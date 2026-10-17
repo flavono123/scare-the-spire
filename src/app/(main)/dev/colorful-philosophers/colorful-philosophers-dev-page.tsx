@@ -11,13 +11,104 @@ import { matchEntities } from "@/lib/chemical-utils";
 import {
   COLORFUL_PHILOSOPHER_SLOTS,
   COLORFUL_PHILOSOPHERS_GAME_VERSION,
+  colorfulPhilosophersWeekNumber,
   upcomingColorfulPhilosopherWeeks,
   type ColorfulPhilosopherPost,
   type ColorfulPhilosopherSlot,
 } from "@/lib/colorful-philosophers";
+import { POOL_LABELS, RELIC_RARITY_LABELS, RELIC_RARITY_ORDER, type RelicFilterPool } from "@/lib/codex-types";
 import { compendiumTypeLabels } from "@/lib/compendium-type-labels";
 import { serviceMessages } from "@/messages/service";
 import { supabaseEnv } from "@/lib/supabase";
+
+const CARD_AFFILIATION_LABELS: Record<string, string> = {
+  ironclad: POOL_LABELS.ironclad,
+  silent: POOL_LABELS.silent,
+  defect: POOL_LABELS.defect,
+  necrobinder: POOL_LABELS.necrobinder,
+  regent: POOL_LABELS.regent,
+  colorless: "무색",
+  curse: "저주",
+  event: "이벤트",
+  status: "상태이상",
+  token: "토큰",
+  quest: "퀘스트",
+};
+
+const AFFILIATION_BAR_CLASS: Record<string, string> = {
+  ironclad: "bg-red-400/70",
+  silent: "bg-emerald-400/70",
+  regent: "bg-orange-400/70",
+  necrobinder: "bg-pink-400/70",
+  defect: "bg-cyan-400/70",
+};
+
+interface AxisBucket {
+  key: string;
+  label: string;
+  used: number;
+  total: number;
+}
+
+interface AxisSpec {
+  title: string;
+  /** Returns [key, label] for an entity, or null when the entity has no value on this axis. */
+  bucket: (entity: EntityInfo) => [string, string] | null;
+  order: string[];
+}
+
+const SLOT_AXES: Partial<Record<ColorfulPhilosopherSlot, AxisSpec[]>> = {
+  card: [
+    {
+      title: "소속",
+      bucket: (entity) => entity.cardData
+        ? [entity.cardData.color, CARD_AFFILIATION_LABELS[entity.cardData.color] ?? entity.cardData.color]
+        : null,
+      order: Object.keys(CARD_AFFILIATION_LABELS),
+    },
+    {
+      title: "희귀도",
+      bucket: (entity) => entity.cardData ? [entity.cardData.rarity, entity.cardData.rarity] : null,
+      order: ["기본", "일반", "희귀", "고급", "고대", "이벤트", "토큰", "저주", "상태이상", "퀘스트"],
+    },
+  ],
+  relic: [
+    {
+      title: "소속",
+      bucket: (entity) => entity.relicData
+        ? [entity.relicData.pool, POOL_LABELS[entity.relicData.pool as RelicFilterPool] ?? entity.relicData.pool]
+        : null,
+      order: ["shared", "ironclad", "silent", "defect", "necrobinder", "regent"],
+    },
+    {
+      title: "희귀도",
+      bucket: (entity) => entity.relicData
+        ? [entity.relicData.rarity, RELIC_RARITY_LABELS[entity.relicData.rarity] ?? entity.relicData.rarity]
+        : null,
+      order: RELIC_RARITY_ORDER,
+    },
+  ],
+};
+
+function axisBuckets(axis: AxisSpec, pool: EntityInfo[], used: EntityInfo[]): AxisBucket[] {
+  const buckets = new Map<string, AxisBucket>();
+  const add = (entity: EntityInfo, field: "used" | "total") => {
+    const value = axis.bucket(entity);
+    if (!value) return;
+    const bucket = buckets.get(value[0]) ?? { key: value[0], label: value[1], used: 0, total: 0 };
+    bucket[field] += 1;
+    buckets.set(value[0], bucket);
+  };
+  pool.forEach((entity) => add(entity, "total"));
+  used.forEach((entity) => add(entity, "used"));
+  const rank = (key: string) => {
+    const index = axis.order.indexOf(key);
+    return index < 0 ? axis.order.length : index;
+  };
+  return Array.from(buckets.values())
+    .filter((bucket) => bucket.total > 0)
+    .sort((a, b) => rank(a.key) - rank(b.key));
+}
 
 export function ColorfulPhilosophersDevPage() {
   const copy = serviceMessages.ko.colorfulPhilosophers;
@@ -63,6 +154,23 @@ export function ColorfulPhilosophersDevPage() {
       bySlot.set(post.slot, slotMap);
     }
     return bySlot;
+  }, [weekPosts.posts, justSaved]);
+
+  const entityByKey = useMemo(
+    () => new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
+    [entities],
+  );
+  const timeline = useMemo(() => {
+    const rows = new Map<string, Map<string, ColorfulPhilosopherPost>>();
+    const posts = justSaved
+      ? [...weekPosts.posts.filter((post) => post.id !== justSaved.id), justSaved]
+      : weekPosts.posts;
+    for (const post of posts) {
+      const row = rows.get(post.weekStart) ?? new Map();
+      row.set(post.slot, post);
+      rows.set(post.weekStart, row);
+    }
+    return Array.from(rows.entries()).sort(([a], [b]) => b.localeCompare(a));
   }, [weekPosts.posts, justSaved]);
 
   const pickRandom = (target: ColorfulPhilosopherSlot) => {
@@ -228,42 +336,77 @@ export function ColorfulPhilosophersDevPage() {
         이 주에 올리기
       </button>
       {error ? <p className="text-sm text-red-300">{error}</p> : null}
-      <section className="space-y-4 border-t border-white/10 pt-5">
+      <section className="space-y-5 border-t border-white/10 pt-5">
         <h2 className="font-service text-sm text-zinc-200">지난 토론 요소</h2>
         {weekPosts.loading ? <p className="text-sm text-zinc-500">불러오는 중...</p> : null}
-        {COLORFUL_PHILOSOPHER_SLOTS.map((item) => {
-          const entries = Array.from(usage.get(item)?.values() ?? []).sort((a, b) =>
-            b.weeks.length - a.weeks.length || b.weeks[0].localeCompare(a.weeks[0]));
-          return (
-            <div key={item} className="space-y-2">
-              <div className="flex items-center justify-between gap-2">
-                <p className="font-service text-xs text-zinc-400">{`${copy.slots[item]} · ${entries.length}개`}</p>
+        <div className="space-y-1">
+          <div className="grid grid-cols-[3.25rem_repeat(3,minmax(0,1fr))] gap-1.5 px-1">
+            <span />
+            {COLORFUL_PHILOSOPHER_SLOTS.map((item) => (
+              <div key={item} className="space-y-1">
+                <p className="font-service text-xs text-zinc-400">{copy.slots[item]}</p>
                 <button
                   type="button"
                   disabled={loading}
                   onClick={() => pickRandom(item)}
-                  className="rounded-full border border-primary/40 bg-primary/15 px-3 py-1 text-xs text-primary disabled:opacity-40"
+                  className="rounded-full border border-primary/40 bg-primary/15 px-2 py-0.5 text-[11px] text-primary disabled:opacity-40"
                 >
-                  안 쓴 요소 랜덤 픽
+                  랜덤 픽
                 </button>
               </div>
-              {entries.length === 0 ? (
-                <p className="text-xs text-zinc-500">아직 없습니다</p>
-              ) : (
-                <ul className="flex flex-wrap gap-2">
-                  {entries.map(({ post, weeks }) => (
-                    <li
-                      key={`${post.resourceType}:${post.resourceId}`}
-                      title={weeks.map((week) => week.slice(5)).join(", ")}
-                      className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/35 px-2 py-1 text-xs text-zinc-200"
-                    >
-                      {post.imageUrl ? <Image src={post.imageUrl} alt="" width={20} height={20} className="object-contain" /> : null}
-                      <span>{post.nameKo}</span>
-                      {weeks.length > 1 ? <span className="text-primary">{`×${weeks.length}`}</span> : null}
-                    </li>
+            ))}
+          </div>
+          {timeline.length === 0 ? <p className="px-1 py-2 text-xs text-zinc-500">아직 없습니다</p> : null}
+          {timeline.map(([week, row]) => (
+            <div
+              key={week}
+              className={`grid grid-cols-[3.25rem_repeat(3,minmax(0,1fr))] items-stretch gap-1.5 rounded-lg border px-1 py-1 ${week === weekStart ? "border-primary/40 bg-primary/5" : "border-white/10 bg-black/25"}`}
+            >
+              <span className="self-center pl-1 text-[11px] leading-tight text-zinc-400">
+                <span className="block font-service text-zinc-200">{`${colorfulPhilosophersWeekNumber(week)}주`}</span>
+                {week.slice(5)}
+              </span>
+              {COLORFUL_PHILOSOPHER_SLOTS.map((item) => {
+                const post = row.get(item);
+                return post ? (
+                  <span key={item} className="flex min-w-0 items-center gap-1.5 rounded bg-black/35 px-1.5 py-1 text-xs text-zinc-200">
+                    {post.imageUrl ? <Image src={post.imageUrl} alt="" width={20} height={20} className="shrink-0 object-contain" /> : null}
+                    <span className="truncate">{post.nameKo}</span>
+                  </span>
+                ) : (
+                  <span key={item} className="flex items-center rounded px-1.5 py-1 text-xs text-zinc-600">—</span>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+        {(["card", "relic"] as const).map((item) => {
+          const axes = SLOT_AXES[item] ?? [];
+          const pool = entities.filter((entity) => entity.type === item);
+          const used = Array.from(usage.get(item)?.values() ?? []).flatMap(({ post, weeks }) => {
+            const entity = entityByKey.get(`${post.resourceType}:${post.resourceId}`);
+            return entity ? Array.from({ length: weeks.length }, () => entity) : [];
+          });
+          return (
+            <div key={item} className="space-y-3">
+              <p className="font-service text-xs text-zinc-400">{`${copy.slots[item]} 집계 · ${used.length}회`}</p>
+              {axes.map((axis) => (
+                <div key={axis.title} className="space-y-1">
+                  <p className="text-[11px] text-zinc-500">{axis.title}</p>
+                  {axisBuckets(axis, pool, used).map((bucket) => (
+                    <div key={bucket.key} className="grid grid-cols-[5rem_1fr_4.5rem] items-center gap-2 text-xs">
+                      <span className="truncate text-zinc-300">{bucket.label}</span>
+                      <span className="h-2 overflow-hidden rounded-full bg-white/5">
+                        <span
+                          className={`block h-full rounded-full ${AFFILIATION_BAR_CLASS[bucket.key] ?? "bg-primary/60"}`}
+                          style={{ width: `${Math.min(100, (bucket.used / bucket.total) * 100)}%` }}
+                        />
+                      </span>
+                      <span className="text-right tabular-nums text-zinc-400">{`${bucket.used} / ${bucket.total}`}</span>
+                    </div>
                   ))}
-                </ul>
-              )}
+                </div>
+              ))}
             </div>
           );
         })}
