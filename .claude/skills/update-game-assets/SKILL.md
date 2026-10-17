@@ -133,3 +133,12 @@ re-implementing the PCK format.
 - The `vars` column on relic/potion/power JSON is owned by the
   **`/baking` skill**, which has its own self-update rule for the
   `XxxVar` shorthand surface and entity model directories.
+
+## Per-version locale text
+
+`data/sts2/localization` holds only the current game's tables. Older versions'
+wording in every locale comes from `data/sts2/localization-history.json`, built
+from the tables committed for each version. After syncing a new patch's
+localization and naming it in `data/sts2/meta.json` and `data/sts2-changes.json`,
+run `pnpm i18n:history`, then `pnpm audit:version-locales` and
+`pnpm test:version-api`, and commit the tables and the history together.

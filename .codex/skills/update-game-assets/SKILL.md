@@ -25,7 +25,9 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    PATH="$HOME/.dotnet/tools:$PATH" ilspycmd -p -o /tmp/sts2-src "$DLL"
    ```
 3. Refresh localization and structural data first. This is the minimum path for
-   fast rich patch work:
+   fast rich patch work. `i18n:sync` overwrites `data/sts2/localization`; the
+   previous version's tables must already be committed, because
+   `pnpm i18n:history` reads each older version's text from git history:
    ```bash
    pnpm i18n:sync
    python3 scripts/parse-enchantments.py
@@ -33,6 +35,14 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    python3 scripts/parse-encounters.py
    python3 scripts/parse-entity-vars.py
    ```
+   Once `data/sts2/meta.json` and `data/sts2-changes.json` name the new
+   patch, pin every locale's text for it and check older versions:
+   ```bash
+   pnpm i18n:history            # data/sts2/localization-history.json
+   pnpm audit:version-locales   # every version x locale against its game text
+   pnpm test:version-api
+   ```
+   Commit the new localization tables and the history together.
 4. Refresh only the likely affected assets. Do not pass `--force` by default:
    ```bash
    python3 scripts/extract-card-portraits.py
