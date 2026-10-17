@@ -27,6 +27,8 @@ interface TransfigureImageCopyButtonProps {
   targetRef: RefObject<HTMLElement | null>;
   /** `icons` is the compact Compendium control. `panel` is the Transfigure pair. */
   layout?: "panel" | "icons";
+  /** Flattens the PNG onto this color. Translucent boards turn gray and faded on a transparent PNG. */
+  backgroundColor?: string;
   labels: {
     copy: string;
     copying: string;
@@ -229,7 +231,10 @@ function withSelectedVersion(fileName: string, version: string): string {
   return `${stem}-v${version}.png`;
 }
 
-async function renderTargetPng(target: HTMLElement): Promise<{ blob: Blob; snapshot: ImageCaptureSnapshot }> {
+async function renderTargetPng(
+  target: HTMLElement,
+  backgroundColor?: string,
+): Promise<{ blob: Blob; snapshot: ImageCaptureSnapshot }> {
   const [{ toBlob }, snapshot] = await Promise.all([
     import("html-to-image"),
     waitForStableCaptureSnapshot(),
@@ -243,6 +248,7 @@ async function renderTargetPng(target: HTMLElement): Promise<{ blob: Blob; snaps
   try {
     const blob = await toBlob(node, {
       cacheBust: false,
+      backgroundColor,
       pixelRatio: Math.min(3, Math.max(2, window.devicePixelRatio || 1)),
       preferredFontFormat: "woff2",
       filter: (domNode) => !isCaptureChrome(domNode),
@@ -272,6 +278,7 @@ export function TransfigureImageCopyButton({
   fileName,
   targetRef,
   layout = "panel",
+  backgroundColor,
   labels,
 }: TransfigureImageCopyButtonProps) {
   const [copyStatus, setCopyStatus] = useState<ActionStatus>("idle");
@@ -305,7 +312,7 @@ export function TransfigureImageCopyButton({
     setCopyStatus("working");
     setDownloadStatus("idle");
     setErrorMessage(null);
-    const blobPromise = renderTargetPng(target).then((rendered) => rendered.blob);
+    const blobPromise = renderTargetPng(target, backgroundColor).then((rendered) => rendered.blob);
 
     void navigator.clipboard.write([
       new ClipboardItem({ "image/png": blobPromise }),
@@ -319,6 +326,7 @@ export function TransfigureImageCopyButton({
       },
     );
   }, [
+    backgroundColor,
     labels.copyFailed,
     labels.copyUnsupported,
     targetRef,
@@ -334,7 +342,7 @@ export function TransfigureImageCopyButton({
     setDownloadStatus("working");
     setErrorMessage(null);
     try {
-      const rendered = await renderTargetPng(target);
+      const rendered = await renderTargetPng(target, backgroundColor);
       const url = URL.createObjectURL(rendered.blob);
       const anchor = document.createElement("a");
       anchor.href = url;
@@ -349,6 +357,7 @@ export function TransfigureImageCopyButton({
       setErrorMessage(labels.downloadFailed);
     }
   }, [
+    backgroundColor,
     fileName,
     labels.downloadFailed,
     targetRef,

@@ -175,6 +175,7 @@ export function DecisionsDecisionsPostView({
       <TransfigureImageCopyButton
         fileName={`${post.title}.png`}
         targetRef={boardRef}
+        backgroundColor="#09090b"
         labels={{
           copy: copy.copyImage,
           copying: copy.copying,
