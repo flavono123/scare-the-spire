@@ -45,6 +45,7 @@ import {
   type FilterSortDir,
 } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
+import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
@@ -338,6 +339,9 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
               currentVersion={currentVersion}
               selectedVersion={selectedVersion}
               onChange={setSelectedVersion}
+              note={versionedEnchantments.some(isVersionTextUnpinned)
+                ? <VersionTextUnpinnedMark serviceLocale={serviceLocale} variant="note" />
+                : null}
             />
           ) : undefined}
         />

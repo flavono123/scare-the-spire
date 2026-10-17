@@ -161,6 +161,7 @@ import { SearchBar } from "./search-bar";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
 import { GameWaxCycleToggle, type GameWaxCycleValue } from "./game-checkbox";
 import { VersionSelector } from "./version-selector";
+import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
@@ -834,6 +835,9 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
               currentVersion={currentVersion}
               selectedVersion={selectedVersion}
               onChange={setSelectedVersion}
+              note={versionedCards.some(isVersionTextUnpinned)
+                ? <VersionTextUnpinnedMark serviceLocale={serviceLocale} variant="note" />
+                : null}
             />
           )}
         />
@@ -849,9 +853,12 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
               return (
                 <div
                   key={card.id}
-                  className="animate-card-enter"
+                  className="relative animate-card-enter"
                   style={{ animationDelay: `${Math.min(i * 12, 250)}ms` }}
                 >
+                  {isVersionTextUnpinned(card) && (
+                    <VersionTextUnpinnedMark serviceLocale={serviceLocale} variant="tile" />
+                  )}
                   <Link
                     href={localizeHref(buildCompendiumResourceDetailHref("card", card.id), serviceLocale)}
                     className="block"

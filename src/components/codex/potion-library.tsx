@@ -45,6 +45,7 @@ import {
 } from "@/lib/card-side-tip-catalog";
 import { collectPotionSideTips } from "@/lib/potion-side-tips";
 import { VersionSelector } from "./version-selector";
+import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
 import { SearchBar } from "./search-bar";
 import {
   FilterSection,
@@ -465,6 +466,9 @@ export function PotionLibrary({
               currentVersion={currentVersion}
               selectedVersion={selectedVersion}
               onChange={setSelectedVersion}
+              note={versionedPotions.some(isVersionTextUnpinned)
+                ? <VersionTextUnpinnedMark serviceLocale={serviceLocale} variant="note" />
+                : null}
             />
           ) : undefined}
         />

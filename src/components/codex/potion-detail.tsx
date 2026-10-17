@@ -43,6 +43,7 @@ import {
   getRelatedEventIdsForPotion,
   getRelatedPowerIdsForPotion,
 } from "@/lib/codex-references";
+import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
 
 function dedupeIds(ids: readonly string[]): string[] {
   const seen = new Set<string>();
@@ -242,6 +243,9 @@ export function PotionDetail({
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
+          {isVersionTextUnpinned(potion) && (
+            <VersionTextUnpinnedMark serviceLocale={serviceLocale} variant="banner" />
+          )}
           <CardSideTipsAnchor
             mode="always"
             preferSide="right"

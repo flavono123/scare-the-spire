@@ -53,6 +53,7 @@ import {
   type FilterSortDir,
 } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
+import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
@@ -421,6 +422,9 @@ export function RelicLibrary({
               currentVersion={currentVersion}
               selectedVersion={selectedVersion}
               onChange={setSelectedVersion}
+              note={versionedRelics.some(isVersionTextUnpinned)
+                ? <VersionTextUnpinnedMark serviceLocale={serviceLocale} variant="note" />
+                : null}
             />
           ) : undefined}
         />

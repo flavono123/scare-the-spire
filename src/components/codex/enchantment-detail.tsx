@@ -44,6 +44,7 @@ import { getAfflictionCardTypeRestriction } from "@/lib/sts2-affliction-rules";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
+import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -247,6 +248,9 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
+          {isVersionTextUnpinned(resource) && (
+            <VersionTextUnpinnedMark serviceLocale={serviceLocale} variant="banner" />
+          )}
           <CardSideTipsAnchor
             mode="always"
             preferSide="right"

@@ -84,6 +84,7 @@ import {
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import { ScrollableBoundedCarousel } from "./bounded-carousel";
+import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
 
 const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
   CORRUPTED: "debuff",
@@ -483,6 +484,9 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           data-card-detail-stage
           className="flex min-h-[34rem] w-full min-w-0 flex-col items-center justify-center gap-4 py-4"
         >
+          {isVersionTextUnpinned(card) && (
+            <VersionTextUnpinnedMark serviceLocale={serviceLocale} variant="banner" />
+          )}
           {/* 카드 + hover popover (popover는 카드 우측, 캐러셀은 카드 아래라 안 겹침).
               활성 인챈트가 있으면 카드 hover 시에도 그 인챈트의 툴팁이 뜨고,
               카드 슬롯 클릭으로 해제 가능. */}

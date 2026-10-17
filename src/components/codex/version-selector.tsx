@@ -1,10 +1,14 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 interface VersionSelectorProps {
   versions: string[];
   currentVersion: string;
   selectedVersion: string;
   onChange: (v: string) => void;
+  /** Shown before the select, e.g. a mark for text this locale did not keep. */
+  note?: ReactNode;
 }
 
 export function VersionSelector({
@@ -12,11 +16,12 @@ export function VersionSelector({
   currentVersion,
   selectedVersion,
   onChange,
+  note,
 }: VersionSelectorProps) {
   const isOlderVersion = selectedVersion !== currentVersion;
   const options = versions.includes(currentVersion) ? versions : [currentVersion, ...versions];
 
-  return (
+  const select = (
     <div className="relative shrink-0">
       <select
         value={selectedVersion}
@@ -47,6 +52,14 @@ export function VersionSelector({
       >
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
       </svg>
+    </div>
+  );
+
+  if (!note) return select;
+  return (
+    <div className="flex shrink-0 items-center gap-2">
+      {note}
+      {select}
     </div>
   );
 }

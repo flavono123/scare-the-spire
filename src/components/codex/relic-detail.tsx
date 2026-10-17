@@ -53,6 +53,7 @@ import {
   type CardSideTipCatalogSources,
 } from "@/lib/card-side-tip-catalog";
 import { collectRelicSideTips } from "@/lib/relic-side-tips";
+import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -421,6 +422,9 @@ export function RelicDetail({
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
+          {isVersionTextUnpinned(relic) && (
+            <VersionTextUnpinnedMark serviceLocale={serviceLocale} variant="banner" />
+          )}
           <CardSideTipsAnchor
             mode="always"
             preferSide="right"
