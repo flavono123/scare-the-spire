@@ -110,6 +110,10 @@ function axisBuckets(axis: AxisSpec, pool: EntityInfo[], used: EntityInfo[]): Ax
     .sort((a, b) => rank(a.key) - rank(b.key));
 }
 
+function randomItem<T>(items: T[]): T {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
 export function ColorfulPhilosophersDevPage() {
   const copy = serviceMessages.ko.colorfulPhilosophers;
   const weeks = useMemo(() => upcomingColorfulPhilosopherWeeks(), []);
@@ -179,7 +183,7 @@ export function ColorfulPhilosophersDevPage() {
     const fresh = candidates.filter((entity) => !used?.has(`${entity.type}:${entity.id}`));
     const from = fresh.length > 0 ? fresh : candidates;
     if (from.length === 0) return;
-    const entity = from[Math.floor(Math.random() * from.length)];
+    const entity = randomItem(from);
     setSlot(target);
     setSelected(entity);
     setQuery("");
