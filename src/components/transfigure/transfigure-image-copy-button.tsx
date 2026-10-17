@@ -254,6 +254,11 @@ function expandCaptureFrame(node: HTMLElement): () => void {
   const insets = imageCaptureInsets(root, descendants);
   const computed = getComputedStyle(node);
   const padding = (property: string) => Number.parseFloat(computed.getPropertyValue(property)) || 0;
+  // Measure before touching any style: widening the box first would reflow a
+  // wrapping board to its new width and make this height too short for the
+  // final, padded layout.
+  const width = node.offsetWidth;
+  const height = node.offsetHeight;
   const previous = {
     boxSizing: node.style.boxSizing,
     width: node.style.width,
@@ -268,8 +273,8 @@ function expandCaptureFrame(node: HTMLElement): () => void {
     marginLeft: node.style.marginLeft,
   };
   node.style.boxSizing = "border-box";
-  node.style.width = `${node.offsetWidth + insets.left + insets.right}px`;
-  node.style.height = `${node.offsetHeight + insets.top + insets.bottom}px`;
+  node.style.width = `${width + insets.left + insets.right}px`;
+  node.style.height = `${height + insets.top + insets.bottom}px`;
   node.style.paddingTop = `${padding("padding-top") + insets.top}px`;
   node.style.paddingRight = `${padding("padding-right") + insets.right}px`;
   node.style.paddingBottom = `${padding("padding-bottom") + insets.bottom}px`;
