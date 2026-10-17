@@ -6893,7 +6893,8 @@
       },
       {
         "field": "vars.Cards",
-        "after": 2
+        "after": 2,
+        "before": 2
       },
       {
         "field": "upgrade.inkyshivs",
