@@ -507,16 +507,27 @@ function monsterMoveTitleCandidates(moveId: string): string[] {
   return candidates;
 }
 
+/**
+ * Moves the game's localization tables leave untitled. The Korean fallback is the
+ * wording of the official patch notes; other locales keep the English move name.
+ * Order of precedence: game title, this map (kor only), English name.
+ */
+const MONSTER_MOVE_TITLE_PATCH_NOTE_KO: Record<string, string> = {
+  "NIBBIT.SLICE": "베기",
+};
+
 function monsterMoveTitleText(
   table: GameLocalizationTable,
   monsterId: string,
   moveId: string,
   fallback: string,
+  gameLocale: GameLocale = "kor",
 ): string {
   for (const candidate of monsterMoveTitleCandidates(moveId)) {
     const title = table[`${monsterId}.moves.${candidate}.title`];
     if (title) return title;
   }
+  if (gameLocale === "kor") return MONSTER_MOVE_TITLE_PATCH_NOTE_KO[`${monsterId}.${moveId}`] ?? fallback;
   return fallback;
 }
 
@@ -2423,6 +2434,7 @@ function mapMonster(
         kor.id,
         km.id,
         gameTitleFallback(km.name, em?.name ?? km.name, gameLocale),
+        gameLocale,
       ),
       nameEn: em?.name ?? km.name,
       kind: "move",
