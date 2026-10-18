@@ -174,3 +174,10 @@ evaluate whether it can cause Cloudflare `exceededResources`, Error 1102, or a
 - 데이터: `src/lib/codex-data.ts`, `src/lib/codex-types.ts`
 - 데이터 SSOT: Steam 패치노트 (밸런스) + 게임 파일 (신규 카드/유물)
 - 한국어 이름은 게임 공식 번역 사용
+
+### STS2 구 빌드 아카이브 (과거 버전 원본)
+- 과거 모든 macOS 빌드(0.96.1 ~ 현재)를 **리포 밖** `~/sts2-builds/<버전>/`(환경변수 `STS2_BUILDS_DIR`로 변경)에 받아 둔다. 이 경로는 리포·`public/`·Next/OpenNext 빌드·배포 번들에 포함되지 않으며 앱 코드(`src/`)에서 import하지 않는다. 리포 안으로 옮기거나 `public/`에 두지 않는다.
+- 각 버전 폴더: `SlayTheSpire2.app/Contents/Resources/{release_info.json, Slay the Spire 2.pck, data_sts2_macos_arm64/sts2.dll}`, 디컴파일 `src/`, 정답 데이터 `canonical/{cards,relics,potions,powers,monsters}.json`. `~/sts2-builds/builds.json`이 manifest ↔ 버전 ↔ 브랜치 ↔ 상태를 기록한다.
+- 과거 값은 패치노트 추정이 아니라 이 아카이브의 dll/PCK를 읽어 확인한다 (`ilspycmd -t MegaCrit.Sts2.Core.Models.<Monsters|Cards|…>.<클래스> <dll>`). 구 빌드의 async 메서드는 상태 기계로 디컴파일돼 `parse-monsters.py`가 파워 적용을 읽지 못하므로 손으로 확인한다.
+- 도구: `scripts/sts2_depot_download.py`(다운로드, manifest 목록은 `scripts/sts2-depot-manifests.json`), `scripts/sts2_decompile_builds.py`, `scripts/sts2_canonical_extract.py`, `scripts/audit-version-api-canonical.ts`(버전 API ↔ 정답 대조), `pnpm test:version-canonical`(회귀 테스트, 아카이브가 없으면 건너뜀).
+- Steam 로그인(`DepotDownloader`, `-remember-password`)은 사용자가 처음 한 번 직접 한다. 계정 정보를 에이전트에 넘기지 않는다. 자세한 절차·manifest 이력: [docs/STS2_DEPOT_MANIFESTS.md](docs/STS2_DEPOT_MANIFESTS.md), 버전 API 전수 조사 결과: [docs/VERSION_API_AUDIT.md](docs/VERSION_API_AUDIT.md).
