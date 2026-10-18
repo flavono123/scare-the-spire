@@ -2859,6 +2859,31 @@
     ],
     "fieldDiffs": [
       {
+        "field": "description",
+        "before": "모든 적에게\n피해를 8 줍니다.\n이번 턴에 사용한 다른\n공격 카드 1장당\n피해량이 2 증가합니다.",
+        "after": "모든 적에게\n피해를 2만큼 4번 줍니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "모든 적에게\n피해를 {CalculatedDamage:diff()} 줍니다.\n이번 턴에 사용한 다른\n공격 카드 1장당\n피해량이 {ExtraDamage:diff()} 증가합니다.",
+        "after": "모든 적에게\n피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.",
+        "beforeByLocale": {
+          "deu": "Füge ALLEN Gegnern {CalculatedDamage:diff()} Schaden zu.\nFügt {ExtraDamage:diff()} Schaden mehr zu pro anderem Angriff, den du in diesem Zug gespielt hast.",
+          "eng": "Deal {CalculatedDamage:diff()} damage to ALL enemies.\nDeals {ExtraDamage:diff()} additional damage for each other Attack you've played this turn.",
+          "esp": "Infliges {CalculatedDamage:diff()} de daño a TODOS los enemigos.\nInfliges {ExtraDamage:diff()} de daño adicional por cada carta de ataque que hayas jugado en este turno.",
+          "fra": "Infligez {CalculatedDamage:diff()} dégâts à TOUS les ennemis.\nInflige {ExtraDamage:diff()} dégâts supplémentaires pour chaque autre Attaque que vous avez jouée ce tour.",
+          "ita": "Infliggi {CalculatedDamage:diff()} di danno a TUTTI i nemici.\nInfliggi {ExtraDamage:diff()} di danno extra per ogni altra carta Attacco che hai giocato in questo turno.",
+          "jpn": "すべての敵に{CalculatedDamage:diff()}ダメージを与える。このターンにプレイしたアタック1枚につき、追加で{ExtraDamage:diff()}ダメージを与える。",
+          "pol": "Zadaj {CalculatedDamage:diff()} pkt. obrażeń WSZYSTKIM przeciwnikom.\nZadaje dodatkowo {ExtraDamage:diff()} pkt. obrażeń za każdy inny Atak zagrany w tej turze.",
+          "ptb": "Cause {CalculatedDamage:diff()} de dano a TODOS os inimigos.\nCausa {ExtraDamage:diff()} de dano adicional por cada outro Ataque que você jogou neste turno.",
+          "rus": "Наносит {CalculatedDamage:diff()} урона ВСЕМ врагам.\nНаносит на {ExtraDamage:diff()} урона больше за каждую вторую Атаку, разыгранную в этом ходу.",
+          "spa": "Inflige {CalculatedDamage:diff()} de daño a TODOS los enemigos.\nInflige {ExtraDamage:diff()} de daño adicional por cada otro Ataque que hayas jugado este turno.",
+          "tha": "สร้างความเสียหาย {CalculatedDamage:diff()} ใส่ศัตรูทั้งหมด\nสร้างความเสียหายเพิ่ม {ExtraDamage:diff()} ตามจำนวนการ์ดโจมตีใบอื่นที่คุณเล่นในเทิร์นนี้",
+          "tur": "TÜM düşmanlara {CalculatedDamage:diff()} hasar ver.\nBu tur oynadığın her Saldırı için fazladan {ExtraDamage:diff()} hasar verir.",
+          "zhs": "对所有敌人造成{CalculatedDamage:diff()}点伤害。\n你在本回合中每打出过一张其他攻击牌，这张牌的伤害就提升{ExtraDamage:diff()}点。"
+        }
+      },
+      {
         "field": "damage",
         "before": 8,
         "after": 2
@@ -2880,11 +2905,21 @@
       {
         "field": "upgrade",
         "before": {
-          "damage": "+1"
+          "damage": "+1",
+          "calculateddamage": "+1",
+          "extradamage": "+1"
         },
         "after": {
           "repeat": "+1"
         }
+      },
+      {
+        "field": "vars.CalculatedDamage",
+        "before": 8
+      },
+      {
+        "field": "vars.ExtraDamage",
+        "before": 2
       }
     ]
   },
