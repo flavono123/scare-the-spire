@@ -410,13 +410,13 @@ function main() {
   // the Compendium flags reconstructed entities with it.
   const lifecycleFields = ["introducedInPatch", "deprecated", "deprecatedInPatch", "versionTextUnpinned"];
   const validCardFields = new Set([
-    "cost", "type", "rarity", "description", "descriptionRaw",
+    "cost", "type", "rarity", "description", "descriptionRaw", "descriptionEn", "descriptionRawEn",
     "damage", "block", "hitCount", "starCost", "isXCost", "isXStarCost",
     "maxUpgradeLevel", "vars", "keywords", "tags", "upgrade",
     ...lifecycleFields,
   ]);
   const validRelicFields = new Set([
-    "description", "descriptionRaw", "rarity", "pool", "flavor", "vars",
+    "description", "descriptionRaw", "descriptionEn", "descriptionRawEn", "rarity", "pool", "flavor", "vars",
     ...lifecycleFields,
   ]);
   const validPotionFields = new Set([

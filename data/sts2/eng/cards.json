@@ -1595,8 +1595,8 @@
   {
     "id": "BLADE_SYMPHONY",
     "name": "Blade Symphony",
-    "description": "Add 2 [gold]Shivs[/gold] to ALL player's [gold]Hands[/gold].",
-    "description_raw": "Add {Cards:diff()} [gold]{Cards:plural:Shiv|Shivs}[/gold] to ALL player's [gold]Hands[/gold].",
+    "description": "Add 2 [gold]Shivs[/gold] to ALL players' [gold]Hands[/gold].",
+    "description_raw": "Add {Cards:diff()} [gold]{Cards:plural:Shiv|Shivs}[/gold] to ALL players' [gold]Hands[/gold].",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -9229,8 +9229,8 @@
   {
     "id": "HELIX_DRILL",
     "name": "Helix Drill",
-    "description": "Deal 3 damage for each [energy:1] previously spent this turn.",
-    "description_raw": "Deal {Damage:diff()} damage for each {energyPrefix:energyIcons(1)} previously spent this turn.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
+    "description": "Deal 3 damage for each [energy:1] spent on other cards this turn.",
+    "description_raw": "Deal {Damage:diff()} damage for each {energyPrefix:energyIcons(1)} spent on other cards this turn.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,

@@ -25680,5 +25680,245 @@
         }
       }
     ]
+  },
+  {
+    "id": "alchemical-coffer-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "ALCHEMICAL_COFFER",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "Upon pickup, gain [blue]4[/blue] potion slots filled with random potions.",
+        "after": "Upon pickup, gain [blue]4[/blue] potion slots filled with random [gold]Potions[/gold]."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion slots filled with random potions.",
+        "after": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion slots filled with random [gold]Potions[/gold]."
+      }
+    ]
+  },
+  {
+    "id": "belt-buckle-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "BELT_BUCKLE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "While you have no potions, you have [blue]2[/blue] additional [gold]Dexterity[/gold].",
+        "after": "While you have no [gold]Potions[/gold], you have [blue]2[/blue] additional [gold]Dexterity[/gold]."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "While you have no potions, you have [blue]{DexterityPower}[/blue] additional [gold]Dexterity[/gold].",
+        "after": "While you have no [gold]Potions[/gold], you have [blue]{DexterityPower}[/blue] additional [gold]Dexterity[/gold]."
+      }
+    ]
+  },
+  {
+    "id": "cauldron-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "CAULDRON",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "Upon pickup, brews [blue]5[/blue] random potions.",
+        "after": "Upon pickup, brews [blue]5[/blue] random [gold]Potions[/gold]."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "Upon pickup, brews [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
+        "after": "Upon pickup, brews [blue]{Potions}[/blue] random [gold]{Potions:plural:Potion|Potions}[/gold]."
+      }
+    ]
+  },
+  {
+    "id": "delicate-frond-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "DELICATE_FROND",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "At the start of each combat, fill all empty potion slots with random potions.",
+        "after": "At the start of each combat, fill all empty potion slots with random [gold]Potions[/gold]."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "At the start of each combat, fill all empty potion slots with random potions.",
+        "after": "At the start of each combat, fill all empty potion slots with random [gold]Potions[/gold]."
+      }
+    ]
+  },
+  {
+    "id": "diamond-diadem-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "DIAMOND_DIADEM",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "Start combat with [blue]20[/blue] [gold]Block[/gold]. Your [gold]Block[/gold] is not removed at the start of your next turn.",
+        "after": "Start combat with [blue]20[/blue] [gold]Block[/gold]. Your [gold]Block[/gold] is not removed at the start of your [blue]2nd[/blue] turn."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "Start combat with [blue]{Block}[/blue] [gold]Block[/gold]. Your [gold]Block[/gold] is not removed at the start of your next turn.",
+        "after": "Start combat with [blue]{Block}[/blue] [gold]Block[/gold]. Your [gold]Block[/gold] is not removed at the start of your [blue]2nd[/blue] turn."
+      }
+    ]
+  },
+  {
+    "id": "phial-holster-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "PHIAL_HOLSTER",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "Upon pickup, gain [blue]1[/blue] potion slot and procure [blue]2[/blue] random potions.",
+        "after": "Upon pickup, gain [blue]1[/blue] potion slot and procure [blue]2[/blue] random [gold]Potions[/gold]."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots} and procure [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
+        "after": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots} and procure [blue]{Potions}[/blue] random [gold]{Potions:plural:Potion|Potions}[/gold]."
+      }
+    ]
+  },
+  {
+    "id": "sozu-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "SOZU",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "Gain [energy:1] at the start of each turn. You can no longer obtain potions.",
+        "after": "Gain [energy:1] at the start of each turn. You can no longer obtain [gold]Potions[/gold]."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "Gain {Energy:energyIcons()} at the start of each turn. You can no longer obtain potions.",
+        "after": "Gain {Energy:energyIcons()} at the start of each turn. You can no longer obtain [gold]Potions[/gold]."
+      }
+    ]
+  },
+  {
+    "id": "tiny-mailbox-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "TINY_MAILBOX",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "Whenever you [gold]Rest[/gold], procure [blue]2[/blue] random potions.",
+        "after": "Whenever you [gold]Rest[/gold], procure [blue]2[/blue] random [gold]Potions[/gold]."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "Whenever you [gold]Rest[/gold], procure [blue]2[/blue] random potions.",
+        "after": "Whenever you [gold]Rest[/gold], procure [blue]2[/blue] random [gold]Potions[/gold]."
+      }
+    ]
+  },
+  {
+    "id": "white-beast-statue-v0-110-0-field-diff",
+    "entityType": "relic",
+    "entityId": "WHITE_BEAST_STATUE",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "Potions always appear in combat rewards.",
+        "after": "[gold]Potions[/gold] always appear in combat rewards."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "Potions always appear in combat rewards.",
+        "after": "[gold]Potions[/gold] always appear in combat rewards."
+      }
+    ]
+  },
+  {
+    "id": "silken-tress-v0-108-0-field-diff",
+    "entityType": "relic",
+    "entityId": "SILKEN_TRESS",
+    "patch": "v0.108.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "Upon pickup, lose all [gold]Gold[/gold]. [gold]Enchant[/gold] all cards in the first card reward with [purple]Glam[/purple].",
+        "after": "Upon pickup, lose all [gold]Gold[/gold]. [gold]Enchant[/gold] all cards in your first card reward with [purple]Glam[/purple]."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "Upon pickup, lose all [gold]Gold[/gold]. [gold]Enchant[/gold] all cards in the first card reward with [purple]Glam[/purple].",
+        "after": "Upon pickup, lose all [gold]Gold[/gold]. [gold]Enchant[/gold] all cards in your first card reward with [purple]Glam[/purple]."
+      }
+    ]
+  },
+  {
+    "id": "blade-symphony-v0-110-0-field-diff",
+    "entityType": "card",
+    "entityId": "BLADE_SYMPHONY",
+    "patch": "v0.110.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "Add 2 [gold]Shivs[/gold] to ALL player's [gold]Hands[/gold].",
+        "after": "Add 2 [gold]Shivs[/gold] to ALL players' [gold]Hands[/gold]."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "Add {Cards:diff()} [gold]{Cards:plural:Shiv|Shivs}[/gold] to ALL player's [gold]Hands[/gold].",
+        "after": "Add {Cards:diff()} [gold]{Cards:plural:Shiv|Shivs}[/gold] to ALL players' [gold]Hands[/gold]."
+      }
+    ]
+  },
+  {
+    "id": "helix-drill-v0-108-0-field-diff",
+    "entityType": "card",
+    "entityId": "HELIX_DRILL",
+    "patch": "v0.108.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "descriptionEn",
+        "before": "Deal 3 damage for each [energy:1] previously spent this turn.",
+        "after": "Deal 3 damage for each [energy:1] spent on other cards this turn."
+      },
+      {
+        "field": "descriptionRawEn",
+        "before": "Deal {Damage:diff()} damage for each {energyPrefix:energyIcons(1)} previously spent this turn.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
+        "after": "Deal {Damage:diff()} damage for each {energyPrefix:energyIcons(1)} spent on other cards this turn.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}"
+      }
+    ]
   }
 ]
