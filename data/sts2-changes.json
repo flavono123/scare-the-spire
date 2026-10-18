@@ -57,7 +57,10 @@
       {
         "field": "descriptionRaw",
         "before": "카드를 {Cards:diff()}장 뽑습니다.\n카드를 {Cards:diff()}장 버립니다.",
-        "after": "카드를 2장 버립니다.\n다음 턴에, [gold]에너지[/gold]를 {Energy:diff()} 얻습니다."
+        "after": "카드를 2장 버립니다.\n다음 턴에, [gold]에너지[/gold]를 {Energy:diff()} 얻습니다.",
+        "beforeByLocale": {
+          "eng": "Draw {Cards:diff()} {Cards:plural:card|cards}.\nDiscard {Cards:diff()} {Cards:plural:card|cards}."
+        }
       },
       {
         "field": "vars",
@@ -120,7 +123,10 @@
       {
         "field": "descriptionRaw",
         "before": "대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 {StrengthPerVulnerable:diff()} 얻습니다.",
-        "after": "[gold]취약[/gold]을 {VulnerablePower:diff()} 부여합니다.\n대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 {StrengthPerVulnerable:diff()} 얻습니다."
+        "after": "[gold]취약[/gold]을 {VulnerablePower:diff()} 부여합니다.\n대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 {StrengthPerVulnerable:diff()} 얻습니다.",
+        "beforeByLocale": {
+          "eng": "Gain {StrengthPerVulnerable:diff()} [gold]Strength[/gold] for each [gold]Vulnerable[/gold] on the enemy."
+        }
       },
       {
         "field": "vars",
@@ -201,7 +207,10 @@
       {
         "field": "descriptionRaw",
         "before": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 체력을\n잃었다면, 카드를 {Cards:diff()}장 뽑습니다.",
-        "after": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 체력을\n잃었다면, {Repeat:diff()}번 적중합니다."
+        "after": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 체력을\n잃었다면, {Repeat:diff()}번 적중합니다.",
+        "beforeByLocale": {
+          "eng": "Deal {Damage:diff()} damage.\nIf you lost HP this turn, draw {Cards:diff()} {Cards:plural:card|cards}."
+        }
       },
       {
         "field": "vars",
@@ -244,7 +253,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}",
-        "after": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.\n이번 턴에 추가로\n{energyPrefix:energyIcons(1)}를 얻을 수 없습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}"
+        "after": "[gold]손[/gold]에 있는 공격 카드 1장당\n{energyPrefix:energyIcons(1)}를 얻습니다.\n이번 턴에 추가로\n{energyPrefix:energyIcons(1)}를 얻을 수 없습니다.{InCombat:\n({CalculatedEnergy:energyIcons()}를 얻습니다.)|}",
+        "beforeByLocale": {
+          "eng": "Gain {energyPrefix:energyIcons(1)} for each Attack in your [gold]Hand[/gold].{InCombat:\n(Gain {CalculatedEnergy:energyIcons()}.)|}"
+        }
       }
     ]
   },
@@ -278,7 +290,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드의 수만큼\n카드를 뽑습니다.",
-        "after": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드의 수만큼\n무작위 {IfUpgraded:show:[gold]강화[/gold]된 |}카드를\n1장 [gold]손[/gold]으로 가져옵니다."
+        "after": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드의 수만큼\n무작위 {IfUpgraded:show:[gold]강화[/gold]된 |}카드를\n1장 [gold]손[/gold]으로 가져옵니다.",
+        "beforeByLocale": {
+          "eng": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nDraw a card for each card [gold]Exhausted[/gold]."
+        }
       }
     ]
   },
@@ -347,6 +362,14 @@
         "field": "description",
         "before": "[star:1]을 얻습니다.\n카드를 2장 뽑습니다.",
         "after": "[star:1]을 얻습니다.\n카드를 1장 뽑습니다.\n다음 턴에, 카드를 1장 뽑습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "{Stars:starIcons()}을 얻습니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+        "after": "{Stars:starIcons()}을 얻습니다.\n카드를 {Cards:diff()}장 뽑습니다.\n다음 턴에,\n카드를 {Cards:diff()}장 뽑습니다.",
+        "beforeByLocale": {
+          "eng": "Gain {Stars:starIcons()}.\nDraw {Cards:diff()} {Cards:plural:card|cards}."
+        }
       }
     ]
   },
@@ -444,7 +467,10 @@
       {
         "field": "descriptionRaw",
         "before": "피해를 {Damage:diff()} 줍니다.\n[gold]손[/gold]에 있는 카드를 1장\n선택해 [gold]하수인 투하[/gold]로\n[gold]변화[/gold]시킵니다.",
-        "after": "[gold]손[/gold]에 있는 카드를 1장\n선택해 [gold]{IfUpgraded:show:하수인 타격+|하수인 타격}[/gold]으로\n[gold]변화[/gold]시킵니다."
+        "after": "[gold]손[/gold]에 있는 카드를 1장\n선택해 [gold]{IfUpgraded:show:하수인 타격+|하수인 타격}[/gold]으로\n[gold]변화[/gold]시킵니다.",
+        "beforeByLocale": {
+          "eng": "Deal {Damage:diff()} damage.\nChoose a card in your [gold]Hand[/gold] to [gold]Transform[/gold] into [gold]{IfUpgraded:show:Minion Dive Bomb+|Minion Dive Bomb}[/gold]."
+        }
       }
     ],
     "relatedEntities": [
@@ -492,7 +518,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]뽑을 카드 더미[/gold]에서\n카드를 {Cards:diff()}장 선택해\n[gold]{IfUpgraded:show:하수인 타격+|하수인 타격}[/gold]으로\n[gold]변화[/gold]시킵니다.",
-        "after": "[gold]뽑을 카드 더미[/gold]에서\n카드를 {Cards:diff()}장 선택해\n[gold]{IfUpgraded:show:하수인 투하+|하수인 투하}[/gold]로\n[gold]변화[/gold]시킵니다."
+        "after": "[gold]뽑을 카드 더미[/gold]에서\n카드를 {Cards:diff()}장 선택해\n[gold]{IfUpgraded:show:하수인 투하+|하수인 투하}[/gold]로\n[gold]변화[/gold]시킵니다.",
+        "beforeByLocale": {
+          "eng": "Choose {Cards:diff()} {Cards:plural:card|cards} in your [gold]Draw Pile[/gold] to [gold]Transform[/gold] into\n[gold]{Cards:plural:{IfUpgraded:show:Minion Strike+|Minion Strike}[/gold]|{IfUpgraded:show:Minion Strikes+|Minion Strikes}[/gold]}."
+        }
       }
     ],
     "relatedEntities": [
@@ -692,7 +721,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]뽑을 카드 더미[/gold]의\n카드를 1장 [gold]{IfUpgraded:show:영혼+|영혼}[/gold]으로\n변화시킵니다.",
-        "after": "[gold]뽑을 카드 더미[/gold]의\n카드를 1장 [gold]영혼[/gold]으로\n변화시킵니다."
+        "after": "[gold]뽑을 카드 더미[/gold]의\n카드를 1장 [gold]영혼[/gold]으로\n변화시킵니다.",
+        "beforeByLocale": {
+          "eng": "Transform a card in your [gold]Draw Pile[/gold] into [gold]{IfUpgraded:show:Soul+|Soul}[/gold]."
+        }
       }
     ]
   },
@@ -747,6 +779,14 @@
         "field": "description",
         "before": "자신에게 [gold]종말[/gold]을 3 부여합니다.\n[energy:1]를 얻습니다.",
         "after": "자신에게 [gold]종말[/gold]을 6 부여합니다.\n[energy:1]를 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "자신에게 [gold]종말[/gold]을 {DoomPower:diff()} 부여합니다.\n{Energy:energyIcons()}를 얻습니다.",
+        "after": "자신에게 [gold]종말[/gold]을 {DoomPower:diff()} 부여합니다.\n{Energy:energyIcons()}를 얻습니다.",
+        "beforeByLocale": {
+          "eng": "Apply {DoomPower:diff()} [gold]Doom[/gold] to yourself.\nGain {Energy:energyIcons()}."
+        }
       }
     ]
   },
@@ -780,7 +820,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]뽑을 카드 더미[/gold]에 있는\n무작위 카드 1장이\n[gold]재사용[/gold]을 {Replay:diff()} 얻습니다.",
-        "after": "[gold]뽑을 카드 더미[/gold]에 있는\n[gold]재사용[/gold]이 없는\n무작위 카드 1장이\n[gold]재사용[/gold]을 {Replay:diff()} 얻습니다."
+        "after": "[gold]뽑을 카드 더미[/gold]에 있는\n[gold]재사용[/gold]이 없는\n무작위 카드 1장이\n[gold]재사용[/gold]을 {Replay:diff()} 얻습니다.",
+        "beforeByLocale": {
+          "eng": "A random card in your [gold]Draw Pile[/gold] gains [gold]Replay[/gold] {Replay:diff()}."
+        }
       }
     ]
   },
@@ -1697,6 +1740,14 @@
         "field": "description",
         "before": "적이 보상으로 주는 [gold]골드[/gold]가 [blue]10[/blue] 증가합니다.",
         "after": "적이 보상으로 주는 [gold]골드[/gold]가 [blue]15[/blue] 증가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "적이 보상으로 주는 [gold]골드[/gold]가 [blue]{Gold}[/blue] 증가합니다.",
+        "after": "적이 보상으로 주는 [gold]골드[/gold]가 [blue]{Gold}[/blue] 증가합니다.",
+        "beforeByLocale": {
+          "eng": "Enemies drop [blue]{Gold}[/blue] additional [gold]Gold[/gold]."
+        }
       }
     ]
   },
@@ -1724,6 +1775,14 @@
         "field": "description",
         "before": "[gold]덱[/gold]에 카드를 [blue]5[/blue]장 추가할 때마다, 체력을 [green]15[/green] 회복합니다.",
         "after": "[gold]덱[/gold]에 카드를 [blue]5[/blue]장 추가할 때마다, 체력을 [green]20[/green] 회복합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]덱[/gold]에 카드를 [blue]{Cards}[/blue]장 추가할 때마다, 체력을 [green]{Heal}[/green] 회복합니다.",
+        "after": "[gold]덱[/gold]에 카드를 [blue]{Cards}[/blue]장 추가할 때마다, 체력을 [green]{Heal}[/green] 회복합니다.",
+        "beforeByLocale": {
+          "eng": "Every [blue]{Cards}[/blue] {Cards:plural:card|cards} you add to your [gold]Deck[/gold], heal [green]{Heal}[/green] HP."
+        }
       }
     ]
   },
@@ -1751,6 +1810,14 @@
         "field": "description",
         "before": "[gold]골드[/gold]를 [blue]20%[/blue] 추가로 획득합니다.",
         "after": "[gold]골드[/gold]를 [blue]25%[/blue] 추가로 획득합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]골드[/gold]를 [blue]20%[/blue] 추가로 획득합니다.",
+        "after": "[gold]골드[/gold]를 [blue]{GoldIncrease:percentMore()}%[/blue] 추가로 획득합니다.",
+        "beforeByLocale": {
+          "eng": "Gain [blue]20%[/blue] additional [gold]Gold[/gold]."
+        }
       }
     ]
   },
@@ -1778,6 +1845,14 @@
         "field": "description",
         "before": "매 전투마다 처음으로 파워 카드를 사용 시, [gold]방어도[/gold]를 [blue]6[/blue] 얻습니다.",
         "after": "매 전투마다 처음으로 파워 카드를 사용 시, [gold]방어도[/gold]를 [blue]7[/blue] 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "매 전투마다 처음으로 파워 카드를 사용 시, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다.",
+        "after": "매 전투마다 처음으로 파워 카드를 사용 시, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다.",
+        "beforeByLocale": {
+          "eng": "The first time you play a Power each combat, gain [blue]{Block}[/blue] [gold]Block[/gold]."
+        }
       }
     ]
   },
@@ -1805,6 +1880,14 @@
         "field": "description",
         "before": "[gold]?[/gold] 방에 진입할 때마다, 체력을 [green]4[/green] 회복합니다.",
         "after": "[gold]?[/gold] 방에 진입할 때마다, 체력을 [green]5[/green] 회복합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]?[/gold] 방에 진입할 때마다, 체력을 [green]{Heal}[/green] 회복합니다.",
+        "after": "[gold]?[/gold] 방에 진입할 때마다, 체력을 [green]{Heal}[/green] 회복합니다.",
+        "beforeByLocale": {
+          "eng": "Whenever you enter a [gold]?[/gold] room, heal [green]{Heal}[/green] HP."
+        }
       }
     ]
   },
@@ -1854,6 +1937,14 @@
         "field": "description",
         "before": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]변화[/gold]시킵니다. 최대 체력을 [blue]10[/blue] 잃습니다.",
         "after": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]변화[/gold]시킵니다. 최대 체력을 [blue]12[/blue] 잃습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]변화[/gold]시킵니다. 최대 체력을 [blue]{MaxHp}[/blue] 잃습니다.",
+        "after": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]변화[/gold]시킵니다. 최대 체력을 [blue]{MaxHp}[/blue] 잃습니다.",
+        "beforeByLocale": {
+          "eng": "Upon pickup, [gold]Transform[/gold] [blue]1[/blue] of your [gold]Strikes[/gold] and [blue]1[/blue] of your [gold]Defends[/gold] and lose [blue]{MaxHp}[/blue] Max HP."
+        }
       }
     ]
   },
@@ -1958,6 +2049,14 @@
         "field": "description",
         "before": "획득 시, [gold]덱[/gold]에서 카드를 [blue]5[/blue]장 제거합니다. [gold]덱[/gold]에 [red]어리석음[/red]을 추가합니다.",
         "after": "획득 시, [gold]덱[/gold]에서 카드를 [blue]3[/blue]장 제거합니다. [gold]덱[/gold]에 [red]어리석음[/red]을 추가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 제거합니다. [gold]덱[/gold]에 [red]어리석음[/red]을 추가합니다.",
+        "after": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 제거합니다. [gold]덱[/gold]에 [red]어리석음[/red]을 추가합니다.",
+        "beforeByLocale": {
+          "eng": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold]. Add [red]Folly[/red] to your [gold]Deck[/gold]."
+        }
       }
     ],
     "relatedEntities": [
@@ -2353,8 +2452,26 @@
         "after": 7
       },
       {
-        "field": "versionTextUnpinned",
-        "before": true
+        "field": "descriptionRaw",
+        "before": "모든 적에게 피해를 {Damage:diff()} 줍니다.\n이번 턴에 가장 최근에 사용한 카드가 스킬 카드라면, 모든 적에게 [gold]약화[/gold]를 {WeakPower:diff()} 부여합니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n[gold]손[/gold]에 다른 카드가\n{CardCount}장 이상 있다면,\n1번 추가로 적중합니다.",
+        "beforeByLocale": {
+          "eng": "Deal {Damage:diff()} damage to ALL enemies.\nIf the last card you played this turn was a Skill, apply {WeakPower:diff()} [gold]Weak[/gold] to ALL enemies."
+        }
+      },
+      {
+        "field": "vars.WeakPower",
+        "before": 1
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "damage": "+2",
+          "weak": "+1"
+        },
+        "after": {
+          "damage": "+2"
+        }
       }
     ]
   },
@@ -2392,6 +2509,14 @@
         "field": "description",
         "before": "피해를 8 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 4 증가합니다.",
         "after": "피해를 9 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 4 증가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {CalculatedDamage:diff()} 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 {ExtraDamage:diff()} 증가합니다.",
+        "after": "피해를 {CalculatedDamage:diff()} 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 {ExtraDamage:diff()} 증가합니다.",
+        "beforeByLocale": {
+          "eng": "Deal {CalculatedDamage:diff()} damage.\nDeals {ExtraDamage:diff()} additional damage for each card discarded this turn."
+        }
       }
     ]
   },
@@ -2470,7 +2595,10 @@
       {
         "field": "descriptionRaw",
         "before": "무색 카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다.",
-        "after": "카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다."
+        "after": "카드를 생성할 때마다, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다.",
+        "beforeByLocale": {
+          "eng": "Whenever you create a Colorless card, gain [blue]{Block}[/blue] [gold]Block[/gold]."
+        }
       }
     ]
   },
@@ -2868,19 +2996,7 @@
         "before": "모든 적에게\n피해를 {CalculatedDamage:diff()} 줍니다.\n이번 턴에 사용한 다른\n공격 카드 1장당\n피해량이 {ExtraDamage:diff()} 증가합니다.",
         "after": "모든 적에게\n피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.",
         "beforeByLocale": {
-          "deu": "Füge ALLEN Gegnern {CalculatedDamage:diff()} Schaden zu.\nFügt {ExtraDamage:diff()} Schaden mehr zu pro anderem Angriff, den du in diesem Zug gespielt hast.",
-          "eng": "Deal {CalculatedDamage:diff()} damage to ALL enemies.\nDeals {ExtraDamage:diff()} additional damage for each other Attack you've played this turn.",
-          "esp": "Infliges {CalculatedDamage:diff()} de daño a TODOS los enemigos.\nInfliges {ExtraDamage:diff()} de daño adicional por cada carta de ataque que hayas jugado en este turno.",
-          "fra": "Infligez {CalculatedDamage:diff()} dégâts à TOUS les ennemis.\nInflige {ExtraDamage:diff()} dégâts supplémentaires pour chaque autre Attaque que vous avez jouée ce tour.",
-          "ita": "Infliggi {CalculatedDamage:diff()} di danno a TUTTI i nemici.\nInfliggi {ExtraDamage:diff()} di danno extra per ogni altra carta Attacco che hai giocato in questo turno.",
-          "jpn": "すべての敵に{CalculatedDamage:diff()}ダメージを与える。このターンにプレイしたアタック1枚につき、追加で{ExtraDamage:diff()}ダメージを与える。",
-          "pol": "Zadaj {CalculatedDamage:diff()} pkt. obrażeń WSZYSTKIM przeciwnikom.\nZadaje dodatkowo {ExtraDamage:diff()} pkt. obrażeń za każdy inny Atak zagrany w tej turze.",
-          "ptb": "Cause {CalculatedDamage:diff()} de dano a TODOS os inimigos.\nCausa {ExtraDamage:diff()} de dano adicional por cada outro Ataque que você jogou neste turno.",
-          "rus": "Наносит {CalculatedDamage:diff()} урона ВСЕМ врагам.\nНаносит на {ExtraDamage:diff()} урона больше за каждую вторую Атаку, разыгранную в этом ходу.",
-          "spa": "Inflige {CalculatedDamage:diff()} de daño a TODOS los enemigos.\nInflige {ExtraDamage:diff()} de daño adicional por cada otro Ataque que hayas jugado este turno.",
-          "tha": "สร้างความเสียหาย {CalculatedDamage:diff()} ใส่ศัตรูทั้งหมด\nสร้างความเสียหายเพิ่ม {ExtraDamage:diff()} ตามจำนวนการ์ดโจมตีใบอื่นที่คุณเล่นในเทิร์นนี้",
-          "tur": "TÜM düşmanlara {CalculatedDamage:diff()} hasar ver.\nBu tur oynadığın her Saldırı için fazladan {ExtraDamage:diff()} hasar verir.",
-          "zhs": "对所有敌人造成{CalculatedDamage:diff()}点伤害。\n你在本回合中每打出过一张其他攻击牌，这张牌的伤害就提升{ExtraDamage:diff()}点。"
+          "eng": "Deal {CalculatedDamage:diff()} damage to ALL enemies.\nDeals {ExtraDamage:diff()} additional damage for each other Attack you've played this turn."
         }
       },
       {
@@ -2981,6 +3097,14 @@
         "after": {
           "energy": "+1"
         }
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "카드를 {Cards:diff()}장 뽑습니다.\n내 턴 시작 시,\n[gold]뽑을 카드 더미[/gold] 맨 위의\n카드를 [gold]소멸[/gold]시킵니다.",
+        "after": "카드를 {Cards:diff()}장 뽑습니다.\n이 카드가 [gold]소멸[/gold]될 시,\n{Energy:energyIcons()}를 얻습니다.",
+        "beforeByLocale": {
+          "eng": "Draw {Cards:diff()} cards.\nAt the start of your turn, [gold]Exhaust[/gold] the top card of your [gold]Draw Pile[/gold]."
+        }
       }
     ]
   },
@@ -3014,7 +3138,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]군주의 칼날[/gold]을 사용할 때마다,\n[gold]방어도[/gold]를 {ParryPower:diff()} 얻습니다.",
-        "after": "[gold]군주의 칼날[/gold]을 사용 시\n이제 [gold]방어도[/gold]를 {ParryPower:diff()}\n얻습니다."
+        "after": "[gold]군주의 칼날[/gold]을 사용 시\n이제 [gold]방어도[/gold]를 {ParryPower:diff()}\n얻습니다.",
+        "beforeByLocale": {
+          "eng": "Whenever you play [gold]Sovereign Blade[/gold], gain {ParryPower:diff()} [gold]Block[/gold]."
+        }
       }
     ],
     "relatedEntities": [
@@ -3153,7 +3280,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]엘리트[/gold] 전투 시작 시, 카드를 추가로 [blue]{Cards}[/blue]장 뽑습니다.",
-        "after": "[gold]엘리트[/gold] 전투 시작 시, 카드를 추가로 [blue]{Cards}[/blue]장 뽑고 {Energy:energyIcons()}를 얻습니다."
+        "after": "[gold]엘리트[/gold] 전투 시작 시, 카드를 추가로 [blue]{Cards}[/blue]장 뽑고 {Energy:energyIcons()}를 얻습니다.",
+        "beforeByLocale": {
+          "eng": "At the start of [gold]Elite[/gold] combats, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}."
+        }
       },
       {
         "field": "vars",
@@ -3197,7 +3327,10 @@
       {
         "field": "descriptionRaw",
         "before": "피해를 {Damage:diff()} 줍니다.\n[gold]버린 카드 더미[/gold]에서\n무작위 카드를 {Cards:diff()}장\n[gold]손[/gold]으로 가져옵니다.",
-        "after": "피해를 {Damage:diff()} 줍니다.\n[gold]버린 카드 더미[/gold]에서\n카드를 최대 {Cards:diff()}장까지\n[gold]손[/gold]으로 가져옵니다."
+        "after": "피해를 {Damage:diff()} 줍니다.\n[gold]버린 카드 더미[/gold]에서\n카드를 최대 {Cards:diff()}장까지\n[gold]손[/gold]으로 가져옵니다.",
+        "beforeByLocale": {
+          "eng": "Deal {Damage:diff()} damage.\nPut {Cards:plural:a random card|{:diff()} random cards} from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold]."
+        }
       }
     ]
   },
@@ -3255,7 +3388,10 @@
       {
         "field": "descriptionRaw",
         "before": "비용이 [blue]0[/blue]이 되고, [gold]영구[/gold]를 얻습니다.",
-        "after": "비용이 [blue]0[/blue]이 되고, 피해량이 [blue]{Damage}[/blue] 증가하고, [gold]영구[/gold]를 얻습니다."
+        "after": "비용이 [blue]0[/blue]이 되고, 피해량이 [blue]{Damage}[/blue] 증가하고, [gold]영구[/gold]를 얻습니다.",
+        "beforeByLocale": {
+          "eng": "Costs [blue]0[/blue] and gains [gold]Eternal[/gold]."
+        }
       },
       {
         "field": "vars",
@@ -5866,6 +6002,14 @@
         "field": "description",
         "before": "모든 적에게\n피해를 7 줍니다.",
         "after": "모든 적에게\n피해를 6 줍니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "모든 적에게 피해를 {Damage:diff()} 줍니다.",
+        "after": "모든 적에게\n피해를 {Damage:diff()} 줍니다.",
+        "beforeByLocale": {
+          "eng": "Deal {Damage:diff()} damage to ALL enemies."
+        }
       }
     ]
   },
@@ -6090,6 +6234,14 @@
         "field": "description",
         "before": "[gold]단조[/gold] 10.",
         "after": "[gold]단조[/gold] 12."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]단조[/gold] {Forge:diff()}.",
+        "after": "[gold]단조[/gold] {Forge:diff()}.",
+        "beforeByLocale": {
+          "eng": "[gold]Forge[/gold] {Forge:diff()}."
+        }
       }
     ]
   },
@@ -6490,6 +6642,14 @@
         "after": {
           "energy": "+1"
         }
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "자신에게 [gold]종말[/gold]을 {DoomPower:diff()} 부여합니다.\n{Energy:energyIcons()}를 얻습니다.",
+        "after": "자신에게 [gold]종말[/gold]을 {DoomPower:diff()} 부여합니다.\n{Energy:energyIcons()}를 얻습니다.",
+        "beforeByLocale": {
+          "eng": "Apply {DoomPower:diff()} [gold]Doom[/gold] to yourself.\nGain {Energy:energyIcons()}."
+        }
       }
     ]
   },
@@ -6509,7 +6669,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]뽑을 카드 더미[/gold]를 섞을 때마다, 카드를 1장 뽑습니다.",
-        "after": "[blue]{Turns}[/blue]턴마다, 카드를 [blue]{Cards}[/blue]장 뽑습니다."
+        "after": "[blue]{Turns}[/blue]턴마다, 카드를 [blue]{Cards}[/blue]장 뽑습니다.",
+        "beforeByLocale": {
+          "eng": "Whenever you shuffle your [gold]Draw Pile[/gold], draw a card."
+        }
       }
     ]
   },
@@ -6534,7 +6697,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]휴식[/gold]을 취할 때마다, 무작위 포션을 1개 생성합니다.",
-        "after": "[gold]휴식[/gold]을 취할 때마다, 무작위 [gold]포션[/gold]을 [blue]2[/blue]개 생성합니다."
+        "after": "[gold]휴식[/gold]을 취할 때마다, 무작위 [gold]포션[/gold]을 [blue]2[/blue]개 생성합니다.",
+        "beforeByLocale": {
+          "eng": "Whenever you [gold]Rest[/gold], procure a random potion."
+        }
       }
     ]
   },
@@ -6666,7 +6832,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]단조[/gold] {Forge:diff()}.",
-        "after": "[gold]단조[/gold] {Forge:diff()}.\n카드를 {Cards:diff()}장 뽑습니다."
+        "after": "[gold]단조[/gold] {Forge:diff()}.\n카드를 {Cards:diff()}장 뽑습니다.",
+        "beforeByLocale": {
+          "eng": "[gold]Forge[/gold] {Forge:diff()}."
+        }
       }
     ]
   },
@@ -6686,7 +6855,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]군주의 칼날[/gold]의 비용이 1 증가합니다. [gold]군주의 칼날[/gold]이 이제 1번 추가로 적중합니다.",
-        "after": "[gold]군주의 칼날[/gold]이 이제 {SwordSagePower:diff()}번 추가로 적중합니다."
+        "after": "[gold]군주의 칼날[/gold]이 이제 {SwordSagePower:diff()}번 추가로 적중합니다.",
+        "beforeByLocale": {
+          "eng": "Increase the cost of [gold]Sovereign Blade[/gold] by 1. [gold]Sovereign Blade[/gold] now hits an additional time."
+        }
       }
     ]
   },
@@ -6706,7 +6878,10 @@
       {
         "field": "descriptionRaw",
         "before": "피해를 {Damage:diff()} 줍니다.\n다음 턴에, 카드를 {Cards:diff()}장 뽑습니다.",
-        "after": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다."
+        "after": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+        "beforeByLocale": {
+          "eng": "Deal {Damage:diff()} damage.\nNext turn, draw {Cards:diff()} {Cards:plural:card|cards}."
+        }
       }
     ]
   },
@@ -6726,7 +6901,10 @@
       {
         "field": "descriptionRaw",
         "before": "피해를 {Damage:diff()} 줍니다.\n[gold]뽑을 카드 더미[/gold] 맨 위의 카드를 [gold]소멸[/gold]시킵니다.",
-        "after": "피해를 {Damage:diff()} 줍니다.\n무작위 카드를\n1장 [gold]소멸[/gold] 시킵니다."
+        "after": "피해를 {Damage:diff()} 줍니다.\n무작위 카드를\n1장 [gold]소멸[/gold] 시킵니다.",
+        "beforeByLocale": {
+          "eng": "Deal {Damage:diff()} damage.\n[gold]Exhaust[/gold] the top card of your [gold]Draw Pile[/gold]."
+        }
       }
     ]
   },
@@ -6742,6 +6920,18 @@
         "field": "description",
         "before": "이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 [gold]힘[/gold]을 2 얻습니다.",
         "after": "[gold]잉크 단도[/gold]를 2장 [gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 [gold]힘[/gold]을 {StrengthPower:diff()} 얻습니다.",
+        "after": "[purple]잉크투성이[/purple] [gold]단도[/gold]를 {Cards:diff()}장\n[gold]손[/gold]으로 가져옵니다.",
+        "beforeByLocale": {
+          "eng": "This turn, whenever you play an Attack, gain {StrengthPower:diff()} [gold]Strength[/gold] this turn."
+        }
+      },
+      {
+        "field": "vars.StrengthPower",
+        "before": 2
       }
     ]
   },
@@ -6782,6 +6972,14 @@
         },
         "after": {
           "energy": "+2"
+        }
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "자신에게 [gold]종말[/gold]을 {DoomPower:diff()} 부여합니다.\n{Energy:energyIcons()}를 얻습니다.",
+        "after": "{Energy:energyIcons()}를 얻습니다.\n이번 턴 동안 카드의 비용이\n{ExtraCost:energyIcons()} 증가합니다.",
+        "beforeByLocale": {
+          "eng": "Apply {DoomPower:diff()} [gold]Doom[/gold] to yourself.\nGain {Energy:energyIcons()}."
         }
       }
     ]
@@ -6857,7 +7055,10 @@
       {
         "field": "descriptionRaw",
         "before": "내 턴 시작 시, 무작위 [gold]공격[/gold] 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴에 그 카드의 비용이 [blue]0[/blue]{energyPrefix:energyIcons(1)}이 됩니다.",
-        "after": "내 턴 시작 시, 무작위 [gold]공격[/gold] 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다."
+        "after": "내 턴 시작 시, 무작위 [gold]공격[/gold] 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다.",
+        "beforeByLocale": {
+          "eng": "At the start of your turn, add a random [gold]Attack[/gold] into your [gold]Hand[/gold]. It costs [blue]0[/blue]{energyPrefix:energyIcons(1)} this turn."
+        }
       }
     ]
   },
@@ -6877,7 +7078,10 @@
       {
         "field": "descriptionRaw",
         "before": "매 전투 시작 시, 무작위 카드를 1장 [gold]손[/gold]으로 가져옵니다. 그 카드의 비용이 [blue]0[/blue]{energyPrefix:energyIcons(1)}이 됩니다.",
-        "after": "매 전투 시작 시, 무작위 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다."
+        "after": "매 전투 시작 시, 무작위 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다.",
+        "beforeByLocale": {
+          "eng": "At the start of each combat, add a random card into your [gold]Hand[/gold]. It costs [blue]0[/blue]{energyPrefix:energyIcons(1)}."
+        }
       }
     ]
   },
@@ -6897,7 +7101,10 @@
       {
         "field": "descriptionRaw",
         "before": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드의 비용이 [blue]0[/blue] {energyPrefix:energyIcons(1)}이 됩니다.",
-        "after": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다."
+        "after": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다.",
+        "beforeByLocale": {
+          "eng": "Put a card from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold]. It costs [blue]0[/blue] {energyPrefix:energyIcons(1)} this turn."
+        }
       }
     ]
   },
