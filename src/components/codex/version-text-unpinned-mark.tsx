@@ -2,15 +2,17 @@
 
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { ServiceLocale } from "@/lib/i18n";
-import { LOCALE_TEXT_PINNED_FROM, VERSION_TEXT_UNPINNED_FIELD } from "@/lib/localization-history";
+import { VERSION_TEXT_UNPINNED_FIELD } from "@/lib/entity-versioning";
 
-/** True when a reconstructed entity shows text that this locale did not have at that version. */
+/** True when a reconstructed entity shows text that is not that version's own. */
 export function isVersionTextUnpinned(entity: object | null | undefined): boolean {
   return Boolean(entity && (entity as Record<string, unknown>)[VERSION_TEXT_UNPINNED_FIELD]);
 }
 
 /**
- * Marks text this game locale did not keep for the selected version.
+ * Marks text that is not the selected version's own: a locale without text
+ * from before the pinned version, or a template naming variables that version
+ * lacked.
  * `tile` is a corner chip on one element, `note` sits beside the version
  * selector, and `banner` is a line on a detail page.
  */
@@ -22,7 +24,7 @@ export function VersionTextUnpinnedMark({
   variant: "tile" | "note" | "banner";
 }) {
   const copy = getCodexServiceMessages(serviceLocale).common;
-  const detail = copy.versionTextUnpinnedDetail.replaceAll("{version}", `v${LOCALE_TEXT_PINNED_FROM}`);
+  const detail = copy.versionTextUnpinnedDetail;
 
   if (variant === "tile") {
     return (

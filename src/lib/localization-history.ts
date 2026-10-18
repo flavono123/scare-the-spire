@@ -1,4 +1,4 @@
-import { compareVersions } from "./entity-versioning";
+import { compareVersions, VERSION_TEXT_UNPINNED_FIELD } from "./entity-versioning";
 import type { GameLocale } from "./i18n";
 import type { EntityFieldDiff, EntityVersionDiff, VersionedEntityType } from "./types";
 
@@ -32,8 +32,7 @@ export const LOCALIZATION_HISTORY_TYPES: readonly VersionedEntityType[] = ["card
  */
 export const LOCALE_TEXT_PINNED_FROM = "0.104.0";
 
-/** Set on an entity reconstructed to a version whose text this locale lacks. */
-export const VERSION_TEXT_UNPINNED_FIELD = "versionTextUnpinned";
+export { VERSION_TEXT_UNPINNED_FIELD } from "./entity-versioning";
 
 const TEXT_FIELD_OF: Record<string, TrackedField> = {
   name: "name",

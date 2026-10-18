@@ -665,7 +665,11 @@ export function CompendiumDirectDetailPage({
   }
 
   if (!detail) {
-    return <LoadingState label="상세 정보를 찾을 수 없습니다." summary={initialSummary} />;
+    // The id exists but not at the chosen version (added later or removed).
+    const label = selectedVersion !== currentVersion.replace(/^v/, "")
+      ? serviceText.common.notInSelectedVersion.replace("{version}", `v${selectedVersion}`)
+      : "상세 정보를 찾을 수 없습니다.";
+    return <LoadingState label={label} summary={initialSummary} />;
   }
 
   return (

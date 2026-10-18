@@ -92,7 +92,18 @@ function syncBakedDescription(
  * Apply a single field diff in reverse (after→before) to an entity object.
  * Supports dot-notation paths like "vars.Damage" or "upgrade.cost".
  */
+/** Set on an entity reconstructed to a version whose own text is not known. */
+export const VERSION_TEXT_UNPINNED_FIELD = "versionTextUnpinned";
+
+/**
+ * Lifecycle fields describe when an entity exists, not its state at a version.
+ * Reverting them would erase `introducedInPatch` and make an entity look
+ * available before it was added.
+ */
+const LIFECYCLE_FIELDS = new Set(["introducedInPatch", "deprecated", "deprecatedInPatch"]);
+
 function applyReverseDiff(entity: Record<string, unknown>, diff: EntityFieldDiff): void {
+  if (LIFECYCLE_FIELDS.has(diff.field)) return;
   const parts = diff.field.split(".");
   if (parts.length === 1) {
     // Simple field — full replacement with "before" value
@@ -375,6 +386,25 @@ export function reconstructEntityAtVersion<T extends { id: string }>(
   }
 
   syncBakedDescription(result, entityType, bakedSnapshot, descriptionDiffApplied);
+  if (usesVariablesTheVersionLacks(entity as Record<string, unknown>, result)) {
+    result[VERSION_TEXT_UNPINNED_FIELD] = true;
+  }
 
   return result as unknown as T;
+}
+
+/**
+ * True when the template still names a variable the entity has today but not
+ * at the reconstructed version. That text came from a later version (no diff
+ * restored the old wording), and baking it leaves "X".
+ */
+function usesVariablesTheVersionLacks(current: Record<string, unknown>, reconstructed: Record<string, unknown>): boolean {
+  const raw = reconstructed.descriptionRaw;
+  if (typeof raw !== "string") return false;
+  const currentVars = (current.vars ?? {}) as Record<string, unknown>;
+  const versionVars = (reconstructed.vars ?? {}) as Record<string, unknown>;
+  for (const [, name] of raw.matchAll(/\{([A-Za-z_][A-Za-z0-9_]*)/g)) {
+    if (currentVars[name] != null && versionVars[name] == null) return true;
+  }
+  return false;
 }
