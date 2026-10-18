@@ -85,6 +85,10 @@ export function localizeVersionDiffs(
     });
     if (unpinned) {
       diffs.push({ field: VERSION_TEXT_UNPINNED_FIELD, before: true, after: null } as EntityFieldDiff);
+    } else if (backfilled.has("descriptionRaw")) {
+      // This patch's old text is known for the locale, so older versions are
+      // pinned again even if a newer patch's text was not.
+      diffs.push({ field: VERSION_TEXT_UNPINNED_FIELD, before: false, after: null } as EntityFieldDiff);
     }
     return { ...entry, diffs };
   });
