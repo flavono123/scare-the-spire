@@ -17,18 +17,18 @@
 
 | 카드 | 항목 | 데이터 | 게임 |
 |---|---|---|---|
-| BREAK (파쇄) | 강화 피해 | +5 | +10 |
-| CINDER | 강화 피해 | +5 | +6 |
-| GRAND_FINALE | 강화 피해 | +10 | +15 |
-| KINGLY_KICK | 강화 피해 | +6 | +8 |
-| PINPOINT | 강화 피해 | +5 | +4 |
-| KINGLY_PUNCH | 강화 피해 | 없음 | +2 |
-| FIGHT_ME | 힘 | 2 | 3 |
-| DANSE_MACABRE | 파워 수치 / 강화 | 3 / +1 | 4 / +2 |
-| ETERNAL_ARMOR | 판금 / 강화 | 7 / +2 | 9 / +3 |
-| WROUGHT_IN_WAR | 제련 | 5 | 7 |
+| 박살 (BREAK) | 강화 피해 | +5 | +10 |
+| 잿불 (CINDER) | 강화 피해 | +5 | +6 |
+| 대단원의 막 (GRAND_FINALE) | 강화 피해 | +10 | +15 |
+| 왕의 발차기 (KINGLY_KICK) | 강화 피해 | +6 | +8 |
+| 정밀 사격 (PINPOINT) | 강화 피해 | +5 | +4 |
+| 왕의 주먹 (KINGLY_PUNCH) | 강화 피해 | 없음 | +2 |
+| 덤벼라! (FIGHT_ME) | 힘 | 2 | 3 |
+| 죽음의 무도 (DANSE_MACABRE) | 파워 수치 / 강화 | 3 / +1 | 4 / +2 |
+| 영원의 갑옷 (ETERNAL_ARMOR) | 판금 / 강화 | 7 / +2 | 9 / +3 |
+| 전장의 생존자 (WROUGHT_IN_WAR) | 제련 | 5 | 7 |
 
-(카드 이름은 데이터의 공식 한국어 이름을 쓴다. 위 표는 ID 기준.) 그 밖에 `EXPECT_A_FIGHT`, `GLOW`, `SPEEDSTER`, `SWORD_SAGE`, `THUNDER`는 값 차이이거나 추출기 한계라 개별 확인이 필요하다. 유물 설명 10개(`ALCHEMICAL_COFFER`, `BELT_BUCKLE`, `CAULDRON`, `DELICATE_FROND`, `DIAMOND_DIADEM`, `PHIAL_HOLSTER`, `SILKEN_TRESS`, `SOZU`, `TINY_MAILBOX`, `WHITE_BEAST_STATUE`)은 게임 원문에 `[gold]Potions[/gold]` 같은 키워드 표기가 있는데 데이터에는 없다 (0.111.0 텍스트 미반영으로 보임). 카드 설명은 `BLADE_SYMPHONY`, `HELIX_DRILL`.
+그 밖에 싸움 준비(`EXPECT_A_FIGHT`), 광채(`GLOW`), 스피드스터(`SPEEDSTER`), 검성(`SWORD_SAGE`), 벼락(`THUNDER`)은 값 차이이거나 추출기 한계라 개별 확인이 필요하다. 유물 설명 10개(`ALCHEMICAL_COFFER`, `BELT_BUCKLE`, `CAULDRON`, `DELICATE_FROND`, `DIAMOND_DIADEM`, `PHIAL_HOLSTER`, `SILKEN_TRESS`, `SOZU`, `TINY_MAILBOX`, `WHITE_BEAST_STATUE`)은 게임 원문에 `[gold]Potions[/gold]` 같은 키워드 표기가 있는데 데이터에는 없다 (0.111.0 텍스트 미반영으로 보임). 카드 설명은 칼날 교향곡(`BLADE_SYMPHONY`), 나선 관통(`HELIX_DRILL`).
 
 수정 방법: 위 값을 정답 데이터로 고치고 설명 변수/강화 문구를 다시 굽는다. 이 문서의 대조가 끝난 뒤 값이 바뀌므로 baseline도 갱신한다.
 
