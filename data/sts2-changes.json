@@ -6919,7 +6919,7 @@
       {
         "field": "description",
         "before": "이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 [gold]힘[/gold]을 2 얻습니다.",
-        "after": "[gold]잉크 단도[/gold]를 2장 [gold]손[/gold]으로 가져옵니다."
+        "after": "[purple]잉크투성이[/purple] [gold]단도[/gold]를 2장\n[gold]손[/gold]으로 가져옵니다."
       },
       {
         "field": "descriptionRaw",
@@ -7116,11 +7116,6 @@
     "character": null,
     "diffs": [],
     "fieldDiffs": [
-      {
-        "field": "description",
-        "before": "[gold]잉크 단도[/gold]를 2장 [gold]손[/gold]으로 가져옵니다.",
-        "after": "[purple]잉크투성이[/purple] [gold]단도[/gold]를 2장\n[gold]손[/gold]으로 가져옵니다."
-      },
       {
         "field": "vars.InkyShivs",
         "before": 2
