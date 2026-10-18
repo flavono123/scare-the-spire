@@ -50,16 +50,6 @@
       " 回打ち消す。"
     ]
   },
-  "Attack Burn": {
-    "name": "アタック燃焼",
-    "description": "#bX ターン有効。 #yアタック を使用すると、 #y廃棄 される。",
-    "descriptions": [
-      "#b",
-      " ターン有効。 #yアタック を使用すると、 #y廃棄 される。",
-      "次の #b",
-      " ターン有効。 #yアタック を使用すると、 #y廃棄 される。"
-    ]
-  },
   "BackAttack": {
     "name": "不意打ち",
     "description": "背後からのアタックで与えるダメージが #b50% 増加する。",
@@ -169,15 +159,6 @@
     "description": "カードを引くたび、コストがランダムに変化する。",
     "descriptions": [
       "カードを引くたび、コストがランダムに変化する。"
-    ]
-  },
-  "Conserve": {
-    "name": "節約",
-    "description": "#yエナジー を次のターンに持ち越す。",
-    "descriptions": [
-      "#yエナジー を次のターンに持ち越す。",
-      "#yエナジー を #b",
-      " ターン先まで持ち越す。"
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       "。"
     ]
   },
-  "Nullify Attack": {
-    "name": "アタック帳消し",
-    "description": "各ターンで #yアタック を一度だけ完全に #yブロック する。",
-    "descriptions": [
-      "各ターンで #yアタック を一度だけ完全に #yブロック する。"
-    ]
-  },
   "Frail": {
     "name": "脆弱化",
     "description": "カードから得られる #yブロック が #b25% 減少。 #bX ターン有効。",
@@ -469,14 +443,6 @@
   },
   "Generic Strength Up Power": {
     "name": "Generic Strength Up Power",
-    "description": "ターン終了時、 #y筋力 #bX を得る。",
-    "descriptions": [
-      "ターン終了時、 #y筋力 #b",
-      " を得る。"
-    ]
-  },
-  "GrowthPower": {
-    "name": "筋力増強",
     "description": "ターン終了時、 #y筋力 #bX を得る。",
     "descriptions": [
       "ターン終了時、 #y筋力 #b",
@@ -832,16 +798,6 @@
       "HPを失うと、その値に等しい #y筋力 をターン終了時まで失う。"
     ]
   },
-  "Skill Burn": {
-    "name": "スキル燃焼",
-    "description": "#bX ターンの間、使用した #yスキル は #y廃棄 される。",
-    "descriptions": [
-      "#b",
-      " ターンの間、使用した #yスキル は #y廃棄 される。",
-      "次の #b",
-      " ターンの間、使用した #yスキル は #y廃棄 される。"
-    ]
-  },
   "Slow": {
     "name": "鈍化",
     "description": "このターン、カードを使用するたび、 #yX が #yアタック で受けるダメージが #b10% 増加する。",
@@ -901,14 +857,6 @@
       " 。"
     ]
   },
-  "StrikeUp": {
-    "name": "ストライクアップ",
-    "description": "名前に「 #yストライク 」を含むカードが追加で #bX ダメージを与える。",
-    "descriptions": [
-      "名前に「 #yストライク 」を含むカードが追加で #b",
-      " ダメージを与える。"
-    ]
-  },
   "Surrounded": {
     "name": "包囲",
     "description": "背後からのアタックは被ダメージが #b50% 増加。ターゲットカードかポーションを使用して向きを変えられる。",
@@ -946,14 +894,6 @@
     "descriptions": [
       "カードを使用するたび、敵全体に #b",
       " ダメージを与える。"
-    ]
-  },
-  "TimeMazePower": {
-    "name": "時の迷宮",
-    "description": "カードを #bX 枚使用すると、ターンが強制終了する。",
-    "descriptions": [
-      "カードを #b",
-      " 枚使用すると、ターンが強制終了する。"
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " #yブロック を得る。"
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "スタンス変更不可",
-    "description": "このターン、スタンスを変更できない。",
-    "descriptions": [
-      "このターン、スタンスを変更できない。"
-    ]
-  },
   "DevaForm": {
     "name": "神体",
     "description": "ターン開始時、 [W] を得る。この効果はターンごとに #bX 増加する。",
@@ -1103,14 +1036,6 @@
       " #yブロック を得る。"
     ]
   },
-  "AngelForm": {
-    "name": "永遠の命",
-    "description": "ターン終了時、 #yプレートアーマー #bX を得る。",
-    "descriptions": [
-      "ターン終了時、 #yプレートアーマー #b",
-      " を得る。"
-    ]
-  },
   "Mantra": {
     "name": "マントラ",
     "description": "#yマントラ を #b10 得ると #y神聖 スタンスに移行する。",
@@ -1153,27 +1078,12 @@
       " #yブロック を得る。"
     ]
   },
-  "NoSkills": {
-    "name": "スキル不可",
-    "description": "このターン #yスキル をプレイできない。",
-    "descriptions": [
-      "このターン #yスキル をプレイできない。"
-    ]
-  },
   "OmegaPower": {
     "name": "オメガ",
     "description": "ターン終了時、敵全体に #bX ダメージを与える。",
     "descriptions": [
       "ターン終了時、敵全体に #b",
       " ダメージを与える。"
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "Omniscience",
-    "description": "DEPERCATEDXDEPRECATED",
-    "descriptions": [
-      "DEPERCATED",
-      "DEPRECATED"
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "ターン終了時、 #y洞察 を #b",
       " 枚山札に混ぜる。",
       " 枚山札に混ぜる。"
-    ]
-  },
-  "Vault": {
-    "name": "飛躍",
-    "description": "次のターン開始時、 #bX ダメージを受ける。",
-    "descriptions": [
-      "次のターン開始時、 #b",
-      " ダメージを受ける。"
     ]
   },
   "Vigor": {

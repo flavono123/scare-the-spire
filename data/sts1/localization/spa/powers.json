@@ -50,16 +50,6 @@
       " perjuicios."
     ]
   },
-  "Attack Burn": {
-    "name": "Consumir Ataques",
-    "description": "Durante #bX turnos, cuando juegues un #yAtaque, #yAgótalo.",
-    "descriptions": [
-      "Durante #b",
-      " turnos, cuando juegues un #yAtaque, #yAgótalo.",
-      "Durante los siguientes #b",
-      " turnos, cuando juegues un #yAtaque, #yAgótalo."
-    ]
-  },
   "BackAttack": {
     "name": "Ataque por la espalda",
     "description": "Hace #b50% más de daño ya que te está atacando por detrás.",
@@ -169,15 +159,6 @@
     "description": "Cada vez que robas una carta, su coste se elige al azar.",
     "descriptions": [
       "Cada vez que robas una carta, su coste se elige al azar."
-    ]
-  },
-  "Conserve": {
-    "name": "Conservar",
-    "description": "La #yEnergía se conserva este turno.",
-    "descriptions": [
-      "La #yEnergía se conserva este turno.",
-      "La #yEnergía se conserva los próximos #b",
-      " turnos."
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       "."
     ]
   },
-  "Nullify Attack": {
-    "name": "Anular Ataque",
-    "description": "#yBloquea por completo un #yAtaque cada turno.",
-    "descriptions": [
-      "#yBloquea por completo un #yAtaque cada turno."
-    ]
-  },
   "Frail": {
     "name": "Frágil",
     "description": "Gana un #b25% menos de #yBloqueo de cartas durante #bX turno.",
@@ -473,14 +447,6 @@
     "descriptions": [
       "Al final de su turno, gana #b",
       " de #yFuerza."
-    ]
-  },
-  "GrowthPower": {
-    "name": "Crecimiento",
-    "description": "Al final del turno, gana #bX #yFuerza.",
-    "descriptions": [
-      "Al final del turno, gana #b",
-      " #yFuerza."
     ]
   },
   "Heatsink": {
@@ -832,16 +798,6 @@
       " recibe daño, pierde esa cantidad de #yFuerza hasta el final del turno."
     ]
   },
-  "Skill Burn": {
-    "name": "Consumir Habilidades",
-    "description": "Durante #bX turno, cuando juegues una #yHabilidad, #yAgótala.",
-    "descriptions": [
-      "Durante #b",
-      " turno, cuando juegues una #yHabilidad, #yAgótala.",
-      "Durante los siguientes #b",
-      " turnos, cuando juegues una #yHabilidad, #yAgótala."
-    ]
-  },
   "Slow": {
     "name": "Lento",
     "description": "Por cada carta jugada este turno, #yX recibe un #b10% más de daño de #yAtaques.",
@@ -901,14 +857,6 @@
       "."
     ]
   },
-  "StrikeUp": {
-    "name": "Golpear Arriba",
-    "description": "Las cartas que contienen #yGolpe hacen #bX de daño adicional.",
-    "descriptions": [
-      "Las cartas que contienen #yGolpe hacen #b",
-      " de daño adicional."
-    ]
-  },
   "Surrounded": {
     "name": "Rodeado",
     "description": "Recibe #b50% más de daño si eres atacado por la espalda. Usa cartas dirigidas o pociones para cambiar tu orientación.",
@@ -946,14 +894,6 @@
     "descriptions": [
       "Cuando juegues una carta, inflige #b",
       " de daño a TODOS los enemigos."
-    ]
-  },
-  "TimeMazePower": {
-    "name": "Laberinto Temporal",
-    "description": "Cuando juegues #bX cartas, se acaba tu turno",
-    "descriptions": [
-      "Cuando juegues #b",
-      " cartas, se acaba tu turno"
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " de #yBloqueo."
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "No puedes cambiar de Postura",
-    "description": "No puedes cambiar de postura este turno.",
-    "descriptions": [
-      "No puedes cambiar de postura este turno."
-    ]
-  },
   "DevaForm": {
     "name": "Forma Deva",
     "description": "Al comienzo de tu turno, gana [W] e incrementa esto por #bX.",
@@ -1103,14 +1036,6 @@
       " de #yBloqueo."
     ]
   },
-  "AngelForm": {
-    "name": "Vivir para Siempre",
-    "description": "Al final de tu turno, gana #bX de #yArmadura #yde #yPlacas.",
-    "descriptions": [
-      "Al final de tu turno, gana #b",
-      " de #yArmadura #yde #yPlacas."
-    ]
-  },
   "Mantra": {
     "name": "Mantra",
     "description": "Cuando obtienes #b10 #yMantra, entra en #yDivinidad.",
@@ -1153,27 +1078,12 @@
       " de #yBloqueo."
     ]
   },
-  "NoSkills": {
-    "name": "Sin Habilidades",
-    "description": "No puedes jugar #yHabilidades este turno.",
-    "descriptions": [
-      "No puedes jugar #yHabilidades este turno."
-    ]
-  },
   "OmegaPower": {
     "name": "Omega",
     "description": "Al final de tu turno, haz #bX de daño a TODOS los enemigos.",
     "descriptions": [
       "Al final de tu turno, haz #b",
       " de daño a TODOS los enemigos."
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "Omnisciencia",
-    "description": "DEPRECATED Cuando #yAdivines, #yAdivina #bXDEPRECATED cartas adicionales.",
-    "descriptions": [
-      "DEPRECATED Cuando #yAdivines, #yAdivina #b",
-      "DEPRECATED cartas adicionales."
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "Al final de tu turno, baraja #b",
       " #yRevelación en tu pila de extracción.",
       " #yRevelaciones en tu pila de extracción."
-    ]
-  },
-  "Vault": {
-    "name": "Sortear",
-    "description": "Recibe #bX de daño al final de tu próximo turno.",
-    "descriptions": [
-      "Recibe #b",
-      " de daño al final de tu próximo turno."
     ]
   },
   "Vigor": {

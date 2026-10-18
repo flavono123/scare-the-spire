@@ -50,16 +50,6 @@
       " debuffs."
     ]
   },
-  "Attack Burn": {
-    "name": "Attack Burn",
-    "description": "For #bX turn, whenever you play an #yAttack, #yExhaust it.",
-    "descriptions": [
-      "For #b",
-      " turn, whenever you play an #yAttack, #yExhaust it.",
-      "For the next #b",
-      " turns, whenever you play an #yAttack, #yExhaust it."
-    ]
-  },
   "BackAttack": {
     "name": "Back Attack",
     "description": "Deals #b50% more damage as it is attacking you from behind.",
@@ -169,15 +159,6 @@
     "description": "Whenever you draw a card, randomize its cost.",
     "descriptions": [
       "Whenever you draw a card, randomize its cost."
-    ]
-  },
-  "Conserve": {
-    "name": "Conserve",
-    "description": "#yEnergy is conserved this turn.",
-    "descriptions": [
-      "#yEnergy is conserved this turn.",
-      "#yEnergy is conserved for the next #b",
-      " turns."
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       "."
     ]
   },
-  "Nullify Attack": {
-    "name": "Nullify Attack",
-    "description": "Fully #yBlocks one #yAttack each turn.",
-    "descriptions": [
-      "Fully #yBlocks one #yAttack each turn."
-    ]
-  },
   "Frail": {
     "name": "Frail",
     "description": "Gain #b25% less #yBlock from cards for #bX turn.",
@@ -469,14 +443,6 @@
   },
   "Generic Strength Up Power": {
     "name": "Generic Strength Up Power",
-    "description": "At the end of its turn, gains #bX #yStrength.",
-    "descriptions": [
-      "At the end of its turn, gains #b",
-      " #yStrength."
-    ]
-  },
-  "GrowthPower": {
-    "name": "Growth",
     "description": "At the end of its turn, gains #bX #yStrength.",
     "descriptions": [
       "At the end of its turn, gains #b",
@@ -832,16 +798,6 @@
       "Upon losing HP, loses that much #yStrength until the end of the turn."
     ]
   },
-  "Skill Burn": {
-    "name": "Skill Burn",
-    "description": "For #bX turn, whenever you play a #ySkill, #yExhaust it.",
-    "descriptions": [
-      "For #b",
-      " turn, whenever you play a #ySkill, #yExhaust it.",
-      "For the next #b",
-      " turns, whenever you play a #ySkill, #yExhaust it."
-    ]
-  },
   "Slow": {
     "name": "Slow",
     "description": "Whenever you play a card, #yX receives #b10% more damage from #yAttacks this turn.",
@@ -901,14 +857,6 @@
       "."
     ]
   },
-  "StrikeUp": {
-    "name": "Strike Up",
-    "description": "Cards containing #yStrike deal #bX additional damage.",
-    "descriptions": [
-      "Cards containing #yStrike deal #b",
-      " additional damage."
-    ]
-  },
   "Surrounded": {
     "name": "Surrounded",
     "description": "Receive #b50% more damage if attacked from behind. Use targeting cards or potions to change your orientation.",
@@ -946,14 +894,6 @@
     "descriptions": [
       "Whenever you play a card, deal #b",
       " damage to ALL enemies."
-    ]
-  },
-  "TimeMazePower": {
-    "name": "Time Maze",
-    "description": "Whenever you play #bX cards, your turn is ended",
-    "descriptions": [
-      "Whenever you play #b",
-      " cards, your turn is ended"
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " #yBlock."
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "Cannot Change Stance",
-    "description": "Cannot change your stance this turn.",
-    "descriptions": [
-      "Cannot change your stance this turn."
-    ]
-  },
   "DevaForm": {
     "name": "Deva",
     "description": "At the start of your turn, gain [W] and increase this by #bX.",
@@ -1103,14 +1036,6 @@
       " #yBlock."
     ]
   },
-  "AngelForm": {
-    "name": "Live Forever",
-    "description": "At the end of your turn, gain #bX #yPlated #yArmor.",
-    "descriptions": [
-      "At the end of your turn, gain #b",
-      " #yPlated #yArmor."
-    ]
-  },
   "Mantra": {
     "name": "Mantra",
     "description": "When you obtain #b10 #yMantra, enter #yDivinity.",
@@ -1153,27 +1078,12 @@
       " #yBlock."
     ]
   },
-  "NoSkills": {
-    "name": "No Skills",
-    "description": "You cannot play #ySkills this turn.",
-    "descriptions": [
-      "You cannot play #ySkills this turn."
-    ]
-  },
   "OmegaPower": {
     "name": "Omega",
     "description": "At the end of your turn, deal #bX damage to ALL enemies.",
     "descriptions": [
       "At the end of your turn, deal #b",
       " damage to ALL enemies."
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "Omniscience",
-    "description": "DEPERCATEDXDEPRECATED",
-    "descriptions": [
-      "DEPERCATED",
-      "DEPRECATED"
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "At the end of your turn, shuffle #b",
       " #yInsight into your draw pile.",
       " #yInsights into your draw pile."
-    ]
-  },
-  "Vault": {
-    "name": "Vault",
-    "description": "Receives #bX damage at the start of your next turn.",
-    "descriptions": [
-      "Receives #b",
-      " damage at the start of your next turn."
     ]
   },
   "Vigor": {

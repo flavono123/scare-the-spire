@@ -169,10 +169,58 @@ def attach_power_sources(
                     power["sources"][kind].append(row["id"])
 
 
+def _class_news(jar, path: str) -> set[str]:
+    cls = parse_class_file(jar.read(path))
+    created: set[str] = set()
+    for method in cls.methods:
+        if not method.code:
+            continue
+        for _start, op, arg in iter_opcodes(method.code):
+            if op == 187:
+                created.add(cls.class_name(u2_from(arg)))
+    return created
+
+
+def live_power_classes(jar) -> set[str]:
+    """Power classes that some non-deprecated class still instantiates (`new`).
+
+    Orphaned classes remain in the jar after reworks (e.g. Book of Stabbing's
+    Attack/Skill Burn, beta Watcher Vault/Omniscience); nothing applies them.
+    Instantiations from dead powers do not count, so iterate to a fixpoint.
+    """
+    edges: dict[str, set[str]] = {}
+    for name in jar.namelist():
+        if not name.startswith("com/megacrit/") or not name.endswith(".class") or "/deprecated/" in name:
+            continue
+        owner = name.removesuffix(".class").split("$")[0].replace("/", ".")
+        powers = {
+            created for created in _class_news(jar, name)
+            if created.startswith("com.megacrit.cardcrawl.powers.") and "$" not in created
+            and created.split("$")[0] != owner
+        }
+        if powers:
+            edges.setdefault(owner, set()).update(powers)
+    live: set[str] = set()
+    changed = True
+    while changed:
+        changed = False
+        for owner, created in edges.items():
+            if owner.startswith("com.megacrit.cardcrawl.powers.") and owner not in live:
+                continue
+            new = created - live
+            if new:
+                live |= new
+                changed = True
+    return live
+
+
 def load_powers(jar, loc_eng: dict[str, Any]) -> list[dict[str, Any]]:
+    live = live_power_classes(jar)
     powers: list[dict[str, Any]] = []
     seen: set[str] = set()
     for class_path in _power_class_paths(jar.namelist()):
+        if class_path.removesuffix(".class").replace("/", ".") not in live:
+            continue
         power = parse_power(jar, class_path)
         if not power or power["locKey"] not in loc_eng or power["id"] in seen:
             continue

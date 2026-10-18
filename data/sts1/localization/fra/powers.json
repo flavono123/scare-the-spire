@@ -50,16 +50,6 @@
       " débuffs."
     ]
   },
-  "Attack Burn": {
-    "name": "Attaque brûlante",
-    "description": "Pendant #bX tour, lorsque vous jouez une carte #yAttaque, #ycelle-ci est Épuisée.",
-    "descriptions": [
-      "Pendant #b",
-      " tour, lorsque vous jouez une carte #yAttaque, #ycelle-ci est Épuisée.",
-      "Pendant les #b prochains",
-      " tours, lorsque vous jouez une carte #yAttaque, #ycelle-ci est Épuisée."
-    ]
-  },
   "BackAttack": {
     "name": "Attaque par derrière",
     "description": "Inflige #b50% de dégâts supplémentaires quand il vous attaque par derrière.",
@@ -169,15 +159,6 @@
     "description": "Le coût des cartes que vous piochez est aléatoire.",
     "descriptions": [
       "Le coût des cartes que vous piochez est aléatoire."
-    ]
-  },
-  "Conserve": {
-    "name": "Économie",
-    "description": "L' #yÉnergie est conservée pour le prochain tour.",
-    "descriptions": [
-      "L' #yÉnergie est conservée pour le prochain tour.",
-      "L' #yÉnergie est conservée pour les #b",
-      " prochains tours."
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       "."
     ]
   },
-  "Nullify Attack": {
-    "name": "Attaque annulée",
-    "description": "#yBloque entièrement une #yAttaque à chaque tour.",
-    "descriptions": [
-      "#yBloque entièrement une #yAttaque à chaque tour."
-    ]
-  },
   "Frail": {
     "name": "Fragilité",
     "description": "Les cartes vous octroient #b25 % moins #yd'Armure pendant #bX tour.",
@@ -472,14 +446,6 @@
     "description": "À la fin de son tour, gagne #bX de #yForce.",
     "descriptions": [
       "À la fin de son tour, gagne #b",
-      " de #yForce."
-    ]
-  },
-  "GrowthPower": {
-    "name": "Croissance",
-    "description": "À la fin du tour, gagne #bX de #yForce.",
-    "descriptions": [
-      "À la fin du tour, gagne #b",
       " de #yForce."
     ]
   },
@@ -832,16 +798,6 @@
       "Quand il perd des PV, il perd autant de #yForce jusqu'à la fin de son tour."
     ]
   },
-  "Skill Burn": {
-    "name": "Brûlure de compétences",
-    "description": "Pendant #bX tour, lorsque vous jouez une carte #yCompétence, #ycelle-ci est Épuisée.",
-    "descriptions": [
-      "Pendant #b",
-      " tour, lorsque vous jouez une carte #yCompétence, #ycelle-ci est Épuisée.",
-      "Pendant les #b prochains",
-      " tours, lorsque vous jouez une carte #yCompétence, #ycelle-ci est Épuisée."
-    ]
-  },
   "Slow": {
     "name": "Ralenti",
     "description": "Chaque fois que vous jouez une carte, #yX subit #b10 % de dégâts en plus des cartes #yAttaque ce tour.",
@@ -901,14 +857,6 @@
       "."
     ]
   },
-  "StrikeUp": {
-    "name": "Frappe Améliorée",
-    "description": "Les cartes contenant #yFrappe infligent #bX dégâts supplémentaires.",
-    "descriptions": [
-      "Les cartes contenant #yFrappe infligent #b",
-      " dégâts supplémentaires."
-    ]
-  },
   "Surrounded": {
     "name": "Entouré",
     "description": "Recevez #b50% de dégâts supplémentaires quand vous êtes attaqué par derrière. Utilisez des cartes ou des potions pour changer votre orientation.",
@@ -946,14 +894,6 @@
     "descriptions": [
       "Lorsque vous jouez une carte, infligez #b",
       " dégâts à TOUS les ennemis."
-    ]
-  },
-  "TimeMazePower": {
-    "name": "Labyrinthe temporel",
-    "description": "Quand vous jouez #bX cartes, votre tour se termine.",
-    "descriptions": [
-      "Quand vous jouez #b",
-      " cartes, votre tour se termine."
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " #yd'Armure."
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "Reste en position",
-    "description": "Vous ne pouvez pas changer de position ce tour.",
-    "descriptions": [
-      "Vous ne pouvez pas changer de position ce tour."
-    ]
-  },
   "DevaForm": {
     "name": "Deva",
     "description": "Au début de votre tour, gagnez [W] et augmentez ce gain de #bX.",
@@ -1103,14 +1036,6 @@
       " #yd'Armure."
     ]
   },
-  "AngelForm": {
-    "name": "Deva",
-    "description": "À la fin de votre tour, gagnez#bX #yd'Armure #yPlaquée.",
-    "descriptions": [
-      "À la fin de votre tour, gagnez#b",
-      " #yd'Armure #yPlaquée."
-    ]
-  },
   "Mantra": {
     "name": "Mantra",
     "description": "Lorsque vous obtenez #b10 de #yMantra, entrez en #yDivinité.",
@@ -1153,27 +1078,12 @@
       " #yd'Armure."
     ]
   },
-  "NoSkills": {
-    "name": "Incompétence",
-    "description": "Vous ne pouvez pas jouer de #yCompétences ce tour.",
-    "descriptions": [
-      "Vous ne pouvez pas jouer de #yCompétences ce tour."
-    ]
-  },
   "OmegaPower": {
     "name": "Oméga",
     "description": "Au début de votre tour, infligez X dégâts à TOUS les ennemis.",
     "descriptions": [
       "Au début de votre tour, infligez ",
       " dégâts à TOUS les ennemis."
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "Omniscience",
-    "description": "Lorsque vous #yScrutez, #yScrutez #bX cartes supplémentaires.",
-    "descriptions": [
-      "Lorsque vous #yScrutez, #yScrutez #b",
-      " cartes supplémentaires."
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "À la fin de votre tour, mélangez #b",
       " #yPersicacité dans votre pioche.",
       " #yPerspicacités dans votre pioche."
-    ]
-  },
-  "Vault": {
-    "name": "Saut",
-    "description": "Reçoit #bX dégâts au début de votre prochain tour.",
-    "descriptions": [
-      "Reçoit #b",
-      " dégâts au début de votre prochain tour."
     ]
   },
   "Vigor": {

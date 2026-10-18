@@ -50,16 +50,6 @@
       " negatywne efekty."
     ]
   },
-  "Attack Burn": {
-    "name": "Spalenie ataku",
-    "description": "Przez kolejną #bX turę, kiedykolwiek zagrasz kartę #yAtaku, #ywyklucz ją.",
-    "descriptions": [
-      "Przez kolejną #b",
-      " turę, kiedykolwiek zagrasz kartę #yAtaku, #ywyklucz ją.",
-      "Przez kolejne #b",
-      " tury, kiedykolwiek zagrasz kartę #yAtaku, #ywyklucz ją."
-    ]
-  },
   "BackAttack": {
     "name": "Atak od tyłu",
     "description": "Zadaje #b50% więcej obrażeń, gdy atakuje cię od tyłu.",
@@ -169,15 +159,6 @@
     "description": "Koszt każdej dobranej karty jest losowy.",
     "descriptions": [
       "Koszt każdej dobranej karty jest losowy."
-    ]
-  },
-  "Conserve": {
-    "name": "Oszczędzanie",
-    "description": "#yEnergia jest zachowywana w tej turze.",
-    "descriptions": [
-      "#yEnergia jest zachowywana w tej turze.",
-      "#yEnergia jest zachowywana przez #b",
-      " następnych tur."
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       "."
     ]
   },
-  "Nullify Attack": {
-    "name": "Anulowanie ataku",
-    "description": "Całkowicie #yBlokuje jeden #yAtak w każdej turze.",
-    "descriptions": [
-      "Całkowicie #yBlokuje jeden #yAtak w każdej turze."
-    ]
-  },
   "Frail": {
     "name": "Kruchość",
     "description": "Otrzymaj #b25% mniej #yBloku z kart przez #bX turę.",
@@ -472,14 +446,6 @@
     "description": "Z końcem swojej tury zyska #bX pkt. #ySiły.",
     "descriptions": [
       "Z końcem swojej tury zyska #b",
-      " pkt. #ySiły."
-    ]
-  },
-  "GrowthPower": {
-    "name": "Wzrost",
-    "description": "Z końcem swojej tury zyska NL #bX pkt. #ySiły.",
-    "descriptions": [
-      "Z końcem swojej tury zyska NL #b",
       " pkt. #ySiły."
     ]
   },
@@ -832,16 +798,6 @@
       "Kiedykolwiek otrzyma obrażenia, traci tyle samo pkt. #ySiły do końca swojej tury."
     ]
   },
-  "Skill Burn": {
-    "name": "Wypalenie umiejętności",
-    "description": "Na czas #bX tury, kiedykolwiek zagrasz kartę #yUmiejętności, #Wyklucz ją.",
-    "descriptions": [
-      "Na czas #b",
-      " tury, kiedykolwiek zagrasz kartę #yUmiejętności, #Wyklucz ją.",
-      "Na czas kolejnych #b",
-      " tur, kiedykolwiek zagrasz kartę #yUmiejętności, #Wyklucz ją."
-    ]
-  },
   "Slow": {
     "name": "Ślamazarność",
     "description": "Za każdą kartę zagraną podczas tej tury, #yX otrzyma #b10% więcej obrażeń od kart #yAtaku.",
@@ -901,14 +857,6 @@
       "."
     ]
   },
-  "StrikeUp": {
-    "name": "Wytrenowane ciosy",
-    "description": "Karty zawierające w nazwie #yUderzenie zadają #bX pkt. dodatkowych obrażeń.",
-    "descriptions": [
-      "Karty zawierające w nazwie #yUderzenie zadają #b",
-      " pkt. dodatkowych obrażeń."
-    ]
-  },
   "Surrounded": {
     "name": "Otoczenie",
     "description": "Otrzymujesz #b50% więcej obrażeń od ataków z tyłu. Używaj kierowanych kart i mikstur, aby zmienić swoją pozycję.",
@@ -946,14 +894,6 @@
     "descriptions": [
       "Kiedykolwiek zagrasz kartę, zadaj #b",
       " pkt. obrażeń WSZYSTKIM przeciwnikom."
-    ]
-  },
-  "TimeMazePower": {
-    "name": "Labirynt czasu",
-    "description": "Po zagraniu #bX kart, twoja tura się kończy.",
-    "descriptions": [
-      "Po zagraniu #b",
-      " kart, twoja tura się kończy."
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " pkt. #yBloku."
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "Zakaz zmiany postawy",
-    "description": "Nie możesz zmienić postawy w tej turze.",
-    "descriptions": [
-      "Nie możesz zmienić postawy w tej turze."
-    ]
-  },
   "DevaForm": {
     "name": "Dewa",
     "description": "Na początku swojej tury zyskaj [W] oraz zwiększ ten zysk o #bX.",
@@ -1103,14 +1036,6 @@
       " pkt. #yBloku."
     ]
   },
-  "AngelForm": {
-    "name": "DEPRECATED AngelForm",
-    "description": "At the end of your turn, gain #bX #yPlated #yArmor.",
-    "descriptions": [
-      "At the end of your turn, gain #b",
-      " #yPlated #yArmor."
-    ]
-  },
   "Mantra": {
     "name": "Mantra",
     "description": "Gdy zdobędziesz #b10 pkt. #yMantry, przyjmij postawę #yBoskości.",
@@ -1153,27 +1078,12 @@
       " pkt. #yBloku."
     ]
   },
-  "NoSkills": {
-    "name": "Zero umiejętności",
-    "description": "Nie możesz zagrywać kart #yUmiejętności w tej turze.",
-    "descriptions": [
-      "Nie możesz zagrywać kart #yUmiejętności w tej turze."
-    ]
-  },
   "OmegaPower": {
     "name": "Omega",
     "description": "Na koniec swojej tury zadaj X pkt. obrażeń WSZYSTKIM przeciwnikom.",
     "descriptions": [
       "Na koniec swojej tury zadaj ",
       " pkt. obrażeń WSZYSTKIM przeciwnikom."
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "Wszechwiedza",
-    "description": "DEPERCATEDXDEPRECATED",
-    "descriptions": [
-      "DEPERCATED",
-      "DEPRECATED"
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "Na koniec swojej tury wtasuj NL #b",
       " #yRozeznania do stosu rozgrywającego.",
       " #yRozeznanie do stosu rozgrywającego."
-    ]
-  },
-  "Vault": {
-    "name": "Krypta",
-    "description": "Otrzyma #bX pkt. obrażeń na początku twojej następnej tury.",
-    "descriptions": [
-      "Otrzyma #b",
-      " pkt. obrażeń na początku twojej następnej tury."
     ]
   },
   "Vigor": {

@@ -1177,6 +1177,90 @@
         "type": "monster",
         "id": "TOADPOLE"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "monsters",
+        "before": [
+          {
+            "id": "TOADPOLE",
+            "name": "올챙이",
+            "nameEn": "Toadpole"
+          },
+          {
+            "id": "CALCIFIED_CULTIST",
+            "name": "석회화된 광신자",
+            "nameEn": "Calcified Cultist"
+          }
+        ],
+        "after": [
+          {
+            "id": "SEAPUNK",
+            "name": "불량 해초",
+            "nameEn": "Seapunk"
+          },
+          {
+            "id": "CALCIFIED_CULTIST",
+            "name": "석회화된 광신자",
+            "nameEn": "Calcified Cultist"
+          }
+        ]
+      },
+      {
+        "field": "compositions",
+        "before": [
+          {
+            "id": "FIXED",
+            "weight": 1,
+            "slots": [
+              [
+                {
+                  "id": "CALCIFIED_CULTIST",
+                  "name": "석회화된 광신자",
+                  "nameEn": "Calcified Cultist"
+                }
+              ],
+              [
+                {
+                  "id": "TOADPOLE",
+                  "name": "올챙이",
+                  "nameEn": "Toadpole"
+                }
+              ]
+            ],
+            "slotNames": [
+              null,
+              null
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "FIXED",
+            "weight": 1,
+            "slots": [
+              [
+                {
+                  "id": "CALCIFIED_CULTIST",
+                  "name": "석회화된 광신자",
+                  "nameEn": "Calcified Cultist"
+                }
+              ],
+              [
+                {
+                  "id": "SEAPUNK",
+                  "name": "불량 해초",
+                  "nameEn": "Seapunk"
+                }
+              ]
+            ],
+            "slotNames": [
+              null,
+              null
+            ]
+          }
+        ]
+      }
     ]
   },
   {
@@ -2794,6 +2878,111 @@
       {
         "type": "monster",
         "id": "CHOMPER"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "tags",
+        "before": [
+          "Burrower",
+          "Workers"
+        ],
+        "after": [
+          "Burrower",
+          "Chomper"
+        ]
+      },
+      {
+        "field": "monsters",
+        "before": [
+          {
+            "id": "BOWLBUG_EGG",
+            "name": "그릇벌레 (알)",
+            "nameEn": "Bowlbug (Egg)"
+          },
+          {
+            "id": "BOWLBUG_SILK",
+            "name": "그릇벌레 (실크)",
+            "nameEn": "Bowlbug (Silk)"
+          },
+          {
+            "id": "TUNNELER",
+            "name": "땅굴충",
+            "nameEn": "Tunneler"
+          }
+        ],
+        "after": [
+          {
+            "id": "TUNNELER",
+            "name": "땅굴충",
+            "nameEn": "Tunneler"
+          },
+          {
+            "id": "CHOMPER",
+            "name": "먹깨비",
+            "nameEn": "Chomper"
+          }
+        ]
+      },
+      {
+        "field": "compositions",
+        "before": [
+          {
+            "id": "FIXED",
+            "weight": 1,
+            "slots": [
+              [
+                {
+                  "id": "BOWLBUG_EGG",
+                  "name": "그릇벌레 (알)",
+                  "nameEn": "Bowlbug (Egg)"
+                },
+                {
+                  "id": "BOWLBUG_SILK",
+                  "name": "그릇벌레 (실크)",
+                  "nameEn": "Bowlbug (Silk)"
+                }
+              ],
+              [
+                {
+                  "id": "TUNNELER",
+                  "name": "땅굴충",
+                  "nameEn": "Tunneler"
+                }
+              ]
+            ],
+            "slotNames": [
+              null,
+              null
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "FIXED",
+            "weight": 1,
+            "slots": [
+              [
+                {
+                  "id": "CHOMPER",
+                  "name": "먹깨비",
+                  "nameEn": "Chomper"
+                }
+              ],
+              [
+                {
+                  "id": "TUNNELER",
+                  "name": "땅굴충",
+                  "nameEn": "Tunneler"
+                }
+              ]
+            ],
+            "slotNames": [
+              null,
+              null
+            ]
+          }
+        ]
       }
     ]
   },

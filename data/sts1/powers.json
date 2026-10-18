@@ -121,24 +121,6 @@
     ]
   },
   {
-    "id": "Attack Burn",
-    "slug": "attack-burn",
-    "className": "com.megacrit.cardcrawl.powers.AttackBurnPower",
-    "type": "debuff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": true,
-    "image": "attackBurn",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "attack-burn"
-    ]
-  },
-  {
     "id": "BackAttack",
     "slug": "backattack",
     "className": "com.megacrit.cardcrawl.powers.BackAttackPower",
@@ -392,24 +374,6 @@
     },
     "legacySlugs": [
       "confusion"
-    ]
-  },
-  {
-    "id": "Conserve",
-    "slug": "conserve",
-    "className": "com.megacrit.cardcrawl.powers.ConservePower",
-    "type": "buff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": true,
-    "image": "conserve",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "conserve"
     ]
   },
   {
@@ -1014,24 +978,6 @@
     ]
   },
   {
-    "id": "Nullify Attack",
-    "slug": "nullify-attack",
-    "className": "com.megacrit.cardcrawl.powers.ForcefieldPower",
-    "type": "buff",
-    "stackType": "single",
-    "canGoNegative": false,
-    "isTurnBased": false,
-    "image": "forcefield",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "nullify-attack"
-    ]
-  },
-  {
     "id": "Frail",
     "slug": "frail",
     "className": "com.megacrit.cardcrawl.powers.FrailPower",
@@ -1088,24 +1034,6 @@
     },
     "legacySlugs": [
       "generic-strength-up-power"
-    ]
-  },
-  {
-    "id": "GrowthPower",
-    "slug": "growthpower",
-    "className": "com.megacrit.cardcrawl.powers.GrowthPower",
-    "type": "buff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": false,
-    "image": "ritual",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "growthpower"
     ]
   },
   {
@@ -1951,24 +1879,6 @@
     ]
   },
   {
-    "id": "Skill Burn",
-    "slug": "skill-burn",
-    "className": "com.megacrit.cardcrawl.powers.SkillBurnPower",
-    "type": "debuff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": true,
-    "image": "skillBurn",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "skill-burn"
-    ]
-  },
-  {
     "id": "Slow",
     "slug": "slow",
     "className": "com.megacrit.cardcrawl.powers.SlowPower",
@@ -2122,24 +2032,6 @@
     ]
   },
   {
-    "id": "StrikeUp",
-    "slug": "strikeup",
-    "className": "com.megacrit.cardcrawl.powers.StrikeUpPower",
-    "type": "buff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": false,
-    "image": "accuracy",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "strikeup"
-    ]
-  },
-  {
     "id": "Surrounded",
     "slug": "surrounded",
     "className": "com.megacrit.cardcrawl.powers.SurroundedPower",
@@ -2237,24 +2129,6 @@
     },
     "legacySlugs": [
       "thousand-cuts"
-    ]
-  },
-  {
-    "id": "TimeMazePower",
-    "slug": "timemazepower",
-    "className": "com.megacrit.cardcrawl.powers.TimeMazePower",
-    "type": "buff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": false,
-    "image": "time",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "timemazepower"
     ]
   },
   {
@@ -2441,24 +2315,6 @@
     ]
   },
   {
-    "id": "CannotChangeStancePower",
-    "slug": "cannotchangestancepower",
-    "className": "com.megacrit.cardcrawl.powers.watcher.CannotChangeStancePower",
-    "type": "debuff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": false,
-    "image": "no_stance",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "cannotchangestancepower"
-    ]
-  },
-  {
     "id": "DevaForm",
     "slug": "devaform",
     "className": "com.megacrit.cardcrawl.powers.watcher.DevaPower",
@@ -2619,24 +2475,6 @@
     ]
   },
   {
-    "id": "AngelForm",
-    "slug": "angelform",
-    "className": "com.megacrit.cardcrawl.powers.watcher.LiveForeverPower",
-    "type": "buff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": false,
-    "image": "deva",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "angelform"
-    ]
-  },
-  {
     "id": "Mantra",
     "slug": "mantra",
     "className": "com.megacrit.cardcrawl.powers.watcher.MantraPower",
@@ -2741,24 +2579,6 @@
     ]
   },
   {
-    "id": "NoSkills",
-    "slug": "noskills",
-    "className": "com.megacrit.cardcrawl.powers.watcher.NoSkillsPower",
-    "type": "debuff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": true,
-    "image": "entangle",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "noskills"
-    ]
-  },
-  {
     "id": "OmegaPower",
     "slug": "omegapower",
     "className": "com.megacrit.cardcrawl.powers.watcher.OmegaPower",
@@ -2776,24 +2596,6 @@
     },
     "legacySlugs": [
       "omegapower"
-    ]
-  },
-  {
-    "id": "OmnisciencePower",
-    "slug": "omnisciencepower",
-    "className": "com.megacrit.cardcrawl.powers.watcher.OmnisciencePower",
-    "type": "buff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": false,
-    "image": "devotion",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "omnisciencepower"
     ]
   },
   {
@@ -2834,24 +2636,6 @@
     },
     "legacySlugs": [
       "study"
-    ]
-  },
-  {
-    "id": "Vault",
-    "slug": "vault",
-    "className": "com.megacrit.cardcrawl.powers.watcher.VaultPower",
-    "type": "buff",
-    "stackType": "counter",
-    "canGoNegative": false,
-    "isTurnBased": false,
-    "image": "carddraw",
-    "sources": {
-      "cards": [],
-      "relics": [],
-      "potions": []
-    },
-    "legacySlugs": [
-      "vault"
     ]
   },
   {

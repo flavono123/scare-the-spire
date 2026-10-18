@@ -50,16 +50,6 @@
       " olumsuz etkiyi engeller."
     ]
   },
-  "Attack Burn": {
-    "name": "Saldırı Yakıcı",
-    "description": "#bX tur, ne zaman bir #ySaldırı oynarsan onu #yTüket.",
-    "descriptions": [
-      "#b",
-      " tur, ne zaman bir #ySaldırı oynarsan onu #yTüket.",
-      "#b",
-      " tur, ne zaman bir #ySaldırı oynarsan onu #yTüket."
-    ]
-  },
   "BackAttack": {
     "name": "Arkadan Saldırı",
     "description": "Arkadan saldırdığı için #b%50 daha fazla hasar verir.",
@@ -169,15 +159,6 @@
     "description": "Ne zaman kart çekersen maliyetini rastgele belirle.",
     "descriptions": [
       "Ne zaman kart çekersen maliyetini rastgele belirle."
-    ]
-  },
-  "Conserve": {
-    "name": "Saklama",
-    "description": "#yEnerji bu tur saklanır.",
-    "descriptions": [
-      "#yEnerji bu tur saklanır.",
-      "#yEnerji sonraki #b",
-      " tur boyunca saklanır."
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       "."
     ]
   },
-  "Nullify Attack": {
-    "name": "Boşa Saldırı",
-    "description": "Her tur bir #ySaldırıyı tamamen #yBlokla.",
-    "descriptions": [
-      "Her tur bir #ySaldırıyı tamamen #yBlokla."
-    ]
-  },
   "Frail": {
     "name": "Kırılgan",
     "description": "Kartlardan #b%25 daha az #yBlok kazanırsın: #bX tur boyunca.",
@@ -469,14 +443,6 @@
   },
   "Generic Strength Up Power": {
     "name": "Kuvvet Artırma",
-    "description": "Turunun sonunda #bX #yKuvvet kazanır.",
-    "descriptions": [
-      "Turunun sonunda #b",
-      " #yKuvvet kazanır."
-    ]
-  },
-  "GrowthPower": {
-    "name": "Büyüme",
     "description": "Turunun sonunda #bX #yKuvvet kazanır.",
     "descriptions": [
       "Turunun sonunda #b",
@@ -832,16 +798,6 @@
       "Hasar aldığında, tur sonuna kadar, aldığı hasar kadar #yKuvvet kaybı yaşar."
     ]
   },
-  "Skill Burn": {
-    "name": "Yanan Yetenek",
-    "description": "#bX tur boyunca, #yBeceri oynadığında onu #yTüket.",
-    "descriptions": [
-      "#b",
-      " tur boyunca, #yBeceri oynadığında onu #yTüket.",
-      "Sonraki #b",
-      " tur boyunca, #yBeceri oynadığında onu #yTüket."
-    ]
-  },
   "Slow": {
     "name": "Yavaşlık",
     "description": "Bu tur oynadığın her bir kart için #yX, #ySaldırı kartlarından #b%10 daha fazla hasar alır.",
@@ -901,14 +857,6 @@
       "."
     ]
   },
-  "StrikeUp": {
-    "name": "Güçlü Darbe",
-    "description": "Adında #yDarbe olan kartlar #bX fazla hasar verir.",
-    "descriptions": [
-      "Adında #yDarbe olan kartlar #b",
-      " fazla hasar verir."
-    ]
-  },
   "Surrounded": {
     "name": "Etrafın Sarıldı",
     "description": "Arkadan gelen saldırılar #b%50 daha fazla hasar verir. Hedefli kartlar veya iksirler ile bakılan yön değiştirebilir.",
@@ -946,14 +894,6 @@
     "descriptions": [
       "Ne zaman bir kart oynarsan TÜM düşmanlara #b",
       " hasar ver."
-    ]
-  },
-  "TimeMazePower": {
-    "name": "Zaman Labirenti",
-    "description": "Ne zaman #bX kart oynarsan turun yarıda kesilir.",
-    "descriptions": [
-      "Ne zaman #b",
-      " kart oynarsan turun yarıda kesilir."
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " #yBlok kazan."
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "Duruş Değişemez",
-    "description": "Bu tur duruş değişemezsin.",
-    "descriptions": [
-      "Bu tur duruş değişemezsin."
-    ]
-  },
   "DevaForm": {
     "name": "Deva Formu",
     "description": "Tur başında [W] kazan ve her tur bunu #bX artır.",
@@ -1103,14 +1036,6 @@
       " #yBlok kazan."
     ]
   },
-  "AngelForm": {
-    "name": "Sonsuz Yaşam",
-    "description": "Tur sonunda #bX #yKaplı #yZırh kazan.",
-    "descriptions": [
-      "Tur sonunda #b",
-      " #yKaplı #yZırh kazan."
-    ]
-  },
   "Mantra": {
     "name": "Mantra",
     "description": "Her #b10 #yMantra topladığında #yKutsal duruşa geçersin.",
@@ -1153,27 +1078,12 @@
       " #yBlok kazan."
     ]
   },
-  "NoSkills": {
-    "name": "Beceri Yok",
-    "description": "Bu tur #yBeceri oynanamaz.",
-    "descriptions": [
-      "Bu tur #yBeceri oynanamaz."
-    ]
-  },
   "OmegaPower": {
     "name": "Omega",
     "description": "Tur sonunda TÜM düşmanlara #bX hasar ver.",
     "descriptions": [
       "Tur sonunda TÜM düşmanlara #b",
       " hasar ver."
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "Omniscience",
-    "description": "DEPERCATEDXDEPERCATED",
-    "descriptions": [
-      "DEPERCATED",
-      "DEPERCATED"
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "Tur sonunda çekme yığınına #b",
       " #yİçgörü karıştır.",
       " #yİçgörü karıştır."
-    ]
-  },
-  "Vault": {
-    "name": "Vault",
-    "description": "Tur başında #bX hasar alır.",
-    "descriptions": [
-      "Tur başında #b",
-      " hasar alır."
     ]
   },
   "Vigor": {

@@ -50,16 +50,6 @@
       " 번 무효화 합니다."
     ]
   },
-  "Attack Burn": {
-    "name": "공격 불사르기",
-    "description": "사용한 #y공격 카드를 #y소멸 시킵니다. NL 지속 턴수 : #bX",
-    "descriptions": [
-      "사용한 #y공격 카드를 #y소멸 시킵니다. NL 지속 턴수 : #b",
-      "",
-      "사용한 #y공격 카드를 #y소멸 시킵니다. NL 지속 턴수 : #b",
-      ""
-    ]
-  },
   "BackAttack": {
     "name": "백 어택",
     "description": "당신의 뒤에서 공격해, #b50% 더 많은 피해를 줍니다.",
@@ -169,15 +159,6 @@
     "description": "카드를 뽑을 때 마다 비용이 무작위로 정해집니다.",
     "descriptions": [
       "카드를 뽑을 때 마다 비용이 무작위로 정해집니다."
-    ]
-  },
-  "Conserve": {
-    "name": "보존",
-    "description": "#y에너지 가 다음 턴까지 보존됩니다.",
-    "descriptions": [
-      "#y에너지 가 다음 턴까지 보존됩니다.",
-      "#y에너지 가 다음 #b",
-      " 턴 동안 보존됩니다."
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       "."
     ]
   },
-  "Nullify Attack": {
-    "name": "공격 무효화",
-    "description": "매 턴 한번의 #y공격 을 완전히 #yBlocks 합니다.",
-    "descriptions": [
-      "매 턴 한번의 #y공격 을 완전히 #yBlocks 합니다."
-    ]
-  },
   "Frail": {
     "name": "손상",
     "description": "카드로부터 얻는 #y방어도 가 #b25% 감소합니다. NL 지속 턴수 : #bX",
@@ -473,14 +447,6 @@
     "descriptions": [
       "턴 종료 시 #y힘 을 #b",
       " 얻습니다."
-    ]
-  },
-  "GrowthPower": {
-    "name": "성장",
-    "description": "매 턴 종료 시 힘을 #bX #y 얻습니다.",
-    "descriptions": [
-      "매 턴 종료 시 힘을 #b",
-      " #y 얻습니다."
     ]
   },
   "Heatsink": {
@@ -832,16 +798,6 @@
       "체력을 잃을 때마다, 턴 종료까지 그만큼의 #y힘 을 잃습니다."
     ]
   },
-  "Skill Burn": {
-    "name": "스킬 불사르기",
-    "description": "#bX 턴 동안 사용한 #y스킬 카드를 #y소멸 시킵니다.",
-    "descriptions": [
-      "#b",
-      " 턴 동안 사용한 #y스킬 카드를 #y소멸 시킵니다.",
-      "#b",
-      " 턴 동안 사용한 #y스킬 카드를 #y소멸 시킵니다."
-    ]
-  },
   "Slow": {
     "name": "둔화",
     "description": "이번 턴 사용한 카드 한 장당, #yX 는 #y공격 카드로 인한 피해를 #b10% 더 받습니다.",
@@ -901,14 +857,6 @@
       "."
     ]
   },
-  "StrikeUp": {
-    "name": "타격 강화",
-    "description": "이름에 #y타격 을 포함한 카드가 추가로 피해를 #bX 줍니다.",
-    "descriptions": [
-      "이름에 #y타격 을 포함한 카드가 추가로 피해를 #b",
-      " 줍니다."
-    ]
-  },
   "Surrounded": {
     "name": "포위됨",
     "description": "당신의 뒤에서 공격할 시 추가로 #b50%의 피해를 줍니다. 보는 방향을 변경하려면 대상을 지정하는 카드나 포션을 사용하십시오.",
@@ -946,14 +894,6 @@
     "descriptions": [
       "카드를 낼 때마다, #b",
       " 의 피해를 줍니다."
-    ]
-  },
-  "TimeMazePower": {
-    "name": "시간 미로",
-    "description": "카드를 #bX 장 낼 때마다, 당신의 턴이 종료됩니다.",
-    "descriptions": [
-      "카드를 #b",
-      " 장 낼 때마다, 당신의 턴이 종료됩니다."
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " 획득합니다."
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "경지 전환 불가",
-    "description": "이번 턴 동안 #y경지 를 바꿀 수 없습니다.",
-    "descriptions": [
-      "이번 턴 동안 #y경지 를 바꿀 수 없습니다."
-    ]
-  },
   "DevaForm": {
     "name": "천신",
     "description": "턴 시작 시, [W] 를 얻고, 얻을 수 있는 양이 #bX 만큼 증가합니다.",
@@ -1103,14 +1036,6 @@
       " 얻습니다."
     ]
   },
-  "AngelForm": {
-    "name": "데바",
-    "description": "턴 종료 시 #y판금 #y갑옷 을 #bX 얻습니다.",
-    "descriptions": [
-      "턴 종료 시 #y판금 #y갑옷 을 #b",
-      " 얻습니다."
-    ]
-  },
   "Mantra": {
     "name": "만트라",
     "description": "#y만트라 를 #b10 획득할 경우, #y강림 합니다.",
@@ -1153,27 +1078,12 @@
       " 얻습니다."
     ]
   },
-  "NoSkills": {
-    "name": "스킬 불가",
-    "description": "이번 턴에 #y스킬 을 사용할 수 없습니다.",
-    "descriptions": [
-      "이번 턴에 #y스킬 을 사용할 수 없습니다."
-    ]
-  },
   "OmegaPower": {
     "name": "오메가 파워",
     "description": "턴 종료 시 적 전체에게 피해를 #bX 줍니다.",
     "descriptions": [
       "턴 종료 시 적 전체에게 피해를 #b",
       " 줍니다."
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "전지",
-    "description": "DEPERCATEDXDEPERCATED",
-    "descriptions": [
-      "DEPERCATED",
-      "DEPERCATED"
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "턴 종료 시, 뽑을 카드 더미에 #y통찰을 #b",
       " 장 섞어 넣습니다.",
       " 장 섞어 넣습니다."
-    ]
-  },
-  "Vault": {
-    "name": "잠금",
-    "description": "다음 턴 시작 시 피해를 #bX 줍니다.",
-    "descriptions": [
-      "다음 턴 시작 시 피해를 #b",
-      " 줍니다."
     ]
   },
   "Vigor": {

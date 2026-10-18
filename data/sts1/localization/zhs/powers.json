@@ -50,16 +50,6 @@
       " 次负面效果。"
     ]
   },
-  "Attack Burn": {
-    "name": "攻击烧毁",
-    "description": "在 #bX 个回合内，你每打出一张 #y攻击牌 ，都会将其 #y消耗 。",
-    "descriptions": [
-      "在 #b",
-      " 个回合内，你每打出一张 #y攻击牌 ，都会将其 #y消耗 。",
-      "在 #b",
-      " 个回合内，你每打出一张 #y攻击牌 ，都会将其 #y消耗 。"
-    ]
-  },
   "BackAttack": {
     "name": "后方攻击",
     "description": "因为从后方对你攻击，造成的伤害增加 #b50% 。",
@@ -169,15 +159,6 @@
     "description": "你抽到的每一张牌，耗能都会随机变化。",
     "descriptions": [
       "你抽到的每一张牌，耗能都会随机变化。"
-    ]
-  },
-  "Conserve": {
-    "name": "保留",
-    "description": "在本回合结束时，将多余的 #y能量 留到下回合。",
-    "descriptions": [
-      "在本回合结束时，将多余的 #y能量 留到下回合。",
-      "在接下来 #b",
-      " 个回合结束时，将多余的 #y能量 留到下回合。"
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       " 点。（等离子充能球不受影响）"
     ]
   },
-  "Nullify Attack": {
-    "name": "无视攻击",
-    "description": "每回合彻底 #y格挡 一次 #y攻击 。",
-    "descriptions": [
-      "每回合彻底 #y格挡 一次 #y攻击 。"
-    ]
-  },
   "Frail": {
     "name": "脆弱",
     "description": "在 #bX 个回合内，从卡牌中获得的 #y格挡 减少 #b25% 。",
@@ -469,14 +443,6 @@
   },
   "Generic Strength Up Power": {
     "name": "Generic Strength Up Power",
-    "description": "在其回合结束时，获得 #bX 点 #y力量 。",
-    "descriptions": [
-      "在其回合结束时，获得 #b",
-      " 点 #y力量 。"
-    ]
-  },
-  "GrowthPower": {
-    "name": "万物生长",
     "description": "在其回合结束时，获得 #bX 点 #y力量 。",
     "descriptions": [
       "在其回合结束时，获得 #b",
@@ -832,16 +798,6 @@
       " 受到伤害，它将在回合结束前失去相应点数的 #y力量 。"
     ]
   },
-  "Skill Burn": {
-    "name": "技能烧毁",
-    "description": "在 #bX 个回合内，你每打出一张 #y技能牌 ，都会将其 #y消耗 。",
-    "descriptions": [
-      "在 #b",
-      " 个回合内，你每打出一张 #y技能牌 ，都会将其 #y消耗 。",
-      "在 #b",
-      " 个回合内，你每打出一张 #y技能牌 ，都会将其 #y消耗 。"
-    ]
-  },
   "Slow": {
     "name": "缓慢",
     "description": "你在这个回合每打出一张卡牌， #yX 从 #y攻击 受到的伤害增加 #b10% 。",
@@ -901,14 +857,6 @@
       " 。"
     ]
   },
-  "StrikeUp": {
-    "name": "打击提升",
-    "description": "卡牌名中带有 #y打击 的牌造成 #bX 点额外伤害。",
-    "descriptions": [
-      "卡牌名中带有 #y打击 的牌造成 #b",
-      " 点额外伤害。"
-    ]
-  },
   "Surrounded": {
     "name": "夹击",
     "description": "从后方受到的伤害增加 #b50% 。用可选定目标的牌和药水可以改变你的朝向。",
@@ -946,14 +894,6 @@
     "descriptions": [
       "你每打出一张牌，都对所有敌人造成 #b",
       " 点伤害。"
-    ]
-  },
-  "TimeMazePower": {
-    "name": "时间迷宫",
-    "description": "每当你打出 #bX 张牌，你的回合会强制结束。",
-    "descriptions": [
-      "每当你打出 #b",
-      " 张牌，你的回合会强制结束。"
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " 点 #y格挡 。"
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "不能改变姿态",
-    "description": "本回合不能改变姿态。",
-    "descriptions": [
-      "本回合不能改变姿态。"
-    ]
-  },
   "DevaForm": {
     "name": "天人",
     "description": "在你的回合开始时，获得 [W] ，然后将次数增加 #bX 。",
@@ -1103,14 +1036,6 @@
       " 点 #y格挡 。"
     ]
   },
-  "AngelForm": {
-    "name": "永生不死",
-    "description": "在你的回合结束时，获得 #bX 层 #y多层护甲 。",
-    "descriptions": [
-      "在你的回合结束时，获得 #b",
-      " 层 #y多层护甲 。"
-    ]
-  },
   "Mantra": {
     "name": "真言",
     "description": "当你获得 #b10 层 #y真言 时，进入 #y神格 。",
@@ -1153,27 +1078,12 @@
       " 点#y格挡 。"
     ]
   },
-  "NoSkills": {
-    "name": "禁用技能",
-    "description": "本回合你不能打出 #y技能牌 。",
-    "descriptions": [
-      "本回合你不能打出 #y技能牌 。"
-    ]
-  },
   "OmegaPower": {
     "name": "欧米伽",
     "description": "在你的回合结束时，对所有敌人造成 #bX 点伤害。",
     "descriptions": [
       "在你的回合结束时，对所有敌人造成 #b",
       " 点伤害。"
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "通晓万物",
-    "description": "DEPRECATEDXDEPRECATED",
-    "descriptions": [
-      "DEPRECATED",
-      "DEPRECATED"
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "在你的回合结束时，在你的抽牌堆中加入 #b",
       " 张 #y洞见 。",
       " 张 #y洞见 。"
-    ]
-  },
-  "Vault": {
-    "name": "腾跃",
-    "description": "在你的下回合开始时受到 #bX 点伤害。",
-    "descriptions": [
-      "在你的下回合开始时受到 #b",
-      " 点伤害。"
     ]
   },
   "Vigor": {

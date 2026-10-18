@@ -50,16 +50,6 @@
       " Debuffs ab."
     ]
   },
-  "Attack Burn": {
-    "name": "Angriffsbrand",
-    "description": "Immer wenn du einen #yAngriff ausspielst, #yerschöpft er – für #bX Zug.",
-    "descriptions": [
-      "Immer wenn du einen #yAngriff ausspielst, #yerschöpft er – für #b",
-      " Zug.",
-      "Immer wenn du einen #yAngriff ausspielst, #yerschöpft er – für die nächsten #b",
-      " Züge."
-    ]
-  },
   "BackAttack": {
     "name": "Hinterhalt",
     "description": "Verursacht #b50% mehr Schaden, da es dich von hinten angreift.",
@@ -169,15 +159,6 @@
     "description": "Immer wenn du eine Karte ziehst, sind ihre Kosten zufällig.",
     "descriptions": [
       "Immer wenn du eine Karte ziehst, sind ihre Kosten zufällig."
-    ]
-  },
-  "Conserve": {
-    "name": "Speichern",
-    "description": "#yEnergie wird in diesem Zug aufbewahrt.",
-    "descriptions": [
-      "#yEnergie wird in diesem Zug aufbewahrt.",
-      "#yEnergie wird für die nächsten #b",
-      " Züge aufbewahrt."
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       "."
     ]
   },
-  "Nullify Attack": {
-    "name": "Angriff aufheben",
-    "description": "#yBlockt jeden Zug einen #yAngriff komplett.",
-    "descriptions": [
-      "#yBlockt jeden Zug einen #yAngriff komplett."
-    ]
-  },
   "Frail": {
     "name": "Gebrechlich",
     "description": "Karten bringen dir #b25% weniger #yBlock (für #bX Zug).",
@@ -472,14 +446,6 @@
     "description": "Erhält am Ende des eigenen Zuges #bX #yStärke.",
     "descriptions": [
       "Erhält am Ende des eigenen Zuges #b",
-      " #yStärke."
-    ]
-  },
-  "GrowthPower": {
-    "name": "Wachstum",
-    "description": "Erhält am Ende seines Zuges #bX #yStärke.",
-    "descriptions": [
-      "Erhält am Ende seines Zuges #b",
       " #yStärke."
     ]
   },
@@ -832,16 +798,6 @@
       "Verliert beim Erleiden von Schaden genauso viel #yStärke für diesen Zug."
     ]
   },
-  "Skill Burn": {
-    "name": "Fertigkeitsbrand",
-    "description": "Immer wenn du eine #yFertigkeit ausspielst, #yerschöpft sie – für #bX Zug.",
-    "descriptions": [
-      "Immer wenn du eine #yFertigkeit ausspielst, #yerschöpft sie – für #b",
-      " Zug.",
-      "Immer wenn du eine #yFertigkeit ausspielst, #yerschöpft sie – für die nächsten #b",
-      " Züge."
-    ]
-  },
   "Slow": {
     "name": "Langsam",
     "description": "Für jede Karte, die in diesem Zug ausgespielt wird, erhält #yX #b10% mehr Schaden von #yAngriffen.",
@@ -901,14 +857,6 @@
       "."
     ]
   },
-  "StrikeUp": {
-    "name": "Starke Schläge",
-    "description": "Karten, die #ySchlag beinhalten, fügen #bX zusätzlichen Schaden zu.",
-    "descriptions": [
-      "Karten, die #ySchlag beinhalten, fügen #b",
-      " zusätzlichen Schaden zu."
-    ]
-  },
   "Surrounded": {
     "name": "Umzingelt",
     "description": "Erleide #b50% mehr Schaden, wenn du von hinten angegriffen wirst. Nutze Karten mit Zielauswahl oder Tränke, um deine Ausrichtung zu ändern.",
@@ -946,14 +894,6 @@
     "descriptions": [
       "Immer wenn du eine Karte ausspielst, verursachst du #b",
       " Schaden an ALLEN Gegnern."
-    ]
-  },
-  "TimeMazePower": {
-    "name": "Verirrte Zeit",
-    "description": "Bei jeder #bX. gespielten Karte endet dein Zug.",
-    "descriptions": [
-      "Bei jeder #b",
-      ". gespielten Karte endet dein Zug."
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " #yBlock."
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "Kann Haltung nicht Ändern",
-    "description": "Du kannst diesen Zug deine Haltung nicht ändern.",
-    "descriptions": [
-      "Du kannst diesen Zug deine Haltung nicht ändern."
-    ]
-  },
   "DevaForm": {
     "name": "Deva",
     "description": "Erhalte zu Beginn deines Zuges [W] und erhöhe dies um #bX.",
@@ -1103,14 +1036,6 @@
       " #yBlock, wenn du in #yRuhe bist."
     ]
   },
-  "AngelForm": {
-    "name": "Ewiges Leben",
-    "description": "Erhalte am Ende deines Zuges #bX #yPanzerrüstung.",
-    "descriptions": [
-      "Erhalte am Ende deines Zuges #b",
-      " #yPanzerrüstung."
-    ]
-  },
   "Mantra": {
     "name": "Mantra",
     "description": "Wenn du #b10 #yMantra erhalten hast, nimm #yGöttlichkeit an.",
@@ -1153,27 +1078,12 @@
       " #yBlock."
     ]
   },
-  "NoSkills": {
-    "name": "Keine Fertigkeiten",
-    "description": "Du kannst diesen Zug keine #yFertigkeiten spielen.",
-    "descriptions": [
-      "Du kannst diesen Zug keine #yFertigkeiten spielen."
-    ]
-  },
   "OmegaPower": {
     "name": "Omega-Macht",
     "description": "Füge zu Beginn deines Zuges ALLEN Gegnern X Schaden zu.",
     "descriptions": [
       "Füge zu Beginn deines Zuges ALLEN Gegnern ",
       " Schaden zu."
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "Allwissenheit",
-    "description": "X",
-    "descriptions": [
-      "",
-      ""
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "Mische am Ende deines Zuges #b",
       " #yEinsichten in deinen Nachziehstapel.",
       " #yEinsicht in deinen Nachziehstapel."
-    ]
-  },
-  "Vault": {
-    "name": "Überspringen",
-    "description": "Nimmt zu Beginn des nächsten Zuges #bX Schaden.",
-    "descriptions": [
-      "Nimmt zu Beginn des nächsten Zuges #b",
-      " Schaden."
     ]
   },
   "Vigor": {

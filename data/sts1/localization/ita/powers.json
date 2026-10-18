@@ -50,16 +50,6 @@
       " debuff."
     ]
   },
-  "Attack Burn": {
-    "name": "Brucia Attacchi",
-    "description": "Per #bX turno, quando giochi un #yAttacco lo #yEsaurisci.",
-    "descriptions": [
-      "Per #b",
-      " turno, quando giochi un #yAttacco lo #yEsaurisci.",
-      "Per i prossimi #b",
-      " turni, quando giochi un #yAttacco lo #yEsaurisci."
-    ]
-  },
   "BackAttack": {
     "name": "Furtivo",
     "description": "Infligge il #b50% di danni in più se ti colpisce alle spalle.",
@@ -169,15 +159,6 @@
     "description": "Ogni volta che peschi una carta, il suo costo cambia in maniera casuale.",
     "descriptions": [
       "Ogni volta che peschi una carta, il suo costo cambia in maniera casuale."
-    ]
-  },
-  "Conserve": {
-    "name": "Riserva",
-    "description": "#yL'Energia viene conservata per il prossimo turno.",
-    "descriptions": [
-      "#yL'Energia viene conservata per il prossimo turno.",
-      "#yL'Energia viene conservata per i prossimi #b",
-      " turni."
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       "."
     ]
   },
-  "Nullify Attack": {
-    "name": "Annulla Attacco",
-    "description": "#yBlocca completamente un #Attacco ogni turno.",
-    "descriptions": [
-      "#yBlocca completamente un #Attacco ogni turno."
-    ]
-  },
   "Frail": {
     "name": "Fragile",
     "description": "#yBlocchi il #b25% in meno tramite carte per #bX turno.",
@@ -472,14 +446,6 @@
     "description": "A fine turno ottiene #bX #yForza.",
     "descriptions": [
       "A fine turno ottiene #b",
-      " #yForza."
-    ]
-  },
-  "GrowthPower": {
-    "name": "Crescita",
-    "description": "Dopo aver agito guadagna #bX #yForza.",
-    "descriptions": [
-      "Dopo aver agito guadagna #b",
       " #yForza."
     ]
   },
@@ -832,16 +798,6 @@
       " Ogni volta che riceve danno, perde pari #yForza fino a fine turno."
     ]
   },
-  "Skill Burn": {
-    "name": "Brucia Abilità",
-    "description": "Per #bX turno, ogni volta che giochi una #yAbilità, #yEsauriscila.",
-    "descriptions": [
-      "Per #b",
-      " turno, ogni volta che giochi una #yAbilità, #yEsauriscila.",
-      "Per i prossimi #b",
-      " turni, ogni volta che giochi una #yAbilità, #yEsauriscila."
-    ]
-  },
   "Slow": {
     "name": "Lento",
     "description": "Per ogni carta giocata questo turno, #yX riceve il #b10% di danni in più dagli #yAttacchi.",
@@ -901,14 +857,6 @@
       "."
     ]
   },
-  "StrikeUp": {
-    "name": "Colpo Potente",
-    "description": "Le carte contenenti #yColpo infliggono #bX danni aggiuntivi.",
-    "descriptions": [
-      "Le carte contenenti #yColpo infliggono #b",
-      " danni aggiuntivi."
-    ]
-  },
   "Surrounded": {
     "name": "Circondato",
     "description": "Riceve il #b50% di danno in più se viene colpito alle spalle. Puoi bersagliare un nemico con carte e pozioni per girarti verso di lui.",
@@ -946,14 +894,6 @@
     "descriptions": [
       "Ogni volta che giochi una carta, infliggi #b",
       " danni a TUTTI i nemici."
-    ]
-  },
-  "TimeMazePower": {
-    "name": "Labirinto Temporale",
-    "description": "Dopo che giochi #bX carte, il tuo turno termina.",
-    "descriptions": [
-      "Dopo che giochi #b",
-      " carte, il tuo turno termina."
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " ."
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "Aspetto Bloccato",
-    "description": "Non puoi cambiare Aspetto questo turno.",
-    "descriptions": [
-      "Non puoi cambiare Aspetto questo turno."
-    ]
-  },
   "DevaForm": {
     "name": "Deva",
     "description": "Ad inizio turno, ottieni [W] Aumenta di #bX.",
@@ -1103,14 +1036,6 @@
       " #yBlocco."
     ]
   },
-  "AngelForm": {
-    "name": "Desiderio",
-    "description": "A fine turno ottieni #bX #yArmatura a #yPiastre.",
-    "descriptions": [
-      "A fine turno ottieni #b",
-      " #yArmatura a #yPiastre."
-    ]
-  },
   "Mantra": {
     "name": "Mantra",
     "description": "Quando ottieni #b10 #yMantra, diventa #yDivino.",
@@ -1153,27 +1078,12 @@
       " ."
     ]
   },
-  "NoSkills": {
-    "name": "Senza Abilità",
-    "description": "Non puoi giocare #yAbilità questo turno.",
-    "descriptions": [
-      "Non puoi giocare #yAbilità questo turno."
-    ]
-  },
   "OmegaPower": {
     "name": "Omega",
     "description": "A fine Turno, infliggi #bX danno a TUTTI i nemici.",
     "descriptions": [
       "A fine Turno, infliggi #b",
       " danno a TUTTI i nemici."
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "Onniscienza",
-    "description": "DEPRECATEDXDEPRECATED",
-    "descriptions": [
-      "DEPRECATED",
-      "DEPRECATED"
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "A fine turno, mischia #b",
       " #yVisione nella pila.",
       " #yVisioni nella pila."
-    ]
-  },
-  "Vault": {
-    "name": "Valico",
-    "description": "Riceve #bX danni all'inizio del tuo prossimo turno.",
-    "descriptions": [
-      "Riceve #b",
-      " danni all'inizio del tuo prossimo turno."
     ]
   },
   "Vigor": {

@@ -50,16 +50,6 @@
       " efeitos negativos."
     ]
   },
-  "Attack Burn": {
-    "name": "Queimar Ataque",
-    "description": "Por #bX turno, sempre que você jogar um #yAtaque, #yExaura-o.",
-    "descriptions": [
-      "Por #b",
-      " turno, sempre que você jogar um #yAtaque, #yExaura-o.",
-      "Pelos próximos #b",
-      " turnos, sempre que você jogar um #yAtaque, #yExaura-o."
-    ]
-  },
   "BackAttack": {
     "name": "Ataque pelas Costas",
     "description": "Causa 50% a mais de dano já que está atacando-o pelas costas.",
@@ -169,15 +159,6 @@
     "description": "Sempre que você comprar uma carta, aleatorize seu custo.",
     "descriptions": [
       "Sempre que você comprar uma carta, aleatorize seu custo."
-    ]
-  },
-  "Conserve": {
-    "name": "Conservar",
-    "description": "#yEnergia é conservada neste turno.",
-    "descriptions": [
-      "#yEnergia é conservada neste turno.",
-      "#yEnergia é conservada nos próximos #b",
-      " turnos."
     ]
   },
   "Constricted": {
@@ -443,13 +424,6 @@
       "."
     ]
   },
-  "Nullify Attack": {
-    "name": "Anular Ataque",
-    "description": "Completamente #yProtege um #yAtaque cada turno.",
-    "descriptions": [
-      "Completamente #yProtege um #yAtaque cada turno."
-    ]
-  },
   "Frail": {
     "name": "Frágil",
     "description": "Ganhe #b25% a menos de #yProteção de cartas por #bX turno.",
@@ -469,14 +443,6 @@
   },
   "Generic Strength Up Power": {
     "name": "Generic Strength Up Power",
-    "description": "No fim de seu turno, ganha #bX de #yForça.",
-    "descriptions": [
-      "No fim de seu turno, ganha #b",
-      " de #yForça."
-    ]
-  },
-  "GrowthPower": {
-    "name": "Crescimento",
     "description": "No fim de seu turno, ganha #bX de #yForça.",
     "descriptions": [
       "No fim de seu turno, ganha #b",
@@ -832,16 +798,6 @@
       "Ao perder PV, perca a mesma quantia em #yForça até o fim do turno."
     ]
   },
-  "Skill Burn": {
-    "name": "Queimar Técnica",
-    "description": "Por #bX turno, sempre que você jogar uma #yTécnica, #yExaura-a.",
-    "descriptions": [
-      "Por #b",
-      " turno, sempre que você jogar uma #yTécnica, #yExaura-a.",
-      "Pelos próximos #b",
-      " turnos, sempre que você jogar uma #yTécnica, #yExaura-a."
-    ]
-  },
   "Slow": {
     "name": "Lento",
     "description": "Sempre que você jogar uma carta, #yX recebe #b10% a mais de dano de #yAtaques neste turno.",
@@ -901,14 +857,6 @@
       "."
     ]
   },
-  "StrikeUp": {
-    "name": "Golpear",
-    "description": "Cartas contendo #yGolpe causam #bX dano adicional.",
-    "descriptions": [
-      "Cartas contendo #yGolpe causam #b",
-      " dano adicional."
-    ]
-  },
   "Surrounded": {
     "name": "Cercado",
     "description": "Receba #b50% a mais de dano se atacado pelas costas. Use cartas que escolhem alvos ou poções para mudar a sua orientação.",
@@ -946,14 +894,6 @@
     "descriptions": [
       "Sempre que você jogar uma carta, cause #b",
       " de dano a TODOS os inimigos."
-    ]
-  },
-  "TimeMazePower": {
-    "name": "Labirinto do Tempo",
-    "description": "Sempre que você jogar #bX cartas, o seu turno acaba.",
-    "descriptions": [
-      "Sempre que você jogar #b",
-      " cartas, o seu turno acaba."
     ]
   },
   "Time Warp": {
@@ -1028,13 +968,6 @@
       " #yProteção."
     ]
   },
-  "CannotChangeStancePower": {
-    "name": "Não Pode Mudar Postura",
-    "description": "Não pode mudar sua Postura neste turno.",
-    "descriptions": [
-      "Não pode mudar sua Postura neste turno."
-    ]
-  },
   "DevaForm": {
     "name": "Deva",
     "description": "No começo do seu turno, ganhe [W] e aumente isto por #bX.",
@@ -1103,14 +1036,6 @@
       " #yProteção."
     ]
   },
-  "AngelForm": {
-    "name": "Viver Para Sempre",
-    "description": "No fim do seu turno, gahe #bX #yArmadura #yChapeada.",
-    "descriptions": [
-      "No fim do seu turno, gahe #b",
-      " #yArmadura #yChapeada."
-    ]
-  },
   "Mantra": {
     "name": "Mantra",
     "description": "Quando voce obtiver #b10 #yMantra, entre em #yDivindade.",
@@ -1153,27 +1078,12 @@
       " #yProteção."
     ]
   },
-  "NoSkills": {
-    "name": "Sem Técnicas",
-    "description": "Voce nçao pode jogar #yTécnicas neste turno.",
-    "descriptions": [
-      "Voce nçao pode jogar #yTécnicas neste turno."
-    ]
-  },
   "OmegaPower": {
     "name": "Ômega",
     "description": "No fim do seu turno, cause #bX de dano a TODOS os inimigos.",
     "descriptions": [
       "No fim do seu turno, cause #b",
       " de dano a TODOS os inimigos."
-    ]
-  },
-  "OmnisciencePower": {
-    "name": "Onisciência",
-    "description": "DEPERCATEDXDEPRECATED",
-    "descriptions": [
-      "DEPERCATED",
-      "DEPRECATED"
     ]
   },
   "Adaptation": {
@@ -1192,14 +1102,6 @@
       "No fim do seu turno, embaralhe #b",
       " #yIntuição na sua pilha de compra.",
       " #yIntuições na sua pilha de compra."
-    ]
-  },
-  "Vault": {
-    "name": "Salto com Vara",
-    "description": "Receives #bX damage at the start of your next turn.",
-    "descriptions": [
-      "Receives #b",
-      " damage at the start of your next turn."
     ]
   },
   "Vigor": {
