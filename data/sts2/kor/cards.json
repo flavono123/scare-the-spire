@@ -688,7 +688,7 @@
       "Arsenal": 1
     },
     "upgrade": {
-      "arsenalpower": "+1"
+      "add_innate": 1
     },
     "image_url": "/static/images/cards/arsenal.png",
     "beta_image_url": "/static/images/cards/beta/arsenal.png"
@@ -5966,9 +5966,7 @@
     "cards_draw": 2,
     "energy_gain": 2,
     "hp_loss": null,
-    "keywords": [
-      "소멸"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -7670,9 +7668,10 @@
     "energy_gain": null,
     "hp_loss": null,
     "keywords": [
-      "선천성",
       "사용불가",
-      "영구"
+      "영구",
+      "선천성",
+      "휘발성"
     ],
     "tags": null,
     "spawns_cards": null,
@@ -13831,7 +13830,7 @@
       "Energy": 2
     },
     "upgrade": {
-      "remove_exhaust": 1
+      "energy": "+1"
     },
     "image_url": "/static/images/cards/production.png",
     "beta_image_url": "/static/images/cards/beta/production.png"
@@ -17481,9 +17480,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "소멸"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": null,
@@ -19986,7 +19983,7 @@
     "energy_gain": null,
     "hp_loss": null,
     "keywords": [
-      "미완"
+      "휘발성"
     ],
     "tags": null,
     "spawns_cards": null,
@@ -19995,7 +19992,7 @@
       "VoidForm": 2
     },
     "upgrade": {
-      "voidformpower": "+1"
+      "remove_ethereal": 1
     },
     "image_url": "/static/images/cards/void_form.png",
     "beta_image_url": "/static/images/cards/beta/void_form.png"

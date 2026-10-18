@@ -688,7 +688,7 @@
       "Arsenal": 1
     },
     "upgrade": {
-      "arsenalpower": "+1"
+      "add_innate": 1
     },
     "image_url": "/static/images/cards/arsenal.png",
     "beta_image_url": "/static/images/cards/beta/arsenal.png"
@@ -5965,9 +5965,7 @@
     "cards_draw": 2,
     "energy_gain": 2,
     "hp_loss": null,
-    "keywords": [
-      "Exhaust"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -7669,9 +7667,10 @@
     "energy_gain": null,
     "hp_loss": null,
     "keywords": [
-      "Innate",
       "Unplayable",
-      "Eternal"
+      "Eternal",
+      "Innate",
+      "Ethereal"
     ],
     "tags": null,
     "spawns_cards": null,
@@ -13830,7 +13829,7 @@
       "Energy": 2
     },
     "upgrade": {
-      "remove_exhaust": 1
+      "energy": "+1"
     },
     "image_url": "/static/images/cards/production.png",
     "beta_image_url": "/static/images/cards/beta/production.png"
@@ -17478,9 +17477,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "Exhaust"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": null,
@@ -19284,7 +19281,9 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "Exhaust"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -19990,7 +19989,7 @@
       "VoidForm": 2
     },
     "upgrade": {
-      "voidformpower": "+1"
+      "remove_ethereal": 1
     },
     "image_url": "/static/images/cards/void_form.png",
     "beta_image_url": "/static/images/cards/beta/void_form.png"
