@@ -45,6 +45,21 @@ const FIELDS: [TrackedField, (id: string) => string][] = [
   ["descriptionRaw", (id) => `${id}.description`],
 ];
 
+/**
+ * Ids a build used for an entity that has another id elsewhere: table ->
+ * current id -> build -> the id in that build's tables. Found by listing
+ * ids that vanish from one build's tables and come back in the next.
+ */
+const BUILD_ID_ALIASES: Record<string, Record<string, Record<string, string>>> = {
+  // v0.100.0 reworked Prepared under the id PREPARE, then rolled it back.
+  cards: { PREPARED: { "0.100.0": "PREPARE" } },
+};
+
+/** The text table entry for an entity in one build, honoring BUILD_ID_ALIASES. */
+function entryAt(build: string, locale: GameLocale, table: string, id: string, suffix: string): string | undefined {
+  return clean(tableAt(build, locale, table)[`${BUILD_ID_ALIASES[table]?.[id]?.[build] ?? id}.${suffix}`]);
+}
+
 const SENTINEL_BASE = 987650;
 
 /**
@@ -133,8 +148,8 @@ async function main() {
             continue;
           }
           const timeline: [string, string][] = [];
-          snapshots.forEach(({ version }, index) => {
-            const value = clean(tables[index][key]);
+          snapshots.forEach(({ version, build }, index) => {
+            const value = clean(tables[index][keyOf(BUILD_ID_ALIASES[source.table]?.[entity.id]?.[build] ?? entity.id)]);
             if (value === undefined) return;
             if (timeline.length === 0 || timeline[timeline.length - 1][1] !== value) timeline.push([version, value]);
           });
@@ -167,23 +182,22 @@ async function main() {
     const diff = change.fieldDiffs?.find((item) => item.field === "description");
     if (!source || !diff || typeof diff.before !== "string" || typeof diff.after !== "string") continue;
     const at = snapshots.findIndex(({ version }) => `v${version}` === change.patch);
-    const key = `${change.entityId}.description`;
     // Pinned range: the game's own templates. At or before its first version
     // there is no earlier snapshot, so use the templates the change itself
     // records (descriptionRaw).
     const rawDiff = change.fieldDiffs?.find((item) => item.field === "descriptionRaw");
     const beforeTemplate = at >= 1
-      ? clean(tableAt(snapshots[at - 1].build, "kor", source.table)[key])
+      ? entryAt(snapshots[at - 1].build, "kor", source.table, change.entityId, "description")
       : at < 1 && compareVersions(change.patch.replace(/^v/, ""), LOCALE_TEXT_PINNED_FROM) <= 0 ? clean(rawDiff?.before) : undefined;
     const afterTemplate = at >= 1
-      ? clean(tableAt(snapshots[at].build, "kor", source.table)[key])
+      ? entryAt(snapshots[at].build, "kor", source.table, change.entityId, "description")
       : at < 1 && compareVersions(change.patch.replace(/^v/, ""), LOCALE_TEXT_PINNED_FROM) <= 0 ? clean(rawDiff?.after) : undefined;
     // A numbers-only change at the pinned start may record no template at
     // all. Then the earliest pinned Korean template stands in, but only if it
     // reads the authored after text exactly (the wording did not move since).
     let fallbackTemplate: string | undefined;
     if (!beforeTemplate && !rawDiff && at < 1 && compareVersions(change.patch.replace(/^v/, ""), LOCALE_TEXT_PINNED_FROM) <= 0) {
-      const pinned = clean(tableAt(snapshots[0].build, "kor", source.table)[key]);
+      const pinned = entryAt(snapshots[0].build, "kor", source.table, change.entityId, "description");
       if (pinned && extractVars(pinned, diff.after)) fallbackTemplate = pinned;
     }
     if (!(beforeTemplate && afterTemplate) && !fallbackTemplate) continue;
