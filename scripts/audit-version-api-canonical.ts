@@ -221,7 +221,8 @@ export async function runAudit(onlyVersion?: string): Promise<{ versions: string
     const tag = `v${version}`;
     const load = async (type: VersionedEntityType) => {
       const rows = await getVersionedEntities<Entity & { id: string }>({ entityType: type, version: tag, locale: "kor" });
-      return new Map(rows.filter((r) => r.entity).map((r) => [r.entityId, r.entity as Entity]));
+      // A deprecated entity is still served (flagged) but is no longer in the game build.
+      return new Map(rows.filter((r) => r.entity && !r.isDeprecated).map((r) => [r.entityId, r.entity as Entity]));
     };
     const cards = await load("card");
     const relics = await load("relic");

@@ -28,6 +28,7 @@
     "upgrade": {
       "cost": 0
     },
+    "introducedInPatch": "v0.109.0",
     "image_url": "/static/images/cards/abundance.png",
     "beta_image_url": null
   },
@@ -1622,6 +1623,7 @@
     "upgrade": {
       "cost": 1
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/blade_symphony.png",
     "beta_image_url": "/static/images/cards/beta/blade_symphony.png"
   },
@@ -1660,6 +1662,7 @@
     "upgrade": {
       "strength": "+2"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": null,
     "beta_image_url": "/static/images/cards/beta/blaze.png"
   },
@@ -2760,6 +2763,7 @@
     "upgrade": {
       "damage": "+33"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/cacophony.png",
     "beta_image_url": "/static/images/cards/beta/cacophony.png"
   },
@@ -3733,6 +3737,7 @@
     "upgrade": {
       "concoctpower": "+1"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/concoct.png",
     "beta_image_url": "/static/images/cards/beta/concoct.png"
   },
@@ -3832,6 +3837,7 @@
     "upgrade": {
       "block": "+3"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/constellation.png",
     "beta_image_url": "/static/images/cards/beta/constellation.png"
   },
@@ -5840,6 +5846,7 @@
       "Rooms": 5
     },
     "upgrade": null,
+    "introducedInPatch": "v0.109.0",
     "image_url": "/static/images/cards/dowsing.png",
     "beta_image_url": null
   },
@@ -6781,6 +6788,7 @@
     "upgrade": {
       "dexterity": "+3"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/fade.png",
     "beta_image_url": "/static/images/cards/beta/fade.png"
   },
@@ -9375,6 +9383,7 @@
     "upgrade": {
       "repeat": "+1"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/hibernate.png",
     "beta_image_url": "/static/images/cards/beta/hibernate.png"
   },
@@ -9841,6 +9850,7 @@
     "upgrade": {
       "imitationlearningpower": "+1"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/imitation_learning.png",
     "beta_image_url": "/static/images/cards/beta/imitation_learning.png"
   },
@@ -11555,6 +11565,7 @@
     "upgrade": {
       "damage": "+12"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/midnight.png",
     "beta_image_url": "/static/images/cards/beta/midnight.png"
   },
@@ -12636,6 +12647,7 @@
     "upgrade": {
       "oneforallpower": "+1"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/one_for_all.png",
     "beta_image_url": "/static/images/cards/beta/one_for_all.png"
   },
@@ -12804,6 +12816,7 @@
     "upgrade": {
       "damage": "+4"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": null,
     "beta_image_url": "/static/images/cards/beta/outrage.png"
   },
@@ -13457,6 +13470,7 @@
     "upgrade": {
       "cards": "+1"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/plot.png",
     "beta_image_url": "/static/images/cards/beta/plot.png"
   },
@@ -16880,6 +16894,7 @@
     "upgrade": {
       "add_innate": 1
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/soulbound.png",
     "beta_image_url": "/static/images/cards/beta/soulbound.png"
   },
@@ -18659,6 +18674,7 @@
     "upgrade": {
       "increase": "+5"
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/the_ball.png",
     "beta_image_url": "/static/images/cards/beta/the_ball.png"
   },
@@ -19594,6 +19610,7 @@
     "upgrade": {
       "remove_exhaust": 1
     },
+    "introducedInPatch": "v0.108.0",
     "image_url": "/static/images/cards/underworld.png",
     "beta_image_url": "/static/images/cards/beta/underworld.png"
   },
@@ -20323,6 +20340,7 @@
       "Damage": 3
     },
     "upgrade": null,
+    "introducedInPatch": "v0.105.0",
     "image_url": "/static/images/cards/wither1.png",
     "beta_image_url": "/static/images/cards/beta/wither.png",
     "max_upgrade_level": 0
