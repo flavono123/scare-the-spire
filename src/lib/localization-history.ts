@@ -49,7 +49,8 @@ function bareVersion(patch: string): string {
  *
  * Authored diffs keep wording only in Korean. Inside the pinned range, text
  * diffs come from the locale's history instead, Korean included. Before it,
- * Korean keeps the authored text; other locales drop it and get a marker.
+ * Korean keeps the authored text; other locales use the diff's
+ * beforeByLocale text when it has one, and otherwise drop it and get a marker.
  */
 export function localizeVersionDiffs(
   base: readonly EntityVersionDiff[],
@@ -63,14 +64,24 @@ export function localizeVersionDiffs(
 
   const localized: EntityVersionDiff[] = base.map((entry) => {
     const pinned = compareVersions(bareVersion(entry.patch), history.pinnedFrom) > 0;
+    // Before the pinned range, an authored diff may carry the old game text per
+    // locale (beforeByLocale, e.g. backfilled from an older build). Then the
+    // locale gets that template and the baked text is rebaked from it.
+    const backfilled = new Set(
+      entry.diffs
+        .filter((diff) => !pinned && locale !== "kor" && diff.beforeByLocale?.[locale] !== undefined)
+        .map((diff) => TEXT_FIELD_OF[diff.field]),
+    );
     let unpinned = false;
-    const diffs = entry.diffs.filter((diff) => {
+    const diffs = entry.diffs.flatMap((diff): EntityFieldDiff[] => {
       const field = TEXT_FIELD_OF[diff.field];
-      if (!field) return true;
-      if (pinned && tracked(entry.entityType, entry.entityId, field)) return false;
-      if (locale === "kor") return true;
-      unpinned = !pinned;
-      return false;
+      if (!field) return [diff];
+      if (pinned && tracked(entry.entityType, entry.entityId, field)) return [];
+      if (locale === "kor") return [diff];
+      const localBefore = diff.beforeByLocale?.[locale];
+      if (localBefore !== undefined) return [{ field: diff.field, before: localBefore, after: null }];
+      if (!pinned && !backfilled.has(field)) unpinned = true;
+      return [];
     });
     if (unpinned) {
       diffs.push({ field: VERSION_TEXT_UNPINNED_FIELD, before: true, after: null } as EntityFieldDiff);

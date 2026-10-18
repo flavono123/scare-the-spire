@@ -223,6 +223,8 @@ export interface EntityFieldDiff {
   before?: unknown;           // Exact value BEFORE this patch
   after?: unknown;            // Exact value AFTER this patch
   upgraded?: boolean;         // true = applies to upgrade sub-fields only
+  /** Text fields before the pinned locale history: the old game text per game locale. */
+  beforeByLocale?: Partial<Record<string, string>>;
 }
 
 /** All field-level diffs for one entity in one patch. */
