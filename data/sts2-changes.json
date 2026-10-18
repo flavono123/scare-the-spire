@@ -518,12 +518,12 @@
     "date": "2026-03-20",
     "character": "regent",
     "summary": "Void Form is now Ethereal.",
-    "summaryKo": "공허의 형상: 미사용 시 소멸 (미완) 키워드 추가.",
+    "summaryKo": "공허의 형상: 휘발성 키워드 추가.",
     "diffs": [
       {
         "attribute": "ethereal",
         "displayName": "Ethereal",
-        "displayNameKo": "미완",
+        "displayNameKo": "휘발성",
         "before": false,
         "after": true,
         "diffType": "boolean"
@@ -2933,13 +2933,6 @@
         "field": "type",
         "before": "파워",
         "after": "스킬"
-      },
-      {
-        "field": "keywords",
-        "before": [],
-        "after": [
-          "소멸"
-        ]
       },
       {
         "field": "vars.Energy",
