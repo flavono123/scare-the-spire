@@ -18,6 +18,38 @@ import type { CodexCard } from "../src/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "../src/lib/types";
 
 async function runTests() {
+  console.log("\n[Monster] structured moves, power amounts, and move graph revert by version");
+  {
+    const at = (entityId: string, version: string) =>
+      getVersionedEntity<Record<string, any>>({ entityType: "monster", entityId, version, locale: "kor" });
+    const hissStrength = (e: Record<string, any> | null) =>
+      e?.moves.find((m: any) => m.id === "HISS").powerApplications[0].amount;
+
+    const nibbit099 = await at("NIBBIT", "v0.99.0");
+    const nibbit100 = await at("NIBBIT", "v0.100.0");
+    assert.deepEqual(hissStrength(nibbit099.entity), { normal: 2, ascension: 2 }, "Nibbit Hiss was 2(2) before v0.100.0");
+    assert.deepEqual(hissStrength(nibbit100.entity), { normal: 2, ascension: 3 }, "Nibbit Hiss is 2(3) from v0.100.0");
+
+    const forgotten099 = await at("THE_FORGOTTEN", "v0.99.0");
+    const forgotten100 = await at("THE_FORGOTTEN", "v0.100.0");
+    const forgotten101 = await at("THE_FORGOTTEN", "v0.101.0");
+    const miasma = (e: Record<string, any> | null) =>
+      e?.moves.find((m: any) => m.id === "MIASMA").powerApplications.find((p: any) => p.amount)?.amount;
+    assert.deepEqual(miasma(forgotten099.entity), { normal: 2, ascension: 2 });
+    assert.deepEqual(miasma(forgotten100.entity), { normal: 2, ascension: 3 }, "stat steal scaled in v0.100.0");
+    assert.deepEqual(miasma(forgotten101.entity), { normal: 2, ascension: 2 }, "scaling removed in v0.101.0");
+    assert.deepEqual(forgotten099.entity?.damageValues?.Dread, { normal: 15, ascension: 17 });
+    assert.deepEqual(forgotten101.entity?.damageValues?.Dread, { normal: 13, ascension: 15 });
+
+    const colony105 = await at("SKULKING_COLONY", "v0.105.0");
+    const colony106 = await at("SKULKING_COLONY", "v0.106.0");
+    assert.ok(colony105.entity?.moves.some((m: any) => m.id === "SMASH"), "Smash existed through v0.105.0");
+    assert.ok(!colony106.entity?.moves.some((m: any) => m.id === "SMASH"), "Smash removed in v0.106.0");
+    assert.equal(colony105.entity?.damageValues?.Smash?.normal, 12);
+    assert.equal(colony105.entity?.initialPowerApplications[0].amount.normal, 15, "Hardened Shell 15 before v0.106.0");
+    assert.equal(colony106.entity?.initialPowerApplications[0].amount.normal, 20);
+    assert.equal(colony105.entity?.moveGraph, null, "pre-v0.106.0 graph is unknown, not the current one");
+  }
   console.log("=== Running Versioned Entity API Spec Tests ===");
 
   // -------------------------------------------------------------------------

@@ -359,6 +359,16 @@ export function reconstructEntityAtVersion<T extends { id: string }>(
   if ("blockValues" in entity && entity.blockValues && typeof entity.blockValues === "object") {
     result.blockValues = { ...(entity.blockValues as Record<string, unknown>) };
   }
+  // Monster structures are replaced wholesale by their diffs; copy so reverted
+  // results never share arrays with the cached current entity.
+  for (const key of ["moves", "bestiaryMoves", "initialPowerApplications"]) {
+    if (key in entity && Array.isArray((entity as Record<string, unknown>)[key])) {
+      result[key] = [...((entity as Record<string, unknown>)[key] as unknown[])];
+    }
+  }
+  if ("moveGraph" in entity && entity.moveGraph && typeof entity.moveGraph === "object") {
+    result.moveGraph = { ...(entity.moveGraph as Record<string, unknown>) };
+  }
   if ("options" in entity && Array.isArray(entity.options)) {
     result.options = entity.options.map((option) => (
       option && typeof option === "object" ? { ...(option as Record<string, unknown>) } : option

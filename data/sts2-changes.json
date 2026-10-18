@@ -3814,7 +3814,7 @@
           },
           {
             "id": "SLICE",
-            "name": "Slice",
+            "name": "베기",
             "nameEn": "Slice",
             "kind": "move",
             "actionTypes": [
@@ -3913,7 +3913,7 @@
           },
           {
             "id": "SLICE",
-            "name": "Slice",
+            "name": "베기",
             "nameEn": "Slice",
             "kind": "move",
             "actionTypes": [
@@ -8414,6 +8414,694 @@
         "field": "minHpAscension",
         "before": 75,
         "after": 80
+      },
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "SMASH",
+            "name": "강타",
+            "nameEn": "Smash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Smash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ZOOM",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INERTIA",
+            "name": "관성",
+            "nameEn": "Inertia",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Inertia",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "PIERCING_STABS",
+            "name": "꿰뚫는 찌르기",
+            "nameEn": "Piercing Stabs",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "PiercingStabs",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "ZOOM",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ZOOM_MOVE_2",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INERTIA",
+            "name": "관성",
+            "nameEn": "Inertia",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Inertia",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "PIERCING_STABS",
+            "name": "꿰뚫는 찌르기",
+            "nameEn": "Piercing Stabs",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "PiercingStabs",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "SMASH",
+            "name": "강타",
+            "nameEn": "Smash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Smash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ZOOM",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INERTIA",
+            "name": "관성",
+            "nameEn": "Inertia",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Inertia",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "PIERCING_STABS",
+            "name": "꿰뚫는 찌르기",
+            "nameEn": "Piercing Stabs",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "PiercingStabs",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "ZOOM",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ZOOM_MOVE_2",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INERTIA",
+            "name": "관성",
+            "nameEn": "Inertia",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Inertia",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "PIERCING_STABS",
+            "name": "꿰뚫는 찌르기",
+            "nameEn": "Piercing Stabs",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "PiercingStabs",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "damageValues",
+        "before": {
+          "Smash": {
+            "normal": 12,
+            "ascension": 13
+          },
+          "Zoom": {
+            "normal": 14,
+            "ascension": 16
+          },
+          "Inertia": {
+            "normal": 9,
+            "ascension": 11
+          },
+          "PiercingStabs": {
+            "normal": 7,
+            "ascension": 8
+          }
+        },
+        "after": {
+          "Zoom": {
+            "normal": 14,
+            "ascension": 16
+          },
+          "Inertia": {
+            "normal": 9,
+            "ascension": 11
+          },
+          "PiercingStabs": {
+            "normal": 7,
+            "ascension": 8
+          }
+        }
+      },
+      {
+        "field": "initialPowerApplications",
+        "before": [
+          {
+            "powerId": "HARDENED_SHELL",
+            "powerName": "단단한 껍질",
+            "powerNameEn": "Hardened Shell",
+            "powerType": "Buff",
+            "target": "self",
+            "amount": {
+              "normal": 15,
+              "ascension": null
+            },
+            "imageUrl": "/images/sts2/powers/hardened_shell_power.webp"
+          }
+        ],
+        "after": [
+          {
+            "powerId": "HARDENED_SHELL",
+            "powerName": "단단한 껍질",
+            "powerNameEn": "Hardened Shell",
+            "powerType": "Buff",
+            "target": "self",
+            "amount": {
+              "normal": 20,
+              "ascension": null
+            },
+            "imageUrl": "/images/sts2/powers/hardened_shell_power.webp"
+          }
+        ]
+      },
+      {
+        "field": "moveGraph",
+        "before": null,
+        "after": {
+          "initial": "ZOOM",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "ZOOM",
+              "to": "ZOOM_MOVE_2",
+              "chance": 100.0,
+              "kind": "fixed"
+            },
+            {
+              "from": "ZOOM_MOVE_2",
+              "to": "INERTIA",
+              "chance": 100.0,
+              "kind": "fixed"
+            },
+            {
+              "from": "INERTIA",
+              "to": "PIERCING_STABS",
+              "chance": 100.0,
+              "kind": "fixed"
+            },
+            {
+              "from": "PIERCING_STABS",
+              "to": "ZOOM",
+              "chance": 100.0,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "ZOOM",
+              "kind": "move",
+              "next": "ZOOM_MOVE_2"
+            },
+            {
+              "id": "ZOOM_MOVE_2",
+              "kind": "move",
+              "next": "INERTIA"
+            },
+            {
+              "id": "INERTIA",
+              "kind": "move",
+              "next": "PIERCING_STABS"
+            },
+            {
+              "id": "PIERCING_STABS",
+              "kind": "move",
+              "next": "ZOOM"
+            }
+          ]
+        }
       }
     ]
   },
