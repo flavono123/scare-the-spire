@@ -2,7 +2,7 @@
 """Extract canonical per-build game facts from decompiled sts2 sources.
 
 Input : <root>/<version>/src   (scripts/sts2_decompile_builds.py)
-Output: <root>/<version>/canonical/{cards,relics,potions,powers,monsters}.json
+Output: <root>/<version>/canonical/{cards,relics,potions,powers,monsters}.json and canonical/loc/<lang>/<table>.json (the build's own text)
 
 These are what the game itself ships in each build, so the versioned entity API
 can be checked against them (scripts/audit-version-api-canonical.ts).
@@ -176,9 +176,33 @@ def extract_monsters(src: Path) -> dict:
     return out
 
 
+LOC_TABLES = ["cards", "relics", "potions", "powers", "enchantments", "afflictions", "monsters", "encounters", "events", "ancients"]
+PCK = "SlayTheSpire2.app/Contents/Resources/Slay the Spire 2.pck"
+
+
+def extract_localization(vd: Path, out: Path) -> None:
+    """Copy the build's own eng/kor text tables (flat "<ID>.title" -> string)."""
+    pck = vd / PCK
+    if not pck.exists():
+        return
+    from lib.pck import PCKReader  # noqa: E402
+    reader = PCKReader(str(pck))
+    try:
+        for lang in ("eng", "kor"):
+            (out / "loc" / lang).mkdir(parents=True, exist_ok=True)
+            for table in LOC_TABLES:
+                path = f"localization/{lang}/{table}.json"
+                if path in reader.entries:
+                    (out / "loc" / lang / f"{table}.json").write_text(
+                        json.dumps(reader.read_json(path), ensure_ascii=False, indent=1, sort_keys=True))
+    finally:
+        reader.close()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--kinds", default="", help="comma list (cards,relics,potions,powers,monsters,loc); default all")
     ap.add_argument("versions", nargs="*")
     args = ap.parse_args()
     for vd in sorted(p for p in ROOT.iterdir() if p.is_dir() and not p.name.startswith("_")):
@@ -189,19 +213,23 @@ def main() -> int:
         if not src.exists():
             print("no src", vd.name)
             continue
-        if out.exists() and not args.force and (out / "monsters.json").exists():
+        if out.exists() and not args.force and not args.kinds and (out / "monsters.json").exists():
             print("skip", vd.name)
             continue
         out.mkdir(exist_ok=True)
-        data = {
-            "cards": extract_cards(src),
-            "relics": extract_entities(src, "MegaCrit.Sts2.Core.Models.Relics", "RelicModel", r"RelicRarity\s+Rarity\s*=>\s*RelicRarity\.(\w+)"),
-            "potions": extract_entities(src, "MegaCrit.Sts2.Core.Models.Potions", "PotionModel", r"PotionRarity\s+Rarity\s*=>\s*PotionRarity\.(\w+)"),
-            "powers": extract_entities(src, "MegaCrit.Sts2.Core.Models.Powers", "PowerModel", None),
-            "monsters": extract_monsters(src),
+        kinds = set(filter(None, args.kinds.split(","))) or {"cards", "relics", "potions", "powers", "monsters", "loc"}
+        makers = {
+            "cards": lambda: extract_cards(src),
+            "relics": lambda: extract_entities(src, "MegaCrit.Sts2.Core.Models.Relics", "RelicModel", r"RelicRarity\s+Rarity\s*=>\s*RelicRarity\.(\w+)"),
+            "potions": lambda: extract_entities(src, "MegaCrit.Sts2.Core.Models.Potions", "PotionModel", r"PotionRarity\s+Rarity\s*=>\s*PotionRarity\.(\w+)"),
+            "powers": lambda: extract_entities(src, "MegaCrit.Sts2.Core.Models.Powers", "PowerModel", None),
+            "monsters": lambda: extract_monsters(src),
         }
+        data = {k: makers[k]() for k in makers if k in kinds}
         for k, v in data.items():
             (out / f"{k}.json").write_text(json.dumps(v, ensure_ascii=False, indent=1, sort_keys=True))
+        if "loc" in kinds:
+            extract_localization(vd, out)
         print("extracted", vd.name, {k: len(v) for k, v in data.items()}, flush=True)
     return 0
 

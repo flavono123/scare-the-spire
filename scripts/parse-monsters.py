@@ -815,9 +815,13 @@ def numeric_value(expr: str, int_props: dict[str, dict]) -> dict | None:
 
 def normalize_lambda_expr(expr: str) -> str:
     expr = expr.strip()
+    # ILSpy prints compiler-generated lambdas with an attribute and decimal conversion:
+    #   [CompilerGenerated] () => decimal.op_Implicit(DreadDamage)
+    expr = re.sub(r"^\[CompilerGenerated\]\s*", "", expr)
     if expr.startswith("() =>"):
-        return expr[5:].strip()
-    return expr
+        expr = expr[5:].strip()
+    m = re.fullmatch(r"decimal\.op_Implicit\((.+)\)", expr)
+    return m.group(1).strip() if m else expr
 
 
 def intent_value_key(expr: str, suffix: str) -> str:
@@ -998,7 +1002,7 @@ def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict, dict]:
             intent_details.append(parse_intent_detail(kind, args, int_props))
             if not args:
                 continue
-            first = args[0]
+            first = normalize_lambda_expr(args[0])
             # Attack intents carry a Damage identifier as the first arg.
             if kind in ("SingleAttackIntent", "MultiAttackIntent", "DeathBlowIntent", "AttackIntent"):
                 prop = int_props.get(first)
