@@ -1751,6 +1751,26 @@
     "map_shop_outline.png",
     "map_unknown_outline.png"
   ],
+  "modifiers": [
+    "all_star.webp",
+    "big_game_hunter.webp",
+    "binary.webp",
+    "character_cards.webp",
+    "cursed_run.webp",
+    "deadly_events.webp",
+    "draft.webp",
+    "flight.webp",
+    "hoarder.webp",
+    "insanity.webp",
+    "midas.webp",
+    "murderous.webp",
+    "night_terrors.webp",
+    "prismatic.webp",
+    "sealed_deck.webp",
+    "specialized.webp",
+    "terminal.webp",
+    "vintage.webp"
+  ],
   "monsters": [
     "architect.webp",
     "assassin_ruby_raider.webp",
@@ -1852,6 +1872,12 @@
     "waterfall_giant.webp",
     "wriggler.webp",
     "zapbot.webp"
+  ],
+  "monsters-beta": [
+    "doormaker_placeholder_1.webp",
+    "doormaker_placeholder_2.webp",
+    "doormaker_placeholder_3.webp",
+    "doormaker_placeholder_4.webp"
   ],
   "monsters-phobia": [
     "decimillipede_back.webp",
@@ -2751,6 +2777,16 @@
     "velvet_choker.webp",
     "vitruvian_minion.webp"
   ],
+  "rooms/rest-sites": [
+    "glory_rest_site_00.webp",
+    "glory_rest_site_fire.webp",
+    "hive_rest_site_00.webp",
+    "hive_rest_site_fire.webp",
+    "overgrowth_rest_site_bg.webp",
+    "overgrowth_rest_site_fire.webp",
+    "underdocks_rest_site_bg.webp",
+    "underdocks_rest_site_fire.webp"
+  ],
   "run-history": [
     "aeonglass_boss_outline.png",
     "aeonglass_boss.png",
@@ -2848,7 +2884,8 @@
     "tiny_nine_patch.png"
   ],
   "ui/combat": [
-    "block.png"
+    "block.png",
+    "combat_reticle.webp"
   ],
   "ui/confirm": [
     "popup_cancel_button_outline.png",
@@ -2856,6 +2893,12 @@
     "popup_confirm_button_outline.png",
     "popup_confirm_button.png",
     "popup_vertical.png"
+  ],
+  "ui/deck-view": [
+    "checkbox_ticked.png",
+    "checkbox_unticked.png",
+    "color_tab_bar.png",
+    "sort_descending.png"
   ],
   "ui/emote": [
     "exclaim.png",
@@ -2880,6 +2923,42 @@
     "relic_inspect_frame.webp",
     "reward_panel.webp"
   ],
+  "ui/merchant": [
+    "card_removal_00.webp",
+    "card_removal_01.webp",
+    "card_removal_02.webp",
+    "card_removal_04.webp",
+    "card_removal_05.webp",
+    "shop_rug.webp",
+    "shop_sales_tag.webp"
+  ],
+  "ui/rest-site": [
+    "option_clone.webp",
+    "option_cook.webp",
+    "option_dig.webp",
+    "option_hatch.webp",
+    "option_heal.webp",
+    "option_kindle.webp",
+    "option_lift.webp",
+    "option_mend.webp",
+    "option_outline.webp",
+    "option_smith.webp",
+    "option_toke.webp"
+  ],
+  "ui/reward-screen": [
+    "proceed_button.webp",
+    "reward_banner.webp",
+    "reward_icon_card_removal.webp",
+    "reward_icon_card.webp",
+    "reward_icon_money.webp",
+    "reward_icon_rare.webp",
+    "reward_icon_shared_relic.webp",
+    "reward_icon_special_card.webp",
+    "reward_icon_uncommon.webp",
+    "reward_item_button.webp",
+    "reward_panel.webp",
+    "reward_skip_button.webp"
+  ],
   "ui/scrollbar": [
     "small_track_center.png",
     "small_track_edge.png",
@@ -2901,5 +2980,10 @@
     "top_bar_map.png",
     "top_bar_settings.png",
     "top_bar.png"
+  ],
+  "vfx": [
+    "glow_card_rare.webp",
+    "glow_card_uncommon.webp",
+    "star1.webp"
   ]
 }
