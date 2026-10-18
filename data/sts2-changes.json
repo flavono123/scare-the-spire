@@ -370,6 +370,11 @@
         "beforeByLocale": {
           "eng": "Gain {Stars:starIcons()}.\nDraw {Cards:diff()} {Cards:plural:card|cards}."
         }
+      },
+      {
+        "field": "vars.Cards",
+        "before": 2,
+        "after": 1
       }
     ]
   },
@@ -7570,6 +7575,11 @@
         "after": {
           "innate": true
         }
+      },
+      {
+        "field": "vars.Speedster",
+        "before": 1,
+        "after": 2
       }
     ]
   },
@@ -12179,6 +12189,11 @@
         "field": "cost",
         "before": 2,
         "after": 1
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+5",
+        "after": "+10"
       }
     ]
   },
@@ -12194,6 +12209,11 @@
         "field": "vars.Damage",
         "before": 17,
         "after": 18
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+5",
+        "after": "+6"
       }
     ]
   },
@@ -12207,6 +12227,11 @@
     "fieldDiffs": [
       {
         "field": "vars.StrengthPower",
+        "before": 2,
+        "after": 3
+      },
+      {
+        "field": "vars.Strength",
         "before": 2,
         "after": 3
       }
@@ -12346,6 +12371,11 @@
         "field": "vars.Damage",
         "before": 50,
         "after": 60
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+10",
+        "after": "+15"
       }
     ]
   },
@@ -12361,6 +12391,11 @@
         "field": "vars.Damage",
         "before": 17,
         "after": 15
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+5",
+        "after": "+4"
       }
     ]
   },
@@ -12481,6 +12516,11 @@
         "field": "vars.Damage",
         "before": 24,
         "after": 27
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+6",
+        "after": "+8"
       }
     ]
   },
@@ -12496,6 +12536,10 @@
         "field": "vars.Increase",
         "before": 3,
         "after": 4
+      },
+      {
+        "field": "upgrade.damage",
+        "after": "+2"
       }
     ]
   },
@@ -12684,9 +12728,19 @@
     "diffs": [],
     "fieldDiffs": [
       {
-        "field": "vars.Block",
+        "field": "vars.DanseMacabrePower",
         "before": 3,
         "after": 4
+      },
+      {
+        "field": "vars.DanseMacabre",
+        "before": 3,
+        "after": 4
+      },
+      {
+        "field": "upgrade.dansemacabrepower",
+        "before": "+1",
+        "after": "+2"
       }
     ]
   },
@@ -12747,6 +12801,16 @@
         "field": "vars.PlatingPower",
         "before": 7,
         "after": 9
+      },
+      {
+        "field": "vars.Plating",
+        "before": 7,
+        "after": 9
+      },
+      {
+        "field": "upgrade.platingpower",
+        "before": "+2",
+        "after": "+3"
       }
     ]
   },
@@ -13606,10 +13670,6 @@
         "field": "descriptionRaw",
         "before": "[gold]군주의 칼날[/gold]이 이제 {SwordSagePower:diff()}번 추가로 적중합니다.",
         "after": "[gold]군주의 칼날[/gold]이\n[gold]재사용[/gold]을 {SwordSagePower:diff()} 얻습니다."
-      },
-      {
-        "field": "vars.SwordSage",
-        "before": 1
       }
     ]
   },
@@ -19508,7 +19568,7 @@
         "before": 1
       },
       {
-        "field": "upgrade.block",
+        "field": "upgrade.calculationbase",
         "after": "+1"
       },
       {
@@ -19997,7 +20057,8 @@
       },
       {
         "field": "vars.Thunder",
-        "before": 6
+        "before": 6,
+        "after": 8
       },
       {
         "field": "upgrade.thunderpower",
@@ -21678,45 +21739,6 @@
         "beforeKo": "추가 턴 전 감소",
         "afterKo": "감소하지 않음",
         "diffType": "text"
-      }
-    ]
-  },
-  {
-    "id": "glow-v0-109-0-field-diff",
-    "entityType": "card",
-    "entityId": "GLOW",
-    "patch": "v0.109.0",
-    "character": "regent",
-    "summary": "Glow draws 2 cards now and 2 cards next turn.",
-    "summaryKo": "빛이 이제 즉시 2장 뽑고 다음 턴에 2장 뽑도록 상향되었습니다.",
-    "diffs": [],
-    "fieldDiffs": [
-      {
-        "field": "description",
-        "before": "[star:1]을 얻습니다.\n카드를 1장 뽑습니다.\n다음 턴에, 카드를 1장 뽑습니다.",
-        "after": "[star:1]을 얻습니다.\n카드를 2장 뽑습니다.\n다음 턴에,\n카드를 2장 뽑습니다."
-      },
-      {
-        "field": "vars.Cards",
-        "before": 1,
-        "after": 2
-      }
-    ]
-  },
-  {
-    "id": "wrought-in-war-v0-109-0-field-diff",
-    "entityType": "card",
-    "entityId": "WROUGHT_IN_WAR",
-    "patch": "v0.109.0",
-    "character": "regent",
-    "summary": "Wrought in War Forge adjusted to 5.",
-    "summaryKo": "전장의 생존자 단조 수치가 5로 조정되었습니다.",
-    "diffs": [],
-    "fieldDiffs": [
-      {
-        "field": "vars.Forge",
-        "before": 7,
-        "after": 5
       }
     ]
   },

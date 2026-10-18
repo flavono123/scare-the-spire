@@ -2185,7 +2185,7 @@
     "name": "Break",
     "description": "Deal 20 damage.\nApply 5 [gold]Vulnerable[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} [gold]Vulnerable[/gold].",
-    "cost": 2,
+    "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -2214,7 +2214,7 @@
       "Vulnerable": 5
     },
     "upgrade": {
-      "damage": "+5",
+      "damage": "+10",
       "vulnerable": "+2"
     },
     "image_url": "/static/images/cards/break.png",
@@ -3262,7 +3262,7 @@
   {
     "id": "CINDER",
     "name": "Cinder",
-    "description": "Deal 17 damage.\n[gold]Exhaust[/gold] 1 card at random.",
+    "description": "Deal 18 damage.\n[gold]Exhaust[/gold] 1 card at random.",
     "description_raw": "Deal {Damage:diff()} damage.\n[gold]Exhaust[/gold] 1 card at random.",
     "cost": 2,
     "is_x_cost": null,
@@ -3272,7 +3272,7 @@
     "rarity": "Common",
     "target": "AnyEnemy",
     "color": "ironclad",
-    "damage": 17,
+    "damage": 18,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -3284,10 +3284,10 @@
     "spawns_cards": null,
     "vars": {
       "CardsToExhaust": 1,
-      "Damage": 17
+      "Damage": 18
     },
     "upgrade": {
-      "damage": "+5"
+      "damage": "+6"
     },
     "image_url": "/static/images/cards/cinder.png",
     "beta_image_url": null
@@ -4463,7 +4463,7 @@
   {
     "id": "DANSE_MACABRE",
     "name": "Danse Macabre",
-    "description": "Whenever you play a card that costs [energy:2] or more, gain 3 [gold]Block[/gold].",
+    "description": "Whenever you play a card that costs [energy:2] or more, gain 4 [gold]Block[/gold].",
     "description_raw": "Whenever you play a card that costs {Energy:energyIcons()} or more, gain {DanseMacabrePower:diff()} [gold]Block[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -4479,7 +4479,7 @@
     "powers_applied": [
       {
         "power": "Danse Macabre",
-        "amount": 3
+        "amount": 4
       }
     ],
     "cards_draw": null,
@@ -4490,11 +4490,11 @@
     "spawns_cards": null,
     "vars": {
       "Energy": 2,
-      "DanseMacabrePower": 3,
-      "DanseMacabre": 3
+      "DanseMacabrePower": 4,
+      "DanseMacabre": 4
     },
     "upgrade": {
-      "dansemacabrepower": "+1"
+      "dansemacabrepower": "+2"
     },
     "image_url": "/static/images/cards/danse_macabre.png",
     "beta_image_url": "/static/images/cards/beta/danse_macabre.png"
@@ -6550,7 +6550,7 @@
   {
     "id": "ETERNAL_ARMOR",
     "name": "Eternal Armor",
-    "description": "Gain 7 [gold]Plating[/gold].",
+    "description": "Gain 9 [gold]Plating[/gold].",
     "description_raw": "Gain {PlatingPower:diff()} [gold]Plating[/gold].",
     "cost": 3,
     "is_x_cost": null,
@@ -6566,7 +6566,7 @@
     "powers_applied": [
       {
         "power": "Plating",
-        "amount": 7
+        "amount": 9
       }
     ],
     "cards_draw": null,
@@ -6576,11 +6576,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "PlatingPower": 7,
-      "Plating": 7
+      "PlatingPower": 9,
+      "Plating": 9
     },
     "upgrade": {
-      "platingpower": "+2"
+      "platingpower": "+3"
     },
     "image_url": "/static/images/cards/eternal_armor.png",
     "beta_image_url": null
@@ -6645,7 +6645,7 @@
       "CalculationExtra": 5
     },
     "upgrade": {
-      "block": "+1",
+      "calculationbase": "+1",
       "calculationextra": "+3"
     },
     "image_url": "/static/images/cards/expect_a_fight.png",
@@ -7165,7 +7165,7 @@
   {
     "id": "FIGHT_ME",
     "name": "Fight Me!",
-    "description": "Deal 5 damage twice.\nGain 2 [gold]Strength[/gold].\nThe enemy gains 1 [gold]Strength[/gold].",
+    "description": "Deal 5 damage twice.\nGain 3 [gold]Strength[/gold].\nThe enemy gains 1 [gold]Strength[/gold].",
     "description_raw": "Deal {Damage:diff()} damage twice.\nGain {StrengthPower:diff()} [gold]Strength[/gold].\nThe enemy gains {EnemyStrength:diff()} [gold]Strength[/gold].",
     "cost": 2,
     "is_x_cost": null,
@@ -7181,7 +7181,7 @@
     "powers_applied": [
       {
         "power": "Strength",
-        "amount": 2
+        "amount": 3
       }
     ],
     "cards_draw": null,
@@ -7194,8 +7194,8 @@
       "EnemyStrength": 1,
       "Damage": 5,
       "Repeat": 2,
-      "StrengthPower": 2,
-      "Strength": 2
+      "StrengthPower": 3,
+      "Strength": 3
     },
     "upgrade": {
       "damage": "+1",
@@ -8406,7 +8406,7 @@
   {
     "id": "GLOW",
     "name": "Glow",
-    "description": "Gain [star:1].\nDraw 2 cards.\nNext turn, draw 2 cards.",
+    "description": "Gain [star:1].\nDraw 1 card.\nNext turn, draw 1 card.",
     "description_raw": "Gain {Stars:starIcons()}.\nDraw {Cards:diff()} {Cards:plural:card|cards}.\nNext turn, draw {Cards:diff()} {Cards:plural:card|cards}.",
     "cost": 1,
     "is_x_cost": null,
@@ -8428,7 +8428,7 @@
     "spawns_cards": null,
     "vars": {
       "Stars": 1,
-      "Cards": 2
+      "Cards": 1
     },
     "upgrade": {
       "stars": "+1"
@@ -8513,7 +8513,7 @@
   {
     "id": "GRAND_FINALE",
     "name": "Grand Finale",
-    "description": "Can only be played if there are no cards in your [gold]Draw Pile[/gold]. Deal 50 damage to ALL enemies.",
+    "description": "Can only be played if there are no cards in your [gold]Draw Pile[/gold]. Deal 60 damage to ALL enemies.",
     "description_raw": "Can only be played if there are no cards in your [gold]Draw Pile[/gold]. Deal {Damage:diff()} damage to ALL enemies.",
     "cost": 0,
     "is_x_cost": null,
@@ -8523,7 +8523,7 @@
     "rarity": "Rare",
     "target": "AllEnemies",
     "color": "silent",
-    "damage": 50,
+    "damage": 60,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -8534,10 +8534,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 50
+      "Damage": 60
     },
     "upgrade": {
-      "damage": "+10"
+      "damage": "+15"
     },
     "image_url": "/static/images/cards/grand_finale.png",
     "beta_image_url": null
@@ -10397,7 +10397,7 @@
   {
     "id": "KINGLY_KICK",
     "name": "Kingly Kick",
-    "description": "Deal 24 damage.\nWhenever you draw this card, reduce its cost by 1.",
+    "description": "Deal 27 damage.\nWhenever you draw this card, reduce its cost by 1.",
     "description_raw": "Deal {Damage:diff()} damage.\nWhenever you draw this card, reduce its cost by 1.",
     "cost": 4,
     "is_x_cost": null,
@@ -10407,7 +10407,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "regent",
-    "damage": 24,
+    "damage": 27,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -10418,10 +10418,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 24
+      "Damage": 27
     },
     "upgrade": {
-      "damage": "+6"
+      "damage": "+8"
     },
     "image_url": "/static/images/cards/kingly_kick.png",
     "beta_image_url": null
@@ -10429,7 +10429,7 @@
   {
     "id": "KINGLY_PUNCH",
     "name": "Kingly Punch",
-    "description": "Deal 8 damage.\nWhenever you draw this card, increase its damage by 3 this combat.",
+    "description": "Deal 8 damage.\nWhenever you draw this card, increase its damage by 4 this combat.",
     "description_raw": "Deal {Damage:diff()} damage.\nWhenever you draw this card, increase its damage by {Increase:diff()} this combat.",
     "cost": 1,
     "is_x_cost": null,
@@ -10450,10 +10450,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 3,
+      "Increase": 4,
       "Damage": 8
     },
     "upgrade": {
+      "damage": "+2",
       "increase": "+2"
     },
     "image_url": "/static/images/cards/kingly_punch.png",
@@ -13411,7 +13412,7 @@
   {
     "id": "PINPOINT",
     "name": "Pinpoint",
-    "description": "Deal 17 damage.\nCosts 1 less [energy:1] for each Skill played this turn.",
+    "description": "Deal 15 damage.\nCosts 1 less [energy:1] for each Skill played this turn.",
     "description_raw": "Deal {Damage:diff()} damage.\nCosts 1 less {energyPrefix:energyIcons(1)} for each Skill played this turn.",
     "cost": 3,
     "is_x_cost": null,
@@ -13421,7 +13422,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "silent",
-    "damage": 17,
+    "damage": 15,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -13432,10 +13433,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 17
+      "Damage": 15
     },
     "upgrade": {
-      "damage": "+5"
+      "damage": "+4"
     },
     "image_url": "/static/images/cards/pinpoint.png",
     "beta_image_url": null
@@ -17018,7 +17019,7 @@
     "powers_applied": [
       {
         "power": "Speedster",
-        "amount": 1
+        "amount": 2
       }
     ],
     "cards_draw": null,
@@ -17029,7 +17030,7 @@
     "spawns_cards": null,
     "vars": {
       "SpeedsterPower": 2,
-      "Speedster": 1
+      "Speedster": 2
     },
     "upgrade": {
       "innate": true
@@ -18296,7 +18297,8 @@
       "SOVEREIGN_BLADE"
     ],
     "vars": {
-      "SwordSagePower": 1
+      "SwordSagePower": 1,
+      "SwordSage": 1
     },
     "upgrade": {
       "cost": 1
@@ -18992,7 +18994,7 @@
     "powers_applied": [
       {
         "power": "Thunder",
-        "amount": 6
+        "amount": 8
       }
     ],
     "cards_draw": null,
@@ -19002,7 +19004,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "ThunderPower": 8
+      "ThunderPower": 8,
+      "Thunder": 8
     },
     "upgrade": {
       "thunderpower": "+3"
@@ -20450,7 +20453,7 @@
   {
     "id": "WROUGHT_IN_WAR",
     "name": "Wrought in War",
-    "description": "Deal 7 damage.\n[gold]Forge[/gold] 5.",
+    "description": "Deal 7 damage.\n[gold]Forge[/gold] 7.",
     "description_raw": "Deal {Damage:diff()} damage.\n[gold]Forge[/gold] {Forge:diff()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -20472,7 +20475,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 7,
-      "Forge": 5
+      "Forge": 7
     },
     "upgrade": {
       "damage": "+2",

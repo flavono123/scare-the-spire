@@ -2214,7 +2214,7 @@
       "Vulnerable": 5
     },
     "upgrade": {
-      "damage": "+5",
+      "damage": "+10",
       "vulnerable": "+2"
     },
     "image_url": "/static/images/cards/break.png",
@@ -3272,7 +3272,7 @@
     "rarity": "일반",
     "target": "AnyEnemy",
     "color": "ironclad",
-    "damage": 17,
+    "damage": 18,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -3287,7 +3287,7 @@
       "Damage": 18
     },
     "upgrade": {
-      "damage": "+5"
+      "damage": "+6"
     },
     "image_url": "/static/images/cards/cinder.png",
     "beta_image_url": null
@@ -4463,7 +4463,7 @@
   {
     "id": "DANSE_MACABRE",
     "name": "죽음의 무도",
-    "description": "비용이 [energy:2] 이상인\n카드를 사용할 때마다,\n[gold]방어도[/gold]를 3 얻습니다.",
+    "description": "비용이 [energy:2] 이상인\n카드를 사용할 때마다,\n[gold]방어도[/gold]를 4 얻습니다.",
     "description_raw": "비용이 {Energy:energyIcons()} 이상인\n카드를 사용할 때마다,\n[gold]방어도[/gold]를 {DanseMacabrePower:diff()} 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -4479,7 +4479,7 @@
     "powers_applied": [
       {
         "power": "죽음의 무도",
-        "amount": 3
+        "amount": 4
       }
     ],
     "cards_draw": null,
@@ -4490,12 +4490,11 @@
     "spawns_cards": null,
     "vars": {
       "Energy": 2,
-      "DanseMacabrePower": 3,
-      "DanseMacabre": 3,
-      "Block": 4
+      "DanseMacabrePower": 4,
+      "DanseMacabre": 4
     },
     "upgrade": {
-      "dansemacabrepower": "+1"
+      "dansemacabrepower": "+2"
     },
     "image_url": "/static/images/cards/danse_macabre.png",
     "beta_image_url": "/static/images/cards/beta/danse_macabre.png"
@@ -6567,7 +6566,7 @@
     "powers_applied": [
       {
         "power": "판금",
-        "amount": 7
+        "amount": 9
       }
     ],
     "cards_draw": null,
@@ -6578,10 +6577,10 @@
     "spawns_cards": null,
     "vars": {
       "PlatingPower": 9,
-      "Plating": 7
+      "Plating": 9
     },
     "upgrade": {
-      "platingpower": "+2"
+      "platingpower": "+3"
     },
     "image_url": "/static/images/cards/eternal_armor.png",
     "beta_image_url": null
@@ -6646,7 +6645,7 @@
       "CalculationExtra": 5
     },
     "upgrade": {
-      "block": "+1",
+      "calculationbase": "+1",
       "calculationextra": "+3"
     },
     "image_url": "/static/images/cards/expect_a_fight.png",
@@ -7182,7 +7181,7 @@
     "powers_applied": [
       {
         "power": "힘",
-        "amount": 2
+        "amount": 3
       }
     ],
     "cards_draw": null,
@@ -7196,7 +7195,7 @@
       "Damage": 5,
       "Repeat": 2,
       "StrengthPower": 3,
-      "Strength": 2
+      "Strength": 3
     },
     "upgrade": {
       "damage": "+1",
@@ -8407,7 +8406,7 @@
   {
     "id": "GLOW",
     "name": "광채",
-    "description": "[star:1]을 얻습니다.\n카드를 2장 뽑습니다.\n다음 턴에,\n카드를 2장 뽑습니다.",
+    "description": "[star:1]을 얻습니다.\n카드를 1장 뽑습니다.\n다음 턴에,\n카드를 1장 뽑습니다.",
     "description_raw": "{Stars:starIcons()}을 얻습니다.\n카드를 {Cards:diff()}장 뽑습니다.\n다음 턴에,\n카드를 {Cards:diff()}장 뽑습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -8429,7 +8428,7 @@
     "spawns_cards": null,
     "vars": {
       "Stars": 1,
-      "Cards": 2
+      "Cards": 1
     },
     "upgrade": {
       "stars": "+1"
@@ -8524,7 +8523,7 @@
     "rarity": "희귀",
     "target": "AllEnemies",
     "color": "silent",
-    "damage": 50,
+    "damage": 60,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -8538,7 +8537,7 @@
       "Damage": 60
     },
     "upgrade": {
-      "damage": "+10"
+      "damage": "+15"
     },
     "image_url": "/static/images/cards/grand_finale.png",
     "beta_image_url": null
@@ -10408,7 +10407,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "regent",
-    "damage": 24,
+    "damage": 27,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -10422,7 +10421,7 @@
       "Damage": 27
     },
     "upgrade": {
-      "damage": "+6"
+      "damage": "+8"
     },
     "image_url": "/static/images/cards/kingly_kick.png",
     "beta_image_url": null
@@ -10455,6 +10454,7 @@
       "Damage": 8
     },
     "upgrade": {
+      "damage": "+2",
       "increase": "+2"
     },
     "image_url": "/static/images/cards/kingly_punch.png",
@@ -13422,7 +13422,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "silent",
-    "damage": 17,
+    "damage": 15,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -13436,7 +13436,7 @@
       "Damage": 15
     },
     "upgrade": {
-      "damage": "+5"
+      "damage": "+4"
     },
     "image_url": "/static/images/cards/pinpoint.png",
     "beta_image_url": null
@@ -17021,7 +17021,7 @@
     "powers_applied": [
       {
         "power": "스피드스터",
-        "amount": 1
+        "amount": 2
       }
     ],
     "cards_draw": null,
@@ -17032,7 +17032,7 @@
     "spawns_cards": null,
     "vars": {
       "SpeedsterPower": 2,
-      "Speedster": 1
+      "Speedster": 2
     },
     "upgrade": {
       "innate": true
@@ -18299,7 +18299,8 @@
       "SOVEREIGN_BLADE"
     ],
     "vars": {
-      "SwordSagePower": 1
+      "SwordSagePower": 1,
+      "SwordSage": 1
     },
     "upgrade": {
       "cost": 1
@@ -18995,7 +18996,7 @@
     "powers_applied": [
       {
         "power": "벼락",
-        "amount": 6
+        "amount": 8
       }
     ],
     "cards_draw": null,
@@ -19005,7 +19006,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "ThunderPower": 8
+      "ThunderPower": 8,
+      "Thunder": 8
     },
     "upgrade": {
       "thunderpower": "+3"
@@ -20453,7 +20455,7 @@
   {
     "id": "WROUGHT_IN_WAR",
     "name": "전장의 생존자",
-    "description": "피해를 7 줍니다.\n[gold]단조[/gold] 5.",
+    "description": "피해를 7 줍니다.\n[gold]단조[/gold] 7.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]단조[/gold] {Forge:diff()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -20475,7 +20477,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 7,
-      "Forge": 5
+      "Forge": 7
     },
     "upgrade": {
       "damage": "+2",
