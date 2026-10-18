@@ -14,7 +14,8 @@
  * A batch file is { base?, outDir?, locale?, shots: Shot[] } where each Shot has
  * `target` or `url`, `out`, and optional `mark`, `replace`, `selector`, `locale`,
  * `upgraded` (card pages: tick "View Upgrades" before capturing), `enchant`
- * (card pages: press the enchantment button with that title first).
+ * (card pages: press the enchantment button with that title first), `beta`
+ * (card, relic, power, epoch pages: turn on the "Beta Art" toggle first).
  * A mark or replace phrase must occur exactly once in the description.
  * Relative paths resolve from the directory pnpm was invoked in.
  *
@@ -66,6 +67,8 @@ interface Shot {
   upgraded?: boolean;
   /** Card pages: name of the enchantment button to press first (e.g. "잉크투성이"). */
   enchant?: string;
+  /** Turn on the page's "Beta Art" toggle first (cards, relics, powers, epochs). */
+  beta?: boolean;
 }
 
 interface Batch {
@@ -249,6 +252,20 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     await page.waitForTimeout(500);
   }
 
+  if (shot.beta) {
+    const name = /베타 아트|Beta Art/;
+    const checkbox = page.getByRole("checkbox", { name }).first();
+    if (await checkbox.count()) {
+      if ((await checkbox.getAttribute("aria-checked")) !== "true") await checkbox.click();
+    } else {
+      // The power page draws it as a plain button.
+      const button = page.getByRole("button", { name }).first();
+      if (!(await button.count())) throw new Error(`${url}: no Beta Art toggle on this page`);
+      await button.click();
+    }
+    await page.waitForTimeout(800);
+  }
+
   const edits = await applyEdits(page, selector, (shot.mark ?? []).map(parseMark), (shot.replace ?? []).map(parseReplace));
   const missing = edits.filter((edit) => edit.found !== true);
   if (missing.length > 0) {
@@ -283,7 +300,7 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     url: page.url(),
     target: shot.target ?? null,
     stamp,
-    edits: { mark: shot.mark ?? [], replace: shot.replace ?? [], upgraded: shot.upgraded ?? false, enchant: shot.enchant ?? null },
+    edits: { mark: shot.mark ?? [], replace: shot.replace ?? [], upgraded: shot.upgraded ?? false, enchant: shot.enchant ?? null, beta: shot.beta ?? false },
     method,
     pixelRatio: DEVICE_SCALE,
     ...image,
@@ -317,6 +334,7 @@ function parseArgs(argv: string[]): { batch: Batch; batchDir: string } | null {
       case "--selector": shot.selector = value(); break;
       case "--upgraded": shot.upgraded = true; break;
       case "--enchant": shot.enchant = value(); break;
+      case "--beta": shot.beta = true; break;
       case "--mark": shot.mark!.push(value()); break;
       case "--mark-color": markColor = value(); break;
       case "--replace": shot.replace!.push(value()); break;
@@ -338,7 +356,7 @@ async function main() {
     console.log(
       "usage: pnpm shorts:capture (--target type/ID[@version] | --url path) --out file.png\n" +
         "         [--mark text]... [--mark-color red|gold|green|blue|purple|#hex] [--replace old=>new]...\n" +
-        "         [--selector css] [--locale kor|eng] [--base http://localhost:3000]\n" +
+        "         [--selector css] [--upgraded] [--enchant name] [--beta] [--locale kor|eng] [--base http://localhost:3000]\n" +
         "       pnpm shorts:capture --batch shots.json",
     );
     process.exit(1);
