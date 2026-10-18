@@ -58,7 +58,14 @@ async function runTests() {
     assert.equal(colony102.entity?.damageValues?.Smash?.normal, 12, "Smash 12(13) from v0.102.0");
     assert.equal(colony101.entity?.damageValues?.Inertia, undefined, "Inertia dealt no damage in v0.101.0");
     const colony100 = await at("SKULKING_COLONY", "v0.100.0");
-    assert.deepEqual(colony100.entity?.moves, [], "v0.100.0 moves are not known");
+    assert.equal(colony100.entity?.minHp, 74, "HP 74(79) from v0.100.0");
+    assert.equal(colony100.entity?.damageValues?.Zoom?.normal, 16, "Zoom 16(17) in v0.100.0, 14(16) from v0.101.0");
+    assert.equal(colony101.entity?.damageValues?.Zoom?.normal, 14);
+    const colony099 = await at("SKULKING_COLONY", "v0.99.1");
+    assert.equal(colony099.entity?.minHp, 79);
+    assert.equal(colony099.entity?.initialPowerApplications[0].amount.normal, 20, "Hardened Shell 20 before v0.100.0");
+    const door100 = await at("DOORMAKER", "v0.100.0");
+    assert.deepEqual(door100.entity?.moves.map((m: any) => m.id), ["DRAMATIC_OPEN", "BEAM", "CHOMP", "PULVERIZE"]);
 
     const door099 = await at("DOORMAKER", "v0.99.1");
     const door101 = await at("DOORMAKER", "v0.101.0");

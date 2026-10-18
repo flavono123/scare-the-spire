@@ -1,0 +1,148 @@
+{
+  "appId": 2868840,
+  "depotId": 2868842,
+  "platform": "macOS",
+  "source": "SteamDB depot manifests tab (unfiltered), pasted 2026-10-18",
+  "manifests": [
+    {
+      "seenUtc": "2026-08-14T01:05:29Z",
+      "manifestId": "5045320271505434676",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-07-31T08:44:21Z",
+      "manifestId": "6028014086612748791",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-07-31T03:24:08Z",
+      "manifestId": "7006298261873589484",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-07-25T18:38:14Z",
+      "manifestId": "1604261622579712050",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-07-17T02:54:27Z",
+      "manifestId": "7169427731078769081",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-07-03T03:24:26Z",
+      "manifestId": "1977841934321910790",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-06-19T00:33:55Z",
+      "manifestId": "8653035385353091849",
+      "branch": "public"
+    },
+    {
+      "seenUtc": "2026-06-04T23:43:08Z",
+      "manifestId": "2804103258730160733",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-05-29T21:30:20Z",
+      "manifestId": "4577611564181546473",
+      "branch": "public"
+    },
+    {
+      "seenUtc": "2026-05-23T00:42:40Z",
+      "manifestId": "5855589493078469321",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-05-22T00:30:18Z",
+      "manifestId": "3684325315583210884",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-05-09T03:11:43Z",
+      "manifestId": "3651962971927659313",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-05-08T00:50:18Z",
+      "manifestId": "71256304972603072",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-04-24T00:11:09Z",
+      "manifestId": "527531085985670167",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-04-17T00:53:14Z",
+      "manifestId": "5723017024281513170",
+      "branch": "public"
+    },
+    {
+      "seenUtc": "2026-04-16T03:50:38Z",
+      "manifestId": "7400006254771756891",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-04-10T00:52:48Z",
+      "manifestId": "9097754098362819748",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-04-03T00:45:34Z",
+      "manifestId": "5829598223547392421",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-03-27T02:22:04Z",
+      "manifestId": "7335114380137289283",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-03-20T01:41:02Z",
+      "manifestId": "8691911314830205080",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-03-14T04:52:06Z",
+      "manifestId": "4896221226191258992",
+      "branch": "public"
+    },
+    {
+      "seenUtc": "2026-03-13T00:35:40Z",
+      "manifestId": "2841353406247532214",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-03-10T17:44:18Z",
+      "manifestId": "3447588968304758517",
+      "branch": "public"
+    },
+    {
+      "seenUtc": "2026-03-07T02:36:24Z",
+      "manifestId": "7077376005054376697",
+      "branch": "public"
+    },
+    {
+      "seenUtc": "2026-03-06T00:47:39Z",
+      "manifestId": "2646416021243959080",
+      "branch": "public"
+    },
+    {
+      "seenUtc": "2026-03-05T17:50:49Z",
+      "manifestId": "1673197266540617643",
+      "branch": "public-beta"
+    },
+    {
+      "seenUtc": "2026-03-05T17:50:49Z",
+      "manifestId": "8195960991513942452",
+      "branch": "troubleshoot"
+    },
+    {
+      "seenUtc": "2026-03-05T17:50:49Z",
+      "manifestId": "2907078504756198574",
+      "branch": "public"
+    }
+  ]
+}
