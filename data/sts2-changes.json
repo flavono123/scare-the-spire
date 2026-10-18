@@ -4514,6 +4514,733 @@
         "afterKo": "매 턴 연속 할퀴기 반복",
         "diffType": "rework"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "RESPAWN",
+            "name": "부활",
+            "nameEn": "Respawn",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "HealIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "HealIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "PAINFUL_STABS",
+                "powerName": "고통스러운 찌르기",
+                "powerNameEn": "Painful Stabs",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/painful_stabs_power.webp"
+              },
+              {
+                "powerId": "NEMESIS",
+                "powerName": "네메시스",
+                "powerNameEn": "Nemesis",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/nemesis_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "BITE",
+            "name": "물기",
+            "nameEn": "Bite",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Bite",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "SKULL_BASH",
+            "name": "두개골 강타",
+            "nameEn": "Skull Bash",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "SkullBash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "VULNERABLE",
+                "powerName": "취약",
+                "powerNameEn": "Vulnerable",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/vulnerable_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "POUNCE",
+            "name": "덮치기",
+            "nameEn": "Pounce",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Pounce",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "MULTI_CLAW",
+            "name": "발톱 연타",
+            "nameEn": "Multi-Claw",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "MultiClaw",
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": "MultiClawTotalCount"
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PHASE3_LACERATE",
+            "name": "찢어발기기",
+            "nameEn": "Lacerate",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Phase3Lacerate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BIG_POUNCE",
+            "name": "거센 덮치기",
+            "nameEn": "Big Pounce",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "BigPounce",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BURNING_GROWL",
+            "name": "타오르는 포효",
+            "nameEn": "Burning Growl",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "StatusIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StatusIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": [
+              {
+                "cardId": "BURN",
+                "cardName": "화상",
+                "cardNameEn": "Burn",
+                "cardType": "상태이상",
+                "cardRarity": "상태이상",
+                "cardColor": "status",
+                "applicationKind": "add",
+                "amount": {
+                  "normal": 3,
+                  "ascension": 5
+                },
+                "imageUrl": "/images/sts2/cards/burn.webp"
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "RESPAWN",
+            "name": "부활",
+            "nameEn": "Respawn",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "HealIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "HealIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "PAINFUL_STABS",
+                "powerName": "고통스러운 찌르기",
+                "powerNameEn": "Painful Stabs",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/painful_stabs_power.webp"
+              },
+              {
+                "powerId": "NEMESIS",
+                "powerName": "네메시스",
+                "powerNameEn": "Nemesis",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/nemesis_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "BITE",
+            "name": "물기",
+            "nameEn": "Bite",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Bite",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "SKULL_BASH",
+            "name": "두개골 강타",
+            "nameEn": "Skull Bash",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "SkullBash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "VULNERABLE",
+                "powerName": "취약",
+                "powerNameEn": "Vulnerable",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/vulnerable_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "MULTI_CLAW",
+            "name": "발톱 연타",
+            "nameEn": "Multi-Claw",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "MultiClaw",
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": "MultiClawTotalCount"
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PHASE3_LACERATE",
+            "name": "찢어발기기",
+            "nameEn": "Lacerate",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Phase3Lacerate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BIG_POUNCE",
+            "name": "거센 덮치기",
+            "nameEn": "Big Pounce",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "BigPounce",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BURNING_GROWL",
+            "name": "타오르는 포효",
+            "nameEn": "Burning Growl",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "StatusIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StatusIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": [
+              {
+                "cardId": "BURN",
+                "cardName": "화상",
+                "cardNameEn": "Burn",
+                "cardType": "상태이상",
+                "cardRarity": "상태이상",
+                "cardColor": "status",
+                "applicationKind": "add",
+                "amount": {
+                  "normal": 3,
+                  "ascension": 5
+                },
+                "imageUrl": "/images/sts2/cards/burn.webp"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "field": "damageValues",
+        "before": {
+          "Bite": {
+            "normal": 20,
+            "ascension": 22
+          },
+          "SkullBash": {
+            "normal": 14,
+            "ascension": 16
+          },
+          "MultiClaw": {
+            "normal": 10,
+            "ascension": 11
+          },
+          "Phase3Lacerate": {
+            "normal": 10,
+            "ascension": 11
+          },
+          "BigPounce": {
+            "normal": 45,
+            "ascension": null
+          },
+          "Pounce": {
+            "normal": 30,
+            "ascension": 32
+          }
+        },
+        "after": {
+          "Bite": {
+            "normal": 20,
+            "ascension": 22
+          },
+          "SkullBash": {
+            "normal": 14,
+            "ascension": 16
+          },
+          "MultiClaw": {
+            "normal": 10,
+            "ascension": 11
+          },
+          "Phase3Lacerate": {
+            "normal": 10,
+            "ascension": 11
+          },
+          "BigPounce": {
+            "normal": 45,
+            "ascension": null
+          }
+        }
+      },
+      {
+        "field": "moveGraph",
+        "before": null,
+        "after": {
+          "initial": "BITE",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "BITE",
+              "to": "SKULL_BASH",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "SKULL_BASH",
+              "to": "BITE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "MULTI_CLAW",
+              "to": "MULTI_CLAW",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "PHASE3_LACERATE",
+              "to": "BIG_POUNCE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BIG_POUNCE",
+              "to": "BURNING_GROWL",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BURNING_GROWL",
+              "to": "PHASE3_LACERATE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "RESPAWN",
+              "to": "MULTI_CLAW",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "Respawns < 2"
+            },
+            {
+              "from": "RESPAWN",
+              "to": "PHASE3_LACERATE",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "Respawns >= 2"
+            }
+          ],
+          "states": [
+            {
+              "id": "RESPAWN",
+              "kind": "move",
+              "next": "REVIVE_BRANCH"
+            },
+            {
+              "id": "BITE",
+              "kind": "move",
+              "next": "SKULL_BASH"
+            },
+            {
+              "id": "SKULL_BASH",
+              "kind": "move",
+              "next": "BITE"
+            },
+            {
+              "id": "MULTI_CLAW",
+              "kind": "move",
+              "next": "MULTI_CLAW"
+            },
+            {
+              "id": "PHASE3_LACERATE",
+              "kind": "move",
+              "next": "BIG_POUNCE"
+            },
+            {
+              "id": "BIG_POUNCE",
+              "kind": "move",
+              "next": "BURNING_GROWL"
+            },
+            {
+              "id": "BURNING_GROWL",
+              "kind": "move",
+              "next": "PHASE3_LACERATE"
+            },
+            {
+              "id": "REVIVE_BRANCH",
+              "kind": "conditional",
+              "branches": [
+                {
+                  "to": "MULTI_CLAW",
+                  "condition": "Respawns < 2"
+                },
+                {
+                  "to": "PHASE3_LACERATE",
+                  "condition": "Respawns >= 2"
+                }
+              ]
+            }
+          ]
+        }
+      }
     ]
   },
   {
