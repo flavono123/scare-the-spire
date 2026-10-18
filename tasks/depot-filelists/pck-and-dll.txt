@@ -1,0 +1,2 @@
+regex:\.pck$
+regex:sts2\.dll$
