@@ -233,7 +233,11 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
 
   await page.goto(url, { waitUntil: "domcontentloaded", timeout: 180_000 });
   const selector = shot.selector ?? CAPTURE_SELECTOR;
-  await page.locator(selector).first().waitFor({ state: "visible", timeout: 120_000 });
+  // Power and epoch pages have no tile node; their download button renders the
+  // art block it is bound to, so the button alone means the page is ready.
+  const ready = shot.selector ? selector : `${selector}, ${DOWNLOAD_SELECTOR}`;
+  await page.locator(ready).filter({ visible: true }).first().waitFor({ state: "visible", timeout: 120_000 });
+  const hasNode = (await page.locator(selector).count()) > 0;
   await page.evaluate(() => document.fonts.ready);
   // Version and locale are stamped on the tile after hydration.
   await page.waitForTimeout(800);
@@ -266,7 +270,10 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     await page.waitForTimeout(800);
   }
 
-  const edits = await applyEdits(page, selector, (shot.mark ?? []).map(parseMark), (shot.replace ?? []).map(parseReplace));
+  if (!hasNode && ((shot.mark?.length ?? 0) > 0 || (shot.replace?.length ?? 0) > 0)) {
+    throw new Error(`${url}: --mark and --replace need a ${selector} node; pass --selector`);
+  }
+  const edits = !hasNode ? [] : await applyEdits(page, selector, (shot.mark ?? []).map(parseMark), (shot.replace ?? []).map(parseReplace));
   const missing = edits.filter((edit) => edit.found !== true);
   if (missing.length > 0) {
     const reasons = missing.map((edit) =>
@@ -274,10 +281,12 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     throw new Error(`${url}: ${reasons.join("; ")}`);
   }
 
-  const stamp = await page.locator(selector).first().evaluate((node: HTMLElement) => ({
-    version: node.dataset.version ?? null,
-    gameLocale: node.dataset.gameLocale ?? null,
-  }));
+  const stamp = !hasNode
+    ? { version: null, gameLocale: null }
+    : await page.locator(selector).first().evaluate((node: HTMLElement) => ({
+      version: node.dataset.version ?? null,
+      gameLocale: node.dataset.gameLocale ?? null,
+    }));
 
   await mkdir(path.dirname(out), { recursive: true });
   const button = page.locator(DOWNLOAD_SELECTOR).filter({ visible: true }).first();
