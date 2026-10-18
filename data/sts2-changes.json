@@ -2351,6 +2351,10 @@
         "field": "vars.Damage",
         "before": 6,
         "after": 7
+      },
+      {
+        "field": "versionTextUnpinned",
+        "before": true
       }
     ]
   },
@@ -7145,6 +7149,10 @@
         "field": "descriptionRaw",
         "before": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]3[/blue][gold]막[/gold] 시작 시 소멸합니다.",
         "after": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]{CombatCount}[/blue]번의 전투 후에 불이 꺼집니다. [gold]휴식 장소[/gold]에서 다시 [gold]불을 붙일[/gold] 수 있습니다."
+      },
+      {
+        "field": "vars.CombatCount",
+        "after": 5
       }
     ]
   },
@@ -14736,6 +14744,39 @@
         "before": "",
         "after": "Seal of Gold",
         "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "inky-v0-105-0-field-diff",
+    "entityType": "enchantment",
+    "entityId": "INKY",
+    "patch": "v0.105.0",
+    "date": "2026-05-08",
+    "character": "silent",
+    "summary": "Inky's bonus damage reduced from +2 to +1.",
+    "summaryKo": "잉크투성이 인챈트의 추가 피해량이 +2에서 +1로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Bonus Damage",
+        "displayNameKo": "추가 피해",
+        "before": 2,
+        "after": 1,
+        "diffType": "number"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "BLADE_OF_INK"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "vars.Damage",
+        "before": 2,
+        "after": 1
       }
     ]
   },

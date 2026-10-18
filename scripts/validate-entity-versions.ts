@@ -406,7 +406,9 @@ function main() {
   // ── Check 4: Field path validation ──
   console.log("=== Check 4: Field path validation ===");
 
-  const lifecycleFields = ["introducedInPatch", "deprecated", "deprecatedInPatch"];
+  // versionTextUnpinned marks that the text before this patch is not known;
+  // the Compendium flags reconstructed entities with it.
+  const lifecycleFields = ["introducedInPatch", "deprecated", "deprecatedInPatch", "versionTextUnpinned"];
   const validCardFields = new Set([
     "cost", "type", "rarity", "description", "descriptionRaw",
     "damage", "block", "hitCount", "starCost", "isXCost", "isXStarCost",
