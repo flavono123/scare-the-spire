@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
+import { resolveMonsterStaticArt } from "@/lib/monster-static-art";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import {
   buildCompendiumResourceDetailHref,
@@ -465,6 +466,7 @@ export function MonsterLibrary({
                       key={monster.id}
                       serviceLocale={serviceLocale}
                       monster={monster}
+                      selectedVersion={activeVersion}
                       displayType={getDisplayMonsterType(monster)}
                       threadKey={threadKey}
                       commentCount={engagementCounts.comments[threadKey] ?? 0}
@@ -505,6 +507,7 @@ export function MonsterLibrary({
               patches={patches}
               changes={changes}
               versionDiffs={versionDiffs}
+              selectedVersion={activeVersion}
               onClose={closeSelectedMonster}
             />
           </div>
@@ -518,6 +521,7 @@ export function MonsterLibrary({
 function MonsterTile({
   serviceLocale,
   monster,
+  selectedVersion,
   displayType,
   threadKey,
   commentCount,
@@ -531,6 +535,7 @@ function MonsterTile({
 }: {
   serviceLocale: ServiceLocale;
   monster: CodexMonster;
+  selectedVersion?: string | null;
   displayType: MonsterType;
   threadKey: string;
   commentCount: number;
@@ -544,7 +549,11 @@ function MonsterTile({
 }) {
   const typeConfig = MONSTER_TYPE_CONFIG[displayType];
   const [hoverMoveId, setHoverMoveId] = useState<string | null | undefined>(undefined);
-  const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
+  const staticArt = resolveMonsterStaticArt(monster.id, selectedVersion);
+  const tileSpineAsset = staticArt ? null : monster.spineAsset;
+  const imageSrc = staticArt
+    ? (staticArt.byMove[hoverMoveId ?? ""] ?? staticArt.defaultImage)
+    : (monster.imageUrl ?? monster.bossImageUrl);
   const hovering = hoverMoveId !== undefined;
 
   return (
@@ -565,7 +574,7 @@ function MonsterTile({
         }}
       >
         {/* Thumbnail: Spine render or boss token */}
-        {(imageSrc || monster.spineAsset) ? (
+        {(imageSrc || tileSpineAsset) ? (
           <div className="relative flex h-12 w-14 shrink-0 items-center justify-center overflow-hidden">
             {imageSrc && (
               <Image
@@ -575,13 +584,13 @@ function MonsterTile({
                 height={48}
                 loading="lazy"
                 className={`max-h-12 max-w-14 object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)] transition-opacity ${
-                  hovering && monster.spineAsset ? "opacity-0" : "opacity-100"
+                  hovering && tileSpineAsset ? "opacity-0" : "opacity-100"
                 }`}
               />
             )}
-            {hovering && monster.spineAsset && (
+            {hovering && tileSpineAsset && (
               <MonsterSpineStage
-                asset={monster.spineAsset}
+                asset={tileSpineAsset}
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
                 selectedMoveId={hoverMoveId}

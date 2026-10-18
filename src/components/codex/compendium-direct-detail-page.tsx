@@ -620,6 +620,7 @@ export function CompendiumDirectDetailPage({
           patches={patches}
           changes={changes}
           versionDiffs={versionDiffs}
+          selectedVersion={selectedVersion}
         />
       );
     }

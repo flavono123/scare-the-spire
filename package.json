@@ -48,6 +48,7 @@
     "codex:validate-references": "tsx scripts/validate-codex-references.ts",
     "test:version-api": "tsx scripts/versioned-entity-api.spec.ts",
     "test:version-canonical": "tsx scripts/versioned-canonical.spec.ts",
+    "test:monster-static-art": "tsx scripts/monster-static-art.spec.ts",
     "audit:version-api": "tsx scripts/audit-version-api-canonical.ts",
     "audit:version-locales": "tsx scripts/audit-version-locales.ts",
     "sts2:patch-lines": "tsx scripts/generate-sts2-patch-lines.ts && tsx scripts/generate-resource-patch-index.ts",

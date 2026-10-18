@@ -75,6 +75,7 @@ import {
   useMonsterAscensionLevel,
 } from "./monster-ascension";
 import { MonsterSpineStage, type MonsterStageVisualBounds } from "./monster-spine-stage";
+import { resolveMonsterStaticArt } from "@/lib/monster-static-art";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 type MoveTone = "attack" | "defense" | "mixed" | "setup";
@@ -1540,6 +1541,8 @@ interface MonsterDetailProps {
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
+  /** Version the monster is shown at ("0.100.0"); decides still art vs Spine for older builds. */
+  selectedVersion?: string | null;
   onClose?: () => void;
 }
 
@@ -1556,6 +1559,7 @@ export function MonsterDetail({
   patches,
   changes,
   versionDiffs,
+  selectedVersion,
   onClose,
 }: MonsterDetailProps) {
   const serviceText = serviceMessages[serviceLocale];
@@ -1668,10 +1672,14 @@ export function MonsterDetail({
   const defaultSelectedMove = moveSummaries.find((summary) => summary.move.id === firstMoveId) ?? moveSummaries[0] ?? null;
   const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? defaultSelectedMove;
   const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
-  const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
-  const hasStageAsset = Boolean(monster.spineAsset || imageSrc);
+  const staticArt = useMemo(() => resolveMonsterStaticArt(monster.id, selectedVersion), [monster.id, selectedVersion]);
+  const stageSpineAsset = staticArt ? null : monster.spineAsset;
+  const imageSrc = staticArt
+    ? (staticArt.byMove[selectedMove?.move.id ?? ""] ?? staticArt.defaultImage)
+    : (monster.imageUrl ?? monster.bossImageUrl);
+  const hasStageAsset = Boolean(stageSpineAsset || imageSrc);
   const stageVisualBounds = stageVisualBoundsState.monsterId === monster.id ? stageVisualBoundsState.bounds : null;
-  const skinParts = getMonsterSkinParts(monster.spineAsset);
+  const skinParts = getMonsterSkinParts(stageSpineAsset);
   const [commentCount, setCommentCount] = useState(0);
   const encounterById = useMemo(() => new Map(encounters.map((encounter) => [encounter.id, encounter])), [encounters]);
   const relatedEncounterTargets: CodexReferenceTarget[] = getRelatedEncounterIdsForMonster(monster.id, encounters).flatMap((encounterId) => {
@@ -1805,7 +1813,7 @@ export function MonsterDetail({
               />
             ) : hasStageAsset ? (
               <MonsterSpineStage
-                asset={monster.spineAsset}
+                asset={stageSpineAsset}
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
                 selectedMoveId={selectedMoveId}
