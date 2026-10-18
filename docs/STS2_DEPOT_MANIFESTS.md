@@ -61,3 +61,10 @@ macOS는 `DepotDownloader` 바이너리의 quarantine 속성 때문에 첫 실�
 ```
 
 PCK(약 1.9GB)까지 받을 때는 `-filelist .../pck-and-dll.txt`와 0.107.0 manifest를 쓴다.
+
+## 결과 메모 (2026-10-18)
+
+- 로그인은 `-qr`로 한 번 하면 저장된다. 이후 `-username <계정> -remember-password`로 받는다. 같은 계정으로 DepotDownloader를 동시에 두 개 돌리지 않는다.
+- `0.100.0`(`8691911314830205080`)만 "No manifest request code ... 401"로 거절된다. 0.99.1과 0.101.0~0.108.0은 정상. Windows depot `2868841`의 03-20 전후 manifest로 다시 시도할 수 있다.
+- 0.107.0 PCK에는 문을 만드는 자 에셋이 없다. 0.104.0 PCK에는 Spine이 아니라 정지 이미지 `images/monsters/beta/door_maker_placeholder_1~4.png`(`scenes/creature_visuals/doormaker.tscn`)만 있다. `public/images/sts2/monsters-beta/`에 추출해 두었다.
+- 받은 dll: `~/Downloads/sts2-old/{0.99.1,0.101.0,0.102.0,0.103.0,0.105.1,0.106.0,0.107.0}`와 0.104.0(PCK 포함). 디컴파일은 `ilspycmd -t MegaCrit.Sts2.Core.Models.Monsters.<클래스> <dll>`. 구 빌드의 async 메서드는 상태 기계로 나와 `parse-monsters.py`가 파워 적용을 읽지 못하므로 손으로 보강했다.

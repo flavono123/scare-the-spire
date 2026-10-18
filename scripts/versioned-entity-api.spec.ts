@@ -46,9 +46,28 @@ async function runTests() {
     assert.ok(colony105.entity?.moves.some((m: any) => m.id === "SMASH"), "Smash existed through v0.105.0");
     assert.ok(!colony106.entity?.moves.some((m: any) => m.id === "SMASH"), "Smash removed in v0.106.0");
     assert.equal(colony105.entity?.damageValues?.Smash?.normal, 12);
+    assert.equal(colony105.entity?.blockValues?.Zoom?.normal, 10, "Zoom gained Block until v0.106.0");
     assert.equal(colony105.entity?.initialPowerApplications[0].amount.normal, 15, "Hardened Shell 15 before v0.106.0");
     assert.equal(colony106.entity?.initialPowerApplications[0].amount.normal, 20);
-    assert.equal(colony105.entity?.moveGraph, null, "pre-v0.106.0 graph is unknown, not the current one");
+    assert.equal(colony105.entity?.moveGraph?.initial, "SMASH", "v0.105.0 graph opens with Smash");
+
+    const colony101 = await at("SKULKING_COLONY", "v0.101.0");
+    const colony102 = await at("SKULKING_COLONY", "v0.102.0");
+    assert.equal(colony101.entity?.minHp, 74);
+    assert.equal(colony101.entity?.damageValues?.Smash?.normal, 9);
+    assert.equal(colony102.entity?.damageValues?.Smash?.normal, 12, "Smash 12(13) from v0.102.0");
+    assert.equal(colony101.entity?.damageValues?.Inertia, undefined, "Inertia dealt no damage in v0.101.0");
+    const colony100 = await at("SKULKING_COLONY", "v0.100.0");
+    assert.deepEqual(colony100.entity?.moves, [], "v0.100.0 moves are not known");
+
+    const door099 = await at("DOORMAKER", "v0.99.1");
+    const door101 = await at("DOORMAKER", "v0.101.0");
+    const door102 = await at("DOORMAKER", "v0.102.0");
+    const door103 = await at("DOORMAKER", "v0.103.0");
+    assert.deepEqual(door099.entity?.moves.map((m: any) => m.id), ["WHAT_IS_IT", "BEAM", "GET_BACK_IN"]);
+    assert.equal(door101.entity?.damageValues?.Hunger?.normal, 12);
+    assert.equal(door102.entity?.damageValues?.Grasp?.normal, 20, "Grasp attacks for 20(23) in v0.102.0");
+    assert.equal(door103.entity?.damageValues?.Hunger?.normal, 30, "Hunger 30(35) from v0.103.0");
   }
   console.log("=== Running Versioned Entity API Spec Tests ===");
 

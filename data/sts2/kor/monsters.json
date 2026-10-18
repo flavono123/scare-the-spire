@@ -4909,7 +4909,10 @@
   {
     "id": "DOORMAKER",
     "name": "문을 만드는 자",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.105.0",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 489,
     "max_hp": null,
     "min_hp_ascension": 512,
@@ -4917,21 +4920,253 @@
     "moves": [
       {
         "id": "DRAMATIC_OPEN",
-        "name": "극적인 개방"
+        "name": "극적인 개방",
+        "action_types": [
+          "buff"
+        ],
+        "intents": [
+          "SummonIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "SummonIntent"
+          }
+        ],
+        "power_applications": [],
+        "card_applications": []
       },
       {
         "id": "HUNGER",
-        "name": "굶주림"
+        "name": "굶주림",
+        "action_types": [
+          "attack"
+        ],
+        "intents": [
+          "SingleAttackIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "SingleAttackIntent",
+            "damage_key": "Hunger",
+            "repeat": {
+              "normal": 1,
+              "ascension": null
+            }
+          }
+        ],
+        "power_applications": [],
+        "card_applications": []
       },
       {
         "id": "SCRUTINY",
-        "name": "감시"
+        "name": "감시",
+        "action_types": [
+          "attack"
+        ],
+        "intents": [
+          "SingleAttackIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "SingleAttackIntent",
+            "damage_key": "Scrutiny",
+            "repeat": {
+              "normal": 1,
+              "ascension": null
+            }
+          }
+        ],
+        "power_applications": [],
+        "card_applications": []
       },
       {
         "id": "GRASP",
-        "name": "움켜쥐기"
+        "name": "움켜쥐기",
+        "action_types": [
+          "attack",
+          "buff"
+        ],
+        "intents": [
+          "MultiAttackIntent",
+          "BuffIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "MultiAttackIntent",
+            "damage_key": "Grasp",
+            "repeat": {
+              "normal": 2,
+              "ascension": null
+            }
+          },
+          {
+            "type": "BuffIntent"
+          }
+        ],
+        "power_applications": [
+          {
+            "power_id": "STRENGTH",
+            "target": "self",
+            "amount": {
+              "normal": 3,
+              "ascension": 4
+            }
+          }
+        ],
+        "card_applications": []
       }
     ],
+    "bestiary_moves": [
+      {
+        "id": "DRAMATIC_OPEN",
+        "name": "극적인 개방",
+        "action_types": [
+          "buff"
+        ],
+        "intents": [
+          "SummonIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "SummonIntent"
+          }
+        ],
+        "power_applications": [],
+        "card_applications": []
+      },
+      {
+        "id": "HUNGER",
+        "name": "Hunger",
+        "action_types": [
+          "attack"
+        ],
+        "intents": [
+          "SingleAttackIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "SingleAttackIntent",
+            "damage_key": "Hunger",
+            "repeat": {
+              "normal": 1,
+              "ascension": null
+            }
+          }
+        ],
+        "power_applications": [],
+        "card_applications": []
+      },
+      {
+        "id": "SCRUTINY",
+        "name": "Scrutiny",
+        "action_types": [
+          "attack"
+        ],
+        "intents": [
+          "SingleAttackIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "SingleAttackIntent",
+            "damage_key": "Scrutiny",
+            "repeat": {
+              "normal": 1,
+              "ascension": null
+            }
+          }
+        ],
+        "power_applications": [],
+        "card_applications": []
+      },
+      {
+        "id": "GRASP",
+        "name": "Grasp",
+        "action_types": [
+          "attack",
+          "buff"
+        ],
+        "intents": [
+          "MultiAttackIntent",
+          "BuffIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "MultiAttackIntent",
+            "damage_key": "Grasp",
+            "repeat": {
+              "normal": 2,
+              "ascension": null
+            }
+          },
+          {
+            "type": "BuffIntent"
+          }
+        ],
+        "power_applications": [
+          {
+            "power_id": "STRENGTH",
+            "target": "self",
+            "amount": {
+              "normal": 3,
+              "ascension": 4
+            }
+          }
+        ],
+        "card_applications": []
+      }
+    ],
+    "move_graph": {
+      "initial": "DRAMATIC_OPEN",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "DRAMATIC_OPEN",
+          "to": "HUNGER",
+          "chance": 100.0,
+          "kind": "fixed"
+        },
+        {
+          "from": "HUNGER",
+          "to": "SCRUTINY",
+          "chance": 100.0,
+          "kind": "fixed"
+        },
+        {
+          "from": "SCRUTINY",
+          "to": "GRASP",
+          "chance": 100.0,
+          "kind": "fixed"
+        },
+        {
+          "from": "GRASP",
+          "to": "HUNGER",
+          "chance": 100.0,
+          "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "DRAMATIC_OPEN",
+          "kind": "move",
+          "next": "HUNGER"
+        },
+        {
+          "id": "HUNGER",
+          "kind": "move",
+          "next": "SCRUTINY"
+        },
+        {
+          "id": "SCRUTINY",
+          "kind": "move",
+          "next": "GRASP"
+        },
+        {
+          "id": "GRASP",
+          "kind": "move",
+          "next": "HUNGER"
+        }
+      ]
+    },
     "damage_values": {
       "Hunger": {
         "normal": 30,
@@ -4947,9 +5182,7 @@
       }
     },
     "block_values": null,
-    "image_url": "/static/images/monsters/doormaker.png",
-    "deprecated": true,
-    "deprecatedInPatch": "v0.105.0"
+    "image_url": "/static/images/monsters/doormaker.png"
   },
   {
     "id": "ENTOMANCER",
