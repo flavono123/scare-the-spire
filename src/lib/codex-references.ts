@@ -700,7 +700,7 @@ export function getRelatedPowerIdsForMonster(
   return dedupeIds([
     ...(monster.initialPowerApplications ?? []).map((application) => application.powerId),
     ...[...monster.moves, ...monster.bestiaryMoves].flatMap((move) =>
-      move.powerApplications.map((application) => application.powerId),
+      (move.powerApplications ?? []).map((application) => application.powerId),
     ),
   ]);
 }
@@ -710,7 +710,7 @@ export function getRelatedCardIdsForMonster(
 ): string[] {
   return dedupeIds(
     [...monster.moves, ...monster.bestiaryMoves].flatMap((move) =>
-      move.cardApplications.map((application) => application.cardId),
+      (move.cardApplications ?? []).map((application) => application.cardId),
     ),
   );
 }
