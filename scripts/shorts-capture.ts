@@ -12,7 +12,9 @@
  *   pnpm shorts:capture --batch shots.json
  *
  * A batch file is { base?, outDir?, locale?, shots: Shot[] } where each Shot has
- * `target` or `url`, `out`, and optional `mark`, `replace`, `selector`, `locale`.
+ * `target` or `url`, `out`, and optional `mark`, `replace`, `selector`, `locale`,
+ * `upgraded` (card pages: tick "View Upgrades" before capturing), `enchant`
+ * (card pages: press the enchantment button with that title first).
  * A mark or replace phrase must occur exactly once in the description.
  * Relative paths resolve from the directory pnpm was invoked in.
  *
@@ -60,6 +62,10 @@ interface Shot {
   replace?: (string | Replace)[];
   /** Node to capture when the page has no download button. */
   selector?: string;
+  /** Turn on the card page's "View Upgrades" checkbox first (cards only). */
+  upgraded?: boolean;
+  /** Card pages: name of the enchantment button to press first (e.g. "잉크투성이"). */
+  enchant?: string;
 }
 
 interface Batch {
@@ -229,6 +235,20 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
   // Version and locale are stamped on the tile after hydration.
   await page.waitForTimeout(800);
 
+  if (shot.upgraded) {
+    const toggle = page.getByRole("checkbox", { name: /View Upgrades|강화/ }).first();
+    if (!(await toggle.count())) throw new Error(`${url}: no upgrade toggle on this page`);
+    if ((await toggle.getAttribute("aria-checked")) !== "true") await toggle.click();
+    await page.waitForTimeout(500);
+  }
+
+  if (shot.enchant) {
+    const button = page.locator(`button[title="${shot.enchant}"]`).first();
+    if (!(await button.count())) throw new Error(`${url}: no enchantment button titled ${shot.enchant}`);
+    if ((await button.getAttribute("aria-pressed")) !== "true") await button.click();
+    await page.waitForTimeout(500);
+  }
+
   const edits = await applyEdits(page, selector, (shot.mark ?? []).map(parseMark), (shot.replace ?? []).map(parseReplace));
   const missing = edits.filter((edit) => edit.found !== true);
   if (missing.length > 0) {
@@ -263,7 +283,7 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     url: page.url(),
     target: shot.target ?? null,
     stamp,
-    edits: { mark: shot.mark ?? [], replace: shot.replace ?? [] },
+    edits: { mark: shot.mark ?? [], replace: shot.replace ?? [], upgraded: shot.upgraded ?? false, enchant: shot.enchant ?? null },
     method,
     pixelRatio: DEVICE_SCALE,
     ...image,
@@ -295,6 +315,8 @@ function parseArgs(argv: string[]): { batch: Batch; batchDir: string } | null {
       case "--url": shot.url = value(); break;
       case "--out": shot.out = value(); break;
       case "--selector": shot.selector = value(); break;
+      case "--upgraded": shot.upgraded = true; break;
+      case "--enchant": shot.enchant = value(); break;
       case "--mark": shot.mark!.push(value()); break;
       case "--mark-color": markColor = value(); break;
       case "--replace": shot.replace!.push(value()); break;
@@ -337,7 +359,8 @@ async function main() {
     throw new Error(`no site at ${base}. Start it with \`pnpm dev\` in scare-the-spire.`);
   }
 
-  const browser = await chromium.launch();
+  // Software WebGL so Spine monster pages render headless.
+  const browser = await chromium.launch({ args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
   try {
     // The site picks its game locale from the browser language, so each locale
     // gets its own context.
