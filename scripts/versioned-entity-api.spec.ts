@@ -21,7 +21,7 @@ async function runTests() {
   console.log("\n[Monster] structured moves, power amounts, and move graph revert by version");
   {
     const at = (entityId: string, version: string) =>
-      getVersionedEntity<Record<string, any>>({ entityType: "monster", entityId, version, locale: "kor" });
+      getVersionedEntity<Record<string, any> & { id: string }>({ entityType: "monster", entityId, version, locale: "kor" });
     const hissStrength = (e: Record<string, any> | null) =>
       e?.moves.find((m: any) => m.id === "HISS").powerApplications[0].amount;
 
