@@ -2,7 +2,7 @@
 """Extract canonical per-build game facts from decompiled sts2 sources.
 
 Input : <root>/<version>/src   (scripts/sts2_decompile_builds.py)
-Output: <root>/<version>/canonical/{cards,relics,potions,powers,monsters}.json and canonical/loc/<lang>/<table>.json (the build's own text)
+Output: <root>/<version>/canonical/{cards,relics,potions,powers,monsters}.json and canonical/loc/<lang>/<table>.json (the build's own text; eng/kor all tables, other locales the history tables)
 
 These are what the game itself ships in each build, so the versioned entity API
 can be checked against them (scripts/audit-version-api-canonical.ts).
@@ -177,20 +177,27 @@ def extract_monsters(src: Path) -> dict:
 
 
 LOC_TABLES = ["cards", "relics", "potions", "powers", "enchantments", "afflictions", "monsters", "encounters", "events", "ancients"]
+# Tables the site pins per version in every locale (scripts/generate-localization-history.ts).
+LOC_HISTORY_TABLES = ["cards", "relics", "potions", "enchantments"]
 PCK = "SlayTheSpire2.app/Contents/Resources/Slay the Spire 2.pck"
 
 
 def extract_localization(vd: Path, out: Path) -> None:
-    """Copy the build's own eng/kor text tables (flat "<ID>.title" -> string)."""
+    """Copy the build's own text tables (flat "<ID>.title" -> string).
+
+    eng/kor get every table; the other locales get the history tables only.
+    """
     pck = vd / PCK
     if not pck.exists():
         return
     from lib.pck import PCKReader  # noqa: E402
     reader = PCKReader(str(pck))
     try:
-        for lang in ("eng", "kor"):
+        langs = sorted({p.split("/")[1] for p in reader.entries if p.startswith("localization/") and p.count("/") == 2})
+        for lang in langs:
+            tables = LOC_TABLES if lang in ("eng", "kor") else LOC_HISTORY_TABLES
             (out / "loc" / lang).mkdir(parents=True, exist_ok=True)
-            for table in LOC_TABLES:
+            for table in tables:
                 path = f"localization/{lang}/{table}.json"
                 if path in reader.entries:
                     (out / "loc" / lang / f"{table}.json").write_text(
