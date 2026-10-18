@@ -1,15 +1,16 @@
 /**
  * Pin each game locale's titles and description templates per version.
  *
- *   pnpm i18n:history
+ *   pnpm i18n:history [--out file]
  *
- * Reads the raw localization committed for every selectable version from
- * LOCALE_TEXT_PINNED_FROM on (see scripts/lib/localization-snapshots.ts) and
- * writes data/sts2/localization-history.json. The version API uses it so an
- * older Compendium version shows that version's text in every locale.
+ * Reads the game's own localization of every archived build from
+ * LOCALE_TEXT_PINNED_FROM on (see scripts/lib/localization-snapshots.ts and the
+ * build archive in AGENTS.md) and writes data/sts2/localization-history.json.
+ * The version API uses it so an older Compendium version shows that version's
+ * text in every locale.
  *
- * Run it after each localization sync, once the new tables are committed or in
- * the working tree.
+ * Run it after each localization sync. A current version that is not archived
+ * yet reads the working tree.
  */
 
 import { writeFileSync } from "node:fs";
@@ -20,9 +21,9 @@ import {
   getCodexPotions,
   getCodexRelics,
 } from "../src/lib/codex-data";
-import { getCodexMeta, getSTS2Changes, getSTS2Patches, deriveEntityVersionDiffs } from "../src/lib/data";
+import { getCodexMeta, getSTS2Changes, getSTS2Patches } from "../src/lib/data";
 import { bakeDescription } from "../src/lib/codex-bake";
-import { compareVersions, getVersionsWithDiffs } from "../src/lib/entity-versioning";
+import { compareVersions } from "../src/lib/entity-versioning";
 import { GAME_LOCALES, type GameLocale } from "../src/lib/i18n";
 import {
   LOCALE_TEXT_PINNED_FROM,
@@ -30,7 +31,7 @@ import {
   type TrackedField,
 } from "../src/lib/localization-history";
 import type { VersionedEntityType } from "../src/lib/types";
-import { tableAt, versionSnapshots, type LocalizationTable } from "./lib/localization-snapshots";
+import { BUILDS_DIR, tableAt, versionSnapshots, type LocalizationTable } from "./lib/localization-snapshots";
 
 const SOURCES: { type: VersionedEntityType; table: string; load: (gameLocale: GameLocale) => Promise<{ id: string }[]> }[] = [
   { type: "card", table: "cards", load: (gameLocale) => getCodexCards({ includeDeprecated: true, gameLocale }) },
@@ -97,16 +98,18 @@ function clean(value: unknown): string | undefined {
 
 async function main() {
   const [patches, changes, meta] = await Promise.all([getSTS2Patches(), getSTS2Changes(), getCodexMeta()]);
-  const selectable = getVersionsWithDiffs(patches, deriveEntityVersionDiffs(changes))
-    .filter((version) => compareVersions(version, LOCALE_TEXT_PINNED_FROM) >= 0);
-  const snapshots = versionSnapshots(selectable, patches, meta.version);
-  if (snapshots[0]?.version !== LOCALE_TEXT_PINNED_FROM) {
-    throw new Error(`no localization snapshot for ${LOCALE_TEXT_PINNED_FROM}; got ${snapshots[0]?.version ?? "none"}`);
+  const { snapshots, missing, unlisted } = versionSnapshots(LOCALE_TEXT_PINNED_FROM, patches, meta.version);
+  if (!snapshots[0] || compareVersions(snapshots[0].version, LOCALE_TEXT_PINNED_FROM) !== 0) {
+    throw new Error(
+      `no archived build for ${LOCALE_TEXT_PINNED_FROM} (first snapshot: ${snapshots[0]?.version ?? "none"}); is the build archive at ${BUILDS_DIR} extracted? See AGENTS.md.`,
+    );
   }
+  if (missing.length > 0) console.warn(`patches without an archived build (their text changes fold into the next patch): ${missing.join(", ")}`);
+  if (unlisted.length > 0) console.warn(`archived builds without a patch entry (their text changes fold into the next patch): ${unlisted.join(", ")}`);
 
   const history: LocalizationHistory = {
     pinnedFrom: LOCALE_TEXT_PINNED_FROM,
-    snapshots: snapshots.map(({ version, commit }) => ({ version, commit: commit.slice(0, 12) })),
+    snapshots,
     text: {},
     varDiffs: [],
     untracked: {},
@@ -116,7 +119,7 @@ async function main() {
   for (const locale of GAME_LOCALES) {
     for (const source of SOURCES) {
       const entities = await source.load(locale);
-      const tables: LocalizationTable[] = snapshots.map(({ commit }) => tableAt(commit, locale, source.table));
+      const tables: LocalizationTable[] = snapshots.map(({ build }) => tableAt(build, locale, source.table));
       const current = tables[tables.length - 1];
       for (const entity of entities as (Record<string, unknown> & { id: string })[]) {
         for (const [field, keyOf] of FIELDS) {
@@ -165,21 +168,22 @@ async function main() {
     if (!source || !diff || typeof diff.before !== "string" || typeof diff.after !== "string") continue;
     const at = snapshots.findIndex(({ version }) => `v${version}` === change.patch);
     const key = `${change.entityId}.description`;
-    // Pinned range: the game's own templates. Before it there is no snapshot,
-    // so use the templates the change itself records (descriptionRaw).
+    // Pinned range: the game's own templates. At or before its first version
+    // there is no earlier snapshot, so use the templates the change itself
+    // records (descriptionRaw).
     const rawDiff = change.fieldDiffs?.find((item) => item.field === "descriptionRaw");
     const beforeTemplate = at >= 1
-      ? clean(tableAt(snapshots[at - 1].commit, "kor", source.table)[key])
+      ? clean(tableAt(snapshots[at - 1].build, "kor", source.table)[key])
       : at < 1 && compareVersions(change.patch.replace(/^v/, ""), LOCALE_TEXT_PINNED_FROM) <= 0 ? clean(rawDiff?.before) : undefined;
     const afterTemplate = at >= 1
-      ? clean(tableAt(snapshots[at].commit, "kor", source.table)[key])
+      ? clean(tableAt(snapshots[at].build, "kor", source.table)[key])
       : at < 1 && compareVersions(change.patch.replace(/^v/, ""), LOCALE_TEXT_PINNED_FROM) <= 0 ? clean(rawDiff?.after) : undefined;
-    // A numbers-only change before the pinned range may record no template at
+    // A numbers-only change at the pinned start may record no template at
     // all. Then the earliest pinned Korean template stands in, but only if it
     // reads the authored after text exactly (the wording did not move since).
     let fallbackTemplate: string | undefined;
     if (!beforeTemplate && !rawDiff && at < 1 && compareVersions(change.patch.replace(/^v/, ""), LOCALE_TEXT_PINNED_FROM) <= 0) {
-      const pinned = clean(tableAt(snapshots[0].commit, "kor", source.table)[key]);
+      const pinned = clean(tableAt(snapshots[0].build, "kor", source.table)[key]);
       if (pinned && extractVars(pinned, diff.after)) fallbackTemplate = pinned;
     }
     if (!(beforeTemplate && afterTemplate) && !fallbackTemplate) continue;
@@ -197,7 +201,8 @@ async function main() {
     }
   }
 
-  const out = path.resolve(__dirname, "..", "data", "sts2", "localization-history.json");
+  const outAt = process.argv.indexOf("--out");
+  const out = outAt >= 0 ? path.resolve(process.argv[outAt + 1]) : path.resolve(__dirname, "..", "data", "sts2", "localization-history.json");
   writeFileSync(out, `${JSON.stringify(history)}\n`);
   const untracked = Object.values(history.untracked).flatMap((byType) => Object.values(byType ?? {}).flat()).length;
   console.log(`${out}: ${snapshots.length} snapshots, ${points} text changes, ${history.varDiffs.length} recovered numbers, ${untracked} untracked fields`);
