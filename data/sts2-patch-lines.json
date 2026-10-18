@@ -8464,11 +8464,11 @@
       "사일런트"
     ],
     "markdownKo": "약간의 버프와 너프",
-    "markdownEn": "Goal: make Sly builds less dominant while still satisfying",
+    "markdownEn": "A few buffs and nerfs",
     "textKo": "약간의 버프와 너프",
-    "textEn": "Goal: make Sly builds less dominant while still satisfying",
+    "textEn": "A few buffs and nerfs",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-011-text-fiqzm3 v0.103.2 0.103.2 컨텐츠 & 밸런스 사일런트 약간의 버프와 너프 goal: make sly builds less dominant while still satisfying"
+    "searchText": "v0.103.2:line-011-text-fiqzm3 v0.103.2 0.103.2 컨텐츠 & 밸런스 사일런트 약간의 버프와 너프 a few buffs and nerfs"
   },
   {
     "id": "v0.103.2:line-012-card-arsenal",
@@ -8518,9 +8518,9 @@
       "네크로바인더"
     ],
     "markdownKo": "[gold:card]연명[/gold] 리워크: \"고급 - 코스트 0 - 스킬 | 자신에게 [gold]파멸[/gold] 3 부여. [gold]에너지[/gold] 1(2) 획득.\" → \"고급 - 코스트 1 - 스킬 | [gold]에너지[/gold] 4(6) 획득. 이번 턴 카드 비용이 추가로 1 증가.\"",
-    "markdownEn": "More buffs than any other character",
+    "markdownEn": "**Borrowed Time** reworked: \"Uncommon - Cost 0 - Skill | Apply 3 Doom. Gain 1(2) Energy.\" -> \"Uncommon - Cost 1 - Skill | Gain 4(6) energy. Cards cost an additional energy this turn.\"",
     "textKo": "연명 리워크: \"고급 - 코스트 0 - 스킬 | 자신에게 파멸 3 부여. 에너지 1(2) 획득.\" → \"고급 - 코스트 1 - 스킬 | 에너지 4(6) 획득. 이번 턴 카드 비용이 추가로 1 증가.\"",
-    "textEn": "More buffs than any other character",
+    "textEn": "Borrowed Time reworked: \"Uncommon - Cost 0 - Skill | Apply 3 Doom. Gain 1(2) Energy.\" -> \"Uncommon - Cost 1 - Skill | Gain 4(6) energy. Cards cost an additional energy this turn.\"",
     "entityRefs": [
       {
         "type": "card",
@@ -8528,7 +8528,7 @@
         "label": "연명"
       }
     ],
-    "searchText": "v0.103.2:line-014-card-borrowed-time v0.103.2 0.103.2 컨텐츠 & 밸런스 네크로바인더 연명 리워크: \"고급 - 코스트 0 - 스킬 | 자신에게 파멸 3 부여. 에너지 1(2) 획득.\" → \"고급 - 코스트 1 - 스킬 | 에너지 4(6) 획득. 이번 턴 카드 비용이 추가로 1 증가.\" more buffs than any other character card borrowed_time 연명 연명 borrowed time"
+    "searchText": "v0.103.2:line-014-card-borrowed-time v0.103.2 0.103.2 컨텐츠 & 밸런스 네크로바인더 연명 리워크: \"고급 - 코스트 0 - 스킬 | 자신에게 파멸 3 부여. 에너지 1(2) 획득.\" → \"고급 - 코스트 1 - 스킬 | 에너지 4(6) 획득. 이번 턴 카드 비용이 추가로 1 증가.\" borrowed time reworked: \"uncommon - cost 0 - skill | apply 3 doom. gain 1(2) energy.\" -> \"uncommon - cost 1 - skill | gain 4(6) energy. cards cost an additional energy this turn.\" card borrowed_time 연명 연명 borrowed time"
   },
   {
     "id": "v0.103.2:line-015-text-fiqzm3",
@@ -8540,11 +8540,11 @@
       "네크로바인더"
     ],
     "markdownKo": "약간의 버프와 너프",
-    "markdownEn": "**Borrowed Time** reworked: \"Uncommon - Cost 0 - Skill | Apply 3 Doom. Gain 1(2) Energy.\" -> \"Uncommon - Cost 1 - Skill | Gain 4(6) energy. Cards cost an additional energy this turn.\"",
+    "markdownEn": "A few buffs and nerfs",
     "textKo": "약간의 버프와 너프",
-    "textEn": "Borrowed Time reworked: \"Uncommon - Cost 0 - Skill | Apply 3 Doom. Gain 1(2) Energy.\" -> \"Uncommon - Cost 1 - Skill | Gain 4(6) energy. Cards cost an additional energy this turn.\"",
+    "textEn": "A few buffs and nerfs",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-015-text-fiqzm3 v0.103.2 0.103.2 컨텐츠 & 밸런스 네크로바인더 약간의 버프와 너프 borrowed time reworked: \"uncommon - cost 0 - skill | apply 3 doom. gain 1(2) energy.\" -> \"uncommon - cost 1 - skill | gain 4(6) energy. cards cost an additional energy this turn.\""
+    "searchText": "v0.103.2:line-015-text-fiqzm3 v0.103.2 0.103.2 컨텐츠 & 밸런스 네크로바인더 약간의 버프와 너프 a few buffs and nerfs"
   },
   {
     "id": "v0.103.2:line-016-text-15fr6m2",
@@ -8556,11 +8556,11 @@
       "디펙트"
     ],
     "markdownKo": "전 캐릭터 중 가장 적은 변경, 약간의 버프와 너프",
-    "markdownEn": "Pairs well with high cost cards like **Reap** and **Bury**",
+    "markdownEn": "Least changes of any character, couple of buffs and nerfs",
     "textKo": "전 캐릭터 중 가장 적은 변경, 약간의 버프와 너프",
-    "textEn": "Pairs well with high cost cards like Reap and Bury",
+    "textEn": "Least changes of any character, couple of buffs and nerfs",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-016-text-15fr6m2 v0.103.2 0.103.2 컨텐츠 & 밸런스 디펙트 전 캐릭터 중 가장 적은 변경, 약간의 버프와 너프 pairs well with high cost cards like reap and bury"
+    "searchText": "v0.103.2:line-016-text-15fr6m2 v0.103.2 0.103.2 컨텐츠 & 밸런스 디펙트 전 캐릭터 중 가장 적은 변경, 약간의 버프와 너프 least changes of any character, couple of buffs and nerfs"
   },
   {
     "id": "v0.103.2:line-017-text-1v8z4ho",
@@ -8572,11 +8572,11 @@
       "무색 & 공용"
     ],
     "markdownKo": "무색 카드, 유물, 포션의 다양한 버프, 너프, 풀/희귀도 변경",
-    "markdownEn": "Least changes of any character, couple of buffs and nerfs",
+    "markdownEn": "Various buffs, nerfs, pool/rarity shifts to Colorless cards, relics, and potions",
     "textKo": "무색 카드, 유물, 포션의 다양한 버프, 너프, 풀/희귀도 변경",
-    "textEn": "Least changes of any character, couple of buffs and nerfs",
+    "textEn": "Various buffs, nerfs, pool/rarity shifts to Colorless cards, relics, and potions",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-017-text-1v8z4ho v0.103.2 0.103.2 컨텐츠 & 밸런스 무색 & 공용 무색 카드, 유물, 포션의 다양한 버프, 너프, 풀/희귀도 변경 least changes of any character, couple of buffs and nerfs"
+    "searchText": "v0.103.2:line-017-text-1v8z4ho v0.103.2 0.103.2 컨텐츠 & 밸런스 무색 & 공용 무색 카드, 유물, 포션의 다양한 버프, 너프, 풀/희귀도 변경 various buffs, nerfs, pool/rarity shifts to colorless cards, relics, and potions"
   },
   {
     "id": "v0.103.2:line-018-card-hidden-gem",
@@ -8588,9 +8588,9 @@
       "무색 & 공용"
     ],
     "markdownKo": "[gold:card]숨겨진 보석[/gold] 카드 리워크",
-    "markdownEn": "Various buffs, nerfs, pool/rarity shifts to Colorless cards, relics, and potions",
+    "markdownEn": "**Hidden Gem** card reworked",
     "textKo": "숨겨진 보석 카드 리워크",
-    "textEn": "Various buffs, nerfs, pool/rarity shifts to Colorless cards, relics, and potions",
+    "textEn": "Hidden Gem card reworked",
     "entityRefs": [
       {
         "type": "card",
@@ -8598,7 +8598,7 @@
         "label": "숨겨진 보석"
       }
     ],
-    "searchText": "v0.103.2:line-018-card-hidden-gem v0.103.2 0.103.2 컨텐츠 & 밸런스 무색 & 공용 숨겨진 보석 카드 리워크 various buffs, nerfs, pool/rarity shifts to colorless cards, relics, and potions card hidden_gem 숨겨진 보석 숨겨진 보석 hidden gem"
+    "searchText": "v0.103.2:line-018-card-hidden-gem v0.103.2 0.103.2 컨텐츠 & 밸런스 무색 & 공용 숨겨진 보석 카드 리워크 hidden gem card reworked card hidden_gem 숨겨진 보석 숨겨진 보석 hidden gem"
   },
   {
     "id": "v0.103.2:line-019-text-kmqtco",
@@ -8610,11 +8610,11 @@
       "무색 & 공용"
     ],
     "markdownKo": "[gold]펜듈럼[/gold] 유물 리워크",
-    "markdownEn": "**Hidden Gem** card reworked",
+    "markdownEn": "**Pendulum** relic reworked",
     "textKo": "펜듈럼 유물 리워크",
-    "textEn": "Hidden Gem card reworked",
+    "textEn": "Pendulum relic reworked",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-019-text-kmqtco v0.103.2 0.103.2 컨텐츠 & 밸런스 무색 & 공용 펜듈럼 유물 리워크 hidden gem card reworked"
+    "searchText": "v0.103.2:line-019-text-kmqtco v0.103.2 0.103.2 컨텐츠 & 밸런스 무색 & 공용 펜듈럼 유물 리워크 pendulum relic reworked"
   },
   {
     "id": "v0.103.2:line-020-text-6t2y2",
@@ -8626,11 +8626,11 @@
       "무색 & 공용"
     ],
     "markdownKo": "다양한 이벤트 선택지/등장 조건 조정",
-    "markdownEn": "**Pendulum** relic reworked",
+    "markdownEn": "Various event option/spawn condition tweaks",
     "textKo": "다양한 이벤트 선택지/등장 조건 조정",
-    "textEn": "Pendulum relic reworked",
+    "textEn": "Various event option/spawn condition tweaks",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-020-text-6t2y2 v0.103.2 0.103.2 컨텐츠 & 밸런스 무색 & 공용 다양한 이벤트 선택지/등장 조건 조정 pendulum relic reworked"
+    "searchText": "v0.103.2:line-020-text-6t2y2 v0.103.2 0.103.2 컨텐츠 & 밸런스 무색 & 공용 다양한 이벤트 선택지/등장 조건 조정 various event option/spawn condition tweaks"
   },
   {
     "id": "v0.103.2:line-021-text-dnolvx",
@@ -8642,11 +8642,11 @@
       "고대의 존재 & 니오우"
     ],
     "markdownKo": "일부 고대의 존재 제물 밸런스 변경",
-    "markdownEn": "Various event option/spawn condition tweaks",
+    "markdownEn": "Balance changes to some Ancient offerings",
     "textKo": "일부 고대의 존재 제물 밸런스 변경",
-    "textEn": "Various event option/spawn condition tweaks",
+    "textEn": "Balance changes to some Ancient offerings",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-021-text-dnolvx v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 일부 고대의 존재 제물 밸런스 변경 various event option/spawn condition tweaks"
+    "searchText": "v0.103.2:line-021-text-dnolvx v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 일부 고대의 존재 제물 밸런스 변경 balance changes to some ancient offerings"
   },
   {
     "id": "v0.103.2:line-022-text-w3e1su",
@@ -8658,11 +8658,11 @@
       "고대의 존재 & 니오우"
     ],
     "markdownKo": "니오우 신규 유물 5종:",
-    "markdownEn": "Balance changes to some Ancient offerings",
+    "markdownEn": "5 new Neow relics:",
     "textKo": "니오우 신규 유물 5종:",
-    "textEn": "Balance changes to some Ancient offerings",
+    "textEn": "5 new Neow relics:",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-022-text-w3e1su v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우 신규 유물 5종: balance changes to some ancient offerings"
+    "searchText": "v0.103.2:line-022-text-w3e1su v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우 신규 유물 5종: 5 new neow relics:"
   },
   {
     "id": "v0.103.2:line-023-text-1e0pfua",
@@ -8674,11 +8674,11 @@
       "고대의 존재 & 니오우"
     ],
     "markdownKo": "[gold]묵직한 석판[/gold]: 희귀 카드 3장 중 1장을 선택해 덱에 추가합니다. 부상 1장을 덱에 추가합니다.",
-    "markdownEn": "5 new Neow relics:",
+    "markdownEn": "**Hefty Tablet**: Choose 1 of 3 Rare cards to add to your Deck. Add 1 Injury to your Deck.",
     "textKo": "묵직한 석판: 희귀 카드 3장 중 1장을 선택해 덱에 추가합니다. 부상 1장을 덱에 추가합니다.",
-    "textEn": "5 new Neow relics:",
+    "textEn": "Hefty Tablet: Choose 1 of 3 Rare cards to add to your Deck. Add 1 Injury to your Deck.",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-023-text-1e0pfua v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 묵직한 석판: 희귀 카드 3장 중 1장을 선택해 덱에 추가합니다. 부상 1장을 덱에 추가합니다. 5 new neow relics:"
+    "searchText": "v0.103.2:line-023-text-1e0pfua v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 묵직한 석판: 희귀 카드 3장 중 1장을 선택해 덱에 추가합니다. 부상 1장을 덱에 추가합니다. hefty tablet: choose 1 of 3 rare cards to add to your deck. add 1 injury to your deck."
   },
   {
     "id": "v0.103.2:line-024-text-j36b06",
@@ -8690,11 +8690,11 @@
       "고대의 존재 & 니오우"
     ],
     "markdownKo": "[gold]니오우의 호부[/gold]: 당신의 타격 1장과 수비 1장을 강화합니다.",
-    "markdownEn": "**Hefty Tablet**: Choose 1 of 3 Rare cards to add to your Deck. Add 1 Injury to your Deck.",
+    "markdownEn": "**Neow's Talisman**: Upgrade 1 of your Strikes and 1 of your Defends.",
     "textKo": "니오우의 호부: 당신의 타격 1장과 수비 1장을 강화합니다.",
-    "textEn": "Hefty Tablet: Choose 1 of 3 Rare cards to add to your Deck. Add 1 Injury to your Deck.",
+    "textEn": "Neow's Talisman: Upgrade 1 of your Strikes and 1 of your Defends.",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-024-text-j36b06 v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우의 호부: 당신의 타격 1장과 수비 1장을 강화합니다. hefty tablet: choose 1 of 3 rare cards to add to your deck. add 1 injury to your deck."
+    "searchText": "v0.103.2:line-024-text-j36b06 v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우의 호부: 당신의 타격 1장과 수비 1장을 강화합니다. neow's talisman: upgrade 1 of your strikes and 1 of your defends."
   },
   {
     "id": "v0.103.2:line-025-text-1hkm1qb",
@@ -8706,11 +8706,11 @@
       "고대의 존재 & 니오우"
     ],
     "markdownKo": "[gold]니오우의 뼈[/gold]: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다.",
-    "markdownEn": "**Neow's Talisman**: Upgrade 1 of your Strikes and 1 of your Defends.",
+    "markdownEn": "**Neow's Bones**: Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.",
     "textKo": "니오우의 뼈: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다.",
-    "textEn": "Neow's Talisman: Upgrade 1 of your Strikes and 1 of your Defends.",
+    "textEn": "Neow's Bones: Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-025-text-1hkm1qb v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우의 뼈: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다. neow's talisman: upgrade 1 of your strikes and 1 of your defends."
+    "searchText": "v0.103.2:line-025-text-1hkm1qb v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우의 뼈: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다. neow's bones: upon pickup, gain 2 random neow relics. add 1 random curse to your deck."
   },
   {
     "id": "v0.103.2:line-026-text-14qxr01",
@@ -8722,11 +8722,11 @@
       "고대의 존재 & 니오우"
     ],
     "markdownKo": "[gold]약병 홀스터[/gold]: 획득 시, 포션 슬롯 1개를 얻고 무작위 포션 2개를 조달합니다.",
-    "markdownEn": "**Neow's Bones**: Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.",
+    "markdownEn": "**Phial Holster**: Upon pickup, gain 1 potion slot and procure 2 random potions.",
     "textKo": "약병 홀스터: 획득 시, 포션 슬롯 1개를 얻고 무작위 포션 2개를 조달합니다.",
-    "textEn": "Neow's Bones: Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.",
+    "textEn": "Phial Holster: Upon pickup, gain 1 potion slot and procure 2 random potions.",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-026-text-14qxr01 v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 약병 홀스터: 획득 시, 포션 슬롯 1개를 얻고 무작위 포션 2개를 조달합니다. neow's bones: upon pickup, gain 2 random neow relics. add 1 random curse to your deck."
+    "searchText": "v0.103.2:line-026-text-14qxr01 v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 약병 홀스터: 획득 시, 포션 슬롯 1개를 얻고 무작위 포션 2개를 조달합니다. phial holster: upon pickup, gain 1 potion slot and procure 2 random potions."
   },
   {
     "id": "v0.103.2:line-027-text-47rhyj",
@@ -8738,11 +8738,11 @@
       "고대의 존재 & 니오우"
     ],
     "markdownKo": "[gold]날개 달린 부츠[/gold]: 다음 방을 선택할 때 경로를 무시할 수 있습니다. 3회.",
-    "markdownEn": "**Phial Holster**: Upon pickup, gain 1 potion slot and procure 2 random potions.",
+    "markdownEn": "**Winged Boots**: You may ignore paths when choosing the next rooms to travel to 3 times.",
     "textKo": "날개 달린 부츠: 다음 방을 선택할 때 경로를 무시할 수 있습니다. 3회.",
-    "textEn": "Phial Holster: Upon pickup, gain 1 potion slot and procure 2 random potions.",
+    "textEn": "Winged Boots: You may ignore paths when choosing the next rooms to travel to 3 times.",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-027-text-47rhyj v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 날개 달린 부츠: 다음 방을 선택할 때 경로를 무시할 수 있습니다. 3회. phial holster: upon pickup, gain 1 potion slot and procure 2 random potions."
+    "searchText": "v0.103.2:line-027-text-47rhyj v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 날개 달린 부츠: 다음 방을 선택할 때 경로를 무시할 수 있습니다. 3회. winged boots: you may ignore paths when choosing the next rooms to travel to 3 times."
   },
   {
     "id": "v0.103.2:line-028-text-5ybzde",
@@ -8754,11 +8754,11 @@
       "적"
     ],
     "markdownKo": "다양한 버프와 너프 ([gold]잠행 군체[/gold] 등)",
-    "markdownEn": "**Winged Boots**: You may ignore paths when choosing the next rooms to travel to 3 times.",
+    "markdownEn": "Various buffs and nerfs (notably **Skulking Colony**)",
     "textKo": "다양한 버프와 너프 (잠행 군체 등)",
-    "textEn": "Winged Boots: You may ignore paths when choosing the next rooms to travel to 3 times.",
+    "textEn": "Various buffs and nerfs (notably Skulking Colony)",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-028-text-5ybzde v0.103.2 0.103.2 컨텐츠 & 밸런스 적 다양한 버프와 너프 (잠행 군체 등) winged boots: you may ignore paths when choosing the next rooms to travel to 3 times."
+    "searchText": "v0.103.2:line-028-text-5ybzde v0.103.2 0.103.2 컨텐츠 & 밸런스 적 다양한 버프와 너프 (잠행 군체 등) various buffs and nerfs (notably skulking colony)"
   },
   {
     "id": "v0.103.2:line-029-text-g52gea",
@@ -8770,11 +8770,11 @@
       "적"
     ],
     "markdownKo": "[gold]문을 만드는 자[/gold]가 가장 큰 폭의 리워크",
-    "markdownEn": "Various buffs and nerfs (notably **Skulking Colony**)",
+    "markdownEn": "**Doormaker** has seen the most drastic reworks",
     "textKo": "문을 만드는 자가 가장 큰 폭의 리워크",
-    "textEn": "Various buffs and nerfs (notably Skulking Colony)",
+    "textEn": "Doormaker has seen the most drastic reworks",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-029-text-g52gea v0.103.2 0.103.2 컨텐츠 & 밸런스 적 문을 만드는 자가 가장 큰 폭의 리워크 various buffs and nerfs (notably skulking colony)"
+    "searchText": "v0.103.2:line-029-text-g52gea v0.103.2 0.103.2 컨텐츠 & 밸런스 적 문을 만드는 자가 가장 큰 폭의 리워크 doormaker has seen the most drastic reworks"
   },
   {
     "id": "v0.103.2:line-030-text-14xutkl",
@@ -8785,11 +8785,11 @@
       "아트"
     ],
     "markdownKo": "다수 카드, 유물, 적, [blue]노누파이페[/blue] 고대의 존재의 플레이스홀더 에셋 업데이트",
-    "markdownEn": "**Doormaker** has seen the most drastic reworks",
+    "markdownEn": "Updated placeholder assets for many cards, relics, enemies, and **Nonupeipe** the Ancient",
     "textKo": "다수 카드, 유물, 적, 노누파이페 고대의 존재의 플레이스홀더 에셋 업데이트",
-    "textEn": "Doormaker has seen the most drastic reworks",
+    "textEn": "Updated placeholder assets for many cards, relics, enemies, and Nonupeipe the Ancient",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-030-text-14xutkl v0.103.2 0.103.2 아트 다수 카드, 유물, 적, 노누파이페 고대의 존재의 플레이스홀더 에셋 업데이트 doormaker has seen the most drastic reworks"
+    "searchText": "v0.103.2:line-030-text-14xutkl v0.103.2 0.103.2 아트 다수 카드, 유물, 적, 노누파이페 고대의 존재의 플레이스홀더 에셋 업데이트 updated placeholder assets for many cards, relics, enemies, and nonupeipe the ancient"
   },
   {
     "id": "v0.103.2:line-031-text-1u1y7wl",
@@ -8800,11 +8800,11 @@
       "아트"
     ],
     "markdownKo": "새로운 적 애니메이션 및 캐릭터 행동 VFX",
-    "markdownEn": "Updated placeholder assets for many cards, relics, enemies, and **Nonupeipe** the Ancient",
+    "markdownEn": "New enemy animations and character move VFX",
     "textKo": "새로운 적 애니메이션 및 캐릭터 행동 VFX",
-    "textEn": "Updated placeholder assets for many cards, relics, enemies, and Nonupeipe the Ancient",
+    "textEn": "New enemy animations and character move VFX",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-031-text-1u1y7wl v0.103.2 0.103.2 아트 새로운 적 애니메이션 및 캐릭터 행동 vfx updated placeholder assets for many cards, relics, enemies, and nonupeipe the ancient"
+    "searchText": "v0.103.2:line-031-text-1u1y7wl v0.103.2 0.103.2 아트 새로운 적 애니메이션 및 캐릭터 행동 vfx new enemy animations and character move vfx"
   },
   {
     "id": "v0.103.2:line-032-text-rfxwh4",
@@ -8815,11 +8815,11 @@
       "아트"
     ],
     "markdownKo": "카드 부정적 효과 VFX",
-    "markdownEn": "New enemy animations and character move VFX",
+    "markdownEn": "Card affliction VFX",
     "textKo": "카드 부정적 효과 VFX",
-    "textEn": "New enemy animations and character move VFX",
+    "textEn": "Card affliction VFX",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-032-text-rfxwh4 v0.103.2 0.103.2 아트 카드 부정적 효과 vfx new enemy animations and character move vfx"
+    "searchText": "v0.103.2:line-032-text-rfxwh4 v0.103.2 0.103.2 아트 카드 부정적 효과 vfx card affliction vfx"
   },
   {
     "id": "v0.103.2:line-033-text-1q7wpbl",
@@ -8830,11 +8830,11 @@
       "아트"
     ],
     "markdownKo": "캐릭터별 에너지 카운터 VFX",
-    "markdownEn": "Card affliction VFX",
+    "markdownEn": "Character-based energy counter VFX",
     "textKo": "캐릭터별 에너지 카운터 VFX",
-    "textEn": "Card affliction VFX",
+    "textEn": "Character-based energy counter VFX",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-033-text-1q7wpbl v0.103.2 0.103.2 아트 캐릭터별 에너지 카운터 vfx card affliction vfx"
+    "searchText": "v0.103.2:line-033-text-1q7wpbl v0.103.2 0.103.2 아트 캐릭터별 에너지 카운터 vfx character-based energy counter vfx"
   },
   {
     "id": "v0.103.2:line-034-text-zj7z6m",
@@ -8845,11 +8845,11 @@
       "UI & UX"
     ],
     "markdownKo": "신규 **배지** 시스템: 런 종료 시 업적, 이스터에그, 주목할 사건 표시",
-    "markdownEn": "Character-based energy counter VFX",
+    "markdownEn": "New **Badges** system: end-of-run markers noting achievements, easter eggs, and notable events",
     "textKo": "신규 배지 시스템: 런 종료 시 업적, 이스터에그, 주목할 사건 표시",
-    "textEn": "Character-based energy counter VFX",
+    "textEn": "New Badges system: end-of-run markers noting achievements, easter eggs, and notable events",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-034-text-zj7z6m v0.103.2 0.103.2 ui & ux 신규 배지 시스템: 런 종료 시 업적, 이스터에그, 주목할 사건 표시 character-based energy counter vfx"
+    "searchText": "v0.103.2:line-034-text-zj7z6m v0.103.2 0.103.2 ui & ux 신규 배지 시스템: 런 종료 시 업적, 이스터에그, 주목할 사건 표시 new badges system: end-of-run markers noting achievements, easter eggs, and notable events"
   },
   {
     "id": "v0.103.2:line-035-text-zq2njs",
@@ -8860,11 +8860,11 @@
       "UI & UX"
     ],
     "markdownKo": "**리더보드** 개편: 친구 전용 점수, 새 점수 체계 (승리 여부 > 배지 수 > 속도)",
-    "markdownEn": "New **Badges** system: end-of-run markers noting achievements, easter eggs, and notable events",
+    "markdownEn": "**Leaderboards** revamped: friends-only scores, new scoring schema (win status > badges > speed)",
     "textKo": "리더보드 개편: 친구 전용 점수, 새 점수 체계 (승리 여부 > 배지 수 > 속도)",
-    "textEn": "New Badges system: end-of-run markers noting achievements, easter eggs, and notable events",
+    "textEn": "Leaderboards revamped: friends-only scores, new scoring schema (win status > badges > speed)",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-035-text-zq2njs v0.103.2 0.103.2 ui & ux 리더보드 개편: 친구 전용 점수, 새 점수 체계 (승리 여부 > 배지 수 > 속도) new badges system: end-of-run markers noting achievements, easter eggs, and notable events"
+    "searchText": "v0.103.2:line-035-text-zq2njs v0.103.2 0.103.2 ui & ux 리더보드 개편: 친구 전용 점수, 새 점수 체계 (승리 여부 > 배지 수 > 속도) leaderboards revamped: friends-only scores, new scoring schema (win status > badges > speed)"
   },
   {
     "id": "v0.103.2:line-036-text-e0s40d",
@@ -8875,11 +8875,11 @@
       "UI & UX"
     ],
     "markdownKo": "베타와 본섭 리더보드 분리",
-    "markdownEn": "**Leaderboards** revamped: friends-only scores, new scoring schema (win status > badges > speed)",
+    "markdownEn": "Beta and main branch leaderboards are now separate",
     "textKo": "베타와 본섭 리더보드 분리",
-    "textEn": "Leaderboards revamped: friends-only scores, new scoring schema (win status > badges > speed)",
+    "textEn": "Beta and main branch leaderboards are now separate",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-036-text-e0s40d v0.103.2 0.103.2 ui & ux 베타와 본섭 리더보드 분리 leaderboards revamped: friends-only scores, new scoring schema (win status > badges > speed)"
+    "searchText": "v0.103.2:line-036-text-e0s40d v0.103.2 0.103.2 ui & ux 베타와 본섭 리더보드 분리 beta and main branch leaderboards are now separate"
   },
   {
     "id": "v0.103.2:line-037-text-1lf5ssp",
@@ -8890,11 +8890,11 @@
       "UI & UX"
     ],
     "markdownKo": "**공포증 모드** 설정 추가",
-    "markdownEn": "Beta and main branch leaderboards are now separate",
+    "markdownEn": "**Phobia Mode** setting added",
     "textKo": "공포증 모드 설정 추가",
-    "textEn": "Beta and main branch leaderboards are now separate",
+    "textEn": "Phobia Mode setting added",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-037-text-1lf5ssp v0.103.2 0.103.2 ui & ux 공포증 모드 설정 추가 beta and main branch leaderboards are now separate"
+    "searchText": "v0.103.2:line-037-text-1lf5ssp v0.103.2 0.103.2 ui & ux 공포증 모드 설정 추가 phobia mode setting added"
   },
   {
     "id": "v0.103.2:line-038-text-bux8nm",
@@ -8905,11 +8905,11 @@
       "UI & UX"
     ],
     "markdownKo": "인게임 피드백 도구 글자 수 제한 500 → 8000",
-    "markdownEn": "**Phobia Mode** setting added",
+    "markdownEn": "In-game feedback tool character limit increased from 500 to 8000",
     "textKo": "인게임 피드백 도구 글자 수 제한 500 → 8000",
-    "textEn": "Phobia Mode setting added",
+    "textEn": "In-game feedback tool character limit increased from 500 to 8000",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-038-text-bux8nm v0.103.2 0.103.2 ui & ux 인게임 피드백 도구 글자 수 제한 500 → 8000 phobia mode setting added"
+    "searchText": "v0.103.2:line-038-text-bux8nm v0.103.2 0.103.2 ui & ux 인게임 피드백 도구 글자 수 제한 500 → 8000 in-game feedback tool character limit increased from 500 to 8000"
   },
   {
     "id": "v0.103.2:line-039-text-wstbvp",
@@ -8920,11 +8920,11 @@
       "UI & UX"
     ],
     "markdownKo": "일일/커스텀 런에서 업적 및 역사 해금 불가",
-    "markdownEn": "In-game feedback tool character limit increased from 500 to 8000",
+    "markdownEn": "Achievements and epochs no longer unlockable in Daily or Custom runs",
     "textKo": "일일/커스텀 런에서 업적 및 역사 해금 불가",
-    "textEn": "In-game feedback tool character limit increased from 500 to 8000",
+    "textEn": "Achievements and epochs no longer unlockable in Daily or Custom runs",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-039-text-wstbvp v0.103.2 0.103.2 ui & ux 일일/커스텀 런에서 업적 및 역사 해금 불가 in-game feedback tool character limit increased from 500 to 8000"
+    "searchText": "v0.103.2:line-039-text-wstbvp v0.103.2 0.103.2 ui & ux 일일/커스텀 런에서 업적 및 역사 해금 불가 achievements and epochs no longer unlockable in daily or custom runs"
   },
   {
     "id": "v0.103.2:line-040-text-18lhrv0",
@@ -8935,11 +8935,11 @@
       "UI & UX"
     ],
     "markdownKo": "컨트롤러 지원 개선",
-    "markdownEn": "Achievements and epochs no longer unlockable in Daily or Custom runs",
+    "markdownEn": "Various controller support improvements",
     "textKo": "컨트롤러 지원 개선",
-    "textEn": "Achievements and epochs no longer unlockable in Daily or Custom runs",
+    "textEn": "Various controller support improvements",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-040-text-18lhrv0 v0.103.2 0.103.2 ui & ux 컨트롤러 지원 개선 achievements and epochs no longer unlockable in daily or custom runs"
+    "searchText": "v0.103.2:line-040-text-18lhrv0 v0.103.2 0.103.2 ui & ux 컨트롤러 지원 개선 various controller support improvements"
   },
   {
     "id": "v0.103.2:line-041-text-fdwmfq",
@@ -8950,11 +8950,11 @@
       "텍스트 변경"
     ],
     "markdownKo": "다양한 카드, 유물, 포션, 파워의 설명문 명확화",
-    "markdownEn": "Various controller support improvements",
+    "markdownEn": "Clarified descriptions for various cards, relics, potions, and powers",
     "textKo": "다양한 카드, 유물, 포션, 파워의 설명문 명확화",
-    "textEn": "Various controller support improvements",
+    "textEn": "Clarified descriptions for various cards, relics, potions, and powers",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-041-text-fdwmfq v0.103.2 0.103.2 텍스트 변경 다양한 카드, 유물, 포션, 파워의 설명문 명확화 various controller support improvements"
+    "searchText": "v0.103.2:line-041-text-fdwmfq v0.103.2 0.103.2 텍스트 변경 다양한 카드, 유물, 포션, 파워의 설명문 명확화 clarified descriptions for various cards, relics, potions, and powers"
   },
   {
     "id": "v0.103.2:line-042-text-1wm5pzy",
@@ -8965,11 +8965,11 @@
       "버그 수정"
     ],
     "markdownKo": "Steam 클라우드 동기화 \"치명적 오류\" 수정",
-    "markdownEn": "Clarified descriptions for various cards, relics, potions, and powers",
+    "markdownEn": "Fixed \"Fatal Error\" Steam cloud sync issue",
     "textKo": "Steam 클라우드 동기화 \"치명적 오류\" 수정",
-    "textEn": "Clarified descriptions for various cards, relics, potions, and powers",
+    "textEn": "Fixed \"Fatal Error\" Steam cloud sync issue",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-042-text-1wm5pzy v0.103.2 0.103.2 버그 수정 steam 클라우드 동기화 \"치명적 오류\" 수정 clarified descriptions for various cards, relics, potions, and powers"
+    "searchText": "v0.103.2:line-042-text-1wm5pzy v0.103.2 0.103.2 버그 수정 steam 클라우드 동기화 \"치명적 오류\" 수정 fixed \"fatal error\" steam cloud sync issue"
   },
   {
     "id": "v0.103.2:line-043-text-g8cupz",
@@ -8980,11 +8980,11 @@
       "버그 수정"
     ],
     "markdownKo": "다수의 크래시, 소프트락, 검은 화면 시작 문제 수정",
-    "markdownEn": "Example: **Fairy in a Bottle** now clearer about triggering only when HP reaches 0",
+    "markdownEn": "Multiple crash, softlock, and black-screen startup fixes",
     "textKo": "다수의 크래시, 소프트락, 검은 화면 시작 문제 수정",
-    "textEn": "Example: Fairy in a Bottle now clearer about triggering only when HP reaches 0",
+    "textEn": "Multiple crash, softlock, and black-screen startup fixes",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-043-text-g8cupz v0.103.2 0.103.2 버그 수정 다수의 크래시, 소프트락, 검은 화면 시작 문제 수정 example: fairy in a bottle now clearer about triggering only when hp reaches 0"
+    "searchText": "v0.103.2:line-043-text-g8cupz v0.103.2 0.103.2 버그 수정 다수의 크래시, 소프트락, 검은 화면 시작 문제 수정 multiple crash, softlock, and black-screen startup fixes"
   },
   {
     "id": "v0.103.2:line-044-text-1egs3c2",
@@ -8995,11 +8995,11 @@
       "버그 수정"
     ],
     "markdownKo": "게임플레이 버그 수정 ([gold]속삭이는 귀걸이[/gold] 유물 로직 등)",
-    "markdownEn": "Fixed \"Fatal Error\" Steam cloud sync issue",
+    "markdownEn": "Gameplay bug fixes (e.g., **Whispering Earring** relic logic)",
     "textKo": "게임플레이 버그 수정 (속삭이는 귀걸이 유물 로직 등)",
-    "textEn": "Fixed \"Fatal Error\" Steam cloud sync issue",
+    "textEn": "Gameplay bug fixes (e.g., Whispering Earring relic logic)",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-044-text-1egs3c2 v0.103.2 0.103.2 버그 수정 게임플레이 버그 수정 (속삭이는 귀걸이 유물 로직 등) fixed \"fatal error\" steam cloud sync issue"
+    "searchText": "v0.103.2:line-044-text-1egs3c2 v0.103.2 0.103.2 버그 수정 게임플레이 버그 수정 (속삭이는 귀걸이 유물 로직 등) gameplay bug fixes (e.g., whispering earring relic logic)"
   },
   {
     "id": "v0.103.2:line-045-text-16hunth",
@@ -9010,11 +9010,11 @@
       "버그 수정"
     ],
     "markdownKo": "컨트롤러 네비게이션 수정",
-    "markdownEn": "Multiple crash, softlock, and black-screen startup fixes",
+    "markdownEn": "Controller navigation fixes",
     "textKo": "컨트롤러 네비게이션 수정",
-    "textEn": "Multiple crash, softlock, and black-screen startup fixes",
+    "textEn": "Controller navigation fixes",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-045-text-16hunth v0.103.2 0.103.2 버그 수정 컨트롤러 네비게이션 수정 multiple crash, softlock, and black-screen startup fixes"
+    "searchText": "v0.103.2:line-045-text-16hunth v0.103.2 0.103.2 버그 수정 컨트롤러 네비게이션 수정 controller navigation fixes"
   },
   {
     "id": "v0.103.2:line-046-text-ypbu3k",
@@ -9025,11 +9025,11 @@
       "버그 수정"
     ],
     "markdownKo": "멀티플레이어: 게임플레이 상호작용, 상태 불일치, 오류 5008 연결 끊김 수정",
-    "markdownEn": "Gameplay bug fixes (e.g., **Whispering Earring** relic logic)",
+    "markdownEn": "Multiplayer: gameplay interaction fixes, state divergence fixes, Error 5008 disconnection fixes",
     "textKo": "멀티플레이어: 게임플레이 상호작용, 상태 불일치, 오류 5008 연결 끊김 수정",
-    "textEn": "Gameplay bug fixes (e.g., Whispering Earring relic logic)",
+    "textEn": "Multiplayer: gameplay interaction fixes, state divergence fixes, Error 5008 disconnection fixes",
     "entityRefs": [],
-    "searchText": "v0.103.2:line-046-text-ypbu3k v0.103.2 0.103.2 버그 수정 멀티플레이어: 게임플레이 상호작용, 상태 불일치, 오류 5008 연결 끊김 수정 gameplay bug fixes (e.g., whispering earring relic logic)"
+    "searchText": "v0.103.2:line-046-text-ypbu3k v0.103.2 0.103.2 버그 수정 멀티플레이어: 게임플레이 상호작용, 상태 불일치, 오류 5008 연결 끊김 수정 multiplayer: gameplay interaction fixes, state divergence fixes, error 5008 disconnection fixes"
   },
   {
     "id": "v0.104.0:line-001-text-1ieu9dc",
