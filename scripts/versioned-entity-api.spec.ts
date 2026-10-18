@@ -100,10 +100,10 @@ async function runTests() {
   assert.ok(preparedAt100.entity, "Prepared entity should exist in v0.100.0");
   assert.equal(preparedAt100.entity.cost, 1, "Prepared cost in v0.100.0 must be 1 (reworked)");
   assert.equal(preparedAt100.entity.vars?.Energy, 2, "Prepared vars.Energy in v0.100.0 must be 2");
-  assert.equal(preparedAt100.entity.vars?.Cards, undefined, "Prepared vars.Cards in v0.100.0 must not exist");
+  assert.equal(preparedAt100.entity.vars?.Cards, 2, "Prepared vars.Cards in v0.100.0 must be 2 (the build's template discards {Cards})");
   assert.ok(
-    preparedAt100.entity.description?.includes("에너지"),
-    "Prepared description in v0.100.0 must mention energy",
+    preparedAt100.entity.description?.includes("[energy:2]"),
+    "Prepared description in v0.100.0 must gain 2 energy (the build's own text shows the energy icon)",
   );
   assert.ok(
     preparedAt100.entity.description?.includes("카드를 2장 버립니다"),
@@ -453,7 +453,7 @@ async function runTests() {
   assert.equal(dominateBefore.entity.upgrade?.vulnerablepower, undefined);
   assert.equal(
     dominateBefore.entity.description,
-    "대상 적이 보유한 [gold]취약[/gold]마다\n[gold]힘[/gold]을 1 얻습니다.",
+    "대상 적이 보유한 [gold]취약[/gold]마다 [gold]힘[/gold]을 1 얻습니다.",
   );
   assert.ok(dominateBefore.entity.keywords?.includes("소멸"));
 

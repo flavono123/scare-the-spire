@@ -68,6 +68,7 @@
           "Cards": 1
         },
         "after": {
+          "Cards": 2,
           "Energy": 2
         }
       },
@@ -12954,6 +12955,7 @@
       {
         "field": "vars",
         "before": {
+          "Cards": 2,
           "Energy": 2
         },
         "after": {
