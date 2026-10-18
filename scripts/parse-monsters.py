@@ -47,6 +47,14 @@ _INT_PROP_ASC_RE = re.compile(
     r"(?:public|private|protected)\s+(?:static\s+)?int\s+(?P<name>\w+)\s*=>\s*"
     r"AscensionHelper\.GetValueIfAscension\([^,]+,\s*(?P<asc>\d+)\s*,\s*(?P<base>\d+)\s*\)\s*;"
 )
+# int Prop { get { int x = GetValueIfAscension(level, asc, base); return x + creature.GetPowerAmount<...>(); } }
+# The listed value is the base; the power amount is added at runtime (TheForgotten.DreadDamage).
+_INT_PROP_ASC_PLUS_POWER_RE = re.compile(
+    r"(?:public|private|protected)\s+(?:static\s+)?int\s+(?P<name>\w+)\s*\{\s*get\s*\{\s*"
+    r"int\s+(?P<local>\w+)\s*=\s*AscensionHelper\.GetValueIfAscension\([^,]+,\s*(?P<asc>\d+)\s*,\s*(?P<base>\d+)\s*\)\s*;\s*"
+    r"return\s+(?P=local)\s*\+\s*[^;]*GetPowerAmount<\w+>\(\)\s*;",
+    re.DOTALL,
+)
 _INT_PROP_PLAIN_RE = re.compile(
     r"(?:public|private|protected)\s+(?:static\s+)?int\s+(?P<name>\w+)\s*=>\s*(?P<val>\d+)\s*;"
 )
@@ -164,6 +172,11 @@ def parse_int_props(text: str) -> dict[str, dict]:
     """Return {prop_name: {normal, ascension}} for every int property, inc. plain ints."""
     out: dict[str, dict] = {}
     for m in _INT_PROP_ASC_RE.finditer(text):
+        out[m.group("name")] = {
+            "normal": int(m.group("base")),
+            "ascension": int(m.group("asc")),
+        }
+    for m in _INT_PROP_ASC_PLUS_POWER_RE.finditer(text):
         out[m.group("name")] = {
             "normal": int(m.group("base")),
             "ascension": int(m.group("asc")),

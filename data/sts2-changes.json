@@ -1216,6 +1216,616 @@
         "field": "minHpAscension",
         "before": 199,
         "after": 209
+      },
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "TARGETING_RETICLE",
+            "name": "십자선 조준",
+            "nameEn": "Targeting Reticle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "TargetingReticle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PRECISION_BEAM",
+            "name": "정밀 광선",
+            "nameEn": "Precision Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "PrecisionBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "CHARGE_UP",
+            "name": "충전",
+            "nameEn": "Charge Up",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "LASER",
+            "name": "레이저",
+            "nameEn": "Laser",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Laser",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RECHARGE",
+            "name": "재충전",
+            "nameEn": "Recharge",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "SleepIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SleepIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "TARGETING_RETICLE",
+            "name": "십자선 조준",
+            "nameEn": "Targeting Reticle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "TargetingReticle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PRECISION_BEAM",
+            "name": "정밀 광선",
+            "nameEn": "Precision Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "PrecisionBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "CHARGE_UP",
+            "name": "충전",
+            "nameEn": "Charge Up",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "LASER",
+            "name": "레이저",
+            "nameEn": "Laser",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Laser",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RECHARGE",
+            "name": "재충전",
+            "nameEn": "Recharge",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "SleepIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SleepIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "TARGETING_RETICLE",
+            "name": "십자선 조준",
+            "nameEn": "Targeting Reticle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "TargetingReticle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PRECISION_BEAM",
+            "name": "정밀 광선",
+            "nameEn": "Precision Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "PrecisionBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "CHARGE_UP",
+            "name": "충전",
+            "nameEn": "Charge Up",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "LASER",
+            "name": "레이저",
+            "nameEn": "Laser",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Laser",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RECHARGE",
+            "name": "재충전",
+            "nameEn": "Recharge",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "SleepIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SleepIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "TARGETING_RETICLE",
+            "name": "십자선 조준",
+            "nameEn": "Targeting Reticle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "TargetingReticle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PRECISION_BEAM",
+            "name": "정밀 광선",
+            "nameEn": "Precision Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "PrecisionBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "CHARGE_UP",
+            "name": "충전",
+            "nameEn": "Charge Up",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "LASER",
+            "name": "레이저",
+            "nameEn": "Laser",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Laser",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RECHARGE",
+            "name": "재충전",
+            "nameEn": "Recharge",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "SleepIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SleepIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
       }
     ],
     "relatedEntities": [
@@ -1262,6 +1872,800 @@
         "field": "minHpAscension",
         "before": 209,
         "after": 219
+      },
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "THRASH",
+            "name": "난동부리기",
+            "nameEn": "Thrash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Thrash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ENLARGING_STRIKE",
+            "name": "확대 타격",
+            "nameEn": "Enlarging Strike",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "EnlargingStrike",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BUG_STING",
+            "name": "벌레 쏘기",
+            "nameEn": "Bug Sting",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "BugSting",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "WEAK",
+                "powerName": "약화",
+                "powerNameEn": "Weak",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/weak_power.webp"
+              },
+              {
+                "powerId": "FRAIL",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "ADAPT",
+            "name": "적응",
+            "nameEn": "Adapt",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "GUARDED_STRIKE",
+            "name": "수호의 타격",
+            "nameEn": "Guarded Strike",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "GuardedStrike",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "THRASH",
+            "name": "난동부리기",
+            "nameEn": "Thrash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Thrash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ENLARGING_STRIKE",
+            "name": "확대 타격",
+            "nameEn": "Enlarging Strike",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "EnlargingStrike",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BUG_STING",
+            "name": "벌레 쏘기",
+            "nameEn": "Bug Sting",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "BugSting",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "WEAK",
+                "powerName": "약화",
+                "powerNameEn": "Weak",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/weak_power.webp"
+              },
+              {
+                "powerId": "FRAIL",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "ADAPT",
+            "name": "적응",
+            "nameEn": "Adapt",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "GUARDED_STRIKE",
+            "name": "수호의 타격",
+            "nameEn": "Guarded Strike",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "GuardedStrike",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "THRASH",
+            "name": "난동부리기",
+            "nameEn": "Thrash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Thrash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ENLARGING_STRIKE",
+            "name": "확대 타격",
+            "nameEn": "Enlarging Strike",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "EnlargingStrike",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BUG_STING",
+            "name": "벌레 쏘기",
+            "nameEn": "Bug Sting",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "BugSting",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "WEAK",
+                "powerName": "약화",
+                "powerNameEn": "Weak",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/weak_power.webp"
+              },
+              {
+                "powerId": "FRAIL",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "ADAPT",
+            "name": "적응",
+            "nameEn": "Adapt",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "GUARDED_STRIKE",
+            "name": "수호의 타격",
+            "nameEn": "Guarded Strike",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "GuardedStrike",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "THRASH",
+            "name": "난동부리기",
+            "nameEn": "Thrash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Thrash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ENLARGING_STRIKE",
+            "name": "확대 타격",
+            "nameEn": "Enlarging Strike",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "EnlargingStrike",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BUG_STING",
+            "name": "벌레 쏘기",
+            "nameEn": "Bug Sting",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "BugSting",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "WEAK",
+                "powerName": "약화",
+                "powerNameEn": "Weak",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/weak_power.webp"
+              },
+              {
+                "powerId": "FRAIL",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "ADAPT",
+            "name": "적응",
+            "nameEn": "Adapt",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "GUARDED_STRIKE",
+            "name": "수호의 타격",
+            "nameEn": "Guarded Strike",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "GuardedStrike",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
       }
     ],
     "relatedEntities": [
@@ -1456,6 +2860,390 @@
         "type": "monster",
         "id": "THE_FORGOTTEN"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "DEBILITATING_SMOG",
+            "name": "쇠약의 안개",
+            "nameEn": "Debilitating Smog",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              },
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "DEBILITATING_SMOG",
+            "name": "쇠약의 안개",
+            "nameEn": "Debilitating Smog",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              },
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "DEBILITATING_SMOG",
+            "name": "쇠약의 안개",
+            "nameEn": "Debilitating Smog",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              },
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "DEBILITATING_SMOG",
+            "name": "쇠약의 안개",
+            "nameEn": "Debilitating Smog",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              },
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      }
     ]
   },
   {
@@ -1484,6 +3272,441 @@
         "type": "monster",
         "id": "THE_LOST"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "MIASMA",
+            "name": "불쾌한 기운",
+            "nameEn": "Miasma",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              },
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "DREAD",
+            "name": "공포",
+            "nameEn": "Dread",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Dread",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "MIASMA",
+            "name": "불쾌한 기운",
+            "nameEn": "Miasma",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              },
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "DREAD",
+            "name": "공포",
+            "nameEn": "Dread",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Dread",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "MIASMA",
+            "name": "불쾌한 기운",
+            "nameEn": "Miasma",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              },
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "DREAD",
+            "name": "공포",
+            "nameEn": "Dread",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Dread",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "MIASMA",
+            "name": "불쾌한 기운",
+            "nameEn": "Miasma",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              },
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "DREAD",
+            "name": "공포",
+            "nameEn": "Dread",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Dread",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "damageValues",
+        "before": {
+          "Dread": {
+            "normal": 15,
+            "ascension": 17
+          }
+        },
+        "after": {
+          "Dread": {
+            "normal": 13,
+            "ascension": 15
+          }
+        }
+      }
     ]
   },
   {
@@ -1510,6 +3733,14 @@
         "displayNameKo": "베기 방어도",
         "before": "5(5)",
         "after": "5(6)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "strength",
+        "displayName": "Hiss Strength",
+        "displayNameKo": "쉿 힘",
+        "before": "2(2)",
+        "after": "2(3)",
         "diffType": "number"
       }
     ],
@@ -1551,6 +3782,386 @@
             "ascension": 6
           }
         }
+      },
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "BUTT",
+            "name": "박치기",
+            "nameEn": "Butt",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Butt",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "SLICE",
+            "name": "Slice",
+            "nameEn": "Slice",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Slice",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "HISS",
+            "name": "쉭쉭대기",
+            "nameEn": "Hiss",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "BUTT",
+            "name": "박치기",
+            "nameEn": "Butt",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Butt",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "SLICE",
+            "name": "Slice",
+            "nameEn": "Slice",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Slice",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "HISS",
+            "name": "쉭쉭대기",
+            "nameEn": "Hiss",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "BUTT",
+            "name": "박치기",
+            "nameEn": "Butt",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Butt",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "HISS",
+            "name": "쉭쉭대기",
+            "nameEn": "Hiss",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "BUTT",
+            "name": "박치기",
+            "nameEn": "Butt",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Butt",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "HISS",
+            "name": "쉭쉭대기",
+            "nameEn": "Hiss",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
       }
     ]
   },
@@ -15396,6 +18007,1018 @@
         "field": "vars.Forge",
         "before": 7,
         "after": 5
+      }
+    ]
+  },
+  {
+    "id": "the-lost-v101-stat-steal-nerf",
+    "entityType": "monster",
+    "entityId": "THE_LOST",
+    "patch": "v0.101.0",
+    "date": "2026-03-24",
+    "character": null,
+    "summary": "The Lost stat stealing no longer scales with Ascension.",
+    "summaryKo": "사라진 자의 능력치 강탈이 더 이상 승천에 따라 스케일되지 않습니다.",
+    "diffs": [
+      {
+        "attribute": "statSteal",
+        "displayName": "Stat steal",
+        "displayNameKo": "능력치 강탈",
+        "before": "2(3) at A9",
+        "beforeKo": "2(3) (승천 9)",
+        "after": "2",
+        "afterKo": "2",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "DEBILITATING_SMOG",
+            "name": "쇠약의 안개",
+            "nameEn": "Debilitating Smog",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              },
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "DEBILITATING_SMOG",
+            "name": "쇠약의 안개",
+            "nameEn": "Debilitating Smog",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              },
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "DEBILITATING_SMOG",
+            "name": "쇠약의 안개",
+            "nameEn": "Debilitating Smog",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              },
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "DEBILITATING_SMOG",
+            "name": "쇠약의 안개",
+            "nameEn": "Debilitating Smog",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              },
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "THE_FORGOTTEN"
+      }
+    ]
+  },
+  {
+    "id": "the-forgotten-v101-stat-steal-nerf",
+    "entityType": "monster",
+    "entityId": "THE_FORGOTTEN",
+    "patch": "v0.101.0",
+    "date": "2026-03-24",
+    "character": null,
+    "summary": "The Forgotten stat stealing no longer scales with Ascension.",
+    "summaryKo": "잊힌 자의 능력치 강탈이 더 이상 승천에 따라 스케일되지 않습니다.",
+    "diffs": [
+      {
+        "attribute": "statSteal",
+        "displayName": "Stat steal",
+        "displayNameKo": "능력치 강탈",
+        "before": "2(3) at A9",
+        "beforeKo": "2(3) (승천 9)",
+        "after": "2",
+        "afterKo": "2",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "MIASMA",
+            "name": "불쾌한 기운",
+            "nameEn": "Miasma",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              },
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "DREAD",
+            "name": "공포",
+            "nameEn": "Dread",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Dread",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "MIASMA",
+            "name": "불쾌한 기운",
+            "nameEn": "Miasma",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              },
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "DREAD",
+            "name": "공포",
+            "nameEn": "Dread",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Dread",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "MIASMA",
+            "name": "불쾌한 기운",
+            "nameEn": "Miasma",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              },
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "DREAD",
+            "name": "공포",
+            "nameEn": "Dread",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Dread",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "MIASMA",
+            "name": "불쾌한 기운",
+            "nameEn": "Miasma",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "defense",
+              "buff"
+            ],
+            "intents": [
+              "DebuffIntent",
+              "DefendIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "player",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              },
+              {
+                "powerId": "DEXTERITY",
+                "powerName": "민첩",
+                "powerNameEn": "Dexterity",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/powers/dexterity_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "DREAD",
+            "name": "공포",
+            "nameEn": "Dread",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Dread",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "THE_LOST"
+      }
+    ]
+  },
+  {
+    "id": "zapbot-v100-hp",
+    "entityType": "monster",
+    "entityId": "ZAPBOT",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "summary": "Zapbot HP decreased by 5 (Fabricator bots).",
+    "summaryKo": "파지직봇 HP 23(24) -> 18(19) 감소 (조립 전문가의 봇).",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "23(24)",
+        "after": "18(19)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 23,
+        "after": 18
+      },
+      {
+        "field": "minHpAscension",
+        "before": 24,
+        "after": 19
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "FABRICATOR"
+      }
+    ]
+  },
+  {
+    "id": "stabbot-v100-hp",
+    "entityType": "monster",
+    "entityId": "STABBOT",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "summary": "Stabbot HP decreased by 5 (Fabricator bots).",
+    "summaryKo": "찔러봇 HP 23(24) -> 18(19) 감소 (조립 전문가의 봇).",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "23(24)",
+        "after": "18(19)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 23,
+        "after": 18
+      },
+      {
+        "field": "minHpAscension",
+        "before": 24,
+        "after": 19
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "FABRICATOR"
+      }
+    ]
+  },
+  {
+    "id": "noisebot-v100-hp",
+    "entityType": "monster",
+    "entityId": "NOISEBOT",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "summary": "Noisebot HP decreased by 5 (Fabricator bots).",
+    "summaryKo": "소음봇 HP 23(24) -> 18(19) 감소 (조립 전문가의 봇).",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "23(24)",
+        "after": "18(19)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 23,
+        "after": 18
+      },
+      {
+        "field": "minHpAscension",
+        "before": 24,
+        "after": 19
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "FABRICATOR"
+      }
+    ]
+  },
+  {
+    "id": "guardbot-v100-hp",
+    "entityType": "monster",
+    "entityId": "GUARDBOT",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "summary": "Guardbot HP decreased by 5 (Fabricator bots).",
+    "summaryKo": "막아봇 HP 21(22) -> 16(17) 감소 (조립 전문가의 봇).",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "21(22)",
+        "after": "16(17)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "minHp",
+        "before": 21,
+        "after": 16
+      },
+      {
+        "field": "minHpAscension",
+        "before": 22,
+        "after": 17
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "FABRICATOR"
       }
     ]
   }

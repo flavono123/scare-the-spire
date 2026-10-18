@@ -21254,8 +21254,8 @@
     },
     "damage_values": {
       "Dread": {
-        "normal": 15,
-        "ascension": 17
+        "normal": 13,
+        "ascension": 15
       }
     },
     "block_values": {
