@@ -9425,11 +9425,11 @@
       "적"
     ],
     "markdownKo": "[gold]밴텀[/gold] 낮은 승천 ([red][jitter]너프[/jitter][/red]): 토막내기 행동 피해량 27(30) -> 26(30). 부여하는 [gold]미끈거림[/gold] 수치는 낮은 승천 9 -> 8 (높은 승천은 9 유지).",
-    "markdownEn": "**Vantom** at lower Ascensions (nerf):",
+    "markdownEn": "**Vantom** at lower Ascensions (nerf): Dismember move damage decreased from 27(30) -> 26(30). Slippery power goes from 9 -> 8(9).",
     "textKo": "밴텀 낮은 승천 (너프): 토막내기 행동 피해량 27(30) -> 26(30). 부여하는 미끈거림 수치는 낮은 승천 9 -> 8 (높은 승천은 9 유지).",
-    "textEn": "Vantom at lower Ascensions (nerf):",
+    "textEn": "Vantom at lower Ascensions (nerf): Dismember move damage decreased from 27(30) -> 26(30). Slippery power goes from 9 -> 8(9).",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-021-text-1bl3use v0.104.0 0.104.0 밸런스 적 밴텀 낮은 승천 (너프): 토막내기 행동 피해량 27(30) -> 26(30). 부여하는 미끈거림 수치는 낮은 승천 9 -> 8 (높은 승천은 9 유지). vantom at lower ascensions (nerf):"
+    "searchText": "v0.104.0:line-021-text-1bl3use v0.104.0 0.104.0 밸런스 적 밴텀 낮은 승천 (너프): 토막내기 행동 피해량 27(30) -> 26(30). 부여하는 미끈거림 수치는 낮은 승천 9 -> 8 (높은 승천은 9 유지). vantom at lower ascensions (nerf): dismember move damage decreased from 27(30) -> 26(30). slippery power goes from 9 -> 8(9)."
   },
   {
     "id": "v0.104.0:line-022-text-1acqoca",
@@ -9441,11 +9441,11 @@
       "적"
     ],
     "markdownKo": "[gold]폭포 거인[/gold] ([red][jitter]너프[/jitter][/red]): 낮은 승천에서 회복량 감소. HP 회복량 15 -> 10(15).",
-    "markdownEn": "Dismember move damage decreased from 27(30) -> 26(30).",
+    "markdownEn": "**Waterfall Giant** (nerf): Now heals less at lower Ascension, HP healed changed from 15 -> 10(15).",
     "textKo": "폭포 거인 (너프): 낮은 승천에서 회복량 감소. HP 회복량 15 -> 10(15).",
-    "textEn": "Dismember move damage decreased from 27(30) -> 26(30).",
+    "textEn": "Waterfall Giant (nerf): Now heals less at lower Ascension, HP healed changed from 15 -> 10(15).",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-022-text-1acqoca v0.104.0 0.104.0 밸런스 적 폭포 거인 (너프): 낮은 승천에서 회복량 감소. hp 회복량 15 -> 10(15). dismember move damage decreased from 27(30) -> 26(30)."
+    "searchText": "v0.104.0:line-022-text-1acqoca v0.104.0 0.104.0 밸런스 적 폭포 거인 (너프): 낮은 승천에서 회복량 감소. hp 회복량 15 -> 10(15). waterfall giant (nerf): now heals less at lower ascension, hp healed changed from 15 -> 10(15)."
   },
   {
     "id": "v0.104.0:line-023-text-q0m2x5",
@@ -9457,11 +9457,11 @@
       "이벤트"
     ],
     "markdownKo": "[gold]미끄러운 다리[/gold] 이벤트 (변경): 덱의 다른 모든 카드에 대해 한 번씩 제거 선택지를 제시하기 전까지는, 같은 카드를 여러 번 제거 대상으로 제시하지 않음.",
-    "markdownEn": "Slippery power goes from 9 -> 8(9).",
+    "markdownEn": "**Slippery Bridge** event (change): Will no longer offer to remove the same card multiple times unless it has already offered to remove all other cards in your deck at least once.",
     "textKo": "미끄러운 다리 이벤트 (변경): 덱의 다른 모든 카드에 대해 한 번씩 제거 선택지를 제시하기 전까지는, 같은 카드를 여러 번 제거 대상으로 제시하지 않음.",
-    "textEn": "Slippery power goes from 9 -> 8(9).",
+    "textEn": "Slippery Bridge event (change): Will no longer offer to remove the same card multiple times unless it has already offered to remove all other cards in your deck at least once.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-023-text-q0m2x5 v0.104.0 0.104.0 밸런스 이벤트 미끄러운 다리 이벤트 (변경): 덱의 다른 모든 카드에 대해 한 번씩 제거 선택지를 제시하기 전까지는, 같은 카드를 여러 번 제거 대상으로 제시하지 않음. slippery power goes from 9 -> 8(9)."
+    "searchText": "v0.104.0:line-023-text-q0m2x5 v0.104.0 0.104.0 밸런스 이벤트 미끄러운 다리 이벤트 (변경): 덱의 다른 모든 카드에 대해 한 번씩 제거 선택지를 제시하기 전까지는, 같은 카드를 여러 번 제거 대상으로 제시하지 않음. slippery bridge event (change): will no longer offer to remove the same card multiple times unless it has already offered to remove all other cards in your deck at least once."
   },
   {
     "id": "v0.104.0:line-024-text-8bwv6p",
@@ -9473,11 +9473,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "멀티플레이어에서 적의 [gold]인공물[/gold], [gold]미끈거림[/gold], [gold]겁쟁이[/gold] 스케일링 너프.",
-    "markdownEn": "**Waterfall Giant** (nerf): Now heals less at lower Ascension, HP healed changed from 15 -> 10(15).",
+    "markdownEn": "Nerfed multiplayer scaling for enemy **Artifact**, **Slippery**, and **Skittish** powers.",
     "textKo": "멀티플레이어에서 적의 인공물, 미끈거림, 겁쟁이 스케일링 너프.",
-    "textEn": "Waterfall Giant (nerf): Now heals less at lower Ascension, HP healed changed from 15 -> 10(15).",
+    "textEn": "Nerfed multiplayer scaling for enemy Artifact, Slippery, and Skittish powers.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-024-text-8bwv6p v0.104.0 0.104.0 밸런스 멀티플레이어 멀티플레이어에서 적의 인공물, 미끈거림, 겁쟁이 스케일링 너프. waterfall giant (nerf): now heals less at lower ascension, hp healed changed from 15 -> 10(15)."
+    "searchText": "v0.104.0:line-024-text-8bwv6p v0.104.0 0.104.0 밸런스 멀티플레이어 멀티플레이어에서 적의 인공물, 미끈거림, 겁쟁이 스케일링 너프. nerfed multiplayer scaling for enemy artifact, slippery, and skittish powers."
   },
   {
     "id": "v0.104.0:line-025-card-stratagem",
@@ -9489,9 +9489,9 @@
       "멀티플레이어"
     ],
     "markdownKo": "[gold:card]책략[/gold]이 멀티플레이어 런에서 더 이상 무색 카드 풀에서 차단되지 않음 (원래 [gold:card]책략[/gold]의 멀티플레이어 버그로 인해 차단되었으며, 해당 버그는 이번에 수정됨).",
-    "markdownEn": "**Slippery Bridge** event (change): Will no longer offer to remove the same card multiple times unless it has already offered to remove all other cards in your deck at least once.",
+    "markdownEn": "**Stratagem** card is no longer banned from the colorless card pool during multiplayer runs (this banning was originally due to a bug with Stratagem in multiplayer, which has now been fixed).",
     "textKo": "책략이 멀티플레이어 런에서 더 이상 무색 카드 풀에서 차단되지 않음 (원래 책략의 멀티플레이어 버그로 인해 차단되었으며, 해당 버그는 이번에 수정됨).",
-    "textEn": "Slippery Bridge event (change): Will no longer offer to remove the same card multiple times unless it has already offered to remove all other cards in your deck at least once.",
+    "textEn": "Stratagem card is no longer banned from the colorless card pool during multiplayer runs (this banning was originally due to a bug with Stratagem in multiplayer, which has now been fixed).",
     "entityRefs": [
       {
         "type": "card",
@@ -9499,7 +9499,7 @@
         "label": "책략"
       }
     ],
-    "searchText": "v0.104.0:line-025-card-stratagem v0.104.0 0.104.0 밸런스 멀티플레이어 책략이 멀티플레이어 런에서 더 이상 무색 카드 풀에서 차단되지 않음 (원래 책략의 멀티플레이어 버그로 인해 차단되었으며, 해당 버그는 이번에 수정됨). slippery bridge event (change): will no longer offer to remove the same card multiple times unless it has already offered to remove all other cards in your deck at least once. card stratagem 책략 책략 stratagem"
+    "searchText": "v0.104.0:line-025-card-stratagem v0.104.0 0.104.0 밸런스 멀티플레이어 책략이 멀티플레이어 런에서 더 이상 무색 카드 풀에서 차단되지 않음 (원래 책략의 멀티플레이어 버그로 인해 차단되었으며, 해당 버그는 이번에 수정됨). stratagem card is no longer banned from the colorless card pool during multiplayer runs (this banning was originally due to a bug with stratagem in multiplayer, which has now been fixed). card stratagem 책략 책략 stratagem"
   },
   {
     "id": "v0.104.0:line-026-card-tag-team",
@@ -9511,9 +9511,9 @@
       "멀티플레이어"
     ],
     "markdownKo": "[gold:card]태그 팀[/gold] ([green][sine]버프[/sine][/green]): 재사용 효과가 \"적 전체에 피해를 입히는\" 공격에도 발동.",
-    "markdownEn": "Nerfed multiplayer scaling for enemy **Artifact**, **Slippery**, and **Skittish** powers.",
+    "markdownEn": "**Tag Team** card (buff): Replay effect now triggers on \"deal damage to ALL enemies\" attacks too.",
     "textKo": "태그 팀 (버프): 재사용 효과가 \"적 전체에 피해를 입히는\" 공격에도 발동.",
-    "textEn": "Nerfed multiplayer scaling for enemy Artifact, Slippery, and Skittish powers.",
+    "textEn": "Tag Team card (buff): Replay effect now triggers on \"deal damage to ALL enemies\" attacks too.",
     "entityRefs": [
       {
         "type": "card",
@@ -9521,7 +9521,7 @@
         "label": "태그 팀"
       }
     ],
-    "searchText": "v0.104.0:line-026-card-tag-team v0.104.0 0.104.0 밸런스 멀티플레이어 태그 팀 (버프): 재사용 효과가 \"적 전체에 피해를 입히는\" 공격에도 발동. nerfed multiplayer scaling for enemy artifact, slippery, and skittish powers. card tag_team 태그 팀 태그 팀 tag team"
+    "searchText": "v0.104.0:line-026-card-tag-team v0.104.0 0.104.0 밸런스 멀티플레이어 태그 팀 (버프): 재사용 효과가 \"적 전체에 피해를 입히는\" 공격에도 발동. tag team card (buff): replay effect now triggers on \"deal damage to all enemies\" attacks too. card tag_team 태그 팀 태그 팀 tag team"
   },
   {
     "id": "v0.104.0:line-027-card-feral-card-not-yet",
@@ -9532,9 +9532,9 @@
       "아트"
     ],
     "markdownKo": "카드 초상화 추가: [gold:card]야성[/gold], [gold:card]불굴[/gold], [gold:card]악의[/gold], [gold:card]강행 돌파[/gold], [gold:card]우박 폭풍[/gold], [gold:card]동기화[/gold], [gold:card]순회[/gold], [gold:card]동전기[/gold], [gold:card]영체화[/gold], [gold:card]연마[/gold].",
-    "markdownEn": "**Stratagem** card is no longer banned from the colorless card pool during multiplayer runs (this banning was originally due to a bug with Stratagem in multiplayer, which has now been fixed).",
+    "markdownEn": "Added portrait art for the following cards: **Feral**, **Not Yet**, **Spite**, **Fight Through**, **Hailstorm**, **Synchronize**, **Iteration**, **Voltaic**, **Apparition**, **Abrasive**.",
     "textKo": "카드 초상화 추가: 야성, 불굴, 악의, 강행 돌파, 우박 폭풍, 동기화, 순회, 동전기, 영체화, 연마.",
-    "textEn": "Stratagem card is no longer banned from the colorless card pool during multiplayer runs (this banning was originally due to a bug with Stratagem in multiplayer, which has now been fixed).",
+    "textEn": "Added portrait art for the following cards: Feral, Not Yet, Spite, Fight Through, Hailstorm, Synchronize, Iteration, Voltaic, Apparition, Abrasive.",
     "entityRefs": [
       {
         "type": "card",
@@ -9587,7 +9587,7 @@
         "label": "연마"
       }
     ],
-    "searchText": "v0.104.0:line-027-card-feral-card-not-yet v0.104.0 0.104.0 아트 카드 초상화 추가: 야성, 불굴, 악의, 강행 돌파, 우박 폭풍, 동기화, 순회, 동전기, 영체화, 연마. stratagem card is no longer banned from the colorless card pool during multiplayer runs (this banning was originally due to a bug with stratagem in multiplayer, which has now been fixed). card feral 야성 야성 feral card not_yet 불굴 불굴 not yet card spite 악의 악의 spite card fight_through 강행 돌파 강행 돌파 fight through card hailstorm 우박 폭풍 우박 폭풍 hailstorm card synchronize 동기화 동기화 synchronize card iteration 순회 순회 iteration card voltaic 동전기 동전기 voltaic card apparition 영체화 영체화 apparition card abrasive 연마 연마 abrasive"
+    "searchText": "v0.104.0:line-027-card-feral-card-not-yet v0.104.0 0.104.0 아트 카드 초상화 추가: 야성, 불굴, 악의, 강행 돌파, 우박 폭풍, 동기화, 순회, 동전기, 영체화, 연마. added portrait art for the following cards: feral, not yet, spite, fight through, hailstorm, synchronize, iteration, voltaic, apparition, abrasive. card feral 야성 야성 feral card not_yet 불굴 불굴 not yet card spite 악의 악의 spite card fight_through 강행 돌파 강행 돌파 fight through card hailstorm 우박 폭풍 우박 폭풍 hailstorm card synchronize 동기화 동기화 synchronize card iteration 순회 순회 iteration card voltaic 동전기 동전기 voltaic card apparition 영체화 영체화 apparition card abrasive 연마 연마 abrasive"
   },
   {
     "id": "v0.104.0:line-028-card-neows-fury",
@@ -9598,9 +9598,9 @@
       "아트"
     ],
     "markdownKo": "[gold:card]니오우의 격분[/gold] 아트 수정 (이제 중앙 정렬).",
-    "markdownEn": "**Tag Team** card (buff): Replay effect now triggers on \"deal damage to ALL enemies\" attacks too.",
+    "markdownEn": "Revised **Neow's Fury** artwork (is now centered).",
     "textKo": "니오우의 격분 아트 수정 (이제 중앙 정렬).",
-    "textEn": "Tag Team card (buff): Replay effect now triggers on \"deal damage to ALL enemies\" attacks too.",
+    "textEn": "Revised Neow's Fury artwork (is now centered).",
     "entityRefs": [
       {
         "type": "card",
@@ -9608,7 +9608,7 @@
         "label": "니오우의 격분"
       }
     ],
-    "searchText": "v0.104.0:line-028-card-neows-fury v0.104.0 0.104.0 아트 니오우의 격분 아트 수정 (이제 중앙 정렬). tag team card (buff): replay effect now triggers on \"deal damage to all enemies\" attacks too. card neows_fury 니오우의 격분 니오우의 격분 neow's fury"
+    "searchText": "v0.104.0:line-028-card-neows-fury v0.104.0 0.104.0 아트 니오우의 격분 아트 수정 (이제 중앙 정렬). revised neow's fury artwork (is now centered). card neows_fury 니오우의 격분 니오우의 격분 neow's fury"
   },
   {
     "id": "v0.104.0:line-029-text-18a4vis",
@@ -9619,11 +9619,11 @@
       "아트"
     ],
     "markdownKo": "[gold]바쿠[/gold] [blue]고대의 존재[/blue] 배경 아트 및 VFX 추가.",
-    "markdownEn": "Added portrait art for the following cards: **Feral**, **Not Yet**, **Spite**, **Fight Through**, **Hailstorm**, **Synchronize**, **Iteration**, **Voltaic**, **Apparition**, **Abrasive**.",
+    "markdownEn": "Added **Vakuu** background art and VFX.",
     "textKo": "바쿠 고대의 존재 배경 아트 및 VFX 추가.",
-    "textEn": "Added portrait art for the following cards: Feral, Not Yet, Spite, Fight Through, Hailstorm, Synchronize, Iteration, Voltaic, Apparition, Abrasive.",
+    "textEn": "Added Vakuu background art and VFX.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-029-text-18a4vis v0.104.0 0.104.0 아트 바쿠 고대의 존재 배경 아트 및 vfx 추가. added portrait art for the following cards: feral, not yet, spite, fight through, hailstorm, synchronize, iteration, voltaic, apparition, abrasive."
+    "searchText": "v0.104.0:line-029-text-18a4vis v0.104.0 0.104.0 아트 바쿠 고대의 존재 배경 아트 및 vfx 추가. added vakuu background art and vfx."
   },
   {
     "id": "v0.104.0:line-030-text-wjqpyl",
@@ -9634,11 +9634,11 @@
       "아트"
     ],
     "markdownKo": "[gold]잠행 군체[/gold] 애니메이션 추가.",
-    "markdownEn": "Revised **Neow's Fury** artwork (is now centered).",
+    "markdownEn": "Added **Skulking Colony** animations.",
     "textKo": "잠행 군체 애니메이션 추가.",
-    "textEn": "Revised Neow's Fury artwork (is now centered).",
+    "textEn": "Added Skulking Colony animations.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-030-text-wjqpyl v0.104.0 0.104.0 아트 잠행 군체 애니메이션 추가. revised neow's fury artwork (is now centered)."
+    "searchText": "v0.104.0:line-030-text-wjqpyl v0.104.0 0.104.0 아트 잠행 군체 애니메이션 추가. added skulking colony animations."
   },
   {
     "id": "v0.104.0:line-031-text-ip7lpq",
@@ -9649,11 +9649,11 @@
       "아트"
     ],
     "markdownKo": "적 아트 업데이트: [gold]땅굴충[/gold], [gold]곤충술사[/gold], [gold]장수아귀[/gold].",
-    "markdownEn": "Added **Vakuu** background art and VFX.",
+    "markdownEn": "Updated art for the following enemies: **Tunneler**, **Entomancer**, **Mawler**.",
     "textKo": "적 아트 업데이트: 땅굴충, 곤충술사, 장수아귀.",
-    "textEn": "Added Vakuu background art and VFX.",
+    "textEn": "Updated art for the following enemies: Tunneler, Entomancer, Mawler.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-031-text-ip7lpq v0.104.0 0.104.0 아트 적 아트 업데이트: 땅굴충, 곤충술사, 장수아귀. added vakuu background art and vfx."
+    "searchText": "v0.104.0:line-031-text-ip7lpq v0.104.0 0.104.0 아트 적 아트 업데이트: 땅굴충, 곤충술사, 장수아귀. updated art for the following enemies: tunneler, entomancer, mawler."
   },
   {
     "id": "v0.104.0:line-032-text-wyhy8",
@@ -9664,11 +9664,11 @@
       "아트"
     ],
     "markdownKo": "적 애니메이션 업데이트: [gold]밴텀[/gold], [gold]의식의 신수[/gold], [gold]곤충술사[/gold].",
-    "markdownEn": "Added **Skulking Colony** animations.",
+    "markdownEn": "Updated animation for the following enemies: **Vantom**, **Ceremonial Beast**, **Entomancer**.",
     "textKo": "적 애니메이션 업데이트: 밴텀, 의식의 신수, 곤충술사.",
-    "textEn": "Added Skulking Colony animations.",
+    "textEn": "Updated animation for the following enemies: Vantom, Ceremonial Beast, Entomancer.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-032-text-wyhy8 v0.104.0 0.104.0 아트 적 애니메이션 업데이트: 밴텀, 의식의 신수, 곤충술사. added skulking colony animations."
+    "searchText": "v0.104.0:line-032-text-wyhy8 v0.104.0 0.104.0 아트 적 애니메이션 업데이트: 밴텀, 의식의 신수, 곤충술사. updated animation for the following enemies: vantom, ceremonial beast, entomancer."
   },
   {
     "id": "v0.104.0:line-033-text-g9wu4o",
@@ -9679,11 +9679,11 @@
       "아트"
     ],
     "markdownKo": "[gold]오물팽이[/gold] 사망 위치 재배치.",
-    "markdownEn": "Updated art for the following enemies: **Tunneler**, **Entomancer**, **Mawler**.",
+    "markdownEn": "Repositioned **Sludge Spinner** death landing spot.",
     "textKo": "오물팽이 사망 위치 재배치.",
-    "textEn": "Updated art for the following enemies: Tunneler, Entomancer, Mawler.",
+    "textEn": "Repositioned Sludge Spinner death landing spot.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-033-text-g9wu4o v0.104.0 0.104.0 아트 오물팽이 사망 위치 재배치. updated art for the following enemies: tunneler, entomancer, mawler."
+    "searchText": "v0.104.0:line-033-text-g9wu4o v0.104.0 0.104.0 아트 오물팽이 사망 위치 재배치. repositioned sludge spinner death landing spot."
   },
   {
     "id": "v0.104.0:line-034-text-r0o63",
@@ -9694,11 +9694,11 @@
       "UI & UX"
     ],
     "markdownKo": "싱글 플레이어/멀티플레이어에 승천 첫 이용 시 튜토리얼 팝업 추가.",
-    "markdownEn": "Updated animation for the following enemies: **Vantom**, **Ceremonial Beast**, **Entomancer**.",
+    "markdownEn": "Added Ascension first-time tutorial popup for single player and multiplayer.",
     "textKo": "싱글 플레이어/멀티플레이어에 승천 첫 이용 시 튜토리얼 팝업 추가.",
-    "textEn": "Updated animation for the following enemies: Vantom, Ceremonial Beast, Entomancer.",
+    "textEn": "Added Ascension first-time tutorial popup for single player and multiplayer.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-034-text-r0o63 v0.104.0 0.104.0 ui & ux 싱글 플레이어/멀티플레이어에 승천 첫 이용 시 튜토리얼 팝업 추가. updated animation for the following enemies: vantom, ceremonial beast, entomancer."
+    "searchText": "v0.104.0:line-034-text-r0o63 v0.104.0 0.104.0 ui & ux 싱글 플레이어/멀티플레이어에 승천 첫 이용 시 튜토리얼 팝업 추가. added ascension first-time tutorial popup for single player and multiplayer."
   },
   {
     "id": "v0.104.0:line-035-text-1mrm0jh",
@@ -9709,11 +9709,11 @@
       "UI & UX"
     ],
     "markdownKo": "Steam 크래시 발생 시 오류 메시지 표시.",
-    "markdownEn": "Repositioned **Sludge Spinner** death landing spot.",
+    "markdownEn": "An error is now displayed when Steam crashes.",
     "textKo": "Steam 크래시 발생 시 오류 메시지 표시.",
-    "textEn": "Repositioned Sludge Spinner death landing spot.",
+    "textEn": "An error is now displayed when Steam crashes.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-035-text-1mrm0jh v0.104.0 0.104.0 ui & ux steam 크래시 발생 시 오류 메시지 표시. repositioned sludge spinner death landing spot."
+    "searchText": "v0.104.0:line-035-text-1mrm0jh v0.104.0 0.104.0 ui & ux steam 크래시 발생 시 오류 메시지 표시. an error is now displayed when steam crashes."
   },
   {
     "id": "v0.104.0:line-036-text-1v713zt",
@@ -9724,11 +9724,11 @@
       "UI & UX"
     ],
     "markdownKo": "피드백 도구가 피드백을 수신하지 못했을 때 오류 표시.",
-    "markdownEn": "Added Ascension first-time tutorial popup for single player and multiplayer.",
+    "markdownEn": "Feedback tool now displays an error if we didn't receive the feedback.",
     "textKo": "피드백 도구가 피드백을 수신하지 못했을 때 오류 표시.",
-    "textEn": "Added Ascension first-time tutorial popup for single player and multiplayer.",
+    "textEn": "Feedback tool now displays an error if we didn't receive the feedback.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-036-text-1v713zt v0.104.0 0.104.0 ui & ux 피드백 도구가 피드백을 수신하지 못했을 때 오류 표시. added ascension first-time tutorial popup for single player and multiplayer."
+    "searchText": "v0.104.0:line-036-text-1v713zt v0.104.0 0.104.0 ui & ux 피드백 도구가 피드백을 수신하지 못했을 때 오류 표시. feedback tool now displays an error if we didn't receive the feedback."
   },
   {
     "id": "v0.104.0:line-037-text-ivw46r",
@@ -9739,11 +9739,11 @@
       "UI & UX"
     ],
     "markdownKo": "[gold]지하 선착장[/gold] 광신자들의 히트박스, 대사, 의도 표시 위치 조정.",
-    "markdownEn": "An error is now displayed when Steam crashes.",
+    "markdownEn": "Adjusted hitbox, speech, and intent position of Underdocks Cultists.",
     "textKo": "지하 선착장 광신자들의 히트박스, 대사, 의도 표시 위치 조정.",
-    "textEn": "An error is now displayed when Steam crashes.",
+    "textEn": "Adjusted hitbox, speech, and intent position of Underdocks Cultists.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-037-text-ivw46r v0.104.0 0.104.0 ui & ux 지하 선착장 광신자들의 히트박스, 대사, 의도 표시 위치 조정. an error is now displayed when steam crashes."
+    "searchText": "v0.104.0:line-037-text-ivw46r v0.104.0 0.104.0 ui & ux 지하 선착장 광신자들의 히트박스, 대사, 의도 표시 위치 조정. adjusted hitbox, speech, and intent position of underdocks cultists."
   },
   {
     "id": "v0.104.0:line-038-text-vzidwb",
@@ -9754,11 +9754,11 @@
       "UI & UX"
     ],
     "markdownKo": "다수의 적 전투에서 의도 아이콘이 너무 위나 아래로 벗어나는 문제 수정.",
-    "markdownEn": "Feedback tool now displays an error if we didn't receive the feedback.",
+    "markdownEn": "Fixed intents being positioned too high or too low in multi-enemy combats.",
     "textKo": "다수의 적 전투에서 의도 아이콘이 너무 위나 아래로 벗어나는 문제 수정.",
-    "textEn": "Feedback tool now displays an error if we didn't receive the feedback.",
+    "textEn": "Fixed intents being positioned too high or too low in multi-enemy combats.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-038-text-vzidwb v0.104.0 0.104.0 ui & ux 다수의 적 전투에서 의도 아이콘이 너무 위나 아래로 벗어나는 문제 수정. feedback tool now displays an error if we didn't receive the feedback."
+    "searchText": "v0.104.0:line-038-text-vzidwb v0.104.0 0.104.0 ui & ux 다수의 적 전투에서 의도 아이콘이 너무 위나 아래로 벗어나는 문제 수정. fixed intents being positioned too high or too low in multi-enemy combats."
   },
   {
     "id": "v0.104.0:line-039-text-u9k4mp",
@@ -9769,11 +9769,11 @@
       "UI & UX"
     ],
     "markdownKo": "도감 버튼이 다른 잠긴 버튼과 유사한 잠김 표시로 변경.",
-    "markdownEn": "Adjusted hitbox, speech, and intent position of Underdocks Cultists.",
+    "markdownEn": "Bestiary button now looks more locked (similar to how other buttons look locked).",
     "textKo": "도감 버튼이 다른 잠긴 버튼과 유사한 잠김 표시로 변경.",
-    "textEn": "Adjusted hitbox, speech, and intent position of Underdocks Cultists.",
+    "textEn": "Bestiary button now looks more locked (similar to how other buttons look locked).",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-039-text-u9k4mp v0.104.0 0.104.0 ui & ux 도감 버튼이 다른 잠긴 버튼과 유사한 잠김 표시로 변경. adjusted hitbox, speech, and intent position of underdocks cultists."
+    "searchText": "v0.104.0:line-039-text-u9k4mp v0.104.0 0.104.0 ui & ux 도감 버튼이 다른 잠긴 버튼과 유사한 잠김 표시로 변경. bestiary button now looks more locked (similar to how other buttons look locked)."
   },
   {
     "id": "v0.104.0:line-040-text-40xrw6",
@@ -9784,11 +9784,11 @@
       "UI & UX"
     ],
     "markdownKo": "적 턴 동안 플레이어 손패가 방해되지 않도록 애니메이션 처리.",
-    "markdownEn": "Fixed intents being positioned too high or too low in multi-enemy combats.",
+    "markdownEn": "The player's hand now animates out of the way while it is the Enemy turn.",
     "textKo": "적 턴 동안 플레이어 손패가 방해되지 않도록 애니메이션 처리.",
-    "textEn": "Fixed intents being positioned too high or too low in multi-enemy combats.",
+    "textEn": "The player's hand now animates out of the way while it is the Enemy turn.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-040-text-40xrw6 v0.104.0 0.104.0 ui & ux 적 턴 동안 플레이어 손패가 방해되지 않도록 애니메이션 처리. fixed intents being positioned too high or too low in multi-enemy combats."
+    "searchText": "v0.104.0:line-040-text-40xrw6 v0.104.0 0.104.0 ui & ux 적 턴 동안 플레이어 손패가 방해되지 않도록 애니메이션 처리. the player's hand now animates out of the way while it is the enemy turn."
   },
   {
     "id": "v0.104.0:line-041-text-72qdrd",
@@ -9799,11 +9799,11 @@
       "UI & UX"
     ],
     "markdownKo": "[blue]고대의 존재[/blue] 카드 텍스트 배경 업데이트: 더 많은 텍스트를 수용하고 약간 더 어둡고 양각 처리.",
-    "markdownEn": "Bestiary button now looks more locked (similar to how other buttons look locked).",
+    "markdownEn": "Updated Ancient card text backgrounds to fit more text and to be very slightly darker and embossed.",
     "textKo": "고대의 존재 카드 텍스트 배경 업데이트: 더 많은 텍스트를 수용하고 약간 더 어둡고 양각 처리.",
-    "textEn": "Bestiary button now looks more locked (similar to how other buttons look locked).",
+    "textEn": "Updated Ancient card text backgrounds to fit more text and to be very slightly darker and embossed.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-041-text-72qdrd v0.104.0 0.104.0 ui & ux 고대의 존재 카드 텍스트 배경 업데이트: 더 많은 텍스트를 수용하고 약간 더 어둡고 양각 처리. bestiary button now looks more locked (similar to how other buttons look locked)."
+    "searchText": "v0.104.0:line-041-text-72qdrd v0.104.0 0.104.0 ui & ux 고대의 존재 카드 텍스트 배경 업데이트: 더 많은 텍스트를 수용하고 약간 더 어둡고 양각 처리. updated ancient card text backgrounds to fit more text and to be very slightly darker and embossed."
   },
   {
     "id": "v0.104.0:line-042-text-j1mtyn",
@@ -9814,11 +9814,11 @@
       "UI & UX"
     ],
     "markdownKo": "게임 오버 화면의 배지 컨트롤러 탐색 지원.",
-    "markdownEn": "The player's hand now animates out of the way while it is the Enemy turn.",
+    "markdownEn": "Set up controller navigation for Badges in the game over screen.",
     "textKo": "게임 오버 화면의 배지 컨트롤러 탐색 지원.",
-    "textEn": "The player's hand now animates out of the way while it is the Enemy turn.",
+    "textEn": "Set up controller navigation for Badges in the game over screen.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-042-text-j1mtyn v0.104.0 0.104.0 ui & ux 게임 오버 화면의 배지 컨트롤러 탐색 지원. the player's hand now animates out of the way while it is the enemy turn."
+    "searchText": "v0.104.0:line-042-text-j1mtyn v0.104.0 0.104.0 ui & ux 게임 오버 화면의 배지 컨트롤러 탐색 지원. set up controller navigation for badges in the game over screen."
   },
   {
     "id": "v0.104.0:line-043-text-10vcdx2",
@@ -9829,11 +9829,11 @@
       "UI & UX"
     ],
     "markdownKo": "런 기록 화면의 배지에 기본 컨트롤러 탐색 추가.",
-    "markdownEn": "Updated Ancient card text backgrounds to fit more text and to be very slightly darker and embossed.",
+    "markdownEn": "Added basic controller navigation to Badges in the run history screen.",
     "textKo": "런 기록 화면의 배지에 기본 컨트롤러 탐색 추가.",
-    "textEn": "Updated Ancient card text backgrounds to fit more text and to be very slightly darker and embossed.",
+    "textEn": "Added basic controller navigation to Badges in the run history screen.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-043-text-10vcdx2 v0.104.0 0.104.0 ui & ux 런 기록 화면의 배지에 기본 컨트롤러 탐색 추가. updated ancient card text backgrounds to fit more text and to be very slightly darker and embossed."
+    "searchText": "v0.104.0:line-043-text-10vcdx2 v0.104.0 0.104.0 ui & ux 런 기록 화면의 배지에 기본 컨트롤러 탐색 추가. added basic controller navigation to badges in the run history screen."
   },
   {
     "id": "v0.104.0:line-044-text-1qr00dp",
@@ -9844,11 +9844,11 @@
       "UI & UX"
     ],
     "markdownKo": "런 기록의 플레이어 정보 아이콘에 컨트롤러 탐색 추가.",
-    "markdownEn": "Set up controller navigation for Badges in the game over screen.",
+    "markdownEn": "Added controller navigation for the player info icons in the run history.",
     "textKo": "런 기록의 플레이어 정보 아이콘에 컨트롤러 탐색 추가.",
-    "textEn": "Set up controller navigation for Badges in the game over screen.",
+    "textEn": "Added controller navigation for the player info icons in the run history.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-044-text-1qr00dp v0.104.0 0.104.0 ui & ux 런 기록의 플레이어 정보 아이콘에 컨트롤러 탐색 추가. set up controller navigation for badges in the game over screen."
+    "searchText": "v0.104.0:line-044-text-1qr00dp v0.104.0 0.104.0 ui & ux 런 기록의 플레이어 정보 아이콘에 컨트롤러 탐색 추가. added controller navigation for the player info icons in the run history."
   },
   {
     "id": "v0.104.0:line-045-text-1v3k9ri",
@@ -9859,11 +9859,11 @@
       "UI & UX"
     ],
     "markdownKo": "[gold]상?인[/gold] 상점의 컨트롤러 탐색 개선.",
-    "markdownEn": "Added basic controller navigation to Badges in the run history screen.",
+    "markdownEn": "Improved controller navigation in the Fake Merchant shop.",
     "textKo": "상?인 상점의 컨트롤러 탐색 개선.",
-    "textEn": "Added basic controller navigation to Badges in the run history screen.",
+    "textEn": "Improved controller navigation in the Fake Merchant shop.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-045-text-1v3k9ri v0.104.0 0.104.0 ui & ux 상?인 상점의 컨트롤러 탐색 개선. added basic controller navigation to badges in the run history screen."
+    "searchText": "v0.104.0:line-045-text-1v3k9ri v0.104.0 0.104.0 ui & ux 상?인 상점의 컨트롤러 탐색 개선. improved controller navigation in the fake merchant shop."
   },
   {
     "id": "v0.104.0:line-046-text-1yj32za",
@@ -9874,11 +9874,11 @@
       "UI & UX"
     ],
     "markdownKo": "일시정지 메뉴 버튼 컨트롤러 탐색이 순환되도록 변경.",
-    "markdownEn": "Added controller navigation for the player info icons in the run history.",
+    "markdownEn": "Pause menu button controller navigation now wraps.",
     "textKo": "일시정지 메뉴 버튼 컨트롤러 탐색이 순환되도록 변경.",
-    "textEn": "Added controller navigation for the player info icons in the run history.",
+    "textEn": "Pause menu button controller navigation now wraps.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-046-text-1yj32za v0.104.0 0.104.0 ui & ux 일시정지 메뉴 버튼 컨트롤러 탐색이 순환되도록 변경. added controller navigation for the player info icons in the run history."
+    "searchText": "v0.104.0:line-046-text-1yj32za v0.104.0 0.104.0 ui & ux 일시정지 메뉴 버튼 컨트롤러 탐색이 순환되도록 변경. pause menu button controller navigation now wraps."
   },
   {
     "id": "v0.104.0:line-047-text-15xggdd",
@@ -9889,11 +9889,11 @@
       "텍스트"
     ],
     "markdownKo": "[gold]멋진 스카프[/gold] 설명이 자동으로 사용되는 카드는 세지 않음을 명시하기 위해 \"손패에서 사용한\" 카드만 센다고 명시.",
-    "markdownEn": "Improved controller navigation in the Fake Merchant shop.",
+    "markdownEn": "**Brilliant Scarf** relic description now specifies that it only counts cards played \"from your hand\" so it's clear that it doesn't count auto-played cards.",
     "textKo": "멋진 스카프 설명이 자동으로 사용되는 카드는 세지 않음을 명시하기 위해 \"손패에서 사용한\" 카드만 센다고 명시.",
-    "textEn": "Improved controller navigation in the Fake Merchant shop.",
+    "textEn": "Brilliant Scarf relic description now specifies that it only counts cards played \"from your hand\" so it's clear that it doesn't count auto-played cards.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-047-text-15xggdd v0.104.0 0.104.0 텍스트 멋진 스카프 설명이 자동으로 사용되는 카드는 세지 않음을 명시하기 위해 \"손패에서 사용한\" 카드만 센다고 명시. improved controller navigation in the fake merchant shop."
+    "searchText": "v0.104.0:line-047-text-15xggdd v0.104.0 0.104.0 텍스트 멋진 스카프 설명이 자동으로 사용되는 카드는 세지 않음을 명시하기 위해 \"손패에서 사용한\" 카드만 센다고 명시. brilliant scarf relic description now specifies that it only counts cards played \"from your hand\" so it's clear that it doesn't count auto-played cards."
   },
   {
     "id": "v0.104.0:line-048-card-reaper-form",
@@ -9904,9 +9904,9 @@
       "텍스트"
     ],
     "markdownKo": "[gold:card]사신의 형상[/gold] 문구 변경: [gold]종말[/gold]이 사용된 카드가 아니라 [gold:card]사신의 형상[/gold] 파워에 의해 부여됨을 명확히 하기 위해 \"공격이 피해를 입힐 때마다, 그만큼의 [gold]종말[/gold]을 부여합니다.\"로 변경 (이전: \"공격이 피해를 입힐 때마다, 해당 피해량만큼 [gold]종말[/gold]도 부여합니다.\")",
-    "markdownEn": "Pause menu button controller navigation now wraps.",
+    "markdownEn": "**Reaper Form** card wording has been changed to make it clear that the Doom is applied by Reaper Form's power rather than by the played card: \"Whenever Attacks deal damage, apply that much Doom.\" (was \"Whenever Attacks deal damage, they also apply that much Doom.\")",
     "textKo": "사신의 형상 문구 변경: 종말이 사용된 카드가 아니라 사신의 형상 파워에 의해 부여됨을 명확히 하기 위해 \"공격이 피해를 입힐 때마다, 그만큼의 종말을 부여합니다.\"로 변경 (이전: \"공격이 피해를 입힐 때마다, 해당 피해량만큼 종말도 부여합니다.\")",
-    "textEn": "Pause menu button controller navigation now wraps.",
+    "textEn": "Reaper Form card wording has been changed to make it clear that the Doom is applied by Reaper Form's power rather than by the played card: \"Whenever Attacks deal damage, apply that much Doom.\" (was \"Whenever Attacks deal damage, they also apply that much Doom.\")",
     "entityRefs": [
       {
         "type": "card",
@@ -9914,7 +9914,7 @@
         "label": "사신의 형상"
       }
     ],
-    "searchText": "v0.104.0:line-048-card-reaper-form v0.104.0 0.104.0 텍스트 사신의 형상 문구 변경: 종말이 사용된 카드가 아니라 사신의 형상 파워에 의해 부여됨을 명확히 하기 위해 \"공격이 피해를 입힐 때마다, 그만큼의 종말을 부여합니다.\"로 변경 (이전: \"공격이 피해를 입힐 때마다, 해당 피해량만큼 종말도 부여합니다.\") pause menu button controller navigation now wraps. card reaper_form 사신의 형상 사신의 형상 reaper form"
+    "searchText": "v0.104.0:line-048-card-reaper-form v0.104.0 0.104.0 텍스트 사신의 형상 문구 변경: 종말이 사용된 카드가 아니라 사신의 형상 파워에 의해 부여됨을 명확히 하기 위해 \"공격이 피해를 입힐 때마다, 그만큼의 종말을 부여합니다.\"로 변경 (이전: \"공격이 피해를 입힐 때마다, 해당 피해량만큼 종말도 부여합니다.\") reaper form card wording has been changed to make it clear that the doom is applied by reaper form's power rather than by the played card: \"whenever attacks deal damage, apply that much doom.\" (was \"whenever attacks deal damage, they also apply that much doom.\") card reaper_form 사신의 형상 사신의 형상 reaper form"
   },
   {
     "id": "v0.104.0:line-049-text-1dwqeca",
@@ -9925,11 +9925,11 @@
       "텍스트"
     ],
     "markdownKo": "다양한 언어 번역 추가.",
-    "markdownEn": "**Brilliant Scarf** relic description now specifies that it only counts cards played \"from your hand\" so it's clear that it doesn't count auto-played cards.",
+    "markdownEn": "Added translations for various languages.",
     "textKo": "다양한 언어 번역 추가.",
-    "textEn": "Brilliant Scarf relic description now specifies that it only counts cards played \"from your hand\" so it's clear that it doesn't count auto-played cards.",
+    "textEn": "Added translations for various languages.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-049-text-1dwqeca v0.104.0 0.104.0 텍스트 다양한 언어 번역 추가. brilliant scarf relic description now specifies that it only counts cards played \"from your hand\" so it's clear that it doesn't count auto-played cards."
+    "searchText": "v0.104.0:line-049-text-1dwqeca v0.104.0 0.104.0 텍스트 다양한 언어 번역 추가. added translations for various languages."
   },
   {
     "id": "v0.104.0:line-050-text-nhfpf3",
@@ -9940,11 +9940,11 @@
       "텍스트"
     ],
     "markdownKo": "다양한 번역 오류 수정.",
-    "markdownEn": "**Reaper Form** card wording has been changed to make it clear that the Doom is applied by Reaper Form's power rather than by the played card: \"Whenever Attacks deal damage, apply that much Doom.\" (was \"Whenever Attacks deal damage, they also apply that much Doom.\")",
+    "markdownEn": "Fixed various translation errors.",
     "textKo": "다양한 번역 오류 수정.",
-    "textEn": "Reaper Form card wording has been changed to make it clear that the Doom is applied by Reaper Form's power rather than by the played card: \"Whenever Attacks deal damage, apply that much Doom.\" (was \"Whenever Attacks deal damage, they also apply that much Doom.\")",
+    "textEn": "Fixed various translation errors.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-050-text-nhfpf3 v0.104.0 0.104.0 텍스트 다양한 번역 오류 수정. reaper form card wording has been changed to make it clear that the doom is applied by reaper form's power rather than by the played card: \"whenever attacks deal damage, apply that much doom.\" (was \"whenever attacks deal damage, they also apply that much doom.\")"
+    "searchText": "v0.104.0:line-050-text-nhfpf3 v0.104.0 0.104.0 텍스트 다양한 번역 오류 수정. fixed various translation errors."
   },
   {
     "id": "v0.104.0:line-051-text-6xdmsn",
@@ -9956,11 +9956,11 @@
       "일반"
     ],
     "markdownKo": "점수를 가져오는 중이거나 실패한 경우, 점수 구분선이 더 이상 표시되지 않음.",
-    "markdownEn": "Added translations for various languages.",
+    "markdownEn": "Score separator lines are no longer shown while fetching score or if it fails.",
     "textKo": "점수를 가져오는 중이거나 실패한 경우, 점수 구분선이 더 이상 표시되지 않음.",
-    "textEn": "Added translations for various languages.",
+    "textEn": "Score separator lines are no longer shown while fetching score or if it fails.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-051-text-6xdmsn v0.104.0 0.104.0 버그 수정 일반 점수를 가져오는 중이거나 실패한 경우, 점수 구분선이 더 이상 표시되지 않음. added translations for various languages."
+    "searchText": "v0.104.0:line-051-text-6xdmsn v0.104.0 0.104.0 버그 수정 일반 점수를 가져오는 중이거나 실패한 경우, 점수 구분선이 더 이상 표시되지 않음. score separator lines are no longer shown while fetching score or if it fails."
   },
   {
     "id": "v0.104.0:line-052-card-unrelenting-card-void-form",
@@ -9972,9 +9972,9 @@
       "일반"
     ],
     "markdownKo": "다음 카드를 무료로 사용하게 만드는 효과([gold:card]무자비[/gold], [gold:card]공허의 형상[/gold] 등)가 모든 카드의 코스트를 증가시키는 효과([gold]뒤엉킴[/gold], [gold]가시 박힌 건틀릿[/gold], [gold:card]연명[/gold] 등)보다 우선 적용되도록 수정.",
-    "markdownEn": "Fixed various translation errors.",
+    "markdownEn": "Effects that make the next card free to play (**Unrelenting** card, **Void Form** card, etc.) now properly take precedence over effects that increase the cost of all cards (**Entangled** affliction, **Spiked Gauntlets** relic, **Borrowed Time** card, etc.).",
     "textKo": "다음 카드를 무료로 사용하게 만드는 효과(무자비, 공허의 형상 등)가 모든 카드의 코스트를 증가시키는 효과(뒤엉킴, 가시 박힌 건틀릿, 연명 등)보다 우선 적용되도록 수정.",
-    "textEn": "Fixed various translation errors.",
+    "textEn": "Effects that make the next card free to play (Unrelenting card, Void Form card, etc.) now properly take precedence over effects that increase the cost of all cards (Entangled affliction, Spiked Gauntlets relic, Borrowed Time card, etc.).",
     "entityRefs": [
       {
         "type": "card",
@@ -9992,7 +9992,7 @@
         "label": "연명"
       }
     ],
-    "searchText": "v0.104.0:line-052-card-unrelenting-card-void-form v0.104.0 0.104.0 버그 수정 일반 다음 카드를 무료로 사용하게 만드는 효과(무자비, 공허의 형상 등)가 모든 카드의 코스트를 증가시키는 효과(뒤엉킴, 가시 박힌 건틀릿, 연명 등)보다 우선 적용되도록 수정. fixed various translation errors. card unrelenting 무자비 무자비 unrelenting card void_form 공허의 형상 공허의 형상 void form card borrowed_time 연명 연명 borrowed time"
+    "searchText": "v0.104.0:line-052-card-unrelenting-card-void-form v0.104.0 0.104.0 버그 수정 일반 다음 카드를 무료로 사용하게 만드는 효과(무자비, 공허의 형상 등)가 모든 카드의 코스트를 증가시키는 효과(뒤엉킴, 가시 박힌 건틀릿, 연명 등)보다 우선 적용되도록 수정. effects that make the next card free to play (unrelenting card, void form card, etc.) now properly take precedence over effects that increase the cost of all cards (entangled affliction, spiked gauntlets relic, borrowed time card, etc.). card unrelenting 무자비 무자비 unrelenting card void_form 공허의 형상 공허의 형상 void form card borrowed_time 연명 연명 borrowed time"
   },
   {
     "id": "v0.104.0:line-053-text-1c5jj5b",
@@ -10004,11 +10004,11 @@
       "일반"
     ],
     "markdownKo": "메인 메뉴로 돌아갔다가 런 재개 후 발생할 수 있는 전투 소프트락 수정.",
-    "markdownEn": "Score separator lines are no longer shown while fetching score or if it fails.",
+    "markdownEn": "Fixed combat softlock that could occur after returning to main menu and resuming a run.",
     "textKo": "메인 메뉴로 돌아갔다가 런 재개 후 발생할 수 있는 전투 소프트락 수정.",
-    "textEn": "Score separator lines are no longer shown while fetching score or if it fails.",
+    "textEn": "Fixed combat softlock that could occur after returning to main menu and resuming a run.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-053-text-1c5jj5b v0.104.0 0.104.0 버그 수정 일반 메인 메뉴로 돌아갔다가 런 재개 후 발생할 수 있는 전투 소프트락 수정. score separator lines are no longer shown while fetching score or if it fails."
+    "searchText": "v0.104.0:line-053-text-1c5jj5b v0.104.0 0.104.0 버그 수정 일반 메인 메뉴로 돌아갔다가 런 재개 후 발생할 수 있는 전투 소프트락 수정. fixed combat softlock that could occur after returning to main menu and resuming a run."
   },
   {
     "id": "v0.104.0:line-054-text-12yd0uk",
@@ -10020,11 +10020,11 @@
       "일반"
     ],
     "markdownKo": "죽어가는 대상에게 파워를 적용할 때 발생하는 크래시 수정.",
-    "markdownEn": "Effects that make the next card free to play (**Unrelenting** card, **Void Form** card, etc.) now properly take precedence over effects that increase the cost of all cards (**Entangled** affliction, **Spiked Gauntlets** relic, **Borrowed Time** card, etc.).",
+    "markdownEn": "Fixed crash when applying powers to dying creatures.",
     "textKo": "죽어가는 대상에게 파워를 적용할 때 발생하는 크래시 수정.",
-    "textEn": "Effects that make the next card free to play (Unrelenting card, Void Form card, etc.) now properly take precedence over effects that increase the cost of all cards (Entangled affliction, Spiked Gauntlets relic, Borrowed Time card, etc.).",
+    "textEn": "Fixed crash when applying powers to dying creatures.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-054-text-12yd0uk v0.104.0 0.104.0 버그 수정 일반 죽어가는 대상에게 파워를 적용할 때 발생하는 크래시 수정. effects that make the next card free to play (unrelenting card, void form card, etc.) now properly take precedence over effects that increase the cost of all cards (entangled affliction, spiked gauntlets relic, borrowed time card, etc.)."
+    "searchText": "v0.104.0:line-054-text-12yd0uk v0.104.0 0.104.0 버그 수정 일반 죽어가는 대상에게 파워를 적용할 때 발생하는 크래시 수정. fixed crash when applying powers to dying creatures."
   },
   {
     "id": "v0.104.0:line-055-text-3afip1",
@@ -10036,11 +10036,11 @@
       "일반"
     ],
     "markdownKo": "세이브가 초기화되기 전 게임 시작 중에 종료 시 발생하는 크래시 수정.",
-    "markdownEn": "Fixed combat softlock that could occur after returning to main menu and resuming a run.",
+    "markdownEn": "Fixed crash when closing the game during startup before saves are initialized.",
     "textKo": "세이브가 초기화되기 전 게임 시작 중에 종료 시 발생하는 크래시 수정.",
-    "textEn": "Fixed combat softlock that could occur after returning to main menu and resuming a run.",
+    "textEn": "Fixed crash when closing the game during startup before saves are initialized.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-055-text-3afip1 v0.104.0 0.104.0 버그 수정 일반 세이브가 초기화되기 전 게임 시작 중에 종료 시 발생하는 크래시 수정. fixed combat softlock that could occur after returning to main menu and resuming a run."
+    "searchText": "v0.104.0:line-055-text-3afip1 v0.104.0 0.104.0 버그 수정 일반 세이브가 초기화되기 전 게임 시작 중에 종료 시 발생하는 크래시 수정. fixed crash when closing the game during startup before saves are initialized."
   },
   {
     "id": "v0.104.0:line-056-text-1qz5buv",
@@ -10052,11 +10052,11 @@
       "일반"
     ],
     "markdownKo": "휴식 장소에서 카드 업그레이드 시 발생하는 크래시 수정.",
-    "markdownEn": "Fixed crash when applying powers to dying creatures.",
+    "markdownEn": "Fixed crash when upgrading a card at rest site.",
     "textKo": "휴식 장소에서 카드 업그레이드 시 발생하는 크래시 수정.",
-    "textEn": "Fixed crash when applying powers to dying creatures.",
+    "textEn": "Fixed crash when upgrading a card at rest site.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-056-text-1qz5buv v0.104.0 0.104.0 버그 수정 일반 휴식 장소에서 카드 업그레이드 시 발생하는 크래시 수정. fixed crash when applying powers to dying creatures."
+    "searchText": "v0.104.0:line-056-text-1qz5buv v0.104.0 0.104.0 버그 수정 일반 휴식 장소에서 카드 업그레이드 시 발생하는 크래시 수정. fixed crash when upgrading a card at rest site."
   },
   {
     "id": "v0.104.0:line-057-text-6apupl",
@@ -10068,11 +10068,11 @@
       "일반"
     ],
     "markdownKo": "타임라인 화면에서 역사 표시기가 화면 밖에 있을 때 발생하는 오류 수정.",
-    "markdownEn": "Fixed crash when closing the game during startup before saves are initialized.",
+    "markdownEn": "Fixed error caused by offscreen Epoch indicator on Timeline screen.",
     "textKo": "타임라인 화면에서 역사 표시기가 화면 밖에 있을 때 발생하는 오류 수정.",
-    "textEn": "Fixed crash when closing the game during startup before saves are initialized.",
+    "textEn": "Fixed error caused by offscreen Epoch indicator on Timeline screen.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-057-text-6apupl v0.104.0 0.104.0 버그 수정 일반 타임라인 화면에서 역사 표시기가 화면 밖에 있을 때 발생하는 오류 수정. fixed crash when closing the game during startup before saves are initialized."
+    "searchText": "v0.104.0:line-057-text-6apupl v0.104.0 0.104.0 버그 수정 일반 타임라인 화면에서 역사 표시기가 화면 밖에 있을 때 발생하는 오류 수정. fixed error caused by offscreen epoch indicator on timeline screen."
   },
   {
     "id": "v0.104.0:line-058-text-1kj2ysk",
@@ -10084,11 +10084,11 @@
       "일반"
     ],
     "markdownKo": "포션 제거 중 포션 슬롯에서 포커스 해제 시 발생하는 오류 수정.",
-    "markdownEn": "Fixed crash when upgrading a card at rest site.",
+    "markdownEn": "Fixed error when un-focusing Potion slot during Potion removal.",
     "textKo": "포션 제거 중 포션 슬롯에서 포커스 해제 시 발생하는 오류 수정.",
-    "textEn": "Fixed crash when upgrading a card at rest site.",
+    "textEn": "Fixed error when un-focusing Potion slot during Potion removal.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-058-text-1kj2ysk v0.104.0 0.104.0 버그 수정 일반 포션 제거 중 포션 슬롯에서 포커스 해제 시 발생하는 오류 수정. fixed crash when upgrading a card at rest site."
+    "searchText": "v0.104.0:line-058-text-1kj2ysk v0.104.0 0.104.0 버그 수정 일반 포션 제거 중 포션 슬롯에서 포커스 해제 시 발생하는 오류 수정. fixed error when un-focusing potion slot during potion removal."
   },
   {
     "id": "v0.104.0:line-059-text-z9vdjl",
@@ -10100,11 +10100,11 @@
       "일반"
     ],
     "markdownKo": "전투 중 UI 요소가 프레임 중간에 제거될 때 발생하는 리눅스 크래시 수정.",
-    "markdownEn": "Fixed error caused by offscreen Epoch indicator on Timeline screen.",
+    "markdownEn": "Fixed Linux crash during combat when UI elements are removed mid-frame.",
     "textKo": "전투 중 UI 요소가 프레임 중간에 제거될 때 발생하는 리눅스 크래시 수정.",
-    "textEn": "Fixed error caused by offscreen Epoch indicator on Timeline screen.",
+    "textEn": "Fixed Linux crash during combat when UI elements are removed mid-frame.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-059-text-z9vdjl v0.104.0 0.104.0 버그 수정 일반 전투 중 ui 요소가 프레임 중간에 제거될 때 발생하는 리눅스 크래시 수정. fixed error caused by offscreen epoch indicator on timeline screen."
+    "searchText": "v0.104.0:line-059-text-z9vdjl v0.104.0 0.104.0 버그 수정 일반 전투 중 ui 요소가 프레임 중간에 제거될 때 발생하는 리눅스 크래시 수정. fixed linux crash during combat when ui elements are removed mid-frame."
   },
   {
     "id": "v0.104.0:line-060-text-1dpo9my",
@@ -10116,11 +10116,11 @@
       "일반"
     ],
     "markdownKo": "방 진입 시 발생하는 크래시 수정.",
-    "markdownEn": "Fixed error when un-focusing Potion slot during Potion removal.",
+    "markdownEn": "Fixed crash when entering rooms.",
     "textKo": "방 진입 시 발생하는 크래시 수정.",
-    "textEn": "Fixed error when un-focusing Potion slot during Potion removal.",
+    "textEn": "Fixed crash when entering rooms.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-060-text-1dpo9my v0.104.0 0.104.0 버그 수정 일반 방 진입 시 발생하는 크래시 수정. fixed error when un-focusing potion slot during potion removal."
+    "searchText": "v0.104.0:line-060-text-1dpo9my v0.104.0 0.104.0 버그 수정 일반 방 진입 시 발생하는 크래시 수정. fixed crash when entering rooms."
   },
   {
     "id": "v0.104.0:line-061-text-b34zdd",
@@ -10132,11 +10132,11 @@
       "일반"
     ],
     "markdownKo": "폴란드어로 플레이 중 여러 적을 발견한 후 게임 오버 화면 문제 수정.",
-    "markdownEn": "Fixed Linux crash during combat when UI elements are removed mid-frame.",
+    "markdownEn": "Fixed an issue with the Game Over screen after discovering multiple enemies while playing in Polish.",
     "textKo": "폴란드어로 플레이 중 여러 적을 발견한 후 게임 오버 화면 문제 수정.",
-    "textEn": "Fixed Linux crash during combat when UI elements are removed mid-frame.",
+    "textEn": "Fixed an issue with the Game Over screen after discovering multiple enemies while playing in Polish.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-061-text-b34zdd v0.104.0 0.104.0 버그 수정 일반 폴란드어로 플레이 중 여러 적을 발견한 후 게임 오버 화면 문제 수정. fixed linux crash during combat when ui elements are removed mid-frame."
+    "searchText": "v0.104.0:line-061-text-b34zdd v0.104.0 0.104.0 버그 수정 일반 폴란드어로 플레이 중 여러 적을 발견한 후 게임 오버 화면 문제 수정. fixed an issue with the game over screen after discovering multiple enemies while playing in polish."
   },
   {
     "id": "v0.104.0:line-062-text-10f9d3r",
@@ -10148,11 +10148,11 @@
       "일반"
     ],
     "markdownKo": "컨트롤러로 죽은 적을 타겟팅할 수 있는 문제 수정.",
-    "markdownEn": "Fixed crash when entering rooms.",
+    "markdownEn": "Fixed being able to target dead enemies with controller.",
     "textKo": "컨트롤러로 죽은 적을 타겟팅할 수 있는 문제 수정.",
-    "textEn": "Fixed crash when entering rooms.",
+    "textEn": "Fixed being able to target dead enemies with controller.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-062-text-10f9d3r v0.104.0 0.104.0 버그 수정 일반 컨트롤러로 죽은 적을 타겟팅할 수 있는 문제 수정. fixed crash when entering rooms."
+    "searchText": "v0.104.0:line-062-text-10f9d3r v0.104.0 0.104.0 버그 수정 일반 컨트롤러로 죽은 적을 타겟팅할 수 있는 문제 수정. fixed being able to target dead enemies with controller."
   },
   {
     "id": "v0.104.0:line-063-text-jkwgek",
@@ -10164,11 +10164,11 @@
       "일반"
     ],
     "markdownKo": "컨트롤러로 적을 타겟팅하는 중 카드 더미 화면을 열 때 발생하는 크래시 수정.",
-    "markdownEn": "Fixed an issue with the Game Over screen after discovering multiple enemies while playing in Polish.",
+    "markdownEn": "Fixed crash when opening card pile screen while targeting an enemy with controller.",
     "textKo": "컨트롤러로 적을 타겟팅하는 중 카드 더미 화면을 열 때 발생하는 크래시 수정.",
-    "textEn": "Fixed an issue with the Game Over screen after discovering multiple enemies while playing in Polish.",
+    "textEn": "Fixed crash when opening card pile screen while targeting an enemy with controller.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-063-text-jkwgek v0.104.0 0.104.0 버그 수정 일반 컨트롤러로 적을 타겟팅하는 중 카드 더미 화면을 열 때 발생하는 크래시 수정. fixed an issue with the game over screen after discovering multiple enemies while playing in polish."
+    "searchText": "v0.104.0:line-063-text-jkwgek v0.104.0 0.104.0 버그 수정 일반 컨트롤러로 적을 타겟팅하는 중 카드 더미 화면을 열 때 발생하는 크래시 수정. fixed crash when opening card pile screen while targeting an enemy with controller."
   },
   {
     "id": "v0.104.0:line-064-text-e2whim",
@@ -10180,11 +10180,11 @@
       "일반"
     ],
     "markdownKo": "전투에 재진입할 때 간헐적으로 발생하는 전투 오류 수정.",
-    "markdownEn": "Fixed being able to target dead enemies with controller.",
+    "markdownEn": "Fixed rare combat errors that could occur when re-entering combat.",
     "textKo": "전투에 재진입할 때 간헐적으로 발생하는 전투 오류 수정.",
-    "textEn": "Fixed being able to target dead enemies with controller.",
+    "textEn": "Fixed rare combat errors that could occur when re-entering combat.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-064-text-e2whim v0.104.0 0.104.0 버그 수정 일반 전투에 재진입할 때 간헐적으로 발생하는 전투 오류 수정. fixed being able to target dead enemies with controller."
+    "searchText": "v0.104.0:line-064-text-e2whim v0.104.0 0.104.0 버그 수정 일반 전투에 재진입할 때 간헐적으로 발생하는 전투 오류 수정. fixed rare combat errors that could occur when re-entering combat."
   },
   {
     "id": "v0.104.0:line-065-text-116kstx",
@@ -10196,11 +10196,11 @@
       "일반"
     ],
     "markdownKo": "디버그 파일 기록 관련 드문 소프트락 수정.",
-    "markdownEn": "Fixed crash when opening card pile screen while targeting an enemy with controller.",
+    "markdownEn": "Fixed rare softlock related to writing debug files.",
     "textKo": "디버그 파일 기록 관련 드문 소프트락 수정.",
-    "textEn": "Fixed crash when opening card pile screen while targeting an enemy with controller.",
+    "textEn": "Fixed rare softlock related to writing debug files.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-065-text-116kstx v0.104.0 0.104.0 버그 수정 일반 디버그 파일 기록 관련 드문 소프트락 수정. fixed crash when opening card pile screen while targeting an enemy with controller."
+    "searchText": "v0.104.0:line-065-text-116kstx v0.104.0 0.104.0 버그 수정 일반 디버그 파일 기록 관련 드문 소프트락 수정. fixed rare softlock related to writing debug files."
   },
   {
     "id": "v0.104.0:line-066-text-kghkby",
@@ -10212,11 +10212,11 @@
       "일반"
     ],
     "markdownKo": "구버전 런 기록에서 발생하는 소프트락 수정.",
-    "markdownEn": "Fixed rare combat errors that could occur when re-entering combat.",
+    "markdownEn": "Fixed softlock on run histories from older versions of the game.",
     "textKo": "구버전 런 기록에서 발생하는 소프트락 수정.",
-    "textEn": "Fixed rare combat errors that could occur when re-entering combat.",
+    "textEn": "Fixed softlock on run histories from older versions of the game.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-066-text-kghkby v0.104.0 0.104.0 버그 수정 일반 구버전 런 기록에서 발생하는 소프트락 수정. fixed rare combat errors that could occur when re-entering combat."
+    "searchText": "v0.104.0:line-066-text-kghkby v0.104.0 0.104.0 버그 수정 일반 구버전 런 기록에서 발생하는 소프트락 수정. fixed softlock on run histories from older versions of the game."
   },
   {
     "id": "v0.104.0:line-067-text-1xraqua",
@@ -10228,11 +10228,11 @@
       "일반"
     ],
     "markdownKo": "저장 작업이 결함에 강하도록 변경하여 소프트락 방지.",
-    "markdownEn": "Fixed rare softlock related to writing debug files.",
+    "markdownEn": "Made save operations fault-tolerant to prevent softlocks.",
     "textKo": "저장 작업이 결함에 강하도록 변경하여 소프트락 방지.",
-    "textEn": "Fixed rare softlock related to writing debug files.",
+    "textEn": "Made save operations fault-tolerant to prevent softlocks.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-067-text-1xraqua v0.104.0 0.104.0 버그 수정 일반 저장 작업이 결함에 강하도록 변경하여 소프트락 방지. fixed rare softlock related to writing debug files."
+    "searchText": "v0.104.0:line-067-text-1xraqua v0.104.0 0.104.0 버그 수정 일반 저장 작업이 결함에 강하도록 변경하여 소프트락 방지. made save operations fault-tolerant to prevent softlocks."
   },
   {
     "id": "v0.104.0:line-068-ascension-level-10",
@@ -10244,9 +10244,9 @@
       "일반"
     ],
     "markdownKo": "승천 10 점수 정상 처리.",
-    "markdownEn": "Fixed softlock on run histories from older versions of the game.",
+    "markdownEn": "Score is correct when at ascension 10.",
     "textKo": "승천 10 점수 정상 처리.",
-    "textEn": "Fixed softlock on run histories from older versions of the game.",
+    "textEn": "Score is correct when at ascension 10.",
     "entityRefs": [
       {
         "type": "ascension",
@@ -10254,7 +10254,7 @@
         "label": "승천 10"
       }
     ],
-    "searchText": "v0.104.0:line-068-ascension-level-10 v0.104.0 0.104.0 버그 수정 일반 승천 10 점수 정상 처리. fixed softlock on run histories from older versions of the game. ascension level_10 승천 10 더블 보스 double boss 승천 10 a10 ascension 10 a10"
+    "searchText": "v0.104.0:line-068-ascension-level-10 v0.104.0 0.104.0 버그 수정 일반 승천 10 점수 정상 처리. score is correct when at ascension 10. ascension level_10 승천 10 더블 보스 double boss 승천 10 a10 ascension 10 a10"
   },
   {
     "id": "v0.104.0:line-069-text-mnm6dn",
@@ -10266,11 +10266,11 @@
       "일반"
     ],
     "markdownKo": "일일 런 점수 제출 시 잘못된 층수 표시 수정.",
-    "markdownEn": "Made save operations fault-tolerant to prevent softlocks.",
+    "markdownEn": "Fixed wrong floor count when submitting Daily score.",
     "textKo": "일일 런 점수 제출 시 잘못된 층수 표시 수정.",
-    "textEn": "Made save operations fault-tolerant to prevent softlocks.",
+    "textEn": "Fixed wrong floor count when submitting Daily score.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-069-text-mnm6dn v0.104.0 0.104.0 버그 수정 일반 일일 런 점수 제출 시 잘못된 층수 표시 수정. made save operations fault-tolerant to prevent softlocks."
+    "searchText": "v0.104.0:line-069-text-mnm6dn v0.104.0 0.104.0 버그 수정 일반 일일 런 점수 제출 시 잘못된 층수 표시 수정. fixed wrong floor count when submitting daily score."
   },
   {
     "id": "v0.104.0:line-070-card-howl-from-beyond",
@@ -10282,9 +10282,9 @@
       "아이언클래드"
     ],
     "markdownKo": "[gold:card]저편의 울음소리[/gold]이 이제 손패를 뽑기 전이 아닌 뽑은 후에 [gold]소멸[/gold] 더미에서 발동.",
-    "markdownEn": "Score is correct when at ascension 10.",
+    "markdownEn": "**Howl From Beyond** card now plays from the Exhaust pile after you've drawn your hand instead of before.",
     "textKo": "저편의 울음소리이 이제 손패를 뽑기 전이 아닌 뽑은 후에 소멸 더미에서 발동.",
-    "textEn": "Score is correct when at ascension 10.",
+    "textEn": "Howl From Beyond card now plays from the Exhaust pile after you've drawn your hand instead of before.",
     "entityRefs": [
       {
         "type": "card",
@@ -10292,7 +10292,7 @@
         "label": "저편의 울음소리"
       }
     ],
-    "searchText": "v0.104.0:line-070-card-howl-from-beyond v0.104.0 0.104.0 버그 수정 아이언클래드 저편의 울음소리이 이제 손패를 뽑기 전이 아닌 뽑은 후에 소멸 더미에서 발동. score is correct when at ascension 10. card howl_from_beyond 저편의 울음소리 저편의 울음소리 howl from beyond"
+    "searchText": "v0.104.0:line-070-card-howl-from-beyond v0.104.0 0.104.0 버그 수정 아이언클래드 저편의 울음소리이 이제 손패를 뽑기 전이 아닌 뽑은 후에 소멸 더미에서 발동. howl from beyond card now plays from the exhaust pile after you've drawn your hand instead of before. card howl_from_beyond 저편의 울음소리 저편의 울음소리 howl from beyond"
   },
   {
     "id": "v0.104.0:line-071-card-havoc-card-anger",
@@ -10304,9 +10304,9 @@
       "아이언클래드"
     ],
     "markdownKo": "[gold:card]파괴[/gold]가 사용한 [gold:card]분노[/gold]이 사용 시 추가로 [gold]소멸[/gold]되는 문제 수정.",
-    "markdownEn": "Fixed wrong floor count when submitting Daily score.",
+    "markdownEn": "Fixed **Anger** card played by **Havoc** also Exhausting on play.",
     "textKo": "파괴가 사용한 분노이 사용 시 추가로 소멸되는 문제 수정.",
-    "textEn": "Fixed wrong floor count when submitting Daily score.",
+    "textEn": "Fixed Anger card played by Havoc also Exhausting on play.",
     "entityRefs": [
       {
         "type": "card",
@@ -10319,7 +10319,7 @@
         "label": "분노"
       }
     ],
-    "searchText": "v0.104.0:line-071-card-havoc-card-anger v0.104.0 0.104.0 버그 수정 아이언클래드 파괴가 사용한 분노이 사용 시 추가로 소멸되는 문제 수정. fixed wrong floor count when submitting daily score. card havoc 파괴 파괴 havoc card anger 분노 분노 anger"
+    "searchText": "v0.104.0:line-071-card-havoc-card-anger v0.104.0 0.104.0 버그 수정 아이언클래드 파괴가 사용한 분노이 사용 시 추가로 소멸되는 문제 수정. fixed anger card played by havoc also exhausting on play. card havoc 파괴 파괴 havoc card anger 분노 분노 anger"
   },
   {
     "id": "v0.104.0:line-072-card-largesse-card-armaments",
@@ -10331,9 +10331,9 @@
       "아이언클래드"
     ],
     "markdownKo": "[gold:card]하사[/gold]+로 손패에 추가된 강화 카드가 [gold:card]전투장비[/gold]의 선택지에 포함되는 문제 수정.",
-    "markdownEn": "**Howl From Beyond** card now plays from the Exhaust pile after you've drawn your hand instead of before.",
+    "markdownEn": "Fixed being able to select an upgraded card with **Armaments** card if it is added to your hand by **Largesse+** card.",
     "textKo": "하사+로 손패에 추가된 강화 카드가 전투장비의 선택지에 포함되는 문제 수정.",
-    "textEn": "Howl From Beyond card now plays from the Exhaust pile after you've drawn your hand instead of before.",
+    "textEn": "Fixed being able to select an upgraded card with Armaments card if it is added to your hand by Largesse+ card.",
     "entityRefs": [
       {
         "type": "card",
@@ -10346,7 +10346,7 @@
         "label": "전투장비"
       }
     ],
-    "searchText": "v0.104.0:line-072-card-largesse-card-armaments v0.104.0 0.104.0 버그 수정 아이언클래드 하사+로 손패에 추가된 강화 카드가 전투장비의 선택지에 포함되는 문제 수정. howl from beyond card now plays from the exhaust pile after you've drawn your hand instead of before. card largesse 하사 하사 largesse card armaments 전투장비 전투장비 armaments"
+    "searchText": "v0.104.0:line-072-card-largesse-card-armaments v0.104.0 0.104.0 버그 수정 아이언클래드 하사+로 손패에 추가된 강화 카드가 전투장비의 선택지에 포함되는 문제 수정. fixed being able to select an upgraded card with armaments card if it is added to your hand by largesse+ card. card largesse 하사 하사 largesse card armaments 전투장비 전투장비 armaments"
   },
   {
     "id": "v0.104.0:line-073-card-not-yet",
@@ -10358,9 +10358,9 @@
       "아이언클래드"
     ],
     "markdownKo": "[gold:card]불굴[/gold]이 더 이상 스킬 포션을 통해 생성되지 않음.",
-    "markdownEn": "Fixed **Anger** card played by **Havoc** also Exhausting on play.",
+    "markdownEn": "**Not Yet** card can no longer be generated via a Skill Potion.",
     "textKo": "불굴이 더 이상 스킬 포션을 통해 생성되지 않음.",
-    "textEn": "Fixed Anger card played by Havoc also Exhausting on play.",
+    "textEn": "Not Yet card can no longer be generated via a Skill Potion.",
     "entityRefs": [
       {
         "type": "card",
@@ -10368,7 +10368,7 @@
         "label": "불굴"
       }
     ],
-    "searchText": "v0.104.0:line-073-card-not-yet v0.104.0 0.104.0 버그 수정 아이언클래드 불굴이 더 이상 스킬 포션을 통해 생성되지 않음. fixed anger card played by havoc also exhausting on play. card not_yet 불굴 불굴 not yet"
+    "searchText": "v0.104.0:line-073-card-not-yet v0.104.0 0.104.0 버그 수정 아이언클래드 불굴이 더 이상 스킬 포션을 통해 생성되지 않음. not yet card can no longer be generated via a skill potion. card not_yet 불굴 불굴 not yet"
   },
   {
     "id": "v0.104.0:line-074-card-survivor",
@@ -10380,9 +10380,9 @@
       "사일런트"
     ],
     "markdownKo": "엿보기 버튼을 통해 [gold:card]생존자[/gold]의 버리기 선택을 건너뛸 수 있는 문제 수정.",
-    "markdownEn": "Fixed being able to select an upgraded card with **Armaments** card if it is added to your hand by **Largesse+** card.",
+    "markdownEn": "Fixed being able to skip the **Survivor** card discard selection via the peek button.",
     "textKo": "엿보기 버튼을 통해 생존자의 버리기 선택을 건너뛸 수 있는 문제 수정.",
-    "textEn": "Fixed being able to select an upgraded card with Armaments card if it is added to your hand by Largesse+ card.",
+    "textEn": "Fixed being able to skip the Survivor card discard selection via the peek button.",
     "entityRefs": [
       {
         "type": "card",
@@ -10390,7 +10390,7 @@
         "label": "생존자"
       }
     ],
-    "searchText": "v0.104.0:line-074-card-survivor v0.104.0 0.104.0 버그 수정 사일런트 엿보기 버튼을 통해 생존자의 버리기 선택을 건너뛸 수 있는 문제 수정. fixed being able to select an upgraded card with armaments card if it is added to your hand by largesse+ card. card survivor 생존자 생존자 survivor"
+    "searchText": "v0.104.0:line-074-card-survivor v0.104.0 0.104.0 버그 수정 사일런트 엿보기 버튼을 통해 생존자의 버리기 선택을 건너뛸 수 있는 문제 수정. fixed being able to skip the survivor card discard selection via the peek button. card survivor 생존자 생존자 survivor"
   },
   {
     "id": "v0.104.0:line-075-card-bombardment",
@@ -10402,9 +10402,9 @@
       "리젠트"
     ],
     "markdownKo": "[gold:card]포격[/gold]이 이제 손패를 뽑기 전이 아닌 뽑은 후에 [gold]소멸[/gold] 더미에서 발동.",
-    "markdownEn": "**Not Yet** card can no longer be generated via a Skill Potion.",
+    "markdownEn": "**Bombardment** card now plays from the Exhaust pile after you've drawn your hand instead of before.",
     "textKo": "포격이 이제 손패를 뽑기 전이 아닌 뽑은 후에 소멸 더미에서 발동.",
-    "textEn": "Not Yet card can no longer be generated via a Skill Potion.",
+    "textEn": "Bombardment card now plays from the Exhaust pile after you've drawn your hand instead of before.",
     "entityRefs": [
       {
         "type": "card",
@@ -10412,7 +10412,7 @@
         "label": "포격"
       }
     ],
-    "searchText": "v0.104.0:line-075-card-bombardment v0.104.0 0.104.0 버그 수정 리젠트 포격이 이제 손패를 뽑기 전이 아닌 뽑은 후에 소멸 더미에서 발동. not yet card can no longer be generated via a skill potion. card bombardment 포격 포격 bombardment"
+    "searchText": "v0.104.0:line-075-card-bombardment v0.104.0 0.104.0 버그 수정 리젠트 포격이 이제 손패를 뽑기 전이 아닌 뽑은 후에 소멸 더미에서 발동. bombardment card now plays from the exhaust pile after you've drawn your hand instead of before. card bombardment 포격 포격 bombardment"
   },
   {
     "id": "v0.104.0:line-076-card-i-am-invincible",
@@ -10424,9 +10424,9 @@
       "리젠트"
     ],
     "markdownKo": "[gold:card]나는 무적이다[/gold]이 이제 손패 버리기 후가 아닌 전에 올바르게 발동.",
-    "markdownEn": "Fixed being able to skip the **Survivor** card discard selection via the peek button.",
+    "markdownEn": "**I Am Invincible** card now properly triggers before you've discarded your hand instead of after.",
     "textKo": "나는 무적이다이 이제 손패 버리기 후가 아닌 전에 올바르게 발동.",
-    "textEn": "Fixed being able to skip the Survivor card discard selection via the peek button.",
+    "textEn": "I Am Invincible card now properly triggers before you've discarded your hand instead of after.",
     "entityRefs": [
       {
         "type": "card",
@@ -10434,7 +10434,7 @@
         "label": "나는 무적이다"
       }
     ],
-    "searchText": "v0.104.0:line-076-card-i-am-invincible v0.104.0 0.104.0 버그 수정 리젠트 나는 무적이다이 이제 손패 버리기 후가 아닌 전에 올바르게 발동. fixed being able to skip the survivor card discard selection via the peek button. card i_am_invincible 나는 무적이다 나는 무적이다 i am invincible"
+    "searchText": "v0.104.0:line-076-card-i-am-invincible v0.104.0 0.104.0 버그 수정 리젠트 나는 무적이다이 이제 손패 버리기 후가 아닌 전에 올바르게 발동. i am invincible card now properly triggers before you've discarded your hand instead of after. card i_am_invincible 나는 무적이다 나는 무적이다 i am invincible"
   },
   {
     "id": "v0.104.0:line-077-text-1niulf7",
@@ -10446,11 +10446,11 @@
       "리젠트"
     ],
     "markdownKo": "[gold]리갈라이트[/gold]가 더 이상 적이 상태이상을 부여할 때 [gold]방어도[/gold]를 획득하지 않음.",
-    "markdownEn": "**Bombardment** card now plays from the Exhaust pile after you've drawn your hand instead of before.",
+    "markdownEn": "**Regalite** relic no longer gains Block from enemies applying statuses.",
     "textKo": "리갈라이트가 더 이상 적이 상태이상을 부여할 때 방어도를 획득하지 않음.",
-    "textEn": "Bombardment card now plays from the Exhaust pile after you've drawn your hand instead of before.",
+    "textEn": "Regalite relic no longer gains Block from enemies applying statuses.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-077-text-1niulf7 v0.104.0 0.104.0 버그 수정 리젠트 리갈라이트가 더 이상 적이 상태이상을 부여할 때 방어도를 획득하지 않음. bombardment card now plays from the exhaust pile after you've drawn your hand instead of before."
+    "searchText": "v0.104.0:line-077-text-1niulf7 v0.104.0 0.104.0 버그 수정 리젠트 리갈라이트가 더 이상 적이 상태이상을 부여할 때 방어도를 획득하지 않음. regalite relic no longer gains block from enemies applying statuses."
   },
   {
     "id": "v0.104.0:line-078-card-summon-forth-card-sovereign-blade",
@@ -10462,9 +10462,9 @@
       "리젠트"
     ],
     "markdownKo": "[gold:card]대령하라[/gold]이 이제 기존 [gold:card]군주의 칼날[/gold]을 대장간 이후가 아닌 전에 손패에 추가.",
-    "markdownEn": "**I Am Invincible** card now properly triggers before you've discarded your hand instead of after.",
+    "markdownEn": "**Summon Forth** card now properly puts existing **Sovereign Blades** into your Hand before Forging instead of after.",
     "textKo": "대령하라이 이제 기존 군주의 칼날을 대장간 이후가 아닌 전에 손패에 추가.",
-    "textEn": "I Am Invincible card now properly triggers before you've discarded your hand instead of after.",
+    "textEn": "Summon Forth card now properly puts existing Sovereign Blades into your Hand before Forging instead of after.",
     "entityRefs": [
       {
         "type": "card",
@@ -10477,7 +10477,7 @@
         "label": "군주의 칼날"
       }
     ],
-    "searchText": "v0.104.0:line-078-card-summon-forth-card-sovereign-blade v0.104.0 0.104.0 버그 수정 리젠트 대령하라이 이제 기존 군주의 칼날을 대장간 이후가 아닌 전에 손패에 추가. i am invincible card now properly triggers before you've discarded your hand instead of after. card summon_forth 대령하라 대령하라 summon forth card sovereign_blade 군주의 칼날 군주의 칼날 sovereign blade"
+    "searchText": "v0.104.0:line-078-card-summon-forth-card-sovereign-blade v0.104.0 0.104.0 버그 수정 리젠트 대령하라이 이제 기존 군주의 칼날을 대장간 이후가 아닌 전에 손패에 추가. summon forth card now properly puts existing sovereign blades into your hand before forging instead of after. card summon_forth 대령하라 대령하라 summon forth card sovereign_blade 군주의 칼날 군주의 칼날 sovereign blade"
   },
   {
     "id": "v0.104.0:line-079-text-1nxhjq3",
@@ -10489,11 +10489,11 @@
       "네크로바인더"
     ],
     "markdownKo": "장면 전환 중 [gold]골골이[/gold] 사망 시 발생하는 크래시 수정.",
-    "markdownEn": "**Regalite** relic no longer gains Block from enemies applying statuses.",
+    "markdownEn": "Fixed crash when **Osty** dies during scene transition.",
     "textKo": "장면 전환 중 골골이 사망 시 발생하는 크래시 수정.",
-    "textEn": "Regalite relic no longer gains Block from enemies applying statuses.",
+    "textEn": "Fixed crash when Osty dies during scene transition.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-079-text-1nxhjq3 v0.104.0 0.104.0 버그 수정 네크로바인더 장면 전환 중 골골이 사망 시 발생하는 크래시 수정. regalite relic no longer gains block from enemies applying statuses."
+    "searchText": "v0.104.0:line-079-text-1nxhjq3 v0.104.0 0.104.0 버그 수정 네크로바인더 장면 전환 중 골골이 사망 시 발생하는 크래시 수정. fixed crash when osty dies during scene transition."
   },
   {
     "id": "v0.104.0:line-080-card-reave-card-soul",
@@ -10505,9 +10505,9 @@
       "네크로바인더"
     ],
     "markdownKo": "[gold:card]강탈[/gold]이 생성하는 [gold:card]영혼[/gold]을 항상 덱 맨 아래로 보내는 문제 수정.",
-    "markdownEn": "**Summon Forth** card now properly puts existing **Sovereign Blades** into your Hand before Forging instead of after.",
+    "markdownEn": "Fixed **Reave** card always bottom-decking the **Soul** card it creates.",
     "textKo": "강탈이 생성하는 영혼을 항상 덱 맨 아래로 보내는 문제 수정.",
-    "textEn": "Summon Forth card now properly puts existing Sovereign Blades into your Hand before Forging instead of after.",
+    "textEn": "Fixed Reave card always bottom-decking the Soul card it creates.",
     "entityRefs": [
       {
         "type": "card",
@@ -10520,7 +10520,7 @@
         "label": "영혼"
       }
     ],
-    "searchText": "v0.104.0:line-080-card-reave-card-soul v0.104.0 0.104.0 버그 수정 네크로바인더 강탈이 생성하는 영혼을 항상 덱 맨 아래로 보내는 문제 수정. summon forth card now properly puts existing sovereign blades into your hand before forging instead of after. card reave 강탈 강탈 reave card soul 영혼 영혼 soul"
+    "searchText": "v0.104.0:line-080-card-reave-card-soul v0.104.0 0.104.0 버그 수정 네크로바인더 강탈이 생성하는 영혼을 항상 덱 맨 아래로 보내는 문제 수정. fixed reave card always bottom-decking the soul card it creates. card reave 강탈 강탈 reave card soul 영혼 영혼 soul"
   },
   {
     "id": "v0.104.0:line-081-card-beckon",
@@ -10532,9 +10532,9 @@
       "디펙트"
     ],
     "markdownKo": "[gold:card]유인[/gold]으로 전투가 전격 오브에 의해 종료될 때도 플레이어가 피해를 입는 문제 수정.",
-    "markdownEn": "Fixed crash when **Osty** dies during scene transition.",
+    "markdownEn": "Fixed **Beckon** still damaging the player if the combat is ended by Lightning orbs.",
     "textKo": "유인으로 전투가 전격 오브에 의해 종료될 때도 플레이어가 피해를 입는 문제 수정.",
-    "textEn": "Fixed crash when Osty dies during scene transition.",
+    "textEn": "Fixed Beckon still damaging the player if the combat is ended by Lightning orbs.",
     "entityRefs": [
       {
         "type": "card",
@@ -10542,7 +10542,7 @@
         "label": "유인"
       }
     ],
-    "searchText": "v0.104.0:line-081-card-beckon v0.104.0 0.104.0 버그 수정 디펙트 유인으로 전투가 전격 오브에 의해 종료될 때도 플레이어가 피해를 입는 문제 수정. fixed crash when osty dies during scene transition. card beckon 유인 유인 beckon"
+    "searchText": "v0.104.0:line-081-card-beckon v0.104.0 0.104.0 버그 수정 디펙트 유인으로 전투가 전격 오브에 의해 종료될 때도 플레이어가 피해를 입는 문제 수정. fixed beckon still damaging the player if the combat is ended by lightning orbs. card beckon 유인 유인 beckon"
   },
   {
     "id": "v0.104.0:line-082-card-bad-luck",
@@ -10554,9 +10554,9 @@
       "포션 & 유물"
     ],
     "markdownKo": "[gold]불가침[/gold]을 보유한 플레이어에게 [gold]장화[/gold]가 [gold:card]불운[/gold] 저주의 피해를 1에서 5로 증폭시키는 문제 수정.",
-    "markdownEn": "Fixed **Reave** card always bottom-decking the **Soul** card it creates.",
+    "markdownEn": "Fixed **The Boot** relic amplifying **Bad Luck** curse's damage from 1 to 5 when the player has Intangible.",
     "textKo": "불가침을 보유한 플레이어에게 장화가 불운 저주의 피해를 1에서 5로 증폭시키는 문제 수정.",
-    "textEn": "Fixed Reave card always bottom-decking the Soul card it creates.",
+    "textEn": "Fixed The Boot relic amplifying Bad Luck curse's damage from 1 to 5 when the player has Intangible.",
     "entityRefs": [
       {
         "type": "card",
@@ -10564,7 +10564,7 @@
         "label": "불운"
       }
     ],
-    "searchText": "v0.104.0:line-082-card-bad-luck v0.104.0 0.104.0 버그 수정 포션 & 유물 불가침을 보유한 플레이어에게 장화가 불운 저주의 피해를 1에서 5로 증폭시키는 문제 수정. fixed reave card always bottom-decking the soul card it creates. card bad_luck 불운 불운 bad luck"
+    "searchText": "v0.104.0:line-082-card-bad-luck v0.104.0 0.104.0 버그 수정 포션 & 유물 불가침을 보유한 플레이어에게 장화가 불운 저주의 피해를 1에서 5로 증폭시키는 문제 수정. fixed the boot relic amplifying bad luck curse's damage from 1 to 5 when the player has intangible. card bad_luck 불운 불운 bad luck"
   },
   {
     "id": "v0.104.0:line-083-modifier-terminal",
@@ -10576,9 +10576,9 @@
       "포션 & 유물"
     ],
     "markdownKo": "[gold]자가 형성 점토[/gold]가 [gold]불치병[/gold]의 최대 HP 감소로 발동하지 않도록 수정.",
-    "markdownEn": "Fixed **Beckon** still damaging the player if the combat is ended by Lightning orbs.",
+    "markdownEn": "**Self-Forming Clay** relic is no longer triggered by **Terminal** modifier's max HP loss.",
     "textKo": "자가 형성 점토가 불치병의 최대 HP 감소로 발동하지 않도록 수정.",
-    "textEn": "Fixed Beckon still damaging the player if the combat is ended by Lightning orbs.",
+    "textEn": "Self-Forming Clay relic is no longer triggered by Terminal modifier's max HP loss.",
     "entityRefs": [
       {
         "type": "modifier",
@@ -10586,7 +10586,7 @@
         "label": "불치병"
       }
     ],
-    "searchText": "v0.104.0:line-083-modifier-terminal v0.104.0 0.104.0 버그 수정 포션 & 유물 자가 형성 점토가 불치병의 최대 hp 감소로 발동하지 않도록 수정. fixed beckon still damaging the player if the combat is ended by lightning orbs. modifier terminal 불치병 불치병 terminal"
+    "searchText": "v0.104.0:line-083-modifier-terminal v0.104.0 0.104.0 버그 수정 포션 & 유물 자가 형성 점토가 불치병의 최대 hp 감소로 발동하지 않도록 수정. self-forming clay relic is no longer triggered by terminal modifier's max hp loss. modifier terminal 불치병 불치병 terminal"
   },
   {
     "id": "v0.104.0:line-084-text-1u0ursl",
@@ -10598,11 +10598,11 @@
       "고대의 존재"
     ],
     "markdownKo": "덱에 타격 카드가 없으면 [gold]영양만점 수프[/gold] 축복을 받을 수 없도록 수정.",
-    "markdownEn": "Fixed **The Boot** relic amplifying **Bad Luck** curse's damage from 1 to 5 when the player has Intangible.",
+    "markdownEn": "Players can no longer roll **Tezcatara's Nutritious Soup** blessing if there are no Strikes in their deck.",
     "textKo": "덱에 타격 카드가 없으면 영양만점 수프 축복을 받을 수 없도록 수정.",
-    "textEn": "Fixed The Boot relic amplifying Bad Luck curse's damage from 1 to 5 when the player has Intangible.",
+    "textEn": "Players can no longer roll Tezcatara's Nutritious Soup blessing if there are no Strikes in their deck.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-084-text-1u0ursl v0.104.0 0.104.0 버그 수정 고대의 존재 덱에 타격 카드가 없으면 영양만점 수프 축복을 받을 수 없도록 수정. fixed the boot relic amplifying bad luck curse's damage from 1 to 5 when the player has intangible."
+    "searchText": "v0.104.0:line-084-text-1u0ursl v0.104.0 0.104.0 버그 수정 고대의 존재 덱에 타격 카드가 없으면 영양만점 수프 축복을 받을 수 없도록 수정. players can no longer roll tezcatara's nutritious soup blessing if there are no strikes in their deck."
   },
   {
     "id": "v0.104.0:line-085-card-stardust",
@@ -10614,9 +10614,9 @@
       "고대의 존재"
     ],
     "markdownKo": "[gold]속삭이는 귀걸이[/gold]가 [gold:card]우주 먼지[/gold]을 올바르게 사용하지 않는 문제 수정.",
-    "markdownEn": "**Self-Forming Clay** relic is no longer triggered by **Terminal** modifier's max HP loss.",
+    "markdownEn": "Fixed **Vakuu's Whispering Earring** not correctly playing **Stardust** card.",
     "textKo": "속삭이는 귀걸이가 우주 먼지을 올바르게 사용하지 않는 문제 수정.",
-    "textEn": "Self-Forming Clay relic is no longer triggered by Terminal modifier's max HP loss.",
+    "textEn": "Fixed Vakuu's Whispering Earring not correctly playing Stardust card.",
     "entityRefs": [
       {
         "type": "card",
@@ -10624,7 +10624,7 @@
         "label": "우주 먼지"
       }
     ],
-    "searchText": "v0.104.0:line-085-card-stardust v0.104.0 0.104.0 버그 수정 고대의 존재 속삭이는 귀걸이가 우주 먼지을 올바르게 사용하지 않는 문제 수정. self-forming clay relic is no longer triggered by terminal modifier's max hp loss. card stardust 우주 먼지 우주 먼지 stardust"
+    "searchText": "v0.104.0:line-085-card-stardust v0.104.0 0.104.0 버그 수정 고대의 존재 속삭이는 귀걸이가 우주 먼지을 올바르게 사용하지 않는 문제 수정. fixed vakuu's whispering earring not correctly playing stardust card. card stardust 우주 먼지 우주 먼지 stardust"
   },
   {
     "id": "v0.104.0:line-086-text-pdi0y",
@@ -10636,11 +10636,11 @@
       "고대의 존재"
     ],
     "markdownKo": "[gold]니오우의 뼈 주사위[/gold]로 [gold]니오우의 호부[/gold]를 함께 얻었을 때, [gold]나뭇잎 습포[/gold]가 [gold]니오우의 호부[/gold]로 강화된 타격/수비를 변환하지 않도록 수정.",
-    "markdownEn": "Players can no longer roll **Tezcatara's Nutritious Soup** blessing if there are no Strikes in their deck.",
+    "markdownEn": "**Leafy Poutice** relic no longer transforms the upgraded Strikes/Defends from **Neow's Talisman** relic if you get both from **Neow's Bones** relic.",
     "textKo": "니오우의 뼈 주사위로 니오우의 호부를 함께 얻었을 때, 나뭇잎 습포가 니오우의 호부로 강화된 타격/수비를 변환하지 않도록 수정.",
-    "textEn": "Players can no longer roll Tezcatara's Nutritious Soup blessing if there are no Strikes in their deck.",
+    "textEn": "Leafy Poutice relic no longer transforms the upgraded Strikes/Defends from Neow's Talisman relic if you get both from Neow's Bones relic.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-086-text-pdi0y v0.104.0 0.104.0 버그 수정 고대의 존재 니오우의 뼈 주사위로 니오우의 호부를 함께 얻었을 때, 나뭇잎 습포가 니오우의 호부로 강화된 타격/수비를 변환하지 않도록 수정. players can no longer roll tezcatara's nutritious soup blessing if there are no strikes in their deck."
+    "searchText": "v0.104.0:line-086-text-pdi0y v0.104.0 0.104.0 버그 수정 고대의 존재 니오우의 뼈 주사위로 니오우의 호부를 함께 얻었을 때, 나뭇잎 습포가 니오우의 호부로 강화된 타격/수비를 변환하지 않도록 수정. leafy poutice relic no longer transforms the upgraded strikes/defends from neow's talisman relic if you get both from neow's bones relic."
   },
   {
     "id": "v0.104.0:line-087-text-b56ywu",
@@ -10652,11 +10652,11 @@
       "고대의 존재"
     ],
     "markdownKo": "[gold]멈추지 않는 팽이[/gold]가 [gold]속삭이는 귀걸이[/gold]로 손패의 마지막 카드를 사용할 때 올바르게 발동.",
-    "markdownEn": "Fixed **Vakuu's Whispering Earring** not correctly playing **Stardust** card.",
+    "markdownEn": "**Unceasing Top** relic now triggers properly when **Vakuu's Whispering Earring** relic plays the last card in your hand.",
     "textKo": "멈추지 않는 팽이가 속삭이는 귀걸이로 손패의 마지막 카드를 사용할 때 올바르게 발동.",
-    "textEn": "Fixed Vakuu's Whispering Earring not correctly playing Stardust card.",
+    "textEn": "Unceasing Top relic now triggers properly when Vakuu's Whispering Earring relic plays the last card in your hand.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-087-text-b56ywu v0.104.0 0.104.0 버그 수정 고대의 존재 멈추지 않는 팽이가 속삭이는 귀걸이로 손패의 마지막 카드를 사용할 때 올바르게 발동. fixed vakuu's whispering earring not correctly playing stardust card."
+    "searchText": "v0.104.0:line-087-text-b56ywu v0.104.0 0.104.0 버그 수정 고대의 존재 멈추지 않는 팽이가 속삭이는 귀걸이로 손패의 마지막 카드를 사용할 때 올바르게 발동. unceasing top relic now triggers properly when vakuu's whispering earring relic plays the last card in your hand."
   },
   {
     "id": "v0.104.0:line-088-text-1g9bjyb",
@@ -10668,11 +10668,11 @@
       "적"
     ],
     "markdownKo": "[gold]난타전[/gold] 이벤트에서 포션을 버릴 수 없는 문제 수정.",
-    "markdownEn": "**Leafy Poutice** relic no longer transforms the upgraded Strikes/Defends from **Neow's Talisman** relic if you get both from **Neow's Bones** relic.",
+    "markdownEn": "Fixed being unable to discard potions in the **Punch Off** event.",
     "textKo": "난타전 이벤트에서 포션을 버릴 수 없는 문제 수정.",
-    "textEn": "Leafy Poutice relic no longer transforms the upgraded Strikes/Defends from Neow's Talisman relic if you get both from Neow's Bones relic.",
+    "textEn": "Fixed being unable to discard potions in the Punch Off event.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-088-text-1g9bjyb v0.104.0 0.104.0 버그 수정 적 난타전 이벤트에서 포션을 버릴 수 없는 문제 수정. leafy poutice relic no longer transforms the upgraded strikes/defends from neow's talisman relic if you get both from neow's bones relic."
+    "searchText": "v0.104.0:line-088-text-1g9bjyb v0.104.0 0.104.0 버그 수정 적 난타전 이벤트에서 포션을 버릴 수 없는 문제 수정. fixed being unable to discard potions in the punch off event."
   },
   {
     "id": "v0.104.0:line-089-text-yb65u4",
@@ -10684,11 +10684,11 @@
       "적"
     ],
     "markdownKo": "해당 턴에 [gold]투사된 공포[/gold] 환영을 처치해도 [gold]어둠의 족쇄[/gold]에서 얻은 음수 [gold]힘[/gold]이 유지되는 문제 수정.",
-    "markdownEn": "**Unceasing Top** relic now triggers properly when **Vakuu's Whispering Earring** relic plays the last card in your hand.",
+    "markdownEn": "Fixed **Parafright** illusion keeping its negative Strength from **Dark Shackles** when you kill it for the turn.",
     "textKo": "해당 턴에 투사된 공포 환영을 처치해도 어둠의 족쇄에서 얻은 음수 힘이 유지되는 문제 수정.",
-    "textEn": "Unceasing Top relic now triggers properly when Vakuu's Whispering Earring relic plays the last card in your hand.",
+    "textEn": "Fixed Parafright illusion keeping its negative Strength from Dark Shackles when you kill it for the turn.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-089-text-yb65u4 v0.104.0 0.104.0 버그 수정 적 해당 턴에 투사된 공포 환영을 처치해도 어둠의 족쇄에서 얻은 음수 힘이 유지되는 문제 수정. unceasing top relic now triggers properly when vakuu's whispering earring relic plays the last card in your hand."
+    "searchText": "v0.104.0:line-089-text-yb65u4 v0.104.0 0.104.0 버그 수정 적 해당 턴에 투사된 공포 환영을 처치해도 어둠의 족쇄에서 얻은 음수 힘이 유지되는 문제 수정. fixed parafright illusion keeping its negative strength from dark shackles when you kill it for the turn."
   },
   {
     "id": "v0.104.0:line-090-text-1gkigpc",
@@ -10700,11 +10700,11 @@
       "이벤트"
     ],
     "markdownKo": "[gold]상?인[/gold]에게 [gold]역겨운 포션[/gold]을 건넬 수 없는 문제 수정.",
-    "markdownEn": "Fixed being unable to discard potions in the **Punch Off** event.",
+    "markdownEn": "Fixed being unable to give the Foul Potion to the **Fake Merchant**.",
     "textKo": "상?인에게 역겨운 포션을 건넬 수 없는 문제 수정.",
-    "textEn": "Fixed being unable to discard potions in the Punch Off event.",
+    "textEn": "Fixed being unable to give the Foul Potion to the Fake Merchant.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-090-text-1gkigpc v0.104.0 0.104.0 버그 수정 이벤트 상?인에게 역겨운 포션을 건넬 수 없는 문제 수정. fixed being unable to discard potions in the punch off event."
+    "searchText": "v0.104.0:line-090-text-1gkigpc v0.104.0 0.104.0 버그 수정 이벤트 상?인에게 역겨운 포션을 건넬 수 없는 문제 수정. fixed being unable to give the foul potion to the fake merchant."
   },
   {
     "id": "v0.104.0:line-091-text-1wtmkcr",
@@ -10716,11 +10716,11 @@
       "이벤트"
     ],
     "markdownKo": "[gold]감염된 자동인형[/gold] 이벤트에서 다른 클래스의 카드가 등장하는 문제 수정.",
-    "markdownEn": "Fixed **Parafright** illusion keeping its negative Strength from **Dark Shackles** when you kill it for the turn.",
+    "markdownEn": "Fixed cards from other classes appearing in the **Infested Automaton** event.",
     "textKo": "감염된 자동인형 이벤트에서 다른 클래스의 카드가 등장하는 문제 수정.",
-    "textEn": "Fixed Parafright illusion keeping its negative Strength from Dark Shackles when you kill it for the turn.",
+    "textEn": "Fixed cards from other classes appearing in the Infested Automaton event.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-091-text-1wtmkcr v0.104.0 0.104.0 버그 수정 이벤트 감염된 자동인형 이벤트에서 다른 클래스의 카드가 등장하는 문제 수정. fixed parafright illusion keeping its negative strength from dark shackles when you kill it for the turn."
+    "searchText": "v0.104.0:line-091-text-1wtmkcr v0.104.0 0.104.0 버그 수정 이벤트 감염된 자동인형 이벤트에서 다른 클래스의 카드가 등장하는 문제 수정. fixed cards from other classes appearing in the infested automaton event."
   },
   {
     "id": "v0.104.0:line-092-text-l8uzir",
@@ -10732,11 +10732,11 @@
       "이벤트"
     ],
     "markdownKo": "[gold]전투로 손상된 훈련 인형[/gold] 이벤트 전투에서 어떻게든 사망 시 발생하는 소프트락 수정.",
-    "markdownEn": "Fixed being unable to give the Foul Potion to the **Fake Merchant**.",
+    "markdownEn": "Fixed softlock if you somehow die in the **Battleworn Dummy** event fight.",
     "textKo": "전투로 손상된 훈련 인형 이벤트 전투에서 어떻게든 사망 시 발생하는 소프트락 수정.",
-    "textEn": "Fixed being unable to give the Foul Potion to the Fake Merchant.",
+    "textEn": "Fixed softlock if you somehow die in the Battleworn Dummy event fight.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-092-text-l8uzir v0.104.0 0.104.0 버그 수정 이벤트 전투로 손상된 훈련 인형 이벤트 전투에서 어떻게든 사망 시 발생하는 소프트락 수정. fixed being unable to give the foul potion to the fake merchant."
+    "searchText": "v0.104.0:line-092-text-l8uzir v0.104.0 0.104.0 버그 수정 이벤트 전투로 손상된 훈련 인형 이벤트 전투에서 어떻게든 사망 시 발생하는 소프트락 수정. fixed softlock if you somehow die in the battleworn dummy event fight."
   },
   {
     "id": "v0.104.0:line-093-card-spoils-map",
@@ -10748,9 +10748,9 @@
       "이벤트"
     ],
     "markdownKo": "퀘스트를 완료했을 때 [gold:card]보물 지도[/gold]이 여러 장인 경우, 이제 모두 제거됨.",
-    "markdownEn": "Fixed cards from other classes appearing in the **Infested Automaton** event.",
+    "markdownEn": "All **Spoils Map** cards are now removed if you complete the quest and you somehow have multiple.",
     "textKo": "퀘스트를 완료했을 때 보물 지도이 여러 장인 경우, 이제 모두 제거됨.",
-    "textEn": "Fixed cards from other classes appearing in the Infested Automaton event.",
+    "textEn": "All Spoils Map cards are now removed if you complete the quest and you somehow have multiple.",
     "entityRefs": [
       {
         "type": "card",
@@ -10758,7 +10758,7 @@
         "label": "보물 지도"
       }
     ],
-    "searchText": "v0.104.0:line-093-card-spoils-map v0.104.0 0.104.0 버그 수정 이벤트 퀘스트를 완료했을 때 보물 지도이 여러 장인 경우, 이제 모두 제거됨. fixed cards from other classes appearing in the infested automaton event. card spoils_map 보물 지도 보물 지도 spoils map"
+    "searchText": "v0.104.0:line-093-card-spoils-map v0.104.0 0.104.0 버그 수정 이벤트 퀘스트를 완료했을 때 보물 지도이 여러 장인 경우, 이제 모두 제거됨. all spoils map cards are now removed if you complete the quest and you somehow have multiple. card spoils_map 보물 지도 보물 지도 spoils map"
   },
   {
     "id": "v0.104.0:line-094-card-spoils-map",
@@ -10770,9 +10770,9 @@
       "이벤트"
     ],
     "markdownKo": "[gold:card]보물 지도[/gold] 퀘스트 카드를 여러 장 보유한 경우, 이제 카드 1장당 600 골드 획득.",
-    "markdownEn": "Fixed softlock if you somehow die in the **Battleworn Dummy** event fight.",
+    "markdownEn": "You now get 600 gold for each copy of the **Spoils Map** quest card you have.",
     "textKo": "보물 지도 퀘스트 카드를 여러 장 보유한 경우, 이제 카드 1장당 600 골드 획득.",
-    "textEn": "Fixed softlock if you somehow die in the Battleworn Dummy event fight.",
+    "textEn": "You now get 600 gold for each copy of the Spoils Map quest card you have.",
     "entityRefs": [
       {
         "type": "card",
@@ -10780,7 +10780,7 @@
         "label": "보물 지도"
       }
     ],
-    "searchText": "v0.104.0:line-094-card-spoils-map v0.104.0 0.104.0 버그 수정 이벤트 보물 지도 퀘스트 카드를 여러 장 보유한 경우, 이제 카드 1장당 600 골드 획득. fixed softlock if you somehow die in the battleworn dummy event fight. card spoils_map 보물 지도 보물 지도 spoils map"
+    "searchText": "v0.104.0:line-094-card-spoils-map v0.104.0 0.104.0 버그 수정 이벤트 보물 지도 퀘스트 카드를 여러 장 보유한 경우, 이제 카드 1장당 600 골드 획득. you now get 600 gold for each copy of the spoils map quest card you have. card spoils_map 보물 지도 보물 지도 spoils map"
   },
   {
     "id": "v0.104.0:line-095-card-armaments",
@@ -10792,9 +10792,9 @@
       "멀티플레이어"
     ],
     "markdownKo": "[gold]기사 패거리[/gold] 조우 중 [gold:card]전투장비[/gold] 사용 관련 드문 멀티플레이어 문제 수정.",
-    "markdownEn": "All **Spoils Map** cards are now removed if you complete the quest and you somehow have multiple.",
+    "markdownEn": "Fixed a rare issue in multiplayer when playing **Armaments** card during the **Knight Gang** encounter.",
     "textKo": "기사 패거리 조우 중 전투장비 사용 관련 드문 멀티플레이어 문제 수정.",
-    "textEn": "All Spoils Map cards are now removed if you complete the quest and you somehow have multiple.",
+    "textEn": "Fixed a rare issue in multiplayer when playing Armaments card during the Knight Gang encounter.",
     "entityRefs": [
       {
         "type": "card",
@@ -10802,7 +10802,7 @@
         "label": "전투장비"
       }
     ],
-    "searchText": "v0.104.0:line-095-card-armaments v0.104.0 0.104.0 버그 수정 멀티플레이어 기사 패거리 조우 중 전투장비 사용 관련 드문 멀티플레이어 문제 수정. all spoils map cards are now removed if you complete the quest and you somehow have multiple. card armaments 전투장비 전투장비 armaments"
+    "searchText": "v0.104.0:line-095-card-armaments v0.104.0 0.104.0 버그 수정 멀티플레이어 기사 패거리 조우 중 전투장비 사용 관련 드문 멀티플레이어 문제 수정. fixed a rare issue in multiplayer when playing armaments card during the knight gang encounter. card armaments 전투장비 전투장비 armaments"
   },
   {
     "id": "v0.104.0:line-096-text-1dtlg1y",
@@ -10814,11 +10814,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "[gold]파엘의 군체[/gold]와 [gold]완갑[/gold]이 소유자가 다른 플레이어에게 [gold]방어도[/gold]를 부여할 때 발동하지 않는 문제 수정.",
-    "markdownEn": "You now get 600 gold for each copy of the **Spoils Map** quest card you have.",
+    "markdownEn": "Fixed **Pael's Legion** and **Vambrace** relics not proccing from the owner applying Block to other players.",
     "textKo": "파엘의 군체와 완갑이 소유자가 다른 플레이어에게 방어도를 부여할 때 발동하지 않는 문제 수정.",
-    "textEn": "You now get 600 gold for each copy of the Spoils Map quest card you have.",
+    "textEn": "Fixed Pael's Legion and Vambrace relics not proccing from the owner applying Block to other players.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-096-text-1dtlg1y v0.104.0 0.104.0 버그 수정 멀티플레이어 파엘의 군체와 완갑이 소유자가 다른 플레이어에게 방어도를 부여할 때 발동하지 않는 문제 수정. you now get 600 gold for each copy of the spoils map quest card you have."
+    "searchText": "v0.104.0:line-096-text-1dtlg1y v0.104.0 0.104.0 버그 수정 멀티플레이어 파엘의 군체와 완갑이 소유자가 다른 플레이어에게 방어도를 부여할 때 발동하지 않는 문제 수정. fixed pael's legion and vambrace relics not proccing from the owner applying block to other players."
   },
   {
     "id": "v0.104.0:line-097-text-tb81sh",
@@ -10830,11 +10830,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "플레이어 중 HP가 8 미만인 사람이 있으면 [gold]울창한 초목[/gold]이 등장하지 않도록 수정.",
-    "markdownEn": "Fixed a rare issue in multiplayer when playing **Armaments** card during the **Knight Gang** encounter.",
+    "markdownEn": "**Dense Vegetation** can no longer appear if any player has less than 8 HP.",
     "textKo": "플레이어 중 HP가 8 미만인 사람이 있으면 울창한 초목이 등장하지 않도록 수정.",
-    "textEn": "Fixed a rare issue in multiplayer when playing Armaments card during the Knight Gang encounter.",
+    "textEn": "Dense Vegetation can no longer appear if any player has less than 8 HP.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-097-text-tb81sh v0.104.0 0.104.0 버그 수정 멀티플레이어 플레이어 중 hp가 8 미만인 사람이 있으면 울창한 초목이 등장하지 않도록 수정. fixed a rare issue in multiplayer when playing armaments card during the knight gang encounter."
+    "searchText": "v0.104.0:line-097-text-tb81sh v0.104.0 0.104.0 버그 수정 멀티플레이어 플레이어 중 hp가 8 미만인 사람이 있으면 울창한 초목이 등장하지 않도록 수정. dense vegetation can no longer appear if any player has less than 8 hp."
   },
   {
     "id": "v0.104.0:line-098-text-6x8a75",
@@ -10846,11 +10846,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "첫 런에서 [gold]유목[/gold] 사용 관련 소프트락 수정.",
-    "markdownEn": "Fixed **Pael's Legion** and **Vambrace** relics not proccing from the owner applying Block to other players.",
+    "markdownEn": "Fixed softlock related to using **Driftwood** relic on your first run.",
     "textKo": "첫 런에서 유목 사용 관련 소프트락 수정.",
-    "textEn": "Fixed Pael's Legion and Vambrace relics not proccing from the owner applying Block to other players.",
+    "textEn": "Fixed softlock related to using Driftwood relic on your first run.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-098-text-6x8a75 v0.104.0 0.104.0 버그 수정 멀티플레이어 첫 런에서 유목 사용 관련 소프트락 수정. fixed pael's legion and vambrace relics not proccing from the owner applying block to other players."
+    "searchText": "v0.104.0:line-098-text-6x8a75 v0.104.0 0.104.0 버그 수정 멀티플레이어 첫 런에서 유목 사용 관련 소프트락 수정. fixed softlock related to using driftwood relic on your first run."
   },
   {
     "id": "v0.104.0:line-099-text-w31xm1",
@@ -10862,11 +10862,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "팀원이 컨트롤러를 사용 중일 때 보물방 로딩 시 발생하는 드문 소프트락 수정.",
-    "markdownEn": "**Dense Vegetation** can no longer appear if any player has less than 8 HP.",
+    "markdownEn": "Fixed rare softlock loading into a treasure room when a teammate is using a controller.",
     "textKo": "팀원이 컨트롤러를 사용 중일 때 보물방 로딩 시 발생하는 드문 소프트락 수정.",
-    "textEn": "Dense Vegetation can no longer appear if any player has less than 8 HP.",
+    "textEn": "Fixed rare softlock loading into a treasure room when a teammate is using a controller.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-099-text-w31xm1 v0.104.0 0.104.0 버그 수정 멀티플레이어 팀원이 컨트롤러를 사용 중일 때 보물방 로딩 시 발생하는 드문 소프트락 수정. dense vegetation can no longer appear if any player has less than 8 hp."
+    "searchText": "v0.104.0:line-099-text-w31xm1 v0.104.0 0.104.0 버그 수정 멀티플레이어 팀원이 컨트롤러를 사용 중일 때 보물방 로딩 시 발생하는 드문 소프트락 수정. fixed rare softlock loading into a treasure room when a teammate is using a controller."
   },
   {
     "id": "v0.104.0:line-100-text-by01ov",
@@ -10878,11 +10878,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "전투 시작 직전 포션 사용 관련 상태 불일치 수정.",
-    "markdownEn": "Fixed softlock related to using **Driftwood** relic on your first run.",
+    "markdownEn": "Fixed state divergence related to using a potion just before combat began.",
     "textKo": "전투 시작 직전 포션 사용 관련 상태 불일치 수정.",
-    "textEn": "Fixed softlock related to using Driftwood relic on your first run.",
+    "textEn": "Fixed state divergence related to using a potion just before combat began.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-100-text-by01ov v0.104.0 0.104.0 버그 수정 멀티플레이어 전투 시작 직전 포션 사용 관련 상태 불일치 수정. fixed softlock related to using driftwood relic on your first run."
+    "searchText": "v0.104.0:line-100-text-by01ov v0.104.0 0.104.0 버그 수정 멀티플레이어 전투 시작 직전 포션 사용 관련 상태 불일치 수정. fixed state divergence related to using a potion just before combat began."
   },
   {
     "id": "v0.104.0:line-101-text-1q2l78i",
@@ -10894,11 +10894,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "특정 드문 연결 오류에 대한 오류 보고 개선.",
-    "markdownEn": "Fixed rare softlock loading into a treasure room when a teammate is using a controller.",
+    "markdownEn": "Improved error reporting for a specific rare connection error.",
     "textKo": "특정 드문 연결 오류에 대한 오류 보고 개선.",
-    "textEn": "Fixed rare softlock loading into a treasure room when a teammate is using a controller.",
+    "textEn": "Improved error reporting for a specific rare connection error.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-101-text-1q2l78i v0.104.0 0.104.0 버그 수정 멀티플레이어 특정 드문 연결 오류에 대한 오류 보고 개선. fixed rare softlock loading into a treasure room when a teammate is using a controller."
+    "searchText": "v0.104.0:line-101-text-1q2l78i v0.104.0 0.104.0 버그 수정 멀티플레이어 특정 드문 연결 오류에 대한 오류 보고 개선. improved error reporting for a specific rare connection error."
   },
   {
     "id": "v0.104.0:line-102-text-1a5mswx",
@@ -10910,11 +10910,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "방 전환 중에 상점에서 아이템을 구매할 수 없도록 수정.",
-    "markdownEn": "Fixed state divergence related to using a potion just before combat began.",
+    "markdownEn": "You can no longer buy items at the shop while transitioning rooms.",
     "textKo": "방 전환 중에 상점에서 아이템을 구매할 수 없도록 수정.",
-    "textEn": "Fixed state divergence related to using a potion just before combat began.",
+    "textEn": "You can no longer buy items at the shop while transitioning rooms.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-102-text-1a5mswx v0.104.0 0.104.0 버그 수정 멀티플레이어 방 전환 중에 상점에서 아이템을 구매할 수 없도록 수정. fixed state divergence related to using a potion just before combat began."
+    "searchText": "v0.104.0:line-102-text-1a5mswx v0.104.0 0.104.0 버그 수정 멀티플레이어 방 전환 중에 상점에서 아이템을 구매할 수 없도록 수정. you can no longer buy items at the shop while transitioning rooms."
   },
   {
     "id": "v0.104.0:line-103-card-pillar-of-creation-card-supermassive",
@@ -10926,9 +10926,9 @@
       "멀티플레이어"
     ],
     "markdownKo": "[gold:card]창조의 기둥[/gold], [gold:card]초질량[/gold], [gold:card]무기고[/gold]이 생성된 카드를 받는 플레이어가 아닌, [gold:card]하사[/gold]을 사용한 플레이어에게 발동하도록 수정.",
-    "markdownEn": "Improved error reporting for a specific rare connection error.",
+    "markdownEn": "**Pillar of Creation**, **Supermassive**, and **Arsenal** cards now proc for the player that played **Largesse** card rather than the player who gets the generated card.",
     "textKo": "창조의 기둥, 초질량, 무기고이 생성된 카드를 받는 플레이어가 아닌, 하사을 사용한 플레이어에게 발동하도록 수정.",
-    "textEn": "Improved error reporting for a specific rare connection error.",
+    "textEn": "Pillar of Creation, Supermassive, and Arsenal cards now proc for the player that played Largesse card rather than the player who gets the generated card.",
     "entityRefs": [
       {
         "type": "card",
@@ -10951,7 +10951,7 @@
         "label": "하사"
       }
     ],
-    "searchText": "v0.104.0:line-103-card-pillar-of-creation-card-supermassive v0.104.0 0.104.0 버그 수정 멀티플레이어 창조의 기둥, 초질량, 무기고이 생성된 카드를 받는 플레이어가 아닌, 하사을 사용한 플레이어에게 발동하도록 수정. improved error reporting for a specific rare connection error. card pillar_of_creation 창조의 기둥 창조의 기둥 pillar of creation card supermassive 초질량 초질량 supermassive card arsenal 무기고 무기고 arsenal card largesse 하사 하사 largesse"
+    "searchText": "v0.104.0:line-103-card-pillar-of-creation-card-supermassive v0.104.0 0.104.0 버그 수정 멀티플레이어 창조의 기둥, 초질량, 무기고이 생성된 카드를 받는 플레이어가 아닌, 하사을 사용한 플레이어에게 발동하도록 수정. pillar of creation, supermassive, and arsenal cards now proc for the player that played largesse card rather than the player who gets the generated card. card pillar_of_creation 창조의 기둥 창조의 기둥 pillar of creation card supermassive 초질량 초질량 supermassive card arsenal 무기고 무기고 arsenal card largesse 하사 하사 largesse"
   },
   {
     "id": "v0.104.0:line-104-text-1phy450",
@@ -10963,11 +10963,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "Steam 멀티플레이어 연결 시간 초과(오류 5008)에 대해 올바른 오류 메시지 표시.",
-    "markdownEn": "You can no longer buy items at the shop while transitioning rooms.",
+    "markdownEn": "The correct error message is now shown for Steam multiplayer connection timeout (error 5008).",
     "textKo": "Steam 멀티플레이어 연결 시간 초과(오류 5008)에 대해 올바른 오류 메시지 표시.",
-    "textEn": "You can no longer buy items at the shop while transitioning rooms.",
+    "textEn": "The correct error message is now shown for Steam multiplayer connection timeout (error 5008).",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-104-text-1phy450 v0.104.0 0.104.0 버그 수정 멀티플레이어 steam 멀티플레이어 연결 시간 초과(오류 5008)에 대해 올바른 오류 메시지 표시. you can no longer buy items at the shop while transitioning rooms."
+    "searchText": "v0.104.0:line-104-text-1phy450 v0.104.0 0.104.0 버그 수정 멀티플레이어 steam 멀티플레이어 연결 시간 초과(오류 5008)에 대해 올바른 오류 메시지 표시. the correct error message is now shown for steam multiplayer connection timeout (error 5008)."
   },
   {
     "id": "v0.104.0:line-105-text-ba38lj",
@@ -10979,11 +10979,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "\"멀티플레이어 그림 표시\" 체크박스가 올바르게 현지화.",
-    "markdownEn": "**Pillar of Creation**, **Supermassive**, and **Arsenal** cards now proc for the player that played **Largesse** card rather than the player who gets the generated card.",
+    "markdownEn": "\"Show Multiplayer Drawings\" tickbox is now correctly localized.",
     "textKo": "\"멀티플레이어 그림 표시\" 체크박스가 올바르게 현지화.",
-    "textEn": "Pillar of Creation, Supermassive, and Arsenal cards now proc for the player that played Largesse card rather than the player who gets the generated card.",
+    "textEn": "\"Show Multiplayer Drawings\" tickbox is now correctly localized.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-105-text-ba38lj v0.104.0 0.104.0 버그 수정 멀티플레이어 \"멀티플레이어 그림 표시\" 체크박스가 올바르게 현지화. pillar of creation, supermassive, and arsenal cards now proc for the player that played largesse card rather than the player who gets the generated card."
+    "searchText": "v0.104.0:line-105-text-ba38lj v0.104.0 0.104.0 버그 수정 멀티플레이어 \"멀티플레이어 그림 표시\" 체크박스가 올바르게 현지화. \"show multiplayer drawings\" tickbox is now correctly localized."
   },
   {
     "id": "v0.104.0:line-106-text-z5bn6",
@@ -10995,11 +10995,11 @@
       "멀티플레이어"
     ],
     "markdownKo": "한 명만 있는 상태로 저장된 멀티플레이어 게임을 시작할 수 없도록 수정.",
-    "markdownEn": "The correct error message is now shown for Steam multiplayer connection timeout (error 5008).",
+    "markdownEn": "You can no longer start a loaded multiplayer game with only one person.",
     "textKo": "한 명만 있는 상태로 저장된 멀티플레이어 게임을 시작할 수 없도록 수정.",
-    "textEn": "The correct error message is now shown for Steam multiplayer connection timeout (error 5008).",
+    "textEn": "You can no longer start a loaded multiplayer game with only one person.",
     "entityRefs": [],
-    "searchText": "v0.104.0:line-106-text-z5bn6 v0.104.0 0.104.0 버그 수정 멀티플레이어 한 명만 있는 상태로 저장된 멀티플레이어 게임을 시작할 수 없도록 수정. the correct error message is now shown for steam multiplayer connection timeout (error 5008)."
+    "searchText": "v0.104.0:line-106-text-z5bn6 v0.104.0 0.104.0 버그 수정 멀티플레이어 한 명만 있는 상태로 저장된 멀티플레이어 게임을 시작할 수 없도록 수정. you can no longer start a loaded multiplayer game with only one person."
   },
   {
     "id": "v0.105.0:line-001-text-8s1c98",
