@@ -146,34 +146,53 @@ async function main() {
 
   // Authored diffs sometimes record a number change only inside the Korean
   // baked text. Recover it so baking the pinned template shows the old number.
-  // A variable recorded as vars.X in any of the element's changes is already
-  // tracked explicitly, so its baked text is not second-guessed.
-  const recordedVars = new Set(
-    changes.flatMap((change) => (change.fieldDiffs ?? [])
-      .filter((item) => item.field.startsWith("vars."))
-      .map((item) => `${change.entityType}:${change.entityId}:${item.field}`)),
-  );
+  // A variable recorded as vars.X at this patch or an earlier one is already
+  // tracked explicitly up to here, so its baked text is not second-guessed.
+  const recordedVars = new Map<string, string[]>();
+  for (const change of changes) {
+    for (const item of change.fieldDiffs ?? []) {
+      if (!item.field.startsWith("vars.")) continue;
+      const key = `${change.entityType}:${change.entityId}:${item.field}`;
+      recordedVars.set(key, [...(recordedVars.get(key) ?? []), change.patch.replace(/^v/, "")]);
+    }
+  }
+  const recordedBy = (key: string, patch: string) =>
+    (recordedVars.get(key) ?? []).some((at) => compareVersions(at, patch.replace(/^v/, "")) <= 0);
   for (const change of changes) {
     const type = change.entityType as VersionedEntityType;
     const source = SOURCES.find((entry) => entry.type === type);
     const diff = change.fieldDiffs?.find((item) => item.field === "description");
     if (!source || !diff || typeof diff.before !== "string" || typeof diff.after !== "string") continue;
     const at = snapshots.findIndex(({ version }) => `v${version}` === change.patch);
-    if (at < 1) continue;
     const key = `${change.entityId}.description`;
-    const beforeTemplate = clean(tableAt(snapshots[at - 1].commit, "kor", source.table)[key]);
-    const afterTemplate = clean(tableAt(snapshots[at].commit, "kor", source.table)[key]);
-    if (!beforeTemplate || !afterTemplate) continue;
+    // Pinned range: the game's own templates. Before it there is no snapshot,
+    // so use the templates the change itself records (descriptionRaw).
+    const rawDiff = change.fieldDiffs?.find((item) => item.field === "descriptionRaw");
+    const beforeTemplate = at >= 1
+      ? clean(tableAt(snapshots[at - 1].commit, "kor", source.table)[key])
+      : at < 1 && compareVersions(change.patch.replace(/^v/, ""), LOCALE_TEXT_PINNED_FROM) <= 0 ? clean(rawDiff?.before) : undefined;
+    const afterTemplate = at >= 1
+      ? clean(tableAt(snapshots[at].commit, "kor", source.table)[key])
+      : at < 1 && compareVersions(change.patch.replace(/^v/, ""), LOCALE_TEXT_PINNED_FROM) <= 0 ? clean(rawDiff?.after) : undefined;
+    // A numbers-only change before the pinned range may record no template at
+    // all. Then the earliest pinned Korean template stands in, but only if it
+    // reads the authored after text exactly (the wording did not move since).
+    let fallbackTemplate: string | undefined;
+    if (!beforeTemplate && !rawDiff && at < 1 && compareVersions(change.patch.replace(/^v/, ""), LOCALE_TEXT_PINNED_FROM) <= 0) {
+      const pinned = clean(tableAt(snapshots[0].commit, "kor", source.table)[key]);
+      if (pinned && extractVars(pinned, diff.after)) fallbackTemplate = pinned;
+    }
+    if (!(beforeTemplate && afterTemplate) && !fallbackTemplate) continue;
     // Reverting needs only the old value. The new one is kept when it reads
     // cleanly; a rework can drop the variable, or a later edit can reword the
     // authored after text.
-    const before = extractVars(beforeTemplate, diff.before);
+    const before = extractVars(beforeTemplate ?? fallbackTemplate!, diff.before);
     if (!before) continue;
-    const after = extractVars(afterTemplate, diff.after) ?? {};
+    const after = extractVars(afterTemplate ?? fallbackTemplate!, diff.after) ?? {};
     const recorded = new Set((change.fieldDiffs ?? []).map((item) => item.field));
     for (const [name, value] of Object.entries(before)) {
       const field = `vars.${name}`;
-      if (after[name] === value || recorded.has(field) || recordedVars.has(`${type}:${change.entityId}:${field}`)) continue;
+      if (after[name] === value || recorded.has(field) || recordedBy(`${type}:${change.entityId}:${field}`, change.patch)) continue;
       history.varDiffs.push({ entityType: type, entityId: change.entityId, patch: change.patch, field, before: value, after: after[name] ?? null });
     }
   }
