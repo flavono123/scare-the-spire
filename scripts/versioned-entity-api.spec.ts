@@ -8,7 +8,8 @@ import {
   resolveVersionedEntity,
 } from "../src/lib/versioned-entity-api";
 import { normalizeVersionedEntityType } from "../src/lib/codex-versioning";
-import { compareVersions, latestPatchVersion } from "../src/lib/entity-versioning";
+import { bakeDescription } from "../src/lib/codex-bake";
+import { compareVersions, latestPatchVersion, varsForBake } from "../src/lib/entity-versioning";
 import { LOCALE_TEXT_PINNED_FROM } from "../src/lib/localization-history";
 import { getEnchantStatModifier } from "../src/lib/sts2-enchant-rules";
 import type { CodexEnchantment } from "../src/lib/codex-types";
@@ -321,10 +322,14 @@ async function runTests() {
 
       // Pinned game text breaks lines and places color tags where the
       // authored diff did not; the words must still match.
-      const comparable = (value: unknown) =>
-        textField && typeof value === "string"
-          ? value.replace(/\[\/?[a-z]+(?:[:=][^\]]*)?\]/gi, "").replace(/\s+/g, "")
-          : value;
+      // A template is compared by what it renders with the version's vars: the
+      // game may write a literal "1" where an authored diff wrote {Var}.
+      const versionVars = varsForBake(entityType, change.entityId, (res.entity as { vars?: unknown }).vars);
+      const comparable = (value: unknown) => {
+        if (!textField || typeof value !== "string") return value;
+        const text = fd.field === "descriptionRaw" ? bakeDescription(value, versionVars) : value;
+        return text.replace(/\[\/?[a-z]+(?:[:=][^\]]*)?\]/gi, "").replace(/\s+/g, "");
+      };
       const mismatch: string = `Mismatch in ${change.patch} ${entityType}:${change.entityId} (${change.id}) .${fd.field}`;
       // Before the pinned version, Korean wording rests on the pinned game
       // text plus authored diffs; a disagreement is an authored text error
