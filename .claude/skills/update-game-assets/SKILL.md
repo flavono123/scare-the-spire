@@ -27,6 +27,9 @@ Parsed from PCK localization + decompiled `sts2.dll`:
 - `scripts/parse-enchantments.py` → `data/sts2/{eng,kor}/enchantments.json`
 - `scripts/parse-monsters.py`    → `data/sts2/{eng,kor}/monsters.json`
 - `scripts/parse-encounters.py`  → `data/sts2/{eng,kor}/encounters.json`
+- `scripts/parse-card-keywords.py` → `keywords` and upgrade `add_*`/`remove_*`
+  in `data/sts2/{eng,kor}/cards.json`, from each card's `CanonicalKeywords` and
+  `OnUpgrade` (never from description text)
 
 Each parser uses DLL C# as source of truth for gameplay numbers
 (HP, damage, room type, monster composition) and the PCK localization
@@ -64,6 +67,7 @@ python3 scripts/extract-map-assets.py --force
 python3 scripts/parse-enchantments.py
 python3 scripts/parse-monsters.py
 python3 scripts/parse-encounters.py
+python3 scripts/parse-card-keywords.py
 
 # 4. Dry-run first if you want to review the diff:
 python3 scripts/parse-monsters.py --dry-run

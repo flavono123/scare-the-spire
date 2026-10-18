@@ -34,6 +34,7 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    python3 scripts/parse-monsters.py
    python3 scripts/parse-encounters.py
    python3 scripts/parse-entity-vars.py
+   python3 scripts/parse-card-keywords.py   # card keywords = CanonicalKeywords
    ```
    Once `data/sts2/meta.json` and `data/sts2-changes.json` name the new
    patch, pin every locale's text for it and check older versions:
@@ -108,6 +109,9 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
 
 - Do not generate final rich patch notes against stale Codex data. If the target version is newer than `data/sts2/meta.json`, run this skill first.
 - Always run `python3 scripts/parse-entity-vars.py` after DLL decompile. Literal `{Var}` leaks in relic/potion/power descriptions mean the patch is not ready.
+- Card `keywords` come only from each card class's `CanonicalKeywords`
+  (`scripts/parse-card-keywords.py`), never from description text: a keyword
+  used as a condition ("when this card is Exhausted") is not the card's keyword.
 - If parser coverage drops sharply, inspect new `MegaCrit.Sts2.Core.Localization.DynamicVars` or `MegaCrit.Sts2.Core.Models.*` directories in `/tmp/sts2-src` and update scripts plus this skill in the same commit.
 - Newly added cards/relics/potions must have both English and Korean names from PCK localization before patch-note entity linking is considered valid.
 - `pnpm codex:validate` must report zero Ancient relic owner coverage errors.
