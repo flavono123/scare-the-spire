@@ -21,7 +21,8 @@ export const COMBAT_SIM_PRESETS: Record<string, CombatSimInput> = {
       { do: "wait", ms: 600 },
       { do: "play", card: "ACROBATICS" },
       { do: "play", card: "PREPARED+" },
-      { do: "wait", ms: 800 },
+      // The last discards fly for about a second after the game moves on.
+      { do: "wait", ms: 1500 },
     ],
   },
   /** v0.103.2 Axebots: two Axebots (front, back). Compare with `axebots-0.104.0`. */

@@ -487,6 +487,12 @@ interface CardTileProps {
   enchantStatMod?: EnchantVarMod | null;
   /** Active affliction overlay id. */
   afflictionId?: string | null;
+  /**
+   * Custom affliction overlay drawn in the affliction slot (card.tscn
+   * OverlayContainer: above the frame and portrait border, below the title
+   * banner, type plaque and cost). Used for overlays with no extracted texture.
+   */
+  afflictionOverlay?: ReactNode;
   /** 카드에 박힌 인챈트 슬롯을 클릭했을 때 (해제 등). */
   onEnchantSlotClick?: () => void;
   onClick?: () => void;
@@ -538,6 +544,7 @@ export const CardTile = memo(function CardTile({
   descriptionSuffix,
   enchantStatMod,
   afflictionId,
+  afflictionOverlay,
   onEnchantSlotClick,
   onClick,
   interactive = true,
@@ -1058,6 +1065,7 @@ export const CardTile = memo(function CardTile({
           />
 
           <AfflictionCardOverlay afflictionId={afflictionId} />
+          {afflictionOverlay}
 
           <div
             className="absolute z-[2] pointer-events-none"
@@ -1268,6 +1276,7 @@ export const CardTile = memo(function CardTile({
 
         {isInfectionCard && <InfectionCardOverlay />}
         <AfflictionCardOverlay afflictionId={afflictionId} />
+        {afflictionOverlay}
 
         <div
           className="absolute z-[3] flex items-center justify-center"

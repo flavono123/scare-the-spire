@@ -172,6 +172,8 @@ export interface SimState {
 
 export type SimEvent =
   | { kind: "energy"; from: number; to: number; cause: "cost" | "affliction" | "power" | "turn"; sourceId?: string; uid?: string }
+  /** The player picks the card up (hover/drag) before PlayCardAction pays for it. */
+  | { kind: "select"; uid: string }
   | { kind: "move"; uid: string; from: PileType; to: PileType; cause: "play" | "draw" | "discard" | "result" | "exhaust" | "shuffle" | "endTurn" }
   | { kind: "enter"; uid: string; to: PileType }
   | { kind: "remove"; uid: string; from: PileType }

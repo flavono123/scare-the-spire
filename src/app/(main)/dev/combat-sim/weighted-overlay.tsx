@@ -9,7 +9,10 @@
  * Time is the simulator clock, so a frame is the same on every run.
  */
 
-import { useLayoutEffect, useRef } from "react";
+import { createContext, useContext, useLayoutEffect, useRef } from "react";
+
+/** Simulator time (ms) for overlays rendered inside memoized card tiles. */
+export const SimClock = createContext(0);
 
 // weighted.tscn ShaderMaterial_devoured
 const EDGE_INTENSITY = 0.8;
@@ -81,7 +84,7 @@ function roundedRectSdf(px: number, py: number, half: number, radius: number) {
   return outside + Math.min(Math.max(dx, dy), 0) - radius;
 }
 
-export function drawWeighted(context: CanvasRenderingContext2D, timeSeconds: number, boost: number) {
+export function drawWeighted(context: CanvasRenderingContext2D, timeSeconds: number) {
   const image = context.createImageData(RES_W, RES_H);
   const data = image.data;
   const t = timeSeconds * PULSE_SPEED;
@@ -116,7 +119,7 @@ export function drawWeighted(context: CanvasRenderingContext2D, timeSeconds: num
       r += 0.3 * speck;
       g += 0.1 * speck;
       b += 0.5 * speck;
-      const alpha = Math.min(1, voidMask * EDGE_INTENSITY * cardMask * (1 + boost));
+      const alpha = Math.min(1, voidMask * EDGE_INTENSITY * cardMask);
       const index = (j * RES_W + i) * 4;
       data[index] = Math.min(255, r * 255);
       data[index + 1] = Math.min(255, g * 255);
@@ -127,21 +130,25 @@ export function drawWeighted(context: CanvasRenderingContext2D, timeSeconds: num
   context.putImageData(image, 0, 0);
 }
 
-/** Covers its card box; `boost` (0..1) brightens the void, e.g. when Weighted triggers. */
-export function WeightedOverlay({ t, boost }: { t: number; boost: number }) {
+/**
+ * Pass as CardTile's `afflictionOverlay`: the tile draws it in card.tscn's
+ * OverlayContainer slot, so the void covers the frame and the description box
+ * edges but not the title banner, type plaque or cost.
+ */
+export function WeightedOverlay() {
+  const t = useContext(SimClock);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useLayoutEffect(() => {
     const context = canvasRef.current?.getContext("2d");
-    if (context) drawWeighted(context, t / 1000, boost);
-  }, [t, boost]);
+    if (context) drawWeighted(context, t / 1000);
+  }, [t]);
   return (
     <canvas
       ref={canvasRef}
       width={RES_W}
       height={RES_H}
       data-combat-sim-weighted=""
-      className="pointer-events-none absolute inset-0 h-full w-full"
-      style={{ zIndex: 20 }}
+      className="pointer-events-none absolute inset-0 z-[3] h-full w-full"
     />
   );
 }

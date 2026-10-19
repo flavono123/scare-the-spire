@@ -277,6 +277,7 @@ export function CombatSimClient({ view, errors }: { view: CombatSimView; errors:
 
 function describeEvent(event: SimEvent): string {
   switch (event.kind) {
+    case "select": return `${event.uid} 집어 듦`;
     case "energy": return `에너지 ${event.from} → ${event.to} (${event.cause}${event.sourceId ? `: ${event.sourceId}` : ""})`;
     case "move": return `${event.uid}: ${event.from} → ${event.to} (${event.cause})`;
     case "enter": return `${event.uid} 전투에 추가 → ${event.to}`;

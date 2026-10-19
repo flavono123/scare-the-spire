@@ -31,7 +31,7 @@ async function main() {
     draw: "STRIKE_SILENT*6",
     powers: "DOORMAKER=GRASP_POWER:1",
     moves: "DOORMAKER=GRASP",
-    script: "wait:600,play:ACROBATICS,play:PREPARED ,wait:800",
+    script: "wait:600,play:ACROBATICS,play:PREPARED ,wait:1500",
   });
   assert.deepEqual(query.errors, []);
   assert.deepEqual(query.input, COMBAT_SIM_PRESETS["doormaker-grasp-0.102.0"]);

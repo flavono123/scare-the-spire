@@ -9,9 +9,12 @@ import { resolveMonsterStaticArt } from "@/lib/monster-static-art";
 import { CombatSimClient } from "./combat-sim-client";
 import { parseCombatSimQuery, type SearchParams } from "./query-input";
 import type { CombatSimMonsterView, CombatSimView, EnergyCounterAsset } from "./view-types";
+import type { CardTrailAsset, EnergyGainVfx } from "./vfx-layer";
 
 interface CombatUiAssets {
   energyCounters: Record<string, EnergyCounterAsset>;
+  energyGainVfx: Record<string, EnergyGainVfx>;
+  cardTrails: Record<string, CardTrailAsset | null>;
   powerIcons: Record<string, string>;
   ui: Record<string, string>;
 }
@@ -90,6 +93,8 @@ async function buildView(
     monsters,
     powerIcons,
     ui: uiAssets.ui,
+    cardTrail: uiAssets.cardTrails[catalog.character.id] ?? null,
+    energyGainVfx: uiAssets.energyGainVfx[catalog.character.id] ?? null,
   };
 }
 

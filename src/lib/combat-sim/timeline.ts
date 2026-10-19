@@ -1,8 +1,9 @@
 /**
  * Turns engine steps into a fixed timeline so the scene is a pure function of
  * time: `frameAt(t)` always returns the same beat, progress and state for the
- * same input. Beat lengths are the simulator's pacing, not game tween timings,
- * except the play wait, which is the game's CustomScaledWait(0.25-0.35s).
+ * same input. Beat lengths follow what the game awaits (see beatDuration);
+ * visual motion that the game does not await (card flights, VFX) runs on its
+ * own clock in the scene.
  */
 
 import type { CombatSimInput, SimEvent, SimResult, SimState } from "./types";
@@ -38,36 +39,48 @@ export interface CombatTimeline {
   beatsUntil(t: number): TimelineBeat[];
 }
 
+/** One rendered frame at 30 fps: the game moves on without awaiting the card's flight. */
+const FRAME_MS = 1000 / 30;
+
+/**
+ * How long the game waits on each step (0.102.0 source):
+ * - CardPileCmd.Add to the hand awaits a 0.25 s tween per card (draws are 0.25 s apart);
+ * - the manual play move tweens to the play position in 0.25 s (Cubic Out);
+ * - discards, the result pile and the end-of-turn discard hand the card to
+ *   NCardFlyVfx and continue (about a frame), the flight plays on its own clock;
+ * - an exhaust fades the card over 0.3 s; a reshuffle waits 0.5 s after the last card;
+ * - energy changes are instant (NEnergyCounter only refreshes its label).
+ * `select` is the simulator's stand-in for the player lifting the card (hover pose).
+ */
 export function beatDuration(event: SimEvent, action: number): number {
   if (action < 0) return 0; // setup is already in place at t = 0
   switch (event.kind) {
+    case "select": return 300;
     case "move":
       switch (event.cause) {
-        case "play": return 450;
-        case "draw": return 220;
-        case "discard": return 300;
-        case "result": return 380;
-        case "exhaust": return 450;
-        case "shuffle": return 30;
-        case "endTurn": return 120;
+        case "play": return 250;
+        case "draw": return 250;
+        case "discard": return FRAME_MS;
+        case "result": return FRAME_MS;
+        case "exhaust": return 300;
+        case "shuffle": return 45;
+        case "endTurn": return 0;
       }
-      return 300;
-    case "energy":
-      // The cost lands with the card leaving the hand (next beat).
-      return event.cause === "cost" ? 0 : 500;
+      return FRAME_MS;
+    case "energy": return 0;
     case "afflictionTrigger": return 0;
     case "animate": return 0;
-    case "afflict": return 250;
-    case "clearAffliction": return 150;
-    case "enter": return 350;
+    case "afflict": return 0;
+    case "clearAffliction": return 0;
+    case "enter": return 250;
     case "remove": return 400;
     case "power": return 400;
     case "damage": return 450;
     case "block": return 350;
     case "intent": return 300;
-    case "shuffle": return 200;
+    case "shuffle": return 500;
     case "wait": return event.ms;
-    case "unimplemented": return 700;
+    case "unimplemented": return 0;
     case "rejected": return 800;
   }
 }

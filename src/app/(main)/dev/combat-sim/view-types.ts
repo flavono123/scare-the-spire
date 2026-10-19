@@ -8,6 +8,7 @@ import type {
 import type { CombatSimInput, SimCatalog } from "@/lib/combat-sim/types";
 import type { MonsterStaticArt } from "@/lib/monster-static-art";
 import type { CombatSimViewOptions } from "./query-input";
+import type { CardTrailAsset, EnergyGainVfx } from "./vfx-layer";
 
 export interface EnergyCounterAsset {
   scene: string;
@@ -55,4 +56,8 @@ export interface CombatSimView {
   monsters: CombatSimMonsterView[];
   powerIcons: Record<string, string | null>;
   ui: Record<string, string>;
+  /** card_trail_<character>.tscn values, drawn behind flying cards. */
+  cardTrail: CardTrailAsset | null;
+  /** <character>_energy_vfx_back/front.tscn glow and ring. */
+  energyGainVfx: EnergyGainVfx | null;
 }

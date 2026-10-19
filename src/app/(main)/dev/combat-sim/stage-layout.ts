@@ -1,10 +1,13 @@
 /**
  * Layout of the 1080x1920 portrait stage, in stage pixels. The game screen is
- * landscape, so this is a vertical re-arrangement: creatures keep the game's
- * left-to-right order and sizes, the hand, piles and energy orb move below.
+ * landscape 1920x1080; the portrait stage keeps the game's UI geometry, scaled
+ * by UI_SCALE and pinned to the same screen corners (piles and energy orb to
+ * the bottom corners, the hand to the bottom center). Creatures keep the
+ * game's left-to-right order and sizes above the hand. The play position moves
+ * from the screen center to the band between creatures and hand (9:16 only).
  */
 
-import type { PileType, SimState } from "@/lib/combat-sim/types";
+import type { SimState } from "@/lib/combat-sim/types";
 import type { CombatTimeline, TimelineBeat } from "@/lib/combat-sim/timeline";
 import type { CombatSimMonsterView } from "./view-types";
 import type { EncounterSceneCombatLayout } from "@/lib/codex-types";
@@ -14,99 +17,105 @@ export const STAGE_H = 1920;
 /** Card tile size (the game's 300x422 card). */
 export const CARD_W = 300;
 export const CARD_H = 422;
-export const FEET_Y = 930;
-/** Stage pixels per game pixel for creatures. */
-export const CREATURE_SCALE = 1.15;
+/** Stage pixels per game pixel, for UI and creatures alike. */
+export const UI_SCALE = 1.15;
+export const CREATURE_SCALE = UI_SCALE;
+export const FEET_Y = 980;
 export const PLAYER_X = 270;
 export const MONSTER_REGION = { left: 560, right: 1050 };
-export const ORB = { x: 150, y: 1330, size: 220 };
+
+/** Game point pinned to the stage's bottom-left / bottom-right corner. */
+function fromBottomLeft(x: number, y: number) {
+  return { x: x * UI_SCALE, y: STAGE_H - (1080 - y) * UI_SCALE };
+}
+function fromBottomRight(x: number, y: number) {
+  return { x: STAGE_W - (1920 - x) * UI_SCALE, y: STAGE_H - (1080 - y) * UI_SCALE };
+}
+
+// combat_piles_container.tscn / NExhaustPileButton / combat_ui.tscn
 export const PILES = {
-  draw: { x: 96, y: 1830 },
-  discard: { x: 984, y: 1830 },
-  exhaust: { x: 984, y: 1680 },
+  draw: fromBottomLeft(55, 1025),
+  discard: fromBottomRight(1866, 1025),
+  exhaust: fromBottomRight(1870, 830),
 };
-const HAND_Y = 1645;
-const HAND_SCALE = 0.88;
-// Between the creatures and the hand, so the played card covers neither.
-const PLAY_POSE = { x: 540, y: 1235, scale: 0.95 };
+/** Pile buttons are 80x80 controls. */
+export const PILE_SIZE = 80 * UI_SCALE;
+/**
+ * Energy counter: 128x128 control with its top-left at (100, 828), i.e. left of
+ * the 1920-wide hand. The portrait hand reaches the left edge, so the orb is
+ * raised to clear the hand's top (9:16 only); x stays the game's.
+ */
+export const ORB = { x: 164 * UI_SCALE, y: 1580, size: 128 * UI_SCALE };
 
-/** Fraction of a beat after which counters (energy, HP, pile counts) show the new value. */
-export const COMMIT_AT = 0.35;
+/** CardHolderContainer anchor: the bottom center of the screen. */
+export const HAND_ANCHOR = { x: STAGE_W / 2, y: STAGE_H };
+/** PileTypeExtensions.GetTargetPosition(Play) is (960, 440); here it sits above the hand. */
+export const PLAY_POSITION = { x: STAGE_W / 2, y: 1330 };
+export const PLAY_SCALE = 0.8 * UI_SCALE;
+/** NHandCardHolder hovered card: y -209 from the anchor, angle 0, scale 1. */
+export const HOVER_Y = -209;
 
-export interface CardPose {
+/**
+ * Hand slots per card count (sts2.dll static arrays): [x, y, angle] relative to
+ * the anchor, card centers in game pixels.
+ */
+const HAND_SLOTS: Record<number, [number, number, number][]> = {
+  1: [[0, -50, 0]],
+  2: [[-100, -50, -2], [100, -50, 2]],
+  3: [[-180, -50, -3], [0, -59, 0], [180, -50, 3]],
+  4: [[-240, -25, -8], [-80, -50, -4], [80, -50, 4], [240, -25, 8]],
+  5: [[-340, 10, -8], [-170, -30, -4], [0, -50, 0], [170, -30, 4], [340, 10, 8]],
+  6: [[-460, 13, -9], [-273, -25, -6], [-90, -50, -3], [90, -50, 3], [273, -25, 6], [460, 13, 9]],
+  7: [[-534, 18, -9], [-365, -14, -6], [-189, -39, -3], [0, -50, 0], [189, -39, 3], [365, -14, 6], [534, 18, 9]],
+  8: [[-565, 28, -12], [-400, -14, -9], [-231, -39, -6], [-80, -50, -3], [80, -50, 3], [231, -39, 6], [400, -14, 9], [565, 28, 12]],
+  9: [[-600, 37, -12], [-445, -2, -9], [-300, -29, -6], [-150, -45, -3], [0, -50, 0], [150, -45, 3], [300, -29, 6], [445, -2, 9], [600, 37, 12]],
+  10: [[-610, 38, -15], [-472, 5, -12], [-340, -21, -9], [-200, -41, -6], [-64, -50, -3], [64, -50, 3], [200, -41, 6], [340, -21, 9], [472, 5, 12], [610, 38, 15]],
+};
+
+/** Hand card scale: 0.8, times 0.95 / 0.9 / 0.85 at 8 / 9 / 10 cards. */
+export function handScale(count: number): number {
+  const factor = count === 8 ? 0.95 : count === 9 ? 0.9 : count === 10 ? 0.85 : 1;
+  return 0.8 * factor * UI_SCALE;
+}
+
+export interface Pose {
   x: number;
   y: number;
   scale: number;
+  /** degrees */
   rotate: number;
-  opacity: number;
-  z: number;
 }
 
-export function pileOf(state: SimState, uid: string): PileType | null {
-  for (const pile of ["hand", "play", "draw", "discard", "exhaust"] as PileType[]) {
-    if (state.piles[pile].includes(uid)) return pile;
+/**
+ * Hand slot pose. The game's hand is 1920 wide; when a slot would leave the
+ * 1080-wide stage the x offsets are compressed (9:16 only), never the y or angle.
+ */
+export function handSlot(index: number, count: number, hovered: number | null = null): Pose {
+  const slots = HAND_SLOTS[Math.max(1, Math.min(10, count))];
+  const [x, y, angle] = slots[Math.min(index, slots.length - 1)];
+  const scale = handScale(count);
+  const maxX = Math.max(...slots.map((slot) => Math.abs(slot[0])));
+  const room = STAGE_W / 2 - (CARD_W * scale) / 2 - 6;
+  const squeeze = maxX * UI_SCALE > room ? room / (maxX * UI_SCALE) : 1;
+  if (hovered === index) {
+    return { x: HAND_ANCHOR.x + x * UI_SCALE * squeeze, y: HAND_ANCHOR.y + HOVER_Y * UI_SCALE, scale: UI_SCALE, rotate: 0 };
   }
-  return null;
-}
-
-export function cardPose(state: SimState, uid: string): CardPose | null {
-  const pile = pileOf(state, uid);
-  switch (pile) {
-    case "hand": {
-      const hand = state.piles.hand;
-      const index = hand.indexOf(uid);
-      const offset = index - (hand.length - 1) / 2;
-      const spread = Math.min(215, 820 / Math.max(1, hand.length - 1));
-      return {
-        x: 540 + offset * spread,
-        y: HAND_Y + offset * offset * 7,
-        scale: HAND_SCALE,
-        rotate: offset * 3.5,
-        opacity: 1,
-        z: 100 + index,
-      };
-    }
-    case "play":
-      return { ...PLAY_POSE, rotate: 0, opacity: 1, z: 400 };
-    case "draw":
-      return { ...PILES.draw, scale: 0.2, rotate: -8, opacity: 0, z: 50 };
-    case "discard":
-      return { ...PILES.discard, scale: 0.2, rotate: 8, opacity: 0, z: 50 };
-    case "exhaust":
-      return { ...PILES.exhaust, scale: 0.35, rotate: 0, opacity: 0, z: 50 };
-    default:
-      return null;
+  // Cards beside a hovered card move away by lerp(100, 0, min(1, |d| / 4)).
+  let push = 0;
+  if (hovered !== null) {
+    const d = index - hovered;
+    push = Math.sign(d) * 100 * (1 - Math.min(1, Math.abs(d) / 4));
   }
-}
-
-export function easeInOut(x: number): number {
-  const t = Math.max(0, Math.min(1, x));
-  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
-}
-
-function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * t;
-}
-
-/** Pose of a card at the current beat: eased from its pose before the beat to after. */
-export function interpolatedPose(beat: TimelineBeat | null, progress: number, state: SimState, uid: string): CardPose | null {
-  if (!beat) return cardPose(state, uid);
-  const from = cardPose(beat.before, uid);
-  const to = cardPose(beat.after, uid);
-  if (!from && !to) return null;
-  if (!from) return to;
-  if (!to) return { ...from, opacity: from.opacity * (1 - progress), scale: from.scale * (1 + 0.15 * progress) };
-  const k = easeInOut(progress);
-  const moving = beat.event.kind === "move" && beat.event.uid === uid;
   return {
-    x: lerp(from.x, to.x, k),
-    y: lerp(from.y, to.y, k),
-    scale: lerp(from.scale, to.scale, k),
-    rotate: lerp(from.rotate, to.rotate, k),
-    opacity: lerp(from.opacity, to.opacity, k),
-    z: moving && progress < 1 ? 500 : to.z,
+    x: HAND_ANCHOR.x + (x * squeeze + push) * UI_SCALE,
+    y: HAND_ANCHOR.y + y * UI_SCALE,
+    scale,
+    rotate: angle,
   };
 }
+
+/** Fraction of a beat after which counters (energy, HP, pile counts) show the new value. */
+export const COMMIT_AT = 0.35;
 
 /** Counters show the new value once a beat is past COMMIT_AT. */
 export function visibleState(beat: TimelineBeat | null, progress: number, fallback: SimState): SimState {
@@ -149,8 +158,8 @@ export interface CreatureBox {
 }
 
 const DEFAULT_MONSTER_BOX = { width: 200, height: 220 };
-/** Bosses with no scene bounds (e.g. Doormaker) get a taller default box. */
-const STATIC_BOSS_HEIGHT = 420;
+/** Still-art bosses with no scene bounds (e.g. Doormaker) get a larger box. */
+const STATIC_BOSS_HEIGHT = 480;
 
 /**
  * Monsters in encounter order, spaced like the game's auto layout
