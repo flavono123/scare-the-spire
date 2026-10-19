@@ -5036,7 +5036,7 @@
       },
       {
         "id": "HUNGER",
-        "name": "Hunger",
+        "name": "굶주림",
         "action_types": [
           "attack"
         ],
@@ -5058,7 +5058,7 @@
       },
       {
         "id": "SCRUTINY",
-        "name": "Scrutiny",
+        "name": "감시",
         "action_types": [
           "attack"
         ],
@@ -5080,7 +5080,7 @@
       },
       {
         "id": "GRASP",
-        "name": "Grasp",
+        "name": "움켜쥐기",
         "action_types": [
           "attack",
           "buff"
