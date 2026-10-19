@@ -31,6 +31,7 @@ keys override the preset and JSON.
 | version | `"0.102.0"` | `version=0.102.0` | Values and text via `getVersionedEntity`; card TargetType, move intents the versioned monster lost, and GRASP_POWER/WEIGHTED text come from `~/sts2-builds/<version>/canonical`. |
 | character | `"SILENT"` | `character=SILENT` | HP and max energy from character data. Optional; required by the `player` and `cards` parts. |
 | parts | `["player", "cards"]` | `parts=player,cards`, `parts=none` | What the stage shows and the server loads. The encounter (background, monsters, intents, monster HP) is always there; `player` adds the character and its HP bar, `cards` the hand, piles, energy orb and card play. Default: both with a character, none without (encounter only). Without `cards`, no card data, affliction text, energy counter, card trail or energy VFX is loaded and card actions are skipped. |
+| speed | `"fast"` | `speed=fast` | Game speed (FastMode): `normal` (default), `fast`, `instant`. Changes only how long the game waits and how long some tweens run; steps and final state are the same in every mode (see [Speed](#speed-fastmode)). |
 | encounter | `"DOORMAKER_BOSS"` | `encounter=AXEBOTS_NORMAL` | Composition from the archived `Encounters/<Name>.cs`, else site data. |
 | energy, maxEnergy | `3`, `3` | `energy=3/3` | |
 | hp | `70` | `hp=40` | Player current HP. |
@@ -65,11 +66,16 @@ unimplemented/rejected tags in the frame (the dev panel log always lists them).
 Read from the archived build source (`~/sts2-builds/<version>/src`), checked
 against 0.102.0:
 
-- Card play order (`PlayCardAction`, `CardModel.OnPlayWrapper`): `CanPlay`
-  (Unplayable keyword, energy), pay energy, hand -> play, affliction `OnPlay`,
-  `CustomScaledWait(0.25-0.35s)` (300 ms), `BeforeCardPlayed`, the card's
-  effect, `AfterCardPlayed`, then the result pile: Power is removed, Exhaust
-  keyword exhausts, otherwise discard.
+- Card play order (`PlayCardAction`, `CardModel.OnPlayWrapper`, read from the
+  async state machine's await numbering): `CanPlay` (Unplayable keyword,
+  energy), pay energy, hand -> play (`AddDuringManualCardPlay`), then
+  `BeforeCardPlayed`, the card's `OnPlay`, enchantment `OnPlay` (not
+  simulated), affliction `OnPlay`, `AfterCardPlayed`,
+  `CustomScaledWait(0.15, 0.3)` minus the time since the card reached the play
+  pile, then the result pile: Power is removed, Exhaust keyword exhausts,
+  otherwise discard. The `CustomScaledWait(0.25, 0.35)` in `OnPlayWrapper` is
+  on the auto-play path only. Attacks trigger the attacker's "Attack"
+  animation inside `DamageCmd.Attack`; skills trigger none.
 - Draw (`CardPileCmd.Draw`): one at a time from the top, stops at 10 cards in
   hand; an empty draw pile takes the discard pile shuffled (seeded RNG, not the
   game's `Rng.Shuffle` order).
@@ -104,6 +110,57 @@ Monster turn: single and multi attack intents deal `damageValues[key].normal`
 x repeat; every other intent (buff, debuff, summon, phase power swaps) is
 tagged unimplemented.
 
+## Speed (FastMode)
+
+`speed` follows the game's FastMode setting (`PrefsSave.FastMode`). Values are
+read from the 0.102.0 build source: every `Cmd.CustomScaledWait(fast,
+standard)` the simulated commands reach and every `FastMode` branch in them
+(`Cmd`, `CardPileCmd`, `NCard`, `NCreature`, `NCreatureStateDisplay`,
+`NHealthBar`, `Neutralize`). `CustomScaledWait` waits `fast` on Fast,
+`standard` on Normal and nothing on Instant; tweens keep the game's Instant
+durations (0.01 s) instead of 0. NCardFlyVfx (discard flights), the hand
+holder lerps and the hand layout have no FastMode branch, so they are the
+same in every mode. Rows marked "일반 값 유지" were not checked per mode and
+keep the Normal value in every mode.
+
+| What | Game source | Normal | Fast | Instant |
+| --- | --- | --- | --- | --- |
+| Draw, card entering combat (awaited pile tween) | `CardPileCmd.AppendPileLerpTween` | 0.25 s | 0.1 s | 0.01 s |
+| Played card to the play position (position tween; awaited only for Power cards) | `AddDuringManualCardPlay` | 0.25 s | 0.1 s | 0.01 s |
+| Played card scale to 0.8 | same | 0.25 s | 0.25 s | 0.25 s |
+| Wait after the card's effects (minus time since the play move) | `OnPlayWrapper`: `CustomScaledWait(0.15, 0.3)` | 0.3 s | 0.15 s | 0 |
+| Attack animation wait (card attack, monster attack) | `CreatureCmd.TriggerAnim`: `CustomScaledWait(min(delay / 2, 0.25), delay)` | delay | min(delay / 2, 0.25 s) | 0 |
+| Neutralize's attack delay | `Neutralize.OnPlay`: `AttackAnimDelay + 0.2` on Normal only | Silent 0.15 + 0.2 s | 0.15 s | 0.15 s |
+| After damage | `CreatureCmd.Damage`: `CustomScaledWait(0.1, 0.2)` | 0.2 s | 0.1 s | 0 |
+| After block | `CreatureCmd.GainBlock`: `CustomScaledWait(0.1, 0.25)` | 0.25 s | 0.1 s | 0 |
+| After a power is applied during an action | `PowerCmd.Apply`: `CustomScaledWait(0.1, 0.25)` | 0.25 s | 0.1 s | 0 |
+| Exhaust fade (from hand or play) | `CardPileCmd`: `Fast ? 0.2 : 0.3` | 0.3 s | 0.2 s | 0.3 s |
+| Discard / result pile / end-of-turn discard | `NCardFlyVfx`, not awaited | ~1 frame | ~1 frame | ~1 frame |
+| Reshuffle, after the cards | `CardPileCmd.Shuffle`: `CustomScaledWait(0.2, 0.5)` | 0.5 s | 0.2 s | 0 |
+| Reshuffle, per-card stagger | `NCardFlyShuffleVfx` | 0.045 s | 일반 값 유지 | 일반 값 유지 |
+| Power card leaving play | `PlayPowerCardFlyVfx` | 0.4 s | 일반 값 유지 | 일반 값 유지 |
+| End of turn, before the hand is discarded | `CombatManager`: `CustomScaledWait(0.3, 0.6)` | 0.6 s | 0.3 s | 0 (placement before the discards 일반 값 유지) |
+| Enemy turn start | `CombatManager`: `CustomScaledWait(0.5, 0.8)` | 0.8 s | 0.5 s | 0 |
+| Each monster's intent | `NCreature.PerformIntent`: `CustomScaledWait(0.25, 0.4)`, skipped on Instant | 0.4 s | 0.25 s | 0 |
+| Block icon appear animation | `NHealthBar.AnimateInBlock`, skipped on Instant | animated | animated | appears at once |
+
+Not affected by `speed`: the `select` stand-in (0.3 s, player input), script
+`wait` actions, rejected tags and the scene's own VFX clocks (card trail,
+energy gain, damage numbers). Not simulated, so not timed per mode:
+`AnimMultiCardPlay` (Fast 0.1 / 0.2 s interval), exhausting from the draw or
+discard pile (Instant 0.01 / Fast 0.2 / Normal 0.5 s interval),
+`StartCombatInternal`, `DramaticOpenMove`, `PowerCmd.Remove` /
+`ModifyAmount`, heals, health bar fade-in and monster death.
+
+For `preset=doormaker-grasp-0.102.0` (600 ms and 1500 ms script waits and two
+0.3 s `select` stand-ins included):
+
+| speed | duration | action ends (ms) | frames at 30 fps |
+| --- | --- | --- | --- |
+| normal | 4033 ms | 600, 1683, 2533, 4033 | 122 |
+| fast | 3283 ms | 600, 1233, 1783, 3283 | 99 |
+| instant | 2833 ms | 600, 963, 1333, 2833 | 86 |
+
 ## Scene and capture
 
 Everything on the stage follows the 0.102.0 node code and scenes; the only
@@ -116,10 +173,11 @@ deliberate departures are for the 9:16 frame and are marked "9:16" below.
   a slot would leave the 1080-wide stage, the energy orb is raised to clear the
   hand, and the play position sits between the creatures and the hand instead
   of the screen center.
-- Timeline (`timeline.ts`): beat lengths are what the game awaits (0.25 s per
-  draw, 0.25 s play tween, CustomScaledWait 0.3 s, discards about a frame since
-  the flight is not awaited, instant energy). `select` is the simulator's
-  stand-in for the player lifting the card (hover pose, 0.3 s).
+- Timeline (`timeline.ts`): beat lengths are what the game awaits for the
+  chosen speed (see [Speed](#speed-fastmode)): draws await the pile tween, the
+  play move is awaited only for Power cards, discards take about a frame since
+  the flight is not awaited, energy changes are instant. `select` is the
+  simulator's stand-in for the player lifting the card (hover pose, 0.3 s).
 - Card motion (`card-motion.ts`): NHandCardHolder lerps (k 7 / 8 / 10) for
   every hand change; draws spawn at the draw pile at scale 1; the played card
   tweens to the play position at scale 0.8 (Cubic Out); discards and the result
@@ -154,11 +212,36 @@ deliberate departures are for the 9:16 frame and are marked "9:16" below.
 ```bash
 pnpm shorts:capture --url "/dev/combat-sim?preset=doormaker-grasp-0.102.0" --t 3190 --out ~/P/slseoun-shorts/<dir>/grasp.png
 pnpm shorts:capture --url "/dev/combat-sim?preset=doormaker-grasp-0.102.0" --frames --fps 30 --out ~/P/slseoun-shorts/<dir>/frames
+pnpm shorts:capture --url "/dev/combat-sim?preset=doormaker-grasp-0.102.0&speed=fast" --frames --fps 30 --out ~/P/slseoun-shorts/<dir>/frames-fast
 ```
 
-The stage is 360x640 CSS px and the capture's device scale is 3, so every
-PNG is 1080x1920. A frame sequence writes `0000.png...` and `frames.json`
-(times, input, final state). Same input and time give byte-identical PNGs.
+The capture opens combat simulator pages with `frame=1080` at device scale 1,
+so the 1080x1920 stage maps 1:1 to the PNG. A frame sequence writes
+`0000.png...` and `frames.json` (times, input with `speed`, final state). Same
+input and time give byte-identical PNGs, whether the frame comes from a
+sequence or a single `--t` capture:
+
+- 2D effects (Weighted overlay, card trail, energy gain) are drawn into
+  offscreen canvases and shown as `<img>` (`canvas-image.tsx`); a `<canvas>`
+  in the page is a composited layer and makes the cards over it composited
+  too. `seek()` waits for those images to decode.
+- The stage is drawn at exactly 1:1. The page's default (360 CSS px wide) at
+  device scale 3 is a `scale(0.333…)` times 3, not exactly 1, and rotated
+  card edges then came out a few levels different depending on the frames
+  before.
+- The capture rasterizes combat simulator pages in software on one thread
+  without checker-imaging or partial raster (`--disable-gpu-rasterization
+  --num-raster-threads=1 --disable-checker-imaging --disable-partial-raster`).
+  Before every seek it takes the stage off screen, drops decoded images
+  (simulated critical memory pressure, then a few frames for it to arrive)
+  and brings the stage back. Otherwise Chrome keeps unchanged tiles and draws
+  a scaled-down image from a larger decode cached in an earlier frame or made
+  by a raster task that happened to run first, so the same frame could differ
+  from run to run.
+- Screenshots of the stage do not use `omitBackground` (the stage is opaque):
+  it repaints the page for each shot and brought the raster race back.
+- The first seek after a page load rasterizes differently from later ones,
+  so the capture first seeks a fresh page to the end.
 
 ## Not simulated or not ported
 
