@@ -1,0 +1,211 @@
+{
+  "source": {
+    "pck": "/Users/flavono123/sts2-builds/0.102.0/SlayTheSpire2.app/Contents/Resources/Slay the Spire 2.pck",
+    "archiveVersion": "0.102.0"
+  },
+  "energyCounters": {
+    "IRONCLAD": {
+      "scene": "scenes/combat/energy_counters/ironclad_energy_counter.tscn",
+      "size": 128,
+      "layers": [
+        {
+          "name": "Layer1",
+          "url": "/images/sts2/combat-ui/energy-counters/ironclad/ironclad_orb_layer_1.webp",
+          "rotationIndex": null
+        },
+        {
+          "name": "Layer2",
+          "url": "/images/sts2/combat-ui/energy-counters/ironclad/ironclad_orb_layer_2.webp",
+          "rotationIndex": 0
+        },
+        {
+          "name": "Layer3",
+          "url": "/images/sts2/combat-ui/energy-counters/ironclad/ironclad_orb_layer_3.webp",
+          "rotationIndex": 1
+        },
+        {
+          "name": "Layer4",
+          "url": "/images/sts2/combat-ui/energy-counters/ironclad/ironclad_orb_layer_4.webp",
+          "rotationIndex": null
+        },
+        {
+          "name": "Layer5",
+          "url": "/images/sts2/combat-ui/energy-counters/ironclad/ironclad_orb_layer_5.webp",
+          "rotationIndex": null
+        }
+      ],
+      "label": {
+        "fontColor": "#fff6e2ff",
+        "outlineColor": "#4c130dff",
+        "shadowColor": "#00000030",
+        "outlineSize": 16,
+        "shadowOffset": [
+          3,
+          2
+        ],
+        "fontSize": 36
+      }
+    },
+    "SILENT": {
+      "scene": "scenes/combat/energy_counters/silent_energy_counter.tscn",
+      "size": 128,
+      "layers": [
+        {
+          "name": "Layer1",
+          "url": "/images/sts2/combat-ui/energy-counters/silent/silent_orb_layer_1.webp",
+          "rotationIndex": null
+        },
+        {
+          "name": "Layer2",
+          "url": "/images/sts2/combat-ui/energy-counters/silent/silent_orb_layer_2.webp",
+          "rotationIndex": 0
+        },
+        {
+          "name": "Layer3",
+          "url": "/images/sts2/combat-ui/energy-counters/silent/silent_orb_layer_3.webp",
+          "rotationIndex": 1
+        },
+        {
+          "name": "Layer4",
+          "url": "/images/sts2/combat-ui/energy-counters/silent/silent_orb_layer_4.webp",
+          "rotationIndex": null
+        },
+        {
+          "name": "Layer5",
+          "url": "/images/sts2/combat-ui/energy-counters/silent/silent_orb_layer_5.webp",
+          "rotationIndex": null
+        }
+      ],
+      "label": {
+        "fontColor": "#fff6e2ff",
+        "outlineColor": "#004f04ff",
+        "shadowColor": "#00000030",
+        "outlineSize": 16,
+        "shadowOffset": [
+          3,
+          2
+        ],
+        "fontSize": 36
+      }
+    },
+    "DEFECT": {
+      "scene": "scenes/combat/energy_counters/defect_energy_counter.tscn",
+      "size": 128,
+      "layers": [
+        {
+          "name": "Layer1",
+          "url": "/images/sts2/combat-ui/energy-counters/defect/defect_orb_layer_1.webp",
+          "rotationIndex": null
+        },
+        {
+          "name": "Layer2",
+          "url": "/images/sts2/combat-ui/energy-counters/defect/defect_orb_layer_2.webp",
+          "rotationIndex": 0
+        },
+        {
+          "name": "Layer3",
+          "url": "/images/sts2/combat-ui/energy-counters/defect/defect_orb_layer_3.webp",
+          "rotationIndex": 1
+        },
+        {
+          "name": "Layer4",
+          "url": "/images/sts2/combat-ui/energy-counters/defect/defect_orb_layer_4.webp",
+          "rotationIndex": null
+        },
+        {
+          "name": "Layer5",
+          "url": "/images/sts2/combat-ui/energy-counters/defect/defect_orb_layer_5.webp",
+          "rotationIndex": null
+        }
+      ],
+      "label": {
+        "fontColor": "#fff6e2ff",
+        "outlineColor": "#163e64ff",
+        "shadowColor": "#00000030",
+        "outlineSize": 16,
+        "shadowOffset": [
+          3,
+          2
+        ],
+        "fontSize": 36
+      }
+    },
+    "REGENT": {
+      "scene": "scenes/combat/energy_counters/regent_energy_counter.tscn",
+      "size": 128,
+      "layers": [
+        {
+          "name": "Layer1",
+          "url": "/images/sts2/combat-ui/energy-counters/regent/regent_orb_layer_1.webp",
+          "rotationIndex": null
+        },
+        {
+          "name": "Layer2",
+          "url": "/images/sts2/combat-ui/energy-counters/regent/regent_orb_layer_2.webp",
+          "rotationIndex": 0
+        },
+        {
+          "name": "Layer3",
+          "url": "/images/sts2/combat-ui/energy-counters/regent/regent_orb_layer_3.webp",
+          "rotationIndex": 1
+        },
+        {
+          "name": "Layer4",
+          "url": "/images/sts2/combat-ui/energy-counters/regent/regent_orb_layer_5.webp",
+          "rotationIndex": null
+        },
+        {
+          "name": "Layer5",
+          "url": "/images/sts2/combat-ui/energy-counters/regent/regent_orb_layer_5.webp",
+          "rotationIndex": null
+        }
+      ],
+      "label": {
+        "fontColor": "#fff6e2ff",
+        "outlineColor": "#784000ff",
+        "shadowColor": "#00000030",
+        "outlineSize": 16,
+        "shadowOffset": [
+          3,
+          2
+        ],
+        "fontSize": 36
+      }
+    },
+    "NECROBINDER": {
+      "scene": "scenes/combat/energy_counters/necrobinder_energy_counter.tscn",
+      "size": 128,
+      "layers": [
+        {
+          "name": "Layer1",
+          "url": "/images/sts2/combat-ui/energy-counters/necrobinder/necrobinder_orb_layer_1.webp",
+          "rotationIndex": null
+        },
+        {
+          "name": "Layer2",
+          "url": "/images/sts2/combat-ui/energy-counters/necrobinder/necrobinder_orb_layer_2.webp",
+          "rotationIndex": 0
+        },
+        {
+          "name": "Layer3",
+          "url": "/images/sts2/combat-ui/energy-counters/necrobinder/necrobinder_orb_layer_3.webp",
+          "rotationIndex": null
+        }
+      ],
+      "label": {
+        "fontColor": "#fff6e2ff",
+        "outlineColor": "#702d6fff",
+        "shadowColor": "#00000030",
+        "outlineSize": 16,
+        "shadowOffset": [
+          3,
+          2
+        ],
+        "fontSize": 36
+      }
+    }
+  },
+  "powerIcons": {
+    "GRASP_POWER": "/images/sts2/combat-ui/powers/grasp_power.webp"
+  }
+}

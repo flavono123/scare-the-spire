@@ -1185,6 +1185,41 @@
     "select_regent.webp",
     "select_silent.webp"
   ],
+  "combat-ui/energy-counters/defect": [
+    "defect_orb_layer_1.webp",
+    "defect_orb_layer_2.webp",
+    "defect_orb_layer_3.webp",
+    "defect_orb_layer_4.webp",
+    "defect_orb_layer_5.webp"
+  ],
+  "combat-ui/energy-counters/ironclad": [
+    "ironclad_orb_layer_1.webp",
+    "ironclad_orb_layer_2.webp",
+    "ironclad_orb_layer_3.webp",
+    "ironclad_orb_layer_4.webp",
+    "ironclad_orb_layer_5.webp"
+  ],
+  "combat-ui/energy-counters/necrobinder": [
+    "necrobinder_orb_layer_1.webp",
+    "necrobinder_orb_layer_2.webp",
+    "necrobinder_orb_layer_3.webp"
+  ],
+  "combat-ui/energy-counters/regent": [
+    "regent_orb_layer_1.webp",
+    "regent_orb_layer_2.webp",
+    "regent_orb_layer_3.webp",
+    "regent_orb_layer_5.webp"
+  ],
+  "combat-ui/energy-counters/silent": [
+    "silent_orb_layer_1.webp",
+    "silent_orb_layer_2.webp",
+    "silent_orb_layer_3.webp",
+    "silent_orb_layer_4.webp",
+    "silent_orb_layer_5.webp"
+  ],
+  "combat-ui/powers": [
+    "grasp_power.webp"
+  ],
   "enchantments": [
     "adroit.webp",
     "clone.webp",
