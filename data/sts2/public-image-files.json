@@ -1225,7 +1225,20 @@
     "discard_pile.webp",
     "draw_pile.webp",
     "exhaust_pile.webp",
+    "health_bar_bg.webp",
+    "health_bar_fill.webp",
+    "health_bar_stroke.webp",
+    "health_bar.webp",
     "pile_button_count.webp"
+  ],
+  "combat-ui/vfx": [
+    "brush_particle_2.webp",
+    "common_glow.webp",
+    "common_ring_polar_a.webp",
+    "small_card_silhouette.webp",
+    "sparkle.webp",
+    "trail.webp",
+    "trail2.webp"
   ],
   "enchantments": [
     "adroit.webp",
