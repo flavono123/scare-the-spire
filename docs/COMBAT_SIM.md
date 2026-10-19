@@ -29,7 +29,8 @@ keys override the preset and JSON.
 | Key | JSON | Query | Notes |
 | --- | --- | --- | --- |
 | version | `"0.102.0"` | `version=0.102.0` | Values and text via `getVersionedEntity`; card TargetType, move intents the versioned monster lost, and GRASP_POWER/WEIGHTED text come from `~/sts2-builds/<version>/canonical`. |
-| character | `"SILENT"` | `character=SILENT` | HP and max energy from character data. |
+| character | `"SILENT"` | `character=SILENT` | HP and max energy from character data. Optional; required by the `player` and `cards` parts. |
+| parts | `["player", "cards"]` | `parts=player,cards`, `parts=none` | What the stage shows and the server loads. The encounter (background, monsters, intents, monster HP) is always there; `player` adds the character and its HP bar, `cards` the hand, piles, energy orb and card play. Default: both with a character, none without (encounter only). Without `cards`, no card data, affliction text, energy counter, card trail or energy VFX is loaded and card actions are skipped. |
 | encounter | `"DOORMAKER_BOSS"` | `encounter=AXEBOTS_NORMAL` | Composition from the archived `Encounters/<Name>.cs`, else site data. |
 | energy, maxEnergy | `3`, `3` | `energy=3/3` | |
 | hp | `70` | `hp=40` | Player current HP. |
@@ -50,6 +51,10 @@ Script actions:
 | `{ "do": "startTurn" }` | `start` | Block clears, energy refills, draw 5. |
 | `{ "do": "addCard", "card": "SHIV", "pile": "hand" }` | `add:SHIV@hand` | A card enters combat; runs `AfterCardEnteredCombat`. |
 | `{ "do": "wait", "ms": 600 }` | `wait:600` | |
+
+Encounter-only scenes (e.g. `preset=axebots-0.103.2` vs `axebots-0.104.0`,
+or `?version=0.103.2&encounter=AXEBOTS_NORMAL&script=wait:2000`) move the
+encounter down, give the monsters the full width and grow the background.
 
 View options (not part of the input): `t=<ms>|end` starts paused there,
 `autoplay=1`, `frame=<css width>` (default 360), `badges=1` shows
