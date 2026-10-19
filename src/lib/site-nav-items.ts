@@ -211,6 +211,13 @@ export const devNavItems = [
   },
   {
     group: "패치/운영",
+    href: "/dev/combat-sim",
+    label: "전투 시뮬레이터",
+    icon: "/images/sts2/combat-ui/ui/draw_pile.webp",
+    strictDevOnly: true,
+  },
+  {
+    group: "패치/운영",
     href: "/dev/admin",
     label: "어드민",
     icon: "/images/sts2/nav/question_mark.png",
