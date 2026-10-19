@@ -36,7 +36,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { chromium, type Page } from "@playwright/test";
+import { chromium, type Browser, type CDPSession, type Page } from "@playwright/test";
 import { TEXT_GOLD, TEXT_GREEN } from "../src/lib/sts2-card-style";
 
 const DEFAULT_BASE = process.env.SHORTS_CAPTURE_BASE_URL ?? "http://localhost:3000";
@@ -263,7 +263,7 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
       await captureFrames(page, shot, requested, selector, out);
       return;
     }
-    if (shot.t !== undefined) await page.evaluate(`window.__sim.seek(${Number(shot.t)})`);
+    if (shot.t !== undefined) await simSeek(page, Number(shot.t));
   } else if (shot.frames || shot.t !== undefined) {
     throw new Error(`${url}: --t and --frames need a combat simulator page (window.__sim)`);
   }
@@ -348,6 +348,34 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
   console.log(`${out}${warn}`);
 }
 
+const cdpSessions = new WeakMap<Page, Promise<CDPSession>>();
+
+const SET_STAGE_DISPLAY = (display: string) => `(async () => {
+  const stage = document.querySelector("[data-combat-sim-stage]");
+  if (stage) stage.style.display = "${display}";
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+})()`;
+
+/**
+ * Seek the combat simulator and repaint the stage from nothing. Chrome keeps
+ * raster tiles that did not change and draws a scaled-down image from a
+ * larger decode of it still cached (a card drawn bigger in an earlier frame),
+ * so the frames before would change this frame's pixels. The stage is taken
+ * off screen, a simulated critical memory pressure drops the decoded images,
+ * and the stage comes back fully rasterized at the new time.
+ */
+async function simSeek(page: Page, time: number) {
+  let session = cdpSessions.get(page);
+  if (!session) {
+    session = page.context().newCDPSession(page);
+    cdpSessions.set(page, session);
+  }
+  await page.evaluate(SET_STAGE_DISPLAY("none"));
+  await (await session).send("Memory.simulatePressureNotification", { level: "critical" });
+  await page.evaluate(`window.__sim.seek(${time})`);
+  await page.evaluate(SET_STAGE_DISPLAY(""));
+}
+
 /** Combat simulator frame sequence: seek each frame time, screenshot the stage. */
 async function captureFrames(page: Page, shot: Shot, requested: string, selector: string, outDir: string) {
   const { fps, from = 0, to } = shot.frames!;
@@ -356,7 +384,7 @@ async function captureFrames(page: Page, shot: Shot, requested: string, selector
   await mkdir(outDir, { recursive: true });
   const node = page.locator(selector).first();
   for (const [index, time] of selected.entries()) {
-    await page.evaluate(`window.__sim.seek(${time})`);
+    await simSeek(page, time);
     await node.screenshot({ path: path.join(outDir, `${String(index).padStart(4, "0")}.png`), omitBackground: true });
   }
   const first = path.join(outDir, "0000.png");
@@ -450,16 +478,29 @@ async function main() {
     throw new Error(`no site at ${base}. Start it with \`pnpm dev\` in scare-the-spire.`);
   }
 
-  // Software WebGL so Spine monster pages render headless.
-  const browser = await chromium.launch({ args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
+  // Software WebGL so Spine monster pages render headless. Combat simulator
+  // shots also raster in software: GPU raster reuses an image decode made at
+  // another scale in an earlier frame, so a seek's pixels would depend on the
+  // frames before it.
+  const browsers = new Map<boolean, Promise<Browser>>();
+  const browserFor = (sim: boolean) => {
+    let browser = browsers.get(sim);
+    if (!browser) {
+      const args = ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", ...(sim ? ["--disable-gpu-rasterization"] : [])];
+      browser = chromium.launch({ args });
+      browsers.set(sim, browser);
+    }
+    return browser;
+  };
   try {
     // The site picks its game locale from the browser language, so each locale
     // gets its own context.
-    const pages = new Map<"kor" | "eng", Page>();
-    const pageFor = async (locale: "kor" | "eng") => {
-      const existing = pages.get(locale);
+    const pages = new Map<string, Page>();
+    const pageFor = async (locale: "kor" | "eng", sim: boolean) => {
+      const key = `${locale}:${sim}`;
+      const existing = pages.get(key);
       if (existing) return existing;
-      const context = await browser.newContext({
+      const context = await (await browserFor(sim)).newContext({
         viewport: { width: 1280, height: 1400 },
         deviceScaleFactor: DEVICE_SCALE,
         acceptDownloads: true,
@@ -469,15 +510,16 @@ async function main() {
       // tsx keeps function names with an `__name` helper that page.evaluate does not ship.
       await context.addInitScript("globalThis.__name = (fn) => fn;");
       const page = await context.newPage();
-      pages.set(locale, page);
+      pages.set(key, page);
       return page;
     };
     for (const shot of batch.shots) {
       const locale = shot.locale ?? batch.locale ?? "kor";
-      await capture(await pageFor(locale), { ...shot, locale }, base, locale, outDir);
+      const sim = Boolean(shot.url?.includes("/dev/combat-sim"));
+      await capture(await pageFor(locale, sim), { ...shot, locale }, base, locale, outDir);
     }
   } finally {
-    await browser.close();
+    await Promise.all([...browsers.values()].map(async (browser) => (await browser).close()));
   }
 }
 

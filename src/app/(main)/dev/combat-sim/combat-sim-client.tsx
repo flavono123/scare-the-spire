@@ -152,6 +152,8 @@ export function CombatSimClient({ view, errors }: { view: CombatSimView; errors:
           setPlaying(false);
           setT(clamp(value));
         });
+        // The 2D effects are <img>s whose src the render just replaced.
+        await Promise.all([...(stageRef.current?.querySelectorAll("img") ?? [])].map((image) => image.decode().catch(() => undefined)));
         await settle();
         return snapshot(result, timeline, tRef.current);
       },

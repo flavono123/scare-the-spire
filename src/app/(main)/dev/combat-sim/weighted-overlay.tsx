@@ -9,7 +9,8 @@
  * Time is the simulator clock, so a frame is the same on every run.
  */
 
-import { createContext, useContext, useLayoutEffect, useRef } from "react";
+import { createContext, useContext } from "react";
+import { CanvasImage } from "./canvas-image";
 
 /** Simulator time (ms) for overlays rendered inside memoized card tiles. */
 export const SimClock = createContext(0);
@@ -137,17 +138,15 @@ export function drawWeighted(context: CanvasRenderingContext2D, timeSeconds: num
  */
 export function WeightedOverlay() {
   const t = useContext(SimClock);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useLayoutEffect(() => {
-    const context = canvasRef.current?.getContext("2d");
-    if (context) drawWeighted(context, t / 1000);
-  }, [t]);
   return (
-    <canvas
-      ref={canvasRef}
+    <CanvasImage
       width={RES_W}
       height={RES_H}
-      data-combat-sim-weighted=""
+      draw={(context) => {
+        drawWeighted(context, t / 1000);
+        return true;
+      }}
+      dataAttribute="data-combat-sim-weighted"
       className="pointer-events-none absolute inset-0 z-[3] h-full w-full"
     />
   );

@@ -29,7 +29,7 @@ import {
   visibleState,
   type CreatureBox,
 } from "./stage-layout";
-import { CardTrailLayer, EnergyGainLayerCanvas, PreloadImages, type EnergyGainVfx } from "./vfx-layer";
+import { CardTrailLayer, EnergyGainLayerImage, PreloadImages, type EnergyGainVfx } from "./vfx-layer";
 import type { CombatSimMonsterView, CombatSimView, EnergyCounterAsset } from "./view-types";
 import { SimClock, WeightedOverlay } from "./weighted-overlay";
 
@@ -549,7 +549,7 @@ function EnergyOrb({ asset, energy, maxEnergy, angle, gains, vfx, t, pixelRatio 
       data-combat-sim-energy={`${energy}/${maxEnergy}`}
     >
       <div className="absolute" style={{ left: vfxOffset, top: vfxOffset }}>
-        <EnergyGainLayerCanvas vfx={vfx} side="back" gains={gains} t={t} size={ENERGY_VFX_BOX} pixelRatio={pixelRatio} />
+        <EnergyGainLayerImage vfx={vfx} side="back" gains={gains} t={t} size={ENERGY_VFX_BOX} pixelRatio={pixelRatio} />
       </div>
       <div className="absolute inset-0" style={{ filter: empty ? "saturate(0.5) brightness(0.563)" : undefined }}>
         {asset.layers.map((layer) => (
@@ -564,7 +564,7 @@ function EnergyOrb({ asset, energy, maxEnergy, angle, gains, vfx, t, pixelRatio 
         ))}
       </div>
       <div className="absolute" style={{ left: vfxOffset, top: vfxOffset }}>
-        <EnergyGainLayerCanvas vfx={vfx} side="front" gains={gains} t={t} size={ENERGY_VFX_BOX} pixelRatio={pixelRatio} />
+        <EnergyGainLayerImage vfx={vfx} side="front" gains={gains} t={t} size={ENERGY_VFX_BOX} pixelRatio={pixelRatio} />
       </div>
       {/* Label: kreon_bold_shared with spacing_glyph 2, size 36, outline 16, shadow (3, 2) with shadow outline 16. */}
       <div

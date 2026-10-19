@@ -12,14 +12,19 @@
  * - Energy gain (`*_energy_vfx_back/front.tscn`, restarted when energy rises):
  *   the common glow (grayscale texture as alpha, tinted) and the polar ring
  *   (polar-mapped texture with the erosion curve).
- * Particle randomness is seeded per flight / per gain.
+ * Particle randomness is seeded per flight / per gain. Each layer is shown as
+ * an <img> (see canvas-image.tsx) and mounted only while it has something to draw.
  */
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { nextRandom, seedRandom } from "@/lib/combat-sim/rng";
+import { CanvasImage } from "./canvas-image";
 import { flyParams, type CardVisual } from "./card-motion";
 import { clamp01, ease, sampleCurve, sampleGradient, type CurvePoint, type GradientData } from "./godot-anim";
 import { STAGE_H, STAGE_W, UI_SCALE } from "./stage-layout";
+
+/** Scratch canvases read back with getImageData. */
+const SOFTWARE_2D: CanvasRenderingContext2DSettings = { willReadFrequently: true };
 
 export interface TrailLine {
   modulate: number[];
@@ -125,7 +130,7 @@ function tinted(image: HTMLImageElement, color: number[], useRed = false): HTMLC
   const canvas = document.createElement("canvas");
   canvas.width = image.naturalWidth;
   canvas.height = image.naturalHeight;
-  const context = canvas.getContext("2d")!;
+  const context = canvas.getContext("2d", SOFTWARE_2D)!;
   context.drawImage(image, 0, 0);
   const data = context.getImageData(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < data.data.length; i += 4) {
@@ -149,7 +154,7 @@ function lineProfile(image: HTMLImageElement): number[] {
     const canvas = document.createElement("canvas");
     canvas.width = image.naturalWidth;
     canvas.height = image.naturalHeight;
-    const context = canvas.getContext("2d")!;
+    const context = canvas.getContext("2d", SOFTWARE_2D)!;
     context.drawImage(image, 0, 0);
     const column = Math.floor(image.naturalWidth / 2);
     profile = Array.from({ length: 9 }, (_, k) => {
@@ -190,11 +195,11 @@ interface FlightRecord {
   visual: CardVisual;
 }
 
-function drawTrail(context: CanvasRenderingContext2D, trail: CardTrailAsset, flight: FlightRecord, textures: Map<string, HTMLImageElement>) {
+function drawTrail(context: CanvasRenderingContext2D, trail: CardTrailAsset, flight: FlightRecord, textures: Map<string, HTMLImageElement>): boolean {
   const fly = flight.visual.fly!;
   const fadeStart = fadeOutStart(flight.seed);
   const fade = flight.age > fadeStart ? 1 - clamp01((flight.age - fadeStart) / 0.5) : 1;
-  if (fade <= 0) return;
+  if (fade <= 0) return false;
   context.save();
   context.globalCompositeOperation = "lighter";
 
@@ -297,6 +302,7 @@ function drawTrail(context: CanvasRenderingContext2D, trail: CardTrailAsset, fli
     context.restore();
   }
   context.restore();
+  return true;
 }
 
 export interface FlightInput {
@@ -306,31 +312,27 @@ export interface FlightInput {
 }
 
 export function CardTrailLayer({ flights, trail, pixelRatio }: { flights: FlightInput[]; trail: CardTrailAsset | null; pixelRatio: number }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const textures = useTextures(
     trail ? [trail.outer.texture, trail.inner.texture, trail.bigSparks?.texture, trail.littleSparks?.texture, ...trail.sprites.map((sprite) => sprite.texture)] : [],
   );
-  useLayoutEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
-    context.setTransform(1, 0, 0, 1, 0, 0);
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    if (!trail || !textures) return;
-    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    for (const flight of flights) {
-      if (!flight.visual.fly) continue;
-      drawTrail(context, trail, { uid: flight.visual.uid, seed: flight.seed, age: flight.visual.fly.age, positionAt: flight.positionAt, visual: flight.visual }, textures);
-    }
-  });
+  if (!trail || !textures || !flights.some((flight) => flight.visual.fly)) return null;
   return (
-    <canvas
-      ref={canvasRef}
-      width={Math.round(STAGE_W * pixelRatio)}
-      height={Math.round(STAGE_H * pixelRatio)}
+    <CanvasImage
+      width={STAGE_W * pixelRatio}
+      height={STAGE_H * pixelRatio}
+      draw={(context) => {
+        context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        let drawn = false;
+        for (const flight of flights) {
+          if (!flight.visual.fly) continue;
+          const record = { uid: flight.visual.uid, seed: flight.seed, age: flight.visual.fly.age, positionAt: flight.positionAt, visual: flight.visual };
+          drawn = drawTrail(context, trail, record, textures) || drawn;
+        }
+        return drawn;
+      }}
       className="pointer-events-none absolute left-0 top-0"
       style={{ width: STAGE_W, height: STAGE_H, zIndex: 450 }}
-      data-combat-sim-trails=""
+      dataAttribute="data-combat-sim-trails"
     />
   );
 }
@@ -348,7 +350,7 @@ function drawRing(context: CanvasRenderingContext2D, image: HTMLImageElement, la
   const buffer = document.createElement("canvas");
   buffer.width = RING_RES;
   buffer.height = RING_RES;
-  const bufferContext = buffer.getContext("2d")!;
+  const bufferContext = buffer.getContext("2d", SOFTWARE_2D)!;
   const output = bufferContext.createImageData(RING_RES, RING_RES);
   for (let j = 0; j < RING_RES; j += 1) {
     for (let i = 0; i < RING_RES; i += 1) {
@@ -384,7 +386,7 @@ function ringSource(image: HTMLImageElement): ImageData {
     const canvas = document.createElement("canvas");
     canvas.width = image.naturalWidth;
     canvas.height = image.naturalHeight;
-    const context = canvas.getContext("2d")!;
+    const context = canvas.getContext("2d", SOFTWARE_2D)!;
     context.drawImage(image, 0, 0);
     data = context.getImageData(0, 0, canvas.width, canvas.height);
     ringSources.set(image.src, data);
@@ -393,54 +395,51 @@ function ringSource(image: HTMLImageElement): ImageData {
 }
 
 /** Glow behind the orb layers or ring in front of them, for every energy gain at or before `t`. */
-export function EnergyGainLayerCanvas({ vfx, side, gains, t, size, pixelRatio }: {
+export function EnergyGainLayerImage({ vfx, side, gains, t, size, pixelRatio }: {
   vfx: EnergyGainVfx | null;
   side: "back" | "front";
   /** Gain start times, ms. */
   gains: number[];
   t: number;
-  /** Canvas box in stage px, centered on the orb. */
+  /** Image box in stage px, centered on the orb. */
   size: number;
   pixelRatio: number;
 }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const layers = (vfx?.layers ?? []).filter((layer) => layer.side === side);
   const textures = useTextures(layers.map((layer) => layer.texture));
-  useLayoutEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
-    context.setTransform(1, 0, 0, 1, 0, 0);
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    if (!textures) return;
-    context.setTransform(pixelRatio, 0, 0, pixelRatio, (size / 2) * pixelRatio, (size / 2) * pixelRatio);
-    for (const start of gains) {
-      const age = (t - start) / 1000;
-      if (age < 0) continue;
-      for (const layer of layers) {
-        if (age >= layer.lifetime || !layer.texture) continue;
-        const image = textures.get(layer.texture);
-        if (!image) continue;
-        const life = age / layer.lifetime;
-        const scale = layer.scaleMin * sampleCurve(layer.scaleCurve, life, 1) * UI_SCALE;
-        const drawSize = image.naturalWidth * scale;
-        if (layer.kind === "glow") {
-          // vfx_grayscale_particle_shader: color = modulate, alpha = vertex alpha * texture red.
-          context.save();
-          context.globalAlpha = sampleCurve(layer.alphaCurve, life, 1) * (layer.modulate[3] ?? 1);
-          context.drawImage(tinted(image, layer.modulate, true), -drawSize / 2, -drawSize / 2, drawSize, drawSize);
-          context.restore();
-        } else {
-          drawRing(context, image, layer, life, drawSize);
-        }
-      }
-    }
-  });
+  const lifetime = Math.max(0, ...layers.map((layer) => layer.lifetime));
+  const active = gains.filter((start) => t >= start && (t - start) / 1000 < lifetime);
+  if (!textures || active.length === 0) return null;
   return (
-    <canvas
-      ref={canvasRef}
-      width={Math.round(size * pixelRatio)}
-      height={Math.round(size * pixelRatio)}
+    <CanvasImage
+      width={size * pixelRatio}
+      height={size * pixelRatio}
+      draw={(context) => {
+        context.setTransform(pixelRatio, 0, 0, pixelRatio, (size / 2) * pixelRatio, (size / 2) * pixelRatio);
+        let drawn = false;
+        for (const start of active) {
+          const age = (t - start) / 1000;
+          for (const layer of layers) {
+            if (age >= layer.lifetime || !layer.texture) continue;
+            const image = textures.get(layer.texture);
+            if (!image) continue;
+            const life = age / layer.lifetime;
+            const scale = layer.scaleMin * sampleCurve(layer.scaleCurve, life, 1) * UI_SCALE;
+            const drawSize = image.naturalWidth * scale;
+            if (layer.kind === "glow") {
+              // vfx_grayscale_particle_shader: color = modulate, alpha = vertex alpha * texture red.
+              context.save();
+              context.globalAlpha = sampleCurve(layer.alphaCurve, life, 1) * (layer.modulate[3] ?? 1);
+              context.drawImage(tinted(image, layer.modulate, true), -drawSize / 2, -drawSize / 2, drawSize, drawSize);
+              context.restore();
+            } else {
+              drawRing(context, image, layer, life, drawSize);
+            }
+            drawn = true;
+          }
+        }
+        return drawn;
+      }}
       className="pointer-events-none absolute"
       style={{ width: size, height: size }}
     />
