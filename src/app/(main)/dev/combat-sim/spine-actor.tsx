@@ -59,6 +59,13 @@ interface Loaded {
 
 const CUE_MIX_IN = 0.12;
 const CUE_MIX_OUT = 0.2;
+/**
+ * Extra canvas around the box (fraction of the box per side, top only above),
+ * so attack poses that leave the idle bounds are not clipped. The fit and the
+ * feet anchor still use the box itself.
+ */
+const OVERSCAN_X = 0.4;
+const OVERSCAN_TOP = 0.35;
 
 export function SpineActor({ id, asset, width, height, pixelRatio, viewport, t, cues, onStatus }: SpineActorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -70,7 +77,7 @@ export function SpineActor({ id, asset, width, height, pixelRatio, viewport, t, 
     const canvas = canvasRef.current;
     if (!loaded || !canvas) return;
     poseAt(loaded, t, cues);
-    render(loaded, canvas);
+    render(loaded, canvas, width * pixelRatio, height * pixelRatio);
   };
   drawRef.current = drawNow;
 
@@ -114,9 +121,15 @@ export function SpineActor({ id, asset, width, height, pixelRatio, viewport, t, 
   return (
     <canvas
       ref={canvasRef}
-      width={Math.max(1, Math.round(width * pixelRatio))}
-      height={Math.max(1, Math.round(height * pixelRatio))}
-      style={{ width, height, display: "block" }}
+      width={Math.max(1, Math.round(width * (1 + 2 * OVERSCAN_X) * pixelRatio))}
+      height={Math.max(1, Math.round(height * (1 + OVERSCAN_TOP) * pixelRatio))}
+      style={{
+        width: width * (1 + 2 * OVERSCAN_X),
+        height: height * (1 + OVERSCAN_TOP),
+        marginLeft: -width * OVERSCAN_X,
+        marginTop: -height * OVERSCAN_TOP,
+        display: "block",
+      }}
     />
   );
 }
@@ -221,14 +234,15 @@ function poseAt(loaded: Loaded, tMs: number, cues: SpineCue[]) {
   loaded.skeleton.updateWorldTransform(loaded.runtime.Physics.reset);
 }
 
-function render(loaded: Loaded, canvas: HTMLCanvasElement) {
+/** `boxWidth` / `boxHeight`: the creature box in canvas pixels (the canvas adds overscan around it). */
+function render(loaded: Loaded, canvas: HTMLCanvasElement, boxWidth: number, boxHeight: number) {
   const { context, renderer, skeleton, viewport } = loaded;
   const gl = context.gl;
   const width = canvas.width;
   const height = canvas.height;
   gl.viewport(0, 0, width, height);
   renderer.camera.setViewport(width, height);
-  const zoom = Math.max(viewport.width / width, viewport.height / height);
+  const zoom = Math.max(viewport.width / boxWidth, viewport.height / boxHeight);
   renderer.camera.zoom = zoom;
   // Centered horizontally, feet (viewport bottom) on the canvas bottom.
   renderer.camera.position.x = viewport.x + viewport.width / 2;

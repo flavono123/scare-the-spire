@@ -6,6 +6,8 @@
  * site data does not carry is read from the build archive
  * (`~/sts2-builds/<version>`, override with STS2_BUILDS_DIR):
  * - card TargetType: `canonical/cards.json` (falls back to the current card data),
+ * - move intents the versioned monster lost (e.g. AXEBOT before v0.104.0):
+ *   `canonical/monsters.json`,
  * - encounter composition: `src/.../Encounters/<Encounter>.cs` (`ModelDb.Monster<X>().ToMutable(), "slot"`),
  * - power and affliction text the site does not ship (e.g. GRASP_POWER, WEIGHTED):
  *   `canonical/loc/kor/{powers,afflictions}.json`.
@@ -100,6 +102,11 @@ export async function readArchiveEncounterMonsters(
 
 type ArchiveCards = Record<string, { target?: string }>;
 type ArchiveLoc = Record<string, string>;
+type ArchiveIntent = { type: string; damage_key?: string; repeat?: { normal: number | null } | null };
+type ArchiveMonsters = Record<string, {
+  damageValues?: Record<string, { normal: number | null }>;
+  moves?: Record<string, { intentDetails?: ArchiveIntent[] }>;
+}>;
 
 export interface CatalogLoad {
   catalog: SimCatalog;
@@ -118,11 +125,12 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
   const warnings: string[] = [];
   if (!archiveDir(version)) warnings.push(`빌드 아카이브 없음: ${path.join(archiveRoot(), version)}`);
 
-  const [characters, sitePowers, siteAfflictions, archiveCards, archivePowerLoc, archiveAfflictionLoc, currentCards] = await Promise.all([
+  const [characters, sitePowers, siteAfflictions, archiveCards, archiveMonsterData, archivePowerLoc, archiveAfflictionLoc, currentCards] = await Promise.all([
     getCodexCharacters({ gameLocale: locale }),
     getCodexPowers({ gameLocale: locale, includeDeprecated: true }),
     getCodexAfflictions({ gameLocale: locale }),
     readArchiveJson<ArchiveCards>(version, "canonical/cards.json"),
+    readArchiveJson<ArchiveMonsters>(version, "canonical/monsters.json"),
     readArchiveJson<ArchiveLoc>(version, "canonical/loc/kor/powers.json"),
     readArchiveJson<ArchiveLoc>(version, "canonical/loc/kor/afflictions.json"),
     readFile(path.join(process.cwd(), "data/sts2/kor/cards.json"), "utf8")
@@ -158,6 +166,25 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
     }
     monsterEntities[monsterId] = monster;
     const damageOf = (key: string | null | undefined) => (key ? monster.damageValues?.[key]?.normal ?? undefined : undefined);
+    const archiveMonster = archiveMonsterData?.[monsterId];
+    const archiveDamageOf = (key: string | undefined) => (key ? archiveMonster?.damageValues?.[key]?.normal ?? undefined : undefined);
+    const intentsOf = (move: CodexMonster["moves"][number]) => {
+      if (move.intentDetails?.length) {
+        return move.intentDetails.map((intent) => ({
+          type: intent.type,
+          damage: damageOf(intent.damageKey),
+          repeat: intent.repeat?.normal ?? undefined,
+        }));
+      }
+      const archived = archiveMonster?.moves?.[move.id]?.intentDetails;
+      if (!archived?.length) return [];
+      warnings.push(`${monsterId} ${move.id} 의도는 아카이브 canonical/monsters.json에서 읽었습니다`);
+      return archived.map((intent) => ({
+        type: intent.type,
+        damage: archiveDamageOf(intent.damage_key),
+        repeat: intent.repeat?.normal ?? undefined,
+      }));
+    };
     monsters[monsterId] = {
       id: monsterId,
       name: monster.name,
@@ -171,11 +198,7 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
       moves: Object.fromEntries(monster.moves.map((move) => [move.id, {
         id: move.id,
         name: move.name ?? null,
-        intents: (move.intentDetails ?? []).map((intent) => ({
-          type: intent.type,
-          damage: damageOf(intent.damageKey),
-          repeat: intent.repeat?.normal ?? undefined,
-        })),
+        intents: intentsOf(move),
       }])),
     };
   }
