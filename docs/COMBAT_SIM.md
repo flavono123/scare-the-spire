@@ -52,8 +52,8 @@ Script actions:
 | `{ "do": "wait", "ms": 600 }` | `wait:600` | |
 
 View options (not part of the input): `t=<ms>|end` starts paused there,
-`autoplay=1`, `frame=<css width>` (default 360), `badges=0` hides the in-frame
-unimplemented/rejected tags.
+`autoplay=1`, `frame=<css width>` (default 360), `badges=1` shows
+unimplemented/rejected tags in the frame (the dev panel log always lists them).
 
 ## Rules implemented
 

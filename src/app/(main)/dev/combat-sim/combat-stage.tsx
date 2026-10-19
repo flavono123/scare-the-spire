@@ -4,6 +4,7 @@ import { memo, useMemo, type CSSProperties } from "react";
 import { CardTile } from "@/components/codex/card-tile";
 import type { CodexCard } from "@/lib/codex-types";
 import { effectiveCard } from "@/lib/combat-sim/engine";
+import { nextRandom, seedRandom } from "@/lib/combat-sim/rng";
 import type { CombatTimeline, TimelineBeat } from "@/lib/combat-sim/timeline";
 import type { SimCreature, SimResult, SimState } from "@/lib/combat-sim/types";
 import { ENERGY_OUTLINE_COLOR, FONT_CQI, gameStroke, TEXT_CREAM } from "@/lib/sts2-card-style";
@@ -123,7 +124,7 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
         />
       ))}
 
-      <Popups timeline={timeline} t={t} player={player} monsters={monsters} />
+      <DamageNumbers timeline={timeline} t={t} player={player} monsters={monsters} />
       {badges && <Badges beats={recent} t={t} />}
     </div>
   );
@@ -511,72 +512,80 @@ const MemoCard = memo(function MemoCard({ card, upgraded, cost, unplayable, suff
   );
 });
 
-interface Popup {
-  key: string;
-  x: number;
-  y: number;
-  text: string;
-  color: string;
-  outlineColor: string;
-  start: number;
+/**
+ * NDamageNumVfx (scenes/vfx/vfx_damage_num.tscn): spawns 100 px above the
+ * creature's VFX point with a little jitter, flies on a random velocity
+ * (x -100..100, y -800..-700 px/s) under 2000 px/s^2 gravity, starts at scale
+ * 1.2-1.3 tinted Color(0.97, 0.167, 0.078), then tweens modulate to cream
+ * (0.5 s Cubic Out), scale to 1 (1.2 s Quad Out) and alpha to 0 (2 s Quad In).
+ * The game draws the random values from Rng.Chaotic; here they are seeded by
+ * the step so a frame is the same on every run.
+ */
+const DAMAGE_NUM_MS = 2000;
+const DAMAGE_START = [0.97, 0.16684, 0.0776];
+const CREAM_RGB = [1, 0.964706, 0.886275];
+const DAMAGE_OUTLINE = [0.21, 0.202685, 0.1869];
+
+function seeded(step: number, salt: number): number {
+  return nextRandom(seedRandom(step * 7919 + salt * 104729))[0];
 }
 
-const POPUP_MS = 900;
+function rgb(color: number[], tint: number[]): string {
+  return `rgb(${color.map((value, i) => Math.round(value * tint[i] * 255)).join(", ")})`;
+}
 
-function Popups({ timeline, t, player, monsters }: { timeline: CombatTimeline; t: number; player: CreatureBox; monsters: CreatureBox[] }) {
-  const popups: Popup[] = [];
+function DamageNumbers({ timeline, t, player, monsters }: { timeline: CombatTimeline; t: number; player: CreatureBox; monsters: CreatureBox[] }) {
+  const numbers: React.ReactNode[] = [];
   for (const beat of timeline.beats) {
-    const start = commitTime(beat);
-    if (start > t || t - start > POPUP_MS) continue;
     const event = beat.event;
-    if (event.kind === "energy" && event.to < event.from && event.cause !== "turn") {
-      popups.push({
-        key: `e${beat.step}`,
-        x: ORB.x + 120,
-        y: ORB.y - 110,
-        text: `-${event.from - event.to}`,
-        color: event.cause === "cost" ? TEXT_CREAM : STS_RED,
-        outlineColor: "#000",
-        start,
-      });
-    } else if (event.kind === "damage") {
-      const box = event.creature === "player" ? player : monsters[Number(event.creature.slice(1))];
-      const dealt = event.amount - event.blocked;
-      if (box) popups.push({ key: `d${beat.step}`, x: box.x, y: box.y - box.height * 0.6, text: dealt > 0 ? String(dealt) : "막음", color: TEXT_CREAM, outlineColor: "#5a0000", start });
-    } else if (event.kind === "block") {
-      popups.push({ key: `b${beat.step}`, x: player.x, y: player.y - player.height * 0.6, text: `+${event.amount}`, color: "#8fd3ff", outlineColor: "#0d2b45", start });
-    }
+    if (event.kind !== "damage") continue;
+    const start = commitTime(beat);
+    const age = (t - start) / 1000;
+    if (age < 0 || age * 1000 > DAMAGE_NUM_MS) continue;
+    const box = event.creature === "player" ? player : monsters[Number(event.creature.slice(1))];
+    if (!box) continue;
+    // NDamageNumVfx.Create(target, result): unblocked damage (+ overkill).
+    const shown = event.amount - event.blocked;
+    if (shown <= 0) continue;
+    const k = box.scale;
+    const r = (salt: number) => seeded(beat.step, salt);
+    const vx = -100 + 200 * r(1);
+    const vy = -800 + 100 * r(2);
+    const x = box.x + (-10 + 20 * r(3)) * k + vx * age * k;
+    const y = box.y - box.height / 2 + (-100 + (-5 + 10 * r(4))) * k + (vy * age + 1000 * age * age) * k;
+    const scale0 = 1.2 + 0.1 * r(5);
+    const rotate = -5 + 10 * r(6);
+    const colorT = 1 - (1 - Math.min(1, age / 0.5)) ** 3;
+    const tint = DAMAGE_START.map((value, i) => value + (CREAM_RGB[i] - value) * colorT);
+    const scaleT = 1 - (1 - Math.min(1, age / 1.2)) ** 2;
+    const scale = scale0 + (1 - scale0) * scaleT;
+    const alpha = 1 - Math.min(1, age / 2) ** 2;
+    numbers.push(
+      <div
+        key={beat.step}
+        className="pointer-events-none absolute flex items-center justify-center"
+        style={{
+          left: x - 128 * k,
+          top: y - 128 * k,
+          width: 256 * k,
+          height: 256 * k,
+          transform: `rotate(${rotate}deg) scale(${scale})`,
+          opacity: alpha,
+          zIndex: 700,
+          fontFamily: KREON,
+          fontWeight: 400,
+          fontSize: 64 * k,
+          letterSpacing: 2 * k,
+          color: rgb(CREAM_RGB, tint),
+          ...outline(rgb(DAMAGE_OUTLINE, tint), 20 * k * 0.5),
+          textShadow: `${5 * k}px ${4 * k}px 0 rgba(0,0,0,0.125)`,
+        }}
+      >
+        {shown}
+      </div>,
+    );
   }
-  return (
-    <>
-      {popups.map((popup) => {
-        const age = (t - popup.start) / POPUP_MS;
-        const rise = (1 - (1 - age) ** 2) * 80;
-        const alpha = age < 0.55 ? 1 : 1 - (age - 0.55) / 0.45;
-        return (
-          <div
-            key={popup.key}
-            className="pointer-events-none absolute"
-            style={{
-              left: popup.x - 150,
-              top: popup.y - 50 - rise,
-              width: 300,
-              textAlign: "center",
-              opacity: alpha,
-              zIndex: 700,
-              fontFamily: KREON,
-              fontWeight: 700,
-              fontSize: 84,
-              color: popup.color,
-              ...outline(popup.outlineColor, 14),
-            }}
-          >
-            {popup.text}
-          </div>
-        );
-      })}
-    </>
-  );
+  return <>{numbers}</>;
 }
 
 function Badges({ beats, t }: { beats: TimelineBeat[]; t: number }) {

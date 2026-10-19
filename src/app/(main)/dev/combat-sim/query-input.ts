@@ -9,7 +9,7 @@ export interface CombatSimViewOptions {
   autoplay: boolean;
   /** CSS width of the 1080x1920 stage; 360 at device scale 3 gives a 1080x1920 PNG. */
   frame: number;
-  /** Show the in-frame unimplemented / rejected tags. */
+  /** Show the in-frame unimplemented / rejected tags (not game UI, so off by default). */
   badges: boolean;
 }
 
@@ -160,7 +160,7 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
     t,
     autoplay: get("autoplay") === "1",
     frame: Number.isFinite(frame) && frame > 0 ? frame : 360,
-    badges: get("badges") !== "0",
+    badges: get("badges") === "1",
   };
 
   const complete = input.version && input.character && input.encounter;
