@@ -49,8 +49,12 @@ declare global {
   }
 }
 
+/** A rendered frame, or 100 ms when rAF is throttled (hidden tab). */
 function nextFrame(): Promise<void> {
-  return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => resolve());
+    setTimeout(resolve, 100);
+  });
 }
 
 function snapshot(result: SimResult, timeline: CombatTimeline, t: number): CombatSimSnapshot {

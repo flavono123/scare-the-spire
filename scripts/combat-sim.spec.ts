@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { archiveDir, loadCombatSimCatalog } from "../src/lib/combat-sim/catalog";
 import { effectiveCard, parseCardSpec, runCombat } from "../src/lib/combat-sim/engine";
 import { COMBAT_SIM_PRESETS } from "../src/lib/combat-sim/scenarios";
+import { parseCombatSimQuery } from "../src/app/(main)/dev/combat-sim/query-input";
 import { buildTimeline } from "../src/lib/combat-sim/timeline";
 import type { SimEvent, SimResult, SimState } from "../src/lib/combat-sim/types";
 
@@ -19,6 +20,21 @@ const kinds = (result: SimResult, kind: SimEvent["kind"]) => result.steps.filter
 async function main() {
   assert.deepEqual(parseCardSpec("PREPARED+"), { id: "PREPARED", upgraded: true, count: 1 });
   assert.deepEqual(parseCardSpec("strike_silent*5"), { id: "STRIKE_SILENT", upgraded: false, count: 5 });
+
+  // The query form decodes a raw `+` to a space; it still means upgraded.
+  const query = parseCombatSimQuery({
+    version: "0.102.0",
+    character: "SILENT",
+    encounter: "DOORMAKER_BOSS",
+    energy: "3/3",
+    hand: "ACROBATICS,PREPARED ",
+    draw: "STRIKE_SILENT*6",
+    powers: "DOORMAKER=GRASP_POWER:1",
+    moves: "DOORMAKER=GRASP",
+    script: "wait:600,play:ACROBATICS,play:PREPARED ,wait:800",
+  });
+  assert.deepEqual(query.errors, []);
+  assert.deepEqual(query.input, COMBAT_SIM_PRESETS["doormaker-grasp-0.102.0"]);
 
   // --- First scenario: v0.102.0 Doormaker Grasp ---------------------------------
   const input = COMBAT_SIM_PRESETS["doormaker-grasp-0.102.0"];

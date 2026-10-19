@@ -29,6 +29,11 @@ function list(value: string | undefined): string[] | undefined {
   return value.split(",").map((item) => item.trim()).filter(Boolean);
 }
 
+/** A raw `+` in a query string decodes to a space; card ids have no spaces, so `PREPARED ` is `PREPARED+`. */
+function cardList(value: string | undefined): string[] | undefined {
+  return list(value?.replace(/ /g, "+"));
+}
+
 /** `DOORMAKER=GRASP_POWER:1,player=STRENGTH_POWER:2` */
 function parsePowers(value: string): Record<string, PowerSpec[]> {
   const powers: Record<string, PowerSpec[]> = {};
@@ -56,7 +61,7 @@ function parseMoves(value: string): Record<string, string> {
  * `>` lists the cards to discard when the card asks; `@` is the target (or the pile for add).
  */
 export function parseScript(value: string): SimAction[] {
-  return (list(value) ?? []).map((token): SimAction => {
+  return (cardList(value) ?? []).map((token): SimAction => {
     const colon = token.indexOf(":");
     const verb = colon < 0 ? token : token.slice(0, colon);
     const rest = colon < 0 ? "" : token.slice(colon + 1);
@@ -127,10 +132,15 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
     if (maxEnergy) input.maxEnergy = Number(maxEnergy);
     const hp = get("hp");
     if (hp) input.hp = Number(hp);
-    input.hand = list(get("hand")) ?? input.hand;
-    input.drawPile = list(get("draw") ?? get("drawPile")) ?? input.drawPile;
-    input.discardPile = list(get("discard") ?? get("discardPile")) ?? input.discardPile;
-    input.exhaustPile = list(get("exhaust") ?? get("exhaustPile")) ?? input.exhaustPile;
+    const piles = {
+      hand: cardList(get("hand")),
+      drawPile: cardList(get("draw") ?? get("drawPile")),
+      discardPile: cardList(get("discard") ?? get("discardPile")),
+      exhaustPile: cardList(get("exhaust") ?? get("exhaustPile")),
+    };
+    for (const [key, cards] of Object.entries(piles)) {
+      if (cards) input[key as keyof typeof piles] = cards;
+    }
     const powers = get("powers");
     if (powers !== undefined) input.powers = parsePowers(powers);
     const moves = get("moves");
