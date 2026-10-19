@@ -18,6 +18,7 @@ import path from "node:path";
 import {
   getCodexCards,
   getCodexEnchantments,
+  getCodexMonsters,
   getCodexPotions,
   getCodexRelics,
 } from "../src/lib/codex-data";
@@ -33,16 +34,27 @@ import {
 import type { VersionedEntityType } from "../src/lib/types";
 import { BUILDS_DIR, tableAt, versionSnapshots, type LocalizationTable } from "./lib/localization-snapshots";
 
-const SOURCES: { type: VersionedEntityType; table: string; load: (gameLocale: GameLocale) => Promise<{ id: string }[]> }[] = [
-  { type: "card", table: "cards", load: (gameLocale) => getCodexCards({ includeDeprecated: true, gameLocale }) },
-  { type: "relic", table: "relics", load: (gameLocale) => getCodexRelics({ gameLocale }) },
-  { type: "potion", table: "potions", load: (gameLocale) => getCodexPotions({ gameLocale }) },
-  { type: "enchantment", table: "enchantments", load: (gameLocale) => getCodexEnchantments({ gameLocale }) },
-];
+type FieldKeys = [TrackedField, (id: string) => string][];
 
-const FIELDS: [TrackedField, (id: string) => string][] = [
+const TITLE_AND_DESCRIPTION: FieldKeys = [
   ["name", (id) => `${id}.title`],
   ["descriptionRaw", (id) => `${id}.description`],
+];
+
+const SOURCES: {
+  type: VersionedEntityType;
+  table: string;
+  load: (gameLocale: GameLocale) => Promise<{ id: string }[]>;
+  fields: FieldKeys;
+  /** Locales the site shows this type's text in; the others fall back to English. */
+  locales?: readonly GameLocale[];
+}[] = [
+  { type: "card", table: "cards", load: (gameLocale) => getCodexCards({ includeDeprecated: true, gameLocale }), fields: TITLE_AND_DESCRIPTION },
+  { type: "relic", table: "relics", load: (gameLocale) => getCodexRelics({ gameLocale }), fields: TITLE_AND_DESCRIPTION },
+  { type: "potion", table: "potions", load: (gameLocale) => getCodexPotions({ gameLocale }), fields: TITLE_AND_DESCRIPTION },
+  { type: "enchantment", table: "enchantments", load: (gameLocale) => getCodexEnchantments({ gameLocale }), fields: TITLE_AND_DESCRIPTION },
+  // Monsters have no description template; only the name changes between builds.
+  { type: "monster", table: "monsters", load: (gameLocale) => getCodexMonsters({ gameLocale }), fields: [["name", (id) => `${id}.name`]], locales: ["kor", "eng"] },
 ];
 
 /**
@@ -67,7 +79,7 @@ const SENTINEL_BASE = 987650;
  * gets a sentinel value, the template is baked, and the sentinels become
  * capture groups matched against the text. Whitespace is ignored.
  */
-function extractVars(template: string, baked: string): Record<string, number> | null {
+function extractVars(template: string, baked: string, loose = true): Record<string, number> | null {
   const names = [...new Set([...template.matchAll(/\{([A-Za-z_][A-Za-z0-9_]*)/g)].map((match) => match[1]))];
   if (names.length === 0) return null;
   if (names.length > 10) return null;
@@ -94,7 +106,7 @@ function extractVars(template: string, baked: string): Record<string, number> | 
   // mixes a later version's phrasing with its own numbers. Then read the
   // numbers in order: fixed numbers must agree, sentinels take the value.
   // Only with a single variable, since reordered wording would swap values.
-  if (order.length !== 1) return null;
+  if (!loose || order.length !== 1) return null;
   const probeNumbers = [...probe.matchAll(/-?\d+/g)].map((item) => item[0]);
   const bakedNumbers = [...baked.matchAll(/-?\d+/g)].map((item) => item[0]);
   if (probeNumbers.length !== bakedNumbers.length) return null;
@@ -133,26 +145,43 @@ async function main() {
 
   for (const locale of GAME_LOCALES) {
     for (const source of SOURCES) {
+      if (source.locales && !source.locales.includes(locale)) continue;
       const entities = await source.load(locale);
       const tables: LocalizationTable[] = snapshots.map(({ build }) => tableAt(build, locale, source.table));
       const current = tables[tables.length - 1];
       for (const entity of entities as (Record<string, unknown> & { id: string })[]) {
-        for (const [field, keyOf] of FIELDS) {
+        for (const [field, keyOf] of source.fields) {
           const key = keyOf(entity.id);
           const latest = clean(current[key]);
-          if (latest === undefined && entity[field] === undefined) continue;
-          // The site renders this field from somewhere other than the table
-          // (or the table lacks it), so the table's history cannot replace it.
-          if (latest === undefined || clean(entity[field]) !== latest) {
-            ((history.untracked[locale] ??= {})[source.type] ??= []).push(`${entity.id}.${field}`);
+          const shown = clean(entity[field]);
+          if (latest === undefined && shown === undefined) continue;
+          const untrack = () => ((history.untracked[locale] ??= {})[source.type] ??= []).push(`${entity.id}.${field}`);
+          const valueAt = (index: number) =>
+            clean(tables[index][keyOf(BUILD_ID_ALIASES[source.table]?.[entity.id]?.[snapshots[index].build] ?? entity.id)]);
+          // The site renders this field from somewhere other than the table,
+          // so the table's history cannot replace it.
+          if (latest !== undefined && shown !== latest) {
+            untrack();
             continue;
           }
           const timeline: [string, string][] = [];
-          snapshots.forEach(({ version, build }, index) => {
-            const value = clean(tables[index][keyOf(BUILD_ID_ALIASES[source.table]?.[entity.id]?.[build] ?? entity.id)]);
+          snapshots.forEach(({ version }, index) => {
+            const value = valueAt(index);
             if (value === undefined) return;
             if (timeline.length === 0 || timeline[timeline.length - 1][1] !== value) timeline.push([version, value]);
           });
+          // The key left the game's tables (a removed card, or a rework that
+          // moved the text elsewhere). Its text is only known for the builds
+          // that had it; from the first build without it, the site's text
+          // stands.
+          if (latest === undefined) {
+            const lastSeen = snapshots.map((_, index) => valueAt(index)).findLastIndex((value) => value !== undefined);
+            if (lastSeen < 0 || shown === undefined) {
+              untrack();
+              continue;
+            }
+            if (timeline[timeline.length - 1][1] !== shown) timeline.push([snapshots[lastSeen + 1].version, shown]);
+          }
           if (timeline.length < 2) continue;
           const byId = (((history.text[locale] ??= {})[source.type] ??= {})[entity.id] ??= {});
           byId[field] = timeline;
@@ -204,7 +233,10 @@ async function main() {
     // Reverting needs only the old value. The new one is kept when it reads
     // cleanly; a rework can drop the variable, or a later edit can reword the
     // authored after text.
-    const before = extractVars(beforeTemplate ?? fallbackTemplate!, diff.before);
+    // An authored before text often carries the new wording with the old
+    // numbers, so the after template reads it when the before template cannot.
+    const before = extractVars(beforeTemplate ?? fallbackTemplate!, diff.before)
+      ?? (afterTemplate ? extractVars(afterTemplate, diff.before, false) : null);
     if (!before) continue;
     const after = extractVars(afterTemplate ?? fallbackTemplate!, diff.after) ?? {};
     const recorded = new Set((change.fieldDiffs ?? []).map((item) => item.field));
