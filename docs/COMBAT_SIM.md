@@ -6,7 +6,10 @@ It exists only on the dev server: the page renders when
 `process.env.NODE_ENV === "development"` and calls `notFound()` otherwise, and
 that check is inlined at build time, so production drops the dynamic import
 and emits no engine or scene chunk. It is not in the sitemap, nav or search
-index, and `robots` is noindex.
+index, and `robots` is noindex. To check a production build, grep the
+emitted JS (`.next/static`, `.next/server`, `.open-next/server-functions`) for
+strings such as `doormaker-grasp-0.102.0` or `data-combat-sim-stage`: they
+must appear only under `.next/dev`.
 
 - Engine (pure, no DOM): `src/lib/combat-sim/` (`engine.ts`, `timeline.ts`,
   `card-effects.ts`, `hooks.ts`; `catalog.ts` builds the per-version data on the
@@ -25,7 +28,7 @@ keys override the preset and JSON.
 
 | Key | JSON | Query | Notes |
 | --- | --- | --- | --- |
-| version | `"0.102.0"` | `version=0.102.0` | Values and text via `getVersionedEntity`. |
+| version | `"0.102.0"` | `version=0.102.0` | Values and text via `getVersionedEntity`; card TargetType, move intents the versioned monster lost, and GRASP_POWER/WEIGHTED text come from `~/sts2-builds/<version>/canonical`. |
 | character | `"SILENT"` | `character=SILENT` | HP and max energy from character data. |
 | encounter | `"DOORMAKER_BOSS"` | `encounter=AXEBOTS_NORMAL` | Composition from the archived `Encounters/<Name>.cs`, else site data. |
 | energy, maxEnergy | `3`, `3` | `energy=3/3` | |
