@@ -15,15 +15,23 @@ type PresetPayload = {
   presets?: Record<string, DecisionsDecisionsResourceRef[]>;
 };
 
-const presetPromise = fetch(
-  `/generated/decisions-decisions-presets.json?v=${STS2_IMAGE_CACHE_BUSTER}`,
-  { cache: "no-cache" },
-)
-  .then((response) => {
-    if (!response.ok) return null;
-    return response.json() as Promise<PresetPayload>;
-  })
-  .catch(() => null);
+// Created on first effect, never at module scope: SSR evaluates this module
+// inside whichever prerender imports it first, and a no-cache fetch there marks
+// that one page dynamic so Next silently drops it from the static output.
+let presetPromise: Promise<PresetPayload | null> | null = null;
+
+function loadPresets(): Promise<PresetPayload | null> {
+  presetPromise ??= fetch(
+    `/generated/decisions-decisions-presets.json?v=${STS2_IMAGE_CACHE_BUSTER}`,
+    { cache: "no-cache" },
+  )
+    .then((response) => {
+      if (!response.ok) return null;
+      return response.json() as Promise<PresetPayload>;
+    })
+    .catch(() => null);
+  return presetPromise;
+}
 
 const legacyPromises = new Map<GameLocale, Promise<EntityInfo[]>>();
 
@@ -64,7 +72,7 @@ export function useDecisionsDecisionsCatalog(
   useEffect(() => {
     if (!includeStamps) return;
     let disposed = false;
-    void presetPromise.then((payload) => {
+    void loadPresets().then((payload) => {
       if (disposed) return;
       if (resources.entities.length > 0) {
         setStamps(stampAllPresetIds(resources.entities));
