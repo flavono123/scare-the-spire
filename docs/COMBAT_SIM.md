@@ -101,18 +101,48 @@ tagged unimplemented.
 
 ## Scene and capture
 
-- Timeline (`timeline.ts`): each engine step is a beat with a fixed length
-  (draw 220 ms, discard 300 ms, play 450 ms, energy loss 500 ms, ...), so
-  `frameAt(t)` is a pure function of `t`. Counters switch 35% into a beat.
+Everything on the stage follows the 0.102.0 node code and scenes; the only
+deliberate departures are for the 9:16 frame and are marked "9:16" below.
+
+- Layout (`stage-layout.ts`): game UI geometry times `UI_SCALE` (1.15), pinned
+  to the same screen corners: draw / discard / exhaust piles and their 80x80
+  buttons, the hand anchored at the bottom center with the game's per-count
+  slot table (x, y, angle) and scale 0.8. 9:16: hand x offsets are squeezed when
+  a slot would leave the 1080-wide stage, the energy orb is raised to clear the
+  hand, and the play position sits between the creatures and the hand instead
+  of the screen center.
+- Timeline (`timeline.ts`): beat lengths are what the game awaits (0.25 s per
+  draw, 0.25 s play tween, CustomScaledWait 0.3 s, discards about a frame since
+  the flight is not awaited, instant energy). `select` is the simulator's
+  stand-in for the player lifting the card (hover pose, 0.3 s).
+- Card motion (`card-motion.ts`): NHandCardHolder lerps (k 7 / 8 / 10) for
+  every hand change; draws spawn at the draw pile at scale 1; the played card
+  tweens to the play position at scale 0.8 (Cubic Out); discards and the result
+  pile fly on NCardFlyVfx arcs (seeded speed, acceleration, duration, arc),
+  darkening and shrinking, then pile counts rise on arrival with the button
+  bump (1.25 -> 1, 0.5 s Expo Out). Exhaust fades the card over 0.3 s.
+- VFX (`vfx-layer.tsx`): the character's card trail (both Line2D trails with
+  width curves, gradients and the texture's cross profile; silhouette sprites;
+  BigSparks / LittleSparks), and the energy gain glow and polar ring with their
+  curves. NDamageNumVfx damage numbers. Particle randomness is seeded per event.
+- Cards: CardTile, with the Weighted overlay (a CPU port of
+  `devoured.gdshader` with `weighted.tscn` uniforms) in the tile's affliction
+  slot, the slot card.tscn's OverlayContainer occupies: above the frame and
+  portrait border, below banner, plaque and cost. Checked against 0.103.x
+  gameplay footage (crimson frame, ragged crimson edge in the description box,
+  clean art, title and cost). Playable cards get the teal highlight (on 0.5 s
+  Cubic Out, off 0.5 s Linear); unplayable costs turn #FF5555 / #501717.
+- Energy orb: the counter scene's layers; rotation layers turn
+  `(i + 1) * 30 deg/s` (5 at 0 energy); at 0 the layers dim (`energy_orb_dark`)
+  and the label turns red. Spending energy has no animation in the game
+  (NEnergyCounter only refreshes the label); gains restart the back/front VFX.
+- Health bar (`health_bar.tscn`): nine-patch background, block outline and
+  fill textures with their modulate colors, the clipping mask, the lagging
+  middleground (holds 1 s, then 1 s Expo Out), Kreon Bold 24 label with glyph
+  spacing 1 and outline 16 (#900000, #1B3045 with block), block icon and label.
 - Spine actors (`spine-actor.tsx`) rebuild their pose from the cue list on
   every `t` (physics reset, not simulated). Doormaker and other still-art
   monsters use `monster-static-art.ts` by current move.
-- Energy orb: the counter scene's layers; rotation layers turn
-  `(i + 1) * 30 deg/s` (5 at 0 energy); at 0 the layers dim (`energy_orb_dark`)
-  and the label turns red.
-- Weighted overlay: a CPU port of `devoured.gdshader` with the uniforms from
-  `weighted.tscn`, drawn at a third of the card size. The cost orb is drawn
-  again above it so the cost stays readable.
 - `window.__sim`: `ready()`, `seek(t)`, `step()`, `play()`, `pause()`,
   `state()`, `frameTimes(fps)`, `duration`, `actionEnds`, `input`.
 
@@ -125,8 +155,13 @@ The stage is 360x640 CSS px and the capture's device scale is 3, so every
 PNG is 1080x1920. A frame sequence writes `0000.png...` and `frames.json`
 (times, input, final state). Same input and time give byte-identical PNGs.
 
-## Not simulated
+## Not simulated or not ported
 
-Relics, potions, rewards, most enemy AI, damage modifiers, card generation by
-effects, and the game's exact tween timings. The portrait layout is a
-re-arrangement of the landscape combat screen, not the game's own layout.
+- Rules: relics, potions, rewards, most enemy AI, damage modifiers, card
+  generation by effects.
+- UI: the hand's discard-selection mode (the simulator picks and discards
+  without the selection screen), the "not enough energy" thought bubble, the
+  card highlight's SDF ripple (a soft band stands in), the card shadow, the
+  exhaust ash particles, the reshuffle's silhouette-only flight (cards fly like
+  discards), the energy gain ribbons / specks / flipbooks (listed per character
+  in `combat-ui-assets.json` `notExported`), and NDamageBlockedVfx.
