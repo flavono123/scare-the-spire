@@ -29,8 +29,10 @@
  *
  * Combat simulator pages (/dev/combat-sim, dev server only) expose `window.__sim`;
  * the capture waits for `__sim.ready()` and seeks with `__sim.seek(t)`, so every
- * frame is the same on every run. The stage is 360x640 CSS px, so the fixed
- * device scale of 3 gives 1080x1920 frames. A frame sequence gets `frames.json`.
+ * frame is the same on every run. They are opened with `frame=1080` at device
+ * scale 1, so the 1080x1920 stage maps 1:1 to the PNG (a 1/3 stage scale at
+ * device scale 3 is not exactly 1 and its edge antialiasing could change with
+ * the frames before). A frame sequence gets `frames.json`.
  */
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -41,6 +43,14 @@ import { TEXT_GOLD, TEXT_GREEN } from "../src/lib/sts2-card-style";
 
 const DEFAULT_BASE = process.env.SHORTS_CAPTURE_BASE_URL ?? "http://localhost:3000";
 const DEVICE_SCALE = 3;
+/** Chrome switches that make combat simulator frames repeatable (see main). */
+const SIM_RASTER_ARGS = ["--disable-gpu-rasterization", "--num-raster-threads=1", "--disable-checker-imaging", "--disable-partial-raster"];
+/** Combat simulator stage width in CSS px, at device scale 1. */
+const SIM_FRAME = 1080;
+
+function isCombatSim(url: string): boolean {
+  return url.includes("/dev/combat-sim");
+}
 const CAPTURE_SELECTOR = "[data-combat-sim-stage], [data-card-tile], [data-relic-inspect-slab]";
 const DOWNLOAD_SELECTOR = "[data-compendium-download-image]";
 
@@ -241,7 +251,9 @@ async function paintedBox(page: Page, file: string) {
 async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "eng", outDir: string) {
   const requested = shot.url ?? (shot.target ? targetPath(shot.target, shot.locale ?? locale) : null);
   if (!requested) throw new Error(`shot needs target or url: ${JSON.stringify(shot)}`);
-  const url = new URL(requested, base).toString();
+  const target = new URL(requested, base);
+  if (isCombatSim(requested) && !target.searchParams.has("frame")) target.searchParams.set("frame", String(SIM_FRAME));
+  const url = target.toString();
   const out = resolvePath(shot.out, outDir);
 
   await page.goto(url, { waitUntil: "domcontentloaded", timeout: 180_000 });
@@ -255,7 +267,10 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
   // Version and locale are stamped on the tile after hydration.
   await page.waitForTimeout(800);
 
-  const isSim = await page.evaluate("Boolean(window.__sim)");
+  // The simulator sets window.__sim in an effect after hydration, which can come later than the stage.
+  const isSim = isCombatSim(requested)
+    ? await page.waitForFunction("Boolean(window.__sim)", undefined, { timeout: 120_000 }).then(() => true)
+    : await page.evaluate("Boolean(window.__sim)");
   if (isSim) {
     await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
     await page.evaluate("window.__sim.ready()");
@@ -325,7 +340,8 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     await download.saveAs(out);
     method = "download-button";
   } else {
-    await page.locator(selector).first().screenshot({ path: out, omitBackground: true });
+    // The simulator stage is opaque; omitBackground repaints the page and makes its raster race.
+    await page.locator(selector).first().screenshot({ path: out, omitBackground: !isSim });
     method = "element-screenshot";
   }
 
@@ -337,7 +353,7 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     stamp,
     edits: { mark: shot.mark ?? [], replace: shot.replace ?? [], upgraded: shot.upgraded ?? false, enchant: shot.enchant ?? null, beta: shot.beta ?? false },
     method,
-    pixelRatio: DEVICE_SCALE,
+    pixelRatio: await page.evaluate("window.devicePixelRatio"),
     ...image,
     capturedAt: new Date().toISOString(),
   };
@@ -350,10 +366,11 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
 
 const cdpSessions = new WeakMap<Page, Promise<CDPSession>>();
 
-const SET_STAGE_DISPLAY = (display: string) => `(async () => {
+/** Show or hide the simulator stage, then let `frames` frames pass. */
+const setStageDisplay = (display: string, frames = 2) => `(async () => {
   const stage = document.querySelector("[data-combat-sim-stage]");
   if (stage) stage.style.display = "${display}";
-  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  for (let i = 0; i < ${frames}; i += 1) await new Promise((resolve) => requestAnimationFrame(resolve));
 })()`;
 
 /**
@@ -361,8 +378,11 @@ const SET_STAGE_DISPLAY = (display: string) => `(async () => {
  * raster tiles that did not change and draws a scaled-down image from a
  * larger decode of it still cached (a card drawn bigger in an earlier frame),
  * so the frames before would change this frame's pixels. The stage is taken
- * off screen, a simulated critical memory pressure drops the decoded images,
- * and the stage comes back fully rasterized at the new time.
+ * off screen, a simulated critical memory pressure drops the decoded images
+ * (it reaches the renderer asynchronously, hence the frames after it), and the
+ * stage comes back fully rasterized at the new time. The first seek after a
+ * page load rasterizes differently from every later one, so a fresh page
+ * first seeks to the end.
  */
 async function simSeek(page: Page, time: number) {
   let session = cdpSessions.get(page);
@@ -370,10 +390,16 @@ async function simSeek(page: Page, time: number) {
     session = page.context().newCDPSession(page);
     cdpSessions.set(page, session);
   }
-  await page.evaluate(SET_STAGE_DISPLAY("none"));
-  await (await session).send("Memory.simulatePressureNotification", { level: "critical" });
-  await page.evaluate(`window.__sim.seek(${time})`);
-  await page.evaluate(SET_STAGE_DISPLAY(""));
+  const warm = await page.evaluate("Boolean(window.__simCaptureWarm)");
+  const times = warm ? [time] : [(await page.evaluate("window.__sim.duration")) as number, time];
+  for (const at of times) {
+    await page.evaluate(setStageDisplay("none"));
+    await (await session).send("Memory.simulatePressureNotification", { level: "critical" });
+    await page.evaluate(setStageDisplay("none", 6));
+    await page.evaluate(`window.__sim.seek(${at})`);
+    await page.evaluate(setStageDisplay(""));
+  }
+  await page.evaluate("window.__simCaptureWarm = true");
 }
 
 /** Combat simulator frame sequence: seek each frame time, screenshot the stage. */
@@ -385,7 +411,8 @@ async function captureFrames(page: Page, shot: Shot, requested: string, selector
   const node = page.locator(selector).first();
   for (const [index, time] of selected.entries()) {
     await simSeek(page, time);
-    await node.screenshot({ path: path.join(outDir, `${String(index).padStart(4, "0")}.png`), omitBackground: true });
+    // The stage is opaque; omitBackground repaints the page and makes its raster race.
+    await node.screenshot({ path: path.join(outDir, `${String(index).padStart(4, "0")}.png`) });
   }
   const first = path.join(outDir, "0000.png");
   const image = await paintedBox(page, first);
@@ -401,7 +428,7 @@ async function captureFrames(page: Page, shot: Shot, requested: string, selector
     actionEnds: await page.evaluate("window.__sim.actionEnds"),
     input: await page.evaluate("window.__sim.input"),
     final: await page.evaluate("window.__sim.state()"),
-    pixelRatio: DEVICE_SCALE,
+    pixelRatio: await page.evaluate("window.devicePixelRatio"),
     width: image.width,
     height: image.height,
     capturedAt: new Date().toISOString(),
@@ -479,14 +506,15 @@ async function main() {
   }
 
   // Software WebGL so Spine monster pages render headless. Combat simulator
-  // shots also raster in software: GPU raster reuses an image decode made at
-  // another scale in an earlier frame, so a seek's pixels would depend on the
-  // frames before it.
+  // shots also raster in software on one thread, without checker-imaging or
+  // partial raster: otherwise an image decode made at another scale (in an
+  // earlier frame, or by a raster task that ran first) and tiles kept from
+  // before change a frame's pixels from run to run.
   const browsers = new Map<boolean, Promise<Browser>>();
   const browserFor = (sim: boolean) => {
     let browser = browsers.get(sim);
     if (!browser) {
-      const args = ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", ...(sim ? ["--disable-gpu-rasterization"] : [])];
+      const args = ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", ...(sim ? SIM_RASTER_ARGS : [])];
       browser = chromium.launch({ args });
       browsers.set(sim, browser);
     }
@@ -501,8 +529,8 @@ async function main() {
       const existing = pages.get(key);
       if (existing) return existing;
       const context = await (await browserFor(sim)).newContext({
-        viewport: { width: 1280, height: 1400 },
-        deviceScaleFactor: DEVICE_SCALE,
+        viewport: sim ? { width: 1600, height: 2100 } : { width: 1280, height: 1400 },
+        deviceScaleFactor: sim ? 1 : DEVICE_SCALE,
         acceptDownloads: true,
         reducedMotion: "reduce",
         locale: locale === "kor" ? "ko-KR" : "en-US",
@@ -515,7 +543,7 @@ async function main() {
     };
     for (const shot of batch.shots) {
       const locale = shot.locale ?? batch.locale ?? "kor";
-      const sim = Boolean(shot.url?.includes("/dev/combat-sim"));
+      const sim = Boolean(shot.url && isCombatSim(shot.url));
       await capture(await pageFor(locale, sim), { ...shot, locale }, base, locale, outDir);
     }
   } finally {
