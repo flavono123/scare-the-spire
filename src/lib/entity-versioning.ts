@@ -89,6 +89,25 @@ function syncBakedDescription(
 }
 
 /**
+ * The English companion of syncBakedDescription: when the English template was
+ * reverted without a baked descriptionEn diff, bake it again.
+ */
+function syncBakedEnglishDescription(
+  entity: Record<string, unknown>,
+  entityType: VersionedEntityType,
+  snapshotRawEn: unknown,
+  descriptionEnDiffApplied: boolean,
+): void {
+  if (descriptionEnDiffApplied) return;
+  if (typeof entity.descriptionRawEn !== "string" || entity.descriptionRawEn.length === 0) return;
+  if (entity.descriptionRawEn === snapshotRawEn) return;
+  entity.descriptionEn = bakeDescription(
+    entity.descriptionRawEn,
+    varsForBake(entityType, entity.id, entity.vars),
+  );
+}
+
+/**
  * Apply a single field diff in reverse (after→before) to an entity object.
  * Supports dot-notation paths like "vars.Damage" or "upgrade.cost".
  */
@@ -379,7 +398,9 @@ export function reconstructEntityAtVersion<T extends { id: string }>(
     descriptionRaw: result.descriptionRaw,
     varsJson: JSON.stringify(result.vars ?? null),
   };
+  const snapshotRawEn = result.descriptionRawEn;
   let descriptionDiffApplied = false;
+  let descriptionEnDiffApplied = false;
 
   for (const patch of patchesToRevert) {
     const diffs = versionDiffs.filter(
@@ -389,6 +410,7 @@ export function reconstructEntityAtVersion<T extends { id: string }>(
       for (const diff of vd.diffs) {
         if (!diff.upgraded) {
           if (isDescriptionField(diff.field)) descriptionDiffApplied = true;
+          if (diff.field === "descriptionEn") descriptionEnDiffApplied = true;
           applyReverseDiff(result, diff);
         }
       }
@@ -396,6 +418,7 @@ export function reconstructEntityAtVersion<T extends { id: string }>(
   }
 
   syncBakedDescription(result, entityType, bakedSnapshot, descriptionDiffApplied);
+  syncBakedEnglishDescription(result, entityType, snapshotRawEn, descriptionEnDiffApplied);
   if (usesVariablesTheVersionLacks(entity as Record<string, unknown>, result)) {
     result[VERSION_TEXT_UNPINNED_FIELD] = true;
   }

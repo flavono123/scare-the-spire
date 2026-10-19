@@ -25,8 +25,11 @@ export interface LocalizationHistory {
 
 export type TrackedField = "name" | "descriptionRaw";
 
-/** Entity types whose title and description come straight from the localization tables. */
-export const LOCALIZATION_HISTORY_TYPES: readonly VersionedEntityType[] = ["card", "relic", "potion", "enchantment"];
+/**
+ * Entity types whose title and description come straight from the localization
+ * tables (monsters: the name only).
+ */
+export const LOCALIZATION_HISTORY_TYPES: readonly VersionedEntityType[] = ["card", "relic", "potion", "enchantment", "monster"];
 
 /**
  * Text before this version was not pinned per locale. Older Compendium
@@ -41,6 +44,20 @@ const TEXT_FIELD_OF: Record<string, TrackedField> = {
   name: "name",
   description: "descriptionRaw",
   descriptionRaw: "descriptionRaw",
+};
+
+/**
+ * Entities carry the English text next to the selected locale's, so every
+ * locale's API also shows the old English wording: nameEn and descriptionRawEn
+ * follow the English history.
+ */
+const ENGLISH_FIELD_OF: Record<string, TrackedField> = {
+  nameEn: "name",
+  descriptionRawEn: "descriptionRaw",
+};
+const ENGLISH_FIELD_FOR: Record<TrackedField, string> = {
+  name: "nameEn",
+  descriptionRaw: "descriptionRawEn",
 };
 
 function bareVersion(patch: string): string {
@@ -64,6 +81,9 @@ export function localizeVersionDiffs(
   const untracked = history.untracked[locale] ?? {};
   const tracked = (type: VersionedEntityType, id: string, field: TrackedField) =>
     LOCALIZATION_HISTORY_TYPES.includes(type) && !untracked[type]?.includes(`${id}.${field}`);
+  const englishUntracked = history.untracked.eng ?? {};
+  const englishTracked = (type: VersionedEntityType, id: string, field: TrackedField) =>
+    LOCALIZATION_HISTORY_TYPES.includes(type) && !englishUntracked[type]?.includes(`${id}.${field}`);
 
   const localized: EntityVersionDiff[] = base.map((entry) => {
     const pinned = compareVersions(bareVersion(entry.patch), history.pinnedFrom) > 0;
@@ -77,6 +97,8 @@ export function localizeVersionDiffs(
     );
     let unpinned = false;
     const diffs = entry.diffs.flatMap((diff): EntityFieldDiff[] => {
+      const englishField = ENGLISH_FIELD_OF[diff.field];
+      if (englishField) return pinned && englishTracked(entry.entityType, entry.entityId, englishField) ? [] : [diff];
       const field = TEXT_FIELD_OF[diff.field];
       if (!field) return [diff];
       if (pinned && tracked(entry.entityType, entry.entityId, field)) return [];
@@ -100,20 +122,27 @@ export function localizeVersionDiffs(
     localized.push({ entityType, entityId, patch, diffs: [{ field, before, after }] });
   }
 
-  for (const [type, ids] of Object.entries(localeText) as [VersionedEntityType, Record<string, Partial<Record<TrackedField, [string, string][]>>>][]) {
-    for (const [id, fields] of Object.entries(ids)) {
-      for (const [field, timeline] of Object.entries(fields) as [TrackedField, [string, string][]][]) {
-        for (let index = 1; index < timeline.length; index += 1) {
-          const [version, after] = timeline[index];
-          localized.push({
-            entityType: type,
-            entityId: id,
-            patch: `v${version}`,
-            diffs: [{ field, before: timeline[index - 1][1], after } as EntityFieldDiff],
-          });
+  const pushTimelines = (
+    source: NonNullable<LocalizationHistory["text"][GameLocale]>,
+    fieldName: (field: TrackedField) => string,
+  ) => {
+    for (const [type, ids] of Object.entries(source) as [VersionedEntityType, Record<string, Partial<Record<TrackedField, [string, string][]>>>][]) {
+      for (const [id, fields] of Object.entries(ids)) {
+        for (const [field, timeline] of Object.entries(fields) as [TrackedField, [string, string][]][]) {
+          for (let index = 1; index < timeline.length; index += 1) {
+            const [version, after] = timeline[index];
+            localized.push({
+              entityType: type,
+              entityId: id,
+              patch: `v${version}`,
+              diffs: [{ field: fieldName(field), before: timeline[index - 1][1], after } as EntityFieldDiff],
+            });
+          }
         }
       }
     }
-  }
+  };
+  pushTimelines(localeText, (field) => field);
+  pushTimelines(history.text.eng ?? {}, (field) => ENGLISH_FIELD_FOR[field]);
   return localized;
 }
