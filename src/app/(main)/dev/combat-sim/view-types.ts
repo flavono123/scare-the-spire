@@ -5,7 +5,7 @@ import type {
   EncounterSceneMonsterSlot,
   MonsterSpineAsset,
 } from "@/lib/codex-types";
-import type { CombatSimInput, SimCatalog } from "@/lib/combat-sim/types";
+import type { CombatSimInput, ScenePart, SimCatalog } from "@/lib/combat-sim/types";
 import type { MonsterStaticArt } from "@/lib/monster-static-art";
 import type { CombatSimViewOptions } from "./query-input";
 import type { CardTrailAsset, EnergyGainVfx } from "./vfx-layer";
@@ -45,13 +45,16 @@ export interface CombatSimView {
   background: string | null;
   combatLayout: EncounterSceneCombatLayout | null;
   monsterSlots: EncounterSceneMonsterSlot[];
+  /** Scene parts on the stage (the encounter is always there). */
+  parts: ScenePart[];
+  /** Null without a character (encounter-only scenes). */
   character: {
     id: string;
     name: string;
     spine: MonsterSpineAsset | null;
     imageUrl: string | null;
     energyCounter: EnergyCounterAsset | null;
-  };
+  } | null;
   /** One entry per `catalog.encounter.monsters` entry, same order. */
   monsters: CombatSimMonsterView[];
   powerIcons: Record<string, string | null>;

@@ -25,6 +25,7 @@ import {
   monsterBoxes,
   orbBaseAngle,
   playerBox,
+  sceneFrame,
   visibleState,
   type CreatureBox,
 } from "./stage-layout";
@@ -53,8 +54,14 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
   const frame = timeline.frameAt(t);
   const visible = visibleState(frame.beat, frame.progress, frame.state);
   const recent = timeline.beatsUntil(t);
-  const player = playerBox();
-  const monsters = useMemo(() => monsterBoxes(view.monsters, view.combatLayout), [view.monsters, view.combatLayout]);
+  const withPlayer = view.parts.includes("player") && view.character !== null;
+  const withCards = view.parts.includes("cards") && view.character !== null;
+  const sceneLayout = sceneFrame(withPlayer, withCards);
+  const player = playerBox(sceneLayout);
+  const monsters = useMemo(
+    () => monsterBoxes(view.monsters, view.combatLayout, sceneFrame(withPlayer, withCards)),
+    [view.monsters, view.combatLayout, withPlayer, withCards],
+  );
   const cues = useMemo(() => animationCues(timeline, view), [timeline, view]);
   const motion = useMemo(() => buildMotion(result, timeline), [result, timeline]);
   const glows = useMemo(() => playableGlowModel(result, timeline, view), [result, timeline, view]);
@@ -81,23 +88,25 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
           ...(view.energyGainVfx?.layers.map((layer) => layer.texture) ?? []),
         ]}
       />
-      <Background url={view.background} />
+      <Background url={view.background} height={sceneLayout.backgroundHeight} />
 
-      <Creature
-        id="player"
-        box={player}
-        creature={visible.player}
-        spine={view.character.spine}
-        imageUrl={view.character.imageUrl}
-        cues={cues.player ?? []}
-        t={t}
-        pixelRatio={pixelRatio}
-        viewport={null}
-        view={view}
-        timeline={timeline}
-        barWidth={player.width}
-        onActorStatus={onActorStatus}
-      />
+      {withPlayer && view.character && (
+        <Creature
+          id="player"
+          box={player}
+          creature={visible.player}
+          spine={view.character.spine}
+          imageUrl={view.character.imageUrl}
+          cues={cues.player ?? []}
+          t={t}
+          pixelRatio={pixelRatio}
+          viewport={null}
+          view={view}
+          timeline={timeline}
+          barWidth={player.width}
+          onActorStatus={onActorStatus}
+        />
+      )}
       {view.monsters.map((monster, index) => {
         const state = visible.monsters[index];
         if (!state) return null;
@@ -125,7 +134,7 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
         );
       })}
 
-      {view.character.energyCounter && (
+      {withCards && view.character?.energyCounter && (
         <EnergyOrb
           asset={view.character.energyCounter}
           energy={visible.energy}
@@ -137,30 +146,33 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
           pixelRatio={pixelRatio}
         />
       )}
-      <Piles view={view} piles={piles} />
+      {withCards && (
+        <>
+          <Piles view={view} piles={piles} />
+          {visuals.map((visual) => (
+            <CardView
+              key={visual.uid}
+              visual={visual}
+              view={view}
+              state={visible}
+              glow={glowAt(glows[visual.uid], t)}
+            />
+          ))}
+          <CardTrailLayer flights={flights} trail={trail} pixelRatio={pixelRatio} />
+        </>
+      )}
 
-      {visuals.map((visual) => (
-        <CardView
-          key={visual.uid}
-          visual={visual}
-          view={view}
-          state={visible}
-          glow={glowAt(glows[visual.uid], t)}
-        />
-      ))}
-      <CardTrailLayer flights={flights} trail={trail} pixelRatio={pixelRatio} />
-
-      <DamageNumbers timeline={timeline} t={t} player={player} monsters={monsters} />
+      <DamageNumbers timeline={timeline} t={t} player={withPlayer ? player : null} monsters={monsters} />
       {badges && <Badges beats={recent} t={t} />}
     </div>
     </SimClock.Provider>
   );
 }
 
-function Background({ url }: { url: string | null }) {
+function Background({ url, height }: { url: string | null; height: number }) {
   if (!url) return null;
   return (
-    <div className="absolute left-0 top-0" style={{ width: STAGE_W, height: 1260 }}>
+    <div className="absolute left-0 top-0" style={{ width: STAGE_W, height }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={url} alt="" className="h-full w-full object-cover" style={{ objectPosition: "50% 60%" }} />
       <div
@@ -187,7 +199,7 @@ function animationCues(timeline: CombatTimeline, view: CombatSimView): Record<st
   for (const beat of timeline.beats) {
     if (beat.event.kind !== "animate") continue;
     const { creature, animation } = beat.event;
-    const asset = creature === "player" ? view.character.spine : view.monsters[Number(creature.slice(1))]?.spine;
+    const asset = creature === "player" ? view.character?.spine : view.monsters[Number(creature.slice(1))]?.spine;
     const key = animation === "attack" ? "ATTACK" : animation === "hurt" ? "HURT" : "CAST";
     const name = asset?.moveAnimations?.[key]?.[0] ?? animation;
     (cues[creature] ??= []).push({ t: beat.start, animation: name });
@@ -199,7 +211,7 @@ interface CreatureProps {
   id: string;
   box: CreatureBox;
   creature: SimCreature;
-  spine: CombatSimView["character"]["spine"];
+  spine: NonNullable<CombatSimView["character"]>["spine"] | CombatSimMonsterView["spine"];
   imageUrl: string | null;
   cues: SpineCue[];
   t: number;
@@ -806,7 +818,7 @@ function rgb(color: number[], tint: number[]): string {
   return `rgb(${color.map((value, i) => Math.round(value * tint[i] * 255)).join(", ")})`;
 }
 
-function DamageNumbers({ timeline, t, player, monsters }: { timeline: CombatTimeline; t: number; player: CreatureBox; monsters: CreatureBox[] }) {
+function DamageNumbers({ timeline, t, player, monsters }: { timeline: CombatTimeline; t: number; player: CreatureBox | null; monsters: CreatureBox[] }) {
   const numbers: React.ReactNode[] = [];
   for (const beat of timeline.beats) {
     const event = beat.event;

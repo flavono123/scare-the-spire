@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { archiveDir, loadCombatSimCatalog } from "../src/lib/combat-sim/catalog";
-import { effectiveCard, parseCardSpec, runCombat } from "../src/lib/combat-sim/engine";
+import { effectiveCard, parseCardSpec, runCombat, sceneParts } from "../src/lib/combat-sim/engine";
 import { COMBAT_SIM_PRESETS } from "../src/lib/combat-sim/scenarios";
 import { parseCombatSimQuery } from "../src/app/(main)/dev/combat-sim/query-input";
 import { buildTimeline } from "../src/lib/combat-sim/timeline";
@@ -41,8 +41,8 @@ async function main() {
   const { catalog, warnings } = await loadCombatSimCatalog(input);
 
   // Versioned values, not invented ones.
-  assert.equal(catalog.character.hp, 70);
-  assert.equal(catalog.character.maxEnergy, 3);
+  assert.equal(catalog.character?.hp, 70);
+  assert.equal(catalog.character?.maxEnergy, 3);
   assert.equal(effectiveCard(catalog.cards.ACROBATICS, false).cost, 1);
   assert.equal(effectiveCard(catalog.cards.ACROBATICS, false).vars.Cards, 3);
   assert.equal(effectiveCard(catalog.cards.PREPARED, true).cost, 0);
@@ -117,13 +117,36 @@ async function main() {
   assert.equal(kinds(reshuffle, "shuffle").length, 1);
   assert.deepEqual(runCombat({ ...input, powers: {}, hand: ["ACROBATICS"], drawPile: [], discardPile: ["STRIKE_SILENT*2", "PREPARED"], seed: 7, script: [{ do: "play", card: "ACROBATICS" }] }, catalog), reshuffle);
 
-  // --- Second candidate: Axebots 0.103.2 (two) -> 0.104.0 (one) ----------------
+  // Scene parts: the default depends on whether a character is given.
+  assert.deepEqual(sceneParts(input), ["player", "cards"]);
+  assert.deepEqual(sceneParts({ version: "0.104.0", encounter: "AXEBOTS_NORMAL" }), []);
+  assert.deepEqual(sceneParts({ ...input, parts: ["player"] }), ["player"]);
+  await assert.rejects(loadCombatSimCatalog({ version: "0.104.0", encounter: "AXEBOTS_NORMAL", parts: ["cards"] }), /character/);
+  // Without the cards part, card piles are not loaded and card actions are skipped.
+  const noCards = runCombat({ ...input, parts: ["player"] }, catalog);
+  assert.deepEqual(noCards.final.piles.hand, []);
+  assert.equal(noCards.final.energy, 0);
+  assert.ok(noCards.warnings.some((warning) => warning.includes("cards 파트")));
+
+  // --- Second candidate: Axebots 0.103.2 (two) -> 0.104.0 (one), encounter only --
   if (archiveDir("0.103.2") && archiveDir("0.104.0")) {
     const before = await loadCombatSimCatalog(COMBAT_SIM_PRESETS["axebots-0.103.2"]);
     const after = await loadCombatSimCatalog(COMBAT_SIM_PRESETS["axebots-0.104.0"]);
     assert.deepEqual(before.catalog.encounter.monsters, [{ monsterId: "AXEBOT", slot: "front" }, { monsterId: "AXEBOT", slot: "back" }]);
     assert.deepEqual(after.catalog.encounter.monsters, [{ monsterId: "AXEBOT", slot: "front" }]);
-    const strike = runCombat(COMBAT_SIM_PRESETS["axebots-0.104.0"], after.catalog);
+    // Encounter-only presets load no character, cards or affliction text.
+    for (const load of [before, after]) {
+      assert.equal(load.catalog.character, null);
+      assert.deepEqual(load.catalog.cards, {});
+      assert.deepEqual(load.catalog.afflictions, {});
+      const run = runCombat(COMBAT_SIM_PRESETS[load === before ? "axebots-0.103.2" : "axebots-0.104.0"], load.catalog);
+      assert.deepEqual(run.warnings, []);
+      assert.equal(Object.keys(run.final.cards).length, 0);
+    }
+    // The same encounter with a character and cards still plays cards.
+    const full = { version: "0.104.0", character: "SILENT", encounter: "AXEBOTS_NORMAL", hand: ["STRIKE_SILENT", "DEFEND_SILENT"], script: [{ do: "play" as const, card: "STRIKE_SILENT", target: 0 }, { do: "play" as const, card: "DEFEND_SILENT" }] };
+    const fullLoad = await loadCombatSimCatalog(full);
+    const strike = runCombat(full, fullLoad.catalog);
     const hit = kinds(strike, "damage")[0]?.event;
     assert.ok(hit?.kind === "damage" && hit.amount === 6 && hit.creature === "m0");
     assert.equal(strike.final.player.block, 5);

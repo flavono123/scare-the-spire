@@ -25,36 +25,19 @@ export const COMBAT_SIM_PRESETS: Record<string, CombatSimInput> = {
       { do: "wait", ms: 1500 },
     ],
   },
-  /** v0.103.2 Axebots: two Axebots (front, back). Compare with `axebots-0.104.0`. */
+  /**
+   * v0.103.2 Axebots: two Axebots (front, back). Compare with `axebots-0.104.0`.
+   * Encounter only: no character and no card interface are loaded or drawn.
+   */
   "axebots-0.103.2": {
     version: "0.103.2",
-    character: "SILENT",
     encounter: "AXEBOTS_NORMAL",
-    energy: 3,
-    maxEnergy: 3,
-    hand: ["STRIKE_SILENT", "STRIKE_SILENT", "DEFEND_SILENT", "DEFEND_SILENT", "NEUTRALIZE"],
-    drawPile: ["STRIKE_SILENT*3", "DEFEND_SILENT*2"],
-    script: [
-      { do: "wait", ms: 600 },
-      { do: "play", card: "STRIKE_SILENT", target: 0 },
-      { do: "play", card: "DEFEND_SILENT" },
-      { do: "wait", ms: 800 },
-    ],
+    script: [{ do: "wait", ms: 2000 }],
   },
-  /** v0.104.0 Axebots: one Axebot (front). */
+  /** v0.104.0 Axebots: one Axebot (front). Encounter only. */
   "axebots-0.104.0": {
     version: "0.104.0",
-    character: "SILENT",
     encounter: "AXEBOTS_NORMAL",
-    energy: 3,
-    maxEnergy: 3,
-    hand: ["STRIKE_SILENT", "STRIKE_SILENT", "DEFEND_SILENT", "DEFEND_SILENT", "NEUTRALIZE"],
-    drawPile: ["STRIKE_SILENT*3", "DEFEND_SILENT*2"],
-    script: [
-      { do: "wait", ms: 600 },
-      { do: "play", card: "STRIKE_SILENT", target: 0 },
-      { do: "play", card: "DEFEND_SILENT" },
-      { do: "wait", ms: 800 },
-    ],
+    script: [{ do: "wait", ms: 2000 }],
   },
 };

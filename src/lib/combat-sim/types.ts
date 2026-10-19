@@ -25,14 +25,27 @@ export type SimAction =
   | { do: "addCard"; card: CardSpec; pile?: PileType }
   | { do: "wait"; ms: number };
 
+/**
+ * Optional scene parts. The encounter (background, monsters, intents, monster
+ * health) is always there; `player` adds the character with its health bar,
+ * `cards` adds the card interface (hand, piles, energy, card play).
+ */
+export type ScenePart = "player" | "cards";
+export const SCENE_PARTS: readonly ScenePart[] = ["player", "cards"];
+
 /** The only input: top-level axes, given as one JSON object or as URL query keys. */
 export interface CombatSimInput {
   /** Game version, e.g. "0.102.0". */
   version: string;
-  /** Character id, e.g. "SILENT". */
-  character: string;
+  /** Character id, e.g. "SILENT". Required by the `player` and `cards` parts. */
+  character?: string;
   /** Encounter id, e.g. "DOORMAKER_BOSS". */
   encounter: string;
+  /**
+   * Scene parts to show and load. Defaults to both with a character, none
+   * without one (an encounter-only scene). `[]` shows the encounter alone.
+   */
+  parts?: ScenePart[];
   energy?: number;
   maxEnergy?: number;
   /** Player current HP (defaults to the character's starting HP). */
@@ -121,7 +134,8 @@ export interface SimEncounterDef {
 /** Everything the engine needs for one version. Built server-side by catalog.ts. */
 export interface SimCatalog {
   version: string;
-  character: SimCharacterDef;
+  /** Null when the scene loads no character (no `player` or `cards` part). */
+  character: SimCharacterDef | null;
   encounter: SimEncounterDef;
   cards: Record<string, SimCardDef>;
   monsters: Record<string, SimMonsterDef>;

@@ -20,7 +20,7 @@ import path from "node:path";
 import { getCodexAfflictions, getCodexCharacters, getCodexPowers } from "../codex-data";
 import type { CodexCard, CodexEncounter, CodexMonster } from "../codex-types";
 import { getVersionedEntity } from "../versioned-entity-api";
-import { inputCardIds, parsePowerSpec } from "./engine";
+import { inputCardIds, parsePowerSpec, sceneParts } from "./engine";
 import { AFFLICTION_HOOKS } from "./hooks";
 import type {
   CombatSimInput,
@@ -125,22 +125,30 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
   const warnings: string[] = [];
   if (!archiveDir(version)) warnings.push(`빌드 아카이브 없음: ${path.join(archiveRoot(), version)}`);
 
+  // Load only what the scene parts use: no character data without a character,
+  // no card data or affliction text without the card interface.
+  const parts = sceneParts(input);
+  const withCards = parts.includes("cards");
+  if (parts.length > 0 && !input.character) throw new Error(`${parts.join(", ")} 파트에는 character가 필요합니다`);
+  const none = <T,>(value: T) => Promise.resolve(value);
   const [characters, sitePowers, siteAfflictions, archiveCards, archiveMonsterData, archivePowerLoc, archiveAfflictionLoc, currentCards] = await Promise.all([
-    getCodexCharacters({ gameLocale: locale }),
+    input.character ? getCodexCharacters({ gameLocale: locale }) : none([]),
     getCodexPowers({ gameLocale: locale, includeDeprecated: true }),
-    getCodexAfflictions({ gameLocale: locale }),
-    readArchiveJson<ArchiveCards>(version, "canonical/cards.json"),
+    withCards ? getCodexAfflictions({ gameLocale: locale }) : none([]),
+    withCards ? readArchiveJson<ArchiveCards>(version, "canonical/cards.json") : none(null),
     readArchiveJson<ArchiveMonsters>(version, "canonical/monsters.json"),
     readArchiveJson<ArchiveLoc>(version, "canonical/loc/kor/powers.json"),
-    readArchiveJson<ArchiveLoc>(version, "canonical/loc/kor/afflictions.json"),
-    readFile(path.join(process.cwd(), "data/sts2/kor/cards.json"), "utf8")
-      .then((text) => JSON.parse(text) as { id: string; target?: string }[])
-      .catch(() => []),
+    withCards ? readArchiveJson<ArchiveLoc>(version, "canonical/loc/kor/afflictions.json") : none(null),
+    withCards
+      ? readFile(path.join(process.cwd(), "data/sts2/kor/cards.json"), "utf8")
+        .then((text) => JSON.parse(text) as { id: string; target?: string }[])
+        .catch(() => [])
+      : none([] as { id: string; target?: string }[]),
   ]);
 
-  const characterId = input.character.toUpperCase();
-  const character = characters.find((entry) => entry.id === characterId);
-  if (!character) throw new Error(`unknown character: ${input.character}`);
+  const characterId = input.character?.toUpperCase() ?? null;
+  const character = characterId ? characters.find((entry) => entry.id === characterId) ?? null : null;
+  if (characterId && !character) throw new Error(`unknown character: ${input.character}`);
 
   const encounterId = input.encounter.toUpperCase();
   const encounterResult = await getVersionedEntity<CodexEncounter>({ entityType: "encounter", entityId: encounterId, version, locale });
@@ -239,7 +247,7 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
   }
 
   const afflictions: Record<string, SimAfflictionDef> = {};
-  for (const afflictionId of Object.keys(AFFLICTION_HOOKS)) {
+  for (const afflictionId of withCards ? Object.keys(AFFLICTION_HOOKS) : []) {
     const site = siteAfflictions.find((affliction) => affliction.id === afflictionId);
     const title = archiveAfflictionLoc?.[`${afflictionId}.title`];
     if (site) {
@@ -257,7 +265,7 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
   return {
     catalog: {
       version,
-      character: { id: character.id, name: character.name, hp: character.startingHp, maxEnergy: character.maxEnergy },
+      character: character ? { id: character.id, name: character.name, hp: character.startingHp, maxEnergy: character.maxEnergy } : null,
       encounter: { id: encounterId, name: encounter.name, monsters: monsterSlots },
       cards,
       monsters,

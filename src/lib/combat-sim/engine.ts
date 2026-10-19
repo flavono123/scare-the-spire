@@ -21,6 +21,7 @@ import { nextRandom, seedRandom } from "./rng";
 import type {
   CardSpec,
   CombatSimInput,
+  ScenePart,
   PileType,
   PowerSpec,
   SimAction,
@@ -35,7 +36,7 @@ import type {
   SimState,
   SimStep,
 } from "./types";
-import { PILE_TYPES } from "./types";
+import { PILE_TYPES, SCENE_PARTS } from "./types";
 
 export const MAX_HAND_SIZE = 10;
 /** `Cmd.CustomScaledWait(0.25f, 0.35f)` between the affliction and the card's own OnPlay. */
@@ -61,8 +62,19 @@ export function parsePowerSpec(spec: PowerSpec): { id: string; amount: number } 
   return { id: id.trim().toUpperCase(), amount: amount === undefined ? 1 : Number(amount) };
 }
 
-/** Every card id the input can put into combat. */
+/** Scene parts the input asks for: `parts`, or both with a character and none without. */
+export function sceneParts(input: CombatSimInput): ScenePart[] {
+  const parts = input.parts ?? (input.character ? [...SCENE_PARTS] : []);
+  return SCENE_PARTS.filter((part) => parts.includes(part));
+}
+
+export function hasPart(input: CombatSimInput, part: ScenePart): boolean {
+  return sceneParts(input).includes(part);
+}
+
+/** Every card id the input can put into combat (none without the `cards` part). */
 export function inputCardIds(input: CombatSimInput): string[] {
+  if (!hasPart(input, "cards")) return [];
   const ids = new Set<string>();
   for (const pile of [input.hand, input.drawPile, input.discardPile, input.exhaustPile]) {
     for (const card of expandCardSpecs(pile)) ids.add(card.id);
@@ -147,14 +159,21 @@ class Combat {
         piles[pile].push(uid);
       });
     };
-    add("hand", input.hand);
-    add("draw", input.drawPile);
-    add("discard", input.discardPile);
-    add("exhaust", input.exhaustPile);
-    if (piles.hand.length > MAX_HAND_SIZE) this.warnings.push(`손 카드가 ${MAX_HAND_SIZE}장을 넘습니다`);
+    const withCards = hasPart(input, "cards");
+    if (withCards) {
+      add("hand", input.hand);
+      add("draw", input.drawPile);
+      add("discard", input.discardPile);
+      add("exhaust", input.exhaustPile);
+      if (piles.hand.length > MAX_HAND_SIZE) this.warnings.push(`손 카드가 ${MAX_HAND_SIZE}장을 넘습니다`);
+    } else if ([input.hand, input.drawPile, input.discardPile, input.exhaustPile].some((pile) => pile?.length)) {
+      this.warnings.push("cards 파트가 꺼져 있어 카드 더미 입력을 무시합니다");
+    }
 
-    const hp = input.hp ?? catalog.character.hp;
-    const player: SimCreature = { key: "player", id: catalog.character.id, hp, maxHp: catalog.character.hp, block: 0, powers: [] };
+    // Without a character the player still exists for the rules (monster attacks), but has no stats.
+    const character = catalog.character;
+    const hp = character ? input.hp ?? character.hp : 0;
+    const player: SimCreature = { key: "player", id: character?.id ?? "NONE", hp, maxHp: character?.hp ?? 0, block: 0, powers: [] };
     const monsters: SimMonster[] = catalog.encounter.monsters.map(({ monsterId, slot }, index) => {
       const def = catalog.monsters[monsterId];
       if (!def) this.warnings.push(`몬스터 데이터 없음: ${monsterId}`);
@@ -164,10 +183,10 @@ class Combat {
       return { key: `m${index}`, id: monsterId, hp: maxHp, maxHp, block: 0, powers: [], slot, moveId };
     });
 
-    const maxEnergy = input.maxEnergy ?? catalog.character.maxEnergy;
+    const maxEnergy = withCards ? input.maxEnergy ?? character?.maxEnergy ?? 0 : 0;
     return {
       turn: 1,
-      energy: input.energy ?? maxEnergy,
+      energy: withCards ? input.energy ?? maxEnergy : 0,
       maxEnergy,
       piles,
       cards,
@@ -289,6 +308,11 @@ class Combat {
   }
 
   private runAction(action: SimAction) {
+    const cardAction = action.do === "play" || action.do === "endTurn" || action.do === "startTurn" || action.do === "addCard";
+    if (cardAction && !hasPart(this.input, "cards")) {
+      this.emit({ kind: "rejected", reason: `cards 파트가 꺼져 있어 ${action.do}를 건너뜁니다` });
+      return;
+    }
     switch (action.do) {
       case "play":
         this.playCard(action);

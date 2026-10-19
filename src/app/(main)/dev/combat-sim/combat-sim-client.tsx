@@ -210,7 +210,7 @@ export function CombatSimClient({ view, errors }: { view: CombatSimView; errors:
         <header className="flex flex-col gap-1">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-300/80">DEV / COMBAT SIM</p>
           <h1 className="text-xl font-bold text-zinc-100">
-            v{view.catalog.version} · {view.catalog.character.name} · {view.catalog.encounter.name}
+            v{view.catalog.version}{view.catalog.character ? ` · ${view.catalog.character.name}` : ""} · {view.catalog.encounter.name}
           </h1>
           {view.preset && <p className="text-xs text-zinc-500">preset: {view.preset}</p>}
         </header>

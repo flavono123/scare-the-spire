@@ -1,5 +1,5 @@
 import { COMBAT_SIM_PRESETS } from "@/lib/combat-sim/scenarios";
-import type { CombatSimInput, PileType, PowerSpec, SimAction } from "@/lib/combat-sim/types";
+import { SCENE_PARTS, type CombatSimInput, type PileType, type PowerSpec, type ScenePart, type SimAction } from "@/lib/combat-sim/types";
 
 export type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -122,6 +122,14 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
     if (character) input.character = character.toUpperCase();
     const encounter = get("encounter");
     if (encounter) input.encounter = encounter.toUpperCase();
+    // parts=none (encounter only), parts=player, parts=player,cards
+    const parts = get("parts");
+    if (parts !== undefined) {
+      const partList = parts === "none" ? [] : (list(parts) ?? []);
+      const unknown = partList.filter((part) => !SCENE_PARTS.includes(part as ScenePart));
+      if (unknown.length > 0) throw new Error(`알 수 없는 parts: ${unknown.join(", ")} (player, cards, none)`);
+      input.parts = partList as ScenePart[];
+    }
     const energy = get("energy");
     if (energy) {
       const [current, max] = energy.split("/");
@@ -163,9 +171,9 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
     badges: get("badges") === "1",
   };
 
-  const complete = input.version && input.character && input.encounter;
-  if (!complete && (preset || json || Object.keys(params).some((key) => ["version", "character", "encounter"].includes(key)))) {
-    errors.push("version, character, encounter가 모두 필요합니다");
+  const complete = input.version && input.encounter;
+  if (!complete && (preset || json || Object.keys(params).some((key) => ["version", "character", "encounter", "parts"].includes(key)))) {
+    errors.push("version과 encounter가 필요합니다 (player·cards 파트에는 character도)");
   }
   return { input: complete ? (input as CombatSimInput) : null, preset, options, errors };
 }

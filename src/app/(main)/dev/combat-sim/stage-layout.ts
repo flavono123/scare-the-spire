@@ -24,6 +24,26 @@ export const FEET_Y = 980;
 export const PLAYER_X = 270;
 export const MONSTER_REGION = { left: 560, right: 1050 };
 
+export interface SceneFrame {
+  feetY: number;
+  monsterRegion: { left: number; right: number };
+  /** Height of the encounter background band. */
+  backgroundHeight: number;
+}
+
+/**
+ * Where the encounter sits for the parts on stage: with the card interface the
+ * creatures stay above the hand; without it the encounter moves down and the
+ * background grows; without the player the monsters take the full width.
+ */
+export function sceneFrame(withPlayer: boolean, withCards: boolean): SceneFrame {
+  return {
+    feetY: withCards ? FEET_Y : 1240,
+    monsterRegion: withPlayer ? MONSTER_REGION : { left: 90, right: 990 },
+    backgroundHeight: withCards ? 1260 : 1560,
+  };
+}
+
 /** Game point pinned to the stage's bottom-left / bottom-right corner. */
 function fromBottomLeft(x: number, y: number) {
   return { x: x * UI_SCALE, y: STAGE_H - (1080 - y) * UI_SCALE };
@@ -166,7 +186,11 @@ const STATIC_BOSS_HEIGHT = 480;
  * (`positionEnemiesFromGameBounds`) or by their scene slot, then scaled to fit
  * the monster region.
  */
-export function monsterBoxes(monsters: CombatSimMonsterView[], combatLayout: EncounterSceneCombatLayout | null): CreatureBox[] {
+export function monsterBoxes(
+  monsters: CombatSimMonsterView[],
+  combatLayout: EncounterSceneCombatLayout | null,
+  frame: SceneFrame = sceneFrame(true, true),
+): CreatureBox[] {
   const gap = combatLayout?.enemyGap ?? 70;
   const sizes = monsters.map((monster) => {
     if (monster.layout) return { width: monster.layout.bounds.width, height: monster.layout.bounds.height };
@@ -192,12 +216,13 @@ export function monsterBoxes(monsters: CombatSimMonsterView[], combatLayout: Enc
   const left = Math.min(...centers.map((x, i) => x - sizes[i].width / 2));
   const right = Math.max(...centers.map((x, i) => x + sizes[i].width / 2));
   const span = right - left;
-  const regionWidth = MONSTER_REGION.right - MONSTER_REGION.left;
+  const region = frame.monsterRegion;
+  const regionWidth = region.right - region.left;
   const scale = Math.min(CREATURE_SCALE, regionWidth / span);
-  const offset = MONSTER_REGION.left + (regionWidth - span * scale) / 2;
+  const offset = region.left + (regionWidth - span * scale) / 2;
   return sizes.map((size, index) => ({
     x: offset + (centers[index] - left) * scale,
-    y: FEET_Y,
+    y: frame.feetY,
     width: size.width * scale,
     height: size.height * scale,
     scale,
@@ -205,6 +230,6 @@ export function monsterBoxes(monsters: CombatSimMonsterView[], combatLayout: Enc
 }
 
 /** The player sits in the game's 240x340 box (`positionPlayerFromGameLayout`). */
-export function playerBox(): CreatureBox {
-  return { x: PLAYER_X, y: FEET_Y, width: 240 * CREATURE_SCALE, height: 340 * CREATURE_SCALE, scale: CREATURE_SCALE };
+export function playerBox(frame: SceneFrame = sceneFrame(true, true)): CreatureBox {
+  return { x: PLAYER_X, y: frame.feetY, width: 240 * CREATURE_SCALE, height: 340 * CREATURE_SCALE, scale: CREATURE_SCALE };
 }

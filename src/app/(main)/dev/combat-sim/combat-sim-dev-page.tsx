@@ -3,7 +3,7 @@ import path from "node:path";
 import Link from "next/link";
 import { getCodexCharacters, getCodexPowers } from "@/lib/codex-data";
 import { loadCombatSimCatalog } from "@/lib/combat-sim/catalog";
-import { parsePowerSpec } from "@/lib/combat-sim/engine";
+import { parsePowerSpec, sceneParts } from "@/lib/combat-sim/engine";
 import { COMBAT_SIM_PRESETS } from "@/lib/combat-sim/scenarios";
 import { resolveMonsterStaticArt } from "@/lib/monster-static-art";
 import { CombatSimClient } from "./combat-sim-client";
@@ -41,13 +41,18 @@ async function buildView(
   input: NonNullable<ReturnType<typeof parseCombatSimQuery>["input"]>,
   query: ReturnType<typeof parseCombatSimQuery>,
 ): Promise<CombatSimView> {
+  // Character art and card interface assets load only for the parts that show them.
+  const parts = sceneParts(input);
+  const withPlayer = parts.includes("player");
+  const withCards = parts.includes("cards");
   const [{ catalog, warnings, entities }, characters, sitePowers, uiAssets] = await Promise.all([
     loadCombatSimCatalog(input),
-    getCodexCharacters({ gameLocale: "kor" }),
+    withPlayer ? getCodexCharacters({ gameLocale: "kor" }) : Promise.resolve([]),
     getCodexPowers({ gameLocale: "kor", includeDeprecated: true }),
     readCombatUiAssets(),
   ]);
-  const character = characters.find((entry) => entry.id === catalog.character.id) ?? null;
+  const characterId = catalog.character?.id ?? null;
+  const character = withPlayer && characterId ? characters.find((entry) => entry.id === characterId) ?? null : null;
   const scene = entities.encounter?.scene ?? null;
   const layoutById = new Map((scene?.combatLayout.monsters ?? []).map((layout) => [layout.monsterId, layout]));
   const slotByName = new Map((scene?.monsterSlots ?? []).map((slot) => [slot.slotName, slot]));
@@ -83,18 +88,21 @@ async function buildView(
     background: scene?.backgroundUrl ?? null,
     combatLayout: scene?.combatLayout ?? null,
     monsterSlots: scene?.monsterSlots ?? [],
-    character: {
-      id: catalog.character.id,
-      name: catalog.character.name,
-      spine: character?.spineAsset ?? null,
-      imageUrl: character?.combatImageUrl ?? null,
-      energyCounter: uiAssets.energyCounters[catalog.character.id] ?? null,
-    },
+    parts,
+    character: catalog.character && characterId
+      ? {
+        id: characterId,
+        name: catalog.character.name,
+        spine: character?.spineAsset ?? null,
+        imageUrl: character?.combatImageUrl ?? null,
+        energyCounter: withCards ? uiAssets.energyCounters[characterId] ?? null : null,
+      }
+      : null,
     monsters,
     powerIcons,
     ui: uiAssets.ui,
-    cardTrail: uiAssets.cardTrails[catalog.character.id] ?? null,
-    energyGainVfx: uiAssets.energyGainVfx[catalog.character.id] ?? null,
+    cardTrail: withCards && characterId ? uiAssets.cardTrails[characterId] ?? null : null,
+    energyGainVfx: withCards && characterId ? uiAssets.energyGainVfx[characterId] ?? null : null,
   };
 }
 
