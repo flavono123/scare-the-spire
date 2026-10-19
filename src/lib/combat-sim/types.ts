@@ -33,6 +33,10 @@ export type SimAction =
 export type ScenePart = "player" | "cards";
 export const SCENE_PARTS: readonly ScenePart[] = ["player", "cards"];
 
+/** Game speed setting (FastModeType): Normal is the default, Fast and Instant shorten or skip waits. */
+export type SimSpeed = "normal" | "fast" | "instant";
+export const SIM_SPEEDS: readonly SimSpeed[] = ["normal", "fast", "instant"];
+
 /** The only input: top-level axes, given as one JSON object or as URL query keys. */
 export interface CombatSimInput {
   /** Game version, e.g. "0.102.0". */
@@ -46,6 +50,8 @@ export interface CombatSimInput {
    * without one (an encounter-only scene). `[]` shows the encounter alone.
    */
   parts?: ScenePart[];
+  /** Game speed (settings FastMode). Changes only timing, never the resulting state. Default "normal". */
+  speed?: SimSpeed;
   energy?: number;
   maxEnergy?: number;
   /** Player current HP (defaults to the character's starting HP). */
@@ -93,6 +99,8 @@ export interface SimMoveDef {
   id: string;
   name: string | null;
   intents: SimIntentDef[];
+  /** `WithAttackerAnim(name, delay)` seconds in the move's source (0 when the move does not set it). */
+  attackAnimDelay: number;
 }
 
 export interface SimMonsterDef {
@@ -123,6 +131,8 @@ export interface SimCharacterDef {
   name: string;
   hp: number;
   maxEnergy: number;
+  /** CharacterModel.AttackAnimDelay seconds (AttackCommand.FromCard). */
+  attackAnimDelay: number;
 }
 
 export interface SimEncounterDef {
@@ -188,7 +198,11 @@ export type SimEvent =
   | { kind: "energy"; from: number; to: number; cause: "cost" | "affliction" | "power" | "turn"; sourceId?: string; uid?: string }
   /** The player picks the card up (hover/drag) before PlayCardAction pays for it. */
   | { kind: "select"; uid: string }
-  | { kind: "move"; uid: string; from: PileType; to: PileType; cause: "play" | "draw" | "discard" | "result" | "exhaust" | "shuffle" | "endTurn" }
+  /**
+   * `awaited` on a play move: AddDuringManualCardPlay waits for the play-pile
+   * tween only for Power cards; other cards start their effect while it flies.
+   */
+  | { kind: "move"; uid: string; from: PileType; to: PileType; cause: "play" | "draw" | "discard" | "result" | "exhaust" | "shuffle" | "endTurn"; awaited?: boolean }
   | { kind: "enter"; uid: string; to: PileType }
   | { kind: "remove"; uid: string; from: PileType }
   | { kind: "afflict"; uid: string; afflictionId: string; amount: number; sourceId: string }
@@ -197,7 +211,14 @@ export type SimEvent =
   | { kind: "power"; creature: string; powerId: string; amount: number; change: "applied" | "removed" }
   | { kind: "damage"; creature: string; amount: number; blocked: number; hpFrom: number; hpTo: number; source: string }
   | { kind: "block"; creature: string; amount: number; total: number }
-  | { kind: "animate"; creature: string; animation: "cast" | "attack" | "hurt" }
+  /** CreatureCmd.TriggerAnim: waits `delayMs` (Normal) / min(delay / 2, 250 ms) (Fast) / 0 (Instant). */
+  | { kind: "animate"; creature: string; animation: "cast" | "attack" | "hurt"; delayMs: number }
+  /**
+   * Cmd.CustomScaledWait(fast, normal): Instant waits 0. With `sincePlayMove`, the
+   * time since that step's play move finished is subtracted (OnPlayWrapper's
+   * CustomScaledWait(0.15 - elapsed, 0.3 - elapsed)).
+   */
+  | { kind: "pause"; reason: string; fastMs: number; normalMs: number; sincePlayMove?: number }
   | { kind: "intent"; creature: string; moveId: string | null }
   | { kind: "shuffle"; count: number }
   | { kind: "wait"; ms: number }

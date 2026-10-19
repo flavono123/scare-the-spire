@@ -1,5 +1,5 @@
 import { COMBAT_SIM_PRESETS } from "@/lib/combat-sim/scenarios";
-import { SCENE_PARTS, type CombatSimInput, type PileType, type PowerSpec, type ScenePart, type SimAction } from "@/lib/combat-sim/types";
+import { SCENE_PARTS, SIM_SPEEDS, type CombatSimInput, type PileType, type PowerSpec, type ScenePart, type SimAction, type SimSpeed } from "@/lib/combat-sim/types";
 
 export type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -135,6 +135,11 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
       const [current, max] = energy.split("/");
       input.energy = Number(current);
       if (max !== undefined) input.maxEnergy = Number(max);
+    }
+    const speed = get("speed");
+    if (speed !== undefined) {
+      if (!SIM_SPEEDS.includes(speed as SimSpeed)) throw new Error(`알 수 없는 speed: ${speed} (normal, fast, instant)`);
+      input.speed = speed as SimSpeed;
     }
     const maxEnergy = get("maxEnergy");
     if (maxEnergy) input.maxEnergy = Number(maxEnergy);

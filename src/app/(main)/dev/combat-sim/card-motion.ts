@@ -5,9 +5,10 @@
  * - Draw (CardPileCmd.Add -> hand): the card appears at the draw pile at scale 1,
  *   angle 0, and its holder lerps it into the hand slot.
  * - Play (AddDuringManualCardPlay): the card leaves its holder keeping its
- *   position with angle 0, then tweens to the play position and scale 0.8 in
- *   0.25 s (Cubic Out). The simulator lifts it to the hover pose first, as the
- *   player's drag would.
+ *   position with angle 0, then tweens to the play position (0.25 / 0.1 /
+ *   0.01 s for Normal / Fast / Instant) and scale 0.8 (0.25 s in every mode),
+ *   Cubic Out. The simulator lifts it to the hover pose first, as the player's
+ *   drag would.
  * - Discard / result / end of turn: NCardFlyVfx flies it to the discard pile on
  *   a quadratic Bezier arc whose time advances with speed U(1.1, 1.25) and
  *   acceleration U(2, 2.5) over duration U(1, 1.75); the control point is the
@@ -15,30 +16,31 @@
  *   (LerpAngle, dt * 12), darkens and shrinks to 0.1 in the first third, then
  *   after arrival shrinks to 0 by u = 0.4 while the trail fades (u > 0.25).
  *   The random values come from Rng.Chaotic in the game; here they are seeded.
- * - Exhaust: modulate to (0.1, 0.1, 0.1, 0) over 0.3 s (the ash particles are not drawn).
+ * - Exhaust: modulate to (0.1, 0.1, 0.1, 0) over 0.3 s (0.2 s on Fast; the ash particles are not drawn).
  * - Pile buttons (NCombatCardPile): a card arriving bumps the icon and count
  *   from 1.25 to 1 over 0.5 s (Expo Out); leaving only lowers the count.
  */
 
 import { nextRandom, seedRandom } from "@/lib/combat-sim/rng";
-import type { CombatTimeline } from "@/lib/combat-sim/timeline";
-import type { PileType, SimResult, SimState } from "@/lib/combat-sim/types";
+import { pileLerpMs, type CombatTimeline } from "@/lib/combat-sim/timeline";
+import type { PileType, SimResult, SimSpeed, SimState } from "@/lib/combat-sim/types";
 import { clamp01, ease, expApproach, expApproachAngle } from "./godot-anim";
 import { HAND_ANCHOR, PILES, PLAY_POSITION, PLAY_SCALE, UI_SCALE, handSlot, type Pose } from "./stage-layout";
 
 const K_POSITION = 7;
 const K_SCALE = 8;
 const K_ANGLE = 10;
-const PLAY_TWEEN = 0.25;
-const EXHAUST_FADE = 0.3;
+/** AppendPlayPileLerpTween scale tween: 0.25 s in every mode. */
+const PLAY_SCALE_TWEEN = 0.25;
 const FLY_STEP = 1 / 120;
 
 type Segment =
   | { kind: "snap"; t: number; pose: Pose }
   | { kind: "lerp"; t: number; target: Pose; snapAngleScale?: boolean }
-  | { kind: "tween"; t: number; to: Pose }
+  /** Play pile: position over `positionSeconds` (AppendPileLerpTween), scale over 0.25 s, both Cubic Out. */
+  | { kind: "tween"; t: number; to: Pose; positionSeconds: number }
   | { kind: "fly"; t: number; to: { x: number; y: number }; seed: number }
-  | { kind: "fade"; t: number }
+  | { kind: "fade"; t: number; seconds: number }
   | { kind: "hide"; t: number };
 
 export interface FlyState {
@@ -185,7 +187,10 @@ export function flyArrival(seed: number): number {
   return flyParams(seed).arrival;
 }
 
-export function buildMotion(result: SimResult, timeline: CombatTimeline): MotionModel {
+export function buildMotion(result: SimResult, timeline: CombatTimeline, speed: SimSpeed = "normal"): MotionModel {
+  const positionSeconds = pileLerpMs(speed) / 1000;
+  // CardPileCmd exhaust fade: FastMode == Fast ? 0.2 : 0.3 (Instant keeps 0.3).
+  const exhaustSeconds = speed === "fast" ? 0.2 : 0.3;
   const tracks = new Map<string, Track>();
   const track = (uid: string) => {
     let entry = tracks.get(uid);
@@ -241,7 +246,7 @@ export function buildMotion(result: SimResult, timeline: CombatTimeline): Motion
           return;
         }
         if (to === "play") {
-          track(uid).segments.push({ kind: "tween", t, to: { x: PLAY_POSITION.x, y: PLAY_POSITION.y, scale: PLAY_SCALE, rotate: 0 } });
+          track(uid).segments.push({ kind: "tween", t, to: { x: PLAY_POSITION.x, y: PLAY_POSITION.y, scale: PLAY_SCALE, rotate: 0 }, positionSeconds });
           relayout(beat.after, t);
           return;
         }
@@ -257,7 +262,7 @@ export function buildMotion(result: SimResult, timeline: CombatTimeline): Motion
         if (to === "exhaust") {
           if (from === "draw" || from === "discard") pileEvents.push({ pile: from, t, delta: -1 });
           pileEvents.push({ pile: "exhaust", t, delta: 1 });
-          track(uid).segments.push({ kind: "fade", t });
+          track(uid).segments.push({ kind: "fade", t, seconds: exhaustSeconds });
           if (from === "hand") relayout(beat.after, t);
           return;
         }
@@ -277,7 +282,7 @@ export function buildMotion(result: SimResult, timeline: CombatTimeline): Motion
         return;
       }
       case "remove":
-        track(event.uid).segments.push({ kind: "fade", t });
+        track(event.uid).segments.push({ kind: "fade", t, seconds: exhaustSeconds });
         return;
       default:
         return;
@@ -328,11 +333,12 @@ export function evaluateTrack(track: Track, tMs: number): CardVisual {
         break;
       }
       case "tween": {
-        const k = ease.cubicOut(clamp01(elapsed / PLAY_TWEEN));
+        const move = ease.cubicOut(clamp01(elapsed / segment.positionSeconds));
+        const grow = ease.cubicOut(clamp01(elapsed / PLAY_SCALE_TWEEN));
         pose = {
-          x: pose.x + (segment.to.x - pose.x) * k,
-          y: pose.y + (segment.to.y - pose.y) * k,
-          scale: pose.scale + (segment.to.scale - pose.scale) * k,
+          x: pose.x + (segment.to.x - pose.x) * move,
+          y: pose.y + (segment.to.y - pose.y) * move,
+          scale: pose.scale + (segment.to.scale - pose.scale) * grow,
           rotate: 0,
         };
         lifted = true;
@@ -356,7 +362,7 @@ export function evaluateTrack(track: Track, tMs: number): CardVisual {
         break;
       }
       case "fade": {
-        const k = clamp01(elapsed / EXHAUST_FADE);
+        const k = clamp01(elapsed / segment.seconds);
         tint = 1 - 0.9 * k;
         alpha = 1 - k;
         visible = k < 1;

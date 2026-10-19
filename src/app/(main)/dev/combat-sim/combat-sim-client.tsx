@@ -288,7 +288,8 @@ function describeEvent(event: SimEvent): string {
     case "power": return `${event.creature} ${event.powerId} ${event.amount} ${event.change}`;
     case "damage": return `${event.creature} 피해 ${event.amount} (막음 ${event.blocked}) ${event.hpFrom} → ${event.hpTo}`;
     case "block": return `${event.creature} 방어도 +${event.amount} = ${event.total}`;
-    case "animate": return `${event.creature} ${event.animation}`;
+    case "animate": return `${event.creature} ${event.animation}${event.delayMs ? ` (지연 ${event.delayMs}ms)` : ""}`;
+    case "pause": return `대기 ${event.reason} (고속 ${event.fastMs} / 일반 ${event.normalMs}ms${event.sincePlayMove !== undefined ? ", 카드 낸 뒤 경과만큼 차감" : ""})`;
     case "intent": return `${event.creature} 다음 행동 ${event.moveId ?? "—"}`;
     case "shuffle": return `버린 카드 ${event.count}장 섞어 뽑을 카드 더미로`;
     case "wait": return `대기 ${event.ms}ms`;

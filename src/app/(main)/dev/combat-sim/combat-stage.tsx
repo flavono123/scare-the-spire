@@ -63,7 +63,8 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
     [view.monsters, view.combatLayout, withPlayer, withCards],
   );
   const cues = useMemo(() => animationCues(timeline, view), [timeline, view]);
-  const motion = useMemo(() => buildMotion(result, timeline), [result, timeline]);
+  const speed = view.input.speed ?? "normal";
+  const motion = useMemo(() => buildMotion(result, timeline, speed), [result, timeline, speed]);
   const glows = useMemo(() => playableGlowModel(result, timeline, view), [result, timeline, view]);
   const energyGains = useMemo(
     () => timeline.beats.filter((beat) => beat.event.kind === "energy" && beat.event.to > beat.event.from).map((beat) => beat.start),
@@ -339,7 +340,8 @@ function HealthBar({ id, creature, box, width, view, timeline, t }: {
       lag = since < 1 ? from : from + (to - from) * ease.expoOut(since - 1);
     }
   }
-  const blockSince = blockAppearSince(timeline, id, t);
+  // NHealthBar.AnimateInBlock is skipped on Instant: the block icon just appears.
+  const blockSince = view.input.speed === "instant" ? Infinity : blockAppearSince(timeline, id, t);
   return (
     <div className="absolute" style={{ left, top, width, height, zIndex: 30 }} data-combat-sim-health={id}>
       <NinePatch url={view.ui.health_bar_bg} texture={{ width: 20, height: 16 }} margin={9} x={k} y={0} width={width - 2 * k} height={height} scale={k} color={HP_BAR.background} />

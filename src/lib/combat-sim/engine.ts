@@ -2,10 +2,17 @@
  * Minimal deterministic combat engine for the dev-only combat simulator.
  *
  * Rules follow the archived build source (`~/sts2-builds/<version>/src`):
- * - Card play (`PlayCardAction` -> `CardModel.SpendResources` -> `OnPlayWrapper`):
- *   pay energy, move hand -> play, affliction OnPlay, CustomScaledWait(0.25-0.35s),
- *   BeforeCardPlayed, card OnPlay, AfterCardPlayed, then the result pile
- *   (Power: removed, Exhaust keyword: exhaust, otherwise discard).
+ * - Card play (`PlayCardAction` -> `CardModel.SpendResources` -> `OnPlayWrapper`,
+ *   order from the state machine's await numbering): pay energy, move hand ->
+ *   play (AddDuringManualCardPlay), then per play: BeforeCardPlayed, card OnPlay,
+ *   enchantment OnPlay, affliction OnPlay, AfterCardPlayed; then
+ *   CustomScaledWait(0.15 - elapsed, 0.3 - elapsed) and the result pile
+ *   (Power: removed, Exhaust keyword: exhaust, otherwise discard). The
+ *   CustomScaledWait(0.25, 0.35) in OnPlayWrapper is on the auto-play path only.
+ * - Animations: attacks trigger "Attack" inside DamageCmd.Attack with the
+ *   attacker's delay; skills trigger no animation unless the card says so.
+ * - Waits are `pause` events with the game's (fast, normal) values, so the
+ *   timeline can follow the speed setting without changing any state.
  * - `CardModel.CanPlay`: Unplayable keyword or not enough energy blocks the play.
  * - `CardPileCmd.Draw`: one card at a time from the top of the draw pile while the
  *   hand has fewer than 10 cards; an empty draw pile reshuffles the discard pile.
@@ -39,8 +46,6 @@ import type {
 import { PILE_TYPES, SCENE_PARTS } from "./types";
 
 export const MAX_HAND_SIZE = 10;
-/** `Cmd.CustomScaledWait(0.25f, 0.35f)` between the affliction and the card's own OnPlay. */
-export const PLAY_WAIT_MS = 300;
 const TURN_DRAW = 5;
 
 export function parseCardSpec(spec: CardSpec): { id: string; upgraded: boolean; count: number } {
@@ -218,13 +223,13 @@ class Combat {
     return PILE_TYPES.find((pile) => this.state.piles[pile].includes(uid)) ?? null;
   }
 
-  moveCard(uid: string, to: PileType, cause: Extract<SimEvent, { kind: "move" }>["cause"], position: "top" | "bottom" = "bottom") {
+  moveCard(uid: string, to: PileType, cause: Extract<SimEvent, { kind: "move" }>["cause"], position: "top" | "bottom" = "bottom", awaited = false) {
     const from = this.pileOf(uid);
     if (!from) return;
     this.state.piles[from] = this.state.piles[from].filter((id) => id !== uid);
     if (position === "top") this.state.piles[to].unshift(uid);
     else this.state.piles[to].push(uid);
-    this.emit({ kind: "move", uid, from, to, cause });
+    this.emit(awaited ? { kind: "move", uid, from, to, cause, awaited } : { kind: "move", uid, from, to, cause });
   }
 
   removeCard(uid: string) {
@@ -272,6 +277,8 @@ class Combat {
     if (existing) existing.amount += spec.amount;
     else owner.powers.push({ ...spec });
     this.emit({ kind: "power", creature: owner.key, powerId: spec.id, amount: spec.amount, change: "applied" });
+    // PowerCmd.Apply: CustomScaledWait(0.1, 0.25); powers present at setup are already in place.
+    if (this.action >= 0) this.emit({ kind: "pause", reason: "power", fastMs: 100, normalMs: 250 });
     const hooks = POWER_HOOKS[spec.id];
     if (!hooks) {
       if (!this.catalog.powers[spec.id]) this.warnings.push(`파워 데이터 없음: ${spec.id}`);
@@ -407,21 +414,9 @@ class Combat {
       this.state.energy -= energyToSpend;
       this.emit({ kind: "energy", from, to: this.state.energy, cause: "cost", uid });
     }
-    this.moveCard(uid, "play", "play");
-    this.emit({ kind: "animate", creature: "player", animation: card.def.type === "Attack" ? "attack" : "cast" });
-
-    const affliction = this.state.cards[uid].affliction;
-    if (affliction) {
-      this.emit({ kind: "afflictionTrigger", uid, afflictionId: affliction.id, amount: affliction.amount });
-      const hooks = AFFLICTION_HOOKS[affliction.id];
-      if (hooks?.onPlay) {
-        this.checkVersion(affliction.id, hooks.checkedVersions);
-        hooks.onPlay(this.hooks, this.state.cards[uid], affliction.amount);
-      } else {
-        this.emit({ kind: "unimplemented", what: `${affliction.id} OnPlay` });
-      }
-    }
-    this.emit({ kind: "wait", ms: PLAY_WAIT_MS });
+    // AddDuringManualCardPlay awaits the play-pile tween only for Power cards.
+    this.moveCard(uid, "play", "play", "bottom", card.def.type === "Power");
+    const playMove = this.steps.length - 1;
 
     const resultPile: PileType | null = card.def.type === "Power"
       ? null
@@ -434,7 +429,21 @@ class Combat {
     } else {
       for (const op of recipe.ops) this.runOp(op, card, uid, target, action.choose);
     }
+    // Enchantments are not simulated; the affliction runs after them, still inside the play.
+    const affliction = this.state.cards[uid].affliction;
+    if (affliction) {
+      this.emit({ kind: "afflictionTrigger", uid, afflictionId: affliction.id, amount: affliction.amount });
+      const hooks = AFFLICTION_HOOKS[affliction.id];
+      if (hooks?.onPlay) {
+        this.checkVersion(affliction.id, hooks.checkedVersions);
+        hooks.onPlay(this.hooks, this.state.cards[uid], affliction.amount);
+      } else {
+        this.emit({ kind: "unimplemented", what: `${affliction.id} OnPlay` });
+      }
+    }
     this.eachPower((owner, power) => POWER_HOOKS[power.id]?.afterCardPlayed?.(this.hooks, owner, power, this.state.cards[uid]));
+    // OnPlayWrapper: CustomScaledWait(0.15 - elapsed, 0.3 - elapsed), elapsed since the card reached the play pile.
+    this.emit({ kind: "pause", reason: "play", fastMs: 150, normalMs: 300, sincePlayMove: playMove });
 
     if (this.pileOf(uid) === "play") {
       if (resultPile) this.moveCard(uid, resultPile, resultPile === "exhaust" ? "exhaust" : "result");
@@ -450,7 +459,10 @@ class Combat {
           ? this.state.monsters.filter((monster) => monster.hp > 0)
           : target ? [target] : [];
         this.noteDamageModifiers(this.state.player, targets);
+        // AttackCommand.FromCard: TriggerAnim("Attack", Character.AttackAnimDelay), then CreatureCmd.Damage.
+        this.emit({ kind: "animate", creature: "player", animation: "attack", delayMs: (this.catalog.character?.attackAnimDelay ?? 0) * 1000 });
         for (const monster of targets) this.dealDamage(monster, amount, uid);
+        this.emit({ kind: "pause", reason: "damage", fastMs: 100, normalMs: 200 });
         return;
       }
       case "block": {
@@ -460,6 +472,8 @@ class Combat {
         }
         this.state.player.block += amount;
         this.emit({ kind: "block", creature: "player", amount, total: this.state.player.block });
+        // CreatureCmd.GainBlock: CustomScaledWait(0.1, 0.25).
+        if (amount > 0) this.emit({ kind: "pause", reason: "block", fastMs: 100, normalMs: 250 });
         return;
       }
       case "draw":
@@ -486,7 +500,7 @@ class Combat {
     creature.block -= blocked;
     creature.hp = Math.max(0, creature.hp - (amount - blocked));
     this.emit({ kind: "damage", creature: creature.key, amount, blocked, hpFrom, hpTo: creature.hp, source });
-    if (creature.hp < hpFrom) this.emit({ kind: "animate", creature: creature.key, animation: "hurt" });
+    if (creature.hp < hpFrom) this.emit({ kind: "animate", creature: creature.key, animation: "hurt", delayMs: 0 });
   }
 
   /** `CardPileCmd.ShuffleIfNecessary`: an empty draw pile takes the shuffled discard pile. */
@@ -538,6 +552,8 @@ class Combat {
   }
 
   private endTurn() {
+    // CombatManager.DoTurnEnd: CustomScaledWait(0.3, 0.6) before the hand goes to the discard pile.
+    this.emit({ kind: "pause", reason: "turnEnd", fastMs: 300, normalMs: 600 });
     for (const uid of [...this.state.piles.hand]) {
       const card = this.effective(uid);
       if (card?.keywords.includes("Retain")) continue;
@@ -547,6 +563,8 @@ class Combat {
   }
 
   private monsterTurn() {
+    // CombatManager.StartTurn (enemy side): CustomScaledWait(0.5, 0.8) before ExecuteEnemyTurn.
+    this.emit({ kind: "pause", reason: "enemyTurn", fastMs: 500, normalMs: 800 });
     for (const monster of this.state.monsters) {
       if (monster.hp <= 0 || !monster.moveId) continue;
       const def = this.catalog.monsters[monster.id];
@@ -555,13 +573,17 @@ class Combat {
         this.emit({ kind: "unimplemented", what: `${monster.id} ${monster.moveId}` });
         continue;
       }
+      // NCreature.PerformIntent: CustomScaledWait(0.25, 0.4), skipped on Instant.
+      this.emit({ kind: "pause", reason: "performIntent", fastMs: 250, normalMs: 400 });
       monster.block = 0;
       for (const intent of move.intents) {
         if ((intent.type === "SingleAttackIntent" || intent.type === "MultiAttackIntent") && intent.damage !== undefined) {
-          this.emit({ kind: "animate", creature: monster.key, animation: "attack" });
+          // AttackCommand.FromMonster(...).WithAttackerAnim(name, delay): one TriggerAnim, then a CreatureCmd.Damage per hit.
+          this.emit({ kind: "animate", creature: monster.key, animation: "attack", delayMs: move.attackAnimDelay * 1000 });
           for (let hit = 0; hit < (intent.repeat ?? 1); hit += 1) {
             this.noteDamageModifiers(monster, [this.state.player]);
             this.dealDamage(this.state.player, intent.damage, monster.key);
+            this.emit({ kind: "pause", reason: "damage", fastMs: 100, normalMs: 200 });
           }
         } else {
           this.emit({ kind: "unimplemented", what: `${def.name} ${move.name ?? move.id}: ${intent.type}` });

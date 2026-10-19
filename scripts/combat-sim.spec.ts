@@ -68,9 +68,17 @@ async function main() {
   assert.deepEqual(draws.map(({ action }) => action), [1, 1, 1, 2, 2]);
   assert.deepEqual(discards.map(({ action }) => action), [1, 2, 2]);
 
-  // The Weighted energy loss lands before the card's own draw (OnPlayWrapper order).
-  const firstPlay = result.steps.filter(({ action }) => action === 1).map(({ event }) => event.kind);
-  assert.ok(firstPlay.indexOf("afflictionTrigger") < firstPlay.indexOf("move", firstPlay.indexOf("afflictionTrigger")));
+  // OnPlayWrapper order (await numbering): the card's own OnPlay (draw, discard) runs
+  // first, then the affliction's OnPlay (Weighted), then the card goes to its result pile.
+  const firstPlay = result.steps.filter(({ action }) => action === 1).map(({ event }) => event);
+  const at = (test: (event: SimEvent) => boolean) => firstPlay.findIndex(test);
+  const lastDraw = firstPlay.map((event, i) => (event.kind === "move" && event.cause === "draw" ? i : -1)).reduce((a, b) => Math.max(a, b), -1);
+  const discardAt = at((event) => event.kind === "move" && event.cause === "discard");
+  const weightedAt = at((event) => event.kind === "afflictionTrigger");
+  const resultAt = at((event) => event.kind === "move" && event.cause === "result");
+  assert.ok(lastDraw < discardAt && discardAt < weightedAt && weightedAt < resultAt, "draw -> discard -> Weighted -> result pile");
+  // Skills trigger no animation; the play's wait counts from the move to the play pile.
+  assert.ok(!firstPlay.some((event) => event.kind === "animate"));
 
   const end = result.final;
   assert.equal(end.energy, 0);
@@ -107,6 +115,32 @@ async function main() {
   assert.equal(timeline.actionEnds.length, input.script!.length);
   assert.deepEqual(timeline.frameAt(timeline.duration).state, result.final);
   assert.deepEqual(timeline.frameAt(0).state, result.start);
+
+  // Speed (settings FastMode): timing only. Same events and state; Normal > Fast > Instant.
+  const bySpeed = (["normal", "fast", "instant"] as const).map((speed) => {
+    const speedInput = { ...input, speed };
+    const run = runCombat(speedInput, catalog);
+    return { speed, run, timeline: buildTimeline(run, speedInput) };
+  });
+  const [normal, fast, instant] = bySpeed;
+  for (const { run } of bySpeed) {
+    assert.deepEqual(run.final, normal.run.final);
+    assert.deepEqual(run.steps.map((step) => step.event), normal.run.steps.map((step) => step.event));
+  }
+  assert.equal(instant.run.final.energy, 0);
+  assert.deepEqual(ids(instant.run.final, "hand"), ["STRIKE_SILENT", "STRIKE_SILENT"]);
+  assert.ok(normal.timeline.duration > fast.timeline.duration && fast.timeline.duration > instant.timeline.duration);
+  // Every play action ends earlier at higher speed; script waits do not scale.
+  for (const index of [1, 2, 3]) {
+    assert.ok(normal.timeline.actionEnds[index] > fast.timeline.actionEnds[index], `action ${index}: normal > fast`);
+    assert.ok(fast.timeline.actionEnds[index] > instant.timeline.actionEnds[index], `action ${index}: fast > instant`);
+  }
+  assert.equal(normal.timeline.actionEnds[0], instant.timeline.actionEnds[0], "script wait is not a game wait");
+  // Game time = everything but script waits and the simulator's hover stand-in (player input).
+  const gameTime = ({ timeline }: (typeof bySpeed)[number]) =>
+    timeline.beats.filter((beat) => beat.event.kind !== "wait" && beat.event.kind !== "select").reduce((sum, beat) => sum + beat.duration, 0);
+  assert.ok(gameTime(normal) > gameTime(fast) && gameTime(fast) > gameTime(instant));
+  assert.ok(gameTime(instant) < 200, `instant game time ${gameTime(instant)} ms`);
 
   // Draw limit: the hand stops at 10.
   const full = runCombat({ ...input, powers: {}, hand: ["ACROBATICS", "STRIKE_SILENT*8"], drawPile: ["STRIKE_SILENT*5"], script: [{ do: "play", card: "ACROBATICS" }] }, catalog);

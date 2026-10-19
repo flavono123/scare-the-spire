@@ -100,6 +100,40 @@ export async function readArchiveEncounterMonsters(
   return monsters.length > 0 ? monsters : null;
 }
 
+async function readArchiveSource(version: string, relative: string): Promise<string | null> {
+  const dir = archiveDir(version);
+  if (!dir) return null;
+  try {
+    return await readFile(path.join(dir, "src", relative), "utf8");
+  } catch {
+    return null;
+  }
+}
+
+/** CharacterModel.AttackAnimDelay from `Characters/<Character>.cs`, in seconds. */
+export async function readArchiveAttackAnimDelay(version: string, characterId: string): Promise<number | null> {
+  const source = await readArchiveSource(version, `MegaCrit.Sts2.Core.Models.Characters/${idToPascal(characterId)}.cs`);
+  const match = source?.match(/AttackAnimDelay\s*=>\s*([0-9.]+)f/);
+  return match ? Number(match[1]) : null;
+}
+
+/**
+ * `WithAttackerAnim(name, delay)` per move from `Monsters/<Monster>.cs`: each
+ * `<Name>Move` state machine body, keyed by move id (`HammerUppercut` -> `HAMMER_UPPERCUT`).
+ */
+export async function readArchiveMoveAnimDelays(version: string, monsterId: string): Promise<Record<string, number> | null> {
+  const source = await readArchiveSource(version, `MegaCrit.Sts2.Core.Models.Monsters/${idToPascal(monsterId)}.cs`);
+  if (!source) return null;
+  const delays: Record<string, number> = {};
+  const starts = [...source.matchAll(/struct _003C(\w+?)Move_003Ed__\d+/g)];
+  starts.forEach((start, index) => {
+    const body = source.slice(start.index, starts[index + 1]?.index ?? source.length);
+    const anim = body.match(/WithAttackerAnim\("[^"]*",\s*([0-9.]+)f/);
+    if (anim) delays[pascalToId(start[1])] = Number(anim[1]);
+  });
+  return delays;
+}
+
 type ArchiveCards = Record<string, { target?: string }>;
 type ArchiveLoc = Record<string, string>;
 type ArchiveIntent = { type: string; damage_key?: string; repeat?: { normal: number | null } | null };
@@ -149,6 +183,8 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
   const characterId = input.character?.toUpperCase() ?? null;
   const character = characterId ? characters.find((entry) => entry.id === characterId) ?? null : null;
   if (characterId && !character) throw new Error(`unknown character: ${input.character}`);
+  const attackAnimDelay = characterId ? await readArchiveAttackAnimDelay(version, characterId) : null;
+  if (characterId && attackAnimDelay === null) warnings.push(`${characterId} AttackAnimDelay를 아카이브에서 읽지 못해 0으로 둡니다`);
 
   const encounterId = input.encounter.toUpperCase();
   const encounterResult = await getVersionedEntity<CodexEncounter>({ entityType: "encounter", entityId: encounterId, version, locale });
@@ -173,6 +209,8 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
       continue;
     }
     monsterEntities[monsterId] = monster;
+    const animDelays = await readArchiveMoveAnimDelays(version, monsterId);
+    if (!animDelays) warnings.push(`${monsterId} 공격 애니메이션 지연을 아카이브에서 읽지 못해 0으로 둡니다`);
     const damageOf = (key: string | null | undefined) => (key ? monster.damageValues?.[key]?.normal ?? undefined : undefined);
     const archiveMonster = archiveMonsterData?.[monsterId];
     const archiveDamageOf = (key: string | undefined) => (key ? archiveMonster?.damageValues?.[key]?.normal ?? undefined : undefined);
@@ -207,6 +245,8 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
         id: move.id,
         name: move.name ?? null,
         intents: intentsOf(move),
+        // AttackCommand.FromMonster leaves the delay at 0 unless the move calls WithAttackerAnim.
+        attackAnimDelay: animDelays?.[move.id] ?? 0,
       }])),
     };
   }
@@ -265,7 +305,9 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
   return {
     catalog: {
       version,
-      character: character ? { id: character.id, name: character.name, hp: character.startingHp, maxEnergy: character.maxEnergy } : null,
+      character: character
+        ? { id: character.id, name: character.name, hp: character.startingHp, maxEnergy: character.maxEnergy, attackAnimDelay: attackAnimDelay ?? 0 }
+        : null,
       encounter: { id: encounterId, name: encounter.name, monsters: monsterSlots },
       cards,
       monsters,
