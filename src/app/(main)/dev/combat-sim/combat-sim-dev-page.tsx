@@ -79,7 +79,8 @@ async function buildView(
   }
 
   return {
-    input,
+    // The resolved speed is part of the input, so window.__sim.input and frames.json name it.
+    input: { ...input, speed: input.speed ?? "normal" },
     preset: query.preset,
     catalog,
     warnings,

@@ -136,7 +136,8 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
       input.energy = Number(current);
       if (max !== undefined) input.maxEnergy = Number(max);
     }
-    const speed = get("speed");
+    // Query or JSON; normal when neither gives one (the dev page fills it in).
+    const speed = get("speed") ?? input.speed;
     if (speed !== undefined) {
       if (!SIM_SPEEDS.includes(speed as SimSpeed)) throw new Error(`알 수 없는 speed: ${speed} (normal, fast, instant)`);
       input.speed = speed as SimSpeed;
