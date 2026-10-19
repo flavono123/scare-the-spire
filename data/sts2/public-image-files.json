@@ -1220,6 +1220,13 @@
   "combat-ui/powers": [
     "grasp_power.webp"
   ],
+  "combat-ui/ui": [
+    "block.webp",
+    "discard_pile.webp",
+    "draw_pile.webp",
+    "exhaust_pile.webp",
+    "pile_button_count.webp"
+  ],
   "enchantments": [
     "adroit.webp",
     "clone.webp",

@@ -207,5 +207,12 @@
   },
   "powerIcons": {
     "GRASP_POWER": "/images/sts2/combat-ui/powers/grasp_power.webp"
+  },
+  "ui": {
+    "draw_pile": "/images/sts2/combat-ui/ui/draw_pile.webp",
+    "discard_pile": "/images/sts2/combat-ui/ui/discard_pile.webp",
+    "exhaust_pile": "/images/sts2/combat-ui/ui/exhaust_pile.webp",
+    "pile_button_count": "/images/sts2/combat-ui/ui/pile_button_count.webp",
+    "block": "/images/sts2/combat-ui/ui/block.webp"
   }
 }

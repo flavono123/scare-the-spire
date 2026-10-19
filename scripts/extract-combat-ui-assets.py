@@ -6,6 +6,7 @@
   `Layers/RotationLayers` are marked with their rotation index (NEnergyCounter
   turns child i at (i + 1) * 30 deg/s, 5 deg/s at 0 energy). The Label's colors
   and sizes are copied into the manifest.
+- Pile buttons and the block icon.
 - Power icons that the site data does not ship (e.g. GRASP_POWER, removed with
   Doormaker in v0.105.0): `images/powers/<name>.png`.
 
@@ -32,6 +33,14 @@ OUT_ROOT = ROOT / "public/images/sts2/combat-ui"
 MANIFEST = ROOT / "data/sts2/combat-ui-assets.json"
 CHARACTERS = ["ironclad", "silent", "defect", "regent", "necrobinder"]
 POWER_ICONS = ["grasp_power"]
+# Textures used by scenes/combat/{draw,discard,exhaust}_pile.tscn and health_bar.tscn (block icon).
+UI_TEXTURES = [
+    "images/packed/combat_ui/draw_pile.png",
+    "images/packed/combat_ui/discard_pile.png",
+    "images/packed/combat_ui/exhaust_pile.png",
+    "images/packed/combat_ui/pile_button_count.png",
+    "images/ui/combat/block.png",
+]
 
 
 def parse_args() -> argparse.Namespace:
@@ -99,7 +108,7 @@ def url_of(path: Path) -> str:
 
 def main() -> None:
     args = parse_args()
-    manifest: dict = {"source": {"pck": pck_path(args), "archiveVersion": args.archive_version}, "energyCounters": {}, "powerIcons": {}}
+    manifest: dict = {"source": {"pck": pck_path(args), "archiveVersion": args.archive_version}, "energyCounters": {}, "powerIcons": {}, "ui": {}}
     with PCKReader(pck_path(args)) as reader:
         for character in CHARACTERS:
             scene = f"scenes/combat/energy_counters/{character}_energy_counter.tscn"
@@ -137,6 +146,10 @@ def main() -> None:
                     "fontSize": int(props.get("theme_override_font_sizes/font_size", "36")),
                 },
             }
+        for source in UI_TEXTURES:
+            out = OUT_ROOT / "ui" / f"{Path(source).stem}.webp"
+            export_texture(reader, source, out, args.dry_run)
+            manifest["ui"][Path(source).stem] = url_of(out)
         for name in POWER_ICONS:
             source = f"images/powers/{name}.png"
             if f"{source}.import" not in reader.entries:
