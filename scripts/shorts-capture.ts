@@ -9,19 +9,28 @@
  *   pnpm shorts:capture --target cards/SPLASH@0.111.0 --out SPLASH-to-be.png --mark "1장"
  *   pnpm shorts:capture --target relics/AKABEKO --replace "8=>12" --out akabeko.png
  *   pnpm shorts:capture --url "/transfigure/abc123" --out post.png
+ *   pnpm shorts:capture --url "/dev/combat-sim?preset=doormaker-grasp-0.102.0" --t 3190 --out grasp.png
+ *   pnpm shorts:capture --url "/dev/combat-sim?preset=doormaker-grasp-0.102.0" --frames --fps 30 --out ~/P/slseoun-shorts/.../frames
  *   pnpm shorts:capture --batch shots.json
  *
  * A batch file is { base?, outDir?, locale?, shots: Shot[] } where each Shot has
  * `target` or `url`, `out`, and optional `mark`, `replace`, `selector`, `locale`,
  * `upgraded` (card pages: tick "View Upgrades" before capturing), `enchant`
  * (card pages: press the enchantment button with that title first), `beta`
- * (card, relic, power, epoch pages: turn on the "Beta Art" toggle first).
+ * (card, relic, power, epoch pages: turn on the "Beta Art" toggle first),
+ * `t` (combat simulator: seek to this ms first), `frames` (combat simulator:
+ * `{ fps, from?, to? }`, `out` is a directory that gets 0000.png, 0001.png, ...).
  * A mark or replace phrase must occur exactly once in the description.
  * Relative paths resolve from the directory pnpm was invoked in.
  *
  * Every PNG gets a sidecar `<out>.json`: requested and final URL, version and
  * locale stamped on the rendered tile, edits, pixel ratio, image size, and the
  * painted bbox (non-transparent pixels), so an assembler can match scales.
+ *
+ * Combat simulator pages (/dev/combat-sim, dev server only) expose `window.__sim`;
+ * the capture waits for `__sim.ready()` and seeks with `__sim.seek(t)`, so every
+ * frame is the same on every run. The stage is 360x640 CSS px, so the fixed
+ * device scale of 3 gives 1080x1920 frames. A frame sequence gets `frames.json`.
  */
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -32,7 +41,7 @@ import { TEXT_GOLD, TEXT_GREEN } from "../src/lib/sts2-card-style";
 
 const DEFAULT_BASE = process.env.SHORTS_CAPTURE_BASE_URL ?? "http://localhost:3000";
 const DEVICE_SCALE = 3;
-const CAPTURE_SELECTOR = "[data-card-tile], [data-relic-inspect-slab]";
+const CAPTURE_SELECTOR = "[data-combat-sim-stage], [data-card-tile], [data-relic-inspect-slab]";
 const DOWNLOAD_SELECTOR = "[data-compendium-download-image]";
 
 /** Same colors the card tile uses for its BBCode spans. */
@@ -69,6 +78,10 @@ interface Shot {
   enchant?: string;
   /** Turn on the page's "Beta Art" toggle first (cards, relics, powers, epochs). */
   beta?: boolean;
+  /** Combat simulator: seek to this time (ms) before capturing. */
+  t?: number;
+  /** Combat simulator: capture a frame sequence into the `out` directory. */
+  frames?: { fps: number; from?: number; to?: number };
 }
 
 interface Batch {
@@ -242,6 +255,19 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
   // Version and locale are stamped on the tile after hydration.
   await page.waitForTimeout(800);
 
+  const isSim = await page.evaluate("Boolean(window.__sim)");
+  if (isSim) {
+    await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
+    await page.evaluate("window.__sim.ready()");
+    if (shot.frames) {
+      await captureFrames(page, shot, requested, selector, out);
+      return;
+    }
+    if (shot.t !== undefined) await page.evaluate(`window.__sim.seek(${Number(shot.t)})`);
+  } else if (shot.frames || shot.t !== undefined) {
+    throw new Error(`${url}: --t and --frames need a combat simulator page (window.__sim)`);
+  }
+
   if (shot.upgraded) {
     const toggle = page.getByRole("checkbox", { name: /View Upgrades|강화/ }).first();
     if (!(await toggle.count())) throw new Error(`${url}: no upgrade toggle on this page`);
@@ -322,6 +348,40 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
   console.log(`${out}${warn}`);
 }
 
+/** Combat simulator frame sequence: seek each frame time, screenshot the stage. */
+async function captureFrames(page: Page, shot: Shot, requested: string, selector: string, outDir: string) {
+  const { fps, from = 0, to } = shot.frames!;
+  const times = (await page.evaluate(`window.__sim.frameTimes(${Number(fps)})`)) as number[];
+  const selected = times.filter((time) => time >= from && (to === undefined || time <= to));
+  await mkdir(outDir, { recursive: true });
+  const node = page.locator(selector).first();
+  for (const [index, time] of selected.entries()) {
+    await page.evaluate(`window.__sim.seek(${time})`);
+    await node.screenshot({ path: path.join(outDir, `${String(index).padStart(4, "0")}.png`), omitBackground: true });
+  }
+  const first = path.join(outDir, "0000.png");
+  const image = await paintedBox(page, first);
+  const sidecar = {
+    requested,
+    url: page.url(),
+    fps,
+    from,
+    to: to ?? null,
+    frames: selected.length,
+    times: selected,
+    duration: await page.evaluate("window.__sim.duration"),
+    actionEnds: await page.evaluate("window.__sim.actionEnds"),
+    input: await page.evaluate("window.__sim.input"),
+    final: await page.evaluate("window.__sim.state()"),
+    pixelRatio: DEVICE_SCALE,
+    width: image.width,
+    height: image.height,
+    capturedAt: new Date().toISOString(),
+  };
+  await writeFile(path.join(outDir, "frames.json"), `${JSON.stringify(sidecar, null, 2)}\n`);
+  console.log(`${outDir} (${selected.length} frames, ${image.width}x${image.height})`);
+}
+
 function parseArgs(argv: string[]): { batch: Batch; batchDir: string } | null {
   const shot: Partial<Shot> = { mark: [], replace: [] };
   let base: string | undefined;
@@ -344,6 +404,9 @@ function parseArgs(argv: string[]): { batch: Batch; batchDir: string } | null {
       case "--upgraded": shot.upgraded = true; break;
       case "--enchant": shot.enchant = value(); break;
       case "--beta": shot.beta = true; break;
+      case "--t": shot.t = Number(value()); break;
+      case "--frames": shot.frames = { fps: shot.frames?.fps ?? 30 }; break;
+      case "--fps": shot.frames = { fps: Number(value()) }; break;
       case "--mark": shot.mark!.push(value()); break;
       case "--mark-color": markColor = value(); break;
       case "--replace": shot.replace!.push(value()); break;
@@ -366,6 +429,7 @@ async function main() {
       "usage: pnpm shorts:capture (--target type/ID[@version] | --url path) --out file.png\n" +
         "         [--mark text]... [--mark-color red|gold|green|blue|purple|#hex] [--replace old=>new]...\n" +
         "         [--selector css] [--upgraded] [--enchant name] [--beta] [--locale kor|eng] [--base http://localhost:3000]\n" +
+        "         [--t ms] [--frames [--fps 30]]   (combat simulator pages; --frames writes <out>/0000.png...)\n" +
         "       pnpm shorts:capture --batch shots.json",
     );
     process.exit(1);
