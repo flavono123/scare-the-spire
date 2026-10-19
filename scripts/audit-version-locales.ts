@@ -1,10 +1,10 @@
 /**
  * Check what the Compendium shows for older versions in every game locale.
  *
- * Ground truth is the raw game localization committed for each version
- * (`data/sts2/localization` in git history). For every selectable version that
- * has such a snapshot, compare the versioned entity's title and description
- * template in each locale with that snapshot.
+ * Ground truth is the game's own localization of each archived build (the
+ * build archive, see AGENTS.md; scripts/lib/localization-snapshots.ts). For
+ * every patch from LOCALE_TEXT_PINNED_FROM on, compare the versioned entity's
+ * title and description template in each locale with that build's tables.
  *
  *   pnpm exec tsx scripts/audit-version-locales.ts [--out report.md] [--json findings.json] [--samples 5]
  *
@@ -12,7 +12,6 @@
  * fields the site always renders differently are not blamed on versioning.
  */
 
-import { execFileSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 import { getSTS2Changes, getSTS2Patches, getEntityVersionDiffs } from "../src/lib/data";
 import { compareVersions, getVersionsWithDiffs } from "../src/lib/entity-versioning";
@@ -21,6 +20,7 @@ import type { VersionedEntityType } from "../src/lib/types";
 import { getVersionedEntities, getVersionedEntity } from "../src/lib/versioned-entity-api";
 import { LOCALE_TEXT_PINNED_FROM } from "../src/lib/localization-history";
 import { getCodexMeta } from "../src/lib/data";
+import { tableAt, versionSnapshots, type LocalizationTable } from "./lib/localization-snapshots";
 
 const TABLES: [VersionedEntityType, string][] = [
   ["card", "cards"],
@@ -31,39 +31,9 @@ const TABLES: [VersionedEntityType, string][] = [
 ];
 
 const HANGUL = /[가-힣]/;
-type Table = Record<string, string>;
 type Entity = Record<string, unknown> & { id: string };
 
-function git(args: string[]): string {
-  return execFileSync("git", args, { encoding: "utf8", maxBuffer: 256 * 1024 * 1024 });
-}
-
-/** Last localization commit dated on or after `from` and before `until`. */
-function snapshotCommit(from: string, until: string | null): string | null {
-  const log = git(["log", "--format=%H %cs", "--", "data/sts2/localization/"]).trim().split("\n");
-  for (const line of log) {
-    const [hash, date] = line.split(" ");
-    if (date >= from && (until === null || date < until)) return hash;
-  }
-  return null;
-}
-
-const tableCache = new Map<string, Table>();
-function tableAt(commit: string, locale: GameLocale, table: string): Table {
-  const key = `${commit}:${locale}:${table}`;
-  const cached = tableCache.get(key);
-  if (cached) return cached;
-  let parsed: Table = {};
-  try {
-    parsed = JSON.parse(git(["show", `${commit}:data/sts2/localization/${locale}/${table}.json`])) as Table;
-  } catch {
-    parsed = {};
-  }
-  tableCache.set(key, parsed);
-  return parsed;
-}
-
-function templateKey(type: VersionedEntityType, id: string, table: Table): string {
+function templateKey(type: VersionedEntityType, id: string, table: LocalizationTable): string {
   if (type === "power" && table[`${id}.smartDescription`] !== undefined) return `${id}.smartDescription`;
   return `${id}.description`;
 }
@@ -104,26 +74,19 @@ async function main() {
   const samples = samplesAt >= 0 ? Number(args[samplesAt + 1]) : 5;
 
   const [patches, versionDiffs, meta] = await Promise.all([getSTS2Patches(), getEntityVersionDiffs(), getCodexMeta()]);
-  const ordered = [...patches]
-    .filter((patch) => /^\d+\.\d+/.test(patch.version))
-    .sort((a, b) => compareVersions(a.version, b.version));
   const selectable = getVersionsWithDiffs(patches, versionDiffs);
-  const head = git(["rev-parse", "HEAD"]).trim();
+  const { snapshots } = versionSnapshots(LOCALE_TEXT_PINNED_FROM, patches, meta.version);
+  const latestBuild = snapshots[snapshots.length - 1].build;
 
   const findings: Finding[] = [];
   const checked: { version: string; commit: string; compared: number }[] = [];
 
-  for (const version of [...selectable].reverse()) {
-    const index = ordered.findIndex((patch) => patch.version === version);
-    const patch = ordered[index];
-    const next = ordered[index + 1] ?? null;
-    const commit = version === meta.version ? head : snapshotCommit(patch.date, next?.date ?? null);
-    if (!commit) continue;
+  for (const { version, build } of snapshots) {
     let compared = 0;
     for (const locale of GAME_LOCALES) {
       for (const [type, tableName] of TABLES) {
-        const table = tableAt(commit, locale, tableName);
-        const current = tableAt(head, locale, tableName);
+        const table = tableAt(build, locale, tableName);
+        const current = tableAt(latestBuild, locale, tableName);
         if (Object.keys(table).length === 0) continue;
         const [atVersion, atLatest] = await Promise.all([
           getVersionedEntities<Entity>({ entityType: type, version, locale }),
@@ -160,11 +123,11 @@ async function main() {
         }
       }
     }
-    checked.push({ version, commit: commit.slice(0, 8), compared });
+    checked.push({ version, commit: build, compared });
   }
 
   const lines: string[] = ["# Version x locale audit", ""];
-  lines.push(`| version | snapshot | compared | wrong | ${KINDS.join(" | ")} |`, `| --- | --- | --- | --- | ${KINDS.map(() => "---").join(" | ")} |`);
+  lines.push(`| version | build | compared | wrong | ${KINDS.join(" | ")} |`, `| --- | --- | --- | --- | ${KINDS.map(() => "---").join(" | ")} |`);
   for (const row of checked) {
     const rows = findings.filter((f) => f.version === row.version);
     const count = (kind: Finding["kind"]) => rows.filter((f) => f.kind === kind).length;
