@@ -146,6 +146,18 @@ async function main() {
   const full = runCombat({ ...input, powers: {}, hand: ["ACROBATICS", "STRIKE_SILENT*8"], drawPile: ["STRIKE_SILENT*5"], script: [{ do: "play", card: "ACROBATICS" }] }, catalog);
   assert.equal(kinds(full, "move").filter(({ event }) => event.kind === "move" && event.cause === "draw").length, 2);
 
+  // Neutralize.cs: WithAttackerAnim("Attack", AttackAnimDelay + 0.2 s only when FastMode is Normal).
+  const neutralizeInput = { ...input, powers: {}, hand: ["NEUTRALIZE"], drawPile: [], script: [{ do: "play" as const, card: "NEUTRALIZE", target: 0 }] };
+  const neutralizeLoad = await loadCombatSimCatalog(neutralizeInput);
+  const neutralize = runCombat(neutralizeInput, neutralizeLoad.catalog);
+  const attackDelay = neutralizeLoad.catalog.character!.attackAnimDelay * 1000;
+  const attackWait = (speed: "normal" | "fast" | "instant") =>
+    buildTimeline(neutralize, { ...neutralizeInput, speed }).beats.find((beat) => beat.event.kind === "animate")!.duration;
+  assert.ok(attackDelay > 0);
+  assert.ok(Math.abs(attackWait("normal") - (attackDelay + 200)) < 1e-6);
+  assert.ok(Math.abs(attackWait("fast") - Math.min(attackDelay * 0.5, 250)) < 1e-6);
+  assert.equal(attackWait("instant"), 0);
+
   // Empty draw pile reshuffles the discard pile with the seed.
   const reshuffle = runCombat({ ...input, powers: {}, hand: ["ACROBATICS"], drawPile: [], discardPile: ["STRIKE_SILENT*2", "PREPARED"], seed: 7, script: [{ do: "play", card: "ACROBATICS" }] }, catalog);
   assert.equal(kinds(reshuffle, "shuffle").length, 1);

@@ -460,7 +460,8 @@ class Combat {
           : target ? [target] : [];
         this.noteDamageModifiers(this.state.player, targets);
         // AttackCommand.FromCard: TriggerAnim("Attack", Character.AttackAnimDelay), then CreatureCmd.Damage.
-        this.emit({ kind: "animate", creature: "player", animation: "attack", delayMs: (this.catalog.character?.attackAnimDelay ?? 0) * 1000 });
+        const delayMs = (this.catalog.character?.attackAnimDelay ?? 0) * 1000;
+        this.emit({ kind: "animate", creature: "player", animation: "attack", delayMs, ...(op.normalAnimExtra ? { normalExtraMs: op.normalAnimExtra * 1000 } : {}) });
         for (const monster of targets) this.dealDamage(monster, amount, uid);
         this.emit({ kind: "pause", reason: "damage", fastMs: 100, normalMs: 200 });
         return;

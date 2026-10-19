@@ -12,8 +12,11 @@
 export type CountRef = number | { var: string };
 
 export type CardOp =
-  /** `DamageCmd.Attack(DynamicVars.<var>.BaseValue).FromCard(this).Targeting(cardPlay.Target)` */
-  | { op: "damage"; var: string; target: "target" | "allEnemies" }
+  /**
+   * `DamageCmd.Attack(DynamicVars.<var>.BaseValue).FromCard(this).Targeting(cardPlay.Target)`;
+   * `normalAnimExtra` (s) is added to the attacker's anim delay when FastMode is Normal.
+   */
+  | { op: "damage"; var: string; target: "target" | "allEnemies"; normalAnimExtra?: number }
   /** `CreatureCmd.GainBlock(Owner.Creature, DynamicVars.<var>, cardPlay)` */
   | { op: "block"; var: string }
   /** `CardPileCmd.Draw(choiceContext, <count>, Owner)` */
@@ -57,10 +60,11 @@ export const CARD_RECIPES: Record<string, CardRecipe> = {
     source: `${CARDS_DIR}/Survivor.cs`,
     ops: [{ op: "block", var: "Block" }, { op: "discardChoice", count: 1 }],
   },
-  // Attack(Damage) on the target, then PowerCmd.Apply<WeakPower>(target, Weak).
+  // Attack(Damage) on the target with WithAttackerAnim("Attack", AttackAnimDelay
+  // + 0.2 s when FastMode is Normal), then PowerCmd.Apply<WeakPower>(target, Weak).
   NEUTRALIZE: {
     source: `${CARDS_DIR}/Neutralize.cs`,
-    ops: [{ op: "damage", var: "Damage", target: "target" }, { op: "unimplemented", what: "WEAK_POWER 부여" }],
+    ops: [{ op: "damage", var: "Damage", target: "target", normalAnimExtra: 0.2 }, { op: "unimplemented", what: "WEAK_POWER 부여" }],
   },
   STRIKE_IRONCLAD: strike("StrikeIronclad"),
   STRIKE_SILENT: strike("StrikeSilent"),

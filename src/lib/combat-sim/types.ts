@@ -211,8 +211,11 @@ export type SimEvent =
   | { kind: "power"; creature: string; powerId: string; amount: number; change: "applied" | "removed" }
   | { kind: "damage"; creature: string; amount: number; blocked: number; hpFrom: number; hpTo: number; source: string }
   | { kind: "block"; creature: string; amount: number; total: number }
-  /** CreatureCmd.TriggerAnim: waits `delayMs` (Normal) / min(delay / 2, 250 ms) (Fast) / 0 (Instant). */
-  | { kind: "animate"; creature: string; animation: "cast" | "attack" | "hurt"; delayMs: number }
+  /**
+   * CreatureCmd.TriggerAnim: waits `delayMs` (Normal) / min(delay / 2, 250 ms) (Fast) / 0 (Instant).
+   * `normalExtraMs` is added to the delay only on Normal (e.g. Neutralize's +0.2 s).
+   */
+  | { kind: "animate"; creature: string; animation: "cast" | "attack" | "hurt"; delayMs: number; normalExtraMs?: number }
   /**
    * Cmd.CustomScaledWait(fast, normal): Instant waits 0. With `sincePlayMove`, the
    * time since that step's play move finished is subtracted (OnPlayWrapper's
