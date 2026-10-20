@@ -155,9 +155,15 @@ export interface MapBarNodeFrame {
   /** "?" showing its outcome. */
   revealed: boolean;
   synthetic: boolean;
-  /** Node scale: the state's size (with the history course's 0.3 s ease) times the reveal pulse. */
+  /** Node scale by state (inactive 0.95, active 1, current 1.08) with the history course's 0.3 s ease. */
   scale: number;
-  /** 0..1 while the destination ring sweeps clockwise, else null. */
+  /** Extra scale of the icon while a "?" reveals (1 otherwise); the selection ring does not pulse. */
+  pulse: number;
+  /**
+   * While the node is the transit's destination before the marker arrives
+   * (no steady ring): the clockwise sweep, 0 during the trail and 0..1 over
+   * 0.70..0.92. Null otherwise.
+   */
   sweep: number | null;
 }
 

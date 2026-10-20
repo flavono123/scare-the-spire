@@ -102,6 +102,18 @@ close(end.nodes[4].scale, 0.95);
 // The node scale eases like the CSS transition.
 close(cssEase(0.5), 0.8024033877399112, 1e-6);
 assert.ok(at(0.93).nodes[1].scale > 1 && at(0.93).nodes[1].scale !== 1.08);
+// The "?" pulses while it reveals; the trail phase already hides the steady ring (sweep 0).
+assert.ok(at(0.96).nodes[1].pulse > 1);
+assert.equal(end.nodes[1].pulse, 1);
+assert.equal(at(0.3).nodes[1].sweep, 0);
+assert.equal(at(0.3).ring, null);
+assert.equal(at(0.3).nodes[1].state, "active");
+// The default frame holds the ancient node and the marker below it.
+for (const layout of [horizontal, vertical]) {
+  for (const node of layout.nodes) {
+    assert.ok(node.marker.x + 22 * 1.15 <= layout.width && node.marker.y + 22 * 1.15 <= layout.height, `marker of ${node.index} inside`);
+  }
+}
 
 // Same input and time, same frame.
 assert.deepEqual(buildMapBarTimeline(preset).frameAt(5123), timeline.frameAt(5123));

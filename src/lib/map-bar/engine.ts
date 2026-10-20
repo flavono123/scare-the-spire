@@ -188,17 +188,20 @@ export function buildMapBarLayout(input: MapBarInput): MapBarLayout {
   const sizes = nodes.map((node) => siteNodeSize(node, ancientScale) * unit);
   const markerSize = input.character === null ? 0 : CHARACTER_MARKER_SIZE * unit;
   const markerOffsets = sizes.map((size) => input.markerOffset ?? size * MARKER_DISTANCE);
-  const roomSize = Math.round(NORMAL_ICON_SIZE * MAP_GAME_SCALE) * unit;
 
-  const padding = input.padding ?? Math.ceil(RING_EXTENT * Math.max(sizes[0], sizes[count - 1]) + 8 * unit);
+  // How far each node reaches from its center: the selection ring (rooms) or the art (ancient),
+  // and on the marker side the popped marker (it overshoots to 1.15).
+  const margin = 4 * unit;
+  const half = nodes.map((node, index) => (node.type === "ancient" ? 0.5 : RING_EXTENT) * sizes[index]);
+  const before = Math.max(...half);
+  const after = Math.max(...half.map((value, index) => Math.max(value, markerSize > 0 ? markerOffsets[index] + (markerSize * 1.15) / 2 : 0)));
+  const padding = input.padding ?? Math.ceil(Math.max(half[0], half[count - 1]) + margin);
   const mainLength = orientation === "horizontal" ? input.width : input.height;
   const main = mainLength ?? Math.ceil(DEFAULT_SPACING * unit * Math.max(1, count - 1) + 2 * padding);
-  // The node line sits so that the ring above and the marker below share the cross axis evenly.
-  const ringHalf = RING_EXTENT * roomSize;
-  const markerReach = markerSize > 0 ? (input.markerOffset ?? roomSize * MARKER_DISTANCE) + markerSize / 2 : ringHalf;
-  const crossDefault = Math.ceil(ringHalf + markerReach + 24 * unit);
-  const cross = (orientation === "horizontal" ? input.height : input.width) ?? crossDefault;
-  const line = cross / 2 - (markerReach - ringHalf) / 2;
+  const crossLength = orientation === "horizontal" ? input.height : input.width;
+  const cross = crossLength ?? Math.ceil(before + after + 2 * margin);
+  // The node line leaves room for the ring on one side and the marker on the other.
+  const line = (cross - (before + after)) / 2 + before;
 
   const along = (index: number) => (count === 1 ? main / 2 : padding + (index * (main - 2 * padding)) / (count - 1));
   const reach = input.reach ?? defaultReach(nodes);
@@ -375,8 +378,9 @@ export function buildMapBarTimeline(input: MapBarInput): MapBarTimeline {
         art: nodeArt(node, revealed, ancient),
         revealed,
         synthetic: revealed && isSynthetic(node),
-        scale: easedValue(initial, scaleChanges[index], t) * pulse,
-        sweep: sweeping && ringFrac > 0 ? ringFrac : null,
+        scale: easedValue(initial, scaleChanges[index], t),
+        pulse,
+        sweep: sweeping ? ringFrac : null,
       };
     });
 
@@ -399,7 +403,7 @@ export function buildMapBarTimeline(input: MapBarInput): MapBarTimeline {
       marker = { node: on, x: point.x, y: point.y, scale, opacity: popping ? charFrac : 1 };
     }
 
-    const sweepNode = nodeFrames.find((frame) => frame.sweep !== null);
+    const sweepNode = nodeFrames.find((frame) => frame.sweep !== null && frame.sweep > 0);
     return {
       t,
       transit: latest && inTransit ? { node: latest.node, progress: progress! } : null,
