@@ -33,6 +33,11 @@
  * scale 1, so the 1080x1920 stage maps 1:1 to the PNG (a 1/3 stage scale at
  * device scale 3 is not exactly 1 and its edge antialiasing could change with
  * the frames before). A frame sequence gets `frames.json`.
+ *
+ * The map progress bar (/dev/map-bar, dev server only) works the same way
+ * through `window.__bar`; its frames are transparent PNGs at the bar's own size
+ * (device scale 1), and sidecars add the node anchors, events and per-frame
+ * marker, ring and node states.
  */
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -51,7 +56,24 @@ const SIM_FRAME = 1080;
 function isCombatSim(url: string): boolean {
   return url.includes("/dev/combat-sim");
 }
-const CAPTURE_SELECTOR = "[data-combat-sim-stage], [data-card-tile], [data-relic-inspect-slab]";
+
+/** A dev studio page that exposes a seekable handle on window. */
+interface Studio {
+  handle: "__sim" | "__bar";
+  stage: string;
+  /** Frames keep the page's transparency (alpha) instead of an opaque stage. */
+  transparent: boolean;
+}
+
+const COMBAT_SIM_STUDIO: Studio = { handle: "__sim", stage: "[data-combat-sim-stage]", transparent: false };
+const MAP_BAR_STUDIO: Studio = { handle: "__bar", stage: "[data-map-bar-stage]", transparent: true };
+
+function studioOf(url: string): Studio | null {
+  if (isCombatSim(url)) return COMBAT_SIM_STUDIO;
+  if (url.includes("/dev/map-bar")) return MAP_BAR_STUDIO;
+  return null;
+}
+const CAPTURE_SELECTOR = "[data-combat-sim-stage], [data-map-bar-stage], [data-card-tile], [data-relic-inspect-slab]";
 const DOWNLOAD_SELECTOR = "[data-compendium-download-image]";
 
 /** Same colors the card tile uses for its BBCode spans. */
@@ -267,20 +289,20 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
   // Version and locale are stamped on the tile after hydration.
   await page.waitForTimeout(800);
 
-  // The simulator sets window.__sim in an effect after hydration, which can come later than the stage.
-  const isSim = isCombatSim(requested)
-    ? await page.waitForFunction("Boolean(window.__sim)", undefined, { timeout: 120_000 }).then(() => true)
-    : await page.evaluate("Boolean(window.__sim)");
-  if (isSim) {
+  // Studios set their handle in an effect after hydration, which can come later than the stage.
+  const studio = studioOf(requested) ?? ((await page.evaluate("Boolean(window.__sim)")) ? COMBAT_SIM_STUDIO : null);
+  if (studio) {
+    await page.waitForFunction(`Boolean(window.${studio.handle})`, undefined, { timeout: 120_000 });
     await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
-    await page.evaluate("window.__sim.ready()");
+    if (studio.transparent) await keepOnlyStage(page, studio);
+    await page.evaluate(`window.${studio.handle}.ready()`);
     if (shot.frames) {
-      await captureFrames(page, shot, requested, selector, out);
+      await captureFrames(page, shot, requested, selector, out, studio);
       return;
     }
-    if (shot.t !== undefined) await simSeek(page, Number(shot.t));
+    if (shot.t !== undefined) await studioSeek(page, studio, Number(shot.t));
   } else if (shot.frames || shot.t !== undefined) {
-    throw new Error(`${url}: --t and --frames need a combat simulator page (window.__sim)`);
+    throw new Error(`${url}: --t and --frames need a combat simulator or map bar page (window.__sim, window.__bar)`);
   }
 
   if (shot.upgraded) {
@@ -340,8 +362,9 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     await download.saveAs(out);
     method = "download-button";
   } else {
-    // The simulator stage is opaque; omitBackground repaints the page and makes its raster race.
-    await page.locator(selector).first().screenshot({ path: out, omitBackground: !isSim });
+    // Studios never use omitBackground: it repaints the page for each shot and makes the raster race
+    // (the combat sim stage is opaque; the map bar page's background is made transparent once).
+    await page.locator(selector).first().screenshot({ path: out, omitBackground: !studio });
     method = "element-screenshot";
   }
 
@@ -355,6 +378,7 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     method,
     pixelRatio: await page.evaluate("window.devicePixelRatio"),
     ...image,
+    ...(studio === MAP_BAR_STUDIO ? await mapBarSidecar(page) : {}),
     capturedAt: new Date().toISOString(),
   };
   await writeFile(`${out}.json`, `${JSON.stringify(sidecar, null, 2)}\n`);
@@ -366,56 +390,86 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
 
 const cdpSessions = new WeakMap<Page, Promise<CDPSession>>();
 
-/** Show or hide the simulator stage, then let `frames` frames pass. */
-const setStageDisplay = (display: string, frames = 2) => `(async () => {
-  const stage = document.querySelector("[data-combat-sim-stage]");
-  if (stage) stage.style.display = "${display}";
-  for (let i = 0; i < ${frames}; i += 1) await new Promise((resolve) => requestAnimationFrame(resolve));
-})()`;
-
-/**
- * Seek the combat simulator and repaint the stage from nothing. Chrome keeps
- * raster tiles that did not change and draws a scaled-down image from a
- * larger decode of it still cached (a card drawn bigger in an earlier frame),
- * so the frames before would change this frame's pixels. The stage is taken
- * off screen, a simulated critical memory pressure drops the decoded images
- * (it reaches the renderer asynchronously, hence the frames after it), and the
- * stage comes back fully rasterized at the new time. The first seek after a
- * page load rasterizes differently from every later one, so a fresh page
- * first seeks to the end.
- */
-async function simSeek(page: Page, time: number) {
+function cdpSession(page: Page): Promise<CDPSession> {
   let session = cdpSessions.get(page);
   if (!session) {
     session = page.context().newCDPSession(page);
     cdpSessions.set(page, session);
   }
-  const warm = await page.evaluate("Boolean(window.__simCaptureWarm)");
-  const times = warm ? [time] : [(await page.evaluate("window.__sim.duration")) as number, time];
-  for (const at of times) {
-    await page.evaluate(setStageDisplay("none"));
-    await (await session).send("Memory.simulatePressureNotification", { level: "critical" });
-    await page.evaluate(setStageDisplay("none", 6));
-    await page.evaluate(`window.__sim.seek(${at})`);
-    await page.evaluate(setStageDisplay(""));
-  }
-  await page.evaluate("window.__simCaptureWarm = true");
+  return session;
 }
 
-/** Combat simulator frame sequence: seek each frame time, screenshot the stage. */
-async function captureFrames(page: Page, shot: Shot, requested: string, selector: string, outDir: string) {
+/** Show or hide the studio stage, then let `frames` frames pass. */
+const setStageDisplay = (stage: string, display: string, frames = 2) => `(async () => {
+  const stage = document.querySelector(${JSON.stringify(stage)});
+  if (stage) stage.style.display = "${display}";
+  for (let i = 0; i < ${frames}; i += 1) await new Promise((resolve) => requestAnimationFrame(resolve));
+})()`;
+
+/**
+ * Paint nothing but the stage over a transparent page, once: the page and its
+ * other elements stop painting and the default background is transparent, so
+ * the PNG keeps the stage's alpha without omitBackground.
+ */
+async function keepOnlyStage(page: Page, studio: Studio) {
+  await page.addStyleTag({
+    content: `html, body { background: transparent !important; } body * { visibility: hidden !important; } ${studio.stage}, ${studio.stage} * { visibility: visible !important; }`,
+  });
+  await (await cdpSession(page)).send("Emulation.setDefaultBackgroundColorOverride", { color: { r: 0, g: 0, b: 0, a: 0 } });
+}
+
+/**
+ * Seek a studio page and repaint the stage from nothing. Chrome keeps raster
+ * tiles that did not change and draws a scaled-down image from a larger
+ * decode of it still cached (a card drawn bigger in an earlier frame), so the
+ * frames before would change this frame's pixels. The stage is taken off
+ * screen, a simulated critical memory pressure drops the decoded images (it
+ * reaches the renderer asynchronously, hence the frames after it), and the
+ * stage comes back fully rasterized at the new time. The first seek after a
+ * page load rasterizes differently from every later one, so a fresh page
+ * first seeks to the end.
+ */
+async function studioSeek(page: Page, studio: Studio, time: number) {
+  const session = await cdpSession(page);
+  const warm = await page.evaluate("Boolean(window.__studioCaptureWarm)");
+  const times = warm ? [time] : [(await page.evaluate(`window.${studio.handle}.duration`)) as number, time];
+  for (const at of times) {
+    await page.evaluate(setStageDisplay(studio.stage, "none"));
+    await session.send("Memory.simulatePressureNotification", { level: "critical" });
+    await page.evaluate(setStageDisplay(studio.stage, "none", 6));
+    await page.evaluate(`window.${studio.handle}.seek(${at})`);
+    await page.evaluate(setStageDisplay(studio.stage, ""));
+  }
+  await page.evaluate("window.__studioCaptureWarm = true");
+}
+
+/** Map bar state for sidecars: node anchors, events and the frame's marker, ring and nodes. */
+async function mapBarSidecar(page: Page) {
+  return {
+    events: await page.evaluate("window.__bar.events"),
+    anchors: await page.evaluate("window.__bar.anchors"),
+    state: await page.evaluate("window.__bar.state()"),
+  };
+}
+
+/** Studio frame sequence: seek each frame time, screenshot the stage. */
+async function captureFrames(page: Page, shot: Shot, requested: string, selector: string, outDir: string, studio: Studio) {
   const { fps, from = 0, to } = shot.frames!;
-  const times = (await page.evaluate(`window.__sim.frameTimes(${Number(fps)})`)) as number[];
+  const handle = studio.handle;
+  const times = (await page.evaluate(`window.${handle}.frameTimes(${Number(fps)})`)) as number[];
   const selected = times.filter((time) => time >= from && (to === undefined || time <= to));
   await mkdir(outDir, { recursive: true });
   const node = page.locator(selector).first();
+  const states: unknown[] = [];
   for (const [index, time] of selected.entries()) {
-    await simSeek(page, time);
-    // The stage is opaque; omitBackground repaints the page and makes its raster race.
+    await studioSeek(page, studio, time);
+    // No omitBackground: it repaints the page for each shot and makes the raster race.
     await node.screenshot({ path: path.join(outDir, `${String(index).padStart(4, "0")}.png`) });
+    if (studio === MAP_BAR_STUDIO) states.push(await page.evaluate("window.__bar.state()"));
   }
   const first = path.join(outDir, "0000.png");
   const image = await paintedBox(page, first);
+  const anchors = studio === MAP_BAR_STUDIO ? ((await page.evaluate("window.__bar.anchors")) as { synthetic?: boolean }[]) : null;
   const sidecar = {
     requested,
     url: page.url(),
@@ -424,10 +478,17 @@ async function captureFrames(page: Page, shot: Shot, requested: string, selector
     to: to ?? null,
     frames: selected.length,
     times: selected,
-    duration: await page.evaluate("window.__sim.duration"),
-    actionEnds: await page.evaluate("window.__sim.actionEnds"),
-    input: await page.evaluate("window.__sim.input"),
-    final: await page.evaluate("window.__sim.state()"),
+    duration: await page.evaluate(`window.${handle}.duration`),
+    ...(studio === COMBAT_SIM_STUDIO
+      ? { actionEnds: await page.evaluate("window.__sim.actionEnds") }
+      : {
+        events: await page.evaluate("window.__bar.events"),
+        anchors,
+        synthetic: anchors!.some((anchor) => anchor.synthetic),
+        states,
+      }),
+    input: await page.evaluate(`window.${handle}.input`),
+    final: await page.evaluate(`window.${handle}.state()`),
     pixelRatio: await page.evaluate("window.devicePixelRatio"),
     width: image.width,
     height: image.height,
@@ -484,7 +545,7 @@ async function main() {
       "usage: pnpm shorts:capture (--target type/ID[@version] | --url path) --out file.png\n" +
         "         [--mark text]... [--mark-color red|gold|green|blue|purple|#hex] [--replace old=>new]...\n" +
         "         [--selector css] [--upgraded] [--enchant name] [--beta] [--locale kor|eng] [--base http://localhost:3000]\n" +
-        "         [--t ms] [--frames [--fps 30]]   (combat simulator pages; --frames writes <out>/0000.png...)\n" +
+        "         [--t ms] [--frames [--fps 30]]   (combat simulator and map bar pages; --frames writes <out>/0000.png...)\n" +
         "       pnpm shorts:capture --batch shots.json",
     );
     process.exit(1);
@@ -543,7 +604,7 @@ async function main() {
     };
     for (const shot of batch.shots) {
       const locale = shot.locale ?? batch.locale ?? "kor";
-      const sim = Boolean(shot.url && isCombatSim(shot.url));
+      const sim = Boolean(shot.url && studioOf(shot.url));
       await capture(await pageFor(locale, sim), { ...shot, locale }, base, locale, outDir);
     }
   } finally {
