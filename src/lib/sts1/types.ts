@@ -85,6 +85,13 @@ export interface Sts1Card {
   innate: boolean;
   retain: boolean;
   portrait: string | null;
+  /**
+   * CSS px (x right, y down) the game moves a trimmed `cards.atlas` portrait:
+   * renderPortrait centers the packed region and ignores its atlas offset.
+   */
+  portraitShift?: [number, number];
+  /** Same drift for the `oldCards.atlas` beta portrait. */
+  betaPortraitShift?: [number, number];
   upgrade: Sts1CardUpgrade | null;
   unlimitedUpgrade: boolean;
   hasBetaArt: boolean;

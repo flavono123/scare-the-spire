@@ -1088,6 +1088,35 @@ def extract_card_ui(jar, prefixes: tuple[str, ...] = ("1024", "512")) -> None:
             save_webp(image, dest[prefix] / f"{rest}.webp", lossless=True)
 
 
+def portrait_shift(region: dict[str, Any]) -> list[float] | None:
+    """AbstractCard.renderPortrait centers the packed region and ignores its
+    atlas offset, so a trimmed portrait drifts. CSS px, x right / y down."""
+    packed_w, packed_h = region["size"]
+    orig_w, orig_h = region.get("orig") or region["size"]
+    offset_x, offset_y = region.get("offset") or [0, 0]
+    shift_x = (orig_w - packed_w) / 2 - offset_x
+    shift_y = offset_y - (orig_h - packed_h) / 2
+    if not shift_x and not shift_y:
+        return None
+    return [int(value) if value.is_integer() else value for value in (shift_x, shift_y)]
+
+
+def apply_portrait_shifts(jar, cards: list[dict[str, Any]]) -> None:
+    for key, atlas_path in (("portraitShift", "cards/cards.atlas"), ("betaPortraitShift", "oldCards/cards.atlas")):
+        regions: dict[str, dict[str, Any]] = {}
+        for page in parse_atlas(jar.read(atlas_path).decode("utf-8", "replace")).values():
+            regions.update(page["regions"])
+        for card in cards:
+            region = regions.get(card.get("portrait") or "")
+            shift = portrait_shift(region) if region else None
+            if key == "betaPortraitShift" and not card.get("hasBetaArt"):
+                shift = None
+            if shift:
+                card[key] = shift
+            else:
+                card.pop(key, None)
+
+
 def extract_ui_extras(jar, out: Path, names: set[str] | None = None) -> int:
     """Extract run-mod icons, PowerTip 9-slice, and leftover card-library chrome."""
     names = names if names is not None else set(jar.namelist())
@@ -1383,6 +1412,11 @@ def main() -> None:
         help="Re-compose STS1 potion lab sprites without rewriting JSON or portraits.",
     )
     parser.add_argument(
+        "--portrait-shifts-only",
+        action="store_true",
+        help="Patch portraitShift/betaPortraitShift into data/sts1/cards.json from the card atlases.",
+    )
+    parser.add_argument(
         "--only",
         default="",
         help="Comma-separated sections to rebuild without touching cards/relics/potions rows: "
@@ -1403,6 +1437,14 @@ def main() -> None:
                 print(f"powers={extract_powers(jar, write_images=not args.skip_images)}")
             if "characters" in sections:
                 print(f"characters={extract_characters(jar, write_images=not args.skip_images)}")
+        return
+
+    if args.portrait_shifts_only:
+        cards = read_data_rows("cards.json")
+        with open_sts1_jar(args.jar) as jar:
+            apply_portrait_shifts(jar, cards)
+        write_json(ROOT / "data" / "sts1" / "cards.json", cards)
+        print(f"portrait shifts={sum('portraitShift' in card for card in cards)}")
         return
 
     if args.card_ui_512_only:
@@ -1498,6 +1540,7 @@ def main() -> None:
             beta_dir = ROOT / "public" / "images" / "sts1" / "cards-beta"
             for card in cards:
                 card["hasBetaArt"] = (beta_dir / f"{card['slug']}.webp").exists()
+        apply_portrait_shifts(jar, cards)
 
         for potion in visible_potions:
             strip_potion_extract_fields(potion)

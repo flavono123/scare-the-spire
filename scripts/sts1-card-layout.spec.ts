@@ -29,6 +29,12 @@ import {
   STS1_CREAM,
   STS1_ENERGY_FONT,
   sts1PortraitBox,
+  STS1_PORTRAIT_OFFSET_Y,
+  STS1_PORTRAIT_SIZE,
+  STS1_TYPE_COLOR,
+  STS1_TYPE_PLAQUE_BASE_WIDTH,
+  sts1TypeBannerLayers,
+  sts1TypePlaqueStretch,
   sts1TitleBox,
   sts1TitleBoxWidthFrac,
   sts1TitleFontScale,
@@ -38,7 +44,7 @@ import {
   sts1CardOrbRegion,
 } from "../src/lib/sts1/card-style";
 import { GAME_LOCALES } from "../src/lib/i18n";
-import { sts1BitmapRole } from "../src/lib/sts1/bitmap-font";
+import { measureBitmapText, sts1BitmapRole } from "../src/lib/sts1/bitmap-font";
 import { EMPTY_STS1_STATS, wrapSts1DescriptionLines } from "../src/lib/sts1/description";
 import { sts1CostLabel, sts1ShowsEnergyOrb } from "../src/lib/sts1/stats";
 import { collectSts1CardSideTips, sts1KeywordTipBody } from "../src/lib/sts1/keyword-tips";
@@ -114,25 +120,53 @@ const typeCenterY = parseFloat(type.top) + parseFloat(type.height) / 2;
 assert.ok(Math.abs(typeCenterY - ((210 + 22) / 420) * 100) < 1e-6);
 assert.equal(type.fontSize, `${(17 / 300) * 100}cqi`);
 
-const attackPortrait = sts1PortraitBox({ type: "attack" } as never);
-assert.equal(attackPortrait.left, `${((136 - 106) / 300) * 100}%`);
-assert.equal(attackPortrait.top, `${((108 - 46) / 420) * 100}%`);
-assert.equal(attackPortrait.width, `${(240 / 300) * 100}%`);
-assert.equal(attackPortrait.height, `${(162 / 420) * 100}%`);
-const attackPortraitBottom =
-  parseFloat(attackPortrait.top) + parseFloat(attackPortrait.height);
-assert.ok(attackPortraitBottom < 53.4, "attack art must stop at the type plaque");
-const skillPortrait = sts1PortraitBox({ type: "skill" } as never);
-const skillPortraitBottom =
-  parseFloat(skillPortrait.top) + parseFloat(skillPortrait.height);
-assert.ok(skillPortraitBottom < 53.7);
-const powerPortrait = sts1PortraitBox({ type: "power" } as never);
-assert.equal(powerPortrait.top, `${((61 - 46) / 420) * 100}%`);
-const powerPortraitBottom =
-  parseFloat(powerPortrait.top) + parseFloat(powerPortrait.height);
-assert.ok(powerPortraitBottom < 53.4);
-assert.deepEqual(sts1PortraitBox({ type: "curse" } as never), skillPortrait);
-assert.deepEqual(sts1PortraitBox({ type: "status" } as never), skillPortrait);
+// renderPortrait: 250×190 at 1:1, centered 72 above card center, never fit to the frame hole.
+assert.equal(STS1_PORTRAIT_SIZE.width, 250);
+assert.equal(STS1_PORTRAIT_SIZE.height, 190);
+assert.equal(STS1_PORTRAIT_OFFSET_Y, 72);
+const untrimmedPortrait = sts1PortraitBox({ type: "power" } as never);
+assert.deepEqual(untrimmedPortrait, {
+  left: `${(25 / 300) * 100}%`,
+  top: `${(43 / 420) * 100}%`,
+  width: `${(250 / 300) * 100}%`,
+  height: `${(190 / 420) * 100}%`,
+});
+assert.deepEqual(sts1PortraitBox({ type: "attack" } as never), untrimmedPortrait);
+// Trimmed atlas regions drift because renderPortrait ignores the region offset.
+const strikePortrait = sts1PortraitBox({ portraitShift: [0.5, 2] } as never);
+assert.equal(strikePortrait.left, `${(25.5 / 300) * 100}%`);
+assert.equal(strikePortrait.top, `${(45 / 420) * 100}%`);
+const betaCard = { portraitShift: [1, 4], betaPortraitShift: [0, 2], hasBetaArt: true } as never;
+assert.equal(sts1PortraitBox(betaCard).top, `${(47 / 420) * 100}%`);
+assert.equal(sts1PortraitBox(betaCard, true).top, `${(45 / 420) * 100}%`);
+const realCards = JSON.parse(
+  readFileSync(join(process.cwd(), "data", "sts1", "cards.json"), "utf8"),
+) as { slug: string; portraitShift?: [number, number] }[];
+assert.deepEqual(realCards.find((card) => card.slug === "defend-r")?.portraitShift, [1, 4]);
+
+// renderDynamicFrame: short labels keep the frame's own plaque; long ones stretch it.
+assert.equal(STS1_TYPE_COLOR, "#595959");
+assert.equal(STS1_TYPE_PLAQUE_BASE_WIDTH, 48);
+assert.equal(sts1TypePlaqueStretch(31), null, "공격 fits the frame plaque");
+assert.equal(sts1TypePlaqueStretch(50.4), null, "stretch 1.1 still returns early");
+assert.deepEqual(sts1TypePlaqueStretch(64), { scaleX: (64 / 48 - 1) * 2 + 1, offset: 8 });
+assert.deepEqual(sts1TypeBannerLayers({ rarity: "rare" } as never, 31), []);
+const korTypeRole = sts1BitmapRole("kor", "type")!;
+for (const label of ["공격", "스킬", "파워", "저주"]) {
+  assert.deepEqual(
+    sts1TypeBannerLayers({ rarity: "common" } as never, measureBitmapText(korTypeRole, label).width),
+    [],
+    `${label} must not draw the stretch pieces`,
+  );
+}
+const statusLayers = sts1TypeBannerLayers(
+  { rarity: "uncommon" } as never,
+  measureBitmapText(korTypeRole, "상태이상").width,
+);
+assert.deepEqual(statusLayers.map((layer) => layer.region), ["uncommon_center", "uncommon_left", "uncommon_right"]);
+assert.match(statusLayers[0].transform, /^scaleX\(1\.[4-9]/);
+assert.match(statusLayers[1].transform, /^translateX\(-/);
+assert.equal(statusLayers[2].transform, statusLayers[1].transform.replace("-", ""));
 
 assert.equal(STS1_DESC_FONT, 24);
 assert.equal(STS1_DESC_BOX_WIDTH, 0.79);

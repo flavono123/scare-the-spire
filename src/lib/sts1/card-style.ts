@@ -97,6 +97,12 @@ export const STS1_DESC_MIN_FONT_SCALE = 0.5;
 export const STS1_TYPE_FONT = 17;
 /** renderType draws at current_y - 22 (down in CSS). */
 export const STS1_TYPE_OFFSET_Y = 22;
+/** AbstractCard.typeColor = Color(0.35, 0.35, 0.35): dark label on the light plaque. */
+export const STS1_TYPE_COLOR = "#595959";
+/** initializeDynamicFrameWidths: the frame's own type plaque fits a 48px label. */
+export const STS1_TYPE_PLAQUE_BASE_WIDTH = 48;
+/** renderDynamicFrame returns early while the stretch factor is <= 1.1. */
+export const STS1_TYPE_PLAQUE_MIN_STRETCH = 1.1;
 
 /** Settings.CREAM_COLOR (rgba8888 -597249). */
 export const STS1_CREAM = "#FFF6E2";
@@ -227,29 +233,24 @@ export function sts1DescriptionTextStyle(gameLocale: GameLocale): CSSProperties 
 }
 
 /**
- * Inner transparent hole of `frame_{attack,skill,power}_common` (alpha scan
- * inside the opaque frame bbox). The previous values used the opaque bbox, so
- * art painted through the open pentagon under the type plaque.
+ * AbstractCard.renderPortrait draws the 250×190 `cards.atlas` region 72 above
+ * card center at 1:1. The portrait's own alpha mask and the frame drawn on top
+ * shape it; fitting the art into the frame hole rescaled it (power art 1.1×).
  */
-const PORTRAIT_HOLE_IN_ATLAS = {
-  attack: { left: 136, top: 108, width: 240, height: 162 },
-  skill: { left: 135, top: 108, width: 240, height: 163 },
-  power: { left: 132, top: 61, width: 248, height: 209 },
-} as const;
+export const STS1_PORTRAIT_SIZE = { width: 250, height: 190 } as const;
+export const STS1_PORTRAIT_OFFSET_Y = 72;
 
-function atlasBoxToCard(box: { left: number; top: number; width: number; height: number }) {
-  const card = STS1_CARD_IN_ATLAS;
+export function sts1PortraitBox(card: Sts1Card, showBeta = false) {
+  const { width, height } = STS1_CARD_IN_ATLAS;
+  const [shiftX, shiftY] = (showBeta && card.hasBetaArt ? card.betaPortraitShift : card.portraitShift) ?? [0, 0];
+  const left = width / 2 - STS1_PORTRAIT_SIZE.width / 2 + shiftX;
+  const top = height / 2 - STS1_PORTRAIT_OFFSET_Y - STS1_PORTRAIT_SIZE.height / 2 + shiftY;
   return {
-    left: `${((box.left - card.left) / card.width) * 100}%`,
-    top: `${((box.top - card.top) / card.height) * 100}%`,
-    width: `${(box.width / card.width) * 100}%`,
-    height: `${(box.height / card.height) * 100}%`,
+    left: `${(left / width) * 100}%`,
+    top: `${(top / height) * 100}%`,
+    width: `${(STS1_PORTRAIT_SIZE.width / width) * 100}%`,
+    height: `${(STS1_PORTRAIT_SIZE.height / height) * 100}%`,
   };
-}
-
-export function sts1PortraitBox(card: Sts1Card) {
-  const type = card.type === "power" || card.type === "attack" ? card.type : "skill";
-  return atlasBoxToCard(PORTRAIT_HOLE_IN_ATLAS[type]);
 }
 
 export const STS1_POOL_COLORS: Record<Exclude<Sts1RelicPool, "shared">, string> = {
@@ -295,12 +296,31 @@ export function sts1TypeBannerRarity(card: Sts1Card): "common" | "uncommon" | "r
   return FRAME_RARITY[card.rarity] ?? "common";
 }
 
-export function sts1TypeBannerPieces(card: Sts1Card): readonly ["left" | "center" | "right", string][] {
+/** initializeDynamicFrameWidths: typeWidth / typeOffset for a measured label width. */
+export function sts1TypePlaqueStretch(labelWidth: number): { scaleX: number; offset: number } | null {
+  const base = STS1_TYPE_PLAQUE_BASE_WIDTH;
+  const scaleX = (labelWidth / base - 1) * 2 + 1;
+  if (scaleX <= STS1_TYPE_PLAQUE_MIN_STRETCH) return null;
+  return { scaleX, offset: (labelWidth - base) / 2 };
+}
+
+/**
+ * renderDynamicFrame: nothing for short labels; otherwise MID stretched about
+ * card center, then LEFT/RIGHT pushed out by typeOffset. Transforms apply to
+ * full 512 atlas layers, whose center is the card center.
+ */
+export function sts1TypeBannerLayers(
+  card: Sts1Card,
+  labelWidth: number,
+): readonly { piece: "left" | "center" | "right"; region: string; transform: string }[] {
+  const stretch = sts1TypePlaqueStretch(labelWidth);
+  if (!stretch) return [];
   const rarity = sts1TypeBannerRarity(card);
+  const shift = `${(stretch.offset / STS1_ATLAS) * 100}%`;
   return [
-    ["left", `${rarity}_left`],
-    ["center", `${rarity}_center`],
-    ["right", `${rarity}_right`],
+    { piece: "center", region: `${rarity}_center`, transform: `scaleX(${stretch.scaleX})` },
+    { piece: "left", region: `${rarity}_left`, transform: `translateX(-${shift})` },
+    { piece: "right", region: `${rarity}_right`, transform: `translateX(${shift})` },
   ];
 }
 

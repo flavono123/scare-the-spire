@@ -23,6 +23,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "anger"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -47,6 +55,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "armaments"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -73,6 +89,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "barricade"
+    ],
+    "portraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -100,6 +120,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "bash"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -126,6 +150,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "battle-trance"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -152,6 +180,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "berserk"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -179,6 +215,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "blood-for-blood"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -205,6 +249,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "bloodletting"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -231,6 +283,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "bludgeon"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -257,6 +317,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "body-slam"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -283,6 +351,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "brutality"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -309,6 +385,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "burning-pact"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -335,6 +415,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "carnage"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -361,6 +449,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "clash"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -387,6 +483,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "cleave"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -414,6 +514,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "clothesline"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -440,6 +544,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "combust"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -466,6 +578,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "corruption"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -492,6 +612,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "dark-embrace"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -519,6 +647,10 @@
     "legacySlugs": [
       "defend-r",
       "defend-ironclad"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -545,6 +677,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "demon-form"
+    ],
+    "portraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -571,6 +707,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "disarm"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -597,6 +741,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "double-tap"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -623,6 +775,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "dropkick"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -649,6 +805,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "dual-wield"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -675,6 +839,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "entrench"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -701,6 +869,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "evolve"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -727,6 +903,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "exhume"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -754,6 +938,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "feed"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -780,6 +968,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "feel-no-pain"
+    ],
+    "portraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -806,6 +998,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "fiend-fire"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -832,6 +1028,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "fire-breathing"
+    ],
+    "portraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -859,6 +1059,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "flame-barrier"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -885,6 +1093,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "flex"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -911,6 +1127,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "ghostly-armor"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -937,6 +1161,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "havoc"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -963,6 +1195,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "headbutt"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -989,6 +1225,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "heavy-blade"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1015,6 +1259,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "hemokinesis"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1041,6 +1289,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "immolate"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -1067,6 +1323,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "impervious"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1093,6 +1357,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "infernal-blade"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1119,6 +1391,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "inflame"
+    ],
+    "portraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -1145,6 +1421,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "intimidate"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1172,6 +1452,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "iron-wave"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1198,6 +1486,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "juggernaut"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -1222,6 +1518,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "limit-break"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1248,6 +1548,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "metallicize"
+    ],
+    "portraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -1274,6 +1578,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "offering"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1300,6 +1612,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "perfected-strike"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -1327,6 +1647,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "pommel-strike"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1353,6 +1681,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "power-through"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1379,6 +1715,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "pummel"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1405,6 +1745,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "rage"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1431,6 +1775,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "rampage"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -1457,6 +1809,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "reaper"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -1483,6 +1839,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "reckless-charge"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1509,6 +1869,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "rupture"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -1536,6 +1904,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "searing-blow"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1562,6 +1938,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "second-wind"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1588,6 +1968,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "seeing-red"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1614,6 +1998,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "sentinel"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1640,6 +2032,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "sever-soul"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1666,6 +2066,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "shockwave"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1692,6 +2096,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "shrug-it-off"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1718,6 +2126,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "spot-weakness"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1745,6 +2157,10 @@
     "legacySlugs": [
       "strike-r",
       "strike-ironclad"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1771,6 +2187,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "sword-boomerang"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1797,6 +2217,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "thunderclap"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1823,6 +2247,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "true-grit"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1849,6 +2281,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "twin-strike"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -1875,6 +2315,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "uppercut"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -1901,6 +2345,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "warcry"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -1927,6 +2375,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "whirlwind"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -1953,6 +2409,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "wild-strike"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -1979,6 +2439,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "accuracy"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -2005,6 +2473,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "acrobatics"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2029,6 +2505,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "adrenaline"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2055,6 +2539,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "after-image"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -2082,6 +2574,14 @@
     "legacySlugs": [
       "venomology",
       "alchemize"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2108,6 +2608,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "all-out-attack"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -2134,6 +2642,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "a-thousand-cuts"
+    ],
+    "portraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -2160,6 +2672,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "backflip"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2186,6 +2706,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "backstab"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -2212,6 +2736,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "bane"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -2238,6 +2770,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "blade-dance"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2264,6 +2804,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "blur"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2290,6 +2838,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "bouncing-flask"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2316,6 +2872,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "bullet-time"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2342,6 +2906,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "burst"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2366,6 +2938,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "calculated-gamble"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2392,6 +2972,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "caltrops"
+    ],
+    "portraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -2416,6 +3000,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "catalyst"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2442,6 +3034,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "choke"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -2468,6 +3068,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "cloak-and-dagger"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2494,6 +3102,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "concentrate"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2520,6 +3136,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "corpse-explosion"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2547,6 +3171,10 @@
     "legacySlugs": [
       "crippling-poison",
       "crippling-cloud"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2573,6 +3201,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "dagger-spray"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -2599,6 +3231,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "dagger-throw"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -2626,6 +3262,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "dash"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -2652,6 +3296,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "deadly-poison"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2679,6 +3327,10 @@
     "legacySlugs": [
       "defend-g",
       "defend-silent"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2705,6 +3357,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "deflect"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2731,6 +3391,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "die-die-die"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -2757,6 +3425,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "distraction"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2783,6 +3459,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "dodge-and-roll"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2807,6 +3487,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "doppelganger"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2833,6 +3521,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "endless-agony"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -2859,6 +3555,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "envenom"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -2885,6 +3589,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "escape-plan"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2911,6 +3623,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "eviscerate"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -2937,6 +3657,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "expertise"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -2963,6 +3691,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "finisher"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -2989,6 +3725,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "flechettes"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -3015,6 +3759,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "flying-knee"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -3041,6 +3793,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "footwork"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -3067,6 +3827,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "glass-knife"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3093,6 +3861,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "grand-finale"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -3119,6 +3891,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "heel-hook"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -3145,6 +3925,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "infinite-blades"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -3172,6 +3960,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "leg-sweep"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3196,6 +3992,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "malaise"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3222,6 +4026,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "masterful-stab"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3249,6 +4061,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "neutralize"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -3276,6 +4096,14 @@
     "legacySlugs": [
       "night-terror",
       "nightmare"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3302,6 +4130,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "noxious-fumes"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3326,6 +4162,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "outmaneuver"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3352,6 +4196,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "phantasmal-killer"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3379,6 +4231,14 @@
     "legacySlugs": [
       "piercingwail",
       "piercing-wail"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3406,6 +4266,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "poisoned-stab"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3432,6 +4296,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "predator"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3458,6 +4330,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "prepared"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3484,6 +4364,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "quick-slash"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3510,6 +4398,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "reflex"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3536,6 +4432,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "riddle-with-holes"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3562,6 +4466,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "setup"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3588,6 +4500,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "skewer"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3614,6 +4534,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "slice"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3638,6 +4566,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "storm-of-steel"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3665,6 +4601,14 @@
     "legacySlugs": [
       "strike-g",
       "strike-silent"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -3692,6 +4636,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "sucker-punch"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3718,6 +4670,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "survivor"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3744,6 +4704,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "tactician"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3770,6 +4738,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "terror"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3796,6 +4772,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "tools-of-the-trade"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -3823,6 +4807,10 @@
     "legacySlugs": [
       "underhanded-strike",
       "sneaky-strike"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -3849,6 +4837,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "unload"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -3875,6 +4871,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "well-laid-plans"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3902,6 +4906,14 @@
     "legacySlugs": [
       "wraith-form-v2",
       "wraith-form"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -3928,6 +4940,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "aggregate"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -3954,6 +4974,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "all-for-one"
+    ],
+    "portraitShift": [
+      -0.5,
+      1.5
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -3980,6 +5008,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "amplify"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4006,6 +5042,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "auto-shields"
+    ],
+    "portraitShift": [
+      0.5,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4032,6 +5076,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "ball-lightning"
+    ],
+    "portraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -4058,6 +5106,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "barrage"
+    ],
+    "portraitShift": [
+      -0.5,
+      1.5
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -4085,6 +5141,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "beam-cell"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -4111,6 +5175,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "biased-cognition"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -4137,6 +5209,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "blizzard"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -4164,6 +5244,10 @@
     "legacySlugs": [
       "bootsequence",
       "boot-sequence"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4190,6 +5274,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "buffer"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -4216,6 +5308,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "capacitor"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -4242,6 +5342,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "chaos"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4268,6 +5376,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "chill"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4295,6 +5411,14 @@
     "legacySlugs": [
       "gash",
       "claw"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -4321,6 +5445,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "cold-snap"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -4347,6 +5479,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "compile-driver"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -4374,6 +5514,14 @@
     "legacySlugs": [
       "conserve-battery",
       "charge-battery"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4400,6 +5548,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "consume"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4426,6 +5582,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "coolheaded"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4452,6 +5616,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "core-surge"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -4478,6 +5650,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "creative-ai"
+    ],
+    "portraitShift": [
+      0,
+      1.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -4502,6 +5682,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "darkness"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4529,6 +5717,14 @@
     "legacySlugs": [
       "defend-b",
       "defend-defect"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4555,6 +5751,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "defragment"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -4581,6 +5785,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "doom-and-gloom"
+    ],
+    "portraitShift": [
+      -0.5,
+      1.5
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -4607,6 +5819,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "double-energy"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4633,6 +5849,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "dualcast"
+    ],
+    "portraitShift": [
+      0.5,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4657,6 +5881,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "echo-form"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -4683,6 +5915,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "electrodynamics"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -4707,6 +5947,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "fission"
+    ],
+    "portraitShift": [
+      0.5,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4733,6 +5981,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "force-field"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4760,6 +6016,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "ftl"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -4786,6 +6050,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "fusion"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4812,6 +6084,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "genetic-algorithm"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4838,6 +6114,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "glacier"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4865,6 +6149,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "go-for-the-eyes"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -4891,6 +6183,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "heatsinks"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -4917,6 +6217,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "hello-world"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -4943,6 +6251,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "hologram"
+    ],
+    "portraitShift": [
+      0.5,
+      0
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -4969,6 +6285,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "hyperbeam"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -4995,6 +6319,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "leap"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5023,6 +6355,10 @@
     "legacySlugs": [
       "lockon",
       "bullseye"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -5049,6 +6385,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "loop"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -5075,6 +6419,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "machine-learning"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -5101,6 +6453,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "melter"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -5127,6 +6487,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "meteor-strike"
+    ],
+    "portraitShift": [
+      -0.5,
+      1.5
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -5151,6 +6519,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "multi-cast"
+    ],
+    "portraitShift": [
+      0.5,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5178,6 +6554,14 @@
     "legacySlugs": [
       "steam-power",
       "overclock"
+    ],
+    "portraitShift": [
+      0.5,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5202,6 +6586,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "rainbow"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5228,6 +6620,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "reboot"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5254,6 +6654,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "rebound"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -5281,6 +6689,14 @@
     "legacySlugs": [
       "redo",
       "recursion"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5307,6 +6723,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "recycle"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5333,6 +6757,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "reinforced-body"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5359,6 +6787,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "reprogram"
+    ],
+    "portraitShift": [
+      0.5,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5385,6 +6821,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "rip-and-tear"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -5412,6 +6856,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "scrape"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -5438,6 +6890,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "seek"
+    ],
+    "portraitShift": [
+      0.5,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5464,6 +6924,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "self-repair"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -5490,6 +6958,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "skim"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5516,6 +6992,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "stack"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5542,6 +7022,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "static-discharge"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -5569,6 +7057,14 @@
     "legacySlugs": [
       "steam",
       "steam-barrier"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5595,6 +7091,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "storm"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -5621,6 +7125,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "streamline"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -5648,6 +7156,14 @@
     "legacySlugs": [
       "strike-b",
       "strike-defect"
+    ],
+    "portraitShift": [
+      -0.5,
+      1.5
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -5674,6 +7190,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "sunder"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -5700,6 +7224,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "sweeping-beam"
+    ],
+    "portraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -5724,6 +7252,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "tempest"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5750,6 +7286,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "thunder-strike"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -5776,6 +7316,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "turbo"
+    ],
+    "portraitShift": [
+      0.5,
+      0
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5803,6 +7351,14 @@
     "legacySlugs": [
       "undo",
       "equilibrium"
+    ],
+    "portraitShift": [
+      0.5,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5829,6 +7385,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "white-noise"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5855,6 +7419,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "zap"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5881,6 +7453,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "alpha"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -5908,6 +7488,14 @@
     "legacySlugs": [
       "battlehymn",
       "battle-hymn"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      1
     ]
   },
   {
@@ -5934,6 +7522,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "blasphemy"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      0,
+      4
     ]
   },
   {
@@ -5961,6 +7557,14 @@
     "legacySlugs": [
       "bowlingbash",
       "bowling-bash"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -5987,6 +7591,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "brilliance"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -6014,6 +7626,14 @@
     "legacySlugs": [
       "carvereality",
       "carve-reality"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -6038,6 +7658,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "collect"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -6064,6 +7692,10 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "conclude"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -6089,6 +7721,14 @@
     "legacySlugs": [
       "conjureblade",
       "conjure-blade"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      0,
+      4
     ]
   },
   {
@@ -6115,6 +7755,10 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "consecrate"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -6141,6 +7785,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "crescendo"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -6169,6 +7821,10 @@
     "legacySlugs": [
       "crushjoints",
       "crush-joints"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -6197,6 +7853,14 @@
     "legacySlugs": [
       "cutthroughfate",
       "cut-through-fate"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -6224,6 +7888,10 @@
     "legacySlugs": [
       "deceivereality",
       "deceive-reality"
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -6251,6 +7919,14 @@
     "legacySlugs": [
       "defend-p",
       "defend-watcher"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -6278,6 +7954,14 @@
     "legacySlugs": [
       "deusexmachina",
       "deus-ex-machina"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -6303,6 +7987,14 @@
     "legacySlugs": [
       "devaform",
       "deva-form"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      1
     ]
   },
   {
@@ -6329,6 +8021,10 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "devotion"
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -6356,6 +8052,14 @@
     "legacySlugs": [
       "emptybody",
       "empty-body"
+    ],
+    "portraitShift": [
+      0.5,
+      4
+    ],
+    "betaPortraitShift": [
+      0,
+      4
     ]
   },
   {
@@ -6383,6 +8087,14 @@
     "legacySlugs": [
       "emptyfist",
       "empty-fist"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1
     ]
   },
   {
@@ -6410,6 +8122,14 @@
     "legacySlugs": [
       "emptymind",
       "empty-mind"
+    ],
+    "portraitShift": [
+      0.5,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -6436,6 +8156,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "eruption"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1
     ]
   },
   {
@@ -6462,6 +8190,10 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "establishment"
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -6488,6 +8220,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "evaluate"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -6515,6 +8255,10 @@
     "legacySlugs": [
       "fasting2",
       "fasting"
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -6542,6 +8286,14 @@
     "legacySlugs": [
       "fearnoevil",
       "fear-no-evil"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -6569,6 +8321,14 @@
     "legacySlugs": [
       "flurryofblows",
       "flurry-of-blows"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -6596,6 +8356,14 @@
     "legacySlugs": [
       "flyingsleeves",
       "flying-sleeves"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -6623,6 +8391,14 @@
     "legacySlugs": [
       "followup",
       "follow-up"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -6648,6 +8424,14 @@
     "legacySlugs": [
       "foreigninfluence",
       "foreign-influence"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -6675,6 +8459,14 @@
     "legacySlugs": [
       "wireheading",
       "foresight"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -6701,6 +8493,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "halt"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      0,
+      4
     ]
   },
   {
@@ -6727,6 +8527,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "indignation"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -6754,6 +8562,14 @@
     "legacySlugs": [
       "innerpeace",
       "inner-peace"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -6781,6 +8597,14 @@
     "legacySlugs": [
       "judgement",
       "judgment"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -6810,6 +8634,14 @@
     "legacySlugs": [
       "justlucky",
       "just-lucky"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -6837,6 +8669,10 @@
     "legacySlugs": [
       "lessonlearned",
       "lesson-learned"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -6864,6 +8700,10 @@
     "legacySlugs": [
       "likewater",
       "like-water"
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -6891,6 +8731,10 @@
     "legacySlugs": [
       "masterreality",
       "master-reality"
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -6917,6 +8761,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "meditate"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -6944,6 +8796,14 @@
     "legacySlugs": [
       "mentalfortress",
       "mental-fortress"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -6970,6 +8830,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "nirvana"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -6996,6 +8864,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "omniscience"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      0.5,
+      4
     ]
   },
   {
@@ -7023,6 +8899,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "perseverance"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1.5,
+      4
     ]
   },
   {
@@ -7049,6 +8933,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "pray"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7076,6 +8968,14 @@
     "legacySlugs": [
       "pathtovictory",
       "pressure-points"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7102,6 +9002,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "prostrate"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -7128,6 +9036,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "protect"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -7155,6 +9071,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "ragnarok"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -7182,6 +9106,14 @@
     "legacySlugs": [
       "reachheaven",
       "reach-heaven"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -7209,6 +9141,10 @@
     "legacySlugs": [
       "adaptation",
       "rushdown"
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -7235,6 +9171,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "sanctity"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      0,
+      4
     ]
   },
   {
@@ -7262,6 +9206,14 @@
     "legacySlugs": [
       "sandsoftime",
       "sands-of-time"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -7290,6 +9242,10 @@
     "legacySlugs": [
       "sashwhip",
       "sash-whip"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -7316,6 +9272,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "scrawl"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -7343,6 +9307,14 @@
     "legacySlugs": [
       "signaturemove",
       "signature-move"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -7370,6 +9342,14 @@
     "legacySlugs": [
       "vengeance",
       "simmering-fury"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7397,6 +9377,14 @@
     "legacySlugs": [
       "spiritshield",
       "spirit-shield"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -7424,6 +9412,14 @@
     "legacySlugs": [
       "strike-p",
       "strike-watcher"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1
     ]
   },
   {
@@ -7450,6 +9446,10 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "study"
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -7476,6 +9476,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "swivel"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7504,6 +9512,14 @@
     "legacySlugs": [
       "talktothehand",
       "talk-to-the-hand"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -7530,6 +9546,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "tantrum"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -7558,6 +9582,14 @@
     "legacySlugs": [
       "thirdeye",
       "third-eye"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -7585,6 +9617,14 @@
     "legacySlugs": [
       "clearthemind",
       "tranquility"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7611,6 +9651,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "vault"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      0,
+      4
     ]
   },
   {
@@ -7637,6 +9685,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "vigilance"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7663,6 +9719,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "wallop"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      -0.5,
+      1.5
     ]
   },
   {
@@ -7690,6 +9754,14 @@
     "legacySlugs": [
       "waveofthehand",
       "wave-of-the-hand"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7716,6 +9788,10 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "weave"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -7743,6 +9819,10 @@
     "legacySlugs": [
       "wheelkick",
       "wheel-kick"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -7771,6 +9851,14 @@
     "legacySlugs": [
       "windmillstrike",
       "windmill-strike"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -7799,6 +9887,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "wish"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -7825,6 +9921,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "worship"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7852,6 +9956,14 @@
     "legacySlugs": [
       "wreathofflame",
       "wreath-of-flame"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -7878,6 +9990,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "apotheosis"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7904,6 +10024,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "bandage-up"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7928,6 +10052,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "blind"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7954,6 +10086,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "chrysalis"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -7980,6 +10120,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "dark-shackles"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8006,6 +10154,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "deep-breath"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      0.5,
+      4.5
     ]
   },
   {
@@ -8030,6 +10186,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "discovery"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8056,6 +10220,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "dramatic-entrance"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -8080,6 +10252,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "enlightenment"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8106,6 +10286,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "finesse"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8132,6 +10320,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "flash-of-steel"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -8156,6 +10352,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "forethought"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8182,6 +10386,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "good-instincts"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      0.5,
+      4.5
     ]
   },
   {
@@ -8210,6 +10422,14 @@
     "legacySlugs": [
       "handofgreed",
       "hand-of-greed"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -8236,6 +10456,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "impatience"
+    ],
+    "portraitShift": [
+      0,
+      4
     ]
   },
   {
@@ -8262,6 +10486,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "jack-of-all-trades"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8288,6 +10520,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "madness"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8314,6 +10550,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "magnetism"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -8340,6 +10584,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "master-of-strategy"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8366,6 +10614,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "mayhem"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -8392,6 +10648,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "metamorphosis"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8418,6 +10682,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "mind-blast"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -8444,6 +10716,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "panacea"
+    ],
+    "portraitShift": [
+      0,
+      4
     ]
   },
   {
@@ -8470,6 +10746,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "panache"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -8497,6 +10781,14 @@
     "legacySlugs": [
       "panicbutton",
       "panic-button"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8523,6 +10815,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "purity"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8549,6 +10845,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "sadistic-nature"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -8573,6 +10877,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "secret-technique"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8597,6 +10909,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "secret-weapon"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8623,6 +10943,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "swift-strike"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -8649,6 +10973,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "the-bomb"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8673,6 +11005,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "thinking-ahead"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8697,6 +11033,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "transmutation"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8721,6 +11065,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "trip"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8747,6 +11099,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "violence"
+    ],
+    "portraitShift": [
+      0,
+      4
     ]
   },
   {
@@ -8773,6 +11129,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "burn"
+    ],
+    "portraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8797,6 +11157,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "dazed"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8821,6 +11189,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "slimed"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8845,6 +11221,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "void"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8869,6 +11253,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "wound"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8894,6 +11286,14 @@
     "legacySlugs": [
       "ghostly",
       "apparition"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8920,6 +11320,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "beta"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -8947,6 +11355,10 @@
     "hasBetaArt": false,
     "legacySlugs": [
       "bite"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -8974,6 +11386,14 @@
     "legacySlugs": [
       "j-a-x",
       "jax"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9000,6 +11420,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "insight"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -9024,6 +11452,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "miracle"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9050,6 +11486,10 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "omega"
+    ],
+    "betaPortraitShift": [
+      0,
+      1
     ]
   },
   {
@@ -9077,6 +11517,14 @@
     "legacySlugs": [
       "ritualdagger",
       "ritual-dagger"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -9103,6 +11551,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "safety"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -9129,6 +11585,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "shiv"
+    ],
+    "portraitShift": [
+      0,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -9155,6 +11619,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "smite"
+    ],
+    "portraitShift": [
+      0.5,
+      2
+    ],
+    "betaPortraitShift": [
+      0,
+      1.5
     ]
   },
   {
@@ -9182,6 +11654,10 @@
     "legacySlugs": [
       "throughviolence",
       "through-violence"
+    ],
+    "portraitShift": [
+      0.5,
+      2
     ]
   },
   {
@@ -9209,6 +11685,10 @@
     "legacySlugs": [
       "becomealmighty",
       "become-almighty"
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -9236,6 +11716,14 @@
     "legacySlugs": [
       "fameandfortune",
       "fame-and-fortune"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      0,
+      4
     ]
   },
   {
@@ -9263,6 +11751,14 @@
     "legacySlugs": [
       "liveforever",
       "live-forever"
+    ],
+    "portraitShift": [
+      0,
+      2.5
+    ],
+    "betaPortraitShift": [
+      0,
+      2.5
     ]
   },
   {
@@ -9289,6 +11785,10 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "expunger"
+    ],
+    "portraitShift": [
+      0,
+      2
     ]
   },
   {
@@ -9314,6 +11814,14 @@
     "legacySlugs": [
       "ascendersbane",
       "ascenders-bane"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9339,6 +11847,14 @@
     "legacySlugs": [
       "curseofthebell",
       "curse-of-the-bell"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      3
     ]
   },
   {
@@ -9363,6 +11879,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "clumsy"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9387,6 +11911,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "decay"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9411,6 +11943,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "doubt"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9435,6 +11975,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "injury"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9459,6 +12007,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "necronomicurse"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9483,6 +12039,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "normality"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9507,6 +12071,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "pain"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9531,6 +12103,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "parasite"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9555,6 +12135,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "pride"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9579,6 +12167,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "regret"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9603,6 +12199,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "shame"
+    ],
+    "portraitShift": [
+      0,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   },
   {
@@ -9627,6 +12231,14 @@
     "hasBetaArt": true,
     "legacySlugs": [
       "writhe"
+    ],
+    "portraitShift": [
+      1,
+      4
+    ],
+    "betaPortraitShift": [
+      1,
+      4
     ]
   }
 ]

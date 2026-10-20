@@ -16,6 +16,7 @@ import {
   STS1_ENERGY_MODIFIED,
   STS1_GREEN_TEXT,
   STS1_DESC_MIN_FONT_SCALE,
+  STS1_TYPE_COLOR,
   sts1CardBannerRegion,
   sts1CardBackgroundRegion,
   sts1CardBodyStyle,
@@ -29,17 +30,18 @@ import {
   sts1PortraitBox,
   sts1TitleBox,
   sts1TitleTextStyle,
-  sts1TypeBannerPieces,
+  sts1TypeBannerLayers,
   sts1TypeBox,
 } from "@/lib/sts1/card-style";
 import type { GameLocale } from "@/lib/i18n";
+import { measureBitmapText, sts1BitmapRole } from "@/lib/sts1/bitmap-font";
 import { sts1HtmlLang } from "@/lib/sts1/locale";
 import { sts1CardPortraitUrl, sts1CardUi512Url } from "@/lib/sts1/paths";
 import { wrapSts1DescriptionLines } from "@/lib/sts1/description";
 import { sts1CardStats, sts1CostLabel, sts1ShowsEnergyOrb } from "@/lib/sts1/stats";
 import type { Sts1Card, Sts1Keyword } from "@/lib/sts1/types";
 
-function AtlasLayer({ src }: { src: string }) {
+function AtlasLayer({ src, transform }: { src: string; transform?: string }) {
   return (
     <div
       className="pointer-events-none absolute bg-no-repeat"
@@ -47,6 +49,7 @@ function AtlasLayer({ src }: { src: string }) {
         ...STS1_ATLAS_LAYER_STYLE,
         backgroundImage: `url("${src}")`,
         backgroundSize: "100% 100%",
+        transform,
       }}
     />
   );
@@ -76,6 +79,8 @@ export function Sts1CardTile({
   const costLabel = sts1CostLabel(stats.cost);
   const showEnergyOrb = sts1ShowsEnergyOrb(stats.cost);
   const upgradedCost = stats.upgraded && card.upgrade?.cost != null;
+  const typeRole = sts1BitmapRole(gameLocale, "type");
+  const typeLabelWidth = typeRole ? measureBitmapText(typeRole, typeLabel).width : 0;
   const descriptionViewportRef = useRef<HTMLDivElement>(null);
   const descriptionContentRef = useRef<HTMLParagraphElement>(null);
   const descriptionFontCqi = sts1DescriptionFontCqi();
@@ -114,21 +119,21 @@ export function Sts1CardTile({
         style={{ ...sts1CardBodyStyle(), containerType: "inline-size" }}
       >
       <AtlasLayer src={sts1CardUi512Url(sts1CardBackgroundRegion(card))} />
-      <div className="absolute overflow-hidden" style={sts1PortraitBox(card)}>
+      <div className="absolute" style={sts1PortraitBox(card, showBeta)}>
         <Image
           src={sts1CardPortraitUrl(card, showBeta)}
           alt=""
           fill
-          className="h-full w-full object-cover"
+          className="h-full w-full"
           sizes="250px"
           loading="lazy"
         />
       </div>
       <AtlasLayer src={sts1CardUi512Url(sts1CardFrameRegion(card))} />
-      <AtlasLayer src={sts1CardUi512Url(sts1CardBannerRegion(card))} />
-      {sts1TypeBannerPieces(card).map(([piece, region]) => (
-        <AtlasLayer key={piece} src={sts1CardUi512Url(region)} />
+      {sts1TypeBannerLayers(card, typeLabelWidth).map(({ piece, region, transform }) => (
+        <AtlasLayer key={piece} src={sts1CardUi512Url(region)} transform={transform} />
       ))}
+      <AtlasLayer src={sts1CardUi512Url(sts1CardBannerRegion(card))} />
       {showEnergyOrb ? (
         <>
           <AtlasLayer src={sts1CardUi512Url(sts1CardOrbRegion(card))} />
@@ -175,7 +180,7 @@ export function Sts1CardTile({
           text={typeLabel}
           role="type"
           gameLocale={gameLocale}
-          color={STS1_CREAM}
+          color={STS1_TYPE_COLOR}
         />
       </div>
       <div
