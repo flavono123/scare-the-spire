@@ -218,6 +218,13 @@ export const devNavItems = [
   },
   {
     group: "패치/운영",
+    href: "/dev/map-bar",
+    label: "맵 진행 바 시뮬레이터",
+    icon: "/images/sts2/map/icons-by-act/overgrowth/map_unknown.png",
+    strictDevOnly: true,
+  },
+  {
+    group: "패치/운영",
     href: "/dev/admin",
     label: "어드민",
     icon: "/images/sts2/nav/question_mark.png",
