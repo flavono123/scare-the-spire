@@ -456,13 +456,44 @@ function holderCqi(px: number) {
   return `${(px / HOLDER_W) * 100}cqi`;
 }
 
+/**
+ * TextureRect STRETCH_KEEP_ASPECT_COVERED with an AtlasTexture whose region
+ * sits at margin.x/y inside a texture margin.width/height larger. Returns the
+ * drawn region; Godot clips it to the rect, so keep it inside.
+ */
+function coveredRegionBox(
+  rect: { left: number; top: number; width: number; height: number },
+  region: { width: number; height: number },
+  margin: { x: number; y: number; width: number; height: number },
+) {
+  const textureWidth = region.width + margin.width;
+  const textureHeight = region.height + margin.height;
+  const scale = Math.max(rect.width / textureWidth, rect.height / textureHeight);
+  return holderBox(
+    rect.left + (rect.width - textureWidth * scale) / 2 + margin.x * scale,
+    rect.top + (rect.height - textureHeight * scale) / 2 + margin.y * scale,
+    region.width * scale,
+    region.height * scale,
+  );
+}
+
+/** TitleLabel is a MegaLabel: MaxFontSize 26, default MinFontSize 8. */
+const TITLE_FONT_PX = { max: 26, min: 8 };
+
 const L = {
   art: holderBox(-125, -168, 250, 190),
   portraitBorder: holderBox(-137.5, -164, 275, 210),
-  banner: { top: 3, height: 17, overhangX: 9 },
+  // TitleBanner offset(-163,-207)~(164,-124); card_banner.tres margin Rect2(1, 23, 2, 25).
+  banner: coveredRegionBox(
+    { left: -163, top: -207, width: 327, height: 83 },
+    { width: 653, height: 145 },
+    { x: 1, y: 23, width: 2, height: 25 },
+  ),
+  title: holderBox(-105, -204, 210, 54),
   ancientBanner: { top: -2.4, width: 112, aspectRatio: "671/182", titlePaddingX: 16, titleTranslateY: -28 },
   plaque: { top: ((1 + HOLDER_H / 2) / HOLDER_H) * 100, height: 37, minWidth: 61, labelPadX: 17 },
-  desc: { top: 64, bottom: 95, paddingX: 9 },
+  // DescriptionLabel offset(-122,37)~(121,173), vertically centered.
+  desc: holderBox(-122, 37, 243, 136),
   cost: {
     top: (-16 / HOLDER_H) * 100,
     left: (-16 / HOLDER_W) * 100,
@@ -480,6 +511,30 @@ const L = {
     height: (54 / HOLDER_H) * 100,
   },
 };
+
+/** Written straight to the title node so the fit loop needs no React state. */
+const TITLE_FONT_VAR = "--card-title-font";
+
+/** MegaLabel.AdjustFontSize: the largest whole font size whose line fits. */
+function fitTitleFont(box: HTMLElement, text: HTMLElement) {
+  const apply = (px: number) => text.style.setProperty(TITLE_FONT_VAR, holderCqi(px));
+  const fits = (px: number) => {
+    apply(px);
+    return text.scrollWidth <= box.clientWidth + 0.5;
+  };
+  let size = TITLE_FONT_PX.max;
+  if (!fits(size)) {
+    let low = TITLE_FONT_PX.min;
+    let high = TITLE_FONT_PX.max - 1;
+    while (low <= high) {
+      const mid = (low + high) >> 1;
+      if (fits(mid)) low = mid + 1;
+      else high = mid - 1;
+    }
+    size = Math.max(TITLE_FONT_PX.min, high);
+  }
+  apply(size);
+}
 
 /**
  * NinePatchRect TypePlaque. The banner material tints only the plaque; the
@@ -639,6 +694,8 @@ export const CardTile = memo(function CardTile({
   const [descriptionFontScale, setDescriptionFontScale] = useState(1);
   const descriptionViewportRef = useRef<HTMLDivElement>(null);
   const descriptionContentRef = useRef<HTMLDivElement>(null);
+  const titleBoxRef = useRef<HTMLDivElement>(null);
+  const titleTextRef = useRef<HTMLSpanElement>(null);
 
   const cardWidth = width ?? CARD_WIDTH_PRESET[size];
 
@@ -837,6 +894,25 @@ export const CardTile = memo(function CardTile({
     void document.fonts?.ready.then(measureDescriptionFit);
     return () => observer.disconnect();
   });
+
+  const hasCustomTitle = titleContent != null;
+  const titleText = `${renderedCardName}${titleUpgradeSuffix}`;
+  useLayoutEffect(() => {
+    const box = titleBoxRef.current;
+    const text = titleTextRef.current;
+    if (!box || !text) return;
+    const measure = () => {
+      if (hasCustomTitle) text.style.removeProperty(TITLE_FONT_VAR);
+      else fitTitleFont(box, text);
+    };
+    measure();
+    // The text node too: a late web-font swap resizes it without touching the box.
+    const observer = new ResizeObserver(measure);
+    observer.observe(box);
+    observer.observe(text);
+    void document.fonts?.ready.then(measure);
+    return () => observer.disconnect();
+  }, [hasCustomTitle, titleText]);
 
   const renderDescription = () => (
     <div
@@ -1236,13 +1312,7 @@ export const CardTile = memo(function CardTile({
             ref={descriptionViewportRef}
             className="absolute z-[5] overflow-hidden flex flex-col items-center justify-center"
             data-card-description-viewport
-            style={{
-              top: `${L.desc.top}%`,
-              bottom: `${100 - L.desc.bottom}%`,
-              left: `${L.desc.paddingX}%`,
-              right: `${L.desc.paddingX}%`,
-              fontFamily: CARD_FONT,
-            }}
+            style={{ ...L.desc, fontFamily: CARD_FONT }}
           >
             {renderDescription()}
           </div>
@@ -1318,34 +1388,32 @@ export const CardTile = memo(function CardTile({
         <AfflictionCardOverlay afflictionId={afflictionId} />
         {afflictionOverlay}
 
-        <div
-          className="absolute z-[3] flex items-center justify-center"
-          style={{
-            top: `${L.banner.top}%`,
-            left: `-${L.banner.overhangX}%`,
-            right: `-${L.banner.overhangX}%`,
-            height: `${L.banner.height}%`,
-          }}
-        >
+        <div className="absolute z-[3] pointer-events-none" style={L.banner}>
           <Image
             src="/images/game-assets/card-misc/card_banner.png"
             alt=""
             fill
-            className="object-contain pointer-events-none"
+            className="pointer-events-none"
             style={{ filter: bannerFilter }}
           />
+        </div>
+        <div
+          ref={titleBoxRef}
+          className="absolute z-[3] flex items-center justify-center"
+          style={L.title}
+        >
           <span
-            className="relative z-10 text-center truncate px-[18%] w-full"
+            ref={titleTextRef}
+            className={`shrink-0 text-center ${hasCustomTitle ? "w-full" : "whitespace-nowrap"}`}
             style={{
-              marginTop: "-10%",
               fontFamily: TITLE_FONT,
-              fontSize: `${FONT_CQI.title}cqi`,
+              fontSize: `var(${TITLE_FONT_VAR}, ${holderCqi(TITLE_FONT_PX.max)})`,
               fontWeight: 800,
               color: titleColor,
               ...(titleStroke as CSSProperties),
             }}
           >
-            {titleContent ?? <>{renderedCardName}{titleUpgradeSuffix}</>}
+            {titleContent ?? titleText}
           </span>
         </div>
 
@@ -1355,13 +1423,7 @@ export const CardTile = memo(function CardTile({
           ref={descriptionViewportRef}
           className="absolute z-[5] overflow-hidden flex flex-col items-center justify-center"
           data-card-description-viewport
-          style={{
-            top: `${L.desc.top}%`,
-            bottom: `${100 - L.desc.bottom}%`,
-            left: `${L.desc.paddingX}%`,
-            right: `${L.desc.paddingX}%`,
-            fontFamily: CARD_FONT,
-          }}
+          style={{ ...L.desc, fontFamily: CARD_FONT }}
         >
           {renderDescription()}
         </div>
