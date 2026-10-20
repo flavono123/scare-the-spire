@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { buildMapBarTimeline, type MapBarTimeline } from "@/lib/map-bar/engine";
@@ -211,7 +212,16 @@ export function MapBarClient({ input, preset, options }: { input: MapBarInput; p
           <h1 className="text-xl font-bold text-zinc-100">
             맵 진행 바 · {input.orientation ?? "horizontal"} · {timeline.layout.width}×{timeline.layout.height}
           </h1>
-          {preset && <p className="text-xs text-zinc-500">preset: {preset}</p>}
+          <nav className="flex flex-wrap items-center gap-3 text-xs">
+            <Link className="text-sky-300 hover:underline" href="/dev/map-bar">← 프리셋 목록</Link>
+            {preset && <span className="text-zinc-500">preset: {preset}</span>}
+            {preset && (
+              <>
+                <Link className="text-sky-300 hover:underline" href={`/dev/map-bar?preset=${preset}`}>가로</Link>
+                <Link className="text-sky-300 hover:underline" href={`/dev/map-bar?preset=${preset}&orientation=vertical`}>세로</Link>
+              </>
+            )}
+          </nav>
         </header>
 
         <div className="flex flex-wrap items-center gap-2">

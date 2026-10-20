@@ -81,6 +81,8 @@ export function parseMapBarQuery(params: SearchParams): ParsedMapBarQuery {
   if (nodes !== undefined) input.nodes = parseNodes(nodes);
   const orientation = get("orientation");
   if (orientation !== undefined) input.orientation = orientation as MapBarInput["orientation"];
+  const start = get("start");
+  if (start !== undefined) input.start = start as MapBarInput["start"];
   const arrivals = get("arrivals");
   if (arrivals !== undefined) input.arrivals = parseArrivals(arrivals);
   for (const [query, key] of NUMBER_KEYS) {

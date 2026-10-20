@@ -3,7 +3,10 @@
  * along one axis and turns arrivals into a timeline, so `frameAt(t)` is the
  * same for the same input and time.
  *
- * Each transit into a node follows the history course's Phase 4 (SeededMapView,
+ * The walk begins by arriving at node 0 (the history course's step 1: no
+ * marker until it pops there), or with `start: "on"` the marker stands on
+ * node 0 from the start. Each transit into a node follows the history
+ * course's Phase 4 (SeededMapView,
  * `transitWindows`): the path dots paint over progress 0..0.70, the
  * destination ring sweeps clockwise over 0.70..0.92, and the marker pops on
  * the destination over 0.92..1.00. The destination becomes the selected node
@@ -38,6 +41,7 @@ import {
   MAP_BAR_NODE_TYPES,
   MAP_BAR_ORIENTATIONS,
   MAP_BAR_OUTCOMES,
+  MAP_BAR_STARTS,
   type MapBarEvent,
   type MapBarFrame,
   type MapBarInput,
@@ -48,6 +52,7 @@ import {
   type MapBarNodeLayout,
   type MapBarNodeState,
   type MapBarOutcome,
+  type MapBarStart,
   type MapBarTransit,
 } from "./types";
 
@@ -63,6 +68,7 @@ const DEFAULT_SPACING = 160;
 
 export const MAP_BAR_DEFAULTS = {
   orientation: "horizontal",
+  start: "before",
   lead: 500,
   transitMs: NODE_BASE_MS,
   holdMs: 1000,
@@ -95,6 +101,7 @@ export function validateMapBarInput(input: MapBarInput): string[] {
     if (node.outcome !== undefined && !MAP_BAR_OUTCOMES.includes(node.outcome)) errors.push(`nodes[${index}].outcome: ${String(node.outcome)} (${MAP_BAR_OUTCOMES.join(", ")})`);
   });
   if (input.orientation !== undefined && !MAP_BAR_ORIENTATIONS.includes(input.orientation)) errors.push(`orientation: ${String(input.orientation)}`);
+  if (input.start !== undefined && !MAP_BAR_STARTS.includes(input.start)) errors.push(`start: ${String(input.start)} (${MAP_BAR_STARTS.join(", ")})`);
   if (input.act !== undefined && !MAP_BAR_ACTS.includes(input.act)) errors.push(`act: ${String(input.act)} (${MAP_BAR_ACTS.join(", ")})`);
   if (input.character !== undefined && input.character !== null && !MAP_BAR_CHARACTERS.includes(input.character)) errors.push(`character: ${String(input.character)} (${MAP_BAR_CHARACTERS.join(", ")}, none)`);
   for (const key of ["width", "height", "transitMs", "scale", "ancientScale"] as const) {
@@ -111,13 +118,17 @@ export function validateMapBarInput(input: MapBarInput): string[] {
   return errors;
 }
 
-/** Default reach: the last node that is not a "?" without an outcome. */
-export function defaultReach(nodes: MapBarNodeInput[]): number {
-  for (let index = nodes.length - 1; index > 0; index -= 1) {
+/**
+ * Default reach: the last node that is not a "?" without an outcome. With
+ * `start: "before"` that can be none (-1); with "on" the marker is at least on node 0.
+ */
+export function defaultReach(nodes: MapBarNodeInput[], start: MapBarStart = MAP_BAR_DEFAULTS.start): number {
+  const first = start === "on" ? 1 : 0;
+  for (let index = nodes.length - 1; index >= first; index -= 1) {
     const node = nodes[index];
     if (node.type !== "unknown" || node.outcome !== undefined) return index;
   }
-  return 0;
+  return first - 1;
 }
 
 // ---------------------------------------------------------------- icons
@@ -189,10 +200,10 @@ export function buildMapBarLayout(input: MapBarInput): MapBarLayout {
   const markerSize = input.character === null ? 0 : CHARACTER_MARKER_SIZE * unit;
   const markerOffsets = sizes.map((size) => input.markerOffset ?? size * MARKER_DISTANCE);
 
-  // How far each node reaches from its center: the selection ring (rooms) or the art (ancient),
-  // and on the marker side the popped marker (it overshoots to 1.15).
-  const margin = 4 * unit;
-  const half = nodes.map((node, index) => (node.type === "ancient" ? 0.5 : RING_EXTENT) * sizes[index]);
+  // How far each node reaches from its center: the selection ring (rooms, up to the current
+  // scale 1.08) or the art (ancient), and on the marker side the popped marker (it overshoots to 1.15).
+  const margin = 8 * unit;
+  const half = nodes.map((node, index) => (node.type === "ancient" ? 0.5 : RING_EXTENT * 1.08) * sizes[index]);
   const before = Math.max(...half);
   const after = Math.max(...half.map((value, index) => Math.max(value, markerSize > 0 ? markerOffsets[index] + (markerSize * 1.15) / 2 : 0)));
   const padding = input.padding ?? Math.ceil(Math.max(half[0], half[count - 1]) + margin);
@@ -204,7 +215,7 @@ export function buildMapBarLayout(input: MapBarInput): MapBarLayout {
   const line = (cross - (before + after)) / 2 + before;
 
   const along = (index: number) => (count === 1 ? main / 2 : padding + (index * (main - 2 * padding)) / (count - 1));
-  const reach = input.reach ?? defaultReach(nodes);
+  const reach = input.reach ?? defaultReach(nodes, input.start);
   const layoutNodes: MapBarNodeLayout[] = nodes.map((node, index) => {
     const a = along(index);
     const x = orientation === "horizontal" ? a : line;
@@ -284,7 +295,8 @@ export function buildMapBarTimeline(input: MapBarInput): MapBarTimeline {
   const warnings: string[] = [];
   const nodes = input.nodes;
   const layout = buildMapBarLayout(input);
-  const reach = input.reach ?? defaultReach(nodes);
+  const start = input.start ?? MAP_BAR_DEFAULTS.start;
+  const reach = input.reach ?? defaultReach(nodes, start);
   const transitDefault = input.transitMs ?? MAP_BAR_DEFAULTS.transitMs;
   const holdDefault = input.holdMs ?? MAP_BAR_DEFAULTS.holdMs;
   const ancient = input.ancient ?? MAP_BAR_DEFAULTS.ancient;
@@ -296,27 +308,27 @@ export function buildMapBarTimeline(input: MapBarInput): MapBarTimeline {
     if (index > reach && node.outcome !== undefined) warnings.push(`nodes[${index}]: reach(${reach}) 뒤라 도착하지 않으므로 outcome이 보이지 않습니다`);
   });
 
-  // Transits 1..reach: arrival at 0.92 of the transit.
+  // Transits into nodes 0..reach (1..reach when the marker starts on node 0): arrival at 0.92 of the transit.
   // A given arrival only has to leave room for the transit after the previous one ends;
   // without one, the transit starts after the lead or the previous hold.
   const transits: MapBarTransit[] = [];
   let previousEnd = 0;
   let free = input.lead ?? MAP_BAR_DEFAULTS.lead;
-  for (let index = 1; index <= reach; index += 1) {
+  for (let index = start === "on" ? 1 : 0; index <= reach; index += 1) {
     let duration = nodes[index].transitMs ?? transitDefault;
     const given = input.arrivals?.[index];
-    let start = free;
+    let begin = free;
     if (typeof given === "number") {
-      start = given - RING_END * duration;
-      if (start < previousEnd) {
+      begin = given - RING_END * duration;
+      if (begin < previousEnd) {
         const fitted = (given - previousEnd) / RING_END;
         if (fitted <= 0) throw new Error(`arrivals[${index}] (${given} ms)가 앞 노드의 이동이 끝나기(${Math.round(previousEnd)} ms) 전입니다`);
         warnings.push(`arrivals[${index}]: 앞 이동과 겹쳐서 이동을 ${Math.round(duration)} → ${Math.round(fitted)} ms로 줄였습니다`);
         duration = fitted;
-        start = previousEnd;
+        begin = previousEnd;
       }
     }
-    const transit = { node: index, start, arrive: start + RING_END * duration, end: start + duration, duration };
+    const transit = { node: index, start: begin, arrive: begin + RING_END * duration, end: begin + duration, duration };
     transits.push(transit);
     previousEnd = transit.end;
     free = transit.end + (nodes[index].holdMs ?? holdDefault);
@@ -324,7 +336,7 @@ export function buildMapBarTimeline(input: MapBarInput): MapBarTimeline {
   const lastEnd = transits.at(-1)?.end ?? (input.lead ?? MAP_BAR_DEFAULTS.lead);
   const duration = input.duration ?? lastEnd + (input.tail ?? holdDefault);
 
-  const events: MapBarEvent[] = [{ kind: "start", node: 0, t: 0 }];
+  const events: MapBarEvent[] = start === "on" ? [{ kind: "start", node: 0, t: 0 }] : [];
   for (const transit of transits) {
     const node = nodes[transit.node];
     events.push({ kind: "depart", node: transit.node, t: transit.start });
@@ -358,12 +370,13 @@ export function buildMapBarTimeline(input: MapBarInput): MapBarTimeline {
     for (const transit of transits) if (transit.start <= t) latest = transit;
     const progress = latest ? Math.min(1, (t - latest.start) / latest.duration) : null;
     const inTransit = latest !== null && progress !== null && progress < 1;
-    const dest = latest?.node ?? 0;
+    // Node the marker is heading to or on; -1 before the first arrival when the walk starts before node 0.
+    const dest = latest?.node ?? (start === "on" ? 0 : -1);
     const { trailFrac, ringFrac, charFrac } = transitWindows(progress ?? 1);
 
     const nodeFrames: MapBarNodeFrame[] = nodes.map((node, index) => {
       const own = transits.find((transit) => transit.node === index);
-      const started = index === 0 || (own !== undefined && own.start <= t);
+      const started = (index === 0 && start === "on") || (own !== undefined && own.start <= t);
       const sweeping = index === dest && latest !== null && node.type !== "ancient" && ringFrac < 1;
       let state: MapBarNodeState;
       if (!started) state = "inactive";
@@ -371,7 +384,7 @@ export function buildMapBarTimeline(input: MapBarInput): MapBarTimeline {
       else state = "active";
       const revealed = revealsOutcome(node) && own !== undefined && t >= own.arrive;
       const pulse = revealed && own !== undefined && t < own.end ? 1 + revealPulse * Math.sin(Math.PI * Math.max(0, Math.min(1, (t - own.arrive) / (own.end - own.arrive)))) : 1;
-      const initial = index === 0 ? NODE_SCALE.current : NODE_SCALE.inactive;
+      const initial = index === 0 && start === "on" ? NODE_SCALE.current : NODE_SCALE.inactive;
       return {
         index,
         state,
@@ -397,10 +410,12 @@ export function buildMapBarTimeline(input: MapBarInput): MapBarTimeline {
     let marker: MapBarFrame["marker"] = null;
     if (input.character !== null) {
       const popping = inTransit && charFrac > 0;
-      const on = latest === null ? 0 : inTransit && charFrac === 0 ? dest - 1 : dest;
-      const point = layout.nodes[on].marker;
-      const scale = popping ? markerPopScale(charFrac) : 1;
-      marker = { node: on, x: point.x, y: point.y, scale, opacity: popping ? charFrac : 1 };
+      const on = inTransit && charFrac === 0 ? dest - 1 : dest;
+      if (on >= 0) {
+        const point = layout.nodes[on].marker;
+        const scale = popping ? markerPopScale(charFrac) : 1;
+        marker = { node: on, x: point.x, y: point.y, scale, opacity: popping ? charFrac : 1 };
+      }
     }
 
     const sweepNode = nodeFrames.find((frame) => frame.sweep !== null && frame.sweep > 0);

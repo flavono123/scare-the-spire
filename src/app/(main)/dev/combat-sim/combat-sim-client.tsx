@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { runCombat } from "@/lib/combat-sim/engine";
@@ -214,7 +215,10 @@ export function CombatSimClient({ view, errors }: { view: CombatSimView; errors:
           <h1 className="text-xl font-bold text-zinc-100">
             v{view.catalog.version}{view.catalog.character ? ` · ${view.catalog.character.name}` : ""} · {view.catalog.encounter.name}
           </h1>
-          {view.preset && <p className="text-xs text-zinc-500">preset: {view.preset}</p>}
+          <nav className="flex flex-wrap items-center gap-3 text-xs">
+            <Link className="text-sky-300 hover:underline" href="/dev/combat-sim">← 프리셋 목록</Link>
+            {view.preset && <span className="text-zinc-500">preset: {view.preset}</span>}
+          </nav>
         </header>
 
         <div className="flex flex-wrap items-center gap-2">

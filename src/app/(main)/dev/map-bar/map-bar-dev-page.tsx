@@ -6,7 +6,9 @@ import { parseMapBarQuery, type SearchParams } from "./query-input";
 export default function MapBarDevPage({ searchParams }: { searchParams: SearchParams }) {
   const query = parseMapBarQuery(searchParams);
   if (!query.input) return <MapBarUsage errors={query.errors} />;
-  return <MapBarClient input={query.input} preset={query.preset} options={query.options} />;
+  // The resolved start and orientation are part of the input, so window.__bar.input and frames.json name them.
+  const input = { ...query.input, start: query.input.start ?? "before", orientation: query.input.orientation ?? "horizontal" } as const;
+  return <MapBarClient input={input} preset={query.preset} options={query.options} />;
 }
 
 function MapBarUsage({ errors }: { errors: string[] }) {

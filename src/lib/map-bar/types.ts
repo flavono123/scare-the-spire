@@ -23,6 +23,10 @@ export const MAP_BAR_CHARACTERS: readonly MapBarCharacter[] = ["ironclad", "sile
 
 export type MapBarBackground = "transparent" | "paper";
 
+/** before: the walk begins by arriving at node 0. on: the marker stands on node 0 from the start. */
+export type MapBarStart = "before" | "on";
+export const MAP_BAR_STARTS: readonly MapBarStart[] = ["before", "on"];
+
 export interface MapBarNodeInput {
   type: MapBarNodeType;
   /** Only for `unknown` nodes: what the "?" shows once the marker arrives. */
@@ -37,6 +41,12 @@ export interface MapBarInput {
   nodes: MapBarNodeInput[];
   /** horizontal: left to right. vertical: bottom to top, as the game map climbs. */
   orientation?: MapBarOrientation;
+  /**
+   * before (default): nothing stands on the bar until the marker arrives at
+   * node 0 (no dots lead there, the ring and pop do). on: the marker stands on
+   * node 0 from t = 0, and transits begin with node 1.
+   */
+  start?: MapBarStart;
   /** Frame size in px (1:1 with the PNG). Defaults fit the nodes. */
   width?: number;
   height?: number;
@@ -47,8 +57,8 @@ export interface MapBarInput {
   reach?: number;
   /**
    * Arrival time (ms) per node index: the marker pops on the node and a "?"
-   * reveals at this time (transit progress 0.92). Index 0 is the start node
-   * and is ignored; a missing entry follows the previous transit plus hold.
+   * reveals at this time (transit progress 0.92). With `start: "on"` index 0
+   * is ignored. A missing entry follows the previous transit plus hold.
    */
   arrivals?: (number | null)[];
   /** Before the first transit (ms) when its arrival is not given. Default 500. */
