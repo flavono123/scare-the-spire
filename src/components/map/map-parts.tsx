@@ -11,7 +11,23 @@
 
 import Image from "next/image";
 import { type CSSProperties, useState } from "react";
-import type { ReplayMapPointType } from "@/lib/sts2-run-replay";
+import {
+  MAP_GAME_SCALE,
+  NORMAL_ICON_SIZE,
+  TRANSIT_RING_END,
+  TRANSIT_TRAIL_END,
+  markerPopScale,
+  transitWindows,
+} from "@/lib/sts2-map-geometry";
+import {
+  mapIconNameForType,
+  mapOutlineNameForType,
+  revealedUnknownIconNameForRoom,
+  revealedUnknownOutlineNameForRoom,
+} from "@/lib/sts2-map-icons";
+
+export { MAP_GAME_SCALE, NORMAL_ICON_SIZE, TRANSIT_RING_END, TRANSIT_TRAIL_END, markerPopScale, transitWindows };
+export { mapIconNameForType, mapOutlineNameForType, revealedUnknownIconNameForRoom, revealedUnknownOutlineNameForRoom };
 
 export const ACT_MAP_META: Record<
   string,
@@ -96,10 +112,6 @@ export const ANCIENT_ASSETS: Record<
 
 export const FALLBACK_ACT_MAP_META = ACT_MAP_META["ACT.OVERGROWTH"];
 
-export const MAP_GAME_SCALE = 0.6;
-
-export const NORMAL_ICON_SIZE = 92;
-
 export const MAP_SELECTION_RING_COLOR = "#241F1A";
 
 export const MAP_ICON_NATIVE_SIZES: Record<string, { width: number; height: number }> = {
@@ -132,75 +144,6 @@ export type RenderSize = {
 
 export function actMapMeta(actId: string) {
   return ACT_MAP_META[actId] ?? FALLBACK_ACT_MAP_META;
-}
-
-export function mapIconNameForType(type: ReplayMapPointType) {
-  switch (type) {
-    case "monster":
-      return "map_monster";
-    case "elite":
-      return "map_elite";
-    case "rest_site":
-      return "map_rest";
-    case "treasure":
-      return "map_chest";
-    case "shop":
-      return "map_shop";
-    case "unknown":
-      return "map_unknown";
-    default:
-      return null;
-  }
-}
-
-export function mapOutlineNameForType(type: ReplayMapPointType) {
-  switch (type) {
-    case "monster":
-      return "map_monster_outline";
-    case "elite":
-      return "map_elite_outline";
-    case "rest_site":
-      return "map_rest_outline";
-    case "treasure":
-      return "map_chest_outline";
-    case "shop":
-      return "map_shop_outline";
-    case "unknown":
-      return "map_unknown_outline";
-    default:
-      return null;
-  }
-}
-
-/** Icon a visited "?" shows for the room it turned out to be (lowercase room type). */
-export function revealedUnknownIconNameForRoom(roomType: string | undefined) {
-  switch (roomType) {
-    case "monster":
-      return "map_unknown_monster";
-    case "elite":
-      return "map_unknown_elite";
-    case "shop":
-      return "map_unknown_shop";
-    case "treasure":
-      return "map_unknown_chest";
-    default:
-      return "map_unknown";
-  }
-}
-
-export function revealedUnknownOutlineNameForRoom(roomType: string | undefined) {
-  switch (roomType) {
-    case "monster":
-      return "map_monster_outline";
-    case "elite":
-      return "map_elite_outline";
-    case "shop":
-      return "map_shop_outline";
-    case "treasure":
-      return "map_chest_outline";
-    default:
-      return "map_unknown_outline";
-  }
 }
 
 export function mapIconSrc(actId: string, iconName: string) {
@@ -429,28 +372,6 @@ export function AssetThumb({
 }
 
 export type MapNodeState = "inactive" | "active" | "current";
-
-/**
- * Phase 4 sub-windows over a node's transit progress (0..1): the trail paints
- * over 0..0.70, the destination ring sweeps clockwise over 0.70..0.92, and the
- * character pops on the destination over 0.92..1.00.
- */
-export const TRANSIT_TRAIL_END = 0.7;
-export const TRANSIT_RING_END = 0.92;
-
-export function transitWindows(transitProgress: number) {
-  const tp = transitProgress;
-  return {
-    trailFrac: Math.max(0, Math.min(1, tp / TRANSIT_TRAIL_END)),
-    ringFrac: Math.max(0, Math.min(1, (tp - TRANSIT_TRAIL_END) / (TRANSIT_RING_END - TRANSIT_TRAIL_END))),
-    charFrac: Math.max(0, Math.min(1, (tp - TRANSIT_RING_END) / (1 - TRANSIT_RING_END))),
-  };
-}
-
-/** Character pop: 0 -> 1.15 over the first 70% of the pop, then settles to 1. */
-export function markerPopScale(charFrac: number) {
-  return charFrac < 0.7 ? (charFrac / 0.7) * 1.15 : 1.15 - ((charFrac - 0.7) / 0.3) * 0.15;
-}
 
 /** One path dot, centered on (left, top). */
 export function PathTick({

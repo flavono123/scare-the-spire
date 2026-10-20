@@ -1,8 +1,18 @@
 /**
- * Map path geometry shared by the history course map and the map progress bar
- * simulator: a stable per-string jitter and the dotted path between two map
- * points, in the map's own (game) units.
+ * Map geometry shared by the history course map and the map progress bar
+ * simulator: the map's render scale and node sizes, a stable per-string
+ * jitter, and the dotted path between two map points in the map's own (game)
+ * units.
  */
+
+/** The history course draws the game map at 0.6 of its game units. */
+export const MAP_GAME_SCALE = 0.6;
+/** Room icon box (game units); the clickable control is 56. */
+export const NORMAL_ICON_SIZE = 92;
+/** Ancient node box (game units). */
+export const ANCIENT_CONTROL_SIZE = 208;
+/** Character marker size in history course px (at MAP_GAME_SCALE). */
+export const CHARACTER_MARKER_SIZE = 44;
 
 export interface MapTickPoint {
   left: number;
@@ -53,4 +63,26 @@ export function pathTickPoints(
       rotation: baseRotation + stableSigned(`${edgeId}:${step}:r`, 0.1),
     };
   });
+}
+
+/**
+ * Phase 4 sub-windows over a node's transit progress (0..1): the trail paints
+ * over 0..0.70, the destination ring sweeps clockwise over 0.70..0.92, and the
+ * character pops on the destination over 0.92..1.00.
+ */
+export const TRANSIT_TRAIL_END = 0.7;
+export const TRANSIT_RING_END = 0.92;
+
+export function transitWindows(transitProgress: number) {
+  const tp = transitProgress;
+  return {
+    trailFrac: Math.max(0, Math.min(1, tp / TRANSIT_TRAIL_END)),
+    ringFrac: Math.max(0, Math.min(1, (tp - TRANSIT_TRAIL_END) / (TRANSIT_RING_END - TRANSIT_TRAIL_END))),
+    charFrac: Math.max(0, Math.min(1, (tp - TRANSIT_RING_END) / (1 - TRANSIT_RING_END))),
+  };
+}
+
+/** Character pop: 0 -> 1.15 over the first 70% of the pop, then settles to 1. */
+export function markerPopScale(charFrac: number) {
+  return charFrac < 0.7 ? (charFrac / 0.7) * 1.15 : 1.15 - ((charFrac - 0.7) / 0.3) * 0.15;
 }

@@ -44,7 +44,7 @@ import {
   transitWindows,
   type RenderSize,
 } from "@/components/map/map-parts";
-import { pathTickPoints, stableSigned } from "@/lib/sts2-map-path-ticks";
+import { ANCIENT_CONTROL_SIZE, CHARACTER_MARKER_SIZE, pathTickPoints, stableSigned } from "@/lib/sts2-map-geometry";
 import { cn } from "@/lib/utils";
 
 const NODE_META: Record<
@@ -154,7 +154,6 @@ const MAP_GAME_COLUMNS = 7;
 const MAP_GAME_DIST_X = 1050 / MAP_GAME_COLUMNS;
 const NORMAL_CONTROL_SIZE = 56;
 const NORMAL_ICON_OVERFLOW = (NORMAL_ICON_SIZE - NORMAL_CONTROL_SIZE) / 2;
-const ANCIENT_CONTROL_SIZE = 208;
 const BOSS_CONTROL_WIDTH = 374;
 const BOSS_CONTROL_HEIGHT = 306;
 const MAP_BACKDROP_SEGMENTS = [
@@ -1146,7 +1145,7 @@ export function SeededMapView({
             // Constant size — does NOT scale with the anchor node. Ancient
             // and boss nodes are larger than monsters, but the player's
             // token reads the same size everywhere (per user note).
-            const MARKER_SIZE = 44;
+            const MARKER_SIZE = CHARACTER_MARKER_SIZE;
             // Anchor offset uses node size so the marker sits just outside
             // the node's left edge, regardless of node sprite footprint.
             const size = mapNodeSize(anchor.node, act);
