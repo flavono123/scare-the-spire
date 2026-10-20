@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from "react";
 import StaticImage from "@/components/ui/static-image";
+import { cacheBustSts2ImageUrl } from "@/lib/sts2-image-cache";
 import type { ServiceLocale } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexCard } from "@/lib/codex-types";
@@ -145,6 +146,19 @@ const ENTANGLED_LEAVES = [
   { x: -153, y: 27, rotation: -1.2563549, scale: 0.6800933 },
   { x: -158, y: -17, rotation: 0.49224094, scale: 0.5397214 },
 ];
+
+/**
+ * Only Ancient portraits get a canvas-group mask; the others rely on the
+ * border covering the 250×190 art. These cuts follow each border's bottom band
+ * 5px above its outer edge, where the opaque band hides them, so rounding at
+ * grid sizes cannot leave art under the V (attack) or round (power) bottom.
+ */
+const PORTRAIT_CLIP_PATHS: Record<string, string> = {
+  공격: "polygon(0% 0%, 100% 0%, 100% 82.3%, 61.2% 100%, 38.8% 100%, 0% 82.3%)",
+  파워: "polygon(0% 0%, 100% 0%, 100% 80.9%, 97.6% 86.5%, 94% 91.5%, 90% 95.3%, 85.2% 98.6%, 80.4% 100%, 19.6% 100%, 14.8% 98.6%, 10% 95.3%, 6% 91.5%, 2.4% 86.5%, 0% 80.9%)",
+};
+
+const TYPE_PLAQUE_SRC = "/images/game-assets/card-misc/card_portrait_border_plaque.png";
 
 const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
   공격: "/images/game-assets/card-portraits/card_portrait_border_attack.png",
@@ -418,17 +432,36 @@ const TITLE_FONT = "var(--font-game-title)";
 // EnergyIcon: offset(-166,-227)~(-102,-163) → 64×64
 // StarIcon: offset(-186,-189)~(-128,-131) → 58×58, sits below-left of energy
 // Enchantment: offset(-166,-116)~(-94,-62) → 72×54, below both orbs (star bottom y=80, enchant top y=95)
+// Portrait: offset(-125,-168)~(125,22) → 250×190, drawn unmasked under Frame
+// PortraitBorder: offset(-137.5,-164)~(137.5,46) → 275×210
+// TypePlaque: NinePatchRect offset(-30.5,1)~(30.5,38), patch margins 13/12;
+//   NCard.UpdateTypePlaqueSizeAndPosition widens it to max(label + 17, 61)
 // =============================================================================
 
 const HOLDER_W = 300;
 const HOLDER_H = 422;
 
+/** card.tscn offsets from the card center → % of the holder. */
+function holderBox(left: number, top: number, width: number, height: number) {
+  return {
+    left: `${((left + HOLDER_W / 2) / HOLDER_W) * 100}%`,
+    top: `${((top + HOLDER_H / 2) / HOLDER_H) * 100}%`,
+    width: `${(width / HOLDER_W) * 100}%`,
+    height: `${(height / HOLDER_H) * 100}%`,
+  };
+}
+
+/** Game px → cqi of the 300-wide holder. */
+function holderCqi(px: number) {
+  return `${(px / HOLDER_W) * 100}cqi`;
+}
+
 const L = {
-  art: { top: 9, left: 6, right: 6, bottom: 56 },
-  portraitBorder: { width: 92, height: 50, top: 9 },
+  art: holderBox(-125, -168, 250, 190),
+  portraitBorder: holderBox(-137.5, -164, 275, 210),
   banner: { top: 3, height: 17, overhangX: 9 },
   ancientBanner: { top: -2.4, width: 112, aspectRatio: "671/182", titlePaddingX: 16, titleTranslateY: -28 },
-  plaque: { width: 22, top: 55 },
+  plaque: { top: ((1 + HOLDER_H / 2) / HOLDER_H) * 100, height: 37, minWidth: 61, labelPadX: 17 },
   desc: { top: 64, bottom: 95, paddingX: 9 },
   cost: {
     top: (-16 / HOLDER_H) * 100,
@@ -447,6 +480,49 @@ const L = {
     height: (54 / HOLDER_H) * 100,
   },
 };
+
+/**
+ * NinePatchRect TypePlaque. The banner material tints only the plaque; the
+ * TypeLabel child keeps its own color.
+ */
+function TypePlaque({ label, filter }: { label: ReactNode; filter?: string }) {
+  return (
+    <div
+      className="absolute left-1/2 -translate-x-1/2 z-[4] flex items-center justify-center whitespace-nowrap"
+      style={{
+        top: `${L.plaque.top}%`,
+        height: holderCqi(L.plaque.height),
+        minWidth: holderCqi(L.plaque.minWidth),
+        paddingInline: holderCqi(L.plaque.labelPadX / 2),
+      }}
+    >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          borderStyle: "solid",
+          borderWidth: 0,
+          borderImageSource: `url("${cacheBustSts2ImageUrl(TYPE_PLAQUE_SRC)}")`,
+          // 123×75 sprite is the 2× of the 61×37 patch (margins 13 / 12).
+          borderImageSlice: "0 24 0 26 fill",
+          borderImageWidth: `0 ${holderCqi(12)} 0 ${holderCqi(13)}`,
+          filter,
+        }}
+      />
+      <span
+        className="relative"
+        style={{
+          fontFamily: CARD_FONT,
+          fontSize: `${FONT_CQI.type}cqi`,
+          fontWeight: 700,
+          color: "rgba(0,0,0,0.75)",
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
 
 // =============================================================================
 // Component
@@ -1154,31 +1230,7 @@ export const CardTile = memo(function CardTile({
             </span>
           </div>
 
-          <div
-            className="absolute left-1/2 -translate-x-1/2 z-[4]"
-            style={{ top: `${L.plaque.top}%`, width: `${L.plaque.width}%` }}
-          >
-            <div className="relative w-full" style={{ aspectRatio: "123/75" }}>
-              <Image
-                src="/images/game-assets/card-misc/card_portrait_border_plaque.png"
-                alt=""
-                fill
-                className="pointer-events-none object-contain"
-                style={{ filter: ancientBannerFilter }}
-              />
-              <span
-                className="absolute inset-0 flex items-center justify-center"
-                style={{
-                  fontFamily: CARD_FONT,
-                  fontSize: `${FONT_CQI.type}cqi`,
-                  fontWeight: 700,
-                  color: "rgba(0,0,0,0.75)",
-                }}
-              >
-                {card.typeLabel}
-              </span>
-            </div>
-          </div>
+          <TypePlaque label={card.typeLabel} filter={ancientBannerFilter} />
 
           <div
             ref={descriptionViewportRef}
@@ -1224,12 +1276,7 @@ export const CardTile = memo(function CardTile({
       <div className="relative h-full w-full overflow-visible">
         <div
           className="absolute overflow-hidden"
-          style={{
-            top: `${L.art.top}%`,
-            left: `${L.art.left}%`,
-            right: `${L.art.right}%`,
-            height: `${L.art.bottom - L.art.top}%`,
-          }}
+          style={{ ...L.art, clipPath: PORTRAIT_CLIP_PATHS[card.type] }}
         >
           {imageSrc && !imgError ? (
             <Image
@@ -1257,14 +1304,7 @@ export const CardTile = memo(function CardTile({
           priority={false}
         />
 
-        <div
-          className="absolute z-[2] pointer-events-none left-1/2 -translate-x-1/2"
-          style={{
-            top: `${L.portraitBorder.top}%`,
-            width: `${L.portraitBorder.width}%`,
-            height: `${L.portraitBorder.height}%`,
-          }}
-        >
+        <div className="absolute z-[2] pointer-events-none" style={L.portraitBorder}>
           <Image
             src={portraitBorderAsset}
             alt=""
@@ -1309,31 +1349,7 @@ export const CardTile = memo(function CardTile({
           </span>
         </div>
 
-        <div
-          className="absolute left-1/2 -translate-x-1/2 z-[4]"
-          style={{ top: `${L.plaque.top}%`, width: `${L.plaque.width}%` }}
-        >
-          <div className="relative w-full" style={{ aspectRatio: "123/75" }}>
-            <Image
-              src="/images/game-assets/card-misc/card_portrait_border_plaque.png"
-              alt=""
-              fill
-              className="pointer-events-none object-contain"
-              style={{ filter: bannerFilter }}
-            />
-            <span
-              className="absolute inset-0 flex items-center justify-center"
-              style={{
-                fontFamily: CARD_FONT,
-                fontSize: `${FONT_CQI.type}cqi`,
-                fontWeight: 700,
-                color: "rgba(0,0,0,0.75)",
-              }}
-            >
-              {card.typeLabel}
-            </span>
-          </div>
-        </div>
+        <TypePlaque label={card.typeLabel} filter={bannerFilter} />
 
         <div
           ref={descriptionViewportRef}
