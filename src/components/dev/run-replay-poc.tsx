@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import {
-  type CSSProperties,
   type ReactNode,
   useEffect,
   useId,
@@ -24,6 +23,28 @@ import {
 } from "@/lib/sts2-run-replay";
 import { localize } from "@/lib/sts2-i18n";
 import { NodeTooltip } from "@/components/history-course/node-tooltip";
+import {
+  ANCIENT_ASSETS,
+  AncientMapAsset,
+  AssetThumb,
+  CharacterMarker,
+  MAP_GAME_SCALE,
+  MAP_SELECTION_RING_COLOR,
+  MapRoomAsset,
+  NORMAL_ICON_SIZE,
+  PathTick,
+  SweepRing,
+  actMapMeta,
+  mapIconNameForType,
+  mapOutlineNameForType,
+  markerPopScale,
+  maskStyle,
+  revealedUnknownIconNameForRoom,
+  revealedUnknownOutlineNameForRoom,
+  transitWindows,
+  type RenderSize,
+} from "@/components/map/map-parts";
+import { pathTickPoints, stableSigned } from "@/lib/sts2-map-path-ticks";
 import { cn } from "@/lib/utils";
 
 const NODE_META: Record<
@@ -66,89 +87,6 @@ const NODE_META: Record<
     chip: "border-zinc-700 bg-zinc-900/85 text-rose-100",
   },
 };
-
-const ACT_MAP_META: Record<
-  string,
-  {
-    key: "overgrowth" | "underdocks" | "hive" | "glory";
-    bgColor: string;
-    traveledColor: string;
-    untraveledColor: string;
-    border: string;
-  }
-> = {
-  "ACT.OVERGROWTH": {
-    key: "overgrowth",
-    bgColor: "#A78A67",
-    traveledColor: "#28231D",
-    untraveledColor: "#574738",
-    border: "rgba(167, 138, 103, 0.36)",
-  },
-  "ACT.UNDERDOCKS": {
-    key: "underdocks",
-    bgColor: "#9F95A5",
-    traveledColor: "#180F24",
-    untraveledColor: "#534A62",
-    border: "rgba(159, 149, 165, 0.36)",
-  },
-  "ACT.HIVE": {
-    key: "hive",
-    bgColor: "#9B9562",
-    traveledColor: "#27221C",
-    untraveledColor: "#6E7750",
-    border: "rgba(155, 149, 98, 0.36)",
-  },
-  "ACT.GLORY": {
-    key: "glory",
-    bgColor: "#819A97",
-    traveledColor: "#1D1E2F",
-    untraveledColor: "#60717C",
-    border: "rgba(129, 154, 151, 0.36)",
-  },
-};
-
-const ANCIENT_ASSETS: Record<
-  string,
-  {
-    node: string;
-    outline: string;
-  }
-> = {
-  neow: {
-    node: "/images/sts2/ancient-nodes/ancient_node_neow.webp",
-    outline: "/images/sts2/ancient-nodes/ancient_node_neow_outline.webp",
-  },
-  orobas: {
-    node: "/images/sts2/ancient-nodes/ancient_node_orobas.webp",
-    outline: "/images/sts2/ancient-nodes/ancient_node_orobas_outline.webp",
-  },
-  nonupeipe: {
-    node: "/images/sts2/ancient-nodes/ancient_node_nonupeipe.webp",
-    outline: "/images/sts2/ancient-nodes/ancient_node_nonupeipe_outline.webp",
-  },
-  darv: {
-    node: "/images/sts2/ancient-nodes/ancient_node_darv.webp",
-    outline: "/images/sts2/ancient-nodes/ancient_node_darv_outline.webp",
-  },
-  pael: {
-    node: "/images/sts2/ancient-nodes/ancient_node_pael.webp",
-    outline: "/images/sts2/ancient-nodes/ancient_node_pael_outline.webp",
-  },
-  tanx: {
-    node: "/images/sts2/ancient-nodes/ancient_node_tanx.webp",
-    outline: "/images/sts2/ancient-nodes/ancient_node_tanx_outline.webp",
-  },
-  tezcatara: {
-    node: "/images/sts2/ancient-nodes/ancient_node_tezcatara.webp",
-    outline: "/images/sts2/ancient-nodes/ancient_node_tezcatara_outline.webp",
-  },
-  vakuu: {
-    node: "/images/sts2/ancient-nodes/ancient_node_vakuu.webp",
-    outline: "/images/sts2/ancient-nodes/ancient_node_vakuu_outline.webp",
-  },
-};
-
-const FALLBACK_ACT_MAP_META = ACT_MAP_META["ACT.OVERGROWTH"];
 
 const BOSS_ASSETS: Record<
   string,
@@ -211,38 +149,14 @@ const BOSS_ASSETS: Record<
   },
 };
 const MAP_BOARD_PADDING_Y = 220;
-const MAP_GAME_SCALE = 0.6;
 const MAP_GAME_VIEWPORT_WIDTH = 1920;
 const MAP_GAME_COLUMNS = 7;
 const MAP_GAME_DIST_X = 1050 / MAP_GAME_COLUMNS;
 const NORMAL_CONTROL_SIZE = 56;
-const NORMAL_ICON_SIZE = 92;
 const NORMAL_ICON_OVERFLOW = (NORMAL_ICON_SIZE - NORMAL_CONTROL_SIZE) / 2;
 const ANCIENT_CONTROL_SIZE = 208;
 const BOSS_CONTROL_WIDTH = 374;
 const BOSS_CONTROL_HEIGHT = 306;
-const MAP_SELECTION_RING_COLOR = "#241F1A";
-const MAP_ICON_NATIVE_SIZES: Record<string, { width: number; height: number }> = {
-  map_monster: { width: 66, height: 68 },
-  map_elite: { width: 89, height: 70 },
-  map_rest: { width: 61, height: 90 },
-  map_chest: { width: 84, height: 59 },
-  map_shop: { width: 69, height: 72 },
-  map_unknown: { width: 73, height: 72 },
-  map_unknown_monster: { width: 66, height: 68 },
-  map_unknown_elite: { width: 89, height: 70 },
-  map_unknown_shop: { width: 69, height: 72 },
-  map_unknown_chest: { width: 84, height: 59 },
-};
-const MAP_OUTLINE_NATIVE_SIZES: Record<string, { width: number; height: number }> = {
-  map_monster_outline: { width: 72, height: 74 },
-  map_elite_outline: { width: 95, height: 77 },
-  map_rest_outline: { width: 73, height: 95 },
-  map_chest_outline: { width: 88, height: 67 },
-  map_shop_outline: { width: 74, height: 76 },
-  map_unknown_outline: { width: 80, height: 78 },
-  map_chest_boss_outline: { width: 96, height: 83 },
-};
 const MAP_BACKDROP_SEGMENTS = [
   { name: "top", top: 0, height: 32 },
   { name: "middle", top: 32, height: 36 },
@@ -989,17 +903,7 @@ export function SeededMapView({
   // 0.70..0.92 → ring sweep on destination node.
   // 0.92..1.00 → character "pop" at destination.
   const tp = typeof transitProgress === "number" ? transitProgress : 1;
-  const TRAIL_END = 0.7;
-  const RING_END = 0.92;
-  const trailFrac = Math.max(0, Math.min(1, tp / TRAIL_END));
-  const ringFrac = Math.max(
-    0,
-    Math.min(1, (tp - TRAIL_END) / (RING_END - TRAIL_END)),
-  );
-  const charFrac = Math.max(
-    0,
-    Math.min(1, (tp - RING_END) / (1 - RING_END)),
-  );
+  const { trailFrac, ringFrac, charFrac } = transitWindows(tp);
 
   return (
     <div className="overflow-x-auto overflow-y-visible">
@@ -1037,26 +941,14 @@ export function SeededMapView({
               ? (index + 1) / tickCount <= trailFrac
               : visited;
             return (
-              <div
+              <PathTick
                 key={`${edge.id}-${index}`}
-                className="absolute"
-                style={{
-                  left: tick.left,
-                  top: tick.top,
-                  width: 16 * MAP_GAME_SCALE,
-                  height: 16 * MAP_GAME_SCALE,
-                  // Translate-only, no layout-affecting offsets. Avoid
-                  // filter chains here — path ticks are tiny and there
-                  // are hundreds of them, so a stacked drop-shadow per
-                  // tick dominates paint/composite cost during scroll.
-                  transform: `translate(-50%, -50%) rotate(${tick.rotation}rad) scale(${tickRevealed ? 1.2 : 1
-                    })`,
-                  ...maskStyle(
-                    effectSrc("map_dot"),
-                    tickRevealed ? meta.traveledColor : meta.untraveledColor,
-                    1,
-                  ),
-                }}
+                left={tick.left}
+                top={tick.top}
+                rotation={tick.rotation}
+                revealed={tickRevealed}
+                traveledColor={meta.traveledColor}
+                untraveledColor={meta.untraveledColor}
               />
             );
           });
@@ -1249,11 +1141,7 @@ export function SeededMapView({
             const anchor = onDestination ? characterAnchor : previousAnchor;
             if (!anchor) return null;
 
-            const scale = onDestination
-              ? charFrac < 0.7
-                ? (charFrac / 0.7) * 1.15
-                : 1.15 - ((charFrac - 0.7) / 0.3) * 0.15
-              : 1;
+            const scale = onDestination ? markerPopScale(charFrac) : 1;
             const opacity = onDestination ? charFrac : 1;
             // Constant size — does NOT scale with the anchor node. Ancient
             // and boss nodes are larger than monsters, but the player's
@@ -1263,42 +1151,16 @@ export function SeededMapView({
             // the node's left edge, regardless of node sprite footprint.
             const size = mapNodeSize(anchor.node, act);
             return (
-              <div
-                aria-hidden
-                data-testid="character-pop-marker"
-                data-on-destination={onDestination ? "true" : "false"}
-                className="pointer-events-none absolute z-20"
-                style={{
-                  left: anchor.pos.left - size.width * 0.55,
-                  top: anchor.pos.top,
-                  width: MARKER_SIZE,
-                  height: MARKER_SIZE,
-                  transform: `translate(-50%, -50%) scale(${scale.toFixed(3)})`,
-                  opacity,
-                }}
-              >
-                {/* Layer the game's own outline silhouette beneath the
-                 *  portrait. No extra disc / ring frame — both webps
-                 *  carry their own visual treatment. */}
-                {characterMarkerOutlineSrc && (
-                  <Image
-                    src={characterMarkerOutlineSrc}
-                    alt=""
-                    fill
-                    sizes="48px"
-                    className="absolute inset-0 object-contain"
-                    unoptimized
-                  />
-                )}
-                <Image
-                  src={characterMarkerSrc}
-                  alt=""
-                  fill
-                  sizes="48px"
-                  className="absolute inset-0 object-contain"
-                  unoptimized
-                />
-              </div>
+              <CharacterMarker
+                left={anchor.pos.left - size.width * 0.55}
+                top={anchor.pos.top}
+                size={MARKER_SIZE}
+                scale={scale}
+                opacity={opacity}
+                onDestination={onDestination}
+                src={characterMarkerSrc}
+                outlineSrc={characterMarkerOutlineSrc}
+              />
             );
           })()}
       </div>
@@ -1332,19 +1194,6 @@ export function MapBackdrop({ actId }: { actId: string }) {
   );
 }
 
-function stableHash(value: string) {
-  let hash = 2166136261;
-  for (let index = 0; index < value.length; index++) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function stableSigned(value: string, magnitude: number) {
-  return ((stableHash(value) / 4294967295) * 2 - 1) * magnitude;
-}
-
 type MapBox = {
   left: number;
   top: number;
@@ -1362,11 +1211,6 @@ type MapLayout = {
   height: number;
   centers: Map<string, MapPoint>;
   endpoints: Map<string, MapPoint>;
-};
-
-type RenderSize = {
-  width: number;
-  height: number;
 };
 
 function hasSecondBoss(act: ReplayActAnalysis) {
@@ -1518,36 +1362,16 @@ function buildPathTicks(
 ) {
   const startGame = gamePathEndpoint(from, act);
   const endGame = gamePathEndpoint(to, act);
-  const dx = endGame.left - startGame.left;
-  const dy = endGame.top - startGame.top;
-  const length = Math.sqrt(dx * dx + dy * dy);
-  const spacing = 22;
-  const count = Math.floor(length / spacing) + 1;
-  const unitX = length === 0 ? 0 : dx / length;
-  const unitY = length === 0 ? 0 : dy / length;
-  const baseRotation = Math.atan2(dy, dx) + Math.PI / 2;
 
-  return Array.from({ length: Math.max(0, count - 1) }, (_, index) => {
-    const step = index + 1;
-    const gamePoint = {
-      left: startGame.left + unitX * spacing * step + stableSigned(`${edgeId}:${step}:x`, 3),
-      top: startGame.top + unitY * spacing * step + stableSigned(`${edgeId}:${step}:y`, 3),
-    };
-
-    return {
-      left:
-        (layout.endpoints.get(from.id)?.left ?? 0) +
-        ((gamePoint.left - startGame.left) * MAP_GAME_SCALE),
-      top:
-        (layout.endpoints.get(from.id)?.top ?? 0) +
-        ((gamePoint.top - startGame.top) * MAP_GAME_SCALE),
-      rotation: baseRotation + stableSigned(`${edgeId}:${step}:r`, 0.1),
-    };
-  });
-}
-
-function actMapMeta(actId: string) {
-  return ACT_MAP_META[actId] ?? FALLBACK_ACT_MAP_META;
+  return pathTickPoints(edgeId, startGame, endGame).map((gamePoint) => ({
+    left:
+      (layout.endpoints.get(from.id)?.left ?? 0) +
+      ((gamePoint.left - startGame.left) * MAP_GAME_SCALE),
+    top:
+      (layout.endpoints.get(from.id)?.top ?? 0) +
+      ((gamePoint.top - startGame.top) * MAP_GAME_SCALE),
+    rotation: gamePoint.rotation,
+  }));
 }
 
 function getAncientAsset(act: ReplayActAnalysis) {
@@ -1578,190 +1402,12 @@ function getBossAsset(bossKey: string | null) {
   return BOSS_ASSETS[stripped] ?? null;
 }
 
-function mapIconNameForType(type: ReplayMapPointType) {
-  switch (type) {
-    case "monster":
-      return "map_monster";
-    case "elite":
-      return "map_elite";
-    case "rest_site":
-      return "map_rest";
-    case "treasure":
-      return "map_chest";
-    case "shop":
-      return "map_shop";
-    case "unknown":
-      return "map_unknown";
-    default:
-      return null;
-  }
-}
-
-function mapOutlineNameForType(type: ReplayMapPointType) {
-  switch (type) {
-    case "monster":
-      return "map_monster_outline";
-    case "elite":
-      return "map_elite_outline";
-    case "rest_site":
-      return "map_rest_outline";
-    case "treasure":
-      return "map_chest_outline";
-    case "shop":
-      return "map_shop_outline";
-    case "unknown":
-      return "map_unknown_outline";
-    default:
-      return null;
-  }
-}
-
 function revealedUnknownIconName(entry: ReplayActAnalysis["history"][number]) {
-  const firstRoomType = entry.rooms[0]?.room_type?.toLowerCase();
-  switch (firstRoomType) {
-    case "monster":
-      return "map_unknown_monster";
-    case "elite":
-      return "map_unknown_elite";
-    case "shop":
-      return "map_unknown_shop";
-    case "treasure":
-      return "map_unknown_chest";
-    default:
-      return "map_unknown";
-  }
+  return revealedUnknownIconNameForRoom(entry.rooms[0]?.room_type?.toLowerCase());
 }
 
 function revealedUnknownOutlineName(entry: ReplayActAnalysis["history"][number]) {
-  const firstRoomType = entry.rooms[0]?.room_type?.toLowerCase();
-  switch (firstRoomType) {
-    case "monster":
-      return "map_monster_outline";
-    case "elite":
-      return "map_elite_outline";
-    case "shop":
-      return "map_shop_outline";
-    case "treasure":
-      return "map_chest_outline";
-    default:
-      return "map_unknown_outline";
-  }
-}
-
-function mapIconSrc(actId: string, iconName: string) {
-  const meta = actMapMeta(actId);
-  return `/images/sts2/map/icons-by-act/${meta.key}/${iconName}.png`;
-}
-
-function mapOutlineSrc(outlineName: string) {
-  return `/images/sts2/map/outlines/${outlineName}.png`;
-}
-
-function effectSrc(name: string) {
-  return `/images/sts2/map/effects/${name}.png`;
-}
-
-function maskStyle(src: string, color: string, opacity = 1): CSSProperties {
-  return {
-    backgroundColor: color,
-    opacity,
-    WebkitMaskImage: `url(${src})`,
-    maskImage: `url(${src})`,
-    WebkitMaskPosition: "center",
-    maskPosition: "center",
-    WebkitMaskRepeat: "no-repeat",
-    maskRepeat: "no-repeat",
-    WebkitMaskSize: "contain",
-    maskSize: "contain",
-  };
-}
-
-function nodeOpacity(state: "inactive" | "active" | "current") {
-  return state === "inactive" ? 0.52 : 1;
-}
-
-function outlineOpacity(state: "inactive" | "active" | "current") {
-  return state === "inactive" ? 0.72 : 1;
-}
-
-function circleOpacity(state: "inactive" | "active" | "current") {
-  if (state === "inactive") return 0;
-  return state === "current" ? 1 : 0.92;
-}
-
-function scaleNativeSize(size: RenderSize): RenderSize {
-  return {
-    width: Math.round(size.width * MAP_GAME_SCALE),
-    height: Math.round(size.height * MAP_GAME_SCALE),
-  };
-}
-
-function mapIconRenderSize(iconName: string): RenderSize {
-  return scaleNativeSize(MAP_ICON_NATIVE_SIZES[iconName] ?? { width: NORMAL_ICON_SIZE, height: NORMAL_ICON_SIZE });
-}
-
-function mapOutlineRenderSize(outlineName: string): RenderSize {
-  return scaleNativeSize(MAP_OUTLINE_NATIVE_SIZES[outlineName] ?? { width: NORMAL_ICON_SIZE, height: NORMAL_ICON_SIZE });
-}
-
-function MapSelectionRing({
-  state,
-  inset,
-  suppress,
-}: {
-  state: "inactive" | "active" | "current";
-  inset: string;
-  /** Phase 4 — when true, the steady ring is hidden so the SweepRing
-   *  overlay can own the destination's selection visual during the
-   *  clockwise sweep window. */
-  suppress?: boolean;
-}) {
-  if (state === "inactive") {
-    return null;
-  }
-  if (suppress) {
-    return null;
-  }
-
-  return (
-    <div
-      className="absolute"
-      style={{
-        inset,
-        ...maskStyle(effectSrc("map_circle_4"), MAP_SELECTION_RING_COLOR, circleOpacity(state)),
-      }}
-    />
-  );
-}
-
-/** Phase 4 — clockwise sweep ring layered on the destination node while
- *  `pct` ramps 0→1. Two stacked masks: the outer wrapper clips by a
- *  conic-gradient wedge anchored at 12 o'clock (`from -90deg`) so the
- *  reveal sweeps clockwise, and the inner div carries the standard
- *  `map_circle_4` ring shape. The result is the same selection ring as
- *  the steady "current" state, but progressively painted in.
- */
-function SweepRing({ pct }: { pct: number }) {
-  const angleDeg = Math.max(0, Math.min(1, pct)) * 360;
-  const wedge = `conic-gradient(from -90deg, white 0deg, white ${angleDeg.toFixed(2)}deg, transparent ${angleDeg.toFixed(2)}deg, transparent 360deg)`;
-  return (
-    <div
-      data-testid="ring-sweep"
-      className="pointer-events-none absolute"
-      style={{
-        inset: "-18%",
-        WebkitMaskImage: wedge,
-        maskImage: wedge,
-        WebkitMaskRepeat: "no-repeat",
-        maskRepeat: "no-repeat",
-      }}
-    >
-      <div
-        className="absolute inset-0"
-        style={maskStyle(effectSrc("map_circle_4"), MAP_SELECTION_RING_COLOR, 1)}
-      />
-    </div>
-  );
+  return revealedUnknownOutlineNameForRoom(entry.rooms[0]?.room_type?.toLowerCase());
 }
 
 function bossKeyForRow(act: ReplayActAnalysis, row: number) {
@@ -1865,53 +1511,6 @@ function MapNodeAsset({
   );
 }
 
-function MapRoomAsset({
-  actId,
-  state,
-  size,
-  iconName,
-  outlineName,
-  alt,
-  suppressRing,
-}: {
-  actId: string;
-  state: "inactive" | "active" | "current";
-  size: RenderSize;
-  iconName: string;
-  outlineName: string;
-  alt: string;
-  suppressRing?: boolean;
-}) {
-  const meta = actMapMeta(actId);
-  const iconSize = mapIconRenderSize(iconName);
-  const outlineSize = mapOutlineRenderSize(outlineName);
-
-  return (
-    <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
-      <MapSelectionRing state={state} inset="-18%" suppress={suppressRing} />
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{
-          width: outlineSize.width,
-          height: outlineSize.height,
-          ...maskStyle(mapOutlineSrc(outlineName), meta.bgColor, outlineOpacity(state)),
-        }}
-      />
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{ width: iconSize.width, height: iconSize.height, opacity: nodeOpacity(state) }}
-      >
-        <AssetThumb
-          src={mapIconSrc(actId, iconName)}
-          fallbackSrc={`/images/sts2/map/icons/${iconName}.png`}
-          alt={alt}
-          className="object-contain"
-        />
-      </div>
-    </div>
-  );
-}
-
 function StepAsset({
   entry,
   type,
@@ -1975,34 +1574,6 @@ function StepAsset({
       outlineName={outlineName}
       alt={NODE_META[type].label}
     />
-  );
-}
-
-function AncientMapAsset({
-  actId,
-  size,
-  src,
-  outlineSrc,
-  alt,
-}: {
-  actId: string;
-  size: RenderSize;
-  src: string;
-  outlineSrc: string;
-  alt: string;
-}) {
-  const meta = actMapMeta(actId);
-
-  return (
-    <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
-      <div className="absolute inset-0" style={maskStyle(outlineSrc, meta.bgColor, 1)}>
-        <span className="sr-only">{alt}</span>
-      </div>
-      <div className="absolute inset-0" style={{ opacity: 0.18 }}>
-        <AssetThumb src={src} fallbackSrc={null} alt={alt} className="object-contain" />
-      </div>
-      <div className="absolute inset-0" style={maskStyle(src, MAP_SELECTION_RING_COLOR, 1)} />
-    </div>
   );
 }
 
@@ -2096,40 +1667,6 @@ function BossMapAsset({
       </div>
       <div className="absolute inset-0" style={maskStyle(src, MAP_SELECTION_RING_COLOR, 1)} />
     </div>
-  );
-}
-
-function AssetThumb({
-  src,
-  fallbackSrc,
-  alt,
-  className,
-}: {
-  src: string | null;
-  fallbackSrc: string | null;
-  alt: string;
-  className: string;
-}) {
-  const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  const resolvedSrc = src && failedSrc !== src ? src : fallbackSrc ?? src;
-
-  if (!resolvedSrc) {
-    return null;
-  }
-
-  return (
-    <Image
-      src={resolvedSrc}
-      alt={alt}
-      fill
-      sizes="(max-width: 1280px) 96px, 128px"
-      className={className}
-      onError={() => {
-        if (src && fallbackSrc && resolvedSrc === src) {
-          setFailedSrc(src);
-        }
-      }}
-    />
   );
 }
 
