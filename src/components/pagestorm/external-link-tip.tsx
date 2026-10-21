@@ -16,20 +16,17 @@ function anchorPreview(anchor: HTMLAnchorElement): LinkPreview {
   };
 }
 
-export function ExternalLinkOgTip({
-  editor,
-  enabled,
-}: {
-  editor: Editor;
-  enabled: boolean;
-}) {
+/**
+ * Open Graph preview on hover over an off-site link, while editing and while
+ * reading. Misses are cached too so moving across a link does not refetch.
+ */
+export function ExternalLinkOgTip({ editor }: { editor: Editor }) {
   const [tip, setTip] = useState<{
     preview: LinkPreview;
     rect: { left: number; top: number; width: number; height: number };
   } | null>(null);
 
   useEffect(() => {
-    if (!enabled) return;
     const root = editor.view.dom;
     let active: HTMLAnchorElement | null = null;
 
@@ -53,11 +50,13 @@ export function ExternalLinkOgTip({
       show(anchor, stored);
       if (anchor.dataset.ogTitle || previewCache.has(anchor.href)) {
         const cached = previewCache.get(anchor.href);
-        if (cached) show(anchor, cached);
+        if (cached?.title) show(anchor, cached);
         return;
       }
-      void fetchLinkPreview(anchor.href).then((preview) => {
-        if (preview.title) previewCache.set(anchor.href, preview);
+      const href = anchor.href;
+      previewCache.set(href, stored);
+      void fetchLinkPreview(href).then((preview) => {
+        previewCache.set(href, preview.title ? preview : { ...stored, title: "" });
         show(anchor, preview.title ? preview : stored);
       }).catch(() => undefined);
     };
@@ -74,9 +73,9 @@ export function ExternalLinkOgTip({
       root.removeEventListener("mouseover", onOver);
       root.removeEventListener("mouseout", onOut);
     };
-  }, [editor, enabled]);
+  }, [editor]);
 
-  if (!enabled || !tip) return null;
+  if (!tip) return null;
 
   return (
     <span

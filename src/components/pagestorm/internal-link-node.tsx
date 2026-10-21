@@ -4,9 +4,12 @@ import { Node, mergeAttributes } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import { useState } from "react";
 import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
+import { EDITOR_ANCHOR_PROPS } from "@/components/editor/editor-link";
 import { SitePathHoverTip } from "./site-path-hover-tip";
+import { selectAtomOnClick } from "@/components/editor/editor-link";
 
-function PagestormInternalLinkView({ editor, node, selected }: NodeViewProps) {
+function PagestormInternalLinkView({ editor, getPos, node, selected }: NodeViewProps) {
+  const selectOnClick = (event: React.MouseEvent<HTMLElement>) => selectAtomOnClick(editor, getPos, event);
   const href = String(node.attrs.href ?? "");
   const label = String(node.attrs.label ?? href);
   const title = String(node.attrs.title ?? label);
@@ -17,7 +20,8 @@ function PagestormInternalLinkView({ editor, node, selected }: NodeViewProps) {
   const showTip = hovered || selected;
 
   return (
-    <NodeViewWrapper as="span" className="inline">
+    <NodeViewWrapper
+      onClick={selectOnClick} as="span" className="inline">
       <span
         className="relative inline"
         onMouseEnter={() => setHovered(true)}
@@ -28,9 +32,7 @@ function PagestormInternalLinkView({ editor, node, selected }: NodeViewProps) {
         <a
           href={href}
           className="pagestorm-internal-link"
-          onClick={(event) => {
-            if (editor.isEditable) event.preventDefault();
-          }}
+          {...(editor.isEditable ? EDITOR_ANCHOR_PROPS : {})}
         >
           {label}
         </a>

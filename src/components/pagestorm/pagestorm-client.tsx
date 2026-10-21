@@ -540,6 +540,9 @@ export function PagestormWriteClient({ gameCopy }: { gameCopy: PagestormGameCopy
       ) return;
       const anchor = (event.target as HTMLElement | null)?.closest("a");
       if (!anchor) return;
+      // New tabs keep this page, and links inside the document never navigate
+      // on a plain click (see EDITOR_ANCHOR_PROPS).
+      if (anchor.target === "_blank" || anchor.closest(".ProseMirror")) return;
       const href = anchor.getAttribute("href");
       if (!href || href.startsWith("#")) return;
       event.preventDefault();

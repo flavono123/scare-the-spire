@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useMemo, useEffect, type CSSProperties, type ReactNode } from "react";
+import { useState, useRef, useCallback, useMemo, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
@@ -63,6 +63,8 @@ import {
   formatEncounterProbability,
 } from "@/lib/encounter-compositions";
 import { getHoverTipPortalRoot, HOVER_TIP_LAYER_Z_INDEX } from "@/lib/hover-tip-layer";
+import { useCoarsePointer } from "@/hooks/use-coarse-pointer";
+import { isModifiedClick, NEW_TAB_LINK_PROPS } from "@/components/editor/editor-link";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "character" | "keyword" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch" | "modifier" | "ascension";
@@ -144,20 +146,6 @@ const GAME_INSPECT_CURSOR_CLASS = "game-inspect-cursor";
 
 function withGameInspectCursor(className: string): string {
   return [className, GAME_INSPECT_CURSOR_CLASS].filter(Boolean).join(" ");
-}
-
-function useCoarsePointer(): boolean {
-  const [isCoarsePointer, setIsCoarsePointer] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(hover: none), (pointer: coarse)");
-    const update = () => setIsCoarsePointer(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  return isCoarsePointer;
 }
 
 type PreviewPlacement = {
@@ -466,6 +454,41 @@ function EntityRelicHoverPreview({
   );
 }
 
+/**
+ * Compendium page for an entity, or null when it has none. `entity.href`
+ * (STS1, custom pages) wins over the per-type route.
+ */
+export function entityCompendiumHref(entity: EntityInfo): string | null {
+  if (entity.href === null) return null;
+  if (entity.href) return entity.href;
+  const compendiumRouteId = (entity.compendiumResourceId ?? entity.id).toLowerCase();
+  switch (entity.type) {
+    case "card":
+    case "character":
+    case "keyword":
+    case "relic":
+    case "potion":
+    case "power":
+    case "enchantment":
+    case "affliction":
+    case "event":
+    case "monster":
+    case "encounter":
+    case "ancient":
+    case "epoch":
+    case "modifier":
+    case "ascension":
+      return buildCompendiumResourceHref(entity.type, compendiumRouteId);
+    case "monsterMove":
+      if (entity.compendiumResourceId) return buildCompendiumResourceHref("monster", compendiumRouteId);
+      return entity.monsterMoveMonsterData
+        ? buildCompendiumResourceHref("monster", entity.monsterMoveMonsterData.id)
+        : null;
+    default:
+      return null;
+  }
+}
+
 export function EntityPreview({
   entity,
   children,
@@ -484,6 +507,7 @@ export function EntityPreview({
   staticHoverPreviews = false,
   disablePreview = false,
   disableLink = false,
+  editorLink = false,
 }: {
   entity: EntityInfo;
   children: ReactNode;
@@ -504,6 +528,11 @@ export function EntityPreview({
   disablePreview?: boolean;
   /** Keep the hover/tap preview but never navigate to the Compendium page. */
   disableLink?: boolean;
+  /**
+   * Inside an editor: a plain click only previews (and selects the atom), the
+   * page opens in a new tab from the tap preview or with a modifier click.
+   */
+  editorLink?: boolean;
 }) {
   const [show, setShow] = useState(false);
   const [previewPressed, setPreviewPressed] = useState(false);
@@ -539,32 +568,7 @@ export function EntityPreview({
     setShow(true);
   }, [entity, forcePosition]);
 
-  const compendiumRouteId = (entity.compendiumResourceId ?? entity.id).toLowerCase();
-  const hrefMap: Partial<Record<EntityType, string>> = {
-    card: buildCompendiumResourceHref("card", compendiumRouteId),
-    character: buildCompendiumResourceHref("character", compendiumRouteId),
-    keyword: buildCompendiumResourceHref("keyword", compendiumRouteId),
-    relic: buildCompendiumResourceHref("relic", compendiumRouteId),
-    potion: buildCompendiumResourceHref("potion", compendiumRouteId),
-    power: buildCompendiumResourceHref("power", compendiumRouteId),
-    enchantment: buildCompendiumResourceHref("enchantment", compendiumRouteId),
-    affliction: buildCompendiumResourceHref("affliction", compendiumRouteId),
-    event: buildCompendiumResourceHref("event", compendiumRouteId),
-    monster: buildCompendiumResourceHref("monster", compendiumRouteId),
-    monsterMove: entity.compendiumResourceId
-      ? buildCompendiumResourceHref("monster", compendiumRouteId)
-      : entity.monsterMoveMonsterData
-      ? buildCompendiumResourceHref("monster", entity.monsterMoveMonsterData.id)
-      : undefined,
-    encounter: buildCompendiumResourceHref("encounter", compendiumRouteId),
-    ancient: buildCompendiumResourceHref("ancient", compendiumRouteId),
-    epoch: buildCompendiumResourceHref("epoch", compendiumRouteId),
-    modifier: buildCompendiumResourceHref("modifier", compendiumRouteId),
-    ascension: buildCompendiumResourceHref("ascension", compendiumRouteId),
-  };
-  const hrefBase = isPendingCompendium || disableLink
-    ? null
-    : entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
+  const hrefBase = isPendingCompendium || disableLink ? null : entityCompendiumHref(entity);
   const localizedHref = hrefBase && serviceLocale && gameLocale
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : hrefBase;
@@ -591,12 +595,17 @@ export function EntityPreview({
   const resolvedLinkClassName = href ? withGameInspectCursor(baseLinkClassName) : baseLinkClassName;
 
   const openTapPreview = useCallback((event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
+    if (editorLink && !useTapPreview && !isModifiedClick(event)) {
+      event.preventDefault();
+      return;
+    }
     if (!useTapPreview) return;
     event.preventDefault();
     setPreviewPressed(false);
     setPreviewNonce((value) => value + 1);
     setShow(true);
-  }, [useTapPreview]);
+  }, [editorLink, useTapPreview]);
+  const newTabProps = editorLink ? NEW_TAB_LINK_PROPS : {};
 
   const tooltipPos = forceShow
     ? "relative z-50 mt-1"
@@ -615,6 +624,7 @@ export function EntityPreview({
       href ? (
         <Link
           href={href}
+          {...newTabProps}
           aria-label={`${entity.nameKo} 페이지로 이동`}
           data-pressed={previewPressed}
           onPointerDown={() => setPreviewPressed(true)}
@@ -681,6 +691,7 @@ export function EntityPreview({
       {!forceShow && href && (
         <Link
           href={href}
+          {...newTabProps}
           className={resolvedLinkClassName}
           onClick={openTapPreview}
           aria-expanded={useTapPreview ? show : undefined}

@@ -15,6 +15,7 @@ import {
 
 type MentionEntity = EntityInfo & { mentionDescription?: string };
 
+const UNMENTIONABLE_MARKS = new Set(["link", "code"]);
 const STS1_MARKER = /([^\s{}#@]+)#1(?:@(\d+(?:\.\d+)*))?/g;
 
 let labelCacheKey: readonly EntityInfo[] | null = null;
@@ -86,7 +87,10 @@ export function replacePagestormMentions(
   const labelIndex = mentionLabelIndex(sts2, sts1);
 
   editor.state.doc.descendants((node, pos) => {
+    if (node.type.name === "codeBlock") return false;
     if (!node.isText || !node.text) return;
+    // A link label or inline code is someone else's text, not a reference.
+    if (node.marks.some((mark) => UNMENTIONABLE_MARKS.has(mark.type.name))) return;
     const text = node.text;
     const cursorOffset = cursor >= pos && cursor <= pos + node.nodeSize
       ? cursor - pos

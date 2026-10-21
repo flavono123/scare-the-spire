@@ -4,13 +4,16 @@ import { Node, mergeAttributes } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import { LoaderCircle, Youtube } from "lucide-react";
 import { EXTERNAL_LINK_TEXT_CLASS } from "@/lib/service-link-classes";
+import { selectAtomOnClick } from "./editor-link";
 
-function YouTubeReferenceNodeView({ node }: NodeViewProps) {
+function YouTubeReferenceNodeView({ editor, getPos, node }: NodeViewProps) {
+  const selectOnClick = (event: React.MouseEvent<HTMLElement>) => selectAtomOnClick(editor, getPos, event);
   const title = (node.attrs.title as string) || (node.attrs.pendingLabel as string);
   const pending = !(node.attrs.title as string);
 
   return (
     <NodeViewWrapper
+      onClick={selectOnClick}
       as="span"
       className={`mx-0.5 inline-flex max-w-full items-center gap-1 align-baseline font-semibold ${EXTERNAL_LINK_TEXT_CLASS}`}
       data-youtube-reference=""

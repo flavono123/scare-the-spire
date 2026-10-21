@@ -201,6 +201,10 @@ export const serviceMessages = {
       make: "감정콘 넣기",
       hint: "눌러서 넣으세요.",
     },
+    editorLink: {
+      open: "새 탭에서 열기",
+      modifierHint: "⌘/Ctrl+클릭으로 바로 열기",
+    },
     engagementTips: {
       commentFirst: "첫 댓글 쓰기",
       commentCount: "{count}개의 댓글",
@@ -1628,6 +1632,10 @@ export const serviceMessages = {
       label: "Emote",
       make: "Insert emote",
       hint: "Tap one to insert.",
+    },
+    editorLink: {
+      open: "Open in new tab",
+      modifierHint: "⌘/Ctrl+click opens it directly",
     },
     engagementTips: {
       commentFirst: "Write the first comment",

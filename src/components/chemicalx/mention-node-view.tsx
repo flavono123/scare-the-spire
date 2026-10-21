@@ -4,8 +4,10 @@ import { NodeViewWrapper } from "@tiptap/react";
 import type { NodeViewProps } from "@tiptap/react";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import { useEntityLinks, useEntityMap } from "./entity-context";
+import { selectAtomOnClick } from "@/components/editor/editor-link";
 
-export function MentionNodeView({ node }: NodeViewProps) {
+export function MentionNodeView({ editor, getPos, node }: NodeViewProps) {
+  const selectOnClick = (event: React.MouseEvent<HTMLElement>) => selectAtomOnClick(editor, getPos, event);
   const entityMap = useEntityMap();
   const entityLinks = useEntityLinks();
   const { id, label, entityType } = node.attrs;
@@ -13,8 +15,9 @@ export function MentionNodeView({ node }: NodeViewProps) {
 
   if (entity) {
     return (
-      <NodeViewWrapper as="span" className="inline">
-        <EntityPreview entity={entity} disableLink={!entityLinks}>
+      <NodeViewWrapper
+      onClick={selectOnClick} as="span" className="inline">
+        <EntityPreview entity={entity} disableLink={!entityLinks} editorLink>
           {label}
         </EntityPreview>
       </NodeViewWrapper>
@@ -22,7 +25,8 @@ export function MentionNodeView({ node }: NodeViewProps) {
   }
 
   return (
-    <NodeViewWrapper as="span" className="spire-gold font-semibold inline">
+    <NodeViewWrapper
+      onClick={selectOnClick} as="span" className="spire-gold font-semibold inline">
       {label}
     </NodeViewWrapper>
   );

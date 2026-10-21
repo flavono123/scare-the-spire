@@ -25,6 +25,7 @@ import type { Sts1MentionEntry } from "@/lib/sts1-mention-index";
 import { Sts1BitmapText } from "./bitmap-text";
 import { Sts1SmartText } from "./smart-text";
 import { Sts1CardTile } from "./card-tile";
+import { EDITOR_ANCHOR_PROPS } from "@/components/editor/editor-link";
 
 const PANEL_SRC = "/images/sts1/relic-popup/panel.webp";
 const FRAME_SRC = {
@@ -296,7 +297,16 @@ function RelicSlab({
   );
 }
 
-export function Sts1MentionHover({ entityId, text }: { entityId: string; text: string }) {
+export function Sts1MentionHover({
+  entityId,
+  text,
+  editorLink = false,
+}: {
+  entityId: string;
+  text: string;
+  /** Inside an editor: plain clicks stay put; see EDITOR_ANCHOR_PROPS. */
+  editorLink?: boolean;
+}) {
   const { index } = useSts1MentionIndex();
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
@@ -352,7 +362,11 @@ export function Sts1MentionHover({ entityId, text }: { entityId: string; text: s
       onFocus={() => setHovered(true)}
       onBlur={() => setHovered(false)}
     >
-      <a href={entry?.href ?? "#"} className="font-game-title font-semibold spire-gold no-underline">
+      <a
+        href={entry?.href ?? "#"}
+        className="font-game-title font-semibold spire-gold no-underline"
+        {...(editorLink ? EDITOR_ANCHOR_PROPS : {})}
+      >
         {text}
       </a>
       {hovered && preview ? (

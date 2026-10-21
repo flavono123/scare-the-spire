@@ -16,7 +16,6 @@ import { useSts1MentionIndex } from "@/hooks/use-sts1-mention-index";
 import { sts1MentionEntity, type Sts1MentionEntity } from "@/lib/sts1-mention-index";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
-import { fetchLinkPreview } from "@/lib/link-preview-client";
 import { braceDisplayText } from "@/lib/rich-keyword-plain-text";
 import { resolveYouTubeReference } from "@/lib/youtube-reference";
 import {
@@ -32,7 +31,8 @@ import {
   PagestormJitter,
   PagestormSine,
 } from "./color-marks";
-import { PagestormEntitiesProvider } from "./entities-context";
+import { findPagestormEntity, PagestormEntitiesProvider } from "./entities-context";
+import { EditorLinkBubble, EditorLinkClicks } from "@/components/editor/link-bubble";
 import {
   CompendiumPickerModal,
   ToyboxPickerModal,
@@ -54,7 +54,7 @@ import {
   PagestormDetailsContent,
   PagestormDetailsSummary,
 } from "./details";
-import { replaceExternalLinkLabel } from "./external-link";
+import { EXTERNAL_LINK_ATTRS, insertExternalLink } from "./external-link";
 import { ExternalLinkOgTip } from "./external-link-tip";
 import { PagestormLinkSheet, selectionTouchesInternalLink } from "./link-sheet";
 import { pagestormMentionContent, replacePagestormMentions } from "./mentions";
@@ -175,6 +175,11 @@ export function PagestormEditor({
     () => (sts1Index?.entries ?? []).map(sts1MentionEntity),
     [sts1Index],
   );
+  const allEntities = useMemo(() => [...entities, ...sts1Entities], [entities, sts1Entities]);
+  const resolveLinkEntity = useCallback(
+    (type: string, id: string) => findPagestormEntity(allEntities, type, id),
+    [allEntities],
+  );
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].pagestorm;
   const entitiesRef = useRef(entities);
@@ -280,14 +285,13 @@ export function PagestormEditor({
       StarterKit.configure({
         heading: { levels: [2, 3] },
         link: {
-          openOnClick: "whenNotEditable",
+          // Tiptap 3 maps "whenNotEditable" to opening on click *while*
+          // editing. EditorLinkClicks owns clicks in the editor; read-only
+          // documents are plain anchors.
+          openOnClick: false,
           autolink: true,
           linkOnPaste: true,
-          HTMLAttributes: {
-            target: "_blank",
-            rel: "noopener noreferrer",
-            class: "pagestorm-inline-link",
-          },
+          HTMLAttributes: { ...EXTERNAL_LINK_ATTRS },
         },
       }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
@@ -308,6 +312,7 @@ export function PagestormEditor({
       PagestormLightSection,
       PagestormMention,
       PagestormInternalLink,
+      EditorLinkClicks,
       brace,
       paths,
     ],
@@ -365,9 +370,7 @@ export function PagestormEditor({
           to,
           view.state.schema.text(found.label, [link.create({
             href: found.href,
-            target: "_blank",
-            rel: "noopener noreferrer",
-            class: "pagestorm-inline-link",
+            ...EXTERNAL_LINK_ATTRS,
           })]),
         ));
         return true;
@@ -393,26 +396,7 @@ export function PagestormEditor({
         event.preventDefault();
         if (!current) return true;
         if (resolved.kind === "og") {
-          const href = resolved.bookmark.url;
-          const fallback = resolved.bookmark.title || href;
-          current.chain().focus().insertContent({
-            type: "text",
-            text: fallback,
-            marks: [{
-              type: "link",
-              attrs: {
-                href,
-                target: "_blank",
-                rel: "noopener noreferrer",
-                class: "pagestorm-inline-link",
-              },
-            }],
-          }).run();
-          void fetchLinkPreview(href).then((preview) => {
-            const live = editorRef.current;
-            if (!live || live.isDestroyed || !preview.title) return;
-            replaceExternalLinkLabel(live, href, fallback, preview);
-          }).catch(() => undefined);
+          insertExternalLink(current, resolved.bookmark.url, resolved.bookmark.title || resolved.bookmark.url);
           return true;
         }
         const pendingLabel = copy.youtubePending;
@@ -569,7 +553,7 @@ export function PagestormEditor({
   }
 
   return (
-    <PagestormEntitiesProvider entities={[...entities, ...sts1Entities]} mode={mode}>
+    <PagestormEntitiesProvider entities={allEntities} mode={mode}>
       <div className="space-y-3">
         {editing && onTitleChange ? (
           <div className="space-y-2">
@@ -614,7 +598,10 @@ export function PagestormEditor({
           <PagestormTableControls editor={editor} frameRef={frameRef} />
         ) : null}
         {editor ? (
-          <ExternalLinkOgTip editor={editor} enabled={!editing} />
+          <ExternalLinkOgTip editor={editor} />
+        ) : null}
+        {editing && editor ? (
+          <EditorLinkBubble editor={editor} resolveEntity={resolveLinkEntity} />
         ) : null}
         {editing && editor ? (
           <PagestormLinkSheet

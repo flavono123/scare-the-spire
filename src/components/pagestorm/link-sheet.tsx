@@ -7,6 +7,8 @@ import { useEditorState } from "@tiptap/react";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
+import { LinkOpenAction } from "@/components/editor/link-bubble";
+import { EXTERNAL_LINK_ATTRS } from "./external-link";
 import { normalizeHttpUrl } from "./markdown-blocks";
 
 export function selectionTouchesInternalLink(editor: Editor): boolean {
@@ -52,12 +54,7 @@ function applyPagestormLink(editor: Editor, title: string, url: string) {
     text: title.trim() || href,
     marks: [{
       type: "link",
-      attrs: {
-        href,
-        target: "_blank",
-        rel: "noopener noreferrer",
-        class: "pagestorm-inline-link",
-      },
+      attrs: { href, ...EXTERNAL_LINK_ATTRS },
     }],
   }).run();
 }
@@ -164,6 +161,7 @@ export function PagestormLinkSheet({
   }, [anchorFrom, editor, frameRef, open]);
 
   if (!open || !point) return null;
+  const openHref = normalizeHttpUrl(url);
 
   return (
     <div
@@ -194,6 +192,11 @@ export function PagestormLinkSheet({
           className="mt-0.5 w-full rounded border border-border bg-background px-1.5 py-1 text-xs text-foreground"
         />
       </label>
+      {openHref ? (
+        <div className="flex justify-end">
+          <LinkOpenAction href={openHref} />
+        </div>
+      ) : null}
     </div>
   );
 }

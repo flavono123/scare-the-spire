@@ -26,6 +26,7 @@ import {
 import { CustomKeyword } from "@/components/chemicalx/custom-keyword";
 import { MentionList } from "@/components/chemicalx/mention-list";
 import { suggestionPopupRender } from "@/components/editor/suggestion-popup";
+import { EditorLinkBubble, EditorLinkClicks } from "@/components/editor/link-bubble";
 import {
   EntityLinksProvider,
   EntityMapProvider,
@@ -596,6 +597,10 @@ export function RichContentEditor({
   const currentFloorRef = useRef(historyFloorMentions?.currentFloor);
   currentFloorRef.current = historyFloorMentions?.currentFloor;
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const resolveLinkEntity = useCallback(
+    (type: string, id: string) => entityMap.get(`${type}:${id}`),
+    [entityMap],
+  );
   const keywordEntityIndex = useMemo(() => buildEntityKeywordIndex(entities), [entities]);
   const exactKeywordIndex = useMemo(() => buildExactKeywordIndex(buildExactKeywordLabels([
     ...entities.flatMap(entityDisplayNames),
@@ -672,6 +677,7 @@ export function RichContentEditor({
         hardBreak: allowLineBreaks ? {} : false,
       }),
       Placeholder.configure({ placeholder: richPlaceholder ? "" : placeholder }),
+      EditorLinkClicks,
       CharacterCount.configure(maxChars == null ? {} : { limit: maxChars }),
       CustomKeyword,
       ...(textEffects
@@ -1320,6 +1326,12 @@ export function RichContentEditor({
           )}
         </EntityLinksProvider>
         </EntityMapProvider>
+        {editor ? (
+          <EditorLinkBubble
+            editor={editor}
+            resolveEntity={entityLinks ? resolveLinkEntity : undefined}
+          />
+        ) : null}
       </div>
 
       {!embedded && youtubeFeedback && (
