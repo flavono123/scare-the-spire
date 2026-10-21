@@ -280,7 +280,6 @@ const toyBoxNavHtml = renderToStaticMarkup(
     alt="장난감 상자"
     items={getToyBoxNavItems({ serviceLocale: "ko", gameLocale: "kor" })}
     align="left"
-    variant="toyBox"
   />,
 );
 assert.match(toyBoxNavHtml, /data-static-nav-dropdown/);

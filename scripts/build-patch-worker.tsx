@@ -405,7 +405,6 @@ function StaticPatchHeader({
             alt={toyBoxLabel}
             items={toyBoxItems}
             align="left"
-            variant="toyBox"
             attentionMarker="toy-box"
           />
         </div>
