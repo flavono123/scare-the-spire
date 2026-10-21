@@ -4,7 +4,7 @@ import { PluginKey } from "@tiptap/pm/state";
 import Suggestion from "@tiptap/suggestion";
 import type { SuggestionMatch, SuggestionOptions } from "@tiptap/suggestion";
 
-const slashCommandPluginKey = new PluginKey("slash-command-suggestion");
+export const slashCommandPluginKey = new PluginKey("slash-command-suggestion");
 
 function findSlashCommandMatch(config: {
   $position: ResolvedPos;

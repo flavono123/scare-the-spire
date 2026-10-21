@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import { RichText } from "@/components/rich-text";
-import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import type { Editor } from "@tiptap/react";
 import {
   TextEffectSelectionOnly,
@@ -14,11 +14,6 @@ import {
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
-import {
-  exitSuggestion,
-  type SuggestionProps,
-  type SuggestionKeyDownProps,
-} from "@tiptap/suggestion";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import {
   EntityMention,
@@ -29,7 +24,8 @@ import {
   braceKeywordSuggestionPluginKey,
 } from "@/components/chemicalx/brace-keyword-suggestion";
 import { CustomKeyword } from "@/components/chemicalx/custom-keyword";
-import { MentionList, type MentionListRef } from "@/components/chemicalx/mention-list";
+import { MentionList } from "@/components/chemicalx/mention-list";
+import { suggestionPopupRender } from "@/components/editor/suggestion-popup";
 import {
   EntityLinksProvider,
   EntityMapProvider,
@@ -69,14 +65,13 @@ import { isCoverSpec } from "@/lib/run-cover-types";
 import {
   SlashCommandList,
   type SlashCommandItem,
-  type SlashCommandListRef,
 } from "@/components/editor/slash-command-list";
-import { SlashCommandSuggestion } from "@/components/editor/slash-command-suggestion";
-import { findFloorHashMatch, FloorHashSuggestion, floorHashPluginKey } from "@/components/editor/floor-hash-suggestion";
 import {
-  FloorMentionList,
-  type FloorMentionListRef,
-} from "@/components/history-course/floor-mention-list";
+  SlashCommandSuggestion,
+  slashCommandPluginKey,
+} from "@/components/editor/slash-command-suggestion";
+import { findFloorHashMatch, FloorHashSuggestion, floorHashPluginKey } from "@/components/editor/floor-hash-suggestion";
+import { FloorMentionList } from "@/components/history-course/floor-mention-list";
 import {
   buildEntityKeywordIndex,
   blocksToTiptapDocument,
@@ -440,19 +435,6 @@ function clearDraft(draftKey: string) {
   sessionStorage.removeItem(draftKey);
 }
 
-function listenForSuggestionOutsidePress(
-  popup: HTMLDivElement,
-  onDismiss: () => void,
-) {
-  const handlePointerDown = (event: PointerEvent) => {
-    if (event.target instanceof Node && !popup.contains(event.target)) {
-      onDismiss();
-    }
-  };
-  document.addEventListener("pointerdown", handlePointerDown, true);
-  return () => document.removeEventListener("pointerdown", handlePointerDown, true);
-}
-
 export interface RichContentEditorProps {
   entities: EntityInfo[];
   onSubmit: (blocks: PostBlock[]) => Promise<void>;
@@ -635,6 +617,9 @@ export function RichContentEditor({
   const composeTimeoutRef = useRef<number | null>(null);
   const submitRef = useRef<() => void>(() => {});
   const suggestionOpenRef = useRef(false);
+  const setSuggestionOpen = useCallback((open: boolean) => {
+    suggestionOpenRef.current = open;
+  }, []);
   const lastEntityInsertRequestIdRef = useRef<number | null>(null);
   const lastContentReplaceRequestIdRef = useRef<number | null>(null);
   const lastHistoryRunInsertRequestIdRef = useRef<number | null>(null);
@@ -759,70 +744,12 @@ export function RichContentEditor({
               if (!isHistoryRunFloorBlock(props)) return;
               replaceExclusiveHistoryFloor(ed, props, range);
             },
-            render: () => {
-              let renderer: ReactRenderer<FloorMentionListRef> | null = null;
-              let popup: HTMLDivElement | null = null;
-              const buildCommand = (props: SuggestionProps) => (
-                item: HistoryRunFloorBlock,
-              ) => {
-                props.command(item as unknown as Record<string, unknown>);
-              };
-              return {
-                onStart: (props: SuggestionProps) => {
-                  suggestionOpenRef.current = true;
-                  renderer = new ReactRenderer(FloorMentionList, {
-                    props: {
-                      items: props.items as HistoryRunFloorBlock[],
-                      command: buildCommand(props),
-                    },
-                    editor: props.editor,
-                  });
-                  popup = document.createElement("div");
-                  popup.style.position = "fixed";
-                  popup.style.zIndex = "130";
-                  popup.dataset.richEditorSuggestionPopup = "history-floor";
-                  popup.appendChild(renderer.element);
-                  document.body.appendChild(popup);
-                  if (props.clientRect) {
-                    const rect = props.clientRect();
-                    if (rect) {
-                      popup.style.left = `${rect.left}px`;
-                      popup.style.top = `${rect.bottom + 4}px`;
-                    }
-                  }
-                },
-                onUpdate: (props: SuggestionProps) => {
-                  renderer?.updateProps({
-                    items: props.items as HistoryRunFloorBlock[],
-                    command: buildCommand(props),
-                  });
-                  if (popup && props.clientRect) {
-                    const rect = props.clientRect();
-                    if (rect) {
-                      popup.style.left = `${rect.left}px`;
-                      popup.style.top = `${rect.bottom + 4}px`;
-                    }
-                  }
-                },
-                onKeyDown: (props: SuggestionKeyDownProps) => {
-                  if (props.event.key === "Escape") {
-                    popup?.remove();
-                    renderer?.destroy();
-                    popup = null;
-                    renderer = null;
-                    return true;
-                  }
-                  return renderer?.ref?.onKeyDown(props) ?? false;
-                },
-                onExit: () => {
-                  suggestionOpenRef.current = false;
-                  popup?.remove();
-                  renderer?.destroy();
-                  popup = null;
-                  renderer = null;
-                },
-              };
-            },
+            render: suggestionPopupRender({
+              component: FloorMentionList,
+              pluginKey: floorHashPluginKey,
+              name: "history-floor",
+              onOpenChange: setSuggestionOpen,
+            }),
           },
         }),
       ] : []),
@@ -862,103 +789,24 @@ export function RichContentEditor({
               })
               .run();
           },
-          render: () => {
-            let renderer: ReactRenderer<MentionListRef> | null = null;
-            let popup: HTMLDivElement | null = null;
-            let stopOutsidePressListener: (() => void) | null = null;
-
-            const buildCommand = (props: SuggestionProps) => (item: EntityInfo) => {
-              props.command({
-                id: item.id,
-                label: item.nameKo,
-                entityType: item.type,
-                type: item.type,
-                nameKo: item.nameKo,
-                nameEn: item.nameEn,
-                color: item.color,
-                imageUrl: item.imageUrl,
-              } as unknown as Record<string, unknown>);
-            };
-            const dismissPopup = () => {
-              suggestionOpenRef.current = false;
-              stopOutsidePressListener?.();
-              stopOutsidePressListener = null;
-              popup?.remove();
-              renderer?.destroy();
-              popup = null;
-              renderer = null;
-            };
-
-            return {
-              onStart: (props: SuggestionProps) => {
-                suggestionOpenRef.current = true;
-                renderer = new ReactRenderer(MentionList, {
-                  props: {
-                    items: props.items,
-                    command: buildCommand(props),
-                  },
-                  editor: props.editor,
-                });
-
-                popup = document.createElement("div");
-                popup.style.position = "fixed";
-                popup.style.zIndex = "100";
-                popup.dataset.richEditorSuggestionPopup = "keyword";
-                popup.appendChild(renderer.element);
-                document.body.appendChild(popup);
-                stopOutsidePressListener = listenForSuggestionOutsidePress(
-                  popup,
-                  () => exitSuggestion(
-                    props.editor.view,
-                    braceKeywordSuggestionPluginKey,
-                  ),
-                );
-
-                if (props.clientRect) {
-                  const rect = props.clientRect();
-                  if (rect) {
-                    popup.style.left = `${rect.left}px`;
-                    popup.style.top = `${rect.bottom + 4}px`;
-                  }
-                }
-              },
-
-              onUpdate: (props: SuggestionProps) => {
-                renderer?.updateProps({
-                  items: props.items,
-                  command: buildCommand(props),
-                });
-
-                if (popup && props.clientRect) {
-                  const rect = props.clientRect();
-                  if (rect) {
-                    popup.style.left = `${rect.left}px`;
-                    popup.style.top = `${rect.bottom + 4}px`;
-                  }
-                }
-              },
-
-              onKeyDown: (props: SuggestionKeyDownProps) => {
-                if (props.event.key === "Escape") {
-                  dismissPopup();
-                  return true;
-                }
-                // Treat `}` as commit: pick the currently-highlighted item
-                // and prevent the literal `}` from being inserted.
-                if (props.event.key === "}") {
-                  const handled = renderer?.ref?.onKeyDown({
-                    event: new KeyboardEvent("keydown", { key: "Enter" }),
-                  });
-                  return handled ?? false;
-                }
-                return renderer?.ref?.onKeyDown(props) ?? false;
-              },
-
-              onExit: () => {
-                dismissPopup();
-              },
-            };
-          },
+          render: suggestionPopupRender({
+            component: MentionList,
+            pluginKey: braceKeywordSuggestionPluginKey,
+            name: "keyword",
+            toCommandProps: (item: EntityInfo) => ({
+              id: item.id,
+              label: item.nameKo,
+              entityType: item.type,
+              type: item.type,
+              nameKo: item.nameKo,
+              nameEn: item.nameEn,
+              color: item.color,
+              imageUrl: item.imageUrl,
+            }),
+            // `}` picks the highlighted row instead of typing a brace.
+            commitKeys: ["}"],
+            onOpenChange: setSuggestionOpen,
+          }),
         },
       }),
       ...(historyRunSlashCommands ? [
@@ -981,77 +829,12 @@ export function RichContentEditor({
               ed.chain().focus().deleteRange(range).run();
               window.setTimeout(command.onSelect, 0);
             },
-            render: () => {
-              let renderer: ReactRenderer<SlashCommandListRef> | null = null;
-              let popup: HTMLDivElement | null = null;
-
-              const buildCommand = (props: SuggestionProps) => (
-                command: SlashCommandItem,
-              ) => {
-                props.command(command as unknown as Record<string, unknown>);
-              };
-
-              return {
-                onStart: (props: SuggestionProps) => {
-                  suggestionOpenRef.current = true;
-                  renderer = new ReactRenderer(SlashCommandList, {
-                    props: {
-                      items: props.items as SlashCommandItem[],
-                      command: buildCommand(props),
-                    },
-                    editor: props.editor,
-                  });
-
-                  popup = document.createElement("div");
-                  popup.style.position = "fixed";
-                  popup.style.zIndex = "130";
-                  popup.appendChild(renderer.element);
-                  document.body.appendChild(popup);
-
-                  if (props.clientRect) {
-                    const rect = props.clientRect();
-                    if (rect) {
-                      popup.style.left = `${rect.left}px`;
-                      popup.style.top = `${rect.bottom + 4}px`;
-                    }
-                  }
-                },
-
-                onUpdate: (props: SuggestionProps) => {
-                  renderer?.updateProps({
-                    items: props.items as SlashCommandItem[],
-                    command: buildCommand(props),
-                  });
-                  if (popup && props.clientRect) {
-                    const rect = props.clientRect();
-                    if (rect) {
-                      popup.style.left = `${rect.left}px`;
-                      popup.style.top = `${rect.bottom + 4}px`;
-                    }
-                  }
-                },
-
-                onKeyDown: (props: SuggestionKeyDownProps) => {
-                  if (props.event.key === "Escape") {
-                    suggestionOpenRef.current = false;
-                    popup?.remove();
-                    renderer?.destroy();
-                    popup = null;
-                    renderer = null;
-                    return true;
-                  }
-                  return renderer?.ref?.onKeyDown(props) ?? false;
-                },
-
-                onExit: () => {
-                  suggestionOpenRef.current = false;
-                  popup?.remove();
-                  renderer?.destroy();
-                  popup = null;
-                  renderer = null;
-                },
-              };
-            },
+            render: suggestionPopupRender({
+              component: SlashCommandList,
+              pluginKey: slashCommandPluginKey,
+              name: "slash-command",
+              onOpenChange: setSuggestionOpen,
+            }),
           },
         }),
       ] : []),

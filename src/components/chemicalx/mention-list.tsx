@@ -1,19 +1,19 @@
 "use client";
 
-import {
-  forwardRef,
-  useImperativeHandle,
-  useState,
-} from "react";
+import { forwardRef } from "react";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { getCharacterColor } from "@/lib/codex-types";
 import { compendiumTypeLabels } from "@/lib/compendium-type-labels";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import {
+  SUGGESTION_LIST_CLASS,
+  SUGGESTION_ROW_CLASS,
+  useSuggestionListNavigation,
+  type SuggestionListRef,
+} from "@/components/editor/suggestion-list";
 
-export interface MentionListRef {
-  onKeyDown: (props: { event: KeyboardEvent }) => boolean;
-}
+export type MentionListRef = SuggestionListRef;
 
 interface MentionListProps {
   items: EntityInfo[];
@@ -24,56 +24,29 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
   ({ items, command }, ref) => {
     const serviceLocale = useServiceLocale();
     const entityTypeLabels = compendiumTypeLabels(serviceLocale);
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const safeSelectedIndex =
-      items.length === 0
-        ? 0
-        : selectedIndex >= items.length
-          ? 0
-          : selectedIndex;
-
-    useImperativeHandle(ref, () => ({
-      onKeyDown: ({ event }) => {
-        if (items.length === 0) return false;
-
-        if (event.key === "ArrowUp") {
-          setSelectedIndex((i) => (i + items.length - 1) % items.length);
-          return true;
-        }
-        if (event.key === "ArrowDown") {
-          setSelectedIndex((i) => (i + 1) % items.length);
-          return true;
-        }
-        if (event.key === "Enter" || event.key === "Tab") {
-          event.preventDefault();
-          const item = items[safeSelectedIndex];
-          if (item) command(item);
-          return true;
-        }
-        if (event.key === "Escape") {
-          return true;
-        }
-        return false;
-      },
-    }));
+    const { listRef, selectedIndex, rowProps } = useSuggestionListNavigation({
+      items,
+      command,
+      itemKey: (item) => `${item.type}:${item.id}`,
+      ref,
+    });
 
     if (items.length === 0) return null;
 
     return (
-      <div className="max-h-64 overflow-hidden overflow-y-auto rounded-lg border border-border bg-popover shadow-xl">
+      <div ref={listRef} className={`w-max max-w-full ${SUGGESTION_LIST_CLASS}`}>
         {items.map((item, i) => {
           const charColor = getCharacterColor(item.color);
           return (
             <button
               key={`${item.type}:${item.id}`}
               type="button"
-              className={`flex items-center gap-2 w-full px-3 py-1.5 text-left text-sm transition-colors ${
-                i === safeSelectedIndex
+              className={`flex items-center gap-2 w-full px-3 py-1.5 text-left text-sm transition-colors ${SUGGESTION_ROW_CLASS} ${
+                i === selectedIndex
                   ? "bg-primary/20 text-primary"
                   : "text-foreground hover:bg-primary/10"
               }`}
-              onClick={() => command(item)}
-              onMouseEnter={() => setSelectedIndex(i)}
+              {...rowProps(i)}
             >
               {item.imageUrl && (
                 <Image

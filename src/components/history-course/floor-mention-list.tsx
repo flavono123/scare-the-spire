@@ -1,16 +1,16 @@
 "use client";
 
+import { forwardRef } from "react";
 import {
-  forwardRef,
-  useImperativeHandle,
-  useState,
-} from "react";
+  SUGGESTION_LIST_CLASS,
+  SUGGESTION_ROW_CLASS,
+  useSuggestionListNavigation,
+  type SuggestionListRef,
+} from "@/components/editor/suggestion-list";
 import { HistoryRunFloorChip } from "@/components/history-course/history-run-floor-chip";
 import type { HistoryRunFloorBlock } from "@/lib/chemical-types";
 
-export interface FloorMentionListRef {
-  onKeyDown: (props: { event: KeyboardEvent }) => boolean;
-}
+export type FloorMentionListRef = SuggestionListRef;
 
 interface FloorMentionListProps {
   items: HistoryRunFloorBlock[];
@@ -19,44 +19,24 @@ interface FloorMentionListProps {
 
 export const FloorMentionList = forwardRef<FloorMentionListRef, FloorMentionListProps>(
   ({ items, command }, ref) => {
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const safeIndex = items.length === 0 || selectedIndex >= items.length
-      ? 0
-      : selectedIndex;
-
-    useImperativeHandle(ref, () => ({
-      onKeyDown: ({ event }) => {
-        if (items.length === 0) return false;
-        if (event.key === "ArrowUp") {
-          setSelectedIndex((index) => (index + items.length - 1) % items.length);
-          return true;
-        }
-        if (event.key === "ArrowDown") {
-          setSelectedIndex((index) => (index + 1) % items.length);
-          return true;
-        }
-        if (event.key === "Enter" || event.key === "Tab") {
-          event.preventDefault();
-          const item = items[safeIndex];
-          if (item) command(item);
-          return true;
-        }
-        return event.key === "Escape";
-      },
-    }));
+    const { listRef, selectedIndex, rowProps } = useSuggestionListNavigation({
+      items,
+      command,
+      itemKey: (item) => `${item.actIndex}:${item.step}:${item.floor}`,
+      ref,
+    });
 
     if (items.length === 0) return null;
 
     return (
-      <div className="max-h-60 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-xl">
+      <div ref={listRef} className={`${SUGGESTION_LIST_CLASS} p-1`}>
         {items.map((item, index) => (
           <button
             key={`${item.actIndex}:${item.step}:${item.floor}`}
             type="button"
-            onClick={() => command(item)}
-            onMouseEnter={() => setSelectedIndex(index)}
-            className={`flex w-full items-center rounded-md px-2 py-1.5 text-left transition-colors ${
-              index === safeIndex
+            {...rowProps(index)}
+            className={`flex w-full items-center rounded-md px-2 py-1.5 text-left transition-colors ${SUGGESTION_ROW_CLASS} ${
+              index === selectedIndex
                 ? "bg-amber-400/15"
                 : "hover:bg-muted"
             }`}

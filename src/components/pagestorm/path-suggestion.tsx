@@ -1,11 +1,17 @@
 "use client";
 
 import { Extension } from "@tiptap/core";
-import Suggestion, { type SuggestionMatch, type SuggestionOptions, type SuggestionProps } from "@tiptap/suggestion";
+import Suggestion, { type SuggestionMatch, type SuggestionOptions } from "@tiptap/suggestion";
 import { PluginKey } from "@tiptap/pm/state";
 import type { ResolvedPos } from "@tiptap/pm/model";
-import { ReactRenderer } from "@tiptap/react";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef } from "react";
+import {
+  SUGGESTION_LIST_CLASS,
+  SUGGESTION_ROW_CLASS,
+  useSuggestionListNavigation,
+  type SuggestionListRef,
+} from "@/components/editor/suggestion-list";
+import { suggestionPopupRender } from "@/components/editor/suggestion-popup";
 import type { ServiceLocale } from "@/lib/i18n";
 import {
   canonicalSitePath,
@@ -79,12 +85,8 @@ export const PagestormPathSuggestion = Extension.create<{
   },
 });
 
-type PathMenuRef = {
-  onKeyDown: (props: { event: KeyboardEvent }) => boolean;
-};
-
 const PathMenu = forwardRef<
-  PathMenuRef,
+  SuggestionListRef,
   {
     items: SitePathMenuItem[];
     locale: ServiceLocale;
@@ -92,34 +94,12 @@ const PathMenu = forwardRef<
     command: (item: SitePathMenuItem) => void;
   }
 >(function PathMenu({ items, locale, emptyLabel, command }, ref) {
-  const itemKey = items.map((item) => item.href).join("|");
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [seenKey, setSeenKey] = useState(itemKey);
-  if (seenKey !== itemKey) {
-    setSeenKey(itemKey);
-    setSelectedIndex(0);
-  }
-  const safeIndex = items.length === 0 ? 0 : selectedIndex % items.length;
-
-  useImperativeHandle(ref, () => ({
-    onKeyDown: ({ event }) => {
-      if (event.key === "ArrowUp" && items.length > 0) {
-        setSelectedIndex((index) => (index + items.length - 1) % items.length);
-        return true;
-      }
-      if (event.key === "ArrowDown" && items.length > 0) {
-        setSelectedIndex((index) => (index + 1) % items.length);
-        return true;
-      }
-      if ((event.key === "Enter" || event.key === "Tab") && items[safeIndex]) {
-        event.preventDefault();
-        command(items[safeIndex]);
-        return true;
-      }
-      if (event.key === "Escape") return true;
-      return false;
-    },
-  }));
+  const { listRef, selectedIndex, rowProps } = useSuggestionListNavigation({
+    items,
+    command,
+    itemKey: (item) => item.href,
+    ref,
+  });
 
   if (items.length === 0) {
     return (
@@ -135,18 +115,17 @@ const PathMenu = forwardRef<
   return (
     <div
       data-pagestorm-path-menu
-      className="max-h-72 w-80 overflow-y-auto rounded-lg border border-border bg-popover shadow-xl"
+      ref={listRef}
+      className={`w-80 ${SUGGESTION_LIST_CLASS}`}
     >
       {items.map((item, index) => (
         <button
           key={item.href}
           type="button"
-          className={`block w-full px-3 py-1.5 text-left ${
-            index === safeIndex ? "bg-primary/20 text-primary" : "text-foreground hover:bg-primary/10"
+          className={`block w-full px-3 py-1.5 text-left ${SUGGESTION_ROW_CLASS} ${
+            index === selectedIndex ? "bg-primary/20 text-primary" : "text-foreground hover:bg-primary/10"
           }`}
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={() => command(item)}
-          onMouseEnter={() => setSelectedIndex(index)}
+          {...rowProps(index)}
         >
           <span className="block truncate text-sm">
             {sitePathText(item, locale, "label")}
@@ -180,73 +159,15 @@ export function createPagestormPathSuggestion(options: {
         if (!entry?.href) return;
         options.onPick({ entry, range });
       },
-      render: () => {
-        let renderer: ReactRenderer<PathMenuRef> | null = null;
-        let popup: HTMLDivElement | null = null;
-        const place = (props: SuggestionProps) => {
-          if (!popup) return;
-          let rect = props.clientRect?.() ?? null;
-          if (!rect) {
-            try {
-              const coords = props.editor.view.coordsAtPos(props.editor.state.selection.from);
-              rect = new DOMRect(coords.left, coords.top, 0, coords.bottom - coords.top);
-            } catch {
-              return;
-            }
-          }
-          const popupWidth = Math.max(popup.offsetWidth, 280);
-          const popupHeight = Math.max(popup.offsetHeight, 80);
-          const left = Math.min(Math.max(8, rect.left), window.innerWidth - popupWidth - 8);
-          const below = rect.bottom + 6;
-          const top = below + popupHeight > window.innerHeight - 8
-            ? Math.max(8, rect.top - popupHeight - 6)
-            : below;
-          popup.style.left = `${left}px`;
-          popup.style.top = `${top}px`;
-        };
-        const dismiss = () => {
-          popup?.remove();
-          renderer?.destroy();
-          popup = null;
-          renderer = null;
-        };
-        return {
-          onStart: (props: SuggestionProps) => {
-            renderer = new ReactRenderer(PathMenu, {
-              props: {
-                items: props.items,
-                locale: options.getLocale(),
-                emptyLabel: options.getEmptyLabel(),
-                command: props.command,
-              },
-              editor: props.editor,
-            });
-            popup = document.createElement("div");
-            popup.style.position = "fixed";
-            popup.style.zIndex = "100";
-            popup.appendChild(renderer.element);
-            document.body.appendChild(popup);
-            place(props);
-          },
-          onUpdate: (props: SuggestionProps) => {
-            renderer?.updateProps({
-              items: props.items,
-              locale: options.getLocale(),
-              emptyLabel: options.getEmptyLabel(),
-              command: props.command,
-            });
-            place(props);
-          },
-          onKeyDown: (props: { event: KeyboardEvent }) => {
-            if (props.event.key === "Escape") {
-              dismiss();
-              return true;
-            }
-            return renderer?.ref?.onKeyDown(props) ?? false;
-          },
-          onExit: dismiss,
-        };
-      },
+      render: suggestionPopupRender({
+        component: PathMenu,
+        pluginKey: pagestormPathPluginKey,
+        name: "site-path",
+        extraProps: () => ({
+          locale: options.getLocale(),
+          emptyLabel: options.getEmptyLabel(),
+        }),
+      }),
     },
   });
 }
