@@ -36,7 +36,7 @@ export function matchOpenBraceKeyword(text: string): {
   full: string;
   query: string;
 } | null {
-  const wrap = text.match(/(\S+)\{([^{}\n]*)$/);
+  const wrap = text.match(/([^\s{}]+)\{([^{}\n]*)$/);
   if (wrap) {
     return {
       full: wrap[0] ?? "",
@@ -50,6 +50,40 @@ export function matchOpenBraceKeyword(text: string): {
     full: bare[0] ?? "",
     query: (bare[1] ?? "").trim(),
   };
+}
+
+/**
+ * Display text typed before the brace of a `display{keyword` range, or null
+ * for a bare `{keyword`. The editors keep it as the node's visible text.
+ */
+export function braceDisplayText(rangeText: string): string | null {
+  const brace = rangeText.indexOf("{");
+  return brace > 0 ? rangeText.slice(0, brace) : null;
+}
+
+export type ClosedBraceKeyword = {
+  from: number;
+  to: number;
+  /** Text before the brace in `display{keyword}`; null for `{keyword}`. */
+  display: string | null;
+  keyword: string;
+};
+
+/**
+ * Closed `display{keyword}` and `{keyword}` tokens. The keyword must not start
+ * or end with whitespace: `{ foo }` stays pending so the brace menu can still
+ * disambiguate it.
+ */
+export function findClosedBraceKeywords(text: string): ClosedBraceKeyword[] {
+  return [...text.matchAll(/([^\s{}\uFFFC]+)?\{(\S(?:[^{}\n]*\S)?)\}/g)].map((match) => {
+    const from = match.index ?? 0;
+    return {
+      from,
+      to: from + match[0].length,
+      display: match[1] ?? null,
+      keyword: match[2] ?? "",
+    };
+  });
 }
 
 export function buildExactKeywordLabels(names: string[]): ExactKeywordLabel[] {

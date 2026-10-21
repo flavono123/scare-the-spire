@@ -3,7 +3,7 @@
 import { PluginKey } from "@tiptap/pm/state";
 import {
   BraceKeywordSuggestion,
-  findBracePortraitMatch,
+  findBraceKeywordMatch,
 } from "@/components/chemicalx/brace-keyword-suggestion";
 import { MentionList } from "@/components/chemicalx/mention-list";
 import { suggestionPopupRender } from "@/components/editor/suggestion-popup";
@@ -24,7 +24,8 @@ export function createPagestormBraceSuggestion(options: {
       char: "",
       allowSpaces: false,
       allowedPrefixes: null,
-      findSuggestionMatch: findBracePortraitMatch,
+      // `display{query` like comments: the text before the brace stays visible.
+      findSuggestionMatch: findBraceKeywordMatch,
       items: ({ query }) => {
         const sts2 = options.getEntities();
         const sts1 = options.getSts1Entities();

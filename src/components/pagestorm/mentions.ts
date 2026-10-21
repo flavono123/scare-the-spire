@@ -3,6 +3,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   buildExactKeywordIndex,
   buildExactKeywordLabels,
+  findClosedBraceKeywords,
   findExactKeywordRanges,
   inProgressKeywordRange,
 } from "@/lib/rich-keyword-plain-text";
@@ -15,7 +16,6 @@ import {
 type MentionEntity = EntityInfo & { mentionDescription?: string };
 
 const STS1_MARKER = /([^\s{}#@]+)#1(?:@(\d+(?:\.\d+)*))?/g;
-const CLOSED_BRACE = /\{([^{}\n]+)\}/g;
 
 let labelCacheKey: readonly EntityInfo[] | null = null;
 let labelCacheSts1: readonly EntityInfo[] | null = null;
@@ -69,7 +69,8 @@ function markerRanges(text: string): Array<{ start: number; end: number }> {
 }
 
 /**
- * Turn closed `{name}`, `{name#1}`, bare `name#1`, and exact names into mentions.
+ * Turn closed `{name}`, `{name#1}`, `display{name}`, bare `name#1`, and exact
+ * names into mentions. `display{name}` keeps `display` as the visible text.
  * `#1` is applied before a bare name so `타격#1` does not become the STS2 card.
  * `@version` stays as text.
  */
@@ -92,21 +93,17 @@ export function replacePagestormMentions(
       : null;
     const covered: Array<{ start: number; end: number }> = [];
 
-    for (const match of text.matchAll(CLOSED_BRACE)) {
-      if (match.index == null) continue;
-      const inside = match[1] ?? "";
-      const parsed = parsePagestormReferenceQuery(inside);
+    for (const match of findClosedBraceKeywords(text)) {
+      const parsed = parsePagestormReferenceQuery(match.keyword);
       if (parsed.version) continue;
-      const entity = resolvePagestormReference(inside, sts2, sts1);
+      const entity = resolvePagestormReference(match.keyword, sts2, sts1);
       if (!entity) continue;
-      const start = match.index;
-      const end = start + match[0].length;
-      covered.push({ start, end });
+      covered.push({ start: match.from, end: match.to });
       replacements.push({
-        from: pos + start,
-        to: pos + end,
+        from: pos + match.from,
+        to: pos + match.to,
         entity,
-        text: entity.nameKo,
+        text: match.display ?? entity.nameKo,
       });
     }
 

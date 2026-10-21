@@ -17,6 +17,7 @@ import { sts1MentionEntity, type Sts1MentionEntity } from "@/lib/sts1-mention-in
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { NavDropdownItem } from "@/lib/site-nav-items";
 import { fetchLinkPreview } from "@/lib/link-preview-client";
+import { braceDisplayText } from "@/lib/rich-keyword-plain-text";
 import { resolveYouTubeReference } from "@/lib/youtube-reference";
 import {
   canonicalSitePath,
@@ -235,8 +236,8 @@ export function PagestormEditor({
         const current = editorRef.current;
         if (!current) return;
         exitSuggestion(current.view, pagestormBracePluginKey);
-        const parsed = entity.nameKo;
-        current.chain().focus().insertContentAt(range, pagestormMentionContent(entity, parsed)).run();
+        const display = braceDisplayText(current.state.doc.textBetween(range.from, range.to));
+        current.chain().focus().insertContentAt(range, pagestormMentionContent(entity, display ?? entity.nameKo)).run();
       },
     }),
     [],

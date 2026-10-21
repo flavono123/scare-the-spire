@@ -86,8 +86,10 @@ import {
   tiptapToBlocks,
 } from "@/lib/chemical-utils";
 import {
+  braceDisplayText,
   buildExactKeywordIndex,
   buildExactKeywordLabels,
+  findClosedBraceKeywords,
   findExactKeywordRanges,
   inProgressKeywordRange,
   type ExactKeywordLabel,
@@ -108,15 +110,6 @@ import {
   COMMENT_MIN_CHARS,
   isCharCountNearLimit,
 } from "@/lib/content-limits";
-
-// Inner body must start AND end with non-whitespace — typing `{ foo }` (with
-// padding spaces) keeps the keyword in a pending, plain-text state so the
-// suggestion popup can handle disambiguation. Removing the padding triggers
-// the regex-based activation for unambiguous names.
-const KEYWORD_RE_SOURCE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}/.source;
-const BARE_KEYWORD_RE_SOURCE = /\{(\S(?:[^{}\n]*\S)?)\}/.source;
-const KEYWORD_AT_CURSOR_RE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}$/;
-const BARE_KEYWORD_AT_CURSOR_RE = /\{(\S(?:[^{}\n]*\S)?)\}$/;
 
 function cleanTooltipText(text: string): string {
   return text
@@ -147,17 +140,15 @@ function replaceKeywordAtCursor(
   if (!empty) return false;
 
   const textBefore = $from.parent.textBetween(0, $from.parentOffset, undefined, "\uFFFC");
-  const wrapMatch = textBefore.match(KEYWORD_AT_CURSOR_RE);
-  const bareMatch = wrapMatch ? null : textBefore.match(BARE_KEYWORD_AT_CURSOR_RE);
-  const m = wrapMatch ?? bareMatch;
-  if (!m) return false;
+  const match = findClosedBraceKeywords(textBefore).at(-1);
+  if (!match || match.to !== textBefore.length) return false;
 
-  const text = sanitizeKeywordPart(m[1] ?? "");
-  const keyword = sanitizeKeywordPart((wrapMatch ? m[2] : m[1]) ?? "");
+  const text = sanitizeKeywordPart(match.display ?? match.keyword);
+  const keyword = sanitizeKeywordPart(match.keyword);
   if (!text || !keyword) return false;
 
   const resolved = resolveKeyword(keyword);
-  const start = from - m[0].length;
+  const start = from - (match.to - match.from);
   const tr = editor.state.tr.replaceWith(
     start,
     from,
@@ -262,44 +253,15 @@ function replaceKeywordsInEditor(
 
   editor.state.doc.descendants((node, pos) => {
     if (!node.isText || !node.text) return;
-    const keywordRe = new RegExp(KEYWORD_RE_SOURCE, "g");
-    const bareKeywordRe = new RegExp(BARE_KEYWORD_RE_SOURCE, "g");
-    const covered = new Set<number>();
-
-    for (const m of node.text.matchAll(keywordRe)) {
-      if (m.index == null) continue;
-
-      const keywordText = sanitizeKeywordPart(m[1] ?? "");
-      const keyword = sanitizeKeywordPart(m[2] ?? "");
+    for (const match of findClosedBraceKeywords(node.text)) {
+      const keyword = sanitizeKeywordPart(match.keyword);
+      const keywordText = sanitizeKeywordPart(match.display ?? match.keyword);
       if (!keywordText || !keyword) continue;
       const resolved = resolveKeyword(keyword);
-
-      const from = pos + m.index;
-      const to = from + m[0].length;
-      for (let index = m.index; index < m.index + m[0].length; index++) {
-        covered.add(index);
-      }
       replacements.push({
-        from,
-        to,
+        from: pos + match.from,
+        to: pos + match.to,
         text: keywordText,
-        keyword: resolved.keyword,
-        description: resolved.description,
-        entityId: resolved.entityId,
-        entityType: resolved.entityType,
-      });
-    }
-
-    for (const m of node.text.matchAll(bareKeywordRe)) {
-      if (m.index == null || covered.has(m.index)) continue;
-
-      const keyword = sanitizeKeywordPart(m[1] ?? "");
-      if (!keyword) continue;
-      const resolved = resolveKeyword(keyword);
-      replacements.push({
-        from: pos + m.index,
-        to: pos + m.index + m[0].length,
-        text: keyword,
         keyword: resolved.keyword,
         description: resolved.description,
         entityId: resolved.entityId,
@@ -772,9 +734,8 @@ export function RichContentEditor({
             const keywordNode = ed.schema.nodes["custom-keyword"];
             if (!keywordNode) return;
             const item = props as unknown as EntityInfo;
-            const rangeText = ed.state.doc.textBetween(range.from, range.to);
-            const braceIdx = rangeText.indexOf("{");
-            const display = braceIdx > 0 ? rangeText.slice(0, braceIdx) : item.nameKo;
+            const display = braceDisplayText(ed.state.doc.textBetween(range.from, range.to))
+              ?? item.nameKo;
             const resolved = resolveKeyword(item.nameKo);
             ed.chain().focus()
               .insertContentAt(range, {

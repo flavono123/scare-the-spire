@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import {
+  braceDisplayText,
   buildExactKeywordIndex,
   buildExactKeywordLabels,
+  findClosedBraceKeywords,
   findExactKeywordRanges,
   inProgressKeywordRange,
   matchOpenBraceKeyword,
@@ -19,6 +21,21 @@ assert.deepEqual(matchOpenBraceKeyword("문구 {빙봉"), {
   full: "{빙봉",
   query: "빙봉",
 });
+
+assert.deepEqual(matchOpenBraceKeyword("a}강타{타"), { full: "강타{타", query: "타" });
+
+assert.equal(braceDisplayText("{타격"), null);
+assert.equal(braceDisplayText("강펀치{타격"), "강펀치");
+
+assert.deepEqual(findClosedBraceKeywords("강펀치{타격} 그리고 {수비}"), [
+  { from: 0, to: 7, display: "강펀치", keyword: "타격" },
+  { from: 12, to: 16, display: null, keyword: "수비" },
+]);
+assert.deepEqual(findClosedBraceKeywords("{ 타격 }"), []);
+assert.deepEqual(
+  findClosedBraceKeywords("\uFFFC강펀치{타격}").map((match) => match.display),
+  ["강펀치"],
+);
 
 const labels = buildExactKeywordLabels([
   "악의",
