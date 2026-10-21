@@ -8,11 +8,9 @@ import type { NavDropdownItem } from "@/lib/site-nav-items";
 
 function MenuRow({
   item,
-  isToyBox,
   nested = false,
 }: {
   item: NavDropdownItem;
-  isToyBox: boolean;
   nested?: boolean;
 }) {
   const showMarker = Boolean(item.attention || item.attentionId);
@@ -21,18 +19,16 @@ function MenuRow({
       href={item.href}
       prefetch={false}
       role="menuitem"
-      className={`flex items-center gap-2.5 px-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
+      className={`flex items-center gap-2.5 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
         nested ? "ml-3 border-l border-border/60" : ""
-      } ${isToyBox ? "py-2 font-service" : "py-1.5"}`}
+      }`}
     >
       <Image
         src={item.icon}
         alt=""
-        width={isToyBox ? 24 : 18}
-        height={isToyBox ? 24 : 18}
-        className={`${
-          isToyBox ? "h-6 w-6" : item.iconClassName ?? "h-[18px] w-[18px]"
-        } shrink-0 object-contain`}
+        width={18}
+        height={18}
+        className={`${item.iconClassName ?? "h-[18px] w-[18px]"} shrink-0 object-contain`}
       />
       <span className="min-w-0 flex-1 truncate">{item.label}</span>
       {(item.isNew || showMarker) && (
@@ -55,12 +51,24 @@ function MenuRow({
   );
 }
 
+function groupItems(items: NavDropdownItem[]): Array<{ group: string; items: NavDropdownItem[] }> {
+  const groups: Array<{ group: string; items: NavDropdownItem[] }> = [];
+  for (const item of items) {
+    const group = item.group ?? "";
+    const last = groups.at(-1);
+    if (last && last.group === group) last.items.push(item);
+    else groups.push({ group, items: [item] });
+  }
+  return groups;
+}
+
 type SiteNavDropdownProps = {
   icon: string;
   alt: string;
   items: NavDropdownItem[];
   align?: "left" | "right";
-  variant?: "default" | "toyBox";
+  /** `grid` lays groups out as columns so long menus stay short. */
+  layout?: "list" | "grid";
   attention?: boolean;
   /** Static patch HTML renders a hidden dot; patch-nav-indicators.js reveals it. */
   attentionMarker?: string;
@@ -71,11 +79,11 @@ export function SiteNavDropdown({
   alt,
   items,
   align = "right",
-  variant = "default",
+  layout = "list",
   attention = false,
   attentionMarker,
 }: SiteNavDropdownProps) {
-  const isToyBox = variant === "toyBox";
+  const grid = layout === "grid";
 
   return (
     <MenuDropdown
@@ -83,8 +91,12 @@ export function SiteNavDropdown({
       staticNav
       summaryClassName="flex cursor-pointer items-center gap-0.5 rounded-md px-1 py-1 transition-colors hover:bg-white/5 sm:gap-1 sm:px-1.5"
       menuClassName={`${
-        isToyBox ? "min-w-[190px]" : "min-w-[140px]"
-      } max-h-[min(24rem,calc(100svh-4.5rem))] overflow-y-auto ${align === "right" ? "right-0" : "left-0"}`}
+        grid
+          ? // The sticky header blurs its backdrop, so `fixed` resolves against the
+          // header box: a phone-width sheet right under the bar.
+          "max-sm:fixed max-sm:inset-x-2 max-sm:top-12 sm:w-[46rem] max-h-[calc(100svh-4.5rem)]"
+          : "min-w-[140px] max-h-[min(24rem,calc(100svh-4.5rem))]"
+      } overflow-y-auto ${align === "right" ? "right-0" : "left-0"}`}
       summary={(
         <>
           <span className={NAV_ATTENTION_SLOT_CLASS}>
@@ -112,26 +124,38 @@ export function SiteNavDropdown({
         </>
       )}
     >
-      <>
-        {isToyBox && (
-          <div className="border-b border-border/60 px-3 pb-2 pt-1.5 font-service text-xs font-semibold text-muted-foreground">
-            {alt}
-          </div>
-        )}
-        {items.map((item, index) => (
-          <div key={item.href}>
-            {item.group && item.group !== items[index - 1]?.group && (
-              <div className="border-t border-border/60 px-3 pb-1 pt-2 text-[11px] font-semibold text-primary/80 first:border-t-0">
-                {item.group}
-              </div>
-            )}
-            <MenuRow item={item} isToyBox={isToyBox} />
-            {item.children?.map((child) => (
-              <MenuRow key={child.href} item={child} isToyBox={isToyBox} nested />
-            ))}
-          </div>
-        ))}
-      </>
+      {grid ? (
+        <div className="grid grid-cols-2 gap-x-1 sm:grid-cols-4">
+          {groupItems(items).map(({ group, items: groupedItems }) => (
+            <div key={group} className="min-w-0">
+              {group && (
+                <div className="px-3 pb-1 pt-1.5 text-[11px] font-semibold text-primary/80">
+                  {group}
+                </div>
+              )}
+              {groupedItems.map((item) => (
+                <MenuRow key={item.href} item={item} />
+              ))}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          {items.map((item, index) => (
+            <div key={item.href}>
+              {item.group && item.group !== items[index - 1]?.group && (
+                <div className="border-t border-border/60 px-3 pb-1 pt-2 text-[11px] font-semibold text-primary/80 first:border-t-0">
+                  {item.group}
+                </div>
+              )}
+              <MenuRow item={item} />
+              {item.children?.map((child) => (
+                <MenuRow key={child.href} item={child} nested />
+              ))}
+            </div>
+          ))}
+        </>
+      )}
     </MenuDropdown>
   );
 }

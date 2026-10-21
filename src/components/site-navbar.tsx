@@ -791,7 +791,6 @@ export function SiteNavbar() {
             alt={serviceLocale === "ko" ? "장난감 상자" : "Toy Box"}
             items={toyBoxItems}
             align="left"
-            variant="toyBox"
             attention={navSeen.toyBox}
           />
 
@@ -801,7 +800,7 @@ export function SiteNavbar() {
               alt="Dev"
               items={devItems}
               align="left"
-              variant="toyBox"
+              layout="grid"
             />
           )}
         </div>
