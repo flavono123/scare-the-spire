@@ -330,26 +330,50 @@ export function CommentSection({
               <span>{copy.editorLoading}</span>
             </div>
           ) : (
-            <RichContentEditor
+            <CommentComposer
               entities={entities}
               onSubmit={handleSubmit}
               placeholder={placeholder ?? copy.placeholder}
               draftKey={getDraftKey(threadKey)}
               submitLabel={submitting ? "..." : copy.submit}
-              minChars={COMMENT_MIN_CHARS}
-              maxChars={COMMENT_MAX_CHARS}
-              allowLineBreaks
-              density={inline ? "inline" : "default"}
+              density={density}
               historyFloorInsertRequest={historyFloorInsertRequest}
               historyFloorMentions={historyFloorMentions}
               floorHashTip={floorHashTip}
               toolbarStart={toolbarStart}
-              enableEmote
             />
           )}
         </div>
       )}
     </div>
+  );
+}
+
+/** The comment editor every thread uses; the dev editor page mounts it too. */
+export function CommentComposer({
+  density = "default",
+  ...props
+}: Pick<
+  RichContentEditorProps,
+  | "entities"
+  | "onSubmit"
+  | "placeholder"
+  | "draftKey"
+  | "submitLabel"
+  | "historyFloorInsertRequest"
+  | "historyFloorMentions"
+  | "floorHashTip"
+  | "toolbarStart"
+> & { density?: "default" | "inline" }) {
+  return (
+    <RichContentEditor
+      {...props}
+      minChars={COMMENT_MIN_CHARS}
+      maxChars={COMMENT_MAX_CHARS}
+      allowLineBreaks
+      density={density}
+      enableEmote
+    />
   );
 }
 

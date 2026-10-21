@@ -183,6 +183,12 @@ export const sts1NavItems = [
 export const devNavItems = [
   {
     group: "서비스 개발",
+    href: "/dev/editors",
+    label: "에디터 모음",
+    icon: PAGESTORM_TOKEN_SRC,
+  },
+  {
+    group: "서비스 개발",
     href: "/dev/colorful-philosophers",
     label: "토론 주차 예약",
     icon: DEBATE_TOKEN_SRC,
