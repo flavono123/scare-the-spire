@@ -52,7 +52,7 @@ function absoluteUrl(value: string, baseUrl: string): string {
 
 export function readOpenGraph(html: string, pageUrl: string): LinkPreview {
   const headEnd = html.toLowerCase().indexOf("</head>");
-  const head = headEnd >= 0 ? html.slice(0, headEnd) : html.slice(0, 48_000);
+  const head = headEnd >= 0 ? html.slice(0, headEnd) : html.slice(0, 128_000);
   const image = metaContent(head, "og:image") || metaContent(head, "twitter:image");
   return {
     title: metaContent(head, "og:title") || metaContent(head, "twitter:title") || documentTitle(head),

@@ -4,7 +4,9 @@ import { isPublicHttpUrl, readOpenGraph } from "@/lib/link-preview";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const MAX_BYTES = 48_000;
+// Enough for heads that inline large scripts before their meta tags.
+const MAX_BYTES = 128_000;
+const TIMEOUT_MS = 3000;
 
 export async function GET(request: Request) {
   const raw = new URL(request.url).searchParams.get("url") ?? "";
@@ -12,7 +14,7 @@ export async function GET(request: Request) {
   if (!target) return NextResponse.json({ message: "unsupported url" }, { status: 400 });
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 1500);
+  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
     const response = await fetch(target, {
       redirect: "follow",
