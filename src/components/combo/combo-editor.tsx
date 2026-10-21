@@ -168,7 +168,7 @@ export function ComboEditor({
           data-combo-youtube-guide
         >
           <Youtube
-            className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#60a5fa] opacity-70"
+            className="mt-0.5 h-3.5 w-3.5 shrink-0 text-(--link-external) opacity-70"
             aria-hidden="true"
           />
           <p>

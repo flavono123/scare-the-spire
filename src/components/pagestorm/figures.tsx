@@ -25,6 +25,7 @@ import { useServiceLocale } from "@/hooks/use-service-locale";
 import { isCompendiumResourceLinkType } from "@/lib/compendium-resource-links";
 import type { CodexCard } from "@/lib/codex-types";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
+import { EXTERNAL_LINK_TEXT_CLASS } from "@/lib/service-link-classes";
 import { youtubeThumbnailUrl, youtubeWatchUrl } from "@/lib/youtube-reference";
 import { serviceMessages } from "@/messages/service";
 import {
@@ -681,7 +682,7 @@ export function YoutubePlayerFigure({
 }) {
   const href = youtubeWatchUrl(videoId);
   const externalTitle = (
-    <span className="spire-blue min-w-0 self-center break-words font-semibold">{title}</span>
+    <span className={`${EXTERNAL_LINK_TEXT_CLASS} min-w-0 self-center break-words font-semibold`}>{title}</span>
   );
   const inner = (
     <div className="flex min-w-0 max-w-full items-center gap-2">

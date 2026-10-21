@@ -23,7 +23,7 @@ export function ComboYouTubeThumbnail({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group/youtube relative block w-24 shrink-0 overflow-hidden rounded-md outline-none ring-1 ring-white/10 transition-[transform,filter,box-shadow] duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:ring-[#60a5fa]/50 focus-visible:ring-2 focus-visible:ring-[#60a5fa] active:translate-y-0 motion-reduce:transform-none sm:w-32"
+      className="group/youtube relative block w-24 shrink-0 overflow-hidden rounded-md outline-none ring-1 ring-white/10 transition-[transform,filter,box-shadow] duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:ring-(--link-external)/50 focus-visible:ring-2 focus-visible:ring-(--link-external) active:translate-y-0 motion-reduce:transform-none sm:w-32"
       aria-label={`${reference.title} · YouTube`}
       title={reference.title}
     >
@@ -51,7 +51,7 @@ export function ComboYouTubeEmbed({
 }: ComboYouTubeReferenceProps) {
   return (
     <section
-      className="overflow-hidden rounded-xl bg-black/55 shadow-xl shadow-black/20 ring-1 ring-[#60a5fa]/15"
+      className="overflow-hidden rounded-xl bg-black/55 shadow-xl shadow-black/20 ring-1 ring-(--link-external)/15"
       aria-label={reference.title}
     >
       <div className="aspect-video min-h-[200px] w-full">

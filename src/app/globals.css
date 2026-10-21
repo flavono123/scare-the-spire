@@ -416,6 +416,9 @@
   --primary: #efc851;
   --primary-foreground: #1a1408;
   --service-aqua: #2aebbe;
+  /* Prose links: in-site aqua, off-site blue (src/lib/service-link-classes.ts). */
+  --link-internal: #2aebbe;
+  --link-external: #60a5fa;
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
@@ -505,6 +508,9 @@
   --primary: #efc851;
   --primary-foreground: #1a1408;
   --service-aqua: #2aebbe;
+  /* Prose links: in-site aqua, off-site blue (src/lib/service-link-classes.ts). */
+  --link-internal: #2aebbe;
+  --link-external: #60a5fa;
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
@@ -557,6 +563,8 @@
   --primary: #7a4e0e;
   --primary-foreground: #faf6ee;
   --service-aqua: #0e6b5f;
+  --link-internal: #0e6b5f;
+  --link-external: #1f5fbf;
   --secondary: oklch(0.91 0.018 80);
   --secondary-foreground: oklch(0.24 0.03 70);
   --muted: oklch(0.91 0.014 80);

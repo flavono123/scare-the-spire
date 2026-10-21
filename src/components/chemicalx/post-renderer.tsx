@@ -24,7 +24,7 @@ import { TextConChip } from "@/components/text-con/text-con-chip";
 import { CardConTile } from "@/components/card-con/card-con-tile";
 import { EmoteGlyph } from "@/components/emote-con/emote-glyph";
 import type { HistoryRunFloorBlock } from "@/lib/chemical-types";
-import { SERVICE_LINK_CLASS } from "@/lib/service-link-classes";
+import { EXTERNAL_PROSE_LINK_CLASS } from "@/lib/service-link-classes";
 
 const STAR_ICON_SRC = "/images/game-assets/card-misc/star_icon.png";
 
@@ -176,7 +176,7 @@ export function PostRenderer({
                 href={youtubeWatchUrl(block.videoId)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={SERVICE_LINK_CLASS}
+                className={EXTERNAL_PROSE_LINK_CLASS}
               >
                 {block.title}
               </a>

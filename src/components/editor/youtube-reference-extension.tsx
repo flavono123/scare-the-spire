@@ -3,6 +3,7 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import { LoaderCircle, Youtube } from "lucide-react";
+import { EXTERNAL_LINK_TEXT_CLASS } from "@/lib/service-link-classes";
 
 function YouTubeReferenceNodeView({ node }: NodeViewProps) {
   const title = (node.attrs.title as string) || (node.attrs.pendingLabel as string);
@@ -11,7 +12,7 @@ function YouTubeReferenceNodeView({ node }: NodeViewProps) {
   return (
     <NodeViewWrapper
       as="span"
-      className="mx-0.5 inline-flex max-w-full items-center gap-1 align-baseline font-semibold sts-text-aqua"
+      className={`mx-0.5 inline-flex max-w-full items-center gap-1 align-baseline font-semibold ${EXTERNAL_LINK_TEXT_CLASS}`}
       data-youtube-reference=""
     >
       {pending ? (
@@ -54,7 +55,7 @@ export const YouTubeReferenceExtension = Node.create({
       "span",
       mergeAttributes(HTMLAttributes, {
         "data-youtube-reference": "",
-        class: "sts-text-aqua font-semibold",
+        class: `${EXTERNAL_LINK_TEXT_CLASS} font-semibold`,
       }),
       (node.attrs.title || node.attrs.pendingLabel) as string,
     ];

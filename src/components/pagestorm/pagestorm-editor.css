@@ -145,9 +145,10 @@
   text-underline-offset: 3px;
 }
 
+/* Same roles and colors as EXTERNAL/INTERNAL_PROSE_LINK_CLASS. */
 .pagestorm-mock-editor a.pagestorm-inline-link {
   display: inline;
-  color: #60a5fa;
+  color: var(--link-external);
   font-weight: 600;
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
@@ -156,10 +157,10 @@
 
 .pagestorm-mock-editor a.pagestorm-internal-link {
   display: inline;
-  color: #2aebbe;
+  color: var(--link-internal);
   font-weight: 600;
   text-decoration: none;
-  border-bottom: 1px solid rgb(42 235 190 / 70%);
+  border-bottom: 1px solid color-mix(in oklab, var(--link-internal) 70%, transparent);
   text-underline-offset: 0;
 }
 
