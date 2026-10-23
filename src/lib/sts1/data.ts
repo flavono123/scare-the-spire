@@ -5,7 +5,7 @@ import path from "path";
 import type { Metadata } from "next";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
-import { withKoreanSearchCanonical } from "@/lib/search-canonical";
+import { withSearchCanonical } from "@/lib/search-canonical";
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { sts1GameLocale } from "./locale";
 import { sts1CardPortraitUrl, sts1PotionImageUrl, sts1RelicImageUrl } from "./paths";
@@ -366,7 +366,7 @@ export function getSts1Metadata(
   canonicalPath: string,
 ): Metadata {
   const messages = serviceMessages[serviceLocale];
-  return withKoreanSearchCanonical(
+  return withSearchCanonical(
     {
       title: {
         absolute: `${title} — ${serviceLocale === "ko" ? "슬레이 더 스파이어" : "Slay the Spire"} — ${messages.brand}`,
@@ -376,6 +376,7 @@ export function getSts1Metadata(
         : `Slay the Spire ${title}.`,
     },
     canonicalPath,
+    serviceLocale,
   );
 }
 

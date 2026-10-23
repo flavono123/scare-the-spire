@@ -11,7 +11,7 @@ import {
   composeToyBoxPostOgDescription,
   getServiceBrand,
 } from "@/lib/service-metadata";
-import { withKoreanSearchCanonical } from "@/lib/search-canonical";
+import { withSearchCanonical } from "@/lib/search-canonical";
 import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import { coverOgImageFromFields } from "@/lib/toybox-post-og";
@@ -71,7 +71,7 @@ export async function generateHistoryCourseRunMetadata(
     },
   };
 
-  return withKoreanSearchCanonical(metadata, canonicalPath);
+  return withSearchCanonical(metadata, canonicalPath, serviceLocale);
 }
 
 export async function renderHistoryCourseRunPage() {
