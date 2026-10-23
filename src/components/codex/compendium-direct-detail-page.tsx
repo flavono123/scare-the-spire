@@ -22,7 +22,7 @@ import { latestPatchVersion, resolveKnownVersion } from "@/lib/entity-versioning
 import type { EntityLifecycle } from "@/lib/entity-lifecycle";
 import type { VersionedEntityType } from "@/lib/types";
 import {
-  COMPENDIUM_DETAIL_PAYLOAD_PATH,
+  loadCompendiumDetailPayload,
   type CompendiumDetailPayload,
   type CompendiumDetailResourceType,
 } from "@/lib/compendium-detail-payload";
@@ -30,14 +30,17 @@ import type { CompendiumDetailSeoSummary } from "@/lib/compendium-detail-metadat
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { toEventCharacterQuoteSpeaker } from "@/lib/event-character-quotes";
 import { useHydrationSafePathname, useHydrationSafeSearchParam } from "@/components/codex/use-hydration-safe-search-param";
-import { getGameLocaleFromPathname } from "@/lib/i18n";
+import { getGameLocaleFromPathname, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import type { PotionPool, RelicPool } from "@/lib/codex-types";
 
 type CompendiumDirectDetailPageProps = {
   resourceType: CompendiumDetailResourceType;
   id: string;
-  payloadPath?: string;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   initialSummary?: CompendiumDetailSeoSummary | null;
+  /** Server-rendered text and links shown until the interactive detail loads. */
+  staticContent?: ReactNode;
 };
 
 const DETAIL_TYPES_WITH_VISIBLE_H1 = new Set<CompendiumDetailResourceType>([
@@ -50,19 +53,21 @@ const DETAIL_TYPES_WITH_VISIBLE_H1 = new Set<CompendiumDetailResourceType>([
 
 const payloadPromises = new Map<string, Promise<CompendiumDetailPayload>>();
 
-function fetchDetailPayload(payloadPath: string): Promise<CompendiumDetailPayload> {
-  const existingPromise = payloadPromises.get(payloadPath);
+function fetchDetailPayload(
+  serviceLocale: ServiceLocale,
+  gameLocale: GameLocale,
+): Promise<CompendiumDetailPayload> {
+  const cacheKey = `${serviceLocale}:${gameLocale}`;
+  const existingPromise = payloadPromises.get(cacheKey);
   if (existingPromise) return existingPromise;
 
-  const nextPromise = fetch(payloadPath, { cache: "no-cache" })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to load ${payloadPath}`);
-      }
-      return response.json() as Promise<CompendiumDetailPayload>;
+  const nextPromise = loadCompendiumDetailPayload(serviceLocale, gameLocale)
+    .catch((error: unknown) => {
+      payloadPromises.delete(cacheKey);
+      throw error;
     });
 
-  payloadPromises.set(payloadPath, nextPromise);
+  payloadPromises.set(cacheKey, nextPromise);
   return nextPromise;
 }
 
@@ -308,25 +313,28 @@ function LoadingState({
 export function CompendiumDirectDetailPage({
   resourceType,
   id,
-  payloadPath = COMPENDIUM_DETAIL_PAYLOAD_PATH,
+  serviceLocale: routeServiceLocale,
+  gameLocale: routeGameLocale,
   initialSummary,
+  staticContent,
 }: CompendiumDirectDetailPageProps) {
+  const payloadKey = `${routeServiceLocale}:${routeGameLocale}`;
   const [payload, setPayload] = useState<CompendiumDetailPayload | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const [loadedPath, setLoadedPath] = useState(payloadPath);
+  const [loadedKey, setLoadedKey] = useState(payloadKey);
   const urlVersion = useHydrationSafeSearchParam("version");
   const pathname = useHydrationSafePathname("/");
   const urlGameLocale = getGameLocaleFromPathname(pathname);
 
-  if (loadedPath !== payloadPath) {
-    setLoadedPath(payloadPath);
+  if (loadedKey !== payloadKey) {
+    setLoadedKey(payloadKey);
     setPayload(null);
     setError(null);
   }
 
   useEffect(() => {
     let active = true;
-    fetchDetailPayload(payloadPath)
+    fetchDetailPayload(routeServiceLocale, routeGameLocale)
       .then((nextPayload) => {
         if (active) setPayload(nextPayload);
       })
@@ -337,19 +345,23 @@ export function CompendiumDirectDetailPage({
     return () => {
       active = false;
     };
-  }, [payloadPath]);
+  }, [routeServiceLocale, routeGameLocale]);
 
   const entities = useMemo(
     () => payload ? buildEntityInfo(payload) : [],
     [payload],
   );
 
-  if (error) {
-    return <LoadingState label="상세 정보를 불러오지 못했습니다." summary={initialSummary} />;
-  }
-
-  if (!payload || payload.gameLocale !== urlGameLocale) {
-    return <LoadingState label="상세 정보를 불러오는 중입니다." summary={initialSummary} />;
+  // The server-rendered content stays in place until the interactive detail
+  // is ready, and also when its data fails to load.
+  if (error || !payload || payload.gameLocale !== urlGameLocale) {
+    if (staticContent) return staticContent;
+    return (
+      <LoadingState
+        label={error ? "상세 정보를 불러오지 못했습니다." : "상세 정보를 불러오는 중입니다."}
+        summary={initialSummary}
+      />
+    );
   }
 
   const { serviceLocale, gameUi, history, resources } = payload;

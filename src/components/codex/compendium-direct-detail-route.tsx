@@ -2,10 +2,7 @@ import { CompendiumDirectDetailPage } from "@/components/codex/compendium-direct
 import {
   generateCompendiumDetailSeoSummary,
 } from "@/lib/compendium-detail-metadata";
-import {
-  COMPENDIUM_DETAIL_PAYLOAD_PATH,
-  type CompendiumDetailResourceType,
-} from "@/lib/compendium-detail-payload";
+import type { CompendiumDetailResourceType } from "@/lib/compendium-detail-payload";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
   DEFAULT_SERVICE_LOCALE,
@@ -16,7 +13,6 @@ import {
 type CompendiumDirectDetailRouteProps = {
   resourceType: CompendiumDetailResourceType;
   id: string;
-  payloadPath?: string;
   gameLocale?: GameLocale;
   serviceLocale?: ServiceLocale;
 };
@@ -24,7 +20,6 @@ type CompendiumDirectDetailRouteProps = {
 export async function CompendiumDirectDetailRoute({
   resourceType,
   id,
-  payloadPath = COMPENDIUM_DETAIL_PAYLOAD_PATH,
   serviceLocale = DEFAULT_SERVICE_LOCALE,
   gameLocale = DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale],
 }: CompendiumDirectDetailRouteProps) {
@@ -37,7 +32,8 @@ export async function CompendiumDirectDetailRoute({
     <CompendiumDirectDetailPage
       resourceType={resourceType}
       id={id}
-      payloadPath={payloadPath}
+      serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
       initialSummary={initialSummary}
     />
   );

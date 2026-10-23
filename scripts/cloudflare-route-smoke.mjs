@@ -222,8 +222,8 @@ function mainCases() {
       contentType: "application/json",
     },
     {
-      name: "Compendium detail payload",
-      path: "/generated/compendium-detail-kor.json",
+      name: "Compendium data chunk",
+      path: "/generated/compendium-data/kor/cards.json",
       contentType: "application/json",
     },
   ];

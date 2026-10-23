@@ -1,27 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { COMPENDIUM_DETAIL_PAYLOAD_PATH } from "@/lib/compendium-detail-payload";
+import { loadCompendiumData } from "@/lib/compendium-data-chunks";
 import type { CodexCard } from "@/lib/codex-types";
 import { resolveCoverCardId } from "@/lib/run-cover-display";
-
-type Payload = {
-  resources?: {
-    cards?: CodexCard[];
-  };
-};
 
 let catalogPromise: Promise<Map<string, CodexCard>> | null = null;
 
 function loadCatalog(): Promise<Map<string, CodexCard>> {
-  catalogPromise ??= fetch(COMPENDIUM_DETAIL_PAYLOAD_PATH, { cache: "no-cache" })
-    .then((res) => {
-      if (!res.ok) throw new Error(`cover card catalog ${res.status}`);
-      return res.json() as Promise<Payload>;
-    })
-    .then((payload) => {
+  catalogPromise ??= loadCompendiumData("kor", ["cards"])
+    .then(({ cards }) => {
       const map = new Map<string, CodexCard>();
-      for (const card of payload.resources?.cards ?? []) {
+      for (const card of cards) {
         map.set(card.id.toUpperCase(), card);
       }
       return map;

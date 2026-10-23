@@ -1,101 +1,16 @@
-import {
-  getCodexAfflictions,
-  getCodexAncients,
-  getCodexCards,
-  getCodexCharacters,
-  getCodexEnchantments,
-  getCodexEncounters,
-  getCodexEpochs,
-  getCodexEvents,
-  getCodexKeywords,
-  getCodexMonsters,
-  getCodexPotions,
-  getCodexPowers,
-  getCodexRelics,
-  getMadScienceBaseCard,
-} from "@/lib/codex-data";
-import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
-import { getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
+import { assembleCompendiumDetailPayload } from "@/lib/compendium-detail-payload";
+import type { CompendiumDetailPayload } from "@/lib/compendium-detail-payload";
+import { loadCompendiumDataResources } from "@/lib/compendium-data-chunks.server";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
   DEFAULT_SERVICE_LOCALE,
   type ServiceLocale,
 } from "@/lib/i18n";
-import type { CompendiumDetailPayload } from "@/lib/compendium-detail-payload";
-import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
 
 export async function buildCompendiumDetailPayload(
   serviceLocale: ServiceLocale = DEFAULT_SERVICE_LOCALE,
 ): Promise<CompendiumDetailPayload> {
   const gameLocale = DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale];
-
-  const [
-    afflictions,
-    ancients,
-    cards,
-    characters,
-    enchantments,
-    encounters,
-    epochs,
-    events,
-    keywords,
-    monsters,
-    potions,
-    powers,
-    relics,
-    madScienceBaseCard,
-    gameUi,
-    patches,
-    changes,
-    versionDiffs,
-    cardSideTipSources,
-  ] = await Promise.all([
-    getCodexAfflictions({ gameLocale }),
-    getCodexAncients({ gameLocale }),
-    getCodexCards({ includeDeprecated: true, gameLocale }),
-    getCodexCharacters({ gameLocale }),
-    getCodexEnchantments({ gameLocale }),
-    getCodexEncounters({ gameLocale }),
-    getCodexEpochs({ gameLocale }),
-    getCodexEvents({ gameLocale }),
-    getCodexKeywords({ gameLocale }),
-    getCodexMonsters({ gameLocale }),
-    getCodexPotions({ gameLocale }),
-    getCodexPowers({ includeDeprecated: true, gameLocale }),
-    getCodexRelics({ gameLocale }),
-    getMadScienceBaseCard({ gameLocale }),
-    getCodexGameUiLabels(gameLocale),
-    getSTS2Patches(),
-    getSTS2Changes(),
-    getEntityVersionDiffs(gameLocale),
-    loadCardSideTipCatalogSources(gameLocale),
-  ]);
-
-  return {
-    serviceLocale,
-    gameLocale,
-    gameUi,
-    resources: {
-      afflictions,
-      ancients,
-      cards,
-      characters,
-      enchantments,
-      encounters,
-      epochs,
-      events,
-      keywords,
-      monsters,
-      potions,
-      powers,
-      relics,
-      madScienceBaseCard,
-    },
-    history: {
-      patches,
-      changes,
-      versionDiffs,
-    },
-    cardSideTipSources,
-  };
+  const resources = await loadCompendiumDataResources(gameLocale);
+  return assembleCompendiumDetailPayload(serviceLocale, gameLocale, resources);
 }
