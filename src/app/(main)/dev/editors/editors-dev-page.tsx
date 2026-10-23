@@ -18,6 +18,17 @@ import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { HistoryRunFloorBlock, PostBlock } from "@/lib/chemical-types";
 import type { PagestormDoc } from "@/lib/pagestorm";
+import { pagestormFeatureSampleDoc } from "@/components/pagestorm/sample";
+import {
+  CHEMICAL_X_SAMPLE,
+  COMBO_SAMPLE,
+  COMMENT_SAMPLE,
+  DEFRAGMENT_OVERLAY_SAMPLE,
+  DEFRAGMENT_SAMPLE,
+  DEFRAGMENT_SAMPLE_TITLE,
+  HISTORY_COURSE_SAMPLE,
+  TRANSFIGURE_SAMPLE,
+} from "./editor-samples";
 
 const RichContentEditor = dynamic<RichContentEditorProps>(
   () => import("@/components/rich-content-editor").then((mod) => mod.RichContentEditor),
@@ -31,6 +42,16 @@ const PagestormEditor = dynamic(
 
 /** Drafts live under their own keys so testing here never touches real drafts. */
 const DRAFT_PREFIX = "sts-dev-editors";
+
+function clearDevDrafts() {
+  try {
+    for (const key of Object.keys(sessionStorage)) {
+      if (key.startsWith(DRAFT_PREFIX)) sessionStorage.removeItem(key);
+    }
+  } catch {
+    // Storage can be unavailable; the editors still remount with samples.
+  }
+}
 
 const FLOOR_CATALOG: HistoryRunFloorBlock[] = [
   { type: "history-run-floor", floor: 1, actIndex: 0, step: 0, mapPointType: "monster" },
@@ -138,7 +159,10 @@ export default function EditorsDevPageClient() {
   const [outputs, setOutputs] = useState<Record<string, PostBlock[]>>({});
   const [defragmentTitle, setDefragmentTitle] = useState("");
   const [effectEditor, setEffectEditor] = useState<Editor | null>(null);
-  const [pagestormTitle, setPagestormTitle] = useState("");
+  const [pagestormTitle, setPagestormTitle] = useState("Lorem ipsum 서류 폭풍");
+  // Bumped to remount every editor from its sample.
+  const [generation, setGeneration] = useState(0);
+  const pagestormSample = useMemo(() => pagestormFeatureSampleDoc() as PagestormDoc, []);
   const [pagestormNickname, setPagestormNickname] = useState("개발자");
   const [pagestormSaved, setPagestormSaved] = useState<{ doc: PagestormDoc; version: number } | null>(null);
 
@@ -188,7 +212,24 @@ export default function EditorsDevPageClient() {
             </li>
           ))}
         </ul>
-        <ClipboardSamples />
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <ClipboardSamples />
+          <button
+            type="button"
+            onClick={() => {
+              clearDevDrafts();
+              setOutputs({});
+              setPagestormSaved(null);
+              setGeneration((value) => value + 1);
+            }}
+            className="rounded border border-border px-2.5 py-1 text-xs text-muted-foreground hover:border-primary/40 hover:text-foreground"
+          >
+            모든 에디터를 샘플로 되돌리기
+          </button>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          각 에디터는 그 서비스의 기능을 모두 쓴 로렘입숨 글로 시작합니다. 고친 내용은 이 탭의 임시 저장에 남습니다.
+        </p>
         <nav className="flex flex-wrap gap-1.5 text-xs">
           {NAV.map(([id, label]) => (
             <a
@@ -204,7 +245,9 @@ export default function EditorsDevPageClient() {
 
       <Section id="comment" title="댓글" usedBy="모든 리소스 페이지, 패치노트, 이거 아님 저거?, 다채로운 철학자들">
         <CommentComposer
+          key={`comment-${generation}`}
           entities={entities}
+          initialBlocks={COMMENT_SAMPLE}
           onSubmit={onComment}
           placeholder="댓글을 남겨 보세요"
           draftKey={`${DRAFT_PREFIX}:comment`}
@@ -215,7 +258,9 @@ export default function EditorsDevPageClient() {
 
       <Section id="comment-inline" title="댓글 (인라인)" usedBy="역사 강의서 재생 화면 같은 좁은 자리">
         <CommentComposer
+          key={`comment-inline-${generation}`}
           entities={entities}
+          initialBlocks={COMMENT_SAMPLE.slice(0, 4)}
           onSubmit={onCommentInline}
           placeholder="짧게 남기기"
           draftKey={`${DRAFT_PREFIX}:comment-inline`}
@@ -227,7 +272,9 @@ export default function EditorsDevPageClient() {
 
       <Section id="history-course" title="역사 강의서 댓글" usedBy="역사 강의서 런 상세 (# 층 언급)">
         <CommentComposer
+          key={`history-${generation}`}
           entities={entities}
+          initialBlocks={HISTORY_COURSE_SAMPLE}
           onSubmit={onHistory}
           placeholder="#6 처럼 층을 언급해 보세요"
           draftKey={`${DRAFT_PREFIX}:history-course`}
@@ -240,7 +287,9 @@ export default function EditorsDevPageClient() {
 
       <Section id="chemical-x" title="케미컬X" usedBy="케미컬X 글쓰기">
         <ChemicalXEditor
+          key={`chemical-x-${generation}`}
           entities={entities}
+          initialBlocks={CHEMICAL_X_SAMPLE}
           placeholder="게임 요소로 짧은 글 쓰기"
           profileNickname="개발자"
           draftKey={`${DRAFT_PREFIX}:chemical-x`}
@@ -253,7 +302,9 @@ export default function EditorsDevPageClient() {
 
       <Section id="combo" title="코오오옴보" usedBy="코오오옴보 글쓰기 (게임 요소 2개 이상, YouTube 1개, / 명령)">
         <ComboEditor
+          key={`combo-${generation}`}
           entities={entities}
+          initialBlocks={COMBO_SAMPLE}
           placeholder="콤보를 적어 보세요"
           profileNickname="개발자"
           serviceLocale={serviceLocale}
@@ -274,7 +325,10 @@ export default function EditorsDevPageClient() {
 
       <Section id="defragment" title="조각모음" usedBy="조각모음 글쓰기 (제목 + 본문, Enter는 줄바꿈)">
         <DefragmentComposer
+          key={`defragment-${generation}`}
           entities={entities}
+          initialTitle={DEFRAGMENT_SAMPLE_TITLE}
+          initialBlocks={DEFRAGMENT_SAMPLE}
           placeholder="본문"
           profileNickname="개발자"
           submitLabel="등록"
@@ -297,7 +351,9 @@ export default function EditorsDevPageClient() {
 
       <Section id="defragment-overlay" title="조각모음 오버레이 본문" usedBy="조각모음 이미지 위 본문 (입력 즉시 반영)">
         <DefragmentOverlayBodyEditor
+          key={`defragment-overlay-${generation}`}
           entities={entities}
+          initialBlocks={DEFRAGMENT_OVERLAY_SAMPLE}
           placeholder="오버레이 본문"
           draftKey={`${DRAFT_PREFIX}:defragment-overlay`}
           onBlocksChange={onOverlay}
@@ -307,10 +363,12 @@ export default function EditorsDevPageClient() {
 
       <Section id="transfigure" title="변형 설명" usedBy="변형 카드 설명 칸 (색·효과 버블, @ 에너지, * 별, 링크 없는 키워드)">
         {/* Mirrors the description editor in transfigure-asset-editor.tsx. */}
-        <div className="mx-auto h-40 w-64 rounded-lg border border-border bg-[#2b2f38] p-2 text-[#FFF6E2] [text-shadow:2px_2px_0_rgba(0,0,0,0.45)]">
+        <div className="mx-auto h-44 w-64 rounded-lg border border-border bg-[#2b2f38] p-2 text-[#FFF6E2] [text-shadow:2px_2px_0_rgba(0,0,0,0.45)]">
           <TextEffectToolbar editor={effectEditor} serviceLocale={serviceLocale} />
           <RichContentEditor
+            key={`transfigure-${generation}`}
             entities={entities}
+            initialBlocks={TRANSFIGURE_SAMPLE}
             onSubmit={async () => {}}
             onBlocksChange={onTransfigure}
             placeholder="피해를 6 줍니다."
@@ -331,7 +389,9 @@ export default function EditorsDevPageClient() {
 
       <Section id="pagestorm" title="서류 폭풍" usedBy="서류 폭풍 글쓰기 (블록, 표, 이미지, / 경로, {요소}, 링크)">
         <PagestormEditor
+          key={`pagestorm-${generation}`}
           mode="edit"
+          initialContent={pagestormSample}
           title={pagestormTitle}
           onTitleChange={setPagestormTitle}
           nickname={pagestormNickname}

@@ -364,6 +364,7 @@ export function CommentComposer({
   | "historyFloorMentions"
   | "floorHashTip"
   | "toolbarStart"
+  | "initialBlocks"
 > & { density?: "default" | "inline" }) {
   return (
     <RichContentEditor

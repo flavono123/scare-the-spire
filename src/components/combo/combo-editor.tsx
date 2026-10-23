@@ -34,6 +34,8 @@ interface ComboEditorProps {
   onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void>;
   hideNickname?: boolean;
   draftKey?: string;
+  /** Starting content for a new post; an edited post starts from its own. */
+  initialBlocks?: PostBlock[];
 }
 
 export function ComboEditor({
@@ -45,6 +47,7 @@ export function ComboEditor({
   onSubmit,
   hideNickname = false,
   draftKey,
+  initialBlocks,
 }: ComboEditorProps) {
   const copy = serviceMessages[serviceLocale].combo;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
@@ -198,7 +201,7 @@ export function ComboEditor({
           draftKey={draftKey ?? (initialPost ? `sts-combo-edit:${initialPost.id}` : "sts-combo-draft")}
           submitLabel={initialPost ? copy.saveChanges : copy.submit}
           maxChars={null}
-          initialBlocks={initialPost?.content}
+          initialBlocks={initialPost?.content ?? initialBlocks}
           submitIconSrc="/images/sts2/badges/ccccombo.webp"
           entityInsertRequest={entityInsertRequest}
           youtubeExtension={youtubeExtension}

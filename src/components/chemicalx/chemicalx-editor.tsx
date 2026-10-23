@@ -24,6 +24,7 @@ interface ChemicalXEditorProps {
   onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void>;
   hideNickname?: boolean;
   draftKey?: string;
+  initialBlocks?: PostBlock[];
 }
 
 export function ChemicalXEditor({
@@ -33,6 +34,7 @@ export function ChemicalXEditor({
   onSubmit,
   hideNickname = false,
   draftKey = "sts-chemicalx-draft",
+  initialBlocks,
 }: ChemicalXEditorProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
@@ -73,6 +75,7 @@ export function ChemicalXEditor({
           keywordTip={copy.keywordTip}
           minChars={CHEMICAL_POST_MIN_CHARS}
           maxChars={CHEMICAL_POST_MAX_CHARS}
+          initialBlocks={initialBlocks}
         />
       </div>
     </div>

@@ -579,3 +579,138 @@ export function pagestormLoremDoc(copy: PagestormCopy): JSONContent {
     ],
   };
 }
+
+function mention(text: string, keyword: string, entityId: string, entityType: string): JSONContent {
+  return {
+    type: "pagestormMention",
+    attrs: { text, keyword, description: "", entityId, entityType },
+  };
+}
+
+function cell(type: "tableHeader" | "tableCell", value: string): JSONContent {
+  return { type, content: [paragraph([text(value)])] };
+}
+
+/**
+ * Every Pagestorm node and mark once, in a short document. The dev editor
+ * page starts from it; pagestormLoremDoc above is the exhaustive style grid.
+ */
+export function pagestormFeatureSampleDoc(): JSONContent {
+  const steam = CANNED_BOOKMARKS[0]!;
+  return {
+    type: "doc",
+    content: [
+      heading(2, "Lorem ipsum dolor"),
+      paragraph([
+        text("Lorem ipsum "),
+        text("dolor", [{ type: "bold" }]),
+        text(" sit "),
+        text("amet", [{ type: "italic" }]),
+        text(", "),
+        text("consectetur", [{ type: "strike" }]),
+        text(" "),
+        text("adipiscing()", [{ type: "code" }]),
+        text(" elit, "),
+        text("sed do", [{ type: "pagestormColor", attrs: { colorKey: "spire-gold" } }, { type: "sine" }]),
+        text(" "),
+        text("eiusmod", [{ type: "pagestormColor", attrs: { colorKey: "spire-red" } }, { type: "jitter" }]),
+        text(" "),
+        text("tempor", [{ type: "pagestormColor", attrs: { colorKey: "character-silent" } }]),
+        text("."),
+      ]),
+      paragraph([
+        mention("강펀치", "강타", "BASH", "card"),
+        text("로 "),
+        mention("취약", "취약", "VULNERABLE", "power"),
+        text("을 걸고 "),
+        mention("강타", "강타", "sts1:cards:bash", "card"),
+        text("(STS1)와 비교. 내부 링크 "),
+        {
+          type: "pagestormInternalLink",
+          attrs: {
+            href: "/byrdispatch",
+            label: "섀소식",
+            title: "섀소식",
+            preview: "슬서운 이야기 업데이트 소식",
+            ogImage: "",
+            ogImageAlt: "",
+          },
+        },
+        text(", 외부 링크 "),
+        text(steam.title, [{
+          type: "link",
+          attrs: {
+            href: steam.url,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            class: "pagestorm-inline-link",
+          },
+        }]),
+        text("."),
+      ]),
+      heading(3, "Ut enim ad minim"),
+      {
+        type: "bulletList",
+        content: [
+          {
+            type: "listItem",
+            content: [
+              paragraph([text(LOREM_P2.slice(0, 40))]),
+              {
+                type: "bulletList",
+                content: [{ type: "listItem", content: [paragraph([text("nisi ut aliquip")])] }],
+              },
+            ],
+          },
+          { type: "listItem", content: [paragraph([text("ex ea commodo consequat")])] },
+        ],
+      },
+      {
+        type: "orderedList",
+        content: [
+          { type: "listItem", content: [paragraph([text("Duis aute irure")])] },
+          { type: "listItem", content: [paragraph([text("in reprehenderit")])] },
+        ],
+      },
+      {
+        type: "blockquote",
+        content: [paragraph([text(LOREM_LIGHT.slice(0, 60))])],
+      },
+      {
+        type: "codeBlock",
+        attrs: { language: "ts" },
+        content: [text("const deck = [\"강타\", \"수비\"];\nplay(deck[0]);")],
+      },
+      {
+        type: "table",
+        content: [
+          { type: "tableRow", content: [cell("tableHeader", "카드"), cell("tableHeader", "비용"), cell("tableHeader", "메모")] },
+          { type: "tableRow", content: [cell("tableCell", "강타"), cell("tableCell", "2"), cell("tableCell", "lorem")] },
+          { type: "tableRow", content: [cell("tableCell", "수비"), cell("tableCell", "1"), cell("tableCell", "ipsum")] },
+        ],
+      },
+      {
+        type: "details",
+        attrs: { open: true },
+        content: [
+          { type: "detailsSummary", content: [text("Excepteur sint occaecat")] },
+          { type: "detailsContent", content: [paragraph([text("cupidatat non proident, sunt in culpa.")])] },
+        ],
+      },
+      { type: "horizontalRule" },
+      paragraph([text("center · Lorem ipsum")], "center"),
+      paragraph([text("right · dolor sit amet")], "right"),
+      sampleAssetNode("PAGESTORM", "card", "left"),
+      sampleAssetNode("CHEMICAL_X", "relic", "center"),
+      youtubeNode(),
+      {
+        type: "pagestormLightSection",
+        content: [
+          heading(3, "Light section"),
+          paragraph([text(LOREM_LIGHT.slice(0, 80))]),
+        ],
+      },
+      paragraph([text("{ 로 게임 요소, / 로 사이트 경로를 이어서 써 보세요.")]),
+    ],
+  };
+}
