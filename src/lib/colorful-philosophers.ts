@@ -6,6 +6,7 @@ import {
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 
 export const COLORFUL_PHILOSOPHERS_HREF = "/colorful-philosophers";
+export const COLORFUL_PHILOSOPHERS_DEV_HREF = "/dev/colorful-philosophers";
 export const COLORFUL_PHILOSOPHERS_TOKEN_SRC = "/images/sts2/modifiers/draft.webp";
 export const COLORFUL_PHILOSOPHERS_BACKGROUND_SRC = "/images/sts2/events/colorful_philosophers.webp";
 export const COLORFUL_PHILOSOPHERS_POSTS_TABLE = "colorful_philosopher_posts";
@@ -83,6 +84,10 @@ export function colorfulPhilosophersWeekStart(now = new Date()): string {
     kst.getUTCDate() - mondayOffset,
   ));
   return monday.toISOString().slice(0, 10);
+}
+
+export function colorfulPhilosophersNextWeekStart(now = new Date()): string {
+  return addColorfulPhilosophersDays(colorfulPhilosophersWeekStart(now), 7);
 }
 
 export function addColorfulPhilosophersDays(value: string, days: number): string {

@@ -14,6 +14,8 @@ import {
 import Image from "@/components/ui/static-image";
 import { useMailboxReply } from "@/hooks/use-mailbox-reply";
 import { useNavSeen } from "@/hooks/use-nav-seen";
+import { useColorfulPhilosophersNextWeekOpen } from "@/hooks/use-colorful-philosopher-posts";
+import { COLORFUL_PHILOSOPHERS_DEV_HREF } from "@/lib/colorful-philosophers";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
   GAME_LOCALE_NATIVE_LABELS,
@@ -750,7 +752,16 @@ export function SiteNavbar() {
     ...item,
     attention: item.attentionId ? navSeen.unreadIds.includes(item.attentionId) : item.attention,
   }));
-  const devItems = getDevNavItems({ serviceLocale, gameLocale });
+  const rawDevItems = getDevNavItems({ serviceLocale, gameLocale });
+  const debateWeekOpen = useColorfulPhilosophersNextWeekOpen(
+    rawDevItems.some((item) => stripGameLocaleFromPath(item.href) === COLORFUL_PHILOSOPHERS_DEV_HREF),
+    pathname,
+  );
+  const devItems = rawDevItems.map((item) => (
+    stripGameLocaleFromPath(item.href) === COLORFUL_PHILOSOPHERS_DEV_HREF
+      ? { ...item, attention: debateWeekOpen }
+      : item
+  ));
   const mailboxReply = useMailboxReply();
   const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
   const isContactPage = stripGameLocaleFromPath(pathname) === "/contact";
@@ -801,6 +812,7 @@ export function SiteNavbar() {
               items={devItems}
               align="left"
               layout="grid"
+              attention={debateWeekOpen}
             />
           )}
         </div>

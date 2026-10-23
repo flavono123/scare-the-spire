@@ -7,6 +7,8 @@ import {
   colorfulPhilosopherPostFromRow,
   colorfulPhilosopherReactionStorageKey,
   colorfulPhilosophersCommentThreadKey,
+  colorfulPhilosophersNextWeekStart,
+  COLORFUL_PHILOSOPHER_SLOTS,
   isColorfulPhilosopherReaction,
   isMissingColorfulPhilosopherPosts,
   type ColorfulPhilosopherPost,
@@ -67,6 +69,31 @@ export function useColorfulPhilosopherWeek(env = supabaseEnv) {
   }, [env, reloadKey]);
 
   return { posts, loading, unavailable, missing, reload };
+}
+
+/** True when next week's production reservation is missing any slot; rechecked per `refreshKey`. */
+export function useColorfulPhilosophersNextWeekOpen(enabled: boolean, refreshKey: string): boolean {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!enabled || !supabaseEnabled) return;
+    let cancelled = false;
+    withSupabaseTimeout(
+      "colorful_philosopher_posts.next_week",
+      supabase.from(COLORFUL_PHILOSOPHERS_POSTS_TABLE).select("slot")
+        .eq("env", "production")
+        .eq("week_start", colorfulPhilosophersNextWeekStart()),
+    ).then(({ data, error }) => {
+      if (cancelled || error) return;
+      const filled = new Set((data ?? []).map((row) => row.slot));
+      setOpen(COLORFUL_PHILOSOPHER_SLOTS.some((slot) => !filled.has(slot)));
+    }).catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled, refreshKey]);
+
+  return enabled && open;
 }
 
 export function useColorfulPhilosopherPost(postId: string) {

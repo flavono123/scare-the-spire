@@ -25,6 +25,7 @@ import {
 } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 import { DEBATE_HREF, DEBATE_TOKEN_SRC } from "@/lib/debate";
+import { COLORFUL_PHILOSOPHERS_DEV_HREF } from "@/lib/colorful-philosophers";
 import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
 import { isLatestByrdispatchNewSection } from "@/lib/toy-box-news";
 import { navSeenIdForHref } from "@/lib/nav-seen";
@@ -189,7 +190,7 @@ export const devNavItems = [
   },
   {
     group: "서비스 개발",
-    href: "/dev/colorful-philosophers",
+    href: COLORFUL_PHILOSOPHERS_DEV_HREF,
     label: "토론 주차 예약",
     icon: DEBATE_TOKEN_SRC,
     strictDevOnly: true,
