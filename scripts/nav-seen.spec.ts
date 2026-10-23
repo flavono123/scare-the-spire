@@ -3,8 +3,12 @@ import {
   contentIsNewerThanSeen,
   displayedUnreadIds,
   effectiveUnreadIds,
+  markNavVisit,
+  menuUnreadSince,
   navSeenIdForHref,
   navSeenStorageKey,
+  readMenuUnreadSince,
+  readNavMenuSeen,
   readNavSeen,
   surfaceIdForPath,
   toyBoxHasUnread,
@@ -45,5 +49,30 @@ assert.equal(toyBoxHasUnread(effectiveUnreadIds([], { combo: true })), true);
 assert.equal(toyBoxHasUnread(effectiveUnreadIds(["combo", "transfigure"], { combo: false, transfigure: false })), false);
 assert.equal(contentIsNewerThanSeen("2026-01-01T00:00:00.000Z", "2026-09-24T00:00:00.000Z"), false);
 assert.equal(contentIsNewerThanSeen("2026-09-25T00:00:00.000Z", "2026-09-24T00:00:00.000Z"), true);
+
+memory.clear();
+readNavSeen(storage, "2026-09-01T00:00:00.000Z");
+// A Toy Box index clears the menu dot (and rows it lights) but keeps index read tint.
+assert.equal(markNavVisit(storage, "/this-or-that", "2026-09-30T00:00:00.000Z"), "this-or-that");
+assert.equal(readNavSeen(storage)["this-or-that"], "2026-09-01T00:00:00.000Z");
+assert.equal(readNavMenuSeen(storage)["this-or-that"], "2026-09-30T00:00:00.000Z");
+assert.equal(readNavMenuSeen(storage)["favorite-tournament"], "2026-09-30T00:00:00.000Z");
+assert.equal(readMenuUnreadSince(storage)["this-or-that"], "2026-09-30T00:00:00.000Z");
+assert.equal(readMenuUnreadSince(storage).combo, "2026-09-01T00:00:00.000Z");
+// A post marks the surface read.
+markNavVisit(storage, "/en/c-c-c-combo/abc", "2026-10-01T00:00:00.000Z");
+assert.equal(readNavSeen(storage).combo, "2026-10-01T00:00:00.000Z");
+// Patch notes still clear only from a note, not the index.
+markNavVisit(storage, "/patches", "2026-10-02T00:00:00.000Z");
+assert.equal(readNavMenuSeen(storage)["patch-notes"], undefined);
+assert.equal(readMenuUnreadSince(storage)["patch-notes"], "2026-09-01T00:00:00.000Z");
+markNavVisit(storage, "/patches/neowsletters", "2026-10-02T00:00:00.000Z");
+assert.equal(readNavMenuSeen(storage).neowsletters, undefined);
+markNavVisit(storage, "/patches/0.111.0", "2026-10-03T00:00:00.000Z");
+assert.equal(readNavSeen(storage)["patch-notes"], "2026-10-03T00:00:00.000Z");
+assert.deepEqual(
+  menuUnreadSince({ combo: "2026-10-05T00:00:00.000Z" }, { combo: "2026-10-01T00:00:00.000Z" }),
+  { combo: "2026-10-05T00:00:00.000Z" },
+);
 
 console.log("nav-seen.spec.ts: ok");

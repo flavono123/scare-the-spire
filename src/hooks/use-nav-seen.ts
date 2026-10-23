@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import {
   effectiveUnreadIds,
   fetchUnreadSurfaceIds,
+  markNavVisit,
   publishNavSeen,
+  readMenuUnreadSince,
   readNavForce,
-  readNavSeen,
   readUnreadCache,
   seenStamp,
-  NAV_SEEN_SURFACES,
-  surfaceIdForPath,
   topBarPatchUnread,
   toyBoxHasUnread,
   writeNavForce,
@@ -20,21 +19,12 @@ import {
   NAV_SEEN_EVENT,
   type NavSeenMap,
 } from "@/lib/nav-seen";
-import { stripGameLocaleFromPath } from "@/lib/i18n";
 
 export function useNavSeen(pathname: string): { unreadIds: string[]; toyBox: boolean; patches: boolean } {
   const [unreadIds, setUnreadIds] = useState<string[]>([]);
 
   useEffect(() => {
-    const surfaceId = surfaceIdForPath(pathname);
-    const surface = NAV_SEEN_SURFACES.find((item) => item.id === surfaceId);
-    const path = stripGameLocaleFromPath(pathname);
-    const onIndex = Boolean(surface && path === surface.href);
-    if (surfaceId && !onIndex) {
-      const seen = readNavSeen(window.localStorage);
-      seen[surfaceId] = new Date().toISOString();
-      writeNavSeen(window.localStorage, seen);
-    }
+    const surfaceId = markNavVisit(window.localStorage, pathname);
 
     let cancelled = false;
     const apply = (ids: readonly string[]) => {
@@ -42,7 +32,7 @@ export function useNavSeen(pathname: string): { unreadIds: string[]; toyBox: boo
     };
 
     const load = () => {
-      const seen = readNavSeen(window.localStorage);
+      const seen = readMenuUnreadSince(window.localStorage);
       const stamp = seenStamp(seen);
       const cached = readUnreadCache(window.sessionStorage, stamp);
       if (cached) {

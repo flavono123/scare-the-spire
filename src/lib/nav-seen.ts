@@ -16,7 +16,10 @@ export function contentIsNewerThanSeen(publishedAt: string, seenAt: string): boo
 export const NAV_SEEN_EVENT = "sts-nav-seen";
 
 const STORAGE_PREFIX = "sts-nav-seen:";
-const FORCE_PREFIX = "sts-nav-force:";
+/** Toy Box index visits dismiss only the menu dot; post visits still move `seen`. */
+const MENU_SEEN_PREFIX = "sts-nav-menu-seen:";
+// Bumped to drop the dev chips' forced marks stored under "sts-nav-force:".
+const FORCE_PREFIX = "sts-nav-force-v2:";
 const UNREAD_CACHE_PREFIX = "sts-nav-unread:";
 const UNREAD_CACHE_MS = 60_000;
 
@@ -56,6 +59,10 @@ export function navSeenStorageKey(env = supabaseEnv): string {
   return `${STORAGE_PREFIX}${env}`;
 }
 
+export function navMenuSeenStorageKey(env = supabaseEnv): string {
+  return `${MENU_SEEN_PREFIX}${env}`;
+}
+
 export function navForceStorageKey(env = supabaseEnv): string {
   return `${FORCE_PREFIX}${env}`;
 }
@@ -88,6 +95,63 @@ export function readNavSeen(storage: Pick<Storage, "getItem" | "setItem">, now =
 
 export function writeNavSeen(storage: Pick<Storage, "setItem">, seen: NavSeenMap): void {
   storage.setItem(navSeenStorageKey(), JSON.stringify(seen));
+}
+
+export function readNavMenuSeen(storage: Pick<Storage, "getItem">): NavSeenMap {
+  try {
+    const raw = storage.getItem(navMenuSeenStorageKey());
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    const menuSeen: NavSeenMap = {};
+    for (const surface of NAV_SEEN_SURFACES) {
+      const value = parsed[surface.id];
+      if (typeof value === "string" && value.length > 0) menuSeen[surface.id] = value;
+    }
+    return menuSeen;
+  } catch {
+    return {};
+  }
+}
+
+/** Menu dots compare against the later of the post-read time and the index-dismiss time. */
+export function menuUnreadSince(seen: NavSeenMap, menuSeen: NavSeenMap): NavSeenMap {
+  const since: NavSeenMap = { ...seen };
+  for (const [id, at] of Object.entries(menuSeen)) {
+    if (!since[id] || at > since[id]) since[id] = at;
+  }
+  return since;
+}
+
+export function readMenuUnreadSince(storage: Pick<Storage, "getItem" | "setItem">): NavSeenMap {
+  return menuUnreadSince(readNavSeen(storage), readNavMenuSeen(storage));
+}
+
+/** Records a visit: a post marks its surface read; a Toy Box index only clears its menu dot. */
+export function markNavVisit(
+  storage: Pick<Storage, "getItem" | "setItem">,
+  pathname: string,
+  now = new Date().toISOString(),
+): string | null {
+  const surfaceId = surfaceIdForPath(pathname);
+  const surface = NAV_SEEN_SURFACES.find((item) => item.id === surfaceId);
+  if (!surface) return null;
+  const onIndex = stripGameLocaleFromPath(pathname) === surface.href;
+  try {
+    if (!onIndex) {
+      const seen = readNavSeen(storage, now);
+      seen[surface.id] = now;
+      writeNavSeen(storage, seen);
+    } else if (!surface.catalog) {
+      const menuSeen = readNavMenuSeen(storage);
+      for (const item of NAV_SEEN_SURFACES) {
+        if (item.id === surface.id || item.alsoShowOn === surface.id) menuSeen[item.id] = now;
+      }
+      storage.setItem(navMenuSeenStorageKey(), JSON.stringify(menuSeen));
+    }
+  } catch {
+    // Storage can be blocked; the dots just stay as they were.
+  }
+  return surface.id;
 }
 
 export function surfaceIdForPath(pathname: string): string | null {

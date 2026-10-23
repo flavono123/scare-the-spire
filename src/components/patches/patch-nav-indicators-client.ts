@@ -1,15 +1,12 @@
-import { stripGameLocaleFromPath } from "@/lib/i18n";
 import {
   effectiveUnreadIds,
   fetchUnreadSurfaceIds,
+  markNavVisit,
   NAV_SEEN_EVENT,
+  readMenuUnreadSince,
   readNavForce,
-  readNavSeen,
-  NAV_SEEN_SURFACES,
-  surfaceIdForPath,
   topBarPatchUnread,
   toyBoxHasUnread,
-  writeNavSeen,
 } from "@/lib/nav-seen";
 
 function applyUnread(ids: readonly string[]) {
@@ -26,17 +23,8 @@ function applyUnread(ids: readonly string[]) {
 }
 
 function sync() {
-  const surfaceId = surfaceIdForPath(window.location.pathname);
-  const surface = NAV_SEEN_SURFACES.find((item) => item.id === surfaceId);
-  const path = stripGameLocaleFromPath(window.location.pathname);
-  const onIndex = Boolean(surface && path === surface.href);
-  if (surfaceId && !onIndex) {
-    const seen = readNavSeen(window.localStorage);
-    seen[surfaceId] = new Date().toISOString();
-    writeNavSeen(window.localStorage, seen);
-  }
-  const seen = readNavSeen(window.localStorage);
-  void fetchUnreadSurfaceIds(seen).then((ids) => {
+  const surfaceId = markNavVisit(window.localStorage, window.location.pathname);
+  void fetchUnreadSurfaceIds(readMenuUnreadSince(window.localStorage)).then((ids) => {
     applyUnread(surfaceId ? ids.filter((id) => id !== surfaceId) : ids);
   });
 }
