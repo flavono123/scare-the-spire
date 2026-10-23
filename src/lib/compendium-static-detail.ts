@@ -88,6 +88,7 @@ export type StaticDetailLink = {
 export type StaticDetailFact = {
   label: string;
   value: string;
+  href?: string;
 };
 
 export type StaticDetailText = {
@@ -447,11 +448,14 @@ function hpRange(min: number | null, max: number | null): string | null {
   return max !== null && max !== min ? `${min}–${max}` : String(min);
 }
 
-function poolLabel(ctx: DetailContext, pool: string): string | null {
-  const character = ctx.resources.characters.find((row) => row.id.toLowerCase() === pool.toLowerCase());
-  if (character) return character.name;
+/** The card, relic, or potion pool, linked to the character page when the pool is a character. */
+function poolFact(ctx: DetailContext, pool: string): StaticDetailFact[] {
+  const characterLink = ctx.link("character", pool);
+  if (characterLink) {
+    return [{ label: ctx.labels.character, value: characterLink.label, href: characterLink.href }];
+  }
   const pools = getCodexServiceMessages(ctx.serviceLocale).labels.pools as Record<string, string>;
-  return pools[pool] ?? null;
+  return fact(ctx.labels.character, pools[pool]);
 }
 
 function actLabel(ctx: DetailContext, act: string | null): string | null {
@@ -475,7 +479,7 @@ function cardModel(ctx: DetailContext, card: CodexCard) {
       ...fact(labels.starCost, card.isXStarCost ? "X" : card.starCost),
       ...fact(labels.type, card.typeLabel),
       ...fact(labels.rarity, card.rarityLabel),
-      ...fact(labels.character, poolLabel(ctx, card.color)),
+      ...poolFact(ctx, card.color),
     ],
     texts: [
       ...text(labels.description, card.description),
@@ -530,7 +534,7 @@ function buildTypeModel(
         imageUrl: relic.imageUrl ?? relic.betaImageUrl,
         facts: [
           ...fact(labels.rarity, gameUi.relicCollection.rarities[relic.rarity]?.label),
-          ...fact(labels.character, poolLabel(ctx, relic.pool)),
+          ...poolFact(ctx, relic.pool),
         ],
         texts: [
           ...text(labels.description, relic.description),
@@ -555,7 +559,7 @@ function buildTypeModel(
         imageUrl: potion.imageUrl,
         facts: [
           ...fact(labels.rarity, gameUi.potionLab.rarities[potion.rarity]?.label),
-          ...fact(labels.character, poolLabel(ctx, potion.pool)),
+          ...poolFact(ctx, potion.pool),
         ],
         texts: text(labels.description, potion.description),
         linkGroups: [

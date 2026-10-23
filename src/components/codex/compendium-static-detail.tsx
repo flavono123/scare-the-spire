@@ -57,7 +57,9 @@ export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetai
             {model.facts.map((fact) => (
               <div key={fact.label} className="min-w-0">
                 <dt className="font-service text-xs text-gray-500">{fact.label}</dt>
-                <dd className="font-game-text text-sm text-gray-200">{fact.value}</dd>
+                <dd className="font-game-text text-sm text-gray-200">
+                  {fact.href ? <StaticLink link={{ href: fact.href, label: fact.value }} /> : fact.value}
+                </dd>
               </div>
             ))}
           </dl>
