@@ -223,20 +223,26 @@ function documentGameLocale(relative) {
   return gameLocaleByPathSegment[segment] ?? null;
 }
 
+function setHtmlTagAttribute(tag, name, value) {
+  const attribute = new RegExp(`\\s${name}="[^"]*"`);
+  return attribute.test(tag)
+    ? tag.replace(attribute, ` ${name}="${value}"`)
+    : tag.replace(/^<html\b/, `<html ${name}="${value}"`);
+}
+
 /**
  * The shared root layout prerenders <html lang="ko">. Locale-prefixed pages use
  * the English service UI, so fix the document attributes before serving them.
+ * Error shells (<html id="__next_error__">) have none, so they are added.
  */
 function localizeDocumentRoot(html, gameLocale, relative) {
   const match = /<html\b[^>]*>/.exec(html);
   if (!match) throw new Error(`No <html> tag in ${relative}`);
-  const tag = match[0]
-    .replace(/\slang="[^"]*"/, ' lang="en"')
-    .replace(/\sdata-service-locale="[^"]*"/, ' data-service-locale="en"')
-    .replace(/\sdata-game-locale="[^"]*"/, ` data-game-locale="${gameLocale}"`);
-  if (!tag.includes(' lang="en"') || !tag.includes(` data-game-locale="${gameLocale}"`)) {
-    throw new Error(`Unexpected <html> attributes in ${relative}: ${match[0]}`);
-  }
+  const tag = [
+    ["lang", "en"],
+    ["data-service-locale", "en"],
+    ["data-game-locale", gameLocale],
+  ].reduce((current, [name, value]) => setHtmlTagAttribute(current, name, value), match[0]);
   return `${html.slice(0, match.index)}${tag}${html.slice(match.index + match[0].length)}`;
 }
 
