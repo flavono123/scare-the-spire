@@ -124,16 +124,28 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
   expect(gameLocaleModal.status()).toBe(200);
   expect(gameLocaleModal.headers()["x-cf-static-page"]).toBe("compendium");
 
-  for (const path of [
-    "/compendium/powers/painful_stabs",
-    "/en/compendium/powers/painful_stabs",
+  // ko and en are each self-canonical with reciprocal ko/en/x-default alternates.
+  for (const [path, lang] of [
+    ["/compendium/powers/painful_stabs", "ko"],
+    ["/en/compendium/powers/painful_stabs", "en"],
   ]) {
-    const response = await page.goto(absolute(path), { waitUntil: "domcontentloaded" });
-    expect(response?.status()).toBe(200);
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-      "href",
-      canonical("/compendium/powers/painful_stabs"),
-    );
+    const response = await request.get(absolute(path), { headers: { Accept: "text/html" } });
+    expect(response.status(), path).toBe(200);
+    const html = await response.text();
+    expect(html, path).toMatch(new RegExp(`<html[^>]* lang="${lang}"`));
+
+    await page.goto(absolute(path), { waitUntil: "domcontentloaded" });
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical(path));
+    for (const [hrefLang, alternatePath] of [
+      ["ko", "/compendium/powers/painful_stabs"],
+      ["en", "/en/compendium/powers/painful_stabs"],
+      ["x-default", "/en/compendium/powers/painful_stabs"],
+    ]) {
+      await expect(page.locator(`link[rel="alternate"][hreflang="${hrefLang}"]`)).toHaveAttribute(
+        "href",
+        canonical(alternatePath),
+      );
+    }
   }
 });
 
