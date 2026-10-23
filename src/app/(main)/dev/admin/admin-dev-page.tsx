@@ -745,6 +745,7 @@ function blockText(blocks: PostBlock[] | null | undefined): string {
         : "*".repeat(Math.max(1, block.count));
     }
     if (block.type === "youtube") return block.title;
+    if (block.type === "link") return block.title;
     if (block.type === "history-run") return historyRunPlainText(block);
     if (block.type === "history-run-floor") return historyRunFloorPlainText(block);
     if (block.type === "card-con") return block.displayText;

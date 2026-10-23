@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { KeywordHoverTip } from "@/components/keyword-hover-tip";
-import { RichText } from "@/components/rich-text";
+import { LinkBlockAnchor, LinkifiedRichText } from "@/components/link-reference-anchor";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
   buildEntityKeywordIndex,
@@ -51,7 +51,7 @@ export function ComboPostRenderer({
     <span>
       {blocks.map((block, index) => {
         if (block.type === "text") {
-          return <RichText key={index} text={block.text} />;
+          return <LinkifiedRichText key={index} text={block.text} />;
         }
 
         if (block.type === "keyword") {
@@ -92,6 +92,10 @@ export function ComboPostRenderer({
               {block.title}
             </a>
           );
+        }
+
+        if (block.type === "link") {
+          return <LinkBlockAnchor key={index} href={block.href} title={block.title} />;
         }
 
         if (block.type === "history-run") return null;

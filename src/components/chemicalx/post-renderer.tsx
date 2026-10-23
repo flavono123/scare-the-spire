@@ -25,6 +25,7 @@ import { CardConTile } from "@/components/card-con/card-con-tile";
 import { EmoteGlyph } from "@/components/emote-con/emote-glyph";
 import type { HistoryRunFloorBlock } from "@/lib/chemical-types";
 import { EXTERNAL_PROSE_LINK_CLASS } from "@/lib/service-link-classes";
+import { LinkBlockAnchor } from "@/components/link-reference-anchor";
 
 const STAR_ICON_SRC = "/images/game-assets/card-misc/star_icon.png";
 
@@ -166,6 +167,10 @@ export function PostRenderer({
                 energyIconSrc={energyIconSrc}
               />
             );
+          }
+
+          if (block.type === "link") {
+            return <LinkBlockAnchor key={i} href={block.href} title={block.title} />;
           }
 
           if (block.type === "youtube") {

@@ -915,6 +915,8 @@ export function transfigureBlocksSignature(items: PostBlock[]): string {
       tokens.push(`card-con:${block.cardId}:${block.gameLocale}:${block.displayText}`);
     } else if (block.type === "emote-con") {
       tokens.push(`emote-con:${block.emoteId}`);
+    } else if (block.type === "link") {
+      tokens.push(`link:${block.href}:${block.title}`);
     } else {
       tokens.push(`youtube:${block.videoId}:${block.title}`);
     }

@@ -40,6 +40,13 @@ export interface YouTubeBlock {
   title: string;
 }
 
+/** Off-site link kept with the page title it had when pasted. */
+export interface LinkBlock {
+  type: "link";
+  href: string;
+  title: string;
+}
+
 /** Stable display metadata captured when a History Course run is referenced. */
 export interface HistoryRunReferenceSnapshot {
   title?: string | null;
@@ -117,6 +124,7 @@ export type PostBlock =
   | KeywordBlock
   | CostTokenBlock
   | YouTubeBlock
+  | LinkBlock
   | HistoryRunBlock
   | HistoryRunFloorBlock
   | TextConBlock

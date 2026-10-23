@@ -15,6 +15,7 @@ import {
 import { historyRunPlainText } from "@/lib/history-run-reference";
 import { isCoverSpec, type CoverSpec } from "@/lib/run-cover-types";
 import { isYouTubeVideoId } from "@/lib/youtube-reference";
+import { isSafeLinkHref, normalizeLinkTitle } from "@/lib/link-reference";
 import { emotePlainText, emoteStorageText, isEmoteId } from "@/lib/emote-con";
 
 function coverSpecFromUnknown(value: unknown): CoverSpec | null {
@@ -203,6 +204,12 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
             title,
           });
         }
+      } else if (node.type === "link-reference") {
+        const href = nodeString(node.attrs?.href).trim();
+        const title = nodeString(node.attrs?.title).trim();
+        if (isSafeLinkHref(href) && title) {
+          blocks.push({ type: "link", href, title: normalizeLinkTitle(title, href) });
+        }
       } else if (node.type === "history-run-reference") {
         const runId = nodeString(node.attrs?.runId).trim();
         if (!runId) continue;
@@ -318,6 +325,16 @@ export function blocksToTiptapDocument(blocks: PostBlock[]): JSONContent {
         },
       }];
     }
+    if (block.type === "link") {
+      return [{
+        type: "link-reference",
+        attrs: {
+          href: block.href,
+          title: block.title,
+          pendingLabel: "",
+        },
+      }];
+    }
     if (block.type === "history-run-floor") {
       return [{
         type: "history-run-floor",
@@ -393,6 +410,7 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
       if (b.type === "keyword") return stripNullCharacters(b.text);
       if (b.type === "cost-token") return costTokenPlainText(b.kind, b.count);
       if (b.type === "youtube") return stripNullCharacters(b.title);
+      if (b.type === "link") return stripNullCharacters(b.title);
       if (b.type === "history-run") return historyRunPlainText(b);
       if (b.type === "history-run-floor") return historyRunFloorPlainText(b);
       if (b.type === "text-con") return stripNullCharacters(b.text);
@@ -418,6 +436,8 @@ export function blocksToStorageText(blocks: PostBlock[]): string {
       if (b.type === "entity") return stripNullCharacters(b.displayText);
       if (b.type === "cost-token") return costTokenPlainText(b.kind, b.count);
       if (b.type === "youtube") return stripNullCharacters(b.title);
+      // The legacy text column keeps the address so the link survives there.
+      if (b.type === "link") return `${stripNullCharacters(b.title)} ${b.href}`;
       if (b.type === "history-run") return historyRunPlainText(b);
       if (b.type === "history-run-floor") return historyRunFloorPlainText(b);
       if (b.type === "text-con") return `[글자콘:${stripNullCharacters(b.text)}]`;

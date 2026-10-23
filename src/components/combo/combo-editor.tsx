@@ -15,6 +15,7 @@ import {
 import { HISTORY_COURSE_RELIC_IMAGE } from "@/lib/history-run-reference";
 import type { ServiceLocale } from "@/lib/i18n";
 import { EXTERNAL_PROSE_LINK_CLASS } from "@/lib/service-link-classes";
+import { isTitledLinkUrl } from "@/lib/link-reference";
 import { serviceMessages } from "@/messages/service";
 import { ComboResourcePicker } from "./combo-resource-picker";
 import { ComboHistoryRunPicker } from "./combo-history-run-picker";
@@ -71,6 +72,11 @@ export function ComboEditor({
     copy.youtubePending,
     copy.youtubeUnavailable,
   ]);
+
+  const linkReferences = useMemo(() => ({
+    pending: copy.linkPending,
+    matches: isTitledLinkUrl,
+  }), [copy.linkPending]);
 
   const handleResourceSelect = useCallback((entity: EntityInfo) => {
     entityInsertRequestIdRef.current += 1;
@@ -196,6 +202,7 @@ export function ComboEditor({
           submitIconSrc="/images/sts2/badges/ccccombo.webp"
           entityInsertRequest={entityInsertRequest}
           youtubeExtension={youtubeExtension}
+          linkReferences={linkReferences}
           historyRunReferences={historyRunReferences}
         />
       </div>

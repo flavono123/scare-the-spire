@@ -17,6 +17,7 @@ import {
   isExternalHref,
 } from "@/lib/service-link-classes";
 import { isYouTubeVideoId, youtubeWatchUrl } from "@/lib/youtube-reference";
+import { isSafeLinkHref } from "@/lib/link-reference";
 import { serviceMessages } from "@/messages/service";
 import { EDITOR_SUGGESTION_Z_INDEX } from "./suggestion-popup";
 import { isModifiedClick, NEW_TAB_LINK_PROPS } from "./editor-link";
@@ -45,6 +46,11 @@ export function selectedLinkTarget(
       const href = text("href");
       if (!href) return null;
       return { href, label: text("title") || text("label") || href, kind: "internal" };
+    }
+    case "link-reference": {
+      const href = text("href");
+      if (!isSafeLinkHref(href)) return null;
+      return { href, label: text("title") || href, kind: "external" };
     }
     case "youtube-reference": {
       const videoId = text("videoId");

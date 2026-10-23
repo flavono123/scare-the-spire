@@ -33,6 +33,10 @@ import {
 } from "@/components/chemicalx/entity-context";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference-extension";
+import { LinkReferenceExtension } from "@/components/editor/link-reference-extension";
+import type { EditorView } from "@tiptap/pm/view";
+import { fetchLinkPreview } from "@/lib/link-preview-client";
+import { normalizeLinkTitle, parseHttpUrl } from "@/lib/link-reference";
 import { HistoryRunReferenceExtension } from "@/components/editor/history-run-reference-extension";
 import { HistoryRunFloorExtension, replaceExclusiveHistoryFloor } from "@/components/editor/history-run-floor-extension";
 import { TextConExtension } from "@/components/editor/text-con-extension";
@@ -440,6 +444,11 @@ export interface RichContentEditorProps {
     duplicate: string;
     unavailable: string;
   };
+  /** Pasted URLs that `matches` accepts become links titled from the page. */
+  linkReferences?: {
+    pending: string;
+    matches: (url: URL) => boolean;
+  };
   historyRunReferences?: {
     insertRequest: {
       requestId: number;
@@ -503,6 +512,7 @@ export function RichContentEditor({
   entityInsertRequest,
   contentReplaceRequest,
   youtubeExtension,
+  linkReferences,
   historyRunReferences,
   historyFloorInsertRequest = null,
   historyFloorMentions = null,
@@ -562,7 +572,8 @@ export function RichContentEditor({
       }
     }
   }, [cardConModalOpen, isMobile]);
-  const [youtubeResolving, setYoutubeResolving] = useState(false);
+  // Pasted YouTube/link references still fetching their titles.
+  const [resolvingReferences, setResolvingReferences] = useState(0);
   const [youtubeFeedback, setYoutubeFeedback] = useState<{
     tone: "aqua" | "error";
     message: string;
@@ -660,6 +671,34 @@ export function RichContentEditor({
     }
     syncEditorState(editor);
   }, [exactKeywordIndex, resolveKeyword, syncEditorState]);
+  const insertLinkReference = (view: EditorView, href: string, pendingLabel: string) => {
+    const referenceNode = view.state.schema.nodes["link-reference"];
+    if (!referenceNode) return;
+    view.dispatch(view.state.tr
+      .replaceSelectionWith(referenceNode.create({ href, title: "", pendingLabel }))
+      .insertText(" ")
+      .scrollIntoView());
+    setResolvingReferences((count) => count + 1);
+    void fetchLinkPreview(href)
+      .then((preview) => preview.title)
+      .catch(() => "")
+      .then((title) => {
+        const currentEditor = editorRef.current;
+        if (!currentEditor || currentEditor.isDestroyed || currentEditor.view !== view) return;
+        // Without a title the address itself stays as the label.
+        const resolved = normalizeLinkTitle(title, href);
+        const tr = view.state.tr;
+        view.state.doc.descendants((node, position) => {
+          if (node.type.name === "link-reference" && node.attrs.href === href && !node.attrs.title) {
+            tr.setNodeMarkup(position, undefined, { ...node.attrs, title: resolved });
+          }
+        });
+        if (tr.docChanged) view.dispatch(tr);
+      })
+      .finally(() => {
+        setResolvingReferences((count) => count - 1);
+      });
+  };
   const processEditorUpdateRef = useRef(processEditorUpdate);
   processEditorUpdateRef.current = processEditorUpdate;
 
@@ -691,6 +730,7 @@ export function RichContentEditor({
         })]
         : []),
       ...(youtubeExtension ? [YouTubeReferenceExtension] : []),
+      ...(linkReferences ? [LinkReferenceExtension] : []),
       ...(historyRunSlashCommands ? [HistoryRunReferenceExtension] : []),
       HistoryRunFloorExtension,
       ...(enableTextCon ? [TextConExtension] : []),
@@ -860,9 +900,15 @@ export function RichContentEditor({
       },
       transformPastedText: stripNullCharacters,
       handlePaste: (view, event) => {
-        if (!youtubeExtension) return false;
-
         const pastedText = event.clipboardData?.getData("text/plain").trim() ?? "";
+        const pastedUrl = linkReferences ? parseHttpUrl(pastedText) : null;
+        if (linkReferences && pastedUrl && linkReferences.matches(pastedUrl)) {
+          event.preventDefault();
+          insertLinkReference(view, pastedUrl.href, linkReferences.pending);
+          return true;
+        }
+
+        if (!youtubeExtension) return false;
         const videoId = parseYouTubeVideoId(pastedText);
         if (!videoId) return false;
 
@@ -891,7 +937,7 @@ export function RichContentEditor({
           .insertText(" ")
           .scrollIntoView();
         view.dispatch(insertTransaction);
-        setYoutubeResolving(true);
+        setResolvingReferences((count) => count + 1);
         setYoutubeFeedback({ tone: "aqua", message: youtubeExtension.pending });
 
         void resolveYouTubeReference(pastedText)
@@ -950,7 +996,7 @@ export function RichContentEditor({
             setYoutubeFeedback({ tone: "error", message: youtubeExtension.unavailable });
           })
           .finally(() => {
-            setYoutubeResolving(false);
+            setResolvingReferences((count) => count - 1);
           });
 
         return true;
@@ -979,6 +1025,7 @@ export function RichContentEditor({
     richPlaceholder,
     submitOnEnter,
     youtubeExtension,
+    linkReferences,
     historyRunSlashCommands,
     enableFloorHash,
   ]);
@@ -1253,7 +1300,7 @@ export function RichContentEditor({
   submitRef.current = handleSubmit;
 
   const isValid = (
-    !youtubeResolving
+    resolvingReferences === 0
     && blocksSubmittable
     && charCount >= minChars
     && (maxChars == null || charCount <= maxChars)
