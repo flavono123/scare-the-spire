@@ -1,5 +1,4 @@
-import fs from "node:fs/promises";
-import path from "node:path";
+import { buildAllEntities } from "@/lib/all-entities";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 import { getCardMaxUpgradeLevel, hasCardUpgrade, renderCardDescription } from "@/lib/codex-card-description";
 import {
@@ -67,8 +66,9 @@ import {
 } from "@/lib/compendium-resource-links";
 import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { patchLineHref } from "@/lib/patch-line-links";
+import { getSTS2PatchLines, getSTS2Patches, getSTS2Stories } from "@/lib/data";
 import {
-  RESOURCE_PATCH_INDEX_ASSET,
+  buildResourcePatchIndex,
   findResourcePatchIndexResource,
   resourcePatchLines,
   type ResourcePatchIndexData,
@@ -289,16 +289,23 @@ function loadResources(gameLocale: GameLocale): Promise<CompendiumDataResources>
   return promise;
 }
 
-let patchIndexPromise: Promise<ResourcePatchIndexData | null> | null = null;
+let patchIndexPromise: Promise<ResourcePatchIndexData> | null = null;
 
-function loadResourcePatchIndex(): Promise<ResourcePatchIndexData | null> {
-  patchIndexPromise ??= fs
-    .readFile(path.join(process.cwd(), "public", RESOURCE_PATCH_INDEX_ASSET), "utf8")
-    .then((raw) => JSON.parse(raw) as ResourcePatchIndexData)
-    .catch((error: unknown) => {
-      console.warn(`Compendium static detail has no change history: ${String(error)}`);
-      return null;
-    });
+// Built from data/ like scripts/generate-resource-patch-index.ts. Reading the
+// generated copy under public/ would make Next trace all of public/ into
+// every detail route.
+function loadResourcePatchIndex(): Promise<ResourcePatchIndexData> {
+  patchIndexPromise ??= Promise.all([
+    getSTS2PatchLines(),
+    getSTS2Patches(),
+    loadResources("kor"),
+    getSTS2Stories(),
+  ]).then(([patchLines, patches, resources, stories]) => buildResourcePatchIndex({
+    patchLines,
+    patches,
+    entities: buildAllEntities(resources),
+    stories,
+  }));
   return patchIndexPromise;
 }
 
@@ -875,8 +882,8 @@ async function buildHistory(
   id: string,
 ): Promise<StaticDetailHistoryLine[]> {
   const storyType = STORY_TYPE_BY_LINK_KIND[kind];
-  const data = storyType ? await loadResourcePatchIndex() : null;
-  if (!data || !storyType) return [];
+  if (!storyType) return [];
+  const data = await loadResourcePatchIndex();
   const resource = findResourcePatchIndexResource(data, storyType, id);
   if (!resource) return [];
 
