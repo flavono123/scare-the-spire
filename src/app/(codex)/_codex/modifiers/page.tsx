@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getCodexModifiers } from "@/lib/codex-data";
-import { loadAllEntities } from "@/lib/load-all-entities";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -13,7 +12,8 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { ModifierLibrary } from "@/components/codex/modifier-library";
+import { ModifierLibraryLoader } from "@/components/codex/modifier-library-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 
 export const dynamic = "force-static";
 
@@ -45,22 +45,26 @@ export default async function CodexModifiersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [modifiers, entities, gameUi] = await Promise.all([
+  const [modifiers, gameUi] = await Promise.all([
     getCodexModifiers({ gameLocale }),
-    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-
   return (
-    <Suspense>
-      <ModifierLibrary
-        serviceLocale={serviceLocale}
+    <>
+      <Suspense>
+        <ModifierLibraryLoader
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          gameUi={gameUi}
+          title={gameUi.nav.modifiers}
+          modifiers={modifiers}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
         gameLocale={gameLocale}
-        gameUi={gameUi}
         title={gameUi.nav.modifiers}
-        modifiers={modifiers}
-        entities={entities}
+        groups={[{ type: "modifier", entries: modifiers }]}
       />
-    </Suspense>
+    </>
   );
 }

@@ -1,20 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import {
-  getCodexAncients,
-  getCodexCards,
-  getCodexCharacters,
-  getCodexEnchantments,
-  getCodexEvents,
-  getCodexMonsters,
-  getCodexPotions,
-  getCodexPowers,
-  getCodexRelics,
-} from "@/lib/codex-data";
-import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
-import { loadAllEntities } from "@/lib/load-all-entities";
+import { getCodexAncients, getCodexCharacters, getCodexRelics } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
-import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -27,7 +15,8 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { RelicLibrary } from "@/components/codex/relic-library";
+import { RelicLibraryLoader } from "@/components/codex/relic-library-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 
 export const dynamic = "force-static";
 
@@ -72,63 +61,43 @@ export default async function CodexRelicsPage({
     relics,
     characters,
     ancients,
-    cards,
-    enchantments,
-    events,
-    powers,
-    monsters,
-    potions,
     patches,
-    changes,
     versionDiffs,
     meta,
-    entities,
     gameUi,
-    tipCatalogSources,
   ] = await Promise.all([
     getCodexRelics({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexAncients({ gameLocale }),
-    getCodexCards({ includeDeprecated: true, gameLocale }),
-    getCodexEnchantments({ gameLocale }),
-    getCodexEvents({ gameLocale }),
-    getCodexPowers({ includeDeprecated: true, gameLocale }),
-    getCodexMonsters({ gameLocale }),
-    getCodexPotions({ gameLocale }),
     getSTS2Patches(),
-    getSTS2Changes(),
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
-    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
-    loadCardSideTipCatalogSources(gameLocale),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
-    <Suspense>
-      <RelicLibrary
-        serviceLocale={serviceLocale}
-        gameUi={gameUi}
+    <>
+      <Suspense>
+        <RelicLibraryLoader
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          title={gameUi.relicCollectionTitle}
+          relics={relics}
+          characters={characters}
+          ancients={ancients}
+          versions={versions}
+          currentVersion={meta.version}
+          patches={patches}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
+        gameLocale={gameLocale}
         title={gameUi.relicCollectionTitle}
-        relics={relics}
-        characters={characters}
-        ancients={ancients}
-        versions={versions}
-        currentVersion={meta.version}
-        patches={patches}
-        changes={changes}
-        versionDiffs={versionDiffs}
-        entities={entities}
-        relatedCards={cards}
-        relatedEvents={events}
-        relatedEnchantments={enchantments}
-        relatedPowers={powers}
-        relatedMonsters={monsters}
-        relatedPotions={potions}
-        tipCatalogSources={tipCatalogSources}
+        groups={[{ type: "relic", entries: relics }]}
       />
-    </Suspense>
+    </>
   );
 }

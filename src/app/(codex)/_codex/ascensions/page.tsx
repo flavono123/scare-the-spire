@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getCodexAscensions } from "@/lib/codex-data";
-import { loadAllEntities } from "@/lib/load-all-entities";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -13,7 +12,8 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { AscensionLibrary } from "@/components/codex/ascension-library";
+import { AscensionLibraryLoader } from "@/components/codex/ascension-library-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 
 export const dynamic = "force-static";
 
@@ -45,22 +45,26 @@ export default async function CodexAscensionsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [ascensions, entities, gameUi] = await Promise.all([
+  const [ascensions, gameUi] = await Promise.all([
     getCodexAscensions({ gameLocale }),
-    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-
   return (
-    <Suspense>
-      <AscensionLibrary
-        serviceLocale={serviceLocale}
+    <>
+      <Suspense>
+        <AscensionLibraryLoader
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          gameUi={gameUi}
+          title={gameUi.nav.ascensions}
+          ascensions={ascensions}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
         gameLocale={gameLocale}
-        gameUi={gameUi}
         title={gameUi.nav.ascensions}
-        ascensions={ascensions}
-        entities={entities}
+        groups={[{ type: "ascension", entries: ascensions }]}
       />
-    </Suspense>
+    </>
   );
 }

@@ -1,17 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import {
-  getCodexCards,
-  getCodexCharacters,
-  getCodexEnchantments,
-  getCodexEvents,
-  getCodexPotions,
-  getCodexPowers,
-  getCodexRelics,
-  getMadScienceBaseCard,
-} from "@/lib/codex-data";
+import { getCodexCharacters, getCodexEvents } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
-import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -23,7 +14,8 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { EventList } from "@/components/codex/event-list";
+import { EventListLoader } from "@/components/codex/event-list-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 import { toEventCharacterQuoteSpeaker } from "@/lib/event-character-quotes";
 
 export const dynamic = "force-static";
@@ -56,44 +48,35 @@ export default async function CodexEventsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [events, characters, cards, enchantments, potions, powers, relics, madScienceBaseCard, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
+  const [events, characters, patches, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexEvents({ gameLocale }),
     getCodexCharacters({ gameLocale }),
-    getCodexCards({ includeDeprecated: true, gameLocale }),
-    getCodexEnchantments({ gameLocale }),
-    getCodexPotions({ gameLocale }),
-    getCodexPowers({ includeDeprecated: true, gameLocale }),
-    getCodexRelics({ gameLocale }),
-    getMadScienceBaseCard({ gameLocale }),
     getSTS2Patches(),
-    getSTS2Changes(),
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
   ]);
-
   const versions = getVersionsWithDiffs(patches, versionDiffs);
-
   return (
-    <Suspense>
-      <EventList
-        serviceLocale={serviceLocale}
-        gameUi={gameUi}
+    <>
+      <Suspense>
+        <EventListLoader
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          title={gameUi.eventsTitle}
+          events={events}
+          characters={characters.map(toEventCharacterQuoteSpeaker)}
+          versions={versions}
+          currentVersion={meta.version}
+          patches={patches}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
+        gameLocale={gameLocale}
         title={gameUi.eventsTitle}
-        cards={cards}
-        enchantments={enchantments}
-        events={events}
-        characters={characters.map(toEventCharacterQuoteSpeaker)}
-        madScienceBaseCard={madScienceBaseCard}
-        potions={potions}
-        powers={powers}
-        relics={relics}
-        versions={versions}
-        currentVersion={meta.version}
-        patches={patches}
-        changes={changes}
-        versionDiffs={versionDiffs}
+        groups={[{ type: "event", entries: events }]}
       />
-    </Suspense>
+    </>
   );
 }

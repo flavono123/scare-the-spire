@@ -1,17 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import {
-  getCodexCards,
-  getCodexPotions,
-  getCodexCharacters,
-  getCodexEnchantments,
-  getCodexEvents,
-  getCodexMonsters,
-  getCodexPowers,
-} from "@/lib/codex-data";
-import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
+import { getCodexPotions, getCodexCharacters } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
-import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -23,7 +14,8 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { PotionLibrary } from "@/components/codex/potion-library";
+import { PotionLibraryLoader } from "@/components/codex/potion-library-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 
 export const dynamic = "force-static";
 
@@ -57,56 +49,42 @@ export default async function CodexPotionsPage({
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [
     potions,
-    cards,
     characters,
-    enchantments,
     patches,
-    changes,
     versionDiffs,
     meta,
     gameUi,
-    events,
-    powers,
-    monsters,
-    tipCatalogSources,
   ] = await Promise.all([
     getCodexPotions({ gameLocale }),
-    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexCharacters({ gameLocale }),
-    getCodexEnchantments({ gameLocale }),
     getSTS2Patches(),
-    getSTS2Changes(),
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
-    getCodexEvents({ gameLocale }),
-    getCodexPowers({ includeDeprecated: true, gameLocale }),
-    getCodexMonsters({ gameLocale }),
-    loadCardSideTipCatalogSources(gameLocale),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
-    <Suspense>
-      <PotionLibrary
-        serviceLocale={serviceLocale}
-        gameUi={gameUi}
+    <>
+      <Suspense>
+        <PotionLibraryLoader
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          title={gameUi.potionLabTitle}
+          potions={potions}
+          characters={characters}
+          versions={versions}
+          currentVersion={meta.version}
+          patches={patches}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
+        gameLocale={gameLocale}
         title={gameUi.potionLabTitle}
-        potions={potions}
-        characters={characters}
-        versions={versions}
-        currentVersion={meta.version}
-        patches={patches}
-        changes={changes}
-        versionDiffs={versionDiffs}
-        relatedCards={cards}
-        relatedEnchantments={enchantments}
-        relatedEvents={events}
-        relatedPowers={powers}
-        relatedMonsters={monsters}
-        tipCatalogSources={tipCatalogSources}
+        groups={[{ type: "potion", entries: potions }]}
       />
-    </Suspense>
+    </>
   );
 }

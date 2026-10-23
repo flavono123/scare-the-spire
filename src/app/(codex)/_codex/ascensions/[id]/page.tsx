@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexAscensions } from "@/lib/codex-data";
-import { loadAllEntities } from "@/lib/load-all-entities";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -11,7 +10,7 @@ import {
   findCodexResourceByRouteId,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { AscensionDetail } from "@/components/codex/ascension-detail";
+import { AscensionDetailLoader } from "@/components/codex/ascension-detail-loader";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -56,9 +55,8 @@ export default async function AscensionDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [ascensions, entities, gameUi] = await Promise.all([
+  const [ascensions, gameUi] = await Promise.all([
     getCodexAscensions({ gameLocale }),
-    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
   const ascension = ascensions.find((item) => (
@@ -68,12 +66,12 @@ export default async function AscensionDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <AscensionDetail
+      <AscensionDetailLoader
+        gameLocale={gameLocale}
         serviceLocale={serviceLocale}
         gameUi={gameUi}
         backToListTitle={gameUi.nav.ascensions}
         ascension={ascension}
-        entities={entities}
       />
     </div>
   );

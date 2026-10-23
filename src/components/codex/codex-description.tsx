@@ -14,7 +14,7 @@ export {
   type DescPart,
   type EnchantVarMod,
 } from "@/lib/codex-card-description";
-import { parseDescription, type DescPart } from "@/lib/codex-card-description";
+import { parseDescription } from "@/lib/codex-card-description";
 
 // =============================================================================
 // Tooltip component

@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexAfflictions, getCodexCards, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexPotions, getCodexPowers, getCodexRelics } from "@/lib/codex-data";
-import { loadAllEntities } from "@/lib/load-all-entities";
+import { getCodexPowers } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
-import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -15,8 +14,8 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
-import { PowerLibrary } from "@/components/codex/power-library";
+import { PowerLibraryLoader } from "@/components/codex/power-library-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 
 export const dynamic = "force-static";
 
@@ -48,48 +47,33 @@ export default async function CodexPowersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [powers, cards, relics, potions, enchantments, events, monsters, afflictions, patches, changes, versionDiffs, meta, entities, gameUi, tipCatalogSources] = await Promise.all([
+  const [powers, patches, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexPowers({ includeDeprecated: true, gameLocale }),
-    getCodexCards({ includeDeprecated: true, gameLocale }),
-    getCodexRelics({ gameLocale }),
-    getCodexPotions({ gameLocale }),
-    getCodexEnchantments({ gameLocale }),
-    getCodexEvents({ gameLocale }),
-    getCodexMonsters({ gameLocale }),
-    getCodexAfflictions({ gameLocale }),
     getSTS2Patches(),
-    getSTS2Changes(),
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
-    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
-    loadCardSideTipCatalogSources(gameLocale),
   ]);
-
   const versions = getVersionsWithDiffs(patches, versionDiffs);
-
   return (
-    <Suspense>
-      <PowerLibrary
-        serviceLocale={serviceLocale}
-        gameUi={gameUi}
+    <>
+      <Suspense>
+        <PowerLibraryLoader
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          title={gameUi.nav.powers}
+          powers={powers}
+          versions={versions}
+          currentVersion={meta.version}
+          patches={patches}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
+        gameLocale={gameLocale}
         title={gameUi.nav.powers}
-        powers={powers}
-        cards={cards}
-        relics={relics}
-        potions={potions}
-        enchantments={enchantments}
-        events={events}
-        monsters={monsters}
-        afflictions={afflictions}
-        tipCatalogSources={tipCatalogSources}
-        versions={versions}
-        currentVersion={meta.version}
-        patches={patches}
-        changes={changes}
-        versionDiffs={versionDiffs}
-        entities={entities}
+        groups={[{ type: "power", entries: powers }]}
       />
-    </Suspense>
+    </>
   );
 }

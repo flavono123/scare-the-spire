@@ -1,26 +1,17 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import {
-  getCodexAncients,
-  getCodexCards,
-  getCodexCharacters,
-  getCodexEnchantments,
-  getCodexAfflictions,
-  getCodexEvents,
-  getCodexMonsters,
-  getCodexPotions,
-  getCodexPowers,
-} from "@/lib/codex-data";
+import { getCodexCards, getCodexCharacters } from "@/lib/codex-data";
 import { loadCardSideTipCatalogSources } from "@/lib/card-side-tip-catalog.server";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
-import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
-import { CardLibrary } from "@/components/codex/card-library";
+import { CardLibraryLoader } from "@/components/codex/card-library-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 
 export const dynamic = "force-static";
 
@@ -48,59 +39,44 @@ export default async function CodexCardsPage({
     cards,
     characters,
     patches,
-    changes,
     versionDiffs,
     meta,
-    enchantments,
-    afflictions,
     gameUi,
-    ancients,
-    events,
-    monsters,
-    potions,
-    powers,
     tipCatalogSources,
   ] = await Promise.all([
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexCharacters({ gameLocale }),
     getSTS2Patches(),
-    getSTS2Changes(),
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
-    getCodexEnchantments({ gameLocale }),
-    getCodexAfflictions({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
-    getCodexAncients({ gameLocale }),
-    getCodexEvents({ gameLocale }),
-    getCodexMonsters({ gameLocale }),
-    getCodexPotions({ gameLocale }),
-    getCodexPowers({ includeDeprecated: true, gameLocale }),
     loadCardSideTipCatalogSources(gameLocale),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
 
+  // Modal, hover-tip, and version-history data load from the static data
+  // chunks after hydration so the page HTML stays small.
   return (
-    <Suspense>
-      <CardLibrary
-        serviceLocale={serviceLocale}
-        gameUi={gameUi}
-        cards={cards}
-        characters={characters}
-        versions={versions}
-        currentVersion={meta.version}
-        patches={patches}
-        changes={changes}
-        versionDiffs={versionDiffs}
-        enchantments={enchantments}
-        afflictions={afflictions}
-        relatedAncients={ancients}
-        relatedEvents={events}
-        relatedMonsters={monsters}
-        relatedPotions={potions}
-        relatedPowers={powers}
-        tipCatalogSources={tipCatalogSources}
+    <>
+      <Suspense>
+        <CardLibraryLoader
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          cards={cards}
+          characters={characters}
+          versions={versions}
+          currentVersion={meta.version}
+          patches={patches}
+          tipCatalogSources={tipCatalogSources}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
+        gameLocale={gameLocale}
+        title={gameUi.cardLibraryTitle}
+        groups={[{ type: "card", entries: cards }]}
       />
-    </Suspense>
+    </>
   );
 }
