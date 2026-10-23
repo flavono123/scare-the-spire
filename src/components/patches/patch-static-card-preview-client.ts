@@ -1,8 +1,5 @@
-import {
-  CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
-  fitCardDescriptionText,
-} from "@/lib/card-description-fit";
-import { FONT_CQI } from "@/lib/sts2-card-style";
+import { fitCardDescriptionText } from "@/lib/card-description-fit";
+import { DESCRIPTION_FIT, FONT_CQI } from "@/lib/sts2-card-style";
 
 (() => {
   const TRIGGER_SELECTOR = "[data-static-card-trigger]";
@@ -40,7 +37,7 @@ import { FONT_CQI } from "@/lib/sts2-card-style";
         viewport,
         content,
         baseFontCqi: FONT_CQI.description,
-        availableHeightRatio: CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
+        ...DESCRIPTION_FIT,
       });
     });
   }

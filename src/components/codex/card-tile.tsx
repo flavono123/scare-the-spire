@@ -26,6 +26,7 @@ import {
 import {
   TITLE_OUTLINE_COLOR,
   ENERGY_OUTLINE_COLOR,
+  DESCRIPTION_FIT,
   DESCRIPTION_SHADOW,
   ENCHANT_LABEL_SHADOW,
   STAR_OUTLINE_COLOR,
@@ -570,8 +571,6 @@ const ANCIENT = {
 
 /** TitleLabel is a MegaLabel: MaxFontSize 26, default MinFontSize 8. */
 const TITLE_FONT_PX = { max: 26, min: 8 };
-/** DescriptionLabel: MegaRichTextLabel MaxFontSize 21, MinFontSize 12. */
-const DESCRIPTION_FONT_PX = { max: 21, min: 12 };
 /**
  * Godot line height is the font's ascent + descent (kreon_regular hhea
  * 997 + 293 of 1024; it outranks the CJK fallbacks) plus line_separation -3,
@@ -783,7 +782,7 @@ export const CardTile = memo(function CardTile({
   costContent,
   starCostContent,
   editableContent = false,
-  minimumDescriptionFontScale = DESCRIPTION_FONT_PX.min / DESCRIPTION_FONT_PX.max,
+  minimumDescriptionFontScale = DESCRIPTION_FIT.minimumFontScale,
   onDescriptionFitChange,
   engagementStats,
   captureSnapshot,
@@ -970,10 +969,8 @@ export const CardTile = memo(function CardTile({
       viewport,
       content,
       baseFontCqi: FONT_CQI.description,
+      ...DESCRIPTION_FIT,
       minimumFontScale: minimumDescriptionFontScale,
-      // MegaRichTextLabel judges the whole DescriptionLabel height in whole px.
-      availableHeightRatio: 1,
-      scaleStep: 1 / DESCRIPTION_FONT_PX.max,
     });
     setDescriptionFontScale((current) => (
       Math.abs(current - fit.fontScale) < 0.001 ? current : fit.fontScale

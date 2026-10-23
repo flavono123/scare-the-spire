@@ -144,6 +144,19 @@ export const CARD_WIDTH_PRESET = {
 // scenes/cards/card.tscn theme_override_font_sizes/font_size 값 / 300 * 100
 // =============================================================================
 
+/** DescriptionLabel: MegaRichTextLabel MaxFontSize 21, MinFontSize 12. */
+export const DESCRIPTION_FONT_PX = { max: 21, min: 12 };
+
+/**
+ * fitCardDescriptionText options that mirror MegaRichTextLabel: the whole
+ * label height, whole-px steps, no smaller than MinFontSize.
+ */
+export const DESCRIPTION_FIT = {
+  availableHeightRatio: 1,
+  scaleStep: 1 / DESCRIPTION_FONT_PX.max,
+  minimumFontScale: DESCRIPTION_FONT_PX.min / DESCRIPTION_FONT_PX.max,
+} as const;
+
 export const FONT_CQI = {
   title: 26 / 300 * 100,        // 8.67
   description: 21 / 300 * 100,  // 7.00
