@@ -1,4 +1,12 @@
-import { mkdirSync, readdirSync, copyFileSync, rmSync, statSync } from "node:fs";
+import {
+  copyFileSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import path from "node:path";
 
 const appDir = path.join(".next", "server", "app");
@@ -8,21 +16,23 @@ const staticMetadataFiles = [
   { source: "robots.txt.body", target: "robots.txt" },
   { source: "sitemap.xml.body", target: "sitemap.xml" },
 ];
-const gameLocalePathSegments = new Set([
-  "en",
-  "zh",
-  "ja",
-  "de",
-  "fr",
-  "it",
-  "es",
-  "es-419",
-  "pt",
-  "ru",
-  "pl",
-  "th",
-  "tr",
-]);
+// Mirrors GAME_LOCALE_BY_PATH_SEGMENT in src/lib/i18n.ts.
+const gameLocaleByPathSegment = {
+  en: "eng",
+  zh: "zhs",
+  ja: "jpn",
+  de: "deu",
+  fr: "fra",
+  it: "ita",
+  es: "spa",
+  "es-419": "esp",
+  pt: "ptb",
+  ru: "rus",
+  pl: "pol",
+  th: "tha",
+  tr: "tur",
+};
+const gameLocalePathSegments = new Set(Object.keys(gameLocaleByPathSegment));
 const compendiumSegments = new Set([
   "ancients",
   "badges",
@@ -206,6 +216,30 @@ function staticPageRelativePath(file) {
   return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
 }
 
+function documentGameLocale(relative) {
+  const parsed = path.parse(relative);
+  if (parsed.ext !== ".html") return null;
+  const segment = parsed.dir ? relative.split(path.sep)[0] : parsed.name;
+  return gameLocaleByPathSegment[segment] ?? null;
+}
+
+/**
+ * The shared root layout prerenders <html lang="ko">. Locale-prefixed pages use
+ * the English service UI, so fix the document attributes before serving them.
+ */
+function localizeDocumentRoot(html, gameLocale, relative) {
+  const match = /<html\b[^>]*>/.exec(html);
+  if (!match) throw new Error(`No <html> tag in ${relative}`);
+  const tag = match[0]
+    .replace(/\slang="[^"]*"/, ' lang="en"')
+    .replace(/\sdata-service-locale="[^"]*"/, ' data-service-locale="en"')
+    .replace(/\sdata-game-locale="[^"]*"/, ` data-game-locale="${gameLocale}"`);
+  if (!tag.includes(' lang="en"') || !tag.includes(` data-game-locale="${gameLocale}"`)) {
+    throw new Error(`Unexpected <html> attributes in ${relative}: ${match[0]}`);
+  }
+  return `${html.slice(0, match.index)}${tag}${html.slice(match.index + match[0].length)}`;
+}
+
 if (!statSync(appDir, { throwIfNoEntry: false })?.isDirectory()) {
   throw new Error(`${appDir} does not exist. Run the Next/OpenNext build before copying static pages.`);
 }
@@ -213,13 +247,20 @@ if (!statSync(appDir, { throwIfNoEntry: false })?.isDirectory()) {
 rmSync(outDir, { recursive: true, force: true });
 
 let count = 0;
+let localizedCount = 0;
 for (const file of walk(appDir)) {
   const relative = staticPageRelativePath(file);
   if (!relative) continue;
 
   const output = path.join(outDir, relative);
   mkdirSync(path.dirname(output), { recursive: true });
-  copyFileSync(file, output);
+  const gameLocale = documentGameLocale(relative);
+  if (gameLocale) {
+    writeFileSync(output, localizeDocumentRoot(readFileSync(file, "utf8"), gameLocale, relative));
+    localizedCount += 1;
+  } else {
+    copyFileSync(file, output);
+  }
   count += 1;
 }
 
@@ -227,7 +268,7 @@ if (count === 0) {
   throw new Error("No Cloudflare static HTML/RSC files were copied.");
 }
 
-console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir}`);
+console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir} (${localizedCount} with an English document root)`);
 
 for (const metadataFile of staticMetadataFiles) {
   const source = path.join(appDir, metadataFile.source);

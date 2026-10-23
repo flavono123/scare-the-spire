@@ -29,6 +29,7 @@ import openNextWorker from "../.open-next/worker.js";
 import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-resource-links";
 import { staticAssetAliasRedirectPath } from "./static-asset-aliases";
 import { maybeEnrichServiceDetailShell } from "./detail-shell-og";
+import { withLocalizedDocumentRoot } from "./document-locale";
 import {
   legacyWorldcupDetailRedirectPath,
   staticCompendiumAssetPath,
@@ -327,7 +328,10 @@ const mainWorker = {
     const staticCompendiumResponse = await maybeServeStaticCompendiumPage(request, env, url);
     if (staticCompendiumResponse) return staticCompendiumResponse;
 
-    return openNextWorker.fetch(request, env, ctx);
+    const openNextResponse: Response = await openNextWorker.fetch(request, env, ctx);
+    return isRscRequest(request, url)
+      ? openNextResponse
+      : withLocalizedDocumentRoot(openNextResponse, url.pathname);
   },
 };
 
