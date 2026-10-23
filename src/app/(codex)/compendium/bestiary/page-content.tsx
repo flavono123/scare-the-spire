@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
+import { slimBestiaryEncounters, slimBestiaryMonsters } from "@/lib/compendium-list-props";
 import {
   getCodexEncounters,
   getCodexCharacters,
@@ -45,9 +46,9 @@ export async function renderCompendiumBestiaryPage(
           gameLocale={gameLocale}
           serviceLocale={serviceLocale}
           gameUi={gameUi}
-          monsters={monsters}
+          monsters={slimBestiaryMonsters(monsters)}
           characters={characters}
-          encounters={encounters}
+          encounters={slimBestiaryEncounters(encounters)}
           patches={patches}
           versions={versions}
           currentVersion={meta.version}

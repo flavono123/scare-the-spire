@@ -17,6 +17,7 @@ import {
 } from "@/lib/codex-resource-og";
 import { RelicLibraryLoader } from "@/components/codex/relic-library-loader";
 import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
+import { slimFilterCharacters } from "@/lib/compendium-list-props";
 
 export const dynamic = "force-static";
 
@@ -86,7 +87,7 @@ export default async function CodexRelicsPage({
           gameUi={gameUi}
           title={gameUi.relicCollectionTitle}
           relics={relics}
-          characters={characters}
+          characters={slimFilterCharacters(characters)}
           ancients={ancients}
           versions={versions}
           currentVersion={meta.version}

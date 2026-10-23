@@ -16,6 +16,7 @@ import {
 } from "@/lib/codex-resource-og";
 import { PotionLibraryLoader } from "@/components/codex/potion-library-loader";
 import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
+import { slimFilterCharacters } from "@/lib/compendium-list-props";
 
 export const dynamic = "force-static";
 
@@ -74,7 +75,7 @@ export default async function CodexPotionsPage({
           gameUi={gameUi}
           title={gameUi.potionLabTitle}
           potions={potions}
-          characters={characters}
+          characters={slimFilterCharacters(characters)}
           versions={versions}
           currentVersion={meta.version}
           patches={patches}
