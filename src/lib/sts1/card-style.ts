@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { GameLocale } from "@/lib/i18n";
-import { sts1LineBreakViaCharacter, sts1GameLocale } from "@/lib/sts1/locale";
+import { sts1LineBreakViaCharacter } from "@/lib/sts1/locale";
 import type {
   Sts1Card,
   Sts1CardType,
@@ -80,19 +80,14 @@ export const STS1_TITLE_BOX_WIDTH_NO_COST = 0.7;
 export const STS1_DESC_FONT = 24;
 export const STS1_DESC_BOX_WIDTH = 0.79;
 export const STS1_CN_DESC_BOX_WIDTH = 0.72;
-/** renderDescription line step is 1.45 * capHeight. */
-export const STS1_DESC_LINE_HEIGHT = 1.45;
+/** renderDescription line step is 1.45 * font.getCapHeight() (not 1.45em). */
+export const STS1_DESC_LINE_STEP = 1.45;
 /** AbstractCard.CARD_ENERGY_IMG_WIDTH used while wrapping [E] tokens. */
 export const STS1_DESC_ENERGY_IMG_WIDTH = 24;
-/**
- * Dark description well on `bg_*` (below the type plaque, above the bottom
- * bevel). Shifting this box up with line count painted Clash into the art.
- * Long copy stays in this well and uses `fitCardDescriptionText`.
- */
-export const STS1_DESC_WELL_TOP = 0.62;
-export const STS1_DESC_WELL_BOTTOM = 0.925;
-/** Floor for `fitCardDescriptionText` so 7-line Kor Omniscience still fits. */
-export const STS1_DESC_MIN_FONT_SCALE = 0.5;
+/** AbstractCard.DESC_OFFSET_Y = IMG_HEIGHT * 0.255. */
+export const STS1_DESC_OFFSET_Y = 420 * 0.255;
+/** orbs/orb.atlas regions renderSmallEnergy draws in card text (24×24 orig). */
+export const STS1_DESC_ORB_SIZE = 24;
 /** FontHelper.cardTypeFont = prepFont(17, true). */
 export const STS1_TYPE_FONT = 17;
 /** renderType draws at current_y - 22 (down in CSS). */
@@ -144,47 +139,48 @@ export function sts1TitleBoxWidthFrac(cost: number): number {
   return cost > 0 || cost === -1 ? STS1_TITLE_BOX_WIDTH : STS1_TITLE_BOX_WIDTH_NO_COST;
 }
 
-function titleEmWidth(name: string): number {
-  let width = 0;
-  for (const char of name) {
-    const code = char.codePointAt(0) ?? 0;
-    if (char === " ") width += 0.33;
-    else if (code >= 0x2e80) width += 1;
-    else width += 0.55;
-  }
-  return width;
-}
-
-export function sts1TitleFontScale(name: string, cost: number): number {
+/**
+ * initializeTitle: useSmallTitleFont when the GlyphLayout width of the name
+ * (with its "+") passes TITLE_BOX_WIDTH; renderTitle then draws it at 0.85
+ * and never clips, so a long name may still spill past the box.
+ */
+export function sts1TitleFontScale(titleWidthPx: number, cost: number): number {
   const boxPx = sts1TitleBoxWidthFrac(cost) * STS1_CARD_IN_ATLAS.width;
-  const px = titleEmWidth(name) * STS1_TITLE_FONT;
-  return px > boxPx ? STS1_TITLE_SMALL_SCALE : 1;
+  return titleWidthPx > boxPx ? STS1_TITLE_SMALL_SCALE : 1;
 }
 
-export function sts1TitleBox(name: string, cost: number) {
+/**
+ * FontHelper.renderRotatedText centers the GlyphLayout on its cap height, so
+ * a label box ends at the baseline (cap center + cap / 2) and its bitmap text
+ * hangs from it (`Sts1BitmapText baseline`).
+ */
+function labelBoxToBaseline(capCenterY: number, capHeight: number, boxHeight: number) {
+  const { height } = STS1_CARD_IN_ATLAS;
+  const baselineY = capCenterY + capHeight / 2;
+  return {
+    top: `${((baselineY - boxHeight) / height) * 100}%`,
+    height: `${(boxHeight / height) * 100}%`,
+  };
+}
+
+export function sts1TitleBox(titleWidthPx: number, cost: number, capHeight: number) {
   const { width, height } = STS1_CARD_IN_ATLAS;
   const widthFrac = sts1TitleBoxWidthFrac(cost);
-  const scale = sts1TitleFontScale(name, cost);
-  const centerY = height / 2 - STS1_TITLE_OFFSET_Y;
-  const boxHeight = STS1_TITLE_FONT * 1.15;
+  const scale = sts1TitleFontScale(titleWidthPx, cost);
   return {
     left: `${((1 - widthFrac) / 2) * 100}%`,
-    top: `${((centerY - boxHeight / 2) / height) * 100}%`,
     width: `${widthFrac * 100}%`,
-    height: `${(boxHeight / height) * 100}%`,
+    ...labelBoxToBaseline(height / 2 - STS1_TITLE_OFFSET_Y, capHeight * scale, STS1_TITLE_FONT * 1.15),
     fontSize: `${((STS1_TITLE_FONT * scale) / width) * 100}cqi`,
   };
 }
 
-export function sts1TypeBox() {
+export function sts1TypeBox(capHeight: number) {
   const { width, height } = STS1_CARD_IN_ATLAS;
-  const centerY = height / 2 + STS1_TYPE_OFFSET_Y;
-  const boxHeight = STS1_TYPE_FONT * 1.2;
   return {
     left: "22%",
     width: "56%",
-    top: `${((centerY - boxHeight / 2) / height) * 100}%`,
-    height: `${(boxHeight / height) * 100}%`,
+    ...labelBoxToBaseline(height / 2 + STS1_TYPE_OFFSET_Y, capHeight, STS1_TYPE_FONT * 1.2),
     fontSize: `${(STS1_TYPE_FONT / width) * 100}cqi`,
   };
 }
@@ -197,39 +193,22 @@ export function sts1DescriptionFontCqi(): number {
   return (STS1_DESC_FONT / STS1_CARD_IN_ATLAS.width) * 100;
 }
 
-export function sts1DescriptionBox(gameLocale: GameLocale) {
-  const widthFrac = sts1DescBoxWidthFrac(gameLocale);
-  return {
-    left: `${((1 - widthFrac) / 2) * 100}%`,
-    width: `${widthFrac * 100}%`,
-    top: `${STS1_DESC_WELL_TOP * 100}%`,
-    bottom: `${(1 - STS1_DESC_WELL_BOTTOM) * 100}%`,
-  };
+/**
+ * renderDescription: draw_y = cy - H/2 + DESC_OFFSET_Y + n·cap·0.775 - cap·0.375,
+ * and each word of line i is renderRotatedText-centered on its cap height at
+ * draw_y - 1.45·cap·i - 6. Returns that center in px from the card top.
+ */
+export function sts1DescriptionLineCapCenterY(index: number, count: number, capHeight: number): number {
+  const half = STS1_CARD_IN_ATLAS.height / 2;
+  const drawY = -half + STS1_DESC_OFFSET_Y + count * capHeight * 0.775 - capHeight * 0.375;
+  return half - (drawY - STS1_DESC_LINE_STEP * capHeight * index - 6);
 }
 
-export function sts1DescriptionWellHeightPx(): number {
-  return (STS1_DESC_WELL_BOTTOM - STS1_DESC_WELL_TOP) * STS1_CARD_IN_ATLAS.height;
-}
-
-export function sts1DescriptionContentHeightPx(lineCount: number, fontScale = 1): number {
-  return Math.max(1, lineCount) * STS1_DESC_LINE_HEIGHT * STS1_DESC_FONT * fontScale;
-}
-
-export function sts1DescriptionTextStyle(gameLocale: GameLocale): CSSProperties {
-  const { width } = STS1_CARD_IN_ATLAS;
-  const locale = sts1GameLocale(gameLocale);
-  const wrap: CSSProperties = sts1LineBreakViaCharacter(gameLocale)
-    ? { wordBreak: "break-all", lineBreak: "anywhere" }
-    : locale === "kor"
-      ? { wordBreak: "keep-all", overflowWrap: "break-word" }
-      : locale === "tha"
-        ? { wordBreak: "break-word", overflowWrap: "anywhere", lineBreak: "anywhere" }
-        : { overflowWrap: "break-word" };
-  return {
-    fontSize: `${(STS1_DESC_FONT / width) * 100}cqi`,
-    lineHeight: STS1_DESC_LINE_HEIGHT,
-    ...wrap,
-  };
+/** renderSmallEnergy puts the orb's 24×24 frame bottom at -100 + ((n - 4) / 2 - i + 1)·1.45·cap. */
+export function sts1DescriptionOrbCenterY(index: number, count: number, capHeight: number): number {
+  const half = STS1_CARD_IN_ATLAS.height / 2;
+  const bottom = -100 + ((count - 4) / 2 - index + 1) * STS1_DESC_LINE_STEP * capHeight;
+  return half - (bottom + STS1_DESC_ORB_SIZE / 2);
 }
 
 /**

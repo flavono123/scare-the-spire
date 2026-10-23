@@ -71,6 +71,15 @@ ROLE_SPECS = {
 }
 
 
+# FontHelper.initialize sets fontScale 0.95 for Thai; prepFont bakes
+# Math.round(size * fontScale * Settings.scale) px.
+LOCALE_FONT_SCALE = {"tha": 0.95}
+
+
+def baked_size(size: int, scale: float) -> int:
+    return int(size * scale + 0.5)
+
+
 def save_webp(image, dest: Path) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
     image.save(dest, "WEBP", lossless=True, method=4)
@@ -108,17 +117,22 @@ def bake_pack(
     packer = RowPacker()
     roles: dict[str, Any] = {}
     faces = {"body": body, "type": type_face}
+    scale = LOCALE_FONT_SCALE.get(name, 1.0)
     for role, spec in ROLE_SPECS.items():
         roles[role] = render_role(
             faces[spec["face"]],
             chars,
             packer,
-            size=spec["size"],
+            size=baked_size(spec["size"], scale),
             border=spec["border"],
             border_color=spec["border_color"],
             shadow=spec["shadow"],
             shadow_color=spec["shadow_color"],
         )
+        if scale != 1.0:
+            # CSS sizes stay on the nominal font size; glyph metrics are the baked px.
+            roles[role]["pixelSize"] = roles[role]["size"]
+            roles[role]["size"] = spec["size"]
         print(f"  {name}.{role} glyphs={len(roles[role]['glyphs'])} cap={roles[role]['capHeight']}")
     page = packer.build()
     save_webp(page, IMAGE_OUT / f"{name}.webp")

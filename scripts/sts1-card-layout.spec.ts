@@ -7,10 +7,9 @@ import {
   STS1_CARD_STAGE,
   STS1_CN_DESC_BOX_WIDTH,
   STS1_DESC_BOX_WIDTH,
-  STS1_DESC_MIN_FONT_SCALE,
   STS1_DESC_FONT,
-  STS1_DESC_WELL_BOTTOM,
-  STS1_DESC_WELL_TOP,
+  STS1_DESC_LINE_STEP,
+  STS1_DESC_OFFSET_Y,
   STS1_ENERGY_TEXT_OFFSET,
   STS1_GREEN_TEXT,
   STS1_TITLE_BORDER_WIDTH,
@@ -20,10 +19,8 @@ import {
   STS1_TYPE_OFFSET_Y,
   sts1CardBodyStyle,
   sts1DescBoxWidthFrac,
-  sts1DescriptionBox,
-  sts1DescriptionContentHeightPx,
-  sts1DescriptionTextStyle,
-  sts1DescriptionWellHeightPx,
+  sts1DescriptionLineCapCenterY,
+  sts1DescriptionOrbCenterY,
   sts1EnergyCostBox,
   sts1EnergyCostTextStyle,
   STS1_CREAM,
@@ -104,20 +101,25 @@ assert.equal(STS1_TITLE_FONT, 27);
 assert.equal(sts1TitleBoxWidthFrac(1), 0.6);
 assert.equal(sts1TitleBoxWidthFrac(-1), 0.6);
 assert.equal(sts1TitleBoxWidthFrac(0), 0.7);
-assert.equal(sts1TitleFontScale("타격", 1), 1);
-assert.equal(sts1TitleFontScale("Strike", 1), 1);
-const title = sts1TitleBox("타격", 1);
+// initializeTitle compares the real GlyphLayout width with TITLE_BOX_WIDTH (180 / 210).
+const korTitleRole = sts1BitmapRole("kor", "title")!;
+assert.equal(sts1TitleFontScale(measureBitmapText(korTitleRole, "타격").width, 1), 1);
+assert.equal(sts1TitleFontScale(181, 1), 0.85);
+assert.equal(sts1TitleFontScale(181, 0), 1);
+assert.equal(sts1TitleFontScale(211, 0), 0.85);
+const title = sts1TitleBox(60, 1, korTitleRole.capHeight);
 assert.equal(title.left, "20%");
 assert.equal(title.width, "60%");
 assert.equal(title.fontSize, "9cqi");
-const titleCenterY = parseFloat(title.top) + parseFloat(title.height) / 2;
-assert.ok(Math.abs(titleCenterY - ((210 - 175) / 420) * 100) < 1e-6);
+// The box ends at the baseline, cap height centered on y = 210 - 175.
+const titleBottom = ((parseFloat(title.top) + parseFloat(title.height)) / 100) * 420;
+assert.ok(Math.abs(titleBottom - (35 + korTitleRole.capHeight / 2)) < 1e-6);
 
 assert.equal(STS1_TYPE_FONT, 17);
 assert.equal(STS1_TYPE_OFFSET_Y, 22);
-const type = sts1TypeBox();
-const typeCenterY = parseFloat(type.top) + parseFloat(type.height) / 2;
-assert.ok(Math.abs(typeCenterY - ((210 + 22) / 420) * 100) < 1e-6);
+const type = sts1TypeBox(11);
+const typeBottom = ((parseFloat(type.top) + parseFloat(type.height)) / 100) * 420;
+assert.ok(Math.abs(typeBottom - (232 + 11 / 2)) < 1e-6);
 assert.equal(type.fontSize, `${(17 / 300) * 100}cqi`);
 
 // renderPortrait: 250×190 at 1:1, centered 72 above card center, never fit to the frame hole.
@@ -176,21 +178,16 @@ assert.equal(sts1DescBoxWidthFrac("eng"), 0.79);
 assert.equal(sts1DescBoxWidthFrac("jpn"), 0.72);
 assert.equal(sts1DescBoxWidthFrac("zhs"), 0.72);
 assert.equal(sts1DescBoxWidthFrac("esp"), 0.79);
-assert.equal(STS1_DESC_WELL_TOP, 0.62);
-assert.equal(STS1_DESC_WELL_BOTTOM, 0.925);
-const korWell = sts1DescriptionBox("kor");
-assert.equal(korWell.left, `${((1 - 0.79) / 2) * 100}%`);
-assert.equal(korWell.width, "79%");
-assert.equal(korWell.top, "62%");
-assert.ok(!("height" in korWell));
-assert.ok("bottom" in korWell);
-assert.ok(parseFloat(korWell.top) > 57, "well must sit below the type plaque");
-assert.ok(100 - parseFloat(String(korWell.bottom)) >= 92, "well must stay above the bottom bevel");
-assert.equal(sts1DescriptionBox("jpn").width, "72%");
-assert.equal(sts1DescriptionTextStyle("kor").fontSize, "8cqi");
-assert.equal(sts1DescriptionTextStyle("kor").wordBreak, "keep-all");
-assert.equal(sts1DescriptionTextStyle("jpn").wordBreak, "break-all");
-assert.equal(sts1DescriptionTextStyle("tha").overflowWrap, "anywhere");
+// renderDescription: DESC_OFFSET_Y = 420 * 0.255, line step 1.45 * capHeight (not 1.45em).
+assert.ok(Math.abs(STS1_DESC_OFFSET_Y - 107.1) < 1e-9);
+assert.equal(STS1_DESC_LINE_STEP, 1.45);
+// Latin capHeight 17, 2 lines: draw_y = -210 + 107.1 + 2*17*0.775 - 17*0.375 from center.
+const latinCap = sts1BitmapRole("eng", "desc")!.capHeight;
+assert.equal(latinCap, 17);
+assert.ok(Math.abs(sts1DescriptionLineCapCenterY(0, 2, 17) - (210 - (-210 + 107.1 + 26.35 - 6.375 - 6))) < 1e-9);
+assert.ok(Math.abs(sts1DescriptionLineCapCenterY(1, 2, 17) - sts1DescriptionLineCapCenterY(0, 2, 17) - 1.45 * 17) < 1e-9);
+// renderSmallEnergy: 24×24 orb bottom at -100 + ((n - 4) / 2 - i + 1) * 1.45 * cap.
+assert.ok(Math.abs(sts1DescriptionOrbCenterY(0, 2, 17) - (210 - (-100 + 0 * 1.45 * 17 + 12))) < 1e-9);
 
 assert.equal(STS1_TITLE_BORDER_WIDTH, 2);
 assert.equal(sts1TitleTextStyle(false).color, STS1_CREAM);
@@ -211,13 +208,9 @@ assert.equal(clashLines[0], "손에 있는 카드가 전부");
 assert.equal(clashLines[1], "공격 카드일 때만");
 assert.equal(clashLines[2], "사용할 수 있습니다.");
 assert.equal(clashLines[3], "피해를 GOLD:14 줍니다.");
-const clashFullHeight = sts1DescriptionContentHeightPx(clashLines.length, 1);
-const wellHeight = sts1DescriptionWellHeightPx();
-assert.ok(clashFullHeight > wellHeight, "Clash at 24px overflows the well and must scale");
-assert.ok(
-  sts1DescriptionContentHeightPx(clashLines.length, STS1_DESC_MIN_FONT_SCALE) <= wellHeight,
-  "Clash must fit after STS2 adaptive minimum scale",
-);
+// The game does not shrink card text; Clash's 4 lines sit below the type plaque.
+const korDescCap = sts1BitmapRole("kor", "desc")!.capHeight;
+assert.ok(sts1DescriptionLineCapCenterY(0, clashLines.length, korDescCap) - korDescCap / 2 > 232 + 11);
 const bashLines = wrapSts1DescriptionLines(
   "피해를 !D! 줍니다. NL 취약을 !M! 부여합니다.",
   { ...EMPTY_STS1_STATS, damage: 8, magic: 2 },
@@ -256,8 +249,7 @@ assert.equal(collectSts1CardSideTips("방어도를 4 얻습니다. 영구적으�
 }]).length, 0);
 
 for (const locale of GAME_LOCALES) {
-  const box = sts1DescriptionBox(locale);
-  assert.ok(box.width === "79%" || box.width === "72%", locale);
+  assert.ok([0.79, 0.72].includes(sts1DescBoxWidthFrac(locale)), locale);
   assert.equal(typeof sts1HtmlLang(locale), "string");
 }
 assert.equal(sts1LineBreakViaCharacter("kor"), false);
@@ -324,15 +316,14 @@ const ranked = rawCards.map((card) => {
     lines: lines.length,
     nlCount,
     chars: description.replace(/\s*NL\s*/g, "").length,
-    fitsAtFull: sts1DescriptionContentHeightPx(lines.length, 1) <= wellHeight,
-    fitsAtMin: sts1DescriptionContentHeightPx(lines.length, STS1_DESC_MIN_FONT_SCALE) <= wellHeight,
+    // Top of the first line's caps; under ~233 it reaches into the art, as in game.
+    textTop: Math.round(sts1DescriptionLineCapCenterY(0, lines.length, korDescCap) - korDescCap / 2),
   };
 });
 
 const longestByChars = [...ranked].sort((a, b) => b.chars - a.chars).slice(0, 8);
 const mostNewlines = [...ranked].sort((a, b) => b.nlCount - a.nlCount || b.lines - a.lines).slice(0, 8);
 const mostWrapped = [...ranked].sort((a, b) => b.lines - a.lines).slice(0, 8);
-assert.ok(mostWrapped.every((row) => row.fitsAtMin), "longest wrapped cards must fit at min scale");
 assert.equal(ranked.find((row) => row.slug === "clash")?.lines, 4);
 
 const keywordHits = korKeywords.map((keyword) => {
@@ -353,7 +344,7 @@ assert.equal(keywordHits.some((row) => row.id === "LOCKED" && row.count === 0), 
 console.log("sts1-card-layout.spec.ts: ok");
 console.log("\nLongest Kor descriptions (chars):");
 for (const row of longestByChars) {
-  console.log(`  ${row.slug}\t${row.name}\tchars=${row.chars}\tNL=${row.nlCount}\twrap=${row.lines}\tfull=${row.fitsAtFull}\tmin=${row.fitsAtMin}`);
+  console.log(`  ${row.slug}\t${row.name}\tchars=${row.chars}\tNL=${row.nlCount}\twrap=${row.lines}\ttextTop=${row.textTop}`);
 }
 console.log("\nMost explicit NL:");
 for (const row of mostNewlines) {
@@ -361,7 +352,7 @@ for (const row of mostNewlines) {
 }
 console.log("\nMost wrapped lines:");
 for (const row of mostWrapped) {
-  console.log(`  ${row.slug}\t${row.name}\twrap=${row.lines}\tfull=${row.fitsAtFull}\tmin=${row.fitsAtMin}`);
+  console.log(`  ${row.slug}\t${row.name}\twrap=${row.lines}\ttextTop=${row.textTop}`);
 }
 console.log("\nKeyword tips in Kor card text:");
 for (const row of keywordHits) {

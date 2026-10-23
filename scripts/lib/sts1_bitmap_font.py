@@ -225,8 +225,12 @@ def face_metrics(face: Face) -> dict[str, int]:
     }
 
 
+# BitmapFontData.capChars: FreeTypeFontGenerator takes the first one the face has.
+CAP_CHARS = "MNBDCEFKAGHIJLOPQRSTUVWXZ"
+
+
 def probe_cap_height(face: Face) -> int:
-    for char in ("万", "H", "가", "x"):
+    for char in CAP_CHARS:
         if face.get_char_index(char) == 0:
             continue
         face.load_char(char, LOAD_FLAGS)

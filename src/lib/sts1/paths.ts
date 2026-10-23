@@ -40,6 +40,10 @@ export function sts1CardUiUrl(region: string): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/card-ui/${region}.webp`);
 }
 
+export function sts1DescOrbUrl(color: "red" | "green" | "blue" | "purple"): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/desc-orbs/${color}.webp`);
+}
+
 export function sts1CardUi512Url(region: string): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/card-ui-512/${region}.webp`);
 }

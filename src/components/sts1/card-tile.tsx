@@ -1,13 +1,8 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
 import Image from "@/components/ui/static-image";
 import { Sts1BitmapText } from "./bitmap-text";
-import { Sts1CardText } from "./description";
-import {
-  CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
-  fitCardDescriptionText,
-} from "@/lib/card-description-fit";
+import { Sts1CardDescriptionLines } from "./description";
 import {
   STS1_ATLAS_LAYER_STYLE,
   STS1_CARD_ASPECT,
@@ -15,16 +10,12 @@ import {
   STS1_ENERGY_FILL,
   STS1_ENERGY_MODIFIED,
   STS1_GREEN_TEXT,
-  STS1_DESC_MIN_FONT_SCALE,
   STS1_TYPE_COLOR,
   sts1CardBannerRegion,
   sts1CardBackgroundRegion,
   sts1CardBodyStyle,
   sts1CardFrameRegion,
   sts1CardOrbRegion,
-  sts1DescriptionBox,
-  sts1DescriptionFontCqi,
-  sts1DescriptionTextStyle,
   sts1EnergyCostBox,
   sts1EnergyCostTextStyle,
   sts1PortraitBox,
@@ -81,31 +72,8 @@ export function Sts1CardTile({
   const upgradedCost = stats.upgraded && card.upgrade?.cost != null;
   const typeRole = sts1BitmapRole(gameLocale, "type");
   const typeLabelWidth = typeRole ? measureBitmapText(typeRole, typeLabel).width : 0;
-  const descriptionViewportRef = useRef<HTMLDivElement>(null);
-  const descriptionContentRef = useRef<HTMLParagraphElement>(null);
-  const descriptionFontCqi = sts1DescriptionFontCqi();
-
-  useLayoutEffect(() => {
-    const viewport = descriptionViewportRef.current;
-    const content = descriptionContentRef.current;
-    if (!viewport || !content) return;
-
-    const measure = () => {
-      fitCardDescriptionText({
-        viewport,
-        content,
-        baseFontCqi: descriptionFontCqi,
-        minimumFontScale: STS1_DESC_MIN_FONT_SCALE,
-        availableHeightRatio: CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
-      });
-    };
-
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(viewport);
-    void document.fonts?.ready.then(measure);
-    return () => observer.disconnect();
-  }, [descriptionFontCqi, descriptionLines, gameLocale, title]);
+  const titleRole = sts1BitmapRole(gameLocale, "title");
+  const titleWidth = titleRole ? measureBitmapText(titleRole, title).width : 0;
 
   return (
     <article
@@ -156,10 +124,10 @@ export function Sts1CardTile({
         </>
       ) : null}
       <h3
-        className="absolute z-10 flex items-center justify-center overflow-hidden whitespace-nowrap text-center leading-none"
+        className="absolute z-10 flex items-end justify-center whitespace-nowrap text-center leading-none"
         aria-label={title}
         style={{
-          ...sts1TitleBox(title, stats.cost),
+          ...sts1TitleBox(titleWidth, stats.cost, titleRole?.capHeight ?? 0),
           ...sts1TitleTextStyle(stats.upgraded),
         }}
       >
@@ -168,38 +136,27 @@ export function Sts1CardTile({
           role="title"
           gameLocale={gameLocale}
           color={stats.upgraded ? STS1_GREEN_TEXT : STS1_CREAM}
+          baseline
         />
       </h3>
       <div
-        className="absolute z-10 flex items-center justify-center leading-none"
-        style={{
-          ...sts1TypeBox(),
-        }}
+        className="absolute z-10 flex items-end justify-center leading-none"
+        style={sts1TypeBox(typeRole?.capHeight ?? 0)}
       >
         <Sts1BitmapText
           text={typeLabel}
           role="type"
           gameLocale={gameLocale}
           color={STS1_TYPE_COLOR}
+          baseline
         />
       </div>
-      <div
-        ref={descriptionViewportRef}
-        className="absolute z-10 flex flex-col items-center justify-center overflow-hidden"
-        data-card-description-viewport
-        style={sts1DescriptionBox(gameLocale)}
-      >
-        <Sts1CardText
-          ref={descriptionContentRef}
-          text={descriptionLines.join(" NL ")}
+      <div className="absolute inset-0 z-10">
+        <Sts1CardDescriptionLines
+          lines={descriptionLines}
           stats={stats}
           keywords={keywords}
           gameLocale={gameLocale}
-          className="max-w-full text-center"
-          style={{
-            ...sts1DescriptionTextStyle(gameLocale),
-            whiteSpace: "nowrap",
-          }}
         />
       </div>
       </div>

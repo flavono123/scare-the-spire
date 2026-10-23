@@ -1129,6 +1129,20 @@ def extract_ui_extras(jar, out: Path, names: set[str] | None = None) -> int:
     for path in sorted(name for name in names if name.startswith(library_prefix) and name.endswith(".png")):
         save_webp(extract_png(jar, path), out / "card-library" / f"{Path(path).stem}.webp")
         written += 1
+    written += extract_description_orbs(jar, out)
+    return written
+
+
+def extract_description_orbs(jar, out: Path) -> int:
+    """orbs/orb.atlas: the 24×24 energy icons renderSmallEnergy draws inside card text."""
+    written = 0
+    for page_name, page in parse_atlas(jar.read("orbs/orb.atlas").decode("utf-8", "replace")).items():
+        sheet = extract_png(jar, f"orbs/{page_name}")
+        for name in ("red", "green", "blue", "purple"):
+            region = page["regions"].get(name)
+            if region:
+                save_webp(extract_atlas_region(sheet, region), out / "desc-orbs" / f"{name}.webp", lossless=True)
+                written += 1
     return written
 
 

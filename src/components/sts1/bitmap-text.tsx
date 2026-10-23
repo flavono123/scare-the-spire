@@ -17,12 +17,15 @@ export function Sts1BitmapText({
   gameLocale,
   color,
   className,
+  baseline = false,
 }: {
   text: string;
   role: Sts1BitmapRoleName;
   gameLocale: GameLocale;
   color: string;
   className?: string;
+  /** Hang the canvas so its glyph baseline sits on the bottom of a flex-end row. */
+  baseline?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pack = sts1BitmapPack(gameLocale, role);
@@ -54,6 +57,7 @@ export function Sts1BitmapText({
   }, [color, metrics, pack.page, roleData, text]);
 
   if (!text || !roleData) return null;
+  const belowBaseline = metrics.height - (metrics.originY + roleData.ascent);
   return (
     <canvas
       ref={canvasRef}
@@ -62,7 +66,9 @@ export function Sts1BitmapText({
         width: `${metrics.width / roleData.size}em`,
         height: `${metrics.height / roleData.size}em`,
         display: "inline-block",
-        verticalAlign: "middle",
+        ...(baseline
+          ? { marginBottom: `${-belowBaseline / roleData.size}em`, flexShrink: 0 }
+          : { verticalAlign: "middle" }),
       }}
       aria-hidden
     />

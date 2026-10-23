@@ -20,7 +20,10 @@ export type Sts1BitmapGlyph = {
 };
 
 export type Sts1BitmapRole = {
+  /** Nominal font size the card layout uses for em math. */
   size: number;
+  /** Baked px when FontHelper.fontScale differs (Thai 0.95); metrics are in these px. */
+  pixelSize?: number;
   ascent: number;
   descent: number;
   lineHeight: number;
