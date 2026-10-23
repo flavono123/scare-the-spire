@@ -837,6 +837,7 @@ function PatchDiffInlinePreview({
 }) {
   const [show, setShow] = useState(false);
   const [previewNonce, setPreviewNonce] = useState(0);
+  const linkHref = useCompendiumLinkHref(href);
 
   return (
     <span
@@ -853,7 +854,7 @@ function PatchDiffInlinePreview({
       onBlur={() => setShow(false)}
     >
       <Link
-        href={href}
+        href={linkHref}
         className="font-game-title font-semibold spire-gold underline decoration-primary/30 underline-offset-2 transition-colors hover:text-primary"
       >
         {children}
@@ -1006,7 +1007,6 @@ function PatchDiffPowerLink({
   children: ReactNode;
 }) {
   const [ascensionLevel] = useMonsterAscensionLevel();
-  const href = useCompendiumLinkHref(localizeHref(buildCompendiumResourceHref("power", powerId), serviceLocale));
   const power = PATCH_DIFF_POWERS[powerId] ?? null;
   const title = power ? (serviceLocale === "ko" ? power.nameKo : power.nameEn) : String(children);
   const description = power
@@ -1015,7 +1015,7 @@ function PatchDiffPowerLink({
 
   return (
     <PatchDiffInlinePreview
-      href={href}
+      href={localizeHref(buildCompendiumResourceHref("power", powerId), serviceLocale)}
       preview={() => (
         <GameHoverTip
           title={title}
