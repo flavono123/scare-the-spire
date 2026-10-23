@@ -163,30 +163,44 @@ export const FONT_CQI = {
 export interface StrokeStyle {
   WebkitTextStroke: string;
   paintOrder: string;
-  textShadow: string;
+  filter: string;
 }
+
+/** Label font_shadow_color alpha / shadow_offset from card.tscn. */
+export interface GameShadow {
+  alpha: number;
+  offset: number;
+}
+
+/** TitleLabel, EnergyLabel, StarLabel: Color(0, 0, 0, 0.188235), offset (2, 2). */
+export const LABEL_SHADOW: GameShadow = { alpha: 0.188235, offset: 2 };
+/** Enchantment/Label: Color(0, 0, 0, 0.25098), offset (1, 1). */
+export const ENCHANT_LABEL_SHADOW: GameShadow = { alpha: 0.25098, offset: 1 };
+/** DescriptionLabel: Color(0, 0, 0, 0.25098), offset (2, 2), no outline. */
+export const DESCRIPTION_SHADOW: GameShadow = { alpha: 0.25098, offset: 2 };
 
 /**
  * 카드 폭(px) 기준 stroke 두께를 자동 계산.
- * Godot outline_size(12)는 카드폭 300 기준 4%. 우리도 stroke = width × 0.04 → 더 깔끔.
- * 단, stroke는 양쪽으로 그려지므로 절반 값 사용 (게임이 outline_size를 stroke 양쪽 크기로 해석).
+ * Godot는 FT_Stroker 반지름을 outline_size / 4로 잡는다. CSS stroke는 글리프 중심에서
+ * 양쪽으로 그려지고 paint-order로 fill 아래에 깔리므로 width = outline_size / 2면
+ * 바깥으로 outline_size / 4가 보인다.
+ * 그림자는 shadow_outline_size = outline_size라 외곽선까지 포함한 모양이므로
+ * text-shadow(fill만) 대신 drop-shadow로 그린다.
  */
 export function gameStroke(
   outlineColor: string,
   cardWidthPx: number,
   outlineSizeGamePx: number = 12, // 게임 기본
+  shadow: GameShadow = LABEL_SHADOW,
 ): StrokeStyle {
-  // 게임 outline_size는 텍스트 가장자리에서 outward 픽셀. CSS -webkit-text-stroke는
-  // 글자 중심에서 양쪽으로 stroke/2 px씩 그려 글리프를 두껍게 함.
-  // 카드폭에 비례 스케일.
   const strokePx = Math.max(
     1,
     Math.round((outlineSizeGamePx / 300) * cardWidthPx * 0.5),
   );
+  const offsetPx = (shadow.offset / 300) * cardWidthPx;
   return {
     WebkitTextStroke: `${strokePx}px ${outlineColor}`,
     paintOrder: "stroke fill",
-    // shadow_offset (2,2) at 300 base → 카드폭 비례
-    textShadow: `${(2 / 300) * cardWidthPx}px ${(2 / 300) * cardWidthPx}px 0 rgba(0,0,0,0.45)`,
+    filter: `drop-shadow(${offsetPx}px ${offsetPx}px 0 rgba(0,0,0,${shadow.alpha}))`,
   };
 }

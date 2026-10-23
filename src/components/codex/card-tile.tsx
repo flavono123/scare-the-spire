@@ -26,6 +26,8 @@ import {
 import {
   TITLE_OUTLINE_COLOR,
   ENERGY_OUTLINE_COLOR,
+  DESCRIPTION_SHADOW,
+  ENCHANT_LABEL_SHADOW,
   STAR_OUTLINE_COLOR,
   ENCHANT_AMOUNT_OUTLINE,
   TITLE_UPGRADED_OUTLINE,
@@ -52,10 +54,7 @@ import {
   getCardKeywordDisplayText,
   splitCardDisplayKeywords,
 } from "@/lib/sts2-card-keywords";
-import {
-  CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
-  fitCardDescriptionText,
-} from "@/lib/card-description-fit";
+import { fitCardDescriptionText } from "@/lib/card-description-fit";
 
 type StaticImageProps = ComponentProps<typeof StaticImage>;
 
@@ -82,11 +81,34 @@ const FRAME_ASSETS: Record<string, string> = {
   퀘스트: "/images/game-assets/card-frames/card_frame_quest.png",
 };
 
-const ANCIENT_TEXT_BG: Record<string, string> = {
-  공격: "/images/game-assets/card-misc/ancient_card_text_bg_attack.png",
-  스킬: "/images/game-assets/card-misc/ancient_card_text_bg_skill.png",
-  파워: "/images/game-assets/card-misc/ancient_card_text_bg_power.png",
+/**
+ * CardModel.AncientTextBg: compressed_atlas ancient_text_bg_<type> regions.
+ * Each sits inside a 693×533 texture through its atlas margin.
+ */
+const ANCIENT_TEXT_BG: Record<string, { src: string; region: { width: number; height: number }; margin: AtlasMargin }> = {
+  공격: {
+    src: "/images/game-assets/card-misc/ancient_card_text_bg_attack.png",
+    region: { width: 676, height: 499 },
+    margin: { x: 10, y: 10, width: 17, height: 34 },
+  },
+  스킬: {
+    src: "/images/game-assets/card-misc/ancient_card_text_bg_skill.png",
+    region: { width: 674, height: 427 },
+    margin: { x: 8, y: 106, width: 19, height: 106 },
+  },
+  파워: {
+    src: "/images/game-assets/card-misc/ancient_card_text_bg_power.png",
+    region: { width: 677, height: 507 },
+    margin: { x: 8, y: 0, width: 16, height: 26 },
+  },
 };
+
+const ANCIENT_PORTRAIT_MASK = "/images/game-assets/card-misc/ancient_portrait_mask_large.png";
+// Baked by scripts/extract-ancient-card-overlay.py from the scene's shader and blend modes.
+const ANCIENT_GLASS_SHADE = "/images/game-assets/card-misc/ancient_glass_shade.png";
+const ANCIENT_GLASS_LIGHT = "/images/game-assets/card-misc/ancient_glass_light.png";
+const ANCIENT_BORDER_ADD = "/images/game-assets/card-misc/ancient_card_border_add.png";
+const ANCIENT_BANNER = "/images/game-assets/card-misc/ancient_banner.png";
 
 const ANCIENT_FLAME_SHEET = "/images/game-assets/card-misc/ancient_card_flame_sheet.png";
 const INFECTION_CARD_ID = "INFECTION";
@@ -456,41 +478,118 @@ function holderCqi(px: number) {
   return `${(px / HOLDER_W) * 100}cqi`;
 }
 
+type GameRect = { left: number; top: number; width: number; height: number };
+/** Godot AtlasTexture.margin: region offset (x, y) and total extra size. */
+type AtlasMargin = { x: number; y: number; width: number; height: number };
+const NO_MARGIN: AtlasMargin = { x: 0, y: 0, width: 0, height: 0 };
+
+function rectBox(rect: GameRect) {
+  return holderBox(rect.left, rect.top, rect.width, rect.height);
+}
+
 /**
- * TextureRect STRETCH_KEEP_ASPECT_COVERED with an AtlasTexture whose region
- * sits at margin.x/y inside a texture margin.width/height larger. Returns the
- * drawn region; Godot clips it to the rect, so keep it inside.
+ * TextureRect KEEP_ASPECT_CENTERED ("contain") or KEEP_ASPECT_COVERED
+ * ("cover") of an AtlasTexture, returning where its region lands. Godot clips
+ * a covered texture to the rect, so a cover result must stay inside it.
  */
-function coveredRegionBox(
-  rect: { left: number; top: number; width: number; height: number },
+function fittedRegion(
+  rect: GameRect,
   region: { width: number; height: number },
-  margin: { x: number; y: number; width: number; height: number },
-) {
+  margin: AtlasMargin,
+  mode: "contain" | "cover",
+): GameRect {
   const textureWidth = region.width + margin.width;
   const textureHeight = region.height + margin.height;
-  const scale = Math.max(rect.width / textureWidth, rect.height / textureHeight);
-  return holderBox(
-    rect.left + (rect.width - textureWidth * scale) / 2 + margin.x * scale,
-    rect.top + (rect.height - textureHeight * scale) / 2 + margin.y * scale,
-    region.width * scale,
-    region.height * scale,
-  );
+  const pick = mode === "cover" ? Math.max : Math.min;
+  const scale = pick(rect.width / textureWidth, rect.height / textureHeight);
+  return {
+    left: rect.left + (rect.width - textureWidth * scale) / 2 + margin.x * scale,
+    top: rect.top + (rect.height - textureHeight * scale) / 2 + margin.y * scale,
+    width: region.width * scale,
+    height: region.height * scale,
+  };
 }
+
+/**
+ * canvas_group_mask_blur maps the CanvasGroup rect (content grown by
+ * fit_margin) to maskUv = uv * (region + offset) + regionXY - offset, clamped
+ * to the region, so the mask region covers the group rect minus `offset`.
+ */
+function canvasGroupMaskRect(
+  content: GameRect,
+  region: { width: number; height: number },
+  offset: { x: number; y: number },
+  fitMargin: number,
+): GameRect {
+  const left = content.left - fitMargin;
+  const top = content.top - fitMargin;
+  const width = content.width + fitMargin * 2;
+  const height = content.height + fitMargin * 2;
+  const spanX = region.width + offset.x;
+  const spanY = region.height + offset.y;
+  return {
+    left: left + (width * offset.x) / spanX,
+    top: top + (height * offset.y) / spanY,
+    width: (width * region.width) / spanX,
+    height: (height * region.height) / spanY,
+  };
+}
+
+function maskStyle(src: string, size = "100% 100%", position = "0 0"): CSSProperties {
+  const image = `url("${cacheBustSts2ImageUrl(src)}")`;
+  return {
+    maskImage: image,
+    maskRepeat: "no-repeat",
+    maskSize: size,
+    maskPosition: position,
+    WebkitMaskImage: image,
+    WebkitMaskRepeat: "no-repeat",
+    WebkitMaskSize: size,
+    WebkitMaskPosition: position,
+  };
+}
+
+// AncientPortrait: offset(-153,-215)~(445,627) at scale 0.5, stretched.
+const ANCIENT_PORTRAIT_RECT: GameRect = { left: -153, top: -215, width: 299, height: 421 };
+
+const ANCIENT = {
+  portrait: ANCIENT_PORTRAIT_RECT,
+  // card_canvas_group_mask_material: mask_region (615,1151,600,847), mask_offset (10,8).
+  portraitMask: canvasGroupMaskRect(ANCIENT_PORTRAIT_RECT, { width: 600, height: 847 }, { x: 10, y: 8 }, 1),
+  // AncientBorderGlassOverlay: offset(-148.465,-210.71)~(442.08,621.3) at scale 0.5.
+  glass: rectBox({ left: -148.46497, top: -210.71002, width: (442.08002 + 148.46497) / 2, height: (621.3 + 210.71002) / 2 }),
+  // AncientBorder: offset(-154,-223)~(152,217), keep aspect centered, 821×1148.
+  border: rectBox(fittedRegion({ left: -154, top: -223, width: 306, height: 440 }, { width: 821, height: 1148 }, NO_MARGIN, "contain")),
+  // AncientTextBg: offset(-133,-22)~(131,181), keep aspect centered.
+  textBgRect: { left: -133, top: -22, width: 264, height: 203 } satisfies GameRect,
+  // AncientBanner: offset(-163,-207)~(164,-124), keep aspect covered (no atlas margin).
+  banner: holderBox(-163, -207, 327, 83),
+  // Fire: AnimatedSprite2D at (164,-10) in the banner, centered, 49×69 frames at scale 0.6.
+  fire: holderBox(-163 + 164 - (49 * 0.6) / 2, -207 - 10 - (69 * 0.6) / 2, 49 * 0.6, 69 * 0.6),
+};
 
 /** TitleLabel is a MegaLabel: MaxFontSize 26, default MinFontSize 8. */
 const TITLE_FONT_PX = { max: 26, min: 8 };
+/** DescriptionLabel: MegaRichTextLabel MaxFontSize 21, MinFontSize 12. */
+const DESCRIPTION_FONT_PX = { max: 21, min: 12 };
+/**
+ * Godot line height is the font's ascent + descent (kreon_regular hhea
+ * 997 + 293 of 1024; it outranks the CJK fallbacks) plus line_separation -3,
+ * which stays in px while the autosize shrinks the font.
+ */
+const DESCRIPTION_LINE_HEIGHT = `calc(${(997 + 293) / 1024}em - ${holderCqi(3)})`;
 
 const L = {
   art: holderBox(-125, -168, 250, 190),
   portraitBorder: holderBox(-137.5, -164, 275, 210),
   // TitleBanner offset(-163,-207)~(164,-124); card_banner.tres margin Rect2(1, 23, 2, 25).
-  banner: coveredRegionBox(
+  banner: rectBox(fittedRegion(
     { left: -163, top: -207, width: 327, height: 83 },
     { width: 653, height: 145 },
     { x: 1, y: 23, width: 2, height: 25 },
-  ),
+    "cover",
+  )),
   title: holderBox(-105, -204, 210, 54),
-  ancientBanner: { top: -2.4, width: 112, aspectRatio: "671/182", titlePaddingX: 16, titleTranslateY: -28 },
   plaque: { top: ((1 + HOLDER_H / 2) / HOLDER_H) * 100, height: 37, minWidth: 61, labelPadX: 17 },
   // DescriptionLabel offset(-122,37)~(121,173), vertically centered.
   desc: holderBox(-122, 37, 243, 136),
@@ -684,7 +783,7 @@ export const CardTile = memo(function CardTile({
   costContent,
   starCostContent,
   editableContent = false,
-  minimumDescriptionFontScale = 0.55,
+  minimumDescriptionFontScale = DESCRIPTION_FONT_PX.min / DESCRIPTION_FONT_PX.max,
   onDescriptionFitChange,
   engagementStats,
   captureSnapshot,
@@ -755,7 +854,7 @@ export const CardTile = memo(function CardTile({
   const titleStroke = gameStroke(titleOutline, cardWidth, 12);
   const costStroke = gameStroke(costOutline, cardWidth, 16);
   const starStroke = gameStroke(STAR_OUTLINE_COLOR, cardWidth, 12);
-  const enchantAmountStroke = gameStroke(ENCHANT_AMOUNT_OUTLINE, cardWidth, 8);
+  const enchantAmountStroke = gameStroke(ENCHANT_AMOUNT_OUTLINE, cardWidth, 8, ENCHANT_LABEL_SHADOW);
 
   // 강화 + 인챈트 모두 누적 적용 (게임 순서: base → upgrade → enchant).
   // descriptionRaw 가 없으면 통합 함수가 card.description 으로 폴백.
@@ -872,14 +971,15 @@ export const CardTile = memo(function CardTile({
       content,
       baseFontCqi: FONT_CQI.description,
       minimumFontScale: minimumDescriptionFontScale,
-      availableHeightRatio: hasCustomDescription ? 1 : CARD_DESCRIPTION_SAFE_HEIGHT_RATIO,
+      // MegaRichTextLabel judges the whole DescriptionLabel height in whole px.
+      availableHeightRatio: 1,
+      scaleStep: 1 / DESCRIPTION_FONT_PX.max,
     });
     setDescriptionFontScale((current) => (
       Math.abs(current - fit.fontScale) < 0.001 ? current : fit.fontScale
     ));
     onDescriptionFitChange?.(fit);
   }, [
-    hasCustomDescription,
     minimumDescriptionFontScale,
     onDescriptionFitChange,
   ]);
@@ -888,9 +988,12 @@ export const CardTile = memo(function CardTile({
     measureDescriptionFit();
 
     const viewport = descriptionViewportRef.current;
+    const content = descriptionContentRef.current;
     if (!viewport) return;
     const observer = new ResizeObserver(measureDescriptionFit);
     observer.observe(viewport);
+    // A late web-font swap resizes the text without touching the viewport.
+    if (content) observer.observe(content);
     void document.fonts?.ready.then(measureDescriptionFit);
     return () => observer.disconnect();
   });
@@ -914,10 +1017,32 @@ export const CardTile = memo(function CardTile({
     return () => observer.disconnect();
   }, [hasCustomTitle, titleText]);
 
+  const renderTitle = () => (
+    <div
+      ref={titleBoxRef}
+      className="absolute z-[3] flex items-center justify-center"
+      style={L.title}
+    >
+      <span
+        ref={titleTextRef}
+        className={`shrink-0 text-center ${hasCustomTitle ? "w-full" : "whitespace-nowrap"}`}
+        style={{
+          fontFamily: TITLE_FONT,
+          fontSize: `var(${TITLE_FONT_VAR}, ${holderCqi(TITLE_FONT_PX.max)})`,
+          fontWeight: 800,
+          color: titleColor,
+          ...(titleStroke as CSSProperties),
+        }}
+      >
+        {titleContent ?? titleText}
+      </span>
+    </div>
+  );
+
   const renderDescription = () => (
     <div
       ref={descriptionContentRef}
-      className={`text-center leading-[1.18] ${
+      className={`text-center ${
         hasCustomDescription
           ? "flex h-full w-full flex-col items-stretch"
           : "max-w-full"
@@ -926,7 +1051,8 @@ export const CardTile = memo(function CardTile({
       style={{
         color: TEXT_CREAM,
         fontSize: `${FONT_CQI.description * descriptionFontScale}cqi`,
-        textShadow: `${(2 / 300) * cardWidth}px ${(2 / 300) * cardWidth}px 0 rgba(0,0,0,0.45)`,
+        lineHeight: DESCRIPTION_LINE_HEIGHT,
+        textShadow: `${(DESCRIPTION_SHADOW.offset / 300) * cardWidth}px ${(DESCRIPTION_SHADOW.offset / 300) * cardWidth}px 0 rgba(0,0,0,${DESCRIPTION_SHADOW.alpha})`,
       }}
     >
       {hasCustomDescription ? (
@@ -1180,8 +1306,15 @@ export const CardTile = memo(function CardTile({
   // ANCIENT CARD
   // =====================================================================
   if (isAncientCard) {
-    const ancientTextBg = ANCIENT_TEXT_BG[card.type] ?? ANCIENT_TEXT_BG["스킬"];
+    const textBg = ANCIENT_TEXT_BG[card.type] ?? ANCIENT_TEXT_BG["스킬"];
+    const textBgBox = rectBox(fittedRegion(ANCIENT.textBgRect, textBg.region, textBg.margin, "contain"));
+    const { portrait, portraitMask } = ANCIENT;
     const ancientBannerFilter = hsvToFilter(ANCIENT_BANNER_HSV);
+    const portraitMaskStyle = maskStyle(
+      ANCIENT_PORTRAIT_MASK,
+      `${holderCqi(portraitMask.width)} ${holderCqi(portraitMask.height)}`,
+      `${holderCqi(portraitMask.left - portrait.left)} ${holderCqi(portraitMask.top - portrait.top)}`,
+    );
 
     return wrapCardRoot(
       <div
@@ -1190,13 +1323,16 @@ export const CardTile = memo(function CardTile({
         onClick={onClick}
       >
         <div className="relative w-full h-full overflow-visible">
-          <div className="absolute inset-0 overflow-hidden rounded-[3%]">
+          <div
+            className="absolute"
+            style={{ ...rectBox(portrait), ...portraitMaskStyle }}
+          >
             {imageSrc && !imgError ? (
               <Image
                 src={imageSrc}
                 alt={renderedCardName}
                 fill
-                className="object-cover object-center"
+                className="object-fill"
                 sizes={`${cardWidth}px`}
                 onError={() => setImgError(true)}
               />
@@ -1207,104 +1343,42 @@ export const CardTile = memo(function CardTile({
             )}
           </div>
 
-          <Image
-            src="/images/game-assets/card-frames/card_frame_ancient.png"
-            alt=""
-            fill
-            className="object-contain pointer-events-none z-[1]"
-            style={{ filter: frameFilter }}
-            sizes={`${cardWidth}px`}
+          {/* AncientBorderGlassOverlay: dst * P + Q from its shader, as two masked layers. */}
+          <div aria-hidden className="pointer-events-none absolute bg-black" style={{ ...ANCIENT.glass, ...maskStyle(ANCIENT_GLASS_SHADE) }} />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute bg-white"
+            style={{ ...ANCIENT.glass, ...maskStyle(ANCIENT_GLASS_LIGHT), mixBlendMode: "plus-lighter" }}
           />
+          {/* AncientBorder: modulate tint and 0.502 alpha baked, blend_mode ADD. */}
+          <div className="pointer-events-none absolute" style={{ ...ANCIENT.border, mixBlendMode: "plus-lighter" }}>
+            <Image src={ANCIENT_BORDER_ADD} alt="" fill className="object-fill" sizes={`${cardWidth}px`} />
+          </div>
+          {/* AncientTextBg: modulate Color(0, 0, 0, 0.66). */}
+          <div className="pointer-events-none absolute" style={textBgBox}>
+            <Image src={textBg.src} alt="" fill className="object-fill" style={{ filter: "brightness(0)", opacity: 0.66 }} />
+          </div>
 
           <AfflictionCardOverlay afflictionId={afflictionId} />
           {afflictionOverlay}
 
-          <div
-            className="absolute z-[2] pointer-events-none"
-            style={{ left: "5%", right: "5%", bottom: "1%", height: "45%" }}
-          >
+          <div className="absolute z-[3] pointer-events-none overflow-hidden" style={ANCIENT.banner}>
+            <Image src={ANCIENT_BANNER} alt="" fill className="object-cover" />
+          </div>
+          <span aria-hidden className="pointer-events-none absolute z-[3] overflow-hidden" style={ANCIENT.fire}>
             <Image
-              src={ancientTextBg}
+              src={ANCIENT_FLAME_SHEET}
               alt=""
               fill
-              className="object-contain object-bottom"
-              style={{ filter: frameFilter, opacity: 0.92 }}
-            />
-          </div>
-
-          <div
-            className="absolute left-1/2 z-[3] flex -translate-x-1/2 items-center justify-center"
-            style={{
-              top: `${L.ancientBanner.top}%`,
-              width: `${L.ancientBanner.width}%`,
-              aspectRatio: L.ancientBanner.aspectRatio,
-            }}
-          >
-              <Image
-                src="/images/game-assets/card-misc/ancient_banner.png"
-                alt=""
-                fill
-                className="object-contain pointer-events-none"
-                style={{ filter: ancientBannerFilter }}
-              />
-              <span
-                aria-hidden
-                className="pointer-events-none absolute left-1/2 z-[8]"
-                style={{
-                  top: "5%",
-                  width: "66%",
-                  height: "50%",
-                  transform: "translateX(-50%)",
-                  background: [
-                    "linear-gradient(90deg, transparent 0%, rgba(83, 232, 255, 0.4) 22%, rgba(155, 255, 160, 0.26) 42%, rgba(255, 155, 78, 0.36) 70%, transparent 100%)",
-                    "radial-gradient(ellipse at 50% 18%, rgba(236, 90, 255, 0.32) 0%, transparent 38%)",
-                    "radial-gradient(ellipse at 50% 70%, rgba(255, 245, 190, 0.18) 0%, transparent 42%)",
-                  ].join(", "),
-                  filter: "blur(1.6px)",
-                  mixBlendMode: "screen",
-                  opacity: 0.9,
-                }}
-              />
-              <span
-                aria-hidden
-                className="pointer-events-none absolute z-[9] overflow-hidden"
-                style={{
-                  left: "50.15%",
-                  top: "-12.05%",
-                  width: "9%",
-                  aspectRatio: "49 / 69",
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                <Image
-                  src={ANCIENT_FLAME_SHEET}
-                  alt=""
-                  fill
-                  className="sts2-ancient-card-flame__sheet pointer-events-none"
-                  style={{
-                    width: "1000%",
-                    maxWidth: "none",
-                    height: "100%",
-                  }}
-                />
-              </span>
-              <span
-                className="relative z-10 w-full truncate text-center"
+              className="sts2-ancient-card-flame__sheet pointer-events-none"
               style={{
-                paddingLeft: `${L.ancientBanner.titlePaddingX}%`,
-                paddingRight: `${L.ancientBanner.titlePaddingX}%`,
-                transform: `translateY(${L.ancientBanner.titleTranslateY}%)`,
-                fontFamily: TITLE_FONT,
-                fontSize: `${FONT_CQI.title}cqi`,
-                fontWeight: 800,
-                lineHeight: 1,
-                color: titleColor,
-                ...(titleStroke as CSSProperties),
+                width: "1000%",
+                maxWidth: "none",
+                height: "100%",
               }}
-            >
-              {titleContent ?? <>{renderedCardName}{titleUpgradeSuffix}</>}
-            </span>
-          </div>
+            />
+          </span>
+          {renderTitle()}
 
           <TypePlaque label={card.typeLabel} filter={ancientBannerFilter} />
 
@@ -1397,25 +1471,7 @@ export const CardTile = memo(function CardTile({
             style={{ filter: bannerFilter }}
           />
         </div>
-        <div
-          ref={titleBoxRef}
-          className="absolute z-[3] flex items-center justify-center"
-          style={L.title}
-        >
-          <span
-            ref={titleTextRef}
-            className={`shrink-0 text-center ${hasCustomTitle ? "w-full" : "whitespace-nowrap"}`}
-            style={{
-              fontFamily: TITLE_FONT,
-              fontSize: `var(${TITLE_FONT_VAR}, ${holderCqi(TITLE_FONT_PX.max)})`,
-              fontWeight: 800,
-              color: titleColor,
-              ...(titleStroke as CSSProperties),
-            }}
-          >
-            {titleContent ?? titleText}
-          </span>
-        </div>
+        {renderTitle()}
 
         <TypePlaque label={card.typeLabel} filter={bannerFilter} />
 
