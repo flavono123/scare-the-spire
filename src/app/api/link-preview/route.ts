@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { isPublicHttpUrl, readOpenGraph } from "@/lib/link-preview";
+import { isPublicHttpUrl, readOpenGraph, type LinkPreview } from "@/lib/link-preview";
+import {
+  parseYouTubeVideoId,
+  resolveYouTubeReference,
+  youtubeThumbnailUrl,
+} from "@/lib/youtube-reference";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -16,6 +21,19 @@ export async function GET(request: Request) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
+    // YouTube puts og:title ~800 KB into the page; oEmbed answers directly.
+    const videoId = parseYouTubeVideoId(target.href);
+    if (videoId) {
+      const reference = await resolveYouTubeReference(target.href, controller.signal);
+      const preview: LinkPreview = {
+        title: reference.title,
+        description: "",
+        image: youtubeThumbnailUrl(videoId),
+      };
+      return NextResponse.json(preview, {
+        headers: { "cache-control": "public, max-age=86400" },
+      });
+    }
     const response = await fetch(target, {
       redirect: "follow",
       signal: controller.signal,
