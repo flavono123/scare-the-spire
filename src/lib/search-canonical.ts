@@ -58,14 +58,23 @@ export function absoluteSearchCanonicalUrl(
   return absoluteSiteUrl(searchCanonicalPath(pathname, serviceLocale));
 }
 
-/** Reciprocal hreflang map shared by the ko and en variants of a page. */
-export function searchLanguageAlternates(pathname: string): SearchLanguageAlternates {
-  const ko = absoluteSiteUrl(searchPathForLocale(pathname, "ko"));
-  const en = absoluteSiteUrl(searchPathForLocale(pathname, "en"));
+/** Reciprocal hreflang paths shared by the ko and en variants of a page. */
+export function searchLanguageAlternatePaths(pathname: string): SearchLanguageAlternates {
+  const ko = searchPathForLocale(pathname, "ko");
+  const en = searchPathForLocale(pathname, "en");
   return {
     ko,
     en,
     "x-default": SEARCH_X_DEFAULT_LOCALE === "ko" ? ko : en,
+  };
+}
+
+export function searchLanguageAlternates(pathname: string): SearchLanguageAlternates {
+  const paths = searchLanguageAlternatePaths(pathname);
+  return {
+    ko: absoluteSiteUrl(paths.ko),
+    en: absoluteSiteUrl(paths.en),
+    "x-default": absoluteSiteUrl(paths["x-default"]),
   };
 }
 
