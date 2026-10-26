@@ -39,7 +39,7 @@
   - YouTube link previews (Pagestorm hover) show the video title and thumbnail.
   - /dev/editors: every editor starts from a lorem ipsum post using its features; the reset button restores them.
 - QA: /c-c-c-combo (write and the post above), /pagestorm/write hover on a YouTube link, /dev/editors; ko; desktop.
-- Commits: cd606bcc, 357012b2, 869fb803, and the hover-preview commit
+- Commits: cd606bcc, 357012b2, 869fb803, 77d53d09
 
 <!--
 ### <항목-id>
