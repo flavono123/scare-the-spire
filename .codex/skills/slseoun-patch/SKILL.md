@@ -164,6 +164,7 @@ Use this in the Cloudflare worktree when rich patch notes need to publish before
 the main Compendium Worker has the matching pages and canonical assets.
 
 - Follow `docs/PATCH_WORKER_DEPLOY_CONTRACT.md`.
+- This is the urgent release path in `docs/RELEASE_PROCESS.md` section 4: skip the full smoke test and feature QA. After pushing, record any other un-QA'd commits that shipped along in `docs/release/UNRELEASED.md`.
 - Build and validate patch pages through the separate static patch Worker path:
   `pnpm patch:build`, `pnpm patch:test`, then `pnpm cf:patch:preview` or
   `pnpm cf:patch:deploy`.
