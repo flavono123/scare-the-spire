@@ -62,6 +62,7 @@ Compare against published entries the user already corrected (`2026-07-09`, `202
    - If any step fails (such as `tsc` typecheck failures or lint errors introduced by recent edits or parallel sessions), diagnose and fix the issues immediately, commit the fixes, and verify that `./.githooks/pre-push` passes cleanly (`[pre-push] ok`).
    - Do not run `pnpm build` for copy-only byrdispatch markdown.
    - Do not add a QA/browser pass to the byrdispatch write itself. Capture with headless Playwright only when media is actually required.
+   - The release that ships this entry runs the CI gate, full smoke test, and feature QA of every commit since the last release in the release session, per `docs/RELEASE_PROCESS.md` section 3. Hand off to it; do not fold it into the byrdispatch write.
 
 ## What to write
 
