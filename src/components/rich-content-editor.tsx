@@ -35,7 +35,7 @@ import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { YouTubeReferenceExtension } from "@/components/editor/youtube-reference-extension";
 import { LinkReferenceExtension } from "@/components/editor/link-reference-extension";
 import type { EditorView } from "@tiptap/pm/view";
-import { fetchLinkPreview } from "@/lib/link-preview-client";
+import { cachedLinkPreview } from "@/lib/link-preview-client";
 import { normalizeLinkTitle, parseHttpUrl } from "@/lib/link-reference";
 import { HistoryRunReferenceExtension } from "@/components/editor/history-run-reference-extension";
 import { HistoryRunFloorExtension, replaceExclusiveHistoryFloor } from "@/components/editor/history-run-floor-extension";
@@ -679,10 +679,8 @@ export function RichContentEditor({
       .insertText(" ")
       .scrollIntoView());
     setResolvingReferences((count) => count + 1);
-    void fetchLinkPreview(href)
-      .then((preview) => preview.title)
-      .catch(() => "")
-      .then((title) => {
+    void cachedLinkPreview(href)
+      .then(({ title }) => {
         const currentEditor = editorRef.current;
         if (!currentEditor || currentEditor.isDestroyed || currentEditor.view !== view) return;
         // Without a title the address itself stays as the label.

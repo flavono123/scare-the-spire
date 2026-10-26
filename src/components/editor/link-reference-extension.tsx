@@ -3,6 +3,7 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import { Link2, LoaderCircle } from "lucide-react";
+import { ExternalLinkHoverPreview } from "@/components/external-link-preview";
 import { EXTERNAL_LINK_TEXT_CLASS } from "@/lib/service-link-classes";
 import { selectAtomOnClick } from "./editor-link";
 
@@ -19,14 +20,19 @@ function LinkReferenceNodeView({ editor, getPos, node }: NodeViewProps) {
       data-link-reference=""
     >
       {pending ? (
-        <LoaderCircle
-          aria-hidden
-          className="h-3.5 w-3.5 shrink-0 animate-spin motion-reduce:animate-none"
-        />
+        <>
+          <LoaderCircle
+            aria-hidden
+            className="h-3.5 w-3.5 shrink-0 animate-spin motion-reduce:animate-none"
+          />
+          <span className="truncate">{title}</span>
+        </>
       ) : (
-        <Link2 aria-hidden className="h-3.5 w-3.5 shrink-0" />
+        <ExternalLinkHoverPreview href={node.attrs.href as string}>
+          <Link2 aria-hidden className="mr-1 inline h-3.5 w-3.5 shrink-0 align-[-0.15em]" />
+          <span className="truncate">{title}</span>
+        </ExternalLinkHoverPreview>
       )}
-      <span className="truncate">{title}</span>
     </NodeViewWrapper>
   );
 }

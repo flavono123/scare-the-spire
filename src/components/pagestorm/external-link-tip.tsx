@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import type { Editor } from "@tiptap/react";
 import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
-import { fetchLinkPreview, type LinkPreview } from "@/lib/link-preview-client";
+import { cachedLinkPreview, type LinkPreview } from "@/lib/link-preview-client";
 import { SitePathHoverTip } from "./site-path-hover-tip";
-
-const previewCache = new Map<string, LinkPreview>();
 
 function anchorPreview(anchor: HTMLAnchorElement): LinkPreview {
   return {
@@ -48,17 +46,10 @@ export function ExternalLinkOgTip({ editor }: { editor: Editor }) {
       active = anchor;
       const stored = anchorPreview(anchor);
       show(anchor, stored);
-      if (anchor.dataset.ogTitle || previewCache.has(anchor.href)) {
-        const cached = previewCache.get(anchor.href);
-        if (cached?.title) show(anchor, cached);
-        return;
-      }
-      const href = anchor.href;
-      previewCache.set(href, stored);
-      void fetchLinkPreview(href).then((preview) => {
-        previewCache.set(href, preview.title ? preview : { ...stored, title: "" });
+      if (anchor.dataset.ogTitle) return;
+      void cachedLinkPreview(anchor.href).then((preview) => {
         show(anchor, preview.title ? preview : stored);
-      }).catch(() => undefined);
+      });
     };
     const onOut = (event: MouseEvent) => {
       const anchor = (event.target as Element | null)?.closest?.("a.pagestorm-inline-link");

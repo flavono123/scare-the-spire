@@ -17,6 +17,30 @@
 
 ## 기능 기대치
 
+### editor-input-unification
+- Feature: Shared editor behavior across comments, Chemical X, C-C-C-Combo, Defragment, Transfigure and Pagestorm: one suggestion popup, two-step links, unified link colors, Pagestorm display{keyword}, Pagestorm external link titles, compact Toy Box menu, grid dev menu, /dev/editors.
+- Expect:
+  - Phone: typing `{타격` (or `/`, `#` in their services) opens the menu next to the caret, above the keyboard when there is no room below; tapping a row inserts it with the keyboard still up and the page not jumping.
+  - Pagestorm: `강펀치{타격}` and `강펀치{타격` + `}` both leave "강펀치" as the mention text.
+  - In editors, clicking a link, keyword or mention never navigates. It shows a bubble (or the Pagestorm link sheet) with "새 탭에서 열기"; ⌘/Ctrl+click opens a new tab. Pagestorm no longer opens a tab on every external link click, and the leave dialog does not appear for these.
+  - In-site links are aqua and off-site links blue in viewers and editors alike, including the C-C-C-Combo YouTube chip, Chemical X YouTube links and patch-note links.
+  - Pagestorm: pasting a URL becomes a link labelled with the page's Open Graph title (game names inside it stay plain text); typing right after does not extend the link; hovering shows the Open Graph card while editing too.
+  - Toy Box menu has no section title and codex-menu density; dev menu lays groups out in columns (phone: full-width sheet).
+  - /dev/editors lists every editor (also in the dev menu).
+- QA: /pagestorm/write, /chemical-x, /c-c-c-combo, a compendium card page comment box, /patches/<latest>, /byrdispatch, /dev/editors; ko; desktop and phone (iPhone viewport).
+- Commits: ee653d59, faa73d97, e59445f0, 15765a6e, 2c759a16, 7d9723dc, e4bfe260, 59a384d8
+
+### combo-titled-links
+- Feature: C-C-C-Combo titles pasted DC Inside links, previews off-site links with their Open Graph card, and the dev editor page opens on full-feature samples.
+- Expect:
+  - Pasting a DC Inside post URL in the combo editor shows "링크 제목을 불러오는 중", then the post title as a blue link chip; the post saves and renders it as a link opening in a new tab.
+  - Older combo posts with a bare DC Inside URL in text (e.g. /c-c-c-combo/c05927c9-3729-423d-8b85-5a7522ec3007) show the post title as a link; other bare URLs become links showing the address.
+  - Hovering a combo link (editor chip, saved link, bare URL) shows the Open Graph image, title and description, as in Pagestorm.
+  - YouTube link previews (Pagestorm hover) show the video title and thumbnail.
+  - /dev/editors: every editor starts from a lorem ipsum post using its features; the reset button restores them.
+- QA: /c-c-c-combo (write and the post above), /pagestorm/write hover on a YouTube link, /dev/editors; ko; desktop.
+- Commits: cd606bcc, 357012b2, 869fb803, and the hover-preview commit
+
 <!--
 ### <항목-id>
 - Feature:

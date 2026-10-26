@@ -14,3 +14,19 @@ export async function fetchLinkPreview(url: string): Promise<LinkPreview> {
 }
 
 export type { LinkPreview };
+
+const EMPTY_PREVIEW: LinkPreview = { title: "", description: "", image: "" };
+const previewCache = new Map<string, Promise<LinkPreview>>();
+
+/**
+ * One request per URL per page view, shared by every hover preview and
+ * title lookup. Failures resolve to an empty preview and are cached too.
+ */
+export function cachedLinkPreview(url: string): Promise<LinkPreview> {
+  let pending = previewCache.get(url);
+  if (!pending) {
+    pending = fetchLinkPreview(url).catch(() => EMPTY_PREVIEW);
+    previewCache.set(url, pending);
+  }
+  return pending;
+}

@@ -3,7 +3,7 @@
 import type { Mark } from "@tiptap/pm/model";
 import type { Editor } from "@tiptap/react";
 import type { LinkPreview } from "@/lib/link-preview";
-import { fetchLinkPreview } from "@/lib/link-preview-client";
+import { cachedLinkPreview } from "@/lib/link-preview-client";
 
 export const EXTERNAL_LINK_ATTRS = {
   target: "_blank",
@@ -25,10 +25,10 @@ export function insertExternalLink(editor: Editor, href: string, fallback: strin
     // keystrokes extend the label and the title swap no longer finds it.
     .unsetMark("link")
     .run();
-  void fetchLinkPreview(href).then((preview) => {
+  void cachedLinkPreview(href).then((preview) => {
     if (editor.isDestroyed || !preview.title) return;
     replaceExternalLinkLabel(editor, href, fallback, preview);
-  }).catch(() => undefined);
+  });
 }
 
 export function replaceExternalLinkLabel(
