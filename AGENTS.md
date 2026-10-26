@@ -10,8 +10,11 @@ Do not commit `pnpm static:data` fallout (`public/generated/*` CI outputs, `src/
 
 ## Branch and Deployment Defaults
 
-- Do not create or switch branches or worktrees unless the user explicitly asks for it.
 - By default, work on the `main` branch and make speculative commits directly there.
+- Do not create or switch branches or worktrees unless the user explicitly asks for it, with one exception: when the session judges the task to be a large refactor (spanning services, shared rendering, route trees, or data schemas, and unsafe to ship half-done or longer than one weekly release cycle), ask the user to approve a worktree before starting. On approval, work in `.claude/worktrees/<name>` on `refactor/<name>`, register it in `docs/release/UNRELEASED.md`, and when merging, `git merge --no-ff` into local `main`, collect its feature expectations, then remove the worktree and branch. See `docs/RELEASE_PROCESS.md`.
+- Every commit that changes user-visible behavior records `Feature:`, `Expect:`, and `QA:` lines in its body (or `QA: none` when nothing user-visible changes); multi-commit features go in `docs/release/UNRELEASED.md`. The release session QAs from these.
+- Regular releases ship with a byrdispatch entry and must pass the CI gate, full smoke test, and feature QA of every commit since the last release, per `docs/RELEASE_PROCESS.md`. The release session decides or asks whether each unmerged worktree is included, and decides or asks before cleaning up stale worktrees.
+- Urgent patch-note releases skip the full smoke test and feature QA: deploy speed comes first, limited to patch Worker consistency (`pnpm patch:test`) and service stability. Record the un-QA'd range in `docs/release/UNRELEASED.md` for the next regular release.
 - Deploy through CI by pushing the `main` branch. Do not run ad hoc `wrangler deploy` scripts.
 - Deploy only by pushing the latest local `main` HEAD as a whole. Every commit already on local `main`, including commits from concurrent tasks, is part of the next deployment and must not be omitted.
 - Never reconstruct, cherry-pick, or recreate a selected subset of commits on top of `origin/main` for deployment. Do not push an alternate ref, temporary branch, worktree, temporary clone, or synthetic commit chain to remote `main`.

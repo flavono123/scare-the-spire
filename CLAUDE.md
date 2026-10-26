@@ -6,6 +6,10 @@
 
 All task instructions must be followed by an immediate speculative commit after each modification. Do not batch changes — commit after every meaningful edit.
 
+- Work on local `main` by default. If the session judges the task to be a large refactor (spanning services, shared rendering, route trees, or data schemas, and unsafe to ship half-done or longer than one weekly release cycle), ask the user to approve a worktree first. Keep making speculative commits inside it; when merging, `git merge --no-ff` into local `main`, collect its feature expectations, then remove the worktree and branch.
+- Commits that change user-visible behavior record `Feature:`, `Expect:`, and `QA:` lines in the body (`QA: none` otherwise). Multi-commit features and open worktrees go in `docs/release/UNRELEASED.md`.
+- Releases (regular byrdispatch releases with CI gate, full smoke test, and feature QA; urgent patch-note releases where speed comes first) follow `docs/RELEASE_PROCESS.md`. The branch and deployment rules in `AGENTS.md` also apply.
+
 ## 기술 스택
 
 - **Framework**: Next.js 15 (App Router, TypeScript strict)
