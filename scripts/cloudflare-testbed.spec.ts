@@ -138,7 +138,9 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
 });
 
 test("compendium detail keeps its view on the canonical detail URL", async ({ page }) => {
-  await page.goto(absolute("/compendium/relics"), { waitUntil: "domcontentloaded" });
+  // Before hydration the tile is a plain link to the detail page; wait for the
+  // client handler that opens the modal.
+  await page.goto(absolute("/compendium/relics"), { waitUntil: "networkidle" });
 
   // Relic tiles preventDefault and open an in-page modal while pushing the
   // canonical detail path. Avoid Playwright's navigation auto-wait so the
@@ -206,7 +208,9 @@ test("History Course invalid detail returns to its index with client navigation"
 
   await page.getByRole("link", { name: /역사 강의서 처음으로|Back to History Course/i }).click();
   await expect(page).toHaveURL(absolute("/history-course"));
-  await expect(page.locator("#history-course-run-search")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 2, name: /도전 이력 다시 보기|View run history again/ }),
+  ).toBeVisible();
 });
 
 test("Supabase failure uses the shared unavailable state", async ({ page }) => {
