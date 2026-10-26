@@ -68,7 +68,7 @@ interface RenderOptions {
   energyIconVariant: Sts2EnergyIconVariant;
 }
 
-function renderEnergyIcons(
+export function renderEnergyIcons(
   count: number,
   keyPrefix: string,
   energyIconVariant: Sts2EnergyIconVariant,
@@ -80,6 +80,27 @@ function renderEnergyIcons(
         <Image
           key={`${keyPrefix}-energy-${i}`}
           src={src}
+          alt=""
+          width={16}
+          height={16}
+          className="inline-block align-text-bottom"
+          style={{ width: "1em", height: "1em" }}
+          aria-hidden
+        />
+      ))}
+    </span>
+  );
+}
+
+export const STS2_STAR_ICON_SRC = "/images/game-assets/card-misc/star_icon.png";
+
+export function renderStarIcons(count: number, keyPrefix: string): ReactNode {
+  return (
+    <span className="inline-flex items-baseline gap-0 align-baseline">
+      {Array.from({ length: count }, (_, i) => (
+        <Image
+          key={`${keyPrefix}-star-${i}`}
+          src={STS2_STAR_ICON_SRC}
           alt=""
           width={16}
           height={16}
@@ -107,6 +128,13 @@ function renderSineNodes(
         return (
           <span key={k}>
             {renderEnergyIcons(parseInt(node.param ?? "1", 10) || 1, k, options.energyIconVariant)}
+          </span>
+        );
+      }
+      if (node.tag === "star") {
+        return (
+          <span key={k}>
+            {renderStarIcons(parseInt(node.param ?? "1", 10) || 1, k)}
           </span>
         );
       }
@@ -168,7 +196,7 @@ function parseBBCode(input: string): TextNode[] {
 
     if (!isClosing && tagName === "star" && tagParam) {
       const count = parseInt(tagParam, 10) || 1;
-      pushText("★".repeat(count));
+      pushNode({ type: "tag", tag: "star", param: String(count), children: [] });
       continue;
     }
 
@@ -236,6 +264,13 @@ function renderNodes(nodes: TextNode[], key = "", options: RenderOptions): React
         return (
           <span key={k}>
             {renderEnergyIcons(parseInt(node.param ?? "1", 10) || 1, k, options.energyIconVariant)}
+          </span>
+        );
+      }
+      if (node.tag === "star") {
+        return (
+          <span key={k}>
+            {renderStarIcons(parseInt(node.param ?? "1", 10) || 1, k)}
           </span>
         );
       }

@@ -6,6 +6,8 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import {
   parseBBCode,
+  renderEnergyIcons,
+  renderStarIcons,
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
@@ -1381,6 +1383,10 @@ function renderBBNodes(
       return renderMarkdownInlineCode(node.text, lookup, key, context);
     }
 
+    if (node.type === "tag" && (node.tag === "energy" || node.tag === "star")) {
+      return renderCostIconNode(node, key);
+    }
+
     if (node.type === "tag" && node.tag && node.children) {
       if (node.tag === "sine") {
         return (
@@ -1428,6 +1434,17 @@ function renderBBNodes(
   });
 }
 
+function renderCostIconNode(node: TextNode, key: string): ReactNode {
+  const count = parseInt(node.param ?? "1", 10) || 1;
+  return (
+    <span key={key}>
+      {node.tag === "star"
+        ? renderStarIcons(count, key)
+        : renderEnergyIcons(count, key, "colorless")}
+    </span>
+  );
+}
+
 function renderSineBBNodes(
   nodes: TextNode[],
   lookup: EntityLookup,
@@ -1440,6 +1457,10 @@ function renderSineBBNodes(
 
     if (node.type === "newline") return <br key={key} />;
     if (node.type === "text" && node.text) return renderSineText(node.text, key, offset);
+
+    if (node.type === "tag" && (node.tag === "energy" || node.tag === "star")) {
+      return renderCostIconNode(node, key);
+    }
 
     if (node.type === "tag" && node.tag && node.children) {
       if (node.tag === "sine") {
