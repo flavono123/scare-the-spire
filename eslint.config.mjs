@@ -20,6 +20,8 @@ const eslintConfig = defineConfig([
     "storybook-static/**",
     "public/generated/*.js",
     "next-env.d.ts",
+    // Worktrees under .claude hold their own sources and build output.
+    ".claude/**",
   ]),
   ...storybook.configs["flat/recommended"]
 ]);
