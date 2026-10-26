@@ -25,6 +25,8 @@ const storage = {
 const seen = readNavSeen(storage, "2026-09-24T00:00:00.000Z");
 assert.equal(seen["patch-notes"], "2026-09-24T00:00:00.000Z");
 assert.equal(seen.combo, "2026-09-24T00:00:00.000Z");
+// A browser that never opened Colorful Philosophers sees this week's posts as new.
+assert.equal(seen["colorful-philosophers"], "1970-01-01T00:00:00.000Z");
 memory.clear();
 storage.setItem(navSeenStorageKey(), JSON.stringify({ "patch-notes": "2026-09-01T00:00:00.000Z" }));
 const filled = readNavSeen(storage, "2026-09-24T00:00:00.000Z");
@@ -38,6 +40,9 @@ assert.equal(surfaceIdForPath("/patches/changes"), null);
 assert.equal(surfaceIdForPath("/this-or-that/tournament/abc"), "favorite-tournament");
 assert.equal(surfaceIdForPath("/en/c-c-c-combo/abc"), "combo");
 assert.equal(surfaceIdForPath("/dev/nav-indicators"), null);
+assert.equal(surfaceIdForPath("/colorful-philosophers/abc"), "colorful-philosophers");
+assert.equal(surfaceIdForPath("/dev/colorful-philosophers"), null);
+assert.equal(navSeenIdForHref("/colorful-philosophers"), "colorful-philosophers");
 
 assert.equal(navSeenIdForHref("/c-c-c-combo"), "combo");
 assert.equal(navSeenIdForHref("/this-or-that/tournament"), null);

@@ -1,3 +1,8 @@
+import {
+  COLORFUL_PHILOSOPHERS_HREF,
+  COLORFUL_PHILOSOPHERS_POSTS_TABLE,
+  colorfulPhilosophersWeekStart,
+} from "@/lib/colorful-philosophers";
 import { FAVORITE_TOURNAMENT_HREF } from "@/lib/favorite-tournament";
 import { stripGameLocaleFromPath } from "@/lib/i18n";
 import { PAGESTORM_HREF } from "@/lib/pagestorm";
@@ -29,6 +34,10 @@ export type NavSeenSurface = {
   label: string;
   table?: "combo_posts" | "transfigure_posts" | "this_or_that_posts" | "favorite_tournament_posts" | "chemical_posts" | "decisions_decisions_posts" | "pagestorm_posts" | "runs";
   catalog?: "patch-notes" | "neowsletters";
+  /** Posts reserved ahead and published at a week's Monday 00:00 KST. */
+  weekly?: typeof COLORFUL_PHILOSOPHERS_POSTS_TABLE;
+  /** Lights for browsers that have never visited, instead of starting from now. */
+  unseenByDefault?: boolean;
   /** Menu row that should also light when this surface is unread. */
   alsoShowOn?: string;
 };
@@ -50,7 +59,16 @@ export const NAV_SEEN_SURFACES: readonly NavSeenSurface[] = [
   { id: "decisions-decisions", href: "/decisions-decisions", label: "어려운 결정", table: "decisions_decisions_posts" },
   { id: "pagestorm", href: PAGESTORM_HREF, label: "서류 폭풍", table: "pagestorm_posts" },
   { id: "history-course", href: "/history-course", label: "역사 강의서", table: "runs" },
+  {
+    id: "colorful-philosophers",
+    href: COLORFUL_PHILOSOPHERS_HREF,
+    label: "다채로운 철학자들",
+    weekly: COLORFUL_PHILOSOPHERS_POSTS_TABLE,
+    unseenByDefault: true,
+  },
 ];
+
+const NEVER_SEEN_AT = "1970-01-01T00:00:00.000Z";
 
 export type NavSeenMap = Record<string, string>;
 export type NavForceMap = Record<string, boolean>;
@@ -68,7 +86,10 @@ export function navForceStorageKey(env = supabaseEnv): string {
 }
 
 function emptySeen(now: string): NavSeenMap {
-  return Object.fromEntries(NAV_SEEN_SURFACES.map((surface) => [surface.id, now]));
+  return Object.fromEntries(NAV_SEEN_SURFACES.map((surface) => [
+    surface.id,
+    surface.unseenByDefault ? NEVER_SEEN_AT : now,
+  ]));
 }
 
 export function readNavSeen(storage: Pick<Storage, "getItem" | "setItem">, now = new Date().toISOString()): NavSeenMap {
@@ -253,8 +274,31 @@ function catalogTimes(surface: NavSeenSurface): readonly string[] {
   return [];
 }
 
+/** Monday 00:00 KST of `weekStart`, as an ISO instant. */
+function weeklyPublishedAt(weekStart: string): string {
+  return new Date(`${weekStart}T00:00:00+09:00`).toISOString();
+}
+
+async function weeklyHasNewer(table: NonNullable<NavSeenSurface["weekly"]>, since: string): Promise<boolean> {
+  if (!supabaseEnabled) return false;
+  const { data, error } = await withSupabaseTimeout(
+    `nav-seen.weekly.${table}`,
+    supabase
+      .from(table)
+      .select("week_start")
+      .eq("env", supabaseEnv)
+      .lte("week_start", colorfulPhilosophersWeekStart())
+      .order("week_start", { ascending: false })
+      .limit(1),
+  );
+  const latest = data?.[0]?.week_start;
+  if (error || typeof latest !== "string") return false;
+  return contentIsNewerThanSeen(weeklyPublishedAt(latest.slice(0, 10)), since);
+}
+
 async function surfaceHasNewer(surface: NavSeenSurface, since: string): Promise<boolean> {
   if (surface.catalog) return catalogTimes(surface).some((publishedAt) => contentIsNewerThanSeen(publishedAt, since));
+  if (surface.weekly) return weeklyHasNewer(surface.weekly, since);
   if (!surface.table || !supabaseEnabled) return false;
   const { data, error } = await withSupabaseTimeout(
     `nav-seen.${surface.id}`,
