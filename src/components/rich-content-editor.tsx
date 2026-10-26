@@ -712,6 +712,9 @@ export function RichContentEditor({
         codeBlock: false,
         horizontalRule: false,
         hardBreak: allowLineBreaks ? {} : false,
+        // Tiptap 3 maps "whenNotEditable" to opening on click *while* editing;
+        // EditorLinkClicks owns clicks in the editor.
+        link: { openOnClick: false },
       }),
       Placeholder.configure({ placeholder: richPlaceholder ? "" : placeholder }),
       EditorLinkClicks,
