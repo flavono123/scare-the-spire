@@ -151,6 +151,7 @@ the migration file and matching frontend change are committed together.
 ## Commit Discipline
 
 - Commit the migration file separately from application code when practical.
+- Record `Migration:`, `Rollout:`, and `Order:` (before-push, after-push, or later-release relative to the app push) in the migration commit body and in the Supabase table of `docs/release/UNRELEASED.md`. The release session applies pending migrations from these per `docs/RELEASE_PROCESS.md` section 5.
 - In the final report, state which migration file was created, whether
   `supabase db push --linked --dry-run` was run, whether `supabase db push
   --linked` was run, how the remote schema was verified, which rollout strategy

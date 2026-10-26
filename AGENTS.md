@@ -48,6 +48,7 @@ This project uses local project skills instead of global home-directory skill in
 - Supabase SQL through `supabase/migration-014-community-stories.sql` has already been applied manually to the linked project.
 - Treat `supabase/setup.sql`, `supabase/migrate-env.sql`, and `supabase/migration-002-*.sql` through `supabase/migration-014-*.sql` as historical baseline files, not pending CLI migrations.
 - For new schema changes after 014, use `.codex/skills/supabase-migrations/SKILL.md` and create/apply migrations with the Supabase CLI under `supabase/migrations/`.
+- Every release checks for pending migrations (`supabase migration list --linked`) and applies them before or after the app push according to their rollout strategy, with user approval for each `supabase db push --linked`, per `docs/RELEASE_PROCESS.md` section 5.
 
 ## Cloudflare Patch Worker
 
