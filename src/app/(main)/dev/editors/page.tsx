@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { devToolsEnabled } from "@/lib/dev-tools";
 
 export const metadata = {
   title: "에디터 모음 — DEV",
@@ -11,10 +10,11 @@ export const metadata = {
 };
 
 export default async function EditorsDevPage() {
-  if (!devToolsEnabled()) {
-    notFound();
+  // NODE_ENV is inlined at build time, so a production build drops this branch
+  // and its dynamic import: no editor sample chunk is emitted.
+  if (process.env.NODE_ENV === "development") {
+    const { default: EditorsDevPageClient } = await import("./editors-dev-page");
+    return <EditorsDevPageClient />;
   }
-
-  const { default: EditorsDevPageClient } = await import("./editors-dev-page");
-  return <EditorsDevPageClient />;
+  notFound();
 }
