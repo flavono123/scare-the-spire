@@ -12,10 +12,10 @@ export const metadata = {
 export const dynamic = "force-static";
 
 export default async function DevProfileSwitchPage() {
-  if (process.env.NODE_ENV !== "development") {
-    notFound();
+  // NODE_ENV is inlined at build time, so production builds drop this branch.
+  if (process.env.NODE_ENV === "development") {
+    const { default: DevProfileSwitchPageClient } = await import("./profile-switch-dev-page");
+    return <DevProfileSwitchPageClient />;
   }
-
-  const { default: DevProfileSwitchPageClient } = await import("./profile-switch-dev-page");
-  return <DevProfileSwitchPageClient />;
+  notFound();
 }

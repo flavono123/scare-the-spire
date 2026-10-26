@@ -8,7 +8,10 @@ export const metadata = {
 export const dynamic = "force-static";
 
 export default async function ColorfulPhilosophersDevRoute() {
-  if (process.env.NODE_ENV !== "development") notFound();
-  const { ColorfulPhilosophersDevPage } = await import("./colorful-philosophers-dev-page");
-  return <ColorfulPhilosophersDevPage />;
+  // NODE_ENV is inlined at build time, so production builds drop this branch.
+  if (process.env.NODE_ENV === "development") {
+    const { ColorfulPhilosophersDevPage } = await import("./colorful-philosophers-dev-page");
+    return <ColorfulPhilosophersDevPage />;
+  }
+  notFound();
 }

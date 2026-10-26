@@ -12,10 +12,10 @@ export const metadata = {
 export const dynamic = "force-static";
 
 export default async function SpireIconsPage() {
-  if (process.env.NODE_ENV !== "development") {
-    notFound();
+  // NODE_ENV is inlined at build time, so production builds drop this branch.
+  if (process.env.NODE_ENV === "development") {
+    const { default: SpireIconsDevPage } = await import("./spire-icons-dev-page");
+    return <SpireIconsDevPage />;
   }
-
-  const { default: SpireIconsDevPage } = await import("./spire-icons-dev-page");
-  return <SpireIconsDevPage />;
+  notFound();
 }

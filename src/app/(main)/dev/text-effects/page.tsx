@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { devToolsEnabled } from "@/lib/dev-tools";
 
 export const metadata = {
   title: "텍스트 효과 레퍼런스 — DEV",
@@ -11,10 +10,10 @@ export const metadata = {
 };
 
 export default async function TextEffectsPage() {
-  if (!devToolsEnabled()) {
-    notFound();
+  // DEV_TOOLS_BUILD is inlined at build time, so production builds drop this branch.
+  if (process.env.DEV_TOOLS_BUILD === "1") {
+    const { default: TextEffectsDevPage } = await import("./text-effects-dev-page");
+    return <TextEffectsDevPage />;
   }
-
-  const { default: TextEffectsDevPage } = await import("./text-effects-dev-page");
-  return <TextEffectsDevPage />;
+  notFound();
 }

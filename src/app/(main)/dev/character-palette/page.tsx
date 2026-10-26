@@ -1,11 +1,4 @@
 import { notFound } from "next/navigation";
-import {
-  getCodexAncients,
-  getCodexCharacters,
-  getCodexEncounters,
-  getCodexMonsters,
-} from "@/lib/codex-data";
-import { buildPaletteSubjects } from "@/lib/dev-palette-subjects";
 
 export const metadata = {
   title: "2색 배색 — DEV",
@@ -19,22 +12,30 @@ export const metadata = {
 export const dynamic = "force-static";
 
 export default async function CharacterPalettePage() {
-  if (process.env.NODE_ENV !== "development") {
-    notFound();
+  // NODE_ENV is inlined at build time, so production builds drop this branch.
+  if (process.env.NODE_ENV === "development") {
+    const [
+      { getCodexAncients, getCodexCharacters, getCodexEncounters, getCodexMonsters },
+      { buildPaletteSubjects },
+      { default: CharacterPaletteDevPage },
+    ] = await Promise.all([
+      import("@/lib/codex-data"),
+      import("@/lib/dev-palette-subjects"),
+      import("./character-palette-dev-page"),
+    ]);
+    const [characters, monsters, ancients, encounters] = await Promise.all([
+      getCodexCharacters({ gameLocale: "kor" }),
+      getCodexMonsters({ gameLocale: "kor" }),
+      getCodexAncients({ gameLocale: "kor" }),
+      getCodexEncounters({ gameLocale: "kor" }),
+    ]);
+    const subjects = buildPaletteSubjects({
+      characters,
+      monsters,
+      ancients,
+      encounters: encounters.filter((encounter) => encounter.roomType === "Boss"),
+    });
+    return <CharacterPaletteDevPage subjects={subjects} />;
   }
-
-  const [characters, monsters, ancients, encounters] = await Promise.all([
-    getCodexCharacters({ gameLocale: "kor" }),
-    getCodexMonsters({ gameLocale: "kor" }),
-    getCodexAncients({ gameLocale: "kor" }),
-    getCodexEncounters({ gameLocale: "kor" }),
-  ]);
-  const subjects = buildPaletteSubjects({
-    characters,
-    monsters,
-    ancients,
-    encounters: encounters.filter((encounter) => encounter.roomType === "Boss"),
-  });
-  const { default: CharacterPaletteDevPage } = await import("./character-palette-dev-page");
-  return <CharacterPaletteDevPage subjects={subjects} />;
+  notFound();
 }

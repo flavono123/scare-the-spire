@@ -1,11 +1,8 @@
 import { notFound } from "next/navigation";
-import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   BESTIARY_DEV_MONSTER_GROUPS,
   getBestiaryDevMonsterGroup,
 } from "@/lib/bestiary-monster-policy";
-import { getCodexMonsters } from "@/lib/codex-data";
-import { DevMonsterSpinePreview } from "./dev-monster-spine-preview";
 
 export const metadata = {
   title: "몬스터 미리보기 — DEV",
@@ -16,6 +13,7 @@ export const metadata = {
 };
 
 export async function generateStaticParams() {
+  if (process.env.DEV_TOOLS_BUILD !== "1") return [];
   return BESTIARY_DEV_MONSTER_GROUPS
     .filter((group) => group.id === "pet" || group.id === "composite-scene")
     .flatMap((group) => group.monsterIds)
@@ -27,24 +25,28 @@ export default async function DevMonsterDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  if (!devToolsEnabled()) {
-    notFound();
+  // DEV_TOOLS_BUILD is inlined at build time, so production builds drop this branch.
+  if (process.env.DEV_TOOLS_BUILD === "1") {
+    const [{ getCodexMonsters }, { DevMonsterSpinePreview }] = await Promise.all([
+      import("@/lib/codex-data"),
+      import("./dev-monster-spine-preview"),
+    ]);
+    const { id } = await params;
+    const monsters = await getCodexMonsters({ gameLocale: "kor" });
+    const monster = monsters.find((item) => item.id.toLowerCase() === id.toLowerCase());
+    if (!monster) notFound();
+
+    const group = getBestiaryDevMonsterGroup(monster.id);
+    if (group?.id !== "pet" && group?.id !== "composite-scene") notFound();
+
+    return (
+      <DevMonsterSpinePreview
+        monster={monster}
+        fallbackImageUrl={getDevMonsterImageSrc(monster.id, monster.imageUrl ?? monster.bossImageUrl)}
+      />
+    );
   }
-
-  const { id } = await params;
-  const monsters = await getCodexMonsters({ gameLocale: "kor" });
-  const monster = monsters.find((item) => item.id.toLowerCase() === id.toLowerCase());
-  if (!monster) notFound();
-
-  const group = getBestiaryDevMonsterGroup(monster.id);
-  if (group?.id !== "pet" && group?.id !== "composite-scene") notFound();
-
-  return (
-    <DevMonsterSpinePreview
-      monster={monster}
-      fallbackImageUrl={getDevMonsterImageSrc(monster.id, monster.imageUrl ?? monster.bossImageUrl)}
-    />
-  );
+  notFound();
 }
 
 function getDevMonsterImageSrc(monsterId: string, imageUrl: string | null): string | null {

@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { devToolsEnabled } from "@/lib/dev-tools";
 
 export const metadata = {
   title: "게임 레퍼런스 — DEV",
@@ -11,10 +10,10 @@ export const metadata = {
 };
 
 export default async function ReferencePage() {
-  if (!devToolsEnabled()) {
-    notFound();
+  // DEV_TOOLS_BUILD is inlined at build time, so production builds drop this branch.
+  if (process.env.DEV_TOOLS_BUILD === "1") {
+    const { default: ReferenceDevPage } = await import("./reference-dev-page");
+    return <ReferenceDevPage />;
   }
-
-  const { default: ReferenceDevPage } = await import("./reference-dev-page");
-  return <ReferenceDevPage />;
+  notFound();
 }

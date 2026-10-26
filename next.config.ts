@@ -1,5 +1,6 @@
 import os from "node:os";
 import type { NextConfig } from "next";
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
 import { STATIC_ASSET_ALIAS_REDIRECTS } from "./workers/static-asset-aliases";
 
 const configuredBuildId = process.env.NEXT_BUILD_ID?.trim();
@@ -160,4 +161,15 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const DEV_TOOLS_FLAG = ["1", "true"].includes(process.env.NEXT_PUBLIC_ENABLE_DEV_TOOLS ?? "");
+
+export default function config(phase: string): NextConfig {
+  return {
+    ...nextConfig,
+    env: {
+      // Inlined at build time, unlike devToolsEnabled(): dev route pages branch
+      // on it so production builds drop their code from the Worker bundle.
+      DEV_TOOLS_BUILD: phase === PHASE_DEVELOPMENT_SERVER || DEV_TOOLS_FLAG ? "1" : "",
+    },
+  };
+}

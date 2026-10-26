@@ -10,9 +10,8 @@ export const metadata = {
 };
 
 export default async function EditorsDevPage() {
-  // NODE_ENV is inlined at build time, so a production build drops this branch
-  // and its dynamic import: no editor sample chunk is emitted.
-  if (process.env.NODE_ENV === "development") {
+  // DEV_TOOLS_BUILD is inlined at build time, so production builds drop this branch.
+  if (process.env.DEV_TOOLS_BUILD === "1") {
     const { default: EditorsDevPageClient } = await import("./editors-dev-page");
     return <EditorsDevPageClient />;
   }
