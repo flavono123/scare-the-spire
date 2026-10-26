@@ -41,6 +41,17 @@
 - QA: /c-c-c-combo (write and the post above), /pagestorm/write hover on a YouTube link, /dev/editors; ko; desktop.
 - Commits: cd606bcc, 357012b2, 869fb803, 77d53d09
 
+### nav-unread-dots
+- Feature: Toy Box menu dots clear from an index visit (patch notes still need a note), Colorful Philosophers lights weekly, forced dev dots are dropped, and the dev menu flags an unreserved next debate week.
+- Expect:
+  - Opening a Toy Box service index (e.g. /c-c-c-combo, /this-or-that) clears that row's dot and, with no other unread, the Toy Box dot; index titles keep their unread tint until a post is opened. /this-or-that also clears the 월드컵 dot it shows.
+  - /patches and /patches/neowsletters indexes do not clear the patch dot; opening a note does.
+  - Colorful Philosophers: a browser with no visit since this week's Monday 00:00 KST (or never) sees the row and Toy Box dots; visiting the index or a post clears them until next Monday.
+  - Dots forced on from /dev/nav-indicators before this change no longer show.
+  - Dev server: the dev menu and 토론 주차 예약 row show a dot when next week's production reservation is missing any of topic, card, relic.
+- QA: /, /c-c-c-combo, /this-or-that, /patches, /patches/<latest>, /colorful-philosophers in a fresh browser profile; dev menu on the dev server; ko; desktop.
+- Commits: 6fb288f1, f0d8af36, 675a37d3
+
 <!--
 ### <항목-id>
 - Feature:
