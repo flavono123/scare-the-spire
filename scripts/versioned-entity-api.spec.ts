@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- walks archived build JSON whose shape varies by version */
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import util from "node:util";

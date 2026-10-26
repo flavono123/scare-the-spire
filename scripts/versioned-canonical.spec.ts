@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- walks archived build JSON whose shape varies by version */
 /**
  * Regression test: the versioned entity API must not drift further from the
  * canonical per-build data (game dll + PCK of every archived build).

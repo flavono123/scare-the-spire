@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- walks archived build JSON whose shape varies by version */
 /**
  * Audit the versioned entity API against the canonical per-build data extracted
  * from the archived game builds (scripts/sts2_canonical_extract.py).
