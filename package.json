@@ -13,7 +13,7 @@
     "cf:build": "pnpm static:data && next build --webpack && node scripts/collect-cf-assets.mjs && node scripts/copy-cf-static-pages.mjs && pnpm cf:assets",
     "cf:assets": "tsx scripts/check-cloudflare-static-assets.ts && tsx scripts/check-cloudflare-route-coverage.ts",
     "cf:size": "node scripts/check-cloudflare-worker-size.mjs",
-    "cf:preview": "pnpm static:data && NEXT_PUBLIC_ENABLE_DEV_TOOLS=1 next build --webpack && node scripts/collect-cf-assets.mjs && node scripts/copy-cf-static-pages.mjs && pnpm cf:assets && wrangler dev",
+    "cf:preview": "pnpm static:data && NEXT_PUBLIC_ENABLE_DEV_TOOLS=1 next build --webpack && node scripts/collect-cf-assets.mjs && node scripts/copy-cf-static-pages.mjs && pnpm cf:assets && CHOKIDAR_USEPOLLING=1 CHOKIDAR_INTERVAL=3600000 wrangler dev",
     "cf:testbed": "node scripts/run-cloudflare-testbed.mjs --remote",
     "cf:testbed:local": "node scripts/run-cloudflare-testbed.mjs",
     "cf:deploy:built": "wrangler deploy --keep-vars",
