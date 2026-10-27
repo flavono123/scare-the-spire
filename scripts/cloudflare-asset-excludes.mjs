@@ -3,9 +3,10 @@
  * main Worker static assets. A Workers Free version holds at most 20,000
  * files, and no page, chunk, data file, or user post loads these.
  *
- * `collect-cf-assets.mjs` skips them, and `prune-cf-unreferenced-assets.mjs`
- * fails the build when a served file references one, so a new reference
- * cannot silently 404 in production. Drop an entry here before using the file.
+ * `collect-cf-assets.mjs` skips them. `prune-cf-unreferenced-assets.mjs` (main
+ * build) and `copy-patch-worker-assets.mjs` (patch build) fail when a served
+ * file references one, so a new reference cannot silently 404 in production.
+ * Drop an entry here before using the file.
  */
 import { existsSync } from "node:fs";
 import path from "node:path";

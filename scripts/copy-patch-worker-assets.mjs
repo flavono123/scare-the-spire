@@ -1,6 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
+import { publicAssetExcludeReason } from "./cloudflare-asset-excludes.mjs";
+import { findReferencedExcludedAssets } from "./prune-cf-unreferenced-assets.mjs";
+
 const projectRoot = process.cwd();
 const patchAssetsDir = path.join(projectRoot, ".patch-worker", "assets");
 const publicDir = path.join(projectRoot, "public");
@@ -121,6 +124,38 @@ async function main() {
   }
 
   console.log(`Copied ${copied.size} patch Worker public assets`);
+  assertNoExcludedMainAssetRefs(assetRefs);
+}
+
+// The patch Worker serves only its own routes and /images/neowsletters/*.
+const PATCH_WORKER_PUBLIC_PREFIXES = ["/images/neowsletters/"];
+
+/**
+ * In production, patch pages load every other public path from the main
+ * Worker, whose upload leaves out the files cloudflare-asset-excludes.mjs
+ * lists. Fail here instead of shipping a reference that 404s there.
+ */
+function assertNoExcludedMainAssetRefs(assetRefs) {
+  const servedByMainWorker = (assetPath) => (
+    !PATCH_WORKER_PUBLIC_PREFIXES.some((prefix) => assetPath.startsWith(prefix))
+  );
+  const { referenced } = findReferencedExcludedAssets(patchAssetsDir, publicDir);
+  const found = referenced.filter(({ asset }) => servedByMainWorker(asset));
+  const problems = found.map(({ asset, from }) => `  ${asset} <- ${from}`);
+  const reported = new Set(found.map(({ asset }) => asset));
+  // The fixed copy list above, which no scanned file names.
+  for (const ref of assetRefs) {
+    if (reported.has(ref) || !servedByMainWorker(ref)) continue;
+    if (publicAssetExcludeReason(ref.slice(1), publicDir)) {
+      problems.push(`  ${ref} <- scripts/copy-patch-worker-assets.mjs`);
+    }
+  }
+  if (problems.length > 0) {
+    throw new Error(
+      "Patch pages reference public files that scripts/cloudflare-asset-excludes.mjs keeps out "
+      + `of the main Worker upload. Remove those entries before using the files:\n${problems.slice(0, 20).join("\n")}`,
+    );
+  }
 }
 
 main().catch((error) => {
