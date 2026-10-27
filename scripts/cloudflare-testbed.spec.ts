@@ -247,6 +247,7 @@ test("static fallback keeps the former Next responses", async ({ request }) => {
     ["/this-or-that/worldcup", "/this-or-that/tournament"],
     ["/en/this-or-that/worldcup", "/en/this-or-that/tournament"],
     ["/does-not-exist/", "/does-not-exist"],
+    ["/EN/this-or-that/tournament", "/en/this-or-that/tournament"],
   ]) {
     const response = await request.get(absolute(path), {
       headers: { Accept: "text/html" },

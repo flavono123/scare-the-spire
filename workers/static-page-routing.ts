@@ -74,6 +74,10 @@ const STATIC_COMPENDIUM_SEGMENTS = new Set([
 
 export type StaticPageExtension = "html" | "rsc";
 
+export function isGameLocalePrefix(segment: string): boolean {
+  return STATIC_GAME_LOCALE_PREFIXES.has(segment);
+}
+
 export function sts1LegacyAliasPath(pathname: string): string | null {
   const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
   const parts = normalizedPathname.split("/").filter(Boolean);

@@ -6,6 +6,7 @@
  */
 
 import { staticAssetAliasRedirectPath } from "./static-asset-aliases";
+import { isGameLocalePrefix } from "./static-page-routing";
 
 const PERMANENT_REDIRECT_STATUS = 308;
 
@@ -64,7 +65,24 @@ export function staticAssetAliasConfigRedirect(url: URL): Response | null {
   return destination ? relativeRedirect(`${destination}${url.search}`) : null;
 }
 
-/** Applied in OpenNext order: data route, repeated slash, trailing slash, config redirects. */
+/**
+ * `[gameLocale]` routes lowercased their segment, so OpenNext rendered
+ * `/EN/...` as the `/en/...` page on demand (or failed with 500 where that
+ * render needed data). Static assets exist only under the lowercase prefix,
+ * so a case variant of a game locale prefix redirects there, query kept.
+ */
+export function gameLocaleCaseRedirect(url: URL): Response | null {
+  const match = /^\/([^/]+)(\/.*)?$/.exec(url.pathname);
+  if (!match) return null;
+  const locale = match[1].toLowerCase();
+  if (locale === match[1] || !isGameLocalePrefix(locale)) return null;
+  return relativeRedirect(`/${locale}${match[2] ?? ""}${url.search}`);
+}
+
+/**
+ * Applied in OpenNext order: data route, repeated slash, trailing slash,
+ * config redirects. The game locale case redirect replaces on-demand renders.
+ */
 export function nextRoutingResponse(request: Request, url: URL): Response | null {
   return (
     nextDataNotFound(request, url)
@@ -72,5 +90,6 @@ export function nextRoutingResponse(request: Request, url: URL): Response | null
     ?? trailingSlashRedirect(url)
     ?? koreanLocaleAliasRedirect(url)
     ?? staticAssetAliasConfigRedirect(url)
+    ?? gameLocaleCaseRedirect(url)
   );
 }

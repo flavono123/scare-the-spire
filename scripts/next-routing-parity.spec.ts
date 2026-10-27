@@ -35,6 +35,15 @@ assert.deepEqual(route("/api/search-index/?x=1"), { status: 308, location: "/gen
 assert.deepEqual(route("/api/search-index", "POST"), { status: 308, location: "/generated/search-index.json" });
 assert.deepEqual(route("/comment-entities/sts2/"), { status: 308, location: "/comment-entities/sts2" });
 
+// Case variants of a game locale prefix go to the lowercase static page.
+assert.deepEqual(route("/EN"), { status: 308, location: "/en" });
+assert.deepEqual(route("/EN/this-or-that/tournament"), { status: 308, location: "/en/this-or-that/tournament" });
+assert.deepEqual(route("/Es-419/decisions-decisions?x=1"), { status: 308, location: "/es-419/decisions-decisions?x=1" });
+assert.deepEqual(route("/ZH/compendium/cards", "POST"), { status: 308, location: "/zh/compendium/cards" });
+assert.equal(route("/en/this-or-that/tournament"), null);
+assert.equal(route("/xx/decisions-decisions"), null, "Unknown locale segments stay 404");
+assert.equal(route("/Cards"), null);
+
 assert.equal(redactPathname("/chemical-x/00000000-0000-4000-8000-000000000000/extra"), "/chemical-x/{id}/extra");
 assert.equal(redactPathname("/en/this-or-that/some-post"), "/en/this-or-that/{id}");
 assert.equal(redactPathname("/defragment/combo/abc"), "/defragment/combo/{id}");
