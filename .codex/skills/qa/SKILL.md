@@ -17,14 +17,14 @@ Run the smallest QA set that credibly covers the implementation scope. Treat `do
 4. Run focused static checks:
    - `pnpm lint` when TypeScript, React, CSS, scripts, config, or data transforms changed.
    - `pnpm build` when routing, app layout, server/client boundaries, data loading, generated data, metadata, or deployment behavior changed.
-   - Cloudflare/OpenNext checks when `wrangler.jsonc`, `open-next.config.ts`, Workers scripts, runtime env behavior, static asset headers, server/client data loading, deployment target behavior, sitemap coverage, canonical URLs, internal links, prefetching, or crawlable route coverage changed. Load `.codex/skills/cf-guardrails/SKILL.md` first, then:
-     - `pnpm cf:assets` after the OpenNext build to verify Korean/English Compendium detail HTML/RSC coverage, Worker path mapping, static asset count, and individual asset size.
+   - Cloudflare checks when `wrangler.jsonc`, Workers scripts, runtime env behavior, static asset headers, server/client data loading, deployment target behavior, sitemap coverage, canonical URLs, internal links, prefetching, or crawlable route coverage changed. Load `.codex/skills/cf-guardrails/SKILL.md` first, then:
+     - `pnpm cf:assets` after `pnpm cf:build` to verify Korean/English Compendium detail HTML/RSC coverage, Worker path mapping, static asset count, individual asset size, and that every prerendered route resolves without a renderer.
      - `pnpm cf:preview` for local Workers runtime smoke.
-     - `pnpm exec wrangler deploy --dry-run --outdir /tmp/sts-worker-dry-run` after an OpenNext build to confirm final Worker bundle size and bindings.
+     - `pnpm cf:size` (Wrangler dry run) after `pnpm cf:build` to confirm final Worker bundle size, the 256 KiB static Worker budget, and bindings.
      - Apply `$cf-guardrails` to review Free-plan runtime risk, request-time work, bundle size, subrequests, and `exceededResources`/503 failure modes.
      - Smoke representative static, SSG, and dynamic routes plus cache headers for `_next/static`, `/images`, `/spine`, `/generated`, `/api/search-index`, and `/comment-entities/sts2`.
-     - For Compendium details, smoke both document and RSC requests in Korean and English and require `x-cf-static-page: compendium` so an OpenNext fallback cannot pass as a static-route success.
-     - For unbounded ID / UUID details (Toy Box posts, History Course runs, federated 조각모음), smoke both document and RSC requests and require `x-cf-static-page: shell`. `x-opennext: 1` on a record URL is a failure.
+     - For Compendium details, smoke both document and RSC requests in Korean and English and require `x-cf-static-page: compendium` so a not-found or redirect response cannot pass as a static-route success.
+     - For unbounded ID / UUID details (Toy Box posts, History Course runs, federated 조각모음), smoke both document and RSC requests and require `x-cf-static-page: shell`. `x-cf-static-page: not-found` on a record URL is a failure.
    - Domain validators such as `pnpm codex:validate` or `pnpm codex:validate-references` when Codex entity data, versions, references, hover links, or rich patch content changed.
 5. Run feature-specific tests or Playwright specs that directly cover the changed area. Prefer existing scripts in `scripts/*.spec.ts` over inventing new checks.
 6. Delegate to the linked QA skills below when their trigger conditions match.

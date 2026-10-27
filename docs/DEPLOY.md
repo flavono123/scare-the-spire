@@ -1,8 +1,9 @@
 # 배포 매뉴얼
 
 이 프로젝트의 기본 배포 대상은 Cloudflare Workers Free다. main Worker는
-OpenNext 빌드 결과를 서빙하고, patch Worker는 미리 생성한 정적 patch
-페이지와 patch-local asset을 별도로 서빙한다.
+`next build`가 prerender한 정적 페이지와 asset만 서빙하는 정적 전용
+Worker이고(런타임에 Next/OpenNext 없음), patch Worker는 미리 생성한 정적
+patch 페이지와 patch-local asset을 별도로 서빙한다.
 
 ## 사전 조건
 
@@ -24,9 +25,12 @@ pnpm cf:preview
 pnpm cf:deploy
 ```
 
-이 명령은 `pnpm static:data`, `opennextjs-cloudflare build`,
-`scripts/copy-cf-static-pages.mjs`, `opennextjs-cloudflare deploy -- --keep-vars`
-순서로 실행된다.
+이 명령은 `pnpm static:data`, `next build --webpack`,
+`scripts/collect-cf-assets.mjs`(`public/**`, `.next/static/**`, `BUILD_ID`),
+`scripts/copy-cf-static-pages.mjs`, `pnpm cf:assets`, `pnpm cf:size`,
+`wrangler deploy --keep-vars` 순서로 실행된다. 결과물은 `.cloudflare/assets`다.
+`pnpm cf:assets`는 실제 Worker를 모든 prerender route에 돌려 렌더러가 필요한
+route가 있으면 실패한다.
 
 ## Patch Worker
 
@@ -53,15 +57,16 @@ binding을 경유한다. 커스텀 도메인 도입 후 직접 route dispatch �
 
 ## Free Tier 확인
 
-Cloudflare 런타임이나 배포 설정을 바꾸는 경우, OpenNext 빌드 뒤 Wrangler
-dry run으로 bundle size와 binding을 확인한다.
+Cloudflare 런타임이나 배포 설정을 바꾸는 경우, `pnpm cf:build` 뒤
+`pnpm cf:size`(Wrangler dry run)로 bundle size와 binding을 확인한다.
 
 ```bash
 pnpm exec wrangler deploy --dry-run --outdir /tmp/sts-worker-dry-run
 ```
 
 Workers Free 기준으로 gzip upload size가 3 MiB를 넘으면 배포 차단 이슈로
-취급한다. 또한 기능 변경 시 request-time CPU 10 ms, 128 MB memory, 50
+취급한다. 정적 전용 main Worker는 수십 KiB라 `pnpm cf:size`는 256 KiB
+예산(`CLOUDFLARE_WORKER_SIZE_BUDGET_KIB`)을 넘어도 실패한다. 또한 기능 변경 시 request-time CPU 10 ms, 128 MB memory, 50
 subrequests/request, 100,000 requests/day 한계에서 `exceededResources`, Error
 1102, 503이 날 수 있는지 검토한다.
 

@@ -69,7 +69,7 @@ This project uses local project skills instead of global home-directory skill in
   `scare-the-spire-patches-testbed` via local `pnpm cf:testbed` (build + wrangler
   `--env testbed`). This is not GHA and must not touch production Workers.
 - Purpose: occasional personal/admin preview, or deploy-related stage verification.
-- Do not confuse with `pnpm cf:preview`, which is OpenNext local preview only.
+- Do not confuse with `pnpm cf:preview`, which is a local `wrangler dev` preview only.
 
 ## Cloudflare Free Tier Guardrails
 
@@ -91,7 +91,7 @@ evaluate whether it can cause Cloudflare `exceededResources`, Error 1102, or a
   unfavorable on the Free plan. Check current Cloudflare docs before relying on
   quotas, billing assumptions, or paid-only limits.
 - For Cloudflare runtime/config changes, verify bundle size and bindings with a
-  Wrangler dry run after the OpenNext build; gzip upload size above 3 MiB is a
+  Wrangler dry run (`pnpm cf:size`) after `pnpm cf:build`; gzip upload size above 3 MiB is a
   blocking issue unless the target plan changes.
 - Patch routes are especially latency-sensitive after release. Keep
   `pnpm patch:build` output static and use `pnpm patch:test` to ensure pending
@@ -103,7 +103,7 @@ evaluate whether it can cause Cloudflare `exceededResources`, Error 1102, or a
 - **UI**: shadcn/ui + Tailwind CSS v4
 - **Data**: JSON files in `data/`
 - **Package Manager**: pnpm
-- **Deploy**: Cloudflare Workers Free target (`@opennextjs/cloudflare` main Worker + separate static patch Worker)
+- **Deploy**: Cloudflare Workers Free target (static-only main Worker serving `next build` output via Wrangler, no OpenNext runtime + separate static patch Worker)
 
 ## 프로젝트 구조
 
@@ -180,7 +180,7 @@ evaluate whether it can cause Cloudflare `exceededResources`, Error 1102, or a
 - 한국어 이름은 게임 공식 번역 사용
 
 ### STS2 구 빌드 아카이브 (과거 버전 원본)
-- 과거 모든 macOS 빌드(0.96.1 ~ 현재)를 **리포 밖** `~/sts2-builds/<버전>/`(환경변수 `STS2_BUILDS_DIR`로 변경)에 받아 둔다. 이 경로는 리포·`public/`·Next/OpenNext 빌드·배포 번들에 포함되지 않으며 앱 코드(`src/`)에서 import하지 않는다. 리포 안으로 옮기거나 `public/`에 두지 않는다.
+- 과거 모든 macOS 빌드(0.96.1 ~ 현재)를 **리포 밖** `~/sts2-builds/<버전>/`(환경변수 `STS2_BUILDS_DIR`로 변경)에 받아 둔다. 이 경로는 리포·`public/`·Next 빌드·배포 번들에 포함되지 않으며 앱 코드(`src/`)에서 import하지 않는다. 리포 안으로 옮기거나 `public/`에 두지 않는다.
 - 각 버전 폴더: `SlayTheSpire2.app/Contents/Resources/{release_info.json, Slay the Spire 2.pck, data_sts2_macos_arm64/sts2.dll}`, 디컴파일 `src/`, 정답 데이터 `canonical/{cards,relics,potions,powers,monsters}.json`. `~/sts2-builds/builds.json`이 manifest ↔ 버전 ↔ 브랜치 ↔ 상태를 기록한다.
 - 과거 값은 패치노트 추정이 아니라 이 아카이브의 dll/PCK를 읽어 확인한다 (`ilspycmd -t MegaCrit.Sts2.Core.Models.<Monsters|Cards|…>.<클래스> <dll>`). 구 빌드의 async 메서드는 상태 기계로 디컴파일돼 `parse-monsters.py`가 파워 적용을 읽지 못하므로 손으로 확인한다.
 - 도구: `scripts/sts2_depot_download.py`(다운로드, manifest 목록은 `scripts/sts2-depot-manifests.json`), `scripts/sts2_decompile_builds.py`, `scripts/sts2_canonical_extract.py`, `scripts/audit-version-api-canonical.ts`(버전 API ↔ 정답 대조), `pnpm test:version-canonical`(회귀 테스트, 아카이브가 없으면 건너뜀).

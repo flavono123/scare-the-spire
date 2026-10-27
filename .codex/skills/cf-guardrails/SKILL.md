@@ -1,6 +1,6 @@
 ---
 name: cf-guardrails
-description: Check Cloudflare Workers Free plan guardrails for scare-the-spire. Use when adding or changing features, Workers, OpenNext runtime behavior, patch Worker behavior, routing, build output, static assets, server data loading, API routes, SEO, sitemaps, canonical URLs, internal links, or any implementation that could affect Cloudflare CPU time, memory, bundle size, subrequests, crawl volume, request volume, or static-first delivery.
+description: Check Cloudflare Workers Free plan guardrails for scare-the-spire. Use when adding or changing features, Workers, main Worker routing, patch Worker behavior, routing, build output, static assets, server data loading, API routes, SEO, sitemaps, canonical URLs, internal links, or any implementation that could affect Cloudflare CPU time, memory, bundle size, subrequests, crawl volume, request volume, or static-first delivery.
 ---
 
 # cf-guardrails
@@ -26,7 +26,8 @@ domain being changed.
   behavior as functional failures, not ops-only concerns.
 - Treat sitemap, canonical URL, `generateStaticParams`, internal-link, prefetch,
   and crawl-surface changes as runtime changes. A route becoming discoverable can
-  expose cold OpenNext work even when no Worker file changed.
+  expose a path the static main Worker does not serve (a production 404)
+  even when no Worker file changed.
 - For crawlable SSG routes, verify that the production request resolves to a
   static asset path. Do not infer static delivery only from successful Next.js
   generation or a `200` response.
@@ -35,13 +36,14 @@ domain being changed.
 
 ## Project Shape
 
-- Main Worker: `@opennextjs/cloudflare`, with static asset dispatch before
-  OpenNext fallback. `scripts/prune-opennext-static-page-cache.mjs` drops
-  inlined prerender `routes` entries that `_cf_static_pages` or the patch
-  Worker already serve. Entries that still fall through to OpenNext stay.
-  The first `routes:{},dynamicRoutes:{}` stub is not the real table.
+- Main Worker: static-only `workers/main-worker.ts` with no Next/OpenNext
+  runtime. It serves `_cf_static_pages` assets, reproduces the former Next
+  answers (`workers/next-routing-parity.ts`, `/api/link-preview`, 405), and
+  returns Next's prerendered not-found page (404) for anything else.
+  `pnpm cf:assets` runs the Worker over every prerendered route and fails when
+  one would need a renderer.
 - Prefixless Korean and `/en` service-locale Compendium detail HTML/RSC must be
-  copied to `_cf_static_pages` and served before OpenNext. Game-only locale
+  copied to `_cf_static_pages` and served from there. Game-only locale
   detail copies are excluded to stay below the Workers Free asset-count limit.
 - Unbounded public ID routes (UUID posts, History Course runs, federated
   조각모음 details) must be prerendered `__id__` HTML/RSC shells. The thin
@@ -50,17 +52,16 @@ domain being changed.
   in `workers/static-page-routing.ts`, `scripts/copy-cf-static-pages.mjs`,
   `scripts/check-cloudflare-static-assets.ts`, and the route-smoke/testbed
   allowlists in the same change. Allowlists do not auto-discover `[id]`
-  routes; an unlisted UUID path falls through to OpenNext and can 1102.
+  routes; an unlisted UUID path returns the static 404.
   Record-specific OG metadata (custom runner titles, descriptions, cover images)
   is injected at the Worker edge via streaming `HTMLRewriter` with edge caching
   (`workers/detail-shell-og.ts`) rather than falling back to generic shell text
-  or invoking OpenNext SSR.
-  Removing the OpenNext fallback itself stays on `docs/OPENNEXT_EXIT_PLAN.md`
-  Phases 5–6, not incidental feature work.
+  or rendering at request time. There is no renderer fallback
+  (`docs/OPENNEXT_EXIT_PLAN.md` Phases 5–6 are done); do not add one.
 - Patch Worker: separate static Worker. Patch HTML, CSS, fonts, images, and
   provisional `/_patches/*` assets must be generated ahead of time. Requests to
   `/images/neowsletters/*` are forwarded directly to `PATCH_WORKER` by `workers/main-worker.ts`.
-- Do not move `/patches*` back into the main OpenNext runtime as the primary
+- Do not move `/patches*` back into the main Worker as the primary
   Cloudflare production path.
 - Future custom-domain route dispatch is documented in
   `docs/CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md`.
@@ -72,10 +73,10 @@ domain being changed.
   inspection.
 - Smoke both HTML and RSC requests for representative Korean and English
   Compendium details. Require `x-cf-static-page: compendium`; a plain `200` is
-  insufficient because OpenNext fallback can also return one.
+  insufficient; require the owner header.
 - For unbounded ID / UUID details, smoke both document and RSC requests
-  (prefixless and `/en`) and require `x-cf-static-page: shell`. `x-opennext: 1`
-  on a record URL is a failure even when the body is 200.
+  (prefixless and `/en`) and require `x-cf-static-page: shell`.
+  `x-cf-static-page: not-found` on a record URL is a failure.
 - For patch Worker changes, run `pnpm patch:build`, `pnpm patch:test`, and
   preview/deploy checks from `$slseoun-patch` or `$qa`.
 - For feature work, record the expected request-time cost and why it remains

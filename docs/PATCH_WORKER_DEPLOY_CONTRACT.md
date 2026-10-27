@@ -57,7 +57,7 @@ but independently deployable surfaces.
   and provisional assets live in `.patch-worker/assets` and are served through
   the `ASSETS` binding. Runtime code may map clean URLs to `index.html`, but it
   must not render patch markdown or query Compendium data at request time.
-- Do not add `/patches*` to the main OpenNext static/SSR surface as the primary
+- Do not add `/patches*` to the main Worker's static surface as the primary
   production path. Patch routes may be present in Next as development wrappers
   and Vercel compatibility, but Cloudflare production should prefer the static
   patch Worker route once a custom domain route is available.
