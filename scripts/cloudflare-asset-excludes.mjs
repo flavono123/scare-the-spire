@@ -31,6 +31,10 @@ export const UNUSED_PUBLIC_SOURCES = new Map([
   ["images/game-assets/card-library/pool_filter_other_direct.webp", "extracted filter icon the card library never draws"],
   ["images/game-assets/card-library/type_sort_other.webp", "extracted filter icon the card library never draws"],
   ["images/game-assets/card-library/type_sort_outline2.webp", "extracted filter icon the card library never draws"],
+  [
+    "generated/ancient-vfx/scenes/neow_behindBody.json",
+    "stale Ancient scene layer; data/sts2/ancient-scene-assets.json dropped it in b23e0c6f",
+  ],
 ]);
 
 /**
