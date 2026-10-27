@@ -9,6 +9,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { localizeHref } from "@/lib/i18n";
+import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
   CodexAffliction,
@@ -154,15 +155,7 @@ interface CardDetailProps {
 }
 
 function getCardDetailLabels(serviceLocale: ServiceLocale) {
-  return serviceLocale === "ko"
-    ? {
-        patchHistory: "패치 이력",
-        noPatchHistory: "구조화 변경 없음",
-      }
-    : {
-        patchHistory: "Patch History",
-        noPatchHistory: "No structured changes",
-      };
+  return getDetailPatchHistoryLabels(serviceLocale);
 }
 
 function isCardUpgradeRecord(value: unknown): value is NonNullable<CodexCard["upgrade"]> {

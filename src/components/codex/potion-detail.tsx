@@ -8,6 +8,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { localizeHref } from "@/lib/i18n";
+import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -111,13 +112,11 @@ function getPotionDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
     ? {
         englishName: "영어명",
-        patchHistory: "패치 이력",
-        noPatchHistory: "구조화 변경 없음",
+        ...getDetailPatchHistoryLabels("ko"),
       }
     : {
         englishName: "English name",
-        patchHistory: "Patch History",
-        noPatchHistory: "No structured changes",
+        ...getDetailPatchHistoryLabels("en"),
       };
 }
 
