@@ -8,12 +8,11 @@ import {
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 import {
-  localizeHrefWithGameLocale,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
 import {
-  buildCompendiumResourceDetailHref,
+  buildCompendiumEntryHref,
   updateCompendiumResourceModalUrl,
 } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -41,23 +40,18 @@ import { GameHoverTip } from "./hover-tip";
 import { SearchBar } from "./search-bar";
 
 function AscensionTile({
-  serviceLocale,
   gameLocale,
   ascension,
   onClick,
 }: {
-  serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   ascension: CodexAscension;
   onClick: () => void;
 }) {
   return (
     <Link
-      href={localizeHrefWithGameLocale(
-        buildCompendiumResourceDetailHref("ascension", ascension.id),
-        serviceLocale,
-        gameLocale,
-      )}
+      // Game-only locales have no detail pages; this links their list modal.
+      href={buildCompendiumEntryHref("ascension", ascension.id, gameLocale)}
       className="mb-5 block break-inside-avoid rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
@@ -190,7 +184,6 @@ export function AscensionLibrary({
             {filteredAscensions.map((ascension) => (
               <AscensionTile
                 key={ascension.id}
-                serviceLocale={serviceLocale}
                 gameLocale={gameLocale}
                 ascension={ascension}
                 onClick={() => selectAscension(ascension.id)}
