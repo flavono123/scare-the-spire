@@ -36,7 +36,7 @@ import {
 } from "@/lib/i18n";
 import type { CompendiumDetailResourceType } from "@/lib/compendium-detail-payload";
 import { KEYWORD_PAGE_OG_IMAGE } from "@/lib/page-og-images";
-import { withKoreanSearchCanonical } from "@/lib/search-canonical";
+import { withSearchCanonical } from "@/lib/search-canonical";
 
 type CompendiumMetadataLocale = {
   gameLocale?: GameLocale;
@@ -53,9 +53,10 @@ function withCompendiumDetailCanonical(
   metadata: Metadata,
   resourceType: CompendiumDetailResourceType,
   id: string,
+  serviceLocale: ServiceLocale,
 ): Metadata {
   const detailPath = `/compendium/${resourceType}/${encodeURIComponent(id.toLowerCase())}`;
-  return withKoreanSearchCanonical(metadata, detailPath);
+  return withSearchCanonical(metadata, detailPath, serviceLocale);
 }
 
 export async function generateCompendiumCardMetadata(
@@ -73,6 +74,7 @@ export async function generateCompendiumCardMetadata(
     getCodexCardOgMetadata(serviceLocale, gameUi.cardLibraryTitle, card),
     "cards",
     id,
+    serviceLocale,
   );
 }
 
@@ -100,6 +102,7 @@ export async function generateCompendiumCharacterMetadata(
     }),
     "characters",
     id,
+    serviceLocale,
   );
 }
 
@@ -127,6 +130,7 @@ export async function generateCompendiumRelicMetadata(
     }),
     "relics",
     id,
+    serviceLocale,
   );
 }
 
@@ -145,6 +149,7 @@ export async function generateCompendiumPotionMetadata(
     getCodexResourceOgMetadata(serviceLocale, gameUi.potionLabTitle, potion),
     "potions",
     id,
+    serviceLocale,
   );
 }
 
@@ -163,6 +168,7 @@ export async function generateCompendiumPowerMetadata(
     getCodexResourceOgMetadata(serviceLocale, gameUi.nav.powers, power),
     "powers",
     id,
+    serviceLocale,
   );
 }
 
@@ -183,6 +189,7 @@ export async function generateCompendiumEnchantmentMetadata(
     getCodexResourceOgMetadata(serviceLocale, serviceText.enchantmentsView.title, resource),
     "enchantments",
     id,
+    serviceLocale,
   );
 }
 
@@ -201,6 +208,7 @@ export async function generateCompendiumAncientMetadata(
     getCodexResourceOgMetadata(serviceLocale, gameUi.ancientsTitle, ancient),
     "ancients",
     id,
+    serviceLocale,
   );
 }
 
@@ -219,6 +227,7 @@ export async function generateCompendiumEventMetadata(
     getCodexResourceOgMetadata(serviceLocale, gameUi.eventsTitle, event),
     "events",
     id,
+    serviceLocale,
   );
 }
 
@@ -241,6 +250,7 @@ export async function generateCompendiumKeywordMetadata(
     }),
     "keywords",
     id,
+    serviceLocale,
   );
 }
 
@@ -267,6 +277,7 @@ export async function generateCompendiumMonsterMetadata(
     ),
     "monsters",
     id,
+    serviceLocale,
   );
 }
 
@@ -290,6 +301,7 @@ export async function generateCompendiumEncounterMetadata(
     ),
     "encounters",
     id,
+    serviceLocale,
   );
 }
 
@@ -308,6 +320,7 @@ export async function generateCompendiumEpochMetadata(
     getCodexResourceOgMetadata(serviceLocale, gameUi.epochsTitle, epoch),
     "epochs",
     id,
+    serviceLocale,
   );
 }
 

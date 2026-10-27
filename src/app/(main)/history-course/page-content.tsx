@@ -23,7 +23,7 @@ export async function generateHistoryCourseMetadata(
       serviceLocale,
       serviceMessages[serviceLocale].historyCourse.subtitle,
     ),
-  }, "/history-course");
+  }, "/history-course", serviceLocale);
 }
 
 export async function renderHistoryCourseIndexPage(

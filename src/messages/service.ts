@@ -19,7 +19,9 @@ export const serviceMessages = {
     },
     patchNotes: {
       indexTitle: "패치 노트",
-      detailTitle: "슬레이 더 스파이어 2 {version} {type} 패치 노트",
+      indexHeading: "슬더스2 패치노트",
+      detailTitle: "슬더스2 {version} {type} 패치노트 – 슬레이 더 스파이어 2",
+      detailHeading: "슬더스2 {version} {type} 패치노트",
       richDetails: "변경된 카드·유물 이름을 선택하면 상세 정보와 버전별 변경 이력을 확인할 수 있습니다.",
     },
     neowsletters: {
@@ -239,7 +241,8 @@ export const serviceMessages = {
     },
     patchChanges: {
       title: "슬서운 변경",
-      metadataDescription: "카드, 유물, 캐릭터별 슬레이 더 스파이어 2 패치 변경 기록",
+      metadataTitle: "슬더스2 카드·유물 패치 변경 기록 – 슬서운 변경",
+      metadataDescription: "슬더스2(슬레이 더 스파이어 2) 패치 변경 기록을 카드, 유물, 캐릭터별로 모아 봅니다.",
       tabs: {
         notes: "패치 노트",
         changes: "슬서운 변경",
@@ -1462,7 +1465,9 @@ export const serviceMessages = {
     },
     patchNotes: {
       indexTitle: "Patch Notes",
-      detailTitle: "Slay the Spire 2 {version} {type} Patch Notes",
+      indexHeading: "STS2 Patch Notes",
+      detailTitle: "STS2 {version} {type} Patch Notes – Slay the Spire 2",
+      detailHeading: "STS2 {version} {type} Patch Notes",
       richDetails: "Select a changed card or relic to view its details and version history.",
     },
     globalSearch: {
@@ -1672,7 +1677,8 @@ export const serviceMessages = {
     },
     patchChanges: {
       title: "scare-the-changes",
-      metadataDescription: "Slay the Spire 2 patch changes by card, relic, character, and more.",
+      metadataTitle: "STS2 Patch Changes by Card & Relic – scare-the-changes",
+      metadataDescription: "Every STS2 (Slay the Spire 2) patch change, grouped by card, relic, character, and more.",
       tabs: {
         notes: "Patch Notes",
         changes: "scare-the-changes",

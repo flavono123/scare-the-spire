@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import type { ServiceLocale } from "@/lib/i18n";
 import { DEFAULT_PAGE_OG_IMAGE, type PageOgImage } from "@/lib/page-og-images";
-import {
-  withKoreanSearchCanonical,
-} from "@/lib/search-canonical";
+import { withSearchCanonical } from "@/lib/search-canonical";
 import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
 
 export {
-  absoluteKoreanCanonicalUrl,
-  koreanSearchPath,
-  withKoreanSearchCanonical,
+  absoluteSearchCanonicalUrl,
+  searchCanonicalPath,
+  searchLanguageAlternates,
+  withSearchCanonical,
 } from "@/lib/search-canonical";
 
 type ServiceMetadataCopy = {
+  homeTitle: string;
   siteDescription: string;
   patchesTitle: string;
   patchesDescription: string;
@@ -36,9 +36,10 @@ type ServiceOgImage = PageOgImage | {
 
 const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
   ko: {
-    siteDescription: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
-    patchesTitle: "슬레이 더 스파이어 2 패치 노트 및 업데이트 내역",
-    patchesDescription: "슬레이 더 스파이어 2 전체 패치 노트, 업데이트 내역, 카드·유물 변경 정보를 한국어로 확인하세요.",
+    homeTitle: "슬서운 이야기 – 슬더스2 패치노트·백과사전",
+    siteDescription: "슬레이 더 스파이어 2(슬더스2) 패치노트, 백과사전, 커뮤니티",
+    patchesTitle: "슬더스2 패치노트 – 슬레이 더 스파이어 2 전체 업데이트 내역",
+    patchesDescription: "슬더스2(슬레이 더 스파이어 2) 전체 패치노트와 업데이트 내역, 카드·유물 변경 정보를 한국어로 확인하세요.",
     chemicalXTitle: "케미컬 X(구 트윕터)",
     chemicalXDescription: "슬레이 더 스파이어 2 게임 요소로 짧은 글 쓰기 - 슬서운 이야기",
     comboTitle: "코오오옴보",
@@ -49,9 +50,10 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
     defragmentDescription: "슬레이 더 스파이어 2 커뮤니티 - 슬서운 이야기",
   },
   en: {
-    siteDescription: "Slay the Spire 2 patch notes, Compendium, and community.",
-    patchesTitle: "Slay the Spire 2 Patch Notes & Update History",
-    patchesDescription: "Complete Slay the Spire 2 patch notes, update history, and linked card and relic changes.",
+    homeTitle: "Scare the Spire – STS2 Patch Notes & Compendium",
+    siteDescription: "Slay the Spire 2 (STS2) patch notes, Compendium, and community.",
+    patchesTitle: "STS2 Patch Notes – All Slay the Spire 2 Updates",
+    patchesDescription: "Every STS2 (Slay the Spire 2) patch note and update history, with linked card and relic changes.",
     chemicalXTitle: "Chemical X (formerly Twipter)",
     chemicalXDescription: "Slay the Spire 2 Write a short post with game elements - Scare the Spire",
     comboTitle: "C-c-c-Combo",
@@ -154,6 +156,22 @@ export function getDefaultServiceMetadata(
   };
 }
 
+/** Home metadata: an absolute title so layout templates never repeat the brand. */
+export function getHomeServiceMetadata(serviceLocale: ServiceLocale): Metadata {
+  const metadata = getDefaultServiceMetadata(serviceLocale);
+  const title = getServiceMetadataCopy(serviceLocale).homeTitle;
+  return withSearchCanonical(
+    {
+      ...metadata,
+      title: { absolute: title },
+      openGraph: { ...metadata.openGraph, title },
+      twitter: { ...metadata.twitter, title },
+    },
+    "/",
+    serviceLocale,
+  );
+}
+
 export function getServiceOgMetadata({
   serviceLocale,
   title,
@@ -194,6 +212,6 @@ export function getServiceOgMetadata({
   };
 
   return canonicalPath
-    ? withKoreanSearchCanonical(metadata, canonicalPath)
+    ? withSearchCanonical(metadata, canonicalPath, serviceLocale)
     : metadata;
 }

@@ -20,6 +20,10 @@ import {
   COMBO_PAGE_OG_IMAGE,
   THIS_OR_THAT_PAGE_OG_IMAGE,
 } from "../src/lib/page-og-images";
+import {
+  searchCanonicalPath,
+  searchLanguageAlternatePaths,
+} from "../src/lib/search-canonical";
 
 interface HTMLRewriterElement {
   setInnerContent(content: string, options?: { html?: boolean }): void;
@@ -268,7 +272,8 @@ export async function fetchDetailShellOgData(
   const serviceLocale = target.gameLocale === "en" ? "en" : "ko";
   const brand = serviceLocale === "en" ? "Scare the Spire" : "슬서운 이야기";
   const game = serviceLocale === "en" ? "Slay the Spire 2" : "슬레이 더 스파이어 2";
-  const canonicalUrl = `${siteOrigin}${pathname}`;
+  // ko and en are self-canonical; other game locales fold into /en.
+  const canonicalUrl = `${siteOrigin}${searchCanonicalPath(pathname)}`;
 
   if (target.service === "history-course") {
     const row = await fetchSupabaseRestSingleRow<{
@@ -467,6 +472,12 @@ export async function fetchDetailShellOgData(
 }
 
 export function enrichShellHtml(response: Response, meta: DetailShellOgData): Response {
+  // The prerendered shell lists the index page's hreflang; retarget it at this record.
+  const canonical = new URL(meta.url);
+  const alternateHrefs: Record<string, string> = Object.fromEntries(
+    Object.entries(searchLanguageAlternatePaths(canonical.pathname))
+      .map(([hrefLang, alternatePath]) => [hrefLang, `${canonical.origin}${alternatePath}`]),
+  );
   return new HTMLRewriter()
     .on("title", {
       element(e) {
@@ -516,6 +527,12 @@ export function enrichShellHtml(response: Response, meta: DetailShellOgData): Re
     .on('link[rel="canonical"]', {
       element(e) {
         e.setAttribute("href", meta.url);
+      },
+    })
+    .on('link[rel="alternate"][hreflang]', {
+      element(e) {
+        const href = alternateHrefs[e.getAttribute("hreflang") ?? ""];
+        if (href) e.setAttribute("href", href);
       },
     })
     .transform(response);

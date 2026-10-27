@@ -8,7 +8,7 @@ import {
 } from "@/lib/i18n";
 import { getActiveRunBadgeCatalog } from "@/lib/run-badge-catalog";
 import { getRunBadgeVariants } from "@/lib/run-badges";
-import { withKoreanSearchCanonical } from "@/lib/search-canonical";
+import { withSearchCanonical } from "@/lib/search-canonical";
 
 type DetailProps = {
   params: Promise<{ id: string }>;
@@ -35,7 +35,7 @@ export async function generateMetadata({ params, searchParams }: DetailProps) {
     description: variants.map((variant) => variant.description).join(" "),
     imageUrl: badge.imageUrl,
   });
-  return withKoreanSearchCanonical(metadata, `/compendium/badges/${badge.slug}`);
+  return withSearchCanonical(metadata, `/compendium/badges/${badge.slug}`, serviceLocale);
 }
 
 export default async function BadgeDetailPage({ params, searchParams }: DetailProps) {

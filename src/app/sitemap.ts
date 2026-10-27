@@ -18,7 +18,7 @@ import {
 import { getSTS2Patches } from "@/lib/data";
 import { getNeowsletters } from "@/lib/neowsletters";
 import { getActiveRunBadgeCatalog } from "@/lib/run-badge-catalog";
-import { absoluteSiteUrl } from "@/lib/site-origin";
+import { searchLanguageAlternates } from "@/lib/search-canonical";
 import {
   getSts1Cards,
   getSts1Characters,
@@ -88,6 +88,18 @@ const COMPENDIUM_DETAIL_ROUTES = [
   ["relics", generateRelicStaticParams],
 ] as const;
 
+const SEARCH_INDEXED_LOCALES = ["ko", "en"] as const;
+
+/** One entry per indexable language, each listing the reciprocal ko/en/x-default alternates. */
+function localizedEntries(path: string, lastModified?: string): MetadataRoute.Sitemap {
+  const languages = searchLanguageAlternates(path);
+  return SEARCH_INDEXED_LOCALES.map((locale) => ({
+    url: languages[locale],
+    ...(lastModified ? { lastModified } : {}),
+    alternates: { languages },
+  }));
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [
     detailParamGroups,
@@ -127,22 +139,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const latestNeowsletterDate = neowsletters.map(({ date }) => date).sort().at(-1);
 
   return [
-    ...paths.map((path) => ({
-      url: absoluteSiteUrl(path),
-      ...((path === "/patches" || path === "/patches/changes") && latestPatchDate
-        ? { lastModified: latestPatchDate }
-        : {}),
-      ...(path === "/patches/neowsletters" && latestNeowsletterDate
-        ? { lastModified: latestNeowsletterDate }
-        : {}),
-    })),
-    ...patches.map(({ version, date }) => ({
-      url: absoluteSiteUrl(`/patches/${version}`),
-      lastModified: date,
-    })),
-    ...neowsletters.map(({ id, date }) => ({
-      url: absoluteSiteUrl(`/patches/neowsletters/${id}`),
-      lastModified: date,
-    })),
+    ...paths.flatMap((path) => localizedEntries(
+      path,
+      path === "/patches" || path === "/patches/changes"
+        ? latestPatchDate
+        : path === "/patches/neowsletters"
+          ? latestNeowsletterDate
+          : undefined,
+    )),
+    ...patches.flatMap(({ version, date }) => localizedEntries(`/patches/${version}`, date)),
+    ...neowsletters.flatMap(({ id, date }) => localizedEntries(`/patches/neowsletters/${id}`, date)),
   ];
 }

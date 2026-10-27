@@ -160,7 +160,7 @@ export async function PatchListPage({
 
   return (
     <div className={TOYBOX_WIDE_SHELL_CLASS}>
-      <h1 className="text-2xl font-bold">{serviceMessages[serviceLocale].patchNotes.indexTitle}</h1>
+      <h1 className="text-2xl font-bold">{serviceMessages[serviceLocale].patchNotes.indexHeading}</h1>
       <PatchSectionTabs
         active="notes"
         serviceLocale={serviceLocale}

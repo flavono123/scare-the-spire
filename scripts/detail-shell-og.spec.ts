@@ -116,6 +116,7 @@ assert.equal(parseDetailShellTarget("/patches/0.100.0"), null);
 interface MockElement {
   setInnerContent?(content: string): void;
   setAttribute?(name: string, value: string): void;
+  getAttribute?(name: string): string | null;
 }
 
 const registeredSelectors: string[] = [];
@@ -196,6 +197,21 @@ async function main() {
     },
   });
   assert.equal(canonicalHref, ogData.url);
+
+  const alternateHrefs = new Map<string, string>();
+  for (const hrefLang of ["ko", "en", "x-default"]) {
+    registeredHandlers.get('link[rel="alternate"][hreflang]')?.({
+      getAttribute: (attr: string) => (attr === "hreflang" ? hrefLang : null),
+      setAttribute(attr: string, val: string) {
+        if (attr === "href") alternateHrefs.set(hrefLang, val);
+      },
+    });
+  }
+  assert.deepEqual(Object.fromEntries(alternateHrefs), {
+    ko: "https://scare-the-spire.com/history-course/my-run-123",
+    en: "https://scare-the-spire.com/en/history-course/my-run-123",
+    "x-default": "https://scare-the-spire.com/en/history-course/my-run-123",
+  });
 
   console.log("detail-shell-og.spec.ts ok");
 }

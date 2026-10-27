@@ -21,7 +21,7 @@ export function getResourcePatchIndexMetadata(serviceLocale: ServiceLocale): Met
   const copy = serviceMessages[serviceLocale].patchChanges;
   return getServiceOgMetadata({
     serviceLocale,
-    title: copy.title,
+    title: copy.metadataTitle,
     description: copy.metadataDescription,
     image: PATCH_NOTES_PAGE_OG_IMAGE,
     canonicalPath: "/patches/changes",

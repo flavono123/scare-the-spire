@@ -45,6 +45,10 @@ import { COLOR_SCHEME_BOOT_SCRIPT, THEME_COLOR_DARK } from "@/lib/color-scheme";
 import { getSTS2Patches } from "@/lib/data";
 import { getNeowsletters } from "@/lib/neowsletters";
 import { getSiteOrigin } from "@/lib/site-origin";
+import {
+  searchCanonicalPath,
+  searchLanguageAlternatePaths,
+} from "@/lib/search-canonical";
 import { serviceMessages } from "@/messages/service";
 import { contactMessages } from "@/messages/contact";
 import {
@@ -544,7 +548,10 @@ function renderShell(route: StaticPatchRoute): string {
   const title = metadataTitle(route.metadata, route.serviceLocale === "ko" ? "슬서운 변경" : "Scare the Changes");
   const description = metadataDescription(route.metadata);
   const image = metadataImage(route.metadata);
-  const canonicalUrl = `${siteOrigin}${route.pathname}`;
+  // ko and en are self-canonical; other game locales fold into /en.
+  const canonicalUrl = `${siteOrigin}${searchCanonicalPath(route.pathname)}`;
+  const languageAlternates = Object.entries(searchLanguageAlternatePaths(route.pathname))
+    .map(([hrefLang, alternatePath]) => ({ hrefLang, href: `${siteOrigin}${alternatePath}` }));
   const lang = route.serviceLocale === "ko" ? "ko" : "en";
   const articleStructuredData = route.article ? {
     "@context": "https://schema.org",
@@ -613,12 +620,16 @@ function renderShell(route: StaticPatchRoute): string {
         <title>{title}</title>
         {description && <meta name="description" content={description} />}
         <link rel="canonical" href={canonicalUrl} />
+        {languageAlternates.map(({ hrefLang, href }) => (
+          <link key={hrefLang} rel="alternate" hrefLang={hrefLang} href={href} />
+        ))}
         <link rel="preload" href="/fonts/GyeonggiCheonnyeonBatangBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="stylesheet" href="/_patches/patch.css" />
         <link rel="icon" href="/favicon.ico" />
         <meta property="og:title" content={title} />
         {description && <meta property="og:description" content={description} />}
         <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:locale" content={lang === "ko" ? "ko_KR" : "en_US"} />
         <meta property="og:type" content={route.article ? "article" : "website"} />
         {route.article && <meta property="article:published_time" content={route.article.datePublished} />}
         {image && <meta property="og:image" content={image} />}
