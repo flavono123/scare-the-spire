@@ -105,7 +105,7 @@ export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetai
             )}
             <div className="min-w-0">
               <p className="font-service text-xs text-gray-500">{model.kindLabel}</p>
-              <h1 className="font-game-title text-3xl font-bold text-gray-100 sm:text-4xl">
+              <h1 className="font-game-title break-words break-keep text-2xl font-bold text-gray-100 min-[360px]:text-3xl sm:text-4xl">
                 {model.title}
               </h1>
               {model.epithet && (
