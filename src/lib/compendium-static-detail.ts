@@ -448,14 +448,16 @@ function hpRange(min: number | null, max: number | null): string | null {
   return max !== null && max !== min ? `${min}–${max}` : String(min);
 }
 
-/** The card, relic, or potion pool, linked to the character page when the pool is a character. */
+/**
+ * The character of a card, relic, or potion pool, linked to the character page.
+ * Other pools (shared, colorless, curse, status, event, token, quest, ancient)
+ * get no fact: they are not characters, and the game has no label for the
+ * pool concept itself (card_library only has POOL_*_TIP filter tips).
+ */
 function poolFact(ctx: DetailContext, pool: string): StaticDetailFact[] {
   const characterLink = ctx.link("character", pool);
-  if (characterLink) {
-    return [{ label: ctx.labels.character, value: characterLink.label, href: characterLink.href }];
-  }
-  const pools = getCodexServiceMessages(ctx.serviceLocale).labels.pools as Record<string, string>;
-  return fact(ctx.labels.character, pools[pool]);
+  if (!characterLink) return [];
+  return [{ label: ctx.labels.character, value: characterLink.label, href: characterLink.href }];
 }
 
 function actLabel(ctx: DetailContext, act: string | null): string | null {
