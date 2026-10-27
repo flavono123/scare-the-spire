@@ -3,6 +3,7 @@ import fs from "node:fs";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
+import { CompendiumDetailLinksProvider } from "@/components/compendium-detail-links";
 import {
   PatchNoteRenderer,
   type EntityInfo,
@@ -101,6 +102,30 @@ assert.doesNotMatch(knowledgeDemonTokenHtml, /지식의악마토큰/);
 
 const staticAvailableHtml = renderStaticPatch("[gold:card]Bash[/gold]", [availableCard]);
 assert.match(staticAvailableHtml, /href="\/en\/compendium\/cards\?card=bash"/);
+
+// The patch worker wraps every page in CompendiumDetailLinksProvider, so
+// entity mentions there link to crawlable detail pages instead of list modals.
+function renderPatchWorkerLine(markdown: string, entities: EntityInfo[], serviceLocale: "ko" | "en", gameLocale: "kor" | "eng" | "zhs"): string {
+  return renderToStaticMarkup(
+    <CompendiumDetailLinksProvider>
+      <PatchNoteRenderer
+        markdown={markdown}
+        entities={entities}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+        staticHoverPreviews
+      />
+    </CompendiumDetailLinksProvider>,
+  );
+}
+assert.match(renderPatchWorkerLine("[gold:card]Bash[/gold]", [availableCard], "en", "eng"), /href="\/en\/compendium\/cards\/bash"/);
+assert.match(renderPatchWorkerLine("[gold:card]Bash[/gold]", [availableCard], "ko", "kor"), /href="\/compendium\/cards\/bash"/);
+assert.match(
+  renderPatchWorkerLine("[Bash](/compendium/cards?card=bash)", [], "ko", "kor"),
+  /href="\/compendium\/cards\/bash"/,
+);
+// Game-only locales publish no detail pages, so they keep the list modal URL.
+assert.match(renderPatchWorkerLine("[gold:card]Bash[/gold]", [availableCard], "en", "zhs"), /href="\/zh\/compendium\/cards\?card=bash/);
 assert.match(staticAvailableHtml, /\/images\/sts2\/cards\/bash\.webp/);
 assert.doesNotMatch(staticAvailableHtml, /Compendium page in progress/);
 

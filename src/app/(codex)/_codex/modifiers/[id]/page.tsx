@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexModifiers } from "@/lib/codex-data";
-import { loadAllEntities } from "@/lib/load-all-entities";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -11,7 +10,7 @@ import {
   findCodexResourceByRouteId,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { ModifierDetail } from "@/components/codex/modifier-detail";
+import { ModifierDetailLoader } from "@/components/codex/modifier-detail-loader";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -52,9 +51,8 @@ export default async function ModifierDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [modifiers, entities, gameUi] = await Promise.all([
+  const [modifiers, gameUi] = await Promise.all([
     getCodexModifiers({ gameLocale }),
-    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
   const modifier = modifiers.find((item) => item.id.toLowerCase() === id.toLowerCase());
@@ -62,12 +60,12 @@ export default async function ModifierDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <ModifierDetail
+      <ModifierDetailLoader
+        gameLocale={gameLocale}
         serviceLocale={serviceLocale}
         gameUi={gameUi}
         backToListTitle={gameUi.nav.modifiers}
         modifier={modifier}
-        entities={entities}
       />
     </div>
   );

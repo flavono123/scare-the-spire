@@ -1,13 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { CharacterList } from "@/components/codex/character-list";
-import {
-  getCodexAncients,
-  getCodexCards,
-  getCodexCharacters,
-  getCodexPotions,
-  getCodexRelics,
-} from "@/lib/codex-data";
+import { CharacterListLoader } from "@/components/codex/character-list-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
+import { getCodexCharacters } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { getCodexMetadata } from "@/lib/codex-service";
 import {
@@ -16,12 +11,11 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
+import { getSTS2Patches } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { loadAllEntities } from "@/lib/load-all-entities";
 
 export const dynamic = "force-static";
 
@@ -62,34 +56,27 @@ export default async function CodexCharactersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [characters, cards, relics, potions, ancients, patches, changes, versionDiffs, entities, gameUi] = await Promise.all([
+  const [characters, patches, gameUi] = await Promise.all([
     getCodexCharacters({ gameLocale }),
-    getCodexCards({ includeDeprecated: true, gameLocale }),
-    getCodexRelics({ gameLocale }),
-    getCodexPotions({ gameLocale }),
-    getCodexAncients({ gameLocale }),
     getSTS2Patches(),
-    getSTS2Changes(),
-    getEntityVersionDiffs(gameLocale),
-    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-
   return (
-    <Suspense>
-      <CharacterList
-        serviceLocale={serviceLocale}
+    <>
+      <Suspense>
+        <CharacterListLoader
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          title={gameUi.charactersTitle}
+          characters={characters}
+          patches={patches}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
+        gameLocale={gameLocale}
         title={gameUi.charactersTitle}
-        characters={characters}
-        cards={cards}
-        relics={relics}
-        potions={potions}
-        ancients={ancients}
-        patches={patches}
-        changes={changes}
-        versionDiffs={versionDiffs}
-        entities={entities}
+        groups={[{ type: "character", entries: characters }]}
       />
-    </Suspense>
+    </>
   );
 }

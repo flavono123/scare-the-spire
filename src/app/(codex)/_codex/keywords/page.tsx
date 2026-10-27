@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexKeywords } from "@/lib/codex-data";
-import { loadAllEntities } from "@/lib/load-all-entities";
+import { getCodexKeywords } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -13,7 +12,8 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { KeywordLibrary } from "@/components/codex/keyword-library";
+import { KeywordLibraryLoader } from "@/components/codex/keyword-library-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 
 export const dynamic = "force-static";
 
@@ -45,23 +45,26 @@ export default async function CodexKeywordsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [keywords, cards, entities, gameUi] = await Promise.all([
+  const [keywords, gameUi] = await Promise.all([
     getCodexKeywords({ gameLocale }),
-    getCodexCards({ includeDeprecated: true, gameLocale }),
-    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-
   return (
-    <Suspense>
-      <KeywordLibrary
-        serviceLocale={serviceLocale}
-        gameUi={gameUi}
+    <>
+      <Suspense>
+        <KeywordLibraryLoader
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          title={gameUi.nav.keywords}
+          keywords={keywords}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
+        gameLocale={gameLocale}
         title={gameUi.nav.keywords}
-        keywords={keywords}
-        cards={cards}
-        entities={entities}
+        groups={[{ type: "keyword", entries: keywords }]}
       />
-    </Suspense>
+    </>
   );
 }

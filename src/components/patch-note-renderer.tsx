@@ -15,6 +15,7 @@ import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, 
 import { RELIC_RARITY_LABELS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { toCompendiumDetailHref, useCompendiumDetailLinks } from "@/components/compendium-detail-links";
 import { AUTO_LINK_ENTITY_TYPES, buildAutoLinkKeywordsByFirst, wrapNumberedAscensionMentions, wrapUntaggedEntityNames, type AutoLinkKeyword } from "@/lib/auto-link-entity-names";
 import {
   localizeHrefWithGameLocale,
@@ -139,7 +140,9 @@ type RenderContext = {
   epochArtMode?: HoverTipArtMode;
   staticHoverPreviews?: boolean;
   autoLinkEntities?: boolean;
+  linkToCompendiumDetails?: boolean;
 };
+
 
 // --- Entity Preview (hover card image) ---
 
@@ -571,9 +574,13 @@ export function EntityPreview({
   }, [entity, forcePosition]);
 
   const hrefBase = isPendingCompendium || disableLink ? null : entityCompendiumHref(entity);
-  const localizedHref = hrefBase && serviceLocale && gameLocale
+  const linkToCompendiumDetails = useCompendiumDetailLinks();
+  const localeHref = hrefBase && serviceLocale && gameLocale
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : hrefBase;
+  const localizedHref = localeHref && linkToCompendiumDetails
+    ? toCompendiumDetailHref(localeHref)
+    : localeHref;
   const href = localizedHref
     && previewEntity.type === "character"
     && previewEntity.characterData
@@ -1682,9 +1689,10 @@ function renderMarkdownLink(
 ): ReactNode {
   const className = classNameForHref(href);
   if (href.startsWith("/")) {
-    const localizedHref = context.serviceLocale && context.gameLocale
+    const localeHref = context.serviceLocale && context.gameLocale
       ? localizeHrefWithGameLocale(href, context.serviceLocale, context.gameLocale)
       : href;
+    const localizedHref = context.linkToCompendiumDetails ? toCompendiumDetailHref(localeHref) : localeHref;
     return <Link key={key} href={localizedHref} className={className}>{label}</Link>;
   }
 
@@ -1885,9 +1893,10 @@ export function PatchNoteInlineText({
   serviceLocale?: ServiceLocale;
   gameLocale?: GameLocale;
 }) {
+  const linkToCompendiumDetails = useCompendiumDetailLinks();
   const context = useMemo<RenderContext>(
-    () => ({ serviceLocale, gameLocale }),
-    [gameLocale, serviceLocale],
+    () => ({ serviceLocale, gameLocale, linkToCompendiumDetails }),
+    [gameLocale, linkToCompendiumDetails, serviceLocale],
   );
 
   return <>{enrichLine(withPatchChangeEffects(markdown), lookup, "patch-inline", context)}</>;
@@ -2119,6 +2128,7 @@ export function PatchNoteRenderer({
 }) {
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
+  const linkToCompendiumDetails = useCompendiumDetailLinks();
   const context = useMemo<RenderContext>(
     () => ({
       gameUi,
@@ -2134,8 +2144,9 @@ export function PatchNoteRenderer({
       epochArtMode,
       staticHoverPreviews,
       autoLinkEntities,
+      linkToCompendiumDetails,
     }),
-    [currentVersion, epochArtMode, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, patchVersion, patches, preferEntityLocaleLabel, serviceLocale, staticHoverPreviews, autoLinkEntities, versionDiffs],
+    [currentVersion, epochArtMode, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, patchVersion, patches, preferEntityLocaleLabel, serviceLocale, staticHoverPreviews, autoLinkEntities, linkToCompendiumDetails, versionDiffs],
   );
   const patchLineByRenderedContent = useMemo(() => {
     const map = new Map<string, STS2PatchLine>();

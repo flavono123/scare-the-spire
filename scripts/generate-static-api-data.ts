@@ -5,6 +5,11 @@ import { loadAllEntities } from "../src/lib/load-all-entities";
 import { getCodexCards } from "../src/lib/codex-data";
 import { cardConLocaleText } from "../src/lib/card-con-locale";
 import { buildCompendiumDetailPayload } from "../src/lib/compendium-detail-payload-builder";
+import {
+  COMPENDIUM_DATA_CHUNK_MAX_BYTES,
+  COMPENDIUM_DATA_CHUNK_ROOT,
+} from "../src/lib/compendium-data-chunks";
+import { buildCompendiumDataChunkFiles } from "../src/lib/compendium-data-chunks.server";
 import { buildCompendiumResourceManifest } from "../src/lib/compendium-resource-manifest";
 import {
   getLatestByrdispatchEntry,
@@ -398,7 +403,37 @@ async function writeJson(target: StaticJsonTarget) {
   console.log(`Wrote ${path.relative(process.cwd(), filePath)}`);
 }
 
-const STALE_STATIC_ALIASES = ["api/search-index", "comment-entities/sts2"];
+async function writeCompendiumDataChunks(
+  files: Awaited<ReturnType<typeof buildCompendiumDataChunkFiles>>,
+) {
+  const chunkRoot = path.join(publicDir, COMPENDIUM_DATA_CHUNK_ROOT.slice(1));
+  await fs.rm(chunkRoot, { recursive: true, force: true });
+  let largest = { path: "", bytes: 0 };
+  for (const file of files) {
+    const body = `${JSON.stringify(file.data)}\n`;
+    const bytes = Buffer.byteLength(body);
+    if (bytes > COMPENDIUM_DATA_CHUNK_MAX_BYTES) {
+      throw new Error(
+        `${file.path} is ${bytes} bytes; split it so every Compendium data chunk stays under ${COMPENDIUM_DATA_CHUNK_MAX_BYTES} bytes.`,
+      );
+    }
+    if (bytes > largest.bytes) largest = { path: file.path, bytes };
+    const filePath = path.join(publicDir, file.path.slice(1));
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, body);
+  }
+  console.log(
+    `Wrote ${files.length} Compendium data chunks under ${path.relative(process.cwd(), chunkRoot)} (largest ${largest.path}: ${largest.bytes} bytes)`,
+  );
+}
+
+// Older builds published the whole Compendium as one >2MB payload per locale.
+const STALE_STATIC_ALIASES = [
+  "api/search-index",
+  "comment-entities/sts2",
+  "generated/compendium-detail-kor.json",
+  "generated/compendium-detail-eng.json",
+];
 
 async function removeStaleStaticAliases() {
   await Promise.all(
@@ -1148,7 +1183,7 @@ async function main() {
     searchIndex,
     commentEntities,
     koreanCompendiumDetailPayload,
-    englishCompendiumDetailPayload,
+    compendiumDataChunkFiles,
     compendiumResourceManifest,
     latestByrdispatchNotice,
     sts2PatchLines,
@@ -1161,7 +1196,7 @@ async function main() {
     buildSearchIndexPayload(),
     loadAllEntities(),
     buildCompendiumDetailPayload("ko"),
-    buildCompendiumDetailPayload("en"),
+    buildCompendiumDataChunkFiles(),
     buildCompendiumResourceManifest(),
     getLatestByrdispatchNotice(),
     getSTS2PatchLines(),
@@ -1196,8 +1231,7 @@ async function main() {
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
     writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
     ...cardConLocales.map(writeJson),
-    writeJson({ path: "generated/compendium-detail-kor.json", data: koreanCompendiumDetailPayload }),
-    writeJson({ path: "generated/compendium-detail-eng.json", data: englishCompendiumDetailPayload }),
+    writeCompendiumDataChunks(compendiumDataChunkFiles),
     writeJson({ path: "generated/compendium-resource-manifest.json", data: compendiumResourceManifest }),
     writeJson({ path: "generated/latest-byrdispatch-notice.json", data: latestByrdispatchNotice }),
     writeJson({ path: "generated/sts2-patch-lines.json", data: sts2PatchLines }),

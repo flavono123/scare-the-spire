@@ -33,6 +33,7 @@ import {
   MonsterSpineStage,
   type MonsterStageVisualBounds,
 } from "@/components/codex/monster-spine-stage";
+import { toCompendiumDetailHref, useCompendiumDetailLinks } from "@/components/compendium-detail-links";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import {
   PatchLineStoriesPanel,
@@ -613,13 +614,15 @@ function SelectedResourcePreview({
       {label}
     </EntityPreview>
   );
-  const href = available
+  const linkToCompendiumDetails = useCompendiumDetailLinks();
+  const localeHref = available
     ? localizeHrefWithGameLocale(
         buildCompendiumResourceHref(resource.type, resource.id),
         serviceLocale,
         gameLocale,
       )
     : null;
+  const href = localeHref && linkToCompendiumDetails ? toCompendiumDetailHref(localeHref) : localeHref;
 
   return (
     <div className="flex min-w-0 flex-col items-center lg:items-start">

@@ -1,28 +1,22 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import {
-  getCodexAncients,
-  getCodexCards,
-  getCodexEpochs,
-  getCodexPotions,
-  getCodexRelics,
-} from "@/lib/codex-data";
+import { getCodexEpochs } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMeta, getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
+import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches } from "@/lib/data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
-import { loadAllEntities } from "@/lib/load-all-entities";
 import {
   findCodexResourceByRouteId,
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
 import { isBetaArtSearchParam } from "@/lib/codex-card-og";
-import { EpochLibrary } from "@/components/codex/epoch-library";
+import { EpochLibraryLoader } from "@/components/codex/epoch-library-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 
 export const dynamic = "force-static";
 
@@ -59,39 +53,33 @@ export default async function CodexEpochsPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const initialShowBeta = isBetaArtSearchParam(resolvedSearchParams.beta);
-  const [epochs, cards, relics, potions, ancients, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
+  const [epochs, patches, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexEpochs({ gameLocale }),
-    getCodexCards({ includeDeprecated: true, gameLocale }),
-    getCodexRelics({ gameLocale }),
-    getCodexPotions({ gameLocale }),
-    getCodexAncients({ gameLocale }),
     getSTS2Patches(),
-    getSTS2Changes(),
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
-    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
   const versions = getVersionsWithDiffs(patches, versionDiffs);
-
   return (
-    <Suspense>
-      <EpochLibrary
-        serviceLocale={serviceLocale}
-        gameUi={gameUi}
-        epochs={epochs}
-        cards={cards}
-        relics={relics}
-        potions={potions}
-        ancients={ancients}
-        patches={patches}
-        changes={changes}
-        versionDiffs={versionDiffs}
-        versions={versions}
-        currentVersion={meta.version}
-        entities={entities}
-        initialShowBeta={initialShowBeta}
+    <>
+      <Suspense>
+        <EpochLibraryLoader
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          epochs={epochs}
+          patches={patches}
+          versions={versions}
+          currentVersion={meta.version}
+          initialShowBeta={initialShowBeta}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
+        gameLocale={gameLocale}
+        title={gameUi.epochsTitle}
+        groups={[{ type: "epoch", entries: epochs }]}
       />
-    </Suspense>
+    </>
   );
 }

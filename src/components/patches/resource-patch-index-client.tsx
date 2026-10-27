@@ -1,4 +1,5 @@
 import { hydrateRoot } from "react-dom/client";
+import { CompendiumDetailLinksProvider } from "@/components/compendium-detail-links";
 import { ResourcePatchIndexExplorer } from "@/components/patches/resource-patch-index-explorer";
 import { isGameLocale, type ServiceLocale } from "@/lib/i18n";
 import type { ResourcePatchIndexData } from "@/lib/resource-patch-index";
@@ -22,12 +23,14 @@ async function mount() {
 
   hydrateRoot(
     root,
-    <ResourcePatchIndexExplorer
-      data={data}
-      serviceLocale={serviceLocale satisfies ServiceLocale}
-      gameLocale={gameLocale}
-      storyPlaceholder={storyPlaceholder}
-    />,
+    <CompendiumDetailLinksProvider>
+      <ResourcePatchIndexExplorer
+        data={data}
+        serviceLocale={serviceLocale satisfies ServiceLocale}
+        gameLocale={gameLocale}
+        storyPlaceholder={storyPlaceholder}
+      />
+    </CompendiumDetailLinksProvider>,
   );
 }
 

@@ -1,3 +1,5 @@
+import { pathPrefixForGameLocale, type GameLocale } from "@/lib/i18n";
+
 export type CompendiumResourceLinkType =
   | "affliction"
   | "ancient"
@@ -160,6 +162,20 @@ export function updateCompendiumResourceModalUrl(
 
   url.hash = "";
   return url;
+}
+
+/**
+ * The link an entry gets on a Compendium list page: its detail page where one
+ * is published (Korean and English), otherwise the list's modal URL.
+ */
+export function buildCompendiumEntryHref(
+  type: CompendiumResourceLinkType,
+  id: string,
+  gameLocale: GameLocale,
+): string {
+  const listPath = `${pathPrefixForGameLocale(gameLocale)}${COMPENDIUM_RESOURCE_LINKS[type].path}`;
+  const url = updateCompendiumResourceModalUrl(new URL(listPath, "https://compendium.invalid"), type, id);
+  return `${url.pathname}${url.search}`;
 }
 
 export function getLegacyCompendiumDetailRedirectPath(url: URL): string | null {

@@ -17,8 +17,9 @@ import {
 } from "@/lib/codex-data";
 import type { GameLocale } from "@/lib/i18n";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
-import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { buildAllEntities } from "@/lib/all-entities";
+
+export { characterTitleAliases } from "@/lib/all-entities";
 
 export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promise<EntityInfo[]> {
   const gameLocale = opts?.gameLocale;
@@ -56,160 +57,21 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
     getCodexEpochs({ gameLocale }),
   ]);
 
-  return [
-    ...codexCards.map((c) => ({
-      id: c.id,
-      nameEn: c.nameEn,
-      nameKo: c.name,
-      aliasesEn: c.id === "MAD_SCIENCE_SKILL" ? ["Mad Science"] : undefined,
-      aliasesKo: c.id === "MAD_SCIENCE_SKILL" ? ["괴짜 과학"] : undefined,
-      imageUrl: c.imageUrl ?? c.betaImageUrl,
-      color: c.color,
-      type: "card" as const,
-      cardData: c,
-    })),
-    ...codexCharacters.map((c) => ({
-      id: c.id,
-      nameEn: c.nameEn,
-      nameKo: c.name,
-      aliasesEn: characterTitleAliases(c.nameEn),
-      imageUrl: c.iconUrl || c.imageUrl,
-      color: c.id.toLowerCase(),
-      type: "character" as const,
-      characterData: c,
-    })),
-    ...codexKeywords.map((k) => ({
-      id: k.id,
-      nameEn: k.nameEn,
-      nameKo: k.name,
-      imageUrl: k.imageUrl,
-      href: buildCompendiumResourceHref("keyword", k.id),
-      color: k.source,
-      type: "keyword" as const,
-      keywordData: k,
-    })),
-    ...codexModifiers.map((m) => ({
-      id: m.id,
-      nameEn: m.nameEn,
-      nameKo: m.name,
-      aliasesEn: m.aliasesEn,
-      aliasesKo: m.aliasesKo,
-      imageUrl: m.imageUrl,
-      href: buildCompendiumResourceHref("modifier", m.id),
-      color: m.polarity,
-      type: "modifier" as const,
-      modifierData: m,
-    })),
-    ...codexAscensions.map((a) => ({
-      id: a.id,
-      nameEn: a.nameEn,
-      nameKo: a.name,
-      aliasesEn: a.aliasesEn,
-      aliasesKo: a.aliasesKo,
-      imageUrl: a.imageUrl,
-      href: buildCompendiumResourceHref("ascension", a.id),
-      color: "ascension",
-      type: "ascension" as const,
-      ascensionData: a,
-    })),
-    ...codexRelics.map((r) => ({
-      id: r.id,
-      nameEn: r.nameEn,
-      nameKo: r.name,
-      imageUrl: r.imageUrl,
-      color: r.pool,
-      type: "relic" as const,
-      relicData: r,
-    })),
-    ...codexPotions.map((p) => ({
-      id: p.id,
-      nameEn: p.nameEn,
-      nameKo: p.name,
-      imageUrl: p.imageUrl,
-      color: p.pool,
-      type: "potion" as const,
-      potionData: p,
-    })),
-    ...codexPowers.map((p) => ({
-      id: p.id,
-      nameEn: p.nameEn,
-      nameKo: p.name,
-      imageUrl: p.imageUrl,
-      color: p.type,
-      type: "power" as const,
-      powerData: p,
-    })),
-    ...codexEnchantments.map((e) => ({
-      id: e.id,
-      nameEn: e.nameEn,
-      nameKo: e.name,
-      imageUrl: e.imageUrl,
-      color: e.cardType ?? "Any",
-      type: "enchantment" as const,
-      enchantmentData: e,
-    })),
-    ...codexAfflictions.map((a) => ({
-      id: a.id,
-      nameEn: a.nameEn,
-      nameKo: a.name,
-      imageUrl: a.imageUrl,
-      color: "affliction",
-      type: "affliction" as const,
-      afflictionData: a,
-    })),
-    ...codexEvents.map((e) => ({
-      id: e.id,
-      nameEn: e.nameEn,
-      nameKo: e.name,
-      imageUrl: e.imageUrl,
-      color: e.act ?? "none",
-      type: "event" as const,
-      eventData: e,
-    })),
-    ...codexMonsters
-      .filter((m) => m.showInCompendium && isPublicBestiaryMonster(m.id))
-      .map((m) => ({
-        id: m.id,
-        nameEn: m.nameEn,
-        nameKo: m.name,
-        imageUrl: m.bossImageUrl ?? m.imageUrl,
-        color: m.type,
-        type: "monster" as const,
-        monsterData: m,
-      })),
-    ...codexEncounters.map((e) => ({
-      id: e.id,
-      nameEn: e.nameEn,
-      nameKo: e.name,
-      imageUrl: e.imageUrl,
-      color: e.roomType,
-      type: "encounter" as const,
-      encounterData: e,
-    })),
-    ...codexAncients.map((a) => ({
-      id: a.id,
-      nameEn: a.nameEn,
-      nameKo: a.name,
-      imageUrl: a.imageUrl,
-      color: a.act ?? "none",
-      type: "ancient" as const,
-      ancientData: a,
-    })),
-    ...codexEpochs.map((e) => ({
-      id: e.id,
-      nameEn: e.nameEn,
-      nameKo: e.name,
-      imageUrl: e.imageUrl,
-      href: buildCompendiumResourceHref("epoch", e.id),
-      color: e.affiliation,
-      type: "epoch" as const,
-      epochData: e,
-    })),
-  ];
-}
-
-export function characterTitleAliases(nameEn: string): string[] | undefined {
-  if (!nameEn.startsWith("The ")) return undefined;
-  const withoutArticle = nameEn.slice(4).trim();
-  return withoutArticle ? [withoutArticle] : undefined;
+  return buildAllEntities({
+    cards: codexCards,
+    characters: codexCharacters,
+    keywords: codexKeywords,
+    modifiers: codexModifiers,
+    ascensions: codexAscensions,
+    relics: codexRelics,
+    potions: codexPotions,
+    powers: codexPowers,
+    enchantments: codexEnchantments,
+    afflictions: codexAfflictions,
+    events: codexEvents,
+    monsters: codexMonsters,
+    encounters: codexEncounters,
+    ancients: codexAncients,
+    epochs: codexEpochs,
+  });
 }

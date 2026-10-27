@@ -1,8 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexAncients, getCodexCards, getCodexCharacters } from "@/lib/codex-data";
-import { loadAllEntities } from "@/lib/load-all-entities";
-import { getCodexMeta, getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
+import { getCodexAncients, getCodexCharacters } from "@/lib/codex-data";
+import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches } from "@/lib/data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import {
   getGameLocaleFromSearchRecord,
@@ -15,7 +14,8 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
-import { AncientList } from "@/components/codex/ancient-list";
+import { AncientListLoader } from "@/components/codex/ancient-list-loader";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 
 export const dynamic = "force-static";
 
@@ -47,34 +47,34 @@ export default async function CodexAncientsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [ancients, cards, characters, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
+  const [ancients, characters, patches, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexAncients({ gameLocale }),
-    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexCharacters({ gameLocale }),
     getSTS2Patches(),
-    getSTS2Changes(),
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
-    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
   const versions = getVersionsWithDiffs(patches, versionDiffs);
-
   return (
-    <Suspense>
-      <AncientList
-        serviceLocale={serviceLocale}
-        gameUi={gameUi}
-        ancients={ancients}
-        cards={cards}
-        characters={characters}
-        patches={patches}
-        changes={changes}
-        versionDiffs={versionDiffs}
-        versions={versions}
-        currentVersion={meta.version}
-        entities={entities}
+    <>
+      <Suspense>
+        <AncientListLoader
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          ancients={ancients}
+          characters={characters}
+          patches={patches}
+          versions={versions}
+          currentVersion={meta.version}
+        />
+      </Suspense>
+      <CompendiumEntryLinkIndex
+        gameLocale={gameLocale}
+        title={gameUi.ancientsTitle}
+        groups={[{ type: "ancient", entries: ancients }]}
       />
-    </Suspense>
+    </>
   );
 }

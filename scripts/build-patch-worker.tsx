@@ -28,6 +28,7 @@ import {
   NeowsletterListPage,
 } from "@/components/patches/neowsletter-list-page";
 import { NAV_ATTENTION_SLOT_CLASS } from "@/components/nav-attention-dot";
+import { CompendiumDetailLinksProvider } from "@/components/compendium-detail-links";
 import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import {
   GAME_LOCALE_PATH_SEGMENTS,
@@ -589,7 +590,9 @@ function renderShell(route: StaticPatchRoute): string {
         pathname={route.pathname}
       />
       <StaticGlobalSearchOverlay serviceLocale={route.serviceLocale} />
-      <main>{route.element}</main>
+      <main>
+        <CompendiumDetailLinksProvider>{route.element}</CompendiumDetailLinksProvider>
+      </main>
       <script
         dangerouslySetInnerHTML={{
           __html: `document.addEventListener("toggle",function(e){var d=e.target;if(!(d instanceof HTMLDetailsElement)||!d.matches("[data-static-nav-dropdown]")||!d.open)return;document.querySelectorAll("details[data-static-nav-dropdown][open]").forEach(function(o){if(o!==d)o.removeAttribute("open")})},true);document.addEventListener("pointerdown",function(e){document.querySelectorAll("details[data-static-nav-dropdown][open]").forEach(function(d){if(!d.contains(e.target))d.removeAttribute("open")})});document.addEventListener("keydown",function(e){if(e.key==="Escape")document.querySelectorAll("details[data-static-nav-dropdown][open]").forEach(function(d){d.removeAttribute("open")})});`,

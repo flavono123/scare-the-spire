@@ -1,11 +1,10 @@
 import { CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-page";
+import { CompendiumStaticDetail } from "@/components/codex/compendium-static-detail";
 import {
   generateCompendiumDetailSeoSummary,
 } from "@/lib/compendium-detail-metadata";
-import {
-  COMPENDIUM_DETAIL_PAYLOAD_PATH,
-  type CompendiumDetailResourceType,
-} from "@/lib/compendium-detail-payload";
+import type { CompendiumDetailResourceType } from "@/lib/compendium-detail-payload";
+import { buildCompendiumStaticDetail } from "@/lib/compendium-static-detail";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
   DEFAULT_SERVICE_LOCALE,
@@ -16,7 +15,6 @@ import {
 type CompendiumDirectDetailRouteProps = {
   resourceType: CompendiumDetailResourceType;
   id: string;
-  payloadPath?: string;
   gameLocale?: GameLocale;
   serviceLocale?: ServiceLocale;
 };
@@ -24,21 +22,22 @@ type CompendiumDirectDetailRouteProps = {
 export async function CompendiumDirectDetailRoute({
   resourceType,
   id,
-  payloadPath = COMPENDIUM_DETAIL_PAYLOAD_PATH,
   serviceLocale = DEFAULT_SERVICE_LOCALE,
   gameLocale = DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale],
 }: CompendiumDirectDetailRouteProps) {
-  const initialSummary = await generateCompendiumDetailSeoSummary(resourceType, id, {
-    gameLocale,
-    serviceLocale,
-  });
+  const [initialSummary, staticDetail] = await Promise.all([
+    generateCompendiumDetailSeoSummary(resourceType, id, { gameLocale, serviceLocale }),
+    buildCompendiumStaticDetail(resourceType, id, { gameLocale, serviceLocale }),
+  ]);
 
   return (
     <CompendiumDirectDetailPage
       resourceType={resourceType}
       id={id}
-      payloadPath={payloadPath}
+      serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
       initialSummary={initialSummary}
+      staticContent={staticDetail ? <CompendiumStaticDetail model={staticDetail} /> : undefined}
     />
   );
 }

@@ -14,6 +14,7 @@ import type {
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { useCompendiumLinkHref } from "@/components/compendium-detail-links";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
@@ -836,6 +837,7 @@ function PatchDiffInlinePreview({
 }) {
   const [show, setShow] = useState(false);
   const [previewNonce, setPreviewNonce] = useState(0);
+  const linkHref = useCompendiumLinkHref(href);
 
   return (
     <span
@@ -852,7 +854,7 @@ function PatchDiffInlinePreview({
       onBlur={() => setShow(false)}
     >
       <Link
-        href={href}
+        href={linkHref}
         className="font-game-title font-semibold spire-gold underline decoration-primary/30 underline-offset-2 transition-colors hover:text-primary"
       >
         {children}
@@ -1626,6 +1628,7 @@ function PowerApplicationIcon({
 }) {
   const className = `relative inline-flex items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-primary/70 ${compact ? "h-5 w-5" : "h-6 w-6"}`;
   const title = serviceLocale === "ko" ? power.powerName : power.powerNameEn;
+  const href = useCompendiumLinkHref(localizeHref(buildCompendiumResourceHref("power", power.powerId), serviceLocale));
   const amount = getEffectiveDamageValue(power.amount, ascensionLevel);
   const amountLabel = amount != null ? `${added ? "+" : ""}${amount}` : null;
   const content = (
@@ -1660,7 +1663,7 @@ function PowerApplicationIcon({
 
   return (
     <Link
-      href={localizeHref(buildCompendiumResourceHref("power", power.powerId), serviceLocale)}
+      href={href}
       className={className}
       title={title}
     >
