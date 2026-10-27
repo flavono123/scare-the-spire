@@ -23,6 +23,7 @@ import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { CardTile } from "@/components/codex/card-tile";
+import { patchVersionPath } from "@/lib/patch-line-links";
 import { resolveStoryPatchLine } from "@/lib/resolve-story-patch-line";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { serviceMessages } from "@/messages/service";
@@ -368,7 +369,7 @@ function EntityInfoBlock({ entityType, entityId, card, relic, potion, label }: {
 
 function patchHrefFromId(patch: string | undefined): string | null {
   if (!patch) return null;
-  return `/patches/${patch.replace(/^v/, "")}`;
+  return `/patches/${patchVersionPath(patch)}`;
 }
 
 function STS2PatchLineBlock({
