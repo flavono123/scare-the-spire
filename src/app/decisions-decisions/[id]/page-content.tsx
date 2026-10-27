@@ -36,7 +36,7 @@ export async function generateDecisionsDecisionsPostMetadata(
     title: gameCopy.title,
     description,
     image: DECISIONS_DECISIONS_PAGE_OG_IMAGE,
-    canonicalPath: recordId ? `${DECISIONS_DECISIONS_HREF}/${recordId}` : DECISIONS_DECISIONS_HREF,
+    canonicalPath: recordId ? `${DECISIONS_DECISIONS_HREF}/${recordId}` : undefined,
   });
 }
 

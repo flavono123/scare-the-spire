@@ -29,7 +29,7 @@ export async function generateColorfulPhilosopherPostMetadata(
       serviceDescription: copy.subtitle,
     }),
     image: COLORFUL_PHILOSOPHERS_PAGE_OG_IMAGE,
-    canonicalPath: recordId ? `${COLORFUL_PHILOSOPHERS_HREF}/${recordId}` : COLORFUL_PHILOSOPHERS_HREF,
+    canonicalPath: recordId ? `${COLORFUL_PHILOSOPHERS_HREF}/${recordId}` : undefined,
   });
 }
 

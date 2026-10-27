@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { pagestormPostOgImage } from "../src/lib/pagestorm";
 import { clipOgDescription, postBlockOgImage } from "../src/lib/toybox-post-og";
 import { DEFRAGMENT_PAGE_OG_IMAGE } from "../src/lib/page-og-images";
-import { parseDetailShellTarget } from "../workers/detail-shell-og";
+import {
+  detailShellCanonicalUrl,
+  parseDetailShellTarget,
+} from "../workers/detail-shell-og";
 
 // Default locale routes
 const historyTarget = parseDetailShellTarget("/history-course/c167-20260901-abcd");
@@ -102,6 +105,32 @@ assert.deepEqual(defragCombo, {
   gameLocale: "",
 });
 
+// Colorful Philosophers records are ID shells too, so they get record search tags.
+assert.deepEqual(parseDetailShellTarget("/ja/colorful-philosophers/test-post-uuid"), {
+  service: "colorful-philosophers",
+  recordId: "test-post-uuid",
+  gameLocale: "ja",
+});
+
+// Record canonical follows the search policy: ko and en are self-canonical,
+// every other game locale folds into /en.
+assert.equal(
+  detailShellCanonicalUrl("https://example.test", "/this-or-that/abc"),
+  "https://example.test/this-or-that/abc",
+);
+assert.equal(
+  detailShellCanonicalUrl("https://example.test", "/en/this-or-that/abc/"),
+  "https://example.test/en/this-or-that/abc",
+);
+assert.equal(
+  detailShellCanonicalUrl("https://example.test", "/ja/this-or-that/abc"),
+  "https://example.test/en/this-or-that/abc",
+);
+assert.equal(
+  detailShellCanonicalUrl("https://example.test", "/es-419/defragment/combo/abc"),
+  "https://example.test/en/defragment/combo/abc",
+);
+
 // Placeholder __id__ must return null
 assert.equal(parseDetailShellTarget("/history-course/__id__"), null);
 assert.equal(parseDetailShellTarget("/en/history-course/__id__"), null);
@@ -112,15 +141,66 @@ assert.equal(parseDetailShellTarget("/history-course"), null);
 assert.equal(parseDetailShellTarget("/compendium/cards/strike"), null);
 assert.equal(parseDetailShellTarget("/patches/0.100.0"), null);
 
-// Test enrichShellHtml handler registrations and attribute updates
+// Test enrichShellHtml handler registrations, attribute updates, and head output
 interface MockElement {
   setInnerContent?(content: string): void;
   setAttribute?(name: string, value: string): void;
   getAttribute?(name: string): string | null;
+  append?(content: string, options?: { html?: boolean }): void;
+  remove?(): void;
 }
 
-const registeredSelectors: string[] = [];
-const registeredHandlers = new Map<string, (el: MockElement) => void>();
+let registeredSelectors: string[] = [];
+let registeredHandlers = new Map<string, (el: MockElement) => void>();
+
+function resetRewriterMock() {
+  registeredSelectors = [];
+  registeredHandlers = new Map();
+}
+
+function appendedHeadHtml(): string {
+  let appended = "";
+  registeredHandlers.get("head")?.({
+    append(content: string, options?: { html?: boolean }) {
+      assert.equal(options?.html, true);
+      appended += content;
+    },
+  });
+  return appended;
+}
+
+function assertRecordSearchTags(
+  html: string,
+  canonicalUrl: string,
+  alternates: Record<string, string>,
+) {
+  const canonicals = [...html.matchAll(/<link rel="canonical" href="([^"]+)"\/>/g)]
+    .map((match) => match[1]);
+  assert.deepEqual(canonicals, [canonicalUrl]);
+  const hrefLangs = [...html.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"\/>/g)]
+    .map((match) => [match[1], match[2]]);
+  assert.equal(hrefLangs.length, 3);
+  assert.deepEqual(Object.fromEntries(hrefLangs), alternates);
+  const ogUrls = [...html.matchAll(/<meta property="og:url" content="([^"]+)"\/>/g)]
+    .map((match) => match[1]);
+  assert.deepEqual(ogUrls, [canonicalUrl]);
+}
+
+function assertStaleSearchTagsRemoved() {
+  for (const selector of [
+    'link[rel="canonical"]',
+    'link[rel="alternate"][hreflang]',
+    'meta[property="og:url"]',
+  ]) {
+    let removed = false;
+    registeredHandlers.get(selector)?.({
+      remove() {
+        removed = true;
+      },
+    });
+    assert.ok(removed, selector);
+  }
+}
 
 class TestHTMLRewriter {
   on(selector: string, handlers: { element?(el: MockElement): void }) {
@@ -138,7 +218,7 @@ class TestHTMLRewriter {
 Object.assign(globalThis, { HTMLRewriter: TestHTMLRewriter });
 
 async function main() {
-  const { enrichShellHtml } = await import("../workers/detail-shell-og");
+  const { enrichShellHtml, fetchDetailShellOgData } = await import("../workers/detail-shell-og");
 
   const dummyResponse = new Response("<html><head><title>old</title></head><body></body></html>", {
     headers: { "Content-Type": "text/html; charset=utf-8", "x-cf-static-page": "shell" },
@@ -148,10 +228,16 @@ async function main() {
     title: "50층 보스 격파! - 슬서운 이야기 역사 강의서",
     description: "시드 런 리플레이",
     image: "https://scare-the-spire.com/images/sts2/cards/bash.webp",
-    url: "https://scare-the-spire.com/history-course/my-run-123",
+  };
+  const canonicalUrl = "https://scare-the-spire.com/history-course/my-run-123";
+  const recordAlternates = {
+    ko: "https://scare-the-spire.com/history-course/my-run-123",
+    en: "https://scare-the-spire.com/en/history-course/my-run-123",
+    "x-default": "https://scare-the-spire.com/en/history-course/my-run-123",
   };
 
-  const resultResponse = enrichShellHtml(dummyResponse, ogData);
+  resetRewriterMock();
+  const resultResponse = enrichShellHtml(dummyResponse, ogData, canonicalUrl);
   assert.equal(resultResponse.headers.get("x-cf-static-page"), "shell");
 
   // Verify all essential OG selectors were attached
@@ -162,8 +248,7 @@ async function main() {
   assert.ok(registeredSelectors.includes('meta[name="twitter:description"]'));
   assert.ok(registeredSelectors.includes('meta[property="og:image"]'));
   assert.ok(registeredSelectors.includes('meta[name="twitter:image"]'));
-  assert.ok(registeredSelectors.includes('meta[property="og:url"]'));
-  assert.ok(registeredSelectors.includes('link[rel="canonical"]'));
+  assert.ok(registeredSelectors.includes("head"));
 
   // Verify element mutations
   let titleContent = "";
@@ -190,28 +275,57 @@ async function main() {
   });
   assert.equal(ogImage, ogData.image);
 
-  let canonicalHref = "";
-  registeredHandlers.get('link[rel="canonical"]')?.({
-    setAttribute(attr: string, val: string) {
-      if (attr === "href") canonicalHref = val;
-    },
-  });
-  assert.equal(canonicalHref, ogData.url);
+  // Exactly one canonical, ko/en/x-default hreflang set, and og:url for the record.
+  assertStaleSearchTagsRemoved();
+  assertRecordSearchTags(appendedHeadHtml(), canonicalUrl, recordAlternates);
 
-  const alternateHrefs = new Map<string, string>();
-  for (const hrefLang of ["ko", "en", "x-default"]) {
-    registeredHandlers.get('link[rel="alternate"][hreflang]')?.({
-      getAttribute: (attr: string) => (attr === "hreflang" ? hrefLang : null),
-      setAttribute(attr: string, val: string) {
-        if (attr === "href") alternateHrefs.set(hrefLang, val);
-      },
-    });
-  }
-  assert.deepEqual(Object.fromEntries(alternateHrefs), {
-    ko: "https://scare-the-spire.com/history-course/my-run-123",
-    en: "https://scare-the-spire.com/en/history-course/my-run-123",
-    "x-default": "https://scare-the-spire.com/en/history-course/my-run-123",
+  // A failed OG lookup still gets the path-computed search tags, without an OG rewrite.
+  resetRewriterMock();
+  enrichShellHtml(new Response("<html><head></head></html>"), null, canonicalUrl);
+  assert.ok(!registeredSelectors.includes("title"));
+  assert.ok(!registeredSelectors.includes('meta[property="og:title"]'));
+  assertStaleSearchTagsRemoved();
+  assertRecordSearchTags(appendedHeadHtml(), canonicalUrl, recordAlternates);
+
+  // A /ja record folds its canonical into /en and keeps reciprocal hreflang.
+  resetRewriterMock();
+  enrichShellHtml(
+    new Response("<html><head></head></html>"),
+    null,
+    detailShellCanonicalUrl("https://scare-the-spire.com", "/ja/this-or-that/abc"),
+  );
+  assertRecordSearchTags(appendedHeadHtml(), "https://scare-the-spire.com/en/this-or-that/abc", {
+    ko: "https://scare-the-spire.com/this-or-that/abc",
+    en: "https://scare-the-spire.com/en/this-or-that/abc",
+    "x-default": "https://scare-the-spire.com/en/this-or-that/abc",
   });
+
+  // OG copy follows the app's service locale: only the prefixless (kor) page is Korean.
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = (async () => new Response(
+    JSON.stringify([{ reason: "높이맞음?", left_type: null, left_id: null }]),
+    { headers: { "Content-Type": "application/json" } },
+  )) as typeof fetch;
+  try {
+    const env = {
+      NEXT_PUBLIC_SUPABASE_URL: "https://stub.supabase.co",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "anon",
+    };
+    for (const [pathname, brand, game] of [
+      ["/this-or-that/abc", "슬서운 이야기", "슬레이 더 스파이어 2"],
+      ["/en/this-or-that/abc", "Scare the Spire", "Slay the Spire 2"],
+      ["/ja/this-or-that/abc", "Scare the Spire", "Slay the Spire 2"],
+      ["/zh/this-or-that/abc", "Scare the Spire", "Slay the Spire 2"],
+    ] as const) {
+      const target = parseDetailShellTarget(pathname);
+      assert.ok(target, pathname);
+      const data = await fetchDetailShellOgData(target, env, "https://scare-the-spire.com", pathname);
+      assert.equal(data?.title, `높이맞음? - ${brand}`, pathname);
+      assert.ok(data?.description.startsWith(`${game} · ${brand} · `), pathname);
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 
   console.log("detail-shell-og.spec.ts ok");
 }

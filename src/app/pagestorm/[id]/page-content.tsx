@@ -40,7 +40,7 @@ export async function generatePagestormPostMetadata(
     title,
     description,
     image,
-    canonicalPath: recordId ? `${PAGESTORM_HREF}/${recordId}` : PAGESTORM_HREF,
+    canonicalPath: recordId ? `${PAGESTORM_HREF}/${recordId}` : undefined,
   });
 }
 

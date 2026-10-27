@@ -36,7 +36,7 @@ export async function generateComboPostMetadata(
     title: copy.comboTitle,
     description,
     image: COMBO_PAGE_OG_IMAGE,
-    canonicalPath: recordId ? `/c-c-c-combo/${recordId}` : "/c-c-c-combo",
+    canonicalPath: recordId ? `/c-c-c-combo/${recordId}` : undefined,
   });
   if (!recordId) return fallback;
 

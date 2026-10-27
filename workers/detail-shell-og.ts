@@ -24,12 +24,18 @@ import {
   searchCanonicalPath,
   searchLanguageAlternatePaths,
 } from "../src/lib/search-canonical";
+import {
+  getGameLocaleFromPathname,
+  getServiceLocaleForGameLocale,
+} from "../src/lib/i18n";
 
 interface HTMLRewriterElement {
   setInnerContent(content: string, options?: { html?: boolean }): void;
   setAttribute(name: string, value: string): void;
   getAttribute(name: string): string | null;
   removeAttribute(name: string): void;
+  append(content: string, options?: { html?: boolean }): void;
+  remove(): void;
 }
 
 interface HTMLRewriterInstance {
@@ -76,7 +82,6 @@ export interface DetailShellOgData {
   title: string;
   description: string;
   image: string;
-  url: string;
 }
 
 const STATIC_GAME_LOCALE_PREFIXES = new Set([
@@ -103,6 +108,7 @@ const STATIC_SERVICE_DETAIL_SEGMENTS = new Set([
   "history-course",
   "decisions-decisions",
   "pagestorm",
+  "colorful-philosophers",
 ]);
 
 const DEFRAGMENT_FEDERATED_SERVICES = new Set([
@@ -269,11 +275,11 @@ export async function fetchDetailShellOgData(
   const config = resolveSupabaseConfig(env);
   if (!config.enabled) return null;
 
-  const serviceLocale = target.gameLocale === "en" ? "en" : "ko";
+  // Same rule as the app: only the prefixless (kor) page is Korean, every
+  // other game locale uses the en service copy.
+  const serviceLocale = getServiceLocaleForGameLocale(getGameLocaleFromPathname(pathname));
   const brand = serviceLocale === "en" ? "Scare the Spire" : "슬서운 이야기";
   const game = serviceLocale === "en" ? "Slay the Spire 2" : "슬레이 더 스파이어 2";
-  // ko and en are self-canonical; other game locales fold into /en.
-  const canonicalUrl = `${siteOrigin}${searchCanonicalPath(pathname)}`;
 
   if (target.service === "history-course") {
     const row = await fetchSupabaseRestSingleRow<{
@@ -299,7 +305,7 @@ export async function fetchDetailShellOgData(
         ? `${game} · ${brand} · History Course · Seeded run replay viewer and community runs.`
         : `${game} · ${brand} · 역사 강의서 · 시드 런 리플레이와 공유된 런 기록`;
 
-    return { title, description, image, url: canonicalUrl };
+    return { title, description, image };
   }
 
   if (target.service === "c-c-c-combo" || target.service === "defragment-combo") {
@@ -325,7 +331,7 @@ export async function fetchDetailShellOgData(
         ? `${game} · ${brand} · C-c-c-Combo · Share game-element combos`
         : `${game} · ${brand} · 코오오옴보 · 슬레이 더 스파이어 2 게임 요소 조합 공유하기`;
 
-    return { title, description, image, url: canonicalUrl };
+    return { title, description, image };
   }
 
   if (target.service === "chemical-x" || target.service === "defragment-chemical_x") {
@@ -346,7 +352,7 @@ export async function fetchDetailShellOgData(
         ? `${game} · ${brand} · Chemical X · Write a short post with game elements`
         : `${game} · ${brand} · 케미컬 X · 슬레이 더 스파이어 2 게임 요소로 짧은 글 쓰기`;
 
-    return { title, description, image, url: canonicalUrl };
+    return { title, description, image };
   }
 
   if (
@@ -372,7 +378,7 @@ export async function fetchDetailShellOgData(
         ? `${game} · ${brand} · This or That · Vote on game dilemmas`
         : `${game} · ${brand} · 이거 vs 저거 · 슬레이 더 스파이어 2 양자택일`;
 
-    return { title, description, image, url: canonicalUrl };
+    return { title, description, image };
   }
 
   if (target.service === "transfigure" || target.service === "defragment-transfigure") {
@@ -402,7 +408,7 @@ export async function fetchDetailShellOgData(
         ? `${game} · ${brand} · Transfigure · Rewrite game element text`
         : `${game} · ${brand} · 변형 · 슬레이 더 스파이어 2 게임 요소 설명 다시 쓰기`;
 
-    return { title, description, image, url: canonicalUrl };
+    return { title, description, image };
   }
 
   if (target.service === "pagestorm" || target.service === "defragment-pagestorm") {
@@ -423,7 +429,7 @@ export async function fetchDetailShellOgData(
         ? `${game} · ${brand} · Pagestorm · Write a document with game elements`
         : `${game} · ${brand} · 서류 폭풍 · 게임 요소로 문서 쓰기`,
     );
-    return { title, description, image, url: canonicalUrl };
+    return { title, description, image };
   }
 
   if (target.service === "defragment") {
@@ -444,7 +450,7 @@ export async function fetchDetailShellOgData(
         ? `${game} · ${brand} · Defragment · Community`
         : `${game} · ${brand} · 조각모음 · 커뮤니티`,
     );
-    return { title, description, image, url: canonicalUrl };
+    return { title, description, image };
   }
 
   if (target.service === "decisions-decisions" || target.service === "defragment-decisions_decisions") {
@@ -465,74 +471,117 @@ export async function fetchDetailShellOgData(
         ? `${game} · ${brand} · Decisions Decisions · Strategic problem solving`
         : `${game} · ${brand} · 어려운 결정 · 슬레이 더 스파이어 2 상황 판단`;
 
-    return { title, description, image, url: canonicalUrl };
+    return { title, description, image };
   }
 
   return null;
 }
 
-export function enrichShellHtml(response: Response, meta: DetailShellOgData): Response {
-  // The prerendered shell lists the index page's hreflang; retarget it at this record.
-  const canonical = new URL(meta.url);
-  const alternateHrefs: Record<string, string> = Object.fromEntries(
-    Object.entries(searchLanguageAlternatePaths(canonical.pathname))
-      .map(([hrefLang, alternatePath]) => [hrefLang, `${canonical.origin}${alternatePath}`]),
-  );
-  return new HTMLRewriter()
-    .on("title", {
-      element(e) {
-        e.setInnerContent(meta.title);
-      },
-    })
-    .on('meta[property="og:title"]', {
-      element(e) {
-        e.setAttribute("content", meta.title);
-      },
-    })
-    .on('meta[name="twitter:title"]', {
-      element(e) {
-        e.setAttribute("content", meta.title);
-      },
-    })
-    .on('meta[name="description"]', {
-      element(e) {
-        e.setAttribute("content", meta.description);
-      },
-    })
-    .on('meta[property="og:description"]', {
-      element(e) {
-        e.setAttribute("content", meta.description);
-      },
-    })
-    .on('meta[name="twitter:description"]', {
-      element(e) {
-        e.setAttribute("content", meta.description);
-      },
-    })
-    .on('meta[property="og:image"]', {
-      element(e) {
-        e.setAttribute("content", meta.image);
-      },
-    })
-    .on('meta[name="twitter:image"]', {
-      element(e) {
-        e.setAttribute("content", meta.image);
-      },
-    })
-    .on('meta[property="og:url"]', {
-      element(e) {
-        e.setAttribute("content", meta.url);
-      },
-    })
+function escapeHtmlAttribute(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/** Policy canonical for a record shell: ko and en are self-canonical, other game locales fold into /en. */
+export function detailShellCanonicalUrl(siteOrigin: string, pathname: string): string {
+  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
+  return `${siteOrigin}${searchCanonicalPath(normalizedPathname)}`;
+}
+
+/** Canonical, ko/en/x-default hreflang, and og:url tags for a record shell. */
+export function detailShellSearchTagsHtml(canonicalUrl: string): string {
+  const canonical = new URL(canonicalUrl);
+  const href = escapeHtmlAttribute(canonical.toString());
+  const alternates = Object.entries(searchLanguageAlternatePaths(canonical.pathname))
+    .map(([hrefLang, alternatePath]) => (
+      `<link rel="alternate" hreflang="${hrefLang}" href="${escapeHtmlAttribute(`${canonical.origin}${alternatePath}`)}"/>`
+    ));
+  return [
+    `<link rel="canonical" href="${href}"/>`,
+    ...alternates,
+    `<meta property="og:url" content="${href}"/>`,
+  ].join("");
+}
+
+/*
+ * The prerendered ID shell carries no canonical, hreflang, or og:url (its RSC
+ * payload has none either, so hydration adds none). Append exactly one set for
+ * this record, computed from the path, whether or not the OG lookup succeeded.
+ */
+export function enrichShellHtml(
+  response: Response,
+  meta: DetailShellOgData | null,
+  canonicalUrl: string,
+): Response {
+  let rewriter = new HTMLRewriter();
+  if (meta) {
+    rewriter = rewriter
+      .on("title", {
+        element(e) {
+          e.setInnerContent(meta.title);
+        },
+      })
+      .on('meta[property="og:title"]', {
+        element(e) {
+          e.setAttribute("content", meta.title);
+        },
+      })
+      .on('meta[name="twitter:title"]', {
+        element(e) {
+          e.setAttribute("content", meta.title);
+        },
+      })
+      .on('meta[name="description"]', {
+        element(e) {
+          e.setAttribute("content", meta.description);
+        },
+      })
+      .on('meta[property="og:description"]', {
+        element(e) {
+          e.setAttribute("content", meta.description);
+        },
+      })
+      .on('meta[name="twitter:description"]', {
+        element(e) {
+          e.setAttribute("content", meta.description);
+        },
+      })
+      .on('meta[property="og:image"]', {
+        element(e) {
+          e.setAttribute("content", meta.image);
+        },
+      })
+      .on('meta[name="twitter:image"]', {
+        element(e) {
+          e.setAttribute("content", meta.image);
+        },
+      });
+  }
+
+  const searchTags = detailShellSearchTagsHtml(canonicalUrl);
+  return rewriter
+    // Drop any search tags a stale shell still carries so exactly one set remains.
     .on('link[rel="canonical"]', {
       element(e) {
-        e.setAttribute("href", meta.url);
+        e.remove();
       },
     })
     .on('link[rel="alternate"][hreflang]', {
       element(e) {
-        const href = alternateHrefs[e.getAttribute("hreflang") ?? ""];
-        if (href) e.setAttribute("href", href);
+        e.remove();
+      },
+    })
+    .on('meta[property="og:url"]', {
+      element(e) {
+        e.remove();
+      },
+    })
+    .on("head", {
+      element(e) {
+        e.append(searchTags, { html: true });
       },
     })
     .transform(response);
@@ -567,10 +616,11 @@ export async function maybeEnrichServiceDetailShell(
     }
   }
 
+  const canonicalUrl = detailShellCanonicalUrl(url.origin, url.pathname);
   const ogData = await fetchDetailShellOgData(target, env, url.origin, url.pathname);
-  if (!ogData) return baseResponse;
-
-  const enriched = enrichShellHtml(baseResponse, ogData);
+  const enriched = enrichShellHtml(baseResponse, ogData, canonicalUrl);
+  // Cache only full enrichment so a failed lookup is retried on the next request.
+  if (!ogData) return enriched;
 
   if (cache && request.method === "GET") {
     try {

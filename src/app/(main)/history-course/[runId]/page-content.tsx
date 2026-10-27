@@ -32,7 +32,8 @@ export async function generateHistoryCourseRunMetadata(
     serviceDescription: copy.historyCourse.subtitle,
   });
   const recordId = metadataRecordId(runId);
-  const canonicalPath = recordId ? `/history-course/${recordId}` : "/history-course";
+  // The prerendered ID shell has no record URL; the worker adds its canonical.
+  const canonicalPath = recordId ? `/history-course/${recordId}` : undefined;
 
   // Bounded single-row lookup (cover_spec + character only). No raw parse /
   // image generation — CF Free-safe. Private IDB-only runs keep the fallback.
@@ -71,7 +72,7 @@ export async function generateHistoryCourseRunMetadata(
     },
   };
 
-  return withSearchCanonical(metadata, canonicalPath, serviceLocale);
+  return canonicalPath ? withSearchCanonical(metadata, canonicalPath, serviceLocale) : metadata;
 }
 
 export async function renderHistoryCourseRunPage() {

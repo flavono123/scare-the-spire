@@ -229,6 +229,42 @@ test("dynamic service routes refresh directly and invalid nesting fails closed",
   }
 });
 
+test("record shells keep exactly one policy canonical set after hydration", async ({ page }) => {
+  await blockSupabase(page);
+  // A missing record also covers the worker's failed-lookup path: the search
+  // tags come from the request path alone. The worker uses the request origin.
+  for (const [path, canonicalPath] of [
+    [`/this-or-that/${MISSING_UUID}`, `/this-or-that/${MISSING_UUID}`],
+    [`/ja/this-or-that/${MISSING_UUID}`, `/en/this-or-that/${MISSING_UUID}`],
+  ]) {
+    const response = await page.goto(absolute(path), { waitUntil: "networkidle" });
+    expect(response?.status(), path).toBe(200);
+    expect(response?.headers()["x-cf-static-page"], path).toBe("shell");
+    await expect(page.locator('[data-static-detail-shell="pending"]')).toHaveCount(0);
+    await page.waitForTimeout(1_000);
+
+    const head = await page.evaluate(() => {
+      const pathOf = (value: string | null) => new URL(value ?? "", location.href).pathname;
+      return {
+        canonicals: [...document.querySelectorAll('link[rel="canonical"]')]
+          .map((link) => pathOf(link.getAttribute("href"))),
+        hrefLangs: [...document.querySelectorAll('link[rel="alternate"][hreflang]')]
+          .map((link) => `${link.getAttribute("hreflang")} ${pathOf(link.getAttribute("href"))}`)
+          .sort(),
+        ogUrls: [...document.querySelectorAll('meta[property="og:url"]')]
+          .map((meta) => pathOf(meta.getAttribute("content"))),
+      };
+    });
+    expect(head.canonicals, path).toEqual([canonicalPath]);
+    expect(head.ogUrls, path).toEqual([canonicalPath]);
+    expect(head.hrefLangs, path).toEqual([
+      `en /en/this-or-that/${MISSING_UUID}`,
+      `ko /this-or-that/${MISSING_UUID}`,
+      `x-default /en/this-or-that/${MISSING_UUID}`,
+    ]);
+  }
+});
+
 test("History Course invalid detail returns to its index with client navigation", async ({ page }) => {
   const response = await page.goto(absolute("/history-course/not_valid"), {
     waitUntil: "domcontentloaded",

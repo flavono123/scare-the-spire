@@ -63,7 +63,7 @@ export async function generateDefragmentFederatedPostMetadata(
     title: gameCopy.title,
     description,
     image: DEFRAGMENT_PAGE_OG_IMAGE,
-    canonicalPath: recordId ? `/defragment/${service}/${recordId}` : "/defragment",
+    canonicalPath: recordId ? `/defragment/${service}/${recordId}` : undefined,
   });
 }
 
