@@ -6,7 +6,7 @@
   "compatibility_date": "2026-06-15",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    "directory": ".open-next/assets",
+    "directory": ".cloudflare/assets",
     "binding": "ASSETS"
   },
   "services": [

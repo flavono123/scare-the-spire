@@ -116,6 +116,9 @@ async function main() {
     const meta = readMeta(htmlFile);
     const status = meta.status ?? 200;
     const location = meta.headers?.location;
+    // A dev-tools build (cf:preview) renders /dev pages the Worker never
+    // serves; production builds prerender them as 404 or a redirect.
+    if (status === 200 && (routePath === "/dev" || routePath.startsWith("/dev/"))) continue;
 
     for (const rsc of [false, true]) {
       const headers: Record<string, string> = rsc ? { RSC: "1" } : { Accept: "text/html" };

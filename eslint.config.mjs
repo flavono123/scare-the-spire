@@ -13,6 +13,7 @@ const eslintConfig = defineConfig([
     // Default ignores of eslint-config-next:
     ".next/**",
     ".open-next/**",
+    ".cloudflare/**",
     ".patch-worker/**",
     ".wrangler/**",
     "out/**",

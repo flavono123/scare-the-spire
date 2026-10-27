@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
 import { spawn, spawnSync } from "node:child_process";
+import { statSync } from "node:fs";
+
+import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
 
 const LOCAL_MAIN_ORIGIN = "http://127.0.0.1:8787";
 const LOCAL_PATCH_ORIGIN = "http://127.0.0.1:8788";
@@ -13,7 +16,7 @@ function usage() {
 Options:
   --origin <url>   Test an already-running preview without building or starting Workers
   --remote         Deploy the isolated testbed Workers to Cloudflare and test them
-  --skip-build     Reuse existing .open-next and .patch-worker artifacts
+  --skip-build     Reuse existing .cloudflare/assets and .patch-worker artifacts
   --help           Show this help`);
 }
 
@@ -256,13 +259,12 @@ async function runRemote(options) {
     "pnpm",
     [
       "exec",
-      "opennextjs-cloudflare",
+      "wrangler",
       "deploy",
       "--config",
       "wrangler.jsonc",
       "--env",
       REMOTE_ENVIRONMENT,
-      "--",
       "--keep-vars",
     ],
     wranglerEnv,
@@ -274,8 +276,17 @@ async function runRemote(options) {
   runSuites(origin, { attempts: 3, retryDelayMs: 2_000 });
 }
 
+function assertBuiltArtifacts() {
+  for (const artifact of [CLOUDFLARE_ASSETS_DIR, ".patch-worker"]) {
+    if (!statSync(artifact, { throwIfNoEntry: false })?.isDirectory()) {
+      throw new Error(`--skip-build needs an existing ${artifact}; run pnpm cf:build and pnpm patch:build first`);
+    }
+  }
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
+  if (options.skipBuild && !options.origin) assertBuiltArtifacts();
   if (options.origin) {
     runSuites(options.origin);
     return;

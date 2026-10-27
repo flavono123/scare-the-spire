@@ -9,8 +9,10 @@ import {
 } from "node:fs";
 import path from "node:path";
 
+import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
+
 const appDir = path.join(".next", "server", "app");
-const assetsDir = path.join(".open-next", "assets");
+const assetsDir = CLOUDFLARE_ASSETS_DIR;
 const outDir = path.join(assetsDir, "_cf_static_pages");
 const staticMetadataFiles = [
   { source: "robots.txt.body", target: "robots.txt" },
@@ -266,7 +268,10 @@ function localizeDocumentRoot(html, gameLocale, relative) {
 }
 
 if (!statSync(appDir, { throwIfNoEntry: false })?.isDirectory()) {
-  throw new Error(`${appDir} does not exist. Run the Next/OpenNext build before copying static pages.`);
+  throw new Error(`${appDir} does not exist. Run next build before copying static pages.`);
+}
+if (!statSync(assetsDir, { throwIfNoEntry: false })?.isDirectory()) {
+  throw new Error(`${assetsDir} does not exist. Run scripts/collect-cf-assets.mjs first.`);
 }
 
 rmSync(outDir, { recursive: true, force: true });
