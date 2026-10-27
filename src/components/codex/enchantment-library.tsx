@@ -128,6 +128,13 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
         return { kind: "affliction", item: affliction };
       }
     }
+    // Afflictions share this list, so ?enchantment=<id> may name one of them.
+    if (urlEnchantmentId) {
+      const affliction = afflictions.find((a) => a.id.toLowerCase() === urlEnchantmentId.toLowerCase());
+      if (affliction) {
+        return { kind: "affliction", item: affliction };
+      }
+    }
     return null;
   }, [afflictions, enchantments, urlAfflictionId, urlEnchantmentId]);
   const selectedResource = useUrlSelection ? urlSelectedResource : selectedResourceOverride;
