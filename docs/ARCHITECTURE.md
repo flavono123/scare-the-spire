@@ -11,6 +11,7 @@ Cloudflare Workers Free를 기본 목표로 하는 정적 우선 Next.js 사이�
 data/*.json + data/*.md
   -> next build --webpack
   -> scripts/collect-cf-assets.mjs + scripts/copy-cf-static-pages.mjs
+     + scripts/prune-cf-unreferenced-assets.mjs
   -> .cloudflare/assets + workers/main-worker.ts (Wrangler bundle)
   -> scare-the-spire main Worker
 

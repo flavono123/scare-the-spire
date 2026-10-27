@@ -45,6 +45,12 @@ domain being changed.
 - Prefixless Korean and `/en` service-locale Compendium detail HTML/RSC must be
   copied to `_cf_static_pages` and served from there. Game-only locale
   detail copies are excluded to stay below the Workers Free asset-count limit.
+- The static asset count (20,000 files per version) is the binding Free limit.
+  `pnpm cf:assets` fails above a 19,500-file budget (500 reserved for urgent
+  releases) and prints the remaining headroom. Before adding many files,
+  check that headroom; public files that are only sources or build inputs
+  belong in `scripts/cloudflare-asset-excludes.mjs`, and unreachable
+  `/_next/static` chunks are pruned by `scripts/prune-cf-unreferenced-assets.mjs`.
 - Unbounded public ID routes (UUID posts, History Course runs, federated
   조각모음 details) must be prerendered `__id__` HTML/RSC shells. The thin
   Worker rewrites a validated one-segment ID to that asset for both document

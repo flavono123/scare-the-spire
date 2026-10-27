@@ -27,10 +27,26 @@ pnpm cf:deploy
 
 이 명령은 `pnpm static:data`, `next build --webpack`,
 `scripts/collect-cf-assets.mjs`(`public/**`, `.next/static/**`, `BUILD_ID`),
-`scripts/copy-cf-static-pages.mjs`, `pnpm cf:assets`, `pnpm cf:size`,
-`wrangler deploy --keep-vars` 순서로 실행된다. 결과물은 `.cloudflare/assets`다.
-`pnpm cf:assets`는 실제 Worker를 모든 prerender route에 돌려 렌더러가 필요한
-route가 있으면 실패한다.
+`scripts/copy-cf-static-pages.mjs`, `scripts/prune-cf-unreferenced-assets.mjs`,
+`pnpm cf:assets`, `pnpm cf:size`, `wrangler deploy --keep-vars` 순서로
+실행된다. 결과물은 `.cloudflare/assets`다. `pnpm cf:assets`는 실제 Worker를
+모든 prerender route에 돌려 렌더러가 필요한 route가 있으면 실패한다.
+
+Workers Free는 버전 하나에 정적 asset 파일을 20,000개까지만 올린다.
+
+- `scripts/cloudflare-asset-excludes.mjs`에 맞는 `public/` 파일은 저장소에
+  남기고 업로드에서 뺀다. Godot `.tres`/`.exr`, `spine-vfx.atlas`로 합쳐지는
+  VFX별 atlas·png, 서비스가 쓰지 않는 원본(예: WOFF2의 원본 TTF)이 해당한다.
+  빠진 파일을 서빙되는 파일이 참조하면 빌드가 실패하니, 쓰기 전에 목록에서
+  지운다.
+- `prune-cf-unreferenced-assets.mjs`는 서빙되는 HTML·RSC·JSON·CSS에서
+  닿지 않는 `/_next/static` 파일(route handler, dev·patch 페이지, 리다이렉트
+  전용 페이지 chunk, Pages Router runtime)을 지운다.
+- `pnpm cf:assets`는 파일 수가 예산(기본 19,500 = 한도 20,000 − 예비 500)을
+  넘으면 실패하고, 사용량·예산·한도·남은 수를 출력한다. 예비분은 급한
+  패치 release가 들어갈 자리다. 큰 기능이 예산을 넘기면 먼저 안 쓰는 asset을
+  정리하고, 그래도 필요하면 `CLOUDFLARE_STATIC_ASSET_BUDGET`(또는
+  `CLOUDFLARE_STATIC_ASSET_RESERVE`)으로 의도적으로 올린다.
 
 ## Patch Worker
 
