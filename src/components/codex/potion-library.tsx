@@ -35,6 +35,7 @@ import {
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
+import { serviceMessages } from "@/messages/service";
 import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
@@ -59,6 +60,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -132,6 +134,8 @@ interface PotionLibraryProps {
   relatedPowers?: CodexPower[];
   relatedMonsters?: CodexMonster[];
   tipCatalogSources?: CardSideTipCatalogSources;
+  /** False until the data chunks settle; the detail modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
 export function PotionLibrary({
@@ -151,6 +155,7 @@ export function PotionLibrary({
   relatedPowers = [],
   relatedMonsters = [],
   tipCatalogSources,
+  detailsReady = true,
 }: PotionLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlPotionId = useHydrationSafeSearchParam("potion");
@@ -520,24 +525,34 @@ export function PotionLibrary({
       {selectedPotion && (
         <CompendiumDetailOverlay onClose={() => closeSelectedPotion()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <PotionDetail
-              serviceLocale={serviceLocale}
-              gameUi={gameUi}
-              backToListTitle={title}
-              potion={selectedPotion}
-              poolLabels={poolLabels}
-              relatedCards={relatedCards}
-              relatedEnchantments={relatedEnchantments}
-              relatedEvents={relatedEvents}
-              relatedPowers={relatedPowers}
-              relatedMonsters={relatedMonsters}
-              tipCatalogSources={tipCatalogSources}
-              tipCatalogCards={relatedCards}
-              patches={patches}
-              changes={changes}
-              versionDiffs={versionDiffs}
-              onClose={closeSelectedPotion}
-            />
+            {detailsReady ? (
+              <PotionDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                backToListTitle={title}
+                potion={selectedPotion}
+                poolLabels={poolLabels}
+                relatedCards={relatedCards}
+                relatedEnchantments={relatedEnchantments}
+                relatedEvents={relatedEvents}
+                relatedPowers={relatedPowers}
+                relatedMonsters={relatedMonsters}
+                tipCatalogSources={tipCatalogSources}
+                tipCatalogCards={relatedCards}
+                patches={patches}
+                changes={changes}
+                versionDiffs={versionDiffs}
+                onClose={closeSelectedPotion}
+              />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedPotion.name}
+                backToListTitle={title}
+                closeLabel={serviceText.common.close}
+                loadingLabel={serviceMessages[serviceLocale].comments.loading}
+                onClose={closeSelectedPotion}
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}
