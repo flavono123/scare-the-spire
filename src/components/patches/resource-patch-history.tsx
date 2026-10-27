@@ -206,11 +206,13 @@ export function ResourcePatchChangeList({
 
 export function ResourcePatchHistory({
   serviceLocale,
+  gameLocale,
   entityType,
   entityId,
   emptyLabel,
 }: {
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
   entityType: StoryEntityType;
   entityId: string;
   emptyLabel: string;
@@ -250,6 +252,7 @@ export function ResourcePatchHistory({
       lines={lines}
       patches={data.patches}
       serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
     />
   );
 }

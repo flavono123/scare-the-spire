@@ -1,6 +1,7 @@
 "use client";
 
 import { ResourcePatchHistory } from "@/components/patches/resource-patch-history";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import type { CodexMonster } from "@/lib/codex-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import type {
@@ -40,6 +41,8 @@ export function STS2ChangeHistory({
   entityId,
   emptyLabel,
 }: STS2ChangeHistoryProps) {
+  // Patch line links follow the page's game locale (/ja/patches/..., not /en/patches/...).
+  const gameLocale = useGameLocale();
   const type = resourceType(entityType);
   if (!type) {
     return <p className="font-game-text text-sm text-gray-500">{emptyLabel}</p>;
@@ -48,6 +51,7 @@ export function STS2ChangeHistory({
   return (
     <ResourcePatchHistory
       serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
       entityType={type}
       entityId={entityId}
       emptyLabel={emptyLabel}
