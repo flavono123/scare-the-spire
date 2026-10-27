@@ -2,7 +2,7 @@
 
 import { useMemo, type ComponentProps } from "react";
 import { CardLibrary } from "./card-library";
-import { useCompendiumData } from "./use-compendium-data";
+import { compendiumDetailsSettled, useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import {
   EMPTY_CARD_SIDE_TIP_SOURCES,
@@ -27,15 +27,19 @@ const LAZY_DATA_KEYS = [
 
 const EMPTY: never[] = [];
 
-type CardLibraryLoaderProps = Omit<ComponentProps<typeof CardLibrary>, "cards" | "changes" | "versionDiffs" | "enchantments" | "afflictions" | "relatedAncients" | "relatedEvents" | "relatedMonsters" | "relatedPotions" | "relatedPowers" | "tipCatalogSources"> & {
+type CardLibraryLoaderProps = Omit<ComponentProps<typeof CardLibrary>, "cards" | "changes" | "versionDiffs" | "enchantments" | "afflictions" | "relatedAncients" | "relatedEvents" | "relatedMonsters" | "relatedPotions" | "relatedPowers" | "tipCatalogSources" | "detailsReady"> & {
   gameLocale: GameLocale;
   cards: CompactCodexCard[];
   keywordLabels: CodexCard["keywordLabels"];
 };
 
-/** Renders CardLibrary from its server props and fills in the rest once the data chunks load. */
+/**
+ * Renders CardLibrary from its server props and fills in the rest once the
+ * data chunks load. The detail modal waits for them, since its enchantments,
+ * afflictions, related lists, and history come from the chunks.
+ */
 export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabels, ...props }: CardLibraryLoaderProps) {
-  const data = useCompendiumData(gameLocale, LAZY_DATA_KEYS);
+  const { data, status } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   const cards = useMemo(
     () => expandCardKeywordLabels(compactCards, keywordLabels),
     [compactCards, keywordLabels],
@@ -44,6 +48,7 @@ export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabe
     <CardLibrary
       {...props}
       cards={cards}
+      detailsReady={compendiumDetailsSettled(status)}
       changes={data?.changes}
       versionDiffs={data?.versionDiffs ?? EMPTY}
       enchantments={data?.enchantments ?? EMPTY}
