@@ -283,6 +283,12 @@ test("static fallback keeps the former Next responses", async ({ request }) => {
   const post = await request.post(absolute("/compendium/cards"), { maxRedirects: 0 });
   expect(post.status()).toBe(405);
   expect(post.headers().allow).toBe("GET, HEAD");
+
+  // A detail path with no page is a 404 for every method, as for GET.
+  const missingPost = await request.post(absolute("/compendium/cards/does-not-exist"), {
+    maxRedirects: 0,
+  });
+  expect(missingPost.status()).toBe(404);
 });
 
 test("History Course invalid detail returns to its index with client navigation", async ({ page }) => {

@@ -320,19 +320,35 @@ function isReadMethod(method: string): boolean {
 const READ_METHODS_ALLOW = "GET, HEAD";
 const LINK_PREVIEW_ALLOW = "GET, HEAD, OPTIONS";
 
-/** Paths a static branch answers for GET/HEAD; other methods get 405 there. */
-function matchesStaticPage(request: Request, url: URL): boolean {
+/** The asset a static branch would serve for a GET/HEAD to this path. */
+function staticPageAssetPath(request: Request, url: URL): string | null {
   const extension = isRscRequest(request, url) ? "rsc" : "html";
   const { pathname } = url;
-  return Boolean(
+  return (
     staticHomeAssetPath(pathname, request, url)
     ?? staticServicePageAssetPath(pathname, extension)
     ?? staticServiceDetailShellAssetPath(pathname, extension)
     ?? staticLegacyPageAssetPath(pathname, extension)
     ?? staticCompendiumAssetPath(sts2CompendiumAliasPath(pathname) ?? pathname, extension)
     ?? staticExactServicePageAssetPath(pathname, extension)
-    ?? prerenderedRedirect(pathname),
   );
+}
+
+/**
+ * Whether a GET/HEAD here finds a page; other methods then get 405. A path
+ * shape whose asset is missing (an unknown detail ID) is a 404 for any method.
+ */
+async function staticPageExists(request: Request, env: Env, url: URL): Promise<boolean> {
+  if (prerenderedRedirect(url.pathname)) return true;
+  const assetPath = staticPageAssetPath(request, url);
+  if (!assetPath) return false;
+  const probe = await fetchStaticPageAsset(
+    new Request(request.url, { method: "HEAD" }),
+    env,
+    assetPath,
+    "probe",
+  );
+  return probe !== null;
 }
 
 /** Next answered non-GET requests to prerendered pages the same way. */
@@ -425,7 +441,9 @@ async function serveUnmatchedRequest(request: Request, env: Env, url: URL): Prom
   const exactServiceResponse = await maybeServeStaticExactServicePage(request, env, url);
   if (exactServiceResponse) return exactServiceResponse;
 
-  if (!isReadMethod(request.method) && matchesStaticPage(request, url)) return methodNotAllowed();
+  if (!isReadMethod(request.method) && await staticPageExists(request, env, url)) {
+    return methodNotAllowed();
+  }
 
   return serveStaticNotFound(request, env, url);
 }
