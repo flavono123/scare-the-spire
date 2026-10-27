@@ -42,10 +42,235 @@
   font-weight: 700;
 }
 
+/* Metric-adjusted local fallbacks for the font-display: swap period. Each family
+   scales a common system serif to the web font's advances and line metrics, so text
+   keeps its line breaks when the web font arrives (no layout shift on swap). Spaces,
+   Hangul and Latin/digits/punctuation differ too much between fonts for one scale,
+   so each class is its own face (unicode-range) with its own size-adjust:
+   web font / fallback average advance over the game's eng/kor localization text.
+   ascent/descent/line-gap-override = web font hhea metric / unitsPerEm / size-adjust.
+   Ranges list only characters the web font has, so after it loads a character it
+   lacks still falls through to the next family as before. */
+@font-face {
+  font-family: "STS Spectral Fallback";
+  src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 100.00%;
+  ascent-override: 105.90%;
+  descent-override: 46.30%;
+  line-gap-override: 0.00%;
+  unicode-range: U+20;
+}
+
+@font-face {
+  font-family: "STS Spectral Fallback";
+  src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 107.58%;
+  ascent-override: 98.44%;
+  descent-override: 43.04%;
+  line-gap-override: 0.00%;
+  unicode-range: U+21-148, U+14A-17F, U+2007-200B, U+2010, U+2012-2015, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030, U+2032-2033, U+2039-203A, U+2044, U+20AC, U+2122;
+}
+
+@font-face {
+  font-family: "STS Kreon Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT");
+  font-style: normal;
+  font-weight: 400;
+  size-adjust: 95.70%;
+  ascent-override: 101.73%;
+  descent-override: 29.90%;
+  line-gap-override: 0.00%;
+  unicode-range: U+20;
+}
+
+@font-face {
+  font-family: "STS Kreon Fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT");
+  font-style: normal;
+  font-weight: 400;
+  size-adjust: 100.12%;
+  ascent-override: 97.24%;
+  descent-override: 28.58%;
+  line-gap-override: 0.00%;
+  unicode-range: U+21-107, U+10A-113, U+116-11B, U+11E-123, U+126-127, U+12A-12B, U+12E-131, U+136-137, U+139-13E, U+141-148, U+14A-14D, U+150-15B, U+15E-167, U+16A-16B, U+16E-17E, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2039-203A, U+2044, U+20AC, U+2122;
+}
+
+@font-face {
+  font-family: "STS Kreon Fallback";
+  src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 95.70%;
+  ascent-override: 101.73%;
+  descent-override: 29.90%;
+  line-gap-override: 0.00%;
+  unicode-range: U+20;
+}
+
+@font-face {
+  font-family: "STS Kreon Fallback";
+  src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 97.24%;
+  ascent-override: 100.13%;
+  descent-override: 29.43%;
+  line-gap-override: 0.00%;
+  unicode-range: U+21-107, U+10A-113, U+116-11B, U+11E-123, U+126-127, U+12A-12B, U+12E-131, U+136-137, U+139-13E, U+141-148, U+14A-14D, U+150-15B, U+15E-167, U+16A-16B, U+16E-17E, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2039-203A, U+2044, U+20AC, U+2122;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback AppleMyungjo";
+  src: local("AppleMyungjo");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 75.00%;
+  ascent-override: 106.67%;
+  descent-override: 26.67%;
+  line-gap-override: 0.00%;
+  unicode-range: U+20;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback AppleMyungjo";
+  src: local("AppleMyungjo");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 77.35%;
+  ascent-override: 103.43%;
+  descent-override: 25.86%;
+  line-gap-override: 0.00%;
+  unicode-range: U+21-7E, U+A1, U+A4, U+A7-AA, U+AD-AE, U+B0-B4, U+B6-BA, U+BC-BF, U+C6, U+D0, U+D7-D8, U+DE-DF, U+E6, U+F0, U+F7-F8, U+FE, U+2015, U+2018-2019, U+201C-201D, U+2020-2021, U+2025-2026, U+2030-2033, U+203B;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback AppleMyungjo";
+  src: local("AppleMyungjo");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 92.93%;
+  ascent-override: 86.08%;
+  descent-override: 21.52%;
+  line-gap-override: 0.00%;
+  unicode-range: U+3001-3003, U+3008-3011, U+3013-3015, U+3131-3163, U+3165-318E, U+AC00-D7A3;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback Batang";
+  src: local("Batang"), local("바탕");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 90.09%;
+  ascent-override: 88.80%;
+  descent-override: 22.20%;
+  line-gap-override: 0.00%;
+  unicode-range: U+20;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback Batang";
+  src: local("Batang"), local("바탕");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 86.41%;
+  ascent-override: 92.58%;
+  descent-override: 23.15%;
+  line-gap-override: 0.00%;
+  unicode-range: U+21-7E, U+A1, U+A4, U+A7-AA, U+AD-AE, U+B0-B4, U+B6-BA, U+BC-BF, U+C6, U+D0, U+D7-D8, U+DE-DF, U+E6, U+F0, U+F7-F8, U+FE, U+2015, U+2018-2019, U+201C-201D, U+2020-2021, U+2025-2026, U+2030-2033, U+203B;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback Batang";
+  src: local("Batang"), local("바탕");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 92.84%;
+  ascent-override: 86.17%;
+  descent-override: 21.54%;
+  line-gap-override: 0.00%;
+  unicode-range: U+3001-3003, U+3008-3011, U+3013-3015, U+3131-3163, U+3165-318E, U+AC00-D7A3;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback Nanum Myeongjo";
+  src: local("NanumMyeongjoBold"), local("NanumMyeongjo Bold"), local("NanumMyeongjo");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 100.07%;
+  ascent-override: 79.95%;
+  descent-override: 19.99%;
+  line-gap-override: 0.00%;
+  unicode-range: U+20;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback Nanum Myeongjo";
+  src: local("NanumMyeongjoBold"), local("NanumMyeongjo Bold"), local("NanumMyeongjo");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 92.37%;
+  ascent-override: 86.60%;
+  descent-override: 21.65%;
+  line-gap-override: 0.00%;
+  unicode-range: U+21-7E, U+A1, U+A4, U+A7-AA, U+AD-AE, U+B0-B4, U+B6-BA, U+BC-BF, U+C6, U+D0, U+D7-D8, U+DE-DF, U+E6, U+F0, U+F7-F8, U+FE, U+2015, U+2018-2019, U+201C-201D, U+2020-2021, U+2025-2026, U+2030-2033, U+203B;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback Nanum Myeongjo";
+  src: local("NanumMyeongjoBold"), local("NanumMyeongjo Bold"), local("NanumMyeongjo");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 97.71%;
+  ascent-override: 81.88%;
+  descent-override: 20.47%;
+  line-gap-override: 0.00%;
+  unicode-range: U+3001-3003, U+3008-3011, U+3013-3015, U+3131-3163, U+3165-318E, U+AC00-D7A3;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback Noto Serif KR";
+  src: local("Noto Serif KR Bold"), local("NotoSerifKR-Bold");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 120.00%;
+  ascent-override: 66.67%;
+  descent-override: 16.67%;
+  line-gap-override: 0.00%;
+  unicode-range: U+20;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback Noto Serif KR";
+  src: local("Noto Serif KR Bold"), local("NotoSerifKR-Bold");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 83.28%;
+  ascent-override: 96.06%;
+  descent-override: 24.01%;
+  line-gap-override: 0.00%;
+  unicode-range: U+21-7E, U+A1, U+A4, U+A7-AA, U+AD-AE, U+B0-B4, U+B6-BA, U+BC-BF, U+C6, U+D0, U+D7-D8, U+DE-DF, U+E6, U+F0, U+F7-F8, U+FE, U+2015, U+2018-2019, U+201C-201D, U+2020-2021, U+2025-2026, U+2030-2033, U+203B;
+}
+
+@font-face {
+  font-family: "STS GC Batang Fallback Noto Serif KR";
+  src: local("Noto Serif KR Bold"), local("NotoSerifKR-Bold");
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 96.11%;
+  ascent-override: 83.24%;
+  descent-override: 20.81%;
+  line-gap-override: 0.00%;
+  unicode-range: U+3001-3003, U+3008-3011, U+3013-3015, U+3131-3163, U+3165-318E, U+AC00-D7A3;
+}
+
 .patch-static-fonts {
-  --font-spectral: "STS Spectral";
-  --font-kreon: "STS Kreon";
-  --font-gc-batang: "STS GC Batang";
+  --font-spectral: "STS Spectral", "STS Spectral Fallback";
+  --font-kreon: "STS Kreon", "STS Kreon Fallback";
+  --font-gc-batang: "STS GC Batang", "STS GC Batang Fallback AppleMyungjo", "STS GC Batang Fallback Batang", "STS GC Batang Fallback Nanum Myeongjo", "STS GC Batang Fallback Noto Serif KR";
 }
 
 .patch-static-dropdown > summary {
@@ -400,9 +625,9 @@
 
 :root {
   color-scheme: dark;
-  --font-spectral: "STS Spectral";
-  --font-kreon: "STS Kreon";
-  --font-gc-batang: "STS GC Batang";
+  --font-spectral: "STS Spectral", "STS Spectral Fallback";
+  --font-kreon: "STS Kreon", "STS Kreon Fallback";
+  --font-gc-batang: "STS GC Batang", "STS GC Batang Fallback AppleMyungjo", "STS GC Batang Fallback Batang", "STS GC Batang Fallback Nanum Myeongjo", "STS GC Batang Fallback Noto Serif KR";
   --radius: 0.625rem;
   --font-service-ui: var(--font-gc-batang, serif);
   --font-game-title-family: var(--font-spectral, serif), var(--font-service-ui);
