@@ -101,10 +101,14 @@ export function getCompendiumResourceIdFromUrl(
 
   const localized = localizedCompendiumPath(url.pathname);
   if (!localized) return null;
-  const detailPrefix = `${config.detailPath}/`;
-  if (!localized.path.startsWith(detailPrefix)) return null;
+  return detailIdFromPath(localized.path, config.detailPath);
+}
 
-  const encodedId = localized.path.slice(detailPrefix.length);
+function detailIdFromPath(path: string, detailPath: string): string | null {
+  const detailPrefix = `${detailPath}/`;
+  if (!path.startsWith(detailPrefix)) return null;
+
+  const encodedId = path.slice(detailPrefix.length);
   if (!encodedId || encodedId.includes("/")) return null;
   try {
     return decodeURIComponent(encodedId);
@@ -176,6 +180,53 @@ export function buildCompendiumEntryHref(
   const listPath = `${pathPrefixForGameLocale(gameLocale)}${COMPENDIUM_RESOURCE_LINKS[type].path}`;
   const url = updateCompendiumResourceModalUrl(new URL(listPath, "https://compendium.invalid"), type, id);
   return `${url.pathname}${url.search}`;
+}
+
+// STS1 list pages and the query param each one opens an entry with. The STS1
+// character select has no such param, so its fallback is the plain list.
+const STS1_LIST_SELECTOR_PARAMS: Record<string, string | null> = {
+  cards: "card",
+  characters: null,
+  potions: "potion",
+  powers: "power",
+  relics: "relic",
+};
+
+/**
+ * Game-only locales publish no Compendium detail pages, so a Korean or English
+ * detail path moved onto one of them (language menu, browser-language
+ * detection, saved-language redirect) would 404. Returns the list URL that
+ * opens the same entry instead, or null when `href` is not a detail path on a
+ * game-only locale. Enchantment and affliction details share one path, so both
+ * map to ?enchantment=<id>.
+ */
+export function getGameOnlyCompendiumDetailFallbackHref(href: string): string | null {
+  const url = new URL(href, "https://compendium.invalid");
+  const localized = localizedCompendiumPath(url.pathname);
+  if (!localized || supportsDirectCompendiumDetails(localized.localePrefix)) return null;
+
+  const sts1Match = /^\/compendium\/sts1\/([^/]+)\/[^/]+$/.exec(localized.path);
+  if (sts1Match) {
+    const listType = sts1Match[1];
+    if (!Object.hasOwn(STS1_LIST_SELECTOR_PARAMS, listType)) return null;
+    const id = detailIdFromPath(localized.path, `/compendium/sts1/${listType}`);
+    if (!id) return null;
+    url.pathname = `${localized.localePrefix}/compendium/sts1/${listType}`;
+    for (const param of COMPENDIUM_SELECTOR_PARAMS) url.searchParams.delete(param);
+    const param = STS1_LIST_SELECTOR_PARAMS[listType];
+    if (param) url.searchParams.set(param, id.toLowerCase());
+    return `${url.pathname}${url.search}`;
+  }
+
+  for (const [type, config] of Object.entries(COMPENDIUM_RESOURCE_LINKS)) {
+    if (type === "affliction") continue;
+    const id = detailIdFromPath(localized.path, config.detailPath);
+    if (!id) continue;
+    const next = updateCompendiumResourceModalUrl(url, type as CompendiumResourceLinkType, id);
+    return `${next.pathname}${next.search}`;
+  }
+
+  return null;
 }
 
 export function getLegacyCompendiumDetailRedirectPath(url: URL): string | null {
