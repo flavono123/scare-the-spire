@@ -55,15 +55,27 @@ import {
   getRelatedRelicIdsForKeyword,
   getRelatedRelicIdsForPower,
 } from "@/lib/codex-references";
-import { getCodexServiceMessages } from "@/lib/codex-service";
+import {
+  formatTemplateCount,
+  getCodexServiceMessages,
+  type CodexServiceMessages,
+} from "@/lib/codex-service";
 import type { CodexCard, CodexKeyword } from "@/lib/codex-types";
 import type { CompendiumDataResources } from "@/lib/compendium-data-chunks";
+import {
+  getCharacterReferenceLabels,
+  getDetailPatchHistoryLabels,
+  getEpochUnlockLabels,
+  relatedResourceLabel,
+  type RelatedResourceKind,
+} from "@/lib/compendium-detail-labels";
 import { loadCompendiumDataResources } from "@/lib/compendium-data-chunks.server";
 import type { CompendiumDetailResourceType } from "@/lib/compendium-detail-payload";
 import {
   buildCompendiumResourceDetailHref,
   type CompendiumResourceLinkType,
 } from "@/lib/compendium-resource-links";
+import { gameText, readGameLocalizationTable } from "@/lib/game-localization";
 import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { patchLineHref } from "@/lib/patch-line-links";
 import { getSTS2PatchLines, getSTS2Patches, getSTS2Stories } from "@/lib/data";
@@ -92,7 +104,8 @@ export type StaticDetailFact = {
 };
 
 export type StaticDetailText = {
-  heading: string;
+  /** Null for narrative text (story, dialogue, flavor), which the interactive detail shows unlabelled. */
+  heading: string | null;
   /** BBCode-marked game text, rendered with RichText. */
   text: string;
 };
@@ -114,6 +127,8 @@ export type CompendiumStaticDetailModel = {
   kindLabel: string;
   title: string;
   altTitle: string | null;
+  /** An Ancient's epithet, shown in quotes without a label like the interactive detail. */
+  epithet: string | null;
   imageUrl: string | null;
   back: StaticDetailLink;
   facts: StaticDetailFact[];
@@ -144,6 +159,11 @@ type LinkKind = Extract<
   | "relic"
 >;
 
+// Hand-written labels for things the interactive details do not label and the
+// game localization has no string for. Everything else comes from the
+// interactive details' own label sources (compendium-detail-labels, service
+// messages, gameUi) or from the game localization, so the static text does not
+// change at hydration.
 const STATIC_DETAIL_LABELS = {
   ko: {
     kinds: {
@@ -161,41 +181,18 @@ const STATIC_DETAIL_LABELS = {
       power: "파워",
       relic: "유물",
     },
-    related: (kind: string) => `관련 ${kind}`,
     keywords: "키워드",
     relatedSection: "관련 항목",
-    history: "변경 이력",
-    noHistory: "기록된 변경 이력이 없습니다.",
-    cost: "비용",
     starCost: "별 비용",
     type: "유형",
-    rarity: "희귀도",
     character: "캐릭터",
     description: "효과",
-    upgraded: "강화 시 효과",
-    flavor: "설명",
-    hp: "체력",
     hpAscension: "체력 (승천)",
     act: "막",
     room: "방 유형",
     era: "시대",
-    unlock: "해금 조건",
     options: "선택지",
-    moves: "행동",
-    epithet: "칭호",
-    startingHp: "시작 체력",
-    startingGold: "시작 골드",
-    maxEnergy: "에너지",
-    startingDeck: "시작 덱",
-    startingRelics: "시작 유물",
     cardPool: "카드",
-    monsters: "몬스터",
-    offeredRelics: "제공 유물",
-    unlockedCards: "해금 카드",
-    unlockedRelics: "해금 유물",
-    unlockedPotions: "해금 포션",
-    nextEpochs: "다음 연대기",
-    cardType: "카드 유형",
   },
   en: {
     kinds: {
@@ -213,45 +210,58 @@ const STATIC_DETAIL_LABELS = {
       power: "Power",
       relic: "Relic",
     },
-    related: (kind: string) => `Related ${kind.toLowerCase()}s`,
     keywords: "Keywords",
     relatedSection: "Related",
-    history: "Change history",
-    noHistory: "No recorded changes.",
-    cost: "Cost",
     starCost: "Star cost",
     type: "Type",
-    rarity: "Rarity",
     character: "Character",
     description: "Effect",
-    upgraded: "Upgraded effect",
-    flavor: "Flavor",
-    hp: "HP",
     hpAscension: "HP (Ascension)",
     act: "Act",
     room: "Room",
     era: "Era",
-    unlock: "Unlock",
     options: "Options",
-    moves: "Moves",
-    epithet: "Title",
-    startingHp: "Starting HP",
-    startingGold: "Starting gold",
-    maxEnergy: "Energy",
-    startingDeck: "Starting deck",
-    startingRelics: "Starting relics",
     cardPool: "Cards",
-    monsters: "Monsters",
-    offeredRelics: "Offered relics",
-    unlockedCards: "Unlocked cards",
-    unlockedRelics: "Unlocked relics",
-    unlockedPotions: "Unlocked potions",
-    nextEpochs: "Next epochs",
-    cardType: "Card type",
   },
 } as const;
 
 type Labels = (typeof STATIC_DETAIL_LABELS)[ServiceLocale];
+
+/** Game strings for labels the interactive details do not show. */
+type StaticGameLabels = {
+  /** main_menu_ui HP_AMOUNT, the character select HP label (also the hydrated stage's HP aria label). */
+  hp: string;
+  /** main_menu_ui GOLD_AMOUNT, the character select gold label. */
+  gold: string;
+  /** static_hover_tips ENERGY.title. */
+  energy: string;
+  /** gameplay_ui RELIC_RARITY.STARTER. */
+  starterRelic: string;
+};
+
+function amountLabel(template: string): string {
+  return template.replace(/\s*[:：]?\s*\{amount\}\s*/i, "").trim();
+}
+
+const gameLabelsByLocale = new Map<GameLocale, Promise<StaticGameLabels>>();
+
+function loadGameLabels(gameLocale: GameLocale): Promise<StaticGameLabels> {
+  let promise = gameLabelsByLocale.get(gameLocale);
+  if (!promise) {
+    promise = Promise.all([
+      readGameLocalizationTable(gameLocale, "main_menu_ui"),
+      readGameLocalizationTable(gameLocale, "static_hover_tips"),
+      readGameLocalizationTable(gameLocale, "gameplay_ui"),
+    ]).then(([mainMenu, hoverTips, gameplay]) => ({
+      hp: amountLabel(gameText(mainMenu, "HP_AMOUNT", "체력: {amount}")),
+      gold: amountLabel(gameText(mainMenu, "GOLD_AMOUNT", "골드: {amount}")),
+      energy: gameText(hoverTips, "ENERGY.title", "에너지"),
+      starterRelic: gameText(gameplay, "RELIC_RARITY.STARTER", "시작 유물"),
+    }));
+    gameLabelsByLocale.set(gameLocale, promise);
+  }
+  return promise;
+}
 
 const STORY_TYPE_BY_LINK_KIND: Partial<Record<LinkKind, StoryEntityType>> = {
   affliction: "affliction",
@@ -368,12 +378,15 @@ function normalizeGameResourceId(id: string): string {
 
 class DetailContext {
   readonly labels: Labels;
+  readonly serviceText: CodexServiceMessages;
 
   constructor(
     readonly index: DetailIndex,
     readonly serviceLocale: ServiceLocale,
+    readonly gameLabels: StaticGameLabels,
   ) {
     this.labels = STATIC_DETAIL_LABELS[serviceLocale];
+    this.serviceText = getCodexServiceMessages(serviceLocale);
   }
 
   get resources(): CompendiumDataResources {
@@ -414,9 +427,9 @@ class DetailContext {
     return out;
   }
 
-  related(kind: LinkKind, ids: readonly string[], excludeId?: string): StaticDetailLinkGroup {
+  related(kind: LinkKind & RelatedResourceKind, ids: readonly string[], excludeId?: string): StaticDetailLinkGroup {
     return {
-      heading: this.labels.related(this.labels.kinds[kind]),
+      heading: relatedResourceLabel(kind, this.serviceLocale, this.resources.gameUi),
       links: this.links(kind, ids, excludeId),
     };
   }
@@ -439,7 +452,7 @@ function fact(label: string, value: string | number | null | undefined): StaticD
   return [{ label, value: String(value) }];
 }
 
-function text(heading: string, value: string | null | undefined): StaticDetailText[] {
+function text(heading: string | null, value: string | null | undefined): StaticDetailText[] {
   return value?.trim() ? [{ heading, text: value }] : [];
 }
 
@@ -467,6 +480,7 @@ function actLabel(ctx: DetailContext, act: string | null): string | null {
 
 function cardModel(ctx: DetailContext, card: CodexCard) {
   const { labels, resources } = ctx;
+  const gameUi = resources.gameUi;
   const cost = card.isXCost ? "X" : card.cost >= 0 ? String(card.cost) : null;
   const upgraded = hasCardUpgrade(card) && getCardMaxUpgradeLevel(card) > 0
     ? renderCardDescription(card, { upgradeLevel: 1 })
@@ -477,15 +491,16 @@ function cardModel(ctx: DetailContext, card: CodexCard) {
     entity: card,
     imageUrl: card.imageUrl ?? card.betaImageUrl,
     facts: [
-      ...fact(labels.cost, cost),
+      ...fact(gameUi.cardLibrary.sort.cost, cost),
       ...fact(labels.starCost, card.isXStarCost ? "X" : card.starCost),
-      ...fact(labels.type, card.typeLabel),
-      ...fact(labels.rarity, card.rarityLabel),
+      ...fact(gameUi.cardLibrary.sort.type, card.typeLabel),
+      ...fact(gameUi.common.rarity, card.rarityLabel),
       ...poolFact(ctx, card.color),
     ],
     texts: [
       ...text(labels.description, card.description),
-      ...(upgraded && upgraded !== card.description ? text(labels.upgraded, upgraded) : []),
+      // The interactive card shows the upgraded text behind its "View Upgrades" toggle.
+      ...(upgraded && upgraded !== card.description ? text(gameUi.cardLibrary.viewUpgrades, upgraded) : []),
     ],
     linkGroups: [
       ctx.keywordGroup((keyword) => getRelatedCardIdsForKeyword(keyword, [card]).length > 0),
@@ -504,6 +519,7 @@ type TypeModel = {
   kind: LinkKind;
   entity: { id: string; name: string; nameEn: string };
   imageUrl: string | null;
+  epithet?: string | null;
   facts: StaticDetailFact[];
   texts: StaticDetailText[];
   linkGroups: StaticDetailLinkGroup[];
@@ -535,12 +551,12 @@ function buildTypeModel(
         entity: relic,
         imageUrl: relic.imageUrl ?? relic.betaImageUrl,
         facts: [
-          ...fact(labels.rarity, gameUi.relicCollection.rarities[relic.rarity]?.label),
+          ...fact(gameUi.common.rarity, gameUi.relicCollection.rarities[relic.rarity]?.label),
           ...poolFact(ctx, relic.pool),
         ],
         texts: [
           ...text(labels.description, relic.description),
-          ...text(labels.flavor, relic.flavor),
+          ...text(null, relic.flavor),
         ],
         linkGroups: [
           ctx.keywordGroup((keyword) => getRelatedRelicIdsForKeyword(keyword, [relic]).length > 0),
@@ -560,7 +576,7 @@ function buildTypeModel(
         entity: potion,
         imageUrl: potion.imageUrl,
         facts: [
-          ...fact(labels.rarity, gameUi.potionLab.rarities[potion.rarity]?.label),
+          ...fact(gameUi.common.rarity, gameUi.potionLab.rarities[potion.rarity]?.label),
           ...poolFact(ctx, potion.pool),
         ],
         texts: text(labels.description, potion.description),
@@ -581,7 +597,10 @@ function buildTypeModel(
         kind: "power",
         entity: power,
         imageUrl: power.imageUrl ?? power.betaImageUrl,
-        facts: fact(labels.type, gameUi.powers.types[power.type]?.label),
+        facts: fact(
+          labels.type,
+          gameUi.powers.types[power.type]?.label || ctx.serviceText.labels.powerTypes[power.type]?.label,
+        ),
         texts: text(labels.description, power.description),
         linkGroups: [
           ctx.keywordGroup((keyword) => getRelatedPowerIdsForKeyword(keyword, [power]).length > 0),
@@ -602,9 +621,9 @@ function buildTypeModel(
           entity: enchantment,
           imageUrl: enchantment.imageUrl,
           facts: fact(
-            labels.cardType,
+            gameUi.cardLibrary.sort.type,
             enchantment.cardType
-              ? getCodexServiceMessages(ctx.serviceLocale).labels.enchantmentCardTypes[enchantment.cardType].label
+              ? ctx.serviceText.labels.enchantmentCardTypes[enchantment.cardType].label
               : null,
           ),
           texts: text(labels.description, enchantment.description),
@@ -666,7 +685,7 @@ function buildTypeModel(
         imageUrl: event.imageUrl,
         facts: fact(labels.act, acts.map((act) => actLabel(ctx, act)).filter(Boolean).join(", ")),
         texts: [
-          ...text(labels.description, event.description),
+          ...text(null, event.description),
           ...text(labels.options, options),
         ],
         linkGroups: [
@@ -697,10 +716,10 @@ function buildTypeModel(
         imageUrl: monster.bossImageUrl ?? monster.imageUrl,
         facts: [
           ...fact(labels.type, gameUi.monsterTypes[monster.type]?.label),
-          ...fact(labels.hp, hpRange(monster.minHp, monster.maxHp)),
+          ...fact(ctx.gameLabels.hp, hpRange(monster.minHp, monster.maxHp)),
           ...fact(labels.hpAscension, hpRange(monster.minHpAscension, monster.maxHpAscension)),
         ],
-        texts: text(labels.moves, moves.join(", ")),
+        texts: text(ctx.serviceText.monstersView.actionPreview, moves.join(", ")),
         linkGroups: [
           ctx.related("encounter", getRelatedEncounterIdsForMonster(monster.id, resources.encounters)),
           ctx.related("power", getRelatedPowerIdsForMonster(monster)),
@@ -722,7 +741,7 @@ function buildTypeModel(
         ],
         texts: [],
         linkGroups: [
-          ctx.group(labels.monsters, "monster", getRelatedMonsterIdsForEncounter(encounter)),
+          ctx.related("monster", getRelatedMonsterIdsForEncounter(encounter)),
         ],
       };
     }
@@ -738,14 +757,17 @@ function buildTypeModel(
         imageUrl: epoch.imageUrl ?? epoch.betaImageUrl,
         facts: fact(labels.era, era),
         texts: [
-          ...text(labels.description, epoch.description),
-          ...text(labels.unlock, ctx.serviceLocale === "ko" ? epoch.unlockInfo : epoch.unlockInfoEn),
+          ...text(null, epoch.description),
+          ...text(
+            getEpochUnlockLabels(ctx.serviceLocale).unlockInfo,
+            ctx.serviceLocale === "ko" ? epoch.unlockInfo : epoch.unlockInfoEn,
+          ),
         ],
         linkGroups: [
-          ctx.group(labels.unlockedCards, "card", epoch.unlocksCards),
-          ctx.group(labels.unlockedRelics, "relic", epoch.unlocksRelics),
-          ctx.group(labels.unlockedPotions, "potion", epoch.unlocksPotions),
-          ctx.group(labels.nextEpochs, "epoch", epoch.expandsTimeline),
+          ctx.related("card", epoch.unlocksCards),
+          ctx.related("relic", epoch.unlocksRelics),
+          ctx.related("potion", epoch.unlocksPotions),
+          ctx.related("epoch", epoch.expandsTimeline),
           ctx.related(
             "ancient",
             epoch.affiliations.flatMap((affiliation) => EPOCH_ANCIENT_AFFILIATION_IDS[affiliation] ?? []),
@@ -760,13 +782,16 @@ function buildTypeModel(
         kind: "ancient",
         entity: ancient,
         imageUrl: ancient.imageUrl,
-        facts: [
-          ...fact(labels.epithet, ancient.epithet),
-          ...fact(labels.act, actLabel(ctx, ancient.act)),
-        ],
-        texts: text(labels.description, ancient.description),
+        epithet: ancient.epithet || null,
+        facts: fact(labels.act, actLabel(ctx, ancient.act)),
+        texts: text(null, ancient.description),
         linkGroups: [
-          ctx.group(labels.offeredRelics, "relic", getRelatedRelicIdsForAncient(ancient)),
+          // Headed like the interactive detail's relic count pill.
+          ctx.group(
+            formatTemplateCount(ctx.serviceText.ancientsView.relicCount, ancient.relicIds.length),
+            "relic",
+            getRelatedRelicIdsForAncient(ancient),
+          ),
           ctx.related("card", getRelatedCardIdsForAncient(ancient, resources.cards)),
           ctx.related("potion", getRelatedPotionIdsForAncient(ancient, resources.potions)),
           ctx.related("event", getRelatedEventIdsForAncient(ancient, resources.events)),
@@ -777,31 +802,32 @@ function buildTypeModel(
       const character = findById(resources.characters, id);
       if (!character) return null;
       const colorKey = character.id.toLowerCase();
+      const characterLabels = getCharacterReferenceLabels(ctx.serviceLocale);
       return {
         kind: "character",
         entity: character,
         imageUrl: character.iconUrl || character.imageUrl,
         facts: [
-          ...fact(labels.startingHp, character.startingHp),
-          ...fact(labels.startingGold, character.startingGold),
-          ...fact(labels.maxEnergy, character.maxEnergy),
+          ...fact(ctx.gameLabels.hp, character.startingHp),
+          ...fact(ctx.gameLabels.gold, character.startingGold),
+          ...fact(ctx.gameLabels.energy, character.maxEnergy),
         ],
-        texts: text(labels.description, character.description),
+        texts: text(null, character.description),
         linkGroups: [
-          ctx.group(labels.startingDeck, "card", character.startingDeckIds),
-          ctx.group(labels.startingRelics, "relic", character.startingRelicIds),
+          ctx.group(characterLabels.startingCards, "card", character.startingDeckIds),
+          ctx.group(ctx.gameLabels.starterRelic, "relic", character.startingRelicIds),
           ctx.group(
             labels.cardPool,
             "card",
             resources.cards.filter((card) => card.color === colorKey).map((card) => card.id),
           ),
           ctx.group(
-            labels.related(labels.kinds.relic),
+            characterLabels.relics,
             "relic",
             resources.relics.filter((relic) => relic.pool === colorKey).map((relic) => relic.id),
           ),
           ctx.group(
-            labels.related(labels.kinds.potion),
+            characterLabels.potions,
             "potion",
             resources.potions.filter((potion) => potion.pool === colorKey).map((potion) => potion.id),
           ),
@@ -922,9 +948,10 @@ const LIST_PATHS: Record<LinkKind, string> = {
   relic: "/compendium/relics",
 };
 
+/** The back link label, as each interactive detail labels its list link. */
 function listTitle(ctx: DetailContext, kind: LinkKind): string {
   const gameUi = ctx.resources.gameUi;
-  const serviceText = getCodexServiceMessages(ctx.serviceLocale);
+  const serviceText = ctx.serviceText;
   switch (kind) {
     case "card":
       return gameUi.cardLibraryTitle;
@@ -941,7 +968,7 @@ function listTitle(ctx: DetailContext, kind: LinkKind): string {
     case "encounter":
       return serviceText.encountersView.backToList;
     case "event":
-      return gameUi.eventsTitle;
+      return serviceText.eventsView.backToList;
     case "ancient":
       return gameUi.ancientsTitle;
     case "epoch":
@@ -954,21 +981,40 @@ function listTitle(ctx: DetailContext, kind: LinkKind): string {
   }
 }
 
+/** The kind label above the title; the pill text where the interactive detail shows one. */
+function kindLabel(ctx: DetailContext, kind: LinkKind): string {
+  const gameUi = ctx.resources.gameUi;
+  switch (kind) {
+    case "ancient":
+      return gameUi.ancientsTitle;
+    case "epoch":
+      return gameUi.epochsTitle;
+    case "affliction":
+      return ctx.serviceText.afflictions;
+    default:
+      return ctx.labels.kinds[kind];
+  }
+}
+
 export async function buildCompendiumStaticDetail(
   resourceType: CompendiumDetailResourceType,
   id: string,
   locale: { serviceLocale: ServiceLocale; gameLocale: GameLocale },
 ): Promise<CompendiumStaticDetailModel | null> {
-  const index = await loadDetailIndex(locale.gameLocale);
-  const ctx = new DetailContext(index, locale.serviceLocale);
+  const [index, gameLabels] = await Promise.all([
+    loadDetailIndex(locale.gameLocale),
+    loadGameLabels(locale.gameLocale),
+  ]);
+  const ctx = new DetailContext(index, locale.serviceLocale, gameLabels);
   const model = buildTypeModel(ctx, resourceType, id);
   if (!model) return null;
 
-  const { labels } = ctx;
+  const historyLabels = getDetailPatchHistoryLabels(locale.serviceLocale);
   return {
-    kindLabel: labels.kinds[model.kind],
+    kindLabel: kindLabel(ctx, model.kind),
     title: model.entity.name,
     altTitle: model.entity.nameEn && model.entity.nameEn !== model.entity.name ? model.entity.nameEn : null,
+    epithet: model.epithet ?? null,
     imageUrl: model.imageUrl,
     back: {
       href: localizeHref(LIST_PATHS[model.kind], locale.serviceLocale),
@@ -979,9 +1025,9 @@ export async function buildCompendiumStaticDetail(
     linkGroups: model.linkGroups.filter((group) => group.links.length > 0),
     history: await buildHistory(ctx, model.kind, model.entity.id),
     labels: {
-      related: labels.relatedSection,
-      history: labels.history,
-      noHistory: labels.noHistory,
+      related: ctx.labels.relatedSection,
+      history: historyLabels.patchHistory,
+      noHistory: historyLabels.noPatchHistory,
     },
   };
 }

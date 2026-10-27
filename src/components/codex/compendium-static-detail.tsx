@@ -46,6 +46,9 @@ export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetai
             <h1 className="font-game-title text-3xl font-bold text-gray-100 sm:text-4xl">
               {model.title}
             </h1>
+            {model.epithet && (
+              <p className="font-game-text text-sm italic text-gray-300">&ldquo;{model.epithet}&rdquo;</p>
+            )}
             {model.altTitle && (
               <p className="font-game-text text-sm text-gray-400">{model.altTitle}</p>
             )}
@@ -65,9 +68,11 @@ export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetai
           </dl>
         )}
 
-        {model.texts.map((block) => (
-          <section key={block.heading} className="flex flex-col gap-1.5">
-            <h2 className="font-game-title text-base font-bold text-foreground">{block.heading}</h2>
+        {model.texts.map((block, index) => (
+          <section key={block.heading ?? `text-${index}`} className="flex flex-col gap-1.5">
+            {block.heading && (
+              <h2 className="font-game-title text-base font-bold text-foreground">{block.heading}</h2>
+            )}
             <p className="font-game-text text-sm leading-relaxed text-gray-300 sm:text-base">
               <RichText text={block.text} />
             </p>
