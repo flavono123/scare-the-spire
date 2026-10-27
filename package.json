@@ -36,6 +36,7 @@
     "patch:audit-ids": "tsx scripts/audit-patch-line-ids.ts",
     "patch:test": "node scripts/ensure-lint-generated.mjs && tsx scripts/check-patch-pending-links.tsx && tsx scripts/audit-patch-line-ids.ts",
     "search:test": "tsx scripts/check-search-regressions.ts",
+    "css:check": "tsx scripts/check-built-css.ts",
     "start": "next start",
     "lint": "node scripts/ensure-lint-generated.mjs && eslint",
     "test:visual": "playwright test scripts/visual-check.spec.ts",

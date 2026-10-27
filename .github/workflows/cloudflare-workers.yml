@@ -209,15 +209,18 @@ jobs:
       - run: pnpm lint
         if: steps.changes.outputs.deploy_any == 'true'
 
+      # next-v2: caches saved before the globals.css @source not fix hold a CSS
+      # module whose dependency snapshot is empty, so they reuse stale CSS forever.
+      # Never restore them; the first v2 build starts cold.
       - name: Restore Next.js build cache
         if: steps.changes.outputs.main == 'true'
         uses: actions/cache@v4
         with:
           path: .next/cache
-          key: ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'open-next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
+          key: ${{ runner.os }}-next-v2-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'open-next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
           restore-keys: |
-            ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-
-            ${{ runner.os }}-next-
+            ${{ runner.os }}-next-v2-${{ hashFiles('pnpm-lock.yaml') }}-
+            ${{ runner.os }}-next-v2-
 
       - name: Compute Cloudflare build id
         if: steps.changes.outputs.main == 'true'
@@ -253,6 +256,10 @@ jobs:
       - name: Build main Worker for Cloudflare
         if: steps.changes.outputs.main == 'true'
         run: pnpm cf:build
+
+      - name: Check built CSS has every globals.css class
+        if: steps.changes.outputs.main == 'true'
+        run: pnpm css:check
 
       - name: Check main Worker size
         if: steps.changes.outputs.main == 'true'
