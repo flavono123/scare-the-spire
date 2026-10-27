@@ -5,6 +5,8 @@
  * relative Location, no body), in the order OpenNext applied them.
  */
 
+import { staticAssetAliasRedirectPath } from "./static-asset-aliases";
+
 const PERMANENT_REDIRECT_STATUS = 308;
 
 function relativeRedirect(location: string): Response {
@@ -52,6 +54,16 @@ export function koreanLocaleAliasRedirect(url: URL): Response | null {
   return relativeRedirect(`${match[2] || "/"}${url.search}`);
 }
 
+/**
+ * next.config.ts static asset alias redirects for what the Worker's GET/HEAD
+ * alias branch does not catch: other methods, and `/api/...` aliases with a
+ * trailing slash (no trailing-slash redirect there). Query kept, like OpenNext.
+ */
+export function staticAssetAliasConfigRedirect(url: URL): Response | null {
+  const destination = staticAssetAliasRedirectPath(url.pathname.replace(/(.)\/$/, "$1"));
+  return destination ? relativeRedirect(`${destination}${url.search}`) : null;
+}
+
 /** Applied in OpenNext order: data route, repeated slash, trailing slash, config redirects. */
 export function nextRoutingResponse(request: Request, url: URL): Response | null {
   return (
@@ -59,5 +71,6 @@ export function nextRoutingResponse(request: Request, url: URL): Response | null
     ?? repeatedSlashRedirect(url)
     ?? trailingSlashRedirect(url)
     ?? koreanLocaleAliasRedirect(url)
+    ?? staticAssetAliasConfigRedirect(url)
   );
 }
