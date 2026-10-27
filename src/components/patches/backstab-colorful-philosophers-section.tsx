@@ -304,6 +304,7 @@ export function BackstabColorfulPhilosophersSection({
                       <ColorfulPhilosopherSubjectArt
                         post={post}
                         serviceLocale={serviceLocale}
+                        gameLocale={gameLocale}
                         width={96}
                         imageWidth={72}
                         entity={entity}

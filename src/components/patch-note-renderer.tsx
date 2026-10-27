@@ -281,10 +281,12 @@ export function GameResourcePreview({
 function MonsterMoveKeywordPreview({
   entity,
   serviceLocale,
+  gameLocale,
   previewNonce,
 }: {
   entity: EntityInfo;
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
   previewNonce: number;
 }) {
   const move = entity.monsterMoveData;
@@ -302,6 +304,7 @@ function MonsterMoveKeywordPreview({
       move={visual}
       monster={monster}
       serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
       selectedMoveNonce={previewNonce}
       title={title}
     />
@@ -927,6 +930,7 @@ export function EntityPreview({
           <MonsterMoveKeywordPreview
             entity={entity}
             serviceLocale={serviceLocale ?? "ko"}
+            gameLocale={gameLocale}
             previewNonce={previewNonce}
           />,
         )
@@ -2197,6 +2201,7 @@ export function PatchNoteRenderer({
             key={`character-low-hp-idle-${i}`}
             characters={characters}
             serviceLocale={context.serviceLocale ?? "ko"}
+            gameLocale={context.gameLocale}
           />,
         );
       }
@@ -2221,6 +2226,7 @@ export function PatchNoteRenderer({
             monster={monster}
             monsters={monsters}
             serviceLocale={context.serviceLocale ?? "ko"}
+            gameLocale={context.gameLocale}
             patchId={patchId || "v0.106.0"}
             variant={variant}
           />,

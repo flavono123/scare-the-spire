@@ -3,13 +3,18 @@
 import Image from "@/components/ui/static-image";
 import { CardTile } from "@/components/codex/card-tile";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
+import { toCompendiumDetailHref } from "@/components/compendium-detail-links";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import {
   COLORFUL_PHILOSOPHERS_TOKEN_SRC,
   colorfulPhilosopherSubjectHref,
   type ColorfulPhilosopherPost,
 } from "@/lib/colorful-philosophers";
-import type { ServiceLocale } from "@/lib/i18n";
+import {
+  buildCompendiumResourceHref,
+  isCompendiumResourceLinkType,
+} from "@/lib/compendium-resource-links";
+import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 
 const SUBJECT_LINK_CLASS =
   "block shrink-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70";
@@ -18,6 +23,7 @@ const SUBJECT_LINK_CLASS =
 export function ColorfulPhilosopherSubjectArt({
   post,
   serviceLocale,
+  gameLocale,
   width = 112,
   imageWidth = width,
   entity: providedEntity,
@@ -25,6 +31,8 @@ export function ColorfulPhilosopherSubjectArt({
 }: {
   post: ColorfulPhilosopherPost;
   serviceLocale: ServiceLocale;
+  /** Keeps game-only locales (/ja, ...) on their Compendium modal URL. */
+  gameLocale?: GameLocale;
   width?: number;
   imageWidth?: number;
   /** Skips the client entity fetch when the caller already has the resource. */
@@ -49,7 +57,13 @@ export function ColorfulPhilosopherSubjectArt({
     />
   );
 
-  const href = colorfulPhilosopherSubjectHref(post, serviceLocale);
+  const href = gameLocale && isCompendiumResourceLinkType(post.resourceType)
+    ? toCompendiumDetailHref(localizeHrefWithGameLocale(
+        buildCompendiumResourceHref(post.resourceType, post.resourceId),
+        serviceLocale,
+        gameLocale,
+      ))
+    : colorfulPhilosopherSubjectHref(post, serviceLocale);
   if (!href) return art;
 
   const previewEntity: EntityInfo = {
