@@ -2,12 +2,6 @@ import type { GameLocale } from "@/lib/i18n";
 import { sts1GameLocale } from "@/lib/sts1/locale";
 import { sts1BitmapFontUrl } from "@/lib/sts1/paths";
 import energy from "@/lib/sts1/bitmap-fonts/energy.json";
-import kor from "@/lib/sts1/bitmap-fonts/kor.json";
-import latin from "@/lib/sts1/bitmap-fonts/latin.json";
-import jpn from "@/lib/sts1/bitmap-fonts/jpn.json";
-import zhs from "@/lib/sts1/bitmap-fonts/zhs.json";
-import rus from "@/lib/sts1/bitmap-fonts/rus.json";
-import tha from "@/lib/sts1/bitmap-fonts/tha.json";
 
 export type Sts1BitmapGlyph = {
   x: number;
@@ -40,17 +34,23 @@ export type Sts1BitmapPack = {
 
 export type Sts1BitmapRoleName = "title" | "desc" | "type" | "energy";
 
-const PACKS: Record<string, Sts1BitmapPack> = {
-  energy: energy as Sts1BitmapPack,
-  kor: kor as Sts1BitmapPack,
-  latin: latin as Sts1BitmapPack,
-  jpn: jpn as Sts1BitmapPack,
-  zhs: zhs as Sts1BitmapPack,
-  rus: rus as Sts1BitmapPack,
-  tha: tha as Sts1BitmapPack,
-};
+export type Sts1BitmapPackName = "kor" | "latin" | "jpn" | "zhs" | "rus" | "tha";
 
-export function sts1BitmapPackName(gameLocale: GameLocale): keyof typeof PACKS {
+const ENERGY_PACK = energy as Sts1BitmapPack;
+
+/**
+ * Locale glyph packs are 28–290 KB each, so they are not bundled here. A page
+ * registers the pack it renders through Sts1BitmapPackScope before any card
+ * text renders; Node specs use scripts/lib/sts1-bitmap-packs.ts.
+ */
+const PACKS: Partial<Record<Sts1BitmapPackName, Sts1BitmapPack>> = {};
+const warnedMissingPacks = new Set<Sts1BitmapPackName>();
+
+export function registerSts1BitmapPack(name: Sts1BitmapPackName, pack: Sts1BitmapPack) {
+  PACKS[name] = pack;
+}
+
+export function sts1BitmapPackName(gameLocale: GameLocale): Sts1BitmapPackName {
   const locale = sts1GameLocale(gameLocale);
   if (locale === "kor" || locale === "jpn" || locale === "zhs" || locale === "rus" || locale === "tha") {
     return locale;
@@ -58,16 +58,29 @@ export function sts1BitmapPackName(gameLocale: GameLocale): keyof typeof PACKS {
   return "latin";
 }
 
+function localePack(gameLocale: GameLocale): Sts1BitmapPack | undefined {
+  const name = sts1BitmapPackName(gameLocale);
+  const pack = PACKS[name];
+  if (!pack && process.env.NODE_ENV !== "production" && !warnedMissingPacks.has(name)) {
+    warnedMissingPacks.add(name);
+    console.error(`STS1 bitmap pack "${name}" rendered before Sts1BitmapPackScope registered it.`);
+  }
+  return pack;
+}
+
 export function sts1BitmapRole(
   gameLocale: GameLocale,
   role: Sts1BitmapRoleName,
 ): Sts1BitmapRole | undefined {
-  const pack = role === "energy" ? PACKS.energy : PACKS[sts1BitmapPackName(gameLocale)];
-  return pack.roles[role];
+  const pack = role === "energy" ? ENERGY_PACK : localePack(gameLocale);
+  return pack?.roles[role];
 }
 
-export function sts1BitmapPack(gameLocale: GameLocale, role: Sts1BitmapRoleName): Sts1BitmapPack {
-  return role === "energy" ? PACKS.energy : PACKS[sts1BitmapPackName(gameLocale)];
+export function sts1BitmapPack(
+  gameLocale: GameLocale,
+  role: Sts1BitmapRoleName,
+): Sts1BitmapPack | undefined {
+  return role === "energy" ? ENERGY_PACK : localePack(gameLocale);
 }
 
 export function sts1BitmapAdvance(

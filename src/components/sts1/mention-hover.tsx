@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Suspense, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
 import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
@@ -10,7 +10,7 @@ import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import type { GameLocale } from "@/lib/i18n";
 import { STS1_CREAM, STS1_DESC_ENERGY_IMG_WIDTH, STS1_DESC_FONT } from "@/lib/sts1/card-style";
-import { sts1BitmapAdvance } from "@/lib/sts1/bitmap-font";
+import { sts1BitmapAdvance, sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
 import {
   EMPTY_STS1_STATS,
   parseSts1CardText,
@@ -22,6 +22,7 @@ import { sts1LineBreakViaCharacter } from "@/lib/sts1/locale";
 import { sts1CardUiUrl } from "@/lib/sts1/paths";
 import type { Sts1Keyword, Sts1RelicTier, Sts1UiLabels } from "@/lib/sts1/types";
 import type { Sts1MentionEntry } from "@/lib/sts1-mention-index";
+import { Sts1BitmapPackScope } from "./bitmap-pack-scope";
 import { Sts1BitmapText } from "./bitmap-text";
 import { Sts1SmartText } from "./smart-text";
 import { Sts1CardTile } from "./card-tile";
@@ -315,11 +316,13 @@ export function Sts1MentionHover({
   const localeKey = serviceLocale === "en" ? "eng" : "kor";
   const labels = index?.labels[localeKey];
   let preview = null;
+  let drawsBitmapText = false;
   if (entry?.resource === "cards" && entry.card && labels) {
     const typeKey = entry.card.type;
     const typeLabel = typeKey === "attack" || typeKey === "skill" || typeKey === "power" || typeKey === "curse" || typeKey === "status"
       ? labels.types[typeKey]
       : entry.card.type;
+    drawsBitmapText = true;
     preview = (
       <div className="w-36 drop-shadow-2xl">
         <Sts1CardTile
@@ -331,6 +334,7 @@ export function Sts1MentionHover({
       </div>
     );
   } else if (entry?.resource === "relics" && labels) {
+    drawsBitmapText = true;
     preview = (
       <RelicSlab
         entry={entry}
@@ -354,6 +358,12 @@ export function Sts1MentionHover({
     );
   }
 
+  const layer = hovered && preview ? (
+    <PortaledHoverTipLayer pin="top-left">
+      {preview}
+    </PortaledHoverTipLayer>
+  ) : null;
+
   return (
     <span
       className="relative inline cursor-help font-semibold spire-gold"
@@ -369,11 +379,12 @@ export function Sts1MentionHover({
       >
         {text}
       </a>
-      {hovered && preview ? (
-        <PortaledHoverTipLayer pin="top-left">
-          {preview}
-        </PortaledHoverTipLayer>
-      ) : null}
+      {layer && drawsBitmapText ? (
+        // The glyph pack loads on first hover; the tip appears once it can draw in full.
+        <Suspense fallback={null}>
+          <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>{layer}</Sts1BitmapPackScope>
+        </Suspense>
+      ) : layer}
     </span>
   );
 }

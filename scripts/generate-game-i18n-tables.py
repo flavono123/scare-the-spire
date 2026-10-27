@@ -16,7 +16,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LOC_DIR = ROOT / "data/sts2/localization"
 OUT_DIR = ROOT / "src/lib/sts2-game-i18n"
-KO_LEGACY = ROOT / "src/lib/sts2-i18n-ko.json"
 
 GAME_LOCALES = [
     "kor",
@@ -109,20 +108,6 @@ def main() -> None:
         write_compact(out_path, next_tables)
         if locale_added:
             added[locale] = locale_added
-
-    ko_current = json.loads(KO_LEGACY.read_text(encoding="utf-8"))
-    ko_next = {}
-    for table, existing in ko_current.items():
-        filename = TITLE_TABLES.get(table)
-        ko_next[table] = (
-            alias_renamed_keys(table, merge_titles(existing, loc_titles("kor", filename)))
-            if filename
-            else existing
-        )
-    KO_LEGACY.write_text(
-        json.dumps(ko_next, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
 
     print("added")
     for locale, keys in added.items():

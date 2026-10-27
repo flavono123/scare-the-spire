@@ -4,6 +4,8 @@ export const dynamicParams = false;
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Sts1CharacterDetail } from "@/components/sts1/character-detail";
+import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
+import { sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -104,16 +106,18 @@ export default async function Sts1CharacterDetailPage({ params, searchParams }: 
   ];
 
   return (
-    <Sts1CharacterDetail
-      character={character}
-      deck={deck}
-      startingRelics={startingRelics}
-      dedicated={dedicated}
-      keywords={keywords}
-      labels={labels}
-      ui={ui}
-      serviceLocale={serviceLocale}
-      gameLocale={gameLocale}
-    />
+    <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
+      <Sts1CharacterDetail
+        character={character}
+        deck={deck}
+        startingRelics={startingRelics}
+        dedicated={dedicated}
+        keywords={keywords}
+        labels={labels}
+        ui={ui}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+      />
+    </Sts1BitmapPackScope>
   );
 }

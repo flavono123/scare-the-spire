@@ -3,6 +3,8 @@ export const dynamic = "force-static";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Sts1CardLibrary } from "@/components/sts1/card-library";
+import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
+import { sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -42,14 +44,16 @@ export default async function Sts1CardsPage({
   ]);
 
   return (
-    <Suspense>
-      <Sts1CardLibrary
-        cards={cards}
-        labels={labels}
-        keywords={keywords}
-        serviceLocale={serviceLocale}
-        gameLocale={gameLocale}
-      />
-    </Suspense>
+    <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
+      <Suspense>
+        <Sts1CardLibrary
+          cards={cards}
+          labels={labels}
+          keywords={keywords}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+        />
+      </Suspense>
+    </Sts1BitmapPackScope>
   );
 }

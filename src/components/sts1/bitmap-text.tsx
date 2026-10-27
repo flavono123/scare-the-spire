@@ -35,9 +35,11 @@ export function Sts1BitmapText({
     [roleData, text],
   );
 
+  const page = pack?.page;
+
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !roleData || !text) return;
+    if (!canvas || !roleData || !text || !page) return;
     canvas.width = Math.ceil(metrics.width);
     canvas.height = Math.ceil(metrics.height);
     const context = canvas.getContext("2d");
@@ -46,15 +48,15 @@ export function Sts1BitmapText({
     context.imageSmoothingQuality = "high";
     context.clearRect(0, 0, canvas.width, canvas.height);
     let cancelled = false;
-    void loadSts1BitmapPage(pack.page).then((page) => {
+    void loadSts1BitmapPage(page).then((image) => {
       if (cancelled || canvasRef.current !== canvas) return;
       context.clearRect(0, 0, canvas.width, canvas.height);
-      drawBitmapText(context, page, roleData, text, color, metrics.originX, metrics.originY);
+      drawBitmapText(context, image, roleData, text, color, metrics.originX, metrics.originY);
     });
     return () => {
       cancelled = true;
     };
-  }, [color, metrics, pack.page, roleData, text]);
+  }, [color, metrics, page, roleData, text]);
 
   if (!text || !roleData) return null;
   const belowBaseline = metrics.height - (metrics.originY + roleData.ascent);

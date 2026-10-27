@@ -3,6 +3,7 @@ export const dynamic = "force-static";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Sts1RelicLibrary } from "@/components/sts1/relic-library";
+import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -35,9 +36,12 @@ export default async function Sts1RelicsPage({
     getSts1UiLabels(gameLocale),
   ]);
 
+  // Sts1CardText draws relic, potion, and power text with the kor glyph pack.
   return (
-    <Suspense>
-      <Sts1RelicLibrary relics={relics} labels={labels} serviceLocale={serviceLocale} />
-    </Suspense>
+    <Sts1BitmapPackScope packs={["kor"]}>
+      <Suspense>
+        <Sts1RelicLibrary relics={relics} labels={labels} serviceLocale={serviceLocale} />
+      </Suspense>
+    </Sts1BitmapPackScope>
   );
 }
