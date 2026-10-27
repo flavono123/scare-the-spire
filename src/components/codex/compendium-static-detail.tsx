@@ -147,9 +147,11 @@ export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetai
               {model.linkGroups.map((group) => (
                 <nav key={group.heading} aria-label={group.heading} className="flex flex-col gap-1">
                   <h3 className="font-service text-xs text-gray-500">{group.heading}</h3>
-                  <ul className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
+                  {/* Fixed columns with one-line names: rows do not rewrap
+                      when the web fonts replace the fallback faces. */}
+                  <ul className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-x-3 gap-y-1 text-sm">
                     {group.links.map((link) => (
-                      <li key={link.href}>
+                      <li key={link.href} className="min-w-0 truncate" title={link.label}>
                         <StaticLink link={link} />
                       </li>
                     ))}
