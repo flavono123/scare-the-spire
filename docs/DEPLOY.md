@@ -19,6 +19,9 @@ patch 페이지와 patch-local asset을 별도로 서빙한다.
 pnpm cf:preview
 ```
 
+정적 전용 Worker라 `/dev` 페이지와 `/api/dev` route는 서빙하지 않는다(404
+페이지). 개발 도구는 `pnpm dev`에서 확인한다.
+
 프로덕션 main Worker를 배포한다.
 
 ```bash

@@ -19,7 +19,7 @@ Run the smallest QA set that credibly covers the implementation scope. Treat `do
    - `pnpm build` when routing, app layout, server/client boundaries, data loading, generated data, metadata, or deployment behavior changed.
    - Cloudflare checks when `wrangler.jsonc`, Workers scripts, runtime env behavior, static asset headers, server/client data loading, deployment target behavior, sitemap coverage, canonical URLs, internal links, prefetching, or crawlable route coverage changed. Load `.codex/skills/cf-guardrails/SKILL.md` first, then:
      - `pnpm cf:assets` after `pnpm cf:build` to verify Korean/English Compendium detail HTML/RSC coverage, Worker path mapping, static asset count, individual asset size, and that every prerendered route resolves without a renderer.
-     - `pnpm cf:preview` for local Workers runtime smoke.
+     - `pnpm cf:preview` for local Workers runtime smoke (no `/dev` or `/api/dev` routes; use `pnpm dev` for dev tools).
      - `pnpm cf:size` (Wrangler dry run) after `pnpm cf:build` to confirm final Worker bundle size, the 256 KiB static Worker budget, and bindings.
      - Apply `$cf-guardrails` to review Free-plan runtime risk, request-time work, bundle size, subrequests, and `exceededResources`/503 failure modes.
      - Smoke representative static, SSG, and dynamic routes plus cache headers for `_next/static`, `/images`, `/spine`, `/generated`, `/api/search-index`, and `/comment-entities/sts2`.
@@ -62,7 +62,7 @@ Load the sub-skill body only when needed, then follow its reporting rules in add
 - Animation/rendering changes: run `pnpm i18n:validate`, targeted static checks, `animation-playback-qa`, and mobile QA if the render surface must work on mobile.
 - History Course replay changes: run `pnpm i18n:validate`, `pnpm lint`, targeted TypeScript checks, `history-course-qa`, targeted `scripts/history-course-*.spec.ts` when UI or reward rendering changed, and mobile QA when `/history-course` layout, topbar, map, or tooltip behavior changed.
 - Script, parser, or extraction changes: run `pnpm i18n:validate`, a representative script command or dry run, and validators for generated outputs affected by the script.
-- Cloudflare Workers migration/runtime or SEO crawl-surface changes: load `$cf-guardrails`, then run `pnpm i18n:validate`, `pnpm lint`, `pnpm build`, `pnpm cf:assets`, `pnpm cf:preview`, Wrangler dry-run upload size check, guardrail risk review, and route/cache smoke against the local Workers preview URL. Include dev-tool parity smoke when `NEXT_PUBLIC_ENABLE_DEV_TOOLS=1` is expected for local preview, and verify that production deploy scripts do not enable dev tools by default.
+- Cloudflare Workers migration/runtime or SEO crawl-surface changes: load `$cf-guardrails`, then run `pnpm i18n:validate`, `pnpm lint`, `pnpm build`, `pnpm cf:assets`, `pnpm cf:preview`, Wrangler dry-run upload size check, guardrail risk review, and route/cache smoke against the local Workers preview URL. `pnpm cf:preview` builds with `NEXT_PUBLIC_ENABLE_DEV_TOOLS=1`, but its static Worker serves no `/dev` pages or `/api/dev` routes (they return the 404 page, so dev widgets that call `/api/dev/*` fail there); run dev-tool checks on `pnpm dev`. Verify that production deploy scripts do not enable dev tools.
 - Patch Worker deployment changes: load `$cf-guardrails`, run `pnpm patch:build`, `pnpm patch:test`, `pnpm cf:patch:preview` when practical, and verify the patch Worker remains asset-first with no request-time patch markdown rendering or Compendium data querying.
 
 ## Adding Sub-QA Skills
