@@ -19,8 +19,32 @@ import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
 
 const assetsRoot = CLOUDFLARE_ASSETS_DIR;
 const nextAppRoot = path.join(".next", "server", "app");
-const maxAssetFiles = Number(process.env.CLOUDFLARE_STATIC_ASSET_LIMIT ?? 20_000);
 const maxAssetBytes = Number(process.env.CLOUDFLARE_STATIC_ASSET_SIZE_LIMIT_MIB ?? 25) * 1024 * 1024;
+
+function envCount(name: string, fallback: number): number {
+  const raw = process.env[name];
+  if (raw === undefined || raw === "") return fallback;
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < 0) {
+    throw new Error(`${name} must be a non-negative integer, got ${JSON.stringify(raw)}.`);
+  }
+  return value;
+}
+
+// Workers Free caps one version at 20,000 static asset files. The budget keeps
+// a reserve below that hard limit so an urgent release that adds pages or
+// images still deploys; raise the budget deliberately, not by accident.
+const maxAssetFiles = envCount("CLOUDFLARE_STATIC_ASSET_LIMIT", 20_000);
+const assetFileReserve = envCount("CLOUDFLARE_STATIC_ASSET_RESERVE", 500);
+const assetFileBudget = envCount(
+  "CLOUDFLARE_STATIC_ASSET_BUDGET",
+  Math.max(0, maxAssetFiles - assetFileReserve),
+);
+if (assetFileBudget > maxAssetFiles) {
+  throw new Error(
+    `CLOUDFLARE_STATIC_ASSET_BUDGET ${assetFileBudget} exceeds the static asset limit ${maxAssetFiles}.`,
+  );
+}
 
 const compendiumSegments = new Set([
   "ancients",
@@ -633,6 +657,12 @@ function checkCloudflareAssetLimits(): { count: number; largestBytes: number; la
     files.length <= maxAssetFiles,
     `Cloudflare static asset count ${files.length} exceeds the Free plan limit ${maxAssetFiles}.`,
   );
+  assert(
+    files.length <= assetFileBudget,
+    `Cloudflare static asset count ${files.length} exceeds the budget ${assetFileBudget} `
+      + `(limit ${maxAssetFiles} minus a ${maxAssetFiles - assetFileBudget}-file reserve). `
+      + "Prune unreferenced assets, or raise CLOUDFLARE_STATIC_ASSET_BUDGET deliberately.",
+  );
 
   let largestBytes = 0;
   let largestPath = "";
@@ -667,7 +697,12 @@ console.log(`Cloudflare static detail shell assets: ${staticDetailShellCount}`);
 console.log(`Cloudflare static Compendium root assets: ${staticCompendiumRootCount}`);
 console.log(`Cloudflare static legacy page assets: ${staticLegacyPageCount}`);
 console.log(`Cloudflare static metadata assets: ${staticMetadataAssetCount}`);
-console.log(`Cloudflare static assets: ${assetStats.count}/${maxAssetFiles}`);
+const formatCount = (value: number) => value.toLocaleString("en-US");
+console.log(
+  `Cloudflare static assets: ${formatCount(assetStats.count)} used / ${formatCount(assetFileBudget)} budget / `
+    + `${formatCount(maxAssetFiles)} limit (headroom ${formatCount(assetFileBudget - assetStats.count)} to budget, `
+    + `${formatCount(maxAssetFiles - assetStats.count)} to limit)`,
+);
 console.log(
   `Largest Cloudflare static asset: ${(assetStats.largestBytes / 1024 / 1024).toFixed(2)} MiB (${assetStats.largestPath})`,
 );
