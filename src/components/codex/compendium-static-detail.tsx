@@ -38,7 +38,7 @@ export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetai
               width={96}
               height={96}
               loading="eager"
-              className="max-h-24 max-w-24 shrink-0 object-contain drop-shadow-lg"
+              className="size-24 shrink-0 object-contain drop-shadow-lg"
             />
           )}
           <div className="min-w-0">
