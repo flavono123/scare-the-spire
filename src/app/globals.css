@@ -892,6 +892,18 @@
   white-space: pre;
 }
 
+/* RichText and patch notes group each word's letters in .rich-sine-word, so the
+   phrase flows inline and breaks only between words instead of overflowing a
+   narrow column as one box. Other per-letter sine markup keeps the box above. */
+.rich-sine:has(.rich-sine-word) {
+  display: inline;
+  white-space: pre-wrap;
+}
+
+.rich-sine-word {
+  white-space: nowrap;
+}
+
 .rich-sine-letter {
   display: inline-block;
   animation: rich-sine-letter 1.4s ease-in-out infinite;
