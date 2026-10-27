@@ -61,6 +61,8 @@ export function findUnreachableNextStatic(assetsDir) {
 
   // Each file answers to its path below /_next/ ("static/chunks/...") and, for
   // hashed names, to its content hash (the async chunk map keys on id + hash).
+  // CSS files are named by the bare hash ("static/css/<hash>.css"); with two
+  // or more async CSS chunks the runtime writes only `{id:hash}` for them.
   const byToken = new Map();
   const addToken = (token, file) => {
     const files = byToken.get(token) ?? [];
@@ -69,7 +71,7 @@ export function findUnreachableNextStatic(assetsDir) {
   };
   for (const file of nextFiles) {
     addToken(file.slice("_next/".length), file);
-    const hash = path.basename(file).match(/[-.]([0-9a-f]{16})\.[a-z0-9]+$/);
+    const hash = path.basename(file).match(/(?:^|[-.])([0-9a-f]{16})\.[a-z0-9]+$/);
     if (hash) addToken(hash[1], file);
   }
 

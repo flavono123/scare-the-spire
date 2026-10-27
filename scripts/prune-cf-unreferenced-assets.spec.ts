@@ -68,6 +68,31 @@ try {
     "URL-encoded page chunk path",
   );
 
+  // Two or more async CSS chunks: the runtime maps chunk id -> bare CSS hash.
+  const cssMap = path.join(root, "css-map");
+  write(
+    cssMap,
+    "_next/static/chunks/webpack-1111111111111111.js",
+    'b.u=e=>"static/chunks/"+e+"."+({812:"3333333333333333"})[e]+".js";'
+      + 'b.miniCssF=e=>"static/css/"+({812:"aaaaaaaaaaaaaaaa",913:"bbbbbbbbbbbbbbbb"})[e]+".css"',
+  );
+  write(cssMap, "_next/static/chunks/main-app-5555555555555555.js");
+  write(cssMap, "_next/static/chunks/812.3333333333333333.js");
+  write(cssMap, "_next/static/css/aaaaaaaaaaaaaaaa.css");
+  write(cssMap, "_next/static/css/bbbbbbbbbbbbbbbb.css");
+  write(cssMap, "_next/static/css/cccccccccccccccc.css");
+  write(
+    cssMap,
+    "_cf_static_pages/index.html",
+    '<script src="/_next/static/chunks/webpack-1111111111111111.js"></script>'
+      + '<script src="/_next/static/chunks/main-app-5555555555555555.js"></script>',
+  );
+  assert.deepEqual(
+    findUnreachableNextStatic(cssMap).unreachable,
+    ["_next/static/css/cccccccccccccccc.css"],
+    "async CSS via the miniCssF hash map",
+  );
+
   // Without served pages nothing reaches the runtime, so pruning refuses to run.
   const empty = path.join(root, "empty");
   write(empty, "_next/static/chunks/webpack-1111111111111111.js");
