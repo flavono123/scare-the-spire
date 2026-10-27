@@ -159,34 +159,36 @@ export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetai
             </section>
           )}
 
-          <section className="flex flex-col gap-2">
-            <h2 className="font-game-title text-base font-bold text-foreground">{model.labels.history}</h2>
-            {model.history.length > 0 ? (
-              <ul className="space-y-1">
-                {model.history.map((line) => (
-                  <li
-                    key={line.id}
-                    className="ml-4 list-outside list-disc whitespace-pre-line py-1 font-game-text text-sm leading-relaxed text-gray-300"
-                  >
-                    {line.segments.map((segment, index) => (
-                      typeof segment === "string"
-                        ? <span key={index}>{segment}</span>
-                        : <StaticLink key={index} link={segment} />
-                    ))}
-                    {" "}
-                    <a
-                      href={line.href}
-                      className="whitespace-nowrap spire-gold transition-colors hover:text-primary"
+          {model.history && (
+            <section className="flex flex-col gap-2">
+              <h2 className="font-game-title text-base font-bold text-foreground">{model.labels.history}</h2>
+              {model.history.length > 0 ? (
+                <ul className="space-y-1">
+                  {model.history.map((line) => (
+                    <li
+                      key={line.id}
+                      className="ml-4 list-outside list-disc whitespace-pre-line py-1 font-game-text text-sm leading-relaxed text-gray-300"
                     >
-                      {line.date} {line.versionLabel}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="font-game-text text-sm text-gray-500">{model.labels.noHistory}</p>
-            )}
-          </section>
+                      {line.segments.map((segment, index) => (
+                        typeof segment === "string"
+                          ? <span key={index}>{segment}</span>
+                          : <StaticLink key={index} link={segment} />
+                      ))}
+                      {" "}
+                      <a
+                        href={line.href}
+                        className="whitespace-nowrap spire-gold transition-colors hover:text-primary"
+                      >
+                        {line.date} {line.versionLabel}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="font-game-text text-sm text-gray-500">{model.labels.noHistory}</p>
+              )}
+            </section>
+          )}
         </div>
       </article>
     </main>

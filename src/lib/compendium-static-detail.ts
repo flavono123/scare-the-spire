@@ -136,7 +136,8 @@ export type CompendiumStaticDetailModel = {
   facts: StaticDetailFact[];
   texts: StaticDetailText[];
   linkGroups: StaticDetailLinkGroup[];
-  history: StaticDetailHistoryLine[];
+  /** Null for kinds whose interactive detail has no patch history section. */
+  history: StaticDetailHistoryLine[] | null;
   labels: {
     related: string;
     history: string;
@@ -952,6 +953,9 @@ const LIST_PATHS: Record<LinkKind, string> = {
   relic: "/compendium/relics",
 };
 
+// EpochDetail and KeywordDetail show no patch history section.
+const KINDS_WITHOUT_HISTORY: ReadonlySet<LinkKind> = new Set(["epoch", "keyword"]);
+
 /** The back link label, as each interactive detail labels its list link. */
 function listTitle(ctx: DetailContext, kind: LinkKind): string {
   const gameUi = ctx.resources.gameUi;
@@ -1028,7 +1032,9 @@ export async function buildCompendiumStaticDetail(
     facts: model.facts,
     texts: model.texts,
     linkGroups: model.linkGroups.filter((group) => group.links.length > 0),
-    history: await buildHistory(ctx, model.kind, model.entity.id),
+    history: KINDS_WITHOUT_HISTORY.has(model.kind)
+      ? null
+      : await buildHistory(ctx, model.kind, model.entity.id),
     labels: {
       related: ctx.labels.relatedSection,
       history: historyLabels.patchHistory,
