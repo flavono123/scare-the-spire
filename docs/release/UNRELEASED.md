@@ -21,12 +21,30 @@
 - Expect: `/ja/...` 등의 canonical이 `/en/...`. `/sitemap.xml`에 `/en` 행과 alternates. 패치 상세 제목이 "슬더스2 v…"/"STS2 v…". 정적 오류 셸 28개(`<locale>/compendium/{monsters,encounters}.html`)는 기존처럼 bestiary로 리다이렉트.
 - QA: `tsx scripts/check-search-canonical.ts`, `tsx scripts/detail-shell-og.spec.ts`, `qa:cf:testbed`(lang·hreflang 기대값). 수동: sitemap, `/ja` canonical, 패치 제목.
 - Commits: `ff7cb925`(merge of claude/wizardly-brattain-bb7f93: 3c62aca5..10d72230)
+- 후속 수정(묶음 1 QA): 크롤러(Googlebot·Yeti 등)는 ko 페이지에서 `/en` 자동 전환을 하지 않음(`4b7d4340`). Toy Box 기록 셸은 hydration 뒤에도 canonical·hreflang·og:url이 한 벌, `/ja` 기록은 `/en` canonical, 게임 로케일 셸 OG 문구는 영어(`e4bcb93b`). 패치 description이 단어 중간에서 잘리지 않음(`311114f5`). modifiers·ascensions 상세에 canonical·hreflang(`e58d7556`). 게임 로케일 목록의 승천·모디파이어·배지 타일이 404 상세 대신 목록 모달 URL로(`3e02cb1b`, `471420ce`, `9d8b3217`). 게임 로케일 패치 페이지·탐색기·백과사전 패치 이력 링크가 `/en` 대신 그 로케일로(`ea1ac8f6`, `e26d34c2`, `22bd242e`). `build-23478716` 패치 줄 링크 404 수정(`8024759b`, `b7f7c4ab`).
+  - Expect: en-US Googlebot UA로 ko URL을 렌더해도 canonical이 ko. `/ja/this-or-that/<id>` hydration 뒤 canonical 1개(`/en/this-or-that/<id>`). `/ja/patches/*`에 `/en/` 링크 0개. `/ja/compendium/{ascensions,modifiers,badges}`에서 404 prefetch 없음.
+  - QA: `tsx scripts/check-search-canonical.ts`, `tsx scripts/detail-shell-og.spec.ts`, `qa:cf:testbed`(Googlebot canonical, 셸 canonical 1개).
 
 ### static-compendium-detail
-- Feature: 백과사전 상세가 사실 항목·효과 텍스트·관련 링크·변경 이력을 서버 HTML로 먼저 내고 hydration한다. 상세 payload를 `/generated/compendium-data/<locale>/<resource>.json` 141개 chunk로 나눈다. 목록은 그리드용 행만 보내고 모달·호버·이력은 chunk에서 불러온다. 목록 끝에 전체 항목 링크 색인. ko/en 정적 패치 페이지의 게임 요소 링크가 `/compendium/<type>/<id>`. 카드·유물·포션 상세의 캐릭터 항목이 캐릭터 페이지로 링크.
-- Expect: 상세(ko/en, 모바일)가 정적 화면→상호작용 화면으로 바뀔 때 큰 깜빡임·레이아웃 이동 없음. chunk 실패 시 정적 본문 유지. 목록 호버 팁·모달·버전 선택 정상. 도감 몬스터의 문을 만드는 자·잠행 군체 타일이 chunk 도착 뒤 정상. 역사 강의서·커버 카드 정상.
+- Feature: 백과사전 상세가 사실 항목·효과 텍스트·관련 링크·변경 이력을 서버 HTML로 먼저 내고 hydration한다. 상세 payload를 `/generated/compendium-data/<locale>/<resource>.json` 141개 chunk로 나눈다. 목록은 그리드용 행만 보내고 모달·호버·이력은 chunk에서 불러온다. 목록 끝에 전체 항목 링크 색인(크롤러·키보드용, 포커스가 닿기 전에는 보이지 않음). ko/en 정적 패치 페이지의 게임 요소 링크가 `/compendium/<type>/<id>`. 카드·유물·포션 상세의 캐릭터 항목이 캐릭터 페이지로 링크.
+- Expect: 상세(ko/en, 모바일) 정적 화면에서 폰트 로드로 인한 레이아웃 이동 없음(CLS≈0). 정적 화면→상호작용 화면은 운영의 로딩 화면처럼 통째로 교체되지만 컨테이너 폭·뒤로가기 위치가 같음. 정적 라벨이 상호작용 화면 라벨과 같아 hydration 때 글자가 바뀌지 않음. chunk 실패 시 정적 본문 유지. 목록 호버 팁·모달·버전 선택 정상. 도감 몬스터의 문을 만드는 자·잠행 군체 타일이 chunk 도착 뒤 정상. 역사 강의서·커버 카드 정상.
 - QA: `static:data`가 1.5 MB 미만 chunk 141개 기록, `cf:smoke --scope all`(`/generated/compendium-data/kor/cards.json`), `qa:cf:testbed` relic 모달. 수동: 위 Expect 항목.
 - Commits: `3741dec8`(merge of claude/recursing-hopper-6b84b3: 33876a10..1fba341f). 충돌은 `patch-note-renderer.tsx` 한 곳, main의 `entityCompendiumHref()` 위에 상세 링크 변환을 얹음.
+- 후속 수정(묶음 1 QA): 정적 상세 라벨을 상호작용 화면 라벨·게임 문자열과 맞춤(인챈트 카드 유형 한국어, 캐릭터가 아닌 분류는 '캐릭터' 항목에서 뺌, en 'Actions', 서사 텍스트에 '효과' 제목 없음)(`8b1c021c`, `76bebf90`, `a4851731`, `cf4b71db`, `c931a954`). 헤더 이미지 고정 96px 상자, 상호작용 화면과 같은 컨테이너(`f7b69ccb`, `60fabce9`). 목록 링크 색인 때문에 목록이 46px 스크롤되던 문제(`b864612d`). chunk 도착 전 몬스터·조우·키워드 모달은 '불러오는 중'(`379376c4`, `8fe92e68`). 영어 몬스터 행동의 '기절함'을 게임 문자열로(`1e5499d7`, `5b3453fc`).
+  - Expect: 390px에서 정적 상세 가로 스크롤 없음. 목록 페이지 휠 스크롤 시 제목 줄이 가려지지 않음. 데이터 도착 전 몬스터 모달에 '검색 결과가 없습니다'가 뜨지 않음. `/en/compendium/monsters/ceremonial_beast` 행동에 '기절함' 없음.
+  - QA: `qa:cf:testbed`, 수동: 위 Expect.
+
+### rendering-fallbacks
+- Feature: 게임 폰트(STS Spectral·Kreon·GC Batang)마다 치수를 맞춘 로컬 대체 폰트를 둬서 웹폰트가 늦게 와도 줄바꿈이 바뀌지 않는다. sine(물결) 텍스트가 띄어쓰기에서 줄바꿈된다. 모든 페이지와 patch Worker 페이지에 적용.
+- Expect: 웹폰트 로드 전후 화면 위치가 같음(정적 상세 CLS 0.19→0.0003). 웹폰트 로드 뒤 화면은 이전과 같음. 좁은 화면에서 sine 인용문이 넘치지 않고, 넓은 화면의 sine 문구는 그대로.
+- QA: 수동: 느린 네트워크에서 `/en/compendium/characters/ironclad`, `/compendium/powers/vulnerable`. 390px에서 `/compendium/events/dense_vegetation`, `/compendium/epochs/defect3_epoch`. 패치노트 sine 문구(버프/너프 라벨) 데스크톱 비교.
+- Commits: `a87120bd`, `41e5bdb1`, `a123c155`
+
+### css-build-guard
+- Feature: Tailwind 자동 감지가 `.agents`·`.claude`·`docs`를 훑지 않게 해서 webpack 영속 캐시가 낡은 CSS를 되살리지 않게 한다. CI가 빌드 뒤 `pnpm css:check`로 빠진 클래스를 잡고, Next 캐시 키를 `next-v2-`로 바꿔 오염된 캐시를 버린다.
+- Expect: 배포 CSS에 `columns-2`·`sm:columns-3`·`lg:columns-5`·`max-h-24`·`whitespace-pre-line`·`rich-sine-space`가 있음. 첫 CI 빌드는 캐시 없이 돈다.
+- QA: CI의 css:check 단계 통과. 로컬은 `rm -rf .next/cache/webpack` 뒤 빌드하고 `pnpm css:check`.
+- Commits: `b5bb6e8a`, `bbf3c2a0`
 
 <!--
 ### <항목-id>
