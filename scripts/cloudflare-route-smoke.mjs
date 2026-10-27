@@ -211,6 +211,85 @@ function mainCases() {
     ...missingPage(`/transfigure/${MISSING_UUID}/extra`),
     ...missingPage(`/pagestorm/${MISSING_UUID}/extra`),
     ...missingPage(`/history-course/${HISTORY_RUN_ID}/extra`),
+    ...page("/decisions-decisions", "service"),
+    ...page("/en/decisions-decisions", "service"),
+    ...page("/this-or-that/tournament", "service"),
+    ...page("/zh/this-or-that/tournament", "service"),
+    {
+      name: "Worldcup index redirect document",
+      path: "/this-or-that/worldcup",
+      headers: { Accept: "text/html" },
+      statuses: [308],
+      location: "/this-or-that/tournament",
+    },
+    {
+      name: "Worldcup index redirect RSC",
+      path: "/en/this-or-that/worldcup?_rsc=smoke",
+      headers: { RSC: "1" },
+      statuses: [308],
+      location: "/en/this-or-that/tournament",
+    },
+    {
+      name: "Korean locale alias redirect",
+      path: "/ko",
+      headers: { Accept: "text/html" },
+      statuses: [308],
+      location: "/",
+    },
+    {
+      name: "Korean locale alias nested redirect",
+      path: "/kor/compendium/cards",
+      headers: { Accept: "text/html" },
+      statuses: [308],
+      location: "/compendium/cards",
+    },
+    {
+      name: "Unknown path trailing-slash redirect",
+      path: "/does-not-exist/",
+      headers: { Accept: "text/html" },
+      statuses: [308],
+      location: "/does-not-exist",
+    },
+    {
+      name: "Not-found document",
+      path: "/does-not-exist",
+      headers: { Accept: "text/html" },
+      statuses: [404],
+      contentType: "text/html",
+      owner: "not-found",
+      bodyIncludes: "<html lang=\"ko\"",
+    },
+    {
+      name: "Locale not-found document",
+      path: "/en/does-not-exist",
+      headers: { Accept: "text/html" },
+      statuses: [404],
+      contentType: "text/html",
+      owner: "not-found",
+      bodyIncludes: "lang=\"en\"",
+    },
+    {
+      name: "Not-found RSC",
+      path: "/does-not-exist?_rsc=smoke",
+      headers: { RSC: "1" },
+      statuses: [404],
+      contentType: "text/x-component",
+      owner: "not-found",
+    },
+    {
+      name: "Link preview rejects a private URL",
+      path: "/api/link-preview?url=http%3A%2F%2F127.0.0.1%2F",
+      statuses: [400],
+      contentType: "application/json",
+      bodyIncludes: "unsupported url",
+    },
+    {
+      name: "POST to a static page",
+      path: "/compendium/cards",
+      method: "POST",
+      statuses: [405],
+      allow: "GET, HEAD",
+    },
     {
       name: "Search index asset",
       path: "/generated/search-index.json",
@@ -328,6 +407,7 @@ function sleep(milliseconds) {
 
 async function fetchCase(origin, testCase) {
   const response = await fetch(`${origin}${testCase.path}`, {
+    method: testCase.method ?? "GET",
     headers: testCase.headers,
     redirect: "manual",
     signal: AbortSignal.timeout(15_000),
@@ -360,6 +440,10 @@ function validateCase(testCase, response, body) {
   const missingBodyPart = requiredBodyParts.find((part) => !body.includes(part));
   if (missingBodyPart) {
     return `response body is missing ${JSON.stringify(missingBodyPart)}`;
+  }
+
+  if (testCase.allow && response.headers.get("allow") !== testCase.allow) {
+    return `expected allow ${testCase.allow}, got ${response.headers.get("allow") || "missing"}`;
   }
 
   if (testCase.location) {
