@@ -2,12 +2,18 @@
  * Builds the main Worker's static asset directory from a finished
  * `next build`: `public/**` at the root, `.next/static/**` at
  * `/_next/static/**`, and `BUILD_ID` (the deployed build marker).
- * `copy-cf-static-pages.mjs` then adds the prerendered pages.
+ * Public files matched by `cloudflare-asset-excludes.mjs` stay out.
+ * `copy-cf-static-pages.mjs` then adds the prerendered pages, and
+ * `prune-cf-unreferenced-assets.mjs` drops unreachable Next chunks.
  */
 import { copyFileSync, cpSync, readdirSync, rmSync, statSync } from "node:fs";
 import path from "node:path";
 
 import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
+import {
+  assertUnusedPublicSourcesExist,
+  publicAssetExcludeReason,
+} from "./cloudflare-asset-excludes.mjs";
 
 const publicDir = "public";
 const nextStaticDir = path.join(".next", "static");
@@ -32,8 +38,22 @@ for (const [label, target, isDirectory] of [
   }
 }
 
+assertUnusedPublicSourcesExist(publicDir);
+
+const excludedByRule = new Map();
 rmSync(CLOUDFLARE_ASSETS_DIR, { recursive: true, force: true });
-cpSync(publicDir, CLOUDFLARE_ASSETS_DIR, { recursive: true, dereference: true });
+cpSync(publicDir, CLOUDFLARE_ASSETS_DIR, {
+  recursive: true,
+  dereference: true,
+  filter: (source) => {
+    const relativePath = path.relative(publicDir, source);
+    if (!relativePath || statSync(source).isDirectory()) return true;
+    const reason = publicAssetExcludeReason(relativePath, publicDir);
+    if (!reason) return true;
+    excludedByRule.set(reason, (excludedByRule.get(reason) ?? 0) + 1);
+    return false;
+  },
+});
 cpSync(nextStaticDir, path.join(CLOUDFLARE_ASSETS_DIR, "_next", "static"), {
   recursive: true,
   dereference: true,
@@ -44,3 +64,6 @@ console.log(
   `Collected ${countFiles(CLOUDFLARE_ASSETS_DIR)} Cloudflare asset(s) in ${CLOUDFLARE_ASSETS_DIR} `
   + `(public, .next/static, BUILD_ID)`,
 );
+for (const [reason, count] of excludedByRule) {
+  console.log(`  left out ${count} public file(s): ${reason}`);
+}
