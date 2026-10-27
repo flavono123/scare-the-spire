@@ -602,7 +602,7 @@ function buildTypeModel(
           facts: fact(
             labels.cardType,
             enchantment.cardType
-              ? (gameUi.cardLibrary.types as Record<string, string>)[enchantment.cardType] ?? enchantment.cardType
+              ? getCodexServiceMessages(ctx.serviceLocale).labels.enchantmentCardTypes[enchantment.cardType].label
               : null,
           ),
           texts: text(labels.description, enchantment.description),
