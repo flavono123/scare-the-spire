@@ -449,7 +449,8 @@ function buildPatchMonsterMoveEntities(
 
   for (const monster of monsters) {
     for (const move of [...monster.bestiaryMoves, ...monster.moves]) {
-      if (["NOTHING", "SPAWNED", "DEAD"].includes(move.id)) continue;
+      // STUNNED is a generic state; auto-linking it would turn the plain word "stunned" into a move mention.
+      if (["NOTHING", "SPAWNED", "DEAD", "STUNNED"].includes(move.id)) continue;
       const key = `${monster.id}:${move.id}`;
       if (seen.has(key)) continue;
       seen.add(key);
