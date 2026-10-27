@@ -2,6 +2,7 @@ import BasePage, {
   generateMetadata as generateBaseMetadata,
   generateStaticParams as generateBaseStaticParams,
 } from "../../../_codex/ascensions/[id]/page";
+import { withSearchCanonical } from "@/lib/search-canonical";
 import { defaultRouteSearchParams } from "../../static-locale";
 
 export const dynamic = "force-static";
@@ -13,8 +14,12 @@ export function generateStaticParams() {
   return generateBaseStaticParams();
 }
 
-export function generateMetadata({ params }: Props) {
-  return generateBaseMetadata({ params, searchParams: defaultRouteSearchParams() });
+export async function generateMetadata({ params }: Props) {
+  const { id } = await params;
+  const metadata = await generateBaseMetadata({ params, searchParams: defaultRouteSearchParams() });
+  if (!metadata.title) return metadata;
+  // Same canonical, hreflang, and og:url as every other Compendium detail page.
+  return withSearchCanonical(metadata, `/compendium/ascensions/${encodeURIComponent(id.toLowerCase())}`, "ko");
 }
 
 export default function CompendiumAscensionDetailPage({ params }: Props) {

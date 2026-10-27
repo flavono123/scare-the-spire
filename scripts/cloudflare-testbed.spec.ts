@@ -125,26 +125,34 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
   expect(gameLocaleModal.headers()["x-cf-static-page"]).toBe("compendium");
 
   // ko and en are each self-canonical with reciprocal ko/en/x-default alternates.
-  for (const [path, lang] of [
-    ["/compendium/powers/painful_stabs", "ko"],
-    ["/en/compendium/powers/painful_stabs", "en"],
+  // Modifier and ascension details share the same policy as other detail types.
+  for (const basePath of [
+    "/compendium/powers/painful_stabs",
+    "/compendium/modifiers/murderous",
+    "/compendium/ascensions/level_08",
   ]) {
-    const response = await request.get(absolute(path), { headers: { Accept: "text/html" } });
-    expect(response.status(), path).toBe(200);
-    const html = await response.text();
-    expect(html, path).toMatch(new RegExp(`<html[^>]* lang="${lang}"`));
-
-    await page.goto(absolute(path), { waitUntil: "domcontentloaded" });
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical(path));
-    for (const [hrefLang, alternatePath] of [
-      ["ko", "/compendium/powers/painful_stabs"],
-      ["en", "/en/compendium/powers/painful_stabs"],
-      ["x-default", "/en/compendium/powers/painful_stabs"],
+    for (const [path, lang] of [
+      [basePath, "ko"],
+      [`/en${basePath}`, "en"],
     ]) {
-      await expect(page.locator(`link[rel="alternate"][hreflang="${hrefLang}"]`)).toHaveAttribute(
-        "href",
-        canonical(alternatePath),
-      );
+      const response = await request.get(absolute(path), { headers: { Accept: "text/html" } });
+      expect(response.status(), path).toBe(200);
+      const html = await response.text();
+      expect(html, path).toMatch(new RegExp(`<html[^>]* lang="${lang}"`));
+
+      await page.goto(absolute(path), { waitUntil: "domcontentloaded" });
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical(path));
+      await expect(page.locator('meta[property="og:url"]')).toHaveAttribute("content", canonical(path));
+      for (const [hrefLang, alternatePath] of [
+        ["ko", basePath],
+        ["en", `/en${basePath}`],
+        ["x-default", `/en${basePath}`],
+      ]) {
+        await expect(page.locator(`link[rel="alternate"][hreflang="${hrefLang}"]`)).toHaveAttribute(
+          "href",
+          canonical(alternatePath),
+        );
+      }
     }
   }
 });

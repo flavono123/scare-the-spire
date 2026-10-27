@@ -8,6 +8,7 @@ import {
   searchRecordForGameLocale,
   type LocaleRouteParams,
 } from "@/lib/locale-routing";
+import { withSearchCanonical } from "@/lib/search-canonical";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -19,11 +20,18 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { gameLocale, id } = await getLocalePairFromParams(params);
-  return generateBaseMetadata({
+  const { gameLocale, serviceLocale, id } = await getLocalePairFromParams(params);
+  const metadata = await generateBaseMetadata({
     params: Promise.resolve({ id }),
     searchParams: Promise.resolve(searchRecordForGameLocale(gameLocale)),
   });
+  if (!metadata.title) return metadata;
+  // Same canonical, hreflang, and og:url as every other Compendium detail page.
+  return withSearchCanonical(
+    metadata,
+    `/compendium/ascensions/${encodeURIComponent(id.toLowerCase())}`,
+    serviceLocale,
+  );
 }
 
 async function LocalizedAscensionDetailPage({ params }: Props) {
