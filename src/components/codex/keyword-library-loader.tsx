@@ -10,11 +10,14 @@ const LAZY_DATA_KEYS = [
   "cards",
 ] as const satisfies readonly CompendiumDataKey[];
 
-type KeywordLibraryLoaderProps = Omit<ComponentProps<typeof KeywordLibrary>, "cards" | "entities"> & {
+type KeywordLibraryLoaderProps = Omit<ComponentProps<typeof KeywordLibrary>, "cards" | "entities" | "detailsReady"> & {
   gameLocale: GameLocale;
 };
 
-/** Renders KeywordLibrary from its server props and fills in the rest once the data chunks load. */
+/**
+ * Renders KeywordLibrary from its server props and fills in the rest once the
+ * data chunks load. The detail modal waits for the related cards and entities.
+ */
 export function KeywordLibraryLoader({ gameLocale, ...props }: KeywordLibraryLoaderProps) {
   const data = useCompendiumData(gameLocale, LAZY_DATA_KEYS);
   const entities = useCompendiumEntities(gameLocale);
@@ -23,6 +26,7 @@ export function KeywordLibraryLoader({ gameLocale, ...props }: KeywordLibraryLoa
       {...props}
       cards={data?.cards}
       entities={entities}
+      detailsReady={data !== null && entities !== undefined}
     />
   );
 }
