@@ -32,10 +32,12 @@ import {
   updateCompendiumResourceModalUrl,
 } from "@/lib/compendium-resource-links";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
+import { serviceMessages } from "@/messages/service";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -55,6 +57,8 @@ interface CharacterListProps {
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
   entities?: EntityInfo[];
+  /** False until the data chunks settle; the detail modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
 const CHARACTER_FACE_FOCUS: Record<string, string> = {
@@ -162,6 +166,7 @@ export function CharacterList({
   changes,
   versionDiffs,
   entities,
+  detailsReady = true,
 }: CharacterListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlCharacterId = useHydrationSafeSearchParam("character");
@@ -355,21 +360,31 @@ export function CharacterList({
       {selectedCharacter && (
         <CompendiumDetailOverlay onClose={() => closeSelectedCharacter()} aria-label={selectedCharacter.name}>
           <div className="mx-4 my-8 w-full max-w-6xl">
-            <CharacterDetail
-              serviceLocale={serviceLocale}
-              backToListTitle={title}
-              character={selectedCharacter}
-              characters={characters}
-              cards={cards}
-              relics={relics}
-              potions={potions}
-              ancients={ancients}
-              onClose={closeSelectedCharacter}
-              entities={entities}
-              patches={patches}
-              changes={changes}
-              versionDiffs={versionDiffs}
-            />
+            {detailsReady ? (
+              <CharacterDetail
+                serviceLocale={serviceLocale}
+                backToListTitle={title}
+                character={selectedCharacter}
+                characters={characters}
+                cards={cards}
+                relics={relics}
+                potions={potions}
+                ancients={ancients}
+                onClose={closeSelectedCharacter}
+                entities={entities}
+                patches={patches}
+                changes={changes}
+                versionDiffs={versionDiffs}
+              />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedCharacter.name}
+                backToListTitle={title}
+                closeLabel={serviceText.common.close}
+                loadingLabel={serviceMessages[serviceLocale].comments.loading}
+                onClose={closeSelectedCharacter}
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}
