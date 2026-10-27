@@ -32,6 +32,7 @@ import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import { versionCodexEntities } from "@/lib/codex-versioning";
+import { serviceMessages } from "@/messages/service";
 import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
@@ -51,6 +52,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -74,9 +76,11 @@ interface PowerLibraryProps {
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
   entities?: EntityInfo[];
+  /** False until the data chunks settle; the detail modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
-export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], relics = [], potions = [], enchantments = [], events = [], monsters = [], afflictions = [], tipCatalogSources, versions, currentVersion, patches, changes, versionDiffs, entities }: PowerLibraryProps) {
+export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], relics = [], potions = [], enchantments = [], events = [], monsters = [], afflictions = [], tipCatalogSources, versions, currentVersion, patches, changes, versionDiffs, entities, detailsReady = true }: PowerLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlPowerId = useHydrationSafeSearchParam("power");
   const urlVersion = useHydrationSafeSearchParam("version");
@@ -331,28 +335,38 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
       {selectedPower && (
         <CompendiumDetailOverlay onClose={() => closeSelectedPower()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <PowerDetail
-              serviceLocale={serviceLocale}
-              gameUi={gameUi}
-              backToListTitle={title}
-              power={selectedPower}
-              initialShowBeta={showBeta}
-              patches={patches}
-              changes={changes}
-              versionDiffs={versionDiffs}
-              entities={entities}
-              relatedCards={cards}
-              relatedRelics={relics}
-              relatedPotions={potions}
-              relatedEnchantments={enchantments}
-              relatedEvents={events}
-              relatedMonsters={monsters}
-              relatedAfflictions={afflictions}
-              tipCatalogSources={tipCatalogSources}
-              tipCatalogCards={cards}
-              tipCatalogPowers={powers}
-              onClose={closeSelectedPower}
-            />
+            {detailsReady ? (
+              <PowerDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                backToListTitle={title}
+                power={selectedPower}
+                initialShowBeta={showBeta}
+                patches={patches}
+                changes={changes}
+                versionDiffs={versionDiffs}
+                entities={entities}
+                relatedCards={cards}
+                relatedRelics={relics}
+                relatedPotions={potions}
+                relatedEnchantments={enchantments}
+                relatedEvents={events}
+                relatedMonsters={monsters}
+                relatedAfflictions={afflictions}
+                tipCatalogSources={tipCatalogSources}
+                tipCatalogCards={cards}
+                tipCatalogPowers={powers}
+                onClose={closeSelectedPower}
+              />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedPower.name}
+                backToListTitle={title}
+                closeLabel={serviceText.common.close}
+                loadingLabel={serviceMessages[serviceLocale].comments.loading}
+                onClose={closeSelectedPower}
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}
