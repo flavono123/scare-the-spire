@@ -282,6 +282,73 @@ export function staticServiceDetailShellAssetPath(
   return null;
 }
 
+/**
+ * Service pages the Worker took over from the Next runtime. Unlike the older
+ * static branches they match only the exact path: a trailing slash keeps the
+ * Next-style 308 that production returned before they became static.
+ */
+export const STATIC_EXACT_SERVICE_PAGES: ReadonlyArray<readonly string[]> = [
+  ["decisions-decisions"],
+  ["this-or-that", "tournament"],
+];
+
+function splitLocalePrefix(pathname: string): { localePrefix: string[]; rest: string[] } {
+  const parts = pathname.split("/").filter(Boolean);
+  if (STATIC_GAME_LOCALE_PREFIXES.has(parts[0] ?? "")) {
+    return { localePrefix: [parts[0]], rest: parts.slice(1) };
+  }
+  return { localePrefix: [], rest: parts };
+}
+
+function isExactRoutePath(pathname: string): boolean {
+  return pathname.startsWith("/") && !pathname.endsWith("/") && !pathname.includes("//");
+}
+
+export function staticExactServicePageAssetPath(
+  pathname: string,
+  extension: StaticPageExtension,
+): string | null {
+  if (!isExactRoutePath(pathname)) return null;
+  const { localePrefix, rest } = splitLocalePrefix(pathname);
+  const page = STATIC_EXACT_SERVICE_PAGES.find((segments) => (
+    segments.length === rest.length && segments.every((segment, index) => rest[index] === segment)
+  ));
+  if (!page) return null;
+  return `/_cf_static_pages/${[...localePrefix, ...page].join("/")}.${extension}`;
+}
+
+/** `/this-or-that/worldcup` was a Next `permanentRedirect` page. */
+export function legacyWorldcupIndexRedirectPath(pathname: string): string | null {
+  if (!isExactRoutePath(pathname)) return null;
+  const { localePrefix, rest } = splitLocalePrefix(pathname);
+  if (rest.length !== 2 || rest[0] !== "this-or-that" || rest[1] !== "worldcup") return null;
+  return `/${[...localePrefix, "this-or-that", "tournament"].join("/")}`;
+}
+
+export interface PrerenderedRedirect {
+  status: 307 | 308;
+  location: string;
+}
+
+/**
+ * Pages whose prerender is only a Next `redirect()` (307) or
+ * `permanentRedirect()` (308). The Worker answers them with the same status
+ * and relative Location instead of serving the meta-refresh HTML.
+ */
+export function prerenderedRedirect(pathname: string): PrerenderedRedirect | null {
+  if (pathname === "/dev/pagestorm-editor") {
+    return { status: 307, location: "/pagestorm/write" };
+  }
+  const worldcupIndex = legacyWorldcupIndexRedirectPath(pathname);
+  return worldcupIndex ? { status: 308, location: worldcupIndex } : null;
+}
+
+export const STATIC_NOT_FOUND_ASSET_BASENAME = "404";
+
+export function staticNotFoundAssetPath(extension: StaticPageExtension): string {
+  return `/_cf_static_pages/${STATIC_NOT_FOUND_ASSET_BASENAME}.${extension}`;
+}
+
 export function legacyWorldcupDetailRedirectPath(pathname: string): string | null {
   const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
   const parts = normalizedPathname.split("/").filter(Boolean);

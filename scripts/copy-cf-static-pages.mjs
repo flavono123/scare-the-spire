@@ -67,6 +67,13 @@ const staticServicePageSegments = new Set([
 const staticNestedServicePages = [
   ["pagestorm", "write"],
 ];
+// Mirrors STATIC_EXACT_SERVICE_PAGES in workers/static-page-routing.ts.
+const staticExactServicePages = [
+  ["decisions-decisions"],
+  ["this-or-that", "tournament"],
+];
+// Next's prerendered not-found page, served by the Worker for unmatched paths.
+const notFoundPage = { source: "_not-found", target: "404" };
 const staticDetailShellSegment = "__id__";
 const staticServiceDetailSegments = new Set([
   "chemical-x",
@@ -140,6 +147,18 @@ function staticPageRelativePath(file) {
       parts[1] === service && parsed.name === nested
     ));
   if (isDefaultNestedServicePage || isGameLocaleNestedServicePage) {
+    return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
+  }
+
+  const routeParts = [...parts, parsed.name];
+  const unprefixedRouteParts = gameLocalePathSegments.has(routeParts[0])
+    ? routeParts.slice(1)
+    : routeParts;
+  const isExactServicePage = staticExactServicePages.some((page) => (
+    page.length === unprefixedRouteParts.length
+    && page.every((segment, index) => unprefixedRouteParts[index] === segment)
+  ));
+  if (isExactServicePage) {
     return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
   }
 
@@ -267,6 +286,15 @@ for (const file of walk(appDir)) {
   } else {
     copyFileSync(file, output);
   }
+  count += 1;
+}
+
+for (const extension of [".html", ".rsc"]) {
+  const source = path.join(appDir, `${notFoundPage.source}${extension}`);
+  if (!statSync(source, { throwIfNoEntry: false })?.isFile()) {
+    throw new Error(`Missing prerendered not-found page: ${source}`);
+  }
+  copyFileSync(source, path.join(outDir, `${notFoundPage.target}${extension}`));
   count += 1;
 }
 
