@@ -42,7 +42,7 @@
 
 ### css-build-guard
 - Feature: Tailwind 자동 감지가 `.agents`·`.claude`·`docs`를 훑지 않게 해서 webpack 영속 캐시가 낡은 CSS를 되살리지 않게 한다. CI가 빌드 뒤 `pnpm css:check`로 빠진 클래스를 잡고, Next 캐시 키를 `next-v2-`로 바꿔 오염된 캐시를 버린다.
-- Expect: 배포 CSS에 `columns-2`·`sm:columns-3`·`lg:columns-5`·`max-h-24`·`whitespace-pre-line`·`rich-sine-space`가 있음. 첫 CI 빌드는 캐시 없이 돈다.
+- Expect: 배포 CSS에 `columns-2`·`sm:columns-3`·`lg:columns-5`·`whitespace-pre-line`·`rich-sine-space`가 있음(`max-h-24`는 `f7b69ccb` 뒤로 쓰는 곳이 없어 빠지는 게 맞음). 첫 CI 빌드는 캐시 없이 돈다.
 - QA: CI의 css:check 단계 통과. 로컬은 `rm -rf .next/cache/webpack` 뒤 빌드하고 `pnpm css:check`.
 - Commits: `b5bb6e8a`, `bbf3c2a0`
 
