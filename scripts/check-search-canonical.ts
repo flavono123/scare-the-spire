@@ -9,6 +9,7 @@ import {
   withSearchCanonical,
 } from "../src/lib/search-canonical";
 import { GAME_LOCALE_PATH_SEGMENTS } from "../src/lib/i18n";
+import { isSearchCrawlerUserAgent } from "../src/lib/locale-detection";
 import { absoluteSiteUrl } from "../src/lib/site-origin";
 
 // Locale-free base paths.
@@ -82,5 +83,35 @@ assert.equal((enMetadata.openGraph as { url?: string }).url, absoluteSiteUrl("/e
 assert.deepEqual(koMetadata.alternates?.languages, enMetadata.alternates?.languages);
 assert.deepEqual(koMetadata.alternates?.types, base.alternates?.types);
 assert.equal(withSearchCanonical({ title: "x" }, "/patches", "en").openGraph, undefined);
+
+// Crawlers keep the requested language page (no client locale switch), so the
+// rendered canonical stays on that page. HeadlessChrome alone is not a crawler.
+for (const userAgent of [
+  "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.137 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+  "Mozilla/5.0 (compatible; Google-InspectionTool/1.0;)",
+  "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
+  "Mozilla/5.0 (compatible; Yeti/1.1; +https://naver.me/spd)",
+  "Mozilla/5.0 (compatible; Daum/4.1; +http://cs.daum.net/faq/15/4118.html?faqId=28966)",
+  "Mozilla/5.0 (compatible; MSIE or Firefox mutant; not on Windows server; + http://tab.search.daum.net/aboutWebSearch.html) Daumoa/3.0",
+  "Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)",
+  "DuckDuckBot/1.1; (+http://duckduckgo.com/duckduckbot.html)",
+  "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+  "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)",
+  "Example-Crawler/1.0",
+  "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+  "Mediapartners-Google",
+]) {
+  assert.equal(isSearchCrawlerUserAgent(userAgent), true, userAgent);
+}
+for (const userAgent of [
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1",
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 13; SM-S918N; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/118.0.0.0 Mobile Safari/537.36 DaumApps/7.10.0 DaumDevice/mobile",
+  "",
+  undefined,
+]) {
+  assert.equal(isSearchCrawlerUserAgent(userAgent), false, String(userAgent));
+}
 
 console.log("search-canonical ok");

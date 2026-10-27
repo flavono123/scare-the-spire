@@ -37,7 +37,10 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { getContactHref } from "@/lib/contact-routing";
-import { detectGameLocaleFromNavigator } from "@/lib/locale-detection";
+import {
+  detectGameLocaleFromNavigator,
+  isSearchCrawlerUserAgent,
+} from "@/lib/locale-detection";
 import {
   globalSearchItemScore,
   globalSearchResultKey,
@@ -359,6 +362,8 @@ function InitialLocaleDetector() {
     if (hasGameLocalePathPrefix(pathname)) return;
     if (searchParams.has("gl")) return;
     if (getLocalePreference()) return;
+    // Crawlers index the requested language page; never switch it for them.
+    if (isSearchCrawlerUserAgent(navigator.userAgent)) return;
 
     const currentHash = window.location.hash;
     const detectedGameLocale = detectGameLocaleFromNavigator(navigator);

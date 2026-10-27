@@ -73,6 +73,19 @@ export function detectGameLocaleFromLanguageTags(tags: readonly string[]): GameL
   return null;
 }
 
+/*
+ * Search and audit crawlers (Googlebot, Google-InspectionTool, bingbot, Naver
+ * Yeti, Daum, Yahoo Slurp, DuckDuckBot, Lighthouse, Mediapartners-Google, and
+ * generic bot/crawl/spider agents). HeadlessChrome alone is not a crawler.
+ */
+const SEARCH_CRAWLER_USER_AGENT_PATTERN =
+  /bot|crawl|spider|slurp|google-inspectiontool|mediapartners|lighthouse|\byeti\/|\bdaum(?:oa)?\//i;
+
+/** True for crawler user agents, which must keep the requested language page. */
+export function isSearchCrawlerUserAgent(userAgent: string | null | undefined): boolean {
+  return Boolean(userAgent && SEARCH_CRAWLER_USER_AGENT_PATTERN.test(userAgent));
+}
+
 export function detectGameLocaleFromNavigator(
   navigatorLike: Pick<Navigator, "language" | "languages">,
 ): GameLocale {

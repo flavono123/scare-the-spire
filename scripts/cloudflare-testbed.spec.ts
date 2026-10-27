@@ -149,6 +149,24 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
   }
 });
 
+test.describe("crawler on an en-US browser", () => {
+  test.use({
+    locale: "en-US",
+    userAgent: "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.137 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+  });
+
+  test("Googlebot keeps the ko page and its ko canonical after hydration", async ({ page }) => {
+    const path = "/compendium/cards/bash";
+    const response = await page.goto(absolute(path), { waitUntil: "networkidle" });
+    expect(response?.status()).toBe(200);
+    // A human en-US visitor is soft-navigated to /en here; a crawler is not.
+    await page.waitForTimeout(1_000);
+    expect(new URL(page.url()).pathname).toBe(path);
+    await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical(path));
+  });
+});
+
 test("compendium detail keeps its view on the canonical detail URL", async ({ page }) => {
   // Before hydration the tile is a plain link to the detail page; wait for the
   // client handler that opens the modal.
