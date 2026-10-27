@@ -12,9 +12,9 @@ import {
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import {
   chemicalPostOgImage,
-  getChemicalPostOgFields,
   truncateOgTitle,
 } from "@/lib/toybox-post-og";
+import { getChemicalPostOgFields } from "@/lib/toybox-post-og-fields";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 

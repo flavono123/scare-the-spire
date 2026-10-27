@@ -12,7 +12,8 @@ import {
   composeToyBoxPostOgDescription,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { clipOgDescription, getDefragmentPostOgFields, postBlockOgImage } from "@/lib/toybox-post-og";
+import { clipOgDescription, postBlockOgImage } from "@/lib/toybox-post-og";
+import { getDefragmentPostOgFields } from "@/lib/toybox-post-og-fields";
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
