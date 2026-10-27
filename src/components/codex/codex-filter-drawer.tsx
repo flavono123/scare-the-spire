@@ -1,6 +1,15 @@
 "use client";
 
-import { useEffect, useState, type HTMLAttributes, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { cn } from "@/lib/utils";
 
@@ -160,6 +169,9 @@ export function CompendiumIndexScroller({
   );
 }
 
+/** Lets a loading stand-in ask its overlay to keep the scroll rail's gutter. */
+const ReserveRailGutterContext = createContext<(() => void) | null>(null);
+
 export function CompendiumDetailOverlay({
   children,
   onClose,
@@ -172,6 +184,11 @@ export function CompendiumDetailOverlay({
   onClose: () => void;
   zClassName?: string;
 } & HTMLAttributes<HTMLDivElement>) {
+  // GameScrollArea adds the desktop rail gutter only once content overflows.
+  // After a loading stand-in has been shown, keep that gutter so the frame does
+  // not move sideways when the full detail arrives and starts to overflow.
+  const [reserveRailGutter, setReserveRailGutter] = useState(false);
+  const requestRailGutter = useCallback(() => setReserveRailGutter(true), []);
   return (
     <div
       className={cn("fixed inset-0 bg-black/70 backdrop-blur-sm", zClassName, className)}
@@ -181,7 +198,7 @@ export function CompendiumDetailOverlay({
       {...rest}
     >
       <GameScrollArea
-        className="h-full"
+        className={cn("h-full", reserveRailGutter && "md:pr-[calc(var(--game-scroll-rail-width)+0.35rem)]")}
         size="large"
         scrollerClassName="min-h-full"
       >
@@ -191,7 +208,9 @@ export function CompendiumDetailOverlay({
             if (event.target === event.currentTarget) onClose();
           }}
         >
-          {children}
+          <ReserveRailGutterContext.Provider value={requestRailGutter}>
+            {children}
+          </ReserveRailGutterContext.Provider>
         </div>
       </GameScrollArea>
     </div>
@@ -218,6 +237,10 @@ export function CompendiumDetailLoading({
   loadingLabel: string;
   onClose: () => void;
 }) {
+  const requestRailGutter = useContext(ReserveRailGutterContext);
+  useLayoutEffect(() => {
+    requestRailGutter?.();
+  }, [requestRailGutter]);
   return (
     <div className="mx-auto w-full max-w-6xl p-4 sm:p-6" aria-busy="true">
       <div className="mb-4 flex w-full items-center justify-between gap-3">
