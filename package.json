@@ -11,7 +11,7 @@
     "static:data": "tsx scripts/generate-static-api-data.ts && tsx scripts/generate-resource-patch-index.ts && tsx scripts/generate-sts1-mention-index.ts && tsx scripts/generate-site-path-index.ts",
     "build": "pnpm static:data && next build --webpack && tsx scripts/prune-dev-route-traces.ts && tsx scripts/check-vercel-function-traces.ts",
     "cf:build": "pnpm static:data && opennextjs-cloudflare build && node scripts/copy-cf-static-pages.mjs && node scripts/prune-opennext-static-page-cache.mjs && pnpm cf:assets",
-    "cf:assets": "tsx scripts/check-cloudflare-static-assets.ts",
+    "cf:assets": "tsx scripts/check-cloudflare-static-assets.ts && tsx scripts/check-cloudflare-route-coverage.ts",
     "cf:size": "node scripts/check-cloudflare-worker-size.mjs",
     "cf:preview": "pnpm static:data && NEXT_PUBLIC_ENABLE_DEV_TOOLS=1 opennextjs-cloudflare build && node scripts/copy-cf-static-pages.mjs && node scripts/prune-opennext-static-page-cache.mjs && pnpm cf:assets && opennextjs-cloudflare preview",
     "cf:testbed": "node scripts/run-cloudflare-testbed.mjs --remote",
