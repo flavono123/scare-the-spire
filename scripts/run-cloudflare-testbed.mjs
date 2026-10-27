@@ -4,6 +4,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { statSync } from "node:fs";
 
 import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
+import { DEV_ASSET_WATCH_ENV } from "./wrangler-dev-assets.mjs";
 
 const LOCAL_MAIN_ORIGIN = "http://127.0.0.1:8787";
 const LOCAL_PATCH_ORIGIN = "http://127.0.0.1:8788";
@@ -93,13 +94,6 @@ function runCaptured(label, command, args, env = process.env) {
     });
   });
 }
-
-// `wrangler dev` watches the assets directory with one kqueue descriptor per
-// file on macOS. Past ~10k assets the descriptors exceed OPEN_MAX and spawning
-// workerd fails with EBADF, so poll (stat-based, no descriptors) instead.
-const DEV_ASSET_WATCH_ENV = process.platform === "darwin"
-  ? { CHOKIDAR_USEPOLLING: "1", CHOKIDAR_INTERVAL: "3600000" }
-  : {};
 
 function startWorker(label, config, port) {
   console.log(`\n[testbed] starting ${label} on port ${port}`);
