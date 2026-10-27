@@ -24,6 +24,24 @@ and `scripts/copy-cf-static-pages.mjs` into `.cloudflare/assets`; deploys use
 `wrangler deploy --keep-vars`. `pnpm cf:assets` runs the Worker against every
 prerendered route and fails if one would need a renderer.
 
+Intended response differences from the OpenNext Worker (no in-app link
+reaches them):
+
+- Parameters OpenNext rendered on demand now get the 404 page: unknown game
+  locale segments (`/xx/decisions-decisions`) and detail IDs outside
+  `[A-Za-z0-9_-]` (`/transfigure/zz.review`). Case variants of a game locale
+  prefix (`/EN/...`) get a 308 to the lowercase path (OpenNext gave 200 or 500).
+- `/_next/image` gets the 404 page. OpenNext's image endpoint passed local
+  images through, but `images.unoptimized` predates the Cloudflare launch, so
+  no page on this origin ever emitted that URL.
+- Unknown paths OpenNext answered with 500 (`/does-not-exist`) get the 404
+  page.
+- Non-GET/HEAD requests get 405 only where a GET finds a page; a missing
+  detail is 404 for every method.
+- Redirects that answer RSC requests keep the query (`_rsc`), and static page
+  responses send Next's `Vary: rsc, next-router-state-tree,
+  next-router-prefetch, next-router-segment-prefetch`.
+
 The service began as a Vercel-targeted Next.js application. OpenNext was added
 as the Cloudflare migration adapter; the sections below record why and how it
 was removed.

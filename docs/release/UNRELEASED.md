@@ -30,8 +30,14 @@
 
 ### opennext-exit (worktree, 미병합)
 - Feature: main Worker가 정적 전용이 된다(런타임 Next/OpenNext 없음, gzip 16.49 KiB). `/decisions-decisions`·`/this-or-that/tournament` 인덱스(14 로케일)를 정적 페이지로 서빙하고, worldcup 인덱스 308·`/dev/pagestorm-editor` 307·`/ko`·`/kor` 308·trailing slash/`//` 308·`/api/link-preview`를 Worker가 예전 응답대로 처리한다. 매칭되지 않는 경로는 Next가 prerender한 not-found 페이지(HTML/RSC, 404, `x-cf-static-page: not-found`)와 `cf-static-404` 로그. 정적 경로의 GET/HEAD 외 메서드는 405. 빌드는 `next build` + `collect-cf-assets.mjs` + `wrangler deploy`. 정적 asset은 닿지 않는 `/_next/static` chunk 64개와 서빙되지 않는 public 파일 53개를 업로드에서 빼고, 낡은 Ancient VFX 텍스처 9개를 지워 18,467개(예산 19,500, 한도 20,000, 예산까지 1,033 남음). STS1 glyph metrics는 페이지 로케일 pack 하나만 받고, 구 STS2 한국어 표는 kor 게임 표를 읽는다(클라이언트 중복 제거 merge).
-- Expect: 화면 변화 없음. STS1 페이지·pagestorm STS1 호버의 글자 렌더 동일. `/does-not-exist`처럼 한 단계짜리 없는 경로가 500 대신 404 페이지. worldcup 인덱스·`/ko` 리다이렉트 Location 동일. 링크 미리보기 동작 동일.
-- QA: `pnpm cf:build`(route coverage·asset 예산 포함 `cf:assets`), `tsx scripts/prune-cf-unreferenced-assets.spec.ts`, `pnpm cf:size`, `pnpm cf:testbed:local --skip-build`, 원격 testbed(`pnpm cf:testbed`) parity, 배포 후 `pnpm cf:logs -- --not-found`.
+- Expect: 화면 변화 없음. STS1 페이지·pagestorm STS1 호버의 글자 렌더 동일. `/does-not-exist`처럼 한 단계짜리 없는 경로가 500 대신 404 페이지. worldcup 인덱스·`/ko` 리다이렉트 Location 동일(RSC 요청은 `_rsc` 쿼리 유지). 링크 미리보기 동작 동일(리다이렉트 중간 단계도 공개 URL만 따라감).
+- 의도한 응답 차이(OpenNext 대비, 실제 링크는 영향 없음):
+  - 렌더러가 요청 시 그리던 비정규 파라미터가 404: 모르는 게임 로케일(`/xx/decisions-decisions`), `.`·`%`가 든 상세 ID(`/transfigure/zz.review`). 게임 로케일 접두사의 대소문자 변형(`/EN/...`, `/En/this-or-that/tournament`)은 소문자 경로로 308(전에는 200 또는 500).
+  - `/_next/image`가 404 페이지(전에는 OpenNext 이미지 endpoint가 로컬 이미지를 200으로 전달). `images.unoptimized`가 2026-04-10부터라 Cloudflare 출시(2026-06-16) 뒤 이 origin의 어떤 페이지도 이 URL을 낸 적 없음.
+  - GET/HEAD 외 메서드: 있는 정적 페이지는 405, 없는 상세(`/compendium/cards/<없는 id>`)는 GET처럼 404.
+  - 정적 페이지 응답에 Next와 같은 `Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch`.
+- 이번 배포 주의: RELEASE_PROCESS 5단계의 배포 전 프로덕션 `cf:smoke --scope main`은 이 브랜치가 추가한 다음 케이스가 옛 앱에서 실패한다(배포 뒤에만 통과). `/decisions-decisions`·`/en/decisions-decisions`·`/this-or-that/tournament`·`/zh/this-or-that/tournament` document/RSC(옛 앱은 `x-cf-static-page` 없음), "Worldcup index redirect RSC"(옛 앱 200), "Not-found document"·"Not-found RSC"(옛 앱 500), "Locale not-found document"(owner 헤더 없음), "POST to a static page". 배포 전 판정은 원격 testbed의 `cf:smoke --scope all`로 하고, 프로덕션 smoke는 배포 뒤에 본다. POST 케이스는 정적 페이지에 본문 없는 요청 하나라 부작용이 없다.
+- QA: `pnpm cf:build`(route coverage·asset 예산 포함 `cf:assets`), `tsx scripts/prune-cf-unreferenced-assets.spec.ts`, `tsx scripts/next-routing-parity.spec.ts`, `tsx scripts/link-preview.spec.ts`, `pnpm cf:size`, `pnpm patch:build`(제외 public 파일 참조 검사), `pnpm cf:testbed:local --skip-build`, 원격 testbed(`pnpm cf:testbed`) parity, 배포 후 `pnpm cf:smoke --scope main`과 `pnpm cf:logs -- --not-found`.
 - Commits: `788be7ea..` (refactor/opennext-exit)
 
 <!--
