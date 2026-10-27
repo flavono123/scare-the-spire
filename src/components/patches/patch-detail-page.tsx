@@ -138,9 +138,14 @@ function escapeInlineJson(value: unknown): string {
   return JSON.stringify(value).replace(/</g, "\\u003c");
 }
 
-function truncateOgDescription(text: string, maxLength = PATCH_OG_DESCRIPTION_MAX_LENGTH): string {
+export function truncateOgDescription(text: string, maxLength = PATCH_OG_DESCRIPTION_MAX_LENGTH): string {
   if (text.length <= maxLength) return text;
-  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
+  const limit = maxLength - 1;
+  const head = text.slice(0, limit);
+  // End at a word boundary (ko words are space-separated too) so no word is cut.
+  const wordEnd = /\s/.test(text[limit]) ? limit : head.search(/\s+\S*$/);
+  const clipped = wordEnd > 0 ? head.slice(0, wordEnd) : head;
+  return `${clipped.replace(/[\s,;:–—-]+$/, "")}…`;
 }
 
 const PATCH_ENTITY_ALIASES_EN: Record<string, string[]> = {

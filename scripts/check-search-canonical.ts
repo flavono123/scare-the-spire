@@ -10,6 +10,12 @@ import {
 } from "../src/lib/search-canonical";
 import { GAME_LOCALE_PATH_SEGMENTS } from "../src/lib/i18n";
 import { isSearchCrawlerUserAgent } from "../src/lib/locale-detection";
+import {
+  getPatchDetailMetadata,
+  getPatchSeoTitle,
+  truncateOgDescription,
+} from "../src/components/patches/patch-detail-page";
+import { getSTS2Patches } from "../src/lib/data";
 import { absoluteSiteUrl } from "../src/lib/site-origin";
 
 // Locale-free base paths.
@@ -114,4 +120,43 @@ for (const userAgent of [
   assert.equal(isSearchCrawlerUserAgent(userAgent), false, String(userAgent));
 }
 
-console.log("search-canonical ok");
+// Clipped patch descriptions end at a word boundary (ko words are space-separated too).
+assert.equal(truncateOgDescription("alpha beta gamma", 12), "alpha beta…");
+assert.equal(truncateOgDescription("alpha beta gamma", 11), "alpha beta…");
+assert.equal(truncateOgDescription("alpha, beta gamma", 9), "alpha…");
+assert.equal(truncateOgDescription("가나 다라마 바사", 8), "가나 다라마…");
+assert.equal(truncateOgDescription("alpha beta", 10), "alpha beta");
+
+// Every patch detail description keeps the SEO title prefix and never stops mid-word.
+async function checkPatchDetailDescriptions() {
+  const patches = await getSTS2Patches();
+  for (const serviceLocale of ["ko", "en"] as const) {
+    for (const patch of patches) {
+      const label = `${serviceLocale} ${patch.version}`;
+      const metadata = await getPatchDetailMetadata({ version: patch.version, serviceLocale });
+      const description = String(metadata.description ?? "");
+      const title = getPatchSeoTitle(patch, serviceLocale);
+      const full = `${title}. ${serviceLocale === "ko" ? patch.summaryKo : patch.summary}`;
+      assert.ok(description.startsWith(title), label);
+      assert.ok(description.length <= 200, label);
+      if (!description.endsWith("…")) {
+        assert.equal(description, full, label);
+        continue;
+      }
+      const body = description.slice(0, -1);
+      assert.ok(full.startsWith(body), label);
+      assert.ok(
+        !/[\p{L}\p{N}]$/u.test(body) || !/[\p{L}\p{N}]/u.test(full[body.length] ?? ""),
+        `${label} clipped mid-word: ${description}`,
+      );
+    }
+  }
+}
+
+checkPatchDetailDescriptions().then(
+  () => console.log("search-canonical ok"),
+  (error: unknown) => {
+    console.error(error);
+    process.exit(1);
+  },
+);
