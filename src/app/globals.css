@@ -2,6 +2,17 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Agent notes and docs are not site markup. Keep them out of automatic source
+   detection: every detected directory becomes a webpack context dependency of
+   this file, and webpack cannot snapshot a directory holding a symlink to a file
+   (.agents/workflows/*.md) or a dangling one (docs/ai-memory), nor afford local
+   worktrees under .claude. A failed snapshot drops all of this file's
+   dependencies, so the persistent build cache kept serving old CSS without the
+   utilities of newly added components (scripts/check-built-css.ts). */
+@source not "../../.agents";
+@source not "../../.claude";
+@source not "../../docs";
+
 @font-face {
   font-family: "STS Spectral";
   src: url("/fonts/spectral_bold.ttf") format("truetype");
