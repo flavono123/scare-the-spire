@@ -91,6 +91,13 @@ function runCaptured(label, command, args, env = process.env) {
   });
 }
 
+// `wrangler dev` watches the assets directory with one kqueue descriptor per
+// file on macOS. Past ~10k assets the descriptors exceed OPEN_MAX and spawning
+// workerd fails with EBADF, so poll (stat-based, no descriptors) instead.
+const DEV_ASSET_WATCH_ENV = process.platform === "darwin"
+  ? { CHOKIDAR_USEPOLLING: "1", CHOKIDAR_INTERVAL: "3600000" }
+  : {};
+
 function startWorker(label, config, port) {
   console.log(`\n[testbed] starting ${label} on port ${port}`);
   const child = spawn(
@@ -112,7 +119,7 @@ function startWorker(label, config, port) {
     ],
     {
       cwd: process.cwd(),
-      env: process.env,
+      env: { ...process.env, ...DEV_ASSET_WATCH_ENV },
       detached: process.platform !== "win32",
       stdio: ["ignore", "pipe", "pipe"],
     },
