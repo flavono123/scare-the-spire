@@ -3,8 +3,8 @@
 ## Status
 
 2026-10-27 OpenNext exit(Phase 6)를 `refactor/opennext-exit`에 구현했다(배포 전).
-main Worker는 정적 전용이 되어 Wrangler dry run 기준 53.21 KiB / gzip
-16.45 KiB다(OpenNext 포함 시 약 2,761 KiB). `pnpm cf:size`는 3,072 KiB 플랫폼
+main Worker는 정적 전용이 되어 Wrangler dry run 기준 53.36 KiB / gzip
+16.49 KiB다(OpenNext 포함 시 약 2,761 KiB). `pnpm cf:size`는 3,072 KiB 플랫폼
 한도와 함께 256 KiB 예산(`CLOUDFLARE_WORKER_SIZE_BUDGET_KIB`)을 검사한다.
 아래 Webpack 전환 기록은 OpenNext가 있던 시기의 측정이다.
 
