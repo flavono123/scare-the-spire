@@ -48,6 +48,9 @@ import { collectSts1CardSideTips, sts1KeywordTipBody } from "../src/lib/sts1/key
 import { sts1HtmlLang, sts1LineBreakViaCharacter, sts1PickerLocales } from "../src/lib/sts1/locale";
 import { STS1_IMAGE_CACHE_BUSTER } from "../src/lib/sts1/image-cache";
 import { sts1CardUi512Url, sts1PotionImageUrl } from "../src/lib/sts1/paths";
+import { registerAllSts1BitmapPacks } from "./lib/sts1-bitmap-packs";
+
+registerAllSts1BitmapPacks();
 
 assert.equal(STS1_CARD_IN_ATLAS.left, 106);
 assert.equal(STS1_CARD_IN_ATLAS.top, 46);

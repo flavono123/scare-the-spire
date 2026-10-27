@@ -4,6 +4,7 @@ export const dynamicParams = false;
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Sts1RelicDetail } from "@/components/sts1/relic-detail";
+import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -45,5 +46,10 @@ export default async function Sts1RelicDetailPage({ params, searchParams }: Deta
     getSts1UiLabels(gameLocale),
   ]);
   if (!relic) notFound();
-  return <Sts1RelicDetail relic={relic} labels={labels} serviceLocale={serviceLocale} />;
+  // Sts1CardText draws relic, potion, and power text with the kor glyph pack.
+  return (
+    <Sts1BitmapPackScope packs={["kor"]}>
+      <Sts1RelicDetail relic={relic} labels={labels} serviceLocale={serviceLocale} />
+    </Sts1BitmapPackScope>
+  );
 }
