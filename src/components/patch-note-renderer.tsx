@@ -1346,42 +1346,21 @@ interface TextNode {
 
 type SineOffset = { current: number };
 
-// Same word grouping as renderSineText in rich-text.tsx: sine text wraps only
-// at spaces.
+// Same as renderSineText in rich-text.tsx: spaces are .rich-sine-space spans so
+// sine text wraps only at spaces.
 function renderSineText(text: string, keyPrefix: string, offset: SineOffset): ReactNode[] {
-  const nodes: ReactNode[] = [];
-  let word: ReactNode[] = [];
-  let wordStart = 0;
-  const flushWord = () => {
-    if (word.length === 0) return;
-    nodes.push(
-      <span key={`${keyPrefix}-sine-word-${wordStart}`} className="rich-sine-word">
-        {word}
-      </span>,
-    );
-    word = [];
-  };
-  Array.from(text).forEach((char, i) => {
+  return Array.from(text).map((char, i) => {
     const index = offset.current++;
-    const letter = (
+    return (
       <span
         key={`${keyPrefix}-sine-${i}`}
-        className="rich-sine-letter"
+        className={char === " " ? "rich-sine-space" : "rich-sine-letter"}
         style={{ "--rich-sine-index": index } as CSSProperties}
       >
         {char}
       </span>
     );
-    if (char === " ") {
-      flushWord();
-      nodes.push(letter);
-      return;
-    }
-    if (word.length === 0) wordStart = i;
-    word.push(letter);
   });
-  flushWord();
-  return nodes;
 }
 
 // Extract plain text from BBCode node tree

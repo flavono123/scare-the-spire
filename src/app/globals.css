@@ -903,16 +903,18 @@
   white-space: pre;
 }
 
-/* RichText and patch notes group each word's letters in .rich-sine-word, so the
-   phrase flows inline and breaks only between words instead of overflowing a
-   narrow column as one box. Other per-letter sine markup keeps the box above. */
-.rich-sine:has(.rich-sine-word) {
+/* RichText and patch notes render spaces as plain inline .rich-sine-space spans:
+   the phrase flows inline, its inline-block letters never part (nowrap, even
+   across color tags), and a line wraps only at those spaces instead of the whole
+   phrase overflowing a narrow column as one box. Other per-letter sine markup
+   keeps the box above. */
+.rich-sine:has(.rich-sine-space) {
   display: inline;
-  white-space: pre-wrap;
+  white-space: nowrap;
 }
 
-.rich-sine-word {
-  white-space: nowrap;
+.rich-sine-space {
+  white-space: pre-wrap;
 }
 
 .rich-sine-letter {
