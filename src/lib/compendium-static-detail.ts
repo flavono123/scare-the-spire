@@ -124,6 +124,8 @@ export type StaticDetailHistoryLine = {
 };
 
 export type CompendiumStaticDetailModel = {
+  /** Picks the page frame of the interactive detail that replaces this one. */
+  kind: StaticDetailKind;
   kindLabel: string;
   title: string;
   altTitle: string | null;
@@ -141,6 +143,8 @@ export type CompendiumStaticDetailModel = {
     noHistory: string;
   };
 };
+
+export type StaticDetailKind = LinkKind;
 
 type LinkKind = Extract<
   CompendiumResourceLinkType,
@@ -1011,6 +1015,7 @@ export async function buildCompendiumStaticDetail(
 
   const historyLabels = getDetailPatchHistoryLabels(locale.serviceLocale);
   return {
+    kind: model.kind,
     kindLabel: kindLabel(ctx, model.kind),
     title: model.entity.name,
     altTitle: model.entity.nameEn && model.entity.nameEn !== model.entity.name ? model.entity.nameEn : null,
