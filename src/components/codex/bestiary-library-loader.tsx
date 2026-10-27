@@ -16,20 +16,22 @@ const LAZY_DATA_KEYS = [
   "versionDiffs",
 ] as const satisfies readonly CompendiumDataKey[];
 
-type BestiaryLibraryLoaderProps = Omit<ComponentProps<typeof BestiaryLibrary>, "afflictions" | "cards" | "powers" | "changes" | "versionDiffs"> & {
+type BestiaryLibraryLoaderProps = Omit<ComponentProps<typeof BestiaryLibrary>, "afflictions" | "cards" | "powers" | "changes" | "versionDiffs" | "detailsReady"> & {
   gameLocale: GameLocale;
 };
 
 /**
  * Renders BestiaryLibrary from its server props and fills in the rest once the
  * data chunks load. The server sends slim monster and encounter rows (see
- * slimBestiaryMonsters); the full rows replace them here.
+ * slimBestiaryMonsters); the full rows replace them here. Detail modals wait
+ * for them, since the slim rows have no moves, pattern, or combat scene.
  */
 export function BestiaryLibraryLoader({ gameLocale, ...props }: BestiaryLibraryLoaderProps) {
   const data = useCompendiumData(gameLocale, LAZY_DATA_KEYS);
   return (
     <BestiaryLibrary
       {...props}
+      detailsReady={data !== null}
       monsters={data?.monsters ?? props.monsters}
       encounters={data?.encounters ?? props.encounters}
       afflictions={data?.afflictions}

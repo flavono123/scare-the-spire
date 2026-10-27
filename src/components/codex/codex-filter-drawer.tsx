@@ -198,3 +198,49 @@ export function CompendiumDetailOverlay({
   );
 }
 
+/**
+ * Stands in for a list modal's detail until the data chunks it reads have
+ * loaded, so the modal never shows partial rows or empty-result text.
+ */
+export function CompendiumDetailLoading({
+  title,
+  backToListTitle,
+  closeLabel,
+  loadingLabel,
+  onClose,
+}: {
+  title: string;
+  backToListTitle: string;
+  closeLabel: string;
+  loadingLabel: string;
+  onClose: () => void;
+}) {
+  return (
+    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6" aria-busy="true">
+      <div className="mb-4 flex w-full items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          className="text-sm text-gray-400 transition-colors hover:text-gray-200"
+        >
+          ← {backToListTitle}
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10"
+          aria-label={closeLabel}
+        >
+          ✕
+        </button>
+      </div>
+      <div className="flex min-h-[26rem] flex-col items-center justify-center gap-4 text-center">
+        <h2 className="font-game-title text-3xl font-bold text-gray-100 sm:text-4xl">{title}</h2>
+        <p className="font-service text-xs text-gray-500" aria-live="polite">
+          {loadingLabel}
+        </p>
+      </div>
+    </div>
+  );
+}
+

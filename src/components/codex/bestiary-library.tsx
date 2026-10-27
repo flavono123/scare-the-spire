@@ -35,6 +35,8 @@ interface BestiaryLibraryProps {
   versions?: string[];
   currentVersion?: string;
   versionDiffs?: EntityVersionDiff[];
+  /** False while the rows are slim grid rows; detail modals show a loading state. */
+  detailsReady?: boolean;
 }
 
 export function BestiaryLibrary({
@@ -51,6 +53,7 @@ export function BestiaryLibrary({
   versions,
   currentVersion,
   versionDiffs,
+  detailsReady = true,
 }: BestiaryLibraryProps) {
   const messages = serviceMessages[serviceLocale].codex;
   const explicitView = useHydrationSafeSearchParam("view");
@@ -124,6 +127,7 @@ export function BestiaryLibrary({
         selectedVersion={selectedVersion}
         onVersionChange={setSelectedVersion}
         trailing={switcher}
+        detailsReady={detailsReady}
       />
     );
   }
@@ -146,6 +150,7 @@ export function BestiaryLibrary({
       selectedVersion={selectedVersion}
       onVersionChange={setSelectedVersion}
       trailing={switcher}
+      detailsReady={detailsReady}
     />
   );
 }

@@ -15,6 +15,7 @@ import {
 } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
+import { serviceMessages } from "@/messages/service";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -45,6 +46,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -72,6 +74,8 @@ interface EncounterLibraryProps {
   onVersionChange?: (version: string) => void;
   title?: string;
   trailing?: React.ReactNode;
+  /** False while encounters are slim grid rows; the modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
 export function EncounterLibrary({
@@ -89,6 +93,7 @@ export function EncounterLibrary({
   onVersionChange,
   title,
   trailing,
+  detailsReady = true,
 }: EncounterLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlEncounterId = useHydrationSafeSearchParam("encounter");
@@ -154,7 +159,14 @@ export function EncounterLibrary({
       ? versionedEncounters.find((e) => e.id.toLowerCase() === urlEncounterId.toLowerCase()) ?? null
       : null
   ), [urlEncounterId, versionedEncounters]);
-  const selectedEncounter = useUrlSelection ? urlSelectedEncounter : selectedEncounterOverride;
+  // Look the picked encounter up again so the full row replaces the slim row
+  // it was picked from once the data chunks load.
+  const overrideEncounter = useMemo(() => (
+    selectedEncounterOverride
+      ? versionedEncounters.find((e) => e.id === selectedEncounterOverride.id) ?? selectedEncounterOverride
+      : null
+  ), [selectedEncounterOverride, versionedEncounters]);
+  const selectedEncounter = useUrlSelection ? urlSelectedEncounter : overrideEncounter;
 
   const selectEncounter = useCallback((encounter: CodexEncounter) => {
     setUseUrlSelection(false);
@@ -457,17 +469,27 @@ export function EncounterLibrary({
       {selectedEncounter && (
         <CompendiumDetailOverlay onClose={() => closeSelectedEncounter()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <EncounterDetail
-              serviceLocale={serviceLocale}
-              gameUi={gameUi}
-              backToListTitle={serviceText.encountersView.backToList}
-              encounter={selectedEncounter}
-              characters={characters}
-              monsters={versionedMonsters}
-              patches={patches}
-              changes={changes}
-              onClose={closeSelectedEncounter}
-            />
+            {detailsReady ? (
+              <EncounterDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                backToListTitle={serviceText.encountersView.backToList}
+                encounter={selectedEncounter}
+                characters={characters}
+                monsters={versionedMonsters}
+                patches={patches}
+                changes={changes}
+                onClose={closeSelectedEncounter}
+              />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedEncounter.name}
+                backToListTitle={serviceText.encountersView.backToList}
+                closeLabel={serviceText.common.close}
+                loadingLabel={serviceMessages[serviceLocale].comments.loading}
+                onClose={closeSelectedEncounter}
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}
