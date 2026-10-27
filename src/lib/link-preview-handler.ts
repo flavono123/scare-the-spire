@@ -13,6 +13,8 @@ import {
 // Enough for heads that inline large scripts before their meta tags.
 const MAX_BYTES = 128_000;
 const TIMEOUT_MS = 3000;
+const MAX_REDIRECTS = 10;
+const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 
 export const LINK_PREVIEW_PATH = "/api/link-preview";
 
@@ -28,6 +30,41 @@ function jsonResponse(
 function emptyPreview(cacheControl?: string): Response {
   const preview: LinkPreview = { title: "", description: "", image: "" };
   return jsonResponse(preview, { cacheControl });
+}
+
+/**
+ * Follows redirects by hand so every hop, not only the first and the final
+ * URL, must pass `isPublicHttpUrl`. Returns null when a hop leaves the public
+ * web; the private URL is never requested.
+ */
+async function fetchPublicPage(
+  target: URL,
+  signal: AbortSignal,
+): Promise<{ response: Response; url: URL } | null> {
+  let url = target;
+  for (let redirects = 0; ; redirects += 1) {
+    const response = await fetch(url, {
+      redirect: "manual",
+      signal,
+      headers: {
+        accept: "text/html",
+        "user-agent": "scare-the-spire-link-preview",
+      },
+    });
+    const location = response.headers.get("location");
+    if (!REDIRECT_STATUSES.has(response.status) || !location) return { response, url };
+    await response.body?.cancel().catch(() => undefined);
+    if (redirects >= MAX_REDIRECTS) throw new Error("too many redirects");
+
+    let next: URL | null;
+    try {
+      next = isPublicHttpUrl(new URL(location, url).href);
+    } catch {
+      next = null;
+    }
+    if (!next) return null;
+    url = next;
+  }
 }
 
 export async function handleLinkPreviewRequest(request: Request): Promise<Response> {
@@ -49,19 +86,12 @@ export async function handleLinkPreviewRequest(request: Request): Promise<Respon
       };
       return jsonResponse(preview, { cacheControl: "public, max-age=86400" });
     }
-    const response = await fetch(target, {
-      redirect: "follow",
-      signal: controller.signal,
-      headers: {
-        accept: "text/html",
-        "user-agent": "scare-the-spire-link-preview",
-      },
-    });
+    const page = await fetchPublicPage(target, controller.signal);
+    if (!page) return emptyPreview();
+    const { response, url: pageUrl } = page;
     if (!response.ok || !response.body) {
+      await response.body?.cancel().catch(() => undefined);
       return emptyPreview("public, max-age=300");
-    }
-    if (!isPublicHttpUrl(response.url || target.href)) {
-      return emptyPreview();
     }
     const reader = response.body.getReader();
     let size = 0;
@@ -75,7 +105,7 @@ export async function handleLinkPreviewRequest(request: Request): Promise<Respon
       if (html.toLowerCase().includes("</head>")) break;
     }
     await reader.cancel().catch(() => undefined);
-    const preview = readOpenGraph(html, response.url || target.href);
+    const preview = readOpenGraph(html, pageUrl.href);
     return jsonResponse(preview, { cacheControl: "public, max-age=86400" });
   } catch {
     return emptyPreview("public, max-age=60");
