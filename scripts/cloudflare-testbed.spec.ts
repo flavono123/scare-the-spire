@@ -226,8 +226,20 @@ test("static fallback keeps the former Next responses", async ({ request }) => {
       expect(response.status(), path).toBe(200);
       expect(response.headers()["x-cf-static-page"], path).toBe(owner);
       expect(response.headers()["content-type"], path).toContain(rsc ? "text/x-component" : "text/html");
+      expect(response.headers()["vary"], path).toContain("rsc");
     }
   }
+
+  // An RSC redirect keeps `_rsc`, so the browser never caches the RSC target
+  // under the document URL.
+  const worldcupRsc = await request.get(absolute("/en/this-or-that/worldcup?_rsc=testbed"), {
+    headers: { RSC: "1" },
+    maxRedirects: 0,
+  });
+  expect(worldcupRsc.status()).toBe(308);
+  const worldcupRscLocation = new URL(worldcupRsc.headers().location, "http://smoke.local");
+  expect(worldcupRscLocation.pathname).toBe("/en/this-or-that/tournament");
+  expect(worldcupRscLocation.search).toBe("?_rsc=testbed");
 
   for (const [path, location] of [
     ["/ko", "/"],

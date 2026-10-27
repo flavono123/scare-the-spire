@@ -73,6 +73,15 @@ function isRscRequest(request: Request, url: URL): boolean {
   return request.headers.get("rsc") === "1" || url.searchParams.has("_rsc");
 }
 
+/**
+ * Query for a redirect that answers an RSC request. Keeping `_rsc` makes the
+ * browser fetch (and cache) the RSC target under its own cache-busting URL,
+ * never under the document URL.
+ */
+function rscRedirectSearch(request: Request, url: URL): string {
+  return isRscRequest(request, url) ? url.search : "";
+}
+
 function isDocumentRequest(request: Request, url: URL): boolean {
   if (isRscRequest(request, url)) return false;
 
@@ -179,7 +188,7 @@ function maybeRedirectLegacyWorldcupDetail(request: Request, url: URL): Response
 
   const redirectUrl = new URL(request.url);
   redirectUrl.pathname = redirectPath;
-  redirectUrl.search = "";
+  redirectUrl.search = rscRedirectSearch(request, url);
   redirectUrl.hash = "";
   return new Response(null, {
     status: 308,
@@ -204,6 +213,12 @@ function staticHomeAssetPath(pathname: string, request: Request, url: URL): stri
     ? `/_cf_static_pages/index.${extension}`
     : `/_cf_static_pages/${maybeLocalePath}.${extension}`;
 }
+
+/**
+ * The HTML and RSC payloads of a page share one URL, chosen by the `RSC`
+ * header. Next sent this Vary so no cache serves one for the other.
+ */
+const STATIC_PAGE_VARY = "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch";
 
 async function fetchStaticPageAsset(
   request: Request,
@@ -231,6 +246,7 @@ async function fetchStaticPageAsset(
 
   const headers = new Headers(assetResponse.headers);
   headers.set("Cache-Control", "public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400");
+  headers.set("Vary", STATIC_PAGE_VARY);
   headers.set("x-cf-static-page", pageType);
   if (assetPath.endsWith(".rsc")) {
     headers.set("Content-Type", "text/x-component; charset=utf-8");
@@ -354,7 +370,7 @@ function maybeServePrerenderedRedirect(request: Request, url: URL): Response | n
     status: redirect.status,
     headers: {
       "Cache-Control": "s-maxage=31536000",
-      Location: redirect.location,
+      Location: `${redirect.location}${rscRedirectSearch(request, url)}`,
     },
   });
 }
