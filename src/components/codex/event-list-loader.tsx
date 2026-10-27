@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { EventList } from "./event-list";
-import { useCompendiumData } from "./use-compendium-data";
+import { compendiumDetailsSettled, useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import type { GameLocale } from "@/lib/i18n";
 
@@ -19,16 +19,21 @@ const LAZY_DATA_KEYS = [
 
 const EMPTY: never[] = [];
 
-type EventListLoaderProps = Omit<ComponentProps<typeof EventList>, "cards" | "enchantments" | "madScienceBaseCard" | "potions" | "powers" | "relics" | "changes" | "versionDiffs"> & {
+type EventListLoaderProps = Omit<ComponentProps<typeof EventList>, "cards" | "enchantments" | "madScienceBaseCard" | "potions" | "powers" | "relics" | "changes" | "versionDiffs" | "detailsReady"> & {
   gameLocale: GameLocale;
 };
 
-/** Renders EventList from its server props and fills in the rest once the data chunks load. */
+/**
+ * Renders EventList from its server props and fills in the rest once the
+ * data chunks load. The detail modal waits for them, since its option
+ * previews and related lists come from the chunks.
+ */
 export function EventListLoader({ gameLocale, ...props }: EventListLoaderProps) {
-  const data = useCompendiumData(gameLocale, LAZY_DATA_KEYS);
+  const { data, status } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   return (
     <EventList
       {...props}
+      detailsReady={compendiumDetailsSettled(status)}
       cards={data?.cards}
       enchantments={data?.enchantments}
       madScienceBaseCard={data?.madScienceBaseCard}

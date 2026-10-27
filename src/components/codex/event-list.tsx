@@ -40,6 +40,7 @@ import {
 } from "@/lib/event-character-quotes";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
+import { serviceMessages } from "@/messages/service";
 import { fuzzyMatchCodexText, stripCodexMarkup } from "@/lib/codex-search";
 import { SearchBar } from "./search-bar";
 import { VersionSelector } from "./version-selector";
@@ -53,6 +54,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -204,6 +206,8 @@ interface EventListProps {
   patches: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs: EntityVersionDiff[];
+  /** False until the data chunks settle; the detail modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
 export function EventList({
@@ -223,6 +227,7 @@ export function EventList({
   patches,
   changes,
   versionDiffs,
+  detailsReady = true,
 }: EventListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlEventId = useHydrationSafeSearchParam("event");
@@ -477,22 +482,32 @@ export function EventList({
       {selectedEvent && (
         <CompendiumDetailOverlay onClose={() => closeSelectedEvent()}>
           <div className="mx-4 my-4 w-full max-w-[92rem]">
-            <EventDetail
-              serviceLocale={serviceLocale}
-              gameUi={gameUi}
-              event={selectedEvent}
-              cards={cards}
-              characters={characters}
-              enchantments={enchantments}
-              madScienceBaseCard={madScienceBaseCard}
-              potions={potions}
-              powers={powers}
-              relics={relics}
-              patches={patches}
-              changes={changes}
-              versionDiffs={versionDiffs}
-              onClose={closeSelectedEvent}
-            />
+            {detailsReady ? (
+              <EventDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                event={selectedEvent}
+                cards={cards}
+                characters={characters}
+                enchantments={enchantments}
+                madScienceBaseCard={madScienceBaseCard}
+                potions={potions}
+                powers={powers}
+                relics={relics}
+                patches={patches}
+                changes={changes}
+                versionDiffs={versionDiffs}
+                onClose={closeSelectedEvent}
+              />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedEvent.name}
+                backToListTitle={serviceText.eventsView.backToList}
+                closeLabel={serviceText.common.close}
+                loadingLabel={serviceMessages[serviceLocale].comments.loading}
+                onClose={closeSelectedEvent}
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}
