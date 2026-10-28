@@ -38,13 +38,17 @@ export function useRetryWhenRequested(failed: boolean, setAttempt: Dispatch<SetS
  */
 export function useRetryFailedCompendiumDataOnReturn(): void {
   useEffect(() => {
+    // Per-instance closures: addEventListener ignores a second registration of
+    // the same function, so a shared listener would be removed for every
+    // notice when any one of them unmounts.
+    const onOnline = () => retryFailedCompendiumData();
     const onVisibilityChange = () => {
       if (document.visibilityState === "visible") retryFailedCompendiumData();
     };
-    window.addEventListener("online", retryFailedCompendiumData);
+    window.addEventListener("online", onOnline);
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () => {
-      window.removeEventListener("online", retryFailedCompendiumData);
+      window.removeEventListener("online", onOnline);
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, []);
