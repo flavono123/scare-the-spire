@@ -749,10 +749,14 @@
   --font-game-text-family: var(--font-kreon, serif), var(--font-service-ui);
 }
 
-/* Korean text in the static detail: the common-character subset, preloaded by
-   compendium-direct-detail-route.tsx under the same locale condition. */
-[data-service-locale="ko"] [data-compendium-static-detail],
-[data-game-locale="kor"] [data-compendium-static-detail] {
+/* Korean text in the static detail: the common-character subset, only in a document
+   whose <head> preloads it (compendium-direct-detail-route.tsx, same locale
+   condition). A client navigation also shows the static detail until the detail
+   data arrives, but its RSC carries no preload (copy-cf-static-pages.mjs); there it
+   keeps the full file above, which is already loaded, instead of fetching the
+   subset for a few hundred milliseconds of use. */
+:root[data-service-locale="ko"]:has(> head > link[rel="preload"][href="/fonts/GyeonggiCheonnyeonBatangBold-common.woff2"]) [data-compendium-static-detail],
+:root[data-game-locale="kor"]:has(> head > link[rel="preload"][href="/fonts/GyeonggiCheonnyeonBatangBold-common.woff2"]) [data-compendium-static-detail] {
   --font-gc-batang: "STS GC Batang Static Common", "STS GC Batang Fallback AppleMyungjo", "STS GC Batang Fallback Batang", "STS GC Batang Fallback Nanum Myeongjo", "STS GC Batang Fallback Noto Serif KR";
 }
 
