@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-data";
+import {
+  type CompendiumLazyDataStatus,
+  useCompendiumEntitiesState,
+} from "@/components/codex/use-compendium-data";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { GameLocale } from "@/lib/i18n";
 
@@ -84,10 +87,13 @@ async function fetchSts2CommentEntities(): Promise<EntityInfo[]> {
  * `initialEntities` as aliases. With `gameLocale`, the primary list is that
  * locale's full entity graph and the Korean graph supplies the aliases (the
  * same data as the Korean file), so a page no longer has to ship the graph in
- * its props; `loading` lasts until the primary graph has arrived or failed,
- * and `failed` is set while either graph has failed (until a retry starts),
- * so the caller can show a retry notice instead of unresolved mentions. The
- * default path never fails: without the file it keeps `initialEntities`.
+ * its props; `loading` lasts until both graphs have arrived or failed (the
+ * Korean aliases resolve legacy mentions and feed the editor suggestions, so
+ * nothing renders from the primary graph alone), and `failed` is set while
+ * either graph has failed (until a retry starts, which goes back to
+ * `loading`), so the caller can show a retry notice instead of unresolved
+ * mentions. The default path never fails: without the file it keeps
+ * `initialEntities`.
  */
 export function useCommentEntities(
   initialEntities?: EntityInfo[],
@@ -98,6 +104,10 @@ export function useCommentEntities(
   const fileEntities = useFileCommentEntities(initialEntities, enabled && !gameLocale);
   const graphEntities = useGraphCommentEntities(gameLocale, enabled);
   return gameLocale ? graphEntities : fileEntities;
+}
+
+function graphSettled(status: CompendiumLazyDataStatus): boolean {
+  return status === "loaded" || status === "failed";
 }
 
 function useGraphCommentEntities(gameLocale: GameLocale | undefined, enabled: boolean) {
@@ -112,7 +122,7 @@ function useGraphCommentEntities(gameLocale: GameLocale | undefined, enabled: bo
   );
   return {
     entities,
-    loading: graphEnabled && (primary.status === "loading" || primary.status === "idle"),
+    loading: graphEnabled && !(graphSettled(primary.status) && graphSettled(fallback.status)),
     failed: graphEnabled && (primary.status === "failed" || fallback.status === "failed"),
   };
 }
