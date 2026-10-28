@@ -42,12 +42,14 @@ function assertFreshArtifacts(options) {
   }
   if (stale.length === 0) return;
 
-  const rebuild = options.remote ? "pnpm cf:testbed -- --remote" : "pnpm cf:testbed:local";
+  const rebuild = options.remote ? "pnpm cf:testbed" : "pnpm cf:testbed:local";
   throw new Error(
     [
-      "refusing to reuse stale Worker artifacts:",
+      "refusing to use stale Worker artifacts:",
       ...stale.map((artifact) => `  - ${artifact.reason} (rebuild with ${artifact.build})`),
-      `Run ${rebuild} without --skip-build to rebuild both from this checkout.`,
+      options.skipBuild
+        ? `Run ${rebuild} without --skip-build to rebuild both from this checkout.`
+        : `The checkout changed during the build; run ${rebuild} again.`,
     ].join("\n"),
   );
 }
