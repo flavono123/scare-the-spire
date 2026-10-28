@@ -19,15 +19,20 @@ Options:
   --help           Show this help`);
 }
 
-const ARTIFACTS = [
-  { dir: ".open-next", build: "pnpm cf:build" },
-  { dir: ".patch-worker", build: "pnpm patch:build" },
-];
-
 // Refuse to test or deploy artifacts built from another commit or tree.
 function assertFreshArtifacts(options) {
+  const artifacts = [
+    { dir: ".open-next", build: "pnpm cf:build" },
+    {
+      dir: ".patch-worker",
+      // Matches the patch build runRemote() does itself.
+      build: options.remote
+        ? "NEXT_PUBLIC_SUPABASE_ENV=production pnpm patch:build"
+        : "pnpm patch:build",
+    },
+  ];
   const stale = [];
-  for (const artifact of ARTIFACTS) {
+  for (const artifact of artifacts) {
     const result = checkBuildRecord(artifact.dir);
     if (result.ok) {
       console.log(`[testbed] ${artifact.dir} built from ${describeBuildRecord(result.record)}`);

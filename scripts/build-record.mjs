@@ -190,7 +190,7 @@ function main(argv) {
         console.log(`[build-record] ${dir} is fresh: ${describeBuildRecord(result.record)}`);
       } else {
         failed = true;
-        console.error(`[build-record] ${dir} is stale: ${result.reason}`);
+        console.error(`[build-record] stale: ${result.reason}`);
       }
     }
     return failed ? 1 : 0;
