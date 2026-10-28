@@ -34,7 +34,9 @@ export async function CompendiumDirectDetailRoute({
   // A static detail that shows Korean uses GC Batang's common-character subset
   // with font-display: optional (globals.css, same locale condition), so only
   // if it is ready within ~100ms. Preloading it starts it before the full file
-  // the root layout preloads, which takes ~150ms to decode.
+  // the root layout preloads, which takes ~150ms to decode. Only the document
+  // needs it: scripts/copy-cf-static-pages.mjs drops the hint React writes into
+  // the RSC payload, so prefetching this route does not fetch the subset.
   if (staticDetail && (serviceLocale === "ko" || gameLocale === "kor")) {
     preload("/fonts/GyeonggiCheonnyeonBatangBold-common.woff2", {
       as: "font",

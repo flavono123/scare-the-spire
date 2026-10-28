@@ -96,6 +96,15 @@ const sts1CompendiumSegments = new Set([
   "powers",
   "relics",
 ]);
+// Only the ko static Compendium detail document needs GC Batang's common-character
+// subset (compendium-direct-detail-route.tsx). React Flight also writes that
+// preload into the page's RSC payload as a hint row, and the Flight client applies
+// hint rows as soon as it parses them, so a <Link> prefetch of a ko detail would
+// fetch the subset on whatever page is open. Hint rows are not referenced by other
+// rows; the HTML keeps its <link rel="preload">.
+const staticDetailSubsetHref = "/fonts/GyeonggiCheonnyeonBatangBold-common.woff2";
+const staticDetailSubsetHintRow =
+  /^:HL\["\/fonts\/GyeonggiCheonnyeonBatangBold-common\.woff2",[^\n]*\n/gm;
 
 function walk(dir, files = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -246,6 +255,14 @@ function localizeDocumentRoot(html, gameLocale, relative) {
   return `${html.slice(0, match.index)}${tag}${html.slice(match.index + match[0].length)}`;
 }
 
+function stripStaticDetailSubsetHint(rsc, relative) {
+  const stripped = rsc.replace(staticDetailSubsetHintRow, "");
+  if (stripped.includes(staticDetailSubsetHref)) {
+    throw new Error(`${relative} still references ${staticDetailSubsetHref} outside a hint row`);
+  }
+  return stripped;
+}
+
 if (!statSync(appDir, { throwIfNoEntry: false })?.isDirectory()) {
   throw new Error(`${appDir} does not exist. Run the Next/OpenNext build before copying static pages.`);
 }
@@ -254,6 +271,7 @@ rmSync(outDir, { recursive: true, force: true });
 
 let count = 0;
 let localizedCount = 0;
+let strippedHintCount = 0;
 for (const file of walk(appDir)) {
   const relative = staticPageRelativePath(file);
   if (!relative) continue;
@@ -264,6 +282,9 @@ for (const file of walk(appDir)) {
   if (gameLocale) {
     writeFileSync(output, localizeDocumentRoot(readFileSync(file, "utf8"), gameLocale, relative));
     localizedCount += 1;
+  } else if (relative.endsWith(".rsc") && readFileSync(file).includes(staticDetailSubsetHref)) {
+    writeFileSync(output, stripStaticDetailSubsetHint(readFileSync(file, "utf8"), relative));
+    strippedHintCount += 1;
   } else {
     copyFileSync(file, output);
   }
@@ -274,7 +295,7 @@ if (count === 0) {
   throw new Error("No Cloudflare static HTML/RSC files were copied.");
 }
 
-console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir} (${localizedCount} with an English document root)`);
+console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir} (${localizedCount} with an English document root, ${strippedHintCount} RSC without the static detail font subset hint)`);
 
 for (const metadataFile of staticMetadataFiles) {
   const source = path.join(appDir, metadataFile.source);
