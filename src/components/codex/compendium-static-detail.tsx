@@ -148,10 +148,11 @@ export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetai
                 <nav key={group.heading} aria-label={group.heading} className="flex flex-col gap-1">
                   <h3 className="font-service text-xs text-gray-500">{group.heading}</h3>
                   {/* Fixed columns with one-line names: rows do not rewrap
-                      when the web fonts replace the fallback faces. */}
+                      when the web fonts replace the fallback faces. The
+                      -m-1 p-1 pair leaves room for the clipped focus ring. */}
                   <ul className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-x-3 gap-y-1 text-sm">
                     {group.links.map((link) => (
-                      <li key={link.href} className="min-w-0 truncate" title={link.label}>
+                      <li key={link.href} className="-m-1 min-w-0 truncate p-1" title={link.label}>
                         <StaticLink link={link} />
                       </li>
                     ))}
