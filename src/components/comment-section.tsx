@@ -18,6 +18,7 @@ import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useCommentLikes } from "@/hooks/use-comment-likes";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import type { GameLocale } from "@/lib/i18n";
 import { ColorfulPhilosopherResourceThread } from "@/components/colorful-philosophers/resource-thread";
 import { LikeButton } from "@/components/like-button";
 import { ResourceReactionBar } from "@/components/resource-reaction-bar";
@@ -47,6 +48,7 @@ function getDraftKey(threadKey: string): string {
 export function CommentSection({
   threadKey,
   initialEntities,
+  entitiesGameLocale,
   onCountChange,
   onCommentsChange,
   onHistoryFloorClick,
@@ -60,6 +62,11 @@ export function CommentSection({
 }: {
   threadKey: string;
   initialEntities?: EntityInfo[];
+  /**
+   * Load this game locale's full entity graph on the client instead of taking
+   * `initialEntities`; comments wait for it so mentions never render unlinked.
+   */
+  entitiesGameLocale?: GameLocale;
   onCountChange?: (count: number) => void;
   onCommentsChange?: (comments: Comment[]) => void;
   onHistoryFloorClick?: (block: HistoryRunFloorBlock) => void;
@@ -86,8 +93,11 @@ export function CommentSection({
   const tips = serviceMessages[serviceLocale].engagementTips;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const { userId, ready, ensureUser } = useAuth();
-  const { entities, loading: entitiesLoading } = useCommentEntities(initialEntities);
+  const { entities, loading: entitiesLoading } = useCommentEntities(initialEntities, {
+    gameLocale: entitiesGameLocale,
+  });
   const { comments, loading, unavailable, add, remove } = useComments(threadKey, userId);
+  const commentsLoading = loading || (Boolean(entitiesGameLocale) && entitiesLoading);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
@@ -181,7 +191,7 @@ export function CommentSection({
           compact
           title={copy.unavailableTitle}
         />
-      ) : loading ? (
+      ) : commentsLoading ? (
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <EngagementSpinner size={14} />
           <span>{copy.loading}</span>

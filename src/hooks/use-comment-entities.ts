@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-data";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import type { GameLocale } from "@/lib/i18n";
+
+/** comment-entities-sts2.json is built from the Korean graph. */
+const KOREAN_GAME_LOCALE: GameLocale = "kor";
 
 let cachedEntities: EntityInfo[] | null = null;
 let pendingEntities: Promise<EntityInfo[]> | null = null;
@@ -72,11 +77,43 @@ async function fetchSts2CommentEntities(): Promise<EntityInfo[]> {
   return pendingEntities;
 }
 
+/**
+ * Mention/link entities for comment editors and rendered comments.
+ *
+ * By default the Korean comment-entities file is merged into
+ * `initialEntities` as aliases. With `gameLocale`, the primary list is that
+ * locale's full entity graph and the Korean graph supplies the aliases (the
+ * same data as the Korean file), so a page no longer has to ship the graph in
+ * its props; `loading` lasts until the primary graph has arrived or failed.
+ */
 export function useCommentEntities(
   initialEntities?: EntityInfo[],
-  options: { enabled?: boolean } = {},
+  options: { enabled?: boolean; gameLocale?: GameLocale } = {},
 ) {
   const enabled = options.enabled ?? true;
+  const gameLocale = options.gameLocale;
+  const fileEntities = useFileCommentEntities(initialEntities, enabled && !gameLocale);
+  const graphEntities = useGraphCommentEntities(gameLocale, enabled);
+  return gameLocale ? graphEntities : fileEntities;
+}
+
+function useGraphCommentEntities(gameLocale: GameLocale | undefined, enabled: boolean) {
+  const graphEnabled = enabled && Boolean(gameLocale);
+  const primary = useCompendiumEntitiesState(gameLocale ?? KOREAN_GAME_LOCALE, { enabled: graphEnabled });
+  const fallback = useCompendiumEntitiesState(KOREAN_GAME_LOCALE, { enabled: graphEnabled });
+  const primaryEntities = primary.entities;
+  const fallbackEntities = fallback.entities;
+  const entities = useMemo(
+    () => mergeCommentEntities(primaryEntities ?? [], fallbackEntities ?? []),
+    [fallbackEntities, primaryEntities],
+  );
+  return {
+    entities,
+    loading: graphEnabled && (primary.status === "loading" || primary.status === "idle"),
+  };
+}
+
+function useFileCommentEntities(initialEntities: EntityInfo[] | undefined, enabled: boolean) {
   const hasInitialEntities = !!initialEntities?.length;
   const [fallbackEntities, setFallbackEntities] = useState<EntityInfo[] | null>(() => cachedEntities);
   const [loadFinished, setLoadFinished] = useState(() => Boolean(cachedEntities));
