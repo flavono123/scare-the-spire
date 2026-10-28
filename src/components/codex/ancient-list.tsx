@@ -168,6 +168,16 @@ export function AncientList({
     return addCodexUrlChangeListener(handler);
   }, []);
 
+  // The loading stand-in has no closeButtonRef, so focus the detail's close
+  // button once it replaces the stand-in, unless the user moved focus already.
+  useEffect(() => {
+    if (!selectedAncient || !detailsReady) return;
+    window.requestAnimationFrame(() => {
+      const active = document.activeElement;
+      if (active === modalRef.current || active === document.body) closeButtonRef.current?.focus();
+    });
+  }, [detailsReady, selectedAncient]);
+
   useEffect(() => {
     if (!selectedAncient) {
       if (modalWasOpenRef.current) {
