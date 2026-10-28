@@ -132,18 +132,23 @@ export function beginBuildRecord(artifactDir, { state } = {}) {
   return snapshot;
 }
 
-// Reads and removes the snapshot `begin` left for this artifact dir.
+// Reads and removes the snapshot `begin` left for this artifact dir; null when
+// there is none.
 function takeBuildStart(artifactDir) {
   const startPath = buildStartPath(artifactDir);
   let snapshot = null;
   try {
     snapshot = JSON.parse(fs.readFileSync(startPath, "utf8"));
   } catch (cause) {
-    if (cause?.code !== "ENOENT") {
+    if (cause?.code !== "ENOENT" && cause?.code !== "ENOTDIR") {
       snapshot = { head: null, error: `${startPath} is unreadable (${errorMessage(cause)})` };
     }
   }
-  fs.rmSync(startPath, { force: true });
+  try {
+    fs.rmSync(startPath, { force: true });
+  } catch {
+    // Nothing to consume when the snapshot dir itself is unusable.
+  }
   return snapshot;
 }
 
