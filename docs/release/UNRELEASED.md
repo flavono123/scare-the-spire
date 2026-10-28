@@ -11,7 +11,7 @@
 |---|---|---|---|
 | domain-migration-c54d7b | claude/domain-migration-c54d7b | 도메인 이전(레거시 호스트 안내, 리다이렉트, robots/sitemap) | 11커밋, main보다 122 뒤처짐. 2026-10-26 정기 배포에서 제외 |
 | opennext-exit | refactor/opennext-exit | main Worker에서 OpenNext 런타임 제거(정적 전용 Worker), 정적 파일 수 정리, 클라이언트 중복 제거 | 진행 중(2026-10-27 시작) |
-| slim-entity-props | refactor/slim-entity-props | 홈·byrdispatch·역사 강의서·Toy Box 목록 4종이 HTML/RSC에 싣는 게임 요소 전체 목록(2.4–3.1 MB)을 화면에 그리는 것만 남기고, 전체 목록은 정적 JSON에서 나중에 불러옴 | 진행 중(2026-10-28 시작) |
+| slim-entity-props | refactor/slim-entity-props | 홈·byrdispatch·역사 강의서·Toy Box 목록 4종이 HTML/RSC에 싣는 게임 요소 전체 목록(2.4–3.1 MB)을 화면에 그리는 것만 남기고, 전체 목록은 정적 JSON에서 나중에 불러옴 | 구현·검증 끝, 병합 대기(2026-10-28 시작). 기대치는 아래 slim-entity-props |
 
 ## 긴급 배포로 QA 없이 나간 범위
 
@@ -52,6 +52,13 @@
 - Expect: 배포 CSS에 `columns-2`·`sm:columns-3`·`lg:columns-5`·`whitespace-pre-line`·`rich-sine-space`가 있음(`max-h-24`는 `f7b69ccb` 뒤로 쓰는 곳이 없어 빠지는 게 맞음). 첫 CI 빌드는 캐시 없이 돈다.
 - QA: CI의 css:check 단계 통과. 로컬은 `rm -rf .next/cache/webpack` 뒤 빌드하고 `pnpm css:check`.
 - Commits: `b5bb6e8a`, `bbf3c2a0`
+
+### slim-entity-props
+- Feature: 7개 페이지(홈, byrdispatch, 역사 강의서, 조각모음, 변형, 코오오옴보, 케미컬X) × 14 로케일이 HTML과 RSC에 통째로 싣던 게임 요소 그래프(약 2.6 MB)를 빼고, 클라이언트가 필요할 때 기존 `/generated/compendium-data/<locale>/*.json` chunk에서 같은 그래프를 만든다(새 정적 파일 없음). byrdispatch는 본문 마크다운이 이름을 부르는 요소만 서버에서 넘기고(`selectEntitiesForTexts`, 약 190개), 지식의 악마 토큰과 낮은 체력 대기 캐릭터는 서버의 전체 그래프에서 그린다. 댓글은 그 로케일 그래프 + 한국어 그래프 별칭을 클라이언트에서 불러온다. 홈은 STS2 요소·변경·패치 목록을 이야기 모달이나 작성기가 열릴 때(주소 해시 포함, 작성 버튼에 포인터·포커스가 닿으면 미리) 불러온다. 코오오옴보·변형·케미컬X·역사 강의서는 마운트 때, 조각모음은 작성 패널을 열 때(버튼 포인터·포커스·터치 시 미리) 불러온다.
+- Expect: 서버 HTML(스크립트 제외)이 전과 바이트 단위로 같다. 그래프가 오기 전에는 기존 '불러오는 중' 안내만 보이고, 원시 id 칩이나 링크 없는 금색 언급이 보이지 않는다. 온 뒤의 게시물·필터 칩·검색·호버·편집기 `{` 제안은 테스트베드와 같다. byrdispatch 본문 호버는 chunk가 막혀도 같다. 작성기·편집기는 그래프가 올 때까지 짧은 '불러오는 중...' 줄을 보이고, chunk를 못 받으면 '데이터베이스가 응답하지 않습니다' 안내를 보인다. 홈 STS2 이야기 모달은 '참조한 변경 항목을 불러오는 중...' 뒤에 같은 내용, STS1 이야기는 바로 뜬다. 바뀐 점은 시점뿐: 해시로 연 모달·케미컬X 편집기·byrdispatch 댓글 목록이 chunk 도착 뒤에 나온다.
+- 측정(기준 빌드 `4c194bc3` 대비): 196개 파일(7페이지 × 14로케일 × html+rsc) 609.2 MB → 49.5 MB(−91.9%). 홈 HTML 3.88 MB → 319 KB, byrdispatch 4.33 MB → 1.70 MB, 역사 강의서 3.06 MB → 39 KB, 조각모음 3.05 MB → 39 KB, 변형 3.04 MB → 27 KB, 코오오옴보 3.03 MB → 26 KB, 케미컬X 3.03 MB → 25 KB(모두 ko). 1.5 MB 넘는 HTML 112개(354.8 MB) → 28개(53.9 MB, byrdispatch 14개와 `compendium/sts1/cards` 14개). 정적 파일 18,594 → 18,591(webpack JS chunk 3개 감소), Worker gzip 2809.51 → 2803.37 KiB. 정규화한 HTML 5,738개(`_cf_static_pages`)와 6,569개(`.next/server/app`) 모두 차이 0.
+- QA: `pnpm test:entity-graph`(14 로케일 chunk 그래프 = `loadAllEntities`), `pnpm test:entity-subset`(byrdispatch kor/eng/jpn 모든 문자열의 렌더 결과가 전체 그래프와 같음), `pnpm patch:test`, `pnpm search:test`, `pnpm css:check`. 수동(Playwright, 로컬 cf 미리보기 vs 테스트베드): `/generated/compendium-data/**`를 막은 채 `/byrdispatch`·`/en/byrdispatch`·`/ja/byrdispatch` 언급 45개 호버. chunk를 붙잡은 채 Toy Box 목록·역사 강의서·홈 `/#sts2-wither-int-max-upgrades`를 열고 안내만 보이는지, 풀면 테스트베드와 같은지. 각 작성기 `{` 제안(`/ja`는 일본어 이름). 홈 작성기에서 줄을 고르면 같은 패치 그림. byrdispatch에서 Toy Box로 클라이언트 이동 시 RSC 30–190 KB.
+- Commits: `22ea84de`, `91de5981`, `e76c0314`, `e0da81bb`, `6df041c5`, `1f6c7854`, `106ed020`, `b14eb958`, `db3a2003`, `6aaf00eb`
 
 <!--
 ### <항목-id>
