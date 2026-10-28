@@ -5,8 +5,15 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { Search, Trash2, X } from "lucide-react";
 import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, STS2PatchLine, StoryEntityType } from "@/lib/types";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { loadCompendiumData } from "@/lib/compendium-data-chunks";
+import {
+  prefetchAllEntityGraph,
+  useCompendiumDataState,
+  useCompendiumEntitiesState,
+  type CompendiumLazyDataStatus,
+} from "@/components/codex/use-compendium-data";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
@@ -17,7 +24,7 @@ import { EngagementSpinner } from "@/components/engagement-spinner";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { LikeButton } from "@/components/like-button";
 import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
-import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
+import { PatchLineReferenceBlock, PatchLineReferenceLoading } from "@/components/patch-line-reference";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
@@ -29,6 +36,17 @@ import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed
 import { serviceMessages } from "@/messages/service";
 
 let fullPatchLinesPromise: Promise<STS2PatchLine[]> | null = null;
+
+// STS2 entities, changes and patches are read only by the story modal and the
+// composer, so they load from the Compendium data chunks when one opens.
+const STS2_HISTORY_KEYS = ["changes", "patches"] as const;
+const NO_STS2_ENTITIES: EntityInfo[] = [];
+const NO_STS2_CHANGES: STS2Change[] = [];
+const NO_STS2_PATCHES: STS2Patch[] = [];
+
+function lazyDataPending(status: CompendiumLazyDataStatus): boolean {
+  return status === "loading" || status === "idle";
+}
 
 function loadFullSts2PatchLines(): Promise<STS2PatchLine[]> {
   fullPatchLinesPromise ??= fetch("/generated/sts2-patch-lines.json", { cache: "no-cache" })
@@ -412,17 +430,7 @@ function STS2PatchLineBlock({
   const referenceCopy = serviceMessages[serviceLocale].stories.reference;
 
   if (story.patchLineId && patchLineLoading) {
-    return (
-      <div
-        className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/[0.06] px-4 py-3 text-xs text-primary/80"
-        role="status"
-        aria-live="polite"
-        data-story-reference-state="loading"
-      >
-        <EngagementSpinner size={14} />
-        <span>{referenceCopy.loading}</span>
-      </div>
-    );
+    return <PatchLineReferenceLoading serviceLocale={serviceLocale} />;
   }
 
   return (
@@ -495,6 +503,7 @@ function StoryExpanded({
   patchLinesLoading,
   sts2Patches,
   sts2Entities,
+  sts2DataLoading,
 }: {
   story: Story;
   serviceLocale: ServiceLocale;
@@ -510,9 +519,14 @@ function StoryExpanded({
   patchLinesLoading: boolean;
   sts2Patches: STS2Patch[];
   sts2Entities: EntityInfo[];
+  sts2DataLoading: boolean;
 }) {
   const hasEntity = story.entityType && story.entityId;
   const isSTS2 = story.game === "sts2";
+
+  if (isSTS2 && sts2DataLoading) {
+    return <PatchLineReferenceLoading serviceLocale={serviceLocale} />;
+  }
 
   if (isSTS2) {
     const entity = hasEntity ? sts2EntityMap.get(`${story.entityType}:${story.entityId}`) : undefined;
@@ -747,6 +761,7 @@ function StoryDetailModal({
   patchLinesLoading,
   sts2Patches,
   sts2Entities,
+  sts2DataLoading,
   userId,
   authReady,
   ensureUser,
@@ -771,6 +786,7 @@ function StoryDetailModal({
   patchLinesLoading: boolean;
   sts2Patches: STS2Patch[];
   sts2Entities: EntityInfo[];
+  sts2DataLoading: boolean;
   userId: string | null;
   authReady: boolean;
   ensureUser: () => Promise<string | null>;
@@ -874,6 +890,7 @@ function StoryDetailModal({
             patchLinesLoading={patchLinesLoading}
             sts2Patches={sts2Patches}
             sts2Entities={sts2Entities}
+            sts2DataLoading={sts2DataLoading}
           />
 
           <CommentSection
@@ -893,6 +910,7 @@ function StoryFeedToolbar({
   searchQuery,
   onSearchQueryChange,
   onOpenComposer,
+  onComposerIntent,
 }: {
   serviceLocale: ServiceLocale;
   sortMode: ToyboxFeedSort;
@@ -900,6 +918,7 @@ function StoryFeedToolbar({
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
   onOpenComposer: () => void;
+  onComposerIntent: () => void;
 }) {
   const copy = storyFeedCopy(serviceLocale);
 
@@ -924,6 +943,8 @@ function StoryFeedToolbar({
         <button
           type="button"
           onClick={onOpenComposer}
+          onPointerEnter={onComposerIntent}
+          onFocus={onComposerIntent}
           className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-orange-800/40 bg-orange-600/10 px-3 text-xs font-semibold text-orange-900 shadow-[0_0_18px_rgba(154,52,18,0.08)] transition-colors hover:border-orange-800/60 hover:bg-orange-600/16 dark:border-[#fb923c]/50 dark:bg-[#fb923c]/15 dark:text-[#fed7aa] dark:shadow-[0_0_18px_rgba(251,146,60,0.14)] dark:hover:border-[#fb923c]/75 dark:hover:bg-[#fb923c]/25 dark:hover:text-white"
         >
           <StoryWriteIcon size={16} />
@@ -936,28 +957,24 @@ function StoryFeedToolbar({
 
 export function StoryFeed({
   serviceLocale = "ko",
+  gameLocale,
   storyPlaceholder,
   stories,
   cards,
   relics,
   potions,
   changes,
-  sts2Changes = [],
-  sts2Patches = [],
   sts2PatchLines = [],
-  sts2Entities = [],
 }: {
   serviceLocale?: ServiceLocale;
+  gameLocale: GameLocale;
   storyPlaceholder: string;
   stories: Story[];
   cards: Card[];
   relics: Relic[];
   potions: Potion[];
   changes: Change[];
-  sts2Changes?: STS2Change[];
-  sts2Patches?: STS2Patch[];
   sts2PatchLines?: STS2PatchLine[];
-  sts2Entities?: EntityInfo[];
 }) {
   const { userId, ready: authReady, ensureUser } = useAuth();
   const communityStories = useCommunityStories(userId);
@@ -969,6 +986,19 @@ export function StoryFeed({
   const [composerOpen, setComposerOpen] = useState(false);
   const [loadedPatchLines, setLoadedPatchLines] = useState<STS2PatchLine[] | null>(null);
   const didMountRef = useRef(false);
+  const sts2DataEnabled = Boolean(activeStoryId) || composerOpen;
+  const sts2EntityState = useCompendiumEntitiesState(gameLocale, { enabled: sts2DataEnabled });
+  const sts2HistoryState = useCompendiumDataState(gameLocale, STS2_HISTORY_KEYS, { enabled: sts2DataEnabled });
+  const sts2Entities = sts2EntityState.entities ?? NO_STS2_ENTITIES;
+  const sts2Changes = sts2HistoryState.data?.changes ?? NO_STS2_CHANGES;
+  const sts2Patches = sts2HistoryState.data?.patches ?? NO_STS2_PATCHES;
+  const sts2DataLoading = lazyDataPending(sts2EntityState.status) || lazyDataPending(sts2HistoryState.status);
+  const prefetchSts2Data = useCallback(() => {
+    prefetchAllEntityGraph(gameLocale);
+    loadCompendiumData(gameLocale, STS2_HISTORY_KEYS).catch(() => {
+      // useCompendiumDataState reports the failure once the composer opens.
+    });
+  }, [gameLocale]);
 
   const handleCommentCountChange = useCallback((storyId: string, count: number) => {
     setCommentCountOverrides((prev) => ({
@@ -1080,6 +1110,7 @@ export function StoryFeed({
           patchLines={patchLineOptions}
           patches={sts2Patches}
           entities={sts2Entities}
+          referenceLoading={sts2DataLoading}
           onAdd={communityStories.add}
           onClose={() => setComposerOpen(false)}
         />
@@ -1100,6 +1131,7 @@ export function StoryFeed({
           patchLinesLoading={patchLinesLoading}
           sts2Patches={sts2Patches}
           sts2Entities={sts2Entities}
+          sts2DataLoading={sts2DataLoading}
           userId={userId}
           authReady={authReady}
           ensureUser={ensureUser}
@@ -1118,6 +1150,7 @@ export function StoryFeed({
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
         onOpenComposer={() => setComposerOpen(true)}
+        onComposerIntent={prefetchSts2Data}
       />
       {communityStories.unavailable ? (
         <StorageUnavailableNotice title={serviceMessages[serviceLocale].comments.unavailableTitle} />

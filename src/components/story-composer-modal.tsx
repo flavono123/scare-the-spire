@@ -7,7 +7,11 @@ import type { STS2Patch, STS2PatchLine } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { EngagementSpinner } from "@/components/engagement-spinner";
-import { PatchLineReferenceBlock, PatchLineReferenceText } from "@/components/patch-line-reference";
+import {
+  PatchLineReferenceBlock,
+  PatchLineReferenceLoading,
+  PatchLineReferenceText,
+} from "@/components/patch-line-reference";
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
@@ -90,6 +94,7 @@ export function StoryComposerModal({
   patchLines,
   patches,
   entities,
+  referenceLoading = false,
   patchArt,
   initialPatchLineId,
   onAdd,
@@ -103,6 +108,8 @@ export function StoryComposerModal({
   patchLines: STS2PatchLine[];
   patches?: STS2Patch[];
   entities?: EntityInfo[];
+  /** While patches or entities load, the selected reference shows a loading line instead of guessed art. */
+  referenceLoading?: boolean;
   patchArt?: ResolvedPatchArt;
   initialPatchLineId?: string;
   onAdd: (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId?: string) => Promise<void>;
@@ -240,7 +247,9 @@ export function StoryComposerModal({
               />
             </label>
 
-            {selectedPatchLine ? (
+            {selectedPatchLine && referenceLoading && !patchArt ? (
+              <PatchLineReferenceLoading serviceLocale={serviceLocale} />
+            ) : selectedPatchLine ? (
               <PatchLineReferenceBlock
                 patchLine={selectedPatchLine}
                 serviceLocale={serviceLocale}
