@@ -1,5 +1,6 @@
 import Image from "@/components/ui/static-image";
 import { RichText } from "@/components/rich-text";
+import { cn } from "@/lib/utils";
 import type {
   CompendiumStaticDetailModel,
   StaticDetailKind,
@@ -69,11 +70,20 @@ const DETAIL_FRAMES: Record<StaticDetailKind, DetailFrame> = {
   },
 };
 
-function StaticLink({ link }: { link: StaticDetailLink }) {
+function StaticLink({ link, oneLine = false }: { link: StaticDetailLink; oneLine?: boolean }) {
   return (
     <a
       href={link.href}
-      className="font-game-title font-semibold spire-gold underline decoration-primary/30 underline-offset-2 transition-colors hover:text-primary"
+      title={oneLine ? link.label : undefined}
+      className={cn(
+        "font-game-title font-semibold spire-gold underline decoration-primary/30 underline-offset-2 transition-colors hover:text-primary",
+        // The link itself is the truncated box: the ellipsis takes its colour,
+        // and no ancestor clips its focus ring. -mx-1 px-1 (and max-width
+        // 100% + 0.5rem) keep the text on the cell while leaving 4px of the
+        // link's own clip box for glyphs and the underline end that overhang
+        // the advance width.
+        oneLine && "-mx-1 block w-fit max-w-[calc(100%+0.5rem)] truncate px-1",
+      )}
     >
       {link.label}
     </a>
@@ -150,13 +160,12 @@ export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetai
               {model.linkGroups.map((group) => (
                 <nav key={group.heading} aria-label={group.heading} className="flex flex-col gap-1">
                   <h3 className="font-service text-xs text-gray-500">{group.heading}</h3>
-                  {/* Fixed columns with one-line names: rows do not rewrap
-                      when the web fonts replace the fallback faces. The
-                      -m-1 p-1 pair leaves room for the clipped focus ring. */}
+                  {/* Fixed columns with one-line names: rows do not depend
+                      on the width of the text. */}
                   <ul className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-x-3 gap-y-1 text-sm">
                     {group.links.map((link) => (
-                      <li key={link.href} className="-m-1 min-w-0 truncate p-1" title={link.label}>
-                        <StaticLink link={link} />
+                      <li key={link.href} className="min-w-0">
+                        <StaticLink link={link} oneLine />
                       </li>
                     ))}
                   </ul>
