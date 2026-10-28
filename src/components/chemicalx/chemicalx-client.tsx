@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Image from "@/components/ui/static-image";
 import { Eye, EyeOff } from "lucide-react";
 import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-data";
-import { EntityGraphGate } from "@/components/entity-graph-gate";
+import { EntityGraphGate, EntityGraphUnavailableNotice } from "@/components/entity-graph-gate";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
@@ -37,8 +37,10 @@ export function ChemicalXClient({ gameLocale, placeholder }: ChemicalXClientProp
   const { userId, ready, ensureUser } = useAuth();
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
   // The full graph loads on the client next to the posts; the feed waits for
-  // both so posts never render with unresolved game elements.
+  // both so posts never render with unresolved game elements. If the graph
+  // fails, one retry notice stands in for the feed and the editor.
   const entityGraph = useCompendiumEntitiesState(gameLocale);
+  const entityGraphFailed = entityGraph.status === "failed";
   const entities = entityGraph.entities ?? NO_ENTITIES;
   const {
     posts,
@@ -91,7 +93,7 @@ export function ChemicalXClient({ gameLocale, placeholder }: ChemicalXClientProp
       </header>
 
       {/* Editor */}
-      {ready && !storageUnavailable && (
+      {ready && !storageUnavailable && !entityGraphFailed && (
         <EntityGraphGate
           status={entityGraph.status}
           serviceLocale={serviceLocale}
@@ -106,7 +108,7 @@ export function ChemicalXClient({ gameLocale, placeholder }: ChemicalXClientProp
       )}
 
       {/* Toolbar */}
-      {!loading && !storageUnavailable && (
+      {!loading && !storageUnavailable && !entityGraphFailed && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <FeedSortToggle
             service="chemical_x"
@@ -136,6 +138,8 @@ export function ChemicalXClient({ gameLocale, placeholder }: ChemicalXClientProp
         <StorageUnavailableNotice
           title={copy.unavailableTitle}
         />
+      ) : entityGraphFailed ? (
+        <EntityGraphUnavailableNotice serviceLocale={serviceLocale} />
       ) : loading ? (
         <ContentLoadingNotice label={copy.loading} />
       ) : (

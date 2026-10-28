@@ -6,6 +6,7 @@ import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-da
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { EntityGraphUnavailableNotice } from "@/components/entity-graph-gate";
 import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
@@ -52,8 +53,10 @@ export function TransfigureClient({
   const { userId, ready, ensureUser } = useAuth();
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
   // The full graph loads on the client next to the posts; the feed waits for
-  // both so posts never render with unresolved game elements.
+  // both so posts never render with unresolved game elements, and shows a
+  // retry notice instead of them if the graph fails.
   const entityGraph = useCompendiumEntitiesState(gameLocale);
+  const entityGraphFailed = entityGraph.status === "failed";
   const entities = entityGraph.entities ?? NO_ENTITIES;
   const {
     posts,
@@ -183,7 +186,7 @@ export function TransfigureClient({
         />
       )}
 
-      {!loading && !unavailable && (
+      {!loading && !unavailable && !entityGraphFailed && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <FeedSortToggle
             service="transfigure"
@@ -199,6 +202,8 @@ export function TransfigureClient({
 
       {unavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} />
+      ) : entityGraphFailed ? (
+        <EntityGraphUnavailableNotice serviceLocale={serviceLocale} />
       ) : loading ? (
         <ContentLoadingNotice label={copy.loading} />
       ) : posts.length === 0 ? (
