@@ -1,6 +1,7 @@
 "use client";
 
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useRetryWhenRequested } from "@/components/compendium-data-retry";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { buildAllEntities } from "@/lib/all-entities";
 import {
@@ -13,50 +14,10 @@ import type { GameLocale } from "@/lib/i18n";
 
 /**
  * "loading" until the chunks arrive or fail. A failure stays until
- * retryFailedCompendiumData() starts the load again (back to "loading").
+ * retryFailedCompendiumData() (compendium-data-retry) starts the load again,
+ * which goes back to "loading".
  */
 export type CompendiumDataStatus = "loading" | "loaded" | "failed";
-
-/** One callback per mounted hook whose load failed. */
-const failedLoadRetries = new Set<() => void>();
-
-/**
- * Starts again every load on the page that failed, for a retry button or a
- * page that comes back online. Hooks that loaded or are loading are untouched.
- */
-export function retryFailedCompendiumData(): void {
-  for (const retry of Array.from(failedLoadRetries)) retry();
-}
-
-/**
- * While a failure notice is shown, retry the failed loads when the browser
- * reconnects or the tab becomes visible again.
- */
-export function useRetryFailedCompendiumDataOnReturn(): void {
-  useEffect(() => {
-    const onVisibilityChange = () => {
-      if (document.visibilityState === "visible") retryFailedCompendiumData();
-    };
-    window.addEventListener("online", retryFailedCompendiumData);
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    return () => {
-      window.removeEventListener("online", retryFailedCompendiumData);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-    };
-  }, []);
-}
-
-/** Lets retryFailedCompendiumData() start a new attempt while the hook's load has failed. */
-function useRetryWhenRequested(failed: boolean, setAttempt: Dispatch<SetStateAction<number>>): void {
-  useEffect(() => {
-    if (!failed) return;
-    const retry = () => setAttempt((attempt) => attempt + 1);
-    failedLoadRetries.add(retry);
-    return () => {
-      failedLoadRetries.delete(retry);
-    };
-  }, [failed, setAttempt]);
-}
 
 /**
  * A hook called with `{ enabled: false }` reports "idle" until it is enabled.

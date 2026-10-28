@@ -1,42 +1,15 @@
 "use client";
 
 import type { ReactNode } from "react";
+import type { CompendiumLazyDataStatus } from "@/components/codex/use-compendium-data";
 import {
-  retryFailedCompendiumData,
+  CompendiumDataRetryButton,
   useRetryFailedCompendiumDataOnReturn,
-  type CompendiumLazyDataStatus,
-} from "@/components/codex/use-compendium-data";
+} from "@/components/compendium-data-retry";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import type { ServiceLocale } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
-
-/** Starts every failed Compendium data load on the page again. */
-export function CompendiumDataRetryButton({
-  serviceLocale,
-  compact = false,
-  className,
-}: {
-  serviceLocale: ServiceLocale;
-  compact?: boolean;
-  className?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={retryFailedCompendiumData}
-      className={cn(
-        "rounded-md border border-primary/30 bg-primary/10 text-xs font-semibold text-primary transition-colors hover:border-primary/50 hover:bg-primary/15 focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70",
-        compact ? "px-2.5 py-1" : "px-3 py-1.5",
-        className,
-      )}
-      data-compendium-data-retry
-    >
-      {serviceMessages[serviceLocale].entityGraph.retry}
-    </button>
-  );
-}
 
 /**
  * Shown in place of a feed or an editor whose entity graph failed to load, so
