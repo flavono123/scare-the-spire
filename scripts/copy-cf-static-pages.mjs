@@ -96,15 +96,19 @@ const sts1CompendiumSegments = new Set([
   "powers",
   "relics",
 ]);
-// Only the ko static Compendium detail document needs GC Batang's common-character
-// subset (compendium-direct-detail-route.tsx). React Flight also writes that
-// preload into the page's RSC payload as a hint row, and the Flight client applies
-// hint rows as soon as it parses them, so a <Link> prefetch of a ko detail would
-// fetch the subset on whatever page is open. Hint rows are not referenced by other
-// rows; the HTML keeps its <link rel="preload">.
+// The static Compendium detail preloads GC Batang's common-character subset on ko
+// detail documents (compendium-direct-detail-route.tsx) and renders its header
+// image eagerly. React Flight also writes both into the detail's RSC payload as
+// hint rows, and the Flight client applies hint rows as soon as it parses them, so
+// a <Link> prefetch of a detail would fetch the subset and the image on whatever
+// page is open. Only the document needs them: drop those rows from detail RSC
+// payloads. Hint rows are not referenced by other rows; the HTML keeps its
+// <link rel="preload"> tags.
 const staticDetailSubsetHref = "/fonts/GyeonggiCheonnyeonBatangBold-common.woff2";
-const staticDetailSubsetHintRow =
-  /^:HL\["\/fonts\/GyeonggiCheonnyeonBatangBold-common\.woff2",[^\n]*\n/gm;
+const staticDetailHintRows = [
+  /^:HL\["\/fonts\/GyeonggiCheonnyeonBatangBold-common\.woff2",[^\n]*\n/gm,
+  /^:HL\["[^"\n]*","image"[^\n]*\n/gm,
+];
 
 function walk(dir, files = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -255,8 +259,17 @@ function localizeDocumentRoot(html, gameLocale, relative) {
   return `${html.slice(0, match.index)}${tag}${html.slice(match.index + match[0].length)}`;
 }
 
-function stripStaticDetailSubsetHint(rsc, relative) {
-  const stripped = rsc.replace(staticDetailSubsetHintRow, "");
+// STS2 detail pages: compendium/<type>/<id> and en/compendium/<type>/<id>.
+function isCompendiumDetail(relative) {
+  const parts = path.parse(relative).dir.split(path.sep).filter(Boolean);
+  const compendiumIndex = parts[0] === "en" ? 1 : 0;
+  return parts.length === compendiumIndex + 2
+    && parts[compendiumIndex] === "compendium"
+    && compendiumSegments.has(parts[compendiumIndex + 1]);
+}
+
+function stripStaticDetailHints(rsc, relative) {
+  const stripped = staticDetailHintRows.reduce((current, row) => current.replace(row, ""), rsc);
   if (stripped.includes(staticDetailSubsetHref)) {
     throw new Error(`${relative} still references ${staticDetailSubsetHref} outside a hint row`);
   }
@@ -282,9 +295,11 @@ for (const file of walk(appDir)) {
   if (gameLocale) {
     writeFileSync(output, localizeDocumentRoot(readFileSync(file, "utf8"), gameLocale, relative));
     localizedCount += 1;
-  } else if (relative.endsWith(".rsc") && readFileSync(file).includes(staticDetailSubsetHref)) {
-    writeFileSync(output, stripStaticDetailSubsetHint(readFileSync(file, "utf8"), relative));
-    strippedHintCount += 1;
+  } else if (relative.endsWith(".rsc") && isCompendiumDetail(relative)) {
+    const rsc = readFileSync(file, "utf8");
+    const stripped = stripStaticDetailHints(rsc, relative);
+    writeFileSync(output, stripped);
+    if (stripped !== rsc) strippedHintCount += 1;
   } else {
     copyFileSync(file, output);
   }
@@ -295,7 +310,7 @@ if (count === 0) {
   throw new Error("No Cloudflare static HTML/RSC files were copied.");
 }
 
-console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir} (${localizedCount} with an English document root, ${strippedHintCount} RSC without the static detail font subset hint)`);
+console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir} (${localizedCount} with an English document root, ${strippedHintCount} detail RSC without static detail hints)`);
 
 for (const metadataFile of staticMetadataFiles) {
   const source = path.join(appDir, metadataFile.source);
