@@ -59,11 +59,8 @@
    interactive detail replaces it: the web font when it is already there, or the
    metric-adjusted fallback for good when it is not. The fallbacks are close to
    the web fonts but not exact, so a swap could still rewrap a title or a
-   paragraph and move everything below it. Spectral and Kreon use the same URLs,
-   so each file is fetched once for both names. GC Batang uses its common-
-   character subset (scripts/build-gc-batang-common-subset.py, same metrics):
-   the full 2 MB file takes ~150ms to decode even from the disk cache, past the
-   ~100ms that optional waits, while the subset decodes in ~25ms. */
+   paragraph and move everything below it. Same URLs, so each file is fetched
+   once for both names. */
 @font-face {
   font-family: "STS Spectral Static";
   src: url("/fonts/spectral_bold.ttf") format("truetype");
@@ -90,6 +87,20 @@
 
 @font-face {
   font-family: "STS GC Batang Static";
+  src: url("/fonts/GyeonggiCheonnyeonBatangBold.woff2") format("woff2");
+  font-display: optional;
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* GC Batang's common-character subset (scripts/build-gc-batang-common-subset.py,
+   same metrics as the full file) for static details that show Korean. The full
+   2 MB file takes ~150ms to decode even from the disk cache, past the ~100ms that
+   optional waits; the subset decodes in ~25ms. Other static details keep the
+   full file above: they reach GC Batang only through the fallback list, and the
+   full file is already preloaded, so they fetch nothing extra. */
+@font-face {
+  font-family: "STS GC Batang Static Common";
   src: url("/fonts/GyeonggiCheonnyeonBatangBold-common.woff2") format("woff2");
   font-display: optional;
   font-style: normal;
@@ -736,6 +747,13 @@
   --font-service-ui: var(--font-gc-batang, serif);
   --font-game-title-family: var(--font-spectral, serif), var(--font-service-ui);
   --font-game-text-family: var(--font-kreon, serif), var(--font-service-ui);
+}
+
+/* Korean text in the static detail: the common-character subset, preloaded by
+   compendium-direct-detail-route.tsx under the same locale condition. */
+[data-service-locale="ko"] [data-compendium-static-detail],
+[data-game-locale="kor"] [data-compendium-static-detail] {
+  --font-gc-batang: "STS GC Batang Static Common", "STS GC Batang Fallback AppleMyungjo", "STS GC Batang Fallback Batang", "STS GC Batang Fallback Nanum Myeongjo", "STS GC Batang Fallback Noto Serif KR";
 }
 
 [data-service-locale="ko"],

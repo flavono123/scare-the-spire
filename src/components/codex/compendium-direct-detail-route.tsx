@@ -31,9 +31,10 @@ export async function CompendiumDirectDetailRoute({
     buildCompendiumStaticDetail(resourceType, id, { gameLocale, serviceLocale }),
   ]);
 
-  // The static detail's GC Batang face (font-display: optional, globals.css)
-  // is used only if it is ready within ~100ms. Preloading the subset starts it
-  // before the full file the root layout preloads, which decodes for ~150ms.
+  // A static detail that shows Korean uses GC Batang's common-character subset
+  // with font-display: optional (globals.css, same locale condition), so only
+  // if it is ready within ~100ms. Preloading it starts it before the full file
+  // the root layout preloads, which takes ~150ms to decode.
   if (staticDetail && (serviceLocale === "ko" || gameLocale === "kor")) {
     preload("/fonts/GyeonggiCheonnyeonBatangBold-common.woff2", {
       as: "font",
