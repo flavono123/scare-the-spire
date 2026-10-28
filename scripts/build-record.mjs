@@ -16,10 +16,9 @@ import { fileURLToPath } from "node:url";
 
 export const BUILD_RECORD_FILE = "build-record.json";
 
-function git(args, cwd, input) {
+function git(args, cwd) {
   const result = spawnSync("git", args, {
     cwd,
-    input,
     encoding: "utf8",
     maxBuffer: 64 * 1024 * 1024,
   });
@@ -28,6 +27,22 @@ function git(args, cwd, input) {
     throw new Error(`git ${args[0]} failed: ${result.stderr.trim() || `exit ${result.status}`}`);
   }
   return result.stdout;
+}
+
+function sha256(data) {
+  return createHash("sha256").update(data).digest("hex");
+}
+
+// Content hash of a working-tree path; symlinks hash their target string.
+function hashPath(file) {
+  try {
+    const stat = fs.lstatSync(file);
+    if (stat.isSymbolicLink()) return `link:${sha256(fs.readlinkSync(file))}`;
+    if (!stat.isFile()) return "not-a-file";
+    return sha256(fs.readFileSync(file));
+  } catch {
+    return "missing";
+  }
 }
 
 // HEAD plus the content of every tracked file that differs from HEAD
@@ -40,17 +55,11 @@ export function readGitState(cwd = process.cwd()) {
     .filter(Boolean);
   const changes = [];
   for (let index = 0; index + 1 < fields.length; index += 2) {
-    changes.push({ status: fields[index], path: fields[index + 1], blob: null });
-  }
-  const present = changes.filter((change) => change.status !== "D");
-  if (present.length > 0) {
-    const blobs = git(
-      ["hash-object", "--stdin-paths"],
-      top,
-      `${present.map((change) => change.path).join("\n")}\n`,
-    ).trim().split("\n");
-    present.forEach((change, index) => {
-      change.blob = blobs[index];
+    const [status, file] = [fields[index], fields[index + 1]];
+    changes.push({
+      status,
+      path: file,
+      hash: status === "D" ? null : hashPath(path.join(top, file)),
     });
   }
   changes.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
@@ -58,7 +67,7 @@ export function readGitState(cwd = process.cwd()) {
 }
 
 function changeKey(change) {
-  return `${change.status} ${change.blob ?? "-"}`;
+  return `${change.status} ${change.hash ?? "-"}`;
 }
 
 function shortSha(sha) {
@@ -159,10 +168,9 @@ export function checkBuildRecord(artifactDir, { state } = {}) {
 // Fingerprint of a record's tree state, for log lines.
 export function describeBuildRecord(record) {
   if (!record.changes.length) return `${shortSha(record.head)} (clean)`;
-  const digest = createHash("sha256")
-    .update(record.changes.map((change) => `${changeKey(change)} ${change.path}`).join("\n"))
-    .digest("hex")
-    .slice(0, 10);
+  const digest = sha256(
+    record.changes.map((change) => `${changeKey(change)} ${change.path}`).join("\n"),
+  ).slice(0, 10);
   return `${shortSha(record.head)} + ${record.changes.length} uncommitted file(s) [${digest}]`;
 }
 
