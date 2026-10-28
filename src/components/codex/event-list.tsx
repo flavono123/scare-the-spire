@@ -506,6 +506,7 @@ export function EventList({
                 closeLabel={serviceText.common.close}
                 loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedEvent}
+                className="max-w-[92rem] p-3 sm:p-4"
               />
             )}
           </div>

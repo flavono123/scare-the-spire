@@ -228,6 +228,8 @@ export function CompendiumDetailLoading({
   closeLabel,
   loadingLabel,
   onClose,
+  className,
+  largeControls = false,
 }: {
   title: string;
   /** Id for the title, when the dialog is labelled by the detail's own heading id. */
@@ -236,25 +238,38 @@ export function CompendiumDetailLoading({
   closeLabel: string;
   loadingLabel: string;
   onClose: () => void;
+  /**
+   * The detail's own root width and padding, when they differ from the
+   * default, so the back link and close button stay put when it loads.
+   */
+  className?: string;
+  /** Use 44px header controls, for details whose header uses them. */
+  largeControls?: boolean;
 }) {
   const requestRailGutter = useContext(ReserveRailGutterContext);
   useLayoutEffect(() => {
     requestRailGutter?.();
   }, [requestRailGutter]);
   return (
-    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6" aria-busy="true">
+    <div className={cn("mx-auto w-full max-w-6xl p-4 sm:p-6", className)} aria-busy="true">
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <button
           type="button"
           onClick={onClose}
-          className="text-sm text-gray-400 transition-colors hover:text-gray-200"
+          className={cn(
+            "text-sm text-gray-400 transition-colors hover:text-gray-200",
+            largeControls && "flex min-h-11 items-center",
+          )}
         >
           ← {backToListTitle}
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10"
+          className={cn(
+            "flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10",
+            largeControls && "h-11 w-11",
+          )}
           aria-label={closeLabel}
         >
           ✕

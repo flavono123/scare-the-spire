@@ -551,6 +551,7 @@ export function PotionLibrary({
                 closeLabel={serviceText.common.close}
                 loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedPotion}
+                className="max-w-5xl"
               />
             )}
           </div>

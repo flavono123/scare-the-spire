@@ -558,6 +558,7 @@ export function RelicLibrary({
                 closeLabel={serviceText.common.close}
                 loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedRelic}
+                className="max-w-5xl"
               />
             )}
           </div>

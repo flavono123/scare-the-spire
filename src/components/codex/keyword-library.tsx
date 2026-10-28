@@ -294,6 +294,7 @@ export function KeywordLibrary({
                 closeLabel={serviceText.common.close}
                 loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedKeyword}
+                className="max-w-5xl"
               />
             )}
           </div>

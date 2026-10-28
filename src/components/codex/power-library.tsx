@@ -365,6 +365,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
                 closeLabel={serviceText.common.close}
                 loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedPower}
+                className="max-w-5xl"
               />
             )}
           </div>

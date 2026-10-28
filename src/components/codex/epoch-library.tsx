@@ -530,6 +530,7 @@ export function EpochLibrary({
                 closeLabel={serviceText.common.close}
                 loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={() => setSelectedEpoch(null)}
+                className="max-w-[92rem] p-3 sm:p-4"
               />
             )}
           </div>

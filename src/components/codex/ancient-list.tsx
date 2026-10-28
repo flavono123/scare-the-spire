@@ -408,6 +408,7 @@ export function AncientList({
                 closeLabel={serviceText.common.close}
                 loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedAncient}
+                largeControls
               />
             )}
           </div>

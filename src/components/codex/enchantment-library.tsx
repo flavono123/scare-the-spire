@@ -439,6 +439,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
                 closeLabel={serviceText.common.close}
                 loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedResource}
+                className="max-w-5xl"
               />
             ) : selectedResource.kind === "enchantment" ? (
               <EnchantmentDetail
