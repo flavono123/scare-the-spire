@@ -7,6 +7,7 @@ import { ComboGameElementFilter } from "@/components/combo/combo-game-element-fi
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { CoverEditorSheet } from "@/components/history-course/cover-editor-sheet";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { EntityGraphUnavailableNotice } from "@/components/entity-graph-gate";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useAuth } from "@/hooks/use-auth";
@@ -92,10 +93,12 @@ export function HistoryCourseRunIndex({
   const { userId, ready: authReady, ensureUser } = useAuth();
   // Game element names for search and filter chips load on the client next
   // to the runs. Until they arrive the filter shows no chips and a search
-  // waits instead of matching against incomplete names.
+  // waits instead of matching against incomplete names. If they fail, a retry
+  // notice stands in for the filter; the runs themselves do not need them.
   const entityGraph = useCompendiumEntitiesState(gameLocale);
   const entities = entityGraph.entities ?? NO_ENTITIES;
-  const entitiesReady = entityGraph.status !== "loading";
+  const entitiesReady = entityGraph.status === "loaded";
+  const entityGraphFailed = entityGraph.status === "failed";
   const [localEntries, setLocalEntries] = useState<LocalEntry[] | null>(null);
   const [donatedRuns, setDonatedRuns] = useState<DonatedRunSummary[] | null>(null);
   const [donatedIds, setDonatedIds] = useState<Set<string>>(new Set());
@@ -106,6 +109,17 @@ export function HistoryCourseRunIndex({
   const [query, setQuery] = useState("");
   const [selectedGameElements, setSelectedGameElements] = useState<ComboResourceRef[]>([]);
   const [sort, setSort] = useState<HistoryCourseIndexSort>("latest");
+  // The filter unmounts while the graph has failed and comes back empty after
+  // a retry, so a search typed while the graph was loading must not keep
+  // filtering the runs behind the notice.
+  const [filterClearedForFailure, setFilterClearedForFailure] = useState(false);
+  if (filterClearedForFailure !== entityGraphFailed) {
+    setFilterClearedForFailure(entityGraphFailed);
+    if (entityGraphFailed) {
+      setQuery("");
+      setSelectedGameElements([]);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -409,23 +423,27 @@ export function HistoryCourseRunIndex({
             labels={serviceMessages[serviceLocale].feedSort}
           />
         ) : null}
-        <ComboGameElementFilter
-          entities={entities}
-          items={entityGraph.status === "loaded" ? searchItems : NO_FILTER_ITEMS}
-          loading={!entitiesReady}
-          selected={selectedGameElements}
-          serviceLocale={serviceLocale}
-          onSelectedChange={setSelectedGameElements}
-          onQueryChange={setQuery}
-          labels={{
-            filterSearchPlaceholder: copy.searchPlaceholder,
-            gameElementsInPosts: copy.gameElementsInRuns,
-            noGameElementsInPosts: copy.noGameElementsInRuns,
-            popularGameElements: copy.popularGameElements,
-            applyPopularGameElement: copy.applyPopularGameElement,
-            removePopularGameElement: copy.removePopularGameElement,
-          }}
-        />
+        {entityGraphFailed ? (
+          <EntityGraphUnavailableNotice compact serviceLocale={serviceLocale} />
+        ) : (
+          <ComboGameElementFilter
+            entities={entities}
+            items={entitiesReady ? searchItems : NO_FILTER_ITEMS}
+            loading={!entitiesReady}
+            selected={selectedGameElements}
+            serviceLocale={serviceLocale}
+            onSelectedChange={setSelectedGameElements}
+            onQueryChange={setQuery}
+            labels={{
+              filterSearchPlaceholder: copy.searchPlaceholder,
+              gameElementsInPosts: copy.gameElementsInRuns,
+              noGameElementsInPosts: copy.noGameElementsInRuns,
+              popularGameElements: copy.popularGameElements,
+              applyPopularGameElement: copy.applyPopularGameElement,
+              removePopularGameElement: copy.removePopularGameElement,
+            }}
+          />
+        )}
       </div>
       <header className="mb-4 flex items-baseline justify-between gap-3">
         <p className="text-[11px] text-muted-foreground">
