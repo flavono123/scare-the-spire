@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn, spawnSync } from "node:child_process";
+import { checkBuildRecord, describeBuildRecord } from "./build-record.mjs";
 
 const LOCAL_MAIN_ORIGIN = "http://127.0.0.1:8787";
 const LOCAL_PATCH_ORIGIN = "http://127.0.0.1:8788";
@@ -14,7 +15,36 @@ Options:
   --origin <url>   Test an already-running preview without building or starting Workers
   --remote         Deploy the isolated testbed Workers to Cloudflare and test them
   --skip-build     Reuse existing .open-next and .patch-worker artifacts
+                   (refused unless both were built from the current checkout)
   --help           Show this help`);
+}
+
+const ARTIFACTS = [
+  { dir: ".open-next", build: "pnpm cf:build" },
+  { dir: ".patch-worker", build: "pnpm patch:build" },
+];
+
+// Refuse to test or deploy artifacts built from another commit or tree.
+function assertFreshArtifacts(options) {
+  const stale = [];
+  for (const artifact of ARTIFACTS) {
+    const result = checkBuildRecord(artifact.dir);
+    if (result.ok) {
+      console.log(`[testbed] ${artifact.dir} built from ${describeBuildRecord(result.record)}`);
+    } else {
+      stale.push({ ...artifact, reason: result.reason });
+    }
+  }
+  if (stale.length === 0) return;
+
+  const rebuild = options.remote ? "pnpm cf:testbed -- --remote" : "pnpm cf:testbed:local";
+  throw new Error(
+    [
+      "refusing to reuse stale Worker artifacts:",
+      ...stale.map((artifact) => `  - ${artifact.reason} (rebuild with ${artifact.build})`),
+      `Run ${rebuild} without --skip-build to rebuild both from this checkout.`,
+    ].join("\n"),
+  );
 }
 
 function parseArgs(argv) {
@@ -225,6 +255,7 @@ async function runRemote(options) {
     );
   }
 
+  assertFreshArtifacts(options);
   run("validate static patch Worker artifact", "pnpm", ["patch:test"]);
   run("validate main Worker upload size", "pnpm", ["cf:size"]);
 
@@ -283,6 +314,7 @@ async function main() {
     run("build main Worker artifact", "pnpm", ["cf:build"]);
     run("build static patch Worker artifact", "pnpm", ["patch:build"]);
   }
+  assertFreshArtifacts(options);
 
   let patchWorker;
   let mainWorker;
