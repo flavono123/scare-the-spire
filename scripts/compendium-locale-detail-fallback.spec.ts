@@ -33,10 +33,9 @@ const STS2_DETAILS = [
   { detail: "/compendium/badges/big_deck", list: "/compendium/badges?badge=big_deck" },
   { detail: "/compendium/cards/bash", list: "/compendium/cards?card=bash" },
   { detail: "/compendium/characters/ironclad", list: "/compendium/characters?character=ironclad" },
-  // Afflictions share the enchantment detail route and list, so the list gets
-  // both params and opens whichever kind has the id.
-  { detail: "/compendium/enchantments/adroit", list: "/compendium/enchantments?enchantment=adroit&affliction=adroit" },
-  { detail: "/compendium/enchantments/bound", list: "/compendium/enchantments?enchantment=bound&affliction=bound" },
+  { detail: "/compendium/enchantments/adroit", list: "/compendium/enchantments?enchantment=adroit" },
+  // Afflictions share the enchantment detail route and list.
+  { detail: "/compendium/enchantments/bound", list: "/compendium/enchantments?enchantment=bound" },
   { detail: "/compendium/encounters/aeonglass_boss", list: "/compendium/bestiary?view=encounters&encounter=aeonglass_boss" },
   { detail: "/compendium/epochs/colorless1_epoch", list: "/compendium/epochs?epoch=colorless1_epoch" },
   { detail: "/compendium/events/dense_vegetation", list: "/compendium/events?event=dense_vegetation" },
