@@ -197,8 +197,9 @@ const STS1_LIST_SELECTOR_PARAMS: Record<string, string | null> = {
  * detail path moved onto one of them (language menu, browser-language
  * detection, saved-language redirect) would 404. Returns the list URL that
  * opens the same entry instead, or null when `href` is not a detail path on a
- * game-only locale. Enchantment and affliction details share one path, so both
- * map to ?enchantment=<id>.
+ * game-only locale. Enchantment and affliction details share one path, so it
+ * maps to ?enchantment=<id>&affliction=<id>: the list opens the enchantment
+ * when one has that id, otherwise the affliction.
  */
 export function getGameOnlyCompendiumDetailFallbackHref(href: string): string | null {
   const url = new URL(href, "https://compendium.invalid");
@@ -223,6 +224,9 @@ export function getGameOnlyCompendiumDetailFallbackHref(href: string): string | 
     const id = detailIdFromPath(localized.path, config.detailPath);
     if (!id) continue;
     const next = updateCompendiumResourceModalUrl(url, type as CompendiumResourceLinkType, id);
+    if (type === "enchantment") {
+      next.searchParams.set(COMPENDIUM_RESOURCE_LINKS.affliction.param, id.toLowerCase());
+    }
     return `${next.pathname}${next.search}`;
   }
 
