@@ -25,6 +25,7 @@ import { ResourceReactionBar } from "@/components/resource-reaction-bar";
 import { COLORFUL_PHILOSOPHERS_GAME_VERSION } from "@/lib/colorful-philosophers";
 import { serviceMessages } from "@/messages/service";
 import { EngagementSpinner } from "@/components/engagement-spinner";
+import { EntityGraphUnavailableNotice } from "@/components/entity-graph-gate";
 import { LikeControl } from "@/components/like-control";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
@@ -64,7 +65,8 @@ export function CommentSection({
   initialEntities?: EntityInfo[];
   /**
    * Load this game locale's full entity graph on the client instead of taking
-   * `initialEntities`; comments wait for it so mentions never render unlinked.
+   * `initialEntities`; comments wait for it so mentions never render unlinked,
+   * and if it fails a retry notice replaces the comments and the editor.
    */
   entitiesGameLocale?: GameLocale;
   onCountChange?: (count: number) => void;
@@ -93,7 +95,7 @@ export function CommentSection({
   const tips = serviceMessages[serviceLocale].engagementTips;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const { userId, ready, ensureUser } = useAuth();
-  const { entities, loading: entitiesLoading } = useCommentEntities(initialEntities, {
+  const { entities, loading: entitiesLoading, failed: entitiesFailed } = useCommentEntities(initialEntities, {
     gameLocale: entitiesGameLocale,
   });
   const { comments, loading, unavailable, add, remove } = useComments(threadKey, userId);
@@ -191,6 +193,11 @@ export function CommentSection({
           compact
           title={copy.unavailableTitle}
         />
+      ) : entitiesFailed ? (
+        // A lazily loaded graph failed: one retry notice stands in for the
+        // comments (their mentions would not resolve) and the editor (it
+        // would offer no suggestions) until a retry loads it.
+        <EntityGraphUnavailableNotice compact serviceLocale={serviceLocale} />
       ) : commentsLoading ? (
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <EngagementSpinner size={14} />
@@ -321,7 +328,7 @@ export function CommentSection({
         </ul>
       )}
 
-      {ready && !storageUnavailable && (
+      {ready && !storageUnavailable && !entitiesFailed && (
         <div className={inline ? "" : "space-y-2"}>
           {!inline && (
           <input

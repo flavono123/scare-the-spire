@@ -84,7 +84,10 @@ async function fetchSts2CommentEntities(): Promise<EntityInfo[]> {
  * `initialEntities` as aliases. With `gameLocale`, the primary list is that
  * locale's full entity graph and the Korean graph supplies the aliases (the
  * same data as the Korean file), so a page no longer has to ship the graph in
- * its props; `loading` lasts until the primary graph has arrived or failed.
+ * its props; `loading` lasts until the primary graph has arrived or failed,
+ * and `failed` is set while either graph has failed (until a retry starts),
+ * so the caller can show a retry notice instead of unresolved mentions. The
+ * default path never fails: without the file it keeps `initialEntities`.
  */
 export function useCommentEntities(
   initialEntities?: EntityInfo[],
@@ -110,6 +113,7 @@ function useGraphCommentEntities(gameLocale: GameLocale | undefined, enabled: bo
   return {
     entities,
     loading: graphEnabled && (primary.status === "loading" || primary.status === "idle"),
+    failed: graphEnabled && (primary.status === "failed" || fallback.status === "failed"),
   };
 }
 
@@ -147,5 +151,6 @@ function useFileCommentEntities(initialEntities: EntityInfo[] | undefined, enabl
   return {
     entities,
     loading: enabled && !hasInitialEntities && !fallbackEntities && !loadFinished,
+    failed: false,
   };
 }
