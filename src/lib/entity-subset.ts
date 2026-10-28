@@ -6,13 +6,16 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 // PatchNoteRenderer resolves entities only by label (nameKo, nameEn,
 // aliasesKo, aliasesEn, trimmed and lowercased): [gold] tokens, **bold**
 // names, auto-linked names, monster move keywords and monster mentions all
-// look up a label that literally occurs in the text, and its BBCode blocks
-// [character-low-hp-idle] and [monster-pattern-diff:ID] read every character
-// or every monster. Keeping every entity with a label found in the text keeps
-// every lookup the renderer can make complete and in the original order, so
-// it renders exactly what the full graph renders.
+// look up a label that literally occurs in the text, and its character
+// low-HP idle and monster pattern diff blocks read every character or every
+// monster. Keeping every entity with a label found in the text keeps every
+// lookup the renderer can make complete and in the original order, so it
+// renders exactly what the full graph renders.
+//
+// Keep bracketed "name:value" examples out of this file: Tailwind reads them
+// as arbitrary property classes and the site CSS would change.
 
-/** BBCode tags such as [gold], [gold:card], [/gold], [sine] or [energy:2]. */
+/** BBCode tags: gold (optionally with a type), its closing tag, sine, energy and so on. */
 const BBCODE_TAG_RE = /\[\/?[a-z][\w-]*(?::[^\]\n]*)?\]/gi;
 const CHARACTER_BLOCK_TOKEN = "[character-low-hp-idle";
 const MONSTER_BLOCK_TOKEN = "[monster-pattern-diff:";

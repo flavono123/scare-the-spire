@@ -28,6 +28,10 @@ const entity = (fields: Partial<EntityInfo> & Pick<EntityInfo, "id" | "type" | "
   ...fields,
 });
 
+// Built at runtime: a literal bracketed name-colon-value string would be read
+// by Tailwind as an arbitrary property class and change the site CSS.
+const block = (name: string, arg: string) => `[${name}:${arg}]`;
+
 // Unit cases for the selection rule.
 {
   const bash = entity({ id: "BASH", type: "card", nameKo: "강타", nameEn: "Bash" });
@@ -44,8 +48,8 @@ const entity = (fields: Partial<EntityInfo> & Pick<EntityInfo, "id" | "type" | "
     [bash, upgraded],
     "nested tags are read the way [gold] extracts its text",
   );
-  assert.deepEqual(selectEntitiesForTexts(all, ["[character-low-hp-idle:v0.111.0]"]), [ironclad]);
-  assert.deepEqual(selectEntitiesForTexts(all, ["[monster-pattern-diff:jaw_worm]"]), [jaw]);
+  assert.deepEqual(selectEntitiesForTexts(all, [block("character-low-hp-idle", "v0.111.0")]), [ironclad]);
+  assert.deepEqual(selectEntitiesForTexts(all, [block("monster-pattern-diff", "jaw_worm")]), [jaw]);
   assert.equal(selectEntitiesForTexts(all, ["강타"])[0], bash, "object identity is kept");
   assert.deepEqual(collectStrings({ a: ["x", { b: "y", c: 1, d: null }], e: "z" }), ["x", "y", "z"]);
 }
