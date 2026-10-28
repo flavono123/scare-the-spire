@@ -53,14 +53,17 @@
   font-weight: 700;
 }
 
-/* The same files under other names with font-display: optional, for the
+/* The same faces under other names with font-display: optional, for the
    server-rendered Compendium detail only ([data-compendium-static-detail], see
    the font tokens below). It keeps the face it first paints with until the
    interactive detail replaces it: the web font when it is already there, or the
    metric-adjusted fallback for good when it is not. The fallbacks are close to
    the web fonts but not exact, so a swap could still rewrap a title or a
-   paragraph and move everything below it. Same URLs, so each file is fetched
-   once for both names. */
+   paragraph and move everything below it. Spectral and Kreon use the same URLs,
+   so each file is fetched once for both names. GC Batang uses its common-
+   character subset (scripts/build-gc-batang-common-subset.py, same metrics):
+   the full 2 MB file takes ~150ms to decode even from the disk cache, past the
+   ~100ms that optional waits, while the subset decodes in ~25ms. */
 @font-face {
   font-family: "STS Spectral Static";
   src: url("/fonts/spectral_bold.ttf") format("truetype");
@@ -87,7 +90,7 @@
 
 @font-face {
   font-family: "STS GC Batang Static";
-  src: url("/fonts/GyeonggiCheonnyeonBatangBold.woff2") format("woff2");
+  src: url("/fonts/GyeonggiCheonnyeonBatangBold-common.woff2") format("woff2");
   font-display: optional;
   font-style: normal;
   font-weight: 700;

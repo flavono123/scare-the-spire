@@ -1,3 +1,4 @@
+import { preload } from "react-dom";
 import { CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-page";
 import { CompendiumStaticDetail } from "@/components/codex/compendium-static-detail";
 import {
@@ -29,6 +30,17 @@ export async function CompendiumDirectDetailRoute({
     generateCompendiumDetailSeoSummary(resourceType, id, { gameLocale, serviceLocale }),
     buildCompendiumStaticDetail(resourceType, id, { gameLocale, serviceLocale }),
   ]);
+
+  // The static detail's GC Batang face (font-display: optional, globals.css)
+  // is used only if it is ready within ~100ms. Preloading the subset starts it
+  // before the full file the root layout preloads, which decodes for ~150ms.
+  if (staticDetail && (serviceLocale === "ko" || gameLocale === "kor")) {
+    preload("/fonts/GyeonggiCheonnyeonBatangBold-common.woff2", {
+      as: "font",
+      type: "font/woff2",
+      crossOrigin: "anonymous",
+    });
+  }
 
   return (
     <CompendiumDirectDetailPage
