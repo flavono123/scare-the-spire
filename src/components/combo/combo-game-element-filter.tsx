@@ -8,6 +8,7 @@ import {
 } from "react";
 import { Check, Search, SlidersHorizontal, X } from "lucide-react";
 import { ScrollableBoundedCarousel } from "@/components/codex/bounded-carousel";
+import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { matchEntities } from "@/lib/chemical-utils";
 import {
@@ -72,6 +73,8 @@ interface ComboGameElementFilterProps {
   serviceLocale: ServiceLocale;
   onSelectedChange: (selected: ComboResourceRef[]) => void;
   onQueryChange?: (query: string) => void;
+  /** While the entity list is still loading, the open panel shows a loading notice instead of results. */
+  loading?: boolean;
   labels?: Partial<
     Record<
       | "filterSearchPlaceholder"
@@ -92,6 +95,7 @@ export function ComboGameElementFilter({
   serviceLocale,
   onSelectedChange,
   onQueryChange,
+  loading = false,
   labels,
 }: ComboGameElementFilterProps) {
   const copy = {
@@ -425,40 +429,44 @@ export function ComboGameElementFilter({
               )}
             </label>
 
-            <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-border px-3 py-2 dark:border-white/10">
-              <button
-                type="button"
-                aria-pressed={activeType == null}
-                onClick={() => setActiveType(null)}
-                className={cn(
-                  "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
-                  activeType == null
-                    ? "border-primary/40 bg-primary/15 text-primary"
-                    : "border-border text-muted-foreground hover:border-border hover:text-foreground dark:border-white/10 dark:hover:border-white/20 dark:hover:text-zinc-300",
-                )}
-              >
-                {copy.allResources}
-              </button>
-              {availableTypes.map((type) => (
+            {!loading && (
+              <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-border px-3 py-2 dark:border-white/10">
                 <button
-                  key={type}
                   type="button"
-                  aria-pressed={activeType === type}
-                  onClick={() => setActiveType(type)}
+                  aria-pressed={activeType == null}
+                  onClick={() => setActiveType(null)}
                   className={cn(
                     "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
-                    activeType === type
+                    activeType == null
                       ? "border-primary/40 bg-primary/15 text-primary"
                       : "border-border text-muted-foreground hover:border-border hover:text-foreground dark:border-white/10 dark:hover:border-white/20 dark:hover:text-zinc-300",
                   )}
                 >
-                  {typeLabels[type] ?? type}
+                  {copy.allResources}
                 </button>
-              ))}
-            </div>
+                {availableTypes.map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    aria-pressed={activeType === type}
+                    onClick={() => setActiveType(type)}
+                    className={cn(
+                      "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition-colors",
+                      activeType === type
+                        ? "border-primary/40 bg-primary/15 text-primary"
+                        : "border-border text-muted-foreground hover:border-border hover:text-foreground dark:border-white/10 dark:hover:border-white/20 dark:hover:text-zinc-300",
+                    )}
+                  >
+                    {typeLabels[type] ?? type}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <GameScrollArea className="min-h-0 flex-1" size="small" scrollerClassName="p-3">
-              {results.length === 0 ? (
+              {loading ? (
+                <ContentLoadingNotice label={serviceMessages[serviceLocale].comments.loading} />
+              ) : results.length === 0 ? (
                 <p className="px-3 py-12 text-center text-xs text-muted-foreground">
                   {normalizedQuery
                     ? copy.noGameElementSearchResults
