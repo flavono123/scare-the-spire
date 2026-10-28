@@ -9,8 +9,10 @@ import { useUserProfile } from "@/hooks/use-user-profile";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import {
   PatchLineReferenceBlock,
+  PatchLineReferenceFailed,
   PatchLineReferenceLoading,
   PatchLineReferenceText,
+  type PatchLineReferenceDataState,
 } from "@/components/patch-line-reference";
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { supabaseEnabled } from "@/lib/supabase";
@@ -94,7 +96,7 @@ export function StoryComposerModal({
   patchLines,
   patches,
   entities,
-  referenceLoading = false,
+  referenceState = "loaded",
   patchArt,
   initialPatchLineId,
   onAdd,
@@ -108,8 +110,12 @@ export function StoryComposerModal({
   patchLines: STS2PatchLine[];
   patches?: STS2Patch[];
   entities?: EntityInfo[];
-  /** While patches or entities load, the selected reference shows a loading line instead of guessed art. */
-  referenceLoading?: boolean;
+  /**
+   * For lazily loaded patches and entities: while they load, or after they
+   * fail, the selected reference shows a loading or failed line instead of
+   * guessed art.
+   */
+  referenceState?: PatchLineReferenceDataState;
   patchArt?: ResolvedPatchArt;
   initialPatchLineId?: string;
   onAdd: (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId?: string) => Promise<void>;
@@ -247,8 +253,10 @@ export function StoryComposerModal({
               />
             </label>
 
-            {selectedPatchLine && referenceLoading && !patchArt ? (
+            {selectedPatchLine && referenceState === "loading" && !patchArt ? (
               <PatchLineReferenceLoading serviceLocale={serviceLocale} />
+            ) : selectedPatchLine && referenceState === "failed" && !patchArt ? (
+              <PatchLineReferenceFailed serviceLocale={serviceLocale} />
             ) : selectedPatchLine ? (
               <PatchLineReferenceBlock
                 patchLine={selectedPatchLine}

@@ -24,7 +24,12 @@ import { EngagementSpinner } from "@/components/engagement-spinner";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { LikeButton } from "@/components/like-button";
 import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
-import { PatchLineReferenceBlock, PatchLineReferenceLoading } from "@/components/patch-line-reference";
+import {
+  PatchLineReferenceBlock,
+  PatchLineReferenceFailed,
+  PatchLineReferenceLoading,
+  type PatchLineReferenceDataState,
+} from "@/components/patch-line-reference";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
@@ -44,8 +49,11 @@ const NO_STS2_ENTITIES: EntityInfo[] = [];
 const NO_STS2_CHANGES: STS2Change[] = [];
 const NO_STS2_PATCHES: STS2Patch[] = [];
 
-function lazyDataPending(status: CompendiumLazyDataStatus): boolean {
-  return status === "loading" || status === "idle";
+/** A failed resource wins over one still loading, so its notice shows at once. */
+function sts2ReferenceDataState(...statuses: CompendiumLazyDataStatus[]): PatchLineReferenceDataState {
+  if (statuses.some((status) => status === "failed")) return "failed";
+  if (statuses.some((status) => status === "loading" || status === "idle")) return "loading";
+  return "loaded";
 }
 
 function loadFullSts2PatchLines(): Promise<STS2PatchLine[]> {
@@ -503,7 +511,7 @@ function StoryExpanded({
   patchLinesLoading,
   sts2Patches,
   sts2Entities,
-  sts2DataLoading,
+  sts2DataState,
 }: {
   story: Story;
   serviceLocale: ServiceLocale;
@@ -519,13 +527,17 @@ function StoryExpanded({
   patchLinesLoading: boolean;
   sts2Patches: STS2Patch[];
   sts2Entities: EntityInfo[];
-  sts2DataLoading: boolean;
+  sts2DataState: PatchLineReferenceDataState;
 }) {
   const hasEntity = story.entityType && story.entityId;
   const isSTS2 = story.game === "sts2";
 
-  if (isSTS2 && sts2DataLoading) {
+  // Never render an STS2 reference from empty entity or patch maps.
+  if (isSTS2 && sts2DataState === "loading") {
     return <PatchLineReferenceLoading serviceLocale={serviceLocale} />;
+  }
+  if (isSTS2 && sts2DataState === "failed") {
+    return <PatchLineReferenceFailed serviceLocale={serviceLocale} />;
   }
 
   if (isSTS2) {
@@ -761,7 +773,7 @@ function StoryDetailModal({
   patchLinesLoading,
   sts2Patches,
   sts2Entities,
-  sts2DataLoading,
+  sts2DataState,
   userId,
   authReady,
   ensureUser,
@@ -786,7 +798,7 @@ function StoryDetailModal({
   patchLinesLoading: boolean;
   sts2Patches: STS2Patch[];
   sts2Entities: EntityInfo[];
-  sts2DataLoading: boolean;
+  sts2DataState: PatchLineReferenceDataState;
   userId: string | null;
   authReady: boolean;
   ensureUser: () => Promise<string | null>;
@@ -890,7 +902,7 @@ function StoryDetailModal({
             patchLinesLoading={patchLinesLoading}
             sts2Patches={sts2Patches}
             sts2Entities={sts2Entities}
-            sts2DataLoading={sts2DataLoading}
+            sts2DataState={sts2DataState}
           />
 
           <CommentSection
@@ -992,7 +1004,7 @@ export function StoryFeed({
   const sts2Entities = sts2EntityState.entities ?? NO_STS2_ENTITIES;
   const sts2Changes = sts2HistoryState.data?.changes ?? NO_STS2_CHANGES;
   const sts2Patches = sts2HistoryState.data?.patches ?? NO_STS2_PATCHES;
-  const sts2DataLoading = lazyDataPending(sts2EntityState.status) || lazyDataPending(sts2HistoryState.status);
+  const sts2DataState = sts2ReferenceDataState(sts2EntityState.status, sts2HistoryState.status);
   const prefetchSts2Data = useCallback(() => {
     prefetchAllEntityGraph(gameLocale);
     loadCompendiumData(gameLocale, STS2_HISTORY_KEYS).catch(() => {
@@ -1110,7 +1122,7 @@ export function StoryFeed({
           patchLines={patchLineOptions}
           patches={sts2Patches}
           entities={sts2Entities}
-          referenceLoading={sts2DataLoading}
+          referenceState={sts2DataState}
           onAdd={communityStories.add}
           onClose={() => setComposerOpen(false)}
         />
@@ -1131,7 +1143,7 @@ export function StoryFeed({
           patchLinesLoading={patchLinesLoading}
           sts2Patches={sts2Patches}
           sts2Entities={sts2Entities}
-          sts2DataLoading={sts2DataLoading}
+          sts2DataState={sts2DataState}
           userId={userId}
           authReady={authReady}
           ensureUser={ensureUser}
