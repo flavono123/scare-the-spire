@@ -53,6 +53,46 @@
   font-weight: 700;
 }
 
+/* The same files under other names with font-display: optional, for the
+   server-rendered Compendium detail only ([data-compendium-static-detail], see
+   the font tokens below). It keeps the face it first paints with until the
+   interactive detail replaces it: the web font when it is already there, or the
+   metric-adjusted fallback for good when it is not. The fallbacks are close to
+   the web fonts but not exact, so a swap could still rewrap a title or a
+   paragraph and move everything below it. Same URLs, so each file is fetched
+   once for both names. */
+@font-face {
+  font-family: "STS Spectral Static";
+  src: url("/fonts/spectral_bold.ttf") format("truetype");
+  font-display: optional;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "STS Kreon Static";
+  src: url("/fonts/kreon_regular.ttf") format("truetype");
+  font-display: optional;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "STS Kreon Static";
+  src: url("/fonts/kreon_bold.ttf") format("truetype");
+  font-display: optional;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "STS GC Batang Static";
+  src: url("/fonts/GyeonggiCheonnyeonBatangBold.woff2") format("woff2");
+  font-display: optional;
+  font-style: normal;
+  font-weight: 700;
+}
+
 /* Metric-adjusted local fallbacks for the font-display: swap period. Each family
    scales a common system serif to the web font's advances and line metrics, so text
    keeps its line breaks when the web font arrives (no layout shift on swap). Spaces,
@@ -681,15 +721,32 @@
   --compendium-rail-fill: rgb(0 0 0 / 0.2);
 }
 
-[data-service-locale="ko"] {
+/* The server-rendered Compendium detail uses the font-display: optional copies
+   of the web fonts. A var() in a custom property is substituted on the element
+   that declares it, so the derived tokens resolved on <html> would keep the swap
+   faces: they are declared again here, and every locale rule below also applies
+   at the static detail root (higher specificity than this default). */
+[data-compendium-static-detail] {
+  --font-spectral: "STS Spectral Static", "STS Spectral Fallback";
+  --font-kreon: "STS Kreon Static", "STS Kreon Fallback";
+  --font-gc-batang: "STS GC Batang Static", "STS GC Batang Fallback AppleMyungjo", "STS GC Batang Fallback Batang", "STS GC Batang Fallback Nanum Myeongjo", "STS GC Batang Fallback Noto Serif KR";
+  --font-service-ui: var(--font-gc-batang, serif);
+  --font-game-title-family: var(--font-spectral, serif), var(--font-service-ui);
+  --font-game-text-family: var(--font-kreon, serif), var(--font-service-ui);
+}
+
+[data-service-locale="ko"],
+[data-service-locale="ko"] [data-compendium-static-detail] {
   --font-service-ui: var(--font-gc-batang, serif);
 }
 
-[data-service-locale="en"] {
+[data-service-locale="en"],
+[data-service-locale="en"] [data-compendium-static-detail] {
   --font-service-ui: var(--font-spectral, serif), var(--font-gc-batang, serif);
 }
 
-[data-game-locale="kor"] {
+[data-game-locale="kor"],
+[data-game-locale="kor"] [data-compendium-static-detail] {
   --font-game-title-family: var(--font-gc-batang, serif);
   --font-game-text-family: var(--font-gc-batang, serif);
 }
@@ -702,7 +759,16 @@
 [data-game-locale="esp"],
 [data-game-locale="ptb"],
 [data-game-locale="pol"],
-[data-game-locale="tur"] {
+[data-game-locale="tur"],
+[data-game-locale="eng"] [data-compendium-static-detail],
+[data-game-locale="deu"] [data-compendium-static-detail],
+[data-game-locale="fra"] [data-compendium-static-detail],
+[data-game-locale="ita"] [data-compendium-static-detail],
+[data-game-locale="spa"] [data-compendium-static-detail],
+[data-game-locale="esp"] [data-compendium-static-detail],
+[data-game-locale="ptb"] [data-compendium-static-detail],
+[data-game-locale="pol"] [data-compendium-static-detail],
+[data-game-locale="tur"] [data-compendium-static-detail] {
   --font-game-title-family: var(--font-spectral, serif), var(--font-service-ui);
   --font-game-text-family: var(--font-kreon, serif), var(--font-service-ui);
 }
@@ -710,7 +776,11 @@
 [data-game-locale="zhs"],
 [data-game-locale="jpn"],
 [data-game-locale="rus"],
-[data-game-locale="tha"] {
+[data-game-locale="tha"],
+[data-game-locale="zhs"] [data-compendium-static-detail],
+[data-game-locale="jpn"] [data-compendium-static-detail],
+[data-game-locale="rus"] [data-compendium-static-detail],
+[data-game-locale="tha"] [data-compendium-static-detail] {
   --font-game-title-family: var(--font-service-ui, serif);
   --font-game-text-family: var(--font-service-ui, serif);
 }

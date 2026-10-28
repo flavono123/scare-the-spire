@@ -83,7 +83,10 @@ function StaticLink({ link }: { link: StaticDetailLink }) {
 export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetailModel }) {
   const frame = DETAIL_FRAMES[model.kind];
   return (
-    <main className="min-h-screen bg-background text-foreground" data-compendium-static-detail="">
+    // font-service here, not only on <body>: text that inherits its font must
+    // resolve this root's font tokens, the font-display: optional faces that do
+    // not swap while this static detail is shown (globals.css).
+    <main className="min-h-screen bg-background font-service text-foreground" data-compendium-static-detail="">
       <article className={frame.root}>
         <div className={frame.backRow}>
           <a href={model.back.href} className={frame.backLink}>
