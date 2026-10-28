@@ -95,7 +95,6 @@ export function ChemicalXClient({ gameLocale, placeholder }: ChemicalXClientProp
         <EntityGraphGate
           status={entityGraph.status}
           serviceLocale={serviceLocale}
-          unavailableTitle={copy.unavailableTitle}
         >
           <ChemicalXEditor
             entities={entities}

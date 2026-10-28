@@ -48,7 +48,6 @@ export function ComboComposerModal({
       <EntityGraphGate
         status={entitiesStatus}
         serviceLocale={serviceLocale}
-        unavailableTitle={copy.unavailableTitle}
       >
         <ComboEditor
           entities={entities}

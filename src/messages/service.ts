@@ -187,6 +187,10 @@ export const serviceMessages = {
       submit: "작성",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
+    entityGraph: {
+      unavailable: "게임 요소 목록을 불러오지 못했습니다",
+      retry: "다시 시도",
+    },
     cardCon: {
       label: "카드콘",
       make: "카드콘 만들기",
@@ -1622,6 +1626,10 @@ export const serviceMessages = {
       placeholder: "Write a comment",
       submit: "Post",
       unavailableTitle: "No responses from database",
+    },
+    entityGraph: {
+      unavailable: "Could not load the game element list",
+      retry: "Retry",
     },
     cardCon: {
       label: "card emoji",

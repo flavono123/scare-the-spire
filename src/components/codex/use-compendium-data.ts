@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { buildAllEntities } from "@/lib/all-entities";
 import {
@@ -11,8 +11,52 @@ import {
 } from "@/lib/compendium-data-chunks";
 import type { GameLocale } from "@/lib/i18n";
 
-/** "loading" until the chunks arrive or fail; a failure is not retried. */
+/**
+ * "loading" until the chunks arrive or fail. A failure stays until
+ * retryFailedCompendiumData() starts the load again (back to "loading").
+ */
 export type CompendiumDataStatus = "loading" | "loaded" | "failed";
+
+/** One callback per mounted hook whose load failed. */
+const failedLoadRetries = new Set<() => void>();
+
+/**
+ * Starts again every load on the page that failed, for a retry button or a
+ * page that comes back online. Hooks that loaded or are loading are untouched.
+ */
+export function retryFailedCompendiumData(): void {
+  for (const retry of Array.from(failedLoadRetries)) retry();
+}
+
+/**
+ * While a failure notice is shown, retry the failed loads when the browser
+ * reconnects or the tab becomes visible again.
+ */
+export function useRetryFailedCompendiumDataOnReturn(): void {
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") retryFailedCompendiumData();
+    };
+    window.addEventListener("online", retryFailedCompendiumData);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.removeEventListener("online", retryFailedCompendiumData);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, []);
+}
+
+/** Lets retryFailedCompendiumData() start a new attempt while the hook's load has failed. */
+function useRetryWhenRequested(failed: boolean, setAttempt: Dispatch<SetStateAction<number>>): void {
+  useEffect(() => {
+    if (!failed) return;
+    const retry = () => setAttempt((attempt) => attempt + 1);
+    failedLoadRetries.add(retry);
+    return () => {
+      failedLoadRetries.delete(retry);
+    };
+  }, [failed, setAttempt]);
+}
 
 /**
  * A hook called with `{ enabled: false }` reports "idle" until it is enabled.
@@ -46,29 +90,38 @@ export function useCompendiumDataState<K extends CompendiumDataKey>(
   keys: readonly K[],
   { enabled = true }: CompendiumLazyDataOptions = {},
 ): { data: Pick<CompendiumDataResources, K> | null; status: CompendiumLazyDataStatus } {
+  const [attempt, setAttempt] = useState(0);
   const [loaded, setLoaded] = useState<{
     gameLocale: GameLocale;
     keys: readonly K[];
+    attempt: number;
     data: Pick<CompendiumDataResources, K> | null;
   } | null>(null);
+  const current = loaded
+    && loaded.gameLocale === gameLocale
+    && loaded.keys === keys
+    && loaded.attempt === attempt
+    ? loaded
+    : null;
+  const failed = Boolean(current && !current.data);
+  useRetryWhenRequested(failed, setAttempt);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || failed) return;
     let active = true;
     loadCompendiumData(gameLocale, keys)
       .then((data) => {
-        if (active) setLoaded({ gameLocale, keys, data });
+        if (active) setLoaded({ gameLocale, keys, attempt, data });
       })
       .catch((error: unknown) => {
         console.error(error);
-        if (active) setLoaded({ gameLocale, keys, data: null });
+        if (active) setLoaded({ gameLocale, keys, attempt, data: null });
       });
     return () => {
       active = false;
     };
-  }, [enabled, gameLocale, keys]);
+  }, [attempt, enabled, failed, gameLocale, keys]);
 
-  const current = loaded && loaded.gameLocale === gameLocale && loaded.keys === keys ? loaded : null;
   if (!current) return { data: null, status: enabled ? "loading" : "idle" };
   return current.data ? { data: current.data, status: "loaded" } : { data: null, status: "failed" };
 }
@@ -121,29 +174,37 @@ export function useCompendiumEntitiesState(
   gameLocale: GameLocale,
   { enabled = true }: CompendiumLazyDataOptions = {},
 ): { entities: EntityInfo[] | undefined; status: CompendiumLazyDataStatus } {
-  const [loaded, setLoaded] = useState<{ gameLocale: GameLocale; entities: EntityInfo[] | undefined } | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const [loaded, setLoaded] = useState<{
+    gameLocale: GameLocale;
+    attempt: number;
+    entities: EntityInfo[] | undefined;
+  } | null>(null);
+  const current = loaded?.gameLocale === gameLocale && loaded.attempt === attempt ? loaded : null;
+  const failed = Boolean(current && !current.entities);
+  useRetryWhenRequested(failed, setAttempt);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || failed) return;
     let active = true;
     loadAllEntityGraph(gameLocale)
       .then((entities) => {
-        if (active) setLoaded({ gameLocale, entities });
+        if (active) setLoaded({ gameLocale, attempt, entities });
       })
       .catch((error: unknown) => {
         console.error(error);
-        if (active) setLoaded({ gameLocale, entities: undefined });
+        if (active) setLoaded({ gameLocale, attempt, entities: undefined });
       });
     return () => {
       active = false;
     };
-  }, [enabled, gameLocale]);
+  }, [attempt, enabled, failed, gameLocale]);
 
-  if (loaded?.gameLocale !== gameLocale) {
+  if (!current) {
     return { entities: undefined, status: enabled ? "loading" : "idle" };
   }
-  return loaded.entities
-    ? { entities: loaded.entities, status: "loaded" }
+  return current.entities
+    ? { entities: current.entities, status: "loaded" }
     : { entities: undefined, status: "failed" };
 }
 

@@ -213,7 +213,6 @@ export function DefragmentClient({
         <EntityGraphGate
           status={entityGraph.status}
           serviceLocale={serviceLocale}
-          unavailableTitle={copy.unavailableTitle}
         >
           {entityGraph.entities && (
             <DefragmentWritePanel

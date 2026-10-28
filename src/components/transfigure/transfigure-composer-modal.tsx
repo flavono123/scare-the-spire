@@ -93,7 +93,6 @@ export function TransfigureComposerModal({
       <EntityGraphGate
         status={entitiesStatus}
         serviceLocale={serviceLocale}
-        unavailableTitle={copy.unavailableTitle}
       >
         <TransfigureEditor
           entities={entities}
