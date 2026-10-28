@@ -44,7 +44,7 @@
   - Expect: JS 차단·폰트 지연에서 정적 상세 CLS 0, 제목 줄 수가 처음 그린 그대로(375·329px 포함). ko 재방문(새 탭·브라우저 재시작)은 GC Batang으로 그림. en 상세는 부분 글꼴을 받지 않음. 상호작용 화면과 다른 페이지 폰트는 이전과 같음. 알려진 차이: ko 상세 첫 방문은 폰트 파일 5개(부분 글꼴 294 KB 추가). 말줄임표 아래 밑줄은 Chromium이 그리지 않음.
   - QA: 수동: JS 차단, `/fonts/**` 2.5초 지연으로 `/compendium/cards/ascenders_bane` 375·329px, `/en/compendium/relics/distinguished_cape` 360px. JS 차단 `/en/compendium/monsters/gremlin_merc` 1440·390px에서 Tab으로 잘린 링크 초점 테두리.
 - 후속 수정(묶음 1 QA 4차): 상세 RSC(ko·en 3030개)에서 부분 글꼴·상세 이미지 preload 힌트 줄을 뺌(`301e3afd`, `3396b7ad`). 상세를 미리 받는 목록 타일과 en 몬스터 페이지의 파워 링크가 부분 글꼴과 쓰지 않는 이미지를 내려받던 문제. 부분 글꼴은 그것을 preload한 문서(ko 상세 직접 방문)에서만 씀(`d863e865`). 클라이언트 이동으로 잠깐 보이는 정적 상세는 이미 받은 원본 파일을 씀. HTML은 그대로.
-  - Expect: 목록 페이지와 `/en/compendium/monsters/doormaker`는 운영처럼 폰트 4개, 이미지 요청도 운영과 같고 미사용 preload 콘솔 경고 없음. ko 상세 직접 방문은 여전히 5개. en 상세에서 언어 메뉴로 한국어 상세로 가면 폰트를 더 받지 않음. `:has()`가 없는 브라우저(Firefox 121·Safari 15.4 이전)는 ko 상세에서도 원본 파일.
+  - Expect: 목록 페이지와 `/en/compendium/monsters/doormaker`는 운영처럼 폰트 4개, 이미지 요청도 운영과 같고 미사용 preload 콘솔 경고 없음. ko 상세 직접 방문은 여전히 5개. en 상세에서 언어 메뉴로 한국어 상세로 가면 폰트를 더 받지 않음. `:has()`가 없는 브라우저(Firefox 121·Safari 15.4 이전)는 ko 상세에서도 원본 파일. 알려진 차이: 클라이언트 이동으로 상세에 들어가면 데이터가 오기 전 정적 상세가 잠깐(약 0.1초) 보이고, 그동안 대체 폰트로 그려질 수 있음(운영은 로딩 화면). 상세 데이터가 2.5초 넘게 늦으면 상호작용 화면으로 바뀔 때 CLS 약 0.04.
   - QA: 수동: 위 페이지의 `/fonts/`·이미지 요청 수(HTTP 캐시 켠 상태).
 
 ### rendering-fallbacks
