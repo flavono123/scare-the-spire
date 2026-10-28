@@ -71,9 +71,10 @@ This project uses local project skills instead of global home-directory skill in
 - Purpose: occasional personal/admin preview, or deploy-related stage verification.
 - `cf:build` and `patch:build` write `build-record.json` (HEAD plus uncommitted
   tracked changes) at the root of `.open-next/` and `.patch-worker/`, outside the
-  uploaded assets. `--skip-build` refuses artifacts whose record is missing,
-  names another HEAD, came from a dev-tools build, or no longer matches the
-  tracked tree; rebuild instead of working around it.
+  uploaded assets. The record names no commit when the checkout changed between
+  the build's start and end. `--skip-build` refuses artifacts whose record is
+  missing or names no commit, names another HEAD, came from a dev-tools build, or
+  no longer matches the tracked tree; rebuild instead of working around it.
 - Do not confuse with `pnpm cf:preview`, which is OpenNext local preview only.
 
 ## Cloudflare Free Tier Guardrails
