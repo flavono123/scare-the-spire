@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { loadAllEntities } from "@/lib/load-all-entities";
 import { ChemicalXClient } from "@/components/chemicalx/chemicalx-client";
 import { ServiceBackground } from "@/components/service-background";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
@@ -34,10 +33,7 @@ export async function generateChemicalXMetadata(
 export async function renderChemicalXPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const [entities, placeholder] = await Promise.all([
-    loadAllEntities({ gameLocale }),
-    getChemicalXPlaceholder(gameLocale),
-  ]);
+  const placeholder = await getChemicalXPlaceholder(gameLocale);
 
   return (
     <div className="relative isolate min-h-[calc(100svh-3rem)]">
@@ -46,7 +42,7 @@ export async function renderChemicalXPage(
         imageClassName="object-center"
       />
       <div className={TOYBOX_NARROW_SHELL_CLASS}>
-        <ChemicalXClient entities={entities} placeholder={placeholder} />
+        <ChemicalXClient gameLocale={gameLocale} placeholder={placeholder} />
       </div>
     </div>
   );
