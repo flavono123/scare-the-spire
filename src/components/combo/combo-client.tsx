@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "@/components/ui/static-image";
+import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-data";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
@@ -32,22 +33,27 @@ const ComboComposerModal = dynamic(
   { ssr: false },
 );
 
+const NO_ENTITIES: EntityInfo[] = [];
+
 interface ComboClientProps {
-  entities: EntityInfo[];
   gameLocale: GameLocale;
   placeholder: string;
 }
 
-export function ComboClient({ entities, gameLocale, placeholder }: ComboClientProps) {
+export function ComboClient({ gameLocale, placeholder }: ComboClientProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].combo;
   const { userId, ready, ensureUser } = useAuth();
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
+  // The full graph loads on the client next to the posts; the feed waits for
+  // both so posts and filter chips never show unresolved game elements.
+  const entityGraph = useCompendiumEntitiesState(gameLocale);
+  const entities = entityGraph.entities ?? NO_ENTITIES;
   const {
     posts,
     likeCounts,
     commentCounts,
-    loading,
+    loading: postsLoading,
     loadingMore,
     hasMore,
     unavailable,
@@ -55,6 +61,7 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
     add,
     update,
   } = useComboPosts(userId, sort);
+  const loading = postsLoading || entityGraph.status === "loading";
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<ComboPost | null>(null);
   const [selectedGameElements, setSelectedGameElements] = useState<ComboResourceRef[]>([]);
@@ -129,6 +136,7 @@ export function ComboClient({ entities, gameLocale, placeholder }: ComboClientPr
       {composerOpen && ready && !unavailable && (
         <ComboComposerModal
           entities={entities}
+          entitiesStatus={entityGraph.status}
           initialPost={editingPost}
           placeholder={placeholder}
           profileNickname={editingPost?.nickname ?? profile.nickname}
