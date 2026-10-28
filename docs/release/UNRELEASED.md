@@ -24,6 +24,9 @@
 - 후속 수정(묶음 1 QA): 크롤러(Googlebot·Yeti 등)는 ko 페이지에서 `/en` 자동 전환을 하지 않음(`4b7d4340`). Toy Box 기록 셸은 hydration 뒤에도 canonical·hreflang·og:url이 한 벌, `/ja` 기록은 `/en` canonical, 게임 로케일 셸 OG 문구는 영어(`e4bcb93b`). 패치 description이 단어 중간에서 잘리지 않음(`311114f5`). modifiers·ascensions 상세에 canonical·hreflang(`e58d7556`). 게임 로케일 목록의 승천·모디파이어·배지 타일이 404 상세 대신 목록 모달 URL로(`3e02cb1b`, `471420ce`, `9d8b3217`). 게임 로케일 패치 페이지·탐색기·백과사전 패치 이력 링크가 `/en` 대신 그 로케일로(`ea1ac8f6`, `e26d34c2`, `22bd242e`). `build-23478716` 패치 줄 링크 404 수정(`8024759b`, `b7f7c4ab`).
   - Expect: en-US Googlebot UA로 ko URL을 렌더해도 canonical이 ko. `/ja/this-or-that/<id>` hydration 뒤 canonical 1개(`/en/this-or-that/<id>`). `/ja/patches/*`에 `/en/` 링크 0개. `/ja/compendium/{ascensions,modifiers,badges}`에서 404 prefetch 없음.
   - QA: `tsx scripts/check-search-canonical.ts`, `tsx scripts/detail-shell-og.spec.ts`, `qa:cf:testbed`(Googlebot canonical, 셸 canonical 1개).
+- 후속 수정(묶음 1 QA 2차): Cubot 휴대폰을 크롤러로 보지 않음(`a0e6c694`). 언어 메뉴·브라우저 언어 감지·저장된 언어가 게임 전용 로케일로 보낼 때, 없는 `/<로케일>/compendium/<type>/<id>` 상세 대신 그 목록의 모달 URL로 보냄(`b1df0d7b`, `2c1bb192`를 `fe059153`로 되돌림).
+  - Expect: ja-JP 브라우저로 `/compendium/cards/bash`를 열면 `/ja/compendium/cards?card=bash`(404 없음, 모달 열림). `/compendium/enchantments/bound`는 `/ja/compendium/enchantments?enchantment=bound`로 가고 束縛 모달이 열림. 언어 메뉴의 게임 전용 언어 링크 12개가 모두 목록 모달 URL이고 `?version=`을 유지. Cubot UA에 ja-JP면 `/ja`로 전환, Googlebot·Yeti는 그대로.
+  - QA: `tsx scripts/compendium-locale-detail-fallback.spec.ts`, `tsx scripts/check-search-canonical.ts`. 수동: 위 Expect.
 
 ### static-compendium-detail
 - Feature: 백과사전 상세가 사실 항목·효과 텍스트·관련 링크·변경 이력을 서버 HTML로 먼저 내고 hydration한다. 상세 payload를 `/generated/compendium-data/<locale>/<resource>.json` 141개 chunk로 나눈다. 목록은 그리드용 행만 보내고 모달·호버·이력은 chunk에서 불러온다. 목록 끝에 전체 항목 링크 색인(크롤러·키보드용, 포커스가 닿기 전에는 보이지 않음). ko/en 정적 패치 페이지의 게임 요소 링크가 `/compendium/<type>/<id>`. 카드·유물·포션 상세의 캐릭터 항목이 캐릭터 페이지로 링크.
@@ -33,6 +36,9 @@
 - 후속 수정(묶음 1 QA): 정적 상세 라벨을 상호작용 화면 라벨·게임 문자열과 맞춤(인챈트 카드 유형 한국어, 캐릭터가 아닌 분류는 '캐릭터' 항목에서 뺌, en 'Actions', 서사 텍스트에 '효과' 제목 없음)(`8b1c021c`, `76bebf90`, `a4851731`, `cf4b71db`, `c931a954`). 헤더 이미지 고정 96px 상자, 상호작용 화면과 같은 컨테이너(`f7b69ccb`, `60fabce9`). 목록 링크 색인 때문에 목록이 46px 스크롤되던 문제(`b864612d`). chunk 도착 전 몬스터·조우·키워드 모달은 '불러오는 중'(`379376c4`, `8fe92e68`). 영어 몬스터 행동의 '기절함'을 게임 문자열로(`1e5499d7`, `5b3453fc`).
   - Expect: 390px에서 정적 상세 가로 스크롤 없음. 목록 페이지 휠 스크롤 시 제목 줄이 가려지지 않음. 데이터 도착 전 몬스터 모달에 '검색 결과가 없습니다'가 뜨지 않음. `/en/compendium/monsters/ceremonial_beast` 행동에 '기절함' 없음.
   - QA: `qa:cf:testbed`, 수동: 위 Expect.
+- 후속 수정(묶음 1 QA 2차): 정적 상세 관련 링크를 고정 열 그리드에 한 줄 이름으로 두고 키보드 초점 테두리 여유를 줌(`8bafe076`, `a4f91b6e`). 320px에서 긴 제목이 화면 안에 들어오고 375px 미만은 24px(`8d3855ba`, `917a0212`). 목록 모달 13종(카드·파워·유물·인챈트·고난·캐릭터·고대의 존재·시대·이벤트·포션·몬스터·조우·키워드)은 chunk가 오기 전 '불러오는 중' 대체 화면만 보이고, 온 뒤 전체 상세로 바뀜. 대체 화면의 뒤로가기·닫기 위치는 상세와 같고, chunk를 못 받으면 props로 상세를 그림(`c216eb6a`~`8a6db55f`, `f71ec4d1`). 대체 화면을 보인 모달은 레일 여백을 유지하고 스크롤 레일을 그리기 전에 측정(`6262341f`, `9849f89d`). 고대의 존재 대체 제목을 별칭 위에 두고 로딩 뒤 닫기 버튼에 초점(`12d7d183`, `42372d2d`). `?enchantment=<고난 id>`가 고난 모달을 염(`3d6ff8d0`).
+  - Expect: 관련 링크 행에서 폰트 교체 CLS 0. 320px에서 정적 제목이 넘치지 않음. 데이터 도착 전 목록 모달은 뒤로가기·닫기·이름·불러오는 중만 보이고 잘못된 내용이 없으며, 도착 뒤 닫기 버튼이 0px 이동. 데이터를 못 받으면 상세가 props로 뜸(몬스터 행동은 운영처럼 '검색 결과가 없습니다'). 알려진 차이: 데이터 도착 전에 연 짧은 모달은 데스크톱에서 빈 레일 여백이 남아 운영보다 16.8px 왼쪽.
+  - QA: 수동: 목록에서 `/generated/compendium-data/**`를 늦춘 채 모달을 열고 풀기. 320px 정적 상세. 정적 상세(JS 차단)에서 Tab으로 관련 링크 초점 테두리.
 
 ### rendering-fallbacks
 - Feature: 게임 폰트(STS Spectral·Kreon·GC Batang)마다 치수를 맞춘 로컬 대체 폰트를 둬서 웹폰트가 늦게 와도 줄바꿈이 바뀌지 않는다. sine(물결) 텍스트가 띄어쓰기에서 줄바꿈된다. 모든 페이지와 patch Worker 페이지에 적용.
