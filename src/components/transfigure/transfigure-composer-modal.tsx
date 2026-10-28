@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Trash2 } from "lucide-react";
+import type { CompendiumLazyDataStatus } from "@/components/codex/use-compendium-data";
+import { EntityGraphGate } from "@/components/entity-graph-gate";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ServiceModalFrame } from "@/components/service-modal-frame";
 import type { SaveTransfigurePostInput } from "@/hooks/use-transfigure-posts";
@@ -12,6 +14,8 @@ import { TransfigureEditor } from "./transfigure-editor";
 
 interface TransfigureComposerModalProps {
   entities: EntityInfo[];
+  /** The editor waits for the full entity graph when the caller loads it lazily. */
+  entitiesStatus?: CompendiumLazyDataStatus;
   gameLocale: GameLocale;
   initialPost?: TransfigurePost | null;
   profileNickname: string;
@@ -27,6 +31,7 @@ interface TransfigureComposerModalProps {
 
 export function TransfigureComposerModal({
   entities,
+  entitiesStatus = "loaded",
   gameLocale,
   initialPost,
   profileNickname,
@@ -40,15 +45,16 @@ export function TransfigureComposerModal({
   const copy = serviceMessages[serviceLocale].transfigure;
   const dialogRef = useRef<HTMLDivElement>(null);
   const [deleting, setDeleting] = useState(false);
+  const editorReady = entitiesStatus === "loaded";
 
   useEffect(() => {
-    if (initialPost) return;
+    if (initialPost || !editorReady) return;
     dialogRef.current
       ?.querySelector<HTMLInputElement>(
         "[data-transfigure-resource-picker] input[type=\"search\"]",
       )
       ?.focus();
-  }, [initialPost]);
+  }, [editorReady, initialPost]);
 
   const handleDelete = async () => {
     if (!onDelete || deleting) return;
@@ -84,16 +90,22 @@ export function TransfigureComposerModal({
         ) : null
       }
     >
-      <TransfigureEditor
-        entities={entities}
-        gameLocale={gameLocale}
-        initialPost={initialPost}
-        profileNickname={profileNickname}
+      <EntityGraphGate
+        status={entitiesStatus}
         serviceLocale={serviceLocale}
-        upgradeLabel={upgradeLabel}
-        hideNickname={hideNickname}
-        onSubmit={onSubmit}
-      />
+        unavailableTitle={copy.unavailableTitle}
+      >
+        <TransfigureEditor
+          entities={entities}
+          gameLocale={gameLocale}
+          initialPost={initialPost}
+          profileNickname={profileNickname}
+          serviceLocale={serviceLocale}
+          upgradeLabel={upgradeLabel}
+          hideNickname={hideNickname}
+          onSubmit={onSubmit}
+        />
+      </EntityGraphGate>
     </ServiceModalFrame>
   );
 }

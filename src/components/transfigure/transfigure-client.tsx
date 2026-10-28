@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-data";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
@@ -31,8 +32,9 @@ const TransfigureComposerModal = dynamic(
   { ssr: false },
 );
 
+const NO_ENTITIES: EntityInfo[] = [];
+
 interface TransfigureClientProps {
-  entities: EntityInfo[];
   gameLocale: GameLocale;
   title: string;
   subtitle: string;
@@ -40,7 +42,6 @@ interface TransfigureClientProps {
 }
 
 export function TransfigureClient({
-  entities,
   gameLocale,
   title,
   subtitle,
@@ -50,11 +51,15 @@ export function TransfigureClient({
   const copy = serviceMessages[serviceLocale].transfigure;
   const { userId, ready, ensureUser } = useAuth();
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
+  // The full graph loads on the client next to the posts; the feed waits for
+  // both so posts never render with unresolved game elements.
+  const entityGraph = useCompendiumEntitiesState(gameLocale);
+  const entities = entityGraph.entities ?? NO_ENTITIES;
   const {
     posts,
     likeCounts,
     commentCounts,
-    loading,
+    loading: postsLoading,
     loadingMore,
     hasMore,
     unavailable,
@@ -63,6 +68,7 @@ export function TransfigureClient({
     update,
     remove,
   } = useTransfigurePosts(userId, sort);
+  const loading = postsLoading || entityGraph.status === "loading";
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<TransfigurePost | null>(null);
   const [saveNotice, setSaveNotice] = useState<string | null>(null);
@@ -165,6 +171,7 @@ export function TransfigureClient({
       {composerOpen && ready && !unavailable && (
         <TransfigureComposerModal
           entities={entities}
+          entitiesStatus={entityGraph.status}
           gameLocale={gameLocale}
           initialPost={editingPost}
           profileNickname={profile.nickname}
