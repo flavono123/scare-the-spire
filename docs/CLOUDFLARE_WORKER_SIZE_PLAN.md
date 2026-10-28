@@ -307,7 +307,10 @@ main/patch artifact를 빌드하고 크기·patch 회귀를 검사한 뒤, produ
 미리보기·배포 검증 stage이며 GHA production CI와 무관하다. main의 실제
 service binding, 전체 asset 전파 준비를 확인하고 route smoke와 Playwright
 browser QA를 실행한다. 이미 빌드한 artifact를 재사용할 때만
-`pnpm cf:testbed -- --skip-build`를 사용한다. 로컬 Miniflare 경로가 필요한
+`pnpm cf:testbed -- --skip-build`를 사용한다. 이때 `.open-next`와
+`.patch-worker`의 `build-record.json`이 현재 HEAD와 tracked 변경 상태와
+일치하지 않으면(기록 없음, 다른 커밋, dev-tools 빌드, 빌드 후 파일 변경)
+배포하지 않고 멈춘다. 로컬 Miniflare 경로가 필요한
 환경에는 `pnpm cf:testbed:local`을 별도로 남긴다. 다음 순서로 최종 검증한다.
 
 ```bash
