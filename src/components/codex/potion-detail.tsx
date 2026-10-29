@@ -39,21 +39,12 @@ import {
   FUTURE_OF_POTIONS_EVENT_NAME_KO,
   FUTURE_OF_POTIONS_EVENT_PATH,
   getFuturePotionChoicesForPotion,
+  getPotionDetailEventIds,
   getRelatedCardIdsForPotion,
   getRelatedEnchantmentIdsForPotion,
-  getRelatedEventIdsForPotion,
   getRelatedPowerIdsForPotion,
 } from "@/lib/codex-references";
 import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
-
-function dedupeIds(ids: readonly string[]): string[] {
-  const seen = new Set<string>();
-  return ids.filter((id) => {
-    if (seen.has(id)) return false;
-    seen.add(id);
-    return true;
-  });
-}
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -169,12 +160,7 @@ export function PotionDetail({
     .filter((card): card is CodexCard => Boolean(card))
     .map(cardToReferenceTarget);
   const eventById = new Map(relatedEvents.map((event) => [event.id, event]));
-  const relatedEventIds = dedupeIds([
-    FUTURE_OF_POTIONS_EVENT_ID,
-    ...getRelatedEventIdsForPotion(potion.id),
-    ...(potion.rarity === "고급" ? ["POTION_COURIER"] : []),
-  ]);
-  const relatedEventTargets = relatedEventIds
+  const relatedEventTargets = getPotionDetailEventIds(potion)
     .map((eventId) => {
       const relatedEvent = eventById.get(eventId);
       const href = eventId === FUTURE_OF_POTIONS_EVENT_ID

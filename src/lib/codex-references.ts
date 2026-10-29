@@ -657,6 +657,15 @@ export function getRelatedEventIdsForPotion(potionId: string): readonly string[]
   return invertEventRelations(EVENT_RELATED_POTION_IDS, potionId);
 }
 
+/** Events the potion detail links to: The Future of Potions, the event relations, and Potion Courier for uncommon potions. */
+export function getPotionDetailEventIds(potion: Pick<CodexPotion, "id" | "rarity">): string[] {
+  return dedupeIds([
+    FUTURE_OF_POTIONS_EVENT_ID,
+    ...getRelatedEventIdsForPotion(potion.id),
+    ...(potion.rarity === "고급" ? ["POTION_COURIER"] : []),
+  ]);
+}
+
 export function getRelatedEventIdsForEnchantment(enchantmentId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_ENCHANTMENT_IDS, enchantmentId);
 }

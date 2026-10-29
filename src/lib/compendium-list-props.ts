@@ -1,5 +1,5 @@
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
-import type { CodexCard, CodexCharacter, CodexEncounter, CodexMonster } from "@/lib/codex-types";
+import type { CodexCard, CodexCharacter, CodexEncounter, CodexEvent, CodexMonster } from "@/lib/codex-types";
 
 // Compendium list pages serialize their grid data into the page HTML. These
 // helpers drop what the grid never reads before the first render; the list
@@ -68,4 +68,13 @@ export function slimFilterCharacters(characters: readonly CodexCharacter[]): Cod
     characterSelectSpineAsset: null,
     spineAsset: null,
   }));
+}
+
+/**
+ * Event rows a list's detail modal links to. The modal falls back to them when
+ * the events chunk fails, so its related event links keep their names.
+ */
+export function pickLinkedEvents(events: readonly CodexEvent[], eventIds: Iterable<string>): CodexEvent[] {
+  const wanted = new Set(eventIds);
+  return events.filter((event) => wanted.has(event.id));
 }
