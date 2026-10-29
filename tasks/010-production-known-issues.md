@@ -104,3 +104,27 @@
 24. **JavaScript를 끄면 사이트 헤더(내비)가 없음**.
     - https://scare-the-spire.flavono123.workers.dev/compendium/events/dense_vegetation
     - 원인: 레이아웃의 사이트 헤더가 Suspense 경계 안에서 스트리밍된다.
+
+### 묶음 2b 병합 QA에서 추가 (2026-10-30)
+
+25. **byrdispatch 본문의 패치 버전 링크가 `/patches/v0.1xx.0`이라 빈 404**(로케일마다 10개, prefetch 404 콘솔 오류도).
+    - https://scare-the-spire.flavono123.workers.dev/byrdispatch
+    - 원인: byrdispatch 렌더러가 `patchVersionPath()` 대신 'v'가 붙은 버전 토큰으로 링크를 만든다(`/patches/[version]`에는 'v'가 없음).
+26. **/en·/ja 홈 이야기 모달의 댓글 편집기 `{` 제안이 한국어 이름이고, 일본어로 찾으면 결과 없음**.
+    - https://scare-the-spire.flavono123.workers.dev/ja#sts2-wither-int-max-upgrades
+    - 원인: 홈 이야기 모달의 CommentSection이 아직 `/generated/comment-entities-sts2.json`(한국어 그래프)으로 제안을 만든다. byrdispatch 댓글은 로케일 그래프 + 한국어 별칭을 쓴다.
+27. **/en·/ja 홈 이야기 모달의 참조 블록이 한국어 라벨이고 ko 주소로 링크**('↳ 관련 항목', 한국어 섹션 제목, 접두사 없는 백과사전 링크, /ja의 패치 줄 링크가 `/en/patches/...`). 작성기의 선택한 참조도 같음.
+    - https://scare-the-spire.flavono123.workers.dev/en
+    - 원인: story-feed 참조가 한국어 섹션 제목과 '관련 항목' 라벨을 쓰고, 백과사전 href에 접두사가 없으며, 패치 링크를 서비스 로케일로 만든다.
+28. **/en·/ja Toy Box 게시물과 byrdispatch 댓글의 호버 팁에 한국어 희귀도·분류·막 라벨**('엘리트', '일반', '1막 — 지하 선착장', '고급', '보스'), 일부 언급 링크는 ko 주소.
+    - https://scare-the-spire.flavono123.workers.dev/en/c-c-c-combo , https://scare-the-spire.flavono123.workers.dev/en/chemical-x
+    - 원인: 공용 호버 팁이 전체 그래프로 그릴 때 한국어 라벨을 쓰고, 댓글 렌더러와 케미컬X 언급이 기본(ko) href를 쓴다(#11과 같은 부류).
+29. **/ja 역사 강의서의 인기 칩과 필터 검색 결과가 영어 이름**(런 커버는 일본어).
+    - https://scare-the-spire.flavono123.workers.dev/ja/history-course
+    - 원인: 필터 라벨이 게임 로케일(jpn)이 아닌 서비스 로케일(en) 이름을 쓴다.
+30. **Supabase가 응답하지 않을 때 숨은 '데이터베이스 응답 없음' 툴팁 때문에 페이지가 화면보다 넓어짐**(390px에서 scrollWidth 409–418).
+    - https://scare-the-spire.flavono123.workers.dev/compendium/powers/vulnerable
+    - 원인: `src/app/globals.css`의 `.engagement-unavailable-icon__tooltip`이 `position:absolute; width:max-content`로 오른쪽 끝 아이콘 가운데에 놓여, 투명할 때도 레이아웃 폭을 차지한다.
+31. **관련 링크의 고대의 존재 호버에 한국어 막 라벨**('3막 — 영광', '2막 — 군락')이 /en·/ja 등 모든 게임 로케일에서 나옴.
+    - https://scare-the-spire.flavono123.workers.dev/en/compendium/relics
+    - 원인: `src/components/codex/entity-reference-links.tsx`가 `EntityPreview`에 `gameUi`를 넘기지 않아 `patch-note-renderer.tsx`의 `gameUi?.acts[act] ?? EVENT_ACT_CONFIG[act].labelKo`가 한국어로 떨어진다.
