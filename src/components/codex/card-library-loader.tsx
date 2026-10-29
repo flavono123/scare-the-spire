@@ -9,7 +9,7 @@ import {
   expandCardKeywordLabels,
   type CompactCodexCard,
 } from "@/lib/compendium-list-props";
-import type { CodexCard } from "@/lib/codex-types";
+import type { CodexCard, CodexEvent } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 
 const LAZY_DATA_KEYS = [
@@ -31,14 +31,18 @@ type CardLibraryLoaderProps = Omit<ComponentProps<typeof CardLibrary>, "cards" |
   gameLocale: GameLocale;
   cards: CompactCodexCard[];
   keywordLabels: CodexCard["keywordLabels"];
+  /** The events the detail modal links to, so it names them when the events chunk fails. */
+  linkedEvents: CodexEvent[];
 };
 
 /**
  * Renders CardLibrary from its server props and fills in the rest once the
  * data chunks load. The detail modal waits for them, since its enchantments,
- * afflictions, related lists, and history come from the chunks.
+ * afflictions, related lists, and history come from the chunks. If they fail,
+ * the modal renders from the server props, with the linked events in place of
+ * the events chunk.
  */
-export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabels, ...props }: CardLibraryLoaderProps) {
+export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabels, linkedEvents, ...props }: CardLibraryLoaderProps) {
   const { data, status } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   const cards = useMemo(
     () => expandCardKeywordLabels(compactCards, keywordLabels),
@@ -54,7 +58,7 @@ export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabe
       enchantments={data?.enchantments ?? EMPTY}
       afflictions={data?.afflictions ?? EMPTY}
       relatedAncients={data?.ancients}
-      relatedEvents={data?.events}
+      relatedEvents={data?.events ?? linkedEvents}
       relatedMonsters={data?.monsters}
       relatedPotions={data?.potions}
       relatedPowers={data?.powers}

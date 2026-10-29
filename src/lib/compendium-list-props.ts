@@ -78,3 +78,14 @@ export function pickLinkedEvents(events: readonly CodexEvent[], eventIds: Iterab
   const wanted = new Set(eventIds);
   return events.filter((event) => wanted.has(event.id));
 }
+
+/** Linked event rows for modals whose event links and hover read only the names and art. */
+export function slimLinkedEvents(events: readonly CodexEvent[]): CodexEvent[] {
+  return events.map((event) => ({
+    ...event,
+    description: "",
+    descriptionEn: "",
+    options: null,
+    pages: null,
+  }));
+}

@@ -55,9 +55,9 @@ import {
   TINKER_TIME_EVENT_ID,
   TINKER_TIME_EVENT_NAME_KO,
   TINKER_TIME_EVENT_PATH,
+  getCardDetailEventIds,
   getRelatedAncientIdsForCard,
   getRelatedEnchantmentIdsForCard,
-  getRelatedEventIdsForCard,
   getRelatedMonsterIdsForCard,
   getRelatedPotionIdsForCard,
   getRelatedPowerIdsForCard,
@@ -287,11 +287,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     ? Math.max(0, Math.min(upgradeLevel, selectableMaxUpgradeLevel))
     : 0;
   const showUpgrade = effectiveUpgradeLevel > 0;
-  const relatedEventIds = [
-    ...getRelatedEventIdsForCard(card.id),
-    ...(isMadScience ? [TINKER_TIME_EVENT_ID] : []),
-  ].filter((eventId, index, eventIds) => eventIds.indexOf(eventId) === index);
-  const relatedEventTargets = relatedEventIds.map((eventId) => {
+  const relatedEventTargets = getCardDetailEventIds(card.id).map((eventId) => {
     const relatedEvent = relatedEvents.find((event) => event.id === eventId) ?? null;
     const href = eventId === TINKER_TIME_EVENT_ID
       ? TINKER_TIME_EVENT_PATH

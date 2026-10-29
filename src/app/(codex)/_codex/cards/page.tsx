@@ -1,7 +1,13 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexCharacters } from "@/lib/codex-data";
-import { compactCardKeywordLabels, slimFilterCharacters } from "@/lib/compendium-list-props";
+import { getCodexCards, getCodexCharacters, getCodexEvents } from "@/lib/codex-data";
+import {
+  compactCardKeywordLabels,
+  pickLinkedEvents,
+  slimFilterCharacters,
+  slimLinkedEvents,
+} from "@/lib/compendium-list-props";
+import { getCardDetailEventIds } from "@/lib/codex-references";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
@@ -42,6 +48,7 @@ export default async function CodexCardsPage({
     versionDiffs,
     meta,
     gameUi,
+    events,
   ] = await Promise.all([
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexCharacters({ gameLocale }),
@@ -49,6 +56,7 @@ export default async function CodexCardsPage({
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
+    getCodexEvents({ gameLocale }),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -69,6 +77,7 @@ export default async function CodexCardsPage({
           versions={versions}
           currentVersion={meta.version}
           patches={patches}
+          linkedEvents={slimLinkedEvents(pickLinkedEvents(events, cards.flatMap((card) => getCardDetailEventIds(card.id))))}
         />
       </Suspense>
       <CompendiumEntryLinkIndex
