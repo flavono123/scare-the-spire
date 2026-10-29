@@ -18,8 +18,8 @@
 ## 기능 기대치
 
 ### search-canonical-policy
-- Feature: ko와 en을 각각 자기 canonical로 두고 ko/en/x-default hreflang을 건다. 그 밖의 게임 로케일은 `/en`을 canonical로 한다. sitemap은 ko·en 두 줄과 alternates를 낸다. 접두사 문서에 `lang="en"`. 패치 제목·H1·설명에 "STS2"/"슬더스2" 접두사.
-- Expect: `/ja/...` 등의 canonical이 `/en/...`. `/sitemap.xml`에 `/en` 행과 alternates. 패치 상세 제목이 "슬더스2 v…"/"STS2 v…". 정적 오류 셸 28개(`<locale>/compendium/{monsters,encounters}.html`)는 기존처럼 bestiary로 리다이렉트.
+- Feature: ko와 en을 각각 자기 canonical로 두고 ko/en/x-default hreflang을 건다. 그 밖의 게임 로케일은 `/en`을 canonical로 한다. sitemap은 ko·en 두 줄과 alternates를 낸다. 접두사 문서에 `lang="en"`. 게임 이름("슬더스2"·"슬레이 더 스파이어 2"/"STS2"·"Slay the Spire 2")은 패치 목록 제목·H1·설명에만 넣는다.
+- Expect: `/ja/...` 등의 canonical이 `/en/...`. `/sitemap.xml`에 `/en` 행과 alternates. 패치 목록(`/patches`, `/en/patches`) 제목·설명에 약칭과 전체 이름이 둘 다 있음. 패치 상세의 탭 제목·H1·og:title·Article headline에는 게임 이름이 없음("v0.111.0 베타 패치노트 - 슬서운 이야기", "v0.111.0 Beta Patch Notes - Scare the Spire", 시듦 패치는 "시듦"). 정적 오류 셸 28개(`<locale>/compendium/{monsters,encounters}.html`)는 기존처럼 bestiary로 리다이렉트.
 - QA: `tsx scripts/check-search-canonical.ts`, `tsx scripts/detail-shell-og.spec.ts`, `qa:cf:testbed`(lang·hreflang 기대값). 수동: sitemap, `/ja` canonical, 패치 제목.
 - Commits: `ff7cb925`(merge of claude/wizardly-brattain-bb7f93: 3c62aca5..10d72230)
 - 후속 수정(묶음 1 QA): 크롤러(Googlebot·Yeti 등)는 ko 페이지에서 `/en` 자동 전환을 하지 않음(`4b7d4340`). Toy Box 기록 셸은 hydration 뒤에도 canonical·hreflang·og:url이 한 벌, `/ja` 기록은 `/en` canonical, 게임 로케일 셸 OG 문구는 영어(`e4bcb93b`). 패치 description이 단어 중간에서 잘리지 않음(`311114f5`). modifiers·ascensions 상세에 canonical·hreflang(`e58d7556`). 게임 로케일 목록의 승천·모디파이어·배지 타일이 404 상세 대신 목록 모달 URL로(`3e02cb1b`, `471420ce`, `9d8b3217`). 게임 로케일 패치 페이지·탐색기·백과사전 패치 이력 링크가 `/en` 대신 그 로케일로(`ea1ac8f6`, `e26d34c2`, `22bd242e`). `build-23478716` 패치 줄 링크 404 수정(`8024759b`, `b7f7c4ab`).

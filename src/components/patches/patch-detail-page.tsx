@@ -756,39 +756,21 @@ export async function generatePatchDetailStaticParams() {
   return patches.map((p) => ({ version: p.version }));
 }
 
-function formatPatchTitle(
-  patch: STS2Patch,
-  serviceLocale: ServiceLocale,
-  variant: "detailTitle" | "detailHeading",
-): string {
-  const version = getPatchVersionLabel(patch, serviceLocale);
-  if (isWitherPatch(patch)) {
-    const shortName = serviceLocale === "ko" ? "슬더스2" : "STS2";
-    const gameTitle = serviceLocale === "ko" ? "슬레이 더 스파이어 2" : "Slay the Spire 2";
-    return variant === "detailTitle"
-      ? `${shortName} ${version} – ${gameTitle}`
-      : `${shortName} ${version}`;
-  }
-
-  return serviceMessages[serviceLocale].patchNotes[variant]
-    .replace("{version}", version)
-    .replace("{type}", PATCH_COPY[serviceLocale].types[patch.type]);
-}
-
-/** Document title and Article headline, e.g. "STS2 v0.111.0 Beta Patch Notes – Slay the Spire 2". */
+/**
+ * Document title, H1 and Article headline, e.g. "v0.111.0 Beta Patch Notes".
+ * Only the patch list names the game (STS2 / 슬더스2 and the full title); a
+ * patch detail carries its version and type alone.
+ */
 export function getPatchSeoTitle(
   patch: STS2Patch,
   serviceLocale: ServiceLocale,
 ): string {
-  return formatPatchTitle(patch, serviceLocale, "detailTitle");
-}
+  const version = getPatchVersionLabel(patch, serviceLocale);
+  if (isWitherPatch(patch)) return version;
 
-/** Visible H1, e.g. "STS2 v0.111.0 Beta Patch Notes". */
-export function getPatchHeading(
-  patch: STS2Patch,
-  serviceLocale: ServiceLocale,
-): string {
-  return formatPatchTitle(patch, serviceLocale, "detailHeading");
+  return serviceMessages[serviceLocale].patchNotes.detailTitle
+    .replace("{version}", version)
+    .replace("{type}", PATCH_COPY[serviceLocale].types[patch.type]);
 }
 
 export async function getPatchDetailMetadata({
@@ -1218,7 +1200,7 @@ export async function PatchDetailPage({
   ];
   const entities = applyCompendiumManifestAvailability(rawEntities, compendiumManifest);
 
-  const title = getPatchHeading(patch, serviceLocale);
+  const title = getPatchSeoTitle(patch, serviceLocale);
   const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
   const rendererEntities = filterPatchNoteEntities(markdown, entities);
   const isWatching = patch.status === "watching";

@@ -16,6 +16,7 @@ import {
   truncateOgDescription,
 } from "../src/components/patches/patch-detail-page";
 import { getSTS2Patches } from "../src/lib/data";
+import { getServiceMetadataCopy } from "../src/lib/service-metadata";
 import { absoluteSiteUrl } from "../src/lib/site-origin";
 
 // Locale-free base paths.
@@ -132,6 +133,19 @@ assert.equal(truncateOgDescription("alpha, beta gamma", 9), "alpha…");
 assert.equal(truncateOgDescription("가나 다라마 바사", 8), "가나 다라마…");
 assert.equal(truncateOgDescription("alpha beta", 10), "alpha beta");
 
+// Only the patch list names the game, in both its short and full forms; patch
+// detail titles (document title, H1, Article headline) carry the version alone.
+const GAME_NAME = /슬더스|슬레이 더 스파이어|STS2|Slay the Spire/;
+for (const [serviceLocale, shortName, fullName] of [
+  ["ko", "슬더스2", "슬레이 더 스파이어 2"],
+  ["en", "STS2", "Slay the Spire 2"],
+] as const) {
+  const { patchesTitle, patchesDescription } = getServiceMetadataCopy(serviceLocale);
+  for (const text of [patchesTitle, patchesDescription]) {
+    assert.ok(text.includes(shortName) && text.includes(fullName), `${serviceLocale} patch list: ${text}`);
+  }
+}
+
 // Every patch detail description keeps the SEO title prefix and never stops mid-word.
 async function checkPatchDetailDescriptions() {
   const patches = await getSTS2Patches();
@@ -142,6 +156,8 @@ async function checkPatchDetailDescriptions() {
       const description = String(metadata.description ?? "");
       const title = getPatchSeoTitle(patch, serviceLocale);
       const full = `${title}. ${serviceLocale === "ko" ? patch.summaryKo : patch.summary}`;
+      assert.doesNotMatch(title, GAME_NAME, label);
+      assert.doesNotMatch(String(metadata.title ?? ""), GAME_NAME, label);
       assert.ok(description.startsWith(title), label);
       assert.ok(description.length <= 200, label);
       if (!description.endsWith("…")) {
