@@ -1,4 +1,3 @@
-import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import type { CodexCard, CodexCharacter, CodexEnchantment, CodexEncounter, CodexEvent, CodexMonster } from "@/lib/codex-types";
 
 // Compendium list pages serialize their grid data into the page HTML. These
@@ -30,16 +29,6 @@ export function expandCardKeywordLabels(
 ): CodexCard[] {
   return cards.map((card) => ({ ...card, keywordLabels: card.keywordLabels ?? keywordLabels }));
 }
-
-export const EMPTY_CARD_SIDE_TIP_SOURCES: CardSideTipCatalogSources = {
-  keywords: [],
-  staticHoverTips: {},
-  engStaticHoverTips: {},
-  orbs: {},
-  engOrbs: {},
-  monsterNames: {},
-  engMonsterNames: {},
-};
 
 /** Bestiary grid rows: moves, Spine assets, and the move graph only feed hover and detail views. */
 export function slimBestiaryMonsters(monsters: readonly CodexMonster[]): CodexMonster[] {

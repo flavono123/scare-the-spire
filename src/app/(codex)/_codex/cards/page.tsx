@@ -18,6 +18,8 @@ import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { CardLibraryLoader } from "@/components/codex/card-library-loader";
 import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
+import { loadLinkedCardSideTipSources } from "@/lib/card-side-tip-catalog.server";
+import { collectCardListSideTips } from "@/lib/compendium-list-side-tips";
 
 export const dynamic = "force-static";
 
@@ -61,9 +63,15 @@ export default async function CodexCardsPage({
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
   const compact = compactCardKeywordLabels(cards);
+  const linkedTipSources = await loadLinkedCardSideTipSources(
+    gameLocale,
+    (catalog) => collectCardListSideTips(cards, catalog),
+    { sentCards: cards },
+  );
 
   // Modal, hover-tip, and version-history data load from the static data
-  // chunks after hydration so the page HTML stays small.
+  // chunks after hydration so the page HTML stays small. The linked rows are
+  // the few the modal and tiles fall back to when the chunks fail.
   return (
     <>
       <Suspense>
@@ -78,6 +86,7 @@ export default async function CodexCardsPage({
           currentVersion={meta.version}
           patches={patches}
           linkedEvents={slimLinkedEvents(pickLinkedEvents(events, cards.flatMap((card) => getCardDetailEventIds(card.id))))}
+          linkedTipSources={linkedTipSources}
         />
       </Suspense>
       <CompendiumEntryLinkIndex

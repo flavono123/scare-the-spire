@@ -4,11 +4,8 @@ import { useMemo, type ComponentProps } from "react";
 import { CardLibrary } from "./card-library";
 import { compendiumDetailsSettled, useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
-import {
-  EMPTY_CARD_SIDE_TIP_SOURCES,
-  expandCardKeywordLabels,
-  type CompactCodexCard,
-} from "@/lib/compendium-list-props";
+import { expandCardKeywordLabels, type CompactCodexCard } from "@/lib/compendium-list-props";
+import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import type { CodexCard, CodexEvent } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 
@@ -33,16 +30,18 @@ type CardLibraryLoaderProps = Omit<ComponentProps<typeof CardLibrary>, "cards" |
   keywordLabels: CodexCard["keywordLabels"];
   /** The events the detail modal links to, so it names them when the events chunk fails. */
   linkedEvents: CodexEvent[];
+  /** The side tip catalog rows the modal and tiles read, so they keep their side tips when the data chunks fail. */
+  linkedTipSources: CardSideTipCatalogSources;
 };
 
 /**
  * Renders CardLibrary from its server props and fills in the rest once the
  * data chunks load. The detail modal waits for them, since its enchantments,
  * afflictions, related lists, and history come from the chunks. If they fail,
- * the modal renders from the server props, with the linked events in place of
- * the events chunk.
+ * the modal renders from the server props, with the linked events and side tip
+ * rows in place of those chunks.
  */
-export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabels, linkedEvents, ...props }: CardLibraryLoaderProps) {
+export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabels, linkedEvents, linkedTipSources, ...props }: CardLibraryLoaderProps) {
   const { data, status } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   const cards = useMemo(
     () => expandCardKeywordLabels(compactCards, keywordLabels),
@@ -62,7 +61,7 @@ export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabe
       relatedMonsters={data?.monsters}
       relatedPotions={data?.potions}
       relatedPowers={data?.powers}
-      tipCatalogSources={data?.cardSideTipSources ?? EMPTY_CARD_SIDE_TIP_SOURCES}
+      tipCatalogSources={data?.cardSideTipSources ?? linkedTipSources}
     />
   );
 }
