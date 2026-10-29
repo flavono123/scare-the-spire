@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexAncients, getCodexCards, getCodexCharacters, getCodexEnchantments, getCodexEvents, getCodexRelics } from "@/lib/codex-data";
+import { getCodexAncients, getCodexCards, getCodexCharacters, getCodexEnchantments, getCodexEvents, getCodexPotions, getCodexRelics } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
@@ -29,6 +29,8 @@ import {
   getRelatedEnchantmentIdsForRelic,
   getRelatedEventIdsForRelic,
 } from "@/lib/codex-references";
+import { loadLinkedCardSideTipSources } from "@/lib/card-side-tip-catalog.server";
+import { collectRelicListSideTips, getRelicSideTipRowIds } from "@/lib/compendium-list-side-tips";
 
 export const dynamic = "force-static";
 
@@ -80,6 +82,7 @@ export default async function CodexRelicsPage({
     events,
     cards,
     enchantments,
+    potions,
   ] = await Promise.all([
     getCodexRelics({ gameLocale }),
     getCodexCharacters({ gameLocale }),
@@ -91,9 +94,16 @@ export default async function CodexRelicsPage({
     getCodexEvents({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexEnchantments({ gameLocale }),
+    getCodexPotions({ gameLocale }),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
+  const linkedCards = pickLinkedRows(cards, relics.flatMap((relic) => getRelatedCardIdsForRelic(relic.id)));
+  const linkedTipSources = await loadLinkedCardSideTipSources(
+    gameLocale,
+    (catalog) => collectRelicListSideTips(relics, catalog, { potions, enchantments }),
+    { sentCards: linkedCards },
+  );
 
   return (
     <>
@@ -110,8 +120,13 @@ export default async function CodexRelicsPage({
           currentVersion={meta.version}
           patches={patches}
           linkedEvents={slimLinkedEvents(pickLinkedEvents(events, relics.flatMap((relic) => getRelatedEventIdsForRelic(relic.id))))}
-          linkedCards={pickLinkedRows(cards, relics.flatMap((relic) => getRelatedCardIdsForRelic(relic.id)))}
-          linkedEnchantments={slimLinkedEnchantments(pickLinkedRows(enchantments, relics.flatMap((relic) => getRelatedEnchantmentIdsForRelic(relic, enchantments))))}
+          linkedCards={linkedCards}
+          linkedEnchantments={slimLinkedEnchantments(pickLinkedRows(enchantments, [
+            ...relics.flatMap((relic) => getRelatedEnchantmentIdsForRelic(relic, enchantments)),
+            ...getRelicSideTipRowIds(relics, "enchantment"),
+          ]))}
+          linkedPotions={pickLinkedRows(potions, getRelicSideTipRowIds(relics, "potion"))}
+          linkedTipSources={linkedTipSources}
         />
       </Suspense>
       <CompendiumEntryLinkIndex
