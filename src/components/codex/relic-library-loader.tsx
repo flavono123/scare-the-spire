@@ -8,6 +8,7 @@ import {
   useCompendiumEntitiesState,
 } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
+import type { CodexEvent } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 
 const LAZY_DATA_KEYS = [
@@ -24,14 +25,18 @@ const LAZY_DATA_KEYS = [
 
 type RelicLibraryLoaderProps = Omit<ComponentProps<typeof RelicLibrary>, "changes" | "versionDiffs" | "entities" | "relatedCards" | "relatedEvents" | "relatedEnchantments" | "relatedPowers" | "relatedMonsters" | "relatedPotions" | "tipCatalogSources" | "detailsReady"> & {
   gameLocale: GameLocale;
+  /** The events the detail modal links to, so it names them when the events chunk fails. */
+  linkedEvents: CodexEvent[];
 };
 
 /**
  * Renders RelicLibrary from its server props and fills in the rest once the
  * data chunks load. The detail modal waits for them, since its related lists,
- * keyword links, and history come from the chunks.
+ * keyword links, and history come from the chunks. If they fail, the modal
+ * renders from the server props, with the linked events in place of the
+ * events chunk.
  */
-export function RelicLibraryLoader({ gameLocale, ...props }: RelicLibraryLoaderProps) {
+export function RelicLibraryLoader({ gameLocale, linkedEvents, ...props }: RelicLibraryLoaderProps) {
   const { data, status: dataStatus } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   const { entities, status: entitiesStatus } = useCompendiumEntitiesState(gameLocale);
   return (
@@ -42,7 +47,7 @@ export function RelicLibraryLoader({ gameLocale, ...props }: RelicLibraryLoaderP
       versionDiffs={data?.versionDiffs}
       entities={entities}
       relatedCards={data?.cards}
-      relatedEvents={data?.events}
+      relatedEvents={data?.events ?? linkedEvents}
       relatedEnchantments={data?.enchantments}
       relatedPowers={data?.powers}
       relatedMonsters={data?.monsters}

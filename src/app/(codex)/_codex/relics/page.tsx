@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexAncients, getCodexCharacters, getCodexRelics } from "@/lib/codex-data";
+import { getCodexAncients, getCodexCharacters, getCodexEvents, getCodexRelics } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
@@ -17,7 +17,8 @@ import {
 } from "@/lib/codex-resource-og";
 import { RelicLibraryLoader } from "@/components/codex/relic-library-loader";
 import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
-import { slimFilterCharacters } from "@/lib/compendium-list-props";
+import { pickLinkedEvents, slimFilterCharacters, slimLinkedEvents } from "@/lib/compendium-list-props";
+import { getRelatedEventIdsForRelic } from "@/lib/codex-references";
 
 export const dynamic = "force-static";
 
@@ -66,6 +67,7 @@ export default async function CodexRelicsPage({
     versionDiffs,
     meta,
     gameUi,
+    events,
   ] = await Promise.all([
     getCodexRelics({ gameLocale }),
     getCodexCharacters({ gameLocale }),
@@ -74,6 +76,7 @@ export default async function CodexRelicsPage({
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
+    getCodexEvents({ gameLocale }),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -92,6 +95,7 @@ export default async function CodexRelicsPage({
           versions={versions}
           currentVersion={meta.version}
           patches={patches}
+          linkedEvents={slimLinkedEvents(pickLinkedEvents(events, relics.flatMap((relic) => getRelatedEventIdsForRelic(relic.id))))}
         />
       </Suspense>
       <CompendiumEntryLinkIndex
