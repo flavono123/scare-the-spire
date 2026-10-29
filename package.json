@@ -54,6 +54,7 @@
     "test:map-bar": "tsx scripts/map-bar.spec.ts",
     "test:entity-graph": "tsx scripts/entity-graph-chunks.spec.ts",
     "test:entity-subset": "tsx scripts/entity-subset.spec.tsx",
+    "test:list-side-tips": "tsx scripts/list-side-tip-sources.spec.ts",
     "audit:version-api": "tsx scripts/audit-version-api-canonical.ts",
     "audit:version-locales": "tsx scripts/audit-version-locales.ts",
     "sts2:patch-lines": "tsx scripts/generate-sts2-patch-lines.ts && tsx scripts/generate-resource-patch-index.ts",
