@@ -2,6 +2,11 @@
 
 import Link from "next/link";
 import { type ReactNode, useMemo } from "react";
+import {
+  CompendiumDataRetryButton,
+  useRetryFailedCompendiumDataOnReturn,
+} from "@/components/compendium-data-retry";
+import { EngagementSpinner } from "@/components/engagement-spinner";
 import { RichText } from "@/components/rich-text";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { PatchArtThumbnail } from "@/components/patches/patch-art";
@@ -12,6 +17,7 @@ import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { STS2Patch, STS2PatchLine } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { serviceMessages } from "@/messages/service";
 
 const FALLBACK_PATCH_ART: ResolvedPatchArt = {
   imageUrl: "/images/sts2/nav/patch_notes_icon.png",
@@ -24,6 +30,43 @@ function findPatch(patches: STS2Patch[] | undefined, patchLine: STS2PatchLine): 
     patch.id === patchLine.patch
     || patch.version === patchLine.version
     || `v${patch.version}` === patchLine.patch,
+  );
+}
+
+/** Whether the patches and entities a lazily loaded patch reference reads are ready. */
+export type PatchLineReferenceDataState = "loading" | "loaded" | "failed";
+
+/** Stands in for a story's patch reference while its data is loading. */
+export function PatchLineReferenceLoading({ serviceLocale }: { serviceLocale: ServiceLocale }) {
+  return (
+    <div
+      className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/[0.06] px-4 py-3 text-xs text-primary/80"
+      role="status"
+      aria-live="polite"
+      data-story-reference-state="loading"
+    >
+      <EngagementSpinner size={14} />
+      <span>{serviceMessages[serviceLocale].stories.reference.loading}</span>
+    </div>
+  );
+}
+
+/**
+ * Stands in for a story's patch reference when its data failed to load, so
+ * the reference never renders with empty entity or patch maps. Retries on the
+ * button, and when the browser reconnects or the tab is shown again.
+ */
+export function PatchLineReferenceFailed({ serviceLocale }: { serviceLocale: ServiceLocale }) {
+  useRetryFailedCompendiumDataOnReturn();
+  return (
+    <div
+      className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/[0.06] px-4 py-3 text-xs text-primary/80"
+      role="alert"
+      data-story-reference-state="failed"
+    >
+      <span>{serviceMessages[serviceLocale].stories.reference.failed}</span>
+      <CompendiumDataRetryButton serviceLocale={serviceLocale} compact className="ml-auto shrink-0" />
+    </div>
   );
 }
 

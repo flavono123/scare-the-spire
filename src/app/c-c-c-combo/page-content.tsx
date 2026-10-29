@@ -3,7 +3,6 @@ import { ComboClient } from "@/components/combo/combo-client";
 import { ServiceBackground } from "@/components/service-background";
 import { getComboPlaceholder } from "@/lib/borrowed-game-copy";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
-import { loadAllEntities } from "@/lib/load-all-entities";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { COMBO_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import {
@@ -34,10 +33,7 @@ export async function generateComboMetadata(
 export async function renderComboPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const [entities, placeholder] = await Promise.all([
-    loadAllEntities({ gameLocale }),
-    getComboPlaceholder(gameLocale),
-  ]);
+  const placeholder = await getComboPlaceholder(gameLocale);
 
   return (
     <div className="relative isolate min-h-[calc(100svh-3rem)]">
@@ -47,7 +43,6 @@ export async function renderComboPage(
       />
       <div className={TOYBOX_NARROW_SHELL_CLASS}>
         <ComboClient
-          entities={entities}
           gameLocale={gameLocale}
           placeholder={placeholder}
         />

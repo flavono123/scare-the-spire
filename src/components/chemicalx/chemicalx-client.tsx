@@ -3,6 +3,8 @@
 import { useState, useMemo, useCallback } from "react";
 import Image from "@/components/ui/static-image";
 import { Eye, EyeOff } from "lucide-react";
+import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-data";
+import { EntityGraphGate, EntityGraphUnavailableNotice } from "@/components/entity-graph-gate";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
@@ -12,6 +14,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useChemicalPosts } from "@/hooks/use-chemical-posts";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
@@ -21,27 +24,36 @@ import { ChemicalXEditor } from "./chemicalx-editor";
 import { PostCard } from "./post-card";
 import { buildEntityMap } from "./post-renderer";
 
+const NO_ENTITIES: EntityInfo[] = [];
+
 interface ChemicalXClientProps {
-  entities: EntityInfo[];
+  gameLocale: GameLocale;
   placeholder: string;
 }
 
-export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps) {
+export function ChemicalXClient({ gameLocale, placeholder }: ChemicalXClientProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const { userId, ready, ensureUser } = useAuth();
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
+  // The full graph loads on the client next to the posts; the feed waits for
+  // both so posts never render with unresolved game elements. If the graph
+  // fails, one retry notice stands in for the feed and the editor.
+  const entityGraph = useCompendiumEntitiesState(gameLocale);
+  const entityGraphFailed = entityGraph.status === "failed";
+  const entities = entityGraph.entities ?? NO_ENTITIES;
   const {
     posts,
     likeCounts,
     commentCounts,
-    loading,
+    loading: postsLoading,
     loadingMore,
     hasMore,
     unavailable,
     loadMore,
     add,
   } = useChemicalPosts(userId, sort);
+  const loading = postsLoading || entityGraph.status === "loading";
   const [showAllTooltips, setShowAllTooltips] = useState(false);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
@@ -81,17 +93,22 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
       </header>
 
       {/* Editor */}
-      {ready && !storageUnavailable && (
-        <ChemicalXEditor
-          entities={entities}
-          placeholder={placeholder}
-          profileNickname={profile.nickname}
-          onSubmit={handleSubmit}
-        />
+      {ready && !storageUnavailable && !entityGraphFailed && (
+        <EntityGraphGate
+          status={entityGraph.status}
+          serviceLocale={serviceLocale}
+        >
+          <ChemicalXEditor
+            entities={entities}
+            placeholder={placeholder}
+            profileNickname={profile.nickname}
+            onSubmit={handleSubmit}
+          />
+        </EntityGraphGate>
       )}
 
       {/* Toolbar */}
-      {!loading && !storageUnavailable && (
+      {!loading && !storageUnavailable && !entityGraphFailed && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <FeedSortToggle
             service="chemical_x"
@@ -121,6 +138,8 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
         <StorageUnavailableNotice
           title={copy.unavailableTitle}
         />
+      ) : entityGraphFailed ? (
+        <EntityGraphUnavailableNotice serviceLocale={serviceLocale} />
       ) : loading ? (
         <ContentLoadingNotice label={copy.loading} />
       ) : (

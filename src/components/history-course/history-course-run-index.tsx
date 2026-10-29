@@ -2,10 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-data";
 import { ComboGameElementFilter } from "@/components/combo/combo-game-element-filter";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { CoverEditorSheet } from "@/components/history-course/cover-editor-sheet";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { EntityGraphUnavailableNotice } from "@/components/entity-graph-gate";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useAuth } from "@/hooks/use-auth";
@@ -31,7 +33,7 @@ import {
   buildHistoryCourseCommentThreadKey,
   commentThreadHref,
 } from "@/lib/comment-threads";
-import { localizeHref } from "@/lib/i18n";
+import { localizeHref, type GameLocale } from "@/lib/i18n";
 import {
   type DonatedRunSummary,
   deleteDonatedRun,
@@ -52,9 +54,11 @@ import { RandomPickCard } from "./random-pick-card";
 import { RunCard, runCardPropsFromReplay } from "./run-card";
 
 const NO_SHARED_RUNS: readonly string[] = [];
+const NO_ENTITIES: EntityInfo[] = [];
+const NO_FILTER_ITEMS: Array<{ resources: ComboResourceRef[] }> = [];
 
 interface Props {
-  entities: EntityInfo[];
+  gameLocale: GameLocale;
   refreshKey?: number;
   sharedRunIds?: readonly string[];
   pendingEditRunId?: string | null;
@@ -77,7 +81,7 @@ interface MergedRun {
 }
 
 export function HistoryCourseRunIndex({
-  entities,
+  gameLocale,
   refreshKey = 0,
   sharedRunIds = NO_SHARED_RUNS,
   pendingEditRunId = null,
@@ -87,6 +91,14 @@ export function HistoryCourseRunIndex({
   const copy = serviceMessages[serviceLocale].historyCourse.lists;
   const router = useRouter();
   const { userId, ready: authReady, ensureUser } = useAuth();
+  // Game element names for search and filter chips load on the client next
+  // to the runs. Until they arrive the filter shows no chips and a search
+  // waits instead of matching against incomplete names. If they fail, a retry
+  // notice stands in for the filter; the runs themselves do not need them.
+  const entityGraph = useCompendiumEntitiesState(gameLocale);
+  const entities = entityGraph.entities ?? NO_ENTITIES;
+  const entitiesReady = entityGraph.status === "loaded";
+  const entityGraphFailed = entityGraph.status === "failed";
   const [localEntries, setLocalEntries] = useState<LocalEntry[] | null>(null);
   const [donatedRuns, setDonatedRuns] = useState<DonatedRunSummary[] | null>(null);
   const [donatedIds, setDonatedIds] = useState<Set<string>>(new Set());
@@ -97,6 +109,17 @@ export function HistoryCourseRunIndex({
   const [query, setQuery] = useState("");
   const [selectedGameElements, setSelectedGameElements] = useState<ComboResourceRef[]>([]);
   const [sort, setSort] = useState<HistoryCourseIndexSort>("latest");
+  // The filter unmounts while the graph has failed and comes back empty after
+  // a retry, so a search typed while the graph was loading must not keep
+  // filtering the runs behind the notice.
+  const [filterClearedForFailure, setFilterClearedForFailure] = useState(false);
+  if (filterClearedForFailure !== entityGraphFailed) {
+    setFilterClearedForFailure(entityGraphFailed);
+    if (entityGraphFailed) {
+      setQuery("");
+      setSelectedGameElements([]);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -385,6 +408,7 @@ export function HistoryCourseRunIndex({
   const sharedReady = donatedRuns !== null;
   const loading = !localReady || !sharedReady;
   const hasQuery = query.trim().length > 0 || selectedGameElements.length > 0;
+  const searchPending = hasQuery && !entitiesReady;
   const donatedForRandom = donatedRuns ?? [];
 
   return (
@@ -399,28 +423,33 @@ export function HistoryCourseRunIndex({
             labels={serviceMessages[serviceLocale].feedSort}
           />
         ) : null}
-        <ComboGameElementFilter
-          entities={entities}
-          items={searchItems}
-          selected={selectedGameElements}
-          serviceLocale={serviceLocale}
-          onSelectedChange={setSelectedGameElements}
-          onQueryChange={setQuery}
-          labels={{
-            filterSearchPlaceholder: copy.searchPlaceholder,
-            gameElementsInPosts: copy.gameElementsInRuns,
-            noGameElementsInPosts: copy.noGameElementsInRuns,
-            popularGameElements: copy.popularGameElements,
-            applyPopularGameElement: copy.applyPopularGameElement,
-            removePopularGameElement: copy.removePopularGameElement,
-          }}
-        />
+        {entityGraphFailed ? (
+          <EntityGraphUnavailableNotice compact serviceLocale={serviceLocale} />
+        ) : (
+          <ComboGameElementFilter
+            entities={entities}
+            items={entitiesReady ? searchItems : NO_FILTER_ITEMS}
+            loading={!entitiesReady}
+            selected={selectedGameElements}
+            serviceLocale={serviceLocale}
+            onSelectedChange={setSelectedGameElements}
+            onQueryChange={setQuery}
+            labels={{
+              filterSearchPlaceholder: copy.searchPlaceholder,
+              gameElementsInPosts: copy.gameElementsInRuns,
+              noGameElementsInPosts: copy.noGameElementsInRuns,
+              popularGameElements: copy.popularGameElements,
+              applyPopularGameElement: copy.applyPopularGameElement,
+              removePopularGameElement: copy.removePopularGameElement,
+            }}
+          />
+        )}
       </div>
       <header className="mb-4 flex items-baseline justify-between gap-3">
         <p className="text-[11px] text-muted-foreground">
           {copy.minBuild.replace("{version}", MIN_SUPPORTED_BUILD.replace(/^v/, ""))}
         </p>
-        {!loading && !unavailable && (
+        {!loading && !unavailable && !searchPending && (
           <span className="text-xs text-muted-foreground">
             {filtered.length > 99 ? "99+" : filtered.length}
           </span>
@@ -429,7 +458,7 @@ export function HistoryCourseRunIndex({
       {unavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} />
       ) : null}
-      {loading ? (
+      {loading || searchPending ? (
         <ContentLoadingNotice label={copy.loadingRuns} />
       ) : localEntries.length === 0 && donatedForRandom.length === 0 ? (
         <p className="rounded-xl bg-zinc-900/40 px-4 py-6 text-center text-xs text-zinc-500 ring-1 ring-zinc-800">

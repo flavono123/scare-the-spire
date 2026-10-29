@@ -7,7 +7,13 @@ import type { STS2Patch, STS2PatchLine } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { EngagementSpinner } from "@/components/engagement-spinner";
-import { PatchLineReferenceBlock, PatchLineReferenceText } from "@/components/patch-line-reference";
+import {
+  PatchLineReferenceBlock,
+  PatchLineReferenceFailed,
+  PatchLineReferenceLoading,
+  PatchLineReferenceText,
+  type PatchLineReferenceDataState,
+} from "@/components/patch-line-reference";
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
@@ -90,6 +96,7 @@ export function StoryComposerModal({
   patchLines,
   patches,
   entities,
+  referenceState = "loaded",
   patchArt,
   initialPatchLineId,
   onAdd,
@@ -103,6 +110,12 @@ export function StoryComposerModal({
   patchLines: STS2PatchLine[];
   patches?: STS2Patch[];
   entities?: EntityInfo[];
+  /**
+   * For lazily loaded patches and entities: while they load, or after they
+   * fail, the selected reference shows a loading or failed line instead of
+   * guessed art.
+   */
+  referenceState?: PatchLineReferenceDataState;
   patchArt?: ResolvedPatchArt;
   initialPatchLineId?: string;
   onAdd: (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId?: string) => Promise<void>;
@@ -240,7 +253,11 @@ export function StoryComposerModal({
               />
             </label>
 
-            {selectedPatchLine ? (
+            {selectedPatchLine && referenceState === "loading" && !patchArt ? (
+              <PatchLineReferenceLoading serviceLocale={serviceLocale} />
+            ) : selectedPatchLine && referenceState === "failed" && !patchArt ? (
+              <PatchLineReferenceFailed serviceLocale={serviceLocale} />
+            ) : selectedPatchLine ? (
               <PatchLineReferenceBlock
                 patchLine={selectedPatchLine}
                 serviceLocale={serviceLocale}

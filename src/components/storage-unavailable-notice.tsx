@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import { cn } from "@/lib/utils";
 
@@ -5,10 +6,13 @@ export function StorageUnavailableNotice({
   title,
   compact = false,
   className,
+  children,
 }: {
   title: string;
   compact?: boolean;
   className?: string;
+  /** An action under the title, such as a retry button. */
+  children?: ReactNode;
 }) {
   return (
     <div
@@ -29,6 +33,7 @@ export function StorageUnavailableNotice({
       <span className={cn("font-semibold text-amber-300", compact ? "text-xs" : "text-sm")}>
         {title}
       </span>
+      {children}
     </div>
   );
 }

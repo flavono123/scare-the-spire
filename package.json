@@ -52,6 +52,8 @@
     "test:monster-static-art": "tsx scripts/monster-static-art.spec.ts",
     "test:combat-sim": "tsx scripts/combat-sim.spec.ts",
     "test:map-bar": "tsx scripts/map-bar.spec.ts",
+    "test:entity-graph": "tsx scripts/entity-graph-chunks.spec.ts",
+    "test:entity-subset": "tsx scripts/entity-subset.spec.tsx",
     "audit:version-api": "tsx scripts/audit-version-api-canonical.ts",
     "audit:version-locales": "tsx scripts/audit-version-locales.ts",
     "sts2:patch-lines": "tsx scripts/generate-sts2-patch-lines.ts && tsx scripts/generate-resource-patch-index.ts",

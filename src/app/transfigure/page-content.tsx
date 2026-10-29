@@ -3,7 +3,6 @@ import { ServiceBackground } from "@/components/service-background";
 import { TransfigureClient } from "@/components/transfigure/transfigure-client";
 import { getTransfigureGameCopy } from "@/lib/borrowed-game-copy";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
-import { loadAllEntities } from "@/lib/load-all-entities";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { TRANSFIGURE_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import {
@@ -34,10 +33,7 @@ export async function generateTransfigureMetadata(
 export async function renderTransfigurePage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const [entities, gameCopy] = await Promise.all([
-    loadAllEntities({ gameLocale }),
-    getTransfigureGameCopy(gameLocale),
-  ]);
+  const gameCopy = await getTransfigureGameCopy(gameLocale);
 
   return (
     <div className="relative isolate min-h-[calc(100svh-3rem)]">
@@ -47,7 +43,6 @@ export async function renderTransfigurePage(
       />
       <div className={TOYBOX_WIDE_SHELL_CLASS}>
         <TransfigureClient
-          entities={entities}
           gameLocale={gameLocale}
           title={gameCopy.title}
           subtitle={gameCopy.subtitle}

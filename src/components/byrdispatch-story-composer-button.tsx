@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import type { EntityInfo } from "@/components/patch-note-renderer";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { useAuth } from "@/hooks/use-auth";
@@ -26,14 +25,14 @@ function newStoryLabel(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko" ? "이야기 쓰기" : "Write story";
 }
 
+// The composer gets no patch list here, so its reference block always shows
+// the generic patch art and never reads entities.
 export function ByrdispatchStoryComposerButton({
   serviceLocale,
   storyPlaceholder,
-  entities,
 }: {
   serviceLocale: ServiceLocale;
   storyPlaceholder: string;
-  entities: EntityInfo[];
 }) {
   const { userId, ready: authReady, ensureUser } = useAuth();
   const communityStories = useCommunityStories(userId);
@@ -70,7 +69,6 @@ export function ByrdispatchStoryComposerButton({
           authReady={authReady}
           ensureUser={ensureUser}
           patchLines={patchLines}
-          entities={entities}
           onAdd={communityStories.add}
           onClose={() => setComposerOpen(false)}
         />

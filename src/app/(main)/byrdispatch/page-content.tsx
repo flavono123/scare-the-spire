@@ -17,6 +17,7 @@ import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { withSearchCanonical } from "@/lib/search-canonical";
 import { buildByrdispatchCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexGameUiLabels, type CodexGameUiLabels } from "@/lib/codex-game-ui";
+import { collectStrings, selectEntitiesForTexts } from "@/lib/entity-subset";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
 import {
@@ -476,6 +477,7 @@ function ByrdispatchNamedLink({
 export function ByrdispatchRichText({
   text,
   entities,
+  knowledgeDemon,
   gameUi,
   serviceLocale,
   gameLocale,
@@ -484,7 +486,10 @@ export function ByrdispatchRichText({
   extraLinks,
 }: {
   text: string;
+  /** Only the entities this text can reach; see selectEntitiesForTexts. */
   entities: EntityInfo[];
+  /** From the full graph, for the {지식의악마토큰} icon. */
+  knowledgeDemon?: EntityInfo;
   gameUi: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
@@ -514,7 +519,6 @@ export function ByrdispatchRichText({
     );
   };
   const parts: ReactNode[] = [];
-  const knowledgeDemon = entities.find((entity) => entity.type === "monster" && entity.id === "KNOWLEDGE_DEMON_BOSS");
   const extraLabels = Object.keys(extraLinks ?? {});
   const actionPattern = inlineActionPattern(extraLabels);
   const occupied: Array<[number, number]> = [];
@@ -565,7 +569,6 @@ export function ByrdispatchRichText({
         <ByrdispatchStoryComposerButton
           serviceLocale={serviceLocale}
           storyPlaceholder={storyPlaceholder}
-          entities={entities}
         />
       ) : isOwnPostMark ? (
         <OwnPostMark className="mx-0.5 align-middle" />
@@ -626,6 +629,7 @@ function ByrdispatchBulletLine({
   bullet,
   notice,
   entities,
+  knowledgeDemon,
   gameUi,
   serviceLocale,
   gameLocale,
@@ -637,6 +641,7 @@ function ByrdispatchBulletLine({
   bullet: ByrdispatchBullet;
   notice: boolean;
   entities: EntityInfo[];
+  knowledgeDemon?: EntityInfo;
   gameUi: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
@@ -683,6 +688,7 @@ function ByrdispatchBulletLine({
         <ByrdispatchRichText
           text={bullet.text}
           entities={entities}
+          knowledgeDemon={knowledgeDemon}
           gameUi={gameUi}
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
@@ -700,6 +706,7 @@ function ByrdispatchDetailsBlock({
   details,
   notice,
   entities,
+  knowledgeDemon,
   gameUi,
   serviceLocale,
   gameLocale,
@@ -711,6 +718,7 @@ function ByrdispatchDetailsBlock({
   details: ByrdispatchDetails;
   notice: boolean;
   entities: EntityInfo[];
+  knowledgeDemon?: EntityInfo;
   gameUi: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
@@ -739,6 +747,7 @@ function ByrdispatchDetailsBlock({
                 item={item}
                 notice={notice}
                 entities={entities}
+                knowledgeDemon={knowledgeDemon}
                 gameUi={gameUi}
                 serviceLocale={serviceLocale}
                 gameLocale={gameLocale}
@@ -806,6 +815,7 @@ function ByrdispatchSectionItemLine({
   item,
   notice,
   entities,
+  knowledgeDemon,
   gameUi,
   serviceLocale,
   gameLocale,
@@ -818,6 +828,7 @@ function ByrdispatchSectionItemLine({
   item: ByrdispatchSectionItem;
   notice: boolean;
   entities: EntityInfo[];
+  knowledgeDemon?: EntityInfo;
   gameUi: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
@@ -841,6 +852,7 @@ function ByrdispatchSectionItemLine({
         details={item.details}
         notice={notice}
         entities={entities}
+        knowledgeDemon={knowledgeDemon}
         gameUi={gameUi}
         serviceLocale={serviceLocale}
         gameLocale={gameLocale}
@@ -867,6 +879,7 @@ function ByrdispatchSectionItemLine({
       bullet={item.bullet}
       notice={notice}
       entities={entities}
+      knowledgeDemon={knowledgeDemon}
       gameUi={gameUi}
       serviceLocale={serviceLocale}
       gameLocale={gameLocale}
@@ -882,6 +895,7 @@ function ByrdispatchSectionList({
   sections,
   notice = false,
   entities,
+  knowledgeDemon,
   gameUi,
   serviceLocale,
   gameLocale,
@@ -892,6 +906,7 @@ function ByrdispatchSectionList({
   sections: ByrdispatchSection[];
   notice?: boolean;
   entities: EntityInfo[];
+  knowledgeDemon?: EntityInfo;
   gameUi: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
@@ -928,6 +943,7 @@ function ByrdispatchSectionList({
                     item={item}
                     notice={notice}
                     entities={entities}
+                    knowledgeDemon={knowledgeDemon}
                     gameUi={gameUi}
                     serviceLocale={serviceLocale}
                     gameLocale={gameLocale}
@@ -967,6 +983,11 @@ export async function renderByrdispatchPage(
   const characters = entities
     .map((entity) => entity.characterData)
     .filter((character): character is NonNullable<EntityInfo["characterData"]> => Boolean(character));
+  const knowledgeDemon = entities.find((entity) => entity.type === "monster" && entity.id === "KNOWLEDGE_DEMON_BOSS");
+  // The rich text only needs the entities its markdown names; the client
+  // flight data would otherwise carry the whole graph. Comments and the story
+  // composer load what they need on the client.
+  const clientEntities = selectEntitiesForTexts(entities, collectStrings(entries));
 
   return (
     <main className={`${TOYBOX_WIDE_MAX_CLASS} px-4 py-8 text-foreground sm:py-10`}>
@@ -1021,7 +1042,8 @@ export async function renderByrdispatchPage(
                     <ByrdispatchSectionList
                       sections={noticeSections}
                       notice
-                      entities={entities}
+                      entities={clientEntities}
+                      knowledgeDemon={knowledgeDemon}
                       gameUi={gameUi}
                       serviceLocale={serviceLocale}
                       gameLocale={gameLocale}
@@ -1035,7 +1057,8 @@ export async function renderByrdispatchPage(
                   <div className={noticeSections.length > 0 ? "mt-5" : "mt-4"}>
                     <ByrdispatchSectionList
                       sections={entry.regularSections}
-                      entities={entities}
+                      entities={clientEntities}
+                      knowledgeDemon={knowledgeDemon}
                       gameUi={gameUi}
                       serviceLocale={serviceLocale}
                       gameLocale={gameLocale}
@@ -1057,7 +1080,7 @@ export async function renderByrdispatchPage(
         </h2>
         <CommentSection
           threadKey={buildByrdispatchCommentThreadKey()}
-          initialEntities={entities}
+          entitiesGameLocale={gameLocale}
         />
       </section>
     </main>
