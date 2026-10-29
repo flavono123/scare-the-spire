@@ -1,5 +1,5 @@
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
-import type { CodexCard, CodexCharacter, CodexEncounter, CodexEvent, CodexMonster } from "@/lib/codex-types";
+import type { CodexCard, CodexCharacter, CodexEnchantment, CodexEncounter, CodexEvent, CodexMonster } from "@/lib/codex-types";
 
 // Compendium list pages serialize their grid data into the page HTML. These
 // helpers drop what the grid never reads before the first render; the list
@@ -71,12 +71,17 @@ export function slimFilterCharacters(characters: readonly CodexCharacter[]): Cod
 }
 
 /**
- * Event rows a list's detail modal links to. The modal falls back to them when
- * the events chunk fails, so its related event links keep their names.
+ * Rows a list's detail modal links to. The modal falls back to them when the
+ * data chunks fail, so its related links keep their names.
  */
+export function pickLinkedRows<T extends { id: string }>(rows: readonly T[], ids: Iterable<string>): T[] {
+  const wanted = new Set(ids);
+  return rows.filter((row) => wanted.has(row.id));
+}
+
+/** Event rows a list's detail modal links to (see pickLinkedRows). */
 export function pickLinkedEvents(events: readonly CodexEvent[], eventIds: Iterable<string>): CodexEvent[] {
-  const wanted = new Set(eventIds);
-  return events.filter((event) => wanted.has(event.id));
+  return pickLinkedRows(events, eventIds);
 }
 
 /** Linked event rows for modals whose event links and hover read only the names and art. */
@@ -87,5 +92,17 @@ export function slimLinkedEvents(events: readonly CodexEvent[]): CodexEvent[] {
     descriptionEn: "",
     options: null,
     pages: null,
+  }));
+}
+
+/** Linked enchantment rows for modals whose enchantment links and hover read only the names, description, card type, and art. */
+export function slimLinkedEnchantments(enchantments: readonly CodexEnchantment[]): CodexEnchantment[] {
+  return enchantments.map((enchantment) => ({
+    ...enchantment,
+    descriptionEn: "",
+    descriptionRaw: null,
+    descriptionRawEn: null,
+    extraCardText: null,
+    extraCardTextEn: null,
   }));
 }
