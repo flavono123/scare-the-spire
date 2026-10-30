@@ -62,8 +62,9 @@ A new issue ships as a `docs/RELEASE_PROCESS.md` §4 urgent release: speed first
 1. Commit the data, both notes, and the images together, with `Feature:` / `Expect:` / `QA:` lines naming `/patches/neowsletters/{id}` and `/en/patches/neowsletters/{id}`.
 2. `pnpm patch:test`, then `pnpm patch:build`. `.patch-worker/` is build output and is not committed.
 3. Serve `.patch-worker/assets` statically (for example `python3 -m http.server 8788 --directory .patch-worker/assets`) and open the list and the issue. Check in the built HTML that every claim has a thread key (`neowsletter:{id}:`), no `[gold` text is left raw, and every `/images/neowsletters/{id}/` image loads. Missing `/images/sts2/ui/...` icons are main Worker assets and are expected on this static server.
-4. If a commit carries a migration that is not applied yet, stop and ask (§4 step 4). Otherwise `git push origin main`. The pre-push hook runs `tsc`. `.github/workflows/cloudflare-workers.yml` deploys.
-5. If the pushed range includes commits that were not QA'd, add it to UNRELEASED.md "긴급 배포로 QA 없이 나간 범위".
+4. If a commit carries a migration that is not applied yet, stop and ask (§4 step 4). Otherwise `git push origin main`. The pre-push hook runs `tsc`. `.github/workflows/cloudflare-workers.yml` deploys. Its "Detect Cloudflare deployment scope" step must route `data/sts2-neowsletters*` and `public/images/neowsletters/*` to `patch_changed`. Without that, only the main Worker ships and the new issue 404s.
+5. When the run finishes, request `/patches/neowsletters/{id}` and `/en/patches/neowsletters/{id}` on production and expect 200 before reporting it shipped.
+6. If the pushed range includes commits that were not QA'd, add it to UNRELEASED.md "긴급 배포로 QA 없이 나간 범위".
 
 ## Image compression
 
