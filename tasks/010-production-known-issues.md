@@ -128,3 +128,28 @@
 31. **관련 링크의 고대의 존재 호버에 한국어 막 라벨**('3막 — 영광', '2막 — 군락')이 /en·/ja 등 모든 게임 로케일에서 나옴.
     - https://scare-the-spire.flavono123.workers.dev/en/compendium/relics
     - 원인: `src/components/codex/entity-reference-links.tsx`가 `EntityPreview`에 `gameUi`를 넘기지 않아 `patch-note-renderer.tsx`의 `gameUi?.acts[act] ?? EVENT_ACT_CONFIG[act].labelKo`가 한국어로 떨어진다.
+
+### 묶음 2 QA에서 추가 (2026-10-31)
+
+32. **Toy Box 기록 링크의 미리보기(OG)가 기록별 값이 아니라 목록 기본값**(제목·설명·이미지). canonical·hreflang·og:url만 기록 주소.
+    - https://scare-the-spire.flavono123.workers.dev/this-or-that/c23e2302-a8da-473d-8205-5078c5aba49e
+    - 원인: `workers/detail-shell-og.ts`는 Worker 변수가 있어야 동작하는데 Worker에 `NEXT_PUBLIC_SUPABASE_URL`·`NEXT_PUBLIC_SUPABASE_ANON_KEY`가 없다(CI는 빌드 환경에만 넣음). 켜면 기록 셸 요청마다 공유 Supabase를 조회하므로 부하를 함께 정해야 한다.
+33. **게임 전용 언어의 통합 검색이 그 언어 이름을 못 찾고, 결과가 한국어 패치 제목으로 나옴**('強打', '赤べこ', '痛击' 0건, 'Bash'는 'v0.98.2 핫픽스 패치 노트 …').
+    - https://scare-the-spire.flavono123.workers.dev/ja
+    - 원인 추정: 모든 언어가 `/generated/search-index.json` 하나를 쓰고, 게임 로케일별 이름·제목이 들어 있지 않다(미확인).
+34. **없는 페이지가 Next 기본 흰 화면이고 ko에서도 영어 문구, /en·/ja 탭 제목은 '슬서운 이야기'. 패치 경로는 헤더도 없는 빈 화면**.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/cards/nope ,
+      https://scare-the-spire.flavono123.workers.dev/patches/nope
+    - 원인: 직접 만든 not-found 페이지가 없고, patch Worker는 빈 404로 답한다. 묶음 2 뒤에는 한 단계짜리 없는 경로도 500 대신 이 화면을 보이므로 보일 일이 늘어난다.
+35. **AEONGLASS 몬스터 행동의 침체 카드 이미지 404**.
+    - https://scare-the-spire.flavono123.workers.dev/images/sts2/cards/wither.webp
+    - 원인: `src/components/codex/monster-move-visuals.tsx:1819`가 없는 파일명을 하드코딩한다(같은 파일 1805행은 `wither1.webp`).
+36. **쉘 페이지의 문의 링크에 `__id__` 자리표시자가 남음**(`/contact?from=%2Fhistory-course%2F__id__`, hydration 뒤에도 그대로).
+    - https://scare-the-spire.flavono123.workers.dev/history-course/not_valid
+    - 원인 미조사.
+37. **Supabase 장애 중 `patch:build`가 54분까지 늘어남**(CI 작업 한도 `timeout-minutes: 60` 근처). 장애 중 배포하면 시간 초과로 실패하거나 패치 페이지가 대체 데이터로 구워질 수 있다.
+    - https://scare-the-spire.flavono123.workers.dev/patches/2026-09-11
+    - 원인: `src/components/patches/patch-detail-page.tsx:843`의 쉘 패치 경로가 로케일마다 `getColorfulPhilosopherGalleryPosts`를 기다리는데 이 질의에 시간 제한이 없다.
+38. **링크 미리보기 방어 보강**(묶음 3의 링크 미리보기 잔여 작업에서 처리).
+    - https://scare-the-spire.flavono123.workers.dev/api/link-preview
+    - 포트 제한 없음, 192.0.0.0/24·TEST-NET 3개·`.internal` 미차단, 요청 수 제한 없음. 악의적인 128 KB 페이지에서 `readOpenGraph`의 정규식 비용이 제곱으로 늘어남(3초 타이머는 본문 읽기까지만 막음).
