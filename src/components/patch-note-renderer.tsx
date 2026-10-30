@@ -1380,6 +1380,8 @@ function extractPlainText(nodes: TextNode[]): string {
 
 // --- Render BBCode nodes with entity matching ---
 
+const PROSE_BOLD_CLASS = "font-bold text-foreground [-webkit-text-stroke:0.35px_currentColor]";
+
 function renderBBNodes(
   nodes: TextNode[],
   lookup: EntityLookup,
@@ -1406,6 +1408,16 @@ function renderBBNodes(
           <span key={key} className="rich-sine">
             {renderSineBBNodes(node.children, lookup, key, context)}
           </span>
+        );
+      }
+
+      // [b]: the Korean service font ships only a bold face, so weight alone
+      // changes nothing. Brighten the text and thicken the stroke instead.
+      if (node.tag === "b") {
+        return (
+          <strong key={key} className={PROSE_BOLD_CLASS}>
+            {renderBBNodes(node.children, lookup, key, context)}
+          </strong>
         );
       }
 
