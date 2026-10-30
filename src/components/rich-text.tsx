@@ -31,6 +31,7 @@ const EFFECT_CLASSES: Record<string, string> = {
   rainbow: "rich-rainbow",
   b: "font-bold",
   i: "italic",
+  s: "line-through",
 };
 
 // All recognized tags (color + effect)

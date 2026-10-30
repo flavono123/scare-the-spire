@@ -1843,6 +1843,27 @@ function isAsciiWordChar(char: string): boolean {
   return /^[a-z0-9_]$/i.test(char);
 }
 
+const EMPHASIS_TAG_RE = /\[(\/?)([bis])\]/g;
+const EMPTY_EMPHASIS_RE = /\[([bis])\]\[\/\1\]/g;
+
+/** Emphasis tags still open after `segment`, outermost first. */
+function openEmphasisAfter(segment: string, open: readonly string[]): string[] {
+  const next = [...open];
+  for (const [, closing, tag] of segment.matchAll(EMPHASIS_TAG_RE)) {
+    if (closing) next.pop();
+    else next.push(tag);
+  }
+  return next;
+}
+
+function withEmphasis(node: ReactNode, tags: readonly string[], key: string): ReactNode {
+  return tags.reduceRight<ReactNode>((child, tag, depth) => (
+    tag === "b"
+      ? <strong key={`${key}-${depth}`} className={PROSE_BOLD_CLASS}>{child}</strong>
+      : <span key={`${key}-${depth}`} className={EFFECT_CLASSES[tag]}>{child}</span>
+  ), node);
+}
+
 // --- Enrich a line of text (BBCode + markdown bold) ---
 
 function enrichLine(
@@ -1864,34 +1885,44 @@ function enrichLine(
       )
       : withNumberedAscensions;
   };
+  // Links are cut out before BBCode parsing, so emphasis that spans a link is
+  // closed before it, re-applied to it, and reopened after it.
+  const renderSegment = (segment: string, open: readonly string[], segmentKey: string) => {
+    if (!segment.replace(EMPHASIS_TAG_RE, "")) return [];
+    const opening = open.map((tag) => `[${tag}]`).join("");
+    const closing = openEmphasisAfter(segment, open).reverse().map((tag) => `[/${tag}]`).join("");
+    return renderBBNodes(
+      parseBBCode(`${opening}${wrapSegment(segment)}${closing}`.replace(EMPTY_EMPHASIS_RE, "")),
+      lookup,
+      segmentKey,
+      context,
+    );
+  };
   const parts: ReactNode[] = [];
   let lastIndex = 0;
   let matchIndex = 0;
+  let open: string[] = [];
 
   for (const match of text.matchAll(MARKDOWN_LINK_RE)) {
     const index = match.index ?? 0;
     if (index > lastIndex) {
-      parts.push(...renderBBNodes(
-        parseBBCode(wrapSegment(text.slice(lastIndex, index))),
-        lookup,
-        `${key}-text-${matchIndex}`,
-        context,
-      ));
+      const segment = text.slice(lastIndex, index);
+      parts.push(...renderSegment(segment, open, `${key}-text-${matchIndex}`));
+      open = openEmphasisAfter(segment, open);
     }
 
-    parts.push(renderMarkdownLink(`${key}-link-${matchIndex}`, match[1], match[2], context));
+    parts.push(withEmphasis(
+      renderMarkdownLink(`${key}-link-${matchIndex}`, match[1], match[2], context),
+      open,
+      `${key}-link-${matchIndex}`,
+    ));
     lastIndex = index + match[0].length;
     matchIndex += 1;
   }
 
   if (lastIndex > 0) {
     if (lastIndex < text.length) {
-      parts.push(...renderBBNodes(
-        parseBBCode(wrapSegment(text.slice(lastIndex))),
-        lookup,
-        `${key}-tail`,
-        context,
-      ));
+      parts.push(...renderSegment(text.slice(lastIndex), open, `${key}-tail`));
     }
     return parts;
   }
