@@ -42,6 +42,12 @@ export const PATCH_TYPE_TOKENS: Record<PatchType, ChipToken> = {
     variant: "ghost",
     className: "bg-zinc-950 text-zinc-300 border-zinc-600",
   },
+  gambit: {
+    src: "/images/sts2/powers/doom_power.webp",
+    alt: { ko: "종말", en: "Doom" },
+    variant: "ghost",
+    className: "bg-zinc-950 text-zinc-300 border-zinc-600",
+  },
 };
 
 export const PATCH_BALANCE_TOKEN: ChipToken = {

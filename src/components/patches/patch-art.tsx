@@ -2,13 +2,13 @@ import Image from "@/components/ui/static-image";
 import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import { cn } from "@/lib/utils";
 
-export type PatchArtTone = "normal" | "building" | "watching" | "wither";
+export type PatchArtTone = "normal" | "building" | "watching" | "shell";
 
 const PATCH_ART_TONE_CLASS: Record<PatchArtTone, string> = {
   normal: "h-full w-full object-cover",
   building: "h-full w-full object-cover grayscale opacity-45 saturate-0",
   watching: "h-full w-full object-cover opacity-75 sepia saturate-150",
-  wither: "h-full w-full object-cover",
+  shell: "h-full w-full object-cover",
 };
 
 export function PatchArtPreview({

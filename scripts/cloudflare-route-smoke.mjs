@@ -68,6 +68,12 @@ function parseArgs(argv) {
   return options;
 }
 
+// Shell patches show a borrowed card line instead of the version and summary.
+const SHELL_PATCH_BODY = {
+  wither: { ko: ["시듦", "금요일에 패치가"], en: ["Wither", "On Friday"] },
+  gambit: { ko: ["포석", "시간을 2주 벌었습니다"], en: ["The Gambit", "Bought 2 weeks of time"] },
+};
+
 function latestPatch() {
   const patches = JSON.parse(readFileSync("data/sts2-patches.json", "utf8"));
   patches.sort((left, right) => right.date.localeCompare(left.date));
@@ -288,8 +294,8 @@ function patchCases() {
       path: `/patches/${latest.version}`,
       headers: { Accept: "text/html" },
       contentType: "text/html",
-      bodyIncludes: latest.type === "wither"
-        ? ["시듦", "금요일에 패치가", "application/ld+json"]
+      bodyIncludes: SHELL_PATCH_BODY[latest.type]
+        ? [...SHELL_PATCH_BODY[latest.type].ko, "application/ld+json"]
         : [
             `슬레이 더 스파이어 2 v${latest.version}`,
             latest.summaryKo,
@@ -301,8 +307,8 @@ function patchCases() {
       path: `/en/patches/${latest.version}`,
       headers: { Accept: "text/html" },
       contentType: "text/html",
-      bodyIncludes: latest.type === "wither"
-        ? ["Wither", "On Friday", "application/ld+json"]
+      bodyIncludes: SHELL_PATCH_BODY[latest.type]
+        ? [...SHELL_PATCH_BODY[latest.type].en, "application/ld+json"]
         : [
             `Slay the Spire 2 v${latest.version}`,
             latest.summary,

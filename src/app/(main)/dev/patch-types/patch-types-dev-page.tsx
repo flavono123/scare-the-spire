@@ -65,6 +65,12 @@ const PATCH_TYPES: readonly {
     labelEn: "Wither",
     desc: "시듦 카드 제목·아트. 칩은 제거된 감쇠. 검정과 그레이스케일.",
   },
+  {
+    type: "gambit",
+    labelKo: "포석",
+    labelEn: "The Gambit",
+    desc: "포석 카드 제목·아트와 포석 파워 토큰. 칩은 종말. 토론 reel이 변화 reel보다 먼저.",
+  },
 ];
 
 const VISUAL_STAGES = [
@@ -179,7 +185,7 @@ export default async function PatchesDevPage() {
       <section className="space-y-4">
         <div className="flex items-center justify-between border-b border-border pb-2">
           <h2 className="text-lg font-bold text-foreground">1. 패치 종류 (PatchType) &amp; 칩 뱃지</h2>
-          <span className="text-xs text-muted-foreground">5가지 PatchType 지원</span>
+          <span className="text-xs text-muted-foreground">6가지 PatchType 지원</span>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -335,7 +341,7 @@ export default async function PatchesDevPage() {
                 <RichText text={WITHER_PATCH_HERO.ko} />
               </div>
               <p className={`mt-0.5 ${WITHER_PATCH_DATE_CLASS}`}>2026-09-11</p>
-              {backstabArt && <PatchArtPreview art={backstabArt} tone="wither" />}
+              {backstabArt && <PatchArtPreview art={backstabArt} tone="shell" />}
             </div>
           </div>
 

@@ -29,16 +29,15 @@ import { getColorfulPhilosopherGalleryPosts } from "@/lib/colorful-philosophers-
 import { getRecentTransfigurePosts } from "@/lib/transfigure-data";
 import {
   WITHER_PATCH_DATE_CLASS,
-  WITHER_PATCH_HERO,
   WITHER_PATCH_HERO_CLASS,
   WITHER_PATCH_TITLE_CLASS,
-  WITHER_TITLE_TOKEN,
 } from "@/lib/wither-patch-shell";
+import { getPatchShell } from "@/lib/patch-shells";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { getPatchVersionLabel, isPatchDraft, isWitherPatch } from "@/lib/sts2-patch-labels";
+import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
@@ -90,6 +89,7 @@ const PATCH_COPY: Record<ServiceLocale, {
       stable: "안정",
       hotfix: "핫픽스",
       wither: "시듦",
+      gambit: "포석",
     },
   },
   en: {
@@ -109,15 +109,16 @@ const PATCH_COPY: Record<ServiceLocale, {
       stable: "Stable",
       hotfix: "Hotfix",
       wither: "Wither",
+      gambit: "The Gambit",
     },
   },
 };
 
-function PatchArtHero({ art, wither = false }: { art: ResolvedPatchArt; wither?: boolean }) {
+function PatchArtHero({ art, shell = false }: { art: ResolvedPatchArt; shell?: boolean }) {
   return (
     <div className={cn(
       "mt-6 aspect-[16/7] overflow-hidden rounded-lg bg-black",
-      wither ? "border border-zinc-700" : "border border-border/70",
+      shell ? "border border-zinc-700" : "border border-border/70",
     )}>
       <Image
         src={art.imageUrl}
@@ -766,7 +767,7 @@ export function getPatchSeoTitle(
   serviceLocale: ServiceLocale,
 ): string {
   const version = getPatchVersionLabel(patch, serviceLocale);
-  if (isWitherPatch(patch)) return version;
+  if (getPatchShell(patch)) return version;
 
   return serviceMessages[serviceLocale].patchNotes.detailTitle
     .replace("{version}", version)
@@ -787,7 +788,7 @@ export async function getPatchDetailMetadata({
   const title = getPatchSeoTitle(patch, serviceLocale);
   const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
   const description = truncateOgDescription(`${title}. ${summary}`);
-  const patchArt = isWitherPatch(patch)
+  const patchArt = getPatchShell(patch)
     ? resolvePatchArt(patch, new Map(), serviceLocale)
     : resolvePatchArt(
         patch,
@@ -836,7 +837,8 @@ export async function PatchDetailPage({
   const patch = patches.find((p) => p.version === version);
   if (!patch) notFound();
 
-  if (isWitherPatch(patch)) {
+  const shell = getPatchShell(patch);
+  if (shell) {
     const [patchBackstabCopy, debateCopy, entities, initialTransfigures, colorfulPhilosopherPosts] = await Promise.all([
       getPatchBackstabGameCopy(gameLocale),
       getDebateGameCopy(gameLocale),
@@ -850,6 +852,17 @@ export async function PatchDetailPage({
     const idx = sortedPatches.findIndex((p) => p.id === patch.id);
     const prevPatch = idx > 0 ? sortedPatches[idx - 1] : null;
     const nextPatch = idx < sortedPatches.length - 1 ? sortedPatches[idx + 1] : null;
+    const debateSection = (
+      <BackstabColorfulPhilosophersSection
+        entityMap={entityMap}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+        cta={debateCopy.invite}
+        hero={debateCopy.reelHero}
+        initialPosts={colorfulPhilosopherPosts}
+        staticHoverPreviews={staticHoverPreviews}
+      />
+    );
 
     return (
       <div className={TOYBOX_WIDE_SHELL_CLASS}>
@@ -864,11 +877,11 @@ export async function PatchDetailPage({
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-2">
               <Image
-                src={WITHER_TITLE_TOKEN.src}
-                alt={WITHER_TITLE_TOKEN.alt[serviceLocale]}
+                src={shell.titleToken.src}
+                alt={shell.titleToken.alt[serviceLocale]}
                 width={28}
                 height={28}
-                className="h-7 w-7 shrink-0 object-contain grayscale"
+                className={cn("h-7 w-7 shrink-0 object-contain", shell.titleTokenClassName)}
               />
               <h1 className={`${WITHER_PATCH_TITLE_CLASS} text-2xl`}>
                 {serviceLocale === "ko" ? patch.titleKo : patch.title}
@@ -881,15 +894,16 @@ export async function PatchDetailPage({
             />
           </div>
           <div className={`mt-3 text-base leading-relaxed ${WITHER_PATCH_HERO_CLASS}`}>
-            <RichText text={WITHER_PATCH_HERO[serviceLocale]} />
+            <RichText text={shell.hero[serviceLocale]} />
           </div>
           <div className={`mt-1 flex items-center gap-3 ${WITHER_PATCH_DATE_CLASS}`}>
             <span>{patch.date}</span>
           </div>
         </div>
 
-        <PatchArtHero art={patchArt} wither />
+        <PatchArtHero art={patchArt} shell />
 
+        {shell.debateFirst && debateSection}
         {/* Transfigure service exposure & creation prompt */}
         <BackstabTransfigureSection
           entities={entities}
@@ -901,16 +915,7 @@ export async function PatchDetailPage({
           transfigureCta={patchBackstabCopy.transfigureCta}
           initialPosts={initialTransfigures}
         />
-
-        <BackstabColorfulPhilosophersSection
-          entityMap={entityMap}
-          serviceLocale={serviceLocale}
-          gameLocale={gameLocale}
-          cta={debateCopy.invite}
-          hero={debateCopy.reelHero}
-          initialPosts={colorfulPhilosopherPosts}
-          staticHoverPreviews={staticHoverPreviews}
-        />
+        {!shell.debateFirst && debateSection}
 
         <section id="comments" className="mt-8 rounded-lg border border-border bg-card/20 p-4">
           <h2 className="mb-3 text-sm font-bold text-foreground">{copy.comments}</h2>
