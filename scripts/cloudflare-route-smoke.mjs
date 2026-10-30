@@ -263,6 +263,7 @@ function mainCases() {
       statuses: [404],
       contentType: "text/html",
       owner: "not-found",
+      vary: "rsc",
       bodyIncludes: "<html lang=\"ko\"",
     },
     {
@@ -281,6 +282,7 @@ function mainCases() {
       statuses: [404],
       contentType: "text/x-component",
       owner: "not-found",
+      vary: "rsc",
     },
     {
       name: "Link preview rejects a private URL",
@@ -446,6 +448,10 @@ function validateCase(testCase, response, body) {
   const missingBodyPart = requiredBodyParts.find((part) => !body.includes(part));
   if (missingBodyPart) {
     return `response body is missing ${JSON.stringify(missingBodyPart)}`;
+  }
+
+  if (testCase.vary && !response.headers.get("vary")?.toLowerCase().includes(testCase.vary)) {
+    return `expected vary to include ${testCase.vary}, got ${response.headers.get("vary") || "missing"}`;
   }
 
   if (testCase.allow && response.headers.get("allow") !== testCase.allow) {

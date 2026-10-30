@@ -406,6 +406,7 @@ async function serveStaticNotFound(request: Request, env: Env, url: URL): Promis
   const isHead = request.method === "HEAD";
   const headers = new Headers({
     "Cache-Control": NOT_FOUND_CACHE_CONTROL,
+    Vary: STATIC_PAGE_VARY,
     "x-cf-static-page": "not-found",
   });
   const asset = await fetchStaticPageAsset(
