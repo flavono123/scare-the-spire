@@ -79,6 +79,10 @@ jobs:
                   data/sts2-patch-notes/*|data/sts2-patches.json|data/sts2-patch-local-resources.json|src/components/patch-note-renderer.tsx|src/components/patches/*|src/app/\(main\)/patches/*|src/app/\[gameLocale\]/patches/*|src/lib/sts2-patch-*.ts|scripts/build-patch-worker.tsx|scripts/dev-patch-proxy.mjs|workers/patch-worker.ts|wrangler.patch.jsonc)
                     patch_changed=true
                     ;;
+                  data/sts2-neowsletters.json|data/sts2-neowsletters/*|public/images/neowsletters/*)
+                    main_changed=true
+                    patch_changed=true
+                    ;;
                   data/sts2/*|data/sts2-changes.json|data/sts2-entity-versions.json|public/images/sts2/*|src/app/\(codex\)/*|src/app/\[gameLocale\]/compendium/*|src/components/codex/*|src/lib/codex-*.ts|src/lib/compendium-*.ts|scripts/generate-static-api-data.ts)
                     main_changed=true
                     patch_after_main=true
