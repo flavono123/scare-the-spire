@@ -1,6 +1,6 @@
 ---
 name: neowsletter
-description: Turn Mega Crit Neowsletter issues into the third 슬서운변경 tab, with Korean claim notes, Codex links, and per-claim comments. Use for 니오우스레터, Neowsletter, newsletter backfill, or a month such as 2026-08.
+description: Turn Mega Crit Neowsletter issues into the third 슬서운변경 tab, with Korean claim notes, Codex links, and per-claim comments, then ship it. Use for 니오우스레터, Neowsletter, /neowsletter, a Steam "The Neowsletter" news link (app 2868840 or the STS1 cross-post on 646570), newsletter backfill, or a month such as 2026-08.
 ---
 
 # neowsletter
@@ -21,7 +21,11 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
 - The letter-wide comment block matches a patch detail comment section: heading `댓글` / `Comments`, not a separate “전체 댓글” title.
 - Include the map-drawing, Connections, and community fan-art sections. Save those images under `public/images/neowsletters/{id}/`.
 - Compress every saved image before commit. See **Image compression** below. Do not resize in the Worker.
-- Record both originals: Mega Crit `sourceUrl` and the real Steam store `steamUrl` (`/news/app/2868840/view/{id}`). Do not build that URL from an API `gid`.
+- Record both originals: Mega Crit `sourceUrl` and the real Steam store `steamUrl` (`/news/app/2868840/view/{id}`). Do not build that URL from an API `gid`. The `{id}` is the announcement gid from `https://store.steampowered.com/events/ajaxgetpartnereventspageable/?clan_accountid=0&appid=2868840&offset=0&count=3&l=english` (`events[].announcement_body.gid`). A link the user pastes may be the STS1 cross-post (`/news/app/646570/...`); map it to the STS2 post by title.
+- The Mega Crit sitemap can lag the post by a day. When the issue is missing there, try `https://megacrit.com/news/{YYYY}-{M}-{D}-neowsletter-issue-{N}/` with the Pacific publish date and accept it only when the page `<title>` is the issue title.
+- The patch renderer strips any `[WORD]` as a tag. Write the source's `[REDACTED]` as `REDACTED`, and never put other text in square brackets outside a link.
+- When an image is byte-identical to one already in an earlier issue (`cmp`), such as last month's Spire Spotting silhouette, point at the earlier path instead of saving a copy. Each copy costs an asset slot.
+- Acts use official names: `[gold:act]과성장[/gold]`, `[gold:act]지하 선착장[/gold]`. Look names up in `data/sts2/{kor,eng}/*.json` by id before writing.
 - Each claim has one comment affordance: Lucide `MessageCircle` with the index like/comment classes, grey until hover, then gold. An empty claim stays collapsed. A claim that already has comments opens by default, shows the count beside the label, and can still be collapsed. Opening it shows a one-line composer. Written comments sit in their own inset thread, still one line, with token, nickname, time, like, and delete on the right. Thread key is `neowsletter:{id}:{claimId}`. The letter-wide thread is `neowsletter:{id}:page`.
 - Keep a `[gold]` tag inside its sentence. Do not break the line to move a relic or card out of the paragraph. Static hovers are `<template>` previews, not slabs rendered in the line. Do not use the low-HP character hover on these pages.
 - Do not wrap asker names or sentences in `**bold**`. The patch renderer paints that as a gold entity. Use `###` for a subsection title.
@@ -49,6 +53,17 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
 5. Keep the third tab label `니오우스레터` / `Neowsletter` and the routes `/patches/neowsletters` and `/patches/neowsletters/{id}`.
 6. Rebuild patch HTML (`pnpm patch:html`) and copy assets (`pnpm patch:assets`) so `/patches` serves the new tab from the patch Worker.
 7. Verify the Korean list, the Korean issue, and `/en/patches/neowsletters/{id}`: cover thumbnail, `spire-blue` source links with icons and arrows, gold names that stay inside the sentence, a comment control under each claim, and an open control with a count only where comments already exist.
+8. Ship it (see **Release** below).
+
+## Release
+
+A new issue ships as a `docs/RELEASE_PROCESS.md` §4 urgent release: speed first, no full smoke or feature QA. Local `main` is pushed whole, so what else rides along is the user's call.
+
+1. Commit the data, both notes, and the images together, with `Feature:` / `Expect:` / `QA:` lines naming `/patches/neowsletters/{id}` and `/en/patches/neowsletters/{id}`.
+2. `pnpm patch:test`, then `pnpm patch:build`. `.patch-worker/` is build output and is not committed.
+3. Serve `.patch-worker/assets` statically (for example `python3 -m http.server 8788 --directory .patch-worker/assets`) and open the list and the issue. Check in the built HTML that every claim has a thread key (`neowsletter:{id}:`), no `[gold` text is left raw, and every `/images/neowsletters/{id}/` image loads. Missing `/images/sts2/ui/...` icons are main Worker assets and are expected on this static server.
+4. If a commit carries a migration that is not applied yet, stop and ask (§4 step 4). Otherwise `git push origin main`. The pre-push hook runs `tsc`. `.github/workflows/cloudflare-workers.yml` deploys.
+5. If the pushed range includes commits that were not QA'd, add it to UNRELEASED.md "긴급 배포로 QA 없이 나간 범위".
 
 ## Image compression
 
