@@ -14,6 +14,8 @@
 
 ## 긴급 배포로 QA 없이 나간 범위
 
+- 2026-10-30 패치 Worker 긴급 배포(`3ba9e60d`, 그 뒤 `e71a0e5d`·`ccf145ca`·`9aeae461`·`ec890adf`)로 로컬 `main` 전체가 함께 나감: search-canonical-policy, static-compendium-detail, rendering-fallbacks, css-build-guard, testbed-build-record, slim-entity-props. 묶음 1은 사용자 검수 통과(패치 제목 수정 포함), 2b는 자동 QA 통과 뒤 사용자 검수 중 배포. 3절의 정기 배포 기능 QA는 다음 정기 배포에서 한다. 이후 범위는 기준점 `411543ff`를 유지한다.
+
 ## 기능 기대치
 
 ### search-canonical-policy
