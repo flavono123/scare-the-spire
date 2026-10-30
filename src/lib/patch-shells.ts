@@ -16,6 +16,8 @@ export interface PatchShell {
   searchImageUrl: string;
   /** Put the debate reel above the transfigure reel. */
   debateFirst: boolean;
+  /** A 슬서운이야기 channel playlist embedded under the transfigure reel. */
+  youtubePlaylist?: { id: string; title: string };
 }
 
 const PATCH_SHELLS: Record<ShellPatchType, PatchShell> = {
@@ -32,6 +34,7 @@ const PATCH_SHELLS: Record<ShellPatchType, PatchShell> = {
     hero: GAMBIT_PATCH_HERO,
     searchImageUrl: "/images/sts2/cards/the_gambit.webp",
     debateFirst: true,
+    youtubePlaylist: { id: "PLSyF4zC6ClQw", title: "패치노트" },
   },
 };
 

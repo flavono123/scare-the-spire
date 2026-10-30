@@ -25,6 +25,7 @@ import { patchSectionAnchorIds } from "@/lib/patch-section-anchors";
 import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
 import { BackstabTransfigureSection } from "@/components/patches/backstab-transfigure-section";
 import { BackstabColorfulPhilosophersSection } from "@/components/patches/backstab-colorful-philosophers-section";
+import { PatchYoutubePlaylistSection } from "@/components/patches/patch-youtube-playlist-section";
 import { getColorfulPhilosopherGalleryPosts } from "@/lib/colorful-philosophers-gallery";
 import { getRecentTransfigurePosts } from "@/lib/transfigure-data";
 import {
@@ -915,6 +916,13 @@ export async function PatchDetailPage({
           transfigureCta={patchBackstabCopy.transfigureCta}
           initialPosts={initialTransfigures}
         />
+        {shell.youtubePlaylist && (
+          <PatchYoutubePlaylistSection
+            playlistId={shell.youtubePlaylist.id}
+            playlistTitle={shell.youtubePlaylist.title}
+            serviceLocale={serviceLocale}
+          />
+        )}
         {!shell.debateFirst && debateSection}
 
         <section id="comments" className="mt-8 rounded-lg border border-border bg-card/20 p-4">
