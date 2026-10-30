@@ -9,7 +9,8 @@
 import { copyFileSync, cpSync, readdirSync, rmSync, statSync } from "node:fs";
 import path from "node:path";
 
-import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
+import { BUILD_RECORD_FILE } from "./build-record.mjs";
+import { CLOUDFLARE_ASSETS_DIR, CLOUDFLARE_BUILD_DIR } from "./cloudflare-assets-dir.mjs";
 import {
   assertUnusedPublicSourcesExist,
   publicAssetExcludeReason,
@@ -39,6 +40,10 @@ for (const [label, target, isDirectory] of [
 }
 
 assertUnusedPublicSourcesExist(publicDir);
+
+// The record describes the assets replaced below. cf:build writes a new one when
+// it finishes; a cf:preview (dev-tools) build leaves none, so --skip-build refuses it.
+rmSync(path.join(CLOUDFLARE_BUILD_DIR, BUILD_RECORD_FILE), { force: true });
 
 const excludedByRule = new Map();
 rmSync(CLOUDFLARE_ASSETS_DIR, { recursive: true, force: true });
