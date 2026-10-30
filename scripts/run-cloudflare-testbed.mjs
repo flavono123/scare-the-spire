@@ -211,7 +211,12 @@ function runSuites(origin, { attempts = 1, retryDelayMs = 0 } = {}) {
     "browser behavior and mobile QA",
     "pnpm",
     ["qa:cf:testbed"],
-    { ...process.env, BASE_URL: origin, CF_TESTBED_ORIGIN: origin },
+    {
+      ...process.env,
+      BASE_URL: origin,
+      CF_TESTBED_ORIGIN: origin,
+      PLAYWRIGHT_BLOCK_SUPABASE: "1",
+    },
   );
 }
 

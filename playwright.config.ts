@@ -26,6 +26,12 @@ export default defineConfig({
   use: {
     baseURL: process.env.BASE_URL ?? "http://localhost:3000",
     headless: true,
+    // Testbed and production share one Supabase project. A suite that does not
+    // test Supabase-backed UI keeps its page loads off it. Unlike page.route(),
+    // blocking at DNS leaves the HTTP cache on.
+    ...(process.env.PLAYWRIGHT_BLOCK_SUPABASE === "1"
+      ? { launchOptions: { args: ["--host-resolver-rules=MAP *.supabase.co ~NOTFOUND"] } }
+      : {}),
   },
   // Do not start dev server — assume it's already running
   retries: 0,
