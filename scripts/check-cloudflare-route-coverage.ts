@@ -3,11 +3,24 @@
  * built static asset directory behind a local ASSETS binding, and fails when a
  * public route would need a renderer. Each route must resolve to a static page,
  * the patch Worker, the same redirect its prerender returned, or (dev pages
- * and the not-found page) the static 404.
+ * and the not-found page) the static 404. Also fails when a Compendium data
+ * chunk is not uploaded, or a game-only locale's list modal URL is not a static
+ * page: neither has a prerendered route of its own to catch it.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
+import {
+  COMPENDIUM_DATA_CHUNK_KEYS,
+  compendiumDataChunkPath,
+  type CompendiumDataChunkName,
+} from "../src/lib/compendium-data-chunks";
+import {
+  buildCompendiumEntryHref,
+  COMPENDIUM_RESOURCE_LINK_TYPES,
+  getGameOnlyCompendiumDetailFallbackHref,
+} from "../src/lib/compendium-resource-links";
+import { GAME_LOCALES, pathPrefixForGameLocale } from "../src/lib/i18n";
 import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
 
 const appDir = path.join(".next", "server", "app");
@@ -24,6 +37,12 @@ interface PrerenderMeta {
 }
 
 type Outcome = "static" | "patch" | "redirect" | "not-found";
+
+// Korean and English publish detail pages; every other game locale opens an
+// entry as a modal on the list page.
+const DIRECT_DETAIL_LOCALES = new Set(["kor", "eng"]);
+const STS1_LISTS = ["cards", "characters", "potions", "powers", "relics"];
+const MODAL_PROBE_ID = "coverage-probe";
 
 function walk(dir: string, files: string[] = []): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -67,6 +86,33 @@ function readMeta(htmlFile: string): PrerenderMeta {
 function routePathForHtml(htmlFile: string): string {
   const relative = path.relative(appDir, htmlFile).split(path.sep).join("/").replace(/\.html$/, "");
   return relative === "index" ? "/" : `/${relative}`;
+}
+
+function missingCompendiumDataChunks(): string[] {
+  const chunks = Object.keys(COMPENDIUM_DATA_CHUNK_KEYS) as CompendiumDataChunkName[];
+  const paths = new Set(GAME_LOCALES.flatMap((gameLocale) => (
+    chunks.map((chunk) => compendiumDataChunkPath(gameLocale, chunk))
+  )));
+  if (paths.size === 0) throw new Error("No Compendium data chunks to check.");
+  return [...paths].filter((chunkPath) => !assetFile(chunkPath));
+}
+
+/** The URLs list tiles, the language menu, and locale redirects use on game-only locales. */
+function gameOnlyModalHrefs(): string[] {
+  const hrefs = new Set<string>();
+  for (const gameLocale of GAME_LOCALES) {
+    if (DIRECT_DETAIL_LOCALES.has(gameLocale)) continue;
+    for (const type of COMPENDIUM_RESOURCE_LINK_TYPES) {
+      hrefs.add(buildCompendiumEntryHref(type, MODAL_PROBE_ID, gameLocale));
+    }
+    for (const list of STS1_LISTS) {
+      const detail = `${pathPrefixForGameLocale(gameLocale)}/compendium/sts1/${list}/${MODAL_PROBE_ID}`;
+      const href = getGameOnlyCompendiumDetailFallbackHref(detail);
+      if (!href) throw new Error(`No list fallback for ${detail}`);
+      hrefs.add(href);
+    }
+  }
+  return [...hrefs];
 }
 
 async function main() {
@@ -152,9 +198,29 @@ async function main() {
     }
   }
 
+  const modalHrefs = gameOnlyModalHrefs();
+  for (const href of modalHrefs) {
+    for (const rsc of [false, true]) {
+      const headers: Record<string, string> = rsc ? { RSC: "1" } : { Accept: "text/html" };
+      const response: Response = await mainWorker.fetch(new Request(`${origin}${href}`, { headers }), env, ctx);
+      await response.body?.cancel();
+      const owner = response.headers.get("x-cf-static-page");
+      if (response.status !== 200 || owner !== "compendium") {
+        failures.push(
+          `${href} (${rsc ? "rsc" : "document"}): list modal URL, Worker ${response.status}`
+          + `${owner ? ` x-cf-static-page=${owner}` : ""}`,
+        );
+      }
+    }
+  }
+
+  const missingChunks = missingCompendiumDataChunks();
+  failures.push(...missingChunks.map((chunkPath) => `${chunkPath}: Compendium data chunk is not in the upload`));
+
   console.log(
     `Cloudflare route coverage: ${htmlFiles.length} prerendered routes x document/RSC · `
-    + `static=${counts.static} patch=${counts.patch} redirect=${counts.redirect} not-found=${counts["not-found"]}`,
+    + `static=${counts.static} patch=${counts.patch} redirect=${counts.redirect} not-found=${counts["not-found"]} · `
+    + `${modalHrefs.length} list modal URLs x document/RSC`,
   );
   if (failures.length > 0) {
     console.error(`${failures.length} prerendered request(s) need a renderer or changed behavior:`);

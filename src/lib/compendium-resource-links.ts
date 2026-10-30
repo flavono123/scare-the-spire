@@ -44,6 +44,10 @@ const COMPENDIUM_RESOURCE_LINKS: Record<CompendiumResourceLinkType, LinkConfig> 
   ascension: { path: "/compendium/ascensions", detailPath: "/compendium/ascensions", param: "ascension" },
 };
 
+export const COMPENDIUM_RESOURCE_LINK_TYPES = Object.keys(
+  COMPENDIUM_RESOURCE_LINKS,
+) as CompendiumResourceLinkType[];
+
 const COMPENDIUM_SELECTOR_PARAMS = new Set(
   Object.values(COMPENDIUM_RESOURCE_LINKS).map(({ param }) => param),
 );
