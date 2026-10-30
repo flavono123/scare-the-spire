@@ -91,7 +91,7 @@
 - QA: `/patches/neowsletters/2024-10`, `/patches/neowsletters/2025-02`, `/patches/neowsletters/2026-04`, `/en/patches/neowsletters/2026-07`, `pnpm tsx scripts/neowsletter-anchors.spec.ts`
 
 ### opennext-exit (worktree, 미병합)
-- Feature: main Worker가 정적 전용이 된다(런타임 Next/OpenNext 없음, gzip 16.85 KiB). `/decisions-decisions`·`/this-or-that/tournament` 인덱스(14 로케일)를 정적 페이지로 서빙하고, worldcup 인덱스 308·`/dev/pagestorm-editor` 307·`/ko`·`/kor` 308·trailing slash/`//` 308·`/api/link-preview`를 Worker가 예전 응답대로 처리한다. 매칭되지 않는 경로는 Next가 prerender한 not-found 페이지(HTML/RSC, 404, `x-cf-static-page: not-found`)와 `cf-static-404` 로그. 정적 경로의 GET/HEAD 외 메서드는 405. 빌드는 `next build` + `collect-cf-assets.mjs` + `wrangler deploy`. 정적 asset은 닿지 않는 `/_next/static` chunk 64개와 서빙되지 않는 public 파일 53개를 업로드에서 빼고, 낡은 Ancient VFX 텍스처 9개를 지워 18,467개(예산 19,500, 한도 20,000, 예산까지 1,033 남음). STS1 glyph metrics는 페이지 로케일 pack 하나만 받고, 구 STS2 한국어 표는 kor 게임 표를 읽는다(클라이언트 중복 제거 merge).
+- Feature: main Worker가 정적 전용이 된다(런타임 Next/OpenNext 없음, gzip 약 17 KiB). `/decisions-decisions`·`/this-or-that/tournament` 인덱스(14 로케일)를 정적 페이지로 서빙하고, worldcup 인덱스 308·`/dev/pagestorm-editor` 307·`/ko`·`/kor` 308·trailing slash/`//` 308·`/api/link-preview`를 Worker가 예전 응답대로 처리한다. 매칭되지 않는 경로는 Next가 prerender한 not-found 페이지(HTML/RSC, 404, `x-cf-static-page: not-found`)와 `cf-static-404` 로그. 정적 경로의 GET/HEAD 외 메서드는 405. 빌드는 `next build` + `collect-cf-assets.mjs` + `wrangler deploy`. 정적 asset은 닿지 않는 `/_next/static` chunk 64개와 서빙되지 않는 public 파일 53개를 업로드에서 빼고, 낡은 Ancient VFX 텍스처 9개를 지워 18,484개(예산 19,500, 한도 20,000, 예산까지 1,016 남음). STS1 glyph metrics는 페이지 로케일 pack 하나만 받고, 구 STS2 한국어 표는 kor 게임 표를 읽는다(클라이언트 중복 제거 merge).
 - Expect: 화면 변화 없음. STS1 페이지·pagestorm STS1 호버의 글자 렌더 동일. `/does-not-exist`처럼 한 단계짜리 없는 경로가 500 대신 404 페이지. worldcup 인덱스·`/ko` 리다이렉트 Location 동일(RSC 요청은 `_rsc` 쿼리 유지). 링크 미리보기 동작 동일(리다이렉트 중간 단계도 공개 URL만 따라감).
 - 의도한 응답 차이(OpenNext 대비, 실제 링크는 영향 없음):
   - 렌더러가 요청 시 그리던 비정규 파라미터가 404: 모르는 게임 로케일(`/xx/decisions-decisions`), `.`·`%`가 든 상세 ID(`/transfigure/zz.review`). 게임 로케일 접두사의 대소문자 변형(`/EN/...`, `/En/this-or-that/tournament`)은 소문자 경로로 308(전에는 200 또는 500).
@@ -99,7 +99,15 @@
   - GET/HEAD 외 메서드: 있는 정적 페이지는 405, 없는 상세(`/compendium/cards/<없는 id>`)는 GET처럼 404.
   - 정적 페이지 응답에 Next와 같은 `Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch`.
 - 의도한 차이(testbed 한정): OpenNext는 `.env*`를 `next-env.mjs`로 Worker에 실어서 로컬에서 만든 testbed Worker에 `.env.local`의 서버 키까지 들어갔다. 정적 Worker 번들에는 어떤 `.env` 값도 없다(`SUPABASE_SECRET_KEY`·`SUPABASE_ACCESS_TOKEN`·`SUPABASE_DB_PASSWORD` 값 검색 0건).
-- 확인 필요: 기록 셸 OG(`workers/detail-shell-og.ts`)는 Worker 변수가 있어야 동작하는데 운영·testbed Worker의 binding은 `ASSETS`·`PATCH_WORKER`뿐이다. 그래서 정적 Worker에서는 기록 셸의 제목·설명·이미지가 인덱스 기본값이고 canonical·hreflang·og:url만 붙는다. CI 빌드에는 `.env` 파일이 없어 운영도 이미 같은 상태로 보이지만, 2026-10-31에 Supabase가 응답하지 않아 실제 기록으로 확인하지 못했다. 확인할 곳: https://scare-the-spire.flavono123.workers.dev/this-or-that/c23e2302-a8da-473d-8205-5078c5aba49e
+- 기록 셸 OG: 운영·testbed 모두 Worker 변수가 없어 제목·설명·이미지가 목록 기본값이고 canonical·hreflang·og:url만 기록 주소다. 배포 전부터 같은 상태라 이 묶음의 회귀가 아니다(`tasks/010` #32).
+- 의도한 응답 차이(병합 QA에서 추가, 실제 링크는 영향 없음):
+  - 개발 전용 경로: `/api/dev/*`의 JSON 404와 `/dev/admin` RSC 200이 prerender된 404 페이지로 바뀜.
+  - 없는 경로의 `.rsc` 문서 요청(`/compendium/cards/bash.rsc`)은 RSC 404가 HTML 404로 바뀜.
+  - 외부 URL을 준 `/_next/image`는 `Sec-Fetch-Dest`가 없거나 document면 403 `Blocked`(Cloudflare 계층으로 추정), image면 404 페이지.
+  - `/_cf_static_pages/404`가 다른 `/_cf_static_pages/*`처럼 정적 asset으로 직접 열림(운영은 404).
+- 알려진 차이(병합 QA): STS1 카드 목록(canvas 약 3,300개)의 첫 언어 전환이 글리프 묶음 chunk를 하나 더 받아 운영보다 0.2~0.5초 늦음. 끝난 화면과 canvas 픽셀은 같음.
+- 첫 운영 배포 뒤 되돌릴 정상 버전(2026-10-31 기준, push 직전 다시 확인): main Worker `30c33e29-04b2-4fb5-8617-371ff079936e`, patch Worker `ac131df6-0512-4c8f-ab33-d9fe8eed9c5a`. 절차는 `docs/DEPLOY.md` 롤백.
+- 후속 수정(묶음 2 QA): 404 페이지 응답에 정적 페이지와 같은 `Vary`를 붙임(같은 URL이 HTML과 RSC 404를 함께 내므로). `cf:smoke`가 확인.
 - 병합으로 맞춘 곳: 빌드 기록은 `.cloudflare/build-record.json`에 남고 `collect-cf-assets.mjs`가 asset을 바꿀 때 지운다(`cf:preview` 산출물이 `--skip-build`를 통과하지 못하게). `cf:assets`가 Compendium data chunk 141개와 게임 전용 로케일 목록 모달 URL 252개도 확인한다.
 - 이번 배포 주의: RELEASE_PROCESS 5단계의 배포 전 프로덕션 `cf:smoke --scope main`은 이 브랜치가 추가한 다음 케이스가 옛 앱에서 실패한다(배포 뒤에만 통과). `/decisions-decisions`·`/en/decisions-decisions`·`/this-or-that/tournament`·`/zh/this-or-that/tournament` document/RSC(옛 앱은 `x-cf-static-page` 없음), "Worldcup index redirect RSC"(옛 앱 200), "Not-found document"·"Not-found RSC"(옛 앱 500), "Locale not-found document"(owner 헤더 없음), "POST to a static page". 배포 전 판정은 원격 testbed의 `cf:smoke --scope all`로 하고, 프로덕션 smoke는 배포 뒤에 본다. POST 케이스는 정적 페이지에 본문 없는 요청 하나라 부작용이 없다.
 - QA: `pnpm cf:build`(route coverage·asset 예산 포함 `cf:assets`), `tsx scripts/prune-cf-unreferenced-assets.spec.ts`, `tsx scripts/next-routing-parity.spec.ts`, `tsx scripts/link-preview.spec.ts`, `pnpm cf:size`, `pnpm patch:build`(제외 public 파일 참조 검사), `pnpm cf:testbed:local --skip-build`, 원격 testbed(`pnpm cf:testbed`) parity, 배포 후 `pnpm cf:smoke --scope main`과 `pnpm cf:logs -- --not-found`.

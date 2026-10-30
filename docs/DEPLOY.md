@@ -62,6 +62,31 @@ Workers Free는 버전 하나에 정적 asset 파일을 20,000개까지만 올�
   정리하고, 그래도 필요하면 `CLOUDFLARE_STATIC_ASSET_BUDGET`(또는
   `CLOUDFLARE_STATIC_ASSET_RESERVE`)으로 의도적으로 올린다.
 
+## 롤백
+
+Worker 버전은 그 버전이 올린 정적 asset 목록까지 함께 갖고 있어서, 이전 버전으로
+되돌리면 asset도 같이 돌아간다. 평소 배포는 CI로만 하고, 롤백만 예외로 Wrangler를
+직접 쓴다. 운영을 바꾸는 일이라 사용자 승인을 받는다.
+
+1. 배포 전에 지금 정상 버전 ID를 `docs/release/UNRELEASED.md`에 적는다.
+
+   ```bash
+   pnpm exec wrangler deployments status --name scare-the-spire
+   pnpm exec wrangler deployments status --name scare-the-spire-patches
+   ```
+
+2. 문제가 생기면 문제가 난 Worker만 되돌린다.
+
+   ```bash
+   pnpm exec wrangler rollback <version-id> --name scare-the-spire
+   pnpm exec wrangler rollback <version-id> --name scare-the-spire-patches
+   ```
+
+3. `pnpm cf:smoke --scope main`으로 복구를 확인한다.
+4. 원인 커밋을 `main`에서 고치거나 되돌린 뒤 push한다. 그러지 않으면 다음 push가
+   같은 코드를 다시 배포한다. 워크플로의 `workflow_dispatch`는 HEAD를 다시 배포할
+   뿐 이전 버전을 고르지 못한다.
+
 ## Patch Worker
 
 patch Worker는 main Worker보다 빨리 패치노트를 공개하기 위한 정적 Worker다.
