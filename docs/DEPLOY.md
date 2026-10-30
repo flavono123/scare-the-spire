@@ -10,6 +10,10 @@ patch 페이지와 patch-local asset을 별도로 서빙한다.
 - `pnpm` 의존성이 설치되어 있어야 한다.
 - Wrangler가 Cloudflare 계정에 인증되어 있어야 한다.
 - main Worker와 patch Worker의 기존 환경 변수는 `--keep-vars`로 유지한다.
+- `.env*` 값은 Worker에 실리지 않는다. 브라우저용 `NEXT_PUBLIC_*`만 `next build`가
+  클라이언트 코드에 넣는다. main Worker가 런타임에 읽는 값은 Worker 변수뿐이라,
+  기록 셸 OG(`workers/detail-shell-og.ts`)는 Worker에
+  `NEXT_PUBLIC_SUPABASE_URL`·`NEXT_PUBLIC_SUPABASE_ANON_KEY`가 있을 때만 동작한다.
 
 ## Main Worker
 
@@ -33,7 +37,14 @@ pnpm cf:deploy
 `scripts/copy-cf-static-pages.mjs`, `scripts/prune-cf-unreferenced-assets.mjs`,
 `pnpm cf:assets`, `pnpm cf:size`, `wrangler deploy --keep-vars` 순서로
 실행된다. 결과물은 `.cloudflare/assets`다. `pnpm cf:assets`는 실제 Worker를
-모든 prerender route에 돌려 렌더러가 필요한 route가 있으면 실패한다.
+모든 prerender route에 돌려 렌더러가 필요한 route가 있으면 실패하고, Compendium
+data chunk가 업로드에서 빠졌거나 게임 전용 로케일의 목록 모달 URL이 정적 페이지가
+아니어도 실패한다. CI는 빌드 뒤 `pnpm css:check`로 낡은 CSS를 잡는다.
+
+`pnpm cf:build`는 빌드한 커밋을 `.cloudflare/build-record.json`(업로드 밖)에
+남기고 `pnpm cf:testbed -- --skip-build`가 이 기록을 확인한다.
+`collect-cf-assets.mjs`가 asset을 바꿀 때 기록을 지우므로 `pnpm cf:preview`
+빌드는 `--skip-build`로 재사용되지 않는다.
 
 Workers Free는 버전 하나에 정적 asset 파일을 20,000개까지만 올린다.
 

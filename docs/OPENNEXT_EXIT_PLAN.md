@@ -22,7 +22,15 @@ request
 `pnpm cf:build` runs `next build --webpack`, `scripts/collect-cf-assets.mjs`,
 and `scripts/copy-cf-static-pages.mjs` into `.cloudflare/assets`; deploys use
 `wrangler deploy --keep-vars`. `pnpm cf:assets` runs the Worker against every
-prerendered route and fails if one would need a renderer.
+prerendered route and fails if one would need a renderer, a Compendium data
+chunk is missing from the upload, or a game-only locale's list modal URL is not
+a static page.
+
+OpenNext wrote `.env*` into the Worker bundle as `next-env.mjs`, so local
+testbed builds carried every `.env.local` value, server keys included. The
+static Worker bundle carries none of them. Its only runtime configuration is
+Worker variables, and the record shell OG lookup needs
+`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` there.
 
 Intended response differences from the OpenNext Worker (no in-app link
 reaches them):

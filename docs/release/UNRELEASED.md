@@ -10,7 +10,7 @@
 | 이름 | 브랜치 | 목적 | 상태 |
 |---|---|---|---|
 | domain-migration-c54d7b | claude/domain-migration-c54d7b | 도메인 이전(레거시 호스트 안내, 리다이렉트, robots/sitemap) | 11커밋, main보다 122 뒤처짐. 2026-10-26 정기 배포에서 제외 |
-| opennext-exit | refactor/opennext-exit | main Worker에서 OpenNext 런타임 제거(정적 전용 Worker), 정적 파일 수 정리, 클라이언트 중복 제거 | 진행 중(2026-10-27 시작). OpenNext 제거 배치 완료, 원격 testbed 검증과 병합 대기 |
+| opennext-exit | refactor/opennext-exit | main Worker에서 OpenNext 런타임 제거(정적 전용 Worker), 정적 파일 수 정리, 클라이언트 중복 제거 | 진행 중(2026-10-27 시작). OpenNext 제거 배치 완료, main `d56208b1`까지 병합(`4626d067`), 원격 testbed 검증과 main 병합 대기 |
 
 ## 긴급 배포로 QA 없이 나간 범위
 
@@ -98,9 +98,12 @@
   - `/_next/image`가 404 페이지(전에는 OpenNext 이미지 endpoint가 로컬 이미지를 200으로 전달). `images.unoptimized`가 2026-04-10부터라 Cloudflare 출시(2026-06-16) 뒤 이 origin의 어떤 페이지도 이 URL을 낸 적 없음.
   - GET/HEAD 외 메서드: 있는 정적 페이지는 405, 없는 상세(`/compendium/cards/<없는 id>`)는 GET처럼 404.
   - 정적 페이지 응답에 Next와 같은 `Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch`.
+- 의도한 차이(testbed 한정): OpenNext는 `.env*`를 `next-env.mjs`로 Worker에 실어서 로컬에서 만든 testbed Worker에 `.env.local`의 서버 키까지 들어갔다. 정적 Worker 번들에는 어떤 `.env` 값도 없다(`SUPABASE_SECRET_KEY`·`SUPABASE_ACCESS_TOKEN`·`SUPABASE_DB_PASSWORD` 값 검색 0건).
+- 확인 필요: 기록 셸 OG(`workers/detail-shell-og.ts`)는 Worker 변수가 있어야 동작하는데 운영·testbed Worker의 binding은 `ASSETS`·`PATCH_WORKER`뿐이다. 그래서 정적 Worker에서는 기록 셸의 제목·설명·이미지가 인덱스 기본값이고 canonical·hreflang·og:url만 붙는다. CI 빌드에는 `.env` 파일이 없어 운영도 이미 같은 상태로 보이지만, 2026-10-31에 Supabase가 응답하지 않아 실제 기록으로 확인하지 못했다. 확인할 곳: https://scare-the-spire.flavono123.workers.dev/this-or-that/c23e2302-a8da-473d-8205-5078c5aba49e
+- 병합으로 맞춘 곳: 빌드 기록은 `.cloudflare/build-record.json`에 남고 `collect-cf-assets.mjs`가 asset을 바꿀 때 지운다(`cf:preview` 산출물이 `--skip-build`를 통과하지 못하게). `cf:assets`가 Compendium data chunk 141개와 게임 전용 로케일 목록 모달 URL 252개도 확인한다.
 - 이번 배포 주의: RELEASE_PROCESS 5단계의 배포 전 프로덕션 `cf:smoke --scope main`은 이 브랜치가 추가한 다음 케이스가 옛 앱에서 실패한다(배포 뒤에만 통과). `/decisions-decisions`·`/en/decisions-decisions`·`/this-or-that/tournament`·`/zh/this-or-that/tournament` document/RSC(옛 앱은 `x-cf-static-page` 없음), "Worldcup index redirect RSC"(옛 앱 200), "Not-found document"·"Not-found RSC"(옛 앱 500), "Locale not-found document"(owner 헤더 없음), "POST to a static page". 배포 전 판정은 원격 testbed의 `cf:smoke --scope all`로 하고, 프로덕션 smoke는 배포 뒤에 본다. POST 케이스는 정적 페이지에 본문 없는 요청 하나라 부작용이 없다.
 - QA: `pnpm cf:build`(route coverage·asset 예산 포함 `cf:assets`), `tsx scripts/prune-cf-unreferenced-assets.spec.ts`, `tsx scripts/next-routing-parity.spec.ts`, `tsx scripts/link-preview.spec.ts`, `pnpm cf:size`, `pnpm patch:build`(제외 public 파일 참조 검사), `pnpm cf:testbed:local --skip-build`, 원격 testbed(`pnpm cf:testbed`) parity, 배포 후 `pnpm cf:smoke --scope main`과 `pnpm cf:logs -- --not-found`.
-- Commits: `788be7ea..` (refactor/opennext-exit)
+- Commits: `788be7ea..` (refactor/opennext-exit). main 병합 `4626d067`.
 
 <!--
 ### <항목-id>
