@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import type { GameLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 import { HistoryCourseRunIndex } from "./history-course-run-index";
 import { ProdRunsDevSection } from "./prod-runs-dev-section";
@@ -10,10 +10,10 @@ import { RunUploadZone } from "./run-upload-zone";
 import { UploadTutorial } from "./upload-tutorial";
 
 interface HistoryCourseLandingProps {
-  entities: EntityInfo[];
+  gameLocale: GameLocale;
 }
 
-export function HistoryCourseLanding({ entities }: HistoryCourseLandingProps) {
+export function HistoryCourseLanding({ gameLocale }: HistoryCourseLandingProps) {
   const serviceLocale = useServiceLocale();
   const coverCopy = serviceMessages[serviceLocale].historyCourse.coverEditor;
   const [refreshKey, setRefreshKey] = useState(0);
@@ -66,7 +66,7 @@ export function HistoryCourseLanding({ entities }: HistoryCourseLandingProps) {
         <UploadTutorial />
       </div>
       <HistoryCourseRunIndex
-        entities={entities}
+        gameLocale={gameLocale}
         refreshKey={refreshKey}
         sharedRunIds={sharedRunIds}
         pendingEditRunId={pendingEditRunId}

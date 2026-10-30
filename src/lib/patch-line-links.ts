@@ -1,8 +1,10 @@
 import { PATCH_LINE_ALIASES, resolveCanonicalPatchLineId } from "@/lib/resolve-story-patch-line";
 import type { STS2PatchLine } from "@/lib/types";
 
+// Patch ids are "v0.111.0", "build-23478716" or "backstab-2026-09-11";
+// the /patches/[version] route segment is the id without that prefix.
 export function patchVersionPath(patch: string): string {
-  return patch.replace(/^v/, "");
+  return patch.replace(/^(?:v(?=\d)|[a-z]+-)/, "");
 }
 
 export function patchLineAnchorId(patchLineId: string): string {

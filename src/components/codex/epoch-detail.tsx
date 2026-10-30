@@ -7,6 +7,7 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { getEpochUnlockLabels } from "@/lib/compendium-detail-labels";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -84,13 +85,11 @@ function getEpochDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
     ? {
         englishName: "영어명",
-        unlockInfo: "해금 조건",
-        unlockText: "해금 내용",
+        ...getEpochUnlockLabels("ko"),
       }
     : {
         englishName: "English name",
-        unlockInfo: "Unlock condition",
-        unlockText: "Unlock text",
+        ...getEpochUnlockLabels("en"),
       };
 }
 

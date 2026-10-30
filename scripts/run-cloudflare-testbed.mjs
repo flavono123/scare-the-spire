@@ -3,7 +3,8 @@
 import { spawn, spawnSync } from "node:child_process";
 import { statSync } from "node:fs";
 
-import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
+import { checkBuildRecord, describeBuildRecord } from "./build-record.mjs";
+import { CLOUDFLARE_ASSETS_DIR, CLOUDFLARE_BUILD_DIR } from "./cloudflare-assets-dir.mjs";
 import { DEV_ASSET_WATCH_ENV } from "./wrangler-dev-assets.mjs";
 
 const LOCAL_MAIN_ORIGIN = "http://127.0.0.1:8787";
@@ -18,7 +19,43 @@ Options:
   --origin <url>   Test an already-running preview without building or starting Workers
   --remote         Deploy the isolated testbed Workers to Cloudflare and test them
   --skip-build     Reuse existing .cloudflare/assets and .patch-worker artifacts
+                   (refused unless both were built from the current checkout)
   --help           Show this help`);
+}
+
+// Refuse to test or deploy artifacts built from another commit or tree.
+function assertFreshArtifacts(options) {
+  const artifacts = [
+    { dir: CLOUDFLARE_BUILD_DIR, build: "pnpm cf:build" },
+    {
+      dir: ".patch-worker",
+      // Matches the patch build runRemote() does itself.
+      build: options.remote
+        ? "NEXT_PUBLIC_SUPABASE_ENV=production pnpm patch:build"
+        : "pnpm patch:build",
+    },
+  ];
+  const stale = [];
+  for (const artifact of artifacts) {
+    const result = checkBuildRecord(artifact.dir);
+    if (result.ok) {
+      console.log(`[testbed] ${artifact.dir} built from ${describeBuildRecord(result.record)}`);
+    } else {
+      stale.push({ ...artifact, reason: result.reason });
+    }
+  }
+  if (stale.length === 0) return;
+
+  const rebuild = options.remote ? "pnpm cf:testbed" : "pnpm cf:testbed:local";
+  throw new Error(
+    [
+      "refusing to use stale Worker artifacts:",
+      ...stale.map((artifact) => `  - ${artifact.reason} (rebuild with ${artifact.build})`),
+      options.skipBuild
+        ? `Run ${rebuild} without --skip-build to rebuild both from this checkout.`
+        : `The checkout changed during the build; run ${rebuild} again.`,
+    ].join("\n"),
+  );
 }
 
 function parseArgs(argv) {
@@ -229,6 +266,7 @@ async function runRemote(options) {
     );
   }
 
+  assertFreshArtifacts(options);
   run("validate static patch Worker artifact", "pnpm", ["patch:test"]);
   run("validate main Worker upload size", "pnpm", ["cf:size"]);
 
@@ -295,6 +333,7 @@ async function main() {
     run("build main Worker artifact", "pnpm", ["cf:build"]);
     run("build static patch Worker artifact", "pnpm", ["patch:build"]);
   }
+  assertFreshArtifacts(options);
 
   let patchWorker;
   let mainWorker;

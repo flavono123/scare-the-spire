@@ -79,6 +79,10 @@ jobs:
                   data/sts2-patch-notes/*|data/sts2-patches.json|data/sts2-patch-local-resources.json|src/components/patch-note-renderer.tsx|src/components/patches/*|src/app/\(main\)/patches/*|src/app/\[gameLocale\]/patches/*|src/lib/sts2-patch-*.ts|scripts/build-patch-worker.tsx|scripts/dev-patch-proxy.mjs|workers/patch-worker.ts|wrangler.patch.jsonc)
                     patch_changed=true
                     ;;
+                  data/sts2-neowsletters.json|data/sts2-neowsletters/*|public/images/neowsletters/*)
+                    main_changed=true
+                    patch_changed=true
+                    ;;
                   data/sts2/*|data/sts2-changes.json|data/sts2-entity-versions.json|public/images/sts2/*|src/app/\(codex\)/*|src/app/\[gameLocale\]/compendium/*|src/components/codex/*|src/lib/codex-*.ts|src/lib/compendium-*.ts|scripts/generate-static-api-data.ts)
                     main_changed=true
                     patch_after_main=true
@@ -214,15 +218,18 @@ jobs:
       - run: pnpm lint
         if: steps.changes.outputs.deploy_any == 'true'
 
+      # next-v2: caches saved before the globals.css @source not fix hold a CSS
+      # module whose dependency snapshot is empty, so they reuse stale CSS forever.
+      # Never restore them; the first v2 build starts cold.
       - name: Restore Next.js build cache
         if: steps.changes.outputs.main == 'true'
         uses: actions/cache@v4
         with:
           path: .next/cache
-          key: ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
+          key: ${{ runner.os }}-next-v2-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
           restore-keys: |
-            ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-
-            ${{ runner.os }}-next-
+            ${{ runner.os }}-next-v2-${{ hashFiles('pnpm-lock.yaml') }}-
+            ${{ runner.os }}-next-v2-
 
       - name: Compute Cloudflare build id
         if: steps.changes.outputs.main == 'true'
@@ -257,6 +264,10 @@ jobs:
       - name: Build main Worker for Cloudflare
         if: steps.changes.outputs.main == 'true'
         run: pnpm cf:build
+
+      - name: Check built CSS has every globals.css class
+        if: steps.changes.outputs.main == 'true'
+        run: pnpm css:check
 
       - name: Check main Worker size
         if: steps.changes.outputs.main == 'true'

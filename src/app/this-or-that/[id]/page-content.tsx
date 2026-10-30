@@ -36,7 +36,7 @@ export async function generateThisOrThatPostMetadata(
     title: gameCopy.title,
     description,
     image: THIS_OR_THAT_PAGE_OG_IMAGE,
-    canonicalPath: recordId ? `/this-or-that/${recordId}` : "/this-or-that",
+    canonicalPath: recordId ? `/this-or-that/${recordId}` : undefined,
   });
   if (!recordId) return fallback;
 

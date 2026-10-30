@@ -25,20 +25,20 @@ import { patchSectionAnchorIds } from "@/lib/patch-section-anchors";
 import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
 import { BackstabTransfigureSection } from "@/components/patches/backstab-transfigure-section";
 import { BackstabColorfulPhilosophersSection } from "@/components/patches/backstab-colorful-philosophers-section";
+import { PatchYoutubePlaylistSection } from "@/components/patches/patch-youtube-playlist-section";
 import { getColorfulPhilosopherGalleryPosts } from "@/lib/colorful-philosophers-gallery";
 import { getRecentTransfigurePosts } from "@/lib/transfigure-data";
 import {
   WITHER_PATCH_DATE_CLASS,
-  WITHER_PATCH_HERO,
   WITHER_PATCH_HERO_CLASS,
   WITHER_PATCH_TITLE_CLASS,
-  WITHER_TITLE_TOKEN,
 } from "@/lib/wither-patch-shell";
+import { getPatchShell } from "@/lib/patch-shells";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { getPatchVersionLabel, isPatchDraft, isWitherPatch } from "@/lib/sts2-patch-labels";
+import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
@@ -90,6 +90,7 @@ const PATCH_COPY: Record<ServiceLocale, {
       stable: "안정",
       hotfix: "핫픽스",
       wither: "시듦",
+      gambit: "포석",
     },
   },
   en: {
@@ -109,15 +110,16 @@ const PATCH_COPY: Record<ServiceLocale, {
       stable: "Stable",
       hotfix: "Hotfix",
       wither: "Wither",
+      gambit: "The Gambit",
     },
   },
 };
 
-function PatchArtHero({ art, wither = false }: { art: ResolvedPatchArt; wither?: boolean }) {
+function PatchArtHero({ art, shell = false }: { art: ResolvedPatchArt; shell?: boolean }) {
   return (
     <div className={cn(
       "mt-6 aspect-[16/7] overflow-hidden rounded-lg bg-black",
-      wither ? "border border-zinc-700" : "border border-border/70",
+      shell ? "border border-zinc-700" : "border border-border/70",
     )}>
       <Image
         src={art.imageUrl}
@@ -138,9 +140,14 @@ function escapeInlineJson(value: unknown): string {
   return JSON.stringify(value).replace(/</g, "\\u003c");
 }
 
-function truncateOgDescription(text: string, maxLength = PATCH_OG_DESCRIPTION_MAX_LENGTH): string {
+export function truncateOgDescription(text: string, maxLength = PATCH_OG_DESCRIPTION_MAX_LENGTH): string {
   if (text.length <= maxLength) return text;
-  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
+  const limit = maxLength - 1;
+  const head = text.slice(0, limit);
+  // End at a word boundary (ko words are space-separated too) so no word is cut.
+  const wordEnd = /\s/.test(text[limit]) ? limit : head.search(/\s+\S*$/);
+  const clipped = wordEnd > 0 ? head.slice(0, wordEnd) : head;
+  return `${clipped.replace(/[\s,;:–—-]+$/, "")}…`;
 }
 
 const PATCH_ENTITY_ALIASES_EN: Record<string, string[]> = {
@@ -444,7 +451,8 @@ function buildPatchMonsterMoveEntities(
 
   for (const monster of monsters) {
     for (const move of [...monster.bestiaryMoves, ...monster.moves]) {
-      if (["NOTHING", "SPAWNED", "DEAD"].includes(move.id)) continue;
+      // STUNNED is a generic state; auto-linking it would turn the plain word "stunned" into a move mention.
+      if (["NOTHING", "SPAWNED", "DEAD", "STUNNED"].includes(move.id)) continue;
       const key = `${monster.id}:${move.id}`;
       if (seen.has(key)) continue;
       seen.add(key);
@@ -750,39 +758,21 @@ export async function generatePatchDetailStaticParams() {
   return patches.map((p) => ({ version: p.version }));
 }
 
-function formatPatchTitle(
-  patch: STS2Patch,
-  serviceLocale: ServiceLocale,
-  variant: "detailTitle" | "detailHeading",
-): string {
-  const version = getPatchVersionLabel(patch, serviceLocale);
-  if (isWitherPatch(patch)) {
-    const shortName = serviceLocale === "ko" ? "슬더스2" : "STS2";
-    const gameTitle = serviceLocale === "ko" ? "슬레이 더 스파이어 2" : "Slay the Spire 2";
-    return variant === "detailTitle"
-      ? `${shortName} ${version} – ${gameTitle}`
-      : `${shortName} ${version}`;
-  }
-
-  return serviceMessages[serviceLocale].patchNotes[variant]
-    .replace("{version}", version)
-    .replace("{type}", PATCH_COPY[serviceLocale].types[patch.type]);
-}
-
-/** Document title and Article headline, e.g. "STS2 v0.111.0 Beta Patch Notes – Slay the Spire 2". */
+/**
+ * Document title, H1 and Article headline, e.g. "v0.111.0 Beta Patch Notes".
+ * Only the patch list names the game (STS2 / 슬더스2 and the full title); a
+ * patch detail carries its version and type alone.
+ */
 export function getPatchSeoTitle(
   patch: STS2Patch,
   serviceLocale: ServiceLocale,
 ): string {
-  return formatPatchTitle(patch, serviceLocale, "detailTitle");
-}
+  const version = getPatchVersionLabel(patch, serviceLocale);
+  if (getPatchShell(patch)) return version;
 
-/** Visible H1, e.g. "STS2 v0.111.0 Beta Patch Notes". */
-export function getPatchHeading(
-  patch: STS2Patch,
-  serviceLocale: ServiceLocale,
-): string {
-  return formatPatchTitle(patch, serviceLocale, "detailHeading");
+  return serviceMessages[serviceLocale].patchNotes.detailTitle
+    .replace("{version}", version)
+    .replace("{type}", PATCH_COPY[serviceLocale].types[patch.type]);
 }
 
 export async function getPatchDetailMetadata({
@@ -799,7 +789,7 @@ export async function getPatchDetailMetadata({
   const title = getPatchSeoTitle(patch, serviceLocale);
   const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
   const description = truncateOgDescription(`${title}. ${summary}`);
-  const patchArt = isWitherPatch(patch)
+  const patchArt = getPatchShell(patch)
     ? resolvePatchArt(patch, new Map(), serviceLocale)
     : resolvePatchArt(
         patch,
@@ -848,7 +838,8 @@ export async function PatchDetailPage({
   const patch = patches.find((p) => p.version === version);
   if (!patch) notFound();
 
-  if (isWitherPatch(patch)) {
+  const shell = getPatchShell(patch);
+  if (shell) {
     const [patchBackstabCopy, debateCopy, entities, initialTransfigures, colorfulPhilosopherPosts] = await Promise.all([
       getPatchBackstabGameCopy(gameLocale),
       getDebateGameCopy(gameLocale),
@@ -862,6 +853,17 @@ export async function PatchDetailPage({
     const idx = sortedPatches.findIndex((p) => p.id === patch.id);
     const prevPatch = idx > 0 ? sortedPatches[idx - 1] : null;
     const nextPatch = idx < sortedPatches.length - 1 ? sortedPatches[idx + 1] : null;
+    const debateSection = (
+      <BackstabColorfulPhilosophersSection
+        entityMap={entityMap}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+        cta={debateCopy.invite}
+        hero={debateCopy.reelHero}
+        initialPosts={colorfulPhilosopherPosts}
+        staticHoverPreviews={staticHoverPreviews}
+      />
+    );
 
     return (
       <div className={TOYBOX_WIDE_SHELL_CLASS}>
@@ -876,11 +878,11 @@ export async function PatchDetailPage({
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-2">
               <Image
-                src={WITHER_TITLE_TOKEN.src}
-                alt={WITHER_TITLE_TOKEN.alt[serviceLocale]}
+                src={shell.titleToken.src}
+                alt={shell.titleToken.alt[serviceLocale]}
                 width={28}
                 height={28}
-                className="h-7 w-7 shrink-0 object-contain grayscale"
+                className={cn("h-7 w-7 shrink-0 object-contain", shell.titleTokenClassName)}
               />
               <h1 className={`${WITHER_PATCH_TITLE_CLASS} text-2xl`}>
                 {serviceLocale === "ko" ? patch.titleKo : patch.title}
@@ -893,15 +895,16 @@ export async function PatchDetailPage({
             />
           </div>
           <div className={`mt-3 text-base leading-relaxed ${WITHER_PATCH_HERO_CLASS}`}>
-            <RichText text={WITHER_PATCH_HERO[serviceLocale]} />
+            <RichText text={shell.hero[serviceLocale]} />
           </div>
           <div className={`mt-1 flex items-center gap-3 ${WITHER_PATCH_DATE_CLASS}`}>
             <span>{patch.date}</span>
           </div>
         </div>
 
-        <PatchArtHero art={patchArt} wither />
+        <PatchArtHero art={patchArt} shell />
 
+        {shell.debateFirst && debateSection}
         {/* Transfigure service exposure & creation prompt */}
         <BackstabTransfigureSection
           entities={entities}
@@ -913,16 +916,14 @@ export async function PatchDetailPage({
           transfigureCta={patchBackstabCopy.transfigureCta}
           initialPosts={initialTransfigures}
         />
-
-        <BackstabColorfulPhilosophersSection
-          entityMap={entityMap}
-          serviceLocale={serviceLocale}
-          gameLocale={gameLocale}
-          cta={debateCopy.invite}
-          hero={debateCopy.reelHero}
-          initialPosts={colorfulPhilosopherPosts}
-          staticHoverPreviews={staticHoverPreviews}
-        />
+        {shell.youtubePlaylist && (
+          <PatchYoutubePlaylistSection
+            playlistId={shell.youtubePlaylist.id}
+            playlistTitle={shell.youtubePlaylist.title}
+            serviceLocale={serviceLocale}
+          />
+        )}
+        {!shell.debateFirst && debateSection}
 
         <section id="comments" className="mt-8 rounded-lg border border-border bg-card/20 p-4">
           <h2 className="mb-3 text-sm font-bold text-foreground">{copy.comments}</h2>
@@ -1212,7 +1213,7 @@ export async function PatchDetailPage({
   ];
   const entities = applyCompendiumManifestAvailability(rawEntities, compendiumManifest);
 
-  const title = getPatchHeading(patch, serviceLocale);
+  const title = getPatchSeoTitle(patch, serviceLocale);
   const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
   const rendererEntities = filterPatchNoteEntities(markdown, entities);
   const isWatching = patch.status === "watching";

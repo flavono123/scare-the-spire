@@ -86,7 +86,7 @@ export interface LinkedEntity {
 }
 
 // STS2 patch types
-export type PatchType = "release" | "hotfix" | "beta" | "stable" | "wither";
+export type PatchType = "release" | "hotfix" | "beta" | "stable" | "wither" | "gambit";
 export type STS2EntityType = StoryEntityType | "enemy" | "blessing";
 export type STS2PatchFeaturedEntityType =
   | "character"

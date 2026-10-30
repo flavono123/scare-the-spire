@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type {
@@ -11,8 +11,8 @@ import type {
   MonsterMoveIntentDetail,
   MonsterMovePowerApplication,
 } from "@/lib/codex-types";
-import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { localizeHref, localizeHrefWithGameLocale } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { useCompendiumLinkHref } from "@/components/compendium-detail-links";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
@@ -66,10 +66,33 @@ export interface MonsterMoveVisual {
 
 type MoveVisual = MonsterMoveVisual;
 
+// Game locale of the page showing these visuals. Compendium links keep it, so
+// game-only locale pages (/ja, ...) link inside their own locale like the
+// other entity mentions on the page.
+const MonsterVisualGameLocaleContext = createContext<GameLocale | undefined>(undefined);
+
+function withMonsterVisualGameLocale(gameLocale: GameLocale | undefined, children: ReactNode): ReactNode {
+  if (!gameLocale) return children;
+  return (
+    <MonsterVisualGameLocaleContext.Provider value={gameLocale}>
+      {children}
+    </MonsterVisualGameLocaleContext.Provider>
+  );
+}
+
+/** Localized Compendium href for `href`, the detail page where the page links to those. */
+function useMonsterVisualCompendiumHref(href: string, serviceLocale: ServiceLocale): string {
+  const gameLocale = useContext(MonsterVisualGameLocaleContext);
+  return useCompendiumLinkHref(gameLocale
+    ? localizeHrefWithGameLocale(href, serviceLocale, gameLocale)
+    : localizeHref(href, serviceLocale));
+}
+
 interface MonsterAnimationPatchDiffBlockProps {
   monster: CodexMonster;
   monsters?: readonly CodexMonster[];
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
   patchId?: string;
   variant?: "full" | "compact";
   defaultOpen?: boolean;
@@ -660,6 +683,7 @@ export function MonsterAnimationPatchDiffBlock({
   monster,
   monsters = [],
   serviceLocale,
+  gameLocale,
   patchId = "v0.106.0",
   variant = "full",
   defaultOpen = true,
@@ -670,7 +694,7 @@ export function MonsterAnimationPatchDiffBlock({
   const compact = variant === "compact";
   const title = serviceLocale === "ko" ? spec.titleKo : spec.titleEn;
 
-  return (
+  return withMonsterVisualGameLocale(gameLocale, (
     <details className={compact ? "group mt-2" : "group my-4"} open={defaultOpen}>
       <summary className="inline-flex cursor-pointer list-none items-center gap-2 text-sm text-blue-400 transition-colors marker:hidden hover:text-blue-300">
         <span className="font-game-title font-bold">
@@ -705,7 +729,7 @@ export function MonsterAnimationPatchDiffBlock({
         </div>
       </div>
     </details>
-  );
+  ));
 }
 
 export function InfestedPrismReworkBlock(props: Omit<MonsterAnimationPatchDiffBlockProps, "patchId">) {
@@ -828,16 +852,19 @@ function getPatchDiffMoveVisual(monster: CodexMonster, moveId: string, fallback?
 
 function PatchDiffInlinePreview({
   href,
+  serviceLocale,
   children,
   preview,
 }: {
+  /** Unlocalized Compendium href. */
   href: string;
+  serviceLocale: ServiceLocale;
   children: ReactNode;
   preview: (nonce: number) => ReactNode;
 }) {
   const [show, setShow] = useState(false);
   const [previewNonce, setPreviewNonce] = useState(0);
-  const linkHref = useCompendiumLinkHref(href);
+  const linkHref = useMonsterVisualCompendiumHref(href, serviceLocale);
 
   return (
     <span
@@ -896,7 +923,8 @@ function PatchDiffMonsterLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(buildCompendiumResourceHref("monster", monster.id), serviceLocale)}
+      href={buildCompendiumResourceHref("monster", monster.id)}
+      serviceLocale={serviceLocale}
       preview={() => (
         <GameHoverTip title={title} style={{ minWidth: 260, maxWidth: 340 }}>
           <span className="flex items-start gap-2.5">
@@ -1015,7 +1043,8 @@ function PatchDiffPowerLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(buildCompendiumResourceHref("power", powerId), serviceLocale)}
+      href={buildCompendiumResourceHref("power", powerId)}
+      serviceLocale={serviceLocale}
       preview={() => (
         <GameHoverTip
           title={title}
@@ -1077,7 +1106,8 @@ function PatchDiffCardLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(buildCompendiumResourceHref("card", cardId), serviceLocale)}
+      href={buildCompendiumResourceHref("card", cardId)}
+      serviceLocale={serviceLocale}
       preview={() => (
         <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
           {card?.imageUrl && (
@@ -1109,7 +1139,8 @@ function PatchDiffMoveLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(buildCompendiumResourceHref("monster", monster.id), serviceLocale)}
+      href={buildCompendiumResourceHref("monster", monster.id)}
+      serviceLocale={serviceLocale}
       preview={(nonce) => (
         <MonsterMoveHoverPreview
           move={move}
@@ -1254,6 +1285,7 @@ export function MonsterMoveHoverPreview({
   move,
   monster,
   serviceLocale,
+  gameLocale,
   selectedMoveNonce = 0,
   title,
   variant = "hover",
@@ -1264,6 +1296,7 @@ export function MonsterMoveHoverPreview({
   move: MonsterMoveVisual;
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
   selectedMoveNonce?: number;
   title?: string;
   variant?: "hover" | "inline";
@@ -1291,10 +1324,10 @@ export function MonsterMoveHoverPreview({
   );
 
   if (variant === "inline") {
-    return previewSurface;
+    return withMonsterVisualGameLocale(gameLocale, previewSurface);
   }
 
-  return (
+  return withMonsterVisualGameLocale(gameLocale, (
     <GameHoverTip title={resolvedTitle} style={{ width: 280, maxWidth: 280 }}>
       <span className="mb-1.5 block font-game-text text-[11px] text-zinc-400">
         {monsterName}
@@ -1302,7 +1335,7 @@ export function MonsterMoveHoverPreview({
       {previewSurface}
       <MoveApplicationIcons move={move} serviceLocale={serviceLocale} ascensionLevel={ascensionLevel} />
     </GameHoverTip>
-  );
+  ));
 }
 
 function MovePreviewSurface({
@@ -1628,7 +1661,7 @@ function PowerApplicationIcon({
 }) {
   const className = `relative inline-flex items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-primary/70 ${compact ? "h-5 w-5" : "h-6 w-6"}`;
   const title = serviceLocale === "ko" ? power.powerName : power.powerNameEn;
-  const href = useCompendiumLinkHref(localizeHref(buildCompendiumResourceHref("power", power.powerId), serviceLocale));
+  const href = useMonsterVisualCompendiumHref(buildCompendiumResourceHref("power", power.powerId), serviceLocale);
   const amount = getEffectiveDamageValue(power.amount, ascensionLevel);
   const amountLabel = amount != null ? `${added ? "+" : ""}${amount}` : null;
   const content = (

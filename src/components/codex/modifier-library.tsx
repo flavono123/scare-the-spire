@@ -8,12 +8,11 @@ import {
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 import {
-  localizeHrefWithGameLocale,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
 import {
-  buildCompendiumResourceDetailHref,
+  buildCompendiumEntryHref,
   updateCompendiumResourceModalUrl,
 } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -52,23 +51,18 @@ const POLARITY_STYLE: Record<ModifierPolarity, { color: string; hover: string }>
 };
 
 function ModifierTile({
-  serviceLocale,
   gameLocale,
   modifier,
   onClick,
 }: {
-  serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   modifier: CodexModifier;
   onClick: () => void;
 }) {
   return (
     <Link
-      href={localizeHrefWithGameLocale(
-        buildCompendiumResourceDetailHref("modifier", modifier.id),
-        serviceLocale,
-        gameLocale,
-      )}
+      // Game-only locales have no detail pages; this links their list modal.
+      href={buildCompendiumEntryHref("modifier", modifier.id, gameLocale)}
       className="mb-5 block break-inside-avoid rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
@@ -253,7 +247,6 @@ export function ModifierLibrary({
                 {groupModifiers.map((modifier) => (
                   <ModifierTile
                     key={modifier.id}
-                    serviceLocale={serviceLocale}
                     gameLocale={gameLocale}
                     modifier={modifier}
                     onClick={() => selectModifier(modifier.id)}

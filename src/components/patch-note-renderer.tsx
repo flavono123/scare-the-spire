@@ -281,10 +281,12 @@ export function GameResourcePreview({
 function MonsterMoveKeywordPreview({
   entity,
   serviceLocale,
+  gameLocale,
   previewNonce,
 }: {
   entity: EntityInfo;
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
   previewNonce: number;
 }) {
   const move = entity.monsterMoveData;
@@ -302,6 +304,7 @@ function MonsterMoveKeywordPreview({
       move={visual}
       monster={monster}
       serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
       selectedMoveNonce={previewNonce}
       title={title}
     />
@@ -927,6 +930,7 @@ export function EntityPreview({
           <MonsterMoveKeywordPreview
             entity={entity}
             serviceLocale={serviceLocale ?? "ko"}
+            gameLocale={gameLocale}
             previewNonce={previewNonce}
           />,
         )
@@ -1346,13 +1350,15 @@ interface TextNode {
 
 type SineOffset = { current: number };
 
+// Same as renderSineText in rich-text.tsx: spaces are .rich-sine-space spans so
+// sine text wraps only at spaces.
 function renderSineText(text: string, keyPrefix: string, offset: SineOffset): ReactNode[] {
   return Array.from(text).map((char, i) => {
     const index = offset.current++;
     return (
       <span
         key={`${keyPrefix}-sine-${i}`}
-        className="rich-sine-letter"
+        className={char === " " ? "rich-sine-space" : "rich-sine-letter"}
         style={{ "--rich-sine-index": index } as CSSProperties}
       >
         {char}
@@ -1373,6 +1379,8 @@ function extractPlainText(nodes: TextNode[]): string {
 }
 
 // --- Render BBCode nodes with entity matching ---
+
+const PROSE_BOLD_CLASS = "font-bold text-foreground [-webkit-text-stroke:0.35px_currentColor]";
 
 function renderBBNodes(
   nodes: TextNode[],
@@ -1400,6 +1408,16 @@ function renderBBNodes(
           <span key={key} className="rich-sine">
             {renderSineBBNodes(node.children, lookup, key, context)}
           </span>
+        );
+      }
+
+      // [b]: the Korean service font ships only a bold face, so weight alone
+      // changes nothing. Brighten the text and thicken the stroke instead.
+      if (node.tag === "b") {
+        return (
+          <strong key={key} className={PROSE_BOLD_CLASS}>
+            {renderBBNodes(node.children, lookup, key, context)}
+          </strong>
         );
       }
 
@@ -1825,6 +1843,27 @@ function isAsciiWordChar(char: string): boolean {
   return /^[a-z0-9_]$/i.test(char);
 }
 
+const EMPHASIS_TAG_RE = /\[(\/?)([bis])\]/g;
+const EMPTY_EMPHASIS_RE = /\[([bis])\]\[\/\1\]/g;
+
+/** Emphasis tags still open after `segment`, outermost first. */
+function openEmphasisAfter(segment: string, open: readonly string[]): string[] {
+  const next = [...open];
+  for (const [, closing, tag] of segment.matchAll(EMPHASIS_TAG_RE)) {
+    if (closing) next.pop();
+    else next.push(tag);
+  }
+  return next;
+}
+
+function withEmphasis(node: ReactNode, tags: readonly string[], key: string): ReactNode {
+  return tags.reduceRight<ReactNode>((child, tag, depth) => (
+    tag === "b"
+      ? <strong key={`${key}-${depth}`} className={PROSE_BOLD_CLASS}>{child}</strong>
+      : <span key={`${key}-${depth}`} className={EFFECT_CLASSES[tag]}>{child}</span>
+  ), node);
+}
+
 // --- Enrich a line of text (BBCode + markdown bold) ---
 
 function enrichLine(
@@ -1846,34 +1885,44 @@ function enrichLine(
       )
       : withNumberedAscensions;
   };
+  // Links are cut out before BBCode parsing, so emphasis that spans a link is
+  // closed before it, re-applied to it, and reopened after it.
+  const renderSegment = (segment: string, open: readonly string[], segmentKey: string) => {
+    if (!segment.replace(EMPHASIS_TAG_RE, "")) return [];
+    const opening = open.map((tag) => `[${tag}]`).join("");
+    const closing = openEmphasisAfter(segment, open).reverse().map((tag) => `[/${tag}]`).join("");
+    return renderBBNodes(
+      parseBBCode(`${opening}${wrapSegment(segment)}${closing}`.replace(EMPTY_EMPHASIS_RE, "")),
+      lookup,
+      segmentKey,
+      context,
+    );
+  };
   const parts: ReactNode[] = [];
   let lastIndex = 0;
   let matchIndex = 0;
+  let open: string[] = [];
 
   for (const match of text.matchAll(MARKDOWN_LINK_RE)) {
     const index = match.index ?? 0;
     if (index > lastIndex) {
-      parts.push(...renderBBNodes(
-        parseBBCode(wrapSegment(text.slice(lastIndex, index))),
-        lookup,
-        `${key}-text-${matchIndex}`,
-        context,
-      ));
+      const segment = text.slice(lastIndex, index);
+      parts.push(...renderSegment(segment, open, `${key}-text-${matchIndex}`));
+      open = openEmphasisAfter(segment, open);
     }
 
-    parts.push(renderMarkdownLink(`${key}-link-${matchIndex}`, match[1], match[2], context));
+    parts.push(withEmphasis(
+      renderMarkdownLink(`${key}-link-${matchIndex}`, match[1], match[2], context),
+      open,
+      `${key}-link-${matchIndex}`,
+    ));
     lastIndex = index + match[0].length;
     matchIndex += 1;
   }
 
   if (lastIndex > 0) {
     if (lastIndex < text.length) {
-      parts.push(...renderBBNodes(
-        parseBBCode(wrapSegment(text.slice(lastIndex))),
-        lookup,
-        `${key}-tail`,
-        context,
-      ));
+      parts.push(...renderSegment(text.slice(lastIndex), open, `${key}-tail`));
     }
     return parts;
   }
@@ -2195,6 +2244,7 @@ export function PatchNoteRenderer({
             key={`character-low-hp-idle-${i}`}
             characters={characters}
             serviceLocale={context.serviceLocale ?? "ko"}
+            gameLocale={context.gameLocale}
           />,
         );
       }
@@ -2219,6 +2269,7 @@ export function PatchNoteRenderer({
             monster={monster}
             monsters={monsters}
             serviceLocale={context.serviceLocale ?? "ko"}
+            gameLocale={context.gameLocale}
             patchId={patchId || "v0.106.0"}
             variant={variant}
           />,

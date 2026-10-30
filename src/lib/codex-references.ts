@@ -17,6 +17,7 @@ import type {
 import { stripCodexMarkup } from "./codex-search";
 import { buildCompendiumResourceHref } from "./compendium-resource-links";
 import { getEncounterMonsterIds } from "./encounter-compositions";
+import { isMadScienceCardId } from "./tinker-time";
 
 export const FUTURE_OF_POTIONS_EVENT_ID = "THE_FUTURE_OF_POTIONS";
 export const FUTURE_OF_POTIONS_EVENT_NAME_KO = "포션의 미래?";
@@ -649,12 +650,29 @@ export function getRelatedEventIdsForCard(cardId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_CARD_IDS, cardId);
 }
 
+/** Events the card detail links to: the event relations, and Tinker Time for Mad Science cards. */
+export function getCardDetailEventIds(cardId: string): string[] {
+  return dedupeIds([
+    ...getRelatedEventIdsForCard(cardId),
+    ...(isMadScienceCardId(cardId) ? [TINKER_TIME_EVENT_ID] : []),
+  ]);
+}
+
 export function getRelatedEventIdsForRelic(relicId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_RELIC_IDS, relicId);
 }
 
 export function getRelatedEventIdsForPotion(potionId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_POTION_IDS, potionId);
+}
+
+/** Events the potion detail links to: The Future of Potions, the event relations, and Potion Courier for uncommon potions. */
+export function getPotionDetailEventIds(potion: Pick<CodexPotion, "id" | "rarity">): string[] {
+  return dedupeIds([
+    FUTURE_OF_POTIONS_EVENT_ID,
+    ...getRelatedEventIdsForPotion(potion.id),
+    ...(potion.rarity === "고급" ? ["POTION_COURIER"] : []),
+  ]);
 }
 
 export function getRelatedEventIdsForEnchantment(enchantmentId: string): readonly string[] {

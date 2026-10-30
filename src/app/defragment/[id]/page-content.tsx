@@ -41,7 +41,7 @@ export async function generateDefragmentPostMetadata(
     title,
     description,
     image,
-    canonicalPath: recordId ? `/defragment/${recordId}` : "/defragment",
+    canonicalPath: recordId ? `/defragment/${recordId}` : undefined,
   });
 }
 

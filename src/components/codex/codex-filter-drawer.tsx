@@ -1,6 +1,15 @@
 "use client";
 
-import { useEffect, useState, type HTMLAttributes, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import { cn } from "@/lib/utils";
 
@@ -160,6 +169,9 @@ export function CompendiumIndexScroller({
   );
 }
 
+/** Lets a loading stand-in ask its overlay to keep the scroll rail's gutter. */
+const ReserveRailGutterContext = createContext<(() => void) | null>(null);
+
 export function CompendiumDetailOverlay({
   children,
   onClose,
@@ -172,6 +184,11 @@ export function CompendiumDetailOverlay({
   onClose: () => void;
   zClassName?: string;
 } & HTMLAttributes<HTMLDivElement>) {
+  // GameScrollArea adds the desktop rail gutter only once content overflows.
+  // After a loading stand-in has been shown, keep that gutter so the frame does
+  // not move sideways when the full detail arrives and starts to overflow.
+  const [reserveRailGutter, setReserveRailGutter] = useState(false);
+  const requestRailGutter = useCallback(() => setReserveRailGutter(true), []);
   return (
     <div
       className={cn("fixed inset-0 bg-black/70 backdrop-blur-sm", zClassName, className)}
@@ -181,7 +198,7 @@ export function CompendiumDetailOverlay({
       {...rest}
     >
       <GameScrollArea
-        className="h-full"
+        className={cn("h-full", reserveRailGutter && "md:pr-[calc(var(--game-scroll-rail-width)+0.35rem)]")}
         size="large"
         scrollerClassName="min-h-full"
       >
@@ -191,9 +208,79 @@ export function CompendiumDetailOverlay({
             if (event.target === event.currentTarget) onClose();
           }}
         >
-          {children}
+          <ReserveRailGutterContext.Provider value={requestRailGutter}>
+            {children}
+          </ReserveRailGutterContext.Provider>
         </div>
       </GameScrollArea>
+    </div>
+  );
+}
+
+/**
+ * Stands in for a list modal's detail until the data chunks it reads have
+ * loaded, so the modal never shows partial rows or empty-result text.
+ */
+export function CompendiumDetailLoading({
+  title,
+  titleId,
+  backToListTitle,
+  closeLabel,
+  loadingLabel,
+  onClose,
+  className,
+  largeControls = false,
+}: {
+  title: string;
+  /** Id for the title, when the dialog is labelled by the detail's own heading id. */
+  titleId?: string;
+  backToListTitle: string;
+  closeLabel: string;
+  loadingLabel: string;
+  onClose: () => void;
+  /**
+   * The detail's own root width and padding, when they differ from the
+   * default, so the back link and close button stay put when it loads.
+   */
+  className?: string;
+  /** Use 44px header controls, for details whose header uses them. */
+  largeControls?: boolean;
+}) {
+  const requestRailGutter = useContext(ReserveRailGutterContext);
+  useLayoutEffect(() => {
+    requestRailGutter?.();
+  }, [requestRailGutter]);
+  return (
+    <div className={cn("mx-auto w-full max-w-6xl p-4 sm:p-6", className)} aria-busy="true">
+      <div className="mb-4 flex w-full items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          className={cn(
+            "text-sm text-gray-400 transition-colors hover:text-gray-200",
+            largeControls && "flex min-h-11 items-center",
+          )}
+        >
+          ← {backToListTitle}
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          className={cn(
+            "flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10",
+            largeControls && "h-11 w-11",
+          )}
+          aria-label={closeLabel}
+        >
+          ✕
+        </button>
+      </div>
+      <div className="flex min-h-[26rem] flex-col items-center justify-center gap-4 text-center">
+        <h2 id={titleId} className="font-game-title text-3xl font-bold text-gray-100 sm:text-4xl">{title}</h2>
+        <p className="font-service text-xs text-gray-500" aria-live="polite">
+          {loadingLabel}
+        </p>
+      </div>
     </div>
   );
 }

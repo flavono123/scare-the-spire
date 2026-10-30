@@ -125,28 +125,54 @@ test("redirect and canonical metadata match the public locale URL", async ({ req
   expect(gameLocaleModal.headers()["x-cf-static-page"]).toBe("compendium");
 
   // ko and en are each self-canonical with reciprocal ko/en/x-default alternates.
-  for (const [path, lang] of [
-    ["/compendium/powers/painful_stabs", "ko"],
-    ["/en/compendium/powers/painful_stabs", "en"],
+  // Modifier and ascension details share the same policy as other detail types.
+  for (const basePath of [
+    "/compendium/powers/painful_stabs",
+    "/compendium/modifiers/murderous",
+    "/compendium/ascensions/level_08",
   ]) {
-    const response = await request.get(absolute(path), { headers: { Accept: "text/html" } });
-    expect(response.status(), path).toBe(200);
-    const html = await response.text();
-    expect(html, path).toMatch(new RegExp(`<html[^>]* lang="${lang}"`));
-
-    await page.goto(absolute(path), { waitUntil: "domcontentloaded" });
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical(path));
-    for (const [hrefLang, alternatePath] of [
-      ["ko", "/compendium/powers/painful_stabs"],
-      ["en", "/en/compendium/powers/painful_stabs"],
-      ["x-default", "/en/compendium/powers/painful_stabs"],
+    for (const [path, lang] of [
+      [basePath, "ko"],
+      [`/en${basePath}`, "en"],
     ]) {
-      await expect(page.locator(`link[rel="alternate"][hreflang="${hrefLang}"]`)).toHaveAttribute(
-        "href",
-        canonical(alternatePath),
-      );
+      const response = await request.get(absolute(path), { headers: { Accept: "text/html" } });
+      expect(response.status(), path).toBe(200);
+      const html = await response.text();
+      expect(html, path).toMatch(new RegExp(`<html[^>]* lang="${lang}"`));
+
+      await page.goto(absolute(path), { waitUntil: "domcontentloaded" });
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical(path));
+      await expect(page.locator('meta[property="og:url"]')).toHaveAttribute("content", canonical(path));
+      for (const [hrefLang, alternatePath] of [
+        ["ko", basePath],
+        ["en", `/en${basePath}`],
+        ["x-default", `/en${basePath}`],
+      ]) {
+        await expect(page.locator(`link[rel="alternate"][hreflang="${hrefLang}"]`)).toHaveAttribute(
+          "href",
+          canonical(alternatePath),
+        );
+      }
     }
   }
+});
+
+test.describe("crawler on an en-US browser", () => {
+  test.use({
+    locale: "en-US",
+    userAgent: "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.137 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+  });
+
+  test("Googlebot keeps the ko page and its ko canonical after hydration", async ({ page }) => {
+    const path = "/compendium/cards/bash";
+    const response = await page.goto(absolute(path), { waitUntil: "networkidle" });
+    expect(response?.status()).toBe(200);
+    // A human en-US visitor is soft-navigated to /en here; a crawler is not.
+    await page.waitForTimeout(1_000);
+    expect(new URL(page.url()).pathname).toBe(path);
+    await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical(path));
+  });
 });
 
 test("compendium detail keeps its view on the canonical detail URL", async ({ page }) => {
@@ -290,6 +316,42 @@ test("static fallback keeps the former Next responses", async ({ request }) => {
     maxRedirects: 0,
   });
   expect(missingPost.status()).toBe(404);
+});
+
+test("record shells keep exactly one policy canonical set after hydration", async ({ page }) => {
+  await blockSupabase(page);
+  // A missing record also covers the worker's failed-lookup path: the search
+  // tags come from the request path alone. The worker uses the request origin.
+  for (const [path, canonicalPath] of [
+    [`/this-or-that/${MISSING_UUID}`, `/this-or-that/${MISSING_UUID}`],
+    [`/ja/this-or-that/${MISSING_UUID}`, `/en/this-or-that/${MISSING_UUID}`],
+  ]) {
+    const response = await page.goto(absolute(path), { waitUntil: "networkidle" });
+    expect(response?.status(), path).toBe(200);
+    expect(response?.headers()["x-cf-static-page"], path).toBe("shell");
+    await expect(page.locator('[data-static-detail-shell="pending"]')).toHaveCount(0);
+    await page.waitForTimeout(1_000);
+
+    const head = await page.evaluate(() => {
+      const pathOf = (value: string | null) => new URL(value ?? "", location.href).pathname;
+      return {
+        canonicals: [...document.querySelectorAll('link[rel="canonical"]')]
+          .map((link) => pathOf(link.getAttribute("href"))),
+        hrefLangs: [...document.querySelectorAll('link[rel="alternate"][hreflang]')]
+          .map((link) => `${link.getAttribute("hreflang")} ${pathOf(link.getAttribute("href"))}`)
+          .sort(),
+        ogUrls: [...document.querySelectorAll('meta[property="og:url"]')]
+          .map((meta) => pathOf(meta.getAttribute("content"))),
+      };
+    });
+    expect(head.canonicals, path).toEqual([canonicalPath]);
+    expect(head.ogUrls, path).toEqual([canonicalPath]);
+    expect(head.hrefLangs, path).toEqual([
+      `en /en/this-or-that/${MISSING_UUID}`,
+      `ko /this-or-that/${MISSING_UUID}`,
+      `x-default /en/this-or-that/${MISSING_UUID}`,
+    ]);
+  }
 });
 
 test("History Course invalid detail returns to its index with client navigation", async ({ page }) => {

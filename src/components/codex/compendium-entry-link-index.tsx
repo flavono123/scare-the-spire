@@ -19,6 +19,11 @@ const SUMMARY_LABEL = {
  * Plain links to every entry of a Compendium list. The interactive grid only
  * renders part of a list at a time, so this keeps every entry reachable from
  * the static HTML.
+ *
+ * The list shell above fills the viewport, so a visible bar here would make
+ * the page scroll and push the list header under the navbar. The index stays
+ * visually hidden (still in the HTML for crawlers and screen readers) and
+ * appears below the list once keyboard focus reaches its toggle.
  */
 export function CompendiumEntryLinkIndex({
   gameLocale,
@@ -36,7 +41,7 @@ export function CompendiumEntryLinkIndex({
   return (
     <nav
       aria-label={`${title} ${SUMMARY_LABEL[serviceLocale]}`}
-      className="border-t border-border bg-background px-4 py-3 text-foreground sm:px-6"
+      className="sr-only bg-background text-foreground focus-within:not-sr-only focus-within:border-t focus-within:border-border focus-within:px-4 focus-within:py-3 sm:focus-within:px-6"
     >
       <details className="group mx-auto max-w-[92rem]">
         <summary className="flex cursor-pointer list-none items-center gap-2 font-game-title text-sm font-bold text-gray-400 hover:text-gray-200">

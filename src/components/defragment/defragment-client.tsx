@@ -1,8 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { EntityInfo } from "@/components/patch-note-renderer";
+import {
+  prefetchAllEntityGraph,
+  useCompendiumEntitiesState,
+} from "@/components/codex/use-compendium-data";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { EntityGraphGate } from "@/components/entity-graph-gate";
 import { DefragmentIndexRow } from "@/components/defragment/defragment-index-row";
 import {
   DEFRAGMENT_AUTHOR_COL_CLASS,
@@ -50,7 +54,6 @@ import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 
 export function DefragmentClient({
-  entities,
   gameLocale,
   title,
   subtitle,
@@ -58,7 +61,6 @@ export function DefragmentClient({
   upgradeLabel,
   decisionsCopy,
 }: {
-  entities: EntityInfo[];
   gameLocale: GameLocale;
   title: string;
   subtitle: string;
@@ -85,6 +87,10 @@ export function DefragmentClient({
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
   const [typeFilter, setTypeFilter] = useState<DefragmentFederatedService | null>(null);
   const [composerOpen, setComposerOpen] = useState(false);
+  // Only the write panel's editors read the full graph: load it once the
+  // panel opens, and start early when the pointer or focus reaches the button.
+  const entityGraph = useCompendiumEntitiesState(gameLocale, { enabled: composerOpen });
+  const prefetchEntityGraph = useCallback(() => prefetchAllEntityGraph(gameLocale), [gameLocale]);
   const {
     items,
     loading,
@@ -180,6 +186,9 @@ export function DefragmentClient({
               type="button"
               aria-expanded={composerOpen}
               onClick={() => setComposerOpen((open) => !open)}
+              onPointerEnter={prefetchEntityGraph}
+              onFocus={prefetchEntityGraph}
+              onTouchStart={prefetchEntityGraph}
               className="group/create inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary shadow-[0_0_18px_rgba(122,78,14,0.08)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/15 hover:shadow-[0_6px_22px_rgba(122,78,14,0.12)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 motion-reduce:transform-none"
             >
               <Image
@@ -201,20 +210,27 @@ export function DefragmentClient({
       </header>
 
       {composerOpen && ready && !unavailable && (
-        <DefragmentWritePanel
-          entities={entities}
-          gameLocale={gameLocale}
-          placeholders={placeholders}
-          upgradeLabel={upgradeLabel}
-          profileNickname={profile.nickname}
-          typeLabels={typeLabels}
-          decisionsCopy={decisionsCopy}
-          onCreated={handleCreated}
-          onUnavailable={() => setUnavailable(true)}
-          ensureUser={ensureUser}
-          userId={userId}
-          authReady={ready}
-        />
+        <EntityGraphGate
+          status={entityGraph.status}
+          serviceLocale={serviceLocale}
+        >
+          {entityGraph.entities && (
+            <DefragmentWritePanel
+              entities={entityGraph.entities}
+              gameLocale={gameLocale}
+              placeholders={placeholders}
+              upgradeLabel={upgradeLabel}
+              profileNickname={profile.nickname}
+              typeLabels={typeLabels}
+              decisionsCopy={decisionsCopy}
+              onCreated={handleCreated}
+              onUnavailable={() => setUnavailable(true)}
+              ensureUser={ensureUser}
+              userId={userId}
+              authReady={ready}
+            />
+          )}
+        </EntityGraphGate>
       )}
 
       {!loading && !unavailable && (

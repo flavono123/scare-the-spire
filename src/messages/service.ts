@@ -20,8 +20,7 @@ export const serviceMessages = {
     patchNotes: {
       indexTitle: "패치 노트",
       indexHeading: "슬더스2 패치노트",
-      detailTitle: "슬더스2 {version} {type} 패치노트 – 슬레이 더 스파이어 2",
-      detailHeading: "슬더스2 {version} {type} 패치노트",
+      detailTitle: "{version} {type} 패치노트",
       richDetails: "변경된 카드·유물 이름을 선택하면 상세 정보와 버전별 변경 이력을 확인할 수 있습니다.",
     },
     neowsletters: {
@@ -187,6 +186,10 @@ export const serviceMessages = {
       submit: "작성",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
+    entityGraph: {
+      unavailable: "게임 요소 목록을 불러오지 못했습니다",
+      retry: "다시 시도",
+    },
     cardCon: {
       label: "카드콘",
       make: "카드콘 만들기",
@@ -233,6 +236,7 @@ export const serviceMessages = {
       reference: {
         loading: "참조한 변경 항목을 불러오는 중...",
         unavailable: "참조한 변경 항목을 찾지 못했습니다",
+        failed: "참조한 변경 항목을 불러오지 못했습니다",
       },
       composer: {
         success: "이야기를 작성했습니다",
@@ -269,6 +273,7 @@ export const serviceMessages = {
         stable: "안정",
         hotfix: "핫픽스",
         wither: "시듦",
+        gambit: "포석",
       },
       goToPatch: "여기로 이동",
       storyCount: "이 변경의 이야기 {count}개",
@@ -1466,8 +1471,7 @@ export const serviceMessages = {
     patchNotes: {
       indexTitle: "Patch Notes",
       indexHeading: "STS2 Patch Notes",
-      detailTitle: "STS2 {version} {type} Patch Notes – Slay the Spire 2",
-      detailHeading: "STS2 {version} {type} Patch Notes",
+      detailTitle: "{version} {type} Patch Notes",
       richDetails: "Select a changed card or relic to view its details and version history.",
     },
     globalSearch: {
@@ -1623,6 +1627,10 @@ export const serviceMessages = {
       submit: "Post",
       unavailableTitle: "No responses from database",
     },
+    entityGraph: {
+      unavailable: "Could not load the game element list",
+      retry: "Retry",
+    },
     cardCon: {
       label: "card emoji",
       make: "card emoji",
@@ -1669,6 +1677,7 @@ export const serviceMessages = {
       reference: {
         loading: "Loading the referenced patch change...",
         unavailable: "Referenced patch change not found",
+        failed: "Could not load the referenced patch change",
       },
       composer: {
         success: "Story published",
@@ -1705,6 +1714,7 @@ export const serviceMessages = {
         stable: "Stable",
         hotfix: "Hotfix",
         wither: "Wither",
+        gambit: "The Gambit",
       },
       goToPatch: "Go here",
       storyCount: "{count} stories for this change",

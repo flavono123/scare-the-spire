@@ -7,6 +7,7 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
@@ -94,14 +95,12 @@ function getRelicDetailLabels(serviceLocale: ServiceLocale) {
     ? {
         englishName: "영어명",
         gameText: "게임 문구",
-        patchHistory: "패치 이력",
-        noPatchHistory: "구조화 변경 없음",
+        ...getDetailPatchHistoryLabels("ko"),
       }
     : {
         englishName: "English name",
         gameText: "Game text",
-        patchHistory: "Patch History",
-        noPatchHistory: "No structured changes",
+        ...getDetailPatchHistoryLabels("en"),
       };
 }
 

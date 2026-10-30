@@ -9,6 +9,7 @@ import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { serviceMessages } from "@/messages/service";
 import { HOVER_TIP_TITLE_COLOR } from "@/lib/hover-tip-chrome";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -2166,8 +2167,8 @@ export function EventDetail({
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = serviceLocale === "ko"
-    ? { englishName: "영어명", patchHistory: "패치 이력", noPatchHistory: "구조화 변경 없음" }
-    : { englishName: "English name", patchHistory: "Patch History", noPatchHistory: "No structured changes" };
+    ? { englishName: "영어명", ...getDetailPatchHistoryLabels("ko") }
+    : { englishName: "English name", ...getDetailPatchHistoryLabels("en") };
   const isModal = Boolean(onClose);
   const profile = useStoredUserProfile();
   const selectedCharacter = useMemo(

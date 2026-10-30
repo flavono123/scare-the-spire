@@ -38,6 +38,7 @@ import {
 } from "@/lib/codex-search";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
+import { serviceMessages } from "@/messages/service";
 import {
   FilterSection,
   IconFilterButton,
@@ -50,6 +51,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -105,6 +107,8 @@ interface EpochLibraryProps {
   currentVersion?: string;
   entities?: EntityInfo[];
   initialShowBeta?: boolean;
+  /** False until the data chunks settle; the detail modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
 function isBetaArtParamEnabled(value: string | null): boolean {
@@ -127,6 +131,7 @@ export function EpochLibrary({
   currentVersion,
   entities,
   initialShowBeta = false,
+  detailsReady = true,
 }: EpochLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
@@ -502,21 +507,32 @@ export function EpochLibrary({
       {selectedEpoch && (
         <CompendiumDetailOverlay onClose={() => setSelectedEpoch(null)} aria-label={selectedEpoch.name}>
           <div className="mx-4 my-4 w-full max-w-[92rem]">
-            <EpochDetail
-              serviceLocale={serviceLocale}
-              gameUi={gameUi}
-              backToListTitle={gameUi.epochsTitle}
-              epoch={selectedEpoch}
-              cards={cards}
-              relics={relics}
-              potions={potions}
-              ancients={ancients}
-              epochs={versionedEpochs}
-              entities={entities}
-              initialShowBeta={activeShowBeta}
-              onShowBetaChange={setBetaArt}
-              onClose={() => setSelectedEpoch(null)}
-            />
+            {detailsReady ? (
+              <EpochDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                backToListTitle={gameUi.epochsTitle}
+                epoch={selectedEpoch}
+                cards={cards}
+                relics={relics}
+                potions={potions}
+                ancients={ancients}
+                epochs={versionedEpochs}
+                entities={entities}
+                initialShowBeta={activeShowBeta}
+                onShowBetaChange={setBetaArt}
+                onClose={() => setSelectedEpoch(null)}
+              />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedEpoch.name}
+                backToListTitle={gameUi.epochsTitle}
+                closeLabel={serviceText.common.close}
+                loadingLabel={serviceMessages[serviceLocale].comments.loading}
+                onClose={() => setSelectedEpoch(null)}
+                className="max-w-[92rem] p-3 sm:p-4"
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}

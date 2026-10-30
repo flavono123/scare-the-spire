@@ -37,7 +37,11 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { getContactHref } from "@/lib/contact-routing";
-import { detectGameLocaleFromNavigator } from "@/lib/locale-detection";
+import { getGameOnlyCompendiumDetailFallbackHref } from "@/lib/compendium-resource-links";
+import {
+  detectGameLocaleFromNavigator,
+  isSearchCrawlerUserAgent,
+} from "@/lib/locale-detection";
 import {
   globalSearchItemScore,
   globalSearchResultKey,
@@ -134,7 +138,9 @@ function languageHref(
 ) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const search = withGameLocaleSearch(searchParams, gameLocale, serviceLocale);
-  return switchGameLocaleHref(pathname, gameLocale, search);
+  const href = switchGameLocaleHref(pathname, gameLocale, search);
+  // Game-only locales have no Compendium detail pages; open the entry on its list.
+  return getGameOnlyCompendiumDetailFallbackHref(href) ?? href;
 }
 
 function readCookie(name: string): string | null {
@@ -359,6 +365,8 @@ function InitialLocaleDetector() {
     if (hasGameLocalePathPrefix(pathname)) return;
     if (searchParams.has("gl")) return;
     if (getLocalePreference()) return;
+    // Crawlers index the requested language page; never switch it for them.
+    if (isSearchCrawlerUserAgent(navigator.userAgent)) return;
 
     const currentHash = window.location.hash;
     const detectedGameLocale = detectGameLocaleFromNavigator(navigator);

@@ -8,6 +8,7 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -69,14 +70,12 @@ function getAncientDetailLabels(serviceLocale: ServiceLocale) {
     ? {
         englishName: "영어명",
         englishEpithet: "영어 이명",
-        patchHistory: "패치 이력",
-        noPatchHistory: "구조화 변경 없음",
+        ...getDetailPatchHistoryLabels("ko"),
       }
     : {
         englishName: "English name",
         englishEpithet: "English epithet",
-        patchHistory: "Patch History",
-        noPatchHistory: "No structured changes",
+        ...getDetailPatchHistoryLabels("en"),
       };
 }
 
@@ -196,6 +195,15 @@ export function AncientDetail({
           <div ref={assetCopyTargetRef} className="w-full">
           <AncientSceneStage ancient={ancient}>
             <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[42%] text-left sm:bottom-5 sm:left-6">
+              {rewardRelics.length === 0 && (
+                // Without the reward panel the title sits above the epithet, not on it.
+                <h1
+                  id={`ancient-detail-title-${ancient.id.toLowerCase()}`}
+                  className="font-game-title text-xl font-bold text-[#efc850] [text-shadow:0_3px_0_rgba(0,0,0,0.9),0_0_12px_rgba(0,0,0,0.8)] sm:text-3xl"
+                >
+                  {ancient.name}
+                </h1>
+              )}
               {ancient.epithet && (
                 <p className="truncate font-game-text text-xs italic text-[#fff6e2] [text-shadow:0_2px_0_rgba(0,0,0,0.95)] sm:text-base">
                   &ldquo;{ancient.epithet}&rdquo;
@@ -211,7 +219,7 @@ export function AncientDetail({
               excludeSelf={excludeSelf}
               className="z-10 sm:pr-[min(32rem,48%)]"
             />
-            {rewardRelics.length > 0 ? (
+            {rewardRelics.length > 0 && (
               <div className="dark pointer-events-auto absolute inset-x-4 bottom-4 top-4 z-50 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]">
                 <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
                 <div className="relative flex min-h-0 flex-1 flex-col gap-2">
@@ -239,13 +247,6 @@ export function AncientDetail({
                   </GameScrollArea>
                 </div>
               </div>
-            ) : (
-              <h1
-                id={`ancient-detail-title-${ancient.id.toLowerCase()}`}
-                className="pointer-events-none absolute bottom-3 left-3 z-20 font-game-title text-xl font-bold text-[#efc850] [text-shadow:0_3px_0_rgba(0,0,0,0.9),0_0_12px_rgba(0,0,0,0.8)] sm:bottom-5 sm:left-6 sm:text-3xl"
-              >
-                {ancient.name}
-              </h1>
             )}
           </AncientSceneStage>
           </div>

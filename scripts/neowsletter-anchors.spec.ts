@@ -29,7 +29,26 @@ const ko = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, "2026-08
 const en = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, "2026-08.md"), "utf8"));
 const ascension = ko.claims.find((claim) => claim.id === "ascension-10");
 assert.equal(neowsletterBodyLines(ascension?.markdown ?? "").length, 2);
-assert.equal(neowsletterBodyLines(ascension?.markdown ?? "")[1]?.startsWith("Casey:"), true);
+assert.equal(neowsletterBodyLines(ascension?.markdown ?? "")[1]?.startsWith("[b]Casey:[/b]"), true);
+
+// Emphasis uses [b], [i], and [s]. Bare ** paints gold and bare * or ~~ prints
+// literally. Both locales carry the original's spans claim by claim.
+function emphasisTags(markdown: string): string {
+  return (markdown.match(/\[[bis]\]/g) ?? []).sort().join("");
+}
+for (const file of fs.readdirSync(notesDir).filter((name) => name.endsWith(".ko.md"))) {
+  const id = file.replace(".ko.md", "");
+  const koMarkdown = fs.readFileSync(path.join(notesDir, file), "utf8");
+  const enMarkdown = fs.readFileSync(path.join(notesDir, `${id}.md`), "utf8");
+  for (const markdown of [koMarkdown, enMarkdown]) {
+    const prose = markdown.split("\n").filter((line) => neowsletterLineKind(line) === "body").join("\n");
+    assert.equal(/\*\*[^*\s]|~~/.test(prose), false, `${id} still has ** or ~~`);
+  }
+  const enClaims = new Map(splitNeowsletterDocument(enMarkdown).claims.map((claim) => [claim.id, claim.markdown]));
+  for (const claim of splitNeowsletterDocument(koMarkdown).claims) {
+    assert.equal(emphasisTags(claim.markdown), emphasisTags(enClaims.get(claim.id) ?? ""), `${id}#${claim.id} emphasis differs`);
+  }
+}
 
 const september = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, "2026-09.ko.md"), "utf8"));
 const septemberEn = splitNeowsletterDocument(fs.readFileSync(path.join(notesDir, "2026-09.md"), "utf8"));

@@ -31,6 +31,7 @@ const EFFECT_CLASSES: Record<string, string> = {
   rainbow: "rich-rainbow",
   b: "font-bold",
   i: "italic",
+  s: "line-through",
 };
 
 // All recognized tags (color + effect)
@@ -49,13 +50,15 @@ interface TextNode {
 
 type SineOffset = { current: number };
 
+// Spaces are plain inline .rich-sine-space spans, so a sine phrase wraps only at
+// its spaces, even across color tags (see .rich-sine in globals.css).
 function renderSineText(text: string, keyPrefix: string, offset: SineOffset): ReactNode[] {
   return Array.from(text).map((char, i) => {
     const index = offset.current++;
     return (
       <span
         key={`${keyPrefix}-sine-${i}`}
-        className="rich-sine-letter"
+        className={char === " " ? "rich-sine-space" : "rich-sine-letter"}
         style={{ "--rich-sine-index": index } as CSSProperties}
       >
         {char}

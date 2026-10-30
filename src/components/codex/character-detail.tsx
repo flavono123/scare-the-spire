@@ -10,6 +10,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { getCharacterReferenceLabels, getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
@@ -112,10 +113,7 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
     ? {
         englishName: "영어명",
-        startingCards: "시작 카드",
-        dedicatedRelicsAndPotions: "전용 유물, 포션",
-        relics: "유물",
-        potions: "포션",
+        ...getCharacterReferenceLabels("ko"),
         unlocksAfter: "{name} 플레이 후 해금",
         gameText: "게임 문구",
         quoteContexts: {
@@ -138,16 +136,12 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
         },
         ancientInteractions: "고대의 존재 상호작용",
         interactionCount: "{count}개",
-        patchHistory: "패치 이력",
-        noPatchHistory: "구조화 변경 없음",
+        ...getDetailPatchHistoryLabels("ko"),
         lowHealthIdle: "낮은 체력",
       }
     : {
         englishName: "English name",
-        startingCards: "Starting Cards",
-        dedicatedRelicsAndPotions: "Character Relics & Potions",
-        relics: "Relics",
-        potions: "Potions",
+        ...getCharacterReferenceLabels("en"),
         unlocksAfter: "Unlocked after playing {name}",
         gameText: "Game text",
         quoteContexts: {
@@ -170,8 +164,7 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
         },
         ancientInteractions: "Ancient Interactions",
         interactionCount: "{count}",
-        patchHistory: "Patch History",
-        noPatchHistory: "No structured changes",
+        ...getDetailPatchHistoryLabels("en"),
         lowHealthIdle: "Low HP",
       };
 }

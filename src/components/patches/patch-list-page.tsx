@@ -13,7 +13,8 @@ import {
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { getPatchVersionLabel, isPatchDraft, isWitherPatch } from "@/lib/sts2-patch-labels";
+import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
+import { getPatchShell } from "@/lib/patch-shells";
 import { resolvePatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
@@ -27,11 +28,10 @@ import { RichText } from "@/components/rich-text";
 import {
   WITHER_PATCH_CARD_CLASS,
   WITHER_PATCH_DATE_CLASS,
-  WITHER_PATCH_HERO,
   WITHER_PATCH_HERO_CLASS,
   WITHER_PATCH_TITLE_CLASS,
-  WITHER_TITLE_TOKEN,
 } from "@/lib/wither-patch-shell";
+import { cn } from "@/lib/utils";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
 const PATCH_COPY: Record<ServiceLocale, {
@@ -50,6 +50,7 @@ const PATCH_COPY: Record<ServiceLocale, {
       stable: "안정",
       hotfix: "핫픽스",
       wither: "시듦",
+      gambit: "포석",
     },
   },
   en: {
@@ -62,6 +63,7 @@ const PATCH_COPY: Record<ServiceLocale, {
       stable: "Stable",
       hotfix: "Hotfix",
       wither: "Wither",
+      gambit: "The Gambit",
     },
   },
 };
@@ -178,7 +180,7 @@ export async function PatchListPage({
           const watchStage = isWatching ? patchWatchStage(patch) : null;
           const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
           const draft = isPatchDraft(patch);
-          const wither = isWitherPatch(patch);
+          const shell = getPatchShell(patch);
 
           if (isWatching) {
             const isDelay = watchStage === "delay";
@@ -275,7 +277,7 @@ export async function PatchListPage({
             );
           }
 
-          if (wither) {
+          if (shell) {
             return (
               <Link
                 key={patch.id}
@@ -286,11 +288,11 @@ export async function PatchListPage({
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                   <span className="inline-flex min-w-0 items-center gap-2">
                     <Image
-                      src={WITHER_TITLE_TOKEN.src}
-                      alt={WITHER_TITLE_TOKEN.alt[serviceLocale]}
+                      src={shell.titleToken.src}
+                      alt={shell.titleToken.alt[serviceLocale]}
                       width={24}
                       height={24}
-                      className="h-6 w-6 shrink-0 object-contain grayscale"
+                      className={cn("h-6 w-6 shrink-0 object-contain", shell.titleTokenClassName)}
                     />
                     <span className={`${WITHER_PATCH_TITLE_CLASS} text-lg`}>
                       {serviceLocale === "ko" ? patch.titleKo : patch.title}
@@ -303,10 +305,10 @@ export async function PatchListPage({
                   />
                 </div>
                 <div className={`mt-1 ${WITHER_PATCH_HERO_CLASS}`}>
-                  <RichText text={WITHER_PATCH_HERO[serviceLocale]} />
+                  <RichText text={shell.hero[serviceLocale]} />
                 </div>
                 <p className={`mt-0.5 ${WITHER_PATCH_DATE_CLASS}`}>{patch.date}</p>
-                {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} tone="wither" />}
+                {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} tone="shell" />}
               </Link>
             );
           }

@@ -3,8 +3,9 @@ import net from "node:net";
 import os from "node:os";
 import path from "node:path";
 import fs from "node:fs/promises";
-import { createReadStream, watch } from "node:fs";
+import { createReadStream, rmSync, watch } from "node:fs";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
+import { BUILD_RECORD_FILE } from "./build-record.mjs";
 
 const root = process.cwd();
 const preferredProxyPort = Number(process.env.PORT ?? 3000);
@@ -226,6 +227,8 @@ function runQueuedPatchReloads() {
   patchReloadRunning = true;
   const jobs = [...patchReloadQueue];
   patchReloadQueue.clear();
+  // A partial rebuild leaves .patch-worker unlike any patch:build output.
+  rmSync(path.join(root, ".patch-worker", BUILD_RECORD_FILE), { force: true });
   const next = () => {
     const command = jobs.shift();
     if (!command) {

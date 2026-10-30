@@ -2,7 +2,11 @@
 
 import type { ComponentProps } from "react";
 import { CharacterList } from "./character-list";
-import { useCompendiumData, useCompendiumEntities } from "./use-compendium-data";
+import {
+  compendiumDetailsSettled,
+  useCompendiumDataState,
+  useCompendiumEntitiesState,
+} from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import type { GameLocale } from "@/lib/i18n";
 
@@ -15,17 +19,22 @@ const LAZY_DATA_KEYS = [
   "versionDiffs",
 ] as const satisfies readonly CompendiumDataKey[];
 
-type CharacterListLoaderProps = Omit<ComponentProps<typeof CharacterList>, "cards" | "relics" | "potions" | "ancients" | "changes" | "versionDiffs" | "entities"> & {
+type CharacterListLoaderProps = Omit<ComponentProps<typeof CharacterList>, "cards" | "relics" | "potions" | "ancients" | "changes" | "versionDiffs" | "entities" | "detailsReady"> & {
   gameLocale: GameLocale;
 };
 
-/** Renders CharacterList from its server props and fills in the rest once the data chunks load. */
+/**
+ * Renders CharacterList from its server props and fills in the rest once the
+ * data chunks load. The detail modal waits for them, since its starter deck,
+ * relics, potions, keyword links, and history come from the chunks.
+ */
 export function CharacterListLoader({ gameLocale, ...props }: CharacterListLoaderProps) {
-  const data = useCompendiumData(gameLocale, LAZY_DATA_KEYS);
-  const entities = useCompendiumEntities(gameLocale);
+  const { data, status: dataStatus } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
+  const { entities, status: entitiesStatus } = useCompendiumEntitiesState(gameLocale);
   return (
     <CharacterList
       {...props}
+      detailsReady={compendiumDetailsSettled(dataStatus, entitiesStatus)}
       cards={data?.cards}
       relics={data?.relics}
       potions={data?.potions}

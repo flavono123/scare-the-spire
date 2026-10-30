@@ -527,6 +527,9 @@ function monsterMoveTitleText(
     const title = table[`${monsterId}.moves.${candidate}.title`];
     if (title) return title;
   }
+  // Moves every monster shares (STUNNED) are titled once under GENERIC.
+  const genericTitle = table[`GENERIC.moves.${moveId}.title`];
+  if (genericTitle) return genericTitle;
   if (gameLocale === "kor") return MONSTER_MOVE_TITLE_PATCH_NOTE_KO[`${monsterId}.${moveId}`] ?? fallback;
   return fallback;
 }
@@ -2411,7 +2414,11 @@ function mapMonster(
   const spineAsset = placeholderArt ? null : (spineAssets.get(kor.id) ?? null);
   const phobiaModeAsset = phobiaModeAssets.get(kor.id) ?? null;
   const phobiaModeImageUrl = phobiaModeAsset?.imageUrl ?? null;
-  const engMovesById = new Map(eng.moves.map((move) => [move.id, move]));
+  // Bestiary-only moves (STUNNED, WAKE_UP) have their English names only in
+  // eng bestiary_moves; combat moves win when an id is in both.
+  const engMovesById = new Map(
+    [...(eng.bestiary_moves ?? []), ...eng.moves].map((move) => [move.id, move]),
+  );
   const mapPowerApplications = (applications: RawMonsterMovePowerApplication[] | undefined): MonsterMovePowerApplication[] =>
     (applications ?? []).map((application) => {
       const display = powerDisplays.get(application.power_id);

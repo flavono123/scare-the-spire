@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import {
+  type CompendiumLazyDataStatus,
+  useCompendiumEntitiesState,
+} from "@/components/codex/use-compendium-data";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import type { GameLocale } from "@/lib/i18n";
+
+/** comment-entities-sts2.json is built from the Korean graph. */
+const KOREAN_GAME_LOCALE: GameLocale = "kor";
 
 let cachedEntities: EntityInfo[] | null = null;
 let pendingEntities: Promise<EntityInfo[]> | null = null;
@@ -72,11 +80,54 @@ async function fetchSts2CommentEntities(): Promise<EntityInfo[]> {
   return pendingEntities;
 }
 
+/**
+ * Mention/link entities for comment editors and rendered comments.
+ *
+ * By default the Korean comment-entities file is merged into
+ * `initialEntities` as aliases. With `gameLocale`, the primary list is that
+ * locale's full entity graph and the Korean graph supplies the aliases (the
+ * same data as the Korean file), so a page no longer has to ship the graph in
+ * its props; `loading` lasts until both graphs have arrived or failed (the
+ * Korean aliases resolve legacy mentions and feed the editor suggestions, so
+ * nothing renders from the primary graph alone), and `failed` is set while
+ * either graph has failed (until a retry starts, which goes back to
+ * `loading`), so the caller can show a retry notice instead of unresolved
+ * mentions. The default path never fails: without the file it keeps
+ * `initialEntities`.
+ */
 export function useCommentEntities(
   initialEntities?: EntityInfo[],
-  options: { enabled?: boolean } = {},
+  options: { enabled?: boolean; gameLocale?: GameLocale } = {},
 ) {
   const enabled = options.enabled ?? true;
+  const gameLocale = options.gameLocale;
+  const fileEntities = useFileCommentEntities(initialEntities, enabled && !gameLocale);
+  const graphEntities = useGraphCommentEntities(gameLocale, enabled);
+  return gameLocale ? graphEntities : fileEntities;
+}
+
+function graphSettled(status: CompendiumLazyDataStatus): boolean {
+  return status === "loaded" || status === "failed";
+}
+
+function useGraphCommentEntities(gameLocale: GameLocale | undefined, enabled: boolean) {
+  const graphEnabled = enabled && Boolean(gameLocale);
+  const primary = useCompendiumEntitiesState(gameLocale ?? KOREAN_GAME_LOCALE, { enabled: graphEnabled });
+  const fallback = useCompendiumEntitiesState(KOREAN_GAME_LOCALE, { enabled: graphEnabled });
+  const primaryEntities = primary.entities;
+  const fallbackEntities = fallback.entities;
+  const entities = useMemo(
+    () => mergeCommentEntities(primaryEntities ?? [], fallbackEntities ?? []),
+    [fallbackEntities, primaryEntities],
+  );
+  return {
+    entities,
+    loading: graphEnabled && !(graphSettled(primary.status) && graphSettled(fallback.status)),
+    failed: graphEnabled && (primary.status === "failed" || fallback.status === "failed"),
+  };
+}
+
+function useFileCommentEntities(initialEntities: EntityInfo[] | undefined, enabled: boolean) {
   const hasInitialEntities = !!initialEntities?.length;
   const [fallbackEntities, setFallbackEntities] = useState<EntityInfo[] | null>(() => cachedEntities);
   const [loadFinished, setLoadFinished] = useState(() => Boolean(cachedEntities));
@@ -110,5 +161,6 @@ export function useCommentEntities(
   return {
     entities,
     loading: enabled && !hasInitialEntities && !fallbackEntities && !loadFinished,
+    failed: false,
   };
 }

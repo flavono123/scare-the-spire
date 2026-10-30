@@ -1,18 +1,89 @@
 import Image from "@/components/ui/static-image";
 import { RichText } from "@/components/rich-text";
+import { cn } from "@/lib/utils";
 import type {
   CompendiumStaticDetailModel,
+  StaticDetailKind,
   StaticDetailLink,
 } from "@/lib/compendium-static-detail";
 
 // Server-rendered Compendium detail: the text and links crawlers read without
 // running JavaScript. Plain anchors keep the RSC payload small.
 
-function StaticLink({ link }: { link: StaticDetailLink }) {
+type DetailFrame = {
+  root: string;
+  backRow: string;
+  backLink: string;
+};
+
+const BACK_LINK = "text-sm text-gray-400 transition-colors hover:text-gray-200";
+const NARROW_FRAME: DetailFrame = {
+  root: "mx-auto w-full max-w-5xl p-4 sm:p-6",
+  backRow: "mb-4 flex items-center justify-between gap-3",
+  backLink: BACK_LINK,
+};
+
+// The page container and back-link row of each interactive detail on its
+// direct page (*-detail.tsx, not in a modal), so the back link and the start
+// of the content do not move when the interactive detail replaces this one.
+const DETAIL_FRAMES: Record<StaticDetailKind, DetailFrame> = {
+  card: {
+    root: "mx-auto w-full max-w-6xl min-w-0 overflow-x-hidden p-4 sm:p-6",
+    backRow: "mb-4 flex w-full items-center justify-between gap-3",
+    backLink: BACK_LINK,
+  },
+  relic: NARROW_FRAME,
+  potion: NARROW_FRAME,
+  power: NARROW_FRAME,
+  enchantment: NARROW_FRAME,
+  affliction: NARROW_FRAME,
+  keyword: NARROW_FRAME,
+  event: {
+    root: "mx-auto w-full max-w-[92rem] p-4 sm:p-6",
+    backRow: "flex items-center justify-between gap-3",
+    backLink: BACK_LINK,
+  },
+  epoch: {
+    root: "mx-auto w-full max-w-[92rem] p-4 sm:p-6",
+    backRow: "mb-4 flex items-center justify-between gap-3",
+    backLink: BACK_LINK,
+  },
+  monster: {
+    root: "mx-auto w-full max-w-6xl p-4 sm:p-6 xl:max-w-7xl",
+    backRow: "mb-4 flex w-full items-center justify-between gap-3",
+    backLink: BACK_LINK,
+  },
+  encounter: {
+    root: "mx-auto w-full max-w-6xl p-4 sm:p-6",
+    backRow: "mb-4 flex w-full items-center justify-between gap-3",
+    backLink: BACK_LINK,
+  },
+  ancient: {
+    root: "mx-auto w-full max-w-6xl p-4 sm:p-6",
+    backRow: "mb-4 flex items-center justify-between gap-3",
+    backLink: `flex min-h-11 items-center ${BACK_LINK}`,
+  },
+  character: {
+    root: "mx-auto w-full max-w-6xl p-4 sm:p-6",
+    backRow: "mb-4 flex items-center justify-between gap-3",
+    backLink: BACK_LINK,
+  },
+};
+
+function StaticLink({ link, oneLine = false }: { link: StaticDetailLink; oneLine?: boolean }) {
   return (
     <a
       href={link.href}
-      className="font-game-title font-semibold spire-gold underline decoration-primary/30 underline-offset-2 transition-colors hover:text-primary"
+      title={oneLine ? link.label : undefined}
+      className={cn(
+        "font-game-title font-semibold spire-gold underline decoration-primary/30 underline-offset-2 transition-colors hover:text-primary",
+        // The link itself is the truncated box: the ellipsis takes its colour,
+        // and no ancestor clips its focus ring. -mx-1 px-1 (and max-width
+        // 100% + 0.5rem) keep the text on the cell while leaving 4px of the
+        // link's own clip box for glyphs and the underline end that overhang
+        // the advance width.
+        oneLine && "-mx-1 block w-fit max-w-[calc(100%+0.5rem)] truncate px-1",
+      )}
     >
       {link.label}
     </a>
@@ -20,106 +91,120 @@ function StaticLink({ link }: { link: StaticDetailLink }) {
 }
 
 export function CompendiumStaticDetail({ model }: { model: CompendiumStaticDetailModel }) {
+  const frame = DETAIL_FRAMES[model.kind];
   return (
-    <main className="min-h-screen bg-background text-foreground" data-compendium-static-detail="">
-      <article className="mx-auto flex w-full max-w-4xl flex-col gap-5 p-4 sm:p-6">
-        <a
-          href={model.back.href}
-          className="w-fit text-sm text-gray-400 transition-colors hover:text-gray-200"
-        >
-          ← {model.back.label}
-        </a>
+    // font-service here, not only on <body>: text that inherits its font must
+    // resolve this root's font tokens, the font-display: optional faces that do
+    // not swap while this static detail is shown (globals.css).
+    <main className="min-h-screen bg-background font-service text-foreground" data-compendium-static-detail="">
+      <article className={frame.root}>
+        <div className={frame.backRow}>
+          <a href={model.back.href} className={frame.backLink}>
+            ← {model.back.label}
+          </a>
+        </div>
 
-        <header className="flex items-center gap-4">
-          {model.imageUrl && (
-            <Image
-              src={model.imageUrl}
-              alt={model.title}
-              width={96}
-              height={96}
-              loading="eager"
-              className="max-h-24 max-w-24 shrink-0 object-contain drop-shadow-lg"
-            />
-          )}
-          <div className="min-w-0">
-            <p className="font-service text-xs text-gray-500">{model.kindLabel}</p>
-            <h1 className="font-game-title text-3xl font-bold text-gray-100 sm:text-4xl">
-              {model.title}
-            </h1>
-            {model.altTitle && (
-              <p className="font-game-text text-sm text-gray-400">{model.altTitle}</p>
+        <div className="flex max-w-4xl flex-col gap-5">
+          <header className="flex items-center gap-4">
+            {model.imageUrl && (
+              <Image
+                src={model.imageUrl}
+                alt={model.title}
+                width={96}
+                height={96}
+                loading="eager"
+                className="size-24 shrink-0 object-contain drop-shadow-lg"
+              />
             )}
-          </div>
-        </header>
+            <div className="min-w-0">
+              <p className="font-service text-xs text-gray-500">{model.kindLabel}</p>
+              <h1 className="font-game-title break-words break-keep text-2xl font-bold text-gray-100 min-[375px]:text-3xl sm:text-4xl">
+                {model.title}
+              </h1>
+              {model.epithet && (
+                <p className="font-game-text text-sm italic text-gray-300">&ldquo;{model.epithet}&rdquo;</p>
+              )}
+              {model.altTitle && (
+                <p className="font-game-text text-sm text-gray-400">{model.altTitle}</p>
+              )}
+            </div>
+          </header>
 
-        {model.facts.length > 0 && (
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-2 rounded-lg border border-border bg-compendium-rail p-4 sm:grid-cols-4">
-            {model.facts.map((fact) => (
-              <div key={fact.label} className="min-w-0">
-                <dt className="font-service text-xs text-gray-500">{fact.label}</dt>
-                <dd className="font-game-text text-sm text-gray-200">
-                  {fact.href ? <StaticLink link={{ href: fact.href, label: fact.value }} /> : fact.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        )}
+          {model.facts.length > 0 && (
+            <dl className="grid grid-cols-2 gap-x-6 gap-y-2 rounded-lg border border-border bg-compendium-rail p-4 sm:grid-cols-4">
+              {model.facts.map((fact) => (
+                <div key={fact.label} className="min-w-0">
+                  <dt className="font-service text-xs text-gray-500">{fact.label}</dt>
+                  <dd className="font-game-text text-sm text-gray-200">
+                    {fact.href ? <StaticLink link={{ href: fact.href, label: fact.value }} /> : fact.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          )}
 
-        {model.texts.map((block) => (
-          <section key={block.heading} className="flex flex-col gap-1.5">
-            <h2 className="font-game-title text-base font-bold text-foreground">{block.heading}</h2>
-            <p className="font-game-text text-sm leading-relaxed text-gray-300 sm:text-base">
-              <RichText text={block.text} />
-            </p>
-          </section>
-        ))}
+          {model.texts.map((block, index) => (
+            <section key={block.heading ?? `text-${index}`} className="flex flex-col gap-1.5">
+              {block.heading && (
+                <h2 className="font-game-title text-base font-bold text-foreground">{block.heading}</h2>
+              )}
+              <p className="font-game-text text-sm leading-relaxed text-gray-300 sm:text-base">
+                <RichText text={block.text} />
+              </p>
+            </section>
+          ))}
 
-        {model.linkGroups.length > 0 && (
-          <section className="flex flex-col gap-3 rounded-lg border border-border bg-compendium-rail p-4">
-            <h2 className="font-game-title text-base font-bold text-foreground">{model.labels.related}</h2>
-            {model.linkGroups.map((group) => (
-              <nav key={group.heading} aria-label={group.heading} className="flex flex-col gap-1">
-                <h3 className="font-service text-xs text-gray-500">{group.heading}</h3>
-                <ul className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
-                  {group.links.map((link) => (
-                    <li key={link.href}>
-                      <StaticLink link={link} />
+          {model.linkGroups.length > 0 && (
+            <section className="flex flex-col gap-3 rounded-lg border border-border bg-compendium-rail p-4">
+              <h2 className="font-game-title text-base font-bold text-foreground">{model.labels.related}</h2>
+              {model.linkGroups.map((group) => (
+                <nav key={group.heading} aria-label={group.heading} className="flex flex-col gap-1">
+                  <h3 className="font-service text-xs text-gray-500">{group.heading}</h3>
+                  {/* Fixed columns with one-line names: rows do not depend
+                      on the width of the text. */}
+                  <ul className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-x-3 gap-y-1 text-sm">
+                    {group.links.map((link) => (
+                      <li key={link.href} className="min-w-0">
+                        <StaticLink link={link} oneLine />
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              ))}
+            </section>
+          )}
+
+          {model.history && (
+            <section className="flex flex-col gap-2">
+              <h2 className="font-game-title text-base font-bold text-foreground">{model.labels.history}</h2>
+              {model.history.length > 0 ? (
+                <ul className="space-y-1">
+                  {model.history.map((line) => (
+                    <li
+                      key={line.id}
+                      className="ml-4 list-outside list-disc whitespace-pre-line py-1 font-game-text text-sm leading-relaxed text-gray-300"
+                    >
+                      {line.segments.map((segment, index) => (
+                        typeof segment === "string"
+                          ? <span key={index}>{segment}</span>
+                          : <StaticLink key={index} link={segment} />
+                      ))}
+                      {" "}
+                      <a
+                        href={line.href}
+                        className="whitespace-nowrap spire-gold transition-colors hover:text-primary"
+                      >
+                        {line.date} {line.versionLabel}
+                      </a>
                     </li>
                   ))}
                 </ul>
-              </nav>
-            ))}
-          </section>
-        )}
-
-        <section className="flex flex-col gap-2">
-          <h2 className="font-game-title text-base font-bold text-foreground">{model.labels.history}</h2>
-          {model.history.length > 0 ? (
-            <ul className="space-y-1">
-              {model.history.map((line) => (
-                <li
-                  key={line.id}
-                  className="ml-4 list-outside list-disc whitespace-pre-line py-1 font-game-text text-sm leading-relaxed text-gray-300"
-                >
-                  {line.segments.map((segment, index) => (
-                    typeof segment === "string"
-                      ? <span key={index}>{segment}</span>
-                      : <StaticLink key={index} link={segment} />
-                  ))}
-                  {" "}
-                  <a
-                    href={line.href}
-                    className="whitespace-nowrap spire-gold transition-colors hover:text-primary"
-                  >
-                    {line.date} {line.versionLabel}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="font-game-text text-sm text-gray-500">{model.labels.noHistory}</p>
+              ) : (
+                <p className="font-game-text text-sm text-gray-500">{model.labels.noHistory}</p>
+              )}
+            </section>
           )}
-        </section>
+        </div>
       </article>
     </main>
   );

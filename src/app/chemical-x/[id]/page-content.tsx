@@ -35,7 +35,7 @@ export async function generateChemicalXPostMetadata(
     title: copy.chemicalXTitle,
     description,
     image: CHEMICAL_X_PAGE_OG_IMAGE,
-    canonicalPath: recordId ? `/chemical-x/${recordId}` : "/chemical-x",
+    canonicalPath: recordId ? `/chemical-x/${recordId}` : undefined,
   });
   if (!recordId) return fallback;
 

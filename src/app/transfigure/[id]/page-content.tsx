@@ -36,7 +36,7 @@ export async function generateTransfigurePostMetadata(
     title: copy.transfigureTitle,
     description,
     image: TRANSFIGURE_PAGE_OG_IMAGE,
-    canonicalPath: recordId ? `/transfigure/${recordId}` : "/transfigure",
+    canonicalPath: recordId ? `/transfigure/${recordId}` : undefined,
   });
   if (!recordId) return fallback;
 

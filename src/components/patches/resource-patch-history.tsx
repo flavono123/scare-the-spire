@@ -10,7 +10,12 @@ import {
 } from "@/components/patch-note-renderer";
 import { PatchArtThumbnail } from "@/components/patches/patch-art";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
-import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import {
+  localizeHref,
+  localizeHrefWithGameLocale,
+  type GameLocale,
+  type ServiceLocale,
+} from "@/lib/i18n";
 import { patchLineMarkdownForService } from "@/lib/patch-line-display";
 import { patchLineHref } from "@/lib/patch-line-links";
 import {
@@ -65,11 +70,13 @@ export function PatchMetaReferenceLink({
   patchLine,
   patches,
   serviceLocale,
+  gameLocale,
   entitiesByKey,
 }: {
   patchLine: STS2PatchLine;
   patches: readonly STS2Patch[];
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
   entitiesByKey: Map<string, EntityInfo>;
 }) {
   const patch = findPatch(patches, patchLine);
@@ -85,7 +92,9 @@ export function PatchMetaReferenceLink({
   return (
     <span className="group/patch-meta relative inline-flex shrink-0">
       <Link
-        href={localizeHref(patchLineHref(patchLine), serviceLocale)}
+        href={gameLocale
+          ? localizeHrefWithGameLocale(patchLineHref(patchLine), serviceLocale, gameLocale)
+          : localizeHref(patchLineHref(patchLine), serviceLocale)}
         prefetch={false}
         className="game-inspect-cursor whitespace-nowrap font-game-text text-sm leading-relaxed spire-gold transition-colors hover:text-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/50"
       >
@@ -177,6 +186,7 @@ export function ResourcePatchChangeList({
                     patchLine={line}
                     patches={patches}
                     serviceLocale={serviceLocale}
+                    gameLocale={gameLocale}
                     entitiesByKey={entitiesByKey}
                   />
                 </span>
@@ -196,11 +206,13 @@ export function ResourcePatchChangeList({
 
 export function ResourcePatchHistory({
   serviceLocale,
+  gameLocale,
   entityType,
   entityId,
   emptyLabel,
 }: {
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
   entityType: StoryEntityType;
   entityId: string;
   emptyLabel: string;
@@ -240,6 +252,7 @@ export function ResourcePatchHistory({
       lines={lines}
       patches={data.patches}
       serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
     />
   );
 }

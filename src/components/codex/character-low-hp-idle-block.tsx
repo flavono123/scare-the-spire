@@ -5,9 +5,13 @@ import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type { CodexCharacter, MonsterSpineAsset } from "@/lib/codex-types";
 import { CHARACTER_COLORS, CHARACTER_ORDER } from "@/lib/codex-types";
-import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
-import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { localizeHref, localizeHrefWithGameLocale } from "@/lib/i18n";
+import {
+  buildCompendiumResourceDetailHref,
+  buildCompendiumResourceHref,
+} from "@/lib/compendium-resource-links";
+import { toCompendiumDetailHref } from "@/components/compendium-detail-links";
 import {
   createSpinePlainTextDownloader,
   loadSpinePlayerRuntime,
@@ -29,7 +33,22 @@ const CHARACTER_LOW_HP_VIEWPORT = {
   padBottom: "0%",
 } as const;
 
-export function characterLowHpDetailHref(characterId: string, serviceLocale: ServiceLocale): string {
+/**
+ * Character page with Low HP on. With a game locale, game-only locales keep
+ * their Compendium modal URL since they publish no detail pages.
+ */
+export function characterLowHpDetailHref(
+  characterId: string,
+  serviceLocale: ServiceLocale,
+  gameLocale?: GameLocale,
+): string {
+  if (gameLocale) {
+    return withCharacterLowHpQuery(toCompendiumDetailHref(localizeHrefWithGameLocale(
+      buildCompendiumResourceHref("character", characterId),
+      serviceLocale,
+      gameLocale,
+    )));
+  }
   return localizeHref(
     withCharacterLowHpQuery(buildCompendiumResourceDetailHref("character", characterId)),
     serviceLocale,
@@ -39,9 +58,11 @@ export function characterLowHpDetailHref(characterId: string, serviceLocale: Ser
 export function CharacterLowHpIdleBlock({
   characters,
   serviceLocale,
+  gameLocale,
 }: {
   characters: readonly CodexCharacter[];
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
 }) {
   const ordered = CHARACTER_ORDER
     .map((id) => characters.find((character) => character.id === id))
@@ -66,6 +87,7 @@ export function CharacterLowHpIdleBlock({
               key={character.id}
               character={character}
               serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
             />
           ))}
         </div>
@@ -101,12 +123,14 @@ export function CharacterLowHpHoverPreview({
 function CharacterLowHpIdleCell({
   character,
   serviceLocale,
+  gameLocale,
 }: {
   character: CodexCharacter;
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
 }) {
   const name = serviceLocale === "ko" ? character.name : character.nameEn;
-  const href = characterLowHpDetailHref(character.id, serviceLocale);
+  const href = characterLowHpDetailHref(character.id, serviceLocale, gameLocale);
   const color = CHARACTER_COLORS[character.id.toLowerCase()] ?? "#eab308";
 
   return (

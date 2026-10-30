@@ -12,7 +12,6 @@ import {
 import { DEFRAGMENT_BACKGROUND_SRC } from "@/lib/defragment";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
-import { loadAllEntities } from "@/lib/load-all-entities";
 import { DEFRAGMENT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { composeToyBoxIndexOgDescription, getServiceOgMetadata } from "@/lib/service-metadata";
 import { TOYBOX_WIDE_BOARD_SHELL_CLASS } from "@/lib/toybox-layout";
@@ -39,7 +38,6 @@ export async function renderDefragmentPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
   const [
-    entities,
     gameCopy,
     comboPlaceholder,
     chemicalPlaceholder,
@@ -47,7 +45,6 @@ export async function renderDefragmentPage(
     transfigureCopy,
     decisionsCopy,
   ] = await Promise.all([
-    loadAllEntities({ gameLocale }),
     getDefragmentGameCopy(gameLocale),
     getComboPlaceholder(gameLocale),
     getChemicalXPlaceholder(gameLocale),
@@ -64,7 +61,6 @@ export async function renderDefragmentPage(
       />
       <div className={TOYBOX_WIDE_BOARD_SHELL_CLASS}>
         <DefragmentClient
-          entities={entities}
           gameLocale={gameLocale}
           title={gameCopy.title}
           subtitle={gameCopy.subtitle}

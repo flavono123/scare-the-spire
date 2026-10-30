@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import {
-  localizeHrefWithGameLocale,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
@@ -17,7 +16,7 @@ import {
 import { fuzzyMatchCodexText, stripCodexMarkup } from "@/lib/codex-search";
 import { formatCodexCount, getCodexServiceMessages } from "@/lib/codex-service";
 import {
-  buildCompendiumResourceDetailHref,
+  buildCompendiumEntryHref,
   updateCompendiumResourceModalUrl,
 } from "@/lib/compendium-resource-links";
 import { BadgeDetail } from "./badge-detail";
@@ -62,23 +61,18 @@ function BadgeArt({
 
 function BadgeTile({
   badge,
-  serviceLocale,
   gameLocale,
   onClick,
 }: {
   badge: RunBadgeCatalogEntry;
-  serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   onClick: () => void;
 }) {
   const variants = getRunBadgeVariants(badge);
   return (
     <Link
-      href={localizeHrefWithGameLocale(
-        buildCompendiumResourceDetailHref("badge", badge.slug),
-        serviceLocale,
-        gameLocale,
-      )}
+      // Game-only locales have no detail pages; this links their list modal.
+      href={buildCompendiumEntryHref("badge", badge.slug, gameLocale)}
       className="mb-5 block break-inside-avoid rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
@@ -270,7 +264,6 @@ export function BadgeLibrary({
               <BadgeTile
                 key={badge.id}
                 badge={badge}
-                serviceLocale={serviceLocale}
                 gameLocale={gameLocale}
                 onClick={() => selectBadge(badge)}
               />

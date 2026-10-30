@@ -8,6 +8,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { localizeHref } from "@/lib/i18n";
+import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -38,21 +39,12 @@ import {
   FUTURE_OF_POTIONS_EVENT_NAME_KO,
   FUTURE_OF_POTIONS_EVENT_PATH,
   getFuturePotionChoicesForPotion,
+  getPotionDetailEventIds,
   getRelatedCardIdsForPotion,
   getRelatedEnchantmentIdsForPotion,
-  getRelatedEventIdsForPotion,
   getRelatedPowerIdsForPotion,
 } from "@/lib/codex-references";
 import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
-
-function dedupeIds(ids: readonly string[]): string[] {
-  const seen = new Set<string>();
-  return ids.filter((id) => {
-    if (seen.has(id)) return false;
-    seen.add(id);
-    return true;
-  });
-}
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -111,13 +103,11 @@ function getPotionDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
     ? {
         englishName: "영어명",
-        patchHistory: "패치 이력",
-        noPatchHistory: "구조화 변경 없음",
+        ...getDetailPatchHistoryLabels("ko"),
       }
     : {
         englishName: "English name",
-        patchHistory: "Patch History",
-        noPatchHistory: "No structured changes",
+        ...getDetailPatchHistoryLabels("en"),
       };
 }
 
@@ -170,12 +160,7 @@ export function PotionDetail({
     .filter((card): card is CodexCard => Boolean(card))
     .map(cardToReferenceTarget);
   const eventById = new Map(relatedEvents.map((event) => [event.id, event]));
-  const relatedEventIds = dedupeIds([
-    FUTURE_OF_POTIONS_EVENT_ID,
-    ...getRelatedEventIdsForPotion(potion.id),
-    ...(potion.rarity === "고급" ? ["POTION_COURIER"] : []),
-  ]);
-  const relatedEventTargets = relatedEventIds
+  const relatedEventTargets = getPotionDetailEventIds(potion)
     .map((eventId) => {
       const relatedEvent = eventById.get(eventId);
       const href = eventId === FUTURE_OF_POTIONS_EVENT_ID

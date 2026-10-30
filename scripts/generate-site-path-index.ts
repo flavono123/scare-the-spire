@@ -38,8 +38,8 @@ function plain(raw: string): string {
   return raw
     .replace(/!\[[^\]]*]\([^)]*\)/g, "")
     .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
-    .replace(/\[(?:gold|blue|red|green)(?::[^\]]+)?]/g, "")
-    .replace(/\[\/(?:gold|blue|red|green)]/g, "")
+    .replace(/\[(?:gold|blue|red|green|b|i|s)(?::[^\]]+)?]/g, "")
+    .replace(/\[\/(?:gold|blue|red|green|b|i|s)]/g, "")
     .replace(/^#{1,6}\s+/, "")
     .replace(/^[-*]\s+/, "")
     .replace(/[*_`]/g, "")

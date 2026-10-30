@@ -34,6 +34,7 @@ import {
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { versionCodexEntities } from "@/lib/codex-versioning";
+import { serviceMessages } from "@/messages/service";
 import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
@@ -58,6 +59,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -91,6 +93,8 @@ interface RelicLibraryProps {
   relatedMonsters?: CodexMonster[];
   relatedPotions?: CodexPotion[];
   tipCatalogSources?: CardSideTipCatalogSources;
+  /** False until the data chunks settle; the detail modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
 export function RelicLibrary({
@@ -113,6 +117,7 @@ export function RelicLibrary({
   relatedMonsters = [],
   relatedPotions = [],
   tipCatalogSources,
+  detailsReady = true,
 }: RelicLibraryProps) {
   const profile = useStoredUserProfile();
   const preferredPool = relicPoolFromCharacterId(profile.characterId);
@@ -522,29 +527,40 @@ export function RelicLibrary({
       {selectedRelic && (
         <CompendiumDetailOverlay onClose={() => closeSelectedRelic()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <RelicDetail
-              serviceLocale={serviceLocale}
-              gameUi={gameUi}
-              backToListTitle={title}
-              relic={selectedRelic}
-              poolLabels={poolLabels}
-              initialVariant={selectedVariantPool}
-              initialShowBeta={showBeta}
-              onClose={closeSelectedRelic}
-              entities={entities}
-              relatedCards={relatedCards}
-              relatedEvents={relatedEvents}
-              relatedAncients={ancients}
-              relatedEnchantments={relatedEnchantments}
-              relatedPowers={relatedPowers}
-              relatedMonsters={relatedMonsters}
-              relatedPotions={relatedPotions}
-              tipCatalogSources={tipCatalogSources}
-              tipCatalogCards={relatedCards}
-              patches={patches}
-              changes={changes}
-              versionDiffs={versionDiffs}
-            />
+            {detailsReady ? (
+              <RelicDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                backToListTitle={title}
+                relic={selectedRelic}
+                poolLabels={poolLabels}
+                initialVariant={selectedVariantPool}
+                initialShowBeta={showBeta}
+                onClose={closeSelectedRelic}
+                entities={entities}
+                relatedCards={relatedCards}
+                relatedEvents={relatedEvents}
+                relatedAncients={ancients}
+                relatedEnchantments={relatedEnchantments}
+                relatedPowers={relatedPowers}
+                relatedMonsters={relatedMonsters}
+                relatedPotions={relatedPotions}
+                tipCatalogSources={tipCatalogSources}
+                tipCatalogCards={relatedCards}
+                patches={patches}
+                changes={changes}
+                versionDiffs={versionDiffs}
+              />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedRelic.name}
+                backToListTitle={title}
+                closeLabel={serviceText.common.close}
+                loadingLabel={serviceMessages[serviceLocale].comments.loading}
+                onClose={closeSelectedRelic}
+                className="max-w-5xl"
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}

@@ -33,6 +33,7 @@ import {
   stripCodexMarkup,
 } from "@/lib/codex-search";
 import { versionCodexEntities } from "@/lib/codex-versioning";
+import { serviceMessages } from "@/messages/service";
 import {
   FilterSection,
   orderByFilterSortDir,
@@ -43,6 +44,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -88,6 +90,8 @@ interface AncientListProps {
   versions?: string[];
   currentVersion?: string;
   entities?: EntityInfo[];
+  /** False until the data chunks settle; the detail modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
 export function AncientList({
@@ -102,6 +106,7 @@ export function AncientList({
   versions,
   currentVersion,
   entities,
+  detailsReady = true,
 }: AncientListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlAncientId = useHydrationSafeSearchParam("ancient");
@@ -162,6 +167,16 @@ export function AncientList({
     };
     return addCodexUrlChangeListener(handler);
   }, []);
+
+  // The loading stand-in has no closeButtonRef, so focus the detail's close
+  // button once it replaces the stand-in, unless the user moved focus already.
+  useEffect(() => {
+    if (!selectedAncient || !detailsReady) return;
+    window.requestAnimationFrame(() => {
+      const active = document.activeElement;
+      if (active === modalRef.current || active === document.body) closeButtonRef.current?.focus();
+    });
+  }, [detailsReady, selectedAncient]);
 
   useEffect(() => {
     if (!selectedAncient) {
@@ -380,20 +395,32 @@ export function AncientList({
             tabIndex={-1}
             className="my-4 mx-2 w-full max-w-6xl outline-none sm:my-8 sm:mx-4"
           >
-            <AncientDetail
-              serviceLocale={serviceLocale}
-              gameUi={gameUi}
-              backToListTitle={gameUi.ancientsTitle}
-              ancient={selectedAncient}
-              cards={cards}
-              characters={characters}
-              onClose={closeSelectedAncient}
-              closeButtonRef={closeButtonRef}
-              entities={entities}
-              patches={patches}
-              changes={changes}
-              versionDiffs={versionDiffs}
-            />
+            {detailsReady ? (
+              <AncientDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                backToListTitle={gameUi.ancientsTitle}
+                ancient={selectedAncient}
+                cards={cards}
+                characters={characters}
+                onClose={closeSelectedAncient}
+                closeButtonRef={closeButtonRef}
+                entities={entities}
+                patches={patches}
+                changes={changes}
+                versionDiffs={versionDiffs}
+              />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedAncient.name}
+                titleId={`ancient-detail-title-${selectedAncient.id.toLowerCase()}`}
+                backToListTitle={gameUi.ancientsTitle}
+                closeLabel={serviceText.common.close}
+                loadingLabel={serviceMessages[serviceLocale].comments.loading}
+                onClose={closeSelectedAncient}
+                largeControls
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}

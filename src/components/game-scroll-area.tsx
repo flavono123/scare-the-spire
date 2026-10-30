@@ -5,7 +5,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
   type Ref,
-  useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -92,7 +92,10 @@ export function GameScrollArea({
     trackHeight: 0,
   });
 
-  useEffect(() => {
+  // Measure before paint: content that mounts outside a click (a list modal's
+  // detail replacing its loading state) would otherwise paint one frame without
+  // the rail gutter and then shift when the gutter arrives.
+  useLayoutEffect(() => {
     const scroller = scrollerNodeRef.current;
     const track = trackRef.current;
     if (!scroller) return;

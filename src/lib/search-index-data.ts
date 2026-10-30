@@ -2,7 +2,7 @@ import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { stripCodexMarkup } from "@/lib/codex-search";
 import { buildCompendiumResourceHref, type CompendiumResourceLinkType } from "@/lib/compendium-resource-links";
 import { getStories, getSTS2Patches, getSTS2Stories } from "@/lib/data";
-import { isWitherPatch } from "@/lib/sts2-patch-labels";
+import { getPatchShell } from "@/lib/patch-shells";
 import { eventCharacterQuoteSearchParts } from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
@@ -370,17 +370,15 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
   ]);
 
   const patchItems: SearchIndexItem[] = patches.map((patch) => {
-    const wither = isWitherPatch(patch);
+    const shell = getPatchShell(patch);
     return {
       id: patch.id,
       type: "patch",
-      title: wither ? patch.titleKo : `${patch.versionLabelKo ?? patch.id} ${patch.titleKo}`,
-      titleEn: wither ? patch.title : `${patch.versionLabel ?? patch.id} ${patch.title}`,
+      title: shell ? patch.titleKo : `${patch.versionLabelKo ?? patch.id} ${patch.titleKo}`,
+      titleEn: shell ? patch.title : `${patch.versionLabel ?? patch.id} ${patch.title}`,
       description: [patch.summaryKo, patch.date, patch.version, patch.type].filter(Boolean).join(" "),
       descriptionEn: [patch.summary, patch.date, patch.version, patch.type].filter(Boolean).join(" "),
-      imageUrl: wither
-        ? "/images/sts2/cards/wither1.webp"
-        : "/images/sts2/nav/patch_notes_icon.png",
+      imageUrl: shell?.searchImageUrl ?? "/images/sts2/nav/patch_notes_icon.png",
       href: `/patches/${patch.version}`,
     };
   });

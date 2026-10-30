@@ -3,7 +3,6 @@
 import {
   cloneElement,
   isValidElement,
-  useEffect,
   useSyncExternalStore,
   type ReactElement,
 } from "react";
@@ -18,19 +17,6 @@ function lastPathSegment(pathname: string): string {
   return parts.at(-1) ?? "";
 }
 
-function syncCanonicalFromLocation() {
-  const canonicalUrl = new URL(window.location.href);
-  canonicalUrl.hash = "";
-  canonicalUrl.search = "";
-  let link = document.querySelector('link[rel="canonical"]');
-  if (!link) {
-    link = document.createElement("link");
-    link.setAttribute("rel", "canonical");
-    document.head.appendChild(link);
-  }
-  link.setAttribute("href", canonicalUrl.toString());
-}
-
 export function StaticDetailShell({
   children,
   idProp = "postId",
@@ -40,12 +26,9 @@ export function StaticDetailShell({
 }) {
   const pathname = usePathname();
   const hydrated = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  // The record's canonical, hreflang, and og:url come from the worker
+  // (workers/detail-shell-og.ts), so the client leaves the head alone.
   const recordId = hydrated ? lastPathSegment(pathname) : null;
-
-  useEffect(() => {
-    if (!recordId) return;
-    syncCanonicalFromLocation();
-  }, [recordId]);
 
   if (!recordId) {
     return (

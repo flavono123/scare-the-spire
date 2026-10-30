@@ -19,6 +19,7 @@ import {
 } from "@/lib/codex-service";
 import type { CodexCard, CodexKeyword } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { serviceMessages } from "@/messages/service";
 import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
@@ -32,6 +33,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -46,6 +48,8 @@ interface KeywordLibraryProps {
   keywords: CodexKeyword[];
   cards?: CodexCard[];
   entities?: EntityInfo[];
+  /** False until cards and entities load; the modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
 const KEYWORD_SOURCE_ORDER: CodexKeyword["source"][] = ["cardKeyword", "staticHoverTip"];
@@ -98,6 +102,7 @@ export function KeywordLibrary({
   keywords,
   cards = [],
   entities,
+  detailsReady = true,
 }: KeywordLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlKeywordId = useHydrationSafeSearchParam("keyword");
@@ -272,15 +277,26 @@ export function KeywordLibrary({
       {selectedKeyword && (
         <CompendiumDetailOverlay onClose={() => closeSelectedKeyword()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <KeywordDetail
-              serviceLocale={serviceLocale}
-              gameUi={gameUi}
-              backToListTitle={title}
-              keyword={selectedKeyword}
-              relatedCards={cards}
-              entities={entities}
-              onClose={closeSelectedKeyword}
-            />
+            {detailsReady ? (
+              <KeywordDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                backToListTitle={title}
+                keyword={selectedKeyword}
+                relatedCards={cards}
+                entities={entities}
+                onClose={closeSelectedKeyword}
+              />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedKeyword.name}
+                backToListTitle={title}
+                closeLabel={serviceText.common.close}
+                loadingLabel={serviceMessages[serviceLocale].comments.loading}
+                onClose={closeSelectedKeyword}
+                className="max-w-5xl"
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}

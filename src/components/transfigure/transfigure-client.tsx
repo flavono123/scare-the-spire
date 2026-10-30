@@ -2,9 +2,11 @@
 
 import { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-data";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
+import { EntityGraphUnavailableNotice } from "@/components/entity-graph-gate";
 import { FeedLoadMoreSentinel } from "@/components/feed-load-more-sentinel";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
@@ -31,8 +33,9 @@ const TransfigureComposerModal = dynamic(
   { ssr: false },
 );
 
+const NO_ENTITIES: EntityInfo[] = [];
+
 interface TransfigureClientProps {
-  entities: EntityInfo[];
   gameLocale: GameLocale;
   title: string;
   subtitle: string;
@@ -40,7 +43,6 @@ interface TransfigureClientProps {
 }
 
 export function TransfigureClient({
-  entities,
   gameLocale,
   title,
   subtitle,
@@ -50,11 +52,17 @@ export function TransfigureClient({
   const copy = serviceMessages[serviceLocale].transfigure;
   const { userId, ready, ensureUser } = useAuth();
   const [sort, setSort] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
+  // The full graph loads on the client next to the posts; the feed waits for
+  // both so posts never render with unresolved game elements, and shows a
+  // retry notice instead of them if the graph fails.
+  const entityGraph = useCompendiumEntitiesState(gameLocale);
+  const entityGraphFailed = entityGraph.status === "failed";
+  const entities = entityGraph.entities ?? NO_ENTITIES;
   const {
     posts,
     likeCounts,
     commentCounts,
-    loading,
+    loading: postsLoading,
     loadingMore,
     hasMore,
     unavailable,
@@ -63,6 +71,7 @@ export function TransfigureClient({
     update,
     remove,
   } = useTransfigurePosts(userId, sort);
+  const loading = postsLoading || entityGraph.status === "loading";
   const [composerOpen, setComposerOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<TransfigurePost | null>(null);
   const [saveNotice, setSaveNotice] = useState<string | null>(null);
@@ -165,6 +174,7 @@ export function TransfigureClient({
       {composerOpen && ready && !unavailable && (
         <TransfigureComposerModal
           entities={entities}
+          entitiesStatus={entityGraph.status}
           gameLocale={gameLocale}
           initialPost={editingPost}
           profileNickname={profile.nickname}
@@ -176,7 +186,7 @@ export function TransfigureClient({
         />
       )}
 
-      {!loading && !unavailable && (
+      {!loading && !unavailable && !entityGraphFailed && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <FeedSortToggle
             service="transfigure"
@@ -192,6 +202,8 @@ export function TransfigureClient({
 
       {unavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} />
+      ) : entityGraphFailed ? (
+        <EntityGraphUnavailableNotice serviceLocale={serviceLocale} />
       ) : loading ? (
         <ContentLoadingNotice label={copy.loading} />
       ) : posts.length === 0 ? (

@@ -29,6 +29,7 @@ import {
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
+import { serviceMessages } from "@/messages/service";
 import {
   collectCardSideTips,
 } from "@/lib/card-keyword-tips";
@@ -166,6 +167,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -219,9 +221,11 @@ interface CardLibraryProps {
   tipCatalogSources: CardSideTipCatalogSources;
   initialCardId?: string | null;
   initialShowBeta?: boolean;
+  /** False until the data chunks settle; the detail modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
-export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, initialCardId = null, initialShowBeta = false }: CardLibraryProps) {
+export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, initialCardId = null, initialShowBeta = false, detailsReady = true }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlVersion = useHydrationSafeSearchParam("version");
   const [userSelectedVersion, setUserSelectedVersion] = useState<string | null>(null);
@@ -914,11 +918,21 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       {selectedCard && (
         <CompendiumDetailOverlay onClose={() => closeSelectedCard()} zClassName="z-[100]">
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <CardDetail key={`${selectedCard.id}:${activeShowBeta ? "beta" : "normal"}`} serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} tipCatalogSources={tipCatalogSources} tipCatalogCards={cards} patches={patches} changes={changes} versionDiffs={versionDiffs} initialShowBeta={activeShowBeta} onShowBetaChange={(next) => {
-              setUseUrlSelection(false);
-              setSelectedCardId(selectedCard.id);
-              setShowBeta(next);
-            }} onClose={closeSelectedCard} />
+            {detailsReady ? (
+              <CardDetail key={`${selectedCard.id}:${activeShowBeta ? "beta" : "normal"}`} serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} tipCatalogSources={tipCatalogSources} tipCatalogCards={cards} patches={patches} changes={changes} versionDiffs={versionDiffs} initialShowBeta={activeShowBeta} onShowBetaChange={(next) => {
+                setUseUrlSelection(false);
+                setSelectedCardId(selectedCard.id);
+                setShowBeta(next);
+              }} onClose={closeSelectedCard} />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedCard.name}
+                backToListTitle={gameUi.cardLibraryTitle}
+                closeLabel={serviceText.common.close}
+                loadingLabel={serviceMessages[serviceLocale].comments.loading}
+                onClose={closeSelectedCard}
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}

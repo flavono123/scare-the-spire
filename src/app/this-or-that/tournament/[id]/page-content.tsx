@@ -32,7 +32,7 @@ export async function generateFavoriteTournamentPostMetadata(
     title,
     description,
     image: THIS_OR_THAT_PAGE_OG_IMAGE,
-    canonicalPath: recordId ? `${FAVORITE_TOURNAMENT_HREF}/${recordId}` : FAVORITE_TOURNAMENT_HREF,
+    canonicalPath: recordId ? `${FAVORITE_TOURNAMENT_HREF}/${recordId}` : undefined,
   });
 }
 

@@ -55,6 +55,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
+  CompendiumDetailLoading,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -95,6 +96,8 @@ interface MonsterLibraryProps {
   selectedVersion?: string;
   onVersionChange?: (version: string) => void;
   trailing?: React.ReactNode;
+  /** False while monsters are slim grid rows; the modal shows a loading state. */
+  detailsReady?: boolean;
 }
 
 export function MonsterLibrary({
@@ -114,6 +117,7 @@ export function MonsterLibrary({
   selectedVersion,
   onVersionChange,
   trailing,
+  detailsReady = true,
 }: MonsterLibraryProps) {
   const serviceText = serviceMessages[serviceLocale];
   const commonText = serviceText.codex.common;
@@ -494,22 +498,32 @@ export function MonsterLibrary({
       {selectedMonster && (
         <CompendiumDetailOverlay onClose={() => closeSelectedMonster()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <MonsterDetail
-              serviceLocale={serviceLocale}
-              gameUi={gameUi}
-              backToListTitle={title}
-              monster={selectedMonster}
-              monsters={versionedMonsters}
-              encounters={versionedEncounters}
-              afflictions={afflictions}
-              cards={versionedCards}
-              powers={versionedPowers}
-              patches={patches}
-              changes={changes}
-              versionDiffs={versionDiffs}
-              selectedVersion={activeVersion}
-              onClose={closeSelectedMonster}
-            />
+            {detailsReady ? (
+              <MonsterDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                backToListTitle={title}
+                monster={selectedMonster}
+                monsters={versionedMonsters}
+                encounters={versionedEncounters}
+                afflictions={afflictions}
+                cards={versionedCards}
+                powers={versionedPowers}
+                patches={patches}
+                changes={changes}
+                versionDiffs={versionDiffs}
+                selectedVersion={activeVersion}
+                onClose={closeSelectedMonster}
+              />
+            ) : (
+              <CompendiumDetailLoading
+                title={selectedMonster.name}
+                backToListTitle={title}
+                closeLabel={commonText.close}
+                loadingLabel={serviceText.comments.loading}
+                onClose={closeSelectedMonster}
+              />
+            )}
           </div>
         </CompendiumDetailOverlay>
       )}

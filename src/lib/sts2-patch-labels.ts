@@ -13,7 +13,3 @@ export function isPatchDraft(patch: STS2Patch): boolean {
   if (patch.draft !== true) return false;
   return !patch.status || patch.status === "ready";
 }
-
-export function isWitherPatch(patch: STS2Patch): patch is STS2Patch & { type: "wither" } {
-  return patch.type === "wither";
-}

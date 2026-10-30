@@ -83,14 +83,15 @@ assert.doesNotMatch(internalLinkHtml, /target="_blank"/);
 const knowledgeDemonTokenHtml = renderToStaticMarkup(
   <ByrdispatchRichText
     text="{지식의악마토큰}"
-    entities={[{
+    entities={[]}
+    knowledgeDemon={{
       id: "KNOWLEDGE_DEMON_BOSS",
       nameEn: "Knowledge Demon",
       nameKo: "지식의 악마",
       imageUrl: "/images/sts2/bosses/knowledge_demon_boss.webp",
       color: "boss",
       type: "monster",
-    }]}
+    }}
     gameUi={{} as CodexGameUiLabels}
     serviceLocale="ko"
     gameLocale="kor"

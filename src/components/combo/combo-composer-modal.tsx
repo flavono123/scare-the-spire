@@ -1,5 +1,7 @@
 "use client";
 
+import type { CompendiumLazyDataStatus } from "@/components/codex/use-compendium-data";
+import { EntityGraphGate } from "@/components/entity-graph-gate";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ServiceModalFrame } from "@/components/service-modal-frame";
 import type { PostBlock } from "@/lib/chemical-types";
@@ -10,6 +12,8 @@ import { ComboEditor } from "./combo-editor";
 
 interface ComboComposerModalProps {
   entities: EntityInfo[];
+  /** The editor waits for the full entity graph when the caller loads it lazily. */
+  entitiesStatus?: CompendiumLazyDataStatus;
   initialPost?: ComboPost | null;
   placeholder: string;
   profileNickname: string;
@@ -20,6 +24,7 @@ interface ComboComposerModalProps {
 
 export function ComboComposerModal({
   entities,
+  entitiesStatus = "loaded",
   initialPost,
   placeholder,
   profileNickname,
@@ -40,14 +45,19 @@ export function ComboComposerModal({
       panelClassName="h-[calc(100svh-3rem)] sm:h-auto sm:max-h-[90vh] sm:max-w-2xl"
       panelDataAttribute="data-combo-composer"
     >
-      <ComboEditor
-        entities={entities}
-        initialPost={initialPost}
-        placeholder={placeholder}
-        profileNickname={profileNickname}
+      <EntityGraphGate
+        status={entitiesStatus}
         serviceLocale={serviceLocale}
-        onSubmit={onSubmit}
-      />
+      >
+        <ComboEditor
+          entities={entities}
+          initialPost={initialPost}
+          placeholder={placeholder}
+          profileNickname={profileNickname}
+          serviceLocale={serviceLocale}
+          onSubmit={onSubmit}
+        />
+      </EntityGraphGate>
     </ServiceModalFrame>
   );
 }

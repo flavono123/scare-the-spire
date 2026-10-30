@@ -69,6 +69,12 @@ This project uses local project skills instead of global home-directory skill in
   `scare-the-spire-patches-testbed` via local `pnpm cf:testbed` (build + wrangler
   `--env testbed`). This is not GHA and must not touch production Workers.
 - Purpose: occasional personal/admin preview, or deploy-related stage verification.
+- `cf:build` and `patch:build` write `build-record.json` (HEAD plus uncommitted
+  tracked changes) at the root of `.cloudflare/` and `.patch-worker/`, outside the
+  uploaded assets. The record names no commit when the checkout changed between
+  the build's start and end. `--skip-build` refuses artifacts whose record is
+  missing or names no commit, names another HEAD, came from a dev-tools build, or
+  no longer matches the tracked tree; rebuild instead of working around it.
 - Do not confuse with `pnpm cf:preview`, which is a local `wrangler dev` preview only.
 
 ## Cloudflare Free Tier Guardrails
