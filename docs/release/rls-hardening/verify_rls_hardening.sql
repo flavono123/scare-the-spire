@@ -1,6 +1,5 @@
 -- Post-apply verification for 20261031044402_rls_hardening.sql.
--- Replaces the draft verify_rls_rollback.sql: no psql variables, so it also runs
--- through `supabase db query --linked -f`.
+-- It uses no psql variables, so it also runs through `supabase db query --linked -f`.
 --
 -- It writes fixture rows on development-env data, so it undoes itself by
 -- construction: the DO block ALWAYS ends in an exception, which rolls the block
@@ -96,7 +95,7 @@ begin
 
   -- 1c. No overlay on someone else's post.
   if v_other_combo is null then
-    v_skipped := v_skipped || 'overlay (no second development combo author)';
+    v_skipped := array_append(v_skipped, 'overlay (no second development combo author)');
   else
     begin
       insert into public.defragment_bodies (env, source_service, source_id, user_id, nickname, content, content_text)
@@ -114,7 +113,7 @@ begin
 
   -- 1d. RPC input.
   if v_tournament is null then
-    v_skipped := v_skipped || 'tournament RPC (no development tournament)';
+    v_skipped := array_append(v_skipped, 'tournament RPC (no development tournament)');
   else
     begin
       perform public.complete_favorite_tournament_play(

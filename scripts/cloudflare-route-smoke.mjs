@@ -17,6 +17,8 @@ Options:
   --scope <main|patch|all>     Route group to test (default: all)
   --attempts <number>          Attempts per request (default: 1)
   --retry-delay-ms <number>    Delay between attempts (default: 0)
+  --no-security-headers        Target predates the security headers: skip them and
+                               the cross-site link preview refusal
   --help                       Show this help`);
 }
 
@@ -26,6 +28,7 @@ function parseArgs(argv) {
     scope: "all",
     attempts: 1,
     retryDelayMs: 0,
+    securityHeaders: true,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -49,6 +52,10 @@ function parseArgs(argv) {
     }
     if (argument === "--retry-delay-ms") {
       options.retryDelayMs = Number(argv[++index]);
+      continue;
+    }
+    if (argument === "--no-security-headers") {
+      options.securityHeaders = false;
       continue;
     }
     throw new Error(`Unknown option: ${argument}`);
@@ -301,6 +308,7 @@ function mainCases() {
       headers: { "Sec-Fetch-Site": "cross-site" },
       statuses: [403],
       contentType: "application/json",
+      securityHeadersOnly: true,
     },
     {
       name: "POST to a static page",
@@ -446,13 +454,13 @@ async function fetchCase(origin, testCase) {
   return { response, body };
 }
 
-function validateCase(testCase, response, body) {
+function validateCase(testCase, response, body, options) {
   const expectedStatuses = testCase.statuses ?? [200];
   if (!expectedStatuses.includes(response.status)) {
     return `expected HTTP ${expectedStatuses.join("/")}, got ${response.status}`;
   }
 
-  for (const [name, value] of SECURITY_HEADERS) {
+  for (const [name, value] of options.securityHeaders ? SECURITY_HEADERS : []) {
     if (response.headers.get(name) !== value) {
       return `expected ${name}: ${value}, got ${response.headers.get(name) ?? "missing"}`;
     }
@@ -501,7 +509,7 @@ async function runCase(origin, testCase, options) {
   for (let attempt = 1; attempt <= options.attempts; attempt += 1) {
     try {
       const { response, body } = await fetchCase(origin, testCase);
-      const failure = validateCase(testCase, response, body);
+      const failure = validateCase(testCase, response, body, options);
       if (!failure) {
         console.log(`PASS ${testCase.name} · HTTP ${response.status}`);
         return;
@@ -525,7 +533,7 @@ async function main() {
   const cases = [
     ...(["main", "all"].includes(options.scope) ? mainCases() : []),
     ...(["patch", "all"].includes(options.scope) ? patchCases() : []),
-  ];
+  ].filter((testCase) => options.securityHeaders || !testCase.securityHeadersOnly);
 
   console.log(`Cloudflare route smoke · ${options.origin} · ${options.scope} · ${cases.length} checks`);
   const failures = [];

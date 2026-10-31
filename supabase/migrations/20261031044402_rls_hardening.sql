@@ -1,7 +1,9 @@
 -- Close the 2026-10 security review items on write paths.
--- Rollout: db-first-additive. Order: before-push. No app change.
--- Every write the deployed app sends keeps its result: clients never send the
--- columns this file locks down. Only writes the app never makes start failing.
+-- Rollout: db-first-additive. Order: before-push.
+-- Every write the deployed app sends keeps its result, because clients never send
+-- the columns this file locks down, with one exception: a post body past 64 KiB is
+-- now refused. The stored maximum is 174 bytes, and the matching app release keeps
+-- that refusal in the editor. An older app shows its outage notice instead.
 -- The file runs as one transaction: any failed check rolls back everything.
 
 -- Fail fast instead of queueing the API behind this migration.

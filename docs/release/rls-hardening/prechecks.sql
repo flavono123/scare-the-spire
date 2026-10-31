@@ -224,7 +224,7 @@ checks(ord, verdict, name, detail) as (
     'env or size constraint names already taken', coalesce(string_agg(k.conname, ', '), '')
   from pg_constraint k
   where k.connamespace = 'public'::regnamespace
-    and (k.conname ~ '_(content|text|layout|pool|matches|blocks|refs|raw|meta|author_token)_size_check$'
+    and (k.conname ~ '_(content|text|layout|pool|matches|blocks|refs|raw|meta|key|author_token)_size_check$'
       or k.conname = 'resource_reactions_key_length_check'
       or k.conname in (select e.tbl || '_env_check' from envs e))
   union all
