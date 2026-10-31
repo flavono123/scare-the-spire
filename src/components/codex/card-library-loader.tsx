@@ -4,8 +4,11 @@ import { useMemo, type ComponentProps } from "react";
 import { CardLibrary } from "./card-library";
 import { compendiumDetailsStatus, useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
-import { expandCardKeywordLabels, type CompactCodexCard } from "@/lib/compendium-list-props";
-import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
+import {
+  EMPTY_CARD_SIDE_TIP_SOURCES,
+  expandCardKeywordLabels,
+  type CompactCodexCard,
+} from "@/lib/compendium-list-props";
 import type { CodexCard } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 
@@ -28,18 +31,15 @@ type CardLibraryLoaderProps = Omit<ComponentProps<typeof CardLibrary>, "cards" |
   gameLocale: GameLocale;
   cards: CompactCodexCard[];
   keywordLabels: CodexCard["keywordLabels"];
-  /** The side tip catalog rows the modal and tiles read, so they keep their side tips when the data chunks fail. */
-  linkedTipSources: CardSideTipCatalogSources;
 };
 
 /**
  * Renders CardLibrary from its server props and fills in the rest once the
  * data chunks load. The detail modal waits for them, since its enchantments,
  * afflictions, related lists, and history come from the chunks, and offers a
- * retry if they fail. The tiles use the linked side tip rows until the chunks
- * load.
+ * retry if they fail.
  */
-export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabels, linkedTipSources, ...props }: CardLibraryLoaderProps) {
+export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabels, ...props }: CardLibraryLoaderProps) {
   const { data, status } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   const cards = useMemo(
     () => expandCardKeywordLabels(compactCards, keywordLabels),
@@ -59,7 +59,7 @@ export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabe
       relatedMonsters={data?.monsters}
       relatedPotions={data?.potions}
       relatedPowers={data?.powers}
-      tipCatalogSources={data?.cardSideTipSources ?? linkedTipSources}
+      tipCatalogSources={data?.cardSideTipSources ?? EMPTY_CARD_SIDE_TIP_SOURCES}
     />
   );
 }

@@ -4,7 +4,7 @@ import type { ComponentProps } from "react";
 import { PotionLibrary } from "./potion-library";
 import { compendiumDetailsStatus, useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
-import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
+import { EMPTY_CARD_SIDE_TIP_SOURCES } from "@/lib/compendium-list-props";
 import type { GameLocale } from "@/lib/i18n";
 
 const LAZY_DATA_KEYS = [
@@ -20,17 +20,16 @@ const LAZY_DATA_KEYS = [
 
 type PotionLibraryLoaderProps = Omit<ComponentProps<typeof PotionLibrary>, "changes" | "versionDiffs" | "relatedCards" | "relatedEnchantments" | "relatedEvents" | "relatedPowers" | "relatedMonsters" | "tipCatalogSources" | "detailsStatus"> & {
   gameLocale: GameLocale;
-  /** The side tip catalog rows the modal and tiles read, so they keep their side tips when the data chunks fail. */
-  linkedTipSources: CardSideTipCatalogSources;
 };
 
 /**
  * Renders PotionLibrary from its server props and fills in the rest once the
  * data chunks load. The detail modal waits for them, since its related lists,
  * hover tips, and history come from the chunks, and offers a retry if they
- * fail. The tiles use the linked side tip rows until the chunks load.
+ * fail. A tile shows the potion's own tip without the chunks; the empty tip
+ * sources stand in for them, and its other tips come with them.
  */
-export function PotionLibraryLoader({ gameLocale, linkedTipSources, ...props }: PotionLibraryLoaderProps) {
+export function PotionLibraryLoader({ gameLocale, ...props }: PotionLibraryLoaderProps) {
   const { data, status } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   return (
     <PotionLibrary
@@ -43,7 +42,7 @@ export function PotionLibraryLoader({ gameLocale, linkedTipSources, ...props }: 
       relatedEvents={data?.events}
       relatedPowers={data?.powers}
       relatedMonsters={data?.monsters}
-      tipCatalogSources={data?.cardSideTipSources ?? linkedTipSources}
+      tipCatalogSources={data?.cardSideTipSources ?? EMPTY_CARD_SIDE_TIP_SOURCES}
     />
   );
 }

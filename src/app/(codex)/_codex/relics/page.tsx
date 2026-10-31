@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexAncients, getCodexCards, getCodexCharacters, getCodexEnchantments, getCodexPotions, getCodexRelics } from "@/lib/codex-data";
+import { getCodexAncients, getCodexCharacters, getCodexRelics } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
@@ -17,17 +17,7 @@ import {
 } from "@/lib/codex-resource-og";
 import { RelicLibraryLoader } from "@/components/codex/relic-library-loader";
 import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
-import {
-  pickLinkedRows,
-  slimFilterCharacters,
-  slimLinkedEnchantments,
-} from "@/lib/compendium-list-props";
-import {
-  getRelatedCardIdsForRelic,
-  getRelatedEnchantmentIdsForRelic,
-} from "@/lib/codex-references";
-import { loadLinkedCardSideTipSources } from "@/lib/card-side-tip-catalog.server";
-import { collectRelicListSideTips, getRelicSideTipRowIds } from "@/lib/compendium-list-side-tips";
+import { slimFilterCharacters } from "@/lib/compendium-list-props";
 
 export const dynamic = "force-static";
 
@@ -76,9 +66,6 @@ export default async function CodexRelicsPage({
     versionDiffs,
     meta,
     gameUi,
-    cards,
-    enchantments,
-    potions,
   ] = await Promise.all([
     getCodexRelics({ gameLocale }),
     getCodexCharacters({ gameLocale }),
@@ -87,18 +74,9 @@ export default async function CodexRelicsPage({
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
-    getCodexCards({ includeDeprecated: true, gameLocale }),
-    getCodexEnchantments({ gameLocale }),
-    getCodexPotions({ gameLocale }),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
-  const linkedCards = pickLinkedRows(cards, relics.flatMap((relic) => getRelatedCardIdsForRelic(relic.id)));
-  const linkedTipSources = await loadLinkedCardSideTipSources(
-    gameLocale,
-    (catalog) => collectRelicListSideTips(relics, catalog, { potions, enchantments }),
-    { sentCards: linkedCards },
-  );
 
   return (
     <>
@@ -114,13 +92,6 @@ export default async function CodexRelicsPage({
           versions={versions}
           currentVersion={meta.version}
           patches={patches}
-          linkedCards={linkedCards}
-          linkedEnchantments={slimLinkedEnchantments(pickLinkedRows(enchantments, [
-            ...relics.flatMap((relic) => getRelatedEnchantmentIdsForRelic(relic, enchantments)),
-            ...getRelicSideTipRowIds(relics, "enchantment"),
-          ]))}
-          linkedPotions={pickLinkedRows(potions, getRelicSideTipRowIds(relics, "potion"))}
-          linkedTipSources={linkedTipSources}
         />
       </Suspense>
       <CompendiumEntryLinkIndex

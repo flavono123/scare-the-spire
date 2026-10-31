@@ -17,8 +17,6 @@ import {
 import { PotionLibraryLoader } from "@/components/codex/potion-library-loader";
 import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 import { slimFilterCharacters } from "@/lib/compendium-list-props";
-import { loadLinkedCardSideTipSources } from "@/lib/card-side-tip-catalog.server";
-import { collectPotionListSideTips } from "@/lib/compendium-list-side-tips";
 
 export const dynamic = "force-static";
 
@@ -67,10 +65,6 @@ export default async function CodexPotionsPage({
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
-  const linkedTipSources = await loadLinkedCardSideTipSources(
-    gameLocale,
-    (catalog) => collectPotionListSideTips(potions, catalog),
-  );
 
   return (
     <>
@@ -85,7 +79,6 @@ export default async function CodexPotionsPage({
           versions={versions}
           currentVersion={meta.version}
           patches={patches}
-          linkedTipSources={linkedTipSources}
         />
       </Suspense>
       <CompendiumEntryLinkIndex

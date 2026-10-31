@@ -8,8 +8,7 @@ import {
   useCompendiumEntitiesState,
 } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
-import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
-import type { CodexCard, CodexEnchantment, CodexPotion } from "@/lib/codex-types";
+import { EMPTY_CARD_SIDE_TIP_SOURCES } from "@/lib/compendium-list-props";
 import type { GameLocale } from "@/lib/i18n";
 
 const LAZY_DATA_KEYS = [
@@ -26,23 +25,16 @@ const LAZY_DATA_KEYS = [
 
 type RelicLibraryLoaderProps = Omit<ComponentProps<typeof RelicLibrary>, "changes" | "versionDiffs" | "entities" | "relatedCards" | "relatedEvents" | "relatedEnchantments" | "relatedPowers" | "relatedMonsters" | "relatedPotions" | "tipCatalogSources" | "detailsStatus"> & {
   gameLocale: GameLocale;
-  /** The cards the detail modal links to, so it names them when the cards chunk fails. */
-  linkedCards: CodexCard[];
-  /** The enchantments the detail modal links to or shows as side tips, so it names them when the enchantments chunk fails. */
-  linkedEnchantments: CodexEnchantment[];
-  /** The potions the side tips show, so the modal and tiles keep them when the data chunks fail. */
-  linkedPotions: CodexPotion[];
-  /** The side tip catalog rows the modal and tiles read, so they keep their side tips when the data chunks fail. */
-  linkedTipSources: CardSideTipCatalogSources;
 };
 
 /**
  * Renders RelicLibrary from its server props and fills in the rest once the
  * data chunks load. The detail modal waits for them, since its related lists,
  * keyword links, and history come from the chunks, and offers a retry if they
- * fail. The tiles use the linked side tip rows until the chunks load.
+ * fail. A tile shows the relic's own tip without the chunks; the empty tip
+ * sources stand in for them, and its other tips come with them.
  */
-export function RelicLibraryLoader({ gameLocale, linkedCards, linkedEnchantments, linkedPotions, linkedTipSources, ...props }: RelicLibraryLoaderProps) {
+export function RelicLibraryLoader({ gameLocale, ...props }: RelicLibraryLoaderProps) {
   const { data, status: dataStatus } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   const { entities, status: entitiesStatus } = useCompendiumEntitiesState(gameLocale);
   return (
@@ -52,13 +44,13 @@ export function RelicLibraryLoader({ gameLocale, linkedCards, linkedEnchantments
       changes={data?.changes}
       versionDiffs={data?.versionDiffs}
       entities={entities}
-      relatedCards={data?.cards ?? linkedCards}
+      relatedCards={data?.cards}
       relatedEvents={data?.events}
-      relatedEnchantments={data?.enchantments ?? linkedEnchantments}
+      relatedEnchantments={data?.enchantments}
       relatedPowers={data?.powers}
       relatedMonsters={data?.monsters}
-      relatedPotions={data?.potions ?? linkedPotions}
-      tipCatalogSources={data?.cardSideTipSources ?? linkedTipSources}
+      relatedPotions={data?.potions}
+      tipCatalogSources={data?.cardSideTipSources ?? EMPTY_CARD_SIDE_TIP_SOURCES}
     />
   );
 }
