@@ -9,6 +9,7 @@ type AssetsBinding = {
 type Env = {
   ASSETS?: AssetsBinding;
   PATCH_WORKER?: PatchWorkerBinding;
+  LINK_PREVIEW_LIMITER?: LinkPreviewLimiter;
   NEXT_PUBLIC_SUPABASE_URL?: string;
   NEXT_PUBLIC_SUPABASE_ANON_KEY?: string;
   NEXT_PUBLIC_SUPABASE_ENV?: string;
@@ -23,7 +24,11 @@ type ExecutionContextLike = {
 };
 
 import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-resource-links";
-import { handleLinkPreviewRequest, LINK_PREVIEW_PATH } from "../src/lib/link-preview-handler";
+import {
+  handleLinkPreviewRequest,
+  LINK_PREVIEW_PATH,
+  type LinkPreviewLimiter,
+} from "../src/lib/link-preview-handler";
 import { staticAssetAliasRedirectPath } from "./static-asset-aliases";
 import { maybeEnrichServiceDetailShell } from "./detail-shell-og";
 import { withLocalizedDocumentRoot } from "./document-locale";
@@ -361,7 +366,7 @@ function methodNotAllowed(): Response {
 }
 
 /** Mirrors the Next route handler: GET, auto HEAD, auto OPTIONS, else 405. */
-async function serveLinkPreview(request: Request): Promise<Response> {
+async function serveLinkPreview(request: Request, env: Env): Promise<Response> {
   if (request.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: { Allow: LINK_PREVIEW_ALLOW } });
   }
@@ -369,7 +374,7 @@ async function serveLinkPreview(request: Request): Promise<Response> {
     return new Response(null, { status: 405, headers: { Allow: LINK_PREVIEW_ALLOW } });
   }
 
-  const response = await handleLinkPreviewRequest(request);
+  const response = await handleLinkPreviewRequest(request, env.LINK_PREVIEW_LIMITER);
   return request.method === "HEAD" ? new Response(null, response) : response;
 }
 
@@ -435,7 +440,7 @@ async function serveUnmatchedRequest(request: Request, env: Env, url: URL): Prom
   const nextRouting = nextRoutingResponse(request, url);
   if (nextRouting) return nextRouting;
 
-  if (isLinkPreviewPath(url.pathname)) return serveLinkPreview(request);
+  if (isLinkPreviewPath(url.pathname)) return serveLinkPreview(request, env);
 
   const redirect = maybeServePrerenderedRedirect(request, url);
   if (redirect) return redirect;

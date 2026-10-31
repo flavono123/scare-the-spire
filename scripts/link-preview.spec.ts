@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { isPublicHttpUrl, readOpenGraph } from "../src/lib/link-preview";
-import { handleLinkPreviewRequest } from "../src/lib/link-preview-handler";
+import { handleLinkPreviewRequest, type LinkPreviewLimiter } from "../src/lib/link-preview-handler";
 
 const html = `
 <html><head>
@@ -202,7 +202,51 @@ async function checkFetchSite() {
   }
 }
 
-main().then(checkFetchSite).then(
+async function checkRateLimit() {
+  const realFetch = globalThis.fetch;
+  let fetched = 0;
+  globalThis.fetch = (async () => {
+    fetched += 1;
+    return new Response('<meta property="og:title" content="ok">', { headers: { "content-type": "text/html" } });
+  }) as typeof fetch;
+  const keys: string[] = [];
+  const limiterAnswering = (success: boolean): LinkPreviewLimiter => ({
+    limit: async ({ key }) => {
+      keys.push(key);
+      return { success };
+    },
+  });
+  const request = (url: string) => new Request(
+    `https://example.test/api/link-preview?url=${encodeURIComponent(url)}`,
+    { headers: { "cf-connecting-ip": "203.0.113.9" } },
+  );
+  try {
+    const allowed = await handleLinkPreviewRequest(request("https://start.example/a"), limiterAnswering(true));
+    assert.equal((await allowed.json()).title, "ok");
+    assert.deepEqual(keys, ["203.0.113.9"]);
+    assert.equal(fetched, 1);
+
+    const limited = await handleLinkPreviewRequest(request("https://start.example/a"), limiterAnswering(false));
+    assert.equal(limited.status, 429);
+    assert.deepEqual(await limited.json(), { title: "", description: "", image: "" });
+    assert.equal(limited.headers.get("cache-control"), null, "the next try must reach the Worker");
+    assert.equal(fetched, 1, "a limited request fetches nothing");
+
+    keys.length = 0;
+    const refused = await handleLinkPreviewRequest(request("http://127.0.0.1/"), limiterAnswering(true));
+    assert.equal(refused.status, 400);
+    assert.deepEqual(keys, [], "a refused URL costs no budget");
+
+    const broken: LinkPreviewLimiter = { limit: () => Promise.reject(new Error("binding failed")) };
+    const failed = await handleLinkPreviewRequest(request("https://start.example/a"), broken);
+    assert.equal(failed.status, 200);
+    assert.deepEqual(await failed.json(), { title: "", description: "", image: "" });
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+}
+
+main().then(checkFetchSite).then(checkRateLimit).then(
   () => console.log("link-preview.spec.ts ok"),
   (error) => {
     console.error(error);

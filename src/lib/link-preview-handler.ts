@@ -15,7 +15,14 @@ const MAX_REDIRECTS = 10;
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 const HEAD_END = "</head>";
 
+const EMPTY_PREVIEW: LinkPreview = { title: "", description: "", image: "" };
+
 export const LINK_PREVIEW_PATH = "/api/link-preview";
+
+/** The Workers Rate Limiting binding: approximate, per IP, per Cloudflare location. */
+export interface LinkPreviewLimiter {
+  limit(options: { key: string }): Promise<{ success: boolean }>;
+}
 
 function jsonResponse(
   body: unknown,
@@ -27,8 +34,7 @@ function jsonResponse(
 }
 
 function emptyPreview(cacheControl?: string): Response {
-  const preview: LinkPreview = { title: "", description: "", image: "" };
-  return jsonResponse(preview, { cacheControl });
+  return jsonResponse(EMPTY_PREVIEW, { cacheControl });
 }
 
 /**
@@ -94,7 +100,10 @@ async function readHead(body: ReadableStream<Uint8Array>): Promise<string> {
   return html;
 }
 
-export async function handleLinkPreviewRequest(request: Request): Promise<Response> {
+export async function handleLinkPreviewRequest(
+  request: Request,
+  limiter?: LinkPreviewLimiter,
+): Promise<Response> {
   // Pages call this same-origin; another site must not spend the Worker's fetches.
   if (request.headers.get("sec-fetch-site") === "cross-site") {
     return jsonResponse({ message: "forbidden" }, { status: 403 });
@@ -107,6 +116,11 @@ export async function handleLinkPreviewRequest(request: Request): Promise<Respon
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
+    const key = request.headers.get("cf-connecting-ip") ?? "unknown";
+    if (limiter && !(await limiter.limit({ key })).success) {
+      return jsonResponse(EMPTY_PREVIEW, { status: 429 });
+    }
+
     // YouTube puts og:title ~800 KB into the page; oEmbed answers directly.
     const videoId = parseYouTubeVideoId(target.href);
     if (videoId) {
