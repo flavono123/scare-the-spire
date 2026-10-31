@@ -1,10 +1,11 @@
 "use client";
 
 import { Node, mergeAttributes } from "@tiptap/core";
-import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
+import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 import { useState } from "react";
 import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
 import { EDITOR_ANCHOR_PROPS } from "@/components/editor/editor-link";
+import { spannedNodeViewRenderer } from "@/components/editor/spanned-node-view";
 import { SitePathHoverTip } from "./site-path-hover-tip";
 import { selectAtomOnClick } from "@/components/editor/editor-link";
 
@@ -111,6 +112,6 @@ export const PagestormInternalLink = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(PagestormInternalLinkView, { as: "span" });
+    return spannedNodeViewRenderer(PagestormInternalLinkView, { as: "span" });
   },
 });

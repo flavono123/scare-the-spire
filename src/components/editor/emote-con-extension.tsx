@@ -3,9 +3,9 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import {
   NodeViewWrapper,
-  ReactNodeViewRenderer,
   type NodeViewProps,
 } from "@tiptap/react";
+import { spannedNodeViewRenderer } from "@/components/editor/spanned-node-view";
 import { EmoteGlyph } from "@/components/emote-con/emote-glyph";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { emotePlainText } from "@/lib/emote-con";
@@ -64,6 +64,6 @@ export const EmoteConExtension = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(EmoteConNodeView, { as: "span" });
+    return spannedNodeViewRenderer(EmoteConNodeView, { as: "span" });
   },
 });

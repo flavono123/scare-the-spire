@@ -3,11 +3,11 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import {
   NodeViewWrapper,
-  ReactNodeViewRenderer,
   type NodeViewProps,
 } from "@tiptap/react";
 import { CardConTile } from "@/components/card-con/card-con-tile";
 import { useEntityMap } from "@/components/chemicalx/entity-context";
+import { spannedNodeViewRenderer } from "@/components/editor/spanned-node-view";
 import { isGameLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -75,6 +75,6 @@ export const CardConExtension = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(CardConNodeView, { as: "span" });
+    return spannedNodeViewRenderer(CardConNodeView, { as: "span" });
   },
 });
