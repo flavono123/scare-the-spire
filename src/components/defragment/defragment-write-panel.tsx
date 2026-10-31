@@ -371,6 +371,7 @@ export function DefragmentWritePanel({
             serviceLocale={serviceLocale}
             hideNickname
             draftKey="sts-defragment-combo-draft"
+            submitBlockedNotice={overlayBodyForSave(overlayBlocks) === "invalid" ? copy.overlayBodyInvalid : null}
             onSubmit={async (blocks) => handleComboSubmit(blocks)}
           />
           {overlay}

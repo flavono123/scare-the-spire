@@ -38,6 +38,7 @@ interface ComboEditorProps {
   draftKey?: string;
   /** Starting content for a new post; an edited post starts from its own. */
   initialBlocks?: PostBlock[];
+  submitBlockedNotice?: string | null;
 }
 
 export function ComboEditor({
@@ -50,6 +51,7 @@ export function ComboEditor({
   hideNickname = false,
   draftKey,
   initialBlocks,
+  submitBlockedNotice = null,
 }: ComboEditorProps) {
   const copy = serviceMessages[serviceLocale].combo;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
@@ -57,6 +59,7 @@ export function ComboEditor({
   const historyRunInsertRequestIdRef = useRef(0);
   const [validationError, setValidationError] = useState<string | null>(null);
   const validationErrorRef = useRef<HTMLParagraphElement>(null);
+  const [noticeRevealRequest, setNoticeRevealRequest] = useState(0);
   const [historyRunPickerOpen, setHistoryRunPickerOpen] = useState(false);
   const [entityInsertRequest, setEntityInsertRequest] = useState<{
     requestId: number;
@@ -116,23 +119,33 @@ export function ComboEditor({
     slashCommands,
   }), [historyRunInsertRequest, slashCommands]);
 
+  const showNotice = useCallback((message: string) => {
+    setValidationError(message);
+    setNoticeRevealRequest((request) => request + 1);
+  }, []);
+
   // A long post fills the modal, so the notice lands below its scrolled end.
+  // Every refused attempt reveals it, even when the message has not changed.
   useEffect(() => {
-    if (validationError) validationErrorRef.current?.scrollIntoView({ block: "nearest" });
-  }, [validationError]);
+    validationErrorRef.current?.scrollIntoView({ block: "nearest" });
+  }, [noticeRevealRequest]);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
     if (extractComboResourceRefs(blocks).length < 2) {
-      setValidationError(copy.minimumResources);
+      showNotice(copy.minimumResources);
       throw new Error("combo requires at least two resources");
     }
     if (countComboYouTubeReferences(blocks) > 1) {
-      setValidationError(copy.youtubeLimit);
+      showNotice(copy.youtubeLimit);
       throw new Error("combo allows one YouTube reference");
     }
     if (exceedsComboTextLimit(blocksToPlainText(blocks).trim())) {
-      setValidationError(copy.textTooLong);
+      showNotice(copy.textTooLong);
       throw new Error("combo text exceeds the stored limit");
+    }
+    if (submitBlockedNotice) {
+      showNotice(submitBlockedNotice);
+      throw new Error("combo submit is blocked by another field");
     }
 
     setValidationError(null);
@@ -144,7 +157,7 @@ export function ComboEditor({
     try {
       await onSubmit(blocks, nickname);
     } catch (error) {
-      setValidationError(copy.saveFailed);
+      showNotice(copy.saveFailed);
       throw error;
     }
   }, [
@@ -156,6 +169,8 @@ export function ComboEditor({
     hideNickname,
     onSubmit,
     profileNickname,
+    showNotice,
+    submitBlockedNotice,
   ]);
 
   return (
