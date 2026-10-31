@@ -168,14 +168,21 @@
 42. **Toy Box 피드와 이야기의 Realtime 구독을 서버가 거절함**. 구독 응답은 ok지만 곧이어 `Unable to subscribe to changes with given parameters` 시스템 오류가 온다. 다른 사람의 수정·삭제가 실시간으로 반영되지 않는다. 운영(realtime-js 2.98)과 testbed(2.118)가 같은 응답을 받고 안내는 뜨지 않는다.
     - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
     - 원인 추정: 해당 표가 `supabase_realtime` publication에 없다(저장소 마이그레이션에는 `defragment_posts` 추가만 있음). live DB의 publication은 확인하지 못했다.
-43. **`scripts/encounter-compositions.spec.ts`가 실패함**(고유 전투 배경 수 11, 기대 17, 16행). CI에 없어 드러나지 않았다.
+43. **`scripts/encounter-compositions.spec.ts`의 기대값이 낡음**(고유 전투 배경 수 11, 기대 17, 16행). 화면 버그는 아니다. CI에 없어 드러나지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/compendium/encounters
-    - 원인 미조사. 배경 데이터가 줄었는지 기대값이 낡았는지 확인이 필요하다.
+    - 원인: `c946b7d3`이 바이트가 같은 배경을 한 파일로 합치면서 고유 배경이 17개에서 11개가 됐고(그림은 그대로) 스펙을 고치지 않았다. 기대값을 11로 바꾸면 나머지 단언은 통과한다.
 44. **'데이터베이스가 응답하지 않습니다' 안내에 재시도 수단이 없음**(사용자 제안: 페이지를 새로 고치는 버튼. 조회를 다시 보내는 방식이 아니라 새로 고침을 유도).
     - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
 45. **DB 쪽 남은 낮은 항목**(코드 읽기로 확인, 운영에서 동작을 재현하지는 않음). RLS 마이그레이션 범위 밖이다.
-    - https://scare-the-spire.flavono123.workers.dev/this-or-that/worldcup
+    - https://scare-the-spire.flavono123.workers.dev/this-or-that/tournament
     - `complete_favorite_tournament_play`가 플레이마다 후보 통계 행을 전부 UPDATE한다(순위가 그대로여도 씀).
     - `transfigure_posts_extra_variants_shape` CHECK가 `octet_length(extra_variants::text)`라 좋아요마다 직렬화한다.
     - `comments.parent_id`·`meta`는 앱이 쓰지 않는데 클라이언트가 쓸 수 있다. `parent_id`는 다른 스레드의 댓글도 가리킬 수 있다.
     - likes·votes·리액션의 `created_at`, 글 INSERT의 `id`는 여전히 클라이언트가 정할 수 있다.
+46. **목록 모달 데이터 chunk가 응답하지 않으면 '불러오는 중...'에서 끝나지 않음**. 실패 응답이 아니라 무응답이면 묶음 3의 실패 안내와 다시 시도 버튼도 나오지 않는다. Esc, ✕, 뒤로가기, 새로고침으로는 빠져나온다.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/relics
+    - 원인: `src/lib/compendium-data-chunks.ts`의 `fetchChunk`에 시간 제한이 없고, `chunkPromises`가 끝나지 않은 promise를 계속 들고 있다.
+47. **/en 390px에서 조우 탭 미리보기가 2,249px로 화면을 크게 넘고 일부 글자가 한국어임**('일반 전투', '1막 — 과성장', 링크의 aria-label). 조합이 많은 조우에서 보인다.
+    - https://scare-the-spire.flavono123.workers.dev/en/compendium/bestiary
+    - 원인 추정: 조우 미리보기가 조합 전체를 높이 제한 없이 그리고 라벨이 언어를 받지 않는다(코드는 확인하지 않음).
+48. **`CLAUDE.md`와 `AGENTS.md`의 수치가 낡음**. `CLAUDE.md`는 Next.js 15, 두 문서 모두 카드 612·유물 314·포션 63이지만 실제는 Next 16.4와 `data/sts2/kor`의 카드 598·유물 298·포션 64다. 화면과는 무관하다.
