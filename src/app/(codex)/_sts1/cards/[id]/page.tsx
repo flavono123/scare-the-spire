@@ -4,6 +4,8 @@ export const dynamicParams = false;
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Sts1CardDetail } from "@/components/sts1/card-detail";
+import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
+import { sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -61,12 +63,14 @@ export default async function Sts1CardDetailPage({ params, searchParams }: Detai
   if (!card) notFound();
 
   return (
-    <Sts1CardDetail
-      card={card}
-      labels={labels}
-      keywords={keywords}
-      serviceLocale={serviceLocale}
-      gameLocale={gameLocale}
-    />
+    <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
+      <Sts1CardDetail
+        card={card}
+        labels={labels}
+        keywords={keywords}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+      />
+    </Sts1BitmapPackScope>
   );
 }

@@ -7,18 +7,52 @@ Related work:
 
 ## Status
 
-The service began as a Vercel-targeted Next.js application. OpenNext was added
-as the Cloudflare migration adapter and is still the build and runtime fallback
-for routes that are not served from `_cf_static_pages`.
-
-The short-term production shape remains:
+2026-10-27: Phases 5 and 6 are implemented on `refactor/opennext-exit`
+(release pending). Next.js is only the build-time renderer; the main Worker is
+static-only and has no OpenNext or Next runtime:
 
 ```text
 request
-  -> thin main Worker
-  -> static home, service index, or Compendium asset when covered
-  -> OpenNext fallback otherwise
+  -> static main Worker
+  -> redirects, /patches* service binding, static HTML/RSC asset or shell
+  -> Next-parity answers (/ko 308, trailing-slash 308, /api/link-preview, 405)
+  -> Next's prerendered not-found page (404) otherwise
 ```
+
+`pnpm cf:build` runs `next build --webpack`, `scripts/collect-cf-assets.mjs`,
+and `scripts/copy-cf-static-pages.mjs` into `.cloudflare/assets`; deploys use
+`wrangler deploy --keep-vars`. `pnpm cf:assets` runs the Worker against every
+prerendered route and fails if one would need a renderer, a Compendium data
+chunk is missing from the upload, or a game-only locale's list modal URL is not
+a static page.
+
+OpenNext wrote `.env*` into the Worker bundle as `next-env.mjs`, so local
+testbed builds carried every `.env.local` value, server keys included. The
+static Worker bundle carries none of them. Its only runtime configuration is
+Worker variables, and the record shell OG lookup needs
+`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` there.
+
+Intended response differences from the OpenNext Worker (no in-app link
+reaches them):
+
+- Parameters OpenNext rendered on demand now get the 404 page: unknown game
+  locale segments (`/xx/decisions-decisions`) and detail IDs outside
+  `[A-Za-z0-9_-]` (`/transfigure/zz.review`). Case variants of a game locale
+  prefix (`/EN/...`) get a 308 to the lowercase path (OpenNext gave 200 or 500).
+- `/_next/image` gets the 404 page. OpenNext's image endpoint passed local
+  images through, but `images.unoptimized` predates the Cloudflare launch, so
+  no page on this origin ever emitted that URL.
+- Unknown paths OpenNext answered with 500 (`/does-not-exist`) get the 404
+  page.
+- Non-GET/HEAD requests get 405 only where a GET finds a page; a missing
+  detail is 404 for every method.
+- Redirects that answer RSC requests keep the query (`_rsc`), and static page
+  responses send Next's `Vary: rsc, next-router-state-tree,
+  next-router-prefetch, next-router-segment-prefetch`.
+
+The service began as a Vercel-targeted Next.js application. OpenNext was added
+as the Cloudflare migration adapter; the sections below record why and how it
+was removed.
 
 Chemical X, Combo, Transfigure, This or That, 어려운 결정, History Course,
 and 조각모음 unbounded IDs are served as static HTML/RSC shells. The thin Worker
@@ -177,6 +211,12 @@ the production asset count retains safe headroom below 20,000 files.
 
 ### Phase 5: Remove the runtime fallback
 
+Status: done (2026-10-27). The seven-day fallback observation below was
+replaced by a `cf-static-404` path log for unmatched document/RSC requests
+(redacted like `pnpm cf:logs`) plus remote testbed parity, because the merged
+search-console work no longer fits under the 3 MiB Workers Free limit with
+OpenNext bundled, so the fallback could not stay deployed for a week.
+
 - Replace `openNextWorker.fetch` with an explicit static 404 after all known
   public routes are covered.
 - Run the production route inventory against a preview with OpenNext fallback
@@ -188,6 +228,10 @@ Exit condition: no expected public request needs OpenNext, no unexplained
 fallback paths remain, and there are no routing or locale regressions.
 
 ### Phase 6: Remove the OpenNext build dependency
+
+Status: done (2026-10-27) with a repository-owned collector
+(`scripts/collect-cf-assets.mjs`). Its file list matches an OpenNext-built
+assets directory except the `cdn-cgi/_next_cache` seed.
 
 - Evaluate Next static export versus a small repository-owned asset collector.
   The choice must support App Router chunks, HTML/RSC assets, static shells,

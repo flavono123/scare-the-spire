@@ -41,7 +41,7 @@ resources, rich patch notes, mobile layout, animation, or QA.
   Compendium joins, or large JSON parsing for them.
 - Keep `/patches*` and `/_patches*` owned by the separate static patch Worker.
   Generate patch HTML, CSS, JavaScript, and resource indexes ahead of time
-  instead of moving patch work into the main OpenNext request path.
+  instead of moving patch work into the main Worker request path.
 - Keep the public resource change-history explorer and its patch tabs in the
   static patch Worker. Production patch builds must emit `/patches/changes`
   route HTML and its client bundle ahead of time. Continue generating
@@ -49,19 +49,20 @@ resources, rich patch notes, mobile layout, animation, or QA.
   Compendium resource-detail history rails.
 - Keep pending Compendium references hover-only when the deployed resource
   manifest does not contain the target; do not turn them into links that 404.
-- Treat OpenNext as still present in the main Worker fallback. Do not remove
-  that fallback, replace `openNextWorker.fetch`, or add game-only locale
-  Compendium shells as incidental feature work; those belong to
-  `docs/OPENNEXT_EXIT_PLAN.md` Phases 4–6.
+- The main Worker is static-only: there is no renderer fallback. A page not
+  registered as a static route returns 404 in production, and `pnpm cf:assets`
+  fails when a prerendered route is unserved. Game-only locale Compendium
+  shells stay `docs/OPENNEXT_EXIT_PLAN.md` Phase 4 work.
 - New unbounded public ID routes **must** ship the Phase 3 static HTML/RSC
-  detail shell in the same feature. Leaving `/{id}` on OpenNext is an Error
-  1102 regression. See Unbounded ID detail shells below.
+  detail shell in the same feature. Leaving `/{id}` unregistered makes it a
+  production 404. See Unbounded ID detail shells below.
 
 ### Unbounded ID detail shells (Error 1102)
 
-Public record URLs are not enumerable at build time. OpenNext rendering them
-on a cold Workers Free isolate exceeds 10 ms CPU (`exceededCpu` / Error 1102 /
-503). A plain `200` is not proof of static delivery.
+Public record URLs are not enumerable at build time. Rendering them per
+request on a cold Workers Free isolate exceeded 10 ms CPU (`exceededCpu` /
+Error 1102 / 503), and the main Worker has no renderer. A plain `200` is not
+proof of static delivery.
 
 Required for every new `/{service}/[id]` (locale prefixes included), History
 Course `runId` paths, federated `/defragment/{service}/{id}`, and similar
@@ -82,19 +83,19 @@ one-segment record URLs:
    - `scripts/cloudflare-route-smoke.mjs` and `scripts/cloudflare-testbed.spec.ts`
 5. The thin Worker rewrites only a validated one-segment ID
    (`^[A-Za-z0-9_-]{1,128}$`) to that asset for **both document and RSC**
-   (`?_rsc=` / RSC headers). Extra path segments fail closed (no OpenNext).
+   (`?_rsc=` / RSC headers). Extra path segments fail closed (static 404).
 6. Production and preview smoke must return `x-cf-static-page: shell`.
-   `x-opennext: 1` on a UUID/record URL is a ship blocker.
+   `x-cf-static-page: not-found` on a UUID/record URL is a ship blocker.
 7. Community post services also need the federated
    `/defragment/{service}/{id}` shell. Do not prerender a `permanentRedirect`
    page as a `__id__` shell; legacy aliases such as `/this-or-that/worldcup/{id}`
    use a bounded Worker 308 instead.
 8. Prefetching a shelled detail is fine once the Worker rewrite covers RSC.
-   Do not prefetch a still-OpenNext ID URL.
+   Do not prefetch an ID URL the Worker does not serve yet.
 
 New service **indexes** must be exact static pages (`x-cf-static-page: service`)
 copied into `_cf_static_pages`, including `/en`. A `ƒ`+`●` split that omits
-the English index HTML leaves that locale on OpenNext.
+the English index HTML leaves that locale as a 404.
 
 These allowlists do not auto-discover new `[id]` routes. Omitting a
 registration can pass CI and 1102 in production. Follow
@@ -477,7 +478,7 @@ filter rail and `CompendiumDetailOverlay`. Mobile still hides the rail below
 - For new routes, choose static generation unless user-specific or live data
   makes that impossible. Unbounded record IDs are not an exception: prerender
   a `__id__` HTML/RSC shell and load the live row in the browser. Do not add
-  `force-dynamic` or request-time OpenNext rendering for UUID/post details.
+  `force-dynamic` or request-time rendering for UUID/post details.
 - For new public assets, use existing extracted assets first. Generate or author
   new art only when no game asset can represent the service concept.
 
@@ -493,7 +494,7 @@ filter rail and `CompendiumDetailOverlay`. Mobile still hides the rail below
     and hero phrase (or explicit omission) for any new or retitled Toy Box
     surface. Confirm the hero was not reused as OG description.
   - For new unbounded ID routes: allowlists updated, and document+RSC smoke
-    returned `x-cf-static-page: shell` (not `x-opennext`).
+    returned `x-cf-static-page: shell` (not `not-found`).
   - For a new Toy Box community service: `nestedUnder: "/defragment"` unless
     the user placed it elsewhere, and `createdAt` so it sorts newest-first
     under 조각모음.

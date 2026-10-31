@@ -4,13 +4,15 @@
 
 Cloudflare Workers Free를 기본 목표로 하는 정적 우선 Next.js 사이트.
 빌드 타임에 JSON/Markdown 데이터를 읽어 가능한 페이지와 API 데이터를
-생성하고, 요청 시 Worker는 정적 asset dispatch 또는 얇은 OpenNext
-fallback만 수행한다.
+생성하고, 요청 시 Worker는 정적 asset dispatch만 수행한다. Next.js는
+빌드 타임 렌더러로만 쓰고 Worker 런타임에는 Next/OpenNext가 없다.
 
 ```
 data/*.json + data/*.md
-  -> Next.js/OpenNext build
-  -> .open-next/assets + .open-next/worker.js
+  -> next build --webpack
+  -> scripts/collect-cf-assets.mjs + scripts/copy-cf-static-pages.mjs
+     + scripts/prune-cf-unreferenced-assets.mjs
+  -> .cloudflare/assets + workers/main-worker.ts (Wrangler bundle)
   -> scare-the-spire main Worker
 
 data/sts2-patch-notes/*.md
@@ -25,13 +27,15 @@ data/sts2-patch-notes/*.md
 - [DEPRECATED.md](./architecture/DEPRECATED.md) — 삭제된 카드/유물, 표현 방식
 - [PATCH_WORKER_DEPLOY_CONTRACT.md](./PATCH_WORKER_DEPLOY_CONTRACT.md) — patch-first 배포 계약
 - [CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md](./CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md) — 추후 커스텀 도메인 route dispatch 목표
-- [OPENNEXT_EXIT_PLAN.md](./OPENNEXT_EXIT_PLAN.md) — 정적 shell 전환과 OpenNext 런타임 제거 계획
+- [OPENNEXT_EXIT_PLAN.md](./OPENNEXT_EXIT_PLAN.md) — 정적 shell 전환과 OpenNext 런타임 제거 기록
 
 ## Worker 구조
 
-- `workers/main-worker.ts`: OpenNext Worker wrapper. `/`, locale home,
-  서비스 인덱스, 일부 Compendium HTML/RSC는 `_cf_static_pages` asset으로
-  먼저 서빙하고, 나머지만 OpenNext fallback으로 넘긴다.
+- `workers/main-worker.ts`: 정적 전용 main Worker. `/`, locale home,
+  서비스 인덱스, detail shell, Compendium HTML/RSC를 `_cf_static_pages`
+  asset으로 서빙하고, 예전 Next 응답(locale/trailing-slash 308,
+  `/api/link-preview`, 405)을 재현하며, 나머지는 Next가 prerender한
+  not-found 페이지를 404로 돌려준다(`workers/next-routing-parity.ts`).
 - `workers/patch-worker.ts`: `pnpm patch:build` 결과물을 서빙하는
   asset-first Worker. 런타임에서 patch markdown을 렌더링하지 않는다.
 - 현재 `/patches*`와 `/_patches*`는 main Worker의 `PATCH_WORKER`
@@ -72,7 +76,7 @@ scare-the-spire/
 ## 배포
 
 - **플랫폼**: Cloudflare Workers Free target
-- **Main Worker**: `pnpm cf:deploy` (`@opennextjs/cloudflare`)
+- **Main Worker**: `pnpm cf:deploy` (`next build` + asset collector + `wrangler deploy`)
 - **Patch Worker**: `pnpm cf:patch:deploy` (`pnpm patch:build` + Wrangler)
 - **이미지**: WebP/PNG 등 정적 파일 직접 서빙. Next image optimization은 사용하지 않음
 - **운영 원칙**: Cloudflare Free 한계 때문에 request-time CPU, 메모리,

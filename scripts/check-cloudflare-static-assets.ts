@@ -1,21 +1,50 @@
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
 import {
   legacyWorldcupDetailRedirectPath,
+  prerenderedRedirect,
+  STATIC_EXACT_SERVICE_PAGES,
   staticCompendiumAssetPath,
+  staticExactServicePageAssetPath,
   staticLegacyPageAssetPath,
+  staticNotFoundAssetPath,
   staticServiceDetailShellAssetPath,
   staticServicePageAssetPath,
   sts1LegacyAliasPath,
   sts2CompendiumAliasPath,
   type StaticPageExtension,
 } from "../workers/static-page-routing";
+import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
 
-const assetsRoot = path.join(".open-next", "assets");
+const assetsRoot = CLOUDFLARE_ASSETS_DIR;
 const nextAppRoot = path.join(".next", "server", "app");
-const maxAssetFiles = Number(process.env.CLOUDFLARE_STATIC_ASSET_LIMIT ?? 20_000);
 const maxAssetBytes = Number(process.env.CLOUDFLARE_STATIC_ASSET_SIZE_LIMIT_MIB ?? 25) * 1024 * 1024;
+
+function envCount(name: string, fallback: number): number {
+  const raw = process.env[name];
+  if (raw === undefined || raw === "") return fallback;
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < 0) {
+    throw new Error(`${name} must be a non-negative integer, got ${JSON.stringify(raw)}.`);
+  }
+  return value;
+}
+
+// Workers Free caps one version at 20,000 static asset files. The budget keeps
+// a reserve below that hard limit so an urgent release that adds pages or
+// images still deploys; raise the budget deliberately, not by accident.
+const maxAssetFiles = envCount("CLOUDFLARE_STATIC_ASSET_LIMIT", 20_000);
+const assetFileReserve = envCount("CLOUDFLARE_STATIC_ASSET_RESERVE", 500);
+const assetFileBudget = envCount(
+  "CLOUDFLARE_STATIC_ASSET_BUDGET",
+  Math.max(0, maxAssetFiles - assetFileReserve),
+);
+if (assetFileBudget > maxAssetFiles) {
+  throw new Error(
+    `CLOUDFLARE_STATIC_ASSET_BUDGET ${assetFileBudget} exceeds the static asset limit ${maxAssetFiles}.`,
+  );
+}
 
 const compendiumSegments = new Set([
   "ancients",
@@ -263,6 +292,61 @@ function checkStaticServicePages(): number {
         count += 1;
       }
     }
+  }
+
+  return count;
+}
+
+function checkStaticExactServicePages(): number {
+  let count = 0;
+  for (const pathPrefix of gameLocalePathPrefixes) {
+    for (const page of STATIC_EXACT_SERVICE_PAGES) {
+      const routePath = `/${[pathPrefix, ...page].filter(Boolean).join("/")}`;
+      for (const extension of ["html", "rsc"] satisfies StaticPageExtension[]) {
+        const assetPath = staticExactServicePageAssetPath(routePath, extension);
+        assert(assetPath, `Static routing rejected exact service page ${routePath}.${extension}`);
+        assert(
+          statSync(path.join(assetsRoot, assetPath.slice(1)), { throwIfNoEntry: false })?.isFile(),
+          `Missing copied exact service page: ${assetPath}`,
+        );
+        count += 1;
+      }
+      assert(
+        staticExactServicePageAssetPath(`${routePath}/`, "html") === null,
+        `${routePath}/ must keep the trailing-slash 308 instead of a static page.`,
+      );
+    }
+  }
+
+  assert(
+    staticExactServicePageAssetPath("/decisions-decisions/extra", "html") === null,
+    "Exact service pages must fail closed for extra path segments.",
+  );
+  assert(
+    staticExactServicePageAssetPath("/ko/decisions-decisions", "html") === null,
+    "Unsupported /ko locale prefix must not map to an exact service page.",
+  );
+  assert(
+    prerenderedRedirect("/this-or-that/worldcup")?.location === "/this-or-that/tournament"
+      && prerenderedRedirect("/this-or-that/worldcup")?.status === 308,
+    "The worldcup index must 308 to the tournament index.",
+  );
+  assert(
+    prerenderedRedirect("/zh/this-or-that/worldcup")?.location === "/zh/this-or-that/tournament",
+    "Locale worldcup indexes must keep the game-locale prefix.",
+  );
+  assert(
+    prerenderedRedirect("/this-or-that/worldcup/") === null,
+    "The worldcup index with a trailing slash must keep the Next 308 to the slashless path first.",
+  );
+
+  for (const extension of ["html", "rsc"] satisfies StaticPageExtension[]) {
+    const assetPath = staticNotFoundAssetPath(extension);
+    assert(
+      statSync(path.join(assetsRoot, assetPath.slice(1)), { throwIfNoEntry: false })?.isFile(),
+      `Missing copied not-found page: ${assetPath}`,
+    );
+    count += 1;
   }
 
   return count;
@@ -573,6 +657,12 @@ function checkCloudflareAssetLimits(): { count: number; largestBytes: number; la
     files.length <= maxAssetFiles,
     `Cloudflare static asset count ${files.length} exceeds the Free plan limit ${maxAssetFiles}.`,
   );
+  assert(
+    files.length <= assetFileBudget,
+    `Cloudflare static asset count ${files.length} exceeds the budget ${assetFileBudget} `
+      + `(limit ${maxAssetFiles} minus a ${maxAssetFiles - assetFileBudget}-file reserve). `
+      + "Prune unreferenced assets, or raise CLOUDFLARE_STATIC_ASSET_BUDGET deliberately.",
+  );
 
   let largestBytes = 0;
   let largestPath = "";
@@ -593,6 +683,7 @@ function checkCloudflareAssetLimits(): { count: number; largestBytes: number; la
 
 const routeCounts = checkServiceLocaleDetails();
 const staticServicePageCount = checkStaticServicePages();
+const staticExactServicePageCount = checkStaticExactServicePages();
 const staticDetailShellCount = checkStaticDetailShellAssets();
 const staticCompendiumRootCount = checkStaticCompendiumRoots();
 const staticLegacyPageCount = checkStaticLegacyPages();
@@ -601,17 +692,16 @@ const assetStats = checkCloudflareAssetLimits();
 
 console.log(`Cloudflare static detail routes: ko=${routeCounts.ko}, en=${routeCounts.en}`);
 console.log(`Cloudflare static service page assets: ${staticServicePageCount}`);
+console.log(`Cloudflare static exact service page and not-found assets: ${staticExactServicePageCount}`);
 console.log(`Cloudflare static detail shell assets: ${staticDetailShellCount}`);
 console.log(`Cloudflare static Compendium root assets: ${staticCompendiumRootCount}`);
 console.log(`Cloudflare static legacy page assets: ${staticLegacyPageCount}`);
 console.log(`Cloudflare static metadata assets: ${staticMetadataAssetCount}`);
-const incrementalCacheRoot = path.join(assetsRoot, "cdn-cgi", "_next_cache");
-const incrementalCacheCount = existsSync(incrementalCacheRoot)
-  ? walkFiles(incrementalCacheRoot).length
-  : 0;
-console.log(`Cloudflare static assets: ${assetStats.count}/${maxAssetFiles}`);
+const formatCount = (value: number) => value.toLocaleString("en-US");
 console.log(
-  `OpenNext incremental cache assets: ${incrementalCacheCount} (page routes already in _cf_static_pages are omitted)`,
+  `Cloudflare static assets: ${formatCount(assetStats.count)} used / ${formatCount(assetFileBudget)} budget / `
+    + `${formatCount(maxAssetFiles)} limit (headroom ${formatCount(assetFileBudget - assetStats.count)} to budget, `
+    + `${formatCount(maxAssetFiles - assetStats.count)} to limit)`,
 );
 console.log(
   `Largest Cloudflare static asset: ${(assetStats.largestBytes / 1024 / 1024).toFixed(2)} MiB (${assetStats.largestPath})`,

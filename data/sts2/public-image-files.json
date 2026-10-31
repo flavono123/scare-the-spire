@@ -78,27 +78,16 @@
     "square_speck.webp",
     "twinkle_star.webp"
   ],
-  "ancient-vfx/runtime/images/rooms/hive/the_insatiable": [
-    "sand_pillar_base.webp"
-  ],
   "ancient-vfx/runtime/images/vfx": [
     "dot.webp",
     "fog_sheet_1.webp",
     "light.webp",
-    "miasma_cloud.webp",
     "short_grain_rice_particle.webp",
     "short_rice_no_glow_particle.webp",
-    "tileable_noise_2.webp",
-    "tiny_glow_dot.webp",
-    "water_texture.webp"
+    "tiny_glow_dot.webp"
   ],
   "ancient-vfx/runtime/images/vfx/fire": [
-    "basic_fire_noise.webp",
-    "cinder_particle.webp",
-    "fire_base_slim.webp",
-    "fire_bottom_mask.webp",
-    "triangle_noise_tile.webp",
-    "zigzag_fire_distortion.webp"
+    "cinder_particle.webp"
   ],
   "ancient-vfx/runtime/images/vfx/monsters/lost_and_forgotten": [
     "lost_smoke_gradient.webp"

@@ -11,10 +11,10 @@ import {
 } from "@/lib/service-metadata";
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import {
-  getThisOrThatPostOgFields,
   toyboxResourceOgImageUrl,
   truncateOgTitle,
 } from "@/lib/toybox-post-og";
+import { getThisOrThatPostOgFields } from "@/lib/toybox-post-og-fields";
 import { serviceMessages } from "@/messages/service";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 

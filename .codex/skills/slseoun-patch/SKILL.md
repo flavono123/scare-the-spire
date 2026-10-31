@@ -173,8 +173,8 @@ the main Compendium Worker has the matching pages and canonical assets.
   the workers.dev/rollback fallback; future custom-domain direct routing is
   documented in `docs/CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md`.
 - Keep patch publishing asset-first. Do not add request-time patch markdown
-  rendering, Compendium data queries, large JSON parsing, or OpenNext SSR work
-  to serve ready patch pages.
+  rendering, Compendium data queries, or large JSON parsing to serve ready
+  patch pages.
 - Rich notes may include new cards, relics, powers, or other Compendium
   resources before the main Worker is ready only when those resources are also
   represented in `data/sts2-patch-local-resources.json`.

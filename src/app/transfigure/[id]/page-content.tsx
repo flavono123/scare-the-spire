@@ -12,10 +12,10 @@ import {
 } from "@/lib/service-metadata";
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import {
-  getTransfigurePostOgFields,
   toyboxResourceOgImageUrl,
   truncateOgTitle,
 } from "@/lib/toybox-post-og";
+import { getTransfigurePostOgFields } from "@/lib/toybox-post-og-fields";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 

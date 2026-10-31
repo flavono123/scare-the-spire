@@ -121,7 +121,7 @@ Follow current Toy Box patterns instead of copying one old route wholesale:
   `$feature-implementation` Unbounded ID detail shells and
   `$cf-guardrails`: `StaticDetailShell`, Worker rewrite, copy/check/smoke
   allowlists, document+RSC `x-cf-static-page: shell`. Do not leave the
-  UUID path on OpenNext.
+  UUID path unregistered (it would 404 in production).
 - Put service-owned UI text in the typed service dictionaries, including the
   functional subtitle phrase and the composed metadata template. Put exact or
   adapted game copy (title, hero, placeholders, remaining verb-like CTAs) in

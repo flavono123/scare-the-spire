@@ -13,9 +13,9 @@ import {
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import {
   comboPostOgImage,
-  getComboPostOgFields,
   truncateOgTitle,
 } from "@/lib/toybox-post-og";
+import { getComboPostOgFields } from "@/lib/toybox-post-og-fields";
 import { serviceMessages } from "@/messages/service";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 

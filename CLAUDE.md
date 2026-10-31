@@ -16,7 +16,7 @@ All task instructions must be followed by an immediate speculative commit after 
 - **UI**: shadcn/ui + Tailwind CSS v4
 - **Data**: JSON files in `data/`
 - **Package Manager**: pnpm
-- **Deploy**: Cloudflare Workers (OpenNext). `main`에 push하면 GHA `.github/workflows/cloudflare-workers.yml`이 배포
+- **Deploy**: Cloudflare Workers (정적 전용 main Worker: `next build` 결과물을 Wrangler로 배포, OpenNext 없음). `main`에 push하면 GHA `.github/workflows/cloudflare-workers.yml`이 배포
 
 ## 프로젝트 구조
 

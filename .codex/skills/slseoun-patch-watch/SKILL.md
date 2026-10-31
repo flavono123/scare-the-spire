@@ -8,7 +8,7 @@ description: Publish or update pre-Steam Slay the Spire 2 patch index stages for
 Create and maintain the patch-index states that exist before rich patch notes are
 ready. This skill covers only static index/page data. Do not add request-time
 Worker work; load `.codex/skills/cf-guardrails/SKILL.md` for any runtime,
-Worker, OpenNext, or asset-pipeline change.
+Worker or asset-pipeline change.
 
 ## Stage Flow
 

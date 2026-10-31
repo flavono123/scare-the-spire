@@ -2,6 +2,12 @@
 
 ## Status
 
+2026-10-27 OpenNext exit(Phase 6)를 `refactor/opennext-exit`에 구현했다(배포 전).
+main Worker는 정적 전용이 되어 Wrangler dry run 기준 54.42 KiB / gzip
+17.08 KiB다(OpenNext 포함 시 약 2,761 KiB). `pnpm cf:size`는 3,072 KiB 플랫폼
+한도와 함께 256 KiB 예산(`CLOUDFLARE_WORKER_SIZE_BUDGET_KIB`)을 검사한다.
+아래 Webpack 전환 기록은 OpenNext가 있던 시기의 측정이다.
+
 2026-07-22 Phase 1-4의 local 구현과 기능 보존 QA를 완료했다. 최신 검증
 artifact의 메인 Worker gzip 업로드 크기는 1,823.88 KiB로, Cloudflare Workers
 Free의 3 MiB(3,072 KiB) 한도까지 1,248.12 KiB 여유가 있다. 같은 작업의
@@ -307,7 +313,7 @@ main/patch artifact를 빌드하고 크기·patch 회귀를 검사한 뒤, produ
 미리보기·배포 검증 stage이며 GHA production CI와 무관하다. main의 실제
 service binding, 전체 asset 전파 준비를 확인하고 route smoke와 Playwright
 browser QA를 실행한다. 이미 빌드한 artifact를 재사용할 때만
-`pnpm cf:testbed -- --skip-build`를 사용한다. 이때 `.open-next`와
+`pnpm cf:testbed -- --skip-build`를 사용한다. 이때 `.cloudflare`와
 `.patch-worker`의 `build-record.json`이 현재 HEAD와 tracked 변경 상태와
 일치하지 않으면(기록 없음, 다른 커밋, dev-tools 빌드, 빌드 도중이나 빌드 후
 파일 변경·커밋) 배포하지 않고 멈춘다. 로컬 Miniflare 경로가 필요한
@@ -465,7 +471,9 @@ inventory가 통과하며 최종 Worker 크기를 새 기준선으로 기록한�
 - Webpack preview에서 기능 회귀가 발견되면 build flag를 되돌리고 Turbopack
   artifact로 CI 배포한다.
 - OpenNext exit 단계에서는 runtime fallback 제거와 build dependency 제거를
-  한 배포에 합치지 않는다.
+  한 배포에 합치지 않는다는 계획이었으나, search-console 작업이 합쳐진 뒤
+  OpenNext 포함 번들이 3 MiB를 넘어 두 단계를 한 release로 낸다. 되돌릴 때는
+  해당 release 직전 배포 버전으로 rollback한다.
 - production deploy는 계속 main branch CI를 사용하며 ad hoc `wrangler deploy`는
   실행하지 않는다.
 

@@ -81,6 +81,8 @@ QA: <확인할 라우트·화면·로케일·뷰포트>
    범위에 따라 `mobile-viewport-qa`·`animation-playback-qa` 등으로 위임한다. 고친 것은 커밋한다.
 7. **섀소식 대조.** 이번 섀소식이 언급한 기능이 모두 배포 범위에 있고 QA를 통과했는지 확인한다.
 8. **push.** 사용자 승인을 받아 로컬 `main` HEAD 전체를 push한다(AGENTS.md 배포 규칙).
+   push 전에 지금 정상 버전 ID를 UNRELEASED.md에 적는다. 롤백 절차는 [DEPLOY.md](DEPLOY.md)의
+   "롤백"을 따른다.
 9. **push 후 마이그레이션.** 운영 배포와 스모크가 통과하면 `after-push` 마이그레이션을 5절
    절차로 적용한다. `later-release`는 대장에 남겨 다음 정기 배포로 넘긴다.
 10. **기록 정리.** 배포가 성공하면 UNRELEASED.md의 기능 기대치와 QA 결과를

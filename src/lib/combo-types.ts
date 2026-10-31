@@ -3,7 +3,7 @@ import type { PostBlock } from "@/lib/chemical-types";
 import {
   buildLatestFeedKeysetFilter,
   TOYBOX_FEED_PAGE_SIZE,
-} from "@/lib/toybox-feed";
+} from "@/lib/toybox-feed-keyset";
 import { isYouTubeVideoId } from "@/lib/youtube-reference";
 
 export interface ComboResourceRef {

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Records which commit a Worker artifact (.patch-worker, .open-next) was built
+// Records which commit a Worker artifact (.patch-worker, .cloudflare) was built
 // from, and checks that a reused artifact still matches the checkout.
 //
 //   node scripts/build-record.mjs begin <artifact-dir>   before the build reads sources
@@ -11,7 +11,7 @@
 // starts, and `write` records a commit only when the checkout still matches
 // that snapshot: a commit or edit that lands mid-build leaves an artifact built
 // from the old sources under the new HEAD. The snapshot is kept under
-// node_modules/.cache because OpenNext empties .open-next during its build.
+// node_modules/.cache because a build replaces its artifact directory.
 
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";

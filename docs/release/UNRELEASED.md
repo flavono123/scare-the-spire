@@ -10,7 +10,7 @@
 | 이름 | 브랜치 | 목적 | 상태 |
 |---|---|---|---|
 | domain-migration-c54d7b | claude/domain-migration-c54d7b | 도메인 이전(레거시 호스트 안내, 리다이렉트, robots/sitemap) | 11커밋, main보다 122 뒤처짐. 2026-10-26 정기 배포에서 제외 |
-| opennext-exit | refactor/opennext-exit | main Worker에서 OpenNext 런타임 제거(정적 전용 Worker), 정적 파일 수 정리, 클라이언트 중복 제거 | 진행 중(2026-10-27 시작) |
+| opennext-exit | refactor/opennext-exit | main Worker에서 OpenNext 런타임 제거(정적 전용 Worker), 정적 파일 수 정리, 클라이언트 중복 제거 | 진행 중(2026-10-27 시작). OpenNext 제거 배치 완료, main `d56208b1`까지 병합(`4626d067`), 원격 testbed 검증과 main 병합 대기 |
 
 ## 긴급 배포로 QA 없이 나간 범위
 
@@ -89,6 +89,29 @@
 - Feature: 니오우스레터 27개 호 전부 Mega Crit 원문의 굵게·기울임·취소선을 한/영 문서에 옮겼다. `[b]`, `[i]`, `[s]`를 쓰고, 예전 호의 `**`, `*`, `~~`는 모두 태그로 바꿨다. `[b]`는 밝은 색에 얇은 외곽선으로 그린다(한국어 본문 글꼴은 Bold 한 벌뿐이라 `font-bold`만으로는 차이가 없음). 강조가 링크를 가로질러도 끊기지 않는다. 경로 미리보기는 태그를 지운다.
 - Expect: 어느 호에서도 `*`, `~~`, `[b]`가 글자 그대로 보이지 않는다. Q&A 이름, 수상자·작가 이름, 날짜가 금색이 아니라 굵게 보인다. 2025-02 `흉측한`, `그림자`, `사랑`에 취소선이 있다. 2026-07 `이 컬렉션` 문장은 링크째 굵게, 2025-10 Connections 링크는 기울임으로 나오고 링크가 동작한다. 2025-07 카드 이름은 굵게면서 호버와 링크가 유지된다.
 - QA: `/patches/neowsletters/2024-10`, `/patches/neowsletters/2025-02`, `/patches/neowsletters/2026-04`, `/en/patches/neowsletters/2026-07`, `pnpm tsx scripts/neowsletter-anchors.spec.ts`
+
+### opennext-exit (worktree, 미병합)
+- Feature: main Worker가 정적 전용이 된다(런타임 Next/OpenNext 없음, gzip 약 17 KiB). `/decisions-decisions`·`/this-or-that/tournament` 인덱스(14 로케일)를 정적 페이지로 서빙하고, worldcup 인덱스 308·`/dev/pagestorm-editor` 307·`/ko`·`/kor` 308·trailing slash/`//` 308·`/api/link-preview`를 Worker가 예전 응답대로 처리한다. 매칭되지 않는 경로는 Next가 prerender한 not-found 페이지(HTML/RSC, 404, `x-cf-static-page: not-found`)와 `cf-static-404` 로그. 정적 경로의 GET/HEAD 외 메서드는 405. 빌드는 `next build` + `collect-cf-assets.mjs` + `wrangler deploy`. 정적 asset은 닿지 않는 `/_next/static` chunk 64개와 서빙되지 않는 public 파일 53개를 업로드에서 빼고, 낡은 Ancient VFX 텍스처 9개를 지워 18,484개(예산 19,500, 한도 20,000, 예산까지 1,016 남음). STS1 glyph metrics는 페이지 로케일 pack 하나만 받고, 구 STS2 한국어 표는 kor 게임 표를 읽는다(클라이언트 중복 제거 merge).
+- Expect: 화면 변화 없음. STS1 페이지·pagestorm STS1 호버의 글자 렌더 동일. `/does-not-exist`처럼 한 단계짜리 없는 경로가 500 대신 404 페이지. worldcup 인덱스·`/ko` 리다이렉트 Location 동일(RSC 요청은 `_rsc` 쿼리 유지). 링크 미리보기 동작 동일(리다이렉트 중간 단계도 공개 URL만 따라감).
+- 의도한 응답 차이(OpenNext 대비, 실제 링크는 영향 없음):
+  - 렌더러가 요청 시 그리던 비정규 파라미터가 404: 모르는 게임 로케일(`/xx/decisions-decisions`), `.`·`%`가 든 상세 ID(`/transfigure/zz.review`). 게임 로케일 접두사의 대소문자 변형(`/EN/...`, `/En/this-or-that/tournament`)은 소문자 경로로 308(전에는 200 또는 500).
+  - `/_next/image`가 404 페이지(전에는 OpenNext 이미지 endpoint가 로컬 이미지를 200으로 전달). `images.unoptimized`가 2026-04-10부터라 Cloudflare 출시(2026-06-16) 뒤 이 origin의 어떤 페이지도 이 URL을 낸 적 없음.
+  - GET/HEAD 외 메서드: 있는 정적 페이지는 405, 없는 상세(`/compendium/cards/<없는 id>`)는 GET처럼 404.
+  - 정적 페이지 응답에 Next와 같은 `Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch`.
+- 의도한 차이(testbed 한정): OpenNext는 `.env*`를 `next-env.mjs`로 Worker에 실어서 로컬에서 만든 testbed Worker에 `.env.local`의 서버 키까지 들어갔다. 정적 Worker 번들에는 어떤 `.env` 값도 없다(`SUPABASE_SECRET_KEY`·`SUPABASE_ACCESS_TOKEN`·`SUPABASE_DB_PASSWORD` 값 검색 0건).
+- 기록 셸 OG: 운영·testbed 모두 Worker 변수가 없어 제목·설명·이미지가 목록 기본값이고 canonical·hreflang·og:url만 기록 주소다. 배포 전부터 같은 상태라 이 묶음의 회귀가 아니다(`tasks/010` #32).
+- 의도한 응답 차이(병합 QA에서 추가, 실제 링크는 영향 없음):
+  - 개발 전용 경로: `/api/dev/*`의 JSON 404와 `/dev/admin` RSC 200이 prerender된 404 페이지로 바뀜.
+  - 없는 경로의 `.rsc` 문서 요청(`/compendium/cards/bash.rsc`)은 RSC 404가 HTML 404로 바뀜.
+  - 외부 URL을 준 `/_next/image`는 `Sec-Fetch-Dest`가 없거나 document면 403 `Blocked`(Cloudflare 계층으로 추정), image면 404 페이지.
+  - `/_cf_static_pages/404`가 다른 `/_cf_static_pages/*`처럼 정적 asset으로 직접 열림(운영은 404).
+- 알려진 차이(병합 QA): STS1 카드 목록(canvas 약 3,300개)의 첫 언어 전환이 글리프 묶음 chunk를 하나 더 받아 운영보다 0.2~0.5초 늦음. 끝난 화면과 canvas 픽셀은 같음.
+- 첫 운영 배포 뒤 되돌릴 정상 버전(2026-10-31 기준, push 직전 다시 확인): main Worker `30c33e29-04b2-4fb5-8617-371ff079936e`, patch Worker `ac131df6-0512-4c8f-ab33-d9fe8eed9c5a`. 절차는 `docs/DEPLOY.md` 롤백.
+- 후속 수정(묶음 2 QA): 404 페이지 응답에 정적 페이지와 같은 `Vary`를 붙임(같은 URL이 HTML과 RSC 404를 함께 내므로). `cf:smoke`가 확인.
+- 병합으로 맞춘 곳: 빌드 기록은 `.cloudflare/build-record.json`에 남고 `collect-cf-assets.mjs`가 asset을 바꿀 때 지운다(`cf:preview` 산출물이 `--skip-build`를 통과하지 못하게). `cf:assets`가 Compendium data chunk 141개와 게임 전용 로케일 목록 모달 URL 252개도 확인한다.
+- 이번 배포 주의: RELEASE_PROCESS 5단계의 배포 전 프로덕션 `cf:smoke --scope main`은 이 브랜치가 추가한 다음 케이스가 옛 앱에서 실패한다(배포 뒤에만 통과). `/decisions-decisions`·`/en/decisions-decisions`·`/this-or-that/tournament`·`/zh/this-or-that/tournament` document/RSC(옛 앱은 `x-cf-static-page` 없음), "Worldcup index redirect RSC"(옛 앱 200), "Not-found document"·"Not-found RSC"(옛 앱 500), "Locale not-found document"(owner 헤더 없음), "POST to a static page". 배포 전 판정은 원격 testbed의 `cf:smoke --scope all`로 하고, 프로덕션 smoke는 배포 뒤에 본다. POST 케이스는 정적 페이지에 본문 없는 요청 하나라 부작용이 없다.
+- QA: `pnpm cf:build`(route coverage·asset 예산 포함 `cf:assets`), `tsx scripts/prune-cf-unreferenced-assets.spec.ts`, `tsx scripts/next-routing-parity.spec.ts`, `tsx scripts/link-preview.spec.ts`, `pnpm cf:size`, `pnpm patch:build`(제외 public 파일 참조 검사), `pnpm cf:testbed:local --skip-build`, 원격 testbed(`pnpm cf:testbed`) parity, 배포 후 `pnpm cf:smoke --scope main`과 `pnpm cf:logs -- --not-found`.
+- Commits: `788be7ea..` (refactor/opennext-exit). main 병합 `4626d067`.
 
 <!--
 ### <항목-id>

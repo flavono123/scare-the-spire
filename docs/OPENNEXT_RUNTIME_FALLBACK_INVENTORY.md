@@ -2,6 +2,11 @@
 
 ## Status
 
+2026-10-27: 이 fallback은 제거됐다. main Worker는 정적 전용이며 남은 요청은
+Next가 prerender한 not-found 페이지로 404를 받는다
+([OpenNext Runtime Exit Plan](./OPENNEXT_EXIT_PLAN.md) Phase 5–6). 아래는 제거 전
+기록이다.
+
 2026-07-22 기준 메인 Worker의 OpenNext runtime fallback은 여러 fallback
 함수의 모음이 아니라 `workers/main-worker.ts` 마지막의
 `openNextWorker.fetch(request, env, ctx)` 한 줄이다. 앞선 정적 분기에서 응답을

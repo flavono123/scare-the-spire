@@ -3,12 +3,19 @@ import { spawnSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
 
+// Workers Free platform limit (gzip upload size).
 const limitKiB = Number(process.env.CLOUDFLARE_WORKER_SIZE_LIMIT_KIB ?? 3072);
+// The static-only main Worker is ~tens of KiB; a jump past this budget means a
+// renderer or a large dependency slipped into the Worker bundle.
+const budgetKiB = Number(process.env.CLOUDFLARE_WORKER_SIZE_BUDGET_KIB ?? 256);
 const outDir = process.env.CLOUDFLARE_WORKER_SIZE_OUTDIR
   ?? path.join(os.tmpdir(), `sts-worker-size-check-${process.pid}`);
 
 if (!Number.isFinite(limitKiB) || limitKiB <= 0) {
   throw new Error(`Invalid CLOUDFLARE_WORKER_SIZE_LIMIT_KIB: ${process.env.CLOUDFLARE_WORKER_SIZE_LIMIT_KIB}`);
+}
+if (!Number.isFinite(budgetKiB) || budgetKiB <= 0) {
+  throw new Error(`Invalid CLOUDFLARE_WORKER_SIZE_BUDGET_KIB: ${process.env.CLOUDFLARE_WORKER_SIZE_BUDGET_KIB}`);
 }
 
 rmSync(outDir, { recursive: true, force: true });
@@ -59,8 +66,17 @@ if (!Number.isFinite(totalKiB) || !Number.isFinite(gzipKiB)) {
 
 console.log(`Cloudflare Worker upload size: ${totalKiB.toFixed(2)} KiB / gzip ${gzipKiB.toFixed(2)} KiB`);
 console.log(`Cloudflare Worker gzip size limit: ${limitKiB.toFixed(2)} KiB`);
+console.log(`Cloudflare Worker gzip size budget: ${budgetKiB.toFixed(2)} KiB`);
 
 if (gzipKiB > limitKiB) {
   console.error(`Cloudflare Worker gzip upload size exceeds the Free plan limit by ${(gzipKiB - limitKiB).toFixed(2)} KiB.`);
+  process.exit(1);
+}
+
+if (gzipKiB > budgetKiB) {
+  console.error(
+    `Cloudflare Worker gzip upload size exceeds the static Worker budget by ${(gzipKiB - budgetKiB).toFixed(2)} KiB. `
+    + "Check what the main Worker imports, or raise CLOUDFLARE_WORKER_SIZE_BUDGET_KIB deliberately.",
+  );
   process.exit(1);
 }

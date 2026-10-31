@@ -14,7 +14,7 @@ otherwise, so a production build drops its dynamic import; it is noindex and
 not in the sitemap or search index, and the navbar lists it (패치/운영 → 맵 진행
 바 시뮬레이터) only on the dev server, like the combat simulator. A preset page
 links back to the preset list. To check a production build, grep the emitted JS (`.next/static`,
-`.next/server`, `.open-next/server-functions`) for `untouchable-history` or
+`.next/server`) for `untouchable-history` or
 `data-map-bar-stage`: they must appear only under `.next/dev`.
 
 - Engine (pure, no DOM): `src/lib/map-bar/` (`engine.ts`, `types.ts`,

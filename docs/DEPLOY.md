@@ -1,14 +1,19 @@
 # 배포 매뉴얼
 
 이 프로젝트의 기본 배포 대상은 Cloudflare Workers Free다. main Worker는
-OpenNext 빌드 결과를 서빙하고, patch Worker는 미리 생성한 정적 patch
-페이지와 patch-local asset을 별도로 서빙한다.
+`next build`가 prerender한 정적 페이지와 asset만 서빙하는 정적 전용
+Worker이고(런타임에 Next/OpenNext 없음), patch Worker는 미리 생성한 정적
+patch 페이지와 patch-local asset을 별도로 서빙한다.
 
 ## 사전 조건
 
 - `pnpm` 의존성이 설치되어 있어야 한다.
 - Wrangler가 Cloudflare 계정에 인증되어 있어야 한다.
 - main Worker와 patch Worker의 기존 환경 변수는 `--keep-vars`로 유지한다.
+- `.env*` 값은 Worker에 실리지 않는다. 브라우저용 `NEXT_PUBLIC_*`만 `next build`가
+  클라이언트 코드에 넣는다. main Worker가 런타임에 읽는 값은 Worker 변수뿐이라,
+  기록 셸 OG(`workers/detail-shell-og.ts`)는 Worker에
+  `NEXT_PUBLIC_SUPABASE_URL`·`NEXT_PUBLIC_SUPABASE_ANON_KEY`가 있을 때만 동작한다.
 
 ## Main Worker
 
@@ -18,15 +23,69 @@ OpenNext 빌드 결과를 서빙하고, patch Worker는 미리 생성한 정적 
 pnpm cf:preview
 ```
 
+정적 전용 Worker라 `/dev` 페이지와 `/api/dev` route는 서빙하지 않는다(404
+페이지). 개발 도구는 `pnpm dev`에서 확인한다.
+
 프로덕션 main Worker를 배포한다.
 
 ```bash
 pnpm cf:deploy
 ```
 
-이 명령은 `pnpm static:data`, `opennextjs-cloudflare build`,
-`scripts/copy-cf-static-pages.mjs`, `opennextjs-cloudflare deploy -- --keep-vars`
-순서로 실행된다.
+이 명령은 `pnpm static:data`, `next build --webpack`,
+`scripts/collect-cf-assets.mjs`(`public/**`, `.next/static/**`, `BUILD_ID`),
+`scripts/copy-cf-static-pages.mjs`, `scripts/prune-cf-unreferenced-assets.mjs`,
+`pnpm cf:assets`, `pnpm cf:size`, `wrangler deploy --keep-vars` 순서로
+실행된다. 결과물은 `.cloudflare/assets`다. `pnpm cf:assets`는 실제 Worker를
+모든 prerender route에 돌려 렌더러가 필요한 route가 있으면 실패하고, Compendium
+data chunk가 업로드에서 빠졌거나 게임 전용 로케일의 목록 모달 URL이 정적 페이지가
+아니어도 실패한다. CI는 빌드 뒤 `pnpm css:check`로 낡은 CSS를 잡는다.
+
+`pnpm cf:build`는 빌드한 커밋을 `.cloudflare/build-record.json`(업로드 밖)에
+남기고 `pnpm cf:testbed -- --skip-build`가 이 기록을 확인한다.
+`collect-cf-assets.mjs`가 asset을 바꿀 때 기록을 지우므로 `pnpm cf:preview`
+빌드는 `--skip-build`로 재사용되지 않는다.
+
+Workers Free는 버전 하나에 정적 asset 파일을 20,000개까지만 올린다.
+
+- `scripts/cloudflare-asset-excludes.mjs`에 맞는 `public/` 파일은 저장소에
+  남기고 업로드에서 뺀다. Godot `.tres`/`.exr`, `spine-vfx.atlas`로 합쳐지는
+  VFX별 atlas·png, 서비스가 쓰지 않는 원본(예: WOFF2의 원본 TTF)이 해당한다.
+  빠진 파일을 서빙되는 파일이 참조하면 빌드가 실패하니, 쓰기 전에 목록에서
+  지운다.
+- `prune-cf-unreferenced-assets.mjs`는 서빙되는 HTML·RSC·JSON·CSS에서
+  닿지 않는 `/_next/static` 파일(route handler, dev·patch 페이지, 리다이렉트
+  전용 페이지 chunk, Pages Router runtime)을 지운다.
+- `pnpm cf:assets`는 파일 수가 예산(기본 19,500 = 한도 20,000 − 예비 500)을
+  넘으면 실패하고, 사용량·예산·한도·남은 수를 출력한다. 예비분은 급한
+  패치 release가 들어갈 자리다. 큰 기능이 예산을 넘기면 먼저 안 쓰는 asset을
+  정리하고, 그래도 필요하면 `CLOUDFLARE_STATIC_ASSET_BUDGET`(또는
+  `CLOUDFLARE_STATIC_ASSET_RESERVE`)으로 의도적으로 올린다.
+
+## 롤백
+
+Worker 버전은 그 버전이 올린 정적 asset 목록까지 함께 갖고 있어서, 이전 버전으로
+되돌리면 asset도 같이 돌아간다. 평소 배포는 CI로만 하고, 롤백만 예외로 Wrangler를
+직접 쓴다. 운영을 바꾸는 일이라 사용자 승인을 받는다.
+
+1. 배포 전에 지금 정상 버전 ID를 `docs/release/UNRELEASED.md`에 적는다.
+
+   ```bash
+   pnpm exec wrangler deployments status --name scare-the-spire
+   pnpm exec wrangler deployments status --name scare-the-spire-patches
+   ```
+
+2. 문제가 생기면 문제가 난 Worker만 되돌린다.
+
+   ```bash
+   pnpm exec wrangler rollback <version-id> --name scare-the-spire
+   pnpm exec wrangler rollback <version-id> --name scare-the-spire-patches
+   ```
+
+3. `pnpm cf:smoke --scope main`으로 복구를 확인한다.
+4. 원인 커밋을 `main`에서 고치거나 되돌린 뒤 push한다. 그러지 않으면 다음 push가
+   같은 코드를 다시 배포한다. 워크플로의 `workflow_dispatch`는 HEAD를 다시 배포할
+   뿐 이전 버전을 고르지 못한다.
 
 ## Patch Worker
 
@@ -53,15 +112,16 @@ binding을 경유한다. 커스텀 도메인 도입 후 직접 route dispatch �
 
 ## Free Tier 확인
 
-Cloudflare 런타임이나 배포 설정을 바꾸는 경우, OpenNext 빌드 뒤 Wrangler
-dry run으로 bundle size와 binding을 확인한다.
+Cloudflare 런타임이나 배포 설정을 바꾸는 경우, `pnpm cf:build` 뒤
+`pnpm cf:size`(Wrangler dry run)로 bundle size와 binding을 확인한다.
 
 ```bash
 pnpm exec wrangler deploy --dry-run --outdir /tmp/sts-worker-dry-run
 ```
 
 Workers Free 기준으로 gzip upload size가 3 MiB를 넘으면 배포 차단 이슈로
-취급한다. 또한 기능 변경 시 request-time CPU 10 ms, 128 MB memory, 50
+취급한다. 정적 전용 main Worker는 수십 KiB라 `pnpm cf:size`는 256 KiB
+예산(`CLOUDFLARE_WORKER_SIZE_BUDGET_KIB`)을 넘어도 실패한다. 또한 기능 변경 시 request-time CPU 10 ms, 128 MB memory, 50
 subrequests/request, 100,000 requests/day 한계에서 `exceededResources`, Error
 1102, 503이 날 수 있는지 검토한다.
 

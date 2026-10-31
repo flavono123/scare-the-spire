@@ -237,6 +237,87 @@ test("dynamic service routes refresh directly and invalid nesting fails closed",
   }
 });
 
+test("static fallback keeps the former Next responses", async ({ request }) => {
+  for (const [path, owner] of [
+    ["/decisions-decisions", "service"],
+    ["/en/decisions-decisions", "service"],
+    ["/this-or-that/tournament", "service"],
+    ["/zh/this-or-that/tournament", "service"],
+  ]) {
+    for (const rsc of [false, true]) {
+      const response = await request.get(absolute(rsc ? `${path}?_rsc=testbed` : path), {
+        headers: rsc ? { RSC: "1" } : { Accept: "text/html" },
+        maxRedirects: 0,
+      });
+      expect(response.status(), path).toBe(200);
+      expect(response.headers()["x-cf-static-page"], path).toBe(owner);
+      expect(response.headers()["content-type"], path).toContain(rsc ? "text/x-component" : "text/html");
+      expect(response.headers()["vary"], path).toContain("rsc");
+    }
+  }
+
+  // An RSC redirect keeps `_rsc`, so the browser never caches the RSC target
+  // under the document URL.
+  const worldcupRsc = await request.get(absolute("/en/this-or-that/worldcup?_rsc=testbed"), {
+    headers: { RSC: "1" },
+    maxRedirects: 0,
+  });
+  expect(worldcupRsc.status()).toBe(308);
+  const worldcupRscLocation = new URL(worldcupRsc.headers().location, "http://smoke.local");
+  expect(worldcupRscLocation.pathname).toBe("/en/this-or-that/tournament");
+  expect(worldcupRscLocation.search).toBe("?_rsc=testbed");
+
+  for (const [path, location] of [
+    ["/ko", "/"],
+    ["/kor/compendium/cards", "/compendium/cards"],
+    ["/this-or-that/worldcup", "/this-or-that/tournament"],
+    ["/en/this-or-that/worldcup", "/en/this-or-that/tournament"],
+    ["/does-not-exist/", "/does-not-exist"],
+    ["/EN/this-or-that/tournament", "/en/this-or-that/tournament"],
+  ]) {
+    const response = await request.get(absolute(path), {
+      headers: { Accept: "text/html" },
+      maxRedirects: 0,
+    });
+    expect(response.status(), path).toBe(308);
+    expect(new URL(response.headers().location, "http://smoke.local").pathname, path).toBe(location);
+  }
+
+  for (const [path, lang] of [
+    ["/does-not-exist", "ko"],
+    ["/en/does-not-exist", "en"],
+  ]) {
+    const response = await request.get(absolute(path), { headers: { Accept: "text/html" } });
+    expect(response.status(), path).toBe(404);
+    expect(response.headers()["x-cf-static-page"], path).toBe("not-found");
+    expect(response.headers()["content-type"], path).toContain("text/html");
+    expect(await response.text(), path).toMatch(new RegExp(`<html[^>]* lang="${lang}"`));
+  }
+
+  const notFoundRsc = await request.get(absolute("/does-not-exist?_rsc=testbed"), {
+    headers: { RSC: "1" },
+  });
+  expect(notFoundRsc.status()).toBe(404);
+  expect(notFoundRsc.headers()["x-cf-static-page"]).toBe("not-found");
+  expect(notFoundRsc.headers()["content-type"]).toContain("text/x-component");
+
+  const privatePreview = await request.get(
+    absolute(`/api/link-preview?url=${encodeURIComponent("http://127.0.0.1/")}`),
+  );
+  expect(privatePreview.status()).toBe(400);
+  expect(await privatePreview.json()).toEqual({ message: "unsupported url" });
+
+  const post = await request.post(absolute("/compendium/cards"), { maxRedirects: 0 });
+  expect(post.status()).toBe(405);
+  expect(post.headers().allow).toBe("GET, HEAD");
+
+  // A detail path with no page is a 404 for every method, as for GET.
+  const missingPost = await request.post(absolute("/compendium/cards/does-not-exist"), {
+    maxRedirects: 0,
+  });
+  expect(missingPost.status()).toBe(404);
+});
+
 test("record shells keep exactly one policy canonical set after hydration", async ({ page }) => {
   await blockSupabase(page);
   // A missing record also covers the worker's failed-lookup path: the search

@@ -23,6 +23,9 @@ Options:
                               (default: exceededCpu, exceededMemory)
                               GraphQL metrics "exceededResources" maps to these
   --limit <number>            Max invocation events to fetch (default: 200, max: 2000)
+  --not-found                 List the main Worker's unmatched document/RSC paths
+                              (its redacted "cf-static-404" log lines) instead of
+                              invocation outcomes
   --json                      Print the redacted event list as JSON
   --help                      Show this help
 
@@ -42,6 +45,7 @@ function parseArgs(argv) {
     outcomes: [],
     limit: 200,
     json: false,
+    notFound: false,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -53,6 +57,10 @@ function parseArgs(argv) {
     }
     if (argument === "--json") {
       options.json = true;
+      continue;
+    }
+    if (argument === "--not-found") {
+      options.notFound = true;
       continue;
     }
     if (argument === "--hours") {
@@ -199,6 +207,44 @@ function extractEvents(result) {
   return Array.isArray(events) ? events : [];
 }
 
+const NOT_FOUND_LOG_PREFIX = "cf-static-404 ";
+
+function eventFilters(options) {
+  if (options.notFound) {
+    return [{ key: "$metadata.message", operation: "includes", type: "string", value: NOT_FOUND_LOG_PREFIX.trim() }];
+  }
+  return outcomeFilters(options.outcomes);
+}
+
+/** The Worker logs `cf-static-404 <document|rsc> <redacted path>`. */
+function summarizeNotFoundEvent(event) {
+  const message = String(event.$metadata?.message ?? event.source?.message ?? "");
+  const start = message.indexOf(NOT_FOUND_LOG_PREFIX);
+  const [kind = "?", path = "?"] = start >= 0
+    ? message.slice(start + NOT_FOUND_LOG_PREFIX.length).trim().split(/\s+/)
+    : [];
+  return { time: event.timestamp, kind, path: redactPathname(path) };
+}
+
+function printNotFound(services) {
+  for (const { service, events } of services) {
+    console.log(`\n${service}`);
+    if (events.length === 0) {
+      console.log("  no cf-static-404 log lines");
+      continue;
+    }
+    const counts = new Map();
+    for (const { kind, path } of events.map(summarizeNotFoundEvent)) {
+      const key = `${kind} ${path}`;
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    console.log(`  events=${events.length}`);
+    for (const [key, count] of [...counts].sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))) {
+      console.log(`  ${String(count).padStart(4)}  ${key}`);
+    }
+  }
+}
+
 function outcomeFilters(outcomes) {
   if (outcomes.length === 1) {
     return [{ key: "$workers.outcome", operation: "eq", type: "string", value: outcomes[0] }];
@@ -225,7 +271,7 @@ async function loadEvents(authentication, service, options, window) {
         filterCombination: "and",
         filters: [
           { key: "$metadata.service", operation: "eq", type: "string", value: service },
-          ...outcomeFilters(options.outcomes),
+          ...eventFilters(options),
         ],
       },
       ...(offset ? { offset, offsetDirection: "next" } : {}),
@@ -317,7 +363,15 @@ try {
     services.push({ service, events });
   }
 
-  if (options.json) {
+  if (options.notFound && options.json) {
+    console.log(JSON.stringify({
+      timeframe: window,
+      services: services.map(({ service, events }) => ({ service, events: events.map(summarizeNotFoundEvent) })),
+    }, null, 2));
+  } else if (options.notFound) {
+    console.log(`Cloudflare Workers unmatched paths · ${formatTimestamp(window.from)} – ${formatTimestamp(window.to)} · auth: ${authentication.source}`);
+    printNotFound(services);
+  } else if (options.json) {
     console.log(
       JSON.stringify(
         {

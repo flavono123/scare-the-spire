@@ -23,8 +23,8 @@ Worker before the patch Worker for every patch-page request.
 ## Target Route Shape
 
 After a custom domain is available, configure route dispatch so patch traffic
-goes directly to the patch Worker and all other traffic goes to the main
-OpenNext Worker:
+goes directly to the patch Worker and all other traffic goes to the static
+main Worker:
 
 ```text
 example.com/patches*   -> scare-the-spire-patches
@@ -38,7 +38,7 @@ path for patch pages once custom-domain route priority can dispatch by path.
 
 ## Guardrails
 
-- Do not move `/patches*` back into the main OpenNext runtime as the primary
+- Do not move `/patches*` back into the main Worker as the primary
   Cloudflare production path.
 - Keep `scare-the-spire-patches` asset-first. Patch HTML, CSS, images, fonts,
   and provisional assets must be generated ahead of time under

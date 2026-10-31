@@ -87,10 +87,15 @@ jobs:
                     main_changed=true
                     patch_after_main=true
                     ;;
-                  package.json|pnpm-lock.yaml|next.config.*|open-next.config.*|postcss.config.*|tsconfig.json|src/app/globals.css|src/components/*|src/lib/*|scripts/*|workers/main-worker.ts|wrangler.jsonc)
+                  package.json|pnpm-lock.yaml|next.config.*|postcss.config.*|tsconfig.json|src/app/globals.css|src/components/*|src/lib/*|scripts/*|workers/main-worker.ts|wrangler.jsonc)
                     main_changed=true
                     patch_changed=true
                     patch_after_main=true
+                    ;;
+                  workers/*)
+                    # Every main Worker module (routing, OG, redirects);
+                    # workers/patch-worker.ts matched the patch case above.
+                    main_changed=true
                     ;;
                   data/*|public/*|src/*)
                     main_changed=true
@@ -221,7 +226,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .next/cache
-          key: ${{ runner.os }}-next-v2-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'open-next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
+          key: ${{ runner.os }}-next-v2-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
           restore-keys: |
             ${{ runner.os }}-next-v2-${{ hashFiles('pnpm-lock.yaml') }}-
             ${{ runner.os }}-next-v2-
@@ -234,7 +239,6 @@ jobs:
               package.json \
               pnpm-lock.yaml \
               next.config.ts \
-              open-next.config.ts \
               wrangler.jsonc \
               tsconfig.json \
               postcss.config.mjs \
@@ -242,7 +246,7 @@ jobs:
               data \
               public \
               scripts \
-              workers/main-worker.ts \
+              workers \
               | xargs -0 shasum -a 256 \
               | shasum -a 256 \
               | cut -c1-20

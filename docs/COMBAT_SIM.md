@@ -7,7 +7,7 @@ It exists only on the dev server: the page renders when
 that check is inlined at build time, so production drops the dynamic import
 and emits no engine or scene chunk. It is not in the sitemap, nav or search
 index, and `robots` is noindex. To check a production build, grep the
-emitted JS (`.next/static`, `.next/server`, `.open-next/server-functions`) for
+emitted JS (`.next/static`, `.next/server`) for
 strings such as `doormaker-grasp-0.102.0` or `data-combat-sim-stage`: they
 must appear only under `.next/dev`.
 

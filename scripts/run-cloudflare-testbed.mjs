@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 
 import { spawn, spawnSync } from "node:child_process";
+import { statSync } from "node:fs";
+
 import { checkBuildRecord, describeBuildRecord } from "./build-record.mjs";
+import { CLOUDFLARE_ASSETS_DIR, CLOUDFLARE_BUILD_DIR } from "./cloudflare-assets-dir.mjs";
+import { DEV_ASSET_WATCH_ENV } from "./wrangler-dev-assets.mjs";
 
 const LOCAL_MAIN_ORIGIN = "http://127.0.0.1:8787";
 const LOCAL_PATCH_ORIGIN = "http://127.0.0.1:8788";
@@ -14,7 +18,7 @@ function usage() {
 Options:
   --origin <url>   Test an already-running preview without building or starting Workers
   --remote         Deploy the isolated testbed Workers to Cloudflare and test them
-  --skip-build     Reuse existing .open-next and .patch-worker artifacts
+  --skip-build     Reuse existing .cloudflare/assets and .patch-worker artifacts
                    (refused unless both were built from the current checkout)
   --help           Show this help`);
 }
@@ -22,7 +26,7 @@ Options:
 // Refuse to test or deploy artifacts built from another commit or tree.
 function assertFreshArtifacts(options) {
   const artifacts = [
-    { dir: ".open-next", build: "pnpm cf:build" },
+    { dir: CLOUDFLARE_BUILD_DIR, build: "pnpm cf:build" },
     {
       dir: ".patch-worker",
       // Matches the patch build runRemote() does itself.
@@ -149,7 +153,7 @@ function startWorker(label, config, port) {
     ],
     {
       cwd: process.cwd(),
-      env: process.env,
+      env: { ...process.env, ...DEV_ASSET_WATCH_ENV },
       detached: process.platform !== "win32",
       stdio: ["ignore", "pipe", "pipe"],
     },
@@ -207,7 +211,12 @@ function runSuites(origin, { attempts = 1, retryDelayMs = 0 } = {}) {
     "browser behavior and mobile QA",
     "pnpm",
     ["qa:cf:testbed"],
-    { ...process.env, BASE_URL: origin, CF_TESTBED_ORIGIN: origin },
+    {
+      ...process.env,
+      BASE_URL: origin,
+      CF_TESTBED_ORIGIN: origin,
+      PLAYWRIGHT_BLOCK_SUPABASE: "1",
+    },
   );
 }
 
@@ -287,13 +296,12 @@ async function runRemote(options) {
     "pnpm",
     [
       "exec",
-      "opennextjs-cloudflare",
+      "wrangler",
       "deploy",
       "--config",
       "wrangler.jsonc",
       "--env",
       REMOTE_ENVIRONMENT,
-      "--",
       "--keep-vars",
     ],
     wranglerEnv,
@@ -305,8 +313,17 @@ async function runRemote(options) {
   runSuites(origin, { attempts: 3, retryDelayMs: 2_000 });
 }
 
+function assertBuiltArtifacts() {
+  for (const artifact of [CLOUDFLARE_ASSETS_DIR, ".patch-worker"]) {
+    if (!statSync(artifact, { throwIfNoEntry: false })?.isDirectory()) {
+      throw new Error(`--skip-build needs an existing ${artifact}; run pnpm cf:build and pnpm patch:build first`);
+    }
+  }
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
+  if (options.skipBuild && !options.origin) assertBuiltArtifacts();
   if (options.origin) {
     runSuites(options.origin);
     return;

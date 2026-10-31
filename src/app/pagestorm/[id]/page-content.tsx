@@ -11,7 +11,8 @@ import {
   composeToyBoxPostOgDescription,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { clipOgDescription, getPagestormPostOgFields } from "@/lib/toybox-post-og";
+import { clipOgDescription } from "@/lib/toybox-post-og";
+import { getPagestormPostOgFields } from "@/lib/toybox-post-og-fields";
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";

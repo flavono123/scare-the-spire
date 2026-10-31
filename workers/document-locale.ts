@@ -26,8 +26,8 @@ export function documentGameLocaleForPath(pathname: string): GameLocale | null {
 
 /**
  * The shared root layout renders <html lang="ko">. Static locale pages are fixed
- * at copy time (scripts/copy-cf-static-pages.mjs); this covers locale-prefixed
- * documents rendered by OpenNext, which all use the English service UI.
+ * at copy time (scripts/copy-cf-static-pages.mjs); this covers the shared static
+ * not-found page served under a locale prefix, which uses the English service UI.
  */
 export function withLocalizedDocumentRoot(response: Response, pathname: string): Response {
   const gameLocale = documentGameLocaleForPath(pathname);

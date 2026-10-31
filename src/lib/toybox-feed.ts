@@ -1,7 +1,11 @@
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import {
+  buildLatestFeedKeysetFilter,
+  TOYBOX_FEED_PAGE_SIZE,
+} from "@/lib/toybox-feed-keyset";
 
-export const TOYBOX_FEED_PAGE_SIZE = 20;
+export { buildLatestFeedKeysetFilter, TOYBOX_FEED_PAGE_SIZE };
 
 export const TOYBOX_FEED_SERVICES = [
   "combo",
@@ -122,15 +126,6 @@ export function toyboxVoteTotal(leftCount: number, rightCount: number): number {
 
 export function toyboxRecommendScore(likeCount: number): number {
   return likeCount;
-}
-
-export function buildLatestFeedKeysetFilter(cursor: {
-  createdAt: string;
-  id: string;
-}): string {
-  const createdAt = cursor.createdAt.replaceAll('"', "");
-  const id = cursor.id.replaceAll('"', "");
-  return `created_at.lt."${createdAt}",and(created_at.eq."${createdAt}",id.lt."${id}")`;
 }
 
 export function isMissingToyboxFeedRpc(
