@@ -7,8 +7,10 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { HistoryRunBlock } from "@/lib/chemical-types";
+import { blocksToPlainText } from "@/lib/chemical-utils";
 import {
   countComboYouTubeReferences,
+  exceedsComboTextLimit,
   extractComboResourceRefs,
   type ComboPost,
 } from "@/lib/combo-types";
@@ -122,6 +124,10 @@ export function ComboEditor({
       setValidationError(copy.youtubeLimit);
       throw new Error("combo allows one YouTube reference");
     }
+    if (exceedsComboTextLimit(blocksToPlainText(blocks).trim())) {
+      setValidationError(copy.textTooLong);
+      throw new Error("combo text exceeds the stored limit");
+    }
 
     setValidationError(null);
     const nickname = hideNickname
@@ -133,6 +139,7 @@ export function ComboEditor({
   }, [
     copy.defaultNickname,
     copy.minimumResources,
+    copy.textTooLong,
     copy.youtubeLimit,
     hideNickname,
     onSubmit,

@@ -6,7 +6,7 @@ import type { ComponentType } from "react";
 /**
  * ReactNodeViewRenderer for views that mark themselves when selected. Since
  * Tiptap 3.31 `selected` follows node selections only; these views also stay
- * marked while a text or select-all range spans the whole node.
+ * marked while a text range spans the whole node, as selecting everything does.
  */
 export function spannedNodeViewRenderer(
   View: ComponentType<NodeViewProps>,

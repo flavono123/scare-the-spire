@@ -9,7 +9,7 @@ import {
 } from "@/lib/combo-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { isCheckViolation, supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 import { currentAuthorProfileToken } from "@/lib/user-profile";
@@ -171,7 +171,7 @@ export function useComboPosts(
         prependPost(post);
         return post;
       } catch (error) {
-        setUnavailable(true);
+        if (!isCheckViolation(error)) setUnavailable(true);
         throw error;
       }
     },
@@ -185,7 +185,7 @@ export function useComboPosts(
         activeUserId: input.activeUserId ?? userId ?? undefined,
       });
       if (error) {
-        setUnavailable(true);
+        if (!isCheckViolation(error)) setUnavailable(true);
         throw new Error(error.message);
       }
       if (!data) return null;
