@@ -223,6 +223,7 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
     <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
+          prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/enchantments", serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(e) => {

@@ -157,6 +157,7 @@ export function Sts1PowerLibrary({
                   {group.map((power) => (
                     <Link
                       key={power.slug}
+                      prefetch={false}
                       href={localizeHref(sts1DetailPath("powers", power.slug), serviceLocale)}
                       className="group"
                       aria-label={power.name}

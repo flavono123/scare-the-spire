@@ -2286,6 +2286,7 @@ export function EventDetail({
     <div className={rootClassName}>
       <div className="flex items-center justify-between gap-3">
         <Link
+          prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/events", serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(e) => {
