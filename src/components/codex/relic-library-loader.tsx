@@ -9,7 +9,7 @@ import {
 } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
-import type { CodexCard, CodexEnchantment, CodexEvent, CodexPotion } from "@/lib/codex-types";
+import type { CodexCard, CodexEnchantment, CodexPotion } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 
 const LAZY_DATA_KEYS = [
@@ -26,8 +26,6 @@ const LAZY_DATA_KEYS = [
 
 type RelicLibraryLoaderProps = Omit<ComponentProps<typeof RelicLibrary>, "changes" | "versionDiffs" | "entities" | "relatedCards" | "relatedEvents" | "relatedEnchantments" | "relatedPowers" | "relatedMonsters" | "relatedPotions" | "tipCatalogSources" | "detailsStatus"> & {
   gameLocale: GameLocale;
-  /** The events the detail modal links to, so it names them when the events chunk fails. */
-  linkedEvents: CodexEvent[];
   /** The cards the detail modal links to, so it names them when the cards chunk fails. */
   linkedCards: CodexCard[];
   /** The enchantments the detail modal links to or shows as side tips, so it names them when the enchantments chunk fails. */
@@ -44,7 +42,7 @@ type RelicLibraryLoaderProps = Omit<ComponentProps<typeof RelicLibrary>, "change
  * keyword links, and history come from the chunks, and offers a retry if they
  * fail. The tiles use the linked side tip rows until the chunks load.
  */
-export function RelicLibraryLoader({ gameLocale, linkedEvents, linkedCards, linkedEnchantments, linkedPotions, linkedTipSources, ...props }: RelicLibraryLoaderProps) {
+export function RelicLibraryLoader({ gameLocale, linkedCards, linkedEnchantments, linkedPotions, linkedTipSources, ...props }: RelicLibraryLoaderProps) {
   const { data, status: dataStatus } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   const { entities, status: entitiesStatus } = useCompendiumEntitiesState(gameLocale);
   return (
@@ -55,7 +53,7 @@ export function RelicLibraryLoader({ gameLocale, linkedEvents, linkedCards, link
       versionDiffs={data?.versionDiffs}
       entities={entities}
       relatedCards={data?.cards ?? linkedCards}
-      relatedEvents={data?.events ?? linkedEvents}
+      relatedEvents={data?.events}
       relatedEnchantments={data?.enchantments ?? linkedEnchantments}
       relatedPowers={data?.powers}
       relatedMonsters={data?.monsters}

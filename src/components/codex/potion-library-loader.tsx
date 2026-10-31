@@ -5,7 +5,6 @@ import { PotionLibrary } from "./potion-library";
 import { compendiumDetailsStatus, useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
-import type { CodexEvent } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 
 const LAZY_DATA_KEYS = [
@@ -21,8 +20,6 @@ const LAZY_DATA_KEYS = [
 
 type PotionLibraryLoaderProps = Omit<ComponentProps<typeof PotionLibrary>, "changes" | "versionDiffs" | "relatedCards" | "relatedEnchantments" | "relatedEvents" | "relatedPowers" | "relatedMonsters" | "tipCatalogSources" | "detailsStatus"> & {
   gameLocale: GameLocale;
-  /** The events the detail modal links to, so it names them when the events chunk fails. */
-  linkedEvents: CodexEvent[];
   /** The side tip catalog rows the modal and tiles read, so they keep their side tips when the data chunks fail. */
   linkedTipSources: CardSideTipCatalogSources;
 };
@@ -33,7 +30,7 @@ type PotionLibraryLoaderProps = Omit<ComponentProps<typeof PotionLibrary>, "chan
  * hover tips, and history come from the chunks, and offers a retry if they
  * fail. The tiles use the linked side tip rows until the chunks load.
  */
-export function PotionLibraryLoader({ gameLocale, linkedEvents, linkedTipSources, ...props }: PotionLibraryLoaderProps) {
+export function PotionLibraryLoader({ gameLocale, linkedTipSources, ...props }: PotionLibraryLoaderProps) {
   const { data, status } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   return (
     <PotionLibrary
@@ -43,7 +40,7 @@ export function PotionLibraryLoader({ gameLocale, linkedEvents, linkedTipSources
       versionDiffs={data?.versionDiffs}
       relatedCards={data?.cards}
       relatedEnchantments={data?.enchantments}
-      relatedEvents={data?.events ?? linkedEvents}
+      relatedEvents={data?.events}
       relatedPowers={data?.powers}
       relatedMonsters={data?.monsters}
       tipCatalogSources={data?.cardSideTipSources ?? linkedTipSources}

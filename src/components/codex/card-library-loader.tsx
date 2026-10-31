@@ -6,7 +6,7 @@ import { compendiumDetailsStatus, useCompendiumDataState } from "./use-compendiu
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import { expandCardKeywordLabels, type CompactCodexCard } from "@/lib/compendium-list-props";
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
-import type { CodexCard, CodexEvent } from "@/lib/codex-types";
+import type { CodexCard } from "@/lib/codex-types";
 import type { GameLocale } from "@/lib/i18n";
 
 const LAZY_DATA_KEYS = [
@@ -28,8 +28,6 @@ type CardLibraryLoaderProps = Omit<ComponentProps<typeof CardLibrary>, "cards" |
   gameLocale: GameLocale;
   cards: CompactCodexCard[];
   keywordLabels: CodexCard["keywordLabels"];
-  /** The events the detail modal links to, so it names them when the events chunk fails. */
-  linkedEvents: CodexEvent[];
   /** The side tip catalog rows the modal and tiles read, so they keep their side tips when the data chunks fail. */
   linkedTipSources: CardSideTipCatalogSources;
 };
@@ -41,7 +39,7 @@ type CardLibraryLoaderProps = Omit<ComponentProps<typeof CardLibrary>, "cards" |
  * retry if they fail. The tiles use the linked side tip rows until the chunks
  * load.
  */
-export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabels, linkedEvents, linkedTipSources, ...props }: CardLibraryLoaderProps) {
+export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabels, linkedTipSources, ...props }: CardLibraryLoaderProps) {
   const { data, status } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
   const cards = useMemo(
     () => expandCardKeywordLabels(compactCards, keywordLabels),
@@ -57,7 +55,7 @@ export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabe
       enchantments={data?.enchantments ?? EMPTY}
       afflictions={data?.afflictions ?? EMPTY}
       relatedAncients={data?.ancients}
-      relatedEvents={data?.events ?? linkedEvents}
+      relatedEvents={data?.events}
       relatedMonsters={data?.monsters}
       relatedPotions={data?.potions}
       relatedPowers={data?.powers}

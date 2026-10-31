@@ -1,4 +1,4 @@
-import type { CodexCard, CodexCharacter, CodexEnchantment, CodexEncounter, CodexEvent, CodexMonster } from "@/lib/codex-types";
+import type { CodexCard, CodexCharacter, CodexEnchantment, CodexEncounter, CodexMonster } from "@/lib/codex-types";
 
 // Compendium list pages serialize their grid data into the page HTML. These
 // helpers drop what the grid never reads before the first render; the list
@@ -66,22 +66,6 @@ export function slimFilterCharacters(characters: readonly CodexCharacter[]): Cod
 export function pickLinkedRows<T extends { id: string }>(rows: readonly T[], ids: Iterable<string>): T[] {
   const wanted = new Set(ids);
   return rows.filter((row) => wanted.has(row.id));
-}
-
-/** Event rows a list's detail modal links to (see pickLinkedRows). */
-export function pickLinkedEvents(events: readonly CodexEvent[], eventIds: Iterable<string>): CodexEvent[] {
-  return pickLinkedRows(events, eventIds);
-}
-
-/** Linked event rows for modals whose event links and hover read only the names and art. */
-export function slimLinkedEvents(events: readonly CodexEvent[]): CodexEvent[] {
-  return events.map((event) => ({
-    ...event,
-    description: "",
-    descriptionEn: "",
-    options: null,
-    pages: null,
-  }));
 }
 
 /** Linked enchantment rows for modals whose enchantment links and hover read only the names, description, card type, and art. */

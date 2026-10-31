@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexPotions, getCodexCharacters, getCodexEvents } from "@/lib/codex-data";
+import { getCodexPotions, getCodexCharacters } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
@@ -16,8 +16,7 @@ import {
 } from "@/lib/codex-resource-og";
 import { PotionLibraryLoader } from "@/components/codex/potion-library-loader";
 import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
-import { pickLinkedEvents, slimFilterCharacters } from "@/lib/compendium-list-props";
-import { getPotionDetailEventIds } from "@/lib/codex-references";
+import { slimFilterCharacters } from "@/lib/compendium-list-props";
 import { loadLinkedCardSideTipSources } from "@/lib/card-side-tip-catalog.server";
 import { collectPotionListSideTips } from "@/lib/compendium-list-side-tips";
 
@@ -58,7 +57,6 @@ export default async function CodexPotionsPage({
     versionDiffs,
     meta,
     gameUi,
-    events,
   ] = await Promise.all([
     getCodexPotions({ gameLocale }),
     getCodexCharacters({ gameLocale }),
@@ -66,7 +64,6 @@ export default async function CodexPotionsPage({
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
-    getCodexEvents({ gameLocale }),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -88,7 +85,6 @@ export default async function CodexPotionsPage({
           versions={versions}
           currentVersion={meta.version}
           patches={patches}
-          linkedEvents={pickLinkedEvents(events, potions.flatMap(getPotionDetailEventIds))}
           linkedTipSources={linkedTipSources}
         />
       </Suspense>
