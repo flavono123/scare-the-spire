@@ -296,6 +296,13 @@ function mainCases() {
       bodyIncludes: "unsupported url",
     },
     {
+      name: "Link preview refuses another site",
+      path: "/api/link-preview?url=https%3A%2F%2Fexample.com%2F",
+      headers: { "Sec-Fetch-Site": "cross-site" },
+      statuses: [403],
+      contentType: "application/json",
+    },
+    {
       name: "POST to a static page",
       path: "/compendium/cards",
       method: "POST",

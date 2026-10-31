@@ -150,6 +150,22 @@ async function main() {
   assert.equal(followed.body.title, "Final");
   assert.equal(followed.body.image, "https://start.example/cover.png");
 
+  for (const contentType of ["application/json", "image/png", "text/plain", "text/htmlx", null]) {
+    const notHtml = await previewThrough({
+      "https://start.example/a": new Response('<meta property="og:title" content="no">', {
+        headers: contentType ? { "content-type": contentType } : {},
+      }),
+    });
+    assert.deepEqual(notHtml.body, { title: "", description: "", image: "" }, String(contentType));
+    assert.equal(notHtml.cacheControl, "public, max-age=300", String(contentType));
+  }
+  const htmlWithCharset = await previewThrough({
+    "https://start.example/a": new Response('<meta property="og:title" content="yes">', {
+      headers: { "content-type": "Text/HTML ; charset=utf-8" },
+    }),
+  });
+  assert.equal(htmlWithCharset.body.title, "yes");
+
   const dripped = await previewThrough({
     "https://start.example/a": drippedPage(`<title>Drip</title>${" ".repeat(127_000)}</HEAD><body>`),
   });
@@ -163,7 +179,30 @@ async function main() {
   assert.equal(split.body.title, "Split");
 }
 
-main().then(
+async function fetchSiteHeader(value: string) {
+  const realFetch = globalThis.fetch;
+  let fetched = 0;
+  globalThis.fetch = (async () => {
+    fetched += 1;
+    return new Response('<meta property="og:title" content="ok">', { headers: { "content-type": "text/html" } });
+  }) as typeof fetch;
+  try {
+    const url = `https://example.test/api/link-preview?url=${encodeURIComponent("https://start.example/a")}`;
+    const response = await handleLinkPreviewRequest(new Request(url, { headers: { "sec-fetch-site": value } }));
+    return { status: response.status, fetched };
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+}
+
+async function checkFetchSite() {
+  assert.deepEqual(await fetchSiteHeader("cross-site"), { status: 403, fetched: 0 });
+  for (const value of ["same-origin", "same-site", "none"]) {
+    assert.deepEqual(await fetchSiteHeader(value), { status: 200, fetched: 1 }, value);
+  }
+}
+
+main().then(checkFetchSite).then(
   () => console.log("link-preview.spec.ts ok"),
   (error) => {
     console.error(error);

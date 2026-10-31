@@ -67,6 +67,11 @@ async function fetchPublicPage(
   }
 }
 
+function isHtml(response: Response): boolean {
+  const mediaType = response.headers.get("content-type")?.split(";")[0];
+  return mediaType?.trim().toLowerCase() === "text/html";
+}
+
 /**
  * Reads up to the end of the head. Only new text can complete `</head>`, so a
  * page dripping one byte at a time costs no more than a single large chunk.
@@ -90,6 +95,11 @@ async function readHead(body: ReadableStream<Uint8Array>): Promise<string> {
 }
 
 export async function handleLinkPreviewRequest(request: Request): Promise<Response> {
+  // Pages call this same-origin; another site must not spend the Worker's fetches.
+  if (request.headers.get("sec-fetch-site") === "cross-site") {
+    return jsonResponse({ message: "forbidden" }, { status: 403 });
+  }
+
   const { hostname: requestHost, searchParams } = new URL(request.url);
   const target = isPublicHttpUrl(searchParams.get("url") ?? "", requestHost);
   if (!target) return jsonResponse({ message: "unsupported url" }, { status: 400 });
@@ -111,7 +121,7 @@ export async function handleLinkPreviewRequest(request: Request): Promise<Respon
     const page = await fetchPublicPage(target, requestHost, controller.signal);
     if (!page) return emptyPreview();
     const { response, url: pageUrl } = page;
-    if (!response.ok || !response.body) {
+    if (!response.ok || !response.body || !isHtml(response)) {
       await response.body?.cancel().catch(() => undefined);
       return emptyPreview("public, max-age=300");
     }
