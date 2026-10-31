@@ -10,31 +10,37 @@ select pg_catalog.set_config('lock_timeout', '3s', true);
 -- Take every table up front in the order sessions do (view, then its base table;
 -- engagement row, then the post whose counter its trigger updates; tournament
 -- post, then plays and stats) so this file cannot deadlock with a like-count
--- read, comment, like, or play in progress.
-lock table
-  public.this_or_that_post_like_counts,
-  public.likes,
-  public.comments,
-  public.community_stories,
-  public.this_or_that_post_likes,
-  public.this_or_that_post_votes,
-  public.resource_reactions,
-  public.resource_reaction_counts,
-  public.colorful_philosopher_reactions,
-  public.defragment_bodies,
-  public.pagestorm_drafts,
-  public.combo_posts,
-  public.transfigure_posts,
-  public.this_or_that_posts,
-  public.chemical_posts,
-  public.defragment_posts,
-  public.decisions_decisions_posts,
-  public.pagestorm_posts,
-  public.runs,
-  public.favorite_tournament_posts,
-  public.favorite_tournament_plays,
-  public.favorite_tournament_candidate_stats
-  in access exclusive mode;
+-- read, comment, like, or play in progress. The CLI sends this file as one
+-- pipeline with no BEGIN, and Postgres 17 refuses a top-level LOCK TABLE there
+-- (25P01). Inside a DO block it runs, and the locks last until the commit.
+do $$
+begin
+  lock table
+    public.this_or_that_post_like_counts,
+    public.likes,
+    public.comments,
+    public.community_stories,
+    public.this_or_that_post_likes,
+    public.this_or_that_post_votes,
+    public.resource_reactions,
+    public.resource_reaction_counts,
+    public.colorful_philosopher_reactions,
+    public.defragment_bodies,
+    public.pagestorm_drafts,
+    public.combo_posts,
+    public.transfigure_posts,
+    public.this_or_that_posts,
+    public.chemical_posts,
+    public.defragment_posts,
+    public.decisions_decisions_posts,
+    public.pagestorm_posts,
+    public.runs,
+    public.favorite_tournament_posts,
+    public.favorite_tournament_plays,
+    public.favorite_tournament_candidate_stats
+    in access exclusive mode;
+end
+$$;
 
 -- 1. Server-managed columns.
 -- Clients cannot choose counters or created_at on INSERT, or move them, id, or
