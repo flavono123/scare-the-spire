@@ -437,7 +437,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   useEffect(() => {
     if (filterKeyRef.current !== filterKey) {
       filterKeyRef.current = filterKey;
-      setVisibleCount(BATCH_SIZE); // eslint-disable-line react-hooks/set-state-in-effect -- reset batch on filter change
+      setVisibleCount(BATCH_SIZE); // Reset the batch on filter change.
     }
   }, [filterKey]);
 

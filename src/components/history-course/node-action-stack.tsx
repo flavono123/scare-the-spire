@@ -161,7 +161,6 @@ export function NodeActionStack({ stageRef, items, nodeLocalMs, hidden }: Props)
         y: r.top - stageRect.top + r.height / 2,
       });
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTargets(m);
   }, [stageRef, items]);
 
