@@ -26,6 +26,23 @@ assert.equal(isPublicHttpUrl("http://224.0.0.1/"), null, "multicast");
 assert.equal(isPublicHttpUrl("http://255.255.255.255/"), null, "broadcast");
 assert.equal(isPublicHttpUrl("http://2130706433/"), null, "numeric loopback");
 assert.equal(isPublicHttpUrl("http://100.63.0.1/")?.hostname, "100.63.0.1");
+assert.equal(isPublicHttpUrl("http://192.0.0.1/"), null, "IETF protocol assignments");
+assert.equal(isPublicHttpUrl("http://192.0.2.1/"), null, "TEST-NET-1");
+assert.equal(isPublicHttpUrl("http://198.51.100.1/"), null, "TEST-NET-2");
+assert.equal(isPublicHttpUrl("http://203.0.113.1/"), null, "TEST-NET-3");
+assert.equal(isPublicHttpUrl("http://192.0.1.1/")?.hostname, "192.0.1.1");
+assert.equal(isPublicHttpUrl("http://203.0.114.1/")?.hostname, "203.0.114.1");
+assert.equal(isPublicHttpUrl("https://metadata.internal/"), null);
+assert.equal(isPublicHttpUrl("https://internal./"), null);
+assert.equal(isPublicHttpUrl("https://example.com:8443/"), null, "only the web ports");
+assert.equal(isPublicHttpUrl("http://example.com:80/")?.hostname, "example.com");
+assert.equal(isPublicHttpUrl("https://example.com:443/")?.hostname, "example.com");
+assert.equal(isPublicHttpUrl("http://example.com:443/")?.hostname, "example.com");
+assert.equal(isPublicHttpUrl("https://scare-the-spire.flavono123.workers.dev/en"), null);
+assert.equal(isPublicHttpUrl("https://1234abcd-scare-the-spire-testbed.flavono123.workers.dev/"), null);
+assert.equal(isPublicHttpUrl("https://scare-the-spire-patches.flavono123.workers.dev/patches"), null);
+assert.equal(isPublicHttpUrl("https://new-domain.example/", "new-domain.example"), null);
+assert.equal(isPublicHttpUrl("https://other.workers.dev/", "new-domain.example")?.hostname, "other.workers.dev");
 
 // Every redirect hop must be public; the private hop is never requested.
 async function previewThrough(hops: Record<string, Response>) {
@@ -56,6 +73,11 @@ async function main() {
   assert.deepEqual(blocked.requested, ["https://start.example/a"]);
   assert.deepEqual(blocked.body, { title: "", description: "", image: "" });
   assert.equal(blocked.cacheControl, null);
+
+  const selfRedirect = await previewThrough({
+    "https://start.example/a": redirectHome("https://example.test/secret"),
+  });
+  assert.deepEqual(selfRedirect.requested, ["https://start.example/a"], "a hop back to this host");
 
   const followed = await previewThrough({
     "https://start.example/a": redirectHome("/b"),

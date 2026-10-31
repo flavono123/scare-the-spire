@@ -39,6 +39,7 @@ function emptyPreview(cacheControl?: string): Response {
  */
 async function fetchPublicPage(
   target: URL,
+  requestHost: string,
   signal: AbortSignal,
 ): Promise<{ response: Response; url: URL } | null> {
   let url = target;
@@ -58,7 +59,7 @@ async function fetchPublicPage(
 
     let next: URL | null;
     try {
-      next = isPublicHttpUrl(new URL(location, url).href);
+      next = isPublicHttpUrl(new URL(location, url).href, requestHost);
     } catch {
       next = null;
     }
@@ -68,8 +69,8 @@ async function fetchPublicPage(
 }
 
 export async function handleLinkPreviewRequest(request: Request): Promise<Response> {
-  const raw = new URL(request.url).searchParams.get("url") ?? "";
-  const target = isPublicHttpUrl(raw);
+  const { hostname: requestHost, searchParams } = new URL(request.url);
+  const target = isPublicHttpUrl(searchParams.get("url") ?? "", requestHost);
   if (!target) return jsonResponse({ message: "unsupported url" }, { status: 400 });
 
   const controller = new AbortController();
@@ -86,7 +87,7 @@ export async function handleLinkPreviewRequest(request: Request): Promise<Respon
       };
       return jsonResponse(preview, { cacheControl: "public, max-age=86400" });
     }
-    const page = await fetchPublicPage(target, controller.signal);
+    const page = await fetchPublicPage(target, requestHost, controller.signal);
     if (!page) return emptyPreview();
     const { response, url: pageUrl } = page;
     if (!response.ok || !response.body) {
