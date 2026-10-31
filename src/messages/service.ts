@@ -188,6 +188,7 @@ export const serviceMessages = {
     },
     entityGraph: {
       unavailable: "게임 요소 목록을 불러오지 못했습니다",
+      detailUnavailable: "상세 정보를 불러오지 못했습니다",
       retry: "다시 시도",
     },
     cardCon: {
@@ -1629,6 +1630,7 @@ export const serviceMessages = {
     },
     entityGraph: {
       unavailable: "Could not load the game element list",
+      detailUnavailable: "Could not load the details",
       retry: "Retry",
     },
     cardCon: {

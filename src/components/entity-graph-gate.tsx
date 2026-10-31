@@ -12,23 +12,27 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 
 /**
- * Shown in place of a feed or an editor whose entity graph failed to load, so
- * nothing renders with unresolved game elements. Retries on the button, and
- * when the browser reconnects or the tab is shown again.
+ * Shown in place of a feed, an editor, or a list modal's detail whose Compendium
+ * data failed to load, so nothing renders with unresolved game elements or
+ * partial rows. Retries on the button, and when the browser reconnects or the
+ * tab is shown again.
  */
 export function EntityGraphUnavailableNotice({
   serviceLocale,
   compact = false,
+  title,
 }: {
   serviceLocale: ServiceLocale;
   compact?: boolean;
+  /** Replaces the game element list message, for a notice about something else. */
+  title?: string;
 }) {
   useRetryFailedCompendiumDataOnReturn();
   return (
     <div role="alert" data-entity-graph-failed>
       <StorageUnavailableNotice
         compact={compact}
-        title={serviceMessages[serviceLocale].entityGraph.unavailable}
+        title={title ?? serviceMessages[serviceLocale].entityGraph.unavailable}
       >
         <CompendiumDataRetryButton serviceLocale={serviceLocale} compact={compact} />
       </StorageUnavailableNotice>
