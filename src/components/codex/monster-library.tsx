@@ -580,6 +580,7 @@ function MonsterTile({
       onMouseLeave={() => setHoverMoveId(undefined)}
     >
       <Link
+        prefetch={false}
         href={localizeHref(buildCompendiumResourceDetailHref("monster", monster.id), serviceLocale)}
         className="flex min-w-0 flex-1 items-center gap-3 text-left"
         onClick={(event) => {

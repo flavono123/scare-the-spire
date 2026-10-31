@@ -445,6 +445,7 @@ function AncientCard({
 }) {
   return (
     <Link
+      prefetch={false}
       href={localizeHref(buildCompendiumResourceDetailHref("ancient", ancient.id), serviceLocale)}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

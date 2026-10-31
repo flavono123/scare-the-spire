@@ -864,6 +864,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                     <VersionTextUnpinnedMark serviceLocale={serviceLocale} variant="tile" />
                   )}
                   <Link
+                    prefetch={false}
                     href={localizeHref(buildCompendiumResourceDetailHref("card", card.id), serviceLocale)}
                     className="block"
                     onClick={(event) => {

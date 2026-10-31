@@ -601,6 +601,7 @@ function PotionTile({
   return (
     <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
       <Link
+        prefetch={false}
         href={localizeHref(buildCompendiumResourceDetailHref("potion", potion.id), serviceLocale)}
         data-potion-tile={potion.id}
         className={`group flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16${lifecycleClassName} border-transparent bg-white/5 hover:bg-white/10 hover:z-10 hover:scale-110 hover:border-primary/60 hover:bg-primary/10`}

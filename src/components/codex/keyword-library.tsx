@@ -76,6 +76,7 @@ function KeywordTile({
 }) {
   return (
     <Link
+      prefetch={false}
       href={localizeHref(buildCompendiumResourceDetailHref("keyword", keyword.id), serviceLocale)}
       className="group block h-full min-h-36 w-full text-left outline-none transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5"
       onClick={(event) => {

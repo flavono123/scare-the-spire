@@ -146,6 +146,7 @@ function EventThumbnail({
   const lifecycleClassName = event.deprecated ? " opacity-50 grayscale saturate-0" : "";
   return (
     <Link
+      prefetch={false}
       href={localizeHref(buildCompendiumResourceDetailHref("event", event.id), serviceLocale)}
       onClick={(clickEvent) => {
         if (clickEvent.metaKey || clickEvent.ctrlKey || clickEvent.shiftKey || clickEvent.altKey || clickEvent.button !== 0) return;

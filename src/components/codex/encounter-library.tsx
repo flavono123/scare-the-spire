@@ -524,6 +524,7 @@ function EncounterTile({
 
   return (
     <Link
+      prefetch={false}
       href={localizeHref(buildCompendiumResourceDetailHref("encounter", encounter.id), serviceLocale)}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

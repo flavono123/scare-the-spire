@@ -432,6 +432,7 @@ function CharacterRow({
 
   return (
     <Link
+      prefetch={false}
       ref={setRowRef}
       href={localizeHref(buildCompendiumResourceDetailHref("character", character.id), serviceLocale)}
       role="listitem"
