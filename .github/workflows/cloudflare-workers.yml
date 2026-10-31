@@ -76,6 +76,11 @@ jobs:
                     main_changed=true
                     patch_changed=true
                     ;;
+                  workers/security-headers.ts|public/_headers)
+                    # Both Workers send this policy.
+                    main_changed=true
+                    patch_changed=true
+                    ;;
                   data/sts2-patch-notes/*|data/sts2-patches.json|data/sts2-patch-local-resources.json|src/components/patch-note-renderer.tsx|src/components/patches/*|src/app/\(main\)/patches/*|src/app/\[gameLocale\]/patches/*|src/lib/sts2-patch-*.ts|scripts/build-patch-worker.tsx|scripts/dev-patch-proxy.mjs|workers/patch-worker.ts|wrangler.patch.jsonc)
                     patch_changed=true
                     ;;

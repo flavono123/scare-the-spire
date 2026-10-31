@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { publicAssetExcludeReason } from "./cloudflare-asset-excludes.mjs";
 import { findReferencedExcludedAssets } from "./prune-cf-unreferenced-assets.mjs";
+import { globalHeaderRuleLines, PUBLIC_HEADERS_FILE } from "./security-headers-file.mjs";
 
 const projectRoot = process.cwd();
 const patchAssetsDir = path.join(projectRoot, ".patch-worker", "assets");
@@ -74,6 +75,16 @@ async function copyPublicAsset(publicPath) {
   copied.add(publicPath);
 }
 
+/**
+ * Pages hit assets before the Worker, so only `_headers` covers them. Just the
+ * global rule: the cache rules of `public/_headers` are for the main Worker.
+ */
+async function writePatchHeadersFile() {
+  const headers = await fs.readFile(path.join(projectRoot, PUBLIC_HEADERS_FILE), "utf8");
+  const rule = `${globalHeaderRuleLines(headers).join("\n")}\n`;
+  await fs.writeFile(path.join(patchAssetsDir, "_headers"), rule);
+}
+
 async function main() {
   const sourceFiles = await walk(patchAssetsDir);
   const assetRefs = new Set([
@@ -122,6 +133,8 @@ async function main() {
   for (const ref of assetRefs) {
     await copyPublicAsset(ref);
   }
+
+  await writePatchHeadersFile();
 
   console.log(`Copied ${copied.size} patch Worker public assets`);
   assertNoExcludedMainAssetRefs(assetRefs);

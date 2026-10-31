@@ -1,3 +1,5 @@
+import { withSecurityHeaders } from "./security-headers";
+
 type Env = {
   ASSETS: {
     fetch(request: Request): Promise<Response>;
@@ -17,11 +19,11 @@ function assetPathForUrl(url: URL): string {
 }
 
 const patchWorker = {
-  fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const assetUrl = new URL(request.url);
     assetUrl.pathname = assetPathForUrl(url);
-    return env.ASSETS.fetch(new Request(assetUrl, request));
+    return withSecurityHeaders(await env.ASSETS.fetch(new Request(assetUrl, request)));
   },
 };
 

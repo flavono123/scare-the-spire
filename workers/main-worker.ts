@@ -29,6 +29,7 @@ import { maybeEnrichServiceDetailShell } from "./detail-shell-og";
 import { withLocalizedDocumentRoot } from "./document-locale";
 import { nextRoutingResponse } from "./next-routing-parity";
 import { redactPathname } from "./path-redaction";
+import { withSecurityHeaders } from "./security-headers";
 import {
   legacyWorldcupDetailRedirectPath,
   prerenderedRedirect,
@@ -449,50 +450,54 @@ async function serveUnmatchedRequest(request: Request, env: Env, url: URL): Prom
   return serveStaticNotFound(request, env, url);
 }
 
+async function routeRequest(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
+  const url = new URL(request.url);
+  const localeRedirect = maybeRedirectRootToPreferredLocale(request, url);
+  if (localeRedirect) return localeRedirect;
+
+  const legacyCompendiumRedirect = maybeRedirectLegacyCompendiumDetail(request, url);
+  if (legacyCompendiumRedirect) return legacyCompendiumRedirect;
+
+  const legacyWorldcupRedirect = maybeRedirectLegacyWorldcupDetail(request, url);
+  if (legacyWorldcupRedirect) return legacyWorldcupRedirect;
+
+  const staticAliasRedirect = maybeRedirectStaticAssetAlias(request, url);
+  if (staticAliasRedirect) return staticAliasRedirect;
+
+  if (isPatchWorkerPath(url.pathname)) {
+    if (env.PATCH_WORKER) return env.PATCH_WORKER.fetch(request);
+
+    return new Response("Patch service unavailable", {
+      status: 503,
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "text/plain; charset=utf-8",
+        "Retry-After": "60",
+      },
+    });
+  }
+
+  const staticHomeResponse = await maybeServeStaticHomePage(request, env, url);
+  if (staticHomeResponse) return staticHomeResponse;
+
+  const staticServiceResponse = await maybeServeStaticServicePage(request, env, url);
+  if (staticServiceResponse) return staticServiceResponse;
+
+  const staticServiceDetailShellResponse = await maybeServeStaticServiceDetailShell(request, env, ctx, url);
+  if (staticServiceDetailShellResponse) return staticServiceDetailShellResponse;
+
+  const staticLegacyResponse = await maybeServeStaticLegacyPage(request, env, url);
+  if (staticLegacyResponse) return staticLegacyResponse;
+
+  const staticCompendiumResponse = await maybeServeStaticCompendiumPage(request, env, url);
+  if (staticCompendiumResponse) return staticCompendiumResponse;
+
+  return serveUnmatchedRequest(request, env, url);
+}
+
 const mainWorker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
-    const url = new URL(request.url);
-    const localeRedirect = maybeRedirectRootToPreferredLocale(request, url);
-    if (localeRedirect) return localeRedirect;
-
-    const legacyCompendiumRedirect = maybeRedirectLegacyCompendiumDetail(request, url);
-    if (legacyCompendiumRedirect) return legacyCompendiumRedirect;
-
-    const legacyWorldcupRedirect = maybeRedirectLegacyWorldcupDetail(request, url);
-    if (legacyWorldcupRedirect) return legacyWorldcupRedirect;
-
-    const staticAliasRedirect = maybeRedirectStaticAssetAlias(request, url);
-    if (staticAliasRedirect) return staticAliasRedirect;
-
-    if (isPatchWorkerPath(url.pathname)) {
-      if (env.PATCH_WORKER) return env.PATCH_WORKER.fetch(request);
-
-      return new Response("Patch service unavailable", {
-        status: 503,
-        headers: {
-          "Cache-Control": "no-store",
-          "Content-Type": "text/plain; charset=utf-8",
-          "Retry-After": "60",
-        },
-      });
-    }
-
-    const staticHomeResponse = await maybeServeStaticHomePage(request, env, url);
-    if (staticHomeResponse) return staticHomeResponse;
-
-    const staticServiceResponse = await maybeServeStaticServicePage(request, env, url);
-    if (staticServiceResponse) return staticServiceResponse;
-
-    const staticServiceDetailShellResponse = await maybeServeStaticServiceDetailShell(request, env, ctx, url);
-    if (staticServiceDetailShellResponse) return staticServiceDetailShellResponse;
-
-    const staticLegacyResponse = await maybeServeStaticLegacyPage(request, env, url);
-    if (staticLegacyResponse) return staticLegacyResponse;
-
-    const staticCompendiumResponse = await maybeServeStaticCompendiumPage(request, env, url);
-    if (staticCompendiumResponse) return staticCompendiumResponse;
-
-    return serveUnmatchedRequest(request, env, url);
+    return withSecurityHeaders(await routeRequest(request, env, ctx));
   },
 };
 
