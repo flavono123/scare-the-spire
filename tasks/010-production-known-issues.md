@@ -217,3 +217,6 @@
 58. **/ja 카드 모달의 링크가 영어 목록으로 보냄**. 첫 카드 타격 모달의 '병사의 스튜' 링크가 `/en/compendium/potions?potion=soldiers_stew`이고, 누르면 포션 모달이 영어로 열린다. 다른 게임 전용 언어는 재지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/ja/compendium/cards
     - 원인 추정: `src/components/codex/entity-reference-links.tsx`의 `toPreviewEntity`가 `localizeHref`만 써서 게임 언어를 받지 않는다.
+59. **Supabase가 멈추면 패치 빌드가 페이지마다 최대 5분씩 멈추고, 실패를 숨긴 채 표본 글로 배포함**. 2026-11-01 01:44~02:35 KST에 `/patches/2026-09-11` 14개 언어 페이지의 빌드 시점 조회가 90~300초씩 멈춰 `patch:build`가 117초에서 3,187초가 됐고, 결과 페이지는 실제 글 없이 61 KB였다(운영 207 KB). 로그에는 아무것도 남지 않는다. CI 배포 작업 제한은 60분이다.
+    - https://scare-the-spire.flavono123.workers.dev/patches/2026-09-11
+    - 원인: `src/lib/transfigure-data.ts`와 `src/lib/colorful-philosophers-gallery.ts`의 조회에 시간 제한이 없고, `catch`가 로그 없이 표본이나 빈 값으로 대체한다.
