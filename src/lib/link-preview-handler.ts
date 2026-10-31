@@ -1,4 +1,4 @@
-import { isPublicHttpUrl, readOpenGraph, type LinkPreview } from "@/lib/link-preview";
+import { isPublicHttpUrl, MAX_HEAD_SIZE, readOpenGraph, type LinkPreview } from "@/lib/link-preview";
 import {
   parseYouTubeVideoId,
   resolveYouTubeReference,
@@ -10,11 +10,10 @@ import {
  * and the static main Worker both call it, so responses stay identical.
  */
 
-// Enough for heads that inline large scripts before their meta tags.
-const MAX_BYTES = 128_000;
 const TIMEOUT_MS = 3000;
 const MAX_REDIRECTS = 10;
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
+const HEAD_END = "</head>";
 
 export const LINK_PREVIEW_PATH = "/api/link-preview";
 
@@ -68,6 +67,28 @@ async function fetchPublicPage(
   }
 }
 
+/**
+ * Reads up to the end of the head. Only new text can complete `</head>`, so a
+ * page dripping one byte at a time costs no more than a single large chunk.
+ */
+async function readHead(body: ReadableStream<Uint8Array>): Promise<string> {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let size = 0;
+  let html = "";
+  while (size < MAX_HEAD_SIZE) {
+    const step = await reader.read();
+    if (step.done) break;
+    const chunk = step.value.subarray(0, MAX_HEAD_SIZE - size);
+    size += chunk.byteLength;
+    const searchFrom = Math.max(0, html.length - HEAD_END.length + 1);
+    html += decoder.decode(chunk, { stream: true });
+    if (html.slice(searchFrom).toLowerCase().includes(HEAD_END)) break;
+  }
+  await reader.cancel().catch(() => undefined);
+  return html;
+}
+
 export async function handleLinkPreviewRequest(request: Request): Promise<Response> {
   const { hostname: requestHost, searchParams } = new URL(request.url);
   const target = isPublicHttpUrl(searchParams.get("url") ?? "", requestHost);
@@ -94,19 +115,7 @@ export async function handleLinkPreviewRequest(request: Request): Promise<Respon
       await response.body?.cancel().catch(() => undefined);
       return emptyPreview("public, max-age=300");
     }
-    const reader = response.body.getReader();
-    let size = 0;
-    const decoder = new TextDecoder();
-    let html = "";
-    while (size < MAX_BYTES) {
-      const step = await reader.read();
-      if (step.done) break;
-      size += step.value.byteLength;
-      html += decoder.decode(step.value, { stream: true });
-      if (html.toLowerCase().includes("</head>")) break;
-    }
-    await reader.cancel().catch(() => undefined);
-    const preview = readOpenGraph(html, pageUrl.href);
+    const preview = readOpenGraph(await readHead(response.body), pageUrl.href);
     return jsonResponse(preview, { cacheControl: "public, max-age=86400" });
   } catch {
     return emptyPreview("public, max-age=60");

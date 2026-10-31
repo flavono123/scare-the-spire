@@ -9,7 +9,16 @@ export interface LinkPreview {
 // Every Worker of this account: production, testbed, patch, version previews.
 const OWN_WORKERS_SUFFIX = ".flavono123.workers.dev";
 
-const META_VALUE = String.raw`(["'])([\s\S]*?)\1`;
+/**
+ * Enough for heads that inline large scripts before their meta tags. Pages are
+ * untrusted and Workers Free allows 10 ms of CPU, so reading stays linear in this.
+ */
+export const MAX_HEAD_SIZE = 128_000;
+const MAX_META_TAGS = 512;
+const MAX_TAG_LENGTH = 16_000;
+
+const META_KEY = /(?:property|name)\s*=\s*(["'])([\s\S]*?)\1/i;
+const META_CONTENT = /content\s*=\s*(["'])([\s\S]*?)\1/i;
 
 function decodeHtml(value: string): string {
   return value
@@ -30,20 +39,41 @@ function decodeHtml(value: string): string {
     .trim();
 }
 
-function metaContent(html: string, key: string): string {
-  const pattern = new RegExp(`<meta\\b[^>]*>`, "gi");
-  for (const tag of html.match(pattern) ?? []) {
-    const name = tag.match(new RegExp(`(?:property|name)\\s*=\\s*${META_VALUE}`, "i"));
-    if (name?.[2]?.toLowerCase() !== key) continue;
-    const content = tag.match(new RegExp(`content\\s*=\\s*${META_VALUE}`, "i"));
-    if (content?.[2]) return decodeHtml(content[2]);
-  }
-  return "";
-}
+/**
+ * One pass over the head. Each tag ends at the next `>`, so when none is left
+ * no later tag can close either and the scan stops instead of retrying.
+ */
+function readHeadTags(head: string): { meta: Map<string, string>; title: string } {
+  const meta = new Map<string, string>();
+  let title: string | null = null;
+  let metaTags = 0;
 
-function documentTitle(html: string): string {
-  const match = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  return match?.[1] ? decodeHtml(match[1]) : "";
+  const tagStart = /<(meta|title)\b/gi;
+  for (let match = tagStart.exec(head); match; match = tagStart.exec(head)) {
+    const tagEnd = head.indexOf(">", match.index);
+    if (tagEnd < 0) break;
+    tagStart.lastIndex = tagEnd + 1;
+
+    if (match[1].toLowerCase() === "title") {
+      if (title !== null) continue;
+      const textStart = tagEnd + 1;
+      const textLength = head.slice(textStart).search(/<\/title>/i);
+      title = textLength < 0 ? "" : head.slice(textStart, textStart + textLength);
+      if (textLength >= 0) tagStart.lastIndex = textStart + textLength;
+      continue;
+    }
+
+    metaTags += 1;
+    if (metaTags > MAX_META_TAGS) break;
+    if (tagEnd - match.index > MAX_TAG_LENGTH) continue;
+    const tag = head.slice(match.index, tagEnd + 1);
+    const key = tag.match(META_KEY)?.[2]?.toLowerCase();
+    if (!key || meta.has(key)) continue;
+    const content = tag.match(META_CONTENT)?.[2];
+    if (content) meta.set(key, content);
+  }
+
+  return { meta, title: title ?? "" };
 }
 
 function absoluteUrl(value: string, baseUrl: string): string {
@@ -56,13 +86,14 @@ function absoluteUrl(value: string, baseUrl: string): string {
 }
 
 export function readOpenGraph(html: string, pageUrl: string): LinkPreview {
-  const headEnd = html.toLowerCase().indexOf("</head>");
-  const head = headEnd >= 0 ? html.slice(0, headEnd) : html.slice(0, 128_000);
-  const image = metaContent(head, "og:image") || metaContent(head, "twitter:image");
+  const bounded = html.slice(0, MAX_HEAD_SIZE);
+  const headEnd = bounded.search(/<\/head>/i);
+  const { meta, title } = readHeadTags(headEnd >= 0 ? bounded.slice(0, headEnd) : bounded);
+  const content = (key: string) => decodeHtml(meta.get(key) ?? "");
   return {
-    title: metaContent(head, "og:title") || metaContent(head, "twitter:title") || documentTitle(head),
-    description: metaContent(head, "og:description") || metaContent(head, "description") || metaContent(head, "twitter:description"),
-    image: absoluteUrl(image, pageUrl),
+    title: content("og:title") || content("twitter:title") || decodeHtml(title),
+    description: content("og:description") || content("description") || content("twitter:description"),
+    image: absoluteUrl(content("og:image") || content("twitter:image"), pageUrl),
   };
 }
 

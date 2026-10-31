@@ -16,6 +16,53 @@ assert.equal(preview.description, "도넛과 혼동");
 assert.equal(preview.image, "https://i.namu.wiki/cover.jpg");
 
 assert.equal(readOpenGraph("<html><head><title>Fallback &amp; Co</title></head>", "https://example.com").title, "Fallback & Co");
+assert.equal(readOpenGraph('<TITLE lang="ko">Upper</TITLE>', "https://example.com").title, "Upper");
+assert.equal(readOpenGraph("<title></title><title>Second</title>", "https://example.com").title, "");
+assert.equal(readOpenGraph("<title>unclosed", "https://example.com").title, "");
+assert.equal(readOpenGraph("<titles>x</title>", "https://example.com").title, "");
+assert.equal(readOpenGraph('<metadata property="og:title" content="no">', "https://example.com").title, "");
+
+const fallbacks = readOpenGraph(`
+  <META NAME="Description" content='first &quot;wins&quot;'>
+  <meta name="description" content="second">
+  <meta property="twitter:title" content="Twitter">
+  <meta property="og:title" content="   ">
+  <meta property="twitter:image" content="/cover.png">
+  <title>Document</title>
+  </head><meta property="og:description" content="after the head">`, "https://example.com/page");
+assert.deepEqual(fallbacks, {
+  title: "Twitter",
+  description: 'first "wins"',
+  image: "https://example.com/cover.png",
+});
+assert.equal(
+  readOpenGraph('<meta property="og:title" content=""><meta property="og:title" content="Filled">', "https://example.com").title,
+  "Filled",
+);
+
+// Workers Free kills a request at 10 ms of CPU. Cubic or quadratic parsing takes
+// seconds on these; the bound is loose only so a busy machine does not flake.
+const ADVERSARIAL_BOUND_MS = 250;
+const adversarial = (unit: string, suffix = "") =>
+  unit.repeat(Math.ceil(128_000 / unit.length)).slice(0, 128_000 - suffix.length) + suffix;
+for (const [label, input] of [
+  ["<meta ", adversarial("<meta ")],
+  ["<title ", adversarial("<title ")],
+  ["<meta closed once", adversarial("<meta ", ">")],
+  ["<title closed once", adversarial("<title ", ">")],
+  ["<title>", adversarial("<title>")],
+  ["<meta>", adversarial("<meta>")],
+  ["<", adversarial("<")],
+  ["whitespace attribute", `<meta name${" ".repeat(127_000)}>`],
+  ["unclosed quote", `<meta name="${"x".repeat(127_000)}>`],
+  ["repeated attributes", `<meta ${'name="a" '.repeat(1_700)}>`],
+  ["entities", `<title>${"&#x".repeat(42_000)}</title>`],
+] as const) {
+  const started = performance.now();
+  readOpenGraph(input, "https://example.com");
+  const elapsed = performance.now() - started;
+  assert.ok(elapsed < ADVERSARIAL_BOUND_MS, `${label} took ${Math.round(elapsed)} ms`);
+}
 assert.equal(isPublicHttpUrl("https://namu.wiki/w/a")?.hostname, "namu.wiki");
 assert.equal(isPublicHttpUrl("http://127.0.0.1/secret"), null);
 assert.equal(isPublicHttpUrl("https://192.168.0.1/"), null);
@@ -66,6 +113,19 @@ async function previewThrough(hops: Record<string, Response>) {
 
 const redirectHome = (location: string) => new Response(null, { status: 302, headers: { location } });
 
+/** Streams the page one byte per chunk, as a slow-drip server would. */
+function drippedPage(html: string): Response {
+  const bytes = new TextEncoder().encode(html);
+  let index = 0;
+  const body = new ReadableStream<Uint8Array>({
+    pull(controller) {
+      if (index >= bytes.length) controller.close();
+      else controller.enqueue(bytes.subarray(index, ++index));
+    },
+  });
+  return new Response(body, { headers: { "content-type": "text/html" } });
+}
+
 async function main() {
   const blocked = await previewThrough({
     "https://start.example/a": redirectHome("http://127.0.0.1:8787/en"),
@@ -89,6 +149,18 @@ async function main() {
   assert.deepEqual(followed.requested, ["https://start.example/a", "https://start.example/b"]);
   assert.equal(followed.body.title, "Final");
   assert.equal(followed.body.image, "https://start.example/cover.png");
+
+  const dripped = await previewThrough({
+    "https://start.example/a": drippedPage(`<title>Drip</title>${" ".repeat(127_000)}</HEAD><body>`),
+  });
+  assert.equal(dripped.body.title, "Drip");
+
+  const split = await previewThrough({
+    "https://start.example/a": new Response(new Blob(["<title>Split</ti", "tle></he", "ad>", "<title>no"]).stream(), {
+      headers: { "content-type": "text/html" },
+    }),
+  });
+  assert.equal(split.body.title, "Split");
 }
 
 main().then(
