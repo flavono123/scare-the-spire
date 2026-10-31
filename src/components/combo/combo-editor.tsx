@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { Youtube } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -56,6 +56,7 @@ export function ComboEditor({
   const entityInsertRequestIdRef = useRef(0);
   const historyRunInsertRequestIdRef = useRef(0);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const validationErrorRef = useRef<HTMLParagraphElement>(null);
   const [historyRunPickerOpen, setHistoryRunPickerOpen] = useState(false);
   const [entityInsertRequest, setEntityInsertRequest] = useState<{
     requestId: number;
@@ -115,6 +116,11 @@ export function ComboEditor({
     slashCommands,
   }), [historyRunInsertRequest, slashCommands]);
 
+  // A long post fills the modal, so the notice lands below its scrolled end.
+  useEffect(() => {
+    if (validationError) validationErrorRef.current?.scrollIntoView({ block: "nearest" });
+  }, [validationError]);
+
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
     if (extractComboResourceRefs(blocks).length < 2) {
       setValidationError(copy.minimumResources);
@@ -135,10 +141,16 @@ export function ComboEditor({
       : (nicknameInputRef.current?.value.trim()
         || profileNickname
         || copy.defaultNickname);
-    await onSubmit(blocks, nickname);
+    try {
+      await onSubmit(blocks, nickname);
+    } catch (error) {
+      setValidationError(copy.saveFailed);
+      throw error;
+    }
   }, [
     copy.defaultNickname,
     copy.minimumResources,
+    copy.saveFailed,
     copy.textTooLong,
     copy.youtubeLimit,
     hideNickname,
@@ -218,7 +230,7 @@ export function ComboEditor({
       </div>
 
       {validationError && (
-        <p className="text-xs text-red-300" role="alert" aria-live="polite">
+        <p ref={validationErrorRef} className="text-xs text-red-300" role="alert" aria-live="polite">
           {validationError}
         </p>
       )}

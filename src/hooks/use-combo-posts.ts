@@ -274,7 +274,7 @@ export function useComboPost(
         activeUserId: input.activeUserId ?? userId ?? undefined,
       });
       if (error) {
-        setUnavailable(true);
+        if (!isCheckViolation(error)) setUnavailable(true);
         throw new Error(error.message);
       }
       if (!data) return null;
