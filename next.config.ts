@@ -31,6 +31,13 @@ const nextConfig: NextConfig = {
   // on the same Wi-Fi open the Network URL. Extra hosts: NEXT_DEV_ALLOWED_ORIGINS.
   allowedDevOrigins: lanDevOrigins(),
   staticPageGenerationTimeout: 420,
+  experimental: {
+    // The main Worker serves each page's whole .rsc and never the per-segment
+    // responses this feature is for. Left on, Next stamps those .rsc files with
+    // InliningHintsStale, which only a segment response clears, so every <Link>
+    // prefetch would expire at once and refetch in a loop.
+    prefetchInlining: false,
+  },
   ...(configuredBuildId
     ? {
         generateBuildId: async () => configuredBuildId,
