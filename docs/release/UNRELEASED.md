@@ -90,7 +90,7 @@
 - QA: `/patches/neowsletters/2024-10`, `/patches/neowsletters/2025-02`, `/patches/neowsletters/2026-04`, `/en/patches/neowsletters/2026-07`, `pnpm tsx scripts/neowsletter-anchors.spec.ts`
 
 ### opennext-exit
-- 상태: 2026-10-31 사용자 검수 통과.
+- 상태: 2026-10-31 사용자 검수 통과, 같은 날 11시 전 운영 배포(`7b3051ad`, main Worker `d1c23a64`, patch Worker `51a9dcb4`). 첫 CI 빌드 포함 약 15분, 운영 `cf:smoke --scope all` 183개 통과. 정기 배포 기능 QA는 다음 정기 배포에서 한다.
 - Feature: main Worker가 정적 전용이 된다(런타임 Next/OpenNext 없음, gzip 약 17 KiB). `/decisions-decisions`·`/this-or-that/tournament` 인덱스(14 로케일)를 정적 페이지로 서빙하고, worldcup 인덱스 308·`/dev/pagestorm-editor` 307·`/ko`·`/kor` 308·trailing slash/`//` 308·`/api/link-preview`를 Worker가 예전 응답대로 처리한다. 매칭되지 않는 경로는 Next가 prerender한 not-found 페이지(HTML/RSC, 404, `x-cf-static-page: not-found`)와 `cf-static-404` 로그. 정적 경로의 GET/HEAD 외 메서드는 405. 빌드는 `next build` + `collect-cf-assets.mjs` + `wrangler deploy`. 정적 asset은 닿지 않는 `/_next/static` chunk 64개와 서빙되지 않는 public 파일 53개를 업로드에서 빼고, 낡은 Ancient VFX 텍스처 9개를 지워 18,484개(예산 19,500, 한도 20,000, 예산까지 1,016 남음). STS1 glyph metrics는 페이지 로케일 pack 하나만 받고, 구 STS2 한국어 표는 kor 게임 표를 읽는다(클라이언트 중복 제거 merge).
 - Expect: 화면 변화 없음. STS1 페이지·pagestorm STS1 호버의 글자 렌더 동일. `/does-not-exist`처럼 한 단계짜리 없는 경로가 500 대신 404 페이지. worldcup 인덱스·`/ko` 리다이렉트 Location 동일(RSC 요청은 `_rsc` 쿼리 유지). 링크 미리보기 동작 동일(리다이렉트 중간 단계도 공개 URL만 따라감).
 - 의도한 응답 차이(OpenNext 대비, 실제 링크는 영향 없음):
