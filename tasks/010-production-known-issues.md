@@ -186,3 +186,15 @@
     - https://scare-the-spire.flavono123.workers.dev/en/compendium/bestiary
     - 원인 추정: 조우 미리보기가 조합 전체를 높이 제한 없이 그리고 라벨이 언어를 받지 않는다(코드는 확인하지 않음).
 48. **`CLAUDE.md`와 `AGENTS.md`의 수치가 낡음**. `CLAUDE.md`는 Next.js 15, 두 문서 모두 카드 612·유물 314·포션 63이지만 실제는 Next 16.4와 `data/sts2/kor`의 카드 598·유물 298·포션 64다. 화면과는 무관하다.
+49. **조각모음 overlay 저장이 DB에서 거부되면 글은 성공처럼 끝나고 overlay 본문만 조용히 사라짐**. 패널이 닫히고 피드에 글이 생기며 안내가 없다. 다시 올릴 수도 없다.
+    - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 원인: `src/hooks/use-defragment-bodies.ts`의 `isMissingDefragmentBodiesTable`이 `/defragment_bodies/i`로 메시지를 보므로 표 이름이 든 23514·42501까지 '표 없음'으로 처리하고, `upsertDefragmentBody`가 null을 돌려준다.
+50. **조각모음 overlay 초안이 게시 뒤에도 남아 다음 글에 다시 붙음**. 같은 탭에서 패널을 다시 열면 콤보 칸은 비었는데 overlay 칸에 이전 글의 본문이 복원되고, 그대로 게시하면 저장된다.
+    - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 원인: overlay 편집기는 `hideSubmitButton`에 빈 `onSubmit`이라 `RichContentEditor`의 `clearDraft`가 불리지 않고, 패널의 성공 경로도 `sts-defragment-overlay:*` 키를 지우지 않는다.
+51. **글 저장 뒤 overlay가 5xx로 실패하면 새로 고침 뒤 복원된 초안을 올릴 때 같은 글이 두 번 저장됨**. 첫 제출은 글이 이미 저장됐는데 장애 안내로 바뀌고 초안이 남는다.
+    - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 원인: `src/components/defragment/defragment-write-panel.tsx`의 catch가 글 insert와 `saveOverlay`를 함께 감싸 두 실패를 구분하지 않고, `RichContentEditor`는 어떤 실패든 초안을 남긴다.
+52. **조각모음에서 서류 폭풍 글 저장이 거부되면 쓰던 문서가 사라지고 미처리 rejection이 남**. 패널이 장애 안내로 바뀌고 세션 저장소에 초안이 없다. 같은 거부에서 `/pagestorm/write`는 편집기가 남는다. 23514로는 1 MiB 넘는 문서에서만 닿는다. 500과 네트워크 실패에서도 같을 것으로 보지만 재현하지는 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 원인: `handlePagestormSubmit`의 catch가 `onUnavailable`을 부른 뒤 다시 던지고, `PagestormEditor`의 `handleSubmit`은 이를 받지 않는다.
