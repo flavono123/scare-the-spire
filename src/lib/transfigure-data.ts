@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { supabase, supabaseClientOptions, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { normalizeTransfigurePost, type TransfigurePost } from "@/lib/transfigure-types";
 import { BUILTIN_SAMPLE_TRANSFIGURES } from "@/lib/transfigure-builtins";
 
@@ -9,7 +9,7 @@ function getClient(): { client: SupabaseClient; env: string } | null {
   const env = process.env.NEXT_PUBLIC_SUPABASE_ENV ?? supabaseEnv ?? "production";
 
   if (url && key) {
-    return { client: createClient(url, key), env };
+    return { client: createClient(url, key, supabaseClientOptions), env };
   }
   if (supabaseEnabled && supabase) {
     return { client: supabase, env: supabaseEnv };

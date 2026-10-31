@@ -6,7 +6,7 @@ import {
   colorfulPhilosophersWeekStart,
   type ColorfulPhilosopherPost,
 } from "@/lib/colorful-philosophers";
-import { supabaseEnv } from "@/lib/supabase";
+import { supabaseClientOptions, supabaseEnv } from "@/lib/supabase";
 
 const COLUMNS = "id, week_start, slot, resource_type, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count";
 
@@ -19,7 +19,7 @@ export async function getColorfulPhilosopherGalleryPosts(): Promise<ColorfulPhil
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const env = process.env.NEXT_PUBLIC_SUPABASE_ENV ?? supabaseEnv ?? "production";
   if (!url || !key) return [];
-  const client = createClient(url, key);
+  const client = createClient(url, key, supabaseClientOptions);
   const currentWeek = colorfulPhilosophersWeekStart();
   try {
     const { data, error } = await client
