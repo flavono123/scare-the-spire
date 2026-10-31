@@ -2,7 +2,7 @@
 
 import { useMemo, type ComponentProps } from "react";
 import { CardLibrary } from "./card-library";
-import { compendiumDetailsStatus, useCompendiumDataState } from "./use-compendium-data";
+import { useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import {
   EMPTY_CARD_SIDE_TIP_SOURCES,
@@ -49,7 +49,7 @@ export function CardLibraryLoader({ gameLocale, cards: compactCards, keywordLabe
     <CardLibrary
       {...props}
       cards={cards}
-      detailsStatus={compendiumDetailsStatus(status)}
+      detailsStatus={status}
       changes={data?.changes}
       versionDiffs={data?.versionDiffs ?? EMPTY}
       enchantments={data?.enchantments ?? EMPTY}

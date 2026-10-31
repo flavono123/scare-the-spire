@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { BestiaryLibrary } from "./bestiary-library";
-import { compendiumDetailsStatus, useCompendiumDataState } from "./use-compendium-data";
+import { useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import type { GameLocale } from "@/lib/i18n";
 
@@ -32,7 +32,7 @@ export function BestiaryLibraryLoader({ gameLocale, ...props }: BestiaryLibraryL
   return (
     <BestiaryLibrary
       {...props}
-      detailsStatus={compendiumDetailsStatus(status)}
+      detailsStatus={status}
       monsters={data?.monsters ?? props.monsters}
       encounters={data?.encounters ?? props.encounters}
       afflictions={data?.afflictions}

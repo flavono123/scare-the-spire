@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { PotionLibrary } from "./potion-library";
-import { compendiumDetailsStatus, useCompendiumDataState } from "./use-compendium-data";
+import { useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import { EMPTY_CARD_SIDE_TIP_SOURCES } from "@/lib/compendium-list-props";
 import type { GameLocale } from "@/lib/i18n";
@@ -34,7 +34,7 @@ export function PotionLibraryLoader({ gameLocale, ...props }: PotionLibraryLoade
   return (
     <PotionLibrary
       {...props}
-      detailsStatus={compendiumDetailsStatus(status)}
+      detailsStatus={status}
       changes={data?.changes}
       versionDiffs={data?.versionDiffs}
       relatedCards={data?.cards}

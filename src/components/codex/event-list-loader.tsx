@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { EventList } from "./event-list";
-import { compendiumDetailsStatus, useCompendiumDataState } from "./use-compendium-data";
+import { useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import type { GameLocale } from "@/lib/i18n";
 
@@ -33,7 +33,7 @@ export function EventListLoader({ gameLocale, ...props }: EventListLoaderProps) 
   return (
     <EventList
       {...props}
-      detailsStatus={compendiumDetailsStatus(status)}
+      detailsStatus={status}
       cards={data?.cards}
       enchantments={data?.enchantments}
       madScienceBaseCard={data?.madScienceBaseCard}
