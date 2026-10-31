@@ -153,3 +153,29 @@
 38. **링크 미리보기 방어 보강**(묶음 3의 링크 미리보기 잔여 작업에서 처리).
     - https://scare-the-spire.flavono123.workers.dev/api/link-preview
     - 포트 제한 없음, 192.0.0.0/24·TEST-NET 3개·`.internal` 미차단, 요청 수 제한 없음. 악의적인 128 KB 페이지에서 `readOpenGraph`의 정규식 비용이 제곱으로 늘어남(3초 타이머는 본문 읽기까지만 막음).
+
+### 묶음 3 QA에서 추가 (2026-10-31)
+
+39. **유물 '엄청 뜨거운 코코아' 타일 호버 팁에 `[energy:4]`가 글자 그대로 보임**. 모달 본문은 정상. ko 유물 298개 중 이 1건만 확인(/en은 표본).
+    - https://scare-the-spire.flavono123.workers.dev/compendium/relics
+    - 원인 추정: 데이터가 `[blue][energy:4][/blue]`처럼 중첩인데 `src/lib/codex-card-description.ts`의 `parseDescription` 정규식이 `[blue]` 안을 다시 파싱하지 않는다(팁 경로는 끝까지 추적하지 않음).
+40. **키보드로 목록 모달을 열면 초점이 타일에 남아 모달 안 첫 초점까지 Tab 298회**. Esc는 동작.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/relics
+    - 원인 추정: 모달이 열릴 때 초점을 옮기지 않는다. 묶음 3의 '다시 시도' 버튼도 같은 이유로 키보드에서 멀다.
+41. **링크 미리보기가 U+10FFFF를 넘는 숫자 엔티티(`&#x110000;`) 하나로 페이지 전체 미리보기를 잃음**. 200 빈 미리보기라 표시 문제에 그침.
+    - https://scare-the-spire.flavono123.workers.dev/api/link-preview?url=https%3A%2F%2Fhttpbin.org%2Fbase64%2FPHRpdGxlPiYjeDExMDAwMDs8L3RpdGxlPg%3D%3D
+    - 원인: `src/lib/link-preview.ts`의 `decodeHtml`이 `String.fromCodePoint` 전에 범위를 보지 않는다.
+42. **Toy Box 피드와 이야기의 Realtime 구독을 서버가 거절함**. 구독 응답은 ok지만 곧이어 `Unable to subscribe to changes with given parameters` 시스템 오류가 온다. 다른 사람의 수정·삭제가 실시간으로 반영되지 않는다. 운영(realtime-js 2.98)과 testbed(2.118)가 같은 응답을 받고 안내는 뜨지 않는다.
+    - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+    - 원인 추정: 해당 표가 `supabase_realtime` publication에 없다(저장소 마이그레이션에는 `defragment_posts` 추가만 있음). live DB의 publication은 확인하지 못했다.
+43. **`scripts/encounter-compositions.spec.ts`가 실패함**(고유 전투 배경 수 11, 기대 17, 16행). CI에 없어 드러나지 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/encounters
+    - 원인 미조사. 배경 데이터가 줄었는지 기대값이 낡았는지 확인이 필요하다.
+44. **'데이터베이스가 응답하지 않습니다' 안내에 재시도 수단이 없음**(사용자 제안: 페이지를 새로 고치는 버튼. 조회를 다시 보내는 방식이 아니라 새로 고침을 유도).
+    - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+45. **DB 쪽 남은 낮은 항목**(코드 읽기로 확인, 운영에서 동작을 재현하지는 않음). RLS 마이그레이션 범위 밖이다.
+    - https://scare-the-spire.flavono123.workers.dev/favorite-tournament
+    - `complete_favorite_tournament_play`가 플레이마다 후보 통계 행을 전부 UPDATE한다(순위가 그대로여도 씀).
+    - `transfigure_posts_extra_variants_shape` CHECK가 `octet_length(extra_variants::text)`라 좋아요마다 직렬화한다.
+    - `comments.parent_id`·`meta`는 앱이 쓰지 않는데 클라이언트가 쓸 수 있다. `parent_id`는 다른 스레드의 댓글도 가리킬 수 있다.
+    - likes·votes·리액션의 `created_at`, 글 INSERT의 `id`는 여전히 클라이언트가 정할 수 있다.
