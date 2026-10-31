@@ -174,7 +174,7 @@
 44. **'데이터베이스가 응답하지 않습니다' 안내에 재시도 수단이 없음**(사용자 제안: 페이지를 새로 고치는 버튼. 조회를 다시 보내는 방식이 아니라 새로 고침을 유도).
     - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
 45. **DB 쪽 남은 낮은 항목**(코드 읽기로 확인, 운영에서 동작을 재현하지는 않음). RLS 마이그레이션 범위 밖이다.
-    - https://scare-the-spire.flavono123.workers.dev/favorite-tournament
+    - https://scare-the-spire.flavono123.workers.dev/this-or-that/worldcup
     - `complete_favorite_tournament_play`가 플레이마다 후보 통계 행을 전부 UPDATE한다(순위가 그대로여도 씀).
     - `transfigure_posts_extra_variants_shape` CHECK가 `octet_length(extra_variants::text)`라 좋아요마다 직렬화한다.
     - `comments.parent_id`·`meta`는 앱이 쓰지 않는데 클라이언트가 쓸 수 있다. `parent_id`는 다른 스레드의 댓글도 가리킬 수 있다.
