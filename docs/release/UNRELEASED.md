@@ -106,7 +106,7 @@
   - 외부 URL을 준 `/_next/image`는 `Sec-Fetch-Dest`가 없거나 document면 403 `Blocked`(Cloudflare 계층으로 추정), image면 404 페이지.
   - `/_cf_static_pages/404`가 다른 `/_cf_static_pages/*`처럼 정적 asset으로 직접 열림(운영은 404).
 - 알려진 차이(병합 QA): STS1 카드 목록(canvas 약 3,300개)의 첫 언어 전환이 글리프 묶음 chunk를 하나 더 받아 운영보다 0.2~0.5초 늦음. 끝난 화면과 canvas 픽셀은 같음.
-- 첫 운영 배포 뒤 되돌릴 정상 버전(2026-10-31 기준, push 직전 다시 확인): main Worker `30c33e29-04b2-4fb5-8617-371ff079936e`, patch Worker `ac131df6-0512-4c8f-ab33-d9fe8eed9c5a`. 절차는 `docs/DEPLOY.md` 롤백.
+- 첫 운영 배포 뒤 되돌릴 정상 버전(2026-10-31 09:33 KST push 직전 확인, OpenNext 마지막 정상 배포 `b51d05b5`): main Worker `c0c36c95-037c-4bcc-8e37-504d8cfcd321`, patch Worker `2c216f3c-1f87-4610-b71f-1b41758c32f2`. 절차는 `docs/DEPLOY.md` 롤백.
 - 후속 수정(묶음 2 QA): 404 페이지 응답에 정적 페이지와 같은 `Vary`를 붙임(같은 URL이 HTML과 RSC 404를 함께 내므로). `cf:smoke`가 확인.
 - 병합으로 맞춘 곳: 빌드 기록은 `.cloudflare/build-record.json`에 남고 `collect-cf-assets.mjs`가 asset을 바꿀 때 지운다(`cf:preview` 산출물이 `--skip-build`를 통과하지 못하게). `cf:assets`가 Compendium data chunk 141개와 게임 전용 로케일 목록 모달 URL 252개도 확인한다.
 - 이번 배포 주의: RELEASE_PROCESS 5단계의 배포 전 프로덕션 `cf:smoke --scope main`은 이 브랜치가 추가한 다음 케이스가 옛 앱에서 실패한다(배포 뒤에만 통과). `/decisions-decisions`·`/en/decisions-decisions`·`/this-or-that/tournament`·`/zh/this-or-that/tournament` document/RSC(옛 앱은 `x-cf-static-page` 없음), "Worldcup index redirect RSC"(옛 앱 200), "Not-found document"·"Not-found RSC"(옛 앱 500), "Locale not-found document"(owner 헤더 없음), "POST to a static page". 배포 전 판정은 원격 testbed의 `cf:smoke --scope all`로 하고, 프로덕션 smoke는 배포 뒤에 본다. POST 케이스는 정적 페이지에 본문 없는 요청 하나라 부작용이 없다.
