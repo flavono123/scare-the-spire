@@ -2,8 +2,12 @@
 
 import { readFileSync } from "node:fs";
 
+import { globalHeaders, PUBLIC_HEADERS_FILE } from "./security-headers-file.mjs";
+
 const MISSING_UUID = "00000000-0000-4000-8000-000000000000";
 const HISTORY_RUN_ID = "1testbedsmoketest";
+// Every response must carry these, whichever Worker or asset rule built it.
+const SECURITY_HEADERS = globalHeaders(readFileSync(PUBLIC_HEADERS_FILE, "utf8"));
 
 function usage() {
   console.log(`Usage: pnpm cf:smoke -- --origin <url> [options]
@@ -299,6 +303,17 @@ function mainCases() {
       allow: "GET, HEAD",
     },
     {
+      name: "Static text asset",
+      path: "/robots.txt",
+      contentType: "text/plain",
+    },
+    {
+      name: "Static page file redirect",
+      path: "/_cf_static_pages/index.html",
+      statuses: [307],
+      location: "/_cf_static_pages/",
+    },
+    {
       name: "Search index asset",
       path: "/generated/search-index.json",
       contentType: "application/json",
@@ -428,6 +443,12 @@ function validateCase(testCase, response, body) {
   const expectedStatuses = testCase.statuses ?? [200];
   if (!expectedStatuses.includes(response.status)) {
     return `expected HTTP ${expectedStatuses.join("/")}, got ${response.status}`;
+  }
+
+  for (const [name, value] of SECURITY_HEADERS) {
+    if (response.headers.get(name) !== value) {
+      return `expected ${name}: ${value}, got ${response.headers.get(name) ?? "missing"}`;
+    }
   }
 
   const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";

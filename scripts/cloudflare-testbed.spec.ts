@@ -45,6 +45,31 @@ const LOCAL_RUN_RAW = JSON.stringify({
 
 test.use({ locale: "ko-KR" });
 
+// A Report-Only policy fires the same event as an enforced one, so every page
+// this suite opens also counts policy violations.
+type CspViolation = { directive: string; blocked: string; source: string };
+let cspViolations: CspViolation[] = [];
+
+test.beforeEach(async ({ page }) => {
+  cspViolations = [];
+  await page.exposeFunction("__reportCspViolation", (violation: CspViolation) => {
+    cspViolations.push(violation);
+  });
+  await page.addInitScript(() => {
+    // An embed's own policy is not ours to count.
+    if (window !== window.top) return;
+    document.addEventListener("securitypolicyviolation", (event) => {
+      const report = (window as unknown as { __reportCspViolation: (violation: CspViolation) => void })
+        .__reportCspViolation;
+      report({ directive: event.effectiveDirective, blocked: event.blockedURI, source: event.sourceFile });
+    });
+  });
+});
+
+test.afterEach(() => {
+  expect(cspViolations).toEqual([]);
+});
+
 function absolute(path: string) {
   return `${BASE_URL}${path}`;
 }
