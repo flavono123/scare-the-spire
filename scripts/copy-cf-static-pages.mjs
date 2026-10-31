@@ -119,6 +119,14 @@ const staticDetailHintRows = [
   /^:HL\["[^"\n]*","image"[^\n]*\n/gm,
 ];
 
+// Next's PrefetchHint.InliningHintsStale on the route tree's root node. The client
+// expires a route carrying it and refetches, and only a .segments response clears
+// it, which the Worker does not serve: every <Link> prefetch would loop. It stays
+// off through `prefetchInlining: false` in next.config.ts; fail if a Next upgrade
+// brings it back or moves the tree.
+const inliningHintsStaleBit = 512;
+const rootRouteHints = /^0:\{[^\n]*?"t":\{"t":\{"s":"[^"]*","h":(\d+)/m;
+
 function walk(dir, files = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const fullPath = path.join(dir, entry.name);
@@ -289,6 +297,14 @@ function isCompendiumDetail(relative) {
     && compendiumSegments.has(parts[compendiumIndex + 1]);
 }
 
+function assertFreshPrefetchHints(rsc, relative) {
+  const hints = rootRouteHints.exec(rsc)?.[1];
+  if (hints === undefined) throw new Error(`No root route hints found in ${relative}`);
+  if (Number(hints) & inliningHintsStaleBit) {
+    throw new Error(`${relative} has stale prefetch hints: the client would refetch it in a loop`);
+  }
+}
+
 function stripStaticDetailHints(rsc, relative) {
   const stripped = staticDetailHintRows.reduce((current, row) => current.replace(row, ""), rsc);
   if (stripped.includes(staticDetailSubsetHref)) {
@@ -321,6 +337,7 @@ for (const file of walk(appDir)) {
     localizedCount += 1;
   } else if (relative.endsWith(".rsc") && isCompendiumDetail(relative)) {
     const rsc = readFileSync(file, "utf8");
+    assertFreshPrefetchHints(rsc, relative);
     const stripped = stripStaticDetailHints(rsc, relative);
     writeFileSync(output, stripped);
     if (stripped !== rsc) strippedHintCount += 1;
