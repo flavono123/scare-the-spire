@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 import { AncientList } from "./ancient-list";
 import {
-  compendiumDetailsSettled,
+  compendiumDetailsStatus,
   useCompendiumDataState,
   useCompendiumEntitiesState,
 } from "./use-compendium-data";
@@ -16,7 +16,7 @@ const LAZY_DATA_KEYS = [
   "versionDiffs",
 ] as const satisfies readonly CompendiumDataKey[];
 
-type AncientListLoaderProps = Omit<ComponentProps<typeof AncientList>, "cards" | "changes" | "versionDiffs" | "entities" | "detailsReady"> & {
+type AncientListLoaderProps = Omit<ComponentProps<typeof AncientList>, "cards" | "changes" | "versionDiffs" | "entities" | "detailsStatus"> & {
   gameLocale: GameLocale;
 };
 
@@ -31,7 +31,7 @@ export function AncientListLoader({ gameLocale, ...props }: AncientListLoaderPro
   return (
     <AncientList
       {...props}
-      detailsReady={compendiumDetailsSettled(dataStatus, entitiesStatus)}
+      detailsStatus={compendiumDetailsStatus(dataStatus, entitiesStatus)}
       cards={data?.cards}
       changes={data?.changes}
       versionDiffs={data?.versionDiffs}

@@ -19,7 +19,6 @@ import {
 } from "@/lib/codex-service";
 import type { CodexCard, CodexKeyword } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { serviceMessages } from "@/messages/service";
 import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
@@ -33,13 +32,14 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { GameHoverTip } from "./hover-tip";
 import { KeywordDetail } from "./keyword-detail";
 import { SearchBar } from "./search-bar";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 interface KeywordLibraryProps {
   serviceLocale: ServiceLocale;
@@ -48,8 +48,8 @@ interface KeywordLibraryProps {
   keywords: CodexKeyword[];
   cards?: CodexCard[];
   entities?: EntityInfo[];
-  /** False until cards and entities load; the modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
 const KEYWORD_SOURCE_ORDER: CodexKeyword["source"][] = ["cardKeyword", "staticHoverTip"];
@@ -102,7 +102,7 @@ export function KeywordLibrary({
   keywords,
   cards = [],
   entities,
-  detailsReady = true,
+  detailsStatus = "loaded",
 }: KeywordLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlKeywordId = useHydrationSafeSearchParam("keyword");
@@ -277,7 +277,7 @@ export function KeywordLibrary({
       {selectedKeyword && (
         <CompendiumDetailOverlay onClose={() => closeSelectedKeyword()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            {detailsReady ? (
+            {detailsStatus === "loaded" ? (
               <KeywordDetail
                 serviceLocale={serviceLocale}
                 gameUi={gameUi}
@@ -288,11 +288,11 @@ export function KeywordLibrary({
                 onClose={closeSelectedKeyword}
               />
             ) : (
-              <CompendiumDetailLoading
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedKeyword.name}
                 backToListTitle={title}
-                closeLabel={serviceText.common.close}
-                loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedKeyword}
                 className="max-w-5xl"
               />

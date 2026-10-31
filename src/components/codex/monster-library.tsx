@@ -55,7 +55,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -65,6 +65,7 @@ import {
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 type MonsterViewMessages =
   (typeof serviceMessages)[ServiceLocale]["codex"]["monstersView"];
@@ -96,8 +97,8 @@ interface MonsterLibraryProps {
   selectedVersion?: string;
   onVersionChange?: (version: string) => void;
   trailing?: React.ReactNode;
-  /** False while monsters are slim grid rows; the modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
 export function MonsterLibrary({
@@ -117,7 +118,7 @@ export function MonsterLibrary({
   selectedVersion,
   onVersionChange,
   trailing,
-  detailsReady = true,
+  detailsStatus = "loaded",
 }: MonsterLibraryProps) {
   const serviceText = serviceMessages[serviceLocale];
   const commonText = serviceText.codex.common;
@@ -498,7 +499,7 @@ export function MonsterLibrary({
       {selectedMonster && (
         <CompendiumDetailOverlay onClose={() => closeSelectedMonster()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            {detailsReady ? (
+            {detailsStatus === "loaded" ? (
               <MonsterDetail
                 serviceLocale={serviceLocale}
                 gameUi={gameUi}
@@ -516,11 +517,11 @@ export function MonsterLibrary({
                 onClose={closeSelectedMonster}
               />
             ) : (
-              <CompendiumDetailLoading
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedMonster.name}
                 backToListTitle={title}
-                closeLabel={commonText.close}
-                loadingLabel={serviceText.comments.loading}
                 onClose={closeSelectedMonster}
               />
             )}

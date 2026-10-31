@@ -175,9 +175,11 @@ export function useCompendiumEntities(gameLocale: GameLocale): EntityInfo[] | un
 }
 
 /**
- * Whether a list's detail modal can render: every chunk it reads has either
- * arrived or failed. After a failure the modal falls back to the server props.
+ * The state of a list's detail modal, from the hooks of the chunks it reads:
+ * "failed" once any has failed, so the modal offers a retry without waiting for
+ * the rest, and "loaded" once all have arrived.
  */
-export function compendiumDetailsSettled(...statuses: CompendiumDataStatus[]): boolean {
-  return statuses.every((status) => status !== "loading");
+export function compendiumDetailsStatus(...statuses: CompendiumDataStatus[]): CompendiumDataStatus {
+  if (statuses.includes("failed")) return "failed";
+  return statuses.includes("loading") ? "loading" : "loaded";
 }

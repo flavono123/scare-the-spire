@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 import { PowerLibrary } from "./power-library";
 import {
-  compendiumDetailsSettled,
+  compendiumDetailsStatus,
   useCompendiumDataState,
   useCompendiumEntitiesState,
 } from "./use-compendium-data";
@@ -23,7 +23,7 @@ const LAZY_DATA_KEYS = [
   "versionDiffs",
 ] as const satisfies readonly CompendiumDataKey[];
 
-type PowerLibraryLoaderProps = Omit<ComponentProps<typeof PowerLibrary>, "cards" | "relics" | "potions" | "enchantments" | "events" | "monsters" | "afflictions" | "tipCatalogSources" | "changes" | "versionDiffs" | "entities" | "detailsReady"> & {
+type PowerLibraryLoaderProps = Omit<ComponentProps<typeof PowerLibrary>, "cards" | "relics" | "potions" | "enchantments" | "events" | "monsters" | "afflictions" | "tipCatalogSources" | "changes" | "versionDiffs" | "entities" | "detailsStatus"> & {
   gameLocale: GameLocale;
 };
 
@@ -38,7 +38,7 @@ export function PowerLibraryLoader({ gameLocale, ...props }: PowerLibraryLoaderP
   return (
     <PowerLibrary
       {...props}
-      detailsReady={compendiumDetailsSettled(dataStatus, entitiesStatus)}
+      detailsStatus={compendiumDetailsStatus(dataStatus, entitiesStatus)}
       cards={data?.cards}
       relics={data?.relics}
       potions={data?.potions}

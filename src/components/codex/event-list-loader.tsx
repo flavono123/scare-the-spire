@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { EventList } from "./event-list";
-import { compendiumDetailsSettled, useCompendiumDataState } from "./use-compendium-data";
+import { compendiumDetailsStatus, useCompendiumDataState } from "./use-compendium-data";
 import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import type { GameLocale } from "@/lib/i18n";
 
@@ -19,7 +19,7 @@ const LAZY_DATA_KEYS = [
 
 const EMPTY: never[] = [];
 
-type EventListLoaderProps = Omit<ComponentProps<typeof EventList>, "cards" | "enchantments" | "madScienceBaseCard" | "potions" | "powers" | "relics" | "changes" | "versionDiffs" | "detailsReady"> & {
+type EventListLoaderProps = Omit<ComponentProps<typeof EventList>, "cards" | "enchantments" | "madScienceBaseCard" | "potions" | "powers" | "relics" | "changes" | "versionDiffs" | "detailsStatus"> & {
   gameLocale: GameLocale;
 };
 
@@ -33,7 +33,7 @@ export function EventListLoader({ gameLocale, ...props }: EventListLoaderProps) 
   return (
     <EventList
       {...props}
-      detailsReady={compendiumDetailsSettled(status)}
+      detailsStatus={compendiumDetailsStatus(status)}
       cards={data?.cards}
       enchantments={data?.enchantments}
       madScienceBaseCard={data?.madScienceBaseCard}

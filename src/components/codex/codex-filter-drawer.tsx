@@ -10,8 +10,12 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from "react";
+import { EntityGraphUnavailableNotice } from "@/components/entity-graph-gate";
 import { GameScrollArea } from "@/components/game-scroll-area";
+import type { ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { serviceMessages } from "@/messages/service";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 interface CodexFilterDrawerState {
   sidebarOpen: boolean;
@@ -218,25 +222,26 @@ export function CompendiumDetailOverlay({
 }
 
 /**
- * Stands in for a list modal's detail until the data chunks it reads have
- * loaded, so the modal never shows partial rows or empty-result text.
+ * Stands in for a list modal's detail while the data chunks it reads load, and
+ * offers a retry if they fail, so the modal never shows partial rows or
+ * empty-result text.
  */
-export function CompendiumDetailLoading({
+export function CompendiumDetailFallback({
+  serviceLocale,
+  status,
   title,
   titleId,
   backToListTitle,
-  closeLabel,
-  loadingLabel,
   onClose,
   className,
   largeControls = false,
 }: {
+  serviceLocale: ServiceLocale;
+  status: Exclude<CompendiumDataStatus, "loaded">;
   title: string;
   /** Id for the title, when the dialog is labelled by the detail's own heading id. */
   titleId?: string;
   backToListTitle: string;
-  closeLabel: string;
-  loadingLabel: string;
   onClose: () => void;
   /**
    * The detail's own root width and padding, when they differ from the
@@ -250,8 +255,9 @@ export function CompendiumDetailLoading({
   useLayoutEffect(() => {
     requestRailGutter?.();
   }, [requestRailGutter]);
+  const messages = serviceMessages[serviceLocale];
   return (
-    <div className={cn("mx-auto w-full max-w-6xl p-4 sm:p-6", className)} aria-busy="true">
+    <div className={cn("mx-auto w-full max-w-6xl p-4 sm:p-6", className)} aria-busy={status === "loading"}>
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <button
           type="button"
@@ -270,18 +276,24 @@ export function CompendiumDetailLoading({
             "flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10",
             largeControls && "h-11 w-11",
           )}
-          aria-label={closeLabel}
+          aria-label={messages.codex.common.close}
         >
           ✕
         </button>
       </div>
       <div className="flex min-h-[26rem] flex-col items-center justify-center gap-4 text-center">
         <h2 id={titleId} className="font-game-title text-3xl font-bold text-gray-100 sm:text-4xl">{title}</h2>
-        <p className="font-service text-xs text-gray-500" aria-live="polite">
-          {loadingLabel}
-        </p>
+        {status === "failed" ? (
+          <EntityGraphUnavailableNotice
+            serviceLocale={serviceLocale}
+            title={messages.entityGraph.detailUnavailable}
+          />
+        ) : (
+          <p className="font-service text-xs text-gray-500" aria-live="polite">
+            {messages.comments.loading}
+          </p>
+        )}
       </div>
     </div>
   );
 }
-

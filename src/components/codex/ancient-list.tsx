@@ -33,7 +33,6 @@ import {
   stripCodexMarkup,
 } from "@/lib/codex-search";
 import { versionCodexEntities } from "@/lib/codex-versioning";
-import { serviceMessages } from "@/messages/service";
 import {
   FilterSection,
   orderByFilterSortDir,
@@ -44,13 +43,14 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { SearchBar } from "./search-bar";
 import { AncientDetail } from "./ancient-detail";
 import { VersionSelector } from "./version-selector";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 const COMPENDIUM_ACT_COLOR = "#60a5fa";
 const COMPENDIUM_ACT_TEXT_CLASS = "text-blue-300";
@@ -90,8 +90,8 @@ interface AncientListProps {
   versions?: string[];
   currentVersion?: string;
   entities?: EntityInfo[];
-  /** False until the data chunks settle; the detail modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
 export function AncientList({
@@ -106,7 +106,7 @@ export function AncientList({
   versions,
   currentVersion,
   entities,
-  detailsReady = true,
+  detailsStatus = "loaded",
 }: AncientListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlAncientId = useHydrationSafeSearchParam("ancient");
@@ -171,12 +171,12 @@ export function AncientList({
   // The loading stand-in has no closeButtonRef, so focus the detail's close
   // button once it replaces the stand-in, unless the user moved focus already.
   useEffect(() => {
-    if (!selectedAncient || !detailsReady) return;
+    if (!selectedAncient || detailsStatus !== "loaded") return;
     window.requestAnimationFrame(() => {
       const active = document.activeElement;
       if (active === modalRef.current || active === document.body) closeButtonRef.current?.focus();
     });
-  }, [detailsReady, selectedAncient]);
+  }, [detailsStatus, selectedAncient]);
 
   useEffect(() => {
     if (!selectedAncient) {
@@ -395,7 +395,7 @@ export function AncientList({
             tabIndex={-1}
             className="my-4 mx-2 w-full max-w-6xl outline-none sm:my-8 sm:mx-4"
           >
-            {detailsReady ? (
+            {detailsStatus === "loaded" ? (
               <AncientDetail
                 serviceLocale={serviceLocale}
                 gameUi={gameUi}
@@ -411,12 +411,12 @@ export function AncientList({
                 versionDiffs={versionDiffs}
               />
             ) : (
-              <CompendiumDetailLoading
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedAncient.name}
                 titleId={`ancient-detail-title-${selectedAncient.id.toLowerCase()}`}
                 backToListTitle={gameUi.ancientsTitle}
-                closeLabel={serviceText.common.close}
-                loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedAncient}
                 largeControls
               />

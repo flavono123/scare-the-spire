@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 import { RelicLibrary } from "./relic-library";
 import {
-  compendiumDetailsSettled,
+  compendiumDetailsStatus,
   useCompendiumDataState,
   useCompendiumEntitiesState,
 } from "./use-compendium-data";
@@ -24,7 +24,7 @@ const LAZY_DATA_KEYS = [
   "versionDiffs",
 ] as const satisfies readonly CompendiumDataKey[];
 
-type RelicLibraryLoaderProps = Omit<ComponentProps<typeof RelicLibrary>, "changes" | "versionDiffs" | "entities" | "relatedCards" | "relatedEvents" | "relatedEnchantments" | "relatedPowers" | "relatedMonsters" | "relatedPotions" | "tipCatalogSources" | "detailsReady"> & {
+type RelicLibraryLoaderProps = Omit<ComponentProps<typeof RelicLibrary>, "changes" | "versionDiffs" | "entities" | "relatedCards" | "relatedEvents" | "relatedEnchantments" | "relatedPowers" | "relatedMonsters" | "relatedPotions" | "tipCatalogSources" | "detailsStatus"> & {
   gameLocale: GameLocale;
   /** The events the detail modal links to, so it names them when the events chunk fails. */
   linkedEvents: CodexEvent[];
@@ -41,9 +41,8 @@ type RelicLibraryLoaderProps = Omit<ComponentProps<typeof RelicLibrary>, "change
 /**
  * Renders RelicLibrary from its server props and fills in the rest once the
  * data chunks load. The detail modal waits for them, since its related lists,
- * keyword links, and history come from the chunks. If they fail, the modal
- * renders from the server props, with the linked cards, events, enchantments,
- * potions, and side tip rows in place of those chunks.
+ * keyword links, and history come from the chunks, and offers a retry if they
+ * fail. The tiles use the linked side tip rows until the chunks load.
  */
 export function RelicLibraryLoader({ gameLocale, linkedEvents, linkedCards, linkedEnchantments, linkedPotions, linkedTipSources, ...props }: RelicLibraryLoaderProps) {
   const { data, status: dataStatus } = useCompendiumDataState(gameLocale, LAZY_DATA_KEYS);
@@ -51,7 +50,7 @@ export function RelicLibraryLoader({ gameLocale, linkedEvents, linkedCards, link
   return (
     <RelicLibrary
       {...props}
-      detailsReady={compendiumDetailsSettled(dataStatus, entitiesStatus)}
+      detailsStatus={compendiumDetailsStatus(dataStatus, entitiesStatus)}
       changes={data?.changes}
       versionDiffs={data?.versionDiffs}
       entities={entities}

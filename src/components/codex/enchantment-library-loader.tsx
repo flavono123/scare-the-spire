@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 import { EnchantmentLibrary } from "./enchantment-library";
 import {
-  compendiumDetailsSettled,
+  compendiumDetailsStatus,
   useCompendiumDataState,
   useCompendiumEntitiesState,
 } from "./use-compendium-data";
@@ -22,7 +22,7 @@ const LAZY_DATA_KEYS = [
   "versionDiffs",
 ] as const satisfies readonly CompendiumDataKey[];
 
-type EnchantmentLibraryLoaderProps = Omit<ComponentProps<typeof EnchantmentLibrary>, "changes" | "versionDiffs" | "entities" | "cards" | "events" | "potions" | "powers" | "relics" | "monsters" | "tipCatalogSources" | "detailsReady"> & {
+type EnchantmentLibraryLoaderProps = Omit<ComponentProps<typeof EnchantmentLibrary>, "changes" | "versionDiffs" | "entities" | "cards" | "events" | "potions" | "powers" | "relics" | "monsters" | "tipCatalogSources" | "detailsStatus"> & {
   gameLocale: GameLocale;
 };
 
@@ -37,7 +37,7 @@ export function EnchantmentLibraryLoader({ gameLocale, ...props }: EnchantmentLi
   return (
     <EnchantmentLibrary
       {...props}
-      detailsReady={compendiumDetailsSettled(dataStatus, entitiesStatus)}
+      detailsStatus={compendiumDetailsStatus(dataStatus, entitiesStatus)}
       changes={data?.changes}
       versionDiffs={data?.versionDiffs}
       entities={entities}

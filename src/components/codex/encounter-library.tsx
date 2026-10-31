@@ -15,7 +15,6 @@ import {
 } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
-import { serviceMessages } from "@/messages/service";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -46,7 +45,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -54,6 +53,7 @@ import { EncounterDetail } from "./encounter-detail";
 import { VersionSelector } from "./version-selector";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import { GameCheckboxToggle } from "./game-checkbox";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 // Room type display order and styling
 const ROOM_TYPE_ORDER: EncounterRoomType[] = ["Monster", "Elite", "Boss"];
@@ -74,8 +74,8 @@ interface EncounterLibraryProps {
   onVersionChange?: (version: string) => void;
   title?: string;
   trailing?: React.ReactNode;
-  /** False while encounters are slim grid rows; the modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
 export function EncounterLibrary({
@@ -93,7 +93,7 @@ export function EncounterLibrary({
   onVersionChange,
   title,
   trailing,
-  detailsReady = true,
+  detailsStatus = "loaded",
 }: EncounterLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlEncounterId = useHydrationSafeSearchParam("encounter");
@@ -469,7 +469,7 @@ export function EncounterLibrary({
       {selectedEncounter && (
         <CompendiumDetailOverlay onClose={() => closeSelectedEncounter()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            {detailsReady ? (
+            {detailsStatus === "loaded" ? (
               <EncounterDetail
                 serviceLocale={serviceLocale}
                 gameUi={gameUi}
@@ -482,11 +482,11 @@ export function EncounterLibrary({
                 onClose={closeSelectedEncounter}
               />
             ) : (
-              <CompendiumDetailLoading
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedEncounter.name}
                 backToListTitle={serviceText.encountersView.backToList}
-                closeLabel={serviceText.common.close}
-                loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedEncounter}
               />
             )}
