@@ -198,3 +198,22 @@
 52. **조각모음에서 서류 폭풍 글 저장이 거부되면 쓰던 문서가 사라지고 미처리 rejection이 남**. 패널이 장애 안내로 바뀌고 세션 저장소에 초안이 없다. 같은 거부에서 `/pagestorm/write`는 편집기가 남는다. 23514로는 1 MiB 넘는 문서에서만 닿는다. 500과 네트워크 실패에서도 같을 것으로 보지만 재현하지는 않았다.
     - https://scare-the-spire.flavono123.workers.dev/defragment
     - 원인: `handlePagestormSubmit`의 catch가 `onUnavailable`을 부른 뒤 다시 던지고, `PagestormEditor`의 `handleSubmit`은 이를 받지 않는다.
+53. **조각모음에서 콤보 밖의 글은 overlay 본문이 1자일 때 이유를 알려 주지 않음**. 변형은 다시 시도하라는 안내가 뜨지만 다시 해도 성공하지 않고, 케미컬X·이거 아님 저거?·어려운 결정·이아저? 월드컵은 무반응, 서류 폭풍은 미처리 rejection이 남는다.
+    - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 원인: `src/components/defragment/defragment-write-panel.tsx`의 각 submit이 overlay를 검사하고 던지거나 false만 돌려준다.
+54. **콤보 작성창에서 본문 글자 위 휠과 터치 드래그로는 창이 스크롤되지 않음**. 저장 버튼 줄 위와 키보드로는 스크롤된다. 긴 글에서는 글자 영역이 화면 대부분을 차지한다.
+    - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+    - 원인 추정: 에디터를 감싼 `GameScrollArea`(`overflow-y-auto overscroll-contain`)가 내용만큼 늘어나 넘침이 없는데도 스크롤 전달을 막는다. Chromium에서만 확인했다.
+55. **키워드의 '새 탭에서 열기' 말풍선이 스크롤을 따라가지 않고 제자리에 남음**. 커서가 있던 키워드가 화면 밖으로 나가도 말풍선은 원래 좌표에서 다른 글자 위에 뜬다.
+    - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+56. **모달 뒤로가기 링크의 cmd 클릭이 새 탭을 열지 않고 모달을 닫음**. 가운데 클릭은 새 탭을 열고, 단독 상세 페이지의 뒤로가기는 cmd 클릭도 새 탭을 연다.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/relics
+    - 원인: 뒤로가기 `onClick`이 `onClose`가 있으면 수식 키를 보지 않고 `preventDefault` 한다(`src/components/codex/*-detail.tsx` 15곳, `src/components/sts1/detail-chrome.tsx`). 타일의 `onClick`은 수식 키를 확인한다.
+57. **슬더스1 유물·파워·포션 모달이 Esc로 닫히지 않음**. 카드 모달만 닫힌다.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/sts1/relics
+    - https://scare-the-spire.flavono123.workers.dev/compendium/sts1/powers
+    - https://scare-the-spire.flavono123.workers.dev/compendium/sts1/potions
+    - 원인: Escape 처리기가 `src/components/sts1/card-library.tsx`에만 있다.
+58. **/ja 카드 모달의 링크가 영어 목록으로 보냄**. 첫 카드 타격 모달의 '병사의 스튜' 링크가 `/en/compendium/potions?potion=soldiers_stew`이고, 누르면 포션 모달이 영어로 열린다. 다른 게임 전용 언어는 재지 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/ja/compendium/cards
+    - 원인 추정: `src/components/codex/entity-reference-links.tsx`의 `toPreviewEntity`가 `localizeHref`만 써서 게임 언어를 받지 않는다.
