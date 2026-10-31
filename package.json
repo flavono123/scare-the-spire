@@ -76,7 +76,7 @@
   },
   "dependencies": {
     "@esotericsoftware/spine-player": "4.2.115",
-    "@supabase/supabase-js": "^2.98.0",
+    "@supabase/supabase-js": "^2.118.0",
     "@tiptap/core": "^3.32.2",
     "@tiptap/extension-bubble-menu": "^3.32.2",
     "@tiptap/extension-character-count": "^3.32.2",
