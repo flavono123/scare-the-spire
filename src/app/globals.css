@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import "./shadcn-tailwind.css";
 
 /* Agent notes and docs are not site markup. Keep them out of automatic source
    detection: every detected directory becomes a webpack context dependency of

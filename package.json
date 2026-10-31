@@ -116,7 +116,6 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "eslint-plugin-storybook": "^10.5.10",
-    "shadcn": "^3.8.5",
     "storybook": "^10.5.10",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
