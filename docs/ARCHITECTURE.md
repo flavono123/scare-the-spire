@@ -38,6 +38,11 @@ data/sts2-patch-notes/*.md
   not-found 페이지를 404로 돌려준다(`workers/next-routing-parity.ts`).
 - `workers/patch-worker.ts`: `pnpm patch:build` 결과물을 서빙하는
   asset-first Worker. 런타임에서 patch markdown을 렌더링하지 않는다.
+- `workers/security-headers.ts`: 두 Worker가 함께 쓰는 보안 헤더 정책. Worker가
+  만든 응답은 `withSecurityHeaders`가, asset 응답(직접 요청과 `env.ASSETS.fetch`
+  모두)은 `public/_headers`의 `/*` 규칙이 덮는다. patch build가 같은 규칙을
+  `.patch-worker/assets/_headers`로 복사하고, `pnpm test:security-headers`가
+  둘이 어긋나면 빌드를 막는다. CSP는 아직 Report-Only다.
 - 현재 `/patches*`와 `/_patches*`는 main Worker의 `PATCH_WORKER`
   service binding을 통해 patch Worker로 전달된다.
 - 커스텀 도메인 도입 후 목표는 `/patches*`와 `/_patches/*`를 patch
