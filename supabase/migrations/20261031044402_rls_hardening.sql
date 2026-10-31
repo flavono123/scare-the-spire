@@ -439,10 +439,13 @@ $$;
 
 -- 8. Payload caps. They bound abuse, not normal use: the largest stored values
 -- on 2026-10-31 were 34 KB for a Pagestorm doc, 11 KB for a play, 9 KB for a
--- pool, 6 KB for decisions placements, 3 KB for extra_ids, and 84 KB for the
--- longest sampled run. A CHECK re-runs on every UPDATE, including each counter
--- change, so these read the stored size. pg_column_size and text octet_length
--- never detoast; octet_length(col::text) would serialize the document per like.
+-- pool, 6 KB for decisions placements, 3 KB for extra_ids, 84 KB for the longest
+-- sampled run, 174 bytes for combo content_text, and 58 bytes for a key column.
+-- A CHECK re-runs on every UPDATE, including each counter change, so these read
+-- the stored size. pg_column_size and text octet_length never detoast;
+-- octet_length(col::text) would serialize the document per like. The title, name,
+-- and cost checks from earlier migrations measure btrim(col), so spaces around a
+-- value pass them; the key caps below bound the stored bytes.
 do $$
 declare
   spec record;
@@ -451,7 +454,7 @@ begin
     select *
     from (values
       ('combo_posts', 'combo_posts_content_size_check',
-        'pg_column_size(content) <= 1048576 and pg_column_size(resources) <= 131072'),
+        'pg_column_size(content) <= 1048576 and pg_column_size(resources) <= 131072 and octet_length(content_text) <= 65536'),
       ('chemical_posts', 'chemical_posts_content_size_check',
         'pg_column_size(content) <= 1048576'),
       ('defragment_posts', 'defragment_posts_content_size_check',
@@ -481,7 +484,19 @@ begin
       ('runs', 'runs_meta_size_check',
         'pg_column_size(note_blocks) <= 1048576 and pg_column_size(cover_spec) <= 1048576 and pg_column_size(badges) <= 131072 and pg_column_size(highlight_card) <= 131072 and pg_column_size(highlight_relic) <= 131072'),
       ('resource_reactions', 'resource_reactions_key_length_check',
-        'char_length(resource_type) <= 32 and char_length(resource_id) <= 128 and char_length(game_version) <= 32')
+        'char_length(resource_type) <= 32 and char_length(resource_id) <= 128 and char_length(game_version) <= 32'),
+      ('likes', 'likes_key_size_check',
+        'octet_length(story_id) <= 1024'),
+      ('comments', 'comments_key_size_check',
+        'octet_length(story_id) <= 1024'),
+      ('community_stories', 'community_stories_key_size_check',
+        'octet_length(entity_type) <= 1024 and octet_length(entity_id) <= 1024 and octet_length(change_id) <= 1024 and octet_length(patch_line_id) <= 1024 and octet_length(source) <= 1024 and octet_length(static_story_id) <= 1024'),
+      ('this_or_that_posts', 'this_or_that_posts_key_size_check',
+        'octet_length(left_type) <= 1024 and octet_length(left_id) <= 1024 and octet_length(right_type) <= 1024 and octet_length(right_id) <= 1024'),
+      ('transfigure_posts', 'transfigure_posts_key_size_check',
+        'octet_length(title) <= 1024 and octet_length(transformed_name) <= 1024 and octet_length(transformed_cost) <= 1024 and octet_length(transformed_star_cost) <= 1024 and octet_length(transformed_upgrade_cost) <= 1024 and octet_length(transformed_upgrade_star_cost) <= 1024 and pg_column_size(card_top_keywords) <= 1024 and pg_column_size(card_bottom_keywords) <= 1024 and pg_column_size(upgraded_card_top_keywords) <= 1024 and pg_column_size(upgraded_card_bottom_keywords) <= 1024'),
+      ('runs', 'runs_key_size_check',
+        'octet_length(id) <= 1024 and octet_length(seed) <= 1024 and octet_length(build) <= 1024 and octet_length("character") <= 1024 and octet_length(donor_nickname) <= 1024')
     ) as v(tbl, con, expr)
   loop
     if not exists (
