@@ -411,7 +411,7 @@ function EntityPotionHoverPreview({
             <span style={{ color: getCharacterColor(potion.pool) }}>
               {potion.pool === "event"
                 ? gameUi?.eventsTitle ?? "이벤트"
-                : gameUi?.characterNames[potion.pool as Exclude<RelicFilterPool, "shared">] ?? POOL_LABELS[potion.pool as RelicFilterPool]}
+                : gameUi?.characterNames?.[potion.pool as Exclude<RelicFilterPool, "shared">] ?? POOL_LABELS[potion.pool as RelicFilterPool]}
             </span>
           )}
         </span>
