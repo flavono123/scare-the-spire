@@ -15,7 +15,7 @@
 
 | 파일 | Rollout | Order | 적용 | 확인 |
 |---|---|---|---|---|
-| `20261031044402_rls_hardening.sql` | db-first-additive | before-push | 미적용, `db push` 승인 대기(사전 조회 2026-11-02 BLOCK 0건, 이력 일치) | 적용 전 사전 조회, 적용 뒤 검증 SQL·`db dump`·testbed(development 데이터)와 운영 화면(`security-hardening`의 DB 묶음) |
+| `20261031044402_rls_hardening.sql` | db-first-additive | before-push | 적용 2026-11-02 13:22 KST(약 3초, 사전 조회 BLOCK 0건, Docker가 없어 `db dump` 대신 카탈로그 조회) | 적용 전 사전 조회, 적용 뒤 검증 SQL·`db dump`·testbed(development 데이터)와 운영 화면(`security-hardening`의 DB 묶음) |
 
 ## 긴급 배포로 QA 없이 나간 범위
 
