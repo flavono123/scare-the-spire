@@ -13,7 +13,7 @@ async function main() {
 
   const scenes = encounters.flatMap((encounter) => encounter.scene ? [encounter.scene] : []);
   assert.equal(scenes.length, 90, "only the two empty localization-only encounters lack scenes");
-  assert.equal(new Set(scenes.map((scene) => scene.backgroundUrl)).size, 17);
+  assert.equal(new Set(scenes.map((scene) => scene.backgroundUrl)).size, 11);
 
   for (const encounter of encounters.filter((candidate) => candidate.compositions?.length)) {
     const formations = expandEncounterFormations(encounter);

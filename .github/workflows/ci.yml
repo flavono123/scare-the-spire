@@ -41,6 +41,10 @@ jobs:
 
       - run: npx tsx scripts/link-preview.spec.ts
 
+      - run: npx tsx scripts/worker-routing.spec.ts
+
+      - run: npx tsx scripts/encounter-compositions.spec.ts
+
       - run: pnpm lint
 
       - name: Free runner disk space for the static build
