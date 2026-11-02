@@ -29,6 +29,7 @@ export type CodexGameUiLabels = {
   potionLabTitle: string;
   bestiaryTitle: string;
   eventsTitle: string;
+  futureOfPotionsTitle: string;
   ancientsTitle: string;
   epochsTitle: string;
   nav: {
@@ -206,6 +207,7 @@ export async function getCodexGameUiLabels(
   gameLocale: GameLocale,
 ): Promise<CodexGameUiLabels> {
   const [
+    events,
     mainMenu,
     gameplay,
     cardLibrary,
@@ -218,6 +220,7 @@ export async function getCodexGameUiLabels(
     statsScreen,
     intents,
   ] = await Promise.all([
+    readGameLocalizationTable(gameLocale, "events"),
     readGameLocalizationTable(gameLocale, "main_menu_ui"),
     readGameLocalizationTable(gameLocale, "gameplay_ui"),
     readGameLocalizationTable(gameLocale, "card_library"),
@@ -352,6 +355,7 @@ export async function getCodexGameUiLabels(
     potionLabTitle: gameText(mainMenu, "COMPENDIUM_POTION_LAB.title", "포션 연구실"),
     bestiaryTitle: gameText(mainMenu, "COMPENDIUM_BESTIARY.title", "몬스터 도감"),
     eventsTitle,
+    futureOfPotionsTitle: gameText(events, "THE_FUTURE_OF_POTIONS.title", "포션의 미래?"),
     ancientsTitle,
     epochsTitle,
     nav: {

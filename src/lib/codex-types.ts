@@ -623,6 +623,13 @@ export interface CodexEvent extends CodexLifecycle {
   options: EventOption[] | null;
   pages: EventPage[] | null;
   imageUrl: string | null; // local path to event art
+  /** The Future of Potions on non-Korean locales: one option per potion rarity and card type. */
+  futurePotionOptions?: LocalizedFuturePotionOption[];
+}
+
+export interface LocalizedFuturePotionOption extends EventOption {
+  /** Game rarity word that stands in for {Potion} where no single potion is known. */
+  potionLabel: string;
 }
 
 // Dialogue line from an ancient encounter
