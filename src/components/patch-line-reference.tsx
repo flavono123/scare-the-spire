@@ -10,9 +10,10 @@ import { EngagementSpinner } from "@/components/engagement-spinner";
 import { RichText } from "@/components/rich-text";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { PatchArtThumbnail } from "@/components/patches/patch-art";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { useGameLocaleForService } from "@/hooks/use-game-locale";
+import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { patchLineHref } from "@/lib/patch-line-links";
-import { patchLineRichText } from "@/lib/patch-line-display";
+import { patchLineRichText, patchLineSectionPath } from "@/lib/patch-line-display";
 import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { STS2Patch, STS2PatchLine } from "@/lib/types";
@@ -90,6 +91,7 @@ export function PatchLineReferenceText({
 export function PatchLineReferenceBlock({
   patchLine,
   serviceLocale,
+  gameLocale,
   patches,
   entities,
   artOverride,
@@ -101,6 +103,7 @@ export function PatchLineReferenceBlock({
 }: {
   patchLine: STS2PatchLine;
   serviceLocale: ServiceLocale;
+  gameLocale?: GameLocale;
   patches?: STS2Patch[];
   entities?: EntityInfo[];
   artOverride?: ResolvedPatchArt;
@@ -110,6 +113,7 @@ export function PatchLineReferenceBlock({
   className?: string;
   trailingAction?: ReactNode;
 }) {
+  const pageGameLocale = useGameLocaleForService(serviceLocale);
   const patch = findPatch(patches, patchLine);
   const art = useMemo(() => {
     if (artOverride) return artOverride;
@@ -119,7 +123,10 @@ export function PatchLineReferenceBlock({
   }, [artOverride, entities, patch, serviceLocale]);
   const versionLabel = patch ? getPatchVersionLabel(patch, serviceLocale) : patchLine.patch;
   const title = patch ? (serviceLocale === "ko" ? patch.titleKo : patch.title) : null;
-  const href = clickable ? localizeHref(patchLineHref(patchLine), serviceLocale) : null;
+  const href = clickable
+    ? localizeHrefWithGameLocale(patchLineHref(patchLine), serviceLocale, gameLocale ?? pageGameLocale)
+    : null;
+  const section = patchLineSectionPath(patchLine, serviceLocale);
   const header = (
     <div className="flex min-w-0 items-start gap-2.5">
       <PatchArtThumbnail
@@ -142,12 +149,12 @@ export function PatchLineReferenceBlock({
             </span>
           )}
         </p>
-        {patchLine.section.length > 0 && (
+        {section.length > 0 && (
           <p className={cn(
             "mt-0.5 text-[11px]",
             emphasized ? "text-muted-foreground" : "text-muted-foreground/75",
           )}>
-            {patchLine.section.join(" / ")}
+            {section.join(" / ")}
           </p>
         )}
       </div>

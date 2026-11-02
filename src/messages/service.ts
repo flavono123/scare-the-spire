@@ -238,6 +238,10 @@ export const serviceMessages = {
         loading: "참조한 변경 항목을 불러오는 중...",
         unavailable: "참조한 변경 항목을 찾지 못했습니다",
         failed: "참조한 변경 항목을 불러오지 못했습니다",
+        related: "관련 항목",
+        relatedByType: { card: "관련 카드", relic: "관련 유물", potion: "관련 포션" },
+        removed: "삭제됨",
+        linkedLabels: { 대체: "대체", 생성: "생성", 삭제: "삭제" } as Record<string, string>,
       },
       composer: {
         success: "이야기를 작성했습니다",
@@ -1683,6 +1687,10 @@ export const serviceMessages = {
         loading: "Loading the referenced patch change...",
         unavailable: "Referenced patch change not found",
         failed: "Could not load the referenced patch change",
+        related: "Related",
+        relatedByType: { card: "Related card", relic: "Related relic", potion: "Related potion" },
+        removed: "Removed",
+        linkedLabels: { 대체: "Replaced", 생성: "Created", 삭제: "Removed" } as Record<string, string>,
       },
       composer: {
         success: "Story published",

@@ -332,6 +332,7 @@ async function main() {
         version: normalizeVersion(patch.version),
         date: patch.date,
         section: koLine.section,
+        sectionEn: enLine && enLine.section.length > 0 ? enLine.section : undefined,
         markdownKo: withDetails(koLine, "markdown"),
         markdownEn: enLine ? withDetails(enLine, "markdown") : undefined,
         summaryMarkdownKo: koLine.details.length > 0 ? koLine.markdown : undefined,

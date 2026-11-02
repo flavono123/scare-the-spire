@@ -190,6 +190,7 @@ export interface STS2PatchLine {
   version: string;
   date: string;
   section: string[];
+  sectionEn?: string[];
   markdownKo: string;
   markdownEn?: string;
   summaryMarkdownKo?: string;
