@@ -1101,7 +1101,16 @@
     return tokens[codex[0]] || "/images/sts2/relics/the_courier.webp";
   }
 
+  // Static pages know their locale from the path: "/ja/patches/..." -> "/ja".
+  function localePrefix() {
+    return window.location.pathname.match(/^\/[^/]+(?=\/patches(?:\/|$))/)?.[0] ?? "";
+  }
+
   function courierHref(storyId, commentId) {
+    return `${localePrefix()}${courierPath(storyId, commentId)}`;
+  }
+
+  function courierPath(storyId, commentId) {
     const anchor = `#history-comment-${commentId}`;
     if (storyId.startsWith("sts2-patch:")) return `/patches/${storyId.slice("sts2-patch:".length)}${anchor}`;
     if (storyId.startsWith("neowsletter:")) {
@@ -1346,6 +1355,20 @@
     });
   }
 
+  // Stored names are Korean and English; other locales use the baked game names.
+  function reelPostName(post) {
+    if (serviceLocale() === "ko") return post.name_ko || "";
+    return reelGameNames()[`${post.resource_type}:${post.resource_id}`] || post.name_en || post.name_ko || "";
+  }
+
+  function reelGameNames() {
+    try {
+      return JSON.parse(document.getElementById("sts-cp-game-names")?.textContent || "{}");
+    } catch {
+      return {};
+    }
+  }
+
   function buildFallbackReelCard(template, stack, post) {
     const card = template.cloneNode(true);
     card.setAttribute("data-cp-id", post.id);
@@ -1354,8 +1377,8 @@
     if (art) {
       const image = post.image_url || "/images/sts2/modifiers/draft.webp";
       const detailPath = COMPENDIUM_DETAIL_PATHS[post.resource_type];
-      const imageHtml = `<img src="${escapeHtml(image)}" alt="${escapeHtml(post.name_ko || "")}" width="72" height="72" class="object-contain" />`;
-      const prefix = serviceLocale() === "en" ? "/en" : "";
+      const imageHtml = `<img src="${escapeHtml(image)}" alt="${escapeHtml(reelPostName(post))}" width="72" height="72" class="object-contain" />`;
+      const prefix = localePrefix();
       art.innerHTML = detailPath
         ? `<a href="${prefix}${detailPath}/${encodeURIComponent(String(post.resource_id).toLowerCase())}" class="block shrink-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70">${imageHtml}</a>`
         : imageHtml;
@@ -1366,7 +1389,7 @@
     };
     setText("[data-cp-week]", reelWeekLabel(stack, post.week_start));
     setText("[data-cp-dates]", `${post.week_start.slice(5)} – ${addDays(post.week_start, 6).slice(5)}`);
-    setText("[data-cp-name]", post.name_ko || "");
+    setText("[data-cp-name]", reelPostName(post));
     setText("[data-cp-body]", post.body || "");
     card.querySelectorAll("[data-cp-reaction]").forEach((button) => {
       delete button.dataset.cpBound;
@@ -1392,7 +1415,7 @@
     const currentWeek = kstWeekStart();
     const rows = await restRequest(
       config,
-      `colorful_philosopher_posts?select=id,week_start,slot,resource_type,resource_id,name_ko,image_url,body,game_version&env=eq.${config.supabaseEnv}&week_start=lte.${currentWeek}&order=week_start.desc&limit=12`,
+      `colorful_philosopher_posts?select=id,week_start,slot,resource_type,resource_id,name_ko,name_en,image_url,body,game_version&env=eq.${config.supabaseEnv}&week_start=lte.${currentWeek}&order=week_start.desc&limit=12`,
     );
     const posts = (Array.isArray(rows) ? rows : [])
       .filter((row) => row.id && row.week_start && row.resource_type && row.resource_id && row.game_version);
@@ -1475,7 +1498,7 @@
         if (!post.id || seen.has(post.id)) return;
         const card = template.cloneNode(true);
         card.setAttribute("data-transfigure-id", post.id);
-        card.setAttribute("data-href", `/transfigure/${post.id}`);
+        card.setAttribute("data-href", `${localePrefix()}/transfigure/${post.id}`);
         card.className = "absolute inset-0 w-full opacity-0 pointer-events-none";
         const title = card.querySelector("h3, h2, .font-semibold");
         if (title && post.title) title.textContent = post.title;

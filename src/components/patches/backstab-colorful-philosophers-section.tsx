@@ -136,6 +136,15 @@ export function BackstabColorfulPhilosophersSection({
   staticHoverPreviews?: boolean;
 }) {
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
+  // patch-comments-client.js swaps in later weeks on the static page, and the
+  // database has no game-only locale names to give it.
+  const gameNames = gameLocale === "kor" || gameLocale === "eng"
+    ? null
+    : Object.fromEntries(
+        Array.from(entityMap.values())
+          .filter((entity) => entity.type === "card" || entity.type === "relic")
+          .map((entity) => [`${entity.type}:${entity.id}`, entity.nameKo]),
+      );
   const indexHref = localizeHrefWithGameLocale(COLORFUL_PHILOSOPHERS_HREF, serviceLocale, gameLocale);
   const { userId, ensureUser } = useAuth();
   const stackRef = useRef<HTMLDivElement>(null);
@@ -250,6 +259,13 @@ export function BackstabColorfulPhilosophersSection({
 
   return (
     <div className="mt-10">
+      {gameNames && (
+        <script
+          id="sts-cp-game-names"
+          type="application/json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(gameNames).replace(/</g, "\\u003c") }}
+        />
+      )}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Image src={COLORFUL_PHILOSOPHERS_TOKEN_SRC} alt="" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
@@ -316,7 +332,9 @@ export function BackstabColorfulPhilosophersSection({
                         {copy.weekNumber.replace("{week}", String(colorfulPhilosophersWeekNumber(post.weekStart)))}
                       </span>
                       <span data-cp-dates="" className="block text-xs text-zinc-500">{`${post.weekStart.slice(5)} – ${weekEnd.slice(5)}`}</span>
-                      <span data-cp-name="" className="block truncate font-service text-lg font-semibold text-primary">{post.nameKo}</span>
+                      <span data-cp-name="" className="block truncate font-service text-lg font-semibold text-primary">
+                        {entity?.nameKo ?? (serviceLocale === "ko" ? post.nameKo : post.nameEn || post.nameKo)}
+                      </span>
                       <span data-cp-body="" className="mt-1 line-clamp-3 block text-sm text-zinc-300">{post.body}</span>
                     </span>
                   </div>

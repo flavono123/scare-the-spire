@@ -7,13 +7,14 @@ import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { ToyBoxIndexHeading } from "@/components/toybox-index-heading";
 import { ColorfulPhilosopherIndexEngagement } from "@/components/colorful-philosophers/index-engagement";
-import { ColorfulPhilosopherSubjectArt } from "@/components/colorful-philosophers/subject-art";
+import { ColorfulPhilosopherSubjectArt, useColorfulPhilosopherName } from "@/components/colorful-philosophers/subject-art";
 import {
   useColorfulPhilosopherCommentCounts,
   useColorfulPhilosopherWeek,
 } from "@/hooks/use-colorful-philosopher-posts";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { localizeHrefWithGameLocale, type ServiceLocale } from "@/lib/i18n";
 import {
   COLORFUL_PHILOSOPHER_LEGACY_SLOTS,
   COLORFUL_PHILOSOPHER_SLOTS,
@@ -36,6 +37,7 @@ export function ColorfulPhilosophersIndex({
   hero: string;
 }) {
   const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
   const { posts, loading, unavailable, missing } = useColorfulPhilosopherWeek();
   const currentWeek = colorfulPhilosophersWeekStart();
@@ -118,8 +120,9 @@ function WeekPostCard({
   commentCount: number;
 }) {
   const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
   const router = useRouter();
-  const href = localizeHref(`${COLORFUL_PHILOSOPHERS_HREF}/${post.id}`, serviceLocale);
+  const href = localizeHrefWithGameLocale(`${COLORFUL_PHILOSOPHERS_HREF}/${post.id}`, serviceLocale, gameLocale);
   const openPost = () => router.push(href);
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
@@ -164,12 +167,14 @@ export function WeekPostCardContent({
   serviceLocale: ServiceLocale;
   children?: ReactNode;
 }) {
+  const gameLocale = useGameLocale();
+  const displayName = useColorfulPhilosopherName(post, serviceLocale);
   return (
     <div className="flex items-center gap-4">
-      <ColorfulPhilosopherSubjectArt post={post} serviceLocale={serviceLocale} width={96} />
+      <ColorfulPhilosopherSubjectArt post={post} serviceLocale={serviceLocale} gameLocale={gameLocale} width={96} />
       <span className="min-w-0 flex-1">
         <span className="block font-service text-xs text-zinc-500">{slotLabel}</span>
-        <span className="block truncate font-service text-lg font-semibold text-primary">{post.nameKo}</span>
+        <span className="block truncate font-service text-lg font-semibold text-primary">{displayName}</span>
         <span className="mt-1 line-clamp-2 block text-sm text-zinc-300">{post.body}</span>
       </span>
       {children}

@@ -33,7 +33,7 @@ import {
   buildHistoryCourseCommentThreadKey,
   commentThreadHref,
 } from "@/lib/comment-threads";
-import { localizeHref, type GameLocale } from "@/lib/i18n";
+import { localizeHrefWithGameLocale, type GameLocale } from "@/lib/i18n";
 import {
   type DonatedRunSummary,
   deleteDonatedRun,
@@ -496,9 +496,10 @@ export function HistoryCourseRunIndex({
                     userId={userId}
                     authReady={authReady}
                     ensureUser={ensureUser}
-                    commentsHref={localizeHref(
+                    commentsHref={localizeHrefWithGameLocale(
                       commentThreadHref(buildHistoryCourseCommentThreadKey(item.runId)),
                       serviceLocale,
+                      gameLocale,
                     )}
                     isOwner={isOwner}
                     ownedLocally
@@ -532,9 +533,10 @@ export function HistoryCourseRunIndex({
                     userId={userId}
                     authReady={authReady}
                     ensureUser={ensureUser}
-                    commentsHref={localizeHref(
+                    commentsHref={localizeHrefWithGameLocale(
                       commentThreadHref(buildHistoryCourseCommentThreadKey(donated.id)),
                       serviceLocale,
+                      gameLocale,
                     )}
                     isOwner={isOwner}
                     ownedLocally={false}

@@ -9,7 +9,8 @@ import { IndexCardEngagement } from "@/components/index-card-engagement";
 import { OwnPostMark } from "@/components/own-post-mark";
 import { PostRenderer } from "./post-renderer";
 import { buildChemicalXCommentThreadKey } from "@/lib/comment-threads";
-import { localizeHref } from "@/lib/i18n";
+import { localizeHrefWithGameLocale } from "@/lib/i18n";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { PostCreatedAt } from "@/components/post-created-at";
@@ -39,10 +40,11 @@ export function PostCard({
   likeCount = 0,
 }: PostCardProps) {
   const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const dateLocale = serviceDateLocale(serviceLocale);
   const router = useRouter();
-  const href = localizeHref(`/chemical-x/${post.id}`, serviceLocale);
+  const href = localizeHrefWithGameLocale(`/chemical-x/${post.id}`, serviceLocale, gameLocale);
   const commentsHref = `${href}#comments`;
   const threadKey = buildChemicalXCommentThreadKey(post.id);
   const openPost = useCallback(() => {

@@ -5,6 +5,7 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { commentThreadHref } from "@/lib/comment-threads";
 import { COLORFUL_PHILOSOPHERS_TOKEN_SRC } from "@/lib/colorful-philosophers";
@@ -17,7 +18,7 @@ import {
 import { DECISIONS_DECISIONS_TOKEN_SRC } from "@/lib/decisions-decisions";
 import { DEFRAGMENT_TOKEN_SRC } from "@/lib/defragment";
 import { FAVORITE_TOURNAMENT_TOKEN_SRC } from "@/lib/favorite-tournament";
-import { localizeHref } from "@/lib/i18n";
+import { getServiceLocaleForGameLocale, localizeHrefWithGameLocale, type GameLocale } from "@/lib/i18n";
 import { PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { serviceMessages } from "@/messages/service";
@@ -150,10 +151,11 @@ function commentHref(storyId: string, commentId: string): string {
   return `${base.replace(/#comments$/, "")}#history-comment-${commentId}`;
 }
 
-function loadCourierSession(serviceLocale: "ko" | "en"): Promise<CourierItem[]> {
-  if (sessionItems && sessionLocale === serviceLocale) return Promise.resolve(sessionItems);
-  if (sessionLoad && sessionLocale === serviceLocale) return sessionLoad;
-  sessionLocale = serviceLocale;
+function loadCourierSession(gameLocale: GameLocale): Promise<CourierItem[]> {
+  if (sessionItems && sessionLocale === gameLocale) return Promise.resolve(sessionItems);
+  if (sessionLoad && sessionLocale === gameLocale) return sessionLoad;
+  sessionLocale = gameLocale;
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const since = new Date(Date.now() - WINDOW_MS).toISOString();
   const pending = (async (): Promise<CourierItem[]> => {
     try {
@@ -175,7 +177,7 @@ function loadCourierSession(serviceLocale: "ko" | "en"): Promise<CourierItem[]> 
           text,
           source: described.source,
           token: described.token,
-          href: localizeHref(commentHref(storyId, id), serviceLocale),
+          href: localizeHrefWithGameLocale(commentHref(storyId, id), serviceLocale, gameLocale),
         }];
       });
       sessionItems = next;
@@ -220,6 +222,7 @@ function CourierSkeleton() {
 
 export function CommentCourier() {
   const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
   const pathname = usePathname() ?? "";
   const copy = serviceMessages[serviceLocale].profile.courier;
   const preference = useSyncExternalStore(
@@ -236,9 +239,9 @@ export function CommentCourier() {
   const enabled = preference === "on";
   const held = isHistoryCourseDetailPath(pathname) && holdFlag !== "0";
   const [openedDuringHold, setOpenedDuringHold] = useState(false);
-  const [loaded, setLoaded] = useState(() => sessionItems != null && sessionLocale === serviceLocale);
+  const [loaded, setLoaded] = useState(() => sessionItems != null && sessionLocale === gameLocale);
   const [items, setItems] = useState<CourierItem[]>(() => (
-    sessionLocale === serviceLocale ? sessionItems ?? [] : []
+    sessionLocale === gameLocale ? sessionItems ?? [] : []
   ));
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -246,7 +249,7 @@ export function CommentCourier() {
   useEffect(() => {
     if (!known || !enabled || !supabaseEnabled) return;
     let cancelled = false;
-    loadCourierSession(serviceLocale).then((next) => {
+    loadCourierSession(gameLocale).then((next) => {
       if (cancelled) return;
       setItems(next);
       setLoaded(true);
@@ -254,7 +257,7 @@ export function CommentCourier() {
     return () => {
       cancelled = true;
     };
-  }, [known, enabled, serviceLocale]);
+  }, [known, enabled, gameLocale]);
 
   useEffect(() => {
     if (!enabled || paused || items.length < 2) return;

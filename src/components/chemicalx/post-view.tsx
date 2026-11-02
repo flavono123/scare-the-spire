@@ -11,9 +11,10 @@ import { CommentSection } from "@/components/comment-section";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
-import { localizeHref } from "@/lib/i18n";
+import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { PostRenderer, buildEntityMap } from "./post-renderer";
@@ -38,6 +39,7 @@ function getTextClass(len: number): string {
 
 export function ChemicalXPostView({ postId, entities, variant = "page" }: PostViewProps) {
   const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const siteDisplayOrigin = getSiteDisplayOrigin();
   const dateLocale = serviceDateLocale(serviceLocale);
@@ -83,8 +85,8 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
         .eq("env", supabaseEnv),
     ).catch(() => ({ error: new Error("timeout") }));
     if (error) return;
-    router.replace(localizeHref("/chemical-x", serviceLocale));
-  }, [post, postId, router, serviceLocale, userId]);
+    router.replace(localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale));
+  }, [gameLocale, post, postId, router, serviceLocale, userId]);
 
   if (loading) {
     return (
@@ -108,7 +110,7 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
       <div className="text-center py-12">
         <p className="text-gray-500 text-sm mb-4">{copy.notFound}</p>
         {!embed && (
-          <Link href={localizeHref("/chemical-x", serviceLocale)} className="text-primary text-sm hover:underline">
+          <Link href={localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale)} className="text-primary text-sm hover:underline">
             {copy.backToChemicalX}
           </Link>
         )}
@@ -123,7 +125,7 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
       {!embed && (
       <div className="flex items-center justify-between">
         <Link
-          href={localizeHref("/chemical-x", serviceLocale)}
+          href={localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale)}
           className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-primary transition-colors"
         >
           <ArrowLeft size={16} />

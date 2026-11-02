@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useComments } from "@/hooks/use-comments";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   COLORFUL_PHILOSOPHERS_HREF,
@@ -15,7 +16,7 @@ import {
   colorfulPhilosophersWeekNumber,
   type ColorfulPhilosopherPost,
 } from "@/lib/colorful-philosophers";
-import { localizeHref } from "@/lib/i18n";
+import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { serviceMessages } from "@/messages/service";
@@ -52,6 +53,7 @@ export function ColorfulPhilosopherResourceThread({
   resourceId: string;
 }) {
   const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
   const [posts, setPosts] = useState<ColorfulPhilosopherPost[]>([]);
 
@@ -82,7 +84,7 @@ export function ColorfulPhilosopherResourceThread({
   return (
     <div className="space-y-3">
       {posts.map((post) => {
-        const href = localizeHref(`${COLORFUL_PHILOSOPHERS_HREF}/${post.id}`, serviceLocale);
+        const href = localizeHrefWithGameLocale(`${COLORFUL_PHILOSOPHERS_HREF}/${post.id}`, serviceLocale, gameLocale);
         const weekEnd = addColorfulPhilosophersDays(post.weekStart, 6);
         return (
           <article key={post.id} className="space-y-1 rounded-lg border border-white/10 px-3 py-2">
