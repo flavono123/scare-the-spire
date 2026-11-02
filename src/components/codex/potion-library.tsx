@@ -35,7 +35,6 @@ import {
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
-import { serviceMessages } from "@/messages/service";
 import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
@@ -60,7 +59,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -76,6 +75,7 @@ import {
   getFuturePotionOutcomeIdsForPotion,
   type FuturePotionOutcomeId,
 } from "@/lib/codex-references";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 type PotionSectionKey = keyof CodexGameUiLabels["potionLab"]["sections"];
 type PotionSortKey = "pool" | "rarity" | "future";
@@ -134,8 +134,8 @@ interface PotionLibraryProps {
   relatedPowers?: CodexPower[];
   relatedMonsters?: CodexMonster[];
   tipCatalogSources?: CardSideTipCatalogSources;
-  /** False until the data chunks settle; the detail modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
 export function PotionLibrary({
@@ -155,7 +155,7 @@ export function PotionLibrary({
   relatedPowers = [],
   relatedMonsters = [],
   tipCatalogSources,
-  detailsReady = true,
+  detailsStatus = "loaded",
 }: PotionLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlPotionId = useHydrationSafeSearchParam("potion");
@@ -525,7 +525,7 @@ export function PotionLibrary({
       {selectedPotion && (
         <CompendiumDetailOverlay onClose={() => closeSelectedPotion()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            {detailsReady ? (
+            {detailsStatus === "loaded" ? (
               <PotionDetail
                 serviceLocale={serviceLocale}
                 gameUi={gameUi}
@@ -545,11 +545,11 @@ export function PotionLibrary({
                 onClose={closeSelectedPotion}
               />
             ) : (
-              <CompendiumDetailLoading
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedPotion.name}
                 backToListTitle={title}
-                closeLabel={serviceText.common.close}
-                loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedPotion}
                 className="max-w-5xl"
               />
@@ -601,6 +601,7 @@ function PotionTile({
   return (
     <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
       <Link
+        prefetch={false}
         href={localizeHref(buildCompendiumResourceDetailHref("potion", potion.id), serviceLocale)}
         data-potion-tile={potion.id}
         className={`group flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16${lifecycleClassName} border-transparent bg-white/5 hover:bg-white/10 hover:z-10 hover:scale-110 hover:border-primary/60 hover:bg-primary/10`}

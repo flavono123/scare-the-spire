@@ -6,7 +6,7 @@ import { blocksToPlainText } from "@/lib/chemical-utils";
 import type { CardColor, CardRarityKo, CardTypeKo } from "@/lib/codex-types";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
 import type { GameLocale } from "@/lib/i18n";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { isCheckViolation, supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 import { currentAuthorProfileToken } from "@/lib/user-profile";
@@ -448,7 +448,7 @@ export function useTransfigurePosts(
         prependPost(post);
         return post;
       } catch (error) {
-        setUnavailable(true);
+        if (!isCheckViolation(error)) setUnavailable(true);
         throw error;
       }
     },
@@ -462,7 +462,7 @@ export function useTransfigurePosts(
         activeUserId: input.activeUserId ?? userId ?? undefined,
       });
       if (error) {
-        setUnavailable(true);
+        if (!isCheckViolation(error)) setUnavailable(true);
         throw new Error(error.message);
       }
       if (!data) return null;
@@ -557,7 +557,7 @@ export function useTransfigurePost(
         activeUserId: input.activeUserId ?? userId ?? undefined,
       });
       if (error) {
-        setUnavailable(true);
+        if (!isCheckViolation(error)) setUnavailable(true);
         throw new Error(error.message);
       }
       if (!data) return null;

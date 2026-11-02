@@ -38,7 +38,6 @@ import {
 } from "@/lib/codex-search";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
-import { serviceMessages } from "@/messages/service";
 import {
   FilterSection,
   IconFilterButton,
@@ -51,7 +50,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -71,6 +70,7 @@ import {
   getEpochUnlockRewardColor,
   getEpochUnlockRewardLabel,
 } from "./epoch-display";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 const AFFILIATION_ICONS: Partial<Record<EpochAffiliation, string>> = {
   ironclad: getCharacterTokenIcon("ironclad", "/images/sts2/characters/character_icon_ironclad.webp"),
@@ -107,8 +107,8 @@ interface EpochLibraryProps {
   currentVersion?: string;
   entities?: EntityInfo[];
   initialShowBeta?: boolean;
-  /** False until the data chunks settle; the detail modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
 function isBetaArtParamEnabled(value: string | null): boolean {
@@ -131,7 +131,7 @@ export function EpochLibrary({
   currentVersion,
   entities,
   initialShowBeta = false,
-  detailsReady = true,
+  detailsStatus = "loaded",
 }: EpochLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
@@ -507,7 +507,7 @@ export function EpochLibrary({
       {selectedEpoch && (
         <CompendiumDetailOverlay onClose={() => setSelectedEpoch(null)} aria-label={selectedEpoch.name}>
           <div className="mx-4 my-4 w-full max-w-[92rem]">
-            {detailsReady ? (
+            {detailsStatus === "loaded" ? (
               <EpochDetail
                 serviceLocale={serviceLocale}
                 gameUi={gameUi}
@@ -524,11 +524,11 @@ export function EpochLibrary({
                 onClose={() => setSelectedEpoch(null)}
               />
             ) : (
-              <CompendiumDetailLoading
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedEpoch.name}
                 backToListTitle={gameUi.epochsTitle}
-                closeLabel={serviceText.common.close}
-                loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={() => setSelectedEpoch(null)}
                 className="max-w-[92rem] p-3 sm:p-4"
               />
@@ -562,6 +562,7 @@ function EpochThumbnail({
 
   return (
     <Link
+      prefetch={false}
       href={localizeHref(buildCompendiumResourceDetailHref("epoch", epoch.id), serviceLocale)}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

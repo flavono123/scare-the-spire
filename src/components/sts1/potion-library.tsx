@@ -171,6 +171,7 @@ export function Sts1PotionLibrary({
                   {group.map((potion) => (
                     <Link
                       key={potion.slug}
+                      prefetch={false}
                       href={localizeHref(sts1DetailPath("potions", potion.slug), serviceLocale)}
                       className="group"
                       title={potion.name}

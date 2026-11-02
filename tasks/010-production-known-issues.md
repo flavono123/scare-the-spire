@@ -153,3 +153,72 @@
 38. **링크 미리보기 방어 보강**(묶음 3의 링크 미리보기 잔여 작업에서 처리).
     - https://scare-the-spire.flavono123.workers.dev/api/link-preview
     - 포트 제한 없음, 192.0.0.0/24·TEST-NET 3개·`.internal` 미차단, 요청 수 제한 없음. 악의적인 128 KB 페이지에서 `readOpenGraph`의 정규식 비용이 제곱으로 늘어남(3초 타이머는 본문 읽기까지만 막음).
+
+### 묶음 3 QA에서 추가 (2026-10-31)
+
+39. **유물 '엄청 뜨거운 코코아' 타일 호버 팁에 `[energy:4]`가 글자 그대로 보임**. 모달 본문은 정상. ko 유물 298개 중 이 1건만 확인(/en은 표본).
+    - https://scare-the-spire.flavono123.workers.dev/compendium/relics
+    - 원인 추정: 데이터가 `[blue][energy:4][/blue]`처럼 중첩인데 `src/lib/codex-card-description.ts`의 `parseDescription` 정규식이 `[blue]` 안을 다시 파싱하지 않는다(팁 경로는 끝까지 추적하지 않음).
+40. **키보드로 목록 모달을 열면 초점이 타일에 남아 모달 안 첫 초점까지 Tab 298회**. Esc는 동작.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/relics
+    - 원인 추정: 모달이 열릴 때 초점을 옮기지 않는다. 묶음 3의 '다시 시도' 버튼도 같은 이유로 키보드에서 멀다.
+41. **링크 미리보기가 U+10FFFF를 넘는 숫자 엔티티(`&#x110000;`) 하나로 페이지 전체 미리보기를 잃음**. 200 빈 미리보기라 표시 문제에 그침.
+    - https://scare-the-spire.flavono123.workers.dev/api/link-preview?url=https%3A%2F%2Fhttpbin.org%2Fbase64%2FPHRpdGxlPiYjeDExMDAwMDs8L3RpdGxlPg%3D%3D
+    - 원인: `src/lib/link-preview.ts`의 `decodeHtml`이 `String.fromCodePoint` 전에 범위를 보지 않는다.
+42. **Toy Box 피드와 이야기의 Realtime 구독을 서버가 거절함**. 구독 응답은 ok지만 곧이어 `Unable to subscribe to changes with given parameters` 시스템 오류가 온다. 다른 사람의 수정·삭제가 실시간으로 반영되지 않는다. 운영(realtime-js 2.98)과 testbed(2.118)가 같은 응답을 받고 안내는 뜨지 않는다.
+    - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+    - 원인 추정: 해당 표가 `supabase_realtime` publication에 없다(저장소 마이그레이션에는 `defragment_posts` 추가만 있음). live DB의 publication은 확인하지 못했다.
+43. **`scripts/encounter-compositions.spec.ts`의 기대값이 낡음**(고유 전투 배경 수 11, 기대 17, 16행). 화면 버그는 아니다. CI에 없어 드러나지 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/encounters
+    - 원인: `c946b7d3`이 바이트가 같은 배경을 한 파일로 합치면서 고유 배경이 17개에서 11개가 됐고(그림은 그대로) 스펙을 고치지 않았다. 기대값을 11로 바꾸면 나머지 단언은 통과한다.
+44. **'데이터베이스가 응답하지 않습니다' 안내에 재시도 수단이 없음**(사용자 제안: 페이지를 새로 고치는 버튼. 조회를 다시 보내는 방식이 아니라 새로 고침을 유도).
+    - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+45. **DB 쪽 남은 낮은 항목**(코드 읽기로 확인, 운영에서 동작을 재현하지는 않음). RLS 마이그레이션 범위 밖이다.
+    - https://scare-the-spire.flavono123.workers.dev/this-or-that/tournament
+    - `complete_favorite_tournament_play`가 플레이마다 후보 통계 행을 전부 UPDATE한다(순위가 그대로여도 씀).
+    - `transfigure_posts_extra_variants_shape` CHECK가 `octet_length(extra_variants::text)`라 좋아요마다 직렬화한다.
+    - `comments.parent_id`·`meta`는 앱이 쓰지 않는데 클라이언트가 쓸 수 있다. `parent_id`는 다른 스레드의 댓글도 가리킬 수 있다.
+    - likes·votes·리액션의 `created_at`, 글 INSERT의 `id`는 여전히 클라이언트가 정할 수 있다.
+46. **목록 모달 데이터 chunk가 응답하지 않으면 '불러오는 중...'에서 끝나지 않음**. 실패 응답이 아니라 무응답이면 묶음 3의 실패 안내와 다시 시도 버튼도 나오지 않는다. Esc, ✕, 뒤로가기, 새로고침으로는 빠져나온다.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/relics
+    - 원인: `src/lib/compendium-data-chunks.ts`의 `fetchChunk`에 시간 제한이 없고, `chunkPromises`가 끝나지 않은 promise를 계속 들고 있다.
+47. **/en 390px에서 조우 탭 미리보기가 2,249px로 화면을 크게 넘고 일부 글자가 한국어임**('일반 전투', '1막 — 과성장', 링크의 aria-label). 조합이 많은 조우에서 보인다.
+    - https://scare-the-spire.flavono123.workers.dev/en/compendium/bestiary
+    - 원인 추정: 조우 미리보기가 조합 전체를 높이 제한 없이 그리고 라벨이 언어를 받지 않는다(코드는 확인하지 않음).
+48. **`CLAUDE.md`와 `AGENTS.md`의 수치가 낡음**. `CLAUDE.md`는 Next.js 15, 두 문서 모두 카드 612·유물 314·포션 63이지만 실제는 Next 16.4와 `data/sts2/kor`의 카드 598·유물 298·포션 64다. 화면과는 무관하다.
+49. **조각모음 overlay 저장이 DB에서 거부되면 글은 성공처럼 끝나고 overlay 본문만 조용히 사라짐**. 패널이 닫히고 피드에 글이 생기며 안내가 없다. 다시 올릴 수도 없다.
+    - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 원인: `src/hooks/use-defragment-bodies.ts`의 `isMissingDefragmentBodiesTable`이 `/defragment_bodies/i`로 메시지를 보므로 표 이름이 든 23514·42501까지 '표 없음'으로 처리하고, `upsertDefragmentBody`가 null을 돌려준다.
+50. **조각모음 overlay 초안이 게시 뒤에도 남아 다음 글에 다시 붙음**. 같은 탭에서 패널을 다시 열면 콤보 칸은 비었는데 overlay 칸에 이전 글의 본문이 복원되고, 그대로 게시하면 저장된다.
+    - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 원인: overlay 편집기는 `hideSubmitButton`에 빈 `onSubmit`이라 `RichContentEditor`의 `clearDraft`가 불리지 않고, 패널의 성공 경로도 `sts-defragment-overlay:*` 키를 지우지 않는다.
+51. **글 저장 뒤 overlay가 5xx로 실패하면 새로 고침 뒤 복원된 초안을 올릴 때 같은 글이 두 번 저장됨**. 첫 제출은 글이 이미 저장됐는데 장애 안내로 바뀌고 초안이 남는다.
+    - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 원인: `src/components/defragment/defragment-write-panel.tsx`의 catch가 글 insert와 `saveOverlay`를 함께 감싸 두 실패를 구분하지 않고, `RichContentEditor`는 어떤 실패든 초안을 남긴다.
+52. **조각모음에서 서류 폭풍 글 저장이 거부되면 쓰던 문서가 사라지고 미처리 rejection이 남**. 패널이 장애 안내로 바뀌고 세션 저장소에 초안이 없다. 같은 거부에서 `/pagestorm/write`는 편집기가 남는다. 23514로는 1 MiB 넘는 문서에서만 닿는다. 500과 네트워크 실패에서도 같을 것으로 보지만 재현하지는 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 원인: `handlePagestormSubmit`의 catch가 `onUnavailable`을 부른 뒤 다시 던지고, `PagestormEditor`의 `handleSubmit`은 이를 받지 않는다.
+53. **조각모음에서 콤보 밖의 글은 overlay 본문이 1자일 때 이유를 알려 주지 않음**. 변형은 다시 시도하라는 안내가 뜨지만 다시 해도 성공하지 않고, 케미컬X·이거 아님 저거?·어려운 결정·이아저? 월드컵은 무반응, 서류 폭풍은 미처리 rejection이 남는다.
+    - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 원인: `src/components/defragment/defragment-write-panel.tsx`의 각 submit이 overlay를 검사하고 던지거나 false만 돌려준다.
+54. **콤보 작성창에서 본문 글자 위 휠과 터치 드래그로는 창이 스크롤되지 않음**. 저장 버튼 줄 위와 키보드로는 스크롤된다. 긴 글에서는 글자 영역이 화면 대부분을 차지한다.
+    - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+    - 원인 추정: 에디터를 감싼 `GameScrollArea`(`overflow-y-auto overscroll-contain`)가 내용만큼 늘어나 넘침이 없는데도 스크롤 전달을 막는다. Chromium에서만 확인했다.
+55. **키워드의 '새 탭에서 열기' 말풍선이 스크롤을 따라가지 않고 제자리에 남음**. 커서가 있던 키워드가 화면 밖으로 나가도 말풍선은 원래 좌표에서 다른 글자 위에 뜬다.
+    - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+56. **모달 뒤로가기 링크의 cmd 클릭이 새 탭을 열지 않고 모달을 닫음**. 가운데 클릭은 새 탭을 열고, 단독 상세 페이지의 뒤로가기는 cmd 클릭도 새 탭을 연다.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/relics
+    - 원인: 뒤로가기 `onClick`이 `onClose`가 있으면 수식 키를 보지 않고 `preventDefault` 한다(`src/components/codex/*-detail.tsx` 15곳, `src/components/sts1/detail-chrome.tsx`). 타일의 `onClick`은 수식 키를 확인한다.
+57. **슬더스1 유물·파워·포션 모달이 Esc로 닫히지 않음**. 카드 모달만 닫힌다.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/sts1/relics
+    - https://scare-the-spire.flavono123.workers.dev/compendium/sts1/powers
+    - https://scare-the-spire.flavono123.workers.dev/compendium/sts1/potions
+    - 원인: Escape 처리기가 `src/components/sts1/card-library.tsx`에만 있다.
+58. **/ja 카드 모달의 링크가 영어 목록으로 보냄**. 첫 카드 타격 모달의 '병사의 스튜' 링크가 `/en/compendium/potions?potion=soldiers_stew`이고, 누르면 포션 모달이 영어로 열린다. 다른 게임 전용 언어는 재지 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/ja/compendium/cards
+    - 원인 추정: `src/components/codex/entity-reference-links.tsx`의 `toPreviewEntity`가 `localizeHref`만 써서 게임 언어를 받지 않는다.
+59. **Supabase가 멈추면 패치 빌드가 페이지마다 최대 5분씩 멈추고, 실패를 숨긴 채 표본 글로 배포함**. 2026-11-01 01:44~02:35 KST에 `/patches/2026-09-11` 14개 언어 페이지의 빌드 시점 조회가 90~300초씩 멈춰 `patch:build`가 117초에서 3,187초가 됐고, 결과 페이지는 실제 글 없이 61 KB였다(운영 207 KB). 로그에는 아무것도 남지 않는다. CI 배포 작업 제한은 60분이다.
+    - https://scare-the-spire.flavono123.workers.dev/patches/2026-09-11
+    - 원인: `src/lib/transfigure-data.ts`와 `src/lib/colorful-philosophers-gallery.ts`의 조회에 시간 제한이 없고, `catch`가 로그 없이 표본이나 빈 값으로 대체한다.
+60. **Supabase Free 인스턴스가 메모리와 디스크 I/O 부족으로 주기적으로 멈춤**. 로그 기준 구간(KST): 10-28 22:10~10-29 02:30, 10-31 00:20~02:30, 10-31 23:35~11-01 02:55, 11-02 09:47~09:52(5xx 없이 6~24초 지연). 멈춘 동안 시스템 카탈로그 조회도 10~22초 걸렸고, 시작 직전 요청이 5분당 50개 미만인 구간도 있어 요청량이나 특정 앱 쿼리 탓이 아니다. 메모리 428 MB, 스왑 약 480 MB 사용, 부팅 47일간 스왑 인 약 5.3 TB, 디스크 읽기 약 47 TB(DB는 49 MB), iowait 2.18%(CPU steal 0, OOM 0). 원인 판단은 추론이며 EBS 버스트 잔량은 직접 보지 못했다.
+    - https://supabase.com/dashboard/project/vhscirjiywwmwlafkhjh

@@ -32,18 +32,18 @@ import {
   updateCompendiumResourceModalUrl,
 } from "@/lib/compendium-resource-links";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
-import { serviceMessages } from "@/messages/service";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { CharacterDetail } from "./character-detail";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import { SearchBar } from "./search-bar";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 interface CharacterListProps {
   serviceLocale: ServiceLocale;
@@ -57,8 +57,8 @@ interface CharacterListProps {
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
   entities?: EntityInfo[];
-  /** False until the data chunks settle; the detail modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
 const CHARACTER_FACE_FOCUS: Record<string, string> = {
@@ -166,7 +166,7 @@ export function CharacterList({
   changes,
   versionDiffs,
   entities,
-  detailsReady = true,
+  detailsStatus = "loaded",
 }: CharacterListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlCharacterId = useHydrationSafeSearchParam("character");
@@ -360,7 +360,7 @@ export function CharacterList({
       {selectedCharacter && (
         <CompendiumDetailOverlay onClose={() => closeSelectedCharacter()} aria-label={selectedCharacter.name}>
           <div className="mx-4 my-8 w-full max-w-6xl">
-            {detailsReady ? (
+            {detailsStatus === "loaded" ? (
               <CharacterDetail
                 serviceLocale={serviceLocale}
                 backToListTitle={title}
@@ -377,11 +377,11 @@ export function CharacterList({
                 versionDiffs={versionDiffs}
               />
             ) : (
-              <CompendiumDetailLoading
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedCharacter.name}
                 backToListTitle={title}
-                closeLabel={serviceText.common.close}
-                loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedCharacter}
               />
             )}
@@ -432,6 +432,7 @@ function CharacterRow({
 
   return (
     <Link
+      prefetch={false}
       ref={setRowRef}
       href={localizeHref(buildCompendiumResourceDetailHref("character", character.id), serviceLocale)}
       role="listitem"

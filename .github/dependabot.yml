@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # Security updates only. A limit of 0 stops routine version pull requests;
+  # security updates have their own limit and need the repository setting on.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

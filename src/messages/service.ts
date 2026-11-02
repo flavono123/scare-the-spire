@@ -188,6 +188,7 @@ export const serviceMessages = {
     },
     entityGraph: {
       unavailable: "게임 요소 목록을 불러오지 못했습니다",
+      detailUnavailable: "상세 정보를 불러오지 못했습니다",
       retry: "다시 시도",
     },
     cardCon: {
@@ -359,6 +360,8 @@ export const serviceMessages = {
       minimumResources: "조합에는 서로 다른 게임 요소가 2개 이상 필요합니다.",
       youtubePending: "YouTube 영상 정보를 불러오는 중...",
       youtubeAdded: "{title} 영상을 참조에 추가했습니다.",
+      textTooLong: "글이 너무 깁니다. 줄인 뒤 다시 올려 주세요.",
+      saveFailed: "글을 저장하지 못했습니다. 다시 시도해 주세요.",
       youtubeLimit: "YouTube 영상은 글마다 하나만 참조할 수 있습니다.",
       youtubeUnavailable: "YouTube 영상 정보를 불러오지 못했습니다. 공개 영상 링크인지 확인하세요.",
       youtubeGuide: "{youtubeLink}를 본문에 붙여넣으면 영상으로 첨부됩니다. 글마다 1개까지 가능합니다. 디시 글 링크는 글 제목으로 바뀝니다.",
@@ -500,6 +503,7 @@ export const serviceMessages = {
       titlePlaceholder: "제목",
       bodyPlaceholder: "본문",
       overlayBody: "본문",
+      overlayBodyInvalid: "본문은 2자 이상 2,000자 이하로 쓰거나 비워 두세요.",
       openOriginal: "{name}에서",
       openTransfigure: "변형하기",
       boardType: "유형",
@@ -1629,6 +1633,7 @@ export const serviceMessages = {
     },
     entityGraph: {
       unavailable: "Could not load the game element list",
+      detailUnavailable: "Could not load the details",
       retry: "Retry",
     },
     cardCon: {
@@ -1800,6 +1805,8 @@ export const serviceMessages = {
       minimumResources: "A combo needs at least two different game elements.",
       youtubePending: "Loading YouTube video details...",
       youtubeAdded: "Added {title} as a video reference.",
+      textTooLong: "This post is too long. Shorten it and try again.",
+      saveFailed: "Could not save your post. Please try again.",
       youtubeLimit: "Each post can reference one YouTube video.",
       youtubeUnavailable: "Could not load the YouTube video. Check that the link is public.",
       youtubeGuide: "Paste a {youtubeLink} into the post to attach the video. One video per post. DC Inside links show their post title.",
@@ -1941,6 +1948,7 @@ export const serviceMessages = {
       titlePlaceholder: "Title",
       bodyPlaceholder: "Body",
       overlayBody: "Body",
+      overlayBodyInvalid: "Write 2 to 2,000 characters in the body, or leave it empty.",
       openOriginal: "In {name}",
       openTransfigure: "Transfigure",
       boardType: "Type",

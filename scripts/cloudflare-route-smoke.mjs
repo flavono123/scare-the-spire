@@ -2,8 +2,12 @@
 
 import { readFileSync } from "node:fs";
 
+import { globalHeaders, PUBLIC_HEADERS_FILE } from "./security-headers-file.mjs";
+
 const MISSING_UUID = "00000000-0000-4000-8000-000000000000";
 const HISTORY_RUN_ID = "1testbedsmoketest";
+// Every response must carry these, whichever Worker or asset rule built it.
+const SECURITY_HEADERS = globalHeaders(readFileSync(PUBLIC_HEADERS_FILE, "utf8"));
 
 function usage() {
   console.log(`Usage: pnpm cf:smoke -- --origin <url> [options]
@@ -13,6 +17,8 @@ Options:
   --scope <main|patch|all>     Route group to test (default: all)
   --attempts <number>          Attempts per request (default: 1)
   --retry-delay-ms <number>    Delay between attempts (default: 0)
+  --no-security-headers        Target predates the security headers: skip them and
+                               the cross-site link preview refusal
   --help                       Show this help`);
 }
 
@@ -22,6 +28,7 @@ function parseArgs(argv) {
     scope: "all",
     attempts: 1,
     retryDelayMs: 0,
+    securityHeaders: true,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -45,6 +52,10 @@ function parseArgs(argv) {
     }
     if (argument === "--retry-delay-ms") {
       options.retryDelayMs = Number(argv[++index]);
+      continue;
+    }
+    if (argument === "--no-security-headers") {
+      options.securityHeaders = false;
       continue;
     }
     throw new Error(`Unknown option: ${argument}`);
@@ -292,11 +303,30 @@ function mainCases() {
       bodyIncludes: "unsupported url",
     },
     {
+      name: "Link preview refuses another site",
+      path: "/api/link-preview?url=https%3A%2F%2Fexample.com%2F",
+      headers: { "Sec-Fetch-Site": "cross-site" },
+      statuses: [403],
+      contentType: "application/json",
+      securityHeadersOnly: true,
+    },
+    {
       name: "POST to a static page",
       path: "/compendium/cards",
       method: "POST",
       statuses: [405],
       allow: "GET, HEAD",
+    },
+    {
+      name: "Static text asset",
+      path: "/robots.txt",
+      contentType: "text/plain",
+    },
+    {
+      name: "Static page file redirect",
+      path: "/_cf_static_pages/index.html",
+      statuses: [307],
+      location: "/_cf_static_pages/",
     },
     {
       name: "Search index asset",
@@ -424,10 +454,16 @@ async function fetchCase(origin, testCase) {
   return { response, body };
 }
 
-function validateCase(testCase, response, body) {
+function validateCase(testCase, response, body, options) {
   const expectedStatuses = testCase.statuses ?? [200];
   if (!expectedStatuses.includes(response.status)) {
     return `expected HTTP ${expectedStatuses.join("/")}, got ${response.status}`;
+  }
+
+  for (const [name, value] of options.securityHeaders ? SECURITY_HEADERS : []) {
+    if (response.headers.get(name) !== value) {
+      return `expected ${name}: ${value}, got ${response.headers.get(name) ?? "missing"}`;
+    }
   }
 
   const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
@@ -473,7 +509,7 @@ async function runCase(origin, testCase, options) {
   for (let attempt = 1; attempt <= options.attempts; attempt += 1) {
     try {
       const { response, body } = await fetchCase(origin, testCase);
-      const failure = validateCase(testCase, response, body);
+      const failure = validateCase(testCase, response, body, options);
       if (!failure) {
         console.log(`PASS ${testCase.name} · HTTP ${response.status}`);
         return;
@@ -497,7 +533,7 @@ async function main() {
   const cases = [
     ...(["main", "all"].includes(options.scope) ? mainCases() : []),
     ...(["patch", "all"].includes(options.scope) ? patchCases() : []),
-  ];
+  ].filter((testCase) => options.securityHeaders || !testCase.securityHeadersOnly);
 
   console.log(`Cloudflare route smoke · ${options.origin} · ${options.scope} · ${cases.length} checks`);
   const failures = [];

@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -34,7 +37,22 @@ jobs:
 
       - run: pnpm test:version-api
 
+      - run: pnpm test:security-headers
+
+      - run: npx tsx scripts/link-preview.spec.ts
+
       - run: pnpm lint
 
-      - run: pnpm build
+      - name: Free runner disk space for the static build
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup
+          df -h /
+
+      # The build production ships, with its route, asset and prefetch gates.
+      # Pull requests get no other run of them: the deploy workflow is push-only.
+      - run: pnpm cf:build
+
+      - run: pnpm css:check
+
+      - run: pnpm cf:size
 

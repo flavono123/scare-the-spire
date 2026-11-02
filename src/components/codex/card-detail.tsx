@@ -55,9 +55,9 @@ import {
   TINKER_TIME_EVENT_ID,
   TINKER_TIME_EVENT_NAME_KO,
   TINKER_TIME_EVENT_PATH,
-  getCardDetailEventIds,
   getRelatedAncientIdsForCard,
   getRelatedEnchantmentIdsForCard,
+  getRelatedEventIdsForCard,
   getRelatedMonsterIdsForCard,
   getRelatedPotionIdsForCard,
   getRelatedPowerIdsForCard,
@@ -287,7 +287,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     ? Math.max(0, Math.min(upgradeLevel, selectableMaxUpgradeLevel))
     : 0;
   const showUpgrade = effectiveUpgradeLevel > 0;
-  const relatedEventTargets = getCardDetailEventIds(card.id).map((eventId) => {
+  const relatedEventIds = [
+    ...getRelatedEventIdsForCard(card.id),
+    ...(isMadScience ? [TINKER_TIME_EVENT_ID] : []),
+  ].filter((eventId, index, eventIds) => eventIds.indexOf(eventId) === index);
+  const relatedEventTargets = relatedEventIds.map((eventId) => {
     const relatedEvent = relatedEvents.find((event) => event.id === eventId) ?? null;
     const href = eventId === TINKER_TIME_EVENT_ID
       ? TINKER_TIME_EVENT_PATH
@@ -446,6 +450,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     <div className="mx-auto w-full max-w-6xl min-w-0 overflow-x-hidden p-4 sm:p-6">
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <Link
+          prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/cards", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {

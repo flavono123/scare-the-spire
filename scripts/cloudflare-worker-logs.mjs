@@ -171,8 +171,15 @@ function summarizeEvent(event) {
   };
 }
 
+function apiErrorDetail(status, payload) {
+  // A rejected request body has no `errors`; its validation issues sit in `_c`.
+  const issues = payload?._c?.issues?.map((issue) => `${issue.path?.join(".")}: ${issue.message}`);
+  return [...(payload?.errors?.map((error) => error.message) ?? []), ...(issues ?? [])].join("; ")
+    || `HTTP ${status}`;
+}
+
 function observabilityErrorMessage(status, payload) {
-  const apiMessage = payload?.errors?.map((error) => error.message).join("; ") || `HTTP ${status}`;
+  const apiMessage = apiErrorDetail(status, payload);
   if (status === 403) {
     return `Workers Logs query returned 403 (${apiMessage}).
 Wrangler OAuth cannot call this API. Create a Custom token with Account → Workers Observability → Write
@@ -262,10 +269,7 @@ async function loadEvents(authentication, service, options, window) {
       dry: true,
       view: "events",
       limit: Math.min(remaining, 200),
-      timeframe: {
-        from: new Date(window.from).toISOString(),
-        to: new Date(window.to).toISOString(),
-      },
+      timeframe: window,
       parameters: {
         datasets: ["cloudflare-workers"],
         filterCombination: "and",

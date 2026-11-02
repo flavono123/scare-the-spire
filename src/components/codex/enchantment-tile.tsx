@@ -66,6 +66,7 @@ export const EnchantmentTile = memo(function EnchantmentTile({
   return (
     <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
       <Link
+        prefetch={false}
         href={localizeHref(buildCompendiumResourceDetailHref("enchantment", resource.id), serviceLocale)}
         className="relative group"
         onClick={(event) => {

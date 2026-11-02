@@ -29,7 +29,6 @@ import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import { versionCodexEntities } from "@/lib/codex-versioning";
-import { serviceMessages } from "@/messages/service";
 import { getAfflictionCardTypeRestriction } from "@/lib/sts2-affliction-rules";
 import {
   fuzzyMatchCodexText,
@@ -51,10 +50,11 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 const CARD_TYPE_ORDER: EnchantmentCardTypeFilter[] = ["Any", "Attack", "Skill"];
 type SelectedEnchantmentResource =
@@ -98,11 +98,11 @@ interface EnchantmentLibraryProps {
   /** Monsters — used to surface ones that apply the selected affliction. */
   monsters?: CodexMonster[];
   tipCatalogSources?: CardSideTipCatalogSources;
-  /** False until the data chunks settle; the detail modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
-export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflictions = [], versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, powers, relics, monsters, tipCatalogSources, detailsReady = true }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflictions = [], versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, powers, relics, monsters, tipCatalogSources, detailsStatus = "loaded" }: EnchantmentLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlEnchantmentId = useHydrationSafeSearchParam("enchantment");
   const urlAfflictionId = useHydrationSafeSearchParam("affliction");
@@ -432,12 +432,12 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
       {selectedResource && (
         <CompendiumDetailOverlay onClose={() => closeSelectedResource()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            {!detailsReady ? (
-              <CompendiumDetailLoading
+            {detailsStatus !== "loaded" ? (
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedResource.item.name}
                 backToListTitle={serviceText.enchantmentsView.title}
-                closeLabel={serviceText.common.close}
-                loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedResource}
                 className="max-w-5xl"
               />

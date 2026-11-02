@@ -3,9 +3,9 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import {
   NodeViewWrapper,
-  ReactNodeViewRenderer,
   type NodeViewProps,
 } from "@tiptap/react";
+import { spannedNodeViewRenderer } from "@/components/editor/spanned-node-view";
 import { TextConChip } from "@/components/text-con/text-con-chip";
 import { cn } from "@/lib/utils";
 
@@ -71,6 +71,6 @@ export const TextConExtension = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(TextConNodeView, { as: "span" });
+    return spannedNodeViewRenderer(TextConNodeView, { as: "span" });
   },
 });

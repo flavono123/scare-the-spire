@@ -61,6 +61,7 @@ function ModifierTile({
 }) {
   return (
     <Link
+      prefetch={false}
       // Game-only locales have no detail pages; this links their list modal.
       href={buildCompendiumEntryHref("modifier", modifier.id, gameLocale)}
       className="mb-5 block break-inside-avoid rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70"

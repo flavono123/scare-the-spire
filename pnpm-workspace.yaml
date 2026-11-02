@@ -1,3 +1,6 @@
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+overrides:
+  # Storybook's range allows 0.28; it stays on 0.27 only because the lockfile had it.
+  esbuild@<0.28.1: ^0.28.2

@@ -9,6 +9,7 @@ type AssetsBinding = {
 type Env = {
   ASSETS?: AssetsBinding;
   PATCH_WORKER?: PatchWorkerBinding;
+  LINK_PREVIEW_LIMITER?: LinkPreviewLimiter;
   NEXT_PUBLIC_SUPABASE_URL?: string;
   NEXT_PUBLIC_SUPABASE_ANON_KEY?: string;
   NEXT_PUBLIC_SUPABASE_ENV?: string;
@@ -23,12 +24,17 @@ type ExecutionContextLike = {
 };
 
 import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-resource-links";
-import { handleLinkPreviewRequest, LINK_PREVIEW_PATH } from "../src/lib/link-preview-handler";
+import {
+  handleLinkPreviewRequest,
+  LINK_PREVIEW_PATH,
+  type LinkPreviewLimiter,
+} from "../src/lib/link-preview-handler";
 import { staticAssetAliasRedirectPath } from "./static-asset-aliases";
 import { maybeEnrichServiceDetailShell } from "./detail-shell-og";
 import { withLocalizedDocumentRoot } from "./document-locale";
 import { nextRoutingResponse } from "./next-routing-parity";
 import { redactPathname } from "./path-redaction";
+import { withSecurityHeaders } from "./security-headers";
 import {
   legacyWorldcupDetailRedirectPath,
   prerenderedRedirect,
@@ -360,7 +366,7 @@ function methodNotAllowed(): Response {
 }
 
 /** Mirrors the Next route handler: GET, auto HEAD, auto OPTIONS, else 405. */
-async function serveLinkPreview(request: Request): Promise<Response> {
+async function serveLinkPreview(request: Request, env: Env): Promise<Response> {
   if (request.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: { Allow: LINK_PREVIEW_ALLOW } });
   }
@@ -368,7 +374,7 @@ async function serveLinkPreview(request: Request): Promise<Response> {
     return new Response(null, { status: 405, headers: { Allow: LINK_PREVIEW_ALLOW } });
   }
 
-  const response = await handleLinkPreviewRequest(request);
+  const response = await handleLinkPreviewRequest(request, env.LINK_PREVIEW_LIMITER);
   return request.method === "HEAD" ? new Response(null, response) : response;
 }
 
@@ -434,7 +440,7 @@ async function serveUnmatchedRequest(request: Request, env: Env, url: URL): Prom
   const nextRouting = nextRoutingResponse(request, url);
   if (nextRouting) return nextRouting;
 
-  if (isLinkPreviewPath(url.pathname)) return serveLinkPreview(request);
+  if (isLinkPreviewPath(url.pathname)) return serveLinkPreview(request, env);
 
   const redirect = maybeServePrerenderedRedirect(request, url);
   if (redirect) return redirect;
@@ -449,50 +455,54 @@ async function serveUnmatchedRequest(request: Request, env: Env, url: URL): Prom
   return serveStaticNotFound(request, env, url);
 }
 
+async function routeRequest(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
+  const url = new URL(request.url);
+  const localeRedirect = maybeRedirectRootToPreferredLocale(request, url);
+  if (localeRedirect) return localeRedirect;
+
+  const legacyCompendiumRedirect = maybeRedirectLegacyCompendiumDetail(request, url);
+  if (legacyCompendiumRedirect) return legacyCompendiumRedirect;
+
+  const legacyWorldcupRedirect = maybeRedirectLegacyWorldcupDetail(request, url);
+  if (legacyWorldcupRedirect) return legacyWorldcupRedirect;
+
+  const staticAliasRedirect = maybeRedirectStaticAssetAlias(request, url);
+  if (staticAliasRedirect) return staticAliasRedirect;
+
+  if (isPatchWorkerPath(url.pathname)) {
+    if (env.PATCH_WORKER) return env.PATCH_WORKER.fetch(request);
+
+    return new Response("Patch service unavailable", {
+      status: 503,
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "text/plain; charset=utf-8",
+        "Retry-After": "60",
+      },
+    });
+  }
+
+  const staticHomeResponse = await maybeServeStaticHomePage(request, env, url);
+  if (staticHomeResponse) return staticHomeResponse;
+
+  const staticServiceResponse = await maybeServeStaticServicePage(request, env, url);
+  if (staticServiceResponse) return staticServiceResponse;
+
+  const staticServiceDetailShellResponse = await maybeServeStaticServiceDetailShell(request, env, ctx, url);
+  if (staticServiceDetailShellResponse) return staticServiceDetailShellResponse;
+
+  const staticLegacyResponse = await maybeServeStaticLegacyPage(request, env, url);
+  if (staticLegacyResponse) return staticLegacyResponse;
+
+  const staticCompendiumResponse = await maybeServeStaticCompendiumPage(request, env, url);
+  if (staticCompendiumResponse) return staticCompendiumResponse;
+
+  return serveUnmatchedRequest(request, env, url);
+}
+
 const mainWorker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
-    const url = new URL(request.url);
-    const localeRedirect = maybeRedirectRootToPreferredLocale(request, url);
-    if (localeRedirect) return localeRedirect;
-
-    const legacyCompendiumRedirect = maybeRedirectLegacyCompendiumDetail(request, url);
-    if (legacyCompendiumRedirect) return legacyCompendiumRedirect;
-
-    const legacyWorldcupRedirect = maybeRedirectLegacyWorldcupDetail(request, url);
-    if (legacyWorldcupRedirect) return legacyWorldcupRedirect;
-
-    const staticAliasRedirect = maybeRedirectStaticAssetAlias(request, url);
-    if (staticAliasRedirect) return staticAliasRedirect;
-
-    if (isPatchWorkerPath(url.pathname)) {
-      if (env.PATCH_WORKER) return env.PATCH_WORKER.fetch(request);
-
-      return new Response("Patch service unavailable", {
-        status: 503,
-        headers: {
-          "Cache-Control": "no-store",
-          "Content-Type": "text/plain; charset=utf-8",
-          "Retry-After": "60",
-        },
-      });
-    }
-
-    const staticHomeResponse = await maybeServeStaticHomePage(request, env, url);
-    if (staticHomeResponse) return staticHomeResponse;
-
-    const staticServiceResponse = await maybeServeStaticServicePage(request, env, url);
-    if (staticServiceResponse) return staticServiceResponse;
-
-    const staticServiceDetailShellResponse = await maybeServeStaticServiceDetailShell(request, env, ctx, url);
-    if (staticServiceDetailShellResponse) return staticServiceDetailShellResponse;
-
-    const staticLegacyResponse = await maybeServeStaticLegacyPage(request, env, url);
-    if (staticLegacyResponse) return staticLegacyResponse;
-
-    const staticCompendiumResponse = await maybeServeStaticCompendiumPage(request, env, url);
-    if (staticCompendiumResponse) return staticCompendiumResponse;
-
-    return serveUnmatchedRequest(request, env, url);
+    return withSecurityHeaders(await routeRequest(request, env, ctx));
   },
 };
 

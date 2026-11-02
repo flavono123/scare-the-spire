@@ -521,6 +521,7 @@ export function TransfigureEditor({
   const draftSessionPrefix = `sts-transfigure-composer:${draftSessionId}:`;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
   const pickerRootRef = useRef<HTMLDivElement>(null);
+  const saveFeedbackRef = useRef<HTMLParagraphElement>(null);
   const [initialDrafts] = useState<TransfigureVariantDraft[]>(() => (
     initialPost
       ? transfigurePostVariants(initialPost).flatMap((variant) => {
@@ -560,6 +561,11 @@ export function TransfigureEditor({
     removeTransfigureDrafts(LEGACY_TRANSFIGURE_DRAFT_PREFIXES);
     return () => removeTransfigureDrafts([draftSessionPrefix]);
   }, [draftSessionPrefix]);
+
+  // The notice renders below the submit button, past a modal's scrolled end.
+  useEffect(() => {
+    if (saveFeedback?.tone === "error") saveFeedbackRef.current?.scrollIntoView({ block: "nearest" });
+  }, [saveFeedback]);
 
   const sourceEntities = useMemo(
     () => entities.filter((entity) => getTransfigureSourceText(entity) != null),
@@ -990,6 +996,7 @@ export function TransfigureEditor({
 
       {saveFeedback && (
         <p
+          ref={saveFeedbackRef}
           className={saveFeedback.tone === "error"
             ? "text-xs text-red-300"
             : "text-xs text-primary/75"}

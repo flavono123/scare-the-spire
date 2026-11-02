@@ -33,6 +33,7 @@ import {
   type DefragmentWriteService,
 } from "@/lib/defragment";
 import type { GameLocale } from "@/lib/i18n";
+import { isCheckViolation } from "@/lib/supabase";
 import type { ThisOrThatResourceRef } from "@/lib/this-or-that";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
@@ -156,7 +157,7 @@ export function DefragmentWritePanel({
       await saveOverlay("combo", post.id, nickname, activeUserId);
       onCreated(feedItemFromPost("combo", post));
     } catch (error) {
-      onUnavailable();
+      if (!isCheckViolation(error)) onUnavailable();
       throw error;
     }
   }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
@@ -227,7 +228,7 @@ export function DefragmentWritePanel({
       onCreated(feedItemFromPost("transfigure", post));
       setTransfigureOpen(false);
     } catch (error) {
-      onUnavailable();
+      if (!isCheckViolation(error)) onUnavailable();
       throw error;
     }
   }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
@@ -370,6 +371,7 @@ export function DefragmentWritePanel({
             serviceLocale={serviceLocale}
             hideNickname
             draftKey="sts-defragment-combo-draft"
+            submitBlockedNotice={overlayBodyForSave(overlayBlocks) === "invalid" ? copy.overlayBodyInvalid : null}
             onSubmit={async (blocks) => handleComboSubmit(blocks)}
           />
           {overlay}

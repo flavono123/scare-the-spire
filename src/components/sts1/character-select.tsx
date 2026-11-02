@@ -477,6 +477,7 @@ export function Sts1CharacterSelect({
                     }}
                   />
                   <Link
+                    prefetch={false}
                     href={localizeHref(sts1DetailPath("characters", character.slug), serviceLocale)}
                     aria-label={character.name}
                     aria-current={isSelected ? "true" : undefined}

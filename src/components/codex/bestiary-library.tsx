@@ -18,6 +18,7 @@ import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { MonsterLibrary } from "./monster-library";
 import { EncounterLibrary } from "./encounter-library";
 import { useHydrationSafeSearchParam } from "./use-hydration-safe-search-param";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 type BestiaryView = "monsters" | "encounters";
 
@@ -35,8 +36,8 @@ interface BestiaryLibraryProps {
   versions?: string[];
   currentVersion?: string;
   versionDiffs?: EntityVersionDiff[];
-  /** False while the rows are slim grid rows; detail modals show a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
 export function BestiaryLibrary({
@@ -53,7 +54,7 @@ export function BestiaryLibrary({
   versions,
   currentVersion,
   versionDiffs,
-  detailsReady = true,
+  detailsStatus = "loaded",
 }: BestiaryLibraryProps) {
   const messages = serviceMessages[serviceLocale].codex;
   const explicitView = useHydrationSafeSearchParam("view");
@@ -127,7 +128,7 @@ export function BestiaryLibrary({
         selectedVersion={selectedVersion}
         onVersionChange={setSelectedVersion}
         trailing={switcher}
-        detailsReady={detailsReady}
+        detailsStatus={detailsStatus}
       />
     );
   }
@@ -150,7 +151,7 @@ export function BestiaryLibrary({
       selectedVersion={selectedVersion}
       onVersionChange={setSelectedVersion}
       trailing={switcher}
-      detailsReady={detailsReady}
+      detailsStatus={detailsStatus}
     />
   );
 }

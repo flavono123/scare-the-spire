@@ -39,12 +39,21 @@ import {
   FUTURE_OF_POTIONS_EVENT_NAME_KO,
   FUTURE_OF_POTIONS_EVENT_PATH,
   getFuturePotionChoicesForPotion,
-  getPotionDetailEventIds,
   getRelatedCardIdsForPotion,
   getRelatedEnchantmentIdsForPotion,
+  getRelatedEventIdsForPotion,
   getRelatedPowerIdsForPotion,
 } from "@/lib/codex-references";
 import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
+
+function dedupeIds(ids: readonly string[]): string[] {
+  const seen = new Set<string>();
+  return ids.filter((id) => {
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+}
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -160,7 +169,12 @@ export function PotionDetail({
     .filter((card): card is CodexCard => Boolean(card))
     .map(cardToReferenceTarget);
   const eventById = new Map(relatedEvents.map((event) => [event.id, event]));
-  const relatedEventTargets = getPotionDetailEventIds(potion)
+  const relatedEventIds = dedupeIds([
+    FUTURE_OF_POTIONS_EVENT_ID,
+    ...getRelatedEventIdsForPotion(potion.id),
+    ...(potion.rarity === "고급" ? ["POTION_COURIER"] : []),
+  ]);
+  const relatedEventTargets = relatedEventIds
     .map((eventId) => {
       const relatedEvent = eventById.get(eventId);
       const href = eventId === FUTURE_OF_POTIONS_EVENT_ID
@@ -204,6 +218,7 @@ export function PotionDetail({
     <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
+          prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/potions", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {

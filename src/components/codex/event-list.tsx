@@ -40,7 +40,6 @@ import {
 } from "@/lib/event-character-quotes";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
-import { serviceMessages } from "@/messages/service";
 import { fuzzyMatchCodexText, stripCodexMarkup } from "@/lib/codex-search";
 import { SearchBar } from "./search-bar";
 import { VersionSelector } from "./version-selector";
@@ -54,11 +53,12 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { EventDetail } from "./event-detail";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 const COMPENDIUM_ACT_COLOR = "#60a5fa";
 const COMPENDIUM_ACT_TEXT_CLASS = "text-blue-300";
@@ -146,6 +146,7 @@ function EventThumbnail({
   const lifecycleClassName = event.deprecated ? " opacity-50 grayscale saturate-0" : "";
   return (
     <Link
+      prefetch={false}
       href={localizeHref(buildCompendiumResourceDetailHref("event", event.id), serviceLocale)}
       onClick={(clickEvent) => {
         if (clickEvent.metaKey || clickEvent.ctrlKey || clickEvent.shiftKey || clickEvent.altKey || clickEvent.button !== 0) return;
@@ -206,8 +207,8 @@ interface EventListProps {
   patches: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs: EntityVersionDiff[];
-  /** False until the data chunks settle; the detail modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
 export function EventList({
@@ -227,7 +228,7 @@ export function EventList({
   patches,
   changes,
   versionDiffs,
-  detailsReady = true,
+  detailsStatus = "loaded",
 }: EventListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlEventId = useHydrationSafeSearchParam("event");
@@ -482,7 +483,7 @@ export function EventList({
       {selectedEvent && (
         <CompendiumDetailOverlay onClose={() => closeSelectedEvent()}>
           <div className="mx-4 my-4 w-full max-w-[92rem]">
-            {detailsReady ? (
+            {detailsStatus === "loaded" ? (
               <EventDetail
                 serviceLocale={serviceLocale}
                 gameUi={gameUi}
@@ -500,11 +501,11 @@ export function EventList({
                 onClose={closeSelectedEvent}
               />
             ) : (
-              <CompendiumDetailLoading
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedEvent.name}
                 backToListTitle={serviceText.eventsView.backToList}
-                closeLabel={serviceText.common.close}
-                loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedEvent}
                 className="max-w-[92rem] p-3 sm:p-4"
               />

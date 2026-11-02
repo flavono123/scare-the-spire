@@ -885,7 +885,6 @@ export function HistoryCourseShell({
       const isIn = Math.abs(globalMs - center) < INTRO_WINDOW_RADIUS_MS;
       const wasIn = wasInIntroWindowRef.current[i] ?? false;
       if (isIn && !wasIn) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIntroToken((t) => t + 1);
         setIntroActive(true);
         setReplayReady(false);
@@ -1078,7 +1077,6 @@ export function HistoryCourseShell({
   useEffect(() => {
     if (runEnded && !wasEndedRef.current) {
       wasEndedRef.current = true;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSummaryOpen(true);
       setPlaying(false);
     } else if (!runEnded && wasEndedRef.current) {

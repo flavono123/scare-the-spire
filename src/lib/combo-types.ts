@@ -6,6 +6,9 @@ import {
 } from "@/lib/toybox-feed-keyset";
 import { isYouTubeVideoId } from "@/lib/youtube-reference";
 
+/** The content_text CHECK in the rls_hardening migration. */
+export const COMBO_TEXT_MAX_BYTES = 65536;
+
 export interface ComboResourceRef {
   type: EntityType;
   id: string;
@@ -87,6 +90,10 @@ export function rankPopularComboResources(
       return left.resource.id.localeCompare(right.resource.id);
     })
     .slice(0, limit);
+}
+
+export function exceedsComboTextLimit(contentText: string): boolean {
+  return new TextEncoder().encode(contentText).length > COMBO_TEXT_MAX_BYTES;
 }
 
 export function extractComboResourceRefs(blocks: PostBlock[]): ComboResourceRef[] {

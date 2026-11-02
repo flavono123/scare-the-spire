@@ -166,6 +166,7 @@ export function AncientDetail({
     <div className="mx-auto w-full max-w-6xl p-4 sm:p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
+          prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/ancients", serviceLocale)}
           className="flex min-h-11 items-center text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(e) => {

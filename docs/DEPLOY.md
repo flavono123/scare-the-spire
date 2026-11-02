@@ -82,7 +82,9 @@ Worker 버전은 그 버전이 올린 정적 asset 목록까지 함께 갖고 �
    pnpm exec wrangler rollback <version-id> --name scare-the-spire-patches
    ```
 
-3. `pnpm cf:smoke --scope main`으로 복구를 확인한다.
+3. `pnpm cf:smoke --origin https://scare-the-spire.flavono123.workers.dev --scope all`로
+   복구를 확인한다. 보안 헤더가 들어가기 전 버전으로 되돌렸다면 `--no-security-headers`를
+   붙인다.
 4. 원인 커밋을 `main`에서 고치거나 되돌린 뒤 push한다. 그러지 않으면 다음 push가
    같은 코드를 다시 배포한다. 워크플로의 `workflow_dispatch`는 HEAD를 다시 배포할
    뿐 이전 버전을 고르지 못한다.

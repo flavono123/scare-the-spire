@@ -63,6 +63,7 @@ export function Sts1DetailShell({
     <div className="mx-auto w-full max-w-6xl min-w-0 overflow-x-hidden p-4 sm:p-6">
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <Link
+          prefetch={onClose ? false : undefined}
           href={localizeHref(backHref, serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(event) => {

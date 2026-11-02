@@ -34,7 +34,6 @@ import {
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { versionCodexEntities } from "@/lib/codex-versioning";
-import { serviceMessages } from "@/messages/service";
 import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
@@ -59,7 +58,7 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
@@ -68,6 +67,7 @@ import {
   EVENT_FILTER_ICON,
   getCharacterTokenIcon,
 } from "./codex-filter-assets";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 type RelicPoolFilter = RelicFilterPool | "event";
 type RelicSortKey = "pool" | "rarity";
@@ -93,8 +93,8 @@ interface RelicLibraryProps {
   relatedMonsters?: CodexMonster[];
   relatedPotions?: CodexPotion[];
   tipCatalogSources?: CardSideTipCatalogSources;
-  /** False until the data chunks settle; the detail modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
 export function RelicLibrary({
@@ -117,7 +117,7 @@ export function RelicLibrary({
   relatedMonsters = [],
   relatedPotions = [],
   tipCatalogSources,
-  detailsReady = true,
+  detailsStatus = "loaded",
 }: RelicLibraryProps) {
   const profile = useStoredUserProfile();
   const preferredPool = relicPoolFromCharacterId(profile.characterId);
@@ -527,7 +527,7 @@ export function RelicLibrary({
       {selectedRelic && (
         <CompendiumDetailOverlay onClose={() => closeSelectedRelic()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            {detailsReady ? (
+            {detailsStatus === "loaded" ? (
               <RelicDetail
                 serviceLocale={serviceLocale}
                 gameUi={gameUi}
@@ -552,11 +552,11 @@ export function RelicLibrary({
                 versionDiffs={versionDiffs}
               />
             ) : (
-              <CompendiumDetailLoading
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedRelic.name}
                 backToListTitle={title}
-                closeLabel={serviceText.common.close}
-                loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedRelic}
                 className="max-w-5xl"
               />

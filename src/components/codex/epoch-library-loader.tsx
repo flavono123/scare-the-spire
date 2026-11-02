@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 import { EpochLibrary } from "./epoch-library";
 import {
-  compendiumDetailsSettled,
+  compendiumDetailsStatus,
   useCompendiumDataState,
   useCompendiumEntitiesState,
 } from "./use-compendium-data";
@@ -19,7 +19,7 @@ const LAZY_DATA_KEYS = [
   "versionDiffs",
 ] as const satisfies readonly CompendiumDataKey[];
 
-type EpochLibraryLoaderProps = Omit<ComponentProps<typeof EpochLibrary>, "cards" | "relics" | "potions" | "ancients" | "changes" | "versionDiffs" | "entities" | "detailsReady"> & {
+type EpochLibraryLoaderProps = Omit<ComponentProps<typeof EpochLibrary>, "cards" | "relics" | "potions" | "ancients" | "changes" | "versionDiffs" | "entities" | "detailsStatus"> & {
   gameLocale: GameLocale;
 };
 
@@ -34,7 +34,7 @@ export function EpochLibraryLoader({ gameLocale, ...props }: EpochLibraryLoaderP
   return (
     <EpochLibrary
       {...props}
-      detailsReady={compendiumDetailsSettled(dataStatus, entitiesStatus)}
+      detailsStatus={compendiumDetailsStatus(dataStatus, entitiesStatus)}
       cards={data?.cards}
       relics={data?.relics}
       potions={data?.potions}

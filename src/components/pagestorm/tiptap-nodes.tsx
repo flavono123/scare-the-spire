@@ -1,7 +1,8 @@
 "use client";
 
 import { Node, mergeAttributes, type Editor } from "@tiptap/core";
-import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
+import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
+import { spannedNodeViewRenderer } from "@/components/editor/spanned-node-view";
 import { GameAssetFigure, YoutubePlayerFigure } from "./figures";
 import {
   findPagestormEntity,
@@ -243,7 +244,7 @@ export const GameAssetNode = Node.create({
     return atomKeyboard(this.name);
   },
   addNodeView() {
-    return ReactNodeViewRenderer(GameAssetView, nodeViewOptions);
+    return spannedNodeViewRenderer(GameAssetView, nodeViewOptions);
   },
 });
 
@@ -272,7 +273,7 @@ export const YoutubePlayerNode = Node.create({
     return atomKeyboard(this.name);
   },
   addNodeView() {
-    return ReactNodeViewRenderer(YoutubeView, nodeViewOptions);
+    return spannedNodeViewRenderer(YoutubeView, nodeViewOptions);
   },
 });
 
@@ -314,7 +315,7 @@ export const ToyboxEmbedNode = Node.create({
     return atomKeyboard(this.name);
   },
   addNodeView() {
-    return ReactNodeViewRenderer(ToyboxView, nodeViewOptions);
+    return spannedNodeViewRenderer(ToyboxView, nodeViewOptions);
   },
 });
 

@@ -375,6 +375,7 @@ export function Sts1CardLibrary({
             {filteredCards.map((card) => (
               <Link
                 key={card.slug}
+                prefetch={false}
                 href={localizeHref(sts1DetailPath("cards", card.slug), serviceLocale)}
                 className="block transition-transform hover:z-10 hover:scale-[1.03]"
                 onClick={(event) => {

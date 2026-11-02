@@ -1,14 +1,16 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { Youtube } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { HistoryRunBlock } from "@/lib/chemical-types";
+import { blocksToPlainText } from "@/lib/chemical-utils";
 import {
   countComboYouTubeReferences,
+  exceedsComboTextLimit,
   extractComboResourceRefs,
   type ComboPost,
 } from "@/lib/combo-types";
@@ -36,6 +38,7 @@ interface ComboEditorProps {
   draftKey?: string;
   /** Starting content for a new post; an edited post starts from its own. */
   initialBlocks?: PostBlock[];
+  submitBlockedNotice?: string | null;
 }
 
 export function ComboEditor({
@@ -48,12 +51,15 @@ export function ComboEditor({
   hideNickname = false,
   draftKey,
   initialBlocks,
+  submitBlockedNotice = null,
 }: ComboEditorProps) {
   const copy = serviceMessages[serviceLocale].combo;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
   const entityInsertRequestIdRef = useRef(0);
   const historyRunInsertRequestIdRef = useRef(0);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const validationErrorRef = useRef<HTMLParagraphElement>(null);
+  const [noticeRevealRequest, setNoticeRevealRequest] = useState(0);
   const [historyRunPickerOpen, setHistoryRunPickerOpen] = useState(false);
   const [entityInsertRequest, setEntityInsertRequest] = useState<{
     requestId: number;
@@ -113,14 +119,33 @@ export function ComboEditor({
     slashCommands,
   }), [historyRunInsertRequest, slashCommands]);
 
+  const showNotice = useCallback((message: string) => {
+    setValidationError(message);
+    setNoticeRevealRequest((request) => request + 1);
+  }, []);
+
+  // A long post fills the modal, so the notice lands below its scrolled end.
+  // Every refused attempt reveals it, even when the message has not changed.
+  useEffect(() => {
+    validationErrorRef.current?.scrollIntoView({ block: "nearest" });
+  }, [noticeRevealRequest]);
+
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
     if (extractComboResourceRefs(blocks).length < 2) {
-      setValidationError(copy.minimumResources);
+      showNotice(copy.minimumResources);
       throw new Error("combo requires at least two resources");
     }
     if (countComboYouTubeReferences(blocks) > 1) {
-      setValidationError(copy.youtubeLimit);
+      showNotice(copy.youtubeLimit);
       throw new Error("combo allows one YouTube reference");
+    }
+    if (exceedsComboTextLimit(blocksToPlainText(blocks).trim())) {
+      showNotice(copy.textTooLong);
+      throw new Error("combo text exceeds the stored limit");
+    }
+    if (submitBlockedNotice) {
+      showNotice(submitBlockedNotice);
+      throw new Error("combo submit is blocked by another field");
     }
 
     setValidationError(null);
@@ -129,14 +154,23 @@ export function ComboEditor({
       : (nicknameInputRef.current?.value.trim()
         || profileNickname
         || copy.defaultNickname);
-    await onSubmit(blocks, nickname);
+    try {
+      await onSubmit(blocks, nickname);
+    } catch (error) {
+      showNotice(copy.saveFailed);
+      throw error;
+    }
   }, [
     copy.defaultNickname,
     copy.minimumResources,
+    copy.saveFailed,
+    copy.textTooLong,
     copy.youtubeLimit,
     hideNickname,
     onSubmit,
     profileNickname,
+    showNotice,
+    submitBlockedNotice,
   ]);
 
   return (
@@ -211,7 +245,7 @@ export function ComboEditor({
       </div>
 
       {validationError && (
-        <p className="text-xs text-red-300" role="alert" aria-live="polite">
+        <p ref={validationErrorRef} className="text-xs text-red-300" role="alert" aria-live="polite">
           {validationError}
         </p>
       )}

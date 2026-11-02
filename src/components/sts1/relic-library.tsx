@@ -171,6 +171,7 @@ export function Sts1RelicLibrary({
                   {group.map((relic) => (
                     <Link
                       key={relic.slug}
+                      prefetch={false}
                       href={localizeHref(sts1DetailPath("relics", relic.slug), serviceLocale)}
                       className="group"
                       title={relic.name}

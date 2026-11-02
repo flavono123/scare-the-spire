@@ -71,6 +71,7 @@ function BadgeTile({
   const variants = getRunBadgeVariants(badge);
   return (
     <Link
+      prefetch={false}
       // Game-only locales have no detail pages; this links their list modal.
       href={buildCompendiumEntryHref("badge", badge.slug, gameLocale)}
       className="mb-5 block break-inside-avoid rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70"

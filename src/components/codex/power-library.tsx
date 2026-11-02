@@ -32,7 +32,6 @@ import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
 import { versionCodexEntities } from "@/lib/codex-versioning";
-import { serviceMessages } from "@/messages/service";
 import {
   fuzzyMatchCodexText,
   stripCodexMarkup,
@@ -52,10 +51,11 @@ import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
   CompendiumIndexScroller,
-  CompendiumDetailLoading,
+  CompendiumDetailFallback,
   CompendiumDetailOverlay,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
+import type { CompendiumDataStatus } from "./use-compendium-data";
 
 interface PowerLibraryProps {
   serviceLocale: ServiceLocale;
@@ -76,11 +76,11 @@ interface PowerLibraryProps {
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
   entities?: EntityInfo[];
-  /** False until the data chunks settle; the detail modal shows a loading state. */
-  detailsReady?: boolean;
+  /** Until "loaded", the detail modal shows a loading state or a retry notice. */
+  detailsStatus?: CompendiumDataStatus;
 }
 
-export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], relics = [], potions = [], enchantments = [], events = [], monsters = [], afflictions = [], tipCatalogSources, versions, currentVersion, patches, changes, versionDiffs, entities, detailsReady = true }: PowerLibraryProps) {
+export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], relics = [], potions = [], enchantments = [], events = [], monsters = [], afflictions = [], tipCatalogSources, versions, currentVersion, patches, changes, versionDiffs, entities, detailsStatus = "loaded" }: PowerLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlPowerId = useHydrationSafeSearchParam("power");
   const urlVersion = useHydrationSafeSearchParam("version");
@@ -335,7 +335,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
       {selectedPower && (
         <CompendiumDetailOverlay onClose={() => closeSelectedPower()}>
           <div className="my-8 mx-4 w-full max-w-6xl">
-            {detailsReady ? (
+            {detailsStatus === "loaded" ? (
               <PowerDetail
                 serviceLocale={serviceLocale}
                 gameUi={gameUi}
@@ -359,11 +359,11 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
                 onClose={closeSelectedPower}
               />
             ) : (
-              <CompendiumDetailLoading
+              <CompendiumDetailFallback
+                serviceLocale={serviceLocale}
+                status={detailsStatus}
                 title={selectedPower.name}
                 backToListTitle={title}
-                closeLabel={serviceText.common.close}
-                loadingLabel={serviceMessages[serviceLocale].comments.loading}
                 onClose={closeSelectedPower}
                 className="max-w-5xl"
               />

@@ -91,6 +91,7 @@ export function RelicTile({
   return (
     <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
       <Link
+        prefetch={false}
         href={localizeHref(buildCompendiumResourceDetailHref("relic", relic.id), serviceLocale)}
         className="relative group block"
         onClick={(event) => {
