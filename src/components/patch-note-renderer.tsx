@@ -1,5 +1,6 @@
 "use client";
 
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { useState, useRef, useCallback, useMemo, type ComponentProps, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import Image from "@/components/ui/static-image";
@@ -499,6 +500,9 @@ export function entityCompendiumHref(entity: EntityInfo): string | null {
   }
 }
 
+// Some encounters roll dozens of compositions; the Compendium page lists them all.
+const ENCOUNTER_PREVIEW_FORMATION_LIMIT = 8;
+
 /** Callers without explicit locales link and label in the locale of the page. */
 export function EntityPreview(props: ComponentProps<typeof LocalizedEntityPreview>) {
   const pageGameLocale = useGameLocale();
@@ -640,6 +644,7 @@ function LocalizedEntityPreview({
   // Pending construction previews stay inline so static HTML and patch:test
   // always include the fail-closed "in progress" copy. Portals drop that
   // markup during SSR.
+  const encounterFormations = entity.encounterData ? expandEncounterFormations(entity.encounterData) : [];
   const portalHoverTips = !staticHoverPreviews && !forceShow && !isPendingCompendium;
   const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => {
     const body = useTapPreview ? (
@@ -647,7 +652,7 @@ function LocalizedEntityPreview({
         <Link
           href={href}
           {...newTabProps}
-          aria-label={`${entity.nameKo} 페이지로 이동`}
+          aria-label={serviceLocale === "en" ? `Go to ${entity.nameKo}` : `${entity.nameKo} 페이지로 이동`}
           data-pressed={previewPressed}
           onPointerDown={() => setPreviewPressed(true)}
           onPointerLeave={() => setPreviewPressed(false)}
@@ -740,7 +745,7 @@ function LocalizedEntityPreview({
       {visible && useTapPreview && getHoverTipPortalRoot() && createPortal(
         <button
           type="button"
-          aria-label="미리보기 닫기"
+          aria-label={serviceLocale === "en" ? "Close preview" : "미리보기 닫기"}
           className="pointer-events-auto fixed inset-0 cursor-default bg-black/35"
           style={{ zIndex: HOVER_TIP_LAYER_Z_INDEX - 1 }}
           onClick={() => setShow(false)}
@@ -961,12 +966,12 @@ function LocalizedEntityPreview({
                     {gameUi?.acts[entity.encounterData.act] ?? (EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
                   </span>
                 )}
-                {entity.encounterData.isWeak && <span className="text-green-400">쉬운 전투</span>}
+                {entity.encounterData.isWeak && <span className="text-green-400">{getCodexServiceMessages(serviceLocale ?? "ko").encountersView.weakEncounter}</span>}
               </>
             )}
           >
             <div className="space-y-1">
-              {expandEncounterFormations(entity.encounterData).map((formation) => (
+              {encounterFormations.slice(0, ENCOUNTER_PREVIEW_FORMATION_LIMIT).map((formation) => (
                 <div key={formation.id} className="flex items-start justify-between gap-3 text-xs">
                   <span>{formation.monsters.map((monster) => monster.name).join(" + ")}</span>
                   <span className="shrink-0 text-amber-300/90">
@@ -977,6 +982,13 @@ function LocalizedEntityPreview({
                   </span>
                 </div>
               ))}
+              {encounterFormations.length > ENCOUNTER_PREVIEW_FORMATION_LIMIT && (
+                <div className="text-xs text-gray-400">
+                  {serviceLocale === "en"
+                    ? `+${encounterFormations.length - ENCOUNTER_PREVIEW_FORMATION_LIMIT} more`
+                    : `외 ${encounterFormations.length - ENCOUNTER_PREVIEW_FORMATION_LIMIT}개`}
+                </div>
+              )}
             </div>
           </GameResourcePreview>,
         )
