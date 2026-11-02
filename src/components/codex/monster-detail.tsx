@@ -869,7 +869,6 @@ function PatternStateTransitionDiagram({
       originY: pan.y,
       moved: false,
     };
-    event.currentTarget.setPointerCapture(event.pointerId);
     setIsDragging(true);
   }, [pan.x, pan.y]);
 
@@ -878,8 +877,11 @@ function PatternStateTransitionDiagram({
     if (!drag || drag.pointerId !== event.pointerId) return;
     const deltaX = event.clientX - drag.startX;
     const deltaY = event.clientY - drag.startY;
-    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+    if (!drag.moved && (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3)) {
       drag.moved = true;
+      // Capture only once dragging: capturing on press retargets the click to
+      // this container, so links and move nodes inside would never receive it.
+      event.currentTarget.setPointerCapture(event.pointerId);
     }
     setPan(clampPan({ x: drag.originX + deltaX, y: drag.originY + deltaY }));
   }, [clampPan]);
