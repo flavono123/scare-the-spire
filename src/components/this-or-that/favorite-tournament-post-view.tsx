@@ -175,7 +175,7 @@ export function FavoriteTournamentPostView({
               <span>{formatBracketRoundLabel(post.pool.length, copy)}</span>
             </div>
             {post.note ? (
-              <p className="mt-2 font-game-text text-sm text-muted-foreground">{post.note}</p>
+              <p className="mt-2 font-game-text text-sm text-muted-foreground [overflow-wrap:anywhere]">{post.note}</p>
             ) : null}
           </div>
           {!isEmbed && (

@@ -21,7 +21,7 @@ interface ChemicalXEditorProps {
   entities: EntityInfo[];
   placeholder: string;
   profileNickname: string;
-  onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void>;
+  onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void | false>;
   hideNickname?: boolean;
   draftKey?: string;
   initialBlocks?: PostBlock[];
@@ -44,7 +44,7 @@ export function ChemicalXEditor({
     const nickname = hideNickname
       ? (profileNickname.trim() || copy.defaultNickname)
       : (nicknameInputRef.current?.value.trim() || profileNickname || copy.defaultNickname);
-    await onSubmit(blocks, nickname);
+    return onSubmit(blocks, nickname);
   }, [copy.defaultNickname, hideNickname, onSubmit, profileNickname]);
 
   return (

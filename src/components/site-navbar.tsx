@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback, type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, useSyncExternalStore, type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -357,31 +357,49 @@ function LanguageDropdown({
   );
 }
 
+/**
+ * The first effect after a document load runs before the metadata boundary
+ * hydrates, so a client navigation there leaves the old title, canonical, and
+ * hreflang tags in the head for good. That one redirect loads a new document.
+ */
+function replaceLocaleHref(
+  router: ReturnType<typeof useRouter>,
+  href: string,
+  afterDocumentLoad: boolean,
+) {
+  if (afterDocumentLoad) window.location.replace(href);
+  else router.replace(href);
+}
+
 function InitialLocaleDetector() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const afterDocumentLoad = useRef(true);
 
   useEffect(() => {
-    if (hasGameLocalePathPrefix(pathname)) return;
-    if (searchParams.has("gl")) return;
-    if (getLocalePreference()) return;
-    // Crawlers index the requested language page; never switch it for them.
-    if (isSearchCrawlerUserAgent(navigator.userAgent)) return;
+    const targetHref = (() => {
+      if (hasGameLocalePathPrefix(pathname)) return null;
+      if (searchParams.has("gl")) return null;
+      if (getLocalePreference()) return null;
+      // Crawlers index the requested language page; never switch it for them.
+      if (isSearchCrawlerUserAgent(navigator.userAgent)) return null;
 
-    const currentHash = window.location.hash;
-    const detectedGameLocale = detectGameLocaleFromNavigator(navigator);
-    const targetHref = languageHref(
-      pathname,
-      new URLSearchParams(searchParams.toString()),
-      detectedGameLocale,
-    );
-    const currentSearch = searchParams.toString();
-    const currentHref = `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
+      const detectedGameLocale = detectGameLocaleFromNavigator(navigator);
+      const detectedHref = languageHref(
+        pathname,
+        new URLSearchParams(searchParams.toString()),
+        detectedGameLocale,
+      );
+      const currentSearch = searchParams.toString();
+      const currentHref = `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
+      return detectedHref === currentHref ? null : detectedHref;
+    })();
 
-    if (targetHref !== currentHref) {
-      router.replace(`${targetHref}${currentHash}`);
+    if (targetHref) {
+      replaceLocaleHref(router, `${targetHref}${window.location.hash}`, afterDocumentLoad.current);
     }
+    afterDocumentLoad.current = false;
   }, [pathname, router, searchParams]);
 
   return null;
@@ -397,38 +415,33 @@ function LocaleCanonicalizer({
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const afterDocumentLoad = useRef(true);
 
   useEffect(() => {
-    const currentHash = window.location.hash;
-    const legacyGameLocale = searchParams.get("gl");
-    if (legacyGameLocale && isGameLocale(legacyGameLocale)) {
-      router.replace(
-        `${languageHref(
-          pathname,
-          new URLSearchParams(searchParams.toString()),
-          legacyGameLocale,
-        )}${currentHash}`,
-      );
-      return;
+    const targetHref = (() => {
+      const search = new URLSearchParams(searchParams.toString());
+      const legacyGameLocale = searchParams.get("gl");
+      if (legacyGameLocale && isGameLocale(legacyGameLocale)) {
+        return languageHref(pathname, search, legacyGameLocale);
+      }
+
+      if (hasGameLocalePathPrefix(pathname)) return null;
+
+      const savedGameLocale = getLocalePreference();
+      if (!savedGameLocale) return null;
+
+      const expectedServiceLocale = getServiceLocaleForGameLocale(savedGameLocale);
+      if (gameLocale === savedGameLocale && serviceLocale === expectedServiceLocale) {
+        return null;
+      }
+
+      return languageHref(pathname, search, savedGameLocale);
+    })();
+
+    if (targetHref) {
+      replaceLocaleHref(router, `${targetHref}${window.location.hash}`, afterDocumentLoad.current);
     }
-
-    if (hasGameLocalePathPrefix(pathname)) return;
-
-    const savedGameLocale = getLocalePreference();
-    if (!savedGameLocale) return;
-
-    const expectedServiceLocale = getServiceLocaleForGameLocale(savedGameLocale);
-    if (gameLocale === savedGameLocale && serviceLocale === expectedServiceLocale) {
-      return;
-    }
-
-    router.replace(
-      `${languageHref(
-        pathname,
-        new URLSearchParams(searchParams.toString()),
-        savedGameLocale,
-      )}${currentHash}`,
-    );
+    afterDocumentLoad.current = false;
   }, [gameLocale, pathname, router, searchParams, serviceLocale]);
 
   return null;
@@ -741,6 +754,10 @@ function GlobalSearch({
 
 // --- Main navbar ---
 
+function subscribeNever() {
+  return () => {};
+}
+
 export function SiteNavbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -773,7 +790,11 @@ export function SiteNavbar() {
       : item
   ));
   const mailboxReply = useMailboxReply();
-  const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
+  // A record shell is prerendered under a placeholder id and React keeps
+  // server attributes on hydration, so the source path waits until the client
+  // renders with the real address.
+  const hydrated = useSyncExternalStore(subscribeNever, () => true, () => false);
+  const contactHref = getContactHref(hydrated ? pathname : "/contact", serviceLocale, gameLocale);
   const isContactPage = stripGameLocaleFromPath(pathname) === "/contact";
 
   return (

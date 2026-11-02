@@ -121,7 +121,9 @@ export function ComboResourcePicker({
 
     searchInputRef.current?.focus();
 
-    const handlePointerDown = (event: PointerEvent) => {
+    // Closing on click, not pointerdown: the panel sits in the page flow, so
+    // closing mid-press moves whatever the pointer was about to click.
+    const handleOutsideClick = (event: MouseEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) setOpenState(false);
     };
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -130,10 +132,11 @@ export function ComboResourcePicker({
 
     if (embedded) return;
 
-    document.addEventListener("pointerdown", handlePointerDown);
+    // Capture: modal panels stop click propagation before it reaches document.
+    document.addEventListener("click", handleOutsideClick, true);
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("click", handleOutsideClick, true);
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [embedded, open]);

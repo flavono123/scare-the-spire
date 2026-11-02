@@ -51,6 +51,7 @@ export function ServiceModalFrame({
   panelDataAttribute?: string;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const pressedBackdropRef = useRef(false);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -74,7 +75,16 @@ export function ServiceModalFrame({
         "fixed inset-0 z-[70] flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center sm:px-3 sm:py-6",
         overlayClassName,
       )}
-      onClick={closeOnBackdrop ? onClose : undefined}
+      onPointerDown={(event) => {
+        pressedBackdropRef.current = event.target === event.currentTarget;
+      }}
+      // A press that starts in the panel and ends here still clicks this
+      // element, for one when the panel shrinks under the pointer.
+      onClick={closeOnBackdrop
+        ? (event) => {
+            if (event.target === event.currentTarget && pressedBackdropRef.current) onClose();
+          }
+        : undefined}
     >
       <div
         ref={(node) => {

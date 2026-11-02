@@ -67,11 +67,9 @@ function normalizeBody(row: unknown): DefragmentBody | null {
 }
 
 export function isMissingDefragmentBodiesTable(
-  error: { code?: string; message?: string } | null | undefined,
+  error: { code?: string } | null | undefined,
 ): boolean {
-  if (!error) return false;
-  if (error.code === "PGRST205" || error.code === "42P01") return true;
-  return /defragment_bodies/i.test(error.message ?? "");
+  return error?.code === "PGRST205" || error?.code === "42P01";
 }
 
 export async function fetchDefragmentBody(
@@ -105,9 +103,12 @@ export async function upsertDefragmentBody(input: {
 }): Promise<DefragmentBody | null> {
   if (!supabaseEnabled) return null;
   const parsed = overlayBodyForSave(input.blocks);
-  if (parsed == null || parsed === "invalid") return null;
+  if (parsed == null) return null;
+  if (parsed === "invalid") throw new Error("defragment overlay body invalid");
   const nickname = input.nickname.trim();
-  if (nickname.length < 1 || nickname.length > 20) return null;
+  if (nickname.length < 1 || nickname.length > 20) {
+    throw new Error("defragment overlay nickname invalid");
+  }
 
   const { data, error } = await withSupabaseTimeout(
     "defragment_bodies.upsert",
@@ -126,9 +127,6 @@ export async function upsertDefragmentBody(input: {
       .select()
       .single(),
   );
-  if (error) {
-    if (isMissingDefragmentBodiesTable(error)) return null;
-    throw error;
-  }
+  if (error) throw error;
   return normalizeBody(data);
 }
