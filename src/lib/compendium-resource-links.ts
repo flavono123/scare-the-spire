@@ -193,6 +193,7 @@ const STS1_LIST_SELECTOR_PARAMS: Record<string, string | null> = {
   characters: null,
   potions: "potion",
   powers: "power",
+  monsters: "monster",
   relics: "relic",
 };
 
