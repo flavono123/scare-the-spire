@@ -1,6 +1,11 @@
 # Task 010: 운영에도 있는 기존 문제 모음
 
-## 상태: TODO (대규모 리팩토링 묶음이 모두 끝난 뒤 착수)
+## 상태: 수정 완료 후 사용자 검수 대기 (2026-11-02, 미배포)
+
+- 고침: #1~20, #22, #24~31, #33~37, #39~41, #43, #44, #46~59, #61.
+- 이미 고쳐짐: #19, #21, #38. 재현 안 됨: #23(동시 4회 전부 200, 드문 500이 사라졌다고 단정은 못 함).
+- 결정 대기: #32(기록별 OG, 요청마다 Supabase 조회), #42(Realtime publication), #45(DB 낮은 항목), #60(Free 인스턴스, Pro 사용 안 함).
+- 아래 목록은 기록으로 남긴다. 수정 내용은 `docs/release/UNRELEASED.md`의 known-issues-fixes에 있다.
 
 ## 분류
 
@@ -228,3 +233,14 @@
 61. **sitemap의 `lastmod`에 미래 날짜가 나옴**. `/patches`, `/patches/changes`, `/patches/2026-11-12`와 각 영어판 6줄이 빌드 시점보다 뒤인 2026-11-12다.
     - https://scare-the-spire.flavono123.workers.dev/sitemap.xml
     - 원인: `src/app/sitemap.ts`가 `data/sts2-patches.json`의 패치 날짜를 그대로 쓴다.
+
+### 2026-11-02 수정 중 추가 (남은 항목)
+
+62. **몬스터 스킨 이름이 게임 언어로 나오지 않음**. 생성 데이터의 `spineAsset.skinVariants[].label`이 모든 언어에서 '형태 1' 같은 한국어다(30건).
+    - https://scare-the-spire.flavono123.workers.dev/en/compendium/bestiary
+63. **게임 요소 선택 창을 연 채 Esc를 누르면 작성창까지 닫힘**. 초안은 남는다. 코드 읽기로만 확인했다.
+    - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+64. **JavaScript를 끈 게임 전용 언어 페이지의 간단 헤더가 영어이고 `/en`으로 링크**. 공용 레이아웃이 로케일을 모른다(#24의 남은 부분).
+    - https://scare-the-spire.flavono123.workers.dev/ja/compendium/cards
+65. **`scripts/contact.spec.ts`의 'submits a private inquiry without requesting a readable row' 1건 실패**. CI에 없는 스펙이고, navbar 변경 전 코드에서도 같았다. 가짜 환경 탓인지 기존 문제인지는 가리지 못했다.
+    - https://scare-the-spire.flavono123.workers.dev/contact
