@@ -24,6 +24,7 @@ import { sts1CardUiUrl, sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1Potion, Sts1PotionPool, Sts1PotionRarity, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1PotionDetail } from "./potion-detail";
 import { Sts1PotionTile } from "./potion-tile";
+import { useEscapeClose } from "./use-escape-close";
 
 const RARITY_ORDER: Sts1PotionRarity[] = ["common", "uncommon", "rare"];
 
@@ -62,6 +63,7 @@ export function Sts1PotionLibrary({
     setUseUrlSelection(false);
     setSelectedOverride(null);
   }, []);
+  useEscapeClose(Boolean(selectedPotion), closePotion);
 
   useEffect(() => {
     if (useUrlSelection) return;

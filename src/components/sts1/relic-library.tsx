@@ -24,6 +24,7 @@ import { sts1CardUiUrl, sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1Relic, Sts1RelicPool, Sts1RelicTier, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1RelicDetail } from "./relic-detail";
 import { Sts1RelicTile } from "./relic-tile";
+import { useEscapeClose } from "./use-escape-close";
 
 const TIER_ORDER: Exclude<Sts1RelicTier, "deprecated">[] = ["starter", "common", "uncommon", "rare", "shop", "special", "boss"];
 
@@ -62,6 +63,7 @@ export function Sts1RelicLibrary({
     setUseUrlSelection(false);
     setSelectedOverride(null);
   }, []);
+  useEscapeClose(Boolean(selectedRelic), closeRelic);
 
   useEffect(() => {
     if (useUrlSelection) return;
