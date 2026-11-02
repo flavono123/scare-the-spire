@@ -25,8 +25,7 @@ export function BetaArtQuiz({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
-  const messages = serviceMessages[serviceLocale];
-  const copy = messages.vexingPuzzlebox;
+  const copy = serviceMessages[serviceLocale].vexingPuzzlebox;
   const sets = useMemo(() => buildBetaArtQuizSets(entries), [entries]);
   const [setIndex, setSetIndex] = useState<number | null>(null);
   const [answers, setAnswers] = useState<boolean[]>([]);
@@ -91,7 +90,7 @@ export function BetaArtQuiz({
       const url = `${window.location.origin}${window.location.pathname}?mode=quiz&set=${setIndex + 1}`;
       try {
         await navigator.clipboard.writeText(
-          `${messages.nav.vexingPuzzlebox} ${copy.quizResultTitle} ${copy.quizSet} ${setIndex + 1} · ${score}/${set.length}\n${grid}\n${url}`,
+          `${gameCopy.title} ${copy.quizResultTitle} ${copy.quizSet} ${setIndex + 1} · ${score}/${set.length}\n${grid}\n${url}`,
         );
         setCopied(true);
       } catch {

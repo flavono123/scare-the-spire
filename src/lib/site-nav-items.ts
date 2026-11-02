@@ -6,6 +6,7 @@ import {
   getDecisionsDecisionsNavTitle,
   getDefragmentNavTitle,
   getPagestormNavTitle,
+  getVexingPuzzleboxNavTitle,
   getTransfigureNavTitle,
 } from "@/lib/borrowed-game-copy";
 import {
@@ -144,7 +145,7 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     href: VEXING_PUZZLEBOX_HREF,
     icon: VEXING_PUZZLEBOX_TOKEN_SRC,
     createdAt: "2026-11-02",
-    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.vexingPuzzlebox,
+    getLabel: (_serviceLocale, gameLocale) => getVexingPuzzleboxNavTitle(gameLocale),
   },
   {
     href: DEBATE_HREF,

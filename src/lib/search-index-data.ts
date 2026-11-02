@@ -470,9 +470,9 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
   const vexingPuzzleboxItems: SearchIndexItem[] = [{
     id: "vexing-puzzlebox",
     type: "vexingPuzzlebox",
-    title: "짜퍼",
+    title: "짜증나는 퍼즐상자",
     titleEn: "Vexing Puzzlebox",
-    description: "짜증나는 퍼즐상자 퀴즈 커넥션스 니오우스레터 베타 아트 감상 갤러리",
+    description: "짜퍼 퀴즈 커넥션스 니오우스레터 베타 아트 감상 갤러리",
     descriptionEn: "quiz connections neowsletter beta art viewer gallery",
     imageUrl: "/images/sts2/relics/vexing_puzzlebox.webp",
     href: "/vexing-puzzlebox",

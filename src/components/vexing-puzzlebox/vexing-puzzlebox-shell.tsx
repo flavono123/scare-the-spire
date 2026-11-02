@@ -15,17 +15,20 @@ import { serviceMessages } from "@/messages/service";
 
 export function VexingPuzzleboxShell({
   active,
+  title,
+  hero,
   serviceLocale,
   gameLocale,
   children,
 }: {
   active: "connections" | "beta-art";
+  title: string;
+  hero: string;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   children: ReactNode;
 }) {
-  const messages = serviceMessages[serviceLocale];
-  const copy = messages.vexingPuzzlebox;
+  const copy = serviceMessages[serviceLocale].vexingPuzzlebox;
   const tabs = [
     {
       id: "connections" as const,
@@ -48,16 +51,17 @@ export function VexingPuzzleboxShell({
         <header className="flex items-center gap-3">
           <Image
             src={VEXING_PUZZLEBOX_TOKEN_SRC}
-            alt={messages.nav.vexingPuzzlebox}
+            alt={title}
             width={56}
             height={56}
             className="h-14 w-14 shrink-0 object-contain drop-shadow"
           />
           <div className="min-w-0">
             <h1 className="font-service text-xl font-bold text-primary sm:text-3xl">
-              {messages.nav.vexingPuzzlebox}
+              {title}
             </h1>
             <h2 className="mt-0.5 text-sm text-muted-foreground">{copy.subtitle}</h2>
+            {hero && <p className="mt-0.5 text-xs text-red-300/90">{hero}</p>}
           </div>
         </header>
         <nav className="mt-4 flex items-center gap-5 border-b border-border" aria-label={copy.tabsLabel}>

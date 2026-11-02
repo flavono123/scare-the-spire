@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ConnectionsClient } from "@/components/vexing-puzzlebox/connections-client";
 import { VexingPuzzleboxShell } from "@/components/vexing-puzzlebox/vexing-puzzlebox-shell";
+import { getVexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { VEXING_PUZZLEBOX_PAGE_OG_IMAGE } from "@/lib/page-og-images";
@@ -16,7 +17,7 @@ export async function generateVexingPuzzleboxMetadata(
   const messages = serviceMessages[serviceLocale];
   return getServiceOgMetadata({
     serviceLocale,
-    title: messages.nav.vexingPuzzlebox,
+    title: (await getVexingPuzzleboxGameCopy(gameLocale)).title,
     description: composeToyBoxIndexOgDescription(serviceLocale, messages.vexingPuzzlebox.subtitle),
     image: VEXING_PUZZLEBOX_PAGE_OG_IMAGE,
     canonicalPath: VEXING_PUZZLEBOX_HREF,
@@ -27,10 +28,24 @@ export async function renderVexingPuzzleboxPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const puzzles = await getConnectionsPuzzles(gameLocale);
+  const [puzzles, gameCopy] = await Promise.all([
+    getConnectionsPuzzles(gameLocale),
+    getVexingPuzzleboxGameCopy(gameLocale),
+  ]);
   return (
-    <VexingPuzzleboxShell active="connections" serviceLocale={serviceLocale} gameLocale={gameLocale}>
-      <ConnectionsClient puzzles={puzzles} serviceLocale={serviceLocale} gameLocale={gameLocale} />
+    <VexingPuzzleboxShell
+      active="connections"
+      title={gameCopy.title}
+      hero={gameCopy.hero}
+      serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
+    >
+      <ConnectionsClient
+        puzzles={puzzles}
+        title={gameCopy.title}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+      />
     </VexingPuzzleboxShell>
   );
 }

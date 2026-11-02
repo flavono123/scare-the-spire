@@ -17,7 +17,7 @@ export async function generateBetaArtMetadata(
   const messages = serviceMessages[serviceLocale];
   return getServiceOgMetadata({
     serviceLocale,
-    title: `${messages.nav.vexingPuzzlebox} ${messages.vexingPuzzlebox.tabBetaArt}`,
+    title: `${(await getVexingPuzzleboxGameCopy(gameLocale)).title} ${messages.vexingPuzzlebox.tabBetaArt}`,
     description: composeToyBoxIndexOgDescription(serviceLocale, messages.vexingPuzzlebox.subtitle),
     image: VEXING_PUZZLEBOX_PAGE_OG_IMAGE,
     canonicalPath: VEXING_PUZZLEBOX_BETA_ART_HREF,
@@ -33,7 +33,13 @@ export async function renderBetaArtPage(
     getVexingPuzzleboxGameCopy(gameLocale),
   ]);
   return (
-    <VexingPuzzleboxShell active="beta-art" serviceLocale={serviceLocale} gameLocale={gameLocale}>
+    <VexingPuzzleboxShell
+      active="beta-art"
+      title={gameCopy.title}
+      hero={gameCopy.hero}
+      serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
+    >
       <BetaArtClient
         entries={entries}
         characters={characters}

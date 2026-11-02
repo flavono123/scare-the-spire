@@ -94,6 +94,8 @@ interface PagestormGameCopy {
 }
 
 interface VexingPuzzleboxGameCopy {
+  title: string;
+  hero: string;
   betaArtHighScore: string;
   betaArtLowScore: string;
 }
@@ -1011,12 +1013,16 @@ async function buildPagestormGameCopy(
 async function buildVexingPuzzleboxGameCopy(
   gameLocale: GameLocale,
 ): Promise<VexingPuzzleboxGameCopy> {
-  const [betaArtHighScore, betaArtLowScore] = await Promise.all([
+  const [title, hero, betaArtHighScore, betaArtLowScore] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "relics", "VEXING_PUZZLEBOX.title"),
+    readGameTextWithEnglishFallback(gameLocale, "relics", "VEXING_PUZZLEBOX.flavor"),
     readGameTextWithEnglishFallback(gameLocale, "events", "FAKE_MERCHANT.talk.purchaseSuccess.line1"),
     readGameTextWithEnglishFallback(gameLocale, "events", "FAKE_MERCHANT.talk.purchaseFailureForbidden.line2"),
   ]);
 
   return {
+    title: title || "Vexing Puzzlebox",
+    hero: stripGameMarkup(hero || ""),
     betaArtHighScore: betaArtHighScore || "",
     betaArtLowScore: betaArtLowScore || "",
   };

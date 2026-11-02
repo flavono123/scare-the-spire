@@ -3,6 +3,8 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 export type ConnectionsMember = {
   key: string;
   name: string;
+  /** Spelling in the original puzzle. */
+  raw: string;
   entity: EntityInfo;
 };
 

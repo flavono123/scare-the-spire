@@ -98,7 +98,7 @@ export const VEXING_PUZZLEBOX_PAGE_OG_IMAGE: PageOgImage = {
   url: "/images/sts2/events/wood_carvings.webp",
   width: 3440,
   height: 1616,
-  alt: "짜퍼 — Vexing Puzzlebox",
+  alt: "짜증나는 퍼즐상자 — Vexing Puzzlebox",
 };
 
 export const PAGESTORM_PAGE_OG_IMAGE: PageOgImage = {
@@ -208,12 +208,12 @@ export const PAGE_OG_IMAGE_RULES = [
   },
   {
     pattern: "/vexing-puzzlebox",
-    label: "짜퍼 커넥션스",
+    label: "짜증나는 퍼즐상자 커넥션스",
     image: VEXING_PUZZLEBOX_PAGE_OG_IMAGE,
   },
   {
     pattern: "/vexing-puzzlebox/beta-art",
-    label: "짜퍼 베타 아트",
+    label: "짜증나는 퍼즐상자 베타 아트",
     image: VEXING_PUZZLEBOX_PAGE_OG_IMAGE,
   },
   {

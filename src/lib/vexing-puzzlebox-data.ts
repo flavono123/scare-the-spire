@@ -100,6 +100,7 @@ export async function getConnectionsPuzzles(gameLocale: GameLocale): Promise<Con
           return {
             key: `${member.ref.type}:${member.ref.id}`,
             name: entity.nameKo,
+            raw: member.raw,
             entity,
           };
         }),

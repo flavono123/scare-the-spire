@@ -47,6 +47,8 @@ export interface DebateGameCopy {
 }
 
 export interface VexingPuzzleboxGameCopy {
+  title: string;
+  hero: string;
   betaArtHighScore: string;
   betaArtLowScore: string;
 }
@@ -191,6 +193,10 @@ export async function getVexingPuzzleboxGameCopy(
   gameLocale: GameLocale,
 ): Promise<VexingPuzzleboxGameCopy> {
   return getBorrowedGameCopy(gameLocale).vexingPuzzlebox;
+}
+
+export function getVexingPuzzleboxNavTitle(gameLocale: GameLocale): string {
+  return getBorrowedGameCopy(gameLocale).vexingPuzzlebox.title;
 }
 
 export function getPagestormNavTitle(gameLocale: GameLocale): string {

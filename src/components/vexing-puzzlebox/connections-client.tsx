@@ -5,13 +5,14 @@ import { EntityPreview } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import { seededShuffle } from "@/lib/beta-art-quiz";
 import { neowsletterClaimHref } from "@/lib/neowsletter-anchors";
+import { MEGA_CRIT_TOKEN_SRC, NEOWSLETTER_TOKEN_SRC } from "@/lib/vexing-puzzlebox";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import {
   readVexingPuzzleboxRecord,
   updateVexingPuzzleboxRecord,
   type ConnectionsProgress,
 } from "@/lib/vexing-puzzlebox-storage";
-import type { ConnectionsCategory, ConnectionsPuzzle } from "@/lib/vexing-puzzlebox-types";
+import type { ConnectionsCategory, ConnectionsMember, ConnectionsPuzzle } from "@/lib/vexing-puzzlebox-types";
 import { serviceMessages } from "@/messages/service";
 
 const MISTAKE_LIMIT = 4;
@@ -24,28 +25,35 @@ const LEVEL_CLASS = [
 ];
 const LEVEL_EMOJI = ["🟨", "🟩", "🟦", "🟪"];
 
+type ItemView = "tokens" | "local" | "original";
+
+function memberLabel(member: ConnectionsMember, view: ItemView): string {
+  return view === "original" ? member.raw : member.name;
+}
+
 function emptyProgress(): ConnectionsProgress {
   return { guesses: [], solvedLevels: [], mistakes: 0 };
 }
 
 function SolvedCategory({
   category,
-  finished,
+  view,
   serviceLocale,
   gameLocale,
 }: {
   category: ConnectionsCategory;
-  finished: boolean;
+  view: ItemView;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
   return (
     <div className={`rounded-lg px-3 py-2.5 ${LEVEL_CLASS[category.level]}`}>
-      <p className="text-center text-sm font-bold">{category.title}</p>
-      {finished && serviceLocale === "ko" && (
-        <p className="text-center text-xs opacity-70">{category.titleEn}</p>
+      <p className="text-center text-sm font-bold">
+        {view === "original" ? category.titleEn : category.title}
+      </p>
+      {view !== "original" && category.note && (
+        <p className="mt-1 text-center text-xs">{category.note}</p>
       )}
-      {category.note && <p className="mt-1 text-center text-xs">{category.note}</p>}
       <ul className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {category.members.map((member) => (
           <li key={member.key} className="flex min-w-0 items-center gap-2 rounded-md bg-black/70 p-1.5 text-white">
@@ -60,7 +68,7 @@ function SolvedCategory({
             )}
             <span className="min-w-0 text-xs [word-break:keep-all]">
               <EntityPreview entity={member.entity} serviceLocale={serviceLocale} gameLocale={gameLocale}>
-                {member.name}
+                {memberLabel(member, view)}
               </EntityPreview>
             </span>
           </li>
@@ -72,10 +80,12 @@ function SolvedCategory({
 
 export function ConnectionsClient({
   puzzles,
+  title,
   serviceLocale,
   gameLocale,
 }: {
   puzzles: ConnectionsPuzzle[];
+  title: string;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
@@ -86,6 +96,7 @@ export function ConnectionsClient({
   const [selected, setSelected] = useState<string[]>([]);
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [view, setView] = useState<ItemView>("tokens");
 
   useEffect(() => {
     const requested = Number(new URLSearchParams(window.location.search).get("p"));
@@ -161,7 +172,7 @@ export function ConnectionsClient({
     const url = `${window.location.origin}${window.location.pathname}?p=${puzzle.number}`;
     try {
       await navigator.clipboard.writeText(
-        `${serviceMessages[serviceLocale].nav.vexingPuzzlebox} ${copy.resultTitle} #${puzzle.number} · ${copy.mistakeCount} ${progress.mistakes}\n${grid}\n${url}`,
+        `${title} ${copy.resultTitle} #${puzzle.number} · ${copy.mistakeCount} ${progress.mistakes}\n${grid}\n${url}`,
       );
       setCopied(true);
     } catch {
@@ -169,8 +180,35 @@ export function ConnectionsClient({
     }
   };
 
+  // English is already the original wording, so its game locale needs one text view.
+  const views: { id: ItemView; label: string }[] = [
+    { id: "tokens", label: copy.viewTokens },
+    ...(gameLocale === "eng" ? [] : [{ id: "local" as const, label: copy.viewLocal }]),
+    { id: "original", label: copy.viewOriginal },
+  ];
+
   return (
     <section className="mx-auto max-w-2xl" data-connections-puzzle={puzzle.number}>
+      <p className="mb-3 text-center text-sm font-semibold">{copy.guide}</p>
+      <div className="mb-3 flex justify-center">
+        <div role="group" aria-label={copy.viewsLabel} className="inline-flex rounded-lg border border-border bg-card/80 p-0.5">
+          {views.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              aria-pressed={view === item.id}
+              onClick={() => setView(item.id)}
+              className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
+                view === item.id
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </div>
       {puzzles.length > 1 && (
         <label className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
           {copy.puzzleLabel}
@@ -191,7 +229,7 @@ export function ConnectionsClient({
           <SolvedCategory
             key={category.level}
             category={category}
-            finished={finished}
+            view={view}
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
           />
@@ -204,19 +242,44 @@ export function ConnectionsClient({
             {remainingTiles.map((tile) => {
               const isSelected = selected.includes(tile.key);
               return (
-                <button
+                <div
                   key={tile.key}
-                  type="button"
+                  role="button"
+                  tabIndex={0}
                   aria-pressed={isSelected}
+                  aria-label={tile.name}
                   onClick={() => toggleTile(tile.key)}
-                  className={`flex min-h-16 items-center justify-center rounded-lg border px-1 py-2 text-center text-xs font-semibold transition-colors [word-break:keep-all] sm:min-h-20 sm:text-sm ${
+                  onKeyDown={(event) => {
+                    if (event.key !== "Enter" && event.key !== " ") return;
+                    event.preventDefault();
+                    toggleTile(tile.key);
+                  }}
+                  className={`flex min-h-16 cursor-pointer items-center justify-center rounded-lg border text-center text-xs font-semibold transition-colors [word-break:keep-all] sm:min-h-20 sm:text-sm [&>span]:h-full [&>span]:min-h-16 [&>span]:w-full [&>span]:sm:min-h-20 ${
                     isSelected
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card/90 text-foreground hover:border-primary/60"
                   }`}
                 >
-                  {tile.name}
-                </button>
+                  {view === "tokens" && tile.entity.imageUrl ? (
+                    <EntityPreview
+                      entity={tile.entity}
+                      serviceLocale={serviceLocale}
+                      gameLocale={gameLocale}
+                      disableLink
+                      linkClassName="flex h-full w-full items-center justify-center"
+                    >
+                      <Image
+                        src={tile.entity.imageUrl}
+                        alt=""
+                        width={72}
+                        height={56}
+                        className="h-12 w-16 object-contain sm:h-14 sm:w-[4.5rem]"
+                      />
+                    </EntityPreview>
+                  ) : (
+                    <span className="flex items-center justify-center px-1 py-2">{memberLabel(tile, view)}</span>
+                  )}
+                </div>
               );
             })}
           </div>
@@ -285,24 +348,23 @@ export function ConnectionsClient({
         </div>
       )}
 
-      <footer className="mt-6 space-y-1 text-center text-xs text-muted-foreground">
-        <p>{copy.attribution.replace("{issue}", String(puzzle.issueNumber))}</p>
-        <p className="flex justify-center gap-3">
-          <a
-            href={localizeHrefWithGameLocale(neowsletterClaimHref(puzzle.issueId, puzzle.claimId), serviceLocale, gameLocale)}
-            className="underline hover:text-foreground"
-          >
-            {copy.sourceIssue}
-          </a>
-          <a
-            href={`https://custom-connections-game.vercel.app/${puzzle.slug}`}
-            target="_blank"
-            rel="noreferrer"
-            className="underline hover:text-foreground"
-          >
-            {copy.sourcePuzzle}
-          </a>
-        </p>
+      <footer className="mt-6 flex flex-wrap justify-center gap-4 text-xs">
+        <a
+          href={localizeHrefWithGameLocale(neowsletterClaimHref(puzzle.issueId, puzzle.claimId), serviceLocale, gameLocale)}
+          className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
+        >
+          <Image src={NEOWSLETTER_TOKEN_SRC} alt="" width={16} height={16} className="h-4 w-4 rounded-sm object-cover" />
+          {copy.sourceIssue.replace("{issue}", String(puzzle.issueNumber))} &rarr;
+        </a>
+        <a
+          href={`https://custom-connections-game.vercel.app/${puzzle.slug}`}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
+        >
+          <Image src={MEGA_CRIT_TOKEN_SRC} alt="" width={16} height={16} className="h-4 w-4 rounded-sm" />
+          {copy.sourcePuzzle} &rarr;
+        </a>
       </footer>
     </section>
   );
