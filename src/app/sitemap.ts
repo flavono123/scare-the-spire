@@ -100,6 +100,11 @@ function localizedEntries(path: string, lastModified?: string): MetadataRoute.Si
   }));
 }
 
+/** Announced dates can be ahead of the build; a sitemap must not claim a future edit. */
+function lastModifiedNoLaterThan(date: string, buildDate: string): string {
+  return date.slice(0, 10) > buildDate ? buildDate : date;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [
     detailParamGroups,
@@ -135,8 +140,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...sts1Powers.map((power) => `/compendium/sts1/powers/${power.slug}`),
     ...sts1Characters.map((character) => `/compendium/sts1/characters/${character.slug}`),
   ];
-  const latestPatchDate = patches.map(({ date }) => date).sort().at(-1);
-  const latestNeowsletterDate = neowsletters.map(({ date }) => date).sort().at(-1);
+  const buildDate = new Date().toISOString().slice(0, 10);
+  const lastModified = (date: string) => lastModifiedNoLaterThan(date, buildDate);
+  const latestPatchDate = patches.map(({ date }) => lastModified(date)).sort().at(-1);
+  const latestNeowsletterDate = neowsletters.map(({ date }) => lastModified(date)).sort().at(-1);
 
   return [
     ...paths.flatMap((path) => localizedEntries(
@@ -147,7 +154,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           ? latestNeowsletterDate
           : undefined,
     )),
-    ...patches.flatMap(({ version, date }) => localizedEntries(`/patches/${version}`, date)),
-    ...neowsletters.flatMap(({ id, date }) => localizedEntries(`/patches/neowsletters/${id}`, date)),
+    ...patches.flatMap(({ version, date }) => localizedEntries(`/patches/${version}`, lastModified(date))),
+    ...neowsletters.flatMap(({ id, date }) => localizedEntries(`/patches/neowsletters/${id}`, lastModified(date))),
   ];
 }
