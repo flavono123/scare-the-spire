@@ -2,8 +2,9 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import { CodexRelic, characterOutlineFilter, type RelicPool } from "@/lib/codex-types";
 import type { CardSideTipCatalogSources } from "@/lib/card-side-tip-catalog";
@@ -49,6 +50,7 @@ export function RelicTile({
   tipCatalogPotions = [],
   tipCatalogEnchantments = [],
 }: RelicTileProps) {
+  const localizeLink = useLocalizedHref();
   const tileVariant = pickRelicCharacterVariant(relic, preferredPool);
   const tileImageUrl = resolveRelicDisplayImage(relic, preferredPool, { showBeta });
   const outlinePool = tileVariant ?? relic.pool;
@@ -92,7 +94,7 @@ export function RelicTile({
     <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
       <Link
         prefetch={false}
-        href={localizeHref(buildCompendiumResourceDetailHref("relic", relic.id), serviceLocale)}
+        href={localizeLink(buildCompendiumResourceDetailHref("relic", relic.id))}
         className="relative group block"
         onClick={(event) => {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

@@ -2,10 +2,11 @@
 
 import { type ReactNode, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexServiceMessages } from "@/lib/codex-service";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { CodexAffliction, CodexCard, CodexEnchantment, CodexEvent, CodexKeyword, CodexPotion, CodexPower, CodexRelic } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -142,6 +143,7 @@ export function KeywordDetail({
   entities,
   onClose,
 }: KeywordDetailProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const labels = keywordDetailLabels(serviceLocale);
@@ -199,7 +201,7 @@ export function KeywordDetail({
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/keywords", serviceLocale)}
+          href={localizeLink("/compendium/keywords")}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(event) => {
             if (onClose) {
@@ -231,6 +233,7 @@ export function KeywordDetail({
           >
             {entities ? (
               <RichDescription
+                gameUi={gameUi}
                 description={keyword.description}
                 entities={entities}
                 excludeEntityTerms={excludeSelf}

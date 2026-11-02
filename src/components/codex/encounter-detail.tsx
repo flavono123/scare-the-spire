@@ -6,11 +6,12 @@ import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { RichText } from "@/components/rich-text";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { formatEncounterLossText } from "@/lib/encounter-compositions";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { STS2Change, STS2Patch } from "@/lib/types";
@@ -88,6 +89,7 @@ export function EncounterDetail({
   changes,
   onClose,
 }: EncounterDetailProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = serviceMessages[serviceLocale];
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const commonText = serviceText.codex.common;
@@ -151,7 +153,7 @@ export function EncounterDetail({
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/bestiary?view=encounters", serviceLocale)}
+          href={localizeLink("/compendium/bestiary?view=encounters")}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(event) => {
             if (onClose) {
@@ -237,7 +239,7 @@ export function EncounterDetail({
                 return (
                   <Link
                     key={monsterRef.id}
-                    href={localizeHref(buildCompendiumResourceHref("monster", monsterRef.id), serviceLocale)}
+                    href={localizeLink(buildCompendiumResourceHref("monster", monsterRef.id))}
                     className="group flex min-w-[7rem] flex-col items-center gap-2 text-center"
                   >
                     <div className="relative flex h-32 w-36 items-center justify-center sm:h-40 sm:w-44">

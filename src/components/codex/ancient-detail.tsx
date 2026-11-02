@@ -2,12 +2,13 @@
 
 import { type ReactNode, type Ref, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -117,6 +118,7 @@ export function AncientDetail({
   changes,
   versionDiffs,
 }: AncientDetailProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getAncientDetailLabels(serviceLocale);
@@ -167,7 +169,7 @@ export function AncientDetail({
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/ancients", serviceLocale)}
+          href={localizeLink("/compendium/ancients")}
           className="flex min-h-11 items-center text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(e) => {
             if (onClose) {
@@ -218,6 +220,7 @@ export function AncientDetail({
               messages={serviceText}
               entities={entities}
               excludeSelf={excludeSelf}
+              gameUi={gameUi}
               className="z-10 sm:pr-[min(32rem,48%)]"
             />
             {rewardRelics.length > 0 && (
@@ -291,7 +294,7 @@ export function AncientDetail({
             ]}
           >
             <Link
-              href={localizeHref(`/compendium/relics#ancient-${ancient.id.toLowerCase()}`, serviceLocale)}
+              href={localizeLink(`/compendium/relics#ancient-${ancient.id.toLowerCase()}`)}
               className={`${relatedCardTargets.length > 0 ? "mt-3 border-t border-white/10 pt-3" : ""} spire-gold flex min-h-11 items-center gap-2 font-game-text text-sm font-bold transition-[filter] hover:brightness-125`}
             >
               <span className="h-7 w-7 shrink-0" aria-hidden>

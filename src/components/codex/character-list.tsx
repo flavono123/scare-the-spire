@@ -1,6 +1,8 @@
 "use client";
 
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import {
@@ -26,7 +28,7 @@ import {
   stripCodexMarkup,
 } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import {
   buildCompendiumResourceDetailHref,
   updateCompendiumResourceModalUrl,
@@ -46,6 +48,7 @@ import { SearchBar } from "./search-bar";
 import type { CompendiumDataStatus } from "./use-compendium-data";
 
 interface CharacterListProps {
+  gameUi?: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   title: string;
   characters: CodexCharacter[];
@@ -166,6 +169,7 @@ export function CharacterList({
   changes,
   versionDiffs,
   entities,
+  gameUi,
   detailsStatus = "loaded",
 }: CharacterListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -362,6 +366,7 @@ export function CharacterList({
           <div className="mx-4 my-8 w-full max-w-6xl">
             {detailsStatus === "loaded" ? (
               <CharacterDetail
+                gameUi={gameUi}
                 serviceLocale={serviceLocale}
                 backToListTitle={title}
                 character={selectedCharacter}
@@ -411,6 +416,7 @@ function CharacterRow({
   setRowRef: (node: HTMLAnchorElement | null) => void;
   onSelect: (character: CodexCharacter) => void;
 }) {
+  const localizeLink = useLocalizedHref();
   const characterPool = character.id.toLowerCase();
   const color = CHARACTER_COLORS[characterPool] ?? "#eab308";
   const faceFocus = CHARACTER_FACE_FOCUS[characterPool] ?? "60% 35%";
@@ -434,7 +440,7 @@ function CharacterRow({
     <Link
       prefetch={false}
       ref={setRowRef}
-      href={localizeHref(buildCompendiumResourceDetailHref("character", character.id), serviceLocale)}
+      href={localizeLink(buildCompendiumResourceDetailHref("character", character.id))}
       role="listitem"
       aria-current={active ? "true" : undefined}
       onMouseEnter={() => setActiveCharacterId(character.id)}

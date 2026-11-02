@@ -3,11 +3,12 @@
 import { type CSSProperties, type PointerEvent, type ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import {
   classifyMonsterIntentFsm,
   getMonsterIntentConditionDescriptor,
@@ -1562,6 +1563,7 @@ export function MonsterDetail({
   selectedVersion,
   onClose,
 }: MonsterDetailProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = serviceMessages[serviceLocale];
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const commonText = serviceText.codex.common;
@@ -1764,7 +1766,7 @@ export function MonsterDetail({
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/bestiary", serviceLocale)}
+          href={localizeLink("/compendium/bestiary")}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) { e.preventDefault(); onClose(); }

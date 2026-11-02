@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useMemo, type CSSProperties, type ReactNode } from "react";
+import { useState, useRef, useCallback, useMemo, type ComponentProps, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
@@ -18,6 +18,7 @@ import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { toCompendiumDetailHref, useCompendiumDetailLinks } from "@/components/compendium-detail-links";
 import { AUTO_LINK_ENTITY_TYPES, buildAutoLinkKeywordsByFirst, wrapNumberedAscensionMentions, wrapUntaggedEntityNames, type AutoLinkKeyword } from "@/lib/auto-link-entity-names";
 import {
+  getServiceLocaleForGameLocale,
   localizeHrefWithGameLocale,
   type GameLocale,
   type ServiceLocale,
@@ -67,6 +68,7 @@ import {
 } from "@/lib/encounter-compositions";
 import { getHoverTipPortalRoot, HOVER_TIP_LAYER_Z_INDEX } from "@/lib/hover-tip-layer";
 import { useCoarsePointer } from "@/hooks/use-coarse-pointer";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { isModifiedClick, NEW_TAB_LINK_PROPS } from "@/components/editor/editor-link";
 
 // Entity types that can appear in patch notes
@@ -497,7 +499,15 @@ export function entityCompendiumHref(entity: EntityInfo): string | null {
   }
 }
 
-export function EntityPreview({
+/** Callers without explicit locales link and label in the locale of the page. */
+export function EntityPreview(props: ComponentProps<typeof LocalizedEntityPreview>) {
+  const pageGameLocale = useGameLocale();
+  const gameLocale = props.gameLocale ?? pageGameLocale;
+  const serviceLocale = props.serviceLocale ?? getServiceLocaleForGameLocale(gameLocale);
+  return <LocalizedEntityPreview {...props} gameLocale={gameLocale} serviceLocale={serviceLocale} />;
+}
+
+function LocalizedEntityPreview({
   entity,
   children,
   forceShow,

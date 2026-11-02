@@ -1,12 +1,13 @@
 "use client";
 
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import { getEpochUnlockLabels } from "@/lib/compendium-detail-labels";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -131,6 +132,7 @@ export function EpochDetail({
   syncBetaSearchParam = false,
   onClose,
 }: EpochDetailProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getEpochDetailLabels(serviceLocale);
@@ -213,7 +215,7 @@ export function EpochDetail({
     <div className={rootClassName}>
       <div className="mb-4 flex items-center justify-between gap-3">
         <a
-          href={localizeHref("/compendium/epochs", serviceLocale)}
+          href={localizeLink("/compendium/epochs")}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(event) => {
             if (onClose) {
@@ -273,6 +275,7 @@ export function EpochDetail({
                     <div className="mt-4 font-game-text text-[15px] leading-relaxed text-zinc-100 drop-shadow-[0_2px_3px_rgba(0,0,0,0.75)]">
                       {entities ? (
                         <RichDescription
+                          gameUi={gameUi}
                           description={epoch.description}
                           entities={entities}
                           excludeEntityTerms={excludeSelf}
@@ -340,6 +343,7 @@ export function EpochDetail({
                 <p className="font-game-text text-sm leading-relaxed text-gray-300">
                   {entities ? (
                     <RichDescription
+                      gameUi={gameUi}
                       description={epoch.unlockInfo}
                       entities={entities}
                       excludeEntityTerms={excludeSelf}
@@ -355,6 +359,7 @@ export function EpochDetail({
                   <p className="font-game-text text-sm leading-relaxed text-gray-300">
                     {entities ? (
                       <RichDescription
+                        gameUi={gameUi}
                         description={epoch.unlockText}
                         entities={entities}
                         excludeEntityTerms={excludeSelf}

@@ -1,5 +1,6 @@
 "use client";
 
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -23,6 +24,7 @@ export function AncientDialogueViewer({
   entities,
   excludeSelf,
   className,
+  gameUi,
 }: {
   ancient: CodexAncient;
   characters: CodexCharacter[];
@@ -30,6 +32,7 @@ export function AncientDialogueViewer({
   entities?: EntityInfo[];
   excludeSelf?: ReadonlySet<string>;
   className?: string;
+  gameUi?: CodexGameUiLabels;
 }) {
   const situationGroups = useMemo(() => SPECIAL_GROUPS.map((key) => ({
       key,
@@ -257,6 +260,7 @@ export function AncientDialogueViewer({
                       <div className="mb-1 text-xs font-bold [text-shadow:0_1px_0_rgba(0,0,0,0.8)]" style={{ color: speakerColor }}>{speakerName}</div>
                       {entities ? (
                         <RichDescription
+                          gameUi={gameUi}
                           description={line.text}
                           entities={entities}
                           excludeEntityTerms={excludeSelf}

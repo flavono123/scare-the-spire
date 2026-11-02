@@ -9,6 +9,7 @@ import {
   CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "@/components/codex/codex-filter-drawer";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { FilterSection, IconFilterButton } from "@/components/codex/codex-filters";
 import { SearchBar } from "@/components/codex/search-bar";
 import {
@@ -18,7 +19,7 @@ import {
 } from "@/components/codex/use-hydration-safe-search-param";
 import { formatCodexCount, getCodexServiceMessages } from "@/lib/codex-service";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import { STS1_FILTER_ICONS, STS1_TIER_COLORS } from "@/lib/sts1/card-style";
 import { sts1CardUiUrl, sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1Relic, Sts1RelicPool, Sts1RelicTier, Sts1UiLabels } from "@/lib/sts1/types";
@@ -36,6 +37,7 @@ export function Sts1RelicLibrary({
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlRelicId = useHydrationSafeSearchParam("relic");
   const [selectedPools, setSelectedPools] = useState<Set<Sts1RelicPool>>(new Set());
@@ -172,7 +174,7 @@ export function Sts1RelicLibrary({
                     <Link
                       key={relic.slug}
                       prefetch={false}
-                      href={localizeHref(sts1DetailPath("relics", relic.slug), serviceLocale)}
+                      href={localizeLink(sts1DetailPath("relics", relic.slug))}
                       className="group"
                       title={relic.name}
                       onClick={(event) => {

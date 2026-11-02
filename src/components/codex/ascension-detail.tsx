@@ -2,11 +2,12 @@
 
 import { type ReactNode, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { CommentSection } from "@/components/comment-section";
 import { STS2ChangeHistory } from "@/components/codex/sts2-change-history";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexServiceMessages } from "@/lib/codex-service";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { CodexAscension } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -58,9 +59,11 @@ function detailLabels(serviceLocale: ServiceLocale) {
 export function AscensionInspect({
   ascension,
   entities,
+  gameUi,
 }: {
   ascension: CodexAscension;
   entities?: EntityInfo[];
+  gameUi?: CodexGameUiLabels;
 }) {
   const excludeSelf = useMemo(
     () => new Set([ascension.name, ascension.nameEn, ...ascension.aliasesKo, ...ascension.aliasesEn]),
@@ -73,6 +76,7 @@ export function AscensionInspect({
       <GameHoverTip title={ascension.name} className="min-w-0 w-full" style={{ minWidth: 0 }}>
         {entities ? (
           <RichDescription
+            gameUi={gameUi}
             description={ascension.description}
             entities={entities}
             excludeEntityTerms={excludeSelf}
@@ -101,6 +105,7 @@ export function AscensionDetail({
   entities?: EntityInfo[];
   onClose?: () => void;
 }) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const labels = detailLabels(serviceLocale);
@@ -112,7 +117,7 @@ export function AscensionDetail({
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/ascensions", serviceLocale)}
+          href={localizeLink("/compendium/ascensions")}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(event) => {
             if (onClose) {
@@ -138,7 +143,7 @@ export function AscensionDetail({
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[18rem] flex-col items-center justify-center gap-2 py-4">
           <div ref={assetCopyTargetRef}>
-            <AscensionInspect ascension={ascension} entities={entities} />
+            <AscensionInspect ascension={ascension} entities={entities} gameUi={gameUi} />
           </div>
           <CompendiumAssetImageActions
             serviceLocale={serviceLocale}

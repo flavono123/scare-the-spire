@@ -76,7 +76,7 @@ import {
   type CompendiumResourceLinkType,
 } from "@/lib/compendium-resource-links";
 import { gameText, readGameLocalizationTable } from "@/lib/game-localization";
-import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { patchLineHref } from "@/lib/patch-line-links";
 import { getSTS2PatchLines, getSTS2Patches, getSTS2Stories } from "@/lib/data";
 import {
@@ -388,6 +388,7 @@ class DetailContext {
   constructor(
     readonly index: DetailIndex,
     readonly serviceLocale: ServiceLocale,
+    readonly gameLocale: GameLocale,
     readonly gameLabels: StaticGameLabels,
   ) {
     this.labels = STATIC_DETAIL_LABELS[serviceLocale];
@@ -398,8 +399,12 @@ class DetailContext {
     return this.index.resources;
   }
 
+  localizedHref(href: string): string {
+    return localizeHrefWithGameLocale(href, this.serviceLocale, this.gameLocale);
+  }
+
   href(kind: LinkKind, id: string): string {
-    return localizeHref(buildCompendiumResourceDetailHref(kind, id), this.serviceLocale);
+    return this.localizedHref(buildCompendiumResourceDetailHref(kind, id));
   }
 
   /** Resolves game ids such as "StrikeIronclad" to the Codex id with a detail page. */
@@ -931,7 +936,7 @@ async function buildHistory(
       id: line.id,
       date: dateLabel(line.date, ctx.serviceLocale),
       versionLabel: patch ? getPatchVersionLabel(patch, ctx.serviceLocale) : line.patch,
-      href: localizeHref(patchLineHref(line), ctx.serviceLocale),
+      href: ctx.localizedHref(patchLineHref(line)),
       segments: historySegments(ctx, line, selfKey),
     };
   });
@@ -1013,7 +1018,7 @@ export async function buildCompendiumStaticDetail(
     loadDetailIndex(locale.gameLocale),
     loadGameLabels(locale.gameLocale),
   ]);
-  const ctx = new DetailContext(index, locale.serviceLocale, gameLabels);
+  const ctx = new DetailContext(index, locale.serviceLocale, locale.gameLocale, gameLabels);
   const model = buildTypeModel(ctx, resourceType, id);
   if (!model) return null;
 
@@ -1026,7 +1031,7 @@ export async function buildCompendiumStaticDetail(
     epithet: model.epithet ?? null,
     imageUrl: model.imageUrl,
     back: {
-      href: localizeHref(LIST_PATHS[model.kind], locale.serviceLocale),
+      href: ctx.localizedHref(LIST_PATHS[model.kind]),
       label: listTitle(ctx, model.kind),
     },
     facts: model.facts,

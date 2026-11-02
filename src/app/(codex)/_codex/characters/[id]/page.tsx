@@ -87,6 +87,7 @@ export default async function CharacterDetailPage({
   return (
     <div className="min-h-screen bg-background text-foreground">
       <CharacterDetail
+        gameUi={gameUi}
         serviceLocale={serviceLocale}
         backToListTitle={gameUi.charactersTitle}
         character={character}

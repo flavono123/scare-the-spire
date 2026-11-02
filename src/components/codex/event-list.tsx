@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { resolveKnownVersion } from "@/lib/entity-versioning";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
@@ -9,7 +10,7 @@ import {
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import {
   buildCompendiumResourceDetailHref,
   updateCompendiumResourceModalUrl,
@@ -143,11 +144,12 @@ function EventThumbnail({
   messages: CodexServiceMessages;
   gameUi: CodexGameUiLabels;
 }) {
+  const localizeLink = useLocalizedHref();
   const lifecycleClassName = event.deprecated ? " opacity-50 grayscale saturate-0" : "";
   return (
     <Link
       prefetch={false}
-      href={localizeHref(buildCompendiumResourceDetailHref("event", event.id), serviceLocale)}
+      href={localizeLink(buildCompendiumResourceDetailHref("event", event.id))}
       onClick={(clickEvent) => {
         if (clickEvent.metaKey || clickEvent.ctrlKey || clickEvent.shiftKey || clickEvent.altKey || clickEvent.button !== 0) return;
         clickEvent.preventDefault();

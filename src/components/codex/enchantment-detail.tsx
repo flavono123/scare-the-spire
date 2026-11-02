@@ -1,13 +1,14 @@
 "use client";
 
 import { type ReactNode, useMemo, useRef, useState } from "react";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
-import { localizeHref } from "@/lib/i18n";
+
 import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -130,6 +131,7 @@ function getEnchantmentDetailLabels(serviceLocale: ServiceLocale) {
 const ENCHANTMENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 
 export function EnchantmentDetail(props: EnchantmentDetailProps) {
+  const localizeLink = useLocalizedHref();
   const {
     serviceLocale,
     gameUi,
@@ -224,7 +226,7 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/enchantments", serviceLocale)}
+          href={localizeLink("/compendium/enchantments")}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(e) => {
             if (onClose) {
@@ -315,6 +317,7 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
                   <div className="font-game-text text-sm leading-relaxed text-gray-300">
                     {entities ? (
                       <RichDescription
+                        gameUi={gameUi}
                         description={resource.extraCardText}
                         entities={entities}
                         excludeEntityTerms={excludeSelf}

@@ -7,7 +7,8 @@ import {
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
+import type { ServiceLocale } from "@/lib/i18n";
 import {
   buildCompendiumResourceDetailHref,
   updateCompendiumResourceModalUrl,
@@ -74,10 +75,11 @@ function KeywordTile({
   keyword: CodexKeyword;
   onClick: () => void;
 }) {
+  const localizeLink = useLocalizedHref();
   return (
     <Link
       prefetch={false}
-      href={localizeHref(buildCompendiumResourceDetailHref("keyword", keyword.id), serviceLocale)}
+      href={localizeLink(buildCompendiumResourceDetailHref("keyword", keyword.id))}
       className="group block h-full min-h-36 w-full text-left outline-none transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5"
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

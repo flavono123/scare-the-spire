@@ -2,8 +2,9 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { getCodexServiceMessages } from "@/lib/codex-service";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 
 export function Sts1MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -57,6 +58,7 @@ export function Sts1DetailShell({
   stageExtra?: ReactNode;
   children: ReactNode;
 }) {
+  const localizeLink = useLocalizedHref();
   const closeLabel = getCodexServiceMessages(serviceLocale).common.close;
   const compact = heroLayout === "icon";
   return (
@@ -64,7 +66,7 @@ export function Sts1DetailShell({
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref(backHref, serviceLocale)}
+          href={localizeLink(backHref)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(event) => {
             if (!onClose) return;

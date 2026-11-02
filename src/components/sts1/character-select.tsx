@@ -13,8 +13,9 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Volume2, VolumeX } from "lucide-react";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
-import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
   STS1_STAGE_HEIGHT,
   STS1_STAGE_WIDTH,
@@ -203,6 +204,7 @@ export function Sts1CharacterSelect({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
+  const localizeLink = useLocalizedHref();
   const router = useRouter();
   const fonts = fontFamilies(gameLocale);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -322,7 +324,7 @@ export function Sts1CharacterSelect({
     () => characters.find((character) => character.id === selectedId) ?? null,
     [characters, selectedId],
   );
-  const detailHref = selected ? localizeHref(sts1DetailPath("characters", selected.slug), serviceLocale) : null;
+  const detailHref = selected ? localizeLink(sts1DetailPath("characters", selected.slug)) : null;
 
   const embark = useCallback(() => {
     if (detailHref) router.push(detailHref);
@@ -331,7 +333,7 @@ export function Sts1CharacterSelect({
   const leave = useCallback(() => {
     const fromSite = document.referrer && new URL(document.referrer).origin === window.location.origin;
     if (fromSite && window.history.length > 1) router.back();
-    else router.push(localizeHref("/compendium", serviceLocale));
+    else router.push(localizeLink("/compendium"));
   }, [router, serviceLocale]);
 
   useEffect(() => {
@@ -478,7 +480,7 @@ export function Sts1CharacterSelect({
                   />
                   <Link
                     prefetch={false}
-                    href={localizeHref(sts1DetailPath("characters", character.slug), serviceLocale)}
+                    href={localizeLink(sts1DetailPath("characters", character.slug))}
                     aria-label={character.name}
                     aria-current={isSelected ? "true" : undefined}
                     className="absolute rounded-full outline-none focus-visible:ring-4 focus-visible:ring-amber-300/70"

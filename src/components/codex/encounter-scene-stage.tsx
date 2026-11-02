@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
@@ -8,7 +9,7 @@ import {
   expandEncounterFormations,
   formatEncounterProbability,
 } from "@/lib/encounter-compositions";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import type {
   CodexCharacter,
   CodexEncounter,
@@ -122,6 +123,7 @@ export function EncounterSceneStage({
   monsterFallbackUrl,
   children,
 }: EncounterSceneStageProps) {
+  const localizeLink = useLocalizedHref();
   const formations = useMemo(() => expandEncounterFormations(encounter), [encounter]);
   const monsterById = useMemo(
     () => new Map(monsters.map((monster) => [monster.id, monster])),
@@ -296,7 +298,7 @@ export function EncounterSceneStage({
         {renderCharacter && character && (
           interactive ? (
             <Link
-              href={localizeHref("/profile", serviceLocale)}
+              href={localizeLink("/profile")}
               aria-label={character.name}
               title={character.name}
               className="group absolute z-20 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
@@ -505,6 +507,7 @@ function EncounterMonsterActor({
   keepFallbackUntilPlayed?: boolean;
   atlasDuotone?: SpineAtlasDuotone | null;
 }) {
+  const localizeLink = useLocalizedHref();
   const stage = (
     <MonsterSpineStage
       asset={monster.spineAsset}
@@ -536,10 +539,7 @@ function EncounterMonsterActor({
 
   return (
     <Link
-      href={localizeHref(
-        buildCompendiumResourceHref("monster", monster.id),
-        serviceLocale,
-      )}
+      href={localizeLink(buildCompendiumResourceHref("monster", monster.id))}
       aria-label={monster.name}
       className="group absolute z-20 block after:absolute after:-inset-2 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
       style={style}
@@ -561,12 +561,10 @@ function EncounterMonsterHotspot({
   serviceLocale: ServiceLocale;
   style: CSSProperties;
 }) {
+  const localizeLink = useLocalizedHref();
   return (
     <Link
-      href={localizeHref(
-        buildCompendiumResourceHref("monster", monster.id),
-        serviceLocale,
-      )}
+      href={localizeLink(buildCompendiumResourceHref("monster", monster.id))}
       aria-label={monster.name}
       title={monster.name}
       className="group absolute z-30 block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
