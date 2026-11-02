@@ -14,7 +14,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
-import { withSearchCanonical } from "@/lib/search-canonical";
+import { withDefaultOpenGraphCanonical } from "@/lib/service-metadata";
 import { buildByrdispatchCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexGameUiLabels, type CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { collectStrings, selectEntitiesForTexts } from "@/lib/entity-subset";
@@ -66,7 +66,7 @@ export function generateByrdispatchMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ): Metadata {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  return withSearchCanonical(
+  return withDefaultOpenGraphCanonical(
     serviceMessages[serviceLocale].byrdispatch.metadata,
     "/byrdispatch",
     serviceLocale,
