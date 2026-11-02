@@ -1365,6 +1365,9 @@ export function RichContentEditor({
                   ? "max-h-[12rem]"
                   : undefined
               }
+              // A contained scroller swallows the wheel and touch pan even with
+              // nothing to scroll, which pins the surrounding composer.
+              scrollerClassName="overscroll-auto"
               size="small"
             >
               <EditorContent
