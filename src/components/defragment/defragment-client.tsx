@@ -99,7 +99,6 @@ export function DefragmentClient({
     unavailable,
     loadMore,
     prependItem,
-    setUnavailable,
   } = useDefragmentFeed(sort, typeFilter, donorNicknamesReady);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
@@ -158,7 +157,6 @@ export function DefragmentClient({
 
   const handleCreated = useCallback((item: DefragmentFeedItem) => {
     if (!typeFilter || item.service === typeFilter) prependItem(item);
-    setComposerOpen(false);
   }, [prependItem, typeFilter]);
 
   const handleColumnSort = useCallback((column: DefragmentBoardColumnSort) => {
@@ -224,7 +222,7 @@ export function DefragmentClient({
               typeLabels={typeLabels}
               decisionsCopy={decisionsCopy}
               onCreated={handleCreated}
-              onUnavailable={() => setUnavailable(true)}
+              onClose={() => setComposerOpen(false)}
               ensureUser={ensureUser}
               userId={userId}
               authReady={ready}

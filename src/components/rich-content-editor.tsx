@@ -404,7 +404,8 @@ function clearDraft(draftKey: string) {
 
 export interface RichContentEditorProps {
   entities: EntityInfo[];
-  onSubmit: (blocks: PostBlock[]) => Promise<void>;
+  /** Resolves `false` when nothing was saved, which keeps the text and draft. */
+  onSubmit: (blocks: PostBlock[]) => Promise<void | false>;
   placeholder: string;
   richPlaceholder?: string;
   draftKey: string;
@@ -1286,7 +1287,7 @@ export function RichContentEditor({
     setSubmitting(true);
 
     try {
-      await onSubmit(blocks);
+      if ((await onSubmit(blocks)) === false) return;
       editor.commands.clearContent();
       setCharCount(0);
       setYoutubeFeedback(null);

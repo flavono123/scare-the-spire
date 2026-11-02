@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { DecisionsDecisionsComposerValues } from "@/components/decisions-decisions/decisions-decisions-composer";
 import type { FavoriteTournamentComposerValues } from "@/components/this-or-that/favorite-tournament-composer";
@@ -32,8 +32,8 @@ import {
   type DefragmentFeedItem,
   type DefragmentWriteService,
 } from "@/lib/defragment";
+import { isDatabaseRejection, submitDefragmentPost } from "@/lib/defragment-submit";
 import type { GameLocale } from "@/lib/i18n";
-import { isCheckViolation } from "@/lib/supabase";
 import type { ThisOrThatResourceRef } from "@/lib/this-or-that";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
@@ -75,6 +75,38 @@ const PagestormEditor = dynamic(
   { ssr: false },
 );
 
+const PRIMARY_DRAFT_KEYS: Partial<Record<DefragmentWriteService, string>> = {
+  combo: "sts-defragment-combo-draft",
+  chemical_x: "sts-defragment-chemical-draft",
+};
+
+function overlayDraftKey(service: DefragmentWriteService) {
+  return `sts-defragment-overlay:${service}`;
+}
+
+function clearOverlayDraft(service: DefragmentWriteService) {
+  sessionStorage.removeItem(overlayDraftKey(service));
+}
+
+/**
+ * The editor clears its own draft after a save, but this panel can unmount it
+ * first, and a draft left behind would post the same text again after a reload.
+ */
+function clearPrimaryDraft(service: DefragmentWriteService) {
+  const key = PRIMARY_DRAFT_KEYS[service];
+  if (key) sessionStorage.removeItem(key);
+}
+
+type FeedPost = Parameters<typeof feedItemFromPost>[1];
+
+/** A saved post whose overlay failed: only the overlay may be sent again. */
+interface PendingOverlay {
+  service: DefragmentWriteService;
+  sourceId: string;
+  nickname: string;
+  activeUserId: string;
+}
+
 export interface DefragmentWritePlaceholders {
   defragment: string;
   combo: string;
@@ -91,7 +123,7 @@ export function DefragmentWritePanel({
   typeLabels,
   decisionsCopy,
   onCreated,
-  onUnavailable,
+  onClose,
   ensureUser,
   userId,
   authReady,
@@ -104,7 +136,7 @@ export function DefragmentWritePanel({
   typeLabels: Record<DefragmentWriteService, string>;
   decisionsCopy: DecisionsDecisionsGameCopy;
   onCreated: (item: DefragmentFeedItem) => void;
-  onUnavailable: () => void;
+  onClose: () => void;
   ensureUser: () => Promise<string | null>;
   userId: string | null;
   authReady: boolean;
@@ -112,11 +144,17 @@ export function DefragmentWritePanel({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].defragment;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
+  const noticeRef = useRef<HTMLParagraphElement>(null);
   const [writeType, setWriteType] = useState<DefragmentWriteService>("combo");
   const [overlayBlocks, setOverlayBlocks] = useState<PostBlock[]>([]);
   const [transfigureOpen, setTransfigureOpen] = useState(false);
   const [totSubmitting, setTotSubmitting] = useState(false);
   const [pagestormTitle, setPagestormTitle] = useState("");
+  const [pagestormSubmitting, setPagestormSubmitting] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [noticeRevealRequest, setNoticeRevealRequest] = useState(0);
+  const [pendingOverlay, setPendingOverlay] = useState<PendingOverlay | null>(null);
+  const [retryingOverlay, setRetryingOverlay] = useState(false);
   const totResources = useThisOrThatEntities(gameLocale);
   const decisionsCatalog = useDecisionsDecisionsCatalog(gameLocale, { includeLegacy: true });
 
@@ -126,6 +164,20 @@ export function DefragmentWritePanel({
       || copy.defaultNickname;
   }, [copy.defaultNickname, profileNickname]);
 
+  const overlayInvalid = overlayBodyForSave(overlayBlocks) === "invalid";
+  const visibleNotice = notice === copy.overlayBodyInvalid && !overlayInvalid ? null : notice;
+
+  const showNotice = useCallback((message: string) => {
+    setNotice(message);
+    setNoticeRevealRequest((request) => request + 1);
+  }, []);
+
+  // A long composer can push the notice below the visible part of the panel.
+  // Every refused attempt reveals it, even when the message has not changed.
+  useEffect(() => {
+    noticeRef.current?.scrollIntoView({ block: "nearest" });
+  }, [noticeRevealRequest]);
+
   const saveOverlay = useCallback(async (
     service: DefragmentWriteService,
     sourceId: string,
@@ -133,8 +185,8 @@ export function DefragmentWritePanel({
     activeUserId: string,
   ) => {
     const parsed = overlayBodyForSave(overlayBlocks);
-    if (parsed === "invalid") throw new Error("defragment overlay body invalid");
     if (!parsed) return;
+    if (parsed === "invalid") throw new Error("defragment overlay body invalid");
     await upsertDefragmentBody({
       service,
       sourceId,
@@ -144,41 +196,112 @@ export function DefragmentWritePanel({
     });
   }, [overlayBlocks]);
 
-  const handleComboSubmit = useCallback(async (blocks: PostBlock[]) => {
-    const activeUserId = userId ?? await ensureUser();
-    if (!activeUserId) throw new Error("anonymous auth unavailable");
+  /** Resolves true once the post exists, whether or not its overlay followed. */
+  const submitPost = useCallback(async <TPost extends FeedPost>(
+    service: DefragmentWriteService,
+    insertPost: (author: { nickname: string; activeUserId: string }) => Promise<TPost | null>,
+  ): Promise<boolean> => {
+    setNotice(null);
     const nickname = readNickname();
-    if (overlayBodyForSave(overlayBlocks) === "invalid") {
-      throw new Error("defragment overlay body invalid");
+    const outcome = await submitDefragmentPost<TPost>({
+      overlayInvalid,
+      resolveUserId: async () => userId ?? await ensureUser(),
+      insertPost: (activeUserId) => insertPost({ nickname, activeUserId }),
+      saveOverlay: (post, activeUserId) => saveOverlay(service, post.id, nickname, activeUserId),
+    });
+
+    switch (outcome.kind) {
+      case "overlay-invalid":
+        showNotice(copy.overlayBodyInvalid);
+        return false;
+      case "post-failed":
+        showNotice(outcome.rejected ? copy.postRejected : copy.postSaveFailed);
+        return false;
+      case "overlay-failed":
+        // The post stays in the feed and its draft goes, so a reload cannot post it twice.
+        onCreated(feedItemFromPost(service, outcome.post));
+        clearPrimaryDraft(service);
+        setPendingOverlay({
+          service,
+          sourceId: outcome.post.id,
+          nickname,
+          activeUserId: outcome.activeUserId,
+        });
+        showNotice(outcome.rejected ? copy.overlayRejected : copy.overlaySaveFailed);
+        return true;
+      case "saved":
+        onCreated(feedItemFromPost(service, outcome.post));
+        clearPrimaryDraft(service);
+        clearOverlayDraft(service);
+        onClose();
+        return true;
     }
+  }, [
+    copy.overlayBodyInvalid,
+    copy.overlayRejected,
+    copy.overlaySaveFailed,
+    copy.postRejected,
+    copy.postSaveFailed,
+    ensureUser,
+    onClose,
+    onCreated,
+    overlayInvalid,
+    readNickname,
+    saveOverlay,
+    showNotice,
+    userId,
+  ]);
+
+  const handleRetryOverlay = useCallback(async () => {
+    if (!pendingOverlay || retryingOverlay) return;
+    if (overlayInvalid) {
+      showNotice(copy.overlayBodyInvalid);
+      return;
+    }
+    setRetryingOverlay(true);
+    setNotice(null);
     try {
-      const post = await insertComboPost({ blocks, nickname, activeUserId });
-      if (!post) return;
-      await saveOverlay("combo", post.id, nickname, activeUserId);
-      onCreated(feedItemFromPost("combo", post));
+      await saveOverlay(
+        pendingOverlay.service,
+        pendingOverlay.sourceId,
+        pendingOverlay.nickname,
+        pendingOverlay.activeUserId,
+      );
+      clearOverlayDraft(pendingOverlay.service);
+      onClose();
     } catch (error) {
-      if (!isCheckViolation(error)) onUnavailable();
-      throw error;
+      showNotice(isDatabaseRejection(error) ? copy.overlayRejected : copy.overlaySaveFailed);
+    } finally {
+      setRetryingOverlay(false);
     }
-  }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
+  }, [
+    copy.overlayBodyInvalid,
+    copy.overlayRejected,
+    copy.overlaySaveFailed,
+    onClose,
+    overlayInvalid,
+    pendingOverlay,
+    retryingOverlay,
+    saveOverlay,
+    showNotice,
+  ]);
+
+  const handleSkipOverlay = useCallback(() => {
+    if (pendingOverlay) clearOverlayDraft(pendingOverlay.service);
+    onClose();
+  }, [onClose, pendingOverlay]);
+
+  const handleComboSubmit = useCallback(async (blocks: PostBlock[]) => {
+    const saved = await submitPost("combo", (author) => insertComboPost({ blocks, ...author }));
+    return saved ? undefined : false as const;
+  }, [submitPost]);
 
   const handleChemicalSubmit = useCallback(async (blocks: PostBlock[]) => {
-    const activeUserId = userId ?? await ensureUser();
-    if (!activeUserId) throw new Error("anonymous auth unavailable");
-    const nickname = readNickname();
-    if (overlayBodyForSave(overlayBlocks) === "invalid") {
-      throw new Error("defragment overlay body invalid");
-    }
-    try {
-      const post = await insertChemicalPost(blocks, nickname, activeUserId);
-      if (!post) return;
-      await saveOverlay("chemical_x", post.id, nickname, activeUserId);
-      onCreated(feedItemFromPost("chemical_x", post));
-    } catch (error) {
-      onUnavailable();
-      throw error;
-    }
-  }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
+    const saved = await submitPost("chemical_x", ({ nickname, activeUserId }) => (
+      insertChemicalPost(blocks, nickname, activeUserId)
+    ));
+    return saved ? undefined : false as const;
+  }, [submitPost]);
 
   const handleTotSubmit = useCallback(async (input: {
     left: ThisOrThatResourceRef;
@@ -187,129 +310,67 @@ export function DefragmentWritePanel({
   }) => {
     setTotSubmitting(true);
     try {
-      const activeUserId = userId ?? await ensureUser();
-      if (!activeUserId) return false;
-      const nickname = readNickname();
-      if (overlayBodyForSave(overlayBlocks) === "invalid") return false;
-      const post = await insertThisOrThatPost({
-        ...input,
-        nickname,
-        activeUserId,
-      });
-      if (!post) return false;
-      await saveOverlay("this_or_that", post.id, nickname, activeUserId);
-      onCreated(feedItemFromPost("this_or_that", post));
-      return true;
-    } catch {
-      onUnavailable();
-      return false;
+      return await submitPost("this_or_that", (author) => (
+        insertThisOrThatPost({ ...input, ...author })
+      ));
     } finally {
       setTotSubmitting(false);
     }
-  }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
+  }, [submitPost]);
+
+  const handleTransfigureOpen = useCallback(() => {
+    // The modal covers the overlay editor, so refuse a bad overlay before it opens.
+    if (overlayInvalid) {
+      showNotice(copy.overlayBodyInvalid);
+      return;
+    }
+    setNotice(null);
+    setTransfigureOpen(true);
+  }, [copy.overlayBodyInvalid, overlayInvalid, showNotice]);
 
   const handleTransfigureSubmit = useCallback(async (
     input: Omit<SaveTransfigurePostInput, "activeUserId">,
   ) => {
-    const activeUserId = userId ?? await ensureUser();
-    if (!activeUserId) throw new Error("anonymous auth unavailable");
-    const nickname = readNickname();
-    if (overlayBodyForSave(overlayBlocks) === "invalid") {
-      throw new Error("defragment overlay body invalid");
-    }
-    try {
-      const post = await insertTransfigurePost({
-        ...input,
-        nickname,
-        activeUserId,
-      });
-      if (!post) return;
-      await saveOverlay("transfigure", post.id, nickname, activeUserId);
-      onCreated(feedItemFromPost("transfigure", post));
-      setTransfigureOpen(false);
-    } catch (error) {
-      if (!isCheckViolation(error)) onUnavailable();
-      throw error;
-    }
-  }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
+    const saved = await submitPost("transfigure", (author) => (
+      insertTransfigurePost({ ...input, ...author })
+    ));
+    // The editor inside the modal reports a rejected promise as a failed save.
+    if (!saved) throw new Error("transfigure post was not saved");
+    setTransfigureOpen(false);
+  }, [submitPost]);
 
   const handleDecisionsSubmit = useCallback(async (
     values: DecisionsDecisionsComposerValues,
-  ) => {
-    const activeUserId = userId ?? await ensureUser();
-    if (!activeUserId) return false;
-    const nickname = readNickname();
-    if (overlayBodyForSave(overlayBlocks) === "invalid") return false;
-    try {
-      const post = await insertDecisionsDecisionsPost({
-        ...values,
-        nickname,
-        activeUserId,
-      });
-      if (!post) return false;
-      await saveOverlay("decisions_decisions", post.id, nickname, activeUserId);
-      onCreated(feedItemFromPost("decisions_decisions", post));
-      return true;
-    } catch {
-      onUnavailable();
-      return false;
-    }
-  }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
+  ) => submitPost("decisions_decisions", (author) => (
+    insertDecisionsDecisionsPost({ ...values, ...author })
+  )), [submitPost]);
 
   const handleFavoriteTournamentSubmit = useCallback(async (
     values: FavoriteTournamentComposerValues,
-  ) => {
-    const activeUserId = userId ?? await ensureUser();
-    if (!activeUserId) return false;
-    const nickname = readNickname();
-    if (overlayBodyForSave(overlayBlocks) === "invalid") return false;
-    try {
-      const post = await insertFavoriteTournamentPost({
-        ...values,
-        nickname,
-        activeUserId,
-      });
-      if (!post) return false;
-      await saveOverlay("favorite_tournament", post.id, nickname, activeUserId);
-      onCreated(feedItemFromPost("favorite_tournament", post));
-      return true;
-    } catch {
-      onUnavailable();
-      return false;
-    }
-  }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
+  ) => submitPost("favorite_tournament", (author) => (
+    insertFavoriteTournamentPost({ ...values, ...author })
+  )), [submitPost]);
 
   const handlePagestormSubmit = useCallback(async (
     input: PagestormEditorSaveInput,
   ) => {
-    const activeUserId = userId ?? await ensureUser();
-    if (!activeUserId) throw new Error("anonymous auth unavailable");
-    const nickname = readNickname();
-    if (overlayBodyForSave(overlayBlocks) === "invalid") {
-      throw new Error("defragment overlay body invalid");
-    }
+    setPagestormSubmitting(true);
     try {
-      const post = await insertPagestormPost({
-        ...input,
-        nickname,
-        activeUserId,
-      });
-      if (!post) return;
-      await saveOverlay("pagestorm", post.id, nickname, activeUserId);
-      onCreated(feedItemFromPost("pagestorm", post));
-      setPagestormTitle("");
-    } catch (error) {
-      onUnavailable();
-      throw error;
+      const saved = await submitPost("pagestorm", (author) => (
+        insertPagestormPost({ ...input, ...author })
+      ));
+      if (saved) setPagestormTitle("");
+    } finally {
+      setPagestormSubmitting(false);
     }
-  }, [ensureUser, onCreated, onUnavailable, overlayBlocks, readNickname, saveOverlay, userId]);
+  }, [submitPost]);
 
   const overlay = (
     <DefragmentOverlayBodyEditor
       key={writeType}
       entities={entities}
       placeholder={placeholders.defragment}
-      draftKey={`sts-defragment-overlay:${writeType}`}
+      draftKey={overlayDraftKey(writeType)}
       onBlocksChange={setOverlayBlocks}
     />
   );
@@ -327,6 +388,7 @@ export function DefragmentWritePanel({
           setOverlayBlocks([]);
           setTransfigureOpen(false);
           setPagestormTitle("");
+          setNotice(null);
         }}
         className={cn(
           "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors",
@@ -347,73 +409,71 @@ export function DefragmentWritePanel({
     );
   }), [typeLabels, writeType]);
 
+  // After a saved post with a failed overlay only the overlay stays open, so
+  // the post cannot be sent a second time.
+  const composerType = pendingOverlay ? null : writeType;
+
   return (
     <div className="space-y-3" data-defragment-write-panel>
-      <div className="overflow-visible rounded-lg border border-border bg-card/30 px-3 py-2">
-        <input
-          key={profileNickname}
-          ref={nicknameInputRef}
-          type="text"
-          defaultValue={profileNickname}
-          placeholder={copy.nicknamePlaceholder}
-          maxLength={20}
-          className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
-        />
-      </div>
-      <div className="flex flex-wrap gap-1.5">{typeChips}</div>
-
-      {writeType === "combo" && (
+      {!pendingOverlay && (
         <>
-          <ComboEditor
-            entities={entities}
-            placeholder={placeholders.combo}
-            profileNickname={readNickname()}
-            serviceLocale={serviceLocale}
-            hideNickname
-            draftKey="sts-defragment-combo-draft"
-            submitBlockedNotice={overlayBodyForSave(overlayBlocks) === "invalid" ? copy.overlayBodyInvalid : null}
-            onSubmit={async (blocks) => handleComboSubmit(blocks)}
-          />
-          {overlay}
-        </>
-      )}
-
-      {writeType === "chemical_x" && (
-        <>
-          <ChemicalXEditor
-            entities={entities}
-            placeholder={placeholders.chemicalX}
-            profileNickname={readNickname()}
-            hideNickname
-            draftKey="sts-defragment-chemical-draft"
-            onSubmit={async (blocks) => handleChemicalSubmit(blocks)}
-          />
-          {overlay}
-        </>
-      )}
-
-      {writeType === "this_or_that" && (
-        <>
-          <div className="overflow-visible rounded-lg border border-border bg-card/30">
-            <ThisOrThatComposerForm
-              entities={totResources.entities}
-              gameLocale={gameLocale}
-              placeholder={placeholders.thisOrThat}
-              authReady={authReady && !totResources.loading && !totResources.error}
-              storageUnavailable={Boolean(totResources.error)}
-              submitting={totSubmitting}
-              onSubmit={handleTotSubmit}
+          <div className="overflow-visible rounded-lg border border-border bg-card/30 px-3 py-2">
+            <input
+              key={profileNickname}
+              ref={nicknameInputRef}
+              type="text"
+              defaultValue={profileNickname}
+              placeholder={copy.nicknamePlaceholder}
+              maxLength={20}
+              className="w-full bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
             />
           </div>
-          {overlay}
+          <div className="flex flex-wrap gap-1.5">{typeChips}</div>
         </>
       )}
 
-      {writeType === "transfigure" && (
+      {composerType === "combo" && (
+        <ComboEditor
+          entities={entities}
+          placeholder={placeholders.combo}
+          profileNickname={readNickname()}
+          serviceLocale={serviceLocale}
+          hideNickname
+          draftKey={PRIMARY_DRAFT_KEYS.combo}
+          onSubmit={async (blocks) => handleComboSubmit(blocks)}
+        />
+      )}
+
+      {composerType === "chemical_x" && (
+        <ChemicalXEditor
+          entities={entities}
+          placeholder={placeholders.chemicalX}
+          profileNickname={readNickname()}
+          hideNickname
+          draftKey={PRIMARY_DRAFT_KEYS.chemical_x}
+          onSubmit={async (blocks) => handleChemicalSubmit(blocks)}
+        />
+      )}
+
+      {composerType === "this_or_that" && (
+        <div className="overflow-visible rounded-lg border border-border bg-card/30">
+          <ThisOrThatComposerForm
+            entities={totResources.entities}
+            gameLocale={gameLocale}
+            placeholder={placeholders.thisOrThat}
+            authReady={authReady && !totResources.loading && !totResources.error}
+            storageUnavailable={Boolean(totResources.error)}
+            submitting={totSubmitting}
+            onSubmit={handleTotSubmit}
+          />
+        </div>
+      )}
+
+      {composerType === "transfigure" && (
         <>
           <button
             type="button"
-            onClick={() => setTransfigureOpen(true)}
+            onClick={handleTransfigureOpen}
             className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary"
           >
             <Image
@@ -425,7 +485,6 @@ export function DefragmentWritePanel({
             />
             {copy.openTransfigure}
           </button>
-          {overlay}
           {transfigureOpen && (
             <TransfigureComposerModal
               entities={entities}
@@ -441,53 +500,79 @@ export function DefragmentWritePanel({
         </>
       )}
 
-      {writeType === "decisions_decisions" && (
-        <>
-          <DecisionsDecisionsComposer
-            entities={decisionsCatalog.entities}
-            entityMap={decisionsCatalog.entityMap}
-            stamps={decisionsCatalog.stamps}
-            gameLocale={gameLocale}
-            serviceLocale={serviceLocale}
-            presetLabels={decisionsCopy.presetLabels}
-            submitLabel={serviceMessages[serviceLocale].decisionsDecisions.submit}
-            profileNickname={readNickname()}
-            hideNickname
-            onSubmit={handleDecisionsSubmit}
-          />
-          {overlay}
-        </>
+      {composerType === "decisions_decisions" && (
+        <DecisionsDecisionsComposer
+          entities={decisionsCatalog.entities}
+          entityMap={decisionsCatalog.entityMap}
+          stamps={decisionsCatalog.stamps}
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          presetLabels={decisionsCopy.presetLabels}
+          submitLabel={serviceMessages[serviceLocale].decisionsDecisions.submit}
+          profileNickname={readNickname()}
+          hideNickname
+          onSubmit={handleDecisionsSubmit}
+        />
       )}
 
-      {writeType === "favorite_tournament" && (
-        <>
-          <FavoriteTournamentComposer
-            entities={decisionsCatalog.entities}
-            entityMap={decisionsCatalog.entityMap}
-            gameLocale={gameLocale}
-            serviceLocale={serviceLocale}
-            presetLabels={decisionsCopy.presetLabels}
-            submitLabel={serviceMessages[serviceLocale].favoriteTournament.submit}
-            profileNickname={readNickname()}
-            hideNickname
-            onSubmit={handleFavoriteTournamentSubmit}
-          />
-          {overlay}
-        </>
+      {composerType === "favorite_tournament" && (
+        <FavoriteTournamentComposer
+          entities={decisionsCatalog.entities}
+          entityMap={decisionsCatalog.entityMap}
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+          presetLabels={decisionsCopy.presetLabels}
+          submitLabel={serviceMessages[serviceLocale].favoriteTournament.submit}
+          profileNickname={readNickname()}
+          hideNickname
+          onSubmit={handleFavoriteTournamentSubmit}
+        />
       )}
 
-      {writeType === "pagestorm" && (
-        <>
-          <PagestormEditor
-            mode="edit"
-            title={pagestormTitle}
-            onTitleChange={setPagestormTitle}
-            nickname={readNickname()}
-            submitLabel={serviceMessages[serviceLocale].pagestorm.submit}
-            onSubmit={handlePagestormSubmit}
-          />
-          {overlay}
-        </>
+      {composerType === "pagestorm" && (
+        <PagestormEditor
+          mode="edit"
+          title={pagestormTitle}
+          onTitleChange={setPagestormTitle}
+          nickname={readNickname()}
+          submitLabel={serviceMessages[serviceLocale].pagestorm.submit}
+          submitting={pagestormSubmitting}
+          onSubmit={handlePagestormSubmit}
+        />
+      )}
+
+      {overlay}
+
+      {visibleNotice && (
+        <p
+          ref={noticeRef}
+          role="alert"
+          data-defragment-write-notice
+          className="text-xs text-red-300"
+        >
+          {visibleNotice}
+        </p>
+      )}
+
+      {pendingOverlay && (
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <button
+            type="button"
+            disabled={retryingOverlay}
+            onClick={handleSkipOverlay}
+            className="inline-flex items-center rounded-lg border border-border px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
+          >
+            {copy.overlaySkip}
+          </button>
+          <button
+            type="button"
+            disabled={retryingOverlay}
+            onClick={() => { void handleRetryOverlay(); }}
+            className="inline-flex items-center rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary disabled:opacity-50"
+          >
+            {copy.overlayRetry}
+          </button>
+        </div>
       )}
     </div>
   );

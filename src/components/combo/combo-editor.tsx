@@ -33,12 +33,11 @@ interface ComboEditorProps {
   placeholder: string;
   profileNickname: string;
   serviceLocale: ServiceLocale;
-  onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void>;
+  onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void | false>;
   hideNickname?: boolean;
   draftKey?: string;
   /** Starting content for a new post; an edited post starts from its own. */
   initialBlocks?: PostBlock[];
-  submitBlockedNotice?: string | null;
 }
 
 export function ComboEditor({
@@ -51,7 +50,6 @@ export function ComboEditor({
   hideNickname = false,
   draftKey,
   initialBlocks,
-  submitBlockedNotice = null,
 }: ComboEditorProps) {
   const copy = serviceMessages[serviceLocale].combo;
   const nicknameInputRef = useRef<HTMLInputElement>(null);
@@ -143,10 +141,6 @@ export function ComboEditor({
       showNotice(copy.textTooLong);
       throw new Error("combo text exceeds the stored limit");
     }
-    if (submitBlockedNotice) {
-      showNotice(submitBlockedNotice);
-      throw new Error("combo submit is blocked by another field");
-    }
 
     setValidationError(null);
     const nickname = hideNickname
@@ -155,7 +149,7 @@ export function ComboEditor({
         || profileNickname
         || copy.defaultNickname);
     try {
-      await onSubmit(blocks, nickname);
+      return await onSubmit(blocks, nickname);
     } catch (error) {
       showNotice(copy.saveFailed);
       throw error;
@@ -170,7 +164,6 @@ export function ComboEditor({
     onSubmit,
     profileNickname,
     showNotice,
-    submitBlockedNotice,
   ]);
 
   return (
