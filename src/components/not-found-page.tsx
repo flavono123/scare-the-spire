@@ -28,7 +28,16 @@ export function NotFoundPage() {
     const segment = pathPrefix.slice(1);
     const gameLocale = gameLocaleFromPathSegment(segment);
     const messages = serviceMessages[gameLocale ? getServiceLocaleForGameLocale(gameLocale) : "ko"];
-    document.title = `${messages.notFound.title} - ${messages.brand}`;
+    const title = `${messages.notFound.title} - ${messages.brand}`;
+    // Metadata from the shared prerender keeps the Korean title and arrives
+    // after this effect, on load and on client navigation alike.
+    const applyTitle = () => {
+      if (document.title !== title) document.title = title;
+    };
+    applyTitle();
+    const observer = new MutationObserver(applyTitle);
+    observer.observe(document.head, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
   }, [pathPrefix]);
 
   return SERVICE_LOCALES.map((serviceLocale) => (
