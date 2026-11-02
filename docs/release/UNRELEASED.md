@@ -23,12 +23,6 @@
 ## 기능 기대치
 
 <!--
-### card-tile-build-match
-- Feature: 카드 타일의 수치·강화·문구가 아카이브한 모든 빌드(0.98.0~0.111.0)의 전투 밖 게임 표시와 같고, 같은 문구는 버전이 달라도 개행이 같다.
-- Expect: 완벽한 타격 6, 쥐어뜯기 10, 재성형 단조 5, 때가 되었다 괄호 줄 없음. 초승달 창 0.104.0은 6, 0.105.0은 8. 재주넘기 0.99.1과 0.108.0의 줄바꿈이 같다.
-- QA: `pnpm test:version-canonical`, `pnpm test:version-api`, `pnpm codex:validate`. 수동: 위 카드의 `/compendium/cards/<id>?version=<버전>` 타일.
-- Commits: `c12bb4d2`와 그 후속 커밋
-
 ### <항목-id>
 - Feature:
 - Expect:
