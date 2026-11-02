@@ -17,6 +17,8 @@ import {
   type CardSideTipHorizontal,
 } from "@/lib/card-side-tip-placement";
 import { MONSTER_TYPE_CONFIG } from "@/lib/codex-types";
+import { usePageGameUiLabels } from "@/hooks/use-game-ui-labels";
+import { useServiceLocale } from "@/hooks/use-service-locale";
 import { getHoverTipPortalRoot, HOVER_TIP_LAYER_Z_INDEX } from "@/lib/hover-tip-layer";
 import { DescriptionText } from "./codex-description";
 import { CardTile } from "./card-tile";
@@ -43,10 +45,12 @@ function KeywordSideTip({ tip }: { tip: Extract<CardSideTip, { kind: "keyword" }
 }
 
 function CardEntitySideTip({ tip }: { tip: Extract<CardSideTip, { kind: "card" }> }) {
+  const serviceLocale = useServiceLocale();
   return (
     <span className="block w-36 drop-shadow-2xl">
       <CardTile
         card={tip.card}
+        serviceLocale={serviceLocale}
         showUpgrade={Boolean(tip.upgrade)}
         showBeta={false}
         interactive={false}
@@ -56,12 +60,13 @@ function CardEntitySideTip({ tip }: { tip: Extract<CardSideTip, { kind: "card" }
 }
 
 function MonsterEntitySideTip({ tip }: { tip: Extract<CardSideTip, { kind: "monster" }> }) {
+  const { gameUi, pending } = usePageGameUiLabels();
   const monster = tip.monster;
   const imageUrl = tip.imageUrl ?? monster?.bossImageUrl ?? monster?.imageUrl ?? null;
   const meta = monster ? (
     <>
       <span style={{ color: MONSTER_TYPE_CONFIG[monster.type].color }}>
-        {MONSTER_TYPE_CONFIG[monster.type].label}
+        {gameUi?.monsterTypes[monster.type].label ?? (pending ? null : MONSTER_TYPE_CONFIG[monster.type].label)}
       </span>
       {monster.minHp != null && monster.minHp !== 9999 && (
         <span className="text-gray-300">

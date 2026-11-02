@@ -22,6 +22,7 @@ import { TransfigureCardKeywordRail } from "@/components/transfigure/transfigure
 import { TransfigureTokenArt } from "@/components/transfigure/transfigure-token-art";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
+import { usePageGameUiLabels } from "@/hooks/use-game-ui-labels";
 import { RELIC_RARITY_LABELS } from "@/lib/codex-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
@@ -176,6 +177,9 @@ export function TransfigureAssetEditor({
   onShowUpgradeChange,
   onSubmit,
 }: TransfigureAssetEditorProps) {
+  const { gameUi: relicGameUi, pending: relicGameUiPending } = usePageGameUiLabels({
+    enabled: entity.type === "relic",
+  });
   const activeMode = showUpgrade ? "upgrade" : "base";
   const sourceCost = getTransfigureSourceCost(entity);
   const displayCard = useMemo(
@@ -580,7 +584,8 @@ export function TransfigureAssetEditor({
           <RelicInspectSlab
             className="max-w-[24rem]"
             rarity={entity.relicData.rarity}
-            rarityLabel={RELIC_RARITY_LABELS[entity.relicData.rarity]}
+            rarityLabel={relicGameUi?.relicCollection.rarities[entity.relicData.rarity].label
+              ?? (relicGameUiPending ? "" : RELIC_RARITY_LABELS[entity.relicData.rarity])}
             title={titleInput}
             art={entity.imageUrl ? (
               <TransfigureTokenArt

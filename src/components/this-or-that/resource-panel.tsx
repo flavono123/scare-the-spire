@@ -8,6 +8,7 @@ import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import { RelicInspectPreview } from "@/components/codex/relic-inspect-preview";
 import { EntityPreview, type EntityInfo, type EntityType } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
+import { useGameUiLabels } from "@/hooks/use-game-ui-labels";
 import { getCharacterColor, RELIC_RARITY_LABELS } from "@/lib/codex-types";
 import { cn } from "@/lib/utils";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
@@ -212,6 +213,9 @@ export function ThisOrThatResourcePanel({
     && (entity.monsterData?.spineAsset || monsterFallbackImageUrl(entity))
     ? <MonsterAssetPreview entity={entity} size={size} />
     : null;
+  const { gameUi: relicGameUi, pending: relicGameUiPending } = useGameUiLabels(gameLocale, {
+    enabled: entity.type === "relic",
+  });
   const assetOnlyHoverTip = assetOnly && !entity.cardData && assetOnlyDescription(entity)
     ? <AssetOnlyNonCardPreview entity={entity} size={size} />
     : null;
@@ -228,7 +232,8 @@ export function ThisOrThatResourcePanel({
     <RelicInspectPreview
       relic={entity.relicData}
       title={entity.nameKo}
-      rarityLabel={RELIC_RARITY_LABELS[entity.relicData.rarity]}
+      rarityLabel={relicGameUi?.relicCollection.rarities[entity.relicData.rarity].label
+        ?? (relicGameUiPending ? "" : RELIC_RARITY_LABELS[entity.relicData.rarity])}
       density="hover"
       className={isLarge ? "w-[16rem] max-w-[16rem]" : "w-[10.5rem] max-w-[10.5rem]"}
     />

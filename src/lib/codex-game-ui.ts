@@ -11,6 +11,7 @@ import type {
   MonsterType,
   PotionRarityKo,
   PowerType,
+  RelicFilterPool,
   RelicRarityKo,
 } from "@/lib/codex-types";
 
@@ -31,6 +32,7 @@ export type CodexGameUiLabels = {
   eventsTitle: string;
   ancientsTitle: string;
   epochsTitle: string;
+  characterNames: Record<Exclude<RelicFilterPool, "shared">, string>;
   nav: {
     cards: string;
     characters: string;
@@ -217,6 +219,7 @@ export async function getCodexGameUiLabels(
     epochs,
     statsScreen,
     intents,
+    characters,
   ] = await Promise.all([
     readGameLocalizationTable(gameLocale, "main_menu_ui"),
     readGameLocalizationTable(gameLocale, "gameplay_ui"),
@@ -229,6 +232,7 @@ export async function getCodexGameUiLabels(
     readGameLocalizationTable(gameLocale, "epochs"),
     readGameLocalizationTable(gameLocale, "stats_screen"),
     readGameLocalizationTable(gameLocale, "intents"),
+    readGameLocalizationTable(gameLocale, "characters"),
   ]);
 
   const cardTypes = Object.fromEntries(
@@ -354,6 +358,13 @@ export async function getCodexGameUiLabels(
     eventsTitle,
     ancientsTitle,
     epochsTitle,
+    characterNames: {
+      ironclad: gameText(characters, "IRONCLAD.title", "아이언클래드"),
+      silent: gameText(characters, "SILENT.title", "사일런트"),
+      defect: gameText(characters, "DEFECT.title", "디펙트"),
+      necrobinder: gameText(characters, "NECROBINDER.title", "네크로바인더"),
+      regent: gameText(characters, "REGENT.title", "리젠트"),
+    },
     nav: {
       cards: gameText(mainMenu, "COMPENDIUM_CARD_LIBRARY.title", "카드 목록"),
       characters: charactersTitle,
