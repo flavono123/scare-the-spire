@@ -29,6 +29,12 @@
 - 범위 주의: 공용 `service-modal-frame.tsx` 배경 닫기 조건, `codex-filter-drawer.tsx` 초점, ko 외 댓글이 게임 언어·한국어 그래프를 둘 다 받아 첫 전송량이 늘어남, 언어별 검색 색인 12개(약 740 KB).
 - Commits: `1eefa3a8..main`의 `Merge tasks/010 fixes` 4개와 후속 커밋
 
+### neowsletter-images-patch-only
+- Feature: 니오우스레터 이미지 399개를 main Worker 업로드에서 빼고 patch Worker에서만 서빙한다. 정적 asset이 18,101개가 되어 예산까지 1,399개 남는다.
+- Expect: 니오우스레터 페이지 이미지가 그대로 나오고 `/images/neowsletters/*`가 1년 캐시 헤더를 유지한다. 베타 아트 표시는 바뀌지 않는다.
+- QA: testbed에서 `cf:smoke --scope all` 186개, `qa:cf:testbed` 12개, 니오우스레터 399개와 베타 아트 673개 HTTP 200·원본 해시 일치, 캐시 헤더 확인. 빌드 결과가 참조하는 니오우스레터·베타 URL의 누락 없음. Supabase 차단 브라우저로 니오우스레터 30쪽 깨진 이미지 0개, 베타 아트 토글이 있는 5개 목록과 표본 상세에서 렌더 확인. 운영에서는 main 이전 patch 배포 뒤 같은 이미지 응답을 다시 본다.
+- Commits: `a6ae5810`
+
 ### vexing-puzzlebox
 - Feature: 장난감 상자의 새 서비스 짜퍼(`/vexing-puzzlebox`). 커넥션스 탭과 베타 아트 탭(감상, 갤러리, 퀴즈). 유물·파워 상세의 `?beta=true`도 함께 고침.
 - Expect: 커넥션스를 풀면 묶음별로 그림과 링크가 열리고 결과를 복사할 수 있다. 베타 아트 감상은 자동 재생되고 끌면 멈춰 비교되며, 갤러리에서 고른 그림이 감상에서 열린다. 퀴즈는 28세트로 풀린다. Supabase가 멈춰도 게임은 돈다.
