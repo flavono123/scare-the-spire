@@ -16,6 +16,7 @@ import {
   getRunBadgeVariants,
   type RunBadgeCatalogEntry,
 } from "@/lib/run-badges";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { DescriptionText } from "./codex-description";
 import { GameHoverTip } from "./hover-tip";
@@ -45,12 +46,7 @@ export function BadgeDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHrefWithGameLocale("/compendium/badges", serviceLocale, gameLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
-          onClick={(event) => {
-            if (onClose) {
-              event.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(event) => closeOnPlainClick(event, onClose)}
         >
           ← {backToListTitle}
         </Link>

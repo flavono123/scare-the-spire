@@ -74,6 +74,7 @@ import {
   getRelatedPotionIdsForEvent,
   getRelatedRelicIdsForEvent,
 } from "@/lib/codex-references";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -2289,9 +2290,7 @@ export function EventDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/events", serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
-          onClick={(e) => {
-            if (onClose) { e.preventDefault(); onClose(); }
-          }}
+          onClick={(e) => closeOnPlainClick(e, onClose)}
         >
           ← {serviceText.eventsView.backToList}
         </Link>

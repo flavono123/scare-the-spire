@@ -30,6 +30,7 @@ import {
   getRelatedCardIdsForAncient,
 } from "@/lib/codex-references";
 import { resolveRelicDisplayImage } from "@/lib/relic-character-variant";
+import { closeOnPlainClick } from "@/lib/plain-click";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -169,12 +170,7 @@ export function AncientDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/ancients", serviceLocale)}
           className="flex min-h-11 items-center text-sm text-gray-400 transition-colors hover:text-gray-200"
-          onClick={(e) => {
-            if (onClose) {
-              e.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(e) => closeOnPlainClick(e, onClose)}
         >
           ← {backToListTitle ?? serviceText.ancientsView.backToList}
         </Link>

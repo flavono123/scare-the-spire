@@ -24,6 +24,7 @@ import {
   MONSTER_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import { getRelatedMonsterIdsForEncounter } from "@/lib/codex-references";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import { DecimillipedeSpineStage } from "./decimillipede-spine-stage";
 import { EncounterSceneStage } from "./encounter-scene-stage";
 import { RelatedResourceLine, type CodexReferenceTarget } from "./entity-reference-links";
@@ -153,12 +154,7 @@ export function EncounterDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/bestiary?view=encounters", serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
-          onClick={(event) => {
-            if (onClose) {
-              event.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(event) => closeOnPlainClick(event, onClose)}
         >
           ← {backToListTitle}
         </Link>

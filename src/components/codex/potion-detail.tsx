@@ -44,6 +44,7 @@ import {
   getRelatedEventIdsForPotion,
   getRelatedPowerIdsForPotion,
 } from "@/lib/codex-references";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
 
 function dedupeIds(ids: readonly string[]): string[] {
@@ -221,12 +222,7 @@ export function PotionDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/potions", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-          onClick={(e) => {
-            if (onClose) {
-              e.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(e) => closeOnPlainClick(e, onClose)}
         >
           ← {backToListTitle}
         </Link>

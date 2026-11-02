@@ -9,6 +9,7 @@ import { getCodexServiceMessages } from "@/lib/codex-service";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { CodexModifier } from "@/lib/codex-types";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { DescriptionText } from "./codex-description";
@@ -118,12 +119,7 @@ export function ModifierDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/modifiers", serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
-          onClick={(event) => {
-            if (onClose) {
-              event.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(event) => closeOnPlainClick(event, onClose)}
         >
           ← {backTitle}
         </Link>
