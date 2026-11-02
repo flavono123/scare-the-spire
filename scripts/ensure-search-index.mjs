@@ -5,6 +5,8 @@ import { spawnSync } from "node:child_process";
 const root = process.cwd();
 const outputs = [
   "public/generated/search-index.json",
+  // A game-only language; every one of them is written with the index.
+  "public/generated/search-names/jpn.json",
 ];
 const sources = [
   "data/sts2",

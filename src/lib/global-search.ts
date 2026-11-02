@@ -1,4 +1,5 @@
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 
 export const globalSearchTypeOrder = [
   "patch",
@@ -108,4 +109,52 @@ export function globalSearchItemScore(
 
 export function globalSearchResultKey(item: GlobalSearchIndexItem): string {
   return `${item.type}:${item.id}`;
+}
+
+/** Game element names of a game-only language, by `globalSearchResultKey`. */
+export type GlobalSearchNames = Record<string, string>;
+
+export const GLOBAL_SEARCH_NAMES_ROOT = "generated/search-names";
+
+/** The main index already holds Korean and English names. */
+export function globalSearchNamesPath(gameLocale: GameLocale): string | null {
+  if (gameLocale === "kor" || gameLocale === "eng") return null;
+  return `/${GLOBAL_SEARCH_NAMES_ROOT}/${gameLocale}.json`;
+}
+
+/** Sets `title` to what this language shows, which is also the name it searches. */
+export function localizeGlobalSearchItems(
+  items: readonly GlobalSearchIndexItem[],
+  serviceLocale: ServiceLocale,
+  names: GlobalSearchNames,
+): GlobalSearchIndexItem[] {
+  return items.map((item) => ({
+    ...item,
+    title: names[globalSearchResultKey(item)] ?? (serviceLocale === "ko" ? item.title : item.titleEn),
+  }));
+}
+
+async function loadGlobalSearchNames(gameLocale: GameLocale): Promise<GlobalSearchNames> {
+  const path = globalSearchNamesPath(gameLocale);
+  if (!path) return {};
+  try {
+    const response = await fetch(path);
+    return response.ok ? await response.json() as GlobalSearchNames : {};
+  } catch {
+    return {};
+  }
+}
+
+/** Without the language's names, results fall back to English instead of failing. */
+export async function loadGlobalSearchItems(
+  serviceLocale: ServiceLocale,
+  gameLocale: GameLocale,
+): Promise<GlobalSearchIndexItem[]> {
+  const [response, names] = await Promise.all([
+    fetch("/generated/search-index.json"),
+    loadGlobalSearchNames(gameLocale),
+  ]);
+  if (!response.ok) throw new Error(`Search index request failed: ${response.status}`);
+  const payload = await response.json() as { items?: GlobalSearchIndexItem[] };
+  return localizeGlobalSearchItems(payload.items ?? [], serviceLocale, names);
 }

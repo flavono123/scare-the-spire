@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
-import { buildSearchIndexPayload } from "../src/lib/search-index-data";
+import { buildSearchIndexPayload, buildSearchNames } from "../src/lib/search-index-data";
+import { GLOBAL_SEARCH_NAMES_ROOT, globalSearchNamesPath } from "../src/lib/global-search";
 import { loadAllEntities } from "../src/lib/load-all-entities";
 import { getCodexCards } from "../src/lib/codex-data";
 import { cardConLocaleText } from "../src/lib/card-con-locale";
@@ -1125,9 +1126,20 @@ async function generateCommentEntitiesOnly() {
   await removeStaleStaticAliases();
 }
 
+async function searchNameTargets(): Promise<StaticJsonTarget[]> {
+  const gameLocales = GAME_LOCALES.filter((gameLocale) => globalSearchNamesPath(gameLocale));
+  return Promise.all(gameLocales.map(async (gameLocale) => ({
+    path: `${GLOBAL_SEARCH_NAMES_ROOT}/${gameLocale}.json`,
+    data: await buildSearchNames(gameLocale),
+  })));
+}
+
 async function generateSearchIndexOnly() {
-  const searchIndex = await buildSearchIndexPayload();
-  await writeJson({ path: "generated/search-index.json", data: searchIndex });
+  const [searchIndex, searchNames] = await Promise.all([buildSearchIndexPayload(), searchNameTargets()]);
+  await Promise.all([
+    writeJson({ path: "generated/search-index.json", data: searchIndex }),
+    ...searchNames.map(writeJson),
+  ]);
   await removeStaleStaticAliases();
 }
 
@@ -1192,6 +1204,7 @@ async function main() {
     toyBoxNewsPayload,
     decisionsDecisionsPresetTarget,
     historyLocTableTargets,
+    searchNames,
   ] = await Promise.all([
     buildSearchIndexPayload(),
     loadAllEntities(),
@@ -1205,6 +1218,7 @@ async function main() {
     buildToyBoxNewsPayload(),
     buildDecisionsDecisionsPresetTarget(),
     buildHistoryLocTableTargets(),
+    searchNameTargets(),
   ]);
 
   await Promise.all([
@@ -1229,6 +1243,7 @@ async function main() {
       events: koreanCompendiumDetailPayload.resources.events,
     }),
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
+    ...searchNames.map(writeJson),
     writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
     ...cardConLocales.map(writeJson),
     writeCompendiumDataChunks(compendiumDataChunkFiles),
