@@ -62,9 +62,11 @@ export async function ResourcePatchIndexPage({
       storyPlaceholder={storyPlaceholder}
     />
   );
+  // renderToString writes image preload hints ahead of the tree. The client root
+  // has no matching nodes, so they would fail hydration with React #418.
   const rootHtml = renderHydratableHtml?.(
     <CompendiumDetailLinksProvider>{explorer}</CompendiumDetailLinksProvider>,
-  );
+  ).replace(/^(?:<link\b[^>]*\/>)+/, "");
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
