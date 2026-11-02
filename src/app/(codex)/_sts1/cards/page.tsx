@@ -2,12 +2,14 @@ export const dynamic = "force-static";
 
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { CompendiumEntryLinkIndex } from "@/components/codex/compendium-entry-link-index";
 import { Sts1CardLibrary } from "@/components/sts1/card-library";
 import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
 import { sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
+  localizeHrefWithGameLocale,
 } from "@/lib/i18n";
 import {
   getSts1Cards,
@@ -15,7 +17,7 @@ import {
   getSts1Metadata,
   getSts1UiLabels,
 } from "@/lib/sts1/data";
-import { sts1IndexPath } from "@/lib/sts1/paths";
+import { sts1DetailPath, sts1IndexPath } from "@/lib/sts1/paths";
 
 export async function generateMetadata({
   searchParams,
@@ -44,16 +46,30 @@ export default async function Sts1CardsPage({
   ]);
 
   return (
-    <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
-      <Suspense>
-        <Sts1CardLibrary
-          cards={cards}
-          labels={labels}
-          keywords={keywords}
-          serviceLocale={serviceLocale}
-          gameLocale={gameLocale}
-        />
-      </Suspense>
-    </Sts1BitmapPackScope>
+    <>
+      <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
+        <Suspense>
+          <Sts1CardLibrary
+            cards={cards}
+            labels={labels}
+            keywords={keywords}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+          />
+        </Suspense>
+      </Sts1BitmapPackScope>
+      <CompendiumEntryLinkIndex
+        gameLocale={gameLocale}
+        title={labels.cardLibraryTitle}
+        groups={[{
+          type: "card",
+          entries: cards.map((card) => ({
+            id: card.slug,
+            name: card.name,
+            href: localizeHrefWithGameLocale(sts1DetailPath("cards", card.slug), serviceLocale, gameLocale),
+          })),
+        }]}
+      />
+    </>
   );
 }

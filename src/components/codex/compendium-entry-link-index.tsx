@@ -7,7 +7,7 @@ import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 export type CompendiumEntryLinkGroup = {
   type: CompendiumResourceLinkType;
   heading?: string;
-  entries: readonly { id: string; name: string }[];
+  entries: readonly { id: string; name: string; href?: string }[];
 };
 
 const SUMMARY_LABEL = {
@@ -57,7 +57,7 @@ export function CompendiumEntryLinkIndex({
               {group.entries.map((entry) => (
                 <li key={entry.id} className="break-inside-avoid py-0.5">
                   <a
-                    href={buildCompendiumEntryHref(group.type, entry.id, gameLocale)}
+                    href={entry.href ?? buildCompendiumEntryHref(group.type, entry.id, gameLocale)}
                     className="text-gray-300 transition-colors hover:text-primary"
                   >
                     {entry.name}

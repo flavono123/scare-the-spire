@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   CompendiumDetailOverlay,
@@ -42,6 +42,10 @@ import { Sts1CardTile } from "./card-tile";
 import { useEscapeClose } from "./use-escape-close";
 import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
 import { collectSts1CardSideTips } from "@/lib/sts1/keyword-tips";
+
+// Rendered per scroll step. Every card holds ~9 text canvases, so the whole list
+// at once costs far more than the STS2 tiles.
+const BATCH_SIZE = 42;
 
 type RarityFilter = "common" | "uncommon" | "rare" | "other";
 const COST_OPTIONS = [0, 1, 2, 3, "3+", "X"] as const;
@@ -217,6 +221,36 @@ export function Sts1CardLibrary({
       });
   }, [cards, searchQuery, selectedColors, selectedCosts, selectedRarities, selectedTypes, serviceLocale, sortDirs]);
 
+  const listKey = useMemo(
+    () => JSON.stringify([
+      [...selectedColors].sort(),
+      [...selectedTypes].sort(),
+      [...selectedRarities].sort(),
+      [...selectedCosts].sort(),
+      searchQuery.trim(),
+      sortDirs,
+    ]),
+    [searchQuery, selectedColors, selectedCosts, selectedRarities, selectedTypes, sortDirs],
+  );
+  const [batch, setBatch] = useState({ listKey, count: BATCH_SIZE });
+  // Read during render so a list change never mounts the old count first.
+  const visibleCount = batch.listKey === listKey ? batch.count : BATCH_SIZE;
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // Re-observe per count: a sentinel still in view would not fire again.
+  useEffect(() => {
+    const sentinel = loadMoreRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setBatch({ listKey, count: visibleCount + BATCH_SIZE });
+      },
+      { root: sentinel.parentElement, rootMargin: "400px" },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [listKey, visibleCount]);
+
   const characterFilters = [
     { key: "ironclad" as const, label: labels.characters.ironclad, icon: STS1_FILTER_ICONS.ironclad },
     { key: "silent" as const, label: labels.characters.silent, icon: STS1_FILTER_ICONS.silent },
@@ -368,7 +402,7 @@ export function Sts1CardLibrary({
             className="grid justify-center gap-2 sm:gap-3"
             style={{ gridTemplateColumns: "repeat(auto-fill, 200px)" }}
           >
-            {filteredCards.map((card) => (
+            {filteredCards.slice(0, visibleCount).map((card) => (
               <Link
                 key={card.slug}
                 prefetch={false}
@@ -406,6 +440,7 @@ export function Sts1CardLibrary({
               </Link>
             ))}
           </div>
+          {visibleCount < filteredCards.length ? <div ref={loadMoreRef} className="h-8" /> : null}
         </CompendiumIndexScroller>
       </main>
       {selectedCard ? (
