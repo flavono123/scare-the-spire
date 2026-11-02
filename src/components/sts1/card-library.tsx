@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   CompendiumDetailOverlay,
@@ -282,7 +282,14 @@ export function Sts1CardLibrary({
   const [batch, setBatch] = useState({ listKey, count: BATCH_SIZE });
   // Read during render so a list change never mounts the old count first.
   const visibleCount = batch.listKey === listKey ? batch.count : BATCH_SIZE;
+  const gridRef = useRef<HTMLDivElement>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // A new list starts from the top. A kept scroll offset would hold the
+  // sentinel in view and pull in every batch.
+  useLayoutEffect(() => {
+    gridRef.current?.parentElement?.scrollTo({ top: 0 });
+  }, [listKey]);
 
   // Re-observe per count: a sentinel still in view would not fire again.
   useEffect(() => {
@@ -446,6 +453,7 @@ export function Sts1CardLibrary({
         />
         <CompendiumIndexScroller scrollerClassName="p-3">
           <div
+            ref={gridRef}
             className="grid justify-center gap-2 sm:gap-3"
             style={{ gridTemplateColumns: "repeat(auto-fill, 200px)" }}
           >
