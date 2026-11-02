@@ -75,7 +75,9 @@ export function Sts1MonsterDetail({
           {monster.hitPoints.map((tier) => (
             <div key={tier.ascension} className="flex items-center justify-between gap-3">
               <dt className="text-muted-foreground">
-                {tier.ascension > 0 ? `${labels.monsters.ascension} ${tier.ascension}+` : "—"}
+                {tier.ascension > 0
+                  ? `${labels.monsters.ascension} ${tier.ascension}+`
+                  : serviceLocale === "ko" ? "기본" : "Base"}
               </dt>
               <dd className="font-bold">{hitPointRange(tier)}</dd>
             </div>

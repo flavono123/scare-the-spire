@@ -48,6 +48,12 @@
 - QA: 로컬에서 `sts1-card-layout`·`sts1-description` 스펙, Chrome headless로 스크롤·필터·검색·상세 확인, 첫 화면 운영본 대비 픽셀 차이 6개(최대 1). testbed 확인과 다른 언어 화면 확인은 남아 있다.
 - Commits: `79997abf`, `8e9a2520`, `8867e0d2`, `7c4f1b94`
 
+### sts1-bestiary
+- Feature: STS1 몬스터 도감. 65종 목록·상세·댓글, STS1 메뉴와 조각모음 STS1 선택기에 추가. `Apology Slime`은 게임이 조우 로드 실패 때만 띄우는 대체 몬스터라 뺐다.
+- Expect: `/compendium/sts1/monsters`가 막별로 묶여 나오고, 상세에 그림, 유형, 막, 승천별 체력, 게임 현지화의 행동 이름이 나온다. 그림은 Spine 3.4 뼈대를 4.2로 바꿔 렌더한 정지 이미지다.
+- QA: 빌드 결과를 로컬 Worker(`wrangler dev`)로 띄워 65종 ko/en HTML, RSC, 이미지 해시 전수 확인, 게임 전용 언어 목록 6개, 필터, 모달, 모바일 확인. testbed는 동시 커밋으로 빌드 기록 검사가 거부해 아직 못 올렸으니 배포 전 `cf:smoke --scope all`을 돌린다. 댓글은 Supabase 차단 상태라 입력을 확인하지 못했다.
+- Commits: `5d864d13`, `38128626`, `6144c600`와 후속 표기 수정
+
 <!--
 ### <항목-id>
 - Feature:
