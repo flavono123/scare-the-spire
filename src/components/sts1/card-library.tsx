@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   CompendiumDetailOverlay,
@@ -110,6 +110,52 @@ function rarityFilterKey(card: Sts1Card): RarityFilter {
   return "rare";
 }
 
+const Sts1LibraryCard = memo(function Sts1LibraryCard({
+  card,
+  href,
+  showUpgrades,
+  showBeta,
+  keywords,
+  typeLabel,
+  gameLocale,
+  onOpen,
+}: {
+  card: Sts1Card;
+  href: string;
+  showUpgrades: boolean;
+  showBeta: boolean;
+  keywords: readonly Sts1Keyword[];
+  typeLabel: string;
+  gameLocale: GameLocale;
+  onOpen: (card: Sts1Card) => void;
+}) {
+  const tipText = showUpgrades && card.upgradeDescription ? card.upgradeDescription : card.description;
+  const tips = useMemo(() => collectSts1CardSideTips(tipText, keywords), [keywords, tipText]);
+  return (
+    <Link
+      prefetch={false}
+      href={href}
+      className="block transition-transform hover:z-10 hover:scale-[1.03]"
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
+        onOpen(card);
+      }}
+    >
+      <CardSideTipsAnchor mode="hover" tips={tips}>
+        <Sts1CardTile
+          card={card}
+          upgradeLevel={showUpgrades ? 1 : 0}
+          showBeta={showBeta}
+          keywords={keywords}
+          gameLocale={gameLocale}
+          typeLabel={typeLabel}
+        />
+      </CardSideTipsAnchor>
+    </Link>
+  );
+});
+
 export function Sts1CardLibrary({
   cards,
   labels,
@@ -131,6 +177,7 @@ export function Sts1CardLibrary({
   const [selectedRarities, setSelectedRarities] = useState<Set<RarityFilter>>(new Set());
   const [selectedCosts, setSelectedCosts] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const deferredQuery = useDeferredValue(searchQuery);
   const [showUpgrades, setShowUpgrades] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
   const [sortDirs, setSortDirs] = useState<Record<SortKey, FilterSortDir>>({
@@ -186,7 +233,7 @@ export function Sts1CardLibrary({
   };
 
   const filteredCards = useMemo(() => {
-    const query = searchQuery.trim();
+    const query = deferredQuery.trim();
     return cards
       .filter((card) => {
         if (selectedColors.size && ![...selectedColors].some((filter) => matchesColor(card, filter))) {
@@ -219,7 +266,7 @@ export function Sts1CardLibrary({
         }
         return 0;
       });
-  }, [cards, searchQuery, selectedColors, selectedCosts, selectedRarities, selectedTypes, serviceLocale, sortDirs]);
+  }, [cards, deferredQuery, selectedColors, selectedCosts, selectedRarities, selectedTypes, serviceLocale, sortDirs]);
 
   const listKey = useMemo(
     () => JSON.stringify([
@@ -227,10 +274,10 @@ export function Sts1CardLibrary({
       [...selectedTypes].sort(),
       [...selectedRarities].sort(),
       [...selectedCosts].sort(),
-      searchQuery.trim(),
+      deferredQuery.trim(),
       sortDirs,
     ]),
-    [searchQuery, selectedColors, selectedCosts, selectedRarities, selectedTypes, sortDirs],
+    [deferredQuery, selectedColors, selectedCosts, selectedRarities, selectedTypes, sortDirs],
   );
   const [batch, setBatch] = useState({ listKey, count: BATCH_SIZE });
   // Read during render so a list change never mounts the old count first.
@@ -403,41 +450,22 @@ export function Sts1CardLibrary({
             style={{ gridTemplateColumns: "repeat(auto-fill, 200px)" }}
           >
             {filteredCards.slice(0, visibleCount).map((card) => (
-              <Link
+              <Sts1LibraryCard
                 key={card.slug}
-                prefetch={false}
+                card={card}
                 href={localizeLink(sts1DetailPath("cards", card.slug))}
-                className="block transition-transform hover:z-10 hover:scale-[1.03]"
-                onClick={(event) => {
-                  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-                  event.preventDefault();
-                  openCard(card);
-                }}
-              >
-                <CardSideTipsAnchor
-                  mode="hover"
-                  tips={collectSts1CardSideTips(
-                    showUpgrades && card.upgradeDescription
-                      ? card.upgradeDescription
-                      : card.description,
-                    keywords,
-                  )}
-                >
-                <Sts1CardTile
-                  card={card}
-                  upgradeLevel={showUpgrades ? 1 : 0}
-                  showBeta={showBeta}
-                  keywords={keywords}
-                  gameLocale={gameLocale}
-                  typeLabel={
-                    card.type === "attack" || card.type === "skill" || card.type === "power"
-                      || card.type === "curse" || card.type === "status"
-                      ? labels.types[card.type]
-                      : card.type
-                  }
-                />
-                </CardSideTipsAnchor>
-              </Link>
+                showUpgrades={showUpgrades}
+                showBeta={showBeta}
+                keywords={keywords}
+                gameLocale={gameLocale}
+                onOpen={openCard}
+                typeLabel={
+                  card.type === "attack" || card.type === "skill" || card.type === "power"
+                    || card.type === "curse" || card.type === "status"
+                    ? labels.types[card.type]
+                    : card.type
+                }
+              />
             ))}
           </div>
           {visibleCount < filteredCards.length ? <div ref={loadMoreRef} className="h-8" /> : null}
