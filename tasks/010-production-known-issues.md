@@ -220,3 +220,5 @@
 59. **Supabase가 멈추면 패치 빌드가 페이지마다 최대 5분씩 멈추고, 실패를 숨긴 채 표본 글로 배포함**. 2026-11-01 01:44~02:35 KST에 `/patches/2026-09-11` 14개 언어 페이지의 빌드 시점 조회가 90~300초씩 멈춰 `patch:build`가 117초에서 3,187초가 됐고, 결과 페이지는 실제 글 없이 61 KB였다(운영 207 KB). 로그에는 아무것도 남지 않는다. CI 배포 작업 제한은 60분이다.
     - https://scare-the-spire.flavono123.workers.dev/patches/2026-09-11
     - 원인: `src/lib/transfigure-data.ts`와 `src/lib/colorful-philosophers-gallery.ts`의 조회에 시간 제한이 없고, `catch`가 로그 없이 표본이나 빈 값으로 대체한다.
+60. **Supabase Free 인스턴스가 메모리와 디스크 I/O 부족으로 주기적으로 멈춤**. 로그 기준 구간(KST): 10-28 22:10~10-29 02:30, 10-31 00:20~02:30, 10-31 23:35~11-01 02:55, 11-02 09:47~09:52(5xx 없이 6~24초 지연). 멈춘 동안 시스템 카탈로그 조회도 10~22초 걸렸고, 시작 직전 요청이 5분당 50개 미만인 구간도 있어 요청량이나 특정 앱 쿼리 탓이 아니다. 메모리 428 MB, 스왑 약 480 MB 사용, 부팅 47일간 스왑 인 약 5.3 TB, 디스크 읽기 약 47 TB(DB는 49 MB), iowait 2.18%(CPU steal 0, OOM 0). 원인 판단은 추론이며 EBS 버스트 잔량은 직접 보지 못했다.
+    - https://supabase.com/dashboard/project/vhscirjiywwmwlafkhjh
