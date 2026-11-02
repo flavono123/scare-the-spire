@@ -123,13 +123,19 @@ export const ALL_ENTITY_DATA_KEYS = [
   "relics",
 ] as const satisfies readonly CompendiumDataKey[];
 
+const CHUNK_FETCH_TIMEOUT_MS = 30_000;
+
 const chunkPromises = new Map<string, Promise<Partial<CompendiumDataResources>>>();
 
 function fetchChunk(path: string): Promise<Partial<CompendiumDataResources>> {
   const existing = chunkPromises.get(path);
   if (existing) return existing;
 
-  const next = fetch(path, { cache: "no-cache" })
+  // An unanswered request would otherwise never reach the failure notice. The
+  // signal also covers reading the body.
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), CHUNK_FETCH_TIMEOUT_MS);
+  const next = fetch(path, { cache: "no-cache", signal: controller.signal })
     .then((response) => {
       if (!response.ok) throw new Error(`Failed to load ${path}`);
       return response.json() as Promise<Partial<CompendiumDataResources>>;
@@ -137,7 +143,8 @@ function fetchChunk(path: string): Promise<Partial<CompendiumDataResources>> {
     .catch((error: unknown) => {
       chunkPromises.delete(path);
       throw error;
-    });
+    })
+    .finally(() => clearTimeout(timeoutId));
   chunkPromises.set(path, next);
   return next;
 }
