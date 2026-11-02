@@ -295,6 +295,7 @@ export function ComboHistoryRunPicker({
                   <StorageUnavailableNotice
                     title={copy.unavailableTitle}
                     compact
+                    reload={false}
                     className="rounded-lg border border-white/5 bg-black/20"
                   />
                 )}

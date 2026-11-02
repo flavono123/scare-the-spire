@@ -185,6 +185,7 @@ export const serviceMessages = {
       placeholder: "댓글을 입력하세요",
       submit: "작성",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
+      reloadPage: "새로 고침",
     },
     entityGraph: {
       unavailable: "게임 요소 목록을 불러오지 못했습니다",
@@ -1630,6 +1631,7 @@ export const serviceMessages = {
       placeholder: "Write a comment",
       submit: "Post",
       unavailableTitle: "No responses from database",
+      reloadPage: "Refresh page",
     },
     entityGraph: {
       unavailable: "Could not load the game element list",

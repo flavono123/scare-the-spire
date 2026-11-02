@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import { StorageReloadButton } from "@/components/storage-reload-button";
 import Image from "@/components/ui/static-image";
+import type { ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export function StorageUnavailableNotice({
@@ -7,12 +9,17 @@ export function StorageUnavailableNotice({
   compact = false,
   className,
   children,
+  reload = true,
+  serviceLocale,
 }: {
   title: string;
   compact?: boolean;
   className?: string;
-  /** An action under the title, such as a retry button. */
+  /** An action under the title, such as a retry button. Replaces the reload button. */
   children?: ReactNode;
+  /** Off inside a form, where reloading would throw away what is being written. */
+  reload?: boolean;
+  serviceLocale?: ServiceLocale;
 }) {
   return (
     <div
@@ -33,7 +40,7 @@ export function StorageUnavailableNotice({
       <span className={cn("font-semibold text-amber-300", compact ? "text-xs" : "text-sm")}>
         {title}
       </span>
-      {children}
+      {children ?? (reload ? <StorageReloadButton compact={compact} serviceLocale={serviceLocale} /> : null)}
     </div>
   );
 }
