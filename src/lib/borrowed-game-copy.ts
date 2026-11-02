@@ -51,6 +51,8 @@ export interface VexingPuzzleboxGameCopy {
   hero: string;
   betaArtHighScore: string;
   betaArtLowScore: string;
+  merchantSuccessLines: string[];
+  merchantFailureLines: string[];
 }
 
 export interface FeedbackFormGameCopy {

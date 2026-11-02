@@ -2926,6 +2926,7 @@
     "potion_popup.png",
     "settings_tiny_left_arrow.png",
     "settings_tiny_right_arrow.png",
+    "speech_bubble3.webp",
     "tiny_nine_patch.png"
   ],
   "ui/combat": [
@@ -2956,6 +2957,13 @@
     "thumb_up.png",
     "wedge_2.png",
     "wedge_shadow.png"
+  ],
+  "ui/hands": [
+    "defect_point.webp",
+    "ironclad_point.webp",
+    "necrobinder_point.webp",
+    "regent_point.webp",
+    "silent_point.webp"
   ],
   "ui/inspect-relic": [
     "relic_inspect_frame-ancient.webp",

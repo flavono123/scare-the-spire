@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
+import { CHARACTER_HAND_TARGET_ATTRIBUTE } from "@/components/vexing-puzzlebox/character-hand-pointer";
+import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { buildBetaArtQuizSets } from "@/lib/beta-art-quiz";
 import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
@@ -32,6 +34,7 @@ export function BetaArtQuiz({
   const [picked, setPicked] = useState<string | null>(null);
   const [savedSets, setSavedSets] = useState<Record<string, boolean[]>>({});
   const [copied, setCopied] = useState(false);
+  const say = useMerchantSay();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- browser storage is only readable after hydration
@@ -127,8 +130,9 @@ export function BetaArtQuiz({
   const questionIndex = picked === null ? answers.length : answers.length - 1;
   const question = set[questionIndex];
 
-  const pick = (key: string) => {
+  const pick = (key: string, choice: HTMLElement) => {
     if (picked !== null) return;
+    say("success", choice);
     const nextAnswers = [...answers, key === question.entry.key];
     setPicked(key);
     setAnswers(nextAnswers);
@@ -211,7 +215,8 @@ export function BetaArtQuiz({
               key={choice.key}
               type="button"
               disabled={picked !== null}
-              onClick={() => pick(choice.key)}
+              {...{ [CHARACTER_HAND_TARGET_ATTRIBUTE]: "" }}
+              onClick={(event) => pick(choice.key, event.currentTarget)}
               className={`rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors [word-break:keep-all] ${stateClass}`}
             >
               {choice.name}

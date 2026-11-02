@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
+import { CHARACTER_HAND_TARGET_ATTRIBUTE } from "@/components/vexing-puzzlebox/character-hand-pointer";
+import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { seededShuffle } from "@/lib/beta-art-quiz";
+import { playPurchaseFailedWiggle } from "@/lib/merchant-feedback";
 import { neowsletterClaimHref } from "@/lib/neowsletter-anchors";
 import { MEGA_CRIT_TOKEN_SRC, NEOWSLETTER_TOKEN_SRC } from "@/lib/vexing-puzzlebox";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
@@ -98,6 +102,38 @@ function SolvedCategory({
   );
 }
 
+function DisplayToggle({
+  label,
+  checked,
+  locked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  /** Turning this off would leave a tile empty. */
+  locked: boolean;
+  onChange: () => void;
+}) {
+  const wrapperRef = useRef<HTMLSpanElement>(null);
+  const say = useMerchantSay();
+  return (
+    <span ref={wrapperRef} className="inline-flex">
+      <GameCheckboxToggle
+        checked={checked}
+        label={label}
+        onCheckedChange={() => {
+          if (locked && wrapperRef.current) {
+            playPurchaseFailedWiggle(wrapperRef.current);
+            say("failure", wrapperRef.current);
+            return;
+          }
+          onChange();
+        }}
+      />
+    </span>
+  );
+}
+
 export function ConnectionsClient({
   puzzles,
   title,
@@ -116,6 +152,7 @@ export function ConnectionsClient({
   const [selected, setSelected] = useState<string[]>([]);
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const [copied, setCopied] = useState(false);
+  const say = useMerchantSay();
   const localNamesDiffer = gameLocale !== "eng";
   const [display, setDisplay] = useState<ItemDisplay>({
     token: true,
@@ -172,11 +209,13 @@ export function ConnectionsClient({
     });
   };
 
-  const toggleTile = (key: string) => {
-    setSelected((current) => {
-      if (current.includes(key)) return current.filter((item) => item !== key);
-      return current.length < GROUP_SIZE ? [...current, key] : current;
-    });
+  const toggleTile = (key: string, tile: HTMLElement) => {
+    if (selected.includes(key)) {
+      setSelected(selected.filter((item) => item !== key));
+    } else if (selected.length < GROUP_SIZE) {
+      setSelected([...selected, key]);
+      say("success", tile);
+    }
   };
 
   const submit = () => {
@@ -217,28 +256,16 @@ export function ConnectionsClient({
     <section className="mx-auto max-w-2xl" data-connections-puzzle={puzzle.number}>
       <p className="mb-3 text-center text-sm font-semibold">{copy.guide}</p>
       <div className="mb-3 flex justify-center">
-        <div role="group" aria-label={copy.viewsLabel} className="inline-flex gap-1.5">
-          {toggles.map((item) => {
-            const checked = display[item.id];
-            return (
-              <button
-                key={item.id}
-                type="button"
-                role="checkbox"
-                aria-checked={checked}
-                disabled={checked && enabledCount === 1}
-                onClick={() => setDisplay((current) => ({ ...current, [item.id]: !current[item.id] }))}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
-                  checked
-                    ? "border-primary bg-primary/15 text-primary"
-                    : "border-border text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <span aria-hidden="true">{checked ? "✓" : "○"}</span>
-                {item.label}
-              </button>
-            );
-          })}
+        <div role="group" aria-label={copy.viewsLabel} className="inline-flex flex-wrap justify-center gap-3">
+          {toggles.map((item) => (
+            <DisplayToggle
+              key={item.id}
+              label={item.label}
+              checked={display[item.id]}
+              locked={display[item.id] && enabledCount === 1}
+              onChange={() => setDisplay((current) => ({ ...current, [item.id]: !current[item.id] }))}
+            />
+          ))}
         </div>
       </div>
 
@@ -275,44 +302,49 @@ export function ConnectionsClient({
             {remainingTiles.map((tile) => {
               const isSelected = selected.includes(tile.key);
               return (
-                <div
-                  key={tile.key}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={isSelected}
-                  aria-label={tile.name}
-                  onClick={() => toggleTile(tile.key)}
-                  onKeyDown={(event) => {
-                    if (event.key !== "Enter" && event.key !== " ") return;
-                    event.preventDefault();
-                    toggleTile(tile.key);
-                  }}
-                  className={`flex min-h-16 cursor-pointer items-center justify-center rounded-lg border text-center text-xs font-semibold transition-colors [word-break:keep-all] sm:min-h-20 sm:text-sm [&>span]:h-full [&>span]:min-h-16 [&>span]:w-full [&>span]:sm:min-h-20 ${
-                    isSelected
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-card/90 text-foreground hover:border-primary/60"
-                  }`}
-                >
-                  <EntityPreview
-                    entity={tile.entity}
-                    serviceLocale={serviceLocale}
-                    gameLocale={gameLocale}
-                    disableLink
-                    linkClassName="flex h-full w-full flex-col items-center justify-center gap-1 px-1 py-2"
+                <div key={tile.key} className="group relative">
+                  <button
+                    type="button"
+                    {...{ [CHARACTER_HAND_TARGET_ATTRIBUTE]: "" }}
+                    aria-pressed={isSelected}
+                    aria-label={tile.name}
+                    onClick={(event) => toggleTile(tile.key, event.currentTarget)}
+                    className={`flex h-full min-h-16 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border px-1 py-2 text-center text-xs font-semibold transition-colors [word-break:keep-all] sm:min-h-20 sm:text-sm ${
+                      isSelected
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card/90 text-foreground hover:border-primary/60"
+                    }`}
                   >
-                    <span className="flex flex-col items-center gap-1">
-                      {display.token && tile.entity.imageUrl && (
-                        <Image
-                          src={tile.entity.imageUrl}
-                          alt=""
-                          width={72}
-                          height={56}
-                          className="h-12 w-16 object-contain sm:h-14 sm:w-[4.5rem]"
-                        />
-                      )}
-                      <MemberLabels member={tile} display={display} />
-                    </span>
-                  </EntityPreview>
+                    {display.token && tile.entity.imageUrl && (
+                      <Image
+                        src={tile.entity.imageUrl}
+                        alt=""
+                        width={72}
+                        height={56}
+                        className="h-12 w-16 object-contain sm:h-14 sm:w-[4.5rem]"
+                      />
+                    )}
+                    <MemberLabels member={tile} display={display} />
+                  </button>
+                  <span className={`absolute right-0.5 top-0.5 transition-opacity group-hover:opacity-100 focus-within:opacity-100 ${
+                    isSelected ? "opacity-100" : "opacity-40"
+                  }`}>
+                    <EntityPreview
+                      entity={tile.entity}
+                      serviceLocale={serviceLocale}
+                      gameLocale={gameLocale}
+                      disableLink
+                      linkClassName="game-inspect-cursor flex h-7 w-7 items-center justify-center rounded"
+                    >
+                      <Image
+                        src="/images/sts2/ui/cursor_inspect.png"
+                        alt={`${tile.name} ${copy.inspect}`}
+                        width={20}
+                        height={20}
+                        className="h-5 w-5"
+                      />
+                    </EntityPreview>
+                  </span>
                 </div>
               );
             })}

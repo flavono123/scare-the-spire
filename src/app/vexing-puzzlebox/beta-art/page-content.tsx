@@ -35,8 +35,7 @@ export async function renderBetaArtPage(
   return (
     <VexingPuzzleboxShell
       active="beta-art"
-      title={gameCopy.title}
-      hero={gameCopy.hero}
+      gameCopy={gameCopy}
       serviceLocale={serviceLocale}
       gameLocale={gameLocale}
     >

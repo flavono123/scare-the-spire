@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ServiceBackground } from "@/components/service-background";
+import { VexingPuzzleboxEffects } from "@/components/vexing-puzzlebox/vexing-puzzlebox-effects";
 import Image from "@/components/ui/static-image";
+import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import {
@@ -15,15 +17,13 @@ import { serviceMessages } from "@/messages/service";
 
 export function VexingPuzzleboxShell({
   active,
-  title,
-  hero,
+  gameCopy,
   serviceLocale,
   gameLocale,
   children,
 }: {
   active: "connections" | "beta-art";
-  title: string;
-  hero: string;
+  gameCopy: VexingPuzzleboxGameCopy;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   children: ReactNode;
@@ -51,17 +51,17 @@ export function VexingPuzzleboxShell({
         <header className="flex items-center gap-3">
           <Image
             src={VEXING_PUZZLEBOX_TOKEN_SRC}
-            alt={title}
+            alt={gameCopy.title}
             width={56}
             height={56}
             className="h-14 w-14 shrink-0 object-contain drop-shadow"
           />
           <div className="min-w-0">
             <h1 className="font-service text-xl font-bold text-primary sm:text-3xl">
-              {title}
+              {gameCopy.title}
             </h1>
             <h2 className="mt-0.5 text-sm text-muted-foreground">{copy.subtitle}</h2>
-            {hero && <p className="mt-0.5 text-xs text-red-300/90">{hero}</p>}
+            {gameCopy.hero && <p className="mt-0.5 text-xs text-red-300/90">{gameCopy.hero}</p>}
           </div>
         </header>
         <nav className="mt-4 flex items-center gap-5 border-b border-border" aria-label={copy.tabsLabel}>
@@ -86,7 +86,14 @@ export function VexingPuzzleboxShell({
             );
           })}
         </nav>
-        <div className="mt-5">{children}</div>
+        <div className="mt-5">
+          <VexingPuzzleboxEffects
+            successLines={gameCopy.merchantSuccessLines}
+            failureLines={gameCopy.merchantFailureLines}
+          >
+            {children}
+          </VexingPuzzleboxEffects>
+        </div>
       </div>
     </div>
   );

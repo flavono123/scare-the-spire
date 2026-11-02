@@ -35,8 +35,7 @@ export async function renderVexingPuzzleboxPage(
   return (
     <VexingPuzzleboxShell
       active="connections"
-      title={gameCopy.title}
-      hero={gameCopy.hero}
+      gameCopy={gameCopy}
       serviceLocale={serviceLocale}
       gameLocale={gameLocale}
     >

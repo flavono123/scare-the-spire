@@ -98,6 +98,8 @@ interface VexingPuzzleboxGameCopy {
   hero: string;
   betaArtHighScore: string;
   betaArtLowScore: string;
+  merchantSuccessLines: string[];
+  merchantFailureLines: string[];
 }
 
 interface FeedbackFormGameCopy {
@@ -1013,6 +1015,18 @@ async function buildPagestormGameCopy(
 async function buildVexingPuzzleboxGameCopy(
   gameLocale: GameLocale,
 ): Promise<VexingPuzzleboxGameCopy> {
+  const readMerchantLines = async (key: string, count: number) => {
+    const lines = await Promise.all(
+      Array.from({ length: count }, (_, index) => (
+        readGameTextWithEnglishFallback(gameLocale, "merchant_room", `MERCHANT.talk.${key}.line${index + 1}`)
+      )),
+    );
+    return lines.filter((line): line is string => Boolean(line));
+  };
+  const [merchantSuccessLines, merchantFailureLines] = await Promise.all([
+    readMerchantLines("purchaseSuccess", 3),
+    readMerchantLines("purchaseFailureGold", 4),
+  ]);
   const [title, hero, betaArtHighScore, betaArtLowScore] = await Promise.all([
     readGameTextWithEnglishFallback(gameLocale, "relics", "VEXING_PUZZLEBOX.title"),
     readGameTextWithEnglishFallback(gameLocale, "relics", "VEXING_PUZZLEBOX.flavor"),
@@ -1025,6 +1039,8 @@ async function buildVexingPuzzleboxGameCopy(
     hero: stripGameMarkup(hero || ""),
     betaArtHighScore: betaArtHighScore || "",
     betaArtLowScore: betaArtLowScore || "",
+    merchantSuccessLines,
+    merchantFailureLines,
   };
 }
 
