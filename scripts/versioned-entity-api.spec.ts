@@ -383,7 +383,7 @@ async function runTests() {
       // authored diff did not; the words must still match.
       // A template is compared by what it renders with the version's vars: the
       // game may write a literal "1" where an authored diff wrote {Var}.
-      const versionVars = varsForBake(entityType, change.entityId, (res.entity as { vars?: unknown }).vars);
+      const versionVars = varsForBake((res.entity as { vars?: unknown }).vars);
       const comparable = (value: unknown) => {
         if (!textField || typeof value !== "string") return value;
         const text = fd.field === "descriptionRaw" ? bakeDescription(value, versionVars) : value;

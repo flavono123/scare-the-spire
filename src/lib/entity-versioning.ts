@@ -1,11 +1,6 @@
-import { bakeDescription } from "./codex-bake";
+import { bakeDescription, withLibraryCalculatedVars } from "./codex-bake";
 import type { CodexCard, CodexRelic, CodexPotion, CodexEvent } from "./codex-types";
 import type { EntityVersionDiff, EntityFieldDiff, STS2Patch, VersionedEntityType } from "./types";
-
-/** Combat-only card vars. The loader omits these when baking library text. */
-const CARD_RUNTIME_DESCRIPTION_VARS: Record<string, readonly string[]> = {
-  TIMES_UP: ["CalculatedDamage"],
-};
 
 export function resolveKnownVersion(
   requested: string | null | undefined,
@@ -51,18 +46,11 @@ function isDescriptionField(field: string): boolean {
   return field === "description" || field.startsWith("description.");
 }
 
-export function varsForBake(
-  entityType: VersionedEntityType,
-  id: unknown,
-  vars: unknown,
-): Record<string, number | string> {
+export function varsForBake(vars: unknown): Record<string, number | string> {
   if (!vars || typeof vars !== "object" || Array.isArray(vars)) return {};
   const baked: Record<string, number | string> = {};
   for (const [key, value] of Object.entries(vars)) {
     if (typeof value === "number" || typeof value === "string") baked[key] = value;
-  }
-  if (entityType === "card" && typeof id === "string") {
-    for (const key of CARD_RUNTIME_DESCRIPTION_VARS[id] ?? []) delete baked[key];
   }
   return baked;
 }
@@ -74,7 +62,6 @@ export function varsForBake(
  */
 function syncBakedDescription(
   entity: Record<string, unknown>,
-  entityType: VersionedEntityType,
   snapshot: { descriptionRaw: unknown; varsJson: string },
   descriptionDiffApplied: boolean,
 ): void {
@@ -82,29 +69,23 @@ function syncBakedDescription(
   if (typeof entity.descriptionRaw !== "string" || entity.descriptionRaw.length === 0) return;
   const varsJson = JSON.stringify(entity.vars ?? null);
   if (entity.descriptionRaw === snapshot.descriptionRaw && varsJson === snapshot.varsJson) return;
-  entity.description = bakeDescription(
-    entity.descriptionRaw,
-    varsForBake(entityType, entity.id, entity.vars),
-  );
+  entity.description = bakeDescription(entity.descriptionRaw, varsForBake(entity.vars));
 }
 
 /**
- * The English companion of syncBakedDescription: when the English template was
- * reverted without a baked descriptionEn diff, bake it again.
+ * The English companion of syncBakedDescription: when the English template or
+ * the numbers were reverted without a baked descriptionEn diff, bake it again.
  */
 function syncBakedEnglishDescription(
   entity: Record<string, unknown>,
-  entityType: VersionedEntityType,
-  snapshotRawEn: unknown,
+  snapshot: { descriptionRawEn: unknown; varsJson: string },
   descriptionEnDiffApplied: boolean,
 ): void {
   if (descriptionEnDiffApplied) return;
   if (typeof entity.descriptionRawEn !== "string" || entity.descriptionRawEn.length === 0) return;
-  if (entity.descriptionRawEn === snapshotRawEn) return;
-  entity.descriptionEn = bakeDescription(
-    entity.descriptionRawEn,
-    varsForBake(entityType, entity.id, entity.vars),
-  );
+  const varsJson = JSON.stringify(entity.vars ?? null);
+  if (entity.descriptionRawEn === snapshot.descriptionRawEn && varsJson === snapshot.varsJson) return;
+  entity.descriptionEn = bakeDescription(entity.descriptionRawEn, varsForBake(entity.vars));
 }
 
 /**
@@ -396,9 +377,9 @@ export function reconstructEntityAtVersion<T extends { id: string }>(
 
   const bakedSnapshot = {
     descriptionRaw: result.descriptionRaw,
+    descriptionRawEn: result.descriptionRawEn,
     varsJson: JSON.stringify(result.vars ?? null),
   };
-  const snapshotRawEn = result.descriptionRawEn;
   let descriptionDiffApplied = false;
   let descriptionEnDiffApplied = false;
 
@@ -417,8 +398,14 @@ export function reconstructEntityAtVersion<T extends { id: string }>(
     }
   }
 
-  syncBakedDescription(result, entityType, bakedSnapshot, descriptionDiffApplied);
-  syncBakedEnglishDescription(result, entityType, snapshotRawEn, descriptionEnDiffApplied);
+  if (entityType === "card" && result.vars && typeof result.vars === "object") {
+    result.vars = withLibraryCalculatedVars(
+      result.vars as Record<string, unknown>,
+      typeof result.descriptionRaw === "string" ? result.descriptionRaw : null,
+    );
+  }
+  syncBakedDescription(result, bakedSnapshot, descriptionDiffApplied);
+  syncBakedEnglishDescription(result, bakedSnapshot, descriptionEnDiffApplied);
   if (usesVariablesTheVersionLacks(entity as Record<string, unknown>, result)) {
     result[VERSION_TEXT_UNPINNED_FIELD] = true;
   }

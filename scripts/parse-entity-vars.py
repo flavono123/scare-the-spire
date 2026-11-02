@@ -32,6 +32,8 @@ DEFAULT_NAMES: dict[str, str] = {
     "CardsVar": "Cards",
     "DamageVar": "Damage",
     "ExtraDamageVar": "ExtraDamage",
+    "CalculationBaseVar": "CalculationBase",
+    "CalculationExtraVar": "CalculationExtra",
     "GoldVar": "Gold",
     "HealVar": "Heal",
     "MaxHpVar": "MaxHp",

@@ -191,11 +191,6 @@
     ],
     "fieldDiffs": [
       {
-        "field": "rarity",
-        "before": "일반",
-        "after": "고급"
-      },
-      {
         "field": "damage",
         "before": 6,
         "after": 5
@@ -222,6 +217,15 @@
         "after": {
           "Damage": 5,
           "Repeat": 2
+        }
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "damage": "+3"
+        },
+        "after": {
+          "repeat": "+1"
         }
       }
     ]
@@ -295,6 +299,20 @@
         "beforeByLocale": {
           "eng": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nDraw a card for each card [gold]Exhausted[/gold]."
         }
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "cost": 0
+        },
+        "after": null
+      },
+      {
+        "field": "keywords",
+        "before": [
+          "소멸"
+        ],
+        "after": []
       }
     ]
   },
@@ -334,8 +352,13 @@
         ]
       },
       {
-        "field": "upgrade.remove_exhaust",
-        "after": 1
+        "field": "upgrade",
+        "before": {
+          "focuspower": "+1"
+        },
+        "after": {
+          "remove_exhaust": 1
+        }
       }
     ]
   },
@@ -571,6 +594,15 @@
         "after": [
           "휘발성"
         ]
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "voidformpower": "+1"
+        },
+        "after": {
+          "remove_ethereal": 1
+        }
       }
     ]
   },
@@ -773,15 +805,6 @@
         "after": 6
       },
       {
-        "field": "upgrade",
-        "before": {
-          "doompower": "-3"
-        },
-        "after": {
-          "energy": "+1"
-        }
-      },
-      {
         "field": "description",
         "before": "자신에게 [gold]종말[/gold]을 3 부여합니다.\n[energy:1]를 얻습니다.",
         "after": "자신에게 [gold]종말[/gold]을 6 부여합니다.\n[energy:1]를 얻습니다."
@@ -792,6 +815,15 @@
         "after": "자신에게 [gold]종말[/gold]을 {DoomPower:diff()} 부여합니다.\n{Energy:energyIcons()}를 얻습니다.",
         "beforeByLocale": {
           "eng": "Apply {DoomPower:diff()} [gold]Doom[/gold] to yourself.\nGain {Energy:energyIcons()}."
+        }
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "energy": "+1"
+        },
+        "after": {
+          "doom": "-3"
         }
       }
     ]
@@ -6015,6 +6047,13 @@
         "afterKo": "매 전투 시작 시 뽑을 카드 더미의 무작위 카드 2장을 남은 전투 동안 강화합니다.",
         "diffType": "rework"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "vars.Cards",
+        "before": 3,
+        "after": 2
+      }
     ]
   },
   {
@@ -7486,6 +7525,14 @@
         "after": {
           "damage": "+2"
         }
+      },
+      {
+        "field": "vars.Weak",
+        "before": 1
+      },
+      {
+        "field": "vars.WeakPower",
+        "before": 1
       }
     ]
   },
@@ -7509,11 +7556,6 @@
       }
     ],
     "fieldDiffs": [
-      {
-        "field": "vars.CalculatedDamage",
-        "before": 8,
-        "after": 9
-      },
       {
         "field": "vars.CalculationBase",
         "before": 8,
@@ -7574,7 +7616,7 @@
           "speedsterpower": "+1"
         },
         "after": {
-          "innate": true
+          "add_innate": 1
         }
       },
       {
@@ -8584,10 +8626,13 @@
         "after": 4
       },
       {
+        "field": "vars.ExtraDamage",
+        "before": 2
+      },
+      {
         "field": "upgrade",
         "before": {
-          "damage": "+1",
-          "calculateddamage": "+1",
+          "calculationbase": "+1",
           "extradamage": "+1"
         },
         "after": {
@@ -8595,7 +8640,7 @@
         }
       },
       {
-        "field": "vars.CalculatedDamage",
+        "field": "vars.CalculationBase",
         "before": 8
       },
       {
@@ -8670,6 +8715,14 @@
         "beforeByLocale": {
           "eng": "Draw {Cards:diff()} cards.\nAt the start of your turn, [gold]Exhaust[/gold] the top card of your [gold]Draw Pile[/gold]."
         }
+      },
+      {
+        "field": "vars.DrumOfBattle",
+        "before": 1
+      },
+      {
+        "field": "vars.DrumOfBattlePower",
+        "before": 1
       }
     ]
   },
@@ -12302,6 +12355,20 @@
         "field": "vars.DexterityPower",
         "before": 3,
         "after": 2
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "dexterity": "+2"
+        },
+        "after": {
+          "dexterity": "+1"
+        }
+      },
+      {
+        "field": "vars.Dexterity",
+        "before": 3,
+        "after": 2
       }
     ]
   },
@@ -12427,6 +12494,15 @@
         "field": "vars.Block",
         "before": 9,
         "after": 7
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "block": "+3"
+        },
+        "after": {
+          "block": "+2"
+        }
       }
     ]
   },
@@ -12457,6 +12533,15 @@
         "field": "vars.Damage",
         "before": 9,
         "after": 11
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "damage": "+3"
+        },
+        "after": {
+          "damage": "+4"
+        }
       }
     ]
   },
@@ -12877,6 +12962,15 @@
         "field": "vars.Parry",
         "before": 8,
         "after": 10
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "parrypower": "+3"
+        },
+        "after": {
+          "parrypower": "+4"
+        }
       }
     ]
   },
@@ -13022,20 +13116,20 @@
         "after": 1
       },
       {
-        "field": "upgrade",
-        "before": {
-          "energy": "+1"
-        },
-        "after": {
-          "energy": "+1"
-        }
-      },
-      {
         "field": "descriptionRaw",
         "before": "자신에게 [gold]종말[/gold]을 {DoomPower:diff()} 부여합니다.\n{Energy:energyIcons()}를 얻습니다.",
         "after": "자신에게 [gold]종말[/gold]을 {DoomPower:diff()} 부여합니다.\n{Energy:energyIcons()}를 얻습니다.",
         "beforeByLocale": {
           "eng": "Apply {DoomPower:diff()} [gold]Doom[/gold] to yourself.\nGain {Energy:energyIcons()}."
+        }
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "doom": "-3"
+        },
+        "after": {
+          "energy": "+1"
         }
       }
     ]
@@ -13207,8 +13301,7 @@
           "forge": "+5"
         },
         "after": {
-          "forge": "+3",
-          "cards": "+1"
+          "forge": "+3"
         }
       },
       {
@@ -13315,6 +13408,23 @@
         "beforeByLocale": {
           "eng": "This turn, whenever you play an Attack, gain {StrengthPower:diff()} [gold]Strength[/gold] this turn."
         }
+      },
+      {
+        "field": "vars.StrengthPower",
+        "before": 2
+      },
+      {
+        "field": "upgrade",
+        "before": {
+          "strength": "+1"
+        },
+        "after": {
+          "cards": "+1"
+        }
+      },
+      {
+        "field": "vars.Strength",
+        "before": 2
       },
       {
         "field": "vars.StrengthPower",
@@ -13513,12 +13623,13 @@
         "before": 2
       },
       {
-        "field": "upgrade.inkyshivs",
-        "before": "+1"
-      },
-      {
-        "field": "upgrade.cards",
-        "after": "+1"
+        "field": "upgrade",
+        "before": {
+          "cards": "+1"
+        },
+        "after": {
+          "cards": "+1"
+        }
       }
     ]
   },
@@ -13570,8 +13681,13 @@
         "before": 1
       },
       {
-        "field": "upgrade.damage",
-        "before": "+1"
+        "field": "upgrade",
+        "before": {
+          "extradamage": "+1"
+        },
+        "after": {
+          "extradamage": "+1"
+        }
       }
     ]
   },
@@ -15782,18 +15898,13 @@
         "after": 4
       },
       {
-        "field": "vars.CalculatedDamage",
-        "before": 11,
-        "after": 13
-      },
-      {
-        "field": "upgrade.damage",
-        "before": "+1"
-      },
-      {
-        "field": "upgrade.extradamage",
-        "before": "+1",
-        "after": "+2"
+        "field": "upgrade",
+        "before": {
+          "extradamage": "+1"
+        },
+        "after": {
+          "extradamage": "+2"
+        }
       }
     ]
   },
@@ -17152,6 +17263,10 @@
         "field": "descriptionRaw",
         "before": "획득 시, 최대 체력을 [blue]9[/blue] 잃습니다. [gold]덱[/gold]에 [gold]영체화[/gold]를 [blue]{Cards}[/blue]장 추가합니다.",
         "after": "획득 시, [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장, [gold]영체화[/gold]를 [blue]{Cards}[/blue]장 추가합니다."
+      },
+      {
+        "field": "vars.HpLoss",
+        "before": 9
       }
     ],
     "date": "2026-07-17",
@@ -18538,6 +18653,14 @@
       {
         "field": "upgrade.cost",
         "after": 0
+      },
+      {
+        "field": "vars.CalculationBase",
+        "after": 0
+      },
+      {
+        "field": "vars.CalculationExtra",
+        "after": 1
       }
     ]
   },
@@ -19050,6 +19173,11 @@
         "field": "descriptionRaw",
         "before": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]3[/blue] [gold]인챈트[/gold]합니다.",
         "after": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 선택합니다. 그 카드에 [purple]신속[/purple]을 [blue]2[/blue] [gold]인챈트[/gold]합니다."
+      },
+      {
+        "field": "vars.Swift",
+        "before": 3,
+        "after": 2
       }
     ]
   },
@@ -19850,17 +19978,15 @@
         "after": 10
       },
       {
-        "field": "vars.CalculatedDamage",
-        "before": 20
-      },
-      {
-        "field": "upgrade.damage",
-        "before": "+3"
-      },
-      {
-        "field": "upgrade.calculationbase",
-        "before": "+3",
-        "after": "+2"
+        "field": "upgrade",
+        "before": {
+          "calculationbase": "+3",
+          "extradamage": "+3"
+        },
+        "after": {
+          "extradamage": "+3",
+          "calculationbase": "+2"
+        }
       }
     ],
     "date": "2026-08-14",
@@ -19988,10 +20114,6 @@
         "field": "vars.Forge",
         "before": 5,
         "after": 6
-      },
-      {
-        "field": "upgrade.cards",
-        "before": "+1"
       }
     ],
     "date": "2026-08-14",
@@ -25919,6 +26041,96 @@
             "normal": 20,
             "ascension": 23
           }
+        }
+      }
+    ]
+  },
+  {
+    "id": "arsenal-v0-101-0-field-diff",
+    "entityType": "card",
+    "entityId": "ARSENAL",
+    "patch": "v0.101.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "upgrade",
+        "before": {
+          "arsenalpower": "+1"
+        },
+        "after": {
+          "add_innate": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "production-v0-100-0-field-diff",
+    "entityType": "card",
+    "entityId": "PRODUCTION",
+    "patch": "v0.100.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "upgrade",
+        "before": {
+          "remove_exhaust": 1
+        },
+        "after": {
+          "energy": "+1"
+        }
+      }
+    ]
+  },
+  {
+    "id": "rip-and-tear-v0-100-0-field-diff",
+    "entityType": "card",
+    "entityId": "RIP_AND_TEAR",
+    "patch": "v0.100.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "이벤트"
+      }
+    ]
+  },
+  {
+    "id": "wither-v0-106-0-field-diff",
+    "entityType": "card",
+    "entityId": "WITHER",
+    "patch": "v0.106.0",
+    "character": null,
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": -1
+      },
+      {
+        "field": "vars.Damage",
+        "before": 2,
+        "after": 3
+      },
+      {
+        "field": "keywords",
+        "before": [
+          "소멸",
+          "보존"
+        ],
+        "after": [
+          "사용불가"
+        ]
+      },
+      {
+        "field": "upgrade",
+        "before": null,
+        "after": {
+          "damage": "+3"
         }
       }
     ]

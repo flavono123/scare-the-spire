@@ -19,6 +19,8 @@ const REFERENCE_PLACEHOLDERS: Record<string, string> = {
   singleStarIcon: "[star:1]",
 };
 
+const CALCULATED_VAR = /^Calculated[A-Z]/;
+
 type VarValue = number | string;
 type Vars = Record<string, VarValue>;
 
@@ -317,8 +319,9 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
   }
 
   // {InCombat:a} — upstream sometimes omits the empty false branch marker.
-  // The compendium renders out-of-combat descriptions, so missing data hides it.
-  const optionalRuntimeMatch = body.match(/^(InCombat):([\s\S]*)$/);
+  // The compendium renders out-of-combat descriptions with no target, so
+  // missing data hides these.
+  const optionalRuntimeMatch = body.match(/^(InCombat|IsTargeting):([\s\S]*)$/);
   if (optionalRuntimeMatch) {
     const [, name, rest] = optionalRuntimeMatch;
     const opts = splitBranches(rest);
@@ -377,6 +380,22 @@ function renderTemplate(input: string, vars: Vars, selfName: string | null): str
     }
   }
   return out;
+}
+
+/**
+ * Out of combat the game's CalculatedVar multiplier is 0, so a card shows
+ * CalculationBase wherever its template names a Calculated* var. Stored
+ * Calculated* values are replaced, and ones only the template names are added.
+ */
+export function withLibraryCalculatedVars<T>(vars: Record<string, T>, raw?: string | null): Record<string, T> {
+  const base = vars.CalculationBase;
+  if (base === undefined) return vars;
+  const names = new Set(Object.keys(vars).filter((key) => CALCULATED_VAR.test(key)));
+  for (const [, name] of (raw ?? "").matchAll(/\{(Calculated[A-Z]\w*)/g)) names.add(name);
+  if (names.size === 0) return vars;
+  const next = { ...vars };
+  for (const name of names) next[name] = base;
+  return next;
 }
 
 export function bakeDescription(raw: string, vars: Vars): string {

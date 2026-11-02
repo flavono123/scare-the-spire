@@ -1,7 +1,7 @@
 // Pure Codex description helpers (no React), shared by client components and
 // server-rendered Compendium content.
 
-import { bakeDescription } from "@/lib/codex-bake";
+import { bakeDescription, withLibraryCalculatedVars } from "@/lib/codex-bake";
 import type { CodexCard } from "@/lib/codex-types";
 
 // =============================================================================
@@ -246,7 +246,7 @@ export function renderCardDescription(
     0,
     Math.floor(options.upgradeLevel ?? (options.upgrade ? 1 : 0)),
   );
-  const finalVars: Record<string, number> = { ...card.vars };
+  let finalVars: Record<string, number> = { ...card.vars };
   const upgradeChanged = new Set<string>();
   const enchantChanged = new Set<string>();
   const templateVarKeys = getTemplateVarKeys(raw, finalVars);
@@ -263,6 +263,11 @@ export function renderCardDescription(
           upgradeChanged.add(varKey.toLowerCase());
         }
       }
+    }
+    const beforeCalculated = finalVars;
+    finalVars = withLibraryCalculatedVars(finalVars, raw);
+    for (const [key, value] of Object.entries(finalVars)) {
+      if (value !== beforeCalculated[key]) upgradeChanged.add(key.toLowerCase());
     }
   }
 

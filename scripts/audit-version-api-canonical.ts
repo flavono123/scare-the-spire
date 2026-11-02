@@ -11,6 +11,11 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { bakeDescription, withLibraryCalculatedVars } from "../src/lib/codex-bake";
+import { renderCardDescription } from "../src/lib/codex-card-description";
+import type { CodexCard } from "../src/lib/codex-types";
+import { varsForBake } from "../src/lib/entity-versioning";
+import { GAME_LOCALES, type GameLocale } from "../src/lib/i18n";
 import { getVersionedEntities } from "../src/lib/versioned-entity-api";
 import type { VersionedEntityType } from "../src/lib/types";
 
@@ -87,6 +92,27 @@ function pushDiff(out: Mismatch[], version: string, type: string, id: string, fi
   if (!same(api, canonical)) out.push({ version, type, id, field, api, canonical });
 }
 
+const upgradeVarName = (k: string) => k.toLowerCase().replace(/power$/, "");
+
+/** Every upgrade effect in one shape, so an effect the build lacks shows too. */
+function normalizedApiUpgrade(up: Record<string, string | number>): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const [k, v] of Object.entries(up)) {
+    if (v == null || /^calculated/.test(k)) continue; // Calculated* follow CalculationBase
+    out[/^(add|remove)_|^cost$/.test(k) ? k : upgradeVarName(k)] = Number(String(v).replace("+", ""));
+  }
+  return Object.fromEntries(Object.entries(out).sort());
+}
+
+function normalizedCanonUpgrade(c: Entity): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const [k, d] of Object.entries<number>(c.upgrade.vars)) out[upgradeVarName(k)] = d;
+  if (c.upgrade.cost !== null) out.cost = c.cost + c.upgrade.cost;
+  for (const k of c.upgrade.addKeywords) out[`add_${k.toLowerCase()}`] = 1;
+  for (const k of c.upgrade.removeKeywords) out[`remove_${k.toLowerCase()}`] = 1;
+  return Object.fromEntries(Object.entries(out).sort());
+}
+
 function auditCards(version: string, api: Map<string, Entity>, canon: Canon, out: Mismatch[]) {
   const T = displayToEnglish("cards", ["type", "rarity", "target", "keywords"]);
   for (const [id, c] of Object.entries(canon)) {
@@ -113,6 +139,7 @@ function auditCards(version: string, api: Map<string, Entity>, canon: Canon, out
       const apiUpgraded = raw === undefined ? undefined : Number(raw);
       pushDiff(out, version, "card", id, "upgrade.cost", apiUpgraded, c.cost + c.upgrade.cost);
     }
+    pushDiff(out, version, "card", id, "upgrade.(all)", normalizedApiUpgrade(up), normalizedCanonUpgrade(c));
     if (c.keywords !== null) pushDiff(out, version, "card", id, "keywords", [...(e.keywords ?? [])].map((k: string) => tr(T.keywords, k)).sort(), [...c.keywords].sort());
   }
   for (const id of api.keys()) if (!canon[id] && !IGNORED_ID.test(id)) out.push({ version, type: "card", id, field: "(exists)", api: "present", canonical: null });
@@ -128,14 +155,10 @@ function auditVarsAndRarity(type: string, version: string, api: Map<string, Enti
   for (const id of api.keys()) if (!canon[id] && !IGNORED_ID.test(id)) out.push({ version, type, id, field: "(exists)", api: "present", canonical: null });
 }
 
-type Loc = Record<string, Record<string, string>>;
-
 function readLoc(version: string, lang: string, table: string): Record<string, string> {
   const f = path.join(BUILDS_DIR, version, "canonical", "loc", lang, `${table}.json`);
   return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf-8")) : {};
 }
-
-const squash = (v: unknown) => (typeof v === "string" ? v.replace(/\s+/g, " ").trim() : v);
 
 /** Name and description template against the build's own localization tables. */
 function auditText(type: string, table: string, version: string, api: Map<string, Entity>, out: Mismatch[]) {
@@ -155,8 +178,42 @@ function auditText(type: string, table: string, version: string, api: Map<string
     }
     for (const [field, apiVal, canon] of checks) {
       if (canon === undefined) continue;
-      pushDiff(out, version, type, id, `text.${field}`, squash(apiVal), squash(canon));
+      pushDiff(out, version, type, id, `text.${field}`, apiVal, canon);
     }
+  }
+}
+
+/** Numbers the build gives; vars only the API knows (string refs, fallbacks) stay. */
+function bakedVars(e: Entity, canon: Entity | undefined): Record<string, number | string> {
+  return varsForBake({ ...(e.vars ?? {}), ...(canon?.vars ?? {}) });
+}
+
+/** The text a library tile paints: the build's template baked with the build's numbers, whitespace included. */
+function auditBakedText(type: string, table: string, version: string, locale: GameLocale, api: Map<string, Entity>, canon: Canon, out: Mismatch[]) {
+  const loc = readLoc(version, locale, table);
+  const suffix = locale === "kor" ? "" : `.${locale}`;
+  for (const [id, e] of api) {
+    const raw = loc[`${id}.description`];
+    if (raw === undefined) continue;
+    const vars = withLibraryCalculatedVars(bakedVars(e, canon[id]), raw);
+    pushDiff(out, version, type, id, `text.description${suffix}`, e.description, bakeDescription(raw, vars));
+  }
+}
+
+/** The upgraded tile: the build's OnUpgrade deltas over the build's numbers. */
+function auditUpgradedText(version: string, api: Map<string, Entity>, canon: Canon, out: Mismatch[]) {
+  const loc = readLoc(version, "kor", "cards");
+  const plain = (s: string) => s.replace(/\[\/?green\]/g, "");
+  for (const [id, e] of api) {
+    const raw = loc[`${id}.description`];
+    const c = canon[id];
+    if (raw === undefined || !c || raw !== e.descriptionRaw || e.specialUpgrade) continue;
+    const vars = bakedVars(e, c) as Record<string, number | string>;
+    for (const [k, d] of Object.entries<number>(c.upgrade.vars)) {
+      for (const name of [k, `${k}Power`]) if (typeof vars[name] === "number") vars[name] = (vars[name] as number) + d;
+    }
+    const want = bakeDescription(raw, { ...withLibraryCalculatedVars(vars, raw), IfUpgraded: 1 });
+    pushDiff(out, version, "card", id, "text.upgradedDescription", plain(renderCardDescription(e as unknown as CodexCard, { upgrade: true })), want);
   }
 }
 
@@ -236,6 +293,16 @@ export async function runAudit(onlyVersion?: string): Promise<{ versions: string
     auditText("power", "powers", version, powerMap, mismatches);
     auditText("monster", "monsters", version, monsters, mismatches);
     auditCards(version, cards, readCanon(version, "cards"), mismatches);
+    auditUpgradedText(version, cards, readCanon(version, "cards"), mismatches);
+    for (const locale of GAME_LOCALES) {
+      const inLocale = async (type: VersionedEntityType) => locale === "kor"
+        ? (type === "card" ? cards : type === "relic" ? relics : potions)
+        : new Map((await getVersionedEntities<Entity & { id: string }>({ entityType: type, version: tag, locale }))
+          .filter((r) => r.entity && !r.isDeprecated).map((r) => [r.entityId, r.entity as Entity]));
+      auditBakedText("card", "cards", version, locale, await inLocale("card"), readCanon(version, "cards"), mismatches);
+      auditBakedText("relic", "relics", version, locale, await inLocale("relic"), readCanon(version, "relics"), mismatches);
+      auditBakedText("potion", "potions", version, locale, await inLocale("potion"), readCanon(version, "potions"), mismatches);
+    }
     auditVarsAndRarity("relic", version, relics, readCanon(version, "relics"), mismatches, displayToEnglish("relics", ["rarity"]).rarity);
     auditVarsAndRarity("potion", version, potions, readCanon(version, "potions"), mismatches, displayToEnglish("potions", ["rarity"]).rarity);
     const powers = Object.fromEntries(Object.entries(readCanon(version, "powers")).map(([id, v]) => [id.replace(/_POWER$/, ""), v]));

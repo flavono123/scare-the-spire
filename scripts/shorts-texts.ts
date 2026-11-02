@@ -101,7 +101,7 @@ async function textFor(
   }
   const raw = entity.descriptionRaw;
   if (typeof raw === "string" && raw === current?.descriptionRaw && !HANGUL.test(raw)) {
-    const baked = plain(bakeDescription(raw, varsForBake(type, id, entity.vars)));
+    const baked = plain(bakeDescription(raw, varsForBake(entity.vars)));
     return { name, description: withKeywords(type, entity, baked), source: "rebaked" };
   }
   return { name, description: null, source: "unavailable" };

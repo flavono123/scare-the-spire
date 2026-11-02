@@ -75,9 +75,9 @@ def class_info(text: str):
 
 BASE_RE = re.compile(r":\s*base\(\s*(-?\d+)\s*,\s*CardType\.(\w+)\s*,\s*CardRarity\.(\w+)\s*,\s*TargetType\.(\w+)")
 KEYWORDS_RE = re.compile(r"CanonicalKeywords\s*(?:=>\s*(.*?);|\{.*?\n\t\})", re.S)
-UP_VAR_RE = re.compile(r"base\.DynamicVars\.(\w+)\.UpgradeValueBy\(\s*(-?[\d.]+)m?\s*\)")
+UP_VAR_RE = re.compile(r"base\.DynamicVars(?:\.|\[\")(\w+)(?:\"\])?\.UpgradeValueBy\(\s*(-?[\d.]+)m?\s*\)")
 UP_COST_RE = re.compile(r"base\.EnergyCost\.UpgradeBy\(\s*(-?\d+)\s*\)")
-UP_KW_RE = re.compile(r"base\.(Add|Remove)Keyword\(CardKeyword\.(\w+)\)")
+UP_KW_RE = re.compile(r"(?:base\.)?(Add|Remove)Keyword\(CardKeyword\.(\w+)\)")
 
 
 def power_aliases(vars_: dict) -> dict:
