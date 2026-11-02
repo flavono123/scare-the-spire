@@ -23,7 +23,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { neowsletterLineKind } from "@/lib/neowsletter-anchors";
-import { patchLineAnchorId } from "@/lib/patch-line-links";
+import { isPatchPageHref, patchLineAnchorId } from "@/lib/patch-line-links";
 import { classNameForHref, RESOURCE_LINK_CLASS } from "@/lib/service-link-classes";
 import { patchLineSummaryMarkdownForService, withPatchChangeEffects } from "@/lib/patch-line-display";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
@@ -1711,7 +1711,16 @@ function renderMarkdownLink(
       ? localizeHrefWithGameLocale(href, context.serviceLocale, context.gameLocale)
       : href;
     const localizedHref = context.linkToCompendiumDetails ? toCompendiumDetailHref(localeHref) : localeHref;
-    return <Link key={key} href={localizedHref} className={className}>{label}</Link>;
+    return (
+      <Link
+        key={key}
+        href={localizedHref}
+        prefetch={isPatchPageHref(localizedHref) ? false : undefined}
+        className={className}
+      >
+        {label}
+      </Link>
+    );
   }
 
   return (
