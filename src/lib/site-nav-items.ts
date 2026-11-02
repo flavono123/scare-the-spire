@@ -364,6 +364,18 @@ export function localizePlainNavItems<
   }));
 }
 
+// The legacy /cards, /relics and /potions routes exist only without a locale prefix.
+export function sts1NavLinkItems(serviceLocale: ServiceLocale, gameLocale: GameLocale): NavDropdownItem[] {
+  return sts1NavDropdownItems(gameLocale).map((item) => ({
+    ...item,
+    href: localizeHrefWithGameLocale(
+      item.href.startsWith("/compendium/") ? item.href : `/compendium/sts1${item.href}`,
+      serviceLocale,
+      gameLocale,
+    ),
+  }));
+}
+
 export function sts1NavDropdownItems(gameLocale: GameLocale): NavDropdownItem[] {
   return sts1NavItems.map((item) => ({
     href: item.href,

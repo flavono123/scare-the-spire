@@ -61,7 +61,7 @@ import {
   gameOnlyLanguageNavLocales,
   localizeCodexNavItems,
   serviceLanguageNavLocales,
-  sts1NavDropdownItems,
+  sts1NavLinkItems,
   sts2NavItems,
 } from "@/lib/site-nav-items";
 
@@ -862,7 +862,7 @@ export function SiteNavbar() {
           <SiteNavDropdown
             icon="/images/sts1_app_icon.png"
             alt={messages.games.sts1}
-            items={sts1NavDropdownItems(gameLocale)}
+            items={sts1NavLinkItems(serviceLocale, gameLocale)}
             align="right"
           />
           <div className="hidden border-l border-border pl-1 xl:block">
