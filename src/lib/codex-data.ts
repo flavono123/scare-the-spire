@@ -618,7 +618,7 @@ function mapCard(
   canonicalKeywordLabels: Record<string, string>,
   gameLocale: GameLocale,
 ): CodexCard {
-  const raw = gameText(gameCards, `${kor.id}.description`, kor.description_raw);
+  const raw = gameText(gameCards, `${kor.id}.description`, gameTitleFallback(kor.description_raw, eng.description_raw, gameLocale));
   const vars = withLibraryCalculatedVars(withCardVarFallbacks(kor.id, kor.vars), raw);
   const rawEn = eng.description_raw ?? eng.description;
   const varsEn = eng.vars ? withLibraryCalculatedVars(withCardVarFallbacks(eng.id, eng.vars), rawEn) : vars;
@@ -901,7 +901,7 @@ function mapRelic(
     descriptionRawEn: rawEn,
     eventDescription: eventRaw ? bakeDescription(eventRaw, vars) : null,
     vars,
-    flavor: gameText(gameRelics, `${kor.id}.flavor`, kor.flavor),
+    flavor: gameText(gameRelics, `${kor.id}.flavor`, gameTitleFallback(kor.flavor, eng.flavor, gameLocale)),
     rarity: kor.rarity as RelicRarityKo,
     pool: kor.pool as RelicPool,
     imageUrl: variantMap ? null : baseUrl,
@@ -2724,7 +2724,7 @@ function mapEncounter(
     tags: kor.tags,
     monsters,
     compositions,
-    lossText: gameText(gameEncounters, `${kor.id}.loss`, kor.loss_text),
+    lossText: gameText(gameEncounters, `${kor.id}.loss`, gameTitleFallback(kor.loss_text, eng.loss_text, gameLocale)),
     imageUrl,
     scene,
     introducedInPatch: kor.introducedInPatch,
@@ -2814,9 +2814,9 @@ export async function getCodexModifiers(opts?: { gameLocale?: GameLocale }): Pro
     const aliases = historicalModifierAliases[id];
     modifiers.push({
       id,
-      name: gameText(gameModifiers, `${id}.title`, kor.name),
+      name: gameText(gameModifiers, `${id}.title`, gameTitleFallback(kor.name, eng.name, gameLocale)),
       nameEn: gameText(engGameModifiers, `${id}.title`, eng.name),
-      description: gameText(gameModifiers, `${id}.description`, kor.description),
+      description: gameText(gameModifiers, `${id}.description`, gameTitleFallback(kor.description, eng.description, gameLocale)),
       descriptionEn: gameText(engGameModifiers, `${id}.description`, eng.description),
       polarity,
       source: "run",
@@ -2874,7 +2874,7 @@ export async function getCodexAscensions(opts?: { gameLocale?: GameLocale }): Pr
     .sort((left, right) => left.level - right.level)
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      const name = gameText(gameAscension, `${kor.id}.title`, kor.name);
+      const name = gameText(gameAscension, `${kor.id}.title`, gameTitleFallback(kor.name, eng.name, gameLocale));
       const nameEn = gameText(engGameAscension, `${kor.id}.title`, eng.name);
       const historical = ASCENSION_HISTORICAL_ALIASES[kor.id];
       const aliasesKo = [
@@ -2891,7 +2891,7 @@ export async function getCodexAscensions(opts?: { gameLocale?: GameLocale }): Pr
         level: kor.level,
         name,
         nameEn,
-        description: gameText(gameAscension, `${kor.id}.description`, kor.description),
+        description: gameText(gameAscension, `${kor.id}.description`, gameTitleFallback(kor.description, eng.description, gameLocale)),
         descriptionEn: gameText(engGameAscension, `${kor.id}.description`, eng.description),
         aliasesKo,
         aliasesEn,
