@@ -1,18 +1,31 @@
 /**
  * Files under `public/` that stay in the repository but are not uploaded as
  * main Worker static assets. A Workers Free version holds at most 20,000
- * files, and no page, chunk, data file, or user post loads these.
+ * files, and no page, chunk, data file, or user post loads these from the main
+ * Worker: files under `PATCH_WORKER_PUBLIC_PREFIXES` reach the patch Worker, and
+ * nothing loads the rest.
  *
  * `collect-cf-assets.mjs` skips them. `prune-cf-unreferenced-assets.mjs` (main
  * build) and `copy-patch-worker-assets.mjs` (patch build) fail when a served
- * file references one, so a new reference cannot silently 404 in production.
- * Drop an entry here before using the file.
+ * file references one that only the main Worker could serve, so a new reference
+ * cannot silently 404 in production. Drop an entry here before using the file.
  */
 import { existsSync } from "node:fs";
 import path from "node:path";
 
 const SHARED_VFX_ROOT = "spine/sts2/vfx";
 const SHARED_VFX_ATLAS = `${SHARED_VFX_ROOT}/spine-vfx.atlas`;
+
+/**
+ * Public paths the patch Worker serves in full. `workers/main-worker.ts` forwards
+ * them to `PATCH_WORKER`, so the main Worker upload does not need its own copy.
+ */
+export const PATCH_WORKER_PUBLIC_PREFIXES = ["/images/neowsletters/"];
+
+/** @param {string} assetPath a public path with its leading slash */
+export function isPatchWorkerPublicAsset(assetPath) {
+  return PATCH_WORKER_PUBLIC_PREFIXES.some((prefix) => assetPath.startsWith(prefix));
+}
 
 /** Single files kept as sources; the site serves something else in their place. */
 export const UNUSED_PUBLIC_SOURCES = new Map([
@@ -71,6 +84,10 @@ export const PUBLIC_ASSET_EXCLUDE_RULES = [
   {
     name: "unused source file",
     test: (relativePath) => UNUSED_PUBLIC_SOURCES.has(relativePath),
+  },
+  {
+    name: "served by the patch Worker",
+    test: (relativePath) => isPatchWorkerPublicAsset(`/${relativePath}`),
   },
 ];
 

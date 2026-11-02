@@ -1,7 +1,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { publicAssetExcludeReason } from "./cloudflare-asset-excludes.mjs";
+import {
+  isPatchWorkerPublicAsset,
+  PATCH_WORKER_PUBLIC_PREFIXES,
+  publicAssetExcludeReason,
+} from "./cloudflare-asset-excludes.mjs";
 import { findReferencedExcludedAssets } from "./prune-cf-unreferenced-assets.mjs";
 import { globalHeaderRuleLines, PUBLIC_HEADERS_FILE } from "./security-headers-file.mjs";
 
@@ -77,12 +81,26 @@ async function copyPublicAsset(publicPath) {
 
 /**
  * Pages hit assets before the Worker, so only `_headers` covers them. Just the
- * global rule: the cache rules of `public/_headers` are for the main Worker.
+ * global rule: the cache rules of `public/_headers` are for the main Worker,
+ * apart from the public paths only this Worker serves.
  */
 async function writePatchHeadersFile() {
   const headers = await fs.readFile(path.join(projectRoot, PUBLIC_HEADERS_FILE), "utf8");
-  const rule = `${globalHeaderRuleLines(headers).join("\n")}\n`;
-  await fs.writeFile(path.join(patchAssetsDir, "_headers"), rule);
+  const rules = [
+    globalHeaderRuleLines(headers).join("\n"),
+    ...PATCH_WORKER_PUBLIC_PREFIXES.map((prefix) => (
+      `${prefix}*\n  Cache-Control: public, max-age=31536000, immutable`
+    )),
+  ];
+  await fs.writeFile(path.join(patchAssetsDir, "_headers"), `${rules.join("\n\n")}\n`);
+}
+
+/** The main Worker upload leaves these out, so every file must ship here. */
+async function collectPatchWorkerPublicAssets() {
+  const files = await Promise.all(
+    PATCH_WORKER_PUBLIC_PREFIXES.map((prefix) => walk(path.join(publicDir, prefix))),
+  );
+  return files.flat().map((file) => `/${path.relative(publicDir, file).split(path.sep).join("/")}`);
 }
 
 async function main() {
@@ -130,6 +148,10 @@ async function main() {
     }
   }
 
+  for (const ref of await collectPatchWorkerPublicAssets()) {
+    assetRefs.add(ref);
+  }
+
   for (const ref of assetRefs) {
     await copyPublicAsset(ref);
   }
@@ -140,18 +162,13 @@ async function main() {
   assertNoExcludedMainAssetRefs(assetRefs);
 }
 
-// The patch Worker serves only its own routes and /images/neowsletters/*.
-const PATCH_WORKER_PUBLIC_PREFIXES = ["/images/neowsletters/"];
-
 /**
  * In production, patch pages load every other public path from the main
  * Worker, whose upload leaves out the files cloudflare-asset-excludes.mjs
  * lists. Fail here instead of shipping a reference that 404s there.
  */
 function assertNoExcludedMainAssetRefs(assetRefs) {
-  const servedByMainWorker = (assetPath) => (
-    !PATCH_WORKER_PUBLIC_PREFIXES.some((prefix) => assetPath.startsWith(prefix))
-  );
+  const servedByMainWorker = (assetPath) => !isPatchWorkerPublicAsset(assetPath);
   const { referenced } = findReferencedExcludedAssets(patchAssetsDir, publicDir);
   const found = referenced.filter(({ asset }) => servedByMainWorker(asset));
   const problems = found.map(({ asset, from }) => `  ${asset} <- ${from}`);

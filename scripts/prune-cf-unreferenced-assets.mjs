@@ -15,7 +15,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
-import { publicAssetExcludeReason } from "./cloudflare-asset-excludes.mjs";
+import { isPatchWorkerPublicAsset, publicAssetExcludeReason } from "./cloudflare-asset-excludes.mjs";
 
 const TEXT_ASSET = /\.(html|rsc|js|mjs|css|json|txt|xml|webmanifest|atlas|svg)$/;
 const NEXT_STATIC_PATH = /static\/(?:chunks|css|media)\/[A-Za-z0-9_%[\]().@+~-]+(?:\/[A-Za-z0-9_%[\]().@+~-]+)*\.(?:js|css|woff2?|ttf|otf|png|jpe?g|gif|svg|webp|avif|ico)/g;
@@ -127,6 +127,7 @@ export function findUnreachableNextStatic(assetsDir) {
 
 /**
  * Lists excluded public files that a served text asset references by path.
+ * Files the patch Worker serves stay reachable, so references to them are fine.
  * @param {string} assetsDir
  * @param {string} publicDir
  * @returns {{ excluded: string[], referenced: Array<{ asset: string, from: string }> }}
@@ -135,7 +136,11 @@ export function findReferencedExcludedAssets(assetsDir, publicDir) {
   const excluded = walkFiles(publicDir)
     .map((file) => toPosix(path.relative(publicDir, file)))
     .filter((relativePath) => publicAssetExcludeReason(relativePath, publicDir));
-  const excludedPaths = new Set(excluded.map((relativePath) => `/${relativePath}`));
+  const excludedPaths = new Set(
+    excluded
+      .map((relativePath) => `/${relativePath}`)
+      .filter((assetPath) => !isPatchWorkerPublicAsset(assetPath)),
+  );
   const referenced = [];
   if (excludedPaths.size === 0) return { excluded, referenced };
 

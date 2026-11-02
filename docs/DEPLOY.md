@@ -53,6 +53,9 @@ Workers Free는 버전 하나에 정적 asset 파일을 20,000개까지만 올�
   VFX별 atlas·png, 서비스가 쓰지 않는 원본(예: WOFF2의 원본 TTF)이 해당한다.
   빠진 파일을 서빙되는 파일이 참조하면 빌드가 실패하니, 쓰기 전에 목록에서
   지운다.
+- 니오우스레터 이미지(`/images/neowsletters/*`)는 patch Worker가 전부 싣고
+  main Worker가 `PATCH_WORKER`로 넘기므로 main 업로드에서 뺀다. 경로 목록은
+  `PATCH_WORKER_PUBLIC_PREFIXES`이고, 이 경로는 위 참조 검사 대상이 아니다.
 - `prune-cf-unreferenced-assets.mjs`는 서빙되는 HTML·RSC·JSON·CSS에서
   닿지 않는 `/_next/static` 파일(route handler, dev·patch 페이지, 리다이렉트
   전용 페이지 chunk, Pages Router runtime)을 지운다.

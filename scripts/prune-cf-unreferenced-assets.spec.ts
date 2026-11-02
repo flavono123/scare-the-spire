@@ -134,6 +134,14 @@ try {
   assert.equal(clean.referenced.length, 0);
   assert.equal(clean.excluded.length, 5);
 
+  // The patch Worker serves these, so a served reference stays valid.
+  write(publicDir, "images/neowsletters/2026-08/cover.png");
+  assert.ok(publicAssetExcludeReason("images/neowsletters/2026-08/cover.png", publicDir));
+  write(assets, "generated/neowsletters.json", '{"imageUrl":"/images/neowsletters/2026-08/cover.png"}');
+  const patchServed = findReferencedExcludedAssets(assets, publicDir);
+  assert.equal(patchServed.referenced.length, 0);
+  assert.equal(patchServed.excluded.length, 6);
+
   write(assets, "_next/static/chunks/main-app-5555555555555555.js", 'src:"/fonts/GyeonggiCheonnyeonBatangBold.ttf"');
   const referenced = findReferencedExcludedAssets(assets, publicDir);
   assert.deepEqual(referenced.referenced, [
