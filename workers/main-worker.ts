@@ -24,6 +24,7 @@ type ExecutionContextLike = {
 };
 
 import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-resource-links";
+import { isSearchCrawlerUserAgent } from "../src/lib/locale-detection";
 import {
   handleLinkPreviewRequest,
   LINK_PREVIEW_PATH,
@@ -137,6 +138,7 @@ function preferredLocalePathSegment(request: Request): string {
 function maybeRedirectRootToPreferredLocale(request: Request, url: URL): Response | null {
   if ((request.method !== "GET" && request.method !== "HEAD") || url.pathname !== "/") return null;
   if (!isDocumentRequest(request, url)) return null;
+  if (isSearchCrawlerUserAgent(request.headers.get("user-agent"))) return null;
 
   const pathSegment = preferredLocalePathSegment(request);
   if (!pathSegment) return null;
