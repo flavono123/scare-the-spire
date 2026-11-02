@@ -5,7 +5,7 @@ import { NodeSelection, Plugin, PluginKey } from "@tiptap/pm/state";
 import { useEditorState, type Editor } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import { ExternalLink } from "lucide-react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { entityCompendiumHref, type EntityInfo } from "@/components/patch-note-renderer";
 import { useCoarsePointer } from "@/hooks/use-coarse-pointer";
 import { useGameLocale } from "@/hooks/use-game-locale";
@@ -94,9 +94,11 @@ const LABEL_CLASS: Record<EditorLinkTarget["kind"], string> = {
   external: EXTERNAL_LINK_TEXT_CLASS,
 };
 
-const BUBBLE_ABOVE = { placement: "top", offset: 8, flip: true, shift: { padding: 8 } } as const;
+const LINK_BUBBLE_KEY = new PluginKey("editorLinkBubble");
+
+const BUBBLE_ABOVE = { placement: "top", offset: 8, flip: true, shift: { padding: 8 }, hide: true } as const;
 // Entity hover cards open above the atom, so their bubble sits below it.
-const BUBBLE_BELOW = { placement: "bottom", offset: 8, flip: true, shift: { padding: 8 } } as const;
+const BUBBLE_BELOW = { placement: "bottom", offset: 8, flip: true, shift: { padding: 8 }, hide: true } as const;
 
 /**
  * Second step of the editor link rule: selecting a linked atom shows where it
@@ -122,6 +124,28 @@ export function EditorLinkBubble({
     const next = selectedLinkTarget(current, resolveEntity);
     return Boolean(next && !(next.kind === "entity" && coarsePointer));
   }, [coarsePointer, resolveEntity]);
+  const hasTarget = Boolean(target);
+  // BubbleMenu listens to window scroll only, and a modal or editor scroller
+  // does not bubble its scroll there. Follow the atom, and hide the bubble
+  // while the scroller has moved the atom out of its view.
+  useEffect(() => {
+    if (!hasTarget) return;
+    const follow = (event: Event) => {
+      if (editor.isDestroyed || !shouldShow({ editor })) return;
+      const scroller = event.target;
+      if (!(scroller instanceof Element) || !scroller.contains(editor.view.dom)) return;
+      const atom = editor.view.nodeDOM(editor.state.selection.from);
+      if (!(atom instanceof Element)) return;
+      const atomRect = atom.getBoundingClientRect();
+      const scrollerRect = scroller.getBoundingClientRect();
+      const inView = atomRect.bottom > scrollerRect.top && atomRect.top < scrollerRect.bottom;
+      editor.view.dispatch(editor.state.tr.setMeta(LINK_BUBBLE_KEY, inView ? "show" : "hide"));
+      // Showing measures before the bubble is back in the page, so measure again.
+      if (inView) editor.view.dispatch(editor.state.tr.setMeta(LINK_BUBBLE_KEY, "updatePosition"));
+    };
+    document.addEventListener("scroll", follow, { capture: true, passive: true });
+    return () => document.removeEventListener("scroll", follow, { capture: true });
+  }, [editor, hasTarget, shouldShow]);
   const options = target?.kind === "entity" ? BUBBLE_BELOW : BUBBLE_ABOVE;
   const href = useMemo(() => {
     if (!target) return "";
@@ -133,6 +157,7 @@ export function EditorLinkBubble({
   return (
     <BubbleMenu
       editor={editor}
+      pluginKey={LINK_BUBBLE_KEY}
       appendTo={() => document.body}
       shouldShow={shouldShow}
       options={options}
