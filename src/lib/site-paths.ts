@@ -110,6 +110,7 @@ const UNLINKED_PREFIXES = [
   "/history-course",
   "/decisions-decisions",
   "/colorful-philosophers",
+  "/vexing-puzzlebox",
 ];
 
 function isUnlinkedPath(href: string): boolean {

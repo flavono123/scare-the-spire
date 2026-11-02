@@ -93,6 +93,11 @@ interface PagestormGameCopy {
   hero: string;
 }
 
+interface VexingPuzzleboxGameCopy {
+  betaArtHighScore: string;
+  betaArtLowScore: string;
+}
+
 interface FeedbackFormGameCopy {
   title: string;
   categoryLabel: string;
@@ -149,6 +154,7 @@ interface BorrowedGameCopyPayload {
   decisionsDecisions: DecisionsDecisionsGameCopy;
   pagestorm: PagestormGameCopy;
   debate: DebateGameCopy;
+  vexingPuzzlebox: VexingPuzzleboxGameCopy;
 }
 
 interface ToyBoxNewsPayload {
@@ -1002,6 +1008,20 @@ async function buildPagestormGameCopy(
   };
 }
 
+async function buildVexingPuzzleboxGameCopy(
+  gameLocale: GameLocale,
+): Promise<VexingPuzzleboxGameCopy> {
+  const [betaArtHighScore, betaArtLowScore] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "events", "FAKE_MERCHANT.talk.purchaseSuccess.line1"),
+    readGameTextWithEnglishFallback(gameLocale, "events", "FAKE_MERCHANT.talk.purchaseFailureForbidden.line2"),
+  ]);
+
+  return {
+    betaArtHighScore: betaArtHighScore || "",
+    betaArtLowScore: betaArtLowScore || "",
+  };
+}
+
 async function buildFeedbackFormGameCopy(
   gameLocale: GameLocale,
 ): Promise<FeedbackFormGameCopy> {
@@ -1050,6 +1070,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         decisionsDecisions,
         pagestorm,
         debate,
+        vexingPuzzlebox,
       ] = await Promise.all([
         readGameTextWithEnglishFallback(
           gameLocale,
@@ -1071,6 +1092,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
         buildDecisionsDecisionsGameCopy(gameLocale),
         buildPagestormGameCopy(gameLocale),
         buildDebateGameCopy(gameLocale),
+        buildVexingPuzzleboxGameCopy(gameLocale),
       ]);
       return [
         gameLocale,
@@ -1087,6 +1109,7 @@ async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, Borrow
           decisionsDecisions,
           pagestorm,
           debate,
+          vexingPuzzlebox,
         },
       ] as const;
     }),

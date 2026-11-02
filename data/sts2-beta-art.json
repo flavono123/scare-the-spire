@@ -1,0 +1,1674 @@
+{
+"pairs": [
+{
+"key": "card:CASCADE",
+"order": 1,
+"officialArtVersion": null
+},
+{
+"key": "card:COLOSSUS",
+"order": 2,
+"officialArtVersion": null
+},
+{
+"key": "card:CONFLAGRATION",
+"order": 3,
+"officialArtVersion": null
+},
+{
+"key": "card:CRIMSON_MANTLE",
+"order": 4,
+"officialArtVersion": null
+},
+{
+"key": "card:DEMONIC_SHIELD",
+"order": 5,
+"officialArtVersion": null
+},
+{
+"key": "card:DRUM_OF_BATTLE",
+"order": 6,
+"officialArtVersion": null
+},
+{
+"key": "card:FIGHT_ME",
+"order": 7,
+"officialArtVersion": null
+},
+{
+"key": "card:JUGGLING",
+"order": 8,
+"officialArtVersion": null
+},
+{
+"key": "card:PILLAGE",
+"order": 9,
+"officialArtVersion": null
+},
+{
+"key": "card:TANK",
+"order": 10,
+"officialArtVersion": null
+},
+{
+"key": "card:UNMOVABLE",
+"order": 11,
+"officialArtVersion": null
+},
+{
+"key": "card:VICIOUS",
+"order": 12,
+"officialArtVersion": null
+},
+{
+"key": "card:BLADE_OF_INK",
+"order": 13,
+"officialArtVersion": null
+},
+{
+"key": "card:BUBBLE_BUBBLE",
+"order": 14,
+"officialArtVersion": null
+},
+{
+"key": "card:CORROSIVE_WAVE",
+"order": 15,
+"officialArtVersion": null
+},
+{
+"key": "card:HAZE",
+"order": 16,
+"officialArtVersion": null
+},
+{
+"key": "card:HIDDEN_DAGGERS",
+"order": 17,
+"officialArtVersion": null
+},
+{
+"key": "card:KNIFE_TRAP",
+"order": 18,
+"officialArtVersion": null
+},
+{
+"key": "card:LEADING_STRIKE",
+"order": 19,
+"officialArtVersion": null
+},
+{
+"key": "card:MURDER",
+"order": 20,
+"officialArtVersion": null
+},
+{
+"key": "card:PHANTOM_BLADES",
+"order": 21,
+"officialArtVersion": null
+},
+{
+"key": "card:PRECISE_CUT",
+"order": 22,
+"officialArtVersion": null
+},
+{
+"key": "card:RICOCHET",
+"order": 23,
+"officialArtVersion": null
+},
+{
+"key": "card:SERPENT_FORM",
+"order": 24,
+"officialArtVersion": null
+},
+{
+"key": "card:SNEAKY",
+"order": 25,
+"officialArtVersion": null
+},
+{
+"key": "card:SPEEDSTER",
+"order": 26,
+"officialArtVersion": null
+},
+{
+"key": "card:STRANGLE",
+"order": 27,
+"officialArtVersion": null
+},
+{
+"key": "card:THE_HUNT",
+"order": 28,
+"officialArtVersion": null
+},
+{
+"key": "card:TRACKING",
+"order": 29,
+"officialArtVersion": null
+},
+{
+"key": "card:UP_MY_SLEEVE",
+"order": 30,
+"officialArtVersion": null
+},
+{
+"key": "card:ALIGNMENT",
+"order": 31,
+"officialArtVersion": null
+},
+{
+"key": "card:ARSENAL",
+"order": 32,
+"officialArtVersion": null
+},
+{
+"key": "card:ASTRAL_PULSE",
+"order": 33,
+"officialArtVersion": null
+},
+{
+"key": "card:BEAT_INTO_SHAPE",
+"order": 34,
+"officialArtVersion": null
+},
+{
+"key": "card:BEGONE",
+"order": 35,
+"officialArtVersion": null
+},
+{
+"key": "card:BIG_BANG",
+"order": 36,
+"officialArtVersion": null
+},
+{
+"key": "card:BLACK_HOLE",
+"order": 37,
+"officialArtVersion": null
+},
+{
+"key": "card:BOMBARDMENT",
+"order": 38,
+"officialArtVersion": null
+},
+{
+"key": "card:BULWARK",
+"order": 39,
+"officialArtVersion": null
+},
+{
+"key": "card:BUNDLE_OF_JOY",
+"order": 40,
+"officialArtVersion": null
+},
+{
+"key": "card:CHILD_OF_THE_STARS",
+"order": 41,
+"officialArtVersion": null
+},
+{
+"key": "card:COLLISION_COURSE",
+"order": 42,
+"officialArtVersion": null
+},
+{
+"key": "card:COMET",
+"order": 43,
+"officialArtVersion": null
+},
+{
+"key": "card:CONQUEROR",
+"order": 44,
+"officialArtVersion": null
+},
+{
+"key": "card:CONVERGENCE",
+"order": 45,
+"officialArtVersion": null
+},
+{
+"key": "card:COSMIC_INDIFFERENCE",
+"order": 46,
+"officialArtVersion": null
+},
+{
+"key": "card:CRASH_LANDING",
+"order": 47,
+"officialArtVersion": null
+},
+{
+"key": "card:CRUSH_UNDER",
+"order": 48,
+"officialArtVersion": null
+},
+{
+"key": "card:DECISIONS_DECISIONS",
+"order": 49,
+"officialArtVersion": null
+},
+{
+"key": "card:DEVASTATE",
+"order": 50,
+"officialArtVersion": null
+},
+{
+"key": "card:DYING_STAR",
+"order": 51,
+"officialArtVersion": null
+},
+{
+"key": "card:FALLING_STAR",
+"order": 52,
+"officialArtVersion": null
+},
+{
+"key": "card:FOREGONE_CONCLUSION",
+"order": 53,
+"officialArtVersion": null
+},
+{
+"key": "card:FURNACE",
+"order": 54,
+"officialArtVersion": null
+},
+{
+"key": "card:GAMMA_BLAST",
+"order": 55,
+"officialArtVersion": null
+},
+{
+"key": "card:GATHER_LIGHT",
+"order": 56,
+"officialArtVersion": null
+},
+{
+"key": "card:GENESIS",
+"order": 57,
+"officialArtVersion": null
+},
+{
+"key": "card:GLOW",
+"order": 58,
+"officialArtVersion": null
+},
+{
+"key": "card:GUIDING_STAR",
+"order": 59,
+"officialArtVersion": null
+},
+{
+"key": "card:HAMMER_TIME",
+"order": 60,
+"officialArtVersion": null
+},
+{
+"key": "card:HEAVENLY_DRILL",
+"order": 61,
+"officialArtVersion": null
+},
+{
+"key": "card:HEGEMONY",
+"order": 62,
+"officialArtVersion": null
+},
+{
+"key": "card:HEIRLOOM_HAMMER",
+"order": 63,
+"officialArtVersion": null
+},
+{
+"key": "card:HIDDEN_CACHE",
+"order": 64,
+"officialArtVersion": null
+},
+{
+"key": "card:I_AM_INVINCIBLE",
+"order": 65,
+"officialArtVersion": null
+},
+{
+"key": "card:KINGLY_PUNCH",
+"order": 66,
+"officialArtVersion": null
+},
+{
+"key": "card:KNOCKOUT_BLOW",
+"order": 67,
+"officialArtVersion": null
+},
+{
+"key": "card:KNOW_THY_PLACE",
+"order": 68,
+"officialArtVersion": null
+},
+{
+"key": "card:LARGESSE",
+"order": 69,
+"officialArtVersion": null
+},
+{
+"key": "card:LUNAR_BLAST",
+"order": 70,
+"officialArtVersion": null
+},
+{
+"key": "card:MAKE_IT_SO",
+"order": 71,
+"officialArtVersion": null
+},
+{
+"key": "card:MANIFEST_AUTHORITY",
+"order": 72,
+"officialArtVersion": null
+},
+{
+"key": "card:MONOLOGUE",
+"order": 73,
+"officialArtVersion": null
+},
+{
+"key": "card:NEUTRON_AEGIS",
+"order": 74,
+"officialArtVersion": null
+},
+{
+"key": "card:PALE_BLUE_DOT",
+"order": 75,
+"officialArtVersion": null
+},
+{
+"key": "card:PARRY",
+"order": 76,
+"officialArtVersion": null
+},
+{
+"key": "card:PATTER",
+"order": 77,
+"officialArtVersion": null
+},
+{
+"key": "card:PHOTON_CUT",
+"order": 78,
+"officialArtVersion": null
+},
+{
+"key": "card:PILLAR_OF_CREATION",
+"order": 79,
+"officialArtVersion": null
+},
+{
+"key": "card:QUASAR",
+"order": 80,
+"officialArtVersion": null
+},
+{
+"key": "card:REFINE_BLADE",
+"order": 81,
+"officialArtVersion": null
+},
+{
+"key": "card:REFLECT",
+"order": 82,
+"officialArtVersion": null
+},
+{
+"key": "card:RESONANCE",
+"order": 83,
+"officialArtVersion": null
+},
+{
+"key": "card:ROYALTIES",
+"order": 84,
+"officialArtVersion": null
+},
+{
+"key": "card:ROYAL_GAMBLE",
+"order": 85,
+"officialArtVersion": null
+},
+{
+"key": "card:SEEKING_EDGE",
+"order": 86,
+"officialArtVersion": null
+},
+{
+"key": "card:SEVEN_STARS",
+"order": 87,
+"officialArtVersion": null
+},
+{
+"key": "card:SHINING_STRIKE",
+"order": 88,
+"officialArtVersion": null
+},
+{
+"key": "card:SPECTRUM_SHIFT",
+"order": 89,
+"officialArtVersion": null
+},
+{
+"key": "card:SPOILS_OF_BATTLE",
+"order": 90,
+"officialArtVersion": null
+},
+{
+"key": "card:SUMMON_FORTH",
+"order": 91,
+"officialArtVersion": null
+},
+{
+"key": "card:SUPERMASSIVE",
+"order": 92,
+"officialArtVersion": null
+},
+{
+"key": "card:SWORD_SAGE",
+"order": 93,
+"officialArtVersion": null
+},
+{
+"key": "card:TERRAFORMING",
+"order": 94,
+"officialArtVersion": null
+},
+{
+"key": "card:THE_SEALED_THRONE",
+"order": 95,
+"officialArtVersion": null
+},
+{
+"key": "card:TYRANNY",
+"order": 96,
+"officialArtVersion": null
+},
+{
+"key": "card:VENERATE",
+"order": 97,
+"officialArtVersion": null
+},
+{
+"key": "card:VOID_FORM",
+"order": 98,
+"officialArtVersion": null
+},
+{
+"key": "card:WROUGHT_IN_WAR",
+"order": 99,
+"officialArtVersion": null
+},
+{
+"key": "card:AFTERLIFE",
+"order": 100,
+"officialArtVersion": null
+},
+{
+"key": "card:BANSHEES_CRY",
+"order": 101,
+"officialArtVersion": null
+},
+{
+"key": "card:BODYGUARD",
+"order": 102,
+"officialArtVersion": null
+},
+{
+"key": "card:BONE_SHARDS",
+"order": 103,
+"officialArtVersion": null
+},
+{
+"key": "card:BURY",
+"order": 104,
+"officialArtVersion": null
+},
+{
+"key": "card:CALL_OF_THE_VOID",
+"order": 105,
+"officialArtVersion": null
+},
+{
+"key": "card:DANSE_MACABRE",
+"order": 106,
+"officialArtVersion": null
+},
+{
+"key": "card:DEATHS_DOOR",
+"order": 107,
+"officialArtVersion": null
+},
+{
+"key": "card:DEBILITATE",
+"order": 108,
+"officialArtVersion": null
+},
+{
+"key": "card:DEFILE",
+"order": 109,
+"officialArtVersion": null
+},
+{
+"key": "card:DELAY",
+"order": 110,
+"officialArtVersion": null
+},
+{
+"key": "card:DEMESNE",
+"order": 111,
+"officialArtVersion": null
+},
+{
+"key": "card:DEVOUR_LIFE",
+"order": 112,
+"officialArtVersion": null
+},
+{
+"key": "card:DIRGE",
+"order": 113,
+"officialArtVersion": null
+},
+{
+"key": "card:DREDGE",
+"order": 114,
+"officialArtVersion": null
+},
+{
+"key": "card:EIDOLON",
+"order": 115,
+"officialArtVersion": null
+},
+{
+"key": "card:ENFEEBLING_TOUCH",
+"order": 116,
+"officialArtVersion": null
+},
+{
+"key": "card:FORBIDDEN_GRIMOIRE",
+"order": 117,
+"officialArtVersion": null
+},
+{
+"key": "card:GLIMPSE_BEYOND",
+"order": 118,
+"officialArtVersion": null
+},
+{
+"key": "card:GRAVEBLAST",
+"order": 119,
+"officialArtVersion": null
+},
+{
+"key": "card:HANG",
+"order": 120,
+"officialArtVersion": null
+},
+{
+"key": "card:HAUNT",
+"order": 121,
+"officialArtVersion": null
+},
+{
+"key": "card:INVOKE",
+"order": 122,
+"officialArtVersion": null
+},
+{
+"key": "card:LEGION_OF_BONE",
+"order": 123,
+"officialArtVersion": null
+},
+{
+"key": "card:LETHALITY",
+"order": 124,
+"officialArtVersion": null
+},
+{
+"key": "card:MISERY",
+"order": 125,
+"officialArtVersion": null
+},
+{
+"key": "card:NECRO_MASTERY",
+"order": 126,
+"officialArtVersion": null
+},
+{
+"key": "card:NEUROSURGE",
+"order": 127,
+"officialArtVersion": null
+},
+{
+"key": "card:PAGESTORM",
+"order": 128,
+"officialArtVersion": null
+},
+{
+"key": "card:PULL_FROM_BELOW",
+"order": 129,
+"officialArtVersion": null
+},
+{
+"key": "card:RATTLE",
+"order": 130,
+"officialArtVersion": null
+},
+{
+"key": "card:REAP",
+"order": 131,
+"officialArtVersion": null
+},
+{
+"key": "card:REAPER_FORM",
+"order": 132,
+"officialArtVersion": null
+},
+{
+"key": "card:RIGHT_HAND_HAND",
+"order": 133,
+"officialArtVersion": null
+},
+{
+"key": "card:SCULPTING_STRIKE",
+"order": 134,
+"officialArtVersion": null
+},
+{
+"key": "card:SEANCE",
+"order": 135,
+"officialArtVersion": null
+},
+{
+"key": "card:SEVERANCE",
+"order": 136,
+"officialArtVersion": null
+},
+{
+"key": "card:SHROUD",
+"order": 137,
+"officialArtVersion": null
+},
+{
+"key": "card:SLEIGHT_OF_FLESH",
+"order": 138,
+"officialArtVersion": null
+},
+{
+"key": "card:SNAP",
+"order": 139,
+"officialArtVersion": null
+},
+{
+"key": "card:SOUL_STORM",
+"order": 140,
+"officialArtVersion": null
+},
+{
+"key": "card:SOW",
+"order": 141,
+"officialArtVersion": null
+},
+{
+"key": "card:SPIRIT_OF_ASH",
+"order": 142,
+"officialArtVersion": null
+},
+{
+"key": "card:SQUEEZE",
+"order": 143,
+"officialArtVersion": null
+},
+{
+"key": "card:THE_SCYTHE",
+"order": 144,
+"officialArtVersion": null
+},
+{
+"key": "card:TRANSFIGURE",
+"order": 145,
+"officialArtVersion": null
+},
+{
+"key": "card:UNDEATH",
+"order": 146,
+"officialArtVersion": null
+},
+{
+"key": "card:VEILPIERCER",
+"order": 147,
+"officialArtVersion": null
+},
+{
+"key": "card:WISP",
+"order": 148,
+"officialArtVersion": null
+},
+{
+"key": "card:BARRAGE",
+"order": 149,
+"officialArtVersion": null
+},
+{
+"key": "card:BOOST_AWAY",
+"order": 150,
+"officialArtVersion": null
+},
+{
+"key": "card:BULK_UP",
+"order": 151,
+"officialArtVersion": null
+},
+{
+"key": "card:ENERGY_SURGE",
+"order": 152,
+"officialArtVersion": null
+},
+{
+"key": "card:FLAK_CANNON",
+"order": 153,
+"officialArtVersion": null
+},
+{
+"key": "card:FOCUSED_STRIKE",
+"order": 154,
+"officialArtVersion": null
+},
+{
+"key": "card:GLASSWORK",
+"order": 155,
+"officialArtVersion": null
+},
+{
+"key": "card:GUNK_UP",
+"order": 156,
+"officialArtVersion": null
+},
+{
+"key": "card:HELIX_DRILL",
+"order": 157,
+"officialArtVersion": null
+},
+{
+"key": "card:ICE_LANCE",
+"order": 158,
+"officialArtVersion": null
+},
+{
+"key": "card:IGNITION",
+"order": 159,
+"officialArtVersion": null
+},
+{
+"key": "card:LIGHTNING_ROD",
+"order": 160,
+"officialArtVersion": null
+},
+{
+"key": "card:QUADCAST",
+"order": 161,
+"officialArtVersion": null
+},
+{
+"key": "card:REFRACT",
+"order": 162,
+"officialArtVersion": null
+},
+{
+"key": "card:ROCKET_PUNCH",
+"order": 163,
+"officialArtVersion": null
+},
+{
+"key": "card:TESLA_COIL",
+"order": 164,
+"officialArtVersion": null
+},
+{
+"key": "card:THUNDER",
+"order": 165,
+"officialArtVersion": null
+},
+{
+"key": "card:TURBO",
+"order": 166,
+"officialArtVersion": null
+},
+{
+"key": "card:UPROAR",
+"order": 167,
+"officialArtVersion": null
+},
+{
+"key": "card:AUTOMATION",
+"order": 168,
+"officialArtVersion": null
+},
+{
+"key": "card:BEACON_OF_HOPE",
+"order": 169,
+"officialArtVersion": null
+},
+{
+"key": "card:BEAT_DOWN",
+"order": 170,
+"officialArtVersion": null
+},
+{
+"key": "card:BELIEVE_IN_YOU",
+"order": 171,
+"officialArtVersion": null
+},
+{
+"key": "card:CALAMITY",
+"order": 172,
+"officialArtVersion": null
+},
+{
+"key": "card:CATASTROPHE",
+"order": 173,
+"officialArtVersion": null
+},
+{
+"key": "card:COORDINATE",
+"order": 174,
+"officialArtVersion": null
+},
+{
+"key": "card:ENTROPY",
+"order": 175,
+"officialArtVersion": null
+},
+{
+"key": "card:FASTEN",
+"order": 176,
+"officialArtVersion": null
+},
+{
+"key": "card:FISTICUFFS",
+"order": 177,
+"officialArtVersion": null
+},
+{
+"key": "card:HIDDEN_GEM",
+"order": 178,
+"officialArtVersion": null
+},
+{
+"key": "card:HUDDLE_UP",
+"order": 179,
+"officialArtVersion": null
+},
+{
+"key": "card:INTERCEPT",
+"order": 180,
+"officialArtVersion": null
+},
+{
+"key": "card:JACKPOT",
+"order": 181,
+"officialArtVersion": null
+},
+{
+"key": "card:MIMIC",
+"order": 182,
+"officialArtVersion": null
+},
+{
+"key": "card:NOSTALGIA",
+"order": 183,
+"officialArtVersion": null
+},
+{
+"key": "card:OMNISLICE",
+"order": 184,
+"officialArtVersion": null
+},
+{
+"key": "card:PREP_TIME",
+"order": 185,
+"officialArtVersion": null
+},
+{
+"key": "card:PRODUCTION",
+"order": 186,
+"officialArtVersion": null
+},
+{
+"key": "card:PROWESS",
+"order": 187,
+"officialArtVersion": null
+},
+{
+"key": "card:RALLY",
+"order": 188,
+"officialArtVersion": null
+},
+{
+"key": "card:REND",
+"order": 189,
+"officialArtVersion": null
+},
+{
+"key": "card:ROLLING_BOULDER",
+"order": 190,
+"officialArtVersion": null
+},
+{
+"key": "card:SALVO",
+"order": 191,
+"officialArtVersion": null
+},
+{
+"key": "card:SCRAWL",
+"order": 192,
+"officialArtVersion": null
+},
+{
+"key": "card:SHOCKWAVE",
+"order": 193,
+"officialArtVersion": null
+},
+{
+"key": "card:SPLASH",
+"order": 194,
+"officialArtVersion": null
+},
+{
+"key": "card:STRATAGEM",
+"order": 195,
+"officialArtVersion": null
+},
+{
+"key": "card:ULTIMATE_DEFEND",
+"order": 196,
+"officialArtVersion": null
+},
+{
+"key": "card:ULTIMATE_STRIKE",
+"order": 197,
+"officialArtVersion": null
+},
+{
+"key": "card:BRIGHTEST_FLAME",
+"order": 198,
+"officialArtVersion": null
+},
+{
+"key": "card:CALTROPS",
+"order": 199,
+"officialArtVersion": null
+},
+{
+"key": "card:MAUL",
+"order": 200,
+"officialArtVersion": null
+},
+{
+"key": "card:RELAX",
+"order": 201,
+"officialArtVersion": null
+},
+{
+"key": "card:TORIC_TOUGHNESS",
+"order": 202,
+"officialArtVersion": null
+},
+{
+"key": "card:WHISTLE",
+"order": 203,
+"officialArtVersion": null
+},
+{
+"key": "card:DISINTEGRATION",
+"order": 204,
+"officialArtVersion": null
+},
+{
+"key": "card:GIANT_ROCK",
+"order": 205,
+"officialArtVersion": null
+},
+{
+"key": "card:LUMINESCE",
+"order": 206,
+"officialArtVersion": null
+},
+{
+"key": "card:MIND_ROT",
+"order": 207,
+"officialArtVersion": null
+},
+{
+"key": "card:MINION_SACRIFICE",
+"order": 208,
+"officialArtVersion": null
+},
+{
+"key": "card:MINION_STRIKE",
+"order": 209,
+"officialArtVersion": null
+},
+{
+"key": "card:SOUL",
+"order": 210,
+"officialArtVersion": null
+},
+{
+"key": "card:SOVEREIGN_BLADE",
+"order": 211,
+"officialArtVersion": null
+},
+{
+"key": "card:BECKON",
+"order": 212,
+"officialArtVersion": null
+},
+{
+"key": "card:DEBRIS",
+"order": 213,
+"officialArtVersion": null
+},
+{
+"key": "card:FRANTIC_ESCAPE",
+"order": 214,
+"officialArtVersion": null
+},
+{
+"key": "card:INFECTION",
+"order": 215,
+"officialArtVersion": null
+},
+{
+"key": "card:SOOT",
+"order": 216,
+"officialArtVersion": null
+},
+{
+"key": "card:ASCENDERS_BANE",
+"order": 217,
+"officialArtVersion": null
+},
+{
+"key": "card:ENTHRALLED",
+"order": 218,
+"officialArtVersion": null
+},
+{
+"key": "card:GREED",
+"order": 219,
+"officialArtVersion": null
+},
+{
+"key": "card:POOR_SLEEP",
+"order": 220,
+"officialArtVersion": null
+},
+{
+"key": "card:SPORE_MIND",
+"order": 221,
+"officialArtVersion": null
+},
+{
+"key": "card:LANTERN_KEY",
+"order": 222,
+"officialArtVersion": null
+},
+{
+"key": "card:SPOILS_MAP",
+"order": 223,
+"officialArtVersion": null
+},
+{
+"key": "card:FEEDING_FRENZY",
+"order": 224,
+"officialArtVersion": "0.99"
+},
+{
+"key": "card:SLOTH",
+"order": 225,
+"officialArtVersion": "0.99"
+},
+{
+"key": "card:WASTE_AWAY",
+"order": 226,
+"officialArtVersion": "0.99"
+},
+{
+"key": "card:GANG_UP",
+"order": 227,
+"officialArtVersion": "0.100.0"
+},
+{
+"key": "card:SEEKER_STRIKE",
+"order": 228,
+"officialArtVersion": "0.100.0"
+},
+{
+"key": "card:SPINNER",
+"order": 229,
+"officialArtVersion": "0.100.0"
+},
+{
+"key": "card:VOLLEY",
+"order": 230,
+"officialArtVersion": "0.100.0"
+},
+{
+"key": "card:KNOCKDOWN",
+"order": 231,
+"officialArtVersion": "0.100.0"
+},
+{
+"key": "card:LIFT",
+"order": 232,
+"officialArtVersion": "0.100.0"
+},
+{
+"key": "card:COMPACT",
+"order": 233,
+"officialArtVersion": "0.101.0"
+},
+{
+"key": "card:CONSUMING_SHADOW",
+"order": 234,
+"officialArtVersion": "0.101.0"
+},
+{
+"key": "card:FUEL",
+"order": 235,
+"officialArtVersion": "0.101.0"
+},
+{
+"key": "card:SHATTER",
+"order": 236,
+"officialArtVersion": "0.101.0"
+},
+{
+"key": "card:SUBROUTINE",
+"order": 237,
+"officialArtVersion": "0.101.0"
+},
+{
+"key": "card:TRASH_TO_TREASURE",
+"order": 238,
+"officialArtVersion": "0.101.0"
+},
+{
+"key": "card:HOTFIX",
+"order": 239,
+"officialArtVersion": "0.102.0"
+},
+{
+"key": "card:MODDED",
+"order": 240,
+"officialArtVersion": "0.102.0"
+},
+{
+"key": "card:SWEEPING_GAZE",
+"order": 241,
+"officialArtVersion": "0.102.0"
+},
+{
+"key": "card:SYNTHESIS",
+"order": 242,
+"officialArtVersion": "0.102.0"
+},
+{
+"key": "card:ADAPTIVE_STRIKE",
+"order": 243,
+"officialArtVersion": "0.103.0"
+},
+{
+"key": "card:BAD_LUCK",
+"order": 244,
+"officialArtVersion": "0.103.0"
+},
+{
+"key": "card:OUTBREAK",
+"order": 245,
+"officialArtVersion": "0.103.0"
+},
+{
+"key": "card:SHADOW_SHIELD",
+"order": 246,
+"officialArtVersion": "0.103.0"
+},
+{
+"key": "card:SMOKESTACK",
+"order": 247,
+"officialArtVersion": "0.103.0"
+},
+{
+"key": "card:ABRASIVE",
+"order": 248,
+"officialArtVersion": "0.104.0"
+},
+{
+"key": "card:APPARITION",
+"order": 249,
+"officialArtVersion": "0.104.0"
+},
+{
+"key": "card:FERAL",
+"order": 250,
+"officialArtVersion": "0.104.0"
+},
+{
+"key": "card:FIGHT_THROUGH",
+"order": 251,
+"officialArtVersion": "0.104.0"
+},
+{
+"key": "card:HAILSTORM",
+"order": 252,
+"officialArtVersion": "0.104.0"
+},
+{
+"key": "card:ITERATION",
+"order": 253,
+"officialArtVersion": "0.104.0"
+},
+{
+"key": "card:SPITE",
+"order": 254,
+"officialArtVersion": "0.104.0"
+},
+{
+"key": "card:SYNCHRONIZE",
+"order": 255,
+"officialArtVersion": "0.104.0"
+},
+{
+"key": "card:VOLTAIC",
+"order": 256,
+"officialArtVersion": "0.104.0"
+},
+{
+"key": "card:NOT_YET",
+"order": 257,
+"officialArtVersion": "0.104.0"
+},
+{
+"key": "card:WITHER",
+"order": 258,
+"officialArtVersion": "0.108.0"
+},
+{
+"key": "card:THE_BALL",
+"order": 259,
+"officialArtVersion": "0.109.0"
+},
+{
+"key": "card:PLOT",
+"order": 260,
+"officialArtVersion": "0.109.0"
+},
+{
+"key": "card:CONSTELLATION",
+"order": 261,
+"officialArtVersion": "0.110.0"
+},
+{
+"key": "card:BLADE_SYMPHONY",
+"order": 262,
+"officialArtVersion": "0.110.0"
+},
+{
+"key": "card:CONCOCT",
+"order": 263,
+"officialArtVersion": "0.110.0"
+},
+{
+"key": "card:TUTOR",
+"order": 264,
+"officialArtVersion": "0.110.0"
+},
+{
+"key": "card:IMITATION_LEARNING",
+"order": 265,
+"officialArtVersion": "0.110.0"
+},
+{
+"key": "card:SOULBOUND",
+"order": 266,
+"officialArtVersion": "0.110.0"
+},
+{
+"key": "card:FADE",
+"order": 267,
+"officialArtVersion": "0.110.0"
+},
+{
+"key": "card:HIBERNATE",
+"order": 268,
+"officialArtVersion": "0.111.0"
+},
+{
+"key": "card:ONE_FOR_ALL",
+"order": 269,
+"officialArtVersion": "0.111.0"
+},
+{
+"key": "card:CACOPHONY",
+"order": 270,
+"officialArtVersion": "0.111.0"
+},
+{
+"key": "card:UNDERWORLD",
+"order": 271,
+"officialArtVersion": "0.111.0"
+},
+{
+"key": "card:MIDNIGHT",
+"order": 272,
+"officialArtVersion": "0.111.0"
+},
+{
+"key": "relic:NINJA_SCROLL",
+"order": 273,
+"officialArtVersion": null
+},
+{
+"key": "relic:SNECKO_SKULL",
+"order": 274,
+"officialArtVersion": null
+},
+{
+"key": "relic:TWISTED_FUNNEL",
+"order": 275,
+"officialArtVersion": null
+},
+{
+"key": "relic:FENCING_MANUAL",
+"order": 276,
+"officialArtVersion": null
+},
+{
+"key": "relic:VITRUVIAN_MINION",
+"order": 277,
+"officialArtVersion": null
+},
+{
+"key": "relic:PHYLACTERY_UNBOUND",
+"order": 278,
+"officialArtVersion": null
+},
+{
+"key": "relic:DATA_DISK",
+"order": 279,
+"officialArtVersion": null
+},
+{
+"key": "relic:EMOTION_CHIP",
+"order": 280,
+"officialArtVersion": null
+},
+{
+"key": "relic:GOLD_PLATED_CABLES",
+"order": 281,
+"officialArtVersion": null
+},
+{
+"key": "relic:INFUSED_CORE",
+"order": 282,
+"officialArtVersion": null
+},
+{
+"key": "relic:METRONOME",
+"order": 283,
+"officialArtVersion": null
+},
+{
+"key": "relic:RUNIC_CAPACITOR",
+"order": 284,
+"officialArtVersion": null
+},
+{
+"key": "relic:SYMBIOTIC_VIRUS",
+"order": 285,
+"officialArtVersion": null
+},
+{
+"key": "relic:BEAUTIFUL_BRACELET",
+"order": 286,
+"officialArtVersion": null
+},
+{
+"key": "relic:BELT_BUCKLE",
+"order": 287,
+"officialArtVersion": null
+},
+{
+"key": "relic:BRILLIANT_SCARF",
+"order": 288,
+"officialArtVersion": null
+},
+{
+"key": "relic:BRONZE_SCALES",
+"order": 289,
+"officialArtVersion": null
+},
+{
+"key": "relic:CLOAK_CLASP",
+"order": 290,
+"officialArtVersion": null
+},
+{
+"key": "relic:DREAM_CATCHER",
+"order": 291,
+"officialArtVersion": null
+},
+{
+"key": "relic:DUSTY_TOME",
+"order": 292,
+"officialArtVersion": null
+},
+{
+"key": "relic:ECTOPLASM",
+"order": 293,
+"officialArtVersion": null
+},
+{
+"key": "relic:FUR_COAT",
+"order": 294,
+"officialArtVersion": null
+},
+{
+"key": "relic:GHOST_SEED",
+"order": 295,
+"officialArtVersion": null
+},
+{
+"key": "relic:HISTORY_COURSE",
+"order": 296,
+"officialArtVersion": null
+},
+{
+"key": "relic:LEAD_PAPERWEIGHT",
+"order": 297,
+"officialArtVersion": null
+},
+{
+"key": "relic:MINIATURE_TENT",
+"order": 298,
+"officialArtVersion": null
+},
+{
+"key": "relic:PAELS_FLESH",
+"order": 299,
+"officialArtVersion": null
+},
+{
+"key": "relic:PAELS_TEARS",
+"order": 300,
+"officialArtVersion": null
+},
+{
+"key": "relic:PENDULUM",
+"order": 301,
+"officialArtVersion": null
+},
+{
+"key": "relic:PHILOSOPHERS_STONE",
+"order": 302,
+"officialArtVersion": null
+},
+{
+"key": "relic:POLLINOUS_CORE",
+"order": 303,
+"officialArtVersion": null
+},
+{
+"key": "relic:RED_MASK",
+"order": 304,
+"officialArtVersion": null
+},
+{
+"key": "relic:RINGING_TRIANGLE",
+"order": 305,
+"officialArtVersion": null
+},
+{
+"key": "relic:TANXS_WHISTLE",
+"order": 306,
+"officialArtVersion": null
+},
+{
+"key": "relic:THE_BOOT",
+"order": 307,
+"officialArtVersion": null
+},
+{
+"key": "relic:VELVET_CHOKER",
+"order": 308,
+"officialArtVersion": null
+},
+{
+"key": "relic:HEFTY_TABLET",
+"order": 309,
+"officialArtVersion": "0.103.0"
+},
+{
+"key": "relic:NEOWS_TALISMAN",
+"order": 310,
+"officialArtVersion": "0.103.0"
+},
+{
+"key": "power:UNMOVABLE",
+"order": 311,
+"officialArtVersion": null
+},
+{
+"key": "power:SMOGGY",
+"order": 312,
+"officialArtVersion": "0.105.0"
+},
+{
+"key": "epoch:DEFECT3_EPOCH",
+"order": 313,
+"officialArtVersion": null
+},
+{
+"key": "epoch:REGENT5_EPOCH",
+"order": 314,
+"officialArtVersion": "0.105.0"
+},
+{
+"key": "epoch:DEFECT1_EPOCH",
+"order": 315,
+"officialArtVersion": "0.106.0"
+},
+{
+"key": "epoch:SILENT7_EPOCH",
+"order": 316,
+"officialArtVersion": "0.106.0"
+},
+{
+"key": "epoch:SILENT5_EPOCH",
+"order": 317,
+"officialArtVersion": "0.106.0"
+},
+{
+"key": "epoch:RELIC1_EPOCH",
+"order": 318,
+"officialArtVersion": "0.106.0"
+},
+{
+"key": "epoch:POTION2_EPOCH",
+"order": 319,
+"officialArtVersion": "0.106.0"
+},
+{
+"key": "epoch:IRONCLAD3_EPOCH",
+"order": 320,
+"officialArtVersion": "0.107.0"
+},
+{
+"key": "epoch:NECROBINDER2_EPOCH",
+"order": 321,
+"officialArtVersion": "0.107.0"
+},
+{
+"key": "epoch:NECROBINDER5_EPOCH",
+"order": 322,
+"officialArtVersion": "0.107.0"
+},
+{
+"key": "epoch:IRONCLAD5_EPOCH",
+"order": 323,
+"officialArtVersion": "0.108.0"
+},
+{
+"key": "epoch:RELIC5_EPOCH",
+"order": 324,
+"officialArtVersion": "0.108.0"
+},
+{
+"key": "epoch:DARV_EPOCH",
+"order": 325,
+"officialArtVersion": "0.108.0"
+},
+{
+"key": "epoch:COLORLESS1_EPOCH",
+"order": 326,
+"officialArtVersion": "0.108.0"
+},
+{
+"key": "epoch:COLORLESS4_EPOCH",
+"order": 327,
+"officialArtVersion": "0.108.0"
+},
+{
+"key": "epoch:NECROBINDER4_EPOCH",
+"order": 328,
+"officialArtVersion": "0.108.0"
+},
+{
+"key": "epoch:COLORLESS2_EPOCH",
+"order": 329,
+"officialArtVersion": "0.108.0"
+},
+{
+"key": "epoch:IRONCLAD4_EPOCH",
+"order": 330,
+"officialArtVersion": "0.108.0"
+},
+{
+"key": "epoch:NECROBINDER6_EPOCH",
+"order": 331,
+"officialArtVersion": "0.109.0"
+},
+{
+"key": "epoch:NECROBINDER7_EPOCH",
+"order": 332,
+"officialArtVersion": "0.109.0"
+},
+{
+"key": "epoch:NECROBINDER3_EPOCH",
+"order": 333,
+"officialArtVersion": "0.109.0"
+}
+],
+"betaOnly": [
+"card:BLAZE",
+"card:OUTRAGE",
+"card:SIDESTEP"
+]
+}

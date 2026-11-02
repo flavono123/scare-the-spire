@@ -423,6 +423,7 @@ export function CompendiumDirectDetailPage({
           gameUi={gameUi}
           backToListTitle={gameUi.relicCollectionTitle}
           relic={relic}
+          initialShowBeta={showBetaArt}
           poolLabels={buildRelicPoolLabels(payload)}
           entities={entities}
           relatedCards={resources.cards}
@@ -500,6 +501,7 @@ export function CompendiumDirectDetailPage({
           gameUi={gameUi}
           backToListTitle={gameUi.nav.powers}
           power={power}
+          initialShowBeta={showBetaArt}
           entities={entities}
           relatedCards={resources.cards}
           relatedRelics={resources.relics}

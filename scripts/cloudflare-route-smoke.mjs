@@ -232,6 +232,10 @@ function mainCases() {
     ...page("/en/decisions-decisions", "service"),
     ...page("/this-or-that/tournament", "service"),
     ...page("/zh/this-or-that/tournament", "service"),
+    ...page("/vexing-puzzlebox", "service"),
+    ...page("/en/vexing-puzzlebox", "service"),
+    ...page("/vexing-puzzlebox/beta-art", "service"),
+    ...page("/zh/vexing-puzzlebox/beta-art", "service"),
     {
       name: "Worldcup index redirect document",
       path: "/this-or-that/worldcup",

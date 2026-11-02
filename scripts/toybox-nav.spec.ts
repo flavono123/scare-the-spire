@@ -8,6 +8,7 @@ assert.equal(hrefs.includes("/this-or-that/tournament"), false);
 assert.equal(hrefs.includes("/this-or-that"), true);
 assert.equal(hrefs.includes("/decisions-decisions"), true);
 assert.equal(hrefs.includes("/defragment"), true);
+assert.equal(hrefs.includes("/vexing-puzzlebox"), true);
 
 const thisOrThat = items.find((item) => item.href === "/this-or-that");
 assert.ok(thisOrThat);

@@ -73,6 +73,8 @@ const staticNestedServicePages = [
 const staticExactServicePages = [
   ["decisions-decisions"],
   ["this-or-that", "tournament"],
+  ["vexing-puzzlebox"],
+  ["vexing-puzzlebox", "beta-art"],
 ];
 // Next's prerendered not-found page, served by the Worker for unmatched paths.
 const notFoundPage = { source: "_not-found", target: "404" };

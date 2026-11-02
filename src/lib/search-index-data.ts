@@ -8,7 +8,7 @@ import { getPatchShell } from "@/lib/patch-shells";
 import { eventCharacterQuoteSearchParts } from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
-export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "favoriteTournament" | "decisionsDecisions" | "pagestorm" | "debate";
+export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "favoriteTournament" | "decisionsDecisions" | "pagestorm" | "debate" | "vexingPuzzlebox";
 
 export type SearchIndexItem = {
   id: string;
@@ -467,6 +467,17 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: "/colorful-philosophers",
   }];
 
+  const vexingPuzzleboxItems: SearchIndexItem[] = [{
+    id: "vexing-puzzlebox",
+    type: "vexingPuzzlebox",
+    title: "짜퍼",
+    titleEn: "Vexing Puzzlebox",
+    description: "짜증나는 퍼즐상자 퀴즈 커넥션스 니오우스레터 베타 아트 감상 갤러리",
+    descriptionEn: "quiz connections neowsletter beta art viewer gallery",
+    imageUrl: "/images/sts2/relics/vexing_puzzlebox.webp",
+    href: "/vexing-puzzlebox",
+  }];
+
   const pagestormItems: SearchIndexItem[] = [{
     id: "pagestorm",
     type: "pagestorm",
@@ -478,5 +489,5 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: "/pagestorm",
   }];
 
-  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems, ...favoriteTournamentItems, ...decisionsDecisionsItems, ...pagestormItems, ...debateItems] };
+  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems, ...favoriteTournamentItems, ...decisionsDecisionsItems, ...vexingPuzzleboxItems, ...pagestormItems, ...debateItems] };
 }

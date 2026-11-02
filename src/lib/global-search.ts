@@ -26,6 +26,7 @@ export const globalSearchTypeOrder = [
   "decisionsDecisions",
   "pagestorm",
   "debate",
+  "vexingPuzzlebox",
 ] as const;
 
 export type GlobalSearchType = (typeof globalSearchTypeOrder)[number];
@@ -71,6 +72,7 @@ export const globalSearchTypeStyles: Record<GlobalSearchType, {
   decisionsDecisions: { icon: "/images/sts2/powers/buffer_power.webp", color: "text-sky-200", bg: "bg-sky-500/10", border: "border-sky-400/30" },
   pagestorm: { icon: "/images/sts2/powers/pagestorm_power.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
   debate: { icon: "/images/sts2/modifiers/draft.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
+  vexingPuzzlebox: { icon: "/images/sts2/relics/vexing_puzzlebox.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-500/30" },
 };
 
 function globalSearchFieldScore(value: string, query: string, weight: number): number | null {

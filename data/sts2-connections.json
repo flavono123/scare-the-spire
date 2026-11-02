@@ -1,0 +1,60 @@
+[
+  {
+    "number": 27,
+    "issueId": "2026-10",
+    "issueNumber": 27,
+    "claimId": "connections-27",
+    "slug": "ntI593ipwd4eQvMzC2hL",
+    "era": "sts2",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Relics you might find on Halloween",
+        "titleKo": "할로윈에 볼 법한 유물",
+        "noteKo": null,
+        "members": [
+          { "raw": "Cauldron", "ref": { "type": "relic", "id": "CAULDRON" } },
+          { "raw": "Big Hat", "ref": { "type": "relic", "id": "BIG_HAT" } },
+          { "raw": "Pumpkin Candle", "ref": { "type": "relic", "id": "PUMPKIN_CANDLE" } },
+          { "raw": "Lasting Candy", "ref": { "type": "relic", "id": "LASTING_CANDY" } }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Items with effects based on Osty's attacks",
+        "titleKo": "골골이의 공격에 따라 효과가 나는 것",
+        "noteKo": null,
+        "members": [
+          { "raw": "Bone Flute", "ref": { "type": "relic", "id": "BONE_FLUTE" } },
+          { "raw": "Sic 'Em", "ref": { "type": "card", "id": "SIC_EM" } },
+          { "raw": "Flatten", "ref": { "type": "card", "id": "FLATTEN" } },
+          { "raw": "Rattle", "ref": { "type": "card", "id": "RATTLE" } }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Cards that require life/HP sacrifice",
+        "titleKo": "체력을 바쳐야 하는 카드",
+        "noteKo": null,
+        "members": [
+          { "raw": "Sacrifice", "ref": { "type": "card", "id": "SACRIFICE" } },
+          { "raw": "Bone Shards", "ref": { "type": "card", "id": "BONE_SHARDS" } },
+          { "raw": "Necro Mastery", "ref": { "type": "card", "id": "NECRO_MASTERY" } },
+          { "raw": "Melancholy", "ref": { "type": "card", "id": "MELANCHOLY" } }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Items featuring skull motifs",
+        "titleKo": "해골 그림이 들어간 것",
+        "noteKo": null,
+        "members": [
+          { "raw": "Bone Tea", "ref": { "type": "relic", "id": "BONE_TEA" } },
+          { "raw": "Bouncing Flask", "ref": { "type": "card", "id": "BOUNCING_FLASK" } },
+          { "raw": "Potion of Doom", "ref": { "type": "potion", "id": "POTION_OF_DOOM" } },
+          { "raw": "Friendship", "ref": { "type": "card", "id": "FRIENDSHIP" } }
+        ]
+      }
+    ]
+  }
+]

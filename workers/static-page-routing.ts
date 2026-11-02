@@ -294,6 +294,8 @@ export function staticServiceDetailShellAssetPath(
 export const STATIC_EXACT_SERVICE_PAGES: ReadonlyArray<readonly string[]> = [
   ["decisions-decisions"],
   ["this-or-that", "tournament"],
+  ["vexing-puzzlebox"],
+  ["vexing-puzzlebox", "beta-art"],
 ];
 
 function splitLocalePrefix(pathname: string): { localePrefix: string[]; rest: string[] } {

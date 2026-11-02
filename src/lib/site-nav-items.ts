@@ -26,6 +26,7 @@ import {
 import { serviceMessages } from "@/messages/service";
 import { DEBATE_HREF, DEBATE_TOKEN_SRC } from "@/lib/debate";
 import { COLORFUL_PHILOSOPHERS_DEV_HREF } from "@/lib/colorful-philosophers";
+import { VEXING_PUZZLEBOX_HREF, VEXING_PUZZLEBOX_TOKEN_SRC } from "@/lib/vexing-puzzlebox";
 import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
 import { isLatestByrdispatchNewSection } from "@/lib/toy-box-news";
 import { navSeenIdForHref } from "@/lib/nav-seen";
@@ -138,6 +139,12 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     nestedUnder: "/defragment",
     byrdispatchSectionTitle: "서류 폭풍",
     getLabel: (_serviceLocale, gameLocale) => getPagestormNavTitle(gameLocale),
+  },
+  {
+    href: VEXING_PUZZLEBOX_HREF,
+    icon: VEXING_PUZZLEBOX_TOKEN_SRC,
+    createdAt: "2026-11-02",
+    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.vexingPuzzlebox,
   },
   {
     href: DEBATE_HREF,

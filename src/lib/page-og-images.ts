@@ -94,6 +94,13 @@ export const COLORFUL_PHILOSOPHERS_PAGE_OG_IMAGE: PageOgImage = {
   alt: "다채로운 철학자들 — Colorful Philosophers",
 };
 
+export const VEXING_PUZZLEBOX_PAGE_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/events/wood_carvings.webp",
+  width: 3440,
+  height: 1616,
+  alt: "짜퍼 — Vexing Puzzlebox",
+};
+
 export const PAGESTORM_PAGE_OG_IMAGE: PageOgImage = {
   url: "/images/sts2/cards/pagestorm.webp",
   width: 1000,
@@ -198,6 +205,16 @@ export const PAGE_OG_IMAGE_RULES = [
     pattern: "/pagestorm/*",
     label: "서류 폭풍 글",
     image: PAGESTORM_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/vexing-puzzlebox",
+    label: "짜퍼 커넥션스",
+    image: VEXING_PUZZLEBOX_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/vexing-puzzlebox/beta-art",
+    label: "짜퍼 베타 아트",
+    image: VEXING_PUZZLEBOX_PAGE_OG_IMAGE,
   },
   {
     pattern: "/colorful-philosophers",

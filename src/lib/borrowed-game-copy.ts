@@ -46,6 +46,11 @@ export interface DebateGameCopy {
   reelHero: string;
 }
 
+export interface VexingPuzzleboxGameCopy {
+  betaArtHighScore: string;
+  betaArtLowScore: string;
+}
+
 export interface FeedbackFormGameCopy {
   title: string;
   categoryLabel: string;
@@ -95,6 +100,7 @@ interface BorrowedGameCopyPayload {
   decisionsDecisions: DecisionsDecisionsGameCopy;
   pagestorm: PagestormGameCopy;
   debate: DebateGameCopy;
+  vexingPuzzlebox: VexingPuzzleboxGameCopy;
 }
 
 const borrowedGameCopy = borrowedGameCopyPayload as Record<GameLocale, BorrowedGameCopyPayload>;
@@ -179,6 +185,12 @@ export async function getPagestormGameCopy(
   gameLocale: GameLocale,
 ): Promise<PagestormGameCopy> {
   return getBorrowedGameCopy(gameLocale).pagestorm;
+}
+
+export async function getVexingPuzzleboxGameCopy(
+  gameLocale: GameLocale,
+): Promise<VexingPuzzleboxGameCopy> {
+  return getBorrowedGameCopy(gameLocale).vexingPuzzlebox;
 }
 
 export function getPagestormNavTitle(gameLocale: GameLocale): string {
