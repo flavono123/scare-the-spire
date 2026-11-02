@@ -1,4 +1,6 @@
 {
+  "hitPoints": "CP",
+  "ascension": "Yükseliş Modu",
   "types": {
     "normal": "Düşmanlar",
     "elite": "Elitler",

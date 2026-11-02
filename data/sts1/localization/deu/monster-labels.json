@@ -1,4 +1,6 @@
 {
+  "hitPoints": "TP",
+  "ascension": "Aufstiegsmodus",
   "types": {
     "normal": "Gegner",
     "elite": "Eliten",

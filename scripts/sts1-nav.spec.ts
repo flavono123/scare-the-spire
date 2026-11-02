@@ -8,6 +8,7 @@ assert.equal(korean[1]?.label, "카드 모음집");
 assert.equal(korean[2]?.label, "유물 모음집");
 assert.equal(korean[3]?.label, "포션 연구실");
 assert.equal(korean[4]?.label, "파워");
+assert.equal(korean[5]?.label, "몬스터 도감");
 assert.deepEqual(
   korean.map((item) => item.icon),
   [
@@ -15,7 +16,8 @@ assert.deepEqual(
     "/images/sts2/nav/stats_cards.png",
     "/images/sts2/relics/snecko_eye.webp",
     "/images/sts2/nav/stats_potions.png",
-    "/images/sts1/powers/strength.webp",
+    "/images/sts1/powers/hello.webp",
+    "/images/sts2/nav/happy_cultist.png",
   ],
 );
 
@@ -29,7 +31,7 @@ assert.equal(latam[1]?.label, "Biblioteca de Cartas");
 
 assert.deepEqual(
   sts1NavItems.map((item) => item.href),
-  ["/compendium/sts1/characters", "/cards", "/relics", "/potions", "/compendium/sts1/powers"],
+  ["/compendium/sts1/characters", "/cards", "/relics", "/potions", "/compendium/sts1/powers", "/compendium/sts1/monsters"],
 );
 
 console.log("sts1-nav.spec.ts: ok");

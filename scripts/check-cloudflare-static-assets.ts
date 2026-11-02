@@ -124,7 +124,7 @@ const defragmentFederatedServices = [
   "pagestorm",
   "history_course",
 ] as const;
-const staticLegacyPageSegments = ["cards", "characters", "potions", "powers", "relics"] as const;
+const staticLegacyPageSegments = ["cards", "characters", "monsters", "potions", "powers", "relics"] as const;
 const staticMetadataAssets = ["robots.txt", "sitemap.xml"] as const;
 
 function walkFiles(dir: string, files: string[] = []): string[] {

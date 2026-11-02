@@ -1,4 +1,6 @@
 {
+  "hitPoints": "生命：",
+  "ascension": "进阶模式",
   "types": {
     "normal": "敌人",
     "elite": "精英",

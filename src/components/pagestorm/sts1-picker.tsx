@@ -275,7 +275,7 @@ export function Sts1CompendiumPickerModal({
   );
 }
 
-function resourceLabel(labels: { cardLibraryTitle: string; relicCollectionTitle: string; potionLabTitle: string; powersTitle: string; charactersTitle: string }, resource: Sts1ResourceType): string {
+function resourceLabel(labels: { cardLibraryTitle: string; relicCollectionTitle: string; potionLabTitle: string; powersTitle: string; monstersTitle: string; charactersTitle: string }, resource: Sts1ResourceType): string {
   switch (resource) {
     case "cards":
       return labels.cardLibraryTitle;
@@ -285,6 +285,8 @@ function resourceLabel(labels: { cardLibraryTitle: string; relicCollectionTitle:
       return labels.potionLabTitle;
     case "powers":
       return labels.powersTitle;
+    case "monsters":
+      return labels.monstersTitle;
     case "characters":
       return labels.charactersTitle;
   }

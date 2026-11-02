@@ -1,4 +1,6 @@
 {
+  "hitPoints": "체력",
+  "ascension": "승천",
   "types": {
     "normal": "적",
     "elite": "엘리트",

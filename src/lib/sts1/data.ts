@@ -15,6 +15,8 @@ import type {
   Sts1CharacterId,
   Sts1CharacterSelectUi,
   Sts1Keyword,
+  Sts1Monster,
+  Sts1MonsterLabels,
   Sts1Potion,
   Sts1Power,
   Sts1PowerType,
@@ -33,12 +35,18 @@ type RawCard = Omit<Sts1Card, "name" | "nameEn" | "description" | "upgradeDescri
 type RawRelic = Omit<Sts1Relic, "name" | "nameEn" | "flavor" | "description" | "descriptions" | "hasLargeArt">;
 type RawPotion = Omit<Sts1Potion, "name" | "nameEn" | "description" | "descriptions">;
 type RawPower = Omit<Sts1Power, "name" | "nameEn" | "description" | "descriptions">;
+type RawMonster = Omit<Sts1Monster, "name" | "nameEn" | "moves">;
 type RawCharacter = Omit<Sts1Character, "name" | "nameEn" | "title" | "flavor">;
 
 type PowerLoc = {
   name: string;
   description: string;
   descriptions: string[];
+};
+
+type MonsterLoc = {
+  name: string;
+  moves: string[];
 };
 
 type CharacterSelectLoc = {
@@ -178,6 +186,25 @@ export const getSts1Powers = cache(async (gameLocale: GameLocale = "kor"): Promi
   });
 });
 
+export const getSts1Monsters = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Monster[]> => {
+  const locale = sts1GameLocale(gameLocale);
+  const [rows, loc, eng] = await Promise.all([
+    readJson<RawMonster[]>("monsters.json"),
+    readJson<Record<string, MonsterLoc>>(`localization/${locale}/monsters.json`),
+    locale === "eng"
+      ? Promise.resolve(null)
+      : readJson<Record<string, MonsterLoc>>("localization/eng/monsters.json"),
+  ]);
+  return rows.map((row) => {
+    const text = loc[row.id] ?? { name: row.id, moves: [] };
+    return {
+      ...row,
+      ...text,
+      nameEn: eng?.[row.id]?.name ?? text.name,
+    };
+  });
+});
+
 export const getSts1CharacterSelectText = cache(async (gameLocale: GameLocale = "kor"): Promise<CharacterSelectLoc> => (
   readJson<CharacterSelectLoc>(`localization/${sts1GameLocale(gameLocale)}/character-select.json`)
 ));
@@ -240,6 +267,11 @@ export async function getSts1Power(id: string, gameLocale: GameLocale = "kor"): 
   return powers.find((power) => matchesSlug(power, id));
 }
 
+export async function getSts1Monster(id: string, gameLocale: GameLocale = "kor"): Promise<Sts1Monster | undefined> {
+  const monsters = await getSts1Monsters(gameLocale);
+  return monsters.find((monster) => matchesSlug(monster, id));
+}
+
 export const getSts1PowerSourceRefs = cache(async (
   gameLocale: GameLocale = "kor",
 ): Promise<Record<string, Sts1ResourceRef[]>> => {
@@ -288,10 +320,11 @@ function stripColon(label: string | undefined): string {
 
 export const getSts1UiLabels = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1UiLabels> => {
   const locale = sts1GameLocale(gameLocale);
-  const [ui, characters, powerTypes] = await Promise.all([
+  const [ui, characters, powerTypes, monsters] = await Promise.all([
     readJson<Sts1UiFile>(`localization/${locale}/ui.json`),
     readJson<Sts1UiLabels["characters"]>(`localization/${locale}/characters.json`),
     readJson<Record<Sts1PowerType, string>>(`localization/${locale}/power-types.json`),
+    readJson<Sts1MonsterLabels>(`localization/${locale}/monster-labels.json`),
   ]);
   const menu = ui.MenuPanels?.TEXT ?? [];
   const library = ui.CardLibraryScreen?.TEXT ?? [];
@@ -304,8 +337,10 @@ export const getSts1UiLabels = cache(async (gameLocale: GameLocale = "kor"): Pro
     relicCollectionTitle: menu[12] || "Relic Collection",
     potionLabTitle: menu[menu.length - 2] || "Potion Lab",
     powersTitle: getCodexNavGameLabel(gameLocale, "powers") ?? "Powers",
+    monstersTitle: getCodexNavGameLabel(gameLocale, "monsters") ?? "Bestiary",
     charactersTitle: getCodexNavGameLabel(gameLocale, "characters") ?? "Characters",
     powerTypes,
+    monsters,
     viewUpgrades: library[7] || popup[6] || "View Upgrade",
     betaArt: popup[14] || "Beta Art",
     types: {

@@ -54,7 +54,11 @@ export type Sts1PowerType = "buff" | "debuff";
 
 export type Sts1CharacterId = "ironclad" | "silent" | "defect" | "watcher";
 
-export type Sts1ResourceType = "cards" | "relics" | "potions" | "powers" | "characters";
+export type Sts1MonsterType = "normal" | "elite" | "boss";
+
+export type Sts1Dungeon = "exordium" | "city" | "beyond" | "ending";
+
+export type Sts1ResourceType = "cards" | "relics" | "potions" | "powers" | "monsters" | "characters";
 
 export interface Sts1CardUpgrade {
   damage?: number;
@@ -200,6 +204,31 @@ export interface Sts1CharacterSelectUi {
   gold: string;
 }
 
+export interface Sts1MonsterHitPoints {
+  ascension: number;
+  min: number;
+  max: number;
+}
+
+export interface Sts1Monster {
+  id: string;
+  slug: string;
+  legacySlugs: string[];
+  dungeon: Sts1Dungeon;
+  type: Sts1MonsterType;
+  hitPoints: Sts1MonsterHitPoints[];
+  name: string;
+  nameEn: string;
+  moves: string[];
+}
+
+export interface Sts1MonsterLabels {
+  hitPoints: string;
+  ascension: string;
+  types: Record<Sts1MonsterType, string>;
+  dungeons: Record<Sts1Dungeon, { act: string; name: string }>;
+}
+
 export interface Sts1Keyword {
   id: string;
   names: string[];
@@ -211,8 +240,10 @@ export interface Sts1UiLabels {
   relicCollectionTitle: string;
   potionLabTitle: string;
   powersTitle: string;
+  monstersTitle: string;
   charactersTitle: string;
   powerTypes: Record<Sts1PowerType, string>;
+  monsters: Sts1MonsterLabels;
   viewUpgrades: string;
   betaArt: string;
   types: Record<"attack" | "skill" | "power" | "curse" | "status", string>;

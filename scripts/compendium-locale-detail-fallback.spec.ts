@@ -47,11 +47,12 @@ const STS2_DETAILS = [
   { detail: "/compendium/relics/akabeko", list: "/compendium/relics?relic=akabeko" },
 ];
 
-// STS1 lists open an entry with ?card=/?potion=/?power=/?relic=; the
+// STS1 lists open an entry with ?card=/?monster=/?potion=/?power=/?relic=; the
 // character select has no such param.
 const STS1_DETAILS = [
   { detail: "/compendium/sts1/cards/anger", list: "/compendium/sts1/cards?card=anger" },
   { detail: "/compendium/sts1/characters/silent", list: "/compendium/sts1/characters" },
+  { detail: "/compendium/sts1/monsters/jaw-worm", list: "/compendium/sts1/monsters?monster=jaw-worm" },
   { detail: "/compendium/sts1/potions/regen-potion", list: "/compendium/sts1/potions?potion=regen-potion" },
   { detail: "/compendium/sts1/powers/after-image", list: "/compendium/sts1/powers?power=after-image" },
   { detail: "/compendium/sts1/relics/akabeko", list: "/compendium/sts1/relics?relic=akabeko" },

@@ -1,4 +1,6 @@
 {
+  "hitPoints": "HP",
+  "ascension": "Ascension Mode",
   "types": {
     "normal": "Enemies",
     "elite": "Elites",

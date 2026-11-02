@@ -41,7 +41,7 @@ type Outcome = "static" | "patch" | "redirect" | "not-found";
 // Korean and English publish detail pages; every other game locale opens an
 // entry as a modal on the list page.
 const DIRECT_DETAIL_LOCALES = new Set(["kor", "eng"]);
-const STS1_LISTS = ["cards", "characters", "potions", "powers", "relics"];
+const STS1_LISTS = ["cards", "characters", "monsters", "potions", "powers", "relics"];
 const MODAL_PROBE_ID = "coverage-probe";
 
 function walk(dir: string, files: string[] = []): string[] {

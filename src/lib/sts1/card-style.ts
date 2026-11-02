@@ -5,6 +5,7 @@ import type {
   Sts1Card,
   Sts1CardType,
   Sts1PotionRarity,
+  Sts1MonsterType,
   Sts1PowerType,
   Sts1RelicPool,
   Sts1RelicTier,
@@ -256,6 +257,12 @@ export const STS1_POTION_RARITY_COLORS: Record<Sts1PotionRarity, string> = {
 };
 
 // Settings.GREEN_TEXT_COLOR / RED_TEXT_COLOR, as used for buff/debuff tip text.
+export const STS1_MONSTER_TYPE_COLORS: Record<Sts1MonsterType, string> = {
+  normal: "#c8c8c8",
+  elite: "#efc851",
+  boss: "#ff6563",
+};
+
 export const STS1_POWER_TYPE_COLORS: Record<Sts1PowerType, string> = {
   buff: "#7fff00",
   debuff: "#ff6563",

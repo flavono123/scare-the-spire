@@ -1,4 +1,6 @@
 {
+  "hitPoints": "HP",
+  "ascension": "โหมดผู้บรรลุ",
   "types": {
     "normal": "ศัตรูทั่วไป",
     "elite": "ลูกพี่",

@@ -7,7 +7,7 @@ export type Sts1MentionEntry = {
   nameKo: string;
   nameEn: string;
   resource: Sts1ResourceType;
-  entityType: "card" | "relic" | "potion" | "power" | "character";
+  entityType: "card" | "relic" | "potion" | "power" | "monster" | "character";
   imageUrl: string;
   href: string;
   description: string;

@@ -50,6 +50,7 @@ const STATIC_STS1_LEGACY_ALIAS_SEGMENTS = new Set([
 const STATIC_STS1_COMPENDIUM_SEGMENTS = new Set([
   ...STATIC_STS1_LEGACY_ALIAS_SEGMENTS,
   "characters",
+  "monsters",
   "powers",
 ]);
 

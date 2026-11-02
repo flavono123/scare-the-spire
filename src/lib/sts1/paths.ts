@@ -2,6 +2,7 @@ import { STS1_IMAGE_CACHE_BUSTER } from "./image-cache";
 import type {
   Sts1Card,
   Sts1CharacterId,
+  Sts1Monster,
   Sts1Potion,
   Sts1Power,
   Sts1Relic,
@@ -78,6 +79,10 @@ export function sts1RelicOutlineUrl(relic: Sts1Relic): string {
 
 export function sts1PowerImageUrl(power: Sts1Power): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/powers/${power.image}.webp`);
+}
+
+export function sts1MonsterImageUrl(monster: Pick<Sts1Monster, "slug">): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/monsters/${monster.slug}.webp`);
 }
 
 export function sts1SoundUrl(key: string): string {

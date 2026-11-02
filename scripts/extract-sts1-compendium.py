@@ -1278,7 +1278,11 @@ def monster_labels(jar, locale: str) -> dict[str, Any]:
     legend = (ui.get("Legend") or {}).get("TEXT") or []
     history = (ui.get("RunHistoryScreen") or {}).get("TEXT") or []
     transition = (ui.get("DungeonTransitionScreen") or {}).get("TEXT") or []
+    option = (ui.get("CharacterOption") or {}).get("TEXT") or []
+    select = (ui.get("CharacterSelectScreen") or {}).get("TEXT") or []
     return {
+        "hitPoints": option[4].strip().rstrip(":").strip(),
+        "ascension": select[8],
         "types": {"normal": legend[13], "elite": legend[16], "boss": history[17]},
         "dungeons": {
             "exordium": {"act": transition[2], "name": transition[3]},

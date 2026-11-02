@@ -1,4 +1,6 @@
 {
+  "hitPoints": "PV",
+  "ascension": "Modalità Ascensione",
   "types": {
     "normal": "Nemici",
     "elite": "Elite",

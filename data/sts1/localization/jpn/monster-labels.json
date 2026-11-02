@@ -1,4 +1,6 @@
 {
+  "hitPoints": "HP",
+  "ascension": "登塔モード",
   "types": {
     "normal": "敵",
     "elite": "エリート",

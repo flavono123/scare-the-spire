@@ -22,6 +22,7 @@ import { searchLanguageAlternates } from "@/lib/search-canonical";
 import {
   getSts1Cards,
   getSts1Characters,
+  getSts1Monsters,
   getSts1Potions,
   getSts1Powers,
   getSts1Relics,
@@ -70,6 +71,7 @@ const COMPENDIUM_INDEX_PATHS = [
   "/compendium/sts1/relics",
   "/compendium/sts1/potions",
   "/compendium/sts1/powers",
+  "/compendium/sts1/monsters",
 ] as const;
 
 const COMPENDIUM_DETAIL_ROUTES = [
@@ -116,6 +118,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     sts1Relics,
     sts1Potions,
     sts1Powers,
+    sts1Monsters,
     sts1Characters,
   ] = await Promise.all([
     Promise.all(
@@ -127,6 +130,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getSts1Relics(),
     getSts1Potions(),
     getSts1Powers(),
+    getSts1Monsters(),
     getSts1Characters(),
   ]);
   const paths = [
@@ -140,6 +144,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...sts1Relics.map((relic) => `/compendium/sts1/relics/${relic.slug}`),
     ...sts1Potions.map((potion) => `/compendium/sts1/potions/${potion.slug}`),
     ...sts1Powers.map((power) => `/compendium/sts1/powers/${power.slug}`),
+    ...sts1Monsters.map((monster) => `/compendium/sts1/monsters/${monster.slug}`),
     ...sts1Characters.map((character) => `/compendium/sts1/characters/${character.slug}`),
   ];
   const buildDate = new Date().toISOString().slice(0, 10);

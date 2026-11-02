@@ -10,6 +10,7 @@ type Sts1NavLabels = Record<Sts1MenuPanelType, string>;
 // STS1 has no menu panel for these; reuse the STS2 Compendium's in-game labels.
 const STS1_FALLBACK_NAV_LABELS: Record<Exclude<Sts1ResourceType, Sts1MenuPanelType>, string> = {
   powers: "Powers",
+  monsters: "Bestiary",
   characters: "Characters",
 };
 
@@ -91,7 +92,7 @@ export function getSts1NavLabel(
   gameLocale: GameLocale,
   type: Sts1ResourceType,
 ): string {
-  if (type === "powers" || type === "characters") {
+  if (type === "powers" || type === "monsters" || type === "characters") {
     return getCodexNavGameLabel(gameLocale, type) ?? STS1_FALLBACK_NAV_LABELS[type];
   }
   return flattenNavLabel(STS1_NAV_LABELS[sts1GameLocale(gameLocale)][type]);

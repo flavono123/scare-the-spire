@@ -2,6 +2,7 @@ import { generateLocalizedStaticParams } from "@/lib/codex-static-params";
 import {
   getSts1Cards,
   getSts1Characters,
+  getSts1Monsters,
   getSts1Potions,
   getSts1Powers,
   getSts1Relics,
@@ -24,6 +25,10 @@ export async function generateSts1PowerStaticParams() {
   return sts1RouteIds(await getSts1Powers());
 }
 
+export async function generateSts1MonsterStaticParams() {
+  return sts1RouteIds(await getSts1Monsters());
+}
+
 export async function generateSts1CharacterStaticParams() {
   return sts1RouteIds(await getSts1Characters());
 }
@@ -42,6 +47,10 @@ export function generateSts1LocalizedPotionStaticParams() {
 
 export function generateSts1LocalizedPowerStaticParams() {
   return generateLocalizedStaticParams(generateSts1PowerStaticParams);
+}
+
+export function generateSts1LocalizedMonsterStaticParams() {
+  return generateLocalizedStaticParams(generateSts1MonsterStaticParams);
 }
 
 export function generateSts1LocalizedCharacterStaticParams() {

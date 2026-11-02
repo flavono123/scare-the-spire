@@ -43,6 +43,11 @@ assert.equal(
   "/_cf_static_pages/compendium/sts1/powers/strength.html",
 );
 assert.equal(
+  staticCompendiumAssetPath("/compendium/sts1/monsters/jaw-worm", "html"),
+  "/_cf_static_pages/compendium/sts1/monsters/jaw-worm.html",
+);
+assert.equal(staticCompendiumAssetPath("/zh/compendium/sts1/monsters/jaw-worm", "html"), null);
+assert.equal(
   staticCompendiumAssetPath("/en/compendium/sts1/characters", "rsc"),
   "/_cf_static_pages/en/compendium/sts1/characters.rsc",
 );

@@ -5,6 +5,7 @@ import {
   getSts1Cards,
   getSts1Characters,
   getSts1Keywords,
+  getSts1Monsters,
   getSts1Potions,
   getSts1Powers,
   getSts1Relics,
@@ -15,6 +16,7 @@ import {
   sts1CharacterIconUrl,
   sts1CharacterPortraitUrl,
   sts1DetailPath,
+  sts1MonsterImageUrl,
   sts1PotionImageUrl,
   sts1PowerImageUrl,
   sts1RelicImageUrl,
@@ -27,11 +29,12 @@ function mentionId(resource: Sts1ResourceType, slug: string): string {
 }
 
 async function buildIndex(): Promise<Sts1MentionIndex> {
-  const [cards, relics, potions, powers, characters, keywords, kor, eng] = await Promise.all([
+  const [cards, relics, potions, powers, monsters, characters, keywords, kor, eng] = await Promise.all([
     getSts1Cards("kor"),
     getSts1Relics("kor"),
     getSts1Potions("kor"),
     getSts1Powers("kor"),
+    getSts1Monsters("kor"),
     getSts1Characters("kor"),
     getSts1Keywords("kor"),
     getSts1UiLabels("kor"),
@@ -94,6 +97,17 @@ async function buildIndex(): Promise<Sts1MentionIndex> {
       href: sts1DetailPath("powers", power.slug),
       description: power.description,
       powerType: power.type,
+    })),
+    ...monsters.map((monster): Sts1MentionEntry => ({
+      id: mentionId("monsters", monster.slug),
+      slug: monster.slug,
+      nameKo: monster.name,
+      nameEn: monster.nameEn,
+      resource: "monsters",
+      entityType: "monster",
+      imageUrl: sts1MonsterImageUrl(monster),
+      href: sts1DetailPath("monsters", monster.slug),
+      description: "",
     })),
     ...characters.map((character): Sts1MentionEntry => ({
       id: mentionId("characters", character.slug),
