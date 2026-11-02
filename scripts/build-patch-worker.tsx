@@ -1,10 +1,11 @@
+// Must stay first: src/lib/supabase.ts reads the environment when it is imported.
+import "./load-build-env";
 /* eslint-disable @next/next/no-css-tags, @next/next/no-head-element, @next/next/no-img-element, @next/next/no-sync-scripts */
 import fs from "fs/promises";
 import path from "path";
 import React, { type ReactNode } from "react";
 import type { Metadata } from "next";
 import { renderToStaticMarkup, renderToString } from "react-dom/server";
-import { loadEnvConfig } from "@next/env";
 import { build as buildClientBundle, stop as stopClientBundler, type Plugin } from "esbuild";
 import {
   PatchDetailPage,
@@ -77,7 +78,6 @@ type StaticPatchRoute = {
   };
 };
 
-loadEnvConfig(process.cwd());
 
 const outDir = path.join(process.cwd(), ".patch-worker/assets");
 const patchCommentsClientPath = path.join(
