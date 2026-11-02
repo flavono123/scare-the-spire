@@ -20,16 +20,17 @@ const MAX_TAG_LENGTH = 16_000;
 const META_KEY = /(?:property|name)\s*=\s*(["'])([\s\S]*?)\1/i;
 const META_CONTENT = /content\s*=\s*(["'])([\s\S]*?)\1/i;
 
+const MAX_CODE_POINT = 0x10ffff;
+
+/** `fromCodePoint` throws past U+10FFFF; one bad entity must not cost the preview. */
+function decodeCodePoint(code: number): string {
+  return code <= MAX_CODE_POINT ? String.fromCodePoint(code) : "";
+}
+
 function decodeHtml(value: string): string {
   return value
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) => {
-      const code = Number.parseInt(hex, 16);
-      return Number.isFinite(code) ? String.fromCodePoint(code) : "";
-    })
-    .replace(/&#(\d+);/g, (_, dec: string) => {
-      const code = Number.parseInt(dec, 10);
-      return Number.isFinite(code) ? String.fromCodePoint(code) : "";
-    })
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) => decodeCodePoint(Number.parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec: string) => decodeCodePoint(Number.parseInt(dec, 10)))
     .replace(/&quot;/g, "\"")
     .replace(/&#39;|&apos;/g, "'")
     .replace(/&lt;/g, "<")
