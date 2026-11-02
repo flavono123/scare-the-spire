@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback, type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, useSyncExternalStore, type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -752,6 +752,10 @@ function GlobalSearch({
 
 // --- Main navbar ---
 
+function subscribeNever() {
+  return () => {};
+}
+
 export function SiteNavbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -784,7 +788,11 @@ export function SiteNavbar() {
       : item
   ));
   const mailboxReply = useMailboxReply();
-  const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
+  // A record shell is prerendered under a placeholder id and React keeps
+  // server attributes on hydration, so the source path waits until the client
+  // renders with the real address.
+  const hydrated = useSyncExternalStore(subscribeNever, () => true, () => false);
+  const contactHref = getContactHref(hydrated ? pathname : "/contact", serviceLocale, gameLocale);
   const isContactPage = stripGameLocaleFromPath(pathname) === "/contact";
 
   return (
