@@ -87,7 +87,7 @@ export function BetaArtViewer({
   const shownShare = betaOnly ? 100 : betaShare;
 
   return (
-    <div className="mx-auto max-w-3xl" data-beta-art-viewer>
+    <div className="mx-auto max-w-[min(48rem,80svh)]" data-beta-art-viewer>
       <div
         ref={stageRef}
         role="img"
@@ -103,7 +103,7 @@ export function BetaArtViewer({
         }}
         onPointerUp={() => setDragging(false)}
         onPointerCancel={() => setDragging(false)}
-        className="relative aspect-[4/3] cursor-ew-resize touch-pan-y select-none overflow-hidden rounded-xl border border-border bg-black"
+        className="relative aspect-[25/19] cursor-ew-resize touch-pan-y select-none overflow-hidden rounded-xl border border-border bg-black"
       >
         {entry.officialUrl && (
           <Image

@@ -154,7 +154,7 @@ export function BetaArtQuiz({
       </div>
 
       <div className={`grid gap-2 ${picked !== null && question.entry.officialUrl ? "grid-cols-2" : "grid-cols-1"}`}>
-        <figure className="relative aspect-[4/3] overflow-hidden rounded-xl border border-border bg-black">
+        <figure className="relative aspect-[25/19] overflow-hidden rounded-xl border border-border bg-black">
           <Image
             src={question.entry.betaUrl}
             alt={copy.quizPrompt}
@@ -169,7 +169,7 @@ export function BetaArtQuiz({
           )}
         </figure>
         {picked !== null && question.entry.officialUrl && (
-          <figure className="relative aspect-[4/3] overflow-hidden rounded-xl border border-border bg-black">
+          <figure className="relative aspect-[25/19] overflow-hidden rounded-xl border border-border bg-black">
             <Image
               src={question.entry.officialUrl}
               alt={question.entry.name}

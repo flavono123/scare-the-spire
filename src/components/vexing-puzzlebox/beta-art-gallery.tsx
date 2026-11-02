@@ -30,7 +30,7 @@ export function BetaArtGallery({
               onClick={() => onOpen(entry.key)}
               className="group w-full overflow-hidden rounded-lg border border-border bg-card/90 text-left transition-colors hover:border-primary/60"
             >
-              <span className="relative block aspect-[4/3] bg-black/40">
+              <span className="relative block aspect-[25/19] bg-black/40">
                 <Image
                   src={entry.betaUrl}
                   alt={entry.name}
