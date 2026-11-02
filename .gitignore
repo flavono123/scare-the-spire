@@ -72,6 +72,7 @@ playwright-report/
 # CI/local static:data outputs (regenerate; do not commit fallout)
 /public/api/search-index
 /public/generated/search-index.json
+/public/generated/search-names/
 /public/generated/this-or-that-resources-*.json
 /public/generated/decisions-decisions-presets.json
 /public/generated/decisions-decisions-legacy-cards-*.json

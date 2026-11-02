@@ -16,6 +16,8 @@ assert.equal(preview.description, "도넛과 혼동");
 assert.equal(preview.image, "https://i.namu.wiki/cover.jpg");
 
 assert.equal(readOpenGraph("<html><head><title>Fallback &amp; Co</title></head>", "https://example.com").title, "Fallback & Co");
+assert.equal(readOpenGraph("<title>A&#x110000;B&#1114112;C&#x41;</title>", "https://example.com").title, "ABCA");
+assert.equal(readOpenGraph(`<title>${"&#x" + "f".repeat(400) + ";"}Kept</title>`, "https://example.com").title, "Kept");
 assert.equal(readOpenGraph('<TITLE lang="ko">Upper</TITLE>', "https://example.com").title, "Upper");
 assert.equal(readOpenGraph("<title></title><title>Second</title>", "https://example.com").title, "");
 assert.equal(readOpenGraph("<title>unclosed", "https://example.com").title, "");

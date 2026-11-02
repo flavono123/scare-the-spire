@@ -76,6 +76,7 @@ import {
 } from "./monster-ascension";
 import { MonsterSpineStage, type MonsterStageVisualBounds } from "./monster-spine-stage";
 import { resolveMonsterStaticArt } from "@/lib/monster-static-art";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 type MoveTone = "attack" | "defense" | "mixed" | "setup";
@@ -1766,9 +1767,7 @@ export function MonsterDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/bestiary", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-          onClick={(e) => {
-            if (onClose) { e.preventDefault(); onClose(); }
-          }}
+          onClick={(e) => closeOnPlainClick(e, onClose)}
         >
           ← {backToListTitle}
         </Link>

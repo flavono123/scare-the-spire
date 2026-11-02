@@ -44,6 +44,7 @@
       placeholder: "댓글을 입력하세요",
       submit: "작성",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
+      reloadPage: "새로 고침",
       storyTitle: "이 변경으로 이야기 쓰기",
       storyPlaceholder: "이 변경에서 떠오른 이야기를 남겨보세요",
       storyNickname: "닉네임",
@@ -62,6 +63,7 @@
       placeholder: "Write a comment",
       submit: "Post",
       unavailableTitle: "No responses from database",
+      reloadPage: "Refresh page",
       storyTitle: "Write story from this change",
       storyPlaceholder: "Share the story this change brought to mind",
       storyNickname: "Nickname",
@@ -759,8 +761,16 @@
         <span class="text-xs font-semibold text-amber-300">
           ${escapeHtml(copy().unavailableTitle)}
         </span>
+        <button
+          type="button"
+          data-storage-reload
+          class="rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:border-primary/50 hover:bg-primary/15"
+        >
+          ${escapeHtml(copy().reloadPage)}
+        </button>
       </div>
     `;
+    root.querySelector("[data-storage-reload]")?.addEventListener("click", () => window.location.reload());
   }
 
   function renderLoading(root) {

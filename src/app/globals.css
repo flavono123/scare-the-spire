@@ -430,6 +430,12 @@
   color: var(--primary);
 }
 
+/* Both languages ship in the HTML of pages one prerender serves for all paths. */
+:root[data-service-locale="ko"] [data-service-locale-only="en"],
+:root[data-service-locale="en"] [data-service-locale-only="ko"] {
+  display: none;
+}
+
 .engagement-unavailable-icon {
   position: relative;
   display: inline-flex;
@@ -493,6 +499,17 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+}
+
+.engagement-unavailable-icon[data-tooltip-align="end"] .engagement-unavailable-icon__tooltip {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+.engagement-unavailable-icon[data-tooltip-align="start"] .engagement-unavailable-icon__tooltip {
+  left: 0;
+  transform: none;
 }
 
 .sts2-ancient-card-flame__sheet {

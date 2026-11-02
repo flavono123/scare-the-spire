@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { closeOnPlainClick } from "@/lib/plain-click";
 
 export function Sts1MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -66,11 +67,7 @@ export function Sts1DetailShell({
           prefetch={onClose ? false : undefined}
           href={localizeHref(backHref, serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
-          onClick={(event) => {
-            if (!onClose) return;
-            event.preventDefault();
-            onClose();
-          }}
+          onClick={(event) => closeOnPlainClick(event, onClose)}
         >
           ← {backLabel}
         </Link>

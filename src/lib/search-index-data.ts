@@ -2,6 +2,8 @@ import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { stripCodexMarkup } from "@/lib/codex-search";
 import { buildCompendiumResourceHref, type CompendiumResourceLinkType } from "@/lib/compendium-resource-links";
 import { getStories, getSTS2Patches, getSTS2Stories } from "@/lib/data";
+import type { GlobalSearchNames } from "@/lib/global-search";
+import type { GameLocale } from "@/lib/i18n";
 import { getPatchShell } from "@/lib/patch-shells";
 import { eventCharacterQuoteSearchParts } from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
@@ -333,6 +335,14 @@ function eventSearchText(
     base,
     ...eventCharacterQuoteSearchParts(entity.eventData, characters),
   ]);
+}
+
+/** One small file per game-only language; the shared index stays Korean and English. */
+export async function buildSearchNames(gameLocale: GameLocale): Promise<GlobalSearchNames> {
+  const entities = await loadAllEntities({ gameLocale });
+  return Object.fromEntries(
+    entities.flatMap((entity) => (entityHref(entity) ? [[entityKey(entity), entity.nameKo]] : [])),
+  );
 }
 
 export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {

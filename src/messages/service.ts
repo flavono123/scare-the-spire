@@ -3,6 +3,12 @@ import type { ServiceLocale } from "@/lib/i18n";
 export const serviceMessages = {
   ko: {
     brand: "슬서운 이야기",
+    notFound: {
+      title: "페이지를 찾을 수 없습니다",
+      description: "주소가 바뀌었거나 없는 페이지입니다.",
+      home: "홈으로",
+      compendium: "백과사전으로",
+    },
     languageSelect: "언어",
     nav: {
       patches: "패치노트",
@@ -185,6 +191,7 @@ export const serviceMessages = {
       placeholder: "댓글을 입력하세요",
       submit: "작성",
       unavailableTitle: "데이터베이스가 응답하지 않습니다",
+      reloadPage: "새로 고침",
     },
     entityGraph: {
       unavailable: "게임 요소 목록을 불러오지 못했습니다",
@@ -1448,6 +1455,12 @@ export const serviceMessages = {
   },
   en: {
     brand: "Scare the Spire",
+    notFound: {
+      title: "Page not found",
+      description: "This page has moved or does not exist.",
+      home: "Go home",
+      compendium: "Go to the Compendium",
+    },
     languageSelect: "Language",
     nav: {
       patches: "Patch Notes",
@@ -1630,6 +1643,7 @@ export const serviceMessages = {
       placeholder: "Write a comment",
       submit: "Post",
       unavailableTitle: "No responses from database",
+      reloadPage: "Refresh page",
     },
     entityGraph: {
       unavailable: "Could not load the game element list",

@@ -4,6 +4,7 @@ import { CloudflareWebAnalytics } from "@/components/cloudflare-web-analytics";
 import { ColorSchemeScript } from "@/components/color-scheme-script";
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
 import { CommentCourier } from "@/components/comment-courier";
+import { NoScriptSiteHeader } from "@/components/no-script-site-header";
 import { SiteNavbar } from "@/components/site-navbar";
 import { ColorSchemeDocumentAttributes } from "@/hooks/use-color-scheme";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
@@ -73,7 +74,7 @@ export default function RootLayout({
         className="min-h-dvh font-service antialiased bg-background text-foreground"
       >
         <ColorSchemeDocumentAttributes />
-        <Suspense>
+        <Suspense fallback={<NoScriptSiteHeader />}>
           <LocaleDocumentAttributes />
           <SiteNavbar />
         </Suspense>

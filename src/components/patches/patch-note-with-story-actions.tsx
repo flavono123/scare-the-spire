@@ -232,6 +232,7 @@ export function PatchLineStoriesPanel({
             <StorageUnavailableNotice
               compact
               className="mt-3"
+              serviceLocale={serviceLocale}
               title={serviceMessages[serviceLocale].comments.unavailableTitle}
             />
           ) : communityLoading ? (

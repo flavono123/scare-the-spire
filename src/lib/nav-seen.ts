@@ -318,7 +318,9 @@ export async function fetchUnreadSurfaceIds(seen: NavSeenMap): Promise<string[]>
   const flags = await Promise.all(NAV_SEEN_SURFACES.map(async (surface) => {
     const since = seen[surface.id];
     if (!since) return null;
-    return await surfaceHasNewer(surface, since) ? surface.id : null;
+    // A timed-out or failed surface only loses its dot, never the other dots.
+    const hasNewer = await surfaceHasNewer(surface, since).catch(() => false);
+    return hasNewer ? surface.id : null;
   }));
   return flags.filter((id): id is string => id !== null);
 }

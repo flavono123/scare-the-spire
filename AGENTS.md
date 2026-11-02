@@ -179,7 +179,7 @@ evaluate whether it can cause Cloudflare `exceededResources`, Error 1102, or a
 - 변경 이력 없는 카드/유물도 데이터에 포함
 
 ### STS2 (메인)
-- 카드 612장, 유물 314개, 포션 63개, 에인션트 8개
+- 카드 598장, 유물 298개, 포션 64개, 에인션트 8개
 - 이미지: `public/images/sts2/` (게임 PCK에서 추출)
 - 데이터: `src/lib/codex-data.ts`, `src/lib/codex-types.ts`
 - 데이터 SSOT: Steam 패치노트 (밸런스) + 게임 파일 (신규 카드/유물)

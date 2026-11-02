@@ -19,6 +19,7 @@ import type {
   CodexRelic,
   EpochAffiliation,
 } from "@/lib/codex-types";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import { DescriptionText } from "./codex-description";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { RichDescription } from "./rich-description";
@@ -215,12 +216,7 @@ export function EpochDetail({
         <a
           href={localizeHref("/compendium/epochs", serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
-          onClick={(event) => {
-            if (onClose) {
-              event.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(event) => closeOnPlainClick(event, onClose)}
         >
           ← {backToListTitle ?? gameUi.epochsTitle}
         </a>

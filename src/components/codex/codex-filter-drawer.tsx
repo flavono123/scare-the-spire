@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useLayoutEffect,
+  useRef,
   useState,
   type HTMLAttributes,
   type ReactNode,
@@ -193,9 +194,29 @@ export function CompendiumDetailOverlay({
   // not move sideways when the full detail arrives and starts to overflow.
   const [reserveRailGutter, setReserveRailGutter] = useState(false);
   const requestRailGutter = useCallback(() => setReserveRailGutter(true), []);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  // Read during render: the first child effect may already have moved focus.
+  const [openerElement] = useState(() => (typeof document === "undefined" ? null : document.activeElement));
+
+  // Keyboard users start inside the modal, not at the tile behind it, and go
+  // back to that tile when it closes.
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog && !dialog.contains(document.activeElement)) dialog.focus({ preventScroll: true });
+    return () => {
+      const focusLost = !document.activeElement || document.activeElement === document.body
+        || dialog?.contains(document.activeElement);
+      if (focusLost && openerElement instanceof HTMLElement && openerElement.isConnected) {
+        openerElement.focus({ preventScroll: true });
+      }
+    };
+  }, [openerElement]);
+
   return (
     <div
-      className={cn("fixed inset-0 bg-black/70 backdrop-blur-sm", zClassName, className)}
+      ref={dialogRef}
+      tabIndex={-1}
+      className={cn("fixed inset-0 bg-black/70 outline-none backdrop-blur-sm", zClassName, className)}
       role={ariaLabel ? "dialog" : rest.role}
       aria-modal={ariaLabel ? true : rest["aria-modal"]}
       aria-label={ariaLabel}

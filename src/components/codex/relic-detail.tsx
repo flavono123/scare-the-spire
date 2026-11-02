@@ -54,6 +54,7 @@ import {
   type CardSideTipCatalogSources,
 } from "@/lib/card-side-tip-catalog";
 import { collectRelicSideTips } from "@/lib/relic-side-tips";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
@@ -400,12 +401,7 @@ export function RelicDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/relics", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-          onClick={(e) => {
-            if (onClose) {
-              e.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(e) => closeOnPlainClick(e, onClose)}
         >
           ← {backToListTitle}
         </Link>

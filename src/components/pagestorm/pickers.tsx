@@ -239,10 +239,10 @@ export function ToyboxPickerModal({
             onChoose={(choice) => onInsert(applyPagestormTransfigureChoice(choosing, choice))}
           />
         ) : insertFailed ? (
-          <StorageUnavailableNotice title={copy.unavailableTitle} compact className="mb-3" />
+          <StorageUnavailableNotice title={copy.unavailableTitle} compact className="mb-3" reload={false} />
         ) : null}
         {choosing ? null : unavailable ? (
-          <StorageUnavailableNotice title={copy.unavailableTitle} />
+          <StorageUnavailableNotice title={copy.unavailableTitle} reload={false} />
         ) : loading ? (
           <ContentLoadingNotice label={copy.loading} />
         ) : posts.length === 0 ? (

@@ -25,6 +25,7 @@ import { sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1Power, Sts1PowerType, Sts1ResourceRef, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1PowerDetail } from "./power-detail";
 import { Sts1PowerTile } from "./power-tile";
+import { useEscapeClose } from "./use-escape-close";
 
 const TYPE_ORDER: Sts1PowerType[] = ["buff", "debuff"];
 
@@ -62,6 +63,7 @@ export function Sts1PowerLibrary({
     setUseUrlSelection(false);
     setSelectedOverride(null);
   }, []);
+  useEscapeClose(Boolean(selectedPower), closePower);
 
   useEffect(() => {
     if (useUrlSelection) return;

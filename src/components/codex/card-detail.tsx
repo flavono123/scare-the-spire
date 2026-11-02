@@ -75,6 +75,7 @@ import {
   getEnchantAmountPresets,
   getEnchantStatModifier,
 } from "@/lib/sts2-enchant-rules";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import {
   canAfflictCard,
   getAfflictionAddedKeywords,
@@ -453,12 +454,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/cards", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-          onClick={(e) => {
-            if (onClose) {
-              e.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(e) => closeOnPlainClick(e, onClose)}
         >
           ← {gameUi.cardLibraryTitle}
         </Link>

@@ -48,6 +48,7 @@ import {
   globalSearchTypeOrder,
   globalSearchTypeStyles,
   type GlobalSearchIndexItem,
+  loadGlobalSearchItems,
 } from "@/lib/global-search";
 import { ProfileAvatarToken } from "@/components/profile/profile-avatar-token";
 import { useStoredProfileSnapshot } from "@/hooks/use-user-profile";
@@ -458,12 +459,13 @@ function GlobalSearch({
 
   const loadIndex = useCallback(async () => {
     if (loaded) return;
-    const response = await fetch("/generated/search-index.json");
-    if (!response.ok) return;
-    const data = await response.json() as { items?: GlobalSearchIndexItem[] };
-    setItems(data.items ?? []);
-    setLoaded(true);
-  }, [loaded]);
+    try {
+      setItems(await loadGlobalSearchItems(serviceLocale, gameLocale));
+      setLoaded(true);
+    } catch {
+      // The next time the search opens tries again.
+    }
+  }, [gameLocale, loaded, serviceLocale]);
 
   const clearPendingTimers = useCallback(() => {
     if (pendingNavigationTimerRef.current !== null) {
@@ -826,7 +828,7 @@ export function SiteNavbar() {
         </div>
 
         <div className="flex min-w-0 flex-1 items-center justify-end gap-0.5 sm:gap-1">
-          <GlobalSearch serviceLocale={serviceLocale} gameLocale={gameLocale} />
+          <GlobalSearch key={gameLocale} serviceLocale={serviceLocale} gameLocale={gameLocale} />
           <div className="hidden xl:block">
             <LanguageDropdown value={gameLocale} label={messages.languageSelect} />
           </div>

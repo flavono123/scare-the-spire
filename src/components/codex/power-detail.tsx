@@ -40,6 +40,7 @@ import {
   getRelatedPotionIdsForPower,
   getRelatedRelicIdsForPower,
 } from "@/lib/codex-references";
+import { closeOnPlainClick } from "@/lib/plain-click";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -210,12 +211,7 @@ export function PowerDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/powers", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-          onClick={(e) => {
-            if (onClose) {
-              e.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(e) => closeOnPlainClick(e, onClose)}
         >
           ← {backTitle}
         </Link>

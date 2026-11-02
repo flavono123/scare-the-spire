@@ -22,6 +22,7 @@ import {
   type CodexPotion,
   type CodexRelic,
 } from "@/lib/codex-types";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import characterFormVfxAssets from "../../../data/sts2/character-form-vfx-assets.json";
 import { DescriptionText } from "./codex-description";
@@ -404,12 +405,7 @@ export function CharacterDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/characters", serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
-          onClick={(event) => {
-            if (onClose) {
-              event.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(event) => closeOnPlainClick(event, onClose)}
         >
           ← {backToListTitle}
         </Link>

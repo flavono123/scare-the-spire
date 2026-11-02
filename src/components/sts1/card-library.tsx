@@ -38,6 +38,7 @@ import type {
 } from "@/lib/sts1/types";
 import { Sts1CardDetail } from "./card-detail";
 import { Sts1CardTile } from "./card-tile";
+import { useEscapeClose } from "./use-escape-close";
 import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
 import { collectSts1CardSideTips } from "@/lib/sts1/keyword-tips";
 
@@ -169,14 +170,7 @@ export function Sts1CardLibrary({
     setSelectedOverride(null);
   }), []);
 
-  useEffect(() => {
-    if (!selectedCard) return;
-    const handler = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeCard();
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [closeCard, selectedCard]);
+  useEscapeClose(Boolean(selectedCard), closeCard);
 
   const toggle = <T,>(set: Set<T>, value: T, setter: (next: Set<T>) => void) => {
     const next = new Set(set);

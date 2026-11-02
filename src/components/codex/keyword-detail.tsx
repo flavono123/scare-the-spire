@@ -23,6 +23,7 @@ import {
   getRelatedPowerIdsForKeyword,
   getRelatedRelicIdsForKeyword,
 } from "@/lib/codex-references";
+import { closeOnPlainClick } from "@/lib/plain-click";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -201,12 +202,7 @@ export function KeywordDetail({
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/keywords", serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
-          onClick={(event) => {
-            if (onClose) {
-              event.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(event) => closeOnPlainClick(event, onClose)}
         >
           ← {backTitle}
         </Link>

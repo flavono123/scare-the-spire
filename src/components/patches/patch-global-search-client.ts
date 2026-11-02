@@ -2,6 +2,7 @@ import {
   globalSearchItemScore,
   globalSearchTypeOrder,
   globalSearchTypeStyles,
+  loadGlobalSearchItems,
   type GlobalSearchIndexItem,
   type GlobalSearchType,
 } from "@/lib/global-search";
@@ -11,10 +12,6 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-
-type SearchIndexPayload = {
-  items?: GlobalSearchIndexItem[];
-};
 
 type LoadState = "idle" | "loading" | "ready" | "error";
 
@@ -112,7 +109,7 @@ function createResultRow(item: GlobalSearchIndexItem): HTMLAnchorElement {
   text.className = "min-w-0 flex-1";
   const title = document.createElement("span");
   title.className = "block truncate font-semibold text-foreground";
-  title.textContent = serviceLocale === "ko" ? item.title : item.titleEn;
+  title.textContent = item.title;
   const type = document.createElement("span");
   type.className = `block truncate text-xs ${style.color}`;
   type.textContent = labels[item.type];
@@ -172,13 +169,9 @@ function renderSearchResults() {
 function loadIndex(): Promise<void> {
   if (loadPromise) return loadPromise;
   loadState = "loading";
-  loadPromise = fetch("/generated/search-index.json")
-    .then((response) => {
-      if (!response.ok) throw new Error(`Search index request failed: ${response.status}`);
-      return response.json() as Promise<SearchIndexPayload>;
-    })
-    .then((payload) => {
-      items = payload.items ?? [];
+  loadPromise = loadGlobalSearchItems(serviceLocale, gameLocale)
+    .then((loaded) => {
+      items = loaded;
       loadState = "ready";
     })
     .catch(() => {

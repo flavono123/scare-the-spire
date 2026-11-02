@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { buildQuerySignal, reportBuildDataFailure } from "@/lib/build-supabase-read";
 import { supabase, supabaseClientOptions, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { normalizeTransfigurePost, type TransfigurePost } from "@/lib/transfigure-types";
 import { BUILTIN_SAMPLE_TRANSFIGURES } from "@/lib/transfigure-builtins";
@@ -26,41 +27,46 @@ export function getRecentTransfigurePosts(limit = 15): Promise<TransfigurePost[]
 
   const promise = fetchRecentTransfigurePosts(limit);
   cache.set(cacheKey, promise);
+  promise.catch(() => cache.delete(cacheKey));
   return promise;
+}
+
+function queryPosts(client: SupabaseClient, env: string, limit: number) {
+  return client
+    .from("transfigure_posts")
+    .select("*")
+    .eq("env", env)
+    .order("created_at", { ascending: false })
+    .limit(limit)
+    .abortSignal(buildQuerySignal());
+}
+
+/** Rows of `env`; a build that is not production borrows production's when it has none. */
+async function fetchNormalizedPosts(client: SupabaseClient, env: string, limit: number): Promise<TransfigurePost[]> {
+  const { data, error } = await queryPosts(client, env, limit);
+  if (error) throw error;
+  const posts = (data ?? []).map(normalizeTransfigurePost);
+  if (posts.length > 0) return posts;
+  if (env === "production") throw new Error("transfigure_posts has no rows");
+
+  const { data: productionData, error: productionError } = await queryPosts(client, "production", limit);
+  if (productionError) throw productionError;
+  const productionPosts = (productionData ?? []).map(normalizeTransfigurePost);
+  if (productionPosts.length > 0) return productionPosts;
+  throw new Error("transfigure_posts has no rows");
 }
 
 async function fetchRecentTransfigurePosts(limit = 15): Promise<TransfigurePost[]> {
   const resolved = getClient();
-  if (!resolved) return [...BUILTIN_SAMPLE_TRANSFIGURES];
+  if (!resolved) {
+    reportBuildDataFailure("transfigure_posts", "Supabase is not configured");
+    return [...BUILTIN_SAMPLE_TRANSFIGURES];
+  }
 
   try {
-    const { data, error } = await resolved.client
-      .from("transfigure_posts")
-      .select("*")
-      .eq("env", resolved.env)
-      .order("created_at", { ascending: false })
-      .limit(limit);
-
-    if (error || !data || data.length === 0) {
-      if (resolved.env !== "production") {
-        const { data: prodData } = await resolved.client
-          .from("transfigure_posts")
-          .select("*")
-          .eq("env", "production")
-          .order("created_at", { ascending: false })
-          .limit(limit);
-        if (prodData && prodData.length > 0) {
-          const norm = prodData.map(normalizeTransfigurePost);
-          if (norm.length > 0) return norm;
-        }
-      }
-      return [...BUILTIN_SAMPLE_TRANSFIGURES];
-    }
-
-    const normalized = data.map(normalizeTransfigurePost);
-    return normalized.length > 0 ? normalized : [...BUILTIN_SAMPLE_TRANSFIGURES];
-  } catch {
+    return await fetchNormalizedPosts(resolved.client, resolved.env, limit);
+  } catch (cause) {
+    reportBuildDataFailure("transfigure_posts", cause);
     return [...BUILTIN_SAMPLE_TRANSFIGURES];
   }
 }
-

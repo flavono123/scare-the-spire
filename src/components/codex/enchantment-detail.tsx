@@ -42,6 +42,7 @@ import {
   getRelatedRelicIdsForEnchantment,
 } from "@/lib/codex-references";
 import { getAfflictionCardTypeRestriction } from "@/lib/sts2-affliction-rules";
+import { closeOnPlainClick } from "@/lib/plain-click";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -226,12 +227,7 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
           prefetch={onClose ? false : undefined}
           href={localizeHref("/compendium/enchantments", serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
-          onClick={(e) => {
-            if (onClose) {
-              e.preventDefault();
-              onClose();
-            }
-          }}
+          onClick={(e) => closeOnPlainClick(e, onClose)}
         >
           ← {backToListTitle}
         </Link>

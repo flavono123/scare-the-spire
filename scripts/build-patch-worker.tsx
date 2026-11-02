@@ -28,6 +28,7 @@ import {
   NeowsletterListPage,
 } from "@/components/patches/neowsletter-list-page";
 import { NAV_ATTENTION_SLOT_CLASS } from "@/components/nav-attention-dot";
+import { NotFoundView } from "@/components/not-found-view";
 import { CompendiumDetailLinksProvider } from "@/components/compendium-detail-links";
 import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import {
@@ -51,6 +52,7 @@ import {
   searchLanguageAlternatePaths,
 } from "@/lib/search-canonical";
 import { serviceMessages } from "@/messages/service";
+import { PATCH_NOT_FOUND_KO_SEGMENT, patchNotFoundAssetPath } from "../workers/patch-not-found";
 import { contactMessages } from "@/messages/contact";
 import {
   gameOnlyLanguageNavLocales,
@@ -747,6 +749,36 @@ async function writeRoute(route: StaticPatchRoute) {
   console.log(`Wrote ${path.relative(process.cwd(), filePath)}`);
 }
 
+async function writeNotFoundPages() {
+  const pages = [
+    { segment: PATCH_NOT_FOUND_KO_SEGMENT, pathname: "/patches", gameLocale: "kor" as GameLocale },
+    ...GAME_LOCALE_PATH_SEGMENTS.map((segment) => {
+      const gameLocale = gameLocaleFromPathSegment(segment);
+      if (!gameLocale) throw new Error(`Unsupported game locale segment: ${segment}`);
+      return { segment, pathname: `/${segment}/patches`, gameLocale };
+    }),
+  ];
+  for (const { segment, pathname, gameLocale } of pages) {
+    const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
+    const messages = serviceMessages[serviceLocale];
+    const filePath = path.join(outDir, patchNotFoundAssetPath(segment));
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, `${renderShell({
+      pathname,
+      serviceLocale,
+      gameLocale,
+      metadata: { title: `${messages.notFound.title} - ${messages.brand}` },
+      element: (
+        <NotFoundView
+          serviceLocale={serviceLocale}
+          pathPrefix={segment === PATCH_NOT_FOUND_KO_SEGMENT ? "" : `/${segment}`}
+        />
+      ),
+    })}\n`);
+  }
+  console.log(`Wrote ${pages.length} not-found pages`);
+}
+
 async function localizedPatchRoutes(version?: string) {
   return GAME_LOCALE_PATH_SEGMENTS.map((segment) => {
     const gameLocale = gameLocaleFromPathSegment(segment);
@@ -763,6 +795,8 @@ async function localizedPatchRoutes(version?: string) {
 async function main() {
   await writePatchClientAssets();
   if (process.argv.includes("--clients-only")) return;
+
+  await writeNotFoundPages();
 
   const patches = await getSTS2Patches();
   await writeRoute({
