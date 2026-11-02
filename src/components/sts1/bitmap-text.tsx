@@ -42,7 +42,9 @@ export function Sts1BitmapText({
     if (!canvas || !roleData || !text || !page) return;
     canvas.width = Math.ceil(metrics.width);
     canvas.height = Math.ceil(metrics.height);
-    const context = canvas.getContext("2d");
+    // drawBitmapText tints through getImageData. On a GPU canvas each readback
+    // blocks the main thread on the GPU, which froze the card list for seconds.
+    const context = canvas.getContext("2d", { willReadFrequently: true });
     if (!context) return;
     context.imageSmoothingEnabled = true;
     context.imageSmoothingQuality = "high";
