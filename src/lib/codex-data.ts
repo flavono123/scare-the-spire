@@ -872,6 +872,31 @@ function getRelicIconVariants(id: string, files: Set<string>): RelicIconVariant[
   return variants && variants.length > 1 ? variants : null;
 }
 
+// String relic vars hold an enchantment name in the data's Korean and English only.
+const RELIC_VAR_ENCHANTMENT_IDS: Record<string, string> = {
+  PAELS_CLAW: "GOOPY",
+  PAELS_GROWTH: "CLONE",
+  ROYAL_STAMP: "ROYALLY_APPROVED",
+};
+
+function localizeRelicVars(
+  relicId: string,
+  vars: Record<string, number | string>,
+  varsEn: Record<string, number | string>,
+  gameEnchantments: GameLocalizationTable,
+  gameLocale: GameLocale,
+): Record<string, number | string> {
+  if (gameLocale === "kor") return vars;
+  const enchantmentId = RELIC_VAR_ENCHANTMENT_IDS[relicId];
+  return Object.fromEntries(Object.entries(vars).map(([key, value]) => {
+    if (typeof value !== "string") return [key, value];
+    const fallback = varsEn[key] ?? value;
+    return [key, enchantmentId
+      ? gameText(gameEnchantments, `${enchantmentId}.title`, String(fallback))
+      : fallback];
+  }));
+}
+
 function mapRelic(
   kor: RawRelic,
   eng: RawRelic,
@@ -879,11 +904,13 @@ function mapRelic(
   iconVariants: RelicIconVariant[] | null,
   betaImageUrl: string | null,
   gameRelics: GameLocalizationTable,
+  gameEnchantments: GameLocalizationTable,
   gameLocale: GameLocale,
 ): CodexRelic {
   const baseUrl = spireCodexImageToLocal(kor.image_url);
-  const vars = kor.vars ?? {};
-  const varsEn = eng.vars ?? vars;
+  const korVars = kor.vars ?? {};
+  const varsEn = eng.vars ?? korVars;
+  const vars = localizeRelicVars(kor.id, korVars, varsEn, gameEnchantments, gameLocale);
   const raw = gameText(
     gameRelics,
     `${kor.id}.description`,
@@ -952,13 +979,22 @@ async function scanRelicVariants(): Promise<Map<string, Partial<Record<RelicPool
 
 export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promise<CodexRelic[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korRelics, engRelics, variantsByBase, betaImageFiles, officialImageFiles, gameRelics] = await Promise.all([
+  const [
+    korRelics,
+    engRelics,
+    variantsByBase,
+    betaImageFiles,
+    officialImageFiles,
+    gameRelics,
+    gameEnchantments,
+  ] = await Promise.all([
     readJson<RawRelic[]>("kor/relics.json"),
     readJson<RawRelic[]>("eng/relics.json"),
     scanRelicVariants(),
     scanImageFilenames("relics-beta"),
     scanImageFilenames("relics"),
     readGameLocalizationTable(gameLocale, "relics"),
+    readGameLocalizationTable(gameLocale, "enchantments"),
   ]);
 
   const engById = new Map(engRelics.map((r) => [r.id, r]));
@@ -976,7 +1012,7 @@ export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promis
       betaImageFiles,
       imageFile,
     ) ?? betaImageUrlForFile("relics", officialImageFiles, imageFile, { exact: false });
-    return mapRelic(kor, eng, variantMap, iconVariants, betaImageUrl, gameRelics, gameLocale);
+    return mapRelic(kor, eng, variantMap, iconVariants, betaImageUrl, gameRelics, gameEnchantments, gameLocale);
   });
 }
 
