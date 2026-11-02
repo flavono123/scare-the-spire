@@ -59,6 +59,7 @@ import { PatchDraftNotice } from "@/components/patches/patch-draft-chrome";
 import { RichText } from "@/components/rich-text";
 import { cn } from "@/lib/utils";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
+import { stripNameCounterPlaceholder } from "@/lib/game-name-placeholders";
 
 const PATCH_COPY: Record<ServiceLocale, {
   backToList: string;
@@ -999,10 +1000,10 @@ export async function PatchDetailPage({
   const preferredPath = serviceLocale === "ko" ? koPath : enPath;
   const fallbackPath = serviceLocale === "ko" ? enPath : koPath;
   try {
-    markdown = await fs.readFile(preferredPath, "utf-8");
+    markdown = stripNameCounterPlaceholder(await fs.readFile(preferredPath, "utf-8"));
   } catch {
     try {
-      markdown = await fs.readFile(fallbackPath, "utf-8");
+      markdown = stripNameCounterPlaceholder(await fs.readFile(fallbackPath, "utf-8"));
     } catch {
       // No patch notes file yet
     }

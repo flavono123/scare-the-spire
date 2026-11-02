@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import type { GameLocale } from "./i18n";
 import type { GameLocalizationTable } from "./game-localization-text";
+import { stripNameCounterPlaceholder } from "./game-name-placeholders";
 
 export type { GameLocalizationTable } from "./game-localization-text";
 export { gameText, gameNullableText } from "./game-localization-text";
@@ -20,7 +21,7 @@ export async function readGameLocalizationTable(
 
   const tablePromise = fs
     .readFile(path.join(LOCALIZATION_DIR, locale, `${tableName}.json`), "utf-8")
-    .then((raw) => JSON.parse(raw) as GameLocalizationTable);
+    .then((raw) => JSON.parse(tableName === "monsters" ? stripNameCounterPlaceholder(raw) : raw) as GameLocalizationTable);
 
   tableCache.set(cacheKey, tablePromise);
   return tablePromise;

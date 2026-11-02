@@ -16,6 +16,7 @@ import {
 } from "./codex-game-ui";
 import { getForcedBestiaryAct, hasPlaceholderBestiaryArt } from "./bestiary-monster-policy";
 import { DEFAULT_GAME_LOCALE_BY_SERVICE, type GameLocale } from "./i18n";
+import { withoutNameCounterPlaceholders } from "./game-name-placeholders";
 import {
   CodexCard,
   CodexKeyword,
@@ -2560,8 +2561,8 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
     gameBestiary,
     engBestiary,
   ] = await Promise.all([
-    readJson<RawMonster[]>("kor/monsters.json"),
-    readJson<RawMonster[]>("eng/monsters.json"),
+    readJson<RawMonster[]>("kor/monsters.json").then(withoutNameCounterPlaceholders),
+    readJson<RawMonster[]>("eng/monsters.json").then(withoutNameCounterPlaceholders),
     readJson<RawPower[]>("kor/powers.json"),
     readJson<RawPower[]>("eng/powers.json"),
     readJson<RawCard[]>("kor/cards.json"),
@@ -2700,8 +2701,8 @@ export async function getCodexEncounters(opts?: { gameLocale?: GameLocale }): Pr
     gameMonsters,
     engGameMonsters,
   ] = await Promise.all([
-    readJson<RawEncounter[]>("kor/encounters.json"),
-    readJson<RawEncounter[]>("eng/encounters.json"),
+    readJson<RawEncounter[]>("kor/encounters.json").then(withoutNameCounterPlaceholders),
+    readJson<RawEncounter[]>("eng/encounters.json").then(withoutNameCounterPlaceholders),
     readJson<EncounterSceneAsset[]>("encounter-scene-assets.json").catch(() => []),
     scanImageSlugs("bosses"),
     readGameLocalizationTable(gameLocale, "encounters"),

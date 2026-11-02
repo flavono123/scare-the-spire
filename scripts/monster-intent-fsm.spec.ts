@@ -170,8 +170,8 @@ const CASES = [
   {
     id: "TEST_SUBJECT",
     slug: "test_subject",
-    monsterNameKo: "실험체 #C{Count}",
-    monsterNameEn: "Test Subject #C{Count}",
+    monsterNameKo: "실험체",
+    monsterNameEn: "Test Subject",
     moveNames: [
       { ko: "물기", en: "Bite" },
       { ko: "두개골 강타", en: "Skull Bash" },

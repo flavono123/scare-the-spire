@@ -4,6 +4,7 @@ import type { Card, Change, Story, Relic, Potion, CardClass, CardType, Character
 import { normalizeVersionedEntityType } from "./codex-versioning";
 import type { GameLocale } from "./i18n";
 import { localizeVersionDiffs, type LocalizationHistory } from "./localization-history";
+import { stripNameCounterPlaceholder } from "./game-name-placeholders";
 
 function toSlug(name: string, cardClass?: string): string {
   const base = name
@@ -132,7 +133,9 @@ export async function getSTS2Changes(): Promise<STS2Change[]> {
 
 export async function getSTS2PatchLines(): Promise<STS2PatchLine[]> {
   return JSON.parse(
-    await fs.readFile(path.join(DATA_DIR, "sts2-patch-lines.json"), "utf-8"),
+    stripNameCounterPlaceholder(
+      await fs.readFile(path.join(DATA_DIR, "sts2-patch-lines.json"), "utf-8"),
+    ),
   );
 }
 
