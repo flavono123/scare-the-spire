@@ -142,6 +142,7 @@ export function ComboGameElementFilter({
       : entities,
     [activeType, entities],
   );
+  // `entities` is the page's game locale graph, so nameKo is the game's name.
   const results = useMemo(() => {
     const matches = normalizedQuery
       ? matchEntities(normalizedQuery, scopedEntities, 80)
@@ -151,8 +152,8 @@ export function ComboGameElementFilter({
       const leftSelected = selectedKeys.has(`${left.type}:${left.id}`);
       const rightSelected = selectedKeys.has(`${right.type}:${right.id}`);
       if (leftSelected !== rightSelected) return leftSelected ? -1 : 1;
-      const leftName = serviceLocale === "en" ? left.nameEn : left.nameKo;
-      const rightName = serviceLocale === "en" ? right.nameEn : right.nameKo;
+      const leftName = left.nameKo;
+      const rightName = right.nameKo;
       return leftName.localeCompare(rightName);
     });
   }, [
@@ -160,7 +161,6 @@ export function ComboGameElementFilter({
     referencedKeys,
     scopedEntities,
     selectedKeys,
-    serviceLocale,
   ]);
 
   useEffect(() => {
@@ -271,7 +271,7 @@ export function ComboGameElementFilter({
             const key = comboResourceKey(resource);
             const entity = entityMap.get(key);
             const name = entity
-              ? (serviceLocale === "en" ? entity.nameEn : entity.nameKo)
+              ? entity.nameKo
               : resource.id;
             const isSelected = selectedKeys.has(key);
             const title = (isSelected
@@ -335,7 +335,7 @@ export function ComboGameElementFilter({
             const key = comboResourceKey(reference);
             const entity = entityMap.get(key);
             const name = entity
-              ? (serviceLocale === "en" ? entity.nameEn : entity.nameKo)
+              ? entity.nameKo
               : reference.id;
 
             return (
@@ -477,7 +477,7 @@ export function ComboGameElementFilter({
                   {results.map((entity) => {
                     const key = `${entity.type}:${entity.id}`;
                     const isSelected = selectedKeys.has(key);
-                    const name = serviceLocale === "en" ? entity.nameEn : entity.nameKo;
+                    const name = entity.nameKo;
 
                     return (
                       <button
