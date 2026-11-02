@@ -10,13 +10,12 @@
 | 이름 | 브랜치 | 목적 | 상태 |
 |---|---|---|---|
 | domain-migration-c54d7b | claude/domain-migration-c54d7b | 도메인 이전(레거시 호스트 안내, 리다이렉트, robots/sitemap) | 11커밋, main보다 332 뒤처짐. 2026-10-26 정기 배포에서 제외 |
-| security-hardening | refactor/security-hardening | 보안 검토 항목 마감(저장하지 못한 글의 안내 외 화면 변화 없음)과 목록 모달 재시도 안내 | `d0c9468f`에서 분기, 진행 중. Supabase 마이그레이션은 준비만 됐고 미적용 |
 
 ## Supabase 마이그레이션
 
 | 파일 | Rollout | Order | 적용 | 확인 |
 |---|---|---|---|---|
-| `20261031044402_rls_hardening.sql` | db-first-additive | before-push | 미적용, 사용자 승인 대기 | 적용 전 사전 조회, 적용 뒤 검증 SQL·`db dump`·testbed(development 데이터)와 운영 화면(`security-hardening`의 DB 묶음) |
+| `20261031044402_rls_hardening.sql` | db-first-additive | before-push | 미적용, `db push` 승인 대기(사전 조회 2026-11-02 BLOCK 0건, 이력 일치) | 적용 전 사전 조회, 적용 뒤 검증 SQL·`db dump`·testbed(development 데이터)와 운영 화면(`security-hardening`의 DB 묶음) |
 
 ## 긴급 배포로 QA 없이 나간 범위
 
