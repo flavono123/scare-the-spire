@@ -37,10 +37,9 @@ import { GameScrollArea } from "@/components/game-scroll-area";
 import { CardTile } from "@/components/codex/card-tile";
 import { patchVersionPath } from "@/lib/patch-line-links";
 import { resolveStoryPatchLine } from "@/lib/resolve-story-patch-line";
+import { loadFullSts2PatchLines } from "@/lib/sts2-patch-lines-client";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { serviceMessages } from "@/messages/service";
-
-let fullPatchLinesPromise: Promise<STS2PatchLine[]> | null = null;
 
 // STS2 entities, changes and patches are read only by the story modal and the
 // composer, so they load from the Compendium data chunks when one opens.
@@ -54,17 +53,6 @@ function sts2ReferenceDataState(...statuses: CompendiumLazyDataStatus[]): PatchL
   if (statuses.some((status) => status === "failed")) return "failed";
   if (statuses.some((status) => status === "loading" || status === "idle")) return "loading";
   return "loaded";
-}
-
-function loadFullSts2PatchLines(): Promise<STS2PatchLine[]> {
-  fullPatchLinesPromise ??= fetch("/generated/sts2-patch-lines.json", { cache: "no-cache" })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to load STS2 patch lines: ${response.status}`);
-      }
-      return response.json() as Promise<STS2PatchLine[]>;
-    });
-  return fullPatchLinesPromise;
 }
 
 function storyFeedCopy(serviceLocale: ServiceLocale) {
@@ -997,6 +985,7 @@ export function StoryFeed({
   const [searchQuery, setSearchQuery] = useState("");
   const [composerOpen, setComposerOpen] = useState(false);
   const [loadedPatchLines, setLoadedPatchLines] = useState<STS2PatchLine[] | null>(null);
+  const [patchLinesComplete, setPatchLinesComplete] = useState(false);
   const didMountRef = useRef(false);
   const sts2DataEnabled = Boolean(activeStoryId) || composerOpen;
   const sts2EntityState = useCompendiumEntitiesState(gameLocale, { enabled: sts2DataEnabled });
@@ -1038,7 +1027,7 @@ export function StoryFeed({
     window.history.replaceState(null, "", nextUrl);
   }, [activeStoryId]);
 
-  const patchLineOptions = loadedPatchLines ?? sts2PatchLines;
+  const patchLineOptions = loadedPatchLines?.length ? loadedPatchLines : sts2PatchLines;
   const patchLineMap = useMemo(() => new Map(patchLineOptions.map((line) => [line.id, line])), [patchLineOptions]);
   const allStories = useMemo(() => {
     const byId = new Map(stories.map((story) => [story.id, story]));
@@ -1059,20 +1048,23 @@ export function StoryFeed({
   );
   const patchLinesLoading = hasMissingPatchLine && loadedPatchLines === null;
 
+  // After a failure the next composer or story modal opening asks again.
   useEffect(() => {
-    if (loadedPatchLines || (!composerOpen && !hasMissingPatchLine)) return;
+    if (patchLinesComplete || (!composerOpen && !hasMissingPatchLine)) return;
     let cancelled = false;
     loadFullSts2PatchLines()
       .then((lines) => {
-        if (!cancelled) setLoadedPatchLines(lines);
+        if (cancelled) return;
+        setLoadedPatchLines(lines);
+        setPatchLinesComplete(true);
       })
       .catch(() => {
-        if (!cancelled) setLoadedPatchLines(sts2PatchLines);
+        if (!cancelled) setLoadedPatchLines((current) => current ?? []);
       });
     return () => {
       cancelled = true;
     };
-  }, [composerOpen, hasMissingPatchLine, loadedPatchLines, sts2PatchLines]);
+  }, [activeStoryId, composerOpen, hasMissingPatchLine, patchLinesComplete]);
   const searchTerm = searchQuery.trim().toLocaleLowerCase();
   const orderedStories = useMemo(() => {
     const filteredStories = searchTerm
