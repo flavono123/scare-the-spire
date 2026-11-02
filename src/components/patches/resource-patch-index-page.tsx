@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
+import type { ReactElement } from "react";
+import { CompendiumDetailLinksProvider } from "@/components/compendium-detail-links";
 import Image from "@/components/ui/static-image";
 import { PatchSectionTabs } from "@/components/patches/patch-section-tabs";
 import { ResourcePatchIndexExplorer } from "@/components/patches/resource-patch-index-explorer";
@@ -36,15 +38,33 @@ async function getResourcePatchIndexData(): Promise<ResourcePatchIndexData> {
 export async function ResourcePatchIndexPage({
   serviceLocale,
   gameLocale,
+  renderHydratableHtml,
 }: {
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  /**
+   * The static patch build renders the page without hydration markers, but
+   * resource-patch-index-client.tsx hydrates this root, so the build renders
+   * the same tree separately through this function.
+   */
+  renderHydratableHtml?: (root: ReactElement) => string;
 }) {
   const [data, storyPlaceholder] = await Promise.all([
     getResourcePatchIndexData(),
     getStoryComposerPlaceholder(gameLocale),
   ]);
   const copy = serviceMessages[serviceLocale].patchChanges;
+  const explorer = (
+    <ResourcePatchIndexExplorer
+      data={data}
+      serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
+      storyPlaceholder={storyPlaceholder}
+    />
+  );
+  const rootHtml = renderHydratableHtml?.(
+    <CompendiumDetailLinksProvider>{explorer}</CompendiumDetailLinksProvider>,
+  );
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
@@ -69,13 +89,9 @@ export async function ResourcePatchIndexPage({
         data-service-locale={serviceLocale}
         data-game-locale={gameLocale}
         data-story-placeholder={storyPlaceholder}
+        dangerouslySetInnerHTML={rootHtml === undefined ? undefined : { __html: rootHtml }}
       >
-        <ResourcePatchIndexExplorer
-          data={data}
-          serviceLocale={serviceLocale}
-          gameLocale={gameLocale}
-          storyPlaceholder={storyPlaceholder}
-        />
+        {rootHtml === undefined ? explorer : undefined}
       </div>
     </div>
   );

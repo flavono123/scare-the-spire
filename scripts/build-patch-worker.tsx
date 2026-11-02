@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import path from "path";
 import React, { type ReactNode } from "react";
 import type { Metadata } from "next";
-import { renderToStaticMarkup } from "react-dom/server";
+import { renderToStaticMarkup, renderToString } from "react-dom/server";
 import { loadEnvConfig } from "@next/env";
 import { build as buildClientBundle, stop as stopClientBundler, type Plugin } from "esbuild";
 import {
@@ -792,6 +792,7 @@ async function main() {
     element: await ResourcePatchIndexPage({
       serviceLocale: "ko",
       gameLocale: "kor",
+      renderHydratableHtml: renderToString,
     }),
     clientScripts: ["/_patches/resource-patch-index.js"],
   });
@@ -803,6 +804,7 @@ async function main() {
       element: await ResourcePatchIndexPage({
         serviceLocale: route.serviceLocale,
         gameLocale: route.gameLocale,
+        renderHydratableHtml: renderToString,
       }),
       clientScripts: ["/_patches/resource-patch-index.js"],
     });
