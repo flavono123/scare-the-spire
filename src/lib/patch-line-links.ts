@@ -7,6 +7,15 @@ export function patchVersionPath(patch: string): string {
   return patch.replace(/^(?:v(?=\d)|[a-z]+-)/, "");
 }
 
+/**
+ * Patch pages live on the static patch Worker, which answers every request with
+ * HTML. A next/link prefetch there gets no RSC payload, so links to them pass
+ * `prefetch={false}`.
+ */
+export function isPatchPageHref(href: string): boolean {
+  return /^(?:\/[^/?#]+)?\/patches(?:[/?#]|$)/.test(href);
+}
+
 export function patchLineAnchorId(patchLineId: string): string {
   const canonicalId = resolveCanonicalPatchLineId(patchLineId) ?? patchLineId;
   return `patch-line-${canonicalId.replace(/[^a-zA-Z0-9_-]/g, "-")}`;

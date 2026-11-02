@@ -81,7 +81,7 @@ export function CharacterLowHpIdleBlock({
       <p className="mb-3 mt-1 font-game-text text-xs leading-relaxed text-zinc-400">
         {summary}
       </p>
-      <div className="relative left-1/2 w-[min(96vw,72rem)] -translate-x-1/2">
+      <div className="sm:relative sm:left-1/2 sm:w-[min(96vw,72rem)] sm:-translate-x-1/2">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {ordered.map((character) => (
             <CharacterLowHpIdleCell

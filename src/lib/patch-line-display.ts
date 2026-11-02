@@ -30,6 +30,11 @@ export function patchLineSummaryMarkdownForService(
     : patchLine.summaryMarkdownEn || patchLine.markdownEn || patchLine.summaryMarkdownKo || patchLine.markdownKo || "";
 }
 
+/** Section titles exist in the note's own languages, so a missing English path stays empty. */
+export function patchLineSectionPath(patchLine: STS2PatchLine, serviceLocale: ServiceLocale): string[] {
+  return serviceLocale === "ko" ? patchLine.section : patchLine.sectionEn ?? [];
+}
+
 export function patchLineDisplayText(patchLine: STS2PatchLine, serviceLocale: ServiceLocale): string {
   return serviceLocale === "ko"
     ? patchLine.textKo || patchLine.textEn || ""

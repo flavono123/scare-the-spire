@@ -25,7 +25,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { neowsletterLineKind } from "@/lib/neowsletter-anchors";
-import { patchLineAnchorId } from "@/lib/patch-line-links";
+import { isPatchPageHref, patchLineAnchorId } from "@/lib/patch-line-links";
 import { classNameForHref, RESOURCE_LINK_CLASS } from "@/lib/service-link-classes";
 import { patchLineSummaryMarkdownForService, withPatchChangeEffects } from "@/lib/patch-line-display";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
@@ -69,7 +69,8 @@ import {
 } from "@/lib/encounter-compositions";
 import { getHoverTipPortalRoot, HOVER_TIP_LAYER_Z_INDEX } from "@/lib/hover-tip-layer";
 import { useCoarsePointer } from "@/hooks/use-coarse-pointer";
-import { useGameLocale } from "@/hooks/use-game-locale";
+import { useGameLocale, useGameLocaleForService } from "@/hooks/use-game-locale";
+import { useGameUiLabels } from "@/hooks/use-game-ui-labels";
 import { isModifiedClick, NEW_TAB_LINK_PROPS } from "@/components/editor/editor-link";
 
 // Entity types that can appear in patch notes
@@ -316,10 +317,12 @@ function MonsterMoveKeywordPreview({
 
 function EntityCardHoverPreview({
   entity,
+  serviceLocale,
   portal = false,
   growUp = false,
 }: {
   entity: EntityInfo;
+  serviceLocale?: ServiceLocale;
   portal?: boolean;
   growUp?: boolean;
 }) {
@@ -332,6 +335,7 @@ function EntityCardHoverPreview({
   const tile = (
     <CardTile
       card={card}
+      serviceLocale={serviceLocale}
       showUpgrade={Boolean(upgradeLevel)}
       upgradeLevel={upgradeLevel}
       showBeta={false}
@@ -405,7 +409,9 @@ function EntityPotionHoverPreview({
           </span>
           {potion.pool !== "shared" && (
             <span style={{ color: getCharacterColor(potion.pool) }}>
-              {potion.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[potion.pool as RelicFilterPool]}
+              {potion.pool === "event"
+                ? gameUi?.eventsTitle ?? "이벤트"
+                : gameUi?.characterNames?.[potion.pool as Exclude<RelicFilterPool, "shared">] ?? POOL_LABELS[potion.pool as RelicFilterPool]}
             </span>
           )}
         </span>
@@ -517,9 +523,9 @@ function LocalizedEntityPreview({
   forceShow,
   forcePosition,
   linkClassName,
-  gameUi,
-  serviceLocale,
-  gameLocale,
+  gameUi: providedGameUi,
+  serviceLocale: providedServiceLocale,
+  gameLocale: providedGameLocale,
   preferEntityLocaleLabel = false,
   patchVersion,
   currentVersion,
@@ -564,6 +570,9 @@ function LocalizedEntityPreview({
     horizontal: "center",
   });
   const ref = useRef<HTMLSpanElement>(null);
+  const pageGameLocale = useGameLocaleForService(providedServiceLocale);
+  const gameLocale = providedGameLocale ?? pageGameLocale;
+  const serviceLocale = providedServiceLocale ?? getServiceLocaleForGameLocale(gameLocale);
   const isCoarsePointer = useCoarsePointer();
   const useTapPreview = isCoarsePointer && !forceShow;
   const visible = show || forceShow;
@@ -574,7 +583,12 @@ function LocalizedEntityPreview({
   const isPendingCompendium = previewEntity.availability === "pending-compendium";
   const staticPreview = staticHoverPreviews && !useTapPreview && !forceShow;
   const pendingStaticPreview = (isPendingCompendium || staticPreview) && !useTapPreview && !forceShow;
-  const showResolvedPreview = (visible || staticPreview) && !isPendingCompendium;
+  const lazyGameUi = useGameUiLabels(gameLocale, {
+    enabled: !providedGameUi && !staticPreview && Boolean(visible),
+  });
+  const gameUi = providedGameUi ?? lazyGameUi.gameUi;
+  const gameUiPending = !providedGameUi && !staticPreview && lazyGameUi.pending;
+  const showResolvedPreview = (visible || staticPreview) && !isPendingCompendium && !gameUiPending;
   const staticPreviewKey = !staticPreview
     ? undefined
     : previewEntity.type === "card" && previewEntity.cardData
@@ -592,7 +606,7 @@ function LocalizedEntityPreview({
 
   const hrefBase = isPendingCompendium || disableLink ? null : entityCompendiumHref(entity);
   const linkToCompendiumDetails = useCompendiumDetailLinks();
-  const localeHref = hrefBase && serviceLocale && gameLocale
+  const localeHref = hrefBase
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : hrefBase;
   const localizedHref = localeHref && linkToCompendiumDetails
@@ -779,6 +793,7 @@ function LocalizedEntityPreview({
             <div className="w-36 drop-shadow-2xl">
               <CardTile
                 card={previewEntity.cardData}
+                serviceLocale={serviceLocale}
                 showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
                 upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
                 showBeta={false}
@@ -788,6 +803,7 @@ function LocalizedEntityPreview({
           ) : (
             <EntityCardHoverPreview
               entity={previewEntity}
+              serviceLocale={serviceLocale}
               portal={false}
               growUp={placement.vertical === "above"}
             />
@@ -800,7 +816,7 @@ function LocalizedEntityPreview({
           !staticHoverPreviews && characterHasLowHealthIdle(previewEntity.characterData) ? (
             <CharacterLowHpHoverPreview
               character={previewEntity.characterData}
-              serviceLocale={serviceLocale ?? "ko"}
+              serviceLocale={serviceLocale}
             />
           ) : (
             <GameResourcePreview
@@ -944,7 +960,7 @@ function LocalizedEntityPreview({
         renderTooltip(
           <MonsterMoveKeywordPreview
             entity={entity}
-            serviceLocale={serviceLocale ?? "ko"}
+            serviceLocale={serviceLocale}
             gameLocale={gameLocale}
             previewNonce={previewNonce}
           />,
@@ -966,7 +982,11 @@ function LocalizedEntityPreview({
                     {gameUi?.acts[entity.encounterData.act] ?? (EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
                   </span>
                 )}
-                {entity.encounterData.isWeak && <span className="text-green-400">{getCodexServiceMessages(serviceLocale ?? "ko").encountersView.weakEncounter}</span>}
+                {entity.encounterData.isWeak && (
+                  <span className="text-green-400">
+                    {getCodexServiceMessages(serviceLocale).encountersView.weakEncounter}
+                  </span>
+                )}
               </>
             )}
           >
@@ -1022,7 +1042,7 @@ function LocalizedEntityPreview({
               imageUrl: entity.epochData.imageUrl,
               betaImageUrl: entity.epochData.betaImageUrl,
               alt: entity.nameKo,
-              betaAlt: `${entity.nameKo} 베타 아트`,
+              betaAlt: serviceLocale === "en" ? `${entity.nameKo} beta art` : `${entity.nameKo} 베타 아트`,
               width: 320,
               height: 224,
               className: "h-auto w-80 rounded object-cover",
@@ -1733,7 +1753,16 @@ function renderMarkdownLink(
       ? localizeHrefWithGameLocale(href, context.serviceLocale, context.gameLocale)
       : href;
     const localizedHref = context.linkToCompendiumDetails ? toCompendiumDetailHref(localeHref) : localeHref;
-    return <Link key={key} href={localizedHref} className={className}>{label}</Link>;
+    return (
+      <Link
+        key={key}
+        href={localizedHref}
+        prefetch={isPatchPageHref(localizedHref) ? false : undefined}
+        className={className}
+      >
+        {label}
+      </Link>
+    );
   }
 
   return (

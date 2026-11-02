@@ -105,18 +105,19 @@ const sts1CompendiumSegments = new Set([
   "powers",
   "relics",
 ]);
-// The static Compendium detail preloads GC Batang's common-character subset on ko
-// detail documents (compendium-direct-detail-route.tsx) and renders its header
-// image eagerly. React Flight also writes both into the detail's RSC payload as
-// hint rows, and the Flight client applies hint rows as soon as it parses them, so
-// a <Link> prefetch of a detail would fetch the subset and the image on whatever
-// page is open. Only the document needs them: drop those rows from detail RSC
-// payloads. Hint rows are not referenced by other rows; the HTML keeps its
-// <link rel="preload"> tags.
+// React Flight writes a page's eager images into its RSC payload as hint rows, and
+// the Flight client applies hint rows as soon as it parses them, so a <Link>
+// prefetch would preload those images on whatever page is open and the browser
+// warns that they went unused. Only the document needs them: drop the rows from
+// every RSC payload. Hint rows are not referenced by other rows; the HTML keeps
+// its <link rel="preload"> tags.
+const imageHintRows = /^:HL\["[^"\n]*","image"[^\n]*\n/gm;
+// The static Compendium detail also preloads GC Batang's common-character subset
+// on ko detail documents (compendium-direct-detail-route.tsx).
 const staticDetailSubsetHref = "/fonts/GyeonggiCheonnyeonBatangBold-common.woff2";
 const staticDetailHintRows = [
   /^:HL\["\/fonts\/GyeonggiCheonnyeonBatangBold-common\.woff2",[^\n]*\n/gm,
-  /^:HL\["[^"\n]*","image"[^\n]*\n/gm,
+  imageHintRows,
 ];
 
 // Next's PrefetchHint.InliningHintsStale on the route tree's root node. The client
@@ -335,10 +336,11 @@ for (const file of walk(appDir)) {
   if (gameLocale) {
     writeFileSync(output, localizeDocumentRoot(readFileSync(file, "utf8"), gameLocale, relative));
     localizedCount += 1;
-  } else if (relative.endsWith(".rsc") && isCompendiumDetail(relative)) {
+  } else if (relative.endsWith(".rsc")) {
     const rsc = readFileSync(file, "utf8");
-    assertFreshPrefetchHints(rsc, relative);
-    const stripped = stripStaticDetailHints(rsc, relative);
+    const detail = isCompendiumDetail(relative);
+    if (detail) assertFreshPrefetchHints(rsc, relative);
+    const stripped = detail ? stripStaticDetailHints(rsc, relative) : rsc.replace(imageHintRows, "");
     writeFileSync(output, stripped);
     if (stripped !== rsc) strippedHintCount += 1;
   } else {
@@ -360,7 +362,7 @@ if (count === 0) {
   throw new Error("No Cloudflare static HTML/RSC files were copied.");
 }
 
-console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir} (${localizedCount} with an English document root, ${strippedHintCount} detail RSC without static detail hints)`);
+console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir} (${localizedCount} with an English document root, ${strippedHintCount} RSC without image hints)`);
 
 for (const metadataFile of staticMetadataFiles) {
   const source = path.join(appDir, metadataFile.source);

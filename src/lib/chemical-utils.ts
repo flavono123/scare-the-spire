@@ -7,7 +7,7 @@ import {
   textHasEffectTags,
   wrapTextEffectMarks,
 } from "@/lib/text-effect-bbcode";
-import { isGameLocale } from "@/lib/i18n";
+import { isGameLocale, type GameLocale } from "@/lib/i18n";
 import {
   historyRunFloorPlainText,
   isHistoryRunFloorBlock,
@@ -513,6 +513,20 @@ function addExactEntity(
     matches.push(entity);
   }
   exact.set(key, matches);
+}
+
+/**
+ * The text of a stored mention on a page in `gameLocale`. Mentions keep the
+ * words their author saw, so outside Korean the current game name replaces them
+ * and an upgrade mark ("강타+") stays.
+ */
+export function entityMentionLabel(
+  entity: Pick<EntityInfo, "nameKo">,
+  storedText: string,
+  gameLocale: GameLocale,
+): string {
+  if (gameLocale === "kor" || !entity.nameKo) return storedText;
+  return `${entity.nameKo}${storedText.match(/\+\d*$/)?.[0] ?? ""}`;
 }
 
 export function buildEntityKeywordIndex(entities: EntityInfo[]): EntityKeywordIndex {

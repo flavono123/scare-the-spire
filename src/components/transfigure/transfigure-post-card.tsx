@@ -115,7 +115,9 @@ export function TransfigurePostCard({
             {post.title?.trim() || resource?.nameKo || post.resource_id}
           </h2>
           <span className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-            <span>{formatTimeAgo(post.created_at, copy, dateLocale)}</span>
+            <time dateTime={post.created_at} data-relative-time="">
+              {formatTimeAgo(post.created_at, copy, dateLocale)}
+            </time>
             {variants.length > 1 && (
               <>
                 <span aria-hidden="true">·</span>

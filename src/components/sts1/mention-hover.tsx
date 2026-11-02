@@ -8,7 +8,7 @@ import { GameResourcePreview } from "@/components/patch-note-renderer";
 import { useSts1MentionIndex } from "@/hooks/use-sts1-mention-index";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
-import type { GameLocale } from "@/lib/i18n";
+import { localizeHrefWithGameLocale, type GameLocale } from "@/lib/i18n";
 import { STS1_CREAM, STS1_DESC_ENERGY_IMG_WIDTH, STS1_DESC_FONT } from "@/lib/sts1/card-style";
 import { sts1BitmapAdvance, sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
 import {
@@ -373,7 +373,7 @@ export function Sts1MentionHover({
       onBlur={() => setHovered(false)}
     >
       <a
-        href={entry?.href ?? "#"}
+        href={entry?.href ? localizeHrefWithGameLocale(entry.href, serviceLocale, gameLocale) : "#"}
         className="font-game-title font-semibold spire-gold no-underline"
         {...(editorLink ? EDITOR_ANCHOR_PROPS : {})}
       >

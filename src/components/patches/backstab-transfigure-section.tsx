@@ -17,7 +17,42 @@ import {
 } from "@/lib/transfigure-types";
 import { BUILTIN_SAMPLE_TRANSFIGURES } from "@/lib/transfigure-builtins";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { serviceDateLocale } from "@/lib/relative-time";
 import { cn } from "@/lib/utils";
+import { serviceMessages } from "@/messages/service";
+
+/**
+ * Static patch pages never hydrate, so the card dates the build baked in are
+ * recomputed here. Mirrors formatTimeAgo in src/lib/relative-time.ts.
+ */
+const RELATIVE_TIME_SCRIPT = `(function(){
+  var stack=document.querySelector("[data-transfigure-preview-stack]");
+  if(!stack)return;
+  var copy;
+  try{copy=JSON.parse(stack.getAttribute("data-relative-time-copy"));}catch(e){return;}
+  if(!copy)return;
+  function label(template,count){return template.replace("{count}",String(count));}
+  function format(value){
+    var time=new Date(value).getTime();
+    var minutes=Math.floor((Date.now()-time)/60000);
+    if(minutes<1)return copy.justNow;
+    if(minutes<60)return label(copy.minutesAgo,minutes);
+    var hours=Math.floor(minutes/60);
+    if(hours<24)return label(copy.hoursAgo,hours);
+    var days=Math.floor(hours/24);
+    if(days<30)return label(copy.daysAgo,days);
+    return new Date(value).toLocaleDateString(copy.dateLocale);
+  }
+  function refresh(){
+    if(stack.getAttribute("data-react-managed")==="true")return;
+    stack.querySelectorAll("time[data-relative-time]").forEach(function(node){
+      var value=node.getAttribute("datetime");
+      if(value&&!isNaN(new Date(value).getTime()))node.textContent=format(value);
+    });
+  }
+  refresh();
+  setInterval(refresh,60000);
+})();`;
 
 export function BackstabTransfigureSection({
   entities,
@@ -39,6 +74,14 @@ export function BackstabTransfigureSection({
   initialPosts?: TransfigurePost[];
 }) {
   const upgradeLabel = serviceLocale === "ko" ? "강화" : "Upgrade";
+  const { justNow, minutesAgo, hoursAgo, daysAgo } = serviceMessages[serviceLocale].transfigure;
+  const relativeTimeCopy = JSON.stringify({
+    justNow,
+    minutesAgo,
+    hoursAgo,
+    daysAgo,
+    dateLocale: serviceDateLocale(serviceLocale),
+  });
   const transfigureRootHref = localizeHrefWithGameLocale(
     "/transfigure",
     serviceLocale,
@@ -157,6 +200,7 @@ export function BackstabTransfigureSection({
         <div
           ref={stackRef}
           data-transfigure-preview-stack=""
+          data-relative-time-copy={relativeTimeCopy}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           className="relative w-full max-w-sm sm:max-w-md"
@@ -199,6 +243,8 @@ export function BackstabTransfigureSection({
             );
           })}
         </div>
+
+        <script dangerouslySetInnerHTML={{ __html: RELATIVE_TIME_SCRIPT }} />
 
         {/* Self-contained client animation script: works in static patch worker without React */}
         <script

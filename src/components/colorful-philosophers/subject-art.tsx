@@ -20,6 +20,15 @@ const SUBJECT_LINK_CLASS =
   "block shrink-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70";
 
 /** Subject art that opens the Compendium detail page and shows the game hover tip. */
+/** The subject's name in the page's game language; stored names are Korean and English. */
+export function useColorfulPhilosopherName(post: ColorfulPhilosopherPost | null, serviceLocale: ServiceLocale): string {
+  const { entities } = useCommentEntities(undefined, { enabled: Boolean(post) && serviceLocale !== "ko" });
+  if (!post) return "";
+  if (serviceLocale === "ko") return post.nameKo;
+  const entity = entities.find((candidate) => candidate.type === post.resourceType && candidate.id === post.resourceId);
+  return entity?.nameKo ?? (post.nameEn || post.nameKo);
+}
+
 export function ColorfulPhilosopherSubjectArt({
   post,
   serviceLocale,
@@ -42,6 +51,7 @@ export function ColorfulPhilosopherSubjectArt({
   const { entities } = useCommentEntities(undefined, { enabled: !providedEntity });
   const entity = providedEntity
     ?? entities.find((candidate) => candidate.type === post.resourceType && candidate.id === post.resourceId);
+  const displayName = entity?.nameKo ?? (serviceLocale === "ko" ? post.nameKo : post.nameEn || post.nameKo);
   const card = post.resourceType === "card" ? entity?.cardData : undefined;
   const art = card ? (
     <span style={{ width }} className="block shrink-0">
@@ -50,7 +60,7 @@ export function ColorfulPhilosopherSubjectArt({
   ) : (
     <Image
       src={post.imageUrl ?? COLORFUL_PHILOSOPHERS_TOKEN_SRC}
-      alt={post.nameKo}
+      alt={displayName}
       width={imageWidth}
       height={imageWidth}
       className="object-contain"
@@ -82,6 +92,7 @@ export function ColorfulPhilosopherSubjectArt({
     <EntityPreview
       entity={previewEntity}
       serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
       linkClassName={SUBJECT_LINK_CLASS}
       staticHoverPreviews={staticHoverPreviews}
     >

@@ -12,6 +12,7 @@ import { TransfigureImageCopyButton } from "@/components/transfigure/transfigure
 import { TransfigureTokenArt } from "@/components/transfigure/transfigure-token-art";
 import Image from "@/components/ui/static-image";
 import type { PostBlock } from "@/lib/chemical-types";
+import { useGameUiLabels } from "@/hooks/use-game-ui-labels";
 import { RELIC_RARITY_LABELS } from "@/lib/codex-types";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
@@ -95,6 +96,9 @@ export function TransfigureResourcePreview({
   tokenColor = null,
   tokenWax = "off",
 }: TransfigureResourcePreviewProps) {
+  const { gameUi: relicGameUi, pending: relicGameUiPending } = useGameUiLabels(gameLocale, {
+    enabled: entity.type === "relic",
+  });
   const entityMap = useMemo(
     () => providedEntityMap ?? buildEntityMap(entities),
     [entities, providedEntityMap],
@@ -263,7 +267,8 @@ export function TransfigureResourcePreview({
             className="max-w-[20rem]"
             titleAs="div"
             rarity={entity.relicData.rarity}
-            rarityLabel={RELIC_RARITY_LABELS[entity.relicData.rarity]}
+            rarityLabel={relicGameUi?.relicCollection.rarities[entity.relicData.rarity].label
+              ?? (relicGameUiPending ? "" : RELIC_RARITY_LABELS[entity.relicData.rarity])}
             title={displayName}
             art={entity.imageUrl ? (
               <TransfigureTokenArt

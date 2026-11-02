@@ -16,6 +16,7 @@ import {
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { withDefaultOpenGraphCanonical } from "@/lib/service-metadata";
 import { buildByrdispatchCommentThreadKey } from "@/lib/comment-threads";
+import { isPatchPageHref } from "@/lib/patch-line-links";
 import { getCodexGameUiLabels, type CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { collectStrings, selectEntitiesForTexts } from "@/lib/entity-subset";
 import { loadAllEntities } from "@/lib/load-all-entities";
@@ -242,8 +243,8 @@ const BYRDISPATCH_EXTERNAL_LINK_CLASS =
 
 const STS1_SECTION_TITLES = new Set(["STS1 (전체)", "STS1 (all)", "STS1"]);
 const STS1_INLINE_LINKS: Record<string, { href: string; icon: string }> = {
-  "유물 모음집": { href: "/relics", icon: "/images/sts2/relics/snecko_eye.webp" },
-  "Relic Collection": { href: "/relics", icon: "/images/sts2/relics/snecko_eye.webp" },
+  "유물 모음집": { href: "/compendium/sts1/relics", icon: "/images/sts2/relics/snecko_eye.webp" },
+  "Relic Collection": { href: "/compendium/sts1/relics", icon: "/images/sts2/relics/snecko_eye.webp" },
   캐릭터: { href: "/compendium/sts1/characters", icon: "/images/sts1/characters/ironclad.webp" },
   Characters: { href: "/compendium/sts1/characters", icon: "/images/sts1/characters/ironclad.webp" },
   파워: { href: "/compendium/sts1/powers", icon: "/images/sts1/powers/hello.webp" },
@@ -410,6 +411,7 @@ function ServiceHeading({
       {canLink && service?.href ? (
         <Link
           href={localizeHrefWithGameLocale(service.href, serviceLocale, gameLocale)}
+          prefetch={isPatchPageHref(service.href) ? false : undefined}
           className={titleClassName}
         >
           {section.title}
@@ -466,6 +468,7 @@ function ByrdispatchNamedLink({
   return (
     <Link
       href={label === "byrdispatch" ? href : localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
+      prefetch={isPatchPageHref(href) ? false : undefined}
       className={className}
     >
       {token}

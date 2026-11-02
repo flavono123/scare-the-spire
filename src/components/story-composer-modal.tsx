@@ -17,7 +17,7 @@ import {
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
-import { patchLineDisplayText } from "@/lib/patch-line-display";
+import { patchLineDisplayText, patchLineSectionPath } from "@/lib/patch-line-display";
 import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import { cn } from "@/lib/utils";
 import { GameScrollArea } from "@/components/game-scroll-area";
@@ -309,7 +309,9 @@ export function StoryComposerModal({
                     selectedPatchLine ? "text-muted-foreground/65" : "text-muted-foreground",
                   )}>
                     <span className="font-medium text-primary">{patchLine.patch}</span>
-                    {patchLine.section.length > 0 && <span>{patchLine.section.join(" / ")}</span>}
+                    {patchLineSectionPath(patchLine, serviceLocale).length > 0 && (
+                      <span>{patchLineSectionPath(patchLine, serviceLocale).join(" / ")}</span>
+                    )}
                   </span>
                   <span className={cn(
                     "block text-xs leading-relaxed",

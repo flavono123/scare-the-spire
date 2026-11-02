@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readdirSync, readFileSync } from "node:fs";
+import path from "node:path";
 import { parseByrdispatchMarkdown } from "../src/lib/byrdispatch";
 
 const parsed = parseByrdispatchMarkdown(
@@ -64,6 +66,13 @@ assert.ok(characters);
 assert.equal(characters.items[0]?.type, "characterLowHpIdle");
 if (characters.items[0]?.type === "characterLowHpIdle") {
   assert.equal(characters.items[0].block.version, "v0.111.0");
+}
+
+// The /patches/[version] route takes the version without its "v" prefix.
+const byrdispatchDir = path.join(process.cwd(), "data/byrdispatch");
+for (const file of readdirSync(byrdispatchDir)) {
+  const markdown = readFileSync(path.join(byrdispatchDir, file), "utf8");
+  assert.equal(/\]\(\/patches\/v\d/.test(markdown), false, `${file} links a v-prefixed patch path`);
 }
 
 console.log("byrdispatch.spec.ts: ok");

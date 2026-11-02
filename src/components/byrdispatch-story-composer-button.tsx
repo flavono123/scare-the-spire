@@ -6,20 +6,8 @@ import { StoryWriteIcon } from "@/components/story-token-icon";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { ServiceLocale } from "@/lib/i18n";
+import { loadFullSts2PatchLines } from "@/lib/sts2-patch-lines-client";
 import type { STS2PatchLine } from "@/lib/types";
-
-let fullPatchLinesPromise: Promise<STS2PatchLine[]> | null = null;
-
-function loadFullSts2PatchLines(): Promise<STS2PatchLine[]> {
-  fullPatchLinesPromise ??= fetch("/generated/sts2-patch-lines.json", { cache: "no-cache" })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to load STS2 patch lines: ${response.status}`);
-      }
-      return response.json() as Promise<STS2PatchLine[]>;
-    });
-  return fullPatchLinesPromise;
-}
 
 function newStoryLabel(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko" ? "이야기 쓰기" : "Write story";

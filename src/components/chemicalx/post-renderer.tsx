@@ -10,8 +10,10 @@ import { RichText } from "@/components/rich-text";
 import Image from "@/components/ui/static-image";
 import {
   buildEntityKeywordIndex,
+  entityMentionLabel,
   resolveEntityKeyword,
 } from "@/lib/chemical-utils";
+import { useGameLocaleForService } from "@/hooks/use-game-locale";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import {
@@ -79,6 +81,8 @@ export function PostRenderer({
   energyIconSrc = resolveSts2EnergyIcon("colorless"),
   onHistoryFloorClick,
 }: PostRendererProps) {
+  const labelGameLocale = useGameLocaleForService(serviceLocale);
+  const mentionGameLocale = gameLocale ?? labelGameLocale;
   const keywordEntityIndex = useMemo(
     () => buildEntityKeywordIndex(Array.from(entityMap.values())),
     [entityMap],
@@ -143,7 +147,7 @@ export function PostRenderer({
             if (entity) {
               return (
                 <EntityPreview key={i} entity={entity} serviceLocale={serviceLocale} gameLocale={gameLocale}>
-                  {block.text}
+                  {entityMentionLabel(entity, block.text, mentionGameLocale)}
                 </EntityPreview>
               );
             }
@@ -249,7 +253,7 @@ export function PostRenderer({
           if (entity) {
             return (
               <EntityPreview key={i} entity={entity} serviceLocale={serviceLocale} gameLocale={gameLocale}>
-                {block.displayText}
+                {entityMentionLabel(entity, block.displayText, mentionGameLocale)}
               </EntityPreview>
             );
           }

@@ -11,9 +11,10 @@ import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { SPIRE_ACTION_CONTROL_CLASS } from "@/components/spire-icon";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
-import { ColorfulPhilosopherSubjectArt } from "@/components/colorful-philosophers/subject-art";
+import { ColorfulPhilosopherSubjectArt, useColorfulPhilosopherName } from "@/components/colorful-philosophers/subject-art";
 import { useColorfulPhilosopherPost } from "@/hooks/use-colorful-philosopher-posts";
 import { useResourceReactions } from "@/hooks/use-resource-reactions";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   COLORFUL_PHILOSOPHER_REACTIONS,
@@ -22,6 +23,7 @@ import {
   colorfulPhilosophersCommentThreadKey,
   type ColorfulPhilosopherReaction,
 } from "@/lib/colorful-philosophers";
+import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 import { cn } from "@/lib/utils";
 
@@ -57,8 +59,10 @@ export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
   const pathname = usePathname();
   const id = postId || pathname.split("/").filter(Boolean).at(-1) || "";
   const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
   const { post, loading, unavailable } = useColorfulPhilosopherPost(id);
+  const displayName = useColorfulPhilosopherName(post, serviceLocale);
   const { userId, ensureUser } = useAuth();
   const resource = useResourceReactions(post?.resourceType ?? "", post?.resourceId ?? "", post?.gameVersion ?? "");
 
@@ -77,16 +81,18 @@ export function ColorfulPhilosopherPostView({ postId }: { postId: string }) {
 
   return (
     <article className="space-y-6" data-colorful-philosophers-post={post.id}>
-      <Link href={COLORFUL_PHILOSOPHERS_HREF} className="inline-flex items-center gap-2 text-sm text-primary">
+      <Link href={localizeHrefWithGameLocale(COLORFUL_PHILOSOPHERS_HREF, serviceLocale, gameLocale)} className="inline-flex items-center gap-2 text-sm text-primary">
         <Image src={COLORFUL_PHILOSOPHERS_TOKEN_SRC} alt="" width={20} height={20} className="object-contain" />
         {copy.title}
       </Link>
       <header className="flex items-center gap-4">
-        <ColorfulPhilosopherSubjectArt post={post} serviceLocale={serviceLocale} />
+        <ColorfulPhilosopherSubjectArt post={post} serviceLocale={serviceLocale} gameLocale={gameLocale} />
         <div>
           <p className="font-service text-xs text-zinc-500">{copy.slots[post.slot]}</p>
-          <h1 className="font-service text-2xl font-bold text-primary">{post.nameKo}</h1>
-          <p className="text-sm text-zinc-400">{`${post.nameEn} · v${post.gameVersion}`}</p>
+          <h1 className="font-service text-2xl font-bold text-primary">{displayName}</h1>
+          <p className="text-sm text-zinc-400">
+            {displayName === post.nameEn ? `v${post.gameVersion}` : `${post.nameEn} · v${post.gameVersion}`}
+          </p>
         </div>
       </header>
       <p className="font-game-text text-base leading-7 text-zinc-100">{post.body}</p>

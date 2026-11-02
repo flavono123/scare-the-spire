@@ -14,7 +14,7 @@ import {
 import type { HistoryRunFloorBlock, PostBlock } from "@/lib/chemical-types";
 import { useAuth } from "@/hooks/use-auth";
 import { useComments, type Comment } from "@/hooks/use-comments";
-import { useCommentEntities } from "@/hooks/use-comment-entities";
+import { useCommentEntities, useCommentEntitiesGameLocale } from "@/hooks/use-comment-entities";
 import { useCommentLikes } from "@/hooks/use-comment-likes";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -49,7 +49,7 @@ function getDraftKey(threadKey: string): string {
 export function CommentSection({
   threadKey,
   initialEntities,
-  entitiesGameLocale,
+  entitiesGameLocale: requestedEntitiesGameLocale,
   onCountChange,
   onCommentsChange,
   onHistoryFloorClick,
@@ -66,7 +66,8 @@ export function CommentSection({
   /**
    * Load this game locale's full entity graph on the client instead of taking
    * `initialEntities`; comments wait for it so mentions never render unlinked,
-   * and if it fails a retry notice replaces the comments and the editor.
+   * and if it fails a retry notice replaces the comments and the editor. Pages
+   * in any other language than Korean do this for their own game locale.
    */
   entitiesGameLocale?: GameLocale;
   onCountChange?: (count: number) => void;
@@ -95,6 +96,7 @@ export function CommentSection({
   const tips = serviceMessages[serviceLocale].engagementTips;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const { userId, ready, ensureUser } = useAuth();
+  const entitiesGameLocale = useCommentEntitiesGameLocale(requestedEntitiesGameLocale);
   const { entities, loading: entitiesLoading, failed: entitiesFailed } = useCommentEntities(initialEntities, {
     gameLocale: entitiesGameLocale,
   });

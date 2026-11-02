@@ -7,6 +7,7 @@ import { LinkBlockAnchor, LinkifiedRichText } from "@/components/link-reference-
 import type { PostBlock } from "@/lib/chemical-types";
 import {
   buildEntityKeywordIndex,
+  entityMentionLabel,
   resolveEntityKeyword,
 } from "@/lib/chemical-utils";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
@@ -64,7 +65,7 @@ export function ComboPostRenderer({
                 serviceLocale={serviceLocale}
                 gameLocale={gameLocale}
               >
-                {block.text}
+                {entityMentionLabel(entity, block.text, gameLocale)}
               </EntityPreview>
             );
           }

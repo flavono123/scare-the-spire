@@ -5,7 +5,7 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { Search, Trash2, X } from "lucide-react";
 import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, STS2PatchLine, StoryEntityType } from "@/lib/types";
-import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { loadCompendiumData } from "@/lib/compendium-data-chunks";
 import {
@@ -37,10 +37,9 @@ import { GameScrollArea } from "@/components/game-scroll-area";
 import { CardTile } from "@/components/codex/card-tile";
 import { patchVersionPath } from "@/lib/patch-line-links";
 import { resolveStoryPatchLine } from "@/lib/resolve-story-patch-line";
+import { loadFullSts2PatchLines } from "@/lib/sts2-patch-lines-client";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { serviceMessages } from "@/messages/service";
-
-let fullPatchLinesPromise: Promise<STS2PatchLine[]> | null = null;
 
 // STS2 entities, changes and patches are read only by the story modal and the
 // composer, so they load from the Compendium data chunks when one opens.
@@ -54,17 +53,6 @@ function sts2ReferenceDataState(...statuses: CompendiumLazyDataStatus[]): PatchL
   if (statuses.some((status) => status === "failed")) return "failed";
   if (statuses.some((status) => status === "loading" || status === "idle")) return "loading";
   return "loaded";
-}
-
-function loadFullSts2PatchLines(): Promise<STS2PatchLine[]> {
-  fullPatchLinesPromise ??= fetch("/generated/sts2-patch-lines.json", { cache: "no-cache" })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to load STS2 patch lines: ${response.status}`);
-      }
-      return response.json() as Promise<STS2PatchLine[]>;
-    });
-  return fullPatchLinesPromise;
 }
 
 function storyFeedCopy(serviceLocale: ServiceLocale) {
@@ -288,14 +276,26 @@ function sts2EntityHref(entity: EntityInfo): string | null {
   }
 }
 
-function STS2EntityInfoBlock({ entity, label, serviceLocale }: { entity?: EntityInfo; label?: string; serviceLocale: ServiceLocale }) {
+function STS2EntityInfoBlock({
+  entity,
+  label,
+  serviceLocale,
+  gameLocale,
+}: {
+  entity?: EntityInfo;
+  label?: string;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+}) {
   if (!entity) return null;
 
-  const href = sts2EntityHref(entity);
+  const entityHref = sts2EntityHref(entity);
+  const href = entityHref ? localizeHrefWithGameLocale(entityHref, serviceLocale, gameLocale) : null;
   const image = entity.imageUrl;
-  const imageAlt = entity.nameKo || entity.nameEn;
-  const title = serviceLocale === "ko" ? entity.nameKo || entity.nameEn : entity.nameEn || entity.nameKo;
-  const subtitle = serviceLocale === "ko" ? entity.nameEn : entity.nameKo;
+  // Entities come from the page's game locale, so nameKo is the game's name here.
+  const title = entity.nameKo || entity.nameEn;
+  const imageAlt = title;
+  const subtitle = entity.nameEn;
   const body = entity.type === "card" && entity.cardData ? (
     <div className="flex items-start gap-3 group">
       <div className="shrink-0">
@@ -358,36 +358,41 @@ function STS2EntityInfoBlock({ entity, label, serviceLocale }: { entity?: Entity
   ) : body;
 }
 
-function EntityInfoBlock({ entityType, entityId, card, relic, potion, label }: {
+function EntityInfoBlock({ entityType, entityId, card, relic, potion, label, serviceLocale, gameLocale }: {
   entityType: string;
   entityId: string;
   card?: Card;
   relic?: Relic;
   potion?: Potion;
   label?: string;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
 }) {
   const entity = entityType === "card" ? card : entityType === "relic" ? relic : potion;
   if (!entity) return null;
 
-  const href = `/${entityType}s/${entityId}`;
-  const nameKo = "nameKo" in entity ? entity.nameKo : "";
+  const href = localizeHrefWithGameLocale(`/compendium/sts1/${entityType}s/${entityId}`, serviceLocale, gameLocale);
   const name = entity.name;
+  // STS1 data has only Korean and English names.
+  const title = serviceLocale === "ko" && "nameKo" in entity ? entity.nameKo : name;
   const deprecated = "deprecated" in entity ? entity.deprecated : false;
 
   return (
     <Link href={href} className="flex gap-3 items-start group">
-      <EntityImage entityType={entityType} entityId={entityId} name={nameKo || name} deprecated={deprecated} />
+      <EntityImage entityType={entityType} entityId={entityId} name={title || name} deprecated={deprecated} />
       <div>
         <p className="font-medium group-hover:text-primary transition-colors">
-          {nameKo}
+          {title}
           {label && (
             <span className="ml-1.5 text-[10px] font-medium text-red-400 bg-red-500/10 rounded px-1 py-0.5">{label}</span>
           )}
           {deprecated && !label && (
-            <span className="ml-1.5 text-[10px] font-medium text-red-400 bg-red-500/10 rounded px-1 py-0.5">삭제됨</span>
+            <span className="ml-1.5 text-[10px] font-medium text-red-400 bg-red-500/10 rounded px-1 py-0.5">
+              {serviceMessages[serviceLocale].stories.reference.removed}
+            </span>
           )}
         </p>
-        <p className="text-xs text-muted-foreground">{name}</p>
+        {title !== name && <p className="text-xs text-muted-foreground">{name}</p>}
       </div>
     </Link>
   );
@@ -405,6 +410,7 @@ function STS2PatchLineBlock({
   story,
   patch,
   serviceLocale,
+  gameLocale,
   patches,
   entities,
 }: {
@@ -414,6 +420,7 @@ function STS2PatchLineBlock({
   story: Story;
   patch?: STS2Patch;
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   patches?: STS2Patch[];
   entities?: EntityInfo[];
 }) {
@@ -423,6 +430,7 @@ function STS2PatchLineBlock({
         <PatchLineReferenceBlock
           patchLine={patchLine}
           serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
           patches={patches}
           entities={entities}
           emphasized
@@ -448,7 +456,11 @@ function STS2PatchLineBlock({
     >
       <div className="mb-2 flex items-center gap-2">
         {href && patchLabel ? (
-          <Link href={localizeHref(href, serviceLocale)} className="text-sm font-medium text-primary hover:text-primary">
+          <Link
+            href={localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
+            prefetch={false}
+            className="text-sm font-medium text-primary hover:text-primary"
+          >
             {patchLabel}
           </Link>
         ) : patchLabel ? (
@@ -499,6 +511,7 @@ function ChangeBlock({ change }: { change: Change }) {
 function StoryExpanded({
   story,
   serviceLocale,
+  gameLocale,
   entityChanges,
   cardMap,
   relicMap,
@@ -515,6 +528,7 @@ function StoryExpanded({
 }: {
   story: Story;
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   entityChanges: Change[];
   cardMap: Map<string, Card>;
   relicMap: Map<string, Relic>;
@@ -529,6 +543,9 @@ function StoryExpanded({
   sts2Entities: EntityInfo[];
   sts2DataState: PatchLineReferenceDataState;
 }) {
+  const referenceCopy = serviceMessages[serviceLocale].stories.reference;
+  // Story data stores these labels in Korean.
+  const linkedLabel = (label: string | undefined) => label && (referenceCopy.linkedLabels[label] ?? label);
   const hasEntity = story.entityType && story.entityId;
   const isSTS2 = story.game === "sts2";
 
@@ -546,11 +563,11 @@ function StoryExpanded({
     const patchLine = resolveStoryPatchLine(story, patchLineMap);
     const patchId = patchLine?.patch ?? change?.patch ?? story.source;
     const patch = patchId ? sts2PatchMap.get(patchId) : undefined;
-    const primaryLabel = story.tags?.includes("삭제") ? "삭제됨" : undefined;
+    const primaryLabel = story.tags?.includes("삭제") ? referenceCopy.removed : undefined;
 
     return (
       <div className="space-y-3">
-        <STS2EntityInfoBlock entity={entity} label={primaryLabel} serviceLocale={serviceLocale} />
+        <STS2EntityInfoBlock entity={entity} label={primaryLabel} serviceLocale={serviceLocale} gameLocale={gameLocale} />
         {(patchLine || change || story.source) && (
           <STS2PatchLineBlock
             patchLine={patchLine}
@@ -559,6 +576,7 @@ function StoryExpanded({
             story={story}
             patch={patch}
             serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
             patches={sts2Patches}
             entities={sts2Entities}
           />
@@ -572,7 +590,7 @@ function StoryExpanded({
               {!isSTS1LinkedEntity && (
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <span>↳</span>
-                  <span>관련 항목</span>
+                  <span>{referenceCopy.related}</span>
                 </div>
               )}
               {isSTS1LinkedEntity ? (
@@ -582,13 +600,16 @@ function StoryExpanded({
                   card={cardMap.get(linked.entityId)}
                   relic={relicMap.get(linked.entityId)}
                   potion={potionMap.get(linked.entityId)}
-                  label={linked.label}
+                  label={linkedLabel(linked.label)}
+                  serviceLocale={serviceLocale}
+                  gameLocale={gameLocale}
                 />
               ) : (
                 <STS2EntityInfoBlock
                   entity={sts2EntityMap.get(`${linked.entityType}:${linked.entityId}`)}
-                  label={linked.label}
+                  label={linkedLabel(linked.label)}
                   serviceLocale={serviceLocale}
+                  gameLocale={gameLocale}
                 />
               )}
             </div>
@@ -609,6 +630,8 @@ function StoryExpanded({
             card={cardMap.get(story.entityId!)}
             relic={relicMap.get(story.entityId!)}
             potion={potionMap.get(story.entityId!)}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
           />
 
           {/* All changes for this entity */}
@@ -630,7 +653,7 @@ function StoryExpanded({
           <div key={`${linked.game ?? "sts1"}-${linked.entityType}-${linked.entityId}`} className="border-t border-border/30 pt-3 space-y-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <span>↳</span>
-              <span>관련 {linked.entityType === "card" ? "카드" : linked.entityType === "relic" ? "유물" : "포션"}</span>
+              <span>{referenceCopy.relatedByType[linked.entityType]}</span>
             </div>
             <EntityInfoBlock
               entityType={linked.entityType}
@@ -638,7 +661,9 @@ function StoryExpanded({
               card={cardMap.get(linked.entityId)}
               relic={relicMap.get(linked.entityId)}
               potion={potionMap.get(linked.entityId)}
-              label={linked.label}
+              label={linkedLabel(linked.label)}
+              serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
             />
             {linkedChanges.map((c) => (
               <ChangeBlock key={c.id} change={c} />
@@ -761,6 +786,7 @@ function StoryCard({
 function StoryDetailModal({
   story,
   serviceLocale,
+  gameLocale,
   entityChanges,
   cardMap,
   relicMap,
@@ -786,6 +812,7 @@ function StoryDetailModal({
 }: {
   story: Story;
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   entityChanges: Change[];
   cardMap: Map<string, Card>;
   relicMap: Map<string, Relic>;
@@ -890,6 +917,7 @@ function StoryDetailModal({
           <StoryExpanded
             story={story}
             serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
             entityChanges={entityChanges}
             cardMap={cardMap}
             relicMap={relicMap}
@@ -907,6 +935,7 @@ function StoryDetailModal({
 
           <CommentSection
             threadKey={story.id}
+            entitiesGameLocale={gameLocale}
             onCountChange={(count) => onCommentCountChange(story.id, count)}
           />
         </GameScrollArea>
@@ -997,6 +1026,7 @@ export function StoryFeed({
   const [searchQuery, setSearchQuery] = useState("");
   const [composerOpen, setComposerOpen] = useState(false);
   const [loadedPatchLines, setLoadedPatchLines] = useState<STS2PatchLine[] | null>(null);
+  const [patchLinesComplete, setPatchLinesComplete] = useState(false);
   const didMountRef = useRef(false);
   const sts2DataEnabled = Boolean(activeStoryId) || composerOpen;
   const sts2EntityState = useCompendiumEntitiesState(gameLocale, { enabled: sts2DataEnabled });
@@ -1038,7 +1068,7 @@ export function StoryFeed({
     window.history.replaceState(null, "", nextUrl);
   }, [activeStoryId]);
 
-  const patchLineOptions = loadedPatchLines ?? sts2PatchLines;
+  const patchLineOptions = loadedPatchLines?.length ? loadedPatchLines : sts2PatchLines;
   const patchLineMap = useMemo(() => new Map(patchLineOptions.map((line) => [line.id, line])), [patchLineOptions]);
   const allStories = useMemo(() => {
     const byId = new Map(stories.map((story) => [story.id, story]));
@@ -1059,20 +1089,23 @@ export function StoryFeed({
   );
   const patchLinesLoading = hasMissingPatchLine && loadedPatchLines === null;
 
+  // After a failure the next composer or story modal opening asks again.
   useEffect(() => {
-    if (loadedPatchLines || (!composerOpen && !hasMissingPatchLine)) return;
+    if (patchLinesComplete || (!composerOpen && !hasMissingPatchLine)) return;
     let cancelled = false;
     loadFullSts2PatchLines()
       .then((lines) => {
-        if (!cancelled) setLoadedPatchLines(lines);
+        if (cancelled) return;
+        setLoadedPatchLines(lines);
+        setPatchLinesComplete(true);
       })
       .catch(() => {
-        if (!cancelled) setLoadedPatchLines(sts2PatchLines);
+        if (!cancelled) setLoadedPatchLines((current) => current ?? []);
       });
     return () => {
       cancelled = true;
     };
-  }, [composerOpen, hasMissingPatchLine, loadedPatchLines, sts2PatchLines]);
+  }, [activeStoryId, composerOpen, hasMissingPatchLine, patchLinesComplete]);
   const searchTerm = searchQuery.trim().toLocaleLowerCase();
   const orderedStories = useMemo(() => {
     const filteredStories = searchTerm
@@ -1131,6 +1164,7 @@ export function StoryFeed({
         <StoryDetailModal
           story={activeStory}
           serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
           entityChanges={entityChangeIndex.get(activeStoryEntityKey) ?? []}
           cardMap={cardMap}
           relicMap={relicMap}

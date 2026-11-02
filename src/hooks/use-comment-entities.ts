@@ -6,6 +6,7 @@ import {
   useCompendiumEntitiesState,
 } from "@/components/codex/use-compendium-data";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import type { GameLocale } from "@/lib/i18n";
 
 /** comment-entities-sts2.json is built from the Korean graph. */
@@ -93,32 +94,45 @@ async function fetchSts2CommentEntities(): Promise<EntityInfo[]> {
  * either graph has failed (until a retry starts, which goes back to
  * `loading`), so the caller can show a retry notice instead of unresolved
  * mentions. The default path never fails: without the file it keeps
- * `initialEntities`.
+ * `initialEntities`. Pages in any other language than Korean always use the
+ * graph path, for their own game locale, so names and labels follow the page;
+ * entities only `initialEntities` knows stay available there.
  */
 export function useCommentEntities(
   initialEntities?: EntityInfo[],
   options: { enabled?: boolean; gameLocale?: GameLocale } = {},
 ) {
   const enabled = options.enabled ?? true;
-  const gameLocale = options.gameLocale;
+  const gameLocale = useCommentEntitiesGameLocale(options.gameLocale);
   const fileEntities = useFileCommentEntities(initialEntities, enabled && !gameLocale);
-  const graphEntities = useGraphCommentEntities(gameLocale, enabled);
+  const graphEntities = useGraphCommentEntities(gameLocale, initialEntities, enabled);
   return gameLocale ? graphEntities : fileEntities;
+}
+
+/** The game locale whose graph comments use, or undefined for the Korean file. */
+export function useCommentEntitiesGameLocale(gameLocale?: GameLocale): GameLocale | undefined {
+  const pathGameLocale = useGameLocale();
+  if (gameLocale) return gameLocale;
+  return pathGameLocale === KOREAN_GAME_LOCALE ? undefined : pathGameLocale;
 }
 
 function graphSettled(status: CompendiumLazyDataStatus): boolean {
   return status === "loaded" || status === "failed";
 }
 
-function useGraphCommentEntities(gameLocale: GameLocale | undefined, enabled: boolean) {
+function useGraphCommentEntities(
+  gameLocale: GameLocale | undefined,
+  initialEntities: EntityInfo[] | undefined,
+  enabled: boolean,
+) {
   const graphEnabled = enabled && Boolean(gameLocale);
   const primary = useCompendiumEntitiesState(gameLocale ?? KOREAN_GAME_LOCALE, { enabled: graphEnabled });
   const fallback = useCompendiumEntitiesState(KOREAN_GAME_LOCALE, { enabled: graphEnabled });
   const primaryEntities = primary.entities;
   const fallbackEntities = fallback.entities;
   const entities = useMemo(
-    () => mergeCommentEntities(primaryEntities ?? [], fallbackEntities ?? []),
-    [fallbackEntities, primaryEntities],
+    () => mergeCommentEntities(primaryEntities ?? [], mergeCommentEntities(fallbackEntities ?? [], initialEntities ?? [])),
+    [fallbackEntities, initialEntities, primaryEntities],
   );
   return {
     entities,
