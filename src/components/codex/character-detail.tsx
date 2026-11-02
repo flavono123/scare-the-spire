@@ -1,6 +1,8 @@
 "use client";
 
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { type ReactNode, type WheelEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import Link from "next/link";
@@ -9,7 +11,7 @@ import { GameScrollArea } from "@/components/game-scroll-area";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import { getCharacterReferenceLabels, getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
@@ -273,6 +275,7 @@ function buildDedicatedPotionTargets(potions: readonly CodexPotion[], characterP
 
 interface CharacterDetailProps {
   serviceLocale: ServiceLocale;
+  gameUi?: CodexGameUiLabels;
   backToListTitle: string;
   character: CodexCharacter;
   characters?: CodexCharacter[];
@@ -289,6 +292,7 @@ interface CharacterDetailProps {
 
 export function CharacterDetail({
   serviceLocale,
+  gameUi,
   backToListTitle,
   character,
   characters = [],
@@ -302,6 +306,7 @@ export function CharacterDetail({
   changes,
   versionDiffs,
 }: CharacterDetailProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getCharacterDetailLabels(serviceLocale);
@@ -403,7 +408,7 @@ export function CharacterDetail({
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/characters", serviceLocale)}
+          href={localizeLink("/compendium/characters")}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(event) => closeOnPlainClick(event, onClose)}
         >
@@ -543,6 +548,7 @@ export function CharacterDetail({
           >
             {entities ? (
               <RichDescription
+                gameUi={gameUi}
                 description={character.description}
                 entities={entities}
                 excludeEntityTerms={excludeSelf}
@@ -576,6 +582,7 @@ export function CharacterDetail({
 
           <CharacterReferenceRail title={detailLabels.startingCards}>
             <CharacterReferenceLine
+              gameUi={gameUi}
               iconUrl="/images/sts2/nav/stats_cards.png"
               serviceLocale={serviceLocale}
               targets={startingCardTargets}
@@ -586,12 +593,14 @@ export function CharacterDetail({
             <CharacterReferenceRail title={detailLabels.dedicatedRelicsAndPotions}>
               <div className="space-y-2">
                 <CharacterReferenceLine
+                  gameUi={gameUi}
                   iconUrl="/images/sts2/relics/bing_bong.webp"
                   label={detailLabels.relics}
                   serviceLocale={serviceLocale}
                   targets={dedicatedRelicTargets}
                 />
                 <CharacterReferenceLine
+                  gameUi={gameUi}
                   iconUrl="/images/sts2/potions/potion_shaped_rock.webp"
                   label={detailLabels.potions}
                   serviceLocale={serviceLocale}
@@ -624,6 +633,7 @@ export function CharacterDetail({
                     <div className="text-gray-300">
                       {entities ? (
                         <RichDescription
+                          gameUi={gameUi}
                           description={quote.text}
                           entities={entities}
                           excludeEntityTerms={excludeSelf}
@@ -645,6 +655,7 @@ export function CharacterDetail({
               ancients={ancients}
               entities={entities}
               excludeSelf={excludeSelf}
+              gameUi={gameUi}
               serviceLocale={serviceLocale}
             />
           </InfoRailSection>
@@ -732,16 +743,19 @@ function CharacterReferenceRail({ title, children }: { title: string; children: 
 }
 
 function CharacterReferenceLine({
+  gameUi,
   iconUrl,
   label,
   serviceLocale,
   targets,
 }: {
+  gameUi?: CodexGameUiLabels;
   iconUrl: string;
   label?: string;
   serviceLocale: ServiceLocale;
   targets: readonly CharacterReferenceTarget[];
 }) {
+  const localizeLink = useLocalizedHref();
   if (targets.length === 0) return null;
 
   return (
@@ -755,14 +769,16 @@ function CharacterReferenceLine({
       />
       {label ? <span className="text-gray-400">{label}:</span> : null}
       {targets.map((target, index) => {
-        const href = localizeHref(target.href, serviceLocale);
+        const href = localizeLink(target.href);
         return (
           <span key={target.id} className="inline-flex items-center gap-1">
             {index > 0 ? <span className="text-gray-500">,</span> : null}
             {target.entity ? (
               <EntityPreview
                 entity={{ ...target.entity, href }}
+                gameUi={gameUi}
                 preferEntityLocaleLabel={false}
+                serviceLocale={serviceLocale}
               >
                 {target.title}
               </EntityPreview>
@@ -787,8 +803,9 @@ function QuoteContextTitle({
   eventEntity?: EntityInfo;
   serviceLocale: ServiceLocale;
 }) {
+  const localizeLink = useLocalizedHref();
   if (!eventEntity) return <span>{title}</span>;
-  const href = localizeHref(buildCompendiumResourceHref("event", eventEntity.id), serviceLocale);
+  const href = localizeLink(buildCompendiumResourceHref("event", eventEntity.id));
   return (
     <EntityPreview
       entity={{ ...eventEntity, href }}
@@ -805,11 +822,13 @@ function CharacterAncientInteractions({
   ancients,
   entities,
   excludeSelf,
+  gameUi,
   serviceLocale,
 }: {
   character: CodexCharacter;
   ancients: CodexAncient[];
   entities?: EntityInfo[];
+  gameUi?: CodexGameUiLabels;
   excludeSelf: ReadonlySet<string>;
   serviceLocale: ServiceLocale;
 }) {
@@ -997,6 +1016,7 @@ function CharacterAncientInteractions({
                       </div>
                       {entities ? (
                         <RichDescription
+                          gameUi={gameUi}
                           description={line.text}
                           entities={entities}
                           excludeEntityTerms={excludeSelf}

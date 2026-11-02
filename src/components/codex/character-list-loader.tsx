@@ -14,12 +14,13 @@ const LAZY_DATA_KEYS = [
   "ancients",
   "cards",
   "changes",
+  "gameUi",
   "potions",
   "relics",
   "versionDiffs",
 ] as const satisfies readonly CompendiumDataKey[];
 
-type CharacterListLoaderProps = Omit<ComponentProps<typeof CharacterList>, "cards" | "relics" | "potions" | "ancients" | "changes" | "versionDiffs" | "entities" | "detailsStatus"> & {
+type CharacterListLoaderProps = Omit<ComponentProps<typeof CharacterList>, "cards" | "relics" | "potions" | "ancients" | "changes" | "gameUi" | "versionDiffs" | "entities" | "detailsStatus"> & {
   gameLocale: GameLocale;
 };
 
@@ -40,6 +41,7 @@ export function CharacterListLoader({ gameLocale, ...props }: CharacterListLoade
       potions={data?.potions}
       ancients={data?.ancients}
       changes={data?.changes}
+      gameUi={data?.gameUi}
       versionDiffs={data?.versionDiffs}
       entities={entities}
     />

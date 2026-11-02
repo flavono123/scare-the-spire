@@ -2,8 +2,9 @@
 
 import { useMemo, memo } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexAffliction, CodexCard, CodexEnchantment, CodexMonster, CodexPower } from "@/lib/codex-types";
 import {
@@ -35,6 +36,7 @@ export const EnchantmentTile = memo(function EnchantmentTile({
   tipCatalogPowers = [],
   tipCatalogMonsters = [],
 }: EnchantmentTileProps) {
+  const localizeLink = useLocalizedHref();
   const resolvedKind: "enchantment" | "affliction" =
     resourceKind ?? ("cardType" in resource ? "enchantment" : "affliction");
   const lifecycleClassName = resource.deprecated ? " opacity-50 grayscale saturate-0" : "";
@@ -67,7 +69,7 @@ export const EnchantmentTile = memo(function EnchantmentTile({
     <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
       <Link
         prefetch={false}
-        href={localizeHref(buildCompendiumResourceDetailHref("enchantment", resource.id), serviceLocale)}
+        href={localizeLink(buildCompendiumResourceDetailHref("enchantment", resource.id))}
         className="relative group"
         onClick={(event) => {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

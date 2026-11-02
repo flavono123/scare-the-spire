@@ -11,8 +11,9 @@ import type {
   MonsterMoveIntentDetail,
   MonsterMovePowerApplication,
 } from "@/lib/codex-types";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
-import { localizeHref, localizeHrefWithGameLocale } from "@/lib/i18n";
+import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { useCompendiumLinkHref } from "@/components/compendium-detail-links";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
@@ -82,10 +83,9 @@ function withMonsterVisualGameLocale(gameLocale: GameLocale | undefined, childre
 
 /** Localized Compendium href for `href`, the detail page where the page links to those. */
 function useMonsterVisualCompendiumHref(href: string, serviceLocale: ServiceLocale): string {
-  const gameLocale = useContext(MonsterVisualGameLocaleContext);
-  return useCompendiumLinkHref(gameLocale
-    ? localizeHrefWithGameLocale(href, serviceLocale, gameLocale)
-    : localizeHref(href, serviceLocale));
+  const pageGameLocale = useGameLocale();
+  const gameLocale = useContext(MonsterVisualGameLocaleContext) ?? pageGameLocale;
+  return useCompendiumLinkHref(localizeHrefWithGameLocale(href, serviceLocale, gameLocale));
 }
 
 interface MonsterAnimationPatchDiffBlockProps {
@@ -1816,7 +1816,7 @@ function witherUpgradeApplication(): MonsterMoveCardApplication {
     cardColor: "status",
     applicationKind: "upgrade",
     amount: { normal: 1, ascension: 2 },
-    imageUrl: "/images/sts2/cards/wither.webp",
+    imageUrl: "/images/sts2/cards/wither1.webp",
   };
 }
 

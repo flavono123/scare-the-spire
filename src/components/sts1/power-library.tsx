@@ -9,6 +9,7 @@ import {
   CompendiumIndexTopBar,
   useCodexFilterDrawer,
 } from "@/components/codex/codex-filter-drawer";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { FilterSection } from "@/components/codex/codex-filters";
 import { SearchBar } from "@/components/codex/search-bar";
 import {
@@ -18,7 +19,7 @@ import {
 } from "@/components/codex/use-hydration-safe-search-param";
 import { formatCodexCount, getCodexServiceMessages } from "@/lib/codex-service";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import { STS1_POWER_TYPE_COLORS } from "@/lib/sts1/card-style";
 import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1DetailPath } from "@/lib/sts1/paths";
@@ -40,6 +41,7 @@ export function Sts1PowerLibrary({
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlPowerId = useHydrationSafeSearchParam("power");
   const [selectedTypes, setSelectedTypes] = useState<Set<Sts1PowerType>>(new Set());
@@ -160,7 +162,7 @@ export function Sts1PowerLibrary({
                     <Link
                       key={power.slug}
                       prefetch={false}
-                      href={localizeHref(sts1DetailPath("powers", power.slug), serviceLocale)}
+                      href={localizeLink(sts1DetailPath("powers", power.slug))}
                       className="group"
                       aria-label={power.name}
                       onClick={(event) => {

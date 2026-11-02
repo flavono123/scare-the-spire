@@ -3,7 +3,7 @@
 import Image from "@/components/ui/static-image";
 import type { ReactNode } from "react";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 
@@ -142,6 +142,7 @@ export function RelatedResourceLine({
     <section className="w-full rounded-lg border border-border bg-compendium-rail p-4">
       <ReferenceLine
         config={config}
+        gameUi={gameUi}
         kind={kind}
         serviceLocale={serviceLocale}
         targets={targets}
@@ -172,6 +173,7 @@ export function RelatedResourceLinks({
                 icon: REFERENCE_KIND_CONFIG[group.kind].icon,
                 label: group.label ?? relatedResourceLabel(group.kind, serviceLocale, gameUi),
               }}
+              gameUi={gameUi}
               kind={group.kind}
               layout={group.layout}
               serviceLocale={serviceLocale}
@@ -187,6 +189,7 @@ export function RelatedResourceLinks({
 
 function ReferenceLine({
   config,
+  gameUi,
   kind,
   serviceLocale,
   targets,
@@ -194,6 +197,7 @@ function ReferenceLine({
   withBottomMargin = false,
 }: {
   config: { icon: string; label: string };
+  gameUi?: CodexGameUiLabels;
   kind: CodexReferenceKind;
   layout?: "inline" | "grid";
   serviceLocale: ServiceLocale;
@@ -210,7 +214,7 @@ function ReferenceLine({
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
           {targets.map((target) => (
             <span key={target.id} className="min-w-0 truncate rounded-md border border-border bg-compendium-rail px-2 py-1.5 text-sm text-gray-200">
-              <EntityPreview entity={toPreviewEntity(target, kind, serviceLocale)} preferEntityLocaleLabel={false}>
+              <EntityPreview entity={toPreviewEntity(target, kind)} gameUi={gameUi} preferEntityLocaleLabel={false} serviceLocale={serviceLocale}>
                 {target.title}
               </EntityPreview>
             </span>
@@ -234,8 +238,10 @@ function ReferenceLine({
         <span key={target.id} className="inline-flex items-center gap-1">
           {index > 0 ? <span className="text-gray-500">,</span> : null}
           <EntityPreview
-            entity={toPreviewEntity(target, kind, serviceLocale)}
+            entity={toPreviewEntity(target, kind)}
+            gameUi={gameUi}
             preferEntityLocaleLabel={false}
+            serviceLocale={serviceLocale}
           >
             {target.title}
           </EntityPreview>
@@ -248,9 +254,8 @@ function ReferenceLine({
 function toPreviewEntity(
   target: CodexReferenceTarget,
   kind: CodexReferenceKind,
-  serviceLocale: ServiceLocale,
 ): EntityInfo {
-  const href = localizeHref(buildCompendiumResourceHref(kind, target.id), serviceLocale);
+  const href = buildCompendiumResourceHref(kind, target.id);
   return {
     ...target.entity,
     id: target.entity?.id ?? target.id,

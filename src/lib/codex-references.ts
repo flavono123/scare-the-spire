@@ -247,6 +247,11 @@ export function getFuturePotionChoicesForPotion(
   return FUTURE_OF_POTIONS_CHOICES.filter((choice) => choice.potionRarity === potion.rarity);
 }
 
+/** The {Potion} slot of a localized option: the game fills in the potion given up. */
+export function fillFuturePotionOption<T extends { description: string }>(option: T, potionName: string): T {
+  return { ...option, description: option.description.replaceAll("{Potion}", potionName) };
+}
+
 export function getFuturePotionOutcomeIdsForPotion(
   potion: Pick<CodexPotion, "rarity">,
 ): FuturePotionOutcomeId[] {

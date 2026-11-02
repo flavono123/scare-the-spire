@@ -17,6 +17,7 @@ import {
   toggleFilterSortDir,
   type FilterSortDir,
 } from "@/components/codex/codex-filters";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { SearchBar } from "@/components/codex/search-bar";
 import {
   addCodexUrlChangeListener,
@@ -25,7 +26,7 @@ import {
 } from "@/components/codex/use-hydration-safe-search-param";
 import { formatCodexCount, getCodexServiceMessages } from "@/lib/codex-service";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
-import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { STS1_FILTER_ICONS } from "@/lib/sts1/card-style";
 import { sts1DetailPath } from "@/lib/sts1/paths";
 import { sts1MatchesCostFilter } from "@/lib/sts1/stats";
@@ -118,6 +119,7 @@ export function Sts1CardLibrary({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlCardId = useHydrationSafeSearchParam("card");
   const [selectedColors, setSelectedColors] = useState<Set<ColorFilter>>(new Set());
@@ -370,7 +372,7 @@ export function Sts1CardLibrary({
               <Link
                 key={card.slug}
                 prefetch={false}
-                href={localizeHref(sts1DetailPath("cards", card.slug), serviceLocale)}
+                href={localizeLink(sts1DetailPath("cards", card.slug))}
                 className="block transition-transform hover:z-10 hover:scale-[1.03]"
                 onClick={(event) => {
                   if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

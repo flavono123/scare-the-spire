@@ -448,6 +448,7 @@ export function CompendiumDirectDetailPage({
     if (character) {
       detail = (
         <CharacterDetail
+          gameUi={gameUi}
           serviceLocale={serviceLocale}
           backToListTitle={gameUi.charactersTitle}
           character={character}

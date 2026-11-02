@@ -2,13 +2,14 @@
 
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import { localizeHref } from "@/lib/i18n";
+
 import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
@@ -199,6 +200,7 @@ function getRemovedUpgradePreviewCard(
 }
 
 export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, tipCatalogCards, tipCatalogKeywords = [], patches, changes, versionDiffs, initialShowBeta = false, onShowBetaChange, syncBetaSearchParam = false, onClose, captureSnapshot }: CardDetailProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getCardDetailLabels(serviceLocale);
@@ -452,7 +454,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/cards", serviceLocale)}
+          href={localizeLink("/compendium/cards")}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => closeOnPlainClick(e, onClose)}
         >

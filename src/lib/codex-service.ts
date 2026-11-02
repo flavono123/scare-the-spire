@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ServiceLocale } from "@/lib/i18n";
-import { withSearchCanonical } from "@/lib/search-canonical";
+import { withDefaultOpenGraphCanonical } from "@/lib/service-metadata";
 import { serviceMessages } from "@/messages/service";
 
 export type CodexServiceMessages =
@@ -47,6 +47,6 @@ export function getCodexMetadata(
       : `Slay the Spire 2 ${title}.`,
   };
   return canonicalPath
-    ? withSearchCanonical(metadata, canonicalPath, serviceLocale)
+    ? withDefaultOpenGraphCanonical(metadata, canonicalPath, serviceLocale)
     : metadata;
 }

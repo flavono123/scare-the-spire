@@ -3,11 +3,12 @@
 import { type CSSProperties, type PointerEvent, type ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import {
   classifyMonsterIntentFsm,
   getMonsterIntentConditionDescriptor,
@@ -869,7 +870,6 @@ function PatternStateTransitionDiagram({
       originY: pan.y,
       moved: false,
     };
-    event.currentTarget.setPointerCapture(event.pointerId);
     setIsDragging(true);
   }, [pan.x, pan.y]);
 
@@ -878,8 +878,11 @@ function PatternStateTransitionDiagram({
     if (!drag || drag.pointerId !== event.pointerId) return;
     const deltaX = event.clientX - drag.startX;
     const deltaY = event.clientY - drag.startY;
-    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+    if (!drag.moved && (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3)) {
       drag.moved = true;
+      // Capture only once dragging: capturing on press retargets the click to
+      // this container, so links and move nodes inside would never receive it.
+      event.currentTarget.setPointerCapture(event.pointerId);
     }
     setPan(clampPan({ x: drag.originX + deltaX, y: drag.originY + deltaY }));
   }, [clampPan]);
@@ -1563,6 +1566,7 @@ export function MonsterDetail({
   selectedVersion,
   onClose,
 }: MonsterDetailProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = serviceMessages[serviceLocale];
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const commonText = serviceText.codex.common;
@@ -1765,7 +1769,7 @@ export function MonsterDetail({
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/bestiary", serviceLocale)}
+          href={localizeLink("/compendium/bestiary")}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => closeOnPlainClick(e, onClose)}
         >

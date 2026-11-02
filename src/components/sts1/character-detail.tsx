@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import Image from "@/components/ui/static-image";
 import { Sts1CardTile } from "./card-tile";
@@ -9,7 +10,7 @@ import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
 import { Sts1ResourceRefLinks } from "./resource-ref-links";
 import { Sts1SmartText } from "./smart-text";
-import { localizeHref, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { sts1PoolColor } from "@/lib/sts1/card-style";
 import { sts1CharacterPortraitUrl, sts1DetailPath, sts1IndexPath } from "@/lib/sts1/paths";
 import type {
@@ -48,6 +49,7 @@ export function Sts1CharacterDetail({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
+  const localizeLink = useLocalizedHref();
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const text = detailLabels(serviceLocale);
   const color = sts1PoolColor(character.id);
@@ -94,7 +96,7 @@ export function Sts1CharacterDetail({
             {deck.map(({ card, count }) => (
               <Link
                 key={card.id}
-                href={localizeHref(sts1DetailPath("cards", card.slug), serviceLocale)}
+                href={localizeLink(sts1DetailPath("cards", card.slug))}
                 className="group relative block"
                 title={card.name}
               >

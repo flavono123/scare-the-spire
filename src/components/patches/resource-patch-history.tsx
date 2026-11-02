@@ -90,13 +90,13 @@ export function PatchMetaReferenceLink({
     : FALLBACK_PATCH_ART;
 
   return (
-    <span className="group/patch-meta relative inline-flex shrink-0">
+    <span className="group/patch-meta relative inline-flex min-w-0">
       <Link
         href={gameLocale
           ? localizeHrefWithGameLocale(patchLineHref(patchLine), serviceLocale, gameLocale)
           : localizeHref(patchLineHref(patchLine), serviceLocale)}
         prefetch={false}
-        className="game-inspect-cursor whitespace-nowrap font-game-text text-sm leading-relaxed spire-gold transition-colors hover:text-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/50"
+        className="game-inspect-cursor text-right font-game-text text-sm leading-relaxed spire-gold transition-colors hover:text-primary focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/50"
       >
         {dateLabel(patchLine.date, serviceLocale)} {version}
       </Link>

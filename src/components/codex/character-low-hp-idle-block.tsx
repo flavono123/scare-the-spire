@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type { CodexCharacter, MonsterSpineAsset } from "@/lib/codex-types";
 import { CHARACTER_COLORS, CHARACTER_ORDER } from "@/lib/codex-types";
+import { useGameLocale } from "@/hooks/use-game-locale";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { localizeHref, localizeHrefWithGameLocale } from "@/lib/i18n";
 import {
@@ -129,8 +130,9 @@ function CharacterLowHpIdleCell({
   serviceLocale: ServiceLocale;
   gameLocale?: GameLocale;
 }) {
+  const pageGameLocale = useGameLocale();
   const name = serviceLocale === "ko" ? character.name : character.nameEn;
-  const href = characterLowHpDetailHref(character.id, serviceLocale, gameLocale);
+  const href = characterLowHpDetailHref(character.id, serviceLocale, gameLocale ?? pageGameLocale);
   const color = CHARACTER_COLORS[character.id.toLowerCase()] ?? "#eab308";
 
   return (

@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import {
   buildCompendiumResourceDetailHref,
   getCompendiumResourceIdFromUrl,
@@ -553,6 +554,7 @@ function EpochThumbnail({
   showBeta: boolean;
   onSelect: (epoch: CodexEpoch) => void;
 }) {
+  const localizeLink = useLocalizedHref();
   const eraLabel = formatEraLabel(epoch.eraName ?? epoch.eraGroup, epoch.eraYear, serviceLocale);
   const affiliationBadges = epoch.affiliations.slice(0, 2);
   const rewardBadges = epoch.unlockRewards.filter((reward) => reward !== "none").slice(0, 1);
@@ -563,7 +565,7 @@ function EpochThumbnail({
   return (
     <Link
       prefetch={false}
-      href={localizeHref(buildCompendiumResourceDetailHref("epoch", epoch.id), serviceLocale)}
+      href={localizeLink(buildCompendiumResourceDetailHref("epoch", epoch.id))}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
         event.preventDefault();

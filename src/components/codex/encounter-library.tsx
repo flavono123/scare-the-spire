@@ -2,13 +2,14 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import {
   addCodexUrlChangeListener,
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import {
   buildCompendiumResourceDetailHref,
   updateCompendiumResourceModalUrl,
@@ -515,6 +516,7 @@ function EncounterTile({
   formationCount: number;
   onClick: () => void;
 }) {
+  const localizeLink = useLocalizedHref();
   const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
 
   // Deduplicate monster display (some encounters list same monster multiple times)
@@ -525,7 +527,7 @@ function EncounterTile({
   return (
     <Link
       prefetch={false}
-      href={localizeHref(buildCompendiumResourceDetailHref("encounter", encounter.id), serviceLocale)}
+      href={localizeLink(buildCompendiumResourceDetailHref("encounter", encounter.id))}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
         event.preventDefault();

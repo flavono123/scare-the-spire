@@ -157,6 +157,22 @@ export function getDefaultServiceMetadata(
 }
 
 /** Home metadata: an absolute title so layout templates never repeat the brand. */
+/**
+ * Next replaces a parent's openGraph wholesale, so a page that only inherits
+ * the default preview must restate it to add its own og:url.
+ */
+export function withDefaultOpenGraphCanonical(
+  metadata: Metadata,
+  pathname: string,
+  serviceLocale: ServiceLocale,
+): Metadata {
+  return withSearchCanonical(
+    { ...metadata, openGraph: metadata.openGraph ?? getDefaultServiceMetadata(serviceLocale).openGraph },
+    pathname,
+    serviceLocale,
+  );
+}
+
 export function getHomeServiceMetadata(serviceLocale: ServiceLocale): Metadata {
   const metadata = getDefaultServiceMetadata(serviceLocale);
   const title = getServiceMetadataCopy(serviceLocale).homeTitle;

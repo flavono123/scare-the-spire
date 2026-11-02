@@ -8,7 +8,7 @@ import { CommentSection } from "@/components/comment-section";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { serviceMessages } from "@/messages/service";
 import { HOVER_TIP_TITLE_COLOR } from "@/lib/hover-tip-chrome";
@@ -37,6 +37,7 @@ import {
   splitEventDescriptionQuotes,
   type EventCharacterQuoteSpeaker,
 } from "@/lib/event-character-quotes";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import {
   pickRelicCharacterVariant,
@@ -67,6 +68,7 @@ import {
 } from "@/lib/tinker-time";
 import {
   FUTURE_OF_POTIONS_EVENT_ID,
+  fillFuturePotionOption,
   TINKER_TIME_EVENT_ID,
   getRelatedCardIdsForEvent,
   getRelatedEnchantmentIdsForEvent,
@@ -1520,7 +1522,8 @@ export function EventContentViewer({
     }
 
     if (event.id === "THE_FUTURE_OF_POTIONS" && (!currentPageId || currentPageId === "INITIAL")) {
-      return FUTURE_OF_POTIONS_OPTIONS;
+      return event.futurePotionOptions?.map((option) => fillFuturePotionOption(option, option.potionLabel))
+        ?? FUTURE_OF_POTIONS_OPTIONS;
     }
 
     if (event.id === "TINKER_TIME" && currentPageId === "CHOOSE_RIDER") {
@@ -2165,6 +2168,7 @@ export function EventDetail({
   versionDiffs,
   onClose,
 }: EventDetailProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = serviceLocale === "ko"
@@ -2178,7 +2182,7 @@ export function EventDetail({
       ?? null,
     [characters, profile.characterId],
   );
-  const profileHref = localizeHref("/profile", serviceLocale);
+  const profileHref = localizeLink("/profile");
   const [preview, setPreview] = useState<EventPreview | null>(null);
   const [commentCount, setCommentCount] = useState(0);
   const [trialNpcOverlay, setTrialNpcOverlay] = useState<TrialNpcOverlay | null>(null);
@@ -2288,7 +2292,7 @@ export function EventDetail({
       <div className="flex items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/events", serviceLocale)}
+          href={localizeLink("/compendium/events")}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(e) => closeOnPlainClick(e, onClose)}
         >

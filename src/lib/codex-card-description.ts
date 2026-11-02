@@ -30,8 +30,22 @@ export function cleanDescription(desc: string): string {
   return text;
 }
 
+const ICON_TAG = /(\[(?:energy|star):\d+\])/;
+const COLOR_TAG_WITH_ICON = /\[(gold|green|red|blue|purple|pink)\]((?:(?!\[\/\1\]).)*?\[(?:energy|star):\d+\].*?)\[\/\1\]/g;
+
+// Color tags are matched whole, so icons inside one would stay literal text.
+// Icons have their own art and no text color: close the tag around them.
+function liftIconsOutOfColorTags(desc: string): string {
+  return desc.replace(COLOR_TAG_WITH_ICON, (_, color: string, inner: string) =>
+    inner
+      .split(ICON_TAG)
+      .map((piece) => (!piece || ICON_TAG.test(piece) ? piece : `[${color}]${piece}[/${color}]`))
+      .join(""),
+  );
+}
+
 export function parseDescription(rawDesc: string): DescPart[] {
-  const desc = cleanDescription(rawDesc);
+  const desc = liftIconsOutOfColorTags(cleanDescription(rawDesc));
   const parts: DescPart[] = [];
   const regex = /\[gold\](.*?)\[\/gold\]|\[green\](.*?)\[\/green\]|\[red\](.*?)\[\/red\]|\[blue\](.*?)\[\/blue\]|\[purple\](.*?)\[\/purple\]|\[pink\](.*?)\[\/pink\]|\[energy:(\d+)\]|\[star:(\d+)\]|\[\/?\w+(?:[:=][^\]\s]+)?(?:\s+[^\]]*)?\]|\n/g;
   let lastIndex = 0;

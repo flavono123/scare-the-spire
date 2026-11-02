@@ -2,6 +2,7 @@
 
 import { type CSSProperties, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
+import { cacheBustSts2ImageUrl } from "@/lib/sts2-image-cache";
 import { cn } from "@/lib/utils";
 import {
   HOVER_TIP_BODY_COLOR,
@@ -112,7 +113,7 @@ export function GameHoverTip({
           {icon && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={icon}
+              src={cacheBustSts2ImageUrl(icon)}
               alt=""
               style={{ width: fontSize + 2, height: fontSize + 2, objectFit: "contain" }}
             />

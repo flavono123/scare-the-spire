@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { resolveKnownVersion } from "@/lib/entity-versioning";
 import Link from "next/link";
 import { SPIRE_ICON_COLORS } from "@/components/spire-icon";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import {
   buildCompendiumResourceDetailHref,
   updateCompendiumResourceModalUrl,
@@ -51,6 +51,7 @@ import {
   stripCodexMarkup,
 } from "@/lib/codex-search";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import {
   getMadScienceCardTypeFromId,
@@ -226,6 +227,7 @@ interface CardLibraryProps {
 }
 
 export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, initialCardId = null, initialShowBeta = false, detailsStatus = "loaded" }: CardLibraryProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlVersion = useHydrationSafeSearchParam("version");
   const [userSelectedVersion, setUserSelectedVersion] = useState<string | null>(null);
@@ -865,7 +867,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                   )}
                   <Link
                     prefetch={false}
-                    href={localizeHref(buildCompendiumResourceDetailHref("card", card.id), serviceLocale)}
+                    href={localizeLink(buildCompendiumResourceDetailHref("card", card.id))}
                     className="block"
                     onClick={(event) => {
                       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

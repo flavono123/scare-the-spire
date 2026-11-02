@@ -2,8 +2,9 @@
 
 import { useMemo, memo } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceDetailHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { CodexAffliction, CodexCard, CodexMonster, CodexPower } from "@/lib/codex-types";
@@ -53,6 +54,7 @@ export const PowerTile = memo(function PowerTile({
   tipCatalogMonsters = [],
   tipCatalogAfflictions = [],
 }: PowerTileProps) {
+  const localizeLink = useLocalizedHref();
   const style = TYPE_STYLES[power.type] ?? TYPE_STYLES.None;
   const imageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
   const lifecycleClassName = power.deprecated ? " opacity-50 grayscale saturate-0" : "";
@@ -86,7 +88,7 @@ export const PowerTile = memo(function PowerTile({
     <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
       <Link
         prefetch={false}
-        href={localizeHref(buildCompendiumResourceDetailHref("power", power.id), serviceLocale)}
+        href={localizeLink(buildCompendiumResourceDetailHref("power", power.id))}
         className="relative group"
         onClick={(event) => {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

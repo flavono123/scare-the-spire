@@ -1,13 +1,14 @@
 "use client";
 
 import { type ReactNode, useMemo, useRef, useState } from "react";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
-import { localizeHref } from "@/lib/i18n";
+
 import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -38,6 +39,7 @@ import {
   FUTURE_OF_POTIONS_EVENT_ID,
   FUTURE_OF_POTIONS_EVENT_NAME_KO,
   FUTURE_OF_POTIONS_EVENT_PATH,
+  fillFuturePotionOption,
   getFuturePotionChoicesForPotion,
   getRelatedCardIdsForPotion,
   getRelatedEnchantmentIdsForPotion,
@@ -139,6 +141,7 @@ export function PotionDetail({
   versionDiffs,
   onClose,
 }: PotionDetailProps) {
+  const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const detailLabels = getPotionDetailLabels(serviceLocale);
@@ -163,13 +166,17 @@ export function PotionDetail({
     return collectPotionSideTips(potion, tipCatalog, { includeSelf: true });
   }, [potion, tipCatalog]);
 
-  const futurePotionChoices = getFuturePotionChoicesForPotion(potion);
   const cardById = new Map(relatedCards.map((card) => [card.id, card]));
   const relatedCardTargets = getRelatedCardIdsForPotion(potion.id, relatedCards)
     .map((cardId) => cardById.get(cardId))
     .filter((card): card is CodexCard => Boolean(card))
     .map(cardToReferenceTarget);
   const eventById = new Map(relatedEvents.map((event) => [event.id, event]));
+  const futurePotionOptions = eventById.get(FUTURE_OF_POTIONS_EVENT_ID)?.futurePotionOptions;
+  const futurePotionChoices = getFuturePotionChoicesForPotion(potion).map((choice) => {
+    const option = futurePotionOptions?.find((candidate) => candidate.id === choice.id);
+    return option ? fillFuturePotionOption(option, potion.name) : choice;
+  });
   const relatedEventIds = dedupeIds([
     FUTURE_OF_POTIONS_EVENT_ID,
     ...getRelatedEventIdsForPotion(potion.id),
@@ -220,7 +227,7 @@ export function PotionDetail({
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/potions", serviceLocale)}
+          href={localizeLink("/compendium/potions")}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => closeOnPlainClick(e, onClose)}
         >

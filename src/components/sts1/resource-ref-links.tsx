@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import Image from "@/components/ui/static-image";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import { sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1ResourceRef } from "@/lib/sts1/types";
 
@@ -15,6 +16,7 @@ export function Sts1ResourceRefLinks({
   refs: readonly Sts1ResourceRef[];
   serviceLocale: ServiceLocale;
 }) {
+  const localizeLink = useLocalizedHref();
   if (refs.length === 0) return null;
   return (
     <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
@@ -23,7 +25,7 @@ export function Sts1ResourceRefLinks({
         {refs.map((ref) => (
           <li key={`${ref.type}:${ref.id}`}>
             <Link
-              href={localizeHref(sts1DetailPath(ref.type, ref.slug), serviceLocale)}
+              href={localizeLink(sts1DetailPath(ref.type, ref.slug))}
               className="flex items-center gap-2 rounded px-1.5 py-1 font-game-text text-sm text-primary transition-colors hover:bg-white/5"
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded bg-black/30">

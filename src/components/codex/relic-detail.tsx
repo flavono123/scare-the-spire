@@ -6,7 +6,7 @@ import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import { getDetailPatchHistoryLabels } from "@/lib/compendium-detail-labels";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -48,6 +48,7 @@ import {
   relicPoolFromCharacterId,
   RELIC_CHARACTER_VARIANT_ORDER,
 } from "@/lib/relic-character-variant";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import {
   createCardSideTipCatalog,
@@ -160,6 +161,7 @@ export function RelicDetail({
   versionDiffs,
   captureSnapshot,
 }: RelicDetailProps) {
+  const localizeLink = useLocalizedHref();
   const profile = useStoredUserProfile();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getRelicDetailLabels(serviceLocale);
@@ -399,7 +401,7 @@ export function RelicDetail({
       <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           prefetch={onClose ? false : undefined}
-          href={localizeHref("/compendium/relics", serviceLocale)}
+          href={localizeLink("/compendium/relics")}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => closeOnPlainClick(e, onClose)}
         >
@@ -449,6 +451,7 @@ export function RelicDetail({
               )}
               description={entities ? (
                 <RichDescription
+                  gameUi={gameUi}
                   description={relic.description}
                   entities={entities}
                   excludeEntityTerms={excludeSelf}
@@ -461,6 +464,7 @@ export function RelicDetail({
               flavor={relic.flavor ? (
                 entities ? (
                   <RichDescription
+                    gameUi={gameUi}
                     description={relic.flavor}
                     entities={entities}
                     excludeEntityTerms={excludeSelf}

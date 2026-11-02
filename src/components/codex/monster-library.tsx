@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
 import { resolveMonsterStaticArt } from "@/lib/monster-static-art";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import {
   buildCompendiumResourceDetailHref,
   updateCompendiumResourceModalUrl,
@@ -38,6 +38,7 @@ import {
   hasMonsterPhobiaMode,
   hasMonsterSkinParts,
 } from "@/lib/monster-skins";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { useAuth } from "@/hooks/use-auth";
 import { EngagementSummary } from "@/components/engagement-summary";
@@ -562,6 +563,7 @@ function MonsterTile({
   ensureUser: () => Promise<string | null>;
   onClick?: () => void;
 }) {
+  const localizeLink = useLocalizedHref();
   const typeConfig = MONSTER_TYPE_CONFIG[displayType];
   const [hoverMoveId, setHoverMoveId] = useState<string | null | undefined>(undefined);
   const staticArt = resolveMonsterStaticArt(monster.id, selectedVersion);
@@ -581,7 +583,7 @@ function MonsterTile({
     >
       <Link
         prefetch={false}
-        href={localizeHref(buildCompendiumResourceDetailHref("monster", monster.id), serviceLocale)}
+        href={localizeLink(buildCompendiumResourceDetailHref("monster", monster.id))}
         className="flex min-w-0 flex-1 items-center gap-3 text-left"
         onClick={(event) => {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

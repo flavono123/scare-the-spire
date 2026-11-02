@@ -16,6 +16,8 @@ import {
 } from "./codex-game-ui";
 import { getForcedBestiaryAct, hasPlaceholderBestiaryArt } from "./bestiary-monster-policy";
 import { DEFAULT_GAME_LOCALE_BY_SERVICE, type GameLocale } from "./i18n";
+import { withoutNameCounterPlaceholders } from "./game-name-placeholders";
+import { FUTURE_OF_POTIONS_CHOICES, FUTURE_OF_POTIONS_EVENT_ID } from "./codex-references";
 import {
   CodexCard,
   CodexKeyword,
@@ -69,6 +71,7 @@ import {
   BAD_RUN_MODIFIER_IDS,
   CHARACTER_CARDS_MODIFIER_IMAGE_URL,
   ASCENSION_TOKEN_IMAGE_URL,
+  LocalizedFuturePotionOption,
 } from "./codex-types";
 import { groupAncientDialogueLines } from "./ancient-dialogue";
 import {
@@ -2027,6 +2030,43 @@ function resolveEventText(localized: string, renderedFallback: string, vars: Eve
   return bakeDescription(normalized, vars);
 }
 
+const FUTURE_POTION_RARITY_KEYS: Record<string, string> = {
+  일반: "COMMON",
+  고급: "UNCOMMON",
+  희귀: "RARE",
+  이벤트: "EVENT",
+  토큰: "TOKEN",
+};
+
+const FUTURE_POTION_CARD_TYPE_KEYS: Record<string, string> = {
+  공격: "ATTACK",
+  스킬: "SKILL",
+  파워: "POWER",
+};
+
+// The game has one POTION option and fills in the rarity and type at runtime.
+// The Compendium lists every combination, in the words of the page's locale.
+function buildFuturePotionOptions(
+  gameEvents: GameLocalizationTable,
+  gameplay: GameLocalizationTable,
+): LocalizedFuturePotionOption[] {
+  const baseKey = "THE_FUTURE_OF_POTIONS.pages.INITIAL.options.POTION";
+  const title = gameText(gameEvents, `${baseKey}.title`, "");
+  const description = gameText(gameEvents, `${baseKey}.description`, "");
+  return FUTURE_OF_POTIONS_CHOICES.map((choice) => {
+    const potionKey = FUTURE_POTION_RARITY_KEYS[choice.potionRarity];
+    const cardRarity = gameText(gameplay, `CARD_RARITY.${FUTURE_POTION_RARITY_KEYS[choice.cardRarity]}`, choice.cardRarity);
+    const cardType = gameText(gameplay, `CARD_TYPE.${FUTURE_POTION_CARD_TYPE_KEYS[choice.cardType]}`, choice.cardType);
+    const potionRarity = gameText(gameplay, `CARD_RARITY.${potionKey}`, choice.potionRarity);
+    return {
+      id: choice.id,
+      title: `${bakeDescription(title, { Rarity: potionRarity })}: ${cardType}`,
+      description: bakeDescription(description, { Potion: "{Potion}", Rarity: cardRarity, Type: cardType }),
+      potionLabel: gameText(gameplay, `POTION_RARITY.${potionKey}`, choice.potionRarity),
+    };
+  });
+}
+
 function mapEventOptions(
   eventId: string,
   pageId: string,
@@ -2118,11 +2158,12 @@ function mapEvent(
 
 export async function getCodexEvents(opts?: { gameLocale?: GameLocale }): Promise<CodexEvent[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korEvents, engEvents, imgFiles, gameEvents] = await Promise.all([
+  const [korEvents, engEvents, imgFiles, gameEvents, gameplay] = await Promise.all([
     readJson<RawEvent[]>("kor/events.json"),
     readJson<RawEvent[]>("eng/events.json"),
     scanImageSlugs("events"),
     readGameLocalizationTable(gameLocale, "events"),
+    readGameLocalizationTable(gameLocale, "gameplay_ui"),
   ]);
 
   const engById = new Map(engEvents.map((e) => [e.id, e]));
@@ -2137,7 +2178,10 @@ export async function getCodexEvents(opts?: { gameLocale?: GameLocale }): Promis
     })
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapEvent(kor, eng, imgFiles, gameEvents, gameLocale);
+      const event = mapEvent(kor, eng, imgFiles, gameEvents, gameLocale);
+      return kor.id === FUTURE_OF_POTIONS_EVENT_ID && gameLocale !== "kor"
+        ? { ...event, futurePotionOptions: buildFuturePotionOptions(gameEvents, gameplay) }
+        : event;
     });
 }
 
@@ -2560,8 +2604,8 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
     gameBestiary,
     engBestiary,
   ] = await Promise.all([
-    readJson<RawMonster[]>("kor/monsters.json"),
-    readJson<RawMonster[]>("eng/monsters.json"),
+    readJson<RawMonster[]>("kor/monsters.json").then(withoutNameCounterPlaceholders),
+    readJson<RawMonster[]>("eng/monsters.json").then(withoutNameCounterPlaceholders),
     readJson<RawPower[]>("kor/powers.json"),
     readJson<RawPower[]>("eng/powers.json"),
     readJson<RawCard[]>("kor/cards.json"),
@@ -2700,8 +2744,8 @@ export async function getCodexEncounters(opts?: { gameLocale?: GameLocale }): Pr
     gameMonsters,
     engGameMonsters,
   ] = await Promise.all([
-    readJson<RawEncounter[]>("kor/encounters.json"),
-    readJson<RawEncounter[]>("eng/encounters.json"),
+    readJson<RawEncounter[]>("kor/encounters.json").then(withoutNameCounterPlaceholders),
+    readJson<RawEncounter[]>("eng/encounters.json").then(withoutNameCounterPlaceholders),
     readJson<EncounterSceneAsset[]>("encounter-scene-assets.json").catch(() => []),
     scanImageSlugs("bosses"),
     readGameLocalizationTable(gameLocale, "encounters"),

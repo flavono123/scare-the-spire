@@ -14,6 +14,7 @@ import {
   type EntityInfo,
   type EntityLookup,
 } from "@/components/patch-note-renderer";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { GOLD_TERM_DESC, TermTooltip } from "./codex-description";
 
 /**
@@ -57,6 +58,7 @@ const COLOR_TAGS = new Set([
 
 interface RenderCtx {
   lookup: EntityLookup | null;
+  gameUi?: CodexGameUiLabels;
   termDescriptions: Record<string, string>;
   hoveredTerm: string | null;
   setHoveredTerm: (t: string | null) => void;
@@ -106,6 +108,7 @@ function renderNodes(nodes: BBNode[], ctx: RenderCtx, prefix: string): ReactNode
             <span key={key} className={className || undefined}>
               <EntityPreview
                 entity={matched}
+                gameUi={ctx.gameUi}
                 linkClassName={[
                   className,
                   "underline decoration-current/30 underline-offset-2 hover:decoration-current/80 transition-colors cursor-pointer",
@@ -191,6 +194,8 @@ function renderNodes(nodes: BBNode[], ctx: RenderCtx, prefix: string): ReactNode
 }
 
 export interface RichDescriptionProps {
+  /** Game labels for the hover previews. Korean fallbacks show without it. */
+  gameUi?: CodexGameUiLabels;
   description: string;
   /** Entities used to resolve inline names to hover-cards + links. */
   entities?: EntityInfo[];
@@ -209,6 +214,7 @@ export interface RichDescriptionProps {
 export function RichDescription({
   description,
   entities,
+  gameUi,
   lookup,
   termDescriptions,
   excludeEntityTerms,
@@ -233,6 +239,7 @@ export function RichDescription({
 
   const ctx: RenderCtx = {
     lookup: resolvedLookup,
+    gameUi,
     termDescriptions: allTerms,
     hoveredTerm,
     setHoveredTerm,

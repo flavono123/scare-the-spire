@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { AncientNodeRender } from "@/components/codex/ancient-node-render";
 import {
   addCodexUrlChangeListener,
@@ -9,7 +10,7 @@ import {
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
+
 import {
   buildCompendiumResourceDetailHref,
   updateCompendiumResourceModalUrl,
@@ -443,10 +444,11 @@ function AncientCard({
   gameUi: CodexGameUiLabels;
   onSelect: (ancient: CodexAncient, trigger: HTMLAnchorElement) => void;
 }) {
+  const localizeLink = useLocalizedHref();
   return (
     <Link
       prefetch={false}
-      href={localizeHref(buildCompendiumResourceDetailHref("ancient", ancient.id), serviceLocale)}
+      href={localizeLink(buildCompendiumResourceDetailHref("ancient", ancient.id))}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
         event.preventDefault();

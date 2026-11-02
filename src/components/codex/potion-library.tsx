@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { resolveKnownVersion } from "@/lib/entity-versioning";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
@@ -11,7 +12,7 @@ import {
   pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
-import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import type { ServiceLocale } from "@/lib/i18n";
 import {
   buildCompendiumResourceDetailHref,
   updateCompendiumResourceModalUrl,
@@ -69,7 +70,6 @@ import {
   getCharacterTokenIcon,
 } from "./codex-filter-assets";
 import {
-  FUTURE_OF_POTIONS_EVENT_NAME_KO,
   FUTURE_OF_POTIONS_OUTCOMES,
   formatFuturePotionOutcome,
   getFuturePotionOutcomeIdsForPotion,
@@ -433,7 +433,7 @@ export function PotionLibrary({
 
         <div className="border-t border-white/10" />
 
-        <FilterSection trigger="?" label={FUTURE_OF_POTIONS_EVENT_NAME_KO} sortDir={sortDirs.future} onSortToggle={() => toggleSort("future")} sortTitle={serviceText.common.sortButtonTitle}>
+        <FilterSection trigger="?" label={gameUi.futureOfPotionsTitle} sortDir={sortDirs.future} onSortToggle={() => toggleSort("future")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-1">
             {orderByFilterSortDir(FUTURE_OF_POTIONS_OUTCOMES, sortDirs.future).map((outcome) => {
               const active = selectedFutureOutcomes.has(outcome.id);
@@ -442,7 +442,9 @@ export function PotionLibrary({
                   key={outcome.id}
                   checked={active}
                   onCheckedChange={() => toggleFutureOutcome(outcome.id)}
-                  label={formatFuturePotionOutcome(outcome)}
+                  label={serviceLocale === "ko"
+                    ? formatFuturePotionOutcome(outcome)
+                    : `${gameUi.cardLibrary.rarities[outcome.cardRarity]} ${gameUi.cardLibrary.types[outcome.cardType]}`}
                   size="sm"
                   align="start"
                   className="w-full py-1.5"
@@ -579,6 +581,7 @@ function PotionTile({
   tipCatalogPowers?: readonly CodexPower[];
   tipCatalogMonsters?: readonly CodexMonster[];
 }) {
+  const localizeLink = useLocalizedHref();
   const lifecycleClassName = potion.deprecated ? " opacity-50 grayscale saturate-0" : "";
 
   const tipCatalog = useMemo(
@@ -602,7 +605,7 @@ function PotionTile({
     <CardSideTipsAnchor mode="hover" preferSide="right" tips={sideTips} className="relative">
       <Link
         prefetch={false}
-        href={localizeHref(buildCompendiumResourceDetailHref("potion", potion.id), serviceLocale)}
+        href={localizeLink(buildCompendiumResourceDetailHref("potion", potion.id))}
         data-potion-tile={potion.id}
         className={`group flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16${lifecycleClassName} border-transparent bg-white/5 hover:bg-white/10 hover:z-10 hover:scale-110 hover:border-primary/60 hover:bg-primary/10`}
         onClick={(event) => {
