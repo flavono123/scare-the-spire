@@ -1,0 +1,1217 @@
+[
+  {
+    "id": "AcidSlime_L",
+    "slug": "acid-slime-l",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 65,
+        "max": 69
+      },
+      {
+        "ascension": 7,
+        "min": 68,
+        "max": 72
+      }
+    ]
+  },
+  {
+    "id": "AcidSlime_M",
+    "slug": "acid-slime-m",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 28,
+        "max": 32
+      },
+      {
+        "ascension": 7,
+        "min": 29,
+        "max": 34
+      }
+    ]
+  },
+  {
+    "id": "AcidSlime_S",
+    "slug": "acid-slime-s",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 8,
+        "max": 12
+      },
+      {
+        "ascension": 7,
+        "min": 9,
+        "max": 13
+      }
+    ]
+  },
+  {
+    "id": "Cultist",
+    "slug": "cultist",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 48,
+        "max": 54
+      },
+      {
+        "ascension": 7,
+        "min": 50,
+        "max": 56
+      }
+    ]
+  },
+  {
+    "id": "FungiBeast",
+    "slug": "fungi-beast",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 22,
+        "max": 28
+      },
+      {
+        "ascension": 7,
+        "min": 24,
+        "max": 28
+      }
+    ]
+  },
+  {
+    "id": "FuzzyLouseDefensive",
+    "slug": "fuzzy-louse-defensive",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 11,
+        "max": 17
+      },
+      {
+        "ascension": 7,
+        "min": 12,
+        "max": 18
+      }
+    ]
+  },
+  {
+    "id": "FuzzyLouseNormal",
+    "slug": "fuzzy-louse-normal",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 10,
+        "max": 15
+      },
+      {
+        "ascension": 7,
+        "min": 11,
+        "max": 16
+      }
+    ]
+  },
+  {
+    "id": "GremlinFat",
+    "slug": "gremlin-fat",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 13,
+        "max": 17
+      },
+      {
+        "ascension": 7,
+        "min": 14,
+        "max": 18
+      }
+    ]
+  },
+  {
+    "id": "GremlinNob",
+    "slug": "gremlin-nob",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 82,
+        "max": 86
+      },
+      {
+        "ascension": 8,
+        "min": 85,
+        "max": 90
+      }
+    ]
+  },
+  {
+    "id": "GremlinThief",
+    "slug": "gremlin-thief",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 10,
+        "max": 14
+      },
+      {
+        "ascension": 7,
+        "min": 11,
+        "max": 15
+      }
+    ]
+  },
+  {
+    "id": "GremlinTsundere",
+    "slug": "gremlin-tsundere",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 12,
+        "max": 15
+      },
+      {
+        "ascension": 7,
+        "min": 13,
+        "max": 17
+      }
+    ]
+  },
+  {
+    "id": "GremlinWarrior",
+    "slug": "gremlin-warrior",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 20,
+        "max": 24
+      },
+      {
+        "ascension": 7,
+        "min": 21,
+        "max": 25
+      }
+    ]
+  },
+  {
+    "id": "GremlinWizard",
+    "slug": "gremlin-wizard",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 21,
+        "max": 25
+      },
+      {
+        "ascension": 7,
+        "min": 22,
+        "max": 26
+      }
+    ]
+  },
+  {
+    "id": "Hexaghost",
+    "slug": "hexaghost",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 250,
+        "max": 250
+      },
+      {
+        "ascension": 9,
+        "min": 264,
+        "max": 264
+      }
+    ]
+  },
+  {
+    "id": "JawWorm",
+    "slug": "jaw-worm",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 40,
+        "max": 44
+      },
+      {
+        "ascension": 7,
+        "min": 42,
+        "max": 46
+      }
+    ]
+  },
+  {
+    "id": "Lagavulin",
+    "slug": "lagavulin",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 109,
+        "max": 111
+      },
+      {
+        "ascension": 8,
+        "min": 112,
+        "max": 115
+      }
+    ]
+  },
+  {
+    "id": "Looter",
+    "slug": "looter",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 44,
+        "max": 48
+      },
+      {
+        "ascension": 7,
+        "min": 46,
+        "max": 50
+      }
+    ]
+  },
+  {
+    "id": "Sentry",
+    "slug": "sentry",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 38,
+        "max": 42
+      },
+      {
+        "ascension": 8,
+        "min": 39,
+        "max": 45
+      }
+    ]
+  },
+  {
+    "id": "SlaverBlue",
+    "slug": "slaver-blue",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 46,
+        "max": 50
+      },
+      {
+        "ascension": 7,
+        "min": 48,
+        "max": 52
+      }
+    ]
+  },
+  {
+    "id": "SlaverRed",
+    "slug": "slaver-red",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 46,
+        "max": 50
+      },
+      {
+        "ascension": 7,
+        "min": 48,
+        "max": 52
+      }
+    ]
+  },
+  {
+    "id": "SlimeBoss",
+    "slug": "slime-boss",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 140,
+        "max": 140
+      },
+      {
+        "ascension": 9,
+        "min": 150,
+        "max": 150
+      }
+    ]
+  },
+  {
+    "id": "SpikeSlime_L",
+    "slug": "spike-slime-l",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 64,
+        "max": 70
+      },
+      {
+        "ascension": 7,
+        "min": 67,
+        "max": 73
+      }
+    ]
+  },
+  {
+    "id": "SpikeSlime_M",
+    "slug": "spike-slime-m",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 28,
+        "max": 32
+      },
+      {
+        "ascension": 7,
+        "min": 29,
+        "max": 34
+      }
+    ]
+  },
+  {
+    "id": "SpikeSlime_S",
+    "slug": "spike-slime-s",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 10,
+        "max": 14
+      },
+      {
+        "ascension": 7,
+        "min": 11,
+        "max": 15
+      }
+    ]
+  },
+  {
+    "id": "TheGuardian",
+    "slug": "the-guardian",
+    "legacySlugs": [],
+    "dungeon": "exordium",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 240,
+        "max": 240
+      },
+      {
+        "ascension": 9,
+        "min": 250,
+        "max": 250
+      }
+    ]
+  },
+  {
+    "id": "BanditBear",
+    "slug": "bandit-bear",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 38,
+        "max": 42
+      },
+      {
+        "ascension": 7,
+        "min": 40,
+        "max": 44
+      }
+    ]
+  },
+  {
+    "id": "BanditChild",
+    "slug": "bandit-child",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 30,
+        "max": 30
+      },
+      {
+        "ascension": 7,
+        "min": 34,
+        "max": 34
+      }
+    ]
+  },
+  {
+    "id": "BanditLeader",
+    "slug": "bandit-leader",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 35,
+        "max": 39
+      },
+      {
+        "ascension": 7,
+        "min": 37,
+        "max": 41
+      }
+    ]
+  },
+  {
+    "id": "BookOfStabbing",
+    "slug": "book-of-stabbing",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 160,
+        "max": 164
+      },
+      {
+        "ascension": 8,
+        "min": 168,
+        "max": 172
+      }
+    ]
+  },
+  {
+    "id": "BronzeAutomaton",
+    "slug": "bronze-automaton",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 300,
+        "max": 300
+      },
+      {
+        "ascension": 9,
+        "min": 320,
+        "max": 320
+      }
+    ]
+  },
+  {
+    "id": "BronzeOrb",
+    "slug": "bronze-orb",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 52,
+        "max": 58
+      },
+      {
+        "ascension": 9,
+        "min": 54,
+        "max": 60
+      }
+    ]
+  },
+  {
+    "id": "Byrd",
+    "slug": "byrd",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 25,
+        "max": 31
+      },
+      {
+        "ascension": 7,
+        "min": 26,
+        "max": 33
+      }
+    ]
+  },
+  {
+    "id": "Centurion",
+    "slug": "centurion",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 76,
+        "max": 80
+      },
+      {
+        "ascension": 7,
+        "min": 78,
+        "max": 83
+      }
+    ]
+  },
+  {
+    "id": "Champ",
+    "slug": "champ",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 420,
+        "max": 420
+      },
+      {
+        "ascension": 9,
+        "min": 440,
+        "max": 440
+      }
+    ]
+  },
+  {
+    "id": "Chosen",
+    "slug": "chosen",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 95,
+        "max": 99
+      },
+      {
+        "ascension": 7,
+        "min": 98,
+        "max": 103
+      }
+    ]
+  },
+  {
+    "id": "GremlinLeader",
+    "slug": "gremlin-leader",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 140,
+        "max": 148
+      },
+      {
+        "ascension": 8,
+        "min": 145,
+        "max": 155
+      }
+    ]
+  },
+  {
+    "id": "Healer",
+    "slug": "healer",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 48,
+        "max": 56
+      },
+      {
+        "ascension": 7,
+        "min": 50,
+        "max": 58
+      }
+    ]
+  },
+  {
+    "id": "Mugger",
+    "slug": "mugger",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 48,
+        "max": 52
+      },
+      {
+        "ascension": 7,
+        "min": 50,
+        "max": 54
+      }
+    ]
+  },
+  {
+    "id": "Shelled Parasite",
+    "slug": "shelled-parasite",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 68,
+        "max": 72
+      },
+      {
+        "ascension": 7,
+        "min": 70,
+        "max": 75
+      }
+    ]
+  },
+  {
+    "id": "SlaverBoss",
+    "slug": "slaver-boss",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 54,
+        "max": 60
+      },
+      {
+        "ascension": 8,
+        "min": 57,
+        "max": 64
+      }
+    ]
+  },
+  {
+    "id": "SnakePlant",
+    "slug": "snake-plant",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 75,
+        "max": 79
+      },
+      {
+        "ascension": 7,
+        "min": 78,
+        "max": 82
+      }
+    ]
+  },
+  {
+    "id": "Snecko",
+    "slug": "snecko",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 114,
+        "max": 120
+      },
+      {
+        "ascension": 7,
+        "min": 120,
+        "max": 125
+      }
+    ]
+  },
+  {
+    "id": "SphericGuardian",
+    "slug": "spheric-guardian",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 20,
+        "max": 20
+      }
+    ]
+  },
+  {
+    "id": "TheCollector",
+    "slug": "the-collector",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 282,
+        "max": 282
+      },
+      {
+        "ascension": 9,
+        "min": 300,
+        "max": 300
+      }
+    ]
+  },
+  {
+    "id": "TorchHead",
+    "slug": "torch-head",
+    "legacySlugs": [],
+    "dungeon": "city",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 38,
+        "max": 40
+      },
+      {
+        "ascension": 9,
+        "min": 40,
+        "max": 45
+      }
+    ]
+  },
+  {
+    "id": "AwakenedOne",
+    "slug": "awakened-one",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 300,
+        "max": 300
+      },
+      {
+        "ascension": 9,
+        "min": 320,
+        "max": 320
+      }
+    ]
+  },
+  {
+    "id": "Dagger",
+    "slug": "dagger",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 20,
+        "max": 25
+      }
+    ]
+  },
+  {
+    "id": "Darkling",
+    "slug": "darkling",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 48,
+        "max": 56
+      },
+      {
+        "ascension": 7,
+        "min": 50,
+        "max": 59
+      }
+    ]
+  },
+  {
+    "id": "Deca",
+    "slug": "deca",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 250,
+        "max": 250
+      },
+      {
+        "ascension": 9,
+        "min": 265,
+        "max": 265
+      }
+    ]
+  },
+  {
+    "id": "Donu",
+    "slug": "donu",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 250,
+        "max": 250
+      },
+      {
+        "ascension": 9,
+        "min": 265,
+        "max": 265
+      }
+    ]
+  },
+  {
+    "id": "Exploder",
+    "slug": "exploder",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 30,
+        "max": 30
+      },
+      {
+        "ascension": 7,
+        "min": 30,
+        "max": 35
+      }
+    ]
+  },
+  {
+    "id": "GiantHead",
+    "slug": "giant-head",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 500,
+        "max": 500
+      },
+      {
+        "ascension": 8,
+        "min": 520,
+        "max": 520
+      }
+    ]
+  },
+  {
+    "id": "Maw",
+    "slug": "maw",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 300,
+        "max": 300
+      }
+    ]
+  },
+  {
+    "id": "Nemesis",
+    "slug": "nemesis",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 185,
+        "max": 185
+      },
+      {
+        "ascension": 8,
+        "min": 200,
+        "max": 200
+      }
+    ]
+  },
+  {
+    "id": "Orb Walker",
+    "slug": "orb-walker",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 90,
+        "max": 96
+      },
+      {
+        "ascension": 7,
+        "min": 92,
+        "max": 102
+      }
+    ]
+  },
+  {
+    "id": "Reptomancer",
+    "slug": "reptomancer",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 180,
+        "max": 190
+      },
+      {
+        "ascension": 8,
+        "min": 190,
+        "max": 200
+      }
+    ]
+  },
+  {
+    "id": "Repulsor",
+    "slug": "repulsor",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 29,
+        "max": 35
+      },
+      {
+        "ascension": 7,
+        "min": 31,
+        "max": 38
+      }
+    ]
+  },
+  {
+    "id": "Serpent",
+    "slug": "serpent",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 170,
+        "max": 170
+      },
+      {
+        "ascension": 7,
+        "min": 190,
+        "max": 190
+      }
+    ]
+  },
+  {
+    "id": "Spiker",
+    "slug": "spiker",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 42,
+        "max": 56
+      },
+      {
+        "ascension": 7,
+        "min": 44,
+        "max": 60
+      }
+    ]
+  },
+  {
+    "id": "TimeEater",
+    "slug": "time-eater",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 456,
+        "max": 456
+      },
+      {
+        "ascension": 9,
+        "min": 480,
+        "max": 480
+      }
+    ]
+  },
+  {
+    "id": "Transient",
+    "slug": "transient",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 999,
+        "max": 999
+      }
+    ]
+  },
+  {
+    "id": "WrithingMass",
+    "slug": "writhing-mass",
+    "legacySlugs": [],
+    "dungeon": "beyond",
+    "type": "normal",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 160,
+        "max": 160
+      },
+      {
+        "ascension": 7,
+        "min": 175,
+        "max": 175
+      }
+    ]
+  },
+  {
+    "id": "CorruptHeart",
+    "slug": "corrupt-heart",
+    "legacySlugs": [],
+    "dungeon": "ending",
+    "type": "boss",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 750,
+        "max": 750
+      },
+      {
+        "ascension": 9,
+        "min": 800,
+        "max": 800
+      }
+    ]
+  },
+  {
+    "id": "SpireShield",
+    "slug": "spire-shield",
+    "legacySlugs": [],
+    "dungeon": "ending",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 110,
+        "max": 110
+      },
+      {
+        "ascension": 8,
+        "min": 125,
+        "max": 125
+      }
+    ]
+  },
+  {
+    "id": "SpireSpear",
+    "slug": "spire-spear",
+    "legacySlugs": [],
+    "dungeon": "ending",
+    "type": "elite",
+    "hitPoints": [
+      {
+        "ascension": 0,
+        "min": 160,
+        "max": 160
+      },
+      {
+        "ascension": 8,
+        "min": 180,
+        "max": 180
+      }
+    ]
+  }
+]

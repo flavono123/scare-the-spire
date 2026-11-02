@@ -1,0 +1,25 @@
+{
+  "types": {
+    "normal": "敌人",
+    "elite": "精英",
+    "boss": " Boss"
+  },
+  "dungeons": {
+    "exordium": {
+      "act": "第一阶段",
+      "name": "入口"
+    },
+    "city": {
+      "act": "第二阶段",
+      "name": "城市"
+    },
+    "beyond": {
+      "act": "第三阶段",
+      "name": "深处"
+    },
+    "ending": {
+      "act": "终幕",
+      "name": "终局"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "types": {
+    "normal": "敵",
+    "elite": "エリート",
+    "boss": "ボス"
+  },
+  "dungeons": {
+    "exordium": {
+      "act": "第1章",
+      "name": "幕開け"
+    },
+    "city": {
+      "act": "第2章",
+      "name": "栄えし所"
+    },
+    "beyond": {
+      "act": "第3章",
+      "name": "彼方"
+    },
+    "ending": {
+      "act": "最終章",
+      "name": "終幕"
+    }
+  }
+}

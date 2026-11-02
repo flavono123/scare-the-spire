@@ -1,0 +1,355 @@
+{
+  "AcidSlime_L": {
+    "name": "Acid Slime (L)",
+    "moves": [
+      "Corrosive Spit",
+      "Split",
+      "Lick"
+    ]
+  },
+  "AcidSlime_M": {
+    "name": "Acid Slime (M)",
+    "moves": [
+      "Corrosive Spit",
+      "Lick"
+    ]
+  },
+  "AcidSlime_S": {
+    "name": "Acid Slime (S)",
+    "moves": []
+  },
+  "Cultist": {
+    "name": "Cultist",
+    "moves": [
+      "Incantation"
+    ]
+  },
+  "FungiBeast": {
+    "name": "Fungi Beast",
+    "moves": [
+      "Grow"
+    ]
+  },
+  "FuzzyLouseDefensive": {
+    "name": "Louse",
+    "moves": [
+      "Spit Web"
+    ]
+  },
+  "FuzzyLouseNormal": {
+    "name": "Louse",
+    "moves": [
+      "Grow"
+    ]
+  },
+  "GremlinFat": {
+    "name": "Fat Gremlin",
+    "moves": [
+      "Smash"
+    ]
+  },
+  "GremlinNob": {
+    "name": "Gremlin Nob",
+    "moves": [
+      "Skull Bash",
+      "Bull Rush"
+    ]
+  },
+  "GremlinThief": {
+    "name": "Sneaky Gremlin",
+    "moves": []
+  },
+  "GremlinTsundere": {
+    "name": "Shield Gremlin",
+    "moves": [
+      "Protect",
+      "Shield Bash"
+    ]
+  },
+  "GremlinWarrior": {
+    "name": "Mad Gremlin",
+    "moves": [
+      "Claw"
+    ]
+  },
+  "GremlinWizard": {
+    "name": "Gremlin Wizard",
+    "moves": [
+      "Charging",
+      "Ultimate Blast"
+    ]
+  },
+  "Hexaghost": {
+    "name": "Hexaghost",
+    "moves": [
+      "Inflame",
+      "Sear",
+      "Inferno"
+    ]
+  },
+  "JawWorm": {
+    "name": "Jaw Worm",
+    "moves": [
+      "Bellow",
+      "Thrash"
+    ]
+  },
+  "Lagavulin": {
+    "name": "Lagavulin",
+    "moves": [
+      "Siphon Soul"
+    ]
+  },
+  "Looter": {
+    "name": "Looter",
+    "moves": [
+      "Lunge",
+      "Mug"
+    ]
+  },
+  "Sentry": {
+    "name": "Sentry",
+    "moves": [
+      "Disintegrate"
+    ]
+  },
+  "SlaverBlue": {
+    "name": "Slaver",
+    "moves": [
+      "Rake"
+    ]
+  },
+  "SlaverRed": {
+    "name": "Slaver",
+    "moves": [
+      "Scrape",
+      "Entangle"
+    ]
+  },
+  "SlimeBoss": {
+    "name": "Slime Boss",
+    "moves": [
+      "Slam",
+      "Preparing",
+      "Split",
+      "Goop Spray"
+    ]
+  },
+  "SpikeSlime_L": {
+    "name": "Spike Slime (L)",
+    "moves": [
+      "Lick",
+      "Split"
+    ]
+  },
+  "SpikeSlime_M": {
+    "name": "Spike Slime (M)",
+    "moves": [
+      "Lick"
+    ]
+  },
+  "SpikeSlime_S": {
+    "name": "Spike Slime (S)",
+    "moves": []
+  },
+  "TheGuardian": {
+    "name": "The Guardian",
+    "moves": [
+      "Defensive Mode",
+      "Fierce Bash",
+      "Roll",
+      "Twin Slam",
+      "Whirlwind",
+      "Charging Up",
+      "Vent Steam"
+    ]
+  },
+  "BanditBear": {
+    "name": "Bear",
+    "moves": []
+  },
+  "BanditChild": {
+    "name": "Pointy",
+    "moves": []
+  },
+  "BanditLeader": {
+    "name": "Romeo",
+    "moves": []
+  },
+  "BookOfStabbing": {
+    "name": "Book of Stabbing",
+    "moves": []
+  },
+  "BronzeAutomaton": {
+    "name": "Bronze Automaton",
+    "moves": [
+      "HYPER BEAM"
+    ]
+  },
+  "BronzeOrb": {
+    "name": "Orb",
+    "moves": []
+  },
+  "Byrd": {
+    "name": "Byrd",
+    "moves": []
+  },
+  "Centurion": {
+    "name": "Centurion",
+    "moves": []
+  },
+  "Champ": {
+    "name": "The Champ",
+    "moves": [
+      "Defensive Stance",
+      "Execute",
+      "Face Slap"
+    ]
+  },
+  "Chosen": {
+    "name": "Chosen",
+    "moves": []
+  },
+  "GremlinLeader": {
+    "name": "Gremlin Leader",
+    "moves": [
+      "Rally!"
+    ]
+  },
+  "Healer": {
+    "name": "Mystic",
+    "moves": []
+  },
+  "Mugger": {
+    "name": "Mugger",
+    "moves": [
+      "Lunge",
+      "Mug"
+    ]
+  },
+  "Shelled Parasite": {
+    "name": "Shelled Parasite",
+    "moves": []
+  },
+  "SlaverBoss": {
+    "name": "Taskmaster",
+    "moves": []
+  },
+  "SnakePlant": {
+    "name": "Snake Plant",
+    "moves": [
+      "Enfeebling Spores"
+    ]
+  },
+  "Snecko": {
+    "name": "Snecko",
+    "moves": [
+      "Perplexing Glare",
+      "Tail Whip",
+      "Bite"
+    ]
+  },
+  "SphericGuardian": {
+    "name": "Spheric Guardian",
+    "moves": []
+  },
+  "TheCollector": {
+    "name": "The Collector",
+    "moves": []
+  },
+  "TorchHead": {
+    "name": "Torch Head",
+    "moves": []
+  },
+  "AwakenedOne": {
+    "name": "Awakened One",
+    "moves": [
+      "Soul Strike",
+      "Dark Echo",
+      "Cleanse",
+      "Sludge"
+    ]
+  },
+  "Dagger": {
+    "name": "Dagger",
+    "moves": []
+  },
+  "Darkling": {
+    "name": "Darkling",
+    "moves": [
+      "Chomp! Chomp!"
+    ]
+  },
+  "Deca": {
+    "name": "Deca",
+    "moves": []
+  },
+  "Donu": {
+    "name": "Donu",
+    "moves": [
+      "Circle of Power"
+    ]
+  },
+  "Exploder": {
+    "name": "Exploder",
+    "moves": []
+  },
+  "GiantHead": {
+    "name": "Giant Head",
+    "moves": []
+  },
+  "Maw": {
+    "name": "The Maw",
+    "moves": []
+  },
+  "Nemesis": {
+    "name": "Nemesis",
+    "moves": []
+  },
+  "Orb Walker": {
+    "name": "Orb Walker",
+    "moves": [
+      "Strength Up"
+    ]
+  },
+  "Reptomancer": {
+    "name": "Reptomancer",
+    "moves": []
+  },
+  "Repulsor": {
+    "name": "Repulsor",
+    "moves": []
+  },
+  "Serpent": {
+    "name": "Spire Growth",
+    "moves": []
+  },
+  "Spiker": {
+    "name": "Spiker",
+    "moves": []
+  },
+  "TimeEater": {
+    "name": "Time Eater",
+    "moves": []
+  },
+  "Transient": {
+    "name": "Transient",
+    "moves": []
+  },
+  "WrithingMass": {
+    "name": "Writhing Mass",
+    "moves": []
+  },
+  "CorruptHeart": {
+    "name": "Corrupt Heart",
+    "moves": []
+  },
+  "SpireShield": {
+    "name": "Spire Shield",
+    "moves": []
+  },
+  "SpireSpear": {
+    "name": "Spire Spear",
+    "moves": []
+  }
+}

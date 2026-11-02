@@ -1,0 +1,355 @@
+{
+  "AcidSlime_L": {
+    "name": "산성 슬라임 (대)",
+    "moves": [
+      "부식의 침",
+      "분열",
+      "핥기"
+    ]
+  },
+  "AcidSlime_M": {
+    "name": "산성 슬라임 (중)",
+    "moves": [
+      "부식의 침",
+      "핥기"
+    ]
+  },
+  "AcidSlime_S": {
+    "name": "산성 슬라임 (소)",
+    "moves": []
+  },
+  "Cultist": {
+    "name": "광신자",
+    "moves": [
+      "주문"
+    ]
+  },
+  "FungiBeast": {
+    "name": "동물하초",
+    "moves": [
+      "성장"
+    ]
+  },
+  "FuzzyLouseDefensive": {
+    "name": "공벌레",
+    "moves": [
+      "거미줄 분사"
+    ]
+  },
+  "FuzzyLouseNormal": {
+    "name": "공벌레",
+    "moves": [
+      "성장"
+    ]
+  },
+  "GremlinFat": {
+    "name": "뚱뚱한 그렘린",
+    "moves": [
+      "강타"
+    ]
+  },
+  "GremlinNob": {
+    "name": "귀족 그렘린",
+    "moves": [
+      "두개골 강타",
+      "황소 돌진"
+    ]
+  },
+  "GremlinThief": {
+    "name": "교활한 그렘린",
+    "moves": []
+  },
+  "GremlinTsundere": {
+    "name": "방패 그렘린",
+    "moves": [
+      "보호",
+      "방패 강타"
+    ]
+  },
+  "GremlinWarrior": {
+    "name": "화난 그렘린",
+    "moves": [
+      "할퀴기"
+    ]
+  },
+  "GremlinWizard": {
+    "name": "그렘린 마법사",
+    "moves": [
+      "충전 중",
+      "궁극의 폭발"
+    ]
+  },
+  "Hexaghost": {
+    "name": "육각령",
+    "moves": [
+      "발화",
+      "그을리기",
+      "지옥염"
+    ]
+  },
+  "JawWorm": {
+    "name": "턱벌레",
+    "moves": [
+      "외침",
+      "난동부리기"
+    ]
+  },
+  "Lagavulin": {
+    "name": "라가불린",
+    "moves": [
+      "영혼 흡수"
+    ]
+  },
+  "Looter": {
+    "name": "도적",
+    "moves": [
+      "찌르기",
+      "훔치기"
+    ]
+  },
+  "Sentry": {
+    "name": "보초기",
+    "moves": [
+      "붕괴"
+    ]
+  },
+  "SlaverBlue": {
+    "name": "노예 상인",
+    "moves": [
+      "갈퀴질"
+    ]
+  },
+  "SlaverRed": {
+    "name": "노예 상인",
+    "moves": [
+      "긁기",
+      "속박"
+    ]
+  },
+  "SlimeBoss": {
+    "name": "대왕 슬라임",
+    "moves": [
+      "강타",
+      "준비 중",
+      "분열",
+      "끈적이 분사"
+    ]
+  },
+  "SpikeSlime_L": {
+    "name": "가시 슬라임 (대)",
+    "moves": [
+      "핥기",
+      "분열"
+    ]
+  },
+  "SpikeSlime_M": {
+    "name": "가시 슬라임 (중)",
+    "moves": [
+      "핥기"
+    ]
+  },
+  "SpikeSlime_S": {
+    "name": "가시 슬라임 (소)",
+    "moves": []
+  },
+  "TheGuardian": {
+    "name": "수호자",
+    "moves": [
+      "수비 모드",
+      "매서운 강타",
+      "구르기",
+      "두번 내려찍기",
+      "회오리바람",
+      "충전 중",
+      "증기 배출"
+    ]
+  },
+  "BanditBear": {
+    "name": "곰",
+    "moves": []
+  },
+  "BanditChild": {
+    "name": "촉새",
+    "moves": []
+  },
+  "BanditLeader": {
+    "name": "로미오",
+    "moves": []
+  },
+  "BookOfStabbing": {
+    "name": "칼부림의 책",
+    "moves": []
+  },
+  "BronzeAutomaton": {
+    "name": "청동 자동인형",
+    "moves": [
+      "파괴광선"
+    ]
+  },
+  "BronzeOrb": {
+    "name": "구체",
+    "moves": []
+  },
+  "Byrd": {
+    "name": "섀",
+    "moves": []
+  },
+  "Centurion": {
+    "name": "백부장",
+    "moves": []
+  },
+  "Champ": {
+    "name": "투사",
+    "moves": [
+      "방어 태세",
+      "사형 집행",
+      "따귀 때리기"
+    ]
+  },
+  "Chosen": {
+    "name": "선택받은 자",
+    "moves": []
+  },
+  "GremlinLeader": {
+    "name": "그렘린 리더",
+    "moves": [
+      "집합!"
+    ]
+  },
+  "Healer": {
+    "name": "신비주의자",
+    "moves": []
+  },
+  "Mugger": {
+    "name": "강도",
+    "moves": [
+      "찌르기",
+      "훔치기"
+    ]
+  },
+  "Shelled Parasite": {
+    "name": "갑각기생충",
+    "moves": []
+  },
+  "SlaverBoss": {
+    "name": "노예 관리자",
+    "moves": []
+  },
+  "SnakePlant": {
+    "name": "뱀 식물",
+    "moves": [
+      "약화 포자"
+    ]
+  },
+  "Snecko": {
+    "name": "스네코",
+    "moves": [
+      "당황스러운 째려보기",
+      "꼬리 흔들기",
+      "물기"
+    ]
+  },
+  "SphericGuardian": {
+    "name": "구체형 수호기",
+    "moves": []
+  },
+  "TheCollector": {
+    "name": "수집가",
+    "moves": []
+  },
+  "TorchHead": {
+    "name": "횃불 머리",
+    "moves": []
+  },
+  "AwakenedOne": {
+    "name": "깨어난 자",
+    "moves": [
+      "영혼 타격",
+      "어둠의 메아리",
+      "정화",
+      "폐기물"
+    ]
+  },
+  "Dagger": {
+    "name": "단검",
+    "moves": []
+  },
+  "Darkling": {
+    "name": "어두미",
+    "moves": [
+      "쩝! 쩝!"
+    ]
+  },
+  "Deca": {
+    "name": "데카",
+    "moves": []
+  },
+  "Donu": {
+    "name": "도누",
+    "moves": [
+      "힘의 원형"
+    ]
+  },
+  "Exploder": {
+    "name": "폭탄기",
+    "moves": []
+  },
+  "GiantHead": {
+    "name": "거인의 머리",
+    "moves": []
+  },
+  "Maw": {
+    "name": "아귀",
+    "moves": []
+  },
+  "Nemesis": {
+    "name": "네메시스",
+    "moves": []
+  },
+  "Orb Walker": {
+    "name": "구체 순찰기",
+    "moves": [
+      "힘 증가"
+    ]
+  },
+  "Reptomancer": {
+    "name": "파충류 주술사",
+    "moves": []
+  },
+  "Repulsor": {
+    "name": "현혹기",
+    "moves": []
+  },
+  "Serpent": {
+    "name": "첨탑 암종",
+    "moves": []
+  },
+  "Spiker": {
+    "name": "반사기",
+    "moves": []
+  },
+  "TimeEater": {
+    "name": "시간 포식자",
+    "moves": []
+  },
+  "Transient": {
+    "name": "과도자",
+    "moves": []
+  },
+  "WrithingMass": {
+    "name": "꿈틀대는 덩어리",
+    "moves": []
+  },
+  "CorruptHeart": {
+    "name": "타락한 심장",
+    "moves": []
+  },
+  "SpireShield": {
+    "name": "첨탑의 방패",
+    "moves": []
+  },
+  "SpireSpear": {
+    "name": "첨탑의 창",
+    "moves": []
+  }
+}

@@ -1,0 +1,355 @@
+{
+  "AcidSlime_L": {
+    "name": "สไลม์กรด (ใหญ่)",
+    "moves": [
+      "พ่นกรด",
+      "แบ่งตัว",
+      "เลีย"
+    ]
+  },
+  "AcidSlime_M": {
+    "name": "สไลม์กรด (กลาง)",
+    "moves": [
+      "พ่นกรด",
+      "เลีย"
+    ]
+  },
+  "AcidSlime_S": {
+    "name": "สไลม์กรด (เล็ก)",
+    "moves": []
+  },
+  "Cultist": {
+    "name": "สาวกคลั่งลัทธิ",
+    "moves": [
+      "ลงอาคม"
+    ]
+  },
+  "FungiBeast": {
+    "name": "อสูรเชื้อรา",
+    "moves": [
+      "เจริญเติบโต"
+    ]
+  },
+  "FuzzyLouseDefensive": {
+    "name": "เหา",
+    "moves": [
+      "พ่นใย"
+    ]
+  },
+  "FuzzyLouseNormal": {
+    "name": "เหา",
+    "moves": [
+      "เจริญเติบโต"
+    ]
+  },
+  "GremlinFat": {
+    "name": "เกร็มลินอ้วน",
+    "moves": [
+      "พุ่งชน"
+    ]
+  },
+  "GremlinNob": {
+    "name": "เกร็มลินชั้นสูง",
+    "moves": [
+      "เปิดกะโหลก",
+      "พุ่งชนบ้าคลั่ง"
+    ]
+  },
+  "GremlinThief": {
+    "name": "เกร็มลินแสนกล",
+    "moves": []
+  },
+  "GremlinTsundere": {
+    "name": "เกร็มลินปกป้อง",
+    "moves": [
+      "ปกป้อง",
+      "ทุบด้วยโล่"
+    ]
+  },
+  "GremlinWarrior": {
+    "name": "เกร็มลินคลั่ง",
+    "moves": [
+      "ข่วน"
+    ]
+  },
+  "GremlinWizard": {
+    "name": "เกร็มลินจอมเวท",
+    "moves": [
+      "สะสมพลัง",
+      "ระเบิดพลังขั้นสุดยอด"
+    ]
+  },
+  "Hexaghost": {
+    "name": "ภูติหกเหลี่ยม",
+    "moves": [
+      "จุดไฟ",
+      "เผา",
+      "ไฟนรก"
+    ]
+  },
+  "JawWorm": {
+    "name": "หนอนจอว์",
+    "moves": [
+      "คำราม",
+      "เฆี่ยนตี"
+    ]
+  },
+  "Lagavulin": {
+    "name": "ลากาวูลิน",
+    "moves": [
+      "ดูดกลืนวิญญาณ"
+    ]
+  },
+  "Looter": {
+    "name": "ขโมย",
+    "moves": [
+      "แทง",
+      "ทิ่ม"
+    ]
+  },
+  "Sentry": {
+    "name": "หุ่นตรวจการณ์",
+    "moves": [
+      "แยกส่วน"
+    ]
+  },
+  "SlaverBlue": {
+    "name": "ทาส",
+    "moves": [
+      "ขูดแผล"
+    ]
+  },
+  "SlaverRed": {
+    "name": "ทาส",
+    "moves": [
+      "กรีดแผล",
+      "ตรึง"
+    ]
+  },
+  "SlimeBoss": {
+    "name": "เจ้าแห่งสไลม์",
+    "moves": [
+      "พุ่งชน",
+      "เตรียมการ",
+      "แบ่งตัว",
+      "ละอองกรด"
+    ]
+  },
+  "SpikeSlime_L": {
+    "name": "สไลม์หนาม (ใหญ่)",
+    "moves": [
+      "เลีย",
+      "แบ่งตัว"
+    ]
+  },
+  "SpikeSlime_M": {
+    "name": "สไลม์หนาม (กลาง)",
+    "moves": [
+      "เลีย"
+    ]
+  },
+  "SpikeSlime_S": {
+    "name": "สไลม์หนาม (เล็ก)",
+    "moves": []
+  },
+  "TheGuardian": {
+    "name": "ผู้พิทักษ์",
+    "moves": [
+      "โหมดตั้งรับ",
+      "ทุบบ้าคลั่ง",
+      "กลิ้ง",
+      "โจมตีรวดเร็ว",
+      "ลมกรด",
+      "สะสมพลัง",
+      "ระเบิดไอร้อน"
+    ]
+  },
+  "BanditBear": {
+    "name": "พี่หมี",
+    "moves": []
+  },
+  "BanditChild": {
+    "name": "เจ้าเปี๊ยก",
+    "moves": []
+  },
+  "BanditLeader": {
+    "name": "โรมีโอ",
+    "moves": []
+  },
+  "BookOfStabbing": {
+    "name": "ตำราแห่งการหักหลัง",
+    "moves": []
+  },
+  "BronzeAutomaton": {
+    "name": "จักรกลสัมฤทธิ์",
+    "moves": [
+      "ลำแสงพิฆาต"
+    ]
+  },
+  "BronzeOrb": {
+    "name": "ลูกแก้วสัมฤทธิ์",
+    "moves": []
+  },
+  "Byrd": {
+    "name": "ณก",
+    "moves": []
+  },
+  "Centurion": {
+    "name": "ทหารนำทัพ",
+    "moves": []
+  },
+  "Champ": {
+    "name": "แชมเปี้ยน",
+    "moves": [
+      "กระบวนท่าตั้งรับ",
+      "ดาบสังหาร",
+      "ตบหน้า"
+    ]
+  },
+  "Chosen": {
+    "name": "สาวกผู้ถูกเลือก",
+    "moves": []
+  },
+  "GremlinLeader": {
+    "name": "หัวหน้าเกร็มลิน",
+    "moves": [
+      "รวมพล!"
+    ]
+  },
+  "Healer": {
+    "name": "ผู้วิเศษ",
+    "moves": []
+  },
+  "Mugger": {
+    "name": "ขโจร",
+    "moves": [
+      "แทง",
+      "ทิ่ม"
+    ]
+  },
+  "Shelled Parasite": {
+    "name": "ปรสิตหุ้มเกราะ",
+    "moves": []
+  },
+  "SlaverBoss": {
+    "name": "หัวหน้าทาส",
+    "moves": []
+  },
+  "SnakePlant": {
+    "name": "ต้นลิ้นมังกร",
+    "moves": [
+      "สปอร์อ่อนแรง"
+    ]
+  },
+  "Snecko": {
+    "name": "งุกแก",
+    "moves": [
+      "สะกดจิต",
+      "สะบัดหาง",
+      "กัด"
+    ]
+  },
+  "SphericGuardian": {
+    "name": "ผู้พิทักษ์ทรงกลม",
+    "moves": []
+  },
+  "TheCollector": {
+    "name": "นักสะสม",
+    "moves": []
+  },
+  "TorchHead": {
+    "name": "หัวไฟ",
+    "moves": []
+  },
+  "AwakenedOne": {
+    "name": "ผู้ตื่นรู้",
+    "moves": [
+      "ปลิดวิญญาณ",
+      "เสียงคำรามแห่งความมืด",
+      "ชำระล้าง",
+      "ตัดชีพจร"
+    ]
+  },
+  "Dagger": {
+    "name": "มีดสั้น",
+    "moves": []
+  },
+  "Darkling": {
+    "name": "สมุนแห่งความมืด",
+    "moves": [
+      "กร้วม! กร้วม!"
+    ]
+  },
+  "Deca": {
+    "name": "เดคา",
+    "moves": []
+  },
+  "Donu": {
+    "name": "โดนู",
+    "moves": [
+      "วงเวทแห่งพลัง"
+    ]
+  },
+  "Exploder": {
+    "name": "หุ่นระเบิด",
+    "moves": []
+  },
+  "GiantHead": {
+    "name": "หัวยักษ์",
+    "moves": []
+  },
+  "Maw": {
+    "name": "มอว์",
+    "moves": []
+  },
+  "Nemesis": {
+    "name": "ยมทูตแห่งกรรม",
+    "moves": []
+  },
+  "Orb Walker": {
+    "name": "ลูกแก้วเดินได้",
+    "moves": [
+      "เพิ่มความแข็งแรง"
+    ]
+  },
+  "Reptomancer": {
+    "name": "เจ้าแห่งสัตว์เลื้อยคลาน",
+    "moves": []
+  },
+  "Repulsor": {
+    "name": "หุ่นขับไล่",
+    "moves": []
+  },
+  "Serpent": {
+    "name": "หน่อของสไปร์",
+    "moves": []
+  },
+  "Spiker": {
+    "name": "หุ่นหนาม",
+    "moves": []
+  },
+  "TimeEater": {
+    "name": "ผู้กลืนกินเวลา",
+    "moves": []
+  },
+  "Transient": {
+    "name": "อนิจจตา",
+    "moves": []
+  },
+  "WrithingMass": {
+    "name": "มวลชักกระตุก",
+    "moves": []
+  },
+  "CorruptHeart": {
+    "name": "หัวใจที่ปนเปื้อน",
+    "moves": []
+  },
+  "SpireShield": {
+    "name": "โล่ของสไปร์",
+    "moves": []
+  },
+  "SpireSpear": {
+    "name": "หอกของสไปร์",
+    "moves": []
+  }
+}

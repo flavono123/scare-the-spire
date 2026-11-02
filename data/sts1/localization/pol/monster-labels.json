@@ -1,0 +1,25 @@
+{
+  "types": {
+    "normal": "Przeciwnik",
+    "elite": "Elitarny przeciwnik",
+    "boss": "Legendarne"
+  },
+  "dungeons": {
+    "exordium": {
+      "act": "Akt 1",
+      "name": "Exordium"
+    },
+    "city": {
+      "act": "Akt 2",
+      "name": "Miasto"
+    },
+    "beyond": {
+      "act": "Akt 3",
+      "name": "Pogranicze"
+    },
+    "ending": {
+      "act": "Akt ?",
+      "name": "???"
+    }
+  }
+}

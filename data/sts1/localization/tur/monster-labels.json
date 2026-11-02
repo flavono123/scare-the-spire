@@ -1,0 +1,25 @@
+{
+  "types": {
+    "normal": "Düşmanlar",
+    "elite": "Elitler",
+    "boss": "Boss"
+  },
+  "dungeons": {
+    "exordium": {
+      "act": "1. Sahne",
+      "name": "Başlangıç"
+    },
+    "city": {
+      "act": "2. Sahne",
+      "name": "Şehir"
+    },
+    "beyond": {
+      "act": "3. Sahne",
+      "name": "Ötesi"
+    },
+    "ending": {
+      "act": "Final Sahnesi",
+      "name": "Sona Eriş"
+    }
+  }
+}

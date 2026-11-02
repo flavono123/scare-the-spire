@@ -1,0 +1,357 @@
+{
+  "AcidSlime_L": {
+    "name": "Slime acide (G)",
+    "moves": [
+      "Crachat acide",
+      "Séparation",
+      "Léchouille"
+    ]
+  },
+  "AcidSlime_M": {
+    "name": "Slime acide (M)",
+    "moves": [
+      "Crachat acide",
+      "Léchouille"
+    ]
+  },
+  "AcidSlime_S": {
+    "name": "Slime acide (P)",
+    "moves": []
+  },
+  "Cultist": {
+    "name": "Adepte",
+    "moves": [
+      "Sombre frappe",
+      "Bénédiction tordue",
+      "Incantation"
+    ]
+  },
+  "FungiBeast": {
+    "name": "Champi-bête",
+    "moves": [
+      "Croissance"
+    ]
+  },
+  "FuzzyLouseDefensive": {
+    "name": "Pou",
+    "moves": [
+      "Toile de crachat"
+    ]
+  },
+  "FuzzyLouseNormal": {
+    "name": "Pou",
+    "moves": [
+      "Croissance"
+    ]
+  },
+  "GremlinFat": {
+    "name": "Gros diablotin",
+    "moves": [
+      "Détruire"
+    ]
+  },
+  "GremlinNob": {
+    "name": "Diablotin Nob",
+    "moves": [
+      "Heurt de crâne",
+      "Ruée de taureau"
+    ]
+  },
+  "GremlinThief": {
+    "name": "Diablotin sournois",
+    "moves": []
+  },
+  "GremlinTsundere": {
+    "name": "Diablotin à bouclier",
+    "moves": [
+      "Protection",
+      "Heurt de bouclier"
+    ]
+  },
+  "GremlinWarrior": {
+    "name": "Diablotin fou",
+    "moves": [
+      "Griffe"
+    ]
+  },
+  "GremlinWizard": {
+    "name": "Diablotin sorcier",
+    "moves": [
+      "En chargement",
+      "Détonation ultime"
+    ]
+  },
+  "Hexaghost": {
+    "name": "Hexaplasme",
+    "moves": [
+      "Enflammer",
+      "Incinération",
+      "Brasier"
+    ]
+  },
+  "JawWorm": {
+    "name": "Mâchouilleur",
+    "moves": [
+      "Beuglement",
+      "Rossée"
+    ]
+  },
+  "Lagavulin": {
+    "name": "Lagavulin",
+    "moves": [
+      "Âme siphonneuse"
+    ]
+  },
+  "Looter": {
+    "name": "Brigand",
+    "moves": [
+      "Avancée",
+      "Vol à la tire"
+    ]
+  },
+  "Sentry": {
+    "name": "Sentinelle",
+    "moves": [
+      "Désintégration"
+    ]
+  },
+  "SlaverBlue": {
+    "name": "Esclavagiste",
+    "moves": [
+      "Griffure"
+    ]
+  },
+  "SlaverRed": {
+    "name": "Esclavagiste",
+    "moves": [
+      "Éraflure",
+      "Enchevêtrement"
+    ]
+  },
+  "SlimeBoss": {
+    "name": "Parrain Slime",
+    "moves": [
+      "Écrasement",
+      "Préparation",
+      "Séparation",
+      "Bombe visqueuse"
+    ]
+  },
+  "SpikeSlime_L": {
+    "name": "Slime épineux (G)",
+    "moves": [
+      "Léchouille",
+      "Séparation"
+    ]
+  },
+  "SpikeSlime_M": {
+    "name": "Slime épineux (M)",
+    "moves": [
+      "Léchouille"
+    ]
+  },
+  "SpikeSlime_S": {
+    "name": "Slime épineux (P)",
+    "moves": []
+  },
+  "TheGuardian": {
+    "name": "Le Gardien",
+    "moves": [
+      "Mode défensif",
+      "Heurt furieux",
+      "Roulade",
+      "Écrasement double",
+      "Tourbillon",
+      "Chargement",
+      "Canon à vapeur"
+    ]
+  },
+  "BanditBear": {
+    "name": "Balourd",
+    "moves": []
+  },
+  "BanditChild": {
+    "name": "Pointu",
+    "moves": []
+  },
+  "BanditLeader": {
+    "name": "Roméo",
+    "moves": []
+  },
+  "BookOfStabbing": {
+    "name": "Manuel d'assassinat",
+    "moves": []
+  },
+  "BronzeAutomaton": {
+    "name": "Automate de bronze",
+    "moves": [
+      "ULTRALASER"
+    ]
+  },
+  "BronzeOrb": {
+    "name": "Orbe",
+    "moves": []
+  },
+  "Byrd": {
+    "name": "Oizo",
+    "moves": []
+  },
+  "Centurion": {
+    "name": "Centurion",
+    "moves": []
+  },
+  "Champ": {
+    "name": "Le Champion",
+    "moves": [
+      "Position défensive",
+      "Exécution",
+      "Gifle"
+    ]
+  },
+  "Chosen": {
+    "name": "Élu",
+    "moves": []
+  },
+  "GremlinLeader": {
+    "name": "Diablotin en chef",
+    "moves": [
+      "Au combat !"
+    ]
+  },
+  "Healer": {
+    "name": "Soigneur",
+    "moves": []
+  },
+  "Mugger": {
+    "name": "Pickpocket",
+    "moves": [
+      "Avancée",
+      "Vol à la tire"
+    ]
+  },
+  "Shelled Parasite": {
+    "name": "Parasite en carapace",
+    "moves": []
+  },
+  "SlaverBoss": {
+    "name": "Tyran",
+    "moves": []
+  },
+  "SnakePlant": {
+    "name": "Serplante",
+    "moves": [
+      "Spores affaiblissantes"
+    ]
+  },
+  "Snecko": {
+    "name": "Geckobra",
+    "moves": [
+      "Regard déroutant",
+      "Fouet caudal",
+      "Morsure"
+    ]
+  },
+  "SphericGuardian": {
+    "name": "Gardien sphérique",
+    "moves": []
+  },
+  "TheCollector": {
+    "name": "Le Collectionneur",
+    "moves": []
+  },
+  "TorchHead": {
+    "name": "Tête de torche",
+    "moves": []
+  },
+  "AwakenedOne": {
+    "name": "L'Éveillé",
+    "moves": [
+      "Frappe d'âme",
+      "Sombre écho",
+      "Purification",
+      "Vase"
+    ]
+  },
+  "Dagger": {
+    "name": "Assassin",
+    "moves": []
+  },
+  "Darkling": {
+    "name": "Être sombre",
+    "moves": [
+      "Croque ! Croque !"
+    ]
+  },
+  "Deca": {
+    "name": "Déca",
+    "moves": []
+  },
+  "Donu": {
+    "name": "Donu",
+    "moves": [
+      "Cercle de pouvoir"
+    ]
+  },
+  "Exploder": {
+    "name": "Explosif",
+    "moves": []
+  },
+  "GiantHead": {
+    "name": "Tête géante",
+    "moves": []
+  },
+  "Maw": {
+    "name": "La gueule",
+    "moves": []
+  },
+  "Nemesis": {
+    "name": "Némésis",
+    "moves": []
+  },
+  "Orb Walker": {
+    "name": "L'Orbiste",
+    "moves": [
+      "Renforcement"
+    ]
+  },
+  "Reptomancer": {
+    "name": "Reptomancien",
+    "moves": []
+  },
+  "Repulsor": {
+    "name": "Répugnant",
+    "moves": []
+  },
+  "Serpent": {
+    "name": "Excroissance de la Tour",
+    "moves": []
+  },
+  "Spiker": {
+    "name": "Épineux",
+    "moves": []
+  },
+  "TimeEater": {
+    "name": "Dévor'Heures",
+    "moves": []
+  },
+  "Transient": {
+    "name": "L'Éphémère",
+    "moves": []
+  },
+  "WrithingMass": {
+    "name": "Masse agonisante",
+    "moves": []
+  },
+  "CorruptHeart": {
+    "name": "Cœur corrompu",
+    "moves": []
+  },
+  "SpireShield": {
+    "name": "Bouclier de la Tour",
+    "moves": []
+  },
+  "SpireSpear": {
+    "name": "Lance de la Tour",
+    "moves": []
+  }
+}

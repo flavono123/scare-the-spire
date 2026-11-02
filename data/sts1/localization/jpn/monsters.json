@@ -1,0 +1,355 @@
+{
+  "AcidSlime_L": {
+    "name": "アシッドスライムL",
+    "moves": [
+      "腐食粘液",
+      "分裂",
+      "舐める"
+    ]
+  },
+  "AcidSlime_M": {
+    "name": "アシッドスライムM",
+    "moves": [
+      "腐食粘液",
+      "舐める"
+    ]
+  },
+  "AcidSlime_S": {
+    "name": "アシッドスライムS",
+    "moves": []
+  },
+  "Cultist": {
+    "name": "狂信者",
+    "moves": [
+      "まじない"
+    ]
+  },
+  "FungiBeast": {
+    "name": "キノコビースト",
+    "moves": [
+      "成長"
+    ]
+  },
+  "FuzzyLouseDefensive": {
+    "name": "シラミ",
+    "moves": [
+      "糸を吐く"
+    ]
+  },
+  "FuzzyLouseNormal": {
+    "name": "シラミ",
+    "moves": [
+      "成長"
+    ]
+  },
+  "GremlinFat": {
+    "name": "太っちょグレムリン",
+    "moves": [
+      "スマッシュ"
+    ]
+  },
+  "GremlinNob": {
+    "name": "グレムリンの頭",
+    "moves": [
+      "スカルバッシュ",
+      "ブルラッシュ"
+    ]
+  },
+  "GremlinThief": {
+    "name": "コソコソグレムリン",
+    "moves": []
+  },
+  "GremlinTsundere": {
+    "name": "シールドグレムリン",
+    "moves": [
+      "防衛",
+      "シールドバッシュ"
+    ]
+  },
+  "GremlinWarrior": {
+    "name": "プンプングレムリン",
+    "moves": [
+      "鋭い爪"
+    ]
+  },
+  "GremlinWizard": {
+    "name": "グレムリンウィザード",
+    "moves": [
+      "チャージ",
+      "アルティメットブラスト"
+    ]
+  },
+  "Hexaghost": {
+    "name": "ヘクサゴースト",
+    "moves": [
+      "発火",
+      "延焼",
+      "業火"
+    ]
+  },
+  "JawWorm": {
+    "name": "デカアゴムシ",
+    "moves": [
+      "怒号",
+      "叩きつける"
+    ]
+  },
+  "Lagavulin": {
+    "name": "ラガヴーリン",
+    "moves": [
+      "魂抽出"
+    ]
+  },
+  "Looter": {
+    "name": "奪う者",
+    "moves": [
+      "剣の一突き",
+      "強奪"
+    ]
+  },
+  "Sentry": {
+    "name": "見張り番",
+    "moves": [
+      "分子分解"
+    ]
+  },
+  "SlaverBlue": {
+    "name": "奴隷商人",
+    "moves": [
+      "人さらいの杖"
+    ]
+  },
+  "SlaverRed": {
+    "name": "奴隷商人",
+    "moves": [
+      "切り裂き",
+      "拘束"
+    ]
+  },
+  "SlimeBoss": {
+    "name": "スライムボス",
+    "moves": [
+      "渾身の体当たり",
+      "行動準備",
+      "分裂",
+      "汚物散布"
+    ]
+  },
+  "SpikeSlime_L": {
+    "name": "スパイクスライムL",
+    "moves": [
+      "舐める",
+      "分裂"
+    ]
+  },
+  "SpikeSlime_M": {
+    "name": "スパイクスライムM",
+    "moves": [
+      "舐める"
+    ]
+  },
+  "SpikeSlime_S": {
+    "name": "スパイクスライムS",
+    "moves": []
+  },
+  "TheGuardian": {
+    "name": "ガーディアン",
+    "moves": [
+      "防御モード",
+      "フィアースバッシュ",
+      "回転",
+      "ツインスラム",
+      "旋風刃",
+      "チャージ",
+      "蒸気開放"
+    ]
+  },
+  "BanditBear": {
+    "name": "ベア",
+    "moves": []
+  },
+  "BanditChild": {
+    "name": "ポインティ",
+    "moves": []
+  },
+  "BanditLeader": {
+    "name": "ロメオ",
+    "moves": []
+  },
+  "BookOfStabbing": {
+    "name": "刺創の本",
+    "moves": []
+  },
+  "BronzeAutomaton": {
+    "name": "機械仕掛けのブロンズ",
+    "moves": [
+      "ハイパービーム"
+    ]
+  },
+  "BronzeOrb": {
+    "name": "オーブ",
+    "moves": []
+  },
+  "Byrd": {
+    "name": "ビャード",
+    "moves": []
+  },
+  "Centurion": {
+    "name": "センチュリオン",
+    "moves": []
+  },
+  "Champ": {
+    "name": "チャンプ",
+    "moves": [
+      "防御の構え",
+      "処刑",
+      "平手打ち"
+    ]
+  },
+  "Chosen": {
+    "name": "選ばれし者",
+    "moves": []
+  },
+  "GremlinLeader": {
+    "name": "グレムリンリーダー",
+    "moves": [
+      "集まれ！"
+    ]
+  },
+  "Healer": {
+    "name": "ミスティック",
+    "moves": []
+  },
+  "Mugger": {
+    "name": "盗む者",
+    "moves": [
+      "剣の一突き",
+      "強奪"
+    ]
+  },
+  "Shelled Parasite": {
+    "name": "ヤドカリパラサイト",
+    "moves": []
+  },
+  "SlaverBoss": {
+    "name": "親方",
+    "moves": []
+  },
+  "SnakePlant": {
+    "name": "スネークプラント",
+    "moves": [
+      "衰弱の胞子"
+    ]
+  },
+  "Snecko": {
+    "name": "ヘビヤモリ",
+    "moves": [
+      "幻惑の凝視",
+      "テイルウィップ",
+      "牙"
+    ]
+  },
+  "SphericGuardian": {
+    "name": "球体の守護者",
+    "moves": []
+  },
+  "TheCollector": {
+    "name": "コレクター",
+    "moves": []
+  },
+  "TorchHead": {
+    "name": "トーチヘッド",
+    "moves": []
+  },
+  "AwakenedOne": {
+    "name": "目覚めし者",
+    "moves": [
+      "ソウルストライク",
+      "ダークエコー",
+      "浄化",
+      "汚泥"
+    ]
+  },
+  "Dagger": {
+    "name": "ダガー",
+    "moves": []
+  },
+  "Darkling": {
+    "name": "ダークリング",
+    "moves": [
+      "ムシャムシャ！"
+    ]
+  },
+  "Deca": {
+    "name": "デカ",
+    "moves": []
+  },
+  "Donu": {
+    "name": "ドヌー",
+    "moves": [
+      "パワーサークル"
+    ]
+  },
+  "Exploder": {
+    "name": "エクスプローダー",
+    "moves": []
+  },
+  "GiantHead": {
+    "name": "ジャイアントヘッド",
+    "moves": []
+  },
+  "Maw": {
+    "name": "モー",
+    "moves": []
+  },
+  "Nemesis": {
+    "name": "ネメシス",
+    "moves": []
+  },
+  "Orb Walker": {
+    "name": "オーブウォーカー",
+    "moves": [
+      "筋力増加"
+    ]
+  },
+  "Reptomancer": {
+    "name": "レプトマンサー",
+    "moves": []
+  },
+  "Repulsor": {
+    "name": "リパルサー",
+    "moves": []
+  },
+  "Serpent": {
+    "name": "塔の生長物",
+    "moves": []
+  },
+  "Spiker": {
+    "name": "スパイカー",
+    "moves": []
+  },
+  "TimeEater": {
+    "name": "タイムイーター",
+    "moves": []
+  },
+  "Transient": {
+    "name": "消えゆく者",
+    "moves": []
+  },
+  "WrithingMass": {
+    "name": "苦悶の塊",
+    "moves": []
+  },
+  "CorruptHeart": {
+    "name": "堕落の心臓",
+    "moves": []
+  },
+  "SpireShield": {
+    "name": "塔の盾",
+    "moves": []
+  },
+  "SpireSpear": {
+    "name": "塔の矛",
+    "moves": []
+  }
+}

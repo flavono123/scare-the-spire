@@ -44,6 +44,12 @@ from scripts.lib.sts1_description_template import (  # noqa: E402
     template_is_resolved,
 )
 from scripts.lib.sts1_jar import default_sts1_jar_path, open_sts1_jar  # noqa: E402
+from scripts.lib.sts1_monsters import (  # noqa: E402
+    load_monsters,
+    localize_monster,
+    monster_art_sources,
+    public_monster_row,
+)
 from scripts.lib.sts1_powers import (  # noqa: E402
     attach_power_sources,
     load_powers,
@@ -1266,6 +1272,42 @@ def extract_powers(jar, *, write_images: bool = True) -> int:
     return len(powers)
 
 
+def monster_labels(jar, locale: str) -> dict[str, Any]:
+    """Enemy type and dungeon names the game itself uses, with their act numbers."""
+    ui = load_loc_table(jar, locale, "ui.json")
+    legend = (ui.get("Legend") or {}).get("TEXT") or []
+    history = (ui.get("RunHistoryScreen") or {}).get("TEXT") or []
+    transition = (ui.get("DungeonTransitionScreen") or {}).get("TEXT") or []
+    return {
+        "types": {"normal": legend[13], "elite": legend[16], "boss": history[17]},
+        "dungeons": {
+            "exordium": {"act": transition[2], "name": transition[3]},
+            "city": {"act": transition[4], "name": transition[5]},
+            "beyond": {"act": transition[6], "name": transition[7]},
+            "ending": {"act": transition[8], "name": transition[9]},
+        },
+    }
+
+
+def extract_monsters(jar) -> int:
+    monsters = load_monsters(jar)
+    missing = [row["slug"] for row in monsters if not row["art"] or not row["hitPoints"]]
+    if missing:
+        raise SystemExit(f"monsters without art or hit points: {', '.join(missing)}")
+    data_root = ROOT / "data" / "sts1"
+    write_json(data_root / "monsters.json", [public_monster_row(row) for row in monsters])
+    write_json(data_root / "monster-art.json", monster_art_sources(monsters))
+    eng = load_loc_table(jar, "eng", "monsters.json")
+    for locale in STS1_LOCALES:
+        loc = load_loc_table(jar, locale, "monsters.json")
+        write_json(
+            data_root / "localization" / locale / "monsters.json",
+            {row["id"]: localize_monster(loc.get(row["id"]) or {}, eng.get(row["id"]) or {}) for row in monsters},
+        )
+        write_json(data_root / "localization" / locale / "monster-labels.json", monster_labels(jar, locale))
+    return len(monsters)
+
+
 def compose_title_background(jar):
     """TitleBackground.render() at slider=0 behind the character select screen (no clouds/dust)."""
     from PIL import Image
@@ -1434,13 +1476,13 @@ def main() -> None:
         "--only",
         default="",
         help="Comma-separated sections to rebuild without touching cards/relics/potions rows: "
-        "powers, characters, relic-text.",
+        "powers, characters, relic-text, monsters.",
     )
     args = parser.parse_args()
 
     if args.only:
         sections = {section.strip() for section in args.only.split(",") if section.strip()}
-        unknown = sections - {"powers", "characters", "relic-text"}
+        unknown = sections - {"powers", "characters", "relic-text", "monsters"}
         if unknown:
             parser.error(f"unknown --only sections: {', '.join(sorted(unknown))}")
         with open_sts1_jar(args.jar) as jar:
@@ -1449,6 +1491,8 @@ def main() -> None:
                 print("rewrote relic localization")
             if "powers" in sections:
                 print(f"powers={extract_powers(jar, write_images=not args.skip_images)}")
+            if "monsters" in sections:
+                print(f"monsters={extract_monsters(jar)}")
             if "characters" in sections:
                 print(f"characters={extract_characters(jar, write_images=not args.skip_images)}")
         return

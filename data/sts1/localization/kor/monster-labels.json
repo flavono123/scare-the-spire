@@ -1,0 +1,25 @@
+{
+  "types": {
+    "normal": "적",
+    "elite": "엘리트",
+    "boss": "보스"
+  },
+  "dungeons": {
+    "exordium": {
+      "act": "1 막",
+      "name": "태초"
+    },
+    "city": {
+      "act": "2 막",
+      "name": "도시"
+    },
+    "beyond": {
+      "act": "3 막",
+      "name": "저편"
+    },
+    "ending": {
+      "act": "? 막",
+      "name": "???"
+    }
+  }
+}

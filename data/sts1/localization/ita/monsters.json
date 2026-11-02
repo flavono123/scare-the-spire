@@ -1,0 +1,355 @@
+{
+  "AcidSlime_L": {
+    "name": "Melma Acida (G)",
+    "moves": [
+      "Saliva Corrosiva",
+      "Scissione",
+      "Leccata"
+    ]
+  },
+  "AcidSlime_M": {
+    "name": "Melma Acida (M)",
+    "moves": [
+      "Saliva Corrosiva",
+      "Leccata"
+    ]
+  },
+  "AcidSlime_S": {
+    "name": "Melma Acida (P)",
+    "moves": []
+  },
+  "Cultist": {
+    "name": "Cultista",
+    "moves": [
+      "Incantesimo"
+    ]
+  },
+  "FungiBeast": {
+    "name": "Bestia Micotica",
+    "moves": [
+      "Crescita"
+    ]
+  },
+  "FuzzyLouseDefensive": {
+    "name": "Pulce",
+    "moves": [
+      "Sputo-Ragnatela"
+    ]
+  },
+  "FuzzyLouseNormal": {
+    "name": "Pulce",
+    "moves": [
+      "Crescita"
+    ]
+  },
+  "GremlinFat": {
+    "name": "Gremlin Grasso",
+    "moves": [
+      "Urto"
+    ]
+  },
+  "GremlinNob": {
+    "name": "Nob Gremlin",
+    "moves": [
+      "Craniata",
+      "Carica"
+    ]
+  },
+  "GremlinThief": {
+    "name": "Gremlin Furtivo",
+    "moves": []
+  },
+  "GremlinTsundere": {
+    "name": "Gremlin Scudiero",
+    "moves": [
+      "Protezione",
+      "Colpo di Scudo"
+    ]
+  },
+  "GremlinWarrior": {
+    "name": "Gremlin Furente",
+    "moves": [
+      "Artigliata"
+    ]
+  },
+  "GremlinWizard": {
+    "name": "Gremlin Mago",
+    "moves": [
+      "Caricamento",
+      "Esplosione Finale"
+    ]
+  },
+  "Hexaghost": {
+    "name": "Spettragono",
+    "moves": [
+      "Animo Ardente",
+      "Scottatura",
+      "Inferno"
+    ]
+  },
+  "JawWorm": {
+    "name": "Verme-Mascella",
+    "moves": [
+      "Grido",
+      "Assalto"
+    ]
+  },
+  "Lagavulin": {
+    "name": "Lagavulin",
+    "moves": [
+      "Assorbimento"
+    ]
+  },
+  "Looter": {
+    "name": "Furfante",
+    "moves": [
+      "Affondo",
+      "Rapina"
+    ]
+  },
+  "Sentry": {
+    "name": "Sentinella",
+    "moves": [
+      "Disintegrare"
+    ]
+  },
+  "SlaverBlue": {
+    "name": "Schiavista",
+    "moves": [
+      "Sfregio"
+    ]
+  },
+  "SlaverRed": {
+    "name": "Schiavista",
+    "moves": [
+      "Graffio",
+      "Trappola"
+    ]
+  },
+  "SlimeBoss": {
+    "name": "Boss Melma",
+    "moves": [
+      "Urto",
+      "Prepazione",
+      "Scissione",
+      "Spruzzo Viscoso"
+    ]
+  },
+  "SpikeSlime_L": {
+    "name": "Melma A Punta(G)",
+    "moves": [
+      "Leccata",
+      "Scissione"
+    ]
+  },
+  "SpikeSlime_M": {
+    "name": "Melma A Punta (M)",
+    "moves": [
+      "Leccata"
+    ]
+  },
+  "SpikeSlime_S": {
+    "name": "Melma A Punta (P)",
+    "moves": []
+  },
+  "TheGuardian": {
+    "name": "Il Guardiano",
+    "moves": [
+      "Modalità Difensiva",
+      "Botta Violenta",
+      "Rotolata",
+      "Colpo Gemello",
+      "Turbine",
+      "Sovraccarico",
+      "Getto di Vapore"
+    ]
+  },
+  "BanditBear": {
+    "name": "Orso",
+    "moves": []
+  },
+  "BanditChild": {
+    "name": "Punte",
+    "moves": []
+  },
+  "BanditLeader": {
+    "name": "Romeo",
+    "moves": []
+  },
+  "BookOfStabbing": {
+    "name": "Libro Omicida",
+    "moves": []
+  },
+  "BronzeAutomaton": {
+    "name": "Automa di Bronzo",
+    "moves": [
+      "IPER RAGGIO"
+    ]
+  },
+  "BronzeOrb": {
+    "name": "Sfera",
+    "moves": []
+  },
+  "Byrd": {
+    "name": "Gryfone",
+    "moves": []
+  },
+  "Centurion": {
+    "name": "Centurione",
+    "moves": []
+  },
+  "Champ": {
+    "name": "Il Campione",
+    "moves": [
+      "Posizione Difensiva",
+      "Esecuzione",
+      "Schiaffo"
+    ]
+  },
+  "Chosen": {
+    "name": "Prescelto",
+    "moves": []
+  },
+  "GremlinLeader": {
+    "name": "Comandante Gremlin",
+    "moves": [
+      "Adunata!"
+    ]
+  },
+  "Healer": {
+    "name": "Mistica",
+    "moves": []
+  },
+  "Mugger": {
+    "name": "Rapinatore",
+    "moves": [
+      "Affondo",
+      "Rapina"
+    ]
+  },
+  "Shelled Parasite": {
+    "name": "Parassita Corazzato",
+    "moves": []
+  },
+  "SlaverBoss": {
+    "name": "Caposquadra",
+    "moves": []
+  },
+  "SnakePlant": {
+    "name": "PiantaSerpe",
+    "moves": [
+      "Spore Debilitanti"
+    ]
+  },
+  "Snecko": {
+    "name": "Snecko",
+    "moves": [
+      "Sguardo Disorientante",
+      "Frustata di Coda",
+      "Morso"
+    ]
+  },
+  "SphericGuardian": {
+    "name": "Guardiano Sferico",
+    "moves": []
+  },
+  "TheCollector": {
+    "name": "Il Collezionista",
+    "moves": []
+  },
+  "TorchHead": {
+    "name": "Testa di Torcia",
+    "moves": []
+  },
+  "AwakenedOne": {
+    "name": "Il Risvegliato",
+    "moves": [
+      "Colpo dell'Anima",
+      "Eco Oscuro",
+      "Purificazione",
+      "Poltiglia"
+    ]
+  },
+  "Dagger": {
+    "name": "Pugnale",
+    "moves": []
+  },
+  "Darkling": {
+    "name": "Brandello di Tenebra",
+    "moves": [
+      "Chomp! Chomp!"
+    ]
+  },
+  "Deca": {
+    "name": "Deca",
+    "moves": []
+  },
+  "Donu": {
+    "name": "Donu",
+    "moves": [
+      "Circolo di Potere"
+    ]
+  },
+  "Exploder": {
+    "name": "Esplosivo",
+    "moves": []
+  },
+  "GiantHead": {
+    "name": "Testa Gigante",
+    "moves": []
+  },
+  "Maw": {
+    "name": "La Fauce",
+    "moves": []
+  },
+  "Nemesis": {
+    "name": "Nemesi",
+    "moves": []
+  },
+  "Orb Walker": {
+    "name": "Sfera Ambulante",
+    "moves": [
+      "Forza in Crescita"
+    ]
+  },
+  "Reptomancer": {
+    "name": "Raptomante",
+    "moves": []
+  },
+  "Repulsor": {
+    "name": "Repulsore",
+    "moves": []
+  },
+  "Serpent": {
+    "name": "Progenie della Guglia",
+    "moves": []
+  },
+  "Spiker": {
+    "name": "Spuntone",
+    "moves": []
+  },
+  "TimeEater": {
+    "name": "Mangiatempo",
+    "moves": []
+  },
+  "Transient": {
+    "name": "Effimero",
+    "moves": []
+  },
+  "WrithingMass": {
+    "name": "Ammasso in Putrefazione",
+    "moves": []
+  },
+  "CorruptHeart": {
+    "name": "Cuore della Corruzione",
+    "moves": []
+  },
+  "SpireShield": {
+    "name": "Scudo Vivente",
+    "moves": []
+  },
+  "SpireSpear": {
+    "name": "Lancia Vivente",
+    "moves": []
+  }
+}

@@ -1,0 +1,355 @@
+{
+  "AcidSlime_L": {
+    "name": "Babosa Ácida (L)",
+    "moves": [
+      "Escupitajo corrosivo",
+      "Dividirse",
+      "Lamer"
+    ]
+  },
+  "AcidSlime_M": {
+    "name": "Babosa Ácida (M)",
+    "moves": [
+      "Escupitajo Corrosivo",
+      "Lamer"
+    ]
+  },
+  "AcidSlime_S": {
+    "name": "Babosa Ácida (S)",
+    "moves": []
+  },
+  "Cultist": {
+    "name": "Cultista",
+    "moves": [
+      "Conjuro"
+    ]
+  },
+  "FungiBeast": {
+    "name": "Bestia Hongo",
+    "moves": [
+      "Crecer"
+    ]
+  },
+  "FuzzyLouseDefensive": {
+    "name": "Piojo",
+    "moves": [
+      "Escupir telaraña"
+    ]
+  },
+  "FuzzyLouseNormal": {
+    "name": "Piojo",
+    "moves": [
+      "Crecer"
+    ]
+  },
+  "GremlinFat": {
+    "name": "Gremlin obeso",
+    "moves": [
+      "Golpetazo"
+    ]
+  },
+  "GremlinNob": {
+    "name": "Gremlin Idiota",
+    "moves": [
+      "Golpe al cráneo",
+      "Carga de embestida"
+    ]
+  },
+  "GremlinThief": {
+    "name": "Gremlin Ladrón",
+    "moves": []
+  },
+  "GremlinTsundere": {
+    "name": "Gremlin Reservado",
+    "moves": [
+      "Proteger",
+      "Golpe con escudo"
+    ]
+  },
+  "GremlinWarrior": {
+    "name": "Gremlin Guerrero",
+    "moves": [
+      "Garra"
+    ]
+  },
+  "GremlinWizard": {
+    "name": "Gremlin Mago",
+    "moves": [
+      "Cargando",
+      "Golpe Final"
+    ]
+  },
+  "Hexaghost": {
+    "name": "Hexafantasma",
+    "moves": [
+      "Prender",
+      "Abrasar",
+      "Infierno"
+    ]
+  },
+  "JawWorm": {
+    "name": "Gusano Dentudo",
+    "moves": [
+      "Grito",
+      "Azotar"
+    ]
+  },
+  "Lagavulin": {
+    "name": "Lagavulin",
+    "moves": [
+      "Succionar alma"
+    ]
+  },
+  "Looter": {
+    "name": "Saqueador",
+    "moves": [
+      "Asalto",
+      "Robar"
+    ]
+  },
+  "Sentry": {
+    "name": "Centinela",
+    "moves": [
+      "Desintegrar"
+    ]
+  },
+  "SlaverBlue": {
+    "name": "Esclavista",
+    "moves": [
+      "Rastrillar"
+    ]
+  },
+  "SlaverRed": {
+    "name": "Esclavista",
+    "moves": [
+      "Raspar",
+      "Enredar"
+    ]
+  },
+  "SlimeBoss": {
+    "name": "Rey Babosa",
+    "moves": [
+      "Golpe",
+      "Preparando",
+      "Dividirse",
+      "Chorro de baba"
+    ]
+  },
+  "SpikeSlime_L": {
+    "name": "Babosa Puntiaguda (L)",
+    "moves": [
+      "Lamer",
+      "Dividirse"
+    ]
+  },
+  "SpikeSlime_M": {
+    "name": "Babosa Puntiaguda (M)",
+    "moves": [
+      "Lamer"
+    ]
+  },
+  "SpikeSlime_S": {
+    "name": "Babosa Puntiaguda (S)",
+    "moves": []
+  },
+  "TheGuardian": {
+    "name": "El Guardián",
+    "moves": [
+      "Modo Defensivo",
+      "Impacto fuerte",
+      "Rodar",
+      "Doble golpe",
+      "Torbellino",
+      "Potenciando",
+      "Descargar vapor"
+    ]
+  },
+  "BanditBear": {
+    "name": "Oso",
+    "moves": []
+  },
+  "BanditChild": {
+    "name": "Puntiagudo",
+    "moves": []
+  },
+  "BanditLeader": {
+    "name": "Romeo",
+    "moves": []
+  },
+  "BookOfStabbing": {
+    "name": "Libro Apuñalador",
+    "moves": []
+  },
+  "BronzeAutomaton": {
+    "name": "Autómata de Bronce",
+    "moves": [
+      "HYPER BEAM"
+    ]
+  },
+  "BronzeOrb": {
+    "name": "Orbe de Bronce",
+    "moves": []
+  },
+  "Byrd": {
+    "name": "Jáparo",
+    "moves": []
+  },
+  "Centurion": {
+    "name": "Centurión",
+    "moves": []
+  },
+  "Champ": {
+    "name": "El Campeón",
+    "moves": [
+      "Posición defensiva",
+      "Ejecutar",
+      "Bofetada"
+    ]
+  },
+  "Chosen": {
+    "name": "Elegido",
+    "moves": []
+  },
+  "GremlinLeader": {
+    "name": "Gremlin Líder",
+    "moves": [
+      "¡Reagrupaos!"
+    ]
+  },
+  "Healer": {
+    "name": "Curandero",
+    "moves": []
+  },
+  "Mugger": {
+    "name": "Carterista",
+    "moves": [
+      "Asalto",
+      "Robar"
+    ]
+  },
+  "Shelled Parasite": {
+    "name": "Parásito con Caparazón",
+    "moves": []
+  },
+  "SlaverBoss": {
+    "name": "Capataz",
+    "moves": []
+  },
+  "SnakePlant": {
+    "name": "Lengua de Tigre",
+    "moves": [
+      "Esporas debilitantes"
+    ]
+  },
+  "Snecko": {
+    "name": "Serpentija",
+    "moves": [
+      "Mirada confundidora",
+      "Golpe de cola",
+      "Mordida"
+    ]
+  },
+  "SphericGuardian": {
+    "name": "Guardián Esférico",
+    "moves": []
+  },
+  "TheCollector": {
+    "name": "El Coleccionista",
+    "moves": []
+  },
+  "TorchHead": {
+    "name": "Cabeza Antorcha",
+    "moves": []
+  },
+  "AwakenedOne": {
+    "name": "El Despertado",
+    "moves": [
+      "Golpe de alma",
+      "Ecos oscuros",
+      "Purificar",
+      "Enfangar"
+    ]
+  },
+  "Dagger": {
+    "name": "Dagger",
+    "moves": []
+  },
+  "Darkling": {
+    "name": "Prole Oscura",
+    "moves": [
+      "¡Ñam! ¡Ñam!"
+    ]
+  },
+  "Deca": {
+    "name": "Deca",
+    "moves": []
+  },
+  "Donu": {
+    "name": "Donu",
+    "moves": [
+      "Círculo de poder"
+    ]
+  },
+  "Exploder": {
+    "name": "Explosivo",
+    "moves": []
+  },
+  "GiantHead": {
+    "name": "Cabeza Gigante",
+    "moves": []
+  },
+  "Maw": {
+    "name": "Las Fauces",
+    "moves": []
+  },
+  "Nemesis": {
+    "name": "Némesis",
+    "moves": []
+  },
+  "Orb Walker": {
+    "name": "Orbe Andante",
+    "moves": [
+      "Aumento de Fuerza"
+    ]
+  },
+  "Reptomancer": {
+    "name": "Vibora Vidente",
+    "moves": []
+  },
+  "Repulsor": {
+    "name": "Repulsor",
+    "moves": []
+  },
+  "Serpent": {
+    "name": "Raiz de la Torre",
+    "moves": []
+  },
+  "Spiker": {
+    "name": "Punzante",
+    "moves": []
+  },
+  "TimeEater": {
+    "name": "Devorador de Tiempo",
+    "moves": []
+  },
+  "Transient": {
+    "name": "Transeúnte",
+    "moves": []
+  },
+  "WrithingMass": {
+    "name": "Masa Inquieta",
+    "moves": []
+  },
+  "CorruptHeart": {
+    "name": "Corazón Corrupto",
+    "moves": []
+  },
+  "SpireShield": {
+    "name": "Escudo de la Aguja",
+    "moves": []
+  },
+  "SpireSpear": {
+    "name": "Lanza de la Aguja",
+    "moves": []
+  }
+}

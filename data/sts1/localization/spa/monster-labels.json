@@ -1,0 +1,25 @@
+{
+  "types": {
+    "normal": "Enemigos",
+    "elite": "Élites",
+    "boss": "Jefe"
+  },
+  "dungeons": {
+    "exordium": {
+      "act": "Acto 1",
+      "name": "Exordium"
+    },
+    "city": {
+      "act": "Acto 2",
+      "name": "La Ciudad"
+    },
+    "beyond": {
+      "act": "Acto 3",
+      "name": "El Más Allá"
+    },
+    "ending": {
+      "act": "Acto ?",
+      "name": "???"
+    }
+  }
+}

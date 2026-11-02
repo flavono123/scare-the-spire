@@ -1,0 +1,25 @@
+{
+  "types": {
+    "normal": "Enemies",
+    "elite": "Elites",
+    "boss": "Boss"
+  },
+  "dungeons": {
+    "exordium": {
+      "act": "Act 1",
+      "name": "Exordium"
+    },
+    "city": {
+      "act": "Act 2",
+      "name": "The City"
+    },
+    "beyond": {
+      "act": "Act 3",
+      "name": "The Beyond"
+    },
+    "ending": {
+      "act": "Final Act",
+      "name": "The Ending"
+    }
+  }
+}

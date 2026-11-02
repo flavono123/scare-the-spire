@@ -1,0 +1,25 @@
+{
+  "types": {
+    "normal": "Inimigos",
+    "elite": "Elites",
+    "boss": "Chefe"
+  },
+  "dungeons": {
+    "exordium": {
+      "act": "Ato 1",
+      "name": "Exórdio"
+    },
+    "city": {
+      "act": "Ato 2",
+      "name": "A Cidade"
+    },
+    "beyond": {
+      "act": "Ato 3",
+      "name": "O Além"
+    },
+    "ending": {
+      "act": "Ato Final",
+      "name": "O Fim"
+    }
+  }
+}

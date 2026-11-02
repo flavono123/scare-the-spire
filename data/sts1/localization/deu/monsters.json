@@ -1,0 +1,355 @@
+{
+  "AcidSlime_L": {
+    "name": "Säureschleim (G)",
+    "moves": [
+      "Ätzende Spucke",
+      "Spalten",
+      "Wabbeln"
+    ]
+  },
+  "AcidSlime_M": {
+    "name": "Säureschleim (M)",
+    "moves": [
+      "Ätzende Spucke",
+      "Wabbeln"
+    ]
+  },
+  "AcidSlime_S": {
+    "name": "Säureschleim (K)",
+    "moves": []
+  },
+  "Cultist": {
+    "name": "Kultist",
+    "moves": [
+      "Zauberformel"
+    ]
+  },
+  "FungiBeast": {
+    "name": "Pilzbestie",
+    "moves": [
+      "Wachsen"
+    ]
+  },
+  "FuzzyLouseDefensive": {
+    "name": "Laus",
+    "moves": [
+      "Speichelnetz"
+    ]
+  },
+  "FuzzyLouseNormal": {
+    "name": "Laus",
+    "moves": [
+      "Wachsen"
+    ]
+  },
+  "GremlinFat": {
+    "name": "Fetter Gremlin",
+    "moves": [
+      "Zerschmettern"
+    ]
+  },
+  "GremlinNob": {
+    "name": "Gremlin-Aristo",
+    "moves": [
+      "Schädelstoß",
+      "Bullenangriff"
+    ]
+  },
+  "GremlinThief": {
+    "name": "Schleichender Gremlin",
+    "moves": []
+  },
+  "GremlinTsundere": {
+    "name": "Schildgremlin",
+    "moves": [
+      "Beschützen",
+      "Schildstoß"
+    ]
+  },
+  "GremlinWarrior": {
+    "name": "Wütender Gremlin",
+    "moves": [
+      "Kralle"
+    ]
+  },
+  "GremlinWizard": {
+    "name": "Gremlinzauberer",
+    "moves": [
+      "Vorbereiten",
+      "Ultimativer Stoß"
+    ]
+  },
+  "Hexaghost": {
+    "name": "Hexageist",
+    "moves": [
+      "Entflammen",
+      "Versengen",
+      "Inferno"
+    ]
+  },
+  "JawWorm": {
+    "name": "Kieferwurm",
+    "moves": [
+      "Brüllen",
+      "Dreschen"
+    ]
+  },
+  "Lagavulin": {
+    "name": "Lagavulin",
+    "moves": [
+      "Seele aussaugen"
+    ]
+  },
+  "Looter": {
+    "name": "Plünderer",
+    "moves": [
+      "Ausfallschritt",
+      "Ausrauben"
+    ]
+  },
+  "Sentry": {
+    "name": "Wache",
+    "moves": [
+      "Zerfallen"
+    ]
+  },
+  "SlaverBlue": {
+    "name": "Sklavenhändler",
+    "moves": [
+      "Harken"
+    ]
+  },
+  "SlaverRed": {
+    "name": "Sklavenhändler",
+    "moves": [
+      "Kratzen",
+      "Verwickeln"
+    ]
+  },
+  "SlimeBoss": {
+    "name": "Schleimboss",
+    "moves": [
+      "Zuschlagen",
+      "Vorbereiten",
+      "Spalten",
+      "Klebriger Nebel"
+    ]
+  },
+  "SpikeSlime_L": {
+    "name": "Stachelschleim (G)",
+    "moves": [
+      "Wabbeln",
+      "Spalten"
+    ]
+  },
+  "SpikeSlime_M": {
+    "name": "Stachelschleim (M)",
+    "moves": [
+      "Wabbeln"
+    ]
+  },
+  "SpikeSlime_S": {
+    "name": "Stachelschleim (K)",
+    "moves": []
+  },
+  "TheGuardian": {
+    "name": "Der Wächter",
+    "moves": [
+      "Defensivmodus",
+      "Erbitterter Hieb",
+      "Einrollen",
+      "Zwillingsschlag",
+      "Wirbelwind",
+      "Aufladen",
+      "Dampf ablassen"
+    ]
+  },
+  "BanditBear": {
+    "name": "Bär",
+    "moves": []
+  },
+  "BanditChild": {
+    "name": "Pointy",
+    "moves": []
+  },
+  "BanditLeader": {
+    "name": "Romeo",
+    "moves": []
+  },
+  "BookOfStabbing": {
+    "name": "Buch des Stechens",
+    "moves": []
+  },
+  "BronzeAutomaton": {
+    "name": "Bronze-Automaton",
+    "moves": [
+      "HYPERSTRAHL"
+    ]
+  },
+  "BronzeOrb": {
+    "name": "Bronzeorb",
+    "moves": []
+  },
+  "Byrd": {
+    "name": "Fogl",
+    "moves": []
+  },
+  "Centurion": {
+    "name": "Zenturio",
+    "moves": []
+  },
+  "Champ": {
+    "name": "Der Champ",
+    "moves": [
+      "Defensivhaltung",
+      "Hinrichten",
+      "Schlag ins Gesicht"
+    ]
+  },
+  "Chosen": {
+    "name": "Auserwählte",
+    "moves": []
+  },
+  "GremlinLeader": {
+    "name": "Gremlinanführer",
+    "moves": [
+      "Versammeln!"
+    ]
+  },
+  "Healer": {
+    "name": "Mystikerin",
+    "moves": []
+  },
+  "Mugger": {
+    "name": "Straßenräuber",
+    "moves": [
+      "Ausfallschritt",
+      "Ausrauben"
+    ]
+  },
+  "Shelled Parasite": {
+    "name": "Gepanzerter Parasit",
+    "moves": []
+  },
+  "SlaverBoss": {
+    "name": "Zuchtmeister",
+    "moves": []
+  },
+  "SnakePlant": {
+    "name": "Schlangenpflanze",
+    "moves": [
+      "Schwächende Sporen"
+    ]
+  },
+  "Snecko": {
+    "name": "Snecko",
+    "moves": [
+      "Verwirrendes Blenden",
+      "Rutenschlag",
+      "Biss"
+    ]
+  },
+  "SphericGuardian": {
+    "name": "Sphärischer Wächter",
+    "moves": []
+  },
+  "TheCollector": {
+    "name": "Der Sammler",
+    "moves": []
+  },
+  "TorchHead": {
+    "name": "Fackelkopf",
+    "moves": []
+  },
+  "AwakenedOne": {
+    "name": "Der Erweckte",
+    "moves": [
+      "Seelenschlag",
+      "Dunkles Echo",
+      "Reinigung",
+      "Schlamm"
+    ]
+  },
+  "Dagger": {
+    "name": "Dolch",
+    "moves": []
+  },
+  "Darkling": {
+    "name": "Dunkeling",
+    "moves": [
+      "Mampf! Mampf!"
+    ]
+  },
+  "Deca": {
+    "name": "Deka",
+    "moves": []
+  },
+  "Donu": {
+    "name": "Donu",
+    "moves": [
+      "Kreis der Macht"
+    ]
+  },
+  "Exploder": {
+    "name": "Explodierer",
+    "moves": []
+  },
+  "GiantHead": {
+    "name": "Riesenkopf",
+    "moves": []
+  },
+  "Maw": {
+    "name": "Der Schlund",
+    "moves": []
+  },
+  "Nemesis": {
+    "name": "Nemesis",
+    "moves": []
+  },
+  "Orb Walker": {
+    "name": "Kugelwandler",
+    "moves": [
+      "Verstärken"
+    ]
+  },
+  "Reptomancer": {
+    "name": "Reptilomantin",
+    "moves": []
+  },
+  "Repulsor": {
+    "name": "Repulsor",
+    "moves": []
+  },
+  "Serpent": {
+    "name": "Spire-Wuchs",
+    "moves": []
+  },
+  "Spiker": {
+    "name": "Stachler",
+    "moves": []
+  },
+  "TimeEater": {
+    "name": "Zeitfresser",
+    "moves": []
+  },
+  "Transient": {
+    "name": "Schwundling",
+    "moves": []
+  },
+  "WrithingMass": {
+    "name": "Knäuelmasse",
+    "moves": []
+  },
+  "CorruptHeart": {
+    "name": "Verdorbenes Herz",
+    "moves": []
+  },
+  "SpireShield": {
+    "name": "Spire-Schild",
+    "moves": []
+  },
+  "SpireSpear": {
+    "name": "Spire-Speer",
+    "moves": []
+  }
+}

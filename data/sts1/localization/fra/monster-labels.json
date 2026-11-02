@@ -1,0 +1,25 @@
+{
+  "types": {
+    "normal": "Ennemis",
+    "elite": "Ennemis d'élite",
+    "boss": "Boss"
+  },
+  "dungeons": {
+    "exordium": {
+      "act": "Acte 1",
+      "name": "L'Exorde"
+    },
+    "city": {
+      "act": "Acte 2",
+      "name": "La ville"
+    },
+    "beyond": {
+      "act": "Acte 3",
+      "name": "L'au-delà"
+    },
+    "ending": {
+      "act": "Acte 4",
+      "name": "La fin"
+    }
+  }
+}

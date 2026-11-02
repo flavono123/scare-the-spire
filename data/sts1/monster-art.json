@@ -1,0 +1,323 @@
+{
+  "acid-slime-l": {
+    "atlas": "images/monsters/theBottom/slimeL/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/slimeL/skeleton.json",
+    "animation": "Idle"
+  },
+  "acid-slime-m": {
+    "atlas": "images/monsters/theBottom/slimeM/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/slimeM/skeleton.json",
+    "animation": "idle"
+  },
+  "acid-slime-s": {
+    "atlas": "images/monsters/theBottom/slimeS/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/slimeS/skeleton.json",
+    "animation": "idle"
+  },
+  "cultist": {
+    "atlas": "images/monsters/theBottom/cultist/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/cultist/skeleton.json",
+    "animation": "waving"
+  },
+  "fungi-beast": {
+    "atlas": "images/monsters/theBottom/fungi/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/fungi/skeleton.json",
+    "animation": "Idle"
+  },
+  "fuzzy-louse-defensive": {
+    "atlas": "images/monsters/theBottom/louseGreen/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/louseGreen/skeleton.json",
+    "animation": "idle"
+  },
+  "fuzzy-louse-normal": {
+    "atlas": "images/monsters/theBottom/louseRed/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/louseRed/skeleton.json",
+    "animation": "idle"
+  },
+  "gremlin-fat": {
+    "atlas": "images/monsters/theBottom/fatGremlin/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/fatGremlin/skeleton.json",
+    "animation": "animation"
+  },
+  "gremlin-nob": {
+    "atlas": "images/monsters/theBottom/nobGremlin/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/nobGremlin/skeleton.json",
+    "animation": "animation"
+  },
+  "gremlin-thief": {
+    "atlas": "images/monsters/theBottom/thiefGremlin/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/thiefGremlin/skeleton.json",
+    "animation": "animation"
+  },
+  "gremlin-tsundere": {
+    "atlas": "images/monsters/theBottom/femaleGremlin/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/femaleGremlin/skeleton.json",
+    "animation": "idle"
+  },
+  "gremlin-warrior": {
+    "atlas": "images/monsters/theBottom/angryGremlin/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/angryGremlin/skeleton.json",
+    "animation": "idle"
+  },
+  "gremlin-wizard": {
+    "atlas": "images/monsters/theBottom/wizardGremlin/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/wizardGremlin/skeleton.json",
+    "animation": "animation"
+  },
+  "hexaghost": {
+    "image": "images/monsters/theBottom/boss/ghost/core.png"
+  },
+  "jaw-worm": {
+    "atlas": "images/monsters/theBottom/jawWorm/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/jawWorm/skeleton.json",
+    "animation": "idle"
+  },
+  "lagavulin": {
+    "atlas": "images/monsters/theBottom/lagavulin/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/lagavulin/skeleton.json",
+    "animation": "Idle_2"
+  },
+  "looter": {
+    "atlas": "images/monsters/theBottom/looter/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/looter/skeleton.json",
+    "animation": "idle"
+  },
+  "sentry": {
+    "atlas": "images/monsters/theBottom/sentry/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/sentry/skeleton.json",
+    "animation": "idle"
+  },
+  "slaver-blue": {
+    "atlas": "images/monsters/theBottom/blueSlaver/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/blueSlaver/skeleton.json",
+    "animation": "idle"
+  },
+  "slaver-red": {
+    "atlas": "images/monsters/theBottom/redSlaver/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/redSlaver/skeleton.json",
+    "animation": "idle"
+  },
+  "slime-boss": {
+    "atlas": "images/monsters/theBottom/boss/slime/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/boss/slime/skeleton.json",
+    "animation": "idle"
+  },
+  "spike-slime-l": {
+    "atlas": "images/monsters/theBottom/slimeAltL/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/slimeAltL/skeleton.json",
+    "animation": "idle"
+  },
+  "spike-slime-m": {
+    "atlas": "images/monsters/theBottom/slimeAltM/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/slimeAltM/skeleton.json",
+    "animation": "idle"
+  },
+  "spike-slime-s": {
+    "atlas": "images/monsters/theBottom/slimeAltS/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/slimeAltS/skeleton.json",
+    "animation": "idle"
+  },
+  "the-guardian": {
+    "atlas": "images/monsters/theBottom/boss/guardian/skeleton.atlas",
+    "skeleton": "images/monsters/theBottom/boss/guardian/skeleton.json",
+    "animation": "idle"
+  },
+  "bandit-bear": {
+    "atlas": "images/monsters/theCity/bear/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/bear/skeleton.json",
+    "animation": "Idle"
+  },
+  "bandit-child": {
+    "atlas": "images/monsters/theCity/pointy/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/pointy/skeleton.json",
+    "animation": "Idle"
+  },
+  "bandit-leader": {
+    "atlas": "images/monsters/theCity/romeo/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/romeo/skeleton.json",
+    "animation": "Idle"
+  },
+  "book-of-stabbing": {
+    "atlas": "images/monsters/theCity/stabBook/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/stabBook/skeleton.json",
+    "animation": "Idle"
+  },
+  "bronze-automaton": {
+    "atlas": "images/monsters/theCity/automaton/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/automaton/skeleton.json",
+    "animation": "idle"
+  },
+  "bronze-orb": {
+    "image": "images/monsters/theCity/automaton/orb.png"
+  },
+  "byrd": {
+    "atlas": "images/monsters/theCity/byrd/flying.atlas",
+    "skeleton": "images/monsters/theCity/byrd/flying.json",
+    "animation": "idle_flap"
+  },
+  "centurion": {
+    "atlas": "images/monsters/theCity/tank/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/tank/skeleton.json",
+    "animation": "Idle"
+  },
+  "champ": {
+    "atlas": "images/monsters/theCity/champ/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/champ/skeleton.json",
+    "animation": "Idle"
+  },
+  "chosen": {
+    "atlas": "images/monsters/theCity/chosen/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/chosen/skeleton.json",
+    "animation": "Idle"
+  },
+  "gremlin-leader": {
+    "atlas": "images/monsters/theCity/gremlinleader/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/gremlinleader/skeleton.json",
+    "animation": "Idle"
+  },
+  "healer": {
+    "atlas": "images/monsters/theCity/healer/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/healer/skeleton.json",
+    "animation": "Idle"
+  },
+  "mugger": {
+    "atlas": "images/monsters/theCity/looterAlt/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/looterAlt/skeleton.json",
+    "animation": "idle"
+  },
+  "shelled-parasite": {
+    "atlas": "images/monsters/theCity/shellMonster/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/shellMonster/skeleton.json",
+    "animation": "Idle"
+  },
+  "slaver-boss": {
+    "atlas": "images/monsters/theCity/slaverMaster/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/slaverMaster/skeleton.json",
+    "animation": "idle"
+  },
+  "snake-plant": {
+    "atlas": "images/monsters/theCity/snakePlant/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/snakePlant/skeleton.json",
+    "animation": "Idle"
+  },
+  "snecko": {
+    "atlas": "images/monsters/theCity/reptile/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/reptile/skeleton.json",
+    "animation": "Idle"
+  },
+  "spheric-guardian": {
+    "atlas": "images/monsters/theCity/sphere/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/sphere/skeleton.json",
+    "animation": "Idle"
+  },
+  "the-collector": {
+    "atlas": "images/monsters/theCity/collector/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/collector/skeleton.json",
+    "animation": "idle"
+  },
+  "torch-head": {
+    "atlas": "images/monsters/theCity/torchHead/skeleton.atlas",
+    "skeleton": "images/monsters/theCity/torchHead/skeleton.json",
+    "animation": "idle"
+  },
+  "awakened-one": {
+    "atlas": "images/monsters/theForest/awakenedOne/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/awakenedOne/skeleton.json",
+    "animation": "Idle_1"
+  },
+  "dagger": {
+    "atlas": "images/monsters/theForest/mage_dagger/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/mage_dagger/skeleton.json",
+    "animation": "Idle"
+  },
+  "darkling": {
+    "atlas": "images/monsters/theForest/darkling/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/darkling/skeleton.json",
+    "animation": "Idle"
+  },
+  "deca": {
+    "atlas": "images/monsters/theForest/deca/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/deca/skeleton.json",
+    "animation": "Idle"
+  },
+  "donu": {
+    "atlas": "images/monsters/theForest/donu/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/donu/skeleton.json",
+    "animation": "Idle"
+  },
+  "exploder": {
+    "atlas": "images/monsters/theForest/exploder/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/exploder/skeleton.json",
+    "animation": "idle"
+  },
+  "giant-head": {
+    "atlas": "images/monsters/theForest/head/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/head/skeleton.json",
+    "animation": "idle_open"
+  },
+  "maw": {
+    "atlas": "images/monsters/theForest/maw/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/maw/skeleton.json",
+    "animation": "idle"
+  },
+  "nemesis": {
+    "atlas": "images/monsters/theForest/nemesis/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/nemesis/skeleton.json",
+    "animation": "Idle"
+  },
+  "orb-walker": {
+    "atlas": "images/monsters/theForest/orbWalker/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/orbWalker/skeleton.json",
+    "animation": "Idle"
+  },
+  "reptomancer": {
+    "atlas": "images/monsters/theForest/mage/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/mage/skeleton.json",
+    "animation": "Idle"
+  },
+  "repulsor": {
+    "atlas": "images/monsters/theForest/repulser/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/repulser/skeleton.json",
+    "animation": "idle"
+  },
+  "serpent": {
+    "atlas": "images/monsters/theForest/spireGrowth/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/spireGrowth/skeleton.json",
+    "animation": "Idle"
+  },
+  "spiker": {
+    "atlas": "images/monsters/theForest/spiker/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/spiker/skeleton.json",
+    "animation": "idle"
+  },
+  "time-eater": {
+    "atlas": "images/monsters/theForest/timeEater/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/timeEater/skeleton.json",
+    "animation": "Idle"
+  },
+  "transient": {
+    "atlas": "images/monsters/theForest/transient/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/transient/skeleton.json",
+    "animation": "Idle"
+  },
+  "writhing-mass": {
+    "atlas": "images/monsters/theForest/spaghetti/skeleton.atlas",
+    "skeleton": "images/monsters/theForest/spaghetti/skeleton.json",
+    "animation": "Idle"
+  },
+  "corrupt-heart": {
+    "atlas": "images/npcs/heart/skeleton.atlas",
+    "skeleton": "images/npcs/heart/skeleton.json",
+    "animation": "idle"
+  },
+  "spire-shield": {
+    "atlas": "images/monsters/theEnding/shield/skeleton.atlas",
+    "skeleton": "images/monsters/theEnding/shield/skeleton.json",
+    "animation": "Idle"
+  },
+  "spire-spear": {
+    "atlas": "images/monsters/theEnding/spear/skeleton.atlas",
+    "skeleton": "images/monsters/theEnding/spear/skeleton.json",
+    "animation": "Idle"
+  }
+}
