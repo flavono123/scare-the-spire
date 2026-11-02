@@ -25,10 +25,23 @@ const LEVEL_CLASS = [
 ];
 const LEVEL_EMOJI = ["🟨", "🟩", "🟦", "🟪"];
 
-type ItemView = "tokens" | "local" | "original";
+type ItemDisplay = {
+  token: boolean;
+  local: boolean;
+  original: boolean;
+};
 
-function memberLabel(member: ConnectionsMember, view: ItemView): string {
-  return view === "original" ? member.raw : member.name;
+function MemberLabels({ member, display }: { member: ConnectionsMember; display: ItemDisplay }) {
+  return (
+    <>
+      {display.local && <span className="block">{member.name}</span>}
+      {display.original && (
+        <span className={`block ${display.local ? "text-[0.7em] font-normal opacity-70" : ""}`}>
+          {member.raw}
+        </span>
+      )}
+    </>
+  );
 }
 
 function emptyProgress(): ConnectionsProgress {
@@ -37,27 +50,30 @@ function emptyProgress(): ConnectionsProgress {
 
 function SolvedCategory({
   category,
-  view,
+  display,
   serviceLocale,
   gameLocale,
 }: {
   category: ConnectionsCategory;
-  view: ItemView;
+  display: ItemDisplay;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
   return (
     <div className={`rounded-lg px-3 py-2.5 ${LEVEL_CLASS[category.level]}`}>
       <p className="text-center text-sm font-bold">
-        {view === "original" ? category.titleEn : category.title}
+        {display.local || !display.original ? category.title : category.titleEn}
       </p>
-      {view !== "original" && category.note && (
+      {display.local && display.original && category.title !== category.titleEn && (
+        <p className="text-center text-xs opacity-70">{category.titleEn}</p>
+      )}
+      {display.local && category.note && (
         <p className="mt-1 text-center text-xs">{category.note}</p>
       )}
       <ul className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {category.members.map((member) => (
           <li key={member.key} className="flex min-w-0 items-center gap-2 rounded-md bg-black/70 p-1.5 text-white">
-            {member.entity.imageUrl && (
+            {display.token && member.entity.imageUrl && (
               <Image
                 src={member.entity.imageUrl}
                 alt=""
@@ -68,7 +84,11 @@ function SolvedCategory({
             )}
             <span className="min-w-0 text-xs [word-break:keep-all]">
               <EntityPreview entity={member.entity} serviceLocale={serviceLocale} gameLocale={gameLocale}>
-                {memberLabel(member, view)}
+                {display.local || display.original ? (
+                  <MemberLabels member={member} display={display} />
+                ) : (
+                  member.name
+                )}
               </EntityPreview>
             </span>
           </li>
@@ -96,7 +116,12 @@ export function ConnectionsClient({
   const [selected, setSelected] = useState<string[]>([]);
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [view, setView] = useState<ItemView>("tokens");
+  const localNamesDiffer = gameLocale !== "eng";
+  const [display, setDisplay] = useState<ItemDisplay>({
+    token: true,
+    local: localNamesDiffer,
+    original: !localNamesDiffer,
+  });
 
   useEffect(() => {
     const requested = Number(new URLSearchParams(window.location.search).get("p"));
@@ -180,35 +205,43 @@ export function ConnectionsClient({
     }
   };
 
-  // English is already the original wording, so its game locale needs one text view.
-  const views: { id: ItemView; label: string }[] = [
-    { id: "tokens", label: copy.viewTokens },
-    ...(gameLocale === "eng" ? [] : [{ id: "local" as const, label: copy.viewLocal }]),
+  // English is already the original wording, so its game locale has no separate local toggle.
+  const toggles: { id: keyof ItemDisplay; label: string }[] = [
+    { id: "token", label: copy.viewTokens },
+    ...(localNamesDiffer ? [{ id: "local" as const, label: copy.viewLocal }] : []),
     { id: "original", label: copy.viewOriginal },
   ];
+  const enabledCount = toggles.filter((item) => display[item.id]).length;
 
   return (
     <section className="mx-auto max-w-2xl" data-connections-puzzle={puzzle.number}>
       <p className="mb-3 text-center text-sm font-semibold">{copy.guide}</p>
       <div className="mb-3 flex justify-center">
-        <div role="group" aria-label={copy.viewsLabel} className="inline-flex rounded-lg border border-border bg-card/80 p-0.5">
-          {views.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              aria-pressed={view === item.id}
-              onClick={() => setView(item.id)}
-              className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
-                view === item.id
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
+        <div role="group" aria-label={copy.viewsLabel} className="inline-flex gap-1.5">
+          {toggles.map((item) => {
+            const checked = display[item.id];
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="checkbox"
+                aria-checked={checked}
+                disabled={checked && enabledCount === 1}
+                onClick={() => setDisplay((current) => ({ ...current, [item.id]: !current[item.id] }))}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+                  checked
+                    ? "border-primary bg-primary/15 text-primary"
+                    : "border-border text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <span aria-hidden="true">{checked ? "✓" : "○"}</span>
+                {item.label}
+              </button>
+            );
+          })}
         </div>
       </div>
+
       {puzzles.length > 1 && (
         <label className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
           {copy.puzzleLabel}
@@ -229,7 +262,7 @@ export function ConnectionsClient({
           <SolvedCategory
             key={category.level}
             category={category}
-            view={view}
+            display={display}
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
           />
@@ -260,25 +293,26 @@ export function ConnectionsClient({
                       : "border-border bg-card/90 text-foreground hover:border-primary/60"
                   }`}
                 >
-                  {view === "tokens" && tile.entity.imageUrl ? (
-                    <EntityPreview
-                      entity={tile.entity}
-                      serviceLocale={serviceLocale}
-                      gameLocale={gameLocale}
-                      disableLink
-                      linkClassName="flex h-full w-full items-center justify-center"
-                    >
-                      <Image
-                        src={tile.entity.imageUrl}
-                        alt=""
-                        width={72}
-                        height={56}
-                        className="h-12 w-16 object-contain sm:h-14 sm:w-[4.5rem]"
-                      />
-                    </EntityPreview>
-                  ) : (
-                    <span className="flex items-center justify-center px-1 py-2">{memberLabel(tile, view)}</span>
-                  )}
+                  <EntityPreview
+                    entity={tile.entity}
+                    serviceLocale={serviceLocale}
+                    gameLocale={gameLocale}
+                    disableLink
+                    linkClassName="flex h-full w-full flex-col items-center justify-center gap-1 px-1 py-2"
+                  >
+                    <span className="flex flex-col items-center gap-1">
+                      {display.token && tile.entity.imageUrl && (
+                        <Image
+                          src={tile.entity.imageUrl}
+                          alt=""
+                          width={72}
+                          height={56}
+                          className="h-12 w-16 object-contain sm:h-14 sm:w-[4.5rem]"
+                        />
+                      )}
+                      <MemberLabels member={tile} display={display} />
+                    </span>
+                  </EntityPreview>
                 </div>
               );
             })}
