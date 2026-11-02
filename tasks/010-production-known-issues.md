@@ -222,3 +222,9 @@
     - 원인: `src/lib/transfigure-data.ts`와 `src/lib/colorful-philosophers-gallery.ts`의 조회에 시간 제한이 없고, `catch`가 로그 없이 표본이나 빈 값으로 대체한다.
 60. **Supabase Free 인스턴스가 메모리와 디스크 I/O 부족으로 주기적으로 멈춤**. 로그 기준 구간(KST): 10-28 22:10~10-29 02:30, 10-31 00:20~02:30, 10-31 23:35~11-01 02:55, 11-02 09:47~09:52(5xx 없이 6~24초 지연). 멈춘 동안 시스템 카탈로그 조회도 10~22초 걸렸고, 시작 직전 요청이 5분당 50개 미만인 구간도 있어 요청량이나 특정 앱 쿼리 탓이 아니다. 메모리 428 MB, 스왑 약 480 MB 사용, 부팅 47일간 스왑 인 약 5.3 TB, 디스크 읽기 약 47 TB(DB는 49 MB), iowait 2.18%(CPU steal 0, OOM 0). 원인 판단은 추론이며 EBS 버스트 잔량은 직접 보지 못했다.
     - https://supabase.com/dashboard/project/vhscirjiywwmwlafkhjh
+
+### 2026-11-02 배포 뒤 추가
+
+61. **sitemap의 `lastmod`에 미래 날짜가 나옴**. `/patches`, `/patches/changes`, `/patches/2026-11-12`와 각 영어판 6줄이 빌드 시점보다 뒤인 2026-11-12다.
+    - https://scare-the-spire.flavono123.workers.dev/sitemap.xml
+    - 원인: `src/app/sitemap.ts`가 `data/sts2-patches.json`의 패치 날짜를 그대로 쓴다.
