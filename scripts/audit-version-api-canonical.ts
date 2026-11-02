@@ -160,6 +160,9 @@ function readLoc(version: string, lang: string, table: string): Record<string, s
   return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf-8")) : {};
 }
 
+/** The same wording keeps the newest line breaks on purpose (keepNewestLineBreaks in the history generator). */
+const squash = (v: unknown) => (typeof v === "string" ? v.replace(/\s+/g, "") : v);
+
 /** Name and description template against the build's own localization tables. */
 function auditText(type: string, table: string, version: string, api: Map<string, Entity>, out: Mismatch[]) {
   const eng = readLoc(version, "eng", table);
@@ -178,7 +181,7 @@ function auditText(type: string, table: string, version: string, api: Map<string
     }
     for (const [field, apiVal, canon] of checks) {
       if (canon === undefined) continue;
-      pushDiff(out, version, type, id, `text.${field}`, apiVal, canon);
+      pushDiff(out, version, type, id, `text.${field}`, squash(apiVal), squash(canon));
     }
   }
 }
@@ -188,7 +191,7 @@ function bakedVars(e: Entity, canon: Entity | undefined): Record<string, number 
   return varsForBake({ ...(e.vars ?? {}), ...(canon?.vars ?? {}) });
 }
 
-/** The text a library tile paints: the build's template baked with the build's numbers, whitespace included. */
+/** The text a library tile paints: the build's template baked with the build's numbers. */
 function auditBakedText(type: string, table: string, version: string, locale: GameLocale, api: Map<string, Entity>, canon: Canon, out: Mismatch[]) {
   const loc = readLoc(version, locale, table);
   const suffix = locale === "kor" ? "" : `.${locale}`;
@@ -196,7 +199,7 @@ function auditBakedText(type: string, table: string, version: string, locale: Ga
     const raw = loc[`${id}.description`];
     if (raw === undefined) continue;
     const vars = withLibraryCalculatedVars(bakedVars(e, canon[id]), raw);
-    pushDiff(out, version, type, id, `text.description${suffix}`, e.description, bakeDescription(raw, vars));
+    pushDiff(out, version, type, id, `text.description${suffix}`, squash(e.description), squash(bakeDescription(raw, vars)));
   }
 }
 
@@ -207,13 +210,13 @@ function auditUpgradedText(version: string, api: Map<string, Entity>, canon: Can
   for (const [id, e] of api) {
     const raw = loc[`${id}.description`];
     const c = canon[id];
-    if (raw === undefined || !c || raw !== e.descriptionRaw || e.specialUpgrade) continue;
+    if (raw === undefined || !c || squash(raw) !== squash(e.descriptionRaw) || e.specialUpgrade) continue;
     const vars = bakedVars(e, c) as Record<string, number | string>;
     for (const [k, d] of Object.entries<number>(c.upgrade.vars)) {
       for (const name of [k, `${k}Power`]) if (typeof vars[name] === "number") vars[name] = (vars[name] as number) + d;
     }
     const want = bakeDescription(raw, { ...withLibraryCalculatedVars(vars, raw), IfUpgraded: 1 });
-    pushDiff(out, version, "card", id, "text.upgradedDescription", plain(renderCardDescription(e as unknown as CodexCard, { upgrade: true })), want);
+    pushDiff(out, version, "card", id, "text.upgradedDescription", squash(plain(renderCardDescription(e as unknown as CodexCard, { upgrade: true }))), squash(want));
   }
 }
 

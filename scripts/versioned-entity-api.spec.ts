@@ -427,6 +427,17 @@ async function runTests() {
   assert.equal(believeAfter.entity?.vars?.Energy, 2);
   assert.match(believeAfter.entity?.description ?? "", /\[energy:2\]/);
 
+  const cardAt = async (entityId: string, version: string) =>
+    (await getVersionedEntity<CodexCard>({ entityType: "card", entityId, version, locale: "kor" })).entity;
+  // Out of combat a Calculated* var reads CalculationBase in every version.
+  assert.match((await cardAt("CRESCENT_SPEAR", "v0.104.0"))?.description ?? "", /피해를 6 줍니다/);
+  assert.match((await cardAt("CRESCENT_SPEAR", "v0.105.0"))?.description ?? "", /피해를 8 줍니다/);
+  assert.match((await cardAt("PERFECTED_STRIKE", "v0.111.0"))?.description ?? "", /피해를 6 줍니다/);
+  assert.match((await cardAt("REND", "v0.111.0"))?.description ?? "", /피해를 10 줍니다/);
+  assert.doesNotMatch((await cardAt("TIMES_UP", "v0.111.0"))?.description ?? "", /\(피해를/);
+  // The same wording keeps the newest line breaks in older versions.
+  assert.equal((await cardAt("FLICK_FLACK", "v0.99.1"))?.description, (await cardAt("FLICK_FLACK", "v0.108.0"))?.description);
+
   console.log("\n[Test 8] Opening a Compendium detail keeps the version query");
   const detailUrl = new URL("http://localhost/compendium/cards?version=0.110.0&beta=true");
   updateCompendiumResourceModalUrl(detailUrl, "card", "STRIKE");

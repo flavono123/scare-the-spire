@@ -576,6 +576,7 @@ const TITLE_FONT_PX = { max: 26, min: 8 };
  * 997 + 293 of 1024; it outranks the CJK fallbacks) plus line_separation -3,
  * which stays in px while the autosize shrinks the font.
  */
+const HANGUL = /[가-힣]/;
 const DESCRIPTION_LINE_HEIGHT = `calc(${(997 + 293) / 1024}em - ${holderCqi(3)})`;
 
 const L = {
@@ -1049,6 +1050,8 @@ export const CardTile = memo(function CardTile({
         color: TEXT_CREAM,
         fontSize: `${FONT_CQI.description * descriptionFontScale}cqi`,
         lineHeight: DESCRIPTION_LINE_HEIGHT,
+        // Korean text without a written break wraps between words, not inside one.
+        ...(HANGUL.test(descText) ? { wordBreak: "keep-all" as const, overflowWrap: "break-word" as const } : null),
         textShadow: `${(DESCRIPTION_SHADOW.offset / 300) * cardWidth}px ${(DESCRIPTION_SHADOW.offset / 300) * cardWidth}px 0 rgba(0,0,0,${DESCRIPTION_SHADOW.alpha})`,
       }}
     >

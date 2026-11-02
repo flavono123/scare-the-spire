@@ -119,6 +119,23 @@ function extractVars(template: string, baked: string, loose = true): Record<stri
   return Object.keys(values).length > 0 ? values : null;
 }
 
+const withoutWhitespace = (value: string) => value.replace(/\s+/g, "");
+
+/**
+ * The game re-broke many lines by hand (Korean at 0.100.0) without changing a
+ * word. The same wording keeps the newest line breaks in every version, so
+ * tiles differ only where the text does.
+ */
+function keepNewestLineBreaks(timeline: [string, string][]): [string, string][] {
+  const kept: [string, string][] = [];
+  for (let index = timeline.length - 1; index >= 0; index -= 1) {
+    const [version, value] = timeline[index];
+    if (kept.length > 0 && withoutWhitespace(kept[0][1]) === withoutWhitespace(value)) kept[0][0] = version;
+    else kept.unshift([version, value]);
+  }
+  return kept;
+}
+
 function clean(value: unknown): string | undefined {
   return typeof value === "string" ? value.replace(/\r/g, "") : undefined;
 }
@@ -182,10 +199,11 @@ async function main() {
             }
             if (timeline[timeline.length - 1][1] !== shown) timeline.push([snapshots[lastSeen + 1].version, shown]);
           }
-          if (timeline.length < 2) continue;
+          const versions = field === "descriptionRaw" ? keepNewestLineBreaks(timeline) : timeline;
+          if (versions.length < 2) continue;
           const byId = (((history.text[locale] ??= {})[source.type] ??= {})[entity.id] ??= {});
-          byId[field] = timeline;
-          points += timeline.length - 1;
+          byId[field] = versions;
+          points += versions.length - 1;
         }
       }
     }

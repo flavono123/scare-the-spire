@@ -160,6 +160,12 @@
   - 롤백 대상(2026-10-31 `wrangler deployments status`, 전체 UUID로 써야 찾는다): main `d1c23a64-0f5a-42f3-a69e-50cc3767e14e`, patch `51a9dcb4-7b1a-4898-accb-c913816d54e4`. 다른 세션이 그 사이 배포하면 push 전에 다시 적는다. 복구 확인은 `pnpm cf:smoke --origin https://scare-the-spire.flavono123.workers.dev --scope all --no-security-headers`.
 
 <!--
+### card-tile-build-match
+- Feature: 카드 타일의 수치·강화·문구가 아카이브한 모든 빌드(0.98.0~0.111.0)의 전투 밖 게임 표시와 같고, 같은 문구는 버전이 달라도 개행이 같다.
+- Expect: 완벽한 타격 6, 쥐어뜯기 10, 재성형 단조 5, 때가 되었다 괄호 줄 없음. 초승달 창 0.104.0은 6, 0.105.0은 8. 재주넘기 0.99.1과 0.108.0의 줄바꿈이 같다.
+- QA: `pnpm test:version-canonical`, `pnpm test:version-api`, `pnpm codex:validate`. 수동: 위 카드의 `/compendium/cards/<id>?version=<버전>` 타일.
+- Commits: `c12bb4d2`와 그 후속 커밋
+
 ### <항목-id>
 - Feature:
 - Expect:
