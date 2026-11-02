@@ -29,6 +29,12 @@
 - 범위 주의: 공용 `service-modal-frame.tsx` 배경 닫기 조건, `codex-filter-drawer.tsx` 초점, ko 외 댓글이 게임 언어·한국어 그래프를 둘 다 받아 첫 전송량이 늘어남, 언어별 검색 색인 12개(약 740 KB).
 - Commits: `1eefa3a8..main`의 `Merge tasks/010 fixes` 4개와 후속 커밋
 
+### sts1-card-render-speed
+- Feature: STS1 카드 목록 렌더 개선. 글자 canvas를 GPU에서 내리고, 42장 단위로 그리며, 바뀌지 않은 타일을 다시 그리지 않는다.
+- Expect: 첫 로딩과 필터·검색 전환이 멈추지 않는다. 카드는 스크롤로 이어서 나오고, 목록이 바뀌면 맨 위로 돌아간다. 정적 HTML에는 370장 링크가 모두 남는다.
+- QA: 로컬에서 `sts1-card-layout`·`sts1-description` 스펙, Chrome headless로 스크롤·필터·검색·상세 확인, 첫 화면 운영본 대비 픽셀 차이 6개(최대 1). testbed 확인과 다른 언어 화면 확인은 남아 있다.
+- Commits: `79997abf`, `8e9a2520`, `8867e0d2`, `7c4f1b94`
+
 <!--
 ### <항목-id>
 - Feature:
