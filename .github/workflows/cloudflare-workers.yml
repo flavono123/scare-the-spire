@@ -228,7 +228,7 @@ jobs:
       # Never restore them; the first v2 build starts cold.
       - name: Restore Next.js build cache
         if: steps.changes.outputs.main == 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .next/cache
           key: ${{ runner.os }}-next-v2-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
