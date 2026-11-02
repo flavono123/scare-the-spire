@@ -55,7 +55,7 @@
 | 문제, 퍼즐, 정답 | 정적 JSON | 영향 없음 |
 | 플레이 기록 | localStorage `sts-beta-art-v1`, `sts-vexing-puzzlebox-v1` | 영향 없음 |
 | 방문 측정 | Cloudflare Web Analytics | 영향 없음 |
-| 댓글(2단계) | 완료 뒤 지연 로드 | 게임은 계속되고 댓글만 멈춤 |
+| 댓글(배포 뒤) | 완료 뒤 지연 로드 | 게임은 계속되고 댓글만 멈춤 |
 
 전역 레이아웃의 `CommentCourier`와 nav-seen 조회는 그대로 돈다. "게임 경로 무의존"이지 "페이지 전체 무의존"은 아니다.
 
@@ -165,7 +165,7 @@ STS1 사건, 몬스터, 파워, 블라이트는 `scripts/extract-sts1-compendium
 - **재사용:** `patch-note-renderer.tsx`의 `GameResourcePreview`, `EntityPreview`, `entityCompendiumHref`, `useCoarsePointer` 탭 미리보기.
 - **공유:** 이모지 격자 텍스트 복사. 항목 이름과 카테고리는 넣지 않는다.
 - **소식지 연결:** `claimId`로 해당 소식지 항목에 게임 링크를 렌더한다. `.ko.md` 본문은 번역 규칙상 건드리지 않는다.
-- **빠지는 것:** 댓글, 일일 모드, 연승, 퍼즐별 OG, 사용자 제작과 제출. 댓글은 CLAUDE.md의 "모든 요소에 댓글" 방향에 따라 2단계에 완료 뒤 지연 로드로 붙인다.
+- **빠지는 것:** 댓글, 일일 모드, 연승, 퍼즐별 OG, 사용자 제작과 제출. 댓글은 CLAUDE.md의 "모든 요소에 댓글" 방향에 따라 배포 뒤 완료 화면에 지연 로드로 붙인다.
 
 ### 데이터
 
