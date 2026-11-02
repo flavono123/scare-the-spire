@@ -2,6 +2,7 @@ import { gameLocaleFromPathSegment, type GameLocale } from "../src/lib/i18n";
 
 interface HTMLRewriterElement {
   setAttribute(name: string, value: string): void;
+  setInnerContent(content: string): void;
 }
 
 interface HTMLRewriterInstance {
@@ -17,6 +18,9 @@ interface HTMLRewriterInstance {
 declare const HTMLRewriter: {
   new (): HTMLRewriterInstance;
 };
+
+/** `notFound.title - brand` in English; the service messages are too large for the Worker. */
+export const NOT_FOUND_TITLE_EN = "Page not found - Scare the Spire";
 
 /** Game locale for a locale-prefixed path; null for prefixless Korean paths. */
 export function documentGameLocaleForPath(pathname: string): GameLocale | null {
@@ -40,6 +44,11 @@ export function withLocalizedDocumentRoot(response: Response, pathname: string):
         element.setAttribute("lang", "en");
         element.setAttribute("data-service-locale", "en");
         element.setAttribute("data-game-locale", gameLocale);
+      },
+    })
+    .on("title", {
+      element(element) {
+        element.setInnerContent(NOT_FOUND_TITLE_EN);
       },
     })
     .transform(response);
