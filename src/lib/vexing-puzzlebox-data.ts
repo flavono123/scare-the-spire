@@ -124,7 +124,8 @@ export async function getBetaArtCatalog(gameLocale: GameLocale): Promise<{
   const powerById = byId(powers);
   const epochById = byId(epochs);
 
-  const toEntry = (key: string, officialArtVersion: string | null): BetaArtEntry => {
+  // Thai lacks some power titles; the Compendium hides those powers there too.
+  const toEntry = (key: string, officialArtVersion: string | null): BetaArtEntry | null => {
     const [type, id] = key.split(":") as [BetaArtType, string];
     const resource = type === "card"
       ? cardById.get(id)
@@ -133,7 +134,7 @@ export async function getBetaArtCatalog(gameLocale: GameLocale): Promise<{
         : type === "power"
           ? powerById.get(id)
           : epochById.get(id);
-    if (!resource?.betaImageUrl) throw new Error(`Beta art entry has no art: ${key}`);
+    if (!resource?.betaImageUrl) return null;
     return {
       key,
       type,
@@ -147,14 +148,14 @@ export async function getBetaArtCatalog(gameLocale: GameLocale): Promise<{
     };
   };
 
-  const betaOnly = betaArtPayload.betaOnly.map((key) => {
+  const betaOnly = betaArtPayload.betaOnly.flatMap((key) => {
     const entry = toEntry(key, null);
-    return { ...entry, officialUrl: null };
+    return entry ? [{ ...entry, officialUrl: null }] : [];
   });
 
   return {
     entries: [
-      ...betaArtPayload.pairs.map((pair) => toEntry(pair.key, pair.officialArtVersion)),
+      ...betaArtPayload.pairs.flatMap((pair) => toEntry(pair.key, pair.officialArtVersion) ?? []),
       ...betaOnly,
     ],
     characters: BETA_ART_CHARACTER_COLORS.flatMap((color) => {
