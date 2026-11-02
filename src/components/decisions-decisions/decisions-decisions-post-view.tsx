@@ -148,7 +148,7 @@ export function DecisionsDecisionsPostView({
         </div>
       </header>
 
-      {post.note && <p className="text-sm text-zinc-300">{post.note}</p>}
+      {post.note && <p className="text-sm text-zinc-300 [overflow-wrap:anywhere]">{post.note}</p>}
 
       {editing && isAuthor && (
         <DecisionsDecisionsComposerModal
