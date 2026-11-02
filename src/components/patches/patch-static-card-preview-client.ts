@@ -18,6 +18,7 @@ import { DESCRIPTION_FIT, FONT_CQI } from "@/lib/sts2-card-style";
     preview.style.position = "fixed";
     preview.style.zIndex = "120";
     preview.style.pointerEvents = "none";
+    preview.style.maxWidth = `calc(100vw - ${MARGIN * 2}px)`;
     document.body.appendChild(preview);
     previews.set(key, preview);
   });
@@ -56,9 +57,12 @@ import { DESCRIPTION_FIT, FONT_CQI } from "@/lib/sts2-card-style";
 
     const triggerRect = trigger.getBoundingClientRect();
     const previewRect = preview.getBoundingClientRect();
-    const left = Math.min(
-      Math.max(triggerRect.left + triggerRect.width / 2 - previewRect.width / 2, MARGIN),
-      window.innerWidth - previewRect.width - MARGIN,
+    const left = Math.max(
+      Math.min(
+        triggerRect.left + triggerRect.width / 2 - previewRect.width / 2,
+        window.innerWidth - previewRect.width - MARGIN,
+      ),
+      MARGIN,
     );
     const top = triggerRect.top >= previewRect.height + MARGIN
       ? triggerRect.top - previewRect.height - 8
