@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { EntityPreview } from "@/components/patch-note-renderer";
 import { RichText } from "@/components/rich-text";
 import Image from "@/components/ui/static-image";
 import {
@@ -15,6 +14,7 @@ import {
   hasLocalNames,
   type ItemDisplay,
 } from "@/components/vexing-puzzlebox/display-toggles";
+import { MemberHover } from "@/components/vexing-puzzlebox/member-hover";
 import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { PotionBelt, type BeltPotion } from "@/components/vexing-puzzlebox/potion-belt";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
@@ -74,10 +74,12 @@ const POTION_SLOT_COUNT = 3;
 type Toast = { text: string; negative: boolean };
 
 function MemberLabels({ member, display }: { member: ConnectionsMember; display: ItemDisplay }) {
+  // A name with no game translation is its original spelling; show it once.
+  const original = display.original && !(display.local && member.name === member.raw);
   return (
     <>
       {display.local && <span className="block">{member.name}</span>}
-      {display.original && (
+      {original && (
         <span className={`block ${display.local ? "text-[0.7em] font-normal opacity-70" : ""}`}>
           {member.raw}
         </span>
@@ -150,9 +152,9 @@ function SolvedCategory({
       <ul className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {category.members.map((member) => (
           <li key={member.key} className="flex min-w-0 items-center gap-2 rounded-md bg-black/70 p-1.5 text-white">
-            {display.token && member.entity.imageUrl && (
+            {display.token && member.imageUrl && (
               <Image
-                src={member.entity.imageUrl}
+                src={member.imageUrl}
                 alt=""
                 width={40}
                 height={40}
@@ -160,13 +162,13 @@ function SolvedCategory({
               />
             )}
             <span className="min-w-0 text-xs [word-break:keep-all]">
-              <EntityPreview entity={member.entity} serviceLocale={serviceLocale} gameLocale={gameLocale}>
+              <MemberHover member={member} serviceLocale={serviceLocale} gameLocale={gameLocale}>
                 {display.local || display.original ? (
                   <MemberLabels member={member} display={display} />
                 ) : (
                   member.name
                 )}
-              </EntityPreview>
+              </MemberHover>
             </span>
           </li>
         ))}
@@ -612,16 +614,21 @@ export function ConnectionsClient({
                     }`}
                   >
                     <span className={`flex flex-col items-center gap-1 ${isWrong ? "connections-wrong-jitter" : ""}`}>
-                      {display.token && tile.entity.imageUrl && (
+                      {display.token && tile.imageUrl && (
                         <Image
-                          src={tile.entity.imageUrl}
+                          src={tile.imageUrl}
                           alt=""
                           width={72}
                           height={56}
                           className="h-12 w-16 object-contain sm:h-14 sm:w-[4.5rem]"
                         />
                       )}
-                      <MemberLabels member={tile} display={display} />
+                      <MemberLabels
+                        member={tile}
+                        display={display.token && !tile.imageUrl && !display.local && !display.original
+                          ? { ...display, original: true }
+                          : display}
+                      />
                     </span>
                   </button>
                   <span
@@ -633,11 +640,11 @@ export function ConnectionsClient({
                       isSelected ? "opacity-100" : "opacity-40"
                     }`}
                   >
-                    <EntityPreview
-                      entity={tile.entity}
+                    <MemberHover
+                      member={tile}
                       serviceLocale={serviceLocale}
                       gameLocale={gameLocale}
-                      disableLink
+                      inspect
                       linkClassName="game-inspect-cursor flex h-7 w-7 items-center justify-center rounded"
                     >
                       <Image
@@ -647,7 +654,7 @@ export function ConnectionsClient({
                         height={20}
                         className="h-5 w-5"
                       />
-                    </EntityPreview>
+                    </MemberHover>
                   </span>
                 </div>
               );

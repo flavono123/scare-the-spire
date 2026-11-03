@@ -1,5 +1,4243 @@
 [
   {
+    "number": 1,
+    "issueId": "2024-09",
+    "issueNumber": 2,
+    "claimId": "activity-corner-connections",
+    "slug": "uUYG4filaDEjCrwmI0u2",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Relics that can be worn around the neck",
+        "titleKo": "목에 걸 수 있는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Teardrop Locket",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "teardroplocket"
+            }
+          },
+          {
+            "raw": "Velvet Choker",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "velvet-choker"
+            }
+          },
+          {
+            "raw": "Slaver's Collar",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "slaverscollar"
+            }
+          },
+          {
+            "raw": "Darkstone Periapt",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "darkstone-periapt"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Items that give block at end of turn",
+        "titleKo": "턴 종료 시 방어도를 주는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Metallicize",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "metallicize"
+            }
+          },
+          {
+            "raw": "Cloak Clasp",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "cloakclasp"
+            }
+          },
+          {
+            "raw": "Orichalcum",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "orichalcum"
+            }
+          },
+          {
+            "raw": "Like Water",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "likewater"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Items that give card draw on next turn",
+        "titleKo": "다음 턴에 카드를 더 뽑게 하는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Pocketwatch",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "pocketwatch"
+            }
+          },
+          {
+            "raw": "Doppelganger",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "doppelganger"
+            }
+          },
+          {
+            "raw": "Predator",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "predator"
+            }
+          },
+          {
+            "raw": "Simmering Fury",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "vengeance"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Cards with art featuring slimes",
+        "titleKo": "그림에 슬라임이 나오는 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Evolve",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "evolve"
+            }
+          },
+          {
+            "raw": "Intimidate",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "intimidate"
+            }
+          },
+          {
+            "raw": "Halt",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "halt"
+            }
+          },
+          {
+            "raw": "Nightmare",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "night-terror"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "issueId": "2024-10",
+    "issueNumber": 3,
+    "claimId": "connections",
+    "slug": "x6yButnTBj2l4AUVPwWw",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Items that create potions",
+        "titleKo": "포션을 만들어 주는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Entropic Brew",
+            "ref": {
+              "game": "sts1",
+              "type": "potion",
+              "id": "entropicbrew"
+            }
+          },
+          {
+            "raw": "Cauldron",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "cauldron"
+            }
+          },
+          {
+            "raw": "Alchemize",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "venomology"
+            }
+          },
+          {
+            "raw": "Tiny House",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "tiny-house"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Cards with a synonym for \"apparition\" in the name",
+        "titleKo": "이름에 '유령'과 같은 뜻의 말이 들어간 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Ghostly Armor",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "ghostly-armor"
+            }
+          },
+          {
+            "raw": "Wraith Form",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "wraith-form-v2"
+            }
+          },
+          {
+            "raw": "Phantasmal Killer",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "phantasmal-killer"
+            }
+          },
+          {
+            "raw": "Spirit Shield",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "spiritshield"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that you might find in a bowl of ramen",
+        "titleKo": "라멘 한 그릇에 들어 있을 법한 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Molten Egg",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "molten-egg-2"
+            }
+          },
+          {
+            "raw": "Ginger",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ginger"
+            }
+          },
+          {
+            "raw": "Meat on the Bone",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "meat-on-the-bone"
+            }
+          },
+          {
+            "raw": "Odd Mushroom",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "odd-mushroom"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Items that give a buff at the start of your turn",
+        "titleKo": "턴 시작 시 버프를 주는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Demon Form",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "demon-form"
+            }
+          },
+          {
+            "raw": "Damaru",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "damaru"
+            }
+          },
+          {
+            "raw": "Brimstone",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "brimstone"
+            }
+          },
+          {
+            "raw": "Devotion",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "devotion"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "issueId": "2024-11",
+    "issueNumber": 4,
+    "claimId": "connections",
+    "slug": "bzFULv99gx9na3F1EYy1",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Events featuring monuments in the title",
+        "titleKo": "이름에 기념물이 들어간 사건",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Forgotten Altar",
+            "ref": {
+              "game": "sts1",
+              "type": "event",
+              "id": "forgotten-altar"
+            }
+          },
+          {
+            "raw": "The Mausoleum",
+            "ref": {
+              "game": "sts1",
+              "type": "event",
+              "id": "the-mausoleum"
+            }
+          },
+          {
+            "raw": "Tomb of Lord Red Mask",
+            "ref": {
+              "game": "sts1",
+              "type": "event",
+              "id": "tomb-of-lord-red-mask"
+            }
+          },
+          {
+            "raw": "Golden Shrine",
+            "ref": {
+              "game": "sts1",
+              "type": "event",
+              "id": "golden-shrine"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Items that could be part of a balanced breakfast",
+        "titleKo": "균형 잡힌 아침 식사에 들어갈 법한 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Lee's Waffle",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "lee-s-waffle"
+            }
+          },
+          {
+            "raw": "Coffee Dripper",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "coffee-dripper"
+            }
+          },
+          {
+            "raw": "Fruit Juice",
+            "ref": {
+              "game": "sts1",
+              "type": "potion",
+              "id": "fruit-juice"
+            }
+          },
+          {
+            "raw": "Frozen Egg",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "frozen-egg-2"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Items that grant resources on next turn",
+        "titleKo": "다음 턴에 자원을 주는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Self-Forming Clay",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "self-forming-clay"
+            }
+          },
+          {
+            "raw": "Dodge and Roll",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "dodge-and-roll"
+            }
+          },
+          {
+            "raw": "Art of War",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "art-of-war"
+            }
+          },
+          {
+            "raw": "Outmaneuver",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "outmaneuver"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Items that retain resources between turns",
+        "titleKo": "턴이 넘어가도 자원을 남겨 두는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Runic Pyramid",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "runic-pyramid"
+            }
+          },
+          {
+            "raw": "Barricade",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "barricade"
+            }
+          },
+          {
+            "raw": "Blur",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "blur"
+            }
+          },
+          {
+            "raw": "Ice Cream",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ice-cream"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "issueId": "2024-12",
+    "issueNumber": 5,
+    "claimId": "connections",
+    "slug": "ylabW6yGRwtXs3F0DSqm",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Items that channel Frost",
+        "titleKo": "냉기를 영창하는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Chill",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "chill"
+            }
+          },
+          {
+            "raw": "Cold Snap",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "cold-snap"
+            }
+          },
+          {
+            "raw": "Frozen Core",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "frozencore"
+            }
+          },
+          {
+            "raw": "Glacier",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "glacier"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics that make classic holiday presents",
+        "titleKo": "연말 선물로 흔히 주는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Bag of Marbles",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "bag-of-marbles"
+            }
+          },
+          {
+            "raw": "Matryoshka",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "matryoshka"
+            }
+          },
+          {
+            "raw": "Unceasing Top",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "unceasing-top"
+            }
+          },
+          {
+            "raw": "Tiny House",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "tiny-house"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that interact with Power cards",
+        "titleKo": "파워 카드와 상호작용하는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Frozen Egg",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "frozen-egg-2"
+            }
+          },
+          {
+            "raw": "Mummified Hand",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "mummified-hand"
+            }
+          },
+          {
+            "raw": "Bottled Tornado",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "bottled-tornado"
+            }
+          },
+          {
+            "raw": "Bird-Faced Urn",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "bird-faced-urn"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics you might find underneath a tree",
+        "titleKo": "나무 아래에서 찾을 법한 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Dead Branch",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "dead-branch"
+            }
+          },
+          {
+            "raw": "Sacred Bark",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "sacredbark"
+            }
+          },
+          {
+            "raw": "Pear",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "pear"
+            }
+          },
+          {
+            "raw": "N'loth's Gift",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "nloth-s-gift"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "issueId": "2025-01",
+    "issueNumber": 6,
+    "claimId": "connections",
+    "slug": "fv4BDhksu7XkWWlQj2OD",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Relics that increase attack damage dealt",
+        "titleKo": "공격 피해를 늘리는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Akabeko",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "akabeko"
+            }
+          },
+          {
+            "raw": "The Boot",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "boot"
+            }
+          },
+          {
+            "raw": "Strike Dummy",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "strikedummy"
+            }
+          },
+          {
+            "raw": "Wrist Blade",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "wristblade"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics that you can use to make a brew",
+        "titleKo": "음료를 우려낼 수 있는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Cauldron",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "cauldron"
+            }
+          },
+          {
+            "raw": "Coffee Dripper",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "coffee-dripper"
+            }
+          },
+          {
+            "raw": "Twisted Funnel",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "twistedfunnel"
+            }
+          },
+          {
+            "raw": "Ancient Tea Set",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ancient-tea-set"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that affect elite combats",
+        "titleKo": "엘리트 전투에 영향을 주는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Black Star",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "black-star"
+            }
+          },
+          {
+            "raw": "Sling of Courage",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "sling"
+            }
+          },
+          {
+            "raw": "Preserved Insect",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "preservedinsect"
+            }
+          },
+          {
+            "raw": "Slaver's Collar",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "slaverscollar"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics featuring a bird motif",
+        "titleKo": "새가 들어간 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Matryoshka",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "matryoshka"
+            }
+          },
+          {
+            "raw": "Bird-Faced Urn",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "bird-faced-urn"
+            }
+          },
+          {
+            "raw": "Cultist Headpiece",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "cultistmask"
+            }
+          },
+          {
+            "raw": "Paper Krane",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "paper-crane"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "issueId": "2025-02",
+    "issueNumber": 7,
+    "claimId": "connections",
+    "slug": "Ct8SNUj2Jhoe67ikJJHW",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Relics that prevent or reduce damage taken",
+        "titleKo": "받는 피해를 막거나 줄이는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Torii",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "torii"
+            }
+          },
+          {
+            "raw": "Tungsten Rod",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "tungstenrod"
+            }
+          },
+          {
+            "raw": "Incense Burner",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "incense-burner"
+            }
+          },
+          {
+            "raw": "Fossilized Helix",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "fossilizedhelix"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics you might give to a Valentine",
+        "titleKo": "밸런타인데이에 선물할 법한 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "N'loth's Gift",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "nloth-s-gift"
+            }
+          },
+          {
+            "raw": "Teardrop Locket",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "teardroplocket"
+            }
+          },
+          {
+            "raw": "Happy Flower",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "happy-flower"
+            }
+          },
+          {
+            "raw": "Ring of the Snake",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ring-of-the-snake"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Cards that cause immediate HP loss upon play",
+        "titleKo": "쓰자마자 체력을 잃는 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Hemokinesis",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "hemokinesis"
+            }
+          },
+          {
+            "raw": "Bloodletting",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "bloodletting"
+            }
+          },
+          {
+            "raw": "Offering",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "offering"
+            }
+          },
+          {
+            "raw": "J.A.X.",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "j-a-x"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Items that feature a visual heart motif",
+        "titleKo": "하트 모양이 그려진 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Emotion Chip",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "emotion-chip"
+            }
+          },
+          {
+            "raw": "Medical Kit",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "medical-kit"
+            }
+          },
+          {
+            "raw": "Regen Potion",
+            "ref": {
+              "game": "sts1",
+              "type": "potion",
+              "id": "regen-potion"
+            }
+          },
+          {
+            "raw": "Brutality",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "brutality"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "issueId": "2025-03",
+    "issueNumber": 8,
+    "claimId": "connections",
+    "slug": "keLTpeyTvyn2fJseXT8p",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Items featuring a flower motif",
+        "titleKo": "꽃이 그려진 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Happy Flower",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "happy-flower"
+            }
+          },
+          {
+            "raw": "Magic Flower",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "magic-flower"
+            }
+          },
+          {
+            "raw": "Violet Lotus",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "violetlotus"
+            }
+          },
+          {
+            "raw": "Purity",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "purity"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Items that negatively impact healing",
+        "titleKo": "회복을 방해하는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Mark of the Bloom",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "mark-of-the-bloom"
+            }
+          },
+          {
+            "raw": "Muzzle",
+            "ref": {
+              "game": "sts1",
+              "type": "blight",
+              "id": "muzzle"
+            }
+          },
+          {
+            "raw": "Durian",
+            "ref": {
+              "game": "sts1",
+              "type": "blight",
+              "id": "post-durian"
+            }
+          },
+          {
+            "raw": "Coffee Dripper",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "coffee-dripper"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that interact positively with Weak",
+        "titleKo": "약화와 잘 맞는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Paper Krane",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "paper-crane"
+            }
+          },
+          {
+            "raw": "Champion Belt",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "champion-belt"
+            }
+          },
+          {
+            "raw": "Ginger",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ginger"
+            }
+          },
+          {
+            "raw": "Red Mask",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "red-mask"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics featuring Spring crops",
+        "titleKo": "봄 작물이 들어간 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Turnip",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "turnip"
+            }
+          },
+          {
+            "raw": "Strawberry",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "strawberry"
+            }
+          },
+          {
+            "raw": "Mango",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "mango"
+            }
+          },
+          {
+            "raw": "Sozu",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "sozu"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "issueId": "2025-04",
+    "issueNumber": 9,
+    "claimId": "connections",
+    "slug": "xBhkFa5WyFmIHXHT6gaX",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Items that can grant gold",
+        "titleKo": "골드를 주는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Golden Idol",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "golden-idol"
+            }
+          },
+          {
+            "raw": "Wish",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "wish"
+            }
+          },
+          {
+            "raw": "Maw Bank",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "mawbank"
+            }
+          },
+          {
+            "raw": "Ceramic Fish",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ceramicfish"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics with emoticon-like faces on them",
+        "titleKo": "이모티콘 같은 얼굴이 있는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Girya",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "girya"
+            }
+          },
+          {
+            "raw": "Matryoshka",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "matryoshka"
+            }
+          },
+          {
+            "raw": "Happy Flower",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "happy-flower"
+            }
+          },
+          {
+            "raw": "Meal Ticket",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "mealticket"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Items that increase attack damage without Strength",
+        "titleKo": "힘 없이 공격 피해를 늘리는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Wrist Blade",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "wristblade"
+            }
+          },
+          {
+            "raw": "Akabeko",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "akabeko"
+            }
+          },
+          {
+            "raw": "Wreath of Flame",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "wreathofflame"
+            }
+          },
+          {
+            "raw": "Accuracy",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "accuracy"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics that a cat might typically try to play with",
+        "titleKo": "고양이가 가지고 놀 법한 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "The Courier",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "the-courier"
+            }
+          },
+          {
+            "raw": "Eternal Feather",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "eternal-feather"
+            }
+          },
+          {
+            "raw": "Thread and Needle",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "thread-and-needle"
+            }
+          },
+          {
+            "raw": "Toy Ornithopter",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "toy-ornithopter"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "issueId": "2025-05",
+    "issueNumber": 10,
+    "claimId": "connections",
+    "slug": "G2gpysKXzlehZwGGiszj",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Items that apply a debuff to your character",
+        "titleKo": "내 캐릭터에게 디버프를 거는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Gremlin Visage",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "gremlinmask"
+            }
+          },
+          {
+            "raw": "Berserk",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "berserk"
+            }
+          },
+          {
+            "raw": "Doubt",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "doubt"
+            }
+          },
+          {
+            "raw": "Shame",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "shame"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Items with effects based on # of cards in hand",
+        "titleKo": "손에 든 카드 수에 따라 효과가 나는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Regret",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "regret"
+            }
+          },
+          {
+            "raw": "Cloak Clasp",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "cloakclasp"
+            }
+          },
+          {
+            "raw": "Spirit Shield",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "spiritshield"
+            }
+          },
+          {
+            "raw": "Storm of Steel",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "storm-of-steel"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Items that feature feathers",
+        "titleKo": "깃털이 그려진 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Apotheosis",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "apotheosis"
+            }
+          },
+          {
+            "raw": "Winged Boots",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "wingedgreaves"
+            }
+          },
+          {
+            "raw": "Dream Catcher",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "dream-catcher"
+            }
+          },
+          {
+            "raw": "Eternal Feather",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "eternal-feather"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics that accompany Mother's Day celebrations",
+        "titleKo": "어머니의 날에 어울리는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Lee's Waffle",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "lee-s-waffle"
+            }
+          },
+          {
+            "raw": "Ancient Tea Set",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ancient-tea-set"
+            }
+          },
+          {
+            "raw": "Happy Flower",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "happy-flower"
+            }
+          },
+          {
+            "raw": "Teardrop Locket",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "teardroplocket"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "issueId": "2025-06",
+    "issueNumber": 11,
+    "claimId": "connections",
+    "slug": "Pyy8R4tT47j6FzBO9vjg",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Cards that can create copies of cards",
+        "titleKo": "카드를 복사하는 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Pride",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "pride"
+            }
+          },
+          {
+            "raw": "Endless Agony",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "endless-agony"
+            }
+          },
+          {
+            "raw": "Anger",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "anger"
+            }
+          },
+          {
+            "raw": "Dual Wield",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "dual-wield"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Cards with art that features multiple orb types",
+        "titleKo": "그림에 여러 종류의 구체가 나오는 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Rainbow",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "rainbow"
+            }
+          },
+          {
+            "raw": "Chaos",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "chaos"
+            }
+          },
+          {
+            "raw": "Fission",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "fission"
+            }
+          },
+          {
+            "raw": "Bullseye",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "lockon"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Items that conditionally apply debuffs to enemies",
+        "titleKo": "조건에 따라 적에게 디버프를 거는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Go For The Eyes",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "go-for-the-eyes"
+            }
+          },
+          {
+            "raw": "Indignation",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "indignation"
+            }
+          },
+          {
+            "raw": "Champion Belt",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "champion-belt"
+            }
+          },
+          {
+            "raw": "Hand Drill",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "handdrill"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics that can be unrolled",
+        "titleKo": "펼칠 수 있는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Tough Bandages",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "tough-bandages"
+            }
+          },
+          {
+            "raw": "Hovering Kite",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "hoveringkite"
+            }
+          },
+          {
+            "raw": "Ninja Scroll",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ninja-scroll"
+            }
+          },
+          {
+            "raw": "Thread and Needle",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "thread-and-needle"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "issueId": "2025-07",
+    "issueNumber": 12,
+    "claimId": "connections",
+    "slug": "o3gH5Q2ogryOo37p7vjL",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Cards with parts of the body in the name",
+        "titleKo": "이름에 신체 부위가 들어간 카드",
+        "noteKo": "영어 이름에 신체 부위가 숨어 있습니다: Third Eye(눈), Coolheaded(머리), Armaments(팔), Leg Sweep(다리).",
+        "members": [
+          {
+            "raw": "Third Eye",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "thirdeye"
+            }
+          },
+          {
+            "raw": "Coolheaded",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "coolheaded"
+            }
+          },
+          {
+            "raw": "Armaments",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "armaments"
+            }
+          },
+          {
+            "raw": "Leg Sweep",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "leg-sweep"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Items with effects based on # of attacks played",
+        "titleKo": "낸 공격 카드 수에 따라 효과가 나는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Nunchaku",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "nunchaku"
+            }
+          },
+          {
+            "raw": "Art of War",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "art-of-war"
+            }
+          },
+          {
+            "raw": "Kunai",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "kunai"
+            }
+          },
+          {
+            "raw": "Pen Nib",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "pen-nib"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Things dependent on # of any type of cards played",
+        "titleKo": "종류와 상관없이 낸 카드 수에 따라 달라지는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Time Warp",
+            "ref": {
+              "game": "sts1",
+              "type": "power",
+              "id": "time-warp"
+            }
+          },
+          {
+            "raw": "FTL",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "ftl"
+            }
+          },
+          {
+            "raw": "Ink Bottle",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "inkbottle"
+            }
+          },
+          {
+            "raw": "Panache",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "panache"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Cards with names that are also famous movie titles",
+        "titleKo": "이름이 유명한 영화 제목과 같은 카드",
+        "noteKo": "영화 「True Grit」, 「Sucker Punch」, 「Predator」, 「Doubt」와 이름이 같습니다.",
+        "members": [
+          {
+            "raw": "True Grit",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "true-grit"
+            }
+          },
+          {
+            "raw": "Sucker Punch",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "sucker-punch"
+            }
+          },
+          {
+            "raw": "Predator",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "predator"
+            }
+          },
+          {
+            "raw": "Doubt",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "doubt"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "issueId": "2025-08",
+    "issueNumber": 13,
+    "claimId": "connections",
+    "slug": "sphonNlstWaOCwnbWAMM",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Cards with effects that trigger if Fatal",
+        "titleKo": "치명타일 때 효과가 나는 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Hand of Greed",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "handofgreed"
+            }
+          },
+          {
+            "raw": "Feed",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "feed"
+            }
+          },
+          {
+            "raw": "Ritual Dagger",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "ritualdagger"
+            }
+          },
+          {
+            "raw": "Lesson Learned",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "lessonlearned"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Items you might use to cool off in the summer",
+        "titleKo": "여름에 더위를 식힐 때 쓸 법한 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Ice Cream",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ice-cream"
+            }
+          },
+          {
+            "raw": "Ornamental Fan",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ornamental-fan"
+            }
+          },
+          {
+            "raw": "Pure Water",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "purewater"
+            }
+          },
+          {
+            "raw": "Fruit Juice",
+            "ref": {
+              "game": "sts1",
+              "type": "potion",
+              "id": "fruit-juice"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that apply a debuff to the player",
+        "titleKo": "플레이어에게 디버프를 거는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Gremlin Visage",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "gremlinmask"
+            }
+          },
+          {
+            "raw": "Mutagenic Strength",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "mutagenicstrength"
+            }
+          },
+          {
+            "raw": "Snecko Eye",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "snecko-eye"
+            }
+          },
+          {
+            "raw": "Duality",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "yang"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Items that share a name with a famous video game",
+        "titleKo": "유명한 비디오 게임과 이름이 같은 것",
+        "noteKo": "게임 「GoldenEye 007」, 「Rage」, 「FTL: Faster Than Light」, 「The Case of the Golden Idol」과 이름이 같습니다.",
+        "members": [
+          {
+            "raw": "Golden Eye",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "goldeneye"
+            }
+          },
+          {
+            "raw": "Rage",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "rage"
+            }
+          },
+          {
+            "raw": "FTL",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "ftl"
+            }
+          },
+          {
+            "raw": "Golden Idol",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "golden-idol"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "issueId": "2025-09",
+    "issueNumber": 14,
+    "claimId": "connections",
+    "slug": "g14MCkop8mMRKjn3lwdZ",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Relics you might find in a desk drawer",
+        "titleKo": "책상 서랍에서 나올 법한 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Pen Nib",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "pen-nib"
+            }
+          },
+          {
+            "raw": "Abacus",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "theabacus"
+            }
+          },
+          {
+            "raw": "Ink Bottle",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "inkbottle"
+            }
+          },
+          {
+            "raw": "Letter Opener",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "letter-opener"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics with effects that trigger on HP loss",
+        "titleKo": "체력을 잃을 때 효과가 나는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Emotion Chip",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "emotion-chip"
+            }
+          },
+          {
+            "raw": "Self-Forming Clay",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "self-forming-clay"
+            }
+          },
+          {
+            "raw": "Centennial Puzzle",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "centennial-puzzle"
+            }
+          },
+          {
+            "raw": "Runic Cube",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "runic-cube"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that can be read",
+        "titleKo": "읽을 수 있는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Art of War",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "art-of-war"
+            }
+          },
+          {
+            "raw": "Enchiridion",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "enchiridion"
+            }
+          },
+          {
+            "raw": "Nilry's Codex",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "nilry-s-codex"
+            }
+          },
+          {
+            "raw": "Ninja Scroll",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "ninja-scroll"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics that interact with card rewards",
+        "titleKo": "카드 보상과 상호작용하는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "N'loth's Gift",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "nloth-s-gift"
+            }
+          },
+          {
+            "raw": "Question Card",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "question-card"
+            }
+          },
+          {
+            "raw": "Busted Crown",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "busted-crown"
+            }
+          },
+          {
+            "raw": "Singing Bowl",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "singing-bowl"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "issueId": "2025-10",
+    "issueNumber": 15,
+    "claimId": "connections",
+    "slug": "jKxTwnNfOr8BzmbApbgo",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Cards that are Ethereal",
+        "titleKo": "휘발성 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Ghostly Armor",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "ghostly-armor"
+            }
+          },
+          {
+            "raw": "Apparition",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "ghostly"
+            }
+          },
+          {
+            "raw": "Echo Form",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "echo-form"
+            }
+          },
+          {
+            "raw": "Carnage",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "carnage"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics that feature flames",
+        "titleKo": "불꽃이 그려진 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Burning Blood",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "burning-blood"
+            }
+          },
+          {
+            "raw": "Bottled Flame",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "bottled-flame"
+            }
+          },
+          {
+            "raw": "Blue Candle",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "blue-candle"
+            }
+          },
+          {
+            "raw": "Lantern",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "lantern"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Items that feature skulls",
+        "titleKo": "해골이 그려진 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Offering",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "offering"
+            }
+          },
+          {
+            "raw": "Bouncing Flask",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "bouncing-flask"
+            }
+          },
+          {
+            "raw": "Snecko Skull",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "snake-skull"
+            }
+          },
+          {
+            "raw": "Red Skull",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "red-skull"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Sources of Burn",
+        "titleKo": "화상을 만드는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Hexaghost",
+            "ref": {
+              "game": "sts1",
+              "type": "monster",
+              "id": "hexaghost"
+            }
+          },
+          {
+            "raw": "Immolate",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "immolate"
+            }
+          },
+          {
+            "raw": "Nemesis",
+            "ref": {
+              "game": "sts1",
+              "type": "monster",
+              "id": "nemesis"
+            }
+          },
+          {
+            "raw": "Overclock",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "steam-power"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "issueId": "2025-11",
+    "issueNumber": 16,
+    "claimId": "connections",
+    "slug": "0dvnTQSgKeGLvXEf7U0x",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Items with effects based on # of cards discarded",
+        "titleKo": "버린 카드 수에 따라 효과가 나는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Eviscerate",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "eviscerate"
+            }
+          },
+          {
+            "raw": "Storm of Steel",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "storm-of-steel"
+            }
+          },
+          {
+            "raw": "Gambling Chip",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "gambling-chip"
+            }
+          },
+          {
+            "raw": "Calculated Gamble",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "calculated-gamble"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Items with synonyms for \"perpetual\" in the name",
+        "titleKo": "이름에 '영원'과 같은 뜻의 말이 들어간 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Unceasing Top",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "unceasing-top"
+            }
+          },
+          {
+            "raw": "Eternal Feather",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "eternal-feather"
+            }
+          },
+          {
+            "raw": "Endless Agony",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "endless-agony"
+            }
+          },
+          {
+            "raw": "Infinite Blades",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "infinite-blades"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that feature a preserved organism",
+        "titleKo": "보존된 생물이 들어간 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "The Specimen",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "the-specimen"
+            }
+          },
+          {
+            "raw": "Mummified Hand",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "mummified-hand"
+            }
+          },
+          {
+            "raw": "Fossilized Helix",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "fossilizedhelix"
+            }
+          },
+          {
+            "raw": "Preserved Insect",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "preservedinsect"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics with end-of-turn effects",
+        "titleKo": "턴 종료 시 효과가 나는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Nilry's Codex",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "nilry-s-codex"
+            }
+          },
+          {
+            "raw": "Runic Pyramid",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "runic-pyramid"
+            }
+          },
+          {
+            "raw": "Orichalcum",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "orichalcum"
+            }
+          },
+          {
+            "raw": "Cloak Clasp",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "cloakclasp"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "issueId": "2025-12",
+    "issueNumber": 17,
+    "claimId": "connections",
+    "slug": "kqvyYZv5i8wxwM1ZxipW",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Relics that add or remove rest site options",
+        "titleKo": "휴식 장소 선택지를 늘리거나 없애는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Peace Pipe",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "peace-pipe"
+            }
+          },
+          {
+            "raw": "Coffee Dripper",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "coffee-dripper"
+            }
+          },
+          {
+            "raw": "Fusion Hammer",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "fusion-hammer"
+            }
+          },
+          {
+            "raw": "Shovel",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "shovel"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics with start of combat effects",
+        "titleKo": "전투 시작 시 효과가 나는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Toolbox",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "toolbox"
+            }
+          },
+          {
+            "raw": "Mutagenic Strength",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "mutagenicstrength"
+            }
+          },
+          {
+            "raw": "Snecko Eye",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "snecko-eye"
+            }
+          },
+          {
+            "raw": "Bag of Preparation",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "bag-of-preparation"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Items related to royalty",
+        "titleKo": "왕실과 관련된 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Regal Pillow",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "regal-pillow"
+            }
+          },
+          {
+            "raw": "Busted Crown",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "busted-crown"
+            }
+          },
+          {
+            "raw": "Circlet",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "circlet"
+            }
+          },
+          {
+            "raw": "Master of Strategy",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "master-of-strategy"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Items that feature star motifs",
+        "titleKo": "별이 그려진 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Black Star",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "black-star"
+            }
+          },
+          {
+            "raw": "Pride",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "pride"
+            }
+          },
+          {
+            "raw": "Wish",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "wish"
+            }
+          },
+          {
+            "raw": "Shuriken",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "shuriken"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "issueId": "2026-01",
+    "issueNumber": 18,
+    "claimId": "connections",
+    "slug": "MVSEQwqKM3ZKZgvZsiiC",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Relics that can measure time",
+        "titleKo": "시간을 잴 수 있는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Mercury Hourglass",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "mercury-hourglass"
+            }
+          },
+          {
+            "raw": "Pocketwatch",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "pocketwatch"
+            }
+          },
+          {
+            "raw": "Sundial",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "sundial"
+            }
+          },
+          {
+            "raw": "Stone Calendar",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "stonecalendar"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Events that allow you to remove cards",
+        "titleKo": "카드를 제거할 수 있는 사건",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Bonfire Spirits",
+            "ref": {
+              "game": "sts1",
+              "type": "event",
+              "id": "bonfire-spirits"
+            }
+          },
+          {
+            "raw": "Falling",
+            "ref": {
+              "game": "sts1",
+              "type": "event",
+              "id": "falling"
+            }
+          },
+          {
+            "raw": "The Cleric",
+            "ref": {
+              "game": "sts1",
+              "type": "event",
+              "id": "the-cleric"
+            }
+          },
+          {
+            "raw": "The Divine Fountain",
+            "ref": {
+              "game": "sts1",
+              "type": "event",
+              "id": "the-divine-fountain"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Things that feature depictions of gold coins",
+        "titleKo": "금화가 그려진 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Old Coin",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "old-coin"
+            }
+          },
+          {
+            "raw": "Just Lucky",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "justlucky"
+            }
+          },
+          {
+            "raw": "Hand of Greed",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "handofgreed"
+            }
+          },
+          {
+            "raw": "Golden Shrine",
+            "ref": {
+              "game": "sts1",
+              "type": "event",
+              "id": "golden-shrine"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Deprecated Cards",
+        "titleKo": "게임에서 빠진 카드",
+        "noteKo": "개발 중 게임에서 빠진 카드라 그림과 번역이 없는 것이 있습니다.",
+        "members": [
+          {
+            "raw": "Venomology",
+            "ref": null
+          },
+          {
+            "raw": "Nova",
+            "ref": null
+          },
+          {
+            "raw": "Flux Capacitor",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "flux-capacitor"
+            }
+          },
+          {
+            "raw": "Undo",
+            "ref": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "issueId": "2026-02",
+    "issueNumber": 19,
+    "claimId": "connections",
+    "slug": "Yfq33LGn7KS0ipat5vDx",
+    "era": "sts1",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Items that both grant energy and draw cards",
+        "titleKo": "에너지도 주고 카드도 뽑게 하는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Heel Hook",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "heel-hook"
+            }
+          },
+          {
+            "raw": "Adrenaline",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "adrenaline"
+            }
+          },
+          {
+            "raw": "Dropkick",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "dropkick"
+            }
+          },
+          {
+            "raw": "Gremlin Horn",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "gremlin-horn"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Buffs that increase strength",
+        "titleKo": "힘을 올리는 버프",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Time Warp",
+            "ref": {
+              "game": "sts1",
+              "type": "power",
+              "id": "time-warp"
+            }
+          },
+          {
+            "raw": "Demon Form",
+            "ref": {
+              "game": "sts1",
+              "type": "power",
+              "id": "demon-form"
+            }
+          },
+          {
+            "raw": "Curiosity",
+            "ref": {
+              "game": "sts1",
+              "type": "power",
+              "id": "curiosity"
+            }
+          },
+          {
+            "raw": "Angry",
+            "ref": {
+              "game": "sts1",
+              "type": "power",
+              "id": "angry"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Buffs/debuffs that use hearts in their symbols",
+        "titleKo": "아이콘에 하트가 들어간 버프와 디버프",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Beat of Death",
+            "ref": {
+              "game": "sts1",
+              "type": "power",
+              "id": "beatofdeath"
+            }
+          },
+          {
+            "raw": "Vulnerable",
+            "ref": {
+              "game": "sts1",
+              "type": "power",
+              "id": "vulnerable"
+            }
+          },
+          {
+            "raw": "Brutality",
+            "ref": {
+              "game": "sts1",
+              "type": "power",
+              "id": "brutality"
+            }
+          },
+          {
+            "raw": "Invincible",
+            "ref": {
+              "game": "sts1",
+              "type": "power",
+              "id": "invincible"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics that have a string attached",
+        "titleKo": "끈이 달린 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Hovering Kite",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "hoveringkite"
+            }
+          },
+          {
+            "raw": "Thread and Needle",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "thread-and-needle"
+            }
+          },
+          {
+            "raw": "Pocketwatch",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "pocketwatch"
+            }
+          },
+          {
+            "raw": "Letter Opener",
+            "ref": {
+              "game": "sts1",
+              "type": "relic",
+              "id": "letter-opener"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "issueId": "2026-03",
+    "issueNumber": 20,
+    "claimId": "connections",
+    "slug": "pv8twfcK1wLxtRrJ5huf",
+    "era": "sts2",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Items that Exhaust your hand",
+        "titleKo": "손패를 소멸시키는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Pael's Eye",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "PAELS_EYE"
+            }
+          },
+          {
+            "raw": "Fiend Fire",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "FIEND_FIRE"
+            }
+          },
+          {
+            "raw": "Stoke",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "STOKE"
+            }
+          },
+          {
+            "raw": "Eidolon",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "EIDOLON"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics that are a part of an enemy",
+        "titleKo": "적의 몸 일부인 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Gremlin Horn",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "GREMLIN_HORN"
+            }
+          },
+          {
+            "raw": "Beating Remnant",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "BEATING_REMNANT"
+            }
+          },
+          {
+            "raw": "Snecko Eye",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "SNECKO_EYE"
+            }
+          },
+          {
+            "raw": "Blessed Antlers",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "BLESSED_ANTLER"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that grant card rewards",
+        "titleKo": "카드 보상을 주는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Glass Eye",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "GLASS_EYE"
+            }
+          },
+          {
+            "raw": "Orrery",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "ORRERY"
+            }
+          },
+          {
+            "raw": "Lost Coffer",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "LOST_COFFER"
+            }
+          },
+          {
+            "raw": "White Star",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "WHITE_STAR"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Items that feature a fine powder",
+        "titleKo": "고운 가루가 들어간 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Powdered Demise",
+            "ref": {
+              "game": "sts2",
+              "type": "potion",
+              "id": "POWDERED_DEMISE"
+            }
+          },
+          {
+            "raw": "Glitter",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "GLITTER"
+            }
+          },
+          {
+            "raw": "Galactic Dust",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "GALACTIC_DUST"
+            }
+          },
+          {
+            "raw": "Charon's Ashes",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "CHARONS_ASHES"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "issueId": "2026-04",
+    "issueNumber": 21,
+    "claimId": "connections",
+    "slug": "UzgIWK4eM7pOikoXgcvJ",
+    "era": "sts2",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Items that Exhaust your hand",
+        "titleKo": "손패를 소멸시키는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Eidolon",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "EIDOLON"
+            }
+          },
+          {
+            "raw": "Pael's Eye",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "PAELS_EYE"
+            }
+          },
+          {
+            "raw": "Fiend Fire",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "FIEND_FIRE"
+            }
+          },
+          {
+            "raw": "Stoke",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "STOKE"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Cards with art that feature a Leaf Slime",
+        "titleKo": "그림에 나뭇잎 슬라임이 나오는 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Go for the Eyes",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "GO_FOR_THE_EYES"
+            }
+          },
+          {
+            "raw": "Tremble",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "TREMBLE"
+            }
+          },
+          {
+            "raw": "Solar Strike",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "SOLAR_STRIKE"
+            }
+          },
+          {
+            "raw": "Stomp",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "STOMP"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Cards that grant Block based on cards Exhausted",
+        "titleKo": "소멸한 카드에 따라 방어도를 주는 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Evil Eye",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "EVIL_EYE"
+            }
+          },
+          {
+            "raw": "Feel No Pain",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "FEEL_NO_PAIN"
+            }
+          },
+          {
+            "raw": "Second Wind",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "SECOND_WIND"
+            }
+          },
+          {
+            "raw": "True Grit",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "TRUE_GRIT"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Cards with art that feature a Twig Slime",
+        "titleKo": "그림에 가지 슬라임이 나오는 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Beam Cell",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "BEAM_CELL"
+            }
+          },
+          {
+            "raw": "Tesla Coil",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "TESLA_COIL"
+            }
+          },
+          {
+            "raw": "Nightmare",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "NIGHTMARE"
+            }
+          },
+          {
+            "raw": "Breakthrough",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "BREAKTHROUGH"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "issueId": "2026-05",
+    "issueNumber": 22,
+    "claimId": "connections",
+    "slug": "qRcZUM29eRqCWcAuiCeu",
+    "era": "sts2",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Sources of vigor",
+        "titleKo": "활력을 주는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Akabeko",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "AKABEKO"
+            }
+          },
+          {
+            "raw": "Prep Time",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "PREP_TIME"
+            }
+          },
+          {
+            "raw": "Patter",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "PATTER"
+            }
+          },
+          {
+            "raw": "Terraforming",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "TERRAFORMING"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics that have fake versions",
+        "titleKo": "가짜가 있는 유물",
+        "noteKo": "짭상인이 파는 가짜 유물(이름에 ?가 들어간 것)의 원본입니다.",
+        "members": [
+          {
+            "raw": "Anchor",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "ANCHOR"
+            }
+          },
+          {
+            "raw": "Lee's Waffle",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "LEES_WAFFLE"
+            }
+          },
+          {
+            "raw": "Orichalcum",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "ORICHALCUM"
+            }
+          },
+          {
+            "raw": "Happy Flower",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "HAPPY_FLOWER"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that are made of stone",
+        "titleKo": "돌로 만든 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Stone Humidifier",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "STONE_HUMIDIFIER"
+            }
+          },
+          {
+            "raw": "Hefty Tablet",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "HEFTY_TABLET"
+            }
+          },
+          {
+            "raw": "Stone Calendar",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "STONE_CALENDAR"
+            }
+          },
+          {
+            "raw": "Oddly Smooth Stone",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "ODDLY_SMOOTH_STONE"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Items that upgrade cards",
+        "titleKo": "카드를 강화하는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Lesson Learned",
+            "ref": {
+              "game": "sts1",
+              "type": "card",
+              "id": "lessonlearned"
+            }
+          },
+          {
+            "raw": "Stone Cracker",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "STONE_CRACKER"
+            }
+          },
+          {
+            "raw": "Neow's Talisman",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "NEOWS_TALISMAN"
+            }
+          },
+          {
+            "raw": "Toxic Egg",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "TOXIC_EGG"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "issueId": "2026-06",
+    "issueNumber": 23,
+    "claimId": "connections",
+    "slug": "BoyCHbBtymN2Umc3EAAu",
+    "era": "sts2",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Relics that are things you might see at the beach",
+        "titleKo": "해변에서 볼 법한 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Sea Glass",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "SEA_GLASS"
+            }
+          },
+          {
+            "raw": "Ice Cream",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "ICE_CREAM"
+            }
+          },
+          {
+            "raw": "Sand Castle",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "SAND_CASTLE"
+            }
+          },
+          {
+            "raw": "Booming Conch",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "BOOMING_CONCH"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Cards that grant immediate Energy",
+        "titleKo": "바로 에너지를 주는 카드",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Brightest Flame",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "BRIGHTEST_FLAME"
+            }
+          },
+          {
+            "raw": "Production",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "PRODUCTION"
+            }
+          },
+          {
+            "raw": "Believe in You",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "BELIEVE_IN_YOU"
+            }
+          },
+          {
+            "raw": "Energy Surge",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "ENERGY_SURGE"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Sources of curses",
+        "titleKo": "저주를 주는 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Sere Talon",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "SERE_TALON"
+            }
+          },
+          {
+            "raw": "Calling Bell",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "CALLING_BELL"
+            }
+          },
+          {
+            "raw": "Sunken Treasury",
+            "ref": {
+              "game": "sts2",
+              "type": "event",
+              "id": "SUNKEN_TREASURY"
+            }
+          },
+          {
+            "raw": "Reflections snoitcelfeR",
+            "ref": {
+              "game": "sts2",
+              "type": "event",
+              "id": "REFLECTIONS"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Cards that are things you might do at the beach",
+        "titleKo": "해변에서 할 법한 일이 이름인 카드",
+        "noteKo": "영어 이름이 해변에서 하는 일입니다: Splash(물장구), Burn(햇볕에 타기), Relax(쉬기), Volley(비치발리볼).",
+        "members": [
+          {
+            "raw": "Splash",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "SPLASH"
+            }
+          },
+          {
+            "raw": "Burn",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "BURN"
+            }
+          },
+          {
+            "raw": "Relax",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "RELAX"
+            }
+          },
+          {
+            "raw": "Volley",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "VOLLEY"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "issueId": "2026-07",
+    "issueNumber": 24,
+    "claimId": "connections",
+    "slug": "Lg0v4IrhEzSGMhdsODcp",
+    "era": "sts2",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Items that feature water",
+        "titleKo": "물이 들어간 것",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Ripple Basin",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "RIPPLE_BASIN"
+            }
+          },
+          {
+            "raw": "Pael's Tears",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "PAELS_TEARS"
+            }
+          },
+          {
+            "raw": "Glowwater Potion",
+            "ref": {
+              "game": "sts2",
+              "type": "potion",
+              "id": "GLOWWATER_POTION"
+            }
+          },
+          {
+            "raw": "Ship in a Bottle",
+            "ref": {
+              "game": "sts2",
+              "type": "potion",
+              "id": "SHIP_IN_A_BOTTLE"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics that feature gemstones",
+        "titleKo": "보석이 들어간 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Prismatic Gem",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "PRISMATIC_GEM"
+            }
+          },
+          {
+            "raw": "Jewelry Box",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "JEWELRY_BOX"
+            }
+          },
+          {
+            "raw": "Regalite",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "REGALITE"
+            }
+          },
+          {
+            "raw": "Whispering Earrings",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "WHISPERING_EARRING"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that provide potions once",
+        "titleKo": "포션을 한 번 주는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Cauldron",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "CAULDRON"
+            }
+          },
+          {
+            "raw": "Lost Coffer",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "LOST_COFFER"
+            }
+          },
+          {
+            "raw": "Alchemical Coffer",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "ALCHEMICAL_COFFER"
+            }
+          },
+          {
+            "raw": "Phial Holster",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "PHIAL_HOLSTER"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics that continually provide potions",
+        "titleKo": "포션을 계속 주는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Petrified Toad",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "PETRIFIED_TOAD"
+            }
+          },
+          {
+            "raw": "Tiny Mailbox",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "TINY_MAILBOX"
+            }
+          },
+          {
+            "raw": "Delicate Frond",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "DELICATE_FROND"
+            }
+          },
+          {
+            "raw": "White Beast Statue",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "WHITE_BEAST_STATUE"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "issueId": "2026-08",
+    "issueNumber": 25,
+    "claimId": "connections",
+    "slug": "0v4Jk9Mk7wGLk7qnJODa",
+    "era": "sts2",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Relics that upgrade cards on pickup",
+        "titleKo": "얻을 때 카드를 강화하는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Pomander",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "POMANDER"
+            }
+          },
+          {
+            "raw": "Sand Castle",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "SAND_CASTLE"
+            }
+          },
+          {
+            "raw": "Yummy Cookie",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "YUMMY_COOKIE"
+            }
+          },
+          {
+            "raw": "Neow's Talisman",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "NEOWS_TALISMAN"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics that hold other things",
+        "titleKo": "다른 것을 담는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Phial Holster",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "PHIAL_HOLSTER"
+            }
+          },
+          {
+            "raw": "Jewelry Box",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "JEWELRY_BOX"
+            }
+          },
+          {
+            "raw": "Scroll Boxes",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "SCROLL_BOXES"
+            }
+          },
+          {
+            "raw": "Potion Belt",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "POTION_BELT"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that upgrade cards after winning combats",
+        "titleKo": "전투에서 이기면 카드를 강화하는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Lava Lamp",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "LAVA_LAMP"
+            }
+          },
+          {
+            "raw": "War Hammer",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "WAR_HAMMER"
+            }
+          },
+          {
+            "raw": "Pael's Tooth",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "PAELS_TOOTH"
+            }
+          },
+          {
+            "raw": "Fishing Rod",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "FISHING_ROD"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics that shoot other things",
+        "titleKo": "무언가를 쏘는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Miniature Cannon",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "MINIATURE_CANNON"
+            }
+          },
+          {
+            "raw": "Crossbow",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "CROSSBOW"
+            }
+          },
+          {
+            "raw": "Festive Popper",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "FESTIVE_POPPER"
+            }
+          },
+          {
+            "raw": "Sling of Courage",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "SLING_OF_COURAGE"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "number": 26,
+    "issueId": "2026-09",
+    "issueNumber": 26,
+    "claimId": "connections-26",
+    "slug": "HK7cqwtkUsqQvhDSFtqB",
+    "era": "sts2",
+    "categories": [
+      {
+        "level": 0,
+        "titleEn": "Relics that can be baked",
+        "titleKo": "구울 수 있는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Lunar Pastry",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "LUNAR_PASTRY"
+            }
+          },
+          {
+            "raw": "Bread",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "BREAD"
+            }
+          },
+          {
+            "raw": "Orange Dough",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "ORANGE_DOUGH"
+            }
+          },
+          {
+            "raw": "Yummy Cookie",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "YUMMY_COOKIE"
+            }
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "titleEn": "Relics that assist with card draw",
+        "titleKo": "카드 뽑기를 돕는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Joss Paper",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "JOSS_PAPER"
+            }
+          },
+          {
+            "raw": "Wing Charm",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "WING_CHARM"
+            }
+          },
+          {
+            "raw": "Beautiful Bracelet",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "BEAUTIFUL_BRACELET"
+            }
+          },
+          {
+            "raw": "Game Piece",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "GAME_PIECE"
+            }
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "titleEn": "Relics that contain words for high temperatures",
+        "titleKo": "이름에 뜨거움을 뜻하는 말이 들어간 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Molten Egg",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "MOLTEN_EGG"
+            }
+          },
+          {
+            "raw": "Burning Sticks",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "BURNING_STICKS"
+            }
+          },
+          {
+            "raw": "Very Hot Cocoa",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "VERY_HOT_COCOA"
+            }
+          },
+          {
+            "raw": "Toasty Mittens",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "TOASTY_MITTENS"
+            }
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "titleEn": "Relics that make cards free to play",
+        "titleKo": "카드를 공짜로 쓰게 하는 유물",
+        "noteKo": null,
+        "members": [
+          {
+            "raw": "Vexing Puzzlebox",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "VEXING_PUZZLEBOX"
+            }
+          },
+          {
+            "raw": "Mummified Hand",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "MUMMIFIED_HAND"
+            }
+          },
+          {
+            "raw": "Nutritious Soup",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "NUTRITIOUS_SOUP"
+            }
+          },
+          {
+            "raw": "Brilliant Scarf",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "BRILLIANT_SCARF"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
     "number": 27,
     "issueId": "2026-10",
     "issueNumber": 27,
@@ -13,10 +4251,38 @@
         "titleKo": "할로윈에 볼 법한 유물",
         "noteKo": null,
         "members": [
-          { "raw": "Cauldron", "ref": { "type": "relic", "id": "CAULDRON" } },
-          { "raw": "Big Hat", "ref": { "type": "relic", "id": "BIG_HAT" } },
-          { "raw": "Pumpkin Candle", "ref": { "type": "relic", "id": "PUMPKIN_CANDLE" } },
-          { "raw": "Lasting Candy", "ref": { "type": "relic", "id": "LASTING_CANDY" } }
+          {
+            "raw": "Cauldron",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "CAULDRON"
+            }
+          },
+          {
+            "raw": "Big Hat",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "BIG_HAT"
+            }
+          },
+          {
+            "raw": "Pumpkin Candle",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "PUMPKIN_CANDLE"
+            }
+          },
+          {
+            "raw": "Lasting Candy",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "LASTING_CANDY"
+            }
+          }
         ]
       },
       {
@@ -25,10 +4291,38 @@
         "titleKo": "골골이의 공격에 따라 효과가 나는 것",
         "noteKo": null,
         "members": [
-          { "raw": "Bone Flute", "ref": { "type": "relic", "id": "BONE_FLUTE" } },
-          { "raw": "Sic 'Em", "ref": { "type": "card", "id": "SIC_EM" } },
-          { "raw": "Flatten", "ref": { "type": "card", "id": "FLATTEN" } },
-          { "raw": "Rattle", "ref": { "type": "card", "id": "RATTLE" } }
+          {
+            "raw": "Bone Flute",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "BONE_FLUTE"
+            }
+          },
+          {
+            "raw": "Sic 'Em",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "SIC_EM"
+            }
+          },
+          {
+            "raw": "Flatten",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "FLATTEN"
+            }
+          },
+          {
+            "raw": "Rattle",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "RATTLE"
+            }
+          }
         ]
       },
       {
@@ -37,10 +4331,38 @@
         "titleKo": "체력을 바쳐야 하는 카드",
         "noteKo": null,
         "members": [
-          { "raw": "Sacrifice", "ref": { "type": "card", "id": "SACRIFICE" } },
-          { "raw": "Bone Shards", "ref": { "type": "card", "id": "BONE_SHARDS" } },
-          { "raw": "Necro Mastery", "ref": { "type": "card", "id": "NECRO_MASTERY" } },
-          { "raw": "Melancholy", "ref": { "type": "card", "id": "MELANCHOLY" } }
+          {
+            "raw": "Sacrifice",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "SACRIFICE"
+            }
+          },
+          {
+            "raw": "Bone Shards",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "BONE_SHARDS"
+            }
+          },
+          {
+            "raw": "Necro Mastery",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "NECRO_MASTERY"
+            }
+          },
+          {
+            "raw": "Melancholy",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "MELANCHOLY"
+            }
+          }
         ]
       },
       {
@@ -49,10 +4371,38 @@
         "titleKo": "해골 그림이 들어간 것",
         "noteKo": null,
         "members": [
-          { "raw": "Bone Tea", "ref": { "type": "relic", "id": "BONE_TEA" } },
-          { "raw": "Bouncing Flask", "ref": { "type": "card", "id": "BOUNCING_FLASK" } },
-          { "raw": "Potion of Doom", "ref": { "type": "potion", "id": "POTION_OF_DOOM" } },
-          { "raw": "Friendship", "ref": { "type": "card", "id": "FRIENDSHIP" } }
+          {
+            "raw": "Bone Tea",
+            "ref": {
+              "game": "sts2",
+              "type": "relic",
+              "id": "BONE_TEA"
+            }
+          },
+          {
+            "raw": "Bouncing Flask",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "BOUNCING_FLASK"
+            }
+          },
+          {
+            "raw": "Potion of Doom",
+            "ref": {
+              "game": "sts2",
+              "type": "potion",
+              "id": "POTION_OF_DOOM"
+            }
+          },
+          {
+            "raw": "Friendship",
+            "ref": {
+              "game": "sts2",
+              "type": "card",
+              "id": "FRIENDSHIP"
+            }
+          }
         ]
       }
     ]

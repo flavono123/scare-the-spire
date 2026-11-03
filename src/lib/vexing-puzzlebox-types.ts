@@ -1,11 +1,18 @@
 import type { EntityInfo } from "@/components/patch-note-renderer";
 
 export type ConnectionsMember = {
+  /** `game:type:id`, or `raw:<spelling>` for a name with no game data. */
   key: string;
   name: string;
   /** Spelling in the original puzzle. */
   raw: string;
-  entity: EntityInfo;
+  imageUrl: string | null;
+  /** STS2 Compendium hover tip. */
+  entity: EntityInfo | null;
+  /** STS1 Compendium hover tip, `sts1:<resource>:<slug>`. */
+  sts1MentionId: string | null;
+  /** STS1 things the Compendium lacks (events, blights): their game description. */
+  note: { description: string } | null;
 };
 
 export type ConnectionsCategory = {
@@ -20,6 +27,10 @@ export type ConnectionsPuzzle = {
   number: number;
   issueId: string;
   issueNumber: number;
+  /** The Neowsletter issue's date, YYYY-MM-DD. */
+  issueDate: string | null;
+  /** Which game the puzzle was written for; members can still name the other one. */
+  era: "sts1" | "sts2";
   claimId: string;
   slug: string;
   categories: ConnectionsCategory[];

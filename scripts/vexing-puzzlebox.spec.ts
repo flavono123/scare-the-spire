@@ -4,12 +4,15 @@ import connectionsPayload from "../data/sts2-connections.json";
 import { buildBetaArtQuizSets } from "../src/lib/beta-art-quiz";
 import type { BetaArtEntry } from "../src/lib/vexing-puzzlebox-types";
 
+assert.equal(connectionsPayload.length, 26, "every Neowsletter puzzle (#22 was never published)");
+assert.equal(new Set(connectionsPayload.map((puzzle) => puzzle.number)).size, 26);
 for (const puzzle of connectionsPayload) {
+  assert.ok(puzzle.categories.every((category) => category.titleKo), `#${puzzle.number} has Korean titles`);
   assert.equal(puzzle.categories.length, 4, `#${puzzle.number} has four groups`);
   assert.deepEqual(puzzle.categories.map((category) => category.level).toSorted(), [0, 1, 2, 3]);
   const keys = puzzle.categories.flatMap((category) => {
     assert.equal(category.members.length, 4, `#${puzzle.number} group has four members`);
-    return category.members.map((member) => `${member.ref.type}:${member.ref.id}`);
+    return category.members.map((member) => (member.ref ? `${member.ref.game}:${member.ref.type}:${member.ref.id}` : member.raw));
   });
   assert.equal(new Set(keys).size, 16, `#${puzzle.number} has no repeated member`);
 }
