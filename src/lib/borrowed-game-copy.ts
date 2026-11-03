@@ -51,12 +51,14 @@ export interface VexingPuzzleboxGameCopy {
   hero: string;
   betaArtHighScore: string;
   betaArtLowScore: string;
-  /** MERCHANT.talk.purchaseSuccess: a tile or choice is picked. */
+  /** MERCHANT.talk.purchaseSuccess: the fourth tile, a right group, or a right quiz pick. */
   merchantSuccessLines: string[];
   /** MERCHANT.talk.purchaseFailureGold: a locked toggle is clicked. */
   merchantFailureLines: string[];
   /** MERCHANT.talk.purchaseFailureForbidden: a guess is wrong. */
   merchantForbiddenLines: string[];
+  /** MERCHANT.talk.purchaseFailureSpace: a fifth tile when four are already picked. */
+  merchantSpaceLines: string[];
   vakuuName: string;
   /** WHISPERING_EARRING.approval */
   vakuuApproval: string;

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Extract the multiplayer hands, the merchant arm, and the speech bubbles from the local PCK.
+"""Extract the Vexing Puzzlebox images from the local PCK.
 
 Outputs:
   - public/images/sts2/ui/hands/{character}_{point,paper,rock}.webp  (scenes/ui/hand_image.tscn)
   - public/images/sts2/ui/hands/merchant_point.webp                  (merchant_room/hand arm + sleeve)
+  - public/images/sts2/ui/hands/fake_merchant_point.webp             (fake_merchant_room/hand)
   - public/images/sts2/ui/speech_bubble3.webp                        (scenes/merchant/merchant_rug_dialogue.tscn)
   - public/images/sts2/ui/speech_bubble3_purple.webp                 (vfx_speech_bubble.tscn, VfxColor.Purple)
+  - public/images/sts2/ui/combat/{end_turn_button,end_turn_button_glow,draw_pile,discard_pile,pile_button_count}.webp
 """
 
 from __future__ import annotations
@@ -30,6 +32,11 @@ MERCHANT_SLEEVE_BOUNDS = (1184, 395, 475, 516)
 # Where the sleeve cuff swallows the cut end of the arm, in the upright arm's pixels.
 MERCHANT_SLEEVE_TOP = 760
 MERCHANT_FADE_START = 1040
+FAKE_MERCHANT_HAND_PATH = "animations/backgrounds/fake_merchant_room/hand/fakemerchanthand.png"
+# Region from fakemerchanthand.atlas: the hand comes with its own sleeve, stored rotated.
+FAKE_MERCHANT_HAND_BOUNDS = (2, 334, 335, 844)
+FAKE_MERCHANT_FADE_SHARE = 0.72
+COMBAT_UI = ("end_turn_button", "end_turn_button_glow", "draw_pile", "discard_pile", "pile_button_count")
 # NSpeechBubbleVfx VfxColor.Purple.
 PURPLE_HSV = (0.3, 0.6, 0.5)
 
@@ -84,6 +91,19 @@ def merchant_arm(pck: PCKReader) -> Image.Image:
     return canvas.crop(canvas.getbbox())
 
 
+def fake_merchant_arm(pck: PCKReader) -> Image.Image:
+    """Stand the fake merchant's pointing hand upright, its sleeve faded at the bottom."""
+    atlas = read_texture(pck, FAKE_MERCHANT_HAND_PATH)
+    arm = crop(atlas, FAKE_MERCHANT_HAND_BOUNDS, rotated=True)
+    fade_start = round(arm.height * FAKE_MERCHANT_FADE_SHARE)
+    fade = Image.new("L", arm.size, 255)
+    for y in range(fade_start, arm.height):
+        share = (y - fade_start) / (arm.height - fade_start)
+        fade.paste(round(255 * (1 - share) ** 1.6), (0, y, arm.width, y + 1))
+    arm.putalpha(ImageChops.multiply(arm.getchannel("A"), fade))
+    return arm.crop(arm.getbbox())
+
+
 def hsv_shift(image: Image.Image, h: float, s: float, v: float) -> Image.Image:
     """shaders/hsv.gdshader: rotate hue and scale chroma in YIQ, then scale value."""
     angle = (1.0 - h) * 2 * math.pi
@@ -129,6 +149,9 @@ def main() -> None:
                 OUTPUT_ROOT / "hands" / f"{character}_{pose}.webp",
             )
     save(merchant_arm(pck), OUTPUT_ROOT / "hands" / "merchant_point.webp")
+    save(fake_merchant_arm(pck), OUTPUT_ROOT / "hands" / "fake_merchant_point.webp")
+    for name in COMBAT_UI:
+        save(read_texture(pck, f"images/packed/combat_ui/{name}.png"), OUTPUT_ROOT / "combat" / f"{name}.webp")
     bubble = read_texture(pck, "images/packed/vfx/speech_bubble3.png")
     save(bubble, OUTPUT_ROOT / "speech_bubble3.webp")
     save(hsv_shift(bubble, *PURPLE_HSV), OUTPUT_ROOT / "speech_bubble3_purple.webp")

@@ -5,7 +5,11 @@ import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import { RichText } from "@/components/rich-text";
 import Image from "@/components/ui/static-image";
-import { CHARACTER_HAND_TARGET_ATTRIBUTE } from "@/components/vexing-puzzlebox/character-hand-pointer";
+import {
+  CHARACTER_HAND_TARGET_ATTRIBUTE,
+  profileTokenCharacter,
+} from "@/components/vexing-puzzlebox/character-hand-pointer";
+import { EndTurnButton, PileButton } from "@/components/vexing-puzzlebox/combat-buttons";
 import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import {
@@ -16,10 +20,12 @@ import {
   type ShuffleMove,
 } from "@/components/vexing-puzzlebox/shuffle-hands";
 import { useVakuu } from "@/components/vexing-puzzlebox/vakuu-chatter";
+import { useStoredProfileSnapshot } from "@/hooks/use-user-profile";
 import { seededShuffle } from "@/lib/beta-art-quiz";
 import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
 import { playPurchaseFailedWiggle } from "@/lib/merchant-feedback";
 import { neowsletterClaimHref } from "@/lib/neowsletter-anchors";
+import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import { MEGA_CRIT_TOKEN_SRC, NEOWSLETTER_TOKEN_SRC } from "@/lib/vexing-puzzlebox";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import {
@@ -197,6 +203,9 @@ export function ConnectionsClient({
   const say = useMerchantSay();
   const vakuu = useVakuu();
   const playSound = usePuzzleboxSound();
+  const { stored, profile } = useStoredProfileSnapshot();
+  // Mistakes are spent like energy: the profile character's, or colorless without one.
+  const energyIcon = resolveSts2EnergyIcon(profileTokenCharacter(stored, profile) ?? "colorless");
   const localNamesDiffer = gameLocale !== "eng";
   const [display, setDisplay] = useState<ItemDisplay>({
     token: true,
@@ -352,12 +361,19 @@ export function ConnectionsClient({
       const count = (deselectCounts.current.get(key) ?? 0) + 1;
       deselectCounts.current.set(key, count);
       if (count === FLIP_FLOP_COUNT) remark(lines.flipFlop, ["hesitation"], 0.8);
-    } else if (selected.length < GROUP_SIZE) {
-      if (selected.length === 0) firstPickAt.current = at;
-      setSelected([...selected, key]);
-      playSound("uiClick");
-      say("success", tile);
+      return;
     }
+    if (selected.length >= GROUP_SIZE) {
+      // A fifth pick is a purchase with full hands: NMerchantSlot's wiggle and the no-room line.
+      playPurchaseFailedWiggle(tile);
+      say("space", tile);
+      return;
+    }
+    if (selected.length === 0) firstPickAt.current = at;
+    const next = [...selected, key];
+    setSelected(next);
+    playSound("uiClick");
+    if (next.length === GROUP_SIZE) say("success", tile);
   };
 
   const shuffle = (at: number) => {
@@ -399,6 +415,7 @@ export function ConnectionsClient({
       setSelected([]);
       setFreshLevel(levels[0]);
       later(() => setFreshLevel((current) => (current === levels[0] ? null : current)), FRESH_TITLE_MS);
+      say("success", button);
       playSound("gold");
       if (solvedLevels.length === puzzle.categories.length) {
         playSound("treasure");
@@ -623,46 +640,51 @@ export function ConnectionsClient({
         <>
           <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
             {copy.remainingMistakes}
-            <span className="flex gap-1" aria-label={`${MISTAKE_LIMIT - progress.mistakes}`}>
+            <span
+              className="flex gap-1"
+              role="img"
+              aria-label={`${MISTAKE_LIMIT - progress.mistakes}/${MISTAKE_LIMIT}`}
+              data-connections-mistakes={MISTAKE_LIMIT - progress.mistakes}
+            >
               {Array.from({ length: MISTAKE_LIMIT }, (_, index) => (
-                <span
+                <Image
                   key={index}
-                  className={`h-2.5 w-2.5 rounded-full ${
-                    index < MISTAKE_LIMIT - progress.mistakes ? "bg-primary" : "bg-muted"
+                  src={energyIcon}
+                  alt=""
+                  width={74}
+                  height={69}
+                  className={`h-6 w-6 object-contain transition-[filter,opacity] duration-300 ${
+                    index < MISTAKE_LIMIT - progress.mistakes ? "" : "opacity-35 grayscale"
                   }`}
                 />
               ))}
             </span>
           </div>
 
-          <div className="mt-3 flex flex-wrap justify-center gap-2">
-            <button
-              type="button"
+          <div className="mt-4 flex items-center justify-center gap-3 sm:gap-5">
+            <PileButton
+              pile="draw"
+              count={remainingTiles.length}
+              label={copy.shuffle}
               disabled={wrongKeys !== null}
               onClick={(event) => shuffle(event.timeStamp)}
-              className="rounded-lg border border-border px-3 py-1.5 text-sm hover:border-primary/60 disabled:opacity-40"
-            >
-              {copy.shuffle}
-            </button>
-            <button
-              type="button"
+            />
+            <PileButton
+              pile="discard"
+              count={selected.length}
+              label={copy.deselect}
               disabled={selected.length === 0}
               onClick={() => {
                 setSelected([]);
                 playSound("uiBack");
               }}
-              className="rounded-lg border border-border px-3 py-1.5 text-sm hover:border-primary/60 disabled:opacity-40"
-            >
-              {copy.deselect}
-            </button>
-            <button
-              type="button"
+            />
+            <EndTurnButton
+              label={copy.submit}
+              ready={selected.length === GROUP_SIZE && wrongKeys === null}
               disabled={selected.length !== GROUP_SIZE || wrongKeys !== null}
               onClick={(event) => submit(event.currentTarget, event.timeStamp)}
-              className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground disabled:opacity-40"
-            >
-              {copy.submit}
-            </button>
+            />
           </div>
         </>
       )}

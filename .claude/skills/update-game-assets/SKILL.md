@@ -21,8 +21,9 @@ Extracted from the PCK file as PNG/WebP.
 - `scripts/extract-card-portraits.py` → `public/images/sts2/cards/`, `cards-beta/`
 - `scripts/extract-nav-icons.py` → `public/images/sts2/nav/`
 - `scripts/extract-map-assets.py` → `public/images/sts2/map/`
-- `scripts/extract-multiplayer-hand-assets.py` → `public/images/sts2/ui/hands/` (multiplayer
-  point/paper/rock hands, the merchant arm) and the speech bubbles in `public/images/sts2/ui/`.
+- `scripts/extract-vexing-puzzlebox-images.py` → `public/images/sts2/ui/hands/` (multiplayer
+  point/paper/rock hands, the merchant and fake merchant arms), the speech bubbles in
+  `public/images/sts2/ui/`, and the combat pile and end turn buttons in `public/images/sts2/ui/combat/`.
   Run from the repo root with `PYTHONPATH=.`.
 - `scripts/extract-vexing-puzzlebox-audio.py` → `public/audio/sts2/` (merchant room music,
   merchant voice, UI and card sounds mixed from FMOD bank layers). Needs `vgmstream-cli`
@@ -70,7 +71,7 @@ python3 scripts/extract-card-portraits.py --force
 python3 scripts/extract-map-assets.py --force
 
 # 2.6 Refresh Vexing Puzzlebox hands, bubbles, and audio
-PYTHONPATH=. python3 scripts/extract-multiplayer-hand-assets.py
+PYTHONPATH=. python3 scripts/extract-vexing-puzzlebox-images.py
 PYTHONPATH=. python3 scripts/extract-vexing-puzzlebox-audio.py
 node scripts/build-sts2-public-image-file-index.mjs
 

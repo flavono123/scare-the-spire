@@ -29,6 +29,7 @@ const MERCHANT_VOICE: Record<MerchantLineKind, PuzzleboxSound> = {
   success: "merchantThankYou",
   failure: "merchantDisappointment",
   forbidden: "merchantDisappointment",
+  space: "merchantDisappointment",
 };
 
 type MerchantBubble = {
@@ -37,6 +38,12 @@ type MerchantBubble = {
   left: number;
   top: number;
 };
+
+/** A random line, not the one he just said when there is another. */
+function pickLine(lines: string[], last: string | null): string {
+  const pool = lines.length > 1 ? lines.filter((line) => line !== last) : lines;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
 
 type MerchantSay = (kind: MerchantLineKind, anchor: HTMLElement) => void;
 
@@ -57,6 +64,7 @@ export function MerchantFeedbackProvider({
   const nextId = useRef(0);
   const hideTimer = useRef<number | null>(null);
   const playSound = usePuzzleboxSound();
+  const lastLine = useRef<string | null>(null);
 
   const say = useCallback<MerchantSay>((kind, anchor) => {
     const lines = linesByKind[kind];
@@ -69,9 +77,11 @@ export function MerchantFeedbackProvider({
     );
     const top = Math.max(BUBBLE_GUTTER_PX, rect.top - BUBBLE_HEIGHT_PX + 6);
     nextId.current += 1;
+    const line = pickLine(lines, lastLine.current);
+    lastLine.current = line;
     setBubble({
       id: nextId.current,
-      line: lines[Math.floor(Math.random() * lines.length)],
+      line,
       left,
       top,
     });

@@ -15,7 +15,7 @@ import {
 export const CHARACTER_HAND_TARGET_ATTRIBUTE = "data-character-hand-target";
 
 const HAND_RENDER_HEIGHT_PX = 320;
-type PointingHand = CharacterPoolSlug | "merchant";
+type PointingHand = CharacterPoolSlug | "merchant" | "fake_merchant";
 /** Texture size and fingertip in texture pixels, measured from each *_point.webp. */
 const HAND_TEXTURES: Record<PointingHand, { width: number; height: number; tipX: number; tipY: number }> = {
   ironclad: { width: 422, height: 1200, tipX: 146, tipY: 19 },
@@ -24,7 +24,23 @@ const HAND_TEXTURES: Record<PointingHand, { width: number; height: number; tipX:
   necrobinder: { width: 422, height: 1200, tipX: 155, tipY: 18 },
   defect: { width: 422, height: 1200, tipX: 213, tipY: 39 },
   merchant: { width: 515, height: 1272, tipX: 216, tipY: 2 },
+  fake_merchant: { width: 335, height: 840, tipX: 157, tipY: 1 },
 };
+/** A profile without a character token gets one of the two merchants each time the hand comes up. */
+const MERCHANT_HANDS: PointingHand[] = ["merchant", "fake_merchant"];
+/** Controls that are not tiles send the hand away at once. */
+const OTHER_CONTROL_SELECTOR = [
+  "a",
+  "button",
+  "input",
+  "label",
+  "select",
+  "textarea",
+  "[role='button']",
+  "[role='checkbox']",
+  "[role='switch']",
+  "[role='tab']",
+].join(",");
 /** NHandImage follows at 0.07 s for remote players. */
 const SMOOTH_TIME_S = 0.07;
 /** NMerchantHand.StopPointing lingers 2 s after the mouse leaves a slot. */
@@ -61,21 +77,20 @@ function fingertipTarget(element: Element): { x: number; y: number } {
   return { x: rect.left + rect.width / 2, y: rect.bottom - TIP_INSET_PX };
 }
 
-/** The profile token's character points; a boss token or no profile gets the merchant's hand. */
-function pointingHandFor(stored: boolean, profile: UserProfile): PointingHand {
+/** The profile token's character, or null for a boss token or no saved profile. */
+export function profileTokenCharacter(stored: boolean, profile: UserProfile): CharacterPoolSlug | null {
   const tokenId = profile.avatarId || profile.characterId;
   if (!stored || profile.avatarKind === "boss" || isBossAvatarId(tokenId) || !isKnownCharacterId(tokenId)) {
-    return "merchant";
+    return null;
   }
   return characterPoolSlug(tokenId);
 }
 
 export function CharacterHandPointer() {
   const { stored, profile } = useStoredProfileSnapshot();
-  const hand = pointingHandFor(stored, profile);
+  const character = profileTokenCharacter(stored, profile);
+  const hands = character ? [character] : MERCHANT_HANDS;
   const handRef = useRef<HTMLDivElement>(null);
-  const texture = HAND_TEXTURES[hand];
-  const scale = HAND_RENDER_HEIGHT_PX / texture.height;
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -95,6 +110,17 @@ export function CharacterHandPointer() {
     const closestTarget = (node: EventTarget | null) => (
       node instanceof Element ? node.closest(`[${CHARACTER_HAND_TARGET_ATTRIBUTE}]`) : null
     );
+    const isOtherControl = (node: EventTarget | null) => (
+      node instanceof Element && !closestTarget(node) && node.closest(OTHER_CONTROL_SELECTOR) !== null
+    );
+
+    /** Show one hand image; with several, each rise picks one at random. */
+    const chooseHand = () => {
+      const images = [...hand.querySelectorAll<HTMLElement>("[data-pointing-hand]")];
+      const chosen = images[Math.floor(Math.random() * images.length)];
+      for (const image of images) image.style.display = image === chosen ? "" : "none";
+      hand.dataset.characterHand = chosen?.dataset.pointingHand ?? "";
+    };
 
     const step = (time: number) => {
       const deltaTime = Math.min((time - lastTime) / 1000, 0.05);
@@ -131,10 +157,20 @@ export function CharacterHandPointer() {
       }, LINGER_MS);
     };
 
+    const retreatNow = () => {
+      clearLinger();
+      if (!target) return;
+      target = null;
+      startLoop();
+    };
+
     const pointAt = (element: Element) => {
       clearLinger();
       // A hidden hand rises straight up to the first target.
-      if (!target && y >= hiddenY() - 1) x = fingertipTarget(element).x;
+      if (!target && y >= hiddenY() - 1) {
+        x = fingertipTarget(element).x;
+        chooseHand();
+      }
       target = element;
       startLoop();
     };
@@ -143,6 +179,7 @@ export function CharacterHandPointer() {
       if (event.pointerType !== "mouse") return;
       const element = closestTarget(event.target);
       if (element) pointAt(element);
+      else if (isOtherControl(event.target)) retreatNow();
     };
     const onPointerOut = (event: PointerEvent) => {
       if (event.pointerType !== "mouse") return;
@@ -151,7 +188,10 @@ export function CharacterHandPointer() {
     };
     const onPointerDown = (event: PointerEvent) => {
       const element = closestTarget(event.target);
-      if (!element) return;
+      if (!element) {
+        if (isOtherControl(event.target)) retreatNow();
+        return;
+      }
       pointAt(element);
       pressed = true;
       startLoop();
@@ -180,18 +220,30 @@ export function CharacterHandPointer() {
     <div
       ref={handRef}
       aria-hidden="true"
-      data-character-hand={hand}
+      data-character-hand={hands[0]}
       className="pointer-events-none fixed left-0 top-0 z-[800]"
       style={{ visibility: "hidden", width: 0, height: 0 }}
     >
-      <Image
-        src={`/images/sts2/ui/hands/${hand}_point.webp`}
-        alt=""
-        width={Math.round(texture.width * scale)}
-        height={HAND_RENDER_HEIGHT_PX}
-        className="absolute max-w-none drop-shadow-lg"
-        style={{ left: -texture.tipX * scale, top: -texture.tipY * scale }}
-      />
+      {hands.map((name, index) => {
+        const texture = HAND_TEXTURES[name];
+        const scale = HAND_RENDER_HEIGHT_PX / texture.height;
+        return (
+          <Image
+            key={name}
+            data-pointing-hand={name}
+            src={`/images/sts2/ui/hands/${name}_point.webp`}
+            alt=""
+            width={Math.round(texture.width * scale)}
+            height={HAND_RENDER_HEIGHT_PX}
+            className="absolute max-w-none drop-shadow-lg"
+            style={{
+              left: -texture.tipX * scale,
+              top: -texture.tipY * scale,
+              display: index === 0 ? undefined : "none",
+            }}
+          />
+        );
+      })}
     </div>,
     document.body,
   );

@@ -22,6 +22,7 @@ export function VexingPuzzleboxEffects({
     success: gameCopy.merchantSuccessLines,
     failure: gameCopy.merchantFailureLines,
     forbidden: gameCopy.merchantForbiddenLines,
+    space: gameCopy.merchantSpaceLines,
   }), [gameCopy]);
   return (
     <PuzzleboxAudioProvider>

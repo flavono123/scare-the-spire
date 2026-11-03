@@ -101,6 +101,7 @@ interface VexingPuzzleboxGameCopy {
   merchantSuccessLines: string[];
   merchantFailureLines: string[];
   merchantForbiddenLines: string[];
+  merchantSpaceLines: string[];
   vakuuName: string;
   vakuuApproval: string;
   vakuuWarning: string;
@@ -1029,10 +1030,11 @@ async function buildVexingPuzzleboxGameCopy(
     );
     return lines.filter((line): line is string => Boolean(line));
   };
-  const [merchantSuccessLines, merchantFailureLines, merchantForbiddenLines] = await Promise.all([
+  const [merchantSuccessLines, merchantFailureLines, merchantForbiddenLines, merchantSpaceLines] = await Promise.all([
     readMerchantLines("purchaseSuccess", 3),
     readMerchantLines("purchaseFailureGold", 4),
     readMerchantLines("purchaseFailureForbidden", 2),
+    readMerchantLines("purchaseFailureSpace", 2),
   ]);
   const [title, hero, betaArtHighScore, betaArtLowScore] = await Promise.all([
     readGameTextWithEnglishFallback(gameLocale, "relics", "VEXING_PUZZLEBOX.title"),
@@ -1057,6 +1059,7 @@ async function buildVexingPuzzleboxGameCopy(
     merchantSuccessLines,
     merchantFailureLines,
     merchantForbiddenLines,
+    merchantSpaceLines,
     vakuuName: vakuuName || "Vakuu",
     vakuuApproval: vakuuApproval || "",
     vakuuWarning: vakuuWarning || "",

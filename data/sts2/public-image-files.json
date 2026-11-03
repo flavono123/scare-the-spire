@@ -2932,7 +2932,12 @@
   ],
   "ui/combat": [
     "block.png",
-    "combat_reticle.webp"
+    "combat_reticle.webp",
+    "discard_pile.webp",
+    "draw_pile.webp",
+    "end_turn_button_glow.webp",
+    "end_turn_button.webp",
+    "pile_button_count.webp"
   ],
   "ui/confirm": [
     "popup_cancel_button_outline.png",
@@ -2963,6 +2968,7 @@
     "defect_paper.webp",
     "defect_point.webp",
     "defect_rock.webp",
+    "fake_merchant_point.webp",
     "ironclad_paper.webp",
     "ironclad_point.webp",
     "ironclad_rock.webp",

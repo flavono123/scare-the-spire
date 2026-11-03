@@ -1139,6 +1139,26 @@
   animation: merchant-bubble-text 0.4s linear both;
 }
 
+/* NEndTurnButton: Glow fades to 0.75 and grows 0.45 -> 0.5 over 0.8 s (Back out);
+   GlowVfx loops 0.5 -> 0.7 scale and 0.4 -> 0 alpha every 1.5 s (Quart out). */
+@keyframes end-turn-glow {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 0.75; transform: scale(1); }
+}
+
+@keyframes end-turn-glow-vfx {
+  from { opacity: 0.4; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.4); }
+}
+
+.end-turn-glow {
+  animation: end-turn-glow 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.end-turn-glow-vfx {
+  animation: end-turn-glow-vfx 1.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
 /* custom-connections-game .invalid-shake: 0.2 s ease-in, 1.5 times. */
 @keyframes connections-invalid-shake {
   0%, 100% { transform: translateX(0); }
@@ -1160,7 +1180,8 @@
   .vakuu-bubble-sprite,
   .vakuu-bubble-text,
   .connections-invalid-shake,
-  .connections-wrong-jitter {
+  .connections-wrong-jitter,
+  .end-turn-glow-vfx {
     animation: none;
   }
 }
