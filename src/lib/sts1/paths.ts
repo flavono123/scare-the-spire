@@ -77,12 +77,20 @@ export function sts1RelicOutlineUrl(relic: Sts1Relic): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/relics-outline/${relic.slug}.webp`);
 }
 
-export function sts1PowerImageUrl(power: Sts1Power): string {
+export function sts1PowerImageUrl(power: Pick<Sts1Power, "image">): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/powers/${power.image}.webp`);
 }
 
 export function sts1MonsterImageUrl(monster: Pick<Sts1Monster, "slug">): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/monsters/${monster.slug}.webp`);
+}
+
+export function sts1IntentImageUrl(name: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/intents/${name}.webp`);
+}
+
+export function sts1UiImageUrl(name: "ascension" | "block"): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/ui/${name}.webp`);
 }
 
 export function sts1SoundUrl(key: string): string {

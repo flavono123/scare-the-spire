@@ -11,6 +11,7 @@ import {
 import {
   getSts1Metadata,
   getSts1Monster,
+  getSts1MonsterRefs,
   getSts1UiLabels,
 } from "@/lib/sts1/data";
 import { sts1DetailPath, sts1MonsterImageUrl } from "@/lib/sts1/paths";
@@ -48,5 +49,6 @@ export default async function Sts1MonsterDetailPage({ params, searchParams }: De
     getSts1UiLabels(gameLocale),
   ]);
   if (!monster) notFound();
-  return <Sts1MonsterDetail monster={monster} labels={labels} serviceLocale={serviceLocale} />;
+  const refs = await getSts1MonsterRefs([monster], gameLocale);
+  return <Sts1MonsterDetail monster={monster} refs={refs} labels={labels} serviceLocale={serviceLocale} />;
 }

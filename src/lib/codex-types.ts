@@ -1076,6 +1076,8 @@ export interface MonsterSpineAsset {
   renderTags: string[];
   atlasUrl: string;
   binaryUrl: string;
+  /** A JSON skeleton, read instead of `binaryUrl` when set. */
+  jsonUrl?: string;
   textureUrls: string[];
   skin: string | null;
   skins: string[];

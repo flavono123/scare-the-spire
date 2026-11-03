@@ -22,7 +22,7 @@ import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { STS1_MONSTER_TYPE_COLORS } from "@/lib/sts1/card-style";
 import { sts1DetailPath } from "@/lib/sts1/paths";
-import type { Sts1Dungeon, Sts1Monster, Sts1MonsterType, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1Dungeon, Sts1Monster, Sts1MonsterRefs, Sts1MonsterType, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1MonsterDetail } from "./monster-detail";
 import { Sts1MonsterTile } from "./monster-tile";
 import { useEscapeClose } from "./use-escape-close";
@@ -39,10 +39,12 @@ function toggled<T>(previous: Set<T>, value: T): Set<T> {
 
 export function Sts1MonsterLibrary({
   monsters,
+  refs,
   labels,
   serviceLocale,
 }: {
   monsters: Sts1Monster[];
+  refs: Sts1MonsterRefs;
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
@@ -196,6 +198,7 @@ export function Sts1MonsterLibrary({
           <div className="mx-4 my-8 w-full max-w-6xl">
             <Sts1MonsterDetail
               monster={selectedMonster}
+              refs={refs}
               labels={labels}
               serviceLocale={serviceLocale}
               onClose={closeMonster}

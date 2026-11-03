@@ -1,5 +1,6 @@
 {
   "acid-slime-l": {
+    "skeleton": "skeleton.796660789b.json",
     "idle": "Idle",
     "animations": [
       "Idle",
@@ -19,6 +20,7 @@
     }
   },
   "acid-slime-m": {
+    "skeleton": "skeleton.87b3cb70a2.json",
     "idle": "idle",
     "animations": [
       "damage",
@@ -38,6 +40,7 @@
     }
   },
   "acid-slime-s": {
+    "skeleton": "skeleton.998763a7aa.json",
     "idle": "idle",
     "animations": [
       "damage",
@@ -57,6 +60,7 @@
     }
   },
   "cultist": {
+    "skeleton": "skeleton.c5658235d3.json",
     "idle": "waving",
     "animations": [
       "rally",
@@ -76,6 +80,7 @@
     }
   },
   "fungi-beast": {
+    "skeleton": "skeleton.a6bd4b2892.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -96,6 +101,7 @@
     }
   },
   "fuzzy-louse-defensive": {
+    "skeleton": "skeleton.6decc78eee.json",
     "idle": "idle",
     "animations": [
       "idle",
@@ -118,6 +124,7 @@
     }
   },
   "fuzzy-louse-normal": {
+    "skeleton": "skeleton.0b70682dd8.json",
     "idle": "idle",
     "animations": [
       "idle",
@@ -140,6 +147,7 @@
     }
   },
   "gremlin-fat": {
+    "skeleton": "skeleton.8584c6725c.json",
     "idle": "animation",
     "animations": [
       "animation"
@@ -158,6 +166,7 @@
     }
   },
   "gremlin-nob": {
+    "skeleton": "skeleton.753e4b6de7.json",
     "idle": "animation",
     "animations": [
       "animation"
@@ -176,6 +185,7 @@
     }
   },
   "gremlin-thief": {
+    "skeleton": "skeleton.36f697430e.json",
     "idle": "animation",
     "animations": [
       "animation"
@@ -194,6 +204,7 @@
     }
   },
   "gremlin-tsundere": {
+    "skeleton": "skeleton.da5da31721.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -212,6 +223,7 @@
     }
   },
   "gremlin-warrior": {
+    "skeleton": "skeleton.95ba25d889.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -230,6 +242,7 @@
     }
   },
   "gremlin-wizard": {
+    "skeleton": "skeleton.f0c33f9ead.json",
     "idle": "animation",
     "animations": [
       "animation"
@@ -248,6 +261,7 @@
     }
   },
   "jaw-worm": {
+    "skeleton": "skeleton.2dade83755.json",
     "idle": "idle",
     "animations": [
       "chomp",
@@ -268,6 +282,7 @@
     }
   },
   "lagavulin": {
+    "skeleton": "skeleton.b41a696d73.json",
     "idle": "Idle_2",
     "animations": [
       "Attack",
@@ -291,6 +306,7 @@
     }
   },
   "looter": {
+    "skeleton": "skeleton.e5de42822d.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -309,6 +325,7 @@
     }
   },
   "sentry": {
+    "skeleton": "skeleton.ccd8405f5d.json",
     "idle": "idle",
     "animations": [
       "attack",
@@ -332,6 +349,7 @@
     }
   },
   "slaver-blue": {
+    "skeleton": "skeleton.cff3e301d6.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -350,6 +368,7 @@
     }
   },
   "slaver-red": {
+    "skeleton": "skeleton.31a10b63d0.json",
     "idle": "idle",
     "animations": [
       "idle",
@@ -369,6 +388,7 @@
     }
   },
   "slime-boss": {
+    "skeleton": "skeleton.7ab6328dc3.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -387,6 +407,7 @@
     }
   },
   "spike-slime-l": {
+    "skeleton": "skeleton.aee896b892.json",
     "idle": "idle",
     "animations": [
       "eyefloat",
@@ -407,6 +428,7 @@
     }
   },
   "spike-slime-m": {
+    "skeleton": "skeleton.373cc841f7.json",
     "idle": "idle",
     "animations": [
       "hit",
@@ -426,6 +448,7 @@
     }
   },
   "spike-slime-s": {
+    "skeleton": "skeleton.aa6b5c9707.json",
     "idle": "idle",
     "animations": [
       "hit",
@@ -445,6 +468,7 @@
     }
   },
   "the-guardian": {
+    "skeleton": "skeleton.121353bec4.json",
     "idle": "idle",
     "animations": [
       "defensive",
@@ -465,6 +489,7 @@
     }
   },
   "bandit-bear": {
+    "skeleton": "skeleton.25b7e5df5a.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -485,6 +510,7 @@
     }
   },
   "bandit-child": {
+    "skeleton": "skeleton.b2e7730b51.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -505,6 +531,7 @@
     }
   },
   "bandit-leader": {
+    "skeleton": "skeleton.d14cf0fc2a.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -525,6 +552,7 @@
     }
   },
   "book-of-stabbing": {
+    "skeleton": "skeleton.4368bdcb0c.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -546,6 +574,7 @@
     }
   },
   "bronze-automaton": {
+    "skeleton": "skeleton.b9e1fe794c.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -564,6 +593,7 @@
     }
   },
   "byrd": {
+    "skeleton": "skeleton.baa6165668.json",
     "idle": "idle_flap",
     "animations": [
       "idle_flap"
@@ -582,6 +612,7 @@
     }
   },
   "centurion": {
+    "skeleton": "skeleton.c4dc5e74c2.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -604,6 +635,7 @@
     }
   },
   "champ": {
+    "skeleton": "skeleton.03255cbae8.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -624,6 +656,7 @@
     }
   },
   "chosen": {
+    "skeleton": "skeleton.3a500d749e.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -644,6 +677,7 @@
     }
   },
   "gremlin-leader": {
+    "skeleton": "skeleton.d470b70c4f.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -665,6 +699,7 @@
     }
   },
   "healer": {
+    "skeleton": "skeleton.dd30c5e1ab.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -685,6 +720,7 @@
     }
   },
   "mugger": {
+    "skeleton": "skeleton.5d92c7251c.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -703,6 +739,7 @@
     }
   },
   "shelled-parasite": {
+    "skeleton": "skeleton.ede3098fc2.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -723,6 +760,7 @@
     }
   },
   "slaver-boss": {
+    "skeleton": "skeleton.097a2054ac.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -741,6 +779,7 @@
     }
   },
   "snake-plant": {
+    "skeleton": "skeleton.15f68d2281.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -762,6 +801,7 @@
     }
   },
   "snecko": {
+    "skeleton": "skeleton.5a087dc4b7.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -783,6 +823,7 @@
     }
   },
   "spheric-guardian": {
+    "skeleton": "skeleton.eaec1044ce.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -803,6 +844,7 @@
     }
   },
   "the-collector": {
+    "skeleton": "skeleton.b34eab6b42.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -821,6 +863,7 @@
     }
   },
   "torch-head": {
+    "skeleton": "skeleton.fe4d378401.json",
     "idle": "idle",
     "animations": [
       "halberd_slam",
@@ -840,6 +883,7 @@
     }
   },
   "awakened-one": {
+    "skeleton": "skeleton.548c663894.json",
     "idle": "Idle_1",
     "animations": [
       "Attack_1",
@@ -862,6 +906,7 @@
     }
   },
   "dagger": {
+    "skeleton": "skeleton.c2d849e2b1.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -883,6 +928,7 @@
     }
   },
   "darkling": {
+    "skeleton": "skeleton.e3ce0c2115.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -904,6 +950,7 @@
     }
   },
   "deca": {
+    "skeleton": "skeleton.fd7c0229f8.json",
     "idle": "Idle",
     "animations": [
       "Attack_1",
@@ -925,6 +972,7 @@
     }
   },
   "donu": {
+    "skeleton": "skeleton.c06aac37da.json",
     "idle": "Idle",
     "animations": [
       "Attack_1",
@@ -946,6 +994,7 @@
     }
   },
   "exploder": {
+    "skeleton": "skeleton.46d9d9e7cf.json",
     "idle": "idle",
     "animations": [
       "damage",
@@ -966,6 +1015,7 @@
     }
   },
   "giant-head": {
+    "skeleton": "skeleton.5b66537a0c.json",
     "idle": "idle_open",
     "animations": [
       "idle_closed",
@@ -987,6 +1037,7 @@
     }
   },
   "maw": {
+    "skeleton": "skeleton.66c86ef493.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -1005,6 +1056,7 @@
     }
   },
   "nemesis": {
+    "skeleton": "skeleton.9e89519d73.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -1025,6 +1077,7 @@
     }
   },
   "orb-walker": {
+    "skeleton": "skeleton.f97be7708a.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -1045,6 +1098,7 @@
     }
   },
   "reptomancer": {
+    "skeleton": "skeleton.0e7dafa02a.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -1066,6 +1120,7 @@
     }
   },
   "repulsor": {
+    "skeleton": "skeleton.603f68ea2c.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -1084,6 +1139,7 @@
     }
   },
   "serpent": {
+    "skeleton": "skeleton.866d6b535a.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -1104,6 +1160,7 @@
     }
   },
   "spiker": {
+    "skeleton": "skeleton.3c897789ea.json",
     "idle": "idle",
     "animations": [
       "attack",
@@ -1124,6 +1181,7 @@
     }
   },
   "time-eater": {
+    "skeleton": "skeleton.5a28e03f78.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -1144,6 +1202,7 @@
     }
   },
   "transient": {
+    "skeleton": "skeleton.07fa78c6f1.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -1164,6 +1223,7 @@
     }
   },
   "writhing-mass": {
+    "skeleton": "skeleton.8467fcf986.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -1184,6 +1244,7 @@
     }
   },
   "corrupt-heart": {
+    "skeleton": "skeleton.5d955fed26.json",
     "idle": "idle",
     "animations": [
       "idle"
@@ -1202,6 +1263,7 @@
     }
   },
   "spire-shield": {
+    "skeleton": "skeleton.2deec354d8.json",
     "idle": "Idle",
     "animations": [
       "Attack",
@@ -1223,6 +1285,7 @@
     }
   },
   "spire-spear": {
+    "skeleton": "skeleton.2572ef0b96.json",
     "idle": "Idle",
     "animations": [
       "Attack_1",

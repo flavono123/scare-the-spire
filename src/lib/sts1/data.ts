@@ -7,7 +7,6 @@ import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 import { withDefaultOpenGraphCanonical } from "@/lib/service-metadata";
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
-import { STS1_IMAGE_CACHE_BUSTER } from "./image-cache";
 import { sts1GameLocale } from "./locale";
 import { sts1CardPortraitUrl, sts1PotionImageUrl, sts1RelicImageUrl } from "./paths";
 import type {
@@ -51,7 +50,7 @@ type RawMonsterMove = {
   tiers: Sts1MonsterMoveTier[];
 };
 type RawMonster = Omit<Sts1Monster, "name" | "nameEn" | "moves" | "spine"> & { moves: RawMonsterMove[] };
-type RawMonsterSpine = { idle: string; animations: string[]; viewport: Sts1MonsterRect; still: Sts1MonsterRect };
+type RawMonsterSpine = { skeleton: string; idle: string; animations: string[]; viewport: Sts1MonsterRect; still: Sts1MonsterRect };
 type RawCharacter = Omit<Sts1Character, "name" | "nameEn" | "title" | "flavor">;
 
 type PowerLoc = {
@@ -224,12 +223,15 @@ export const getSts1Monsters = cache(async (gameLocale: GameLocale = "kor"): Pro
       nameEn: nameIndex == null ? null : english.moveNames[nameIndex] || null,
     }));
     const art = spine[row.slug];
+    // The skeleton's name carries its content hash; the atlas and pages are game files.
     const monsterSpine: Sts1MonsterSpine | null = art
       ? {
-          ...art,
-          // /spine/* is cached as immutable; the pages are game files and never change.
-          skeletonUrl: `${STS1_SPINE_ROOT}/${row.slug}/skeleton.json?v=${STS1_IMAGE_CACHE_BUSTER}`,
-          atlasUrl: `${STS1_SPINE_ROOT}/${row.slug}/skeleton.atlas?v=${STS1_IMAGE_CACHE_BUSTER}`,
+          idle: art.idle,
+          animations: art.animations,
+          viewport: art.viewport,
+          still: art.still,
+          skeletonUrl: `${STS1_SPINE_ROOT}/${row.slug}/${art.skeleton}`,
+          atlasUrl: `${STS1_SPINE_ROOT}/${row.slug}/skeleton.atlas`,
         }
       : null;
     return {

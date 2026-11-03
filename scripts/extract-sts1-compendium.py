@@ -1300,14 +1300,19 @@ INTENT_IMAGES = {
     "stun": "images/ui/intent/stunL.png",
     "unknown": "images/ui/intent/unknownL.png",
 }
-ASCENSION_ICON = "images/ui/topPanel/ascension.png"
+# The top panel's ascension badge and the block icon over a creature's health bar.
+MONSTER_UI_IMAGES = {
+    "ascension": "images/ui/topPanel/ascension.png",
+    "block": "images/ui/combat/block.png",
+}
 
 
 def write_monster_ui_images(jar) -> None:
     out = ROOT / "public" / "images" / "sts1"
     for name, entry in INTENT_IMAGES.items():
         save_webp(extract_png(jar, entry), out / "intents" / f"{name}.webp", lossless=True)
-    save_webp(extract_png(jar, ASCENSION_ICON), out / "ui" / "ascension.webp", lossless=True)
+    for name, entry in MONSTER_UI_IMAGES.items():
+        save_webp(extract_png(jar, entry), out / "ui" / f"{name}.webp", lossless=True)
 
 
 def monster_labels(jar, locale: str, intent_headers: dict[str, int]) -> dict[str, Any]:

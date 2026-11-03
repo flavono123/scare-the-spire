@@ -507,7 +507,11 @@ class Machine:
             owner, name, desc = cls.fieldref(insn.operand)
             stack.append(self._get_static(owner, name, desc))
         elif op == 179:
-            stack.pop()
+            owner, name, _desc = cls.fieldref(insn.operand)
+            value = stack.pop()
+            # Keep aliases like `NAME_X = MOVES[2]`; other statics stay symbolic.
+            if owner == cls.name and isinstance(value, Elem):
+                self.statics[(owner, name)] = value
         elif op == 180:
             owner, name, desc = cls.fieldref(insn.operand)
             target = stack.pop()

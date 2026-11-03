@@ -9,6 +9,19 @@ export const MONSTER_ASCENSION_STORAGE_KEY = "sts2.monsterAscensionLevel";
 const MONSTER_ASCENSION_EVENT = "sts2:monster-ascension-level";
 const ASCENSION_ICON = "/images/sts2/ui/topbar/top_bar_ascension.png";
 
+/** Where a game's bestiary keeps its ascension level; each game keeps its own. */
+export interface MonsterAscensionScope {
+  storageKey: string;
+  event: string;
+  maxLevel: number;
+}
+
+const STS2_ASCENSION_SCOPE: MonsterAscensionScope = {
+  storageKey: MONSTER_ASCENSION_STORAGE_KEY,
+  event: MONSTER_ASCENSION_EVENT,
+  maxLevel: 10,
+};
+
 export const MONSTER_HP_ASCENSION_LEVEL = 8;
 export const MONSTER_MOVE_ASCENSION_LEVEL = 9;
 
@@ -19,32 +32,36 @@ export interface MonsterHpDisplay {
   ascended: boolean;
 }
 
-export function useMonsterAscensionLevel(): [number, (level: number | ((current: number) => number)) => void] {
+export function useMonsterAscensionLevel(
+  scope: MonsterAscensionScope = STS2_ASCENSION_SCOPE,
+): [number, (level: number | ((current: number) => number)) => void] {
   const [level, setLevelState] = useState(0);
+  const { storageKey, event, maxLevel } = scope;
 
   useEffect(() => {
-    const sync = () => setLevelState(readMonsterAscensionLevel());
+    const sync = () => setLevelState(readMonsterAscensionLevel(storageKey, maxLevel));
     sync();
 
     window.addEventListener("storage", sync);
-    window.addEventListener(MONSTER_ASCENSION_EVENT, sync);
+    window.addEventListener(event, sync);
 
     return () => {
       window.removeEventListener("storage", sync);
-      window.removeEventListener(MONSTER_ASCENSION_EVENT, sync);
+      window.removeEventListener(event, sync);
     };
-  }, []);
+  }, [event, maxLevel, storageKey]);
 
   const setLevel = useCallback((next: number | ((current: number) => number)) => {
-    const resolved = clampAscensionLevel(typeof next === "function" ? next(readMonsterAscensionLevel()) : next);
+    const current = readMonsterAscensionLevel(storageKey, maxLevel);
+    const resolved = clampAscensionLevel(typeof next === "function" ? next(current) : next, maxLevel);
     setLevelState(resolved);
     try {
-      window.localStorage.setItem(MONSTER_ASCENSION_STORAGE_KEY, String(resolved));
-      window.dispatchEvent(new CustomEvent(MONSTER_ASCENSION_EVENT));
+      window.localStorage.setItem(storageKey, String(resolved));
+      window.dispatchEvent(new CustomEvent(event));
     } catch {
       // Keep the in-memory value when storage is unavailable.
     }
-  }, []);
+  }, [event, maxLevel, storageKey]);
 
   return [level, setLevel];
 }
@@ -56,6 +73,8 @@ export function MonsterAscensionStepper({
   compact = false,
   prominent = false,
   className = "",
+  maxLevel = STS2_ASCENSION_SCOPE.maxLevel,
+  iconSrc = ASCENSION_ICON,
 }: {
   level: number;
   onChange: (level: number | ((current: number) => number)) => void;
@@ -63,6 +82,8 @@ export function MonsterAscensionStepper({
   compact?: boolean;
   prominent?: boolean;
   className?: string;
+  maxLevel?: number;
+  iconSrc?: string;
 }) {
   const decreaseLabel = serviceLocale === "ko" ? "승천 감소" : "Decrease ascension";
   const increaseLabel = serviceLocale === "ko" ? "승천 증가" : "Increase ascension";
@@ -95,7 +116,7 @@ export function MonsterAscensionStepper({
       </button>
       <span className="relative inline-flex items-center justify-center" aria-hidden="true">
         <Image
-          src={ASCENSION_ICON}
+          src={iconSrc}
           alt=""
           width={iconSize}
           height={iconSize}
@@ -109,7 +130,7 @@ export function MonsterAscensionStepper({
         type="button"
         aria-label={increaseLabel}
         className={`${buttonClass} inline-flex items-center justify-center rounded bg-zinc-950/70 text-zinc-200 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-35`}
-        disabled={level >= 10}
+        disabled={level >= maxLevel}
         onClick={() => onChange((current) => current + 1)}
       >
         +
@@ -145,7 +166,19 @@ export function MonsterHealthBar({
   const hp = getMonsterHpDisplay(monster, ascensionLevel, hpOverride);
   if (!hp) return null;
 
-  const hpLabel = `${hp.value}/${hp.value}`;
+  return <MonsterHealthBarView hpLabel={`${hp.value}/${hp.value}`} compact={compact} className={className} />;
+}
+
+/** The in-combat bar with a ready-made `current/max` label. */
+export function MonsterHealthBarView({
+  hpLabel,
+  compact = false,
+  className = "",
+}: {
+  hpLabel: string;
+  compact?: boolean;
+  className?: string;
+}) {
   const barClipPath = "polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%)";
 
   return (
@@ -210,19 +243,19 @@ export function getEffectiveDamageValue(
   return value.normal ?? value.ascension;
 }
 
-function readMonsterAscensionLevel(): number {
+function readMonsterAscensionLevel(storageKey: string, maxLevel: number): number {
   if (typeof window === "undefined") return 0;
 
   try {
-    return clampAscensionLevel(Number(window.localStorage.getItem(MONSTER_ASCENSION_STORAGE_KEY) ?? 0));
+    return clampAscensionLevel(Number(window.localStorage.getItem(storageKey) ?? 0), maxLevel);
   } catch {
     return 0;
   }
 }
 
-function clampAscensionLevel(level: number): number {
+function clampAscensionLevel(level: number, maxLevel: number): number {
   if (!Number.isFinite(level)) return 0;
-  return Math.min(10, Math.max(0, Math.trunc(level)));
+  return Math.min(maxLevel, Math.max(0, Math.trunc(level)));
 }
 
 function formatNumberRange(min: number | null, max: number | null): string | null {

@@ -269,7 +269,7 @@ function MonsterSpineStageComponent({
 
         try {
           player = new SpinePlayerCtor(parent, {
-            binaryUrl: loadedAsset.binaryUrl,
+            ...(loadedAsset.jsonUrl ? { jsonUrl: loadedAsset.jsonUrl } : { binaryUrl: loadedAsset.binaryUrl }),
             atlasUrl: loadedAsset.atlasUrl,
             skin: singleSkin ?? undefined,
             skins: loadedAsset.skins,
@@ -387,6 +387,7 @@ function MonsterSpineStageComponent({
     asset,
     asset?.atlasUrl,
     asset?.binaryUrl,
+    asset?.jsonUrl,
     compositeSkinKey,
     compositeSkinNames,
     monsterName,

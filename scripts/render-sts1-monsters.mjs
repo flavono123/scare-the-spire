@@ -12,13 +12,16 @@
  *
  * Outputs:
  * - public/images/sts1/monsters/<slug>.webp: the still (first idle frame, trimmed)
- * - public/spine/sts1/monsters/<slug>/: skeleton.json (4.2), skeleton.atlas, pages
+ * - public/spine/sts1/monsters/<slug>/: skeleton.<hash>.json (4.2), skeleton.atlas, pages.
+ *   /spine/* is cached as immutable and the player tells JSON from binary by
+ *   the `.json` ending, so the content hash goes in the name, not a query.
  * - data/sts1/monster-spine.json: idle clip, clips, the viewport every clip fits
  *   in, and where the still sits inside it
  *
  * Usage: node scripts/render-sts1-monsters.mjs [--jar path] [--only slug,slug]
  */
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import path from "node:path";
@@ -496,16 +499,20 @@ function round(rect) {
   return Object.fromEntries(Object.entries(rect).map(([key, value]) => [key, Math.round(value * 10) / 10]));
 }
 
+/** Returns the skeleton's file name. */
 function exportSkeleton(jar, slug, art, skeleton, atlasText) {
   const dir = path.join(SPINE_DIR, slug);
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
-  writeFileSync(path.join(dir, "skeleton.json"), JSON.stringify(skeleton));
+  const text = JSON.stringify(skeleton);
+  const name = `skeleton.${createHash("sha256").update(text).digest("hex").slice(0, 10)}.json`;
+  writeFileSync(path.join(dir, name), text);
   writeFileSync(path.join(dir, "skeleton.atlas"), atlasText);
   const source = path.posix.dirname(art.atlas);
-  for (const name of atlasPages(atlasText)) {
-    writeFileSync(path.join(dir, name), readEntry(jar, `${source}/${name}`));
+  for (const page of atlasPages(atlasText)) {
+    writeFileSync(path.join(dir, page), readEntry(jar, `${source}/${page}`));
   }
+  return name;
 }
 
 async function main() {
@@ -539,8 +546,8 @@ async function main() {
         const directory = path.posix.dirname(art.atlas);
         const pages = Object.fromEntries(atlasPages(atlasText).map((name) => [name, pngDataUrl(jar, `${directory}/${name}`)]));
         result = await renderSkeleton(page, art, skeleton, atlasText, pages, stagedAnimations(monsters.get(slug), art.animation));
-        exportSkeleton(jar, slug, art, skeleton, atlasText);
         meta[slug] = {
+          skeleton: exportSkeleton(jar, slug, art, skeleton, atlasText),
           idle: art.animation,
           animations: result.animations,
           viewport: round(result.viewport),

@@ -9,6 +9,7 @@ import {
 } from "@/lib/i18n";
 import {
   getSts1Metadata,
+  getSts1MonsterRefs,
   getSts1Monsters,
   getSts1UiLabels,
 } from "@/lib/sts1/data";
@@ -38,10 +39,11 @@ export default async function Sts1MonstersPage({
     getSts1Monsters(gameLocale),
     getSts1UiLabels(gameLocale),
   ]);
+  const refs = await getSts1MonsterRefs(monsters, gameLocale);
 
   return (
     <Suspense>
-      <Sts1MonsterLibrary monsters={monsters} labels={labels} serviceLocale={serviceLocale} />
+      <Sts1MonsterLibrary monsters={monsters} refs={refs} labels={labels} serviceLocale={serviceLocale} />
     </Suspense>
   );
 }

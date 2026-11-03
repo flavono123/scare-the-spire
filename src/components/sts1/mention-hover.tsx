@@ -302,11 +302,18 @@ export function Sts1MentionHover({
   entityId,
   text,
   editorLink = false,
+  children,
+  className = "relative inline cursor-help font-semibold spire-gold",
+  linkClassName = "font-game-title font-semibold spire-gold no-underline",
 }: {
   entityId: string;
   text: string;
   /** Inside an editor: plain clicks stay put; see EDITOR_ANCHOR_PROPS. */
   editorLink?: boolean;
+  /** Drawn in place of `text` (an icon token); `text` stays the accessible name. */
+  children?: ReactNode;
+  className?: string;
+  linkClassName?: string;
 }) {
   const { index } = useSts1MentionIndex();
   const serviceLocale = useServiceLocale();
@@ -366,7 +373,7 @@ export function Sts1MentionHover({
 
   return (
     <span
-      className="relative inline cursor-help font-semibold spire-gold"
+      className={className}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setHovered(true)}
@@ -374,10 +381,11 @@ export function Sts1MentionHover({
     >
       <a
         href={entry?.href ? localizeHrefWithGameLocale(entry.href, serviceLocale, gameLocale) : "#"}
-        className="font-game-title font-semibold spire-gold no-underline"
+        className={linkClassName}
+        aria-label={children ? text : undefined}
         {...(editorLink ? EDITOR_ANCHOR_PROPS : {})}
       >
-        {text}
+        {children ?? text}
       </a>
       {layer && drawsBitmapText ? (
         // The glyph pack loads on first hover; the tip appears once it can draw in full.

@@ -128,10 +128,20 @@ class MonsterReader:
         self.switch_maps = switch_maps
         self.class_ids = class_ids
 
+    def _static_aliases(self) -> dict[tuple[str, str], Any]:
+        """Static fields <clinit> sets to a `MOVES[i]` entry."""
+        if not hasattr(self, "_aliases"):
+            machine = Machine(self.cls, invoke_hook=lambda *_args: NotImplemented)
+            clinit = self.cls.method("<clinit>")
+            if clinit and clinit.code:
+                machine.run(clinit, Obj(self.cls.name))
+            self._aliases = dict(machine.statics)
+        return self._aliases
+
     def _machine(self, ascension: int, recorder: _Recorder) -> Machine:
         return Machine(
             self.cls,
-            statics={(ABSTRACT_DUNGEON, "ascensionLevel"): ascension},
+            statics={**self._static_aliases(), (ABSTRACT_DUNGEON, "ascensionLevel"): ascension},
             switch_maps=self.switch_maps,
             invoke_hook=recorder.hook,
         )
