@@ -28,6 +28,8 @@ const COLOR_CLASSES: Record<string, string> = {
 const EFFECT_CLASSES: Record<string, string> = {
   sine: "rich-sine",
   jitter: "rich-jitter",
+  // Godot's built-in [shake], which the Whispering Earring lines use.
+  shake: "rich-jitter",
   rainbow: "rich-rainbow",
   b: "font-bold",
   i: "italic",

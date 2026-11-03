@@ -51,8 +51,21 @@ export interface VexingPuzzleboxGameCopy {
   hero: string;
   betaArtHighScore: string;
   betaArtLowScore: string;
+  /** MERCHANT.talk.purchaseSuccess: a tile or choice is picked. */
   merchantSuccessLines: string[];
+  /** MERCHANT.talk.purchaseFailureGold: a locked toggle is clicked. */
   merchantFailureLines: string[];
+  /** MERCHANT.talk.purchaseFailureForbidden: a guess is wrong. */
+  merchantForbiddenLines: string[];
+  vakuuName: string;
+  /** WHISPERING_EARRING.approval */
+  vakuuApproval: string;
+  /** WHISPERING_EARRING.warning */
+  vakuuWarning: string;
+  /** VAKUU.talk.ANY.1-0r: "{Visits} times..." */
+  vakuuVisits: string;
+  /** VAKUU.talk.ANY.2-0r */
+  vakuuEndless: string;
 }
 
 export interface FeedbackFormGameCopy {

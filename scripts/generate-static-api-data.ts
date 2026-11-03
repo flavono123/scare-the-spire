@@ -100,6 +100,12 @@ interface VexingPuzzleboxGameCopy {
   betaArtLowScore: string;
   merchantSuccessLines: string[];
   merchantFailureLines: string[];
+  merchantForbiddenLines: string[];
+  vakuuName: string;
+  vakuuApproval: string;
+  vakuuWarning: string;
+  vakuuVisits: string;
+  vakuuEndless: string;
 }
 
 interface FeedbackFormGameCopy {
@@ -1023,15 +1029,24 @@ async function buildVexingPuzzleboxGameCopy(
     );
     return lines.filter((line): line is string => Boolean(line));
   };
-  const [merchantSuccessLines, merchantFailureLines] = await Promise.all([
+  const [merchantSuccessLines, merchantFailureLines, merchantForbiddenLines] = await Promise.all([
     readMerchantLines("purchaseSuccess", 3),
     readMerchantLines("purchaseFailureGold", 4),
+    readMerchantLines("purchaseFailureForbidden", 2),
   ]);
   const [title, hero, betaArtHighScore, betaArtLowScore] = await Promise.all([
     readGameTextWithEnglishFallback(gameLocale, "relics", "VEXING_PUZZLEBOX.title"),
     readGameTextWithEnglishFallback(gameLocale, "relics", "VEXING_PUZZLEBOX.flavor"),
     readGameTextWithEnglishFallback(gameLocale, "events", "FAKE_MERCHANT.talk.purchaseSuccess.line1"),
     readGameTextWithEnglishFallback(gameLocale, "events", "FAKE_MERCHANT.talk.purchaseFailureForbidden.line2"),
+  ]);
+  // Vakuu talks through the Whispering Earring; these are the game's own earring and Ancient lines.
+  const [vakuuName, vakuuApproval, vakuuWarning, vakuuVisits, vakuuEndless] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "ancients", "VAKUU.title"),
+    readGameTextWithEnglishFallback(gameLocale, "relics", "WHISPERING_EARRING.approval"),
+    readGameTextWithEnglishFallback(gameLocale, "relics", "WHISPERING_EARRING.warning"),
+    readGameTextWithEnglishFallback(gameLocale, "ancients", "VAKUU.talk.ANY.1-0r.ancient"),
+    readGameTextWithEnglishFallback(gameLocale, "ancients", "VAKUU.talk.ANY.2-0r.ancient"),
   ]);
 
   return {
@@ -1041,6 +1056,12 @@ async function buildVexingPuzzleboxGameCopy(
     betaArtLowScore: betaArtLowScore || "",
     merchantSuccessLines,
     merchantFailureLines,
+    merchantForbiddenLines,
+    vakuuName: vakuuName || "Vakuu",
+    vakuuApproval: vakuuApproval || "",
+    vakuuWarning: vakuuWarning || "",
+    vakuuVisits: vakuuVisits || "",
+    vakuuEndless: vakuuEndless || "",
   };
 }
 

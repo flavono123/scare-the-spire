@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ServiceBackground } from "@/components/service-background";
+import { PuzzleboxAudioToggles } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import { VexingPuzzleboxEffects } from "@/components/vexing-puzzlebox/vexing-puzzlebox-effects";
 import Image from "@/components/ui/static-image";
 import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
@@ -85,14 +86,12 @@ export function VexingPuzzleboxShell({
               </Link>
             );
           })}
+          <div className="ml-auto pb-1.5">
+            <PuzzleboxAudioToggles musicLabel={copy.musicToggle} effectsLabel={copy.effectsToggle} />
+          </div>
         </nav>
         <div className="mt-5">
-          <VexingPuzzleboxEffects
-            successLines={gameCopy.merchantSuccessLines}
-            failureLines={gameCopy.merchantFailureLines}
-          >
-            {children}
-          </VexingPuzzleboxEffects>
+          <VexingPuzzleboxEffects gameCopy={gameCopy}>{children}</VexingPuzzleboxEffects>
         </div>
       </div>
     </div>

@@ -13,7 +13,9 @@ import {
 import { createPortal } from "react-dom";
 import { RichText } from "@/components/rich-text";
 import Image from "@/components/ui/static-image";
+import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import type { MerchantLineKind } from "@/lib/merchant-feedback";
+import type { PuzzleboxSound } from "@/lib/vexing-puzzlebox-audio";
 
 /** NMerchantDialogue: 0.5 s in, 1 s hold, 0.5 s fade. */
 const BUBBLE_LIFETIME_MS = 2000;
@@ -22,6 +24,12 @@ const BUBBLE_HEIGHT_PX = 156;
 const BUBBLE_GUTTER_PX = 8;
 /** The bubble's tail sits this far along its width. */
 const BUBBLE_TAIL_SHARE = 0.2;
+/** NMerchantInventory thanks on a purchase; NMerchantSlot sighs on a failed one. */
+const MERCHANT_VOICE: Record<MerchantLineKind, PuzzleboxSound> = {
+  success: "merchantThankYou",
+  failure: "merchantDisappointment",
+  forbidden: "merchantDisappointment",
+};
 
 type MerchantBubble = {
   id: number;
@@ -39,21 +47,21 @@ export function useMerchantSay(): MerchantSay {
 }
 
 export function MerchantFeedbackProvider({
-  successLines,
-  failureLines,
+  lines: linesByKind,
   children,
 }: {
-  successLines: string[];
-  failureLines: string[];
+  lines: Record<MerchantLineKind, string[]>;
   children: ReactNode;
 }) {
   const [bubble, setBubble] = useState<MerchantBubble | null>(null);
   const nextId = useRef(0);
   const hideTimer = useRef<number | null>(null);
+  const playSound = usePuzzleboxSound();
 
   const say = useCallback<MerchantSay>((kind, anchor) => {
-    const lines = kind === "success" ? successLines : failureLines;
+    const lines = linesByKind[kind];
     if (lines.length === 0) return;
+    playSound(MERCHANT_VOICE[kind]);
     const rect = anchor.getBoundingClientRect();
     const left = Math.min(
       Math.max(BUBBLE_GUTTER_PX, rect.left + rect.width / 2 - BUBBLE_WIDTH_PX * BUBBLE_TAIL_SHARE),
@@ -69,7 +77,7 @@ export function MerchantFeedbackProvider({
     });
     if (hideTimer.current !== null) window.clearTimeout(hideTimer.current);
     hideTimer.current = window.setTimeout(() => setBubble(null), BUBBLE_LIFETIME_MS);
-  }, [successLines, failureLines]);
+  }, [linesByKind, playSound]);
 
   useEffect(() => () => {
     if (hideTimer.current !== null) window.clearTimeout(hideTimer.current);

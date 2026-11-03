@@ -1,4 +1,5 @@
-export type MerchantLineKind = "success" | "failure";
+/** success: a pick; failure: a locked toggle (not enough gold); forbidden: a wrong guess. */
+export type MerchantLineKind = "success" | "failure" | "forbidden";
 
 /** NMerchantSlot.WiggleAnimation: two sine cycles of 10 units over 0.4 s, quad ease-out. */
 const WIGGLE_DURATION_MS = 400;
