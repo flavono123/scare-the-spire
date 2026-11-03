@@ -172,13 +172,21 @@ function convertAnimation(animation) {
 export function convertSkeleton(skeleton, animationName) {
   const animation = skeleton.animations?.[animationName];
   if (!animation) throw new Error(`Skeleton has no animation ${JSON.stringify(animationName)}`);
+  // 3.4 has no `order`; its runtime always solves IK, then paths, then
+  // transforms, which is what lets a hand follow the end of a path-bent arm.
+  const ik = skeleton.ik ?? [];
+  const paths = skeleton.path ?? [];
+  const transforms = skeleton.transform ?? [];
   return {
     skeleton: { ...skeleton.skeleton, spine: "4.2.0" },
     bones: skeleton.bones.map(convertBone),
     slots: skeleton.slots,
-    ik: skeleton.ik ?? [],
-    transform: (skeleton.transform ?? []).map(convertMixes),
-    path: (skeleton.path ?? []).map(convertMixes),
+    ik: ik.map((constraint, index) => ({ ...constraint, order: index })),
+    transform: transforms.map((constraint, index) => ({
+      ...convertMixes(constraint),
+      order: ik.length + paths.length + index,
+    })),
+    path: paths.map((constraint, index) => ({ ...convertMixes(constraint), order: ik.length + index })),
     skins: Object.entries(skeleton.skins ?? {}).map(([name, attachments]) => ({ name, attachments })),
     animations: { pose: convertAnimation(animation) },
   };
