@@ -230,36 +230,42 @@ export function BetaArtClient({
 
       {mode !== "quiz" && (
         <div className="mt-5" data-beta-art-filters>
-          <div className="flex flex-wrap items-center gap-2">
-            {mode === "gallery" && (
-              <label className="relative mr-1 flex items-center">
-                <Search aria-hidden="true" className="pointer-events-none absolute left-2 h-3.5 w-3.5 text-muted-foreground" />
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder={copy.searchPlaceholder}
-                  aria-label={copy.searchPlaceholder}
-                  className="h-8 w-40 rounded-md border border-border bg-background/80 pl-7 pr-2 text-sm sm:w-52"
-                />
-              </label>
-            )}
-            {typeFilters.map((item) => (
-              <TokenFilter
-                key={item.id}
-                label={item.label}
-                icon={TYPE_TOKENS[item.id]}
-                selected={typeFilter === item.id}
-                onClick={() => {
-                  setTypeFilter(typeFilter === item.id ? null : item.id);
-                  setColorFilter(null);
-                  setEarlyAccessOnly(false);
-                }}
+          {/* Search sits left and the tokens stay centered; watching keeps the search's room so nothing shifts. */}
+          <div className="flex flex-col gap-2 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+            <label
+              className={`relative flex items-center sm:justify-self-start ${mode === "gallery" ? "" : "invisible"}`}
+              aria-hidden={mode === "gallery" ? undefined : true}
+            >
+              <Search aria-hidden="true" className="pointer-events-none absolute left-2 h-3.5 w-3.5 text-muted-foreground" />
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={copy.searchPlaceholder}
+                aria-label={copy.searchPlaceholder}
+                tabIndex={mode === "gallery" ? undefined : -1}
+                disabled={mode !== "gallery"}
+                className="h-8 w-full rounded-md border border-border bg-background/80 pl-7 pr-2 text-sm sm:w-52"
               />
-            ))}
+            </label>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {typeFilters.map((item) => (
+                <TokenFilter
+                  key={item.id}
+                  label={item.label}
+                  icon={TYPE_TOKENS[item.id]}
+                  selected={typeFilter === item.id}
+                  onClick={() => {
+                    setTypeFilter(typeFilter === item.id ? null : item.id);
+                    setColorFilter(null);
+                    setEarlyAccessOnly(false);
+                  }}
+                />
+              ))}
+            </div>
           </div>
           {/* The card row always keeps its height, so picking a type never moves the page. */}
-          <div className="mt-1 flex h-10 flex-wrap items-center gap-2" data-beta-art-card-filters={typeFilter === "card" ? "" : undefined}>
+          <div className="mt-1 flex h-10 flex-wrap items-center justify-center gap-2" data-beta-art-card-filters={typeFilter === "card" ? "" : undefined}>
             {typeFilter === "card" && (
               <>
                 {characters.map((character) => (
