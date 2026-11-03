@@ -179,7 +179,7 @@ export const sts1NavItems = [
   { href: "/relics", type: "relics", icon: "/images/sts2/relics/snecko_eye.webp" },
   { href: "/potions", type: "potions", icon: "/images/sts2/nav/stats_potions.png" },
   { href: "/compendium/sts1/powers", type: "powers", icon: "/images/sts1/powers/hello.webp" },
-  { href: "/compendium/sts1/monsters", type: "monsters", icon: "/images/sts2/nav/happy_cultist.png" },
+  { href: "/compendium/sts1/monsters", type: "monsters", icon: "/images/sts1/nav/monster.webp" },
 ] as const satisfies readonly {
   href: string;
   type: Sts1ResourceType;
