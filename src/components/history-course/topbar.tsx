@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode 
 import { DescriptionText } from "@/components/codex/codex-description";
 import { HoverTip } from "@/components/codex/hover-tip";
 import { PortaledHoverTipLayer } from "@/components/codex/card-keyword-tip-stack";
+import { PotionBay, PotionSlot } from "@/components/game-potion-bay";
 import { HistoryEntityPreview } from "@/components/history-course/history-entity-preview";
 import { useGameI18n } from "@/hooks/use-game-i18n";
 import { useGameLocale } from "@/hooks/use-game-locale";
@@ -538,19 +539,9 @@ function PotionSlots({
     historyStaticHoverTip("POTION_SLOT", gameLocale),
   );
   return (
-    <span
-      data-potion-bay
-      className="relative inline-flex items-center gap-1 px-1"
-      style={{
-        // nine-slice keeps the chamfer corners at 8px so the slot bay matches
-        // the height of HP/gold/floor chips instead of doubling them.
-        borderImage:
-          "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png) 28 fill / 8px / 0 stretch",
-        borderStyle: "solid",
-        borderWidth: "8px",
-        transform: "translateY(-4px)",
-      }}
-      aria-label={playback.potionSlots.replace("{count}", String(count))}
+    <PotionBay
+      label={playback.potionSlots.replace("{count}", String(count))}
+      style={{ transform: "translateY(-4px)" }}
     >
       {Array.from({ length: count }).map((_, i) => {
         const potionId = potions[i] ?? null;
@@ -569,26 +560,11 @@ function PotionSlots({
           ? localizeGame(tables, "potions", visiblePotionId) ?? potion?.name ?? visiblePotionId
           : emptyTip.title;
         const slot = (
-          <span className="relative inline-block h-6 w-5" data-potion-slot-index={i}>
-            <Image
-              src="/images/sts2/ui/topbar/potion_placeholder.png"
-              alt=""
-              fill
-              sizes="20px"
-              className="object-contain opacity-90"
-              unoptimized
-            />
-            {visiblePotionId && (
-              <Image
-                src={potionIconSrc(visiblePotionId)}
-                alt={label}
-                fill
-                sizes="20px"
-                className="object-contain drop-shadow-[0_0_6px_rgba(103,232,249,0.75)]"
-                unoptimized
-              />
-            )}
-          </span>
+          <PotionSlot
+            index={i}
+            potionSrc={visiblePotionId ? potionIconSrc(visiblePotionId) : null}
+            potionAlt={label}
+          />
         );
         if (entity) {
           return (
@@ -610,7 +586,7 @@ function PotionSlots({
           </HoverTipWrap>
         );
       })}
-    </span>
+    </PotionBay>
   );
 }
 

@@ -102,6 +102,11 @@ interface VexingPuzzleboxGameCopy {
   merchantFailureLines: string[];
   merchantForbiddenLines: string[];
   merchantSpaceLines: string[];
+  soundTab: string;
+  musicVolume: string;
+  sfxVolume: string;
+  potionThrow: string;
+  potionDiscard: string;
   vakuuName: string;
   vakuuApproval: string;
   vakuuWarning: string;
@@ -1042,6 +1047,13 @@ async function buildVexingPuzzleboxGameCopy(
     readGameTextWithEnglishFallback(gameLocale, "events", "FAKE_MERCHANT.talk.purchaseSuccess.line1"),
     readGameTextWithEnglishFallback(gameLocale, "events", "FAKE_MERCHANT.talk.purchaseFailureForbidden.line2"),
   ]);
+  const [soundTab, musicVolume, sfxVolume, potionThrow, potionDiscard] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "TAB_SOUND"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "MUSIC_VOLUME"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "SFX_VOLUME"),
+    readGameTextWithEnglishFallback(gameLocale, "gameplay_ui", "POTION_POPUP.throw"),
+    readGameTextWithEnglishFallback(gameLocale, "gameplay_ui", "POTION_POPUP.discard"),
+  ]);
   // Vakuu talks through the Whispering Earring; these are the game's own earring and Ancient lines.
   const [vakuuName, vakuuApproval, vakuuWarning, vakuuVisits, vakuuEndless] = await Promise.all([
     readGameTextWithEnglishFallback(gameLocale, "ancients", "VAKUU.title"),
@@ -1060,6 +1072,11 @@ async function buildVexingPuzzleboxGameCopy(
     merchantFailureLines,
     merchantForbiddenLines,
     merchantSpaceLines,
+    soundTab: soundTab || "Sound",
+    musicVolume: musicVolume || "Music",
+    sfxVolume: sfxVolume || "SFX",
+    potionThrow: potionThrow || "Throw",
+    potionDiscard: potionDiscard || "Discard",
     vakuuName: vakuuName || "Vakuu",
     vakuuApproval: vakuuApproval || "",
     vakuuWarning: vakuuWarning || "",

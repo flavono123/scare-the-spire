@@ -9,6 +9,8 @@ export type ConnectionsProgress = {
   mistakes: number;
   /** Times this puzzle was started over, which Vakuu counts. */
   retries?: number;
+  /** Potion belt slots still holding a rock. Missing in older saves means a full belt. */
+  potions?: boolean[];
 };
 
 type VexingPuzzleboxRecord = {

@@ -11,11 +11,14 @@ import {
 } from "@/components/vexing-puzzlebox/character-hand-pointer";
 import { EndTurnButton, PileButton } from "@/components/vexing-puzzlebox/combat-buttons";
 import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
+import { PotionBelt, type BeltPotion } from "@/components/vexing-puzzlebox/potion-belt";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
+import { playRockHit, playRockThrow } from "@/components/vexing-puzzlebox/rock-throw";
 import {
   playShuffleHands,
   SHUFFLE_GRIP_MS,
   SHUFFLE_RELEASE_MS,
+  SHUFFLE_TOTAL_MS,
   shuffleHandUrls,
   type ShuffleMove,
 } from "@/components/vexing-puzzlebox/shuffle-hands";
@@ -60,6 +63,8 @@ const SHUFFLE_SPAM_COUNT = 3;
 const SHUFFLE_SPAM_WINDOW_MS = 12_000;
 const FLIP_FLOP_COUNT = 2;
 const INSPECT_PEEK_COUNT = 5;
+/** Player.initialMaxPotionSlotCount */
+const POTION_SLOT_COUNT = 3;
 
 type ItemDisplay = {
   token: boolean;
@@ -88,6 +93,33 @@ function emptyProgress(): ConnectionsProgress {
 
 function guessId(keys: string[]): string {
   return [...keys].sort().join("|");
+}
+
+function fullBelt(): boolean[] {
+  return Array.from({ length: POTION_SLOT_COUNT }, () => true);
+}
+
+function randomItem<T>(items: T[]): T | null {
+  return items.length > 0 ? items[Math.floor(Math.random() * items.length)] : null;
+}
+
+/**
+ * The tile a thrown rock lands on. With one to three tiles picked, it is an unpicked tile
+ * of the group most of them belong to (ties go to the group picked first); otherwise any tile left.
+ */
+function rockTarget(selected: string[], remaining: string[], levelByKey: Map<string, number>): string | null {
+  if (selected.length > 0 && selected.length < GROUP_SIZE) {
+    const counts = new Map<number, number>();
+    for (const key of selected) {
+      const level = levelByKey.get(key) ?? -1;
+      counts.set(level, (counts.get(level) ?? 0) + 1);
+    }
+    const most = Math.max(...counts.values());
+    const level = selected.map((key) => levelByKey.get(key) ?? -1).find((item) => counts.get(item) === most);
+    const pick = randomItem(remaining.filter((key) => levelByKey.get(key) === level && !selected.includes(key)));
+    if (pick) return pick;
+  }
+  return randomItem(remaining);
 }
 
 function SolvedCategory({
@@ -181,11 +213,13 @@ function DisplayToggle({
 export function ConnectionsClient({
   puzzles,
   gameCopy,
+  beltPotion,
   serviceLocale,
   gameLocale,
 }: {
   puzzles: ConnectionsPuzzle[];
   gameCopy: VexingPuzzleboxGameCopy;
+  beltPotion: BeltPotion;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
@@ -200,6 +234,9 @@ export function ConnectionsClient({
   const [wrongKeys, setWrongKeys] = useState<string[] | null>(null);
   const [toast, setToast] = useState<Toast | null>(null);
   const [freshLevel, setFreshLevel] = useState<number | null>(null);
+  const [hintKey, setHintKey] = useState<string | null>(null);
+  /** The draw pile counts its cards back in while the hands shuffle. */
+  const [shuffleCount, setShuffleCount] = useState<number | null>(null);
   const say = useMerchantSay();
   const vakuu = useVakuu();
   const playSound = usePuzzleboxSound();
@@ -256,6 +293,7 @@ export function ConnectionsClient({
     setCopied(false);
     setWrongKeys(null);
     setToast(null);
+    setHintKey(null);
   }, [puzzle.number]);
 
   useEffect(() => {
@@ -340,6 +378,11 @@ export function ConnectionsClient({
     if (moves.length === 0) return;
     for (const offset of [0, 70, 150]) later(() => playSound("cardSlide"), SHUFFLE_GRIP_MS + offset);
     later(() => playSound("cardStack"), SHUFFLE_RELEASE_MS);
+    const total = before.size;
+    for (let count = 1; count <= total; count += 1) {
+      later(() => setShuffleCount(count), ((count - 1) / total) * SHUFFLE_TOTAL_MS);
+    }
+    later(() => setShuffleCount(null), SHUFFLE_TOTAL_MS + 80);
   }, [tiles, playSound]);
 
   const saveProgress = (next: ConnectionsProgress) => {
@@ -372,6 +415,7 @@ export function ConnectionsClient({
     if (selected.length === 0) firstPickAt.current = at;
     const next = [...selected, key];
     setSelected(next);
+    if (key === hintKey) setHintKey(null);
     playSound("uiClick");
     if (next.length === GROUP_SIZE) say("success", tile);
   };
@@ -394,6 +438,7 @@ export function ConnectionsClient({
 
   const submit = (button: HTMLElement, at: number) => {
     if (wrongKeys) return;
+    setHintKey(null);
     const guessed = progress.guessKeys ?? [];
     if (guessed.some((keys) => guessId(keys) === guessId(selected))) {
       showToast({ text: copy.alreadyGuessed, negative: false });
@@ -461,6 +506,7 @@ export function ConnectionsClient({
     const retries = (progress.retries ?? 0) + 1;
     saveProgress({ ...emptyProgress(), retries });
     setSelected([]);
+    setHintKey(null);
     playSound("uiBack");
     // VAKUU.talk.ANY counts visits; a third run onward may hear that this never ends.
     const visit = retries + 1;
@@ -483,6 +529,30 @@ export function ConnectionsClient({
     } catch {
       setCopied(false);
     }
+  };
+
+  const potions = progress.potions ?? fullBelt();
+  const spendPotion = (slot: number) => {
+    saveProgress({ ...progress, potions: potions.map((filled, index) => (index === slot ? false : filled)) });
+  };
+
+  const throwRock = (slot: number, from: HTMLElement) => {
+    const key = rockTarget(selected, remainingTiles.map((tile) => tile.key), levelByKey);
+    const target = key ? tileRefs.current.get(key) : null;
+    if (!key || !target) return;
+    spendPotion(slot);
+    setHintKey(null);
+    void playRockThrow(from.getBoundingClientRect(), target.getBoundingClientRect(), beltPotion.imageUrl).then(() => {
+      playSound("rockHit");
+      const landed = tileRefs.current.get(key);
+      if (landed) playRockHit(landed);
+      setHintKey(key);
+    });
+  };
+
+  const discardRock = (slot: number) => {
+    spendPotion(slot);
+    playSound("rockDrop");
   };
 
   const changeDisplay = (id: keyof ItemDisplay) => {
@@ -583,7 +653,10 @@ export function ConnectionsClient({
                     aria-pressed={isSelected}
                     aria-label={tile.name}
                     onClick={(event) => toggleTile(tile.key, event.currentTarget, event.timeStamp)}
+                    data-connections-hint={tile.key === hintKey && !isSelected ? "" : undefined}
                     className={`flex h-full min-h-16 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border px-1 py-2 text-center text-xs font-semibold transition-colors [word-break:keep-all] sm:min-h-20 sm:text-sm ${
+                      tile.key === hintKey && !isSelected ? "connections-beckon " : ""
+                    }${
                       isWrong
                         ? "connections-invalid-shake border-red-500 bg-red-950/90 text-red-300"
                         : isSelected
@@ -638,7 +711,8 @@ export function ConnectionsClient({
 
       {!finished && (
         <>
-          <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-12 gap-y-3 sm:gap-x-16">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             {copy.remainingMistakes}
             <span
               className="flex gap-1"
@@ -660,11 +734,22 @@ export function ConnectionsClient({
               ))}
             </span>
           </div>
+          <PotionBelt
+            label={copy.potionBelt}
+            potion={beltPotion}
+            slots={potions}
+            throwLabel={gameCopy.potionThrow}
+            discardLabel={gameCopy.potionDiscard}
+            disabled={wrongKeys !== null}
+            onThrow={throwRock}
+            onDiscard={discardRock}
+          />
+          </div>
 
           <div className="mt-4 flex items-center justify-center gap-3 sm:gap-5">
             <PileButton
               pile="draw"
-              count={remainingTiles.length}
+              count={shuffleCount ?? remainingTiles.length}
               label={copy.shuffle}
               disabled={wrongKeys !== null}
               onClick={(event) => shuffle(event.timeStamp)}

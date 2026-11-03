@@ -60,6 +60,10 @@ SOUNDS: dict[str, tuple[tuple[str, ...], str]] = {
     "merchant_laugh_2": (("sts2_sfx_VO_merchant_laughter_v1_rr2",), "96k"),
     # event:/sfx/ui/treasure/treasure_act1
     "treasure": (("sts2_sfx_ui_treasure_a1_v4",), "96k"),
+    # A thrown Potion-Shaped Rock lands: the rock bowlbug's rock attack over the base hit impact.
+    "rock_hit": (("STS2_SFX_E-A2_WorkerBug-Rock-Attack_v1", "STS2_SFX_HitImpact_Base_Medium_1_v1"), "96k"),
+    # A discarded Potion-Shaped Rock drops.
+    "rock_drop": (("sts1_sfx_DropRelic_Rocky",), "96k"),
 }
 
 
@@ -80,7 +84,9 @@ def fsb_sample_names(bank: bytes) -> list[str]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pck", type=Path, default=default_pck_path())
+    parser.add_argument("--only", help="Comma-separated output names to rebuild; default all.")
     args = parser.parse_args()
+    only = set(args.only.split(",")) if args.only else None
 
     pck = PCKReader(args.pck)
     with tempfile.TemporaryDirectory() as temp:
@@ -97,6 +103,8 @@ def main() -> None:
 
         OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
         for output, (names, bitrate) in SOUNDS.items():
+            if only and output not in only:
+                continue
             layers = []
             for name in names:
                 if name not in samples:

@@ -59,6 +59,13 @@ export interface VexingPuzzleboxGameCopy {
   merchantForbiddenLines: string[];
   /** MERCHANT.talk.purchaseFailureSpace: a fifth tile when four are already picked. */
   merchantSpaceLines: string[];
+  /** settings_ui TAB_SOUND, MUSIC_VOLUME, SFX_VOLUME */
+  soundTab: string;
+  musicVolume: string;
+  sfxVolume: string;
+  /** gameplay_ui POTION_POPUP.throw / .discard */
+  potionThrow: string;
+  potionDiscard: string;
   vakuuName: string;
   /** WHISPERING_EARRING.approval */
   vakuuApproval: string;

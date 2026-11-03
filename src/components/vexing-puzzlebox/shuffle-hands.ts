@@ -25,6 +25,7 @@ const OFFSCREEN_MARGIN_PX = 30;
 
 export const SHUFFLE_GRIP_MS = APPROACH_MS;
 export const SHUFFLE_RELEASE_MS = APPROACH_MS + CARRY_MS;
+export const SHUFFLE_TOTAL_MS = TOTAL_MS;
 
 export type ShuffleMove = {
   element: HTMLElement;

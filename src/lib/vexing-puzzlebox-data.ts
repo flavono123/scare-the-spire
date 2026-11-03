@@ -26,6 +26,17 @@ function byId<T extends { id: string }>(items: readonly T[]): Map<string, T> {
   return new Map(items.map((item) => [item.id, item]));
 }
 
+/** Potion-Shaped Rock fills the Connections potion belt. */
+const BELT_POTION_ID = "POTION_SHAPED_ROCK";
+
+export async function getConnectionsBeltPotion(
+  gameLocale: GameLocale,
+): Promise<{ name: string; description: string; imageUrl: string }> {
+  const potion = (await getCodexPotions({ gameLocale })).find((item) => item.id === BELT_POTION_ID);
+  if (!potion) throw new Error(`Connections belt potion is missing: ${BELT_POTION_ID}`);
+  return { name: potion.name, description: potion.description, imageUrl: potion.imageUrl };
+}
+
 export async function getConnectionsPuzzles(gameLocale: GameLocale): Promise<ConnectionsPuzzle[]> {
   const [cards, relics, potions] = await Promise.all([
     getCodexCards({ gameLocale, includeDeprecated: true }),

@@ -7,7 +7,7 @@ import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { VEXING_PUZZLEBOX_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { composeToyBoxIndexOgDescription, getServiceOgMetadata } from "@/lib/service-metadata";
 import { VEXING_PUZZLEBOX_HREF } from "@/lib/vexing-puzzlebox";
-import { getConnectionsPuzzles } from "@/lib/vexing-puzzlebox-data";
+import { getConnectionsBeltPotion, getConnectionsPuzzles } from "@/lib/vexing-puzzlebox-data";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateVexingPuzzleboxMetadata(
@@ -28,9 +28,10 @@ export async function renderVexingPuzzleboxPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const [puzzles, gameCopy] = await Promise.all([
+  const [puzzles, gameCopy, beltPotion] = await Promise.all([
     getConnectionsPuzzles(gameLocale),
     getVexingPuzzleboxGameCopy(gameLocale),
+    getConnectionsBeltPotion(gameLocale),
   ]);
   return (
     <VexingPuzzleboxShell
@@ -42,6 +43,7 @@ export async function renderVexingPuzzleboxPage(
       <ConnectionsClient
         puzzles={puzzles}
         gameCopy={gameCopy}
+        beltPotion={beltPotion}
         serviceLocale={serviceLocale}
         gameLocale={gameLocale}
       />
