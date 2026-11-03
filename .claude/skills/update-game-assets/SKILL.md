@@ -74,6 +74,8 @@ python3 scripts/extract-map-assets.py --force
 PYTHONPATH=. python3 scripts/extract-vexing-puzzlebox-images.py
 PYTHONPATH=. python3 scripts/extract-vexing-puzzlebox-audio.py
 node scripts/build-sts2-public-image-file-index.mjs
+# Beta art pairs and their Shorts episodes come from the slseoun-shorts catalog
+python3 scripts/sync-beta-art-snapshot.py
 
 # 3. Refresh entity data (names, HP, moves, damage, room types, etc.)
 python3 scripts/parse-enchantments.py
