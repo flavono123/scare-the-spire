@@ -4,21 +4,26 @@ import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "@/components/ui/static-image";
 import { useStoredProfileSnapshot } from "@/hooks/use-user-profile";
-import { characterPoolSlug, type CharacterPoolSlug } from "@/lib/user-profile";
+import {
+  characterPoolSlug,
+  isBossAvatarId,
+  isKnownCharacterId,
+  type CharacterPoolSlug,
+  type UserProfile,
+} from "@/lib/user-profile";
 
 export const CHARACTER_HAND_TARGET_ATTRIBUTE = "data-character-hand-target";
 
-const HAND_TEXTURE_WIDTH = 422;
-const HAND_TEXTURE_HEIGHT = 1200;
 const HAND_RENDER_HEIGHT_PX = 320;
-const HAND_SCALE = HAND_RENDER_HEIGHT_PX / HAND_TEXTURE_HEIGHT;
-/** Fingertip in texture pixels, measured from each multiplayer_hand_*_point.png. */
-const FINGERTIPS: Record<CharacterPoolSlug, { x: number; y: number }> = {
-  ironclad: { x: 146, y: 19 },
-  silent: { x: 159, y: 19 },
-  regent: { x: 127, y: 22 },
-  necrobinder: { x: 155, y: 18 },
-  defect: { x: 213, y: 39 },
+type PointingHand = CharacterPoolSlug | "merchant";
+/** Texture size and fingertip in texture pixels, measured from each *_point.webp. */
+const HAND_TEXTURES: Record<PointingHand, { width: number; height: number; tipX: number; tipY: number }> = {
+  ironclad: { width: 422, height: 1200, tipX: 146, tipY: 19 },
+  silent: { width: 422, height: 1200, tipX: 159, tipY: 19 },
+  regent: { width: 422, height: 1200, tipX: 127, tipY: 22 },
+  necrobinder: { width: 422, height: 1200, tipX: 155, tipY: 18 },
+  defect: { width: 422, height: 1200, tipX: 213, tipY: 39 },
+  merchant: { width: 515, height: 1272, tipX: 216, tipY: 2 },
 };
 /** NHandImage follows at 0.07 s for remote players. */
 const SMOOTH_TIME_S = 0.07;
@@ -56,11 +61,21 @@ function fingertipTarget(element: Element): { x: number; y: number } {
   return { x: rect.left + rect.width / 2, y: rect.bottom - TIP_INSET_PX };
 }
 
+/** The profile token's character points; a boss token or no profile gets the merchant's hand. */
+function pointingHandFor(stored: boolean, profile: UserProfile): PointingHand {
+  const tokenId = profile.avatarId || profile.characterId;
+  if (!stored || profile.avatarKind === "boss" || isBossAvatarId(tokenId) || !isKnownCharacterId(tokenId)) {
+    return "merchant";
+  }
+  return characterPoolSlug(tokenId);
+}
+
 export function CharacterHandPointer() {
-  const { profile } = useStoredProfileSnapshot();
-  const character = characterPoolSlug(profile.characterId);
+  const { stored, profile } = useStoredProfileSnapshot();
+  const hand = pointingHandFor(stored, profile);
   const handRef = useRef<HTMLDivElement>(null);
-  const fingertip = FINGERTIPS[character];
+  const texture = HAND_TEXTURES[hand];
+  const scale = HAND_RENDER_HEIGHT_PX / texture.height;
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -165,17 +180,17 @@ export function CharacterHandPointer() {
     <div
       ref={handRef}
       aria-hidden="true"
-      data-character-hand={character}
+      data-character-hand={hand}
       className="pointer-events-none fixed left-0 top-0 z-[800]"
       style={{ visibility: "hidden", width: 0, height: 0 }}
     >
       <Image
-        src={`/images/sts2/ui/hands/${character}_point.webp`}
+        src={`/images/sts2/ui/hands/${hand}_point.webp`}
         alt=""
-        width={Math.round(HAND_TEXTURE_WIDTH * HAND_SCALE)}
+        width={Math.round(texture.width * scale)}
         height={HAND_RENDER_HEIGHT_PX}
         className="absolute max-w-none drop-shadow-lg"
-        style={{ left: -fingertip.x * HAND_SCALE, top: -fingertip.y * HAND_SCALE }}
+        style={{ left: -texture.tipX * scale, top: -texture.tipY * scale }}
       />
     </div>,
     document.body,
