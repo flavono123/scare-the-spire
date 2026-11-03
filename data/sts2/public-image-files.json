@@ -2926,6 +2926,7 @@
     "potion_popup.png",
     "settings_tiny_left_arrow.png",
     "settings_tiny_right_arrow.png",
+    "speech_bubble3_purple.webp",
     "speech_bubble3.webp",
     "tiny_nine_patch.png"
   ],
@@ -2959,11 +2960,22 @@
     "wedge_shadow.png"
   ],
   "ui/hands": [
+    "defect_paper.webp",
     "defect_point.webp",
+    "defect_rock.webp",
+    "ironclad_paper.webp",
     "ironclad_point.webp",
+    "ironclad_rock.webp",
+    "merchant_point.webp",
+    "necrobinder_paper.webp",
     "necrobinder_point.webp",
+    "necrobinder_rock.webp",
+    "regent_paper.webp",
     "regent_point.webp",
-    "silent_point.webp"
+    "regent_rock.webp",
+    "silent_paper.webp",
+    "silent_point.webp",
+    "silent_rock.webp"
   ],
   "ui/inspect-relic": [
     "relic_inspect_frame-ancient.webp",
