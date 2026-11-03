@@ -3,8 +3,12 @@ const STORAGE_KEY = "sts-vexing-puzzlebox-v1";
 export type ConnectionsProgress = {
   /** Levels of each submitted group's members, in submit order. */
   guesses: number[][];
+  /** Member keys of each submitted group, to refuse a repeated guess. Missing in older saves. */
+  guessKeys?: string[][];
   solvedLevels: number[];
   mistakes: number;
+  /** Times this puzzle was started over, which Vakuu counts. */
+  retries?: number;
 };
 
 type VexingPuzzleboxRecord = {

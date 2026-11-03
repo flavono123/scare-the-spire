@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import { CHARACTER_HAND_TARGET_ATTRIBUTE } from "@/components/vexing-puzzlebox/character-hand-pointer";
 import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
+import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
+import { useVakuu } from "@/components/vexing-puzzlebox/vakuu-chatter";
 import { buildBetaArtQuizSets } from "@/lib/beta-art-quiz";
+import { playInvalidShake } from "@/lib/merchant-feedback";
 import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import {
@@ -15,6 +18,9 @@ import type { BetaArtEntry } from "@/lib/vexing-puzzlebox-types";
 import { serviceMessages } from "@/messages/service";
 
 const HIGH_SCORE_SHARE = 0.7;
+const STREAK = 3;
+/** A pick this soon after the art appears was not a long look. */
+const SNAP_PICK_MS = 1200;
 
 export function BetaArtQuiz({
   entries,
@@ -35,6 +41,13 @@ export function BetaArtQuiz({
   const [savedSets, setSavedSets] = useState<Record<string, boolean[]>>({});
   const [copied, setCopied] = useState(false);
   const say = useMerchantSay();
+  const vakuu = useVakuu();
+  const playSound = usePuzzleboxSound();
+  const boardRef = useRef<HTMLDivElement>(null);
+  const questionShownAt = useRef(0);
+  const lines = copy.vakuu;
+  const setFinished = setIndex !== null && answers.length === sets[setIndex].length && picked === null;
+  const finalScore = answers.filter(Boolean).length;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- browser storage is only readable after hydration
@@ -43,7 +56,19 @@ export function BetaArtQuiz({
     if (requested >= 1 && requested <= sets.length) setSetIndex(requested - 1);
   }, [sets.length]);
 
-  const openSet = (index: number | null) => {
+  // Vakuu sums up a finished set.
+  useEffect(() => {
+    if (!setFinished || setIndex === null) return;
+    const high = finalScore / sets[setIndex].length >= HIGH_SCORE_SHARE;
+    vakuu(
+      { lines: high ? lines.quizHigh : lines.quizLow, tags: ["result"], probability: 1, force: true },
+      boardRef.current,
+      { corner: true },
+    );
+  }, [setFinished, setIndex, finalScore, sets, lines, vakuu]);
+
+  const openSet = (index: number | null, at = 0) => {
+    questionShownAt.current = at;
     setSetIndex(index);
     setAnswers([]);
     setPicked(null);
@@ -63,7 +88,7 @@ export function BetaArtQuiz({
             <li key={index}>
               <button
                 type="button"
-                onClick={() => openSet(index)}
+                onClick={(event) => openSet(index, event.timeStamp)}
                 className={`w-full rounded-lg border py-3 text-center text-sm font-semibold transition-colors hover:border-primary/60 ${
                   saved ? "border-primary/50 bg-primary/10" : "border-border bg-card/90"
                 }`}
@@ -81,10 +106,9 @@ export function BetaArtQuiz({
   }
 
   const set = sets[setIndex];
-  const setFinished = answers.length === set.length && picked === null;
 
   if (setFinished) {
-    const score = answers.filter(Boolean).length;
+    const score = finalScore;
     const resultLine = score / set.length >= HIGH_SCORE_SHARE
       ? gameCopy.betaArtHighScore
       : gameCopy.betaArtLowScore;
@@ -101,7 +125,7 @@ export function BetaArtQuiz({
       }
     };
     return (
-      <div className="mx-auto max-w-xl text-center" data-beta-art-result>
+      <div ref={boardRef} className="mx-auto max-w-xl text-center" data-beta-art-result>
         <p className="font-game-title text-4xl font-bold tabular-nums">{score}/{set.length}</p>
         {resultLine && <p className="mt-2 text-sm text-muted-foreground">{resultLine}</p>}
         <p className="mt-3 text-lg tracking-tight">
@@ -130,10 +154,33 @@ export function BetaArtQuiz({
   const questionIndex = picked === null ? answers.length : answers.length - 1;
   const question = set[questionIndex];
 
-  const pick = (key: string, choice: HTMLElement) => {
+  const pick = (key: string, choice: HTMLElement, at: number) => {
     if (picked !== null) return;
-    say("success", choice);
-    const nextAnswers = [...answers, key === question.entry.key];
+    const correct = key === question.entry.key;
+    const nextAnswers = [...answers, correct];
+    const streak = nextAnswers.slice(-STREAK);
+    const remark = (pool: readonly string[], probability: number) => vakuu(
+      { lines: pool.filter(Boolean), tags: ["answer"], probability },
+      boardRef.current,
+      { corner: true },
+    );
+    playSound("uiClick");
+    if (correct) {
+      say("success", choice);
+      playSound("gold");
+    } else {
+      say("forbidden", choice);
+      playInvalidShake(choice);
+    }
+    if (streak.length === STREAK && streak.every((answer) => answer === correct)) {
+      remark(correct ? lines.quizStreakRight : lines.quizStreakWrong, 0.9);
+    } else if (questionShownAt.current > 0 && at - questionShownAt.current < SNAP_PICK_MS) {
+      remark(lines.quizFast, 0.5);
+    } else if (correct) {
+      remark([gameCopy.vakuuApproval, ...lines.quizCorrect], 0.35);
+    } else {
+      remark(lines.quizWrong, 0.4);
+    }
     setPicked(key);
     setAnswers(nextAnswers);
     if (nextAnswers.length === set.length) {
@@ -146,7 +193,7 @@ export function BetaArtQuiz({
   };
 
   return (
-    <div className="mx-auto max-w-2xl" data-beta-art-question={questionIndex + 1}>
+    <div ref={boardRef} className="mx-auto max-w-2xl" data-beta-art-question={questionIndex + 1}>
       <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
         <button type="button" onClick={() => openSet(null)} className="underline hover:text-foreground">
           {copy.quizBack}
@@ -216,10 +263,13 @@ export function BetaArtQuiz({
               type="button"
               disabled={picked !== null}
               {...{ [CHARACTER_HAND_TARGET_ATTRIBUTE]: "" }}
-              onClick={(event) => pick(choice.key, event.currentTarget)}
+              onClick={(event) => pick(choice.key, event.currentTarget, event.timeStamp)}
               className={`rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors [word-break:keep-all] ${stateClass}`}
             >
-              {choice.name}
+              {/* A wrong pick reads as a nerf: red, jittering. */}
+              <span className={picked !== null && !correct && choice.key === picked ? "connections-wrong-jitter inline-block" : ""}>
+                {choice.name}
+              </span>
             </button>
           );
         })}
@@ -229,7 +279,10 @@ export function BetaArtQuiz({
         <div className="mt-4 text-center">
           <button
             type="button"
-            onClick={() => setPicked(null)}
+            onClick={(event) => {
+              questionShownAt.current = event.timeStamp;
+              setPicked(null);
+            }}
             className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground"
           >
             {answers.length === set.length ? copy.quizResult : copy.quizNext}

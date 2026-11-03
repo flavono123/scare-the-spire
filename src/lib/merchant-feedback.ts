@@ -16,3 +16,18 @@ export function playPurchaseFailedWiggle(element: HTMLElement): void {
   });
   element.animate(keyframes, { duration: WIGGLE_DURATION_MS, easing: WIGGLE_EASING });
 }
+
+/** custom-connections-game .invalid-shake: 5 px each way, 0.2 s ease-in, 1.5 times. */
+export function playInvalidShake(element: HTMLElement): void {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  element.animate(
+    [
+      { transform: "translateX(0)" },
+      { transform: "translateX(-5px)" },
+      { transform: "translateX(0)" },
+      { transform: "translateX(5px)" },
+      { transform: "translateX(0)" },
+    ],
+    { duration: 200, iterations: 1.5, easing: "ease-in" },
+  );
+}

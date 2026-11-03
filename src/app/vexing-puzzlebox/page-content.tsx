@@ -41,7 +41,7 @@ export async function renderVexingPuzzleboxPage(
     >
       <ConnectionsClient
         puzzles={puzzles}
-        title={gameCopy.title}
+        gameCopy={gameCopy}
         serviceLocale={serviceLocale}
         gameLocale={gameLocale}
       />

@@ -7,9 +7,9 @@
 
 export type VakuuUtterance = {
   /** Lines to pick from; Vakuu avoids ones he said recently. */
-  lines: string[];
+  lines: readonly string[];
   /** Topics; a remark on the same topic waits SAME_TAG_WINDOW_MS. */
-  tags: string[];
+  tags: readonly string[];
   /** Chance to speak once the etiquette passes. */
   probability: number;
   /** Skips the etiquette, for results the player waits on. */
@@ -27,9 +27,9 @@ const REPEAT_MEMORY = 6;
 const SECONDS_PER_CHAR = 0.12;
 const CJK_MULTIPLIER = 1.5;
 const MIN_SECONDS = 1.5;
-const CJK_PATTERN = /[ᄀ-ᇿ぀-ヿ㄰-㆏㐀-鿿가-힯]/;
+const CJK_PATTERN = /[\u1100-\u11ff\u3040-\u30ff\u3130-\u318f\u3400-\u9fff\uac00-\ud7af]/;
 
-type SpokenRecord = { line: string; tags: string[]; at: number };
+type SpokenRecord = { line: string; tags: readonly string[]; at: number };
 
 export class VakuuSpeaker {
   private recent: SpokenRecord[] = [];

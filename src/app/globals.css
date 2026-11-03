@@ -1150,11 +1150,17 @@
   animation: connections-invalid-shake 0.2s ease-in 1.5;
 }
 
+/* A wrong group reads as a nerf: red, jittering like [jitter]. */
+.connections-wrong-jitter {
+  animation: rich-jitter 0.15s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .vakuu-bubble-box,
   .vakuu-bubble-sprite,
   .vakuu-bubble-text,
-  .connections-invalid-shake {
+  .connections-invalid-shake,
+  .connections-wrong-jitter {
     animation: none;
   }
 }
