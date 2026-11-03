@@ -8,6 +8,7 @@ import {
   profileTokenCharacter,
 } from "@/components/vexing-puzzlebox/character-hand-pointer";
 import { EndTurnButton, PileButton } from "@/components/vexing-puzzlebox/combat-buttons";
+import { ConnectionsIndex, connectionsStatus, issueMonth } from "@/components/vexing-puzzlebox/connections-index";
 import {
   defaultItemDisplay,
   DisplayToggles,
@@ -194,6 +195,8 @@ export function ConnectionsClient({
   const lines = copy.vakuu;
   const [puzzleNumber, setPuzzleNumber] = useState(puzzles[0].number);
   const puzzle = puzzles.find((item) => item.number === puzzleNumber) ?? puzzles[0];
+  const [listOpen, setListOpen] = useState(false);
+  const [records, setRecords] = useState<Record<string, ConnectionsProgress>>({});
   const [progress, setProgress] = useState<ConnectionsProgress>(emptyProgress);
   const [selected, setSelected] = useState<string[]>([]);
   const [shuffleSeed, setShuffleSeed] = useState(0);
@@ -244,10 +247,36 @@ export function ConnectionsClient({
   };
 
   useEffect(() => {
-    const requested = Number(new URLSearchParams(window.location.search).get("p"));
+    const params = new URLSearchParams(window.location.search);
+    const requested = Number(params.get("p"));
     // eslint-disable-next-line react-hooks/set-state-in-effect -- the puzzle number lives in the URL of a static page
     if (puzzles.some((item) => item.number === requested)) setPuzzleNumber(requested);
+    setListOpen(params.has("list"));
+    setRecords(readVexingPuzzleboxRecord().connections);
   }, [puzzles]);
+
+  /** Opening a puzzle or the list keeps the URL shareable: `?p=12`, or `?list`. */
+  const showPuzzleUrl = (next: { puzzle?: number; list?: boolean }) => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("p");
+    url.searchParams.delete("list");
+    if (next.list) url.searchParams.set("list", "");
+    else if (next.puzzle !== undefined && next.puzzle !== puzzles[0].number) url.searchParams.set("p", String(next.puzzle));
+    window.history.replaceState(window.history.state, "", url.toString().replace("list=", "list"));
+  };
+
+  const openPuzzle = (number: number) => {
+    setPuzzleNumber(number);
+    setListOpen(false);
+    showPuzzleUrl({ puzzle: number });
+    playSound("uiClick");
+  };
+
+  const openList = () => {
+    setListOpen(true);
+    showPuzzleUrl({ list: true });
+    playSound("uiClick");
+  };
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- browser storage is only readable after hydration
@@ -350,6 +379,7 @@ export function ConnectionsClient({
 
   const saveProgress = (next: ConnectionsProgress) => {
     setProgress(next);
+    setRecords((current) => ({ ...current, [puzzle.number]: next }));
     updateVexingPuzzleboxRecord((record) => {
       record.connections[puzzle.number] = next;
     });
@@ -531,243 +561,302 @@ export function ConnectionsClient({
     if (inspectCount.current === INSPECT_PEEK_COUNT) remark(lines.inspectPeek, ["inspect"], 1);
   };
 
+  // Puzzles come newest first.
+  const puzzleIndex = puzzles.findIndex((item) => item.number === puzzle.number);
+  const newer = puzzleIndex > 0 ? puzzles[puzzleIndex - 1] : null;
+  const older = puzzleIndex < puzzles.length - 1 ? puzzles[puzzleIndex + 1] : null;
+  const unsolved = [...puzzles.slice(puzzleIndex + 1), ...puzzles.slice(0, puzzleIndex)].find((item) => {
+    const status = connectionsStatus(records[item.number], item.categories.length);
+    return status === "new" || status === "playing";
+  });
+  const arrowClass = "flex h-8 w-8 items-center justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] transition-transform enabled:hover:scale-110 disabled:opacity-25";
+
   return (
     <section className="mx-auto max-w-2xl" data-connections-puzzle={puzzle.number}>
-      <p className="mb-3 text-center text-sm font-semibold">{copy.guide}</p>
-      <div className="mb-3 flex justify-center">
-        <DisplayToggles
-          display={display}
-          gameLocale={gameLocale}
-          labels={{ group: copy.viewsLabel, token: copy.viewTokens, local: copy.viewLocal, original: copy.viewOriginal }}
-          onChange={changeDisplay}
-        />
-      </div>
-
-      {puzzles.length > 1 && (
-        <label className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
-          {copy.puzzleLabel}
-          <select
-            value={puzzle.number}
-            onChange={(event) => setPuzzleNumber(Number(event.target.value))}
-            className="rounded-md border border-border bg-background px-2 py-1 text-foreground"
-          >
-            {puzzles.map((item) => (
-              <option key={item.number} value={item.number}>#{item.number}</option>
-            ))}
-          </select>
-        </label>
-      )}
-
-      <div ref={boardRef} className="relative">
-        {toast && (
-          <p
-            role="status"
-            data-connections-toast
-            className="absolute left-1/2 top-2 z-30 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/85 px-3 py-1.5 font-game-title text-sm font-semibold text-white shadow-lg"
-          >
-            <RichText text={toast.negative ? `[red][jitter]${toast.text}[/jitter][/red]` : toast.text} />
-          </p>
-        )}
-
-        <div className="space-y-2">
-          {visibleCategories.map((category) => (
-            <SolvedCategory
-              key={category.level}
-              category={category}
-              display={display}
-              fresh={category.level === freshLevel}
-              serviceLocale={serviceLocale}
-              gameLocale={gameLocale}
-            />
-          ))}
-        </div>
-
-        {!finished && (
-          <div className={`grid grid-cols-4 gap-1.5 sm:gap-2 ${visibleCategories.length > 0 ? "mt-2" : ""}`}>
-            {remainingTiles.map((tile) => {
-              const isSelected = selected.includes(tile.key);
-              const isWrong = wrongKeys?.includes(tile.key) ?? false;
-              return (
-                <div
-                  key={tile.key}
-                  ref={(element) => {
-                    if (element) tileRefs.current.set(tile.key, element);
-                    else tileRefs.current.delete(tile.key);
-                  }}
-                  className="group relative"
-                >
-                  <button
-                    type="button"
-                    {...{ [CHARACTER_HAND_TARGET_ATTRIBUTE]: "" }}
-                    aria-pressed={isSelected}
-                    aria-label={tile.name}
-                    onClick={(event) => toggleTile(tile.key, event.currentTarget, event.timeStamp)}
-                    data-connections-hint={tile.key === hintKey && !isSelected ? "" : undefined}
-                    className={`flex h-full min-h-16 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border px-1 py-2 text-center text-xs font-semibold transition-colors [word-break:keep-all] sm:min-h-20 sm:text-sm ${
-                      tile.key === hintKey && !isSelected ? "connections-beckon " : ""
-                    }${
-                      isWrong
-                        ? "connections-invalid-shake border-red-500 bg-red-950/90 text-red-300"
-                        : isSelected
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border bg-card/90 text-foreground hover:border-primary/60"
-                    }`}
-                  >
-                    <span className={`flex flex-col items-center gap-1 ${isWrong ? "connections-wrong-jitter" : ""}`}>
-                      {display.token && tile.imageUrl && (
-                        <Image
-                          src={tile.imageUrl}
-                          alt=""
-                          width={72}
-                          height={56}
-                          className="h-12 w-16 object-contain sm:h-14 sm:w-[4.5rem]"
-                        />
-                      )}
-                      <MemberLabels
-                        member={tile}
-                        display={display.token && !tile.imageUrl && !display.local && !display.original
-                          ? { ...display, original: true }
-                          : display}
-                      />
-                    </span>
-                  </button>
-                  <span
-                    onPointerEnter={(event) => {
-                      if (event.pointerType === "mouse") countInspect();
-                    }}
-                    onClick={countInspect}
-                    className={`absolute right-0.5 top-0.5 transition-opacity group-hover:opacity-100 focus-within:opacity-100 ${
-                      isSelected ? "opacity-100" : "opacity-40"
-                    }`}
-                  >
-                    <MemberHover
-                      member={tile}
-                      serviceLocale={serviceLocale}
-                      gameLocale={gameLocale}
-                      inspect
-                      linkClassName="game-inspect-cursor flex h-7 w-7 items-center justify-center rounded"
-                    >
-                      <Image
-                        src="/images/sts2/ui/cursor_inspect.png"
-                        alt={`${tile.name} ${copy.inspect}`}
-                        width={20}
-                        height={20}
-                        className="h-5 w-5"
-                      />
-                    </MemberHover>
-                  </span>
-                </div>
-              );
-            })}
+      <div className="mb-4 flex items-center justify-between gap-2 border-b border-border/60 pb-2" data-connections-bar>
+        {listOpen ? (
+          <p className="font-game-title text-base font-semibold">{copy.puzzleList}</p>
+        ) : (
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              aria-label={copy.olderPuzzle}
+              disabled={!older}
+              onClick={() => older && openPuzzle(older.number)}
+              className={arrowClass}
+            >
+              <Image src="/images/sts2/ui/settings_tiny_left_arrow.png" alt="" width={32} height={32} className="object-contain" />
+            </button>
+            <p className="flex items-baseline gap-2">
+              <span className="font-game-title text-lg font-bold tabular-nums">#{puzzle.number}</span>
+              <span className="text-xs text-muted-foreground">
+                {issueMonth(puzzle.issueDate, serviceLocale)} · {puzzle.era.toUpperCase()}
+              </span>
+            </p>
+            <button
+              type="button"
+              aria-label={copy.newerPuzzle}
+              disabled={!newer}
+              onClick={() => newer && openPuzzle(newer.number)}
+              className={arrowClass}
+            >
+              <Image src="/images/sts2/ui/settings_tiny_right_arrow.png" alt="" width={32} height={32} className="object-contain" />
+            </button>
           </div>
         )}
+        <button
+          type="button"
+          onClick={listOpen ? () => openPuzzle(puzzle.number) : openList}
+          className="text-xs text-muted-foreground underline hover:text-foreground"
+        >
+          {listOpen ? copy.backToPuzzle.replace("{number}", String(puzzle.number)) : copy.puzzleList}
+        </button>
       </div>
 
-      {!finished && (
+      {listOpen ? (
+        <ConnectionsIndex
+          puzzles={puzzles}
+          records={records}
+          currentNumber={puzzle.number}
+          serviceLocale={serviceLocale}
+          onOpen={openPuzzle}
+        />
+      ) : (
         <>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-12 gap-y-3 sm:gap-x-16">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            {copy.remainingMistakes}
-            <span
-              className="flex gap-1"
-              role="img"
-              aria-label={`${MISTAKE_LIMIT - progress.mistakes}/${MISTAKE_LIMIT}`}
-              data-connections-mistakes={MISTAKE_LIMIT - progress.mistakes}
-            >
-              {Array.from({ length: MISTAKE_LIMIT }, (_, index) => (
-                <Image
-                  key={index}
-                  src={energyIcon}
-                  alt=""
-                  width={74}
-                  height={69}
-                  className={`h-6 w-6 object-contain transition-[filter,opacity] duration-300 ${
-                    index < MISTAKE_LIMIT - progress.mistakes ? "" : "opacity-35 grayscale"
-                  }`}
+          <p className="mb-3 text-center text-sm font-semibold">{copy.guide}</p>
+          <div className="mb-3 flex justify-center">
+            <DisplayToggles
+              display={display}
+              gameLocale={gameLocale}
+              labels={{ group: copy.viewsLabel, token: copy.viewTokens, local: copy.viewLocal, original: copy.viewOriginal }}
+              onChange={changeDisplay}
+            />
+          </div>
+
+
+          <div ref={boardRef} className="relative">
+            {toast && (
+              <p
+                role="status"
+                data-connections-toast
+                className="absolute left-1/2 top-2 z-30 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/85 px-3 py-1.5 font-game-title text-sm font-semibold text-white shadow-lg"
+              >
+                <RichText text={toast.negative ? `[red][jitter]${toast.text}[/jitter][/red]` : toast.text} />
+              </p>
+            )}
+
+            <div className="space-y-2">
+              {visibleCategories.map((category) => (
+                <SolvedCategory
+                  key={category.level}
+                  category={category}
+                  display={display}
+                  fresh={category.level === freshLevel}
+                  serviceLocale={serviceLocale}
+                  gameLocale={gameLocale}
                 />
               ))}
-            </span>
-          </div>
-          <PotionBelt
-            label={copy.potionBelt}
-            potion={beltPotion}
-            slots={potions}
-            throwLabel={gameCopy.potionThrow}
-            discardLabel={gameCopy.potionDiscard}
-            disabled={wrongKeys !== null}
-            onThrow={throwRock}
-            onDiscard={discardRock}
-          />
+            </div>
+
+            {!finished && (
+              <div className={`grid grid-cols-4 gap-1.5 sm:gap-2 ${visibleCategories.length > 0 ? "mt-2" : ""}`}>
+                {remainingTiles.map((tile) => {
+                  const isSelected = selected.includes(tile.key);
+                  const isWrong = wrongKeys?.includes(tile.key) ?? false;
+                  return (
+                    <div
+                      key={tile.key}
+                      ref={(element) => {
+                        if (element) tileRefs.current.set(tile.key, element);
+                        else tileRefs.current.delete(tile.key);
+                      }}
+                      className="group relative"
+                    >
+                      <button
+                        type="button"
+                        {...{ [CHARACTER_HAND_TARGET_ATTRIBUTE]: "" }}
+                        aria-pressed={isSelected}
+                        aria-label={tile.name}
+                        onClick={(event) => toggleTile(tile.key, event.currentTarget, event.timeStamp)}
+                        data-connections-hint={tile.key === hintKey && !isSelected ? "" : undefined}
+                        className={`flex h-full min-h-16 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border px-1 py-2 text-center text-xs font-semibold transition-colors [word-break:keep-all] sm:min-h-20 sm:text-sm ${
+                          tile.key === hintKey && !isSelected ? "connections-beckon " : ""
+                        }${
+                          isWrong
+                            ? "connections-invalid-shake border-red-500 bg-red-950/90 text-red-300"
+                            : isSelected
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-card/90 text-foreground hover:border-primary/60"
+                        }`}
+                      >
+                        <span className={`flex flex-col items-center gap-1 ${isWrong ? "connections-wrong-jitter" : ""}`}>
+                          {display.token && tile.imageUrl && (
+                            <Image
+                              src={tile.imageUrl}
+                              alt=""
+                              width={72}
+                              height={56}
+                              className="h-12 w-16 object-contain sm:h-14 sm:w-[4.5rem]"
+                            />
+                          )}
+                          <MemberLabels
+                            member={tile}
+                            display={display.token && !tile.imageUrl && !display.local && !display.original
+                              ? { ...display, original: true }
+                              : display}
+                          />
+                        </span>
+                      </button>
+                      {(tile.entity || tile.sts1MentionId || tile.note) && (
+                        <span
+                          onPointerEnter={(event) => {
+                            if (event.pointerType === "mouse") countInspect();
+                          }}
+                          onClick={countInspect}
+                          className={`absolute right-0.5 top-0.5 transition-opacity group-hover:opacity-100 focus-within:opacity-100 ${
+                            isSelected ? "opacity-100" : "opacity-40"
+                          }`}
+                        >
+                          <MemberHover
+                            member={tile}
+                            serviceLocale={serviceLocale}
+                            gameLocale={gameLocale}
+                            inspect
+                            linkClassName="game-inspect-cursor flex h-7 w-7 items-center justify-center rounded"
+                          >
+                            <Image
+                              src="/images/sts2/ui/cursor_inspect.png"
+                              alt={`${tile.name} ${copy.inspect}`}
+                              width={20}
+                              height={20}
+                              className="h-5 w-5"
+                            />
+                          </MemberHover>
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
-          <div className="mt-4 flex items-center justify-center gap-3 sm:gap-5">
-            <PileButton
-              pile="draw"
-              count={shuffleCount ?? remainingTiles.length}
-              label={copy.shuffle}
-              disabled={wrongKeys !== null}
-              onClick={(event) => shuffle(event.timeStamp)}
-            />
-            <PileButton
-              pile="discard"
-              count={selected.length}
-              label={copy.deselect}
-              disabled={selected.length === 0}
-              onClick={() => {
-                setSelected([]);
-                playSound("uiBack");
-              }}
-            />
-            <EndTurnButton
-              label={copy.submit}
-              ready={selected.length === GROUP_SIZE && wrongKeys === null}
-              disabled={selected.length !== GROUP_SIZE || wrongKeys !== null}
-              onClick={(event) => submit(event.currentTarget, event.timeStamp)}
-            />
-          </div>
+          {!finished && (
+            <>
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-x-12 gap-y-3 sm:gap-x-16">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                {copy.remainingMistakes}
+                <span
+                  className="flex gap-1"
+                  role="img"
+                  aria-label={`${MISTAKE_LIMIT - progress.mistakes}/${MISTAKE_LIMIT}`}
+                  data-connections-mistakes={MISTAKE_LIMIT - progress.mistakes}
+                >
+                  {Array.from({ length: MISTAKE_LIMIT }, (_, index) => (
+                    <Image
+                      key={index}
+                      src={energyIcon}
+                      alt=""
+                      width={74}
+                      height={69}
+                      className={`h-6 w-6 object-contain transition-[filter,opacity] duration-300 ${
+                        index < MISTAKE_LIMIT - progress.mistakes ? "" : "opacity-35 grayscale"
+                      }`}
+                    />
+                  ))}
+                </span>
+              </div>
+              <PotionBelt
+                label={copy.potionBelt}
+                potion={beltPotion}
+                slots={potions}
+                throwLabel={gameCopy.potionThrow}
+                discardLabel={gameCopy.potionDiscard}
+                disabled={wrongKeys !== null}
+                onThrow={throwRock}
+                onDiscard={discardRock}
+              />
+              </div>
+
+              <div className="mt-4 flex items-center justify-center gap-3 sm:gap-5">
+                <PileButton
+                  pile="draw"
+                  count={shuffleCount ?? remainingTiles.length}
+                  label={copy.shuffle}
+                  disabled={wrongKeys !== null}
+                  onClick={(event) => shuffle(event.timeStamp)}
+                />
+                <PileButton
+                  pile="discard"
+                  count={selected.length}
+                  label={copy.deselect}
+                  disabled={selected.length === 0}
+                  onClick={() => {
+                    setSelected([]);
+                    playSound("uiBack");
+                  }}
+                />
+                <EndTurnButton
+                  label={copy.submit}
+                  ready={selected.length === GROUP_SIZE && wrongKeys === null}
+                  disabled={selected.length !== GROUP_SIZE || wrongKeys !== null}
+                  onClick={(event) => submit(event.currentTarget, event.timeStamp)}
+                />
+              </div>
+            </>
+          )}
+
+          {finished && (
+            <div className="mt-4 text-center">
+              <p className="font-semibold">{solvedAll ? copy.solvedAll : copy.failed}</p>
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={copyResult}
+                  className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground"
+                >
+                  {copied ? copy.copied : copy.copyResult}
+                </button>
+                <button
+                  type="button"
+                  onClick={retry}
+                  className="rounded-lg border border-border px-3 py-1.5 text-sm hover:border-primary/60"
+                >
+                  {copy.retry}
+                </button>
+                {unsolved && (
+                  <button
+                    type="button"
+                    onClick={() => openPuzzle(unsolved.number)}
+                    className="rounded-lg border border-border px-3 py-1.5 text-sm hover:border-primary/60"
+                  >
+                    {copy.nextUnsolved.replace("{number}", String(unsolved.number))}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          <footer className="mt-6 flex flex-wrap justify-center gap-4 text-xs">
+            <a
+              href={localizeHrefWithGameLocale(neowsletterClaimHref(puzzle.issueId, puzzle.claimId), serviceLocale, gameLocale)}
+              className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
+            >
+              <Image src={NEOWSLETTER_TOKEN_SRC} alt="" width={16} height={16} className="h-4 w-4 rounded-sm object-cover" />
+              {copy.sourceIssue.replace("{issue}", String(puzzle.issueNumber))} &rarr;
+            </a>
+            <a
+              href={`https://custom-connections-game.vercel.app/${puzzle.slug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
+            >
+              <Image src={MEGA_CRIT_TOKEN_SRC} alt="" width={16} height={16} className="h-4 w-4 rounded-sm" />
+              {copy.sourcePuzzle} &rarr;
+            </a>
+          </footer>
         </>
       )}
-
-      {finished && (
-        <div className="mt-4 text-center">
-          <p className="font-semibold">{solvedAll ? copy.solvedAll : copy.failed}</p>
-          <div className="mt-3 flex flex-wrap justify-center gap-2">
-            <button
-              type="button"
-              onClick={copyResult}
-              className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground"
-            >
-              {copied ? copy.copied : copy.copyResult}
-            </button>
-            <button
-              type="button"
-              onClick={retry}
-              className="rounded-lg border border-border px-3 py-1.5 text-sm hover:border-primary/60"
-            >
-              {copy.retry}
-            </button>
-          </div>
-        </div>
-      )}
-
-      <footer className="mt-6 flex flex-wrap justify-center gap-4 text-xs">
-        <a
-          href={localizeHrefWithGameLocale(neowsletterClaimHref(puzzle.issueId, puzzle.claimId), serviceLocale, gameLocale)}
-          className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
-        >
-          <Image src={NEOWSLETTER_TOKEN_SRC} alt="" width={16} height={16} className="h-4 w-4 rounded-sm object-cover" />
-          {copy.sourceIssue.replace("{issue}", String(puzzle.issueNumber))} &rarr;
-        </a>
-        <a
-          href={`https://custom-connections-game.vercel.app/${puzzle.slug}`}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
-        >
-          <Image src={MEGA_CRIT_TOKEN_SRC} alt="" width={16} height={16} className="h-4 w-4 rounded-sm" />
-          {copy.sourcePuzzle} &rarr;
-        </a>
-      </footer>
     </section>
   );
 }
