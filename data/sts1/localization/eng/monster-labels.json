@@ -23,5 +23,22 @@
       "act": "Final Act",
       "name": "The Ending"
     }
+  },
+  "intents": {
+    "ATTACK": "Aggressive",
+    "ATTACK_BUFF": "Aggressive",
+    "ATTACK_DEBUFF": "Strategic",
+    "ATTACK_DEFEND": "Aggressive",
+    "BUFF": "Strategic",
+    "DEBUFF": "Strategic",
+    "DEFEND": "Defensive",
+    "DEFEND_BUFF": "Defensive",
+    "DEFEND_DEBUFF": "Defensive",
+    "ESCAPE": "Cowardly",
+    "MAGIC": "Magical",
+    "SLEEP": "Sleeping",
+    "STRONG_DEBUFF": "Strategic",
+    "STUN": "Stunned",
+    "UNKNOWN": "Unknown"
   }
 }

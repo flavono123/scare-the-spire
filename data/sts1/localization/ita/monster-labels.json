@@ -23,5 +23,22 @@
       "act": "Ultimo Atto",
       "name": "Il Finale"
     }
+  },
+  "intents": {
+    "ATTACK": "Aggressivo",
+    "ATTACK_BUFF": "Aggressivo",
+    "ATTACK_DEBUFF": "Strategico",
+    "ATTACK_DEFEND": "Aggressivo",
+    "BUFF": "Strategico",
+    "DEBUFF": "Strategico",
+    "DEFEND": "Difensivo",
+    "DEFEND_BUFF": "Difensivo",
+    "DEFEND_DEBUFF": "Difensivo",
+    "ESCAPE": "Codardo",
+    "MAGIC": "Magico",
+    "SLEEP": "Addormentato",
+    "STRONG_DEBUFF": "Strategico",
+    "STUN": "Stordito",
+    "UNKNOWN": "Sconosciuto"
   }
 }

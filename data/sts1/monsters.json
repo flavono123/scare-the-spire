@@ -16,6 +16,133 @@
         "min": 68,
         "max": 72
       }
+    ],
+    "moves": [
+      {
+        "id": 3,
+        "key": "SPLIT",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "shake"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN",
+            "summons": [
+              "AcidSlime_M",
+              "AcidSlime_M"
+            ],
+            "flags": [
+              "suicide"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "NORMAL_TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 16,
+            "hits": [
+              16
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 18,
+            "hits": [
+              18
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "WEAK_LICK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "SLIME_TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 11,
+            "hits": [
+              11
+            ],
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 12,
+            "hits": [
+              12
+            ],
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -34,6 +161,109 @@
         "ascension": 7,
         "min": 29,
         "max": 34
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "NORMAL_TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 10,
+            "hits": [
+              10
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 12,
+            "hits": [
+              12
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "WEAK_LICK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "WOUND_TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 7,
+            "hits": [
+              7
+            ],
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 1,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 8,
+            "hits": [
+              8
+            ],
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 1,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -54,6 +284,66 @@
         "min": 9,
         "max": 13
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "DEBUFF",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 3,
+            "hits": [
+              3
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 4,
+            "hits": [
+              4
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -72,6 +362,75 @@
         "ascension": 7,
         "min": 50,
         "max": 56
+      }
+    ],
+    "moves": [
+      {
+        "id": 3,
+        "key": "INCANTATION",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Ritual",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Ritual",
+                "target": "self",
+                "amount": 4
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Ritual",
+                "target": "self",
+                "amount": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "DARK_STRIKE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 6,
+            "hits": [
+              6
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -92,6 +451,82 @@
         "min": 24,
         "max": 28
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "GROW",
+        "nameIndex": 0,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 4
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "BITE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 6,
+            "hits": [
+              6
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Spore Cloud",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
     ]
   },
   {
@@ -110,6 +545,114 @@
         "ascension": 7,
         "min": 12,
         "max": 18
+      }
+    ],
+    "moves": [
+      {
+        "id": 3,
+        "key": "BITE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": {
+              "min": 5,
+              "max": 7
+            },
+            "hits": [
+              {
+                "min": 5,
+                "max": 7
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": {
+              "min": 6,
+              "max": 8
+            },
+            "hits": [
+              {
+                "min": 6,
+                "max": 8
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "WEAKEN",
+        "nameIndex": 0,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "rear"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Curl Up",
+            "target": "self",
+            "amount": {
+              "min": 3,
+              "max": 7
+            }
+          }
+        ]
+      },
+      {
+        "ascension": 7,
+        "powers": [
+          {
+            "power": "Curl Up",
+            "target": "self",
+            "amount": {
+              "min": 4,
+              "max": 8
+            }
+          }
+        ]
+      },
+      {
+        "ascension": 17,
+        "powers": [
+          {
+            "power": "Curl Up",
+            "target": "self",
+            "amount": {
+              "min": 9,
+              "max": 12
+            }
+          }
+        ]
       }
     ]
   },
@@ -130,6 +673,125 @@
         "min": 11,
         "max": 16
       }
+    ],
+    "moves": [
+      {
+        "id": 3,
+        "key": "BITE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": {
+              "min": 5,
+              "max": 7
+            },
+            "hits": [
+              {
+                "min": 5,
+                "max": 7
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": {
+              "min": 6,
+              "max": 8
+            },
+            "hits": [
+              {
+                "min": 6,
+                "max": 8
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "STRENGTHEN",
+        "nameIndex": 0,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "rear"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 4
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Curl Up",
+            "target": "self",
+            "amount": {
+              "min": 3,
+              "max": 7
+            }
+          }
+        ]
+      },
+      {
+        "ascension": 7,
+        "powers": [
+          {
+            "power": "Curl Up",
+            "target": "self",
+            "amount": {
+              "min": 4,
+              "max": 8
+            }
+          }
+        ]
+      },
+      {
+        "ascension": 17,
+        "powers": [
+          {
+            "power": "Curl Up",
+            "target": "self",
+            "amount": {
+              "min": 9,
+              "max": 12
+            }
+          }
+        ]
+      }
     ]
   },
   {
@@ -148,6 +810,91 @@
         "ascension": 7,
         "min": 14,
         "max": 18
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "BLUNT",
+        "nameIndex": 0,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 4,
+            "hits": [
+              4
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 5,
+            "hits": [
+              5
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 5,
+            "hits": [
+              5
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              },
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 99,
+        "key": null,
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ESCAPE",
+            "flags": [
+              "escape"
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -168,6 +915,115 @@
         "min": 85,
         "max": 90
       }
+    ],
+    "moves": [
+      {
+        "id": 3,
+        "key": "BELLOW",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Anger",
+                "target": "self",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 18,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Anger",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "SKULL_BASH",
+        "nameIndex": 0,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 6,
+            "hits": [
+              6
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 8,
+            "hits": [
+              8
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "BULL_RUSH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 14,
+            "hits": [
+              14
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK",
+            "damage": 16,
+            "hits": [
+              16
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -186,6 +1042,57 @@
         "ascension": 7,
         "min": 11,
         "max": 15
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "PUNCTURE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 9,
+            "hits": [
+              9
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 10,
+            "hits": [
+              10
+            ]
+          }
+        ]
+      },
+      {
+        "id": 99,
+        "key": null,
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ESCAPE",
+            "flags": [
+              "escape"
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -206,6 +1113,95 @@
         "min": 13,
         "max": 17
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "PROTECT",
+        "nameIndex": 0,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 7
+              }
+            ]
+          },
+          {
+            "ascension": 7,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 8
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 11
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "BASH",
+        "nameIndex": 1,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 6,
+            "hits": [
+              6
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 8,
+            "hits": [
+              8
+            ]
+          }
+        ]
+      },
+      {
+        "id": 99,
+        "key": null,
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ESCAPE",
+            "flags": [
+              "escape"
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -224,6 +1220,74 @@
         "ascension": 7,
         "min": 21,
         "max": 25
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "SCRATCH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 4,
+            "hits": [
+              4
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 5,
+            "hits": [
+              5
+            ]
+          }
+        ]
+      },
+      {
+        "id": 99,
+        "key": null,
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ESCAPE",
+            "flags": [
+              "escape"
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Angry",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "ascension": 17,
+        "powers": [
+          {
+            "power": "Angry",
+            "target": "self",
+            "amount": 2
+          }
+        ]
       }
     ]
   },
@@ -244,6 +1308,64 @@
         "min": 22,
         "max": 26
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "CHARGE",
+        "nameIndex": 0,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN"
+          }
+        ]
+      },
+      {
+        "id": 99,
+        "key": null,
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ESCAPE",
+            "flags": [
+              "escape"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "DOPE_MAGIC",
+        "nameIndex": 1,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 25,
+            "hits": [
+              25
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 30,
+            "hits": [
+              30
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -262,6 +1384,195 @@
         "ascension": 9,
         "min": 264,
         "max": 264
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "DIVIDER",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "multiplier": 6,
+            "hits": [
+              -1,
+              -1,
+              -1,
+              -1,
+              -1,
+              -1
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "key": "ACTIVATE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "SEAR",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 6,
+            "hits": [
+              6
+            ],
+            "cards": [
+              {
+                "card": "Burn",
+                "amount": 1,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 6,
+            "hits": [
+              6
+            ],
+            "cards": [
+              {
+                "card": "Burn",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "key": "INFERNO",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 2,
+            "multiplier": 6,
+            "hits": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 3,
+            "multiplier": 6,
+            "hits": [
+              3,
+              3,
+              3,
+              3,
+              3,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 5,
+            "multiplier": 2,
+            "hits": [
+              5,
+              5
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 6,
+            "multiplier": 2,
+            "hits": [
+              6,
+              6
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "INFLAME",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 12
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 12
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -282,6 +1593,133 @@
         "min": 42,
         "max": 46
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "CHOMP",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "chomp"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 11,
+            "hits": [
+              11
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 12,
+            "hits": [
+              12
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "BELLOW",
+        "nameIndex": 0,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "tailslam"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 6
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 6
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 4
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 9
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "THRASH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "hop"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEFEND",
+            "damage": 7,
+            "hits": [
+              7
+            ],
+            "block": [
+              {
+                "target": "self",
+                "amount": 5
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -300,6 +1738,111 @@
         "ascension": 8,
         "min": 112,
         "max": 115
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "DEBUFF",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Debuff"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Dexterity",
+                "target": "player",
+                "amount": -1
+              },
+              {
+                "power": "Strength",
+                "target": "player",
+                "amount": -1
+              }
+            ]
+          },
+          {
+            "ascension": 18,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Dexterity",
+                "target": "player",
+                "amount": -2
+              },
+              {
+                "power": "Strength",
+                "target": "player",
+                "amount": -2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "STRONG_ATK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 18,
+            "hits": [
+              18
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK",
+            "damage": 20,
+            "hits": [
+              20
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "key": "IDLE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "SLEEP"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "OPEN",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STUN"
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -320,6 +1863,121 @@
         "min": 46,
         "max": 50
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "SMOKE_BOMB",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "self",
+                "amount": 6
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "MUG",
+        "nameIndex": 1,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 10,
+            "hits": [
+              10
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 11,
+            "hits": [
+              11
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "LUNGE",
+        "nameIndex": 0,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 12,
+            "hits": [
+              12
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 14,
+            "hits": [
+              14
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "ESCAPE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ESCAPE",
+            "flags": [
+              "escape"
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Thievery",
+            "target": "self",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "ascension": 17,
+        "powers": [
+          {
+            "power": "Thievery",
+            "target": "self",
+            "amount": 20
+          }
+        ]
+      }
     ]
   },
   {
@@ -338,6 +1996,79 @@
         "ascension": 8,
         "min": 39,
         "max": 45
+      }
+    ],
+    "moves": [
+      {
+        "id": 3,
+        "key": "BOLT",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "cards": [
+              {
+                "card": "Dazed",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 18,
+            "intent": "DEBUFF",
+            "cards": [
+              {
+                "card": "Dazed",
+                "amount": 3,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "BEAM",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 9,
+            "hits": [
+              9
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK",
+            "damage": 10,
+            "hits": [
+              10
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 1
+          }
+        ]
       }
     ]
   },
@@ -358,6 +2089,100 @@
         "min": 48,
         "max": 52
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "STAB",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 12,
+            "hits": [
+              12
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 13,
+            "hits": [
+              13
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "RAKE",
+        "nameIndex": 0,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 7,
+            "hits": [
+              7
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 8,
+            "hits": [
+              8
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 8,
+            "hits": [
+              8
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -376,6 +2201,124 @@
         "ascension": 7,
         "min": 48,
         "max": 52
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "STAB",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 13,
+            "hits": [
+              13
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 14,
+            "hits": [
+              14
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "ENTANGLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "idleNoNet"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Entangled",
+                "target": "player",
+                "amount": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "SCRAPE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 8,
+            "hits": [
+              8
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 9,
+            "hits": [
+              9
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 9,
+            "hits": [
+              9
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -396,6 +2339,113 @@
         "min": 150,
         "max": 150
       }
+    ],
+    "moves": [
+      {
+        "id": 4,
+        "key": "STICKY",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 3,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "STRONG_DEBUFF",
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 5,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "PREP_SLAM",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "SPLIT",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "shake"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN",
+            "summons": [
+              "SpikeSlime_L",
+              "AcidSlime_L"
+            ],
+            "flags": [
+              "suicide"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "SLAM",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "jump"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 35,
+            "hits": [
+              35
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 38,
+            "hits": [
+              38
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -414,6 +2464,115 @@
         "ascension": 7,
         "min": 67,
         "max": 73
+      }
+    ],
+    "moves": [
+      {
+        "id": 3,
+        "key": "SPLIT",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "shake"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN",
+            "summons": [
+              "SpikeSlime_M",
+              "SpikeSlime_M"
+            ],
+            "flags": [
+              "suicide"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "FRAIL_LICK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "DEBUFF",
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "FLAME_TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 16,
+            "hits": [
+              16
+            ],
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 18,
+            "hits": [
+              18
+            ],
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -434,6 +2593,80 @@
         "min": 29,
         "max": 34
       }
+    ],
+    "moves": [
+      {
+        "id": 4,
+        "key": "FRAIL_LICK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "FLAME_TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 8,
+            "hits": [
+              8
+            ],
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 1,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 10,
+            "hits": [
+              10
+            ],
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 1,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -452,6 +2685,42 @@
         "ascension": 7,
         "min": 11,
         "max": 15
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 5,
+            "hits": [
+              5
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 6,
+            "hits": [
+              6
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -472,6 +2741,213 @@
         "min": 250,
         "max": 250
       }
+    ],
+    "moves": [
+      {
+        "id": 7,
+        "key": "VENT_STEAM",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              },
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "key": "WHIRLWIND",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 5,
+            "multiplier": 4,
+            "hits": [
+              5,
+              5,
+              5,
+              5
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "ROLL_ATTACK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 9,
+            "hits": [
+              9
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 10,
+            "hits": [
+              10
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "TWIN_SLAM",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_BUFF",
+            "damage": 8,
+            "multiplier": 2,
+            "hits": [
+              8,
+              8
+            ]
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "key": "CHARGE_UP",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "self",
+                "amount": 9
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "FIERCE_BASH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 32,
+            "hits": [
+              32
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 36,
+            "hits": [
+              36
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "CLOSE_UP",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Sharp Hide",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Sharp Hide",
+                "target": "self",
+                "amount": 4
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Mode Shift",
+            "target": "self",
+            "amount": 30
+          }
+        ]
+      },
+      {
+        "ascension": 9,
+        "powers": [
+          {
+            "power": "Mode Shift",
+            "target": "self",
+            "amount": 35
+          }
+        ]
+      },
+      {
+        "ascension": 19,
+        "powers": [
+          {
+            "power": "Mode Shift",
+            "target": "self",
+            "amount": 40
+          }
+        ]
+      }
     ]
   },
   {
@@ -490,6 +2966,118 @@
         "ascension": 7,
         "min": 40,
         "max": 44
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "BEAR_HUG",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Dexterity",
+                "target": "player",
+                "amount": -2
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Dexterity",
+                "target": "player",
+                "amount": -4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "LUNGE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEFEND",
+            "damage": 9,
+            "hits": [
+              9
+            ],
+            "block": [
+              {
+                "target": "self",
+                "amount": 9
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEFEND",
+            "damage": 10,
+            "hits": [
+              10
+            ],
+            "block": [
+              {
+                "target": "self",
+                "amount": 9
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "MAUL",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 18,
+            "hits": [
+              18
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 20,
+            "hits": [
+              20
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -510,6 +3098,46 @@
         "min": 34,
         "max": 34
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "POINTY_SPECIAL",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 5,
+            "multiplier": 2,
+            "hits": [
+              5,
+              5
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 6,
+            "multiplier": 2,
+            "hits": [
+              6,
+              6
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -528,6 +3156,112 @@
         "ascension": 7,
         "min": 37,
         "max": 41
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "MOCK",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "AGONIZING_SLASH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 10,
+            "hits": [
+              10
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 12,
+            "hits": [
+              12
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 12,
+            "hits": [
+              12
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "CROSS_SLASH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 15,
+            "hits": [
+              15
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 17,
+            "hits": [
+              17
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -548,6 +3282,80 @@
         "min": 168,
         "max": 172
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "STAB",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 6,
+            "multiplier": 2,
+            "hits": [
+              6
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK",
+            "damage": 7,
+            "multiplier": 2,
+            "hits": [
+              7
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "BIG_STAB",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack_2"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 21,
+            "hits": [
+              21
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK",
+            "damage": 24,
+            "hits": [
+              24
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Painful Stabs",
+            "target": "self",
+            "amount": null
+          }
+        ]
+      }
     ]
   },
   {
@@ -566,6 +3374,164 @@
         "ascension": 9,
         "min": 320,
         "max": 320
+      }
+    ],
+    "moves": [
+      {
+        "id": 4,
+        "key": "SPAWN_ORBS",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN",
+            "summons": [
+              "BronzeOrb",
+              "BronzeOrb"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "HYPER_BEAM",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 45,
+            "hits": [
+              45
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 50,
+            "hits": [
+              50
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "STUNNED",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STUN"
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "FLAIL",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 7,
+            "multiplier": 2,
+            "hits": [
+              7,
+              7
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 8,
+            "multiplier": 2,
+            "hits": [
+              8,
+              8
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "key": "BOOST",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 9
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 9
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 4
+              }
+            ]
+          },
+          {
+            "ascension": 9,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 12
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 4
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 3
+          }
+        ]
       }
     ]
   },
@@ -586,6 +3552,59 @@
         "min": 54,
         "max": 60
       }
+    ],
+    "moves": [
+      {
+        "id": 3,
+        "key": "STASIS",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "SUPPORT_BEAM",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 12
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "BEAM",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 8,
+            "hits": [
+              8
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -604,6 +3623,181 @@
         "ascension": 7,
         "min": 26,
         "max": 33
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "GO_AIRBORNE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN",
+            "powers": [
+              {
+                "power": "Flight",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "UNKNOWN",
+            "powers": [
+              {
+                "power": "Flight",
+                "target": "self",
+                "amount": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "STUNNED",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STUN"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "key": "CAW",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "PECK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 1,
+            "multiplier": 5,
+            "hits": [
+              1,
+              1,
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 1,
+            "multiplier": 6,
+            "hits": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "SWOOP",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 12,
+            "hits": [
+              12
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 14,
+            "hits": [
+              14
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "key": "HEADBUTT",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 3,
+            "hits": [
+              3
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Flight",
+            "target": "self",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "ascension": 17,
+        "powers": [
+          {
+            "power": "Flight",
+            "target": "self",
+            "amount": 4
+          }
+        ]
       }
     ]
   },
@@ -624,6 +3818,105 @@
         "min": 78,
         "max": 83
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "PROTECT",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 15
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 20
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "FURY",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 6,
+            "multiplier": 3,
+            "hits": [
+              6,
+              6,
+              6
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 7,
+            "multiplier": 3,
+            "hits": [
+              7,
+              7,
+              7
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "SLASH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 12,
+            "hits": [
+              12
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 14,
+            "hits": [
+              14
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -642,6 +3935,283 @@
         "ascension": 9,
         "min": 440,
         "max": 440
+      }
+    ],
+    "moves": [
+      {
+        "id": 7,
+        "key": "ANGER",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 6
+              }
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 9
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 12
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "EXECUTE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "jump"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 10,
+            "multiplier": 2,
+            "hits": [
+              10,
+              10
+            ]
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "key": "TAUNT",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              },
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "DEFENSIVE_STANCE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 15
+              }
+            ],
+            "powers": [
+              {
+                "power": "Metallicize",
+                "target": "self",
+                "amount": 5
+              }
+            ]
+          },
+          {
+            "ascension": 9,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 18
+              }
+            ],
+            "powers": [
+              {
+                "power": "Metallicize",
+                "target": "self",
+                "amount": 6
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 20
+              }
+            ],
+            "powers": [
+              {
+                "power": "Metallicize",
+                "target": "self",
+                "amount": 7
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "key": "GLOAT",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "FACE_SLAP",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 12,
+            "hits": [
+              12
+            ],
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 2
+              },
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 14,
+            "hits": [
+              14
+            ],
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 2
+              },
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "HEAVY_SLASH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 16,
+            "hits": [
+              16
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 18,
+            "hits": [
+              18
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -662,6 +4232,161 @@
         "min": 98,
         "max": 103
       }
+    ],
+    "moves": [
+      {
+        "id": 5,
+        "key": "POKE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 5,
+            "multiplier": 2,
+            "hits": [
+              5,
+              5
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 6,
+            "multiplier": 2,
+            "hits": [
+              6,
+              6
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "HEX",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Hex",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "DEBILITATE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 10,
+            "hits": [
+              10
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 12,
+            "hits": [
+              12
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "DRAIN",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 3
+              },
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "ZAP",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 18,
+            "hits": [
+              18
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 21,
+            "hits": [
+              21
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -680,6 +4405,113 @@
         "ascension": 8,
         "min": 145,
         "max": 155
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "RALLY",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Call"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "STAB",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 6,
+            "multiplier": 3,
+            "hits": [
+              6,
+              6,
+              6
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "ENCOURAGE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 6
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 6
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 4
+              }
+            ]
+          },
+          {
+            "ascension": 18,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 10
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 5
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -700,6 +4532,135 @@
         "min": 50,
         "max": 58
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "HEAL",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "heal": [
+              {
+                "target": "ally",
+                "amount": 16
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "BUFF",
+            "heal": [
+              {
+                "target": "ally",
+                "amount": 20
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "ATTACK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 8,
+            "hits": [
+              8
+            ],
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 9,
+            "hits": [
+              9
+            ],
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "BUFF",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 4
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -718,6 +4679,131 @@
         "ascension": 7,
         "min": 50,
         "max": 54
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "SMOKE_BOMB",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "self",
+                "amount": 11
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "self",
+                "amount": 17
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "MUG",
+        "nameIndex": 1,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 10,
+            "hits": [
+              10
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 11,
+            "hits": [
+              11
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "BIGSWIPE",
+        "nameIndex": 0,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 16,
+            "hits": [
+              16
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 18,
+            "hits": [
+              18
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "ESCAPE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ESCAPE",
+            "flags": [
+              "escape"
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Thievery",
+            "target": "self",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "ascension": 17,
+        "powers": [
+          {
+            "power": "Thievery",
+            "target": "self",
+            "amount": 20
+          }
+        ]
       }
     ]
   },
@@ -738,6 +4824,143 @@
         "min": 70,
         "max": 75
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "FELL",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 18,
+            "hits": [
+              18
+            ],
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 21,
+            "hits": [
+              21
+            ],
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "STUNNED",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STUN"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "DOUBLE_STRIKE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "hop"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 6,
+            "multiplier": 2,
+            "hits": [
+              6,
+              6
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 7,
+            "multiplier": 2,
+            "hits": [
+              7,
+              7
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "LIFE_SUCK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_BUFF",
+            "damage": 10,
+            "hits": [
+              10
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_BUFF",
+            "damage": 12,
+            "hits": [
+              12
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "block": [
+          {
+            "target": "self",
+            "amount": 14
+          }
+        ],
+        "powers": [
+          {
+            "power": "Plated Armor",
+            "target": "self",
+            "amount": 14
+          }
+        ]
+      }
     ]
   },
   {
@@ -756,6 +4979,78 @@
         "ascension": 8,
         "min": 57,
         "max": 64
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "SCOURING_WHIP",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 7,
+            "hits": [
+              7
+            ],
+            "cards": [
+              {
+                "card": "Wound",
+                "amount": 1,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 7,
+            "hits": [
+              7
+            ],
+            "cards": [
+              {
+                "card": "Wound",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 18,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 7,
+            "hits": [
+              7
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 1
+              }
+            ],
+            "cards": [
+              {
+                "card": "Wound",
+                "amount": 3,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -776,6 +5071,79 @@
         "min": 78,
         "max": 82
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "SPORES",
+        "nameIndex": 0,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 2
+              },
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "CHOMPY_CHOMPS",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 7,
+            "multiplier": 3,
+            "hits": [
+              7,
+              7,
+              7
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 8,
+            "multiplier": 3,
+            "hits": [
+              8,
+              8,
+              8
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Malleable",
+            "target": "self",
+            "amount": null
+          }
+        ]
+      }
     ]
   },
   {
@@ -795,6 +5163,129 @@
         "min": 120,
         "max": 125
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "GLARE",
+        "nameIndex": 0,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Confusion",
+                "target": "player",
+                "amount": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "TAIL",
+        "nameIndex": 1,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 8,
+            "hits": [
+              8
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 10,
+            "hits": [
+              10
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 10,
+            "hits": [
+              10
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              },
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "BITE",
+        "nameIndex": 2,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack_2"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 15,
+            "hits": [
+              15
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 18,
+            "hits": [
+              18
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -808,6 +5299,176 @@
         "ascension": 0,
         "min": 20,
         "max": 20
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "INITIAL_BLOCK_GAIN",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "self",
+                "amount": 25
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "self",
+                "amount": 35
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "FRAIL_ATTACK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 10,
+            "hits": [
+              10
+            ],
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 5
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 11,
+            "hits": [
+              11
+            ],
+            "powers": [
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "BLOCK_ATTACK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEFEND",
+            "damage": 10,
+            "hits": [
+              10
+            ],
+            "block": [
+              {
+                "target": "self",
+                "amount": 15
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEFEND",
+            "damage": 11,
+            "hits": [
+              11
+            ],
+            "block": [
+              {
+                "target": "self",
+                "amount": 15
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "BIG_ATTACK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 10,
+            "multiplier": 2,
+            "hits": [
+              10,
+              10
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 11,
+            "multiplier": 2,
+            "hits": [
+              11,
+              11
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "block": [
+          {
+            "target": "self",
+            "amount": 40
+          }
+        ],
+        "powers": [
+          {
+            "power": "Barricade",
+            "target": "self",
+            "amount": null
+          },
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 3
+          }
+        ]
       }
     ]
   },
@@ -828,6 +5489,194 @@
         "min": 300,
         "max": 300
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "SPAWN",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN",
+            "summons": [
+              "TorchHead",
+              "TorchHead"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "MEGA_DEBUFF",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 3
+              },
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 3
+              },
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 5
+              },
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 5
+              },
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "key": "REVIVE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN",
+            "summons": [
+              "TorchHead"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "FIREBALL",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 18,
+            "hits": [
+              18
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 21,
+            "hits": [
+              21
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "BUFF",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 15
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 15
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 4
+              }
+            ]
+          },
+          {
+            "ascension": 9,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 18
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 4
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 23
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 5
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -846,6 +5695,34 @@
         "ascension": 9,
         "min": 40,
         "max": 45
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 7,
+            "hits": [
+              7
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -866,6 +5743,211 @@
         "min": 320,
         "max": 320
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "SLASH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack_1"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 20,
+            "hits": [
+              20
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "SOUL_STRIKE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 6,
+            "multiplier": 4,
+            "hits": [
+              6,
+              6,
+              6,
+              6
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "key": "DARK_ECHO",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack_2"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 40,
+            "hits": [
+              40
+            ]
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "key": "SLUDGE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack_2"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 18,
+            "hits": [
+              18
+            ],
+            "cards": [
+              {
+                "card": "Void",
+                "amount": 1,
+                "pile": "draw"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "key": "TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 10,
+            "multiplier": 3,
+            "hits": [
+              10,
+              10,
+              10
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "REBIRTH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Idle_2"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN"
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Regenerate",
+            "target": "self",
+            "amount": 10
+          },
+          {
+            "power": "Curiosity",
+            "target": "self",
+            "amount": 1
+          },
+          {
+            "power": "Unawakened",
+            "target": "self",
+            "amount": null
+          }
+        ]
+      },
+      {
+        "ascension": 4,
+        "powers": [
+          {
+            "power": "Regenerate",
+            "target": "self",
+            "amount": 10
+          },
+          {
+            "power": "Curiosity",
+            "target": "self",
+            "amount": 1
+          },
+          {
+            "power": "Unawakened",
+            "target": "self",
+            "amount": null
+          },
+          {
+            "power": "Strength",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "ascension": 19,
+        "powers": [
+          {
+            "power": "Regenerate",
+            "target": "self",
+            "amount": 15
+          },
+          {
+            "power": "Curiosity",
+            "target": "self",
+            "amount": 2
+          },
+          {
+            "power": "Unawakened",
+            "target": "self",
+            "amount": null
+          },
+          {
+            "power": "Strength",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
     ]
   },
   {
@@ -879,6 +5961,62 @@
         "ascension": 0,
         "min": 20,
         "max": 25
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "WOUND",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 9,
+            "hits": [
+              9
+            ],
+            "cards": [
+              {
+                "card": "Wound",
+                "amount": 1,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "EXPLODE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack2"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 25,
+            "hits": [
+              25
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -899,6 +6037,166 @@
         "min": 50,
         "max": 59
       }
+    ],
+    "moves": [
+      {
+        "id": 5,
+        "key": "REINCARNATE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Life Link",
+                "target": "self",
+                "amount": 1
+              }
+            ],
+            "heal": [
+              {
+                "target": "self",
+                "amount": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "HARDEN",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "self",
+                "amount": 12
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 12
+              }
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "NIP",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": {
+              "min": 7,
+              "max": 11
+            },
+            "hits": [
+              {
+                "min": 7,
+                "max": 11
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": {
+              "min": 9,
+              "max": 13
+            },
+            "hits": [
+              {
+                "min": 9,
+                "max": 13
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "CHOMP",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 8,
+            "multiplier": 2,
+            "hits": [
+              8,
+              8
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 9,
+            "multiplier": 2,
+            "hits": [
+              9,
+              9
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "COUNT",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN"
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Life Link",
+            "target": "self",
+            "amount": null
+          }
+        ]
+      }
     ]
   },
   {
@@ -917,6 +6215,112 @@
         "ascension": 9,
         "min": 265,
         "max": 265
+      }
+    ],
+    "moves": [
+      {
+        "id": 0,
+        "key": "BEAM",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack_2"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 10,
+            "multiplier": 2,
+            "hits": [
+              10,
+              10
+            ],
+            "cards": [
+              {
+                "card": "Dazed",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 12,
+            "multiplier": 2,
+            "hits": [
+              12,
+              12
+            ],
+            "cards": [
+              {
+                "card": "Dazed",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "SQUARE_OF_PROTECTION",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 16
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "DEFEND_BUFF",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 16
+              }
+            ],
+            "powers": [
+              {
+                "power": "Plated Armor",
+                "target": "ally",
+                "amount": 3
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "ascension": 19,
+        "powers": [
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 3
+          }
+        ]
       }
     ]
   },
@@ -937,6 +6341,82 @@
         "min": 265,
         "max": 265
       }
+    ],
+    "moves": [
+      {
+        "id": 0,
+        "key": "BEAM",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack_2"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 10,
+            "multiplier": 2,
+            "hits": [
+              10,
+              10
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 12,
+            "multiplier": 2,
+            "hits": [
+              12,
+              12
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "CIRCLE_OF_PROTECTION",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 3
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "ascension": 19,
+        "powers": [
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 3
+          }
+        ]
+      }
     ]
   },
   {
@@ -955,6 +6435,61 @@
         "ascension": 7,
         "min": 30,
         "max": 35
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "ATTACK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 9,
+            "hits": [
+              9
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 11,
+            "hits": [
+              11
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "BLOCK",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN"
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Explosive",
+            "target": "self",
+            "amount": 3
+          }
+        ]
       }
     ]
   },
@@ -975,6 +6510,73 @@
         "min": 520,
         "max": 520
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "IT_IS_TIME",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 10
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK",
+            "damage": 20
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "GLARE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "COUNT",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 13,
+            "hits": [
+              13
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Slow",
+            "target": "self",
+            "amount": 0
+          }
+        ]
+      }
     ]
   },
   {
@@ -988,6 +6590,131 @@
         "ascension": 0,
         "min": 300,
         "max": 300
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "ROAR",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 3
+              },
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 5
+              },
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "key": "NOMNOMNOM",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 5,
+            "multiplier": 1
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "DROOL",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 3
+              }
+            ]
+          },
+          {
+            "ascension": 17,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "SLAM",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 25,
+            "hits": [
+              25
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 30,
+            "hits": [
+              30
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -1008,6 +6735,94 @@
         "min": 200,
         "max": 200
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "TRI_ATTACK",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 6,
+            "multiplier": 3,
+            "hits": [
+              6,
+              6,
+              6
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK",
+            "damage": 7,
+            "multiplier": 3,
+            "hits": [
+              7,
+              7,
+              7
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "TRI_BURN",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "cards": [
+              {
+                "card": "Burn",
+                "amount": 3,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 18,
+            "intent": "DEBUFF",
+            "cards": [
+              {
+                "card": "Burn",
+                "amount": 5,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "SCYTHE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 45,
+            "hits": [
+              45
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -1026,6 +6841,92 @@
         "ascension": 7,
         "min": 92,
         "max": 102
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "CLAW",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 15,
+            "hits": [
+              15
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 16,
+            "hits": [
+              16
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "LASER",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 10,
+            "hits": [
+              10
+            ],
+            "cards": [
+              {
+                "card": "Burn",
+                "amount": 1,
+                "pile": "discard-and-deck"
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 11,
+            "hits": [
+              11
+            ],
+            "cards": [
+              {
+                "card": "Burn",
+                "amount": 1,
+                "pile": "discard-and-deck"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Generic Strength Up Power",
+            "target": "self",
+            "amount": null
+          }
+        ]
       }
     ]
   },
@@ -1046,6 +6947,113 @@
         "min": 190,
         "max": 200
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "SPAWN_DAGGER",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Sumon"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "UNKNOWN"
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "SNAKE_STRIKE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 13,
+            "multiplier": 2,
+            "hits": [
+              13,
+              13
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 16,
+            "multiplier": 2,
+            "hits": [
+              16,
+              16
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "BIG_BITE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 30,
+            "hits": [
+              30
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK",
+            "damage": 34,
+            "hits": [
+              34
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Minion",
+            "target": "ally",
+            "amount": null
+          }
+        ]
+      }
     ]
   },
   {
@@ -1064,6 +7072,61 @@
         "ascension": 7,
         "min": 31,
         "max": 38
+      }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "ATTACK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 11,
+            "hits": [
+              11
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 13,
+            "hits": [
+              13
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "DAZE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEBUFF",
+            "cards": [
+              {
+                "card": "Dazed",
+                "amount": 2,
+                "pile": "draw"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
       }
     ]
   },
@@ -1084,6 +7147,95 @@
         "min": 190,
         "max": 190
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "QUICK_TACKLE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 16,
+            "hits": [
+              16
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 18,
+            "hits": [
+              18
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "CONSTRICT",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Constricted",
+                "target": "player",
+                "amount": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "SMASH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 22,
+            "hits": [
+              22
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 25,
+            "hits": [
+              25
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0
+      }
     ]
   },
   {
@@ -1102,6 +7254,88 @@
         "ascension": 7,
         "min": 44,
         "max": 60
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "ATTACK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 7,
+            "hits": [
+              7
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 9,
+            "hits": [
+              9
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "BUFF_THORNS",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Thorns",
+                "target": "self",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Thorns",
+            "target": "self",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "ascension": 2,
+        "powers": [
+          {
+            "power": "Thorns",
+            "target": "self",
+            "amount": 4
+          }
+        ]
+      },
+      {
+        "ascension": 17,
+        "powers": [
+          {
+            "power": "Thorns",
+            "target": "self",
+            "amount": 7
+          }
+        ]
       }
     ]
   },
@@ -1122,6 +7356,206 @@
         "min": 480,
         "max": 480
       }
+    ],
+    "moves": [
+      {
+        "id": 5,
+        "key": "HASTE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "heal": [
+              {
+                "target": "self",
+                "amount": 0
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "BUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 32
+              }
+            ],
+            "heal": [
+              {
+                "target": "self",
+                "amount": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "REVERBERATE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 7,
+            "multiplier": 3,
+            "hits": [
+              7,
+              7,
+              7
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 8,
+            "multiplier": 3,
+            "hits": [
+              8,
+              8,
+              8
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "HEAD_SLAM",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 26,
+            "hits": [
+              26
+            ],
+            "powers": [
+              {
+                "power": "Draw Reduction",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 32,
+            "hits": [
+              32
+            ],
+            "powers": [
+              {
+                "power": "Draw Reduction",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 32,
+            "hits": [
+              32
+            ],
+            "powers": [
+              {
+                "power": "Draw Reduction",
+                "target": "player",
+                "amount": 1
+              }
+            ],
+            "cards": [
+              {
+                "card": "Slimed",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "RIPPLE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND_DEBUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 20
+              }
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 1
+              },
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          },
+          {
+            "ascension": 19,
+            "intent": "DEFEND_DEBUFF",
+            "block": [
+              {
+                "target": "self",
+                "amount": 20
+              }
+            ],
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 1
+              },
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 1
+              },
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Time Warp",
+            "target": "self",
+            "amount": null
+          }
+        ]
+      }
     ]
   },
   {
@@ -1135,6 +7569,69 @@
         "ascension": 0,
         "min": 999,
         "max": 999
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "ATTACK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 40,
+            "hits": [
+              30
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 50,
+            "hits": [
+              40
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Fading",
+            "target": "self",
+            "amount": 5
+          },
+          {
+            "power": "Shifting",
+            "target": "self",
+            "amount": null
+          }
+        ]
+      },
+      {
+        "ascension": 17,
+        "powers": [
+          {
+            "power": "Fading",
+            "target": "self",
+            "amount": 6
+          },
+          {
+            "power": "Shifting",
+            "target": "self",
+            "amount": null
+          }
+        ]
       }
     ]
   },
@@ -1155,6 +7652,195 @@
         "min": 175,
         "max": 175
       }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "MULTI_HIT",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "slow-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 7,
+            "multiplier": 3,
+            "hits": [
+              7,
+              7,
+              7
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 9,
+            "multiplier": 3,
+            "hits": [
+              9,
+              9,
+              9
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "ATTACK_BLOCK",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEFEND",
+            "damage": 15,
+            "hits": [
+              15
+            ],
+            "block": [
+              {
+                "target": "self",
+                "amount": 15
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEFEND",
+            "damage": 16,
+            "hits": [
+              16
+            ],
+            "block": [
+              {
+                "target": "self",
+                "amount": 16
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "ATTACK_DEBUFF",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "motion",
+            "name": "fast-attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 10,
+            "hits": [
+              10
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              },
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 12,
+            "hits": [
+              12
+            ],
+            "powers": [
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              },
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 0,
+        "key": "BIG_HIT",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 32,
+            "hits": [
+              32
+            ]
+          },
+          {
+            "ascension": 2,
+            "intent": "ATTACK",
+            "damage": 38,
+            "hits": [
+              38
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "MEGA_DEBUFF",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF"
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Compulsive",
+            "target": "self",
+            "amount": null
+          },
+          {
+            "power": "Malleable",
+            "target": "self",
+            "amount": null
+          }
+        ]
+      }
     ]
   },
   {
@@ -1173,6 +7859,195 @@
         "ascension": 9,
         "min": 800,
         "max": 800
+      }
+    ],
+    "moves": [
+      {
+        "id": 3,
+        "key": "DEBILITATE",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "STRONG_DEBUFF",
+            "powers": [
+              {
+                "power": "Vulnerable",
+                "target": "player",
+                "amount": 2
+              },
+              {
+                "power": "Weakened",
+                "target": "player",
+                "amount": 2
+              },
+              {
+                "power": "Frail",
+                "target": "player",
+                "amount": 2
+              }
+            ],
+            "cards": [
+              {
+                "card": "Dazed",
+                "amount": 1,
+                "pile": "draw"
+              },
+              {
+                "card": "Slimed",
+                "amount": 1,
+                "pile": "draw"
+              },
+              {
+                "card": "Wound",
+                "amount": 1,
+                "pile": "draw"
+              },
+              {
+                "card": "Burn",
+                "amount": 1,
+                "pile": "draw"
+              },
+              {
+                "card": "Void",
+                "amount": 1,
+                "pile": "draw"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "BLOOD_SHOTS",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 2,
+            "multiplier": 12,
+            "hits": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 2,
+            "multiplier": 15,
+            "hits": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "ECHO_ATTACK",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 40,
+            "hits": [
+              40
+            ]
+          },
+          {
+            "ascension": 4,
+            "intent": "ATTACK",
+            "damage": 45,
+            "hits": [
+              45
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "key": "GAIN_ONE_STRENGTH",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "self",
+                "amount": 2
+              },
+              {
+                "power": "Artifact",
+                "target": "self",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Invincible",
+            "target": "self",
+            "amount": 300
+          },
+          {
+            "power": "BeatOfDeath",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "ascension": 19,
+        "powers": [
+          {
+            "power": "Invincible",
+            "target": "self",
+            "amount": 200
+          },
+          {
+            "power": "BeatOfDeath",
+            "target": "self",
+            "amount": 2
+          }
+        ]
       }
     ]
   },
@@ -1193,6 +8068,156 @@
         "min": 125,
         "max": 125
       }
+    ],
+    "moves": [
+      {
+        "id": 2,
+        "key": "FORTIFY",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "DEFEND",
+            "block": [
+              {
+                "target": "ally",
+                "amount": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "key": "BASH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 12,
+            "hits": [
+              12
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "player",
+                "amount": -1
+              }
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 14,
+            "hits": [
+              14
+            ],
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "player",
+                "amount": -1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "SMASH",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "old_attack"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEFEND",
+            "damage": 34,
+            "hits": [
+              34
+            ],
+            "block": [
+              {
+                "target": "self",
+                "amount": 34
+              }
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK_DEFEND",
+            "damage": 38,
+            "hits": [
+              38
+            ],
+            "block": [
+              {
+                "target": "self",
+                "amount": 38
+              }
+            ]
+          },
+          {
+            "ascension": 18,
+            "intent": "ATTACK_DEFEND",
+            "damage": 38,
+            "hits": [
+              38
+            ],
+            "block": [
+              {
+                "target": "self",
+                "amount": 99
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Surrounded",
+            "target": "player",
+            "amount": null
+          },
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "ascension": 18,
+        "powers": [
+          {
+            "power": "Surrounded",
+            "target": "player",
+            "amount": null
+          },
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
     ]
   },
   {
@@ -1211,6 +8236,149 @@
         "ascension": 8,
         "min": 180,
         "max": 180
+      }
+    ],
+    "moves": [
+      {
+        "id": 1,
+        "key": "BURN_STRIKE",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack_2"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 5,
+            "multiplier": 2,
+            "hits": [
+              5,
+              5
+            ],
+            "cards": [
+              {
+                "card": "Burn",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 6,
+            "multiplier": 2,
+            "hits": [
+              6,
+              6
+            ],
+            "cards": [
+              {
+                "card": "Burn",
+                "amount": 2,
+                "pile": "discard"
+              }
+            ]
+          },
+          {
+            "ascension": 18,
+            "intent": "ATTACK_DEBUFF",
+            "damage": 6,
+            "multiplier": 2,
+            "hits": [
+              6,
+              6
+            ],
+            "cards": [
+              {
+                "card": "Burn",
+                "amount": 2,
+                "pile": "draw"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "key": "PIERCER",
+        "nameIndex": null,
+        "triggers": [],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "BUFF",
+            "powers": [
+              {
+                "power": "Strength",
+                "target": "ally",
+                "amount": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "key": "SKEWER",
+        "nameIndex": null,
+        "triggers": [
+          {
+            "type": "spine",
+            "name": "Attack_2"
+          }
+        ],
+        "tiers": [
+          {
+            "ascension": 0,
+            "intent": "ATTACK",
+            "damage": 10,
+            "multiplier": 3,
+            "hits": [
+              10,
+              10,
+              10
+            ]
+          },
+          {
+            "ascension": 3,
+            "intent": "ATTACK",
+            "damage": 10,
+            "multiplier": 4,
+            "hits": [
+              10,
+              10,
+              10,
+              10
+            ]
+          }
+        ]
+      }
+    ],
+    "startingEffects": [
+      {
+        "ascension": 0,
+        "powers": [
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "ascension": 18,
+        "powers": [
+          {
+            "power": "Artifact",
+            "target": "self",
+            "amount": 2
+          }
+        ]
       }
     ]
   }

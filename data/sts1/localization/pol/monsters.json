@@ -1,7 +1,7 @@
 {
   "AcidSlime_L": {
     "name": "Toksyglut (D)",
-    "moves": [
+    "moveNames": [
       "Żrąca ślina",
       "Podział",
       "Liźnięcie"
@@ -9,79 +9,83 @@
   },
   "AcidSlime_M": {
     "name": "Toksyglut (Ś)",
-    "moves": [
+    "moveNames": [
       "Żrąca ślina",
       "Liźnięcie"
     ]
   },
   "AcidSlime_S": {
     "name": "Toksyglut (M)",
-    "moves": []
+    "moveNames": []
   },
   "Cultist": {
     "name": "Kultysta",
-    "moves": [
+    "moveNames": [
+      "",
+      "",
       "Zaklinanie"
     ]
   },
   "FungiBeast": {
     "name": "Grzybozwierz",
-    "moves": [
+    "moveNames": [
       "Przyrost"
     ]
   },
   "FuzzyLouseDefensive": {
     "name": "Gnida",
-    "moves": [
+    "moveNames": [
       "Sieć"
     ]
   },
   "FuzzyLouseNormal": {
     "name": "Gnida",
-    "moves": [
+    "moveNames": [
       "Przyrost"
     ]
   },
   "GremlinFat": {
     "name": "Grublin",
-    "moves": [
+    "moveNames": [
       "Uderzenie"
     ]
   },
   "GremlinNob": {
     "name": "Herszt Gremlinów",
-    "moves": [
+    "moveNames": [
       "Z czachy",
       "Szarża"
     ]
   },
   "GremlinThief": {
     "name": "Przebiegły Gremlin",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GremlinTsundere": {
     "name": "Gremlin Tarczownik",
-    "moves": [
+    "moveNames": [
       "Obrona",
       "Z tarczy"
     ]
   },
   "GremlinWarrior": {
     "name": "Szalony Gremlin",
-    "moves": [
+    "moveNames": [
       "Zadrapanie"
     ]
   },
   "GremlinWizard": {
     "name": "Gremlin Znachor",
-    "moves": [
+    "moveNames": [
       "Ładowanie",
       "Pustoszący cios"
     ]
   },
   "Hexaghost": {
     "name": "Heksaduch",
-    "moves": [
+    "moveNames": [
       "Rozpalenie",
       "Spopielenie",
       "Inferno"
@@ -89,46 +93,46 @@
   },
   "JawWorm": {
     "name": "Szczękościsk",
-    "moves": [
+    "moveNames": [
       "Ryk",
       "Zgryz"
     ]
   },
   "Lagavulin": {
     "name": "Lagavulin",
-    "moves": [
+    "moveNames": [
       "Pożarcie duszy"
     ]
   },
   "Looter": {
     "name": "Szabrownik",
-    "moves": [
+    "moveNames": [
       "Natarcie",
       "Ograbienie"
     ]
   },
   "Sentry": {
     "name": "Wartownik",
-    "moves": [
+    "moveNames": [
       "Rozczłonkowanie"
     ]
   },
   "SlaverBlue": {
     "name": "Poganiacz",
-    "moves": [
+    "moveNames": [
       "Zadrapanie"
     ]
   },
   "SlaverRed": {
     "name": "Poganiacz",
-    "moves": [
+    "moveNames": [
       "Zadrapanie",
       "Spętanie"
     ]
   },
   "SlimeBoss": {
     "name": "Masterszlam",
-    "moves": [
+    "moveNames": [
       "Miażdżenie",
       "Przygotowywanie",
       "Podział",
@@ -137,24 +141,24 @@
   },
   "SpikeSlime_L": {
     "name": "Kolcoglut (D)",
-    "moves": [
+    "moveNames": [
       "Liźnięcie",
       "Podział"
     ]
   },
   "SpikeSlime_M": {
     "name": "Kolcoglut (Ś)",
-    "moves": [
+    "moveNames": [
       "Liźnięcie"
     ]
   },
   "SpikeSlime_S": {
     "name": "Kolcoglut (M)",
-    "moves": []
+    "moveNames": []
   },
   "TheGuardian": {
     "name": "Strażnik",
-    "moves": [
+    "moveNames": [
       "Tryb obronny",
       "Wściekłe uderzenie",
       "Skulenie",
@@ -166,41 +170,55 @@
   },
   "BanditBear": {
     "name": "Niedźwiedź",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BanditChild": {
     "name": "Zadzior",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BanditLeader": {
     "name": "Romeo",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BookOfStabbing": {
     "name": "Księga Sztychów",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BronzeAutomaton": {
     "name": "Automaton z Brązu",
-    "moves": [
+    "moveNames": [
       "HIPERPROMIEŃ"
     ]
   },
   "BronzeOrb": {
     "name": "Sfera",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Byrd": {
     "name": "Ptok",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Centurion": {
     "name": "Setnik",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Champ": {
     "name": "Czempion",
-    "moves": [
+    "moveNames": [
       "Postawa obronna",
       "Egzekucja",
       "Z liścia"
@@ -208,42 +226,50 @@
   },
   "Chosen": {
     "name": "Wybrana",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GremlinLeader": {
     "name": "Gremlin Przywódca",
-    "moves": [
+    "moveNames": [
       "Do mnie!"
     ]
   },
   "Healer": {
     "name": "Mistyk",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Mugger": {
     "name": "Rabuś",
-    "moves": [
+    "moveNames": [
       "Natarcie",
       "Ograbienie"
     ]
   },
   "Shelled Parasite": {
     "name": "Panceżyt",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SlaverBoss": {
     "name": "Nadzorca",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SnakePlant": {
     "name": "Wężołówka",
-    "moves": [
+    "moveNames": [
       "Pasożytnicze zarodniki"
     ]
   },
   "Snecko": {
     "name": "Wonsz",
-    "moves": [
+    "moveNames": [
       "Hipnotyzujący blask",
       "Trzaśnięcie ogonem",
       "Ugryzienie"
@@ -251,19 +277,25 @@
   },
   "SphericGuardian": {
     "name": "Sferyczny Strażnik",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TheCollector": {
     "name": "Kolekcjoner",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TorchHead": {
     "name": "Pochodnik",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "AwakenedOne": {
     "name": "Przebudzony",
-    "moves": [
+    "moveNames": [
       "Uderzenie duszy",
       "Mroczne echo",
       "Wyzwolenie",
@@ -272,84 +304,116 @@
   },
   "Dagger": {
     "name": "Sztylet",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Darkling": {
     "name": "Cichociemny",
-    "moves": [
+    "moveNames": [
       "Chrup! Chrup!"
     ]
   },
   "Deca": {
     "name": "Cleo",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Donu": {
     "name": "Donutan",
-    "moves": [
+    "moveNames": [
       "Krąg mocy"
     ]
   },
   "Exploder": {
     "name": "Wybuchowiec",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GiantHead": {
     "name": "Tęgi Łeb",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Maw": {
     "name": "Paszczur",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Nemesis": {
     "name": "Nemezis",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Orb Walker": {
     "name": "Kulminator",
-    "moves": [
+    "moveNames": [
       "Wzmocnienie"
     ]
   },
   "Reptomancer": {
     "name": "Gadzinomantka",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Repulsor": {
     "name": "Repulsor",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Serpent": {
     "name": "Macki Iglicy",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Spiker": {
     "name": "Cierń",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TimeEater": {
     "name": "Pożeracz Czasu",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Transient": {
     "name": "Przemijacz",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "WrithingMass": {
     "name": "Wijąca się Masa",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "CorruptHeart": {
     "name": "Spaczone Serce",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SpireShield": {
     "name": "Tarcza Iglicy",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SpireSpear": {
     "name": "Włócznia Iglicy",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   }
 }

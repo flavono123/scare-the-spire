@@ -1,7 +1,7 @@
 {
   "AcidSlime_L": {
     "name": "酸液史莱姆（大）",
-    "moves": [
+    "moveNames": [
       "腐蚀喷吐",
       "分裂",
       "舔舔"
@@ -9,79 +9,83 @@
   },
   "AcidSlime_M": {
     "name": "酸液史莱姆（中）",
-    "moves": [
+    "moveNames": [
       "腐蚀喷吐",
       "舔舔"
     ]
   },
   "AcidSlime_S": {
     "name": "酸液史莱姆（小）",
-    "moves": []
+    "moveNames": []
   },
   "Cultist": {
     "name": "邪教徒",
-    "moves": [
+    "moveNames": [
+      "",
+      "",
       "念咒"
     ]
   },
   "FungiBeast": {
     "name": "真菌兽",
-    "moves": [
+    "moveNames": [
       "生长"
     ]
   },
   "FuzzyLouseDefensive": {
     "name": "虱虫",
-    "moves": [
+    "moveNames": [
       "吐网"
     ]
   },
   "FuzzyLouseNormal": {
     "name": "虱虫",
-    "moves": [
+    "moveNames": [
       "成长"
     ]
   },
   "GremlinFat": {
     "name": "胖地精",
-    "moves": [
+    "moveNames": [
       "粉碎"
     ]
   },
   "GremlinNob": {
     "name": "地精大块头",
-    "moves": [
+    "moveNames": [
       "颅骨重击",
       "蛮牛冲撞"
     ]
   },
   "GremlinThief": {
     "name": "卑鄙地精",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GremlinTsundere": {
     "name": "持盾地精",
-    "moves": [
+    "moveNames": [
       "保护",
       "盾击"
     ]
   },
   "GremlinWarrior": {
     "name": "火大地精",
-    "moves": [
+    "moveNames": [
       "爪挠"
     ]
   },
   "GremlinWizard": {
     "name": "地精法师",
-    "moves": [
+    "moveNames": [
       "蓄能",
       "终极大爆炸"
     ]
   },
   "Hexaghost": {
     "name": "六火亡魂",
-    "moves": [
+    "moveNames": [
       "高热",
       "灼烧",
       "地狱火"
@@ -89,46 +93,46 @@
   },
   "JawWorm": {
     "name": "大颚虫",
-    "moves": [
+    "moveNames": [
       "咆哮",
       "抽打"
     ]
   },
   "Lagavulin": {
     "name": "乐加维林",
-    "moves": [
+    "moveNames": [
       "灵魂吸取"
     ]
   },
   "Looter": {
     "name": "抢劫的",
-    "moves": [
+    "moveNames": [
       "突刺",
       "打劫"
     ]
   },
   "Sentry": {
     "name": "哨卫",
-    "moves": [
+    "moveNames": [
       "粉碎"
     ]
   },
   "SlaverBlue": {
     "name": "奴隶贩子",
-    "moves": [
+    "moveNames": [
       "耙伤"
     ]
   },
   "SlaverRed": {
     "name": "奴隶贩子",
-    "moves": [
+    "moveNames": [
       "刮伤",
       "丢网"
     ]
   },
   "SlimeBoss": {
     "name": "史莱姆老大",
-    "moves": [
+    "moveNames": [
       "猛撞",
       "准备",
       "分裂",
@@ -137,24 +141,24 @@
   },
   "SpikeSlime_L": {
     "name": "尖刺史莱姆（大）",
-    "moves": [
+    "moveNames": [
       "舔舔",
       "分裂"
     ]
   },
   "SpikeSlime_M": {
     "name": "尖刺史莱姆（中）",
-    "moves": [
+    "moveNames": [
       "舔舔"
     ]
   },
   "SpikeSlime_S": {
     "name": "尖刺史莱姆（小）",
-    "moves": []
+    "moveNames": []
   },
   "TheGuardian": {
     "name": "守护者",
-    "moves": [
+    "moveNames": [
       "防御模式",
       "猛烈痛击",
       "滚动",
@@ -166,41 +170,55 @@
   },
   "BanditBear": {
     "name": "熊",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BanditChild": {
     "name": "尖尖",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BanditLeader": {
     "name": "罗密欧",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BookOfStabbing": {
     "name": "扎人的书",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BronzeAutomaton": {
     "name": "铜制机械人偶",
-    "moves": [
+    "moveNames": [
       "超能光束"
     ]
   },
   "BronzeOrb": {
     "name": "铜球",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Byrd": {
     "name": "异鸟",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Centurion": {
     "name": "百夫长",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Champ": {
     "name": "第一勇士",
-    "moves": [
+    "moveNames": [
       "防御态势",
       "处决",
       "打脸"
@@ -208,42 +226,50 @@
   },
   "Chosen": {
     "name": "被拣选者",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GremlinLeader": {
     "name": "地精首领",
-    "moves": [
+    "moveNames": [
       "集合！"
     ]
   },
   "Healer": {
     "name": "神秘术士",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Mugger": {
     "name": "打劫的",
-    "moves": [
+    "moveNames": [
       "猛冲",
       "抢劫"
     ]
   },
   "Shelled Parasite": {
     "name": "带壳寄生怪",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SlaverBoss": {
     "name": "奴隶头子",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SnakePlant": {
     "name": "蛇花",
-    "moves": [
+    "moveNames": [
       "虚弱孢子"
     ]
   },
   "Snecko": {
     "name": "异蛇",
-    "moves": [
+    "moveNames": [
       "困惑瞪视",
       "扫尾",
       "噬咬"
@@ -251,19 +277,25 @@
   },
   "SphericGuardian": {
     "name": "圆球守护者",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TheCollector": {
     "name": "收藏家",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TorchHead": {
     "name": "火炬头",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "AwakenedOne": {
     "name": "觉醒者",
-    "moves": [
+    "moveNames": [
       "灵魂攻击",
       "黑暗回音",
       "净化",
@@ -272,84 +304,116 @@
   },
   "Dagger": {
     "name": "匕首",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Darkling": {
     "name": "小黑",
-    "moves": [
+    "moveNames": [
       "啊呜！啊呜！"
     ]
   },
   "Deca": {
     "name": "八体",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Donu": {
     "name": "甜圈",
-    "moves": [
+    "moveNames": [
       "力量之环"
     ]
   },
   "Exploder": {
     "name": "爆炸机",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GiantHead": {
     "name": "大脑袋",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Maw": {
     "name": "巨口",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Nemesis": {
     "name": "天罚",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Orb Walker": {
     "name": "圆球行者",
-    "moves": [
+    "moveNames": [
       "强化"
     ]
   },
   "Reptomancer": {
     "name": "拜蛇术士",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Repulsor": {
     "name": "反冲机",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Serpent": {
     "name": "塔内增生组织",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Spiker": {
     "name": "钉刺机",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TimeEater": {
     "name": "时间吞噬者",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Transient": {
     "name": "倏忽魔",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "WrithingMass": {
     "name": "扭曲团块",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "CorruptHeart": {
     "name": "腐化之心",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SpireShield": {
     "name": "高塔之盾",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SpireSpear": {
     "name": "高塔之矛",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   }
 }

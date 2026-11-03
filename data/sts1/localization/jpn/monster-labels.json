@@ -23,5 +23,22 @@
       "act": "最終章",
       "name": "終幕"
     }
+  },
+  "intents": {
+    "ATTACK": "攻撃的",
+    "ATTACK_BUFF": "攻撃的",
+    "ATTACK_DEBUFF": "戦略的",
+    "ATTACK_DEFEND": "攻撃的",
+    "BUFF": "戦略的",
+    "DEBUFF": "戦略的",
+    "DEFEND": "防御的",
+    "DEFEND_BUFF": "防御的",
+    "DEFEND_DEBUFF": "防御的",
+    "ESCAPE": "消極的",
+    "MAGIC": "魔法",
+    "SLEEP": "睡眠",
+    "STRONG_DEBUFF": "戦略的",
+    "STUN": "スタン",
+    "UNKNOWN": "不明"
   }
 }

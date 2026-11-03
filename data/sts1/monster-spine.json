@@ -1,0 +1,1246 @@
+{
+  "acid-slime-l": {
+    "idle": "Idle",
+    "animations": [
+      "Idle",
+      "damage"
+    ],
+    "viewport": {
+      "x": -167.6,
+      "y": -4.4,
+      "width": 363,
+      "height": 168
+    },
+    "still": {
+      "x": -167.6,
+      "y": -4.4,
+      "width": 363,
+      "height": 168
+    }
+  },
+  "acid-slime-m": {
+    "idle": "idle",
+    "animations": [
+      "damage",
+      "idle"
+    ],
+    "viewport": {
+      "x": -95.6,
+      "y": -8.3,
+      "width": 193,
+      "height": 111
+    },
+    "still": {
+      "x": -95.6,
+      "y": -8.3,
+      "width": 193,
+      "height": 111
+    }
+  },
+  "acid-slime-s": {
+    "idle": "idle",
+    "animations": [
+      "damage",
+      "idle"
+    ],
+    "viewport": {
+      "x": -60.6,
+      "y": -2.3,
+      "width": 125,
+      "height": 73
+    },
+    "still": {
+      "x": -60.6,
+      "y": -2.3,
+      "width": 125,
+      "height": 73
+    }
+  },
+  "cultist": {
+    "idle": "waving",
+    "animations": [
+      "rally",
+      "waving"
+    ],
+    "viewport": {
+      "x": -152.5,
+      "y": -3.6,
+      "width": 321.5,
+      "height": 313
+    },
+    "still": {
+      "x": -122,
+      "y": -3.6,
+      "width": 291,
+      "height": 313
+    }
+  },
+  "fungi-beast": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -196.5,
+      "y": -28.2,
+      "width": 368,
+      "height": 186
+    },
+    "still": {
+      "x": -115.4,
+      "y": -26.2,
+      "width": 246,
+      "height": 184
+    }
+  },
+  "fuzzy-louse-defensive": {
+    "idle": "idle",
+    "animations": [
+      "idle",
+      "idle closed",
+      "rear",
+      "transitiontoclosed",
+      "transitiontoopened"
+    ],
+    "viewport": {
+      "x": -87.3,
+      "y": -16.3,
+      "width": 164,
+      "height": 126.2
+    },
+    "still": {
+      "x": -87.3,
+      "y": -16.3,
+      "width": 164,
+      "height": 103
+    }
+  },
+  "fuzzy-louse-normal": {
+    "idle": "idle",
+    "animations": [
+      "idle",
+      "idle closed",
+      "rear",
+      "transitiontoclosed",
+      "transitiontoopened"
+    ],
+    "viewport": {
+      "x": -87.5,
+      "y": -16.4,
+      "width": 164,
+      "height": 154.1
+    },
+    "still": {
+      "x": -87.5,
+      "y": -16.4,
+      "width": 164,
+      "height": 116
+    }
+  },
+  "gremlin-fat": {
+    "idle": "animation",
+    "animations": [
+      "animation"
+    ],
+    "viewport": {
+      "x": -54.8,
+      "y": -14.4,
+      "width": 97,
+      "height": 238
+    },
+    "still": {
+      "x": -54.8,
+      "y": -14.4,
+      "width": 97,
+      "height": 238
+    }
+  },
+  "gremlin-nob": {
+    "idle": "animation",
+    "animations": [
+      "animation"
+    ],
+    "viewport": {
+      "x": -168.2,
+      "y": -29.1,
+      "width": 346,
+      "height": 390
+    },
+    "still": {
+      "x": -168.2,
+      "y": -29.1,
+      "width": 346,
+      "height": 390
+    }
+  },
+  "gremlin-thief": {
+    "idle": "animation",
+    "animations": [
+      "animation"
+    ],
+    "viewport": {
+      "x": -73.8,
+      "y": -0.1,
+      "width": 129,
+      "height": 131
+    },
+    "still": {
+      "x": -73.8,
+      "y": -0.1,
+      "width": 129,
+      "height": 129
+    }
+  },
+  "gremlin-tsundere": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -61,
+      "y": -10.5,
+      "width": 121.3,
+      "height": 182
+    },
+    "still": {
+      "x": -61,
+      "y": -10.5,
+      "width": 118,
+      "height": 182
+    }
+  },
+  "gremlin-warrior": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -67,
+      "y": -11.4,
+      "width": 118.3,
+      "height": 180
+    },
+    "still": {
+      "x": -67,
+      "y": -11.4,
+      "width": 118,
+      "height": 180
+    }
+  },
+  "gremlin-wizard": {
+    "idle": "animation",
+    "animations": [
+      "animation"
+    ],
+    "viewport": {
+      "x": -98.8,
+      "y": -8.3,
+      "width": 215,
+      "height": 168
+    },
+    "still": {
+      "x": -98.8,
+      "y": -8.3,
+      "width": 215,
+      "height": 168
+    }
+  },
+  "jaw-worm": {
+    "idle": "idle",
+    "animations": [
+      "chomp",
+      "idle",
+      "tailslam"
+    ],
+    "viewport": {
+      "x": -128.1,
+      "y": -37.8,
+      "width": 305.3,
+      "height": 174
+    },
+    "still": {
+      "x": -115.7,
+      "y": -37.8,
+      "width": 293,
+      "height": 160
+    }
+  },
+  "lagavulin": {
+    "idle": "Idle_2",
+    "animations": [
+      "Attack",
+      "Coming_out",
+      "Debuff",
+      "Hit",
+      "Idle_1",
+      "Idle_2"
+    ],
+    "viewport": {
+      "x": -322,
+      "y": -76.9,
+      "width": 507,
+      "height": 413
+    },
+    "still": {
+      "x": -168.8,
+      "y": -22.8,
+      "width": 324,
+      "height": 334
+    }
+  },
+  "looter": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -115.6,
+      "y": -17.1,
+      "width": 191,
+      "height": 209
+    },
+    "still": {
+      "x": -115.6,
+      "y": -17.1,
+      "width": 191,
+      "height": 209
+    }
+  },
+  "sentry": {
+    "idle": "idle",
+    "animations": [
+      "attack",
+      "hit",
+      "idle",
+      "spaz1",
+      "spaz2",
+      "spaz3"
+    ],
+    "viewport": {
+      "x": -75.2,
+      "y": -26.4,
+      "width": 141,
+      "height": 335.3
+    },
+    "still": {
+      "x": -75.2,
+      "y": -26.4,
+      "width": 141,
+      "height": 331
+    }
+  },
+  "slaver-blue": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -172.9,
+      "y": -18.5,
+      "width": 278,
+      "height": 238
+    },
+    "still": {
+      "x": -172.9,
+      "y": -18.5,
+      "width": 278,
+      "height": 238
+    }
+  },
+  "slaver-red": {
+    "idle": "idle",
+    "animations": [
+      "idle",
+      "idleNoNet"
+    ],
+    "viewport": {
+      "x": -188.3,
+      "y": -18.5,
+      "width": 401,
+      "height": 235
+    },
+    "still": {
+      "x": -188.3,
+      "y": -18.5,
+      "width": 401,
+      "height": 235
+    }
+  },
+  "slime-boss": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -195,
+      "y": -37.2,
+      "width": 399,
+      "height": 317
+    },
+    "still": {
+      "x": -195,
+      "y": -37.2,
+      "width": 399,
+      "height": 317
+    }
+  },
+  "spike-slime-l": {
+    "idle": "idle",
+    "animations": [
+      "eyefloat",
+      "hit",
+      "idle"
+    ],
+    "viewport": {
+      "x": -155,
+      "y": -32.9,
+      "width": 363,
+      "height": 172
+    },
+    "still": {
+      "x": -155,
+      "y": -32.9,
+      "width": 363,
+      "height": 172
+    }
+  },
+  "spike-slime-m": {
+    "idle": "idle",
+    "animations": [
+      "hit",
+      "idle"
+    ],
+    "viewport": {
+      "x": -96,
+      "y": -39.3,
+      "width": 193,
+      "height": 113
+    },
+    "still": {
+      "x": -96,
+      "y": -39.3,
+      "width": 193,
+      "height": 113
+    }
+  },
+  "spike-slime-s": {
+    "idle": "idle",
+    "animations": [
+      "hit",
+      "idle"
+    ],
+    "viewport": {
+      "x": -60,
+      "y": -22,
+      "width": 125,
+      "height": 86
+    },
+    "still": {
+      "x": -60,
+      "y": -22,
+      "width": 125,
+      "height": 86
+    }
+  },
+  "the-guardian": {
+    "idle": "idle",
+    "animations": [
+      "defensive",
+      "idle",
+      "transition"
+    ],
+    "viewport": {
+      "x": -441.5,
+      "y": 146.1,
+      "width": 885.4,
+      "height": 719.6
+    },
+    "still": {
+      "x": -441.5,
+      "y": 146.1,
+      "width": 885.4,
+      "height": 719.6
+    }
+  },
+  "bandit-bear": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -197.6,
+      "y": -27.4,
+      "width": 361,
+      "height": 304.6
+    },
+    "still": {
+      "x": -104.9,
+      "y": -27.4,
+      "width": 225,
+      "height": 288
+    }
+  },
+  "bandit-child": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -392.7,
+      "y": -39,
+      "width": 478.9,
+      "height": 290
+    },
+    "still": {
+      "x": -110.8,
+      "y": -25.3,
+      "width": 197,
+      "height": 177
+    }
+  },
+  "bandit-leader": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -138.7,
+      "y": -21,
+      "width": 219.2,
+      "height": 291
+    },
+    "still": {
+      "x": -102.5,
+      "y": -21,
+      "width": 183,
+      "height": 291
+    }
+  },
+  "book-of-stabbing": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Attack_2",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -388.5,
+      "y": -135,
+      "width": 787.4,
+      "height": 619.6
+    },
+    "still": {
+      "x": -212.9,
+      "y": -30.6,
+      "width": 362,
+      "height": 419
+    }
+  },
+  "bronze-automaton": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -137.8,
+      "y": -45.9,
+      "width": 262,
+      "height": 420
+    },
+    "still": {
+      "x": -137.8,
+      "y": -45.9,
+      "width": 262,
+      "height": 420
+    }
+  },
+  "byrd": {
+    "idle": "idle_flap",
+    "animations": [
+      "idle_flap"
+    ],
+    "viewport": {
+      "x": -117.9,
+      "y": -21.7,
+      "width": 237,
+      "height": 255.9
+    },
+    "still": {
+      "x": -117.9,
+      "y": -21.7,
+      "width": 237,
+      "height": 247
+    }
+  },
+  "centurion": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Attack_old",
+      "Hit",
+      "Idle",
+      "Idle_old"
+    ],
+    "viewport": {
+      "x": -182,
+      "y": -22.4,
+      "width": 365,
+      "height": 371.5
+    },
+    "still": {
+      "x": -141,
+      "y": -22.4,
+      "width": 233,
+      "height": 331
+    }
+  },
+  "champ": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -291.6,
+      "y": -87.9,
+      "width": 577,
+      "height": 498
+    },
+    "still": {
+      "x": -185.1,
+      "y": -28.9,
+      "width": 339,
+      "height": 387
+    }
+  },
+  "chosen": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -96.9,
+      "y": -20,
+      "width": 198,
+      "height": 289.7
+    },
+    "still": {
+      "x": -96.9,
+      "y": -20,
+      "width": 198,
+      "height": 274
+    }
+  },
+  "gremlin-leader": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Call",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -193.1,
+      "y": -39,
+      "width": 399,
+      "height": 416
+    },
+    "still": {
+      "x": -145.1,
+      "y": -20.2,
+      "width": 246,
+      "height": 304
+    }
+  },
+  "healer": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -198.5,
+      "y": -21.9,
+      "width": 294.9,
+      "height": 638
+    },
+    "still": {
+      "x": -129.7,
+      "y": -21.9,
+      "width": 209,
+      "height": 236
+    }
+  },
+  "mugger": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -110.8,
+      "y": -17.3,
+      "width": 187,
+      "height": 202
+    },
+    "still": {
+      "x": -110.8,
+      "y": -17.3,
+      "width": 187,
+      "height": 202
+    }
+  },
+  "shelled-parasite": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -174.7,
+      "y": -22,
+      "width": 381,
+      "height": 260.1
+    },
+    "still": {
+      "x": -160.7,
+      "y": -22,
+      "width": 367,
+      "height": 238
+    }
+  },
+  "slaver-boss": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -109.5,
+      "y": -27.6,
+      "width": 263,
+      "height": 314
+    },
+    "still": {
+      "x": -109.5,
+      "y": -27.6,
+      "width": 263,
+      "height": 314
+    }
+  },
+  "snake-plant": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle",
+      "old_hit"
+    ],
+    "viewport": {
+      "x": -353.1,
+      "y": -39.3,
+      "width": 537.6,
+      "height": 430.8
+    },
+    "still": {
+      "x": -173.5,
+      "y": -39.3,
+      "width": 358,
+      "height": 347
+    }
+  },
+  "snecko": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Attack_2",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -266.6,
+      "y": -26.8,
+      "width": 433,
+      "height": 295.3
+    },
+    "still": {
+      "x": -205.3,
+      "y": -26.8,
+      "width": 364,
+      "height": 293
+    }
+  },
+  "spheric-guardian": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -617.4,
+      "y": -21.4,
+      "width": 1055.2,
+      "height": 317
+    },
+    "still": {
+      "x": -192.7,
+      "y": -21.4,
+      "width": 375,
+      "height": 317
+    }
+  },
+  "the-collector": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -140.2,
+      "y": -41.1,
+      "width": 313,
+      "height": 382
+    },
+    "still": {
+      "x": -140.2,
+      "y": -41.1,
+      "width": 313,
+      "height": 382
+    }
+  },
+  "torch-head": {
+    "idle": "idle",
+    "animations": [
+      "halberd_slam",
+      "idle"
+    ],
+    "viewport": {
+      "x": -89.2,
+      "y": -30.2,
+      "width": 158,
+      "height": 215
+    },
+    "still": {
+      "x": -89.2,
+      "y": -30.2,
+      "width": 158,
+      "height": 215
+    }
+  },
+  "awakened-one": {
+    "idle": "Idle_1",
+    "animations": [
+      "Attack_1",
+      "Attack_2",
+      "Hit",
+      "Idle_1",
+      "Idle_2"
+    ],
+    "viewport": {
+      "x": -351,
+      "y": -42.9,
+      "width": 682,
+      "height": 456.4
+    },
+    "still": {
+      "x": -220.5,
+      "y": -42.9,
+      "width": 516,
+      "height": 231
+    }
+  },
+  "dagger": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Attack2",
+      "Hurt",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -1342,
+      "y": -554.5,
+      "width": 1661.3,
+      "height": 668.1
+    },
+    "still": {
+      "x": -115.6,
+      "y": -84.4,
+      "width": 244,
+      "height": 185
+    }
+  },
+  "darkling": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle",
+      "old_Attack"
+    ],
+    "viewport": {
+      "x": -352.5,
+      "y": -109.2,
+      "width": 523,
+      "height": 310
+    },
+    "still": {
+      "x": -128.7,
+      "y": -19.8,
+      "width": 290,
+      "height": 177
+    }
+  },
+  "deca": {
+    "idle": "Idle",
+    "animations": [
+      "Attack_1",
+      "Attack_2",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -447.4,
+      "y": -28.7,
+      "width": 633,
+      "height": 549.3
+    },
+    "still": {
+      "x": -173.6,
+      "y": -28.7,
+      "width": 346,
+      "height": 382
+    }
+  },
+  "donu": {
+    "idle": "Idle",
+    "animations": [
+      "Attack_1",
+      "Attack_2",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -450.3,
+      "y": -26,
+      "width": 618.2,
+      "height": 540.2
+    },
+    "still": {
+      "x": -182.2,
+      "y": -26,
+      "width": 350,
+      "height": 378
+    }
+  },
+  "exploder": {
+    "idle": "idle",
+    "animations": [
+      "damage",
+      "explode",
+      "idle"
+    ],
+    "viewport": {
+      "x": -57.1,
+      "y": -19.7,
+      "width": 122.7,
+      "height": 169
+    },
+    "still": {
+      "x": -57.1,
+      "y": -19.7,
+      "width": 109,
+      "height": 169
+    }
+  },
+  "giant-head": {
+    "idle": "idle_open",
+    "animations": [
+      "idle_closed",
+      "idle_open",
+      "transition_open_eyes",
+      "transition_shut_eyes"
+    ],
+    "viewport": {
+      "x": -242,
+      "y": -49.8,
+      "width": 474,
+      "height": 290
+    },
+    "still": {
+      "x": -242,
+      "y": -49.8,
+      "width": 474,
+      "height": 290
+    }
+  },
+  "maw": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -177,
+      "y": -35,
+      "width": 352,
+      "height": 329
+    },
+    "still": {
+      "x": -177,
+      "y": -35,
+      "width": 352,
+      "height": 329
+    }
+  },
+  "nemesis": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -388.6,
+      "y": -32.2,
+      "width": 682,
+      "height": 503
+    },
+    "still": {
+      "x": -166,
+      "y": -25.2,
+      "width": 313,
+      "height": 464
+    }
+  },
+  "orb-walker": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -169.1,
+      "y": -24.7,
+      "width": 281,
+      "height": 244
+    },
+    "still": {
+      "x": -169.1,
+      "y": -24.7,
+      "width": 281,
+      "height": 244
+    }
+  },
+  "reptomancer": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hurt",
+      "Idle",
+      "Sumon"
+    ],
+    "viewport": {
+      "x": -169.2,
+      "y": -37.7,
+      "width": 330,
+      "height": 307
+    },
+    "still": {
+      "x": -93.2,
+      "y": -37.7,
+      "width": 192,
+      "height": 304
+    }
+  },
+  "repulsor": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -78,
+      "y": -21.7,
+      "width": 144.8,
+      "height": 152
+    },
+    "still": {
+      "x": -70.2,
+      "y": -21.7,
+      "width": 137,
+      "height": 152
+    }
+  },
+  "serpent": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hurt",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -606.8,
+      "y": -185.3,
+      "width": 1127.9,
+      "height": 923.9
+    },
+    "still": {
+      "x": -273.1,
+      "y": -44.1,
+      "width": 471,
+      "height": 433
+    }
+  },
+  "spiker": {
+    "idle": "idle",
+    "animations": [
+      "attack",
+      "damaged",
+      "idle"
+    ],
+    "viewport": {
+      "x": -62.4,
+      "y": -25.1,
+      "width": 120,
+      "height": 168.5
+    },
+    "still": {
+      "x": -62.4,
+      "y": -25.1,
+      "width": 120,
+      "height": 168
+    }
+  },
+  "time-eater": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -252,
+      "y": -80.3,
+      "width": 476.2,
+      "height": 504
+    },
+    "still": {
+      "x": -227.8,
+      "y": -49.4,
+      "width": 452,
+      "height": 403
+    }
+  },
+  "transient": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hurt",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -390,
+      "y": -19.6,
+      "width": 622,
+      "height": 429.1
+    },
+    "still": {
+      "x": -158.3,
+      "y": -19.6,
+      "width": 325,
+      "height": 344
+    }
+  },
+  "writhing-mass": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -611.6,
+      "y": -39.2,
+      "width": 885.7,
+      "height": 318
+    },
+    "still": {
+      "x": -277,
+      "y": -39.2,
+      "width": 523,
+      "height": 318
+    }
+  },
+  "corrupt-heart": {
+    "idle": "idle",
+    "animations": [
+      "idle"
+    ],
+    "viewport": {
+      "x": -212.5,
+      "y": -58.8,
+      "width": 595.7,
+      "height": 901
+    },
+    "still": {
+      "x": -212.5,
+      "y": -58.8,
+      "width": 595.7,
+      "height": 901
+    }
+  },
+  "spire-shield": {
+    "idle": "Idle",
+    "animations": [
+      "Attack",
+      "Hit",
+      "Idle",
+      "old_attack"
+    ],
+    "viewport": {
+      "x": -243.8,
+      "y": -31.7,
+      "width": 563,
+      "height": 389
+    },
+    "still": {
+      "x": -134.4,
+      "y": -31.7,
+      "width": 320,
+      "height": 305
+    }
+  },
+  "spire-spear": {
+    "idle": "Idle",
+    "animations": [
+      "Attack_1",
+      "Attack_2",
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -504.2,
+      "y": -39,
+      "width": 802.7,
+      "height": 318.5
+    },
+    "still": {
+      "x": -302.4,
+      "y": -39,
+      "width": 497,
+      "height": 302
+    }
+  }
+}

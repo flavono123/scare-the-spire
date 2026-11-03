@@ -44,7 +44,14 @@ from scripts.lib.sts1_description_template import (  # noqa: E402
     template_is_resolved,
 )
 from scripts.lib.sts1_jar import default_sts1_jar_path, open_sts1_jar  # noqa: E402
+from scripts.lib.sts1_monster_moves import (  # noqa: E402
+    class_ids,
+    intent_header_indexes,
+    intent_switch_maps,
+    read_monster_moves,
+)
 from scripts.lib.sts1_monsters import (  # noqa: E402
+    MONSTER_PACKAGE,
     load_monsters,
     localize_monster,
     monster_art_sources,
@@ -1272,9 +1279,41 @@ def extract_powers(jar, *, write_images: bool = True) -> int:
     return len(powers)
 
 
-def monster_labels(jar, locale: str) -> dict[str, Any]:
-    """Enemy type and dungeon names the game itself uses, with their act numbers."""
+# AbstractMonster.getIntentImg() and getAttackIntent(): attack art steps up
+# every 5 total damage; buff/debuff/defend intents have one large image each.
+INTENT_IMAGES = {
+    "attack-1": "images/ui/intent/attack/attack_intent_1.png",
+    "attack-2": "images/ui/intent/attack/attack_intent_2.png",
+    "attack-3": "images/ui/intent/attack/attack_intent_3.png",
+    "attack-4": "images/ui/intent/attack/attack_intent_4.png",
+    "attack-5": "images/ui/intent/attack/attack_intent_5.png",
+    "attack-6": "images/ui/intent/attack/attack_intent_6.png",
+    "attack-7": "images/ui/intent/attack/attack_intent_7.png",
+    "buff": "images/ui/intent/buff1L.png",
+    "debuff": "images/ui/intent/debuff1L.png",
+    "strong-debuff": "images/ui/intent/debuff2L.png",
+    "defend": "images/ui/intent/defendL.png",
+    "defend-buff": "images/ui/intent/defendBuffL.png",
+    "escape": "images/ui/intent/escapeL.png",
+    "magic": "images/ui/intent/magicL.png",
+    "sleep": "images/ui/intent/sleepL.png",
+    "stun": "images/ui/intent/stunL.png",
+    "unknown": "images/ui/intent/unknownL.png",
+}
+ASCENSION_ICON = "images/ui/topPanel/ascension.png"
+
+
+def write_monster_ui_images(jar) -> None:
+    out = ROOT / "public" / "images" / "sts1"
+    for name, entry in INTENT_IMAGES.items():
+        save_webp(extract_png(jar, entry), out / "intents" / f"{name}.webp", lossless=True)
+    save_webp(extract_png(jar, ASCENSION_ICON), out / "ui" / "ascension.webp", lossless=True)
+
+
+def monster_labels(jar, locale: str, intent_headers: dict[str, int]) -> dict[str, Any]:
+    """Enemy type, dungeon and intent names the game itself uses, with their act numbers."""
     ui = load_loc_table(jar, locale, "ui.json")
+    intent_text = (ui.get("AbstractMonster") or {}).get("TEXT") or []
     legend = (ui.get("Legend") or {}).get("TEXT") or []
     history = (ui.get("RunHistoryScreen") or {}).get("TEXT") or []
     transition = (ui.get("DungeonTransitionScreen") or {}).get("TEXT") or []
@@ -1290,7 +1329,44 @@ def monster_labels(jar, locale: str) -> dict[str, Any]:
             "beyond": {"act": transition[6], "name": transition[7]},
             "ending": {"act": transition[8], "name": transition[9]},
         },
+        "intents": {intent: intent_text[index] for intent, index in sorted(intent_headers.items())},
     }
+
+
+def _skeleton_animations(jar, art: dict[str, str] | None) -> set[str] | None:
+    if not art or "skeleton" not in art:
+        return None
+    return set(json.loads(jar.read(art["skeleton"])).get("animations", {}))
+
+
+def _playable_triggers(triggers: list[dict[str, str]], animations: set[str] | None, idle: str) -> list[dict[str, str]]:
+    """Drops clips the skeleton lacks (another skeleton's) or that only restart idle."""
+    kept: list[dict[str, str]] = []
+    for trigger in triggers:
+        if trigger["type"] == "spine" and (animations is None or trigger["name"] not in animations or trigger["name"] == idle):
+            continue
+        if kept and kept[-1] == trigger:
+            continue
+        kept.append(trigger)
+    return kept
+
+
+def attach_monster_moves(jar, monsters: list[dict[str, Any]]) -> None:
+    switch_maps = intent_switch_maps(jar)
+    ids = class_ids(jar)
+    for row in monsters:
+        behavior = read_monster_moves(
+            jar,
+            f"{MONSTER_PACKAGE}{row['dungeon']}/{row['className']}.class",
+            switch_maps=switch_maps,
+            class_ids=ids,
+        )
+        animations = _skeleton_animations(jar, row["art"])
+        idle = (row["art"] or {}).get("animation", "")
+        for move in behavior["moves"]:
+            move["triggers"] = _playable_triggers(move["triggers"], animations, idle)
+        row["moves"] = behavior["moves"]
+        row["startingEffects"] = behavior["startingEffects"]
 
 
 def extract_monsters(jar) -> int:
@@ -1298,6 +1374,9 @@ def extract_monsters(jar) -> int:
     missing = [row["slug"] for row in monsters if not row["art"] or not row["hitPoints"]]
     if missing:
         raise SystemExit(f"monsters without art or hit points: {', '.join(missing)}")
+    attach_monster_moves(jar, monsters)
+    intent_headers = intent_header_indexes(jar, intent_switch_maps(jar))
+    write_monster_ui_images(jar)
     data_root = ROOT / "data" / "sts1"
     write_json(data_root / "monsters.json", [public_monster_row(row) for row in monsters])
     write_json(data_root / "monster-art.json", monster_art_sources(monsters))
@@ -1308,7 +1387,7 @@ def extract_monsters(jar) -> int:
             data_root / "localization" / locale / "monsters.json",
             {row["id"]: localize_monster(loc.get(row["id"]) or {}, eng.get(row["id"]) or {}) for row in monsters},
         )
-        write_json(data_root / "localization" / locale / "monster-labels.json", monster_labels(jar, locale))
+        write_json(data_root / "localization" / locale / "monster-labels.json", monster_labels(jar, locale, intent_headers))
     return len(monsters)
 
 

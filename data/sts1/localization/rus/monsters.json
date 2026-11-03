@@ -1,7 +1,7 @@
 {
   "AcidSlime_L": {
     "name": "Едкий слизень (Больш.)",
-    "moves": [
+    "moveNames": [
       "Едкий плевок",
       "Деление",
       "Облизывание"
@@ -9,79 +9,83 @@
   },
   "AcidSlime_M": {
     "name": "Едкий слизень (Ср.)",
-    "moves": [
+    "moveNames": [
       "Едкий плевок",
       "Облизывание"
     ]
   },
   "AcidSlime_S": {
     "name": "Едкий слизень (Мал.)",
-    "moves": []
+    "moveNames": []
   },
   "Cultist": {
     "name": "Культист",
-    "moves": [
+    "moveNames": [
+      "",
+      "",
       "Заклинание"
     ]
   },
   "FungiBeast": {
     "name": "Грибной паразит",
-    "moves": [
+    "moveNames": [
       "Вырастание"
     ]
   },
   "FuzzyLouseDefensive": {
     "name": "Вошь",
-    "moves": [
+    "moveNames": [
       "Плевок паутиной"
     ]
   },
   "FuzzyLouseNormal": {
     "name": "Вошь",
-    "moves": [
+    "moveNames": [
       "Вырастание"
     ]
   },
   "GremlinFat": {
     "name": "Толстый гремлин",
-    "moves": [
+    "moveNames": [
       "Крушить"
     ]
   },
   "GremlinNob": {
     "name": "Гремлин-верзила",
-    "moves": [
+    "moveNames": [
       "Пролом черепа",
       "Бычий рывок"
     ]
   },
   "GremlinThief": {
     "name": "Коварный гремлин",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GremlinTsundere": {
     "name": "Гремлин-щитоносец",
-    "moves": [
+    "moveNames": [
       "Заслон",
       "Удар щитом"
     ]
   },
   "GremlinWarrior": {
     "name": "Безумный гремлин",
-    "moves": [
+    "moveNames": [
       "Когти"
     ]
   },
   "GremlinWizard": {
     "name": "Гремлин-маг",
-    "moves": [
+    "moveNames": [
       "Приготовиться",
       "Мощный удар"
     ]
   },
   "Hexaghost": {
     "name": "Гексадух",
-    "moves": [
+    "moveNames": [
       "Воспламенение",
       "Прижигание",
       "Инферно"
@@ -89,46 +93,46 @@
   },
   "JawWorm": {
     "name": "Зубастый червь",
-    "moves": [
+    "moveNames": [
       "Рык",
       "Молотить"
     ]
   },
   "Lagavulin": {
     "name": "Лагавулин",
-    "moves": [
+    "moveNames": [
       "Высосать душу"
     ]
   },
   "Looter": {
     "name": "Мародёр",
-    "moves": [
+    "moveNames": [
       "Выпад",
       "Грабёж"
     ]
   },
   "Sentry": {
     "name": "Часовой",
-    "moves": [
+    "moveNames": [
       "Расщепление"
     ]
   },
   "SlaverBlue": {
     "name": "Работорговец",
-    "moves": [
+    "moveNames": [
       "Сгребание"
     ]
   },
   "SlaverRed": {
     "name": "Работорговец",
-    "moves": [
+    "moveNames": [
       "Царапание",
       "Опутывание"
     ]
   },
   "SlimeBoss": {
     "name": "Слизнебосс",
-    "moves": [
+    "moveNames": [
       "Хлопок",
       "Подготовка",
       "Деление",
@@ -137,24 +141,24 @@
   },
   "SpikeSlime_L": {
     "name": "Шипастый слизень (Больш.)",
-    "moves": [
+    "moveNames": [
       "Облизывание",
       "Деление"
     ]
   },
   "SpikeSlime_M": {
     "name": "Шипастый слизень (Ср.)",
-    "moves": [
+    "moveNames": [
       "Облизывание"
     ]
   },
   "SpikeSlime_S": {
     "name": "Шипастый слизень (Мал.)",
-    "moves": []
+    "moveNames": []
   },
   "TheGuardian": {
     "name": "Страж",
-    "moves": [
+    "moveNames": [
       "Оборонительный режим",
       "Яростный удар",
       "Свернуться",
@@ -166,41 +170,55 @@
   },
   "BanditBear": {
     "name": "Медведь",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BanditChild": {
     "name": "Колючка",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BanditLeader": {
     "name": "Ромео",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BookOfStabbing": {
     "name": "Истыклопедия",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BronzeAutomaton": {
     "name": "Бронзовый Автоматон",
-    "moves": [
+    "moveNames": [
       "ГИПЕРЛУЧ"
     ]
   },
   "BronzeOrb": {
     "name": "Сфера",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Byrd": {
     "name": "Птах",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Centurion": {
     "name": "Центурион",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Champ": {
     "name": "Чемпион",
-    "moves": [
+    "moveNames": [
       "Защитная стойка",
       "Казнить",
       "Пощёчина"
@@ -208,42 +226,50 @@
   },
   "Chosen": {
     "name": "Избранный",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GremlinLeader": {
     "name": "Предводитель гремлинов",
-    "moves": [
+    "moveNames": [
       "К оружию!"
     ]
   },
   "Healer": {
     "name": "Жрица",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Mugger": {
     "name": "Грабитель",
-    "moves": [
+    "moveNames": [
       "Выпад",
       "Ограбить"
     ]
   },
   "Shelled Parasite": {
     "name": "Панцирный паразит",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SlaverBoss": {
     "name": "Надсмотрщик",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SnakePlant": {
     "name": "Змеецвет",
-    "moves": [
+    "moveNames": [
       "Ослабляющие споры"
     ]
   },
   "Snecko": {
     "name": "Змекко",
-    "moves": [
+    "moveNames": [
       "Озадачивающий взгляд",
       "Взмах хвостом",
       "Укус"
@@ -251,19 +277,25 @@
   },
   "SphericGuardian": {
     "name": "Сферический страж",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TheCollector": {
     "name": "Коллекционер",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TorchHead": {
     "name": "Пламяголовый",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "AwakenedOne": {
     "name": "Пробуждённый",
-    "moves": [
+    "moveNames": [
       "Удар души",
       "Эхо тьмы",
       "Очищение",
@@ -272,84 +304,116 @@
   },
   "Dagger": {
     "name": "Кинжал",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Darkling": {
     "name": "Темныш",
-    "moves": [
+    "moveNames": [
       "Хрум! Хрум!"
     ]
   },
   "Deca": {
     "name": "Дека",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Donu": {
     "name": "Дону",
-    "moves": [
+    "moveNames": [
       "Круг силы"
     ]
   },
   "Exploder": {
     "name": "Взрыватель",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GiantHead": {
     "name": "Огромная голова",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Maw": {
     "name": "Пасть",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Nemesis": {
     "name": "Немезис",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Orb Walker": {
     "name": "Сфероход",
-    "moves": [
+    "moveNames": [
       "Рост силы"
     ]
   },
   "Reptomancer": {
     "name": "Жрица змеи",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Repulsor": {
     "name": "Отвратник",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Serpent": {
     "name": "Отросток Шпиля",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Spiker": {
     "name": "Шипастый",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TimeEater": {
     "name": "Пожиратель времени",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Transient": {
     "name": "Преходящий",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "WrithingMass": {
     "name": "Извивающаяся масса",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "CorruptHeart": {
     "name": "Порочное сердце",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SpireShield": {
     "name": "Щит Шпиля",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SpireSpear": {
     "name": "Копье Шпиля",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   }
 }

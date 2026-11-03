@@ -23,5 +23,22 @@
       "act": "Letzter Akt",
       "name": "Das Ende"
     }
+  },
+  "intents": {
+    "ATTACK": "Aggressiv",
+    "ATTACK_BUFF": "Aggressiv",
+    "ATTACK_DEBUFF": "Strategisch",
+    "ATTACK_DEFEND": "Aggressiv",
+    "BUFF": "Strategisch",
+    "DEBUFF": "Strategisch",
+    "DEFEND": "Defensiv",
+    "DEFEND_BUFF": "Defensiv",
+    "DEFEND_DEBUFF": "Defensiv",
+    "ESCAPE": "Feige",
+    "MAGIC": "Magisch",
+    "SLEEP": "Schlafend",
+    "STRONG_DEBUFF": "Strategisch",
+    "STUN": "Betäubt",
+    "UNKNOWN": "Unbekannt"
   }
 }

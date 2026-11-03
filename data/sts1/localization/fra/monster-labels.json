@@ -23,5 +23,22 @@
       "act": "Acte 4",
       "name": "La fin"
     }
+  },
+  "intents": {
+    "ATTACK": "Agressif",
+    "ATTACK_BUFF": "Agressif",
+    "ATTACK_DEBUFF": "Stratégique",
+    "ATTACK_DEFEND": "Agressif",
+    "BUFF": "Stratégique",
+    "DEBUFF": "Stratégique",
+    "DEFEND": "Défensif",
+    "DEFEND_BUFF": "Défensif",
+    "DEFEND_DEBUFF": "Défensif",
+    "ESCAPE": "Lâche",
+    "MAGIC": "Magique",
+    "SLEEP": "Endormi",
+    "STRONG_DEBUFF": "Stratégique",
+    "STUN": "Étourdi",
+    "UNKNOWN": "Inconnu"
   }
 }

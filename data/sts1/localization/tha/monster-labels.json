@@ -23,5 +23,22 @@
       "act": "องก์สุดท้าย",
       "name": "อวสาน"
     }
+  },
+  "intents": {
+    "ATTACK": "ก้าวร้าว",
+    "ATTACK_BUFF": "ก้าวร้าว",
+    "ATTACK_DEBUFF": "กลยุทธ์",
+    "ATTACK_DEFEND": "ก้าวร้าว",
+    "BUFF": "กลยุทธ์",
+    "DEBUFF": "กลยุทธ์",
+    "DEFEND": "ตั้งรับ",
+    "DEFEND_BUFF": "ตั้งรับ",
+    "DEFEND_DEBUFF": "ตั้งรับ",
+    "ESCAPE": "ขี้ขลาด",
+    "MAGIC": "ใช้เวท",
+    "SLEEP": "หลับอยู่",
+    "STRONG_DEBUFF": "กลยุทธ์",
+    "STUN": "มึนงง",
+    "UNKNOWN": "ปริศนา"
   }
 }

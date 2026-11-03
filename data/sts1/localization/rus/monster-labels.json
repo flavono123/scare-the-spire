@@ -23,5 +23,22 @@
       "act": "Финальный акт",
       "name": "Эндшпиль"
     }
+  },
+  "intents": {
+    "ATTACK": "Агрессия",
+    "ATTACK_BUFF": "Агрессия",
+    "ATTACK_DEBUFF": "Стратегия",
+    "ATTACK_DEFEND": "Агрессия",
+    "BUFF": "Стратегия",
+    "DEBUFF": "Стратегия",
+    "DEFEND": "Защита",
+    "DEFEND_BUFF": "Защита",
+    "DEFEND_DEBUFF": "Защита",
+    "ESCAPE": "Трусливость",
+    "MAGIC": "Магия",
+    "SLEEP": "Спит",
+    "STRONG_DEBUFF": "Стратегия",
+    "STUN": "Оглушение",
+    "UNKNOWN": "Неизвестно"
   }
 }

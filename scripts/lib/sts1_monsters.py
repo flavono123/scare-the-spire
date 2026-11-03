@@ -179,8 +179,13 @@ def public_monster_row(row: dict[str, Any]) -> dict[str, Any]:
 
 
 def localize_monster(entry: dict[str, Any], fallback: dict[str, Any]) -> dict[str, Any]:
-    moves = entry.get("MOVES") or fallback.get("MOVES") or []
+    """Name and the full `MOVES` table; moves point into it by index."""
+    moves = entry.get("MOVES") or []
+    english = fallback.get("MOVES") or []
     return {
         "name": entry.get("NAME") or fallback.get("NAME") or "",
-        "moves": [move for move in dict.fromkeys(moves) if move],
+        "moveNames": [
+            (moves[index] if index < len(moves) else "") or (english[index] if index < len(english) else "")
+            for index in range(max(len(moves), len(english)))
+        ],
     }

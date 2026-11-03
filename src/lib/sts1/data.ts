@@ -7,6 +7,7 @@ import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
 import { withDefaultOpenGraphCanonical } from "@/lib/service-metadata";
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
+import { STS1_IMAGE_CACHE_BUSTER } from "./image-cache";
 import { sts1GameLocale } from "./locale";
 import { sts1CardPortraitUrl, sts1PotionImageUrl, sts1RelicImageUrl } from "./paths";
 import type {
@@ -17,6 +18,13 @@ import type {
   Sts1Keyword,
   Sts1Monster,
   Sts1MonsterLabels,
+  Sts1MonsterMove,
+  Sts1MonsterMoveTier,
+  Sts1MonsterMoveTrigger,
+  Sts1MonsterRect,
+  Sts1MonsterRefs,
+  Sts1MonsterSpine,
+  Sts1MonsterStartingTier,
   Sts1Potion,
   Sts1Power,
   Sts1PowerType,
@@ -35,7 +43,15 @@ type RawCard = Omit<Sts1Card, "name" | "nameEn" | "description" | "upgradeDescri
 type RawRelic = Omit<Sts1Relic, "name" | "nameEn" | "flavor" | "description" | "descriptions" | "hasLargeArt">;
 type RawPotion = Omit<Sts1Potion, "name" | "nameEn" | "description" | "descriptions">;
 type RawPower = Omit<Sts1Power, "name" | "nameEn" | "description" | "descriptions">;
-type RawMonster = Omit<Sts1Monster, "name" | "nameEn" | "moves">;
+type RawMonsterMove = {
+  id: number;
+  key: string | null;
+  nameIndex: number | null;
+  triggers: Sts1MonsterMoveTrigger[];
+  tiers: Sts1MonsterMoveTier[];
+};
+type RawMonster = Omit<Sts1Monster, "name" | "nameEn" | "moves" | "spine"> & { moves: RawMonsterMove[] };
+type RawMonsterSpine = { idle: string; animations: string[]; viewport: Sts1MonsterRect; still: Sts1MonsterRect };
 type RawCharacter = Omit<Sts1Character, "name" | "nameEn" | "title" | "flavor">;
 
 type PowerLoc = {
@@ -46,7 +62,8 @@ type PowerLoc = {
 
 type MonsterLoc = {
   name: string;
-  moves: string[];
+  /** The game's `MOVES` table; moves point into it by index. */
+  moveNames: string[];
 };
 
 type CharacterSelectLoc = {
@@ -186,24 +203,69 @@ export const getSts1Powers = cache(async (gameLocale: GameLocale = "kor"): Promi
   });
 });
 
+const STS1_SPINE_ROOT = "/spine/sts1/monsters";
+
 export const getSts1Monsters = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Monster[]> => {
   const locale = sts1GameLocale(gameLocale);
-  const [rows, loc, eng] = await Promise.all([
+  const [rows, loc, eng, spine] = await Promise.all([
     readJson<RawMonster[]>("monsters.json"),
     readJson<Record<string, MonsterLoc>>(`localization/${locale}/monsters.json`),
     locale === "eng"
       ? Promise.resolve(null)
       : readJson<Record<string, MonsterLoc>>("localization/eng/monsters.json"),
+    readJson<Record<string, RawMonsterSpine>>("monster-spine.json"),
   ]);
   return rows.map((row) => {
-    const text = loc[row.id] ?? { name: row.id, moves: [] };
+    const text = loc[row.id] ?? { name: row.id, moveNames: [] };
+    const english = eng?.[row.id] ?? text;
+    const moves = row.moves.map(({ nameIndex, ...move }): Sts1MonsterMove => ({
+      ...move,
+      name: nameIndex == null ? null : text.moveNames[nameIndex] || null,
+      nameEn: nameIndex == null ? null : english.moveNames[nameIndex] || null,
+    }));
+    const art = spine[row.slug];
+    const monsterSpine: Sts1MonsterSpine | null = art
+      ? {
+          ...art,
+          // /spine/* is cached as immutable; the pages are game files and never change.
+          skeletonUrl: `${STS1_SPINE_ROOT}/${row.slug}/skeleton.json?v=${STS1_IMAGE_CACHE_BUSTER}`,
+          atlasUrl: `${STS1_SPINE_ROOT}/${row.slug}/skeleton.atlas?v=${STS1_IMAGE_CACHE_BUSTER}`,
+        }
+      : null;
     return {
       ...row,
-      ...text,
-      nameEn: eng?.[row.id]?.name ?? text.name,
+      name: text.name,
+      nameEn: english.name,
+      moves,
+      spine: monsterSpine,
     };
   });
 });
+
+function monsterEffectTiers(monster: Sts1Monster): (Sts1MonsterMoveTier | Sts1MonsterStartingTier)[] {
+  return [...monster.moves.flatMap((move) => move.tiers), ...monster.startingEffects];
+}
+
+/** Localized names and links for what these monsters' moves refer to. */
+export async function getSts1MonsterRefs(monsters: Sts1Monster[], gameLocale: GameLocale = "kor"): Promise<Sts1MonsterRefs> {
+  const tiers = monsters.flatMap(monsterEffectTiers);
+  const powerIds = new Set(tiers.flatMap((tier) => tier.powers?.map((row) => row.power) ?? []));
+  const cardIds = new Set(tiers.flatMap((tier) => tier.cards?.map((row) => row.card) ?? []));
+  const monsterIds = new Set(tiers.flatMap((tier) => tier.summons ?? []));
+  const [powers, cards, summoned] = await Promise.all([
+    powerIds.size ? getSts1Powers(gameLocale) : Promise.resolve([]),
+    cardIds.size ? getSts1Cards(gameLocale) : Promise.resolve([]),
+    monsterIds.size ? getSts1Monsters(gameLocale) : Promise.resolve([]),
+  ]);
+  return {
+    powers: Object.fromEntries(powers.filter((row) => powerIds.has(row.id)).map((row) => [
+      row.id,
+      { slug: row.slug, name: row.name, image: row.image, type: row.type },
+    ])),
+    cards: Object.fromEntries(cards.filter((row) => cardIds.has(row.id)).map((row) => [row.id, { slug: row.slug, name: row.name }])),
+    monsters: Object.fromEntries(summoned.filter((row) => monsterIds.has(row.id)).map((row) => [row.id, { slug: row.slug, name: row.name }])),
+  };
+}
 
 export const getSts1CharacterSelectText = cache(async (gameLocale: GameLocale = "kor"): Promise<CharacterSelectLoc> => (
   readJson<CharacterSelectLoc>(`localization/${sts1GameLocale(gameLocale)}/character-select.json`)

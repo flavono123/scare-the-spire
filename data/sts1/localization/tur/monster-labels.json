@@ -23,5 +23,22 @@
       "act": "Final Sahnesi",
       "name": "Sona Eriş"
     }
+  },
+  "intents": {
+    "ATTACK": "Agresif",
+    "ATTACK_BUFF": "Agresif",
+    "ATTACK_DEBUFF": "Stratejik",
+    "ATTACK_DEFEND": "Agresif",
+    "BUFF": "Stratejik",
+    "DEBUFF": "Stratejik",
+    "DEFEND": "Savunmacı",
+    "DEFEND_BUFF": "Savunmacı",
+    "DEFEND_DEBUFF": "Savunmacı",
+    "ESCAPE": "Korkakça",
+    "MAGIC": "Büyülü",
+    "SLEEP": "Uykuda",
+    "STRONG_DEBUFF": "Stratejik",
+    "STUN": "Sersemletildi",
+    "UNKNOWN": "Bilinmiyor"
   }
 }

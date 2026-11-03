@@ -23,5 +23,22 @@
       "act": "? 막",
       "name": "???"
     }
+  },
+  "intents": {
+    "ATTACK": "공격",
+    "ATTACK_BUFF": "공격",
+    "ATTACK_DEBUFF": "복합",
+    "ATTACK_DEFEND": "공격",
+    "BUFF": "복합",
+    "DEBUFF": "복합",
+    "DEFEND": "방어",
+    "DEFEND_BUFF": "방어",
+    "DEFEND_DEBUFF": "방어",
+    "ESCAPE": "도망",
+    "MAGIC": "마법",
+    "SLEEP": "수면",
+    "STRONG_DEBUFF": "복합",
+    "STUN": "기절",
+    "UNKNOWN": "미지"
   }
 }

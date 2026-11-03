@@ -23,5 +23,22 @@
       "act": "Ato Final",
       "name": "O Fim"
     }
+  },
+  "intents": {
+    "ATTACK": "Agressivo",
+    "ATTACK_BUFF": "Aggressivo",
+    "ATTACK_DEBUFF": "Estratégico",
+    "ATTACK_DEFEND": "Agressivo",
+    "BUFF": "Estratégico",
+    "DEBUFF": "Estratégico",
+    "DEFEND": "Defensivo",
+    "DEFEND_BUFF": "Defensivo",
+    "DEFEND_DEBUFF": "Defensivo",
+    "ESCAPE": "Covardemente",
+    "MAGIC": "Mágico",
+    "SLEEP": "Dormindo",
+    "STRONG_DEBUFF": "Estratégico",
+    "STUN": "Atordoado",
+    "UNKNOWN": "Desconhecido"
   }
 }

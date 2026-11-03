@@ -23,5 +23,22 @@
       "act": "终幕",
       "name": "终局"
     }
+  },
+  "intents": {
+    "ATTACK": "攻势",
+    "ATTACK_BUFF": "攻势",
+    "ATTACK_DEBUFF": "策略",
+    "ATTACK_DEFEND": "攻势",
+    "BUFF": "策略",
+    "DEBUFF": "策略",
+    "DEFEND": "守势",
+    "DEFEND_BUFF": "守势",
+    "DEFEND_DEBUFF": "守势",
+    "ESCAPE": "胆小",
+    "MAGIC": "魔法",
+    "SLEEP": "熟睡",
+    "STRONG_DEBUFF": "策略",
+    "STUN": "击晕",
+    "UNKNOWN": "不明"
   }
 }

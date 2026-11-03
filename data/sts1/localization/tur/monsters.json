@@ -1,7 +1,7 @@
 {
   "AcidSlime_L": {
     "name": "Asitli Balçık (B)",
-    "moves": [
+    "moveNames": [
       "Aşındırıcı Tükürük",
       "İkiye Bölünme",
       "Yalama"
@@ -9,79 +9,83 @@
   },
   "AcidSlime_M": {
     "name": "Asitli Balçık (O)",
-    "moves": [
+    "moveNames": [
       "Aşındırıcı Tükürük",
       "Yalama"
     ]
   },
   "AcidSlime_S": {
     "name": "Asitli Balçık (K)",
-    "moves": []
+    "moveNames": []
   },
   "Cultist": {
     "name": "Tarikatçı",
-    "moves": [
+    "moveNames": [
+      "",
+      "",
       "Sihirli Sözler"
     ]
   },
   "FungiBeast": {
     "name": "Mantarsı Canavar",
-    "moves": [
+    "moveNames": [
       "Büyüme"
     ]
   },
   "FuzzyLouseDefensive": {
     "name": "Bit",
-    "moves": [
+    "moveNames": [
       "Ağ Atma"
     ]
   },
   "FuzzyLouseNormal": {
     "name": "Bit",
-    "moves": [
+    "moveNames": [
       "Büyüme"
     ]
   },
   "GremlinFat": {
     "name": "Şişko Gremlin",
-    "moves": [
+    "moveNames": [
       "Parçalama"
     ]
   },
   "GremlinNob": {
     "name": "Züppe Gremlin",
-    "moves": [
+    "moveNames": [
       "Kafa Darbesi",
       "Kaba Güç"
     ]
   },
   "GremlinThief": {
     "name": "Sinsi Gremlin",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GremlinTsundere": {
     "name": "Kalkancı Gremlin",
-    "moves": [
+    "moveNames": [
       "Koruma",
       "Kalkan Vuruşu"
     ]
   },
   "GremlinWarrior": {
     "name": "Deli Gremlin",
-    "moves": [
+    "moveNames": [
       "Pençe"
     ]
   },
   "GremlinWizard": {
     "name": "Gremlin Büyücüsü",
-    "moves": [
+    "moveNames": [
       "Şarj Ediyorum",
       "Nihai Patlama"
     ]
   },
   "Hexaghost": {
     "name": "Hexahayalet",
-    "moves": [
+    "moveNames": [
       "Alevlenme",
       "Soldurma",
       "Cehennem"
@@ -89,46 +93,46 @@
   },
   "JawWorm": {
     "name": "Çene Kurdu",
-    "moves": [
+    "moveNames": [
       "Feryat",
       "Dayak Atma"
     ]
   },
   "Lagavulin": {
     "name": "Lagavulin",
-    "moves": [
+    "moveNames": [
       "Ruh Çekme"
     ]
   },
   "Looter": {
     "name": "Yağmacı",
-    "moves": [
+    "moveNames": [
       "Hamle",
       "Gasp"
     ]
   },
   "Sentry": {
     "name": "Nöbetçi",
-    "moves": [
+    "moveNames": [
       "Parçalara Ayırma"
     ]
   },
   "SlaverBlue": {
     "name": "Köle Tüccarı",
-    "moves": [
+    "moveNames": [
       "Tırmık"
     ]
   },
   "SlaverRed": {
     "name": "Köle Tüccarı",
-    "moves": [
+    "moveNames": [
       "Sıyrık",
       "El Ayak Dolaştırma"
     ]
   },
   "SlimeBoss": {
     "name": "Balçık Reyiz",
-    "moves": [
+    "moveNames": [
       "Gömçürme",
       "Hazırlanıyor",
       "İkiye Ayrılma",
@@ -137,24 +141,24 @@
   },
   "SpikeSlime_L": {
     "name": "Dikenli Balçık (B)",
-    "moves": [
+    "moveNames": [
       "Yalama",
       "İkiye Ayrılma"
     ]
   },
   "SpikeSlime_M": {
     "name": "Dikenli Balçık (O)",
-    "moves": [
+    "moveNames": [
       "Yalama"
     ]
   },
   "SpikeSlime_S": {
     "name": "Dikenli Balçık (K)",
-    "moves": []
+    "moveNames": []
   },
   "TheGuardian": {
     "name": "Gardiyan",
-    "moves": [
+    "moveNames": [
       "Savunma Modu",
       "Sert Darbe",
       "Yuvarlanma",
@@ -166,41 +170,55 @@
   },
   "BanditBear": {
     "name": "Ayı",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BanditChild": {
     "name": "Sivri",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BanditLeader": {
     "name": "Çapkın",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BookOfStabbing": {
     "name": "Saplama Kitabı",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "BronzeAutomaton": {
     "name": "Bronz Otomaton",
-    "moves": [
+    "moveNames": [
       "HİPERIŞIN"
     ]
   },
   "BronzeOrb": {
     "name": "Küre",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Byrd": {
     "name": "Guş",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Centurion": {
     "name": "Bölük Komutanı",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Champ": {
     "name": "Şampiyon",
-    "moves": [
+    "moveNames": [
       "Savunma Duruşu",
       "İdam",
       "Tokatlama"
@@ -208,42 +226,50 @@
   },
   "Chosen": {
     "name": "Seçilmiş",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GremlinLeader": {
     "name": "Gremlin Lideri",
-    "moves": [
+    "moveNames": [
       "Koşun!"
     ]
   },
   "Healer": {
     "name": "Şifacı",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Mugger": {
     "name": "Yan Kesici",
-    "moves": [
+    "moveNames": [
       "Hamle",
       "Gasp"
     ]
   },
   "Shelled Parasite": {
     "name": "Kabuklu Parazit",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SlaverBoss": {
     "name": "Şef",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SnakePlant": {
     "name": "Yılan Bitki",
-    "moves": [
+    "moveNames": [
       "Güçsüzleştiren Spor"
     ]
   },
   "Snecko": {
     "name": "Snecko",
-    "moves": [
+    "moveNames": [
       "Şaşırtıcı Parıltı",
       "Kuyruk Kırbacı",
       "Isırık"
@@ -251,19 +277,25 @@
   },
   "SphericGuardian": {
     "name": "Küresel Gardiyan",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TheCollector": {
     "name": "Koleksiyoncu",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TorchHead": {
     "name": "Meşale Kafa",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "AwakenedOne": {
     "name": "Uyanmış Olan",
-    "moves": [
+    "moveNames": [
       "Ruh Darbesi",
       "Karanlık Yankısı",
       "Temizlenme",
@@ -272,84 +304,116 @@
   },
   "Dagger": {
     "name": "Hançer",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Darkling": {
     "name": "Karanlıktaki",
-    "moves": [
+    "moveNames": [
       "Çap! Çap!"
     ]
   },
   "Deca": {
     "name": "Deca",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Donu": {
     "name": "Donu",
-    "moves": [
+    "moveNames": [
       "Güç Halkası"
     ]
   },
   "Exploder": {
     "name": "Patlayan",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "GiantHead": {
     "name": "Devasa Kafa",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Maw": {
     "name": "Gırtlak Canavarı",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Nemesis": {
     "name": "Ezeli Düşman",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Orb Walker": {
     "name": "Yürüyen Küre",
-    "moves": [
+    "moveNames": [
       "Kuvvet Toplama"
     ]
   },
   "Reptomancer": {
     "name": "Sürüngen Büyücü",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Repulsor": {
     "name": "İtici",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Serpent": {
     "name": "Engerek",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Spiker": {
     "name": "Çivili",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "TimeEater": {
     "name": "Zaman Yiyen",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "Transient": {
     "name": "Süreksiz",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "WrithingMass": {
     "name": "Kıvranan Kitle",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "CorruptHeart": {
     "name": "Yozlaşmış Kalp",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SpireShield": {
     "name": "Spire Kalkanı",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   },
   "SpireSpear": {
     "name": "Spire Mızrağı",
-    "moves": []
+    "moveNames": [
+      ""
+    ]
   }
 }

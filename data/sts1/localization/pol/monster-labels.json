@@ -23,5 +23,22 @@
       "act": "Akt ?",
       "name": "???"
     }
+  },
+  "intents": {
+    "ATTACK": "Agresja",
+    "ATTACK_BUFF": "Agresja",
+    "ATTACK_DEBUFF": "Taktyka",
+    "ATTACK_DEFEND": "Agresja",
+    "BUFF": "Taktyka",
+    "DEBUFF": "Taktyka",
+    "DEFEND": "Defensywa",
+    "DEFEND_BUFF": "Defensywa",
+    "DEFEND_DEBUFF": "Defensywa",
+    "ESCAPE": "Ucieczka",
+    "MAGIC": "Zaklinanie",
+    "SLEEP": "Sen",
+    "STRONG_DEBUFF": "Taktyka",
+    "STUN": "Ogłuszenie",
+    "UNKNOWN": "Nieznany"
   }
 }

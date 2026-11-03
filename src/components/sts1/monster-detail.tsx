@@ -91,8 +91,8 @@ export function Sts1MonsterDetail({
           </div>
           <ul className="flex flex-wrap gap-2">
             {monster.moves.map((move) => (
-              <li key={move}>
-                <Sts1MetaPill value={move} />
+              <li key={move.id}>
+                <Sts1MetaPill value={move.name ?? labels.monsters.intents[move.tiers[0]?.intent ?? "UNKNOWN"]} />
               </li>
             ))}
           </ul>

@@ -210,6 +210,91 @@ export interface Sts1MonsterHitPoints {
   max: number;
 }
 
+/** AbstractMonster.Intent values a move can show. */
+export type Sts1MonsterIntent =
+  | "ATTACK"
+  | "ATTACK_BUFF"
+  | "ATTACK_DEBUFF"
+  | "ATTACK_DEFEND"
+  | "BUFF"
+  | "DEBUFF"
+  | "STRONG_DEBUFF"
+  | "DEFEND"
+  | "DEFEND_DEBUFF"
+  | "DEFEND_BUFF"
+  | "ESCAPE"
+  | "MAGIC"
+  | "SLEEP"
+  | "STUN"
+  | "UNKNOWN";
+
+/** A fixed number, or an inclusive random roll such as `random(5, 7)`. */
+export type Sts1MonsterAmount = number | { min: number; max: number };
+export type Sts1MonsterEffectTarget = "self" | "player" | "ally";
+
+export interface Sts1MonsterEffects {
+  block?: { target: Sts1MonsterEffectTarget; amount: Sts1MonsterAmount | null }[];
+  powers?: { power: string; target: Sts1MonsterEffectTarget; amount: Sts1MonsterAmount | null }[];
+  cards?: { card: string; amount: number; pile: "discard" | "draw" | "hand" | "discard-and-deck" }[];
+  heal?: { target: Sts1MonsterEffectTarget; amount: Sts1MonsterAmount | null }[];
+  /** Monster IDs. */
+  summons?: string[];
+  flags?: ("escape" | "suicide")[];
+}
+
+/** Values from this ascension level up, until the next tier. */
+export interface Sts1MonsterMoveTier extends Sts1MonsterEffects {
+  ascension: number;
+  intent?: Sts1MonsterIntent;
+  /** The damage the intent shows (`setMove`). */
+  damage?: Sts1MonsterAmount;
+  /** Hit count when the intent shows `damage × multiplier`. */
+  multiplier?: number;
+  /** Damage of each queued hit (`takeTurn`). */
+  hits?: (Sts1MonsterAmount | null)[];
+}
+
+export interface Sts1MonsterStartingTier extends Sts1MonsterEffects {
+  ascension: number;
+}
+
+/** `spine` plays a skeleton clip; `motion` is the game's whole-sprite lunge, hop or shake. */
+export interface Sts1MonsterMoveTrigger {
+  type: "spine" | "motion";
+  name: string;
+}
+
+export interface Sts1MonsterMove {
+  /** The move byte the game queues. */
+  id: number;
+  /** The constant's name in the monster class, e.g. `CHOMP`. */
+  key: string | null;
+  /** Localized name when the game names the move, else null. */
+  name: string | null;
+  nameEn: string | null;
+  triggers: Sts1MonsterMoveTrigger[];
+  tiers: Sts1MonsterMoveTier[];
+}
+
+export interface Sts1MonsterRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** A Spine 3.4 skeleton converted to 4.2, in skeleton units (y up). */
+export interface Sts1MonsterSpine {
+  skeletonUrl: string;
+  atlasUrl: string;
+  idle: string;
+  animations: string[];
+  /** Union of every clip's bounds: the player's fixed viewport. */
+  viewport: Sts1MonsterRect;
+  /** Where the still image sits inside the viewport. */
+  still: Sts1MonsterRect;
+}
+
 export interface Sts1Monster {
   id: string;
   slug: string;
@@ -219,7 +304,16 @@ export interface Sts1Monster {
   hitPoints: Sts1MonsterHitPoints[];
   name: string;
   nameEn: string;
-  moves: string[];
+  moves: Sts1MonsterMove[];
+  startingEffects: Sts1MonsterStartingTier[];
+  spine: Sts1MonsterSpine | null;
+}
+
+/** Names and links for the powers, cards and monsters a monster's moves reference. */
+export interface Sts1MonsterRefs {
+  powers: Record<string, { slug: string; name: string; image: string; type: Sts1PowerType }>;
+  cards: Record<string, { slug: string; name: string }>;
+  monsters: Record<string, { slug: string; name: string }>;
 }
 
 export interface Sts1MonsterLabels {
@@ -227,6 +321,8 @@ export interface Sts1MonsterLabels {
   ascension: string;
   types: Record<Sts1MonsterType, string>;
   dungeons: Record<Sts1Dungeon, { act: string; name: string }>;
+  /** Intent tooltip headers (AbstractMonster.TEXT). */
+  intents: Record<Sts1MonsterIntent, string>;
 }
 
 export interface Sts1Keyword {
