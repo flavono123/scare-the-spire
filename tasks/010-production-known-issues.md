@@ -244,3 +244,6 @@
     - https://scare-the-spire.flavono123.workers.dev/ja/compendium/cards
 65. **`scripts/contact.spec.ts`의 'submits a private inquiry without requesting a readable row' 1건 실패**. CI에 없는 스펙이고, navbar 변경 전 코드에서도 같았다. 가짜 환경 탓인지 기존 문제인지는 가리지 못했다.
     - https://scare-the-spire.flavono123.workers.dev/contact
+66. **관리자 글 서비스 목록에 역사 강의서가 두 번 들어가 React 중복 키 오류가 남**. `Encountered two children with the same key, \`history_course\``가 개발 콘솔에 찍힌다.
+    - http://localhost:3001/dev/admin (개발 전용 화면)
+    - 원인: `src/lib/admin-rls-activity.ts`의 `ADMIN_POST_SERVICES`가 `DEFRAGMENT_FEDERATED_SERVICES`(이미 `history_course` 포함)를 펼친 뒤 `"history_course"`를 또 붙인다. 운영 코드도 같다.
