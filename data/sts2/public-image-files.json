@@ -3038,6 +3038,12 @@
     "track_edge.png",
     "train.png"
   ],
+  "ui/submenu": [
+    "submenu_card_library.webp",
+    "submenu_load.webp",
+    "submenu_panel_short.webp",
+    "submenu_unknown.webp"
+  ],
   "ui/topbar": [
     "potion_placeholder.png",
     "submenu_history_icon.png",

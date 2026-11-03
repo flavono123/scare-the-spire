@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import { RichText } from "@/components/rich-text";
 import Image from "@/components/ui/static-image";
@@ -10,6 +9,12 @@ import {
   profileTokenCharacter,
 } from "@/components/vexing-puzzlebox/character-hand-pointer";
 import { EndTurnButton, PileButton } from "@/components/vexing-puzzlebox/combat-buttons";
+import {
+  defaultItemDisplay,
+  DisplayToggles,
+  hasLocalNames,
+  type ItemDisplay,
+} from "@/components/vexing-puzzlebox/display-toggles";
 import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { PotionBelt, type BeltPotion } from "@/components/vexing-puzzlebox/potion-belt";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
@@ -65,12 +70,6 @@ const FLIP_FLOP_COUNT = 2;
 const INSPECT_PEEK_COUNT = 5;
 /** Player.initialMaxPotionSlotCount */
 const POTION_SLOT_COUNT = 3;
-
-type ItemDisplay = {
-  token: boolean;
-  local: boolean;
-  original: boolean;
-};
 
 type Toast = { text: string; negative: boolean };
 
@@ -176,40 +175,6 @@ function SolvedCategory({
   );
 }
 
-function DisplayToggle({
-  label,
-  checked,
-  locked,
-  onChange,
-}: {
-  label: string;
-  checked: boolean;
-  /** Turning this off would leave a tile empty. */
-  locked: boolean;
-  onChange: () => void;
-}) {
-  const wrapperRef = useRef<HTMLSpanElement>(null);
-  const say = useMerchantSay();
-  const playSound = usePuzzleboxSound();
-  return (
-    <span ref={wrapperRef} className="inline-flex">
-      <GameCheckboxToggle
-        checked={checked}
-        label={label}
-        onCheckedChange={() => {
-          if (locked && wrapperRef.current) {
-            playPurchaseFailedWiggle(wrapperRef.current);
-            say("failure", wrapperRef.current);
-            return;
-          }
-          playSound(checked ? "checkboxOff" : "checkboxOn");
-          onChange();
-        }}
-      />
-    </span>
-  );
-}
-
 export function ConnectionsClient({
   puzzles,
   gameCopy,
@@ -243,12 +208,8 @@ export function ConnectionsClient({
   const { stored, profile } = useStoredProfileSnapshot();
   // Mistakes are spent like energy: the profile character's, or colorless without one.
   const energyIcon = resolveSts2EnergyIcon(profileTokenCharacter(stored, profile) ?? "colorless");
-  const localNamesDiffer = gameLocale !== "eng";
-  const [display, setDisplay] = useState<ItemDisplay>({
-    token: true,
-    local: localNamesDiffer,
-    original: !localNamesDiffer,
-  });
+  const localNamesDiffer = hasLocalNames(gameLocale);
+  const [display, setDisplay] = useState<ItemDisplay>(() => defaultItemDisplay(gameLocale));
 
   const boardRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef(new Map<string, HTMLDivElement>());
@@ -555,8 +516,7 @@ export function ConnectionsClient({
     playSound("rockDrop");
   };
 
-  const changeDisplay = (id: keyof ItemDisplay) => {
-    const next = { ...display, [id]: !display[id] };
+  const changeDisplay = (next: ItemDisplay, id: keyof ItemDisplay) => {
     setDisplay(next);
     if (id === "token" && !next.token) remark(lines.tokensOff, ["display"], 1);
     if (localNamesDiffer && id === "local" && !next.local && next.original) {
@@ -569,29 +529,16 @@ export function ConnectionsClient({
     if (inspectCount.current === INSPECT_PEEK_COUNT) remark(lines.inspectPeek, ["inspect"], 1);
   };
 
-  // English is already the original wording, so its game locale has no separate local toggle.
-  const toggles: { id: keyof ItemDisplay; label: string }[] = [
-    { id: "token", label: copy.viewTokens },
-    ...(localNamesDiffer ? [{ id: "local" as const, label: copy.viewLocal }] : []),
-    { id: "original", label: copy.viewOriginal },
-  ];
-  const enabledCount = toggles.filter((item) => display[item.id]).length;
-
   return (
     <section className="mx-auto max-w-2xl" data-connections-puzzle={puzzle.number}>
       <p className="mb-3 text-center text-sm font-semibold">{copy.guide}</p>
       <div className="mb-3 flex justify-center">
-        <div role="group" aria-label={copy.viewsLabel} className="inline-flex flex-wrap justify-center gap-3">
-          {toggles.map((item) => (
-            <DisplayToggle
-              key={item.id}
-              label={item.label}
-              checked={display[item.id]}
-              locked={display[item.id] && enabledCount === 1}
-              onChange={() => changeDisplay(item.id)}
-            />
-          ))}
-        </div>
+        <DisplayToggles
+          display={display}
+          gameLocale={gameLocale}
+          labels={{ group: copy.viewsLabel, token: copy.viewTokens, local: copy.viewLocal, original: copy.viewOriginal }}
+          onChange={changeDisplay}
+        />
       </div>
 
       {puzzles.length > 1 && (

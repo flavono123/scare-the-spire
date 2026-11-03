@@ -8,6 +8,7 @@ Outputs:
   - public/images/sts2/ui/speech_bubble3.webp                        (scenes/merchant/merchant_rug_dialogue.tscn)
   - public/images/sts2/ui/speech_bubble3_purple.webp                 (vfx_speech_bubble.tscn, VfxColor.Purple)
   - public/images/sts2/ui/combat/{end_turn_button,end_turn_button_glow,draw_pile,discard_pile,pile_button_count}.webp
+  - public/images/sts2/ui/submenu/{submenu_panel_short,submenu_load,submenu_card_library,submenu_unknown}.webp
 """
 
 from __future__ import annotations
@@ -37,6 +38,13 @@ FAKE_MERCHANT_HAND_PATH = "animations/backgrounds/fake_merchant_room/hand/fakeme
 FAKE_MERCHANT_HAND_BOUNDS = (2, 334, 335, 844)
 FAKE_MERCHANT_FADE_SHARE = 0.72
 COMBAT_UI = ("end_turn_button", "end_turn_button_glow", "draw_pile", "discard_pile", "pile_button_count")
+# Main menu submenu buttons (submenu_button_short.tscn) for the beta art mode tabs.
+SUBMENU_UI = {
+    "submenu_panel_short": "images/packed/common_ui/submenu_panel_short.png",
+    "submenu_load": "images/ui/main_menu/submenu_load.png",
+    "submenu_card_library": "images/ui/main_menu/submenu_card_library.png",
+    "submenu_unknown": "images/ui/main_menu/submenu_unknown.png",
+}
 # NSpeechBubbleVfx VfxColor.Purple.
 PURPLE_HSV = (0.3, 0.6, 0.5)
 
@@ -152,6 +160,8 @@ def main() -> None:
     save(fake_merchant_arm(pck), OUTPUT_ROOT / "hands" / "fake_merchant_point.webp")
     for name in COMBAT_UI:
         save(read_texture(pck, f"images/packed/combat_ui/{name}.png"), OUTPUT_ROOT / "combat" / f"{name}.webp")
+    for name, source in SUBMENU_UI.items():
+        save(read_texture(pck, source), OUTPUT_ROOT / "submenu" / f"{name}.webp")
     bubble = read_texture(pck, "images/packed/vfx/speech_bubble3.png")
     save(bubble, OUTPUT_ROOT / "speech_bubble3.webp")
     save(hsv_shift(bubble, *PURPLE_HSV), OUTPUT_ROOT / "speech_bubble3_purple.webp")

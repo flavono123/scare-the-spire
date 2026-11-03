@@ -1,0 +1,92 @@
+"use client";
+
+import { useRef } from "react";
+import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
+import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
+import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
+import type { GameLocale } from "@/lib/i18n";
+import { playPurchaseFailedWiggle } from "@/lib/merchant-feedback";
+
+/** What an item shows: its picture, its name in the game language, its original English name. */
+export type ItemDisplay = {
+  token: boolean;
+  local: boolean;
+  original: boolean;
+};
+
+/** English is already the original wording, so its game locale has no separate local name. */
+export function hasLocalNames(gameLocale: GameLocale): boolean {
+  return gameLocale !== "eng";
+}
+
+export function defaultItemDisplay(gameLocale: GameLocale): ItemDisplay {
+  const local = hasLocalNames(gameLocale);
+  return { token: true, local, original: !local };
+}
+
+function DisplayToggle({
+  label,
+  checked,
+  locked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  /** Turning this off would leave an item empty. */
+  locked: boolean;
+  onChange: () => void;
+}) {
+  const wrapperRef = useRef<HTMLSpanElement>(null);
+  const say = useMerchantSay();
+  const playSound = usePuzzleboxSound();
+  return (
+    <span ref={wrapperRef} className="inline-flex">
+      <GameCheckboxToggle
+        checked={checked}
+        label={label}
+        onCheckedChange={() => {
+          if (locked && wrapperRef.current) {
+            playPurchaseFailedWiggle(wrapperRef.current);
+            say("failure", wrapperRef.current);
+            return;
+          }
+          playSound(checked ? "checkboxOff" : "checkboxOn");
+          onChange();
+        }}
+      />
+    </span>
+  );
+}
+
+/** Picture / local name / original name checkboxes; the last one on cannot be turned off. */
+export function DisplayToggles({
+  display,
+  gameLocale,
+  labels,
+  onChange,
+}: {
+  display: ItemDisplay;
+  gameLocale: GameLocale;
+  labels: { group: string; token: string; local: string; original: string };
+  onChange: (next: ItemDisplay, changed: keyof ItemDisplay) => void;
+}) {
+  const toggles: { id: keyof ItemDisplay; label: string }[] = [
+    { id: "token", label: labels.token },
+    ...(hasLocalNames(gameLocale) ? [{ id: "local" as const, label: labels.local }] : []),
+    { id: "original", label: labels.original },
+  ];
+  const enabledCount = toggles.filter((item) => display[item.id]).length;
+  return (
+    <div role="group" aria-label={labels.group} className="inline-flex flex-wrap justify-center gap-3">
+      {toggles.map((item) => (
+        <DisplayToggle
+          key={item.id}
+          label={item.label}
+          checked={display[item.id]}
+          locked={display[item.id] && enabledCount === 1}
+          onChange={() => onChange({ ...display, [item.id]: !display[item.id] }, item.id)}
+        />
+      ))}
+    </div>
+  );
+}

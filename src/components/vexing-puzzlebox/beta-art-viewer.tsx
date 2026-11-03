@@ -1,7 +1,12 @@
 "use client";
 
+import { Youtube } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { BoundedCarouselFrame } from "@/components/codex/bounded-carousel";
+import { PlaybackRateGroup, PlaybackToggle } from "@/components/playback-controls";
 import Image from "@/components/ui/static-image";
+import { PileButton } from "@/components/vexing-puzzlebox/combat-buttons";
+import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { seededShuffle } from "@/lib/beta-art-quiz";
 import { BETA_ART_PLAYLIST_URL } from "@/lib/vexing-puzzlebox";
@@ -11,6 +16,11 @@ import { serviceMessages } from "@/messages/service";
 /** Milliseconds each art stays on screen. The Shorts run at 1200. */
 const SPEEDS = { slow: 3000, normal: 1800, fast: 1200 } as const;
 type Speed = keyof typeof SPEEDS;
+const SPEED_ORDER: Speed[] = ["slow", "normal", "fast"];
+/** The draw pile counts back up while the order reshuffles. */
+const SHUFFLE_COUNT_MS = 600;
+const SHUFFLE_COUNT_STEPS = 20;
+const COMPENDIUM_TOKEN_SRC = "/images/sts2/nav/submenu_compendium.png";
 
 export function BetaArtViewer({
   entries,
@@ -24,6 +34,7 @@ export function BetaArtViewer({
   gameLocale: GameLocale;
 }) {
   const copy = serviceMessages[serviceLocale].vexingPuzzlebox;
+  const playSound = usePuzzleboxSound();
   const [shuffleSeed, setShuffleSeed] = useState<number | null>(null);
   const ordered = useMemo(
     () => (shuffleSeed === null ? entries : seededShuffle(entries, shuffleSeed)),
@@ -37,7 +48,9 @@ export function BetaArtViewer({
   /** Share of the frame showing beta art, from the right edge. 100 hides the final art. */
   const [betaShare, setBetaShare] = useState(0);
   const [dragging, setDragging] = useState(false);
+  const [shuffleCount, setShuffleCount] = useState<number | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const countTimers = useRef<number[]>([]);
 
   const index = Math.min(position, ordered.length - 1);
   const entry = ordered[index];
@@ -76,6 +89,20 @@ export function BetaArtViewer({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [move]);
 
+  useEffect(() => () => countTimers.current.forEach((timer) => window.clearTimeout(timer)), []);
+
+  const shuffle = () => {
+    setShuffleSeed(Math.floor(Math.random() * 1_000_000));
+    setPosition(0);
+    setBetaShare(0);
+    playSound("cardSlide");
+    countTimers.current.forEach((timer) => window.clearTimeout(timer));
+    countTimers.current = Array.from({ length: SHUFFLE_COUNT_STEPS }, (_, step) => window.setTimeout(() => {
+      setShuffleCount(Math.max(1, Math.round((ordered.length * (step + 1)) / SHUFFLE_COUNT_STEPS)));
+    }, (step * SHUFFLE_COUNT_MS) / SHUFFLE_COUNT_STEPS));
+    countTimers.current.push(window.setTimeout(() => setShuffleCount(null), SHUFFLE_COUNT_MS + 60));
+  };
+
   const dragTo = (event: PointerEvent<HTMLDivElement>) => {
     const rect = stageRef.current?.getBoundingClientRect();
     if (!rect || !entry.officialUrl) return;
@@ -85,65 +112,77 @@ export function BetaArtViewer({
 
   const betaOnly = !entry.officialUrl;
   const shownShare = betaOnly ? 100 : betaShare;
+  const speedLabel = { slow: copy.speedSlow, normal: copy.speedNormal, fast: copy.speedFast };
 
   return (
     <div className="mx-auto max-w-[min(48rem,80svh)]" data-beta-art-viewer>
-      <div
-        ref={stageRef}
-        role="img"
-        aria-label={`${entry.name} ${copy.beta}`}
-        onPointerDown={(event) => {
-          event.currentTarget.setPointerCapture(event.pointerId);
-          setDragging(true);
-          setPlaying(false);
-          dragTo(event);
-        }}
-        onPointerMove={(event) => {
-          if (dragging) dragTo(event);
-        }}
-        onPointerUp={() => setDragging(false)}
-        onPointerCancel={() => setDragging(false)}
-        className="relative aspect-[25/19] cursor-ew-resize touch-pan-y select-none overflow-hidden rounded-xl border border-border bg-black"
+      <BoundedCarouselFrame
+        canMovePrevious
+        canMoveNext
+        onPrevious={() => move(-1)}
+        onNext={() => move(1)}
+        previousLabel={copy.previous}
+        nextLabel={copy.next}
       >
-        {entry.officialUrl && (
-          <Image
-            key={entry.officialUrl}
-            src={entry.officialUrl}
-            alt=""
-            width={960}
-            height={720}
-            draggable={false}
-            className="absolute inset-0 h-full w-full object-contain"
-          />
-        )}
         <div
-          className={`absolute inset-0 ${dragging ? "" : "transition-[clip-path] duration-500 ease-in-out motion-reduce:transition-none"}`}
-          style={{ clipPath: `inset(0 0 0 ${100 - shownShare}%)` }}
+          ref={stageRef}
+          role="img"
+          aria-label={`${entry.name} ${copy.beta}`}
+          onPointerDown={(event) => {
+            event.currentTarget.setPointerCapture(event.pointerId);
+            setDragging(true);
+            setPlaying(false);
+            dragTo(event);
+          }}
+          onPointerMove={(event) => {
+            if (dragging) dragTo(event);
+          }}
+          onPointerUp={() => setDragging(false)}
+          onPointerCancel={() => setDragging(false)}
+          className="relative aspect-[25/19] cursor-ew-resize touch-pan-y select-none overflow-hidden rounded-xl border border-border bg-black"
         >
-          <Image
-            key={entry.betaUrl}
-            src={entry.betaUrl}
-            alt=""
-            width={960}
-            height={720}
-            draggable={false}
-            className="absolute inset-0 h-full w-full bg-black object-contain"
-          />
+          {entry.officialUrl && (
+            <Image
+              key={entry.officialUrl}
+              src={entry.officialUrl}
+              alt=""
+              width={960}
+              height={720}
+              draggable={false}
+              className="absolute inset-0 h-full w-full object-contain"
+            />
+          )}
+          <div
+            className={`absolute inset-0 ${dragging ? "" : "transition-[clip-path] duration-500 ease-in-out motion-reduce:transition-none"}`}
+            style={{ clipPath: `inset(0 0 0 ${100 - shownShare}%)` }}
+          >
+            <Image
+              key={entry.betaUrl}
+              src={entry.betaUrl}
+              alt=""
+              width={960}
+              height={720}
+              draggable={false}
+              className="absolute inset-0 h-full w-full bg-black object-contain"
+            />
+          </div>
+          {!betaOnly && (
+            <span
+              aria-hidden="true"
+              className={`absolute inset-y-0 w-px bg-white/50 ${dragging ? "" : "transition-[left] duration-500 ease-in-out motion-reduce:transition-none"}`}
+              style={{ left: `${100 - shownShare}%` }}
+            />
+          )}
+          {shownShare >= 50 && (
+            <span className="absolute left-2 top-1.5 text-[10px] font-medium tracking-wide text-white/35">
+              {betaOnly ? copy.betaOnly : copy.beta}
+            </span>
+          )}
+          <span className="absolute right-2 top-1.5 text-[10px] tabular-nums text-white/35">
+            {index + 1}/{ordered.length}
+          </span>
         </div>
-        {!betaOnly && (
-          <span
-            aria-hidden="true"
-            className={`absolute inset-y-0 w-0.5 bg-white/80 ${dragging ? "" : "transition-[left] duration-500 ease-in-out motion-reduce:transition-none"}`}
-            style={{ left: `${100 - shownShare}%` }}
-          />
-        )}
-        <span className="absolute left-2 top-2 rounded bg-black/70 px-2 py-0.5 text-xs text-white">
-          {betaOnly ? copy.betaOnly : shownShare >= 50 ? copy.beta : copy.official}
-        </span>
-        <span className="absolute right-2 top-2 rounded bg-black/70 px-2 py-0.5 text-xs text-white tabular-nums">
-          {index + 1}/{ordered.length}
-        </span>
-      </div>
+      </BoundedCarouselFrame>
 
       {/* Keep the next pair cached so the swap does not flash. */}
       <div className="hidden" aria-hidden="true">
@@ -158,55 +197,34 @@ export function BetaArtViewer({
         <p className="text-xs text-muted-foreground">{copy.compareHint}</p>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm">
-        <button type="button" onClick={() => move(-1)} className="rounded-lg border border-border px-3 py-1.5 hover:border-primary/60">
-          {copy.previous}
-        </button>
-        <button
-          type="button"
-          onClick={() => setPlaying(!playing)}
-          className="rounded-lg bg-primary px-4 py-1.5 font-semibold text-primary-foreground"
-        >
-          {playing ? copy.pause : copy.play}
-        </button>
-        <button type="button" onClick={() => move(1)} className="rounded-lg border border-border px-3 py-1.5 hover:border-primary/60">
-          {copy.next}
-        </button>
-        <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          {copy.speed}
-          <select
-            value={speed}
-            onChange={(event) => setSpeed(event.target.value as Speed)}
-            className="rounded-md border border-border bg-background px-1.5 py-1 text-foreground"
-          >
-            <option value="slow">{copy.speedSlow}</option>
-            <option value="normal">{copy.speedNormal}</option>
-            <option value="fast">{copy.speedFast}</option>
-          </select>
-        </label>
-        <button
-          type="button"
-          aria-pressed={shuffleSeed !== null}
-          onClick={() => {
-            setShuffleSeed(shuffleSeed === null ? Math.floor(Math.random() * 1_000_000) : null);
-            setPosition(0);
-            setBetaShare(0);
-          }}
-          className="rounded-lg border border-border px-3 py-1.5 text-xs hover:border-primary/60"
-        >
-          {shuffleSeed === null ? copy.orderShuffle : copy.orderSeries}
-        </button>
+      <div className="mt-3 flex flex-wrap items-center justify-center gap-4 text-xs">
+        <PlaybackToggle
+          playing={playing}
+          playLabel={copy.play}
+          pauseLabel={copy.pause}
+          onToggle={() => setPlaying(!playing)}
+        />
+        <PlaybackRateGroup rates={SPEED_ORDER} rate={speed} onChange={setSpeed} label={(value) => speedLabel[value]} />
+        <PileButton pile="draw" count={shuffleCount ?? ordered.length} label={copy.shuffle} onClick={shuffle} />
       </div>
 
-      <p className="mt-3 flex justify-center gap-3 text-xs text-muted-foreground">
+      <p className="mt-4 flex flex-wrap justify-center gap-4 text-xs">
         <a
           href={localizeHrefWithGameLocale(entry.href, serviceLocale, gameLocale)}
-          className="underline hover:text-foreground"
+          className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
         >
-          {copy.openCompendium}
+          <Image src={COMPENDIUM_TOKEN_SRC} alt="" width={16} height={16} className="h-4 w-4 object-contain" />
+          {copy.openCompendium} &rarr;
         </a>
-        <a href={BETA_ART_PLAYLIST_URL} target="_blank" rel="noreferrer" className="underline hover:text-foreground">
-          {copy.watchShorts}
+        <a
+          href={BETA_ART_PLAYLIST_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
+        >
+          <Image src="/favicon.ico" alt="" width={16} height={16} className="h-4 w-4 rounded-sm" />
+          <Youtube aria-hidden="true" className="h-4 w-4 shrink-0 text-red-500" />
+          {copy.watchShorts} &rarr;
         </a>
       </p>
     </div>

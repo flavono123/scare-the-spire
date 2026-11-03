@@ -6,6 +6,7 @@ import {
   MapBackdrop,
   SeededMapView,
 } from "@/components/dev/run-replay-poc";
+import { PlaybackRateGroup, PlaybackToggle } from "@/components/playback-controls";
 import { HistoryTinyCardIcon } from "@/components/history-course/card-action-icon";
 import { DeckModal } from "@/components/history-course/deck-modal";
 import { NodeLastScene } from "@/components/history-course/node-last-scene";
@@ -1851,37 +1852,23 @@ function PlaybackBar({
       />
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            data-history-play-toggle=""
-            onClick={onTogglePlay}
-            className="flex h-7 w-12 items-center justify-center rounded-md border border-white/20 bg-black/40 transition hover:bg-white/10"
-            aria-label={playing ? playback.pause : playback.play}
-          >
-            {playing ? <PauseIcon /> : <PlayIcon />}
-          </button>
+          <PlaybackToggle
+            playing={playing}
+            playLabel={playback.play}
+            pauseLabel={playback.pause}
+            onToggle={onTogglePlay}
+          />
         </div>
         <div className="flex items-center gap-1.5">
           <span className="text-zinc-400">{completedStepCount}/{totalStepCount}</span>
-          <div className="ml-2 inline-flex overflow-hidden rounded-md border border-white/15 bg-black/30">
-            {PLAYBACK_RATES.map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => onChangeRate(r)}
-                disabled={rateLocked && r !== 1}
-                className={cn(
-                  "px-2 py-1 transition",
-                  rate === r
-                    ? "bg-amber-500/30 text-amber-100"
-                    : "text-zinc-300 hover:bg-white/10",
-                  rateLocked && r !== 1 && "cursor-not-allowed opacity-40 hover:bg-transparent",
-                )}
-                aria-pressed={rate === r}
-              >
-                {r}×
-              </button>
-            ))}
+          <div className="ml-2">
+            <PlaybackRateGroup
+              rates={PLAYBACK_RATES}
+              rate={rate}
+              onChange={onChangeRate}
+              label={(r) => `${r}×`}
+              isDisabled={(r) => Boolean(rateLocked) && r !== 1}
+            />
           </div>
         </div>
       </div>
@@ -2148,22 +2135,5 @@ function Track({
         />
       </span>
     </div>
-  );
-}
-
-function PlayIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-      <path d="M3 1.5 L12 7 L3 12.5 Z" />
-    </svg>
-  );
-}
-
-function PauseIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-      <rect x="2.5" y="1.5" width="3.2" height="11" />
-      <rect x="8.3" y="1.5" width="3.2" height="11" />
-    </svg>
   );
 }

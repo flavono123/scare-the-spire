@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import betaArtPayload from "../data/sts2-beta-art.json";
 import connectionsPayload from "../data/sts2-connections.json";
-import { BETA_ART_QUIZ_SET_SIZE, buildBetaArtQuizSets } from "../src/lib/beta-art-quiz";
+import { buildBetaArtQuizSets } from "../src/lib/beta-art-quiz";
 import type { BetaArtEntry } from "../src/lib/vexing-puzzlebox-types";
 
 for (const puzzle of connectionsPayload) {
@@ -14,26 +14,31 @@ for (const puzzle of connectionsPayload) {
   assert.equal(new Set(keys).size, 16, `#${puzzle.number} has no repeated member`);
 }
 
-const entries = [...betaArtPayload.pairs.map((pair) => pair.key), ...betaArtPayload.betaOnly]
-  .filter((key) => key.startsWith("card:"))
-  .map((key, index): BetaArtEntry => ({
-    key,
-    type: "card",
-    id: key.slice("card:".length),
-    name: key,
-    color: ["ironclad", "silent", "curse", "status"][index % 4],
+const entries = betaArtPayload.pairs.map((pair, index): BetaArtEntry => {
+  const [type, id] = pair.key.split(":") as [BetaArtEntry["type"], string];
+  return {
+    key: pair.key,
+    type,
+    id,
+    name: pair.key,
+    nameEn: pair.key,
+    color: type === "card" ? ["ironclad", "silent", "curse", "status"][index % 4] : null,
     betaUrl: "",
     officialUrl: null,
     href: "",
     earlyAccess: false,
-  }));
+    episode: pair.episode,
+    episodeOrder: pair.episodeOrder,
+  };
+});
 
 const sets = buildBetaArtQuizSets(entries);
 const questions = sets.flat();
-assert.equal(questions.length, 274);
+assert.equal(sets.length, 48, "one set per Shorts episode");
+assert.equal(questions.length, entries.length - 1, "every paired art but Pale Blue Dot");
 assert.ok(questions.every((question) => !question.entry.key.endsWith("PALE_BLUE_DOT")));
 assert.equal(new Set(questions.map((question) => question.entry.key)).size, questions.length);
-assert.ok(sets.slice(0, -1).every((set) => set.length === BETA_ART_QUIZ_SET_SIZE));
+assert.ok(sets.every((set) => set.length >= 5 && set.length <= 7));
 for (const question of questions) {
   assert.equal(question.choices.length, 4);
   assert.equal(new Set(question.choices.map((choice) => choice.key)).size, 4);

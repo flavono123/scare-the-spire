@@ -1,6 +1,11 @@
 "use client";
 
+import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { PortaledHoverTipLayer } from "@/components/codex/card-keyword-tip-stack";
+import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
+import { HoverTip } from "@/components/codex/hover-tip";
+import Image from "@/components/ui/static-image";
 import { BetaArtGallery } from "@/components/vexing-puzzlebox/beta-art-gallery";
 import { BetaArtQuiz } from "@/components/vexing-puzzlebox/beta-art-quiz";
 import { BetaArtViewer } from "@/components/vexing-puzzlebox/beta-art-viewer";
@@ -16,6 +21,135 @@ import { serviceMessages } from "@/messages/service";
 type BetaArtMode = "watch" | "gallery" | "quiz";
 
 const OTHER_COLOR_FILTER = "other";
+const SUBMENU_ROOT = "/images/sts2/ui/submenu";
+/** Main menu submenu art for each mode. */
+const MODE_ICONS: Record<BetaArtMode, string> = {
+  watch: `${SUBMENU_ROOT}/submenu_load.webp`,
+  gallery: `${SUBMENU_ROOT}/submenu_card_library.webp`,
+  quiz: `${SUBMENU_ROOT}/submenu_unknown.webp`,
+};
+/** The Compendium menu's type tokens. */
+const TYPE_TOKENS: Record<BetaArtType, string> = {
+  card: "/images/sts2/nav/stats_cards.png",
+  relic: "/images/sts2/relics/bing_bong.webp",
+  power: "/images/sts2/nav/unmovable_power_beta.webp",
+  epoch: "/images/sts2/relics/planisphere.webp",
+};
+/** Yummy Cookie's character variants stand for each character's cards. */
+const CHARACTER_TOKENS: Record<string, string> = {
+  ironclad: "/images/sts2/relics/yummy_cookie_ironclad.webp",
+  silent: "/images/sts2/relics/yummy_cookie_silent.webp",
+  regent: "/images/sts2/relics/yummy_cookie_regent.webp",
+  necrobinder: "/images/sts2/relics/yummy_cookie_necro.webp",
+  defect: "/images/sts2/relics/yummy_cookie_defect.webp",
+};
+const OTHER_CARDS_TOKEN = "/images/game-assets/card-misc/energy_colorless.png";
+
+/** submenu_button_short.tscn: a parchment panel, the title in gold over the art, a cream description. */
+function ModeButton({
+  label,
+  description,
+  icon,
+  selected,
+  onSelect,
+}: {
+  label: string;
+  description: string;
+  icon: string;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={selected}
+      onClick={onSelect}
+      className={`group/mode relative aspect-[490/560] w-[6.5rem] shrink-0 transition-[transform,filter] duration-150 sm:w-[8.5rem] ${
+        selected
+          ? "scale-105 drop-shadow-[0_0_10px_rgba(239,200,81,0.55)]"
+          : "brightness-75 hover:scale-[1.03] hover:brightness-95"
+      }`}
+    >
+      <Image
+        src={`${SUBMENU_ROOT}/submenu_panel_short.webp`}
+        alt=""
+        width={490}
+        height={660}
+        className="absolute inset-0 h-full w-full"
+      />
+      <span className="absolute inset-x-[8%] top-[5%] flex h-[17%] items-center justify-center">
+        <span
+          className="font-game-title text-sm font-bold leading-none sm:text-base"
+          style={{
+            color: "#efc851",
+            WebkitTextStroke: "3px #333127",
+            paintOrder: "stroke fill",
+            textShadow: "2px 2px 0 rgba(0,0,0,0.13)",
+          }}
+        >
+          {label}
+        </span>
+      </span>
+      <Image
+        src={icon}
+        alt=""
+        width={378}
+        height={288}
+        className="absolute left-1/2 top-[25%] w-[72%] -translate-x-1/2"
+      />
+      <span
+        className="absolute inset-x-[10%] bottom-[7%] text-center text-[10px] leading-tight sm:text-[11px]"
+        style={{ color: "#fff6e2", textShadow: "1.5px 1px 0 rgba(0,0,0,0.25)" }}
+      >
+        {description}
+      </span>
+    </button>
+  );
+}
+
+/** A filter shown as a bare token; its name appears as a hover tip. */
+function TokenFilter({
+  label,
+  icon,
+  selected,
+  onClick,
+}: {
+  label: string;
+  icon: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <span
+      className="relative inline-flex"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <button
+        type="button"
+        aria-label={label}
+        aria-pressed={selected}
+        onClick={onClick}
+        onFocus={() => setHovered(true)}
+        onBlur={() => setHovered(false)}
+        className={`flex h-9 w-9 items-center justify-center transition-[transform,filter,opacity] duration-150 ${
+          selected
+            ? "scale-110 opacity-100 drop-shadow-[0_0_6px_rgba(239,200,81,0.8)]"
+            : "opacity-55 grayscale-[35%] hover:scale-105 hover:opacity-90"
+        }`}
+      >
+        <Image src={icon} alt="" width={36} height={36} className="h-8 w-8 object-contain" />
+      </button>
+      {hovered && (
+        <PortaledHoverTipLayer pin="top-left">
+          <HoverTip title={label} compact />
+        </PortaledHoverTipLayer>
+      )}
+    </span>
+  );
+}
 
 export function BetaArtClient({
   entries,
@@ -35,6 +169,7 @@ export function BetaArtClient({
   const [typeFilter, setTypeFilter] = useState<BetaArtType | null>(null);
   const [colorFilter, setColorFilter] = useState<string | null>(null);
   const [earlyAccessOnly, setEarlyAccessOnly] = useState(false);
+  const [query, setQuery] = useState("");
   const [focusKey, setFocusKey] = useState<string | null>(null);
 
   useEffect(() => {
@@ -54,113 +189,114 @@ export function BetaArtClient({
   };
 
   const characterColors = useMemo(() => new Set(characters.map((item) => item.color)), [characters]);
+  const needle = mode === "gallery" ? query.trim().toLocaleLowerCase() : "";
   const filtered = useMemo(() => entries.filter((entry) => {
     if (typeFilter && entry.type !== typeFilter) return false;
-    if (earlyAccessOnly && !entry.earlyAccess) return false;
-    if (colorFilter === OTHER_COLOR_FILTER) return !characterColors.has(entry.color ?? "");
-    if (colorFilter) return entry.color === colorFilter;
+    if (typeFilter === "card" && earlyAccessOnly && !entry.earlyAccess) return false;
+    if (typeFilter === "card" && colorFilter === OTHER_COLOR_FILTER && characterColors.has(entry.color ?? "")) return false;
+    if (typeFilter === "card" && colorFilter && colorFilter !== OTHER_COLOR_FILTER && entry.color !== colorFilter) return false;
+    if (needle && !entry.name.toLocaleLowerCase().includes(needle) && !entry.nameEn.toLocaleLowerCase().includes(needle)) {
+      return false;
+    }
     return true;
-  }), [entries, typeFilter, colorFilter, earlyAccessOnly, characterColors]);
+  }), [entries, typeFilter, colorFilter, earlyAccessOnly, characterColors, needle]);
 
-  const modes: { id: BetaArtMode; label: string }[] = [
-    { id: "watch", label: copy.modeWatch },
-    { id: "gallery", label: copy.modeGallery },
-    { id: "quiz", label: copy.modeQuiz },
+  const modes: { id: BetaArtMode; label: string; description: string }[] = [
+    { id: "watch", label: copy.modeWatch, description: copy.modeWatchDescription },
+    { id: "gallery", label: copy.modeGallery, description: copy.modeGalleryDescription },
+    { id: "quiz", label: copy.modeQuiz, description: copy.modeQuizDescription },
   ];
-  const typeFilters: { id: BetaArtType | null; label: string }[] = [
-    { id: null, label: copy.filterAll },
+  const typeFilters: { id: BetaArtType; label: string }[] = [
     { id: "card", label: copy.filterCard },
     { id: "relic", label: copy.filterRelic },
     { id: "power", label: copy.filterPower },
     { id: "epoch", label: copy.filterEpoch },
   ];
-  const chipClass = (selected: boolean) => (
-    `rounded-full border px-2.5 py-1 text-xs transition-colors ${
-      selected
-        ? "border-primary bg-primary/15 text-primary"
-        : "border-border text-muted-foreground hover:text-foreground"
-    }`
-  );
 
   return (
     <section data-beta-art-mode={mode}>
-      <div className="flex justify-center">
-        <div role="tablist" aria-label={copy.modesLabel} className="inline-flex rounded-lg border border-border bg-card/80 p-0.5">
-          {modes.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={mode === item.id}
-              onClick={() => changeMode(item.id)}
-              className={`rounded-md px-4 py-1.5 text-sm font-semibold transition-colors ${
-                mode === item.id
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
+      <div role="tablist" aria-label={copy.modesLabel} className="flex justify-center gap-2 sm:gap-4">
+        {modes.map((item) => (
+          <ModeButton
+            key={item.id}
+            label={item.label}
+            description={item.description}
+            icon={MODE_ICONS[item.id]}
+            selected={mode === item.id}
+            onSelect={() => changeMode(item.id)}
+          />
+        ))}
       </div>
 
       {mode !== "quiz" && (
-        <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-          {typeFilters.map((item) => (
-            <button
-              key={item.label}
-              type="button"
-              aria-pressed={typeFilter === item.id}
-              onClick={() => {
-                setTypeFilter(item.id);
-                if (item.id !== "card") setColorFilter(null);
-              }}
-              className={chipClass(typeFilter === item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-          {typeFilter === "card" && (
-            <>
-              {characters.map((character) => (
-                <button
-                  key={character.color}
-                  type="button"
-                  aria-pressed={colorFilter === character.color}
-                  onClick={() => setColorFilter(colorFilter === character.color ? null : character.color)}
-                  className={chipClass(colorFilter === character.color)}
-                >
-                  {character.name}
-                </button>
-              ))}
-              <button
-                type="button"
-                aria-pressed={colorFilter === OTHER_COLOR_FILTER}
-                onClick={() => setColorFilter(colorFilter === OTHER_COLOR_FILTER ? null : OTHER_COLOR_FILTER)}
-                className={chipClass(colorFilter === OTHER_COLOR_FILTER)}
-              >
-                {copy.filterOther}
-              </button>
-              <button
-                type="button"
-                aria-pressed={earlyAccessOnly}
-                onClick={() => setEarlyAccessOnly(!earlyAccessOnly)}
-                className={chipClass(earlyAccessOnly)}
-              >
-                {copy.filterEarlyAccess}
-              </button>
-            </>
-          )}
+        <div className="mt-5" data-beta-art-filters>
+          <div className="flex flex-wrap items-center gap-2">
+            {mode === "gallery" && (
+              <label className="relative mr-1 flex items-center">
+                <Search aria-hidden="true" className="pointer-events-none absolute left-2 h-3.5 w-3.5 text-muted-foreground" />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={copy.searchPlaceholder}
+                  aria-label={copy.searchPlaceholder}
+                  className="h-8 w-40 rounded-md border border-border bg-background/80 pl-7 pr-2 text-sm sm:w-52"
+                />
+              </label>
+            )}
+            {typeFilters.map((item) => (
+              <TokenFilter
+                key={item.id}
+                label={item.label}
+                icon={TYPE_TOKENS[item.id]}
+                selected={typeFilter === item.id}
+                onClick={() => {
+                  setTypeFilter(typeFilter === item.id ? null : item.id);
+                  setColorFilter(null);
+                  setEarlyAccessOnly(false);
+                }}
+              />
+            ))}
+          </div>
+          {/* The card row always keeps its height, so picking a type never moves the page. */}
+          <div className="mt-1 flex h-10 flex-wrap items-center gap-2" data-beta-art-card-filters={typeFilter === "card" ? "" : undefined}>
+            {typeFilter === "card" && (
+              <>
+                {characters.map((character) => (
+                  <TokenFilter
+                    key={character.color}
+                    label={character.name}
+                    icon={CHARACTER_TOKENS[character.color] ?? OTHER_CARDS_TOKEN}
+                    selected={colorFilter === character.color}
+                    onClick={() => setColorFilter(colorFilter === character.color ? null : character.color)}
+                  />
+                ))}
+                <TokenFilter
+                  label={copy.filterOther}
+                  icon={OTHER_CARDS_TOKEN}
+                  selected={colorFilter === OTHER_COLOR_FILTER}
+                  onClick={() => setColorFilter(colorFilter === OTHER_COLOR_FILTER ? null : OTHER_COLOR_FILTER)}
+                />
+                <span className="ml-2">
+                  <GameCheckboxToggle
+                    checked={earlyAccessOnly}
+                    label={copy.filterEarlyAccess}
+                    onCheckedChange={() => setEarlyAccessOnly(!earlyAccessOnly)}
+                  />
+                </span>
+              </>
+            )}
+          </div>
         </div>
       )}
 
-      <div className="mt-5">
+      <div className="mt-4">
         {mode !== "quiz" && filtered.length === 0 && (
           <p className="py-16 text-center text-sm text-muted-foreground">{copy.filtersEmpty}</p>
         )}
         {mode === "watch" && filtered.length > 0 && (
           <BetaArtViewer
+            key={`${typeFilter}-${colorFilter}-${earlyAccessOnly}`}
             entries={filtered}
             focusKey={focusKey}
             serviceLocale={serviceLocale}
@@ -173,6 +309,7 @@ export function BetaArtClient({
             serviceLocale={serviceLocale}
             onOpen={(key) => {
               setFocusKey(key);
+              setQuery("");
               changeMode("watch");
             }}
           />
