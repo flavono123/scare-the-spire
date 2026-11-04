@@ -58,6 +58,7 @@ import {
   CHARACTER_CARDS_MODIFIER_IMAGE_URL,
 } from "@/lib/codex-types";
 import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
+import { VEXING_PUZZLEBOX_HREF, VEXING_PUZZLEBOX_TOKEN_SRC } from "@/lib/vexing-puzzlebox";
 import {
   COLORFUL_PHILOSOPHERS_HREF,
   COLORFUL_PHILOSOPHERS_TOKEN_SRC,
@@ -128,6 +129,10 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "STS1 (전체)": { href: null, icon: "/images/sts1_app_icon.png" },
   "STS1 (all)": { href: null, icon: "/images/sts1_app_icon.png" },
   STS1: { href: null, icon: "/images/sts1_app_icon.png" },
+  "슬레이 더 스파이어 1": { href: null, icon: "/images/sts1_app_icon.png" },
+  "Slay the Spire 1": { href: null, icon: "/images/sts1_app_icon.png" },
+  "짜증나는 퍼즐상자": { href: VEXING_PUZZLEBOX_HREF, icon: VEXING_PUZZLEBOX_TOKEN_SRC },
+  "Vexing Puzzlebox": { href: VEXING_PUZZLEBOX_HREF, icon: VEXING_PUZZLEBOX_TOKEN_SRC },
   키워드: { href: "/compendium/keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
   Keywords: { href: "/compendium/keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
   유물: { href: "/compendium/relics", icon: "/images/sts2/relics/bing_bong.webp" },
@@ -241,7 +246,13 @@ const BYRDISPATCH_INTERNAL_LINK_CLASS =
 const BYRDISPATCH_EXTERNAL_LINK_CLASS =
   `inline-flex items-center gap-1 align-[-0.2em] ${EXTERNAL_PROSE_LINK_CLASS}`;
 
-const STS1_SECTION_TITLES = new Set(["STS1 (전체)", "STS1 (all)", "STS1"]);
+const STS1_SECTION_TITLES = new Set([
+  "STS1 (전체)",
+  "STS1 (all)",
+  "STS1",
+  "슬레이 더 스파이어 1",
+  "Slay the Spire 1",
+]);
 const STS1_INLINE_LINKS: Record<string, { href: string; icon: string }> = {
   "유물 모음집": { href: "/compendium/sts1/relics", icon: "/images/sts2/relics/snecko_eye.webp" },
   "Relic Collection": { href: "/compendium/sts1/relics", icon: "/images/sts2/relics/snecko_eye.webp" },
@@ -249,6 +260,8 @@ const STS1_INLINE_LINKS: Record<string, { href: string; icon: string }> = {
   Characters: { href: "/compendium/sts1/characters", icon: "/images/sts1/characters/ironclad.webp" },
   파워: { href: "/compendium/sts1/powers", icon: "/images/sts1/powers/hello.webp" },
   Powers: { href: "/compendium/sts1/powers", icon: "/images/sts1/powers/hello.webp" },
+  "몬스터 도감": { href: "/compendium/sts1/monsters", icon: "/images/sts1/nav/run-history-elite.webp" },
+  Bestiary: { href: "/compendium/sts1/monsters", icon: "/images/sts1/nav/run-history-elite.webp" },
 };
 
 const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
