@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { BoundedCarouselFrame } from "@/components/codex/bounded-carousel";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import {
@@ -219,6 +220,27 @@ export function BetaArtQuiz({
     else url.searchParams.set("set", String(index + 1));
     window.history.replaceState(window.history.state, "", url);
   };
+
+  /** Forward only: the carousel's right arrow, or the right arrow key, once the answer is shown. */
+  const nextQuestion = useCallback((at: number) => {
+    questionShownAt.current = at;
+    setQuestionShown(undefined);
+    setPicked(null);
+    const board = boardRef.current;
+    if (board && board.getBoundingClientRect().top < 0) board.scrollIntoView({ block: "start", behavior: "smooth" });
+  }, []);
+
+  useEffect(() => {
+    if (picked === null) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "ArrowRight" || event.altKey || event.ctrlKey || event.metaKey) return;
+      if ((event.target as HTMLElement | null)?.closest("input, textarea, select, [contenteditable='true']")) return;
+      event.preventDefault();
+      nextQuestion(event.timeStamp);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [picked, nextQuestion]);
 
   // The clock starts once the art has loaded; a cached one is ready at once.
   const currentQuestionKey = set && picked === null && !setFinished ? set[answers.length]?.entry.key : null;
@@ -485,103 +507,95 @@ export function BetaArtQuiz({
       </div>
 
       {/* Question and answer keep one layout, so the choices never move between them. */}
-      <div className="grid grid-cols-2 gap-2">
-        <figure className="relative aspect-[25/19] overflow-hidden rounded-xl border border-border bg-black">
-          <Image
-            ref={artRef}
-            src={question.entry.betaUrl}
-            alt={copy.beta}
-            width={720}
-            height={540}
-            onLoad={() => {
-              if (picked === null && !clock.started()) {
-                clock.start();
-                setClockOn(true);
-              }
-            }}
-            className="h-full w-full object-contain"
-          />
-          <figcaption className="absolute left-2 top-1.5 text-[10px] tracking-wide text-white/35">{copy.beta}</figcaption>
-        </figure>
-        <figure className="relative flex aspect-[25/19] items-center justify-center overflow-hidden rounded-xl border border-border bg-black">
-          {picked !== null && question.entry.officialUrl ? (
+      <BoundedCarouselFrame
+        canMovePrevious={false}
+        canMoveNext={picked !== null}
+        onPrevious={() => undefined}
+        onNext={() => nextQuestion(performance.now())}
+        previousLabel={copy.previous}
+        nextLabel={lastQuestion ? copy.quizResult : copy.quizNext}
+        nextClassName="beta-quiz-next"
+      >
+        <div className="grid grid-cols-2 gap-2">
+          <figure className="relative aspect-[25/19] overflow-hidden rounded-xl border border-border bg-black">
             <Image
-              src={question.entry.officialUrl}
-              alt={question.entry.name}
+              ref={artRef}
+              src={question.entry.betaUrl}
+              alt={copy.beta}
               width={720}
               height={540}
+              onLoad={() => {
+                if (picked === null && !clock.started()) {
+                  clock.start();
+                  setClockOn(true);
+                }
+              }}
               className="h-full w-full object-contain"
             />
-          ) : (
-            <span className="font-game-title text-4xl font-bold text-white/15" aria-hidden="true">
-              {picked !== null ? "" : "?"}
-            </span>
-          )}
-          {picked !== null && !question.entry.officialUrl && (
-            <span className="absolute inset-0 flex items-center justify-center text-xs text-white/50">{copy.betaOnly}</span>
-          )}
-        </figure>
-      </div>
-      <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
-        {clockOn && picked === null && (
-          <div
-            key={question.entry.key}
-            className="beta-quiz-clock h-full bg-green-400/80"
-            style={{ animationPlayState: clock.paused ? "paused" : "running" }}
-          />
-        )}
-      </div>
-
-      {/* The answer's line stays empty, not gone, while the question is open. */}
-      <p className="mt-2 min-h-5 text-center text-sm font-semibold">
-        {picked !== null && <AnswerName entry={question.entry} serviceLocale={serviceLocale} gameLocale={gameLocale} />}
-      </p>
-
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        {question.choices.map((choice) => {
-          const correct = choice.key === question.entry.key;
-          const stateClass = picked === null
-            ? "border-border bg-card/90 hover:border-primary/60"
-            : correct
-              ? "border-green-500 bg-green-500/20"
-              : choice.key === picked
-                ? "border-red-500 bg-red-500/20"
-                : "border-border bg-card/50 opacity-60";
-          return (
-            <button
-              key={choice.key}
-              type="button"
-              disabled={picked !== null}
-              {...{ [CHARACTER_HAND_TARGET_ATTRIBUTE]: "" }}
-              onClick={(event) => pick(choice.key, event.currentTarget, event.timeStamp)}
-              className={`flex justify-center rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors [word-break:keep-all] ${stateClass}`}
-            >
-              {/* A wrong pick reads as a nerf: red, jittering. */}
-              <span className={picked !== null && !correct && choice.key === picked ? "connections-wrong-jitter inline-block" : ""}>
-                <ChoiceLabel entry={choice} display={display} />
+            <figcaption className="absolute left-2 top-1.5 text-[10px] tracking-wide text-white/35">{copy.beta}</figcaption>
+          </figure>
+          <figure className="relative flex aspect-[25/19] items-center justify-center overflow-hidden rounded-xl border border-border bg-black">
+            {picked !== null && question.entry.officialUrl ? (
+              <Image
+                src={question.entry.officialUrl}
+                alt={question.entry.name}
+                width={720}
+                height={540}
+                className="h-full w-full object-contain"
+              />
+            ) : (
+              <span className="font-game-title text-4xl font-bold text-white/15" aria-hidden="true">
+                {picked !== null ? "" : "?"}
               </span>
-            </button>
-          );
-        })}
-      </div>
+            )}
+            {picked !== null && !question.entry.officialUrl && (
+              <span className="absolute inset-0 flex items-center justify-center text-xs text-white/50">{copy.betaOnly}</span>
+            )}
+          </figure>
+        </div>
+        <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
+          {clockOn && picked === null && (
+            <div
+              key={question.entry.key}
+              className="beta-quiz-clock h-full bg-green-400/80"
+              style={{ animationPlayState: clock.paused ? "paused" : "running" }}
+            />
+          )}
+        </div>
 
-      {/* The next button's row is held while a question is open, so the page keeps its height. */}
-      <div className={`mt-4 text-center ${picked === null ? "invisible" : ""}`} aria-hidden={picked === null ? true : undefined}>
-        <button
-          type="button"
-          tabIndex={picked === null ? -1 : undefined}
-          onClick={(event) => {
-            questionShownAt.current = event.timeStamp;
-            setQuestionShown(undefined);
-            setPicked(null);
-            const board = boardRef.current;
-            if (board && board.getBoundingClientRect().top < 0) board.scrollIntoView({ block: "start", behavior: "smooth" });
-          }}
-          className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground"
-        >
-          {lastQuestion ? copy.quizResult : copy.quizNext}
-        </button>
-      </div>
+        {/* The answer's line stays empty, not gone, while the question is open. */}
+        <p className="mt-2 min-h-5 text-center text-sm font-semibold">
+          {picked !== null && <AnswerName entry={question.entry} serviceLocale={serviceLocale} gameLocale={gameLocale} />}
+        </p>
+
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          {question.choices.map((choice) => {
+            const correct = choice.key === question.entry.key;
+            const stateClass = picked === null
+              ? "border-border bg-card/90 hover:border-primary/60"
+              : correct
+                ? "border-green-500 bg-green-500/20"
+                : choice.key === picked
+                  ? "border-red-500 bg-red-500/20"
+                  : "border-border bg-card/50 opacity-60";
+            return (
+              <button
+                key={choice.key}
+                type="button"
+                disabled={picked !== null}
+                {...{ [CHARACTER_HAND_TARGET_ATTRIBUTE]: "" }}
+                onClick={(event) => pick(choice.key, event.currentTarget, event.timeStamp)}
+                className={`flex justify-center rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors [word-break:keep-all] ${stateClass}`}
+              >
+                {/* A wrong pick reads as a nerf: red, jittering. */}
+                <span className={picked !== null && !correct && choice.key === picked ? "connections-wrong-jitter inline-block" : ""}>
+                  <ChoiceLabel entry={choice} display={display} />
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </BoundedCarouselFrame>
     </div>
   );
 }

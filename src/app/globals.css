@@ -1240,11 +1240,29 @@
   animation: beta-quiz-hurt 0.85s ease-out;
 }
 
+/* The next arrow slides in once the answer shows, then nudges forward twice. */
+@keyframes beta-quiz-next-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes beta-quiz-next-nudge {
+  0%, 100% { transform: none; }
+  50% { transform: translateX(4px); }
+}
+
+.beta-quiz-next {
+  animation:
+    beta-quiz-next-in 0.25s ease-out,
+    beta-quiz-next-nudge 0.7s ease-in-out 0.6s 2;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .beta-quiz-clock,
   .beta-quiz-life-lost,
   .beta-quiz-life-float,
-  .beta-quiz-hurt {
+  .beta-quiz-hurt,
+  .beta-quiz-next {
     animation-duration: 1ms;
   }
 }

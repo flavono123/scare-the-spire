@@ -19,6 +19,8 @@ interface BoundedCarouselFrameProps {
   nextLabel: string;
   children: ReactNode;
   className?: string;
+  /** Extra classes for the next arrow, such as an entrance when it appears. */
+  nextClassName?: string;
 }
 
 export function BoundedCarouselFrame({
@@ -30,6 +32,7 @@ export function BoundedCarouselFrame({
   nextLabel,
   children,
   className = "",
+  nextClassName = "",
 }: BoundedCarouselFrameProps) {
   return (
     <div className={`relative ${className}`}>
@@ -55,7 +58,7 @@ export function BoundedCarouselFrame({
           type="button"
           aria-label={nextLabel}
           onClick={onNext}
-          className="absolute right-0 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] transition-transform hover:scale-110"
+          className={`absolute right-0 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] transition-transform hover:scale-110 ${nextClassName}`}
         >
           <Image
             src="/images/sts2/ui/settings_tiny_right_arrow.png"
