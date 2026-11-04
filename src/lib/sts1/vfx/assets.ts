@@ -145,6 +145,12 @@ export class AtlasRegion extends TextureRegion {
   }
 }
 
+/** A loose image's size in the sheet, without loading it (layout for monsters drawn from an image). */
+export function textureSize(path: string): { width: number; height: number } | null {
+  const entry = SHEET.textures[path];
+  return entry ? { width: entry.w, height: entry.h } : null;
+}
+
 const regions = new Map<string, AtlasRegion>();
 const textures = new Map<string, Texture>();
 

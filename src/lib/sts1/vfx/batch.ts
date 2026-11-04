@@ -144,7 +144,7 @@ export class SpriteBatch {
     gl.deleteBuffer(this.vertexBuffer);
     gl.deleteBuffer(this.indexBuffer);
     gl.deleteProgram(this.program);
-    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    // The canvas stays mounted and may get a new batch (React remounts effects), so its context is kept.
   }
 
   setColor(color: Color | number, g?: number, b?: number, a?: number): void {

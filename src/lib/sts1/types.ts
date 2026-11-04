@@ -295,6 +295,38 @@ export interface Sts1MonsterSpine {
   still: Sts1MonsterRect;
 }
 
+/** A number the game computed from positions and rolls: `c + sum(t[name] * value(name))`. */
+export type Sts1VfxNumber = number | { c: number; t: Record<string, number> };
+
+export type Sts1VfxArg =
+  | Sts1VfxNumber
+  | boolean
+  | string
+  | null
+  | { color: string | number | number[] }
+  | { enum: string }
+  | { creature: "monster" | "player" }
+  | { hitbox: "monster" | "player" };
+
+/** One step of a move's `takeTurn`, `at` seconds after the turn starts. */
+export type Sts1VfxEvent =
+  | { at: number; type: "spine" | "motion" | "state"; name: string }
+  | { at: number; type: "effect"; effect: string; args: Sts1VfxArg[]; list?: "top" }
+  | { at: number; type: "shake"; intensity: string; dur: string };
+
+/** What the constructor tells the stage about the monster's body, in game units. */
+export interface Sts1MonsterVfx {
+  /** `hb_x, hb_y, hb_w, hb_h` from `super(...)`. */
+  hitbox?: [number, number, number, number];
+  offset?: [number, number];
+  /** `loadAnimation`'s scale: the game draws the skeleton at 1/scale. */
+  skeletonScale?: number;
+  /** The image `AbstractMonster` draws when there is no skeleton. */
+  image?: string;
+  /** Move id -> timeline. */
+  moves: Record<string, Sts1VfxEvent[]>;
+}
+
 export interface Sts1Monster {
   id: string;
   slug: string;
@@ -307,6 +339,7 @@ export interface Sts1Monster {
   moves: Sts1MonsterMove[];
   startingEffects: Sts1MonsterStartingTier[];
   spine: Sts1MonsterSpine | null;
+  vfx: Sts1MonsterVfx | null;
 }
 
 /** Names and links for the powers, cards and monsters a monster's moves reference. */

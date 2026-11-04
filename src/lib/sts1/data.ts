@@ -24,6 +24,7 @@ import type {
   Sts1MonsterRefs,
   Sts1MonsterSpine,
   Sts1MonsterStartingTier,
+  Sts1MonsterVfx,
   Sts1Potion,
   Sts1Power,
   Sts1PowerType,
@@ -49,7 +50,7 @@ type RawMonsterMove = {
   triggers: Sts1MonsterMoveTrigger[];
   tiers: Sts1MonsterMoveTier[];
 };
-type RawMonster = Omit<Sts1Monster, "name" | "nameEn" | "moves" | "spine"> & { moves: RawMonsterMove[] };
+type RawMonster = Omit<Sts1Monster, "name" | "nameEn" | "moves" | "spine" | "vfx"> & { moves: RawMonsterMove[] };
 type RawMonsterSpine = { skeleton: string; idle: string; animations: string[]; viewport: Sts1MonsterRect; still: Sts1MonsterRect };
 type RawCharacter = Omit<Sts1Character, "name" | "nameEn" | "title" | "flavor">;
 
@@ -206,13 +207,14 @@ const STS1_SPINE_ROOT = "/spine/sts1/monsters";
 
 export const getSts1Monsters = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Monster[]> => {
   const locale = sts1GameLocale(gameLocale);
-  const [rows, loc, eng, spine] = await Promise.all([
+  const [rows, loc, eng, spine, vfx] = await Promise.all([
     readJson<RawMonster[]>("monsters.json"),
     readJson<Record<string, MonsterLoc>>(`localization/${locale}/monsters.json`),
     locale === "eng"
       ? Promise.resolve(null)
       : readJson<Record<string, MonsterLoc>>("localization/eng/monsters.json"),
     readJson<Record<string, RawMonsterSpine>>("monster-spine.json"),
+    readJson<Record<string, Sts1MonsterVfx>>("monster-vfx.json"),
   ]);
   return rows.map((row) => {
     const text = loc[row.id] ?? { name: row.id, moveNames: [] };
@@ -240,6 +242,7 @@ export const getSts1Monsters = cache(async (gameLocale: GameLocale = "kor"): Pro
       nameEn: english.name,
       moves,
       spine: monsterSpine,
+      vfx: vfx[row.slug] ?? null,
     };
   });
 });

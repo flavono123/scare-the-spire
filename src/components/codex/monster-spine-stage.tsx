@@ -61,6 +61,10 @@ interface MonsterSpineStageProps {
   formPlacementRef?: MutableRefObject<MonsterStageFormPlacement | null>;
   onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
   onReady?: () => void;
+  /** The loaded player, and null when it is torn down (for callers that read its skeleton). */
+  onPlayer?: (player: SpinePlayer | null) => void;
+  /** Loop this instead of `asset.idleAnimation` (a monster's second form). */
+  idleAnimationOverride?: string | null;
   atlasDuotone?: SpineAtlasDuotone | null;
   skeletonTransform?: {
     coordinateHeight: number;
@@ -145,6 +149,8 @@ function MonsterSpineStageComponent({
   formPlacementRef,
   onVisualBoundsChange,
   onReady,
+  onPlayer,
+  idleAnimationOverride = null,
   atlasDuotone,
   skeletonTransform = null,
 }: MonsterSpineStageProps) {
@@ -160,6 +166,7 @@ function MonsterSpineStageComponent({
   const [playbackArmed, setPlaybackArmed] = useState(false);
   const onDeathAnimationCompleteRef = useRef(onDeathAnimationComplete);
   const onReadyRef = useRef(onReady);
+  const onPlayerRef = useRef(onPlayer);
   const onVisualBoundsChangeRef = useRef(onVisualBoundsChange);
   const skeletonTransformRef = useRef(skeletonTransform);
   const formAttachmentRef = useRef(formAttachment);
@@ -175,8 +182,8 @@ function MonsterSpineStageComponent({
   );
   const singleSkin = compositeSkinNames.length > 0 ? null : selectedSkin ?? asset?.skin ?? null;
   const selectedAnimation = useMemo(
-    () => asset ? resolveSpineAnimation(asset, selectedMoveId, availableAnimations) : null,
-    [asset, availableAnimations, selectedMoveId],
+    () => asset ? resolveSpineAnimation(asset, selectedMoveId, availableAnimations, idleAnimationOverride) : null,
+    [asset, availableAnimations, idleAnimationOverride, selectedMoveId],
   );
   const selectedTrackAnimations = useMemo(
     () => asset && selectedMoveId ? asset.moveAnimationTracks?.[selectedMoveId] ?? null : null,
@@ -232,6 +239,7 @@ function MonsterSpineStageComponent({
   useEffect(() => {
     onDeathAnimationCompleteRef.current = onDeathAnimationComplete;
     onReadyRef.current = onReady;
+    onPlayerRef.current = onPlayer;
     onVisualBoundsChangeRef.current = onVisualBoundsChange;
     skeletonTransformRef.current = skeletonTransform;
     atlasDuotoneRef.current = atlasDuotone;
@@ -328,6 +336,7 @@ function MonsterSpineStageComponent({
               applyCompositeSkin(loadedPlayer, SpineSkinCtor, Physics, compositeSkinNames, monsterName);
               applyIdleTracks(loadedPlayer, loadedAsset.idleTracks);
               playerRef.current = loadedPlayer;
+              onPlayerRef.current?.(loadedPlayer);
               setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? loadedAsset.animations);
               setLoadState("ready");
               setPlayerEpoch((epoch) => epoch + 1);
@@ -374,6 +383,7 @@ function MonsterSpineStageComponent({
       stopPump();
       clearVfx(vfxPlayerRef, vfxContainerRef, vfxTimeoutRef);
       if (formPlacementTargetRef.current) formPlacementTargetRef.current.current = null;
+      if (playerRef.current) onPlayerRef.current?.(null);
       playerRef.current = null;
       try {
         restoreSpineAtlasDuotone(player, loadedAsset.atlasUrl);
@@ -459,10 +469,11 @@ function MonsterSpineStageComponent({
       availableAnimations.length > 0 ? availableAnimations : asset.animations,
     );
     const deathClip = isDeadMove ? deathAnimationCandidates(asset, available)[0] ?? null : null;
+    const idleAnimation = idleAnimationOverride ?? asset.idleAnimation;
     const loops =
       !isDeadMove &&
       Boolean(selectedAnimation) &&
-      (selectedAnimation === asset.idleAnimation || selectedMoveId == null || loopSelectedMove);
+      (selectedAnimation === idleAnimation || selectedMoveId == null || loopSelectedMove);
 
     const armPlayback = () => {
       if (keepFallbackUntilPlayed) setPlaybackArmed(true);
@@ -519,8 +530,8 @@ function MonsterSpineStageComponent({
         armPlayback();
       } else if (selectedAnimation) {
         const entry = restartSpineAnimation(player, selectedAnimation, loops);
-        if (!loops && asset.idleAnimation && selectedAnimation !== asset.idleAnimation) {
-          const idleEntry = player.addAnimation(asset.idleAnimation, true, 0);
+        if (!loops && idleAnimation && selectedAnimation !== idleAnimation) {
+          const idleEntry = player.addAnimation(idleAnimation, true, 0);
           idleEntry.mixDuration = 0;
           idleEntry.mixTime = 0;
         }
@@ -541,6 +552,7 @@ function MonsterSpineStageComponent({
     asset,
     availableAnimations,
     holdDeathPose,
+    idleAnimationOverride,
     keepFallbackUntilPlayed,
     loadState,
     loopSelectedMove,
@@ -758,6 +770,7 @@ function resolveSpineAnimation(
   asset: MonsterSpineAsset,
   moveId: string | null,
   availableAnimations: string[],
+  idleAnimationOverride: string | null = null,
 ): string {
   const available = new Set(availableAnimations.length > 0 ? availableAnimations : asset.animations);
   if (isDeathMoveId(moveId)) {
@@ -767,6 +780,7 @@ function resolveSpineAnimation(
   const candidates = [
     ...(moveId ? asset.moveAnimations[moveId] ?? [] : []),
     moveId?.toLowerCase(),
+    idleAnimationOverride,
     asset.idleAnimation,
     asset.animations[0],
   ].filter(Boolean) as string[];

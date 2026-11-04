@@ -15,16 +15,6 @@ export const GL_ONE_MINUS_SRC_ALPHA = 771;
 export const GL_DST_COLOR = 774;
 export const GL_ONE_MINUS_DST_COLOR = 775;
 
-function rgba8888(bits: number): Color {
-  const value = bits >>> 0;
-  return new Color(
-    ((value >>> 24) & 0xff) / 255,
-    ((value >>> 16) & 0xff) / 255,
-    ((value >>> 8) & 0xff) / 255,
-    (value & 0xff) / 255,
-  );
-}
-
 export class Color {
   r: number;
   g: number;
@@ -47,7 +37,13 @@ export class Color {
 
   /** `new Color(int rgba8888)`. */
   static fromRgba8888(bits: number): Color {
-    return rgba8888(bits);
+    const value = bits >>> 0;
+    return new Color(
+      ((value >>> 24) & 0xff) / 255,
+      ((value >>> 16) & 0xff) / 255,
+      ((value >>> 8) & 0xff) / 255,
+      (value & 0xff) / 255,
+    );
   }
 
   /** `Color.valueOf("rrggbb" | "rrggbbaa")`. */
@@ -114,39 +110,39 @@ export class Color {
 
   // libGDX's named colors are shared mutable objects; effects `cpy()` them.
   static readonly WHITE = new Color(1, 1, 1, 1);
-  static readonly LIGHT_GRAY = rgba8888(0xbfbfbfff);
-  static readonly GRAY = rgba8888(0x7f7f7fff);
-  static readonly DARK_GRAY = rgba8888(0x3f3f3fff);
+  static readonly LIGHT_GRAY = Color.fromRgba8888(0xbfbfbfff);
+  static readonly GRAY = Color.fromRgba8888(0x7f7f7fff);
+  static readonly DARK_GRAY = Color.fromRgba8888(0x3f3f3fff);
   static readonly BLACK = new Color(0, 0, 0, 1);
   static readonly CLEAR = new Color(0, 0, 0, 0);
   static readonly BLUE = new Color(0, 0, 1, 1);
   static readonly NAVY = new Color(0, 0, 0.5, 1);
-  static readonly ROYAL = rgba8888(0x4169e1ff);
-  static readonly SLATE = rgba8888(0x708090ff);
-  static readonly SKY = rgba8888(0x87ceebff);
+  static readonly ROYAL = Color.fromRgba8888(0x4169e1ff);
+  static readonly SLATE = Color.fromRgba8888(0x708090ff);
+  static readonly SKY = Color.fromRgba8888(0x87ceebff);
   static readonly CYAN = new Color(0, 1, 1, 1);
   static readonly TEAL = new Color(0, 0.5, 0.5, 1);
-  static readonly GREEN = rgba8888(0x00ff00ff);
-  static readonly CHARTREUSE = rgba8888(0x7fff00ff);
-  static readonly LIME = rgba8888(0x32cd32ff);
-  static readonly FOREST = rgba8888(0x228b22ff);
-  static readonly OLIVE = rgba8888(0x6b8e23ff);
-  static readonly YELLOW = rgba8888(0xffff00ff);
-  static readonly GOLD = rgba8888(0xffd700ff);
-  static readonly GOLDENROD = rgba8888(0xdaa520ff);
-  static readonly ORANGE = rgba8888(0xffa500ff);
-  static readonly BROWN = rgba8888(0x8b4513ff);
-  static readonly TAN = rgba8888(0xd2b48cff);
-  static readonly FIREBRICK = rgba8888(0xb22222ff);
-  static readonly RED = rgba8888(0xff0000ff);
-  static readonly SCARLET = rgba8888(0xff341cff);
-  static readonly CORAL = rgba8888(0xff7f50ff);
-  static readonly SALMON = rgba8888(0xfa8072ff);
-  static readonly PINK = rgba8888(0xff69b4ff);
+  static readonly GREEN = Color.fromRgba8888(0x00ff00ff);
+  static readonly CHARTREUSE = Color.fromRgba8888(0x7fff00ff);
+  static readonly LIME = Color.fromRgba8888(0x32cd32ff);
+  static readonly FOREST = Color.fromRgba8888(0x228b22ff);
+  static readonly OLIVE = Color.fromRgba8888(0x6b8e23ff);
+  static readonly YELLOW = Color.fromRgba8888(0xffff00ff);
+  static readonly GOLD = Color.fromRgba8888(0xffd700ff);
+  static readonly GOLDENROD = Color.fromRgba8888(0xdaa520ff);
+  static readonly ORANGE = Color.fromRgba8888(0xffa500ff);
+  static readonly BROWN = Color.fromRgba8888(0x8b4513ff);
+  static readonly TAN = Color.fromRgba8888(0xd2b48cff);
+  static readonly FIREBRICK = Color.fromRgba8888(0xb22222ff);
+  static readonly RED = Color.fromRgba8888(0xff0000ff);
+  static readonly SCARLET = Color.fromRgba8888(0xff341cff);
+  static readonly CORAL = Color.fromRgba8888(0xff7f50ff);
+  static readonly SALMON = Color.fromRgba8888(0xfa8072ff);
+  static readonly PINK = Color.fromRgba8888(0xff69b4ff);
   static readonly MAGENTA = new Color(1, 0, 1, 1);
-  static readonly PURPLE = rgba8888(0xa020f0ff);
-  static readonly VIOLET = rgba8888(0xee82eeff);
-  static readonly MAROON = rgba8888(0xb03060ff);
+  static readonly PURPLE = Color.fromRgba8888(0xa020f0ff);
+  static readonly VIOLET = Color.fromRgba8888(0xee82eeff);
+  static readonly MAROON = Color.fromRgba8888(0xb03060ff);
 }
 
 // -- MathUtils ------------------------------------------------------------------

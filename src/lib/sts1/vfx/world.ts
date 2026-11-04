@@ -31,7 +31,10 @@ export function moveHitbox(hb: Hitbox, cX: number, cY: number): void {
   hb.y = cY - hb.height / 2;
 }
 
-/** A Spine bone as the game's 3.x runtime reports it (world values include the skeleton's position). */
+/**
+ * A Spine bone as the game's 3.x runtime reports it: world values are
+ * relative to the skeleton (monster classes add `skeleton.getX()` themselves).
+ */
 export interface BoneView {
   getX(): number;
   getY(): number;
@@ -289,20 +292,14 @@ export const AbstractDungeon = {
 };
 
 /** Sounds are not played on the site; the calls stay so ports read like the game. */
+type SoundCall = (key: string, ...options: number[]) => number;
+const silent: SoundCall = () => 0;
 const sound = {
-  play(_key: string, _pitchVariation?: number): number {
-    return 0;
-  },
-  playA(_key: string, _pitchAdjust: number): number {
-    return 0;
-  },
-  playV(_key: string, _volume: number): number {
-    return 0;
-  },
-  playAV(_key: string, _pitchAdjust: number, _volume: number): number {
-    return 0;
-  },
-  stop(_key: string): void {},
+  play: silent,
+  playA: silent,
+  playV: silent,
+  playAV: silent,
+  stop: (() => {}) as (key: string) => void,
 };
 
 export const CardCrawlGame = {
