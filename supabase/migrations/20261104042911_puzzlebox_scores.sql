@@ -3,7 +3,8 @@
 -- New tables and RPCs only. No deployed reader or writer touches them, so every
 -- existing contract stays as it is.
 --
--- Clients send what happened in a run, never a score. submit_puzzlebox_run replays
+-- Clients send what happened in a run, never a score: the groups or answers in order,
+-- rocks thrown, answer times, and what was on screen (pictures and names hidden earn more). submit_puzzlebox_run replays
 -- the run with the numbers in src/lib/vexing-puzzlebox-score.ts, so a change there
 -- needs a migration here. Answers ship in the static pages, so the server only refuses
 -- runs that could not have happened; the read RPCs also drop scores above the board's
@@ -119,6 +120,28 @@ grant select on table public.puzzlebox_players, public.puzzlebox_runs, public.pu
   to authenticated;
 grant select on table public.puzzlebox_board_stats to anon, authenticated;
 
+-- What a run had on screen: pictures, game-language names, English names. Raises unless
+-- it is three booleans with at least one shown.
+create or replace function public.puzzlebox_run_display(p_shown jsonb)
+returns boolean[]
+language plpgsql
+immutable
+set search_path = ''
+as $$
+begin
+  if jsonb_typeof(p_shown) is distinct from 'object'
+    or jsonb_typeof(p_shown -> 'token') is distinct from 'boolean'
+    or jsonb_typeof(p_shown -> 'local') is distinct from 'boolean'
+    or jsonb_typeof(p_shown -> 'original') is distinct from 'boolean' then
+    raise exception 'shown must be three booleans' using errcode = '22023';
+  end if;
+  if not ((p_shown ->> 'token')::boolean or (p_shown ->> 'local')::boolean or (p_shown ->> 'original')::boolean) then
+    raise exception 'something must be shown' using errcode = '22023';
+  end if;
+  return array[(p_shown ->> 'token')::boolean, (p_shown ->> 'local')::boolean, (p_shown ->> 'original')::boolean];
+end;
+$$;
+
 -- Replays a run record and scores it, or raises when the record could not have
 -- happened. Mirrors scoreConnections and scoreBetaQuiz.
 create or replace function public.puzzlebox_score_run(p_game text, p_run jsonb)
@@ -153,6 +176,8 @@ declare
   streak integer := 0;
   streak_points integer := 0;
   speed integer := 0;
+  shown boolean[];
+  display_points integer := 0;
 begin
   if jsonb_typeof(p_run) is distinct from 'object' then
     raise exception 'run must be an object' using errcode = '22023';
@@ -171,6 +196,7 @@ begin
     if rocks not between 0 and 3 then
       raise exception 'rocks must be 0 to 3' using errcode = '22023';
     end if;
+    shown := public.puzzlebox_run_display(p_run -> 'shown');
 
     for guess in select value from jsonb_array_elements(guesses) loop
       if cardinality(solved) = 4 or mistakes >= 4 then
@@ -206,6 +232,11 @@ begin
     end loop;
     if cleared then
       score := score + coalesce(mistake_bonus[mistakes + 1], 0);
+      -- Hidden for the whole run: pictures 10, game-language names 5, English names 5.
+      score := score
+        + case when shown[1] then 0 else 10 end
+        + case when shown[2] then 0 else 5 end
+        + case when shown[3] then 0 else 5 end;
     end if;
     if purple_first then
       score := score + 5;
@@ -222,7 +253,7 @@ begin
       'mistakes', mistakes,
       'rocks', rocks,
       'solved', to_jsonb(solved),
-      'run', jsonb_build_object('guesses', guesses, 'rocks', rocks)
+      'run', jsonb_build_object('guesses', guesses, 'rocks', rocks, 'shown', p_run -> 'shown')
     );
   end if;
 
@@ -251,6 +282,7 @@ begin
         raise exception 'an answer is a pick, a result, and a time' using errcode = '22023';
       end if;
       ms := least(600000, greatest(0, round((answer ->> 'ms')::numeric)))::integer;
+      shown := public.puzzlebox_run_display(answer -> 'shown');
       picks := picks || (answer ->> 'pick')::numeric::integer;
       corrects := corrects || (answer ->> 'correct')::boolean;
       if (answer ->> 'correct')::boolean then
@@ -264,6 +296,11 @@ begin
         if streak >= 3 then
           streak_points := streak_points + 2;
         end if;
+        -- Hidden while this question was asked: pictures 5, each name 2.
+        display_points := display_points
+          + case when shown[1] then 0 else 5 end
+          + case when shown[2] then 0 else 2 end
+          + case when shown[3] then 0 else 2 end;
       else
         wrong := wrong + 1;
         streak := 0;
@@ -274,7 +311,7 @@ begin
       raise exception 'run is not finished' using errcode = '22023';
     end if;
 
-    score := correct_count * 10 + speed + streak_points + greatest(0, 3 - wrong) * 5;
+    score := correct_count * 10 + speed + display_points + streak_points + greatest(0, 3 - wrong) * 5;
     return jsonb_build_object(
       'score', score,
       'perfect', correct_count = questions,
@@ -638,6 +675,7 @@ as $$
   ) ranks;
 $$;
 
+revoke all on function public.puzzlebox_run_display(jsonb) from public, anon, authenticated;
 revoke all on function public.puzzlebox_score_run(text, jsonb) from public, anon, authenticated;
 revoke all on function public.submit_puzzlebox_run(text, text, text, jsonb, jsonb) from public, anon, authenticated;
 grant execute on function public.submit_puzzlebox_run(text, text, text, jsonb, jsonb) to authenticated;

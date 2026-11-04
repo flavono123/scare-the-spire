@@ -29,7 +29,12 @@
      3
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "score": 90,
   "perfect": true
@@ -64,7 +69,12 @@
      0
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "score": 100,
   "perfect": true
@@ -99,7 +109,12 @@
      2
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "score": 95,
   "perfect": true
@@ -140,7 +155,12 @@
      3
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "score": 80,
   "perfect": false
@@ -187,7 +207,12 @@
      3
     ]
    ],
-   "rocks": 1
+   "rocks": 1,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "score": 65,
   "perfect": false
@@ -240,7 +265,12 @@
      3
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "score": 70,
   "perfect": false
@@ -287,7 +317,12 @@
      2
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "score": 80,
   "perfect": false
@@ -322,7 +357,12 @@
      3
     ]
    ],
-   "rocks": 1
+   "rocks": 1,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "score": 80,
   "perfect": false
@@ -369,7 +409,12 @@
      3
     ]
    ],
-   "rocks": 1
+   "rocks": 1,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "score": 15,
   "perfect": false
@@ -404,7 +449,12 @@
      0
     ]
    ],
-   "rocks": 3
+   "rocks": 3,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "score": 0,
   "perfect": false
@@ -433,7 +483,12 @@
      2
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "error": true
  },
@@ -473,7 +528,12 @@
      0
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "error": true
  },
@@ -507,7 +567,12 @@
      3
     ]
    ],
-   "rocks": 4
+   "rocks": 4,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "error": true
  },
@@ -546,7 +611,12 @@
      3
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "error": true
  },
@@ -586,7 +656,12 @@
      3
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "error": true
  },
@@ -599,22 +674,42 @@
     {
      "pick": 0,
      "correct": true,
-     "ms": 800
+     "ms": 800,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 2,
      "correct": false,
-     "ms": 3000
+     "ms": 3000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 1,
      "correct": true,
-     "ms": 5500
+     "ms": 5500,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 3,
      "correct": true,
-     "ms": 12000
+     "ms": 12000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     }
    ]
   },
@@ -630,27 +725,52 @@
     {
      "pick": 0,
      "correct": true,
-     "ms": 1000
+     "ms": 1000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 1,
      "correct": true,
-     "ms": 1000
+     "ms": 1000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 2,
      "correct": true,
-     "ms": 1000
+     "ms": 1000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 3,
      "correct": true,
-     "ms": 1000
+     "ms": 1000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 0,
      "correct": true,
-     "ms": 1000
+     "ms": 1000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     }
    ]
   },
@@ -666,17 +786,32 @@
     {
      "pick": 1,
      "correct": false,
-     "ms": 2000
+     "ms": 2000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 1,
      "correct": false,
-     "ms": 2000
+     "ms": 2000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 1,
      "correct": false,
-     "ms": 2000
+     "ms": 2000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     }
    ]
   },
@@ -692,7 +827,12 @@
     {
      "pick": 0,
      "correct": true,
-     "ms": 9550
+     "ms": 9550,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     }
    ]
   },
@@ -708,7 +848,12 @@
     {
      "pick": 0,
      "correct": true,
-     "ms": 1001
+     "ms": 1001,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     }
    ]
   },
@@ -724,7 +869,12 @@
     {
      "pick": 0,
      "correct": true,
-     "ms": 5950
+     "ms": 5950,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     }
    ]
   },
@@ -740,32 +890,62 @@
     {
      "pick": 0,
      "correct": false,
-     "ms": 4000
+     "ms": 4000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 0,
      "correct": true,
-     "ms": 20000
+     "ms": 20000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 0,
      "correct": true,
-     "ms": 20000
+     "ms": 20000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 0,
      "correct": true,
-     "ms": 20000
+     "ms": 20000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 0,
      "correct": true,
-     "ms": 20000
+     "ms": 20000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 0,
      "correct": true,
-     "ms": 20000
+     "ms": 20000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     }
    ]
   },
@@ -781,22 +961,42 @@
     {
      "pick": 1,
      "correct": false,
-     "ms": 2000
+     "ms": 2000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 1,
      "correct": false,
-     "ms": 2000
+     "ms": 2000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 1,
      "correct": false,
-     "ms": 2000
+     "ms": 2000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 0,
      "correct": true,
-     "ms": 2000
+     "ms": 2000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     }
    ]
   },
@@ -811,12 +1011,22 @@
     {
      "pick": 1,
      "correct": false,
-     "ms": 2000
+     "ms": 2000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     },
     {
      "pick": 0,
      "correct": true,
-     "ms": 2000
+     "ms": 2000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
     }
    ]
   },
@@ -830,6 +1040,306 @@
    "answers": [
     {
      "pick": 4,
+     "correct": true,
+     "ms": 2000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": true
+     }
+    }
+   ]
+  },
+  "error": true
+ },
+ {
+  "name": "names only, Korean default",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": false
+   }
+  },
+  "score": 95,
+  "perfect": true
+ },
+ {
+  "name": "English name only",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     3,
+     3,
+     3,
+     3
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ]
+   ],
+   "rocks": 0,
+   "shown": {
+    "token": false,
+    "local": false,
+    "original": true
+   }
+  },
+  "score": 115,
+  "perfect": true
+ },
+ {
+  "name": "pictures only",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": false,
+    "original": false
+   }
+  },
+  "score": 100,
+  "perfect": true
+ },
+ {
+  "name": "no display bonus on a failed run",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     2,
+     1,
+     1
+    ],
+    [
+     1,
+     2,
+     1,
+     1
+    ],
+    [
+     1,
+     2,
+     1,
+     1
+    ],
+    [
+     1,
+     2,
+     1,
+     1
+    ]
+   ],
+   "rocks": 0,
+   "shown": {
+    "token": false,
+    "local": true,
+    "original": false
+   }
+  },
+  "score": 10,
+  "perfect": false
+ },
+ {
+  "name": "nothing shown",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0,
+   "shown": {
+    "token": false,
+    "local": false,
+    "original": false
+   }
+  },
+  "error": true
+ },
+ {
+  "name": "display missing",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0
+  },
+  "error": true
+ },
+ {
+  "name": "quiz names only on the right answers",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 3,
+   "answers": [
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 20000,
+     "shown": {
+      "token": false,
+      "local": true,
+      "original": false
+     }
+    },
+    {
+     "pick": 1,
+     "correct": false,
+     "ms": 20000,
+     "shown": {
+      "token": false,
+      "local": true,
+      "original": false
+     }
+    },
+    {
+     "pick": 2,
+     "correct": true,
+     "ms": 20000,
+     "shown": {
+      "token": true,
+      "local": true,
+      "original": false
+     }
+    }
+   ]
+  },
+  "score": 39,
+  "perfect": false
+ },
+ {
+  "name": "quiz answer display missing",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 1,
+   "answers": [
+    {
+     "pick": 0,
      "correct": true,
      "ms": 2000
     }

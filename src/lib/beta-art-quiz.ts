@@ -1,7 +1,7 @@
 import type { BetaArtEntry } from "@/lib/vexing-puzzlebox-types";
 
-/** Wrong answers a set allows before it ends, like Connections mistakes. */
-export const BETA_ART_QUIZ_LIVES = 3;
+/** Wrong answers a set allows before it ends, like Connections mistakes. Shared with the score. */
+export { BETA_QUIZ_LIVES as BETA_ART_QUIZ_LIVES } from "@/lib/vexing-puzzlebox-score";
 const QUIZ_SEED = 20261102;
 /** A black screen with one dot: nothing to recognise. */
 const QUIZ_EXCLUDED_KEYS = new Set(["card:PALE_BLUE_DOT"]);

@@ -7,6 +7,7 @@ export const PUZZLEBOX_GAMES = ["connections", "beta-quiz"] as const;
 export type PuzzleboxGame = (typeof PUZZLEBOX_GAMES)[number];
 
 export type ScorePartId =
+  | "display"
   | "groups"
   | "mistakeBonus"
   | "purpleFirst"
@@ -20,6 +21,33 @@ export type ScorePartId =
 export type ScorePart = { id: ScorePartId; points: number; count: number };
 export type ScoreBreakdown = { total: number; perfect: boolean; parts: ScorePart[] };
 
+/**
+ * What the player had on screen during the run: pictures, game-language names, English names.
+ * Anything shown at any point counts as shown. A locale with no separate game-language name
+ * sends `local: false`, so every locale starts from the same bonus.
+ */
+export type RunDisplay = { token: boolean; local: boolean; original: boolean };
+
+export const ALL_SHOWN: RunDisplay = { token: true, local: true, original: true };
+
+export function mergeDisplay(left: RunDisplay | undefined, right: RunDisplay): RunDisplay {
+  if (!left) return { ...right };
+  return { token: left.token || right.token, local: left.local || right.local, original: left.original || right.original };
+}
+
+/** Points for each hidden part: a picture gives away the most. */
+export type DisplayBonus = { token: number; local: number; original: number };
+
+export function displayBonus(shown: RunDisplay | undefined, bonus: DisplayBonus): number {
+  if (!shown) return 0;
+  return (shown.token ? 0 : bonus.token) + (shown.local ? 0 : bonus.local) + (shown.original ? 0 : bonus.original);
+}
+
+/** The most hiding can earn: everything off but one name. */
+function maxDisplayBonus(bonus: DisplayBonus): number {
+  return bonus.token + Math.max(bonus.local, bonus.original);
+}
+
 export const CONNECTIONS_GROUP_SIZE = 4;
 export const CONNECTIONS_MISTAKE_LIMIT = 4;
 export const CONNECTIONS_ROCK_SLOTS = 3;
@@ -31,7 +59,9 @@ export const CONNECTIONS_PURPLE_FIRST = 5;
 /** Purple, blue, green, yellow in that order. Replaces the purple-first bonus. */
 export const CONNECTIONS_REVERSE_RAINBOW = 10;
 export const CONNECTIONS_ROCK_PENALTY = 10;
-export const CONNECTIONS_MAX_SCORE = 100;
+/** Added to a full solve for each part kept hidden the whole run. */
+export const CONNECTIONS_DISPLAY_BONUS: DisplayBonus = { token: 10, local: 5, original: 5 };
+export const CONNECTIONS_MAX_SCORE = 100 + maxDisplayBonus(CONNECTIONS_DISPLAY_BONUS);
 const PURPLE_LEVEL = 3;
 
 export type ConnectionsRun = {
@@ -39,6 +69,7 @@ export type ConnectionsRun = {
   guesses: number[][];
   /** Rocks thrown. Discarded rocks cost nothing. */
   rocks: number;
+  shown: RunDisplay;
 };
 
 /** Replays the guesses: which levels were solved, in what order, and the mistakes made. */
@@ -72,6 +103,7 @@ export function scoreConnections(run: ConnectionsRun): ScoreBreakdown {
     { id: "mistakeBonus", count: mistakes, points: cleared ? CONNECTIONS_MISTAKE_BONUS[mistakes] ?? 0 : 0 },
     { id: "purpleFirst", count: purpleFirst ? 1 : 0, points: purpleFirst ? CONNECTIONS_PURPLE_FIRST : 0 },
     { id: "reverseRainbow", count: reverseRainbow ? 1 : 0, points: reverseRainbow ? CONNECTIONS_REVERSE_RAINBOW : 0 },
+    { id: "display", count: 0, points: cleared ? displayBonus(run.shown, CONNECTIONS_DISPLAY_BONUS) : 0 },
     { id: "rocks", count: rocks, points: -rocks * CONNECTIONS_ROCK_PENALTY },
   ];
   const total = Math.max(0, parts.reduce((sum, part) => sum + part.points, 0));
@@ -89,6 +121,8 @@ export const BETA_QUIZ_SPEED_FULL_MS = 1000;
 /** ...which falls in a straight line to nothing here. The clock stops measuring after this. */
 export const BETA_QUIZ_SPEED_ZERO_MS = 10000;
 export const BETA_QUIZ_SPEED_MAX = 10;
+/** Added to each right answer for each part hidden while it was asked. */
+export const BETA_QUIZ_DISPLAY_BONUS: DisplayBonus = { token: 5, local: 2, original: 2 };
 
 export type BetaQuizAnswer = {
   /** Which of the four choices was picked, in the order shown. */
@@ -96,6 +130,7 @@ export type BetaQuizAnswer = {
   correct: boolean;
   /** Time from the art appearing to the pick, while the page was visible. */
   ms: number;
+  shown: RunDisplay;
 };
 
 export type BetaQuizRun = { questions: number; answers: BetaQuizAnswer[] };
@@ -117,12 +152,14 @@ export function scoreBetaQuiz(run: BetaQuizRun): ScoreBreakdown {
   let streakPoints = 0;
   let streakCount = 0;
   let speed = 0;
+  let display = 0;
   for (const answer of run.answers) {
     if (wrong >= BETA_QUIZ_LIVES) break;
     if (answer.correct) {
       correct += 1;
       streak += 1;
       speed += betaQuizSpeedBonus(answer.ms);
+      display += displayBonus(answer.shown, BETA_QUIZ_DISPLAY_BONUS);
       if (streak >= BETA_QUIZ_STREAK_FROM) {
         streakPoints += BETA_QUIZ_STREAK_POINTS;
         streakCount += 1;
@@ -136,6 +173,7 @@ export function scoreBetaQuiz(run: BetaQuizRun): ScoreBreakdown {
   const parts: ScorePart[] = [
     { id: "correct", count: correct, points: correct * BETA_QUIZ_CORRECT_POINTS },
     { id: "speed", count: correct, points: speed },
+    { id: "display", count: correct, points: display },
     { id: "streak", count: streakCount, points: streakPoints },
     { id: "lives", count: lives, points: lives * BETA_QUIZ_LIFE_POINTS },
   ];
@@ -148,7 +186,7 @@ export function scoreBetaQuiz(run: BetaQuizRun): ScoreBreakdown {
 
 /** The best a set of this many questions can score: all fast, all right, no life lost. */
 export function betaQuizMaxScore(questions: number): number {
-  return questions * (BETA_QUIZ_CORRECT_POINTS + BETA_QUIZ_SPEED_MAX)
+  return questions * (BETA_QUIZ_CORRECT_POINTS + BETA_QUIZ_SPEED_MAX + maxDisplayBonus(BETA_QUIZ_DISPLAY_BONUS))
     + Math.max(0, questions - BETA_QUIZ_STREAK_FROM + 1) * BETA_QUIZ_STREAK_POINTS
     + BETA_QUIZ_LIVES * BETA_QUIZ_LIFE_POINTS;
 }
