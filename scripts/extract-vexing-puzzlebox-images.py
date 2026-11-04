@@ -9,12 +9,14 @@ Outputs:
   - public/images/sts2/ui/speech_bubble3_purple.webp                 (vfx_speech_bubble.tscn, VfxColor.Purple)
   - public/images/sts2/ui/combat/{end_turn_button,end_turn_button_glow,draw_pile,discard_pile,pile_button_count}.webp
   - public/images/sts2/ui/submenu/{submenu_panel_short,submenu_load,submenu_card_library,submenu_unknown}.webp
+  - public/images/sts2/ui/leaderboard/*.webp  (daily run leaderboard, game over badges, confirm button)
 """
 
 from __future__ import annotations
 
 import argparse
 import math
+import re
 from pathlib import Path
 
 from PIL import Image, ImageChops
@@ -45,6 +47,19 @@ SUBMENU_UI = {
     "submenu_card_library": "images/ui/main_menu/submenu_card_library.png",
     "submenu_unknown": "images/ui/main_menu/submenu_unknown.png",
 }
+# The daily run screen's leaderboard (daily_run_leaderboard_header.tscn) and confirm button
+# (confirm_button.tscn), for the puzzlebox rankings tab.
+LEADERBOARD_UI = {
+    "submenu_leaderboards_icon": "images/packed/main_menu/submenu_leaderboards_icon.png",
+    "stats_trophy": "images/packed/statistics_screen/stats_trophy.png",
+    "badge_gold": "images/ui/game_over_screen/badge_gold.png",
+    "badge_perfect": "images/ui/game_over_screen/badge_perfect.png",
+    "confirm_button": "images/atlases/ui_atlas.sprites/confirm_button.tres",
+    "confirm_button_tick": "images/atlases/compressed.sprites/confirm_button_tick.tres",
+    "confirm_button_outline": "images/atlases/compressed.sprites/confirm_button_outline.tres",
+}
+ATLAS_PATH_RE = re.compile(r'path="res://([^"]+)"')
+ATLAS_REGION_RE = re.compile(r"region = Rect2\(([^)]+)\)")
 # NSpeechBubbleVfx VfxColor.Purple.
 PURPLE_HSV = (0.3, 0.6, 0.5)
 
@@ -58,6 +73,18 @@ def read_texture(pck: PCKReader, source_path: str) -> Image.Image:
     if image is None:
         raise SystemExit(f"Could not decode {ctex_path}")
     return image.convert("RGBA")
+
+
+def read_atlas_sprite(pck: PCKReader, tres_path: str) -> Image.Image:
+    """An AtlasTexture .tres: crop its region out of the atlas page it points at."""
+    text = pck.read_file(tres_path).decode("utf-8", errors="replace")
+    atlas_match = ATLAS_PATH_RE.search(text)
+    region_match = ATLAS_REGION_RE.search(text)
+    if not atlas_match or not region_match:
+        raise SystemExit(f"Could not parse atlas sprite {tres_path}")
+    atlas = read_texture(pck, atlas_match.group(1))
+    x, y, width, height = (int(float(part)) for part in region_match.group(1).split(","))
+    return atlas.crop((x, y, x + width, y + height))
 
 
 def save(image: Image.Image, output_path: Path) -> None:
@@ -162,6 +189,9 @@ def main() -> None:
         save(read_texture(pck, f"images/packed/combat_ui/{name}.png"), OUTPUT_ROOT / "combat" / f"{name}.webp")
     for name, source in SUBMENU_UI.items():
         save(read_texture(pck, source), OUTPUT_ROOT / "submenu" / f"{name}.webp")
+    for name, source in LEADERBOARD_UI.items():
+        image = read_atlas_sprite(pck, source) if source.endswith(".tres") else read_texture(pck, source)
+        save(image, OUTPUT_ROOT / "leaderboard" / f"{name}.webp")
     bubble = read_texture(pck, "images/packed/vfx/speech_bubble3.png")
     save(bubble, OUTPUT_ROOT / "speech_bubble3.webp")
     save(hsv_shift(bubble, *PURPLE_HSV), OUTPUT_ROOT / "speech_bubble3_purple.webp")

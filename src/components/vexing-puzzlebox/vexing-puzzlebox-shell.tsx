@@ -10,9 +10,11 @@ import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import {
   BETA_ART_TOKEN_SRC,
   CONNECTIONS_TOKEN_SRC,
+  RANKINGS_TOKEN_SRC,
   VEXING_PUZZLEBOX_BACKGROUND_SRC,
   VEXING_PUZZLEBOX_BETA_ART_HREF,
   VEXING_PUZZLEBOX_HREF,
+  VEXING_PUZZLEBOX_RANKINGS_HREF,
   VEXING_PUZZLEBOX_TOKEN_SRC,
 } from "@/lib/vexing-puzzlebox";
 import { serviceMessages } from "@/messages/service";
@@ -24,7 +26,7 @@ export function VexingPuzzleboxShell({
   gameLocale,
   children,
 }: {
-  active: "connections" | "beta-art";
+  active: "connections" | "beta-art" | "rankings";
   gameCopy: VexingPuzzleboxGameCopy;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
@@ -43,6 +45,12 @@ export function VexingPuzzleboxShell({
       label: copy.tabBetaArt,
       href: VEXING_PUZZLEBOX_BETA_ART_HREF,
       icon: BETA_ART_TOKEN_SRC,
+    },
+    {
+      id: "rankings" as const,
+      label: copy.tabRankings,
+      href: VEXING_PUZZLEBOX_RANKINGS_HREF,
+      icon: RANKINGS_TOKEN_SRC,
     },
   ];
 
@@ -81,7 +89,7 @@ export function VexingPuzzleboxShell({
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <Image src={tab.icon} alt="" width={24} height={24} className="h-6 w-6 object-contain" />
+                <Image src={tab.icon} alt="" width={48} height={48} className="h-6 w-6 object-contain" />
                 <span>{tab.label}</span>
                 {selected && <span className="absolute inset-x-0 -bottom-px h-0.5 bg-primary" />}
               </Link>

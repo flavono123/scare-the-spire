@@ -75,6 +75,16 @@ export interface VexingPuzzleboxGameCopy {
   vakuuVisits: string;
   /** VAKUU.talk.ANY.2-0r */
   vakuuEndless: string;
+  /** main_menu_ui DAILY_RUN_MENU.LEADERBOARDS.title, for the rankings tab. */
+  leaderboardTitle: string;
+  /** main_menu_ui LEADERBOARDS.rankHeader / nameHeader / scoreHeader */
+  leaderboardRank: string;
+  leaderboardName: string;
+  leaderboardScore: string;
+  /** DAILY_RUN_MENU.LEADERBOARDS.fetchingScores without its thinky dots. */
+  leaderboardFetching: string;
+  /** The first line of DAILY_RUN_MENU.LEADERBOARDS.noScore. */
+  leaderboardEmpty: string;
 }
 
 export interface FeedbackFormGameCopy {

@@ -112,6 +112,12 @@ interface VexingPuzzleboxGameCopy {
   vakuuWarning: string;
   vakuuVisits: string;
   vakuuEndless: string;
+  leaderboardTitle: string;
+  leaderboardRank: string;
+  leaderboardName: string;
+  leaderboardScore: string;
+  leaderboardFetching: string;
+  leaderboardEmpty: string;
 }
 
 interface FeedbackFormGameCopy {
@@ -1054,6 +1060,15 @@ async function buildVexingPuzzleboxGameCopy(
     readGameTextWithEnglishFallback(gameLocale, "gameplay_ui", "POTION_POPUP.throw"),
     readGameTextWithEnglishFallback(gameLocale, "gameplay_ui", "POTION_POPUP.discard"),
   ]);
+  // The daily run screen's leaderboard words, for the rankings tab.
+  const [leaderboardTitle, leaderboardRank, leaderboardName, leaderboardScore, leaderboardFetching, leaderboardEmpty] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "DAILY_RUN_MENU.LEADERBOARDS.title"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "LEADERBOARDS.rankHeader"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "LEADERBOARDS.nameHeader"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "LEADERBOARDS.scoreHeader"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "DAILY_RUN_MENU.LEADERBOARDS.fetchingScores"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "DAILY_RUN_MENU.LEADERBOARDS.noScore"),
+  ]);
   // Vakuu talks through the Whispering Earring; these are the game's own earring and Ancient lines.
   const [vakuuName, vakuuApproval, vakuuWarning, vakuuVisits, vakuuEndless] = await Promise.all([
     readGameTextWithEnglishFallback(gameLocale, "ancients", "VAKUU.title"),
@@ -1082,6 +1097,13 @@ async function buildVexingPuzzleboxGameCopy(
     vakuuWarning: vakuuWarning || "",
     vakuuVisits: vakuuVisits || "",
     vakuuEndless: vakuuEndless || "",
+    leaderboardTitle: leaderboardTitle || "Leaderboards",
+    leaderboardRank: leaderboardRank || "Rank",
+    leaderboardName: leaderboardName || "Name",
+    leaderboardScore: leaderboardScore || "Score",
+    // The page draws its own dots.
+    leaderboardFetching: stripGameMarkup(leaderboardFetching || "Fetching Scores...").replace(/[.…]+$/, ""),
+    leaderboardEmpty: (leaderboardEmpty || "No scores have been submitted.").split(/\n|\\n/)[0].trim(),
   };
 }
 

@@ -217,6 +217,11 @@ export const PAGE_OG_IMAGE_RULES = [
     image: VEXING_PUZZLEBOX_PAGE_OG_IMAGE,
   },
   {
+    pattern: "/vexing-puzzlebox/rankings",
+    label: "짜증나는 퍼즐상자 순위",
+    image: VEXING_PUZZLEBOX_PAGE_OG_IMAGE,
+  },
+  {
     pattern: "/colorful-philosophers",
     label: "다채로운 철학자들",
     image: COLORFUL_PHILOSOPHERS_PAGE_OG_IMAGE,

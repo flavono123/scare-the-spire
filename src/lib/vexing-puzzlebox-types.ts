@@ -63,3 +63,18 @@ export type BetaArtCharacter = {
   color: string;
   name: string;
 };
+
+/** A Connections puzzle as the rankings tab needs it. */
+export type RankingsConnectionsBoard = {
+  number: number;
+  issueDate: string | null;
+  era: "sts1" | "sts2";
+  /** Group titles by level, yellow to purple. */
+  levels: string[];
+};
+
+/** A beta art quiz set as the rankings tab needs it: each question's art and its choices' names. */
+export type RankingsQuizSet = {
+  number: number;
+  questions: { key: string; name: string; betaUrl: string; choices: string[] }[];
+};

@@ -14,6 +14,7 @@ import {
 } from "@/lib/codex-data";
 import type { CodexCard, CodexEvent, CodexPotion, CodexRelic } from "@/lib/codex-types";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { buildBetaArtQuizSets } from "@/lib/beta-art-quiz";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { getSts1Cards, getSts1Monsters, getSts1Potions, getSts1Powers, getSts1Relics } from "@/lib/sts1/data";
 import { sts1GameLocale } from "@/lib/sts1/locale";
@@ -30,6 +31,8 @@ import type {
   BetaArtType,
   ConnectionsMember,
   ConnectionsPuzzle,
+  RankingsConnectionsBoard,
+  RankingsQuizSet,
 } from "@/lib/vexing-puzzlebox-types";
 
 const BETA_ART_CHARACTER_COLORS = ["ironclad", "silent", "regent", "necrobinder", "defect"];
@@ -284,5 +287,30 @@ export async function getBetaArtCatalog(gameLocale: GameLocale): Promise<{
       const character = characters.find((item) => item.id.toLowerCase() === color);
       return character ? [{ color, name: character.name }] : [];
     }),
+  };
+}
+
+/** What the rankings tab shows of each board: titles and dates, and each quiz question's names. */
+export async function getRankingsBoards(gameLocale: GameLocale): Promise<{
+  connections: RankingsConnectionsBoard[];
+  quizSets: RankingsQuizSet[];
+}> {
+  const [puzzles, { entries }] = await Promise.all([getConnectionsPuzzles(gameLocale), getBetaArtCatalog(gameLocale)]);
+  return {
+    connections: puzzles.map((puzzle) => ({
+      number: puzzle.number,
+      issueDate: puzzle.issueDate,
+      era: puzzle.era,
+      levels: [0, 1, 2, 3].map((level) => puzzle.categories.find((category) => category.level === level)?.title ?? ""),
+    })),
+    quizSets: buildBetaArtQuizSets(entries).map((questions, index) => ({
+      number: index + 1,
+      questions: questions.map((question) => ({
+        key: question.entry.key,
+        name: question.entry.name,
+        betaUrl: question.entry.betaUrl,
+        choices: question.choices.map((choice) => choice.name),
+      })),
+    })),
   };
 }
