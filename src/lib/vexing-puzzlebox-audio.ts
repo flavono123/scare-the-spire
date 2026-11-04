@@ -15,7 +15,8 @@ export type PuzzleboxSound =
   | "merchantWelcome"
   | "merchantLaugh"
   | "rockHit"
-  | "rockDrop";
+  | "rockDrop"
+  | "lifeLost";
 
 /** Round-robin files per FMOD event, and a volume that evens out the game mix. */
 export const PUZZLEBOX_SOUNDS: Record<PuzzleboxSound, { files: string[]; volume: number; voice?: boolean }> = {
@@ -41,6 +42,7 @@ export const PUZZLEBOX_SOUNDS: Record<PuzzleboxSound, { files: string[]; volume:
   merchantLaugh: { files: ["merchant_laugh_1", "merchant_laugh_2"], volume: 0.45, voice: true },
   rockHit: { files: ["rock_hit"], volume: 0.7 },
   rockDrop: { files: ["rock_drop"], volume: 0.6 },
+  lifeLost: { files: ["life_lost"], volume: 0.6 },
 };
 
 /** event:/music merchant room theme, Overgrowth. */

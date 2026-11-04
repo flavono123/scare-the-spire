@@ -1195,6 +1195,60 @@
   animation: rich-jitter 0.15s ease-in-out infinite;
 }
 
+/* The quiz speed bonus drains: whole for the first second, nothing at ten. */
+@keyframes beta-quiz-clock {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+.beta-quiz-clock {
+  transform-origin: left;
+  animation: beta-quiz-clock 9s linear 1s forwards;
+}
+
+/* A life lost: the energy token flares red, jolts, and goes dark like a spent orb. */
+@keyframes beta-quiz-life-lost {
+  0% { transform: scale(1); filter: none; opacity: 1; }
+  15% { transform: scale(1.6) rotate(-14deg); filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.95)) brightness(1.5); }
+  35% { transform: scale(1.25) rotate(10deg); filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.8)); }
+  55% { transform: scale(1.1) rotate(-6deg); }
+  100% { transform: scale(1); filter: grayscale(1) brightness(0.5); opacity: 0.35; }
+}
+
+.beta-quiz-life-lost {
+  animation: beta-quiz-life-lost 0.9s ease-out forwards;
+}
+
+@keyframes beta-quiz-life-float {
+  0% { opacity: 0; transform: translate(-50%, 6px); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -26px); }
+}
+
+.beta-quiz-life-float {
+  animation: beta-quiz-life-float 1.3s ease-out forwards;
+}
+
+/* The board takes the hit: a red flash from the edges. */
+@keyframes beta-quiz-hurt {
+  0% { box-shadow: inset 0 0 0 0 rgba(239, 68, 68, 0); }
+  18% { box-shadow: inset 0 0 70px 14px rgba(239, 68, 68, 0.6); }
+  100% { box-shadow: inset 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.beta-quiz-hurt {
+  animation: beta-quiz-hurt 0.85s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beta-quiz-clock,
+  .beta-quiz-life-lost,
+  .beta-quiz-life-float,
+  .beta-quiz-hurt {
+    animation-duration: 1ms;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .vakuu-bubble-box,
   .vakuu-bubble-sprite,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { RichText } from "@/components/rich-text";
 import Image from "@/components/ui/static-image";
 import {
@@ -18,6 +19,7 @@ import {
 import { MemberHover } from "@/components/vexing-puzzlebox/member-hover";
 import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { PotionBelt, type BeltPotion } from "@/components/vexing-puzzlebox/potion-belt";
+import { ScoreSummary, type ScoreSubmission } from "@/components/vexing-puzzlebox/score-summary";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import { playRockHit, playRockThrow } from "@/components/vexing-puzzlebox/rock-throw";
 import {
@@ -29,6 +31,8 @@ import {
   type ShuffleMove,
 } from "@/components/vexing-puzzlebox/shuffle-hands";
 import { useVakuu } from "@/components/vexing-puzzlebox/vakuu-chatter";
+import { useAuth } from "@/hooks/use-auth";
+import { puzzleboxPlayer, submitPuzzleboxRun, useMyPuzzleboxStandings } from "@/hooks/use-puzzlebox-scores";
 import { useStoredProfileSnapshot } from "@/hooks/use-user-profile";
 import { seededShuffle } from "@/lib/beta-art-quiz";
 import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
@@ -38,9 +42,22 @@ import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import { MEGA_CRIT_TOKEN_SRC, NEOWSLETTER_TOKEN_SRC } from "@/lib/vexing-puzzlebox";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import {
+  ALL_SHOWN,
+  CONNECTIONS_DISPLAY_BONUS,
+  CONNECTIONS_MAX_SCORE,
+  displayBonus,
+  mergeDisplay,
+  scoreConnections,
+  type ConnectionsRun,
+  type RunDisplay,
+} from "@/lib/vexing-puzzlebox-score";
+import {
+  readLocalBestScores,
   readVexingPuzzleboxRecord,
+  recordLocalScore,
   updateVexingPuzzleboxRecord,
   type ConnectionsProgress,
+  type LocalBestScore,
 } from "@/lib/vexing-puzzlebox-storage";
 import type { ConnectionsCategory, ConnectionsMember, ConnectionsPuzzle } from "@/lib/vexing-puzzlebox-types";
 import { serviceMessages } from "@/messages/service";
@@ -73,6 +90,15 @@ const INSPECT_PEEK_COUNT = 5;
 const POTION_SLOT_COUNT = 3;
 
 type Toast = { text: string; negative: boolean };
+
+/** What the board shows, as the score counts it: a locale without its own names never shows them. */
+function runDisplayOf(display: ItemDisplay, gameLocale: GameLocale): RunDisplay {
+  return { token: display.token, local: hasLocalNames(gameLocale) && display.local, original: display.original };
+}
+
+function connectionsRun(progress: ConnectionsProgress): ConnectionsRun {
+  return { guesses: progress.guesses, rocks: progress.rocksThrown ?? 0, shown: progress.shown ?? ALL_SHOWN };
+}
 
 function MemberLabels({ member, display }: { member: ConnectionsMember; display: ItemDisplay }) {
   // A name with no game translation is its original spelling; show it once.
@@ -207,6 +233,15 @@ export function ConnectionsClient({
   const [hintKey, setHintKey] = useState<string | null>(null);
   /** The draw pile counts its cards back in while the hands shuffle. */
   const [shuffleCount, setShuffleCount] = useState<number | null>(null);
+  const [localScores, setLocalScores] = useState<Record<string, LocalBestScore>>({});
+  const [submission, setSubmission] = useState<ScoreSubmission | null>(null);
+  const [standingsRefresh, setStandingsRefresh] = useState(0);
+  const { ensureUser } = useAuth();
+  const scoreBoards = useMemo(
+    () => Object.fromEntries(puzzles.map((item) => [String(item.number), CONNECTIONS_MAX_SCORE])),
+    [puzzles],
+  );
+  const standings = useMyPuzzleboxStandings("connections", scoreBoards, standingsRefresh);
   const say = useMerchantSay();
   const vakuu = useVakuu();
   const playSound = usePuzzleboxSound();
@@ -253,6 +288,7 @@ export function ConnectionsClient({
     if (puzzles.some((item) => item.number === requested)) setPuzzleNumber(requested);
     setListOpen(params.has("list"));
     setRecords(readVexingPuzzleboxRecord().connections);
+    setLocalScores(readLocalBestScores("connections"));
   }, [puzzles]);
 
   /** Opening a puzzle or the list keeps the URL shareable: `?p=12`, or `?list`. */
@@ -286,6 +322,7 @@ export function ConnectionsClient({
     setWrongKeys(null);
     setToast(null);
     setHintKey(null);
+    setSubmission(null);
   }, [puzzle.number]);
 
   useEffect(() => {
@@ -385,6 +422,34 @@ export function ConnectionsClient({
     });
   };
 
+  /** A finished run: keep the best score here, then post it for the rankings. */
+  const finishRun = (final: ConnectionsProgress) => {
+    const run = connectionsRun(final);
+    const result = scoreConnections(run);
+    setLocalScores(recordLocalScore("connections", puzzle.number, result.total, result.perfect));
+    const board = puzzle.number;
+    setSubmission({ board, pending: true, result: null });
+    void submitPuzzleboxRun({
+      ensureUser,
+      game: "connections",
+      board,
+      run,
+      player: puzzleboxPlayer(serviceMessages[serviceLocale].comments.defaultNickname),
+    }).then((response) => {
+      setSubmission((current) => (current?.board === board ? { board, pending: false, result: response } : current));
+      if (response) setStandingsRefresh((count) => count + 1);
+    });
+  };
+
+  /** Anything shown once the run is under way counts against the display bonus. */
+  const runActive = !finished && (progress.guesses.length > 0 || selected.length > 0);
+  const revealDisplay = (shown: RunDisplay) => {
+    const merged = mergeDisplay(progress.shown, shown);
+    if (progress.shown && merged.token === progress.shown.token && merged.local === progress.shown.local
+      && merged.original === progress.shown.original) return;
+    saveProgress({ ...progress, shown: merged });
+  };
+
   const showToast = (next: Toast) => {
     setToast(next);
     later(() => setToast((current) => (current === next ? null : current)), WRONG_FEEDBACK_MS);
@@ -445,11 +510,14 @@ export function ConnectionsClient({
     const submitted = {
       guesses: [...progress.guesses, levels],
       guessKeys: [...guessed, [...selected]],
+      shown: mergeDisplay(progress.shown, runDisplayOf(display, gameLocale)),
     };
 
     if (correct) {
       const solvedLevels = [...progress.solvedLevels, levels[0]];
-      saveProgress({ ...progress, ...submitted, solvedLevels });
+      const next = { ...progress, ...submitted, solvedLevels };
+      saveProgress(next);
+      if (solvedLevels.length === puzzle.categories.length) finishRun(next);
       setSelected([]);
       setFreshLevel(levels[0]);
       later(() => setFreshLevel((current) => (current === levels[0] ? null : current)), FRESH_TITLE_MS);
@@ -484,8 +552,10 @@ export function ConnectionsClient({
     const mistakes = progress.mistakes + 1;
     later(() => {
       setWrongKeys(null);
-      saveProgress({ ...progress, ...submitted, mistakes });
+      const next = { ...progress, ...submitted, mistakes };
+      saveProgress(next);
       if (mistakes >= MISTAKE_LIMIT) {
+        finishRun(next);
         setSelected([]);
         playSound("merchantLaugh");
         remark(lines.failed, ["result"], 1, { force: true, delay: VAKUU_DELAY_MS });
@@ -498,6 +568,7 @@ export function ConnectionsClient({
   const retry = () => {
     const retries = (progress.retries ?? 0) + 1;
     saveProgress({ ...emptyProgress(), retries });
+    setSubmission(null);
     setSelected([]);
     setHintKey(null);
     playSound("uiBack");
@@ -525,15 +596,19 @@ export function ConnectionsClient({
   };
 
   const potions = progress.potions ?? fullBelt();
-  const spendPotion = (slot: number) => {
-    saveProgress({ ...progress, potions: potions.map((filled, index) => (index === slot ? false : filled)) });
+  const spendPotion = (slot: number, thrown: boolean) => {
+    saveProgress({
+      ...progress,
+      potions: potions.map((filled, index) => (index === slot ? false : filled)),
+      rocksThrown: (progress.rocksThrown ?? 0) + (thrown ? 1 : 0),
+    });
   };
 
   const throwRock = (slot: number, from: HTMLElement) => {
     const key = rockTarget(selected, remainingTiles.map((tile) => tile.key), levelByKey);
     const target = key ? tileRefs.current.get(key) : null;
     if (!key || !target) return;
-    spendPotion(slot);
+    spendPotion(slot, true);
     setHintKey(null);
     void playRockThrow(from.getBoundingClientRect(), target.getBoundingClientRect(), beltPotion.imageUrl).then(() => {
       playSound("rockHit");
@@ -544,12 +619,13 @@ export function ConnectionsClient({
   };
 
   const discardRock = (slot: number) => {
-    spendPotion(slot);
+    spendPotion(slot, false);
     playSound("rockDrop");
   };
 
   const changeDisplay = (next: ItemDisplay, id: keyof ItemDisplay) => {
     setDisplay(next);
+    if (runActive) revealDisplay(runDisplayOf(next, gameLocale));
     if (id === "token" && !next.token) remark(lines.tokensOff, ["display"], 1);
     if (localNamesDiffer && id === "local" && !next.local && next.original) {
       remark(lines.originalOnly, ["display"], 0.8);
@@ -557,9 +633,16 @@ export function ConnectionsClient({
   };
 
   const countInspect = () => {
+    // The magnifier's tip shows the picture and the name.
+    if (!finished) revealDisplay(ALL_SHOWN);
     inspectCount.current += 1;
     if (inspectCount.current === INSPECT_PEEK_COUNT) remark(lines.inspectPeek, ["inspect"], 1);
   };
+
+  const displayBonusNow = displayBonus(
+    finished ? progress.shown ?? ALL_SHOWN : mergeDisplay(runActive ? progress.shown : undefined, runDisplayOf(display, gameLocale)),
+    CONNECTIONS_DISPLAY_BONUS,
+  );
 
   // Puzzles come newest first.
   const puzzleIndex = puzzles.findIndex((item) => item.number === puzzle.number);
@@ -618,19 +701,30 @@ export function ConnectionsClient({
           puzzles={puzzles}
           records={records}
           currentNumber={puzzle.number}
+          energyIcon={energyIcon}
+          scores={localScores}
+          standings={standings}
           serviceLocale={serviceLocale}
           onOpen={openPuzzle}
         />
       ) : (
         <>
           <p className="mb-3 text-center text-sm font-semibold">{copy.guide}</p>
-          <div className="mb-3 flex justify-center">
+          <div className="mb-3 flex items-center justify-center gap-3">
             <DisplayToggles
               display={display}
               gameLocale={gameLocale}
               labels={{ group: copy.viewsLabel, token: copy.viewTokens, local: copy.viewLocal, original: copy.viewOriginal }}
               onChange={changeDisplay}
             />
+            <GameUiHoverTip label={copy.displayBonusTip}>
+              <span
+                className={`font-game-title text-sm font-bold tabular-nums ${displayBonusNow > 0 ? "text-green-400" : "text-muted-foreground/60"}`}
+                data-connections-display-bonus={displayBonusNow}
+              >
+                +{displayBonusNow}
+              </span>
+            </GameUiHoverTip>
           </div>
 
 
@@ -809,6 +903,14 @@ export function ConnectionsClient({
           {finished && (
             <div className="mt-4 text-center">
               <p className="font-semibold">{solvedAll ? copy.solvedAll : copy.failed}</p>
+              <ScoreSummary
+                breakdown={scoreConnections(connectionsRun(progress))}
+                best={localScores[puzzle.number]}
+                submission={submission?.board === puzzle.number ? submission : null}
+                rankingsQuery={`game=connections&board=${puzzle.number}`}
+                serviceLocale={serviceLocale}
+                gameLocale={gameLocale}
+              />
               <div className="mt-3 flex flex-wrap justify-center gap-2">
                 <button
                   type="button"

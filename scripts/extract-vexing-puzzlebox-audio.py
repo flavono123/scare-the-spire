@@ -62,6 +62,8 @@ SOUNDS: dict[str, tuple[tuple[str, ...], str]] = {
     "treasure": (("sts2_sfx_ui_treasure_a1_v4",), "96k"),
     # A thrown Potion-Shaped Rock lands: the rock bowlbug's rock attack over the base hit impact.
     "rock_hit": (("STS2_SFX_E-A2_WorkerBug-Rock-Attack_v1", "STS2_SFX_HitImpact_Base_Medium_1_v1"), "96k"),
+    # A wrong quiz answer costs a life: the heavy base hit impact the player takes damage with.
+    "life_lost": (("STS2_SFX_HitImpact_Base_Heavy_1_v1",), "96k"),
     # A discarded Potion-Shaped Rock drops.
     "rock_drop": (("sts1_sfx_DropRelic_Rocky",), "96k"),
 }

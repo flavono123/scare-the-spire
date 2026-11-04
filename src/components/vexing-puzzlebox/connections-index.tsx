@@ -1,7 +1,10 @@
 "use client";
 
+import Image from "@/components/ui/static-image";
+import type { PuzzleboxStanding } from "@/hooks/use-puzzlebox-scores";
 import type { ServiceLocale } from "@/lib/i18n";
-import type { ConnectionsProgress } from "@/lib/vexing-puzzlebox-storage";
+import { CONNECTIONS_TOKEN_SRC } from "@/lib/vexing-puzzlebox";
+import type { ConnectionsProgress, LocalBestScore } from "@/lib/vexing-puzzlebox-storage";
 import type { ConnectionsPuzzle } from "@/lib/vexing-puzzlebox-types";
 import { serviceMessages } from "@/messages/service";
 
@@ -27,17 +30,70 @@ export function issueMonth(date: string | null, serviceLocale: ServiceLocale): s
   }).format(new Date(`${date}T00:00:00Z`));
 }
 
+const ERA_TOKENS = {
+  sts1: { src: "/images/sts1_app_icon.png", label: "Slay the Spire" },
+  sts2: { src: "/images/sts2/icons/app_icon.png", label: "Slay the Spire 2" },
+} as const;
+
+/**
+ * The Connections token as a toggle: dark when untouched, half lit while playing,
+ * lit when solved, and burnt red when the mistakes ran out.
+ */
+export function StatusToken({ status, label, size = 28 }: { status: ConnectionsStatus; label: string; size?: number }) {
+  const style = { width: size, height: size };
+  const image = (className: string) => (
+    <Image src={CONNECTIONS_TOKEN_SRC} alt="" width={size * 2} height={size * 2} className={`absolute inset-0 h-full w-full object-contain ${className}`} />
+  );
+  return (
+    <span role="img" aria-label={label} title={label} className="relative inline-block shrink-0" style={style} data-status-token={status}>
+      {status === "new" && image("opacity-30 grayscale")}
+      {status === "playing" && (
+        <>
+          {image("opacity-40 grayscale")}
+          {image("[clip-path:inset(0_50%_0_0)]")}
+        </>
+      )}
+      {status === "solved" && image("drop-shadow-[0_0_6px_rgba(250,204,21,0.55)]")}
+      {status === "failed" && image("opacity-80 grayscale sepia saturate-[4] hue-rotate-[-40deg]")}
+    </span>
+  );
+}
+
+/** Mistakes as the energy they cost: a lit token for each left, an empty socket for each spent. */
+export function EnergySockets({ left, total, icon, label }: { left: number; total: number; icon: string; label: string }) {
+  return (
+    <span className="flex items-center gap-0.5" role="img" aria-label={label} title={label} data-energy-left={left}>
+      {Array.from({ length: total }, (_, index) => (
+        <Image
+          key={index}
+          src={icon}
+          alt=""
+          width={37}
+          height={35}
+          className={`h-5 w-5 object-contain ${index < left ? "" : "opacity-25 brightness-0"}`}
+        />
+      ))}
+    </span>
+  );
+}
+
 /** Every puzzle, newest first, with its issue month, game, and how far the player got. */
 export function ConnectionsIndex({
   puzzles,
   records,
   currentNumber,
+  energyIcon,
+  scores,
+  standings,
   serviceLocale,
   onOpen,
 }: {
   puzzles: ConnectionsPuzzle[];
   records: Record<string, ConnectionsProgress>;
   currentNumber: number;
+  energyIcon: string;
+  scores: Record<string, LocalBestScore>;
+  standings: Record<string, PuzzleboxStanding>;
   serviceLocale: ServiceLocale;
   onOpen: (number: number) => void;
 }) {
@@ -48,19 +104,22 @@ export function ConnectionsIndex({
     solved: copy.statusSolved,
     failed: copy.statusFailed,
   };
-  const latest = puzzles[0]?.number;
   return (
-    <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4" data-connections-index={puzzles.length}>
+    <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-3" data-connections-index={puzzles.length}>
       {puzzles.map((puzzle) => {
         const progress = records[puzzle.number];
         const status = connectionsStatus(progress, puzzle.categories.length);
+        const best = scores[puzzle.number];
+        const standing = standings[puzzle.number];
+        const era = ERA_TOKENS[puzzle.era];
+        const left = MISTAKE_LIMIT - (progress?.mistakes ?? 0);
         return (
           <li key={puzzle.number}>
             <button
               type="button"
               onClick={() => onOpen(puzzle.number)}
               data-connections-status={status}
-              className={`flex w-full flex-col gap-1.5 rounded-lg border p-2.5 text-left transition-colors hover:border-primary/60 ${
+              className={`flex w-full flex-col gap-2 rounded-lg border p-3 text-left transition-colors hover:border-primary/60 ${
                 puzzle.number === currentNumber
                   ? "border-primary/70 bg-primary/10"
                   : status === "new"
@@ -68,42 +127,46 @@ export function ConnectionsIndex({
                     : "border-border bg-card/90"
               }`}
             >
-              <span className="flex items-baseline justify-between gap-2">
-                <span className="font-game-title text-lg font-bold tabular-nums">#{puzzle.number}</span>
-                <span className="flex items-center gap-1 text-[10px]">
-                  {puzzle.number === latest && (
-                    <span className="rounded bg-primary/20 px-1 py-0.5 font-semibold text-primary">{copy.latestPuzzle}</span>
-                  )}
-                  <span
-                    className={`rounded px-1 py-0.5 font-semibold ${
-                      puzzle.era === "sts1" ? "bg-red-500/15 text-red-300" : "bg-sky-500/15 text-sky-300"
-                    }`}
-                  >
-                    {puzzle.era.toUpperCase()}
-                  </span>
+              <span className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2">
+                  <StatusToken status={status} label={statusLabel[status]} />
+                  <span className="font-game-title text-xl font-bold tabular-nums">#{puzzle.number}</span>
                 </span>
+                <Image src={era.src} alt={era.label} title={era.label} width={40} height={40} className="h-6 w-6 object-contain" />
               </span>
               <span className="text-xs text-muted-foreground">{issueMonth(puzzle.issueDate, serviceLocale)}</span>
-              <span className="flex items-center justify-between gap-2">
-                <span className="flex gap-0.5" aria-hidden="true">
-                  {puzzle.categories.map((category, index) => {
-                    const solved = progress?.solvedLevels[index];
-                    return (
-                      <span
-                        key={category.level}
-                        className={`h-2.5 w-4 rounded-sm ${solved === undefined ? "bg-muted" : LEVEL_SWATCH[solved]}`}
-                      />
-                    );
-                  })}
-                </span>
-                <span
-                  className={`whitespace-nowrap text-[11px] ${
-                    status === "solved" ? "text-green-400" : status === "failed" ? "text-red-400" : "text-muted-foreground"
-                  }`}
-                >
-                  {statusLabel[status]}
-                  {status === "solved" && progress ? ` · ${copy.mistakeCount} ${progress.mistakes}` : ""}
-                </span>
+              <span className="flex gap-0.5" aria-hidden="true">
+                {puzzle.categories.map((category, index) => {
+                  const solved = progress?.solvedLevels[index];
+                  return (
+                    <span
+                      key={category.level}
+                      className={`h-2.5 flex-1 rounded-sm ${solved === undefined ? "bg-muted" : LEVEL_SWATCH[solved]}`}
+                    />
+                  );
+                })}
+              </span>
+              <span className="flex min-h-6 items-center justify-between gap-2">
+                {status === "new" ? (
+                  <span />
+                ) : (
+                  <EnergySockets
+                    left={left}
+                    total={MISTAKE_LIMIT}
+                    icon={energyIcon}
+                    label={`${copy.remainingMistakes} ${left}/${MISTAKE_LIMIT}`}
+                  />
+                )}
+                {best && (
+                  <span className="flex items-baseline gap-1.5 whitespace-nowrap">
+                    <span className="font-game-title text-base font-bold tabular-nums spire-gold">{best.best}</span>
+                    {standing && (
+                      <span className="text-[11px] tabular-nums text-muted-foreground">
+                        {copy.rankLine.replace("{rank}", String(standing.rank)).replace("{players}", String(standing.players))}
+                      </span>
+                    )}
+                  </span>
+                )}
               </span>
             </button>
           </li>
