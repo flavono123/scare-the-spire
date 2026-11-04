@@ -45,6 +45,8 @@ const LEVEL_BAR = ["bg-amber-300", "bg-green-400", "bg-sky-400", "bg-violet-400"
 const ERA_TOKENS = { sts1: "/images/sts1_app_icon.png", sts2: "/images/sts2/icons/app_icon.png" } as const;
 const PAGE_SIZE = 10;
 
+type RankingsCopy = { [Key in keyof (typeof serviceMessages)["ko"]["vexingPuzzlebox"]["rankings"]]: string };
+
 type Board = {
   /** Null for the game's totals. */
   id: string | null;
@@ -164,7 +166,7 @@ function ConnectionsStats({
   stats: PuzzleboxBoardStats;
   board: RankingsConnectionsBoard;
   energyIcon: string;
-  copy: (typeof serviceMessages)["ko"]["vexingPuzzlebox"]["rankings"];
+  copy: RankingsCopy;
 }) {
   const people = (count: number) => copy.peopleValue.replace("{count}", String(count));
   return (
@@ -215,7 +217,7 @@ function QuizStats({
 }: {
   stats: PuzzleboxBoardStats;
   set: RankingsQuizSet;
-  copy: (typeof serviceMessages)["ko"]["vexingPuzzlebox"]["rankings"];
+  copy: RankingsCopy;
 }) {
   const people = (count: number) => copy.peopleValue.replace("{count}", String(count));
   const hardest = stats.question_wrong.reduce(
