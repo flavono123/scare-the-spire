@@ -18,6 +18,10 @@
 | `20261104042911_puzzlebox_scores.sql` | db-first-additive | before-push | 적용 2026-11-04 19:01 KST(사용자 승인, 새 `puzzlebox_*` 객체만 생성) | PGlite에서 점수 사례 33개·제출·순위·RLS 확인. 2026-11-04 16:00 KST `migration list --linked`: 대기는 이 파일 하나, 원격에만 있는 항목 없음. `db push --linked --dry-run`: 이 파일만 적용 대상. 적용 뒤 `migration list --linked` 원격 반영, anon `get_puzzlebox_leaderboard` RPC가 빈 순위 반환, anon의 `puzzlebox_runs` 직접 조회는 42501로 거부 |
 | `20261104101913_puzzlebox_rocks_left.sql` | db-first-additive | before-push | 적용 2026-11-04 19:21 KST(사용자 승인, 함수 교체만). `migration list --linked` 원격 반영, anon 직접 호출은 42501 | `puzzlebox_score_run`만 바꾼다. 커넥션스 기록에 `rocksLeft`(0~3, 던진 돌 수만큼 줄어듦)가 더해지고, 다 풀면 남은 돌 하나에 +10, 던진 돌 감점은 없앤다. 배포된 앱 중 `submit_puzzlebox_run`을 부르는 것이 없어서 기록 계약이 엄해져도 깨지는 호출이 없다. 이미 저장된 기록의 점수는 그대로다. PGlite에서 두 마이그레이션을 이어 적용해 점수 사례 37개·제출·순위·RLS 확인 |
 
+## push 전 운영 버전(롤백 대상)
+
+main Worker `4625f49b-e3c6-4937-b3ff-3f2a983f7e2c`, patch Worker `94a9ec75-138a-4848-83f6-70e84268112f`(2026-11-02 배포). testbed 검수 커밋 `968949a6`: 게이트, `cf:smoke --scope all` 204개, `qa:cf:testbed` 12개 통과.
+
 ## 긴급 배포로 QA 없이 나간 범위
 
 없음.
