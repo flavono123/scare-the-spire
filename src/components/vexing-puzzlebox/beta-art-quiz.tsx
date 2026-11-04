@@ -487,7 +487,7 @@ export function BetaArtQuiz({
             {lostLife && (
               <span
                 key={`float-${hurt}`}
-                className="beta-quiz-life-float pointer-events-none absolute -top-3 font-game-title text-sm font-bold text-red-400"
+                className="beta-quiz-life-float pointer-events-none absolute -top-4 whitespace-nowrap font-game-title text-sm font-bold text-red-400 drop-shadow-[0_1px_0_rgba(0,0,0,0.8)]"
                 style={{ left: `${((livesLeft + 0.5) / BETA_ART_QUIZ_LIVES) * 100}%` }}
                 aria-hidden="true"
               >

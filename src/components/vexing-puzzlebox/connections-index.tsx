@@ -35,26 +35,30 @@ const ERA_TOKENS = {
   sts2: { src: "/images/sts2/icons/app_icon.png", label: "Slay the Spire 2" },
 } as const;
 
+/** The chains are gray metal, so lit means gilded and burnt means rusted red. */
+const GILDED = "[filter:sepia(1)_saturate(3.2)_hue-rotate(2deg)_brightness(1.2)_drop-shadow(0_0_5px_rgba(250,204,21,0.6))]";
+const RUSTED = "[filter:sepia(1)_saturate(6)_hue-rotate(-48deg)_brightness(0.8)]";
+
 /**
- * The Connections token as a toggle: dark when untouched, half lit while playing,
- * lit when solved, and burnt red when the mistakes ran out.
+ * The Connections token as a toggle: dark when untouched, half gilded while playing,
+ * gilded when solved, and rusted red when the mistakes ran out.
  */
-export function StatusToken({ status, label, size = 28 }: { status: ConnectionsStatus; label: string; size?: number }) {
+export function StatusToken({ status, label, size = 30 }: { status: ConnectionsStatus; label: string; size?: number }) {
   const style = { width: size, height: size };
   const image = (className: string) => (
     <Image src={CONNECTIONS_TOKEN_SRC} alt="" width={size * 2} height={size * 2} className={`absolute inset-0 h-full w-full object-contain ${className}`} />
   );
   return (
     <span role="img" aria-label={label} title={label} className="relative inline-block shrink-0" style={style} data-status-token={status}>
-      {status === "new" && image("opacity-30 grayscale")}
+      {status === "new" && image("opacity-25 grayscale")}
       {status === "playing" && (
         <>
-          {image("opacity-40 grayscale")}
-          {image("[clip-path:inset(0_50%_0_0)]")}
+          {image("opacity-25 grayscale")}
+          {image(`${GILDED} [clip-path:inset(0_50%_0_0)]`)}
         </>
       )}
-      {status === "solved" && image("drop-shadow-[0_0_6px_rgba(250,204,21,0.55)]")}
-      {status === "failed" && image("opacity-80 grayscale sepia saturate-[4] hue-rotate-[-40deg]")}
+      {status === "solved" && image(GILDED)}
+      {status === "failed" && image(RUSTED)}
     </span>
   );
 }

@@ -66,9 +66,16 @@ function recordedAt(iso: string, serviceLocale: ServiceLocale): string {
   const date = new Date(iso);
   const today = new Date();
   const sameDay = date.toDateString() === today.toDateString();
-  return new Intl.DateTimeFormat(serviceLocale === "ko" ? "ko-KR" : "en-US", sameDay
-    ? { hour: "2-digit", minute: "2-digit", hour12: false }
-    : { month: "numeric", day: "numeric" }).format(date);
+  if (sameDay) {
+    return new Intl.DateTimeFormat(serviceLocale === "ko" ? "ko-KR" : "en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(date);
+  }
+  return serviceLocale === "ko"
+    ? `${date.getMonth() + 1}월 ${date.getDate()}일`
+    : new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(date);
 }
 
 /** Two gray rules with a shadow, like NDailyRunLeaderboardSeparator. */
