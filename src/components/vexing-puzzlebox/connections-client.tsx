@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { RichText } from "@/components/rich-text";
 import Image from "@/components/ui/static-image";
 import {
@@ -43,9 +42,7 @@ import { MEGA_CRIT_TOKEN_SRC, NEOWSLETTER_TOKEN_SRC } from "@/lib/vexing-puzzleb
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import {
   ALL_SHOWN,
-  CONNECTIONS_DISPLAY_BONUS,
   CONNECTIONS_MAX_SCORE,
-  displayBonus,
   mergeDisplay,
   scoreConnections,
   type ConnectionsRun,
@@ -639,11 +636,6 @@ export function ConnectionsClient({
     if (inspectCount.current === INSPECT_PEEK_COUNT) remark(lines.inspectPeek, ["inspect"], 1);
   };
 
-  const displayBonusNow = displayBonus(
-    finished ? progress.shown ?? ALL_SHOWN : mergeDisplay(runActive ? progress.shown : undefined, runDisplayOf(display, gameLocale)),
-    CONNECTIONS_DISPLAY_BONUS,
-  );
-
   // Puzzles come newest first.
   const puzzleIndex = puzzles.findIndex((item) => item.number === puzzle.number);
   const newer = puzzleIndex > 0 ? puzzles[puzzleIndex - 1] : null;
@@ -718,14 +710,6 @@ export function ConnectionsClient({
               labels={{ group: copy.viewsLabel, token: copy.viewTokens }}
               onChange={changeDisplay}
             />
-            <GameUiHoverTip label={copy.displayBonusTip}>
-              <span
-                className={`font-game-title text-sm font-bold tabular-nums ${displayBonusNow > 0 ? "text-green-400" : "text-muted-foreground/60"}`}
-                data-connections-display-bonus={displayBonusNow}
-              >
-                +{displayBonusNow}
-              </span>
-            </GameUiHoverTip>
           </div>
 
 

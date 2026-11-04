@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { GameUiHoverTip } from "@/components/game-ui-hover-tip";
 import { EntityPreview } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import {
@@ -28,9 +27,7 @@ import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from 
 import { playInvalidShake } from "@/lib/merchant-feedback";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import {
-  BETA_QUIZ_DISPLAY_BONUS,
   betaQuizMaxScore,
-  displayBonus,
   mergeDisplay,
   scoreBetaQuiz,
   type BetaQuizAnswer,
@@ -366,10 +363,6 @@ export function BetaArtQuiz({
   const questionIndex = picked === null ? answers.length : answers.length - 1;
   const question = set[questionIndex];
   const pickedAnswer = picked === null ? null : answers[answers.length - 1];
-  const bonusNow = displayBonus(
-    picked === null ? mergeDisplay(questionShown, runDisplayOf(display, gameLocale)) : pickedAnswer?.shown,
-    BETA_QUIZ_DISPLAY_BONUS,
-  );
 
   const changeDisplay = (next: ItemDisplay) => {
     setDisplay(next);
@@ -446,14 +439,6 @@ export function BetaArtQuiz({
           labels={{ group: copy.viewsLabel, token: copy.viewTokens }}
           onChange={(next) => changeDisplay(next)}
         />
-        <GameUiHoverTip label={copy.quizBonusTip}>
-          <span
-            className={`font-game-title text-sm font-bold tabular-nums ${bonusNow > 0 ? "text-green-400" : "text-muted-foreground/60"}`}
-            data-beta-art-display-bonus={bonusNow}
-          >
-            +{bonusNow}
-          </span>
-        </GameUiHoverTip>
       </div>
       <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
         <button type="button" onClick={() => openSet(null)} className="underline hover:text-foreground">

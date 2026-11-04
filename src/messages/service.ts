@@ -188,8 +188,6 @@ export const serviceMessages = {
       submitting: "순위에 올리는 중",
       rankLine: "{players}명 중 {rank}위",
       viewRankings: "순위 보기",
-      displayBonusTip: "다 풀면 그림·이름을 숨긴 만큼 더 받습니다. 한 번이라도 켜거나 돋보기로 보면 켠 것으로 칩니다.",
-      quizBonusTip: "맞히면 빠를수록(10초까지), 그림·이름을 숨길수록 더 받습니다",
       livesLost: "체력 -1",
       statusNoMistakes: "실수 없음",
       rankings: {
@@ -1813,8 +1811,6 @@ export const serviceMessages = {
       submitting: "Posting to the rankings",
       rankLine: "#{rank} of {players}",
       viewRankings: "See rankings",
-      displayBonusTip: "A full solve earns more for each picture or name kept hidden. Turning one on even once, or using the magnifier, counts as shown.",
-      quizBonusTip: "Right answers earn more the faster they are (up to 10 s) and the less is shown",
       livesLost: "-1 life",
       statusNoMistakes: "No mistakes",
       rankings: {
