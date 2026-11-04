@@ -74,7 +74,8 @@ export function VexingPuzzleboxShell({
             {gameCopy.hero && <p className="mt-0.5 text-xs text-red-300/90">{gameCopy.hero}</p>}
           </div>
         </header>
-        <nav className="mt-4 flex items-center gap-5 border-b border-border" aria-label={copy.tabsLabel}>
+        {/* On phones the icon stacks over the label: three labels side by side outgrow 320px. */}
+        <nav className="mt-4 flex items-end gap-3 border-b border-border sm:items-center sm:gap-5" aria-label={copy.tabsLabel}>
           {tabs.map((tab) => {
             const selected = tab.id === active;
             return (
@@ -83,14 +84,14 @@ export function VexingPuzzleboxShell({
                 href={localizeHrefWithGameLocale(tab.href, serviceLocale, gameLocale)}
                 prefetch={false}
                 aria-current={selected ? "page" : undefined}
-                className={`relative inline-flex items-center gap-2 pb-2.5 font-game-title text-sm transition-colors ${
+                className={`relative inline-flex flex-col items-center gap-0.5 pb-2 font-game-title text-xs transition-colors sm:flex-row sm:gap-2 sm:pb-2.5 sm:text-sm ${
                   selected
                     ? "font-semibold text-primary"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <Image src={tab.icon} alt="" width={48} height={48} className="h-6 w-6 object-contain" />
-                <span>{tab.label}</span>
+                <span className="whitespace-nowrap">{tab.label}</span>
                 {selected && <span className="absolute inset-x-0 -bottom-px h-0.5 bg-primary" />}
               </Link>
             );
