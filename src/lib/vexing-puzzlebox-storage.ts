@@ -19,6 +19,9 @@ export type ConnectionsProgress = {
   shown?: RunDisplay;
 };
 
+/** The picture / game-language name / English name toggles, as last set. */
+export type StoredItemDisplay = { token: boolean; local: boolean; original: boolean };
+
 /** A board's best local score; retries never lower it. */
 export type LocalBestScore = { best: number; perfect: boolean; last: number };
 
@@ -28,6 +31,8 @@ type VexingPuzzleboxRecord = {
   betaArtSets: Record<string, boolean[]>;
   /** Best scores by game, then board number. Missing in older saves. */
   scores?: Partial<Record<"connections" | "beta-quiz", Record<string, LocalBestScore>>>;
+  /** Toggles by game locale, shared by both games and every board. Missing in older saves. */
+  display?: Record<string, StoredItemDisplay>;
 };
 
 function emptyRecord(): VexingPuzzleboxRecord {
@@ -56,6 +61,21 @@ export function recordLocalScore(
     next = scores;
   });
   return next;
+}
+
+export function readStoredItemDisplay(gameLocale: string): StoredItemDisplay | null {
+  const stored = readVexingPuzzleboxRecord().display?.[gameLocale];
+  if (!stored || typeof stored !== "object") return null;
+  const { token, local, original } = stored;
+  return typeof token === "boolean" && typeof local === "boolean" && typeof original === "boolean"
+    ? { token, local, original }
+    : null;
+}
+
+export function writeStoredItemDisplay(gameLocale: string, display: StoredItemDisplay): void {
+  updateVexingPuzzleboxRecord((record) => {
+    record.display = { ...record.display, [gameLocale]: display };
+  });
 }
 
 export function readVexingPuzzleboxRecord(): VexingPuzzleboxRecord {

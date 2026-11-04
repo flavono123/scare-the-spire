@@ -9,9 +9,9 @@ import {
   profileTokenCharacter,
 } from "@/components/vexing-puzzlebox/character-hand-pointer";
 import {
-  defaultItemDisplay,
   DisplayToggles,
   hasLocalNames,
+  useItemDisplay,
   type ItemDisplay,
 } from "@/components/vexing-puzzlebox/display-toggles";
 import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
@@ -154,7 +154,7 @@ export function BetaArtQuiz({
   const [picked, setPicked] = useState<string | null>(null);
   const [savedSets, setSavedSets] = useState<Record<string, boolean[]>>({});
   const [copied, setCopied] = useState(false);
-  const [display, setDisplay] = useState<ItemDisplay>(() => defaultItemDisplay(gameLocale));
+  const [display, setDisplay] = useItemDisplay(gameLocale);
   const say = useMerchantSay();
   const vakuu = useVakuu();
   const playSound = usePuzzleboxSound();

@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import { GAME_LOCALE_LABELS, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { playPurchaseFailedWiggle } from "@/lib/merchant-feedback";
+import { readStoredItemDisplay, writeStoredItemDisplay } from "@/lib/vexing-puzzlebox-storage";
 import { serviceMessages } from "@/messages/service";
 
 /** What an item shows: its picture, its name in the game language, its original English name. */
@@ -38,6 +39,32 @@ export function displayItemLabels(
 export function defaultItemDisplay(gameLocale: GameLocale): ItemDisplay {
   const local = hasLocalNames(gameLocale);
   return { token: true, local, original: !local };
+}
+
+/** The toggles as last set in this game language, or the default when nothing usable is saved. */
+export function storedItemDisplay(gameLocale: GameLocale): ItemDisplay {
+  const stored = readStoredItemDisplay(gameLocale);
+  if (!stored) return defaultItemDisplay(gameLocale);
+  const display = hasLocalNames(gameLocale) ? stored : { ...stored, local: false };
+  // Something has to stay on, as the toggles themselves insist.
+  return display.token || display.local || display.original ? display : defaultItemDisplay(gameLocale);
+}
+
+/**
+ * The toggles, shared by Connections and the beta art quiz and by every board: moving between
+ * them keeps what the player hid instead of falling back to the default.
+ */
+export function useItemDisplay(gameLocale: GameLocale): [ItemDisplay, (next: ItemDisplay) => void] {
+  const [display, setDisplay] = useState<ItemDisplay>(() => defaultItemDisplay(gameLocale));
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- browser storage is only readable after hydration
+    setDisplay(storedItemDisplay(gameLocale));
+  }, [gameLocale]);
+  const change = useCallback((next: ItemDisplay) => {
+    setDisplay(next);
+    writeStoredItemDisplay(gameLocale, next);
+  }, [gameLocale]);
+  return [display, change];
 }
 
 function DisplayToggle({

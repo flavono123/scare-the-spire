@@ -10,9 +10,10 @@ import {
 import { EndTurnButton, PileButton } from "@/components/vexing-puzzlebox/combat-buttons";
 import { ConnectionsIndex, connectionsStatus, issueMonth } from "@/components/vexing-puzzlebox/connections-index";
 import {
-  defaultItemDisplay,
   DisplayToggles,
   hasLocalNames,
+  storedItemDisplay,
+  useItemDisplay,
   type ItemDisplay,
 } from "@/components/vexing-puzzlebox/display-toggles";
 import { MemberHover } from "@/components/vexing-puzzlebox/member-hover";
@@ -115,6 +116,11 @@ function MemberLabels({ member, display }: { member: ConnectionsMember; display:
 
 function emptyProgress(): ConnectionsProgress {
   return { guesses: [], guessKeys: [], solvedLevels: [], mistakes: 0 };
+}
+
+function sameDisplay(left: RunDisplay | undefined, right: RunDisplay | undefined): boolean {
+  if (!left || !right) return left === right;
+  return left.token === right.token && left.local === right.local && left.original === right.original;
 }
 
 function guessId(keys: string[]): string {
@@ -222,6 +228,11 @@ export function ConnectionsClient({
   const [listOpen, setListOpen] = useState(false);
   const [records, setRecords] = useState<Record<string, ConnectionsProgress>>({});
   const [progress, setProgress] = useState<ConnectionsProgress>(emptyProgress);
+  /** Which puzzle's progress is on screen, and that progress as last saved, for delayed saves. */
+  const shownPuzzle = useRef<number | null>(null);
+  const latestProgress = useRef<ConnectionsProgress>(emptyProgress());
+  /** The `?p=` puzzle is known; loading before that would open the latest puzzle's run for a frame. */
+  const [urlRead, setUrlRead] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -247,7 +258,7 @@ export function ConnectionsClient({
   // Mistakes are spent like energy: the profile character's, or colorless without one.
   const energyIcon = resolveSts2EnergyIcon(profileTokenCharacter(stored, profile) ?? "colorless");
   const localNamesDiffer = hasLocalNames(gameLocale);
-  const [display, setDisplay] = useState<ItemDisplay>(() => defaultItemDisplay(gameLocale));
+  const [display, setDisplay] = useItemDisplay(gameLocale);
 
   const boardRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef(new Map<string, HTMLDivElement>());
@@ -287,6 +298,7 @@ export function ConnectionsClient({
     setListOpen(params.has("list"));
     setRecords(readVexingPuzzleboxRecord().connections);
     setLocalScores(readLocalBestScores("connections"));
+    setUrlRead(true);
   }, [puzzles]);
 
   /** Opening a puzzle or the list keeps the URL shareable: `?p=12`, or `?list`. */
@@ -313,15 +325,32 @@ export function ConnectionsClient({
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- browser storage is only readable after hydration
-    setProgress(readVexingPuzzleboxRecord().connections[puzzle.number] ?? emptyProgress());
+    if (!urlRead) return;
+    const saved = readVexingPuzzleboxRecord().connections[puzzle.number] ?? emptyProgress();
+    const unfinished = saved.guesses.length > 0
+      && saved.solvedLevels.length < puzzle.categories.length
+      && saved.mistakes < MISTAKE_LIMIT;
+    // A run opened again shows the toggles as they are now, which may be more than it had.
+    const loaded = unfinished
+      ? { ...saved, shown: mergeDisplay(saved.shown, runDisplayOf(storedItemDisplay(gameLocale), gameLocale)) }
+      : saved;
+    if (unfinished && !sameDisplay(saved.shown, loaded.shown)) {
+      updateVexingPuzzleboxRecord((record) => {
+        record.connections[puzzle.number] = loaded;
+      });
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- browser storage is only readable after hydration
+      setRecords((current) => ({ ...current, [puzzle.number]: loaded }));
+    }
+    shownPuzzle.current = puzzle.number;
+    latestProgress.current = loaded;
+    setProgress(loaded);
     setSelected([]);
     setCopied(false);
     setWrongKeys(null);
     setToast(null);
     setHintKey(null);
     setSubmission(null);
-  }, [puzzle.number]);
+  }, [puzzle.number, puzzle.categories.length, gameLocale, urlRead]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -412,12 +441,15 @@ export function ConnectionsClient({
     later(() => setShuffleCount(null), SHUFFLE_TOTAL_MS + 80);
   }, [tiles, playSound]);
 
-  const saveProgress = (next: ConnectionsProgress) => {
-    setProgress(next);
-    setRecords((current) => ({ ...current, [puzzle.number]: next }));
+  /** Saves a puzzle's progress; the screen follows only while that puzzle is still open. */
+  const saveProgress = (next: ConnectionsProgress, number = puzzle.number) => {
+    setRecords((current) => ({ ...current, [number]: next }));
     updateVexingPuzzleboxRecord((record) => {
-      record.connections[puzzle.number] = next;
+      record.connections[number] = next;
     });
+    if (shownPuzzle.current !== number) return;
+    latestProgress.current = next;
+    setProgress(next);
   };
 
   /** A finished run: keep the best score here, then post it for the rankings. */
@@ -439,12 +471,14 @@ export function ConnectionsClient({
     });
   };
 
-  /** Anything shown once the run is under way counts against the display bonus. */
+  /**
+   * Anything shown once the run is under way counts against the display bonus. The run starts
+   * with the first tile picked; toggles and the magnifier before that are free.
+   */
   const runActive = !finished && (progress.guesses.length > 0 || selected.length > 0);
   const revealDisplay = (shown: RunDisplay) => {
     const merged = mergeDisplay(progress.shown, shown);
-    if (progress.shown && merged.token === progress.shown.token && merged.local === progress.shown.local
-      && merged.original === progress.shown.original) return;
+    if (sameDisplay(progress.shown, merged)) return;
     saveProgress({ ...progress, shown: merged });
   };
 
@@ -469,6 +503,10 @@ export function ConnectionsClient({
       return;
     }
     if (selected.length === 0) firstPickAt.current = at;
+    if (selected.length === 0 && progress.guesses.length === 0 && !finished) {
+      // The run starts here, with what is on screen now. Older saves may hold reveals from before.
+      saveProgress({ ...progress, shown: runDisplayOf(display, gameLocale) });
+    }
     const next = [...selected, key];
     setSelected(next);
     if (key === hintKey) setHintKey(null);
@@ -548,13 +586,17 @@ export function ConnectionsClient({
     else remark(lines.wrong, ["miss"], 0.3, { delay: VAKUU_DELAY_MS });
 
     const mistakes = progress.mistakes + 1;
+    const number = puzzle.number;
     later(() => {
-      setWrongKeys(null);
-      const next = { ...progress, ...submitted, mistakes };
-      saveProgress(next);
+      const stillOpen = shownPuzzle.current === number;
+      if (stillOpen) setWrongKeys(null);
+      // Toggles turned on during this second were saved meanwhile; build on that, not on the old copy.
+      const latest = stillOpen ? latestProgress.current : readVexingPuzzleboxRecord().connections[number] ?? progress;
+      const next = { ...latest, ...submitted, shown: mergeDisplay(latest.shown, submitted.shown), mistakes };
+      saveProgress(next, number);
       if (mistakes >= MISTAKE_LIMIT) {
         finishRun(next);
-        setSelected([]);
+        if (stillOpen) setSelected([]);
         playSound("merchantLaugh");
         remark(lines.failed, ["result"], 1, { force: true, delay: VAKUU_DELAY_MS });
       } else if (mistakes === MISTAKE_LIMIT - 1) {
@@ -631,8 +673,8 @@ export function ConnectionsClient({
   };
 
   const countInspect = () => {
-    // The magnifier's tip shows the picture and the name.
-    if (!finished) revealDisplay(ALL_SHOWN);
+    // The magnifier's tip shows the picture and the name; before the run starts that is free.
+    if (runActive) revealDisplay(ALL_SHOWN);
     inspectCount.current += 1;
     if (inspectCount.current === INSPECT_PEEK_COUNT) remark(lines.inspectPeek, ["inspect"], 1);
   };
