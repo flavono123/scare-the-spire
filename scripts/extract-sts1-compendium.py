@@ -49,6 +49,7 @@ from scripts.lib.sts1_monster_moves import (  # noqa: E402
     intent_header_indexes,
     intent_switch_maps,
     read_monster_moves,
+    read_monster_vfx,
 )
 from scripts.lib.sts1_monsters import (  # noqa: E402
     MONSTER_PACKAGE,
@@ -1374,17 +1375,51 @@ def attach_monster_moves(jar, monsters: list[dict[str, Any]]) -> None:
         row["startingEffects"] = behavior["startingEffects"]
 
 
+def monster_vfx(jar, monsters: list[dict[str, Any]]) -> dict[str, Any]:
+    """Each monster's body and per-move playback timeline (`data/sts1/monster-vfx.json`)."""
+    switch_maps = intent_switch_maps(jar)
+    ids = class_ids(jar)
+    rows: dict[str, Any] = {}
+    unknown: list[str] = []
+    for row in monsters:
+        vfx = read_monster_vfx(
+            jar,
+            f"{MONSTER_PACKAGE}{row['dungeon']}/{row['className']}.class",
+            [move["id"] for move in row["moves"]],
+            switch_maps=switch_maps,
+            class_ids=ids,
+        )
+        animations = _skeleton_animations(jar, row["art"])
+        idle = (row["art"] or {}).get("animation", "")
+        for move_id, events in list(vfx["moves"].items()):
+            kept = [
+                event for event in events
+                if event["type"] != "spine" or (animations is not None and event["name"] in animations and event["name"] != idle)
+            ]
+            if kept:
+                vfx["moves"][move_id] = kept
+            else:
+                del vfx["moves"][move_id]
+        unknown += [f"{row['slug']}: {value}" for value in vfx.pop("unknown")]
+        rows[row["slug"]] = vfx
+    if unknown:
+        print("effect arguments the reader could not resolve:", *unknown, sep="\n  ")
+    return rows
+
+
 def extract_monsters(jar) -> int:
     monsters = load_monsters(jar)
     missing = [row["slug"] for row in monsters if not row["art"] or not row["hitPoints"]]
     if missing:
         raise SystemExit(f"monsters without art or hit points: {', '.join(missing)}")
     attach_monster_moves(jar, monsters)
+    vfx = monster_vfx(jar, monsters)
     intent_headers = intent_header_indexes(jar, intent_switch_maps(jar))
     write_monster_ui_images(jar)
     data_root = ROOT / "data" / "sts1"
     write_json(data_root / "monsters.json", [public_monster_row(row) for row in monsters])
     write_json(data_root / "monster-art.json", monster_art_sources(monsters))
+    write_json(data_root / "monster-vfx.json", vfx)
     eng = load_loc_table(jar, "eng", "monsters.json")
     for locale in STS1_LOCALES:
         loc = load_loc_table(jar, locale, "monsters.json")

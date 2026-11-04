@@ -1,0 +1,623 @@
+{
+  "sheet": "/images/sts1/vfx/sheet.50e063104d.webp",
+  "width": 2048,
+  "height": 2434,
+  "regions": {
+    "attack/blunt_heavy": {
+      "x": 716,
+      "y": 1750,
+      "w": 196,
+      "h": 189,
+      "offsetX": 157,
+      "offsetY": 175,
+      "origW": 512,
+      "origH": 512
+    },
+    "attack/blunt_light": {
+      "x": 1131,
+      "y": 1962,
+      "w": 135,
+      "h": 134,
+      "offsetX": 198,
+      "offsetY": 182,
+      "origW": 512,
+      "origH": 512
+    },
+    "attack/fire": {
+      "x": 914,
+      "y": 1750,
+      "w": 194,
+      "h": 188,
+      "offsetX": 170,
+      "offsetY": 176,
+      "origW": 512,
+      "origH": 512
+    },
+    "attack/poison": {
+      "x": 122,
+      "y": 1750,
+      "w": 229,
+      "h": 206,
+      "offsetX": 151,
+      "offsetY": 154,
+      "origW": 512,
+      "origH": 512
+    },
+    "attack/shield": {
+      "x": 1625,
+      "y": 1750,
+      "w": 136,
+      "h": 153,
+      "offsetX": 186,
+      "offsetY": 178,
+      "origW": 512,
+      "origH": 512
+    },
+    "attack/slash_heavy": {
+      "x": 353,
+      "y": 1750,
+      "w": 361,
+      "h": 195,
+      "offsetX": 105,
+      "offsetY": 169,
+      "origW": 512,
+      "origH": 512
+    },
+    "attack/slash_horizontal": {
+      "x": 244,
+      "y": 2334,
+      "w": 294,
+      "h": 35,
+      "offsetX": 119,
+      "offsetY": 238,
+      "origW": 512,
+      "origH": 512
+    },
+    "attack/slash_light": {
+      "x": 1363,
+      "y": 1750,
+      "w": 260,
+      "h": 160,
+      "offsetX": 124,
+      "offsetY": 175,
+      "origW": 512,
+      "origH": 512
+    },
+    "attack/slash_vertical": {
+      "x": 1656,
+      "y": 1236,
+      "w": 35,
+      "h": 294,
+      "offsetX": 239,
+      "offsetY": 119,
+      "origW": 512,
+      "origH": 512
+    },
+    "borderGlow2": {
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 720,
+      "offsetX": 0,
+      "offsetY": 0,
+      "origW": 1280,
+      "origH": 720
+    },
+    "combat/biteBot": {
+      "x": 1256,
+      "y": 2110,
+      "w": 195,
+      "h": 105,
+      "offsetX": 40,
+      "offsetY": 23,
+      "origW": 278,
+      "origH": 278
+    },
+    "combat/biteTop": {
+      "x": 1268,
+      "y": 1962,
+      "w": 238,
+      "h": 131,
+      "offsetX": 24,
+      "offsetY": 128,
+      "origW": 278,
+      "origH": 278
+    },
+    "combat/blurDot": {
+      "x": 1965,
+      "y": 2334,
+      "w": 30,
+      "h": 30,
+      "offsetX": 1,
+      "offsetY": 1,
+      "origW": 32,
+      "origH": 32
+    },
+    "combat/blurWave": {
+      "x": 540,
+      "y": 2334,
+      "w": 126,
+      "h": 35,
+      "offsetX": 1,
+      "offsetY": 43,
+      "origW": 128,
+      "origH": 128
+    },
+    "combat/cleave": {
+      "x": 983,
+      "y": 2231,
+      "w": 964,
+      "h": 100,
+      "offsetX": 13,
+      "offsetY": 446,
+      "origW": 1024,
+      "origH": 1024
+    },
+    "combat/flame4": {
+      "x": 83,
+      "y": 2334,
+      "w": 29,
+      "h": 78,
+      "offsetX": 48,
+      "offsetY": 5,
+      "origW": 128,
+      "origH": 128
+    },
+    "combat/flame5": {
+      "x": 0,
+      "y": 2110,
+      "w": 75,
+      "h": 119,
+      "offsetX": 46,
+      "offsetY": 8,
+      "origW": 128,
+      "origH": 128
+    },
+    "combat/flame6": {
+      "x": 77,
+      "y": 2110,
+      "w": 36,
+      "h": 117,
+      "offsetX": 50,
+      "offsetY": 1,
+      "origW": 128,
+      "origH": 128
+    },
+    "combat/laserThick": {
+      "x": 0,
+      "y": 1962,
+      "w": 982,
+      "h": 146,
+      "offsetX": 938,
+      "offsetY": 34,
+      "origW": 1920,
+      "origH": 213
+    },
+    "combat/laserThin": {
+      "x": 0,
+      "y": 2231,
+      "w": 981,
+      "h": 101,
+      "offsetX": 934,
+      "offsetY": 28,
+      "origW": 1920,
+      "origH": 156
+    },
+    "combat/spike2": {
+      "x": 1839,
+      "y": 2334,
+      "w": 124,
+      "h": 30,
+      "offsetX": 128,
+      "offsetY": 49,
+      "origW": 256,
+      "origH": 128
+    },
+    "combat/stake": {
+      "x": 0,
+      "y": 1750,
+      "w": 120,
+      "h": 210,
+      "offsetX": 68,
+      "offsetY": 5,
+      "origW": 256,
+      "origH": 256
+    },
+    "combat/strikeLine3": {
+      "x": 0,
+      "y": 2417,
+      "w": 37,
+      "h": 17,
+      "offsetX": 45,
+      "offsetY": 54,
+      "origW": 128,
+      "origH": 128
+    },
+    "combat/weightyImpact": {
+      "x": 1110,
+      "y": 1750,
+      "w": 251,
+      "h": 170,
+      "offsetX": 5,
+      "offsetY": 0,
+      "origW": 256,
+      "origH": 256
+    },
+    "combat/wobblyLine": {
+      "x": 1951,
+      "y": 1236,
+      "w": 67,
+      "h": 231,
+      "offsetX": 101,
+      "offsetY": 12,
+      "origW": 256,
+      "origH": 256
+    },
+    "cone5": {
+      "x": 115,
+      "y": 2110,
+      "w": 1139,
+      "h": 106,
+      "offsetX": 1,
+      "offsetY": 97,
+      "origW": 1140,
+      "origH": 300
+    },
+    "cone6": {
+      "x": 668,
+      "y": 2334,
+      "w": 1135,
+      "h": 32,
+      "offsetX": 5,
+      "offsetY": 34,
+      "origW": 1140,
+      "origH": 100
+    },
+    "cone8": {
+      "x": 514,
+      "y": 1236,
+      "w": 1140,
+      "h": 406,
+      "offsetX": 0,
+      "offsetY": 7,
+      "origW": 1140,
+      "origH": 420
+    },
+    "env/dust1": {
+      "x": 58,
+      "y": 2417,
+      "w": 11,
+      "h": 15,
+      "offsetX": 6,
+      "offsetY": 10,
+      "origW": 32,
+      "origH": 32
+    },
+    "env/dust2": {
+      "x": 142,
+      "y": 2417,
+      "w": 9,
+      "h": 8,
+      "offsetX": 2,
+      "offsetY": 19,
+      "origW": 32,
+      "origH": 32
+    },
+    "env/dust3": {
+      "x": 39,
+      "y": 2417,
+      "w": 17,
+      "h": 16,
+      "offsetX": 10,
+      "offsetY": 7,
+      "origW": 32,
+      "origH": 32
+    },
+    "env/dust4": {
+      "x": 71,
+      "y": 2417,
+      "w": 29,
+      "h": 13,
+      "offsetX": 2,
+      "offsetY": 9,
+      "origW": 32,
+      "origH": 32
+    },
+    "env/dust5": {
+      "x": 122,
+      "y": 2417,
+      "w": 18,
+      "h": 12,
+      "offsetX": 5,
+      "offsetY": 10,
+      "origW": 32,
+      "origH": 32
+    },
+    "env/dust6": {
+      "x": 102,
+      "y": 2417,
+      "w": 18,
+      "h": 13,
+      "offsetX": 5,
+      "offsetY": 12,
+      "origW": 32,
+      "origH": 32
+    },
+    "env/fire1": {
+      "x": 2024,
+      "y": 2334,
+      "w": 11,
+      "h": 18,
+      "offsetX": 11,
+      "offsetY": 7,
+      "origW": 32,
+      "origH": 32
+    },
+    "env/fire2": {
+      "x": 1997,
+      "y": 2334,
+      "w": 10,
+      "h": 27,
+      "offsetX": 11,
+      "offsetY": 1,
+      "origW": 32,
+      "origH": 32
+    },
+    "env/fire3": {
+      "x": 2009,
+      "y": 2334,
+      "w": 13,
+      "h": 22,
+      "offsetX": 10,
+      "offsetY": 2,
+      "origW": 32,
+      "origH": 32
+    },
+    "exhaust/bigBlur": {
+      "x": 1898,
+      "y": 1962,
+      "w": 123,
+      "h": 128,
+      "offsetX": 1,
+      "offsetY": 0,
+      "origW": 128,
+      "origH": 128
+    },
+    "exhaust/smallBlur": {
+      "x": 180,
+      "y": 2334,
+      "w": 62,
+      "h": 63,
+      "offsetX": 1,
+      "offsetY": 0,
+      "origW": 64,
+      "origH": 64
+    },
+    "glowSpark2": {
+      "x": 0,
+      "y": 2334,
+      "w": 81,
+      "h": 81,
+      "offsetX": 10,
+      "offsetY": 8,
+      "origW": 100,
+      "origH": 100
+    },
+    "shine2": {
+      "x": 1949,
+      "y": 2231,
+      "w": 80,
+      "h": 96,
+      "offsetX": 24,
+      "offsetY": 18,
+      "origW": 128,
+      "origH": 128
+    },
+    "ui/impactLineThick": {
+      "x": 2023,
+      "y": 1962,
+      "w": 20,
+      "h": 123,
+      "offsetX": 54,
+      "offsetY": 1,
+      "origW": 128,
+      "origH": 128
+    }
+  },
+  "textures": {
+    "images/monsters/theBottom/boss/fire1.png": {
+      "x": 1508,
+      "y": 1962,
+      "w": 128,
+      "h": 128
+    },
+    "images/monsters/theBottom/boss/fire2.png": {
+      "x": 1638,
+      "y": 1962,
+      "w": 128,
+      "h": 128
+    },
+    "images/monsters/theBottom/boss/ghost/core.png": {
+      "x": 1282,
+      "y": 0,
+      "w": 512,
+      "h": 512
+    },
+    "images/monsters/theBottom/boss/ghost/plasma1.png": {
+      "x": 0,
+      "y": 722,
+      "w": 512,
+      "h": 512
+    },
+    "images/monsters/theBottom/boss/ghost/plasma2.png": {
+      "x": 514,
+      "y": 722,
+      "w": 512,
+      "h": 512
+    },
+    "images/monsters/theBottom/boss/ghost/plasma3.png": {
+      "x": 1028,
+      "y": 722,
+      "w": 512,
+      "h": 512
+    },
+    "images/monsters/theBottom/boss/ghost/shadow.png": {
+      "x": 0,
+      "y": 1236,
+      "w": 512,
+      "h": 512
+    },
+    "images/monsters/theCity/automaton/orb.png": {
+      "x": 984,
+      "y": 1962,
+      "w": 145,
+      "h": 145
+    },
+    "images/vfx/combat/slash_1.png": {
+      "x": 1768,
+      "y": 1962,
+      "w": 128,
+      "h": 128
+    },
+    "images/vfx/horizontal_line.png": {
+      "x": 1693,
+      "y": 1236,
+      "w": 256,
+      "h": 256
+    },
+    "images/vfx/web.png": {
+      "x": 114,
+      "y": 2334,
+      "w": 64,
+      "h": 64
+    },
+    "images/whiteSquare32.png": {
+      "x": 1805,
+      "y": 2334,
+      "w": 32,
+      "h": 32
+    }
+  },
+  "imageMaster": {
+    "ANIMATED_SLASH_VFX": {
+      "texture": "images/vfx/combat/slash_1.png"
+    },
+    "ATK_BLUNT_HEAVY": {
+      "region": "attack/blunt_heavy"
+    },
+    "ATK_BLUNT_LIGHT": {
+      "region": "attack/blunt_light"
+    },
+    "ATK_FIRE": {
+      "region": "attack/fire"
+    },
+    "ATK_POISON": {
+      "region": "attack/poison"
+    },
+    "ATK_SHIELD": {
+      "region": "attack/shield"
+    },
+    "ATK_SLASH_D": {
+      "region": "attack/slash_light"
+    },
+    "ATK_SLASH_H": {
+      "region": "attack/slash_horizontal"
+    },
+    "ATK_SLASH_HEAVY": {
+      "region": "attack/slash_heavy"
+    },
+    "ATK_SLASH_V": {
+      "region": "attack/slash_vertical"
+    },
+    "BLUR_WAVE": {
+      "region": "combat/blurWave"
+    },
+    "BORDER_GLOW_2": {
+      "region": "borderGlow2"
+    },
+    "CONE_2": {
+      "region": "cone8"
+    },
+    "CONE_4": {
+      "region": "cone5"
+    },
+    "CONE_5": {
+      "region": "cone6"
+    },
+    "DUST_1": {
+      "region": "env/dust1"
+    },
+    "DUST_2": {
+      "region": "env/dust2"
+    },
+    "DUST_3": {
+      "region": "env/dust3"
+    },
+    "DUST_4": {
+      "region": "env/dust4"
+    },
+    "DUST_5": {
+      "region": "env/dust5"
+    },
+    "DUST_6": {
+      "region": "env/dust6"
+    },
+    "EXHAUST_L": {
+      "region": "exhaust/bigBlur"
+    },
+    "EXHAUST_S": {
+      "region": "exhaust/smallBlur"
+    },
+    "FLAME_1": {
+      "region": "combat/flame4"
+    },
+    "FLAME_2": {
+      "region": "combat/flame5"
+    },
+    "FLAME_3": {
+      "region": "combat/flame6"
+    },
+    "GHOST_ORB_1": {
+      "texture": "images/monsters/theBottom/boss/fire1.png"
+    },
+    "GHOST_ORB_2": {
+      "texture": "images/monsters/theBottom/boss/fire2.png"
+    },
+    "GLOW_SPARK_2": {
+      "region": "glowSpark2"
+    },
+    "HORIZONTAL_LINE": {
+      "texture": "images/vfx/horizontal_line.png"
+    },
+    "ROOM_SHINE_2": {
+      "region": "shine2"
+    },
+    "STRIKE_BLUR": {
+      "region": "combat/blurDot"
+    },
+    "STRIKE_LINE_2": {
+      "region": "combat/strikeLine3"
+    },
+    "THICK_3D_LINE_2": {
+      "region": "combat/spike2"
+    },
+    "TORCH_FIRE_1": {
+      "region": "env/fire1"
+    },
+    "TORCH_FIRE_2": {
+      "region": "env/fire2"
+    },
+    "TORCH_FIRE_3": {
+      "region": "env/fire3"
+    },
+    "WEB_VFX": {
+      "texture": "images/vfx/web.png"
+    },
+    "WHITE_SQUARE_IMG": {
+      "texture": "images/whiteSquare32.png"
+    },
+    "WOBBLY_LINE": {
+      "region": "combat/wobblyLine"
+    }
+  }
+}

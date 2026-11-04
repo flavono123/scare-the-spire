@@ -21,8 +21,11 @@ from scripts.lib.jvm_eval import (
     Obj,
     Range,
     Static,
+    Sym,
+    SymRef,
     Tainted,
     Wide,
+    parse_descriptor,
     switch_maps_from,
     untaint,
 )
@@ -43,6 +46,25 @@ MOTION_ACTIONS = {
     "AnimateHopAction": "hop",
     "AnimateJumpAction": "jump",
     "AnimateShakeAction": "shake",
+}
+VFX_PACKAGE = "com.megacrit.cardcrawl.vfx."
+SETTINGS = "com.megacrit.cardcrawl.core.Settings"
+COLOR = "com.badlogic.gdx.graphics.Color"
+MATH_UTILS = "com.badlogic.gdx.math.MathUtils"
+EFFECT_LISTS = {"effectList", "effectsQueue", "topLevelEffects"}
+# Dialog and floating text are not replayed on the site.
+TEXT_EFFECTS = {"SpeechBubble", "MegaSpeechBubble", "SpeechTextEffect", "TextAboveCreatureEffect"}
+# Actions whose first update flashes `FlashAtkImgEffect(target.hb.cX, target.hb.cY, attackEffect)`.
+FLASH_ACTIONS = {"DamageAction", "LoseHPAction", "VampireDamageAction", "ApplyPowerAction"}
+ACTION_DURATIONS = {
+    (SETTINGS, "ACTION_DUR_XFAST"): 0.1,
+    (SETTINGS, "ACTION_DUR_FASTER"): 0.2,
+    (SETTINGS, "ACTION_DUR_FAST"): 0.25,
+    (SETTINGS, "ACTION_DUR_MED"): 0.5,
+    (SETTINGS, "ACTION_DUR_LONG"): 1.0,
+    (SETTINGS, "ACTION_DUR_XLONG"): 1.5,
+    (SETTINGS, "FAST_MODE"): 0,
+    (SETTINGS, "scale"): 1.0,
 }
 CARD_PILES = {
     "MakeTempCardInDiscardAction": "discard",
@@ -74,6 +96,12 @@ class _Recorder:
         self.moves: list[dict[str, Any]] = []
 
     def hook(self, frame: Frame, owner: str, name: str, desc: str, target: Any, args: list[Any]) -> Any:
+        if name == "<init>" and owner == ABSTRACT_MONSTER and target is frame.this:
+            target.fields["__monster"] = list(args)
+            return VOID
+        if name == "loadAnimation" and target is frame.this:
+            target.fields["__loadAnimation"] = list(args)
+            return VOID
         if name == "<init>" and owner.endswith(".DamageInfo") and isinstance(target, Obj) and len(args) >= 2:
             target.fields["base"] = args[1]
             target.fields["output"] = args[1]
@@ -103,6 +131,100 @@ class _Recorder:
                 desc = "(Ljava/lang/String;" if named else "("
                 calls.append(_set_move_call(desc, values))
         return calls
+
+
+class _VfxRecorder(_Recorder):
+    """Also keeps the action queue in the game's order, direct effect adds and symbolic rolls."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.queue: list[Obj] = []
+        self.immediate: list[tuple[str, Obj]] = []
+        self.rolls = 0
+
+    def _roll(self, low: Any, high: Any, integer: bool) -> Any:
+        low, high = untaint(low), untaint(high)
+        if not all(isinstance(value, (int, float)) and not isinstance(value, bool) for value in (low, high)):
+            return OPAQUE
+        if low == high:
+            return low
+        self.rolls += 1
+        return Sym(0.0, ((f"{'randi' if integer else 'rand'}{self.rolls}:{low}:{high}", 1.0),))
+
+    def hook(self, frame: Frame, owner: str, name: str, desc: str, target: Any, args: list[Any]) -> Any:
+        if name == "<init>" and isinstance(target, Obj) and owner == target.cls and target is not frame.this:
+            target.fields["__desc"] = desc
+            return NotImplemented
+        if name in {"addToBottom", "addToBot"} and args and isinstance(args[-1], Obj):
+            self.queue.append(args[-1])
+            return VOID
+        if name == "addToTop" and args and isinstance(args[-1], Obj):
+            self.queue.insert(0, args[-1])
+            return VOID
+        if name == "add" and isinstance(target, Static) and target.owner == ABSTRACT_DUNGEON and target.name in EFFECT_LISTS:
+            if args and isinstance(args[0], Obj):
+                self.immediate.append((target.name, args[0]))
+            return 1
+        if owner == MATH_UTILS and name == "random":
+            if desc == "()F":
+                return self._roll(0.0, 1.0, False)
+            if desc == "(F)F":
+                return self._roll(0.0, args[0], False)
+            if desc == "(FF)F":
+                return self._roll(args[0], args[1], False)
+            if desc == "(I)I":
+                return self._roll(0, args[0], True)
+            if desc == "(II)I":
+                return self._roll(args[0], args[1], True)
+        if name == "cpy" and (isinstance(target, Static) and target.owner == COLOR or isinstance(target, Obj) and target.cls == COLOR):
+            return target
+        if name == "valueOf" and owner == COLOR and args and isinstance(args[0], str):
+            return Obj(COLOR, args=[args[0]])
+        return super().hook(frame, owner, name, desc, target, args)
+
+
+def _encode_vfx_arg(value: Any, kind: str, this: Obj, unknown: list[str]) -> Any:
+    value = untaint(value.value if isinstance(value, Wide) else value)
+    if kind == "Z":
+        return bool(value) if isinstance(value, (int, bool)) else None
+    if isinstance(value, Range):
+        value = Sym(0.0, ((f"randi0:{value.low}:{value.high}", 1.0),))
+    if isinstance(value, Sym):
+        if not value.terms:
+            return round(value.const, 4)
+        return {"c": round(value.const, 4), "t": {name: round(coeff, 4) for name, coeff in value.terms}}
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return round(float(value), 4) if isinstance(value, float) else value
+    if isinstance(value, str):
+        return value
+    if value is this or value == SymRef("m"):
+        return {"creature": "monster"}
+    if value == SymRef("p"):
+        return {"creature": "player"}
+    if value == SymRef("m.hb"):
+        return {"hitbox": "monster"}
+    if value == SymRef("p.hb"):
+        return {"hitbox": "player"}
+    if isinstance(value, Static) and value.owner == COLOR:
+        return {"color": value.name}
+    if isinstance(value, Static) and value.owner == SETTINGS and value.name.endswith("_COLOR"):
+        return {"color": f"Settings.{value.name}"}
+    if isinstance(value, Obj) and value.cls == COLOR and value.args:
+        plain = [untaint(arg) for arg in value.args]
+        if len(plain) == 1 and isinstance(plain[0], str):
+            return {"color": plain[0] if plain[0].startswith("#") else f"#{plain[0]}"}
+        if len(plain) == 1 and isinstance(plain[0], int):
+            return {"color": plain[0]}
+        if len(plain) == 4 and all(isinstance(arg, (int, float)) for arg in plain):
+            return {"color": [round(float(arg), 4) for arg in plain]}
+    if isinstance(value, Static) and "$" in value.owner:
+        return {"enum": value.name}
+    if value is None:
+        return None
+    unknown.append(repr(value)[:80])
+    return None
 
 
 def _set_move_call(desc: str, args: list[Any]) -> dict[str, Any]:
@@ -208,6 +330,155 @@ class MonsterReader:
             machine.run(method, this)
         return self._summarize(recorder, this, machine)
 
+    def body(self) -> dict[str, Any]:
+        """Hitbox, offset and skeleton scale from the constructor's `super(...)` and `loadAnimation(...)`."""
+        this = self._constructed(0)
+        args = [_plain(arg) for arg in this.fields.get("__monster", [])]
+        body: dict[str, Any] = {}
+        if len(args) >= 7 and all(isinstance(arg, (int, float)) for arg in args[3:7]):
+            body["hitbox"] = args[3:7]
+        if len(args) >= 10 and all(isinstance(arg, (int, float)) for arg in args[8:10]):
+            body["offset"] = args[8:10]
+        if len(args) >= 8 and isinstance(args[7], str):
+            body["image"] = args[7]
+        load = this.fields.get("__loadAnimation")
+        if load and len(load) >= 3 and isinstance(_plain(load[2]), (int, float)) and _plain(load[2]) != 1:
+            body["skeletonScale"] = _plain(load[2])
+        return body
+
+    def _action_duration(self, action: Obj) -> float:
+        """How long the action holds the queue: its constructor's `duration` if `update()` ticks it down."""
+        key = (action.cls, action.fields.get("__desc"))
+        cache = self.__dict__.setdefault("_durations", {})
+        if key in cache:
+            return cache[key]
+        duration = 0.0
+        if action.simple_name in {"VFXAction", "WaitAction"} or action.cls.startswith("com.megacrit.cardcrawl.actions."):
+            try:
+                cls = parse_class_file(self.jar.read(action.cls.replace(".", "/") + ".class"))
+            except KeyError:
+                cls = None
+            update = cls.method("update", "()V") if cls else None
+            ticks = bool(update and update.code and "tickDuration" in self._method_names(cls, update))
+            constructor = cls.method("<init>", action.fields.get("__desc")) if cls and action.fields.get("__desc") else None
+            if ticks and constructor and constructor.code:
+                this = Obj(cls.name)
+                Machine(cls, statics=dict(ACTION_DURATIONS), invoke_hook=lambda *_args: NotImplemented).run(constructor, this, list(action.args or []))
+                value = _plain(this.fields.get("duration"))
+                duration = float(value) if isinstance(value, (int, float)) else 0.0
+        cache[key] = duration
+        return duration
+
+    @staticmethod
+    def _method_names(cls: JavaClass, method: Any) -> set[str]:
+        names = set()
+        for insn in Machine(cls).insns(method).values():
+            if insn.op in {182, 183, 184, 185}:
+                names.add(cls.methodref(insn.operand)[1])
+        return names
+
+    def vfx_turn(self, move_id: int) -> tuple[list[dict[str, Any]], list[str]]:
+        """`takeTurn` for one move as a timeline: when each clip, motion, state change, flash and effect starts."""
+        this = self._constructed(0)
+        this.fields.update({
+            "nextMove": move_id,
+            "hb": SymRef("m.hb"),
+            "drawX": Sym.of("m.drawX"),
+            "drawY": Sym.of("m.drawY"),
+            "animX": Sym.of("m.animX"),
+            "animY": Sym.of("m.animY"),
+        })
+        recorder = _VfxRecorder()
+        machine = Machine(
+            self.cls,
+            statics={
+                **self._static_aliases(),
+                **ACTION_DURATIONS,
+                (ABSTRACT_DUNGEON, "ascensionLevel"): 0,
+                (SETTINGS, "xScale"): 1.0,
+                (SETTINGS, "yScale"): 1.0,
+                (SETTINGS, "renderScale"): 1.0,
+                (SETTINGS, "WIDTH"): Sym.of("screen.w"),
+                (SETTINGS, "HEIGHT"): Sym.of("screen.h"),
+                (ABSTRACT_DUNGEON, "floorY"): Sym.of("floorY"),
+                (ABSTRACT_DUNGEON, "player"): SymRef("p"),
+            },
+            switch_maps=self.switch_maps,
+            invoke_hook=recorder.hook,
+        )
+        take_turn = self.cls.method("takeTurn", "()V")
+        if take_turn and take_turn.code:
+            machine.run(take_turn, this)
+        unknown: list[str] = []
+
+        def creature(value: Any) -> str | None:
+            if value is this or value == SymRef("m"):
+                return "m"
+            if value == SymRef("p"):
+                return "p"
+            return None
+
+        def effect_event(at: float, effect: Obj, list_name: str) -> dict[str, Any]:
+            desc = effect.fields.get("__desc") or ""
+            kinds = parse_descriptor(desc)[0] if desc else []
+            event = {
+                "at": round(at, 3),
+                "type": "effect",
+                "effect": effect.cls.removeprefix(VFX_PACKAGE),
+                "args": [_encode_vfx_arg(arg, kinds[index] if index < len(kinds) else "", this, unknown)
+                         for index, arg in enumerate(effect.args or [])],
+            }
+            if list_name == "topLevelEffects":
+                event["list"] = "top"
+            return event
+
+        def flash(at: float, target: Any, attack: str) -> dict[str, Any] | None:
+            ref = creature(target)
+            if not ref or attack == "NONE":
+                return None
+            return {
+                "at": round(at, 3),
+                "type": "effect",
+                "effect": "combat.FlashAtkImgEffect",
+                "args": [{"c": 0, "t": {f"{ref}.hb.cX": 1}}, {"c": 0, "t": {f"{ref}.hb.cY": 1}}, {"enum": attack}],
+            }
+
+        events: list[dict[str, Any]] = [
+            effect_event(0.0, effect, name) for name, effect in recorder.immediate if effect.simple_name not in TEXT_EFFECTS
+        ]
+        at = 0.0
+        for action in recorder.queue:
+            name = action.simple_name
+            args = action.args or []
+            if name == "VFXAction":
+                effect = next((arg for arg in args if isinstance(arg, Obj) and arg.cls.startswith(VFX_PACKAGE)), None)
+                if effect and effect.simple_name not in TEXT_EFFECTS:
+                    top = len(args) == 4 and _plain(args[3]) == 1
+                    events.append(effect_event(at, effect, "topLevelEffects" if top else "effectList"))
+            elif name in FLASH_ACTIONS:
+                attack = next((arg.name for arg in args if isinstance(arg, Static) and arg.owner.endswith("$AttackEffect")), "NONE")
+                event = flash(at, args[0] if args else None, attack)
+                if event:
+                    events.append(event)
+            elif name == "GainBlockAction" and args:
+                event = flash(at, args[0], "SHIELD")
+                if event:
+                    events.append(event)
+            elif name in MOTION_ACTIONS:
+                events.append({"at": round(at, 3), "type": "motion", "name": MOTION_ACTIONS[name]})
+            elif name == "SetAnimationAction" and len(args) >= 2 and isinstance(args[1], str):
+                events.append({"at": round(at, 3), "type": "spine", "name": args[1]})
+            elif name == "ChangeStateAction" and len(args) >= 2 and isinstance(args[1], str):
+                events.append({"at": round(at, 3), "type": "state", "name": args[1]})
+                for animation in self._state_animations(machine, this, args[1]):
+                    events.append({"at": round(at, 3), "type": "spine", "name": animation})
+            elif name == "ShakeScreenAction" and len(args) >= 3:
+                dur, intensity = args[1], args[2]
+                if isinstance(dur, Static) and isinstance(intensity, Static):
+                    events.append({"at": round(at, 3), "type": "shake", "intensity": intensity.name, "dur": dur.name})
+            at += self._action_duration(action)
+        return events, unknown
+
     def _state_animations(self, machine: Machine, this: Obj, state: str) -> list[str]:
         method = self.cls.method("changeState", "(Ljava/lang/String;)V")
         if not method or not method.code:
@@ -291,6 +562,19 @@ class MonsterReader:
             "flags": flags,
             "triggers": triggers,
         }
+
+
+def read_monster_vfx(jar: Any, class_path: str, move_ids: list[int], *, switch_maps: dict[str, dict[str, int]], class_ids: dict[str, str]) -> dict[str, Any]:
+    """Body (hitbox, offset, skeleton scale) and each move's playback timeline."""
+    reader = MonsterReader(jar, class_path, switch_maps=switch_maps, class_ids=class_ids)
+    timelines: dict[str, list[dict[str, Any]]] = {}
+    unknown: list[str] = []
+    for move_id in move_ids:
+        events, missing = reader.vfx_turn(move_id)
+        unknown += missing
+        if events:
+            timelines[str(move_id)] = events
+    return {**reader.body(), "moves": timelines, "unknown": unknown}
 
 
 def byte_constant_names(cls: JavaClass) -> dict[int, str]:

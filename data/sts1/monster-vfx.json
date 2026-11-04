@@ -1,0 +1,6908 @@
+{
+  "acid-slime-l": {
+    "hitbox": [
+      0,
+      0,
+      300,
+      180
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "shake"
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "acid-slime-m": {
+    "hitbox": [
+      0,
+      0,
+      170,
+      130
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "acid-slime-s": {
+    "hitbox": [
+      0,
+      -4,
+      130,
+      100
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cultist": {
+    "hitbox": [
+      -8,
+      10,
+      230,
+      240
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HORIZONTAL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "fungi-beast": {
+    "hitbox": [
+      0,
+      -16,
+      260,
+      170
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "fuzzy-louse-defensive": {
+    "hitbox": [
+      0,
+      -5,
+      180,
+      140
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "REAR_IDLE"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "rear"
+        },
+        {
+          "at": 0.9,
+          "type": "effect",
+          "effect": "combat.WebEffect",
+          "args": [
+            {
+              "creature": "player"
+            },
+            {
+              "c": -70.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 10.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "fuzzy-louse-normal": {
+    "hitbox": [
+      0,
+      -5,
+      180,
+      140
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "REAR_IDLE"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "rear"
+        }
+      ]
+    }
+  },
+  "gremlin-fat": {
+    "hitbox": [
+      0,
+      0,
+      110,
+      220
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gremlin-nob": {
+    "hitbox": [
+      -70,
+      -10,
+      270,
+      380
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gremlin-thief": {
+    "hitbox": [
+      0,
+      0,
+      120,
+      160
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HORIZONTAL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gremlin-tsundere": {
+    "hitbox": [
+      0,
+      0,
+      120,
+      200
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gremlin-warrior": {
+    "hitbox": [
+      -4,
+      12,
+      130,
+      194
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gremlin-wizard": {
+    "hitbox": [
+      40,
+      -5,
+      130,
+      180
+    ],
+    "offset": [
+      -35,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "hexaghost": {
+    "hitbox": [
+      20,
+      0,
+      450,
+      450
+    ],
+    "image": "images/monsters/theBottom/boss/ghost/core.png",
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.GhostIgniteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand1:-120.0:120.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand2:-120.0:120.0": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "at": 0.05,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.15,
+          "type": "effect",
+          "effect": "combat.GhostIgniteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand3:-120.0:120.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand4:-120.0:120.0": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "at": 0.2,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.GhostIgniteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand5:-120.0:120.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand6:-120.0:120.0": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "at": 0.35,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.45,
+          "type": "effect",
+          "effect": "combat.GhostIgniteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand7:-120.0:120.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand8:-120.0:120.0": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.GhostIgniteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand9:-120.0:120.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand10:-120.0:120.0": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "at": 0.65,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.75,
+          "type": "effect",
+          "effect": "combat.GhostIgniteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand11:-120.0:120.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand12:-120.0:120.0": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "at": 0.8,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.9,
+          "type": "state",
+          "name": "Deactivate"
+        }
+      ],
+      "5": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "Activate"
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FireballEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 1.1,
+          "type": "state",
+          "name": "Activate Orb"
+        }
+      ],
+      "6": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.ScreenOnFireEffect",
+          "args": []
+        },
+        {
+          "at": 0.05,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.15,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.35,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.45,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.55,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 3.65,
+          "type": "state",
+          "name": "Deactivate"
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "BorderFlashEffect",
+          "args": [
+            {
+              "color": "CHARTREUSE"
+            }
+          ]
+        },
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.7,
+          "type": "state",
+          "name": "Activate Orb"
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.InflameEffect",
+          "args": [
+            {
+              "creature": "monster"
+            }
+          ]
+        },
+        {
+          "at": 0.05,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        },
+        {
+          "at": 0.55,
+          "type": "state",
+          "name": "Activate Orb"
+        }
+      ]
+    }
+  },
+  "jaw-worm": {
+    "hitbox": [
+      0,
+      -25,
+      260,
+      170
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "chomp"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.BiteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "shake",
+          "intensity": "MED",
+          "dur": "SHORT"
+        },
+        {
+          "at": 0.95,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "hop"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        },
+        {
+          "at": 0.35,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "lagavulin": {
+    "hitbox": [
+      0,
+      -25,
+      320,
+      220
+    ],
+    "offset": [
+      0,
+      20
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "DEBUFF"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Debuff"
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "looter": {
+    "hitbox": [
+      0,
+      0,
+      200,
+      220
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.75,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "3": [
+        {
+          "at": 0.75,
+          "type": "effect",
+          "effect": "combat.SmokeBombEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "sentry": {
+    "hitbox": [
+      0,
+      -5,
+      180,
+      310
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "3": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.ShockWaveEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            {
+              "color": "ROYAL"
+            },
+            {
+              "enum": "ADDITIVE"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "attack"
+        },
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "BorderFlashEffect",
+          "args": [
+            {
+              "color": "SKY"
+            }
+          ]
+        },
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.SmallLaserEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "slaver-blue": {
+    "hitbox": [
+      0,
+      0,
+      170,
+      230
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HORIZONTAL"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "slaver-red": {
+    "hitbox": [
+      0,
+      0,
+      170,
+      230
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HORIZONTAL"
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "Use Net"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "idleNoNet"
+        },
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.EntangleEffect",
+          "args": [
+            {
+              "c": -70.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 10.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "slime-boss": {
+    "hitbox": [
+      0,
+      -30,
+      400,
+      350
+    ],
+    "offset": [
+      0,
+      28
+    ],
+    "moves": {
+      "4": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "2": [
+        {
+          "at": 1.0,
+          "type": "shake",
+          "intensity": "LOW",
+          "dur": "LONG"
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "shake"
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "jump"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.WeightyImpactEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            },
+            {
+              "color": [
+                0.1,
+                1.0,
+                0.1,
+                0.0
+              ]
+            }
+          ]
+        },
+        {
+          "at": 1.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "POISON"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "spike-slime-l": {
+    "hitbox": [
+      0,
+      -30,
+      300,
+      180
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "shake"
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "spike-slime-m": {
+    "hitbox": [
+      0,
+      -25,
+      170,
+      130
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "4": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "spike-slime-s": {
+    "hitbox": [
+      0,
+      -24,
+      130,
+      100
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "the-guardian": {
+    "hitbox": [
+      0,
+      95,
+      440,
+      350
+    ],
+    "offset": [
+      -50,
+      -100
+    ],
+    "skeletonScale": 2,
+    "moves": {
+      "5": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.CleaveEffect",
+          "args": [
+            true
+          ]
+        },
+        {
+          "at": 0.75,
+          "type": "effect",
+          "effect": "combat.CleaveEffect",
+          "args": [
+            true
+          ]
+        },
+        {
+          "at": 1.0,
+          "type": "effect",
+          "effect": "combat.CleaveEffect",
+          "args": [
+            true
+          ]
+        },
+        {
+          "at": 1.25,
+          "type": "effect",
+          "effect": "combat.CleaveEffect",
+          "args": [
+            true
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "Offensive Mode"
+        },
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.1,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HEAVY"
+            }
+          ]
+        }
+      ],
+      "6": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "bandit-bear": {
+    "hitbox": [
+      -5,
+      -4,
+      180,
+      280
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "MAUL"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "bandit-child": {
+    "hitbox": [
+      -5,
+      -4,
+      190,
+      180
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "SLASH"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.4,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_VERTICAL"
+            }
+          ]
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HORIZONTAL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "bandit-leader": {
+    "hitbox": [
+      -10,
+      -7,
+      180,
+      285
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "3": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "STAB"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "STAB"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "book-of-stabbing": {
+    "hitbox": [
+      0,
+      -10,
+      320,
+      420
+    ],
+    "offset": [
+      0,
+      5
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_VERTICAL"
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK_2"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_VERTICAL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "bronze-automaton": {
+    "hitbox": [
+      0,
+      -30,
+      270,
+      400
+    ],
+    "offset": [
+      -50,
+      20
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.LaserBeamEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 60.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        },
+        {
+          "at": 0.35,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        }
+      ],
+      "5": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "bronze-orb": {
+    "hitbox": [
+      0,
+      0,
+      160,
+      160
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "image": "images/monsters/theCity/automaton/orb.png",
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "BorderFlashEffect",
+          "args": [
+            {
+              "color": "SKY"
+            }
+          ]
+        },
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.SmallLaserEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "byrd": {
+    "hitbox": [
+      0,
+      50,
+      240,
+      180
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "FLYING"
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        },
+        {
+          "at": 0.35,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        },
+        {
+          "at": 0.45,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        },
+        {
+          "at": 0.55,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        },
+        {
+          "at": 0.65,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HEAVY"
+            }
+          ]
+        }
+      ],
+      "5": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "centurion": {
+    "hitbox": [
+      -14,
+      -20,
+      250,
+      330
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "3": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "MACE_HIT"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.35,
+          "type": "state",
+          "name": "MACE_HIT"
+        },
+        {
+          "at": 0.35,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.7,
+          "type": "state",
+          "name": "MACE_HIT"
+        },
+        {
+          "at": 0.7,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.95,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "MACE_HIT"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "champ": {
+    "hitbox": [
+      0,
+      -15,
+      400,
+      410
+    ],
+    "offset": [
+      -90,
+      0
+    ],
+    "moves": {
+      "7": [
+        {
+          "at": 2.0,
+          "type": "effect",
+          "effect": "combat.InflameEffect",
+          "args": [
+            {
+              "creature": "monster"
+            }
+          ]
+        },
+        {
+          "at": 2.25,
+          "type": "effect",
+          "effect": "combat.InflameEffect",
+          "args": [
+            {
+              "creature": "monster"
+            }
+          ]
+        },
+        {
+          "at": 2.5,
+          "type": "effect",
+          "effect": "combat.InflameEffect",
+          "args": [
+            {
+              "creature": "monster"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "jump"
+        },
+        {
+          "at": 0.75,
+          "type": "effect",
+          "effect": "combat.GoldenSlashEffect",
+          "args": [
+            {
+              "c": -60.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            },
+            true
+          ]
+        },
+        {
+          "at": 0.95,
+          "type": "effect",
+          "effect": "combat.GoldenSlashEffect",
+          "args": [
+            {
+              "c": 60.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            },
+            true
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.GoldenSlashEffect",
+          "args": [
+            {
+              "c": -60.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            },
+            false
+          ]
+        }
+      ]
+    }
+  },
+  "chosen": {
+    "hitbox": [
+      5,
+      -10,
+      200,
+      280
+    ],
+    "offset": [
+      0,
+      -20
+    ],
+    "moves": {
+      "5": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HORIZONTAL"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_VERTICAL"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 2.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 2.0,
+          "type": "spine",
+          "name": "Attack"
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HEAVY"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gremlin-leader": {
+    "hitbox": [
+      0,
+      -15,
+      200,
+      310
+    ],
+    "offset": [
+      35,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "CALL"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Call"
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HORIZONTAL"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_VERTICAL"
+            }
+          ]
+        },
+        {
+          "at": 0.7,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "healer": {
+    "hitbox": [
+      0,
+      -20,
+      230,
+      250
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "STAFF_RAISE"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "STAFF_RAISE"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        }
+      ]
+    }
+  },
+  "mugger": {
+    "hitbox": [
+      0,
+      0,
+      200,
+      220
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "3": [
+        {
+          "at": 2.0,
+          "type": "effect",
+          "effect": "combat.SmokeBombEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "shelled-parasite": {
+    "hitbox": [
+      20,
+      -6,
+      350,
+      260
+    ],
+    "offset": [
+      -20,
+      10
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.8,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "hop"
+        },
+        {
+          "at": 0.55,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        },
+        {
+          "at": 0.65,
+          "type": "motion",
+          "name": "hop"
+        },
+        {
+          "at": 1.2,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.BiteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand1:-25.0:25.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand2:-25.0:25.0": 1.0
+              }
+            },
+            {
+              "color": "GOLD"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "slaver-boss": {
+    "hitbox": [
+      -10,
+      -8,
+      200,
+      280
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "snake-plant": {
+    "hitbox": [
+      0,
+      -44,
+      350,
+      360
+    ],
+    "offset": [
+      0,
+      50
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.BiteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand1:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand2:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "color": "CHARTREUSE"
+            }
+          ]
+        },
+        {
+          "at": 0.8,
+          "type": "effect",
+          "effect": "combat.BiteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand3:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand4:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "color": "CHARTREUSE"
+            }
+          ]
+        },
+        {
+          "at": 1.1,
+          "type": "effect",
+          "effect": "combat.BiteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand5:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand6:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "color": "CHARTREUSE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "snecko": {
+    "hitbox": [
+      -30,
+      -20,
+      310,
+      305
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.IntimidateEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK_2"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.BiteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand1:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand2:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "color": "CHARTREUSE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "spheric-guardian": {
+    "hitbox": [
+      0,
+      10,
+      280,
+      280
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        },
+        {
+          "at": 0.25,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.2,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "the-collector": {
+    "hitbox": [
+      15,
+      -40,
+      300,
+      390
+    ],
+    "offset": [
+      60,
+      135
+    ],
+    "moves": {
+      "4": [
+        {
+          "at": 2.0,
+          "type": "effect",
+          "effect": "CollectorCurseEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "torch-head": {
+    "hitbox": [
+      -5,
+      -20,
+      145,
+      240
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "awakened-one": {
+    "hitbox": [
+      40,
+      -30,
+      460,
+      250
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK_1"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack_1"
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.1,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.2,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ],
+      "5": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK_2"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.ShockWaveEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            {
+              "color": [
+                0.1,
+                0.0,
+                0.2,
+                1.0
+              ]
+            },
+            {
+              "enum": "CHAOTIC"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.ShockWaveEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            {
+              "color": [
+                0.3,
+                0.2,
+                0.4,
+                1.0
+              ]
+            },
+            {
+              "enum": "CHAOTIC"
+            }
+          ]
+        },
+        {
+          "at": 0.9,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SMASH"
+            }
+          ]
+        }
+      ],
+      "6": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK_2"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "POISON"
+            }
+          ]
+        }
+      ],
+      "8": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.55,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.65,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 1.2,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 1.3,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 1.85,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.IntenseZoomEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            true
+          ],
+          "list": "top"
+        },
+        {
+          "at": 0.05,
+          "type": "state",
+          "name": "REBIRTH"
+        },
+        {
+          "at": 0.05,
+          "type": "spine",
+          "name": "Idle_2"
+        }
+      ]
+    }
+  },
+  "dagger": {
+    "hitbox": [
+      0,
+      -50,
+      140,
+      130
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HORIZONTAL"
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "SUICIDE"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack2"
+        },
+        {
+          "at": 0.3,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "darkling": {
+    "hitbox": [
+      0,
+      -20,
+      260,
+      200
+    ],
+    "offset": [
+      0,
+      20
+    ],
+    "moves": {
+      "5": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "REVIVE"
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "deca": {
+    "hitbox": [
+      0,
+      -26,
+      390,
+      390
+    ],
+    "offset": [
+      -350,
+      30
+    ],
+    "moves": {
+      "0": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "donu": {
+    "hitbox": [
+      0,
+      -20,
+      390,
+      390
+    ],
+    "offset": [
+      100,
+      20
+    ],
+    "moves": {
+      "0": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "exploder": {
+    "hitbox": [
+      -8,
+      -10,
+      150,
+      150
+    ],
+    "offset": [
+      0,
+      10
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "giant-head": {
+    "hitbox": [
+      0,
+      -40,
+      460,
+      300
+    ],
+    "offset": [
+      -70,
+      40
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 1.7,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SMASH"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 1.7,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "maw": {
+    "hitbox": [
+      0,
+      -40,
+      430,
+      360
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "5": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "nemesis": {
+    "hitbox": [
+      5,
+      -10,
+      350,
+      440
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.1,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.2,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.ShockWaveEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            {
+              "color": "Settings.GREEN_TEXT_COLOR"
+            },
+            {
+              "enum": "CHAOTIC"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.4,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "orb-walker": {
+    "hitbox": [
+      -20,
+      -14,
+      280,
+      250
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HEAVY"
+            }
+          ]
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.4,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "reptomancer": {
+    "hitbox": [
+      0,
+      -30,
+      220,
+      320
+    ],
+    "offset": [
+      -20,
+      10
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "SUMMON"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Sumon"
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.BiteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand1:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand2:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "color": "ORANGE"
+            }
+          ]
+        },
+        {
+          "at": 0.7,
+          "type": "effect",
+          "effect": "combat.BiteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand3:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand4:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "color": "ORANGE"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.BiteEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0,
+                "rand1:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0,
+                "rand2:-50.0:50.0": 1.0
+              }
+            },
+            {
+              "color": "CHARTREUSE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "repulsor": {
+    "hitbox": [
+      -8,
+      -10,
+      150,
+      150
+    ],
+    "offset": [
+      0,
+      10
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HORIZONTAL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "serpent": {
+    "hitbox": [
+      -10,
+      -35,
+      480,
+      430
+    ],
+    "offset": [
+      0,
+      10
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.4,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "spiker": {
+    "hitbox": [
+      -8,
+      -10,
+      150,
+      150
+    ],
+    "offset": [
+      0,
+      10
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HORIZONTAL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "time-eater": {
+    "hitbox": [
+      -10,
+      -30,
+      476,
+      410
+    ],
+    "offset": [
+      -50,
+      30
+    ],
+    "moves": {
+      "2": [
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.ShockWaveEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            {
+              "color": "Settings.BLUE_TEXT_COLOR"
+            },
+            {
+              "enum": "CHAOTIC"
+            }
+          ]
+        },
+        {
+          "at": 1.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 1.35,
+          "type": "effect",
+          "effect": "combat.ShockWaveEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            {
+              "color": "Settings.BLUE_TEXT_COLOR"
+            },
+            {
+              "enum": "CHAOTIC"
+            }
+          ]
+        },
+        {
+          "at": 2.1,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 2.2,
+          "type": "effect",
+          "effect": "combat.ShockWaveEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            {
+              "color": "Settings.BLUE_TEXT_COLOR"
+            },
+            {
+              "enum": "CHAOTIC"
+            }
+          ]
+        },
+        {
+          "at": 2.95,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.5,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.5,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.9,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "POISON"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "transient": {
+    "hitbox": [
+      0,
+      -15,
+      370,
+      340
+    ],
+    "offset": [
+      0,
+      20
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.4,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "writhing-mass": {
+    "hitbox": [
+      5,
+      -26,
+      450,
+      310
+    ],
+    "offset": [
+      0,
+      15
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "slow-attack"
+        },
+        {
+          "at": 0.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        },
+        {
+          "at": 0.7,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_LIGHT"
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "motion",
+          "name": "fast-attack"
+        },
+        {
+          "at": 0.25,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.35,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "motion",
+          "name": "fast-attack"
+        }
+      ],
+      "0": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.4,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_HEAVY"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "corrupt-heart": {
+    "hitbox": [
+      30,
+      -30,
+      476,
+      410
+    ],
+    "offset": [
+      -50,
+      30
+    ],
+    "moves": {
+      "3": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.HeartMegaDebuffEffect",
+          "args": []
+        }
+      ],
+      "1": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.BloodShotEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            },
+            12
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.7,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.8,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.9,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 1.0,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 1.1,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 1.2,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 1.3,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 1.4,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 1.5,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 1.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 1.7,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.ViceCrushEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "p.hb.cY": 1.0
+              }
+            }
+          ]
+        },
+        {
+          "at": 0.6,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "4": [
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "BorderFlashEffect",
+          "args": [
+            {
+              "color": [
+                0.8,
+                0.5,
+                1.0,
+                1.0
+              ]
+            }
+          ]
+        },
+        {
+          "at": 0.0,
+          "type": "effect",
+          "effect": "combat.HeartBuffEffect",
+          "args": [
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cX": 1.0
+              }
+            },
+            {
+              "c": 0.0,
+              "t": {
+                "m.hb.cY": 1.0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "spire-shield": {
+    "hitbox": [
+      0,
+      -20,
+      380,
+      290
+    ],
+    "offset": [
+      -1000,
+      15
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack"
+        },
+        {
+          "at": 0.35,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "OLD_ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "old_attack"
+        },
+        {
+          "at": 0.35,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "BLUNT_HEAVY"
+            }
+          ]
+        },
+        {
+          "at": 0.45,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "m.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SHIELD"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "spire-spear": {
+    "hitbox": [
+      0,
+      -15,
+      380,
+      290
+    ],
+    "offset": [
+      70,
+      10
+    ],
+    "moves": {
+      "1": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.15,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        },
+        {
+          "at": 0.25,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.25,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.4,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "FIRE"
+            }
+          ]
+        }
+      ],
+      "3": [
+        {
+          "at": 0.0,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.0,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.15,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        },
+        {
+          "at": 0.25,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.25,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.4,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        },
+        {
+          "at": 0.5,
+          "type": "state",
+          "name": "ATTACK"
+        },
+        {
+          "at": 0.5,
+          "type": "spine",
+          "name": "Attack_2"
+        },
+        {
+          "at": 0.65,
+          "type": "effect",
+          "effect": "combat.FlashAtkImgEffect",
+          "args": [
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cX": 1
+              }
+            },
+            {
+              "c": 0,
+              "t": {
+                "p.hb.cY": 1
+              }
+            },
+            {
+              "enum": "SLASH_DIAGONAL"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -109,12 +109,56 @@ class Range:
     high: int
 
 
+@dataclass(frozen=True)
+class Sym:
+    """`const + sum(coeff * name)`: a linear expression over named unknowns.
+
+    Positions the game reads from creatures and the screen (`m.hb.cX`,
+    `p.hb.cY`, `screen.w`) and random rolls stay symbolic through float
+    arithmetic, so effect arguments can be evaluated later on the site.
+    """
+
+    const: float = 0.0
+    terms: tuple[tuple[str, float], ...] = ()
+
+    @staticmethod
+    def of(name: str) -> "Sym":
+        return Sym(0.0, ((name, 1.0),))
+
+    def plus(self, other: "Sym | float | int") -> "Sym":
+        if not isinstance(other, Sym):
+            return Sym(self.const + other, self.terms)
+        merged = dict(self.terms)
+        for name, coeff in other.terms:
+            merged[name] = merged.get(name, 0.0) + coeff
+        return Sym(self.const + other.const, tuple((name, coeff) for name, coeff in merged.items() if coeff != 0))
+
+    def scaled(self, factor: float) -> "Sym":
+        return Sym(self.const * factor, tuple((name, coeff * factor) for name, coeff in self.terms if coeff * factor != 0))
+
+
+@dataclass(frozen=True)
+class SymRef:
+    """An object whose fields read as symbols, e.g. `m.hb` -> `m.hb.cX`."""
+
+    name: str
+
+
 @dataclass
 class Insn:
     offset: int
     op: int
     operand: Any
     next: int
+
+
+_range_rolls = [0]
+
+
+def _range_sym(value: "Range") -> "Sym":
+    """An int roll inside symbolic arithmetic: a named uniform term."""
+    _range_rolls[0] += 1
+    return Sym(0.0, ((f"randi{_range_rolls[0]}:{value.low}:{value.high}", 1.0),))
 
 
 def _signed(value: int) -> int:
@@ -446,7 +490,10 @@ class Machine:
             stack.append(self._arith((op - 96) // 4, left, right, wide=(op - 96) % 4 in {1, 3}))
         elif 116 <= op <= 119:
             value = stack.pop()
-            stack.append(-_num(value) if _known(value) else OPAQUE)
+            if isinstance(untaint(value), Sym):
+                stack.append(untaint(value).scaled(-1.0))
+            else:
+                stack.append(-_num(value) if _known(value) else OPAQUE)
         elif 120 <= op <= 131:
             right, left = stack.pop(), stack.pop()
             stack.append(self._bits(op, left, right))
@@ -515,7 +562,9 @@ class Machine:
         elif op == 180:
             owner, name, desc = cls.fieldref(insn.operand)
             target = stack.pop()
-            if target is frame.this and self.exploring and name not in frame.fields and desc in {"I", "Z", "B", "F", "S"}:
+            if isinstance(target, SymRef):
+                stack.append(SymRef(f"{target.name}.{name}") if desc.startswith("L") else Sym.of(f"{target.name}.{name}"))
+            elif target is frame.this and self.exploring and name not in frame.fields and desc in {"I", "Z", "B", "F", "S"}:
                 # Inherited state (hit points, block) is unknown while exploring.
                 stack.append(OPAQUE)
             else:
@@ -587,7 +636,35 @@ class Machine:
     # -- values ----------------------------------------------------------------
 
     @staticmethod
+    def _sym_arith(kind: int, left: Any, right: Any) -> Any:
+        left = untaint(left.value if isinstance(left, Wide) else left)
+        right = untaint(right.value if isinstance(right, Wide) else right)
+        if isinstance(left, Range):
+            left = _range_sym(left)
+        if isinstance(right, Range):
+            right = _range_sym(right)
+        number = lambda value: isinstance(value, (int, float)) and not isinstance(value, bool)
+        if not (isinstance(left, Sym) or number(left)) or not (isinstance(right, Sym) or number(right)):
+            return OPAQUE
+        if kind == 0:
+            return left.plus(right) if isinstance(left, Sym) else right.plus(left)
+        if kind == 1:
+            return left.plus(right.scaled(-1.0) if isinstance(right, Sym) else -right) if isinstance(left, Sym) else right.scaled(-1.0).plus(left)
+        if kind == 2:
+            if isinstance(left, Sym) and number(right):
+                return left.scaled(float(right))
+            if isinstance(right, Sym) and number(left):
+                return right.scaled(float(left))
+            return OPAQUE
+        if kind == 3 and isinstance(left, Sym) and number(right) and right != 0:
+            return left.scaled(1.0 / float(right))
+        return OPAQUE
+
+    @staticmethod
     def _arith(kind: int, left: Any, right: Any, wide: bool) -> Any:
+        if any(isinstance(untaint(value.value if isinstance(value, Wide) else value), Sym) for value in (left, right)):
+            value = Machine._sym_arith(kind, left, right)
+            return Wide(value) if wide else value
         if isinstance(left, Range) or isinstance(right, Range):
             if kind in {0, 1} and (isinstance(left, Range) != isinstance(right, Range)):
                 rng, other = (left, right) if isinstance(left, Range) else (right, left)
@@ -636,6 +713,9 @@ class Machine:
 
     @staticmethod
     def _convert(op: int, value: Any) -> Any:
+        plain = value.value if isinstance(value, Wide) else value
+        if isinstance(plain, Sym):
+            return Wide(plain) if op in {133, 135, 138, 140, 141, 143} else plain
         if not _known(value):
             return Wide(OPAQUE) if op in {133, 135, 138, 140, 141, 143} else OPAQUE
         number = _num(value)
