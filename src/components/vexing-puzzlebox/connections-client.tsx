@@ -806,7 +806,7 @@ export function ConnectionsClient({
                         aria-label={tile.name}
                         onClick={(event) => toggleTile(tile.key, event.currentTarget, event.timeStamp)}
                         data-connections-hint={tile.key === hintKey && !isSelected ? "" : undefined}
-                        className={`flex h-full min-h-16 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border px-1 py-2 text-center text-xs font-semibold transition-colors [word-break:keep-all] sm:min-h-20 sm:text-sm ${
+                        className={`flex h-full min-h-16 w-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border px-1 py-2 text-center text-xs font-semibold transition-colors [overflow-wrap:anywhere] [word-break:keep-all] sm:min-h-20 sm:text-sm ${
                           tile.key === hintKey && !isSelected ? "connections-beckon " : ""
                         }${
                           isWrong
@@ -816,7 +816,7 @@ export function ConnectionsClient({
                               : "border-border bg-card/90 text-foreground hover:border-primary/60"
                         }`}
                       >
-                        <span className={`flex flex-col items-center gap-1 ${isWrong ? "connections-wrong-jitter" : ""}`}>
+                        <span className={`flex max-w-full flex-col items-center gap-1 ${isWrong ? "connections-wrong-jitter" : ""}`}>
                           {display.token && tile.imageUrl && (
                             <Image
                               src={tile.imageUrl}
