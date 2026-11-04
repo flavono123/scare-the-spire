@@ -133,7 +133,7 @@ function RankRow({
 }) {
   return (
     <div
-      className={`grid grid-cols-[2.75rem_minmax(0,1fr)_3.5rem_3rem_4rem] items-center gap-1 py-1.5 ${CREAM} ${row.is_me ? "bg-[#85ceeb]/10" : ""}`}
+      className={`grid grid-cols-[2rem_minmax(0,1fr)_3rem_2rem_3.25rem] sm:grid-cols-[2.75rem_minmax(0,1fr)_3.5rem_3rem_4rem] items-center gap-1 py-1.5 ${CREAM} ${row.is_me ? "bg-[#85ceeb]/10" : ""}`}
       data-rank-row={row.rank}
       data-rank-me={row.is_me ? "" : undefined}
     >
@@ -403,7 +403,7 @@ export function RankingsClient({
 
   return (
     <section className="mx-auto max-w-5xl" data-puzzlebox-rankings={game} data-rankings-board={board.id ?? "total"}>
-      <div role="tablist" aria-label={copy.gamesLabel} className="mb-5 flex justify-center gap-6">
+      <div role="tablist" aria-label={copy.gamesLabel} className="mb-5 flex justify-center gap-4 sm:gap-6">
         {games.map((item) => (
           <button
             key={item.id}
@@ -411,7 +411,7 @@ export function RankingsClient({
             role="tab"
             aria-selected={game === item.id}
             onClick={() => showBoard(item.id, 1)}
-            className={`flex items-center gap-2 font-game-title text-base transition-opacity ${
+            className={`flex min-w-0 items-center gap-2 text-left font-game-title text-sm transition-opacity sm:text-base ${
               game === item.id ? `${GOLD} font-semibold` : "text-muted-foreground opacity-70 hover:opacity-100"
             }`}
           >
@@ -522,7 +522,7 @@ export function RankingsClient({
             </button>
           </div>
 
-          <div className="mt-3 grid grid-cols-[2.75rem_minmax(0,1fr)_3.5rem_3rem_4rem] items-end gap-1 pb-1.5" aria-hidden="true">
+          <div className="mt-3 grid grid-cols-[2rem_minmax(0,1fr)_3rem_2rem_3.25rem] sm:grid-cols-[2.75rem_minmax(0,1fr)_3.5rem_3rem_4rem] items-end gap-1 pb-1.5" aria-hidden="true">
             <GameUiHoverTip label={gameCopy.leaderboardRank}>
               <Image src={TROPHY_SRC} alt="" width={64} height={64} className="h-8 w-8 object-contain" />
             </GameUiHoverTip>
