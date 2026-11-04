@@ -67,7 +67,7 @@ function ModeButton({
       role="tab"
       aria-selected={selected}
       onClick={onSelect}
-      className={`group/mode relative aspect-[490/560] w-[6.5rem] shrink-0 transition-[transform,filter] duration-150 sm:w-[8.5rem] ${
+      className={`group/mode relative aspect-[490/560] w-[6.5rem] min-w-0 shrink transition-[transform,filter] duration-150 sm:w-[8.5rem] ${
         selected
           ? "scale-105 drop-shadow-[0_0_10px_rgba(239,200,81,0.55)]"
           : "brightness-75 hover:scale-[1.03] hover:brightness-95"
@@ -276,8 +276,10 @@ export function BetaArtClient({
               ))}
             </div>
           </div>
-          {/* The card row always keeps its height, so picking a type never moves the page. */}
-          <div className="mt-1 flex h-10 flex-wrap items-center justify-center gap-2" data-beta-art-card-filters={typeFilter === "card" ? "" : undefined}>
+          {/* The card row reserves the room it needs (two lines on phones, where the tokens and the
+              checkbox wrap), so picking a type never moves the page. It may still grow, never clip:
+              a fixed height let the wrapped checkbox fall under the art below. */}
+          <div className="mt-1 flex min-h-[5.25rem] flex-wrap content-center items-center justify-center gap-2 sm:min-h-10" data-beta-art-card-filters={typeFilter === "card" ? "" : undefined}>
             {typeFilter === "card" && (
               <>
                 {characters.map((character) => (
