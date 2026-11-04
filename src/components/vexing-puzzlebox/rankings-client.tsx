@@ -128,29 +128,48 @@ function ScoreRules({
     : fill(copy.ruleOneName, { name: GAME_LOCALE_LABELS.eng[serviceLocale], points: bonus.local });
   const [yellow, green, blue, purple] = CONNECTIONS_LEVEL_POINTS;
   const [none, one, two] = CONNECTIONS_MISTAKE_BONUS;
-  const rules = game === "connections"
+  /** Each rule, with any notes on how it is counted under it. */
+  const rules: { text: string; notes?: string[] }[] = game === "connections"
     ? [
-      fill(copy.ruleGroups, { yellow, green, blue, purple }),
-      fill(copy.ruleClear, { none, one, two }),
-      fill(copy.ruleOrder, { purple: CONNECTIONS_PURPLE_FIRST, rainbow: CONNECTIONS_REVERSE_RAINBOW }),
-      fill(copy.ruleRocks, { rock: CONNECTIONS_ROCK_PENALTY }),
-      [fill(copy.ruleConnectionsDisplay, { items }), oneName, copy.ruleConnectionsShown].filter(Boolean).join(" "),
+      { text: fill(copy.ruleGroups, { yellow, green, blue, purple }) },
+      { text: fill(copy.ruleClear, { none, one, two }) },
+      { text: fill(copy.ruleOrder, { purple: CONNECTIONS_PURPLE_FIRST, rainbow: CONNECTIONS_REVERSE_RAINBOW }) },
+      { text: fill(copy.ruleRocks, { rock: CONNECTIONS_ROCK_PENALTY }) },
+      {
+        text: fill(copy.ruleConnectionsDisplay, { items }),
+        notes: [copy.ruleConnectionsShown, ...(oneName ? [oneName] : [])],
+      },
     ]
     : [
-      fill(copy.ruleQuizCorrect, { correct: BETA_QUIZ_CORRECT_POINTS, streakFrom: BETA_QUIZ_STREAK_FROM, streak: BETA_QUIZ_STREAK_POINTS }),
-      fill(copy.ruleQuizSpeed, {
-        max: BETA_QUIZ_SPEED_MAX,
-        full: BETA_QUIZ_SPEED_FULL_MS / 1000,
-        zero: BETA_QUIZ_SPEED_ZERO_MS / 1000,
-      }),
-      [fill(copy.ruleQuizDisplay, { items }), oneName, copy.ruleQuizShown].filter(Boolean).join(" "),
-      fill(copy.ruleQuizLives, { life: BETA_QUIZ_LIFE_POINTS }),
+      {
+        text: fill(copy.ruleQuizCorrect, {
+          correct: BETA_QUIZ_CORRECT_POINTS,
+          streakFrom: BETA_QUIZ_STREAK_FROM,
+          streak: BETA_QUIZ_STREAK_POINTS,
+        }),
+      },
+      {
+        text: fill(copy.ruleQuizSpeed, {
+          max: BETA_QUIZ_SPEED_MAX,
+          full: BETA_QUIZ_SPEED_FULL_MS / 1000,
+          zero: BETA_QUIZ_SPEED_ZERO_MS / 1000,
+        }),
+      },
+      { text: fill(copy.ruleQuizDisplay, { items }), notes: [copy.ruleQuizShown, ...(oneName ? [oneName] : [])] },
+      { text: fill(copy.ruleQuizLives, { life: BETA_QUIZ_LIFE_POINTS }) },
     ];
   return (
     <div className="mt-5" data-rankings-score-rules={game}>
       <p className={`font-game-title text-lg font-semibold ${CREAM}`}>{copy.scoreRulesLabel}</p>
       <ul className={`mt-2 list-disc space-y-1 pl-5 text-xs leading-relaxed ${CREAM} opacity-85 marker:text-[#efc851]/70`}>
-        {rules.map((rule) => <li key={rule}>{rule}</li>)}
+        {rules.map((rule) => (
+          <li key={rule.text}>
+            {rule.text}
+            {rule.notes?.map((note) => (
+              <span key={note} className="block opacity-70">{note}</span>
+            ))}
+          </li>
+        ))}
       </ul>
     </div>
   );
