@@ -9,6 +9,7 @@ import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from 
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import {
   BETA_ART_TOKEN_SRC,
+  CONNECTIONS_TOKEN_SRC,
   VEXING_PUZZLEBOX_BACKGROUND_SRC,
   VEXING_PUZZLEBOX_BETA_ART_HREF,
   VEXING_PUZZLEBOX_HREF,
@@ -35,7 +36,7 @@ export function VexingPuzzleboxShell({
       id: "connections" as const,
       label: copy.tabConnections,
       href: VEXING_PUZZLEBOX_HREF,
-      icon: VEXING_PUZZLEBOX_TOKEN_SRC,
+      icon: CONNECTIONS_TOKEN_SRC,
     },
     {
       id: "beta-art" as const,
