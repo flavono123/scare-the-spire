@@ -212,7 +212,6 @@ export function BetaArtViewer({
 
       <div className="mt-3 text-center">
         <p className="font-game-title text-lg font-semibold">{entry.name}</p>
-        <p className="text-xs text-muted-foreground">{copy.compareHint}</p>
         <BetaArtReactions
           artKey={entry.key}
           likeCount={likes[storyId] ?? 0}

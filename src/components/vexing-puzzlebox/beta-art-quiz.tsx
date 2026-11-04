@@ -489,7 +489,7 @@ export function BetaArtQuiz({
           <Image
             ref={artRef}
             src={question.entry.betaUrl}
-            alt={copy.quizPrompt}
+            alt={copy.beta}
             width={720}
             height={540}
             onLoad={() => {
@@ -531,12 +531,9 @@ export function BetaArtQuiz({
         )}
       </div>
 
-      <p className="mt-2 text-center text-sm font-semibold">
-        {picked === null ? (
-          copy.quizPrompt
-        ) : (
-          <AnswerName entry={question.entry} serviceLocale={serviceLocale} gameLocale={gameLocale} />
-        )}
+      {/* The answer's line stays empty, not gone, while the question is open. */}
+      <p className="mt-2 min-h-5 text-center text-sm font-semibold">
+        {picked !== null && <AnswerName entry={question.entry} serviceLocale={serviceLocale} gameLocale={gameLocale} />}
       </p>
 
       <div className="mt-3 grid grid-cols-2 gap-2">
