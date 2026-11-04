@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
-import { displayItemLabels, hasLocalNames } from "@/components/vexing-puzzlebox/display-toggles";
+import { displayItemLabels } from "@/components/vexing-puzzlebox/display-toggles";
 import type { PuzzleboxSubmitResult } from "@/hooks/use-puzzlebox-scores";
-import { GAME_LOCALE_LABELS, localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { INTERNAL_TOKEN_LINK_CLASS } from "@/lib/service-link-classes";
 import { RANKINGS_TOKEN_SRC, VEXING_PUZZLEBOX_RANKINGS_HREF } from "@/lib/vexing-puzzlebox";
-import type { RunDisplay, ScoreBreakdown, ScorePart } from "@/lib/vexing-puzzlebox-score";
+import type { ScoreBreakdown, ScorePart } from "@/lib/vexing-puzzlebox-score";
 import type { LocalBestScore } from "@/lib/vexing-puzzlebox-storage";
 import { serviceMessages } from "@/messages/service";
 
@@ -22,23 +22,13 @@ function visibleParts(parts: ScorePart[]): ScorePart[] {
   return parts.filter((part) => part.id === "groups" || part.id === "correct" || part.points !== 0);
 }
 
-/** What the display points were for, by the toggles' own names: 숨긴 그림/영어. */
-function hiddenDisplayLabel(hidden: RunDisplay, gameLocale: GameLocale, serviceLocale: ServiceLocale): string {
-  const copy = serviceMessages[serviceLocale].vexingPuzzlebox;
-  const names = displayItemLabels(gameLocale, serviceLocale)
-    .filter((item) => hidden[item.id])
-    .map((item) => item.label);
-  const labels = names.length > 0 ? [copy.scoreParts.display.replace("{items}", names.join("/"))] : [];
-  // English has one name only, so its share for a hidden second name is always earned.
-  if (!hasLocalNames(gameLocale) && hidden.local) {
-    labels.push(copy.scoreOneName.replace("{name}", GAME_LOCALE_LABELS.eng[serviceLocale]));
-  }
-  return labels.join(" · ");
-}
-
+/** The display line names every toggle of this game language: 숨긴 그림/한국어/영어 표시. */
 function partLabel(part: ScorePart, gameLocale: GameLocale, serviceLocale: ServiceLocale): string {
-  if (part.id === "display" && part.hidden) return hiddenDisplayLabel(part.hidden, gameLocale, serviceLocale);
-  return serviceMessages[serviceLocale].vexingPuzzlebox.scoreParts[part.id].replace("{count}", String(part.count));
+  const label = serviceMessages[serviceLocale].vexingPuzzlebox.scoreParts[part.id];
+  if (part.id === "display") {
+    return label.replace("{items}", displayItemLabels(gameLocale, serviceLocale).map((item) => item.label).join("/"));
+  }
+  return label.replace("{count}", String(part.count));
 }
 
 /** A finished run's score, how it adds up, the best so far, and the server's rank once it answers. */

@@ -18,13 +18,7 @@ export type ScorePartId =
   | "streak"
   | "lives";
 
-export type ScorePart = {
-  id: ScorePartId;
-  points: number;
-  count: number;
-  /** The display part only: what stayed hidden where it earned points. */
-  hidden?: RunDisplay;
-};
+export type ScorePart = { id: ScorePartId; points: number; count: number };
 export type ScoreBreakdown = { total: number; perfect: boolean; parts: ScorePart[] };
 
 /**
@@ -39,10 +33,6 @@ export const ALL_SHOWN: RunDisplay = { token: true, local: true, original: true 
 export function mergeDisplay(left: RunDisplay | undefined, right: RunDisplay): RunDisplay {
   if (!left) return { ...right };
   return { token: left.token || right.token, local: left.local || right.local, original: left.original || right.original };
-}
-
-function hiddenOf(shown: RunDisplay): RunDisplay {
-  return { token: !shown.token, local: !shown.local, original: !shown.original };
 }
 
 /** Points for each hidden part: a picture gives away the most. */
@@ -113,12 +103,7 @@ export function scoreConnections(run: ConnectionsRun): ScoreBreakdown {
     { id: "mistakeBonus", count: mistakes, points: cleared ? CONNECTIONS_MISTAKE_BONUS[mistakes] ?? 0 : 0 },
     { id: "purpleFirst", count: purpleFirst ? 1 : 0, points: purpleFirst ? CONNECTIONS_PURPLE_FIRST : 0 },
     { id: "reverseRainbow", count: reverseRainbow ? 1 : 0, points: reverseRainbow ? CONNECTIONS_REVERSE_RAINBOW : 0 },
-    {
-      id: "display",
-      count: 0,
-      points: cleared ? displayBonus(run.shown, CONNECTIONS_DISPLAY_BONUS) : 0,
-      hidden: cleared ? hiddenOf(run.shown) : undefined,
-    },
+    { id: "display", count: 0, points: cleared ? displayBonus(run.shown, CONNECTIONS_DISPLAY_BONUS) : 0 },
     { id: "rocks", count: rocks, points: -rocks * CONNECTIONS_ROCK_PENALTY },
   ];
   const total = Math.max(0, parts.reduce((sum, part) => sum + part.points, 0));
@@ -168,7 +153,6 @@ export function scoreBetaQuiz(run: BetaQuizRun): ScoreBreakdown {
   let streakCount = 0;
   let speed = 0;
   let display = 0;
-  let hidden: RunDisplay = { token: false, local: false, original: false };
   for (const answer of run.answers) {
     if (wrong >= BETA_QUIZ_LIVES) break;
     if (answer.correct) {
@@ -176,7 +160,6 @@ export function scoreBetaQuiz(run: BetaQuizRun): ScoreBreakdown {
       streak += 1;
       speed += betaQuizSpeedBonus(answer.ms);
       display += displayBonus(answer.shown, BETA_QUIZ_DISPLAY_BONUS);
-      hidden = mergeDisplay(hidden, hiddenOf(answer.shown));
       if (streak >= BETA_QUIZ_STREAK_FROM) {
         streakPoints += BETA_QUIZ_STREAK_POINTS;
         streakCount += 1;
@@ -190,7 +173,7 @@ export function scoreBetaQuiz(run: BetaQuizRun): ScoreBreakdown {
   const parts: ScorePart[] = [
     { id: "correct", count: correct, points: correct * BETA_QUIZ_CORRECT_POINTS },
     { id: "speed", count: correct, points: speed },
-    { id: "display", count: correct, points: display, hidden },
+    { id: "display", count: correct, points: display },
     { id: "streak", count: streakCount, points: streakPoints },
     { id: "lives", count: lives, points: lives * BETA_QUIZ_LIFE_POINTS },
   ];
