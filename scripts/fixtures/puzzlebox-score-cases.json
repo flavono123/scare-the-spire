@@ -1,0 +1,840 @@
+[
+ {
+  "name": "clear in rainbow order",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0
+  },
+  "score": 90,
+  "perfect": true
+ },
+ {
+  "name": "reverse rainbow",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     3,
+     3,
+     3,
+     3
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ]
+   ],
+   "rocks": 0
+  },
+  "score": 100,
+  "perfect": true
+ },
+ {
+  "name": "purple first",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     3,
+     3,
+     3,
+     3
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ]
+   ],
+   "rocks": 0
+  },
+  "score": 95,
+  "perfect": true
+ },
+ {
+  "name": "one mistake",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0
+  },
+  "score": 80,
+  "perfect": false
+ },
+ {
+  "name": "two mistakes and a rock",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     2,
+     2,
+     2,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 1
+  },
+  "score": 65,
+  "perfect": false
+ },
+ {
+  "name": "three mistakes",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     2,
+     2,
+     2,
+     1
+    ],
+    [
+     3,
+     0,
+     3,
+     3
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0
+  },
+  "score": 70,
+  "perfect": false
+ },
+ {
+  "name": "purple first with two mistakes",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     3,
+     3,
+     3,
+     3
+    ],
+    [
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     2,
+     2,
+     2,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ]
+   ],
+   "rocks": 0
+  },
+  "score": 80,
+  "perfect": false
+ },
+ {
+  "name": "rock on a clean clear",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 1
+  },
+  "score": 80,
+  "perfect": false
+ },
+ {
+  "name": "failed after two groups",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     3,
+     2,
+     2
+    ],
+    [
+     2,
+     3,
+     2,
+     2
+    ],
+    [
+     3,
+     2,
+     2,
+     2
+    ],
+    [
+     2,
+     2,
+     3,
+     3
+    ]
+   ],
+   "rocks": 1
+  },
+  "score": 15,
+  "perfect": false
+ },
+ {
+  "name": "failed with nothing and three rocks",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0
+    ]
+   ],
+   "rocks": 3
+  },
+  "score": 0,
+  "perfect": false
+ },
+ {
+  "name": "unfinished",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ]
+   ],
+   "rocks": 0
+  },
+  "error": true
+ },
+ {
+  "name": "guess after the end",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ]
+   ],
+   "rocks": 0
+  },
+  "error": true
+ },
+ {
+  "name": "four rocks",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 4
+  },
+  "error": true
+ },
+ {
+  "name": "three-tile guess",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0
+  },
+  "error": true
+ },
+ {
+  "name": "level out of range",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     4,
+     4,
+     4,
+     4
+    ],
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0
+  },
+  "error": true
+ },
+ {
+  "name": "quiz mixed",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 4,
+   "answers": [
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 800
+    },
+    {
+     "pick": 2,
+     "correct": false,
+     "ms": 3000
+    },
+    {
+     "pick": 1,
+     "correct": true,
+     "ms": 5500
+    },
+    {
+     "pick": 3,
+     "correct": true,
+     "ms": 12000
+    }
+   ]
+  },
+  "score": 55,
+  "perfect": false
+ },
+ {
+  "name": "quiz perfect and fast",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 5,
+   "answers": [
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 1000
+    },
+    {
+     "pick": 1,
+     "correct": true,
+     "ms": 1000
+    },
+    {
+     "pick": 2,
+     "correct": true,
+     "ms": 1000
+    },
+    {
+     "pick": 3,
+     "correct": true,
+     "ms": 1000
+    },
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 1000
+    }
+   ]
+  },
+  "score": 121,
+  "perfect": true
+ },
+ {
+  "name": "quiz out of lives",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 6,
+   "answers": [
+    {
+     "pick": 1,
+     "correct": false,
+     "ms": 2000
+    },
+    {
+     "pick": 1,
+     "correct": false,
+     "ms": 2000
+    },
+    {
+     "pick": 1,
+     "correct": false,
+     "ms": 2000
+    }
+   ]
+  },
+  "score": 0,
+  "perfect": false
+ },
+ {
+  "name": "quiz half point rounds up",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 1,
+   "answers": [
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 9550
+    }
+   ]
+  },
+  "score": 26,
+  "perfect": true
+ },
+ {
+  "name": "quiz just past full speed",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 1,
+   "answers": [
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 1001
+    }
+   ]
+  },
+  "score": 35,
+  "perfect": true
+ },
+ {
+  "name": "quiz 4.5 rounds up",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 1,
+   "answers": [
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 5950
+    }
+   ]
+  },
+  "score": 30,
+  "perfect": true
+ },
+ {
+  "name": "quiz streak after a miss",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 6,
+   "answers": [
+    {
+     "pick": 0,
+     "correct": false,
+     "ms": 4000
+    },
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 20000
+    },
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 20000
+    },
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 20000
+    },
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 20000
+    },
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 20000
+    }
+   ]
+  },
+  "score": 66,
+  "perfect": false
+ },
+ {
+  "name": "quiz answer after the end",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 5,
+   "answers": [
+    {
+     "pick": 1,
+     "correct": false,
+     "ms": 2000
+    },
+    {
+     "pick": 1,
+     "correct": false,
+     "ms": 2000
+    },
+    {
+     "pick": 1,
+     "correct": false,
+     "ms": 2000
+    },
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 2000
+    }
+   ]
+  },
+  "error": true
+ },
+ {
+  "name": "quiz unfinished",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 4,
+   "answers": [
+    {
+     "pick": 1,
+     "correct": false,
+     "ms": 2000
+    },
+    {
+     "pick": 0,
+     "correct": true,
+     "ms": 2000
+    }
+   ]
+  },
+  "error": true
+ },
+ {
+  "name": "quiz pick out of range",
+  "game": "beta-quiz",
+  "run": {
+   "questions": 1,
+   "answers": [
+    {
+     "pick": 4,
+     "correct": true,
+     "ms": 2000
+    }
+   ]
+  },
+  "error": true
+ }
+]
