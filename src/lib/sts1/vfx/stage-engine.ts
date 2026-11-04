@@ -69,8 +69,31 @@ export interface StageCallbacks {
   onBodyDrawn?(): void;
 }
 
-export function behaviorFor(monster: Pick<Sts1Monster, "id">): boolean {
-  return monster.id in MONSTER_BEHAVIORS;
+export interface SpineAnimationStateLike {
+  timeScale: number;
+  addListener(listener: { start?: (entry: { timeScale: number; animation: { name: string } | null }) => void }): void;
+}
+
+/**
+ * The speeds the game sets on its AnimationState and track entries: the
+ * constructor's for the first clip (the opening idle), `changeState`'s for
+ * every later start of those clips.
+ */
+export function applySpineTimeScales(
+  state: SpineAnimationStateLike,
+  scales: NonNullable<Sts1Monster["vfx"]>["timeScales"],
+): void {
+  if (!scales) return;
+  if (scales.state) state.timeScale = scales.state;
+  let opening = true;
+  state.addListener({
+    start: (entry) => {
+      const name = entry.animation?.name ?? "";
+      const scale = (opening ? scales.start?.[name] : undefined) ?? scales.clips?.[name];
+      opening = false;
+      if (scale) entry.timeScale = scale;
+    },
+  });
 }
 
 export class Sts1StageEngine {

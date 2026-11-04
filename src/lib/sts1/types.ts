@@ -323,6 +323,11 @@ export interface Sts1MonsterVfx {
   skeletonScale?: number;
   /** The image `AbstractMonster` draws when there is no skeleton. */
   image?: string;
+  /**
+   * Spine speeds the game sets: `start` for the clip the constructor starts,
+   * `clips` for clips `changeState` starts, `state` for the AnimationState.
+   */
+  timeScales?: { start?: Record<string, number>; clips?: Record<string, number>; state?: number };
   /** Move id -> timeline. */
   moves: Record<string, Sts1VfxEvent[]>;
 }

@@ -39,6 +39,7 @@ CARD_PACKAGE = "com.megacrit.cardcrawl.cards."
 POWER_PACKAGE = "com.megacrit.cardcrawl.powers."
 MONSTER_PACKAGE = "com.megacrit.cardcrawl.monsters."
 ACTION_QUEUE_METHODS = {"addToBottom", "addToTop", "addToBot"}
+TRACK_ENTRY = "com.esotericsoftware.spine.AnimationState$TrackEntry"
 # Sprite motions the game applies to the whole monster, not to its skeleton.
 MOTION_ACTIONS = {
     "AnimateFastAttackAction": "fast-attack",
@@ -94,6 +95,8 @@ class _Recorder:
         self.actions: list[Obj] = []
         self.animations: list[str] = []
         self.moves: list[dict[str, Any]] = []
+        # Clip -> TrackEntry.setTimeScale; "*" for AnimationState.setTimeScale.
+        self.time_scales: dict[str, float] = {}
 
     def hook(self, frame: Frame, owner: str, name: str, desc: str, target: Any, args: list[Any]) -> Any:
         if name == "<init>" and owner == ABSTRACT_MONSTER and target is frame.this:
@@ -109,9 +112,17 @@ class _Recorder:
         if name in ACTION_QUEUE_METHODS and args and isinstance(args[-1], Obj):
             self.actions.append(args[-1])
             return VOID
-        if name == "setAnimation" and owner.endswith("AnimationState") and len(args) >= 2 and isinstance(args[1], str):
-            self.animations.append(args[1])
-            return OPAQUE
+        if name in {"setAnimation", "addAnimation"} and owner.endswith("AnimationState") and len(args) >= 2 and isinstance(args[1], str):
+            if name == "setAnimation":
+                self.animations.append(args[1])
+            return Obj(TRACK_ENTRY, fields={"animation": args[1]})
+        if name == "setTimeScale" and args and isinstance(_plain(args[0]), (int, float)):
+            if isinstance(target, Obj) and target.cls == TRACK_ENTRY:
+                self.time_scales[target.fields["animation"]] = float(_plain(args[0]))
+                return VOID
+            if owner.endswith("AnimationState"):
+                self.time_scales["*"] = float(_plain(args[0]))
+                return VOID
         if name == "setMove" and target is frame.this:
             self.moves.append(_set_move_call(desc, args))
             return VOID
@@ -272,8 +283,10 @@ class MonsterReader:
         this = Obj(self.cls.name, fields={"damage": ListObj(), "state": Static("spine", "state")})
         constructors = [m for m in self.cls.methods if m.name == "<init>" and m.code]
         constructor = min(constructors, key=lambda method: len(method.descriptor))
-        machine = self._machine(ascension, _Recorder())
+        recorder = _Recorder()
+        machine = self._machine(ascension, recorder)
         machine.run(constructor, this, [0.0, 0.0])
+        this.fields["__timeScales"] = recorder.time_scales
         return this
 
     def _tainted_state(self, this: Obj) -> Obj:
@@ -341,6 +354,20 @@ class MonsterReader:
             body["offset"] = args[8:10]
         if len(args) >= 8 and isinstance(args[7], str):
             body["image"] = args[7]
+        # The constructor's clip speeds hold for the first idle; `changeState`'s
+        # for every clip it starts; AnimationState's own for everything.
+        start = dict(this.fields.get("__timeScales", {}))
+        clips = dict(self.__dict__.get("_state_time_scales", {}))
+        state = clips.pop("*", start.pop("*", 1.0))
+        scales: dict[str, Any] = {
+            "start": {name: round(value, 4) for name, value in sorted(start.items()) if value != 1},
+            "clips": {name: round(value, 4) for name, value in sorted(clips.items()) if value != 1},
+        }
+        if state != 1:
+            scales["state"] = round(state, 4)
+        scales = {key: value for key, value in scales.items() if value}
+        if scales:
+            body["timeScales"] = scales
         load = this.fields.get("__loadAnimation")
         if load and len(load) >= 3 and isinstance(_plain(load[2]), (int, float)) and _plain(load[2]) != 1:
             body["skeletonScale"] = _plain(load[2])
@@ -490,6 +517,7 @@ class MonsterReader:
             machine.run(method, this, [state])
         finally:
             machine.invoke_hook = previous
+        self.__dict__.setdefault("_state_time_scales", {}).update(recorder.time_scales)
         return recorder.animations
 
     def _summarize(self, recorder: _Recorder, this: Obj, machine: Machine) -> dict[str, Any]:

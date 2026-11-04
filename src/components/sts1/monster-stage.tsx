@@ -8,7 +8,7 @@ import type { MonsterSpineAsset } from "@/lib/codex-types";
 import { sts1MonsterImageUrl } from "@/lib/sts1/paths";
 import type { Sts1Monster, Sts1MonsterMove, Sts1MonsterRect } from "@/lib/sts1/types";
 import { textureSize } from "@/lib/sts1/vfx/assets";
-import { Sts1StageEngine, type SpineSkeletonLike } from "@/lib/sts1/vfx/stage-engine";
+import { Sts1StageEngine, applySpineTimeScales, type SpineSkeletonLike } from "@/lib/sts1/vfx/stage-engine";
 
 /** Room above the monster for the intent, and below it for the health bar. */
 const DETAIL_LAYOUT = { top: 84, bottom: 48, side: 16 };
@@ -251,9 +251,10 @@ export function Sts1MonsterStage({
                     selectedMoveId={clip.name}
                     selectedMoveNonce={clip.nonce}
                     idleAnimationOverride={idle}
-                    onPlayer={(player) => engineRef.current?.setSkeleton(
-                      (player?.skeleton as SpineSkeletonLike | null | undefined) ?? null,
-                    )}
+                    onPlayer={(player) => {
+                      engineRef.current?.setSkeleton((player?.skeleton as SpineSkeletonLike | null | undefined) ?? null);
+                      if (player?.animationState) applySpineTimeScales(player.animationState, monster.vfx?.timeScales);
+                    }}
                     className="relative h-full w-full"
                     viewportOverride={viewport}
                     viewportPadding={NO_PADDING}
