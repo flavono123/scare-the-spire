@@ -442,7 +442,8 @@ export function BetaArtQuiz({
         <DisplayToggles
           display={display}
           gameLocale={gameLocale}
-          labels={{ group: copy.viewsLabel, token: copy.viewTokens, local: copy.viewLocal, original: copy.viewOriginal }}
+          serviceLocale={serviceLocale}
+          labels={{ group: copy.viewsLabel, token: copy.viewTokens }}
           onChange={(next) => changeDisplay(next)}
         />
         <GameUiHoverTip label={copy.quizBonusTip}>

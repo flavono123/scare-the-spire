@@ -714,7 +714,8 @@ export function ConnectionsClient({
             <DisplayToggles
               display={display}
               gameLocale={gameLocale}
-              labels={{ group: copy.viewsLabel, token: copy.viewTokens, local: copy.viewLocal, original: copy.viewOriginal }}
+              serviceLocale={serviceLocale}
+              labels={{ group: copy.viewsLabel, token: copy.viewTokens }}
               onChange={changeDisplay}
             />
             <GameUiHoverTip label={copy.displayBonusTip}>

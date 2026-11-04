@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
-import type { GameLocale } from "@/lib/i18n";
+import { GAME_LOCALE_LABELS, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { playPurchaseFailedWiggle } from "@/lib/merchant-feedback";
 
 /** What an item shows: its picture, its name in the game language, its original English name. */
@@ -58,22 +58,27 @@ function DisplayToggle({
   );
 }
 
-/** Picture / local name / original name checkboxes; the last one on cannot be turned off. */
+/**
+ * Picture / game-language name / English name checkboxes; the last one on cannot be turned off.
+ * Names are labelled by language, like the game locale picker: 한국어, 일본어, 영어.
+ */
 export function DisplayToggles({
   display,
   gameLocale,
+  serviceLocale,
   labels,
   onChange,
 }: {
   display: ItemDisplay;
   gameLocale: GameLocale;
-  labels: { group: string; token: string; local: string; original: string };
+  serviceLocale: ServiceLocale;
+  labels: { group: string; token: string };
   onChange: (next: ItemDisplay, changed: keyof ItemDisplay) => void;
 }) {
   const toggles: { id: keyof ItemDisplay; label: string }[] = [
     { id: "token", label: labels.token },
-    ...(hasLocalNames(gameLocale) ? [{ id: "local" as const, label: labels.local }] : []),
-    { id: "original", label: labels.original },
+    ...(hasLocalNames(gameLocale) ? [{ id: "local" as const, label: GAME_LOCALE_LABELS[gameLocale][serviceLocale] }] : []),
+    { id: "original", label: GAME_LOCALE_LABELS.eng[serviceLocale] },
   ];
   const enabledCount = toggles.filter((item) => display[item.id]).length;
   return (
