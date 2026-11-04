@@ -84,6 +84,11 @@ export function buildHistoryCourseCommentThreadKey(runId: string): string {
   return `history-course:${runId}`;
 }
 
+/** One beta art's thread, keyed like the beta art catalog (`card:CASCADE`). */
+export function buildBetaArtCommentThreadKey(artKey: string): string {
+  return `beta-art:${artKey}`;
+}
+
 export const COMMENT_THREAD_SERVICES = [
   "patches",
   "compendium",
@@ -166,6 +171,10 @@ export function commentThreadHref(storyId: string): string {
     if (isCompendiumResourceLinkType(type)) {
       return `${buildCompendiumResourceDetailHref(type, id)}${COMMENTS_ANCHOR}`;
     }
+  }
+
+  if (storyId.startsWith("beta-art:") && storyId.length > "beta-art:".length) {
+    return `/vexing-puzzlebox/beta-art?art=${encodeURIComponent(storyId.slice("beta-art:".length))}${COMMENTS_ANCHOR}`;
   }
 
   return prefixedResourceCommentsHref(storyId, "this-or-that:", "/this-or-that")

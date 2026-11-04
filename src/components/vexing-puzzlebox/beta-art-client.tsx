@@ -9,6 +9,8 @@ import Image from "@/components/ui/static-image";
 import { BetaArtGallery } from "@/components/vexing-puzzlebox/beta-art-gallery";
 import { BetaArtQuiz } from "@/components/vexing-puzzlebox/beta-art-quiz";
 import { BetaArtViewer } from "@/components/vexing-puzzlebox/beta-art-viewer";
+import { useAuth } from "@/hooks/use-auth";
+import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import type {
@@ -171,13 +173,23 @@ export function BetaArtClient({
   const [earlyAccessOnly, setEarlyAccessOnly] = useState(false);
   const [query, setQuery] = useState("");
   const [focusKey, setFocusKey] = useState<string | null>(null);
+  const [openComments, setOpenComments] = useState(false);
+  const { userId, ready, ensureUser } = useAuth();
+  const auth = useMemo(() => ({ userId, ready, ensureUser }), [userId, ready, ensureUser]);
+  const engagement = useEngagementCounts({ enabled: mode !== "quiz" });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const requested = params.get("mode");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- the mode lives in the URL of a static page
     if (requested === "gallery" || requested === "quiz") setMode(requested);
-  }, []);
+    // A comment link from a profile opens that art with its thread.
+    const art = params.get("art");
+    if (art && entries.some((entry) => entry.key === art)) {
+      setFocusKey(art);
+      setOpenComments(window.location.hash === "#comments");
+    }
+  }, [entries]);
 
   const changeMode = (next: BetaArtMode) => {
     setMode(next);
@@ -302,9 +314,13 @@ export function BetaArtClient({
         )}
         {mode === "watch" && filtered.length > 0 && (
           <BetaArtViewer
-            key={`${typeFilter}-${colorFilter}-${earlyAccessOnly}`}
+            key={`${typeFilter}-${colorFilter}-${earlyAccessOnly}-${focusKey}-${openComments}`}
             entries={filtered}
             focusKey={focusKey}
+            likes={engagement.likes}
+            comments={engagement.comments}
+            auth={auth}
+            initialCommentsOpen={openComments}
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
           />
@@ -312,9 +328,13 @@ export function BetaArtClient({
         {mode === "gallery" && filtered.length > 0 && (
           <BetaArtGallery
             entries={filtered}
+            likes={engagement.likes}
+            comments={engagement.comments}
+            auth={auth}
             serviceLocale={serviceLocale}
-            onOpen={(key) => {
+            onOpen={(key, options) => {
               setFocusKey(key);
+              setOpenComments(Boolean(options?.comments));
               setQuery("");
               changeMode("watch");
             }}

@@ -5,10 +5,16 @@ import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } 
 import { BoundedCarouselFrame } from "@/components/codex/bounded-carousel";
 import { PlaybackRateGroup, PlaybackToggle } from "@/components/playback-controls";
 import Image from "@/components/ui/static-image";
+import {
+  BetaArtComments,
+  BetaArtReactions,
+  type BetaArtAuth,
+} from "@/components/vexing-puzzlebox/beta-art-engagement";
 import { PileButton } from "@/components/vexing-puzzlebox/combat-buttons";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { seededShuffle } from "@/lib/beta-art-quiz";
+import { buildBetaArtCommentThreadKey } from "@/lib/comment-threads";
 import { BETA_ART_PLAYLIST_URL } from "@/lib/vexing-puzzlebox";
 import type { BetaArtEntry } from "@/lib/vexing-puzzlebox-types";
 import { serviceMessages } from "@/messages/service";
@@ -25,11 +31,19 @@ const COMPENDIUM_TOKEN_SRC = "/images/sts2/nav/submenu_compendium.png";
 export function BetaArtViewer({
   entries,
   focusKey,
+  likes,
+  comments,
+  auth,
+  initialCommentsOpen = false,
   serviceLocale,
   gameLocale,
 }: {
   entries: BetaArtEntry[];
   focusKey: string | null;
+  likes: Record<string, number>;
+  comments: Record<string, number>;
+  auth: BetaArtAuth;
+  initialCommentsOpen?: boolean;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
@@ -43,7 +57,10 @@ export function BetaArtViewer({
   const [position, setPosition] = useState(() => (
     Math.max(0, focusKey ? entries.findIndex((entry) => entry.key === focusKey) : 0)
   ));
-  const [playing, setPlaying] = useState(focusKey === null);
+  const [playing, setPlaying] = useState(focusKey === null && !initialCommentsOpen);
+  const [commentsOpen, setCommentsOpen] = useState(initialCommentsOpen);
+  /** Counts the open thread reported, ahead of the page-wide totals. */
+  const [loadedCounts, setLoadedCounts] = useState<Record<string, number>>({});
   const [speed, setSpeed] = useState<Speed>("normal");
   /** Share of the frame showing beta art, from the right edge. 100 hides the final art. */
   const [betaShare, setBetaShare] = useState(0);
@@ -55,6 +72,7 @@ export function BetaArtViewer({
   const index = Math.min(position, ordered.length - 1);
   const entry = ordered[index];
   const nextEntry = ordered[(index + 1) % ordered.length];
+  const storyId = buildBetaArtCommentThreadKey(entry.key);
 
   const move = useCallback((step: number) => {
     setPosition((current) => (Math.min(current, ordered.length - 1) + step + ordered.length) % ordered.length);
@@ -63,8 +81,8 @@ export function BetaArtViewer({
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- the motion preference is only readable after hydration
-    setPlaying(!window.matchMedia("(prefers-reduced-motion: reduce)").matches && focusKey === null);
-  }, [focusKey]);
+    setPlaying(!window.matchMedia("(prefers-reduced-motion: reduce)").matches && focusKey === null && !initialCommentsOpen);
+  }, [focusKey, initialCommentsOpen]);
 
   useEffect(() => {
     if (!playing || dragging) return;
@@ -195,6 +213,20 @@ export function BetaArtViewer({
       <div className="mt-3 text-center">
         <p className="font-game-title text-lg font-semibold">{entry.name}</p>
         <p className="text-xs text-muted-foreground">{copy.compareHint}</p>
+        <BetaArtReactions
+          artKey={entry.key}
+          likeCount={likes[storyId] ?? 0}
+          commentCount={loadedCounts[storyId] ?? comments[storyId] ?? 0}
+          auth={auth}
+          commentsOpen={commentsOpen}
+          onComments={() => {
+            setCommentsOpen((open) => !open);
+            setPlaying(false);
+          }}
+          serviceLocale={serviceLocale}
+          size={18}
+          className="mt-2"
+        />
       </div>
 
       <div className="mt-3 flex flex-wrap items-center justify-center gap-4 text-xs">
@@ -227,6 +259,17 @@ export function BetaArtViewer({
           {copy.watchShorts} &rarr;
         </a>
       </p>
+
+      {commentsOpen && (
+        <BetaArtComments
+          artKey={entry.key}
+          title={entry.name}
+          gameLocale={gameLocale}
+          onCountChange={(count) => setLoadedCounts((current) => (
+            current[storyId] === count ? current : { ...current, [storyId]: count }
+          ))}
+        />
+      )}
     </div>
   );
 }
