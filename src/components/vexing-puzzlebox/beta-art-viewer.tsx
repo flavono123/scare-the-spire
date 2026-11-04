@@ -97,7 +97,11 @@ export function BetaArtViewer({
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLElement && event.target.closest("input, textarea, select, button, a")) return;
+      // The comment composer is a contenteditable editor, so its keys must not play or move the art.
+      if (event.target instanceof HTMLElement && (
+        event.target.isContentEditable
+        || event.target.closest("input, textarea, select, button, a, [contenteditable]")
+      )) return;
       if (event.key === "ArrowLeft") move(-1);
       if (event.key === "ArrowRight") move(1);
       if (event.key === " ") {
