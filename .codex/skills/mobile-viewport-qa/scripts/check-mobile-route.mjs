@@ -194,6 +194,12 @@ async function coveredControls(page, scopeSelector) {
       if (style.visibility !== "visible" || style.display === "none" || Number(style.opacity) === 0) return null;
       if (element.closest("[aria-hidden=true], [inert], [hidden]")) return null;
       if (element.getClientRects().length === 0) return null;
+      // Closed <details> bodies and content-visibility:hidden keep layout boxes but are not shown.
+      if (typeof element.checkVisibility === "function" && !element.checkVisibility({
+        contentVisibilityAuto: true, opacityProperty: true, visibilityProperty: true,
+      })) return null;
+      const closedDetails = element.closest("details:not([open])");
+      if (closedDetails && !element.closest("summary")) return null;
       // A hidden form control styled behind a custom box is checked through its label.
       if (element instanceof HTMLInputElement && (element.type === "checkbox" || element.type === "radio")) {
         const rect = element.getBoundingClientRect();
@@ -202,8 +208,12 @@ async function coveredControls(page, scopeSelector) {
       element.scrollIntoView({ block: "center", inline: "center" });
       const rect = element.getBoundingClientRect();
       if (rect.width < 4 || rect.height < 4) return null;
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
+      // An inline link wrapped over lines has a box whose center can fall between the lines,
+      // so tap the middle of its first line instead.
+      const lines = [...element.getClientRects()].filter((line) => line.width > 0 && line.height > 0);
+      const target = lines.length > 1 ? lines[0] : rect;
+      const x = target.left + target.width / 2;
+      const y = target.top + target.height / 2;
       // A closed off-canvas drawer sits wholly beside the viewport and cannot be scrolled to.
       if (rect.right <= 0 || rect.left >= innerWidth) return null;
       if (x < 0 || y < 0 || x > innerWidth || y > innerHeight) return { covered: `${describe(element)} is outside the viewport at (${Math.round(x)}, ${Math.round(y)})` };
