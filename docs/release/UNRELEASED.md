@@ -15,7 +15,7 @@
 
 | 파일 | Rollout | Order | 적용 | 확인 |
 |---|---|---|---|---|
-| `20261104042911_puzzlebox_scores.sql` | db-first-additive | before-push | 안 함 | PGlite에서 점수 사례 33개·제출·순위·RLS 확인. 2026-11-04 16:00 KST `migration list --linked`: 대기는 이 파일 하나, 원격에만 있는 항목 없음. `db push --linked --dry-run`: 이 파일만 적용 대상. 실제 적용은 사용자 승인 대기 |
+| `20261104042911_puzzlebox_scores.sql` | db-first-additive | before-push | 적용 2026-11-04 19:01 KST(사용자 승인, 새 `puzzlebox_*` 객체만 생성) | PGlite에서 점수 사례 33개·제출·순위·RLS 확인. 2026-11-04 16:00 KST `migration list --linked`: 대기는 이 파일 하나, 원격에만 있는 항목 없음. `db push --linked --dry-run`: 이 파일만 적용 대상. 적용 뒤 `migration list --linked` 원격 반영, anon `get_puzzlebox_leaderboard` RPC가 빈 순위 반환, anon의 `puzzlebox_runs` 직접 조회는 42501로 거부 |
 
 ## 긴급 배포로 QA 없이 나간 범위
 
