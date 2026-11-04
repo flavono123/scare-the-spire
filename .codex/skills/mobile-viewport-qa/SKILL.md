@@ -10,7 +10,7 @@ Use this skill for mobile layout QA in this repository, especially when a page w
 ## Workflow
 
 1. Start or reuse the local app server.
-2. Read the canonical mobile sizes from `scripts/mobile-qa.mjs --list`; do not invent viewport presets.
+2. Read the canonical mobile sizes from `scripts/mobile-qa.mjs --list`; do not invent viewport presets. The list starts at 320px (the narrowest supported phone); run every preset.
 3. Run `scripts/check-mobile-route.mjs` against the route under test.
 4. Inspect failures and screenshots under `/tmp/mobile-viewport-qa/<timestamp>`.
 5. Fix the page, then rerun the same command.
@@ -27,6 +27,24 @@ node .codex/skills/mobile-viewport-qa/scripts/check-mobile-route.mjs \
   --render-selector main \
   --controls-selector "[data-mobile-qa-none]"
 ```
+
+For pages whose controls open new rows or panels, list each state with `--open` (selectors joined
+by `||`). After every click the script rechecks horizontal overflow and that each visible control in
+`--occlusion-scope` (default `body`) takes a tap at its own center:
+
+```bash
+node .codex/skills/mobile-viewport-qa/scripts/check-mobile-route.mjs \
+  --route /vexing-puzzlebox/beta-art \
+  --render-selector "[data-beta-art-mode]" \
+  --controls-selector "[data-mobile-qa-none]" \
+  --min-visible-height 200 \
+  --open "[data-beta-art-filters] button:has(img)"
+```
+
+`covered control` lines fail the run: something in the page flow sits over a control (a wrapped
+row escaping a fixed-height box, a stage drawn over its own filters). `under a fixed layer` lines are
+warnings for headers or floating widgets over content at the scroll end; report them. An empty scope
+fails so the check never passes by finding nothing.
 
 Do not replace feature-specific checks with this hook. Run it after narrow lint/build/interaction checks so mobile layout failures are caught before final reporting.
 

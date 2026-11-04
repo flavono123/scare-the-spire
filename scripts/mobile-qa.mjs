@@ -10,6 +10,9 @@ const ANDROID_UA =
   "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36";
 
 const PRESETS = [
+  // The narrowest phone width we support (iPhone SE 1st gen, small Android). Wrapping rows
+  // and fixed-height boxes break here first, so it must stay in the list.
+  { name: "Small phone 320", width: 320, height: 568, dpr: 2, userAgent: IOS_UA },
   { name: "iPhone 13 mini / user", width: 375, height: 812, dpr: 3, userAgent: IOS_UA },
   { name: "iPhone mainstream 6.1", width: 390, height: 844, dpr: 3, userAgent: IOS_UA },
   { name: "iPhone Plus / Pro Max", width: 430, height: 932, dpr: 3, userAgent: IOS_UA },

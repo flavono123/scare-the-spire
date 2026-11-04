@@ -472,3 +472,29 @@ test("Combo mobile index keeps its primary interaction in the viewport", async (
   await page.keyboard.press("Escape");
   await expect(searchInput).toBeHidden();
 });
+
+test("beta art card filters stay pressable on the narrowest phone", async ({ page }) => {
+  // 2026-11-04: the wrapped checkbox fell out of a fixed-height row and under the art.
+  await blockSupabase(page);
+  await page.setViewportSize({ width: 320, height: 568 });
+  const response = await page.goto(absolute("/vexing-puzzlebox/beta-art"), { waitUntil: "domcontentloaded" });
+  expect(response?.status()).toBe(200);
+  const row = page.locator("[data-beta-art-card-filters]");
+  // Retry the type token until hydration has wired it up.
+  await expect(async () => {
+    await page.locator("[data-beta-art-filters] button:has(img)").first().click();
+    await expect(row).toHaveAttribute("data-beta-art-card-filters", "", { timeout: 1000 });
+  }).toPass({ timeout: 20_000 });
+  await expectNoHorizontalOverflow(page);
+  const controls = row.locator(":scope > button, :scope > span button");
+  expect(await controls.count()).toBeGreaterThan(1);
+  for (const control of await controls.all()) {
+    const covered = await control.evaluate((element) => {
+      element.scrollIntoView({ block: "center" });
+      const rect = element.getBoundingClientRect();
+      const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return hit && !element.contains(hit) ? `${element.textContent?.trim() || element.getAttribute("aria-label")} under ${hit.tagName}` : null;
+    });
+    expect(covered).toBeNull();
+  }
+});

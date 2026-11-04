@@ -42,6 +42,26 @@ Use both automated and manual review:
 - For community, profile, nickname, comment, Chemical X, or meme content, verify stored/displayed body text is not auto-translated and that only the UI shell follows `serviceLocale`.
 - For borrowed game phrases, verify fixture/runtime handling follows the source-game-text rules instead of generic service translation.
 
+## Mobile State Matrix (required for UI changes)
+
+A page that looks right on first load can still break once a filter, tab, menu, or toggle opens a
+new row. Overflow checks and screenshots miss a control that spills out of a fixed-height box and
+sits under the next block (2026-11-04: the beta art 출시 뒤 바뀐 그림 checkbox, covered on every
+phone width, shipped after "mobile checked").
+
+- Run `.codex/skills/mobile-viewport-qa` for every route whose UI changed, at all presets from
+  `scripts/mobile-qa.mjs --list`. The list starts at 320px; never drop it or test only 390px.
+- Pass `--open "SEL||SEL"` for each state the change adds or reshapes (type filters, sub-filters,
+  tabs, drawers, quiz/answer views) so overflow and the covered-control check run after each click.
+  A route with filters is not checked until each filter row has been opened.
+- A covered-control failure is a bug, not a warning. "under a fixed layer" lines are reported as
+  warnings; mention them in the report.
+- Check ko, `/en`, and one game-only locale (`/ja`): longer labels wrap differently.
+- Red flag in review: a fixed `h-*` on a `flex-wrap` row or any box holding wrapping controls.
+  Reserve room with `min-h-*` per breakpoint instead.
+- When a commit after an earlier QA pass changes the same screen, the earlier "mobile ok" does not
+  carry over. Rerun the matrix.
+
 ## Linked QA Skills
 
 Use these project-local skills as subroutines when scope matches:

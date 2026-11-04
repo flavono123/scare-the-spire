@@ -27,6 +27,10 @@ const options = {
   choiceSelector: stringArg(args, "choice-selector", "[data-profile-choice]"),
   clickTypes: stringArg(args, "click-types", "").split(",").map((value) => value.trim()).filter(Boolean),
   minVisibleHeight: numberArg(args, "min-visible-height", 240),
+  // Selectors clicked in order before the occlusion check, to reach filter/tab/menu states.
+  openSteps: stringArg(args, "open", "").split("||").map((value) => value.trim()).filter(Boolean),
+  occlusionScope: stringArg(args, "occlusion-scope", "body"),
+  noOcclusion: Boolean(args["no-occlusion"]),
   timeoutMs: numberArg(args, "timeout", 60000),
   noDev: Boolean(args["no-dev"]),
   headed: Boolean(args.headed),
@@ -62,6 +66,9 @@ try {
     console.log(`[mobile-viewport-qa] ${status} ${preset.name} (${preset.width}x${preset.height})`);
     for (const failure of result.failures) {
       console.log(`  - ${failure}`);
+    }
+    for (const warning of [...new Set(result.warnings ?? [])]) {
+      console.log(`  ! ${warning}`);
     }
   }
 } finally {
@@ -111,6 +118,34 @@ async function checkPreset(browser, preset, options) {
     const screenshotPath = path.join(options.outputDir, `${slug}-initial.png`);
     await page.screenshot({ path: screenshotPath, fullPage: false });
 
+    const occlusion = [];
+    if (!options.noOcclusion) {
+      occlusion.push({ step: "initial", covered: await coveredControls(page, options.occlusionScope) });
+    }
+    for (const [index, selector] of options.openSteps.entries()) {
+      const target = page.locator(selector).first();
+      if ((await target.count()) === 0) {
+        failures.push(`open step not found: ${selector}`);
+        break;
+      }
+      await target.scrollIntoViewIfNeeded().catch(() => {});
+      await target.click();
+      await page.waitForTimeout(700);
+      await page.screenshot({ path: path.join(options.outputDir, `${slug}-open-${index + 1}.png`), fullPage: false });
+      const after = await readLayout(page, options, preset);
+      if (after.documentWidth > after.viewport.width + 2) {
+        failures.push(`horizontal overflow after open step ${index + 1}: document=${after.documentWidth}, viewport=${after.viewport.width}`);
+      }
+      if (!options.noOcclusion) {
+        occlusion.push({ step: `open ${index + 1}: ${selector}`, covered: await coveredControls(page, options.occlusionScope) });
+      }
+    }
+    const warnings = [];
+    for (const { step, covered } of occlusion) {
+      for (const item of covered.covered) failures.push(`covered control (${step}): ${item}`);
+      for (const item of covered.overlay) warnings.push(`under a fixed layer (${step}): ${item}`);
+    }
+
     const clickResults = [];
     for (const type of options.clickTypes) {
       const clickResult = await clickChoiceAndVerify(page, options, type);
@@ -128,6 +163,7 @@ async function checkPreset(browser, preset, options) {
       ...preset,
       failures,
       layout: initial,
+      warnings,
       clickResults,
       consoleEvents,
       screenshots: [screenshotPath],
@@ -135,6 +171,64 @@ async function checkPreset(browser, preset, options) {
   } finally {
     await context.close().catch(() => {});
   }
+}
+
+/**
+ * Every visible control in the scope must receive a tap at its own center. A control that
+ * spills out of a fixed-height box and sits under the next block passes overflow and
+ * screenshot checks but fails here (2026-11-04: the beta art 출시 뒤 바뀐 그림 checkbox).
+ */
+async function coveredControls(page, scopeSelector) {
+  const handles = await page.locator(`${scopeSelector} :is(button, a[href], input, select, textarea, label, [role=button], [role=checkbox], [role=switch], [role=tab])`).elementHandles();
+  const covered = [];
+  // An empty scope would pass silently, so it is a failure of its own.
+  if (handles.length === 0) return { covered: [`no controls found in ${scopeSelector}`], overlay: [] };
+  const overlay = [];
+  for (const handle of handles) {
+    const result = await handle.evaluate((element) => {
+      const style = getComputedStyle(element);
+      if (style.visibility !== "visible" || style.display === "none" || Number(style.opacity) === 0) return null;
+      if (element.closest("[aria-hidden=true], [inert], [hidden]")) return null;
+      if (element.getClientRects().length === 0) return null;
+      // A hidden form control styled behind a custom box is checked through its label.
+      if (element instanceof HTMLInputElement && (element.type === "checkbox" || element.type === "radio")) {
+        const rect = element.getBoundingClientRect();
+        if (rect.width <= 2 || rect.height <= 2 || style.opacity === "0") return null;
+      }
+      element.scrollIntoView({ block: "center", inline: "center" });
+      const rect = element.getBoundingClientRect();
+      if (rect.width < 4 || rect.height < 4) return null;
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      if (x < 0 || y < 0 || x > innerWidth || y > innerHeight) return { covered: `${describe(element)} is outside the viewport at (${Math.round(x)}, ${Math.round(y)})` };
+      const hit = document.elementFromPoint(x, y);
+      if (!hit || element.contains(hit) || hit.contains(element)) return null;
+      // Labels wrapping their control, and controls inside the hit label, are the same target.
+      const hitLabel = hit.closest("label");
+      if (hitLabel && (hitLabel === element || hitLabel.contains(element))) return null;
+      // Next dev tools exist only on the dev server.
+      if (hit.closest("nextjs-portal") || element.closest("nextjs-portal")) return null;
+      // A fixed or sticky layer (header, floating ticker) over content the page cannot scroll
+      // further is reported apart from in-flow occlusion.
+      const message = `${describe(element)} is under ${describe(hit)}`;
+      for (let node = hit; node && node !== document.body; node = node.parentElement) {
+        const position = getComputedStyle(node).position;
+        if (position === "fixed" || position === "sticky") return { overlay: message };
+      }
+      return { covered: message };
+
+      function describe(node) {
+        const text = (node.getAttribute("aria-label") || node.textContent || "").replace(/\s+/g, " ").trim().slice(0, 40);
+        const cls = String(node.className || "").split(/\s+/).slice(0, 3).join(".");
+        return `${node.tagName.toLowerCase()}${cls ? `.${cls}` : ""}${text ? ` "${text}"` : ""}`;
+      }
+    });
+    if (result?.covered) covered.push(result.covered);
+    if (result?.overlay && overlay.length < 10) overlay.push(result.overlay);
+    if (covered.length >= 10) break;
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  return { covered, overlay };
 }
 
 async function readLayout(page, options, preset) {
@@ -410,6 +504,11 @@ Options:
   --choice-selector SELECTOR   Selectable carousel item base selector. Default: [data-profile-choice]
   --click-types LIST           Comma list of data-profile-choice-type values to click.
   --min-visible-height PX      Minimum visible render height. Default: 240
+  --open "SEL||SEL"            Click these selectors in order (filters, tabs, menus), then
+                               recheck overflow and covered controls after each click.
+  --occlusion-scope SELECTOR   Where every visible control must take a tap at its center.
+                               Default: body
+  --no-occlusion               Skip the covered-control check.
   --output DIR                 Screenshot and summary directory.
   --no-dev                     Do not start Next dev server.
   --headed                     Run browser headed.
