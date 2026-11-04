@@ -2,10 +2,12 @@
  * A WebGL SpriteBatch with libGDX's draw overloads and blending, so ported
  * effects draw exactly what the game's batch would.
  *
- * Coordinates are the game's screen units, y up. The canvas is a transparent
- * overlay, so blending is split per channel: color blends the way the game's
- * does, and alpha keeps what the page needs to composite the result (additive
- * light adds over the page instead of darkening it).
+ * Coordinates are the game's screen units, y up. The canvas is a transparent,
+ * premultiplied overlay, so every pixel's alpha must cover its color: GPU
+ * compositors (headed Chrome on macOS) drop pixels whose color exceeds alpha,
+ * which is what additive light with untouched alpha leaves. Normal blending
+ * writes coverage as usual; additive light writes premultiplied color with its
+ * brightest channel as coverage, so it lightens the page like a screen blend.
  */
 import type { SheetImage } from "./assets";
 import { Texture, TextureRegion } from "./assets";
@@ -39,9 +41,21 @@ precision mediump float;
 varying vec2 v_texCoord;
 varying vec4 v_color;
 uniform sampler2D u_texture;
+uniform float u_light;
 void main() {
-  gl_FragColor = v_color * texture2D(u_texture, v_texCoord);
+  vec4 color = v_color * texture2D(u_texture, v_texCoord);
+  if (u_light > 0.5) {
+    vec3 light = u_light > 1.5 ? color.rgb : color.rgb * color.a;
+    gl_FragColor = vec4(light, max(light.r, max(light.g, light.b)));
+  } else {
+    gl_FragColor = color;
+  }
 }`;
+
+/** `u_light`: off, additive with source alpha, additive with source ONE. */
+const LIGHT_OFF = 0;
+const LIGHT_SRC_ALPHA = 1;
+const LIGHT_SRC_ONE = 2;
 
 function compile(gl: WebGLRenderingContext, type: number, source: string): WebGLShader {
   const shader = gl.createShader(type);
@@ -61,6 +75,7 @@ export class SpriteBatch {
   private readonly indexBuffer: WebGLBuffer;
   private readonly vertices = new Float32Array(MAX_SPRITES * FLOATS_PER_SPRITE);
   private readonly viewLocation: WebGLUniformLocation | null;
+  private readonly lightLocation: WebGLUniformLocation | null;
   private readonly glTextures = new Map<SheetImage, WebGLTexture>();
   private sprites = 0;
   private currentSheet: SheetImage | null = null;
@@ -83,6 +98,7 @@ export class SpriteBatch {
     }
     this.program = program;
     this.viewLocation = gl.getUniformLocation(program, "u_view");
+    this.lightLocation = gl.getUniformLocation(program, "u_light");
 
     const vertexBuffer = gl.createBuffer();
     const indexBuffer = gl.createBuffer();
@@ -166,12 +182,17 @@ export class SpriteBatch {
 
   private applyBlend(): void {
     const gl = this.gl;
-    if (this.blendDst === GL_ONE) {
-      // Additive light: add color, leave coverage alone.
-      gl.blendFuncSeparate(this.blendSrc, GL_ONE, GL_ZERO, GL_ONE);
-    } else if (this.blendSrc === GL_SRC_ALPHA && this.blendDst === GL_ONE_MINUS_SRC_ALPHA) {
+    if (this.blendDst === GL_ONE && (this.blendSrc === GL_SRC_ALPHA || this.blendSrc === GL_ONE)) {
+      // Additive light: the shader premultiplies, so color and coverage both add.
+      gl.uniform1f(this.lightLocation, this.blendSrc === GL_ONE ? LIGHT_SRC_ONE : LIGHT_SRC_ALPHA);
+      gl.blendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ONE);
+      return;
+    }
+    gl.uniform1f(this.lightLocation, LIGHT_OFF);
+    if (this.blendSrc === GL_SRC_ALPHA && this.blendDst === GL_ONE_MINUS_SRC_ALPHA) {
       gl.blendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     } else {
+      // No ported effect uses another mode; coverage is left as it was.
       gl.blendFuncSeparate(this.blendSrc, this.blendDst, GL_ZERO, GL_ONE);
     }
   }
