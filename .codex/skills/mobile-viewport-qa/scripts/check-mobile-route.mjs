@@ -200,6 +200,8 @@ async function coveredControls(page, scopeSelector) {
       if (rect.width < 4 || rect.height < 4) return null;
       const x = rect.left + rect.width / 2;
       const y = rect.top + rect.height / 2;
+      // A closed off-canvas drawer sits wholly beside the viewport and cannot be scrolled to.
+      if (rect.right <= 0 || rect.left >= innerWidth) return null;
       if (x < 0 || y < 0 || x > innerWidth || y > innerHeight) return { covered: `${describe(element)} is outside the viewport at (${Math.round(x)}, ${Math.round(y)})` };
       const hit = document.elementFromPoint(x, y);
       if (!hit || element.contains(hit) || hit.contains(element)) return null;
