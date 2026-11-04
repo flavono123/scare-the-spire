@@ -5,6 +5,7 @@ import Image from "@/components/ui/static-image";
 import { displayItemLabels, hasLocalNames } from "@/components/vexing-puzzlebox/display-toggles";
 import type { PuzzleboxSubmitResult } from "@/hooks/use-puzzlebox-scores";
 import { GAME_LOCALE_LABELS, localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import { INTERNAL_TOKEN_LINK_CLASS } from "@/lib/service-link-classes";
 import { RANKINGS_TOKEN_SRC, VEXING_PUZZLEBOX_RANKINGS_HREF } from "@/lib/vexing-puzzlebox";
 import type { RunDisplay, ScoreBreakdown, ScorePart } from "@/lib/vexing-puzzlebox-score";
 import type { LocalBestScore } from "@/lib/vexing-puzzlebox-storage";
@@ -91,10 +92,10 @@ export function ScoreSummary({
         <Link
           href={`${localizeHrefWithGameLocale(VEXING_PUZZLEBOX_RANKINGS_HREF, serviceLocale, gameLocale)}?${rankingsQuery}`}
           prefetch={false}
-          className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
+          className={INTERNAL_TOKEN_LINK_CLASS}
         >
-          <Image src={RANKINGS_TOKEN_SRC} alt="" width={16} height={16} className="h-4 w-4 object-contain" />
-          {copy.viewRankings} &rarr;
+          <Image src={RANKINGS_TOKEN_SRC} alt="" width={58} height={32} className="h-4 w-auto object-contain" />
+          {copy.viewRankings}
         </Link>
       </p>
     </div>

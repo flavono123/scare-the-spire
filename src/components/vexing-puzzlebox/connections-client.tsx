@@ -38,6 +38,7 @@ import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
 import { playPurchaseFailedWiggle } from "@/lib/merchant-feedback";
 import { neowsletterClaimHref } from "@/lib/neowsletter-anchors";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
+import { INTERNAL_TOKEN_LINK_CLASS } from "@/lib/service-link-classes";
 import { MEGA_CRIT_TOKEN_SRC, NEOWSLETTER_TOKEN_SRC } from "@/lib/vexing-puzzlebox";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import {
@@ -927,10 +928,10 @@ export function ConnectionsClient({
           <footer className="mt-6 flex flex-wrap justify-center gap-4 text-xs">
             <a
               href={localizeHrefWithGameLocale(neowsletterClaimHref(puzzle.issueId, puzzle.claimId), serviceLocale, gameLocale)}
-              className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
+              className={INTERNAL_TOKEN_LINK_CLASS}
             >
               <Image src={NEOWSLETTER_TOKEN_SRC} alt="" width={16} height={16} className="h-4 w-4 rounded-sm object-cover" />
-              {copy.sourceIssue.replace("{issue}", String(puzzle.issueNumber))} &rarr;
+              {copy.sourceIssue.replace("{issue}", String(puzzle.issueNumber))}
             </a>
             <a
               href={`https://custom-connections-game.vercel.app/${puzzle.slug}`}

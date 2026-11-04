@@ -18,6 +18,9 @@ export const EXTERNAL_LINK_TEXT_CLASS = "text-(--link-external)";
 export const INTERNAL_PROSE_LINK_CLASS =
   `font-semibold ${INTERNAL_LINK_TEXT_CLASS} no-underline border-b border-(--link-internal)/70 transition-colors hover:brightness-125`;
 
+/** An in-site link led by a token image, like 조각모음's service links. No arrow; that marks off-site. */
+export const INTERNAL_TOKEN_LINK_CLASS = `inline-flex items-center gap-1 ${INTERNAL_PROSE_LINK_CLASS}`;
+
 /** Off-site prose links, in viewers and editors alike. */
 export const EXTERNAL_PROSE_LINK_CLASS =
   `font-semibold ${EXTERNAL_LINK_TEXT_CLASS} underline decoration-(--link-external) decoration-1 underline-offset-[3px] transition-colors hover:brightness-125`;

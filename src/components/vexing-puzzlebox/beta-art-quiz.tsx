@@ -25,6 +25,7 @@ import { BETA_ART_QUIZ_LIVES, buildBetaArtQuizSets } from "@/lib/beta-art-quiz";
 import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { playInvalidShake } from "@/lib/merchant-feedback";
+import { RESOURCE_LINK_CLASS } from "@/lib/service-link-classes";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import {
   betaQuizMaxScore,
@@ -122,7 +123,7 @@ function AnswerName({
   const entity = useBetaArtEntity(entry, gameLocale);
   if (!entity) {
     return (
-      <a href={localizeHrefWithGameLocale(entry.href, serviceLocale, gameLocale)} className="underline">
+      <a href={localizeHrefWithGameLocale(entry.href, serviceLocale, gameLocale)} className={RESOURCE_LINK_CLASS}>
         {entry.name}
       </a>
     );

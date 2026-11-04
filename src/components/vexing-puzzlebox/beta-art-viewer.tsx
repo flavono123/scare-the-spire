@@ -15,6 +15,7 @@ import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { seededShuffle } from "@/lib/beta-art-quiz";
 import { buildBetaArtCommentThreadKey } from "@/lib/comment-threads";
+import { INTERNAL_TOKEN_LINK_CLASS } from "@/lib/service-link-classes";
 import { BETA_ART_PLAYLIST_URL } from "@/lib/vexing-puzzlebox";
 import type { BetaArtEntry } from "@/lib/vexing-puzzlebox-types";
 import { serviceMessages } from "@/messages/service";
@@ -26,7 +27,8 @@ const SPEED_ORDER: Speed[] = ["slow", "normal", "fast"];
 /** The draw pile counts back up while the order reshuffles. */
 const SHUFFLE_COUNT_MS = 600;
 const SHUFFLE_COUNT_STEPS = 20;
-const COMPENDIUM_TOKEN_SRC = "/images/sts2/nav/submenu_compendium.png";
+/** The STS2 Compendium's own token, as on the top bar. */
+const COMPENDIUM_TOKEN_SRC = "/images/sts2/icons/app_icon.png";
 
 export function BetaArtViewer({
   entries,
@@ -240,12 +242,9 @@ export function BetaArtViewer({
       </div>
 
       <p className="mt-4 flex flex-wrap justify-center gap-4 text-xs">
-        <a
-          href={localizeHrefWithGameLocale(entry.href, serviceLocale, gameLocale)}
-          className="inline-flex items-center gap-1 spire-blue transition-colors hover:text-blue-300"
-        >
-          <Image src={COMPENDIUM_TOKEN_SRC} alt="" width={16} height={16} className="h-4 w-4 object-contain" />
-          {copy.openCompendium} &rarr;
+        <a href={localizeHrefWithGameLocale(entry.href, serviceLocale, gameLocale)} className={INTERNAL_TOKEN_LINK_CLASS}>
+          <Image src={COMPENDIUM_TOKEN_SRC} alt="" width={32} height={32} className="h-4 w-4 object-contain" />
+          {copy.openCompendium}
         </a>
         <a
           href={BETA_ART_PLAYLIST_URL}
