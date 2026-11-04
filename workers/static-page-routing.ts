@@ -297,6 +297,7 @@ export const STATIC_EXACT_SERVICE_PAGES: ReadonlyArray<readonly string[]> = [
   ["this-or-that", "tournament"],
   ["vexing-puzzlebox"],
   ["vexing-puzzlebox", "beta-art"],
+  ["vexing-puzzlebox", "rankings"],
 ];
 
 function splitLocalePrefix(pathname: string): { localePrefix: string[]; rest: string[] } {

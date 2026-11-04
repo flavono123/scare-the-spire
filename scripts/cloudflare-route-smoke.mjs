@@ -239,6 +239,8 @@ function mainCases() {
     ...page("/en/vexing-puzzlebox", "service"),
     ...page("/vexing-puzzlebox/beta-art", "service"),
     ...page("/zh/vexing-puzzlebox/beta-art", "service"),
+    ...page("/vexing-puzzlebox/rankings", "service"),
+    ...page("/ja/vexing-puzzlebox/rankings", "service"),
     {
       name: "Worldcup index redirect document",
       path: "/this-or-that/worldcup",
