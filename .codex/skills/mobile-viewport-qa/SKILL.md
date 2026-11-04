@@ -41,10 +41,12 @@ node .codex/skills/mobile-viewport-qa/scripts/check-mobile-route.mjs \
   --open "[data-beta-art-filters] button:has(img)"
 ```
 
-`covered control` lines fail the run: something in the page flow sits over a control (a wrapped
+`covered control` lines fail the run (also text that runs outside its own control, such as a long
+name that cannot wrap): something in the page flow sits over a control (a wrapped
 row escaping a fixed-height box, a stage drawn over its own filters). `under a fixed layer` lines are
 warnings for headers or floating widgets over content at the scroll end; report them. An empty scope
-fails so the check never passes by finding nothing.
+fails so the check never passes by finding nothing. The browser language defaults to `ko-KR`;
+pass `--locale en-US` with `/en` routes and check one game-only locale (`/ja`).
 
 Do not replace feature-specific checks with this hook. Run it after narrow lint/build/interaction checks so mobile layout failures are caught before final reporting.
 

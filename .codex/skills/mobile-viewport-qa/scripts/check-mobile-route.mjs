@@ -31,6 +31,9 @@ const options = {
   openSteps: stringArg(args, "open", "").split("||").map((value) => value.trim()).filter(Boolean),
   occlusionScope: stringArg(args, "occlusion-scope", "body"),
   noOcclusion: Boolean(args["no-occlusion"]),
+  // Without a browser language the site redirects prefixless routes to /en, so Korean would
+  // never be checked. Korean is the default service language.
+  locale: stringArg(args, "locale", "ko-KR"),
   timeoutMs: numberArg(args, "timeout", 60000),
   noDev: Boolean(args["no-dev"]),
   headed: Boolean(args.headed),
@@ -88,6 +91,7 @@ async function checkPreset(browser, preset, options) {
     deviceScaleFactor: preset.dpr,
     hasTouch: true,
     isMobile: true,
+    locale: options.locale,
     userAgent: preset.name.toLowerCase().includes("iphone") ? IOS_UA : ANDROID_UA,
   });
   const page = await context.newPage();
@@ -203,6 +207,19 @@ async function coveredControls(page, scopeSelector) {
       // A closed off-canvas drawer sits wholly beside the viewport and cannot be scrolled to.
       if (rect.right <= 0 || rect.left >= innerWidth) return null;
       if (x < 0 || y < 0 || x > innerWidth || y > innerHeight) return { covered: `${describe(element)} is outside the viewport at (${Math.round(x)}, ${Math.round(y)})` };
+      // Text that runs past its own control (a long name that cannot wrap) is clipped or
+      // overlaps a neighbor even when the control itself is tappable.
+      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+      for (let text = walker.nextNode(); text; text = walker.nextNode()) {
+        if (!text.textContent?.trim() || !textCanSpill(text.parentElement, element)) continue;
+        const range = document.createRange();
+        range.selectNodeContents(text);
+        for (const line of range.getClientRects()) {
+          if (line.width && (line.left < rect.left - 1 || line.right > rect.right + 1)) {
+            return { covered: `${describe(element)} text "${text.textContent.trim().slice(0, 30)}" runs outside it` };
+          }
+        }
+      }
       const hit = document.elementFromPoint(x, y);
       if (!hit || element.contains(hit) || hit.contains(element)) return null;
       // Labels wrapping their control, and controls inside the hit label, are the same target.
@@ -218,6 +235,21 @@ async function coveredControls(page, scopeSelector) {
         if (position === "fixed" || position === "sticky") return { overlay: message };
       }
       return { covered: message };
+
+      // Skip text that is screen-reader only, clipped on purpose (truncate), or in a badge
+      // positioned outside the control by design.
+      function textCanSpill(node, control) {
+        for (let current = node; current; current = current.parentElement) {
+          const style = getComputedStyle(current);
+          const box = current.getBoundingClientRect();
+          if (box.width <= 1 || box.height <= 1) return false;
+          if (style.clip !== "auto" || (style.clipPath && style.clipPath !== "none")) return false;
+          if (style.overflowX !== "visible" || style.textOverflow === "ellipsis") return false;
+          if (current !== control && (style.position === "absolute" || style.position === "fixed")) return false;
+          if (current === control) return true;
+        }
+        return true;
+      }
 
       function describe(node) {
         const text = (node.getAttribute("aria-label") || node.textContent || "").replace(/\s+/g, " ").trim().slice(0, 40);
@@ -511,6 +543,7 @@ Options:
   --occlusion-scope SELECTOR   Where every visible control must take a tap at its center.
                                Default: body
   --no-occlusion               Skip the covered-control check.
+  --locale LOCALE              Browser language. Default: ko-KR (use en-US with /en routes).
   --output DIR                 Screenshot and summary directory.
   --no-dev                     Do not start Next dev server.
   --headed                     Run browser headed.
