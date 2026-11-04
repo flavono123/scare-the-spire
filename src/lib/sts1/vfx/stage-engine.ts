@@ -56,8 +56,19 @@ export interface StageGeometry {
   originY: number;
   /** Game units per skeleton unit. */
   skeletonUnit: number;
-  /** The monster's left edge, CSS pixels. */
+  /** The monster's left and right edges, CSS pixels. */
   monsterLeft: number;
+  monsterRight: number;
+}
+
+/**
+ * Whether the player stands right of the monster. Monsters stand at three
+ * quarters of a 1920-wide screen plus their offset (`AbstractMonster`); the
+ * player at a quarter (`AbstractDungeon`), or at half in Shield and Spear. Only
+ * Spire Shield (offset -1000) stands left of it.
+ */
+function playerOnRight(offsetX: number): boolean {
+  return 1920 * 0.75 + offsetX < 1920 * 0.25;
 }
 
 export interface StageCallbacks {
@@ -187,11 +198,13 @@ export class Sts1StageEngine {
     monster.drawY = (geometry.height - geometry.originY) / unit;
     world.floorY = monster.drawY - (this.monster.vfx?.offset?.[1] ?? 0);
     refreshHitboxLocation(monster);
-    // The player stands just left of the monster. A small monster is drawn
-    // large, so the player's body is shortened to keep effects aimed at it on stage.
+    // The player stands just beside the monster, on the side the game puts it.
+    // A small monster is drawn large, so the player's body is shortened to keep
+    // effects aimed at it on stage.
     const player = world.player;
-    const left = geometry.monsterLeft / unit;
-    const cX = Math.min(world.width * 0.3, Math.max(world.width * 0.15, left - PLAYER_HITBOX.width * 0.6));
+    const cX = playerOnRight(this.monster.vfx?.offset?.[0] ?? 0)
+      ? Math.max(world.width * 0.7, Math.min(world.width * 0.85, geometry.monsterRight / unit + PLAYER_HITBOX.width * 0.6))
+      : Math.min(world.width * 0.3, Math.max(world.width * 0.15, geometry.monsterLeft / unit - PLAYER_HITBOX.width * 0.6));
     const centerHeight = Math.min(
       PLAYER_HITBOX.y + PLAYER_HITBOX.height / 2,
       (world.height - world.floorY) * 0.4,

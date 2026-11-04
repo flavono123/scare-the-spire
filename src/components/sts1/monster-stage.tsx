@@ -163,6 +163,7 @@ export function Sts1MonsterStage({
       originY: box.top + box.height + body.rect.y * box.unit,
       skeletonUnit: body.skeletonUnit,
       monsterLeft: box.left,
+      monsterRight: box.left + box.width,
     });
   }, [body, box, size, monster]);
 
