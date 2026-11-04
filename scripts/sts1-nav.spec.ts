@@ -17,7 +17,7 @@ assert.deepEqual(
     "/images/sts2/relics/snecko_eye.webp",
     "/images/sts2/nav/stats_potions.png",
     "/images/sts1/powers/hello.webp",
-    "/images/sts1/nav/monster.webp",
+    "/images/sts1/nav/run-history-elite.webp",
   ],
 );
 
