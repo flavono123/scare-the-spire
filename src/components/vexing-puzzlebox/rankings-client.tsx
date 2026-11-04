@@ -8,6 +8,7 @@ import { DisplayedProfileNickname } from "@/components/profile/displayed-profile
 import Image from "@/components/ui/static-image";
 import { profileTokenCharacter } from "@/components/vexing-puzzlebox/character-hand-pointer";
 import { issueMonth } from "@/components/vexing-puzzlebox/connections-index";
+import { displayItemLabels, hasLocalNames } from "@/components/vexing-puzzlebox/display-toggles";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import {
   usePuzzleboxLeaderboard,
@@ -18,7 +19,7 @@ import {
 } from "@/hooks/use-puzzlebox-scores";
 import { useStoredProfileSnapshot } from "@/hooks/use-user-profile";
 import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
-import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
+import { GAME_LOCALE_LABELS, localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import {
   BETA_ART_TOKEN_SRC,
@@ -26,7 +27,26 @@ import {
   VEXING_PUZZLEBOX_BETA_ART_HREF,
   VEXING_PUZZLEBOX_HREF,
 } from "@/lib/vexing-puzzlebox";
-import { betaQuizMaxScore, CONNECTIONS_MAX_SCORE, type PuzzleboxGame } from "@/lib/vexing-puzzlebox-score";
+import {
+  BETA_QUIZ_CORRECT_POINTS,
+  BETA_QUIZ_DISPLAY_BONUS,
+  BETA_QUIZ_LIFE_POINTS,
+  BETA_QUIZ_SPEED_FULL_MS,
+  BETA_QUIZ_SPEED_MAX,
+  BETA_QUIZ_SPEED_ZERO_MS,
+  BETA_QUIZ_STREAK_FROM,
+  BETA_QUIZ_STREAK_POINTS,
+  betaQuizMaxScore,
+  CONNECTIONS_DISPLAY_BONUS,
+  CONNECTIONS_LEVEL_POINTS,
+  CONNECTIONS_MAX_SCORE,
+  CONNECTIONS_MISTAKE_BONUS,
+  CONNECTIONS_PURPLE_FIRST,
+  CONNECTIONS_REVERSE_RAINBOW,
+  CONNECTIONS_ROCK_PENALTY,
+  type DisplayBonus,
+  type PuzzleboxGame,
+} from "@/lib/vexing-puzzlebox-score";
 import type { RankingsConnectionsBoard, RankingsQuizSet } from "@/lib/vexing-puzzlebox-types";
 import { serviceMessages } from "@/messages/service";
 
@@ -78,6 +98,62 @@ function recordedAt(iso: string, serviceLocale: ServiceLocale): string {
   return serviceLocale === "ko"
     ? `${date.getMonth() + 1}월 ${date.getDate()}일`
     : new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(date);
+}
+
+function fill(template: string, values: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (match, key: string) => (key in values ? String(values[key]) : match));
+}
+
+/**
+ * How a game scores, from the same numbers the scorer uses. The display bonus is explained
+ * here only; the games keep it out of sight while playing.
+ */
+function ScoreRules({
+  game,
+  gameLocale,
+  serviceLocale,
+  copy,
+}: {
+  game: PuzzleboxGame;
+  gameLocale: GameLocale;
+  serviceLocale: ServiceLocale;
+  copy: RankingsCopy;
+}) {
+  const bonus: DisplayBonus = game === "connections" ? CONNECTIONS_DISPLAY_BONUS : BETA_QUIZ_DISPLAY_BONUS;
+  const items = displayItemLabels(gameLocale, serviceLocale)
+    .map((item) => fill(copy.ruleDisplayItem, { name: item.label, points: bonus[item.id] }))
+    .join(" · ");
+  const oneName = hasLocalNames(gameLocale)
+    ? null
+    : fill(copy.ruleOneName, { name: GAME_LOCALE_LABELS.eng[serviceLocale], points: bonus.local });
+  const [yellow, green, blue, purple] = CONNECTIONS_LEVEL_POINTS;
+  const [none, one, two] = CONNECTIONS_MISTAKE_BONUS;
+  const rules = game === "connections"
+    ? [
+      fill(copy.ruleGroups, { yellow, green, blue, purple }),
+      fill(copy.ruleClear, { none, one, two }),
+      fill(copy.ruleOrder, { purple: CONNECTIONS_PURPLE_FIRST, rainbow: CONNECTIONS_REVERSE_RAINBOW }),
+      fill(copy.ruleRocks, { rock: CONNECTIONS_ROCK_PENALTY }),
+      [fill(copy.ruleConnectionsDisplay, { items }), oneName, copy.ruleConnectionsShown].filter(Boolean).join(" "),
+    ]
+    : [
+      fill(copy.ruleQuizCorrect, { correct: BETA_QUIZ_CORRECT_POINTS, streakFrom: BETA_QUIZ_STREAK_FROM, streak: BETA_QUIZ_STREAK_POINTS }),
+      fill(copy.ruleQuizSpeed, {
+        max: BETA_QUIZ_SPEED_MAX,
+        full: BETA_QUIZ_SPEED_FULL_MS / 1000,
+        zero: BETA_QUIZ_SPEED_ZERO_MS / 1000,
+      }),
+      [fill(copy.ruleQuizDisplay, { items }), oneName, copy.ruleQuizShown].filter(Boolean).join(" "),
+      fill(copy.ruleQuizLives, { life: BETA_QUIZ_LIFE_POINTS }),
+    ];
+  return (
+    <div className="mt-5" data-rankings-score-rules={game}>
+      <p className={`font-game-title text-lg font-semibold ${CREAM}`}>{copy.scoreRulesLabel}</p>
+      <ul className={`mt-2 list-disc space-y-1 pl-5 text-xs leading-relaxed ${CREAM} opacity-85 marker:text-[#efc851]/70`}>
+        {rules.map((rule) => <li key={rule}>{rule}</li>)}
+      </ul>
+    </div>
+  );
 }
 
 /** Two gray rules with a shadow, like NDailyRunLeaderboardSeparator. */
@@ -452,6 +528,8 @@ export function RankingsClient({
               <p className={`mt-2 text-sm ${CREAM} opacity-70`}>{failed ? copy.unavailable : copy.noStats}</p>
             )}
           </div>
+
+          <ScoreRules game={game} gameLocale={gameLocale} serviceLocale={serviceLocale} copy={copy} />
 
           <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-4">
             <div className="min-w-0">
