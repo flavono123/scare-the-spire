@@ -12,7 +12,7 @@ export type ScorePartId =
   | "mistakeBonus"
   | "purpleFirst"
   | "reverseRainbow"
-  | "rocks"
+  | "rocksLeft"
   | "correct"
   | "speed"
   | "streak"
@@ -58,17 +58,22 @@ export const CONNECTIONS_MISTAKE_BONUS = [20, 10, 5] as const;
 export const CONNECTIONS_PURPLE_FIRST = 5;
 /** Purple, blue, green, yellow in that order. Replaces the purple-first bonus. */
 export const CONNECTIONS_REVERSE_RAINBOW = 10;
-export const CONNECTIONS_ROCK_PENALTY = 10;
+/** Added to a full solve for each rock still on the belt. A thrown or discarded rock earns nothing. */
+export const CONNECTIONS_ROCK_LEFT_POINTS = 10;
 /** Added to a full solve for each part kept hidden the whole run. */
 export const CONNECTIONS_DISPLAY_BONUS: DisplayBonus = { token: 10, local: 5, original: 5 };
-export const CONNECTIONS_MAX_SCORE = 100 + maxDisplayBonus(CONNECTIONS_DISPLAY_BONUS);
+export const CONNECTIONS_MAX_SCORE = 100
+  + CONNECTIONS_ROCK_SLOTS * CONNECTIONS_ROCK_LEFT_POINTS
+  + maxDisplayBonus(CONNECTIONS_DISPLAY_BONUS);
 const PURPLE_LEVEL = 3;
 
 export type ConnectionsRun = {
   /** Levels of each submitted group's members, in submit order. */
   guesses: number[][];
-  /** Rocks thrown. Discarded rocks cost nothing. */
+  /** Rocks thrown. A perfect run throws none; discarding one keeps it perfect. */
   rocks: number;
+  /** Rocks still on the belt at the end: neither thrown nor discarded. */
+  rocksLeft: number;
   shown: RunDisplay;
 };
 
@@ -92,6 +97,7 @@ export function scoreConnections(run: ConnectionsRun): ScoreBreakdown {
   const { solved, mistakes } = replayConnections(run.guesses);
   const cleared = solved.length === CONNECTIONS_LEVEL_POINTS.length;
   const rocks = Math.max(0, Math.min(CONNECTIONS_ROCK_SLOTS, Math.floor(run.rocks)));
+  const rocksLeft = Math.max(0, Math.min(CONNECTIONS_ROCK_SLOTS - rocks, Math.floor(run.rocksLeft)));
   const reverseRainbow = cleared && solved.every((level, index) => level === PURPLE_LEVEL - index);
   const purpleFirst = cleared && !reverseRainbow && solved[0] === PURPLE_LEVEL;
   const parts: ScorePart[] = [
@@ -104,9 +110,9 @@ export function scoreConnections(run: ConnectionsRun): ScoreBreakdown {
     { id: "purpleFirst", count: purpleFirst ? 1 : 0, points: purpleFirst ? CONNECTIONS_PURPLE_FIRST : 0 },
     { id: "reverseRainbow", count: reverseRainbow ? 1 : 0, points: reverseRainbow ? CONNECTIONS_REVERSE_RAINBOW : 0 },
     { id: "display", count: 0, points: cleared ? displayBonus(run.shown, CONNECTIONS_DISPLAY_BONUS) : 0 },
-    { id: "rocks", count: rocks, points: -rocks * CONNECTIONS_ROCK_PENALTY },
+    { id: "rocksLeft", count: rocksLeft, points: cleared ? rocksLeft * CONNECTIONS_ROCK_LEFT_POINTS : 0 },
   ];
-  const total = Math.max(0, parts.reduce((sum, part) => sum + part.points, 0));
+  const total = parts.reduce((sum, part) => sum + part.points, 0);
   return { total, perfect: cleared && mistakes === 0 && rocks === 0, parts };
 }
 

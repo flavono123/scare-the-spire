@@ -30,13 +30,14 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
     "original": true
    }
   },
-  "score": 90,
+  "score": 120,
   "perfect": true
  },
  {
@@ -70,13 +71,14 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
     "original": true
    }
   },
-  "score": 100,
+  "score": 130,
   "perfect": true
  },
  {
@@ -110,13 +112,14 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
     "original": true
    }
   },
-  "score": 95,
+  "score": 125,
   "perfect": true
  },
  {
@@ -156,13 +159,14 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
     "original": true
    }
   },
-  "score": 80,
+  "score": 110,
   "perfect": false
  },
  {
@@ -208,13 +212,14 @@
     ]
    ],
    "rocks": 1,
+   "rocksLeft": 2,
    "shown": {
     "token": true,
     "local": true,
     "original": true
    }
   },
-  "score": 65,
+  "score": 95,
   "perfect": false
  },
  {
@@ -266,13 +271,14 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
     "original": true
    }
   },
-  "score": 70,
+  "score": 100,
   "perfect": false
  },
  {
@@ -318,13 +324,14 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
     "original": true
    }
   },
-  "score": 80,
+  "score": 110,
   "perfect": false
  },
  {
@@ -358,13 +365,14 @@
     ]
    ],
    "rocks": 1,
+   "rocksLeft": 2,
    "shown": {
     "token": true,
     "local": true,
     "original": true
    }
   },
-  "score": 80,
+  "score": 110,
   "perfect": false
  },
  {
@@ -410,13 +418,14 @@
     ]
    ],
    "rocks": 1,
+   "rocksLeft": 2,
    "shown": {
     "token": true,
     "local": true,
     "original": true
    }
   },
-  "score": 15,
+  "score": 25,
   "perfect": false
  },
  {
@@ -450,6 +459,7 @@
     ]
    ],
    "rocks": 3,
+   "rocksLeft": 0,
    "shown": {
     "token": true,
     "local": true,
@@ -484,6 +494,7 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
@@ -529,6 +540,7 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
@@ -568,6 +580,7 @@
     ]
    ],
    "rocks": 4,
+   "rocksLeft": 0,
    "shown": {
     "token": true,
     "local": true,
@@ -612,6 +625,7 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
@@ -657,6 +671,7 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
@@ -1083,13 +1098,14 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": true,
     "original": false
    }
   },
-  "score": 95,
+  "score": 125,
   "perfect": true
  },
  {
@@ -1123,13 +1139,14 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": false,
     "local": false,
     "original": true
    }
   },
-  "score": 115,
+  "score": 145,
   "perfect": true
  },
  {
@@ -1163,13 +1180,14 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": true,
     "local": false,
     "original": false
    }
   },
-  "score": 100,
+  "score": 130,
   "perfect": true
  },
  {
@@ -1209,6 +1227,7 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": false,
     "local": true,
@@ -1249,6 +1268,7 @@
     ]
    ],
    "rocks": 0,
+   "rocksLeft": 3,
    "shown": {
     "token": false,
     "local": false,
@@ -1287,7 +1307,175 @@
      3
     ]
    ],
-   "rocks": 0
+   "rocks": 0,
+   "rocksLeft": 3
+  },
+  "error": true
+ },
+ {
+  "name": "discarded rock keeps perfect but not its points",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0,
+   "rocksLeft": 2,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
+  },
+  "score": 110,
+  "perfect": true
+ },
+ {
+  "name": "failed run keeps its rocks for nothing",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     2,
+     1,
+     1
+    ],
+    [
+     1,
+     2,
+     1,
+     1
+    ],
+    [
+     1,
+     2,
+     1,
+     1
+    ],
+    [
+     1,
+     2,
+     1,
+     1
+    ]
+   ],
+   "rocks": 0,
+   "rocksLeft": 3,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
+  },
+  "score": 10,
+  "perfect": false
+ },
+ {
+  "name": "more rocks left than the belt holds",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 1,
+   "rocksLeft": 3,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
+  },
+  "error": true
+ },
+ {
+  "name": "rocks left missing",
+  "game": "connections",
+  "run": {
+   "guesses": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     2,
+     2,
+     2,
+     2
+    ],
+    [
+     3,
+     3,
+     3,
+     3
+    ]
+   ],
+   "rocks": 0,
+   "shown": {
+    "token": true,
+    "local": true,
+    "original": true
+   }
   },
   "error": true
  },

@@ -96,7 +96,12 @@ function runDisplayOf(display: ItemDisplay, gameLocale: GameLocale): RunDisplay 
 }
 
 function connectionsRun(progress: ConnectionsProgress): ConnectionsRun {
-  return { guesses: progress.guesses, rocks: progress.rocksThrown ?? 0, shown: progress.shown ?? ALL_SHOWN };
+  return {
+    guesses: progress.guesses,
+    rocks: progress.rocksThrown ?? 0,
+    rocksLeft: (progress.potions ?? fullBelt()).filter(Boolean).length,
+    shown: progress.shown ?? ALL_SHOWN,
+  };
 }
 
 function MemberLabels({ member, display }: { member: ConnectionsMember; display: ItemDisplay }) {

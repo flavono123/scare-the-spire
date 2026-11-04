@@ -36,7 +36,7 @@ for (const item of cases as ScoreCase[]) {
 assert.equal(Math.max(...(cases as ScoreCase[]).filter((item) => item.game === "connections").map((item) => item.score ?? 0)), CONNECTIONS_MAX_SCORE);
 // Five fast right answers with only one name shown, a streak of three, no life lost.
 assert.equal(betaQuizMaxScore(5), 5 * (10 + 10 + 7) + 3 * 2 + 3 * 5);
-assert.equal(CONNECTIONS_MAX_SCORE, 115);
+assert.equal(CONNECTIONS_MAX_SCORE, 145);
 assert.equal(betaQuizSpeedBonus(0), 10);
 assert.equal(betaQuizSpeedBonus(10000), 0);
 assert.equal(betaQuizSpeedBonus(Number.POSITIVE_INFINITY), 0);
