@@ -707,7 +707,7 @@ export function ConnectionsClient({
               display={display}
               gameLocale={gameLocale}
               serviceLocale={serviceLocale}
-              labels={{ group: copy.viewsLabel, token: copy.viewTokens }}
+              groupLabel={copy.viewsLabel}
               onChange={changeDisplay}
             />
           </div>
