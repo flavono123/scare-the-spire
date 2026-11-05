@@ -432,9 +432,10 @@ SURFACE_MAP 2.2절 5~9번과 10번의 `threads`를 덮는다. 엔드포인트 �
 
 - `API_READ_LIMITER`: 60초 600건, 키 `cf-connecting-ip`. 캐시 없는 공개 읽기(`engagement`, `engagement-counts`)에만.
 - `API_WRITE_LIMITER`: 60초 30건, 키는 검증한 sub. 쓰기와 `/api/me/*`.
-- 운영 namespace `1001`·`1002`, testbed `1101`·`1102`. 한도는 Cloudflare 위치마다 따로 세고 대략적이다.
+- 운영 namespace `1101`·`1102`, testbed `1201`·`1202`(`1001`·`1002`는 링크 미리보기가 쓴다). 한도는 Cloudflare
+  위치마다 따로 세고 대략적이다.
 - binding이 없거나 `limit()`이 실패하면 막지 않는다. 막힘은 429 `rate_limited`.
-- Free 플랜에서 binding을 쓸 수 있는지 문서에 적혀 있지 않다. testbed 배포로 먼저 확인한다.
+- 이 계정에서 binding을 쓸 수 있는 것은 운영의 `LINK_PREVIEW_LIMITER`가 이미 보여 준다.
 
 **목록 참여 수** `GET /api/read/engagement-counts`: `rpc/get_engagement_counts(p_env)`를 그대로 부르고 지금 훅과 같은
 `{ likes, comments }`를 준다. 접두사 거르기는 이야기·베타 아트의 동작을 바꾸므로(SURFACE_MAP 8.4절) 1단계에 두지 않는다.

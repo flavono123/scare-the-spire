@@ -12,16 +12,17 @@ import {
   type LegacyReason,
 } from "./http";
 import { bearerToken, checkSupabaseAccessToken, fetchSupabaseJwks, type VerifiedSupabaseUser } from "./jwt";
+import { clientIp, withinRateLimit, type RateLimitEnv, type RateLimitKind } from "./rate-limit";
 import { supabaseApiConfig, supabaseIssuer, type SupabaseApiConfig } from "./supabase-rest";
 
 /**
  * The same-origin API router (docs/supabase-exit/STEP1_DESIGN.md 4). It owns
  * /api/read/, /api/me/ and /api/write/; everything else under /api keeps its
  * current handler. Order of checks: route, method, cross-site, query, kill
- * switch, QA, flag, token, handler.
+ * switch, QA, flag, token, rate limit, body, handler.
  */
 
-export type ApiEnv = FlagsEnv;
+export type ApiEnv = FlagsEnv & RateLimitEnv;
 
 type BaseContext = {
   request: Request;
@@ -38,7 +39,12 @@ type BaseContext = {
 };
 
 export type PublicRouteContext = BaseContext;
-export type UserRouteContext = BaseContext & { user: VerifiedSupabaseUser; token: string };
+export type UserRouteContext = BaseContext & {
+  user: VerifiedSupabaseUser;
+  token: string;
+  /** The parsed JSON body when the route declares `body`; otherwise undefined. */
+  body: unknown;
+};
 
 type QuerySchema = Record<string, (value: string) => boolean>;
 
@@ -48,6 +54,11 @@ type RouteBase = {
   path: string;
   group: ApiSurfaceGroup;
   query?: QuerySchema;
+  /**
+   * Counted by client IP (public) or verified user (me, write). Public routes
+   * served from a cache leave it unset; user routes default to "user".
+   */
+  rateLimit?: RateLimitKind | "none";
 };
 
 export type PublicRoute = RouteBase & {
@@ -61,6 +72,8 @@ export type PublicRoute = RouteBase & {
 export type UserRoute = RouteBase & {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   access: "me" | "write";
+  /** A JSON body of at most `maxBytes`, counted on the stream. */
+  body?: { maxBytes: number };
   handle(context: UserRouteContext): Promise<Response>;
 };
 
@@ -103,6 +116,41 @@ function allowHeader(routes: readonly ApiRoute[]): string {
     if (route.method === "GET") methods.add("HEAD");
   }
   return [...methods].join(", ");
+}
+
+type BodyRead = { ok: true; value: unknown } | { ok: false; code: "invalid" | "too_large" };
+
+/** Reads a JSON body, counting bytes as they arrive so a lying Content-Length cannot pass. */
+export async function readJsonBody(request: Request, maxBytes: number): Promise<BodyRead> {
+  const type = request.headers.get("content-type") ?? "";
+  if (!/^application\/json(?:\s*;|$)/i.test(type)) return { ok: false, code: "invalid" };
+  const declared = Number(request.headers.get("content-length") ?? "0");
+  if (Number.isFinite(declared) && declared > maxBytes) return { ok: false, code: "too_large" };
+  if (!request.body) return { ok: false, code: "invalid" };
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > maxBytes) {
+      void reader.cancel().catch(() => undefined);
+      return { ok: false, code: "too_large" };
+    }
+    chunks.push(value);
+  }
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  try {
+    return { ok: true, value: JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)) };
+  } catch {
+    return { ok: false, code: "invalid" };
+  }
 }
 
 const TOKEN_ERRORS: Record<"expired" | "invalid" | "unavailable", ApiErrorCode> = {
@@ -171,6 +219,9 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
 
     let response: Response;
     if (route.access === "public") {
+      if (route.rateLimit === "ip" && !(await withinRateLimit(env, "ip", clientIp(request)))) {
+        return error("rate_limited");
+      }
       response = await route.handle(base);
     } else {
       const token = bearerToken(request);
@@ -182,7 +233,16 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
         waitUntil: (promise) => ctx.waitUntil(promise),
       });
       if (!check.ok) return error(TOKEN_ERRORS[check.reason]);
-      response = await route.handle({ ...base, user: check.user, token });
+      if (route.rateLimit !== "none" && !(await withinRateLimit(env, "user", check.user.userId))) {
+        return error("rate_limited");
+      }
+      let body: unknown;
+      if (route.body) {
+        const read = await readJsonBody(request, route.body.maxBytes);
+        if (!read.ok) return error(read.code);
+        body = read.value;
+      }
+      response = await route.handle({ ...base, user: check.user, token, body });
     }
     return { response: isHead ? withoutBody(response) : response, label, code: "handler" };
   }

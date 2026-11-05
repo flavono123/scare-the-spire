@@ -1,4 +1,5 @@
 import sts2Meta from "../../data/sts2/meta.json";
+import { philosopherReplyThreadKey } from "@/lib/engagement-keys";
 import { kstWeekStart } from "@/lib/nav-surfaces";
 import {
   buildCompendiumResourceDetailHref,
@@ -50,8 +51,9 @@ export interface ColorfulPhilosopherPost {
   reworkCount: number;
 }
 
+// The Worker's /api/read/engagement builds the same key, so it lives in engagement-keys.ts.
 export function colorfulPhilosophersCommentThreadKey(postId: string): string {
-  return `colorful-philosophers:${postId}`;
+  return philosopherReplyThreadKey(postId);
 }
 
 export function colorfulPhilosopherReactionStorageKey(postId: string): string {
