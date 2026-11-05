@@ -11,7 +11,6 @@ import type { PublicRoute, PublicRouteContext } from "../router";
 import {
   inWaves,
   postgrest,
-  READ_TIMEOUT_MS,
   type ApiDataEnv,
   type Fetcher,
   type RestResult,
@@ -49,8 +48,12 @@ const NAV_KEY = "nav";
 export const NAV_MEMORY_MS = 30_000;
 export const NAV_REFRESH_AFTER_MS = 60_000;
 export const NAV_BLOCKING_AFTER_MS = 24 * 60 * 60_000;
-const LEASE_MS = 10_000;
-const DEADLINE_MS = 3_500;
+// A refresh nobody waits for (waitUntil) may take longer than one a request waits for;
+// during Supabase slowdowns simple reads take 2-3 s each. The lease outlives both.
+export const NAV_BACKGROUND_DEADLINE_MS = 10_000;
+// A blocking first fill stays inside the client's 8 s timeout, after up to 1 s of flag wait.
+export const NAV_BLOCKING_DEADLINE_MS = 6_000;
+const LEASE_MS = 15_000;
 const MIN_CALL_MS = 200;
 const COURIER_WINDOW_MS = 14 * 24 * 60 * 60_000;
 const COURIER_LIMIT = 12;
@@ -129,10 +132,11 @@ export async function fetchNavFromSupabase(
   previous: NavSnapshotBody | null,
   now: number,
   fetcher?: Fetcher,
+  deadlineMs = NAV_BACKGROUND_DEADLINE_MS,
 ): Promise<{ body: NavSnapshotBody; allFailed: boolean }> {
-  const deadline = Date.now() + DEADLINE_MS;
+  const deadline = Date.now() + deadlineMs;
   const call = (path: string, params: Record<string, string>) => async (): Promise<RestResult<Row[]>> => {
-    const remaining = Math.min(READ_TIMEOUT_MS, deadline - Date.now());
+    const remaining = deadline - Date.now();
     if (remaining < MIN_CALL_MS) return { ok: false, status: 0, code: "timeout" };
     return postgrest<Row[]>(config, { path, query: new URLSearchParams(params), timeoutMs: remaining, fetcher });
   };
@@ -199,12 +203,13 @@ async function refreshUnderLease(
   now: number,
   /** The row exists but its body is unusable (another env, malformed): its age means nothing. */
   ignoreAge: boolean,
+  deadlineMs: number,
 ): Promise<NavSnapshotBody | null> {
   const leaseUntil = now + LEASE_MS;
   const staleBefore = ignoreAge ? Number.MAX_SAFE_INTEGER : now - NAV_REFRESH_AFTER_MS;
   const lease = await db.prepare(NAV_LEASE_SQL).bind(NAV_KEY, leaseUntil, now, staleBefore).run();
   if ((lease.meta?.changes ?? 0) !== 1) return null;
-  const { body, allFailed } = await fetchNavFromSupabase(config, previous, Date.now());
+  const { body, allFailed } = await fetchNavFromSupabase(config, previous, Date.now(), undefined, deadlineMs);
   if (allFailed) {
     const backoff = FAIL_BACKOFF_MS[Math.min(failCount + 1, FAIL_BACKOFF_MS.length) - 1];
     await db.prepare(NAV_FAIL_SQL).bind(NAV_KEY, Date.now() + backoff, leaseUntil).run();
@@ -264,9 +269,18 @@ export async function handleNav(context: PublicRouteContext): Promise<Response> 
   const backingOff = row ? now < row.fail_until : false;
   if (age < NAV_REFRESH_AFTER_MS || backingOff) return body ? respond(body) : unavailable();
 
-  const refresh = refreshUnderLease(context.db, config, body, row?.fail_count ?? 0, now, unusableRow);
+  const blocking = !body || age >= NAV_BLOCKING_AFTER_MS;
+  const refresh = refreshUnderLease(
+    context.db,
+    config,
+    body,
+    row?.fail_count ?? 0,
+    now,
+    unusableRow,
+    blocking ? NAV_BLOCKING_DEADLINE_MS : NAV_BACKGROUND_DEADLINE_MS,
+  );
   context.ctx.waitUntil(refresh.catch(() => undefined));
-  if (body && age < NAV_BLOCKING_AFTER_MS) return respond(body);
+  if (!blocking && body) return respond(body);
 
   // Nothing usable (first fill, or older than a day): this request waits for its own lease.
   const fresh = await refresh.catch(() => null);
