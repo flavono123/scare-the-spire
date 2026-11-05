@@ -1195,6 +1195,80 @@
       .trim();
   }
 
+  // Same contract as src/lib/runtime-flags.ts and src/lib/nav-snapshot.ts
+  // (docs/supabase-exit/STEP1_DESIGN.md 7, 8.2). The page-wide object lets this
+  // script and the bundled patch scripts share one /api/read/nav request.
+  const FLAG_COOKIE = "slseoun_rf";
+  const API_MARKER_HEADER = "x-slseoun-api";
+  const NAV_SNAPSHOT_TTL_MS = 30000;
+
+  function slseounRuntime() {
+    window.__slseounRuntime = window.__slseounRuntime || { demoted: new Set() };
+    return window.__slseounRuntime;
+  }
+
+  function surfacePath(group) {
+    if (slseounRuntime().demoted.has(group)) return "legacy";
+    const entry = document.cookie.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${FLAG_COOKIE}=`));
+    if (!entry) return "legacy";
+    const [version, ...groups] = entry.slice(FLAG_COOKIE.length + 1).split(".");
+    return version === "v1" && groups.includes(group) ? "api" : "legacy";
+  }
+
+  function configEnv(config) {
+    if (config?.supabaseEnv) return config.supabaseEnv;
+    try {
+      return JSON.parse(document.getElementById(CONFIG_ID)?.textContent || "{}").supabaseEnv || "production";
+    } catch {
+      return "production";
+    }
+  }
+
+  function loadNavSnapshot(expectedEnv) {
+    const runtime = slseounRuntime();
+    const now = Date.now();
+    if (runtime.nav && now - runtime.nav.at < NAV_SNAPSHOT_TTL_MS) return runtime.nav.promise;
+    const legacy = () => {
+      runtime.demoted.add("nav");
+      return new Error("surface_legacy");
+    };
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), QUERY_TIMEOUT_MS);
+    const promise = fetch("/api/read/nav", {
+      headers: { Accept: "application/json" },
+      credentials: "same-origin",
+      signal: controller.signal,
+    }).then(async (response) => {
+      // No router (a Worker from before step 1) is a legacy signal, like 409.
+      if (response.headers.get(API_MARKER_HEADER) !== "1") throw legacy();
+      const body = await response.json().catch(() => null);
+      if (response.status === 409 && body?.error === "surface_legacy") throw legacy();
+      if (!response.ok) throw new Error("unavailable");
+      if (!body || body.v !== 1 || !Array.isArray(body.courier) || !body.latest || !body.weekly) throw legacy();
+      if (body.env !== expectedEnv) throw legacy();
+      return body;
+    }).finally(() => clearTimeout(timer));
+    runtime.nav = { promise, at: now };
+    return promise;
+  }
+
+  /** Courier rows from the nav snapshot (api) or Supabase (legacy); null when neither can run. */
+  function courierItems(config, since) {
+    const legacy = () => (config
+      ? restRequest(config, `comments?select=id,story_id,content,created_at&env=eq.${config.supabaseEnv}&created_at=gte.${encodeURIComponent(since)}&order=created_at.desc&limit=12`)
+        .then((rows) => (Array.isArray(rows) ? rows : []).flatMap((row) => {
+          const text = courierCommentText(row.content);
+          if (!row.id || !row.story_id || !text) return [];
+          return [{ id: row.id, storyId: row.story_id, text }];
+        }))
+      : null);
+    if (surfacePath("nav") !== "api") return legacy();
+    return loadNavSnapshot(configEnv(config)).then(
+      (snapshot) => snapshot.courier.map((item) => ({ id: item.id, storyId: item.storyId, text: item.text })),
+      () => (slseounRuntime().demoted.has("nav") ? legacy() || [] : []),
+    );
+  }
+
   function mountCourier(config) {
     const root = document.createElement("div");
     root.id = "sts-courier-root";
@@ -1231,18 +1305,14 @@
       document.head.appendChild(style);
     }
     place(skeleton);
-    if (!config) {
+    const since = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
+    const rowsPromise = courierItems(config, since);
+    if (!rowsPromise) {
       root.replaceChildren();
       return;
     }
-    const since = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
-    restRequest(config, `comments?select=id,story_id,content,created_at&env=eq.${config.supabaseEnv}&created_at=gte.${encodeURIComponent(since)}&order=created_at.desc&limit=12`)
-      .then((rows) => {
-        const items = (Array.isArray(rows) ? rows : []).flatMap((row) => {
-          const text = courierCommentText(row.content);
-          if (!row.id || !row.story_id || !text) return [];
-          return [{ id: row.id, storyId: row.story_id, text }];
-        });
+    rowsPromise
+      .then((items) => {
         if (items.length === 0) {
           root.replaceChildren();
           return;

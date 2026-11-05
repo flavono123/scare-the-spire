@@ -1,42 +1,55 @@
 import {
-  parseInjectedRuntimeFlags,
-  RUNTIME_FLAGS_ELEMENT_ID,
+  FLAG_COOKIE_NAME,
+  parseFlagCookieValue,
   type ApiSurfaceGroup,
   type SurfacePath,
 } from "@/lib/api-surfaces";
 
 /**
- * Which data path a screen group uses in this page: "api" when the Worker put
- * the group in the injected flags script, "legacy" otherwise (no script in
- * `pnpm dev`, on the patch Worker's own host, or when every flag is legacy).
+ * Which data path a screen group uses: "api" when the Worker's `slseoun_rf`
+ * cookie lists the group and this page has not demoted it, "legacy" otherwise
+ * (no cookie in `pnpm dev`, on the patch Worker's own host, or while every flag
+ * is legacy). See docs/supabase-exit/STEP1_DESIGN.md 7.
  *
  * Read it only in effects and event handlers, never during render: the build
- * prerenders with no document (legacy), so a render-time read would make the
- * first client render differ from the HTML and break hydration.
+ * prerenders without cookies, so a render-time read would make the first
+ * client render differ from the HTML and break hydration.
  */
 
-let injected: Set<ApiSurfaceGroup> | null = null;
-const demoted = new Set<ApiSurfaceGroup>();
+/** Page-wide state shared by every bundle on the page (patch pages load several). */
+export type SlseounRuntime = {
+  demoted: Set<string>;
+  nav?: { promise: Promise<unknown>; at: number };
+};
 
-function injectedGroups(): Set<ApiSurfaceGroup> {
-  if (injected) return injected;
-  if (typeof document === "undefined") return new Set();
-  injected = parseInjectedRuntimeFlags(document.getElementById(RUNTIME_FLAGS_ELEMENT_ID)?.textContent);
-  return injected;
+declare global {
+  interface Window {
+    __slseounRuntime?: SlseounRuntime;
+  }
 }
 
+export function slseounRuntime(): SlseounRuntime {
+  if (typeof window === "undefined") return { demoted: new Set() };
+  window.__slseounRuntime ??= { demoted: new Set() };
+  return window.__slseounRuntime;
+}
+
+function cookieValue(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  for (const part of document.cookie.split(";")) {
+    const index = part.indexOf("=");
+    if (index >= 0 && part.slice(0, index).trim() === name) return part.slice(index + 1).trim();
+  }
+  return null;
+}
+
+/** Read on every call, so a newer page in another tab can move this one too. */
 export function surfacePath(group: ApiSurfaceGroup): SurfacePath {
-  if (demoted.has(group)) return "legacy";
-  return injectedGroups().has(group) ? "api" : "legacy";
+  if (slseounRuntime().demoted.has(group)) return "legacy";
+  return parseFlagCookieValue(cookieValue(FLAG_COOKIE_NAME))?.has(group) ? "api" : "legacy";
 }
 
-/** The Worker answered 409 surface_legacy: use the legacy path for the rest of this page. */
+/** The Worker sent a legacy signal: use the legacy path for the rest of this page. */
 export function demoteSurface(group: ApiSurfaceGroup): void {
-  demoted.add(group);
-}
-
-/** Spec hook: forget the cached script and demotions. */
-export function resetRuntimeFlagsForTest(): void {
-  injected = null;
-  demoted.clear();
+  slseounRuntime().demoted.add(group);
 }

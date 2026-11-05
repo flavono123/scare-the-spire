@@ -6,6 +6,10 @@ import {
 import { FAVORITE_TOURNAMENT_HREF } from "@/lib/favorite-tournament";
 import { stripGameLocaleFromPath } from "@/lib/i18n";
 import { PAGESTORM_HREF } from "@/lib/pagestorm";
+import { SurfaceLegacyError } from "@/lib/api-client";
+import { loadNavSnapshot, snapshotHasSurface, type NavSnapshot } from "@/lib/nav-snapshot";
+import { weeklyPublishedAt } from "@/lib/nav-surfaces";
+import { surfacePath } from "@/lib/runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import patchesJson from "../../data/sts2-patches.json";
@@ -274,11 +278,6 @@ function catalogTimes(surface: NavSeenSurface): readonly string[] {
   return [];
 }
 
-/** Monday 00:00 KST of `weekStart`, as an ISO instant. */
-function weeklyPublishedAt(weekStart: string): string {
-  return new Date(`${weekStart}T00:00:00+09:00`).toISOString();
-}
-
 async function weeklyHasNewer(table: NonNullable<NavSeenSurface["weekly"]>, since: string): Promise<boolean> {
   if (!supabaseEnabled) return false;
   const { data, error } = await withSupabaseTimeout(
@@ -314,7 +313,7 @@ async function surfaceHasNewer(surface: NavSeenSurface, since: string): Promise<
   return (data?.length ?? 0) > 0;
 }
 
-export async function fetchUnreadSurfaceIds(seen: NavSeenMap): Promise<string[]> {
+async function legacyUnreadSurfaceIds(seen: NavSeenMap): Promise<string[]> {
   const flags = await Promise.all(NAV_SEEN_SURFACES.map(async (surface) => {
     const since = seen[surface.id];
     if (!since) return null;
@@ -323,6 +322,50 @@ export async function fetchUnreadSurfaceIds(seen: NavSeenMap): Promise<string[]>
     return hasNewer ? surface.id : null;
   }));
   return flags.filter((id): id is string => id !== null);
+}
+
+/**
+ * Unread ids from the Worker's nav snapshot: the same answer as the legacy
+ * per-surface queries (`created_at > since` exists iff the latest one is newer).
+ * Catalog surfaces never need the network; a surface the snapshot does not
+ * know (a Worker older than this bundle) asks Supabase the legacy way.
+ * `snapshot` null means the API was unavailable: only catalog dots remain.
+ */
+export async function unreadFromSnapshot(seen: NavSeenMap, snapshot: NavSnapshot | null): Promise<string[]> {
+  const flags = await Promise.all(NAV_SEEN_SURFACES.map(async (surface) => {
+    const since = seen[surface.id];
+    if (!since) return null;
+    let hasNewer = false;
+    if (surface.catalog) {
+      hasNewer = catalogTimes(surface).some((publishedAt) => contentIsNewerThanSeen(publishedAt, since));
+    } else if (!snapshot) {
+      hasNewer = false;
+    } else if (surface.weekly) {
+      const weekStart = snapshot.weekly["colorful-philosophers"];
+      hasNewer = typeof weekStart === "string" && contentIsNewerThanSeen(weeklyPublishedAt(weekStart), since);
+    } else if (snapshotHasSurface(snapshot, surface.id)) {
+      const latest = snapshot.latest[surface.id];
+      hasNewer = typeof latest === "string" && contentIsNewerThanSeen(latest, since);
+    } else {
+      hasNewer = await surfaceHasNewer(surface, since).catch(() => false);
+    }
+    return hasNewer ? surface.id : null;
+  }));
+  return flags.filter((id): id is string => id !== null);
+}
+
+/** Never rejects, on either path. */
+export async function fetchUnreadSurfaceIds(seen: NavSeenMap): Promise<string[]> {
+  if (surfacePath("nav") === "api") {
+    try {
+      return await unreadFromSnapshot(seen, await loadNavSnapshot());
+    } catch (error) {
+      // The shared promise may come from the patch static client, which demotes instead of throwing our class.
+      if (!(error instanceof SurfaceLegacyError) && surfacePath("nav") === "api") return unreadFromSnapshot(seen, null);
+      // Demoted: fall through to the legacy queries.
+    }
+  }
+  return legacyUnreadSurfaceIds(seen);
 }
 
 export function publishNavSeen(): void {

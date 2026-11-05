@@ -2,11 +2,16 @@ import type { ApiSurfaceGroup } from "@/lib/api-surfaces";
 import { demoteSurface } from "@/lib/runtime-flags";
 
 /**
- * Browser client for the same-origin Worker API (docs/supabase-exit/STEP1_DESIGN.md 7).
- * Only a 409 surface_legacy answer sends a caller back to the legacy path; on
- * outages the legacy path would only ask the same Supabase again, so callers
- * show their unavailable state instead.
+ * Browser client for the same-origin Worker API (docs/supabase-exit/STEP1_DESIGN.md 4.3, 7).
+ *
+ * Legacy signals: 409 surface_legacy, or any /api response without the router
+ * marker header (a Worker rolled back to before step 1 answers /api with an
+ * HTML 404). Both demote the group for this page and throw SurfaceLegacyError;
+ * callers then redo the call on the legacy path. Outages are not legacy
+ * signals: the legacy path would only ask the same Supabase again.
  */
+
+export const API_MARKER_HEADER = "X-Slseoun-Api";
 
 export class ApiError extends Error {
   constructor(readonly status: number, readonly code: string) {
@@ -15,15 +20,18 @@ export class ApiError extends Error {
   }
 }
 
-/** The Worker turned this group back to the legacy path. */
+/**
+ * The Worker cannot serve this call: use the legacy path. `processed` is false
+ * when the request certainly did nothing, so a write may be resent on legacy.
+ */
 export class SurfaceLegacyError extends ApiError {
-  constructor() {
-    super(409, "surface_legacy");
+  constructor(status: number, readonly processed: boolean) {
+    super(status, "surface_legacy");
     this.name = "SurfaceLegacyError";
   }
 }
 
-/** Network failure, timeout, or a 5xx from the Worker. */
+/** Network failure, timeout, or a 5xx from the router. */
 export class ApiUnavailableError extends ApiError {
   constructor(status: number, code = "unavailable") {
     super(status, code);
@@ -44,6 +52,7 @@ export type ApiFetchInit = {
 
 export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: ApiFetchInit = {}): Promise<T> {
   if (!path.startsWith("/api/")) throw new Error(`api path must be absolute: ${path}`);
+  const method = init.method ?? "GET";
   const headers: Record<string, string> = { Accept: "application/json" };
   if (init.body !== undefined) headers["Content-Type"] = "application/json";
   if (init.token) headers.Authorization = `Bearer ${init.token}`;
@@ -56,7 +65,7 @@ export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: Ap
   let response: Response;
   try {
     response = await fetch(path, {
-      method: init.method ?? "GET",
+      method,
       headers,
       body: init.body === undefined ? undefined : JSON.stringify(init.body),
       credentials: "same-origin",
@@ -69,12 +78,20 @@ export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: Ap
     init.signal?.removeEventListener("abort", abortFromCaller);
   }
 
+  if (response.headers.get(API_MARKER_HEADER) !== "1") {
+    // No router answered. A 404/405 from an old Worker certainly did nothing;
+    // after a Cloudflare 5xx a write may have run, so it is not resent.
+    const processed = method !== "GET" && !(response.status === 404 || response.status === 405);
+    demoteSurface(group);
+    throw new SurfaceLegacyError(response.status, processed);
+  }
+
   if (response.status === 204) return undefined as T;
   let payload: unknown = null;
   try {
     payload = await response.json();
   } catch {
-    if (response.ok) throw new ApiUnavailableError(response.status, "bad_response");
+    throw new ApiUnavailableError(response.status, "bad_response");
   }
 
   if (response.ok) return payload as T;
@@ -83,7 +100,7 @@ export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: Ap
     : `http_${response.status}`;
   if (response.status === 409 && code === "surface_legacy") {
     demoteSurface(group);
-    throw new SurfaceLegacyError();
+    throw new SurfaceLegacyError(409, false);
   }
   if (response.status >= 500) throw new ApiUnavailableError(response.status, code);
   throw new ApiError(response.status, code);
