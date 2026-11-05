@@ -67,7 +67,11 @@ type MeBody = {
 
 type Ask = { part: EngagementPart; key: string; resolve(value: unknown): void; reject(error: unknown): void };
 
-const BATCH_WINDOW_MS = 8;
+// A batch goes out once no new ask came for BATCH_QUIET_MS, and never later than
+// BATCH_MAX_WAIT_MS after its first ask. Patch pages mount each comment root in its
+// own task, so the asks of one page arrive spread over tens of milliseconds.
+const BATCH_QUIET_MS = 8;
+const BATCH_MAX_WAIT_MS = 40;
 // Philosophers' reply threads and reaction totals arrive before their widgets mount.
 const PRIMED_MS = 15_000;
 const QUERY_BUDGET = ENGAGEMENT_QUERY_MAX_CHARS - 200;
@@ -156,15 +160,20 @@ function settle(asks: readonly Ask[], pick: (ask: Ask) => unknown, unavailable: 
 function createQueue(send: (asks: Ask[]) => Promise<void>) {
   let pending: Ask[] = [];
   let timer: ReturnType<typeof setTimeout> | null = null;
+  let firstAskAt = 0;
+  const flush = () => {
+    const asks = pending;
+    pending = [];
+    timer = null;
+    void send(asks);
+  };
   return function ask<T>(part: EngagementPart, key: string): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       pending.push({ part, key, resolve: resolve as (value: unknown) => void, reject });
-      timer ??= setTimeout(() => {
-        const asks = pending;
-        pending = [];
-        timer = null;
-        void send(asks);
-      }, BATCH_WINDOW_MS);
+      const now = Date.now();
+      if (timer === null) firstAskAt = now;
+      else clearTimeout(timer);
+      timer = setTimeout(flush, Math.max(0, Math.min(BATCH_QUIET_MS, firstAskAt + BATCH_MAX_WAIT_MS - now)));
     });
   };
 }
