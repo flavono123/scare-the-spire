@@ -19,6 +19,8 @@ Options:
   --retry-delay-ms <number>    Delay between attempts (default: 0)
   --no-security-headers        Target predates the security headers: skip them and
                                the cross-site link preview refusal
+  --no-api-router              Target predates the same-origin API router (Supabase
+                               exit step 1): skip its check
   --help                       Show this help`);
 }
 
@@ -29,6 +31,7 @@ function parseArgs(argv) {
     attempts: 1,
     retryDelayMs: 0,
     securityHeaders: true,
+    apiRouter: true,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -56,6 +59,10 @@ function parseArgs(argv) {
     }
     if (argument === "--no-security-headers") {
       options.securityHeaders = false;
+      continue;
+    }
+    if (argument === "--no-api-router") {
+      options.apiRouter = false;
       continue;
     }
     throw new Error(`Unknown option: ${argument}`);
@@ -320,6 +327,16 @@ function mainCases() {
       securityHeadersOnly: true,
     },
     {
+      // The router answers without calling Supabase or D1: an unknown /api/read path is a legacy signal.
+      name: "API router answers an unknown route",
+      path: "/api/read/smoke-no-such-route",
+      statuses: [409],
+      contentType: "application/json",
+      bodyIncludes: "surface_legacy",
+      header: ["x-slseoun-api", "1"],
+      apiRouterOnly: true,
+    },
+    {
       name: "POST to a static page",
       path: "/compendium/cards",
       method: "POST",
@@ -499,6 +516,10 @@ function validateCase(testCase, response, body, options) {
     return `expected vary to include ${testCase.vary}, got ${response.headers.get("vary") || "missing"}`;
   }
 
+  if (testCase.header && response.headers.get(testCase.header[0]) !== testCase.header[1]) {
+    return `expected ${testCase.header[0]}: ${testCase.header[1]}, got ${response.headers.get(testCase.header[0]) ?? "missing"}`;
+  }
+
   if (testCase.allow && response.headers.get("allow") !== testCase.allow) {
     return `expected allow ${testCase.allow}, got ${response.headers.get("allow") || "missing"}`;
   }
@@ -542,7 +563,9 @@ async function main() {
   const cases = [
     ...(["main", "all"].includes(options.scope) ? mainCases() : []),
     ...(["patch", "all"].includes(options.scope) ? patchCases() : []),
-  ].filter((testCase) => options.securityHeaders || !testCase.securityHeadersOnly);
+  ]
+    .filter((testCase) => options.securityHeaders || !testCase.securityHeadersOnly)
+    .filter((testCase) => options.apiRouter || !testCase.apiRouterOnly);
 
   console.log(`Cloudflare route smoke · ${options.origin} · ${options.scope} · ${cases.length} checks`);
   const failures = [];

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn, spawnSync } from "node:child_process";
-import { statSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 
 import { checkBuildRecord, describeBuildRecord } from "./build-record.mjs";
 import { CLOUDFLARE_ASSETS_DIR, CLOUDFLARE_BUILD_DIR } from "./cloudflare-assets-dir.mjs";
@@ -20,6 +20,10 @@ Options:
   --remote         Deploy the isolated testbed Workers to Cloudflare and test them
   --skip-build     Reuse existing .cloudflare/assets and .patch-worker artifacts
                    (refused unless both were built from the current checkout)
+  --api            Local only: turn the runtime flags on (API_RUNTIME_FLAGS=d1) and give
+                   the local Worker the API vars from .env.local, so /api reaches the
+                   shared Supabase's development rows. Off by default, like --allow-supabase
+                   in mobile QA. Set flags with: pnpm flags set path.<group> api --env production --local
   --help           Show this help`);
 }
 
@@ -59,7 +63,7 @@ function assertFreshArtifacts(options) {
 }
 
 function parseArgs(argv) {
-  const options = { origin: "", remote: false, skipBuild: false };
+  const options = { origin: "", remote: false, skipBuild: false, api: false };
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
     if (argument === "--") continue;
@@ -79,6 +83,10 @@ function parseArgs(argv) {
       options.skipBuild = true;
       continue;
     }
+    if (argument === "--api") {
+      options.api = true;
+      continue;
+    }
     throw new Error(`Unknown option: ${argument}`);
   }
 
@@ -87,6 +95,36 @@ function parseArgs(argv) {
   }
   options.origin = options.origin.replace(/\/+$/, "");
   return options;
+}
+
+/** One key from .env.local or .env, without loading the rest (it holds service secrets). */
+function checkoutEnvValue(name) {
+  if (process.env[name]) return process.env[name];
+  for (const file of [".env.local", ".env"]) {
+    let text;
+    try {
+      text = readFileSync(file, "utf8");
+    } catch {
+      continue;
+    }
+    const line = text.split("\n").find((candidate) => candidate.startsWith(`${name}=`));
+    if (line) return line.slice(name.length + 1).trim().replace(/^["']|["']$/g, "");
+  }
+  return "";
+}
+
+/** --var arguments for the same-origin API (docs/supabase-exit/STEP1_DESIGN.md 2.1, 10). */
+function apiVarArgs(dataEnv) {
+  const vars = {
+    API_SUPABASE_URL: checkoutEnvValue("NEXT_PUBLIC_SUPABASE_URL").replace(/\/+$/, ""),
+    API_SUPABASE_KEY: checkoutEnvValue("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+    API_DATA_ENV: dataEnv,
+  };
+  run("check API vars", "pnpm", ["exec", "tsx", "scripts/check-api-vars.ts", "--expect-env", dataEnv], {
+    ...process.env,
+    ...vars,
+  });
+  return Object.entries(vars).flatMap(([key, value]) => ["--var", `${key}:${value}`]);
 }
 
 function executable(name) {
@@ -132,7 +170,7 @@ function runCaptured(label, command, args, env = process.env) {
   });
 }
 
-function startWorker(label, config, port) {
+function startWorker(label, config, port, extraArgs = []) {
   console.log(`\n[testbed] starting ${label} on port ${port}`);
   const child = spawn(
     executable("pnpm"),
@@ -150,6 +188,7 @@ function startWorker(label, config, port) {
       "--log-level",
       "warn",
       "--show-interactive-dev-session=false",
+      ...extraArgs,
     ],
     {
       cwd: process.cwd(),
@@ -276,6 +315,14 @@ async function runRemote(options) {
   run("validate main Worker upload size", "pnpm", ["cf:size"]);
 
   const wranglerEnv = { ...process.env, WRANGLER_WRITE_LOGS: "0" };
+  const apiVars = apiVarArgs("development");
+  // Idempotent; the testbed Worker reads runtime_flags and api_cache from its own D1.
+  run(
+    "apply testbed D1 migrations",
+    "pnpm",
+    ["exec", "wrangler", "d1", "migrations", "apply", "DB", "--env", REMOTE_ENVIRONMENT, "--remote"],
+    wranglerEnv,
+  );
   await runCaptured(
     "deploy isolated patch Worker",
     "pnpm",
@@ -303,6 +350,7 @@ async function runRemote(options) {
       "--env",
       REMOTE_ENVIRONMENT,
       "--keep-vars",
+      ...apiVars,
     ],
     wranglerEnv,
   );
@@ -346,7 +394,13 @@ async function main() {
     patchWorker = startWorker("patch-worker", "wrangler.patch.jsonc", 8788);
     await waitForWorker("patch Worker", patchWorker, `${LOCAL_PATCH_ORIGIN}/patches`);
 
-    mainWorker = startWorker("main-worker", "wrangler.jsonc", 8787);
+    const localApiArgs = options.api
+      ? ["--var", "API_RUNTIME_FLAGS:d1", ...apiVarArgs("development")]
+      : [];
+    if (options.api) {
+      run("apply local D1 migrations", "pnpm", ["exec", "wrangler", "d1", "migrations", "apply", "DB", "--local"]);
+    }
+    mainWorker = startWorker("main-worker", "wrangler.jsonc", 8787, localApiArgs);
     await waitForWorker("main Worker", mainWorker, `${LOCAL_MAIN_ORIGIN}/`);
     await waitForWorker(
       "main-to-patch service binding",

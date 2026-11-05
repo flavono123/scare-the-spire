@@ -43,6 +43,8 @@ jobs:
 
       - run: npx tsx scripts/worker-routing.spec.ts
 
+      - run: pnpm test:api
+
       - run: npx tsx scripts/build-supabase-read.spec.ts
 
       - run: npx tsx scripts/encounter-compositions.spec.ts

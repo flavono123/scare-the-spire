@@ -282,9 +282,18 @@ jobs:
       - name: Deploy to Cloudflare Workers
         if: steps.changes.outputs.main == 'true'
         run: |
+          # Same-origin API vars (docs/supabase-exit/STEP1_DESIGN.md 2.1, 10). Passed on
+          # every deploy and checked first, because --keep-vars would keep a bad value.
+          export API_SUPABASE_URL="${NEXT_PUBLIC_SUPABASE_URL%/}"
+          export API_SUPABASE_KEY="$NEXT_PUBLIC_SUPABASE_ANON_KEY"
+          export API_DATA_ENV=production
+          npx tsx scripts/check-api-vars.ts --expect-env production
           for attempt in 1 2 3; do
             echo "main Worker deploy attempt ${attempt}/3"
-            if pnpm cf:deploy:built; then
+            if pnpm cf:deploy:built \
+              --var "API_SUPABASE_URL:${API_SUPABASE_URL}" \
+              --var "API_SUPABASE_KEY:${API_SUPABASE_KEY}" \
+              --var "API_DATA_ENV:${API_DATA_ENV}"; then
               exit 0
             fi
 
