@@ -47,7 +47,9 @@ export function ResourceReactionBar({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
   const { userId, ensureUser } = useAuth();
-  const resource = useResourceReactions(resourceType, resourceId, gameVersion, userId);
+  const resource = useResourceReactions(resourceType, resourceId, gameVersion, userId, {
+    personal: variant !== "readonly",
+  });
 
   if (variant === "readonly") {
     return (

@@ -2,6 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
+import { ApiError } from "@/lib/api-client";
+import {
+  engagementApiFor,
+  forgetEngagement,
+  loadEngagement,
+  shouldUseLegacy,
+  writeMayGoLegacy,
+} from "@/lib/api-engagement";
+import { apiFetchAsUser } from "@/lib/api-session";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
@@ -28,6 +37,8 @@ export interface Comment {
   avatar_kind?: ProfileAvatarKind | string | null;
   palette_id?: string | null;
   palette_swapped?: boolean | null;
+  /** Present when the thread came from the Worker (/api/read/engagement). */
+  like_count?: number;
 }
 
 interface UseCommentsReturn {
@@ -50,30 +61,55 @@ export function useComments(storyId: string, userId: string | null): UseComments
   const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
+    const loadLegacy = () => {
+      withSupabaseTimeout(
+        "comments.select",
+        supabase
+          .from("comments")
+          .select("*")
+          .eq("story_id", storyId)
+          .eq("env", supabaseEnv)
+          .order("created_at", { ascending: true }),
+      )
+        .then(({ data, error }) => {
+          if (error) throw error;
+          if (cancelled) return;
+          setComments(data ?? []);
+          setUnavailable(false);
+          setLoading(false);
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setUnavailable(true);
+          setLoading(false);
+        });
+    };
 
-    withSupabaseTimeout(
-      "comments.select",
-      supabase
-        .from("comments")
-        .select("*")
-        .eq("story_id", storyId)
-        .eq("env", supabaseEnv)
-        .order("created_at", { ascending: true }),
-    )
-      .then(({ data, error }) => {
-        if (error) throw error;
-        if (cancelled) return;
-        setComments(data ?? []);
-        setUnavailable(false);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setUnavailable(true);
-        setLoading(false);
-      });
+    if (engagementApiFor("threads", storyId)) {
+      loadEngagement("threads", storyId)
+        .then((rows) => {
+          if (cancelled) return;
+          setComments(rows as Comment[]);
+          setUnavailable(false);
+          setLoading(false);
+        })
+        .catch((error) => {
+          if (cancelled) return;
+          if (shouldUseLegacy(error) && supabaseEnabled) {
+            loadLegacy();
+            return;
+          }
+          setUnavailable(true);
+          setLoading(false);
+        });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    if (!supabaseEnabled) return;
+    loadLegacy();
     return () => {
       cancelled = true;
     };
@@ -100,6 +136,37 @@ export function useComments(storyId: string, userId: string | null): UseComments
       }
 
       const token = authorToken !== undefined ? authorToken : currentAuthorProfileToken();
+      if (engagementApiFor("threads", storyId)) {
+        try {
+          const { comment } = await apiFetchAsUser<{ comment: Comment }>("comments", "/api/write/comments", {
+            method: "POST",
+            body: {
+              threadKey: storyId,
+              nickname,
+              content,
+              contentBlocks: contentBlocks ?? null,
+              ...(token ? {
+                author: {
+                  avatarId: token.avatar_id,
+                  avatarKind: token.avatar_kind,
+                  paletteId: token.palette_id,
+                  paletteSwapped: token.palette_swapped,
+                },
+              } : {}),
+            },
+          });
+          forgetEngagement("threads", storyId);
+          setComments((prev) => [...prev, { ...comment, content_blocks: contentBlocks ?? null }]);
+          return;
+        } catch (error) {
+          // Only a write that certainly did nothing may be sent again on the legacy path.
+          if (!writeMayGoLegacy(error)) {
+            setUnavailable(true);
+            throw new Error(error instanceof ApiError ? error.code : "Comment storage unavailable");
+          }
+        }
+      }
+
       const basePayload = {
         story_id: storyId,
         user_id: activeUserId,
@@ -142,6 +209,25 @@ export function useComments(storyId: string, userId: string | null): UseComments
   const remove = useCallback(
     async (commentId: string) => {
       if (!userId || !supabaseEnabled) return;
+      if (engagementApiFor("threads", storyId)) {
+        let resendOnLegacy = false;
+        try {
+          await apiFetchAsUser("comments", `/api/write/comments?id=${encodeURIComponent(commentId)}`, { method: "DELETE" });
+        } catch (error) {
+          // not_found: already gone or never ours. It leaves the list either way, as on the legacy path.
+          if (writeMayGoLegacy(error)) {
+            resendOnLegacy = true;
+          } else if (!(error instanceof ApiError && error.code === "not_found")) {
+            setUnavailable(true);
+            return;
+          }
+        }
+        if (!resendOnLegacy) {
+          forgetEngagement("threads", storyId);
+          setComments((prev) => prev.filter((c) => c.id !== commentId));
+          return;
+        }
+      }
       const { error } = await withSupabaseTimeout(
         "comments.delete",
         supabase.from("comments").delete().eq("id", commentId),
@@ -152,7 +238,7 @@ export function useComments(storyId: string, userId: string | null): UseComments
       }
       setComments((prev) => prev.filter((c) => c.id !== commentId));
     },
-    [userId],
+    [storyId, userId],
   );
 
   return { comments, loading, unavailable, add, remove };
