@@ -164,7 +164,8 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
 
   async function dispatch(request: Request, env: ApiEnv, ctx: ExecutionContextLike, url: URL): Promise<{ response: Response; label: string; code: string }> {
     const forPath = routes.filter((route) => route.path === url.pathname);
-    const label = forPath[0]?.id ?? redactPathname(url.pathname);
+    // The matched route's id once the method is known; the path's first route before that.
+    let label = forPath[0]?.id ?? redactPathname(url.pathname);
     const legacy = (reason: LegacyReason) => ({ response: legacyResponse(reason), label, code: `legacy:${reason}` });
     const error = (code: ApiErrorCode, headers?: Record<string, string>) => ({ response: apiError(code, headers), label, code });
 
@@ -180,6 +181,7 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
     const method = isHead ? "GET" : request.method;
     const route = forPath.find((candidate) => candidate.method === method);
     if (!route) return error("method_not_allowed", { Allow: allowHeader(forPath) });
+    label = route.id;
     if (method !== "GET" && isCrossSiteWrite(request, url)) return error("cross_site");
     if (!validQuery(url, route.query)) return error("invalid");
 
