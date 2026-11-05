@@ -7,220 +7,288 @@
 
 ## 상태
 
-2026-11-05: 초안. 이 문서는 모든 화면이 같이 쓰는 기반(런타임 플래그, HTML 주입, `/api` 라우터, Supabase
-어댑터, JWT 검증, 클라이언트 헬퍼)과 첫 화면인 네비(`nav`)를 정한다. 다른 화면의 엔드포인트와 응답은
-SURFACE_MAP.md 2절을 따르고, 화면을 옮길 때 이 문서 9절에 차례로 더한다.
+- 2026-11-05 초안을 쓰고, 여섯 관점(되돌리기, HTTP·런타임, 보안, 클라이언트, 비용, 플랫폼 사실)의 반박 검토를
+  받아 고쳤다. 검토에서 바뀐 큰 결정:
+  1. **플래그는 HTML 본문이 아니라 응답 쿠키로 알린다**(3.3절). 수 MB짜리 페이지(패치 0.107.1 2.5 MiB)를 모두
+     HTMLRewriter로 다시 쓰면 Free 10 ms CPU에 닿는다(로컬 측정 +6~10 ms). 본문을 건드리지 않으면 ETag 조작,
+     하위 자원(`/_patches/*.js`) 304 손실, `<head>` 하이드레이션 문제가 함께 사라진다.
+  2. **Worker를 1단계 이전 판으로 되돌려도 열린 탭이 legacy로 돌아온다**(4.3절). 라우터 응답에 표식 헤더를 두고,
+     표식 없는 응답은 "라우터 없음"으로 본다.
+  3. **네비 스냅샷은 D1 한 행에 두고 isolate 하나만 갱신한다**(8.1절). isolate 메모리 캐시만으로는 크롤러 트래픽에서
+     Supabase 부하가 줄지 않는다(지금과 비슷한 하루 2.5만~5만 쿼리). D1 행은 원본이 아니라 캐시라서 지워도 된다.
+  4. 운영에서는 배포 때 켜는 스위치(`API_RUNTIME_FLAGS`)가 꺼져 있는 한 D1을 읽지도 않는다(2.1절). 모든 플래그가
+     `legacy`인 운영은 바이트와 지연 모두 지금과 같다.
+- 이 문서는 모든 화면이 같이 쓰는 기반과 첫 화면 `nav`를 정한다. 다른 화면은 SURFACE_MAP.md 2절을 따르되,
+  이 문서 9절의 규칙이 우선한다.
 
 ## 1. 순서
 
-1. 기반: 플래그, 주입, 라우터, 어댑터, JWT, 클라이언트 헬퍼. 모든 플래그가 `legacy`이면 운영 동작이 지금과
-   바이트 단위로 같아야 한다(3.4절).
+1. 기반: 스위치, 플래그, 쿠키, `/api` 라우터, 어댑터, JWT, 클라이언트 헬퍼. 운영은 스위치를 끈 채 배포한다.
 2. `nav`: 네비 새 글 표시와 댓글 배달부. 읽기만 하고 사용자와 무관하다.
-3. `comments`: 공용 댓글, 백과사전 묶음, 좋아요, 리소스 반응, 목록 참여 수. 첫 쓰기 화면이라 JWT 경로를 여기서
-   처음 쓴다.
+3. `comments`: 공용 댓글, 백과사전 묶음, 좋아요, 리소스 반응, 목록 참여 수. 첫 쓰기 화면이다.
 4. 나머지 그룹(`toybox-feed`, `colorful-philosophers`, `stories`, `history-runs`, `puzzlebox`, `profile`,
    `contact`).
 
-각 화면은 플래그를 `api`로 켜기 전에 testbed에서 먼저 켠다. 켜는 것과 되돌리는 것은 배포 없이 플래그로 한다.
+각 그룹은 testbed에서 먼저 켜고(10절), 넘어갈 조건(12절)을 본 뒤 운영에서 켠다. 운영 플래그를 바꾸는 것은
+매번 사용자 승인 뒤에 한다.
 
 ## 2. Worker 구성
 
 ### 2.1 binding과 변수
 
-| 이름 | 종류 | 값 | 비고 |
-|---|---|---|---|
-| `DB` | D1 binding | 운영 `slseoun-prod`, testbed `slseoun-testbed` | `apac` location hint. 1단계에는 `runtime_flags`만 쓴다 |
-| `API_SUPABASE_URL` | var | 프로젝트 URL | 배포할 때 `--var`로 넣는다. 저장소에 적지 않는다(지금도 GitHub secret이다) |
-| `API_SUPABASE_KEY` | var | publishable 키(`sb_publishable_…`) | 같음. 클라이언트 번들에 이미 있는 공개 키다 |
-| `API_DATA_ENV` | var | 운영 `production`, testbed `development` | 행의 `env` 열. 클라이언트 값을 받지 않는다 |
+| 이름 | 종류 | 운영 | testbed | 비고 |
+|---|---|---|---|---|
+| `DB` | D1 binding | `slseoun-prod` | `slseoun-testbed` | `apac` location hint. 1단계에는 읽기 복제를 켜지 않는다(2.2절) |
+| `API_RUNTIME_FLAGS` | var(`wrangler.jsonc`) | `off` | `d1` | `d1`일 때만 D1 플래그를 읽는다. 그 밖의 값은 모두 `legacy` |
+| `API_SUPABASE_URL` | var(`--var`) | 프로젝트 URL | 같음 | 저장소에 적지 않는다(지금도 GitHub secret) |
+| `API_SUPABASE_KEY` | var(`--var`) | publishable 키 | 같음 | 클라이언트 번들에 이미 있는 공개 키 |
+| `API_DATA_ENV` | var(`--var`) | `production` | `development` | 행의 `env` 열. 클라이언트 값을 받지 않는다 |
 
 - 이름을 `API_`로 시작하게 한 이유: [detail-shell-og.ts](../../workers/detail-shell-og.ts)는
-  `NEXT_PUBLIC_SUPABASE_*`와 `SUPABASE_*`를 읽는다. 같은 이름을 넣으면 지금 꺼져 있는 OG 보강이 켜지고, 그
-  안의 테이블 오류(SURFACE_MAP 8.3절)와 상세 HTML마다의 Supabase 요청이 함께 생긴다. OG는 1단계 범위가 아니다.
+  `NEXT_PUBLIC_SUPABASE_*`와 `SUPABASE_*`를 읽는다. 같은 이름을 쓰면 지금 꺼져 있는 OG 보강이 켜진다. 그 안에는
+  테이블 오류(SURFACE_MAP 8.3절)가 있고, 상세 HTML마다 Supabase 요청이 생긴다. OG는 1단계 범위가 아니다.
+- isolate마다 한 번 값을 검사한다:
+  - URL은 끝 슬래시를 떼고 `^https://[a-z0-9]{20}\.supabase\.co$`에 맞아야 한다. 로컬 테스트용
+    `http://127.0.0.1:<port>`는 허용한다.
+  - 키는 `sb_publishable_`로 시작해야 한다. secret 키가 들어가면 RLS를 건너뛰므로 거절한다.
+  - env는 `production` 또는 `development`여야 한다.
+
+  하나라도 틀리면 그 isolate의 실효 플래그는 모두 `legacy`이고, `/api`는 409 `surface_legacy`(사유
+  `not_configured`)를 돌려준다. 변수를 빠뜨린 배포가 이미 열린 탭을 깨지 않게 하려는 것이다(4.3절).
+- `--keep-vars` 때문에 한 번 들어간 var는 다음 배포에도 남는다. 그래서 var는 kill switch가 아니다. CI는 세 값을
+  매번 넘기고, 비었거나 env가 대상과 다르면 배포 전에 실패한다(10절). kill switch는 D1 플래그와
+  `API_RUNTIME_FLAGS`다.
 - 1단계에는 secret이 없다. 쓰기는 사용자 토큰을 넘기고, JWKS는 공개 값이다.
-- 세 var 가운데 하나라도 없으면 `/api`의 Supabase 경로는 503 `not_configured`이고, 플래그와 상관없이 HTML에는
-  `api`를 넣지 않는다(3.3절). 변수를 빠뜨린 배포가 화면을 깨지 않게 하려는 것이다.
 
 ### 2.2 D1
 
 - `wrangler.jsonc` 최상위와 `env.testbed`에 각각 `d1_databases`를 적는다(named env는 물려받지 않는다).
-  `database_id`를 꼭 적는다. 비어 있으면 `wrangler deploy`가 새 DB를 만든다.
-- 마이그레이션은 `d1/migrations/`에 둔다(`migrations_dir`). Supabase 마이그레이션(`supabase/migrations/`)과
-  섞이지 않게 한다. 스키마는 늘리기만 한다(plan 7.2절).
-- 읽기 복제를 켠다. 플래그 읽기는 `withSession("first-unconstrained")`가 있으면 그것으로, 없으면(로컬)
-  `prepare`로 한다. 복제 지연(보통 몇 초)만큼 되돌리기가 늦을 수 있다.
+  `database_id`를 꼭 적는다. 비어 있으면 `wrangler deploy`가 새 DB를 만든다. spec으로 두 id가 다른지 확인한다.
+- 마이그레이션은 `d1/migrations/`(`migrations_dir`). Supabase 마이그레이션(`supabase/migrations/`)과 섞지 않는다.
+  스키마는 늘리기만 한다(plan 7.2절).
+- 읽기 복제는 1단계에 켜지 않는다. 복제본은 얼마든지 늦을 수 있어서(Cloudflare 문서: "arbitrarily out of
+  date"), 켜면 플래그 되돌리기의 상한이 없어진다. 끈 뒤 복제본이 멈추는 데에도 24시간까지 걸린다. 1단계의 D1
+  읽기는 플래그 10행과 스냅샷 1행이라 복제로 얻을 것이 없다. 3단계에 데이터 읽기용으로 다시 검토한다. 계획서
+  1단계의 "읽기 복제 켜기"는 이 판단으로 바꾼다.
+- 1단계 테이블: `runtime_flags`, `runtime_flag_events`(3.1절), `api_cache`(8.1절).
 
 ## 3. 런타임 플래그
 
-### 3.1 테이블
+### 3.1 테이블과 바꾸는 법
 
 ```sql
-CREATE TABLE runtime_flags (
-  key TEXT PRIMARY KEY,
-  value TEXT NOT NULL,
-  updated_at TEXT NOT NULL,
-  note TEXT NOT NULL DEFAULT ''
-);
-CREATE TABLE runtime_flag_events (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  key TEXT NOT NULL,
-  value TEXT NOT NULL,
-  at TEXT NOT NULL,
-  note TEXT NOT NULL DEFAULT ''
-);
+CREATE TABLE runtime_flags (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL, note TEXT NOT NULL DEFAULT '');
+CREATE TABLE runtime_flag_events (id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT NOT NULL, value TEXT NOT NULL, at TEXT NOT NULL, note TEXT NOT NULL DEFAULT '');
 ```
 
-- 키는 `path.<그룹>`이다. 그룹은 SURFACE_MAP 1.2절의 9개다: `nav`, `comments`, `toybox-feed`,
-  `colorful-philosophers`, `stories`, `history-runs`, `puzzlebox`, `profile`, `contact`.
-- 값은 `legacy` 또는 `api`다. 1단계의 안전한 쪽은 `legacy`이고, 행이 없거나 값을 모르면 `legacy`다.
+- 키는 `path.<그룹>`, 값은 `legacy` 또는 `api`. 그룹은 SURFACE_MAP 1.2절의 9개다. 행이 없거나 값을 모르면 `legacy`.
 - 키 이름에 단계 축을 넣는다. 3단계의 읽기 저장소는 `read.<그룹>`(`supabase` 또는 `d1`), 4·5단계는 그때 정한다.
-  한 축을 바꾸는 플래그가 다른 축의 값을 함께 바꾸지 않게 하려는 것이다(plan 7.2절 "한 단계에 한 가지만").
-- 바꾸는 것은 `scripts/runtime-flags.mjs`로만 한다(`get`, `set <key> <value> --note`, 대상 `--env testbed` 또는
-  `--env production`). `runtime_flags` upsert와 `runtime_flag_events` insert를 한 batch로 보낸다. 운영 값을 바꾸는
-  것은 사용자 승인 뒤에만 한다.
+  한 축의 플래그가 다른 축을 함께 바꾸지 않게 하려는 것이다(plan 7.2절 "한 단계에 한 가지만").
+- Worker는 자기 라우터 표에 경로가 있는 그룹만 `api`로 받는다. 그 그룹의 엔드포인트가 없는 Worker 판으로 되돌려도
+  플래그가 그 그룹을 켜지 못한다.
+- 바꾸는 것은 `scripts/runtime-flags.ts`로만 한다.
+  - `--env testbed|production`과 `--remote|--local`을 둘 다 꼭 받는다. wrangler 4의 `d1 execute`는 기본이
+    로컬이라서, 빠뜨리면 운영 되돌리기가 로컬 파일에 써지고 성공으로 보인다.
+  - 키와 값을 알려진 목록으로 검사한다. 쓰기 전에 대상 DB 이름을 출력하고, 쓴 뒤 같은 행을 원격에서 다시 읽어
+    보여 준다. 운영은 `--confirm-production`을 더 받는다.
+  - `runtime_flags` upsert와 `runtime_flag_events` insert를 한 번에 보낸다.
 
 ### 3.2 Worker가 읽는 법
 
-- `SELECT key, value FROM runtime_flags` 한 번으로 전부 읽는다(행 10개 안팎). 아는 키와 값만 받는다.
-- isolate 메모리에 30초 둔다. 30초가 지난 값은 그대로 쓰고 `ctx.waitUntil`로 다시 읽는다(한 번에 하나만).
-- 메모리에 값이 없을 때만 기다린다. HTML 요청은 150 ms, `/api` 요청은 1초까지 기다리고, 넘거나 실패하면
-  `legacy` 기본값을 쓴다. 실패한 결과는 5초만 둔다. 늦게 끝난 읽기는 그대로 캐시를 채운다.
-- 문서 요청(GET·HEAD, RSC가 아님)과 `/api` 요청에서만 읽는다. RSC, 정적 asset, 다른 메서드는 읽지 않는다.
+플래그 값은 isolate 메모리에 둔다. 상태는 셋이다.
 
-### 3.3 HTML 주입
+| 상태 | 페이지 요청 | `/api` 요청 |
+|---|---|---|
+| 신선(읽은 지 30초 안) | 그대로 쓴다 | 그대로 쓴다 |
+| 낡음(30초~5분) | 그대로 쓰고 `waitUntil`로 다시 읽는다 | 다시 읽고 기다린다(최대 1초). 실패하면 `legacy` |
+| 없음(5분 넘음, 처음, 읽기 실패) | "모름". 쿠키를 바꾸지 않고 `waitUntil`로 읽는다 | 위와 같다 |
 
-- `mainWorker.fetch` 감싸개에서 한다. 그래서 정적 페이지, 상세 셸, 404, PATCH_WORKER가 돌려준 패치 페이지까지
-  모두 덮는다.
-- `api`인 그룹이 하나도 없으면 주입하지 않는다. 그때 HTML은 지금과 같다.
-- 있으면 content type이 `text/html`이고 본문이 있는 응답(200, 404)의 `<head>` 맨 앞에 넣는다.
+- 페이지 요청은 D1을 절대 기다리지 않는다. 1단계에서는 `legacy`가 언제나 안전한 쪽이다.
+- `/api` 요청은 30초가 지난 값을 쓰지 않는다. 그래서 되돌리기는 30초 + D1 왕복 안에 모든 isolate의 `/api`에
+  닿는다(복제를 켜지 않았으므로 복제 지연은 없다).
+- 공개 읽기(`/api/read/*`)는 플래그 읽기와 데이터 읽기를 한 D1 batch로 같이 보내고 끝에서 판단한다. 쓰기와
+  `/api/me/*`는 플래그를 먼저 확인한다.
+- 다시 읽기는 isolate마다 한 번에 하나다. 진행 표시는 promise가 아니라 2초 뒤 풀리는 시각으로 둔다. 다른 요청의
+  promise를 기다리지 않는다. 모든 D1 읽기는 `waitUntil`에 건다(요청이 끝나면 취소되지 않게).
+- 읽기에 실패하면 마지막 성공 값을 "낡음"으로 유지하고, 실패를 이어서 하면 10초, 30초, 60초로 간격을 늘린다.
+- `API_RUNTIME_FLAGS`가 `d1`이 아니면 D1을 읽지 않고 모두 `legacy`다.
+- 페이지 요청이란: GET·HEAD이고, `/api/`가 아니며, 파일 경로가 아니다(`/_patches/`, `/images/`, `/fonts/`, 확장자가
+  있는 경로. [patch-worker.ts](../../workers/patch-worker.ts)의 `isFilePath`와 같은 규칙). RSC 요청도 포함한다.
+  `Accept`로 판단하지 않는다. 브라우저는 스크립트와 CSS에도 `*/*`를 보낸다.
 
-  ```html
-  <script id="slseoun-runtime-flags" type="application/json">{"v":1,"path":{"nav":"api"}}</script>
-  ```
+### 3.3 쿠키로 알리기
 
-  `api`인 그룹만 적는다. JSON의 `<`는 `<`로 바꾼다. React 19는 `<head>`의 낯선 태그를 하이드레이션에서
-  건너뛰고, 상세 셸 OG가 이미 `<head>`에 태그를 넣고 있다(SURFACE_MAP 6.3절).
-- 크롤러에도 똑같이 넣는다. 사람과 크롤러가 다른 경로를 타면 오류율 비교가 어긋난다.
+- 쿠키 `slseoun_rf`. 값은 `v1`과 `api`인 그룹을 점으로 이은 것이다. 예: `v1.nav.comments`. 그룹은 이름순.
+- Worker는 페이지 요청의 응답에서, 실효 플래그를 알 때만, 요청에 실려 온 쿠키 값과 다를 때만
+  `Set-Cookie`를 보낸다.
+  - `api`인 그룹이 있으면 `slseoun_rf=<값>; Path=/; Max-Age=86400; SameSite=Lax`, https면 `; Secure`.
+  - 없으면(모두 `legacy`) 쿠키가 실려 왔을 때만 `Max-Age=0`으로 지운다.
+  - 실효 플래그를 모르면(3.2절 "없음") 보내지 않는다. 차가운 isolate가 사용자를 legacy로 흔들지 않게 한다.
+- `Set-Cookie`는 304와 HEAD에도 붙는다. 본문과 ETag와 `Cache-Control`은 건드리지 않는다. 그래서 브라우저 캐시의
+  304 재검증이 지금 그대로 동작한다.
+- 응답 헤더는 `withSecurityHeaders`가 만든 사본에 붙인다. 서비스 binding과 redirect 응답의 헤더는 바꿀 수 없다.
+- 쿠키는 기능 쿠키이고 사용자를 식별하지 않는다. 요청마다 약 20바이트가 붙는다. 정적 asset 요청은 Worker를
+  거치지 않으므로 쿠키를 받기만 하고 무시한다.
+- 크롤러가 쿠키를 받지 않으면 `legacy`로 남는다(지금과 같다).
+- 계획서 7.3절의 "플래그는 Worker가 HTML에 넣어 준다"는 이 방식으로 바꾼다. 3단계의 첫 데이터 HTML 주입은 그때
+  CPU 문제를 따로 풀어야 한다(앞부분만 읽고 나머지는 native pipe로 흘리는 방식 등). 상태 절의 측정을 참고한다.
 
-### 3.4 ETag와 304
+### 3.4 QA 쿠키
 
-플래그가 바뀌어도 asset ETag는 그대로라서, 손대지 않으면 브라우저가 304를 받고 옛 플래그가 든 HTML을 계속
-쓴다. 그래서 주입한 HTML의 ETag에 플래그 판을 붙인다.
+브라우저 QA의 `*.supabase.co` 차단은 Worker가 대신 부르는 Supabase 요청을 막지 못한다. 그래서 Worker가
+아래 쿠키를 따른다.
 
-- 플래그 판 `ver`: `api`인 그룹을 이름순으로 이은 문자열(`nav=api;...`)의 FNV-1a 32비트 base36. `api`가 없으면
-  `ver = 0`이다.
-- 나가는 응답(주입했거나 주입할 HTML의 200·HEAD, 그리고 아래 규칙으로 고친 요청의 304): ETag
-  `"<원래 값>-rf<ver>"`. 원래 값이 `W/`로 시작하면 그 표시를 유지한다. 원래 ETag가 없으면 붙이지 않는다.
-- 들어오는 문서 요청의 `If-None-Match`(목록의 태그마다):
-
-  | 태그 | `ver = 0`일 때 | `ver ≠ 0`일 때 |
-  |---|---|---|
-  | `-rf<ver>`로 끝남(지금 판) | 해당 없음 | 접미사를 떼고 넘긴다 |
-  | `-rf<다른 판>`으로 끝남 | 버린다 | 버린다 |
-  | 접미사 없음 | 그대로 넘긴다 | 버린다 |
-  | `*` | 그대로 | 그대로 |
-
-  태그를 하나라도 버렸거나 `ver ≠ 0`이면 `If-Modified-Since`도 지운다. 남은 태그가 없으면 `If-None-Match`를
-  지운다. 그래서 판이 바뀐 탭은 200으로 새 플래그를 받고, 같은 판이면 304가 그대로 동작한다.
-- `ver = 0`인 동안 접미사 없는 태그는 그대로 지나가므로, 모든 플래그가 `legacy`인 운영은 지금과 같다.
-- `Cache-Control`(`public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400`)은 바꾸지 않는다.
-  stale-while-revalidate로 브라우저가 옛 HTML을 한 번 더 쓸 수 있다. 그 탭은 3.5절의 서버 쪽 강제로 막는다.
-
-### 3.5 서버 쪽 강제
-
-- `/api` 엔드포인트마다 그룹이 있다. 그 그룹의 플래그가 `legacy`면 처리하지 않고 409
-  `{ "error": "surface_legacy" }`(`no-store`)를 돌려준다.
-- 클라이언트는 409를 받으면 그 페이지가 살아 있는 동안 그 그룹을 `legacy`로 내리고 legacy 경로로 다시 한다.
-- 그래서 되돌리기가 열어 둔 탭, 304로 받은 옛 HTML, stale-while-revalidate로 받은 HTML에도 30초(캐시) 안에
-  닿는다.
+- `slseoun_qa=no-supabase`: 그 요청의 실효 플래그는 모두 `legacy`이고 `slseoun_rf`를 지운다. `/api`는 Supabase를
+  부르지 않고 409를 낸다. Playwright(`PLAYWRIGHT_BLOCK_SUPABASE=1`)와 모바일 QA 스크립트(`--allow-supabase`가 없을
+  때)가 사이트 출처에만 넣는다. 사용자에게 해가 없으므로 운영에서도 따른다.
+- `slseoun_qa_path=<그룹>.<그룹>`: 그 그룹을 `api`로 고정한다. `API_DATA_ENV=development`일 때만 따른다. testbed
+  spec이 D1 플래그 상태와 상관없이 자기가 시험할 경로를 고르게 하려는 것이다.
+- 헤더가 아니라 쿠키인 이유: Playwright의 `extraHTTPHeaders`는 다른 출처 요청에도 붙어 preflight를 만든다.
+  쿠키는 출처별이다.
 
 ## 4. `/api` 라우터
 
-- 위치: `mainWorker.fetch`에서 `routeRequest`보다 먼저 경로를 본다. `/api/read/`, `/api/me/`, `/api/write/`로
-  시작하는 경로만 가져간다. `/api/link-preview`와 `/api/search-index`(별칭)는 지금 길로 간다. `/api/patches…`처럼
-  패치 Worker 정규식에 걸리는 이름도 라우터가 먼저 받는다.
-- 경로 표: `{ method, path, group, handler }`. 경로는 정확히 맞아야 하고 끝 슬래시를 받지 않는다. 없는 경로는
-  JSON 404 `not_found`, 메서드가 다르면 405와 `Allow`. HEAD는 본문 없는 GET, OPTIONS는 204와 `Allow`.
-- 모든 응답: `Content-Type: application/json; charset=utf-8`, `X-Robots-Tag: noindex`, 명시한
-  `Cache-Control`. CORS 헤더는 보내지 않는다(같은 출처만 읽을 수 있다). `withSecurityHeaders`를 그대로 지난다.
-- 오류 형식은 `{ "error": "<code>" }` 하나다.
+### 4.1 위치와 경로
+
+- `mainWorker.fetch`에서 `routeRequest`보다 먼저 본다. `/api/read/`, `/api/me/`, `/api/write/`로 시작하는 경로만
+  가져간다. `/api/link-preview`와 `/api/search-index`(별칭)는 지금 길로 간다. `/api/patches…`처럼 패치 Worker
+  정규식에 걸리는 이름도 라우터가 먼저 받는다.
+- `wrangler.jsonc`의 assets에 `"run_worker_first": ["/api/*"]`를 둔다(testbed도). `public/api/`에 파일이 생겨도
+  라우터를 가리지 않는다. 정적 asset 검사(`check-cloudflare-static-assets.ts`)는 `/api/` 아래 asset이 있으면
+  실패한다.
+- 경로 표 항목: `{ method, path, group, access: "public" | "me" | "write", handler, query }`. 경로는 정확히 맞아야
+  하고 끝 슬래시를 받지 않는다. HEAD는 GET 처리기를 `allowUpstream: false`로 부른다(메모리·D1 캐시로만 답하고
+  Supabase를 부르지 않는다). OPTIONS는 204와 `Allow`.
+- 쿼리 검사: 항목마다 받는 매개변수와 형식이 있다. 모르는 매개변수, 같은 매개변수가 두 번 나오면 400 `invalid`.
+  캐시 키는 정렬하고 중복을 없앤 값으로 만든다. PostgREST URL은 정해진 필터로만 만들고 클라이언트의 `select`,
+  `order`, `limit`, `offset`, `or`, `and`를 넘기지 않는다.
+
+### 4.2 응답
+
+- 모든 라우터 응답에 `X-Slseoun-Api: 1`, `Content-Type: application/json; charset=utf-8`, `X-Robots-Tag: noindex`.
+  CORS 헤더는 보내지 않는다.
+- `Cache-Control`: 기본은 `private, no-store`. `access: "public"`인 성공 응답만 `public, max-age=N`을 쓸 수 있고,
+  N은 플래그 TTL(30초)을 넘지 않는다. 오류는 모두 `no-store`.
+- 오류 형식: `{ "error": "<code>" }`, 409는 `{ "error": "surface_legacy", "reason": "<사유>" }`.
 
   | 상태 | code | 언제 |
   |---|---|---|
   | 400 | `invalid` | 쿼리·본문 검사 실패 |
-  | 401 | `unauthenticated` | 토큰이 없거나 서명·만료·발급자 검사 실패(쓰기, `/api/me`) |
+  | 401 | `token_expired` | 토큰 만료, PostgREST의 401(PGRST30x). 클라이언트는 한 번만 갱신하고 다시 보낸다 |
+  | 401 | `token_invalid` | 서명·발급자·대상·역할·sub 검사 실패. 갱신하지 않는다 |
   | 403 | `forbidden`, `cross_site` | RLS 거절(42501), 교차 사이트 쓰기 |
-  | 404 | `not_found` | 경로 없음, 대상 없음(0행) |
+  | 404 | `not_found` | 대상이 없음(0행). 경로가 없을 때는 쓰지 않는다 |
   | 405 | `method_not_allowed` | |
-  | 409 | `surface_legacy` | 3.5절 |
-  | 413 | `too_large` | 본문 상한 초과 |
-  | 422 | `check_violation` | 23514 |
+  | 409 | `surface_legacy` | legacy로 가라는 뜻(4.3절). 다른 뜻으로 409를 쓰지 않는다 |
+  | 413 | `too_large` | 본문 상한 초과(스트림 바이트로 센다) |
+  | 422 | `check_violation`, `duplicate` | 23514, 23505 |
   | 429 | `rate_limited` | |
-  | 503 | `unavailable`, `not_configured` | Supabase 시간 초과·5xx·연결 실패, 변수 없음. `Retry-After: 30` |
+  | 503 | `unavailable`, `auth_unavailable` | Supabase 시간 초과·5xx·연결 실패. 모르는 kid인데 JWKS를 받지 못함. `Retry-After: 30` |
 
-- 교차 사이트 쓰기: GET·HEAD가 아닌 요청은 `Sec-Fetch-Site`가 `same-origin`이거나, 없으면 `Origin`이 요청
-  출처와 같아야 한다(link-preview와 같은 규칙). 아니면 403 `cross_site`.
-- 공개 읽기는 `Authorization`을 보지 않는다. 개인 필드가 필요한 화면은 `/api/me/*`로 따로 부른다. 그래서 공개
-  응답은 사용자마다 달라지지 않고 메모리·브라우저 캐시에 둘 수 있다(SURFACE_MAP 1.2절의 "토큰이 있으면 같은
-  응답에 개인 필드"는 이 규칙으로 바꾼다).
+### 4.3 legacy로 돌려보내는 신호
+
+"이 Worker는 이 호출을 처리할 수 없다"는 모두 409 `surface_legacy`다. 사유(`reason`)는 기록용이다.
+
+- `flag`: 그룹 플래그가 `legacy`
+- `no_route`: `/api/read|me|write/` 아래의 모르는 경로
+- `not_configured`: 2.1절 변수 검사 실패
+- `off`: `API_RUNTIME_FLAGS`가 `d1`이 아님
+- `qa`: `slseoun_qa=no-supabase`
+
+클라이언트(7절)는 다음을 모두 "legacy로 가라"로 본다: 409 `surface_legacy`, 그리고 `X-Slseoun-Api` 표식이 없는
+`/api` 응답. 표식이 없다는 것은 라우터가 없는 Worker(1단계 이전 판으로 되돌린 경우)이거나 Cloudflare 오류
+페이지라는 뜻이다. 1단계 이전 Worker는 `/api/*`에 HTML 404를 준다(`main-worker.ts:441-457`).
+
+### 4.4 교차 사이트 쓰기
+
+- 1단계 쓰기는 `Authorization: Bearer` 헤더로만 인증하고 쿠키 신원이 없다. 그래서 CSRF는 구조적으로 성립하지 않는다.
+- 그래도 심층 방어로, GET·HEAD가 아닌 요청은 `Sec-Fetch-Site`가 `cross-site`나 `same-site`이면, 또는 `Origin`이
+  있는데 요청 출처와 다르면(`null` 포함) 403 `cross_site`다. 둘 다 없으면 받는다(옛 브라우저). JWT 검사와 본문
+  읽기보다 먼저 한다. 4단계에 쿠키 신원이 생기면 다시 검토한다.
+
+### 4.5 로그
+
+- 라우터가 남기는 줄은 `api <method> <route id> <status> <code>` 하나다. 경로는 `redactPathname`을 거친다.
+- 헤더, 토큰, sub, 요청·응답 본문, PostgREST의 `message`·`details`·`hint`는 남기지 않는다. PostgREST `details`에는
+  행 내용(닉네임, 본문, user_id)이 들어 있다. 어댑터는 이 값을 결과에 담지도 않는다.
+- `comments`를 켜기 전에 testbed 쓰기 경로에 `Authorization: Bearer x.y.z`를 보내 401을 받고, `pnpm cf:logs --json`에서
+  헤더가 남지 않는지 확인한다.
 
 ## 5. Supabase 어댑터
 
-- `workers/api/supabase-rest.ts`. supabase-js가 아니라 `fetch`로 PostgREST를 부른다(Worker 크기 256 KiB 예산).
+- `workers/api/supabase-rest.ts`. supabase-js가 아니라 `fetch`로 PostgREST를 부른다. Worker 번들에 supabase-js가
+  들어가면 `cf:size`가 실패하게 한다.
 - 헤더: `apikey: <API_SUPABASE_KEY>`, `Accept: application/json`. 사용자 토큰이 있을 때만
-  `Authorization: Bearer <토큰>`을 넣는다. publishable 키를 Bearer로 넣지 않는다.
+  `Authorization: Bearer <토큰>`. publishable 키를 Bearer로 넣지 않는다.
+- 공개 읽기 처리기는 토큰 인자가 없는 어댑터를 받는다. 개인 데이터는 `access: "me"`와 `"write"` 처리기만 다룬다.
 - 모든 쿼리에 `env=eq.<API_DATA_ENV>`를 Worker가 붙인다. 쓰기 본문의 `env`와 `user_id`도 Worker가 채운다.
-- 시간 제한: 읽기 4초, 쓰기 6초(클라이언트 8초보다 짧게). AbortController로 끊는다.
-- 결과는 `{ ok: true, data }` 또는 `{ ok: false, status, code, message }`. PostgREST 오류 JSON의 `code`를 그대로
-  두고, 4절 표로 바꾸는 것은 엔드포인트가 한다.
-- 화면마다 저장소 인터페이스를 두고(`NavSource` 등) Supabase 구현만 만든다. 3단계에 같은 인터페이스로 D1 구현을
-  더한다.
-- 같은 데이터를 두 경로가 같은 모양으로 내도록, 행을 화면 모양으로 바꾸는 함수는 `src/lib`의 순수 함수를 같이
-  쓴다(Worker가 import). 큰 데이터를 끌고 오는 모듈은 import하지 않는다.
+- 동시 요청: Workers는 응답 헤더를 기다리는 연결을 한 번에 6개까지만 연다. 나머지는 줄을 서고, 그동안 시간 제한이
+  흐른다. 그래서 한 요청 안의 PostgREST 호출은 한 번에 5개까지 보낸다(D1·JWKS 호출 자리를 남긴다). 시간 제한은
+  보낼 때 시작한다.
+- 시간 제한: 읽기 하나 4초, 쓰기 6초. 한 엔드포인트 전체는 클라이언트 8초보다 짧게(공개 읽기 3.5초).
+- 결과는 `{ ok: true, data }` 또는 `{ ok: false, status, code }`. `code`는 PostgREST·Postgres 코드이거나
+  `timeout`, `network`, `bad_response`, `http_<상태>`다.
+- 화면마다 저장소 인터페이스를 두고(`NavSource` 등) Supabase 구현만 만든다. 3단계에 D1 구현을 더한다.
+- 행을 화면 모양으로 바꾸는 함수는 `src/lib`의 import 없는 순수 모듈로 두고 두 경로가 같이 쓴다.
+  supabase-js나 큰 JSON을 끌고 오는 모듈(`nav-seen.ts`, `colorful-philosophers.ts`)은 Worker가 import하지 않는다.
 
 ## 6. JWT 검증
 
-- `workers/api/auth.ts`. `Authorization: Bearer <access_token>`만 받는다(URL로 받지 않는다).
-- 순서: 세 조각과 base64url 확인 → 헤더 `alg = ES256`, `kid`가 JWKS에 있음 → WebCrypto ECDSA P-256 SHA-256
-  서명 확인 → `exp > now - 30초`, `iss = <API_SUPABASE_URL>/auth/v1`, `aud`에 `authenticated`,
-  `role = authenticated`, `sub`가 uuid.
-- JWKS는 코드에 고정한다(`workers/api/supabase-jwks.ts`, 2026-11-05에 받은 키 하나). 모르는 `kid`면
-  `<API_SUPABASE_URL>/auth/v1/.well-known/jwks.json`을 받아 10분 둔다(실패도 1분 둔다). CryptoKey는 isolate마다
-  캐시한다.
-- 실패는 모두 401 `unauthenticated`. 클라이언트는 supabase-js로 세션을 갱신하고 한 번만 다시 보낸다. Worker는
-  토큰을 갱신하지 않는다.
+- `workers/api/jwt.ts`. `Authorization: Bearer <access_token>`만 받는다(URL로 받지 않는다).
+- 순서(값싼 검사부터):
+  1. 길이 8 KB 이하, 세 조각, base64url
+  2. 서명 전 payload로 `iss = <API_SUPABASE_URL>/auth/v1`, `aud`에 `authenticated`, `role = authenticated`,
+     `sub`가 uuid, `exp`가 숫자인지 본다. 틀리면 401 `token_invalid`. JWKS를 찾기 전에 걸러서, 아무 토큰으로나
+     JWKS를 받게 만들 수 없게 한다.
+  3. 헤더 `alg = ES256`, `kid` 128자 이하
+  4. 키 찾기: 고정 키 → 받아 둔 JWKS. 둘 다 없으면 JWKS를 받는다. 받는 것은 isolate마다 1분에 한 번까지이고, 어떤
+     kid든 같은 쿨다운을 쓴다(kid별 표를 두지 않는다). 진행 중인 받기는 함께 쓴다. 시간 제한 2초, 본문 16 KB.
+     받은 뒤에도 없으면 `token_invalid`, 받지 못했으면 503 `auth_unavailable`.
+  5. WebCrypto ECDSA P-256 SHA-256 서명 확인. 실패하면 `token_invalid`
+  6. `exp - 5 > now`. 아니면 401 `token_expired`(PostgREST에 닿기 전에 만료될 토큰을 미리 걸러 갱신을 부른다).
+     `iat`가 `now + 30`보다 뒤면 `token_invalid`
+- 고정 키(`workers/api/supabase-jwks.ts`, 2026-11-05에 받은 ES256 키 하나)는 시작값이다. 1단계에서는 PostgREST가
+  토큰을 다시 검증하므로 Worker 검사는 심층 방어다. Worker가 유일한 검증자가 되는 4단계 전에 키 목록을 D1로
+  옮기고 폐기(revocation) 절차를 둔다.
 - 검증한 `sub`만 신원으로 쓴다. 클라이언트가 보낸 `user_id`는 받지 않는다.
+- Worker는 토큰을 갱신하지 않는다.
 
 ## 7. 클라이언트
 
-- `src/lib/runtime-flags.ts`: `surfacePath(group): "legacy" | "api"`, `demoteSurface(group)`. 주입된 스크립트를
-  처음 부를 때 한 번 읽는다. `document`가 없거나(빌드, 서버) 스크립트가 없으면(`pnpm dev`, 패치 Worker 직접
-  접근, 플래그 전부 `legacy`) `legacy`다.
-- 규칙: 렌더 중에 플래그를 읽지 않는다. 효과(effect)나 이벤트 처리에서만 읽는다. 렌더에서 읽으면 빌드 HTML
-  (`legacy`)과 첫 클라이언트 렌더가 달라져 하이드레이션이 어긋난다.
-- `src/lib/api-client.ts`: `apiFetch(group, path, init)`. 절대 경로 `/api/...`만 쓴다. 시간 제한 8초
-  (AbortController). 409 `surface_legacy`면 `demoteSurface` 뒤 `SurfaceLegacyError`, 401·403·404·422·429는 코드가
-  든 `ApiError`, 네트워크·시간 초과·5xx는 `ApiUnavailableError`.
-- legacy로 다시 하는 것은 409일 때뿐이다. 503에 legacy로 가면 같은 Supabase를 브라우저가 한 번 더 부를 뿐이라서,
-  지금의 "응답 없음" 화면을 보인다.
-- `supabaseEnabled` 검사(빌드에 Supabase 변수가 없으면 false)는 `api` 경로에서는 보지 않는다. Worker가 변수를
-  갖는다. 이 검사가 있는 곳은 SURFACE_MAP 6.10절에 적혀 있고, 화면을 옮길 때 함께 고친다.
-- 패치 페이지의 정적 클라이언트(`patch-comments-client.js`)는 같은 스크립트를 읽는 작은 함수를 따로 둔다. 번들
-  셋(rich, nav-indicators, resource-patch-index)은 `src/lib`의 같은 헬퍼를 번들한다.
+- `src/lib/runtime-flags.ts`:
+  - `surfacePath(group)`: 부를 때마다 `document.cookie`의 `slseoun_rf`를 읽는다(값이 `v1.`로 시작하지 않으면
+    무시). 그리고 이 페이지에서 내린 그룹이면 `legacy`다. 다른 탭의 새 페이지가 쿠키를 바꾸면 열린 탭에도 닿는다.
+  - `demoteSurface(group)`: 이 페이지가 살아 있는 동안 그 그룹을 `legacy`로 둔다.
+  - 페이지 안 공유 상태(내린 그룹, 네비 스냅샷 요청)는 `window.__slseounRuntime`에 둔다. 패치 페이지에는 서로 다른
+    번들(esbuild IIFE 여럿, 정적 `patch-comments-client.js`)이 있어서 모듈 변수로는 공유되지 않는다.
+- 규칙: 렌더 중에 플래그를 읽지 않는다. 효과(effect)와 이벤트 처리에서만 읽는다. 렌더 중에 보는
+  `supabaseEnabled` 검사(버튼 비활성화 등)는 빌드 상수로 그대로 둔다. CI 빌드에서는 늘 true다
+  (`cloudflare-workers.yml`이 env를 확인한다). 효과와 처리기 안의 `supabaseEnabled` 검사만 `api` 경로에서 건너뛴다.
+- `src/lib/api-client.ts`: `apiFetch(group, path, init)`. 절대 경로 `/api/...`만 쓴다. 시간 제한 8초.
+  - legacy 신호(4.3절)를 받으면 `demoteSurface` 뒤 `SurfaceLegacyError`를 던진다. 호출부는 legacy 경로로 한 번
+    다시 한다.
+  - 쓰기의 자동 재시도는 처리되지 않았음이 확실할 때만 한다. 409 `surface_legacy`이거나, 표식 없는 404·405(라우터가
+    없는 Worker)다. 표식 없는 5xx 뒤에는 쓰기를 legacy로 다시 보내지 않는다. 두 번 쓸 수 있다.
+  - 401 `token_expired`: supabase-js로 갱신하고 한 번만 다시 보낸다. `token_invalid`과 503에는 갱신하지 않는다.
+  - 그 밖의 4xx는 코드가 든 `ApiError`. 네트워크 오류·시간 초과·표식 있는 5xx는 `ApiUnavailableError`.
+- 503에 legacy로 가지 않는다. 같은 Supabase를 브라우저가 한 번 더 부를 뿐이라서, 지금의 "응답 없음" 화면을 보인다.
+- 패치 정적 클라이언트(`patch-comments-client.js`)는 같은 쿠키와 `window.__slseounRuntime`을 읽는 작은 함수를
+  따로 둔다. `api` 경로에서 세션 갱신이 실패하면 새 익명 가입으로 넘어가지 않는다(지금은 넘어가서 uid를 덮어쓴다).
+  이 규칙은 `comments`를 옮길 때 적용한다.
 
 ## 8. 네비(`nav`)
 
 ### 8.1 엔드포인트
 
-`GET /api/read/nav`. 공개, 그룹 `nav`.
+`GET /api/read/nav`. `access: "public"`, 그룹 `nav`, 매개변수 없음.
 
 ```json
 {
   "v": 1,
-  "generatedAt": "2026-11-05T12:00:00.000Z",
+  "env": "production",
+  "fetchedAt": "2026-11-05T12:00:00.000Z",
   "latest": {
-    "combo": "2026-11-04T09:12:33.120Z",
-    "transfigure": null,
+    "combo": "2026-11-04T09:12:33.120Z", "transfigure": null,
     "this-or-that": "…", "favorite-tournament": "…", "chemical-x": "…",
     "decisions-decisions": "…", "pagestorm": "…", "history-course": "…"
   },
@@ -229,88 +297,135 @@ CREATE TABLE runtime_flag_events (
 }
 ```
 
-- `latest`: 8개 테이블마다 `select=created_at&env=eq.<env>&order=created_at.desc&limit=1`. 값은
-  `new Date(x).toISOString()`로 맞춘다(PostgREST는 마이크로초와 `+00:00`을 준다. 클라이언트는 문자열로 비교한다).
-  실패한 테이블은 `null`이다. 지금도 실패한 표면은 점만 잃는다.
-- `weekly`: `colorful_philosopher_posts`의 `week_start <= 이번 주 월요일(KST)` 가운데 최신 `week_start`
-  (`YYYY-MM-DD`). 이번 주 계산은 `colorfulPhilosophersWeekStart`와 같은 식이다(spec으로 같음을 확인한다).
+Supabase 읽기(갱신할 때만):
+
+- `latest`: 8개 테이블마다 `select=created_at&env=eq.<env>&created_at=not.is.null&order=created_at.desc&limit=1`.
+  `created_at`이 비어 있는 행을 거르는 이유: Postgres 내림차순은 NULL이 먼저라서, 그런 행 하나가 최신값을 가린다.
+  값은 `new Date(x).toISOString()`으로 맞춘다(PostgREST는 마이크로초와 `+00:00`을 주고, 클라이언트는 문자열로
+  비교한다).
+- `weekly`: `colorful_philosopher_posts`의 `week_start <= 이번 주 월요일(KST)` 가운데 최신 `week_start`.
 - `courier`: `comments`의 최근 14일 12개, `id, story_id, content, created_at`. `text`는
-  `courierCommentText(content)`이고 빈 줄은 뺀다. href·출처 이름·토큰은 지금처럼 클라이언트가 `storyId`로 만든다.
-- 10개 요청이 모두 실패하면 503 `unavailable`. 일부만 실패하면 200에 `"partial": true`.
-- 캐시:
-  - Worker 메모리에 60초. 지난 값은 그대로 주고 `waitUntil`로 다시 읽는다. Supabase가 응답하지 않으면 10분까지
-    지난 값을 준다. `partial`이면 10초만 둔다.
-  - 응답 `Cache-Control: public, max-age=60`(`partial`이면 `max-age=10`). 같은 브라우저의 페이지 이동과 탭이
-    1분 동안 다시 부르지 않는다.
-- Worker 안 요청은 캐시가 비었을 때 subrequest 10개다(Free 한도 50).
+  `courierCommentText(content)`를 160자로 자른 것(넘으면 `…`). 빈 줄은 뺀다.
+- 테이블 목록과 KST 주 계산은 import 없는 `src/lib/nav-surfaces.ts`에 두고 `nav-seen.ts`·`colorful-philosophers.ts`와
+  Worker가 같이 쓴다. 서비스가 늘어도 두 경로가 갈라지지 않는다.
+- 10개 호출은 한 번에 5개씩 두 번에 보낸다. 처음 묶음에 배달부와 철학자를 넣는다(색인이 없어 가장 느리다).
+
+캐시(원본은 늘 Supabase이고, 아래는 모두 지워도 되는 캐시다):
+
+- D1 `api_cache` 한 행(`key='nav'`): `body`(위 JSON), `fetched_at`, `lease_until`, `fail_count`, `fail_until`.
+- isolate 메모리에 30초. 메모리에 없으면 플래그와 함께 D1 batch 한 번으로 읽는다.
+- `fetched_at`이 60초를 넘었으면 갱신 임대를 시도한다. 임대는 조건부 UPDATE(`lease_until < now`이고
+  `fail_until <= now`)로, 이긴 isolate 하나만 `waitUntil`에서 Supabase를 읽는다. 나머지는 지금 값을 준다. 그래서
+  Supabase의 네비 부하는 트래픽과 상관없이 하루 1,440번 × 10건 이하다.
+- 갱신에서 일부 테이블이 실패하면 그 테이블만 지난 값을 유지한다. 실패 때문에 TTL을 줄이지 않는다. 모두 실패하면
+  `fail_count`를 올리고 `fail_until`을 60초, 120초, 300초로 늘린다. 모든 isolate가 같이 물러선다.
+- 행이 없거나 `fetched_at`이 24시간을 넘었을 때만 요청이 직접 기다린다(임대를 이긴 경우, 전체 3.5초). 임대를 지면
+  지난 값을 주고, 값이 아예 없으면 503 `unavailable`.
+- 응답 `Cache-Control: public, max-age=30`. 503은 `no-store`이고 `Retry-After: 30`.
+- 비용: D1 읽기는 메모리에 없을 때 플래그 약 10행 + 1행, 쓰기는 갱신마다 2행(하루 3천 행 이하). Free 한도의 1% 안팎이다.
 
 ### 8.2 클라이언트
 
-- `src/lib/nav-snapshot.ts`: `loadNavSnapshot()`. 진행 중인 요청을 함께 쓰고, 받은 값을 페이지 메모리에 60초
-  둔다. 네비와 배달부가 같은 요청 하나를 쓴다.
-- `fetchUnreadSurfaceIds(seen)`(`nav-seen.ts`): `nav`가 `api`면 스냅샷으로 계산한다.
-  - 테이블 표면: `latest[id] > since[id]`
-  - 철학자: `weeklyPublishedAt(weekly) > since`
-  - 패치 노트·니오우스레터: 지금처럼 번들 JSON
-  - 409면 legacy로 다시 한다. 503이나 시간 초과면 점 없음(지금 실패 동작과 같다).
-- 탭별 60초 unread 캐시(`sts-nav-unread:`)는 그대로 둔다. 두 경로 모두 결과 목록을 저장한다.
-- 배달부(`comment-courier.tsx`): `nav`가 `api`면 스냅샷의 `courier`를 쓴다. 배달부를 끈 사용자도 네비 때문에
-  같은 응답을 받으므로 요청이 늘지 않는다.
-- 패치 페이지: `patch-nav-indicators-client.ts`는 `fetchUnreadSurfaceIds`를 그대로 쓰므로 함께 바뀐다.
-  `patch-comments-client.js`의 배달부는 플래그를 읽어 `api`면 `/api/read/nav`의 `courier`를 쓴다.
+- `src/lib/nav-snapshot.ts`: `loadNavSnapshot()`. 진행 중인 요청과 받은 값을 `window.__slseounRuntime`에 30초 둔다.
+  네비, 배달부, 패치 페이지의 두 스크립트가 요청 하나를 같이 쓴다.
+- 응답의 `env`가 빌드의 `supabaseEnv`와 다르면 그 페이지는 `nav`를 legacy로 내린다(경고 로그). testbed 패치 페이지는
+  production env로 빌드되어 Worker의 development와 다르다(10절). 본 시각 저장소도 env별이라 섞으면 점이 틀린다.
+- `fetchUnreadSurfaceIds(seen)`(`nav-seen.ts`)는 어느 경로에서도 거부(reject)하지 않는다.
+  - 패치 노트·니오우스레터: 번들 JSON으로, 스냅샷 결과와 상관없이 계산한다.
+  - 테이블 표면: `latest[id] > since[id]`. 철학자: `weeklyPublishedAt(weekly) > since`.
+  - 스냅샷에 키가 없으면(서버가 모르는 새 서비스) 그 표면만 legacy 쿼리로 본다.
+  - legacy 신호면 전체를 legacy로 다시 한다. 503이나 시간 초과면 테이블 표면은 점 없음, 카탈로그 점은 그대로다.
+- 탭별 60초 unread 캐시(`sts-nav-unread:`)는 그대로 둔다.
+- 배달부(`comment-courier.tsx`): `nav`가 `api`면 스냅샷의 `courier`를 쓴다.
+- 패치 페이지: `patch-nav-indicators-client.ts`는 `fetchUnreadSurfaceIds`를 그대로 쓴다. `patch-comments-client.js`의
+  배달부는 `api` 분기를 `!config` 검사보다 앞에 둔다(빌드에 Supabase 설정이 없어도 동작하게).
 
 ### 8.3 요청 수
 
-- 지금: Next 페이지마다 Supabase 9~10건과 CORS preflight, 패치 페이지마다 10건(캐시 없음).
-- `nav = api`: 브라우저가 1분에 한 번 이하로 `/api/read/nav` 1건(Workers 요청). Supabase는 isolate가 1분에 한 번
-  이하로 10건.
-- Workers 요청은 페이지 조회만큼 늘 수 있다(브라우저 캐시를 빼면). 넘어갈 조건(하루 6만 건 아래)을
-  `pnpm cf:metrics`로 본다.
+- 지금: Next 페이지마다 Supabase 9~10건과 preflight, 패치 페이지마다 10건(캐시 없음). 크롤러가 하루 2.5만~5만 건.
+- `nav = api`: 브라우저가 30초에 한 번 이하로 `/api/read/nav` 1건(Workers 요청). Supabase는 계정 전체에서 1분에
+  한 번 이하로 10건(하루 1.44만 건 이하).
+- Workers 요청은 JS를 실행하는 페이지 조회만큼 는다. 검토 추정: main 하루 1만~2.2만, 비관적으로 3.4만~4만.
 
 ## 9. 다른 화면을 옮길 때
 
-- 엔드포인트, 응답, 신원은 SURFACE_MAP 2절의 그 화면 표를 따른다. 바꾼 것은 이 절에 적는다.
-- 공개 읽기에 개인 필드를 섞지 않는다(4절). 개인 필드는 `/api/me/*` 한 번으로 덧칠한다.
+- 엔드포인트와 응답은 SURFACE_MAP 2절의 그 화면 표를 따르되, 아래가 우선한다.
+- **공개 읽기에는 개인 필드가 없다.** SURFACE_MAP의 `likedByMe`, `mine`, `myLikes`, `viewer`, `viewerKind(s)`,
+  `is_me`, `me`, around_me처럼 JWT로 고르는 필드는 `/api/read/*`에서 빼고, 그룹마다 `/api/me/<그룹>` 덧칠 한 번으로
+  준다. 공개 응답은 `Authorization`이 있든 없든 바이트가 같아야 한다(spec으로 확인).
+- 매개변수는 4.1절 규칙을 따른다. 스레드 키는 `comment-threads.ts`의 문법에 맞고 1 KB 이하, `prefix`는 정해진
+  목록(`sts2-codex:<알려진 종류>:`, `neowsletter:<YYYY-MM>:`)에서만, 키 목록은 개수 상한을 둔다.
 - 쓰기는 `Prefer: return=representation`으로 0행을 404로 구별한다. `contact_inquiries`만 `return=minimal`이다.
+- 첫 쓰기 그룹(`comments`)과 함께 rate limit binding `API_LIMITER`를 더한다(운영과 testbed namespace를 따로).
+  쓰기는 검증한 sub로, 캐시에 없는 공개 읽기는 `cf-connecting-ip`로 센다.
 - 응답이 128 KB를 넘을 수 있는 화면은 상한이나 페이지를 둔다(SURFACE_MAP 8.2절).
-- 화면마다 `workers/api/routes/<그룹>.ts`, 클라이언트는 그 화면의 훅에서 `surfacePath`로 고른다. 라우터 표는
-  그룹 파일이 내보내는 목록을 모아 만든다.
+- 응답 모양은 늘리기만 한다. 필드를 지우거나 뜻을 바꾸려면 새 경로를 만든다. 클라이언트는 모르는 `v`를 legacy
+  신호로 본다.
+- 파일은 `workers/api/routes/<그룹>.ts`. 라우터 표는 그룹 파일이 내보내는 목록을 모은다.
 
 ## 10. 배포와 testbed
 
-- CI(`.github/workflows/cloudflare-workers.yml`)의 main 배포에 `--var API_SUPABASE_URL:… --var
-  API_SUPABASE_KEY:… --var API_DATA_ENV:production`을 더한다. 값은 이미 있는 빌드 env에서 가져온다.
-- testbed(`scripts/run-cloudflare-testbed.mjs --remote`)도 같은 세 값을 넣는다. `API_DATA_ENV=development`.
-- D1 DB 두 개를 만들고 `database_id`를 `wrangler.jsonc`에 커밋한다. 마이그레이션은 testbed에 먼저 적용한다.
-- 로컬 `wrangler dev`는 local D1을 쓴다. Worker 변수는 `.dev.vars`(gitignore)에 둔다.
-- `/api` 스모크: `cloudflare-route-smoke.mjs`에 라우터가 살아 있는지만 보는 확인을 더한다(`/api/read/없는경로`가
-  JSON 404). 읽기 스모크는 Supabase를 부르므로 넣지 않는다.
+- CI(`.github/workflows/cloudflare-workers.yml`) main 배포에 `--var API_SUPABASE_URL:… --var API_SUPABASE_KEY:…
+  --var API_DATA_ENV:production`을 더한다. 값은 이미 있는 빌드 env에서 가져온다. 셋 중 하나라도 비었거나 URL·키
+  형식이 2.1절과 맞지 않으면 배포 전에 실패한다.
+- testbed(`scripts/run-cloudflare-testbed.mjs --remote`)도 같은 세 값을 넣는다(`API_DATA_ENV=development`).
+- `API_RUNTIME_FLAGS`는 `wrangler.jsonc`에 적는다. 운영은 `off`로 시작하고, 운영에서 첫 그룹을 켜기 직전 배포에서
+  `d1`로 바꾼다(코드 리뷰를 거친다).
+- D1 두 개를 `--location apac`으로 만들고 `database_id`를 커밋한다. 마이그레이션은 `wrangler d1 migrations apply DB
+  --remote`(testbed는 `--env testbed`)로 testbed에 먼저 적용한다.
+- 로컬 `wrangler dev`는 local D1을 쓴다. Worker 변수는 `.dev.vars`(gitignore)에 두고, 기본 견본에는 `API_SUPABASE_*`를
+  넣지 않는다. 로컬 QA가 Worker를 통해 공유 Supabase를 부르지 않게 하려는 것이다. 필요할 때만 따로 넣는다.
+- testbed env 차이: main 페이지는 checkout의 Next env(메인 checkout은 development), 패치 페이지는 production으로
+  빌드된다. 패치 페이지의 `nav`는 8.2절의 env 검사로 legacy에 남는다. `comments`를 옮길 때 testbed 패치 클라이언트
+  env를 development로 맞출지 정한다(지금 testbed 패치 댓글은 운영 행을 읽고 쓴다).
+- `/api` 스모크: `cloudflare-route-smoke.mjs`에 `/api/read/없는경로`가 409 `surface_legacy`와 표식 헤더를 주는지 보는
+  확인을 더한다(Supabase를 부르지 않는다). 1단계 이전 판으로 되돌린 뒤의 확인을 위해 `--no-api-router`를 둔다
+  (`--no-security-headers`와 같은 방식).
+- testbed QA도 계정의 하루 10만 요청을 같이 쓴다. 그룹을 켜는 testbed QA는 한 번에 한 그룹, 필요한 경로만 돈다.
 
 ## 11. 테스트
 
-- Worker spec(tsx, 지금 방식): 라우터(경로, 메서드, HEAD, OPTIONS, 교차 사이트), 플래그(D1 stub, 시간 제한,
-  캐시, 실패 기본값), ETag 규칙 표 전부, 주입(HTMLRewriter stub), Supabase 어댑터(fetch stub으로 URL, apikey,
-  Authorization 유무, env 필터), JWT(Node `crypto.subtle`로 만든 ES256 키쌍: 정상, 만료, 다른 kid, 다른 iss,
-  HS256 거절), nav 처리기(부분 실패, 전부 실패, 캐시).
-- 기존 spec이 깨지지 않는지: `worker-routing.spec.ts`, `security-headers.spec.ts`(HTMLRewriter 없음),
-  `check-cloudflare-route-coverage.ts`(binding 없음, fetch 거부). 플래그 코드는 binding이 없으면 기본값으로
-  떨어지고 응답을 바꾸지 않는다.
-- 로컬 통합: `wrangler dev --local`에서 local D1 플래그를 `api`로 바꿔 HTML 주입, ETag 304, `/api/read/nav`를
-  확인한다. 브라우저 QA는 `*.supabase.co`를 막고, Worker를 통한 요청만 공유 Supabase(development 행)에 간다.
+- Worker spec(tsx, 지금 방식):
+  - 라우터: 경로, 메서드, HEAD(Supabase를 부르지 않음), OPTIONS, 쿼리 검사, 표식 헤더, 409 사유별, 교차 사이트
+  - 플래그: 상태 셋, 페이지 요청이 기다리지 않음, `/api`가 30초 넘은 값을 쓰지 않음, 실패 간격, 스위치 `off`
+  - 쿠키: 같은 값이면 보내지 않음, 모르면 보내지 않음, 지우기, Secure, 304·HEAD·서비스 binding 응답(바꿀 수 없는
+    헤더), 파일 경로·`/api`에는 보내지 않음, QA 쿠키
+  - 스위치 `off`의 운영 동등성: 정해 둔 URL들에서 `/api/*`를 뺀 응답의 상태, 헤더, 본문이 라우팅 함수의 결과와 같다
+  - 어댑터: URL, apikey, Authorization 유무, env 필터, 5개씩 보내기, 시간 제한
+  - JWT: 정상, 만료, 다른 kid, 다른 iss, HS256, 서명 전 검사로 JWKS를 받지 않음, 쿨다운
+  - nav: 임대, 부분 실패의 테이블별 유지, 모두 실패의 물러서기, 첫 채우기, 503, 24시간
+  - 공개 경로가 `Authorization` 유무에 같은 바이트를 주는지
+- 클라이언트 spec(tsx): 스냅샷으로 계산한 점과 legacy 쿼리 의미(`created_at > since`가 있는가)가 같은 fixture에서
+  같은지, 카탈로그 점, 모르는 키, env 불일치, `apiFetch`의 legacy 신호(409, 표식 없는 HTML 404)와 재시도 규칙.
+- 기존 spec이 깨지지 않는지: `worker-routing.spec.ts`, `security-headers.spec.ts`,
+  `check-cloudflare-route-coverage.ts`(binding 없음, fetch 거부). 스위치가 `off`거나 binding이 없으면 응답은 그대로다.
+- Playwright: `blockSupabase`와 `PLAYWRIGHT_BLOCK_SUPABASE`를 쓰는 곳은 `slseoun_qa=no-supabase` 쿠키도 넣는다.
+  `api` 경로를 시험하는 spec은 `slseoun_qa_path`로 경로를 고정하고 `/api/*`를 mock한다.
+- Worker 번들에 supabase-js가 없는지 `cf:size`가 확인한다.
 
-## 12. 되돌리기
+## 12. 넘어갈 조건(1단계, 그룹마다)
+
+- 켠 그룹의 오류율이 `legacy`와 같다.
+- Workers 요청이 계정 전체(main, patches, testbed 둘) 합으로 하루 6만 건 아래다. `cf:metrics`는 지금 main과 patches만
+  세므로 testbed Worker를 더한다. 서비스 binding 호출이 하루 한도에 따로 세어지는지는 문서에 없으니, 확인 전까지는
+  센다고 본다.
+- CPU: `exceededCpu`가 0이고 `cpuTimeP99`가 5 ms 아래다.
+- Worker subrequest와 Supabase API 요청 수가 지금보다 늘지 않는다.
+
+## 13. 되돌리기
 
 | 상황 | 수단 |
 |---|---|
-| 한 화면의 `api` 경로가 이상함 | `scripts/runtime-flags.mjs set path.<그룹> legacy`. 30초 안에 새 HTML과 `/api` 거절(409)이 legacy로 보낸다 |
-| D1이 응답하지 않음 | 자동으로 `legacy` 기본값 |
-| Worker 코드 버그(주입, 라우터) | `wrangler rollback`(사용자 승인). 스키마는 늘리기만 했으므로 이전 버전도 돈다 |
-| 변수를 빠뜨린 배포 | 주입하지 않으므로(2.1절) 모든 화면이 legacy로 남는다 |
+| 한 그룹의 `api` 경로가 이상함 | `tsx scripts/runtime-flags.ts set path.<그룹> legacy --env production --remote --note … --confirm-production`(승인 뒤). `/api`는 30초 + D1 왕복 안에 409를 내고, 새 페이지는 쿠키를 지운다. 공개 응답의 브라우저 캐시(최대 30초)가 지나면 열린 탭도 legacy다 |
+| 모든 그룹을 한 번에 | `API_RUNTIME_FLAGS`를 `off`로 바꾸는 배포, 또는 모든 `path.*`를 `legacy`로 |
+| D1이 응답하지 않음 | 자동으로 `legacy`(`/api`는 409, 페이지는 쿠키를 바꾸지 않음) |
+| Worker 코드 버그 | `wrangler rollback`(사용자 승인). 먼저 모든 `path.*`를 `legacy`로 바꾸고 1분 기다린다. 그러면 새 Worker가 409로 열린 탭을 내린다. 1단계 이전 판으로 가더라도 표식 없는 응답을 클라이언트가 legacy 신호로 본다(4.3절). 고친 판을 배포한 뒤에 플래그를 다시 켠다. D1 상태는 Worker 판과 함께 되돌아가지 않는다 |
+| 변수를 빠뜨리거나 틀린 배포 | 그 isolate는 409(`not_configured`)로 legacy. CI 검사가 먼저 막는다 |
 
-## 13. 정하지 않은 것
+## 14. 정하지 않은 것
 
-- Realtime: plan은 1단계에 그대로 둔다. 이벤트가 오지 않으므로 `api` 화면에서 채널을 열지 않는 안이
-  있다(SURFACE_MAP 5.1절, 8.4절 15번). `toybox-feed`와 `stories`를 옮길 때 사용자에게 묻는다. `nav`와 `comments`에는
-  채널이 없다.
+- Realtime: plan은 1단계에 그대로 둔다. 지금 이벤트가 하나도 오지 않으므로(SURFACE_MAP 5.1절) `api` 화면에서 채널을
+  열지 않는 안이 있다. `toybox-feed`와 `stories`를 옮길 때 사용자에게 묻는다. `nav`와 `comments`에는 채널이 없다.
 - 화면 하나를 한 번에 읽는 Supabase RPC(`get_nav_latest` 등)는 운영 마이그레이션이라 1단계에는 두지 않는다.
-  subrequest로 한다.
+- JWT 키 목록을 D1로 옮기고 폐기 절차를 두는 것: 4단계 전.
+- testbed 패치 클라이언트의 env: `comments`를 옮길 때(10절).

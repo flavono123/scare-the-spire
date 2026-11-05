@@ -84,8 +84,9 @@ dev 관리)는 1단계 플래그가 없다. 플래그 이름은 plan 7.2절(plan
   최대 2건이다. plan 7.3절의 "화면당 1~2건"(plan:410-411) 안이다.
 - 엔드포인트 이름은 plan 5절의 `/api/read/*`·`/api/me/*`·`/api/write/*` 규칙(plan:155-157)에 맞췄다. 영역 조사가
   제안한 이름(`/api/codex-thread`, `/api/toybox/feed`, `/api/profile` 등)과 다르다.
-- 공개 읽기에 `Authorization`을 같이 보내면 같은 응답에 `likedByMe` 같은 개인 필드를 붙이고
-  `Cache-Control: private, no-store`로 낸다. 토큰이 없으면 공개 응답이다.
+- ~~공개 읽기에 `Authorization`을 같이 보내면 같은 응답에 `likedByMe` 같은 개인 필드를 붙이고
+  `Cache-Control: private, no-store`로 낸다.~~ [STEP1_DESIGN.md](STEP1_DESIGN.md) 9절로 바꿨다: 공개 읽기에는
+  개인 필드가 없고, 개인 필드는 그룹마다 `/api/me/<그룹>` 덧칠 한 번으로 준다.
 
 ### 1.3 페이지 한 번 볼 때의 요청 수
 
@@ -189,6 +190,10 @@ dev 관리)는 1단계 플래그가 없다. 플래그 이름은 plan 7.2절(plan
 | 32 | dev 관리 화면 | 없음 | 배포되지 않음 | service 키 |
 
 ### 2.2 화면별 상세
+
+아래 표의 응답 가운데 JWT로 고르는 개인 필드(`likedByMe`, `mine`, `myLikes`, `viewer`, `viewerKind(s)`, `is_me`,
+`me`, around_me)는 `/api/read/*` 응답에서 빼고 `/api/me/<그룹>` 덧칠로 옮긴다. 오류 코드와 legacy 신호도
+[STEP1_DESIGN.md](STEP1_DESIGN.md) 4절이 우선한다.
 
 #### 1. 네비 새 글 표시
 

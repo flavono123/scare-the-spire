@@ -399,17 +399,20 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 #### 1단계: 같은 출처 API(뒤는 Supabase)
 
 - D1 `slseoun-prod`와 `slseoun-testbed`를 만들고 binding과 `runtime_flags` 테이블만 먼저 둔다(`apac`
-  location hint, 읽기 복제 켜기).
+  location hint). 읽기 복제는 켜지 않는다. 복제본이 늦으면 플래그 되돌리기의 상한이 없어지기 때문이다. 3단계에
+  데이터 읽기용으로 다시 검토한다([1단계 설계](supabase-exit/STEP1_DESIGN.md) 2.2절).
 - `workers/api/`에 화면 단위 엔드포인트를 만든다. 각 엔드포인트는 같은 인터페이스 뒤에 Supabase 어댑터와 D1
   어댑터를 둔다. 이 단계에서는 Supabase 어댑터만 쓴다.
 - 쓰기는 사용자의 Supabase access token을 그대로 넘긴다. 그래서 권한은 지금처럼 RLS가 검사한다. Worker는
   ES256 JWKS로 토큰 서명만 미리 확인한다.
 - 클라이언트는 화면별 플래그(`legacy` 또는 `api`)로 기존 `supabase-js` 경로와 새 API 경로를 고른다. 두 경로가
-  한동안 번들에 같이 있다. 플래그는 Worker가 HTML에 넣어 준다.
+  한동안 번들에 같이 있다. 플래그는 Worker가 응답 쿠키로 알려 준다. 처음에는 HTML에 넣으려 했지만 수 MB짜리
+  페이지를 다시 쓰는 CPU가 Free 10 ms에 닿아 바꿨다([1단계 설계](supabase-exit/STEP1_DESIGN.md) 3.3절).
 - Realtime은 아직 그대로 둔다.
 - 엔드포인트는 화면당 한 번 호출로 묶는다. Supabase REST를 그대로 중계하는 범용 프록시는 만들지 않는다. 페이지당
   호출이 10건이면 하루 Workers 요청이 17만 건까지 늘어 무료 한도를 넘는다. 화면당 1~2건이면 하루 약 5만 건 이하다.
-- 넘어갈 조건: 켠 화면의 오류율이 `legacy`와 같고, Workers 요청이 하루 6만 건 아래다.
+- 넘어갈 조건: 켠 화면의 오류율이 `legacy`와 같고, Workers 요청이 계정 전체(testbed 포함) 하루 6만 건 아래이며,
+  CPU 한도 초과가 없다([1단계 설계](supabase-exit/STEP1_DESIGN.md) 12절).
 
 #### 2단계: D1 그림자(원본은 Supabase)
 
