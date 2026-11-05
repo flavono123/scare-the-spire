@@ -29,6 +29,8 @@ export type JwtVerifyOptions = {
   fetchJwks?: () => Promise<readonly SupabaseJwk[]>;
   /** Overrides the pinned keys (tests). */
   pinnedKeys?: readonly SupabaseJwk[];
+  /** Keeps a shared JWKS fetch alive when the request that started it ends. */
+  waitUntil?: (promise: Promise<unknown>) => void;
 };
 
 const MAX_TOKEN_LENGTH = 8192;
@@ -43,6 +45,10 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 // random kids cannot turn the Worker into Supabase load.
 const LIVE_JWKS_TTL_MS = 10 * 60_000;
 const LIVE_JWKS_COOLDOWN_MS = 60_000;
+// No request waits longer than this on a fetch another request started.
+const LIVE_JWKS_WAIT_MS = 2_000;
+// A fetch still pending after this is treated as lost (its request was cancelled).
+const LIVE_JWKS_STUCK_MS = 10_000;
 
 type LiveJwks = { keys: readonly SupabaseJwk[]; fetchedAt: number };
 let liveJwks: LiveJwks | null = null;
@@ -107,13 +113,27 @@ export function parseJwks(document: unknown): SupabaseJwk[] {
   }));
 }
 
+function settleWithin(promise: Promise<void>, ms: number): Promise<void> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  return Promise.race([
+    promise,
+    new Promise<void>((resolve) => {
+      timer = setTimeout(resolve, ms);
+    }),
+  ]).finally(() => clearTimeout(timer));
+}
+
+function liveSetIsStale(nowMs: number): boolean {
+  return !liveJwks || nowMs - liveJwks.fetchedAt >= LIVE_JWKS_TTL_MS;
+}
+
 async function liveKey(kid: string, options: JwtVerifyOptions): Promise<SupabaseJwk | "unavailable" | null> {
   const nowMs = Date.now();
-  const fresh = liveJwks && nowMs - liveJwks.fetchedAt < LIVE_JWKS_TTL_MS;
-  if (!fresh && options.fetchJwks && !liveFetch && nowMs - lastLiveFetchAt >= LIVE_JWKS_COOLDOWN_MS) {
+  if (liveFetch && nowMs - lastLiveFetchAt > LIVE_JWKS_STUCK_MS) liveFetch = null;
+  if (liveSetIsStale(nowMs) && options.fetchJwks && !liveFetch && nowMs - lastLiveFetchAt >= LIVE_JWKS_COOLDOWN_MS) {
     lastLiveFetchAt = nowMs;
     const fetchJwks = options.fetchJwks;
-    liveFetch = (async () => {
+    const run: Promise<void> = (async () => {
       try {
         const keys = await fetchJwks();
         liveJwks = { keys, fetchedAt: Date.now() };
@@ -121,15 +141,17 @@ async function liveKey(kid: string, options: JwtVerifyOptions): Promise<Supabase
       } catch {
         lastLiveFetchFailed = true;
       } finally {
-        liveFetch = null;
+        if (liveFetch === run) liveFetch = null;
       }
     })();
+    liveFetch = run;
+    options.waitUntil?.(run);
   }
-  if (liveFetch) await liveFetch;
+  if (liveFetch) await settleWithin(liveFetch, LIVE_JWKS_WAIT_MS);
   const found = liveJwks?.keys.find((key) => key.kid === kid);
   if (found) return found;
-  // A kid we could not check because the live set never loaded is not the token's fault.
-  if (lastLiveFetchFailed && !liveJwks && options.fetchJwks) return "unavailable";
+  // The kid could not be checked against a current key set: not the token's fault.
+  if (options.fetchJwks && liveSetIsStale(Date.now()) && (lastLiveFetchFailed || liveFetch)) return "unavailable";
   return null;
 }
 

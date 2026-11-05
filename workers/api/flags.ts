@@ -40,12 +40,14 @@ let memory: FlagMemory | null = null;
 let refreshGuardUntil = 0;
 let failures = 0;
 let retryAt = 0;
+let lastFailureAt = -Infinity;
 
 export function resetFlagsForTest(): void {
   memory = null;
   refreshGuardUntil = 0;
   failures = 0;
   retryAt = 0;
+  lastFailureAt = -Infinity;
 }
 
 export const FLAGS_SQL = "SELECT key, value FROM runtime_flags";
@@ -74,7 +76,13 @@ export function recordFlags(groups: ReadonlySet<ApiSurfaceGroup>, now: number): 
   retryAt = 0;
 }
 
-export function recordFlagFailure(now: number): void {
+/**
+ * Counts one failure per read attempt: reads that started before an already
+ * recorded failure overlapped it and do not escalate the backoff again.
+ */
+export function recordFlagFailure(startedAt: number, now: number): void {
+  if (lastFailureAt >= startedAt) return;
+  lastFailureAt = now;
   failures += 1;
   retryAt = now + FAILURE_BACKOFF_MS[Math.min(failures, FAILURE_BACKOFF_MS.length) - 1];
 }
@@ -87,13 +95,14 @@ export function flagsDisabledReason(env: FlagsEnv): "off" | "not_configured" | n
 }
 
 async function readFlags(db: D1Database, routedGroups: ReadonlySet<ApiSurfaceGroup>, now: () => number) {
+  const startedAt = now();
   try {
     const result = await flagsStatement(db).all<{ key: string; value: string }>();
     const groups = parseFlagRows(result.results ?? [], routedGroups);
     recordFlags(groups, now());
     return groups;
   } catch (error) {
-    recordFlagFailure(now());
+    recordFlagFailure(startedAt, now());
     throw error;
   }
 }
@@ -143,6 +152,7 @@ export async function apiFlags(
   if (now < retryAt) return { ok: false, reason: "unknown" };
 
   const statements = [flagsStatement(db), ...extra(db)];
+  const startedAt = Date.now();
   const batch = (async () => {
     try {
       const results = await db.batch(statements);
@@ -150,7 +160,7 @@ export async function apiFlags(
       recordFlags(groups, Date.now());
       return { groups, prefetched: results.slice(1).map((result) => result.results ?? []) };
     } catch (error) {
-      recordFlagFailure(Date.now());
+      recordFlagFailure(startedAt, Date.now());
       throw error;
     }
   })();

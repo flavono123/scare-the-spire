@@ -92,6 +92,22 @@ async function main() {
   }) as typeof fetch;
   await assert.rejects(() => apiFetch("nav", "/api/read/nav"), ApiUnavailableError);
 
+  // The timeout covers a body that stalls after the headers arrived.
+  globalThis.fetch = (async (_input: unknown, init?: RequestInit) => {
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode("{\"v\":"));
+        init?.signal?.addEventListener("abort", () => controller.error(new DOMException("aborted", "AbortError")));
+      },
+    });
+    return new Response(stream, { headers: { "content-type": "application/json", "x-slseoun-api": "1" } });
+  }) as typeof fetch;
+  const stalledAt = Date.now();
+  await assert.rejects(() => apiFetch("nav", "/api/read/nav", { timeoutMs: 100 }), (error) => (
+    error instanceof ApiUnavailableError && error.code === "timeout"
+  ));
+  assert.ok(Date.now() - stalledAt < 1000, "stalled body cut by the timeout");
+
   // --- Nav snapshot ------------------------------------------------------------
   const snapshot = {
     v: 1 as const,

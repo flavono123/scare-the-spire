@@ -182,6 +182,57 @@ async function main() {
   assert.deepEqual(results, ["ok", "ok", "ok"]);
   assert.equal(shared, 1, "single-flight JWKS fetch");
 
+  // After the live set goes stale (10 min), a failed refetch means "unavailable", not "invalid",
+  // and the 60 s cooldown (not the TTL) limits refetches for random kids.
+  {
+    resetJwtCachesForTest();
+    const realNow = Date.now;
+    let clock = realNow();
+    Date.now = () => clock;
+    try {
+      let calls = 0;
+      let fail = false;
+      const timedOptions = {
+        issuer: ISSUER,
+        now: NOW,
+        pinnedKeys: [jwk],
+        fetchJwks: async () => {
+          calls += 1;
+          if (fail) throw new Error("auth down");
+          return [rotated.jwk];
+        },
+      };
+      const freshKid = await keyPair("fresh-kid");
+      const freshToken = await sign(freshKid.privateKey, { alg: "ES256", kid: "fresh-kid" }, claims());
+      assert.equal(await reason(rotatedToken, timedOptions), "ok");
+      assert.equal(calls, 1);
+      clock += 11 * 60_000;
+      fail = true;
+      assert.equal(await reason(freshToken, timedOptions), "unavailable", "stale set and failed refetch");
+      assert.equal(calls, 2);
+      fail = false;
+      clock += 10_000;
+      assert.equal(await reason(freshToken, timedOptions), "unavailable", "cooldown holds after a failure");
+      assert.equal(calls, 2, "no refetch within the cooldown");
+      clock += 61_000;
+      assert.equal(await reason(freshToken, timedOptions), "invalid", "refetched set lacks the kid");
+      assert.equal(calls, 3);
+      assert.equal(await reason(await sign(freshKid.privateKey, { alg: "ES256", kid: "random-2" }, claims()), timedOptions), "invalid");
+      assert.equal(calls, 3, "a fresh set answers random kids without fetching");
+    } finally {
+      Date.now = realNow;
+    }
+  }
+
+  // A fetch that never settles (its request was cancelled) does not hang later requests.
+  {
+    resetJwtCachesForTest();
+    const hung = { ...liveOptions, fetchJwks: () => new Promise<never>(() => undefined) };
+    const started = Date.now();
+    assert.equal(await reason(rotatedToken, hung), "unavailable");
+    assert.ok(Date.now() - started < 2600, "wait capped near 2 s");
+  }
+
   // fetchSupabaseJwks: timeout-free happy path, size cap, HTTP errors.
   const jwksBody = JSON.stringify({ keys: [rotated.jwk] });
   assert.deepEqual(await fetchSupabaseJwks("https://p.supabase.co/auth/v1", async (url) => {

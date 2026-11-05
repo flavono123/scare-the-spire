@@ -63,35 +63,39 @@ export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: Ap
   init.signal?.addEventListener("abort", abortFromCaller, { once: true });
 
   let response: Response;
+  let payload: unknown = null;
   try {
-    response = await fetch(path, {
-      method,
-      headers,
-      body: init.body === undefined ? undefined : JSON.stringify(init.body),
-      credentials: "same-origin",
-      signal: controller.signal,
-    });
-  } catch {
-    throw new ApiUnavailableError(0);
+    try {
+      response = await fetch(path, {
+        method,
+        headers,
+        body: init.body === undefined ? undefined : JSON.stringify(init.body),
+        credentials: "same-origin",
+        signal: controller.signal,
+      });
+    } catch {
+      throw new ApiUnavailableError(0, controller.signal.aborted ? "timeout" : "unavailable");
+    }
+
+    if (response.headers.get(API_MARKER_HEADER) !== "1") {
+      // No router answered. A 404/405 from an old Worker certainly did nothing;
+      // after a Cloudflare 5xx a write may have run, so it is not resent.
+      const processed = method !== "GET" && !(response.status === 404 || response.status === 405);
+      demoteSurface(group);
+      void response.body?.cancel().catch(() => undefined);
+      throw new SurfaceLegacyError(response.status, processed);
+    }
+
+    if (response.status === 204) return undefined as T;
+    // The same deadline covers the body: a stalled body must not hang every caller.
+    try {
+      payload = await response.json();
+    } catch {
+      throw new ApiUnavailableError(response.status, controller.signal.aborted ? "timeout" : "bad_response");
+    }
   } finally {
     clearTimeout(timeout);
     init.signal?.removeEventListener("abort", abortFromCaller);
-  }
-
-  if (response.headers.get(API_MARKER_HEADER) !== "1") {
-    // No router answered. A 404/405 from an old Worker certainly did nothing;
-    // after a Cloudflare 5xx a write may have run, so it is not resent.
-    const processed = method !== "GET" && !(response.status === 404 || response.status === 405);
-    demoteSurface(group);
-    throw new SurfaceLegacyError(response.status, processed);
-  }
-
-  if (response.status === 204) return undefined as T;
-  let payload: unknown = null;
-  try {
-    payload = await response.json();
-  } catch {
-    throw new ApiUnavailableError(response.status, "bad_response");
   }
 
   if (response.ok) return payload as T;

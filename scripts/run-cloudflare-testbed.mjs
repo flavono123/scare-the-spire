@@ -23,7 +23,8 @@ Options:
   --api            Local only: turn the runtime flags on (API_RUNTIME_FLAGS=d1) and give
                    the local Worker the API vars from .env.local, so /api reaches the
                    shared Supabase's development rows. Off by default, like --allow-supabase
-                   in mobile QA. Set flags with: pnpm flags set path.<group> api --env production --local
+                   in mobile QA. Set flags with:
+                   pnpm flags set path.<group> api --env production --local --note "local QA"
   --help           Show this help`);
 }
 

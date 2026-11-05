@@ -60,14 +60,18 @@ const NAV_CACHE_CONTROL = "public, max-age=30";
 
 export const NAV_SNAPSHOT_SQL =
   "SELECT body, fetched_at, lease_until, fail_count, fail_until FROM api_cache WHERE key = ?1";
-// Wins only when no one holds the lease and the failure backoff is over.
+// Wins only when no one holds the lease, the failure backoff is over, and the
+// row is still stale (?4 = now - refresh age), so a row another isolate just
+// saved cannot be leased again by an isolate holding an older copy.
 export const NAV_LEASE_SQL =
   "INSERT INTO api_cache (key, body, fetched_at, lease_until, fail_count, fail_until) VALUES (?1, '', 0, ?2, 0, 0) " +
   "ON CONFLICT(key) DO UPDATE SET lease_until = excluded.lease_until " +
-  "WHERE api_cache.lease_until < ?3 AND api_cache.fail_until <= ?3";
+  "WHERE api_cache.lease_until < ?3 AND api_cache.fail_until <= ?3 AND api_cache.fetched_at <= ?4";
+// Only the holder of this exact lease may write (?4 / ?3 = its lease_until).
 export const NAV_SAVE_SQL =
-  "UPDATE api_cache SET body = ?2, fetched_at = ?3, lease_until = 0, fail_count = 0, fail_until = 0 WHERE key = ?1";
-export const NAV_FAIL_SQL = "UPDATE api_cache SET lease_until = 0, fail_count = ?2, fail_until = ?3 WHERE key = ?1";
+  "UPDATE api_cache SET body = ?2, fetched_at = ?3, lease_until = 0, fail_count = 0, fail_until = 0 WHERE key = ?1 AND lease_until = ?4";
+export const NAV_FAIL_SQL =
+  "UPDATE api_cache SET lease_until = 0, fail_count = fail_count + 1, fail_until = ?2 WHERE key = ?1 AND lease_until = ?3";
 
 let memory: { body: NavSnapshotBody; fetchedAt: number; loadedAt: number } | null = null;
 
@@ -193,19 +197,23 @@ async function refreshUnderLease(
   previous: NavSnapshotBody | null,
   failCount: number,
   now: number,
+  /** The row exists but its body is unusable (another env, malformed): its age means nothing. */
+  ignoreAge: boolean,
 ): Promise<NavSnapshotBody | null> {
-  const lease = await db.prepare(NAV_LEASE_SQL).bind(NAV_KEY, now + LEASE_MS, now).run();
+  const leaseUntil = now + LEASE_MS;
+  const staleBefore = ignoreAge ? Number.MAX_SAFE_INTEGER : now - NAV_REFRESH_AFTER_MS;
+  const lease = await db.prepare(NAV_LEASE_SQL).bind(NAV_KEY, leaseUntil, now, staleBefore).run();
   if ((lease.meta?.changes ?? 0) !== 1) return null;
   const { body, allFailed } = await fetchNavFromSupabase(config, previous, Date.now());
   if (allFailed) {
-    const count = failCount + 1;
-    const backoff = FAIL_BACKOFF_MS[Math.min(count, FAIL_BACKOFF_MS.length) - 1];
-    await db.prepare(NAV_FAIL_SQL).bind(NAV_KEY, count, Date.now() + backoff).run();
+    const backoff = FAIL_BACKOFF_MS[Math.min(failCount + 1, FAIL_BACKOFF_MS.length) - 1];
+    await db.prepare(NAV_FAIL_SQL).bind(NAV_KEY, Date.now() + backoff, leaseUntil).run();
     return null;
   }
   const fetchedAt = Date.parse(body.fetchedAt);
-  await db.prepare(NAV_SAVE_SQL).bind(NAV_KEY, JSON.stringify(body), fetchedAt).run();
-  memory = { body, fetchedAt, loadedAt: Date.now() };
+  const saved = await db.prepare(NAV_SAVE_SQL).bind(NAV_KEY, JSON.stringify(body), fetchedAt, leaseUntil).run();
+  // Our lease ran out and someone else refreshed: keep their row, still answer with ours.
+  if ((saved.meta?.changes ?? 0) === 1) memory = { body, fetchedAt, loadedAt: Date.now() };
   return body;
 }
 
@@ -239,6 +247,8 @@ export async function handleNav(context: PublicRouteContext): Promise<Response> 
 
   const { row } = await readSnapshotRow(context);
   let body = row ? parseNavBody(row.body, config.dataEnv) : null;
+  // A row we read but cannot use may be replaced at once; a row we failed to read keeps the age guard.
+  const unusableRow = row !== null && body === null;
   let fetchedAt = body && row ? row.fetched_at : 0;
   if (body) {
     memory = { body, fetchedAt, loadedAt: now };
@@ -254,7 +264,7 @@ export async function handleNav(context: PublicRouteContext): Promise<Response> 
   const backingOff = row ? now < row.fail_until : false;
   if (age < NAV_REFRESH_AFTER_MS || backingOff) return body ? respond(body) : unavailable();
 
-  const refresh = refreshUnderLease(context.db, config, body, row?.fail_count ?? 0, now);
+  const refresh = refreshUnderLease(context.db, config, body, row?.fail_count ?? 0, now, unusableRow);
   context.ctx.waitUntil(refresh.catch(() => undefined));
   if (body && age < NAV_BLOCKING_AFTER_MS) return respond(body);
 

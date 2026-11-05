@@ -72,7 +72,8 @@ QA: <확인할 라우트·화면·로케일·뷰포트>
    - `pnpm cf:build`와 `pnpm cf:size` (main Worker 크기 초과는 과거 첫 배포 실패의 최다 원인)
 5. **전수 스모크 테스트.** 페이지 안정성을 확인한다. `before-push` 마이그레이션이 있으면
    먼저 5절 절차로 적용하고(이 시점부터 운영 중인 이전 앱 + 새 DB 상태가 되므로 운영
-   `cf:smoke`도 함께 본다), 그 뒤에 새 앱 + 새 DB로 스모크한다.
+   `cf:smoke`도 함께 본다. 운영 중인 앱에 `/api` 라우터가 아직 없으면 `--no-api-router`를 붙인다),
+   그 뒤에 새 앱 + 새 DB로 스모크한다.
    - `pnpm cf:testbed -- --remote`로 격리된 testbed Worker에 올려 `qa:cf:testbed`와
      `cf:smoke --scope all`을 돌린다.
    - 주요 라우트가 2xx/3xx로 응답하는지, 콘솔 오류가 없는지, 한국어·영어 로케일이 깨지지

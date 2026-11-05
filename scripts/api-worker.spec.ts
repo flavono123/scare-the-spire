@@ -40,40 +40,43 @@ class FakeD1 implements D1Database {
 
   prepare(query: string): D1PreparedStatement {
     let args: unknown[] = [];
-    const db = this;
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
-      db.queries.push(query);
-      if (db.delayMs) await new Promise((resolve) => setTimeout(resolve, db.delayMs));
-      if (db.failing) throw new Error("D1 down");
+      this.queries.push(query);
+      if (this.delayMs) await new Promise((resolve) => setTimeout(resolve, this.delayMs));
+      if (this.failing) throw new Error("D1 down");
       if (query === FLAGS_SQL) {
-        return { success: true, results: [...db.flags].map(([key, value]) => ({ key, value })) };
+        return { success: true, results: [...this.flags].map(([key, value]) => ({ key, value })) };
       }
       if (query === NAV_SNAPSHOT_SQL) {
-        const row = db.cache.get(String(args[0]));
+        const row = this.cache.get(String(args[0]));
         return { success: true, results: row ? [{ ...row }] : [] };
       }
+      // Same semantics as the SQL in routes/nav.ts (checked against sqlite3 in the code review).
       if (query === NAV_LEASE_SQL) {
-        const [key, leaseUntil, now] = args as [string, number, number];
-        const row = db.cache.get(key);
+        const [key, leaseUntil, now, staleBefore] = args as [string, number, number, number];
+        const row = this.cache.get(key);
         if (!row) {
-          db.cache.set(key, { body: "", fetched_at: 0, lease_until: leaseUntil, fail_count: 0, fail_until: 0 });
+          this.cache.set(key, { body: "", fetched_at: 0, lease_until: leaseUntil, fail_count: 0, fail_until: 0 });
           return { success: true, results: [], meta: { changes: 1 } };
         }
-        if (row.lease_until < now && row.fail_until <= now) {
+        if (row.lease_until < now && row.fail_until <= now && row.fetched_at <= staleBefore) {
           row.lease_until = leaseUntil;
           return { success: true, results: [], meta: { changes: 1 } };
         }
         return { success: true, results: [], meta: { changes: 0 } };
       }
       if (query === NAV_SAVE_SQL) {
-        const [key, body, fetchedAt] = args as [string, string, number];
-        const row = db.cache.get(key)!;
+        const [key, body, fetchedAt, leaseUntil] = args as [string, string, number, number];
+        const row = this.cache.get(key);
+        if (!row || row.lease_until !== leaseUntil) return { success: true, results: [], meta: { changes: 0 } };
         Object.assign(row, { body, fetched_at: fetchedAt, lease_until: 0, fail_count: 0, fail_until: 0 });
         return { success: true, results: [], meta: { changes: 1 } };
       }
       if (query === NAV_FAIL_SQL) {
-        const [key, count, until] = args as [string, number, number];
-        Object.assign(db.cache.get(key)!, { lease_until: 0, fail_count: count, fail_until: until });
+        const [key, until, leaseUntil] = args as [string, number, number];
+        const row = this.cache.get(key);
+        if (!row || row.lease_until !== leaseUntil) return { success: true, results: [], meta: { changes: 0 } };
+        Object.assign(row, { lease_until: 0, fail_count: row.fail_count + 1, fail_until: until });
         return { success: true, results: [], meta: { changes: 1 } };
       }
       throw new Error(`unexpected SQL: ${query}`);
@@ -396,8 +399,17 @@ async function main() {
     const qa = await mainWorker.fetch(get("/compendium/cards", { headers: { cookie: "slseoun_rf=v1.nav; slseoun_qa=no-supabase" } }), env(db) as never, ctx);
     assert.equal(qa.headers.get("set-cookie"), "slseoun_rf=; Path=/; Max-Age=0; SameSite=Lax; Secure", "QA cookie clears the flag");
 
-    const pinned = await mainWorker.fetch(get("/compendium/cards", { headers: { cookie: "slseoun_qa_path=nav" } }), env(db, { DB: new FakeD1() }) as never, new Ctx());
-    assert.ok(pinned.headers.get("set-cookie")?.startsWith("slseoun_rf=v1.nav"), "QA pin works on development data");
+    // The pin must win over D1 (legacy here) with no flag read, so reset the isolate memory first.
+    resetAll();
+    const legacyDb = new FakeD1();
+    legacyDb.flags.set("path.nav", "legacy");
+    const pinnedCtx = new Ctx();
+    const pinned = await mainWorker.fetch(get("/compendium/cards", { headers: { cookie: "slseoun_qa_path=nav" } }), env(legacyDb) as never, pinnedCtx);
+    assert.equal(pinned.headers.get("set-cookie"), "slseoun_rf=v1.nav; Path=/; Max-Age=86400; SameSite=Lax; Secure", "QA pin works on development data");
+    await pinnedCtx.drain();
+    assert.equal(legacyDb.queries.filter((query) => query === FLAGS_SQL).length, 0, "a pin does not read D1 flags");
+    const unpinned = await mainWorker.fetch(get("/compendium/cards"), env(legacyDb) as never, new Ctx());
+    assert.equal(unpinned.headers.get("set-cookie"), null, "without the pin, a cold isolate leaves the cookie alone");
 
     resetAll();
     const prodPin = await mainWorker.fetch(
@@ -519,6 +531,7 @@ async function main() {
     assert.equal(down.calls.length, 10);
     assert.equal(db.cache.get("nav")!.fail_count, 1);
     assert.ok(db.cache.get("nav")!.fail_until > Date.now() + 50_000);
+    assert.equal(db.cache.get("nav")!.lease_until, 0, "the failed refresh released its lease");
     for (let index = 0; index < 5; index += 1) {
       resetAll();
       await nav(db, ctx);
@@ -560,6 +573,75 @@ async function main() {
     resetFlagsForTest();
     const withoutToken = await nav(db, new Ctx());
     assert.equal(await withToken.text(), await withoutToken.text(), "public reads ignore Authorization");
+  }
+
+  // QA pin on /api: dev data only, exact groups, and no-supabase wins.
+  {
+    const db = new FakeD1();
+    db.flags.set("path.nav", "legacy");
+    db.cache.set("nav", { body: "", fetched_at: 0, lease_until: 0, fail_count: 0, fail_until: 0 });
+    stubSupabase(healthySupabase);
+    resetAll();
+    const pinned = await nav(db, new Ctx(), { headers: { cookie: "slseoun_qa_path=nav" } });
+    assert.equal(pinned.status, 200, "pinned nav served despite D1 legacy");
+    assert.equal(db.queries.filter((query) => query === FLAGS_SQL).length, 0);
+    resetAll();
+    const prod = await nav(db, new Ctx(), { headers: { cookie: "slseoun_qa_path=nav" } }, { API_DATA_ENV: "production" });
+    assert.deepEqual(await prod.json(), { error: "surface_legacy", reason: "flag" }, "pin ignored on production data");
+    resetAll();
+    const other = await nav(db, new Ctx(), { headers: { cookie: "slseoun_qa_path=comments" } });
+    assert.deepEqual(await other.json(), { error: "surface_legacy", reason: "flag" }, "pin is per group");
+    resetAll();
+    const both = await nav(db, new Ctx(), { headers: { cookie: "slseoun_qa_path=nav; slseoun_qa=no-supabase" } });
+    assert.deepEqual(await both.json(), { error: "surface_legacy", reason: "qa" });
+  }
+
+  // Concurrent flag reads that fail together count as one failure (10 s backoff, not 60 s).
+  {
+    resetAll();
+    const db = new FakeD1();
+    db.flags.set("path.nav", "api");
+    db.failing = true;
+    const ctx = new Ctx();
+    await Promise.all([nav(db, ctx), nav(db, ctx), nav(db, ctx)]);
+    await ctx.drain();
+    db.failing = false;
+    stubSupabase(healthySupabase);
+    const realNow = Date.now;
+    Date.now = () => realNow() + 11_000;
+    try {
+      const recovered = await nav(db, ctx);
+      assert.equal(recovered.status, 200, "one failure, so D1 is retried after 10 s");
+    } finally {
+      Date.now = realNow;
+    }
+  }
+
+  // Lease race: an isolate holding an older copy cannot lease a row another isolate just saved.
+  {
+    resetAll();
+    const db = new FakeD1();
+    db.flags.set("path.nav", "api");
+    const supabase = stubSupabase(healthySupabase);
+    const ctx = new Ctx();
+    await nav(db, ctx);
+    await ctx.drain();
+    assert.equal(supabase.calls.length, 10);
+    // Isolate A read the row while it was stale; isolate B has since saved a fresh one.
+    const row = db.cache.get("nav")!;
+    const staleCopy = { ...row, fetched_at: row.fetched_at - 61_000 };
+    resetAll();
+    const lateStart = await mainWorker.fetch(get("/api/read/nav"), env(db) as never, ctx).then(() => undefined);
+    void lateStart;
+    await ctx.drain();
+    assert.equal(supabase.calls.length, 10, "fresh row: no second refresh");
+    // Simulate A's lease attempt with its stale view: the SQL guard refuses it.
+    const lease = await db.prepare(NAV_LEASE_SQL).bind("nav", Date.now() + 10_000, Date.now(), Date.now() - 60_000).run();
+    assert.equal(lease.meta?.changes, 0, "lease requires a stale row");
+    void staleCopy;
+    // A writer whose lease is gone cannot overwrite the newer save.
+    const save = await db.prepare(NAV_SAVE_SQL).bind("nav", "{}", Date.now(), 12345).run();
+    assert.equal(save.meta?.changes, 0, "only the lease holder saves");
   }
 
   // Freshness bound: /api never uses flags older than FRESH_MS.

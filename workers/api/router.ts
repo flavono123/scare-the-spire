@@ -179,6 +179,7 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
       const check = await checkSupabaseAccessToken(token, {
         issuer,
         fetchJwks: () => fetchSupabaseJwks(issuer),
+        waitUntil: (promise) => ctx.waitUntil(promise),
       });
       if (!check.ok) return error(TOKEN_ERRORS[check.reason]);
       response = await route.handle({ ...base, user: check.user, token });

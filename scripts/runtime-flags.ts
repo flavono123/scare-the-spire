@@ -66,7 +66,10 @@ function rows(output: unknown, index: number): Record<string, unknown>[] {
 }
 
 function main() {
-  const [command, ...rest] = process.argv.slice(2);
+  const argv = process.argv.slice(2);
+  // `pnpm flags -- set …` passes the separator through.
+  if (argv[0] === "--") argv.shift();
+  const [command, ...rest] = argv;
   const env = option(rest, "--env");
   if (env !== "testbed" && env !== "production") usage("--env testbed or --env production is required");
   const remote = rest.includes("--remote");
