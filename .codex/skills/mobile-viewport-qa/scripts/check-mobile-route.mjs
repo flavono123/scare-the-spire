@@ -37,6 +37,9 @@ const options = {
   timeoutMs: numberArg(args, "timeout", 60000),
   noDev: Boolean(args["no-dev"]),
   headed: Boolean(args.headed),
+  // Testbed and production share one Supabase project, and QA sweeps have stalled it. Block it
+  // unless the route under test needs Supabase-backed UI (comments, likes, feeds).
+  allowSupabase: Boolean(args["allow-supabase"]),
   outputDir: path.resolve(stringArg(args, "output", path.join("/tmp/mobile-viewport-qa", timestampSlug()))),
 };
 
@@ -52,10 +55,18 @@ if (!(await canReach(options.baseUrl))) {
 }
 
 const presets = await loadMobilePresets(repoRoot);
-const browser = await chromium.launch({ headless: !options.headed });
+// Resolver rules instead of context.route(): route() turns off the HTTP cache and skews requests.
+const browser = await chromium.launch({
+  headless: !options.headed,
+  args: options.allowSupabase ? [] : ["--host-resolver-rules=MAP *.supabase.co ~NOTFOUND"],
+});
+if (!options.allowSupabase) {
+  console.log("[mobile-viewport-qa] *.supabase.co blocked (pass --allow-supabase to check DB-backed UI)");
+}
 const summary = {
   ok: true,
   url: joinUrl(options.baseUrl, options.route),
+  supabaseBlocked: !options.allowSupabase,
   outputDir: options.outputDir,
   presets: [],
 };
@@ -555,6 +566,8 @@ Options:
   --no-occlusion               Skip the covered-control check.
   --locale LOCALE              Browser language. Default: ko-KR (use en-US with /en routes).
   --output DIR                 Screenshot and summary directory.
+  --allow-supabase             Let the browser reach *.supabase.co (blocked by default). Use only
+                               when the check needs comments, likes, feeds, or other DB data.
   --no-dev                     Do not start Next dev server.
   --headed                     Run browser headed.
 `);

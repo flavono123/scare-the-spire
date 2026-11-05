@@ -76,6 +76,7 @@ If a different page lacks stable selectors, add narrowly scoped `data-*` attribu
 
 - The script starts `pnpm exec next dev` when the configured base URL is unreachable, unless `--no-dev` is passed.
 - Use `--base-url http://localhost:<port>` for an existing server on a nondefault port.
+- The browser cannot reach `*.supabase.co` by default, because the testbed and production share one Supabase project and QA sweeps have stalled it. Pages show their DB-down state (empty comments, feeds, counts). Pass `--allow-supabase` only when the check needs that data, and keep such runs small.
 - Use `--headed` only when manual inspection is needed.
 - Use `--min-visible-height <px>` when a route legitimately has a smaller mobile render area than the profile page.
 
