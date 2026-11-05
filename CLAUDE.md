@@ -10,6 +10,10 @@ All task instructions must be followed by an immediate speculative commit after 
 - Commits that change user-visible behavior record `Feature:`, `Expect:`, and `QA:` lines in the body (`QA: none` otherwise). Multi-commit features and open worktrees go in `docs/release/UNRELEASED.md`.
 - Releases (regular byrdispatch releases with CI gate, full smoke test, and feature QA; urgent patch-note releases where speed comes first) and the Supabase migrations they carry follow `docs/RELEASE_PROCESS.md`. The branch and deployment rules in `AGENTS.md` also apply.
 
+## 진행 중인 Supabase 이관
+
+- Supabase → D1 이관이 진행 중이다. 같은 시기에 하는 작업은 [docs/SUPABASE_EXIT_PARALLEL_WORK.md](docs/SUPABASE_EXIT_PARALLEL_WORK.md)의 유의사항을 따른다.
+
 ## 기술 스택
 
 - **Framework**: Next.js 16 (App Router, TypeScript strict)
