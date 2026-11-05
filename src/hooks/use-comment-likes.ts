@@ -36,8 +36,11 @@ export function useCommentLikes(threadKey: string, comments: readonly Comment[],
   const commentIds = comments.map((comment) => comment.id);
   const idsKey = commentIds.join(",");
   const idsRef = useRef<string[]>(commentIds);
+  // The legacy effect below re-runs on ids and user only, as before; it reads the key through this.
+  const threadKeyRef = useRef(threadKey);
   useEffect(() => {
     idsRef.current = commentIds;
+    threadKeyRef.current = threadKey;
   });
   // Rows from the Worker carry their like counts; legacy rows do not and are counted by a query.
   const rowsCarryCounts = comments.length > 0 && comments.every((comment) => typeof comment.like_count === "number");
@@ -67,7 +70,7 @@ export function useCommentLikes(threadKey: string, comments: readonly Comment[],
   useEffect(() => {
     if (commentIds.length === 0) return;
     let cancelled = false;
-    const viaApi = engagementApiFor("threads", threadKey);
+    const viaApi = engagementApiFor("threads", threadKeyRef.current);
     if ((!viaApi || !rowsCarryCounts) && supabaseEnabled) {
       supabase
         .from("comment_likes")
@@ -86,7 +89,7 @@ export function useCommentLikes(threadKey: string, comments: readonly Comment[],
     return () => {
       cancelled = true;
     };
-  }, [idsKey, rowsCarryCounts, threadKey, userId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [idsKey, rowsCarryCounts, userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Api: this user's likes for the whole thread, without waiting for the rows.
   useEffect(() => {

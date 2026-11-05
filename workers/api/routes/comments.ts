@@ -53,7 +53,7 @@ const SECOND_WAVE_MIN_MS = 1000;
 /** One batch of comment rows; a planted 128 KB row per comment cannot make a page's read heavy. */
 export const THREAD_BATCH_MAX_BYTES = 1024 * 1024;
 const CONTENT_BLOCKS_MAX_BYTES = 128 * 1024;
-const AUTHOR_FIELD_MAX = 128;
+const AUTHOR_FIELD_MAX = 64;
 
 export type CommentRow = {
   id: string;

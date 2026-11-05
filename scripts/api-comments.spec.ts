@@ -414,6 +414,7 @@ async function main() {
     { threadKey: "bad key", nickname: "이름", content: "내용" },
     { threadKey: patchKey, nickname: "이름", content: "내용", contentBlocks: "text" },
     { threadKey: patchKey, nickname: "이름", content: "내용", author: { avatarId: 3 } },
+    { threadKey: patchKey, nickname: "이름", content: "내용", author: { avatarId: "a".repeat(65) } },
     [],
   ]) {
     assert.equal((await call("/api/write/comments", authed("POST", bad))).status, 400, JSON.stringify(bad).slice(0, 60));
