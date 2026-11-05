@@ -170,6 +170,96 @@ async function main() {
   assert.equal(kstWeekStart(new Date("2026-11-01T14:59:59Z")), "2026-10-26");
   assert.equal(kstWeekStart(new Date("2026-11-01T15:00:00Z")), "2026-11-02");
 
+  // --- Comments group: coalesced engagement reads (STEP1_DESIGN 9.1) ----------
+  const { engagementApiFor, loadEngagement, loadEngagementMine } = await import("../src/lib/api-engagement");
+  const { ENGAGEMENT_QUERY_MAX_CHARS } = await import("../src/lib/engagement-keys");
+
+  resetPage("slseoun_rf=v1.nav");
+  assert.equal(engagementApiFor("threads", "sts2-codex:card:bash"), false, "comments not on the api path");
+  resetPage("slseoun_rf=v1.comments");
+  assert.equal(engagementApiFor("threads", "sts2-codex:card:bash"), true);
+  assert.equal(engagementApiFor("threads", "bad key"), false, "a key the Worker refuses stays legacy");
+  assert.equal(engagementApiFor("reactions", "card:bash"), false);
+
+  const engagementUrls: string[] = [];
+  let engagementReply: (url: URL) => Response = () => marked({});
+  globalThis.fetch = (async (input: unknown) => {
+    const url = new URL(String(input), "https://example.test");
+    engagementUrls.push(`${url.pathname}${url.search}`);
+    return engagementReply(url);
+  }) as typeof fetch;
+
+  // Asks from one render share one request; derived reply threads are held for later widgets.
+  const replyKey = "colorful-philosophers:44444444-4444-4444-8444-444444444444";
+  engagementReply = () => marked({
+    v: 1,
+    env: "production",
+    threads: { "sts2-codex:card:bash": [{ id: "c1", like_count: 2 }], [replyKey]: [{ id: "r1", like_count: 0 }] },
+    likes: { "sts2-codex:card:bash": 3 },
+    reactions: { "card:bash:0.104.0": { buff: 1, nerf: 0, rework: 0 }, "card:bash:0.103.2": { buff: 0, nerf: 4, rework: 0 } },
+    philosophers: { "card:bash": [{ id: "44444444-4444-4444-8444-444444444444" }] },
+  });
+  const [thread, likeCount, reaction, posts] = await Promise.all([
+    loadEngagement("threads", "sts2-codex:card:bash"),
+    loadEngagement("likes", "sts2-codex:card:bash"),
+    loadEngagement("reactions", "card:bash:0.104.0"),
+    loadEngagement("philosophers", "card:bash"),
+  ]);
+  assert.equal(engagementUrls.length, 1, "one request for the whole render");
+  assert.equal(
+    engagementUrls[0],
+    "/api/read/engagement?threads=sts2-codex:card:bash&likes=sts2-codex:card:bash&reactions=card:bash:0.104.0&philosophers=card:bash",
+  );
+  assert.equal(thread[0].like_count, 2);
+  assert.equal(likeCount, 3);
+  assert.deepEqual(reaction, { buff: 1, nerf: 0, rework: 0 });
+  assert.equal(posts.length, 1);
+  assert.deepEqual((await loadEngagement("threads", replyKey)).map((row) => row.id), ["r1"], "reply thread came with the posts");
+  assert.deepEqual(await loadEngagement("reactions", "card:bash:0.103.2"), { buff: 0, nerf: 4, rework: 0 });
+  assert.equal(engagementUrls.length, 1, "held values need no request");
+
+  // A failed part rejects only its asks.
+  engagementUrls.length = 0;
+  engagementReply = () => marked({ v: 1, env: "production", threads: { "byrdispatch": [] }, unavailable: ["reactions"] });
+  const [okThread, failedReaction] = await Promise.allSettled([
+    loadEngagement("threads", "byrdispatch"),
+    loadEngagement("reactions", "card:bash:0.104.0"),
+  ]);
+  assert.equal(okThread.status, "fulfilled");
+  assert.ok(failedReaction.status === "rejected" && failedReaction.reason instanceof ApiUnavailableError);
+
+  // A legacy signal rejects the whole batch with SurfaceLegacyError and demotes the group.
+  engagementReply = () => marked({ error: "surface_legacy", reason: "flag" }, 409);
+  const legacyAsks = await Promise.allSettled([loadEngagement("threads", "byrdispatch"), loadEngagement("likes", "byrdispatch")]);
+  assert.ok(legacyAsks.every((result) => result.status === "rejected" && result.reason instanceof SurfaceLegacyError));
+  assert.equal(engagementApiFor("threads", "byrdispatch"), false, "demoted for the page");
+
+  // An unknown response version is a legacy signal too.
+  resetPage("slseoun_rf=v1.comments");
+  engagementReply = () => marked({ v: 2 });
+  await assert.rejects(() => loadEngagement("threads", "byrdispatch"), SurfaceLegacyError);
+  assert.equal(engagementApiFor("threads", "byrdispatch"), false);
+
+  // Batches stay under the per-part cap and the query length.
+  resetPage("slseoun_rf=v1.comments");
+  engagementUrls.length = 0;
+  engagementReply = (url) => {
+    const keys = (url.searchParams.get("threads") ?? "").split(",");
+    return marked({ v: 1, env: "production", threads: Object.fromEntries(keys.map((key) => [key, []])) });
+  };
+  const manyKeys = Array.from({ length: 70 }, (_, index) => `neowsletter:2026-10:claim-${index}`);
+  await Promise.all(manyKeys.map((key) => loadEngagement("threads", key)));
+  assert.equal(engagementUrls.length, 2, "70 thread keys need two requests (cap 64)");
+  const longKeys = Array.from({ length: 40 }, (_, index) => `sts2-codex:card:${"X".repeat(180)}${index}`);
+  engagementUrls.length = 0;
+  await Promise.all(longKeys.map((key) => loadEngagement("threads", key)));
+  assert.ok(engagementUrls.length >= 2 && engagementUrls.every((url) => url.length - "/api/read/engagement?".length <= ENGAGEMENT_QUERY_MAX_CHARS));
+
+  // Personal reads need a session; without one they fail without calling the Worker.
+  engagementUrls.length = 0;
+  await assert.rejects(() => loadEngagementMine("likes", "byrdispatch"), (error) => error instanceof ApiError && error.code === "token_invalid");
+  assert.equal(engagementUrls.length, 0);
+
   console.log("api-client spec passed");
 }
 
