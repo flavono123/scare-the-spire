@@ -18,6 +18,14 @@
      Supabase 부하가 줄지 않는다(지금과 비슷한 하루 2.5만~5만 쿼리). D1 행은 원본이 아니라 캐시라서 지워도 된다.
   4. 운영에서는 배포 때 켜는 스위치(`API_RUNTIME_FLAGS`)가 꺼져 있는 한 D1을 읽지도 않는다(2.1절). 모든 플래그가
      `legacy`인 운영은 바이트와 지연 모두 지금과 같다.
+- 2026-11-06 00:03 KST 로컬 확인(`wrangler dev`, local D1 `path.nav=api`, Supabase development 행):
+  - 브라우저의 `*.supabase.co`를 막은 채 `/`, `/compendium/cards`, `/patches`에서 네비 점(헤더 10개, 패치 페이지
+    11개)과 배달부가 `/api/read/nav` 한 번으로 떴다. 브라우저가 Supabase로 보낸 네비·배달부 쿼리는 0건이다.
+  - 같은 순간 Supabase를 직접 읽은 legacy 답과 표면 8개의 점, 최신 시각(밀리초까지), 배달부 id가 모두 같았다.
+  - `/api/read/nav`가 1단계 이전 Worker처럼 표식 없는 HTML 404를 주게 하자, 페이지가 legacy로 내려와 같은 점과
+    배달부를 보였다.
+  - 쿠키는 304와 HEAD에도 붙었고, 파일 경로(`/_patches/*.css`)에는 붙지 않았다. QA 쿠키를 보내면 `/api`는
+    409 `qa`이고 페이지는 쿠키를 지웠다. 첫 채우기는 0.46초, 그다음은 메모리에서 6 ms였다.
 - 이 문서는 모든 화면이 같이 쓰는 기반과 첫 화면 `nav`를 정한다. 다른 화면은 SURFACE_MAP.md 2절을 따르되,
   이 문서 9절의 규칙이 우선한다.
 
