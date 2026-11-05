@@ -15,7 +15,11 @@ if (expected !== "production" && expected !== "development") {
   process.exit(2);
 }
 
-const config = supabaseApiConfig(process.env);
+const config = supabaseApiConfig({
+  API_SUPABASE_URL: process.env.API_SUPABASE_URL,
+  API_SUPABASE_KEY: process.env.API_SUPABASE_KEY,
+  API_DATA_ENV: process.env.API_DATA_ENV,
+});
 if (!config) {
   console.error(
     "API_SUPABASE_URL must be https://<20-char ref>.supabase.co, API_SUPABASE_KEY a sb_publishable_ key, "
