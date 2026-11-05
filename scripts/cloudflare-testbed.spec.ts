@@ -80,6 +80,8 @@ function canonical(path: string) {
 
 async function blockSupabase(page: Page) {
   await page.route(/https:\/\/[^/]+\.supabase\.co\//, (route) => route.abort("connectionfailed"));
+  // Screens on the api path reach Supabase through the Worker; this cookie sends them back to legacy.
+  await page.context().addCookies([{ name: "slseoun_qa", value: "no-supabase", url: BASE_URL }]);
 }
 
 async function expectNoHorizontalOverflow(page: Page) {

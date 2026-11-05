@@ -1,5 +1,8 @@
 import { defineConfig } from "@playwright/test";
 
+const baseURL = process.env.BASE_URL ?? "http://localhost:3000";
+const blockSupabase = process.env.PLAYWRIGHT_BLOCK_SUPABASE === "1";
+
 export default defineConfig({
   testDir: "./scripts",
   testMatch: [
@@ -24,13 +27,29 @@ export default defineConfig({
   ],
   timeout: 30_000,
   use: {
-    baseURL: process.env.BASE_URL ?? "http://localhost:3000",
+    baseURL,
     headless: true,
     // Testbed and production share one Supabase project. A suite that does not
     // test Supabase-backed UI keeps its page loads off it. Unlike page.route(),
-    // blocking at DNS leaves the HTTP cache on.
-    ...(process.env.PLAYWRIGHT_BLOCK_SUPABASE === "1"
-      ? { launchOptions: { args: ["--host-resolver-rules=MAP *.supabase.co ~NOTFOUND"] } }
+    // blocking at DNS leaves the HTTP cache on. The cookie keeps the Worker's
+    // same-origin /api off Supabase as well (docs/supabase-exit/STEP1_DESIGN.md 3.4).
+    ...(blockSupabase
+      ? {
+          launchOptions: { args: ["--host-resolver-rules=MAP *.supabase.co ~NOTFOUND"] },
+          storageState: {
+            cookies: [{
+              name: "slseoun_qa",
+              value: "no-supabase",
+              domain: new URL(baseURL).hostname,
+              path: "/",
+              expires: -1,
+              httpOnly: false,
+              secure: false,
+              sameSite: "Lax" as const,
+            }],
+            origins: [],
+          },
+        }
       : {}),
   },
   // Do not start dev server — assume it's already running
