@@ -7,8 +7,8 @@ Supabase를 Cloudflare D1으로 옮기는 작업이 진행 중이다. 전체 계
 ## 지금 단계
 
 - 0단계 끝(2026-11-05): 운영 DB 백업을 로컬에 받았고, 모바일 뷰포트 QA가 기본으로 Supabase를 막는다.
-- 1단계(같은 출처 API)부터는 별도 worktree에서 한다. 시작하면 [UNRELEASED.md](release/UNRELEASED.md)에
-  등록한다.
+- 1단계(같은 출처 API) 진행 중(2026-11-05 시작): worktree `.claude/worktrees/supabase-exit`, 브랜치
+  `refactor/supabase-exit`. [UNRELEASED.md](release/UNRELEASED.md)에 등록했다.
 
 ## 이관과 상관없는 작업
 

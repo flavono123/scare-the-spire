@@ -10,6 +10,7 @@
 | 이름 | 브랜치 | 목적 | 상태 |
 |---|---|---|---|
 | domain-migration-c54d7b | claude/domain-migration-c54d7b | 도메인 이전(레거시 호스트 안내, 리다이렉트, robots/sitemap) | 11커밋, main보다 332 뒤처짐. 2026-10-26 정기 배포에서 제외 |
+| supabase-exit | refactor/supabase-exit | Supabase → D1 이관 1단계(같은 출처 API). 계획은 [SUPABASE_EXIT_PLAN.md](../SUPABASE_EXIT_PLAN.md) 7절 | 2026-11-05 시작. 단계가 끝날 때마다 main에 병합해 정기 배포로 낸다 |
 
 ## Supabase 마이그레이션
 
