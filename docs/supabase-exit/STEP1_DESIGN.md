@@ -404,6 +404,10 @@ SURFACE_MAP 2.2절 5~9번과 10번의 `threads`를 덮는다. 엔드포인트 �
 - 부분 실패: 한 부분이 실패하면 그 부분을 빼고 `unavailable: ["reactions"]`처럼 이름을 적는다. 지금 훅이 따로 실패하는
   것과 같게 화면의 그 부분만 "응답 없음"이다. 모두 실패하면 503.
 - 캐시는 두지 않는다. 쓴 사람이 다시 불러도 자기 댓글이 보여야 한다. 지금도 매번 Supabase를 읽는다. 캐시는 3단계에서 본다.
+- 상한: 엔드포인트 전체 6.5초(클라이언트 8초에서 플래그 대기 1초를 뺀 안). 모든 PostgREST 호출이 남은 시간만 쓰고,
+  150 ms 아래로 남으면 보내지 않는다. 철학자의 두 번째 묶음은 1초 넘게 남았을 때만 읽는다(못 읽은 것은 위젯이 따로 부른다).
+  댓글 행 한 묶음의 본문은 1 MB까지 스트림 바이트로 센다. 넘으면 `threads`를 `unavailable`로 둔다. 행마다 128 KB인
+  `content_blocks`를 심어 페이지 읽기를 CPU·메모리 한도로 밀어내지 못하게 하려는 것이다(어댑터 기본 상한은 2 MB).
 
 **개인 덧칠** `GET /api/me/engagement` (`access: "me"`): `threads`, `likes`, `reactions`를 같은 형식으로 받아
 `commentLikes: { <키>: 내가 누른 댓글 id[] }`, `likes: { <키>: true|false }`, `reactions: { <대상>: kind|null }`.
@@ -426,6 +430,9 @@ SURFACE_MAP 2.2절 5~9번과 10번의 `threads`를 덮는다. 엔드포인트 �
 - 오류: 23514 → 422 `check_violation`, 42501 → 403 `forbidden`, PostgREST 401 → 401 `token_expired`, 그 밖의
   4xx → 400 `invalid`, 시간 초과·5xx → 503.
 - 쓰기 응답이 새 상태를 돌려주므로 클라이언트는 다시 읽지 않는다. 정적 패치 클라이언트의 "쓰고 다시 읽기 2~3건"도 없어진다.
+- 쓰기가 반영된 뒤 수·합계 읽기만 실패하면 200에 `count: null`·`counts: null`을 준다. 실패로 답하면 클라이언트가
+  반영된 쓰기를 되돌려 보여 주기 때문이다. 클라이언트는 null이면 낙관적으로 고친 값을 그대로 둔다. 쓰기들도 같은 6.5초
+  상한을 쓴다.
 
 **rate limit**: binding 둘을 둔다(9절의 `API_LIMITER` 하나를 바꾼다). 한 binding은 한도가 하나라서 읽기와 쓰기를
 나눴다.
@@ -444,8 +451,10 @@ SURFACE_MAP 2.2절 5~9번과 10번의 `threads`를 덮는다. 엔드포인트 �
 **클라이언트**
 
 - `src/lib/api-engagement.ts`: 한 페이지에서 8 ms 안에 들어온 요청을 한 번의 `/api/read/engagement`(상한을 넘으면
-  여럿)로 모은다. 철학자 글과 함께 온 답글·반응은 15초 동안 담아 두어 뒤에 마운트되는 `ReplyLines`와 읽기 전용 막대가
-  다시 부르지 않는다. 개인 덧칠도 같은 방식으로 모은다. legacy 신호면 모은 요청이 모두 legacy로 다시 간다.
+  여럿)로 모은다. 철학자 글이 든 묶음은 돌려받은 스레드·반응을 모두(요청한 것도) 15초 동안 한 번씩 꺼내 쓰게 담아 둔다.
+  뒤에 마운트되는 `ReplyLines`와 읽기 전용 막대(지금 버전 글이면 머리와 같은 대상)가 다시 부르지 않는다. 쓰기는 그 키를
+  지운다. 개인 덧칠도 같은 방식으로 모은다. 댓글 좋아요 덧칠은 댓글 행을 기다리지 않고 스레드 키로 마운트 때 묻는다.
+  legacy 신호면 모은 요청이 모두 legacy로 다시 간다. 모르는 응답 `v`도 legacy 신호다(`engagement-counts` 포함).
 - 훅(`use-comments`, `use-comment-likes`, `use-likes`, `use-resource-reactions`, `use-engagement-counts`,
   `resource-thread`)은 효과와 처리기 안에서만 `surfacePath("comments")`를 본다. 반환 모양은 그대로다.
   `useCommentLikes`는 api 경로에서 댓글 행의 `like_count`를 쓰므로 인자에 댓글 행을 받는다.
@@ -455,7 +464,9 @@ SURFACE_MAP 2.2절 5~9번과 10번의 `threads`를 덮는다. 엔드포인트 �
 - 패치 정적 클라이언트: 스레드 읽기·쓰기와 셸 릴 반응 쓰기에 api 분기를 둔다. api 경로에서 저장된 세션의 갱신이
   네트워크·시간 초과·5xx로 실패하면 새 익명 가입으로 넘어가지 않고 "응답 없음"을 보인다(7절). 갱신 토큰이 거절된
   경우(400·401)는 supabase-js처럼 죽은 세션으로 보고 가입한다. 쓰기 응답으로 화면을 고치므로 "쓰고 다시 읽기"가 없다.
-  만료된 토큰은 읽기에서 갱신하지 않고 내 좋아요 덧칠만 건너뛴다.
+  만료된 토큰은 읽기에서 갱신하지 않고 내 좋아요 덧칠만 건너뛴다. 쓰기는 `token_expired`면 한 번 갱신하고 한 번 다시
+  보낸다. 첫 쓰기가 새 세션을 만들었거나 삭제가 404면 스레드를 다시 읽는다(내 것 표시가 바뀐다). 셸 릴의 반응 합계는
+  api 경로에서 `/api/read/engagement?reactions=`로 읽어 쓰기와 같은 env를 본다.
 - testbed 패치 페이지(10절): api 경로에서는 Worker의 `API_DATA_ENV`(development) 행을 읽고 쓴다. 빌드에 구운
   env(production)는 legacy 경로에서만 쓴다. 댓글 쪽 브라우저 저장소(초안, 반응 localStorage)는 env를 키에 넣지 않으므로
   네비처럼 env 검사로 내리지 않는다. 그래서 10절의 열린 질문은 "api 경로는 Worker env를 따른다"로 닫는다.

@@ -216,14 +216,20 @@ async function main() {
   assert.equal(posts.length, 1);
   assert.deepEqual((await loadEngagement("threads", replyKey)).map((row) => row.id), ["r1"], "reply thread came with the posts");
   assert.deepEqual(await loadEngagement("reactions", "card:bash:0.103.2"), { buff: 0, nerf: 4, rework: 0 });
+  // A read-only bar under a post of the current version asks for the header's own target again.
+  assert.deepEqual(await loadEngagement("reactions", "card:bash:0.104.0"), { buff: 1, nerf: 0, rework: 0 });
   assert.equal(engagementUrls.length, 1, "held values need no request");
+  // Held values are taken once.
+  engagementReply = () => marked({ v: 1, env: "production", reactions: { "card:bash:0.104.0": { buff: 9, nerf: 0, rework: 0 } } });
+  assert.deepEqual(await loadEngagement("reactions", "card:bash:0.104.0"), { buff: 9, nerf: 0, rework: 0 });
+  assert.equal(engagementUrls.length, 2);
 
   // A failed part rejects only its asks.
   engagementUrls.length = 0;
   engagementReply = () => marked({ v: 1, env: "production", threads: { "byrdispatch": [] }, unavailable: ["reactions"] });
   const [okThread, failedReaction] = await Promise.allSettled([
     loadEngagement("threads", "byrdispatch"),
-    loadEngagement("reactions", "card:bash:0.104.0"),
+    loadEngagement("reactions", "relic:orrery:0.104.0"),
   ]);
   assert.equal(okThread.status, "fulfilled");
   assert.ok(failedReaction.status === "rejected" && failedReaction.reason instanceof ApiUnavailableError);

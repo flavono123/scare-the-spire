@@ -459,10 +459,10 @@
   // 5xx) does not fall through to a new anonymous sign-up, which would replace the
   // user's id (docs/supabase-exit/STEP1_DESIGN.md 7). A rejected refresh token
   // (400/401) is dead either way, as supabase-js treats it.
-  async function ensureSession(config, { keepUserOnTransientFailure = false } = {}) {
+  async function ensureSession(config, { keepUserOnTransientFailure = false, forceRefresh = false } = {}) {
     const stored = normalizeSession(readStoredSession(config));
     const now = Math.floor(Date.now() / 1000);
-    if (stored?.access_token && stored.expires_at && stored.expires_at > now + 60) {
+    if (!forceRefresh && stored?.access_token && stored.expires_at && stored.expires_at > now + 60) {
       return stored;
     }
 
@@ -995,7 +995,6 @@
 
       try {
         const viaApi = commentsViaApi(threadKey);
-        const session = await ensureSession(config, { keepUserOnTransientFailure: viaApi });
         const profileState = readStoredProfileIconState();
         const authorToken = profileState.stored ? {
           avatar_id: profileState.avatarId,
@@ -1010,9 +1009,8 @@
         };
         if (viaApi) {
           try {
-            const created = await apiRequest("/api/write/comments", {
+            const { result: created, session: writer } = await apiWriteAsUser(config, "/api/write/comments", {
               method: "POST",
-              token: session.access_token,
               body: {
                 threadKey,
                 nickname,
@@ -1025,10 +1023,14 @@
                 },
               },
             });
+            // A new session (first write) has other likes: read the thread again for it.
+            if (sessionUserId(writer) !== state.userId) {
+              await reload();
+              return;
+            }
             // The answer is the new row: no reload.
             state.comments = [...state.comments, created.comment];
             state.likeCounts.set(created.comment.id, 0);
-            state.userId = sessionUserId(session);
             state.submitting = false;
             if (contentInput) contentInput.value = "";
             renderComments(root, state);
@@ -1039,6 +1041,7 @@
             if (!error.legacy || error.processed) throw error;
           }
         }
+        const session = await ensureSession(config);
         await restRequest(config, "comments?select=*", {
           method: "POST",
           token: session.access_token,
@@ -1064,42 +1067,53 @@
       if (!likeButton && !deleteButton) return;
 
       try {
-        const viaApi = commentsViaApi(threadKey);
-        const session = await ensureSession(config, { keepUserOnTransientFailure: viaApi });
-        if (viaApi) {
+        if (commentsViaApi(threadKey)) {
           try {
+            let writer = null;
+            let changedOnServer = false;
             if (likeButton) {
               const commentId = likeButton.dataset.commentLike;
               if (!commentId) return;
-              const result = await apiRequest(`/api/write/comment-likes?id=${encodeURIComponent(commentId)}`, {
-                method: state.liked.has(commentId) ? "DELETE" : "PUT",
-                token: session.access_token,
+              const wasLiked = state.liked.has(commentId);
+              const write = await apiWriteAsUser(config, `/api/write/comment-likes?id=${encodeURIComponent(commentId)}`, {
+                method: wasLiked ? "DELETE" : "PUT",
               });
-              if (result.liked) state.liked.add(commentId);
+              writer = write.session;
+              if (write.result.liked) state.liked.add(commentId);
               else state.liked.delete(commentId);
-              state.likeCounts.set(commentId, result.count);
+              const shown = state.likeCounts.get(commentId) ?? 0;
+              // Null: committed, but the count could not be read; adjust the shown one.
+              state.likeCounts.set(commentId, typeof write.result.count === "number"
+                ? write.result.count
+                : Math.max(0, shown + (write.result.liked === wasLiked ? 0 : write.result.liked ? 1 : -1)));
             }
             if (deleteButton) {
               const commentId = deleteButton.dataset.commentDelete;
               if (!commentId) return;
               try {
-                await apiRequest(`/api/write/comments?id=${encodeURIComponent(commentId)}`, {
+                const write = await apiWriteAsUser(config, `/api/write/comments?id=${encodeURIComponent(commentId)}`, {
                   method: "DELETE",
-                  token: session.access_token,
                 });
+                writer = write.session;
+                state.comments = state.comments.filter((comment) => comment.id !== commentId);
               } catch (error) {
-                // Already gone or not ours: it leaves the list, as the legacy reload shows.
+                // Already gone, or not this session's: read the thread again instead of guessing.
                 if (error.code !== "not_found") throw error;
+                changedOnServer = true;
               }
-              state.comments = state.comments.filter((comment) => comment.id !== commentId);
             }
-            state.userId = sessionUserId(session);
+            // A new session (the first write signed up) has other likes and other own comments.
+            if (changedOnServer || (writer && sessionUserId(writer) !== state.userId)) {
+              await reload();
+              return;
+            }
             renderComments(root, state);
             return;
           } catch (error) {
             if (!error.legacy || error.processed) throw error;
           }
         }
+        const session = await ensureSession(config);
         if (likeButton) {
           const commentId = likeButton.dataset.commentLike;
           if (!commentId) return;
@@ -1390,6 +1404,21 @@
       return parsed;
     } finally {
       clearTimeout(timer);
+    }
+  }
+
+  /**
+   * An api write with the session's token; `token_expired` refreshes once and
+   * sends once more (src/lib/api-session.ts). Resolves to { result, session }.
+   */
+  async function apiWriteAsUser(config, path, init) {
+    let session = await ensureSession(config, { keepUserOnTransientFailure: true });
+    try {
+      return { result: await apiRequest(path, { ...init, token: session.access_token }), session };
+    } catch (error) {
+      if (error.code !== "token_expired") throw error;
+      session = await ensureSession(config, { keepUserOnTransientFailure: true, forceRefresh: true });
+      return { result: await apiRequest(path, { ...init, token: session.access_token }), session };
     }
   }
 
@@ -1708,11 +1737,27 @@
     const buttons = Array.from(document.querySelectorAll("[data-colorful-philosophers-card] [data-cp-reaction]"));
     const ids = Array.from(new Set(buttons.map((button) => button.dataset.cpResource).filter(Boolean)));
     if (ids.length === 0) return;
+    const counts = new Map();
+    // Totals come from the env the reaction writes go to: the Worker's on the api path.
+    const targets = Array.from(new Set(buttons
+      .filter((button) => reactionsViaApi(button.dataset.cpType, button.dataset.cpResource, button.dataset.cpVersion))
+      .map((button) => `${button.dataset.cpType}:${button.dataset.cpResource}:${button.dataset.cpVersion}`)));
+    if (targets.length > 0 && targets.length === new Set(buttons.map((button) => `${button.dataset.cpType}:${button.dataset.cpResource}:${button.dataset.cpVersion}`)).size) {
+      try {
+        const body = await apiRequest(`/api/read/engagement?reactions=${targets.slice(0, 64).join(",")}`);
+        if (body?.v === 1 && body.reactions) {
+          Object.entries(body.reactions).forEach(([target, value]) => counts.set(target, value));
+          applyReelCounts(buttons, counts);
+          return;
+        }
+      } catch (error) {
+        if (!error.legacy) throw error;
+      }
+    }
     const rows = await restRequest(
       config,
       `resource_reaction_counts?select=resource_type,resource_id,game_version,buff_count,nerf_count,rework_count&env=eq.${config.supabaseEnv}&resource_id=in.(${ids.map(encodeURIComponent).join(",")})`,
     );
-    const counts = new Map();
     (Array.isArray(rows) ? rows : []).forEach((row) => {
       counts.set(`${row.resource_type}:${row.resource_id}:${row.game_version}`, {
         buff: row.buff_count || 0,
@@ -1720,6 +1765,10 @@
         rework: row.rework_count || 0,
       });
     });
+    applyReelCounts(buttons, counts);
+  }
+
+  function applyReelCounts(buttons, counts) {
     buttons.forEach((button) => {
       const count = button.querySelector("[data-cp-count]");
       if (!count) return;
@@ -1788,25 +1837,15 @@
     const gameVersion = button.dataset.cpVersion;
     const kind = button.dataset.cpKind;
     if (!postId || !resourceType || !resourceId || !gameVersion || !kind) return;
-    const viaApi = reactionsViaApi(resourceType, resourceId, gameVersion);
-    let session;
-    try {
-      session = await ensureSession(config, { keepUserOnTransientFailure: viaApi });
-    } catch {
-      return;
-    }
-    const userId = sessionUserId(session);
-    if (!userId) return;
     const key = `sts-resource-reaction:${resourceType}:${resourceId}:${gameVersion}`;
     const stored = window.localStorage.getItem(key);
     const previous = stored === "buff" || stored === "nerf" || stored === "rework" ? stored : null;
     const next = previous === kind ? null : kind;
-    if (viaApi) {
+    if (reactionsViaApi(resourceType, resourceId, gameVersion)) {
       try {
         // The Worker reads the current row, so a stale kind cannot conflict, and it answers the totals.
-        const result = await apiRequest("/api/write/reactions", {
+        const { result } = await apiWriteAsUser(config, "/api/write/reactions", {
           method: "PUT",
-          token: session.access_token,
           body: { resourceType, resourceId, gameVersion, kind: next },
         });
         if (result.kind) window.localStorage.setItem(key, result.kind);
@@ -1816,7 +1855,15 @@
           const count = other.querySelector("[data-cp-count]");
           const otherKind = other.dataset.cpKind;
           if (!count || !otherKind) return;
-          count.textContent = String(Number(result.counts?.[otherKind]) || 0);
+          if (result.counts) {
+            count.textContent = String(Number(result.counts[otherKind]) || 0);
+          } else {
+            // Committed, but the totals could not be read: adjust the shown ones.
+            let value = Number(count.textContent) || 0;
+            if (previous === otherKind) value = Math.max(0, value - 1);
+            if (result.kind === otherKind) value += 1;
+            count.textContent = String(value);
+          }
           other.setAttribute("aria-pressed", result.kind === otherKind ? "true" : "false");
         });
         return;
@@ -1824,6 +1871,14 @@
         if (!error.legacy || error.processed) return;
       }
     }
+    let session;
+    try {
+      session = await ensureSession(config);
+    } catch {
+      return;
+    }
+    const userId = sessionUserId(session);
+    if (!userId) return;
     const filter = `env=eq.${config.supabaseEnv}&resource_type=eq.${resourceType}&resource_id=eq.${resourceId}&game_version=eq.${gameVersion}&user_id=eq.${userId}`;
     try {
       if (next === null) {

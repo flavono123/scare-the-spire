@@ -55,6 +55,8 @@ class FakeRest {
   philosophers: Row[] = [];
   calls: { method: string; url: URL; auth: string | null; body: unknown }[] = [];
   failTables = new Set<string>();
+  /** Fail only the count reads (HEAD) and the totals read of these tables. */
+  failReads = new Set<string>();
   jwks: unknown = { keys: [] };
   private seq = 0;
 
@@ -128,6 +130,9 @@ class FakeRest {
     assert.equal(request.headers.get("apikey"), "sb_publishable_test");
     const name = url.pathname.replace("/rest/v1/", "");
     if (this.failTables.has(name)) return new Response("{\"code\":\"XX000\"}", { status: 500 });
+    if (this.failReads.has(name) && (request.method === "HEAD" || request.method === "GET")) {
+      return new Response("{\"code\":\"XX000\"}", { status: 503 });
+    }
     const prefer = request.headers.get("prefer") ?? "";
     const params = url.searchParams;
     const user = this.userOf(auth);
@@ -451,6 +456,38 @@ async function main() {
   assert.deepEqual((await json(await reaction(null))).body, { kind: null, counts: { buff: 0, nerf: 1, rework: 0 } });
   assert.equal((await reaction("love")).status, 400);
   assert.equal((await call("/api/write/reactions", authed("PUT", { resourceType: "card", resourceId: "a:b", gameVersion: "1", kind: "buff" }))).status, 400);
+
+  // A committed write whose count read fails answers 200 with an unknown count, never 503.
+  rest.failReads.add("likes");
+  const committedLike = await json(await call(`/api/write/likes?key=${patchKey}`, authed("PUT")));
+  assert.deepEqual(committedLike, { ...committedLike, status: 200, body: { liked: true, count: null } });
+  assert.ok(rest.likes.some((row) => row.story_id === patchKey && row.user_id === USER), "the like is stored");
+  assert.deepEqual((await json(await call(`/api/write/likes?key=${patchKey}`, authed("DELETE")))).body, { liked: false, count: null });
+  rest.failReads.delete("likes");
+  rest.failReads.add("resource_reaction_counts");
+  const committedReaction = await json(await reaction("nerf"));
+  assert.equal(committedReaction.status, 200);
+  assert.deepEqual(committedReaction.body, { kind: "nerf", counts: null });
+  assert.equal(rest.reactions.find((row) => row.user_id === USER)?.kind, "nerf");
+  await reaction(null);
+  rest.failReads.delete("resource_reaction_counts");
+
+  // Prototype names are unknown parameters, not crashes.
+  for (const name of ["constructor", "__proto__", "hasOwnProperty", "valueOf", "toString"]) {
+    assert.equal((await call(`/api/read/engagement-counts?${name}=1`)).status, 400, name);
+    assert.equal((await call(`/api/read/engagement?threads=${codexKey}&${name}=1`)).status, 400, name);
+  }
+
+  // A batch of planted 128 KB rows is cut at the byte cap and reported unavailable.
+  const plantedKey = "transfigure:planted";
+  for (let index = 0; index < 9; index += 1) {
+    rest.comments.push({ id: `66666666-6666-4666-8666-${String(index).padStart(12, "0")}`, story_id: plantedKey, user_id: OTHER, nickname: "심기", content: "큰 행", content_blocks: [{ type: "text", text: "가".repeat(43_000) }], created_at: `2026-11-05T04:00:0${index}.000Z`, env: "development", parent_id: null, meta: null, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false });
+  }
+  const planted = await json(await call(`/api/read/engagement?threads=${plantedKey}&likes=${plantedKey}`));
+  assert.equal(planted.status, 200);
+  assert.deepEqual(planted.body.unavailable, ["threads"]);
+  assert.equal((await call(`/api/read/engagement?threads=${plantedKey}`)).status, 503);
+  rest.comments = rest.comments.filter((row) => row.story_id !== plantedKey);
 
   // --- Engagement counts ------------------------------------------------------------
   const counts = await json(await call("/api/read/engagement-counts"));

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiFetch } from "@/lib/api-client";
+import { apiFetch, SurfaceLegacyError } from "@/lib/api-client";
 import { shouldUseLegacy } from "@/lib/api-engagement";
-import { surfacePath } from "@/lib/runtime-flags";
+import { demoteSurface, surfacePath } from "@/lib/runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
@@ -64,11 +64,17 @@ export function useEngagementCounts({ enabled = true }: { enabled?: boolean } = 
       )
         .then((body) => {
           if (cancelled) return;
-          if (body?.v !== 1 || !body.likes || !body.comments) throw new Error("bad engagement counts");
+          // A version this client does not know is a legacy signal, like the other api reads.
+          if (body?.v !== 1) {
+            demoteSurface("comments");
+            throw new SurfaceLegacyError(200, false);
+          }
+          if (!body.likes || !body.comments) throw new Error("bad engagement counts");
           setCounts({ likes: body.likes, comments: body.comments, unavailable: false });
           setLoaded(true);
         })
         .catch((error) => {
+          if (cancelled) return;
           if (shouldUseLegacy(error) && supabaseEnabled) loadLegacy();
           else fail();
         });

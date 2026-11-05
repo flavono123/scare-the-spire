@@ -43,6 +43,15 @@ const REACTION_COUNT_COLUMNS = "resource_type,resource_id,game_version,buff_coun
 /** One batch never returns more comment rows than this; a full batch is reported unavailable, never cut silently. */
 export const THREAD_ROW_LIMIT = 1000;
 export const WRITE_BODY_MAX_BYTES = 160 * 1024;
+/**
+ * The whole endpoint, Supabase calls included, ends inside the client's 8 s
+ * timeout after up to 1 s of flag wait (STEP1_DESIGN 5).
+ */
+export const HANDLER_BUDGET_MS = 6500;
+/** Below this, the philosophers' second wave is skipped; the widgets ask on their own. */
+const SECOND_WAVE_MIN_MS = 1000;
+/** One batch of comment rows; a planted 128 KB row per comment cannot make a page's read heavy. */
+export const THREAD_BATCH_MAX_BYTES = 1024 * 1024;
 const CONTENT_BLOCKS_MAX_BYTES = 128 * 1024;
 const AUTHOR_FIELD_MAX = 128;
 
@@ -142,9 +151,11 @@ function engagementQuerySchema(parts: readonly EngagementPart[]) {
   return Object.fromEntries(parts.map((part) => [part, (value: string) => parseEngagementList(part, value) !== null]));
 }
 
-async function readThreads(config: SupabaseApiConfig, keys: readonly string[]): Promise<RestResult<RawCommentRow[]>> {
+async function readThreads(config: SupabaseApiConfig, keys: readonly string[], deadline: number): Promise<RestResult<RawCommentRow[]>> {
   return postgrest<RawCommentRow[]>(config, {
     path: "comments",
+    deadline,
+    maxBytes: THREAD_BATCH_MAX_BYTES,
     query: new URLSearchParams({
       select: `${COMMENT_COLUMNS},comment_likes(count)`,
       env: `eq.${config.dataEnv}`,
@@ -167,8 +178,9 @@ function groupThreads(keys: readonly string[], rows: readonly RawCommentRow[]): 
   return threads;
 }
 
-async function readLikeCount(config: SupabaseApiConfig, key: string): Promise<RestResult<number>> {
+async function readLikeCount(config: SupabaseApiConfig, key: string, deadline: number): Promise<RestResult<number>> {
   const result = await postgrest<null>(config, {
+    deadline,
     method: "HEAD",
     path: "likes",
     query: new URLSearchParams({ select: "id", story_id: `eq.${key}`, env: `eq.${config.dataEnv}` }),
@@ -182,9 +194,11 @@ async function readLikeCount(config: SupabaseApiConfig, key: string): Promise<Re
 async function readReactionCounts(
   config: SupabaseApiConfig,
   targets: readonly ReactionTarget[],
+  deadline: number,
 ): Promise<RestResult<Record<string, ReactionCounts>>> {
   const ids = [...new Set(targets.map((target) => target.resourceId))];
   const result = await postgrest<ReactionCountRow[]>(config, {
+    deadline,
     path: "resource_reaction_counts",
     query: new URLSearchParams({ select: REACTION_COUNT_COLUMNS, env: `eq.${config.dataEnv}`, resource_id: inList(ids) }),
   });
@@ -197,10 +211,11 @@ async function readReactionCounts(
   return { ...result, data: counts };
 }
 
-async function readPhilosophers(config: SupabaseApiConfig, resourceKey: string): Promise<RestResult<PhilosopherRow[]>> {
+async function readPhilosophers(config: SupabaseApiConfig, resourceKey: string, deadline: number): Promise<RestResult<PhilosopherRow[]>> {
   const resource = parsePhilosopherResourceKey(resourceKey);
   if (!resource) return { ok: false, status: 400, code: "invalid" };
   return postgrest<PhilosopherRow[]>(config, {
+    deadline,
     path: "colorful_philosopher_posts",
     query: new URLSearchParams({
       select: PHILOSOPHER_COLUMNS,
@@ -245,6 +260,7 @@ async function handleEngagement(context: PublicRouteContext): Promise<Response> 
   if (!wanted) return apiError("invalid");
   if (!context.allowUpstream) return jsonResponse({ v: 1, env: context.config.dataEnv });
   const { config } = context;
+  const deadline = Date.now() + HANDLER_BUDGET_MS;
   const body: EngagementBody = { v: 1, env: config.dataEnv };
   const unavailable = new Set<EngagementPart>();
 
@@ -256,14 +272,14 @@ async function handleEngagement(context: PublicRouteContext): Promise<Response> 
   const tasks: (() => Promise<void>)[] = [];
   if (threadKeys.length) {
     tasks.push(async () => {
-      const result = await readThreads(config, threadKeys);
+      const result = await readThreads(config, threadKeys, deadline);
       if (!result.ok || (result.data ?? []).length >= THREAD_ROW_LIMIT) unavailable.add("threads");
       else body.threads = groupThreads(threadKeys, result.data ?? []);
     });
   }
   if (targets.length) {
     tasks.push(async () => {
-      const result = await readReactionCounts(config, targets);
+      const result = await readReactionCounts(config, targets, deadline);
       if (result.ok) body.reactions = result.data;
       else unavailable.add("reactions");
     });
@@ -271,7 +287,7 @@ async function handleEngagement(context: PublicRouteContext): Promise<Response> 
   const philosopherRows: Record<string, PhilosopherRow[]> = {};
   for (const resource of resources) {
     tasks.push(async () => {
-      const result = await readPhilosophers(config, resource);
+      const result = await readPhilosophers(config, resource, deadline);
       if (result.ok) philosopherRows[resource] = result.data ?? [];
       else unavailable.add("philosophers");
     });
@@ -279,7 +295,7 @@ async function handleEngagement(context: PublicRouteContext): Promise<Response> 
   const likes: Record<string, number> = {};
   for (const key of likeKeys) {
     tasks.push(async () => {
-      const result = await readLikeCount(config, key);
+      const result = await readLikeCount(config, key, deadline);
       if (result.ok) likes[key] = result.data;
       else unavailable.add("likes");
     });
@@ -288,9 +304,10 @@ async function handleEngagement(context: PublicRouteContext): Promise<Response> 
   if (likeKeys.length && !unavailable.has("likes")) body.likes = likes;
   if (resources.length && !unavailable.has("philosophers")) {
     body.philosophers = philosopherRows;
-
+  }
+  if (body.philosophers && deadline - Date.now() >= SECOND_WAVE_MIN_MS) {
     // Second wave: reply threads and reaction totals the posts' widgets will ask for.
-    const extras = philosopherExtras(Object.values(philosopherRows).flat());
+    const extras = philosopherExtras(Object.values(body.philosophers).flat());
     const extraThreads = extras.threads.filter((key) => !(body.threads && key in body.threads));
     const extraTargets = extras.reactions.filter((target) => !(body.reactions && reactionTargetKey(target) in body.reactions));
     const uniqueTargets = [...new Map(extraTargets.map((target) => [reactionTargetKey(target), target])).values()];
@@ -298,7 +315,7 @@ async function handleEngagement(context: PublicRouteContext): Promise<Response> 
     // A failed extra is left out; the widget then asks for it on its own.
     if (extraThreads.length) {
       second.push(async () => {
-        const result = await readThreads(config, extraThreads);
+        const result = await readThreads(config, extraThreads, deadline);
         if (result.ok && (result.data ?? []).length < THREAD_ROW_LIMIT) {
           body.threads = { ...body.threads, ...groupThreads(extraThreads, result.data ?? []) };
         }
@@ -306,7 +323,7 @@ async function handleEngagement(context: PublicRouteContext): Promise<Response> 
     }
     if (uniqueTargets.length) {
       second.push(async () => {
-        const result = await readReactionCounts(config, uniqueTargets);
+        const result = await readReactionCounts(config, uniqueTargets, deadline);
         if (result.ok) body.reactions = { ...body.reactions, ...result.data };
       });
     }
@@ -335,6 +352,7 @@ async function handleEngagementMe(context: UserRouteContext): Promise<Response> 
   if (!wanted) return apiError("invalid");
   if (!context.allowUpstream) return jsonResponse({ v: 1, env: context.config.dataEnv });
   const { config, token, user } = context;
+  const deadline = Date.now() + HANDLER_BUDGET_MS;
   const body: EngagementMeBody = { v: 1, env: config.dataEnv };
   const unavailable = new Set<EngagementPart>();
   const tasks: (() => Promise<void>)[] = [];
@@ -345,6 +363,7 @@ async function handleEngagementMe(context: UserRouteContext): Promise<Response> 
       const result = await postgrest<{ comment_id: string; comments: { story_id: string } | null }[]>(config, {
         path: "comment_likes",
         token,
+        deadline,
         query: new URLSearchParams({
           select: "comment_id,comments!inner(story_id)",
           user_id: `eq.${user.userId}`,
@@ -372,6 +391,7 @@ async function handleEngagementMe(context: UserRouteContext): Promise<Response> 
       const result = await postgrest<{ story_id: string }[]>(config, {
         path: "likes",
         token,
+        deadline,
         query: new URLSearchParams({
           select: "story_id",
           user_id: `eq.${user.userId}`,
@@ -395,6 +415,7 @@ async function handleEngagementMe(context: UserRouteContext): Promise<Response> 
       const result = await postgrest<{ resource_type: string; resource_id: string; game_version: string; kind: string }[]>(config, {
         path: "resource_reactions",
         token,
+        deadline,
         query: new URLSearchParams({
           select: "resource_type,resource_id,game_version,kind",
           user_id: `eq.${user.userId}`,
@@ -488,6 +509,7 @@ async function handleCreateComment(context: UserRouteContext): Promise<Response>
     method: "POST",
     path: "comments",
     token,
+    deadline: Date.now() + HANDLER_BUDGET_MS,
     query: new URLSearchParams({ select: COMMENT_COLUMNS }),
     prefer: ["return=representation"],
     body: { ...input, user_id: user.userId, env: config.dataEnv },
@@ -505,6 +527,7 @@ async function handleDeleteComment(context: UserRouteContext): Promise<Response>
     method: "DELETE",
     path: "comments",
     token,
+    deadline: Date.now() + HANDLER_BUDGET_MS,
     query: new URLSearchParams({ id: `eq.${id.toLowerCase()}`, user_id: `eq.${user.userId}`, select: "id" }),
     prefer: ["return=representation"],
   });
@@ -513,8 +536,9 @@ async function handleDeleteComment(context: UserRouteContext): Promise<Response>
   return jsonResponse({ deleted: true });
 }
 
-async function exactCount(config: SupabaseApiConfig, table: string, query: Record<string, string>): Promise<RestResult<number>> {
+async function exactCount(config: SupabaseApiConfig, table: string, query: Record<string, string>, deadline: number): Promise<RestResult<number>> {
   const result = await postgrest<null>(config, {
+    deadline,
     method: "HEAD",
     path: table,
     query: new URLSearchParams(query),
@@ -526,8 +550,14 @@ async function exactCount(config: SupabaseApiConfig, table: string, query: Recor
 }
 
 /** Insert that treats "already there" (23505) as done; PUT is idempotent. */
-async function insertIgnoringDuplicate(config: SupabaseApiConfig, token: string, path: string, body: unknown): Promise<RestFailure | null> {
-  const result = await postgrest<null>(config, { method: "POST", path, token, body, prefer: ["return=minimal"] });
+async function insertIgnoringDuplicate(
+  config: SupabaseApiConfig,
+  token: string,
+  path: string,
+  body: unknown,
+  deadline: number,
+): Promise<RestFailure | null> {
+  const result = await postgrest<null>(config, { method: "POST", path, token, body, deadline, prefer: ["return=minimal"] });
   if (result.ok || result.code === "23505") return null;
   return result;
 }
@@ -535,43 +565,46 @@ async function insertIgnoringDuplicate(config: SupabaseApiConfig, token: string,
 async function handleCommentLike(context: UserRouteContext, like: boolean): Promise<Response> {
   const id = (context.url.searchParams.get("id") ?? "").toLowerCase();
   const { config, token, user } = context;
+  const deadline = Date.now() + HANDLER_BUDGET_MS;
   if (like) {
-    const failure = await insertIgnoringDuplicate(config, token, "comment_likes", { comment_id: id, user_id: user.userId });
+    const failure = await insertIgnoringDuplicate(config, token, "comment_likes", { comment_id: id, user_id: user.userId }, deadline);
     if (failure) return restError(failure);
   } else {
     const result = await postgrest<null>(config, {
       method: "DELETE",
       path: "comment_likes",
       token,
+      deadline,
       query: new URLSearchParams({ comment_id: `eq.${id}`, user_id: `eq.${user.userId}` }),
       prefer: ["return=minimal"],
     });
     if (!result.ok) return restError(result);
   }
-  const count = await exactCount(config, "comment_likes", { select: "id", comment_id: `eq.${id}` });
-  if (!count.ok) return restError(count);
-  return jsonResponse({ liked: like, count: count.data });
+  // The write is committed: a failed count read is reported as an unknown count, never as a failure.
+  const count = await exactCount(config, "comment_likes", { select: "id", comment_id: `eq.${id}` }, deadline);
+  return jsonResponse({ liked: like, count: count.ok ? count.data : null });
 }
 
 async function handleLike(context: UserRouteContext, like: boolean): Promise<Response> {
   const key = context.url.searchParams.get("key") ?? "";
   const { config, token, user } = context;
+  const deadline = Date.now() + HANDLER_BUDGET_MS;
   if (like) {
-    const failure = await insertIgnoringDuplicate(config, token, "likes", { story_id: key, user_id: user.userId, env: config.dataEnv });
+    const failure = await insertIgnoringDuplicate(config, token, "likes", { story_id: key, user_id: user.userId, env: config.dataEnv }, deadline);
     if (failure) return restError(failure);
   } else {
     const result = await postgrest<null>(config, {
       method: "DELETE",
       path: "likes",
       token,
+      deadline,
       query: new URLSearchParams({ story_id: `eq.${key}`, user_id: `eq.${user.userId}`, env: `eq.${config.dataEnv}` }),
       prefer: ["return=minimal"],
     });
     if (!result.ok) return restError(result);
   }
-  const count = await exactCount(config, "likes", { select: "id", story_id: `eq.${key}`, env: `eq.${config.dataEnv}` });
-  if (!count.ok) return restError(count);
-  return jsonResponse({ liked: like, count: count.data });
+  const count = await exactCount(config, "likes", { select: "id", story_id: `eq.${key}`, env: `eq.${config.dataEnv}` }, deadline);
+  return jsonResponse({ liked: like, count: count.ok ? count.data : null });
 }
 
 export type ReactionInput = ReactionTarget & { kind: ReactionKind | null };
@@ -593,6 +626,7 @@ async function handleReaction(context: UserRouteContext): Promise<Response> {
   const input = parseReactionInput(context.body);
   if (!input) return apiError("invalid");
   const { config, token, user } = context;
+  const deadline = Date.now() + HANDLER_BUDGET_MS;
   const match = {
     env: `eq.${config.dataEnv}`,
     resource_type: `eq.${input.resourceType}`,
@@ -604,6 +638,7 @@ async function handleReaction(context: UserRouteContext): Promise<Response> {
     method: "PATCH",
     path: "resource_reactions",
     token,
+    deadline,
     query: new URLSearchParams({ ...match, select: "kind" }),
     body: { kind: input.kind },
     prefer: ["return=representation"],
@@ -614,6 +649,7 @@ async function handleReaction(context: UserRouteContext): Promise<Response> {
       method: "DELETE",
       path: "resource_reactions",
       token,
+      deadline,
       query: new URLSearchParams(match),
       prefer: ["return=minimal"],
     });
@@ -628,6 +664,7 @@ async function handleReaction(context: UserRouteContext): Promise<Response> {
         method: "POST",
         path: "resource_reactions",
         token,
+        deadline,
         body: {
           env: config.dataEnv,
           resource_type: input.resourceType,
@@ -648,6 +685,7 @@ async function handleReaction(context: UserRouteContext): Promise<Response> {
 
   const counts = await postgrest<ReactionCountRow[]>(config, {
     path: "resource_reaction_counts",
+    deadline,
     query: new URLSearchParams({
       select: "buff_count,nerf_count,rework_count",
       env: match.env,
@@ -656,8 +694,8 @@ async function handleReaction(context: UserRouteContext): Promise<Response> {
       game_version: match.game_version,
     }),
   });
-  if (!counts.ok) return restError(counts);
-  return jsonResponse({ kind: input.kind, counts: countsFromRow(counts.data?.[0]) });
+  // The write is committed: a failed totals read is reported as unknown totals.
+  return jsonResponse({ kind: input.kind, counts: counts.ok ? countsFromRow(counts.data?.[0]) : null });
 }
 
 // --- Engagement counts ---------------------------------------------------------------
@@ -669,6 +707,7 @@ async function handleEngagementCounts(context: PublicRouteContext): Promise<Resp
     method: "POST",
     path: "rpc/get_engagement_counts",
     body: { p_env: config.dataEnv },
+    deadline: Date.now() + HANDLER_BUDGET_MS,
   });
   if (!result.ok) return restError(result);
   const likes: Record<string, number> = {};

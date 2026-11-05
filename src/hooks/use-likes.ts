@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   engagementApiFor,
+  forgetEngagement,
   loadEngagement,
   loadEngagementMine,
   shouldUseLegacy,
@@ -187,6 +188,7 @@ export function useLikes(
         await apiFetchAsUser("comments", `/api/write/likes?key=${encodeURIComponent(storyId)}`, {
           method: nextLiked ? "PUT" : "DELETE",
         });
+        forgetEngagement("likes", storyId);
         return;
       } catch (error) {
         setLiked(activeLiked);

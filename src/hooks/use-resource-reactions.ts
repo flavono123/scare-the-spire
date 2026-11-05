@@ -7,6 +7,7 @@ import {
 } from "@/lib/colorful-philosophers";
 import {
   engagementApiFor,
+  forgetEngagement,
   loadEngagement,
   loadEngagementMine,
   shouldUseLegacy,
@@ -255,15 +256,17 @@ export function useResourceReactions(
     if (engagementApiFor("reactions", reactionTargetKey({ resourceType, resourceId, gameVersion }))) {
       try {
         // The Worker reads the current row, so a stale kind from another tab cannot conflict.
-        const result = await apiFetchAsUser<{ kind: ColorfulPhilosopherReaction | null; counts: ResourceReactionCounts }>(
+        const result = await apiFetchAsUser<{ kind: ColorfulPhilosopherReaction | null; counts: ResourceReactionCounts | null }>(
           "comments",
           "/api/write/reactions",
           { method: "PUT", body: { resourceType, resourceId, gameVersion, kind: nextKind } },
         );
+        forgetEngagement("reactions", reactionTargetKey({ resourceType, resourceId, gameVersion }));
         setPendingKind(null);
         setUnavailable(false);
         setKind(result.kind);
-        setCounts({ buff: result.counts.buff, nerf: result.counts.nerf, rework: result.counts.rework });
+        // Null totals: the write is committed but they could not be read; keep the optimistic ones.
+        if (result.counts) setCounts({ buff: result.counts.buff, nerf: result.counts.nerf, rework: result.counts.rework });
         return { ok: true as const };
       } catch (error) {
         if (!writeMayGoLegacy(error)) {

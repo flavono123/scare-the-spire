@@ -103,8 +103,9 @@ function validQuery(url: URL, schema: QuerySchema | undefined): boolean {
   for (const [name, value] of url.searchParams) {
     if (seen.has(name)) return false;
     seen.add(name);
-    const check = schema?.[name];
-    if (!check || !check(value)) return false;
+    // Own keys only: `constructor` or `__proto__` must not reach Object.prototype members.
+    const check = schema && Object.hasOwn(schema, name) ? schema[name] : undefined;
+    if (typeof check !== "function" || !check(value)) return false;
   }
   return true;
 }

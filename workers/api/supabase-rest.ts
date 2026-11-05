@@ -61,11 +61,51 @@ export type RestRequest = {
   token?: string | null;
   prefer?: string[];
   timeoutMs?: number;
+  /**
+   * Epoch ms by which the whole endpoint must be done. The call gets at most
+   * the time left, and is not sent at all when less than MIN_CALL_MS is left.
+   */
+  deadline?: number;
+  /** Largest response body read; past it the call fails with `too_large`. */
+  maxBytes?: number;
   fetcher?: Fetcher;
 };
 
 export const READ_TIMEOUT_MS = 4000;
 export const WRITE_TIMEOUT_MS = 6000;
+export const MIN_CALL_MS = 150;
+/** Default body cap: every step 1 response is far smaller (comments rows are at most 128 KB each). */
+export const DEFAULT_MAX_BYTES = 2 * 1024 * 1024;
+
+/** Reads a body counting bytes as they arrive; null when it passes `maxBytes`. */
+async function readCapped(response: Response, maxBytes: number): Promise<string | null> {
+  const declared = Number(response.headers.get("content-length") ?? "");
+  if (Number.isFinite(declared) && declared > maxBytes) {
+    void response.body?.cancel().catch(() => undefined);
+    return null;
+  }
+  if (!response.body) return "";
+  const reader = response.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > maxBytes) {
+      void reader.cancel().catch(() => undefined);
+      return null;
+    }
+    chunks.push(value);
+  }
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(bytes);
+}
 
 const PATH = /^(?:rpc\/)?[a-z_][a-z0-9_]*$/;
 
@@ -85,7 +125,12 @@ export async function postgrest<T>(config: SupabaseApiConfig, request: RestReque
     body = JSON.stringify(request.body);
   }
 
-  const timeoutMs = request.timeoutMs ?? (method === "GET" || method === "HEAD" ? READ_TIMEOUT_MS : WRITE_TIMEOUT_MS);
+  let timeoutMs = request.timeoutMs ?? (method === "GET" || method === "HEAD" ? READ_TIMEOUT_MS : WRITE_TIMEOUT_MS);
+  if (request.deadline !== undefined) {
+    const left = request.deadline - Date.now();
+    if (left < MIN_CALL_MS) return { ok: false, status: 0, code: "timeout" };
+    timeoutMs = Math.min(timeoutMs, left);
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const fetcher: Fetcher = request.fetcher ?? ((input, init) => fetch(input, init));
@@ -100,8 +145,9 @@ export async function postgrest<T>(config: SupabaseApiConfig, request: RestReque
   }
 
   try {
-    const text = method === "HEAD" ? "" : await response.text();
+    const text = method === "HEAD" ? "" : await readCapped(response, request.maxBytes ?? DEFAULT_MAX_BYTES);
     clearTimeout(timer);
+    if (text === null) return { ok: false, status: response.status, code: "too_large" };
     let parsed: unknown = null;
     if (text) {
       try {

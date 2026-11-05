@@ -198,6 +198,41 @@ async function main() {
     assert.equal(head.headers.get("content-type"), "application/json; charset=utf-8");
   }
 
+  // Deadline: no call when the endpoint's time is up; otherwise at most the time left.
+  {
+    const { calls, fetcher } = recording(() => Response.json([]));
+    const late = await postgrest(config, { path: "comments", fetcher, deadline: Date.now() + 50 });
+    assert.deepEqual(late, { ok: false, status: 0, code: "timeout" });
+    assert.equal(calls.length, 0, "a call with under MIN_CALL_MS left is not sent");
+
+    const slow: Fetcher = (_input, init) => new Promise((_resolve, reject) => {
+      init?.signal?.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")));
+    });
+    const startedAt = Date.now();
+    const cut = await postgrest(config, { path: "comments", fetcher: slow, deadline: Date.now() + 300 });
+    assert.equal(cut.ok ? "ok" : cut.code, "timeout");
+    assert.ok(Date.now() - startedAt < 1000, "the deadline beats the 4 s read timeout");
+  }
+
+  // Body cap: counted on the stream, so a missing or lying Content-Length cannot pass.
+  {
+    const big = "[" + Array.from({ length: 200 }, () => JSON.stringify({ content: "x".repeat(1000) })).join(",") + "]";
+    const streamed = () => new Response(new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode(big));
+        controller.close();
+      },
+    }));
+    const { fetcher } = recording(streamed);
+    const capped = await postgrest(config, { path: "comments", fetcher, maxBytes: 50_000 });
+    assert.equal(capped.ok ? "ok" : capped.code, "too_large");
+    const fits = await postgrest<unknown[]>(config, { path: "comments", fetcher, maxBytes: 1_000_000 });
+    assert.ok(fits.ok && Array.isArray(fits.data) && fits.data.length === 200);
+    const declared = recording(() => new Response("[]", { headers: { "content-length": "9999999" } }));
+    const refused = await postgrest(config, { path: "comments", fetcher: declared.fetcher, maxBytes: 1000 });
+    assert.equal(refused.ok ? "ok" : refused.code, "too_large");
+  }
+
   console.log("api-supabase-rest spec passed");
 }
 

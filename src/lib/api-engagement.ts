@@ -177,7 +177,9 @@ const askRead = createQueue(async (asks) => {
     try {
       const body = await apiFetch<ReadBody>("comments", `/api/read/engagement?${queryFor(batch, READ_PARTS)}`);
       if (body?.v !== 1) throw unknownBody();
-      const asked = new Set(batch.map((ask) => primedKey(ask.part, ask.key)));
+      // A batch with philosophers holds every thread and reaction it returned, asked ones too:
+      // a read-only bar under a post of the current version asks for the header's target again.
+      const asked = body.philosophers ? new Set<string>() : new Set(batch.map((ask) => primedKey(ask.part, ask.key)));
       prime("threads", body.threads, asked);
       prime("reactions", body.reactions, asked);
       settle(batch, (ask) => (body[ask.part as keyof ReadBody] as Record<string, unknown> | undefined)?.[ask.key], body.unavailable);
