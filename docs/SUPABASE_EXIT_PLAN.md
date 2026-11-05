@@ -14,6 +14,9 @@
 2026-11-05: 단계 계획을 소프트 마이그레이션으로 다시 짰다(7절). 배포 수보다 단계마다 되돌릴 수 있는지를
 우선한다.
 
+2026-11-05: 0단계를 마쳤다(7.3절 0단계의 결과). 같은 시기 다른 작업의 유의사항은
+[SUPABASE_EXIT_PARALLEL_WORK.md](SUPABASE_EXIT_PARALLEL_WORK.md)에 있다.
+
 ## 결론
 
 - **이전할 곳**: Cloudflare D1(SQLite)과 지금 쓰는 main Worker의 같은 출처(same-origin) `/api/*` 경로,
@@ -379,6 +382,20 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
    `--host-resolver-rules`를 쓴다.
 3. 이것 말고는 곧 지울 코드에 손대지 않는다.
 
+결과(2026-11-05):
+
+- 20:48 KST에 받았다. Docker 소켓을 쓸 수 없어서 `supabase db dump` 대신 Homebrew `libpq` 18의
+  `pg_dump`로 session pooler(`aws-1-ap-northeast-1.pooler.supabase.com:5432`)에 붙었다. 서버는 Postgres 17.6이다.
+- 위치는 저장소 밖 `~/slseoun-backups/supabase/20261105-2048/`이다(디렉터리 700, 파일 600). 파일은
+  `public.dump`(custom 형식, 스키마와 데이터), `public-schema.sql`, `supabase_migrations.dump`, `auth-users.dump`,
+  `auth-user-ids.csv`, `publications.csv`, `row-estimates.csv`, `SHA256SUMS`다.
+- 대조: `public` 테이블 31개의 행 수가 운영과 모두 같았다(4,152행). 정책 81개, 트리거 19개, 함수 28개가
+  들어 있다. `auth.users`는 3,808명이고 모두 익명이다. Storage 객체는 0개라서 받을 것이 없다.
+- 복원은 아직 해 보지 않았다. 로컬 Postgres가 없어서 `pg_restore`로 파일 전체를 읽어 내는 것까지만 확인했다.
+  2단계의 변환 스크립트가 이 dump를 처음 실제로 쓰게 된다.
+- 모바일 뷰포트 QA(`check-mobile-route.mjs`)가 기본으로 `*.supabase.co`를 막는다. DB를 쓰는 화면을 볼 때만
+  `--allow-supabase`를 붙인다. `/compendium/cards`에서 프리셋마다 21건, 모두 168건이 막혔다.
+
 #### 1단계: 같은 출처 API(뒤는 Supabase)
 
 - D1 `slseoun-prod`와 `slseoun-testbed`를 만들고 binding과 `runtime_flags` 테이블만 먼저 둔다(`apac`
@@ -397,7 +414,7 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 #### 2단계: D1 그림자(원본은 Supabase)
 
 - SQLite DDL을 `migrations/`에 둔다(`wrangler d1 migrations`). 인덱스, 카운터 테이블, `surface_latest`도 만든다.
-- 첫 복사: dump를 변환 스크립트(Postgres 타입 → SQLite)로 바꿔 넣는다. 공개 데이터가 4,154행, 12 MB라서 D1
+- 첫 복사: dump를 변환 스크립트(Postgres 타입 → SQLite)로 바꿔 넣는다. 공개 데이터가 4,152행(0단계 백업 기준), 12 MB라서 D1
   하루 쓰기 한도(10만 행) 안에 든다. `env='production'`은 prod D1로, `env='development'`는 testbed D1로 나눈다.
 - 변경 동기화: Supabase에 변경 로그 테이블과 테이블별 트리거를 추가하는 마이그레이션을 하나 둔다(지우는 스크립트도
   함께). Worker cron이 1분마다 변경 로그를 읽어 D1에 반영한다. 쓰기는 하루 수십 건이라 트리거 부하는 무시할
@@ -495,7 +512,7 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 1. 구현을 시작할 때 worktree 사용 승인
 2. Realtime을 polling으로 바꾸는 것(체감: 새 글이 최대 1분 늦게 보임)
 3. 기존 익명 신원을 claim 방식으로 옮기는 것과 기한(Supabase 토큰은 퇴역 때까지 유지)
-4. 0단계(백업, QA 차단)를 지금 바로 할지
+4. 0단계(백업, QA 차단)를 지금 바로 할지: 2026-11-05에 했다
 5. 2단계에서 운영 Supabase에 변경 로그 트리거 마이그레이션을 적용하는 것(운영 DB 적용은 매번 승인)
 6. 5단계 뒤 Supabase 미러를 유지할 기간(2~4주 제안)과 퇴역 시점
 
