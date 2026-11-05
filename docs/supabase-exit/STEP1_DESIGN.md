@@ -367,12 +367,95 @@ Supabase 읽기(갱신할 때만):
 - 매개변수는 4.1절 규칙을 따른다. 스레드 키는 `comment-threads.ts`의 문법에 맞고 1 KB 이하, `prefix`는 정해진
   목록(`sts2-codex:<알려진 종류>:`, `neowsletter:<YYYY-MM>:`)에서만, 키 목록은 개수 상한을 둔다.
 - 쓰기는 `Prefer: return=representation`으로 0행을 404로 구별한다. `contact_inquiries`만 `return=minimal`이다.
-- 첫 쓰기 그룹(`comments`)과 함께 rate limit binding `API_LIMITER`를 더한다(운영과 testbed namespace를 따로).
-  쓰기는 검증한 sub로, 캐시에 없는 공개 읽기는 `cf-connecting-ip`로 센다.
+- 첫 쓰기 그룹(`comments`)과 함께 rate limit binding을 더한다(운영과 testbed namespace를 따로). 쓰기는 검증한
+  sub로, 캐시에 없는 공개 읽기는 `cf-connecting-ip`로 센다. 읽기와 쓰기의 한도가 달라 binding을 둘로 나눴다(9.1절).
 - 응답이 128 KB를 넘을 수 있는 화면은 상한이나 페이지를 둔다(SURFACE_MAP 8.2절).
 - 응답 모양은 늘리기만 한다. 필드를 지우거나 뜻을 바꾸려면 새 경로를 만든다. 클라이언트는 모르는 `v`를 legacy
   신호로 본다.
 - 파일은 `workers/api/routes/<그룹>.ts`. 라우터 표는 그룹 파일이 내보내는 목록을 모은다.
+
+### 9.1 댓글(`comments`)
+
+SURFACE_MAP 2.2절 5~9번과 10번의 `threads`를 덮는다. 엔드포인트 이름은 SURFACE_MAP 1.2절의 안
+(`/api/read/thread`, `codex-thread`)을 아래로 바꾼다. 화면마다 묶음 엔드포인트를 두는 대신, 읽기 하나를 두고
+클라이언트가 같은 순간의 요청을 하나로 모은다. 백과사전 상세, 니오우스레터, 장난감 상자 상세가 모두 같은 길을 쓴다.
+
+**공개 읽기** `GET /api/read/engagement` (`access: "public"`, `Cache-Control: private, no-store`)
+
+| 매개변수 | 형식 | 상한 | 응답 |
+|---|---|---|---|
+| `threads` | 스레드 키를 `,`로 이음 | 64개 | `threads: { <키>: Comment[] }` |
+| `likes` | 스레드 키 | 16개 | `likes: { <키>: 수 }` |
+| `reactions` | `<종류>:<id>:<버전>` | 64개 | `reactions: { <대상>: { buff, nerf, rework } }`(행이 없으면 0) |
+| `philosophers` | `<종류>:<id>` | 4개 | `philosophers: { <자원>: 행[] }`. 그 글들의 답글 스레드와 반응 합계도 `threads`·`reactions`에 넣는다 |
+
+- 하나는 있어야 하고, 쿼리 문자열 전체는 6,000자 이하다.
+- 스레드 키는 `^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$`. 2026-11-06 두 env의 `comments`·`likes` 키 전부(372개)가 이 문자만
+  쓴다. 대상의 종류는 `[a-z_-]{1,32}`, id는 `[A-Za-z0-9._-]{1,128}`, 버전은 `[A-Za-z0-9._-]{1,32}`. 검사 함수는
+  import 없는 `src/lib/engagement-keys.ts`에 두고 Worker와 클라이언트가 같이 쓴다. 클라이언트는 검사를 통과하지 못하는
+  키를 legacy로 읽는다(400을 화면 오류로 만들지 않는다).
+- `Comment`는 legacy 행과 같은 snake_case 열(`id, story_id, user_id, nickname, content, content_blocks, created_at,
+  avatar_id, avatar_kind, palette_id, palette_swapped`)에 `like_count`를 더한 것이다. `user_id`는 지금도 공개 읽기로
+  보이고 작성자 표시(`userId === comment.user_id`)에 쓴다. `parent_id`·`meta`는 주지 않는다. 클라이언트 매핑이 그대로다.
+- Supabase 호출: 스레드는 `comments?select=<열>,comment_likes(count)&story_id=in.(…)&order=created_at.asc&limit=1000`
+  한 번(댓글 좋아요를 행마다 세는 지금 방식 대신 임베드 count). 좋아요 수는 키마다 HEAD `count=exact`. 반응은
+  `resource_reaction_counts`를 `resource_id=in.(…)`로 한 번 읽고 대상으로 거른다(지금 `fetchResourceReactionCounts`와
+  같다). 철학자 글은 자원마다 `week_start` 내림차순 20개, 그 뒤 답글·반응을 두 번째 묶음으로 읽는다.
+- 부분 실패: 한 부분이 실패하면 그 부분을 빼고 `unavailable: ["reactions"]`처럼 이름을 적는다. 지금 훅이 따로 실패하는
+  것과 같게 화면의 그 부분만 "응답 없음"이다. 모두 실패하면 503.
+- 캐시는 두지 않는다. 쓴 사람이 다시 불러도 자기 댓글이 보여야 한다. 지금도 매번 Supabase를 읽는다. 캐시는 3단계에서 본다.
+
+**개인 덧칠** `GET /api/me/engagement` (`access: "me"`): `threads`, `likes`, `reactions`를 같은 형식으로 받아
+`commentLikes: { <키>: 내가 누른 댓글 id[] }`, `likes: { <키>: true|false }`, `reactions: { <대상>: kind|null }`.
+댓글 좋아요는 `comment_likes?select=comment_id,comments!inner(story_id)&user_id=eq.<sub>&comments.story_id=in.(…)`
+한 번이라 공개 읽기를 기다리지 않는다. sub는 검증한 토큰에서만 온다.
+
+**쓰기** (`access: "write"`, 본문은 `application/json`, 160 KB 이하)
+
+| 경로 | 본문·매개변수 | 하는 일 | 응답 |
+|---|---|---|---|
+| `POST /api/write/comments` | `{ threadKey, nickname, content, contentBlocks?, author? }` | insert(user_id = sub, env = Worker), `return=representation` | 201 `{ comment }` |
+| `DELETE /api/write/comments?id=` | uuid | delete `id`·`user_id = sub`, `return=representation` | `{ deleted: true }`, 0행이면 404 |
+| `PUT·DELETE /api/write/comment-likes?id=` | 댓글 uuid | insert(23505는 이미 누름) 또는 delete, 뒤에 HEAD count | `{ liked, count }`, 댓글이 없으면(23503) 404 |
+| `PUT·DELETE /api/write/likes?key=` | 스레드 키 | 같음 | `{ liked, count }` |
+| `PUT /api/write/reactions` | `{ resourceType, resourceId, gameVersion, kind }`, kind는 buff·nerf·rework·null | null이면 delete. 아니면 PATCH kind, 0행이면 insert, 23505면 PATCH 한 번 더. 이전 kind를 localStorage가 아니라 DB로 정한다 | `{ kind, counts }` |
+
+- 본문 검사: nickname은 trim 뒤 1~20자, content는 2~2,000자(DB CHECK와 지금 클라이언트 검사), `contentBlocks`는 배열
+  이나 null이고 JSON 128 KB 이하, `author`는 `avatarId`·`avatarKind`·`paletteId`(64자 이하 문자열 또는 null)와
+  `paletteSwapped`(boolean 또는 null). `author`가 없으면 그 열을 보내지 않는다(DB 기본값, 지금 `use-comments.ts`와 같다).
+- 오류: 23514 → 422 `check_violation`, 42501 → 403 `forbidden`, PostgREST 401 → 401 `token_expired`, 그 밖의
+  4xx → 400 `invalid`, 시간 초과·5xx → 503.
+- 쓰기 응답이 새 상태를 돌려주므로 클라이언트는 다시 읽지 않는다. 정적 패치 클라이언트의 "쓰고 다시 읽기 2~3건"도 없어진다.
+
+**rate limit**: binding 둘을 둔다(9절의 `API_LIMITER` 하나를 바꾼다). 한 binding은 한도가 하나라서 읽기와 쓰기를
+나눴다.
+
+- `API_READ_LIMITER`: 60초 600건, 키 `cf-connecting-ip`. 캐시 없는 공개 읽기(`engagement`, `engagement-counts`)에만.
+- `API_WRITE_LIMITER`: 60초 30건, 키는 검증한 sub. 쓰기와 `/api/me/*`.
+- 운영 namespace `1001`·`1002`, testbed `1101`·`1102`. 한도는 Cloudflare 위치마다 따로 세고 대략적이다.
+- binding이 없거나 `limit()`이 실패하면 막지 않는다. 막힘은 429 `rate_limited`.
+- Free 플랜에서 binding을 쓸 수 있는지 문서에 적혀 있지 않다. testbed 배포로 먼저 확인한다.
+
+**목록 참여 수** `GET /api/read/engagement-counts`: `rpc/get_engagement_counts(p_env)`를 그대로 부르고 지금 훅과 같은
+`{ likes, comments }`를 준다. 접두사 거르기는 이야기·베타 아트의 동작을 바꾸므로(SURFACE_MAP 8.4절) 1단계에 두지 않는다.
+지금 24 KB다.
+
+**클라이언트**
+
+- `src/lib/api-engagement.ts`: 한 페이지에서 8 ms 안에 들어온 요청을 한 번의 `/api/read/engagement`(상한을 넘으면
+  여럿)로 모은다. 철학자 글과 함께 온 답글·반응은 15초 동안 담아 두어 뒤에 마운트되는 `ReplyLines`와 읽기 전용 막대가
+  다시 부르지 않는다. 개인 덧칠도 같은 방식으로 모은다. legacy 신호면 모은 요청이 모두 legacy로 다시 간다.
+- 훅(`use-comments`, `use-comment-likes`, `use-likes`, `use-resource-reactions`, `use-engagement-counts`,
+  `resource-thread`)은 효과와 처리기 안에서만 `surfacePath("comments")`를 본다. 반환 모양은 그대로다.
+  `useCommentLikes`는 api 경로에서 댓글 행의 `like_count`를 쓰므로 인자에 댓글 행을 받는다.
+- 쓰기 토큰은 `supabase.auth.getSession()`에서 꺼낸다. `token_expired`면 `refreshSession()` 뒤 한 번만 다시 보낸다.
+  처리되지 않았음이 확실한 legacy 신호(7절)면 같은 쓰기를 legacy로 한 번 보낸다.
+- 읽기 전용 반응 막대(철학자 글 아래)는 api 경로에서 내 반응을 읽지 않는다. 보여 주지 않는 값이다.
+- 패치 정적 클라이언트: 스레드 읽기·쓰기와 셸 릴 반응 쓰기에 api 분기를 둔다. api 경로에서 저장된 세션의 갱신이
+  실패하면 새 익명 가입으로 넘어가지 않고 "응답 없음"을 보인다(7절). 저장된 세션이 아예 없을 때만 가입한다.
+- testbed 패치 페이지(10절): api 경로에서는 Worker의 `API_DATA_ENV`(development) 행을 읽고 쓴다. 빌드에 구운
+  env(production)는 legacy 경로에서만 쓴다. 댓글 쪽 브라우저 저장소(초안, 반응 localStorage)는 env를 키에 넣지 않으므로
+  네비처럼 env 검사로 내리지 않는다. 그래서 10절의 열린 질문은 "api 경로는 Worker env를 따른다"로 닫는다.
 
 ## 10. 배포와 testbed
 
@@ -439,4 +522,4 @@ Supabase 읽기(갱신할 때만):
   열지 않는 안이 있다. `toybox-feed`와 `stories`를 옮길 때 사용자에게 묻는다. `nav`와 `comments`에는 채널이 없다.
 - 화면 하나를 한 번에 읽는 Supabase RPC(`get_nav_latest` 등)는 운영 마이그레이션이라 1단계에는 두지 않는다.
 - JWT 키 목록을 D1로 옮기고 폐기 절차를 두는 것: 4단계 전.
-- testbed 패치 클라이언트의 env: `comments`를 옮길 때(10절).
+- ~~testbed 패치 클라이언트의 env: `comments`를 옮길 때(10절).~~ 9.1절에서 닫았다.
