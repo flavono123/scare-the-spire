@@ -5,8 +5,9 @@
  */
 import assert from "node:assert/strict";
 
-import { apiError, jsonResponse, withoutBody } from "../workers/api/http";
+import { API_MARKER_HEADER, apiError, jsonResponse, legacyResponse, withoutBody } from "../workers/api/http";
 import {
+  inWaves,
   isUpstreamFailure,
   postgrest,
   supabaseApiConfig,
@@ -14,7 +15,8 @@ import {
   type Fetcher,
 } from "../workers/api/supabase-rest";
 
-const config = { url: "https://project.supabase.co", key: "sb_publishable_test", dataEnv: "development" as const };
+const PROJECT = "https://abcdefghijklmnopqrst.supabase.co";
+const config = { url: PROJECT, key: "sb_publishable_test", dataEnv: "development" as const };
 
 type Seen = { url: string; method: string; headers: Headers; body: string | undefined };
 
@@ -35,15 +37,29 @@ function recording(respond: (seen: Seen) => Response | Promise<Response>) {
 
 async function main() {
   // Config validation.
+  const key = "sb_publishable_AbC-123_x";
   assert.deepEqual(
-    supabaseApiConfig({ API_SUPABASE_URL: "https://project.supabase.co/", API_SUPABASE_KEY: "k", API_DATA_ENV: "production" }),
-    { url: "https://project.supabase.co", key: "k", dataEnv: "production" },
+    supabaseApiConfig({ API_SUPABASE_URL: `${PROJECT}//`, API_SUPABASE_KEY: key, API_DATA_ENV: "production" }),
+    { url: PROJECT, key, dataEnv: "production" },
+    "trailing slashes are stripped",
+  );
+  assert.deepEqual(
+    supabaseApiConfig({ API_SUPABASE_URL: "http://127.0.0.1:54321", API_SUPABASE_KEY: key, API_DATA_ENV: "development" }),
+    { url: "http://127.0.0.1:54321", key, dataEnv: "development" },
   );
   assert.equal(supabaseApiConfig({}), null);
-  assert.equal(supabaseApiConfig({ API_SUPABASE_URL: "https://evil.example", API_SUPABASE_KEY: "k", API_DATA_ENV: "production" }), null);
-  assert.equal(supabaseApiConfig({ API_SUPABASE_URL: "https://project.supabase.co", API_SUPABASE_KEY: "k", API_DATA_ENV: "staging" }), null);
-  assert.equal(supabaseApiConfig({ API_SUPABASE_URL: "https://project.supabase.co", API_SUPABASE_KEY: "", API_DATA_ENV: "production" }), null);
-  assert.equal(supabaseIssuer(config), "https://project.supabase.co/auth/v1");
+  for (const [label, env] of [
+    ["other host", { API_SUPABASE_URL: "https://evil.example", API_SUPABASE_KEY: key, API_DATA_ENV: "production" }],
+    ["short ref", { API_SUPABASE_URL: "https://project.supabase.co", API_SUPABASE_KEY: key, API_DATA_ENV: "production" }],
+    ["http project", { API_SUPABASE_URL: "http://abcdefghijklmnopqrst.supabase.co", API_SUPABASE_KEY: key, API_DATA_ENV: "production" }],
+    ["env", { API_SUPABASE_URL: PROJECT, API_SUPABASE_KEY: key, API_DATA_ENV: "staging" }],
+    ["empty key", { API_SUPABASE_URL: PROJECT, API_SUPABASE_KEY: "", API_DATA_ENV: "production" }],
+    ["secret key", { API_SUPABASE_URL: PROJECT, API_SUPABASE_KEY: "sb_secret_abc", API_DATA_ENV: "production" }],
+    ["legacy jwt key", { API_SUPABASE_URL: PROJECT, API_SUPABASE_KEY: "eyJhbGciOiJIUzI1NiJ9.e30.x", API_DATA_ENV: "production" }],
+  ] as const) {
+    assert.equal(supabaseApiConfig(env), null, label);
+  }
+  assert.equal(supabaseIssuer(config), `${PROJECT}/auth/v1`);
 
   // Public read: apikey only, no Authorization.
   {
@@ -53,7 +69,7 @@ async function main() {
     const query = new URLSearchParams({ select: "created_at", env: "eq.development", order: "created_at.desc", limit: "1" });
     const result = await postgrest<{ created_at: string }[]>(config, { path: "combo_posts", query, fetcher });
     assert.deepEqual(result, { ok: true, status: 200, data: [{ created_at: "2026-11-05T00:00:00+00:00" }], contentRange: "0-0/*" });
-    assert.equal(calls[0].url, "https://project.supabase.co/rest/v1/combo_posts?select=created_at&env=eq.development&order=created_at.desc&limit=1");
+    assert.equal(calls[0].url, `${PROJECT}/rest/v1/combo_posts?select=created_at&env=eq.development&order=created_at.desc&limit=1`);
     assert.equal(calls[0].headers.get("apikey"), "sb_publishable_test");
     assert.equal(calls[0].headers.get("authorization"), null);
     assert.equal(calls[0].method, "GET");
@@ -87,9 +103,18 @@ async function main() {
 
   // PostgREST errors keep their code.
   {
+    const { fetcher } = recording(() => new Response(JSON.stringify({
+      code: "23514",
+      message: "violates check",
+      details: "Failing row contains (nick, secret comment, 4f1c2a7e-...)",
+    }), { status: 400 }));
+    const result = await postgrest(config, { method: "POST", path: "comments", fetcher });
+    assert.deepEqual(result, { ok: false, status: 400, code: "23514" }, "row content is not kept");
+  }
+  {
     const { fetcher } = recording(() => new Response(JSON.stringify({ code: "42501", message: "denied" }), { status: 403 }));
     const result = await postgrest(config, { method: "DELETE", path: "comments", fetcher });
-    assert.deepEqual(result, { ok: false, status: 403, code: "42501", message: "denied" });
+    assert.deepEqual(result, { ok: false, status: 403, code: "42501" });
     assert.equal(result.ok === false && isUpstreamFailure(result), false);
   }
   {
@@ -124,6 +149,22 @@ async function main() {
     assert.equal(result.ok === false && result.code, "network");
   }
 
+  // inWaves keeps at most `limit` tasks in flight and preserves order.
+  {
+    let inFlight = 0;
+    let peak = 0;
+    const tasks = Array.from({ length: 10 }, (_, index) => async () => {
+      inFlight += 1;
+      peak = Math.max(peak, inFlight);
+      await new Promise((resolve) => setTimeout(resolve, 5 + (index % 3)));
+      inFlight -= 1;
+      return index;
+    });
+    assert.deepEqual(await inWaves(tasks, 5), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    assert.equal(peak, 5);
+    assert.deepEqual(await inWaves([], 5), []);
+  }
+
   // Paths are restricted to tables and rpc names.
   await assert.rejects(() => postgrest(config, { path: "../auth/v1/admin" }));
   await assert.rejects(() => postgrest(config, { path: "comments?select=*" }));
@@ -136,10 +177,17 @@ async function main() {
     assert.equal(response.headers.get("x-robots-tag"), "noindex");
     assert.deepEqual(await response.json(), { ok: 1 });
 
-    const legacy = apiError("surface_legacy");
+    assert.equal(response.headers.get(API_MARKER_HEADER), "1");
+    assert.equal(jsonResponse({}).headers.get("cache-control"), "private, no-store", "private by default");
+
+    const legacy = legacyResponse("no_route");
     assert.equal(legacy.status, 409);
-    assert.equal(legacy.headers.get("cache-control"), "no-store");
-    assert.deepEqual(await legacy.json(), { error: "surface_legacy" });
+    assert.equal(legacy.headers.get("cache-control"), "private, no-store");
+    assert.equal(legacy.headers.get(API_MARKER_HEADER), "1");
+    assert.deepEqual(await legacy.json(), { error: "surface_legacy", reason: "no_route" });
+
+    const duplicate = apiError("duplicate");
+    assert.equal(duplicate.status, 422, "duplicates never reuse 409");
 
     const unavailable = apiError("unavailable");
     assert.equal(unavailable.status, 503);

@@ -6,10 +6,22 @@ import assert from "node:assert/strict";
 
 import {
   bearerToken,
+  checkSupabaseAccessToken,
+  fetchSupabaseJwks,
   parseJwks,
   resetJwtCachesForTest,
-  verifySupabaseAccessToken,
+  type JwtVerifyOptions,
 } from "../workers/api/jwt";
+
+async function verifySupabaseAccessToken(token: string, options: JwtVerifyOptions) {
+  const result = await checkSupabaseAccessToken(token, options);
+  return result.ok ? result.user : null;
+}
+
+async function reason(token: string, options: JwtVerifyOptions) {
+  const result = await checkSupabaseAccessToken(token, options);
+  return result.ok ? "ok" : result.reason;
+}
 import { PINNED_SUPABASE_JWKS, type SupabaseJwk } from "../workers/api/supabase-jwks";
 
 const ISSUER = "https://project.supabase.co/auth/v1";
@@ -78,11 +90,16 @@ async function main() {
   const arrayAud = await sign(privateKey, header, claims({ aud: ["authenticated", "other"] }));
   assert.ok(await verifySupabaseAccessToken(arrayAud, options));
 
-  // Within the 30 s skew an expired token still passes; past it, it fails.
-  assert.ok(await verifySupabaseAccessToken(await sign(privateKey, header, claims({ exp: NOW - 10 })), options));
-  assert.equal(await verifySupabaseAccessToken(await sign(privateKey, header, claims({ exp: NOW - 31 })), options), null);
-  assert.equal(await verifySupabaseAccessToken(await sign(privateKey, header, claims({ exp: "never" })), options), null);
-  assert.equal(await verifySupabaseAccessToken(await sign(privateKey, header, claims({ nbf: NOW + 120 })), options), null);
+  // Expiry: a token with under 5 s left is "expired" (refresh), not "invalid".
+  assert.ok(await verifySupabaseAccessToken(await sign(privateKey, header, claims({ exp: NOW + 6 })), options));
+  assert.equal(await reason(await sign(privateKey, header, claims({ exp: NOW + 5 })), options), "expired");
+  assert.equal(await reason(await sign(privateKey, header, claims({ exp: NOW - 600 })), options), "expired");
+  assert.equal(await reason(await sign(privateKey, header, claims({ exp: "never" })), options), "invalid");
+  assert.equal(await reason(await sign(privateKey, header, claims({ nbf: NOW + 120 })), options), "invalid");
+  assert.equal(await reason(await sign(privateKey, header, claims({ iat: NOW + 120 })), options), "invalid");
+  // An expired token signed by another key is invalid, not expired.
+  const forger = await keyPair("test-kid");
+  assert.equal(await reason(await sign(forger.privateKey, header, claims({ exp: NOW - 600 })), options), "invalid");
 
   // Claims that do not match a Supabase user token.
   for (const [label, override] of [
@@ -104,8 +121,7 @@ async function main() {
   assert.equal(await verifySupabaseAccessToken(await sign(privateKey, { alg: "ES256", kid: "other" }, claims()), options), null);
 
   // A token signed by a different key with the same kid fails.
-  const stranger = await keyPair("test-kid");
-  assert.equal(await verifySupabaseAccessToken(await sign(stranger.privateKey, header, claims()), options), null);
+  assert.equal(await verifySupabaseAccessToken(await sign(forger.privateKey, header, claims()), options), null);
 
   // Tampered payload fails.
   const [h, , s] = good.split(".");
@@ -135,13 +151,45 @@ async function main() {
   assert.equal(await verifySupabaseAccessToken(await sign(rotated.privateKey, { alg: "ES256", kid: "random" }, claims()), liveOptions), null);
   assert.equal(fetches, 1, "live JWKS fetched once");
 
-  // A failing live fetch is retried only after the throttle.
+  // A failing live fetch reports "unavailable" (no client refresh) and is retried only after the cooldown.
   resetJwtCachesForTest();
   let failing = 0;
   const failingOptions = { ...liveOptions, fetchJwks: async () => { failing += 1; throw new Error("down"); } };
-  assert.equal(await verifySupabaseAccessToken(rotatedToken, failingOptions), null);
-  assert.equal(await verifySupabaseAccessToken(rotatedToken, failingOptions), null);
+  assert.equal(await reason(rotatedToken, failingOptions), "unavailable");
+  assert.equal(await reason(rotatedToken, failingOptions), "unavailable");
   assert.equal(failing, 1, "failed live fetch throttled");
+
+  // Claim checks run before any key lookup: a wrong-issuer token with an unknown kid never fetches.
+  resetJwtCachesForTest();
+  let precheckFetches = 0;
+  const precheckOptions = { ...liveOptions, fetchJwks: async () => { precheckFetches += 1; return []; } };
+  assert.equal(await reason(await sign(rotated.privateKey, { alg: "ES256", kid: "x1" }, claims({ iss: "https://evil" })), precheckOptions), "invalid");
+  assert.equal(await reason(await sign(rotated.privateKey, { alg: "ES256", kid: "x2" }, claims({ role: "anon" })), precheckOptions), "invalid");
+  assert.equal(precheckFetches, 0, "no JWKS fetch for tokens that fail claim checks");
+
+  // Concurrent unknown kids share one fetch.
+  resetJwtCachesForTest();
+  let shared = 0;
+  const sharedOptions = {
+    ...liveOptions,
+    fetchJwks: async () => {
+      shared += 1;
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      return [rotated.jwk];
+    },
+  };
+  const results = await Promise.all([1, 2, 3].map(() => reason(rotatedToken, sharedOptions)));
+  assert.deepEqual(results, ["ok", "ok", "ok"]);
+  assert.equal(shared, 1, "single-flight JWKS fetch");
+
+  // fetchSupabaseJwks: timeout-free happy path, size cap, HTTP errors.
+  const jwksBody = JSON.stringify({ keys: [rotated.jwk] });
+  assert.deepEqual(await fetchSupabaseJwks("https://p.supabase.co/auth/v1", async (url) => {
+    assert.equal(url, "https://p.supabase.co/auth/v1/.well-known/jwks.json");
+    return new Response(jwksBody);
+  }), [rotated.jwk]);
+  await assert.rejects(() => fetchSupabaseJwks("https://p.supabase.co/auth/v1", async () => new Response("x".repeat(17_000))));
+  await assert.rejects(() => fetchSupabaseJwks("https://p.supabase.co/auth/v1", async () => new Response("", { status: 500 })));
 
   // The pinned key is a P-256 key that WebCrypto accepts.
   assert.equal(PINNED_SUPABASE_JWKS.length, 1);

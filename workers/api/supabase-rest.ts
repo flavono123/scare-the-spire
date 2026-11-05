@@ -24,10 +24,12 @@ export function supabaseApiConfig(env: SupabaseApiEnv): SupabaseApiConfig | null
   const url = (env.API_SUPABASE_URL ?? "").trim().replace(/\/+$/, "");
   const key = (env.API_SUPABASE_KEY ?? "").trim();
   const dataEnv = (env.API_DATA_ENV ?? "").trim();
-  if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url) && !/^http:\/\/(?:127\.0\.0\.1|localhost):\d+$/.test(url)) {
+  // A project URL, or a local stub server in specs and `wrangler dev`.
+  if (!/^https:\/\/[a-z0-9]{20}\.supabase\.co$/.test(url) && !/^http:\/\/(?:127\.0\.0\.1|localhost):\d+$/.test(url)) {
     return null;
   }
-  if (!key) return null;
+  // Only the publishable key: a secret key would bypass RLS.
+  if (!/^sb_publishable_[A-Za-z0-9_-]+$/.test(key)) return null;
   if (dataEnv !== "production" && dataEnv !== "development") return null;
   return { url, key, dataEnv };
 }
@@ -37,12 +39,15 @@ export function supabaseIssuer(config: SupabaseApiConfig): string {
 }
 
 export type RestSuccess<T> = { ok: true; status: number; data: T; contentRange: string | null };
+/**
+ * PostgREST/Postgres `code` (e.g. 42501, 23514, PGRST116), or timeout, network,
+ * bad_response, http_<status>. PostgREST's message/details/hint are dropped on
+ * purpose: they carry row content (nicknames, comment text, user ids).
+ */
 export type RestFailure = {
   ok: false;
   status: number;
-  /** PostgREST/Postgres code (e.g. 42501, 23514, PGRST116), or timeout, network, bad_response, http_<status>. */
   code: string;
-  message: string;
 };
 export type RestResult<T> = RestSuccess<T> | RestFailure;
 
@@ -90,13 +95,8 @@ export async function postgrest<T>(config: SupabaseApiConfig, request: RestReque
     response = await fetcher(url.toString(), { method, headers, body, signal: controller.signal });
   } catch (error) {
     clearTimeout(timer);
-    const aborted = controller.signal.aborted;
-    return {
-      ok: false,
-      status: 0,
-      code: aborted ? "timeout" : "network",
-      message: aborted ? `timed out after ${timeoutMs} ms` : String((error as Error)?.message ?? error),
-    };
+    void error;
+    return { ok: false, status: 0, code: controller.signal.aborted ? "timeout" : "network" };
   }
 
   try {
@@ -107,29 +107,41 @@ export async function postgrest<T>(config: SupabaseApiConfig, request: RestReque
       try {
         parsed = JSON.parse(text);
       } catch {
-        return { ok: false, status: response.status, code: "bad_response", message: "response was not JSON" };
+        return { ok: false, status: response.status, code: "bad_response" };
       }
     }
     if (!response.ok) {
-      const error = (parsed && typeof parsed === "object" ? parsed : {}) as { code?: unknown; message?: unknown };
+      const error = (parsed && typeof parsed === "object" ? parsed : {}) as { code?: unknown };
       return {
         ok: false,
         status: response.status,
-        code: typeof error.code === "string" && error.code ? error.code : `http_${response.status}`,
-        message: typeof error.message === "string" ? error.message : "",
+        code: typeof error.code === "string" && /^[A-Z0-9]{1,16}$/.test(error.code) ? error.code : `http_${response.status}`,
       };
     }
     return { ok: true, status: response.status, data: parsed as T, contentRange: response.headers.get("content-range") };
-  } catch (error) {
+  } catch {
     clearTimeout(timer);
-    const aborted = controller.signal.aborted;
-    return {
-      ok: false,
-      status: response.status,
-      code: aborted ? "timeout" : "network",
-      message: String((error as Error)?.message ?? error),
-    };
+    return { ok: false, status: response.status, code: controller.signal.aborted ? "timeout" : "network" };
   }
+}
+
+/**
+ * Runs tasks at most `limit` at a time. Workers keep only six connections
+ * waiting for headers per invocation and queue the rest while their timers
+ * run, so endpoints send PostgREST calls in waves of five.
+ */
+export async function inWaves<T>(tasks: readonly (() => Promise<T>)[], limit = 5): Promise<T[]> {
+  const results = new Array<T>(tasks.length);
+  let next = 0;
+  async function worker() {
+    while (next < tasks.length) {
+      const index = next;
+      next += 1;
+      results[index] = await tasks[index]();
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, tasks.length) }, worker));
+  return results;
 }
 
 /** True when Supabase itself is unhealthy, as opposed to rejecting the request. */

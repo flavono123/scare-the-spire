@@ -2,9 +2,9 @@ import { PINNED_SUPABASE_JWKS, type SupabaseJwk } from "./supabase-jwks";
 
 /**
  * Verifies a Supabase access token (ES256) before the Worker forwards it to
- * PostgREST. RLS still decides what the user may do; this check only keeps
- * forged or expired tokens from reaching Supabase and gives the endpoints a
- * trusted user id. The Worker never refreshes tokens.
+ * PostgREST (docs/supabase-exit/STEP1_DESIGN.md 6). In step 1 PostgREST checks
+ * the token again, so this is defense in depth plus a trusted user id for the
+ * endpoints. The Worker never refreshes tokens.
  */
 
 export type VerifiedSupabaseUser = {
@@ -13,31 +13,41 @@ export type VerifiedSupabaseUser = {
   expiresAt: number;
 };
 
+/** expired: refresh once and retry. invalid: do not refresh. unavailable: keys could not be loaded. */
+export type TokenRejection = "expired" | "invalid" | "unavailable";
+
+export type TokenCheck =
+  | { ok: true; user: VerifiedSupabaseUser }
+  | { ok: false; reason: TokenRejection };
+
 export type JwtVerifyOptions = {
   /** `<API_SUPABASE_URL>/auth/v1`. */
   issuer: string;
   /** Unix seconds; tests pin it. */
   now?: number;
-  /** Loads the live JWKS when a token names an unknown key. */
+  /** Loads the live JWKS when a token names a key that is not pinned. */
   fetchJwks?: () => Promise<readonly SupabaseJwk[]>;
   /** Overrides the pinned keys (tests). */
   pinnedKeys?: readonly SupabaseJwk[];
 };
 
-const CLOCK_SKEW_SECONDS = 30;
 const MAX_TOKEN_LENGTH = 8192;
 const MAX_KID_LENGTH = 128;
+// Reject tokens that would expire before PostgREST sees them, so the client refreshes first.
+const EXPIRY_MARGIN_SECONDS = 5;
+const ISSUED_AT_SKEW_SECONDS = 30;
 const BASE64URL = /^[A-Za-z0-9_-]+$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-// A live JWKS fetch happens at most once a minute per isolate, whatever kids
-// requests name, so random kids cannot turn the Worker into a Supabase load.
+// One live JWKS fetch per isolate per minute, whatever kids requests name, so
+// random kids cannot turn the Worker into Supabase load.
 const LIVE_JWKS_TTL_MS = 10 * 60_000;
-const LIVE_JWKS_RETRY_MS = 60_000;
+const LIVE_JWKS_COOLDOWN_MS = 60_000;
 
 type LiveJwks = { keys: readonly SupabaseJwk[]; fetchedAt: number };
 let liveJwks: LiveJwks | null = null;
 let lastLiveFetchAt = 0;
+let lastLiveFetchFailed = false;
 let liveFetch: Promise<void> | null = null;
 const importedKeys = new Map<string, Promise<CryptoKey>>();
 
@@ -45,11 +55,12 @@ const importedKeys = new Map<string, Promise<CryptoKey>>();
 export function resetJwtCachesForTest(): void {
   liveJwks = null;
   lastLiveFetchAt = 0;
+  lastLiveFetchFailed = false;
   liveFetch = null;
   importedKeys.clear();
 }
 
-function base64UrlToBytes(value: string): Uint8Array {
+function base64UrlToBytes(value: string): Uint8Array<ArrayBuffer> {
   const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
   const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
   const binary = atob(padded);
@@ -75,6 +86,7 @@ function isUsableJwk(value: unknown): value is SupabaseJwk {
   return key.kty === "EC"
     && key.crv === "P-256"
     && (key.alg === undefined || key.alg === "ES256")
+    && (key.use === undefined || key.use === "sig")
     && typeof key.kid === "string"
     && typeof key.x === "string"
     && typeof key.y === "string";
@@ -95,28 +107,30 @@ export function parseJwks(document: unknown): SupabaseJwk[] {
   }));
 }
 
-async function liveKey(kid: string, options: JwtVerifyOptions): Promise<SupabaseJwk | null> {
+async function liveKey(kid: string, options: JwtVerifyOptions): Promise<SupabaseJwk | "unavailable" | null> {
   const nowMs = Date.now();
-  if (liveJwks && nowMs - liveJwks.fetchedAt < LIVE_JWKS_TTL_MS) {
-    return liveJwks.keys.find((key) => key.kid === kid) ?? null;
-  }
-  if (!options.fetchJwks) return null;
-  if (!liveFetch && nowMs - lastLiveFetchAt >= LIVE_JWKS_RETRY_MS) {
+  const fresh = liveJwks && nowMs - liveJwks.fetchedAt < LIVE_JWKS_TTL_MS;
+  if (!fresh && options.fetchJwks && !liveFetch && nowMs - lastLiveFetchAt >= LIVE_JWKS_COOLDOWN_MS) {
     lastLiveFetchAt = nowMs;
     const fetchJwks = options.fetchJwks;
     liveFetch = (async () => {
       try {
         const keys = await fetchJwks();
-        if (keys.length > 0) liveJwks = { keys, fetchedAt: Date.now() };
+        liveJwks = { keys, fetchedAt: Date.now() };
+        lastLiveFetchFailed = false;
       } catch {
-        // Keep the pinned keys; the next fetch waits for LIVE_JWKS_RETRY_MS.
+        lastLiveFetchFailed = true;
       } finally {
         liveFetch = null;
       }
     })();
   }
   if (liveFetch) await liveFetch;
-  return liveJwks?.keys.find((key) => key.kid === kid) ?? null;
+  const found = liveJwks?.keys.find((key) => key.kid === kid);
+  if (found) return found;
+  // A kid we could not check because the live set never loaded is not the token's fault.
+  if (lastLiveFetchFailed && !liveJwks && options.fetchJwks) return "unavailable";
+  return null;
 }
 
 function importKey(jwk: SupabaseJwk): Promise<CryptoKey> {
@@ -141,66 +155,87 @@ function audienceIncludesAuthenticated(aud: unknown): boolean {
   return Array.isArray(aud) && aud.includes("authenticated");
 }
 
-/** Returns the verified user, or null for any token the Worker must not trust. */
-export async function verifySupabaseAccessToken(
-  token: string,
-  options: JwtVerifyOptions,
-): Promise<VerifiedSupabaseUser | null> {
-  if (!token || token.length > MAX_TOKEN_LENGTH) return null;
+const invalid: TokenCheck = { ok: false, reason: "invalid" };
+
+/** Checks a token; cheap claim checks run before any key lookup or fetch. */
+export async function checkSupabaseAccessToken(token: string, options: JwtVerifyOptions): Promise<TokenCheck> {
+  if (!token || token.length > MAX_TOKEN_LENGTH) return invalid;
   const parts = token.split(".");
-  if (parts.length !== 3 || !parts.every((part) => BASE64URL.test(part))) return null;
+  if (parts.length !== 3 || !parts.every((part) => BASE64URL.test(part))) return invalid;
   const [headerSegment, payloadSegment, signatureSegment] = parts;
 
   const header = decodeJsonSegment(headerSegment);
-  if (!header || header.alg !== "ES256") return null;
+  const payload = decodeJsonSegment(payloadSegment);
+  if (!header || !payload) return invalid;
+  if (header.alg !== "ES256") return invalid;
   const kid = header.kid;
-  if (typeof kid !== "string" || kid.length === 0 || kid.length > MAX_KID_LENGTH) return null;
+  if (typeof kid !== "string" || kid.length === 0 || kid.length > MAX_KID_LENGTH) return invalid;
 
-  const pinned = options.pinnedKeys ?? PINNED_SUPABASE_JWKS;
-  const jwk = pinned.find((key) => key.kid === kid) ?? await liveKey(kid, options);
-  if (!jwk) return null;
+  const now = options.now ?? Math.floor(Date.now() / 1000);
+  const exp = payload.exp;
+  const sub = payload.sub;
+  if (typeof exp !== "number" || !Number.isFinite(exp)) return invalid;
+  if (payload.iss !== options.issuer) return invalid;
+  if (!audienceIncludesAuthenticated(payload.aud)) return invalid;
+  if (payload.role !== "authenticated") return invalid;
+  if (typeof sub !== "string" || !UUID.test(sub)) return invalid;
+  const iat = payload.iat;
+  if (iat !== undefined && (typeof iat !== "number" || iat > now + ISSUED_AT_SKEW_SECONDS)) return invalid;
+  const nbf = payload.nbf;
+  if (nbf !== undefined && (typeof nbf !== "number" || nbf > now + ISSUED_AT_SKEW_SECONDS)) return invalid;
 
-  let signature: Uint8Array;
+  let signature: Uint8Array<ArrayBuffer>;
   try {
     signature = base64UrlToBytes(signatureSegment);
   } catch {
-    return null;
+    return invalid;
   }
   // JWS ES256 signatures are the raw 64-byte r||s pair WebCrypto expects.
-  if (signature.length !== 64) return null;
+  if (signature.length !== 64) return invalid;
+
+  const pinned = options.pinnedKeys ?? PINNED_SUPABASE_JWKS;
+  const jwk = pinned.find((key) => key.kid === kid) ?? await liveKey(kid, options);
+  if (jwk === "unavailable") return { ok: false, reason: "unavailable" };
+  if (!jwk) return invalid;
 
   let valid = false;
   try {
-    const key = await importKey(jwk);
     valid = await crypto.subtle.verify(
       { name: "ECDSA", hash: "SHA-256" },
-      key,
+      await importKey(jwk),
       signature,
       new TextEncoder().encode(`${headerSegment}.${payloadSegment}`),
     );
   } catch {
-    return null;
+    return invalid;
   }
-  if (!valid) return null;
+  if (!valid) return invalid;
 
-  const payload = decodeJsonSegment(payloadSegment);
-  if (!payload) return null;
-  const now = options.now ?? Math.floor(Date.now() / 1000);
-  const exp = payload.exp;
-  if (typeof exp !== "number" || !Number.isFinite(exp) || exp <= now - CLOCK_SKEW_SECONDS) return null;
-  const nbf = payload.nbf;
-  if (nbf !== undefined && (typeof nbf !== "number" || nbf > now + CLOCK_SKEW_SECONDS)) return null;
-  if (payload.iss !== options.issuer) return null;
-  if (!audienceIncludesAuthenticated(payload.aud)) return null;
-  if (payload.role !== "authenticated") return null;
-  const sub = payload.sub;
-  if (typeof sub !== "string" || !UUID.test(sub)) return null;
+  // Only a correctly signed token is told to refresh.
+  if (exp - EXPIRY_MARGIN_SECONDS <= now) return { ok: false, reason: "expired" };
 
   return {
-    userId: sub.toLowerCase(),
-    isAnonymous: payload.is_anonymous === true,
-    expiresAt: exp,
+    ok: true,
+    user: { userId: sub.toLowerCase(), isAnonymous: payload.is_anonymous === true, expiresAt: exp },
   };
+}
+
+/** Loads the project JWKS with a short timeout and size cap. */
+export async function fetchSupabaseJwks(
+  authUrl: string,
+  fetcher: (input: string, init?: RequestInit) => Promise<Response> = (input, init) => fetch(input, init),
+): Promise<SupabaseJwk[]> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 2000);
+  try {
+    const response = await fetcher(`${authUrl}/.well-known/jwks.json`, { signal: controller.signal });
+    if (!response.ok) throw new Error(`jwks ${response.status}`);
+    const text = await response.text();
+    if (text.length > 16 * 1024) throw new Error("jwks too large");
+    return parseJwks(JSON.parse(text));
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /** The bearer token of a request, or null. Tokens never travel in URLs. */
