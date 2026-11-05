@@ -45,6 +45,19 @@
   번갈아 켜고 홈, `/compendium/cards`, `/patches/<최신>`의 점·배달부 비교, 쿠키 지우기, 409 되돌리기 확인
 - Commits: worktree `refactor/supabase-exit`
 
+### supabase-exit-step1-comments
+- Feature: 댓글 그룹의 api 경로. 공개 읽기 `/api/read/engagement`(스레드·좋아요 수·반응 합계·철학자 글을 한 요청에
+  모음), 개인 덧칠 `/api/me/engagement`, 쓰기 `/api/write/comments`·`comment-likes`·`likes`·`reactions`, 목록 참여 수
+  `/api/read/engagement-counts`. rate limit binding `API_READ_LIMITER`·`API_WRITE_LIMITER`(운영 namespace 1101·1102,
+  testbed 1201·1202). 설계는 [STEP1_DESIGN.md](../supabase-exit/STEP1_DESIGN.md) 9.1절
+- Expect: `path.comments=legacy`(운영 기본)에서는 화면과 요청이 그대로다. api면 백과사전 상세가 Supabase 4~5+2N건 대신
+  Worker 1~2건, 니오우스레터가 claim별 스레드 대신 몇 건으로 줄고, 쓰기는 응답으로 화면을 고친다(다시 읽지 않음).
+  testbed 패치 페이지는 api 경로에서 development 행을 읽고 쓴다
+- QA: testbed에서 `path.comments`를 api로 켜고 백과사전 상세(댓글·답글·좋아요·반응 쓰기와 되돌리기), 패치 셸 릴 반응,
+  니오우스레터 claim 스레드, 몬스터 목록 참여 수를 legacy와 비교. `Authorization: Bearer x.y.z`로 쓰기 401과 로그에
+  헤더가 남지 않는지(설계 4.5절)
+- Commits: worktree `refactor/supabase-exit`
+
 <!--
 ### <항목-id>
 - Feature:
