@@ -55,6 +55,7 @@ let liveJwks: LiveJwks | null = null;
 let lastLiveFetchAt = 0;
 let lastLiveFetchFailed = false;
 let liveFetch: Promise<void> | null = null;
+let liveFetchGeneration = 0;
 const importedKeys = new Map<string, Promise<CryptoKey>>();
 
 /** Clears module caches between spec cases. */
@@ -133,7 +134,8 @@ async function liveKey(kid: string, options: JwtVerifyOptions): Promise<Supabase
   if (liveSetIsStale(nowMs) && options.fetchJwks && !liveFetch && nowMs - lastLiveFetchAt >= LIVE_JWKS_COOLDOWN_MS) {
     lastLiveFetchAt = nowMs;
     const fetchJwks = options.fetchJwks;
-    const run: Promise<void> = (async () => {
+    const generation = ++liveFetchGeneration;
+    liveFetch = (async () => {
       try {
         const keys = await fetchJwks();
         liveJwks = { keys, fetchedAt: Date.now() };
@@ -141,11 +143,11 @@ async function liveKey(kid: string, options: JwtVerifyOptions): Promise<Supabase
       } catch {
         lastLiveFetchFailed = true;
       } finally {
-        if (liveFetch === run) liveFetch = null;
+        // A newer fetch may have replaced one that was treated as lost.
+        if (liveFetchGeneration === generation) liveFetch = null;
       }
     })();
-    liveFetch = run;
-    options.waitUntil?.(run);
+    options.waitUntil?.(liveFetch);
   }
   if (liveFetch) await settleWithin(liveFetch, LIVE_JWKS_WAIT_MS);
   const found = liveJwks?.keys.find((key) => key.kid === kid);
