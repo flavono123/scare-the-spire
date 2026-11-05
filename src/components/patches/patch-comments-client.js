@@ -447,11 +447,19 @@
       AUTH_TIMEOUT_MS,
     );
 
-    if (!response.ok) throw new Error(`Auth request failed: ${response.status}`);
+    if (!response.ok) {
+      const error = new Error(`Auth request failed: ${response.status}`);
+      error.status = response.status;
+      throw error;
+    }
     return response.json();
   }
 
-  async function ensureSession(config) {
+  // On the api path a refresh that failed for a transient reason (network, timeout,
+  // 5xx) does not fall through to a new anonymous sign-up, which would replace the
+  // user's id (docs/supabase-exit/STEP1_DESIGN.md 7). A rejected refresh token
+  // (400/401) is dead either way, as supabase-js treats it.
+  async function ensureSession(config, { keepUserOnTransientFailure = false } = {}) {
     const stored = normalizeSession(readStoredSession(config));
     const now = Math.floor(Date.now() / 1000);
     if (stored?.access_token && stored.expires_at && stored.expires_at > now + 60) {
@@ -469,7 +477,9 @@
           writeStoredSession(config, refreshed);
           return refreshed;
         }
-      } catch {
+      } catch (error) {
+        const rejected = error?.status === 400 || error?.status === 401;
+        if (keepUserOnTransientFailure && !rejected) throw error;
         // Fall through to an anonymous sign-in below.
       }
     }
@@ -869,7 +879,53 @@
     void remapCommentNickTokens(root);
   }
 
+  /** Thread state from /api/read/engagement and /api/me/engagement; null means use the legacy path. */
+  async function loadApiState(config, threadKey) {
+    let body;
+    try {
+      body = await apiRequest(`/api/read/engagement?threads=${threadKey}`);
+    } catch (error) {
+      if (error.legacy) return null;
+      throw error;
+    }
+    const comments = body?.v === 1 ? body.threads?.[threadKey] : undefined;
+    if (!Array.isArray(comments)) {
+      if (body?.v !== 1) {
+        slseounRuntime().demoted.add("comments");
+        return null;
+      }
+      throw new Error("unavailable");
+    }
+    const session = config ? normalizeSession(readStoredSession(config)) : null;
+    const userId = sessionUserId(session);
+    const likeCounts = new Map(comments.map((comment) => [comment.id, Number(comment.like_count) || 0]));
+    const liked = new Set();
+    const now = Math.floor(Date.now() / 1000);
+    // Only a live token; an expired one is refreshed on the first write, never on a read.
+    if (userId && comments.length > 0 && session?.access_token && session.expires_at > now + 5) {
+      try {
+        const mine = await apiRequest(`/api/me/engagement?threads=${threadKey}`, { token: session.access_token });
+        for (const id of mine?.commentLikes?.[threadKey] ?? []) liked.add(id);
+      } catch {
+        // Hearts stay empty; the comments still show.
+      }
+    }
+    return {
+      comments,
+      likeCounts,
+      liked,
+      userId,
+      nickname: readStoredNickname(copy().defaultNickname),
+      submitting: false,
+      viaApi: true,
+    };
+  }
+
   async function loadState(config, threadKey) {
+    if (commentsViaApi(threadKey)) {
+      const state = await loadApiState(config, threadKey);
+      if (state) return state;
+    }
     const comments = await restRequest(config, commentsPath(threadKey, config));
     const session = normalizeSession(readStoredSession(config));
     const userId = sessionUserId(session);
@@ -938,7 +994,8 @@
       renderComments(root, state);
 
       try {
-        const session = await ensureSession(config);
+        const viaApi = commentsViaApi(threadKey);
+        const session = await ensureSession(config, { keepUserOnTransientFailure: viaApi });
         const profileState = readStoredProfileIconState();
         const authorToken = profileState.stored ? {
           avatar_id: profileState.avatarId,
@@ -951,6 +1008,37 @@
           palette_id: null,
           palette_swapped: false,
         };
+        if (viaApi) {
+          try {
+            const created = await apiRequest("/api/write/comments", {
+              method: "POST",
+              token: session.access_token,
+              body: {
+                threadKey,
+                nickname,
+                content,
+                author: {
+                  avatarId: authorToken.avatar_id,
+                  avatarKind: authorToken.avatar_kind,
+                  paletteId: authorToken.palette_id,
+                  paletteSwapped: authorToken.palette_swapped,
+                },
+              },
+            });
+            // The answer is the new row: no reload.
+            state.comments = [...state.comments, created.comment];
+            state.likeCounts.set(created.comment.id, 0);
+            state.userId = sessionUserId(session);
+            state.submitting = false;
+            if (contentInput) contentInput.value = "";
+            renderComments(root, state);
+            syncCommentCounter(root);
+            return;
+          } catch (error) {
+            // Only a write that certainly did nothing is sent again on the legacy path.
+            if (!error.legacy || error.processed) throw error;
+          }
+        }
         await restRequest(config, "comments?select=*", {
           method: "POST",
           token: session.access_token,
@@ -976,7 +1064,42 @@
       if (!likeButton && !deleteButton) return;
 
       try {
-        const session = await ensureSession(config);
+        const viaApi = commentsViaApi(threadKey);
+        const session = await ensureSession(config, { keepUserOnTransientFailure: viaApi });
+        if (viaApi) {
+          try {
+            if (likeButton) {
+              const commentId = likeButton.dataset.commentLike;
+              if (!commentId) return;
+              const result = await apiRequest(`/api/write/comment-likes?id=${encodeURIComponent(commentId)}`, {
+                method: state.liked.has(commentId) ? "DELETE" : "PUT",
+                token: session.access_token,
+              });
+              if (result.liked) state.liked.add(commentId);
+              else state.liked.delete(commentId);
+              state.likeCounts.set(commentId, result.count);
+            }
+            if (deleteButton) {
+              const commentId = deleteButton.dataset.commentDelete;
+              if (!commentId) return;
+              try {
+                await apiRequest(`/api/write/comments?id=${encodeURIComponent(commentId)}`, {
+                  method: "DELETE",
+                  token: session.access_token,
+                });
+              } catch (error) {
+                // Already gone or not ours: it leaves the list, as the legacy reload shows.
+                if (error.code !== "not_found") throw error;
+              }
+              state.comments = state.comments.filter((comment) => comment.id !== commentId);
+            }
+            state.userId = sessionUserId(session);
+            renderComments(root, state);
+            return;
+          } catch (error) {
+            if (!error.legacy || error.processed) throw error;
+          }
+        }
         if (likeButton) {
           const commentId = likeButton.dataset.commentLike;
           if (!commentId) return;
@@ -1213,6 +1336,61 @@
     if (!entry) return "legacy";
     const [version, ...groups] = entry.slice(FLAG_COOKIE.length + 1).split(".");
     return version === "v1" && groups.includes(group) ? "api" : "legacy";
+  }
+
+  const THREAD_KEY = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$/;
+  const REACTION_PART = { type: /^[a-z_-]{1,32}$/, id: /^[A-Za-z0-9._-]{1,128}$/, version: /^[A-Za-z0-9._-]{1,32}$/ };
+
+  /** Same rule as src/lib/engagement-keys.ts: other keys stay on the legacy path. */
+  function commentsViaApi(threadKey) {
+    return surfacePath("comments") === "api" && THREAD_KEY.test(threadKey);
+  }
+
+  function reactionsViaApi(type, id, version) {
+    return surfacePath("comments") === "api"
+      && REACTION_PART.type.test(type) && REACTION_PART.id.test(id) && REACTION_PART.version.test(version);
+  }
+
+  /**
+   * Same-origin /api call with src/lib/api-client.ts semantics. Errors carry
+   * `legacy` (use the legacy path) and `processed` (a write may have run, so it
+   * is never resent), plus the router's error `code`.
+   */
+  async function apiRequest(path, { method = "GET", token, body } = {}) {
+    const headers = { Accept: "application/json" };
+    if (body !== undefined) headers["Content-Type"] = "application/json";
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), QUERY_TIMEOUT_MS);
+    const fail = (fields) => Object.assign(new Error(fields.code || "unavailable"), fields);
+    try {
+      let response;
+      try {
+        response = await fetch(path, {
+          method,
+          headers,
+          body: body === undefined ? undefined : JSON.stringify(body),
+          credentials: "same-origin",
+          signal: controller.signal,
+        });
+      } catch {
+        throw fail({ code: "unavailable" });
+      }
+      if (response.headers.get(API_MARKER_HEADER) !== "1") {
+        slseounRuntime().demoted.add("comments");
+        void response.body?.cancel().catch(() => undefined);
+        throw fail({ legacy: true, processed: method !== "GET" && response.status !== 404 && response.status !== 405, status: response.status });
+      }
+      const parsed = await response.json().catch(() => null);
+      if (response.status === 409 && parsed?.error === "surface_legacy") {
+        slseounRuntime().demoted.add("comments");
+        throw fail({ legacy: true, processed: false, status: 409 });
+      }
+      if (!response.ok) throw fail({ code: parsed?.error || `http_${response.status}`, status: response.status });
+      return parsed;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   function configEnv(config) {
@@ -1610,13 +1788,42 @@
     const gameVersion = button.dataset.cpVersion;
     const kind = button.dataset.cpKind;
     if (!postId || !resourceType || !resourceId || !gameVersion || !kind) return;
-    const session = await ensureSession(config);
+    const viaApi = reactionsViaApi(resourceType, resourceId, gameVersion);
+    let session;
+    try {
+      session = await ensureSession(config, { keepUserOnTransientFailure: viaApi });
+    } catch {
+      return;
+    }
     const userId = sessionUserId(session);
     if (!userId) return;
     const key = `sts-resource-reaction:${resourceType}:${resourceId}:${gameVersion}`;
     const stored = window.localStorage.getItem(key);
     const previous = stored === "buff" || stored === "nerf" || stored === "rework" ? stored : null;
     const next = previous === kind ? null : kind;
+    if (viaApi) {
+      try {
+        // The Worker reads the current row, so a stale kind cannot conflict, and it answers the totals.
+        const result = await apiRequest("/api/write/reactions", {
+          method: "PUT",
+          token: session.access_token,
+          body: { resourceType, resourceId, gameVersion, kind: next },
+        });
+        if (result.kind) window.localStorage.setItem(key, result.kind);
+        else window.localStorage.removeItem(key);
+        const card = button.closest("[data-colorful-philosophers-card]");
+        card?.querySelectorAll("[data-cp-reaction]").forEach((other) => {
+          const count = other.querySelector("[data-cp-count]");
+          const otherKind = other.dataset.cpKind;
+          if (!count || !otherKind) return;
+          count.textContent = String(Number(result.counts?.[otherKind]) || 0);
+          other.setAttribute("aria-pressed", result.kind === otherKind ? "true" : "false");
+        });
+        return;
+      } catch (error) {
+        if (!error.legacy || error.processed) return;
+      }
+    }
     const filter = `env=eq.${config.supabaseEnv}&resource_type=eq.${resourceType}&resource_id=eq.${resourceId}&game_version=eq.${gameVersion}&user_id=eq.${userId}`;
     try {
       if (next === null) {
