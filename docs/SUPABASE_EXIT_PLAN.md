@@ -132,7 +132,8 @@ Storage는 쓰지 않는다.
 
 D1 Free 한도(2026-11-04 공식 문서 확인): 하루 rows read 500만, rows written 10만(00:00 UTC 초기화), DB 10개,
 DB당 500 MB, 계정 5 GB, Worker 호출당 쿼리 50개, 쿼리 30초. 한도를 넘으면 초기화(09:00 KST)까지 쿼리가 오류를
-낸다. 읽기 복제(read replication)는 추가 비용이 없다.
+낸다. 읽기 복제(read replication)는 추가 비용이 없다. Time Travel(시점 복원)은 Free에서 7일이고 추가 비용이
+없다. Supabase Free에는 자동 백업이 없다. 지금 Supabase 프로젝트 위치는 도쿄(`ap-northeast-1`)다.
 
 ## 5. 목표 구조
 
@@ -235,7 +236,7 @@ DB 부담이 없다. 실시간이 꼭 필요해지면 그때 Durable Object WebS
 | CPU 10 ms/요청 | P50 0.8~1.4 ms | 주입·JSON 직렬화 소폭 증가 | 주입 크기 상한으로 관리 |
 | D1 rows read 500만/일 | (Supabase 요청 2만~4.8만/일) | 캐시 적중이면 0. 최악(캐시 없음)이 페이지 2,000 × 쿼리 10 × 50행 = 100만 | 여유 있음 |
 | D1 rows written 10만/일 | 쓰기·RPC 하루 수십 건 | 같음 | 여유 큼 |
-| DB당 500 MB | **미측정**(측정 시점에 DB가 응답하지 않음) | `runs.raw`(런 파일 원문)가 가장 클 것 | 1단계에서 측정. 크면 gzip 압축 저장이나 원문만 별도 D1 DB로 분리 |
+| DB당 500 MB | DB 전체 35 MB(2026-11-05 측정). 가장 큰 테이블은 `runs` 687행 7.6 MB, 그다음은 옮기지 않을 Auth 테이블 | 30 MB 안팎 | 여유 큼. 런 원문이 크게 늘 때만 압축이나 별도 DB를 검토 |
 
 D1 primary 위치는 만들 때 `apac` location hint로 정한다. 나중에 바꿀 수 없다.
 
@@ -251,7 +252,7 @@ D1 primary 위치는 만들 때 `apac` location hint로 정한다. 나중에 바
 
 **1단계: 측정과 준비**
 
-- 테이블별 행 수와 크기, `runs.raw` 크기 분포를 잰다.
+- 테이블별 행 수와 크기는 2026-11-05에 쟀다(DB 전체 35 MB). 이관 직전에 다시 확인한다.
 - ES256 JWKS와 레거시 HS256 secret을 확보한다. secret은 사용자가 대시보드에서 직접 확인한다.
 - D1 `slseoun-prod`와 `slseoun-testbed`를 만들고 `wrangler.jsonc`에 binding을 추가한다.
 
@@ -295,7 +296,7 @@ D1 primary 위치는 만들 때 `apac` location hint로 정한다. 나중에 바
 | 위험 | 대응 |
 |---|---|
 | D1 일일 한도에 걸리면 09:00 KST까지 쿼리 오류 | 캐시 강등(마지막 값 표시), 크롤러는 캐시로만 처리, 일일 사용량을 GraphQL로 확인 |
-| DB가 500 MB를 넘음 | 1단계 측정 뒤 압축하거나 런 원문만 별도 DB로 분리(무료 10개) |
+| DB가 500 MB를 넘음 | 지금 35 MB라 당분간 해당 없음. 런 원문이 크게 늘면 압축하거나 별도 DB로 분리(무료 10개) |
 | soft navigation에는 주입이 안 됨 | prefetch, 메모리·localStorage 직전 값 |
 | claim하지 못한 사용자는 기존 글의 소유권을 잃음 | 긴 claim 기한, HS256 토큰까지 검증, 문의 창구 |
 | 작업량이 큼(훅 34, RPC 12, 테이블 약 30) | worktree에서 단계별로 진행, 주간 배포와 분리 |
