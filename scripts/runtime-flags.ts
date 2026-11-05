@@ -4,17 +4,21 @@
  * screen between the legacy and api paths (docs/supabase-exit/STEP1_DESIGN.md 3.1).
  *
  * Usage:
- *   tsx scripts/runtime-flags.ts list --env testbed|production [--remote]
- *   tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --note "why" [--remote]
+ *   tsx scripts/runtime-flags.ts list --env testbed|production --remote|--local
+ *   tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note "why"
  *
- * Without --remote it touches the local `wrangler dev` database. Changing
- * production also needs --confirm-production, and only after the user approves.
+ * The target must be named: wrangler 4's `d1 execute` defaults to the local
+ * file, so a rollback that forgot --remote would "succeed" without touching
+ * Cloudflare. Changing production also needs --confirm-production, and only
+ * after the user approves. Workers pick a change up within about 30 s.
  */
 import { spawnSync } from "node:child_process";
 
 import { API_SURFACE_GROUPS, SURFACE_PATHS, pathFlagKey } from "../src/lib/api-surfaces";
 
 type Target = { env: "testbed" | "production"; remote: boolean };
+
+const DATABASES = { testbed: "slseoun-testbed", production: "slseoun-prod" } as const;
 
 const KNOWN_KEYS = new Map<string, readonly string[]>(
   API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), SURFACE_PATHS]),
@@ -24,8 +28,8 @@ function usage(message?: string): never {
   if (message) console.error(message);
   console.error([
     "Usage:",
-    "  tsx scripts/runtime-flags.ts list --env testbed|production [--remote]",
-    "  tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --note \"why\" [--remote] [--confirm-production]",
+    "  tsx scripts/runtime-flags.ts list --env testbed|production --remote|--local",
+    "  tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     `Keys: ${[...KNOWN_KEYS.keys()].join(", ")}`,
   ].join("\n"));
   process.exit(2);
@@ -41,7 +45,7 @@ function sqlString(value: string): string {
 }
 
 function execute(target: Target, sql: string): unknown {
-  const args = ["exec", "wrangler", "d1", "execute", "DB", target.remote ? "--remote" : "--local", "--json", "--command", sql];
+  const args = ["exec", "wrangler", "d1", "execute", "DB", target.remote ? "--remote" : "--local", "--yes", "--json", "--command", sql];
   if (target.env === "testbed") args.push("--env", "testbed");
   const result = spawnSync("pnpm", args, { encoding: "utf8", env: { ...process.env, WRANGLER_WRITE_LOGS: "0" } });
   if (result.status !== 0) {
@@ -65,8 +69,12 @@ function main() {
   const [command, ...rest] = process.argv.slice(2);
   const env = option(rest, "--env");
   if (env !== "testbed" && env !== "production") usage("--env testbed or --env production is required");
-  const target: Target = { env, remote: rest.includes("--remote") };
-  const where = `${env}${target.remote ? " (remote)" : " (local)"}`;
+  const remote = rest.includes("--remote");
+  const local = rest.includes("--local");
+  if (remote === local) usage("name the target: --remote (Cloudflare) or --local (wrangler dev)");
+  const target: Target = { env, remote };
+  const where = `${DATABASES[env]}${remote ? " (remote)" : " (local)"}`;
+  console.log(`target: ${where}`);
 
   if (command === "list") {
     const output = execute(
@@ -98,6 +106,11 @@ function main() {
         "ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, note = excluded.note; " +
         `INSERT INTO runtime_flag_events (key, value, at, note) VALUES (${sqlString(key)}, ${sqlString(value)}, ${sqlString(at)}, ${sqlString(note)});`,
     );
+    const readBack = rows(execute(target, `SELECT key, value, updated_at, note FROM runtime_flags WHERE key = ${sqlString(key)};`), 0)[0];
+    if (readBack?.value !== value || readBack?.updated_at !== at) {
+      console.error(`read-back mismatch in ${where}:`, readBack);
+      process.exit(1);
+    }
     console.log(`${key} = ${value} in ${where} at ${at}. Workers pick it up within about 30 s.`);
     return;
   }

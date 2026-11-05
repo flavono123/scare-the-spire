@@ -1,4 +1,5 @@
 import sts2Meta from "../../data/sts2/meta.json";
+import { kstWeekStart } from "@/lib/nav-surfaces";
 import {
   buildCompendiumResourceDetailHref,
   isCompendiumResourceLinkType,
@@ -73,17 +74,9 @@ export function isColorfulPhilosopherReaction(value: string): value is ColorfulP
   return (COLORFUL_PHILOSOPHER_REACTIONS as readonly string[]).includes(value);
 }
 
-const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
-
+// The Worker's /api/read/nav computes the same week, so the formula lives in nav-surfaces.ts.
 export function colorfulPhilosophersWeekStart(now = new Date()): string {
-  const kst = new Date(now.getTime() + KST_OFFSET_MS);
-  const mondayOffset = (kst.getUTCDay() + 6) % 7;
-  const monday = new Date(Date.UTC(
-    kst.getUTCFullYear(),
-    kst.getUTCMonth(),
-    kst.getUTCDate() - mondayOffset,
-  ));
-  return monday.toISOString().slice(0, 10);
+  return kstWeekStart(now);
 }
 
 export function colorfulPhilosophersNextWeekStart(now = new Date()): string {

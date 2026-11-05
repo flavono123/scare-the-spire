@@ -23,15 +23,6 @@ export type SurfacePath = "legacy" | "api";
 
 export const SURFACE_PATHS: readonly SurfacePath[] = ["legacy", "api"];
 
-/** `<script type="application/json">` the Worker puts at the top of <head>. */
-export const RUNTIME_FLAGS_ELEMENT_ID = "slseoun-runtime-flags";
-
-/** What the Worker injects: only groups on the api path are listed. */
-export type InjectedRuntimeFlags = {
-  v: 1;
-  path: Partial<Record<ApiSurfaceGroup, "api">>;
-};
-
 export function isApiSurfaceGroup(value: unknown): value is ApiSurfaceGroup {
   return typeof value === "string" && (API_SURFACE_GROUPS as readonly string[]).includes(value);
 }
@@ -41,18 +32,26 @@ export function pathFlagKey(group: ApiSurfaceGroup): string {
   return `path.${group}`;
 }
 
-/** Groups on the api path in an injected payload; anything malformed means none. */
-export function parseInjectedRuntimeFlags(text: string | null | undefined): Set<ApiSurfaceGroup> {
-  const groups = new Set<ApiSurfaceGroup>();
-  if (!text) return groups;
-  try {
-    const parsed = JSON.parse(text) as Partial<InjectedRuntimeFlags>;
-    if (parsed?.v !== 1 || !parsed.path || typeof parsed.path !== "object") return groups;
-    for (const [group, value] of Object.entries(parsed.path)) {
-      if (isApiSurfaceGroup(group) && value === "api") groups.add(group);
-    }
-  } catch {
-    // A broken payload keeps every screen on the legacy path.
-  }
-  return groups;
+/** Cookie the Worker sets on page responses: `v1` plus the api groups, dot-joined. */
+export const FLAG_COOKIE_NAME = "slseoun_rf";
+const FLAG_COOKIE_VERSION = "v1";
+
+/** QA cookies the Worker honors (STEP1_DESIGN 3.4). */
+export const QA_COOKIE_NAME = "slseoun_qa";
+export const QA_NO_SUPABASE = "no-supabase";
+export const QA_PATH_COOKIE_NAME = "slseoun_qa_path";
+
+/** Cookie value for the api groups, or null when every group is legacy. */
+export function flagCookieValue(groups: Iterable<ApiSurfaceGroup>): string | null {
+  const sorted = [...new Set(groups)].filter(isApiSurfaceGroup).sort();
+  return sorted.length > 0 ? [FLAG_COOKIE_VERSION, ...sorted].join(".") : null;
+}
+
+/** Api groups in a cookie value; another version or garbage means none. */
+export function parseFlagCookieValue(value: string | null | undefined): Set<ApiSurfaceGroup> | null {
+  if (!value) return null;
+  const [version, ...groups] = value.split(".");
+  if (version !== FLAG_COOKIE_VERSION) return null;
+  if (groups.length === 0 || !groups.every(isApiSurfaceGroup)) return null;
+  return new Set(groups as ApiSurfaceGroup[]);
 }

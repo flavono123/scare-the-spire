@@ -97,3 +97,6 @@ data/sts2-old/
 
 *storybook.log
 storybook-static
+
+# Local Worker vars (wrangler dev)
+.dev.vars*
