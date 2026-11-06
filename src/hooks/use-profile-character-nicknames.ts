@@ -7,7 +7,7 @@ import {
   parseNicknamePoolRows,
   type ProfileNicknamePools,
 } from "@/lib/profile-character-nicknames";
-import { apiFetch, shouldUseLegacy } from "@/lib/api-client";
+import { apiFetch, requireApiVersion, shouldUseLegacy } from "@/lib/api-client";
 import { surfacePath } from "@/lib/runtime-flags";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
@@ -17,7 +17,9 @@ export async function fetchProfileCharacterNicknamePools(): Promise<ProfileNickn
   if (surfacePath("profile") === "api") {
     try {
       const body = await apiFetch<{ v?: number; rows?: unknown[] | null }>("profile", "/api/read/profile/nicknames");
-      if (body?.v !== 1 || !body.rows) return null;
+      requireApiVersion("profile", body);
+      // v1 with no rows: the pools table is not deployed, as the legacy read reports.
+      if (!body.rows) return null;
       return parseNicknamePoolRows(body.rows as Parameters<typeof parseNicknamePoolRows>[0]);
     } catch (error) {
       if (!shouldUseLegacy(error)) return null;

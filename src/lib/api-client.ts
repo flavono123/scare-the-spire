@@ -39,6 +39,17 @@ export class ApiUnavailableError extends ApiError {
   }
 }
 
+/**
+ * A v1-shaped answer this client does not understand is a legacy signal
+ * (docs/supabase-exit/STEP1_DESIGN.md 9): demote the group for the page and
+ * throw so the caller redoes its legacy query.
+ */
+export function requireApiVersion(group: ApiSurfaceGroup, body: { v?: unknown } | null | undefined): void {
+  if (body?.v === 1) return;
+  demoteSurface(group);
+  throw new SurfaceLegacyError(200, false);
+}
+
 /** True when a failed api call should be redone on the legacy path. */
 export function shouldUseLegacy(error: unknown): boolean {
   return error instanceof SurfaceLegacyError;

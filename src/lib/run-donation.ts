@@ -609,18 +609,20 @@ export async function getDonatedRunOgFields(runId: string): Promise<{
   coverSpec: CoverSpec | null;
 } | null> {
   if (!supabaseEnabled || !runId) return null;
-  if (runsViaApi() && isRunId(runId)) {
-    try {
-      const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=meta`);
-      if (rows !== "legacy") {
-        const row = rows[0];
-        return row ? { character: String(row.character ?? ""), coverSpec: parseCoverSpec(row.cover_spec) } : null;
-      }
-    } catch {
-      return null;
-    }
-  }
   for (const env of runReadEnvs()) {
+    // The api path serves the page's own env; dev tools then also read production on legacy.
+    if (runsViaApi(env) && isRunId(runId)) {
+      try {
+        const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=meta`);
+        if (rows !== "legacy") {
+          const row = rows[0];
+          if (!row) continue;
+          return { character: String(row.character ?? ""), coverSpec: parseCoverSpec(row.cover_spec) };
+        }
+      } catch {
+        return null;
+      }
+    }
     const withCover = await withSupabaseTimeout(
       "runs.select.og-fields",
       supabase
@@ -665,22 +667,22 @@ export async function getDonatedRunOgFields(runId: string): Promise<{
 /** Light cover lookup for combo list thumbs when snapshot omitted coverSpec. */
 export async function getRunCoverSpec(runId: string): Promise<CoverSpec | null> {
   if (!supabaseEnabled || !runId) return null;
-  if (runsViaApi() && isRunId(runId)) {
-    try {
-      const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=cover`);
-      if (rows !== "legacy") {
-        const row = rows[0];
-        if (!row) return null;
-        const stored = parseCoverSpec(row.cover_spec);
-        if (stored?.auto === false) return stored;
-        const parsed = parseRunSafely(row.raw);
-        return parsed ? pickAlternatingCover(runId, parsed) : stored;
-      }
-    } catch {
-      return null;
-    }
-  }
   for (const env of runReadEnvs()) {
+    if (runsViaApi(env) && isRunId(runId)) {
+      try {
+        const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=cover`);
+        if (rows !== "legacy") {
+          const row = rows[0];
+          if (!row) continue;
+          const stored = parseCoverSpec(row.cover_spec);
+          if (stored?.auto === false) return stored;
+          const parsed = parseRunSafely(row.raw);
+          return parsed ? pickAlternatingCover(runId, parsed) : stored;
+        }
+      } catch {
+        return null;
+      }
+    }
     const withCover = await withSupabaseTimeout(
       "runs.select.cover-spec",
       supabase

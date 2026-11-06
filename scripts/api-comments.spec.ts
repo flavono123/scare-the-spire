@@ -825,6 +825,23 @@ async function main() {
   assert.deepEqual(batch.body.inserted, ["ffff"], "duplicates are skipped, not failed");
   assert.equal((await upload("/api/write/history-runs/batch", [], { "content-length": String(25 * 1024 * 1024) })).status, 413);
   assert.equal((await call("/api/write/history-runs", { method: "POST", headers: { authorization: `Bearer ${token}`, "content-type": "text/plain" }, body: "{}" })).status, 400);
+  // No Content-Length: the cap is counted on the stream and answered 413, not 503.
+  const chunk = new TextEncoder().encode("x".repeat(1024 * 1024));
+  let chunksSent = 0;
+  const endless = new ReadableStream<Uint8Array>({
+    pull(controller) {
+      chunksSent += 1;
+      if (chunksSent > 26) controller.close();
+      else controller.enqueue(chunk);
+    },
+  });
+  const overCap = await mainWorker.fetch(new Request(`${ORIGIN}/api/write/history-runs/batch`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${token}`, "content-type": "application/json", "sec-fetch-site": "same-origin" },
+    body: endless,
+    duplex: "half",
+  } as RequestInit), env as never, ctx);
+  assert.equal(overCap.status, 413);
 
   const cover = (id: string, bearer = token) => call(`/api/write/history-runs/cover?id=${id}`, authed("PATCH", { coverSpec: { auto: false, card: "BASH" } }, bearer));
   assert.equal((await json(await cover("bbbb"))).body.updated, true);

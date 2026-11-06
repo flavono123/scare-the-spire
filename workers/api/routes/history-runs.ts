@@ -12,7 +12,7 @@ import {
 } from "../../../src/lib/history-runs-api-rules";
 import { API_MARKER_HEADER, apiError, jsonResponse, PRIVATE_NO_STORE } from "../http";
 import type { ApiRoute, PublicRouteContext, UserRouteContext } from "../router";
-import { postgrest, postgrestStream, rowsEnvelopeStream } from "../supabase-rest";
+import { isCappedBodyOver, postgrest, postgrestStream, rowsEnvelopeStream } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
 
 /**
@@ -24,6 +24,13 @@ import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
  * is handled like the other groups.
  */
 
+/**
+ * Waiting on I/O costs no Worker CPU, so streamed calls get wall-clock limits
+ * under the client's (20 s for lists, 30 s for uploads) instead of the 6.5 s
+ * endpoint budget: an upload's header timer also covers the browser's upload.
+ */
+const STREAM_READ_MS = 15_000;
+const STREAM_UPLOAD_MS = 25_000;
 /** Streamed answers stop past this; the list today is about 8 MB. */
 const STREAM_MAX_BYTES = 24 * 1024 * 1024;
 /** One upload batch; the client sends what the user picked (raw files up to 2 MB). */
@@ -54,10 +61,11 @@ async function streamSelect(
   legacySelect: string,
 ): Promise<Response> {
   const { config } = context;
-  const deadline = Date.now() + HANDLER_BUDGET_MS;
+  const deadline = Date.now() + STREAM_READ_MS;
   const call = (columns: string) => postgrestStream(config, {
     path: "runs",
     deadline,
+    timeoutMs: STREAM_READ_MS,
     query: new URLSearchParams({ ...query, select: columns, env: `eq.${config.dataEnv}` }),
   });
   let result = await call(select);
@@ -158,12 +166,17 @@ async function streamUpload(context: UserRouteContext, batch: boolean): Promise<
     method: "POST",
     path: "runs",
     token,
-    deadline: Date.now() + HANDLER_BUDGET_MS,
+    deadline: Date.now() + STREAM_UPLOAD_MS,
+    timeoutMs: STREAM_UPLOAD_MS,
     bodyStream,
     query: batch ? new URLSearchParams({ on_conflict: "id,env", select: "id" }) : undefined,
     prefer: batch ? ["resolution=ignore-duplicates", "return=representation"] : ["return=minimal"],
   });
-  if (!result.ok) return apiError(restErrorCode(result));
+  if (!result.ok) {
+    // The cap counts bytes as they stream, so a body without Content-Length is caught here.
+    if (isCappedBodyOver(bodyStream)) return apiError("too_large");
+    return apiError(restErrorCode(result));
+  }
   if (!batch) {
     void result.response.body?.cancel().catch(() => undefined);
     return jsonResponse({ v: 1, env: config.dataEnv }, { status: 201 });

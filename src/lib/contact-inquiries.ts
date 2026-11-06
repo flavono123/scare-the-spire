@@ -1,5 +1,5 @@
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
-import { ApiError, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
+import { ApiError, requireApiVersion, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import { apiFetchAsUser } from "@/lib/api-session";
 import { sanitizeContactSourcePath, type ContactCategory } from "@/lib/contact-rules";
 import { surfacePath } from "@/lib/runtime-flags";
@@ -161,7 +161,7 @@ export async function listOwnContactInquiries(): Promise<ContactInquiryHistoryIt
         "profile",
         "/api/me/profile/inquiries",
       );
-      if (body?.v !== 1) throw new Error("bad inquiries");
+      requireApiVersion("profile", body);
       return (body.rows ?? []).map((row) => historyItem(row, body.replySeenColumn !== false));
     } catch (error) {
       if (!shouldUseLegacy(error)) throw error;
@@ -198,8 +198,8 @@ export async function hasUnseenContactReply(): Promise<boolean | null> {
   if (surfacePath("contact") === "api") {
     try {
       const body = await apiFetchAsUser<{ v?: number; unseen?: unknown }>("contact", "/api/me/mailbox");
-      if (body?.v === 1 && typeof body.unseen === "boolean") return body.unseen;
-      return null;
+      requireApiVersion("contact", body);
+      return typeof body.unseen === "boolean" ? body.unseen : null;
     } catch (error) {
       // Null keeps the dot as it was, like a failed legacy read.
       if (!shouldUseLegacy(error)) return null;

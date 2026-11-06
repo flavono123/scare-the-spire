@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { shouldUseLegacy } from "@/lib/api-client";
+import { requireApiVersion, shouldUseLegacy } from "@/lib/api-client";
 import { apiFetchAsUser } from "@/lib/api-session";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
@@ -65,7 +65,7 @@ async function readStatsRows(): Promise<ProfileActivityStatsRow[]> {
   if (surfacePath("profile") === "api") {
     try {
       const body = await apiFetchAsUser<RowsBody<ProfileActivityStatsRow>>("profile", "/api/me/profile/stats");
-      if (body?.v !== 1) throw new Error("bad profile stats");
+      requireApiVersion("profile", body);
       return body.rows ?? [];
     } catch (error) {
       if (!shouldUseLegacy(error)) throw error;
@@ -90,7 +90,7 @@ async function readActivityRows(
     try {
       const query = new URLSearchParams({ category: filter, sort, offset: String(offset) });
       const body = await apiFetchAsUser<RowsBody<ProfileActivityRow>>("profile", `/api/me/profile/activity?${query}`);
-      if (body?.v !== 1) throw new Error("bad profile activity");
+      requireApiVersion("profile", body);
       return body.rows ?? [];
     } catch (error) {
       if (!shouldUseLegacy(error)) throw error;

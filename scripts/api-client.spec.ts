@@ -302,6 +302,13 @@ async function main() {
   await assert.rejects(() => loadEngagementMine("likes", "byrdispatch"), (error) => error instanceof ApiError && error.code === "token_invalid");
   assert.equal(engagementUrls.length, 0);
 
+  // An answer of an unknown version is a legacy signal for its group.
+  const { requireApiVersion } = await import("../src/lib/api-client");
+  resetPage("slseoun_rf=v1.profile");
+  assert.doesNotThrow(() => requireApiVersion("profile", { v: 1 }));
+  assert.throws(() => requireApiVersion("profile", { v: 2 }), SurfaceLegacyError);
+  assert.equal(surfacePath("profile"), "legacy", "demoted for the page");
+
   console.log("api-client spec passed");
 }
 

@@ -312,17 +312,27 @@ export function rowsEnvelopeStream(
   });
 }
 
+const overCap = new WeakSet<ReadableStream<Uint8Array>>();
+
 /** Counts bytes of a request body as it streams to PostgREST; past `maxBytes` the upload fails. */
 export function cappedBodyStream(body: ReadableStream<Uint8Array>, maxBytes: number): ReadableStream<Uint8Array> {
   let size = 0;
-  return body.pipeThrough(new TransformStream<Uint8Array, Uint8Array>({
+  let stream: ReadableStream<Uint8Array> | null = null;
+  stream = body.pipeThrough(new TransformStream<Uint8Array, Uint8Array>({
     transform(chunk, controller) {
       size += chunk.byteLength;
       if (size > maxBytes) {
+        if (stream) overCap.add(stream);
         controller.error(new Error("too_large"));
         return;
       }
       controller.enqueue(chunk);
     },
   }));
+  return stream;
+}
+
+/** True when `cappedBodyStream` cut this body at its cap (answer 413, not 503). */
+export function isCappedBodyOver(stream: ReadableStream<Uint8Array> | null): boolean {
+  return Boolean(stream && overCap.has(stream));
 }
