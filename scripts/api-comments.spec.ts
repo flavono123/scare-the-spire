@@ -54,6 +54,10 @@ class FakeRest {
   reactions: Row[] = [];
   philosophers: Row[] = [];
   contactInquiries: Row[] = [];
+  nicknamePools: Row[] = [{ character_id: "ironclad", locale: "ko", nicknames: ["철갑"] }];
+  missingTables = new Set<string>();
+  noSeenColumn = false;
+  rpcBodies: Record<string, unknown>[] = [];
   calls: { method: string; url: URL; auth: string | null; body: unknown }[] = [];
   failTables = new Set<string>();
   /** Fail only the count reads (HEAD) and the totals read of these tables. */
@@ -88,6 +92,7 @@ class FakeRest {
     if (name === "resource_reaction_counts") return this.reactionCounts();
     if (name === "colorful_philosopher_posts") return this.philosophers;
     if (name === "contact_inquiries") return this.contactInquiries;
+    if (name === "profile_character_nickname_pools") return this.nicknamePools;
     throw new Error(`unknown table ${name}`);
   }
 
@@ -145,6 +150,15 @@ class FakeRest {
     const params = url.searchParams;
     const user = this.userOf(auth);
 
+    if (this.missingTables.has(name)) return Response.json({ code: "PGRST205" }, { status: 404 });
+    if (name === "contact_inquiries" && this.noSeenColumn && (params.get("select")?.includes("reply_seen_at") || params.has("reply_seen_at"))) {
+      return Response.json({ code: "42703" }, { status: 400 });
+    }
+    if (name === "rpc/get_my_profile_activity_stats" || name === "rpc/get_my_profile_activity") {
+      if (!user) return Response.json({ code: "42501" }, { status: 401 });
+      this.rpcBodies.push({ name, ...(body as Row) });
+      return Response.json(name.endsWith("stats") ? [{ category: "comments", post_count: 2, like_count: 1 }] : [{ activity_id: "a1", total_count: 1 }]);
+    }
     if (name === "rpc/get_engagement_counts") {
       const env = (body as { p_env: string }).p_env;
       const keys = new Set([...this.comments, ...this.likes].filter((row) => row.env === env).map((row) => String(row.story_id)));
@@ -210,7 +224,7 @@ class FakeRest {
       return new Response(null, { status: 201 });
     }
 
-    const all = name === "comments" ? this.comments : name === "comment_likes" ? this.commentLikes : name === "likes" ? this.likes : this.reactions;
+    const all = name === "resource_reactions" ? this.reactions : this.table(name);
     // RLS: only the caller's rows are visible to update and delete.
     const targets = all.filter((row) => this.matches(row, params) && (row.user_id === user));
     if (request.method === "DELETE") {
@@ -244,7 +258,7 @@ class FakeRest {
 }
 
 class FakeD1 implements D1Database {
-  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"]]);
+  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"], ["path.profile", "api"]]);
   prepare(query: string): D1PreparedStatement {
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       if (query !== FLAGS_SQL) throw new Error(`unexpected SQL ${query}`);
@@ -631,6 +645,43 @@ async function main() {
   db.flags.set("path.contact", "legacy");
   resetFlagsForTest();
   assert.equal((await json(await mailbox(token))).body.reason, "flag");
+
+  // --- Profile (STEP1_DESIGN 9.4) ----------------------------------------------------------
+  const asUser = (path: string, init: RequestInit = {}) => call(path, { ...init, headers: { authorization: `Bearer ${token}`, ...(init.headers ?? {}) } });
+  assert.deepEqual((await json(await call("/api/read/profile/nicknames"))).body.rows, rest.nicknamePools);
+  rest.missingTables.add("profile_character_nickname_pools");
+  assert.equal((await json(await call("/api/read/profile/nicknames"))).body.rows, null, "a missing pools table reads as no pools");
+  rest.missingTables.clear();
+
+  assert.equal((await call("/api/me/profile/stats")).status, 401);
+  const stats = await json(await asUser("/api/me/profile/stats"));
+  assert.deepEqual(stats.body.rows, [{ category: "comments", post_count: 2, like_count: 1 }]);
+  assert.deepEqual(rest.rpcBodies.at(-1), { name: "rpc/get_my_profile_activity_stats", p_env: "development" });
+  assert.equal(rest.calls.at(-1)?.auth, `Bearer ${token}`, "the RPC reads auth.uid() from the user's token");
+  await asUser("/api/me/profile/activity?category=comments&sort=likes&offset=20");
+  assert.deepEqual(rest.rpcBodies.at(-1), { name: "rpc/get_my_profile_activity", p_env: "development", p_category: "comments", p_sort: "likes", p_limit: 20, p_offset: 20 });
+  for (const bad of ["category=all&sort=oldest", "category=secret", "offset=-1", "offset=99999", "offset=1e3"]) {
+    assert.equal((await asUser(`/api/me/profile/activity?${bad}`)).status, 400, bad);
+  }
+
+  rest.contactInquiries = [
+    { id: "i1", user_id: USER, env: "development", category: "bug", message: "개발 문의입니다 열글자", status: "done", admin_response: "고쳤어요", reply_seen_at: null, created_at: "2026-11-05T00:00:00Z" },
+    { id: "i2", user_id: USER, env: "production", category: "bug", message: "운영 문의입니다 열글자", status: "new", admin_response: "운영 답", reply_seen_at: null, created_at: "2026-11-04T00:00:00Z" },
+    { id: "i3", user_id: OTHER, env: "development", category: "bug", message: "남의 문의입니다 열글자", status: "new", admin_response: null, reply_seen_at: null, created_at: "2026-11-03T00:00:00Z" },
+  ];
+  const inquiries = await json(await asUser("/api/me/profile/inquiries"));
+  assert.deepEqual((inquiries.body.rows as Row[]).map((row) => row.id), ["i1"], "own rows of this env only");
+  assert.equal(inquiries.body.replySeenColumn, true);
+  rest.noSeenColumn = true;
+  const older = await json(await asUser("/api/me/profile/inquiries"));
+  assert.equal(older.body.replySeenColumn, false);
+  assert.ok(!("reply_seen_at" in (older.body.rows as Row[])[0]), "the fallback read skips the column");
+  assert.equal((await asUser("/api/write/profile/inquiries-seen", { method: "POST", headers: { "sec-fetch-site": "same-origin" } })).status, 200, "no column: nothing to mark");
+  rest.noSeenColumn = false;
+  assert.equal((await asUser("/api/write/profile/inquiries-seen", { method: "POST", headers: { "sec-fetch-site": "same-origin" } })).status, 200);
+  assert.ok(rest.contactInquiries[0].reply_seen_at, "this env's answered inquiry is marked seen");
+  assert.equal(rest.contactInquiries[1].reply_seen_at, null, "another env's stays unseen");
+  rest.contactInquiries = [];
 
   // --- Helpers ------------------------------------------------------------------------
   assert.equal(contentRangeTotal("0-4/5"), 5);

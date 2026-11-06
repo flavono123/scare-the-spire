@@ -549,6 +549,27 @@ SURFACE_MAP 2.2절 3번(네비 메일함 점)과 29번(문의 쓰기)을 덮는�
   지금처럼 `ContactInquiryRateLimitError`를 던진다. Worker의 `API_WRITE_LIMITER` 429도 같은 안내가 된다.
 - 메일함 읽기가 실패하면 클라이언트는 `null`(점을 그대로 둠)이다. 지금 legacy와 같다.
 
+### 9.4 프로필(`profile`)
+
+SURFACE_MAP 2.2절 28번. SURFACE_MAP의 묶음 `/api/me/profile` 대신 지금 호출마다 경로 하나를 둔다. 프로필은 드물게 보는
+화면이라 Worker 요청이 몇 건 늘어도 하루 한도에 영향이 작고, 지금 훅의 실패 단위(통계, 목록, 문의가 따로 "응답 없음")를
+그대로 지킬 수 있다.
+
+| 경로 | Supabase | 응답 |
+|---|---|---|
+| `GET /api/read/profile/nicknames` | `profile_character_nickname_pools`(env 없음, 10행 이하) | `{ v, env, rows }`. 테이블이 없으면(PGRST205, 42P01) `rows: null` |
+| `GET /api/me/profile/stats` | `rpc/get_my_profile_activity_stats { p_env }` | `{ v, env, rows }` |
+| `GET /api/me/profile/activity?category=&sort=&offset=` | `rpc/get_my_profile_activity { p_env, p_category, p_sort, p_limit: 20, p_offset }` | `{ v, env, rows }` |
+| `GET /api/me/profile/inquiries` | `contact_inquiries` 이력 열, 최신순 50개. `reply_seen_at` 열이 없으면 그 열 없이 다시 | `{ v, env, rows, replySeenColumn }` |
+| `POST /api/write/profile/inquiries-seen` | 답변이 있고 안 본 내 문의에 `reply_seen_at = Worker 시각` (`return=minimal`) | `{}` |
+
+- RPC는 `auth.uid()`를 읽으므로 사용자 토큰으로 부른다. 분류·정렬·쪽 크기·최대 offset(10,000)은 import 없는
+  `src/lib/profile-activity-rules.ts`에 두고 훅과 Worker가 같이 쓴다. 활동 한 쪽은 런 원문이 없어 작다(공개 데이터
+  전체가 원문을 빼면 약 1.4 MB, plan 측정). 어댑터의 2 MB 상한을 넘으면 그 쪽만 "응답 없음"이다.
+- **바뀌는 것:** 내 문의 목록은 지금 env 필터가 없어 두 env의 행을 보여 준다. Worker는 5절 규칙대로 자기 env만 읽는다.
+  운영과 testbed를 같은 브라우저 세션으로 오간 사용자만 차이가 보인다.
+- 읽음 표시는 두 번 해도 해가 없지만, 쓰기 규칙대로 처리되지 않았음이 확실할 때만 legacy로 다시 보낸다.
+
 ## 10. 배포와 testbed
 
 - CI(`.github/workflows/cloudflare-workers.yml`) main 배포에 `--var API_SUPABASE_URL:… --var API_SUPABASE_KEY:…

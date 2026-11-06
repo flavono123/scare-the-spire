@@ -7,10 +7,22 @@ import {
   parseNicknamePoolRows,
   type ProfileNicknamePools,
 } from "@/lib/profile-character-nicknames";
+import { apiFetch, shouldUseLegacy } from "@/lib/api-client";
+import { surfacePath } from "@/lib/runtime-flags";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 export async function fetchProfileCharacterNicknamePools(): Promise<ProfileNicknamePools | null> {
+  // docs/supabase-exit/STEP1_DESIGN.md 9.4. Null on any failure, as before.
+  if (surfacePath("profile") === "api") {
+    try {
+      const body = await apiFetch<{ v?: number; rows?: unknown[] | null }>("profile", "/api/read/profile/nicknames");
+      if (body?.v !== 1 || !body.rows) return null;
+      return parseNicknamePoolRows(body.rows as Parameters<typeof parseNicknamePoolRows>[0]);
+    } catch (error) {
+      if (!shouldUseLegacy(error)) return null;
+    }
+  }
   if (!supabaseEnabled) return null;
 
   try {

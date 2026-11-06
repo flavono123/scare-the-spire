@@ -39,8 +39,10 @@ interface ContactInquiryHistoryRow {
   created_at: string;
 }
 
-const CONTACT_INQUIRY_HISTORY_COLUMNS = "id,category,message,env,status,admin_response,reply_seen_at,created_at";
-const CONTACT_INQUIRY_HISTORY_COLUMNS_LEGACY = "id,category,message,env,status,admin_response,created_at";
+import {
+  CONTACT_INQUIRY_HISTORY_COLUMNS,
+  CONTACT_INQUIRY_HISTORY_COLUMNS_LEGACY,
+} from "@/lib/profile-activity-rules";
 
 export function contactReplyIsUnseen(row: {
   admin_response?: unknown;
@@ -136,8 +138,35 @@ export async function submitContactInquiry(input: ContactInquiryInput): Promise<
   throw error;
 }
 
+function historyItem(row: ContactInquiryHistoryRow, withSeenColumn: boolean): ContactInquiryHistoryItem {
+  return {
+    id: row.id,
+    category: row.category,
+    message: row.message,
+    env: row.env,
+    status: row.status,
+    adminResponse: row.admin_response,
+    replySeenAt: withSeenColumn && "reply_seen_at" in row ? row.reply_seen_at ?? null : undefined,
+    createdAt: row.created_at,
+  };
+}
+
 export async function listOwnContactInquiries(): Promise<ContactInquiryHistoryItem[]> {
   if (!supabaseEnabled) throw new Error("Supabase is not configured");
+
+  // docs/supabase-exit/STEP1_DESIGN.md 9.4: this env's inquiries only.
+  if (surfacePath("profile") === "api") {
+    try {
+      const body = await apiFetchAsUser<{ v?: number; rows?: ContactInquiryHistoryRow[]; replySeenColumn?: boolean }>(
+        "profile",
+        "/api/me/profile/inquiries",
+      );
+      if (body?.v !== 1) throw new Error("bad inquiries");
+      return (body.rows ?? []).map((row) => historyItem(row, body.replySeenColumn !== false));
+    } catch (error) {
+      if (!shouldUseLegacy(error)) throw error;
+    }
+  }
 
   const first = await withSupabaseTimeout(
     "contact_inquiries.select",
@@ -160,16 +189,7 @@ export async function listOwnContactInquiries(): Promise<ContactInquiryHistoryIt
     : first;
 
   if (result.error) throw result.error;
-  return ((result.data ?? []) as ContactInquiryHistoryRow[]).map((row) => ({
-    id: row.id,
-    category: row.category,
-    message: row.message,
-    env: row.env,
-    status: row.status,
-    adminResponse: row.admin_response,
-    replySeenAt: "reply_seen_at" in row ? row.reply_seen_at ?? null : undefined,
-    createdAt: row.created_at,
-  }));
+  return ((result.data ?? []) as ContactInquiryHistoryRow[]).map((row) => historyItem(row, true));
 }
 
 export async function hasUnseenContactReply(): Promise<boolean | null> {
@@ -209,6 +229,19 @@ export async function hasUnseenContactReply(): Promise<boolean | null> {
 
 export async function markOwnContactRepliesSeen(): Promise<void> {
   if (!supabaseEnabled) return;
+
+  if (surfacePath("profile") === "api") {
+    try {
+      await apiFetchAsUser("profile", "/api/write/profile/inquiries-seen", { method: "POST" });
+      return;
+    } catch (error) {
+      // Marking seen twice is harmless, but only a call that certainly did nothing is resent.
+      if (!writeMayGoLegacy(error)) {
+        console.warn("Failed to mark contact replies seen", error instanceof Error ? error.message : error);
+        return;
+      }
+    }
+  }
 
   const { error } = await withSupabaseTimeout(
     "contact_inquiries.reply_seen",
