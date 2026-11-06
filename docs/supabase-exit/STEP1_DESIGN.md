@@ -700,8 +700,8 @@ SURFACE_MAP 2.2절 11~18번. 장난감 상자 글은 행 하나가 1 MB를 넘�
 - api 경로는 `${table}_feed` Realtime 채널을 열지 않는다(14절 결정). 채널 실패가 불러온 피드를 "응답 없음"으로 덮던
   일도 api 경로에서는 없다.
 - 옮기지 않는 것: RPC가 없을 때의 대체 select, `get_defragment_feed` v1 대체, 열이 없을 때의 다시 시도(운영에 모두 있다),
-  SURFACE_MAP 13번 메모의 죽은 경로, 패치 페이지의 변형 릴과 빌드 시점 읽기(`transfigure-data.ts`), 상세 셸 OG(플래그
-  없음, SURFACE_MAP 2.3절).
+  SURFACE_MAP 13번 메모의 죽은 경로, 패치 페이지의 변형 릴과 빌드 시점 읽기(`transfigure-data.ts`), 상세 셸 OG(플래그를
+  따르지 않는 4개 중 하나, SURFACE_MAP 1.2절).
 
 ## 10. 배포와 testbed
 
