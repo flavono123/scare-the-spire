@@ -48,6 +48,8 @@
   `/api/read/nav` 1건이다
 - QA: 운영 배포 뒤 `pnpm cf:smoke -- --origin <운영>`(API 라우터 확인 포함). testbed에서 `path.nav` legacy와 api를
   번갈아 켜고 홈, `/compendium/cards`, `/patches/<최신>`의 점·배달부 비교, 쿠키 지우기, 409 되돌리기 확인
+- testbed: 2026-11-06부터 development 전용이다(`9531ccb6`). main·패치 페이지 모두 development 행만 읽고 써서 testbed
+  패치 페이지의 네비도 api 경로를 쓴다. 운영 빌드(CI, `cf:patch:deploy`)는 그대로 production이다
 - Commits: worktree `refactor/supabase-exit`
 
 ### supabase-exit-step1-comments

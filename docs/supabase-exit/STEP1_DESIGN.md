@@ -84,6 +84,12 @@
   `catalogHasNewer`를 넣었다(`79dfa5b2`, spec은 고치기 전 판에서 실패). testbed(`79dfa5b2`) 스모크 205개·브라우저 QA 13개
   통과, 모든 네비 표면을 지금 읽은 것으로 두면 패치 노트 점이 api·legacy 모두 꺼진다. 운영 D1(`slseoun-prod`)에는
   마이그레이션 0001·0002가 아직 적용되지 않았다(승인 대기).
+- 2026-11-06 16:40 KST testbed를 development 전용으로 바꿨다(`9531ccb6`, 사용자 결정, 10절). 첫 실행은 testbed D1
+  마이그레이션 단계에서 Cloudflare API 7403(일시 오류)로 멈췄고, 같은 산출물로 다시 배포해 스모크 205개·브라우저 QA
+  13개가 통과했다. 브라우저 Supabase를 막고 `/patches`, `/patches/neowsletters`, `/patches/2026-09-11`을 열면 설정의
+  `supabaseEnv`가 `development`이고, 네비가 `/api/read/nav` 1건으로 뜨며 env 불일치 경고가 없다. 2026-09-11은 릴과
+  참여 수도 `/api`로 읽는다. 남은 Supabase 요청은 페이지마다 변형 릴 1건(`transfigure_posts`, development 행)뿐이고,
+  이는 9.8절에서 1단계에 옮기지 않기로 한 것이다. 운영 `/patches`는 그대로 `production`이다.
 - 이 문서는 모든 화면이 같이 쓰는 기반과 첫 화면 `nav`를 정한다. 다른 화면은 SURFACE_MAP.md 2절을 따르되,
   이 문서 9절의 규칙이 우선한다.
 
