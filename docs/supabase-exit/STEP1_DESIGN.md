@@ -662,6 +662,47 @@ SURFACE_MAP 2.2절 21번과 10번의 `stories`.
   25행 키가 모두 맞는다).
 - api 경로는 Realtime 채널을 열지 않는다(14절 결정). 패치 정적 작성기(리치 번들이 실패할 때만 쓰임)도 api 분기를 쓴다.
 
+### 9.8 장난감 상자(`toybox-feed`)
+
+SURFACE_MAP 2.2절 11~18번. 장난감 상자 글은 행 하나가 1 MB를 넘기도 한다(어려운 결정의 배치, 서류 폭풍 문서, 2.2절
+12번 메모). SURFACE_MAP이 제안한 묶음 응답(피드에 viewer·표지·다음 커서, 서류 폭풍 목록에 썸네일·요약)은 Worker가
+행을 파싱해야 해서 9.6절과 같은 CPU 문제에 닿는다. 1단계는 **지금 클라이언트 쿼리마다 같은 일을 하는 경로를 하나씩 두고,
+글이 든 응답과 요청은 흘려보낸다.** 클라이언트의 정규화·커서·카운터 코드는 그대로 쓴다. 묶음과 요약은 3단계(D1 읽기)에서
+요약 열과 함께 한다.
+
+| 경로 | Supabase | 응답 |
+|---|---|---|
+| `GET /api/read/toybox-feed?service=&sort=[&score=&created_at=&cursor_id=]` | `get_toybox_feed` 20행 | RPC 배열 그대로 |
+| `GET /api/read/defragment-feed?sort=[&커서]` | `get_defragment_feed_v2` 20행 | 같음 |
+| `GET /api/read/defragment-runs?sort=latest\|recommended\|comments[&커서]` | 조각모음 게시판의 런 11열, keyset | 같음 |
+| `GET /api/read/toybox-post?service=&id=` | 그 서비스 테이블의 한 행 `select *` | 배열 그대로(없으면 `[]`) |
+| `POST /api/write/toybox-post?service=` | insert, 본문 그대로(`return=representation`) | 201 배열 그대로 |
+| `PATCH /api/write/toybox-post?service=&id=` | 내 글 update, 본문 그대로. 수정 정책이 있는 5개 서비스만 | 배열 그대로(0행이면 `[]`) |
+| `DELETE /api/write/toybox-post?service=&id=` | 내 글 하나 | `{ v, env, deleted }` |
+| `GET /api/read/favorite-tournament/presets`, `stats?id=` | 기본 대회 전부, 후보 통계 | 배열 그대로 |
+| `POST /api/write/favorite-tournament/play` `{ tournamentId, startingSize, championType, championId, matches }` | `complete_favorite_tournament_play`(env는 Worker 값) | `{ v, env, result }` |
+| `GET /api/read/pagestorm/posts` | 최신 50개, 목록 12열 | 배열 그대로 |
+| `GET /api/me/pagestorm/drafts[?id=]` | 내 임시 저장 최근 20개(목록 열) 또는 하나(`select *`) | 배열 그대로 |
+| `POST`·`PATCH`·`DELETE /api/write/pagestorm/drafts[?id=]` | 임시 저장 insert·update·delete | 글 쓰기와 같다 |
+| `GET /api/read/defragment-body?service=&id=`, `PUT /api/write/defragment-body` | 덧글 본문 읽기, upsert(`on_conflict=env,source_service,source_id`) | 배열 그대로 |
+| `GET /api/read/this-or-that/like-counts?ids=`, `GET /api/me/this-or-that/likes?ids=` | 좋아요 수 뷰, 내 좋아요 | `{ v, env, rows }` |
+| `PUT`·`DELETE /api/write/this-or-that/like?id=` | 좋아요 insert(중복은 성공)·delete | `{ v, env, liked }` |
+| `GET /api/read/this-or-that/vote-summaries?ids=`(50개까지), `GET /api/me/this-or-that/votes?ids=` | `get_this_or_that_vote_summaries`, 내 투표 | `{ v, env, rows }` |
+| `PUT /api/write/this-or-that/vote?id=` `{ choice, surface }`, `DELETE` | 투표 insert(`created_surface`)·delete | `{ v, env, choice }` |
+| `GET /api/read/this-or-that/comment-counts?ids=` | `this-or-that:<id>` 키의 댓글 행 | `{ v, env, counts }` |
+
+- id 목록은 uuid만, 중복 없이 100개까지(투표 요약은 RPC 한도인 50개). 커서는 셋 다 있거나 없어야 하고 정수, ISO 시각,
+  행 id 형식만 받는다. 런 keyset의 `or` 필터는 Worker가 검사한 커서 값으로 만든다(지금은 큰따옴표만 지운다).
+- **예외(1단계만):** 글·임시 저장·덧글 본문 쓰기는 본문을 파싱하지 않으므로(9.6절과 같다) Worker가 `env`와 `user_id`를
+  채우지 못한다. 클라이언트가 지금처럼 채우고, RLS가 `user_id = auth.uid()`를, 보호 트리거가 카운터와 `created_at`을
+  맡는다. 남은 위험은 사용자가 자기 글을 다른 env에 쓰는 것뿐이다. 수정·삭제는 검증한 sub와 Worker env로 거른다. 업로드
+  상한은 글 8 MB, 임시 저장 4 MB다.
+- api 경로는 `${table}_feed` Realtime 채널을 열지 않는다(14절 결정). 채널 실패가 불러온 피드를 "응답 없음"으로 덮던
+  일도 api 경로에서는 없다.
+- 옮기지 않는 것: RPC가 없을 때의 대체 select, `get_defragment_feed` v1 대체, 열이 없을 때의 다시 시도(운영에 모두 있다),
+  SURFACE_MAP 13번 메모의 죽은 경로, 패치 페이지의 변형 릴과 빌드 시점 읽기(`transfigure-data.ts`), 상세 셸 OG(플래그
+  없음, SURFACE_MAP 2.3절).
+
 ## 10. 배포와 testbed
 
 - CI(`.github/workflows/cloudflare-workers.yml`) main 배포에 `--var API_SUPABASE_URL:… --var API_SUPABASE_KEY:…
