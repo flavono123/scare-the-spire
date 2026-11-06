@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
@@ -10,6 +11,13 @@ import {
   type ThisOrThatVoteSummary,
   type ThisOrThatVoteSurface,
 } from "@/lib/this-or-that-votes";
+import {
+  apiMyThisOrThatVotes,
+  apiThisOrThatUnvote,
+  apiThisOrThatVote,
+  apiThisOrThatVoteSummaries,
+  toyboxViaApi,
+} from "@/lib/toybox-api";
 
 interface UseThisOrThatVotesReturn {
   summaries: Record<string, ThisOrThatVoteSummary>;
@@ -60,29 +68,48 @@ export function useThisOrThatVotes(
     let cancelled = false;
     const requestMutationVersion = mutationVersion.current;
 
-    const summaryQuery = withSupabaseTimeout(
-      "get_this_or_that_vote_summaries",
-      supabase.rpc("get_this_or_that_vote_summaries", {
-        p_post_ids: postIds,
-        p_env: supabaseEnv,
-      }),
-    );
-    const ownVoteQuery = userId
-      ? withSupabaseTimeout(
-          "this_or_that_post_votes.user_status",
-          supabase
-            .from("this_or_that_post_votes")
-            .select("post_id,choice")
-            .eq("env", supabaseEnv)
-            .eq("user_id", userId)
-            .in("post_id", postIds),
-        )
-      : Promise.resolve({ data: [], error: null });
+    const load = async (): Promise<{ summaryRows: unknown[]; ownVoteRows: unknown[] }> => {
+      if (toyboxViaApi()) {
+        try {
+          // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same RPC and rows, through the Worker.
+          // Over 50 ids the summaries call fails as the RPC does, so neither read needs chunks.
+          const ids = [...new Set(postIds)];
+          const [summaryRows, ownVoteRows] = await Promise.all([
+            apiThisOrThatVoteSummaries(ids),
+            userId ? apiMyThisOrThatVotes(ids) : [],
+          ]);
+          return { summaryRows, ownVoteRows };
+        } catch (error) {
+          if (!shouldUseLegacy(error) || !supabaseEnabled) throw error;
+        }
+      }
+      const summaryQuery = withSupabaseTimeout(
+        "get_this_or_that_vote_summaries",
+        supabase.rpc("get_this_or_that_vote_summaries", {
+          p_post_ids: postIds,
+          p_env: supabaseEnv,
+        }),
+      );
+      const ownVoteQuery = userId
+        ? withSupabaseTimeout(
+            "this_or_that_post_votes.user_status",
+            supabase
+              .from("this_or_that_post_votes")
+              .select("post_id,choice")
+              .eq("env", supabaseEnv)
+              .eq("user_id", userId)
+              .in("post_id", postIds),
+          )
+        : Promise.resolve({ data: [], error: null });
 
-    Promise.all([summaryQuery, ownVoteQuery])
-      .then(([summaryResult, ownVoteResult]) => {
-        if (summaryResult.error) throw summaryResult.error;
-        if (ownVoteResult.error) throw ownVoteResult.error;
+      const [summaryResult, ownVoteResult] = await Promise.all([summaryQuery, ownVoteQuery]);
+      if (summaryResult.error) throw summaryResult.error;
+      if (ownVoteResult.error) throw ownVoteResult.error;
+      return { summaryRows: summaryResult.data ?? [], ownVoteRows: ownVoteResult.data ?? [] };
+    };
+
+    load()
+      .then(({ summaryRows, ownVoteRows }) => {
         if (cancelled) return;
         if (requestMutationVersion !== mutationVersion.current) {
           setLoadedQueryKey(queryKey);
@@ -90,7 +117,7 @@ export function useThisOrThatVotes(
         }
 
         const nextSummaries: Record<string, ThisOrThatVoteSummary> = {};
-        for (const row of summaryResult.data ?? []) {
+        for (const row of summaryRows) {
           const summary = row as {
             post_id: unknown;
             left_count: unknown;
@@ -105,7 +132,7 @@ export function useThisOrThatVotes(
         }
 
         const nextChoices: Record<string, ThisOrThatVoteChoice> = {};
-        for (const row of ownVoteResult.data ?? []) {
+        for (const row of ownVoteRows) {
           const vote = row as { post_id: unknown; choice: ThisOrThatVoteChoice };
           nextChoices[String(vote.post_id)] = vote.choice;
         }
@@ -153,7 +180,17 @@ export function useThisOrThatVotes(
     }));
 
     const activeUserId = userId ?? await ensureUser();
-    const result = activeUserId
+    let apiResult: { error: unknown } | null = null;
+    if (activeUserId && toyboxViaApi()) {
+      try {
+        await apiThisOrThatVote(postId, choice, surface);
+        apiResult = { error: null };
+      } catch (error) {
+        // Only a write that certainly did nothing is sent again on the legacy path.
+        if (!writeMayGoLegacy(error)) apiResult = { error };
+      }
+    }
+    const result = apiResult ?? (activeUserId
       ? await withSupabaseTimeout(
           "this_or_that_post_votes.insert",
           supabase.from("this_or_that_post_votes").insert({
@@ -164,7 +201,7 @@ export function useThisOrThatVotes(
             env: supabaseEnv,
           }),
         ).catch(() => ({ error: new Error("timeout") }))
-      : { error: new Error("auth unavailable") };
+      : { error: new Error("auth unavailable") });
 
     mutationVersion.current += 1;
     markPending(postId, false);
@@ -200,7 +237,16 @@ export function useThisOrThatVotes(
       [postId]: changeThisOrThatVoteSummary(previousSummary, choice, -1),
     }));
 
-    const { error } = await withSupabaseTimeout(
+    let apiResult: { error: unknown } | null = null;
+    if (toyboxViaApi()) {
+      try {
+        await apiThisOrThatUnvote(postId);
+        apiResult = { error: null };
+      } catch (apiError) {
+        if (!writeMayGoLegacy(apiError)) apiResult = { error: apiError };
+      }
+    }
+    const { error } = apiResult ?? await withSupabaseTimeout(
       "this_or_that_post_votes.delete",
       supabase
         .from("this_or_that_post_votes")

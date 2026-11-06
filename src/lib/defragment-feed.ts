@@ -1,3 +1,4 @@
+import { shouldUseLegacy } from "@/lib/api-client";
 import {
   feedItemFromPost,
   isDefragmentFederatedService,
@@ -9,6 +10,8 @@ import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { isCoverSpec } from "@/lib/run-cover-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { apiDefragmentFeed, apiDefragmentRuns, toyboxViaApi } from "@/lib/toybox-api";
+import { isCursorCreatedAt, isRowId } from "@/lib/toybox-api-rules";
 import {
   asNonNegativeInt,
   buildLatestFeedKeysetFilter,
@@ -141,6 +144,18 @@ export function cursorFromDefragmentItem(
   };
 }
 
+/** Run ids are free text: a cursor the Worker would refuse stays on legacy (as run-donation.ts does). */
+function apiCursorOk(cursor: ToyboxFeedCursor | null): boolean {
+  return !cursor || (isRowId(cursor.id) && isCursorCreatedAt(cursor.createdAt));
+}
+
+function feedPage(rows: unknown[]): DefragmentFeedPage {
+  const items = rows
+    .map(parseDefragmentFeedRow)
+    .filter((item): item is DefragmentFeedItem => item != null);
+  return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
+}
+
 async function fetchFilteredDefragmentFeedPage(options: {
   service: Exclude<DefragmentFederatedService, "history_course">;
   sort: ToyboxFeedSort;
@@ -171,6 +186,14 @@ async function fetchHistoryCourseDefragmentPage(options: {
     ? options.sort
     : "latest";
   const scoreColumn = sort === "comments" ? "comment_count" : "like_count";
+  if (toyboxViaApi() && apiCursorOk(options.cursor)) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same columns, order and keyset; the Worker builds the filter.
+      return historyCoursePage(await apiDefragmentRuns(sort, options.cursor));
+    } catch (error) {
+      if (!shouldUseLegacy(error)) throw error;
+    }
+  }
   let query = supabase
     .from("runs")
     .select("id, created_at, like_count, comment_count, seed, donor_user_id, donor_nickname, cover_spec, win, ascension, total_floors")
@@ -200,7 +223,11 @@ async function fetchHistoryCourseDefragmentPage(options: {
     throw error;
   }
 
-  const items = (data ?? [])
+  return historyCoursePage(data ?? []);
+}
+
+function historyCoursePage(rows: unknown[]): DefragmentFeedPage {
+  const items = rows
     .map((row) => {
       const record = row as Record<string, unknown>;
       return parseDefragmentFeedRow({
@@ -249,6 +276,13 @@ export async function fetchDefragmentFeedPage(options: {
     });
   }
 
+  if (toyboxViaApi() && apiCursorOk(options.cursor)) {
+    try {
+      return feedPage(await apiDefragmentFeed(sort, options.cursor));
+    } catch (error) {
+      if (!shouldUseLegacy(error)) throw error;
+    }
+  }
   const v2 = await withSupabaseTimeout(
     "get_defragment_feed_v2",
     supabase.rpc("get_defragment_feed_v2", {
@@ -275,12 +309,7 @@ export async function fetchDefragmentFeedPage(options: {
       }),
     );
 
-  if (!result.error) {
-    const items = ((result.data ?? []) as unknown[])
-      .map(parseDefragmentFeedRow)
-      .filter((item): item is DefragmentFeedItem => item != null);
-    return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
-  }
+  if (!result.error) return feedPage((result.data ?? []) as unknown[]);
 
   if (!isMissingDefragmentFeedRpc(result.error)) throw result.error;
   return { items: [], hasMore: false };

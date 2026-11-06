@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
+import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import {
   DECISIONS_DECISIONS_FEED_SERVICE,
   DECISIONS_DECISIONS_GAME_VERSION,
@@ -17,6 +18,14 @@ import {
 } from "@/lib/decisions-decisions";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import {
+  apiCreateToyboxPost,
+  apiDeleteToyboxPost,
+  apiToyboxPost,
+  apiUpdateToyboxPost,
+  toyboxViaApi,
+  toyboxWriteError,
+} from "@/lib/toybox-api";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 import { currentAuthorProfileToken } from "@/lib/user-profile";
 
@@ -52,26 +61,35 @@ export async function insertDecisionsDecisionsPost(
   if (!isValidSave(input)) return null;
 
   const authorToken = currentAuthorProfileToken();
+  const row = {
+    user_id: input.activeUserId,
+    nickname: input.nickname.trim(),
+    title: input.title.trim(),
+    note: input.note.trim(),
+    preset_key: input.presetKey,
+    game_version: DECISIONS_DECISIONS_GAME_VERSION,
+    rows: input.rows,
+    placements: input.placements,
+    extra_ids: input.extraIds,
+    env: supabaseEnv,
+    avatar_id: authorToken.avatar_id,
+    avatar_kind: authorToken.avatar_kind,
+    palette_id: authorToken.palette_id,
+    palette_swapped: authorToken.palette_swapped,
+  };
+  if (toyboxViaApi()) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, sent through the Worker.
+      return normalizeDecisionsDecisionsPost(await apiCreateToyboxPost("decisions_decisions", row));
+    } catch (error) {
+      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     "decisions_decisions_posts.insert",
     supabase
       .from(DECISIONS_DECISIONS_TABLE)
-      .insert({
-        user_id: input.activeUserId,
-        nickname: input.nickname.trim(),
-        title: input.title.trim(),
-        note: input.note.trim(),
-        preset_key: input.presetKey,
-        game_version: DECISIONS_DECISIONS_GAME_VERSION,
-        rows: input.rows,
-        placements: input.placements,
-        extra_ids: input.extraIds,
-        env: supabaseEnv,
-        avatar_id: authorToken.avatar_id,
-        avatar_kind: authorToken.avatar_kind,
-        palette_id: authorToken.palette_id,
-        palette_swapped: authorToken.palette_swapped,
-      })
+      .insert(row)
       .select()
       .single(),
   );
@@ -87,24 +105,35 @@ export async function updateDecisionsDecisionsPost(
   if (!isValidSave(input)) return null;
 
   const authorToken = currentAuthorProfileToken();
+  const patch = {
+    nickname: input.nickname.trim(),
+    title: input.title.trim(),
+    note: input.note.trim(),
+    preset_key: input.presetKey,
+    game_version: DECISIONS_DECISIONS_GAME_VERSION,
+    rows: input.rows,
+    placements: input.placements,
+    extra_ids: input.extraIds,
+    avatar_id: authorToken.avatar_id,
+    avatar_kind: authorToken.avatar_kind,
+    palette_id: authorToken.palette_id,
+    palette_swapped: authorToken.palette_swapped,
+  };
+  if (toyboxViaApi()) {
+    try {
+      const data = await apiUpdateToyboxPost("decisions_decisions", postId, patch);
+      // Legacy .single() throws when no row matched (PGRST116).
+      if (!data) throw new Error("no row");
+      return normalizeDecisionsDecisionsPost(data);
+    } catch (error) {
+      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     "decisions_decisions_posts.update",
     supabase
       .from(DECISIONS_DECISIONS_TABLE)
-      .update({
-        nickname: input.nickname.trim(),
-        title: input.title.trim(),
-        note: input.note.trim(),
-        preset_key: input.presetKey,
-        game_version: DECISIONS_DECISIONS_GAME_VERSION,
-        rows: input.rows,
-        placements: input.placements,
-        extra_ids: input.extraIds,
-        avatar_id: authorToken.avatar_id,
-        avatar_kind: authorToken.avatar_kind,
-        palette_id: authorToken.palette_id,
-        palette_swapped: authorToken.palette_swapped,
-      })
+      .update(patch)
       .eq("id", postId)
       .eq("user_id", input.activeUserId)
       .eq("env", supabaseEnv)
@@ -166,15 +195,26 @@ export function useDecisionsDecisionsPost(
     if (!supabaseEnabled) return;
     let cancelled = false;
 
-    withSupabaseTimeout(
-      "decisions_decisions_posts.detail",
-      supabase
-        .from(DECISIONS_DECISIONS_TABLE)
-        .select("*")
-        .eq("id", postId)
-        .eq("env", supabaseEnv)
-        .maybeSingle(),
-    )
+    const load = async () => {
+      if (toyboxViaApi()) {
+        try {
+          return { data: await apiToyboxPost("decisions_decisions", postId), error: null };
+        } catch (error) {
+          if (!shouldUseLegacy(error)) throw error;
+        }
+      }
+      return withSupabaseTimeout(
+        "decisions_decisions_posts.detail",
+        supabase
+          .from(DECISIONS_DECISIONS_TABLE)
+          .select("*")
+          .eq("id", postId)
+          .eq("env", supabaseEnv)
+          .maybeSingle(),
+      );
+    };
+
+    load()
       .then(({ data, error }) => {
         if (error) throw error;
         if (cancelled) return;
@@ -201,6 +241,19 @@ export function useDecisionsDecisionsPost(
 
   const remove = useCallback(async () => {
     if (!userId || !supabaseEnabled) return false;
+    if (toyboxViaApi()) {
+      try {
+        // Not ours or already gone still clears the post, as the legacy delete does.
+        await apiDeleteToyboxPost("decisions_decisions", postId);
+        setPost(null);
+        return true;
+      } catch (error) {
+        if (!writeMayGoLegacy(error)) {
+          setUnavailable(true);
+          return false;
+        }
+      }
+    }
     const { error } = await withSupabaseTimeout(
       "decisions_decisions_posts.detail.delete",
       supabase

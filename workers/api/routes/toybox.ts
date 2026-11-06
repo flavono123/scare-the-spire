@@ -453,22 +453,6 @@ async function handleUnvote(context: UserRouteContext): Promise<Response> {
   return jsonResponse({ v: 1, env: config.dataEnv, choice: null });
 }
 
-async function handleCommentCounts(context: PublicRouteContext): Promise<Response> {
-  const ids = parsePostIds(context.url.searchParams.get("ids") ?? "");
-  if (!ids) return apiError("invalid");
-  const { config } = context;
-  if (!context.allowUpstream) return jsonResponse({ v: 1, env: config.dataEnv });
-  const keys = ids.map((id) => `"this-or-that:${id}"`).join(",");
-  const result = await readRows(config, "comments", { select: "story_id", env: `eq.${config.dataEnv}`, story_id: `in.(${keys})` });
-  if (!result.ok) return apiError(restErrorCode(result));
-  const counts: Record<string, number> = {};
-  for (const row of result.data ?? []) {
-    const id = String(row.story_id ?? "").slice("this-or-that:".length);
-    if (id) counts[id] = (counts[id] ?? 0) + 1;
-  }
-  return jsonResponse({ v: 1, env: config.dataEnv, counts });
-}
-
 const idQuery = { id: isPostUuid };
 const idsQuery = { ids: (value: string) => parsePostIds(value) !== null };
 
@@ -504,5 +488,4 @@ export const toyboxRoutes: readonly ApiRoute[] = [
   route({ id: "me.this-or-that.votes", method: "GET", path: "/api/me/this-or-that/votes", access: "me", query: idsQuery, handle: handleMyVotes }),
   route({ id: "write.this-or-that.vote.put", method: "PUT", path: "/api/write/this-or-that/vote", access: "write", query: idQuery, body: { maxBytes: 1024 }, handle: handleVote }),
   route({ id: "write.this-or-that.vote.delete", method: "DELETE", path: "/api/write/this-or-that/vote", access: "write", query: idQuery, handle: handleUnvote }),
-  route({ id: "read.this-or-that.comment-counts", method: "GET", path: "/api/read/this-or-that/comment-counts", access: "public", rateLimit: "ip", query: idsQuery, handle: handleCommentCounts }),
 ];

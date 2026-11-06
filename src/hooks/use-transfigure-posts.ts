@@ -5,9 +5,18 @@ import type { PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import type { CardColor, CardRarityKo, CardTypeKo } from "@/lib/codex-types";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
+import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import type { GameLocale } from "@/lib/i18n";
 import { isCheckViolation, supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import {
+  apiCreateToyboxPost,
+  apiDeleteToyboxPost,
+  apiToyboxPost,
+  apiUpdateToyboxPost,
+  toyboxViaApi,
+  toyboxWriteError,
+} from "@/lib/toybox-api";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 import { currentAuthorProfileToken } from "@/lib/user-profile";
 import {
@@ -345,31 +354,44 @@ function validateSaveInput(input: SaveTransfigurePostInput) {
   };
 }
 
+/** `viaApi`: only the detail page edits; the list update is unreachable (SURFACE_MAP 13). */
 async function persistTransfigurePostUpdate(
   postId: string,
   input: SaveTransfigurePostInput,
+  viaApi = false,
 ) {
   const normalized = validateSaveInput(input);
   if (!normalized || !input.activeUserId) {
     return { data: null, error: null };
   }
 
+  const patch = {
+    nickname: normalized.nickname,
+    title: normalized.title,
+    ...normalized.representative,
+    ...normalized.extraVariantsPatch,
+    ...(currentAuthorProfileToken() ? {
+      avatar_id: currentAuthorProfileToken().avatar_id,
+      avatar_kind: currentAuthorProfileToken().avatar_kind,
+      palette_id: currentAuthorProfileToken().palette_id,
+      palette_swapped: currentAuthorProfileToken().palette_swapped,
+    } : {}),
+  };
+  if (viaApi && toyboxViaApi()) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same patch, sent through the Worker.
+      const data = await apiUpdateToyboxPost("transfigure", postId, patch);
+      // Legacy .single() reports no matched row as an error (PGRST116).
+      return data ? { data, error: null } : { data: null, error: { code: "PGRST116", message: "no row" } };
+    } catch (error) {
+      if (!writeMayGoLegacy(error)) return { data: null, error: toyboxWriteError(error) };
+    }
+  }
   return withSupabaseTimeout(
     "transfigure_posts.update",
     supabase
       .from("transfigure_posts")
-      .update({
-        nickname: normalized.nickname,
-        title: normalized.title,
-        ...normalized.representative,
-        ...normalized.extraVariantsPatch,
-        ...(currentAuthorProfileToken() ? {
-          avatar_id: currentAuthorProfileToken().avatar_id,
-          avatar_kind: currentAuthorProfileToken().avatar_kind,
-          palette_id: currentAuthorProfileToken().palette_id,
-          palette_swapped: currentAuthorProfileToken().palette_swapped,
-        } : {}),
-      })
+      .update(patch)
       .eq("id", postId)
       .eq("user_id", input.activeUserId)
       .eq("env", supabaseEnv)
@@ -385,25 +407,34 @@ export async function insertTransfigurePost(
   if (!normalized || !input.activeUserId) return null;
 
   const token = currentAuthorProfileToken();
+  // Typed loosely: insert() rejects the extraVariantsPatch union.
+  const row: Record<string, unknown> = {
+    user_id: input.activeUserId,
+    nickname: normalized.nickname,
+    title: normalized.title,
+    source_game_locale: input.sourceGameLocale,
+    ...normalized.representative,
+    ...normalized.extraVariantsPatch,
+    env: supabaseEnv,
+    ...(token ? {
+      avatar_id: token.avatar_id,
+      avatar_kind: token.avatar_kind,
+      palette_id: token.palette_id,
+      palette_swapped: token.palette_swapped,
+    } : {}),
+  };
+  if (toyboxViaApi()) {
+    try {
+      return normalizePost(await apiCreateToyboxPost("transfigure", row));
+    } catch (error) {
+      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     "transfigure_posts.insert",
     supabase
       .from("transfigure_posts")
-      .insert({
-        user_id: input.activeUserId,
-        nickname: normalized.nickname,
-        title: normalized.title,
-        source_game_locale: input.sourceGameLocale,
-        ...normalized.representative,
-        ...normalized.extraVariantsPatch,
-        env: supabaseEnv,
-        ...(token ? {
-          avatar_id: token.avatar_id,
-          avatar_kind: token.avatar_kind,
-          palette_id: token.palette_id,
-          palette_swapped: token.palette_swapped,
-        } : {}),
-      })
+      .insert(row)
       .select()
       .single(),
   );
@@ -523,15 +554,26 @@ export function useTransfigurePost(
     if (!supabaseEnabled) return;
     let cancelled = false;
 
-    withSupabaseTimeout(
-      "transfigure_posts.detail",
-      supabase
-        .from("transfigure_posts")
-        .select("*")
-        .eq("id", postId)
-        .eq("env", supabaseEnv)
-        .maybeSingle(),
-    )
+    const load = async () => {
+      if (toyboxViaApi()) {
+        try {
+          return { data: await apiToyboxPost("transfigure", postId), error: null };
+        } catch (error) {
+          if (!shouldUseLegacy(error)) throw error;
+        }
+      }
+      return withSupabaseTimeout(
+        "transfigure_posts.detail",
+        supabase
+          .from("transfigure_posts")
+          .select("*")
+          .eq("id", postId)
+          .eq("env", supabaseEnv)
+          .maybeSingle(),
+      );
+    };
+
+    load()
       .then(({ data, error }) => {
         if (error) throw error;
         if (cancelled) return;
@@ -555,7 +597,7 @@ export function useTransfigurePost(
       const { data, error } = await persistTransfigurePostUpdate(postId, {
         ...input,
         activeUserId: input.activeUserId ?? userId ?? undefined,
-      });
+      }, true);
       if (error) {
         if (!isCheckViolation(error)) setUnavailable(true);
         throw new Error(error.message);
@@ -570,6 +612,19 @@ export function useTransfigurePost(
 
   const remove = useCallback(async () => {
     if (!userId || !supabaseEnabled) return false;
+    if (toyboxViaApi()) {
+      try {
+        // Not ours or already gone still clears the post, as the legacy delete does.
+        await apiDeleteToyboxPost("transfigure", postId);
+        setPost(null);
+        return true;
+      } catch (error) {
+        if (!writeMayGoLegacy(error)) {
+          setUnavailable(true);
+          return false;
+        }
+      }
+    }
     const { error } = await withSupabaseTimeout(
       "transfigure_posts.detail.delete",
       supabase

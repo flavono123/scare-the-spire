@@ -1,4 +1,4 @@
-import { ApiUnavailableError, apiFetch, requireApiVersion } from "@/lib/api-client";
+import { ApiError, ApiUnavailableError, apiFetch, requireApiVersion } from "@/lib/api-client";
 import { apiFetchAsUser } from "@/lib/api-session";
 import { surfacePath } from "@/lib/runtime-flags";
 import { cursorQuery, type ToyboxPostService } from "@/lib/toybox-api-rules";
@@ -27,6 +27,24 @@ function rowsOf(data: unknown): Row[] {
   if (Array.isArray(data)) return data as Row[];
   requireApiVersion(TOYBOX_GROUP, data as { v?: unknown } | null);
   throw new ApiUnavailableError(200, "no_upstream");
+}
+
+/** The PostgREST codes behind the Worker's write error codes (workers/api/routes/comments.ts restErrorCode). */
+const POSTGREST_CODES: Readonly<Record<string, string>> = {
+  check_violation: "23514",
+  duplicate: "23505",
+  not_found: "23503",
+  forbidden: "42501",
+};
+
+/**
+ * An api write error shaped like the legacy PostgREST error, so `isCheckViolation`
+ * and the defragment panel's `isDatabaseRejection` read the same code. Other codes
+ * (`invalid`, `unavailable`, `token_invalid`, `too_large`) stay as they are.
+ */
+export function toyboxWriteError(error: unknown): Error & { code?: string } {
+  if (!(error instanceof ApiError)) return error instanceof Error ? error : new Error(String(error));
+  return Object.assign(new Error(error.code), { code: POSTGREST_CODES[error.code] ?? error.code });
 }
 
 function v1<T extends { v?: unknown }>(data: T): T {
@@ -205,9 +223,4 @@ export async function apiThisOrThatVote(postId: string, choice: "left" | "right"
 
 export async function apiThisOrThatUnvote(postId: string): Promise<void> {
   v1(await apiFetchAsUser<{ v?: number }>(TOYBOX_GROUP, `/api/write/this-or-that/vote?id=${encodeURIComponent(postId)}`, { method: "DELETE" }));
-}
-
-export async function apiThisOrThatCommentCounts(postIds: readonly string[]): Promise<Record<string, number>> {
-  const body = v1(await apiFetch<{ v?: number; counts?: Record<string, number> }>(TOYBOX_GROUP, `/api/read/this-or-that/comment-counts?ids=${ids(postIds)}`));
-  return body.counts ?? {};
 }

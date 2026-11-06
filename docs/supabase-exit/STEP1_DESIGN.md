@@ -689,7 +689,6 @@ SURFACE_MAP 2.2절 11~18번. 장난감 상자 글은 행 하나가 1 MB를 넘�
 | `PUT`·`DELETE /api/write/this-or-that/like?id=` | 좋아요 insert(중복은 성공)·delete | `{ v, env, liked }` |
 | `GET /api/read/this-or-that/vote-summaries?ids=`(50개까지), `GET /api/me/this-or-that/votes?ids=` | `get_this_or_that_vote_summaries`, 내 투표 | `{ v, env, rows }` |
 | `PUT /api/write/this-or-that/vote?id=` `{ choice, surface }`, `DELETE` | 투표 insert(`created_surface`)·delete | `{ v, env, choice }` |
-| `GET /api/read/this-or-that/comment-counts?ids=` | `this-or-that:<id>` 키의 댓글 행 | `{ v, env, counts }` |
 
 - id 목록은 uuid만, 중복 없이 100개까지(투표 요약은 RPC 한도인 50개). 커서는 셋 다 있거나 없어야 하고 정수, ISO 시각,
   행 id 형식만 받는다. 런 keyset의 `or` 필터는 Worker가 검사한 커서 값으로 만든다(지금은 큰따옴표만 지운다).
@@ -697,6 +696,10 @@ SURFACE_MAP 2.2절 11~18번. 장난감 상자 글은 행 하나가 1 MB를 넘�
   채우지 못한다. 클라이언트가 지금처럼 채우고, RLS가 `user_id = auth.uid()`를, 보호 트리거가 카운터와 `created_at`을
   맡는다. 남은 위험은 사용자가 자기 글을 다른 env에 쓰는 것뿐이다. 수정·삭제는 검증한 sub와 Worker env로 거른다. 업로드
   상한은 글 8 MB, 임시 저장 4 MB다.
+- 이거 vs 저거 좋아요를 이미 누른 글에 다시 보내면(다른 탭에서 눌렀을 때) legacy는 중복 오류로 단추를 되돌리고 화면을
+  "응답 없음"으로 바꾸지만, Worker는 성공으로 답해 눌린 채로 둔다. 좋아요 수와 내 좋아요 읽기는 쌓인 id가 100개를 넘으면
+  100개씩 나눠 읽는다. 투표 요약은 지금처럼 50개를 넘으면 실패한다(SURFACE_MAP 14번 메모).
+- 옮기지 않은 `use-this-or-that-comment-counts.ts`는 부르는 곳이 없어 경로도 두지 않는다.
 - api 경로는 `${table}_feed` Realtime 채널을 열지 않는다(14절 결정). 채널 실패가 불러온 피드를 "응답 없음"으로 덮던
   일도 api 경로에서는 없다.
 - 옮기지 않는 것: RPC가 없을 때의 대체 select, `get_defragment_feed` v1 대체, 열이 없을 때의 다시 시도(운영에 모두 있다),

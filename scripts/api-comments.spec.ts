@@ -1116,12 +1116,6 @@ async function main() {
   const fiftyOne = Array.from({ length: 51 }, (_, index) => `aaaaaaaa-0000-4000-8000-${String(index).padStart(12, "0")}`).join(",");
   assert.equal((await call(`/api/read/this-or-that/vote-summaries?ids=${fiftyOne}`)).status, 400, "the RPC refuses more than 50 ids");
   assert.equal((await call(`/api/read/this-or-that/like-counts?ids=${POST_A},${POST_A}`)).status, 400, "ids are unique");
-  rest.comments.push(
-    { id: rest.id(), story_id: `this-or-that:${POST_A}`, user_id: OTHER, nickname: "a", content: "1", env: "development", created_at: "2026-11-05T00:00:00Z" },
-    { id: rest.id(), story_id: `this-or-that:${POST_A}`, user_id: OTHER, nickname: "a", content: "2", env: "development", created_at: "2026-11-05T00:00:01Z" },
-    { id: rest.id(), story_id: `this-or-that:${POST_A}`, user_id: OTHER, nickname: "a", content: "3", env: "production", created_at: "2026-11-05T00:00:02Z" },
-  );
-  assert.deepEqual((await json(await call(`/api/read/this-or-that/comment-counts?ids=${POST_A},${POST_B}`))).body.counts, { [POST_A]: 2 });
   rest.toybox = {};
 
   // --- Helpers ------------------------------------------------------------------------

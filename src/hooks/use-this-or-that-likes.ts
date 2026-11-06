@@ -1,8 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { apiMyThisOrThatLikes, apiSetThisOrThatLike, apiThisOrThatLikeCounts, toyboxViaApi } from "@/lib/toybox-api";
+import { TOYBOX_IDS_MAX } from "@/lib/toybox-api-rules";
 
 interface UseThisOrThatLikesReturn {
   counts: Record<string, number>;
@@ -14,6 +17,16 @@ interface UseThisOrThatLikesReturn {
 
 function postIdKey(postIds: string[]) {
   return [...postIds].sort().join(":");
+}
+
+/** The api reads at most TOYBOX_IDS_MAX unique ids a call; the legacy `.in()` takes them all. */
+async function readInChunks<T>(postIds: string[], read: (ids: string[]) => Promise<T[]>): Promise<T[]> {
+  const unique = [...new Set(postIds)];
+  const reads: Promise<T[]>[] = [];
+  for (let start = 0; start < unique.length; start += TOYBOX_IDS_MAX) {
+    reads.push(read(unique.slice(start, start + TOYBOX_IDS_MAX)));
+  }
+  return (await Promise.all(reads)).flat();
 }
 
 export function useThisOrThatLikes(
@@ -37,30 +50,47 @@ export function useThisOrThatLikes(
     let cancelled = false;
     const requestMutationVersion = mutationVersion.current;
 
-    const countQuery = withSupabaseTimeout(
-      "this_or_that_post_like_counts.select",
-      supabase
-        .from("this_or_that_post_like_counts")
-        .select("post_id,like_count")
-        .eq("env", supabaseEnv)
-        .in("post_id", postIds),
-    );
-    const likedQuery = userId
-      ? withSupabaseTimeout(
-          "this_or_that_post_likes.user_status",
-          supabase
-            .from("this_or_that_post_likes")
-            .select("post_id")
-            .eq("env", supabaseEnv)
-            .eq("user_id", userId)
-            .in("post_id", postIds),
-        )
-      : Promise.resolve({ data: [], error: null });
+    const load = async (): Promise<{ countRows: unknown[]; likedRows: unknown[] }> => {
+      if (toyboxViaApi()) {
+        try {
+          // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same view and rows, through the Worker.
+          const [countRows, likedIds] = await Promise.all([
+            readInChunks(postIds, apiThisOrThatLikeCounts),
+            userId ? readInChunks(postIds, apiMyThisOrThatLikes) : [],
+          ]);
+          return { countRows, likedRows: likedIds.map((post_id) => ({ post_id })) };
+        } catch (error) {
+          if (!shouldUseLegacy(error) || !supabaseEnabled) throw error;
+        }
+      }
+      const countQuery = withSupabaseTimeout(
+        "this_or_that_post_like_counts.select",
+        supabase
+          .from("this_or_that_post_like_counts")
+          .select("post_id,like_count")
+          .eq("env", supabaseEnv)
+          .in("post_id", postIds),
+      );
+      const likedQuery = userId
+        ? withSupabaseTimeout(
+            "this_or_that_post_likes.user_status",
+            supabase
+              .from("this_or_that_post_likes")
+              .select("post_id")
+              .eq("env", supabaseEnv)
+              .eq("user_id", userId)
+              .in("post_id", postIds),
+          )
+        : Promise.resolve({ data: [], error: null });
 
-    Promise.all([countQuery, likedQuery])
-      .then(([countResult, likedResult]) => {
-        if (countResult.error) throw countResult.error;
-        if (likedResult.error) throw likedResult.error;
+      const [countResult, likedResult] = await Promise.all([countQuery, likedQuery]);
+      if (countResult.error) throw countResult.error;
+      if (likedResult.error) throw likedResult.error;
+      return { countRows: countResult.data ?? [], likedRows: likedResult.data ?? [] };
+    };
+
+    load()
+      .then(({ countRows, likedRows }) => {
         if (cancelled) return;
         if (requestMutationVersion !== mutationVersion.current) {
           setLoading(false);
@@ -68,13 +98,13 @@ export function useThisOrThatLikes(
         }
 
         const nextCounts: Record<string, number> = { ...seedCounts };
-        for (const row of countResult.data ?? []) {
+        for (const row of countRows) {
           const postId = String((row as { post_id: unknown }).post_id);
           nextCounts[postId] = Number((row as { like_count: unknown }).like_count ?? 0);
         }
 
         const nextLiked = new Set<string>();
-        for (const row of likedResult.data ?? []) {
+        for (const row of likedRows) {
           nextLiked.add(String((row as { post_id: unknown }).post_id));
         }
 
@@ -121,7 +151,18 @@ export function useThisOrThatLikes(
           .from("this_or_that_post_likes")
           .insert({ post_id: postId, user_id: activeUserId, env: supabaseEnv });
 
-    const { error } = await withSupabaseTimeout(
+    // The builder above sends nothing until awaited, so the api path skips it.
+    let apiResult: { error: unknown } | null = null;
+    if (toyboxViaApi()) {
+      try {
+        await apiSetThisOrThatLike(postId, !currentlyLiked);
+        apiResult = { error: null };
+      } catch (apiError) {
+        // Only a write that certainly did nothing is sent again on the legacy path.
+        if (!writeMayGoLegacy(apiError)) apiResult = { error: apiError };
+      }
+    }
+    const { error } = apiResult ?? await withSupabaseTimeout(
       currentlyLiked ? "this_or_that_post_likes.delete" : "this_or_that_post_likes.insert",
       request,
     ).catch(() => ({ error: new Error("timeout") }));
