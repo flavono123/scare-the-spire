@@ -397,8 +397,8 @@ Supabase 읽기(갱신할 때만):
 
 - `src/lib/nav-snapshot.ts`: `loadNavSnapshot()`. 진행 중인 요청과 받은 값을 `window.__slseounRuntime`에 30초 둔다.
   네비, 배달부, 패치 페이지의 두 스크립트가 요청 하나를 같이 쓴다.
-- 응답의 `env`가 빌드의 `supabaseEnv`와 다르면 그 페이지는 `nav`를 legacy로 내린다(경고 로그). testbed 패치 페이지는
-  production env로 빌드되어 Worker의 development와 다르다(10절). 본 시각 저장소도 env별이라 섞으면 점이 틀린다.
+- 응답의 `env`가 빌드의 `supabaseEnv`와 다르면 그 페이지는 `nav`를 legacy로 내린다(경고 로그). 본 시각 저장소도
+  env별이라 섞으면 점이 틀린다. testbed는 main·패치 페이지 모두 development로 빌드해 Worker와 같다(10절).
 - `fetchUnreadSurfaceIds(seen)`(`nav-seen.ts`)는 어느 경로에서도 거부(reject)하지 않는다.
   - 패치 노트·니오우스레터: 번들 JSON으로, 스냅샷 결과와 상관없이 계산한다.
   - 테이블 표면: `latest[id] > since[id]`. 철학자: `weeklyPublishedAt(weekly) > since`.
@@ -750,9 +750,11 @@ SURFACE_MAP 2.2절 11~18번. 장난감 상자 글은 행 하나가 1 MB를 넘�
   --remote`(testbed는 `--env testbed`)로 testbed에 먼저 적용한다.
 - 로컬 `wrangler dev`는 local D1을 쓴다. Worker 변수는 `.dev.vars`(gitignore)에 두고, 기본 견본에는 `API_SUPABASE_*`를
   넣지 않는다. 로컬 QA가 Worker를 통해 공유 Supabase를 부르지 않게 하려는 것이다. 필요할 때만 따로 넣는다.
-- testbed env 차이: main 페이지는 checkout의 Next env(메인 checkout은 development), 패치 페이지는 production으로
-  빌드된다. 패치 페이지의 `nav`는 8.2절의 env 검사로 legacy에 남는다. `comments`를 옮길 때 testbed 패치 클라이언트
-  env를 development로 맞출지 정한다(지금 testbed 패치 댓글은 운영 행을 읽고 쓴다).
+- testbed env: development 전용이다(2026-11-06 결정). `run-cloudflare-testbed.mjs --remote`는 main과 패치 빌드 모두에
+  `NEXT_PUBLIC_SUPABASE_ENV=development`를 넣는다. checkout의 `.env.local` 값과 상관없다. 그래서 testbed 패치 페이지의
+  댓글·네비도 development 행을 읽고 쓰며, 운영 행에는 닿지 않는다. 이전에는 패치 빌드만 production이라 패치 페이지
+  `nav`가 8.2절의 env 검사로 legacy에 남고 패치 댓글이 운영 행을 읽고 썼다. 운영 배포(CI, `cf:patch:deploy`)는 그대로
+  production이다.
 - `/api` 스모크: `cloudflare-route-smoke.mjs`에 `/api/read/없는경로`가 409 `surface_legacy`와 표식 헤더를 주는지 보는
   확인을 더한다(Supabase를 부르지 않는다). 1단계 이전 판으로 되돌린 뒤의 확인을 위해 `--no-api-router`를 둔다
   (`--no-security-headers`와 같은 방식).

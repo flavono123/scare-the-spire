@@ -10,6 +10,9 @@ import { DEV_ASSET_WATCH_ENV } from "./wrangler-dev-assets.mjs";
 const LOCAL_MAIN_ORIGIN = "http://127.0.0.1:8787";
 const LOCAL_PATCH_ORIGIN = "http://127.0.0.1:8788";
 const REMOTE_ENVIRONMENT = "testbed";
+// The testbed is a development stage: its pages, patch pages and /api all use the
+// shared Supabase's development rows, never production ones (users only reach production).
+const TESTBED_DATA_ENV = "development";
 const REMOTE_READY_TIMEOUT_MS = 180_000;
 
 function usage() {
@@ -36,7 +39,7 @@ function assertFreshArtifacts(options) {
       dir: ".patch-worker",
       // Matches the patch build runRemote() does itself.
       build: options.remote
-        ? "NEXT_PUBLIC_SUPABASE_ENV=production pnpm patch:build"
+        ? `NEXT_PUBLIC_SUPABASE_ENV=${TESTBED_DATA_ENV} pnpm patch:build`
         : "pnpm patch:build",
     },
   ];
@@ -302,13 +305,10 @@ async function waitForRemoteStack(origin, timeoutMs = REMOTE_READY_TIMEOUT_MS) {
 
 async function runRemote(options) {
   if (!options.skipBuild) {
-    run("build main Worker artifact", "pnpm", ["cf:build"]);
-    run(
-      "build static patch Worker artifact",
-      "pnpm",
-      ["patch:build"],
-      { ...process.env, NEXT_PUBLIC_SUPABASE_ENV: "production" },
-    );
+    // Set explicitly: a checkout .env.local pointing at production must not leak into the testbed.
+    const buildEnv = { ...process.env, NEXT_PUBLIC_SUPABASE_ENV: TESTBED_DATA_ENV };
+    run("build main Worker artifact", "pnpm", ["cf:build"], buildEnv);
+    run("build static patch Worker artifact", "pnpm", ["patch:build"], buildEnv);
   }
 
   assertFreshArtifacts(options);
@@ -316,7 +316,7 @@ async function runRemote(options) {
   run("validate main Worker upload size", "pnpm", ["cf:size"]);
 
   const wranglerEnv = { ...process.env, WRANGLER_WRITE_LOGS: "0" };
-  const apiVars = apiVarArgs("development");
+  const apiVars = apiVarArgs(TESTBED_DATA_ENV);
   // Idempotent; the testbed Worker reads runtime_flags and api_cache from its own D1.
   run(
     "apply testbed D1 migrations",
