@@ -351,7 +351,7 @@ export async function unreadFromSnapshot(seen: NavSeenMap, snapshot: NavSnapshot
     if (!since) return null;
     let hasNewer = false;
     if (surface.catalog) {
-      hasNewer = catalogTimes(surface).some((publishedAt) => contentIsNewerThanSeen(publishedAt, since));
+      hasNewer = catalogHasNewer(catalogTimes(surface), since);
     } else if (!snapshot) {
       hasNewer = false;
     } else if (surface.weekly) {

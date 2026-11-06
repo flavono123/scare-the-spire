@@ -159,6 +159,9 @@ async function main() {
   const offline = await unreadFromSnapshot(neverSeen, null);
   assert.ok(offline.includes("patch-notes") && offline.includes("neowsletters"), "catalog dots survive an outage");
   assert.ok(!offline.includes("combo"), "table dots need the snapshot");
+  // A future-dated patch shell (2026-11-12 Gambit) does not keep the dot lit after a read (main df30437c).
+  const readNow = await unreadFromSnapshot({ ...neverSeen, "patch-notes": new Date().toISOString() }, snapshot);
+  assert.ok(!readNow.includes("patch-notes"), "only catalog entries whose time has come count");
 
   // fetchUnreadSurfaceIds never rejects: an outage keeps the catalog dots.
   resetPage("slseoun_rf=v1.nav");
