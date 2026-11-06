@@ -233,9 +233,10 @@ async function handleTournamentPlay(context: UserRouteContext): Promise<Response
   const { tournamentId, startingSize, championType, championId, matches } = body;
   if (typeof tournamentId !== "string" || !isPostUuid(tournamentId)) return apiError("invalid");
   if (!Number.isInteger(startingSize) || typeof championType !== "string" || typeof championId !== "string") return apiError("invalid");
-  if (!Array.isArray(matches) || matches.length > 256) return apiError("invalid");
+  if (!Array.isArray(matches)) return apiError("invalid");
   const { config, token } = context;
-  // The RPC checks the size, bracket and candidates itself (schema:396-543).
+  // The RPC checks the size, bracket and candidates itself (schema:396-543); a pool of
+  // every card and relic (about 1,000 entries, 120 KB of matches) fits the body cap.
   const result = await postgrest<unknown>(config, {
     method: "POST",
     path: "rpc/complete_favorite_tournament_play",
@@ -472,7 +473,7 @@ export const toyboxRoutes: readonly ApiRoute[] = [
   route({ id: "write.toybox-post.delete", method: "DELETE", path: "/api/write/toybox-post", access: "write", query: { service: isToyboxPostService, ...idQuery }, handle: handleDeletePost }),
   route({ id: "read.favorite-tournament.presets", method: "GET", path: "/api/read/favorite-tournament/presets", access: "public", rateLimit: "ip", query: {}, handle: handleTournamentPresets }),
   route({ id: "read.favorite-tournament.stats", method: "GET", path: "/api/read/favorite-tournament/stats", access: "public", rateLimit: "ip", query: idQuery, handle: handleTournamentStats }),
-  route({ id: "write.favorite-tournament.play", method: "POST", path: "/api/write/favorite-tournament/play", access: "write", query: {}, body: { maxBytes: 64 * 1024 }, handle: handleTournamentPlay }),
+  route({ id: "write.favorite-tournament.play", method: "POST", path: "/api/write/favorite-tournament/play", access: "write", query: {}, body: { maxBytes: 256 * 1024 }, handle: handleTournamentPlay }),
   route({ id: "read.pagestorm.posts", method: "GET", path: "/api/read/pagestorm/posts", access: "public", rateLimit: "ip", query: {}, handle: handlePagestormPosts }),
   route({ id: "me.pagestorm.drafts", method: "GET", path: "/api/me/pagestorm/drafts", access: "me", query: idQuery, handle: handleMyDrafts }),
   route({ id: "write.pagestorm.drafts.create", method: "POST", path: "/api/write/pagestorm/drafts", access: "write", query: {}, rawBody: { maxBytes: DRAFT_UPLOAD_MAX_BYTES }, handle: handleCreateDraft }),
@@ -481,11 +482,11 @@ export const toyboxRoutes: readonly ApiRoute[] = [
   route({ id: "read.defragment-body", method: "GET", path: "/api/read/defragment-body", access: "public", rateLimit: "ip", query: { service: isSourceService, id: isRowId }, handle: handleReadBody }),
   route({ id: "write.defragment-body", method: "PUT", path: "/api/write/defragment-body", access: "write", query: {}, rawBody: { maxBytes: POST_UPLOAD_MAX_BYTES }, handle: handleUpsertBody }),
   route({ id: "read.this-or-that.like-counts", method: "GET", path: "/api/read/this-or-that/like-counts", access: "public", rateLimit: "ip", query: idsQuery, handle: handleLikeCounts }),
-  route({ id: "me.this-or-that.likes", method: "GET", path: "/api/me/this-or-that/likes", access: "me", query: idsQuery, handle: handleMyLikes }),
-  route({ id: "write.this-or-that.like.put", method: "PUT", path: "/api/write/this-or-that/like", access: "write", query: idQuery, handle: (context: UserRouteContext) => handleLike(context, true) }),
-  route({ id: "write.this-or-that.like.delete", method: "DELETE", path: "/api/write/this-or-that/like", access: "write", query: idQuery, handle: (context: UserRouteContext) => handleLike(context, false) }),
+  route({ id: "me.this-or-that.likes", method: "GET", path: "/api/me/this-or-that/likes", access: "me", rateLimit: "ip", query: idsQuery, handle: handleMyLikes }),
+  route({ id: "write.this-or-that.like.put", method: "PUT", path: "/api/write/this-or-that/like", access: "write", rateLimit: "ip", query: idQuery, handle: (context: UserRouteContext) => handleLike(context, true) }),
+  route({ id: "write.this-or-that.like.delete", method: "DELETE", path: "/api/write/this-or-that/like", access: "write", rateLimit: "ip", query: idQuery, handle: (context: UserRouteContext) => handleLike(context, false) }),
   route({ id: "read.this-or-that.vote-summaries", method: "GET", path: "/api/read/this-or-that/vote-summaries", access: "public", rateLimit: "ip", query: { ids: (value: string) => parsePostIds(value, THIS_OR_THAT_SUMMARY_IDS) !== null }, handle: handleVoteSummaries }),
-  route({ id: "me.this-or-that.votes", method: "GET", path: "/api/me/this-or-that/votes", access: "me", query: idsQuery, handle: handleMyVotes }),
-  route({ id: "write.this-or-that.vote.put", method: "PUT", path: "/api/write/this-or-that/vote", access: "write", query: idQuery, body: { maxBytes: 1024 }, handle: handleVote }),
-  route({ id: "write.this-or-that.vote.delete", method: "DELETE", path: "/api/write/this-or-that/vote", access: "write", query: idQuery, handle: handleUnvote }),
+  route({ id: "me.this-or-that.votes", method: "GET", path: "/api/me/this-or-that/votes", access: "me", rateLimit: "ip", query: idsQuery, handle: handleMyVotes }),
+  route({ id: "write.this-or-that.vote.put", method: "PUT", path: "/api/write/this-or-that/vote", access: "write", rateLimit: "ip", query: idQuery, body: { maxBytes: 1024 }, handle: handleVote }),
+  route({ id: "write.this-or-that.vote.delete", method: "DELETE", path: "/api/write/this-or-that/vote", access: "write", rateLimit: "ip", query: idQuery, handle: handleUnvote }),
 ];

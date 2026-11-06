@@ -23,9 +23,9 @@ export function toyboxViaApi(): boolean {
 }
 
 /** A passthrough answer: the array, or a v1 answer without rows (the Worker may not reach Supabase). */
-function rowsOf(data: unknown): Row[] {
+function rowsOf(data: unknown, write = false): Row[] {
   if (Array.isArray(data)) return data as Row[];
-  requireApiVersion(TOYBOX_GROUP, data as { v?: unknown } | null);
+  requireApiVersion(TOYBOX_GROUP, data as { v?: unknown } | null, write);
   throw new ApiUnavailableError(200, "no_upstream");
 }
 
@@ -47,8 +47,9 @@ export function toyboxWriteError(error: unknown): Error & { code?: string } {
   return Object.assign(new Error(error.code), { code: POSTGREST_CODES[error.code] ?? error.code });
 }
 
-function v1<T extends { v?: unknown }>(data: T): T {
-  requireApiVersion(TOYBOX_GROUP, data);
+/** `write`: the answer to a write, which ran; an unknown version then demotes without a resend. */
+function v1<T extends { v?: unknown }>(data: T, write = false): T {
+  requireApiVersion(TOYBOX_GROUP, data, write);
   return data;
 }
 
@@ -88,7 +89,7 @@ export async function apiCreateToyboxPost(service: ToyboxPostService, row: Row):
     method: "POST",
     body: row,
     timeoutMs: UPLOAD_MS,
-  }));
+  }), true);
   if (!rows[0]) throw new ApiUnavailableError(201, "empty_insert");
   return rows[0];
 }
@@ -100,14 +101,14 @@ export async function apiUpdateToyboxPost(service: ToyboxPostService, id: string
     method: "PATCH",
     body: patch,
     timeoutMs: UPLOAD_MS,
-  }));
+  }), true);
   return rows[0] ?? null;
 }
 
 /** Deletes the caller's own post; false when no row matched. */
 export async function apiDeleteToyboxPost(service: ToyboxPostService, id: string): Promise<boolean> {
   const query = new URLSearchParams({ service, id });
-  const body = v1(await apiFetchAsUser<{ v?: number; deleted?: boolean }>(TOYBOX_GROUP, `/api/write/toybox-post?${query}`, { method: "DELETE" }));
+  const body = v1(await apiFetchAsUser<{ v?: number; deleted?: boolean }>(TOYBOX_GROUP, `/api/write/toybox-post?${query}`, { method: "DELETE" }), true);
   return body.deleted === true;
 }
 
@@ -131,7 +132,7 @@ export async function apiTournamentPlay(play: {
   const body = v1(await apiFetchAsUser<{ v?: number; result?: unknown }>(TOYBOX_GROUP, "/api/write/favorite-tournament/play", {
     method: "POST",
     body: play,
-  }));
+  }), true);
   return body.result ?? null;
 }
 
@@ -153,7 +154,7 @@ export async function apiMyPagestormDraft(id: string): Promise<Row | null> {
 }
 
 export async function apiCreatePagestormDraft(row: Row): Promise<Row> {
-  const rows = rowsOf(await apiFetchAsUser(TOYBOX_GROUP, "/api/write/pagestorm/drafts", { method: "POST", body: row, timeoutMs: UPLOAD_MS }));
+  const rows = rowsOf(await apiFetchAsUser(TOYBOX_GROUP, "/api/write/pagestorm/drafts", { method: "POST", body: row, timeoutMs: UPLOAD_MS }), true);
   if (!rows[0]) throw new ApiUnavailableError(201, "empty_insert");
   return rows[0];
 }
@@ -163,12 +164,12 @@ export async function apiUpdatePagestormDraft(id: string, patch: Row): Promise<R
     method: "PATCH",
     body: patch,
     timeoutMs: UPLOAD_MS,
-  }));
+  }), true);
   return rows[0] ?? null;
 }
 
 export async function apiDeletePagestormDraft(id: string): Promise<boolean> {
-  const body = v1(await apiFetchAsUser<{ v?: number; deleted?: boolean }>(TOYBOX_GROUP, `/api/write/pagestorm/drafts?id=${encodeURIComponent(id)}`, { method: "DELETE" }));
+  const body = v1(await apiFetchAsUser<{ v?: number; deleted?: boolean }>(TOYBOX_GROUP, `/api/write/pagestorm/drafts?id=${encodeURIComponent(id)}`, { method: "DELETE" }), true);
   return body.deleted === true;
 }
 
@@ -182,7 +183,7 @@ export async function apiDefragmentBody(sourceService: string, sourceId: string)
 
 /** Upserts on (env, source_service, source_id); the row carries user_id and env like the legacy upsert. */
 export async function apiUpsertDefragmentBody(row: Row): Promise<Row | null> {
-  const rows = rowsOf(await apiFetchAsUser(TOYBOX_GROUP, "/api/write/defragment-body", { method: "PUT", body: row, timeoutMs: UPLOAD_MS }));
+  const rows = rowsOf(await apiFetchAsUser(TOYBOX_GROUP, "/api/write/defragment-body", { method: "PUT", body: row, timeoutMs: UPLOAD_MS }), true);
   return rows[0] ?? null;
 }
 
@@ -201,7 +202,7 @@ export async function apiMyThisOrThatLikes(postIds: readonly string[]): Promise<
 export async function apiSetThisOrThatLike(postId: string, liked: boolean): Promise<void> {
   v1(await apiFetchAsUser<{ v?: number }>(TOYBOX_GROUP, `/api/write/this-or-that/like?id=${encodeURIComponent(postId)}`, {
     method: liked ? "PUT" : "DELETE",
-  }));
+  }), true);
 }
 
 export async function apiThisOrThatVoteSummaries(postIds: readonly string[]): Promise<Row[]> {
@@ -218,9 +219,9 @@ export async function apiThisOrThatVote(postId: string, choice: "left" | "right"
   v1(await apiFetchAsUser<{ v?: number }>(TOYBOX_GROUP, `/api/write/this-or-that/vote?id=${encodeURIComponent(postId)}`, {
     method: "PUT",
     body: { choice, surface },
-  }));
+  }), true);
 }
 
 export async function apiThisOrThatUnvote(postId: string): Promise<void> {
-  v1(await apiFetchAsUser<{ v?: number }>(TOYBOX_GROUP, `/api/write/this-or-that/vote?id=${encodeURIComponent(postId)}`, { method: "DELETE" }));
+  v1(await apiFetchAsUser<{ v?: number }>(TOYBOX_GROUP, `/api/write/this-or-that/vote?id=${encodeURIComponent(postId)}`, { method: "DELETE" }), true);
 }

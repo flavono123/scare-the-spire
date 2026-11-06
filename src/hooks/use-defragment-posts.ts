@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
+import { ApiError, ApiUnavailableError, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import type { PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import {
@@ -193,7 +193,9 @@ export async function fetchDefragmentPost(
     try {
       return normalizePost(await apiToyboxPost("defragment", postId));
     } catch (error) {
-      // The legacy read turns every error into "no post".
+      // An outage rejects like the legacy timeout, so the page shows "unavailable".
+      if (error instanceof ApiUnavailableError || (error instanceof ApiError && error.code === "rate_limited")) throw error;
+      // A PostgREST error on the legacy read becomes "no post".
       if (!shouldUseLegacy(error)) return null;
     }
   }

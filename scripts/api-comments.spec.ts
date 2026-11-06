@@ -1069,6 +1069,8 @@ async function main() {
   assert.deepEqual((await json(await call("/api/write/favorite-tournament/play", authed("POST", play)))).body.result, { play_count: 1 });
   assert.equal(rest.rpcBodies.at(-1)!.p_env, "development");
   assert.equal((await json(await call("/api/write/favorite-tournament/play", authed("POST", { ...play, startingSize: 3 })))).body.error, "invalid");
+  const fullPool = Array.from({ length: 297 }, (_, index) => ({ round: 1, a: { type: "relic", id: `relic_${index}` }, b: { type: "relic", id: `relic_${index + 1}` }, winner: "a" }));
+  assert.equal((await call("/api/write/favorite-tournament/play", authed("POST", { ...play, startingSize: 298, matches: fullPool }))).status, 200, "a 298-relic bracket is the RPC's to check");
   assert.equal((await call("/api/write/favorite-tournament/play", authed("POST", { ...play, tournamentId: "x" }))).status, 400);
 
   // Pagestorm: the list leaves out nothing it shows; drafts are the caller's own.
@@ -1097,8 +1099,14 @@ async function main() {
   assert.equal(((await (await call(`/api/read/defragment-body?service=combo&id=${POST_A}`)).json()) as Row[]).length, 1);
   assert.equal((await call("/api/read/defragment-body?service=Combo!&id=x")).status, 400);
 
-  // This or that: likes, votes, summaries, comment counts.
-  assert.equal((await call(`/api/write/this-or-that/like?id=${POST_A}`, authed("PUT"))).status, 200);
+  // This or that: likes, votes, summaries. The toggles and overlays count on the read budget by IP.
+  readLimiter.keys.length = 0;
+  writeLimiter.keys.length = 0;
+  const likeFromIp = authed("PUT");
+  likeFromIp.headers = { ...(likeFromIp.headers as Record<string, string>), "cf-connecting-ip": "203.0.113.7" };
+  assert.equal((await call(`/api/write/this-or-that/like?id=${POST_A}`, likeFromIp)).status, 200);
+  assert.equal(writeLimiter.keys.length, 0, "a like is not charged to the 30/min write budget");
+  assert.deepEqual(readLimiter.keys, ["ip:203.0.113.7"]);
   assert.equal((await call(`/api/write/this-or-that/like?id=${POST_A}`, authed("PUT"))).status, 200, "liking twice is not an error");
   rest.toybox.this_or_that_post_likes.push({ post_id: POST_A, user_id: OTHER, env: "development" }, { post_id: POST_A, user_id: OTHER, env: "production" });
   assert.deepEqual((await json(await call(`/api/read/this-or-that/like-counts?ids=${POST_A},${POST_B}`))).body.rows, [{ post_id: POST_A, like_count: 2 }]);

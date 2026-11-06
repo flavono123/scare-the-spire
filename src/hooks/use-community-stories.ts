@@ -256,7 +256,7 @@ export function useCommunityStories(
               } : {}),
             },
           });
-          requireApiVersion("stories", body);
+          requireApiVersion("stories", body, true);
           const inserted = body.row;
           if (inserted) setRows((prev) => uniqueRows([inserted, ...prev]).slice(0, COMMUNITY_STORY_LIMIT));
           return;

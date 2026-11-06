@@ -42,12 +42,13 @@ export class ApiUnavailableError extends ApiError {
 /**
  * A v1-shaped answer this client does not understand is a legacy signal
  * (docs/supabase-exit/STEP1_DESIGN.md 9): demote the group for the page and
- * throw so the caller redoes its legacy query.
+ * throw so the caller redoes its legacy query. Pass `processed` for the answer
+ * to a write: the router answered 2xx, so the write ran and must not be resent.
  */
-export function requireApiVersion(group: ApiSurfaceGroup, body: { v?: unknown } | null | undefined): void {
+export function requireApiVersion(group: ApiSurfaceGroup, body: { v?: unknown } | null | undefined, processed = false): void {
   if (body?.v === 1) return;
   demoteSurface(group);
-  throw new SurfaceLegacyError(200, false);
+  throw new SurfaceLegacyError(200, processed);
 }
 
 /** True when a failed api call should be redone on the legacy path. */

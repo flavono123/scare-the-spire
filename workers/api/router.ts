@@ -58,7 +58,9 @@ type RouteBase = {
   query?: QuerySchema;
   /**
    * Counted by client IP (public) or verified user (me, write). Public routes
-   * served from a cache leave it unset; user routes default to "user".
+   * served from a cache leave it unset; user routes default to "user" (the
+   * 30/min write budget). A user route may pick "ip" to count on the read budget
+   * instead: cheap idempotent toggles and their overlays (STEP1_DESIGN 9.8).
    */
   rateLimit?: RateLimitKind | "none";
 };
@@ -244,9 +246,11 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
         waitUntil: (promise) => ctx.waitUntil(promise),
       });
       if (!check.ok) return error(TOKEN_ERRORS[check.reason]);
-      if (route.rateLimit !== "none" && !(await withinRateLimit(env, "user", check.user.userId))) {
-        return error("rate_limited");
-      }
+      const allowed = route.rateLimit === "none"
+        || (route.rateLimit === "ip"
+          ? await withinRateLimit(env, "ip", clientIp(request))
+          : await withinRateLimit(env, "user", check.user.userId));
+      if (!allowed) return error("rate_limited");
       let body: unknown;
       if (route.body) {
         const read = await readJsonBody(request, route.body.maxBytes);

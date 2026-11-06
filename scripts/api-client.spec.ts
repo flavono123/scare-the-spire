@@ -12,7 +12,7 @@ const fakeDocument: FakeDocument = { cookie: "" };
 Object.assign(globalThis, { window: fakeWindow, document: fakeDocument });
 
 async function main() {
-  const { ApiError, ApiUnavailableError, apiFetch, SurfaceLegacyError } = await import("../src/lib/api-client");
+  const { ApiError, ApiUnavailableError, apiFetch, requireApiVersion, SurfaceLegacyError, writeMayGoLegacy } = await import("../src/lib/api-client");
   const { demoteSurface, slseounRuntime, surfacePath } = await import("../src/lib/runtime-flags");
   const { loadNavSnapshot, validateNavSnapshot } = await import("../src/lib/nav-snapshot");
   const { fetchUnreadSurfaceIds, NAV_SEEN_SURFACES, unreadFromSnapshot } = await import("../src/lib/nav-seen");
@@ -81,6 +81,11 @@ async function main() {
   stubFetch(() => marked({ error: "unavailable" }, 503));
   await assert.rejects(() => apiFetch("nav", "/api/read/nav"), ApiUnavailableError);
   assert.equal(surfacePath("nav"), "api", "an outage is not a legacy signal");
+
+  // An unknown version on a read may be redone on legacy; on a write answer the write ran.
+  assert.throws(() => requireApiVersion("toybox-feed", { v: 2 }), (error) => writeMayGoLegacy(error));
+  assert.throws(() => requireApiVersion("toybox-feed", { v: 2 }, true), (error) => error instanceof SurfaceLegacyError && !writeMayGoLegacy(error));
+  assert.equal(surfacePath("toybox-feed"), "legacy", "either way the group is demoted");
 
   stubFetch(() => marked({ error: "duplicate" }, 422));
   await assert.rejects(() => apiFetch("nav", "/api/read/nav"), (error) => (
@@ -303,7 +308,6 @@ async function main() {
   assert.equal(engagementUrls.length, 0);
 
   // An answer of an unknown version is a legacy signal for its group.
-  const { requireApiVersion } = await import("../src/lib/api-client");
   resetPage("slseoun_rf=v1.profile");
   assert.doesNotThrow(() => requireApiVersion("profile", { v: 1 }));
   assert.throws(() => requireApiVersion("profile", { v: 2 }), SurfaceLegacyError);
