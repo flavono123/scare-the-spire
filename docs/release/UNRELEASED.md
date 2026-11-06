@@ -79,7 +79,7 @@
 - Expect: `legacy`면 그대로다. api면 같은 화면이 Worker를 거치고 Realtime 채널(`community_stories`, `${table}_feed`)을
   열지 않는다. 바뀌는 것: 채널 실패로 피드가 "응답 없음"이 되는 일이 없다(tasks/010 #42). 글·임시 저장·덧글 본문 쓰기의
   env는 Worker가 강제하지 못한다(RLS가 작성자 확인)
-- 상태: 2026-11-06 구현 중
+- 상태: 2026-11-06 로컬 QA 71/71(브라우저 Supabase 차단). 6관점 검토의 7건 수정. testbed 확인 전
 - QA: testbed에서 api와 legacy를 번갈아 켜고 각 피드·상세·이거 vs 저거 좋아요·투표·서류 폭풍 임시 저장을 비교. 월드컵
   플레이와 덧글 본문은 지울 수 없어 spec으로만 확인한다
 - Commits: worktree `refactor/supabase-exit`
