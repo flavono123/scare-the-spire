@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { toyboxViaApi } from "@/lib/toybox-api";
 import {
   countsFromFeedItems,
   cursorFromFeedItem,
@@ -97,7 +98,9 @@ export function useToyboxFeed<T extends PostIdentity>({
   }, [service, sort, table]);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
+    // The api path opens no channel: these tables are not in the publication, so it
+    // never delivered an event, and a failed join only hid a loaded feed (STEP1_DESIGN 14).
+    if (!supabaseEnabled || toyboxViaApi()) return;
 
     const channel = supabase
       .channel(`${table}_feed`)

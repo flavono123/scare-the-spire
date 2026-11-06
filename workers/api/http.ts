@@ -79,3 +79,21 @@ export function apiErrorStatus(code: ApiErrorCode): number {
 export function withoutBody(response: Response): Response {
   return new Response(null, { status: response.status, statusText: response.statusText, headers: response.headers });
 }
+
+/**
+ * PostgREST's JSON body handed to the client by the runtime, with no JS
+ * touching it: a JS pump over a 5.5 MB body cost 77-204 ms CPU on testbed
+ * (STEP1_DESIGN 9.6). The body is PostgREST's array as is.
+ */
+export function passthroughJson(upstream: Response, env: string, status = 200): Response {
+  return new Response(upstream.body, {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": PRIVATE_NO_STORE,
+      "X-Robots-Tag": "noindex",
+      "X-Slseoun-Api-Env": env,
+      [API_MARKER_HEADER]: "1",
+    },
+  });
+}

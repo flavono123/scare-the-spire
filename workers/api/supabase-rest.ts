@@ -204,7 +204,7 @@ export function isUpstreamFailure(result: RestFailure): boolean {
   return result.status === 0 || result.status >= 500 || result.code === "bad_response";
 }
 
-export type StreamRequest = Omit<RestRequest, "body" | "maxBytes"> & {
+export type StreamRequest = Omit<RestRequest, "maxBytes"> & {
   /** A JSON body passed through without parsing (run uploads carry raw run files). */
   bodyStream?: ReadableStream<Uint8Array> | null;
 };
@@ -226,7 +226,8 @@ export async function postgrestStream(config: SupabaseApiConfig, request: Stream
   const headers = new Headers({ apikey: config.key, Accept: "application/json" });
   if (request.token) headers.set("Authorization", `Bearer ${request.token}`);
   if (request.prefer?.length) headers.set("Prefer", request.prefer.join(","));
-  if (request.bodyStream) headers.set("Content-Type", "application/json");
+  const textBody = request.bodyStream ? undefined : request.body !== undefined ? JSON.stringify(request.body) : undefined;
+  if (request.bodyStream || textBody !== undefined) headers.set("Content-Type", "application/json");
 
   let timeoutMs = request.timeoutMs ?? (method === "GET" || method === "HEAD" ? READ_TIMEOUT_MS : WRITE_TIMEOUT_MS);
   if (request.deadline !== undefined) {
@@ -242,7 +243,7 @@ export async function postgrestStream(config: SupabaseApiConfig, request: Stream
     response = await fetcher(url.toString(), {
       method,
       headers,
-      body: request.bodyStream ?? undefined,
+      body: request.bodyStream ?? textBody,
       signal: controller.signal,
       // Node and Workers both need this for a streamed request body.
       ...(request.bodyStream ? { duplex: "half" } : {}),

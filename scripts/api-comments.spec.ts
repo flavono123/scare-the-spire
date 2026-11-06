@@ -47,6 +47,12 @@ async function makeSigner() {
 
 type Row = Record<string, unknown>;
 
+const TOYBOX_TABLES = new Set([
+  "combo_posts", "transfigure_posts", "this_or_that_posts", "chemical_posts", "decisions_decisions_posts",
+  "favorite_tournament_posts", "pagestorm_posts", "defragment_posts", "pagestorm_drafts", "defragment_bodies",
+  "this_or_that_post_likes", "this_or_that_post_votes", "favorite_tournament_candidate_stats",
+]);
+
 class FakeRest {
   comments: Row[] = [];
   commentLikes: Row[] = [];
@@ -56,6 +62,8 @@ class FakeRest {
   contactInquiries: Row[] = [];
   runs: Row[] = [];
   stories: Row[] = [];
+  /** Toybox tables by name (posts, drafts, bodies, this or that likes and votes, tournament stats). */
+  toybox: Record<string, Row[]> = {};
   noCoverColumn = false;
   nicknamePools: Row[] = [{ character_id: "ironclad", locale: "ko", nicknames: ["철갑"] }];
   missingTables = new Set<string>();
@@ -98,6 +106,17 @@ class FakeRest {
     if (name === "profile_character_nickname_pools") return this.nicknamePools;
     if (name === "runs") return this.runs;
     if (name === "community_stories") return this.stories;
+    if (name === "this_or_that_post_like_counts") {
+      const counts = new Map<string, Row>();
+      for (const like of this.toybox.this_or_that_post_likes ?? []) {
+        const key = `${like.env}|${like.post_id}`;
+        const row = counts.get(key) ?? { env: like.env, post_id: like.post_id, like_count: 0 };
+        row.like_count = Number(row.like_count) + 1;
+        counts.set(key, row);
+      }
+      return [...counts.values()];
+    }
+    if (TOYBOX_TABLES.has(name)) return (this.toybox[name] ??= []);
     throw new Error(`unknown table ${name}`);
   }
 
@@ -108,7 +127,7 @@ class FakeRest {
 
   matches(row: Row, params: URLSearchParams, embedded?: Row): boolean {
     for (const [name, value] of params) {
-      if (["select", "order", "limit", "on_conflict"].includes(name)) continue;
+      if (["select", "order", "limit", "on_conflict", "or"].includes(name)) continue;
       const [owner, column] = name.includes(".") ? name.split(".") : [null, name];
       const source = owner ? embedded : row;
       if (!source) return false;
@@ -125,6 +144,8 @@ class FakeRest {
         if (source[column] === null || source[column] === undefined) return false;
       } else if (value.startsWith("lte.")) {
         if (!(cell <= value.slice(4))) return false;
+      } else if (value.startsWith("like.") && value.endsWith("*")) {
+        if (!cell.startsWith(value.slice(5, -1))) return false;
       } else {
         throw new Error(`unsupported filter ${name}=${value}`);
       }
@@ -181,6 +202,26 @@ class FakeRest {
       this.rpcBodies.push({ name, ...(body as Row) });
       return Response.json(name.endsWith("stats") ? [{ category: "comments", post_count: 2, like_count: 1 }] : [{ activity_id: "a1", total_count: 1 }]);
     }
+    if (name === "rpc/get_toybox_feed" || name === "rpc/get_defragment_feed_v2") {
+      this.rpcBodies.push({ name, auth: Boolean(user), ...(body as Row) });
+      return Response.json([{ post: { id: "feed-row", created_at: "2026-11-05T00:00:00Z" }, like_count: 2, comment_count: 1, recommend_score: 2 }]);
+    }
+    if (name === "rpc/get_this_or_that_vote_summaries") {
+      const args = body as { p_post_ids: string[]; p_env: string };
+      this.rpcBodies.push({ name, ...args });
+      const votes = (this.toybox.this_or_that_post_votes ?? []).filter((row) => row.env === args.p_env);
+      return Response.json(args.p_post_ids.map((id) => ({
+        post_id: id,
+        left_count: votes.filter((row) => row.post_id === id && row.choice === "left").length,
+        right_count: votes.filter((row) => row.post_id === id && row.choice === "right").length,
+      })));
+    }
+    if (name === "rpc/complete_favorite_tournament_play") {
+      if (!user) return Response.json({ code: "42501" }, { status: 401 });
+      this.rpcBodies.push({ name, ...(body as Row) });
+      if ((body as Row).p_starting_size === 3) return Response.json({ code: "22023" }, { status: 400 });
+      return Response.json({ play_count: 1 });
+    }
     if (name === "rpc/get_engagement_counts") {
       const env = (body as { p_env: string }).p_env;
       const keys = new Set([...this.comments, ...this.likes].filter((row) => row.env === env).map((row) => String(row.story_id)));
@@ -232,6 +273,32 @@ class FakeRest {
       }
       return prefer.includes("return=representation")
         ? Response.json(inserted.map((row) => ({ id: row.id })), { status: 201 })
+        : new Response(null, { status: 201 });
+    }
+
+    if (request.method === "POST" && TOYBOX_TABLES.has(name)) {
+      const input = body as Row;
+      if (input.user_id !== user) return Response.json({ code: "42501" }, { status: 403 });
+      const rows = this.table(name);
+      if (name === "defragment_bodies") {
+        const same = rows.find((row) => ["env", "source_service", "source_id"].every((key) => row[key] === input[key]));
+        if (same && !params.has("on_conflict")) return Response.json({ code: "23505" }, { status: 409 });
+        if (same && same.user_id !== user) return Response.json({ code: "42501" }, { status: 403 });
+        const row = same ? Object.assign(same, input) : { id: this.id(), ...input };
+        if (!same) rows.push(row);
+        return Response.json([this.project(row, params.get("select") ?? "*")], { status: same ? 200 : 201 });
+      }
+      if (name === "this_or_that_post_likes" || name === "this_or_that_post_votes") {
+        if (rows.some((row) => row.post_id === input.post_id && row.user_id === user && row.env === input.env)) return Response.json({ code: "23505" }, { status: 409 });
+        rows.push({ ...input });
+        return new Response(null, { status: 201 });
+      }
+      if (typeof input.title === "string" && input.title.length > 120) return Response.json({ code: "23514" }, { status: 400 });
+      // Guard triggers reset the counters and the creation time (SURFACE_MAP 4.1).
+      const row = { ...input, id: this.id(), created_at: "2026-11-06T00:00:00Z", like_count: 0, comment_count: 0 };
+      rows.push(row);
+      return prefer.includes("return=representation")
+        ? Response.json([this.project(row, params.get("select") ?? "*")], { status: 201 })
         : new Response(null, { status: 201 });
     }
 
@@ -305,7 +372,7 @@ class FakeRest {
 }
 
 class FakeD1 implements D1Database {
-  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"], ["path.profile", "api"], ["path.puzzlebox", "api"], ["path.history-runs", "api"], ["path.stories", "api"]]);
+  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"], ["path.profile", "api"], ["path.puzzlebox", "api"], ["path.history-runs", "api"], ["path.stories", "api"], ["path.toybox-feed", "api"]]);
   prepare(query: string): D1PreparedStatement {
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       if (query !== FLAGS_SQL) throw new Error(`unexpected SQL ${query}`);
@@ -919,6 +986,143 @@ async function main() {
   rest.stories.push(story("77777777-7777-4777-8777-000000000001"));
   assert.equal((await json(await call("/api/write/stories?id=77777777-7777-4777-8777-000000000001", authed("DELETE")))).body.deleted, false, "not the author's");
   rest.stories = [];
+
+  // --- Toybox feed (STEP1_DESIGN 9.8) ------------------------------------------------
+  const sendRaw = (method: string, path: string, payload: unknown, bearer = token) => {
+    const text = JSON.stringify(payload);
+    return call(path, {
+      method,
+      headers: {
+        authorization: `Bearer ${bearer}`,
+        "content-type": "application/json",
+        "sec-fetch-site": "same-origin",
+        "content-length": String(new TextEncoder().encode(text).byteLength),
+      },
+      body: text,
+    });
+  };
+  const POST_A = "aaaaaaaa-0000-4000-8000-000000000001";
+  const POST_B = "aaaaaaaa-0000-4000-8000-000000000002";
+
+  // Feeds: the RPC rows pass through as an array; the env and page size are the Worker's.
+  rest.rpcBodies.length = 0;
+  const toyFeed = await call("/api/read/toybox-feed?service=combo&sort=recommended&score=3&created_at=2026-11-05T00:00:00.123456%2B00:00&cursor_id=" + POST_A);
+  assert.equal(toyFeed.status, 200);
+  assert.equal(toyFeed.headers.get("x-slseoun-api-env"), "development");
+  assert.equal(((await toyFeed.json()) as Row[])[0].like_count, 2);
+  assert.deepEqual(rest.rpcBodies.at(-1), {
+    name: "rpc/get_toybox_feed", auth: false, p_env: "development", p_service: "combo", p_sort: "recommended", p_limit: 20,
+    p_cursor_score: 3, p_cursor_created_at: "2026-11-05T00:00:00.123456+00:00", p_cursor_id: POST_A,
+  });
+  assert.equal((await call("/api/read/defragment-feed?sort=latest")).status, 200);
+  assert.deepEqual(rest.rpcBodies.at(-1), {
+    name: "rpc/get_defragment_feed_v2", auth: false, p_env: "development", p_sort: "latest", p_limit: 20,
+    p_cursor_score: null, p_cursor_created_at: null, p_cursor_id: null,
+  });
+  for (const bad of [
+    "service=defragment&sort=latest", "service=combo&sort=oldest", "service=combo&sort=latest&score=1",
+    "service=combo&sort=latest&score=1&created_at=yesterday&cursor_id=x", "service=combo&sort=latest&p_env=production",
+  ]) {
+    assert.equal((await call(`/api/read/toybox-feed?${bad}`)).status, 400, bad);
+  }
+  rest.calls.length = 0;
+  assert.equal((await call("/api/read/defragment-runs?sort=comments&score=4&created_at=2026-11-05T00:00:00Z&cursor_id=run_1")).status, 200);
+  const runsQuery = rest.calls.at(-1)!.url.searchParams;
+  assert.equal(runsQuery.get("order"), "comment_count.desc,created_at.desc,id.desc");
+  assert.equal(runsQuery.get("or"), '(comment_count.lt.4,and(comment_count.eq.4,created_at.lt."2026-11-05T00:00:00Z"),and(comment_count.eq.4,created_at.eq."2026-11-05T00:00:00Z",id.lt."run_1"))');
+  assert.equal(runsQuery.get("env"), "eq.development");
+  assert.equal((await call("/api/read/defragment-runs?sort=play_count")).status, 400, "runs have no play count sort");
+
+  // Posts: insert passes the body through (RLS checks the author), the guard trigger resets counters.
+  const comboRow = { user_id: USER, nickname: "나", title: "콤보", env: "development", like_count: 99 };
+  const createdPost = await sendRaw("POST", "/api/write/toybox-post?service=combo", comboRow);
+  assert.equal(createdPost.status, 201);
+  const postRow = ((await createdPost.json()) as Row[])[0];
+  assert.equal(postRow.like_count, 0, "counters come from the table, not the body");
+  assert.equal((await sendRaw("POST", "/api/write/toybox-post?service=combo", { ...comboRow, user_id: OTHER })).status, 403, "RLS refuses another author");
+  assert.equal((await json(await sendRaw("POST", "/api/write/toybox-post?service=combo", { ...comboRow, title: "가".repeat(121) }))).body.error, "check_violation");
+  assert.equal((await sendRaw("POST", "/api/write/toybox-post?service=runs", comboRow)).status, 400, "only toybox tables");
+  const postId = String(postRow.id);
+  const readPost = await call(`/api/read/toybox-post?service=combo&id=${postId}`);
+  assert.equal(((await readPost.json()) as Row[])[0].title, "콤보");
+  assert.deepEqual(await (await call(`/api/read/toybox-post?service=transfigure&id=${postId}`)).json(), [], "another service's table has no such post");
+  const patched = await sendRaw("PATCH", `/api/write/toybox-post?service=combo&id=${postId}`, { title: "고친 콤보" });
+  assert.equal(((await patched.json()) as Row[])[0].title, "고친 콤보");
+  assert.deepEqual(await (await sendRaw("PATCH", `/api/write/toybox-post?service=combo&id=${postId}`, { title: "남의 것" }, otherToken)).json(), [], "not the author's: no row");
+  assert.equal((await sendRaw("PATCH", `/api/write/toybox-post?service=chemical_x&id=${postId}`, { title: "x" })).status, 400, "chemical posts have no update policy");
+  const patchCall = rest.calls.filter((entry) => entry.method === "PATCH").at(-1)!;
+  assert.equal(patchCall.url.searchParams.get("user_id"), `eq.${OTHER}`, "update is scoped to the caller");
+  assert.equal(patchCall.url.searchParams.get("env"), "eq.development");
+  assert.equal((await json(await call(`/api/write/toybox-post?service=combo&id=${postId}`, authed("DELETE", undefined, otherToken)))).body.deleted, false);
+  assert.equal((await json(await call(`/api/write/toybox-post?service=combo&id=${postId}`, authed("DELETE")))).body.deleted, true);
+  assert.equal((await call("/api/write/toybox-post?service=combo", { method: "POST", headers: { authorization: `Bearer ${token}`, "sec-fetch-site": "same-origin", "content-type": "application/json" }, body: "{}" })).status, 400, "a raw body needs Content-Length");
+
+  // Favorite tournament: presets, stats, play through the RPC with the Worker env.
+  rest.toybox.favorite_tournament_posts = [
+    { id: POST_A, preset_key: "builtin:cards", env: "development", created_at: "2026-11-01T00:00:00Z" },
+    { id: POST_B, preset_key: null, env: "development", created_at: "2026-11-02T00:00:00Z" },
+  ];
+  assert.deepEqual(((await (await call("/api/read/favorite-tournament/presets")).json()) as Row[]).map((row) => row.id), [POST_A]);
+  rest.toybox.favorite_tournament_candidate_stats = [{ tournament_id: POST_A, env: "development", resource_id: "bash" }, { tournament_id: POST_A, env: "production", resource_id: "x" }];
+  assert.equal(((await (await call(`/api/read/favorite-tournament/stats?id=${POST_A}`)).json()) as Row[]).length, 1);
+  const play = { tournamentId: POST_A, startingSize: 4, championType: "card", championId: "bash", matches: [] };
+  assert.deepEqual((await json(await call("/api/write/favorite-tournament/play", authed("POST", play)))).body.result, { play_count: 1 });
+  assert.equal(rest.rpcBodies.at(-1)!.p_env, "development");
+  assert.equal((await json(await call("/api/write/favorite-tournament/play", authed("POST", { ...play, startingSize: 3 })))).body.error, "invalid");
+  assert.equal((await call("/api/write/favorite-tournament/play", authed("POST", { ...play, tournamentId: "x" }))).status, 400);
+
+  // Pagestorm: the list leaves out nothing it shows; drafts are the caller's own.
+  rest.toybox.pagestorm_posts = [{ id: POST_A, title: "글", content: { doc: 1 }, env: "development", created_at: "2026-11-01T00:00:00Z" }];
+  rest.calls.length = 0;
+  assert.equal((await call("/api/read/pagestorm/posts")).status, 200);
+  assert.equal(rest.calls.at(-1)!.url.searchParams.get("limit"), "50");
+  const draft = await sendRaw("POST", "/api/write/pagestorm/drafts", { user_id: USER, title: "초안", env: "development" });
+  assert.equal(draft.status, 201);
+  const draftId = String(((await draft.json()) as Row[])[0].id);
+  rest.toybox.pagestorm_drafts.push({ id: POST_B, user_id: OTHER, title: "남의 초안", env: "development" });
+  const myDrafts = await call("/api/me/pagestorm/drafts", { headers: { authorization: `Bearer ${token}` } });
+  assert.deepEqual(((await myDrafts.json()) as Row[]).map((row) => row.title), ["초안"]);
+  assert.deepEqual(await (await call(`/api/me/pagestorm/drafts?id=${POST_B}`, { headers: { authorization: `Bearer ${token}` } })).json(), [], "another user's draft is not read");
+  assert.equal((await call("/api/me/pagestorm/drafts")).status, 401);
+  assert.equal(((await (await sendRaw("PATCH", `/api/write/pagestorm/drafts?id=${draftId}`, { title: "고친 초안" })).json()) as Row[])[0].title, "고친 초안");
+  assert.equal((await json(await call(`/api/write/pagestorm/drafts?id=${draftId}`, authed("DELETE")))).body.deleted, true);
+
+  // Defragment bodies: upsert on the source key, read by source.
+  const overlay = { user_id: USER, env: "development", source_service: "combo", source_id: POST_A, content: [] };
+  assert.equal((await sendRaw("PUT", "/api/write/defragment-body", overlay)).status, 200);
+  assert.equal((await sendRaw("PUT", "/api/write/defragment-body", { ...overlay, content: [{ t: 1 }] })).status, 200);
+  assert.equal(rest.toybox.defragment_bodies.length, 1, "the second write updates the same body");
+  const bodyCall = rest.calls.filter((entry) => entry.url.pathname.endsWith("/defragment_bodies")).at(-1)!;
+  assert.equal(bodyCall.url.searchParams.get("on_conflict"), "env,source_service,source_id");
+  assert.equal(((await (await call(`/api/read/defragment-body?service=combo&id=${POST_A}`)).json()) as Row[]).length, 1);
+  assert.equal((await call("/api/read/defragment-body?service=Combo!&id=x")).status, 400);
+
+  // This or that: likes, votes, summaries, comment counts.
+  assert.equal((await call(`/api/write/this-or-that/like?id=${POST_A}`, authed("PUT"))).status, 200);
+  assert.equal((await call(`/api/write/this-or-that/like?id=${POST_A}`, authed("PUT"))).status, 200, "liking twice is not an error");
+  rest.toybox.this_or_that_post_likes.push({ post_id: POST_A, user_id: OTHER, env: "development" }, { post_id: POST_A, user_id: OTHER, env: "production" });
+  assert.deepEqual((await json(await call(`/api/read/this-or-that/like-counts?ids=${POST_A},${POST_B}`))).body.rows, [{ post_id: POST_A, like_count: 2 }]);
+  assert.deepEqual((await json(await call(`/api/me/this-or-that/likes?ids=${POST_A},${POST_B}`, { headers: { authorization: `Bearer ${token}` } }))).body.rows, [{ post_id: POST_A }]);
+  assert.equal((await call(`/api/write/this-or-that/like?id=${POST_A}`, authed("DELETE"))).status, 200);
+  assert.equal(rest.toybox.this_or_that_post_likes.filter((row) => row.user_id === USER).length, 0);
+  assert.equal((await call(`/api/write/this-or-that/vote?id=${POST_A}`, authed("PUT", { choice: "left", surface: "index" }))).status, 201);
+  assert.equal(rest.toybox.this_or_that_post_votes[0].created_surface, "index");
+  assert.equal((await call(`/api/write/this-or-that/vote?id=${POST_A}`, authed("PUT", { choice: "middle", surface: "index" }))).status, 400);
+  assert.equal((await json(await call(`/api/write/this-or-that/vote?id=${POST_A}`, authed("PUT", { choice: "right", surface: "detail" })))).body.error, "duplicate", "one vote per post");
+  const summaries = await json(await call(`/api/read/this-or-that/vote-summaries?ids=${POST_A}`));
+  assert.deepEqual(summaries.body.rows, [{ post_id: POST_A, left_count: 1, right_count: 0 }]);
+  assert.deepEqual((await json(await call(`/api/me/this-or-that/votes?ids=${POST_A}`, { headers: { authorization: `Bearer ${token}` } }))).body.rows, [{ post_id: POST_A, choice: "left" }]);
+  assert.equal((await call(`/api/write/this-or-that/vote?id=${POST_A}`, authed("DELETE"))).status, 200);
+  const fiftyOne = Array.from({ length: 51 }, (_, index) => `aaaaaaaa-0000-4000-8000-${String(index).padStart(12, "0")}`).join(",");
+  assert.equal((await call(`/api/read/this-or-that/vote-summaries?ids=${fiftyOne}`)).status, 400, "the RPC refuses more than 50 ids");
+  assert.equal((await call(`/api/read/this-or-that/like-counts?ids=${POST_A},${POST_A}`)).status, 400, "ids are unique");
+  rest.comments.push(
+    { id: rest.id(), story_id: `this-or-that:${POST_A}`, user_id: OTHER, nickname: "a", content: "1", env: "development", created_at: "2026-11-05T00:00:00Z" },
+    { id: rest.id(), story_id: `this-or-that:${POST_A}`, user_id: OTHER, nickname: "a", content: "2", env: "development", created_at: "2026-11-05T00:00:01Z" },
+    { id: rest.id(), story_id: `this-or-that:${POST_A}`, user_id: OTHER, nickname: "a", content: "3", env: "production", created_at: "2026-11-05T00:00:02Z" },
+  );
+  assert.deepEqual((await json(await call(`/api/read/this-or-that/comment-counts?ids=${POST_A},${POST_B}`))).body.counts, { [POST_A]: 2 });
+  rest.toybox = {};
 
   // --- Helpers ------------------------------------------------------------------------
   assert.equal(contentRangeTotal("0-4/5"), 5);

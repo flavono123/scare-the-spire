@@ -1,4 +1,6 @@
+import { shouldUseLegacy } from "@/lib/api-client";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { apiToyboxFeed, toyboxViaApi } from "@/lib/toybox-api";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   buildLatestFeedKeysetFilter,
@@ -309,6 +311,20 @@ export async function fetchToyboxFeedPage<T extends PostIdentity>(options: {
   if (!supabaseEnabled) return { items: [], hasMore: false };
 
   const sort = resolveToyboxFeedSort(options.service, options.sort);
+  const parseRows = (rows: unknown[]) => {
+    const items = rows
+      .map((row) => parseToyboxFeedRow(row, options.normalizePost))
+      .filter((item): item is ToyboxFeedItem<T> => item != null);
+    return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
+  };
+  if (toyboxViaApi()) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same RPC rows, through the Worker.
+      return parseRows(await apiToyboxFeed(options.service, sort, options.cursor));
+    } catch (apiError) {
+      if (!shouldUseLegacy(apiError)) throw apiError;
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     `get_toybox_feed.${options.service}`,
     supabase.rpc("get_toybox_feed", {
@@ -322,13 +338,7 @@ export async function fetchToyboxFeedPage<T extends PostIdentity>(options: {
     }),
   );
 
-  if (!error) {
-    const rows = (data ?? []) as unknown[];
-    const items = rows
-      .map((row) => parseToyboxFeedRow(row, options.normalizePost))
-      .filter((item): item is ToyboxFeedItem<T> => item != null);
-    return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
-  }
+  if (!error) return parseRows((data ?? []) as unknown[]);
 
   if (!isMissingToyboxFeedRpc(error)) throw error;
 
