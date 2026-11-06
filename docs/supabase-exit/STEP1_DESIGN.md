@@ -645,6 +645,23 @@ SURFACE_MAP 2.2절 22~25번. 런 행에는 원문(`raw`, 행마다 최대 260 KB
   카운터로 바꾸는 것은 일치 확인 뒤로 미룬다.
 - select 목록의 공백은 어댑터가 지운다(supabase-js와 같다).
 
+### 9.7 이야기(`stories`)
+
+SURFACE_MAP 2.2절 21번과 10번의 `stories`.
+
+| 경로 | Supabase | 응답 |
+|---|---|---|
+| `GET /api/read/stories?limit=100\|200\|1000[&source=]` | `community_stories` 19열, 최신순 | PostgREST 배열 그대로(9.6절처럼 JS가 본문을 만지지 않는다) |
+| `POST /api/write/stories` `{ nickname, sentence, entityType, entityId, patchLineId, source, linkedEntities, author? }` | insert(`return=representation`) | 201 `{ v, env, row }` |
+| `DELETE /api/write/stories?id=` | 내 이야기 하나 | `{ v, env, deleted }`. 클라이언트는 지금처럼 목록에서 뺀다 |
+
+- `/patches/changes`의 1,000행은 행마다 `tags`·`linked_entities`가 128 KB까지라 흘려보낸다. limit은 지금 쓰는 세 값만,
+  `source`는 패치 id 문자(`[A-Za-z0-9._-]`)만 받는다.
+- 행은 Worker가 만든다: user_id = sub, env = Worker 값, `game = "sts2"`, `tags = []`. 문장 2~120자, 닉네임 1~20자,
+  연결 128 KB는 테이블 CHECK와 같다. 규칙은 import 없는 `src/lib/stories-api-rules.ts`에 둔다(2026-11-06 두 env의
+  25행 키가 모두 맞는다).
+- api 경로는 Realtime 채널을 열지 않는다(14절 결정). 패치 정적 작성기(리치 번들이 실패할 때만 쓰임)도 api 분기를 쓴다.
+
 ## 10. 배포와 testbed
 
 - CI(`.github/workflows/cloudflare-workers.yml`) main 배포에 `--var API_SUPABASE_URL:… --var API_SUPABASE_KEY:…

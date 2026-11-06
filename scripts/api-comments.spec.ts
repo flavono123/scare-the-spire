@@ -55,6 +55,7 @@ class FakeRest {
   philosophers: Row[] = [];
   contactInquiries: Row[] = [];
   runs: Row[] = [];
+  stories: Row[] = [];
   noCoverColumn = false;
   nicknamePools: Row[] = [{ character_id: "ironclad", locale: "ko", nicknames: ["철갑"] }];
   missingTables = new Set<string>();
@@ -96,6 +97,7 @@ class FakeRest {
     if (name === "contact_inquiries") return this.contactInquiries;
     if (name === "profile_character_nickname_pools") return this.nicknamePools;
     if (name === "runs") return this.runs;
+    if (name === "community_stories") return this.stories;
     throw new Error(`unknown table ${name}`);
   }
 
@@ -200,7 +202,7 @@ class FakeRest {
         return this.matches(row, params);
       });
       const order = /^([a-z_]+)\.(asc|desc)$/.exec(params.get("order") ?? "");
-      if (name === "runs" && order) {
+      if ((name === "runs" || name === "community_stories") && order) {
         rows = [...rows].sort((a, b) => String(a[order[1]]).localeCompare(String(b[order[1]])) * (order[2] === "desc" ? -1 : 1));
       }
       if (params.get("order") === "created_at.asc") rows = [...rows].sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
@@ -247,6 +249,10 @@ class FakeRest {
         const same = (row: Row) => ["env", "resource_type", "resource_id", "game_version", "user_id"].every((key) => row[key] === input[key]);
         if (this.reactions.some(same)) return Response.json({ code: "23505" }, { status: 409 });
         this.reactions.push({ ...input });
+      } else if (name === "community_stories") {
+        const row = { id: this.id(), static_story_id: null, change_id: null, created_at: new Date().toISOString(), ...input };
+        this.stories.push(row);
+        return Response.json([this.project(row, params.get("select") ?? "*")], { status: 201 });
       } else if (name === "contact_inquiries") {
         // enforce_contact_inquiry_rate_limit (schema:589-618).
         const recent = this.contactInquiries.filter((row) => row.user_id === user && row.env === input.env).length;
@@ -299,7 +305,7 @@ class FakeRest {
 }
 
 class FakeD1 implements D1Database {
-  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"], ["path.profile", "api"], ["path.puzzlebox", "api"], ["path.history-runs", "api"]]);
+  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"], ["path.profile", "api"], ["path.puzzlebox", "api"], ["path.history-runs", "api"], ["path.stories", "api"]]);
   prepare(query: string): D1PreparedStatement {
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       if (query !== FLAGS_SQL) throw new Error(`unexpected SQL ${query}`);
@@ -866,6 +872,53 @@ async function main() {
   assert.ok(rest.runs.some((row) => row.id === "aaa"));
   assert.equal((await json(await call("/api/write/history-runs?id=bbbb", authed("DELETE")))).body.deleted, true);
   rest.runs = [];
+
+  // --- Stories (STEP1_DESIGN 9.7) -----------------------------------------------------------
+  const story = (id: string, extra: Row = {}): Row => ({
+    id, user_id: OTHER, static_story_id: null, nickname: "이야기꾼", sentence: "강타가 세졌다", game: "sts2",
+    entity_type: "card", entity_id: "BASH", change_id: null, patch_line_id: "v0.105.0:line-001", source: "v0.105.0",
+    tags: [], linked_entities: [], created_at: `2026-11-0${id.length}T00:00:00Z`, env: "development",
+    avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false, ...extra,
+  });
+  rest.stories = [story("s1"), story("s22", { source: "v0.106.0" }), story("s333", { env: "production" })];
+  const feed = await call("/api/read/stories?limit=100");
+  assert.equal(feed.status, 200);
+  const feedRows = await feed.json() as Row[];
+  assert.deepEqual(feedRows.map((row) => row.id), ["s22", "s1"], "this env, newest first, passed through as an array");
+  assert.deepEqual(((await (await call("/api/read/stories?limit=200&source=v0.105.0")).json()) as Row[]).map((row) => row.id), ["s1"]);
+  for (const bad of ["limit=50", "limit=1000&source=bad source", "limit=100&order=id"]) {
+    assert.equal((await call(`/api/read/stories?${bad}`)).status, 400, bad);
+  }
+  const storyInput = {
+    nickname: "  나  ", sentence: "  새 이야기입니다  ", entityType: "card", entityId: "WITHER",
+    patchLineId: "v0.106.1:line-002-card-wither", source: "v0.106.1",
+    linkedEntities: [{ entityType: "relic", entityId: "ORRERY", label: "태양계" }],
+    author: { avatarId: "silent", avatarKind: "character", paletteId: null, paletteSwapped: false },
+    user_id: OTHER, env: "production", game: "sts1", tags: ["spam"],
+  };
+  const createdStory = await json(await call("/api/write/stories", authed("POST", storyInput)));
+  assert.equal(createdStory.status, 201);
+  const storyRow = createdStory.body.row as Row;
+  assert.equal(storyRow.user_id, USER, "the author is the verified sub");
+  assert.equal(storyRow.env, "development");
+  assert.equal(storyRow.game, "sts2");
+  assert.deepEqual(storyRow.tags, [], "tags are not taken from the body");
+  assert.equal(storyRow.sentence, "새 이야기입니다");
+  assert.equal(storyRow.avatar_id, "silent");
+  for (const bad of [
+    { ...storyInput, sentence: "짧" },
+    { ...storyInput, sentence: "가".repeat(121) },
+    { ...storyInput, nickname: "가".repeat(21) },
+    { ...storyInput, patchLineId: "bad id" },
+    { ...storyInput, linkedEntities: [{ entityType: 1 }] },
+    { ...storyInput, author: { avatarId: 5 } },
+  ]) {
+    assert.equal((await call("/api/write/stories", authed("POST", bad))).status, 400, JSON.stringify(bad).slice(0, 70));
+  }
+  assert.equal((await json(await call("/api/write/stories?id=" + String(storyRow.id).replace(/^.*?([0-9a-f-]{36})$/, "$1"), authed("DELETE")))).body.deleted, true);
+  rest.stories.push(story("77777777-7777-4777-8777-000000000001"));
+  assert.equal((await json(await call("/api/write/stories?id=77777777-7777-4777-8777-000000000001", authed("DELETE")))).body.deleted, false, "not the author's");
+  rest.stories = [];
 
   // --- Helpers ------------------------------------------------------------------------
   assert.equal(contentRangeTotal("0-4/5"), 5);

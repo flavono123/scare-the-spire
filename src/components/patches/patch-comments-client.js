@@ -650,7 +650,8 @@
       error.classList.add("hidden");
       try {
         if (!config) throw new Error("Missing database config");
-        const session = await ensureSession(config);
+        const viaApi = surfacePath("stories") === "api";
+        const session = viaApi ? null : await ensureSession(config);
         const refs = patchLineRefs(action);
         const primaryRef = refs[0];
         const linkedEntities = refs.slice(1).map((ref) => ({
@@ -670,12 +671,41 @@
           palette_id: null,
           palette_swapped: false,
         };
+        if (viaApi) {
+          try {
+            // docs/supabase-exit/STEP1_DESIGN.md 9.7: the Worker fills the user id, env and game.
+            await apiWriteAsUser(config, "/api/write/stories", {
+              method: "POST",
+              group: "stories",
+              body: {
+                nickname,
+                sentence,
+                entityType: primaryRef?.type ?? null,
+                entityId: primaryRef?.id ?? null,
+                patchLineId,
+                source: patchId,
+                linkedEntities,
+                author: {
+                  avatarId: authorToken.avatar_id,
+                  avatarKind: authorToken.avatar_kind,
+                  paletteId: authorToken.palette_id,
+                  paletteSwapped: authorToken.palette_swapped,
+                },
+              },
+            });
+            close();
+            return;
+          } catch (apiError) {
+            if (!apiError.legacy || apiError.processed) throw apiError;
+          }
+        }
+        const legacySession = session ?? await ensureSession(config);
         await restRequest(config, "community_stories?select=*", {
           method: "POST",
-          token: session.access_token,
+          token: legacySession.access_token,
           headers: { Prefer: "return=representation" },
           body: {
-            user_id: sessionUserId(session),
+            user_id: sessionUserId(legacySession),
             nickname,
             sentence,
             game: "sts2",
