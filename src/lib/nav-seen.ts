@@ -18,6 +18,19 @@ export function contentIsNewerThanSeen(publishedAt: string, seenAt: string): boo
   return publishedAt > seenAt;
 }
 
+/**
+ * A future-dated entry (such as a placeholder shell for an upcoming patch) is
+ * always later than any visit, so it would keep the dot lit after every read.
+ * Only entries whose time has already come count.
+ */
+export function catalogHasNewer(
+  publishedTimes: readonly string[],
+  seenAt: string,
+  now = new Date().toISOString(),
+): boolean {
+  return publishedTimes.some((publishedAt) => publishedAt <= now && contentIsNewerThanSeen(publishedAt, seenAt));
+}
+
 export const NAV_SEEN_EVENT = "sts-nav-seen";
 
 const STORAGE_PREFIX = "sts-nav-seen:";
@@ -297,7 +310,7 @@ async function weeklyHasNewer(table: NonNullable<NavSeenSurface["weekly"]>, sinc
 }
 
 async function surfaceHasNewer(surface: NavSeenSurface, since: string): Promise<boolean> {
-  if (surface.catalog) return catalogTimes(surface).some((publishedAt) => contentIsNewerThanSeen(publishedAt, since));
+  if (surface.catalog) return catalogHasNewer(catalogTimes(surface), since);
   if (surface.weekly) return weeklyHasNewer(surface.weekly, since);
   if (!surface.table || !supabaseEnabled) return false;
   const { data, error } = await withSupabaseTimeout(

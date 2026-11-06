@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  catalogHasNewer,
   contentIsNewerThanSeen,
   displayedUnreadIds,
   effectiveUnreadIds,
@@ -81,3 +82,17 @@ assert.deepEqual(
 );
 
 console.log("nav-seen.spec.ts: ok");
+
+// A future-dated patch shell must not keep the patch-notes dot lit after a read.
+assert.equal(
+  catalogHasNewer(["2026-11-12T12:00:00.000Z"], "2026-11-06T00:00:00.000Z", "2026-11-06T04:00:00.000Z"),
+  false,
+);
+assert.equal(
+  catalogHasNewer(["2026-11-12T12:00:00.000Z"], "2026-11-06T00:00:00.000Z", "2026-11-12T12:00:00.000Z"),
+  true,
+);
+assert.equal(
+  catalogHasNewer(["2026-11-05T12:00:00.000Z"], "2026-11-06T00:00:00.000Z", "2026-11-06T04:00:00.000Z"),
+  false,
+);
