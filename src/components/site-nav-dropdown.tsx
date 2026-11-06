@@ -72,6 +72,8 @@ type SiteNavDropdownProps = {
   attention?: boolean;
   /** Static patch HTML renders a hidden dot; patch-nav-indicators.js reveals it. */
   attentionMarker?: string;
+  /** A newly added service inside; its emerald pip replaces the gold one. */
+  newService?: boolean;
 };
 
 export function SiteNavDropdown({
@@ -82,6 +84,7 @@ export function SiteNavDropdown({
   layout = "list",
   attention = false,
   attentionMarker,
+  newService = false,
 }: SiteNavDropdownProps) {
   const grid = layout === "grid";
 
@@ -107,7 +110,9 @@ export function SiteNavDropdown({
               height={28}
               className="h-full w-full rounded-sm object-contain brightness-90 transition-all hover:brightness-110 group-open:brightness-125"
             />
-            {(attention || attentionMarker) && (
+            {newService ? (
+              <NavAttentionDot tone="new-service" />
+            ) : (attention || attentionMarker) && (
               <NavAttentionDot marker={attentionMarker} dormant={Boolean(attentionMarker) && !attention} />
             )}
           </span>

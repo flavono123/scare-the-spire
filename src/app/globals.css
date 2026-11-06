@@ -1655,6 +1655,25 @@
   animation: nav-attention-sine 1.8s ease-in-out infinite;
 }
 
+/* New service pip: emerald like the menu NEW pill, with a ripple instead of the gold sine. */
+@keyframes nav-attention-ripple-new {
+  0% {
+    box-shadow:
+      0 0 0 1px #0b1a14,
+      0 0 0 0 rgba(52, 211, 153, 0.75);
+  }
+  70%, 100% {
+    box-shadow:
+      0 0 0 1px #0b1a14,
+      0 0 0 6px rgba(52, 211, 153, 0);
+  }
+}
+
+.nav-attention-dot.nav-attention-dot-new {
+  background: #34d399;
+  animation: nav-attention-ripple-new 1.6s ease-out infinite;
+}
+
 .nav-title-read {
   filter: grayscale(0.65);
 }
@@ -1671,6 +1690,10 @@
   .nav-attention-dot {
     animation: none;
     box-shadow: 0 0 0 1px #1a1208;
+  }
+
+  .nav-attention-dot.nav-attention-dot-new {
+    box-shadow: 0 0 0 1px #0b1a14, 0 0 0 3px rgba(52, 211, 153, 0.35);
   }
 }
 

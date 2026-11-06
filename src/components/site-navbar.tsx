@@ -63,6 +63,7 @@ import {
   serviceLanguageNavLocales,
   sts1NavLinkItems,
   sts2NavItems,
+  toyBoxHasNewService,
 } from "@/lib/site-nav-items";
 
 type PendingSearchResult = {
@@ -834,6 +835,7 @@ export function SiteNavbar() {
             items={toyBoxItems}
             align="left"
             attention={navSeen.toyBox}
+            newService={toyBoxHasNewService(toyBoxItems)}
           />
 
           {devItems.length > 0 && (

@@ -9,6 +9,7 @@ import {
   type NavForceMap,
   type NavSeenSurface,
 } from "@/lib/nav-seen";
+import { getToyBoxNavItems, toyBoxHasNewService } from "@/lib/site-nav-items";
 import { supabaseEnv } from "@/lib/supabase";
 
 function IndicatorChip({
@@ -43,6 +44,8 @@ export default function NavIndicatorsDevPage() {
   const toySurfaces = NAV_SEEN_SURFACES.filter((surface) => !surface.catalog);
   const litPatch = patchSurfaces.filter((surface) => navSeen.unreadIds.includes(surface.id));
   const litToy = toySurfaces.filter((surface) => navSeen.unreadIds.includes(surface.id));
+  const toyBoxItems = getToyBoxNavItems({ serviceLocale: "ko", gameLocale: "kor" });
+  const newServices = toyBoxItems.filter((item) => item.isNew);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- read the browser force flags after paint
@@ -115,6 +118,20 @@ export default function NavIndicatorsDevPage() {
             />
           ))}
         </div>
+      </section>
+
+      <section className="flex flex-col gap-3 rounded-md border border-border p-4">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-service text-sm font-semibold">새 서비스</h2>
+          <span className={`text-xs font-semibold ${toyBoxHasNewService(toyBoxItems) ? "text-emerald-600 dark:text-emerald-300" : "text-muted-foreground"}`}>
+            {toyBoxHasNewService(toyBoxItems) ? "켜짐" : "꺼짐"}
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {newServices.length > 0
+            ? `상자 아이콘에 초록 점, 메뉴에 NEW: ${newServices.map((item) => item.label).join(", ")}. 다음 섀소식이 나오면 꺼진다. 일찍 끄려면 site-nav-items의 announceNewThrough를 지운다.`
+            : "알릴 새 서비스가 없다."}
+        </p>
       </section>
 
       <button
