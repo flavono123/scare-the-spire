@@ -13,7 +13,7 @@ import {
 } from "./http";
 import { bearerToken, checkSupabaseAccessToken, fetchSupabaseJwks, type VerifiedSupabaseUser } from "./jwt";
 import { clientIp, withinRateLimit, type RateLimitEnv, type RateLimitKind } from "./rate-limit";
-import { cappedBodyStream, supabaseApiConfig, supabaseIssuer, type SupabaseApiConfig } from "./supabase-rest";
+import { supabaseApiConfig, supabaseIssuer, type SupabaseApiConfig } from "./supabase-rest";
 
 /**
  * The same-origin API router (docs/supabase-exit/STEP1_DESIGN.md 4). It owns
@@ -44,7 +44,7 @@ export type UserRouteContext = BaseContext & {
   token: string;
   /** The parsed JSON body when the route declares `body`; otherwise undefined. */
   body: unknown;
-  /** The unread JSON body, byte-capped, when the route declares `rawBody`; otherwise null. */
+  /** The unread JSON body when the route declares `rawBody` (length checked); otherwise null. */
   bodyStream: ReadableStream<Uint8Array> | null;
 };
 
@@ -76,7 +76,11 @@ export type UserRoute = RouteBase & {
   access: "me" | "write";
   /** A JSON body of at most `maxBytes`, counted on the stream. */
   body?: { maxBytes: number };
-  /** A JSON body passed through unparsed (too big to parse in the CPU budget), at most `maxBytes`. */
+  /**
+   * A JSON body passed through unparsed and untouched by JS (too big to parse or
+   * even pump in the CPU budget). It needs a Content-Length of at most `maxBytes`;
+   * browsers always send one for a string body, and HTTP framing holds the body to it.
+   */
   rawBody?: { maxBytes: number };
   handle(context: UserRouteContext): Promise<Response>;
 };
@@ -254,9 +258,10 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
         if (!/^application\/json(?:\s*;|$)/i.test(request.headers.get("content-type") ?? "") || !request.body) {
           return error("invalid");
         }
-        const declared = Number(request.headers.get("content-length") ?? "0");
-        if (Number.isFinite(declared) && declared > route.rawBody.maxBytes) return error("too_large");
-        bodyStream = cappedBodyStream(request.body, route.rawBody.maxBytes);
+        const length = request.headers.get("content-length");
+        if (length === null || !/^\d{1,10}$/.test(length)) return error("invalid");
+        if (Number(length) > route.rawBody.maxBytes) return error("too_large");
+        bodyStream = request.body;
       }
       response = await route.handle({ ...base, user: check.user, token, body, bodyStream });
     }

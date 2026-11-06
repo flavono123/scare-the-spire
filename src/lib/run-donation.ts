@@ -1,4 +1,4 @@
-import { ApiError, apiFetch, shouldUseLegacy, writeMayGoLegacy } from "./api-client";
+import { ApiError, apiFetch, requireApiVersion, shouldUseLegacy, writeMayGoLegacy } from "./api-client";
 import { apiFetchAsUser } from "./api-session";
 import {
   HISTORY_RUN_REFERENCE_LIMIT,
@@ -117,11 +117,17 @@ function runsViaApi(env: string = supabaseEnv): boolean {
 
 type RowsBody = { v?: number; rows?: unknown };
 
-/** Rows from a Worker read, or "legacy" when the Worker sent this group back. */
+/**
+ * Rows from a Worker read, or "legacy" when the Worker sent this group back.
+ * Views with raw run files are PostgREST's array passed through as is; `meta`
+ * is a `{ v, env, rows }` answer. Any other shape is a legacy signal (section 9).
+ */
 async function apiRunRows(path: string): Promise<RunRow[] | "legacy"> {
   try {
-    const body = await apiFetch<RowsBody>("history-runs", path, { timeoutMs: 20_000 });
-    if (body?.v !== 1 || !Array.isArray(body.rows)) throw new Error("bad history-runs answer");
+    const body = await apiFetch<RowsBody | RunRow[]>("history-runs", path, { timeoutMs: 20_000 });
+    if (Array.isArray(body)) return body;
+    requireApiVersion("history-runs", body);
+    if (!Array.isArray(body.rows)) throw new Error("bad history-runs answer");
     return body.rows as RunRow[];
   } catch (error) {
     if (shouldUseLegacy(error)) return "legacy";

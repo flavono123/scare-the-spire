@@ -608,7 +608,7 @@ SURFACE_MAP 2.2절 22~25번. 런 행에는 원문(`raw`, 행마다 최대 260 KB
 
 | 경로 | Supabase | 응답 |
 |---|---|---|
-| `GET /api/read/history-runs?view=recent` | 최신 100개, 요약 열과 `raw` | `{"v":1,"env":…,"rows":<PostgREST 본문 그대로>}` |
+| `GET /api/read/history-runs?view=recent` | 최신 100개, 요약 열과 `raw` | PostgREST 배열 그대로(봉투 없음, env는 `X-Slseoun-Api-Env` 헤더) |
 | `GET /api/read/history-runs?view=reference` | `start_time` 최신 30개(콤보 런 고르기) | 같음 |
 | `GET /api/read/history-run?id=&view=detail` | 한 행, 상세 열과 `raw` | 같음 |
 | `GET /api/read/history-run?id=&view=cover` | `id, raw, cover_spec`(자동 표지 계산) | 같음 |
@@ -621,9 +621,11 @@ SURFACE_MAP 2.2절 22~25번. 런 행에는 원문(`raw`, 행마다 최대 260 KB
 | `POST /api/write/history-runs/nicknames` `{ nickname }` | 닉네임이 다른 내 런의 `donor_nickname`(null은 건너뜀, 지금과 같다) | `{ v, env }` |
 | `DELETE /api/write/history-runs?id=` | 내 런 하나 | `{ v, env, deleted }`. 클라이언트는 지금처럼 오류가 없으면 성공으로 본다 |
 
-- 흘려보내기: 어댑터의 `postgrestStream`은 응답 헤더까지만 시간 제한을 두고 본문을 읽지 않는다. Worker는 본문 앞뒤에
-  봉투(`{"v":1,"env":…,"rows":`와 `}`)만 붙이고 바이트를 센다. 24 MB를 넘으면 스트림을 끊어 클라이언트가 잘린 JSON(응답
-  없음)을 받는다. 요청 본문도 세면서 그대로 넘긴다(24 MB. `Content-Length`가 크면 바로, 없으면 스트림에서 세어 413).
+- 흘려보내기: 어댑터의 `postgrestStream`은 응답 헤더까지만 시간 제한을 두고 본문을 읽지 않는다. Worker는 PostgREST
+  본문 스트림을 `new Response()`에 그대로 넘겨 **JS가 본문 조각을 만지지 않게** 한다. 처음에는 JS 스트림으로 봉투를
+  붙이고 바이트를 셌는데, testbed에서 5.5 MB 목록이 CPU 중앙 133 ms(77~204 ms)였다(Free 10 ms, 결과는 `ok`). 그래서
+  원문이 든 view는 봉투 없는 배열이고, 크기는 쿼리(100행)와 테이블의 원문 상한이 정한다. 요청 본문도 JS 없이 넘긴다.
+  `Content-Length`가 있어야 하고(브라우저는 문자열 본문에 늘 보낸다) 24 MB를 넘으면 413, 없으면 400이다.
   클라이언트 시간 제한은 이 경로만 20초(목록)·30초(업로드)다. I/O 대기는 Worker CPU를 쓰지 않으므로 흘려보내는 호출의
   헤더 시간 제한은 6.5초 예산 대신 15초(읽기)·25초(업로드)다. 업로드의 헤더 시간은 브라우저가 본문을 올리는 시간까지
   포함하기 때문이다. 시간 제한 뒤에 늦게 반영된 쓰기는 지금 legacy의 8초 타임아웃과 같은 성질이다(로컬 확인에서 늦은 묶음

@@ -773,25 +773,23 @@ async function main() {
   const recent = await call("/api/read/history-runs?view=recent");
   assert.equal(recent.status, 200);
   assert.equal(recent.headers.get("x-slseoun-api"), "1");
-  const recentText = await recent.text();
-  const recentBody = JSON.parse(recentText) as { v: number; env: string; rows: Row[] };
-  assert.equal(recentBody.v, 1);
-  assert.equal(recentBody.env, "development");
-  assert.deepEqual(recentBody.rows.map((row) => row.id), ["bbbb", "aaa"], "development only, newest first");
-  assert.equal(recentBody.rows[0].raw, rawFile, "the raw run file passes through untouched");
-  assert.ok(recentText.startsWith('{"v":1,"env":"development","rows":['), "the envelope wraps the streamed body");
-  const reference = await json(await call("/api/read/history-runs?view=reference"));
-  assert.equal((reference.body.rows as Row[]).length, 2);
+  assert.equal(recent.headers.get("x-slseoun-api-env"), "development");
+  const recentRows = await recent.json() as Row[];
+  assert.ok(Array.isArray(recentRows), "PostgREST's array, passed through without an envelope");
+  assert.deepEqual(recentRows.map((row) => row.id), ["bbbb", "aaa"], "development only, newest first");
+  assert.equal(recentRows[0].raw, rawFile, "the raw run file passes through untouched");
+  const referenceRows = await (await call("/api/read/history-runs?view=reference")).json() as Row[];
+  assert.equal(referenceRows.length, 2);
   assert.equal((rest.calls.at(-1)?.url.searchParams.get("order")), "start_time.desc");
   rest.noCoverColumn = true;
-  const olderRuns = await json(await call("/api/read/history-runs?view=recent"));
-  assert.ok(!("cover_spec" in (olderRuns.body.rows as Row[])[0]), "without the cover_spec column it reads the older columns");
+  const olderRuns = await (await call("/api/read/history-runs?view=recent")).json() as Row[];
+  assert.ok(!("cover_spec" in olderRuns[0]), "without the cover_spec column it reads the older columns");
   rest.noCoverColumn = false;
   assert.equal((await call("/api/read/history-runs?view=all")).status, 400);
   assert.equal((await call("/api/read/history-runs")).status, 400);
 
-  const detail = await json(await call("/api/read/history-run?id=bbbb&view=detail"));
-  assert.equal((detail.body.rows as Row[])[0].raw, rawFile);
+  const detailRows = await (await call("/api/read/history-run?id=bbbb&view=detail")).json() as Row[];
+  assert.equal(detailRows[0].raw, rawFile);
   const meta = await json(await call("/api/read/history-run?id=bbbb&view=meta"));
   assert.deepEqual((meta.body.rows as Row[])[0], { id: "bbbb", character: "IRONCLAD", cover_spec: { auto: true } }, "meta carries no raw");
   assert.deepEqual((await json(await call("/api/read/history-run?id=ccccc&view=meta"))).body.rows, [], "another env's run is not found");
@@ -811,11 +809,21 @@ async function main() {
   assert.deepEqual(mine.body.ids, ["bbbb"], "this env's runs donated by the token's user");
   assert.deepEqual((await json(await call("/api/me/history-runs?id=aaa", { headers: { authorization: `Bearer ${token}` } }))).body.ids, []);
 
-  const upload = (path: string, payload: unknown, headers: Record<string, string> = {}) => call(path, {
-    method: "POST",
-    headers: { authorization: `Bearer ${token}`, "content-type": "application/json", "sec-fetch-site": "same-origin", ...headers },
-    body: JSON.stringify(payload),
-  });
+  // Browsers send Content-Length with a string body; Node's Request does not fill it in, so the spec does.
+  const upload = (path: string, payload: unknown, headers: Record<string, string> = {}) => {
+    const text = JSON.stringify(payload);
+    return call(path, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "content-type": "application/json",
+        "sec-fetch-site": "same-origin",
+        "content-length": String(new TextEncoder().encode(text).byteLength),
+        ...headers,
+      },
+      body: text,
+    });
+  };
   assert.equal((await upload("/api/write/history-runs", runRow("dddd", USER))).status, 201);
   assert.equal(rest.runs.find((row) => row.id === "dddd")?.raw, rawFile, "the uploaded raw arrives as sent");
   assert.equal((await json(await upload("/api/write/history-runs", runRow("dddd", USER)))).body.error, "duplicate", "23505 tells the page it was already shared");
@@ -825,7 +833,7 @@ async function main() {
   assert.deepEqual(batch.body.inserted, ["ffff"], "duplicates are skipped, not failed");
   assert.equal((await upload("/api/write/history-runs/batch", [], { "content-length": String(25 * 1024 * 1024) })).status, 413);
   assert.equal((await call("/api/write/history-runs", { method: "POST", headers: { authorization: `Bearer ${token}`, "content-type": "text/plain" }, body: "{}" })).status, 400);
-  // No Content-Length: the cap is counted on the stream and answered 413, not 503.
+  // A raw body needs a Content-Length (browsers send one for a string body): the body is never pumped by JS.
   const chunk = new TextEncoder().encode("x".repeat(1024 * 1024));
   let chunksSent = 0;
   const endless = new ReadableStream<Uint8Array>({
@@ -841,7 +849,7 @@ async function main() {
     body: endless,
     duplex: "half",
   } as RequestInit), env as never, ctx);
-  assert.equal(overCap.status, 413);
+  assert.equal(overCap.status, 400, "no Content-Length, no passthrough");
 
   const cover = (id: string, bearer = token) => call(`/api/write/history-runs/cover?id=${id}`, authed("PATCH", { coverSpec: { auto: false, card: "BASH" } }, bearer));
   assert.equal((await json(await cover("bbbb"))).body.updated, true);

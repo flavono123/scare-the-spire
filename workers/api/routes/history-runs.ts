@@ -12,7 +12,7 @@ import {
 } from "../../../src/lib/history-runs-api-rules";
 import { API_MARKER_HEADER, apiError, jsonResponse, PRIVATE_NO_STORE } from "../http";
 import type { ApiRoute, PublicRouteContext, UserRouteContext } from "../router";
-import { isCappedBodyOver, postgrest, postgrestStream, rowsEnvelopeStream } from "../supabase-rest";
+import { postgrest, postgrestStream } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
 
 /**
@@ -31,8 +31,6 @@ import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
  */
 const STREAM_READ_MS = 15_000;
 const STREAM_UPLOAD_MS = 25_000;
-/** Streamed answers stop past this; the list today is about 8 MB. */
-const STREAM_MAX_BYTES = 24 * 1024 * 1024;
 /** One upload batch; the client sends what the user picked (raw files up to 2 MB). */
 const UPLOAD_MAX_BYTES = 24 * 1024 * 1024;
 const NICKNAME_MAX = 64;
@@ -41,13 +39,20 @@ const ENGAGEMENT_ROWS = 1000;
 
 const MISSING_COLUMN = new Set(["PGRST204", "42703"]);
 
+/**
+ * PostgREST's JSON array, handed to the client by the runtime without any JS
+ * touching it: a JS pump over the 5.5 MB development list cost 77-204 ms CPU
+ * on testbed (Free allows 10 ms). The answer is a bare array of rows; its size
+ * is bounded by the query (100 rows) and the table's raw cap.
+ */
 function streamedRows(response: Response, env: string): Response {
-  return new Response(rowsEnvelopeStream(response.body, env, STREAM_MAX_BYTES), {
+  return new Response(response.body, {
     status: 200,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Cache-Control": PRIVATE_NO_STORE,
       "X-Robots-Tag": "noindex",
+      "X-Slseoun-Api-Env": env,
       [API_MARKER_HEADER]: "1",
     },
   });
@@ -172,11 +177,7 @@ async function streamUpload(context: UserRouteContext, batch: boolean): Promise<
     query: batch ? new URLSearchParams({ on_conflict: "id,env", select: "id" }) : undefined,
     prefer: batch ? ["resolution=ignore-duplicates", "return=representation"] : ["return=minimal"],
   });
-  if (!result.ok) {
-    // The cap counts bytes as they stream, so a body without Content-Length is caught here.
-    if (isCappedBodyOver(bodyStream)) return apiError("too_large");
-    return apiError(restErrorCode(result));
-  }
+  if (!result.ok) return apiError(restErrorCode(result));
   if (!batch) {
     void result.response.body?.cancel().catch(() => undefined);
     return jsonResponse({ v: 1, env: config.dataEnv }, { status: 201 });
