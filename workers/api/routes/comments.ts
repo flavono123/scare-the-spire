@@ -191,24 +191,30 @@ async function readLikeCount(config: SupabaseApiConfig, key: string, deadline: n
   return total === null ? { ok: false, status: result.status, code: "bad_response" } : { ...result, data: total };
 }
 
+/**
+ * Totals for `targets`, zero when there is no row. `extraResourceIds` widens the
+ * read so later targets on those resources (a philosopher post's own version)
+ * need no second call; `all` carries every row read.
+ */
 async function readReactionCounts(
   config: SupabaseApiConfig,
   targets: readonly ReactionTarget[],
   deadline: number,
-): Promise<RestResult<Record<string, ReactionCounts>>> {
-  const ids = [...new Set(targets.map((target) => target.resourceId))];
+  extraResourceIds: readonly string[] = [],
+): Promise<RestResult<{ asked: Record<string, ReactionCounts>; all: Record<string, ReactionCounts> }>> {
+  const ids = [...new Set([...targets.map((target) => target.resourceId), ...extraResourceIds])];
   const result = await postgrest<ReactionCountRow[]>(config, {
     deadline,
     path: "resource_reaction_counts",
     query: new URLSearchParams({ select: REACTION_COUNT_COLUMNS, env: `eq.${config.dataEnv}`, resource_id: inList(ids) }),
   });
   if (!result.ok) return result;
-  const counts: Record<string, ReactionCounts> = Object.fromEntries(targets.map((target) => [reactionTargetKey(target), zeroCounts()]));
+  const all: Record<string, ReactionCounts> = {};
   for (const row of result.data ?? []) {
-    const key = reactionTargetKey({ resourceType: String(row.resource_type), resourceId: String(row.resource_id), gameVersion: String(row.game_version) });
-    if (key in counts) counts[key] = countsFromRow(row);
+    all[reactionTargetKey({ resourceType: String(row.resource_type), resourceId: String(row.resource_id), gameVersion: String(row.game_version) })] = countsFromRow(row);
   }
-  return { ...result, data: counts };
+  const asked = Object.fromEntries(targets.map((target) => [reactionTargetKey(target), all[reactionTargetKey(target)] ?? zeroCounts()]));
+  return { ...result, data: { asked, all } };
 }
 
 async function readPhilosophers(config: SupabaseApiConfig, resourceKey: string, deadline: number): Promise<RestResult<PhilosopherRow[]>> {
@@ -268,66 +274,79 @@ async function handleEngagement(context: PublicRouteContext): Promise<Response> 
   const likeKeys = wanted.likes ?? [];
   const targets = (wanted.reactions ?? []).map((key) => parseReactionTargetKey(key) as ReactionTarget);
   const resources = wanted.philosophers ?? [];
+  const resourceIds = resources.map((key) => (parsePhilosopherResourceKey(key) as { resourceId: string }).resourceId);
 
-  const tasks: (() => Promise<void>)[] = [];
-  if (threadKeys.length) {
-    tasks.push(async () => {
-      const result = await readThreads(config, threadKeys, deadline);
-      if (!result.ok || (result.data ?? []).length >= THREAD_ROW_LIMIT) unavailable.add("threads");
-      else body.threads = groupThreads(threadKeys, result.data ?? []);
-    });
-  }
-  if (targets.length) {
-    tasks.push(async () => {
-      const result = await readReactionCounts(config, targets, deadline);
-      if (result.ok) body.reactions = result.data;
-      else unavailable.add("reactions");
-    });
-  }
+  // Every Supabase call costs Worker CPU (Free: 10 ms a request), so a codex detail
+  // makes four: posts, totals and like count first, then all comment rows at once.
+  // Totals read the posts' resource ids too, which covers each post's own version.
+  let reactionRows: Record<string, ReactionCounts> | null = null;
   const philosopherRows: Record<string, PhilosopherRow[]> = {};
+  const likes: Record<string, number> = {};
+  const first: (() => Promise<void>)[] = [];
+  if (targets.length || resourceIds.length) {
+    first.push(async () => {
+      const result = await readReactionCounts(config, targets, deadline, resourceIds);
+      if (result.ok) {
+        reactionRows = result.data.all;
+        if (targets.length) body.reactions = result.data.asked;
+      } else if (targets.length) {
+        unavailable.add("reactions");
+      }
+    });
+  }
   for (const resource of resources) {
-    tasks.push(async () => {
+    first.push(async () => {
       const result = await readPhilosophers(config, resource, deadline);
       if (result.ok) philosopherRows[resource] = result.data ?? [];
       else unavailable.add("philosophers");
     });
   }
-  const likes: Record<string, number> = {};
   for (const key of likeKeys) {
-    tasks.push(async () => {
+    first.push(async () => {
       const result = await readLikeCount(config, key, deadline);
       if (result.ok) likes[key] = result.data;
       else unavailable.add("likes");
     });
   }
-  await inWaves(tasks);
-  if (likeKeys.length && !unavailable.has("likes")) body.likes = likes;
-  if (resources.length && !unavailable.has("philosophers")) {
-    body.philosophers = philosopherRows;
+  // Without philosophers the threads need not wait for anything.
+  const threadsFirst = resources.length === 0;
+  if (threadsFirst && threadKeys.length) {
+    first.push(async () => {
+      const result = await readThreads(config, threadKeys, deadline);
+      if (!result.ok || (result.data ?? []).length >= THREAD_ROW_LIMIT) unavailable.add("threads");
+      else body.threads = groupThreads(threadKeys, result.data ?? []);
+    });
   }
-  if (body.philosophers && deadline - Date.now() >= SECOND_WAVE_MIN_MS) {
-    // Second wave: reply threads and reaction totals the posts' widgets will ask for.
-    const extras = philosopherExtras(Object.values(body.philosophers).flat());
-    const extraThreads = extras.threads.filter((key) => !(body.threads && key in body.threads));
-    const extraTargets = extras.reactions.filter((target) => !(body.reactions && reactionTargetKey(target) in body.reactions));
-    const uniqueTargets = [...new Map(extraTargets.map((target) => [reactionTargetKey(target), target])).values()];
-    const second: (() => Promise<void>)[] = [];
-    // A failed extra is left out; the widget then asks for it on its own.
-    if (extraThreads.length) {
-      second.push(async () => {
-        const result = await readThreads(config, extraThreads, deadline);
-        if (result.ok && (result.data ?? []).length < THREAD_ROW_LIMIT) {
-          body.threads = { ...body.threads, ...groupThreads(extraThreads, result.data ?? []) };
+  await inWaves(first);
+  if (likeKeys.length && !unavailable.has("likes")) body.likes = likes;
+
+  if (resources.length) {
+    let replyKeys: string[] = [];
+    if (!unavailable.has("philosophers")) {
+      body.philosophers = philosopherRows;
+      const extras = philosopherExtras(Object.values(philosopherRows).flat());
+      replyKeys = extras.threads.filter((key) => !threadKeys.includes(key));
+      // Each post's own reaction target, from the rows already read; a missing row is zero.
+      const rows: Record<string, ReactionCounts> | null = reactionRows;
+      if (rows) {
+        const derived: Record<string, ReactionCounts> = {};
+        for (const target of extras.reactions) {
+          const key = reactionTargetKey(target);
+          if (!(body.reactions && key in body.reactions)) derived[key] = rows[key] ?? zeroCounts();
         }
-      });
+        if (Object.keys(derived).length) body.reactions = { ...body.reactions, ...derived };
+      }
     }
-    if (uniqueTargets.length) {
-      second.push(async () => {
-        const result = await readReactionCounts(config, uniqueTargets, deadline);
-        if (result.ok) body.reactions = { ...body.reactions, ...result.data };
-      });
+    // Asked threads always go; reply threads only while there is time (their widgets can ask later).
+    const keys = [...threadKeys, ...(deadline - Date.now() >= SECOND_WAVE_MIN_MS ? replyKeys : [])];
+    if (keys.length) {
+      const result = await readThreads(config, keys, deadline);
+      if (result.ok && (result.data ?? []).length < THREAD_ROW_LIMIT) {
+        body.threads = groupThreads(keys, result.data ?? []);
+      } else if (threadKeys.length) {
+        unavailable.add("threads");
+      }
     }
-    await inWaves(second);
   }
 
   const requested = ENGAGEMENT_PARTS.filter((part) => wanted[part]?.length);

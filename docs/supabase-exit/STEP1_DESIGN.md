@@ -410,7 +410,11 @@ SURFACE_MAP 2.2절 5~9번과 10번의 `threads`를 덮는다. 엔드포인트 �
 - Supabase 호출: 스레드는 `comments?select=<열>,comment_likes(count)&story_id=in.(…)&order=created_at.asc&limit=1000`
   한 번(댓글 좋아요를 행마다 세는 지금 방식 대신 임베드 count). 좋아요 수는 키마다 HEAD `count=exact`. 반응은
   `resource_reaction_counts`를 `resource_id=in.(…)`로 한 번 읽고 대상으로 거른다(지금 `fetchResourceReactionCounts`와
-  같다). 철학자 글은 자원마다 `week_start` 내림차순 20개, 그 뒤 답글·반응을 두 번째 묶음으로 읽는다.
+  같다). 철학자 글은 자원마다 `week_start` 내림차순 20개다.
+- Supabase 호출 하나가 Worker CPU 약 0.5~1 ms라서(testbed 측정: 호출 0개 중앙 1 ms, 1개 2 ms, 6개 5 ms·p90 8 ms·최대
+  14 ms) 호출 수를 줄인다. 반응 합계는 철학자 자원의 id까지 넓혀 한 번에 읽어 각 글의 버전 합계를 따로 읽지 않는다.
+  철학자 글을 요청하면 스레드와 답글 스레드를 글을 읽은 뒤 한 쿼리로 읽는다. 백과사전 상세는 글, 합계, 좋아요 수,
+  댓글 행의 4번이다. 철학자 글이 없으면 스레드는 첫 묶음에서 바로 읽는다.
 - 부분 실패: 한 부분이 실패하면 그 부분을 빼고 `unavailable: ["reactions"]`처럼 이름을 적는다. 지금 훅이 따로 실패하는
   것과 같게 화면의 그 부분만 "응답 없음"이다. 모두 실패하면 503.
 - 캐시는 두지 않는다. 쓴 사람이 다시 불러도 자기 댓글이 보여야 한다. 지금도 매번 Supabase를 읽는다. 캐시는 3단계에서 본다.

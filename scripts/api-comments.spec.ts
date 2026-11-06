@@ -332,6 +332,8 @@ async function main() {
   assert.deepEqual(reactions["card:bash:0.103.2"], { buff: 0, nerf: 1, rework: 0 }, "the post's own version rides along");
   assert.equal((read.body.philosophers as Record<string, unknown[]>)["card:bash"].length, 1);
   assert.equal(threads["colorful-philosophers:44444444-4444-4444-8444-444444444444"].length, 1, "reply threads ride along");
+  assert.equal(rest.calls.filter((entry) => entry.url.pathname.startsWith("/rest/")).length, 4,
+    "a codex detail costs four Supabase calls: posts, totals, like count, then all comment rows");
   assert.ok(rest.calls.every((entry) => entry.auth === null), "public reads never forward a user token");
   assert.ok(rest.calls.every((entry) => entry.url.searchParams.get("env") === "eq.development" || entry.url.searchParams.get("comments.env") === "eq.development" || !entry.url.pathname.startsWith("/rest")), "every query is scoped to the Worker env");
   assert.equal(readLimiter.keys.at(-1), "ip:203.0.113.9");
