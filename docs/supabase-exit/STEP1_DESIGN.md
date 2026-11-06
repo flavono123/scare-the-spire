@@ -36,6 +36,16 @@
   - 니오우스레터 2026-08: claim 루트 27개를 공개 읽기 1건으로 읽었다(prefetch 전에는 부하에 따라 4~9건).
   - 몬스터 목록의 참여 수는 `/api/read/engagement-counts` 1건이다.
   - `/api/read|me/engagement`가 표식 없는 404를 주게 하자 페이지가 legacy로 내려와 같은 댓글 1과 답글 5를 보였다.
+- 2026-11-06 10:00 KST testbed(`pnpm cf:testbed -- --remote`, `f30676a6`·`1f1a0652`): 플래그가 모두 `legacy`일 때
+  스모크 205개와 브라우저 QA 13개 통과. 그 뒤 testbed D1에서 `path.nav`·`path.comments`를 `api`로 켰다(그대로 둔다).
+  - 쓰기에 `Authorization: Bearer x.y.z`를 보내 401 `token_invalid`. `wrangler tail`에 남은 Worker 로그는
+    `api POST write.comments.create 401 token_invalid` 한 줄이고, 토큰 값과 본문은 없다. tail 이벤트의 `authorization`
+    헤더는 Cloudflare가 `REDACTED`로 가린다(4.5절 확인).
+  - 로컬 댓글 QA 36개를 testbed 주소로 돌려 35개 통과. 남은 하나는 셸 패치 페이지의 배달부 legacy 쿼리다. testbed 패치
+    페이지는 production env로 빌드되어 Worker의 development 스냅샷과 env가 달라 네비가 legacy에 남는다(8.2절, testbed만).
+  - CPU(tail `cpuTime`, 30번씩): 백과사전 묶음 중앙 5 ms·p90 10 ms·최대 17 ms, 니오우스레터 27개 스레드 중앙 3 ms·p90
+    9 ms, 참여 수 중앙 3 ms·p90 7 ms. 같은 날 운영 main Worker 24시간은 p50 1.8 ms·p99 7.5 ms(16,784건, 오류 0)이고,
+    14~17 ms 요청도 결과는 `ok`였다. 호출 수를 6에서 4로 줄여도 꼬리는 줄지 않았다(같은 isolate의 GC 등 잡음이 크다).
 - 이 문서는 모든 화면이 같이 쓰는 기반과 첫 화면 `nav`를 정한다. 다른 화면은 SURFACE_MAP.md 2절을 따르되,
   이 문서 9절의 규칙이 우선한다.
 
@@ -535,7 +545,9 @@ SURFACE_MAP 2.2절 5~9번과 10번의 `threads`를 덮는다. 엔드포인트 �
 - Workers 요청이 계정 전체(main, patches, testbed 둘) 합으로 하루 6만 건 아래다. `cf:metrics`는 지금 main과 patches만
   세므로 testbed Worker를 더한다. 서비스 binding 호출이 하루 한도에 따로 세어지는지는 문서에 없으니, 확인 전까지는
   센다고 본다.
-- CPU: `exceededCpu`가 0이고 `cpuTimeP99`가 5 ms 아래다.
+- CPU: `exceededCpu`가 0이고 `cpuTimeP99`가 켜기 전 기준선보다 나빠지지 않는다. 처음에 적은 "5 ms 아래"는 지금
+  운영(2026-11-06 24시간 p99 7.5 ms)도 맞추지 못하는 값이라 바꿨다. **운영에서 그룹을 켤 때 사용자가 이 조건을 다시
+  본다.** 기준선은 켜기 직전 `pnpm cf:metrics -- --worker main --hours 24`로 적는다.
 - Worker subrequest와 Supabase API 요청 수가 지금보다 늘지 않는다.
 
 ## 13. 되돌리기

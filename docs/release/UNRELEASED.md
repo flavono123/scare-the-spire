@@ -53,6 +53,8 @@
 - Expect: `path.comments=legacy`(운영 기본)에서는 화면과 요청이 그대로다. api면 백과사전 상세가 Supabase 4~5+2N건 대신
   Worker 1~2건, 니오우스레터가 claim별 스레드 대신 몇 건으로 줄고, 쓰기는 응답으로 화면을 고친다(다시 읽지 않음).
   testbed 패치 페이지는 api 경로에서 development 행을 읽고 쓴다
+- 상태: 2026-11-06 로컬 QA 36/36, testbed QA 35/36(남은 1개는 testbed 패치 페이지의 네비 env 차이). testbed D1은
+  `path.nav`·`path.comments`가 `api`다
 - QA: testbed에서 `path.comments`를 api로 켜고 백과사전 상세(댓글·답글·좋아요·반응 쓰기와 되돌리기), 패치 셸 릴 반응,
   니오우스레터 claim 스레드, 몬스터 목록 참여 수를 legacy와 비교. `Authorization: Bearer x.y.z`로 쓰기 401과 로그에
   헤더가 남지 않는지(설계 4.5절)
