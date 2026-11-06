@@ -39,6 +39,16 @@ export class ApiUnavailableError extends ApiError {
   }
 }
 
+/** True when a failed api call should be redone on the legacy path. */
+export function shouldUseLegacy(error: unknown): boolean {
+  return error instanceof SurfaceLegacyError;
+}
+
+/** True when a failed api write certainly did nothing, so legacy may send it once. */
+export function writeMayGoLegacy(error: unknown): boolean {
+  return error instanceof SurfaceLegacyError && !error.processed;
+}
+
 export const API_TIMEOUT_MS = 8000;
 
 export type ApiFetchInit = {

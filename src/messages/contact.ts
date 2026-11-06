@@ -1,4 +1,4 @@
-import type { ContactCategory } from "@/lib/contact-inquiries";
+import type { ContactCategory } from "@/lib/contact-rules";
 import type { ServiceLocale } from "@/lib/i18n";
 
 interface ContactCategoryMessage {

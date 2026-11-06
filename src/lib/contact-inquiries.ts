@@ -1,19 +1,17 @@
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
-import { sanitizeContactSourcePath } from "@/lib/contact-routing";
+import { ApiError, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
+import { apiFetchAsUser } from "@/lib/api-session";
+import { sanitizeContactSourcePath, type ContactCategory } from "@/lib/contact-rules";
+import { surfacePath } from "@/lib/runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
-export const CONTACT_MESSAGE_MIN_LENGTH = 10;
-export const CONTACT_MESSAGE_MAX_LENGTH = 8000;
-export const CONTACT_EMAIL_MAX_LENGTH = 254;
-
-export type ContactCategory =
-  | "bug"
-  | "correction"
-  | "feedback"
-  | "report"
-  | "partnership"
-  | "other";
+export {
+  CONTACT_EMAIL_MAX_LENGTH,
+  CONTACT_MESSAGE_MAX_LENGTH,
+  CONTACT_MESSAGE_MIN_LENGTH,
+  type ContactCategory,
+} from "@/lib/contact-rules";
 
 export type ContactInquiryEnv = "development" | "production";
 export type ContactInquiryStatus = "new" | "reviewing" | "done" | "spam";
@@ -91,6 +89,30 @@ function errorText(error: unknown): string {
 export async function submitContactInquiry(input: ContactInquiryInput): Promise<void> {
   if (!supabaseEnabled) throw new Error("Supabase is not configured");
 
+  // docs/supabase-exit/STEP1_DESIGN.md 9.3: the Worker fills the user id and env.
+  if (surfacePath("contact") === "api") {
+    try {
+      await apiFetchAsUser("contact", "/api/write/contact-inquiries", {
+        method: "POST",
+        body: {
+          category: input.category,
+          message: input.message,
+          replyEmail: input.replyEmail,
+          pagePath: input.pagePath,
+          serviceLocale: input.serviceLocale,
+          gameLocale: input.gameLocale,
+          viewportWidth: input.viewportWidth,
+          viewportHeight: input.viewportHeight,
+        },
+      });
+      return;
+    } catch (error) {
+      if (error instanceof ApiError && error.code === "rate_limited") throw new ContactInquiryRateLimitError();
+      // Only a write that certainly did nothing is sent again on the legacy path.
+      if (!writeMayGoLegacy(error)) throw error;
+    }
+  }
+
   const { error } = await withSupabaseTimeout(
     "contact_inquiries.insert",
     supabase.from("contact_inquiries").insert({
@@ -152,6 +174,17 @@ export async function listOwnContactInquiries(): Promise<ContactInquiryHistoryIt
 
 export async function hasUnseenContactReply(): Promise<boolean | null> {
   if (!supabaseEnabled) return null;
+
+  if (surfacePath("contact") === "api") {
+    try {
+      const body = await apiFetchAsUser<{ v?: number; unseen?: unknown }>("contact", "/api/me/mailbox");
+      if (body?.v === 1 && typeof body.unseen === "boolean") return body.unseen;
+      return null;
+    } catch (error) {
+      // Null keeps the dot as it was, like a failed legacy read.
+      if (!shouldUseLegacy(error)) return null;
+    }
+  }
 
   try {
     const { data, error } = await withSupabaseTimeout(

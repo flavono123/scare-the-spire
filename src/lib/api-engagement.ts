@@ -282,12 +282,4 @@ export function loadEngagementMine<P extends MePart>(part: P, key: string): Prom
   return promise;
 }
 
-/** True when a failed api call should be redone on the legacy path. */
-export function shouldUseLegacy(error: unknown): boolean {
-  return error instanceof SurfaceLegacyError;
-}
-
-/** True when a failed api write certainly did nothing, so legacy may send it once. */
-export function writeMayGoLegacy(error: unknown): boolean {
-  return error instanceof SurfaceLegacyError && !error.processed;
-}
+export { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";

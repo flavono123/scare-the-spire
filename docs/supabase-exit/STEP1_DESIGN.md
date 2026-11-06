@@ -526,6 +526,25 @@ SURFACE_MAP 2.2절 19·20번과 10번의 `reel`을 덮는다. 글은 관리 화�
   - legacy 신호나 모르는 `v`면 그룹을 내리고 같은 화면을 legacy로 다시 읽는다.
 - 다음 주 예약 확인(`useColorfulPhilosophersNextWeekOpen`)은 dev 네비에서만 돌므로 옮기지 않는다.
 
+### 9.3 문의(`contact`)
+
+SURFACE_MAP 2.2절 3번(네비 메일함 점)과 29번(문의 쓰기)을 덮는다. 둘 다 세션이 있어야 한다(authenticated만).
+
+| 경로 | 하는 일 | 응답 |
+|---|---|---|
+| `GET /api/me/mailbox` | 답변이 있고 아직 안 본 내 문의 1행(`env`, `admin_response not null`, `reply_seen_at is null`) | `{ v, env, unseen }`. `reply_seen_at` 열이 없으면(PGRST204, 42703) `false` |
+| `POST /api/write/contact-inquiries` | `{ category, message, replyEmail, pagePath, serviceLocale, gameLocale, viewportWidth, viewportHeight }`를 검사해 insert(`return=minimal`) | 201 `{}` |
+
+- 검사는 테이블 CHECK와 같다(분류 6가지, 본문 trim 뒤 10~8,000자, 메일 3~254자와 형식, 제휴는 메일 필수, 서비스 로케일
+  ko·en, 게임 로케일 14가지, 화면 크기 1~10,000 정수 또는 null). `pagePath`는 `?`·`#` 앞까지, `/`로 시작하지 않으면
+  `/`. 규칙은 import 없는 `src/lib/contact-rules.ts`에 두고 페이지·legacy insert·Worker가 같이 쓴다.
+- user_id는 검증한 sub, env는 Worker 값이다. `status`는 보내지 않는다(기본 `new`, 정책이 `new`만 받는다).
+- `return=minimal`: authenticated는 `reply_email`·`user_id`·화면 크기 열을 읽을 수 없어 `representation`이면 실패한다.
+  같은 이유로 메일함 읽기는 `user_id`로 거르지 않는다(RLS가 자기 행만 보인다).
+- 테이블 트리거의 시간당 3건 제한(P0001 `contact_inquiry_rate_limited`)은 429 `rate_limited`로 바꾼다. 클라이언트는
+  지금처럼 `ContactInquiryRateLimitError`를 던진다. Worker의 `API_WRITE_LIMITER` 429도 같은 안내가 된다.
+- 메일함 읽기가 실패하면 클라이언트는 `null`(점을 그대로 둠)이다. 지금 legacy와 같다.
+
 ## 10. 배포와 testbed
 
 - CI(`.github/workflows/cloudflare-workers.yml`) main 배포에 `--var API_SUPABASE_URL:… --var API_SUPABASE_KEY:…

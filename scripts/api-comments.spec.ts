@@ -53,6 +53,7 @@ class FakeRest {
   likes: Row[] = [];
   reactions: Row[] = [];
   philosophers: Row[] = [];
+  contactInquiries: Row[] = [];
   calls: { method: string; url: URL; auth: string | null; body: unknown }[] = [];
   failTables = new Set<string>();
   /** Fail only the count reads (HEAD) and the totals read of these tables. */
@@ -86,6 +87,7 @@ class FakeRest {
     if (name === "resource_reactions") return this.reactions;
     if (name === "resource_reaction_counts") return this.reactionCounts();
     if (name === "colorful_philosopher_posts") return this.philosophers;
+    if (name === "contact_inquiries") return this.contactInquiries;
     throw new Error(`unknown table ${name}`);
   }
 
@@ -105,6 +107,10 @@ class FakeRest {
         if (cell !== value.slice(3)) return false;
       } else if (value.startsWith("in.")) {
         if (!FakeRest.parseIn(value).includes(cell)) return false;
+      } else if (value === "is.null") {
+        if (source[column] !== null && source[column] !== undefined) return false;
+      } else if (value === "not.is.null") {
+        if (source[column] === null || source[column] === undefined) return false;
       } else if (value.startsWith("lte.")) {
         if (!(cell <= value.slice(4))) return false;
       } else {
@@ -151,6 +157,8 @@ class FakeRest {
 
     if (request.method === "GET" || request.method === "HEAD") {
       let rows = this.table(name).filter((row) => {
+        // RLS: an inquiry is visible to its author only.
+        if (name === "contact_inquiries" && row.user_id !== user) return false;
         if (name === "comment_likes" && params.has("comments.story_id")) {
           const parent = this.comments.find((comment) => comment.id === row.comment_id);
           return Boolean(parent) && this.matches(row, params, parent);
@@ -185,6 +193,12 @@ class FakeRest {
         const same = (row: Row) => ["env", "resource_type", "resource_id", "game_version", "user_id"].every((key) => row[key] === input[key]);
         if (this.reactions.some(same)) return Response.json({ code: "23505" }, { status: 409 });
         this.reactions.push({ ...input });
+      } else if (name === "contact_inquiries") {
+        // enforce_contact_inquiry_rate_limit (schema:589-618).
+        const recent = this.contactInquiries.filter((row) => row.user_id === user && row.env === input.env).length;
+        if (recent >= 3) return Response.json({ code: "P0001" }, { status: 400 });
+        this.contactInquiries.push({ id: this.id(), admin_response: null, reply_seen_at: null, status: "new", ...input });
+        return new Response(null, { status: 201 });
       } else if (name === "comments") {
         if (String(input.content).length > 2000) return Response.json({ code: "23514" }, { status: 400 });
         const row = { id: this.id(), created_at: new Date().toISOString(), parent_id: null, meta: null, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false, ...input };
@@ -230,7 +244,7 @@ class FakeRest {
 }
 
 class FakeD1 implements D1Database {
-  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"]]);
+  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"]]);
   prepare(query: string): D1PreparedStatement {
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       if (query !== FLAGS_SQL) throw new Error(`unexpected SQL ${query}`);
@@ -569,6 +583,54 @@ async function main() {
   resetFlagsForTest();
   assert.equal((await json(await call("/api/read/colorful-philosophers/week"))).body.reason, "flag");
   assert.equal((await call(query)).status, 200, "comments stays on its own flag");
+
+  // --- Contact (STEP1_DESIGN 9.3) ----------------------------------------------------------
+  const mailbox = (bearer?: string) => call("/api/me/mailbox", bearer ? { headers: { authorization: `Bearer ${bearer}` } } : {});
+  assert.equal((await mailbox()).status, 401);
+  assert.deepEqual((await json(await mailbox(token))).body, { v: 1, env: "development", unseen: false });
+  rest.contactInquiries.push({ id: rest.id(), user_id: OTHER, env: "development", admin_response: "답변", reply_seen_at: null });
+  assert.equal((await json(await mailbox(token))).body.unseen, false, "another user's reply is not this user's");
+  rest.contactInquiries.push({ id: rest.id(), user_id: USER, env: "production", admin_response: "답변", reply_seen_at: null });
+  assert.equal((await json(await mailbox(token))).body.unseen, false, "another env's reply does not count");
+  rest.contactInquiries.push({ id: rest.id(), user_id: USER, env: "development", admin_response: "답변", reply_seen_at: null });
+  assert.equal((await json(await mailbox(token))).body.unseen, true);
+  rest.contactInquiries = [];
+
+  const inquiry = {
+    category: "bug", message: "  강타 설명이 틀렸습니다. 확인 부탁드려요  ", replyEmail: " Me@Example.COM ",
+    pagePath: "/compendium/cards/bash?x=1#top", serviceLocale: "ko", gameLocale: "kor", viewportWidth: 390, viewportHeight: 844,
+    userId: OTHER, env: "production",
+  };
+  const sent = await call("/api/write/contact-inquiries", authed("POST", inquiry));
+  assert.equal(sent.status, 201);
+  const stored = rest.contactInquiries[0];
+  assert.equal(stored.user_id, USER);
+  assert.equal(stored.env, "development");
+  assert.equal(stored.message, "강타 설명이 틀렸습니다. 확인 부탁드려요");
+  assert.equal(stored.reply_email, "me@example.com");
+  assert.equal(stored.page_path, "/compendium/cards/bash");
+  assert.ok(!("userId" in stored) && !("status" in (rest.calls.at(-1)?.body as Row)), "only table columns; status keeps its default");
+  assert.equal(rest.calls.at(-1)?.url.searchParams.get("select"), null, "return=minimal: authenticated cannot read the row back");
+  for (const bad of [
+    { ...inquiry, category: "spam" },
+    { ...inquiry, message: "짧음" },
+    { ...inquiry, category: "partnership", replyEmail: null },
+    { ...inquiry, replyEmail: "not-an-email" },
+    { ...inquiry, serviceLocale: "ja" },
+    { ...inquiry, gameLocale: "xx" },
+    { ...inquiry, viewportWidth: 0 },
+    { ...inquiry, viewportHeight: 1.5 },
+  ]) {
+    assert.equal((await call("/api/write/contact-inquiries", authed("POST", bad))).status, 400, JSON.stringify(bad).slice(0, 80));
+  }
+  await call("/api/write/contact-inquiries", authed("POST", inquiry));
+  await call("/api/write/contact-inquiries", authed("POST", inquiry));
+  const fourth = await json(await call("/api/write/contact-inquiries", authed("POST", inquiry)));
+  assert.equal(fourth.status, 429);
+  assert.equal(fourth.body.error, "rate_limited", "the table's three-an-hour limit is a 429");
+  db.flags.set("path.contact", "legacy");
+  resetFlagsForTest();
+  assert.equal((await json(await mailbox(token))).body.reason, "flag");
 
   // --- Helpers ------------------------------------------------------------------------
   assert.equal(contentRangeTotal("0-4/5"), 5);
