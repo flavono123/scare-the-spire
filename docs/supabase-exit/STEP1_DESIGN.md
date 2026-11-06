@@ -57,6 +57,11 @@
   저장·묶음 공유(중복 건너뜀)·삭제를 합성 런으로 확인했고, QA 행은 0개로 정리했다. 지울 수 없는 쓰기(문의 제출,
   퍼즐상자 제출)는 spec으로만 확인했다. development 런은 모두 같은 `created_at`(일괄 복사)이라 "최신 100"이 쿼리마다
   다른 부분집합이다(legacy도 같다).
+- 2026-11-06 12:10 KST testbed(`12a46bd6`): 스모크 205개·브라우저 QA 13개 통과. testbed D1에서 `colorful-philosophers`,
+  `contact`, `profile`, `puzzlebox`, `history-runs`도 `api`로 켰다(그대로 둔다). 네 그룹 QA 42/42, 철학자 14/15, 댓글
+  회귀 33/36이고, 남은 것은 testbed 패치 페이지 네비의 env 차이(배달부·주간 글 legacy 쿼리)와 한 번씩만 난 타이밍
+  실패다(다시 돌려 통과). CPU(tail): 런 목록 5.5 MB 중앙 2 ms·p90 7 ms·최대 8 ms(JS 스트림 봉투였을 때 133 ms), 런
+  상세 중앙 3 ms, 철학자 주간 목록 중앙 4 ms.
 - 이 문서는 모든 화면이 같이 쓰는 기반과 첫 화면 `nav`를 정한다. 다른 화면은 SURFACE_MAP.md 2절을 따르되,
   이 문서 9절의 규칙이 우선한다.
 

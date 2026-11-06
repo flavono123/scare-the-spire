@@ -60,6 +60,18 @@
   헤더가 남지 않는지(설계 4.5절)
 - Commits: worktree `refactor/supabase-exit`
 
+### supabase-exit-step1-colorful-philosophers · contact · profile · puzzlebox · history-runs
+- Feature: 나머지 그룹의 api 경로(설계 9.2~9.6). 철학자 주간 목록·글·셸 패치 릴, 메일함 점·문의 쓰기, 프로필(닉네임 풀,
+  활동 통계·목록, 내 문의, 읽음 표시), 퍼즐상자(순위표, 내 순위, 판 제출), 역사 강의서 런(목록·상세·참여 수·내 런,
+  공유·묶음 공유·표지·닉네임·삭제). 런 원문이 든 읽기와 쓰기는 Worker가 파싱하지 않고 그대로 흘려보낸다
+- Expect: 각 그룹이 `legacy`(운영 기본)면 그대로다. api면 같은 화면이 Worker를 거친다. 바뀌는 것: 내 문의 목록은 이
+  env만, 퍼즐상자 순위표는 세션이 있으면 `/api/me`, 런 공유 본문의 env는 Worker가 강제하지 못한다(RLS가 기증자 확인)
+- 상태: 2026-11-06 로컬 QA 15/15·42/42, testbed 42/42·14/15(남은 1개는 testbed 네비 env 차이). testbed D1은 7개
+  그룹이 `api`다. `toybox-feed`·`stories`는 Realtime 결정 대기
+- QA: testbed에서 그룹별로 api와 legacy를 번갈아 켜고 철학자 목록·글·셸 릴, 프로필, 퍼즐상자 순위표, 역사 강의서 목록·
+  상세·공유를 비교. 지울 수 없는 쓰기(문의, 퍼즐상자 제출)는 운영 확인 때 사용자와 정한다
+- Commits: worktree `refactor/supabase-exit`
+
 <!--
 ### <항목-id>
 - Feature:
