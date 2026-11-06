@@ -261,6 +261,42 @@ async function main() {
   await Promise.all(longKeys.map((key) => loadEngagement("threads", key)));
   assert.ok(engagementUrls.length >= 2 && engagementUrls.every((url) => url.length - "/api/read/engagement?".length <= ENGAGEMENT_QUERY_MAX_CHARS));
 
+  // Prefetch: roots that mount over several tasks share one request, in flight or held.
+  const { prefetchEngagement } = await import("../src/lib/api-engagement");
+  resetPage("slseoun_rf=v1.comments");
+  engagementUrls.length = 0;
+  let releaseReply: () => void = () => undefined;
+  engagementReply = (url) => {
+    const keys = (url.searchParams.get("threads") ?? "").split(",");
+    return marked({ v: 1, env: "production", threads: Object.fromEntries(keys.map((key) => [key, [{ id: key }]])) });
+  };
+  const gate = new Promise<void>((resolve) => {
+    releaseReply = resolve;
+  });
+  const gatedFetch = globalThis.fetch;
+  globalThis.fetch = (async (input: unknown, init?: RequestInit) => {
+    await gate;
+    return gatedFetch(input as string, init);
+  }) as typeof fetch;
+  const claimKeys = Array.from({ length: 27 }, (_, index) => `neowsletter:2026-08:c${index}`);
+  prefetchEngagement("threads", claimKeys);
+  await new Promise((resolve) => setTimeout(resolve, 60));
+  // Widgets mount while the request is in flight, one task apart.
+  const mounted: Promise<unknown>[] = [];
+  for (const key of claimKeys.slice(0, 20)) {
+    mounted.push(loadEngagement("threads", key));
+    await new Promise((resolve) => setTimeout(resolve, 15));
+  }
+  releaseReply();
+  await Promise.all(mounted);
+  globalThis.fetch = gatedFetch;
+  assert.equal(engagementUrls.length, 1, "one request for 27 roots mounted over 300 ms");
+  // The rest mount after it settled: each takes the held answer once.
+  for (const key of claimKeys.slice(20)) assert.deepEqual(await loadEngagement("threads", key), [{ id: key }]);
+  assert.equal(engagementUrls.length, 1);
+  await loadEngagement("threads", claimKeys[0]);
+  assert.equal(engagementUrls.length, 2, "a joined answer is not held for later");
+
   // Personal reads need a session; without one they fail without calling the Worker.
   engagementUrls.length = 0;
   await assert.rejects(() => loadEngagementMine("likes", "byrdispatch"), (error) => error instanceof ApiError && error.code === "token_invalid");

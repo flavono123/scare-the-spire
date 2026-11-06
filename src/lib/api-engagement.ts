@@ -94,9 +94,18 @@ function takePrimed(part: EngagementPart, key: string): unknown {
   return entry.until > Date.now() ? entry.value : undefined;
 }
 
-/** A write changed this key: drop anything held for it. */
+/**
+ * Asks already sent or queued, so two widgets on one key share one answer.
+ * `joined` is false while only a prefetch waits on it.
+ */
+const inflight = new Map<string, { promise: Promise<unknown>; joined: boolean }>();
+const inflightMine = new Map<string, Promise<unknown>>();
+
+/** A write changed this key: drop anything held for it, and stop sharing a read started before the write. */
 export function forgetEngagement(part: EngagementPart, key: string): void {
   primed.delete(primedKey(part, key));
+  inflight.delete(primedKey(part, key));
+  inflightMine.delete(primedKey(part, key));
 }
 
 function prime(part: EngagementPart, values: Record<string, unknown> | undefined, asked: Set<string>) {
@@ -216,12 +225,61 @@ const askMe = createQueue(async (asks) => {
 export function loadEngagement<P extends EngagementPart>(part: P, key: string): Promise<EngagementValue[P]> {
   const held = takePrimed(part, key);
   if (held !== undefined) return Promise.resolve(held as EngagementValue[P]);
-  return askRead<EngagementValue[P]>(part, key);
+  const id = primedKey(part, key);
+  const running = inflight.get(id);
+  if (running) {
+    running.joined = true;
+    return running.promise as Promise<EngagementValue[P]>;
+  }
+  const entry = { promise: askRead<EngagementValue[P]>(part, key) as Promise<unknown>, joined: true };
+  inflight.set(id, entry);
+  entry.promise.then(
+    () => undefined,
+    () => undefined,
+  ).finally(() => {
+    if (inflight.get(id) === entry) inflight.delete(id);
+  });
+  return entry.promise as Promise<EngagementValue[P]>;
+}
+
+/**
+ * Asks for many keys at once before their widgets mount (patch pages mount each
+ * comment root in its own task, which would otherwise spread the asks over
+ * several batches). A widget that mounts while the ask runs shares it; one that
+ * mounts after it settles takes the held answer once (15 s).
+ */
+export function prefetchEngagement(part: EngagementPart, keys: readonly string[]): void {
+  for (const key of new Set(keys)) {
+    if (!engagementApiFor(part, key)) continue;
+    const id = primedKey(part, key);
+    if (inflight.has(id) || primed.has(id)) continue;
+    const entry = { promise: askRead<unknown>(part, key), joined: false };
+    inflight.set(id, entry);
+    entry.promise.then(
+      (value) => {
+        if (!entry.joined && inflight.get(id) === entry) primed.set(id, { value, until: Date.now() + PRIMED_MS });
+      },
+      () => undefined,
+    ).finally(() => {
+      if (inflight.get(id) === entry) inflight.delete(id);
+    });
+  }
 }
 
 /** One part of one key from /api/me/engagement (needs a session). */
 export function loadEngagementMine<P extends MePart>(part: P, key: string): Promise<EngagementMeValue[P]> {
-  return askMe<EngagementMeValue[P]>(part, key);
+  const id = primedKey(part, key);
+  const running = inflightMine.get(id);
+  if (running) return running as Promise<EngagementMeValue[P]>;
+  const promise = askMe<EngagementMeValue[P]>(part, key);
+  inflightMine.set(id, promise);
+  promise.then(
+    () => undefined,
+    () => undefined,
+  ).finally(() => {
+    if (inflightMine.get(id) === promise) inflightMine.delete(id);
+  });
+  return promise;
 }
 
 /** True when a failed api call should be redone on the legacy path. */

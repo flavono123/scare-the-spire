@@ -12,6 +12,7 @@ import {
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
+import { prefetchEngagement } from "@/lib/api-engagement";
 import type { ServiceLocale } from "@/lib/i18n";
 import {
   countStoriesByPatchLine,
@@ -185,6 +186,13 @@ function mountRichPatchStorySurface() {
 
 function mountRichPatchComments() {
   const roots = document.querySelectorAll<HTMLElement>("[data-patch-comment-root]");
+  // Roots mount one task each; ask for the ones that mount now in one batch first.
+  prefetchEngagement(
+    "threads",
+    Array.from(roots)
+      .filter((root) => !("richCommentMounted" in root.dataset) && root.dataset.commentDensity === "inline")
+      .flatMap((root) => (root.dataset.threadKey ? [root.dataset.threadKey] : [])),
+  );
 
   for (const root of roots) {
     const threadKey = root.dataset.threadKey;
