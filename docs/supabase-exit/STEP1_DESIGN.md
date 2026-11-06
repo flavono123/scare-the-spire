@@ -591,6 +591,43 @@ SURFACE_MAP 2.2절 26·27번. RPC 셋(SECURITY DEFINER, `auth.uid()`를 읽음)�
   판)은 400. 클라이언트는 지금처럼 어떤 실패에도 `null`이고 게임은 기다리지 않는다.
 - 클라이언트의 5분 sessionStorage 캐시와 제출 뒤 그 게임 캐시 지우기는 그대로다.
 
+### 9.6 역사 강의서 런(`history-runs`)
+
+SURFACE_MAP 2.2절 22~25번. 런 행에는 원문(`raw`, 행마다 최대 260 KB)이 있다. 목록 100개가 운영 7.9 MB, development
+5.5 MB이고 콤보 런 고르기 30개가 3.1 MB다. Worker가 이것을 파싱하면 CPU 한도를 넘는다(plan 측정 27.7 ms). 원문을 빼려면
+요약 열(`characters`, `game_elements`)과 687행 backfill이 먼저 있어야 하고, 이는 운영 DB 쓰기라 승인이 필요하다.
+1단계는 DB를 바꾸지 않고 **원문이 든 응답과 요청을 파싱하지 않고 흘려보낸다.** 클라이언트는 지금처럼 원문을 받아 직접
+파싱한다. 원문을 빼는 일은 3단계(D1 읽기)에서 요약 열과 함께 한다.
+
+| 경로 | Supabase | 응답 |
+|---|---|---|
+| `GET /api/read/history-runs?view=recent` | 최신 100개, 요약 열과 `raw` | `{"v":1,"env":…,"rows":<PostgREST 본문 그대로>}` |
+| `GET /api/read/history-runs?view=reference` | `start_time` 최신 30개(콤보 런 고르기) | 같음 |
+| `GET /api/read/history-run?id=&view=detail` | 한 행, 상세 열과 `raw` | 같음 |
+| `GET /api/read/history-run?id=&view=cover` | `id, raw, cover_spec`(자동 표지 계산) | 같음 |
+| `GET /api/read/history-run?id=&view=meta` | `id, character, cover_spec`(OG, "공유됐나") | `{ v, env, rows }` |
+| `GET /api/read/history-runs/engagement?ids=` | `history-course:<id>` 키의 likes·comments 행(각 1,000행까지) | `{ v, env, likes: {id: 수}, comments: {id: 수} }` |
+| `GET /api/me/history-runs[?id=]` | `donor_user_id = sub`인 이 env의 런 id | `{ v, env, ids }` |
+| `POST /api/write/history-runs` | 한 행 insert, 본문 그대로(`return=minimal`) | 201. 이미 있으면 422 `duplicate` |
+| `POST /api/write/history-runs/batch` | 행 배열 upsert(`on_conflict=id,env`, 중복 무시), 본문 그대로 | 201 `{ v, env, inserted: [id] }` |
+| `PATCH /api/write/history-runs/cover?id=` `{ coverSpec }` | 내 런의 `cover_spec` | `{ v, env, updated }`. 열이 없으면 `reason: "no_column"` |
+| `POST /api/write/history-runs/nicknames` `{ nickname }` | 닉네임이 다른 내 런의 `donor_nickname`(null은 건너뜀, 지금과 같다) | `{ v, env }` |
+| `DELETE /api/write/history-runs?id=` | 내 런 하나 | `{ v, env, deleted }`. 클라이언트는 지금처럼 오류가 없으면 성공으로 본다 |
+
+- 흘려보내기: 어댑터의 `postgrestStream`은 응답 헤더까지만 시간 제한을 두고 본문을 읽지 않는다. Worker는 본문 앞뒤에
+  봉투(`{"v":1,"env":…,"rows":`와 `}`)만 붙이고 바이트를 센다. 24 MB를 넘으면 스트림을 끊어 클라이언트가 잘린 JSON(응답
+  없음)을 받는다. 요청 본문도 세면서 그대로 넘긴다(24 MB, `Content-Length`가 크면 바로 413). 클라이언트 시간 제한은 이
+  경로만 20초(목록)·30초(업로드)다.
+- **예외(1단계만):** 원문이 든 쓰기는 본문을 파싱하지 않으므로 Worker가 `env`와 `donor_user_id`를 채우지 못한다(5절
+  규칙의 예외). 클라이언트가 지금처럼 채우고, RLS가 `donor_user_id = auth.uid()`를 검사한다. 남은 위험은 사용자가 자기
+  런을 다른 env에 쓰는 것뿐이다. 그 밖의 쓰기(표지, 닉네임, 삭제)와 소유 확인은 검증한 sub와 Worker env로 거른다.
+  지금 소유 확인과 내 런 목록은 페이지가 준 uid로 읽는다. api 경로는 토큰의 sub만 쓴다.
+- `cover_spec`·`donor_nickname` 열이 없을 때의 다시 시도: 읽기는 Worker가 옛 열 목록으로 다시 읽는다. 쓰기는 본문을
+  고칠 수 없으므로 다시 시도하지 않는다(운영과 testbed에는 두 열이 있다).
+- 공개 목록은 지금처럼 `donor_user_id`를 내보낸다(넓히지 않는다). 참여 수는 지금처럼 행을 세고, runs의 트리거
+  카운터로 바꾸는 것은 일치 확인 뒤로 미룬다.
+- select 목록의 공백은 어댑터가 지운다(supabase-js와 같다).
+
 ## 10. 배포와 testbed
 
 - CI(`.github/workflows/cloudflare-workers.yml`) main 배포에 `--var API_SUPABASE_URL:… --var API_SUPABASE_KEY:…

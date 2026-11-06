@@ -54,6 +54,8 @@ class FakeRest {
   reactions: Row[] = [];
   philosophers: Row[] = [];
   contactInquiries: Row[] = [];
+  runs: Row[] = [];
+  noCoverColumn = false;
   nicknamePools: Row[] = [{ character_id: "ironclad", locale: "ko", nicknames: ["철갑"] }];
   missingTables = new Set<string>();
   noSeenColumn = false;
@@ -93,6 +95,7 @@ class FakeRest {
     if (name === "colorful_philosopher_posts") return this.philosophers;
     if (name === "contact_inquiries") return this.contactInquiries;
     if (name === "profile_character_nickname_pools") return this.nicknamePools;
+    if (name === "runs") return this.runs;
     throw new Error(`unknown table ${name}`);
   }
 
@@ -112,6 +115,8 @@ class FakeRest {
         if (cell !== value.slice(3)) return false;
       } else if (value.startsWith("in.")) {
         if (!FakeRest.parseIn(value).includes(cell)) return false;
+      } else if (value.startsWith("neq.")) {
+        if (source[column] === null || source[column] === undefined || cell === value.slice(4)) return false;
       } else if (value === "is.null") {
         if (source[column] !== null && source[column] !== undefined) return false;
       } else if (value === "not.is.null") {
@@ -151,6 +156,9 @@ class FakeRest {
     const user = this.userOf(auth);
 
     if (this.missingTables.has(name)) return Response.json({ code: "PGRST205" }, { status: 404 });
+    if (name === "runs" && this.noCoverColumn && params.get("select")?.includes("cover_spec")) {
+      return Response.json({ code: "42703" }, { status: 400 });
+    }
     if (name === "contact_inquiries" && this.noSeenColumn && (params.get("select")?.includes("reply_seen_at") || params.has("reply_seen_at"))) {
       return Response.json({ code: "42703" }, { status: 400 });
     }
@@ -191,6 +199,10 @@ class FakeRest {
         }
         return this.matches(row, params);
       });
+      const order = /^([a-z_]+)\.(asc|desc)$/.exec(params.get("order") ?? "");
+      if (name === "runs" && order) {
+        rows = [...rows].sort((a, b) => String(a[order[1]]).localeCompare(String(b[order[1]])) * (order[2] === "desc" ? -1 : 1));
+      }
       if (params.get("order") === "created_at.asc") rows = [...rows].sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
       if (params.get("order") === "week_start.desc") rows = [...rows].sort((a, b) => String(b.week_start).localeCompare(String(a.week_start)));
       const limit = Number(params.get("limit") ?? "100000");
@@ -204,6 +216,22 @@ class FakeRest {
     }
 
     if (!user) return Response.json({ code: "42501" }, { status: 401 });
+
+    if (request.method === "POST" && name === "runs") {
+      const rowsIn = (Array.isArray(body) ? body : [body]) as Row[];
+      if (rowsIn.some((row) => row.donor_user_id !== user)) return Response.json({ code: "42501" }, { status: 403 });
+      const inserted: Row[] = [];
+      for (const row of rowsIn) {
+        const exists = this.runs.some((run) => run.id === row.id && run.env === row.env);
+        if (exists && !params.has("on_conflict")) return Response.json({ code: "23505" }, { status: 409 });
+        if (exists) continue;
+        this.runs.push({ ...row });
+        inserted.push(row);
+      }
+      return prefer.includes("return=representation")
+        ? Response.json(inserted.map((row) => ({ id: row.id })), { status: 201 })
+        : new Response(null, { status: 201 });
+    }
 
     if (request.method === "POST") {
       const input = body as Row;
@@ -238,7 +266,8 @@ class FakeRest {
 
     const all = name === "resource_reactions" ? this.reactions : this.table(name);
     // RLS: only the caller's rows are visible to update and delete.
-    const targets = all.filter((row) => this.matches(row, params) && (row.user_id === user));
+    const owner = name === "runs" ? "donor_user_id" : "user_id";
+    const targets = all.filter((row) => this.matches(row, params) && (row[owner] === user));
     if (request.method === "DELETE") {
       for (const row of targets) all.splice(all.indexOf(row), 1);
       if (name === "comments") {
@@ -270,7 +299,7 @@ class FakeRest {
 }
 
 class FakeD1 implements D1Database {
-  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"], ["path.profile", "api"], ["path.puzzlebox", "api"]]);
+  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"], ["path.profile", "api"], ["path.puzzlebox", "api"], ["path.history-runs", "api"]]);
   prepare(query: string): D1PreparedStatement {
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       if (query !== FLAGS_SQL) throw new Error(`unexpected SQL ${query}`);
@@ -730,6 +759,88 @@ async function main() {
   assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, board: "999" }))).status, 400);
   assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, board: 1 }))).status, 400);
   assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, run: [] }))).status, 400);
+
+  // --- History runs (STEP1_DESIGN 9.6) ---------------------------------------------------
+  const rawFile = JSON.stringify({ seed: "S", players: [{ character: "CHARACTER.IRONCLAD" }], note: "가\u00e9\"quoted\"" });
+  const runRow = (id: string, donor: string, extra: Row = {}): Row => ({
+    id, raw: rawFile, seed: "S", build: "v0.103.2", character: "IRONCLAD", ascension: 1, win: true,
+    start_time: `2026-11-0${id.length % 9}T00:00:00Z`, run_time: 100, acts_count: 3, total_floors: 50,
+    cover_spec: { auto: true }, donor_user_id: donor, donor_nickname: "기증자", env: "development",
+    created_at: `2026-11-05T0${id.length % 9}:00:00Z`, ...extra,
+  });
+  rest.runs = [runRow("aaa", OTHER), runRow("bbbb", USER), runRow("ccccc", USER, { env: "production" })];
+
+  const recent = await call("/api/read/history-runs?view=recent");
+  assert.equal(recent.status, 200);
+  assert.equal(recent.headers.get("x-slseoun-api"), "1");
+  const recentText = await recent.text();
+  const recentBody = JSON.parse(recentText) as { v: number; env: string; rows: Row[] };
+  assert.equal(recentBody.v, 1);
+  assert.equal(recentBody.env, "development");
+  assert.deepEqual(recentBody.rows.map((row) => row.id), ["bbbb", "aaa"], "development only, newest first");
+  assert.equal(recentBody.rows[0].raw, rawFile, "the raw run file passes through untouched");
+  assert.ok(recentText.startsWith('{"v":1,"env":"development","rows":['), "the envelope wraps the streamed body");
+  const reference = await json(await call("/api/read/history-runs?view=reference"));
+  assert.equal((reference.body.rows as Row[]).length, 2);
+  assert.equal((rest.calls.at(-1)?.url.searchParams.get("order")), "start_time.desc");
+  rest.noCoverColumn = true;
+  const olderRuns = await json(await call("/api/read/history-runs?view=recent"));
+  assert.ok(!("cover_spec" in (olderRuns.body.rows as Row[])[0]), "without the cover_spec column it reads the older columns");
+  rest.noCoverColumn = false;
+  assert.equal((await call("/api/read/history-runs?view=all")).status, 400);
+  assert.equal((await call("/api/read/history-runs")).status, 400);
+
+  const detail = await json(await call("/api/read/history-run?id=bbbb&view=detail"));
+  assert.equal((detail.body.rows as Row[])[0].raw, rawFile);
+  const meta = await json(await call("/api/read/history-run?id=bbbb&view=meta"));
+  assert.deepEqual((meta.body.rows as Row[])[0], { id: "bbbb", character: "IRONCLAD", cover_spec: { auto: true } }, "meta carries no raw");
+  assert.deepEqual((await json(await call("/api/read/history-run?id=ccccc&view=meta"))).body.rows, [], "another env's run is not found");
+  assert.equal((await call("/api/read/history-run?id=a/b&view=detail")).status, 400);
+  rest.calls.length = 0;
+  assert.equal((await call("/api/read/history-runs?view=recent", { method: "HEAD" })).status, 200);
+  assert.equal(rest.calls.length, 0, "HEAD does not call Supabase");
+
+  rest.likes.push({ id: rest.id(), story_id: "history-course:aaa", user_id: OTHER, env: "development" });
+  rest.comments.push({ id: "77777777-0000-4000-8000-000000000001", story_id: "history-course:aaa", user_id: OTHER, nickname: "런", content: "좋은 런", content_blocks: null, created_at: "2026-11-05T06:00:00.000Z", env: "development", parent_id: null, meta: null, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false });
+  const engagement = await json(await call("/api/read/history-runs/engagement?ids=aaa,bbbb"));
+  assert.deepEqual(engagement.body.likes, { aaa: 1 });
+  assert.deepEqual(engagement.body.comments, { aaa: 1 });
+  assert.equal((await call("/api/read/history-runs/engagement?ids=aaa,aaa")).status, 400);
+
+  const mine = await json(await call("/api/me/history-runs", { headers: { authorization: `Bearer ${token}` } }));
+  assert.deepEqual(mine.body.ids, ["bbbb"], "this env's runs donated by the token's user");
+  assert.deepEqual((await json(await call("/api/me/history-runs?id=aaa", { headers: { authorization: `Bearer ${token}` } }))).body.ids, []);
+
+  const upload = (path: string, payload: unknown, headers: Record<string, string> = {}) => call(path, {
+    method: "POST",
+    headers: { authorization: `Bearer ${token}`, "content-type": "application/json", "sec-fetch-site": "same-origin", ...headers },
+    body: JSON.stringify(payload),
+  });
+  assert.equal((await upload("/api/write/history-runs", runRow("dddd", USER))).status, 201);
+  assert.equal(rest.runs.find((row) => row.id === "dddd")?.raw, rawFile, "the uploaded raw arrives as sent");
+  assert.equal((await json(await upload("/api/write/history-runs", runRow("dddd", USER)))).body.error, "duplicate", "23505 tells the page it was already shared");
+  assert.equal((await upload("/api/write/history-runs", runRow("eeee", OTHER))).status, 403, "RLS refuses another donor");
+  const batch = await json(await upload("/api/write/history-runs/batch", [runRow("dddd", USER), runRow("ffff", USER)]));
+  assert.equal(batch.status, 201);
+  assert.deepEqual(batch.body.inserted, ["ffff"], "duplicates are skipped, not failed");
+  assert.equal((await upload("/api/write/history-runs/batch", [], { "content-length": String(25 * 1024 * 1024) })).status, 413);
+  assert.equal((await call("/api/write/history-runs", { method: "POST", headers: { authorization: `Bearer ${token}`, "content-type": "text/plain" }, body: "{}" })).status, 400);
+
+  const cover = (id: string, bearer = token) => call(`/api/write/history-runs/cover?id=${id}`, authed("PATCH", { coverSpec: { auto: false, card: "BASH" } }, bearer));
+  assert.equal((await json(await cover("bbbb"))).body.updated, true);
+  assert.deepEqual(rest.runs.find((row) => row.id === "bbbb")?.cover_spec, { auto: false, card: "BASH" });
+  assert.equal((await json(await cover("aaa"))).body.updated, false, "only the donor may change a cover");
+
+  rest.runs.push(runRow("gggg", USER, { donor_nickname: null }));
+  assert.equal((await call("/api/write/history-runs/nicknames", authed("POST", { nickname: "새이름" }))).status, 200);
+  assert.equal(rest.runs.find((row) => row.id === "bbbb")?.donor_nickname, "새이름");
+  assert.equal(rest.runs.find((row) => row.id === "aaa")?.donor_nickname, "기증자", "another donor's runs stay");
+  assert.equal(rest.runs.find((row) => row.id === "gggg")?.donor_nickname, null, "neq skips a null nickname, like the legacy update");
+
+  assert.equal((await json(await call("/api/write/history-runs?id=aaa", authed("DELETE")))).body.deleted, false);
+  assert.ok(rest.runs.some((row) => row.id === "aaa"));
+  assert.equal((await json(await call("/api/write/history-runs?id=bbbb", authed("DELETE")))).body.deleted, true);
+  rest.runs = [];
 
   // --- Helpers ------------------------------------------------------------------------
   assert.equal(contentRangeTotal("0-4/5"), 5);

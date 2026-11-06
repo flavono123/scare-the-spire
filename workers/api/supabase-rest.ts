@@ -109,11 +109,20 @@ async function readCapped(response: Response, maxBytes: number): Promise<string 
 
 const PATH = /^(?:rpc\/)?[a-z_][a-z0-9_]*$/;
 
+/** PostgREST select lists carry no whitespace (supabase-js strips it the same way). */
+function compactQuery(query: URLSearchParams | undefined): string {
+  if (!query) return "";
+  const copy = new URLSearchParams(query);
+  const select = copy.get("select");
+  if (select !== null) copy.set("select", select.replace(/\s+/g, ""));
+  return copy.toString();
+}
+
 export async function postgrest<T>(config: SupabaseApiConfig, request: RestRequest): Promise<RestResult<T>> {
   if (!PATH.test(request.path)) throw new Error(`invalid PostgREST path: ${request.path}`);
   const method = request.method ?? "GET";
   const url = new URL(`${config.url}/rest/v1/${request.path}`);
-  if (request.query) url.search = request.query.toString();
+  if (request.query) url.search = compactQuery(request.query);
 
   const headers = new Headers({ apikey: config.key, Accept: "application/json" });
   // The publishable key is not a JWT; only a user token goes in Authorization.
@@ -193,4 +202,127 @@ export async function inWaves<T>(tasks: readonly (() => Promise<T>)[], limit = 5
 /** True when Supabase itself is unhealthy, as opposed to rejecting the request. */
 export function isUpstreamFailure(result: RestFailure): boolean {
   return result.status === 0 || result.status >= 500 || result.code === "bad_response";
+}
+
+export type StreamRequest = Omit<RestRequest, "body" | "maxBytes"> & {
+  /** A JSON body passed through without parsing (run uploads carry raw run files). */
+  bodyStream?: ReadableStream<Uint8Array> | null;
+};
+
+export type StreamResult = { ok: true; status: number; response: Response } | RestFailure;
+
+/**
+ * A PostgREST call whose response body is handed back unread, for answers too
+ * big to parse inside the Worker's CPU budget (run lists with raw run files,
+ * STEP1_DESIGN 9.6). The timeout covers the headers only; the client's own
+ * timeout covers a stalled body. Failures are read (they are small) and mapped
+ * like `postgrest`.
+ */
+export async function postgrestStream(config: SupabaseApiConfig, request: StreamRequest): Promise<StreamResult> {
+  if (!PATH.test(request.path)) throw new Error(`invalid PostgREST path: ${request.path}`);
+  const method = request.method ?? "GET";
+  const url = new URL(`${config.url}/rest/v1/${request.path}`);
+  if (request.query) url.search = compactQuery(request.query);
+  const headers = new Headers({ apikey: config.key, Accept: "application/json" });
+  if (request.token) headers.set("Authorization", `Bearer ${request.token}`);
+  if (request.prefer?.length) headers.set("Prefer", request.prefer.join(","));
+  if (request.bodyStream) headers.set("Content-Type", "application/json");
+
+  let timeoutMs = request.timeoutMs ?? (method === "GET" || method === "HEAD" ? READ_TIMEOUT_MS : WRITE_TIMEOUT_MS);
+  if (request.deadline !== undefined) {
+    const left = request.deadline - Date.now();
+    if (left < MIN_CALL_MS) return { ok: false, status: 0, code: "timeout" };
+    timeoutMs = Math.min(timeoutMs, left);
+  }
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const fetcher: Fetcher = request.fetcher ?? ((input, init) => fetch(input, init));
+  let response: Response;
+  try {
+    response = await fetcher(url.toString(), {
+      method,
+      headers,
+      body: request.bodyStream ?? undefined,
+      signal: controller.signal,
+      // Node and Workers both need this for a streamed request body.
+      ...(request.bodyStream ? { duplex: "half" } : {}),
+    } as RequestInit);
+  } catch {
+    clearTimeout(timer);
+    return { ok: false, status: 0, code: controller.signal.aborted ? "timeout" : "network" };
+  }
+  clearTimeout(timer);
+  if (response.ok) return { ok: true, status: response.status, response };
+  const text = await readCapped(response, 64 * 1024).catch(() => null);
+  let code = `http_${response.status}`;
+  try {
+    const parsed = text ? JSON.parse(text) as { code?: unknown } : null;
+    if (typeof parsed?.code === "string" && /^[A-Z0-9]{1,16}$/.test(parsed.code)) code = parsed.code;
+  } catch {
+    // Not JSON: keep http_<status>.
+  }
+  return { ok: false, status: response.status, code };
+}
+
+/**
+ * Wraps a JSON array body as `{"v":1,"env":…,"rows":<body>}` without parsing it,
+ * counting bytes; past `maxBytes` the stream errors, so the client sees a cut
+ * body (bad_response) rather than an unbounded one.
+ */
+export function rowsEnvelopeStream(
+  body: ReadableStream<Uint8Array> | null,
+  env: string,
+  maxBytes: number,
+): ReadableStream<Uint8Array> {
+  const encoder = new TextEncoder();
+  const reader = body?.getReader() ?? null;
+  let stage: "prefix" | "body" | "done" = "prefix";
+  let size = 0;
+  return new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      if (stage === "prefix") {
+        controller.enqueue(encoder.encode(`{"v":1,"env":${JSON.stringify(env)},"rows":`));
+        stage = reader ? "body" : "done";
+        if (!reader) {
+          controller.enqueue(encoder.encode("[]}"));
+          controller.close();
+        }
+        return;
+      }
+      if (stage === "done" || !reader) return;
+      const { done, value } = await reader.read();
+      if (done) {
+        stage = "done";
+        controller.enqueue(encoder.encode("}"));
+        controller.close();
+        return;
+      }
+      size += value.byteLength;
+      if (size > maxBytes) {
+        stage = "done";
+        void reader.cancel().catch(() => undefined);
+        controller.error(new Error("too_large"));
+        return;
+      }
+      controller.enqueue(value);
+    },
+    cancel(reason) {
+      void reader?.cancel(reason).catch(() => undefined);
+    },
+  });
+}
+
+/** Counts bytes of a request body as it streams to PostgREST; past `maxBytes` the upload fails. */
+export function cappedBodyStream(body: ReadableStream<Uint8Array>, maxBytes: number): ReadableStream<Uint8Array> {
+  let size = 0;
+  return body.pipeThrough(new TransformStream<Uint8Array, Uint8Array>({
+    transform(chunk, controller) {
+      size += chunk.byteLength;
+      if (size > maxBytes) {
+        controller.error(new Error("too_large"));
+        return;
+      }
+      controller.enqueue(chunk);
+    },
+  }));
 }

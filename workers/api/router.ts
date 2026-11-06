@@ -13,7 +13,7 @@ import {
 } from "./http";
 import { bearerToken, checkSupabaseAccessToken, fetchSupabaseJwks, type VerifiedSupabaseUser } from "./jwt";
 import { clientIp, withinRateLimit, type RateLimitEnv, type RateLimitKind } from "./rate-limit";
-import { supabaseApiConfig, supabaseIssuer, type SupabaseApiConfig } from "./supabase-rest";
+import { cappedBodyStream, supabaseApiConfig, supabaseIssuer, type SupabaseApiConfig } from "./supabase-rest";
 
 /**
  * The same-origin API router (docs/supabase-exit/STEP1_DESIGN.md 4). It owns
@@ -44,6 +44,8 @@ export type UserRouteContext = BaseContext & {
   token: string;
   /** The parsed JSON body when the route declares `body`; otherwise undefined. */
   body: unknown;
+  /** The unread JSON body, byte-capped, when the route declares `rawBody`; otherwise null. */
+  bodyStream: ReadableStream<Uint8Array> | null;
 };
 
 type QuerySchema = Record<string, (value: string) => boolean>;
@@ -74,6 +76,8 @@ export type UserRoute = RouteBase & {
   access: "me" | "write";
   /** A JSON body of at most `maxBytes`, counted on the stream. */
   body?: { maxBytes: number };
+  /** A JSON body passed through unparsed (too big to parse in the CPU budget), at most `maxBytes`. */
+  rawBody?: { maxBytes: number };
   handle(context: UserRouteContext): Promise<Response>;
 };
 
@@ -245,7 +249,16 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
         if (!read.ok) return error(read.code);
         body = read.value;
       }
-      response = await route.handle({ ...base, user: check.user, token, body });
+      let bodyStream: ReadableStream<Uint8Array> | null = null;
+      if (route.rawBody) {
+        if (!/^application\/json(?:\s*;|$)/i.test(request.headers.get("content-type") ?? "") || !request.body) {
+          return error("invalid");
+        }
+        const declared = Number(request.headers.get("content-length") ?? "0");
+        if (Number.isFinite(declared) && declared > route.rawBody.maxBytes) return error("too_large");
+        bodyStream = cappedBodyStream(request.body, route.rawBody.maxBytes);
+      }
+      response = await route.handle({ ...base, user: check.user, token, body, bodyStream });
     }
     return { response: isHead ? withoutBody(response) : response, label, code: "handler" };
   }
