@@ -1655,6 +1655,48 @@
   animation: nav-attention-sine 1.8s ease-in-out infinite;
 }
 
+/* New service pip: emerald like the menu NEW pill, with a ripple instead of the gold sine. */
+@keyframes nav-attention-ripple-new {
+  0% {
+    box-shadow:
+      0 0 0 1px #0b1a14,
+      0 0 0 0 rgba(52, 211, 153, 0.75);
+  }
+  70%, 100% {
+    box-shadow:
+      0 0 0 1px #0b1a14,
+      0 0 0 6px rgba(52, 211, 153, 0);
+  }
+}
+
+.nav-attention-dot.nav-attention-dot-new {
+  background: #34d399;
+  animation: nav-attention-ripple-new 1.6s ease-out infinite;
+}
+
+/* Unchecked inquiry pip (dev): red, larger and faster than the other pips, so it reads first. */
+@keyframes nav-attention-ripple-inbox {
+  0% {
+    box-shadow:
+      0 0 0 1.5px #1a0808,
+      0 0 0 0 rgba(255, 82, 82, 0.85);
+  }
+  70%, 100% {
+    box-shadow:
+      0 0 0 1.5px #1a0808,
+      0 0 0 7px rgba(255, 82, 82, 0);
+  }
+}
+
+.nav-attention-dot.nav-attention-dot-inbox {
+  width: 0.6875rem;
+  height: 0.6875rem;
+  margin-top: -0.34375rem;
+  margin-right: -0.34375rem;
+  background: #ff5252;
+  animation: nav-attention-ripple-inbox 1.1s ease-out infinite;
+}
+
 .nav-title-read {
   filter: grayscale(0.65);
 }
@@ -1671,6 +1713,16 @@
   .nav-attention-dot {
     animation: none;
     box-shadow: 0 0 0 1px #1a1208;
+  }
+
+  .nav-attention-dot.nav-attention-dot-new {
+    animation: none;
+    box-shadow: 0 0 0 1px #0b1a14, 0 0 0 3px rgba(52, 211, 153, 0.35);
+  }
+
+  .nav-attention-dot.nav-attention-dot-inbox {
+    animation: none;
+    box-shadow: 0 0 0 1.5px #1a0808, 0 0 0 4px rgba(255, 82, 82, 0.4);
   }
 }
 

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo, useCallback, useSyncExternalStore
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
-import { NAV_ATTENTION_SLOT_CLASS, NavAttentionDot } from "@/components/nav-attention-dot";
+import { NAV_ATTENTION_SLOT_CLASS, NavAttentionDot, type NavAttentionTone } from "@/components/nav-attention-dot";
 import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import {
@@ -14,6 +14,7 @@ import {
 import Image from "@/components/ui/static-image";
 import { useMailboxReply } from "@/hooks/use-mailbox-reply";
 import { useNavSeen } from "@/hooks/use-nav-seen";
+import { useDevContactInbox } from "@/hooks/use-dev-contact-inbox";
 import { useColorfulPhilosophersNextWeekOpen } from "@/hooks/use-colorful-philosopher-posts";
 import { COLORFUL_PHILOSOPHERS_DEV_HREF } from "@/lib/colorful-philosophers";
 import {
@@ -63,6 +64,7 @@ import {
   serviceLanguageNavLocales,
   sts1NavLinkItems,
   sts2NavItems,
+  toyBoxHasNewService,
 } from "@/lib/site-nav-items";
 
 type PendingSearchResult = {
@@ -185,6 +187,7 @@ function NavIconLink({
   className,
   external,
   attention = false,
+  attentionTone = "unread",
   tokenSlot = false,
 }: {
   href: string;
@@ -196,6 +199,7 @@ function NavIconLink({
   className?: string;
   external?: boolean;
   attention?: boolean;
+  attentionTone?: NavAttentionTone;
   tokenSlot?: boolean;
 }) {
   const Tag = external ? "a" : Link;
@@ -230,7 +234,7 @@ function NavIconLink({
               style={{ "--nav-icon-size": `${iconSize}px` } as CSSProperties}
             />
           )}
-          {attention && <NavAttentionDot />}
+          {attention && <NavAttentionDot tone={attentionTone} />}
         </span>
       </Tag>
     </GameUiHoverTip>
@@ -790,6 +794,8 @@ export function SiteNavbar() {
       : item
   ));
   const mailboxReply = useMailboxReply();
+  const inboxUnchecked = useDevContactInbox(pathname);
+  const mailboxTone: NavAttentionTone = inboxUnchecked ? "inbox" : "unread";
   // A record shell is prerendered under a placeholder id and React keeps
   // server attributes on hydration, so the source path waits until the client
   // renders with the real address.
@@ -834,6 +840,7 @@ export function SiteNavbar() {
             items={toyBoxItems}
             align="left"
             attention={navSeen.toyBox}
+            newService={toyBoxHasNewService(toyBoxItems)}
           />
 
           {devItems.length > 0 && (
@@ -873,7 +880,8 @@ export function SiteNavbar() {
               iconSize={24}
               iconClassName="group-hover:scale-110"
               tokenSlot
-              attention={mailboxReply}
+              attention={mailboxReply || inboxUnchecked}
+              attentionTone={mailboxTone}
             />
           </div>
           <NavIconLink
@@ -910,7 +918,7 @@ export function SiteNavbar() {
               height={34}
               className="h-full w-full object-contain drop-shadow-md transition-transform group-hover:scale-110"
             />
-            {mailboxReply && <NavAttentionDot />}
+            {(mailboxReply || inboxUnchecked) && <NavAttentionDot tone={mailboxTone} />}
           </span>
           <span className="pointer-events-none absolute bottom-full right-0 mb-2 whitespace-nowrap rounded-md border border-border bg-popover px-2 py-1 text-xs font-bold text-popover-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
             {contactCopy.navLabel}

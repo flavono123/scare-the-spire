@@ -29,7 +29,7 @@ import { DEBATE_HREF, DEBATE_TOKEN_SRC } from "@/lib/debate";
 import { COLORFUL_PHILOSOPHERS_DEV_HREF } from "@/lib/colorful-philosophers";
 import { VEXING_PUZZLEBOX_HREF, VEXING_PUZZLEBOX_TOKEN_SRC } from "@/lib/vexing-puzzlebox";
 import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
-import { isLatestByrdispatchNewSection } from "@/lib/toy-box-news";
+import { isLatestByrdispatchNewSection, isLatestByrdispatchOnOrBefore } from "@/lib/toy-box-news";
 import { navSeenIdForHref } from "@/lib/nav-seen";
 
 export type CodexLabelKey = {
@@ -59,6 +59,12 @@ type ToyBoxServiceDefinition = {
   nestedUnder?: string;
   /** Tab of the parent service; omitted from the Toy Box dropdown. */
   dropdownHidden?: boolean;
+  /**
+   * Byrdispatch date the service shipped in. It is announced as new until a
+   * later byrdispatch entry (the next regular release) is published. Delete the
+   * field to stop announcing it sooner.
+   */
+  announceNewThrough?: string;
   getLabel: (
     serviceLocale: ServiceLocale,
     gameLocale: GameLocale,
@@ -66,10 +72,16 @@ type ToyBoxServiceDefinition = {
 };
 
 function toyBoxServiceIsNew(service: ToyBoxServiceDefinition): boolean {
+  if (service.announceNewThrough && isLatestByrdispatchOnOrBefore(service.announceNewThrough)) return true;
   return Boolean(
     service.byrdispatchSectionTitle
     && isLatestByrdispatchNewSection(service.byrdispatchSectionTitle),
   );
+}
+
+/** Whether the Toy Box icon should carry the new-service marker. */
+export function toyBoxHasNewService(items: readonly NavDropdownItem[]): boolean {
+  return items.some((item) => item.isNew);
 }
 
 const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
@@ -145,6 +157,7 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     href: VEXING_PUZZLEBOX_HREF,
     icon: VEXING_PUZZLEBOX_TOKEN_SRC,
     createdAt: "2026-11-02",
+    announceNewThrough: "2026-11-04",
     getLabel: (_serviceLocale, gameLocale) => getVexingPuzzleboxNavTitle(gameLocale),
   },
   {

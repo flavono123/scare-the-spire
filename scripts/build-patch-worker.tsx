@@ -58,6 +58,7 @@ import { contactMessages } from "@/messages/contact";
 import {
   gameOnlyLanguageNavLocales,
   getToyBoxNavItems,
+  toyBoxHasNewService,
   localizeCodexNavItems,
   serviceLanguageNavLocales,
   sts1NavDropdownItems,
@@ -413,6 +414,7 @@ function StaticPatchHeader({
             items={toyBoxItems}
             align="left"
             attentionMarker="toy-box"
+            newService={toyBoxHasNewService(toyBoxItems)}
           />
         </div>
 
