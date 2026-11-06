@@ -574,7 +574,8 @@ async function main() {
   assert.equal(week.status, 200);
   const weekPosts = week.body.posts as Record<string, unknown>[];
   assert.deepEqual(weekPosts.map((row) => row.id), [futureId, "44444444-4444-4444-8444-444444444444"], "newest first, development only, reservations included");
-  assert.deepEqual(week.body.commentCounts, { "44444444-4444-4444-8444-444444444444": 1 }, "replies counted for published posts only");
+  assert.deepEqual(week.body.commentCounts, { "44444444-4444-4444-8444-444444444444": 1, [futureId]: 1 },
+    "replies counted for every returned post; the client picks the weeks it shows by its own clock");
   assert.ok(!("env" in weekPosts[0]), "only the post columns");
 
   const onePost = await json(await call("/api/read/colorful-philosophers/post?id=44444444-4444-4444-8444-444444444444"));

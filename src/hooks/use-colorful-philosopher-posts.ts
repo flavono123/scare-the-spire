@@ -67,7 +67,9 @@ export function useColorfulPhilosopherWeek(env = supabaseEnv) {
         if (cancelled) return;
         checkVersion(body);
         setPosts(postsFromRows(body.posts ?? []));
-        setCommentCounts(body.commentCounts ?? null);
+        // No counts in a v1 answer means the Worker could not read them: show none rather
+        // than have the browser ask Supabase again (STEP1_DESIGN 7, 9.2).
+        setCommentCounts(body.commentCounts ?? {});
         setMissing(false);
         setUnavailable(false);
         setLoading(false);

@@ -21,11 +21,7 @@ const COMMENT_COUNT_ROWS = 1000;
 
 type PostRow = Record<string, unknown> & { id?: unknown; week_start?: unknown };
 
-function weekOf(row: PostRow): string {
-  return typeof row.week_start === "string" ? row.week_start.slice(0, 10) : "";
-}
-
-/** Reply counts for the posts the list shows (published by this KST week). */
+/** Reply counts for every returned post: the client decides by its own clock which week is out. */
 async function replyCounts(config: SupabaseApiConfig, postIds: readonly string[], deadline: number) {
   if (postIds.length === 0) return { ok: true as const, data: {} as Record<string, number> };
   const keys = postIds.map(philosopherReplyThreadKey);
@@ -65,11 +61,8 @@ async function handleWeek(context: PublicRouteContext): Promise<Response> {
   });
   if (!posts.ok) return apiError(restErrorCode(posts));
   const rows = posts.data ?? [];
-  const currentWeek = kstWeekStart(new Date(context.now));
-  const shown = rows
-    .filter((row) => typeof row.id === "string" && isUuid(row.id) && weekOf(row) && weekOf(row) <= currentWeek)
-    .map((row) => String(row.id));
-  const counts = await replyCounts(config, shown, deadline);
+  const ids = rows.filter((row) => typeof row.id === "string" && isUuid(row.id)).map((row) => String(row.id));
+  const counts = await replyCounts(config, ids, deadline);
   // Counts failing leaves them out; the list then shows no reply numbers, like the legacy query.
   return jsonResponse({ v: 1, env: config.dataEnv, posts: rows, ...(counts.ok ? { commentCounts: counts.data } : {}) });
 }

@@ -510,15 +510,16 @@ SURFACE_MAP 2.2절 19·20번과 10번의 `reel`을 덮는다. 글은 관리 화�
 
 | 경로 | 매개변수 | Supabase | 응답 |
 |---|---|---|---|
-| `GET /api/read/colorful-philosophers/week` | 없음 | 글 100개(`week_start` 내림차순), 그 가운데 이번 주(KST)까지 공개된 글의 답글 행(`story_id`, 1,000행까지) | `{ v, env, posts: 행[], commentCounts?: { <글 id>: 수 } }` |
+| `GET /api/read/colorful-philosophers/week` | 없음 | 글 100개(`week_start` 내림차순), 그 글들의 답글 행(`story_id`, 1,000행까지) | `{ v, env, posts: 행[], commentCounts?: { <글 id>: 수 } }` |
 | `GET /api/read/colorful-philosophers/post?id=` | 글 uuid | 1행 | `{ v, env, post: 행 \| null }` |
 | `GET /api/read/colorful-philosophers/reel` | 없음 | `week_start <= 이번 주(KST)` 12개 | `{ v, env, posts: 행[] }` |
 
 - 행은 지금 쿼리와 같은 열이다. 클라이언트가 지금처럼 `colorfulPhilosopherPostFromRow`로 바꾼다(Worker는
   `colorful-philosophers.ts`를 import하지 않는다).
 - 이번 주는 Worker가 `kstWeekStart`(`nav-surfaces.ts`)로 정한다. 목록은 지금처럼 미래 주 예약까지 받아 클라이언트가
-  숨긴다. 답글 수는 공개된 글만 센다(지금 `index-view.tsx`가 공개된 글의 id로 세는 것과 같다). 답글 수 읽기가 실패하면
-  `commentCounts`를 빼고, 목록은 지금처럼 수 없이 보인다.
+  숨긴다. 답글 수는 받은 글 모두를 센다. 어느 주까지 보일지는 클라이언트가 자기 시계로 정하므로, 월요일 경계에서 기기
+  시계가 Worker보다 빠르면 Worker가 세지 않은 예약 글이 보일 수 있기 때문이다. 답글 수 읽기가 실패하면 `commentCounts`를
+  빼고, 클라이언트는 수 없이(0) 보인다. 브라우저가 Supabase에 다시 묻지 않는다(7절).
 - 캐시는 두지 않는다(답글 수가 쓴 사람에게 바로 맞아야 한다). 공개 읽기라 `API_READ_LIMITER`를 쓴다.
 - 클라이언트:
   - `useColorfulPhilosopherWeek(env)`는 `env`가 빌드 env일 때만 api 경로를 쓴다. dev 관리 화면은 다른 env를 골라
