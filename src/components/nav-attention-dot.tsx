@@ -5,12 +5,15 @@ export const NAV_ATTENTION_SLOT_CLASS =
 /**
  * - `unread`: gold sine pip for new posts.
  * - `new-service`: emerald ripple pip for a newly added service.
+ * - `inbox`: larger red ripple pip for inquiries the operator has not
+ *   checked yet (dev only). It outranks the other two.
  */
-export type NavAttentionTone = "unread" | "new-service";
+export type NavAttentionTone = "unread" | "new-service" | "inbox";
 
 const TONE_CLASS: Record<NavAttentionTone, string> = {
   unread: "",
   "new-service": " nav-attention-dot-new",
+  inbox: " nav-attention-dot-inbox",
 };
 
 export function NavAttentionDot({
