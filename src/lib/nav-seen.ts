@@ -36,8 +36,9 @@ export const NAV_SEEN_EVENT = "sts-nav-seen";
 const STORAGE_PREFIX = "sts-nav-seen:";
 /** Toy Box index visits dismiss only the menu dot; post visits still move `seen`. */
 const MENU_SEEN_PREFIX = "sts-nav-menu-seen:";
-// Bumped to drop the dev chips' forced marks stored under "sts-nav-force:".
-const FORCE_PREFIX = "sts-nav-force-v2:";
+// Bumped to drop the dev chips' forced marks (v1 "sts-nav-force:", then v2
+// on 2026-11-06 once testing was done).
+const FORCE_PREFIX = "sts-nav-force-v3:";
 const UNREAD_CACHE_PREFIX = "sts-nav-unread:";
 const UNREAD_CACHE_MS = 60_000;
 
