@@ -571,6 +571,26 @@ SURFACE_MAP 2.2절 28번. SURFACE_MAP의 묶음 `/api/me/profile` 대신 지금 
   운영과 testbed를 같은 브라우저 세션으로 오간 사용자만 차이가 보인다.
 - 읽음 표시는 두 번 해도 해가 없지만, 쓰기 규칙대로 처리되지 않았음이 확실할 때만 legacy로 다시 보낸다.
 
+### 9.5 퍼즐상자(`puzzlebox`)
+
+SURFACE_MAP 2.2절 26·27번. RPC 셋(SECURITY DEFINER, `auth.uid()`를 읽음)을 그대로 부른다.
+
+| 경로 | RPC | 응답 |
+|---|---|---|
+| `GET /api/read/puzzlebox/leaderboard?game=&boards=&board=&offset=&around_me=` | `get_puzzlebox_leaderboard`, 토큰 없이 | `{ v, env, leaderboard }` |
+| `GET /api/me/puzzlebox/leaderboard?…`(같은 매개변수) | 같은 RPC, 사용자 토큰으로(`is_me`, `me`) | 같음 |
+| `GET /api/me/puzzlebox/standings?game=&boards=` | `get_my_puzzlebox_standings` | `{ v, env, standings }` |
+| `POST /api/write/puzzlebox/runs` `{ game, board, run, player }` | `submit_puzzlebox_run` | `{ v, env, result }` |
+
+- `boards`는 페이지가 아는 판과 최고점이다(RPC는 이 판들만 순위를 매긴다). 쿼리에서는 `1:4,2:4` 꼴이고, 판 번호 1~4자리,
+  점수 1~6자리, 500개까지다. 규칙은 import 없는 `src/lib/puzzlebox-api-rules.ts`에 둔다. `board`는 `total` 또는 판 번호,
+  `offset`은 100,000 이하.
+- 지금 supabase-js는 세션이 있으면 토큰을 붙여 순위표에 내 행(`is_me`, `me`)이 들어간다. 그래서 클라이언트는 세션이
+  있으면 `/api/me`, 없으면 `/api/read`를 부른다. 공개 경로는 브라우저가 토큰을 보내도 넘기지 않는다(9절).
+- 제출의 점수 계산·판 검사·횟수 제한(3초에 한 번, 하루 500판)은 RPC가 한다. 54000은 429 `rate_limited`, 22023(모르는
+  판)은 400. 클라이언트는 지금처럼 어떤 실패에도 `null`이고 게임은 기다리지 않는다.
+- 클라이언트의 5분 sessionStorage 캐시와 제출 뒤 그 게임 캐시 지우기는 그대로다.
+
 ## 10. 배포와 testbed
 
 - CI(`.github/workflows/cloudflare-workers.yml`) main 배포에 `--var API_SUPABASE_URL:… --var API_SUPABASE_KEY:…

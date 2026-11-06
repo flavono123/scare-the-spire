@@ -154,6 +154,18 @@ class FakeRest {
     if (name === "contact_inquiries" && this.noSeenColumn && (params.get("select")?.includes("reply_seen_at") || params.has("reply_seen_at"))) {
       return Response.json({ code: "42703" }, { status: 400 });
     }
+    if (name.startsWith("rpc/") && name.includes("puzzlebox")) {
+      const args = body as Row;
+      this.rpcBodies.push({ name, auth: Boolean(user), ...args });
+      if (name === "rpc/get_puzzlebox_leaderboard") {
+        return Response.json({ players: 2, offset: args.p_offset, rows: [{ rank: 1, is_me: Boolean(user) }], me: user ? { rank: 1 } : null, stats: null });
+      }
+      if (!user) return Response.json({ code: "42501" }, { status: 401 });
+      if (name === "rpc/get_my_puzzlebox_standings") return Response.json([{ board: "1", score: 4, perfect: true, rank: 1, players: 2 }]);
+      if ((args.p_run as Row)?.spam) return Response.json({ code: "54000" }, { status: 400 });
+      if (args.p_board === "999") return Response.json({ code: "22023" }, { status: 400 });
+      return Response.json({ score: 4, perfect: true, attempt: 1, improved: true, best: 4, best_perfect: true, rank: 1, players: 2 });
+    }
     if (name === "rpc/get_my_profile_activity_stats" || name === "rpc/get_my_profile_activity") {
       if (!user) return Response.json({ code: "42501" }, { status: 401 });
       this.rpcBodies.push({ name, ...(body as Row) });
@@ -258,7 +270,7 @@ class FakeRest {
 }
 
 class FakeD1 implements D1Database {
-  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"], ["path.profile", "api"]]);
+  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"], ["path.profile", "api"], ["path.puzzlebox", "api"]]);
   prepare(query: string): D1PreparedStatement {
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       if (query !== FLAGS_SQL) throw new Error(`unexpected SQL ${query}`);
@@ -683,6 +695,41 @@ async function main() {
   assert.ok(rest.contactInquiries[0].reply_seen_at, "this env's answered inquiry is marked seen");
   assert.equal(rest.contactInquiries[1].reply_seen_at, null, "another env's stays unseen");
   rest.contactInquiries = [];
+
+  // --- Puzzlebox (STEP1_DESIGN 9.5) -------------------------------------------------------
+  const { encodePuzzleboxBoards, parsePuzzleboxBoards } = await import("../src/lib/puzzlebox-api-rules");
+  assert.equal(encodePuzzleboxBoards({ 1: 4, 12: 16 }), "1:4,12:16");
+  assert.deepEqual(parsePuzzleboxBoards("1:4,12:16"), { 1: 4, 12: 16 });
+  for (const bad of ["", "1:4,1:5", "a:4", "1:-1", "1:4:5", "12345:1"]) assert.equal(parsePuzzleboxBoards(bad), null, bad);
+  assert.equal(encodePuzzleboxBoards({ x: 1 }), null);
+
+  const board = "/api/read/puzzlebox/leaderboard?game=connections&boards=1:4,2:4&board=total&offset=10&around_me=0";
+  const publicBoard = await json(await call(board, { headers: { authorization: `Bearer ${token}` } }));
+  assert.equal(publicBoard.status, 200);
+  assert.deepEqual(rest.rpcBodies.at(-1), {
+    name: "rpc/get_puzzlebox_leaderboard", auth: false, p_env: "development", p_game: "connections",
+    p_boards: { 1: 4, 2: 4 }, p_board: null, p_offset: 10, p_around_me: false,
+  }, "the public route never forwards a token, even when the browser sent one");
+  assert.equal((publicBoard.body.leaderboard as Row).me, null);
+  const myBoard = await json(await call(board.replace("/api/read/", "/api/me/").replace("board=total", "board=2").replace("around_me=0", "around_me=1"), { headers: { authorization: `Bearer ${token}` } }));
+  assert.deepEqual((myBoard.body.leaderboard as Row).me, { rank: 1 });
+  assert.equal((rest.rpcBodies.at(-1) as Row).p_board, "2");
+  assert.equal((rest.rpcBodies.at(-1) as Row).p_around_me, true);
+  for (const bad of ["game=chess&boards=1:4", "game=connections&boards=x", "game=connections&boards=1:4&offset=9999999", "game=connections&boards=1:4&board=total&around_me=2"]) {
+    assert.equal((await call(`/api/read/puzzlebox/leaderboard?${bad}`)).status, 400, bad);
+  }
+  assert.equal((await call("/api/me/puzzlebox/standings?game=connections&boards=1:4")).status, 401);
+  const standings = await json(await call("/api/me/puzzlebox/standings?game=connections&boards=1:4", { headers: { authorization: `Bearer ${token}` } }));
+  assert.equal((standings.body.standings as Row[])[0].board, "1");
+
+  const run = { game: "connections", board: "1", run: { picks: [] }, player: { nickname: "나" } };
+  const submitted = await json(await call("/api/write/puzzlebox/runs", authed("POST", run)));
+  assert.equal((submitted.body.result as Row).rank, 1);
+  assert.deepEqual(rest.rpcBodies.at(-1), { name: "rpc/submit_puzzlebox_run", auth: true, p_env: "development", p_game: "connections", p_board: "1", p_run: { picks: [] }, p_player: { nickname: "나" } });
+  assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, run: { spam: true } }))).status, 429, "54000 is the RPC's own run limit");
+  assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, board: "999" }))).status, 400);
+  assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, board: 1 }))).status, 400);
+  assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, run: [] }))).status, 400);
 
   // --- Helpers ------------------------------------------------------------------------
   assert.equal(contentRangeTotal("0-4/5"), 5);
