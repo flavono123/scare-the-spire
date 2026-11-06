@@ -499,6 +499,33 @@ SURFACE_MAP 2.2절 5~9번과 10번의 `threads`를 덮는다. 엔드포인트 �
   env(production)는 legacy 경로에서만 쓴다. 댓글 쪽 브라우저 저장소(초안, 반응 localStorage)는 env를 키에 넣지 않으므로
   네비처럼 env 검사로 내리지 않는다. 그래서 10절의 열린 질문은 "api 경로는 Worker env를 따른다"로 닫는다.
 
+### 9.2 다채로운 철학자들(`colorful-philosophers`)
+
+SURFACE_MAP 2.2절 19·20번과 10번의 `reel`을 덮는다. 글은 관리 화면(service 키)만 쓰고, 반응과 답글은 `comments`
+그룹이다(9.1절). 그래서 이 그룹은 읽기만 있다.
+
+| 경로 | 매개변수 | Supabase | 응답 |
+|---|---|---|---|
+| `GET /api/read/colorful-philosophers/week` | 없음 | 글 100개(`week_start` 내림차순), 그 가운데 이번 주(KST)까지 공개된 글의 답글 행(`story_id`, 1,000행까지) | `{ v, env, posts: 행[], commentCounts?: { <글 id>: 수 } }` |
+| `GET /api/read/colorful-philosophers/post?id=` | 글 uuid | 1행 | `{ v, env, post: 행 \| null }` |
+| `GET /api/read/colorful-philosophers/reel` | 없음 | `week_start <= 이번 주(KST)` 12개 | `{ v, env, posts: 행[] }` |
+
+- 행은 지금 쿼리와 같은 열이다. 클라이언트가 지금처럼 `colorfulPhilosopherPostFromRow`로 바꾼다(Worker는
+  `colorful-philosophers.ts`를 import하지 않는다).
+- 이번 주는 Worker가 `kstWeekStart`(`nav-surfaces.ts`)로 정한다. 목록은 지금처럼 미래 주 예약까지 받아 클라이언트가
+  숨긴다. 답글 수는 공개된 글만 센다(지금 `index-view.tsx`가 공개된 글의 id로 세는 것과 같다). 답글 수 읽기가 실패하면
+  `commentCounts`를 빼고, 목록은 지금처럼 수 없이 보인다.
+- 캐시는 두지 않는다(답글 수가 쓴 사람에게 바로 맞아야 한다). 공개 읽기라 `API_READ_LIMITER`를 쓴다.
+- 클라이언트:
+  - `useColorfulPhilosopherWeek(env)`는 `env`가 빌드 env일 때만 api 경로를 쓴다. dev 관리 화면은 다른 env를 골라
+    부르므로 legacy에 남는다. 답은 `commentCounts`도 돌려주고, `useColorfulPhilosopherCommentCounts(ids, known)`는
+    받은 수가 있으면 묻지 않는다.
+  - `useColorfulPhilosopherPost(id)`는 id가 uuid일 때 api 경로를 쓴다.
+  - 셸 패치 릴(`patch-comments-client.js`의 `refreshReelWeek`)은 `/reel`을 읽는다. 반응 합계는 `comments` 그룹 경로다.
+    변형 릴(`transfigure_posts`)은 `toybox-feed` 그룹이라 그대로 둔다.
+  - legacy 신호나 모르는 `v`면 그룹을 내리고 같은 화면을 legacy로 다시 읽는다.
+- 다음 주 예약 확인(`useColorfulPhilosophersNextWeekOpen`)은 dev 네비에서만 돌므로 옮기지 않는다.
+
 ## 10. 배포와 testbed
 
 - CI(`.github/workflows/cloudflare-workers.yml`) main 배포에 `--var API_SUPABASE_URL:… --var API_SUPABASE_KEY:…

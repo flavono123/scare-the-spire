@@ -1370,7 +1370,7 @@
    * `legacy` (use the legacy path) and `processed` (a write may have run, so it
    * is never resent), plus the router's error `code`.
    */
-  async function apiRequest(path, { method = "GET", token, body } = {}) {
+  async function apiRequest(path, { method = "GET", token, body, group = "comments" } = {}) {
     const headers = { Accept: "application/json" };
     if (body !== undefined) headers["Content-Type"] = "application/json";
     if (token) headers.Authorization = `Bearer ${token}`;
@@ -1391,13 +1391,13 @@
         throw fail({ code: "unavailable" });
       }
       if (response.headers.get(API_MARKER_HEADER) !== "1") {
-        slseounRuntime().demoted.add("comments");
+        slseounRuntime().demoted.add(group);
         void response.body?.cancel().catch(() => undefined);
         throw fail({ legacy: true, processed: method !== "GET" && response.status !== 404 && response.status !== 405, status: response.status });
       }
       const parsed = await response.json().catch(() => null);
       if (response.status === 409 && parsed?.error === "surface_legacy") {
-        slseounRuntime().demoted.add("comments");
+        slseounRuntime().demoted.add(group);
         throw fail({ legacy: true, processed: false, status: 409 });
       }
       if (!response.ok) throw fail({ code: parsed?.error || `http_${response.status}`, status: response.status });
@@ -1700,10 +1700,23 @@
     const stack = reelStack();
     if (!stack) return;
     const currentWeek = kstWeekStart();
-    const rows = await restRequest(
-      config,
-      `colorful_philosopher_posts?select=id,week_start,slot,resource_type,resource_id,name_ko,name_en,image_url,body,game_version&env=eq.${config.supabaseEnv}&week_start=lte.${currentWeek}&order=week_start.desc&limit=12`,
-    );
+    let rows = null;
+    if (surfacePath("colorful-philosophers") === "api") {
+      try {
+        const body = await apiRequest("/api/read/colorful-philosophers/reel", { group: "colorful-philosophers" });
+        if (body?.v === 1 && Array.isArray(body.posts)) rows = body.posts;
+        else slseounRuntime().demoted.add("colorful-philosophers");
+      } catch (error) {
+        if (!error.legacy) throw error;
+      }
+    }
+    // Legacy, or the api path answered with a legacy signal.
+    rows ??= config
+      ? await restRequest(
+        config,
+        `colorful_philosopher_posts?select=id,week_start,slot,resource_type,resource_id,name_ko,name_en,image_url,body,game_version&env=eq.${config.supabaseEnv}&week_start=lte.${currentWeek}&order=week_start.desc&limit=12`,
+      )
+      : [];
     const posts = (Array.isArray(rows) ? rows : [])
       .filter((row) => row.id && row.week_start && row.resource_type && row.resource_id && row.game_version);
     if (posts.length === 0) return;

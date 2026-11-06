@@ -39,14 +39,14 @@ export function ColorfulPhilosophersIndex({
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
   const copy = serviceMessages[serviceLocale].colorfulPhilosophers;
-  const { posts, loading, unavailable, missing } = useColorfulPhilosopherWeek();
+  const { posts, loading, unavailable, missing, commentCounts: knownCommentCounts } = useColorfulPhilosopherWeek();
   const currentWeek = colorfulPhilosophersWeekStart();
   const visiblePosts = useMemo(
     () => posts.filter((post) => post.weekStart <= currentWeek),
     [posts, currentWeek],
   );
   const postIds = useMemo(() => visiblePosts.map((post) => post.id), [visiblePosts]);
-  const commentCounts = useColorfulPhilosopherCommentCounts(postIds);
+  const commentCounts = useColorfulPhilosopherCommentCounts(postIds, knownCommentCounts);
   const weekStarts = Array.from(new Set([
     currentWeek,
     ...visiblePosts.map((post) => post.weekStart),

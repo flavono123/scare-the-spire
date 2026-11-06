@@ -105,6 +105,8 @@ class FakeRest {
         if (cell !== value.slice(3)) return false;
       } else if (value.startsWith("in.")) {
         if (!FakeRest.parseIn(value).includes(cell)) return false;
+      } else if (value.startsWith("lte.")) {
+        if (!(cell <= value.slice(4))) return false;
       } else {
         throw new Error(`unsupported filter ${name}=${value}`);
       }
@@ -228,7 +230,7 @@ class FakeRest {
 }
 
 class FakeD1 implements D1Database {
-  flags = new Map<string, string>([["path.comments", "api"]]);
+  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"]]);
   prepare(query: string): D1PreparedStatement {
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       if (query !== FLAGS_SQL) throw new Error(`unexpected SQL ${query}`);
@@ -522,6 +524,51 @@ async function main() {
   const pinned = await call(query, { headers: { cookie: "slseoun_qa_path=comments" } });
   assert.equal(pinned.status, 200, "development QA may pin the api path");
   assert.equal((await call(query, { headers: { cookie: "slseoun_qa=no-supabase" } })).status, 409);
+
+  // --- Colorful philosophers (STEP1_DESIGN 9.2) -----------------------------------------
+  db.flags.set("path.comments", "api");
+  resetFlagsForTest();
+  const { kstWeekStart } = await import("../src/lib/nav-surfaces");
+  const thisWeek = kstWeekStart(new Date());
+  const nextWeek = new Date(Date.parse(`${thisWeek}T00:00:00Z`) + 7 * 86_400_000).toISOString().slice(0, 10);
+  const futureId = "77777777-7777-4777-8777-777777777777";
+  rest.philosophers.push({
+    id: futureId, week_start: nextWeek, slot: "relic", resource_type: "relic", resource_id: "orrery",
+    name_ko: "태양계의", name_en: "Orrery", image_url: null, body: "다음 주 예약", game_version: "0.103.2", env: "development",
+  });
+  rest.philosophers.push({
+    id: "88888888-8888-4888-8888-888888888888", week_start: thisWeek, slot: "card", resource_type: "card", resource_id: "zap",
+    name_ko: "전기 충격", name_en: "Zap", image_url: null, body: "운영 행", game_version: "0.103.2", env: "production",
+  });
+  rest.comments.push({ id: "99999999-0000-4000-8000-000000000001", story_id: `colorful-philosophers:${futureId}`, user_id: OTHER, nickname: "미리", content: "예약 글 답글", content_blocks: null, created_at: "2026-11-05T05:00:00.000Z", env: "development", parent_id: null, meta: null, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false });
+
+  const week = await json(await call("/api/read/colorful-philosophers/week"));
+  assert.equal(week.status, 200);
+  const weekPosts = week.body.posts as Record<string, unknown>[];
+  assert.deepEqual(weekPosts.map((row) => row.id), [futureId, "44444444-4444-4444-8444-444444444444"], "newest first, development only, reservations included");
+  assert.deepEqual(week.body.commentCounts, { "44444444-4444-4444-8444-444444444444": 1 }, "replies counted for published posts only");
+  assert.ok(!("env" in weekPosts[0]), "only the post columns");
+
+  const onePost = await json(await call("/api/read/colorful-philosophers/post?id=44444444-4444-4444-8444-444444444444"));
+  assert.equal((onePost.body.post as Record<string, unknown>).resource_id, "bash");
+  assert.equal((await json(await call("/api/read/colorful-philosophers/post?id=88888888-8888-4888-8888-888888888888"))).body.post, null, "another env's post is not found");
+  assert.equal((await call("/api/read/colorful-philosophers/post?id=not-a-uuid")).status, 400);
+  assert.equal((await call("/api/read/colorful-philosophers/post")).status, 400);
+
+  const reel = await json(await call("/api/read/colorful-philosophers/reel"));
+  assert.deepEqual((reel.body.posts as Record<string, unknown>[]).map((row) => row.id), ["44444444-4444-4444-8444-444444444444"], "no reservation in the reel");
+  assert.equal((await call("/api/read/colorful-philosophers/week?limit=500")).status, 400);
+
+  rest.failTables.add("comments");
+  const weekWithoutCounts = await json(await call("/api/read/colorful-philosophers/week"));
+  assert.equal(weekWithoutCounts.status, 200);
+  assert.ok(!("commentCounts" in weekWithoutCounts.body), "a failed count read leaves the counts out");
+  rest.failTables.clear();
+
+  db.flags.set("path.colorful-philosophers", "legacy");
+  resetFlagsForTest();
+  assert.equal((await json(await call("/api/read/colorful-philosophers/week"))).body.reason, "flag");
+  assert.equal((await call(query)).status, 200, "comments stays on its own flag");
 
   // --- Helpers ------------------------------------------------------------------------
   assert.equal(contentRangeTotal("0-4/5"), 5);
