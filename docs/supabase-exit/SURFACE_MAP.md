@@ -1535,6 +1535,9 @@ colorful_philosopher_reactions, favorite_tournament_plays는 user_id까지 누�
 
 ### 7.7 저장소와 운영 dump의 차이
 
+- 정정(2026-11-07, [CLEANUP_AUDIT.md](CLEANUP_AUDIT.md) 3.5절): 아래 첫 줄은 틀렸다. `likes`, `comments`,
+  `comment_likes`, `runs`, `chemical_posts`, `community_stories`와 `get_engagement_counts`의 DDL은 `supabase/setup.sql`과
+  `migration-0xx`에만 있다. 7.6절의 `puzzlebox_runs`도 쓰이는 표다.
 - 테이블 31개와 함수 28개는 모두 저장소 마이그레이션에서 만들어진다. 정책 이름 81개가 같다.
 - 이름으로 찾을 수 없는 트리거 11개는 `rls_hardening.sql:93-153`의 `format()`으로 만들어진다.
 - 저장소에만 있는 색인 셋은 나중에 지워졌다(`supabase/migrate-env.sql:13,15`, `20260923223000_debate_cycle_weeks.sql:70`).

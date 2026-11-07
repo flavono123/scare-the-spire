@@ -246,5 +246,9 @@
 65. **`scripts/contact.spec.ts`의 'submits a private inquiry without requesting a readable row' 1건 실패**. CI에 없는 스펙이고, navbar 변경 전 코드에서도 같았다. 가짜 환경 탓인지 기존 문제인지는 가리지 못했다.
     - https://scare-the-spire.flavono123.workers.dev/contact
 66. **관리자 글 서비스 목록에 역사 강의서가 두 번 들어가 React 중복 키 오류가 남**. `Encountered two children with the same key, \`history_course\``가 개발 콘솔에 찍힌다.
+
+### 2026-11-07 Supabase 이관 정리 조사에서 추가
+
+67. **이아저? 월드컵 플레이 기록 전체가 누구에게나 열려 있음**. https://scare-the-spire.flavono123.workers.dev/this-or-that/tournament 의 플레이가 쌓이는 `favorite_tournament_plays`의 SELECT 정책 `favorite_tournament_plays_read`가 `TO public USING (true)`라, 공개 anon 키만 있으면 모든 사람의 플레이(`user_id`, 대진 `matches`, 우승 후보)를 읽을 수 있다. 앱은 이 표를 읽지 않는다(쓰기는 RPC `complete_favorite_tournament_play`, 읽기는 dev 관리 지표의 service 키뿐). 고치는 방법은 정책 삭제. 근거: `docs/supabase-exit/CLEANUP_AUDIT.md` 3.4절.
     - http://localhost:3001/dev/admin (개발 전용 화면)
     - 원인: `src/lib/admin-rls-activity.ts`의 `ADMIN_POST_SERVICES`가 `DEFRAGMENT_FEDERATED_SERVICES`(이미 `history_course` 포함)를 펼친 뒤 `"history_course"`를 또 붙인다. 운영 코드도 같다.
