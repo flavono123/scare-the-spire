@@ -282,6 +282,15 @@ export async function runFirstCopy(opts: FirstCopyOptions): Promise<FirstCopyRep
     const [row] = await opts.target.all(`SELECT ${tables.map((t) => `(SELECT count(*) FROM (SELECT 1 FROM ${t} LIMIT 1)) AS ${t}`).join(", ")}`);
     const filled = tables.filter((t) => Number(row[t]) > 0);
     if (filled.length) stops.push(`the target already holds rows in ${filled.join(", ")}: a copy over them needs --refill`);
+  } else if (present.has("outbox") && present.has("sync_rejects")) {
+    // Design 5.5: a re-fill after step 5 comes only once the outbox is empty with no open 'out' reject.
+    const [row] = await opts.target.all(
+      "SELECT (SELECT count(*) FROM outbox) AS outbox, " +
+        "(SELECT count(*) FROM sync_rejects WHERE direction = 'out' AND resolved_at IS NULL) AS open_out",
+    );
+    if (Number(row.outbox) > 0 || Number(row.open_out) > 0) {
+      stops.push(`the outbox holds ${row.outbox} rows and ${row.open_out} open 'out' rejects: send them before a re-fill (design 5.5)`);
+    }
   }
 
   // 2-3. W0 just before the dump, then the dump (one snapshot).

@@ -376,6 +376,9 @@ async function main() {
     const { target } = await copy(baseRows(), "development");
     const again = await copy(baseRows(), "development", { target });
     expectStop(again.report, /already holds rows in sync_state, comments/);
+    target.db.exec(`INSERT INTO outbox (table_name, op, match_key, created_at) VALUES ('likes', 'delete', '{"story_id": "x"}', 1)`);
+    expectStop((await copy(baseRows(), "development", { target, refill: true })).report, /outbox holds 1 rows .*before a re-fill/);
+    target.db.exec("DELETE FROM outbox");
 
     const rows = baseRows();
     rows.likes.push({ id: U(503), story_id: "sts2-codex:card:bash", user_id: U(4), created_at: TS, env: "development", reaction_type: "thumb_up" });
