@@ -92,6 +92,22 @@ async function main() {
     error instanceof ApiError && !(error instanceof SurfaceLegacyError) && error.code === "duplicate"
   ));
 
+  // responseType "text" (the run raw file, R3r): the body as is; error answers stay JSON.
+  resetPage("slseoun_rf=v1.history-runs");
+  let accepted: string | null = null;
+  globalThis.fetch = (async (_input: unknown, init?: RequestInit) => {
+    accepted = new Headers(init?.headers).get("accept");
+    return new Response("{\"players\": [ ]}", { headers: { "content-type": "text/plain; charset=utf-8", "x-slseoun-api": "1" } });
+  }) as typeof fetch;
+  assert.equal(await apiFetch("history-runs", "/api/read/history-run/raw?id=r1", { responseType: "text" }), "{\"players\": [ ]}");
+  assert.equal(accepted, "text/plain");
+  stubFetch(() => marked({ error: "rate_limited" }, 429));
+  await assert.rejects(() => apiFetch("history-runs", "/api/read/history-run/raw?id=r1", { responseType: "text" }), (error) => (
+    error instanceof ApiError && error.code === "rate_limited"
+  ));
+  stubFetch(() => marked({ error: "surface_legacy", reason: "flag" }, 409));
+  await assert.rejects(() => apiFetch("history-runs", "/api/read/history-run/raw?id=r1", { responseType: "text" }), SurfaceLegacyError);
+
   globalThis.fetch = (async () => {
     throw new TypeError("network");
   }) as typeof fetch;
