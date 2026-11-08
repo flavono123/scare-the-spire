@@ -22,10 +22,13 @@ import { DATA_ENVS, readFlags, SYNC_FLAG_KEY, type CutoverTarget } from "./cutov
 import type { D1HttpClient } from "./d1-http-client";
 import type { PostgrestReader } from "./postgrest-reader";
 
-/** Upsert order: every parent before its children (FKs in Supabase). */
+/**
+ * Upsert order: every parent before its children (FKs in Supabase). Comments come after the post
+ * tables and runs although no FK asks for it: Supabase's comment trigger counts a new comment into
+ * its post or run only when that row is already there.
+ */
 export const RELOAD_ORDER: readonly string[] = [
   "puzzlebox_players",
-  "comments",
   "community_stories",
   "chemical_posts",
   "combo_posts",
@@ -35,6 +38,7 @@ export const RELOAD_ORDER: readonly string[] = [
   "decisions_decisions_posts",
   "pagestorm_posts",
   "runs",
+  "comments",
   "pagestorm_drafts",
   "defragment_bodies",
   "this_or_that_post_votes",

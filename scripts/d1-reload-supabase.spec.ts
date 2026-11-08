@@ -73,6 +73,13 @@ async function main() {
   const rowText = JSON.stringify(run);
   const shared = await h.call("/api/write/history-runs/share", { method: "POST", raw: `[${rowText},${raw}]`, headers: { "x-slseoun-row-length": String(rowText.length) } });
   assert.equal(shared.status, 201, shared.text);
+  // A post and a run Supabase never saw (made after the mirror stopped), each with a comment and a like:
+  // Supabase's triggers can only count them into a parent row that is already there.
+  const chemical = await created("/api/write/toybox-post?service=chemical_x", { user_id: USER, nickname: "닉", content: [], content_text: "새 글입니다", env: "development" });
+  for (const thread of [`chemical-x:${chemical}`, `history-course:${run.id}`]) {
+    assert.equal((await h.call("/api/write/comments", { method: "POST", body: { threadKey: thread, nickname: "닉", content: "새 댓글" }, as: OTHER })).status, 201);
+    assert.equal((await h.call(`/api/write/likes?key=${encodeURIComponent(thread)}`, { method: "PUT", as: OTHER })).status, 200);
+  }
   const board = { game: "connections", board: "1", run: { guesses: [[0, 0, 0, 0], [1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3]], rocks: 0, rocksLeft: 3, shown: { token: true, local: true, original: true } }, player: { nickname: "퍼즐러" } };
   assert.equal((await h.call("/api/write/puzzlebox/runs", { method: "POST", body: board })).status, 200);
   await h.call("/api/write/stories", { method: "POST", body: { sentence: "새 이야기입니다", nickname: "닉", patchLineId: "v0.1:1", source: "v0.1", linkedEntities: [] } });
@@ -168,6 +175,10 @@ async function main() {
     const sbStats = (await pg.query<Record<string, unknown>>("select resource_id, match_wins, current_rank from public.favorite_tournament_candidate_stats where tournament_id = $1 order by resource_id", [ft])).rows;
     assert.deepEqual(sbStats, h.db.rows("SELECT resource_id, match_wins, current_rank FROM favorite_tournament_candidate_stats WHERE tournament_id = ?1 ORDER BY resource_id", ft));
     assert.deepEqual(await one("select raw, win from public.runs where id = $1", [run.id]), { raw, win: true }, "the raw through the text RPC");
+    assert.deepEqual(await one("select like_count, comment_count from public.chemical_posts where id = $1", [chemical]), { like_count: 1, comment_count: 1 },
+      "a post new to Supabase counts the comment and like reloaded with it");
+    assert.deepEqual(await one("select like_count, comment_count from public.runs where id = $1 and env = 'development'", [run.id]), { like_count: 1, comment_count: 1 },
+      "so does a run new to Supabase");
     assert.equal((await one("select buff_count from public.resource_reaction_counts where resource_id = 'bash' and env = 'development'")).buff_count, 1);
     assert.equal(await count("select count(*)::int as n from public.comment_likes where comment_id = $1", [U(901)]), 0, "the extra comment's like went with it");
     assert.equal(await count("select count(*)::int as n from public.comments where env = 'production'"), 1);
