@@ -1044,7 +1044,10 @@ pnpm flags list --env testbed --remote                                          
 - 7번: 다른 행에 최근 2분 안의 시각이 있으면 그 isolate 메모리에 다시 비교를 둔다(최대 16개). 2분 뒤 같은
   isolate의 다음 api GET이 양쪽을 다시 읽어 센다. 그 전에 isolate가 사라지면 세지 않는다. 줄이 차면 `skipped`.
 - 5번: Supabase에 그 글이 있는지 한 번 더 읽어, 없으면 `compared`로만 센다.
-- 6번: 목록이 1000행이면, 철학자 답글 수나 런 참여 수의 합이 1000 이상이면 `skipped`.
+- 6번: 목록이 1000행이면, 철학자 답글 수나 런 참여 수의 합이 1000 이상이면, 참여 지도(`read.engagement-counts`,
+  RPC 한 행이 키 하나)의 키가 1000개 이상이면 `skipped`.
+- 7번은 시각이 있는 행에만 건다. 좋아요·댓글 수처럼 시각 없는 수의 차이는 바로 센다(레거시 경로 쓰기가 1분 동기화
+  전이면 차이로 보일 수 있다).
 - 피드(T1~T7)는 `queries.sql`의 틀로 서비스, 정렬, 쪽마다 문장을 만든다. 틀 재현과 계획은 시험이 본다.
 - 시험: `pnpm test:d1-sync`의 `scripts/d1-shadow-reads.spec.ts`(PGlite PostgREST와 첫 복사 사본, 모든 읽기 경로).
   백업 확인은 `pnpm exec tsx scripts/d1-shadow-backup-check.ts <백업 폴더> --work <임시 폴더>`(2026-11-05 백업 두
