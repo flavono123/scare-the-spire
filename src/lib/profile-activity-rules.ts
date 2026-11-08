@@ -37,5 +37,4 @@ export function isProfileActivityOffset(value: string): boolean {
 
 /** The inquiry history columns; `reply_seen_at` arrived later, so readers fall back without it. */
 export const CONTACT_INQUIRY_HISTORY_COLUMNS = "id,category,message,env,status,admin_response,reply_seen_at,created_at";
-export const CONTACT_INQUIRY_HISTORY_COLUMNS_LEGACY = "id,category,message,env,status,admin_response,created_at";
 export const CONTACT_INQUIRY_HISTORY_LIMIT = 50;

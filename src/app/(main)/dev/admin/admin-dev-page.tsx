@@ -49,7 +49,6 @@ import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   DEFAULT_PROFILE_NICKNAMES,
   PROFILE_CHARACTER_NICKNAME_POOLS_TABLE,
-  isMissingProfileCharacterNicknamePoolsTable,
   nicknamePoolRowsFromPools,
   parseNicknamePoolRows,
   parseNicknamePoolsFromFormData,
@@ -604,9 +603,7 @@ async function readNicknamePools(): Promise<NicknamePoolState> {
         pools: DEFAULT_PROFILE_NICKNAMES,
         source: "defaults",
         canEdit: true,
-        error: isMissingProfileCharacterNicknamePoolsTable(error)
-          ? "profile_character_nickname_pools 마이그레이션이 필요합니다."
-          : error.message,
+        error: error.message,
       };
     }
     return {

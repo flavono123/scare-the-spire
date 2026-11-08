@@ -74,12 +74,6 @@ function normalizeBody(row: unknown): DefragmentBody | null {
   };
 }
 
-export function isMissingDefragmentBodiesTable(
-  error: { code?: string } | null | undefined,
-): boolean {
-  return error?.code === "PGRST205" || error?.code === "42P01";
-}
-
 export async function fetchDefragmentBody(
   service: DefragmentFederatedService,
   sourceId: string,
@@ -104,10 +98,7 @@ export async function fetchDefragmentBody(
       .eq("source_id", sourceId)
       .maybeSingle(),
   );
-  if (error) {
-    if (isMissingDefragmentBodiesTable(error)) return null;
-    throw error;
-  }
+  if (error) throw error;
   return normalizeBody(data);
 }
 

@@ -39,18 +39,7 @@ interface ContactInquiryHistoryRow {
   created_at: string;
 }
 
-import {
-  CONTACT_INQUIRY_HISTORY_COLUMNS,
-  CONTACT_INQUIRY_HISTORY_COLUMNS_LEGACY,
-} from "@/lib/profile-activity-rules";
-
-export function isMissingContactReplySeenColumn(
-  error: { code?: string; message?: string } | null | undefined,
-): boolean {
-  if (!error) return false;
-  if (error.code === "PGRST204" || error.code === "42703") return true;
-  return /reply_seen_at/i.test(error.message ?? "");
-}
+import { CONTACT_INQUIRY_HISTORY_COLUMNS } from "@/lib/profile-activity-rules";
 
 export interface ContactInquiryInput {
   userId: string;
@@ -129,7 +118,7 @@ export async function submitContactInquiry(input: ContactInquiryInput): Promise<
   throw error;
 }
 
-function historyItem(row: ContactInquiryHistoryRow, withSeenColumn: boolean): ContactInquiryHistoryItem {
+function historyItem(row: ContactInquiryHistoryRow): ContactInquiryHistoryItem {
   return {
     id: row.id,
     category: row.category,
@@ -137,7 +126,7 @@ function historyItem(row: ContactInquiryHistoryRow, withSeenColumn: boolean): Co
     env: row.env,
     status: row.status,
     adminResponse: row.admin_response,
-    replySeenAt: withSeenColumn && "reply_seen_at" in row ? row.reply_seen_at ?? null : undefined,
+    replySeenAt: "reply_seen_at" in row ? row.reply_seen_at ?? null : undefined,
     createdAt: row.created_at,
   };
 }
@@ -148,18 +137,18 @@ export async function listOwnContactInquiries(): Promise<ContactInquiryHistoryIt
   // docs/supabase-exit/STEP1_DESIGN.md 9.4: this env's inquiries only.
   if (surfacePath("profile") === "api") {
     try {
-      const body = await apiFetchAsUser<{ v?: number; rows?: ContactInquiryHistoryRow[]; replySeenColumn?: boolean }>(
+      const body = await apiFetchAsUser<{ v?: number; rows?: ContactInquiryHistoryRow[] }>(
         "profile",
         "/api/me/profile/inquiries",
       );
       requireApiVersion("profile", body);
-      return (body.rows ?? []).map((row) => historyItem(row, body.replySeenColumn !== false));
+      return (body.rows ?? []).map(historyItem);
     } catch (error) {
       if (!shouldUseLegacy(error)) throw error;
     }
   }
 
-  const first = await withSupabaseTimeout(
+  const result = await withSupabaseTimeout(
     "contact_inquiries.select",
     supabase
       .from("contact_inquiries")
@@ -168,19 +157,9 @@ export async function listOwnContactInquiries(): Promise<ContactInquiryHistoryIt
       // ponytail: cap the first version at 50; add pagination if real users outgrow it.
       .limit(50),
   );
-  const result = first.error && isMissingContactReplySeenColumn(first.error)
-    ? await withSupabaseTimeout(
-      "contact_inquiries.select",
-      supabase
-        .from("contact_inquiries")
-        .select(CONTACT_INQUIRY_HISTORY_COLUMNS_LEGACY)
-        .order("created_at", { ascending: false })
-        .limit(50),
-    )
-    : first;
 
   if (result.error) throw result.error;
-  return ((result.data ?? []) as ContactInquiryHistoryRow[]).map((row) => historyItem(row, true));
+  return ((result.data ?? []) as ContactInquiryHistoryRow[]).map(historyItem);
 }
 
 export async function hasUnseenContactReply(): Promise<boolean | null> {
@@ -208,10 +187,7 @@ export async function hasUnseenContactReply(): Promise<boolean | null> {
         .is("reply_seen_at", null)
         .limit(1),
     );
-    if (error) {
-      if (isMissingContactReplySeenColumn(error)) return false;
-      return null;
-    }
+    if (error) return null;
     return (data?.length ?? 0) > 0;
   } catch {
     return null;
@@ -243,7 +219,5 @@ export async function markOwnContactRepliesSeen(): Promise<void> {
       .not("admin_response", "is", null)
       .is("reply_seen_at", null),
   );
-  if (error && !isMissingContactReplySeenColumn(error)) {
-    console.warn("Failed to mark contact replies seen", error.message);
-  }
+  if (error) console.warn("Failed to mark contact replies seen", error.message);
 }

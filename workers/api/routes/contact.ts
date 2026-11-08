@@ -10,11 +10,6 @@ import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
  * table's trigger keeps its own rate limit (3 an hour) and the user check.
  */
 
-/** The reply_seen_at column was added later; until it exists there is nothing unseen. */
-function missingSeenColumn(code: string): boolean {
-  return code === "PGRST204" || code === "42703";
-}
-
 async function handleMailbox(context: UserRouteContext): Promise<Response> {
   const { config, token } = context;
   if (!context.allowUpstream) return jsonResponse({ v: 1, env: config.dataEnv });
@@ -31,10 +26,7 @@ async function handleMailbox(context: UserRouteContext): Promise<Response> {
       limit: "1",
     }),
   });
-  if (!result.ok) {
-    if (missingSeenColumn(result.code)) return jsonResponse({ v: 1, env: config.dataEnv, unseen: false });
-    return apiError(restErrorCode(result));
-  }
+  if (!result.ok) return apiError(restErrorCode(result));
   return jsonResponse({ v: 1, env: config.dataEnv, unseen: (result.data ?? []).length > 0 });
 }
 

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import {
   PROFILE_CHARACTER_NICKNAME_POOLS_TABLE,
-  isMissingProfileCharacterNicknamePoolsTable,
   parseNicknamePoolRows,
   type ProfileNicknamePools,
 } from "@/lib/profile-character-nicknames";
@@ -35,9 +34,7 @@ export async function fetchProfileCharacterNicknamePools(): Promise<ProfileNickn
         .select("character_id, locale, nicknames"),
     );
     if (error) {
-      if (!isMissingProfileCharacterNicknamePoolsTable(error)) {
-        console.warn("Failed to load profile character nicknames", error.message);
-      }
+      console.warn("Failed to load profile character nicknames", error.message);
       return null;
     }
     return parseNicknamePoolRows(data);

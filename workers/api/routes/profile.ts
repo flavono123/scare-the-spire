@@ -1,6 +1,5 @@
 import {
   CONTACT_INQUIRY_HISTORY_COLUMNS,
-  CONTACT_INQUIRY_HISTORY_COLUMNS_LEGACY,
   CONTACT_INQUIRY_HISTORY_LIMIT,
   isProfileActivityFilter,
   isProfileActivityOffset,
@@ -18,10 +17,6 @@ import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
  * and marking replies seen. Everything but the nickname pools needs a session.
  */
 
-/** Errors meaning a table or column is not deployed yet (as the legacy readers treat them). */
-const MISSING_TABLE = new Set(["PGRST205", "42P01"]);
-const MISSING_COLUMN = new Set(["PGRST204", "42703"]);
-
 async function handleNicknames(context: PublicRouteContext): Promise<Response> {
   const { config } = context;
   if (!context.allowUpstream) return jsonResponse({ v: 1, env: config.dataEnv });
@@ -31,10 +26,7 @@ async function handleNicknames(context: PublicRouteContext): Promise<Response> {
     deadline: Date.now() + HANDLER_BUDGET_MS,
     query: new URLSearchParams({ select: "character_id,locale,nicknames" }),
   });
-  if (!result.ok) {
-    if (MISSING_TABLE.has(result.code)) return jsonResponse({ v: 1, env: config.dataEnv, rows: null });
-    return apiError(restErrorCode(result));
-  }
+  if (!result.ok) return apiError(restErrorCode(result));
   return jsonResponse({ v: 1, env: config.dataEnv, rows: result.data ?? [] });
 }
 
@@ -94,14 +86,9 @@ async function handleInquiries(context: UserRouteContext): Promise<Response> {
       limit: String(CONTACT_INQUIRY_HISTORY_LIMIT),
     }),
   });
-  let result = await read(CONTACT_INQUIRY_HISTORY_COLUMNS);
-  let replySeenColumn = true;
-  if (!result.ok && MISSING_COLUMN.has(result.code)) {
-    replySeenColumn = false;
-    result = await read(CONTACT_INQUIRY_HISTORY_COLUMNS_LEGACY);
-  }
+  const result = await read(CONTACT_INQUIRY_HISTORY_COLUMNS);
   if (!result.ok) return apiError(restErrorCode(result));
-  return jsonResponse({ v: 1, env: config.dataEnv, rows: result.data ?? [], replySeenColumn });
+  return jsonResponse({ v: 1, env: config.dataEnv, rows: result.data ?? [] });
 }
 
 async function handleInquiriesSeen(context: UserRouteContext): Promise<Response> {
@@ -120,7 +107,7 @@ async function handleInquiriesSeen(context: UserRouteContext): Promise<Response>
     body: { reply_seen_at: new Date(context.now).toISOString() },
     prefer: ["return=minimal"],
   });
-  if (!result.ok && !MISSING_COLUMN.has(result.code)) return apiError(restErrorCode(result));
+  if (!result.ok) return apiError(restErrorCode(result));
   return jsonResponse({});
 }
 

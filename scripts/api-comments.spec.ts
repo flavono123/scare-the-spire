@@ -65,8 +65,6 @@ class FakeRest {
   /** Toybox tables by name (posts, drafts, bodies, this or that likes and votes, tournament stats). */
   toybox: Record<string, Row[]> = {};
   nicknamePools: Row[] = [{ character_id: "ironclad", locale: "ko", nicknames: ["철갑"] }];
-  missingTables = new Set<string>();
-  noSeenColumn = false;
   rpcBodies: Record<string, unknown>[] = [];
   calls: { method: string; url: URL; auth: string | null; body: unknown }[] = [];
   failTables = new Set<string>();
@@ -177,10 +175,6 @@ class FakeRest {
     const params = url.searchParams;
     const user = this.userOf(auth);
 
-    if (this.missingTables.has(name)) return Response.json({ code: "PGRST205" }, { status: 404 });
-    if (name === "contact_inquiries" && this.noSeenColumn && (params.get("select")?.includes("reply_seen_at") || params.has("reply_seen_at"))) {
-      return Response.json({ code: "42703" }, { status: 400 });
-    }
     if (name.startsWith("rpc/") && name.includes("puzzlebox")) {
       const args = body as Row;
       this.rpcBodies.push({ name, auth: Boolean(user), ...args });
@@ -760,9 +754,6 @@ async function main() {
   // --- Profile (STEP1_DESIGN 9.4) ----------------------------------------------------------
   const asUser = (path: string, init: RequestInit = {}) => call(path, { ...init, headers: { authorization: `Bearer ${token}`, ...(init.headers ?? {}) } });
   assert.deepEqual((await json(await call("/api/read/profile/nicknames"))).body.rows, rest.nicknamePools);
-  rest.missingTables.add("profile_character_nickname_pools");
-  assert.equal((await json(await call("/api/read/profile/nicknames"))).body.rows, null, "a missing pools table reads as no pools");
-  rest.missingTables.clear();
 
   assert.equal((await call("/api/me/profile/stats")).status, 401);
   const stats = await json(await asUser("/api/me/profile/stats"));
@@ -782,13 +773,6 @@ async function main() {
   ];
   const inquiries = await json(await asUser("/api/me/profile/inquiries"));
   assert.deepEqual((inquiries.body.rows as Row[]).map((row) => row.id), ["i1"], "own rows of this env only");
-  assert.equal(inquiries.body.replySeenColumn, true);
-  rest.noSeenColumn = true;
-  const older = await json(await asUser("/api/me/profile/inquiries"));
-  assert.equal(older.body.replySeenColumn, false);
-  assert.ok(!("reply_seen_at" in (older.body.rows as Row[])[0]), "the fallback read skips the column");
-  assert.equal((await asUser("/api/write/profile/inquiries-seen", { method: "POST", headers: { "sec-fetch-site": "same-origin" } })).status, 200, "no column: nothing to mark");
-  rest.noSeenColumn = false;
   assert.equal((await asUser("/api/write/profile/inquiries-seen", { method: "POST", headers: { "sec-fetch-site": "same-origin" } })).status, 200);
   assert.ok(rest.contactInquiries[0].reply_seen_at, "this env's answered inquiry is marked seen");
   assert.equal(rest.contactInquiries[1].reply_seen_at, null, "another env's stays unseen");
