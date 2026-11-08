@@ -58,6 +58,7 @@
     "test:api": "tsx scripts/api-jwt.spec.ts && tsx scripts/api-supabase-rest.spec.ts && tsx scripts/api-worker.spec.ts && tsx scripts/api-comments.spec.ts && tsx scripts/api-client.spec.ts && tsx scripts/api-identity.spec.ts && tsx scripts/api-identity-client.spec.ts && tsx scripts/api-identity-patch-client.spec.ts && pnpm run test:write-gate && tsx scripts/api-write-retry.spec.ts",
     "test:d1-sync": "tsx scripts/d1-change-log.spec.ts && tsx scripts/d1-row-mapper.spec.ts && tsx scripts/d1-run-summary.spec.ts && tsx scripts/d1-run-summary-backup-check.ts && tsx scripts/d1-first-copy.spec.ts && tsx scripts/d1-first-copy-backup-check.ts && tsx scripts/d1-reconcile.spec.ts && tsx scripts/d1-sync-cron.spec.ts && tsx scripts/d1-read-after-write.spec.ts && tsx scripts/d1-sync-pglite.spec.ts && tsx scripts/d1-shadow-reads.spec.ts && tsx scripts/d1-shadow-backup-check.ts && tsx scripts/d1-read-store.spec.ts && tsx scripts/d1-write.spec.ts && tsx scripts/d1-mirror.spec.ts && tsx scripts/d1-step5-supabase.spec.ts && tsx scripts/d1-cutover.spec.ts && tsx scripts/d1-reload-supabase.spec.ts",
     "d1:reconcile": "tsx scripts/d1-reconcile.ts",
+    "d1:exercise": "tsx scripts/d1-exercise-writes.ts",
     "test:write-gate": "tsx scripts/write-gate.spec.ts && tsx scripts/write-gate-equivalence.spec.ts && tsx scripts/direct-writes-policies.spec.ts",
     "flags": "tsx scripts/runtime-flags.ts",
     "sync:state": "tsx scripts/d1-sync-state.ts",
