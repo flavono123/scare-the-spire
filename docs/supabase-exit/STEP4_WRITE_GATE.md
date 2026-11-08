@@ -86,23 +86,23 @@ history-runs, puzzlebox, contact, profile(문의 읽음). nav와 colorful-philos
 
 ### 4.1 경로
 
-1. 라우터(`workers/api/router.ts`)는 `access: "write"` 경로에서 `workerWriteService`로 그 그룹의 쓰기 방식을 본다.
-   `worker`이고 `API_SUPABASE_SERVICE_KEY`(`sb_secret_…`)가 있으면 worker 방식, 아니면 지금 코드 그대로다.
-2. worker 방식이면 신원 해석기(4.2절)가 uid를 정한다. 속도 제한과 본문 읽기는 지금과 같다.
-3. 핸들러에 넘기는 `config`에 게이트를 단다(`withWriteGate`). `postgrest`·`postgrestStream`은 `token`이 있는 호출만
-   게이트로 보낸다(`supabase-rest.ts`에 두 줄). 공개 읽기(좋아요 수, 반응 합계)는 지금처럼 publishable 키로 간다.
+1. 라우터(`workers/api/router.ts`)는 지금처럼 신원(오늘은 사용자 토큰의 ES256 검증), 속도 제한, 본문 읽기를 한다.
+2. 그다음 `access: "write"` 경로에서 `workerWriteContext`가 그 그룹의 쓰기 방식을 본다. `worker`이고
+   `API_SUPABASE_SERVICE_KEY`(`sb_secret_…`)가 있으면 worker 방식, 아니면 `null`이라 핸들러는 지금 코드 그대로다.
+3. worker 방식이면 핸들러에 넘기는 `config`에 게이트를 달고(`withWriteGate`), `token`을 자리표시 `worker-actor`로
+   바꾼다. `postgrest`·`postgrestStream`은 `token`이 있는 호출만 게이트로 보낸다(`supabase-rest.ts`에 두 줄). 공개
+   읽기(좋아요 수, 반응 합계)는 지금처럼 publishable 키로 간다.
 4. 게이트는 흘려보내던 업로드 본문(글, 임시 저장, 덧글 본문, 런)을 읽어 파싱하고(24 MiB 상한), `decideWrite`로 판단한
    뒤 service 키로 보낸다. 사용자 토큰은 보내지 않는다. 조회(소유 확인, 원글 확인, 문의 수)도 service 키다.
 5. `me` 경로(개인 읽기)는 이 단계에서 바꾸지 않는다. 계속 사용자 토큰이다.
 
 ### 4.2 신원
 
-`workers/api/write-identity.ts`의 `WriteIdentityResolver` 목록을 차례로 묻고 처음 답한 것을 쓴다. 기본값은
-`bearerWriteIdentity` 하나다(지금 rls 경로와 같은 ES256 검증). 쿠키 신원은
-`createApiRouter(API_ROUTES, { writeIdentity: [cookieResolver, bearerWriteIdentity] })`로 앞에 꽂는다. 해석기는
-`{ ok: true, user: { userId, isAnonymous, expiresAt }, token, source }`, `{ ok: false, code }`, 또는 이 요청에 신원이
-없으면 `null`을 돌려준다. 토큰 없는 신원이면 핸들러의 `token`은 자리표시 `worker-actor`다. 게이트가 가로채므로
-밖으로 나가지 않는다. rls 방식에서는 쿠키가 신원이 아니다(RLS가 사용자 토큰을 원한다).
+게이트는 신원을 따로 풀지 않는다. 라우터가 푼 신원의 uid를 `writeActor(user)`(`write-gate/gate.ts`) 한 곳에서
+받아 소유 열과 `p_actor`로 쓴다. 오늘은 rls 경로와 같은 토큰 검증의 `sub`다. 서명 쿠키 신원(plan 5.3, 다른 작업의
+`resolveRequestIdentity`, `context.user`)을 합칠 때는 라우터의 `check.user` 자리만 그 신원으로 바꾸면 된다. 쿠키
+신원에 토큰이 없어도 worker 방식의 핸들러는 자리표시 `worker-actor`를 받으므로 게이트가 가로챈다. 자리표시와 사용자
+토큰은 밖으로 나가지 않는다(spec이 본다).
 
 ### 4.3 플래그
 
@@ -143,7 +143,8 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
   `SUPABASE_PUBLIC_SCHEMA=<덤프>`를 주면 같은 사례를 덤프의 실제 정책·트리거·함수·권한 위에서 돌린다. 2026-11-05
   백업 사본으로 돌려 통과했다(백업은 커밋하지 않는다).
 - `scripts/write-gate.spec.ts`: 플래그 읽기·캐시·기본값·실패, 라우터 연결(rls는 토큰, worker는 secret 키와 소유 필터,
-  키가 없으면 rls), 쿠키 해석기 꽂기, `me` 경로는 토큰 그대로, 모르는 요청은 보내지 않음.
+  키가 없으면 rls), 소유자는 라우터가 푼 신원의 uid, 사용자 토큰과 자리표시는 나가지 않음, 신원 없으면 401,
+  `me` 경로는 토큰 그대로, 모르는 요청은 보내지 않음.
 - `scripts/direct-writes-policies.spec.ts`: 7절의 두 스크립트(아래).
 - 게이트를 일부러 망가뜨린 6가지(삭제 소유 필터, insert 보호 열, 문의 제한, upsert 기존 행, update 보호 열, 투표 env)
   모두 동등성 spec이 잡았다(로컬 확인, 커밋하지 않은 일회성 확인).

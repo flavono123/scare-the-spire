@@ -1,6 +1,7 @@
 /**
  * Step 4 write gate wiring (docs/supabase-exit/STEP4_WRITE_GATE.md 4): the write.<group> flags, the
- * router hook, the identity resolvers and the service-key requests, against an in-memory Supabase.
+ * router hook, the uid the gate takes from the router's identity and the service-key requests, against
+ * an in-memory Supabase.
  * What Supabase decides is covered by write-gate-equivalence.spec.ts on PGlite.
  * Usage: tsx scripts/write-gate.spec.ts
  */
@@ -16,15 +17,14 @@ import { commentsRoutes } from "../workers/api/routes/comments";
 import { contactRoutes } from "../workers/api/routes/contact";
 import { toyboxRoutes } from "../workers/api/routes/toybox";
 import { decideWrite, ownerState, type GateLookups } from "../workers/api/write-gate/decide";
-import { supabaseServiceConfig, WORKER_ACTOR_TOKEN } from "../workers/api/write-gate/gate";
+import { supabaseServiceConfig, WORKER_ACTOR_TOKEN, writeActor } from "../workers/api/write-gate/gate";
 import { parseWriteFlagRows, resetWriteFlagsForTest, WRITE_FLAGS_SQL, writeModeFor } from "../workers/api/write-flags";
-import { bearerWriteIdentity, type WriteIdentityResolver } from "../workers/api/write-identity";
 
 const ORIGIN = "https://testbed.example.workers.dev";
 const PROJECT = "http://127.0.0.1:54399";
 const ISSUER = `${PROJECT}/auth/v1`;
 const USER = "4f1c2a7e-9b3d-4c5e-8f60-1a2b3c4d5e6f";
-const COOKIE_USER = "9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d";
+const OTHER_USER = "9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d";
 const COMMENT = "c1000000-0000-4000-8000-000000000001";
 
 function base64Url(bytes: Uint8Array): string {
@@ -155,7 +155,7 @@ function decisionChecks() {
   assert.equal(ownerState(USER, USER), "match");
   assert.equal(ownerState(USER.toUpperCase(), USER), "match");
   assert.equal(ownerState(`{${USER.replace(/-/g, "")}}`, USER), "match", "Postgres uuid input forms");
-  assert.equal(ownerState(COOKIE_USER, USER), "other");
+  assert.equal(ownerState(OTHER_USER, USER), "other");
   assert.equal(ownerState(null, USER), "other", "NULL never equals auth.uid()");
   assert.equal(ownerState(undefined, USER), "other");
   assert.equal(ownerState("nope", USER), "invalid");
@@ -195,18 +195,12 @@ async function routerChecks() {
   const db = new FlagsD1();
   const env = { API_RUNTIME_FLAGS: "d1", API_SUPABASE_URL: PROJECT, API_SUPABASE_KEY: "sb_publishable_test", API_DATA_ENV: "development", DB: db };
   const routes = [...commentsRoutes, ...contactRoutes, ...toyboxRoutes];
-  const cookieResolver: WriteIdentityResolver = async (request) => {
-    const cookie = request.headers.get("cookie") ?? "";
-    if (cookie.includes("sid=bad")) return { ok: false, code: "token_invalid" };
-    if (!cookie.includes("sid=good")) return null;
-    return { ok: true, user: { userId: COOKIE_USER, isAnonymous: true, expiresAt: 0 }, token: null, source: "cookie" };
-  };
-  const router = createApiRouter(routes, { writeIdentity: [cookieResolver, bearerWriteIdentity] });
+  const router = createApiRouter(routes);
   const token = await signer.token();
-  const send = (path: string, init: { method: string; body?: unknown; bearer?: boolean; cookie?: string }, environment: Record<string, unknown> = env) => {
+  const otherToken = await signer.token(OTHER_USER);
+  const send = (path: string, init: { method: string; body?: unknown; bearer?: string | false }, environment: Record<string, unknown> = env) => {
     const headers: Record<string, string> = { "sec-fetch-site": "same-origin" };
-    if (init.bearer !== false) headers.authorization = `Bearer ${token}`;
-    if (init.cookie) headers.cookie = init.cookie;
+    if (init.bearer !== false) headers.authorization = `Bearer ${init.bearer ?? token}`;
     if (init.body !== undefined) headers["content-type"] = "application/json";
     return router.handle(new Request(`${ORIGIN}${path}`, { method: init.method, headers, body: init.body === undefined ? undefined : JSON.stringify(init.body) }), environment as never, ctx);
   };
@@ -249,16 +243,20 @@ async function routerChecks() {
   assert.equal(head?.apikey, "sb_publishable_test");
   assert.equal(head?.authorization, null);
 
-  // A cookie identity: no bearer needed, the cookie's uid owns the row, the placeholder token never leaves.
+  // The owner is always the identity the router resolved (writeActor), whoever's token it is.
+  assert.equal(writeActor({ userId: OTHER_USER }), OTHER_USER);
   supabase.calls = [];
-  assert.equal((await send("/api/write/comments", { method: "POST", body: comment, bearer: false, cookie: "sid=good" }, workerEnv)).status, 201);
+  assert.equal((await send("/api/write/comments", { method: "POST", body: comment, bearer: otherToken }, workerEnv)).status, 201);
   [write] = supabase.writes();
-  assert.equal((write.body as { user_id: string }).user_id, COOKIE_USER);
-  assert.ok(supabase.calls.every((call) => !String(call.authorization).includes(WORKER_ACTOR_TOKEN)));
-  assert.equal((await send("/api/write/comments", { method: "POST", body: comment, bearer: false, cookie: "sid=bad" }, workerEnv)).status, 401);
+  assert.equal((write.body as { user_id: string }).user_id, OTHER_USER);
+  // Neither the user's token nor the placeholder handlers get in worker mode ever leaves the Worker.
+  assert.ok(supabase.calls.every((call) => call.authorization === null), "worker mode sends no Authorization at all");
+  assert.ok(supabase.calls.every((call) => !JSON.stringify(call).includes(WORKER_ACTOR_TOKEN)));
+  // Worker mode still needs an identity: no token or a bad one is refused before anything is sent.
+  supabase.calls = [];
   assert.equal((await send("/api/write/comments", { method: "POST", body: comment, bearer: false }, workerEnv)).status, 401, "no identity at all");
-  // In rls mode the cookie is not an identity: RLS needs the user's token.
-  assert.equal((await send("/api/write/contact-inquiries", { method: "POST", body: {}, bearer: false, cookie: "sid=good" }, workerEnv)).status, 401);
+  assert.equal((await send("/api/write/comments", { method: "POST", body: comment, bearer: "not.a.token" }, workerEnv)).status, 401, "a bad token");
+  assert.equal(supabase.calls.length, 0);
 
   // Personal reads are not writes: they keep the user's token in worker mode.
   supabase.calls = [];

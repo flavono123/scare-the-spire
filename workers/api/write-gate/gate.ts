@@ -27,11 +27,22 @@ export type WriteGateEnv = WriteFlagsEnv & {
 };
 
 /**
- * The `token` handlers get in worker mode when the identity came without a
- * bearer token (the cookie identity). The gate intercepts by it and never sends
- * it; if it ever reached Supabase, Supabase would refuse it.
+ * The `token` handlers get in worker mode, in place of the user's token. The
+ * gate intercepts calls by it and never sends it, so the user's token never
+ * leaves the Worker in worker mode; if it ever reached Supabase, Supabase
+ * would refuse it.
  */
 export const WORKER_ACTOR_TOKEN = "worker-actor";
+
+/**
+ * The uid that owns a worker-mode write: the identity the router resolved for
+ * the request. Today that is the verified Supabase access token (the rls path's
+ * check); with the signed-cookie identity (plan 5.3) it is whatever the
+ * router's identity resolution returns, so this is the one place to point at it.
+ */
+export function writeActor(user: { userId: string }): string {
+  return user.userId;
+}
 
 /** Largest JSON body the gate reads from a passed-through upload (run batches are the biggest). */
 export const GATE_BODY_MAX_BYTES = 24 * 1024 * 1024;
@@ -180,4 +191,21 @@ export function createWriteGate(options: WriteGateOptions): WriteGateHook {
 /** The handler config for a worker-mode write: the same project, with the gate in front of user calls. */
 export function withWriteGate(config: SupabaseApiConfig, gate: WriteGateHook): SupabaseApiConfig {
   return { ...config, writeGate: gate };
+}
+
+/**
+ * The router's hook for /api/write routes: in worker mode, the handler's config
+ * (gate in front) and token (the placeholder) for writes owned by `actor`; null
+ * on the rls path, where the handler gets today's config and the user's token.
+ */
+export async function workerWriteContext(
+  env: WriteGateEnv,
+  ctx: ExecutionContextLike,
+  group: ApiSurfaceGroup,
+  config: SupabaseApiConfig,
+  actor: string,
+): Promise<{ config: SupabaseApiConfig; token: string } | null> {
+  const service = await workerWriteService(env, ctx, group, config);
+  if (!service) return null;
+  return { config: withWriteGate(config, createWriteGate({ actor, service })), token: WORKER_ACTOR_TOKEN };
 }

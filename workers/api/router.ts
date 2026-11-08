@@ -14,8 +14,7 @@ import {
 import { bearerToken, checkSupabaseAccessToken, fetchSupabaseJwks, type VerifiedSupabaseUser } from "./jwt";
 import { clientIp, withinRateLimit, type RateLimitEnv, type RateLimitKind } from "./rate-limit";
 import { supabaseApiConfig, supabaseIssuer, type SupabaseApiConfig } from "./supabase-rest";
-import { createWriteGate, withWriteGate, workerWriteService, WORKER_ACTOR_TOKEN, type WriteGateEnv } from "./write-gate/gate";
-import { DEFAULT_WRITE_IDENTITY, resolveWriteIdentity, type WriteIdentityResolver } from "./write-identity";
+import { workerWriteContext, writeActor, type WriteGateEnv } from "./write-gate/gate";
 
 /**
  * The same-origin API router (docs/supabase-exit/STEP1_DESIGN.md 4). It owns
@@ -25,11 +24,6 @@ import { DEFAULT_WRITE_IDENTITY, resolveWriteIdentity, type WriteIdentityResolve
  */
 
 export type ApiEnv = FlagsEnv & RateLimitEnv & WriteGateEnv;
-
-export type ApiRouterOptions = {
-  /** Step 4: who is writing in worker write mode, first answer wins (write-identity.ts). */
-  writeIdentity?: readonly WriteIdentityResolver[];
-};
 
 type BaseContext = {
   request: Request;
@@ -177,9 +171,8 @@ const TOKEN_ERRORS: Record<"expired" | "invalid" | "unavailable", ApiErrorCode> 
   unavailable: "auth_unavailable",
 };
 
-export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterOptions = {}) {
+export function createApiRouter(routes: readonly ApiRoute[]) {
   const routedGroups: ReadonlySet<ApiSurfaceGroup> = new Set(routes.map((route) => route.group));
-  const writeIdentity = options.writeIdentity ?? DEFAULT_WRITE_IDENTITY;
 
   async function dispatch(request: Request, env: ApiEnv, ctx: ExecutionContextLike, url: URL): Promise<{ response: Response; label: string; code: string }> {
     const forPath = routes.filter((route) => route.path === url.pathname);
@@ -245,28 +238,15 @@ export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterO
       }
       response = await route.handle(base);
     } else {
-      // Step 4: write.<group> = worker checks the write in the Worker and sends it with the service key.
-      const service = route.access === "write" ? await workerWriteService(env, ctx, route.group, config) : null;
-      let check: { user: VerifiedSupabaseUser };
-      let token: string;
-      if (service) {
-        const identity = await resolveWriteIdentity(writeIdentity, request, { config, ctx });
-        if (!identity.ok) return error(identity.code);
-        check = identity;
-        token = identity.token ?? WORKER_ACTOR_TOKEN;
-      } else {
-        const bearer = bearerToken(request);
-        if (!bearer) return error("token_invalid");
-        const issuer = supabaseIssuer(config);
-        const checked = await checkSupabaseAccessToken(bearer, {
-          issuer,
-          fetchJwks: () => fetchSupabaseJwks(issuer),
-          waitUntil: (promise) => ctx.waitUntil(promise),
-        });
-        if (!checked.ok) return error(TOKEN_ERRORS[checked.reason]);
-        check = checked;
-        token = bearer;
-      }
+      const token = bearerToken(request);
+      if (!token) return error("token_invalid");
+      const issuer = supabaseIssuer(config);
+      const check = await checkSupabaseAccessToken(token, {
+        issuer,
+        fetchJwks: () => fetchSupabaseJwks(issuer),
+        waitUntil: (promise) => ctx.waitUntil(promise),
+      });
+      if (!check.ok) return error(TOKEN_ERRORS[check.reason]);
       const allowed = route.rateLimit === "none"
         || (route.rateLimit === "ip"
           ? await withinRateLimit(env, "ip", clientIp(request))
@@ -288,8 +268,10 @@ export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterO
         if (Number(length) > route.rawBody.maxBytes) return error("too_large");
         bodyStream = request.body;
       }
-      const handlerConfig = service ? withWriteGate(config, createWriteGate({ actor: check.user.userId, service })) : config;
-      response = await route.handle({ ...base, config: handlerConfig, user: check.user, token, body, bodyStream });
+      // Step 4: write.<group> = worker checks the write in the Worker and sends it with the service key,
+      // owned by the identity resolved above (write-gate/gate.ts writeActor).
+      const gated = route.access === "write" ? await workerWriteContext(env, ctx, route.group, config, writeActor(check.user)) : null;
+      response = await route.handle({ ...base, user: check.user, token, body, bodyStream, ...gated });
     }
     return { response: isHead ? withoutBody(response) : response, label, code: "handler" };
   }
