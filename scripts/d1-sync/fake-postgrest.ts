@@ -145,7 +145,8 @@ export class FakePostgrest {
   clock = Date.parse("2026-11-08T03:00:00.000Z");
   /** Answers a call instead of the store (fault injection). */
   intercept: ((call: Call) => Response | null) | null = null;
-  textPlain = true;
+  /** Supabase's PostgREST answers Accept: text/plain on a table with 406 PGRST107 (testbed 2026-11-09). */
+  textPlain = false;
   private nextId = 1;
 
   table(name: string): Row[] {

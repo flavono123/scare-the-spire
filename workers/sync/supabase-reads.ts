@@ -211,8 +211,12 @@ async function readTextCapped(response: Response, maxBytes: number): Promise<{ t
 }
 
 /**
- * One run's raw file as text (design 5.3 item 9): one column, Accept: text/plain, the body bound
- * as it arrives (no JSON.parse). An empty body means no such run in this env.
+ * One run's raw file as text (design 5.3 item 9): one column as a JSON array. Supabase's PostgREST
+ * answers `Accept: text/plain` with 406 PGRST107 (no text/plain handler for a table column, seen on
+ * testbed 2026-11-09), so the body is `[{"raw":"..."}]` and JSON.parse unescapes the string; `raw`
+ * is a text column, so the result is byte for byte the stored file. The read is capped at twice the
+ * byte budget (JSON escaping of a raw file adds about a tenth; every byte escaped is the worst case)
+ * and the decoded file at the budget itself. An empty array means no such run in this env.
  */
 export async function fetchRunRaw(
   config: SupabaseApiConfig,
@@ -223,17 +227,29 @@ export async function fetchRunRaw(
   const result = await postgrestStream(config, {
     path: "runs",
     query: new URLSearchParams({ select: "raw", id: `eq.${id}`, env: `eq.${config.dataEnv}` }),
-    accept: "text/plain",
     ...options,
   });
   if (!result.ok) return { ok: false, code: result.code, status: result.status };
+  let read: { text: string; bytes: number } | null;
   try {
-    const read = await readTextCapped(result.response, maxBytes);
-    if (!read) return { ok: false, code: "too_large", status: result.status };
-    return { ok: true, ...read };
+    read = await readTextCapped(result.response, maxBytes * 2 + 64);
   } catch {
     return { ok: false, code: "network", status: result.status };
   }
+  if (!read) return { ok: false, code: "too_large", status: result.status };
+  let rows: unknown;
+  try {
+    rows = JSON.parse(read.text);
+  } catch {
+    return { ok: false, code: "bad_json", status: result.status };
+  }
+  if (!Array.isArray(rows)) return { ok: false, code: "bad_json", status: result.status };
+  if (rows.length === 0) return { ok: true, text: "", bytes: 0 };
+  const raw = (rows[0] as { raw?: unknown } | null)?.raw;
+  if (typeof raw !== "string") return { ok: false, code: "bad_json", status: result.status };
+  const bytes = new TextEncoder().encode(raw).byteLength;
+  if (bytes > maxBytes) return { ok: false, code: "too_large", status: result.status };
+  return { ok: true, text: raw, bytes };
 }
 
 /**
