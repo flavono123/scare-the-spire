@@ -8,6 +8,7 @@ import { apiError, jsonResponse } from "../http";
 import type { ApiRoute, PublicRouteContext, UserRouteContext } from "../router";
 import { postgrest, type SupabaseApiConfig } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
+import { readAfterWrite } from "../../sync/read-after-write";
 
 /**
  * The puzzlebox group (docs/supabase-exit/STEP1_DESIGN.md 9.5): the rankings,
@@ -93,6 +94,17 @@ async function handleSubmit(context: UserRouteContext): Promise<Response> {
     if (result.code === "22023") return apiError("invalid");
     return apiError(restErrorCode(result));
   }
+  // The RPC wrote the player, the run (its attempt number is in the answer) and the best row; the
+  // board statistics are counters the sync copies.
+  const attempt = (result.data as { attempt?: unknown } | null)?.attempt;
+  const user = context.user.userId;
+  await readAfterWrite(context, "write.puzzlebox.runs", () => [
+    { op: "reread", table: "puzzlebox_players", match: { user_id: user }, then: "upsert", exclude: ["hidden"] },
+    ...(typeof attempt === "number"
+      ? [{ op: "reread" as const, table: "puzzlebox_runs", match: { user_id: user, game, board, attempt }, order: "id.desc", then: "insert" as const }]
+      : []),
+    { op: "reread", table: "puzzlebox_best", match: { game, board, user_id: user }, then: "upsert" },
+  ]);
   return jsonResponse({ v: 1, env: config.dataEnv, result: result.data ?? null });
 }
 

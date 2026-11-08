@@ -895,6 +895,44 @@ HEAD count, `comment_likes(count)`)과 같다.
   적용에는 `PRAGMA defer_foreign_keys`를 쓰지 않는다. 미뤄도 커밋 때 같은 FK로 실패하고, 부모 없는 행을 넣는
   길이 되어서는 안 된다.
 
+**구현과 켜는 순서**(2026-11-08, `workers/sync/`). 코드는 `run-sync.ts`(cron), `read-after-write.ts`(쓰기 경로 29개가
+부르는 도우미), `supabase-reads.ts`, `sync-sql.ts`. 시험은 `pnpm test:d1-sync`의 `d1-sync-cron`, `d1-read-after-write`,
+`d1-sync-pglite`(실제 변경 로그 트리거 → 동기화 = 마지막 상태의 첫 복사).
+
+- 스위치 둘: Worker 변수 `API_RUNTIME_FLAGS=d1`, D1 `runtime_flags`의 `sync.enabled = on`. 하나라도 아니면 cron은
+  아무것도 하지 않는다(운영은 `off`라 D1도 읽지 않는다). 자기 쓰기 읽기도 같은 플래그를 본다(isolate가 30초 기억).
+- 비밀 하나: `API_SUPABASE_SECRET_KEY`(`sb_secret_…`). 변경 로그 읽기, 다시 읽기, 원문, 7일 지우기에만 쓴다.
+- cron: `wrangler.jsonc` 기본·testbed `triggers.crons = ["* * * * *"]`.
+- 켜기(testbed 먼저, 운영은 승인 뒤 `--confirm-production`):
+  1. `wrangler secret put API_SUPABASE_SECRET_KEY --env testbed` 뒤 배포.
+  2. 첫 복사가 `W0`를 넘긴다. `L0`는 Supabase에서
+     `select coalesce(min(id), W0 + 1) from public.d1_change_log where changed_at >= (select changed_at from public.d1_change_log where id = W0) - interval '5 minutes'`
+     (`W0 = 0`, 빈 로그면 `L0 = 1`).
+  3. `pnpm sync:state start --l0 <L0> --env testbed --remote`: `low_watermark = high_seen = L0 - 1`. `sync.enabled`가
+     on이면 거부한다. `sync_state` 행이 없으면 cron은 `not_started`로 끝난다(리스 행도 만들지 않는다).
+  4. `pnpm flags set sync.enabled on --env testbed --remote --note "…"`.
+  5. 끄기는 `pnpm flags set sync.enabled off …`. 창은 남고, 7일 안에 다시 켜면 이어서 읽는다.
+  6. 보기: `pnpm sync:state show --env testbed --remote`(창, 실행마다 문장·subrequest·원문 바이트, 지연, 실패, 열린 거절,
+     원문 줄).
+- 설계가 열어 둔 곳에서 고른 것:
+  - 새 행과 창 다시 읽기를 머리줄 읽기 하나로 합쳤다(`id > low_watermark`, `not.in.(applied_above)`, 100개). 그 뒤
+    본문 읽기 하나, 5분 규칙의 기준 id 읽기 하나(`changed_at < now - 5분`인 가장 큰 id, env 무관). 로그 읽기는 최대 3번,
+    subrequest는 최대 16번이다.
+  - `applied_above`가 1,900개를 넘으면 `id <= high_seen`만 읽는다(2,000개 CHECK 안).
+  - 첫 batch가 제약 오류로 실패하고 나눌 예산이 없으면 `last_error = split:<첫 id>:<개수>`를 남기고, 다음 실행이 그
+    조각을 통째로 다시 하지 않고 반부터 나눈다. 없으면 매 실행이 같은 batch에서 실패해 워터마크가 멈춘다.
+  - 제약 오류(FK, CHECK)만 나누고, 그 밖의 D1 오류는 그 실행을 멈추고 `fail_count`, `last_error`만 남긴다.
+  - 원문 받기 실패는 `sync_pending_raw.attempts`, `last_error`에 적고 줄 끝으로 보낸다. `sync_rejects.ref`에 넣을
+    변경 로그 id가 없어 거절 행은 만들지 않는다. 빈 답(그 env에 런이 없음)이면 줄에서 지운다.
+  - 0행 `U`와 고아 본문은 batch가 커밋된 뒤 다시 읽어 정한다. 그 사이에 실행이 죽으면 그 한 변경은 일일 대조가 찾는다.
+  - 7일 지우기는 UTC 19:00(한국 04:00) 실행에서, 그 D1의 `low_watermark` 이하이고 자기 env나 env null인 행만.
+  - 리스 55초, Supabase 호출 마감 40초. 지연 2분 초과는 Worker 로그 한 줄(`sync lag_ms=…`)로 알린다. `last_cpu_ms`는
+    tail 소비자가 없어 0으로 남는다.
+  - 자기 쓰기 읽기: 요청마다 D1 문장 20개, 쓰기 답은 256 KB까지 복제본에서 읽는다(그보다 큰 글은 동기화가 가져온다).
+    서버가 id를 만드는 쓰기(문의, 런 하나 올리기, 월드컵 플레이, 퍼즐상자)는 그 사용자의 가장 최근 행을 service 키로
+    다시 읽는다. 필터로 여러 행을 고치는 둘(문의 읽음, 기증자 닉네임)은 같은 필터의 D1 문장 하나다. 고치기는 답의
+    행에서 키와 복사 카운터를 뺀 열을 쓴다.
+
 ### 5.4 일일 대조(GitHub Actions)
 
 - 매퍼(Supabase 원본 표)마다 양쪽의 모든 행을 읽어 한 함수로 정규화한다(env와 죽은 열 빼기, 시각 `canonicalTs`,

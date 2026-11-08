@@ -3,6 +3,7 @@ import { apiError, jsonResponse } from "../http";
 import type { ApiRoute, UserRouteContext } from "../router";
 import { postgrest } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
+import { readAfterWrite } from "../../sync/read-after-write";
 
 /**
  * The contact group (docs/supabase-exit/STEP1_DESIGN.md 9.3): the nav mailbox
@@ -50,6 +51,10 @@ async function handleSubmit(context: UserRouteContext): Promise<Response> {
     if (result.code === "P0001") return apiError("rate_limited");
     return apiError(restErrorCode(result));
   }
+  // return=minimal and a server-made id: the user's newest inquiry is the one just written.
+  await readAfterWrite(context, "write.contact-inquiries", [
+    { op: "reread", table: "contact_inquiries", match: { user_id: user.userId }, order: "created_at.desc,id.desc", then: "insert" },
+  ]);
   return jsonResponse({}, { status: 201 });
 }
 

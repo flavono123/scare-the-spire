@@ -4,6 +4,7 @@ import { API_MARKER_HEADER, apiError, jsonResponse, PRIVATE_NO_STORE } from "../
 import type { ApiRoute, PublicRouteContext, UserRouteContext } from "../router";
 import { postgrest, postgrestStream } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
+import { readAfterWrite } from "../../sync/read-after-write";
 
 /**
  * The stories group (docs/supabase-exit/STEP1_DESIGN.md 9.7): the community
@@ -64,6 +65,7 @@ async function handleCreate(context: UserRouteContext): Promise<Response> {
   if (!result.ok) return apiError(restErrorCode(result));
   const inserted = result.data?.[0];
   if (!inserted) return apiError("unavailable");
+  await readAfterWrite(context, "write.stories.create", [{ op: "insert", table: "community_stories", row: inserted }]);
   return jsonResponse({ v: 1, env: config.dataEnv, row: inserted }, { status: 201 });
 }
 
@@ -80,7 +82,9 @@ async function handleDelete(context: UserRouteContext): Promise<Response> {
     prefer: ["return=representation"],
   });
   if (!result.ok) return apiError(restErrorCode(result));
-  return jsonResponse({ v: 1, env: config.dataEnv, deleted: (result.data ?? []).length > 0 });
+  const deleted = (result.data ?? []).length > 0;
+  if (deleted) await readAfterWrite(context, "write.stories.delete", [{ op: "delete", table: "community_stories", key: { id: id.toLowerCase() } }]);
+  return jsonResponse({ v: 1, env: config.dataEnv, deleted });
 }
 
 export const storiesRoutes: readonly ApiRoute[] = [

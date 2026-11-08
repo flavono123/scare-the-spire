@@ -15,14 +15,17 @@
 import { spawnSync } from "node:child_process";
 
 import { API_SURFACE_GROUPS, SURFACE_PATHS, pathFlagKey } from "../src/lib/api-surfaces";
+import { SYNC_FLAG_KEY, SYNC_FLAG_VALUES } from "../workers/sync/sync-env";
 
 type Target = { env: "testbed" | "production"; remote: boolean };
 
 const DATABASES = { testbed: "slseoun-testbed", production: "slseoun-prod" } as const;
 
-const KNOWN_KEYS = new Map<string, readonly string[]>(
-  API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), SURFACE_PATHS]),
-);
+const KNOWN_KEYS = new Map<string, readonly string[]>([
+  ...API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), SURFACE_PATHS] as const),
+  // Step 2: the 1-minute sync and read-after-write (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3).
+  [SYNC_FLAG_KEY, SYNC_FLAG_VALUES],
+]);
 
 function usage(message?: string): never {
   if (message) console.error(message);
@@ -30,6 +33,7 @@ function usage(message?: string): never {
     "Usage:",
     "  tsx scripts/runtime-flags.ts list --env testbed|production --remote|--local",
     "  tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
+    "  tsx scripts/runtime-flags.ts set sync.enabled on|off --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     `Keys: ${[...KNOWN_KEYS.keys()].join(", ")}`,
   ].join("\n"));
   process.exit(2);

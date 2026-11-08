@@ -12,6 +12,8 @@ import { API_MARKER_HEADER, apiError, jsonResponse, PRIVATE_NO_STORE } from "../
 import type { ApiRoute, PublicRouteContext, UserRouteContext } from "../router";
 import { postgrest, postgrestStream } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
+import { readAfterWrite } from "../../sync/read-after-write";
+import { RAW_RUN_NICKNAMES } from "../../sync/sync-sql";
 
 /**
  * The history-runs group (docs/supabase-exit/STEP1_DESIGN.md 9.6). Run rows
@@ -169,12 +171,18 @@ async function streamUpload(context: UserRouteContext, batch: boolean): Promise<
   if (!result.ok) return apiError(restErrorCode(result));
   if (!batch) {
     void result.response.body?.cancel().catch(() => undefined);
+    // return=minimal: the donor's newest run is the one just uploaded (re-read without its raw).
+    await readAfterWrite(context, "write.history-runs.create", [
+      { op: "reread", table: "runs", match: { donor_user_id: context.user.userId }, order: "created_at.desc,id.desc", then: "insert" },
+    ]);
     return jsonResponse({ v: 1, env: config.dataEnv }, { status: 201 });
   }
   // Ids only: small.
   const rows = await result.response.json().catch(() => null) as { id?: unknown }[] | null;
   if (!Array.isArray(rows)) return apiError("unavailable");
-  return jsonResponse({ v: 1, env: config.dataEnv, inserted: rows.map((row) => String(row.id)) }, { status: 201 });
+  const inserted = rows.map((row) => String(row.id));
+  await readAfterWrite(context, "write.history-runs.batch", [{ op: "rereadIds", table: "runs", ids: inserted }]);
+  return jsonResponse({ v: 1, env: config.dataEnv, inserted }, { status: 201 });
 }
 
 async function handleCover(context: UserRouteContext): Promise<Response> {
@@ -195,7 +203,13 @@ async function handleCover(context: UserRouteContext): Promise<Response> {
     prefer: ["return=representation"],
   });
   if (!result.ok) return apiError(restErrorCode(result));
-  return jsonResponse({ v: 1, env: config.dataEnv, updated: (result.data ?? []).length > 0 });
+  const updated = (result.data ?? []).length > 0;
+  if (updated) {
+    await readAfterWrite(context, "write.history-runs.cover", [
+      { op: "update", table: "runs", key: { id }, set: { cover_spec: body.coverSpec } },
+    ]);
+  }
+  return jsonResponse({ v: 1, env: config.dataEnv, updated });
 }
 
 async function handleNicknames(context: UserRouteContext): Promise<Response> {
@@ -214,6 +228,9 @@ async function handleNicknames(context: UserRouteContext): Promise<Response> {
     prefer: ["return=minimal"],
   });
   if (!result.ok) return apiError(restErrorCode(result));
+  await readAfterWrite(context, "write.history-runs.nicknames", [
+    { op: "statement", statement: { sql: RAW_RUN_NICKNAMES, params: [nickname, user.userId] } },
+  ]);
   return jsonResponse({ v: 1, env: config.dataEnv });
 }
 
@@ -230,7 +247,9 @@ async function handleDelete(context: UserRouteContext): Promise<Response> {
     prefer: ["return=representation"],
   });
   if (!result.ok) return apiError(restErrorCode(result));
-  return jsonResponse({ v: 1, env: config.dataEnv, deleted: (result.data ?? []).length > 0 });
+  const deleted = (result.data ?? []).length > 0;
+  if (deleted) await readAfterWrite(context, "write.history-runs.delete", [{ op: "delete", table: "runs", key: { id } }]);
+  return jsonResponse({ v: 1, env: config.dataEnv, deleted });
 }
 
 const idQuery = { id: isRunId };

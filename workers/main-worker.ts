@@ -27,6 +27,8 @@ import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-res
 import { withFlagCookie } from "./api/flag-cookie";
 import { isApiRouterPath, type ApiEnv } from "./api/router";
 import { apiRouter } from "./api/routes";
+import { runSync } from "./sync/run-sync";
+import type { SyncEnv } from "./sync/sync-env";
 import { isSearchCrawlerUserAgent } from "../src/lib/locale-detection";
 import {
   handleLinkPreviewRequest,
@@ -506,6 +508,11 @@ async function routeRequest(request: Request, env: Env, ctx: ExecutionContextLik
 }
 
 const mainWorker = {
+  /** The 1-minute D1 sync (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3); a no-op until sync.enabled is on. */
+  async scheduled(controller: { scheduledTime: number }, env: Env & SyncEnv, ctx: ExecutionContextLike): Promise<void> {
+    ctx.waitUntil(runSync(env, { scheduledTime: controller.scheduledTime }).catch(() => undefined));
+  },
+
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
     // Before routeRequest: /api/patches* would otherwise match the patch Worker paths.
