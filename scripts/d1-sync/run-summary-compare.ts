@@ -17,7 +17,7 @@ import type { RunRow } from "../../src/lib/run-summary-row";
 import type { SqliteDb } from "./test-db";
 
 /** What the list shows or searches for one donated run. */
-function comparable(inputs: HistoryRunListInputs) {
+export function comparable(inputs: HistoryRunListInputs) {
   const summary = { ...inputs.summary };
   delete summary.raw;
   const doc = listSearchDoc(inputs);
