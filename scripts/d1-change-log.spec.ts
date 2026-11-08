@@ -37,9 +37,8 @@ const COMMENT_PARENT = "c0000000-0000-4000-8000-000000000000";
 const TOT_PARENT = "70000000-0000-4000-8000-000000000000";
 const FT_PARENT = "f0000000-0000-4000-8000-000000000000";
 
-// Stand-ins for what Supabase provides before any repo SQL runs: the API roles, auth.users,
-// auth.uid() from the request claims, the realtime publication, and the default privileges
-// Supabase sets on public (ALL to anon, authenticated and service_role).
+// Stand-ins for what Supabase provides before any repo SQL runs: the API roles, auth.users with
+// the columns repo functions read, auth.uid() from the request claims, and the realtime publication.
 const SUPABASE_BOOTSTRAP = `
 create role anon nologin noinherit;
 create role authenticated nologin noinherit;
@@ -52,6 +51,11 @@ create function auth.uid() returns uuid language sql stable
 grant usage on schema auth to anon, authenticated, service_role;
 grant usage on schema public to anon, authenticated, service_role;
 create publication supabase_realtime;
+`;
+
+// The default privileges Supabase sets on public: ALL to anon, authenticated and service_role.
+// A pg_dump sets its own at the end, so the dump replay does not take these.
+const SUPABASE_DEFAULT_PRIVILEGES = `
 alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
 alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
 alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
@@ -80,9 +84,16 @@ function historicalFiles(): string[] {
   ];
 }
 
-async function freshSupabase(): Promise<PGlite> {
+async function freshSupabase(defaultPrivileges = true): Promise<PGlite> {
   const db = new PGlite();
   await db.exec(SUPABASE_BOOTSTRAP);
+  if (defaultPrivileges) await db.exec(SUPABASE_DEFAULT_PRIVILEGES);
+  return db;
+}
+
+async function repoSchema(): Promise<PGlite> {
+  const db = await freshSupabase();
+  for (const file of historicalFiles()) await applyFile(db, file);
   return db;
 }
 
@@ -121,25 +132,48 @@ const DESCRIBE_TABLE = `
 select jsonb_build_object(
   'columns', (select jsonb_agg(jsonb_build_array(a.attname, format_type(a.atttypid, a.atttypmod), a.attnotnull,
       pg_get_expr(d.adbin, d.adrelid), a.attgenerated, a.attidentity,
-      (select jsonb_agg(x.grantee::regrole::text || ':' || x.privilege_type order by 1)
-         from aclexplode(a.attacl) x where x.grantee <> c.relowner)) order by a.attnum)
+      (select jsonb_agg(g order by g) from (select x.grantee::regrole::text || ':' || x.privilege_type as g
+         from aclexplode(a.attacl) x where x.grantee <> c.relowner) as col_grants)) order by a.attname)
     from pg_attribute a left join pg_attrdef d on d.adrelid = a.attrelid and d.adnum = a.attnum
     where a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped),
   'constraints', (select jsonb_agg(jsonb_build_array(k.conname, pg_get_constraintdef(k.oid)) order by k.conname)
     from pg_constraint k where k.conrelid = c.oid),
-  'indexes', (select jsonb_agg(pg_get_indexdef(i.indexrelid) order by 1) from pg_index i where i.indrelid = c.oid),
+  'indexes', (select jsonb_agg(def order by def)
+    from (select pg_get_indexdef(i.indexrelid) as def from pg_index i where i.indrelid = c.oid) as defs),
   'triggers', (select jsonb_agg(pg_get_triggerdef(t.oid) order by t.tgname)
     from pg_trigger t where t.tgrelid = c.oid and not t.tgisinternal),
   'policies', (select jsonb_agg(jsonb_build_array(p.polname, p.polpermissive, p.polcmd,
-      (select jsonb_agg(case when r = 0 then 'public' else r::regrole::text end order by 1) from unnest(p.polroles) r),
+      (select jsonb_agg(role order by role) from (select case when r = 0 then 'public' else r::regrole::text end as role
+         from unnest(p.polroles) as r) as roles),
       pg_get_expr(p.polqual, p.polrelid), pg_get_expr(p.polwithcheck, p.polrelid)) order by p.polname)
     from pg_policy p where p.polrelid = c.oid),
   'rls', jsonb_build_array(c.relrowsecurity, c.relforcerowsecurity),
-  'grants', (select jsonb_agg(case when x.grantee = 0 then 'public' else x.grantee::regrole::text end
-      || ':' || x.privilege_type order by 1)
-    from aclexplode(c.relacl) x where x.grantee <> c.relowner)
-) as description
+  'grants', (select jsonb_agg(g order by g) from (select case when x.grantee = 0 then 'public'
+      else x.grantee::regrole::text end || ':' || x.privilege_type as g
+    from aclexplode(c.relacl) x where x.grantee <> c.relowner) as table_grants)
+) as description,
+(select jsonb_agg(a.attname order by a.attnum) from pg_attribute a
+  where a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped) as column_order
 from pg_class c where c.oid = ('public.' || $1)::regclass
+`;
+
+// A dump replay parses each CHECK once more, which flattens nested ANDs that BETWEEN leaves in a
+// deparse. Re-adding each CHECK from its own text puts the repo side through the same round trip.
+const roundTripChecks = (tables: string[]) => `
+do $$
+declare
+  k record;
+begin
+  for k in
+    select c.conrelid::regclass as tbl, c.conname, pg_get_constraintdef(c.oid) as def
+    from pg_constraint c
+    where c.contype = 'c'
+      and c.conrelid = any (array[${tables.map((table) => `'public.${table}'`).join(", ")}]::regclass[])
+  loop
+    execute format('alter table %s drop constraint %I, add constraint %I %s', k.tbl, k.conname, k.conname, k.def);
+  end loop;
+end
+$$;
 `;
 
 const DESCRIBE_FUNCTION = `
@@ -150,38 +184,49 @@ from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname = $1
 async function describe(db: PGlite, tables: string[]) {
   await db.query("select set_config('search_path', '', false)");
   const out: Record<string, unknown> = {};
+  const columnOrder: Record<string, unknown> = {};
   const functions = new Set<string>();
   for (const table of tables) {
-    const { rows } = await db.query<{ description: Json }>(DESCRIBE_TABLE, [table]);
+    const { rows } = await db.query<{ description: Json; column_order: unknown }>(DESCRIBE_TABLE, [table]);
     out[table] = rows[0].description;
+    columnOrder[table] = rows[0].column_order;
     for (const match of JSON.stringify(rows[0].description).matchAll(/public\.(\w+)\(/g)) functions.add(match[1]);
   }
   for (const fn of [...functions].sort()) {
     out[`function ${fn}`] = (await db.query<{ defs: unknown }>(DESCRIBE_FUNCTION, [fn])).rows[0].defs;
   }
   await db.query("select set_config('search_path', '\"$user\", public', false)");
-  return out;
+  return { out, columnOrder };
 }
 
-async function compareWithDump(repoDb: PGlite, dumpFile: string) {
+// Column order is reported, not failed: the log and the sync read columns by name.
+async function compareWithDump(dumpFile: string) {
   const dump = readFileSync(dumpFile, "utf8")
     .split("\n")
     .filter((line) => !line.startsWith("\\"))
     .join("\n")
     .replace(/^CREATE SCHEMA public;$/m, "");
-  const live = await freshSupabase();
+  const live = await freshSupabase(false);
   await live.exec(dump);
+  const repo = await repoSchema();
+  await repo.exec(roundTripChecks(LOGGED_TABLES));
   const expected = await describe(live, LOGGED_TABLES);
-  const actual = await describe(repoDb, LOGGED_TABLES);
-  const differing = Object.keys(expected).filter(
-    (key) => JSON.stringify(expected[key]) !== JSON.stringify(actual[key]),
+  const actual = await describe(repo, LOGGED_TABLES);
+  const differing = Object.keys(expected.out).filter(
+    (key) => JSON.stringify(expected.out[key]) !== JSON.stringify(actual.out[key]),
   );
   for (const key of differing) {
-    console.error(`schema differs: ${key}\n  dump: ${JSON.stringify(expected[key])}\n  repo: ${JSON.stringify(actual[key])}`);
+    console.error(`schema differs: ${key}\n  dump: ${JSON.stringify(expected.out[key])}\n  repo: ${JSON.stringify(actual.out[key])}`);
+  }
+  for (const table of LOGGED_TABLES) {
+    if (JSON.stringify(expected.columnOrder[table]) !== JSON.stringify(actual.columnOrder[table])) {
+      console.log(`column order differs (not failed): ${table}\n  dump: ${JSON.stringify(expected.columnOrder[table])}\n  repo: ${JSON.stringify(actual.columnOrder[table])}`);
+    }
   }
   assert.deepEqual(differing, [], "the repo SQL rebuilds the logged tables as the dump has them");
-  console.log(`schema check: ${Object.keys(expected).length} tables and functions match ${path.basename(dumpFile)}`);
+  console.log(`schema check: ${Object.keys(expected.out).length} tables and functions match ${path.basename(dumpFile)}`);
   await live.close();
+  await repo.close();
 }
 
 // --- Change-log checks -------------------------------------------------------------------------
@@ -661,16 +706,15 @@ async function main() {
   assert.deepEqual([...CASES.map((c) => c.table)].sort(), [...LOGGED_TABLES].sort(), "every logged table has a case");
   assert.ok(existsSync(ROLLBACK), "rollback script in place");
 
-  const db = await freshSupabase();
-  for (const file of historicalFiles()) await applyFile(db, file);
+  const dump = process.env.SUPABASE_PUBLIC_SCHEMA;
+  if (dump) await compareWithDump(dump);
+  else console.log("schema check skipped: set SUPABASE_PUBLIC_SCHEMA to a public schema dump");
+
+  const db = await repoSchema();
   const { rows: publicTables } = await db.query<{ relname: string }>(
     "select relname from pg_class where relnamespace = 'public'::regnamespace and relkind = 'r' order by 1");
   assert.deepEqual(publicTables.map((row) => row.relname), [...LOGGED_TABLES, ...UNLOGGED_TABLES].sort(),
     "the repo SQL builds the 27 logged tables and the four the design leaves behind");
-
-  const dump = process.env.SUPABASE_PUBLIC_SCHEMA;
-  if (dump) await compareWithDump(db, dump);
-  else console.log("schema check skipped: set SUPABASE_PUBLIC_SCHEMA to a public schema dump");
 
   await db.exec(SETUP);
   const migration = `${MIGRATIONS}/${CHANGE_LOG[0]}`;
