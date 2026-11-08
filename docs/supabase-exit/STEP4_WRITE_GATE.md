@@ -134,14 +134,15 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 
 `pnpm test:write-gate`가 셋을 돌린다.
 
-- `scripts/write-gate-equivalence.spec.ts`: PGlite DB 둘을 저장소 SQL로 만든다. "오늘"(변경 로그와 이 마이그레이션을
-  뺀 전부)과 "4단계"(이 마이그레이션을 더함)다. 같은 Worker가 오늘 DB에는 rls 방식으로, 4단계 DB에는 worker 방식으로
+- `scripts/write-gate-equivalence.spec.ts`: PGlite DB 둘을 저장소 SQL로 만든다. "오늘"(이 마이그레이션을 뺀 전부, 2단계
+  변경 로그는 포함)과 "4단계"(이 마이그레이션을 더함)다. 덤프로 돌릴 때는 덤프 위에 변경 로그를 올린다. 변경 로그
+  `d1_change_log`도 비교하므로(로그 id, 시각, `row_bytes`만 뺀다) worker 방식의 쓰기가 D1 동기화에 같은 변경을 남긴다. 같은 Worker가 오늘 DB에는 rls 방식으로, 4단계 DB에는 worker 방식으로
   붙는다. `scripts/lib/supabase-pglite.ts`의 작은 PostgREST가 요청마다 한 트랜잭션에서 키가 가리키는 역할로 SQL을
   돌린다. 가짜 PostgREST는 Supabase의 `auth.uid()` 정의를 쓰고 PostgREST 12처럼 `request.jwt.claims`만 둔다. API
   사례 114개(29개 쓰기 경로 모두, 글 표 여덟 개마다 고치기·지우기를 자기 것과 남의 것으로, 정직한 요청과 남의 행, 위조한
   카운터·시각·소유자, CHECK 위반, 없는 열, 중복, 다른 env 글, 없는 글, 속도 제한 등)와
   PostgREST 수준 사례 28개(경로가 만들지 않는 위조 소유자, 권한, 정책 없는 update 등)가 양쪽에서 같은 HTTP 응답을
-  내고 쓰는 26개 표에 같은 행을 남겨야 통과한다. 위조 시각과 새 uuid만 `<now>`, `<uuid>`로 맞춘다. rls 쪽은 service
+  내고 쓰는 26개 표와 변경 로그에 같은 행을 남겨야 통과한다. 위조 시각과 새 uuid만 `<now>`, `<uuid>`로 맞춘다. rls 쪽은 service
   키를, worker 쪽은 사용자 토큰을 한 번도 쓰지 않았는지도 본다. 셋째 DB(이 마이그레이션을 두 번 적용)에 rls 방식으로
   같은 사례를 보내 오늘과 같은 답과 행이 나오는지도 본다. 마이그레이션이 브라우저 역할과 옛 탭에 바꾸는 것이 없고 다시
   돌려도 된다는 확인이다. 끝에 오늘 DB에서 사례 이름대로 되었는지(자기 글 고치기의

@@ -113,6 +113,8 @@ const TABLES = [
   "favorite_tournament_posts", "favorite_tournament_plays", "favorite_tournament_candidate_stats", "pagestorm_posts",
   "defragment_posts", "pagestorm_drafts", "defragment_bodies", "this_or_that_post_likes", "this_or_that_post_votes",
   "runs", "contact_inquiries", "puzzlebox_players", "puzzlebox_runs", "puzzlebox_best", "puzzlebox_board_stats",
+  // The step 2 change log (applied before step 4): worker-mode writes must log the same changes for the D1 sync.
+  "d1_change_log",
 ];
 
 // --- Normalizing ------------------------------------------------------------------------------------
@@ -140,7 +142,10 @@ function normalize(value: unknown): unknown {
 }
 
 async function tableRows(db: PGlite, table: string): Promise<string[]> {
-  const { rows } = await db.query<{ rows: unknown[] }>(`select coalesce(jsonb_agg(to_jsonb(t)), '[]'::jsonb) as rows from public.${table} t`);
+  // The log's own id and clock are not part of the change, and row_bytes follows the length of the row's
+  // timestamps (trailing zeros of the microseconds).
+  const row = table === "d1_change_log" ? "to_jsonb(t) - 'id' - 'changed_at' - 'row_bytes'" : "to_jsonb(t)";
+  const { rows } = await db.query<{ rows: unknown[] }>(`select coalesce(jsonb_agg(${row}), '[]'::jsonb) as rows from public.${table} t`);
   return (rows[0].rows ?? []).map((row) => JSON.stringify(normalize(row))).sort();
 }
 
@@ -443,16 +448,21 @@ const GATE_CASES: GateCase[] = [
 ];
 
 async function main() {
-  const skip = (file: string) => file.endsWith("_d1_change_log.sql");
+  const changeLog = repoSchemaFiles().filter((file) => file.endsWith("_d1_change_log.sql"));
   const step4Migration = repoSchemaFiles().filter((file) => file.endsWith("_worker_write_actor.sql"));
   const dump = process.env.SUPABASE_PUBLIC_SCHEMA;
+  // The dump predates the change log, so it is applied on top like on Supabase.
   const [today, step4, step4Rls] = await Promise.all(dump
-    ? [supabaseFromDump(dump), supabaseFromDump(dump, step4Migration), supabaseFromDump(dump, [...step4Migration, ...step4Migration])]
+    ? [
+      supabaseFromDump(dump, changeLog),
+      supabaseFromDump(dump, [...changeLog, ...step4Migration]),
+      supabaseFromDump(dump, [...changeLog, ...step4Migration, ...step4Migration]),
+    ]
     : [
-      supabaseFromRepo(repoSchemaFiles((file) => skip(file) || step4Migration.includes(file))),
-      supabaseFromRepo(repoSchemaFiles(skip)),
+      supabaseFromRepo(repoSchemaFiles((file) => step4Migration.includes(file))),
+      supabaseFromRepo(repoSchemaFiles()),
       // The migration a second time: it must be idempotent.
-      supabaseFromRepo([...repoSchemaFiles(skip), ...step4Migration]),
+      supabaseFromRepo([...repoSchemaFiles(), ...step4Migration]),
     ]);
   console.log(dump ? `schema: replayed ${dump}` : "schema: rebuilt from the repo's supabase SQL");
   // decideWrite sends a payload whose owner is no uuid unchanged because the cast refuses it first: true
