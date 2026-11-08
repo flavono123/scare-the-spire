@@ -44,15 +44,18 @@ jobs:
       max-parallel: 1
       matrix:
         target: ${{ fromJSON(github.event_name == 'workflow_dispatch' && format('["{0}"]', inputs.target) || '["testbed","production"]') }}
+    # Tokens are only given to the steps that need them (as cloudflare-workers.yml does with
+    # CLOUDFLARE_API_TOKEN), never to checkout, setup or install.
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
-      CLOUDFLARE_D1_API_TOKEN: ${{ secrets.CLOUDFLARE_D1_API_TOKEN }}
       SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
     steps:
       - name: Check credentials
         id: credentials
         shell: bash
+        env:
+          CLOUDFLARE_D1_API_TOKEN: ${{ secrets.CLOUDFLARE_D1_API_TOKEN }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           missing=""
           for name in CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_D1_API_TOKEN SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY; do
@@ -94,3 +97,5 @@ jobs:
         env:
           TARGET: ${{ matrix.target }}
           FILL_ONLY: ${{ inputs.fill_only }}
+          CLOUDFLARE_D1_API_TOKEN: ${{ secrets.CLOUDFLARE_D1_API_TOKEN }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
