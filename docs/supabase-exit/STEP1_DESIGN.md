@@ -333,6 +333,18 @@ CREATE TABLE runtime_flag_events (id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT
 - 고정 키(`workers/api/supabase-jwks.ts`, 2026-11-05에 받은 ES256 키 하나)는 시작값이다. 1단계에서는 PostgREST가
   토큰을 다시 검증하므로 Worker 검사는 심층 방어다. Worker가 유일한 검증자가 되는 4단계 전에 키 목록을 D1로
   옮기고 폐기(revocation) 절차를 둔다.
+  - 2026-11-09 만들었다(`step4/prereqs`). D1 `api_verification_keys`(`d1/migrations/0007`, 쿼리 K1~K5)가 고정 키
+    위에 얹힌다. 고정 키는 그 kid의 행이 없으면 그대로 믿고, 행이 있으면 행이 정한다. `revoked_at`이 없는 행은 키를
+    더하고, 있는 행은 그 kid를 받은 JWKS에 있어도 거절한다(키 찾기 전에, JWKS를 받지 않고). 표가 비었거나 아직 한
+    번도 못 읽었으면 고정 키만 믿고 아무것도 폐기하지 않는다(지금과 같다). 읽기 실패는 마지막 성공 값을 둔다.
+  - 읽기(K1)는 isolate마다 1분에 한 문장까지다(성공·실패 모두). 토큰을 검증하는 요청(`/api/me`·`/api/write`의
+    bearer, claim)만 읽고, 진행 중인 읽기는 시작 뒤 1초까지만 기다린다. 쿠키만 있는 요청은 읽지 않는다.
+  - 바꾸기는 `scripts/verification-keys.ts`(`list`, `add --jwk`, `revoke <kid>`, 되돌리기 `unrevoke <kid>`)로만
+    한다. `runtime-flags.ts`처럼 `--env`, `--remote|--local`, `--note`가 필요하고 운영 쓰기는 `--confirm-production`.
+    폐기 절차: Supabase에서 키를 바꿔 새 세션이 새 키로 서명되게 하고 → 새 키를 `add` → 옛 키를 `revoke`(1분 안에
+    모든 isolate). 옛 키 토큰을 든 브라우저는 `token_invalid`를 받고 supabase-js가 새 키로 갱신한다. 고정 키를
+    폐기했으면 다음 배포에서 `supabase-jwks.ts`에서도 뺀다(첫 D1 읽기가 실패한 isolate는 고정 키만 보기 때문).
+    레거시 HS256(`API_SUPABASE_LEGACY_JWT_SECRET`, claim 전용)은 kid가 없어 이 표로 폐기하지 않고 secret을 지운다.
 - 검증한 `sub`만 신원으로 쓴다. 클라이언트가 보낸 `user_id`는 받지 않는다.
 - Worker는 토큰을 갱신하지 않는다.
 

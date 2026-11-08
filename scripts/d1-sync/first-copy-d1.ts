@@ -20,10 +20,16 @@ export interface MigrationFile {
   text: string;
 }
 
-/** The step-2 migrations: every d1/migrations file from 0003 on, in name order (today 0003..0006). */
+/**
+ * Migrations from 0003 on whose tables the Worker owns (not a copy of Supabase): a re-fill must
+ * neither drop nor re-create them. 0007: the token signing keys and their revocations.
+ */
+export const WORKER_OWNED_MIGRATIONS: ReadonlySet<string> = new Set(["0007_api_verification_keys.sql"]);
+
+/** The step-2 migrations: every d1/migrations file from 0003 on but the Worker-owned ones, in name order (today 0003..0006). */
 export function stepTwoMigrations(dir = join(ROOT, "d1/migrations")): MigrationFile[] {
   return readdirSync(dir)
-    .filter((name) => /^\d{4}_.*\.sql$/.test(name) && Number(name.slice(0, 4)) >= 3)
+    .filter((name) => /^\d{4}_.*\.sql$/.test(name) && Number(name.slice(0, 4)) >= 3 && !WORKER_OWNED_MIGRATIONS.has(name))
     .sort()
     .map((name) => ({ name, text: readFileSync(join(dir, name), "utf8") }));
 }
