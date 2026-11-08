@@ -1,6 +1,5 @@
 import {
   API_SURFACE_GROUPS,
-  isApiSurfaceGroup,
   pathFlagKey,
   type ApiSurfaceGroup,
 } from "../../src/lib/api-surfaces";
@@ -171,8 +170,4 @@ export async function apiFlags(
   } catch {
     return { ok: false, reason: "unknown" };
   }
-}
-
-export function isGroupOn(groups: ReadonlySet<ApiSurfaceGroup>, group: string): boolean {
-  return isApiSurfaceGroup(group) && groups.has(group);
 }

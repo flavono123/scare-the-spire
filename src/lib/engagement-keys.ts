@@ -79,10 +79,6 @@ export function parsePhilosopherResourceKey(value: string): PhilosopherResource 
   return { resourceType: parts[0], resourceId: parts[1] };
 }
 
-export function isPhilosopherResource(resource: PhilosopherResource): boolean {
-  return parsePhilosopherResourceKey(philosopherResourceKey(resource)) !== null;
-}
-
 /** True when `value` is a valid entry of `part`. */
 export function isEngagementEntry(part: EngagementPart, value: string): boolean {
   if (part === "threads" || part === "likes") return isThreadKey(value);

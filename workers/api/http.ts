@@ -71,10 +71,6 @@ export function legacyResponse(reason: LegacyReason): Response {
   return jsonResponse({ error: "surface_legacy", reason }, { status: 409 });
 }
 
-export function apiErrorStatus(code: ApiErrorCode): number {
-  return ERROR_STATUS[code];
-}
-
 /** HEAD answers carry the GET headers without a body. */
 export function withoutBody(response: Response): Response {
   return new Response(null, { status: response.status, statusText: response.statusText, headers: response.headers });
