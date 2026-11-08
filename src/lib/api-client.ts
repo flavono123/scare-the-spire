@@ -108,6 +108,8 @@ export type ApiFetchInit = {
   token?: string | null;
   timeoutMs?: number;
   signal?: AbortSignal;
+  /** "text": a 2xx body is returned as text (the run raw file, R3r); errors are still JSON. */
+  responseType?: "json" | "text";
 };
 
 export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: ApiFetchInit = {}): Promise<T> {
@@ -128,7 +130,8 @@ export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: Ap
 async function apiFetchOnce<T>(group: ApiSurfaceGroup, path: string, init: ApiFetchInit): Promise<T> {
   if (!path.startsWith("/api/")) throw new Error(`api path must be absolute: ${path}`);
   const method = init.method ?? "GET";
-  const headers: Record<string, string> = { ...(init.headers ?? {}), Accept: "application/json" };
+  const asText = init.responseType === "text";
+  const headers: Record<string, string> = { ...(init.headers ?? {}), Accept: asText ? "text/plain" : "application/json" };
   if (init.body !== undefined || init.rawBody !== undefined) headers["Content-Type"] = "application/json";
   if (init.token) headers.Authorization = `Bearer ${init.token}`;
 
@@ -164,7 +167,7 @@ async function apiFetchOnce<T>(group: ApiSurfaceGroup, path: string, init: ApiFe
     if (response.status === 204) return undefined as T;
     // The same deadline covers the body: a stalled body must not hang every caller.
     try {
-      payload = await response.json();
+      payload = asText && response.ok ? await response.text() : await response.json();
     } catch {
       throw new ApiUnavailableError(response.status, controller.signal.aborted ? "timeout" : "bad_response");
     }
