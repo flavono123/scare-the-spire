@@ -1,0 +1,206 @@
+# 4단계 설계: Worker 쓰기 검증(뒤는 여전히 Supabase)
+
+관련 문서: [Supabase 탈출 계획](../SUPABASE_EXIT_PLAN.md) 5.2·7.3(4단계)·7.4절, [1단계 설계](STEP1_DESIGN.md),
+[D1 스키마 설계](D1_SCHEMA_DESIGN.md) 5.5절, [Supabase 사용 지도](SURFACE_MAP.md) 4절.
+
+## 상태
+
+2026-11-08: 구현과 로컬 검증을 마쳤다. 모두 꺼져 있다. 운영은 `API_RUNTIME_FLAGS=off`라 라우터에 닿지 않고,
+testbed도 `write.<group>` 행이 없으면 지금(rls)과 같다. Supabase 마이그레이션과 직접 쓰기 닫기 스크립트는
+적용하지 않았다. 서명 쿠키 신원(plan 5.3)은 다른 작업이 만들고, 여기서는 꽂을 자리만 둔다(4.2절).
+
+## 1. 바꾸는 것
+
+계획 7.3절 4단계의 "Worker가 길이, 허용 값, 소유권을 직접 검사하고 service 키로 Supabase에 쓴다"와 "모든 화면이
+`api` 경로로 옮겨진 뒤 브라우저(anon, authenticated)의 직접 쓰기 정책을 닫는다"를 맡는다.
+
+- 쓰기 그룹마다 `write.<group>` 런타임 플래그를 둔다. `rls`는 지금이다. Worker가 사용자의 Supabase 토큰을 넘기고
+  RLS, 보호 트리거, 권한이 판단한다. `worker`는 Worker가 그 판단을 직접 하고 service 키로 쓴다.
+- 1단계 쓰기 핸들러는 바꾸지 않는다. 핸들러가 만드는 PostgREST 호출 가운데 사용자 신원을 실은 호출만 게이트가
+  가로챈다(4절). 그래서 응답 모양과 오류 대응이 1단계와 그대로 같다.
+- 판단 기준은 오늘 Supabase가 같은 사용자의 토큰으로 받는 것과 받지 않는 것 전부다. 기준 fixture는 지금의 RLS
+  정책, 트리거, 권한이고, 같은 요청을 양쪽에 보내 결과를 대조한다(6절).
+
+## 2. 쓰기 전수 목록
+
+"API"는 1단계 경로(`workers/api/routes`), "브라우저"는 `legacy` 경로의 supabase-js·REST 직접 쓰기다. 관리 화면의
+service 키 쓰기(문의 답변, 닉네임 풀, 철학자 글)는 브라우저 경로가 아니라 범위 밖이다(5단계에서 D1로).
+
+| 표·RPC | 작업 | API | 브라우저 | 오늘 Supabase가 보는 것 |
+|---|---|---|---|---|
+| comments | insert, delete | `write.comments.create`, `.delete` | `use-comments.ts:187,233`, `patch-comments-client.js:1075,1172` | I·D 정책 uid, U 정책 없음. `guard_insert_server_columns`(created_at) |
+| comment_likes | insert, delete | `write.comment-likes.put`, `.delete` | `use-comment-likes.ts:160,157`, `patch-comments-client.js:1160,1155` | I·D 정책 uid |
+| likes | insert, delete | `write.likes.put`, `.delete` | `use-likes.ts:230,210` | I·D 정책 uid |
+| resource_reactions | update(kind), insert, delete | `write.reactions` | `use-resource-reactions.ts:96-99,287-290`, `patch-comments-client.js:1906-1910` | I·D 정책 uid, U 정책 TO authenticated uid, `GRANT UPDATE(kind)`만 |
+| community_stories | insert, delete | `write.stories.create`, `.delete` | `use-community-stories.ts:272,328`, `patch-comments-client.js:703` | I·D 정책 uid. `guard_insert_server_columns`(created_at, static_story_id = null) |
+| combo·transfigure·decisions·pagestorm·defragment 글 | insert, update, delete | `write.toybox-post.create`, `.update`, `.delete` | `use-combo-posts.ts:108,154,305`, `use-transfigure-posts.ts:432,389,582`, `use-decisions-decisions-posts.ts:92,136,245`, `use-pagestorm-posts.ts:92,142,499`, `use-defragment-posts.ts:109,147` | I·U·D 정책 uid. `guard_post_server_columns` |
+| chemical·this_or_that 글 | insert, delete | 위와 같음 | `use-chemical-posts.ts:77`, `chemicalx/post-view.tsx:106`, `use-this-or-that-posts.ts:101,230` | I·D 정책 uid, U 정책 없음. guard(이거 vs 저거는 투표 수도) |
+| favorite_tournament_posts | insert, delete | 위와 같음 | `use-favorite-tournament-posts.ts:98,267` | I 정책 uid와 `preset_key NOT LIKE 'builtin:%'`, D uid. guard(play_count도) |
+| pagestorm_drafts | insert, update, delete | `write.pagestorm.drafts.*` | `use-pagestorm-posts.ts:195,222,249` | 네 정책 모두 uid. 트리거 없음 |
+| defragment_bodies | upsert | `write.defragment-body` | `use-defragment-bodies.ts:142` | I·U 정책 TO authenticated uid와 `defragment_source_owned`, D uid. 트리거 없음 |
+| this_or_that_post_likes | insert, delete | `write.this-or-that.like.*` | `use-this-or-that-likes.ts:152,146` | I·D 정책 uid |
+| this_or_that_post_votes | insert, delete | `write.this-or-that.vote.*` | `use-this-or-that-votes.ts:196,253` | I 정책 uid와 같은 env의 글, D uid, U 정책 없음, 읽기는 자기 것 |
+| runs | insert, upsert(중복 무시), update(cover_spec, donor_nickname), delete | `write.history-runs.*` | `run-donation.ts:192,303,369,572,626` | 정책 `donor_user_id` = uid. `guard_post_server_columns` |
+| contact_inquiries | insert, update(reply_seen_at) | `write.contact-inquiries`, `write.profile.inquiries-seen` | `contact-inquiries.ts:100,217` | TO authenticated I(uid, status 'new')·U·R 정책, 열 단위 권한, DELETE 권한 없음. `contact_inquiries_rate_limit`(uid 확인, trim·소문자, 시간당 3건) |
+| rpc complete_favorite_tournament_play | 호출 | `write.favorite-tournament.play` | `use-favorite-tournament-posts.ts:310` | SECURITY DEFINER, `auth.uid()` 필요, anon·authenticated 실행 |
+| rpc submit_puzzlebox_run | 호출 | `write.puzzlebox.runs` | `use-puzzlebox-scores.ts:152` | SECURITY DEFINER, `auth.uid()` 필요, authenticated 실행 |
+| colorful_philosopher_reactions | 없음 | 없음 | 죽은 코드(SURFACE_MAP 4.1) | TO authenticated I·U·D. 7절에서 닫기만 한다 |
+
+`write.<group>` 그룹: comments(댓글·좋아요·반응), stories, toybox-feed(글·임시 저장·덧글 본문·이거 vs 저거·월드컵),
+history-runs, puzzlebox, contact, profile(문의 읽음). nav와 colorful-philosophers는 쓰기 경로가 없다.
+
+## 3. 규칙
+
+`workers/api/write-gate/rules.ts`(표별 데이터)와 `decide.ts`(판단)에 있다. service 역할이 건너뛰는 것만 옮긴다.
+
+- **옮기는 것**: RLS 정책(소유 열 = uid, 추가 조건 셋), 역할 조건이 붙은 BEFORE 트리거(`WHEN (CURRENT_USER = ANY
+  ('anon','authenticated'))`), 권한(열 단위 GRANT, DELETE 권한 없음), 문의 트리거(5절에서 역할 조건을 단다),
+  `auth.uid()`를 읽는 RPC 둘.
+- **Supabase에 남는 것**: 열 CHECK, NOT NULL, 유일·외래 키, 카운터 트리거(SECURITY DEFINER, 역할 조건 없음), RPC
+  본문. service 역할 쓰기에도 그대로 돌기 때문에 Worker가 베끼지 않는다. 베끼면 Worker가 더 엄격하거나 느슨해질
+  수 있다. 계획 5.2절의 "길이, 허용 값" 검사는 1단계 핸들러의 입력 검사(`parseCommentInput`, `storyInsertRow`,
+  `contactInquiryRow` 등)와 Supabase의 CHECK가 지금처럼 맡고, D1이 원본이 되는 5단계에는 D1 CHECK(0003~0006)가 맡는다.
+- **판단 순서**는 Postgres와 같다: 권한 → BEFORE 트리거(문의) → 정책의 WITH CHECK → (Supabase의) CHECK.
+- **insert**: 소유 열이 uid가 아니면(빠짐, NULL, 다른 uuid) 42501. uuid로 읽을 수 없는 값은 Postgres가 정책보다 먼저
+  22P02로 거절하므로 그대로 보낸다. 대소문자, 중괄호, 하이픈 형태는 같은 uuid로 본다. 추가 조건:
+  `not_builtin_preset`(대소문자 구분), `vote_post_same_env`(service로 글을 읽음), `defragment_source_owned`(service로
+  원글을 읽음). 보호 트리거가 정하는 열(카운터, created_at, static_story_id)은 본문에서 뺀다. 열 기본값이 트리거가
+  넣는 값과 같다(0, now(), NULL).
+- **upsert**: `merge-duplicates`면 기존 행이 update 정책의 USING을 통과해야 한다(아니면 42501). `ignore-duplicates`도
+  건너뛸 행까지 insert 정책을 먼저 본다. PGlite에서 확인했다: 남의 런이 섞인 묶음 공유는 지금도 전체가 403이다.
+- **update**: 소유 필터(`owner=eq.uid`)를 덧붙인다. 정책이 없는 표는 행이 없는 결과다. 본문이 소유자를 남으로
+  바꾸면, 보이는 행이 있을 때만 42501이고 없으면 빈 결과다(service로 확인). 보호 트리거가 되돌리는 열(id, env,
+  카운터, created_at)은 뺀다. 그런 열만 있던 본문은 `{owner: uid}`로 바꿔 지금처럼 행이 "고쳐져" 돌아오게 한다.
+- **delete**: 소유 필터를 덧붙인다. 정책이 없으면 빈 결과, DELETE 권한이 없으면(문의) 42501.
+- **열 단위 권한**: 반응 update는 `kind`만, 문의 insert는 10개 열만, 문의 update는 `reply_seen_at`만. 문의는 필터와
+  돌려받는 열에도 SELECT 권한이 있어야 한다(`user_id`, `reply_email`, 화면 크기 열은 없다).
+- **문의**: 다른 사용자면 42501, `message`는 btrim(공백만), `reply_email`은 btrim·소문자·빈 값은 NULL, 그리고 service로
+  같은 사용자·env의 최근 1시간 행을 세어 3건 이상이면 P0001(지금처럼 429 `rate_limited`).
+- **RPC**: `complete_favorite_tournament_play`, `submit_puzzlebox_run`은 service 전용 래퍼
+  `worker_complete_favorite_tournament_play`, `worker_submit_puzzlebox_run`으로 보내고 `p_actor = uid`를 붙인다(5절).
+  본문에 이미 `p_actor`가 있으면 지금 PostgREST처럼 PGRST202(404)다.
+- **모르는 요청**(표·RPC·메서드, 논리 필터 `or`, `columns`, 해결 방식 없는 `on_conflict`, 사용자 신원으로 읽기)은
+  보내지 않고 500 `gate_unsupported`(API는 503 `unavailable`)로 답하고 로그를 남긴다.
+
+## 4. 동작
+
+### 4.1 경로
+
+1. 라우터(`workers/api/router.ts`)는 `access: "write"` 경로에서 `workerWriteService`로 그 그룹의 쓰기 방식을 본다.
+   `worker`이고 `API_SUPABASE_SERVICE_KEY`(`sb_secret_…`)가 있으면 worker 방식, 아니면 지금 코드 그대로다.
+2. worker 방식이면 신원 해석기(4.2절)가 uid를 정한다. 속도 제한과 본문 읽기는 지금과 같다.
+3. 핸들러에 넘기는 `config`에 게이트를 단다(`withWriteGate`). `postgrest`·`postgrestStream`은 `token`이 있는 호출만
+   게이트로 보낸다(`supabase-rest.ts`에 두 줄). 공개 읽기(좋아요 수, 반응 합계)는 지금처럼 publishable 키로 간다.
+4. 게이트는 흘려보내던 업로드 본문(글, 임시 저장, 덧글 본문, 런)을 읽어 파싱하고(24 MiB 상한), `decideWrite`로 판단한
+   뒤 service 키로 보낸다. 사용자 토큰은 보내지 않는다. 조회(소유 확인, 원글 확인, 문의 수)도 service 키다.
+5. `me` 경로(개인 읽기)는 이 단계에서 바꾸지 않는다. 계속 사용자 토큰이다.
+
+### 4.2 신원
+
+`workers/api/write-identity.ts`의 `WriteIdentityResolver` 목록을 차례로 묻고 처음 답한 것을 쓴다. 기본값은
+`bearerWriteIdentity` 하나다(지금 rls 경로와 같은 ES256 검증). 쿠키 신원은
+`createApiRouter(API_ROUTES, { writeIdentity: [cookieResolver, bearerWriteIdentity] })`로 앞에 꽂는다. 해석기는
+`{ ok: true, user: { userId, isAnonymous, expiresAt }, token, source }`, `{ ok: false, code }`, 또는 이 요청에 신원이
+없으면 `null`을 돌려준다. 토큰 없는 신원이면 핸들러의 `token`은 자리표시 `worker-actor`다. 게이트가 가로채므로
+밖으로 나가지 않는다. rls 방식에서는 쿠키가 신원이 아니다(RLS가 사용자 토큰을 원한다).
+
+### 4.3 플래그
+
+- 키: `write.comments`, `write.toybox-feed`, `write.stories`, `write.history-runs`, `write.puzzlebox`, `write.profile`,
+  `write.contact`. 값: `rls` | `worker`. `scripts/runtime-flags.ts set write.<group> …`로만 바꾼다.
+- `path.<group> = api`인 요청에서만 읽는다. D1 `runtime_flags`를 `key GLOB 'write.*'`로 읽고 isolate에 30초 둔다.
+- 행이 없거나, 모르는 값이거나, 읽기가 실패하거나 1초를 넘으면 Worker env `API_WRITE_MODE_DEFAULT`를 쓴다. 이 값은
+  `worker`일 때만 worker이고 그 밖에는 rls다. 7절의 직접 쓰기를 닫은 뒤에는 안전한 쪽이 worker가 되므로 그때 이 값을
+  `worker`로 배포한다(plan 7.2절: 플래그를 못 읽으면 그 단계의 안전한 쪽인 env 기본값).
+
+## 5. Supabase 마이그레이션(적용 안 함)
+
+`supabase/migrations/20261108160000_worker_write_actor.sql`, `db-first-additive`, `before-push`. 되돌리기는
+`docs/release/worker-write-actor/rollback_worker_write_actor.sql`(모든 `write.<group>`이 rls로 돌아간 뒤에만).
+
+1. `contact_inquiries_rate_limit`에 보호 트리거와 같은 `WHEN`을 단다. D1 설계 5.5절이 "4단계 Worker 쓰기 전"으로 정한
+   것과 같은 문장이다. anon·authenticated에는 그대로 돈다.
+2. `worker_complete_favorite_tournament_play(p_actor, …)`, `worker_submit_puzzlebox_run(p_actor, …)`: 그 트랜잭션에만
+   `request.jwt.claim.sub`를 actor로 두고 원래 RPC를 그대로 부른다. SECURITY INVOKER, `search_path` 빈 값, 실행 권한은
+   service_role만(Supabase 기본 권한이 주는 anon·authenticated 실행을 거둔다). 그래서 대진·크기·후보 검사, 3초·하루
+   500판 제한, 통계와 순위가 지금과 같다. D1 설계 5.5절의 `mirror_favorite_tournament_play`(5단계)와는 별개다.
+
+Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마이그레이션을 올리면 둘 다에 적용되지만 브라우저
+역할에는 바뀌는 것이 없다. `d1-change-log.spec.ts`를 `SUPABASE_PUBLIC_SCHEMA`(2026-11-05 백업)로 돌리면 이 파일 때문에
+`contact_inquiries` 트리거 정의 하나가 덤프와 다르다고 나온다. 적용한 뒤의 새 덤프와는 같아진다.
+
+## 6. 검증
+
+`pnpm test:write-gate`가 셋을 돌린다.
+
+- `scripts/write-gate-equivalence.spec.ts`: PGlite DB 둘을 저장소 SQL로 만든다. "오늘"(변경 로그와 이 마이그레이션을
+  뺀 전부)과 "4단계"(이 마이그레이션을 더함)다. 같은 Worker가 오늘 DB에는 rls 방식으로, 4단계 DB에는 worker 방식으로
+  붙는다. `scripts/lib/supabase-pglite.ts`의 작은 PostgREST가 요청마다 한 트랜잭션에서 키가 가리키는 역할로 SQL을
+  돌린다. API 사례 84개(정직한 요청과 남의 행, 위조한 카운터·시각·소유자, CHECK 위반, 중복, 다른 env 글, 속도 제한 등)와
+  PostgREST 수준 사례 23개(경로가 만들지 않는 위조 소유자, 권한, 정책 없는 update 등)가 양쪽에서 같은 HTTP 응답을
+  내고 쓰는 26개 표에 같은 행을 남겨야 통과한다. 위조 시각과 새 uuid만 `<now>`, `<uuid>`로 맞춘다. rls 쪽은 service
+  키를, worker 쪽은 사용자 토큰을 한 번도 쓰지 않았는지도 본다.
+  `SUPABASE_PUBLIC_SCHEMA=<덤프>`를 주면 같은 사례를 덤프의 실제 정책·트리거·함수·권한 위에서 돌린다. 2026-11-05
+  백업 사본으로 돌려 통과했다(백업은 커밋하지 않는다).
+- `scripts/write-gate.spec.ts`: 플래그 읽기·캐시·기본값·실패, 라우터 연결(rls는 토큰, worker는 secret 키와 소유 필터,
+  키가 없으면 rls), 쿠키 해석기 꽂기, `me` 경로는 토큰 그대로, 모르는 요청은 보내지 않음.
+- `scripts/direct-writes-policies.spec.ts`: 7절의 두 스크립트(아래).
+- 게이트를 일부러 망가뜨린 6가지(삭제 소유 필터, insert 보호 열, 문의 제한, upsert 기존 행, update 보호 열, 투표 env)
+  모두 동등성 spec이 잡았다(로컬 확인, 커밋하지 않은 일회성 확인).
+
+## 7. 브라우저 직접 쓰기 닫기(적용 안 함)
+
+- 닫기: `docs/release/step4-direct-writes/close_direct_writes.sql`. anon·authenticated의 INSERT·UPDATE·DELETE 정책
+  50개를 지우고(SELECT 정책은 둔다) 두 쓰기 RPC의 실행 권한을 거둔다. 모든 공개 표는 RLS가 켜져 있고 쓸 수 있는 뷰가
+  없어서(spec이 확인) 정책이 유일한 길이다. 오래 열어 둔 탭의 insert는 42501, update·delete는 0행이 된다.
+- 되살리기: `restore_direct_writes.sql`. 50개 정책을 저장소 마이그레이션의 정의 그대로 다시 만들고 실행 권한을 돌려준다.
+  두 번 돌려도 같다. spec이 닫기 전과 되살린 뒤의 정책·함수 권한·표 권한이 같음을, 덤프를 주면 덤프 위에서도 같음을
+  확인한다(2026-11-05 백업 사본으로 통과).
+- 마이그레이션이 아니다. `supabase/migrations`에 두지 않는다. 다른 마이그레이션의 `db push`에 섞이면 아직 legacy인
+  화면의 쓰기가 끊긴다.
+- 닫는 조건(이 순서로): 5절 마이그레이션 적용, testbed와 운영 모두 모든 그룹이 `path.<group> = api`이고
+  `write.<group> = worker`, 두 Worker 모두 `API_SUPABASE_SERVICE_KEY`와 `API_WRITE_MODE_DEFAULT=worker` 배포.
+  Supabase가 하나라서 한 번 닫으면 testbed와 운영이 같이 닫힌다.
+- 닫은 뒤 주의: 경로 플래그를 못 읽으면 라우터는 지금 `legacy`로 돌려보내고(flags.ts), 클라이언트는 legacy 경로로 직접
+  쓴다. 닫은 뒤에는 그 쓰기가 실패한다. 즉 D1 플래그 읽기 장애가 쓰기 장애가 된다(8절 열린 질문 1).
+
+## 8. 켜는 순서와 되돌리기
+
+켜기(원격 작업은 모두 사용자 승인 뒤, testbed 먼저):
+
+1. 5절 마이그레이션을 `docs/RELEASE_PROCESS.md` 5절대로 올린다.
+2. Supabase secret 키를 만들어 testbed Worker secret `API_SUPABASE_SERVICE_KEY`로 넣는다(값은 출력하지 않는다).
+3. 이 코드가 든 Worker를 testbed에 배포한다. 플래그 행이 없으면 지금과 같다.
+4. testbed에서 그룹 하나씩 `pnpm flags -- set write.<group> worker --env testbed --remote --note "…"`, 그 화면의 쓰기를
+   한 번씩 해 보고 Supabase 행을 확인한다. 이상하면 그 그룹을 `rls`로.
+5. 운영도 같은 순서(그 그룹의 `path.<group> = api`가 켜진 뒤에만 뜻이 있다).
+6. 모든 그룹이 worker가 되면 `API_WRITE_MODE_DEFAULT=worker`를 배포하고 7절 닫기 스크립트를 적용한다.
+
+되돌리기: 닫기 뒤라면 `restore_direct_writes.sql` 먼저, 그다음 `write.<group>`을 `rls`로(필요하면
+`API_WRITE_MODE_DEFAULT`도 지운다). 마이그레이션 되돌리기는 모든 그룹이 rls가 된 뒤에만. 원본이 Supabase라 데이터는
+그대로다.
+
+## 9. 지금과 다른 점(알고 남긴 것)
+
+1. 문의 시간당 3건은 Worker가 센 뒤 쓴다. 트리거의 advisory lock이 없어 동시에 보낸 문의 둘이 모두 들어갈 수 있다(최대
+   한 건 더). 시각도 DB의 `now()` 대신 Worker 시각이다.
+2. 문의 메일의 소문자 바꾸기는 JS `toLowerCase()`다. Postgres `lower()`는 DB 로캘을 따르므로 ASCII 밖의 글자에서
+   다를 수 있다.
+3. 보호 열(카운터, created_at)에 형식이 틀린 값(`"like_count": "abc"`)을 보내면 지금은 22P02로 거절되지만, worker
+   방식은 그 열을 빼고 받는다. 정직한 클라이언트는 그런 값을 보내지 않는다.
+4. 여러 행 요청에서 두 행이 서로 다른 이유로 실패하면 어느 오류 코드가 나오는지가 다를 수 있다(둘 다 거절).
+5. 흘려보내던 업로드를 이제 파싱한다. 로컬(Node) 측정으로 파싱과 직렬화가 1 MB 글 약 4 ms, 4 MB 글 약 14 ms였다.
+   글 상한 8 MB, 임시 저장 4 MB, 런 묶음 24 MB라 큰 업로드는 Free 10 ms를 넘을 수 있다. testbed에서 재야 한다.
+6. 문의를 돌려받는 insert(`return=representation`)는 돌려받는 열마다 SELECT 권한을 본다. PostgREST가 `RETURNING`에
+   넣는 열이 `select` 목록과 같다고 보았다. 실제 경로는 `return=minimal`만 쓴다.
+7. env는 지금처럼 클라이언트 값을 그대로 둔다. 1단계 설계 9.6·9.8절은 본문을 파싱하지 못하는 것을 "1단계만"의
+   예외로 적었지만, 동등성(같은 요청에 같은 결과)을 지키려고 바꾸지 않았다. 강제하려면 사용자 결정이 필요하다.
+
+## 10. 열린 질문
+
+1. 직접 쓰기를 닫은 뒤에는 경로 플래그 읽기 실패의 안전한 쪽도 legacy가 아니라 api가 된다. `flags.ts`에
+   `API_PATH_FLAGS_DEFAULT` 같은 env 기본값을 둘지, 닫기를 6단계(legacy 제거)까지 미룰지 정해야 한다.
+2. 5단계에 `write.<group>`에 `paused`(재시도 응답)를 더할 때, 이 코드는 모르는 값을 기본값으로 읽는다. 5단계 작업이
+   이 파일의 `isWriteMode`와 `writeModeFor`를 함께 넓혀야 한다.
+3. 쿠키 신원만 있는 사용자의 `me` 경로(개인 읽기, `get_my_*`)는 아직 사용자 토큰이 필요하다. 쿠키 작업이 같은
+   게이트 방식(service 읽기 + 소유 필터, actor RPC)으로 옮길지 정해야 한다.
