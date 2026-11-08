@@ -1,14 +1,17 @@
 /**
- * Step 4 write gate equivalence (docs/supabase-exit/STEP4_WRITE_GATE.md 6). Two PGlite databases are
- * built from the repo's supabase SQL: "today" (every migration but the unapplied change log and the
- * step 4 migration) and "step 4" (with 20261108160000_worker_write_actor.sql). The same Worker serves
- * both: write.<group> = rls against today (the user's token, RLS, guard triggers, grants), and
- * write.<group> = worker against step 4 (the Worker's checks, then the service key). Every case runs on
- * both and must give the same HTTP answer and leave the same rows in every written table. Gate-level
- * cases then send PostgREST writes no route builds (forged owners, privileges, missing policies).
+ * Step 4 write gate equivalence (docs/supabase-exit/STEP4_WRITE_GATE.md 6). PGlite databases are built
+ * from the repo's supabase SQL: "today" (every migration, the step 2 change log included, but the step 4
+ * one) and "step 4" (with 20261108160000_worker_write_actor.sql). The same Worker serves both:
+ * write.<group> = rls against today (the user's token, RLS, guard triggers, grants), and
+ * write.<group> = worker against step 4 (the Worker's checks, then the service key). A third database
+ * (the step 4 migration applied twice) is served in rls mode: the migration must change nothing for
+ * user tokens and must be idempotent. Every case runs on all three and must give the same HTTP answer
+ * and leave the same rows in every written table and in the change log. Gate-level cases then send
+ * PostgREST writes no route builds (forged owners, privileges, missing policies).
  * Usage: tsx scripts/write-gate-equivalence.spec.ts
  * SUPABASE_PUBLIC_SCHEMA=<pg_dump --schema-only of public> runs the same cases on that dump's policies,
- * triggers, functions and grants instead (the dump plus the step 4 migration on the worker side).
+ * triggers, functions and grants instead (the dump plus the change log, and the step 4 migration on the
+ * step 4 sides).
  */
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
