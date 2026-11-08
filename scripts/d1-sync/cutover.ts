@@ -193,12 +193,6 @@ export function changeLogReader(opts: { url: string; serviceKey: string; fetch: 
 
 // ------------------------------------------------------------------------------------------- run
 
-class Stop extends Error {
-  constructor(readonly status: "refused" | "aborted" | "failed", message: string) {
-    super(message);
-  }
-}
-
 export async function runCutover(ports: CutoverPorts, options: CutoverOptions): Promise<CutoverReport> {
   const lines: string[] = [];
   const say = (line: string) => {
