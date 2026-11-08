@@ -1,9 +1,9 @@
 /**
  * The first copy and the re-fill (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.2), target and source
  * given. Steps: preflight the target, W0, dump, plan (map, summaries, checks), rehearse the whole copy
- * on an in-memory SQLite copy of the D1 schema, L0, stop on any check 5.2 says to ask about, then
- * (unless dry run) drop and re-create for a re-fill, write in bounded batches, and verify the target
- * against the rehearsal.
+ * on an in-memory SQLite copy of the D1 schema (with L0 as it is then), stop on any check 5.2 says to
+ * ask about, then (unless dry run) drop and re-create for a re-fill, write in bounded batches, take L0
+ * again and write the watermark row last (step 7), and verify the target against the rehearsal.
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -302,8 +302,10 @@ export async function runFirstCopy(opts: FirstCopyOptions): Promise<FirstCopyRep
   const plan = buildFirstCopyPlan(parseDumpCopyBlocks(dumpText), opts.env, nowMs);
   stops.push(...stopReasons(plan));
 
-  // 7 (computed now, written last). L0 by the 5-minute rule; an empty log starts at 0.
-  const l0 = w0 > 0 ? await opts.source.firstIdWithinFiveMinutes(w0) : null;
+  // 7, previewed for the rehearsal and the report: L0 by the 5-minute rule; an empty log starts at 0.
+  // The written row takes L0 again after the copy (step 7), so a lower id that commits late still counts.
+  const fiveMinuteL0 = () => (w0 > 0 ? opts.source.firstIdWithinFiveMinutes(w0) : Promise.resolve(null));
+  const l0 = await fiveMinuteL0();
   const watermark = l0 === null ? 0 : l0 - 1;
 
   const writes: D1Statement[] = [
@@ -390,9 +392,16 @@ export async function runFirstCopy(opts: FirstCopyOptions): Promise<FirstCopyRep
       }
     }
     log(`writing ${plannedWrites.length} statements (about ${estimatedRows} rows)`);
-    const result = await opts.target.write(plannedWrites, writeBudget);
-    report.writes.rowsWritten = result.rowsWritten;
-    report.writes.requests = requests + result.requests;
+    const copied = plannedWrites.slice(0, -1);
+    const result = await opts.target.write(copied, writeBudget);
+    // 7. L0 again now that the copy is in, then the watermark row last.
+    report.l0 = await fiveMinuteL0();
+    report.watermark = report.l0 === null ? 0 : report.l0 - 1;
+    log(`L0 = ${report.l0 ?? "none"}; writing the watermark ${report.watermark}`);
+    const markEstimate = plannedWrites[plannedWrites.length - 1].estimate;
+    const mark = await opts.target.write([planned({ sql: WATERMARK_SQL, params: [report.watermark] }, markEstimate)], writeBudget);
+    report.writes.rowsWritten = result.rowsWritten + mark.rowsWritten;
+    report.writes.requests = requests + result.requests + mark.requests;
   } catch (error) {
     report.outcome = "stopped";
     report.stops.push(
@@ -413,7 +422,8 @@ export async function runFirstCopy(opts: FirstCopyOptions): Promise<FirstCopyRep
     report.stops.push(`the copy is written but reading it back failed: ${(error as Error).message}`);
     return report;
   }
-  const differences = compareSnapshots(rehearsal, snap);
+  const written = { low_watermark: report.watermark, high_seen: report.watermark, applied_above: "[]" };
+  const differences = compareSnapshots({ ...rehearsal, syncState: written }, snap);
   report.verification = { snapshot: snap, differences };
   if (differences.length) {
     report.outcome = "stopped";
@@ -445,7 +455,8 @@ export function formatReport(r: FirstCopyReport): string {
   out.push(`  target: ${r.target}`);
   out.push(`  source: ${r.source}; Supabase env ${r.env}`);
   out.push(
-    `  change log: W0 = ${r.w0}, L0 = ${r.l0 ?? "none (empty log)"}; sync_state supabase_in low_watermark = high_seen = ${r.watermark}`,
+    `  change log: W0 = ${r.w0}, L0 = ${r.l0 ?? "none (empty log)"}; sync_state supabase_in low_watermark = high_seen = ${r.watermark}` +
+      `${r.writes.rowsWritten === null ? " (as of now; a copy takes L0 again after its writes)" : ""}`,
   );
   out.push(`  dump: ${kb(r.dumpBytes)}`);
   out.push("");

@@ -34,7 +34,7 @@ import {
   THREADS_FILL_SQL,
   type FirstCopyReport,
 } from "./d1-sync/first-copy-run";
-import { DumpFileSource, l0Sql, PgliteSource, PoolerSource, poolerOptionsFromEnv } from "./d1-sync/first-copy-source";
+import { DumpFileSource, l0Sql, PgliteSource, PoolerSource, poolerOptionsFromEnv, type CopySource } from "./d1-sync/first-copy-source";
 import { openD1TestDb, type SqliteDb } from "./d1-sync/test-db";
 
 let checks = 0;
@@ -411,6 +411,27 @@ async function main() {
     assert.equal(report.w0, 0);
     assert.equal(report.l0, null);
     assert.equal(report.watermark, 0);
+  });
+
+  await check("step 7: L0 is taken again after the copy, so a lower id that commits late is not skipped", async () => {
+    const file = new DumpFileSource(dumpFile(baseRows()), { workDir: WORK, noChangeLog: false });
+    // At the dump only W0 (3) is within 5 minutes; id 2 of the same window commits while the copy is written.
+    const answers = [3, 2];
+    const source: CopySource = {
+      label: "late commit",
+      maxChangeLogId: () => file.maxChangeLogId(),
+      dumpData: () => file.dumpData(),
+      firstIdWithinFiveMinutes: async () => answers.shift()!,
+      close: async () => {},
+    };
+    const target = freshTarget();
+    const report = await runFirstCopy({ target, source, env: "development", refill: false, dryRun: false, nowMs: 1_762_560_000_000 });
+    assert.equal(report.outcome, "ok", formatReport(report));
+    assert.deepEqual([report.w0, report.l0, report.watermark], [3, 2, 1]);
+    assert.deepEqual(answers, [], "L0 asked before the rehearsal and again after the copy");
+    assert.equal(report.rehearsal.syncState?.high_seen, 2, "the rehearsal used the L0 of the dump");
+    assert.deepEqual({ ...(target.db.prepare("SELECT low_watermark, high_seen FROM sync_state").get() as object) }, { low_watermark: 1, high_seen: 1 });
+    assert.deepEqual(report.verification?.differences, []);
   });
 
   // ----------------------------------------------------------------------------------------- remote D1 (fake API)
