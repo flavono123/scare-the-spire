@@ -10,7 +10,8 @@
  */
 import assert from "node:assert/strict";
 
-import { canonicalKey, mirrorOutbox, outboxHealth } from "../workers/api/d1-write/mirror";
+import { WRITE_GROUPS, sourceFlagKey } from "../src/lib/write-source-flags";
+import { canonicalKey, mirrorOutbox, outboxHealth, scheduledOutboxMirror } from "../workers/api/d1-write/mirror";
 import { outboxStatement, readPayload } from "../workers/api/d1-write/outbox";
 import { repoSupabase, PgliteRest } from "./d1-sync/pglite-supabase";
 import { OTHER, setupHarness, USER, type Harness } from "./d1-sync/write-harness";
@@ -63,6 +64,7 @@ async function recorder() {
     assert.equal(calls[0].url.searchParams.get("on_conflict"), "story_id,user_id,env");
     assert.match(calls[0].headers.get("prefer") ?? "", /resolution=ignore-duplicates/);
     assert.equal(calls[0].headers.get("apikey"), "sb_secret_test");
+    assert.ok(calls.every((entry) => entry.headers.get("authorization") === null), "a new-format secret key is never sent as a bearer");
     assert.deepEqual(JSON.parse(calls[0].body), { story_id: "sts2-codex:card:a", user_id: USER, created_at: TS, env: "development" });
     const post = JSON.parse(calls[2].body) as Record<string, unknown>;
     assert.deepEqual(post.content, [{ t: "x" }]);
@@ -131,7 +133,9 @@ async function recorder() {
     h.db.run("UPDATE sync_state SET lease_until = ?1 WHERE name = 'outbox_out'", Date.now() + 30_000);
     assert.equal((await mirrorOutbox(env)).reason, "leased");
     h.db.run("UPDATE sync_state SET lease_until = 0 WHERE name = 'outbox_out'");
-    assert.equal((await mirrorOutbox({ ...(h.env as object), API_SUPABASE_SERVICE_KEY: "sb_publishable_x" } as never)).reason, "no_config", "only a secret key");
+    assert.equal((await mirrorOutbox({ ...(h.env as object), API_SUPABASE_SECRET_KEY: "sb_publishable_x" } as never)).reason, "no_config", "only a secret key");
+    const fallback = { ...(h.env as object), API_SUPABASE_SECRET_KEY: undefined, API_SUPABASE_SERVICE_KEY: "sb_secret_test" };
+    assert.notEqual((await mirrorOutbox(fallback as never)).reason, "no_config", "the step 4 name is read when the shared one is unset");
   });
 
   await check("env-less puzzlebox_players: skipped (dropped) by a development Worker, sent by production", async () => {
@@ -147,6 +151,52 @@ async function recorder() {
     assert.equal(call.url.searchParams.get("on_conflict"), "user_id");
     const body = JSON.parse(call.body) as Record<string, unknown>;
     assert.ok(!("env" in body) && !("hidden" in body), "no env, and the operator's hidden switch is never mirrored");
+  });
+
+  await check("rows waiting behind a reject do not fill the run: later keys still go", async () => {
+    h.supabase.calls = [];
+    h.db.run("INSERT INTO sync_rejects (direction, ref, table_name, d1_table, row_key, op, reason, payload, error, first_at, last_at) VALUES ('out', 9001, 'likes', 'likes', ?1, 'delete', 'supabase_4xx', '{}', '23503', 1, 1)",
+      canonicalKey(JSON.stringify({ story_id: "stuck", user_id: USER })));
+    const stuck = Array.from({ length: 25 }, () => ({ table: "likes", op: "delete" as const, match: { story_id: "stuck", user_id: USER }, payload: null }));
+    insertOutbox(h, [...stuck, { table: "likes", op: "delete", match: { story_id: "free", user_id: USER }, payload: null }]);
+    h.supabase.answers = [{ status: 409, code: "23503" }];
+    const report = await mirrorOutbox(env);
+    assert.deepEqual([report.retriedRejects, report.resolvedRejects, report.sent], [1, 0, 1]);
+    assert.deepEqual(h.supabase.restCalls().map((entry) => entry.url.searchParams.get("story_id")), ["eq.stuck", "eq.free"]);
+    assert.equal(h.outbox().length, 25, "the stuck key's rows wait behind its reject");
+    // After a write the run leaves rejects to the cron, but their keys still wait.
+    h.supabase.calls = [];
+    const after = await mirrorOutbox(env, { maxRows: 5, statementBudget: 20, retryRejects: false });
+    assert.deepEqual([after.retriedRejects, after.sent, h.supabase.restCalls().length], [0, 0, 0]);
+    h.db.run("UPDATE sync_rejects SET resolved_at = 1 WHERE ref = 9001");
+    h.db.run("DELETE FROM outbox");
+  });
+
+  await check("a run stays inside its D1 statement budget", async () => {
+    const db = { get statements() { return h.db.log.length; } };
+    insertOutbox(h, Array.from({ length: 30 }, (_, i) => ({ table: "comments", op: "insert" as const, match: { id: U(500 + i) }, payload: readPayload("comments") })));
+    for (const budget of [45, 20]) {
+      const before = db.statements;
+      const report = await mirrorOutbox(env, { statementBudget: budget });
+      assert.ok(db.statements - before <= budget, `${db.statements - before} statements for a budget of ${budget}`);
+      assert.ok(report.sent > 0 && report.remaining);
+    }
+    while (h.outbox().length) await mirrorOutbox(env);
+  });
+
+  await check("the cron call is inert unless API_RUNTIME_FLAGS is d1 and a source is d1", async () => {
+    const db = { get statements() { return h.db.log.length; } };
+    insertOutbox(h, [{ table: "likes", op: "delete", match: { story_id: "cron", user_id: USER }, payload: null }]);
+    let before = db.statements;
+    assert.equal(await scheduledOutboxMirror({ ...(h.env as object), API_RUNTIME_FLAGS: "off" } as never), null);
+    assert.equal(db.statements, before, "production today: no D1 read at all");
+    for (const group of WRITE_GROUPS) h.setFlag(sourceFlagKey(group), "supabase");
+    before = db.statements;
+    assert.equal(await scheduledOutboxMirror(env), null);
+    assert.equal(db.statements - before, 1, "only the gate read");
+    for (const group of WRITE_GROUPS) h.setFlag(sourceFlagKey(group), "d1");
+    assert.equal((await scheduledOutboxMirror(env))?.sent, 1);
+    assert.equal(h.outbox().length, 0);
   });
 }
 

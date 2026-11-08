@@ -64,6 +64,9 @@ export const D1_WRITE_HANDLERS: Readonly<Record<string, D1WriteHandler>> = {
   "write.puzzlebox.runs": submitRun,
 };
 
+/** D1 statements the mirror run after a write may use (the write batch and flag reads use the rest of 50). */
+export const AFTER_WRITE_MIRROR_STATEMENTS = 20;
+
 /** The share route exists for the D1 source only; on Supabase the client keeps the batch upload. */
 export const SHARE_UNAVAILABLE = "single_run_unavailable";
 
@@ -129,8 +132,12 @@ export async function d1WriteHook(route: UserRoute, context: UserRouteContext): 
     return apiError("unavailable");
   }
   if (response.status < 300) {
-    // Mirror right away; the 1-minute cron picks up whatever this leaves (design 5.5).
-    context.ctx.waitUntil(mirrorOutbox(context.env as MirrorEnv, { maxRows: 5 }).catch(() => undefined));
+    // Mirror right away; the 1-minute cron picks up whatever this leaves and retries the rejects
+    // (design 5.5). The budget leaves the invocation's 50 D1 statements room for this write.
+    context.ctx.waitUntil(
+      mirrorOutbox(context.env as MirrorEnv, { maxRows: 5, statementBudget: AFTER_WRITE_MIRROR_STATEMENTS, retryRejects: false })
+        .catch(() => undefined),
+    );
   }
   return response;
 }

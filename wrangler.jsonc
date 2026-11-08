@@ -17,6 +17,11 @@
   "vars": {
     "API_RUNTIME_FLAGS": "off"
   },
+  // Step 2 1-minute D1 sync (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3). A no-op unless
+  // API_RUNTIME_FLAGS is "d1" and runtime_flags sync.enabled is on; API_SUPABASE_SECRET_KEY is a secret.
+  "triggers": {
+    "crons": ["* * * * *"]
+  },
   "d1_databases": [
     {
       "binding": "DB",
@@ -56,6 +61,9 @@
       "preview_urls": true,
       "vars": {
         "API_RUNTIME_FLAGS": "d1"
+      },
+      "triggers": {
+        "crons": ["* * * * *"]
       },
       "d1_databases": [
         {

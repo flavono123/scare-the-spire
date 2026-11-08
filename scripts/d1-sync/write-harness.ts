@@ -9,7 +9,7 @@ import { resetFlagsForTest } from "../../workers/api/flags";
 import { resetJwtCachesForTest } from "../../workers/api/jwt";
 import { resetWriteGateForTest } from "../../workers/api/d1-write/gate";
 import mainWorker from "../../workers/main-worker";
-import { SqliteD1 } from "./sqlite-d1";
+import { SqliteD1 } from "./write-sqlite-d1";
 
 export const ORIGIN = "https://testbed.example.workers.dev";
 export const PROJECT = "https://abcdefghijklmnopqrst.supabase.co";
@@ -107,7 +107,7 @@ export async function setupHarness(options: { dataEnv?: "production" | "developm
     ASSETS: { fetch: async () => new Response("asset") },
     PATCH_WORKER: { fetch: async () => new Response("patch") },
   };
-  if (options.serviceKey) env.API_SUPABASE_SERVICE_KEY = "sb_secret_test";
+  if (options.serviceKey) env.API_SUPABASE_SECRET_KEY = "sb_secret_test";
   const ctx = new Ctx();
   const tokens: Record<string, string> = { [USER]: await signer.token(USER), [OTHER]: await signer.token(OTHER) };
 

@@ -1,6 +1,7 @@
 import type { D1Database } from "../d1";
 import type { Fetcher } from "../supabase-rest";
 import { rowsOf, runBatch, stmt, type D1Statement, type D1Value } from "./db";
+import { anyD1Source, readWriteGate } from "./gate";
 import type { OutboxOp, OutboxPayload } from "./outbox";
 import { keyParams, mirrorTable, rowJson, type MirrorTable } from "./tables";
 
@@ -29,7 +30,12 @@ import { keyParams, mirrorTable, rowJson, type MirrorTable } from "./tables";
 export type MirrorEnv = {
   DB?: D1Database;
   API_SUPABASE_URL?: string;
-  /** Supabase secret (service role) key, a Worker secret. The mirror is off without it. */
+  /**
+   * Supabase secret key (sb_secret_...), a Worker secret shared with the step 2 sync
+   * (workers/sync/sync-env.ts). The mirror is off without it.
+   */
+  API_SUPABASE_SECRET_KEY?: string;
+  /** The same secret under the step 4 write-validation name; read only when the one above is unset. */
   API_SUPABASE_SERVICE_KEY?: string;
   API_DATA_ENV?: string;
 };
@@ -38,7 +44,7 @@ export type MirrorConfig = { url: string; key: string; dataEnv: "production" | "
 
 export function mirrorConfig(env: MirrorEnv): MirrorConfig | null {
   const url = (env.API_SUPABASE_URL ?? "").trim().replace(/\/+$/, "");
-  const key = (env.API_SUPABASE_SERVICE_KEY ?? "").trim();
+  const key = (env.API_SUPABASE_SECRET_KEY || env.API_SUPABASE_SERVICE_KEY || "").trim();
   const dataEnv = (env.API_DATA_ENV ?? "").trim();
   if (!/^https:\/\/[a-z0-9]{20}\.supabase\.co$/.test(url) && !/^http:\/\/(?:127\.0\.0\.1|localhost):\d+$/.test(url)) return null;
   if (!/^sb_secret_[A-Za-z0-9_-]+$/.test(key)) return null;
@@ -105,7 +111,8 @@ async function call(
 ): Promise<SendResult> {
   const url = new URL(`${config.url}/rest/v1/${request.path}`);
   if (request.query) url.search = request.query.toString();
-  const headers = new Headers({ apikey: config.key, Authorization: `Bearer ${config.key}`, Accept: "application/json" });
+  // A new-format secret key is not a JWT: apikey only, never as the bearer (STEP1_DESIGN 5).
+  const headers = new Headers({ apikey: config.key, Accept: "application/json" });
   if (request.body !== undefined) headers.set("Content-Type", request.contentType ?? "application/json");
   headers.set("Prefer", ["return=minimal", ...(request.prefer ?? [])].join(","));
   const controller = new AbortController();
@@ -232,9 +239,25 @@ function readStatements(items: Prepared[]): D1Statement[] {
 
 export type MirrorOptions = {
   maxRows?: number;
+  /**
+   * D1 statements this run may use: the invocation's 50 (each batch member counts) minus what the
+   * caller already ran. A run after a write passes what the write left; the cron passes 45.
+   */
+  statementBudget?: number;
+  /** Retry open 'out' rejects first (the cron does); a run after a write leaves them to the cron. */
+  retryRejects?: boolean;
   now?: () => number;
   fetcher?: Fetcher;
 };
+
+/** Reads one outbox row needs at send time: none for a delete, the row, and the stats for the tournament RPC. */
+function readsFor(op: OutboxOp): number {
+  if (op === "delete") return 0;
+  return op === "rpc" ? 2 : 1;
+}
+
+/** Open 'out' reject keys read with the lease; more than this costs one extra read. */
+const OPEN_REJECT_KEYS_READ = 50;
 
 /**
  * One mirror run. Safe to call from any number of invocations: a lease in sync_state ('outbox_out')
@@ -249,7 +272,12 @@ export async function mirrorOutbox(env: MirrorEnv, options: MirrorOptions = {}):
   const now = options.now ?? Date.now;
   const fetcher: Fetcher = options.fetcher ?? ((input, init) => fetch(input, init));
   const maxRows = Math.max(1, Math.min(options.maxRows ?? 20, 20));
+  const budget = Math.min(options.statementBudget ?? 45, 45);
+  const retryRejects = options.retryRejects ?? true;
   const startedAt = now();
+  // Statements used so far; the end always costs two more (the outbox delete and the lease release).
+  let used = 3;
+  const END = 2;
 
   // S1 (lease) + S2 (next rows) + open 'out' rejects in one round trip.
   const [lease, pending, rejects] = await runBatch(db, [
@@ -259,10 +287,11 @@ export async function mirrorOutbox(env: MirrorEnv, options: MirrorOptions = {}):
         "WHERE sync_state.lease_until < excluded.last_run_at RETURNING low_watermark, high_seen, applied_above",
       "outbox_out", startedAt + MIRROR_LEASE_MS, startedAt,
     ),
-    stmt("SELECT seq, table_name, op, match_key, payload, attempts, next_attempt_at FROM outbox WHERE seq > ?1 ORDER BY seq LIMIT ?2", 0, maxRows + 1),
+    // S2: 50 rows, so rows waiting behind an open reject do not fill the run's maxRows.
+    stmt("SELECT seq, table_name, op, match_key, payload, attempts, next_attempt_at FROM outbox WHERE seq > ?1 ORDER BY seq LIMIT 50", 0),
     stmt(
       "SELECT direction, ref, table_name, row_key, op, payload FROM sync_rejects WHERE resolved_at IS NULL AND direction = 'out' ORDER BY last_at LIMIT ?1",
-      MAX_REJECT_RETRIES,
+      OPEN_REJECT_KEYS_READ,
     ),
   ]);
   if (rowsOf(lease).length === 0) return { ...report, reason: "leased" };
@@ -272,11 +301,27 @@ export async function mirrorOutbox(env: MirrorEnv, options: MirrorOptions = {}):
   const openRejects = rowsOf<OpenReject>(rejects);
   const finish: D1Statement[] = [];
   try {
-    // 1. Retry open rejects: re-send the current D1 state of the key (the payload is never replayed).
-    const retries = openRejects.map((reject) =>
-      prepare({ seq: reject.ref, table_name: reject.table_name, op: reject.op as OutboxOp, match_key: reject.row_key, payload: reject.payload === "{}" ? null : reject.payload, attempts: 0, next_attempt_at: 0 }),
-    );
-    const stillOpen = new Set<string>();
+    // Every open reject blocks its key until it is resolved (rows of that key wait behind it).
+    const stillOpen = new Set<string>(openRejects.map((reject) => blockKey(reject.table_name, reject.row_key)));
+    if (openRejects.length >= OPEN_REJECT_KEYS_READ) {
+      used += 1;
+      const more = await runBatch(db, [stmt("SELECT table_name, row_key FROM sync_rejects WHERE resolved_at IS NULL AND direction = 'out'")]);
+      for (const reject of rowsOf<{ table_name: string; row_key: string }>(more[0])) stillOpen.add(blockKey(reject.table_name, reject.row_key));
+    }
+
+    // 1. Retry open rejects, oldest first: re-send the current D1 state of the key (the payload is
+    //    never replayed). Each costs its reads and one sync_rejects update.
+    const retries: Prepared[] = [];
+    if (retryRejects) {
+      let retryCost = 1;
+      for (const reject of openRejects.slice(0, MAX_REJECT_RETRIES)) {
+        const cost = readsFor(reject.op as OutboxOp) + 1;
+        if (used + retryCost + cost + END > budget) break;
+        retryCost += cost;
+        retries.push(prepare({ seq: reject.ref, table_name: reject.table_name, op: reject.op as OutboxOp, match_key: reject.row_key, payload: reject.payload === "{}" ? null : reject.payload, attempts: 0, next_attempt_at: 0 }));
+      }
+      if (retries.length) used += retryCost;
+    }
     if (retries.length) {
       const reads = await runBatch(db, readStatements(retries));
       for (const item of retries) {
@@ -286,9 +331,9 @@ export async function mirrorOutbox(env: MirrorEnv, options: MirrorOptions = {}):
         const result = await send(config, fetcher, buildCall(config, item, row, stats));
         if (result.ok) {
           report.resolvedRejects += 1;
+          stillOpen.delete(blockKey(item.record.table_name, item.record.match_key));
           finish.push(stmt("UPDATE sync_rejects SET resolved_at = ?3 WHERE direction = ?1 AND ref = ?2 AND resolved_at IS NULL", "out", item.record.seq, now()));
         } else {
-          stillOpen.add(blockKey(item.record.table_name, item.record.match_key));
           finish.push(stmt(
             "UPDATE sync_rejects SET attempts = attempts + 1, last_at = ?3, error = ?4 WHERE direction = ?1 AND ref = ?2 AND resolved_at IS NULL",
             "out", item.record.seq, now(), result.code,
@@ -300,24 +345,27 @@ export async function mirrorOutbox(env: MirrorEnv, options: MirrorOptions = {}):
         }
       }
     }
-    // Rejects not retried this run (over the cap) still block their keys.
-    if (openRejects.length >= MAX_REJECT_RETRIES) {
-      const more = await runBatch(db, [stmt("SELECT table_name, row_key FROM sync_rejects WHERE resolved_at IS NULL AND direction = 'out'")]);
-      for (const reject of rowsOf<{ table_name: string; row_key: string }>(more[0])) {
-        if (!openRejects.some((open) => open.table_name === reject.table_name && open.row_key === reject.row_key)) {
-          stillOpen.add(blockKey(reject.table_name, reject.row_key));
-        }
+    // 2. The outbox in seq order: up to maxRows rows whose key is not waiting behind an open reject,
+    //    within the statement budget (each row: its reads, plus one statement if it fails).
+    const batch: Prepared[] = [];
+    let waiting = 0;
+    let rowCost = 1;
+    for (const record of records) {
+      if (stillOpen.has(blockKey(record.table_name, record.match_key))) {
+        waiting += 1;
+        continue;
       }
+      const cost = readsFor(record.op) + 1;
+      if (batch.length === maxRows || used + rowCost + cost + END > budget) break;
+      rowCost += cost;
+      batch.push(prepare(record));
     }
-
-    // 2. The outbox in seq order.
-    report.remaining = records.length > maxRows;
-    const batch = records.slice(0, maxRows).map(prepare);
+    report.remaining = records.length > batch.length + waiting || records.length === 50;
     if (batch.length === 0) {
       report.reason = "empty";
       return report;
     }
-    if (batch[0].record.next_attempt_at > startedAt && !stillOpen.has(blockKey(batch[0].record.table_name, batch[0].record.match_key))) {
+    if (batch[0].record.next_attempt_at > startedAt) {
       report.reason = "backoff";
       return report;
     }
@@ -377,9 +425,20 @@ function d1TableOf(table: string): string {
   return table === "runs" || table.endsWith("_posts") ? "posts" : table;
 }
 
-/** The cron's call: one run of up to 20 rows (the rest waits for the next minute). */
-export async function scheduledOutboxMirror(env: MirrorEnv, options: MirrorOptions = {}): Promise<MirrorReport> {
-  return mirrorOutbox(env, { ...options, maxRows: options.maxRows ?? 20 });
+/**
+ * The 1-minute cron's call (design 5.5): one run of up to 20 rows; the rest waits for the next
+ * minute. Inert unless API_RUNTIME_FLAGS is "d1" (production today reads nothing) and some write
+ * group's source is d1. The budget leaves room for the gate read and the step 2 sync's own gate
+ * read in the same scheduled invocation (the sync is off while a source is d1).
+ */
+export async function scheduledOutboxMirror(
+  env: MirrorEnv & { API_RUNTIME_FLAGS?: string },
+  options: MirrorOptions = {},
+): Promise<MirrorReport | null> {
+  if (env.API_RUNTIME_FLAGS !== "d1" || !env.DB) return null;
+  const gate = await readWriteGate(env.DB);
+  if (!anyD1Source(gate)) return null;
+  return mirrorOutbox(env, { maxRows: 20, statementBudget: 43, ...options });
 }
 
 /** Counts for the cutover's "outbox empty and no open out reject" check. */

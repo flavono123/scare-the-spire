@@ -27,6 +27,7 @@ import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-res
 import { withFlagCookie } from "./api/flag-cookie";
 import { isApiRouterPath, type ApiEnv } from "./api/router";
 import { apiRouter } from "./api/routes";
+import { scheduledOutboxMirror, type MirrorEnv } from "./api/d1-write/mirror";
 import { isSearchCrawlerUserAgent } from "../src/lib/locale-detection";
 import {
   handleLinkPreviewRequest,
@@ -506,6 +507,11 @@ async function routeRequest(request: Request, env: Env, ctx: ExecutionContextLik
 }
 
 const mainWorker = {
+  /** Step 5 outbox mirror (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.5); a no-op unless a write source is d1. */
+  async scheduled(_controller: { scheduledTime: number }, env: Env & MirrorEnv, ctx: ExecutionContextLike): Promise<void> {
+    ctx.waitUntil(scheduledOutboxMirror(env).catch(() => undefined));
+  },
+
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
     // Before routeRequest: /api/patches* would otherwise match the patch Worker paths.
