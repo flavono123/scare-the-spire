@@ -11,9 +11,13 @@ import {
   type ApiErrorCode,
   type LegacyReason,
 } from "./http";
-import { bearerToken, checkSupabaseAccessToken, fetchSupabaseJwks, type VerifiedSupabaseUser } from "./jwt";
+import { IDENTITY_CLAIM_PATH, type IdentityMode } from "../../src/lib/identity-cookies";
+import { handleIdentityClaim } from "./identity/claim";
+import { withSetCookies, type IdentityEnv } from "./identity/cookie";
+import { resolveRequestIdentity } from "./identity/resolve";
+import type { VerifiedSupabaseUser } from "./jwt";
 import { clientIp, withinRateLimit, type RateLimitEnv, type RateLimitKind } from "./rate-limit";
-import { supabaseApiConfig, supabaseIssuer, type SupabaseApiConfig } from "./supabase-rest";
+import { supabaseApiConfig, type SupabaseApiConfig } from "./supabase-rest";
 
 /**
  * The same-origin API router (docs/supabase-exit/STEP1_DESIGN.md 4). It owns
@@ -22,7 +26,7 @@ import { supabaseApiConfig, supabaseIssuer, type SupabaseApiConfig } from "./sup
  * switch, QA, flag, token, rate limit, body, handler.
  */
 
-export type ApiEnv = FlagsEnv & RateLimitEnv;
+export type ApiEnv = FlagsEnv & RateLimitEnv & IdentityEnv;
 
 type BaseContext = {
   request: Request;
@@ -41,7 +45,13 @@ type BaseContext = {
 export type PublicRouteContext = BaseContext;
 export type UserRouteContext = BaseContext & {
   user: VerifiedSupabaseUser;
+  /**
+   * The verified Supabase token to forward (RLS). Empty in step 4 cookie mode
+   * when the request carried no token for the cookie's uid (identity/resolve.ts).
+   */
   token: string;
+  /** How `user` was established: `token` (step 1) or `cookie` (step 4, plan 5.3). */
+  identitySource: IdentityMode;
   /** The parsed JSON body when the route declares `body`; otherwise undefined. */
   body: unknown;
   /** The unread JSON body when the route declares `rawBody` (length checked); otherwise null. */
@@ -92,7 +102,7 @@ export type ApiRoute = PublicRoute | UserRoute;
 const ROUTER_PREFIXES = ["/api/read/", "/api/me/", "/api/write/"];
 
 export function isApiRouterPath(pathname: string): boolean {
-  return ROUTER_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  return pathname === IDENTITY_CLAIM_PATH || ROUTER_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
 function log(method: string, label: string, status: number, code: string): void {
@@ -164,12 +174,6 @@ export async function readJsonBody(request: Request, maxBytes: number): Promise<
   }
 }
 
-const TOKEN_ERRORS: Record<"expired" | "invalid" | "unavailable", ApiErrorCode> = {
-  expired: "token_expired",
-  invalid: "token_invalid",
-  unavailable: "auth_unavailable",
-};
-
 export function createApiRouter(routes: readonly ApiRoute[]) {
   const routedGroups: ReadonlySet<ApiSurfaceGroup> = new Set(routes.map((route) => route.group));
 
@@ -237,37 +241,37 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
       }
       response = await route.handle(base);
     } else {
-      const token = bearerToken(request);
-      if (!token) return error("token_invalid");
-      const issuer = supabaseIssuer(config);
-      const check = await checkSupabaseAccessToken(token, {
-        issuer,
-        fetchJwks: () => fetchSupabaseJwks(issuer),
-        waitUntil: (promise) => ctx.waitUntil(promise),
-      });
-      if (!check.ok) return error(TOKEN_ERRORS[check.reason]);
+      // Step 4 identity (identity/resolve.ts); token mode is the step 1 bearer check.
+      const resolved = await resolveRequestIdentity(request, env, ctx, config, routedGroups, qa.noSupabase, url);
+      const userError = (code: ApiErrorCode) => {
+        const result = error(code);
+        return { ...result, response: withSetCookies(result.response, resolved.setCookies) };
+      };
+      if (!resolved.ok) return userError(resolved.code);
+      const { user, token, source } = resolved.identity;
       const allowed = route.rateLimit === "none"
         || (route.rateLimit === "ip"
           ? await withinRateLimit(env, "ip", clientIp(request))
-          : await withinRateLimit(env, "user", check.user.userId));
-      if (!allowed) return error("rate_limited");
+          : await withinRateLimit(env, "user", user.userId));
+      if (!allowed) return userError("rate_limited");
       let body: unknown;
       if (route.body) {
         const read = await readJsonBody(request, route.body.maxBytes);
-        if (!read.ok) return error(read.code);
+        if (!read.ok) return userError(read.code);
         body = read.value;
       }
       let bodyStream: ReadableStream<Uint8Array> | null = null;
       if (route.rawBody) {
         if (!/^application\/json(?:\s*;|$)/i.test(request.headers.get("content-type") ?? "") || !request.body) {
-          return error("invalid");
+          return userError("invalid");
         }
         const length = request.headers.get("content-length");
-        if (length === null || !/^\d{1,10}$/.test(length)) return error("invalid");
-        if (Number(length) > route.rawBody.maxBytes) return error("too_large");
+        if (length === null || !/^\d{1,10}$/.test(length)) return userError("invalid");
+        if (Number(length) > route.rawBody.maxBytes) return userError("too_large");
         bodyStream = request.body;
       }
-      response = await route.handle({ ...base, user: check.user, token, body, bodyStream });
+      response = await route.handle({ ...base, user, token: token ?? "", identitySource: source, body, bodyStream });
+      response = withSetCookies(response, resolved.setCookies);
     }
     return { response: isHead ? withoutBody(response) : response, label, code: "handler" };
   }
@@ -275,6 +279,7 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
   return {
     routedGroups,
     async handle(request: Request, env: ApiEnv, ctx: ExecutionContextLike, url = new URL(request.url)): Promise<Response> {
+      if (url.pathname === IDENTITY_CLAIM_PATH) return handleIdentityClaim(request, env, ctx, url, routedGroups);
       let result: { response: Response; label: string; code: string };
       try {
         result = await dispatch(request, env, ctx, url);
