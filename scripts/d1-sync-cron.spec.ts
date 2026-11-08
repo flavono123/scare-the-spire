@@ -453,6 +453,27 @@ async function main() {
     assert.deepEqual(JSON.parse(h.state().applied_above), [1, 2, 3]);
   });
 
+  await check("a window handed over again re-applies idempotently past ids whose rejects were closed before", async () => {
+    const h = harness();
+    const foreign = thisOrThat(7, { env: OTHER_ENV });
+    h.rest.table("this_or_that_posts").push(foreign);
+    h.rest.insert("this_or_that_post_likes", thisOrThatLike(String(foreign.id), U(3), ENV));
+    h.rest.insert("defragment_bodies", body("combo", U(400_998)));
+    h.rest.insert("comments", comment(1, "sts2-codex:card:again"));
+    const first = await h.sync();
+    assert.deepEqual(first.rejects.map((reject) => [reject.ref, reject.reason, reject.closed]).sort(), [[1, "cross_env", true], [2, "orphan", true]]);
+    // The same ids again (pnpm sync:state start with an older L0, or a run whose S11 lost the lease).
+    h.d1.sqlite.prepare("UPDATE sync_state SET low_watermark = 0, high_seen = 0, applied_above = '[]'").run();
+    h.rest.insert("comments", comment(2, "sts2-codex:card:again"));
+    const reports: SyncReport[] = [];
+    for (let i = 0; i < 4; i++) reports.push(await h.sync());
+    assert.ok(reports.every((report) => report.status === "ok"), reports.map((report) => report.error ?? "").join(" | "));
+    assert.deepEqual(JSON.parse(h.state().applied_above), [1, 2, 3, 4], "every id is committed again");
+    assert.equal(count(h, "SELECT count(*) AS n FROM comments"), 2);
+    assert.equal(count(h, "SELECT count(*) AS n FROM sync_rejects"), 2, "one reject row per change-log id");
+    assert.equal(count(h, "SELECT count(*) AS n FROM sync_rejects WHERE resolved_at IS NULL"), 0);
+  });
+
   await check("an FK child whose parent arrives later is an open fk reject that the retry resolves", async () => {
     const h = harness();
     const post = thisOrThat(9);

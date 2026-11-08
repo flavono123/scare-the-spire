@@ -155,6 +155,15 @@ function shortError(error: unknown): string {
   return String((error as { message?: unknown })?.message ?? error).replace(/\s+/g, " ").slice(0, 200);
 }
 
+/**
+ * sync_rejects is keyed by (direction, ref): the reject row of this change-log id exists already,
+ * because the id was processed before (a window handed over again, or a run whose S11 lost the
+ * lease). The id is done; re-applying a window stays idempotent (design 5.2 step 7).
+ */
+function rejectRefTaken(error: unknown): boolean {
+  return /UNIQUE constraint failed: sync_rejects\.direction, sync_rejects\.ref/i.test(String((error as { message?: unknown })?.message ?? error));
+}
+
 /** Unix ms of a PostgREST timestamp, or NaN. */
 export function timestampMs(text: string): number {
   const ts = canonicalTs(text);
@@ -736,6 +745,7 @@ class SyncRun {
   /** One change failed alone: an FK error gets one re-read; otherwise it becomes a reject. */
   private async single(item: Item, kind: "fk" | "check", error: unknown): Promise<void> {
     const change = item.change;
+    if (item.kind === "reject" && rejectRefTaken(error)) return this.commitIdsOnly(item.ids);
     if (item.kind !== "apply" || !change) throw error;
     if (kind === "fk") {
       const parent = PARENTS[change.table];
@@ -798,11 +808,26 @@ class SyncRun {
       this.stopped = true;
       return;
     }
-    await this.batch([...item.statements, this.s11For(item.ids, item.statements.length + 1)]);
+    try {
+      await this.batch([...item.statements, this.s11For(item.ids, item.statements.length + 1)]);
+    } catch (error) {
+      if (!rejectRefTaken(error)) throw error;
+      return this.commitIdsOnly(item.ids);
+    }
     this.commitDone(item.ids);
     if (item.reject) {
       this.report.rejects.push({ ref: item.ids[0], table: item.reject.table, reason: item.reject.reason, closed: item.reject.closed });
     }
+  }
+
+  /** Commits ids whose reject row was written by an earlier run (rejectRefTaken): S11 alone. */
+  private async commitIdsOnly(ids: readonly number[]): Promise<void> {
+    if (this.budgetLeft() < 1) {
+      this.stopped = true;
+      return;
+    }
+    await this.batch([this.s11For(ids, 1)]);
+    this.commitDone(ids);
   }
 
   /**
@@ -863,7 +888,13 @@ class SyncRun {
       this.init.log(`sync follow-up lost ${change.table} ${item.ids[0]} ${reason}`);
       return;
     }
-    await this.batch(reject.statements);
+    try {
+      await this.batch(reject.statements);
+    } catch (error) {
+      // Recorded by an earlier run of the same id (see rejectRefTaken); the ids are committed.
+      if (rejectRefTaken(error)) return;
+      throw error;
+    }
     if (reject.reject) {
       this.report.rejects.push({ ref: item.ids[0], table: change.table, reason, closed: reject.reject.closed });
     }
