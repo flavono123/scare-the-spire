@@ -427,7 +427,8 @@ export class RemoteD1Target implements D1Target {
     const result: WriteResult = { rowsWritten: 0, changes: [], requests: 0 };
     for (const batch of batches(writes, REMOTE_BATCH_STATEMENTS, REMOTE_BATCH_BYTES, (w) => w.wire.params.length > 0)) {
       budget?.check(sum(batch.map((w) => w.estimate)));
-      const sql = batch.length === 1 ? batch[0].wire.sql : batch.map((w) => w.wire.sql).join(";\n");
+      // "\n;" ends any trailing line comment of a statement before the separator.
+      const sql = batch.length === 1 ? batch[0].wire.sql : batch.map((w) => w.wire.sql).join("\n;\n");
       const answers = await this.request(sql, batch.length === 1 ? batch[0].wire.params : []);
       result.requests += 1;
       if (answers.length !== batch.length) {

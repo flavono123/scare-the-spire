@@ -279,6 +279,24 @@ export function buildFirstCopyPlan(blocks: Map<string, CopyBlock>, env: DataEnv,
         tally.rejectSamples[reason] ??= (error as Error).message;
         continue;
       }
+      // Runs: the raw checks and the summary columns (RF2) from the raw, as the fill job computes them.
+      let summaryFill: PlannedStatement | null = null;
+      if (table === "runs") {
+        const id = String(image.id);
+        const raw = String(image.raw);
+        checks.runs.count += 1;
+        const bytes = utf8(raw);
+        rawSizes.push(bytes);
+        if (bytes > RUN_RAW_MAX_BYTES) checks.runs.overCap.push(id);
+        try {
+          const summary = extractRunListSummary(id, raw);
+          factSizes.push(utf8(JSON.stringify(summary.list_facts)));
+          elementSizes.push(utf8(JSON.stringify(summary.game_elements)));
+          summaryFill = { table: SUMMARY_FILL, statement: runSummaryFillStatement(id, summary) };
+        } catch {
+          checks.runs.unreadable.push(id);
+        }
+      }
       const ctxParentEnv = fkChild ? (parentEnv[fkChild.parent].get(String(image[fkChild.column])) ?? null) : undefined;
       const result = mapRow(table, image, { nowMs, parentEnv: ctxParentEnv });
       if (!result.ok) {
@@ -318,22 +336,9 @@ export function buildFirstCopyPlan(blocks: Map<string, CopyBlock>, env: DataEnv,
       }
       if (table === "likes" || table === "comments") threadKeys.add(String(image.story_id));
 
-      if (table === "runs") {
-        const id = String(image.id);
-        const raw = String(image.raw);
-        checks.runs.count += 1;
+      if (summaryFill) {
         bump(expected, "post_history_course_file");
-        const bytes = utf8(raw);
-        rawSizes.push(bytes);
-        if (bytes > RUN_RAW_MAX_BYTES) checks.runs.overCap.push(id);
-        try {
-          const summary = extractRunListSummary(id, raw);
-          factSizes.push(utf8(JSON.stringify(summary.list_facts)));
-          elementSizes.push(utf8(JSON.stringify(summary.game_elements)));
-          statements.push({ table: SUMMARY_FILL, statement: runSummaryFillStatement(id, summary) });
-        } catch {
-          checks.runs.unreadable.push(id);
-        }
+        statements.push(summaryFill);
       }
     }
 
