@@ -492,6 +492,27 @@ async function main() {
     assert.equal(count(h, "SELECT count(*) AS n FROM sync_rejects WHERE resolved_at IS NULL"), 0);
   });
 
+  await check("the 10-attempt limit stops only rejects whose current row fails a D1 CHECK; an fk child keeps its retry", async () => {
+    const h = harness();
+    const post = thisOrThat(11);
+    // In Supabase but not in D1 (its log row has not come): the like is an open fk reject.
+    h.rest.table("this_or_that_posts").push({ ...post });
+    h.rest.insert("this_or_that_post_likes", thisOrThatLike(String(post.id), U(3)));
+    h.rest.insert("likes", like("sts2-codex:card:limit", U(5), { created_at: "infinity" }));
+    for (let i = 0; i < 13; i++) await h.sync();
+    const attempts = (ref: number) => Number(h.d1.one("SELECT attempts FROM sync_rejects WHERE ref = ?1", ref)?.attempts);
+    assert.equal(h.d1.one("SELECT reason FROM sync_rejects WHERE ref = 1")?.reason, "fk");
+    assert.ok(attempts(1) > 10, `the fk reject is still retried (${attempts(1)} attempts)`);
+    assert.equal(attempts(2), 10, "the bad_timestamp reject stops at 10 attempts and waits for the user");
+    // The parent finally arrives through the log: the child's next retry resolves.
+    h.rest.table("this_or_that_posts").splice(0, 1);
+    h.rest.insert("this_or_that_posts", post);
+    await h.sync();
+    await h.sync();
+    assert.equal(count(h, "SELECT count(*) AS n FROM this_or_that_post_likes"), 1);
+    assert.deepEqual(h.d1.rows("SELECT ref FROM sync_rejects WHERE resolved_at IS NULL"), [{ ref: 2 }]);
+  });
+
   // ----------------------------------------------------------------------------- late commits and the window
 
   await check("a late-committed lower id is applied from the window and holds the watermark until then", async () => {

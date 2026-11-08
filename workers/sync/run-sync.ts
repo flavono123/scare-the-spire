@@ -83,6 +83,11 @@ export const APPLIED_MAX = 2000;
 export const LATE_MS = 5 * 60_000;
 export const LAG_ALERT_MS = 2 * 60_000;
 export const REJECT_ATTEMPTS_MAX = 10;
+/**
+ * Reasons whose current Supabase row fails a D1 CHECK: the only rejects the attempt limit stops
+ * (design 5.3 item 1); they wait for the user. fk and zero_rows are retried every run.
+ */
+const DETERMINISTIC_REASONS: ReadonlySet<string> = new Set(["bad_timestamp", "bad_element", "check"]);
 export const CLEANUP_AGE_MS = 7 * 24 * 60 * 60_000;
 /** Minute of the UTC day of the daily log cleanup: 19:00 UTC is 04:00 in Korea. */
 export const CLEANUP_MINUTE_UTC = 19 * 60;
@@ -350,7 +355,8 @@ class SyncRun {
   async retryRejects(rows: readonly RejectRow[]): Promise<void> {
     for (const row of rows) {
       if (row.direction !== "in") continue;
-      if (Number(row.attempts) >= REJECT_ATTEMPTS_MAX || !KNOWN_TABLES.has(row.table_name)) {
+      const exhausted = Number(row.attempts) >= REJECT_ATTEMPTS_MAX && DETERMINISTIC_REASONS.has(row.reason);
+      if (exhausted || !KNOWN_TABLES.has(row.table_name)) {
         this.report.retries.push({ ref: row.ref, outcome: "skipped" });
         continue;
       }
