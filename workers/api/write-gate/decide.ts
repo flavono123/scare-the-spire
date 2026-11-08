@@ -169,15 +169,18 @@ async function decideInsert(table: string, rule: TableRule, write: GateWrite, ac
   const conflict = onConflict === null ? null : onConflict.split(",");
   if (conflict && !conflict.every((column) => IDENTIFIER.test(column))) return unsupported();
   const merge = conflict !== null && resolution === "merge-duplicates";
-  const ignore = conflict !== null && resolution === "ignore-duplicates";
-  if (conflict !== null && !merge && !ignore) return unsupported();
+  if (conflict !== null && !merge && resolution !== "ignore-duplicates") return unsupported();
   if (write.query.has("columns")) return unsupported();
   const representation = preferValue(write.prefer, "return") === "representation";
 
   // Grants are checked before anything runs.
   if (rule.grants?.insert && !keys.every((key) => rule.grants?.insert?.includes(key))) return forbidden();
   if (merge && rule.grants?.update && !keys.every((key) => rule.grants?.update?.includes(key))) return forbidden();
-  if (representation && rule.grants?.select) return forbidden();
+  if (representation && rule.grants?.select) {
+    // RETURNING needs SELECT on the returned columns (all of them for `*`).
+    const returned = selectColumns(write.query);
+    if (!returned || !returned.every((column) => rule.grants?.select?.includes(column))) return forbidden();
+  }
 
   const out: Row[] = [];
   for (const [index, original] of (rows as Row[]).entries()) {
@@ -210,28 +213,16 @@ async function decideInsert(table: string, rule: TableRule, write: GateWrite, ac
       passes = check.value;
     }
 
-    let existing: Row | null | undefined;
-    const readExisting = async (): Promise<LookupResult<Row | null>> => {
-      const filters = (conflict ?? []).map((column) => [column, eq(valueOf(row, column, rule))] as [string, string]);
-      const found = await lookups.rows(table, rule.owner, filters, 1);
-      return found.ok ? { ok: true, value: found.value[0] ?? null } : found;
-    };
-
-    if (!passes) {
-      // ON CONFLICT DO NOTHING checks the insert policy only on rows it actually inserts.
-      if (ignore && owner !== "invalid") {
-        const found = await readExisting();
-        if (!found.ok) return reject(found.status, found.code);
-        if (found.value) continue;
-      }
-      return forbidden();
-    }
+    // The proposed row is checked before conflicts are looked at, so a row that would be skipped
+    // by ON CONFLICT DO NOTHING still fails the statement (checked on PGlite).
+    if (!passes) return forbidden();
 
     if (merge && owner === "match") {
       // ON CONFLICT DO UPDATE: the existing row must pass the update policy's USING, or the statement fails.
-      const found = await readExisting();
+      const filters = (conflict ?? []).map((column) => [column, eq(valueOf(row, column, rule))] as [string, string]);
+      const found = await lookups.rows(table, rule.owner, filters, 1);
       if (!found.ok) return reject(found.status, found.code);
-      existing = found.value;
+      const existing = found.value[0];
       if (existing && (!rule.policies.update || ownerState(existing[rule.owner], actor) !== "match")) return forbidden();
     }
 
