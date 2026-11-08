@@ -6,12 +6,18 @@
  * Usage:
  *   tsx scripts/runtime-flags.ts list --env testbed|production --remote|--local
  *   tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note "why"
+ *   tsx scripts/runtime-flags.ts set source.<group> supabase|d1 --env ... --note "why"   (step 5 write source)
+ *   tsx scripts/runtime-flags.ts set write.paused on|off --env ... --note "why"           (step 5 cutover pause)
+ *
+ * The step 5 keys are normally flipped together by scripts/d1-cutover.ts (pause, drain, reconcile,
+ * every source.<group>, unpause); setting them one by one is for a rollback by hand.
  *
  * The target must be named: wrangler 4's `d1 execute` defaults to the local
  * file, so a rollback that forgot --remote would "succeed" without touching
  * Cloudflare. Changing production also needs --confirm-production, and only
  * after the user approves. Workers pick a change up within about 30 s.
  */
+import { WRITE_GROUPS, WRITE_PAUSED_KEY, WRITE_PAUSED_VALUES, WRITE_SOURCES, sourceFlagKey } from "../src/lib/write-source-flags";
 import { spawnSync } from "node:child_process";
 
 import { API_SURFACE_GROUPS, SURFACE_PATHS, pathFlagKey } from "../src/lib/api-surfaces";
@@ -64,6 +70,10 @@ function rows(output: unknown, index: number): Record<string, unknown>[] {
   const entry = output[index] as { results?: Record<string, unknown>[] } | undefined;
   return entry?.results ?? [];
 }
+
+// Step 5 (docs/SUPABASE_EXIT_PLAN.md 7.3): the write source per group and the cutover pause.
+for (const group of WRITE_GROUPS) KNOWN_KEYS.set(sourceFlagKey(group), WRITE_SOURCES);
+KNOWN_KEYS.set(WRITE_PAUSED_KEY, WRITE_PAUSED_VALUES);
 
 function main() {
   const argv = process.argv.slice(2);
