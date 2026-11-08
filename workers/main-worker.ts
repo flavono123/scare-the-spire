@@ -29,6 +29,7 @@ import { isApiRouterPath, type ApiEnv } from "./api/router";
 import { apiRouter } from "./api/routes";
 import { runSync } from "./sync/run-sync";
 import type { SyncEnv } from "./sync/sync-env";
+import { scheduledOutboxMirror, type MirrorEnv } from "./api/d1-write/mirror";
 import { isSearchCrawlerUserAgent } from "../src/lib/locale-detection";
 import {
   handleLinkPreviewRequest,
@@ -508,9 +509,13 @@ async function routeRequest(request: Request, env: Env, ctx: ExecutionContextLik
 }
 
 const mainWorker = {
-  /** The 1-minute D1 sync (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3); a no-op until sync.enabled is on. */
-  async scheduled(controller: { scheduledTime: number }, env: Env & SyncEnv, ctx: ExecutionContextLike): Promise<void> {
+  /**
+   * Cron, every minute. Step 2 sync (D1_SCHEMA_DESIGN.md 5.3) runs only while sync.enabled is on; the step 5
+   * outbox mirror (5.5) only while a write source is d1. The cutover keeps the two from being on together.
+   */
+  async scheduled(controller: { scheduledTime: number }, env: Env & SyncEnv & MirrorEnv, ctx: ExecutionContextLike): Promise<void> {
     ctx.waitUntil(runSync(env, { scheduledTime: controller.scheduledTime }).catch(() => undefined));
+    ctx.waitUntil(scheduledOutboxMirror(env).catch(() => undefined));
   },
 
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {

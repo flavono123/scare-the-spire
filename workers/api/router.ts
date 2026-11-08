@@ -1,6 +1,7 @@
 import type { ApiSurfaceGroup } from "../../src/lib/api-surfaces";
 import { redactPathname } from "../path-redaction";
 import type { D1Database, D1PreparedStatement } from "./d1";
+import { d1WriteHook } from "./d1-write";
 import { qaOverride } from "./flag-cookie";
 import { apiFlags, flagsDisabledReason, type ExecutionContextLike, type FlagsEnv, type ShadowRates } from "./flags";
 import {
@@ -297,7 +298,9 @@ export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterO
       // owned by the identity resolved above (write-gate/gate.ts writeActor).
       const gated = route.access === "write" ? await workerWriteContext(env, ctx, route.group, config, writeActor(user)) : null;
       handlerContext = { ...base, user, token: token ?? "", identitySource: source, body, bodyStream, ...gated };
-      response = await route.handle(handlerContext as UserRouteContext);
+      const userContext = handlerContext as UserRouteContext;
+      // Step 5: the write gate (pause, D1 source); null keeps the route's own handler.
+      response = (route.access === "write" ? await d1WriteHook(route, userContext) : null) ?? await route.handle(userContext);
       response = withSetCookies(response, resolved.setCookies);
     }
     if (!isHead && method === "GET" && options.onResponse) {
