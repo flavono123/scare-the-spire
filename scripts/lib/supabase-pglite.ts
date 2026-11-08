@@ -57,6 +57,25 @@ export async function supabaseFromRepo(files: readonly string[]): Promise<PGlite
   return db;
 }
 
+/**
+ * A `pg_dump --schema-only` of the live public schema replayed on the same stand-ins (for local
+ * checks against a backup; nothing from a backup is committed). The dump sets its own privileges.
+ */
+export async function supabaseFromDump(dumpFile: string, after: readonly string[] = []): Promise<PGlite> {
+  const dump = readFileSync(dumpFile, "utf8")
+    .split("\n")
+    .filter((line) => !line.startsWith("\\"))
+    .join("\n")
+    .replace(/^CREATE SCHEMA public;$/m, "");
+  const db = new PGlite();
+  await db.exec(SUPABASE_BOOTSTRAP.split("\n").filter((line) => !line.startsWith("alter default privileges")).join("\n"));
+  await db.exec(dump);
+  // pg_dump turns row_security off and empties search_path for its session; requests need the defaults.
+  await db.exec("reset all");
+  for (const file of after) await applySqlFile(db, file);
+  return db;
+}
+
 // --- PostgREST ---------------------------------------------------------------------------------
 
 type Role = "anon" | "authenticated" | "service_role";

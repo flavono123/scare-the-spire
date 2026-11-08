@@ -7,6 +7,8 @@
  * both and must give the same HTTP answer and leave the same rows in every written table. Gate-level
  * cases then send PostgREST writes no route builds (forged owners, privileges, missing policies).
  * Usage: tsx scripts/write-gate-equivalence.spec.ts
+ * SUPABASE_PUBLIC_SCHEMA=<pg_dump --schema-only of public> runs the same cases on that dump's policies,
+ * triggers, functions and grants instead (the dump plus the step 4 migration on the worker side).
  */
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -21,7 +23,7 @@ import { postgrest, type RestRequest, type SupabaseApiConfig } from "../workers/
 import { createWriteGate, withWriteGate } from "../workers/api/write-gate/gate";
 import { resetWriteFlagsForTest, WRITE_FLAGS_SQL } from "../workers/api/write-flags";
 import mainWorker from "../workers/main-worker";
-import { PgRest, repoSchemaFiles, supabaseFromRepo } from "./lib/supabase-pglite";
+import { PgRest, repoSchemaFiles, supabaseFromDump, supabaseFromRepo } from "./lib/supabase-pglite";
 
 const ORIGIN = "https://testbed.example.workers.dev";
 const TODAY_URL = "http://127.0.0.1:54321";
@@ -395,10 +397,15 @@ const GATE_CASES: GateCase[] = [
 
 async function main() {
   const skip = (file: string) => file.endsWith("_d1_change_log.sql");
-  const [today, step4] = await Promise.all([
-    supabaseFromRepo(repoSchemaFiles((file) => skip(file) || file.endsWith("_worker_write_actor.sql"))),
-    supabaseFromRepo(repoSchemaFiles(skip)),
-  ]);
+  const step4Migration = repoSchemaFiles().filter((file) => file.endsWith("_worker_write_actor.sql"));
+  const dump = process.env.SUPABASE_PUBLIC_SCHEMA;
+  const [today, step4] = await Promise.all(dump
+    ? [supabaseFromDump(dump), supabaseFromDump(dump, step4Migration)]
+    : [
+      supabaseFromRepo(repoSchemaFiles((file) => skip(file) || step4Migration.includes(file))),
+      supabaseFromRepo(repoSchemaFiles(skip)),
+    ]);
+  console.log(dump ? `schema: replayed ${dump}` : "schema: rebuilt from the repo's supabase SQL");
   await today.exec(SEED);
   await step4.exec(SEED);
   await assertSameTables(today, step4, "seed");
