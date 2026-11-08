@@ -12,9 +12,9 @@ sqlite 3.51.0
 tables (42): api_cache=1, colorful_philosopher_posts=62, comment_likes=502, comments=1504, community_stories=302, contact_inquiries=62, defragment_bodies=201, favorite_tournament_candidate_stats=2, favorite_tournament_plays=1, likes=353, outbox=3, pagestorm_drafts=1, post_chemical_x=101, post_combo=100, post_combo_resources=200, post_decisions_decisions=101, post_favorite_tournament=101, post_favorite_tournament_pool=202, post_history_course=101, post_history_course_file=101, post_pagestorm=101, post_this_or_that=101, post_transfigure=101, posts=807, profile_character_nickname_pools=2, puzzlebox_best=302, puzzlebox_board_stats=13, puzzlebox_players=52, puzzlebox_runs=602, resource_reaction_counts=122, resource_reactions=403, runtime_flag_events=1, runtime_flags=1, shadow_diffs=1, shadow_stats=1, sync_checks=3, sync_pending_raw=1, sync_rejects=2, sync_state=2, this_or_that_post_likes=401, this_or_that_post_votes=100, threads=147
 
 == CHECK / FK probes
-ok   rejected: timestamp without 6 fraction digits -> CHECK constraint failed: created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'
-ok   rejected: timestamp with +00:00 offset -> CHECK constraint failed: created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'
-ok   rejected: uppercase uuid -> CHECK constraint failed: user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'
+ok   rejected: timestamp without 6 fraction digits -> CHECK constraint failed: (substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')
+ok   rejected: timestamp with +00:00 offset -> CHECK constraint failed: (substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')
+ok   rejected: uppercase uuid -> CHECK constraint failed: (user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)
 ok   rejected: STRICT: text in an INTEGER column -> cannot store TEXT value in INTEGER column threads.like_count
 ok   rejected: FK: comment like without its comment -> FOREIGN KEY constraint failed
 ok   rejected: FK: service row without its post -> FOREIGN KEY constraint failed
@@ -23,7 +23,7 @@ ok   rejected: service column with another service's value -> CHECK constraint f
 ok   rejected: FK: this-or-that like for a missing post (step 5 answers not_found) -> FOREIGN KEY constraint failed
 ok   rejected: posts: second row with the same (service, id) -> UNIQUE constraint failed: posts.service, posts.id
 ok   rejected: posts: uuid service with a run-shaped id -> CHECK constraint failed: CASE WHEN service = 'history_course' THEN length(CAST(id AS BLOB)) <= 1024
-              ELSE id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]' END
+              ELSE (id GLOB '????????-????-????-????-????????????' AND id NOT GLOB '*[^0-9a-f-]*' AND length(replace(id, '-', '')) = 32) END
 ok   rejected: posts: owner-less combo -> CHECK constraint failed: user_id IS NOT NULL OR service IN ('favorite_tournament', 'history_course')
 ok   rejected: posts: title on a service without one -> CHECK constraint failed: CASE
     WHEN service = 'transfigure' THEN title IS NULL
@@ -42,7 +42,7 @@ ok   rejected: tournament play with wrong match count -> CHECK constraint failed
 ok   rejected: philosopher week_start not a Monday -> CHECK constraint failed: week_start GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND strftime('%w', week_start) = '1'
 ok   rejected: outbox op outside the enum -> CHECK constraint failed: op IN ('insert', 'upsert', 'update', 'delete', 'rpc')
 ok   rejected: posts: run id over 1024 bytes (runs_key_size_check) -> CHECK constraint failed: CASE WHEN service = 'history_course' THEN length(CAST(id AS BLOB)) <= 1024
-              ELSE id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]' END
+              ELSE (id GLOB '????????-????-????-????-????????????' AND id NOT GLOB '*[^0-9a-f-]*' AND length(replace(id, '-', '')) = 32) END
 ok   rejected: posts: service id that is not a lowercase identifier -> CHECK constraint failed: length(service) BETWEEN 1 AND 32 AND service NOT GLOB '*[^a-z_]*'
 ok   rejected: sync_state: high_seen below low_watermark -> CHECK constraint failed: high_seen >= low_watermark
 ok   rejected: sync_rejects: second open reject for the same key -> UNIQUE constraint failed: sync_rejects.direction, sync_rejects.table_name, sync_rejects.row_key

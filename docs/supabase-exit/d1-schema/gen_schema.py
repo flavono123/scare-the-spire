@@ -1,16 +1,32 @@
 # Writes the step-2 D1 migrations from schema.src.sql: every "-- migration: <file>" section becomes
-# <migrations dir>/<file>, with the @UUID@ / @TS@ / @DATE@ tokens expanded to GLOB patterns.
+# <migrations dir>/<file>, with the "<column> GLOB @UUID@ / @TS@ / @DATE@" tokens expanded.
 #   python3 -I gen_schema.py <schema.src.sql> <d1/migrations>          write the files
 #   python3 -I gen_schema.py <schema.src.sql> <d1/migrations> --check  write nothing; exit 1 if a file differs
 import os, re, sys
 
-H = "[0-9a-f]"
 D = "[0-9]"
-TOKENS = {
-    "@UUID@": "'" + "-".join(H * n for n in (8, 4, 4, 4, 12)) + "'",
-    "@TS@": "'" + D*4 + "-" + D*2 + "-" + D*2 + "T" + D*2 + ":" + D*2 + ":" + D*2 + "." + D*6 + "Z'",
-    "@DATE@": "'" + D*4 + "-" + D*2 + "-" + D*2 + "'",
-}
+# D1 rejects a GLOB or LIKE pattern over 50 bytes ("LIKE or GLOB pattern too complex"), so the one-pattern
+# forms of a uuid ([0-9a-f] x 32 with hyphens, 260 bytes) and a timestamp (107 bytes) are written as a
+# conjunction of short GLOBs that accepts exactly the same strings (and NULL, as the single GLOB does).
+D1_PATTERN_MAX = 50
+# uuid: 36 characters with '-' at 9, 14, 19 and 24, only [0-9a-f-], and exactly those 4 hyphens.
+UUID = ("({c} GLOB '????????-????-????-????-????????????' AND {c} NOT GLOB '*[^0-9a-f-]*'"
+        " AND length(replace({c}, '-', '')) = 32)")
+# 'YYYY-MM-DDTHH:MM:SS.ffffffZ': characters 1-10, 11-19 and 20 to the end.
+TS = ("(substr({c}, 1, 10) GLOB '" + D*4 + "-" + D*2 + "-" + D*2 + "'"
+      " AND substr({c}, 11, 9) GLOB 'T" + D*2 + ":" + D*2 + ":" + D*2 + "'"
+      " AND substr({c}, 20) GLOB '." + D*6 + "Z')")
+DATE = "{c} GLOB '" + D*4 + "-" + D*2 + "-" + D*2 + "'"
+TOKENS = {"UUID": UUID, "TS": TS, "DATE": DATE}
+
+
+def expand(text):
+    text = re.sub(r"\b([a-z_]+) GLOB @(UUID|TS|DATE)@", lambda m: TOKENS[m.group(2)].format(c=m.group(1)), text)
+    assert not re.search(r"@[A-Z]+@", text), "unexpanded token (a token must follow '<column> GLOB ')"
+    for m in re.finditer(r"\b(?:GLOB|LIKE)\s+'((?:[^']|'')*)'", text, re.I):
+        n = len(m.group(1).replace("''", "'").encode())
+        assert n <= D1_PATTERN_MAX, "pattern of %d bytes, over the D1 limit: %s" % (n, m.group(1))
+    return text
 # A section starts at its banner: a "-- ====" line, the "-- migration:" line, the header comment lines
 # that become the top of the file, and a closing "-- ====" line. It ends at the next banner.
 BANNER = re.compile(r"^-- =+\n-- migration: (\d{4}_[a-z0-9_]+\.sql)\n((?:--(?: .*)?\n)*?)-- =+\n", re.M)
@@ -21,9 +37,7 @@ NOTICE = ("-- Generated from docs/supabase-exit/d1-schema/schema.src.sql by gen_
 
 def render(src_text):
     """Returns {file name: file text} for every migration section of the source."""
-    for token, pattern in TOKENS.items():
-        src_text = src_text.replace(token, pattern)
-    assert not re.search(r"@[A-Z]+@", src_text), "unexpanded token"
+    src_text = expand(src_text)
     marks = list(BANNER.finditer(src_text))
     assert marks, "no '-- migration:' section"
     files = {}

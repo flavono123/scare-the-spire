@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS posts (
   id TEXT NOT NULL,
   -- Owner. NULL only for builtin tournaments (preset_key 'builtin:*') and for a run whose donor was
   -- removed (Postgres ON DELETE SET NULL).
-  user_id TEXT CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  user_id TEXT CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
   -- Author snapshot (decision 5): frozen at insert, refreshed by edits of the 4 editable services.
   -- For history_course this is the donor nickname, rewritten by the donor's nickname sync; the token
   -- columns are NULL.
@@ -37,10 +37,10 @@ CREATE TABLE IF NOT EXISTS posts (
   -- like_count is recounted from this_or_that_post_likes (E13c, design 2.2).
   like_count INTEGER NOT NULL DEFAULT 0 CHECK (like_count >= 0),
   comment_count INTEGER NOT NULL DEFAULT 0 CHECK (comment_count >= 0),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   -- Toy Box ids are Postgres uuid; runs.id is text with octet_length <= 1024 only (runs_key_size_check).
   CHECK (CASE WHEN service = 'history_course' THEN length(CAST(id AS BLOB)) <= 1024
-              ELSE id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]' END),
+              ELSE (id GLOB '????????-????-????-????-????????????' AND id NOT GLOB '*[^0-9a-f-]*' AND length(replace(id, '-', '')) = 32) END),
   CHECK (CASE WHEN service = 'history_course'
               THEN length(trim(nickname)) BETWEEN 1 AND 20 AND length(CAST(nickname AS BLOB)) <= 1024
               ELSE length(nickname) BETWEEN 1 AND 20 END),
@@ -206,9 +206,9 @@ CREATE TABLE IF NOT EXISTS post_this_or_that (
 CREATE TABLE IF NOT EXISTS this_or_that_post_votes (
   service TEXT NOT NULL DEFAULT 'this_or_that' CHECK (service = 'this_or_that'),
   post_id TEXT NOT NULL,
-  user_id TEXT NOT NULL CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  user_id TEXT NOT NULL CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
   choice TEXT NOT NULL CHECK (choice IN ('left', 'right')),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   PRIMARY KEY (service, post_id, user_id),
   FOREIGN KEY (service, post_id) REFERENCES post_this_or_that (service, post_id) ON DELETE CASCADE
 ) STRICT, WITHOUT ROWID;
@@ -224,8 +224,8 @@ CREATE TABLE IF NOT EXISTS this_or_that_post_votes (
 CREATE TABLE IF NOT EXISTS this_or_that_post_likes (
   service TEXT NOT NULL DEFAULT 'this_or_that' CHECK (service = 'this_or_that'),
   post_id TEXT NOT NULL,
-  user_id TEXT NOT NULL CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  user_id TEXT NOT NULL CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   PRIMARY KEY (service, post_id, user_id),
   FOREIGN KEY (service, post_id) REFERENCES post_this_or_that (service, post_id) ON DELETE CASCADE
 ) STRICT, WITHOUT ROWID;
@@ -282,17 +282,17 @@ CREATE TABLE IF NOT EXISTS favorite_tournament_candidate_stats (
 -- One row per finished bracket: the source row of play_count and of every stat. No route exposes it
 -- (the public read policy is not ported: tasks/010 #67).
 CREATE TABLE IF NOT EXISTS favorite_tournament_plays (
-  id TEXT NOT NULL PRIMARY KEY CHECK (id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  id TEXT NOT NULL PRIMARY KEY CHECK ((id GLOB '????????-????-????-????-????????????' AND id NOT GLOB '*[^0-9a-f-]*' AND length(replace(id, '-', '')) = 32)),
   service TEXT NOT NULL DEFAULT 'favorite_tournament' CHECK (service = 'favorite_tournament'),
   tournament_id TEXT NOT NULL,
-  user_id TEXT NOT NULL CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  user_id TEXT NOT NULL CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
   starting_size INTEGER NOT NULL CHECK (starting_size >= 2),
   champion_type TEXT NOT NULL,
   champion_id TEXT NOT NULL,
   -- [{left_type, left_id, right_type, right_id, winner}], iterated once at write.
   matches TEXT NOT NULL CHECK (json_valid(matches) AND json_type(matches) = 'array'
     AND json_array_length(matches) = starting_size - 1),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   FOREIGN KEY (service, tournament_id) REFERENCES post_favorite_tournament (service, post_id) ON DELETE CASCADE
 ) STRICT;
 -- TW5b recount and the cascade from post_favorite_tournament look plays up by (service, tournament_id).
@@ -325,8 +325,8 @@ CREATE TABLE IF NOT EXISTS post_pagestorm (
 
 -- Private 서류 폭풍 drafts. Not posts: no service, counters, feed or thread.
 CREATE TABLE IF NOT EXISTS pagestorm_drafts (
-  id TEXT NOT NULL PRIMARY KEY CHECK (id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
-  user_id TEXT NOT NULL CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  id TEXT NOT NULL PRIMARY KEY CHECK ((id GLOB '????????-????-????-????-????????????' AND id NOT GLOB '*[^0-9a-f-]*' AND length(replace(id, '-', '')) = 32)),
+  user_id TEXT NOT NULL CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
   nickname TEXT NOT NULL CHECK (length(nickname) BETWEEN 1 AND 20),
   avatar_id TEXT,
   avatar_kind TEXT,
@@ -335,8 +335,8 @@ CREATE TABLE IF NOT EXISTS pagestorm_drafts (
   title TEXT NOT NULL CHECK (length(title) BETWEEN 1 AND 80),
   content TEXT NOT NULL CHECK (json_valid(content) AND json_type(content) = 'object'),
   content_text TEXT NOT NULL CHECK (length(content_text) BETWEEN 1 AND 8000),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
-  updated_at TEXT NOT NULL CHECK (updated_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
+  updated_at TEXT NOT NULL CHECK ((substr(updated_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(updated_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(updated_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   CHECK (coalesce(length(CAST(avatar_id AS BLOB)), 0) + coalesce(length(CAST(avatar_kind AS BLOB)), 0)
          + coalesce(length(CAST(palette_id AS BLOB)), 0) <= 1024)
 ) STRICT;
@@ -351,12 +351,12 @@ CREATE INDEX IF NOT EXISTS pagestorm_drafts_user_updated ON pagestorm_drafts (us
 CREATE TABLE IF NOT EXISTS defragment_bodies (
   service TEXT NOT NULL,                  -- source_service: the post's service
   post_id TEXT NOT NULL,
-  user_id TEXT NOT NULL CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  user_id TEXT NOT NULL CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
   nickname TEXT NOT NULL CHECK (length(nickname) BETWEEN 1 AND 20),   -- its only snapshot column
   content TEXT NOT NULL CHECK (json_valid(content)),                 -- PostBlock[]
   content_text TEXT NOT NULL CHECK (length(content_text) BETWEEN 2 AND 8000),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
-  updated_at TEXT NOT NULL CHECK (updated_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
+  updated_at TEXT NOT NULL CHECK ((substr(updated_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(updated_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(updated_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   PRIMARY KEY (service, post_id),
   FOREIGN KEY (service, post_id) REFERENCES posts (service, id) ON DELETE CASCADE
 ) STRICT;

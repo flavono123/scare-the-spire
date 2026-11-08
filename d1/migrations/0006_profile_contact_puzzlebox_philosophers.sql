@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS profile_character_nickname_pools (
   -- Display-only array. Per-element rules (1..20 chars, trimmed, unique) are the script's.
   nicknames TEXT NOT NULL CHECK (json_valid(nicknames) AND json_type(nicknames) = 'array'
     AND json_array_length(nicknames) BETWEEN 1 AND 50),
-  updated_at TEXT NOT NULL CHECK (updated_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  updated_at TEXT NOT NULL CHECK ((substr(updated_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(updated_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(updated_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   PRIMARY KEY (character_id, locale)
 ) STRICT, WITHOUT ROWID;
 
@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS profile_character_nickname_pools (
 -- crafted-value rule (design 3.1).
 -- Not ported: env, viewport_width, viewport_height (write-only).
 CREATE TABLE IF NOT EXISTS contact_inquiries (
-  id TEXT NOT NULL PRIMARY KEY CHECK (id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
-  user_id TEXT CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  id TEXT NOT NULL PRIMARY KEY CHECK ((id GLOB '????????-????-????-????-????????????' AND id NOT GLOB '*[^0-9a-f-]*' AND length(replace(id, '-', '')) = 32)),
+  user_id TEXT CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
   category TEXT NOT NULL CHECK (category IN ('bug', 'correction', 'feedback', 'report', 'partnership', 'other')),
   message TEXT NOT NULL CHECK (length(message) BETWEEN 10 AND 8000 AND message = trim(message)),
   -- The e-mail regex is the Worker's (contact-rules.ts EMAIL); length, trim and '@' are kept here.
@@ -34,10 +34,10 @@ CREATE TABLE IF NOT EXISTS contact_inquiries (
   game_locale TEXT NOT NULL CHECK (game_locale IN (
     'kor', 'eng', 'zhs', 'jpn', 'deu', 'fra', 'ita', 'spa', 'esp', 'ptb', 'rus', 'pol', 'tha', 'tur')),
   status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'reviewing', 'done', 'spam')),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   admin_response TEXT,
-  responded_at TEXT CHECK (responded_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
-  reply_seen_at TEXT CHECK (reply_seen_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  responded_at TEXT CHECK ((substr(responded_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(responded_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(responded_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
+  reply_seen_at TEXT CHECK ((substr(reply_seen_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(reply_seen_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(reply_seen_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   CHECK (category <> 'partnership' OR reply_email IS NOT NULL),
   CHECK ((admin_response IS NULL AND responded_at IS NULL) OR (admin_response IS NOT NULL
     AND responded_at IS NOT NULL AND length(admin_response) BETWEEN 1 AND 8000 AND admin_response = trim(admin_response)))
@@ -51,13 +51,13 @@ CREATE TABLE IF NOT EXISTS puzzlebox_runs (
   id INTEGER PRIMARY KEY,
   game TEXT NOT NULL CHECK (game IN ('connections', 'beta-quiz')),
   board TEXT NOT NULL CHECK (board GLOB '[1-9]' OR board GLOB '[1-9][0-9]' OR board GLOB '[1-9][0-9][0-9]'),
-  user_id TEXT NOT NULL CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  user_id TEXT NOT NULL CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
   attempt INTEGER NOT NULL CHECK (attempt >= 1),
   score INTEGER NOT NULL,
   perfect INTEGER NOT NULL CHECK (perfect IN (0, 1)),
   -- Normalized replay the scorer returned ({guesses, rocks, rocksLeft, shown} or {questions, answers}).
   run TEXT NOT NULL CHECK (json_valid(run) AND json_type(run) = 'object' AND length(CAST(run AS BLOB)) <= 1048576),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z')
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z'))
 ) STRICT;
 -- X1 3-second burst check and 500-per-day cap: this user's runs by time.
 CREATE INDEX IF NOT EXISTS puzzlebox_runs_user_created ON puzzlebox_runs (user_id, created_at);
@@ -65,7 +65,7 @@ CREATE INDEX IF NOT EXISTS puzzlebox_runs_user_created ON puzzlebox_runs (user_i
 -- One latest player token per user. The Supabase table has no env column, so every database holds
 -- every row. Tokens are overwritten on every submitted run.
 CREATE TABLE IF NOT EXISTS puzzlebox_players (
-  user_id TEXT NOT NULL PRIMARY KEY CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  user_id TEXT NOT NULL PRIMARY KEY CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
   nickname TEXT NOT NULL CHECK (length(nickname) BETWEEN 1 AND 24),
   avatar_id TEXT CHECK (length(avatar_id) BETWEEN 1 AND 40 AND avatar_id NOT GLOB '*[^A-Z0-9_]*'),
   avatar_kind TEXT CHECK (avatar_kind IN ('character', 'boss')),
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS puzzlebox_players (
   palette_swapped INTEGER NOT NULL DEFAULT 0
     CHECK (palette_swapped IN (0, 1) AND (palette_swapped = 0 OR palette_id IS NOT NULL)),
   hidden INTEGER NOT NULL DEFAULT 0 CHECK (hidden IN (0, 1)),   -- operator switch: out of every ranking
-  updated_at TEXT NOT NULL CHECK (updated_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z')
+  updated_at TEXT NOT NULL CHECK ((substr(updated_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(updated_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(updated_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z'))
 ) STRICT, WITHOUT ROWID;
 
 -- Best run per player and board. A later equal score does not replace it (first to reach ranks higher).
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS puzzlebox_best (
   perfect INTEGER NOT NULL CHECK (perfect IN (0, 1)),
   -- No ON DELETE action: puzzlebox runs are never deleted.
   run_id INTEGER NOT NULL REFERENCES puzzlebox_runs (id),
-  achieved_at TEXT NOT NULL CHECK (achieved_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  achieved_at TEXT NOT NULL CHECK ((substr(achieved_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(achieved_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(achieved_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   attempts INTEGER NOT NULL CHECK (attempts >= 1),
   PRIMARY KEY (game, board, user_id)
 ) STRICT, WITHOUT ROWID;
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS puzzlebox_board_stats (
 -- 다채로운 철학자들: up to three admin posts per KST week (topic, card, relic; 'power' allowed, unused).
 -- Not ported: env, buff_count, nerf_count, rework_count (frozen; the screen reads resource_reaction_counts).
 CREATE TABLE IF NOT EXISTS colorful_philosopher_posts (
-  id TEXT NOT NULL PRIMARY KEY CHECK (id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  id TEXT NOT NULL PRIMARY KEY CHECK ((id GLOB '????????-????-????-????-????????????' AND id NOT GLOB '*[^0-9a-f-]*' AND length(replace(id, '-', '')) = 32)),
   -- Monday of the KST week.
   week_start TEXT NOT NULL CHECK (week_start GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND strftime('%w', week_start) = '1'),
   slot TEXT NOT NULL CHECK (slot IN ('topic', 'card', 'relic', 'power')),
@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS colorful_philosopher_posts (
   image_url TEXT,
   body TEXT NOT NULL CHECK (length(body) BETWEEN 1 AND 500),
   game_version TEXT NOT NULL CHECK (length(game_version) BETWEEN 1 AND 32),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   CHECK ((slot = 'topic' AND resource_type <> 'topic') OR resource_type = slot),
   -- One post per slot per week; also the week-ordered access path (F1, F3, F4, F6, F7).
   UNIQUE (week_start, slot)

@@ -1,8 +1,9 @@
 -- =====================================================================================================
 -- D1 schema for the Supabase exit, step 2 (docs/supabase-exit/D1_SCHEMA_DESIGN.md): the source of
 -- d1/migrations 0003-0006, which apply after the unchanged 0001_runtime_flags.sql and
--- 0002_api_cache.sql. gen_schema.py writes each "-- migration:" section to its file with the
--- @UUID@ / @TS@ / @DATE@ tokens expanded; check.py fails when a file and its section differ.
+-- 0002_api_cache.sql. gen_schema.py writes each "-- migration:" section to its file with the uuid,
+-- timestamp and date GLOB tokens expanded (as short GLOBs: D1 rejects patterns over 50 bytes);
+-- check.py fails when a file and its section differ.
 --
 -- Conventions (design section "공통 규칙"):
 --   * One D1 database per environment (slseoun-prod, slseoun-testbed, local dev). No env column, and no

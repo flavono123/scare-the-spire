@@ -7,11 +7,11 @@
 -- Comments on any thread key. No UPDATE path for users, as in Postgres.
 -- Not ported: env, parent_id and its self FK, meta (CLEANUP_AUDIT 3.1).
 CREATE TABLE IF NOT EXISTS comments (
-  id TEXT NOT NULL PRIMARY KEY CHECK (id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  id TEXT NOT NULL PRIMARY KEY CHECK ((id GLOB '????????-????-????-????-????????????' AND id NOT GLOB '*[^0-9a-f-]*' AND length(replace(id, '-', '')) = 32)),
   -- Thread key (same column name as Supabase). Free string, no FK: orphans are kept, as today.
   -- Postgres checks only octet_length <= 1024, so '' is accepted here too (no lower bound).
   story_id TEXT NOT NULL CHECK (length(CAST(story_id AS BLOB)) <= 1024),
-  user_id TEXT NOT NULL CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  user_id TEXT NOT NULL CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
   -- Author snapshot, frozen at insert.
   nickname TEXT NOT NULL CHECK (length(nickname) BETWEEN 1 AND 20),
   avatar_id TEXT,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS comments (
   content_blocks TEXT CHECK (json_valid(content_blocks) AND length(CAST(content_blocks AS BLOB)) <= 1048576),
   -- Count of comment_likes rows, set by recount in the same batch (no Supabase column).
   like_count INTEGER NOT NULL DEFAULT 0 CHECK (like_count >= 0),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   CHECK (coalesce(length(CAST(avatar_id AS BLOB)), 0) + coalesce(length(CAST(avatar_kind AS BLOB)), 0)
          + coalesce(length(CAST(palette_id AS BLOB)), 0) <= 1024)
 ) STRICT;
@@ -41,8 +41,8 @@ CREATE INDEX IF NOT EXISTS comments_user ON comments (user_id, created_at, id);
 -- sync parks that row in sync_rejects ('bad_timestamp') for a human (design 3.1).
 CREATE TABLE IF NOT EXISTS comment_likes (
   comment_id TEXT NOT NULL REFERENCES comments (id) ON DELETE CASCADE,
-  user_id TEXT NOT NULL CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  user_id TEXT NOT NULL CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   PRIMARY KEY (comment_id, user_id)
 ) STRICT, WITHOUT ROWID;
 
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS comment_likes (
 -- created_at: same crafted-value rule as comment_likes.
 CREATE TABLE IF NOT EXISTS likes (
   story_id TEXT NOT NULL CHECK (length(CAST(story_id AS BLOB)) <= 1024),
-  user_id TEXT NOT NULL CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  user_id TEXT NOT NULL CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   PRIMARY KEY (story_id, user_id)
 ) STRICT, WITHOUT ROWID;
 
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS threads (
   thread_key TEXT NOT NULL PRIMARY KEY CHECK (length(CAST(thread_key AS BLOB)) <= 1024),
   like_count INTEGER NOT NULL DEFAULT 0 CHECK (like_count >= 0),        -- rows in likes
   comment_count INTEGER NOT NULL DEFAULT 0 CHECK (comment_count >= 0),  -- rows in comments
-  last_comment_at TEXT CHECK (last_comment_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),               -- max(comments.created_at)
+  last_comment_at TEXT CHECK ((substr(last_comment_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(last_comment_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(last_comment_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),               -- max(comments.created_at)
   updated_at INTEGER NOT NULL DEFAULT 0                                 -- Unix ms of the last recount
 ) STRICT, WITHOUT ROWID;
 
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS resource_reactions (
   resource_id TEXT NOT NULL CHECK (length(resource_id) <= 128),
   resource_type TEXT NOT NULL CHECK (length(resource_type) <= 32),
   game_version TEXT NOT NULL CHECK (length(game_version) <= 32),
-  user_id TEXT NOT NULL CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
+  user_id TEXT NOT NULL CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),
   kind TEXT NOT NULL CHECK (kind IN ('buff', 'nerf', 'rework')),
   PRIMARY KEY (resource_id, resource_type, game_version, user_id)
 ) STRICT, WITHOUT ROWID;
@@ -96,8 +96,8 @@ CREATE TABLE IF NOT EXISTS resource_reaction_counts (
 -- 이야기. Not a posts row: not a Toy Box service, no counter columns, no count sort, no nav surface,
 -- and official stories use a bare thread key.
 CREATE TABLE IF NOT EXISTS community_stories (
-  id TEXT NOT NULL PRIMARY KEY CHECK (id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),
-  user_id TEXT CHECK (user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'),                 -- NULL for official (seed) stories
+  id TEXT NOT NULL PRIMARY KEY CHECK ((id GLOB '????????-????-????-????-????????????' AND id NOT GLOB '*[^0-9a-f-]*' AND length(replace(id, '-', '')) = 32)),
+  user_id TEXT CHECK ((user_id GLOB '????????-????-????-????-????????????' AND user_id NOT GLOB '*[^0-9a-f-]*' AND length(replace(user_id, '-', '')) = 32)),                 -- NULL for official (seed) stories
   -- Seed id; non-null makes the row official and its thread key the bare id. Admin scripts and the
   -- sync write it, users never do.
   static_story_id TEXT UNIQUE CHECK (length(CAST(static_story_id AS BLOB)) <= 1024),
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS community_stories (
   tags TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(tags) AND length(CAST(tags AS BLOB)) <= 1048576),
   linked_entities TEXT NOT NULL DEFAULT '[]'
     CHECK (json_valid(linked_entities) AND length(CAST(linked_entities AS BLOB)) <= 1048576),
-  created_at TEXT NOT NULL CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'),
+  created_at TEXT NOT NULL CHECK ((substr(created_at, 1, 10) GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND substr(created_at, 11, 9) GLOB 'T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]' AND substr(created_at, 20) GLOB '.[0-9][0-9][0-9][0-9][0-9][0-9]Z')),
   CHECK (coalesce(length(CAST(avatar_id AS BLOB)), 0) + coalesce(length(CAST(avatar_kind AS BLOB)), 0)
          + coalesce(length(CAST(palette_id AS BLOB)), 0) <= 1024)
 ) STRICT;
