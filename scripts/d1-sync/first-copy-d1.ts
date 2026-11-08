@@ -354,14 +354,17 @@ interface D1ApiResponse {
 }
 
 const REMOTE_BATCH_STATEMENTS = 50;
-const REMOTE_BATCH_BYTES = 256_000;
+// D1 applies its 100 KB SQL length limit to the whole multi-statement text of one request, not to
+// each statement (local D1 refuses 30 statements of 4 KB with SQLITE_TOOBIG), so a request's joined
+// text stays under the per-statement cap too (the "\n;\n" separators add at most 147 bytes).
+const REMOTE_BATCH_BYTES = MAX_STATEMENT_BYTES;
 const REMOTE_MIN_GAP_MS = 300; // under the API's 1,200 requests per 5 minutes
 const REMOTE_ATTEMPTS = 3;
 
 /**
  * Remote D1 through POST /accounts/{account}/d1/database/{id}/query. Statements without params go
- * several to a request (one sql text, statements joined by ';'); a statement with a bound string goes
- * alone with its params. Retries only network errors, 429 and 5xx.
+ * several to a request (one sql text under 90 KB, statements joined by ';'); a statement with a bound
+ * string goes alone with its params. Retries only network errors, 429 and 5xx.
  */
 export class RemoteD1Target implements D1Target {
   readonly remote = true;

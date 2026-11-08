@@ -425,6 +425,10 @@ async function main() {
       const reply = (status: number, json: unknown) => ({ status, headers: { get: () => null }, json: async () => json });
       if (calls.length <= (opts.failFirst ?? 0)) return reply(503, { success: false, errors: [{ code: 7500, message: "busy" }] });
       if (opts.refuseMatching?.test(body.sql)) return reply(400, { success: false, errors: [{ code: 7500, message: "SQLITE_CONSTRAINT" }] });
+      // As local D1 does: the 100 KB SQL length limit covers the whole multi-statement text.
+      if (Buffer.byteLength(body.sql) > 100_000) {
+        return reply(400, { success: false, errors: [{ code: 7500, message: "statement too long: SQLITE_TOOBIG" }] });
+      }
       const parts = body.params?.length ? [body.sql] : splitSqlScript(body.sql);
       const result = [];
       for (const sql of parts) {
@@ -448,6 +452,15 @@ async function main() {
     return rows;
   }
 
+  /** 40 comments of 2,000 Korean characters (about 6 KB inlined each): more than 100 KB of statements. */
+  function longCommentRows(): Rows {
+    const rows = bigRawRows();
+    for (let i = 0; i < 40; i++) {
+      rows.comments.push({ ...rows.comments[0], id: U(700 + i), content: "가".repeat(2000) });
+    }
+    return rows;
+  }
+
   function remote(db: SqliteDb, api: ReturnType<typeof fakeApi>) {
     return new RemoteD1Target("remote D1 slseoun-testbed (fake)", {
       accountId: "a".repeat(32),
@@ -462,7 +475,7 @@ async function main() {
   await check("remote: batched writes, raws alone with params, verification through the API", async () => {
     const db = freshTarget().db;
     const api = fakeApi(db, { failFirst: 1 });
-    const rows = bigRawRows();
+    const rows = longCommentRows();
     const bigRaw = rows.runs[0].raw!;
     const report = await runFirstCopy({
       target: remote(db, api),
@@ -483,7 +496,12 @@ async function main() {
     assert.match(rawCall.sql, /^INSERT INTO post_history_course_file \(service, post_id, raw\) VALUES \('history_course', 'r0000000000000f01', \?1\)/);
     assert.ok(api.calls.filter((c) => c.params.length > 0).every((c) => splitSqlScript(c.sql).length === 1), "bound statements go alone");
     assert.ok(api.calls.some((c) => splitSqlScript(c.sql).length > 10), "the rest goes several to a request");
-    assert.ok(api.calls.every((c) => Buffer.byteLength(c.sql) <= 256_000 + 90_000));
+    assert.ok(api.calls.every((c) => Buffer.byteLength(c.sql) <= 100_000), "every request's SQL text is under D1's 100 KB");
+    assert.ok(
+      api.calls.filter((c) => c.sql.includes("INSERT INTO comments ")).length >= 3,
+      "the long comments (about 240 KB) take several requests",
+    );
+    assert.equal(n(db, "SELECT count(*) FROM comments"), 42);
     assert.ok((report.writes.rowsWritten ?? 0) > 0);
     assert.equal(report.verification?.differences.length, 0);
     assert.equal(n(db, "SELECT count(*) FROM posts"), 2);
