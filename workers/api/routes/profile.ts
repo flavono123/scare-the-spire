@@ -10,6 +10,9 @@ import { apiError, jsonResponse } from "../http";
 import type { ApiRoute, PublicRouteContext, UserRouteContext } from "../router";
 import { postgrest } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
+import { canonicalTs } from "../../../src/lib/d1-time";
+import { readAfterWrite } from "../../sync/read-after-write";
+import { RAW_INQUIRIES_SEEN } from "../../sync/sync-sql";
 
 /**
  * The profile group (docs/supabase-exit/STEP1_DESIGN.md 9.4): nickname pools,
@@ -108,6 +111,10 @@ async function handleInquiriesSeen(context: UserRouteContext): Promise<Response>
     prefer: ["return=minimal"],
   });
   if (!result.ok) return apiError(restErrorCode(result));
+  const seenAt = canonicalTs(new Date(context.now).toISOString());
+  await readAfterWrite(context, "write.profile.inquiries-seen", seenAt
+    ? [{ op: "statement", statement: { sql: RAW_INQUIRIES_SEEN, params: [seenAt, context.user.userId] } }]
+    : []);
   return jsonResponse({});
 }
 

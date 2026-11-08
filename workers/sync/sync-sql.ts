@@ -55,6 +55,16 @@ export const RUN_FAIL =
 /** The D1 story_id of a comment, for the thread recount of a delete whose image has no story_id. */
 export const COMMENT_THREAD = "SELECT story_id FROM comments WHERE id = ?1";
 
+/**
+ * Read-after-write of the two writes that match rows by a filter instead of a key, with the same
+ * filter: the mailbox "seen" mark (only reply_seen_at, design 3.1) and the donor nickname sync of runs
+ * (rows whose nickname is null are skipped, like the legacy update; D1 has no null nickname).
+ */
+export const RAW_INQUIRIES_SEEN =
+  "UPDATE contact_inquiries SET reply_seen_at = ?1 WHERE user_id = ?2 AND admin_response IS NOT NULL AND reply_seen_at IS NULL";
+export const RAW_RUN_NICKNAMES =
+  "UPDATE posts SET nickname = ?1 WHERE service = 'history_course' AND user_id = ?2 AND nickname <> ?1";
+
 export const DEFER_FOREIGN_KEYS: D1Statement = { sql: "PRAGMA defer_foreign_keys = ON", params: [] };
 
 export function s11Statement(window: {

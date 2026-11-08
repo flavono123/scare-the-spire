@@ -27,6 +27,7 @@ import {
   type RestResult,
   type SupabaseApiConfig,
 } from "../supabase-rest";
+import { readAfterWrite, type RawOp } from "../../sync/read-after-write";
 
 /**
  * The comments group (docs/supabase-exit/STEP1_DESIGN.md 9.1): one coalesced
@@ -536,6 +537,7 @@ async function handleCreateComment(context: UserRouteContext): Promise<Response>
   if (!result.ok) return restError(result);
   const row = result.data?.[0];
   if (!row) return apiError("unavailable");
+  await readAfterWrite(context, "write.comments.create", [{ op: "insert", table: "comments", row }]);
   return jsonResponse({ comment: { ...row, like_count: 0 } }, { status: 201 });
 }
 
@@ -552,6 +554,7 @@ async function handleDeleteComment(context: UserRouteContext): Promise<Response>
   });
   if (!result.ok) return restError(result);
   if (!result.data?.length) return apiError("not_found");
+  await readAfterWrite(context, "write.comments.delete", [{ op: "delete", table: "comments", key: { id: id.toLowerCase() } }]);
   return jsonResponse({ deleted: true });
 }
 
@@ -599,6 +602,10 @@ async function handleCommentLike(context: UserRouteContext, like: boolean): Prom
     });
     if (!result.ok) return restError(result);
   }
+  const key = { comment_id: id, user_id: user.userId };
+  await readAfterWrite(context, "write.comment-likes", [
+    like ? { op: "reread", table: "comment_likes", match: key, then: "insert" } : { op: "delete", table: "comment_likes", key },
+  ]);
   // The write is committed: a failed count read is reported as an unknown count, never as a failure.
   const count = await exactCount(config, "comment_likes", { select: "id", comment_id: `eq.${id}` }, deadline);
   return jsonResponse({ liked: like, count: count.ok ? count.data : null });
@@ -622,6 +629,10 @@ async function handleLike(context: UserRouteContext, like: boolean): Promise<Res
     });
     if (!result.ok) return restError(result);
   }
+  const match = { story_id: key, user_id: user.userId };
+  await readAfterWrite(context, "write.likes", [
+    like ? { op: "reread", table: "likes", match, then: "insert" } : { op: "delete", table: "likes", key: match },
+  ]);
   const count = await exactCount(config, "likes", { select: "id", story_id: `eq.${key}`, env: `eq.${config.dataEnv}` }, deadline);
   return jsonResponse({ liked: like, count: count.ok ? count.data : null });
 }
@@ -663,6 +674,13 @@ async function handleReaction(context: UserRouteContext): Promise<Response> {
     prefer: ["return=representation"],
   });
 
+  const reactionKey = {
+    resource_id: input.resourceId,
+    resource_type: input.resourceType,
+    game_version: input.gameVersion,
+    user_id: user.userId,
+  };
+  let applied: RawOp;
   if (input.kind === null) {
     const result = await postgrest<null>(config, {
       method: "DELETE",
@@ -673,7 +691,10 @@ async function handleReaction(context: UserRouteContext): Promise<Response> {
       prefer: ["return=minimal"],
     });
     if (!result.ok) return restError(result);
+    applied = { op: "delete", table: "resource_reactions", key: reactionKey };
   } else {
+    // An updated row changes only kind; an inserted row is the whole row.
+    applied = { op: "update", table: "resource_reactions", key: reactionKey, set: { kind: input.kind } };
     // The kind column is the only one users may update (schema:6064), so no upsert:
     // update, insert when there was no row, and update again if another tab inserted first.
     let result = await update();
@@ -698,9 +719,12 @@ async function handleReaction(context: UserRouteContext): Promise<Response> {
       if (!inserted.ok) {
         result = await update();
         if (!result.ok) return restError(result);
+      } else {
+        applied = { op: "insert", table: "resource_reactions", row: { ...reactionKey, kind: input.kind } };
       }
     }
   }
+  await readAfterWrite(context, "write.reactions", [applied]);
 
   const counts = await postgrest<ReactionCountRow[]>(config, {
     path: "resource_reaction_counts",

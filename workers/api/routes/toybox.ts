@@ -21,6 +21,7 @@ import { apiError, jsonResponse, passthroughJson } from "../http";
 import type { ApiRoute, PublicRouteContext, UserRouteContext } from "../router";
 import { postgrest, postgrestStream, type StreamRequest, type SupabaseApiConfig } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
+import { readAfterWrite, readAfterWriteFromAnswer, userColumns } from "../../sync/read-after-write";
 
 /**
  * The toybox-feed group (docs/supabase-exit/STEP1_DESIGN.md 9.8): the feeds of
@@ -162,6 +163,7 @@ async function handleCreatePost(context: UserRouteContext): Promise<Response> {
     timeoutMs: UPLOAD_MS,
   });
   if (!result.ok) return apiError(restErrorCode(result));
+  await readAfterWriteFromAnswer(context, "write.toybox-post.create", result.response, (row) => [{ op: "insert", table: table(service), row }]);
   return passthroughJson(result.response, config.dataEnv, 201);
 }
 
@@ -181,6 +183,10 @@ async function handleUpdatePost(context: UserRouteContext): Promise<Response> {
     timeoutMs: UPLOAD_MS,
   });
   if (!result.ok) return apiError(restErrorCode(result));
+  // The user's columns only: the counters stay as the sync copied them.
+  await readAfterWriteFromAnswer(context, "write.toybox-post.update", result.response, (row) => [
+    { op: "update", table: table(service), key: { id: row.id }, set: userColumns(table(service), row) },
+  ]);
   return passthroughJson(result.response, config.dataEnv);
 }
 
@@ -195,7 +201,9 @@ async function deleteOwn(context: UserRouteContext, path: string, id: string): P
     prefer: ["return=representation"],
   });
   if (!result.ok) return apiError(restErrorCode(result));
-  return jsonResponse({ v: 1, env: config.dataEnv, deleted: (result.data ?? []).length > 0 });
+  const deleted = (result.data ?? []).length > 0;
+  if (deleted) await readAfterWrite(context, `write.delete.${path}`, [{ op: "delete", table: path, key: { id: id.toLowerCase() } }]);
+  return jsonResponse({ v: 1, env: config.dataEnv, deleted });
 }
 
 async function handleDeletePost(context: UserRouteContext): Promise<Response> {
@@ -252,6 +260,15 @@ async function handleTournamentPlay(context: UserRouteContext): Promise<Response
     },
   });
   if (!result.ok) return apiError(restErrorCode(result));
+  // The play row (server-made id: the user's newest play of this tournament); play_count and the
+  // candidate stats are counters the sync copies.
+  await readAfterWrite(context, "write.favorite-tournament.play", [{
+    op: "reread",
+    table: "favorite_tournament_plays",
+    match: { tournament_id: tournamentId.toLowerCase(), user_id: context.user.userId },
+    order: "created_at.desc,id.desc",
+    then: "insert",
+  }]);
   return jsonResponse({ v: 1, env: config.dataEnv, result: result.data ?? null });
 }
 
@@ -291,6 +308,7 @@ async function handleCreateDraft(context: UserRouteContext): Promise<Response> {
     timeoutMs: UPLOAD_MS,
   });
   if (!result.ok) return apiError(restErrorCode(result));
+  await readAfterWriteFromAnswer(context, "write.pagestorm.drafts.create", result.response, (row) => [{ op: "insert", table: "pagestorm_drafts", row }]);
   return passthroughJson(result.response, config.dataEnv, 201);
 }
 
@@ -309,6 +327,9 @@ async function handleUpdateDraft(context: UserRouteContext): Promise<Response> {
     timeoutMs: UPLOAD_MS,
   });
   if (!result.ok) return apiError(restErrorCode(result));
+  await readAfterWriteFromAnswer(context, "write.pagestorm.drafts.update", result.response, (row) => [
+    { op: "update", table: "pagestorm_drafts", key: { id: row.id }, set: userColumns("pagestorm_drafts", row) },
+  ]);
   return passthroughJson(result.response, config.dataEnv);
 }
 
@@ -347,6 +368,7 @@ async function handleUpsertBody(context: UserRouteContext): Promise<Response> {
     timeoutMs: UPLOAD_MS,
   });
   if (!result.ok) return apiError(restErrorCode(result));
+  await readAfterWriteFromAnswer(context, "write.defragment-body", result.response, (row) => [{ op: "upsert", table: "defragment_bodies", row }]);
   return passthroughJson(result.response, config.dataEnv);
 }
 
@@ -389,6 +411,10 @@ async function handleLike(context: UserRouteContext, like: boolean): Promise<Res
     ? await postgrest<null>(config, { method: "POST", path: "this_or_that_post_likes", token, deadline, body: { post_id: id, user_id: user.userId, env: config.dataEnv }, prefer: ["return=minimal"] })
     : await postgrest<null>(config, { method: "DELETE", path: "this_or_that_post_likes", token, deadline, query: new URLSearchParams({ post_id: `eq.${id}`, user_id: `eq.${user.userId}`, env: `eq.${config.dataEnv}` }), prefer: ["return=minimal"] });
   if (!result.ok && !(like && result.code === "23505")) return apiError(restErrorCode(result));
+  const match = { post_id: id, user_id: user.userId };
+  await readAfterWrite(context, "write.this-or-that.like", [
+    like ? { op: "reread", table: "this_or_that_post_likes", match, then: "insert" } : { op: "delete", table: "this_or_that_post_likes", key: match },
+  ]);
   return jsonResponse({ v: 1, env: config.dataEnv, liked: like });
 }
 
@@ -435,6 +461,9 @@ async function handleVote(context: UserRouteContext): Promise<Response> {
     prefer: ["return=minimal"],
   });
   if (!result.ok) return apiError(restErrorCode(result));
+  await readAfterWrite(context, "write.this-or-that.vote", [
+    { op: "reread", table: "this_or_that_post_votes", match: { post_id: id, user_id: user.userId }, then: "insert" },
+  ]);
   return jsonResponse({ v: 1, env: config.dataEnv, choice: body.choice }, { status: 201 });
 }
 
@@ -451,6 +480,9 @@ async function handleUnvote(context: UserRouteContext): Promise<Response> {
     prefer: ["return=minimal"],
   });
   if (!result.ok) return apiError(restErrorCode(result));
+  await readAfterWrite(context, "write.this-or-that.unvote", [
+    { op: "delete", table: "this_or_that_post_votes", key: { post_id: id, user_id: user.userId } },
+  ]);
   return jsonResponse({ v: 1, env: config.dataEnv, choice: null });
 }
 
