@@ -1008,6 +1008,28 @@ HEAD count, `comment_likes(count)`)과 같다.
   행을 건너뛰게 되기 때문이다. 그래서 첫 복사를 다시 한다(5.2절 다시 채우기: 잎부터 `DROP`, DDL, 복사, 새 `W0`).
   Supabase가 원본일 때는 계획이 이것을 허용한다. 되돌린 뒤 후보 통계는 Supabase 값이 된다.
 
+**구현**(2026-11-09, `workers/api/d1-write/`, `scripts/d1-cutover.ts`, `scripts/d1-reload-supabase.ts`). 시험은
+`pnpm test:d1-sync`의 `d1-write`, `d1-mirror`, `d1-step5-supabase`, `d1-cutover`, `d1-reload-supabase`와 `pnpm test:api`의
+`api-write-retry`.
+
+- 플래그: `source.<group>` = `supabase`|`d1`(없으면 supabase), `write.paused` = `on`|`off`. 쓰기 경로가 있는 그룹 7개를
+  전환 스크립트가 한꺼번에 바꾼다(한 문장). 쓰기 게이트는 경로 플래그처럼 isolate가 30초 기억한다. 게이트를 못 읽으면
+  Worker 변수 `API_WRITE_SOURCE_DEFAULT`(없으면 supabase)를 쓰므로, D1이 원본이 된 뒤 배포에서 `d1`로 둔다.
+- 미러 비밀은 2단계 동기화와 같은 `API_SUPABASE_SECRET_KEY`(`apikey` 헤더만)다. cron(`scheduled`)은 `API_RUNTIME_FLAGS=d1`이고
+  어떤 원본이 `d1`일 때만 돈다(운영은 지금 D1도 읽지 않는다). 실행마다 D1 문장 예산(cron 43, 쓰기 뒤 20)과 행 20개(쓰기 뒤 5개,
+  거절 재시도는 cron만) 안에서 보낸다. S2는 50행을 읽어 열린 거절 뒤에 선 행이 실행의 몫을 채우지 않게 한다.
+- 전환(`--to d1`): `write.paused` on → 35초(게이트 기억 시간) → 변경 로그 머리 `H`를 읽고, 배포된 1분 동기화가 이 env의 `H`까지
+  적용할 때까지(창 `applied_above`, 워터마크) 기다린다. 스크립트 안에서 따로 적용하지 않는다(동기화의 적용 함수가 Worker 안에
+  있다) → `sync.enabled` off, 돌던 실행이 끝날 때까지(마지막 실행 + 45초) → 일일 대조 통과 → 원본 `d1` → `write.paused` off.
+  뒤집기 전에 실패하면 동기화를 다시 켜고 쓰기를 푼다. 쓰기는 보통 1~2분 멈추고, 브라우저는 멈춘 쓰기를 90초까지 다시 보낸다.
+- 되돌리기(`--to supabase`): `write.paused` on → 35초 → outbox 0, 열린 `out` 거절 0까지(cron 미러) → 원본 `supabase` →
+  `write.paused` off → 다시 채우기(`d1-first-copy.ts --refill`, 동기화 꺼진 채) → `sync.enabled` on. `--no-refill`이면 마지막
+  둘을 손으로 한다. 다시 채우는 동안 D1 읽기 화면은 비거나 오래된 값을 보이므로 3단계 읽기 플래그를 먼저 supabase로 둔다.
+- 전체 재적재(7단계 되돌리기): 쓰기 멈춤, 모든 원본 `d1`, 동기화 꺼짐일 때만 돈다. 미러와 같은 본문·RPC로 이 env의 D1 행을
+  부모부터 upsert(merge)하고, Supabase에만 있는 이 env 행을 잎부터 지운다. 파생 값은 Supabase 트리거가 다시 센다. D1에 없는
+  NOT NULL 쓰기 전용 열(7절)은 Supabase에 있던 값을 지키고, 없던 행에는 CHECK를 통과하는 자리값(`created_surface = 'detail'`,
+  `source_game_locale = 'kor'`, `game_version = 'd1-reload'`)을 넣는다. 같은 이유로 고아 조각모음 본문은 Supabase에서도 지워진다.
+
 ## 6. 그림자 읽기 대조
 
 샘플된 `api` 요청에서 Worker는 오늘처럼 Supabase로 답하고, `ctx.waitUntil`에서 D1 어댑터를 돌려 두 답을
