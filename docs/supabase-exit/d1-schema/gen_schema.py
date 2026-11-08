@@ -64,13 +64,20 @@ def main():
         if not check:
             with open(target, "w", encoding="utf-8") as f:
                 f.write(text)
+    # A generated file whose section was renamed or removed would still be applied by wrangler.
+    stale = sorted(f for f in os.listdir(mig) if f.endswith(".sql") and f not in files
+                   and NOTICE.splitlines()[0] in open(os.path.join(mig, f), encoding="utf-8").read())
     if check:
-        if differing:
-            print("migrations differ from %s: %s (run gen_schema.py without --check)" % (src, ", ".join(differing)))
+        if differing or stale:
+            print("migrations differ from %s: %s (run gen_schema.py without --check)%s" % (
+                src, ", ".join(differing) or "none", "; generated files with no section: " + ", ".join(stale)
+                if stale else ""))
             sys.exit(1)
         print("migrations match %s: %s" % (src, ", ".join(files)))
     else:
         print("wrote %d of %d migrations: %s" % (len(differing), len(files), ", ".join(differing) or "none changed"))
+        if stale:
+            print("generated files with no section (remove them by hand): " + ", ".join(stale))
 
 
 if __name__ == "__main__":
