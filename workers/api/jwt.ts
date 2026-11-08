@@ -31,6 +31,16 @@ export type JwtVerifyOptions = {
   pinnedKeys?: readonly SupabaseJwk[];
   /** Keeps a shared JWKS fetch alive when the request that started it ends. */
   waitUntil?: (promise: Promise<unknown>) => void;
+  /**
+   * Claim only (docs/SUPABASE_EXIT_PLAN.md 5.3): a correctly signed token is
+   * accepted whatever its `exp`; the caller applies its own claim deadline.
+   */
+  ignoreExpiry?: boolean;
+  /**
+   * Claim only: the project's legacy JWT secret, so tokens signed with the
+   * previous HS256 key (plan 5.3) verify too. Without it HS256 is refused.
+   */
+  legacyHs256Secret?: string;
 };
 
 const MAX_TOKEN_LENGTH = 8192;
@@ -57,6 +67,7 @@ let lastLiveFetchFailed = false;
 let liveFetch: Promise<void> | null = null;
 let liveFetchGeneration = 0;
 const importedKeys = new Map<string, Promise<CryptoKey>>();
+const legacyKeys = new Map<string, Promise<CryptoKey>>();
 
 /** Clears module caches between spec cases. */
 export function resetJwtCachesForTest(): void {
@@ -65,6 +76,7 @@ export function resetJwtCachesForTest(): void {
   lastLiveFetchFailed = false;
   liveFetch = null;
   importedKeys.clear();
+  legacyKeys.clear();
 }
 
 function base64UrlToBytes(value: string): Uint8Array<ArrayBuffer> {
@@ -174,6 +186,17 @@ function importKey(jwk: SupabaseJwk): Promise<CryptoKey> {
   return imported;
 }
 
+function importLegacyKey(secret: string): Promise<CryptoKey> {
+  let imported = legacyKeys.get(secret);
+  if (!imported) {
+    imported = crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
+    imported.catch(() => legacyKeys.delete(secret));
+    if (legacyKeys.size >= 4) legacyKeys.clear();
+    legacyKeys.set(secret, imported);
+  }
+  return imported;
+}
+
 function audienceIncludesAuthenticated(aud: unknown): boolean {
   if (aud === "authenticated") return true;
   return Array.isArray(aud) && aud.includes("authenticated");
@@ -191,9 +214,12 @@ export async function checkSupabaseAccessToken(token: string, options: JwtVerify
   const header = decodeJsonSegment(headerSegment);
   const payload = decodeJsonSegment(payloadSegment);
   if (!header || !payload) return invalid;
-  if (header.alg !== "ES256") return invalid;
+  const legacySecret = options.legacyHs256Secret;
+  const hs256 = header.alg === "HS256" && typeof legacySecret === "string" && legacySecret.length > 0;
+  if (header.alg !== "ES256" && !hs256) return invalid;
   const kid = header.kid;
-  if (typeof kid !== "string" || kid.length === 0 || kid.length > MAX_KID_LENGTH) return invalid;
+  // Legacy HS256 tokens may carry no kid; they are checked against the one secret.
+  if (!hs256 && (typeof kid !== "string" || kid.length === 0 || kid.length > MAX_KID_LENGTH)) return invalid;
 
   const now = options.now ?? Math.floor(Date.now() / 1000);
   const exp = payload.exp;
@@ -214,29 +240,34 @@ export async function checkSupabaseAccessToken(token: string, options: JwtVerify
   } catch {
     return invalid;
   }
-  // JWS ES256 signatures are the raw 64-byte r||s pair WebCrypto expects.
-  if (signature.length !== 64) return invalid;
-
-  const pinned = options.pinnedKeys ?? PINNED_SUPABASE_JWKS;
-  const jwk = pinned.find((key) => key.kid === kid) ?? await liveKey(kid, options);
-  if (jwk === "unavailable") return { ok: false, reason: "unavailable" };
-  if (!jwk) return invalid;
-
+  const signed = new TextEncoder().encode(`${headerSegment}.${payloadSegment}`);
   let valid = false;
-  try {
-    valid = await crypto.subtle.verify(
-      { name: "ECDSA", hash: "SHA-256" },
-      await importKey(jwk),
-      signature,
-      new TextEncoder().encode(`${headerSegment}.${payloadSegment}`),
-    );
-  } catch {
-    return invalid;
+  if (hs256) {
+    if (signature.length !== 32) return invalid;
+    try {
+      valid = await crypto.subtle.verify("HMAC", await importLegacyKey(legacySecret as string), signature, signed);
+    } catch {
+      return invalid;
+    }
+  } else {
+    // JWS ES256 signatures are the raw 64-byte r||s pair WebCrypto expects.
+    if (signature.length !== 64) return invalid;
+
+    const pinned = options.pinnedKeys ?? PINNED_SUPABASE_JWKS;
+    const jwk = pinned.find((key) => key.kid === kid) ?? await liveKey(kid as string, options);
+    if (jwk === "unavailable") return { ok: false, reason: "unavailable" };
+    if (!jwk) return invalid;
+
+    try {
+      valid = await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, await importKey(jwk), signature, signed);
+    } catch {
+      return invalid;
+    }
   }
   if (!valid) return invalid;
 
   // Only a correctly signed token is told to refresh.
-  if (exp - EXPIRY_MARGIN_SECONDS <= now) return { ok: false, reason: "expired" };
+  if (!options.ignoreExpiry && exp - EXPIRY_MARGIN_SECONDS <= now) return { ok: false, reason: "expired" };
 
   return {
     ok: true,

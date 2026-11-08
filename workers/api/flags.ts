@@ -39,6 +39,8 @@ type FlagMemory = {
   groups: ReadonlySet<ApiSurfaceGroup>;
   shadow: ShadowRates;
   readAt: number;
+  /** Every row of the read, for flags that are not path flags (identity.mode). */
+  values: ReadonlyMap<string, string>;
 };
 
 let memory: FlagMemory | null = null;
@@ -101,8 +103,22 @@ export function clampShadowRate(value: unknown): number {
   return rate >= 1 ? 1 : rate;
 }
 
-export function recordFlags(groups: ReadonlySet<ApiSurfaceGroup>, now: number, shadow: ShadowRates = NO_SHADOW): void {
-  memory = { groups, shadow, readAt: now };
+/** String-valued rows of a flags read, by key. */
+export function flagValues(rows: readonly { key?: unknown; value?: unknown }[]): Map<string, string> {
+  const values = new Map<string, string>();
+  for (const row of rows) {
+    if (typeof row.key === "string" && typeof row.value === "string") values.set(row.key, row.value);
+  }
+  return values;
+}
+
+export function recordFlags(
+  groups: ReadonlySet<ApiSurfaceGroup>,
+  now: number,
+  shadow: ShadowRates = NO_SHADOW,
+  values: ReadonlyMap<string, string> = new Map(),
+): void {
+  memory = { groups, shadow, readAt: now, values };
   failures = 0;
   retryAt = 0;
 }
@@ -130,7 +146,7 @@ async function readFlags(db: D1Database, routedGroups: ReadonlySet<ApiSurfaceGro
   try {
     const result = await flagsStatement(db).all<{ key: string; value: string }>();
     const groups = parseFlagRows(result.results ?? [], routedGroups);
-    recordFlags(groups, now(), parseShadowRates(result.results ?? [], routedGroups));
+    recordFlags(groups, now(), parseShadowRates(result.results ?? [], routedGroups), flagValues(result.results ?? []));
     return groups;
   } catch (error) {
     recordFlagFailure(startedAt, now());
@@ -156,6 +172,15 @@ export function pageFlags(
   }
   if (memory && age < STALE_MAX_MS) return memory.groups;
   return null;
+}
+
+/**
+ * Every flag value of this isolate's last good read, or null when it has none
+ * younger than `maxAgeMs` (page requests accept STALE_MAX_MS, /api FRESH_MS).
+ */
+export function rememberedFlagValues(now = Date.now(), maxAgeMs = STALE_MAX_MS): ReadonlyMap<string, string> | null {
+  if (!memory || now - memory.readAt >= maxAgeMs) return null;
+  return memory.values;
 }
 
 export type ApiFlagDecision =
@@ -190,7 +215,7 @@ export async function apiFlags(
       const flagRows = (results[0]?.results ?? []) as { key?: unknown; value?: unknown }[];
       const groups = parseFlagRows(flagRows, routedGroups);
       const shadow = parseShadowRates(flagRows, routedGroups);
-      recordFlags(groups, Date.now(), shadow);
+      recordFlags(groups, Date.now(), shadow, flagValues(flagRows));
       return { groups, shadow, prefetched: results.slice(1).map((result) => result.results ?? []) };
     } catch (error) {
       recordFlagFailure(startedAt, Date.now());

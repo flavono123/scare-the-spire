@@ -10,6 +10,7 @@
  *
  * shadow.<group> is the step 2 shadow-read sample rate (docs/supabase-exit/D1_SCHEMA_DESIGN.md 6):
  * 0 (or no row) compares nothing, 1 compares every api read of the group.
+ *   tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note "why"
  *
  * The target must be named: wrangler 4's `d1 execute` defaults to the local
  * file, so a rollback that forgot --remote would "succeed" without touching
@@ -20,6 +21,7 @@ import { spawnSync } from "node:child_process";
 
 import { API_SURFACE_GROUPS, SURFACE_PATHS, pathFlagKey, shadowFlagKey } from "../src/lib/api-surfaces";
 import { SYNC_FLAG_KEY, SYNC_FLAG_VALUES } from "../workers/sync/sync-env";
+import { IDENTITY_MODE_KEY, IDENTITY_MODES } from "../src/lib/identity-cookies";
 
 type Target = { env: "testbed" | "production"; remote: boolean };
 
@@ -41,6 +43,8 @@ const KNOWN_KEYS = new Map<string, KeyRule>([
   ...API_SURFACE_GROUPS.map((group) => [shadowFlagKey(group), SHADOW_RULE] as const),
   // Step 2: the 1-minute sync and read-after-write (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3).
   [SYNC_FLAG_KEY, oneOf(SYNC_FLAG_VALUES)],
+  // Step 4 identity (docs/SUPABASE_EXIT_PLAN.md 5.3): token is step 1, cookie the signed cookie.
+  [IDENTITY_MODE_KEY, oneOf(IDENTITY_MODES)],
 ]);
 
 function usage(message?: string): never {
@@ -51,6 +55,7 @@ function usage(message?: string): never {
     "  tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set sync.enabled on|off --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set shadow.<group> 0..1 --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
+    "  tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     `Keys: ${[...KNOWN_KEYS.keys()].join(", ")}`,
   ].join("\n"));
   process.exit(2);

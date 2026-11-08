@@ -927,12 +927,24 @@
       throw new Error("unavailable");
     }
     const session = config ? normalizeSession(readStoredSession(config)) : null;
-    const userId = sessionUserId(session);
+    const cookieMode = identityCookieMode();
+    const userId = sessionUserId(session) ?? (cookieMode ? claimedUid() : null);
     const likeCounts = new Map(comments.map((comment) => [comment.id, Number(comment.like_count) || 0]));
     const liked = new Set();
     const now = Math.floor(Date.now() / 1000);
-    // Only a live token; an expired one is refreshed on the first write, never on a read.
-    if (userId && comments.length > 0 && session?.access_token && session.expires_at > now + 5) {
+    if (cookieMode) {
+      // Cookie mode: claim once (never a new sign-up: there is a session or a claimed uid), no token.
+      if (userId && comments.length > 0 && config) {
+        try {
+          await ensureClaimed(config);
+          const mine = await apiRequest(`/api/me/engagement?threads=${threadKey}`);
+          for (const id of mine?.commentLikes?.[threadKey] ?? []) liked.add(id);
+        } catch {
+          // Hearts stay empty; the comments still show.
+        }
+      }
+    } else if (userId && comments.length > 0 && session?.access_token && session.expires_at > now + 5) {
+      // Only a live token; an expired one is refreshed on the first write, never on a read.
       try {
         const mine = await apiRequest(`/api/me/engagement?threads=${threadKey}`, { token: session.access_token });
         for (const id of mine?.commentLikes?.[threadKey] ?? []) liked.add(id);
@@ -1382,6 +1394,136 @@
     return version === "v1" && groups.includes(group) ? "api" : "legacy";
   }
 
+  // Step 4 signed-cookie identity, same contract as src/lib/api-identity.ts and
+  // src/lib/identity-cookies.ts (docs/SUPABASE_EXIT_PLAN.md 5.3). Inert unless
+  // the Worker set slseoun_idm=cookie.
+  const IDENTITY_MODE_COOKIE = "slseoun_idm";
+  const IDENTITY_MARKER_KEY = "slseoun-identity";
+  const IDENTITY_CLAIM_PATH = "/api/auth/claim";
+  let identityClaim = null;
+
+  function identityCookieMode() {
+    const entry = document.cookie.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${IDENTITY_MODE_COOKIE}=`));
+    return entry === `${IDENTITY_MODE_COOKIE}=cookie`;
+  }
+
+  function claimedUid() {
+    try {
+      const parsed = JSON.parse(window.localStorage.getItem(IDENTITY_MARKER_KEY) || "null");
+      return typeof parsed?.uid === "string" ? parsed.uid : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function rememberClaim(uid) {
+    try {
+      window.localStorage.setItem(IDENTITY_MARKER_KEY, JSON.stringify({ uid, at: new Date().toISOString() }));
+    } catch {
+      // The cookie still works; the next write claims again.
+    }
+  }
+
+  /** POST /api/auth/claim once per page at a time; errors carry `identityLegacy` or the router `code`. */
+  function claimIdentity(accessToken) {
+    identityClaim = identityClaim || (async () => {
+      const fail = (fields) => Object.assign(new Error(fields.code || "unavailable"), fields);
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), QUERY_TIMEOUT_MS);
+      try {
+        let response;
+        try {
+          response = await fetch(IDENTITY_CLAIM_PATH, {
+            method: "POST",
+            headers: { Accept: "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify(accessToken ? { access_token: accessToken } : {}),
+            credentials: "same-origin",
+            signal: controller.signal,
+          });
+        } catch {
+          throw fail({ code: "unavailable" });
+        }
+        if (response.headers.get(API_MARKER_HEADER) !== "1") {
+          void response.body?.cancel().catch(() => undefined);
+          throw fail({ identityLegacy: true });
+        }
+        const parsed = await response.json().catch(() => null);
+        if (response.status === 409 && parsed?.error === "surface_legacy") throw fail({ identityLegacy: true });
+        if (!response.ok) throw fail({ code: parsed?.error || `http_${response.status}`, status: response.status });
+        if (parsed?.v !== 1 || typeof parsed.uid !== "string") throw fail({ code: "bad_response" });
+        rememberClaim(parsed.uid);
+        return parsed;
+      } finally {
+        clearTimeout(timer);
+      }
+    })().finally(() => {
+      identityClaim = null;
+    });
+    return identityClaim;
+  }
+
+  /**
+   * The claimed uid. Claims with the stored Supabase token (expired is fine) when
+   * this browser has not claimed it yet, or when `force` (the cookie is gone).
+   * With no Supabase session the Worker signs up on Supabase, as ensureSession
+   * does today, and that session is stored for supabase-js.
+   */
+  async function ensureClaimed(config, { force = false } = {}) {
+    const stored = normalizeSession(readStoredSession(config));
+    const storedUid = sessionUserId(stored);
+    const marker = claimedUid();
+    if (!force && marker && (!storedUid || storedUid === marker)) return marker;
+    const claimed = await claimIdentity(stored?.access_token ?? null);
+    if (claimed.session) writeStoredSession(config, normalizeSession(claimed.session));
+    return claimed.uid;
+  }
+
+  /** The session to report for a cookie-mode write: the stored one when it is the same user. */
+  function cookieSession(config, uid) {
+    const stored = normalizeSession(readStoredSession(config));
+    return stored && sessionUserId(stored) === uid ? stored : { user: { id: uid } };
+  }
+
+  /**
+   * A refused claim (token_invalid: the stored token is past the claim deadline,
+   * or HS256 without the legacy secret) also takes the token path, which
+   * refreshes the session as today; the Worker accepts the bearer while there is
+   * no cookie, and the next write claims the fresh token.
+   */
+  function tokenPathAfterClaim(error) {
+    return Boolean(error.identityLegacy) || error.code === "token_invalid";
+  }
+
+  /**
+   * A cookie-mode api write, or null to use the token path: identity.mode is
+   * token again, the claim was refused, or the route still needs the token.
+   * `identity_required` claims again and sends once more; none of these ran the handler.
+   */
+  async function apiWriteWithCookie(config, path, init) {
+    let uid;
+    try {
+      uid = await ensureClaimed(config);
+    } catch (error) {
+      if (tokenPathAfterClaim(error)) return null;
+      throw error;
+    }
+    try {
+      return { result: await apiRequest(path, init), session: cookieSession(config, uid) };
+    } catch (error) {
+      if (error.code === "identity_required") {
+        try {
+          uid = await ensureClaimed(config, { force: true });
+        } catch (claimError) {
+          if (tokenPathAfterClaim(claimError)) return null;
+          throw claimError;
+        }
+        return { result: await apiRequest(path, init), session: cookieSession(config, uid) };
+      }
+      if (error.code === "token_invalid" || error.code === "token_expired") return null;
+      throw error;
+    }
+  }
+
   const THREAD_KEY = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$/;
   const REACTION_PART = { type: /^[a-z_-]{1,32}$/, id: /^[A-Za-z0-9._-]{1,128}$/, version: /^[A-Za-z0-9._-]{1,32}$/ };
 
@@ -1442,6 +1584,10 @@
    * sends once more (src/lib/api-session.ts). Resolves to { result, session }.
    */
   async function apiWriteAsUser(config, path, init) {
+    if (identityCookieMode()) {
+      const viaCookie = await apiWriteWithCookie(config, path, init);
+      if (viaCookie) return viaCookie;
+    }
     let session = await ensureSession(config, { keepUserOnTransientFailure: true });
     try {
       return { result: await apiRequest(path, { ...init, token: session.access_token }), session };

@@ -14,6 +14,10 @@
   // Step 1 of the Supabase exit. "off" keeps every screen on the legacy path and
   // skips D1 entirely; "d1" reads runtime_flags. API_SUPABASE_URL, API_SUPABASE_KEY
   // and API_DATA_ENV are passed with --var at deploy time.
+  // Step 4 identity (docs/SUPABASE_EXIT_PLAN.md 5.3) reads two Worker secrets, set
+  // with `wrangler secret put` per env, never here: API_IDENTITY_SECRET (cookie HMAC
+  // key, at least 32 characters; without it identity stays on bearer tokens) and,
+  // optionally, API_SUPABASE_LEGACY_JWT_SECRET (claims of old HS256 tokens).
   "vars": {
     "API_RUNTIME_FLAGS": "off"
   },
