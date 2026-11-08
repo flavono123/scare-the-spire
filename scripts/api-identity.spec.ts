@@ -428,6 +428,14 @@ async function main() {
     const unclaimedExpired = await call("/api/write/spec-echo", { authorization: `Bearer ${await signer.es256({ exp: now() - 60 })}` });
     assert.deepEqual([unclaimedExpired.status, unclaimedExpired.body.error], [401, "token_expired"], "an expired token is refreshed as today");
     assert.equal((await call("/api/write/spec-echo", { authorization: "Bearer x.y.z" })).body.error, "token_invalid");
+    // The legacy HS256 secret and the ignored expiry are for claims only: a bearer is checked as in step 1.
+    const withLegacy = { ...baseEnv, API_SUPABASE_LEGACY_JWT_SECRET: LEGACY_SECRET };
+    for (const mode of ["token", "cookie"]) {
+      setMode(mode);
+      const hs256Bearer = await call("/api/write/spec-echo", { authorization: `Bearer ${await signer.hs256(LEGACY_SECRET)}` }, withLegacy);
+      assert.deepEqual([hs256Bearer.status, hs256Bearer.body.error], [401, "token_invalid"], `${mode} mode: an HS256 bearer is refused as today`);
+    }
+    setMode("cookie");
     assert.equal((await call("/api/write/spec-echo", { cookie: "slseoun_id=v1.garbage", authorization: `Bearer ${token}` })).body.source, "token", "a bad cookie falls back to the token too");
     const missing = await call("/api/write/spec-echo");
     assert.deepEqual([missing.status, missing.body.error], [401, "identity_required"], "neither cookie nor token");
