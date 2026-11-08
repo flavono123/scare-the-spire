@@ -476,8 +476,9 @@ SELECT p.id, h.seed, h.build, h."character", h.ascension, h.win, h.start_time, h
 FROM posts p JOIN post_history_course h ON h.service = p.service AND h.post_id = p.id
 WHERE p.service = 'history_course' AND p.id = ?1;
 
--- @ R4 cover view: combo thumbs re-pick a non-manual cover from list_facts as they do from the raw today; the editor's raw is R3r | expect=post_history_course:PK | allow= | params=["r00000000000000f"]
-SELECT post_id AS id, cover_spec, list_facts FROM post_history_course WHERE service = 'history_course' AND post_id = ?1;
+-- @ R4 cover view: combo thumbs re-pick a non-manual cover from list_facts and the phrase columns as they do from the raw today (summary_version 0: from R3r); the editor's raw is R3r | expect=post_history_course:PK | allow= | params=["r00000000000000f"]
+SELECT post_id AS id, cover_spec, list_facts, win, ascension, total_floors, summary_version
+FROM post_history_course WHERE service = 'history_course' AND post_id = ?1;
 
 -- @ R3r run raw for detail and cover editor (the stored text is the body, never wrapped in JSON) | expect=post_history_course_file:PK | allow= | params=["r00000000000000f"]
 SELECT raw FROM post_history_course_file WHERE service = 'history_course' AND post_id = ?1;

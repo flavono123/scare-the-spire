@@ -1,4 +1,5 @@
 import {
+  HISTORY_RUN_RAW_PATH,
   HISTORY_RUN_REFERENCE_LIMIT,
   isHistoryRunsView,
   isHistoryRunView,
@@ -8,7 +9,7 @@ import {
   RUN_DETAIL_COLUMNS,
   RUN_SUMMARY_COLUMNS,
 } from "../../../src/lib/history-runs-api-rules";
-import { API_MARKER_HEADER, apiError, jsonResponse, PRIVATE_NO_STORE } from "../http";
+import { API_MARKER_HEADER, apiError, jsonResponse, PRIVATE_NO_STORE, textResponse } from "../http";
 import type { ApiRoute, PublicRouteContext, UserRouteContext } from "../router";
 import { postgrest, postgrestStream } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
@@ -99,6 +100,23 @@ async function handleOne(context: PublicRouteContext): Promise<Response> {
   });
   if (!result.ok) return apiError(restErrorCode(result));
   return jsonResponse({ v: 1, env: config.dataEnv, rows: result.data ?? [] });
+}
+
+/** One run's raw file as text/plain (R3r): PostgREST's single-column text body, passed through unread. */
+async function handleRaw(context: PublicRouteContext): Promise<Response> {
+  const id = context.url.searchParams.get("id") ?? "";
+  if (!isRunId(id)) return apiError("invalid");
+  const { config } = context;
+  if (!context.allowUpstream) return jsonResponse({ v: 1, env: config.dataEnv });
+  const result = await postgrestStream(config, {
+    path: "runs",
+    deadline: Date.now() + STREAM_READ_MS,
+    timeoutMs: STREAM_READ_MS,
+    query: new URLSearchParams({ select: "raw", id: `eq.${id}`, env: `eq.${config.dataEnv}` }),
+    accept: "text/plain",
+  });
+  if (!result.ok) return apiError(restErrorCode(result));
+  return textResponse(result.response.body, config.dataEnv);
 }
 
 async function handleEngagement(context: PublicRouteContext): Promise<Response> {
@@ -274,6 +292,16 @@ export const historyRunsRoutes: readonly ApiRoute[] = [
     query: { id: isRunId, view: isHistoryRunView },
     rateLimit: "ip",
     handle: handleOne,
+  },
+  {
+    id: "read.history-run.raw",
+    method: "GET",
+    path: HISTORY_RUN_RAW_PATH,
+    group: "history-runs",
+    access: "public",
+    query: idQuery,
+    rateLimit: "ip",
+    handle: handleRaw,
   },
   {
     id: "read.history-runs.engagement",

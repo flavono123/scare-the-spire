@@ -209,6 +209,9 @@ export const SHADOW_SPECS: Readonly<Record<string, ShadowSpec>> = {
       return projectRows(answer, view === "cover" ? ["id", "cover_spec"] : RUN_DETAIL_META_COLUMNS);
     },
   },
+  // R3r: raw files are not compared on requests (the daily reconcile compares their hashes, design 6).
+  // Answering here keeps the shadow from reading a copy of a body up to 1.9 MB.
+  "read.history-run.raw": { supabase: () => Promise.resolve({ ok: false, reason: "raw_file" }) },
   "read.history-runs.engagement": {
     skip: (supabase) => (sum(record(supabase).likes) >= POSTGREST_ROW_CAP || sum(record(supabase).comments) >= POSTGREST_ROW_CAP ? "row_cap" : null),
   },
