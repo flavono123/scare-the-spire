@@ -236,6 +236,10 @@ const API_CASES: ApiCase[] = [
   { name: "reaction insert", method: "PUT", path: "/api/write/reactions", body: { resourceType: "card", resourceId: "BASH", gameVersion: "0.1.0", kind: "buff" }, status: 200 },
   { name: "reaction update", method: "PUT", path: "/api/write/reactions", body: { resourceType: "card", resourceId: "BASH", gameVersion: "0.1.0", kind: "nerf" }, status: 200 },
   { name: "reaction clear", method: "PUT", path: "/api/write/reactions", body: { resourceType: "card", resourceId: "BASH", gameVersion: "0.1.0", kind: null }, status: 200 },
+  { name: "reaction clear when there is none", method: "PUT", path: "/api/write/reactions", body: { resourceType: "relic", resourceId: "ANCHOR", gameVersion: "0.1.0", kind: null }, status: 200 },
+  { name: "reaction with a bad kind", method: "PUT", path: "/api/write/reactions", body: { resourceType: "card", resourceId: "BASH", gameVersion: "0.1.0", kind: "angry" }, status: 400 },
+  { name: "unlike when not liked", method: "DELETE", path: "/api/write/likes?key=sts2-codex:card:STRIKE", status: 200 },
+  { name: "comment unlike when not liked", method: "DELETE", path: `/api/write/comment-likes?id=${C1}`, status: 200 },
   // stories group
   {
     name: "story insert", method: "POST", path: "/api/write/stories",
@@ -296,6 +300,32 @@ const API_CASES: ApiCase[] = [
     name: "defragment post insert", method: "POST", path: "/api/write/toybox-post?service=defragment",
     body: { id: DEFRAG_NEW, user_id: U1, nickname: "닉", title: "title", content: [], content_text: "text", env: "development", ...FORGED }, status: 201,
   },
+  // every post table: updates where a route exists (five services), deletes everywhere, own and another user's
+  {
+    name: "transfigure update with guarded columns", method: "PATCH", path: `/api/write/toybox-post?service=transfigure&id=${TRANS1}`,
+    body: { content_text: "edited", env: "production", ...FORGED }, status: 200,
+  },
+  { name: "transfigure update by another user", actor: U2, method: "PATCH", path: `/api/write/toybox-post?service=transfigure&id=${TRANS1}`, body: { content_text: "hijack" }, status: 200 },
+  { name: "transfigure delete by another user", actor: U2, method: "DELETE", path: `/api/write/toybox-post?service=transfigure&id=${TRANS1}`, status: 200 },
+  { name: "decisions update with guarded columns", method: "PATCH", path: `/api/write/toybox-post?service=decisions_decisions&id=${DEC_NEW}`, body: { title: "title 2", ...FORGED }, status: 200 },
+  { name: "decisions update by another user", actor: U2, method: "PATCH", path: `/api/write/toybox-post?service=decisions_decisions&id=${DEC_NEW}`, body: { title: "hijack" }, status: 200 },
+  { name: "defragment post update with guarded columns", method: "PATCH", path: `/api/write/toybox-post?service=defragment&id=${DEFRAG_NEW}`, body: { title: "title 2", ...FORGED }, status: 200 },
+  { name: "defragment post update giving it away", method: "PATCH", path: `/api/write/toybox-post?service=defragment&id=${DEFRAG_NEW}`, body: { user_id: U2 }, status: 403 },
+  { name: "pagestorm update by another user", actor: U2, method: "PATCH", path: `/api/write/toybox-post?service=pagestorm&id=${PAGE1}`, body: { title: "hijack" }, status: 200 },
+  { name: "chemical update (no update route)", method: "PATCH", path: `/api/write/toybox-post?service=chemical_x&id=${CHEM_NEW}`, body: { content_text: "edited" }, status: 400 },
+  { name: "this or that delete of another user's", method: "DELETE", path: `/api/write/toybox-post?service=this_or_that&id=${TOT2}`, status: 200 },
+  { name: "tournament delete of another user's", method: "DELETE", path: `/api/write/toybox-post?service=favorite_tournament&id=${FAV1}`, status: 200 },
+  { name: "pagestorm delete by another user", actor: U2, method: "DELETE", path: `/api/write/toybox-post?service=pagestorm&id=${PAGE1}`, status: 200 },
+  { name: "chemical delete by another user", actor: U2, method: "DELETE", path: `/api/write/toybox-post?service=chemical_x&id=${CHEM_NEW}`, status: 200 },
+  { name: "decisions delete by another user", actor: U2, method: "DELETE", path: `/api/write/toybox-post?service=decisions_decisions&id=${DEC_NEW}`, status: 200 },
+  { name: "defragment post delete by another user", actor: U2, method: "DELETE", path: `/api/write/toybox-post?service=defragment&id=${DEFRAG_NEW}`, status: 200 },
+  { name: "transfigure delete own", method: "DELETE", path: `/api/write/toybox-post?service=transfigure&id=${TRANS_NEW}`, status: 200 },
+  { name: "this or that delete own", method: "DELETE", path: `/api/write/toybox-post?service=this_or_that&id=${TOT_NEW}`, status: 200 },
+  { name: "chemical delete own", method: "DELETE", path: `/api/write/toybox-post?service=chemical_x&id=${CHEM_NEW}`, status: 200 },
+  { name: "decisions delete own", method: "DELETE", path: `/api/write/toybox-post?service=decisions_decisions&id=${DEC_NEW}`, status: 200 },
+  { name: "tournament delete own", method: "DELETE", path: `/api/write/toybox-post?service=favorite_tournament&id=${FAV_NEW}`, status: 200 },
+  { name: "pagestorm delete own", method: "DELETE", path: `/api/write/toybox-post?service=pagestorm&id=${PAGE_NEW}`, status: 200 },
+  { name: "defragment post delete own", method: "DELETE", path: `/api/write/toybox-post?service=defragment&id=${DEFRAG_NEW}`, status: 200 },
   // pagestorm drafts: no guard trigger, the client's times and env stay
   {
     name: "draft insert", method: "POST", path: "/api/write/pagestorm/drafts",
@@ -321,6 +351,8 @@ const API_CASES: ApiCase[] = [
   { name: "this or that like", method: "PUT", path: `/api/write/this-or-that/like?id=${TOT2}`, status: 200 },
   { name: "this or that like again", method: "PUT", path: `/api/write/this-or-that/like?id=${TOT2}`, status: 200 },
   { name: "this or that unlike", method: "DELETE", path: `/api/write/this-or-that/like?id=${TOT2}`, status: 200 },
+  { name: "this or that like on another env's post", method: "PUT", path: `/api/write/this-or-that/like?id=${TOT_PROD}`, status: 200 },
+  { name: "this or that like on no post", method: "PUT", path: `/api/write/this-or-that/like?id=${MISSING}`, status: 404 },
   { name: "vote", method: "PUT", path: `/api/write/this-or-that/vote?id=${TOT2}`, body: { choice: "left", surface: "index" }, status: 201 },
   { name: "vote again", method: "PUT", path: `/api/write/this-or-that/vote?id=${TOT2}`, body: { choice: "right", surface: "detail" }, status: 422 },
   { name: "vote on another env's post", method: "PUT", path: `/api/write/this-or-that/vote?id=${TOT_PROD}`, body: { choice: "left", surface: "index" }, status: 403 },
@@ -334,6 +366,10 @@ const API_CASES: ApiCase[] = [
   {
     name: "tournament play with a wrong match count", method: "POST", path: "/api/write/favorite-tournament/play",
     body: { tournamentId: FAV1, startingSize: 3, championType: "card", championId: "BASH", matches: [{ left_type: "card", left_id: "BASH", right_type: "card", right_id: "STRIKE", winner: "left" }] }, status: 400,
+  },
+  {
+    name: "tournament play on no tournament", method: "POST", path: "/api/write/favorite-tournament/play",
+    body: { tournamentId: MISSING, startingSize: 2, championType: "card", championId: "BASH", matches: [{ left_type: "card", left_id: "BASH", right_type: "card", right_id: "STRIKE", winner: "left" }] }, status: 400,
   },
   // history-runs group
   { name: "run upload with forged counters", method: "POST", path: "/api/write/history-runs", body: RUN_ROW(FORGED), status: 201 },
@@ -470,6 +506,19 @@ async function main() {
     await assertSameTables(today, step4, item.name);
   }
   console.log(`api cases: ${API_CASES.length} answer alike and leave the same rows`);
+
+  // The cases did what their names say on today's database (both sides already hold the same rows).
+  const one = async (sql: string) => (await today.query<Record<string, unknown>>(sql)).rows;
+  assert.deepEqual(await one(`select content_text, like_count, comment_count, env, user_id from public.transfigure_posts where id = '${TRANS1}'`),
+    [{ content_text: "edited", like_count: 0, comment_count: 0, env: "development", user_id: U1 }], "own update kept the guarded columns");
+  assert.deepEqual(await one(`select title from public.pagestorm_posts where id = '${PAGE1}'`), [{ title: "title 2" }], "another user's update and delete did nothing");
+  assert.equal((await one(`select id from public.this_or_that_posts where id = '${TOT2}'`)).length, 1, "another user's post stays");
+  assert.equal((await one(`select id from public.favorite_tournament_posts where id = '${FAV1}'`)).length, 1, "another user's post stays");
+  for (const [table, postId] of [["transfigure_posts", TRANS_NEW], ["this_or_that_posts", TOT_NEW], ["chemical_posts", CHEM_NEW],
+    ["decisions_decisions_posts", DEC_NEW], ["favorite_tournament_posts", FAV_NEW], ["pagestorm_posts", PAGE_NEW], ["defragment_posts", DEFRAG_NEW]]) {
+    assert.equal((await one(`select id from public.${table} where id = '${postId}'`)).length, 0, `own ${table} delete removed the row`);
+  }
+  assert.equal((await one(`select post_id from public.this_or_that_post_likes where post_id = '${TOT_PROD}'`)).length, 1, "a like on another env's post is accepted today");
 
   const todayConfig: SupabaseApiConfig = { url: TODAY_URL, key: PUBLISHABLE, dataEnv: "development" };
   const step4Config: SupabaseApiConfig = { url: STEP4_URL, key: PUBLISHABLE, dataEnv: "development" };

@@ -136,10 +136,13 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 - `scripts/write-gate-equivalence.spec.ts`: PGlite DB 둘을 저장소 SQL로 만든다. "오늘"(변경 로그와 이 마이그레이션을
   뺀 전부)과 "4단계"(이 마이그레이션을 더함)다. 같은 Worker가 오늘 DB에는 rls 방식으로, 4단계 DB에는 worker 방식으로
   붙는다. `scripts/lib/supabase-pglite.ts`의 작은 PostgREST가 요청마다 한 트랜잭션에서 키가 가리키는 역할로 SQL을
-  돌린다. API 사례 85개(정직한 요청과 남의 행, 위조한 카운터·시각·소유자, CHECK 위반, 없는 열, 중복, 다른 env 글, 속도 제한 등)와
+  돌린다. 가짜 PostgREST는 Supabase의 `auth.uid()` 정의를 쓰고 PostgREST 12처럼 `request.jwt.claims`만 둔다. API
+  사례 114개(29개 쓰기 경로 모두, 글 표 여덟 개마다 고치기·지우기를 자기 것과 남의 것으로, 정직한 요청과 남의 행, 위조한
+  카운터·시각·소유자, CHECK 위반, 없는 열, 중복, 다른 env 글, 없는 글, 속도 제한 등)와
   PostgREST 수준 사례 24개(경로가 만들지 않는 위조 소유자, 권한, 정책 없는 update 등)가 양쪽에서 같은 HTTP 응답을
   내고 쓰는 26개 표에 같은 행을 남겨야 통과한다. 위조 시각과 새 uuid만 `<now>`, `<uuid>`로 맞춘다. rls 쪽은 service
-  키를, worker 쪽은 사용자 토큰을 한 번도 쓰지 않았는지도 본다.
+  키를, worker 쪽은 사용자 토큰을 한 번도 쓰지 않았는지도 본다. 끝에 오늘 DB에서 사례 이름대로 되었는지(자기 글 고치기의
+  보호 열, 남의 글은 그대로, 자기 글 지우기) 확인한다.
   `SUPABASE_PUBLIC_SCHEMA=<덤프>`를 주면 같은 사례를 덤프의 실제 정책·트리거·함수·권한 위에서 돌린다. 2026-11-05
   백업 사본으로 돌려 통과했다(백업은 커밋하지 않는다).
 - `scripts/write-gate.spec.ts`: 플래그 읽기·캐시·기본값·실패, 라우터 연결(rls는 토큰, worker는 secret 키와 소유 필터,
