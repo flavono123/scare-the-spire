@@ -6,6 +6,7 @@
  * Usage:
  *   tsx scripts/runtime-flags.ts list --env testbed|production --remote|--local
  *   tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note "why"
+ *   tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note "why"
  *
  * The target must be named: wrangler 4's `d1 execute` defaults to the local
  * file, so a rollback that forgot --remote would "succeed" without touching
@@ -15,14 +16,17 @@
 import { spawnSync } from "node:child_process";
 
 import { API_SURFACE_GROUPS, SURFACE_PATHS, pathFlagKey } from "../src/lib/api-surfaces";
+import { IDENTITY_MODE_KEY, IDENTITY_MODES } from "../src/lib/identity-cookies";
 
 type Target = { env: "testbed" | "production"; remote: boolean };
 
 const DATABASES = { testbed: "slseoun-testbed", production: "slseoun-prod" } as const;
 
-const KNOWN_KEYS = new Map<string, readonly string[]>(
-  API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), SURFACE_PATHS]),
-);
+const KNOWN_KEYS = new Map<string, readonly string[]>([
+  ...API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), SURFACE_PATHS] as const),
+  // Step 4 identity (docs/SUPABASE_EXIT_PLAN.md 5.3): token is step 1, cookie the signed cookie.
+  [IDENTITY_MODE_KEY, IDENTITY_MODES],
+]);
 
 function usage(message?: string): never {
   if (message) console.error(message);
@@ -30,6 +34,7 @@ function usage(message?: string): never {
     "Usage:",
     "  tsx scripts/runtime-flags.ts list --env testbed|production --remote|--local",
     "  tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
+    "  tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     `Keys: ${[...KNOWN_KEYS.keys()].join(", ")}`,
   ].join("\n"));
   process.exit(2);

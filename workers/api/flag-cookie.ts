@@ -8,7 +8,10 @@ import {
   QA_PATH_COOKIE_NAME,
   type ApiSurfaceGroup,
 } from "../../src/lib/api-surfaces";
+import { IDENTITY_MODE_COOKIE_NAME } from "../../src/lib/identity-cookies";
 import { flagsDisabledReason, pageFlags, type ExecutionContextLike, type FlagsEnv } from "./flags";
+import { identityModeCookieHeader, type IdentityEnv } from "./identity/cookie";
+import { pageIdentityMode } from "./identity/mode";
 import { supabaseApiConfig } from "./supabase-rest";
 
 /**
@@ -110,13 +113,19 @@ export function flagCookieHeader(
 export function withFlagCookie(
   request: Request,
   url: URL,
-  env: FlagsEnv,
+  env: FlagsEnv & IdentityEnv,
   ctx: ExecutionContextLike,
   routedGroups: ReadonlySet<ApiSurfaceGroup>,
   response: Response,
 ): Response {
   if (!isPageRequest(request, url)) return response;
   const groups = effectivePageGroups(request, env, ctx, routedGroups);
+  // Step 4 identity mode signal (slseoun_idm); token mode with no cookie adds nothing.
+  const identityMode = pageIdentityMode(env, qaOverride(request, env).noSupabase);
+  const identitySignal = identityMode === null
+    ? null
+    : identityModeCookieHeader(readCookie(request, IDENTITY_MODE_COOKIE_NAME), identityMode, url.protocol === "https:");
+  if (identitySignal) response.headers.append("Set-Cookie", identitySignal);
   if (groups === null) return response;
   const header = flagCookieHeader(readCookie(request, FLAG_COOKIE_NAME), groups, url.protocol === "https:");
   if (header) response.headers.append("Set-Cookie", header);
