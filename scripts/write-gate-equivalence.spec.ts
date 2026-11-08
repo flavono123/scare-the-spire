@@ -28,6 +28,8 @@ import { PgRest, repoSchemaFiles, supabaseFromDump, supabaseFromRepo } from "./l
 const ORIGIN = "https://testbed.example.workers.dev";
 const TODAY_URL = "http://127.0.0.1:54321";
 const STEP4_URL = "http://127.0.0.1:54322";
+/** The step 4 database served in rls mode: browser roles and old tabs must see no change. */
+const STEP4_RLS_URL = "http://127.0.0.1:54323";
 const PUBLISHABLE = "sb_publishable_spec";
 const SECRET = "sb_secret_spec";
 
@@ -437,26 +439,30 @@ async function main() {
   const skip = (file: string) => file.endsWith("_d1_change_log.sql");
   const step4Migration = repoSchemaFiles().filter((file) => file.endsWith("_worker_write_actor.sql"));
   const dump = process.env.SUPABASE_PUBLIC_SCHEMA;
-  const [today, step4] = await Promise.all(dump
-    ? [supabaseFromDump(dump), supabaseFromDump(dump, step4Migration)]
+  const [today, step4, step4Rls] = await Promise.all(dump
+    ? [supabaseFromDump(dump), supabaseFromDump(dump, step4Migration), supabaseFromDump(dump, [...step4Migration, ...step4Migration])]
     : [
       supabaseFromRepo(repoSchemaFiles((file) => skip(file) || step4Migration.includes(file))),
       supabaseFromRepo(repoSchemaFiles(skip)),
+      // The migration a second time: it must be idempotent.
+      supabaseFromRepo([...repoSchemaFiles(skip), ...step4Migration]),
     ]);
   console.log(dump ? `schema: replayed ${dump}` : "schema: rebuilt from the repo's supabase SQL");
-  await today.exec(SEED);
-  await step4.exec(SEED);
+  for (const db of [today, step4, step4Rls]) await db.exec(SEED);
   await assertSameTables(today, step4, "seed");
+  await assertSameTables(today, step4Rls, "seed");
 
   const signer = await makeSigner();
   const options = { secretKey: SECRET, publishableKey: PUBLISHABLE, jwks: signer.jwks };
   const restToday = new PgRest(today, options);
   const restStep4 = new PgRest(step4, options);
+  const restStep4Rls = new PgRest(step4Rls, options);
   const realFetch = globalThis.fetch;
   globalThis.fetch = (async (input: Request | string | URL, init?: RequestInit) => {
     const request = new Request(input, init);
     if (request.url.startsWith(TODAY_URL)) return restToday.handle(request);
     if (request.url.startsWith(STEP4_URL)) return restStep4.handle(request);
+    if (request.url.startsWith(STEP4_RLS_URL)) return restStep4Rls.handle(request);
     throw new Error(`unexpected fetch ${request.url}`);
   }) as typeof fetch;
   resetFlagsForTest();
@@ -471,13 +477,14 @@ async function main() {
     ASSETS: { fetch: async () => new Response("asset") },
     PATCH_WORKER: { fetch: async () => new Response("patch") },
   };
-  const sides: [Side, Side] = [
+  const sides: [Side, Side, Side] = [
     { name: "rls", issuer: `${TODAY_URL}/auth/v1`, env: { ...common, API_SUPABASE_URL: TODAY_URL } },
     {
       name: "worker",
       issuer: `${STEP4_URL}/auth/v1`,
       env: { ...common, API_SUPABASE_URL: STEP4_URL, API_SUPABASE_SERVICE_KEY: SECRET, API_WRITE_MODE_DEFAULT: "worker" },
     },
+    { name: "rls after the migration", issuer: `${STEP4_RLS_URL}/auth/v1`, env: { ...common, API_SUPABASE_URL: STEP4_RLS_URL } },
   ];
 
   async function callApi(side: Side, item: ApiCase) {
@@ -498,14 +505,17 @@ async function main() {
     const before = { today: restToday.calls.length, step4: restStep4.calls.length };
     const rls = await callApi(sides[0], item);
     const worker = await callApi(sides[1], item);
+    const rlsAfter = await callApi(sides[2], item);
     assert.equal(rls.status, item.status, `${item.name}: today answers ${rls.status} ${JSON.stringify(rls.body)}`);
     assert.deepEqual(worker, rls, `${item.name}: worker mode answers differently`);
+    assert.deepEqual(rlsAfter, rls, `${item.name}: the step 4 migration changed the rls path`);
     // The rls side never uses the service key; the worker side never forwards a user token.
     assert.ok(restToday.calls.slice(before.today).every((call) => call.role !== "service_role"), `${item.name}: rls side used the service key`);
     assert.ok(restStep4.calls.slice(before.step4).every((call) => call.role !== "authenticated"), `${item.name}: worker side forwarded the token`);
     await assertSameTables(today, step4, item.name);
+    await assertSameTables(today, step4Rls, `${item.name} (rls after the migration)`);
   }
-  console.log(`api cases: ${API_CASES.length} answer alike and leave the same rows`);
+  console.log(`api cases: ${API_CASES.length} answer alike and leave the same rows (also in rls mode after the migration)`);
 
   // The cases did what their names say on today's database (both sides already hold the same rows).
   const one = async (sql: string) => (await today.query<Record<string, unknown>>(sql)).rows;
@@ -522,11 +532,13 @@ async function main() {
 
   const todayConfig: SupabaseApiConfig = { url: TODAY_URL, key: PUBLISHABLE, dataEnv: "development" };
   const step4Config: SupabaseApiConfig = { url: STEP4_URL, key: PUBLISHABLE, dataEnv: "development" };
+  const step4RlsConfig: SupabaseApiConfig = { url: STEP4_RLS_URL, key: PUBLISHABLE, dataEnv: "development" };
   const service: SupabaseApiConfig = { url: STEP4_URL, key: SECRET, dataEnv: "development" };
   for (const item of GATE_CASES) {
     const actor = item.actor ?? U1;
     const token = await signer.token(actor, `${TODAY_URL}/auth/v1`);
     const rls = await postgrest(todayConfig, { ...item.request, token });
+    const rlsAfter = await postgrest(step4RlsConfig, { ...item.request, token: await signer.token(actor, `${STEP4_RLS_URL}/auth/v1`) });
     const gated = withWriteGate(step4Config, createWriteGate({ actor, service }));
     const worker = await postgrest(gated, { ...item.request, token: "worker-actor" });
     const shape = (result: Awaited<ReturnType<typeof postgrest>>) => (result.ok
@@ -535,13 +547,16 @@ async function main() {
     assert.equal(rls.status, item.status, `${item.name}: today answers ${JSON.stringify(shape(rls))}`);
     if (item.code) assert.equal(rls.ok ? null : rls.code, item.code, `${item.name}: today's code`);
     assert.deepEqual(shape(worker), shape(rls), `${item.name}: the gate answers differently`);
+    assert.deepEqual(shape(rlsAfter), shape(rls), `${item.name}: the step 4 migration changed what a user token may do`);
     await assertSameTables(today, step4, item.name);
+    await assertSameTables(today, step4Rls, `${item.name} (rls after the migration)`);
   }
-  console.log(`gate cases: ${GATE_CASES.length} answer alike and leave the same rows`);
+  console.log(`gate cases: ${GATE_CASES.length} answer alike and leave the same rows (also with a user token after the migration)`);
 
   globalThis.fetch = realFetch;
   await today.close();
   await step4.close();
+  await step4Rls.close();
   console.log("write-gate equivalence spec passed");
 }
 
