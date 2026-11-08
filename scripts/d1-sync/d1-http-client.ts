@@ -75,7 +75,9 @@ export function d1HttpClient(opts: {
       const response = await opts.fetch(url, {
         method: "POST",
         headers: { authorization: `Bearer ${opts.token}`, "content-type": "application/json" },
-        body: JSON.stringify({ sql, params }),
+        // The API documents params as strings: numbers go as their text, and SQLite's column
+        // affinity (also in STRICT tables) and comparison rules turn them back into integers.
+        body: JSON.stringify({ sql, params: params.map((value) => (typeof value === "number" ? String(value) : value)) }),
       });
       const text = await response.text();
       let body: ApiBody | null = null;
