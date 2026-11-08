@@ -72,7 +72,7 @@ export interface PoolerOptions {
 }
 
 /** Connection settings from the environment: SUPABASE_PROJECT_REF, SUPABASE_DB_PASSWORD, optional SUPABASE_POOLER_HOST. */
-export function poolerOptionsFromEnv(workDir: string, env = process.env): PoolerOptions {
+export function poolerOptionsFromEnv(workDir: string, env: Record<string, string | undefined> = process.env): PoolerOptions {
   const ref = env.SUPABASE_PROJECT_REF;
   const password = env.SUPABASE_DB_PASSWORD;
   if (!ref || !password) {

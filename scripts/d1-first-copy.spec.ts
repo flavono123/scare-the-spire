@@ -460,7 +460,7 @@ async function main() {
     const db = freshTarget().db;
     const api = fakeApi(db, { failFirst: 1 });
     const rows = bigRawRows();
-    const bigRaw = rows.runs[0].raw;
+    const bigRaw = rows.runs[0].raw!;
     const report = await runFirstCopy({
       target: remote(db, api),
       source: new DumpFileSource(dumpFile(rows), { workDir: WORK, noChangeLog: false }),
