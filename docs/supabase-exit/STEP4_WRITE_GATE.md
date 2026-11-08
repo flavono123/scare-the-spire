@@ -87,7 +87,7 @@ history-runs, puzzlebox, contact, profile(문의 읽음). nav와 colorful-philos
 ### 4.1 경로
 
 1. 라우터(`workers/api/router.ts`)는 지금처럼 신원(오늘은 사용자 토큰의 ES256 검증), 속도 제한, 본문 읽기를 한다.
-2. 그다음 `access: "write"` 경로에서 `workerWriteContext`가 본다. Worker에 `API_SUPABASE_SERVICE_KEY`(`sb_secret_…`)가
+2. 그다음 `access: "write"` 경로에서 `workerWriteContext`가 본다. Worker에 `API_SUPABASE_SECRET_KEY`(`sb_secret_…`)가
    없으면 플래그도 읽지 않고 `null`이다(지금 운영처럼 키가 없으면 D1 읽기가 하나도 늘지 않는다). 키가 있고 그 그룹의
    쓰기 방식이 `worker`이면 worker 방식, 아니면 `null`이라 핸들러는 지금 코드 그대로다.
 3. worker 방식이면 핸들러에 넘기는 `config`에 게이트를 달고(`withWriteGate`), `token`을 자리표시 `worker-actor`로
@@ -169,7 +169,7 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 - 마이그레이션이 아니다. `supabase/migrations`에 두지 않는다. 다른 마이그레이션의 `db push`에 섞이면 아직 legacy인
   화면의 쓰기가 끊긴다.
 - 닫는 조건(이 순서로): 5절 마이그레이션 적용, testbed와 운영 모두 모든 그룹이 `path.<group> = api`이고
-  `write.<group> = worker`, 두 Worker 모두 `API_SUPABASE_SERVICE_KEY`와 `API_WRITE_MODE_DEFAULT=worker` 배포.
+  `write.<group> = worker`, 두 Worker 모두 `API_SUPABASE_SECRET_KEY`와 `API_WRITE_MODE_DEFAULT=worker` 배포.
   Supabase가 하나라서 한 번 닫으면 testbed와 운영이 같이 닫힌다.
 - 닫기 전에 더 필요한 것: 경로 플래그를 못 읽으면 라우터와 페이지 쿠키는 지금 `legacy`로 돌려보내고(flags.ts),
   클라이언트는 legacy 경로로 직접 쓴다. 닫은 뒤에는 그 쓰기가 실패해 D1 플래그 읽기 장애가 쓰기 장애가 된다. plan
@@ -181,7 +181,8 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 켜기(원격 작업은 모두 사용자 승인 뒤, testbed 먼저):
 
 1. 5절 마이그레이션을 `docs/RELEASE_PROCESS.md` 5절대로 올린다.
-2. Supabase secret 키를 만들어 testbed Worker secret `API_SUPABASE_SERVICE_KEY`로 넣는다(값은 출력하지 않는다).
+2. testbed Worker secret `API_SUPABASE_SECRET_KEY`(Supabase secret 키)를 확인한다. 2단계 동기화와 5단계 미러가 같은
+   이름의 같은 secret을 쓴다. 아직 없으면 Supabase secret 키를 만들어 넣는다(값은 출력하지 않는다).
 3. 이 코드가 든 Worker를 testbed에 배포한다. 플래그 행이 없으면 지금과 같다.
 4. testbed에서 그룹 하나씩 `pnpm flags -- set write.<group> worker --env testbed --remote --note "…"`, 그 화면의 쓰기를
    한 번씩 해 보고 Supabase 행을 확인한다. 이상하면 그 그룹을 `rls`로. `history-runs`는 9절 5번(런 하나씩 공유)을

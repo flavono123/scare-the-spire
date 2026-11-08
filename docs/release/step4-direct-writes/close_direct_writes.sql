@@ -8,7 +8,7 @@
 -- approval, only when all of these hold (in this order):
 --   1. supabase/migrations/20261108160000_worker_write_actor.sql is applied.
 --   2. Every screen group is on the api path (path.<group> = api) and every write.<group> = worker.
---   3. The deployed Worker has API_SUPABASE_SERVICE_KEY and API_WRITE_MODE_DEFAULT=worker, so a failed
+--   3. The deployed Worker has API_SUPABASE_SECRET_KEY and API_WRITE_MODE_DEFAULT=worker, so a failed
 --      flag read falls back to worker mode, not to the token path these policies served.
 -- Undo: docs/release/step4-direct-writes/restore_direct_writes.sql (restore first, then flags back to rls).
 -- Run with: supabase db query --linked -f docs/release/step4-direct-writes/close_direct_writes.sql

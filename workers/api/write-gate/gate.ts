@@ -22,8 +22,11 @@ import { decideWrite, type GateDecision, type GateLookups, type GateWrite, type 
  */
 
 export type WriteGateEnv = WriteFlagsEnv & {
-  /** A Supabase secret key (sb_secret_…), a Worker secret. Without it worker mode stays off. */
-  API_SUPABASE_SERVICE_KEY?: string;
+  /**
+   * A Supabase secret key (sb_secret_…), a Worker secret: the same one the step 2 sync
+   * (workers/sync/sync-env.ts) and the step 5 mirror read. Without it worker mode stays off.
+   */
+  API_SUPABASE_SECRET_KEY?: string;
 };
 
 /**
@@ -48,7 +51,7 @@ export function writeActor(user: { userId: string }): string {
 export const GATE_BODY_MAX_BYTES = 24 * 1024 * 1024;
 
 export function supabaseServiceConfig(env: WriteGateEnv, base: SupabaseApiConfig): SupabaseApiConfig | null {
-  const key = (env.API_SUPABASE_SERVICE_KEY ?? "").trim();
+  const key = (env.API_SUPABASE_SECRET_KEY ?? "").trim();
   if (!/^sb_secret_[A-Za-z0-9_-]+$/.test(key)) return null;
   return { url: base.url, key, dataEnv: base.dataEnv };
 }

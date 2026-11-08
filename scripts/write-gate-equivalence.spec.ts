@@ -514,7 +514,7 @@ async function main() {
     {
       name: "worker",
       issuer: `${STEP4_URL}/auth/v1`,
-      env: { ...common, API_SUPABASE_URL: STEP4_URL, API_SUPABASE_SERVICE_KEY: SECRET, API_WRITE_MODE_DEFAULT: "worker" },
+      env: { ...common, API_SUPABASE_URL: STEP4_URL, API_SUPABASE_SECRET_KEY: SECRET, API_WRITE_MODE_DEFAULT: "worker" },
     },
     { name: "rls after the migration", issuer: `${STEP4_RLS_URL}/auth/v1`, env: { ...common, API_SUPABASE_URL: STEP4_RLS_URL } },
   ];

@@ -147,9 +147,9 @@ async function writeFlagChecks() {
 
 function decisionChecks() {
   const base = { url: PROJECT, key: "sb_publishable_x", dataEnv: "development" as const };
-  assert.equal(supabaseServiceConfig({ API_SUPABASE_SERVICE_KEY: "sb_secret_abc" }, base)?.key, "sb_secret_abc");
-  assert.equal(supabaseServiceConfig({ API_SUPABASE_SERVICE_KEY: "sb_publishable_abc" }, base), null, "never a publishable key");
-  assert.equal(supabaseServiceConfig({ API_SUPABASE_SERVICE_KEY: "eyJhbGciOi.legacy.jwt" }, base), null, "never a legacy JWT key");
+  assert.equal(supabaseServiceConfig({ API_SUPABASE_SECRET_KEY: "sb_secret_abc" }, base)?.key, "sb_secret_abc");
+  assert.equal(supabaseServiceConfig({ API_SUPABASE_SECRET_KEY: "sb_publishable_abc" }, base), null, "never a publishable key");
+  assert.equal(supabaseServiceConfig({ API_SUPABASE_SECRET_KEY: "eyJhbGciOi.legacy.jwt" }, base), null, "never a legacy JWT key");
   assert.equal(supabaseServiceConfig({}, base), null);
 
   assert.equal(ownerState(USER, USER), "match");
@@ -231,7 +231,7 @@ async function routerChecks() {
   assert.equal(db.writeReads, readsBefore, "no service key: no write flag read");
 
   // worker mode: the service key, no Authorization, the owner from the identity.
-  const workerEnv = { ...env, API_SUPABASE_SERVICE_KEY: "sb_secret_test" };
+  const workerEnv = { ...env, API_SUPABASE_SECRET_KEY: "sb_secret_test" };
   supabase.calls = [];
   const created = await send("/api/write/comments", { method: "POST", body: comment }, workerEnv);
   assert.equal(created.status, 201);
