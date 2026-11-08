@@ -641,17 +641,20 @@ async function main() {
     const third = await h.sync();
     assert.deepEqual(third.raws.map((raw) => raw.outcome), ["stored", "stored"]);
     assert.equal(h.d1.one("SELECT raw FROM post_history_course_file WHERE post_id = ?1", String(run(1).id))?.raw, big);
-    const textCall = h.rest.calls.find((call) => call.accept === "text/plain");
-    assert.equal(textCall?.query.get("select"), "raw");
+    const rawCall = h.rest.calls.find((call) => call.table === "runs" && call.query.get("select") === "raw");
+    assert.ok(rawCall, "the raw is read as the one column raw");
+    assert.notEqual(rawCall?.accept, "text/plain", "Supabase answers text/plain on a table with 406");
+    assert.ok(!h.rest.calls.some((call) => call.accept === "text/plain"));
 
-    // No text/plain support: counted, moved to the back, never blocking the watermark.
+    // A failing raw read: counted, moved to the back, never blocking the watermark.
     h.rest.insert("runs", run(4));
-    h.rest.textPlain = false;
     await h.sync();
+    h.rest.intercept = (call) =>
+      call.table === "runs" && call.query.get("select") === "raw" ? Response.json({ code: "PGRST000" }, { status: 503 }) : null;
     const failed = await h.sync();
     assert.deepEqual(failed.raws.map((raw) => raw.outcome), ["failed"]);
-    assert.match(String(h.d1.one("SELECT last_error FROM sync_pending_raw")?.last_error), /fetch:PGRST107/);
-    h.rest.textPlain = true;
+    assert.match(String(h.d1.one("SELECT last_error FROM sync_pending_raw")?.last_error), /^fetch:/);
+    h.rest.intercept = null;
     // A run deleted before its raw arrived drops out of the queue.
     h.rest.delete("runs", { id: run(4).id });
     const gone = await h.sync();
