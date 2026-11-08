@@ -1339,7 +1339,7 @@ export function mergeTouched(list: readonly Touched[]): Touched {
   });
 }
 
-/** Recounts after a batch's mapper statements: E13a, E13b per thread key, E14 per comment id. */
+/** Recounts after a batch's mapper statements: E13a, E13b per thread key, E14 per comment id (queries.sql). */
 export function recountStatements(touched: Touched, nowMs: number): D1Statement[] {
   const out: D1Statement[] = [];
   for (const key of touched.threadComments) {
@@ -1349,7 +1349,8 @@ export function recountStatements(touched: Touched, nowMs: number): D1Statement[
         "SELECT ?1, count(*), max(created_at), ?2 FROM comments WHERE story_id = ?1 " +
         "ON CONFLICT (thread_key) DO UPDATE SET comment_count = excluded.comment_count, " +
         "last_comment_at = excluded.last_comment_at, updated_at = excluded.updated_at " +
-        "WHERE threads.comment_count IS NOT excluded.comment_count OR threads.last_comment_at IS NOT excluded.last_comment_at",
+        "WHERE threads.comment_count IS NOT excluded.comment_count OR threads.last_comment_at IS NOT excluded.last_comment_at " +
+        "RETURNING comment_count",
       params: [key, nowMs],
     });
   }
@@ -1358,13 +1359,13 @@ export function recountStatements(touched: Touched, nowMs: number): D1Statement[
       sql:
         "INSERT INTO threads (thread_key, like_count, updated_at) SELECT ?1, count(*), ?2 FROM likes WHERE story_id = ?1 " +
         "ON CONFLICT (thread_key) DO UPDATE SET like_count = excluded.like_count, updated_at = excluded.updated_at " +
-        "WHERE threads.like_count IS NOT excluded.like_count",
+        "WHERE threads.like_count IS NOT excluded.like_count RETURNING like_count",
       params: [key, nowMs],
     });
   }
   for (const id of touched.commentLikes) {
     out.push({
-      sql: "UPDATE comments SET like_count = (SELECT count(*) FROM comment_likes WHERE comment_id = ?1) WHERE id = ?1",
+      sql: "UPDATE comments SET like_count = (SELECT count(*) FROM comment_likes WHERE comment_id = ?1) WHERE id = ?1 RETURNING like_count",
       params: [id],
     });
   }
