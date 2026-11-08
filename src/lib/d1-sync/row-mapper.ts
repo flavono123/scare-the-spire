@@ -745,6 +745,15 @@ const COLS_BY_TABLE = new Map(
   }),
 );
 
+/**
+ * The Supabase columns a table's rows are copied from, with their kind and whether D1 allows NULL
+ * (the array child of a post table and the run raw included). The first copy's checks read it.
+ */
+export function copiedColumns(table: string): ReadonlyArray<{ name: string; kind: string; nullable: boolean }> {
+  specOf(table);
+  return [...COLS_BY_TABLE.get(table)!.values()].map((c) => ({ name: c.s, kind: c.kind, nullable: c.nullable }));
+}
+
 /** The env a row image belongs to, or null for the tables without env (and comment_likes). */
 export function rowEnv(image: RowImage | null | undefined): string | null {
   return image && typeof image.env === "string" ? image.env : null;

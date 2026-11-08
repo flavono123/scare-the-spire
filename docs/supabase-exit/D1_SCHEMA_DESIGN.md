@@ -768,6 +768,32 @@ Worker로 옮긴 것: `runs`의 서버 열 보호 트리거는 R14(올리기) �
 쓰는 행: 운영 기준 참여 약 3천, 글 1만~2만(풀 행 포함), 런 약 6천. 한 DB에 3만 안팎이다. 무료 쓰기 한도(계정
 하루 10만)를 생각해 testbed와 운영을 다른 날 채운다.
 
+**실행**(`scripts/d1-first-copy.ts`). 위 1~7번과 검사를 한 번에 한다. D1에 쓰기 전에 메모리 SQLite에 같은 스키마로
+전부 넣어 보고(리허설), 검사가 하나라도 걸리면 쓰지 않고 멈춘다(종료 코드 2). 쓴 뒤에는 D1을 다시 읽어 리허설과
+행 수, 파생 값, 런 요약, `sync_state`, R1 답 크기, FK 검사를 맞대 본다.
+
+- 먼저 할 일: Supabase에 변경 로그 마이그레이션(5.1절), 대상 D1에 `d1/migrations`(`wrangler d1 migrations apply`). 그날은
+  그 DB의 그림자 샘플을 0으로 둔다.
+- 필요한 값: `SUPABASE_PROJECT_REF`, `SUPABASE_DB_PASSWORD`(세션 pooler, libpq `psql`·`pg_dump`, `PGTZ=UTC`로 뜬다),
+  `CLOUDFLARE_API_TOKEN`·`CLOUDFLARE_ACCOUNT_ID` 또는 wrangler 로그인. 덤프는 지우는 임시 폴더에만 둔다(`--work`로 바꿈).
+- 미리 보기(D1에 쓰지 않음): `pnpm exec tsx --env-file=.env.local scripts/d1-first-copy.ts --env testbed --dry-run`.
+  운영도 `--env production --dry-run`으로 본다(읽기만 하므로 승인 플래그가 없어도 된다).
+- testbed 첫 복사: `pnpm exec tsx --env-file=.env.local scripts/d1-first-copy.ts --env testbed`.
+- 운영 첫 복사(사용자 승인 뒤, testbed와 다른 날): `... --env production --confirm-production`.
+- 다시 채우기: 같은 명령에 `--refill`. `0003` 이후 마이그레이션의 표(지금 39개)를 잎부터 `DROP`하고 그 파일을 다시
+  올린 뒤 새 `W0`로 복사한다. `d1_migrations` 기록은 그대로 둔다. 보고서의 "DROP rows written"이 이 `DROP`의 쓴 행이다.
+  `outbox`에 행이나 열린 `out` 거절이 있으면 멈춘다(5.5절 되돌리기의 전제). 그 DB의 1분 동기화 cron을 끄고 돌린다.
+  첫 복사처럼 끝난 뒤에 켠다(7번).
+- 첫 복사는 `0003` 이후 표가 모두 비어 있어야 한다. 행이 있으면 멈추고 `--refill`을 쓰라고 한다.
+- 하루 쓰기 예산 `--write-budget`(기본 8만 행, 동기화와 앱 쓰기 몫을 남김). 리허설로 잰 예상이 넘으면 쓰기 전에,
+  쓰는 중에 넘을 것 같으면 그 batch 앞에서 멈춘다. 중간에 멈춘 D1은 다른 날 `--refill`로 다시 채운다.
+- 로컬: `pnpm exec tsx scripts/d1-first-copy.ts --local --persist-to <폴더> --data-env development|production`에
+  `--dump-file <pg_dump 파일> --no-change-log`(변경 로그 없는 백업, `W0 = 0`) 또는 `--pglite <폴더>`를 준다.
+- 2026-11-05 백업으로 로컬 확인(`pnpm exec tsx scripts/d1-first-copy-backup-check.ts ~/slseoun-backups/supabase/20261105-2048`):
+  PGlite에 백업과 변경 로그를 올리고 env마다 로컬 D1에 복사했다. 행 수는 백업의 env별 수와 모두 같다. 개발 글 166(런 103),
+  고아 본문 7, 100개 목록 답 539.0 KB, 쓴 행 3,551. 운영 글 849(런 584), 고아 본문 0, 647.9 KB, 쓴 행 17,554(로컬 D1 보고,
+  예상 17,565). 두 env 모두 멈춘 검사 0, `cross_env` 0, 카운터 어긋남 0. 다시 채우기의 `DROP` 쓴 행은 로컬 D1에서 0이다.
+
 ### 5.3 1분 동기화(2~4단계)
 
 한 번의 cron 실행은 Workers Free 한도 안에서 끝나야 한다: D1 쿼리 50개(batch 안의 문장도 하나씩 센다),
