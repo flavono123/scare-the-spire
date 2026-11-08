@@ -184,6 +184,23 @@ async function recorder() {
     while (h.outbox().length) await mirrorOutbox(env);
   });
 
+  await check("no call starts that could end after the lease: slow answers leave the rest for the next run", async () => {
+    let clock = 1_000_000;
+    const slow = async (input: Request | string | URL, init?: RequestInit) => {
+      clock += 7_000; // each call answers, but takes 7 s
+      return h.supabase.handle(new Request(input, init));
+    };
+    insertOutbox(h, Array.from({ length: 10 }, (_, i) => ({ table: "likes", op: "delete" as const, match: { story_id: `slow${i}`, user_id: USER }, payload: null })));
+    h.supabase.calls = [];
+    const report = await mirrorOutbox(env, { now: () => clock, fetcher: slow });
+    // Lease 55 s, a call may take 8 s plus the closing batch: calls start at 0, 7, ... 42 s, none at 49 s.
+    assert.deepEqual([report.sent, report.remaining], [7, true]);
+    assert.deepEqual(h.supabase.restCalls().map((entry) => entry.url.searchParams.get("story_id")), [0, 1, 2, 3, 4, 5, 6].map((i) => `eq.slow${i}`));
+    assert.equal(h.outbox().length, 3, "the rest stays in order");
+    assert.equal(h.db.one("SELECT lease_until FROM sync_state WHERE name = 'outbox_out'")!.lease_until, 0, "and the lease is released");
+    while (h.outbox().length) await mirrorOutbox(env);
+  });
+
   await check("the cron call is inert unless API_RUNTIME_FLAGS is d1 and a source is d1", async () => {
     const db = { get statements() { return h.db.log.length; } };
     insertOutbox(h, [{ table: "likes", op: "delete", match: { story_id: "cron", user_id: USER }, payload: null }]);

@@ -54,6 +54,12 @@ export function mirrorConfig(env: MirrorEnv): MirrorConfig | null {
 
 export const MIRROR_LEASE_MS = 55_000;
 export const CALL_TIMEOUT_MS = 8_000;
+/**
+ * A call starts only if it can end (CALL_TIMEOUT_MS) and the closing D1 batch can run before the lease
+ * ends: after that another run may take the lease, and two runs sending at once could land an old
+ * delete after a newer insert of the same key. 20 slow-but-answering calls would outlast the lease.
+ */
+export const SEND_MARGIN_MS = CALL_TIMEOUT_MS + 2_000;
 export const MAX_REJECT_RETRIES = 5;
 const BACKOFF_MS = [5_000, 15_000, 60_000, 300_000];
 
@@ -315,6 +321,7 @@ export async function mirrorOutbox(env: MirrorEnv, options: MirrorOptions = {}):
   ]);
   if (rowsOf(lease).length === 0) return { ...report, reason: "leased" };
   const leaseUntil = startedAt + MIRROR_LEASE_MS;
+  const timeLeft = () => now() < leaseUntil - SEND_MARGIN_MS;
   report.ran = true;
   const records = rowsOf<OutboxRecord>(pending);
   const openRejects = rowsOf<OpenReject>(rejects);
@@ -344,6 +351,10 @@ export async function mirrorOutbox(env: MirrorEnv, options: MirrorOptions = {}):
     if (retries.length) {
       const reads = await runBatch(db, readStatements(retries));
       for (const item of retries) {
+        if (!timeLeft()) {
+          report.remaining = true;
+          return report;
+        }
         report.retriedRejects += 1;
         const row = item.read >= 0 ? rowsOf<Record<string, unknown>>(reads[item.read])[0] : undefined;
         const stats = item.statsRead >= 0 ? rowsOf<Record<string, unknown>>(reads[item.statsRead]) : undefined;
@@ -399,6 +410,8 @@ export async function mirrorOutbox(env: MirrorEnv, options: MirrorOptions = {}):
         done.push(item.record.seq);
         continue;
       }
+      // Out of lease time: the rest waits for the next run (in order, nothing skipped).
+      if (!timeLeft()) break;
       const row = item.read >= 0 ? rowsOf<Record<string, unknown>>(reads[item.read])[0] : undefined;
       const stats = item.statsRead >= 0 ? rowsOf<Record<string, unknown>>(reads[item.statsRead]) : undefined;
       const result = await send(config, fetcher, buildCall(config, item, row, stats));
