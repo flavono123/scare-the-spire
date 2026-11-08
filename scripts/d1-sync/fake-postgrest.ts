@@ -122,6 +122,19 @@ function orMatches(row: Row, expression: string): boolean {
   });
 }
 
+/** Whether a row passes every filter of a PostgREST query string. */
+export function rowMatchesQuery(row: Row, params: URLSearchParams): boolean {
+  for (const [column, filter] of params) {
+    if (["select", "order", "limit", "on_conflict"].includes(column)) continue;
+    if (column === "or") {
+      if (!orMatches(row, filter)) return false;
+      continue;
+    }
+    if (!matches(row, column, filter)) return false;
+  }
+  return true;
+}
+
 export class FakePostgrest {
   tables = new Map<string, Row[]>();
   log: LogRow[] = [];
@@ -236,17 +249,7 @@ export class FakePostgrest {
     const source = table === "d1_change_log"
       ? (this.log.filter((row) => !this.hidden.has(row.id)) as unknown as Row[])
       : this.table(table);
-    let rows = source.filter((row) => {
-      for (const [column, filter] of url.searchParams) {
-        if (["select", "order", "limit", "on_conflict"].includes(column)) continue;
-        if (column === "or") {
-          if (!orMatches(row, filter)) return false;
-          continue;
-        }
-        if (!matches(row, column, filter)) return false;
-      }
-      return true;
-    });
+    let rows = source.filter((row) => rowMatchesQuery(row, url.searchParams));
     if (request.method === "DELETE") {
       const remove = new Set(rows);
       if (table === "d1_change_log") this.log = this.log.filter((row) => !remove.has(row as unknown as Row));
