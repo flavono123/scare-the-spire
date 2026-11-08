@@ -10,6 +10,7 @@ import assert from "node:assert/strict";
 import { WRITE_PAUSED_KEY, WRITE_GROUPS, sourceFlagKey } from "../src/lib/write-source-flags";
 import { D1_WRITE_HANDLERS } from "../workers/api/d1-write";
 import { pgTimestampText } from "../workers/api/d1-write/db";
+import { parseGateRows, readWriteGate, resetWriteGateForTest, supabaseInSyncAllowed } from "../workers/api/d1-write/gate";
 import { API_ROUTES } from "../workers/api/routes";
 import { OTHER, setupHarness, USER, type Harness } from "./d1-sync/write-harness";
 
@@ -196,15 +197,374 @@ async function storiesAndContact() {
   });
 }
 
+function shareBody(row: Record<string, unknown>, raw: string): { raw: string; headers: Record<string, string> } {
+  const rowText = JSON.stringify(row);
+  return { raw: `[${rowText},${raw}]`, headers: { "x-slseoun-row-length": String(rowText.length) } };
+}
+
+const RUN_ROW = (id: string, donor = USER) => ({
+  id, donor_user_id: donor, donor_nickname: "기증자", env: "development", seed: "SEEDX", build: "v0.107", character: "CHARACTER.SILENT",
+  ascension: 3, win: true, start_time: 1762000000, run_time: 1800, acts_count: 3, total_floors: 49, badges: [{ id: "b", rarity: "gold" }],
+  highlight_card: null, highlight_relic: null, note_blocks: null, cover_spec: { auto: true },
+  characters: ["CHARACTER.SILENT"], game_mode: "standard", game_elements: [{ type: "card", id: "neutralize" }],
+  list_facts: { cards: [], relics: [], potions: [], deck_size: 20, relic_count: 5, highlight_card: null, highlight_relic: null },
+  summary_version: 1,
+});
+
+async function runs() {
+  const h = await setupHarness();
+  const runId = "r0000000000000a1";
+  await check("run share: one run per request, raw bound unparsed, counts seeded from threads, outbox R14d", async () => {
+    // A like on the run's thread before it is shared (a run shared, removed and shared again).
+    h.db.run("INSERT INTO likes (story_id, user_id, created_at) VALUES (?1, ?2, ?3)", `history-course:${runId}`, OTHER, TS);
+    h.db.run("INSERT INTO threads (thread_key, like_count) VALUES (?1, 1)", `history-course:${runId}`);
+    const raw = "{\"seed\":\"SEEDX\",\"players\":[{\"character\":\"CHARACTER.SILENT\"}],\"note\":\"\\\"quoted\\\" , ]\"}";
+    const body = shareBody(RUN_ROW(runId), raw);
+    const res = await h.call("/api/write/history-runs/share", { method: "POST", raw: body.raw, headers: body.headers });
+    assert.deepEqual([res.status, res.json], [201, { v: 1, env: "development", inserted: [runId] }]);
+    assert.equal(h.db.one("SELECT raw FROM post_history_course_file WHERE post_id = ?1", runId)!.raw, raw);
+    const post = h.db.one("SELECT user_id, nickname, summary, like_count, title FROM posts WHERE service = 'history_course' AND id = ?1", runId)!;
+    assert.deepEqual(post, { user_id: USER, nickname: "기증자", summary: "SEEDX", like_count: 1, title: null });
+    const run = h.db.one("SELECT win, summary_version, game_mode, characters, cover_spec, total_floors FROM post_history_course WHERE post_id = ?1", runId)!;
+    assert.deepEqual(run, { win: 1, summary_version: 1, game_mode: "standard", characters: "[\"CHARACTER.SILENT\"]", cover_spec: "{\"auto\":true}", total_floors: 49 });
+    const out = h.outbox().at(-1)!;
+    assert.deepEqual([out.table_name, out.op, out.match, out.payload], ["runs", "upsert", { id: runId }, { read: "post_history_course" }]);
+  });
+
+  await check("run share refusals and repeats", async () => {
+    const again = shareBody(RUN_ROW(runId), "{}");
+    assert.deepEqual((await h.call("/api/write/history-runs/share", { method: "POST", raw: again.raw, headers: again.headers })).json.inserted, []);
+    const before = h.outbox().length;
+    const stolen = shareBody(RUN_ROW(runId, OTHER), "{}");
+    const other = await h.call("/api/write/history-runs/share", { method: "POST", raw: stolen.raw, headers: stolen.headers, as: OTHER });
+    assert.deepEqual(other.json.inserted, [], "already shared by someone else");
+    assert.equal(h.outbox().length, before, "no outbox row for another donor's run");
+    const forged = shareBody(RUN_ROW("r0000000000000b2", OTHER), "{}");
+    assert.equal((await h.call("/api/write/history-runs/share", { method: "POST", raw: forged.raw, headers: forged.headers })).status, 403);
+    assert.equal((await h.call("/api/write/history-runs/share", { method: "POST", raw: forged.raw, headers: { "x-slseoun-row-length": "5" } })).status, 400);
+    const longName = shareBody({ ...RUN_ROW("r0000000000000c3"), donor_nickname: "x".repeat(21) }, "{}");
+    assert.deepEqual((await h.call("/api/write/history-runs/share", { method: "POST", raw: longName.raw, headers: longName.headers })).json.error, "check_violation");
+    const old = await h.call("/api/write/history-runs/batch", { method: "POST", body: [RUN_ROW("r0000000000000d4")] });
+    assert.deepEqual([old.status, old.json.error], [409, "single_run_required"]);
+    assert.equal((await h.call("/api/write/history-runs", { method: "POST", body: RUN_ROW("r0000000000000d4") })).json.error, "single_run_required");
+  });
+
+  await check("run cover, nicknames and delete: owner only, one outbox row per changed run", async () => {
+    seedPost(h, "history_course", "r0000000000000e5", USER);
+    seedPost(h, "history_course", "r0000000000000f6", OTHER);
+    assert.deepEqual((await h.call(`/api/write/history-runs/cover?id=${runId}`, { method: "PATCH", body: { coverSpec: { auto: false, kind: "card" } } })).json, { v: 1, env: "development", updated: true });
+    assert.equal(h.db.one("SELECT cover_spec FROM post_history_course WHERE post_id = ?1", runId)!.cover_spec, "{\"auto\":false,\"kind\":\"card\"}");
+    const before = h.outbox().length;
+    assert.deepEqual((await h.call("/api/write/history-runs/cover?id=r0000000000000f6", { method: "PATCH", body: { coverSpec: { auto: false } } })).json.updated, false);
+    assert.equal(h.outbox().length, before, "another donor's run: no outbox row");
+    assert.equal((await h.call(`/api/write/history-runs/cover?id=${runId}`, { method: "PATCH", body: { coverSpec: { pad: "x".repeat(17000) } } })).status, 400);
+    const cover = h.outbox().at(-1)!;
+    assert.deepEqual([cover.op, cover.match, cover.payload], ["update", { id: runId, donor_user_id: USER }, { read: "post_history_course", columns: ["cover_spec"] }]);
+
+    const mark = h.outbox().length;
+    assert.deepEqual((await h.call("/api/write/history-runs/nicknames", { method: "POST", body: { nickname: "기증자" } })).json, { v: 1, env: "development" });
+    const renamed = h.outbox().slice(mark);
+    assert.deepEqual(renamed.map((entry) => entry.match.id), ["r0000000000000e5"], "only the run whose nickname differs");
+    assert.equal(h.db.one("SELECT nickname FROM posts WHERE id = 'r0000000000000e5'")!.nickname, "기증자");
+    assert.equal(h.db.one("SELECT nickname FROM posts WHERE id = 'r0000000000000f6'")!.nickname, "닉");
+
+    assert.deepEqual((await h.call("/api/write/history-runs?id=r0000000000000f6", { method: "DELETE" })).json.deleted, false);
+    assert.deepEqual((await h.call(`/api/write/history-runs?id=${runId}`, { method: "DELETE" })).json.deleted, true);
+    assert.equal(h.db.rows("SELECT * FROM post_history_course_file WHERE post_id = ?1", runId).length, 0, "the file cascades");
+    assert.deepEqual(h.db.one("SELECT like_count FROM threads WHERE thread_key = ?1", `history-course:${runId}`), { like_count: 1 }, "threads stay");
+    const deletes = h.outbox().filter((entry) => entry.op === "delete");
+    assert.deepEqual(deletes.map((entry) => entry.match), [{ id: "r0000000000000f6", donor_user_id: USER }, { id: runId, donor_user_id: USER }]);
+  });
+}
+
+const COMBO_ROW = (extra: Record<string, unknown> = {}) => ({
+  user_id: USER, nickname: "콤보왕", content: [{ type: "paragraph", text: "본문" }], content_text: "  콤보 본문입니다  ",
+  resources: [{ type: "card", id: "bash" }, { type: "relic", id: "anchor" }], env: "development",
+  avatar_id: "IRONCLAD", avatar_kind: "character", palette_id: "red", palette_swapped: true, ...extra,
+});
+
+async function toybox() {
+  const h = await setupHarness();
+  let comboId = "";
+  await check("post create (combo): posts + service row + children, server columns, select=* answer", async () => {
+    const res = await h.call("/api/write/toybox-post?service=combo", { method: "POST", body: COMBO_ROW({ like_count: 99, created_at: "2000-01-01T00:00:00Z" }) });
+    assert.equal(res.status, 201);
+    const [row] = res.json as unknown as Array<Record<string, unknown>>;
+    comboId = String(row.id);
+    assert.deepEqual([row.like_count, row.comment_count, row.env, row.user_id, row.palette_swapped], [0, 0, "development", USER, true]);
+    assert.deepEqual(row.resources, [{ type: "card", id: "bash" }, { type: "relic", id: "anchor" }]);
+    assert.notEqual(String(row.created_at).slice(0, 4), "2000", "created_at is the server's");
+    assert.deepEqual(h.db.one("SELECT summary, like_count FROM posts WHERE service = 'combo' AND id = ?1", comboId), { summary: "콤보 본문입니다", like_count: 0 });
+    assert.equal(h.db.rows("SELECT * FROM post_combo_resources WHERE post_id = ?1 ORDER BY ord", comboId).length, 2);
+    const out = h.outbox().at(-1)!;
+    assert.deepEqual([out.table_name, out.op, out.match, out.payload], ["combo_posts", "insert", { id: comboId }, { read: "posts" }]);
+  });
+
+  await check("post create refusals: owner 403, unknown column 400, env 400, duplicate id 422, builtin 403, CHECK 422", async () => {
+    assert.equal((await h.call("/api/write/toybox-post?service=combo", { method: "POST", body: COMBO_ROW({ user_id: OTHER }) })).json.error, "forbidden");
+    assert.equal((await h.call("/api/write/toybox-post?service=combo", { method: "POST", body: COMBO_ROW({ bogus: 1 }) })).json.error, "invalid");
+    assert.equal((await h.call("/api/write/toybox-post?service=combo", { method: "POST", body: COMBO_ROW({ env: "production" }) })).json.error, "invalid");
+    assert.equal((await h.call("/api/write/toybox-post?service=combo", { method: "POST", body: COMBO_ROW({ id: comboId }) })).json.error, "duplicate");
+    assert.equal((await h.call("/api/write/toybox-post?service=combo", { method: "POST", body: COMBO_ROW({ content_text: "x" }) })).json.error, "check_violation");
+    assert.equal((await h.call("/api/write/toybox-post?service=this_or_that", { method: "POST", body: { user_id: USER, nickname: "닉", left_type: "card", left_id: "a", right_type: "card", right_id: "b", reason: "이유", vote_rate_bps: 1 } })).json.error, "invalid");
+    const builtin = { user_id: USER, nickname: "닉", title: "월드컵", preset_key: "builtin:x", game_version: "0.1", pool: [] };
+    assert.equal((await h.call("/api/write/toybox-post?service=favorite_tournament", { method: "POST", body: builtin })).json.error, "forbidden");
+    assert.equal((await h.call("/api/write/toybox-post?service=defragment", { method: "POST", body: COMBO_ROW() })).status, 400);
+    assert.equal(h.db.rows("SELECT * FROM posts").length, 1, "nothing written by a refusal");
+  });
+
+  await check("post create (transfigure, tournament): defaults, write-only columns in the outbox extra and the answer", async () => {
+    const tf = await h.call("/api/write/toybox-post?service=transfigure", {
+      method: "POST",
+      body: { user_id: USER, nickname: "닉", resource_type: "card", resource_id: "bash", source_text: "원문", source_game_locale: "kor", content: [], content_text: "바뀐 효과", title: "  제목  ", card_top_keywords: ["exhaust"] },
+    });
+    assert.equal(tf.status, 201);
+    const [row] = tf.json as unknown as Array<Record<string, unknown>>;
+    assert.deepEqual([row.source_game_locale, row.show_upgrade, row.omit_energy_cost, row.card_top_keywords, row.extra_variants], ["kor", false, false, ["exhaust"], []]);
+    assert.equal(h.db.one("SELECT summary FROM posts WHERE id = ?1", String(row.id))!.summary, "제목");
+    assert.deepEqual(h.outbox().at(-1)!.payload, { read: "posts", extra: { source_game_locale: "kor" } });
+    const ft = await h.call("/api/write/toybox-post?service=favorite_tournament", {
+      method: "POST",
+      body: { user_id: USER, nickname: "닉", title: "유물 월드컵", preset_key: "custom", game_version: "0.107", pool: [{ type: "relic", id: "a" }, { type: "relic", id: "b" }, { type: "relic", id: "c" }, { type: "relic", id: "d" }] },
+    });
+    const [tournament] = ft.json as unknown as Array<Record<string, unknown>>;
+    assert.deepEqual([tournament.play_count, tournament.note, tournament.game_version], [0, "", "0.107"]);
+    assert.equal(h.db.rows("SELECT * FROM post_favorite_tournament_pool WHERE post_id = ?1", String(tournament.id)).length, 4);
+  });
+
+  await check("post update: owner only, guard columns kept, summary and children redone, outbox update", async () => {
+    const other = await h.call(`/api/write/toybox-post?service=combo&id=${comboId}`, { method: "PATCH", body: { content_text: "남의 글 고치기" }, as: OTHER });
+    assert.deepEqual([other.status, other.json], [200, []]);
+    const res = await h.call(`/api/write/toybox-post?service=combo&id=${comboId}`, {
+      method: "PATCH",
+      body: { content_text: "고친 본문입니다", resources: [{ type: "potion", id: "fire" }], like_count: 50, env: "production", created_at: "2000-01-01T00:00:00Z" },
+    });
+    const [row] = res.json as unknown as Array<Record<string, unknown>>;
+    assert.deepEqual([row.content_text, row.like_count, row.env], ["고친 본문입니다", 0, "development"]);
+    assert.deepEqual(row.resources, [{ type: "potion", id: "fire" }]);
+    assert.equal(h.db.one("SELECT summary FROM posts WHERE id = ?1", comboId)!.summary, "고친 본문입니다");
+    const out = h.outbox().at(-1)!;
+    assert.deepEqual([out.op, out.match, out.payload], ["update", { id: comboId, user_id: USER }, { read: "posts", columns: ["content_text", "resources"] }]);
+    assert.equal((await h.call(`/api/write/toybox-post?service=combo&id=${comboId}`, { method: "PATCH", body: { user_id: OTHER } })).json.error, "forbidden");
+    assert.equal((await h.call(`/api/write/toybox-post?service=chemical_x&id=${comboId}`, { method: "PATCH", body: {} })).status, 400, "no update policy");
+  });
+
+  await check("this-or-that likes and votes: FK refusals as today, recounts, outbox", async () => {
+    const tot = U(20);
+    seedPost(h, "this_or_that", tot, OTHER);
+    const missing = await h.call(`/api/write/this-or-that/like?id=${U(21)}`, { method: "PUT" });
+    assert.deepEqual([missing.status, missing.json.error], [404, "not_found"]);
+    assert.deepEqual((await h.call(`/api/write/this-or-that/like?id=${tot}`, { method: "PUT" })).json, { v: 1, env: "development", liked: true });
+    assert.deepEqual((await h.call(`/api/write/this-or-that/like?id=${tot}`, { method: "PUT" })).json.liked, true, "repeat like succeeds");
+    assert.equal(h.db.one("SELECT like_count FROM posts WHERE id = ?1", tot)!.like_count, 1);
+    await h.call(`/api/write/this-or-that/like?id=${tot}`, { method: "DELETE" });
+    assert.equal(h.db.one("SELECT like_count FROM posts WHERE id = ?1", tot)!.like_count, 0);
+    const unlike = h.outbox().filter((entry) => entry.table_name === "this_or_that_post_likes").at(-1)!;
+    assert.deepEqual([unlike.op, unlike.match], ["delete", { post_id: tot, user_id: USER }]);
+
+    const vote = await h.call(`/api/write/this-or-that/vote?id=${tot}`, { method: "PUT", body: { choice: "left", surface: "detail" } });
+    assert.deepEqual([vote.status, vote.json], [201, { v: 1, env: "development", choice: "left" }]);
+    assert.equal((await h.call(`/api/write/this-or-that/vote?id=${tot}`, { method: "PUT", body: { choice: "right", surface: "detail" } })).json.error, "duplicate");
+    assert.equal((await h.call(`/api/write/this-or-that/vote?id=${U(21)}`, { method: "PUT", body: { choice: "right", surface: "index" } })).json.error, "forbidden");
+    await h.call(`/api/write/this-or-that/vote?id=${tot}`, { method: "PUT", body: { choice: "right", surface: "index" }, as: OTHER });
+    assert.deepEqual(h.db.one("SELECT left_vote_count, right_vote_count FROM post_this_or_that WHERE post_id = ?1", tot), { left_vote_count: 1, right_vote_count: 1 });
+    assert.deepEqual(h.outbox().filter((entry) => entry.table_name === "this_or_that_post_votes")[0].payload, { read: "this_or_that_post_votes", extra: { created_surface: "detail" } });
+    assert.deepEqual((await h.call(`/api/write/this-or-that/vote?id=${tot}`, { method: "DELETE" })).json.choice, null);
+    assert.deepEqual(h.db.one("SELECT left_vote_count, right_vote_count FROM post_this_or_that WHERE post_id = ?1", tot), { left_vote_count: 0, right_vote_count: 1 });
+  });
+
+  await check("tournament play: the RPC's checks, play_count and stats recount, ranks, rpc outbox row", async () => {
+    const id = U(30);
+    seedPost(h, "favorite_tournament", id, OTHER, { pool: ["a", "b", "c", "d"], title: "유물 월드컵" });
+    const m = (l: string, r: string, winner: "left" | "right") => ({ left_type: "relic", left_id: l, right_type: "relic", right_id: r, winner });
+    const play = { tournamentId: id, startingSize: 4, championType: "relic", championId: "a", matches: [m("a", "b", "left"), m("c", "d", "right"), m("a", "d", "left")] };
+    assert.deepEqual((await h.call("/api/write/favorite-tournament/play", { method: "POST", body: play })).json, { v: 1, env: "development", result: { ok: true } });
+    assert.equal(h.db.one("SELECT play_count FROM post_favorite_tournament WHERE post_id = ?1", id)!.play_count, 1);
+    const stats = h.db.rows("SELECT resource_id, match_appearances, match_wins, championships, current_rank, rank_history FROM favorite_tournament_candidate_stats WHERE tournament_id = ?1 ORDER BY current_rank", id);
+    assert.deepEqual(stats.map((row) => [row.resource_id, row.match_appearances, row.match_wins, row.championships, row.current_rank]), [
+      ["a", 2, 2, 1, 1], ["d", 2, 1, 0, 2], ["b", 1, 0, 0, 3], ["c", 1, 0, 0, 4],
+    ]);
+    const history = JSON.parse(String(stats[0].rank_history)) as Array<{ at: string; rank: number }>;
+    assert.equal(history.length, 1);
+    assert.match(history[0].at, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d{1,3})?$/, "Postgres timestamp::text");
+    assert.equal(pgTimestampText(Date.UTC(2026, 10, 8, 1, 2, 3, 450)), "2026-11-08 01:02:03.45");
+    assert.equal(pgTimestampText(Date.UTC(2026, 10, 8, 1, 2, 3, 0)), "2026-11-08 01:02:03");
+    const out = h.outbox().at(-1)!;
+    assert.deepEqual([out.table_name, out.op, out.payload], ["favorite_tournament_plays", "rpc", { read: "favorite_tournament_plays", fn: "mirror_favorite_tournament_play" }]);
+    // A second play: only rows whose rank changed get a history entry.
+    await h.call("/api/write/favorite-tournament/play", { method: "POST", body: { ...play, championId: "d", matches: [m("a", "b", "right"), m("c", "d", "right"), m("b", "d", "right")] }, as: OTHER });
+    const after = h.db.rows("SELECT resource_id, current_rank, rank_history FROM favorite_tournament_candidate_stats WHERE tournament_id = ?1 ORDER BY current_rank", id);
+    assert.deepEqual(after.map((row) => [row.resource_id, row.current_rank, (JSON.parse(String(row.rank_history)) as unknown[]).length]), [
+      ["d", 1, 2], ["a", 2, 2], ["b", 3, 1], ["c", 4, 1],
+    ]);
+    const bad = async (body: unknown) => (await h.call("/api/write/favorite-tournament/play", { method: "POST", body })).json.error;
+    assert.equal(await bad({ ...play, championId: "b" }), "invalid", "champion must win the final");
+    assert.equal(await bad({ ...play, matches: [m("a", "x", "left"), m("c", "d", "right"), m("a", "d", "left")] }), "invalid", "outside the pool");
+    assert.equal(await bad({ ...play, startingSize: 8 }), "invalid", "match count");
+    assert.equal(await bad({ ...play, tournamentId: U(31) }), "invalid", "no tournament");
+    assert.equal(await bad({ ...play, matches: [m("a", "b", "left"), { ...m("c", "d", "right"), winner: "both" }, m("a", "d", "left")] }), "invalid", "winner");
+    assert.equal(h.db.one("SELECT play_count FROM post_favorite_tournament WHERE post_id = ?1", id)!.play_count, 2);
+  });
+
+  await check("서류 폭풍 drafts: create, owner-only update and delete", async () => {
+    const created = await h.call("/api/write/pagestorm/drafts", { method: "POST", body: { user_id: USER, nickname: "닉", title: "초안", content: { type: "doc" }, content_text: "초안 본문", env: "development", updated_at: "2026-11-07T00:00:00.000Z" } });
+    assert.equal(created.status, 201);
+    const [draft] = created.json as unknown as Array<Record<string, unknown>>;
+    assert.equal(draft.updated_at, "2026-11-07T00:00:00+00:00", "the client's updated_at, as today (no guard)");
+    const id = String(draft.id);
+    assert.deepEqual((await h.call(`/api/write/pagestorm/drafts?id=${id}`, { method: "PATCH", body: { title: "남의 초안" }, as: OTHER })).json, []);
+    const [updated] = (await h.call(`/api/write/pagestorm/drafts?id=${id}`, { method: "PATCH", body: { title: "고친 초안" } })).json as unknown as Array<Record<string, unknown>>;
+    assert.equal(updated.title, "고친 초안");
+    assert.deepEqual(h.outbox().at(-1)!.payload, { read: "pagestorm_drafts", columns: ["title"] });
+    assert.equal((await h.call("/api/write/pagestorm/drafts", { method: "POST", body: { user_id: OTHER, nickname: "닉", title: "t", content: {}, content_text: "x" } })).json.error, "forbidden");
+    assert.deepEqual((await h.call(`/api/write/pagestorm/drafts?id=${id}`, { method: "DELETE", as: OTHER })).json.deleted, false);
+    assert.deepEqual((await h.call(`/api/write/pagestorm/drafts?id=${id}`, { method: "DELETE" })).json.deleted, true);
+  });
+
+  await check("조각모음 body: post owner only (defragment_source_owned), upsert keeps the owner", async () => {
+    const body = { env: "development", source_service: "combo", source_id: comboId, user_id: USER, nickname: "닉", content: [{ type: "p" }], content_text: "조각 본문", updated_at: "2026-11-07T00:00:00.000Z" };
+    const first = await h.call("/api/write/defragment-body", { method: "PUT", body });
+    assert.equal(first.status, 200);
+    const [row] = first.json as unknown as Array<Record<string, unknown>>;
+    assert.deepEqual([row.source_service, row.source_id, row.content_text, row.env], ["combo", comboId, "조각 본문", "development"]);
+    const second = await h.call("/api/write/defragment-body", { method: "PUT", body: { ...body, content_text: "고친 조각" } });
+    assert.equal((second.json as unknown as Array<Record<string, unknown>>)[0].content_text, "고친 조각");
+    assert.equal((await h.call("/api/write/defragment-body", { method: "PUT", body: { ...body, user_id: OTHER }, as: OTHER })).json.error, "forbidden");
+    seedPost(h, "history_course", "r00000000000000aa", USER);
+    assert.equal((await h.call("/api/write/defragment-body", { method: "PUT", body: { ...body, source_service: "history_course", source_id: U(40) } })).json.error, "forbidden", "defragment_source_owned has no run branch");
+    assert.equal((await h.call("/api/write/defragment-body", { method: "PUT", body: { ...body, source_id: "r00000000000000aa" } })).json.error, "invalid", "source_id is a uuid column");
+    assert.equal((await h.call("/api/write/defragment-body", { method: "PUT", body: { ...body, source_id: U(41) } })).json.error, "forbidden", "no such post");
+    const rows = h.outbox().filter((entry) => entry.table_name === "defragment_bodies");
+    assert.equal(rows.length, 2);
+    assert.deepEqual(rows[0].match, { source_service: "combo", source_id: comboId });
+  });
+
+  await check("post delete: owner only, cascades, outbox delete with the owner", async () => {
+    assert.deepEqual((await h.call(`/api/write/toybox-post?service=combo&id=${comboId}`, { method: "DELETE", as: OTHER })).json.deleted, false);
+    assert.deepEqual((await h.call(`/api/write/toybox-post?service=combo&id=${comboId}`, { method: "DELETE" })).json.deleted, true);
+    for (const table of ["post_combo", "post_combo_resources", "defragment_bodies"]) {
+      assert.equal(h.db.rows(`SELECT * FROM ${table} WHERE post_id = ?1`, comboId).length, 0, table);
+    }
+    const out = h.outbox().at(-1)!;
+    assert.deepEqual([out.table_name, out.op, out.match], ["combo_posts", "delete", { id: comboId, user_id: USER }]);
+    assert.deepEqual((await h.call(`/api/write/toybox-post?service=defragment&id=${comboId}`, { method: "DELETE" })).json.deleted, false);
+  });
+}
+
+async function puzzlebox() {
+  const h = await setupHarness();
+  const run = { guesses: [[3, 3, 3, 3], [2, 2, 2, 2], [0, 1, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]], rocks: 1, rocksLeft: 1, shown: { token: true, local: false, original: true } };
+  const player = { nickname: "  퍼즐러  ", avatar_id: "IRONCLAD", avatar_kind: "character", palette_id: "red", palette_swapped: true };
+  await check("puzzlebox submit: scored like puzzlebox_score_run, best, stats, rank, outbox rows", async () => {
+    const res = await h.call("/api/write/puzzlebox/runs", { method: "POST", body: { game: "connections", board: "2", run, player } });
+    assert.equal(res.status, 200);
+    // Solved 3,2,1,0 (a reverse rainbow): 70 levels, mistake bonus 10, local hidden 5, 1 rock left 10, rainbow 10.
+    assert.deepEqual(res.json.result, { score: 105, perfect: false, attempt: 1, improved: true, best: 105, best_perfect: false, rank: 1, players: 1 });
+    const stats = h.db.one("SELECT players, cleared, perfect, score_sum, mistakes_sum, rocks_sum, purple_first, level_solved FROM puzzlebox_board_stats WHERE game = 'connections' AND board = '2'")!;
+    // The stats count purple first whenever the first solved group is level 3 (the RPC's rule).
+    assert.deepEqual(stats, { players: 1, cleared: 1, perfect: 0, score_sum: 105, mistakes_sum: 1, rocks_sum: 1, purple_first: 1, level_solved: "[1,1,1,1]" });
+    assert.deepEqual(h.db.one("SELECT nickname, palette_swapped FROM puzzlebox_players WHERE user_id = ?1", USER), { nickname: "퍼즐러", palette_swapped: 1 });
+    const tables = h.outbox().map((entry) => entry.table_name);
+    assert.deepEqual(tables, ["puzzlebox_runs", "puzzlebox_best", "puzzlebox_board_stats"], "no puzzlebox_players row outside production");
+    const burst = await h.call("/api/write/puzzlebox/runs", { method: "POST", body: { game: "connections", board: "2", run, player } });
+    assert.deepEqual([burst.status, burst.json.error], [429, "rate_limited"], "one run of a board every 3 s");
+    assert.equal(h.db.rows("SELECT * FROM puzzlebox_runs").length, 1);
+    assert.equal(h.outbox().length, 3, "a refused run leaves no outbox row");
+  });
+
+  await check("puzzlebox submit: second attempt keeps the best, quiz stats arrays, refusals", async () => {
+    h.db.run("UPDATE puzzlebox_runs SET created_at = '2026-01-01T00:00:00.000000Z'");
+    const worse = { ...run, guesses: [[0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3]], rocksLeft: 0 };
+    const res = await h.call("/api/write/puzzlebox/runs", { method: "POST", body: { game: "connections", board: "2", run: worse, player } });
+    assert.deepEqual(res.json.result, { score: 0, perfect: false, attempt: 2, improved: false, best: 105, best_perfect: false, rank: 1, players: 1 });
+    assert.equal(h.db.one("SELECT players FROM puzzlebox_board_stats WHERE board = '2'")!.players, 1, "stats count first runs only");
+    const shown = { token: true, local: true, original: true };
+    const quiz = { questions: 3, answers: [{ pick: 1, correct: true, ms: 800, shown }, { pick: 2, correct: false, ms: 5000, shown }, { pick: 0, correct: true, ms: 5500, shown }] };
+    const answer = await h.call("/api/write/puzzlebox/runs", { method: "POST", body: { game: "beta-quiz", board: "1", run: quiz, player }, as: OTHER });
+    // 2 correct x10, speed 10 + round(10*4500/9000)=5, 2 wrong left x5.
+    assert.equal((answer.json.result as Record<string, unknown>).score, 20 + 15 + 10);
+    const quizStats = h.db.one("SELECT question_wrong, wrong_picks, speed_sum FROM puzzlebox_board_stats WHERE game = 'beta-quiz' AND board = '1'")!;
+    assert.deepEqual(quizStats, { question_wrong: "[0,1,0]", wrong_picks: "[0,0,0,0,0,0,1,0,0,0,0,0]", speed_sum: 15 });
+    const bad = async (body: unknown) => (await h.call("/api/write/puzzlebox/runs", { method: "POST", body })).json.error;
+    assert.equal(await bad({ game: "connections", board: "0", run, player }), "invalid", "board pattern");
+    assert.equal(await bad({ game: "connections", board: "3", run: { ...run, guesses: [[3, 3, 3, 3]] }, player }), "invalid", "not finished");
+    assert.equal(await bad({ game: "connections", board: "3", run: { ...run, shown: { token: false, local: false, original: false } }, player }), "invalid", "something shown");
+    assert.equal(await bad({ game: "connections", board: "3", run, player: { ...player, palette_swapped: "maybe" } }), "invalid", "::boolean");
+  });
+
+  const prod = await setupHarness({ dataEnv: "production" });
+  await check("puzzlebox_players is mirrored from production only", async () => {
+    await prod.call("/api/write/puzzlebox/runs", { method: "POST", body: { game: "connections", board: "2", run, player } });
+    assert.deepEqual(prod.outbox().map((entry) => entry.table_name), ["puzzlebox_runs", "puzzlebox_players", "puzzlebox_best", "puzzlebox_board_stats"]);
+  });
+}
+
+async function gate() {
+  await check("every write route has a D1 handler", () => {
+    const writes = API_ROUTES.filter((route) => route.access === "write").map((route) => route.id);
+    assert.ok(writes.length >= 30);
+    for (const id of writes) assert.ok(D1_WRITE_HANDLERS[id], `no D1 handler for ${id}`);
+  });
+
+  const h = await setupHarness({ source: "supabase" });
+  await check("no source flag: today's Supabase handler runs, D1 untouched", async () => {
+    h.setFlag(sourceFlagKey("comments"), null);
+    const res = await h.call("/api/write/likes?key=sts2-codex:card:bash", { method: "PUT" });
+    assert.equal(res.status, 200);
+    assert.ok(h.supabase.restCalls().some((entry) => entry.url.pathname === "/rest/v1/likes" && entry.method === "POST"), "PostgREST got the insert");
+    assert.equal(h.db.rows("SELECT * FROM likes").length, 0);
+    assert.equal(h.outbox().length, 0);
+  });
+
+  await check("write.paused: every write answers 503 write_paused with Retry-After, reads go on", async () => {
+    h.setFlag(WRITE_PAUSED_KEY, "on");
+    const calls = h.supabase.restCalls().length;
+    for (const [path, init] of [
+      ["/api/write/likes?key=sts2-codex:card:bash", { method: "PUT" }],
+      ["/api/write/comments", { method: "POST", body: { threadKey: "sts2-codex:card:bash", nickname: "닉", content: "좋은 카드" } }],
+      ["/api/write/history-runs/share", { method: "POST", raw: "[{},{}]", headers: { "x-slseoun-row-length": "2" } }],
+    ] as const) {
+      const res = await h.call(path, init as never);
+      assert.deepEqual([res.status, res.json.error, res.headers.get("retry-after")], [503, "write_paused", "3"], path);
+    }
+    assert.equal(h.supabase.restCalls().length, calls, "nothing reached Supabase");
+    const read = await h.call("/api/read/engagement-counts");
+    assert.notEqual(read.status, 503);
+    h.setFlag(WRITE_PAUSED_KEY, "off");
+    assert.equal((await h.call("/api/write/likes?key=sts2-codex:card:bash", { method: "PUT" })).status, 200);
+  });
+
+  await check("the share route answers single_run_unavailable on the Supabase source", async () => {
+    const res = await h.call("/api/write/history-runs/share", { method: "POST", raw: "[{},{}]", headers: { "x-slseoun-row-length": "2" } });
+    assert.deepEqual([res.status, res.json.error], [409, "single_run_unavailable"]);
+  });
+
+  await check("gate rows: unknown values keep today's behaviour; an unreadable gate is null (the env default applies)", async () => {
+    const gate = parseGateRows([{ key: "source.comments", value: "d1" }, { key: "source.stories", value: "D1" }, { key: WRITE_PAUSED_KEY, value: "yes" }]);
+    assert.equal(gate.sources.comments, "d1");
+    assert.equal(gate.sources.stories, "supabase");
+    assert.equal(gate.paused, false);
+    assert.equal(supabaseInSyncAllowed(gate), false);
+    assert.equal(supabaseInSyncAllowed(parseGateRows([])), true);
+    resetWriteGateForTest();
+    const broken = { prepare: () => { throw new Error("D1 down"); }, batch: async () => { throw new Error("D1 down"); } };
+    assert.equal(await readWriteGate(broken as never), null);
+    resetWriteGateForTest();
+  });
+}
+
 async function main() {
   const realFetch = globalThis.fetch;
   try {
     await engagement();
     await storiesAndContact();
+    await runs();
+    await toybox();
+    await puzzlebox();
+    await gate();
   } finally {
     globalThis.fetch = realFetch;
   }
-  void WRITE_PAUSED_KEY; void WRITE_GROUPS; void sourceFlagKey; void D1_WRITE_HANDLERS; void pgTimestampText; void API_ROUTES;
   console.log(`d1-write: ${checks} checks passed`);
 }
 
