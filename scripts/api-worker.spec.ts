@@ -207,7 +207,7 @@ function checkWranglerConfig() {
   assert.notEqual(prod.database_id, testbed.database_id, "testbed flags must never flip production");
   assert.equal(prod.database_name, "slseoun-prod");
   assert.equal(testbed.database_name, "slseoun-testbed");
-  assert.equal(config.vars?.API_RUNTIME_FLAGS, "off", "production starts with the flags off");
+  assert.equal(config.vars?.API_RUNTIME_FLAGS, "d1", "production reads runtime_flags since step 2");
   assert.deepEqual(config.assets?.run_worker_first, ["/api/*"]);
   for (const key of ["API_SUPABASE_URL", "API_SUPABASE_KEY", "API_DATA_ENV"]) {
     assert.equal(config.vars?.[key], undefined, `${key} comes from --var, not the repo`);
