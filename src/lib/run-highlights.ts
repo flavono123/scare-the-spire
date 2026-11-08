@@ -34,8 +34,8 @@ export function buildRunHighlights(run: ReplayRun, runId: string): RunHighlights
   const relic = pickStable(relicPool, `${runId}:${run.seed}:relic`);
 
   return {
-    card: card ? toHighlight("card", card.id) : null,
-    relic: relic ? toHighlight("relic", relic.id) : null,
+    card: card ? runHighlightFromId("card", card.id) : null,
+    relic: relic ? runHighlightFromId("relic", relic.id) : null,
   };
 }
 
@@ -46,7 +46,8 @@ export function runHighlightName(
   return serviceLocale === "ko" ? highlight.nameKo : highlight.nameEn;
 }
 
-function toHighlight(kind: HighlightKind, replayId: string): RunHighlightResource {
+/** The highlight resource of a card or relic id (replay or normalized id). */
+export function runHighlightFromId(kind: HighlightKind, replayId: string): RunHighlightResource {
   const id = normalizeId(replayId);
   const table = kind === "card" ? "cards" : "relics";
   return {

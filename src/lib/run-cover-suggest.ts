@@ -103,7 +103,7 @@ function totalFloors(run: ReplayRun): number {
   return total;
 }
 
-type PhraseFacts = {
+export type PhraseFacts = {
   win: boolean;
   totalFloors: number;
   ascension: number;
@@ -111,7 +111,19 @@ type PhraseFacts = {
   deckSize: number;
 };
 
-function factsFromRun(run: ReplayRun): PhraseFacts {
+/**
+ * What the weighted cover pool reads from a run, in its read order: cards by first appearance in
+ * the player decks as [id, copies, lowest floor added (null when none), any copy upgraded], relics by
+ * first appearance as [id, any copy added after floor 0], potions as listed. Ids are normalized.
+ * The D1 list stores this in post_history_course.list_facts (design 4.4).
+ */
+export type CoverPoolFacts = {
+  cards: Array<[id: string, copies: number, firstFloor: number | null, upgraded: boolean]>;
+  relics: Array<[id: string, acquired: boolean]>;
+  potions: string[];
+};
+
+export function factsFromRun(run: ReplayRun): PhraseFacts {
   return {
     win: run.win,
     totalFloors: totalFloors(run),
@@ -127,12 +139,7 @@ function factsFromRun(run: ReplayRun): PhraseFacts {
   };
 }
 
-function buildWeightedPool(
-  run: ReplayRun,
-  rarityById?: SuggestCoversInput["rarityById"],
-): Weighted[] {
-  if (run.players.length === 0) return [];
-
+export function coverPoolFactsFromRun(run: ReplayRun): CoverPoolFacts {
   const cards = new Map<string, { copies: number; floors: number[]; upgraded: boolean }>();
   for (const player of run.players) {
     for (const card of player.deck) {
@@ -148,16 +155,53 @@ function buildWeightedPool(
     }
   }
 
+  // A relic keeps its first position; its weight is the highest of its copies, which is the
+  // acquired one whenever any copy was added after floor 0.
+  const relics = new Map<string, boolean>();
+  for (const player of run.players) {
+    for (const relic of player.relics) {
+      if (typeof relic.id !== "string") continue;
+      const id = normalizeId(relic.id);
+      relics.set(id, (relics.get(id) ?? false) || (relic.floor_added_to_deck ?? 0) > 0);
+    }
+  }
+
+  const potions: string[] = [];
+  for (const player of run.players) {
+    for (const potion of player.potions ?? []) {
+      if (typeof potion.id !== "string") continue;
+      const id = normalizeId(potion.id);
+      if (!id || id === "POTION_SLOT" || id === "NONE") continue;
+      potions.push(id);
+    }
+  }
+
+  return {
+    cards: [...cards].map(([id, entry]) => [
+      id,
+      entry.copies,
+      entry.floors.length ? Math.min(...entry.floors) : null,
+      entry.upgraded,
+    ]),
+    relics: [...relics],
+    potions,
+  };
+}
+
+function weightedPoolFromFacts(
+  facts: CoverPoolFacts,
+  rarityById?: SuggestCoversInput["rarityById"],
+): Weighted[] {
   const pool: Weighted[] = [];
-  for (const [id, entry] of cards) {
+  for (const [id, copies, firstFloor, upgraded] of facts.cards) {
     let weight = 1;
-    const minFloor = entry.floors.length ? Math.min(...entry.floors) : 1;
+    const minFloor = firstFloor ?? 1;
     if (minFloor > 1) weight += 3;
     if (minFloor > 34) weight += 2;
-    if (entry.copies === 2) weight += 4;
-    else if (entry.copies === 3) weight += 6;
-    else if (entry.copies >= 4) weight += 8;
-    if (entry.upgraded) weight += 2;
+    if (copies === 2) weight += 4;
+    else if (copies === 3) weight += 6;
+    else if (copies >= 4) weight += 8;
+    if (upgraded) weight += 2;
     const rarity = rarityById?.card?.[id] ?? null;
     if (rarity === "희귀") weight += 2;
     else if (rarity === "고급") weight += 1;
@@ -167,43 +211,37 @@ function buildWeightedPool(
       kind: "card",
       id,
       weight,
-      copies: entry.copies,
+      copies,
       rarity,
-      upgraded: entry.upgraded,
+      upgraded,
     });
   }
 
-  const relics = new Map<string, Weighted>();
-  for (const player of run.players) {
-    for (const relic of player.relics) {
-      if (typeof relic.id !== "string") continue;
-      const id = normalizeId(relic.id);
-      let weight = 2;
-      if ((relic.floor_added_to_deck ?? 0) > 0) weight += 2;
-      const rarity = rarityById?.relic?.[id] ?? null;
-      if (rarity === "보스" || rarity === "희귀") weight += 3;
-      if (STARTER_RELICS.has(id) || rarity === "시작 유물") weight *= 0.4;
-      const current = relics.get(id);
-      if (!current || weight > current.weight) {
-        relics.set(id, { kind: "relic", id, weight, copies: 1, rarity });
-      }
-    }
+  for (const [id, acquired] of facts.relics) {
+    let weight = 2;
+    if (acquired) weight += 2;
+    const rarity = rarityById?.relic?.[id] ?? null;
+    if (rarity === "보스" || rarity === "희귀") weight += 3;
+    if (STARTER_RELICS.has(id) || rarity === "시작 유물") weight *= 0.4;
+    pool.push({ kind: "relic", id, weight, copies: 1, rarity });
   }
-  pool.push(...relics.values());
 
-  for (const player of run.players) {
-    for (const potion of player.potions ?? []) {
-      if (typeof potion.id !== "string") continue;
-      const id = normalizeId(potion.id);
-      if (!id || id === "POTION_SLOT" || id === "NONE") continue;
-      let weight = 1;
-      const rarity = rarityById?.potion?.[id] ?? null;
-      if (rarity === "희귀") weight += 1;
-      pool.push({ kind: "potion", id, weight, copies: 1, rarity });
-    }
+  for (const id of facts.potions) {
+    let weight = 1;
+    const rarity = rarityById?.potion?.[id] ?? null;
+    if (rarity === "희귀") weight += 1;
+    pool.push({ kind: "potion", id, weight, copies: 1, rarity });
   }
 
   return pool;
+}
+
+function buildWeightedPool(
+  run: ReplayRun,
+  rarityById?: SuggestCoversInput["rarityById"],
+): Weighted[] {
+  if (run.players.length === 0) return [];
+  return weightedPoolFromFacts(coverPoolFactsFromRun(run), rarityById);
 }
 
 function pickElements(
@@ -382,7 +420,15 @@ export function coverPhrasePool(
   run: ReplayRun,
   elements: CoverElement[],
 ): string[] {
-  return phraseCandidates(factsFromRun(run), elements).map((item) => item.text);
+  return coverPhrasePoolFromFacts(factsFromRun(run), elements);
+}
+
+/** coverPhrasePool from phrase facts (the D1 list keeps them in columns and list_facts). */
+export function coverPhrasePoolFromFacts(
+  facts: PhraseFacts,
+  elements: CoverElement[],
+): string[] {
+  return phraseCandidates(facts, elements).map((item) => item.text);
 }
 
 /** Thumbnail overlay = list[0], lockup title = first later distinct item. */
@@ -493,10 +539,26 @@ export function listRankedCoverBackgroundCards(
 }
 
 export function suggestCovers(input: SuggestCoversInput): SuggestCoversResult {
+  return suggestCoversFromPool({
+    runId: input.runId,
+    pool: buildWeightedPool(input.run, input.rarityById),
+    facts: factsFromRun(input.run),
+    reshuffle: input.reshuffle,
+    cooccurrence: input.cooccurrence,
+  });
+}
+
+function suggestCoversFromPool(input: {
+  runId: string;
+  pool: Weighted[];
+  facts: PhraseFacts;
+  reshuffle?: number;
+  cooccurrence?: CoverCooccurrenceTable;
+}): SuggestCoversResult {
   const reshuffle = input.reshuffle ?? 0;
   const seedBase = `${input.runId}:${reshuffle}`;
   const cooccurrence = input.cooccurrence ?? DEFAULT_COOCCURRENCE;
-  const pool = buildWeightedPool(input.run, input.rarityById);
+  const pool = input.pool;
   const cards = pool.filter((item) => item.kind === "card");
   const officialArtCards = cards.filter((item) => !BETA_ONLY_CARD_ART_IDS.has(item.id));
   const focusCard =
@@ -515,11 +577,16 @@ export function suggestCovers(input: SuggestCoversInput): SuggestCoversResult {
     cooccurrence,
   });
 
-  const pairA = pickCoverPhrasePair(input.run, elementsA, `${seedBase}:phA`);
-  const pairB = pickCoverPhrasePair(
-    input.run,
-    elementsB.length > 0 ? elementsB : elementsA,
-    `${seedBase}:phB`,
+  const pairA = pairFromPhraseList(
+    suggestCoverPhrasesFromFacts(input.facts, elementsA, `${seedBase}:phA`, 5),
+  );
+  const pairB = pairFromPhraseList(
+    suggestCoverPhrasesFromFacts(
+      input.facts,
+      elementsB.length > 0 ? elementsB : elementsA,
+      `${seedBase}:phB`,
+      5,
+    ),
   );
 
   const coverA: CoverSpec = {
@@ -551,7 +618,33 @@ export function pickAlternatingCover(
   run: ReplayRun,
   reshuffle = 0,
 ): CoverSpec {
-  const { covers } = suggestCovers({ runId, run, reshuffle });
+  return alternatingCover(runId, suggestCovers({ runId, run, reshuffle }), reshuffle);
+}
+
+/**
+ * pickAlternatingCover from the stored list facts instead of the raw run (the D1 list, design
+ * 4.4): the same pool weights, phrase facts and A/B slot.
+ */
+export function pickAlternatingCoverFromFacts(
+  runId: string,
+  poolFacts: CoverPoolFacts,
+  phraseFacts: PhraseFacts,
+  reshuffle = 0,
+): CoverSpec {
+  return alternatingCover(
+    runId,
+    suggestCoversFromPool({
+      runId,
+      pool: weightedPoolFromFacts(poolFacts),
+      facts: phraseFacts,
+      reshuffle,
+    }),
+    reshuffle,
+  );
+}
+
+function alternatingCover(runId: string, result: SuggestCoversResult, reshuffle: number): CoverSpec {
+  const { covers } = result;
   const index = hashString(`${runId}:cover-slot:${reshuffle}`) % 2;
   return covers[index] ?? covers[0]!;
 }

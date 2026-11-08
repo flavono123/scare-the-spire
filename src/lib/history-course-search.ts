@@ -14,7 +14,7 @@ import { historyRunCharacterLabel } from "@/lib/history-run-reference";
 import { displayNameForCoverElement } from "@/lib/run-cover-display";
 import { historyCourseLockupTitle, resolveCoverPhrase } from "@/lib/run-cover-phrase";
 import { coverPhrasePool } from "@/lib/run-cover-suggest";
-import type { CoverSpec } from "@/lib/run-cover-types";
+import type { CoverElement, CoverSpec } from "@/lib/run-cover-types";
 import type { DonatedRunSummary } from "@/lib/run-donation";
 import { buildSearchTokens } from "@/lib/sts2-build-version";
 import type { GameI18nTables } from "@/lib/sts2-game-i18n";
@@ -250,21 +250,53 @@ function resourceFallbackNames(resource: ComboResourceRef): string[] {
   return names;
 }
 
+/**
+ * What the search doc reads from the parsed run. The D1 list builds the same facts from the run
+ * summary columns (design 4.4) instead of the raw.
+ */
+export interface HistoryCourseRunSearchFacts {
+  gameElements: ComboResourceRef[];
+  seed: string;
+  gameMode: string;
+  build: string;
+  ascension: number;
+  win: boolean;
+  totalFloors: number;
+  characters: string[];
+  coverPhrasePool(elements: CoverElement[]): string[];
+}
+
+export function historyCourseRunSearchFacts(run: ReplayRun): HistoryCourseRunSearchFacts {
+  return {
+    gameElements: extractRunGameElements(run),
+    seed: run.seed,
+    gameMode: run.game_mode,
+    build: run.build_id,
+    ascension: run.ascension,
+    win: run.win,
+    totalFloors: run.map_point_history.reduce((total, act) => total + act.length, 0),
+    characters: run.players.map((player) => player.character),
+    coverPhrasePool: (elements) => coverPhrasePool(run, elements),
+  };
+}
+
 export function buildHistoryCourseSearchDoc(input: {
   runId: string;
   run?: ReplayRun | null;
+  /** Used instead of `run` when the list has the run's summary columns and no raw. */
+  runFacts?: HistoryCourseRunSearchFacts | null;
   donated?: DonatedRunSummary | null;
   cover?: CoverSpec | null;
   noteBlocks?: PostBlock[] | null;
   entities?: EntityInfo[];
 }): HistoryCourseSearchDoc {
-  const run = input.run ?? null;
+  const run = input.runFacts ?? (input.run ? historyCourseRunSearchFacts(input.run) : null);
   const cover = input.cover
     ?? input.donated?.cover_spec
     ?? null;
   const noteBlocks = input.noteBlocks ?? input.donated?.note_blocks ?? null;
   const resources = mergeResources(
-    run ? extractRunGameElements(run) : [],
+    run ? run.gameElements : [],
     resourcesFromCover(cover),
     input.donated ? resourcesFromDonatedSummary(input.donated) : [],
   );
@@ -275,8 +307,8 @@ export function buildHistoryCourseSearchDoc(input: {
   const parts = new Set<string>();
   addHaystackValue(parts, input.runId);
   addHaystackValue(parts, run?.seed ?? input.donated?.seed);
-  addHaystackValue(parts, run?.game_mode);
-  const build = run?.build_id ?? input.donated?.build ?? "";
+  addHaystackValue(parts, run?.gameMode);
+  const build = run?.build ?? input.donated?.build ?? "";
   for (const token of buildSearchTokens(build)) addHaystackValue(parts, token);
   const ascension = run?.ascension ?? input.donated?.ascension;
   if (typeof ascension === "number") {
@@ -296,13 +328,13 @@ export function buildHistoryCourseSearchDoc(input: {
     addHaystackValue(parts, "defeat");
   }
   const floors = run
-    ? run.map_point_history.reduce((total, act) => total + act.length, 0)
+    ? run.totalFloors
     : input.donated?.total_floors;
   if (typeof floors === "number") {
     addHaystackValue(parts, `${floors}층`);
     addHaystackValue(parts, `floor ${floors}`);
   }
-  const characters = run?.players.map((player) => player.character)
+  const characters = run?.characters
     ?? input.donated?.characters
     ?? (input.donated?.character ? [input.donated.character] : []);
   for (const character of characters) {
@@ -339,7 +371,7 @@ export function buildHistoryCourseSearchDoc(input: {
       addHaystackValue(parts, element.id);
     }
     if (run) {
-      for (const phrase of coverPhrasePool(run, cover.elements)) {
+      for (const phrase of run.coverPhrasePool(cover.elements)) {
         addHaystackValue(parts, phrase);
       }
     }
