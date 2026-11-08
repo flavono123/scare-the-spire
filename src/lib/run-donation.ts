@@ -10,70 +10,26 @@ import {
 import { surfacePath } from "./runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "./supabase";
 import { withSupabaseTimeout } from "./supabase-timeout";
-import type { PostBlock } from "./chemical-types";
 import { devToolsEnabled } from "./dev-tools";
-import { buildRunHighlights, type RunHighlightResource } from "./run-highlights";
+import { buildRunHighlights } from "./run-highlights";
 import { duplicateShareShouldUpdateCover } from "./history-course-share-state";
 import { pickAlternatingCover, suggestDefaultCover } from "./run-cover-suggest";
-import { isCoverSpec, type CoverSpec } from "./run-cover-types";
-import { parseReplayRun, type ReplayBadge, type ReplayRun } from "./sts2-run-replay";
+import type { CoverSpec } from "./run-cover-types";
+import type { ReplayRun } from "./sts2-run-replay";
 import { readStoredUserProfile } from "./user-profile";
-import { mergePartyBadges, partyCharacters } from "./history-party";
+import { mergePartyBadges } from "./history-party";
+import {
+  normalizeRunRow,
+  normalizeRunSummaryRow,
+  parseCoverSpec,
+  parseRunSafely,
+  totalFloorsFromRun,
+  type DonatedRun,
+  type DonatedRunSummary,
+  type RunRow,
+} from "./run-summary-row";
 
-export interface DonatedRun {
-  id: string;
-  raw: string;
-  seed: string;
-  build: string;
-  character: string;
-  ascension: number;
-  win: boolean;
-  start_time: number | null;
-  run_time: number | null;
-  acts_count: number;
-  badges: ReplayBadge[];
-  highlight_card: RunHighlightResource | null;
-  highlight_relic: RunHighlightResource | null;
-  note_blocks: PostBlock[] | null;
-  cover_spec: CoverSpec | null;
-  created_at: string;
-}
-
-export interface DonatedRunSummary {
-  id: string;
-  seed: string;
-  build: string;
-  character: string;
-  /** Present when listing still has raw and can parse the party. */
-  characters?: string[];
-  ascension: number;
-  win: boolean;
-  start_time: number | null;
-  run_time: number | null;
-  acts_count: number;
-  // Total floors visited across all acts. Pre-extracted at insert
-  // time so the listing query doesn't have to parse the raw JSON.
-  total_floors: number;
-  badges: ReplayBadge[];
-  highlight_card: RunHighlightResource | null;
-  highlight_relic: RunHighlightResource | null;
-  note_blocks: PostBlock[] | null;
-  cover_spec: CoverSpec | null;
-  /** Present on gallery listings that still select raw for cover backfill. */
-  raw?: string | null;
-  donor_user_id: string | null;
-  created_at: string;
-}
-
-function totalFloorsFromRun(run: ReplayRun): number {
-  let total = 0;
-  for (const act of run.map_point_history) total += act.length;
-  return total;
-}
-
-function parseCoverSpec(value: unknown): CoverSpec | null {
-  return isCoverSpec(value) ? value : null;
-}
+export type { DonatedRun, DonatedRunSummary } from "./run-summary-row";
 
 function parsedMetaFromRun(run: ReplayRun, runId: string) {
   const highlights = buildRunHighlights(run, runId);
@@ -94,11 +50,6 @@ function parsedMetaFromRun(run: ReplayRun, runId: string) {
     cover_spec: suggestDefaultCover(runId, run),
   };
 }
-
-type RunRow = Partial<DonatedRunSummary & DonatedRun> & {
-  raw?: string | null;
-  cover_spec?: unknown;
-};
 
 // The column lists live in history-runs-api-rules.ts so the Worker reads the same ones.
 
@@ -140,59 +91,6 @@ function runReadEnvs(): string[] {
     return [supabaseEnv, "production"];
   }
   return [supabaseEnv];
-}
-
-function parseRunSafely(raw: string | null | undefined): ReplayRun | null {
-  if (!raw) return null;
-  try {
-    return parseReplayRun(raw);
-  } catch {
-    return null;
-  }
-}
-
-function normalizeRunRow(row: RunRow, runId: string): DonatedRun {
-  const parsedRun = parseRunSafely(row.raw);
-  const highlights = parsedRun ? buildRunHighlights(parsedRun, runId) : null;
-  const storedCover = parseCoverSpec(row.cover_spec);
-  // Auto covers re-pick A/B on read so both variants show in the index.
-  const cover_spec =
-    storedCover?.auto === false
-      ? storedCover
-      : parsedRun
-        ? pickAlternatingCover(runId, parsedRun)
-        : storedCover;
-  return {
-    id: row.id ?? runId,
-    raw: row.raw ?? "",
-    seed: row.seed ?? parsedRun?.seed ?? "",
-    build: row.build ?? parsedRun?.build_id ?? "",
-    character: row.character ?? parsedRun?.players[0]?.character ?? "",
-    ascension: row.ascension ?? parsedRun?.ascension ?? 0,
-    win: row.win ?? parsedRun?.win ?? false,
-    start_time: row.start_time ?? parsedRun?.start_time ?? null,
-    run_time: row.run_time ?? parsedRun?.run_time ?? null,
-    acts_count: row.acts_count ?? parsedRun?.acts.length ?? 0,
-    badges: parsedRun ? mergePartyBadges(parsedRun) : (row.badges ?? []),
-    highlight_card: row.highlight_card ?? highlights?.card ?? null,
-    highlight_relic: row.highlight_relic ?? highlights?.relic ?? null,
-    note_blocks: row.note_blocks ?? null,
-    cover_spec,
-    created_at: row.created_at ?? new Date(0).toISOString(),
-  };
-}
-
-function normalizeRunSummaryRow(row: RunRow): DonatedRunSummary {
-  const runId = row.id ?? "";
-  const normalized = normalizeRunRow(row, runId);
-  const parsedRun = parseRunSafely(row.raw);
-  return {
-    ...normalized,
-    characters: parsedRun ? partyCharacters(parsedRun) : [normalized.character],
-    total_floors: row.total_floors ?? (parsedRun ? totalFloorsFromRun(parsedRun) : 0),
-    raw: row.raw ?? null,
-    donor_user_id: row.donor_user_id ?? null,
-  };
 }
 
 async function selectDonatedRunForEnv(
