@@ -38,6 +38,8 @@ export type ClaimSession = {
   expires_in: number;
   expires_at: number;
   token_type: string;
+  /** Supabase's user object as sign-up returned it; supabase-js stores it with the session. */
+  user: Record<string, unknown>;
 };
 
 export type ClaimResponse = {

@@ -35,6 +35,7 @@ function sessionFrom(body: unknown, nowSeconds: number): { uid: string; session:
       expires_in: expiresIn,
       expires_at: expiresAt,
       token_type: typeof value.token_type === "string" ? value.token_type : "bearer",
+      user: user as Record<string, unknown>,
     },
   };
 }
