@@ -16,6 +16,7 @@
 
 | 파일 | Rollout | Order | 적용 | 확인 |
 |---|---|---|---|---|
+| `20261108130427_d1_change_log.sql`(2단계 변경 로그, 되돌리기 `d1-change-log/rollback_d1_change_log.sql`) | db-first-additive | before-push | 미적용 | 로컬 PGlite `pnpm test:d1-sync` 통과 |
 
 ## D1 마이그레이션
 
