@@ -1,0 +1,96 @@
+name: D1 daily reconcile
+
+# Supabase exit step 2 (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.4, 4.4): the run summary fill, then
+# the daily comparison of each Supabase env with its own D1. Reads Supabase only; writes D1 only
+# (the fill and the day's sync_checks rows). Before the first copy exists the script writes
+# nothing and ends with a notice; a scheduled run without its credentials ends with a notice too.
+
+on:
+  schedule:
+    - cron: "30 19 * * *" # 04:30 KST
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Which Supabase env and D1 to reconcile
+        type: choice
+        options:
+          - testbed
+          - production
+        default: testbed
+      fill_only:
+        description: Only run the run summary fill
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: d1-reconcile-${{ inputs.target || 'scheduled' }}
+  cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  reconcile:
+    name: Reconcile ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # The credentials live in this environment today; moving them is a separate task.
+    environment: cloudflare-production
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        target: ${{ fromJSON(github.event_name == 'workflow_dispatch' && format('["{0}"]', inputs.target) || '["testbed","production"]') }}
+    env:
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_D1_API_TOKEN: ${{ secrets.CLOUDFLARE_D1_API_TOKEN }}
+      SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - name: Check credentials
+        id: credentials
+        shell: bash
+        run: |
+          missing=""
+          for name in CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_D1_API_TOKEN SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY; do
+            if [[ -z "${!name}" ]]; then missing="${missing} ${name}"; fi
+          done
+          if [[ -n "$missing" ]]; then
+            if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
+              echo "::notice title=D1 reconcile::skipped, not configured yet (missing:${missing})"
+              echo "ready=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "::error title=D1 reconcile::missing:${missing}"
+            exit 1
+          fi
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.credentials.outputs.ready == 'true'
+
+      - uses: pnpm/action-setup@v4
+        if: steps.credentials.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.credentials.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+        if: steps.credentials.outputs.ready == 'true'
+
+      - name: Fill run summaries and reconcile
+        if: steps.credentials.outputs.ready == 'true'
+        shell: bash
+        run: |
+          args=(--target "$TARGET")
+          if [[ "$FILL_ONLY" == "true" ]]; then args+=(--fill-only); fi
+          pnpm d1:reconcile "${args[@]}"
+        env:
+          TARGET: ${{ matrix.target }}
+          FILL_ONLY: ${{ inputs.fill_only }}
