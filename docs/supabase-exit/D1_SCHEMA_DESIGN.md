@@ -768,6 +768,32 @@ Worker로 옮긴 것: `runs`의 서버 열 보호 트리거는 R14(올리기) �
 쓰는 행: 운영 기준 참여 약 3천, 글 1만~2만(풀 행 포함), 런 약 6천. 한 DB에 3만 안팎이다. 무료 쓰기 한도(계정
 하루 10만)를 생각해 testbed와 운영을 다른 날 채운다.
 
+**실행**(`scripts/d1-first-copy.ts`). 위 1~7번과 검사를 한 번에 한다. D1에 쓰기 전에 메모리 SQLite에 같은 스키마로
+전부 넣어 보고(리허설), 검사가 하나라도 걸리면 쓰지 않고 멈춘다(종료 코드 2). 쓴 뒤에는 D1을 다시 읽어 리허설과
+행 수, 파생 값, 런 요약, `sync_state`, R1 답 크기, FK 검사를 맞대 본다.
+
+- 먼저 할 일: Supabase에 변경 로그 마이그레이션(5.1절), 대상 D1에 `d1/migrations`(`wrangler d1 migrations apply`). 그날은
+  그 DB의 그림자 샘플을 0으로 둔다.
+- 필요한 값: `SUPABASE_PROJECT_REF`, `SUPABASE_DB_PASSWORD`(세션 pooler, libpq `psql`·`pg_dump`, `PGTZ=UTC`로 뜬다),
+  `CLOUDFLARE_API_TOKEN`·`CLOUDFLARE_ACCOUNT_ID` 또는 wrangler 로그인. 덤프는 지우는 임시 폴더에만 둔다(`--work`로 바꿈).
+- 미리 보기(D1에 쓰지 않음): `pnpm exec tsx --env-file=.env.local scripts/d1-first-copy.ts --env testbed --dry-run`.
+  운영도 `--env production --dry-run`으로 본다(읽기만 하므로 승인 플래그가 없어도 된다).
+- testbed 첫 복사: `pnpm exec tsx --env-file=.env.local scripts/d1-first-copy.ts --env testbed`.
+- 운영 첫 복사(사용자 승인 뒤, testbed와 다른 날): `... --env production --confirm-production`.
+- 다시 채우기: 같은 명령에 `--refill`. `0003` 이후 마이그레이션의 표(지금 39개)를 잎부터 `DROP`하고 그 파일을 다시
+  올린 뒤 새 `W0`로 복사한다. `d1_migrations` 기록은 그대로 둔다. 보고서의 "DROP rows written"이 이 `DROP`의 쓴 행이다.
+  `outbox`에 행이나 열린 `out` 거절이 있으면 멈춘다(5.5절 되돌리기의 전제). 그 DB의 1분 동기화 cron을 끄고 돌린다.
+  첫 복사처럼 끝난 뒤에 켠다(7번).
+- 첫 복사는 `0003` 이후 표가 모두 비어 있어야 한다. 행이 있으면 멈추고 `--refill`을 쓰라고 한다.
+- 하루 쓰기 예산 `--write-budget`(기본 8만 행, 동기화와 앱 쓰기 몫을 남김). 리허설로 잰 예상이 넘으면 쓰기 전에,
+  쓰는 중에 넘을 것 같으면 그 batch 앞에서 멈춘다. 중간에 멈춘 D1은 다른 날 `--refill`로 다시 채운다.
+- 로컬: `pnpm exec tsx scripts/d1-first-copy.ts --local --persist-to <폴더> --data-env development|production`에
+  `--dump-file <pg_dump 파일> --no-change-log`(변경 로그 없는 백업, `W0 = 0`) 또는 `--pglite <폴더>`를 준다.
+- 2026-11-05 백업으로 로컬 확인(`pnpm exec tsx scripts/d1-first-copy-backup-check.ts ~/slseoun-backups/supabase/20261105-2048`):
+  PGlite에 백업과 변경 로그를 올리고 env마다 로컬 D1에 복사했다. 행 수는 백업의 env별 수와 모두 같다. 개발 글 166(런 103),
+  고아 본문 7, 100개 목록 답 539.0 KB, 쓴 행 3,551. 운영 글 849(런 584), 고아 본문 0, 647.9 KB, 쓴 행 17,554(로컬 D1 보고,
+  예상 17,565). 두 env 모두 멈춘 검사 0, `cross_env` 0, 카운터 어긋남 0. 다시 채우기의 `DROP` 쓴 행은 로컬 D1에서 0이다.
+
 ### 5.3 1분 동기화(2~4단계)
 
 한 번의 cron 실행은 Workers Free 한도 안에서 끝나야 한다: D1 쿼리 50개(batch 안의 문장도 하나씩 센다),
@@ -900,6 +926,21 @@ HEAD count, `comment_likes(count)`)과 같다.
 - 열린 거절이나 행 차이가 있으면 그날은 실패다. 손으로 만든 값의 거절(3.1절)은 사용자가 그 행을 어떻게 할지 정하고
   그 일을 마칠 때까지 실패다. 그 행은 Supabase에만 있으므로, 거절을 닫기만 해서는 `rows` 차이와 `derived` 차이가
   남는다. D1 읽기는 하루 모든 행 한 번(1만 안팎)이다.
+- **명령과 작업**(`scripts/d1-reconcile.ts`, `scripts/d1-sync/reconcile.ts`):
+  - `pnpm d1:reconcile --target testbed|production`: 요약 채우기(RF1 → R3r → `extractRunListSummary` → RF2) 뒤 대조.
+    `--fill-only`는 채우기만 한다(손으로 돌리는 채우기).
+  - testbed는 `env='development'`와 `slseoun-testbed`, production은 `env='production'`과 `slseoun-prod`(id는
+    `wrangler.jsonc`). Supabase는 PostgREST(service 키)로 읽기만 한다. D1은 HTTP API로 RF2와 그날의 `sync_checks`만 쓴다.
+  - 환경 변수: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_D1_API_TOKEN`(D1 편집).
+    값은 출력하지 않는다.
+  - Supabase 행은 같은 매퍼로 로컬 SQLite(D1 스키마, FK 끔)에 넣어 D1 행끼리 비교한다. 매퍼나 CHECK가 거절한 행은
+    `supabase_reject:<이유>` 차이다. D1은 표마다 기본키 키셋으로 한 번 읽는다(원문 표는 쪽마다 10행).
+  - 종료 1: 행 차이, 파생 차이, 요약 비교 차이, 열린 거절. 보고만: 채우기 뒤 `summary_version` 0 런(경고), 고아 본문,
+    `cross_env` 좋아요, 글·런 수 대 `threads`. 로그에는 수와 이유만 남기고 키는 `sync_checks.diff_sample`에만 둔다.
+  - 첫 복사 전(`0003`~`0006` 없음, 표가 빔, `sync_state`의 `supabase_in` 행 없음)에는 아무것도 쓰지 않고 알림만
+    남긴다(종료 0).
+  - `.github/workflows/d1-reconcile.yml`: 매일 04:30 KST에 testbed, production 차례로. 손으로는 `target`, `fill_only`를
+    고른다. `cloudflare-production` 환경의 비밀값을 쓰고, 예약 실행에 비밀값이 없으면 알림만 남긴다.
 
 ### 5.5 5단계 미러(D1 → Supabase)
 
