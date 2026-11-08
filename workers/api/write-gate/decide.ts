@@ -112,9 +112,9 @@ export function ownerState(value: unknown, actor: string): "match" | "other" | "
 }
 
 function withoutKeys(row: Row, keys: readonly string[]): Row {
-  const copy: Row = {};
-  for (const [key, value] of Object.entries(row)) if (!keys.includes(key)) copy[key] = value;
-  return copy;
+  // fromEntries defines own properties, so a "__proto__" key stays a key (PostgREST refuses it) instead of
+  // an assignment that would drop it and let the row through.
+  return Object.fromEntries(Object.entries(row).filter(([key]) => !keys.includes(key)));
 }
 
 function valueOf(row: Row, column: string, rule: TableRule): unknown {
