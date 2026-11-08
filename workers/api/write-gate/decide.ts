@@ -184,6 +184,10 @@ async function decideInsert(table: string, rule: TableRule, write: GateWrite, ac
     if (!returned || !returned.every((column) => rule.grants?.select?.includes(column))) return forbidden();
   }
 
+  // PostgREST reads the whole payload into rows before any trigger or policy runs: an owner that is no
+  // uuid fails that cast (22P02) for the statement, so it goes out as it came and fails the same way.
+  if ((rows as Row[]).some((row) => ownerState(row[rule.owner], actor) === "invalid")) return { kind: "send", write };
+
   const out: Row[] = [];
   for (const [index, original] of (rows as Row[]).entries()) {
     let row = original;

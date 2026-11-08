@@ -21,6 +21,7 @@ import { FLAGS_SQL, resetFlagsForTest } from "../workers/api/flags";
 import { resetJwtCachesForTest } from "../workers/api/jwt";
 import { postgrest, type RestRequest, type SupabaseApiConfig } from "../workers/api/supabase-rest";
 import { createWriteGate, withWriteGate } from "../workers/api/write-gate/gate";
+import { TABLE_RULES } from "../workers/api/write-gate/rules";
 import { resetWriteFlagsForTest, WRITE_FLAGS_SQL } from "../workers/api/write-flags";
 import mainWorker from "../workers/main-worker";
 import { PgRest, repoSchemaFiles, supabaseFromDump, supabaseFromRepo } from "./lib/supabase-pglite";
@@ -432,6 +433,9 @@ const GATE_CASES: GateCase[] = [
   { name: "inquiry read back", actor: U3, request: { method: "POST", path: "contact_inquiries", body: INQUIRY({}), prefer: ["return=representation"] }, status: 403, code: "42501" },
   { name: "inquiry read back of a hidden column", actor: U3, request: { method: "POST", path: "contact_inquiries", body: INQUIRY({}), query: q({ select: "id,user_id" }), prefer: ["return=representation"] }, status: 403, code: "42501" },
   { name: "inquiry read back of its id", actor: U3, request: { method: "POST", path: "contact_inquiries", body: INQUIRY({}), query: q({ select: "id,status" }), prefer: ["return=representation"] }, status: 201 },
+  // U3 is at three this hour now: a value that is no uuid still fails its cast before the trigger counts.
+  { name: "inquiry with a bad owner at the limit", actor: U3, request: { method: "POST", path: "contact_inquiries", body: INQUIRY({ user_id: "nope" }), prefer: ["return=minimal"] }, status: 400, code: "22P02" },
+  { name: "inquiry over the limit", actor: U3, request: { method: "POST", path: "contact_inquiries", body: INQUIRY({}), prefer: ["return=minimal"] }, status: 400, code: "P0001" },
   { name: "inquiry answer by its user", request: { method: "PATCH", path: "contact_inquiries", body: { admin_response: "self answer" }, query: q({ env: "eq.development" }), prefer: ["return=minimal"] }, status: 403, code: "42501" },
   { name: "inquiry filtered by user id", request: { method: "PATCH", path: "contact_inquiries", body: { reply_seen_at: "2026-11-08T00:00:00Z" }, query: q({ user_id: `eq.${U1}` }), prefer: ["return=minimal"] }, status: 403, code: "42501" },
   { name: "inquiry delete", request: { method: "DELETE", path: "contact_inquiries", query: q({ env: "eq.development" }), prefer: ["return=minimal"] }, status: 403, code: "42501" },
@@ -451,6 +455,13 @@ async function main() {
       supabaseFromRepo([...repoSchemaFiles(skip), ...step4Migration]),
     ]);
   console.log(dump ? `schema: replayed ${dump}` : "schema: rebuilt from the repo's supabase SQL");
+  // decideWrite sends a payload whose owner is no uuid unchanged because the cast refuses it first: true
+  // only while every owner column is uuid.
+  for (const [table, rule] of Object.entries(TABLE_RULES)) {
+    const { rows } = await today.query<{ type: string }>(
+      "select format_type(atttypid, atttypmod) as type from pg_attribute where attrelid = ('public.' || $1)::regclass and attname = $2", [table, rule.owner]);
+    assert.equal(rows[0]?.type, "uuid", `${table}.${rule.owner} is uuid`);
+  }
   for (const db of [today, step4, step4Rls]) await db.exec(SEED);
   await assertSameTables(today, step4, "seed");
   await assertSameTables(today, step4Rls, "seed");
