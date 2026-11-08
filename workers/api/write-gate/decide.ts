@@ -152,9 +152,10 @@ async function insertCheck(rule: TableRule, row: Row, actor: string, lookups: Ga
     case undefined:
       return { ok: true, value: true };
     case "not_builtin_preset": {
-      // preset_key !~~ 'builtin:%': NULL is not true, and LIKE is case-sensitive.
+      // preset_key !~~ 'builtin:%': NULL is not true, and LIKE is case-sensitive. A JSON number, boolean,
+      // object or array lands in the text column as its JSON text, which never starts with "builtin:".
       const key = valueOf(row, "preset_key", rule);
-      return { ok: true, value: typeof key === "string" && !key.startsWith("builtin:") };
+      return { ok: true, value: key !== null && !(typeof key === "string" && key.startsWith("builtin:")) };
     }
     case "vote_post_same_env": {
       // EXISTS (posts.id = post_id AND posts.env = env), read past RLS like the policy's subquery.

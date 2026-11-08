@@ -427,6 +427,8 @@ const GATE_CASES: GateCase[] = [
   // Postgres uuid input takes one hyphen after a group of four digits and braces only in pairs: these fail the cast.
   { name: "comment with an unclosed brace owner", request: { method: "POST", path: "comments", body: { story_id: "k", user_id: `{${U2}`, nickname: "닉", content: "hello", env: "development" }, prefer: ["return=minimal"] }, status: 400, code: "22P02" },
   { name: "comment with a doubled hyphen owner", request: { method: "POST", path: "comments", body: { story_id: "k", user_id: U2.replace("-", "--"), nickname: "닉", content: "hello", env: "development" }, prefer: ["return=minimal"] }, status: 400, code: "22P02" },
+  // A JSON number lands in the text column as its text, which is no builtin key.
+  { name: "tournament with a number preset key", request: { method: "POST", path: "favorite_tournament_posts", body: { id: id("f0000000", 5), user_id: U1, nickname: "닉", title: "cup", preset_key: 5, game_version: "0.1", pool: POOL, env: "development" }, prefer: ["return=minimal"] }, status: 201 },
   { name: "comment with an empty content", request: { method: "POST", path: "comments", body: { story_id: "k", user_id: U1, nickname: "닉", content: "", env: "development" }, prefer: ["return=minimal"] }, status: 400, code: "23514" },
   { name: "comment update (no policy)", request: { method: "PATCH", path: "comments", body: { content: "edited" }, query: q({ id: `eq.${C2}`, select: "id" }), prefer: ["return=representation"] }, status: 200 },
   { name: "comment delete of another user's by its owner filter", request: { method: "DELETE", path: "comments", query: q({ id: `eq.${C2}`, user_id: `eq.${U2}`, select: "id" }), prefer: ["return=representation"] }, status: 200 },
