@@ -418,8 +418,9 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 
 #### 2단계: D1 그림자(원본은 Supabase)
 
-- 설계: [D1 스키마 설계](supabase-exit/D1_SCHEMA_DESIGN.md)(2026-11-08). 표 구조, 동기화·미러, 그림자 대조가 있다. 2단계
-  구현 시작 때 올릴 Supabase 마이그레이션은 `runs` 요약 열 하나(설계 10.2절)이고, 사용자 결정은 설계 10.1~10.9절이다.
+- 설계: [D1 스키마 설계](supabase-exit/D1_SCHEMA_DESIGN.md)(2026-11-08). 표 구조, 동기화·미러, 그림자 대조가 있다. 런 요약은 D1에서만
+  만들고 Supabase `runs`는 바꾸지 않는다(설계 10.2절). 2단계에 운영 Supabase에 올리는 것은 아래 변경 로그 하나다. 사용자
+  결정은 설계 10.1~10.9절이다.
 - SQLite DDL을 `migrations/`에 둔다(`wrangler d1 migrations`). 인덱스, 카운터 테이블, `surface_latest`도 만든다.
 - 첫 복사: dump를 변환 스크립트(Postgres 타입 → SQLite)로 바꿔 넣는다. 공개 데이터가 4,152행(0단계 백업 기준), 12 MB라서 D1
   하루 쓰기 한도(10만 행) 안에 든다. `env='production'`은 prod D1로, `env='development'`는 testbed D1로 나눈다.

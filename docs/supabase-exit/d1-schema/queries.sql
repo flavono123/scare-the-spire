@@ -503,6 +503,14 @@ UPDATE posts SET nickname = ?2
 WHERE (service, id) IN (SELECT service, id FROM posts WHERE user_id = ?1 AND service = 'history_course')
   AND nickname <> ?2;
 
+-- @ RF1 summary fill: runs whose summary is older than this extractor (fill job in GitHub Actions; ~600 rows, reads the service by design) | expect= | allow=svcrange:post_history_course,scan:post_history_course,walk | params=[1]
+SELECT post_id FROM post_history_course WHERE service = 'history_course' AND summary_version < ?1 ORDER BY post_id LIMIT 50;
+
+-- @ RF2 summary fill: write one run's summary and badges (the raw came from R3r; never touches cover_spec) | expect=post_history_course:PK | allow= | params=["r00000000000000f","[\"CHARACTER.SILENT\"]","standard","[]","{}","[]",1]
+UPDATE post_history_course
+SET characters = ?2, game_mode = ?3, game_elements = ?4, list_facts = ?5, badges = ?6, summary_version = ?7
+WHERE service = 'history_course' AND post_id = ?1 AND summary_version < ?7;
+
 -- @ R13 unshare by owner (cascades the run row and the file; threads stay) | expect=posts:PK | allow= | params=["r00000000000000f","0000000f-1111-4111-8111-111111111111"]
 DELETE FROM posts WHERE service = 'history_course' AND id = ?1 AND user_id = ?2 RETURNING id;
 

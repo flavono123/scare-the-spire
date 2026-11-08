@@ -356,6 +356,10 @@ PASS R12 donor nickname sync (keys from the covering posts_user seek: without st
       LIST SUBQUERY 2
       SEARCH posts USING COVERING INDEX posts_user (user_id=? AND service=?)
       CREATE BLOOM FILTER
+PASS RF1 summary fill: runs whose summary is older than this extractor (fill job in GitHub Actions; ~600 rows, reads the service by design) allow=svcrange:post_history_course,scan:post_history_course,walk [ran, 50 row(s)]
+      SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=?)
+PASS RF2 summary fill: write one run's summary and badges (the raw came from R3r; never touches cover_spec) [ran, 0 row(s)]
+      SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
 PASS R13 unshare by owner (cascades the run row and the file; threads stay) [ran, 1 row(s)]
       SEARCH posts USING PRIMARY KEY (service=? AND id=?)
       SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
@@ -824,6 +828,10 @@ PASS R12 donor nickname sync (keys from the covering posts_user seek: without st
       LIST SUBQUERY 2
       SEARCH posts USING COVERING INDEX posts_user (user_id=? AND service=?)
       CREATE BLOOM FILTER
+PASS RF1 summary fill: runs whose summary is older than this extractor (fill job in GitHub Actions; ~600 rows, reads the service by design) allow=svcrange:post_history_course,scan:post_history_course,walk [ran, 50 row(s)]
+      SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=?)
+PASS RF2 summary fill: write one run's summary and badges (the raw came from R3r; never touches cover_spec) [ran, 0 row(s)]
+      SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
 PASS R13 unshare by owner (cascades the run row and the file; threads stay) [ran, 1 row(s)]
       SEARCH posts USING PRIMARY KEY (service=? AND id=?)
       SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
@@ -989,4 +997,4 @@ PASS F6 next week open (dev nav) [ran, 0 row(s)]
       SEARCH colorful_philosopher_posts USING COVERING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start=?)
 PASS F7 admin upsert (local script; keeps id and created_at on conflict) [ran, 1 row(s)]
 
-queries: 126, failures (probes + plans, both passes): 0
+queries: 128, failures (probes + plans, both passes): 0
