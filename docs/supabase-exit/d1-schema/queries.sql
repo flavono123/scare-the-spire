@@ -239,7 +239,7 @@ DELETE FROM sync_pending_raw WHERE post_id = ?1;
 -- @ S14 mirror, step 5: read a run at send time (raw from its table, never from the outbox; no row -> send only the delete) | expect=p:PK,h:PK,f:PK | allow= | params=["r00000000000000f"]
 SELECT p.id, p.user_id AS donor_user_id, p.nickname AS donor_nickname, p.created_at, h.seed, h.build, h."character",
        h.ascension, h.win, h.start_time, h.run_time, h.acts_count, h.total_floors, h.cover_spec, h.summary_version,
-       h.badges, h.characters, h.game_mode, h.game_elements, h.cover_phrases, f.raw
+       h.badges, h.characters, h.game_mode, h.game_elements, h.list_facts, f.raw
 FROM posts p JOIN post_history_course h ON h.service = p.service AND h.post_id = p.id
 JOIN post_history_course_file f ON f.service = p.service AND f.post_id = p.id
 WHERE p.service = 'history_course' AND p.id = ?1;
@@ -453,23 +453,20 @@ DELETE FROM pagestorm_drafts WHERE id = ?1 AND user_id = ?2 RETURNING id;
 
 -- =============================================================================== 역사 강의서 runs (R)
 
--- @ R1 run list (100 latest) with summary columns and row-true counts | expect=p:posts_service_created,h:PK,t:PK | allow= | params=[]
+-- @ R1 run list (100 latest) with summary columns, game elements (popular chips and search from page load, as today) and row-true counts | expect=p:posts_service_created,h:PK,t:PK | allow= | params=[]
 SELECT p.id, h.seed, h.build, h."character", h.characters, h.ascension, h.win, h.start_time, h.run_time,
-       h.acts_count, h.total_floors, h.badges, h.cover_spec, h.game_mode, h.cover_phrases, h.summary_version,
+       h.acts_count, h.total_floors, h.badges, h.cover_spec, h.game_mode, h.game_elements, h.list_facts,
+       h.summary_version,
        p.user_id AS donor_user_id, p.created_at, coalesce(t.like_count, 0) AS like_count,
        coalesce(t.comment_count, 0) AS comment_count
 FROM posts p CROSS JOIN post_history_course h ON h.service = p.service AND h.post_id = p.id
 LEFT JOIN threads t ON t.thread_key = 'history-course:' || p.id
 WHERE p.service = 'history_course' ORDER BY p.created_at DESC, p.id DESC LIMIT 100;
 
--- @ R1e run list, game elements view (only when the element filter opens) | expect=p:posts_service_created,h:PK | allow= | params=[]
-SELECT p.id, h.game_elements FROM posts p CROSS JOIN post_history_course h ON h.service = p.service AND h.post_id = p.id
-WHERE p.service = 'history_course' ORDER BY p.created_at DESC, p.id DESC LIMIT 100;
-
 -- @ R2 combo / 조각모음 run picker (30 by start time; RUN_SUMMARY_COLUMNS with summary columns in place of raw) | expect=h:post_history_course_start_time,p:PK | allow= | params=[]
 SELECT h.post_id AS id, h.seed, h.build, h."character", h.ascension, h.win, h.start_time, h.run_time, h.acts_count,
        h.total_floors, h.cover_spec, p.user_id AS donor_user_id, p.created_at, h.characters, h.badges, h.game_mode,
-       h.cover_phrases, h.summary_version
+       h.game_elements, h.list_facts, h.summary_version
 FROM post_history_course h CROSS JOIN posts p ON p.service = h.service AND p.id = h.post_id
 ORDER BY h.start_time DESC, h.post_id DESC LIMIT 30;
 
@@ -479,8 +476,8 @@ SELECT p.id, h.seed, h.build, h."character", h.ascension, h.win, h.start_time, h
 FROM posts p JOIN post_history_course h ON h.service = p.service AND h.post_id = p.id
 WHERE p.service = 'history_course' AND p.id = ?1;
 
--- @ R4 cover editor meta (the raw is R3r) | expect=post_history_course:PK | allow= | params=["r00000000000000f"]
-SELECT post_id AS id, cover_spec FROM post_history_course WHERE service = 'history_course' AND post_id = ?1;
+-- @ R4 cover view: combo thumbs re-pick a non-manual cover from list_facts as they do from the raw today; the editor's raw is R3r | expect=post_history_course:PK | allow= | params=["r00000000000000f"]
+SELECT post_id AS id, cover_spec, list_facts FROM post_history_course WHERE service = 'history_course' AND post_id = ?1;
 
 -- @ R3r run raw for detail and cover editor (the stored text is the body, never wrapped in JSON) | expect=post_history_course_file:PK | allow= | params=["r00000000000000f"]
 SELECT raw FROM post_history_course_file WHERE service = 'history_course' AND post_id = ?1;
@@ -495,8 +492,8 @@ WHERE thread_key IN (SELECT 'history-course:' || value FROM json_each(?1));
 -- @ R7 my run ids | expect=posts:posts_user | allow= | params=["00000007-1111-4111-8111-111111111111"]
 SELECT id FROM posts WHERE user_id = ?1 AND service = 'history_course';
 
--- @ R11 cover save by owner | expect=post_history_course:PK,posts:PK | allow= | params=["r00000000000000f","0000000f-1111-4111-8111-111111111111","{\"auto\":false}","[\"x\"]"]
-UPDATE post_history_course SET cover_spec = ?3, cover_phrases = ?4
+-- @ R11 cover save by owner | expect=post_history_course:PK,posts:PK | allow= | params=["r00000000000000f","0000000f-1111-4111-8111-111111111111","{\"auto\":false}"]
+UPDATE post_history_course SET cover_spec = ?3
 WHERE service = 'history_course' AND post_id = ?1
   AND EXISTS (SELECT 1 FROM posts WHERE service = 'history_course' AND id = ?1 AND user_id = ?2)
 RETURNING post_id;
@@ -519,14 +516,14 @@ WHERE true ON CONFLICT (service, id) DO NOTHING RETURNING id;
 
 -- @ R14b share: run summary row, only under this donor's history_course posts row | expect=p:PK | allow= | params=["[{\"id\":\"r00000000000000f\",\"seed\":\"dup\",\"build\":\"v\",\"character\":\"CHARACTER.SILENT\",\"ascension\":1,\"win\":0,\"acts_count\":3}]","0000000f-1111-4111-8111-111111111111"]
 INSERT INTO post_history_course (service, post_id, seed, build, "character", ascension, win, start_time, run_time, acts_count,
-  total_floors, cover_spec, summary_version, badges, characters, game_mode, game_elements, cover_phrases)
+  total_floors, cover_spec, summary_version, badges, characters, game_mode, game_elements, list_facts)
 SELECT p.service, p.id, json_extract(e.value, '$.seed'), json_extract(e.value, '$.build'),
        json_extract(e.value, '$.character'), json_extract(e.value, '$.ascension'), json_extract(e.value, '$.win'),
        json_extract(e.value, '$.start_time'), json_extract(e.value, '$.run_time'), json_extract(e.value, '$.acts_count'),
        coalesce(json_extract(e.value, '$.total_floors'), 0), json_extract(e.value, '$.cover_spec'),
        coalesce(json_extract(e.value, '$.summary_version'), 0), coalesce(json_extract(e.value, '$.badges'), '[]'),
        json_extract(e.value, '$.characters'), json_extract(e.value, '$.game_mode'), json_extract(e.value, '$.game_elements'),
-       json_extract(e.value, '$.cover_phrases')
+       json_extract(e.value, '$.list_facts')
 FROM json_each(?1) e CROSS JOIN posts p
   ON p.service = 'history_course' AND p.id = json_extract(e.value, '$.id') AND p.user_id = ?2
 WHERE true ON CONFLICT (service, post_id) DO NOTHING;

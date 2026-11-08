@@ -23,8 +23,8 @@
     런 602 등)을 넣었다. FK 자식과 지우기 연쇄 다섯 가지(월드컵, 코오오옴보, 런, 이거 아님 저거?, 댓글)가 기대대로
     지워지고 남는다. 이거 아님 저거? 글을 지우면 투표와 좋아요가 FK 연쇄로 지워진다. 같은 id를 가진 두 서비스의
     글이 두 행으로 따로 있고, 하나를 지워도 다른 하나는 그대로인지도 본다.
-  - CHECK·FK 검사 29개: 막아야 할 값 22개는 막고, Supabase가 받는 값 7개는 받는다.
-  - 쿼리 127개를 `EXPLAIN QUERY PLAN`으로 두 번(통계 없이, `ANALYZE` 뒤) 확인했다. 모두 의도한 색인을 쓴다.
+  - CHECK·FK 검사 30개: 막아야 할 값 23개는 막고, Supabase가 받는 값 7개는 받는다.
+  - 쿼리 126개를 `EXPLAIN QUERY PLAN`으로 두 번(통계 없이, `ANALYZE` 뒤) 확인했다. 모두 의도한 색인을 쓴다.
     `service` 앞부분만 쓰는 기본키 검색(그 서비스 행을 다 읽는다)도 훑기로 본다(9절). 색인을 다 쓰지 않는 10개는
     일부러 그렇다(9절). 결과는 `plans.txt`.
 - D1의 SQLite 판에서 같은 계획이 나오는지는 아직 보지 않았다. `check.py`는 이 컴퓨터의 `sqlite3`(3.51.0)만 보므로
@@ -33,9 +33,16 @@
   `fixtures.sql`을 올리고, `queries.sql`의 문장마다 매개변수를 값으로 바꿔 앞에 `EXPLAIN QUERY PLAN`을 붙인 파일을
   `wrangler d1 execute --local --file --json`으로 돌려, 그 `detail` 줄을 `check.py`의 `judge()`에 넣는다(`ANALYZE`
   뒤에 한 번 더).
-- 2026-11-08 두 번째 검토 반영. 다른 env 글에 단 이거 아님 저거? 좋아요(5.1절 전제 조건 3번, 10절 10번), 좋아요
-  취소의 outbox 행, outbox 막기 기준 `(table_name, match_key)`, 자기 쓰기 적용 실패, `threads`에 넣지 않은 좋아요
-  수(10절 9번), `check.py`의 `service` 앞부분 검사, 글자와 번호 오류를 고쳤다. "검토 기록" 끝.
+- 2026-11-08 두 번째 검토 반영. 다른 env 글에 단 이거 아님 저거? 좋아요, 좋아요 취소의 outbox 행, outbox 막기
+  기준 `(table_name, match_key)`, 자기 쓰기 적용 실패, `threads`에 넣지 않은 좋아요 수, `check.py`의 `service`
+  앞부분 검사, 글자와 번호 오류를 고쳤다. "검토 기록" 끝.
+- 2026-11-08 사용자 결정 반영(10.1~10.9절). 모든 기능을 오늘 동작 그대로 옮긴다. Supabase 전제 조건 마이그레이션은
+  `runs` 요약 열 하나만 남았다. 손으로 만든 요청만 만들 수 있는 값은 운영에서 고치지 않고 동기화 거절로 사람에게
+  넘긴다(3.1절). 열린 질문은 없다. 첫 복사 검사, 채우기 dry-run, 1분 동기화가 기대와 다른 수나 손으로 만든 값을
+  내면 그때 묻는다(카운터 어긋남과 JSON 크기는 보고만 한다, 10절 끝).
+- 2026-11-08 세 번째 검토 반영. 목록의 표지 편집, 채우기 뒤의 `summary_version` 0 런, 손으로 만든 값의 거절을
+  끝내는 길, 배지와 파티 캐릭터의 일일 비교, 상세의 표지, 문의 트리거 시점, 결정 번호(10.1~10.9절)를 고쳤다.
+  검토가 사용자 확인으로 남긴 둘(배지 규칙, 문의 트리거 시점)은 그대로 옮기기 원칙으로 정했다(4.4절, 5.5절).
 
 ## 1. 결정과 적용
 
@@ -55,14 +62,15 @@
    트리거와 매번 전체를 훑던 `get_engagement_counts`를 대신한다. 수로 정렬하는 피드(장난감 상자 추천순·댓글순,
    조각모음, 역사 강의서 거르기)가 있으므로 `posts`도 `like_count`, `comment_count`를 계속 가진다. `threads`로
    조인해 정렬하면 쪽마다 그 서비스의 글 전체와 `threads` 행을 읽는다. `posts` 열이면 색인 하나로 20행만 읽는다.
-   5단계부터 이 열은 같은 batch에서 `threads` 값을 그대로 복사한다(E13c). 2~4단계에는 Supabase 값을 복사한다.
-   이거 아님 저거? 글의 `like_count`만 `this_or_that_post_likes` 행에서 센다. Supabase
-   `this_or_that_posts.like_count`와 원본이 같다(2.2절). 이 좋아요 수는 `threads`에 넣지 않는다. 지시와 다른
-   선택이라 10절 9번에 올렸다.
+   2~4단계에는 Supabase 값을 복사한다. 5단계부터 이 열은 같은 batch에서 `threads` 값을 그대로 복사한다(E13c).
+   5단계에 이거 아님 저거? 글의 `like_count`만 `this_or_that_post_likes` 행에서 센다. Supabase
+   `this_or_that_posts.like_count`와 원본이 같다(2.2절). 이 좋아요 수는 `threads`에 넣지 않는다. 오늘 참여 수
+   답과 같다(10.9절).
 4. **런 파일 원문은 자기 표에 둔다.** `post_history_course_file(post_id, raw)`. 크기(최대 277 KB)가 D1 한 행
-   한도 2 MB 안이라 R2는 쓰지 않는다. 목록은 원문을 읽지 않는다. 목록이 쓰는 요약 열은 브라우저가 올릴 때 이미
-   런을 읽어 계산해 함께 보내고, 서버는 저장만 한다(4.4절의 열 목록). `cover_spec`은 서버 열이라 표지를 바꾸면
-   모두에게 보인다. 이미 올라간 런은 한 번 도는 채우기 스크립트로 요약을 얻는다.
+   한도 2 MB 안이라 R2는 쓰지 않는다. 목록은 원문을 읽지 않는다. 목록이 원문에서 얻던 것은 요약 열이 대신한다.
+   브라우저가 올릴 때 이미 런을 읽어 계산해 함께 보내고, 서버는 저장만 한다(4.4절의 열 목록). 자동 표지는 오늘처럼
+   목록에서 브라우저가 고른다. 원문 대신 요약 열에서 고른다. 저장된 `cover_spec`은 바꾸지 않는다. 이미 올라간 런은
+   한 번 도는 채우기 스크립트로 요약 열만 얻는다(10.2절).
 5. **작성자 모습은 그 행에 굳힌다.** 글과 댓글을 쓸 때의 `nickname`, `avatar_id`, `avatar_kind`, `palette_id`,
    `palette_swapped`를 보통 열로 둔다(JSON 아님). 이름, 널 허용, CHECK가 Supabase와 같다. 수정할 수 있는 네
    서비스는 수정 때 다시 쓴다(오늘과 같다). 역사 강의서의 기증자 닉네임은 굳히지 않는다(기증자가 닉네임을 바꾸면
@@ -96,14 +104,16 @@
   FK 오류이고(오늘 23503처럼 Worker가 `not_found`로 바꾼다), 글을 지우면 좋아요도 연쇄로 지워진다. 이것을
   흉내 내는 Worker 문장이 필요 없다.
 - Postgres FK `this_or_that_post_likes_post_id_fkey`는 env를 보지 않고, INSERT 정책도 `auth.uid() = user_id`만
-  본다. 투표 정책처럼 글과 env가 같은지 보는 곳이 없어 다른 env 글에 단 좋아요가 Supabase에 들어갈 수 있다.
-  env마다 따로인 D1에서는 그 행의 부모가 없어 FK가 거절한다. 그래서 5.1절 전제 조건 3번으로 정책에 env 확인을
-  더한다(10절 10번).
+  본다. 투표 정책처럼 글과 env가 같은지 보는 곳이 없어 다른 env 글에 단 좋아요가 Supabase에 들어갈 수 있다
+  (tasks/010 #70). env마다 따로인 D1에서는 그 행의 부모가 없어 FK가 거절한다.
+- Supabase에서도 이 좋아요는 어디에도 보이지 않는다. 수 트리거, 수 뷰, 프로필 RPC가 모두 env로 글과 맞춘다. 그래서
+  운영은 바꾸지 않는다. 매퍼는 이 행을 알려진 종류 `cross_env`로 세고 넣지 않으며, 거절을 저절로 닫는다(5.3절).
+  일일 대조는 부모 글과 env가 같은 행만 비교한다(5.4절). 화면은 오늘과 같다(10.6절).
 - 수는 같은 재계산 규칙(2.3절)을 따른다. 5단계에는 좋아요 batch에서 이 표의 행을 세어 `posts.like_count`에
   쓴다(E13c). 2~4단계에는 Supabase `this_or_that_posts.like_count`를 복사한다. 수 읽기(T15), 내 좋아요(T16),
   프로필 활동(P2, P3)은 오늘의 뷰와 RPC처럼 이 표를 읽는다.
 - `threads`의 `this-or-that:<id>` 행은 오늘 `get_engagement_counts`처럼 `likes` 행과 댓글만 센다. 그래서 참여
-  지도가 오늘과 같고, 대조에서 뺄 키가 없다. 지시("flow into threads")와 다른 선택이다(10절 9번).
+  지도가 오늘과 같고, 대조에서 뺄 키가 없다. 이 값을 읽는 화면은 없다(10.9절).
 - Supabase `likes`에 `this-or-that:` 키 행이 있으면 보통 스레드 키의 좋아요로 복사한다. 오늘과 같다.
 
 ### 2.3 파생 값은 원본 행에서 다시 센다
@@ -114,6 +124,9 @@
   싸다. 같은 규칙을 이거 아님 저거? 투표 수(그 글의 투표 행)와 월드컵 `play_count`(그 대회의 플레이 행)에도
   쓴다. 후보 통계만 더하기다. 다시 세면 그 대회의 모든 플레이 `matches`를 다시 읽어야 한다. 더하기는 한
   batch(한 트랜잭션) 안이라 잃지 않는다.
+- 2~4단계에는 Supabase 수를 그대로 복사한다(10.1절). Supabase 수의 어긋남(tasks/010 #68)은 전환 때 한꺼번에
+  고쳐지지 않는다. 5단계에 그 글·런의 좋아요나 댓글이 바뀌면(다시 올린 런은 R14가 `threads`에서 수를 가져올 때)
+  행 수로 맞춰진다. 그 뒤 활동이 없는 글에는 복사한 수가 남는다.
 
 ### 2.4 그 밖
 
@@ -143,7 +156,7 @@ FK를 미룬다). outbox 읽기는 `seq` 범위로 바꿨다. 런 올리기의 �
 고정했다. 그러지 않으면 SQLite가 기증자의 글 전체를 먼저 훑는다. 키를 `(service, id)`로 바꾼 뒤에도 고쳤다. 서비스
 표의 `service` 열은 모든 행이 같은 값이라, 통계로 보면 이 열로는 하나도 거르지 못한다. 그래서 `ANALYZE` 뒤
 SQLite가 작은 서비스 표를 먼저 다 읽고 정렬하는 계획을 골랐다. 피드의 서비스 표 조인은 `CROSS JOIN`으로 `posts`를 바깥 반복에 고정했다(T1~T3, T7,
-T8, T11, R1, R1e. 런 고르기 R2는 런 표를 바깥에 고정한다). `posts_user`는 `(user_id, service, created_at, id)`로 넓혔다. 기증자
+T8, T11, R1. 런 고르기 R2는 런 표를 바깥에 고정한다). `posts_user`는 `(user_id, service, created_at, id)`로 넓혔다. 기증자
 닉네임 맞추기(R12)는 키를 이 색인에서 먼저 얻는다. 통계가 없으면 UPDATE가 기본키의 `service` 앞부분을 고르기
 때문이다.
 
@@ -153,33 +166,43 @@ T8, T11, R1, R1e. 런 고르기 R2는 런 표를 바깥에 고정한다). `posts
 
 D1 CHECK는 Supabase가 받는 행을 모두 받아야 한다. 아니면 첫 복사나 1분 동기화가 Supabase에 이미 있는 행을
 거절하고, 2~4단계 동안 두 저장소가 갈라진다. 거절은 `sync_rejects`에 열린 채 남고, 열린 거절은 단계 문턱을
-막는다. 그래서:
+막는다. 손으로 만든 요청만 만들 수 있는 값은 예외다(아래 "손으로 만든 값의 규칙"). 그래서:
 
 - D1 CHECK는 Postgres의 범위(길이, 목록, 크기)를 그대로 옮긴다.
 - 1단계 Worker가 이미 하는 더 엄격한 규칙(정규식, trim, 작은 JSON 상한)은 Worker 검증으로 남긴다.
 - `pg_column_size`(압축 크기) CHECK는 1 MiB 텍스트 상한으로 바꾸고, 첫 복사 스크립트가 열마다 실제 최댓값을
   보고한다.
-- Postgres에 없는 CHECK는 데이터로 확인하고 Supabase에도 같은 CHECK를 다는 것만 둔다: 철학자 `week_start` 월요일
-  (덤프 28행 모두), 퍼즐상자 플레이어 토큰 패턴(RPC가 정규화해서만 쓴다), 런 원문 1.9 MB,
-  런 요약 열(Supabase에 새로 더하는 열이라 같은 CHECK를 함께 단다).
+- Postgres에 없는 CHECK는 Supabase가 그런 값을 만들 길이 없을 때만 둔다: 철학자 `week_start` 월요일(관리자
+  스크립트만 쓴다, 덤프 28행 모두 월요일), 퍼즐상자 플레이어 토큰 패턴(RPC가 정규화해서만 쓴다). Supabase에는
+  달지 않는다.
+- 런 원문 1.9 MB와 런 요약 열은 Supabase `runs` 마이그레이션(5.1절, 10.2절)이 같은 CHECK를 함께 단다. Supabase에
+  새로 더하는 열과 상한이다.
 
 **클라이언트가 쓸 수 있는 열.** Supabase의 몇몇 열은 클라이언트가 직접(anon 키와 RLS) 또는 1단계 Worker의
-파싱 없는 통과 경로로 쓸 수 있고, 보호 트리거가 없다. 여기에 D1이 받지 못하는 값(NULL, `'infinity'`, 10000년,
-기원전, 꼴이 다른 JSON)이 들어오면 첫 복사 뒤에도 언제든 거절이 생긴다. 그래서 동기화 기간 내내 지키는 규칙을
-열마다 하나씩 두고, 2단계 Supabase 마이그레이션의 전제 조건으로 넣는다(5.1절). 새 CHECK는 `NOT VALID`로 달고,
-첫 복사 수가 깨끗하게 나온 뒤 `VALIDATE`한다.
+파싱 없는 통과 경로로 쓸 수 있고, 보호 트리거가 없다. 앱은 여기에 D1이 받는 값만 쓴다. 손으로 만든 요청만
+D1이 받지 못하는 값(NULL, `'infinity'`, 10000년, 기원전, 꼴이 다른 JSON)을 넣을 수 있다.
 
-| Supabase 열 | 오늘 쓸 수 있는 길 | 규칙(2단계 마이그레이션) | D1 |
+**손으로 만든 값의 규칙(10.6절).** 이런 값은 운영에서 고치지 않고, 막는 Supabase 마이그레이션도 두지 않는다.
+
+- 1분 동기화는 그 행을 `sync_rejects`에 열어 두고 이유를 분명히 적는다(`bad_timestamp`, `bad_element`, `check`).
+  매퍼는 값을 몰래 바꾸지 않는다: 다른 시각으로 채우거나, 원소를 버리거나, 열을 빼고 넣지 않는다.
+- 첫 복사는 이런 행을 표마다 세어 보고한다(5.2절). 기대 0이다(첫 복사가 센다). 잰 것은 `runs`의 NULL
+  `created_at`(2026-11-05 덤프 0행)과 다른 env 글의 이거 아님 저거? 좋아요(2026-11-05 백업 0행)뿐이다.
+- 첫 복사든 1분 동기화든 이런 행이 나오면 그때 사용자에게 묻는다(그 행을 고칠지, 알려진 종류로 셀지). 그 행은
+  Supabase에만 있으므로 거절을 닫기만 해서는 일일 대조의 행 차이, `derived` 차이, 그림자 차이가 남는다. 사용자가
+  정하고 그 일을 마칠 때까지 일일 대조, 그림자 대조, 단계 문턱은 실패로 남는다(5.4절, 6절 9번).
+- 다른 env 글에 단 이거 아님 저거? 좋아요만 예외다. Supabase에서도 보이지 않으므로 알려진 종류 `cross_env`로
+  세고 넣지 않으며 거절을 저절로 닫는다(2.2절).
+- 4단계에 브라우저의 직접 쓰기가 닫히고 Worker가 모든 쓰기를 검증한다. 그 뒤로는 이런 값이 생기지 않는다.
+
+| Supabase 열 | 오늘 쓸 수 있는 길 | D1이 받지 못하는 값이 오면 | D1 |
 |---|---|---|---|
-| `likes`, `comment_likes`, `this_or_that_post_likes`, `this_or_that_post_votes`의 `created_at` | 보호 트리거 없음, 널 허용(`likes`, `comment_likes`) | `guard_insert_server_columns`와 같은 `WHEN`의 BEFORE INSERT 트리거로 `created_at := now()`. 널 허용 표에는 `CHECK (created_at IS NOT NULL)` | `NOT NULL` + 시각 GLOB 그대로 |
-| `pagestorm_drafts`, `defragment_bodies`의 `created_at`, `updated_at` | `/api/write/pagestorm-drafts`, 본문 쓰기 | INSERT: 둘 다 `now()`. UPDATE: `created_at := old.created_at`, `updated_at := now()` | 그대로 |
-| `contact_inquiries.reply_seen_at` | `GRANT UPDATE(reply_seen_at)`, RLS 내 행 | BEFORE UPDATE 트리거: 클라이언트가 NULL이 아닌 값을 쓰면 `now()`로 | 그대로 |
-| `likes.story_id`, `comments.story_id` | Postgres는 `octet_length <= 1024`만 봄(`''` 받음) | 없음 | 아래 한계를 없앴다: `<= 1024`만(`threads.thread_key`도) |
-| `combo_posts.resources`, `favorite_tournament_posts.pool` 원소 | jsonb 배열이면 무엇이든 | 원소마다 문자열 `type`, 문자열 `id`만 있는 객체(`jsonb_path` 또는 IMMUTABLE SQL 함수) | 자식 표 `NOT NULL` 그대로 |
-| `this_or_that_post_likes.env`(부모 글과 env가 다를 수 있음) | INSERT 정책은 `auth.uid() = user_id`만, FK는 env를 보지 않음. 1단계 Worker `handleLike`와 클라이언트 대체 경로가 글 확인 없이 `env`를 붙여 넣음 | INSERT 정책에 투표 정책과 같은 `EXISTS (SELECT 1 FROM this_or_that_posts p WHERE p.id = post_id AND p.env = this_or_that_post_likes.env)`(5.1절 3번) | FK `(service, post_id)` 그대로 |
-
-- 매퍼는 값을 몰래 바꾸지 않는다. `canonicalTs`가 `null`을 내면(무한대, 범위 밖, 꼴 틀림) 그 변경은 거절이고,
-  다른 시각으로 채우지 않는다(5.3절).
+| `likes`, `comment_likes`, `this_or_that_post_likes`, `this_or_that_post_votes`의 `created_at` | 보호 트리거 없음, 널 허용(`likes`, `comment_likes`) | `bad_timestamp` 거절 | `NOT NULL` + 시각 GLOB 그대로 |
+| `pagestorm_drafts`, `defragment_bodies`의 `created_at`, `updated_at` | `/api/write/pagestorm-drafts`, 본문 쓰기 | `bad_timestamp` 거절 | 그대로 |
+| `contact_inquiries.reply_seen_at` | `GRANT UPDATE(reply_seen_at)`, RLS 내 행 | `bad_timestamp` 거절 | 그대로 |
+| `likes.story_id`, `comments.story_id` | Postgres는 `octet_length <= 1024`만 봄(`''` 받음) | 생기지 않음 | 아래 한계를 없앴다: `<= 1024`만(`threads.thread_key`도) |
+| `combo_posts.resources`, `favorite_tournament_posts.pool` 원소 | jsonb 배열이면 무엇이든 | 원소가 문자열 `type`, `id`를 가진 객체가 아니면 그 글을 `bad_element` 거절 | 자식 표 `NOT NULL` 그대로 |
+| `this_or_that_post_likes.env`(부모 글과 env가 다를 수 있음) | INSERT 정책은 `auth.uid() = user_id`만, FK는 env를 보지 않음. 1단계 Worker `handleLike`와 클라이언트 대체 경로가 글 확인 없이 `env`를 붙여 넣음 | `cross_env`로 세고 넣지 않음, 거절은 저절로 닫힘 | FK `(service, post_id)` 그대로 |
 
 **자라기만 하는 스키마와 CHECK.** 7단계 전에는 스키마가 자라기만 한다. 이 말은 "새 스키마가 옛 스키마를 모두
 품는다"는 뜻이다. SQLite는 CHECK를 표를 다시 만들지 않고는 바꿀 수 없으므로:
@@ -236,9 +259,9 @@ D1 CHECK는 Supabase가 받는 행을 모두 받아야 한다. 아니면 첫 복
   `(created_at, id)`로 정렬하므로 순서가 하나로 정해진다. 미러는 저장 꼴을 보내고, Postgres는 그대로 저장한다.
 - SQLite `datetime('now')`나 `strftime`으로 저장 값을 만들지 않는다.
 - 데이터 시각은 `NOT NULL`이다. Supabase는 `comments`, `likes`, `comment_likes`, `chemical_posts`, `runs`의
-  `created_at`에 NULL을 허용하지만 앱은 쓰지 않는다. 2단계 마이그레이션이 클라이언트 쓰기 길을 막고(3.1절),
-  첫 복사가 표마다 NULL을 세고, 하나라도 있으면 멈춘다(정렬도 다르다: Postgres DESC는 NULL이 앞, SQLite는 뒤).
-  `runs`는 2026-11-05 덤프에서 0이었다.
+  `created_at`에 NULL을 허용하지만 앱은 쓰지 않는다. 첫 복사가 표마다 NULL을 센다(기대 0, `runs`는 2026-11-05
+  덤프에서 0). 하나라도 있으면 멈추고 그때 사용자에게 묻는다(10.3절. 정렬도 다르다: Postgres DESC는 NULL이 앞,
+  SQLite는 뒤). 그 뒤 손으로 만든 요청이 넣는 NULL은 3.1절 규칙대로 `bad_timestamp` 거절이다.
 - 월드컵 `rank_history[].at`만 예외다. Postgres `timestamp::text` 꼴(공백, 오프셋 없음, 끝 0 지움)을 JSON 안에
   그대로 둔다. 5단계 D1(TW5d)도 같은 꼴로 쓴다. 일일 대조는 이 값을 UTC로 보고 `canonicalTs`로 맞춰 비교한다.
 
@@ -336,7 +359,7 @@ D1 CHECK는 Supabase가 받는 행을 모두 받아야 한다. 아니면 첫 복
   - 리스는 `api_cache`처럼 조건부 upsert로 잡는다(S1). 창 상태는 적용 batch의 마지막 문장(S11)이 리스 주인
     조건으로 쓴다. 커밋된 일은 다시 하지 않고, 뒤의 실패가 창을 붙잡지 못한다.
 - `sync_rejects`: 어느 방향이든 적용하지 못한 변경. Supabase 표 이름, D1 표, 키(`row_key`, JSON 객체), 짧은 이유
-  (`reason`)를 둔다. `payload`는 진단용이고 다시 적용하지 않는다. 다시 시도는 그 키로 지금 행을 다시 읽어 적용한다
+  (`reason`, 목록은 5.3절)를 둔다. `payload`는 진단용이고 다시 적용하지 않는다. 다시 시도는 그 키로 지금 행을 다시 읽어 적용한다
   (5.3절). 키마다 열린 거절은 하나다(부분 UNIQUE `sync_rejects_open_key`, S4c). 색인 `sync_rejects_open (last_at)
   WHERE resolved_at IS NULL`(S4). 열린 거절이 있으면 단계 문턱을 넘지 못한다.
 - `sync_pending_raw`: 아직 받지 않은 런 원문의 런 id. 런만 있으므로 키는 런 id 하나다. 실행마다 2개까지
@@ -515,12 +538,12 @@ CREATE TABLE IF NOT EXISTS post_history_course (
   service TEXT NOT NULL DEFAULT 'history_course' CHECK (service = 'history_course'),
   post_id TEXT NOT NULL,
   seed, build, "character", ascension, win, start_time, run_time, acts_count, total_floors,  -- already columns
-  cover_spec TEXT,             -- the cover everyone sees (server-side)
+  cover_spec TEXT,             -- the stored cover (server-side, never written by the backfill)
   summary_version INTEGER NOT NULL DEFAULT 0,
   badges TEXT NOT NULL DEFAULT '[]',
-  characters TEXT, game_mode TEXT, game_elements TEXT, cover_phrases TEXT,                   -- new
+  characters TEXT, game_mode TEXT, game_elements TEXT, list_facts TEXT,                      -- new
   CHECK (summary_version = 0 OR (characters IS NOT NULL AND game_mode IS NOT NULL
-    AND game_elements IS NOT NULL AND cover_phrases IS NOT NULL)),
+    AND game_elements IS NOT NULL AND list_facts IS NOT NULL)),
   PRIMARY KEY (service, post_id),
   FOREIGN KEY (service, post_id) REFERENCES posts (service, id) ON DELETE CASCADE
 ) STRICT;
@@ -535,32 +558,69 @@ CREATE TABLE IF NOT EXISTS post_history_course_file (
 ```
 
 목록이 오늘 원문에서 읽는 것을 따라가 정한 요약 열이다(`run-donation.ts` `normalizeRunSummaryRow`,
-`history-course-run-index.tsx`, `history-course-search.ts`):
+`run-cover-suggest.ts` `pickAlternatingCover`, `run-highlights.ts`, `history-course-run-index.tsx`,
+`history-course-search.ts`). 요약 열은 `characters`, `game_elements`, `game_mode`, `list_facts`,
+`summary_version` 다섯이다(10.2절).
 
 | 목록이 쓰는 것 | 오늘 출처 | D1 |
 |---|---|---|
 | `seed`, `build`, `character`, `ascension`, `win`, `start_time`, `run_time`, `acts_count`, `total_floors` | 열(없으면 원문) | 열 그대로 |
 | 파티 캐릭터 `characters` | 원문(`partyCharacters`) | 새 열, JSON 배열 |
-| 배지 `badges` | 원문(`mergePartyBadges`). 저장된 열은 읽지 않았다 | 열(채우기가 다시 계산) |
-| 표지 `cover_spec` | 수동이면 열, 자동이면 읽을 때마다 원문에서 다시 고름 | 열. 자동 표지도 저장한다. 채우기가 한 번 다시 고른다 |
-| 게임 요소 `game_elements` | 원문(`extractRunGameElements`). 거르기와 인기 요소 | 새 열, JSON 배열. 걸러도 브라우저가 목록 100개 위에서 하므로 자식 표가 아니다 |
+| 배지 `badges` | 원문(`mergePartyBadges`). 읽을 때마다 다시 만든다. 올릴 때 같은 함수로 쓴 열은 읽지 않았다 | 열 그대로. 채우기가 원문에서 다시 만들어 쓴다(아래) |
+| 표지 | 수동(`auto = false`)이면 `cover_spec`, 아니면 읽을 때마다 원문에서 `pickAlternatingCover`로 다시 고름 | 같은 규칙. 수동이면 `cover_spec`, 아니면 브라우저가 `list_facts`로 같은 함수를 돌려 고른다. `cover_spec`은 그대로 둔다 |
+| 게임 요소 `game_elements` | 원문(`extractRunGameElements`). 검색창 아래 인기 요소 칩(첫 화면부터, 런 전체에서)과 검색 | 새 열, JSON 배열. 목록과 함께 보낸다(10.4절). 걸러도 브라우저가 목록 100개 위에서 하므로 자식 표가 아니다 |
 | 게임 모드 `game_mode` | 원문 | 새 열 |
-| 표지 문구 `cover_phrases` | `coverPhrasePool(run, cover.elements)` | 새 열. 표지를 바꿀 때 함께 쓴다 |
+| 자동 표지 입력, 표지 문구, 강조 카드·유물 | 원문(`buildWeightedPool`, `factsFromRun`, `coverPhrasePool(run, cover.elements)`, `buildRunHighlights`) | 새 열 `list_facts`, JSON 객체(아래) |
 | 좋아요·댓글 수 | 행 수(오늘 목록이 `likes`·`comments` 행을 세어 씀) | `threads`(R1이 조인) |
-| `highlight_card`, `highlight_relic`, `note_blocks` | 읽지 않음 | 옮기지 않음 |
+| 주인의 표지 편집 | 원문. 버튼이 `donated.raw`에 묶이고(`history-course-run-index.tsx`의 `onEditCover`), 편집기가 원문을 파싱한 런 전체를 받는다(`parseReplayRun`, `listRankedCoverElements`). 그 브라우저에 로컬 런이 없을 때(다른 기기) 목록에서 여는 길이 이것이다 | 버튼은 오늘처럼 주인에게 보인다. 편집기를 열 때 R3r로 원문을 받는다(3단계 클라이언트 변경). `list_facts`로는 편집기에 줄 런을 만들 수 없다 |
+| 저장된 `highlight_card`, `highlight_relic`, `note_blocks` | 읽지 않음(강조는 원문에서 다시 고름) | 옮기지 않음 |
 
-- `summary_version`: 0이면 아직 요약이 없다(채우기 전 런, 또는 옛 탭이 올린 런). N이면 추출기 판 N이 썼다.
-  추출기나 표지 고르기가 바뀌면 상수를 올리고 채우기를 다시 돈다.
+- `list_facts`는 목록이 원문에서 읽던 것 가운데 다른 열에 없는 것이다. 자동 표지 고르기가 읽는 순서 그대로 둔다:
+  - 카드: 플레이어 덱 순서로 처음 나온 카드마다 `[id, 장수, 처음 얻은 층(없으면 null), 강화 여부]`.
+  - 유물: 처음 나온 순서로 `[id, 얻은 층이 0보다 큰 적이 있는지]`. 포션: 플레이어 순서 그대로 id 목록(중복 포함,
+    `POTION_SLOT`·`NONE` 뺌).
+  - `deck_size`, `relic_count`: 플레이어마다의 최댓값(`factsFromRun`).
+  - `highlight_card`, `highlight_relic`: `buildRunHighlights(run, id)`가 고른 id(런 id와 시드로 정해진다).
+- 브라우저는 이 객체로 오늘과 같은 함수를 돈다. 자동 표지는 `pickAlternatingCover`, 검색 문구는 보이는 표지의
+  원소로 `coverPhrasePool`, 강조는 위 id다. 그래서 표지 문구를 열로 저장하지 않는다. 문구는 보이는 표지를 따라가야
+  하고, 자동 표지는 읽을 때 고르기 때문이다. 고르기 규칙(가중치, 문구 틀)이 바뀌어도 입력이 같으면 오늘처럼 바로
+  반영된다. 입력이 바뀌면 `summary_version`을 올린다.
+- 배지는 이와 다르다. 오늘 목록은 읽을 때마다 원문에서 `mergePartyBadges`로 배지를 다시 만든다(`RUN_SUMMARY_COLUMNS`에
+  `badges`가 없다). 그래서 배지 규칙이 바뀌면 옛 런의 목록 배지도 바로 바뀐다. D1 목록은 저장된 `badges` 열을
+  보이므로, 오늘과 같게 하려고 `badges`도 요약으로 다룬다.
+  - 채우기는 요약 열과 함께 `badges`도 원문에서 다시 만들어 쓴다. 오늘 이 열을 읽는 화면이 없어 쓰는 순간 바뀌어
+    보이는 것은 없다.
+  - 배지 규칙(`mergePartyBadges`)이 바뀌면 `summary_version`을 올리고 채우기를 다시 돈다. 그러면 옛 런도 오늘처럼
+    새 규칙의 배지를 보인다. 일일 대조가 차이를 잡는다(5.4절).
+- 저장된 `cover_spec`을 그대로 보이는 곳은 조각모음(`history_meta`)과 메타·OG(`getDonatedRunOgFields`)다. 상세와
+  표지 편집기는 오늘처럼 원문에서 고른다. 오늘 상세는 `normalizeRunRow`가 수동이 아닌 표지를 원문에서
+  `pickAlternatingCover`로 다시 고르고, `run-detail-loader.tsx`의 `ensureCoverSpec`이 한 번 더 고른다. D1에서는
+  R3r 원문으로 같은 함수를 돈다. 그래서 상세와 IDB 캐시(`saveRun`의 `coverSpec`)의 표지가 오늘과 같다. 채우기는
+  `cover_spec`을 바꾸지 않는다. 바꾸면 조각모음 화면이 바뀐다(10.2절).
+- `summary_version`: 0이면 아직 요약이 없다(채우기 전 런, 또는 클라이언트 변경 전 JS를 띄운 탭이 올린 런). N이면
+  추출기 판 N이 썼다. 추출기, 강조 고르기(`buildRunHighlights`), `list_facts`의 입력이 바뀌면 상수를 올리고 채우기를
+  다시 돈다. 채우기는 요약 열만 쓴다.
+- 채우기 뒤에도 옛 탭은 요약 열 없이 런을 올린다(1단계 Worker `streamUpload`는 본문을 그대로 넘기고, 직접 쓰는 옛
+  경로도 있다). 그런 행은 `summary_version = 0`이다. D1 목록에서 이런 런은 `game_elements`가 없어 인기 요소 칩과
+  검색에서 빠지고, `characters`가 `[character]`로 떨어져 파티가 한 명만 보인다. 그래서 첫 복사 검사와 일일 대조가
+  `summary_version = 0`인 런 수를 보고한다. 0이 아니면 같은 채우기 스크립트(요약 열만 씀)를 그 행에만 다시 돈다. 다시
+  돌 때도 5.1절처럼 채우기 dry-run을 보여 주고 승인을 받는다. 3단계로 넘어갈 조건에 "`summary_version = 0` 런
+  0개"를 넣는다.
 - `game_elements`를 자식 표로 하면 운영에 약 62,500행이고, 한 번 복사에 15만~22만 행을 쓴다(무료 쓰기 한도 하루
   10만을 넘는다). 서버에서 원소로 거르는 쿼리가 생기면 그때 `run_game_elements`를 더한다.
 - 런 id와 소유자는 `posts`에 있다. 목록(R1)은 `posts_service_created`를 훑고 서비스 표와 `threads`를 기본키로
-  찾는다. 요소 거르기가 열릴 때만 `game_elements`를 따로 읽는다(R1e, 열린 질문 4). 런 고르기(R2)도 목록과 같은
-  요약 열을 고른다(1단계 `RUN_SUMMARY_COLUMNS`에서 `raw` 대신 요약 열, `acts_count` 포함).
-- **상세와 표지 편집기의 원문.** R3(상세 메타), R4(표지 메타)는 원문을 고르지 않는다. 원문은 R3r 하나로 읽고,
+  찾는다. `game_elements`와 `list_facts`도 함께 준다. 100개에 약 0.6 MB(570~620 KB)다(요약 약 60 KB,
+  `game_elements` 약 410 KB, `list_facts` 추정 100~150 KB. 채우기 dry-run이 잰다). 오늘은 원문까지 약 7.9 MB다.
+  계획 5.1절은 페이지 HTML에 넣는 첫 데이터 JSON에 상한 128 KB를 둔다. 목록 답은 그보다 커서, 역사 강의서 목록의
+  첫 데이터를 어떻게 넣을지는 3단계에 따로 정한다. 런 고르기(R2)도 목록과 같은 요약 열을 고른다(1단계
+  `RUN_SUMMARY_COLUMNS`에서 `raw` 대신 요약 열, `acts_count` 포함). 코오오옴보의 런 표지(R4)는 `cover_spec`과
+  `list_facts`를 줘 같은 규칙으로 고른다.
+- **상세와 표지 편집기의 원문.** R3(상세 메타)와 R4(코오오옴보 썸네일 표지)는 원문을 고르지 않는다. 상세와 표지
+  편집기의 원문은 R3r 하나로 읽고,
   저장된 텍스트를 응답 본문 그대로 준다(JSON으로 감싸지 않음, Worker가 파싱하지 않음). 메타는 같은 요청의 헤더나
   따로 요청(R5)으로 준다. 이 답 모양 변경은 3단계에 클라이언트와 함께 들어간다. 2단계 그림자 대조는 원문을 뺀
   열로 하므로 영향이 없다. testbed에서 277 KB와 1.9 MB 원문으로 `text()`, bind, 응답의 CPU를 재서 여기 적는다.
-  1.9 MB가 10 ms를 넘으면 두 쪽 상한을 함께 낮춘다(예: 1 MB). 지금 최대 원문은 277 KB라 아직 그런 파일이 없다.
+  상한은 1.9 MB로 정했다(10.8절). 지금 최대 원문은 277 KB(중간값 약 57 KB)다.
 
 | 색인 | 쿼리 |
 |---|---|
@@ -608,9 +668,10 @@ Worker로 옮긴 것: `runs`의 서버 열 보호 트리거는 R14(올리기) �
   - `submit_puzzlebox_run`, `puzzlebox_score_run`, `puzzlebox_run_display`는 Worker batch(X1a~e)와
     `vexing-puzzlebox-score.ts`로. SQL과 TS에 같은 채점이 두 벌 있던 것이 없어진다. 플레이어 태그
     (`left(md5(user_id), 4)`)는 Worker가 계산한다.
-  - **환경마다의 뜻(5단계부터).** 오늘 `puzzlebox_players`는 사용자마다 한 행을 두 env가 함께 쓰고, 하루 500판은
-    두 env를 합쳐 센다. 환경마다 D1이 원본이 되면 이렇게 바뀌고, 이것을 의도한 변화로 받는다:
-    - 하루 500판은 그 env 안에서 센다(env마다 500판). testbed는 개발자만 쓰므로 운영 제한은 그대로다.
+  - **환경마다의 뜻(5단계부터).** 오늘 `puzzlebox_players`는 사용자마다 한 행을 두 env가 함께 쓰고, 하루 500판과
+    3초 연타 규칙(`submit_puzzlebox_run`의 스팸 막기)은 두 env를 합쳐 센다. 환경마다 D1이 원본이 되면:
+    - 하루 500판과 3초 규칙은 그 env 안에서 센다. 실제로는 바뀌는 것이 없다. testbed와 운영은 서로 다른 익명
+      사용자라 오늘도 한 사용자의 판은 한 env에만 있다(10.7절).
     - testbed에서 한 판이 운영 D1의 플레이어 행을 바꾸지 않는다. env 없는 표(`puzzlebox_players`,
       `profile_character_nickname_pools`)는 운영만 Supabase로 미러하고 testbed는 자기 D1에만 둔다(5.5절).
     - `hidden`은 관리자 스크립트가 모든 D1과 Supabase에 쓴다. 한 곳만 바꾸면 다른 리더보드에는 남는다.
@@ -635,50 +696,40 @@ Worker로 옮긴 것: `runs`의 서버 열 보호 트리거는 R14(올리기) �
 - 옮기는 27개 표에 트리거를 단다. env가 없는 표(`profile_character_nickname_pools`, `puzzlebox_players`)의 행은
   env가 null이고 모든 D1에 적용된다.
 
-런 요약:
+런 요약(10.2절, 10.8절). 변경 로그 밖에서 2단계에 올리는 Supabase 마이그레이션은 이것 하나다:
 
-- `runs`에 요약 열 다섯(`characters`, `game_elements`, `game_mode`, `cover_phrases`, `summary_version`)과
-  `octet_length(raw) <= 1900000` CHECK를 더한다(모든 행이 277 KB 이하라 바로 통과). 요약 열에는 D1과 같은
-  CHECK(JSON 배열 타입, `summary_version > 0`이면 네 열이 모두 있음)를 단다. 2~4단계에는 Supabase가
-  원본이라 요약도 Supabase에 있어야 한다. 마이그레이션이 먼저, 클라이언트가 나중이다(PostgREST는 모르는 열을
-  거절한다).
+- `runs`에 요약 열 다섯(`characters`, `game_elements`, `game_mode`, `list_facts`, `summary_version`)과
+  `octet_length(raw) <= 1900000` CHECK를 더한다. 오늘 가장 큰 원문은 277 KB(중간값 약 57 KB)라 바로 통과한다.
+  요약 열에는 D1과 같은 CHECK(`characters`·`game_elements`는 JSON 배열, `list_facts`는 JSON 객체,
+  `summary_version > 0`이면 네 열이 모두 있음)를 단다. 2~4단계에는 Supabase가 원본이라 요약도 Supabase에 있어야
+  한다.
+- 순서: 마이그레이션이 먼저, 올릴 때 요약을 계산해 보내는 클라이언트 변경이 나중이다(PostgREST는 모르는 열을
+  거절한다). 그 다음 한 번 도는 채우기 스크립트가 이미 올라간 런의 요약 열을 채운다. 채우기는 요약 열과
+  `badges`(오늘 읽는 화면이 없는 열)만 쓴다. `cover_spec`과 그 밖의 열은 쓰지 않는다(4.4절).
+- 2단계 구현을 시작할 때, 첫 복사 전에 올린다. 두 가지를 따로 승인받는다:
+  - 마이그레이션은 `docs/RELEASE_PROCESS.md` 5절을 따른다: `supabase db push --dry-run`을 보여 주고 사용자 승인을
+    받은 뒤 올린다. 되돌리기 스크립트를 함께 둔다.
+  - 채우기는 운영 `runs` 행 약 500개를 쓰는 별도 스크립트다. 쓰기 전에 자기 dry-run을 보여 주고 승인을 받는다.
+    dry-run은 전체 수를 보여 준다: 채울 런 수, `list_facts` 크기의 최대·중간값, 그리고 오늘 목록이 원문에서
+    계산하는 값(배지, 원문으로 채우던 빈 열)과 저장된 열이 다른 런 수(기대 0). 다르면 그때 사용자에게 묻는다.
+- 채우기 뒤에 옛 탭이 올린 `summary_version = 0` 런은 같은 스크립트를 그 행에만 다시 돌려 채운다. 다시 돌 때도
+  채우기 dry-run과 승인을 거친다(4.4절).
 
-전제 조건(3.1절 "클라이언트가 쓸 수 있는 열", 첫 복사 전에 모두 올린다). 새 CHECK는 `NOT VALID`로 달고, 첫 복사
-검사가 0을 보고한 뒤 `VALIDATE CONSTRAINT`한다. 마이그레이션마다 되돌리는 스크립트를 함께 둔다.
+그 밖의 Supabase 전제 조건 마이그레이션은 두지 않는다(10.6절). 손으로 만든 요청만 만들 수 있는 값은 3.1절
+규칙대로 동기화 거절이 된다.
 
-1. `created_at` 보호: `likes`, `comment_likes`, `this_or_that_post_likes`, `this_or_that_post_votes`에 보호
-   트리거와 같은 `WHEN (CURRENT_USER IN (anon, authenticated))`의 BEFORE INSERT 트리거(`created_at := now()`). `likes`,
-   `comment_likes`에는 `CHECK (created_at IS NOT NULL)`. `pagestorm_drafts`, `defragment_bodies`: INSERT는
-   `created_at`, `updated_at`을 `now()`로, UPDATE는 `created_at := old.created_at`, `updated_at := now()`.
-   `contact_inquiries`: BEFORE UPDATE에서 클라이언트가 쓴 `reply_seen_at`이 NULL이 아니면 `now()`.
-2. 원소 꼴: `combo_posts.resources`와 `favorite_tournament_posts.pool`에 "원소마다 문자열 `type`, 문자열 `id`만
-   있는 객체" CHECK(IMMUTABLE SQL 함수 또는 `jsonb_path_exists`). 없는 키를 조용히 버리면 다시 만든 답이 달라지고,
-   `type`이 없으면 D1 `NOT NULL`이 거절한다.
-3. 이거 아님 저거? 좋아요의 env(10절 10번의 가): `this_or_that_post_likes_insert_owner` 정책을 투표 정책
-   `this_or_that_post_votes_insert_owner`와 같은 꼴로 바꾼다.
-
-   ```sql
-   DROP POLICY this_or_that_post_likes_insert_owner ON public.this_or_that_post_likes;
-   CREATE POLICY this_or_that_post_likes_insert_owner ON public.this_or_that_post_likes FOR INSERT
-     WITH CHECK (((SELECT auth.uid() AS uid) = user_id) AND EXISTS (SELECT 1 FROM public.this_or_that_posts p
-       WHERE p.id = this_or_that_post_likes.post_id AND p.env = this_or_that_post_likes.env));
-   ```
-
-   되돌리기 스크립트는 옛 정책 `WITH CHECK ((auth.uid() = user_id))`다. 오늘 없는 글에 좋아요하면 FK 23503이라
-   1단계 Worker가 `not_found`로 답하지만, 이 뒤로는 다른 env의 글과 같이 정책 42501이라 `forbidden`이다(투표와
-   같다). 브라우저가 두 답을 같이 다루는지 testbed에서 함께 본다. 운영 쓰기 경로를 바꾸므로 승인이 필요하다. 2026-11-05 백업에서 env가 부모와 다른 좋아요는
-   0행(전체 10행)이고, 투표는 정책이, 월드컵 플레이·통계는 RPC(`env = p_env`로 대회를 찾음)가 이미 막는다.
-
-4단계 전에 올리는 것(5.5절): `contact_inquiries_rate_limit` 트리거에 `WHEN` 붙이기.
+나중 단계의 메모: `contact_inquiries_rate_limit` 트리거에 `WHEN` 붙이기(5.5절). 2단계에는 하지 않는다. service
+키로 문의를 쓰는 첫 단계 전(4단계 Worker 쓰기 전)에 올린다. 4단계 Worker가 service 키로 문의를 쓰기 때문이다(5.5절).
+4단계 일이라 그때 승인을 받는다.
 
 ### 5.2 첫 복사
 
-1. 런 요약 채우기와 카운터 다시 세기(열린 질문 1의 가)를 먼저 끝낸다. 둘 다 Supabase 행 수백 개를 바꾸는 일이라,
-   첫 복사 뒤에 하면 변경 로그 폭주가 된다(5.3절 예산으로 수십 분).
+1. 런 요약 채우기(5.1절)를 먼저 끝낸다. Supabase 행 수백 개를 바꾸는 일이라, 첫 복사 뒤에 하면 변경 로그 폭주가
+   된다(5.3절 예산으로 수십 분). Supabase 수는 다시 세지 않는다(10.1절).
 2. 변경 로그 마이그레이션을 올리고 `max(id)`를 적는다(`W0`).
 3. 옮기는 표를 `pg_dump --data-only`로 한 스냅샷에서 뜬다.
 4. 표마다 같은 매퍼의 `toD1`로 바꾼다. env로 나누고(`comment_likes`는 부모 댓글의 env), 시각을 `canonicalTs`로,
-   JSON을 압축 꼴로. 아래 검사를 하나라도 넘지 못하면 멈춘다.
+   JSON을 압축 꼴로. 아래 검사에서 기대와 다른 값이 나오면 멈추고 사용자에게 묻는다.
 5. 부모 먼저 넣는다(`posts` → `post_*` → 자식 → 위성, `comments` → `comment_likes`, `puzzlebox_players` →
    `puzzlebox_runs` → `puzzlebox_best`).
 6. 파생 값을 채운다: `threads`는 D1의 `likes`·`comments`에서 세고, `comments.like_count`는 `comment_likes`에서
@@ -687,16 +738,24 @@ Worker로 옮긴 것: `runs`의 서버 열 보호 트리거는 R14(올리기) �
    `low_watermark = high_seen = L0 - 1`. 그 사이 행을 다시 적용해도 같다(멱등). `W0` 바로 아래 id가 덤프 스냅샷
    뒤에 커밋되는 경우를 놓치지 않는다. 5분 규칙이 막으려는 것과 같은 경우다. 그 뒤 cron을 켠다.
 
-첫 복사 검사: 데이터 시각에 NULL이 없고 모두 `canonicalTs`를 통과한다. 오프셋이 모두 `+00`이다. `pool`·`resources`
-원소가 모두 `{type, id}` 문자열이다. 원문이 1.9 MB 이하다. 고아 `defragment_bodies`(그 서비스·id의 글이 없음)는
-세어 보고하고 넣지 않는다. FK 자식(투표, 이거 아님 저거? 좋아요, 월드컵 플레이·통계)이 부모 글과 env가 같은지
-센다. Postgres FK에는 env가 없어 다른 env의 글을 가리킬 수 있고, 그런 행은 env마다 따로인 D1에서 부모가 없다.
-투표, 플레이, 통계는 정책과 RPC가 막으므로 0이어야 하고, 아니면 멈춘다. 좋아요는 5.1절 3번 전에 들어간 행만
-있을 수 있다. 행 수를 보고하고, 그 행은 세고 넣지 않는다(`cross_env`, `defragment_bodies` 고아와 같은 방식).
-Supabase에서도 이 행은 어디에도 보이지 않는다: 수 트리거, 수 뷰, 프로필 RPC가 모두 env로 글과 맞춘다. 3번을
-올리지 않기로 하면(10절 10번의 나) 동기화 기간 내내 이 방식이다(5.3절 표별 대응). 카운터 어긋남(`like_count`·`comment_count` 대 행 수, 투표 수, 플레이 수)을
-보고만 한다(열린 질문 1). JSON 열마다 최대 크기를 보고한다. 이 검사가 0을 보고하면 5.1절의 `NOT VALID` CHECK를
-`VALIDATE`한다.
+첫 복사 검사(기대와 다른 수가 나오면 그때 묻는다. 카운터 어긋남과 JSON 크기는 보고만 한다, 10절 끝):
+
+- 데이터 시각의 NULL을 표마다 센다(기대 0, `runs`는 0). 하나라도 있으면 멈추고 묻는다(10.3절).
+- 손으로 만든 값(3.1절)을 표마다 센다: `canonicalTs`를 통과하지 못하는 시각, `{type, id}` 문자열이 아닌
+  `pool`·`resources` 원소. 기대 0이다(첫 복사가 센다). 있으면 멈추고 묻는다.
+- 덤프가 UTC로 떠졌는지 본다(시각의 오프셋이 모두 `+00`). `timestamptz`는 UTC로 저장되므로 오프셋은 pg_dump 세션
+  시간대가 UTC가 아닐 때만 달라진다. 다르면 세션 시간대를 UTC로 두고 다시 뜬다.
+- `summary_version = 0`인 런 수를 보고한다(기대 0, 채우기 바로 뒤). 0이 아니면 그 행만 다시 채운다(4.4절, 5.1절).
+- 원문이 1.9 MB 이하다(5.1절 CHECK가 이미 지킨다).
+- 고아 `defragment_bodies`(그 서비스·id의 글이 없음)는 세어 보고하고 넣지 않는다.
+- FK 자식(투표, 이거 아님 저거? 좋아요, 월드컵 플레이·통계)이 부모 글과 env가 같은지 센다. Postgres FK에는 env가
+  없어 다른 env의 글을 가리킬 수 있고, 그런 행은 env마다 따로인 D1에서 부모가 없다. 투표는 INSERT 정책이, 플레이와
+  통계는 RPC(`env = p_env`로 대회를 찾음)가 막으므로 0이어야 하고, 아니면 멈춘다. 좋아요는 막는 곳이 없다
+  (tasks/010 #70, 2026-11-05 백업에서 0행). 행 수를 보고하고, 그 행은 `cross_env`로 세고 넣지 않는다.
+  Supabase에서도 이 행은 어디에도 보이지 않는다. 동기화 기간 내내 같은 방식이다(5.3절 표별 대응).
+- 카운터 어긋남(`like_count`·`comment_count` 대 행 수, 투표 수, 플레이 수)은 보고만 한다. 수는 Supabase 값을
+  그대로 복사한다(10.1절, tasks/010 #68).
+- JSON 열마다 최대 크기를 보고한다.
 
 **다시 채우기.** 5단계 전까지는 D1을 비우고 다시 채울 수 있다(계획 7.2). `DELETE`로 비우지 않는다. 지운 행과 색인
 항목도 쓴 행으로 세므로(`posts` 한 행 = 표 + 보조 색인 7개 = 8행) 비우고 채우기가 첫 복사의 두 배, 6만 행을
@@ -723,7 +782,7 @@ fetch와 약 2.4 MB(최대 11 MB) JSON 파싱이 한 실행에 몰린다. 그러
    payload를 다시 적용하지 않는다. 그 표와 키로 Supabase의 지금 행을 하나 읽는다(service 키, 런은 `raw`를 빼고).
    행이 있으면 같은 매퍼로 upsert하고, 없으면 같은 지우기 길로 지운다(연쇄 포함). 그리고 `resolved_at`을 쓴다
    (S4d). 다시 읽어 보니 Supabase에 행이 없으면 그 거절은 저절로 닫힌다(지운 부모의 자식 같은 경우). 지금 행이
-   D1 CHECK에 걸리는 결정적 거절만 사람 몫으로 남고, 10번 시도 한도는 이것에만 쓴다.
+   D1 CHECK에 걸리는 결정적 거절만 열린 채 남아 그때 사용자에게 묻고(3.1절), 10번 시도 한도는 이것에만 쓴다.
 2. **새 행 읽기.** `id > high_seen`이고 env가 `API_DATA_ENV`나 null인 행을 id 순서로 100개까지, 먼저 `id,
    table_name, op, row_bytes, changed_at`만 읽는다. 그 가운데 바이트 합이 512 KB 이하인 앞부분만 본문까지
    읽는다(혼자 512 KB를 넘는 행은 혼자 읽는다). 한 번의 폭주가 읽기를 막지 않는다.
@@ -761,7 +820,7 @@ fetch와 약 2.4 MB(최대 11 MB) JSON 파싱이 한 실행에 몰린다. 그러
 | `comments` | `comments`(`env`, `parent_id`, `meta` 뺌) | `threads` 댓글 쪽 재계산(옛 키와 새 키) |
 | `comment_likes` | `comment_likes`(`id` 뺌) | `comments.like_count` 재계산 |
 | `likes` | `likes`(`id`, `env`, `reaction_type` 뺌). `this-or-that:` 키도 보통 스레드 키로 복사한다(오늘과 같다) | `threads` 좋아요 쪽 재계산. 글·런의 수는 그 행의 변경으로 온다 |
-| `this_or_that_post_likes` | `this_or_that_post_likes`(`id`, `env` 뺌). FK라 글 행 뒤에 둔다. 5.1절 3번이 있으면 부모는 늘 같은 env다. 3번 전에 들어간 행, 또는 3번을 올리지 않을 때(10절 10번의 나)는 FK 오류의 다시 읽기에서 Supabase 글이 다른 env에 있으면 `cross_env`로 세고 거절을 닫는다 | 없음. 글의 `like_count`는 그 글 행의 변경으로 온다 |
+| `this_or_that_post_likes` | `this_or_that_post_likes`(`id`, `env` 뺌). FK라 글 행 뒤에 둔다. FK 오류의 다시 읽기에서 Supabase 글이 다른 env에 있으면 `cross_env`로 세고 넣지 않으며 거절을 닫는다(2.2절, tasks/010 #70) | 없음. 글의 `like_count`는 그 글 행의 변경으로 온다 |
 | `resource_reactions` | 같은 행 | 없음(합계 행이 따로 온다) |
 | `resource_reaction_counts` | 같은 행(복사) | — |
 | `community_stories` | 같은 행 | 없음 |
@@ -778,7 +837,20 @@ fetch와 약 2.4 MB(최대 11 MB) JSON 파싱이 한 실행에 몰린다. 그러
 HEAD count, `comment_likes(count)`)과 같다.
 
 **매퍼는 값을 몰래 바꾸지 않는다.** `canonicalTs`가 `null`이면, JSON 꼴이 틀리면, CHECK에 걸리면 그 변경은
-거절이다. 다른 값으로 채우거나 열을 버리고 넣지 않는다. 5.1절 전제 조건이 이런 행을 Supabase에서 막는다.
+거절이다. 다른 값으로 채우거나 열을 버리고 넣지 않는다. 거절 이유(`sync_rejects.reason`)는 사람이 바로 알 수 있게
+나눈다:
+
+| 이유 | 뜻 | 처리 |
+|---|---|---|
+| `bad_timestamp` | `canonicalTs`가 `null`(무한대, 범위 밖, 꼴 틀림)이거나 D1이 값을 요구하는 곳의 NULL | 열어 두고 그때 사용자에게 묻는다. 사용자가 정한 일을 마칠 때까지 대조와 문턱은 실패다(3.1절) |
+| `bad_element` | `resources`·`pool` 원소가 문자열 `type`, `id`를 가진 객체가 아니라 자식 행으로 나눌 수 없음 | 같음(3.1절) |
+| `check`, `fk` | 그 밖의 CHECK·FK 오류(다시 읽어도 같을 때) | 열어 둔다 |
+| `cross_env` | 다른 env 글에 단 이거 아님 저거? 좋아요 | 세고 넣지 않으며 저절로 닫는다 |
+| `orphan` | 글이 없는 조각모음 본문 | 세고 넣지 않으며 저절로 닫는다 |
+| `zero_rows`, `raw_fetch`, `supabase_4xx` | 0행 `U`, 원문 받기 실패, 미러 영구 거절(5.5절) | 다시 시도, 남으면 열어 둔다 |
+
+손으로 만든 값의 거절은 기대 0이고(첫 복사가 센다, 5.2절), 4단계에 Worker가 모든 쓰기를 검증한 뒤로는 생기지
+않는다.
 
 **자기가 쓴 것 읽기**(계획 7.3): 1단계 쓰기 경로가 Supabase 쓰기에 성공하면 그 행을 D1에도 적용한다. 응답 전에
 같은 요청 안에서 한다(`waitUntil`이 아님). 그래야 같은 사용자의 다음 요청(예: 지우기)보다 늦게 닿지 않는다.
@@ -809,15 +881,22 @@ HEAD count, `comment_likes(count)`)과 같다.
   - `likes`: 같은 이름의 표끼리 비교한다.
   - `this_or_that_post_likes`: 같은 이름의 표끼리 비교한다. Supabase 쪽은 `this_or_that_posts!inner(env)`로 읽고
     `env=eq.<env>&this_or_that_posts.env=eq.<env>`로 부모 글과 env가 같은 좋아요만 비교한다. 다른 env의 글에 단
-    좋아요는 `cross_env` "알려진 종류"로 수만 적고 날을 실패시키지 않는다(5.2절).
+    좋아요는 `cross_env` "알려진 종류"로 수만 적고 날을 실패시키지 않는다(2.2절, tasks/010 #70).
   - 글 일곱 표와 `runs`: D1 `posts`를 `service`로 나눠 각 표와 `(service, id)`로 비교한다.
   - D1에만 있는 열은 `rows`에서 뺀다: `posts.summary`, `comments.like_count`, `threads` 전체.
   - 5단계의 testbed는 env 없는 표(`puzzlebox_players`, `profile_character_nickname_pools`)를 비교하지 않는다(5.5절).
 - 파생(`derived`): `threads` 대 D1 행 재계산과 `rpc/get_engagement_counts`(같아야 한다), `comments.like_count` 대
   재계산. 글·런 수 대 `threads`(이거 아님 저거? 좋아요 수는 `this_or_that_post_likes` 행 수)는 참고만 한다
-  (문턱을 막지 않음). Supabase의 델타 트리거가 어긋난 곳(런을 내렸다 다시 올린 경우)이 그대로 보인다.
-- 런 원문은 양쪽 sha-256으로, 요약 열은 Supabase 원문을 프로젝트 코드로 다시 읽어 비교한다.
-- 열린 거절이나 행 차이가 있으면 그날은 실패다. D1 읽기는 하루 모든 행 한 번(1만 안팎)이다.
+  (문턱을 막지 않음). Supabase의 델타 트리거가 어긋난 곳(런을 내렸다 다시 올린 경우, tasks/010 #68)이 그대로
+  보인다. 2~4단계에는 고치지 않는다(10.1절).
+- 런 원문은 양쪽 sha-256으로 비교한다. 요약 열은 Supabase 원문을 프로젝트 코드로 다시 읽어 비교한다. 목록이 요약
+  열로 만드는 것(자동 표지, 검색 문구, 강조 카드·유물, 인기 요소, 배지 `badges` 대 원문의 `mergePartyBadges`, 파티
+  캐릭터 `characters`)이 원문으로 만든 것과 같은지도 본다(4.4절). 다르면 그날은 실패이고, 그때 사용자에게 묻는다
+  (5.1절 채우기 dry-run과 같은 처리). 옛 탭이 올린 런, 파서나 `mergePartyBadges`가 바뀐 경우가 여기서 잡힌다.
+- `summary_version = 0`인 런 수를 보고한다. 0이 아니면 그 행만 다시 채운다(4.4절, 5.1절).
+- 열린 거절이나 행 차이가 있으면 그날은 실패다. 손으로 만든 값의 거절(3.1절)은 사용자가 그 행을 어떻게 할지 정하고
+  그 일을 마칠 때까지 실패다. 그 행은 Supabase에만 있으므로, 거절을 닫기만 해서는 `rows` 차이와 `derived` 차이가
+  남는다. D1 읽기는 하루 모든 행 한 번(1만 안팎)이다.
 
 ### 5.5 5단계 미러(D1 → Supabase)
 
@@ -849,7 +928,8 @@ HEAD count, `comment_likes(count)`)과 같다.
 - **문의 트리거(4단계 전 마이그레이션).** `contact_inquiries_rate_limit`은 `WHEN`이 없는 BEFORE INSERT 트리거라
   모든 역할에 돈다. 함수의 첫 줄이 `new.user_id is distinct from (select auth.uid())`면 예외다. 미러와 4단계
   Worker는 service 키로 쓰므로 `auth.uid()`가 NULL이고, 로그인한 사용자의 문의는 매번 42501로 거절된다. 그래서
-  4단계 전에, `docs/RELEASE_PROCESS.md`를 따라 되돌리기 스크립트와 함께 올린다:
+  service 키로 문의를 쓰는 첫 단계 전(4단계 Worker 쓰기 전)에, `docs/RELEASE_PROCESS.md`를 따라 되돌리기
+  스크립트와 함께 올린다:
 
   ```sql
   DROP TRIGGER contact_inquiries_rate_limit ON public.contact_inquiries;
@@ -877,7 +957,7 @@ HEAD count, `comment_likes(count)`)과 같다.
 - 지우기는 늘 소유자를 match에 넣는다. 거절된 지우기의 outbox 행이 남의 행을 지울 수 없다.
 - 모든 호출은 다시 보내도 같다(중복 무시 insert, 키로 지우기, 같은 값 upsert).
 - 마이그레이션 목록(5단계): `mirror_favorite_tournament_play`, `puzzlebox_runs.id` `GENERATED BY DEFAULT`, 런 원문
-  text RPC. 4단계 전: 문의 트리거 `WHEN`.
+  text RPC. 4단계 전(service 키로 문의를 쓰는 첫 단계 전): 문의 트리거 `WHEN`.
 - **5단계에서 되돌릴 때**(testbed에서 시험한 스크립트로): 쓰기를 멈추고, outbox를 비우고(열린 `out` 거절 0),
   원본 플래그를 돌린다. 그 뒤 워터마크만 옮기지 않는다. 5단계 동안 D1이 직접 센 파생 값(`posts` 수, 투표 수,
   `play_count`, 후보 통계, `resource_reaction_counts`)과 Supabase 트리거·RPC가 만든 값이 다르고, 그 Supabase 쪽 `U`
@@ -923,13 +1003,19 @@ D1 어댑터가 답을 다시 만드는 규칙:
 3. **죽은 열**: 철학자 `buff_count`·`nerf_count`·`rework_count`(굳은 값, 2행이 0이 아니다), 변형
    `source_game_locale`, 월드컵 `game_version`. Supabase 쪽에서 빼고 비교한다.
 4. **Supabase 카운터 어긋남**: 목록의 수(`posts.like_count` 복사)와 상세의 수(`threads`, 행 수)가 Supabase에서
-   이미 다른 곳. 첫 복사 보고에 있는 것은 "알려진 어긋남"으로 분류한다(열린 질문 1).
+   이미 다른 곳(tasks/010 #68). 2~4단계에는 D1도 Supabase 수를 복사하므로 같은 경로의 두 답은 같고, 그림자
+   대조에서 차이가 나지 않는다(10.1절).
 5. **고아 본문**: 지운 글의 조각모음 본문은 Supabase에서 나오고 D1에서는 `[]`다. 그 id의 글이 Supabase에 없으면
    예상된 차이다.
 6. **응답 상한**: PostgREST의 1 MiB 흐름 상한과 1000행 상한에 걸린 답은 건너뛰고 `skipped`로 센다.
 7. **동기화 지연**: 다른 행이 최근 2분 안의 것이면 2분 뒤 한 번 더 비교한 뒤 센다.
-8. **역사 강의서 자동 표지**: 채우기 전에는 목록이 원문에서 표지를 다시 고르고 D1은 저장된 표지를 준다. 그림자
-   비교는 원문을 뺀 열 단위라 차이가 없지만, 3단계 전에 채우기를 끝내야 화면이 같다.
+8. **역사 강의서 자동 표지**: 두 쪽 모두 저장된 `cover_spec`과 요약 열을 주고, 자동 표지는 브라우저가 고른다
+   (4.4절). 그림자 비교는 원문을 뺀 같은 열 단위라 차이가 없다. `summary_version` 0 런(채우기 전 런, 채우기 뒤
+   옛 탭이 올린 런)은 D1 목록에 고를 입력이 없다. 그래서 첫 복사 전에 채우기를 끝내고(5.1절), 그 뒤 생긴 0 런은
+   첫 복사 검사와 일일 대조가 세어 그 행만 다시 채운다. 3단계로 넘어갈 조건은 "`summary_version = 0` 런 0개"다.
+9. **손으로 만든 값의 거절 행**: 그 행은 Supabase에만 있어, 그 행이 들어간 답(목록, 수, 참여 지도)이 D1과 다르다.
+   알려진 종류로 빼지 않고 차이로 센다. 사용자가 그 행을 어떻게 할지 정하고 그 일을 마칠 때까지 그림자 대조와 단계
+   문턱은 실패다(3.1절).
 
 ## 7. 옮기지 않는 것
 
@@ -945,7 +1031,7 @@ D1 어댑터가 답을 다시 만드는 규칙:
 | `this_or_that_post_likes`의 카운터 트리거, 뷰 `this_or_that_post_like_counts` | 표는 옮긴다(2.2절). 트리거는 재계산(E13c)으로, 뷰는 수 읽기(T15)로 |
 | `this_or_that_posts.vote_rate_bps`와 색인 둘 | 읽는 곳 없음. 대조 동안만 어댑터가 계산 |
 | `this_or_that_post_votes.created_surface`, `transfigure_posts.source_game_locale`, `favorite_tournament_posts.game_version` | 쓰기만 함. Supabase에서 NOT NULL이라 미러가 요청 값이나 기본값을 채운다 |
-| `runs.highlight_card`, `highlight_relic`, `note_blocks` | 쓰기만 함. `badges`는 목록이 새로 읽으므로 남긴다 |
+| `runs.highlight_card`, `highlight_relic`, `note_blocks` | 쓰기만 함. 목록은 강조를 원문에서 다시 골랐고, 이제 `list_facts`의 id로 고른다(4.4절). `badges`는 목록에 보이므로 남긴다 |
 | `contact_inquiries.viewport_width`, `viewport_height` | 쓰기만 함 |
 | `colorful_philosopher_posts.buff_count`, `nerf_count`, `rework_count` | 굳은 값 |
 | `defragment_bodies.source_service` | `posts.service`와 같다 |
@@ -969,7 +1055,7 @@ D1은 읽은 행(색인 행 포함)으로 센다. 무료는 계정에 하루 읽
 | 이아저? 월드컵 목록과 기본 대회 | T5, T9 | T5는 서비스 글 약 100 + 쪽에 보이는 20개 대회의 풀. T9는 기본 대회 풀 전체(최대 약 3,000) | 10~30 | 최대 9만 |
 | 장난감 상자 피드 한 쪽 | T1~T3 | 약 60~80 | 약 43 | 약 0.3만 |
 | 조각모음 한 쪽 | T6 | 약 60 | 약 9 | 1천 미만 |
-| 역사 강의서 목록 | R1 | 약 400 | 약 14 | 약 0.6만 |
+| 역사 강의서 목록(`game_elements` 포함) | R1 | 약 400 | 약 14 | 약 0.6만 |
 | 런 상세 | R3, R3r | 3 | 수십 | 1천 미만 |
 | 프로필 | P2, P3 | 내 행 수십 | 약 5 | 1천 미만 |
 | 문의, 퍼즐상자, 철학자 | C, X, F | 수십 | 적음 | 수천 |
@@ -978,6 +1064,9 @@ D1은 읽은 행(색인 행 포함)으로 센다. 무료는 계정에 하루 읽
 - 합계는 하루 약 21만 행, 무료 한도의 약 4%다. 가장 큰 항목은 기본 대회 풀(최악)과 네비 스냅샷(최악)이다. T5는
   검토에서 풀을 정렬 뒤에 만들게 바꿔, 쪽에 보이지 않는 대회의 풀은 읽지 않는다.
 - 2단계 그림자 읽기는 샘플된 요청만큼 같은 읽기를 한 번 더 한다. 100%로 켜도 약 8%다.
+- 역사 강의서 목록은 `game_elements`와 `list_facts`를 함께 주므로(10.4절) 읽는 행은 그대로이고 답만 크다. 100개에
+  약 0.6 MB(570~620 KB), 오늘 원문 포함 약 7.9 MB다(4.4절). 어댑터는 이 두 JSON 열을 파싱하지 않고 문자열로 이어
+  붙여 CPU 10 ms 안에 둔다(6절). testbed에서 이 답의 CPU를 잰다. HTML 첫 데이터 상한(128 KB)과의 관계는 4.4절.
 - 쓰기:
   - 1분 동기화의 리스와 실행 기록이 DB마다 하루 약 3천 행(두 DB 약 6천).
   - 앱 쓰기는 댓글 하나가 약 7행(행 + 색인 4 + `threads` + 글 수), 좋아요가 약 4행이라 하루 1천 행 아래다. 월드컵
@@ -1004,14 +1093,15 @@ python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1
 - `fixtures.sql`: 대표 행, 대량 행, 지우기 연쇄 검사(실패하면 CHECK 오류로 멈춘다). 이거 아님 저거? 글을 지우면(TW3)
   투표와 좋아요가 FK 연쇄로 지워지는지 본다. 같은 id의 두 서비스 글이 두 행이고, 하나를 지워도 다른 글과 그
   서비스 행이 남는지 본다.
-- `queries.sql`: 쿼리 127개. 머리줄에 기대 색인과 허용 예외가 있다.
+- `queries.sql`: 쿼리 126개. 머리줄에 기대 색인과 허용 예외가 있다.
 - `check.py`: 임시 폴더의 빈 `check.db`에 `0001`, `0002`, `schema.sql`을 `PRAGMA foreign_keys=ON`으로 올리고, 고정 행을
-  넣고, CHECK·FK 검사 29개를 돌리고, 쿼리마다 `EXPLAIN QUERY PLAN`을 통계 없이 한 번, `ANALYZE` 뒤 한 번 본다.
+  넣고, CHECK·FK 검사 30개를 돌리고, 쿼리마다 `EXPLAIN QUERY PLAN`을 통계 없이 한 번, `ANALYZE` 뒤 한 번 본다.
   쿼리도 실제로 실행한다(쓰기는 savepoint 안에서 되돌림). 결과는 `plans.txt`.
   - 새로 더한 검사(막아야 함): 꼴이 틀린 서비스 이름, `high_seen < low_watermark`, 같은 키의 두 번째 열린 거절, 다른
     서비스 글 밑의 서비스 행(FK), 다른 서비스 값의 `service` 열(CHECK), 없는 글의 이거 아님 저거? 좋아요(FK), 같은
-    `(service, id)`의 두 번째 행, 1024 바이트를 넘는 런 id. (받아야 함): 빈 스레드 키, 모르는 새 서비스의 글, 다른
-    글의 uuid와 같은 런 id.
+    `(service, id)`의 두 번째 행, 1024 바이트를 넘는 런 id, 객체가 아닌 `list_facts`. (받아야 함): 빈 스레드 키,
+    모르는 새 서비스의 글, 다른 글의 uuid와 같은 런 id.
+  - 고정 행에 닫힌 `cross_env` 거절 한 행이 있다(키마다 하나 규칙은 열린 거절에만 걸린다).
 
 규칙: 기대한 색인을 써야 한다. 일반 표를 그냥 훑으면(`SCAN t`), `ORDER BY`에 임시 B-tree를 쓰면, `LIMIT` 없이
 색인 전체를 걸으면 실패다. `service` 앞부분만 쓰는 기본키 검색(`SEARCH t USING PRIMARY KEY (service=?)`)도 훑기로
@@ -1033,7 +1123,7 @@ python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1
 | P1 닉네임 풀 | 10행 전체 | 표 전체가 답 |
 | C5a 관리자 문의함 | 문의 전체 | 로컬 스크립트, 11행 |
 
-이 밖의 117개는 두 번 모두 의도한 색인으로만 읽고, 피드(T1~T3, T6, T7, T11, E8, E10, R1, R2)는 임시 정렬이
+이 밖의 116개는 두 번 모두 의도한 색인으로만 읽고, 피드(T1~T3, T6, T7, T11, E8, E10, R1, R2)는 임시 정렬이
 없다.
 
 구현 때 더할 시험(SQLite 밖, Worker와 스크립트):
@@ -1044,53 +1134,80 @@ python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1
   덮지 않는다(`U` 거절 뒤 새 `U`가 적용되고, 다시 시도는 Supabase 지금 행을 쓴다).
 - 5단계 미러: 서로 다른 글 표의 같은 id 두 outbox 행에서, 앞 행이 영구 거절되어도 뒤 행(다른 표)은 보내진다.
   같은 `(table_name, match_key)`의 뒤 행만 기다린다. 좋아요 취소(TL2)가 outbox 지우기 행을 남긴다.
+- 동기화 거절 이유: 손으로 만든 시각(`'infinity'`, NULL)은 `bad_timestamp`, `type`이 없는 `resources` 원소는
+  `bad_element`로 열린 채 남고, 다른 env 글의 이거 아님 저거? 좋아요는 `cross_env`로 세고 닫힌다(3.1절, 5.3절).
+- 런 요약: 운영과 testbed의 모든 런에서 목록이 요약 열로 만든 자동 표지, 검색 문구, 강조 카드·유물, 인기 요소,
+  배지, 파티 캐릭터, 검색 결과가 원문으로 만든 것과 같다(4.4절). 채우기 dry-run이 먼저 이것을 센다. 채우기 뒤에
+  요약 열 없이 올린 런은 `summary_version = 0`으로 남고, 다시 채우기가 그 행만 채운다.
 - 그림자 어댑터: 답의 키가 1단계 열 목록(`TOYBOX_POST_TABLES` 표의 열, `PAGESTORM_LIST_COLUMNS`,
-  `RUN_SUMMARY_COLUMNS`, `RUN_DETAIL_COLUMNS`)과 같다.
+  `RUN_SUMMARY_COLUMNS`, `RUN_DETAIL_COLUMNS`)과 같다. 목록·고르기는 원문 대신 요약 열이다.
+- 목록의 표지 편집: 다른 기기(로컬 런 없음)에서 공유한 런의 주인이 목록에서 "표지 편집"을 누르면 오늘처럼 편집기가
+  열린다. 편집기는 R3r로 원문을 받는다. 상세의 표지가 오늘처럼 원문에서 고른 표지와 같다(4.4절).
 - testbed(4·5단계 전): service role 쓰기 하나를 미러되는 표마다 Supabase 트리거에 통과시킨다. 다시 채우기의
   `DROP`이 D1 쓴 행으로 세이지 않는지 잰다. 277 KB, 1.9 MB 원문의 `text()`·bind·응답 CPU를 잰다.
 
-## 10. 열린 질문
+## 10. 결정(2026-11-08)
 
-1. **카운터 어긋남을 언제 맞출까.** Supabase의 델타 트리거가 만든 `like_count`·`comment_count`(런을 내렸다 다시
-   올린 경우 등)와 투표·플레이 수가 행 수와 다른 곳이 있다. (가) 그림자 문턱 전에 service role UPDATE로 Supabase를
-   한 번 다시 센다(운영 데이터 쓰기). 그러면 "그림자 차이 0"이 정말 0이다. (나) 5단계 전환 때 D1이 행 수로 맞추고,
-   그때까지 대조는 "알려진 어긋남"을 둔다. 권하는 것은 (가)다. 첫 복사 전에 한다(5.2절 1번). 첫 복사 보고가
-   바뀌는 행을 정확히 보여 준다.
-2. **2단계 Supabase `runs` 마이그레이션과 채우기를 할까.** 요약 열 다섯과 1.9 MB CHECK를 더하고,
-   한 번 도는 스크립트가 자동 표지를 다시 골라 저장한다(운영 405 + testbed 102행, 표지가 없는 운영 149행을 채움).
-   수동 표지 31행은 그대로 둔다. 목록에 보이는 표지는 바뀌지 않는다(목록은 이미 읽을 때마다 다시 고른다). 저장된
-   값만 바뀐다. 권하는 것은 한다. 목록 요약 열이 없으면 D1 목록(R1)을 만들 수 없다. 첫 복사 전에 한다.
-3. **데이터 시각에 NULL이 나오면.** `chemical_posts` 등에서 첫 복사가 NULL `created_at`을 찾으면, Supabase 값을 정한
-   시각으로 고칠지(운영 데이터 쓰기), D1 열을 널 허용으로 할지(정렬이 Postgres와 달라진다). 권하는 것은 앞쪽이다.
-   검사가 찾을 때만 묻는다(`runs`는 0이었다). 2단계 보호 트리거가 새 NULL은 막는다.
-4. **역사 강의서 `game_elements`를 목록과 함께 보낼까.** 100개에 약 410 KB(오늘 7.9 MB보다 훨씬 작다), 또는
-   요소 거르기를 열 때만 따로(목록 약 60 KB). 정하지 않으면 따로 읽기(R1e)로 한다. HTML 첫 데이터 128 KB 상한
-   안에 들기 때문이다.
-5. **기증자 `donor_user_id`를 계속 공개할까.** 목록과 조각모음이 기증자 uid를 모두에게 준다(오늘과 같다).
-   권하는 것은 3단계 뒤 `/api/me`의 "내 것" 표시로 바꾸고 공개를 멈추는 것이다. 2~3단계 대조 동안은 답이 같아야
-   하므로 오늘과 같이 둔다.
-6. **2단계 Supabase 전제 조건 마이그레이션을 한 번에 올릴까.** 5.1절 1~3번(`created_at` 보호, 원소 꼴 CHECK,
-   이거 아님 저거? 좋아요 env 정책)은 운영 쓰기 경로를 바꾼다. 클라이언트가 보낸 시각 대신 서버 시각을 쓰고, 꼴이
-   틀린 원소와 다른 env 글의 좋아요를 거절한다. 오늘 클라이언트는 그런 값을 보내지 않으므로 화면 변화는 없을 것으로
-   본다. 키를 `(service, id)`로 바꾸면서 글 id, 런 id 전제 조건은 없어졌다. 이거 아님 저거? 좋아요를 자기 표로
-   두면서 공통 `likes`의 접두사 전제 조건은 없어졌지만, 자기 표의 FK가 env 정책(3번)을 새로 요구한다. 첫 복사 전에
-   한 정기 배포로 묶어 올리고 되돌리기 스크립트를 함께 두는 것을 권한다.
-7. **퍼즐상자 env별 뜻을 받아들일까.** 5단계부터 하루 500판이 env마다 세어지고, testbed 플레이는 운영 플레이어 행에
-   닿지 않는다(4.5절). 권하는 것은 받아들이는 것이다. testbed는 개발자만 쓴다.
-8. **런 원문 상한 1.9 MB를 지킬까.** testbed CPU 측정(4.4절)에서 1.9 MB 상세 응답이 10 ms를 넘으면 두 쪽 상한을
-   1 MB로 낮춘다. 지금 최대가 277 KB라 어느 쪽이든 오늘 데이터는 들어간다.
-9. **이거 아님 저거? 좋아요 수를 `threads`에도 넣을까.** 지시는 수가 `threads`로 모이는 것이었다(결정 3).
-   (가) 넣지 않는다(지금 설계): 오늘 `get_engagement_counts`와 같고 참여 지도(E7)와 일일 derived 대조에 예외가
-   없다. 대신 이 서비스만 `threads`의 `this-or-that:<id>` 행의 `like_count`(공통 `likes` 행 수, 보통 0)와
-   `posts.like_count`(`this_or_that_post_likes` 행 수)가 다르고, E7 참여 지도의 `this-or-that:` 좋아요 수는
-   `this_or_that_post_likes`를 반영하지 않는다. (나) 넣는다: 지시대로지만 E7, 그림자 대조, 일일 derived 대조에
-   `this-or-that:` 예외가 다시 필요하다(오늘 Supabase 답과 달라진다). 권하는 것은 (가)다.
-10. **다른 env 글에 단 이거 아님 저거? 좋아요를 어떻게 막을까.** Supabase는 받고 D1 FK는 거절한다(2.2절, 3.1절).
-   (가) 5.1절 전제 조건 3번: INSERT 정책에 투표와 같은 env 확인을 더한다. 운영 쓰기 경로 변경은 정책 한 줄이고,
-   되돌리기는 옛 정책이다. 투표와 같은 규칙이라 참조 무결성 선호에도 맞는다. (나) 운영은 바꾸지 않고, 매퍼가
-   그 env에 부모 글이 없는 좋아요를 `cross_env`로 세고 거절을 닫으며, 일일 대조는 부모와 env가 같은 행만
-   비교한다(5.2절, 5.3절, 5.4절). 쓰기 길은 열린 채라 testbed 사용자가 운영 글 id에 단 좋아요가 Supabase에 계속
-   쌓인다. 권하는 것은 (가)다. 어느 쪽이든 첫 복사는 3번 전에 들어간 행을 (나)처럼 세고 넣지 않는다.
+사용자가 정한 원칙: 모든 기능을 오늘 동작 그대로 옮긴다. 가는 길에 찾은 운영 버그는 tasks/010에 적고(#68, #69,
+#70) 나중 버그 수정 묶음에서 고친다. 이 문서의 이전 열린 질문 1~10은 아래로 정해졌다. 옛 1~9번은 10.1~10.9절,
+옛 10번(다른 env 글의 좋아요)은 10.6절에 합쳤다.
+
+### 10.1 카운터 어긋남
+
+Supabase 수를 다시 세지 않는다. 2단계는 Supabase 수 열을 그대로 복사한다. 어긋남은 tasks/010 #68이다. 전환 때
+한꺼번에 고쳐지지는 않는다. 5단계에 그 글·런의 좋아요나 댓글이 바뀌면(다시 올린 런은 R14가 `threads`에서 수를
+가져올 때) 재계산 규칙(2.3절)이 행 수로 맞춘다. 그 뒤 활동이 없는 글에는 복사한 수가 남는다.
+
+### 10.2 런 요약
+
+Supabase `runs`에 요약 열 다섯과 원문 1.9 MB CHECK를 더하고, 채우기 스크립트가 이미 올라간 런의 요약 열만
+채운다. 저장된 `cover_spec`은 바꾸지 않는다(조각모음이 저장 표지를 보여 준다). 목록은 오늘처럼 브라우저가 자동
+표지를 고르고, 그 입력을 요약 열 `list_facts`가 담는다(4.4절). 마이그레이션, 클라이언트 변경, 채우기 순서로 2단계
+구현 시작에, 첫 복사 전에 올린다. 마이그레이션은 `docs/RELEASE_PROCESS.md` 5절대로, 채우기는 자기 dry-run과
+승인으로 한다(5.1절). 채우기 뒤에 생긴 `summary_version = 0` 런은 같은 스크립트로 그 행만 다시 채운다.
+
+### 10.3 NULL `created_at`
+
+첫 복사가 표마다 센다(기대 0, `runs`는 2026-11-05 덤프에서 0). 있으면 그때 묻는다. 손으로 만든 요청만 만드는 새
+NULL은 10.6절을 따른다.
+
+### 10.4 `game_elements`
+
+오늘처럼 목록과 함께 보낸다. 검색창 아래 인기 요소 칩이 첫 화면부터 모든 런으로 만들어지고, 검색어가 런의
+카드·유물 이름과 맞는다. 목록은 100개에 약 0.6 MB(570~620 KB)다(오늘 약 7.9 MB). HTML 첫 데이터 상한과의
+관계는 4.4절, 3단계 일이다.
+
+### 10.5 `donor_user_id`
+
+오늘처럼 공개 답에 둔다. 댓글과 글도 이미 `user_id`를 준다. 이 uid는 "내 런" 표시와 무작위 고르기에서 내 런을
+빼는 데만 쓴다.
+
+### 10.6 Supabase 전제 조건
+
+10.2절 밖의 Supabase 전제 조건 마이그레이션은 없다(`created_at` 보호 트리거, 원소 꼴 CHECK, 이거 아님 저거?
+좋아요 env 정책을 뺐다). 손으로 만든 요청만 만드는 값은 운영에서 고치지 않는다. 1분 동기화가 이유를 적어
+`sync_rejects`에 남기고, 첫 복사가 보고한다(기대 0, 첫 복사가 센다). 어느 쪽이든 나오면 그때 사용자에게 묻고,
+사용자가 정한 일을 마칠 때까지 대조와 문턱은 실패다(3.1절). 다른 env 글의 좋아요(#70)는 `cross_env`로 세고 넣지
+않으며 거절을 닫는다. 일일 대조는 같은 env 행만 비교한다. 4단계부터는 Worker가 모든 쓰기를 검증해 이런 값이
+생기지 않는다(3.1절). 문의 트리거 `WHEN`은 service 키로 문의를 쓰는 첫 단계 전(4단계 Worker 쓰기 전)에 올린다
+(5.1절, 5.5절).
+
+### 10.7 퍼즐상자 env
+
+하루 500판과 3초 규칙은 나뉜 뒤 env마다 센다. testbed와 운영은 다른 익명 사용자라 실제로 바뀌는 것이 없다
+(4.5절).
+
+### 10.8 원문 상한
+
+1.9 MB를 10.2절과 함께 단다. 오늘 가장 큰 원문은 277 KB(중간값 약 57 KB)다.
+
+### 10.9 이거 아님 저거? 좋아요와 `threads`
+
+`threads`에 넣지 않는다. 오늘 참여 수 답과 같고, 이 값을 읽는 화면은 없다(2.2절).
+
+남은 열린 질문은 없다. 첫 복사 검사(5.2절), 채우기 dry-run(5.1절), 일일 대조의 요약 비교(5.4절)가 기대와 다른
+수를 보고하거나, 1분 동기화가 손으로 만든 값을 거절하면 그때 묻는다. 카운터 어긋남과 JSON 최대 크기는 보고만
+한다.
 
 ## 검토에서 남긴 것
 
@@ -1098,8 +1215,13 @@ python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1
 
 - **월드컵 통계 A안**(RPC가 `p_created_at`과 `COLLATE "C"`로 같은 바이트를 만들기): B안(D1 행을 상태로 미러)을
   골랐다. 두 곳에서 계산하지 않으므로 정렬 규칙(열린 확인 `datcollate`)을 몰라도 된다.
-- **`likes`·`comment_likes`의 D1 `created_at` 널 허용**: Supabase 보호 트리거와 NOT NULL CHECK를 골랐다. 정렬에 쓰지
-  않는 열이라 널 허용도 됐지만, 원본을 막는 쪽이 매퍼에 예외를 남기지 않는다.
+- **Supabase 쪽에서 손으로 만든 값 막기**(`created_at` 보호 트리거, 원소 꼴 CHECK, 이거 아님 저거? 좋아요 env
+  정책): 하지 않는다(10.6절). 운영 쓰기 경로를 바꾸기 때문이다. 이런 값은 동기화 거절이 되어 그때 사용자에게
+  묻고(3.1절), 4단계 Worker 검증이 그 뒤로 막는다.
+- **`likes`·`comment_likes`의 D1 `created_at` 널 허용**: 하지 않는다. D1은 `NOT NULL`이고, 손으로 만든 NULL은
+  `bad_timestamp` 거절이다. 앱은 NULL을 쓰지 않는다.
+- **채우기의 자동 표지 다시 고르기와 Supabase 수 다시 세기**: 하지 않는다(10.1절, 10.2절). 저장된 표지와 수를 바꾸면
+  조각모음과 목록 수가 오늘과 달라진다.
 - **Supabase `octet_length(story_id) >= 1`**: D1 아래 한계를 없앴다. 운영 데이터를 건드리지 않고, 빈 키 하나가 생겨도
   해가 없다.
 - **글 지우기 때 이거 아님 저거? 좋아요 지우기 outbox 행 쓰기**: 쓰지 않는다. 양쪽 FK 연쇄가 같은 일을 한다. 써도
@@ -1108,8 +1230,8 @@ python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1
   원문을 넘기는 두 호출로 할지, 다른 길로 할지는 5단계 설계에서 정한다.
 - **S5 isolate 합치기**: 지금 트래픽에서는 100%로도 하루 2만 행이라 바로 하지 않는다. 8절에 조건을 적었다.
 - **비용 검토가 지적한 샘플 플래그 규칙**(샘플 값이 없으면 0, 0~1로 자름): 샘플 플래그를 설명하는 6절에 넣었다.
-- **로컬 데이터 백업으로 원소 꼴을 미리 세기**: 이번 검토의 자료 목록에 데이터 백업이 없어 열지 않았다. 첫 복사
-  검사와 5.1절 마이그레이션이 센다.
+- **로컬 데이터 백업으로 원소 꼴과 `list_facts` 크기를 미리 세기**: 이번 검토의 자료 목록에 데이터 백업이 없어
+  열지 않았다. 원소 꼴은 첫 복사 검사가, `list_facts` 크기는 채우기 dry-run이 센다.
 
 ## 검토 기록
 
@@ -1119,7 +1241,7 @@ python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1
   보호 트리거가 덮지 않는 클라이언트 쓰기 열, 피드 RPC의 답 열(`to_jsonb(p.*)`), 이거 아님 저거? 좋아요의 FK를 봤다.
   - 바꾼 것: 같은 글 id가 Supabase의 두 글 표에 있을 수 있는 문제를 찾았다(지금은 복합 키로 푼다, 3.4절). 런
     올리기의 요약 행과 원문은 이 기증자의 런 밑에만 들어간다(R14b, R14c). "클라이언트가 쓸 수 있는 열" 표와 2단계
-    전제 조건(3.1절, 5.1절). 이거 아님 저거? 좋아요의 FK와 연쇄(지금은 자기 표의 FK, 2.2절). 피드·고르기·서류 폭풍
+    전제 조건(3.1절, 5.1절. 전제 조건은 뒤에 사용자 결정으로 뺐다). 이거 아님 저거? 좋아요의 FK와 연쇄(지금은 자기 표의 FK, 2.2절). 피드·고르기·서류 폭풍
     쿼리를 1단계 답의 열 전체로 넓혔다(T1~T5, T9, T11, T12, R2). 퍼즐상자 env별
     뜻(4.5절).
 - **이관**: 동기화, 거절, 미러, 되돌리기가 실제 순서와 실패에서 멈추지 않는지. 변경 로그 창, 거절 재시도, 부분 `U`,
@@ -1148,17 +1270,43 @@ python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1
     공통 `likes`에 합치며 생긴 것을 뺐다: Supabase `likes_not_this_or_that` CHECK와 행 옮기기, 1단계 Worker의 접두사
     거절, FK와 연쇄를 흉내 내던 문장(옛 TL1~TL1c, TW3a. 지금 TL1은 FK에 맡기는 넣기 한 문장이다), 그림자·일일 대조의 `this-or-that:` 예외.
   - 함께 고친 것: 피드의 서비스 표 조인을 `CROSS JOIN`으로, `posts_user`에 `service`를 넣고, R12는 키를 색인에서 먼저
-    얻는다(2절 끝). 5.1절 전제 조건은 둘(`created_at` 보호, 원소 꼴)이 남았다. 두 번째 검토가 셋째를 더했다(아래).
+    얻는다(2절 끝). 5.1절 전제 조건은 둘(`created_at` 보호, 원소 꼴)이 남았다. 두 번째 검토가 셋째를 더했다(아래). 셋 모두 뒤에
+    사용자 결정으로 뺐다(끝).
 - **두 번째 검토(사용자 선호 반영 뒤)**:
   - 좋아요를 자기 표로 되돌리며 FK가 생겨, 다른 env 글에 단 좋아요(Supabase는 받는다)가 D1에서 거절되는 길이
     새로 열렸다. 투표는 INSERT 정책의 env `EXISTS`가, 월드컵 플레이·통계는 RPC의 `env = p_env`가 이미 막으므로
-    열린 곳은 좋아요뿐이다(이전 요약의 "투표에도 원래 있던 문제"는 틀렸다). 5.1절 3번(정책), 3.1절 표 한 줄, 5.2절
-    검사의 처리(`cross_env`로 세고 넣지 않음), 5.3절 표별 대응, 5.4절 Supabase 쪽 쿼리, 10절 10번.
+    열린 곳은 좋아요뿐이다(이전 요약의 "투표에도 원래 있던 문제"는 틀렸다). 옛 5.1절 3번(정책, 뒤에 뺐다), 3.1절 표 한
+    줄, 5.2절 검사의 처리(`cross_env`로 세고 넣지 않음), 5.3절 표별 대응, 5.4절 Supabase 쪽 쿼리, 옛 10절 10번.
   - 좋아요 취소(TL2)에 outbox 지우기 행을 더하고, "outbox 행을 만들지 않는다"를 글 지우기의 연쇄로 범위를 밝혔다.
   - outbox 막기 기준을 `(table_name, match_key)`로(4.1절, 5.5절, 스키마 주석). 미러 시험에 같은 id의 두 글 표 행.
   - 자기 쓰기 적용이 FK·CHECK로 실패해도 답은 Supabase 결과대로, 행은 1분 동기화에 맡긴다(5.3절).
-  - `threads`에 넣지 않은 이거 아님 저거? 좋아요 수를 결정으로 올렸다(10절 9번).
+  - `threads`에 넣지 않은 이거 아님 저거? 좋아요 수를 결정으로 올렸다(옛 10절 9번, 지금 10.9절).
   - `check.py`가 `service` 앞부분만 쓰는 기본키 검색을 실패로 본다(9절). T4, T5만 `svcrange` 허용.
   - 코오오옴보 스레드 키 접두사를 `fixtures.sql`과 `queries.sql`에서 실제 `c-c-c-combo:`로 고쳤고, 접두사 목록을
     3.4절에 적었다. 그 밖에 절 번호 참조, 글 표 수(일곱 표와 `runs`), 스키마 주석, 9절 피드 목록, 5.5절 "예외 둘",
-    10절 2번·5번의 권하는 답, D1 SQLite 판 확인 방법(상태).
+    옛 10절 2번·5번의 권하는 답, D1 SQLite 판 확인 방법(상태).
+- **사용자 결정 반영(두 번째 검토 뒤)**: 모든 기능을 오늘 동작 그대로 옮긴다는 결정(10.1~10.9절)을 적용했다.
+  - 뺀 것: 5.1절 전제 조건 셋(`created_at` 보호 트리거, 원소 꼴 CHECK, 이거 아님 저거? 좋아요 env 정책)과 그에
+    기댄 `NOT VALID`·`VALIDATE` 순서, 첫 복사 전 Supabase 수 다시 세기, 채우기의 자동 표지 다시 고르기, 요소
+    거르기용 따로 읽기(옛 R1e). 3.1절의 "손으로 만든 값의 규칙" 하나가 대신한다.
+  - 바꾼 것: 요약 열 `cover_phrases`를 `list_facts`로 바꿨다. 목록은 자동 표지를 브라우저가 읽을 때 고르므로, 문구도
+    보이는 표지를 따라 브라우저가 만들어야 오늘과 같다. `list_facts`는 자동 표지 고르기, 표지 문구, 강조 카드·유물이
+    원문에서 읽던 입력이다(4.4절). R1·R2가 `game_elements`·`list_facts`를 주고, R4가 `list_facts`를 주고, R11은
+    `cover_spec`만 쓴다.
+  - 더한 것: 거절 이유 `bad_timestamp`, `bad_element`, `cross_env`(5.3절, 스키마 주석), 고정 행의 닫힌 `cross_env`
+    거절, `list_facts` 객체 CHECK 검사, 채우기 dry-run의 비교 수(5.1절), 일일 대조의 목록 결과 비교(5.4절).
+- **세 번째 검토(사용자 결정 반영 뒤)**:
+  - 목록의 "표지 편집"이 원문에 묶여 있는 것을 4.4절 표에 더했다. D1에서는 편집기를 열 때 R3r로 원문을 받는다.
+    9절 시험에 넣었다.
+  - 채우기 뒤 옛 탭이 올린 `summary_version = 0` 런: 첫 복사 검사와 일일 대조가 세고, 그 행만 다시 채우고, 3단계
+    조건에 "0개"를 넣었다(4.4절, 5.1절, 5.2절, 5.4절, 6절 8번).
+  - 손으로 만든 값의 거절을 끝내는 길: 그때 사용자에게 묻고, 사용자가 정한 일을 마칠 때까지 대조와 문턱은 실패다
+    (3.1절, 5.3절 표, 5.4절, 6절 9번, 10절 끝). "오늘 0"은 "기대 0(첫 복사가 센다)"과 잰 근거로 고쳤다.
+  - 일일 대조의 목록 비교에 배지와 파티 캐릭터를 더했다(5.4절). 배지 규칙이 바뀔 때는 `summary_version`을 올려
+    다시 채운다(4.4절). `summary_version`을 올리는 조건에 강조 고르기를 더했다.
+  - 상세는 저장 표지가 아니라 원문에서 고른 표지를 보인다(4.4절, 스키마 주석).
+  - 문의 트리거 `WHEN` 시점을 "4단계 Worker 쓰기 전"으로 맞췄다(5.1절, 5.5절, 10.6절).
+  - 결정 이름 D1~D9가 데이터베이스 D1과 겹쳐 10.1~10.9절로 바꿨다. 옛 질문 번호와의 대응, #68이 고쳐지는 범위(2.3절,
+    10.1절), 덤프 오프셋 검사를 손으로 만든 값에서 뺀 것(5.2절), 두 dry-run 나누기(5.1절), HTML 첫 데이터 상한 설명과
+    목록 크기(4.4절, 8절, 10.4절), 결정 3의 단계, 6절 4번, R4 설명을 고쳤다.
+  - 다른 문서: 계획 문서의 2단계 설명, tasks/010 #68·#70의 참조.

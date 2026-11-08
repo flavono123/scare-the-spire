@@ -9,6 +9,11 @@ INSERT INTO sync_state (name, low_watermark, high_seen) VALUES ('supabase_in', 0
 INSERT INTO sync_rejects (direction, ref, table_name, d1_table, row_key, op, reason, payload, error, first_at, last_at)
 VALUES ('in', 41, 'comments', 'comments', '{"id":"c0000000-0000-4000-8000-000000000041"}', 'I', 'check',
         '{"id":"x"}', 'CHECK constraint failed', 1762560000000, 1762560000000);
+-- A known kind: a this-or-that like on a post of the other env (tasks/010 #70), counted and closed.
+INSERT INTO sync_rejects (direction, ref, table_name, d1_table, row_key, op, reason, payload, error, first_at, last_at, resolved_at)
+VALUES ('in', 43, 'this_or_that_post_likes', 'this_or_that_post_likes',
+        '{"service":"this_or_that","post_id":"a7777777-0000-4000-8000-00000000000c","user_id":"11111111-1111-4111-8111-111111111111"}',
+        'I', 'cross_env', '{}', 'FOREIGN KEY constraint failed', 1762560000000, 1762560000000, 1762560000000);
 INSERT INTO sync_pending_raw (post_id, queued_at) VALUES ('r00000000000000f', 1762560000000);
 INSERT INTO outbox (table_name, op, match_key, payload, created_at)
 VALUES ('comments', 'insert', '{"id":"c0000000-0000-4000-8000-000000000001"}', '{"content":"hi"}', 1762560000000),
@@ -118,10 +123,11 @@ INSERT INTO defragment_bodies (service, post_id, user_id, nickname, content, con
 ('combo', 'a0000000-0000-4000-8000-000000000002', '22222222-2222-4222-8222-222222222222', '사일런트',
  '[{"type":"text","text":"본문"}]', '조각 본문', '2026-11-03T00:00:00.000000Z', '2026-11-03T00:00:00.000000Z');
 INSERT INTO post_history_course (post_id, seed, build, "character", ascension, win, start_time, run_time, acts_count,
-  total_floors, cover_spec, summary_version, badges, characters, game_mode, game_elements, cover_phrases) VALUES
+  total_floors, cover_spec, summary_version, badges, characters, game_mode, game_elements, list_facts) VALUES
 ('0a1b2c3d4e5f6g7h', 'SEED123', 'v0.107.1', 'CHARACTER.IRONCLAD', 10, 1, 1762300000, 3600, 3, 51,
  '{"auto":true,"elements":[]}', 1, '[{"id":"BADGE.FAST","rarity":"gold"}]', '["CHARACTER.IRONCLAD"]', 'standard',
- '[{"type":"card","id":"bash"}]', '["강타"]');
+ '[{"type":"card","id":"bash"}]',
+ '{"deck_size":12,"relic_count":3,"cards":[["BASH",1,1,false]],"relics":[["BURNING_BLOOD",false]],"potions":[],"highlight_card":"BASH","highlight_relic":"BURNING_BLOOD"}');
 INSERT INTO post_history_course_file (post_id, raw) VALUES ('0a1b2c3d4e5f6g7h', '{"seed":"SEED123"}');
 
 -- ---------------------------------------------------------------- profile, contact, puzzlebox, philosophers

@@ -66,6 +66,8 @@ probes = [
      "INSERT INTO posts (id, service, user_id, nickname, summary, created_at) VALUES ('a7777777-0000-4000-8000-000000000004', 'combo', ?, 'n', ?, '2026-11-05T11:48:12.345600Z')", [UUID1, "x" * 121]),
     ("run summary_version > 0 without the summary",
      "INSERT INTO post_history_course (post_id, seed, build, \"character\", ascension, win, acts_count, summary_version) VALUES ('r00000000000000f', 's', 'b', 'c', 0, 0, 3, 1)", []),
+    ("run list_facts that is not a JSON object",
+     "UPDATE post_history_course SET list_facts = '[]' WHERE post_id = '0a1b2c3d4e5f6g7h'", []),
     ("tournament play with wrong match count",
      "INSERT INTO favorite_tournament_plays (id, tournament_id, user_id, starting_size, champion_type, champion_id, matches, created_at) VALUES ('f7777777-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000005', ?, 4, 'relic', 'anchor', '[]', '2026-11-05T11:48:12.345600Z')", [UUID1]),
     ("philosopher week_start not a Monday",

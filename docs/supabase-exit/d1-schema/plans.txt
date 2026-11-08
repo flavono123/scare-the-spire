@@ -8,7 +8,7 @@ same id in two services: two rows: ok
 same id in two services: delete is per service: ok
 comment cascade: ok
 sqlite 3.51.0
-tables (42): api_cache=1, colorful_philosopher_posts=62, comment_likes=502, comments=1504, community_stories=302, contact_inquiries=62, defragment_bodies=201, favorite_tournament_candidate_stats=2, favorite_tournament_plays=1, likes=353, outbox=3, pagestorm_drafts=1, post_chemical_x=101, post_combo=100, post_combo_resources=200, post_decisions_decisions=101, post_favorite_tournament=101, post_favorite_tournament_pool=202, post_history_course=101, post_history_course_file=101, post_pagestorm=101, post_this_or_that=101, post_transfigure=101, posts=807, profile_character_nickname_pools=2, puzzlebox_best=302, puzzlebox_board_stats=13, puzzlebox_players=52, puzzlebox_runs=602, resource_reaction_counts=122, resource_reactions=403, runtime_flag_events=1, runtime_flags=1, shadow_diffs=1, shadow_stats=1, sync_checks=3, sync_pending_raw=1, sync_rejects=1, sync_state=2, this_or_that_post_likes=401, this_or_that_post_votes=100, threads=147
+tables (42): api_cache=1, colorful_philosopher_posts=62, comment_likes=502, comments=1504, community_stories=302, contact_inquiries=62, defragment_bodies=201, favorite_tournament_candidate_stats=2, favorite_tournament_plays=1, likes=353, outbox=3, pagestorm_drafts=1, post_chemical_x=101, post_combo=100, post_combo_resources=200, post_decisions_decisions=101, post_favorite_tournament=101, post_favorite_tournament_pool=202, post_history_course=101, post_history_course_file=101, post_pagestorm=101, post_this_or_that=101, post_transfigure=101, posts=807, profile_character_nickname_pools=2, puzzlebox_best=302, puzzlebox_board_stats=13, puzzlebox_players=52, puzzlebox_runs=602, resource_reaction_counts=122, resource_reactions=403, runtime_flag_events=1, runtime_flags=1, shadow_diffs=1, shadow_stats=1, sync_checks=3, sync_pending_raw=1, sync_rejects=2, sync_state=2, this_or_that_post_likes=401, this_or_that_post_votes=100, threads=147
 
 == CHECK / FK probes
 ok   rejected: timestamp without 6 fraction digits -> CHECK constraint failed: created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'
@@ -33,7 +33,9 @@ ok   rejected: posts: title on a service without one -> CHECK constraint failed:
     ELSE title IS NULL OR length(title) BETWEEN 1 AND 80 END
 ok   rejected: posts: board summary over 120 chars -> CHECK constraint failed: length(summary) <= 120
 ok   rejected: run summary_version > 0 without the summary -> CHECK constraint failed: summary_version = 0 OR (characters IS NOT NULL AND game_mode IS NOT NULL
-    AND game_elements IS NOT NULL AND cover_phrases IS NOT NULL)
+    AND game_elements IS NOT NULL AND list_facts IS NOT NULL)
+ok   rejected: run list_facts that is not a JSON object -> CHECK constraint failed: json_valid(list_facts) AND json_type(list_facts) = 'object'
+    AND length(CAST(list_facts AS BLOB)) <= 1048576
 ok   rejected: tournament play with wrong match count -> CHECK constraint failed: json_valid(matches) AND json_type(matches) = 'array'
     AND json_array_length(matches) = starting_size - 1
 ok   rejected: philosopher week_start not a Monday -> CHECK constraint failed: week_start GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND strftime('%w', week_start) = '1'
@@ -322,20 +324,17 @@ PASS TW6 조각모음 body upsert, owner of the post only [ran, 0 row(s)]
       SEARCH posts USING PRIMARY KEY (service=? AND id=?)
 PASS TW7 draft delete by owner [ran, 1 row(s)]
       SEARCH pagestorm_drafts USING INDEX sqlite_autoindex_pagestorm_drafts_1 (id=?)
-PASS R1 run list (100 latest) with summary columns and row-true counts [ran, 100 row(s)]
+PASS R1 run list (100 latest) with summary columns, game elements (popular chips and search from page load, as today) and row-true counts [ran, 100 row(s)]
       SEARCH p USING INDEX posts_service_created (service=?)
       SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
       SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
-PASS R1e run list, game elements view (only when the element filter opens) [ran, 100 row(s)]
-      SEARCH p USING COVERING INDEX posts_service_created (service=?)
-      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
 PASS R2 combo / 조각모음 run picker (30 by start time; RUN_SUMMARY_COLUMNS with summary columns in place of raw) [ran, 30 row(s)]
       SCAN h USING INDEX post_history_course_start_time
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
 PASS R3 run detail meta (RUN_DETAIL_COLUMNS without raw; the raw is R3r, returned as the response body) [ran, 1 row(s)]
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
       SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
-PASS R4 cover editor meta (the raw is R3r) [ran, 1 row(s)]
+PASS R4 cover view: combo thumbs re-pick a non-manual cover from list_facts as they do from the raw today; the editor's raw is R3r [ran, 1 row(s)]
       SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
 PASS R3r run raw for detail and cover editor (the stored text is the body, never wrapped in JSON) [ran, 1 row(s)]
       SEARCH post_history_course_file USING INDEX sqlite_autoindex_post_history_course_file_1 (service=? AND post_id=?)
@@ -793,20 +792,17 @@ PASS TW6 조각모음 body upsert, owner of the post only [ran, 0 row(s)]
       SEARCH posts USING PRIMARY KEY (service=? AND id=?)
 PASS TW7 draft delete by owner [ran, 1 row(s)]
       SEARCH pagestorm_drafts USING INDEX sqlite_autoindex_pagestorm_drafts_1 (id=?)
-PASS R1 run list (100 latest) with summary columns and row-true counts [ran, 100 row(s)]
+PASS R1 run list (100 latest) with summary columns, game elements (popular chips and search from page load, as today) and row-true counts [ran, 100 row(s)]
       SEARCH p USING INDEX posts_service_created (service=?)
       SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
       SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
-PASS R1e run list, game elements view (only when the element filter opens) [ran, 100 row(s)]
-      SEARCH p USING COVERING INDEX posts_service_created (service=?)
-      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
 PASS R2 combo / 조각모음 run picker (30 by start time; RUN_SUMMARY_COLUMNS with summary columns in place of raw) [ran, 30 row(s)]
       SCAN h USING INDEX post_history_course_start_time
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
 PASS R3 run detail meta (RUN_DETAIL_COLUMNS without raw; the raw is R3r, returned as the response body) [ran, 1 row(s)]
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
       SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
-PASS R4 cover editor meta (the raw is R3r) [ran, 1 row(s)]
+PASS R4 cover view: combo thumbs re-pick a non-manual cover from list_facts as they do from the raw today; the editor's raw is R3r [ran, 1 row(s)]
       SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
 PASS R3r run raw for detail and cover editor (the stored text is the body, never wrapped in JSON) [ran, 1 row(s)]
       SEARCH post_history_course_file USING INDEX sqlite_autoindex_post_history_course_file_1 (service=? AND post_id=?)
@@ -993,4 +989,4 @@ PASS F6 next week open (dev nav) [ran, 0 row(s)]
       SEARCH colorful_philosopher_posts USING COVERING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start=?)
 PASS F7 admin upsert (local script; keeps id and created_at on conflict) [ran, 1 row(s)]
 
-queries: 127, failures (probes + plans, both passes): 0
+queries: 126, failures (probes + plans, both passes): 0

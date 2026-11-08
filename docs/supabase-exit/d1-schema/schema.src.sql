@@ -82,8 +82,12 @@ CREATE TABLE IF NOT EXISTS sync_rejects (
   -- The D1 key as a JSON object, e.g. {"service": "combo", "id": "..."} or {"story_id": "...", "user_id": "..."}.
   row_key TEXT NOT NULL CHECK (json_valid(row_key) AND json_type(row_key) = 'object'),
   op TEXT NOT NULL,
-  -- Short class: 'check', 'fk', 'zero_rows', 'orphan', 'raw_fetch', 'supabase_4xx'. Free text (leaf table
-  -- rule, design 3.7).
+  -- Short class (free text, leaf table rule, design 3.7). Known kinds closed automatically and only
+  -- counted: 'orphan' (a 조각모음 body whose post is gone), 'cross_env' (a this-or-that like on a post
+  -- of another env, invisible in Supabase too). Left open for a human: 'bad_timestamp' (canonicalTs gives
+  -- null, or NULL where D1 needs a value), 'bad_element' (an array element D1 cannot split into a typed
+  -- child row), 'check', 'fk', 'zero_rows', 'raw_fetch', 'supabase_4xx'. Values only a hand-crafted
+  -- request can create are never changed in Supabase; they land here (design 3.1).
   reason TEXT NOT NULL DEFAULT 'error' CHECK (length(reason) BETWEEN 1 AND 64),
   payload TEXT NOT NULL CHECK (json_valid(payload)),
   error TEXT NOT NULL,
@@ -217,8 +221,9 @@ CREATE INDEX IF NOT EXISTS comments_recent ON comments (created_at, id);
 CREATE INDEX IF NOT EXISTS comments_user ON comments (user_id, created_at, id);
 
 -- Who liked which comment. Not ported: id (never read). Key = the old unique pair.
--- created_at is nullable in Postgres; the step-2 Supabase migration adds a created_at := now() guard
--- for client inserts and a NOT NULL CHECK, so NOT NULL here holds for every synced row (design 3.1).
+-- created_at is nullable in Postgres, but the app never writes NULL (the column default fills it). A
+-- NULL or odd created_at that only a hand-crafted request can create is not changed in Supabase: the
+-- sync parks that row in sync_rejects ('bad_timestamp') for a human (design 3.1).
 CREATE TABLE IF NOT EXISTS comment_likes (
   comment_id TEXT NOT NULL REFERENCES comments (id) ON DELETE CASCADE,
   user_id TEXT NOT NULL CHECK (user_id GLOB @UUID@),
@@ -230,7 +235,7 @@ CREATE TABLE IF NOT EXISTS comment_likes (
 -- No FK: the key is a thread key, not a post id, and Supabase has none either. The this-or-that
 -- likes are their own table (this_or_that_post_likes, 0005); a 'this-or-that:' row in Supabase likes
 -- is copied here as an ordinary like on that thread key, as today.
--- created_at: same Supabase guard and NOT NULL CHECK as comment_likes.
+-- created_at: same crafted-value rule as comment_likes.
 CREATE TABLE IF NOT EXISTS likes (
   story_id TEXT NOT NULL CHECK (length(CAST(story_id AS BLOB)) <= 1024),
   user_id TEXT NOT NULL CHECK (user_id GLOB @UUID@),
@@ -412,8 +417,9 @@ CREATE TABLE IF NOT EXISTS post_combo (
 ) STRICT;
 
 -- combo_posts.resources: the post's game elements, filtered and ranked by element (decision 2).
--- Every element is {"type": string, "id": string} and nothing else: the step-2 Supabase migration adds
--- that CHECK (combo_posts_resources_shape), so the NOT NULL columns below never see a NULL.
+-- The app writes every element as {"type": string, "id": string}. An element without them (only a
+-- hand-crafted request can write one; Supabase has no CHECK and gets none) is never dropped or
+-- reshaped: the sync parks the post in sync_rejects ('bad_element') for a human (design 3.1).
 -- ord keeps the array order. No element index yet: no server query filters by element; add
 -- (resource_type, resource_id, post_id) when one does.
 CREATE TABLE IF NOT EXISTS post_combo_resources (
@@ -525,11 +531,12 @@ CREATE TABLE IF NOT EXISTS this_or_that_post_votes (
 
 -- 이거 아님 저거? likes (Supabase this_or_that_post_likes). Key = (service, post_id, user_id): the Supabase
 -- UNIQUE (post_id, user_id, env) without env, with the constant service in front; not ported: id (never
--- read), env. Supabase's FK ignores env; the step-2 policy prerequisite (design 5.1 item 3) keeps a like
--- in its post's env, so every synced like finds its parent in this env's D1. FK and cascade as in Postgres (post_id -> this_or_that_posts ON
+-- read), env. Supabase's FK ignores env, so a like can point at a post of the other env (tasks/010
+-- #70). Supabase hides such a like everywhere (counts, views and the profile RPC match env); the sync
+-- counts it as 'cross_env', skips it and closes the reject (design 2.2). FK and cascade as in Postgres (post_id -> this_or_that_posts ON
 -- DELETE CASCADE): a like needs the post, and deleting the post deletes its likes. The source of the
 -- post's like_count (recount E13c, step 5+) and of T15, T16, P2, P3, as today's view and RPCs read it.
--- created_at: same Supabase guard as comment_likes (NOT NULL already in Postgres).
+-- created_at: NOT NULL already in Postgres; an odd client-sent value follows the crafted-value rule.
 CREATE TABLE IF NOT EXISTS this_or_that_post_likes (
   service TEXT NOT NULL DEFAULT 'this_or_that' CHECK (service = 'this_or_that'),
   post_id TEXT NOT NULL,
@@ -556,8 +563,8 @@ CREATE TABLE IF NOT EXISTS post_favorite_tournament (
 CREATE UNIQUE INDEX IF NOT EXISTS post_favorite_tournament_builtin
   ON post_favorite_tournament (preset_key) WHERE substr(preset_key, 1, 8) = 'builtin:';
 
--- favorite_tournament_posts.pool: same element shape and Supabase CHECK as combo resources
--- (favorite_tournament_posts_pool_shape). The candidates, joined by element when a play is checked
+-- favorite_tournament_posts.pool: same element shape and crafted-value rule as combo resources.
+-- The candidates, joined by element when a play is checked
 -- (decision 2). ord keeps the array order. Builtin pools hold up to about 1,000 entries.
 CREATE TABLE IF NOT EXISTS post_favorite_tournament_pool (
   service TEXT NOT NULL DEFAULT 'favorite_tournament' CHECK (service = 'favorite_tournament'),
@@ -685,27 +692,37 @@ CREATE TABLE IF NOT EXISTS post_history_course (
   run_time INTEGER,                       -- seconds
   acts_count INTEGER NOT NULL,            -- detail meta only
   total_floors INTEGER NOT NULL DEFAULT 0,
-  -- The cover everyone sees (server-side, so an owner's change is visible to all). Auto covers are
-  -- stored too; the backfill re-picks them once. Worker cap 16 KiB; this is the row backstop.
+  -- The stored cover (server-side, so an owner's change is visible to all). 조각모음 (history_meta) and
+  -- the meta/OG show it as stored. The detail and the cover editor re-pick a non-manual cover from the
+  -- R3r raw as they do today. The list and the picker show a manual cover (auto = false) as stored and
+  -- re-pick any other one in the browser from list_facts, as they re-pick from the raw today. The
+  -- backfill never writes it. Worker cap 16 KiB; this is the row backstop.
   cover_spec TEXT CHECK (json_valid(cover_spec) AND json_type(cover_spec) = 'object'
     AND length(CAST(cover_spec AS BLOB)) <= 1048576),
-  -- Browser-computed list summary. summary_version 0 = not computed yet (old upload, not backfilled);
-  -- N > 0 = written by extractor version N (src constant RUN_SUMMARY_VERSION).
+  -- Browser-computed list summary (characters, game_elements, game_mode, list_facts, summary_version).
+  -- summary_version 0 = not computed yet (not backfilled yet, or uploaded by a tab still on the old JS
+  -- after the backfill; the first copy and the daily check count these and re-run the backfill on
+  -- them); N > 0 = written by extractor version N (src constant RUN_SUMMARY_VERSION, bumped when the
+  -- extractor, buildRunHighlights or the list_facts inputs change).
   summary_version INTEGER NOT NULL DEFAULT 0 CHECK (summary_version >= 0),
   badges TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(badges) AND json_type(badges) = 'array'
     AND length(CAST(badges AS BLOB)) <= 1048576),                    -- [{id, rarity}], party best
   characters TEXT CHECK (json_valid(characters) AND json_type(characters) = 'array'
     AND length(CAST(characters AS BLOB)) <= 65536),                  -- ["CHARACTER.IRONCLAD", ...]
   game_mode TEXT CHECK (length(CAST(game_mode AS BLOB)) <= 1024),
-  -- [{type, id}] of every element of the run: displayed and filtered in the browser only (no server
-  -- query filters by element), so JSON TEXT, not a child table.
+  -- [{type, id}] of every element of the run (extractRunGameElements): sent with the list for the
+  -- popular-element chips and the search, filtered in the browser only (no server query filters by
+  -- element), so JSON TEXT, not a child table.
   game_elements TEXT CHECK (json_valid(game_elements) AND json_type(game_elements) = 'array'
     AND length(CAST(game_elements AS BLOB)) <= 1048576),
-  -- Search-only strings of the cover; rewritten with every cover change.
-  cover_phrases TEXT CHECK (json_valid(cover_phrases) AND json_type(cover_phrases) = 'array'
-    AND length(CAST(cover_phrases AS BLOB)) <= 65536),
+  -- What the list read from the raw and no other column holds: the auto cover picker's inputs in its
+  -- read order (cards with copies, first floor and upgrade; relics with the acquired flag; potions as
+  -- listed; max deck size and relic count) and the highlight card and relic ids. The browser runs the
+  -- same pickAlternatingCover, coverPhrasePool and search code on it (design 4.4).
+  list_facts TEXT CHECK (json_valid(list_facts) AND json_type(list_facts) = 'object'
+    AND length(CAST(list_facts AS BLOB)) <= 1048576),
   CHECK (summary_version = 0 OR (characters IS NOT NULL AND game_mode IS NOT NULL
-    AND game_elements IS NOT NULL AND cover_phrases IS NOT NULL)),
+    AND game_elements IS NOT NULL AND list_facts IS NOT NULL)),
   PRIMARY KEY (service, post_id),
   FOREIGN KEY (service, post_id) REFERENCES posts (service, id) ON DELETE CASCADE
 ) STRICT;
@@ -715,8 +732,8 @@ CREATE INDEX IF NOT EXISTS post_history_course_start_time ON post_history_course
 -- The raw .run file (decision 4: its own table, still in D1). Opaque text, parsed only by the browser,
 -- bound and returned by the Worker without JSON.parse. The 1.9 MB cap keeps the row under D1's 2 MB
 -- limit; the step-2 Supabase migration adds the same CHECK. The raw is never copied into an outbox
--- row (the mirror reads it here). Whether 1.9 MB stays is decided by the testbed CPU measurement
--- (design 4.4); a lower cap would be applied to both sides before any larger file exists.
+-- row (the mirror reads it here). The cap is settled at 1.9 MB (design 10 D8); today's largest raw is
+-- 277 KB.
 CREATE TABLE IF NOT EXISTS post_history_course_file (
   service TEXT NOT NULL DEFAULT 'history_course' CHECK (service = 'history_course'),
   post_id TEXT NOT NULL,
@@ -743,7 +760,8 @@ CREATE TABLE IF NOT EXISTS profile_character_nickname_pools (
 ) STRICT, WITHOUT ROWID;
 
 -- Contact inquiries. user_id and reply_email are private: no browser answer ever selects them.
--- reply_seen_at is client-writable in Supabase; the step-2 guard sets it to now() (design 3.1).
+-- reply_seen_at is client-writable in Supabase (no guard, none added); an odd value follows the
+-- crafted-value rule (design 3.1).
 -- Not ported: env, viewport_width, viewport_height (write-only).
 CREATE TABLE IF NOT EXISTS contact_inquiries (
   id TEXT NOT NULL PRIMARY KEY CHECK (id GLOB @UUID@),
