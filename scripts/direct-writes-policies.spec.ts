@@ -16,6 +16,8 @@ import { applySqlFile, repoSchemaFiles, supabaseFromDump, supabaseFromRepo } fro
 
 const MIGRATION = "supabase/migrations/20261108160000_worker_write_actor.sql";
 const ROLLBACK = "docs/release/worker-write-actor/rollback_worker_write_actor.sql";
+const READ_MIGRATION = "supabase/migrations/20261109150000_worker_read_actor.sql";
+const READ_ROLLBACK = "docs/release/worker-read-actor/rollback_worker_read_actor.sql";
 const CLOSE = "docs/release/step4-direct-writes/close_direct_writes.sql";
 const RESTORE = "docs/release/step4-direct-writes/restore_direct_writes.sql";
 const U1 = "11111111-1111-4111-8111-111111111111";
@@ -142,7 +144,27 @@ async function rollbackCheck(db: PGlite, label: string) {
   console.log(`${label}: migration rollback ok`);
 }
 
+/** The personal-read wrappers (cookie-only identities, STEP4_WRITE_GATE 10.1): service-only, and a clean rollback. */
+async function readRollbackCheck(db: PGlite, label: string) {
+  await db.exec(`insert into auth.users (id) values ('${U1}') on conflict do nothing`);
+  const before = await snapshot(db);
+  const stats = (fn: string, actor: string) => `select * from public.${fn}(${actor}'development')`;
+  await applySqlFile(db, READ_MIGRATION);
+  await applySqlFile(db, READ_MIGRATION);
+  assert.equal((await as(db, "service_role", null, stats("worker_get_my_profile_activity_stats", `'${U1}', `))).ok, true, `${label}: the wrapper runs for the service role`);
+  assert.deepEqual(await as(db, "authenticated", U1, stats("worker_get_my_profile_activity_stats", `'${U1}', `)), { ok: false, code: "42501" }, `${label}: the wrapper is service-only`);
+  assert.deepEqual(await as(db, "service_role", null, stats("worker_get_my_profile_activity_stats", "null, ")), { ok: false, code: "42501" }, `${label}: no actor, no read`);
+  assert.equal((await as(db, "authenticated", U1, stats("get_my_profile_activity_stats", ""))).ok, true, `${label}: the RPC itself is unchanged`);
+  await applySqlFile(db, READ_ROLLBACK);
+  await applySqlFile(db, READ_ROLLBACK);
+  assert.deepEqual(await snapshot(db), before, `${label}: rollback brings back today's functions and grants`);
+  console.log(`${label}: read actor migration and rollback ok`);
+}
+
 async function main() {
+  const beforeRead = await supabaseFromRepo(repoSchemaFiles((file) => file.endsWith("_d1_change_log.sql") || file === READ_MIGRATION));
+  await readRollbackCheck(beforeRead, "repo schema");
+  await beforeRead.close();
   const today = await supabaseFromRepo(repoSchemaFiles((file) => file.endsWith("_d1_change_log.sql") || file === MIGRATION));
   await rollbackCheck(today, "repo schema");
   await today.close();

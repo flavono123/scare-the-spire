@@ -21,6 +21,7 @@ import type { PGlite } from "@electric-sql/pglite";
 import { API_SURFACE_GROUPS, pathFlagKey } from "../src/lib/api-surfaces";
 import type { D1Database, D1PreparedStatement, D1Result } from "../workers/api/d1";
 import { FLAGS_SQL, resetFlagsForTest } from "../workers/api/flags";
+import { signIdentityCookie } from "../workers/api/identity/cookie";
 import { resetJwtCachesForTest } from "../workers/api/jwt";
 import { postgrest, type RestRequest, type SupabaseApiConfig } from "../workers/api/supabase-rest";
 import { createWriteGate, withWriteGate } from "../workers/api/write-gate/gate";
@@ -134,6 +135,9 @@ function normalize(value: unknown): unknown {
   }
   if (typeof value === "string") {
     if (UUID.test(value) && !KNOWN_IDS.has(value.toLowerCase())) return "<uuid>";
+    // A new row's id inside a key (`community:<id>` in the profile activity).
+    const text = value.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, (id) => (KNOWN_IDS.has(id.toLowerCase()) ? id : "<uuid>"));
+    if (text !== value) return text;
     const match = TIMESTAMP.exec(value);
     if (match) {
       const zone = match[4] ? (match[4] === "Z" ? "Z" : match[4].length === 3 ? `${match[4]}:00` : match[4]) : "Z";
@@ -187,7 +191,10 @@ class FlagsD1 implements D1Database {
     const statement: D1PreparedStatement = {
       bind: () => statement,
       all: (async () => {
-        if (query === FLAGS_SQL) return { success: true, results: API_SURFACE_GROUPS.map((group) => ({ key: pathFlagKey(group), value: "api" })) };
+        // identity.mode = cookie only counts for an env with API_IDENTITY_SECRET (the personal reads below).
+        if (query === FLAGS_SQL) {
+          return { success: true, results: [...API_SURFACE_GROUPS.map((group) => ({ key: pathFlagKey(group), value: "api" })), { key: "identity.mode", value: "cookie" }] };
+        }
         if (query === WRITE_FLAGS_SQL) return { success: true, results: [] };
         throw new Error(`unexpected SQL: ${query}`);
       }) as D1PreparedStatement["all"],
@@ -456,7 +463,7 @@ const GATE_CASES: GateCase[] = [
 
 async function main() {
   const changeLog = repoSchemaFiles().filter((file) => file.endsWith("_d1_change_log.sql"));
-  const step4Migration = repoSchemaFiles().filter((file) => file.endsWith("_worker_write_actor.sql"));
+  const step4Migration = repoSchemaFiles().filter((file) => file.endsWith("_worker_write_actor.sql") || file.endsWith("_worker_read_actor.sql"));
   const dump = process.env.SUPABASE_PUBLIC_SCHEMA;
   // The dump predates the change log, so it is applied on top like on Supabase.
   const [today, step4, step4Rls] = await Promise.all(dump
@@ -649,6 +656,68 @@ async function main() {
     await assertSameTables(today, step4Rls, `${item.name} (rls after the migration)`);
   }
   console.log(`gate cases: ${GATE_CASES.length} answer alike and leave the same rows (also with a user token after the migration)`);
+
+  // Personal reads of a cookie-only identity (STEP4_WRITE_GATE 10.1): today the user's token and RLS;
+  // in cookie mode without a token, the read gate with the service key (owner filters, actor RPCs).
+  {
+    const IDENTITY_SECRET = "gate-spec-identity-secret-0123456789abcdef";
+    const meSides = sides.map((side) => ({ ...side, env: { ...side.env, API_IDENTITY_SECRET: IDENTITY_SECRET, API_SUPABASE_SECRET_KEY: SECRET } }));
+    const boards = "1:999999,2:999999";
+    const ME_CASES: { name: string; actor?: string; path: string }[] = [
+      { name: "mailbox", path: "/api/me/mailbox" },
+      { name: "mailbox of a user without inquiries", actor: U2, path: "/api/me/mailbox" },
+      { name: "inquiries", path: "/api/me/profile/inquiries" },
+      { name: "inquiries of another user", actor: U3, path: "/api/me/profile/inquiries" },
+      { name: "profile stats", path: "/api/me/profile/stats" },
+      { name: "profile stats of another user", actor: U2, path: "/api/me/profile/stats" },
+      { name: "profile activity", path: "/api/me/profile/activity?category=all&sort=latest&offset=0" },
+      { name: "profile activity, runs by likes", path: "/api/me/profile/activity?category=history_course&sort=likes&offset=0" },
+      { name: "my runs", path: "/api/me/history-runs" },
+      { name: "my run by id", path: "/api/me/history-runs?id=run-u1" },
+      { name: "another user's run by id", path: "/api/me/history-runs?id=run-new" },
+      { name: "my likes and reactions", path: `/api/me/engagement?likes=${encodeURIComponent(`toybox:combo:${COMBO2},sts2-codex:card:BASH`)}&reactions=card:BASH:0.1.0` },
+      { name: "my drafts", path: "/api/me/pagestorm/drafts" },
+      { name: "my draft by id", path: `/api/me/pagestorm/drafts?id=${DRAFT1}` },
+      { name: "another user's draft by id", path: `/api/me/pagestorm/drafts?id=${DRAFT2}` },
+      { name: "another user's drafts", actor: U2, path: "/api/me/pagestorm/drafts" },
+      { name: "my this-or-that likes", path: `/api/me/this-or-that/likes?ids=${TOT2},${TOT_PROD}` },
+      { name: "my this-or-that votes", path: `/api/me/this-or-that/votes?ids=${TOT2},${TOT_NEW}` },
+      { name: "another user's this-or-that votes", actor: U2, path: `/api/me/this-or-that/votes?ids=${TOT2},${TOT_NEW}` },
+      { name: "puzzlebox standings", path: `/api/me/puzzlebox/standings?game=connections&boards=${boards}` },
+      { name: "puzzlebox leaderboard around me", path: `/api/me/puzzlebox/leaderboard?game=connections&boards=${boards}&around_me=1` },
+      { name: "puzzlebox leaderboard of a board", actor: U2, path: `/api/me/puzzlebox/leaderboard?game=connections&boards=${boards}&board=1` },
+    ];
+    const read = async (side: Side, item: { actor?: string; path: string }, how: "token" | "cookie") => {
+      const actor = item.actor ?? U1;
+      const headers: Record<string, string> = how === "token"
+        ? { authorization: `Bearer ${await signer.token(actor, side.issuer)}` }
+        : { cookie: `slseoun_id=${await signIdentityCookie(IDENTITY_SECRET, actor)}` };
+      const response = await mainWorker.fetch(new Request(`${ORIGIN}${item.path}`, { headers }), side.env as never, ctx);
+      const text = await response.text();
+      return { status: response.status, body: normalize(text ? JSON.parse(text) : null) };
+    };
+    resetFlagsForTest();
+    for (const item of ME_CASES) {
+      const before = { today: restToday.calls.length, step4: restStep4.calls.length };
+      const viaToken = await read(meSides[0], item, "token");
+      const viaCookie = await read(meSides[1], item, "cookie");
+      const viaTokenAfter = await read(meSides[2], item, "token");
+      assert.equal(viaToken.status, 200, `${item.name}: today answers ${JSON.stringify(viaToken)}`);
+      assert.deepEqual(viaCookie, viaToken, `${item.name}: a cookie-only identity reads something else`);
+      assert.deepEqual(viaTokenAfter, viaToken, `${item.name}: the step 4 migrations changed what a user token reads`);
+      assert.ok(restToday.calls.slice(before.today).every((call) => call.role === "authenticated"), `${item.name}: the token side reads as the user`);
+      const cookieCalls = restStep4.calls.slice(before.step4);
+      assert.ok(cookieCalls.length > 0 && cookieCalls.every((call) => call.role === "service_role"), `${item.name}: the cookie side reads with the service key`);
+    }
+    // Not vacuous: the reads found the users' rows.
+    const mine = (await read(meSides[1], { path: "/api/me/profile/inquiries" }, "cookie")).body as { rows: unknown[] };
+    assert.ok(mine.rows.length >= 4, "U1's inquiries");
+    const stats = (await read(meSides[1], { path: "/api/me/profile/stats" }, "cookie")).body as { rows: { post_count: number }[] };
+    assert.ok(stats.rows.some((row) => Number(row.post_count) > 0), "U1's activity counts");
+    const standings = (await read(meSides[1], { path: `/api/me/puzzlebox/standings?game=connections&boards=${boards}` }, "cookie")).body as { standings: unknown[] };
+    assert.ok(standings.standings.length > 0, "U1's puzzlebox standing");
+    console.log(`me reads: ${ME_CASES.length} answer alike for a cookie-only identity (service key) and a token (RLS)`);
+  }
 
   // Known difference, last because it leaves different rows (STEP4_WRITE_GATE 9.10): a hand-made batch that
   // mixes another user's run with a new one is refused as a whole today; one run at a time, the honest run

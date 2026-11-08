@@ -95,7 +95,8 @@ history-runs, puzzlebox, contact, profile(문의 읽음). nav와 colorful-philos
    읽기(좋아요 수, 반응 합계)는 지금처럼 publishable 키로 간다.
 4. 게이트는 흘려보내던 업로드 본문(글, 임시 저장, 덧글 본문, 런)을 읽어 파싱하고(24 MiB 상한), `decideWrite`로 판단한
    뒤 service 키로 보낸다. 사용자 토큰은 보내지 않는다. 조회(소유 확인, 원글 확인, 문의 수)도 service 키다.
-5. `me` 경로(개인 읽기)는 이 단계에서 바꾸지 않는다. 계속 사용자 토큰이다.
+5. `me` 경로(개인 읽기)는 요청에 그 uid의 사용자 토큰이 있으면 지금처럼 토큰이다. 서명 쿠키만 있는 신원(쿠키 방식의
+   브라우저는 토큰을 보내지 않는다)은 읽기 게이트(`write-gate/me-read.ts`)를 거쳐 service 키로 읽는다(10.1).
 
 ### 4.2 신원
 
@@ -125,6 +126,14 @@ history-runs, puzzlebox, contact, profile(문의 읽음). nav와 colorful-philos
    `request.jwt.claim.sub`를 actor로 두고 원래 RPC를 그대로 부른다. SECURITY INVOKER, `search_path` 빈 값, 실행 권한은
    service_role만(Supabase 기본 권한이 주는 anon·authenticated 실행을 거둔다). 그래서 대진·크기·후보 검사, 3초·하루
    500판 제한, 통계와 순위가 지금과 같다. D1 설계 5.5절의 `mirror_favorite_tournament_play`(5단계)와는 별개다.
+
+3. (2026-11-09 추가, 적용 안 함) `supabase/migrations/20261109150000_worker_read_actor.sql`, `db-first-additive`,
+   `before-push`(어느 env든 `identity.mode = cookie`를 켜기 전). 되돌리기는
+   `docs/release/worker-read-actor/rollback_worker_read_actor.sql`(`identity.mode`가 token으로 돌아간 뒤에만). 개인 읽기
+   RPC 넷(`get_my_profile_activity_stats`, `get_my_profile_activity`, `get_puzzlebox_leaderboard`,
+   `get_my_puzzlebox_standings`)의 `worker_*` 래퍼다. 2번과 같은 모양(트랜잭션 동안만 sub, service_role만 실행, 원래 RPC를
+   그대로). 프로필 RPC는 SECURITY INVOKER라 service 역할로 RLS를 지나 읽지만, 읽는 행이 모두 그 사용자의 것(auth.uid()로
+   거름)이거나 모두가 읽는 표라 답이 같다(동등성 spec).
 
 Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마이그레이션을 올리면 둘 다에 적용되지만 브라우저
 역할에는 바뀌는 것이 없다. `d1-change-log.spec.ts`를 `SUPABASE_PUBLIC_SCHEMA`(2026-11-05 백업)로 돌리면 이 파일 때문에
@@ -252,8 +261,22 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 
 ## 10. 열린 질문
 
-1. 쿠키 신원만 있는 사용자의 `me` 경로(개인 읽기, `get_my_*`)는 아직 사용자 토큰이 필요하다. 쿠키 작업이 같은
-   게이트 방식(service 읽기 + 소유 필터, actor RPC)으로 옮길지 합칠 때 정한다.
+1. 쿠키 신원만 있는 사용자의 `me` 경로(개인 읽기, `get_my_*`): 2026-11-09 같은 게이트 방식으로 옮겼다(`step4/prereqs`).
+   쿠키 방식의 브라우저는 토큰을 보내지 않으므로, 신원 작업만으로는 `me` 호출이 anon으로 Supabase에 닿아 RLS가 행을
+   숨기고 `get_my_*`는 실행 권한이 없었다.
+   - 라우터: `me` 경로에서 풀린 신원에 토큰이 없고(쿠키만) Worker에 secret 키가 있으면 핸들러 config 앞에 읽기
+     게이트를 달고 토큰을 자리표시로 바꾼다. 플래그는 따로 없다(토큰이 있으면 지금 그대로, 되돌리기는
+     `identity.mode = token`).
+   - 읽기 게이트(`decideMeRead`): 표 읽기는 쿼리 그대로 service 키로 보내되, 자기 행만 보이는 SELECT 정책의 표
+     (`TABLE_RULES`의 `select: "owner"`: 문의, 임시 저장, 이거 아님 저거? 투표)에는 소유 필터를 붙인다. 열 단위 권한(문의)은
+     select·필터·정렬 열에 그대로 적용(42501), 묶어 읽는 표는 모두가 읽는 표만(댓글 좋아요의 댓글). `auth.uid()`를 읽는
+     RPC 넷은 5절 3번의 래퍼로 `p_actor`를 붙여 보낸다. 그 밖(쓰기, 논리 필터, 모르는 표·RPC)은 보내지 않고 500
+     `gate_unsupported`.
+   - 검증: 동등성 spec이 `me` 경로 11개를 22가지로(내 것·남의 것, id 지정) 오늘(토큰, RLS)과 쿠키만(service 키, 4단계
+     마이그레이션 둘)에서 같은 답인지 본다. `me.engagement`의 댓글 좋아요(`comments!inner` 묶어 읽기)는 가짜 PostgREST가
+     묶어 읽기를 못 해 결정 단위 spec(`write-gate.spec.ts`)으로만 본다.
+   - 5절 3번 마이그레이션을 올리기 전에는 쿠키 방식에서 프로필 통계·활동, 퍼즐상자 내 순위·순위표의 `me` 읽기가
+     PGRST202다. 이 코드 없이 쿠키 방식이면 anon으로 닿아 앞의 셋은 실행 권한이 없고(42501) 순위표는 "나"가 빠진다.
 
 합칠 때의 메모:
 

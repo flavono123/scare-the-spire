@@ -21,6 +21,7 @@ import { clientIp, withinRateLimit, type RateLimitEnv, type RateLimitKind } from
 import { supabaseApiConfig, type SupabaseApiConfig } from "./supabase-rest";
 import { workerWriteContext, writeActor, type WriteGateEnv } from "./write-gate/gate";
 import { withPathDefault } from "./path-default";
+import { meReadContext } from "./write-gate/me-read";
 
 /**
  * The same-origin API router (docs/supabase-exit/STEP1_DESIGN.md 4). It owns
@@ -297,8 +298,11 @@ export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterO
         bodyStream = request.body;
       }
       // Step 4: write.<group> = worker checks the write in the Worker and sends it with the service key,
-      // owned by the identity resolved above (write-gate/gate.ts writeActor).
-      const gated = route.access === "write" ? await workerWriteContext(env, ctx, route.group, config, writeActor(user)) : null;
+      // owned by the identity resolved above (write-gate/gate.ts writeActor). A personal read of a
+      // cookie-only identity (no Supabase token) goes out the same way, limited like RLS (write-gate/me-read.ts).
+      const gated = route.access === "write"
+        ? await workerWriteContext(env, ctx, route.group, config, writeActor(user))
+        : token === null ? meReadContext(env, config, writeActor(user)) : null;
       handlerContext = { ...base, user, token: token ?? "", identitySource: source, body, bodyStream, ...gated };
       const userContext = handlerContext as UserRouteContext;
       // Step 5: the write gate (pause, D1 source); null keeps the route's own handler.
