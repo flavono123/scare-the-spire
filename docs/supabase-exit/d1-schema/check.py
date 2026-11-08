@@ -71,7 +71,8 @@ def main():
     if gen.returncode != 0:
         print((gen.stdout + gen.stderr).strip())
         sys.exit(1)
-    migrations = sorted(f for f in os.listdir(MIG) if re.fullmatch(r"[0-9]{4}_[a-z0-9_]+\.sql", f))
+    # The files wrangler applies: its default migrations pattern is *.sql (no dotfiles), in name order.
+    migrations = sorted(f for f in os.listdir(MIG) if f.endswith(".sql") and not f.startswith("."))
     db_path = os.path.join(tempfile.mkdtemp(prefix="d1-schema-check-"), "check.db")
     ddl = "PRAGMA foreign_keys=ON;\n" + "\n".join(
         open(os.path.join(MIG, f), encoding="utf-8").read() for f in migrations)
