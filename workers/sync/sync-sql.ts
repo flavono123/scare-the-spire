@@ -33,10 +33,14 @@ export const S13C =
 
 export const S13D = "DELETE FROM sync_pending_raw WHERE post_id = ?1;";
 
-/** The flag and whether the first copy handed over its watermark (the sync_state row exists). */
+/**
+ * The flag, whether the first copy handed over its watermark (the sync_state row exists), and the
+ * last run's error note (a "split:<first id>:<items>" note starts this run's batch smaller).
+ */
 export const SYNC_GATE =
   "SELECT (SELECT value FROM runtime_flags WHERE key = 'sync.enabled') AS flag, " +
-  "EXISTS (SELECT 1 FROM sync_state WHERE name = 'supabase_in') AS started";
+  "EXISTS (SELECT 1 FROM sync_state WHERE name = 'supabase_in') AS started, " +
+  "(SELECT last_error FROM sync_state WHERE name = 'supabase_in') AS last_error";
 
 /** Every open 'in' reject key: changes to these keys fold into the reject (design 5.3 item 4). */
 export const OPEN_KEYS = "SELECT table_name, row_key FROM sync_rejects WHERE direction = 'in' AND resolved_at IS NULL";

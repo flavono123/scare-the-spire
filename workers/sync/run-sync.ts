@@ -197,7 +197,7 @@ export async function runSync(env: SyncEnv, options: SyncOptions = {}): Promise<
   const log = options.log ?? ((line: string) => console.log(line));
 
   report.statements += 1;
-  const gate = await db.prepare(SYNC_GATE).first<{ flag?: unknown; started?: unknown }>();
+  const gate = await db.prepare(SYNC_GATE).first<{ flag?: unknown; started?: unknown; last_error?: unknown }>();
   if (gate?.flag !== "on") return { ...report, status: "flag_off" };
   if (!gate.started) return { ...report, status: "not_started" };
   const config = supabaseServiceConfig(env);
@@ -222,12 +222,14 @@ export async function runSync(env: SyncEnv, options: SyncOptions = {}): Promise<
     now,
     log,
     fetcher: options.fetcher,
-    deadline: startedAt + RUN_DEADLINE_MS,
+    // Wall clock: the PostgREST helpers compare deadlines with Date.now().
+    deadline: Date.now() + RUN_DEADLINE_MS,
     leaseUntil,
     low: Number(leaseRow.low_watermark),
     high: Number(leaseRow.high_seen),
     applied: (JSON.parse(leaseRow.applied_above) as number[]).map(Number),
     openKeys: (openKeys.results as Array<{ table_name: string; row_key: string }>).map((row) => keyText(row.table_name, row.row_key)),
+    split: parseSplitNote(gate.last_error),
   });
   report.status = "ok";
   try {
@@ -266,7 +268,23 @@ type RunInit = {
   high: number;
   applied: number[];
   openKeys: string[];
+  /** The last run's failing batch that it had no budget left to split. */
+  split: { firstId: number; items: number } | null;
 };
+
+/**
+ * A run whose first batch fails and leaves too little budget to halve it notes the failing prefix
+ * in sync_state.last_error; the next run starting at the same id tries half of it first. Without
+ * this, every run would retry the same full batch and the watermark would never move.
+ */
+export function splitNote(firstId: number, items: number): string {
+  return `split:${firstId}:${items}`;
+}
+
+function parseSplitNote(value: unknown): { firstId: number; items: number } | null {
+  const match = typeof value === "string" ? /^split:(\d+):(\d+)$/.exec(value) : null;
+  return match ? { firstId: Number(match[1]), items: Number(match[2]) } : null;
+}
 
 class SyncRun {
   private readonly low: number;
@@ -281,6 +299,8 @@ class SyncRun {
   private rereads = 0;
   private retryStatements = 0;
   private stopped = false;
+  /** A slice known to hold a failing change that this run had no budget left to split. */
+  private note: { firstId: number; items: number } | null = null;
 
   constructor(
     private readonly db: D1Database,
@@ -502,7 +522,18 @@ class SyncRun {
     const items = this.buildItems(bodies);
     const cut = this.cutToBudget(items);
     if (cut.length > 0) {
-      await this.attempt(cut);
+      // The last run left a failing slice here unsplit: go on splitting it instead of retrying it whole.
+      const split = this.init.split;
+      if (split && cut[0].ids[0] === split.firstId && cut.length >= split.items) {
+        await this.attempt(cut.slice(0, split.items), true);
+      } else {
+        await this.attempt(cut, false);
+      }
+      if (this.note) {
+        const note = splitNote(this.note.firstId, this.note.items);
+        this.report.error = note;
+        await this.recordFailure(note);
+      }
     } else {
       await this.commitWindowOnly();
     }
@@ -645,9 +676,16 @@ class SyncRun {
     this.report.window = window;
   }
 
-  /** One batch; halves on a constraint error down to one change (design 5.3 items 6 and 7). */
-  private async attempt(items: Item[]): Promise<void> {
-    if (items.length === 0 || this.stopped) return;
+  /**
+   * One batch; halves on a constraint error down to one change (design 5.3 items 6 and 7).
+   * `failing`: the slice is known to hold a failing change, so it is split without a whole try.
+   * "passed": committed whole; "settled": failed and was split (or rejected) to the end;
+   * "refused": out of budget, the rest waits for the next run.
+   */
+  private async attempt(items: Item[], failing: boolean): Promise<"passed" | "settled" | "refused"> {
+    if (items.length === 0) return "passed";
+    if (this.stopped) return "refused";
+    if (failing && items.length > 1) return this.split(items);
     const ids = items.flatMap((item) => item.ids);
     const touched = mergeTouched(items.map((item) => item.touched));
     const body = [
@@ -655,10 +693,10 @@ class SyncRun {
       ...items.flatMap((item) => item.statements),
       ...recountStatements(touched, this.nowMs),
     ];
-    // Out of budget: stop halving, the rest waits for the next run (design 5.3 item 7).
     if (body.length + 1 + FOLLOW_UP_RESERVE > this.budgetLeft()) {
       this.stopped = true;
-      return;
+      if (failing) this.note = { firstId: items[0].ids[0], items: items.length };
+      return "refused";
     }
     const statements = [...body, this.s11For(ids, body.length + 1)];
     let results: D1Result[];
@@ -667,14 +705,9 @@ class SyncRun {
     } catch (error) {
       const kind = classifyD1Error(error);
       if (kind === "transient") throw error;
-      if (items.length > 1) {
-        const middle = Math.ceil(items.length / 2);
-        await this.attempt(items.slice(0, middle));
-        await this.attempt(items.slice(middle));
-        return;
-      }
+      if (items.length > 1) return this.split(items);
       await this.single(items[0], kind, error);
-      return;
+      return "settled";
     }
     this.commitDone(ids);
     for (const item of items) {
@@ -683,6 +716,21 @@ class SyncRun {
       }
     }
     await this.followUps(items, results, 1);
+    return "passed";
+  }
+
+  /** Halves of a failing slice; a second half after a passing first half holds the failure. */
+  private async split(items: Item[]): Promise<"settled" | "refused"> {
+    const middle = Math.ceil(items.length / 2);
+    const first = await this.attempt(items.slice(0, middle), false);
+    if (first === "refused") {
+      // The first half did not fit: the next run splits this whole slice (unless a smaller failing
+      // slice inside it was noted already).
+      this.note ??= { firstId: items[0].ids[0], items: items.length };
+      return "refused";
+    }
+    const second = await this.attempt(items.slice(middle), first === "passed");
+    return second === "refused" ? "refused" : "settled";
   }
 
   /** One change failed alone: an FK error gets one re-read; otherwise it becomes a reject. */
