@@ -50,7 +50,10 @@ export type UserRouteContext = BaseContext & {
    * when the request carried no token for the cookie's uid (identity/resolve.ts).
    */
   token: string;
-  /** How `user` was established: `token` (step 1) or `cookie` (step 4, plan 5.3). */
+  /**
+   * How `user` was established: `token` (step 1, and step 4 calls that carry no
+   * valid cookie yet) or `cookie` (step 4, plan 5.3).
+   */
   identitySource: IdentityMode;
   /** The parsed JSON body when the route declares `body`; otherwise undefined. */
   body: unknown;

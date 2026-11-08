@@ -24,6 +24,9 @@ import { apiIdentityMode, type IdentityFlagsEnv } from "./mode";
  *   only when it names the same uid; otherwise `token` is null. Handlers that
  *   still forward `token` then reach PostgREST as anon and RLS refuses, so turn
  *   cookie mode on only after the step 4 writes use the service key.
+ *   Without a valid cookie, a valid bearer token still names the user
+ *   (`source: "token"`), so clients that have not claimed yet keep writing as
+ *   today; with neither the answer is `identity_required`.
  */
 
 export type RequestIdentity = {
@@ -79,10 +82,18 @@ export async function resolveRequestIdentity(
   const secret = identitySecret(env) as string;
   const now = Math.floor(Date.now() / 1000);
   const cookie = await verifyIdentityCookie(secret, readCookie(request, IDENTITY_COOKIE_NAME), now);
-  if (!cookie.ok) return { ok: false, code: "identity_required", setCookies };
+  const { token, check } = await verifiedBearer(request, config, ctx);
+  if (!cookie.ok) {
+    // No cookie yet: a page that has not seen slseoun_idm (an isolate without the
+    // flags in memory sends no signal) or JS from before step 4. Its Supabase
+    // bearer token is today's proof of the same uid, so the call goes on as in
+    // token mode; the signal above makes the next call claim.
+    if (!token || !check) return { ok: false, code: "identity_required", setCookies };
+    if (!check.ok) return { ok: false, code: TOKEN_ERRORS[check.reason], setCookies };
+    return { ok: true, identity: { source: "token", user: check.user, token }, setCookies };
+  }
   if (cookie.renew) setCookies.push(identityCookieHeader(await signIdentityCookie(secret, cookie.uid, now), secure));
 
-  const { token, check } = await verifiedBearer(request, config, ctx);
   const sameUser = token !== null && check?.ok === true && check.user.userId === cookie.uid;
   return {
     ok: true,

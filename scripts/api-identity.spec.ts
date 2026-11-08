@@ -422,8 +422,17 @@ async function main() {
     assert.deepEqual(sameToken.body, { uid: USER, token, source: "cookie" }, "an old tab's token for the same uid is handed on");
     const otherToken = await call("/api/me/spec-echo", { cookie: goodCookie, authorization: `Bearer ${await signer.es256({ sub: OTHER })}` });
     assert.deepEqual(otherToken.body, { uid: USER, token: "", source: "cookie" }, "the cookie wins; another uid's token is dropped");
-    const missing = await call("/api/write/spec-echo", { authorization: `Bearer ${token}` });
-    assert.deepEqual([missing.status, missing.body.error], [401, "identity_required"], "cookie mode needs the cookie");
+    // No cookie yet (no signal on the page, or JS from before step 4): the bearer token still names the user.
+    const unclaimed = await call("/api/write/spec-echo", { authorization: `Bearer ${token}` });
+    assert.deepEqual([unclaimed.status, unclaimed.body], [200, { uid: USER, token, source: "token" }], "an unclaimed tab keeps writing with its token");
+    assert.ok(cookiesOf(unclaimed.response).some((cookie) => cookie.startsWith("slseoun_idm=cookie")), "and is told to claim");
+    assert.equal(cookieValue(unclaimed.response, "slseoun_id"), null, "a bearer call issues no identity cookie");
+    const unclaimedExpired = await call("/api/write/spec-echo", { authorization: `Bearer ${await signer.es256({ exp: now() - 60 })}` });
+    assert.deepEqual([unclaimedExpired.status, unclaimedExpired.body.error], [401, "token_expired"], "an expired token is refreshed as today");
+    assert.equal((await call("/api/write/spec-echo", { authorization: "Bearer x.y.z" })).body.error, "token_invalid");
+    assert.equal((await call("/api/write/spec-echo", { cookie: "slseoun_id=v1.garbage", authorization: `Bearer ${token}` })).body.source, "token", "a bad cookie falls back to the token too");
+    const missing = await call("/api/write/spec-echo");
+    assert.deepEqual([missing.status, missing.body.error], [401, "identity_required"], "neither cookie nor token");
     assert.ok(cookiesOf(missing.response).some((cookie) => cookie.startsWith("slseoun_idm=cookie")));
     const tampered = goodCookie.replace(USER, OTHER);
     assert.equal((await call("/api/write/spec-echo", { cookie: tampered })).body.error, "identity_required");
