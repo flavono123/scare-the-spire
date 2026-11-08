@@ -83,7 +83,7 @@ export type MirrorReport = {
 
 export type SendResult = { ok: true } | { ok: false; transient: boolean; code: string };
 
-type CallRequest = { method: "POST" | "PATCH" | "DELETE"; path: string; query?: URLSearchParams; body?: string; contentType?: string; prefer?: string[] };
+export type CallRequest = { method: "POST" | "PATCH" | "DELETE"; path: string; query?: URLSearchParams; body?: string; contentType?: string; prefer?: string[] };
 
 /** What to do for one outbox row: a call, nothing (the key is gone from D1), or a permanent refusal. */
 export type Built = { request: CallRequest } | { skip: true } | { error: string };
@@ -104,15 +104,17 @@ export function isTransient(status: number, code: string): boolean {
   return code === "timeout" || code === "network";
 }
 
-async function call(
+export async function call(
   config: MirrorConfig,
   fetcher: Fetcher,
   request: CallRequest,
 ): Promise<SendResult> {
   const url = new URL(`${config.url}/rest/v1/${request.path}`);
   if (request.query) url.search = request.query.toString();
-  // A new-format secret key is not a JWT: apikey only, never as the bearer (STEP1_DESIGN 5).
+  // A new-format secret key is not a JWT: apikey only, never as the bearer (STEP1_DESIGN 5). Only the
+  // reload script can pass a legacy JWT service key (mirrorConfig takes sb_secret_ only); it also goes as the bearer.
   const headers = new Headers({ apikey: config.key, Accept: "application/json" });
+  if (!config.key.startsWith("sb_")) headers.set("Authorization", `Bearer ${config.key}`);
   if (request.body !== undefined) headers.set("Content-Type", request.contentType ?? "application/json");
   headers.set("Prefer", ["return=minimal", ...(request.prefer ?? [])].join(","));
   const controller = new AbortController();
@@ -199,7 +201,24 @@ export function buildCall(
   return { request: { method: "POST", path: spec.table, query, body, prefer } };
 }
 
-async function send(config: MirrorConfig, fetcher: Fetcher, built: Built): Promise<SendResult> {
+/**
+ * The mirror's call for one D1 row sent as `op`, outside the outbox (the step 7 reload,
+ * scripts/d1-sync/reload-supabase.ts): the same bodies, RPCs and run text body as the mirror.
+ */
+export function callForRow(
+  config: MirrorConfig,
+  table: string,
+  op: OutboxOp,
+  row: Record<string, unknown>,
+  stats?: Record<string, unknown>[],
+): Built {
+  const spec = mirrorTable(table);
+  const match = Object.fromEntries(spec.key.map((name) => [name, row[name]]));
+  const record: OutboxRecord = { seq: 0, table_name: table, op, match_key: JSON.stringify(match), payload: null, attempts: 0, next_attempt_at: 0 };
+  return buildCall(config, { record, spec, match, payload: null, read: -1, statsRead: -1 }, row, stats);
+}
+
+export async function send(config: MirrorConfig, fetcher: Fetcher, built: Built): Promise<SendResult> {
   if ("skip" in built) return { ok: true };
   if ("error" in built) return { ok: false, transient: false, code: built.error };
   return call(config, fetcher, built.request);

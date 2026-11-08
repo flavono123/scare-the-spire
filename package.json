@@ -56,7 +56,7 @@
     "test:entity-subset": "tsx scripts/entity-subset.spec.tsx",
     "test:security-headers": "tsx scripts/security-headers.spec.ts",
     "test:api": "tsx scripts/api-jwt.spec.ts && tsx scripts/api-supabase-rest.spec.ts && tsx scripts/api-worker.spec.ts && tsx scripts/api-comments.spec.ts && tsx scripts/api-client.spec.ts && tsx scripts/api-write-retry.spec.ts",
-    "test:d1-sync": "tsx scripts/d1-change-log.spec.ts && tsx scripts/d1-row-mapper.spec.ts && tsx scripts/d1-run-summary.spec.ts && tsx scripts/d1-run-summary-backup-check.ts && tsx scripts/d1-first-copy.spec.ts && tsx scripts/d1-first-copy-backup-check.ts && tsx scripts/d1-reconcile.spec.ts",
+    "test:d1-sync": "tsx scripts/d1-change-log.spec.ts && tsx scripts/d1-row-mapper.spec.ts && tsx scripts/d1-run-summary.spec.ts && tsx scripts/d1-run-summary-backup-check.ts && tsx scripts/d1-first-copy.spec.ts && tsx scripts/d1-first-copy-backup-check.ts && tsx scripts/d1-reconcile.spec.ts && tsx scripts/d1-write.spec.ts && tsx scripts/d1-mirror.spec.ts && tsx scripts/d1-step5-supabase.spec.ts && tsx scripts/d1-cutover.spec.ts && tsx scripts/d1-reload-supabase.spec.ts",
     "d1:reconcile": "tsx scripts/d1-reconcile.ts",
     "flags": "tsx scripts/runtime-flags.ts",
     "audit:version-api": "tsx scripts/audit-version-api-canonical.ts",

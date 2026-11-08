@@ -96,7 +96,7 @@ export class PgliteRest {
     const parts: string[] = [];
     const params: string[] = [];
     for (const [name, value] of url.searchParams) {
-      if (["on_conflict", "select", "order", "limit"].includes(name)) continue;
+      if (["on_conflict", "select", "order", "limit", "offset"].includes(name)) continue;
       const match = /^eq\.([\s\S]*)$/.exec(value);
       if (!match) throw new Error(`unsupported filter ${name}=${value}`);
       params.push(match[1]);
@@ -152,7 +152,11 @@ export class PgliteRest {
         return `${ident(col)} ${dir === "desc" ? "desc" : "asc"}`;
       }).join(", ")}` : "";
       const limit = url.searchParams.get("limit");
-      const { rows } = await this.db.query(`select ${columns} from ${table} ${where.sql} ${orderSql} ${limit ? `limit ${Number(limit)}` : ""}`, where.params);
+      const offset = url.searchParams.get("offset");
+      const { rows } = await this.db.query(
+        `select ${columns} from ${table} ${where.sql} ${orderSql} ${limit ? `limit ${Number(limit)}` : ""} ${offset ? `offset ${Number(offset)}` : ""}`,
+        where.params,
+      );
       return Response.json(rows);
     }
     if (method === "DELETE") {
