@@ -13,9 +13,12 @@ import { FRESH_MS, STALE_MAX_MS } from "../flags";
  * to, and whether writes are paused for the cutover. Read from D1 runtime_flags beside the step 1
  * path flags, kept in isolate memory like them (a value older than FRESH_MS is re-read).
  *
- * Fail closed: when the flags cannot be read and no value younger than STALE_MAX_MS is in memory,
- * the gate is unknown and the write answers 503 (the client retries later). Guessing "supabase"
- * while D1 is the source would split the stores.
+ * When the flags cannot be read and no value younger than STALE_MAX_MS is in memory, readWriteGate
+ * returns null and the hook (index.ts fallbackGate) uses the Worker var API_WRITE_SOURCE_DEFAULT
+ * (supabase unless it says d1), never paused. That keeps today's behaviour while no flag is set;
+ * once D1 is the source, set API_WRITE_SOURCE_DEFAULT=d1 at the next deploy so an unreadable gate
+ * cannot send a write to Supabase. (The router's own path flags fail the same way: a request only
+ * gets here when they were read within STALE_MAX_MS.)
  */
 
 export type WriteGate = {
