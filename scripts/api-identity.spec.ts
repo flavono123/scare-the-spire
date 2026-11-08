@@ -342,15 +342,13 @@ async function main() {
     assert.equal(bad.body.uid, NEW_USER, "an invalid cookie means a new user");
     assert.equal(auth.signups.length, 2);
 
+    // A failed sign-up is a failed sign-in as today: 503, no Worker-made uid, no cookie.
     for (const mode of ["http_500", "http_429", "network", "garbage"] as const) {
       auth.signupMode = mode;
-      const fallback = await claim({});
-      assert.equal(fallback.status, 200, mode);
-      assert.equal(fallback.body.created, true);
-      assert.equal(fallback.body.session, null, `${mode}: no Supabase session`);
-      assert.match(String(fallback.body.uid), /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
-      assert.notEqual(fallback.body.uid, NEW_USER);
-      assert.equal(await cookieUid(fallback.response), fallback.body.uid, `${mode}: the Worker made the uid`);
+      const failed = await claim({});
+      assert.deepEqual([failed.status, failed.body], [503, { error: "auth_unavailable" }], mode);
+      assert.equal(cookieValue(failed.response, "slseoun_id"), null, `${mode}: no identity cookie`);
+      assert.equal(failed.response.headers.get("x-slseoun-api"), "1", `${mode}: a router answer, not a legacy signal`);
     }
     auth.signupMode = "ok";
   }

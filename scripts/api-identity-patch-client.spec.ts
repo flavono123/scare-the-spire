@@ -104,6 +104,17 @@ async function main() {
     assert.equal(write.session.user?.id, NEW_USER);
   }
 
+  // Cookie mode, no Supabase session, the Worker's sign-up failed: a failed sign-in as today.
+  {
+    const { client, document, store, sent, state } = load();
+    document.cookie = "slseoun_idm=cookie";
+    state.respond = (request) => request.url === "/api/auth/claim" ? marked({ error: "auth_unavailable" }, 503) : marked({ ok: true });
+    await assert.rejects(() => client.apiWriteAsUser(CONFIG, "/api/write/comments", { method: "POST", body: {} }), (error: { code?: string }) => error.code === "auth_unavailable");
+    assert.deepEqual(sent.map((request) => request.url), ["/api/auth/claim"], "no write and no sign-up from the browser");
+    assert.equal(store.get(AUTH_KEY), undefined);
+    assert.equal(store.get("slseoun-identity"), undefined);
+  }
+
   // identity_required claims again and resends once; a legacy claim answer goes back to tokens.
   {
     const { client, document, store, sent, state } = load();

@@ -44,7 +44,7 @@ const AUTH_KEY = "sb-abcdefghijklmnopqrst-auth-token";
 type Sent = { url: string; method: string; headers: Record<string, string>; body: unknown; credentials?: string };
 
 async function main() {
-  const { ApiError } = await import("../src/lib/api-client");
+  const { ApiError, ApiUnavailableError } = await import("../src/lib/api-client");
   const { apiFetchAsUser } = await import("../src/lib/api-session");
   const identity = await import("../src/lib/api-identity");
 
@@ -215,6 +215,11 @@ async function main() {
   reset("slseoun_idm=cookie");
   await assert.rejects(() => apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), (error) => error instanceof ApiError && error.code === "token_invalid");
   assert.equal(sent.length, 0, "apiFetchAsUser never signs up (ensureUser does)");
+  // The Worker's sign-up failed: a failed sign-in as today, nothing remembered.
+  respond = () => marked({ error: "auth_unavailable" }, 503);
+  await assert.rejects(() => identity.claimNewIdentity(), (error) => error instanceof ApiUnavailableError && error.code === "auth_unavailable");
+  assert.equal(identity.claimedUid(), null);
+  sent.length = 0;
   const session = { access_token: "a", refresh_token: "r", expires_in: 3600, expires_at: 2, token_type: "bearer", user: { id: NEW_USER } };
   respond = () => marked({ v: 1, uid: NEW_USER, created: true, session });
   const created = await identity.claimNewIdentity();

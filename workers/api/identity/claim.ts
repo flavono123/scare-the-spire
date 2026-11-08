@@ -23,8 +23,11 @@ import { supabaseAnonymousSignup } from "./supabase-signup";
  *   The browser keeps its Supabase session in localStorage (plan: until step 7).
  * - `{}`: a new user. A request that already has a valid cookie keeps it.
  *   Otherwise the Worker signs up anonymously on Supabase and returns that
- *   session so supabase-js holds the same uid. Only when Supabase Auth fails
- *   does the Worker make the uid itself (plan 5.3, 8).
+ *   session so supabase-js holds the same uid. When that sign-up fails the
+ *   answer is 503 auth_unavailable and no cookie, as a failed anonymous sign-in
+ *   leaves the user unable to write today. The Worker makes no uid of its own
+ *   while Supabase holds the data (a uid outside auth.users breaks its FKs);
+ *   plan 5.3's Worker-made uid waits until Supabase is retired.
  */
 
 export type ClaimEnv = IdentityFlagsEnv & RateLimitEnv;
@@ -160,10 +163,8 @@ async function claim(
 
   const signup = await supabaseAnonymousSignup(config, fetcher);
   if (signup.ok) return { response: await respond(request, url, secret, signup.uid, true, signup.session, now), code: "signed_up" };
-  // Plan 5.3: only when Supabase Auth fails does the Worker make the uid. That uid
-  // is not in auth.users, so Supabase writes that reference it fail (FK) while
-  // Supabase is the write source.
-  return { response: await respond(request, url, secret, crypto.randomUUID(), true, null, now), code: `worker_uid:${signup.code}` };
+  // No Worker-made uid while Supabase holds the data: answer like a failed sign-in today.
+  return { response: apiError("auth_unavailable"), code: `auth_unavailable:${signup.code}` };
 }
 
 /** Handles the claim path; `fetcher` replaces the Supabase Auth fetch in specs. */
