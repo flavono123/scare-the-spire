@@ -16,6 +16,17 @@ export type SupabaseApiConfig = {
   url: string;
   key: string;
   dataEnv: ApiDataEnv;
+  /**
+   * Step 4 worker write mode (workers/api/write-gate): calls that carry a user
+   * token go to the gate, which checks them and writes with the service key.
+   * Unset on the rls path, so those calls go out exactly as before.
+   */
+  writeGate?: WriteGateHook;
+};
+
+export type WriteGateHook = {
+  postgrest(request: RestRequest): Promise<RestResult<unknown>>;
+  stream(request: StreamRequest): Promise<StreamResult>;
 };
 
 export type Fetcher = (input: Request | string | URL, init?: RequestInit) => Promise<Response>;
@@ -120,6 +131,7 @@ function compactQuery(query: URLSearchParams | undefined): string {
 
 export async function postgrest<T>(config: SupabaseApiConfig, request: RestRequest): Promise<RestResult<T>> {
   if (!PATH.test(request.path)) throw new Error(`invalid PostgREST path: ${request.path}`);
+  if (config.writeGate && request.token) return config.writeGate.postgrest(request) as Promise<RestResult<T>>;
   const method = request.method ?? "GET";
   const url = new URL(`${config.url}/rest/v1/${request.path}`);
   if (request.query) url.search = compactQuery(request.query);
@@ -222,6 +234,7 @@ export type StreamResult = { ok: true; status: number; response: Response } | Re
  */
 export async function postgrestStream(config: SupabaseApiConfig, request: StreamRequest): Promise<StreamResult> {
   if (!PATH.test(request.path)) throw new Error(`invalid PostgREST path: ${request.path}`);
+  if (config.writeGate && request.token) return config.writeGate.stream(request);
   const method = request.method ?? "GET";
   const url = new URL(`${config.url}/rest/v1/${request.path}`);
   if (request.query) url.search = compactQuery(request.query);

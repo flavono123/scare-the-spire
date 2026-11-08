@@ -17,6 +17,7 @@
 | 파일 | Rollout | Order | 적용 | 확인 |
 |---|---|---|---|---|
 | `20261108130427_d1_change_log.sql`(2단계 변경 로그, 되돌리기 `d1-change-log/rollback_d1_change_log.sql`) | db-first-additive | before-push | 미적용 | 로컬 PGlite `pnpm test:d1-sync` 통과 |
+| `20261108160000_worker_write_actor.sql`(4단계 Worker 쓰기: 문의 트리거 `WHEN`, actor RPC 래퍼. 되돌리기 `worker-write-actor/rollback_worker_write_actor.sql`. 브라우저 직접 쓰기 닫기·되살리기 `step4-direct-writes/*.sql`은 마이그레이션이 아니다) | db-first-additive | before-push(service 키로 문의를 쓰는 첫 `write.contact = worker` 전) | 미적용 | 로컬 PGlite `pnpm test:write-gate` 통과(저장소 SQL과 2026-11-05 덤프 사본) |
 
 ## D1 마이그레이션
 

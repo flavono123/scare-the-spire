@@ -18,6 +18,7 @@ import { resolveRequestIdentity } from "./identity/resolve";
 import type { VerifiedSupabaseUser } from "./jwt";
 import { clientIp, withinRateLimit, type RateLimitEnv, type RateLimitKind } from "./rate-limit";
 import { supabaseApiConfig, type SupabaseApiConfig } from "./supabase-rest";
+import { workerWriteContext, writeActor, type WriteGateEnv } from "./write-gate/gate";
 
 /**
  * The same-origin API router (docs/supabase-exit/STEP1_DESIGN.md 4). It owns
@@ -26,7 +27,7 @@ import { supabaseApiConfig, type SupabaseApiConfig } from "./supabase-rest";
  * switch, QA, flag, token, rate limit, body, handler.
  */
 
-export type ApiEnv = FlagsEnv & RateLimitEnv & IdentityEnv;
+export type ApiEnv = FlagsEnv & RateLimitEnv & IdentityEnv & WriteGateEnv;
 
 type BaseContext = {
   request: Request;
@@ -292,7 +293,10 @@ export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterO
         if (Number(length) > route.rawBody.maxBytes) return userError("too_large");
         bodyStream = request.body;
       }
-      handlerContext = { ...base, user, token: token ?? "", identitySource: source, body, bodyStream };
+      // Step 4: write.<group> = worker checks the write in the Worker and sends it with the service key,
+      // owned by the identity resolved above (write-gate/gate.ts writeActor).
+      const gated = route.access === "write" ? await workerWriteContext(env, ctx, route.group, config, writeActor(user)) : null;
+      handlerContext = { ...base, user, token: token ?? "", identitySource: source, body, bodyStream, ...gated };
       response = await route.handle(handlerContext as UserRouteContext);
       response = withSetCookies(response, resolved.setCookies);
     }

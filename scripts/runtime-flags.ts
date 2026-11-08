@@ -22,6 +22,7 @@ import { spawnSync } from "node:child_process";
 import { API_SURFACE_GROUPS, SURFACE_PATHS, pathFlagKey, shadowFlagKey } from "../src/lib/api-surfaces";
 import { SYNC_FLAG_KEY, SYNC_FLAG_VALUES } from "../workers/sync/sync-env";
 import { IDENTITY_MODE_KEY, IDENTITY_MODES } from "../src/lib/identity-cookies";
+import { WRITE_FLAG_GROUPS, WRITE_MODES, writeFlagKey } from "../src/lib/api-write-modes";
 
 type Target = { env: "testbed" | "production"; remote: boolean };
 
@@ -45,6 +46,8 @@ const KNOWN_KEYS = new Map<string, KeyRule>([
   [SYNC_FLAG_KEY, oneOf(SYNC_FLAG_VALUES)],
   // Step 4 identity (docs/SUPABASE_EXIT_PLAN.md 5.3): token is step 1, cookie the signed cookie.
   [IDENTITY_MODE_KEY, oneOf(IDENTITY_MODES)],
+  // Step 4 (docs/supabase-exit/STEP4_WRITE_GATE.md): rls = today, worker = Worker checks and the service key.
+  ...WRITE_FLAG_GROUPS.map((group) => [writeFlagKey(group), oneOf(WRITE_MODES)] as const),
 ]);
 
 function usage(message?: string): never {
@@ -56,6 +59,7 @@ function usage(message?: string): never {
     "  tsx scripts/runtime-flags.ts set sync.enabled on|off --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set shadow.<group> 0..1 --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
+    "  tsx scripts/runtime-flags.ts set write.<group> rls|worker --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     `Keys: ${[...KNOWN_KEYS.keys()].join(", ")}`,
   ].join("\n"));
   process.exit(2);
