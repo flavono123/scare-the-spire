@@ -1,9 +1,9 @@
 /**
- * A local SQLite stand-in for a D1 database of the step-2 schema: d1/migrations 0001 and 0002, then
- * docs/supabase-exit/d1-schema/schema.sql, with foreign keys on (D1 enforces them by default).
+ * A local SQLite stand-in for a D1 database of the step-2 schema (d1SchemaSql), with foreign keys on
+ * (D1 enforces them by default).
  * Uses Node's built-in node:sqlite (Node 22.13+).
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -29,12 +29,19 @@ const { DatabaseSync } = createRequire(import.meta.url)("node:sqlite") as {
   DatabaseSync: new (location: string) => SqliteDb;
 };
 
+/**
+ * Every d1/migrations/*.sql in name order, as wrangler applies them. Until the step-2 migrations
+ * (0003-0006) are generated from schema.src.sql, the draft docs/supabase-exit/d1-schema/schema.sql
+ * stands in for them; once they exist that draft is gone and the migrations are the schema.
+ */
 export function d1SchemaSql(): string {
-  return [
-    readFileSync(join(ROOT, "d1/migrations/0001_runtime_flags.sql"), "utf8"),
-    readFileSync(join(ROOT, "d1/migrations/0002_api_cache.sql"), "utf8"),
-    readFileSync(join(ROOT, "docs/supabase-exit/d1-schema/schema.sql"), "utf8"),
-  ].join("\n");
+  const dir = join(ROOT, "d1/migrations");
+  const files = readdirSync(dir).filter((name) => name.endsWith(".sql") && !name.startsWith(".")).sort();
+  const parts = files.map((name) => readFileSync(join(dir, name), "utf8"));
+  if (!files.some((name) => name.startsWith("0003_"))) {
+    parts.push(readFileSync(join(ROOT, "docs/supabase-exit/d1-schema/schema.sql"), "utf8"));
+  }
+  return parts.join("\n");
 }
 
 export function openD1TestDb(): SqliteDb {
