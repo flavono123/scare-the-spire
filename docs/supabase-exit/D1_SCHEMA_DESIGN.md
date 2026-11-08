@@ -47,6 +47,11 @@
   검토가 사용자 확인으로 남긴 둘(배지 규칙, 문의 트리거 시점)은 그대로 옮기기 원칙으로 정했다(4.4절, 5.5절).
 - 2026-11-08 사용자 결정: 런 요약은 D1에서만 만든다. Supabase `runs`는 바꾸지 않는다(10.2절). 위 기록의 "`runs` 요약
   열 마이그레이션"과 "채우기 dry-run"은 없어졌다. 2단계에 운영 Supabase에 올리는 마이그레이션은 변경 로그 하나다(5.1절).
+- 2026-11-08 마이그레이션 `0003`~`0006`을 만들어 로컬 D1(wrangler 4.156.0, workerd 1.20261023.1)에 올렸다. 표 42개, 이름
+  있는 색인 25개, 트리거 0개. D1의 SQLite는 3.53.4다(D1이 `sqlite_version()`을 막아 workerd 바이너리에서 읽었다). D1이
+  50바이트 넘는 GLOB 패턴과 TEMP 표를 거절해 uuid·시각 CHECK를 같은 값만 받는 짧은 GLOB으로 나눠 쓰고(3.3절)
+  `fixtures.sql`을 고쳤다. 고정 행은 `check.py`와 같은 행 수로 들어간다. `check-local-d1.py`: 쿼리 128개, 두 번 모두 규칙
+  실패 0. 19개는 계획 글자만 다르고 같은 색인을 쓴다(IN 목록의 Bloom 필터 줄이 없고 EXISTS가 `SEARCH ... EXISTS`로 나온다).
 
 ## 1. 결정과 적용
 
@@ -226,7 +231,7 @@ D1이 받지 못하는 값(NULL, `'infinity'`, 10000년, 기원전, 꼴이 다�
 |---|---|---|
 | `timestamptz` | TEXT `YYYY-MM-DDTHH:MM:SS.ffffffZ` | 3.3절 |
 | `date` | TEXT `YYYY-MM-DD` | `week_start`. 월요일 CHECK 포함 |
-| `uuid` | TEXT 소문자, 하이픈, 36자 | GLOB CHECK. Supabase id를 그대로 쓴다 |
+| `uuid` | TEXT 소문자, 하이픈, 36자 | GLOB CHECK(D1 한도 때문에 짧은 GLOB 셋, 3.3절). Supabase id를 그대로 쓴다 |
 | `boolean` | INTEGER 0/1 | Postgres가 널을 허용하면 D1도 허용한다 |
 | `jsonb` | TEXT + `json_valid()` | 압축 JSON |
 | 배열 | 원소로 거르거나 조인하면 자식 표, 아니면 JSON 배열 TEXT | 결정 2 |
@@ -242,6 +247,10 @@ D1이 받지 못하는 값(NULL, `'infinity'`, 10000년, 기원전, 꼴이 다�
 
 - **저장 꼴은 하나다.** `YYYY-MM-DDTHH:MM:SS.ffffffZ`. UTC, 소수 6자리, `Z`, 27자. 모든 데이터 시각 열에 같은 GLOB
   CHECK가 있다. 다른 꼴은 들어갈 수 없다(검사 확인).
+  - D1은 50바이트가 넘는 GLOB·LIKE 패턴을 거절한다(`LIKE or GLOB pattern too complex`). 그래서 한 패턴(시각 107바이트,
+    uuid 260바이트) 대신 같은 값만 받는 짧은 GLOB을 AND로 묶는다. 시각은 1~10번째, 11~19번째, 20번째부터 끝 글자를
+    따로 보고, uuid는 `????????-????-????-????-????????????` 꼴, `[0-9a-f-]` 글자만, 하이픈 넷을 본다. `gen_schema.py`가
+    펴고 50바이트를 넘는 패턴을 막는다. 옛 한 패턴과 받는 값이 같다(4만 2천여 경우에서 차이 0, NULL 포함).
 - 왜 이 꼴인가:
   - Postgres `timestamptz`는 마이크로초까지 있다. 6자리면 잃는 것이 없어 PostgREST 문자열로 정확히 되돌릴 수 있다.
   - 길이가 고정이라 SQLite BINARY 글자 순서가 시간 순서다. 그래서 `ORDER BY created_at`, `(created_at, id)` 키셋,
@@ -1080,6 +1089,7 @@ D1은 읽은 행(색인 행 포함)으로 센다. 무료는 계정에 하루 읽
 ```bash
 python3 -I docs/supabase-exit/d1-schema/gen_schema.py docs/supabase-exit/d1-schema/schema.src.sql d1/migrations
 python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1/migrations
+python3 -I docs/supabase-exit/d1-schema/check-local-d1.py docs/supabase-exit/d1-schema
 ```
 
 - `schema.src.sql`: 전체 DDL의 원본. `-- migration:` 구역마다 `gen_schema.py`가 `@UUID@`, `@TS@`, `@DATE@`를 GLOB로 펴서
@@ -1098,6 +1108,11 @@ python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1
     `(service, id)`의 두 번째 행, 1024 바이트를 넘는 런 id, 객체가 아닌 `list_facts`. (받아야 함): 빈 스레드 키,
     모르는 새 서비스의 글, 다른 글의 uuid와 같은 런 id.
   - 고정 행에 닫힌 `cross_env` 거절 한 행이 있다(키마다 하나 규칙은 열린 거절에만 걸린다).
+- `check-local-d1.py`: 같은 계획을 로컬 D1(workerd의 SQLite)에서 읽는다. 임시 `--persist-to` 폴더에 `0001`~`0006`과
+  `fixtures.sql`을 올리고(기본 로컬 D1과 원격은 건드리지 않는다), 쿼리마다 매개변수를 값으로 바꿔 `EXPLAIN QUERY PLAN`을
+  `wrangler d1 execute --local --file --json` 한 번으로 돌려 `detail` 줄을 `check.py`의 `judge()`에 넣는다(`ANALYZE` 뒤에 한
+  번 더). 결과는 `plans-local-d1.txt`이고, `plans.txt`와 계획이 다른 쿼리를 두 계획과 함께 적는다. 값으로 바꿔도
+  3.51.0에서는 계획이 하나도 바뀌지 않는다(확인).
 
 규칙: 기대한 색인을 써야 한다. 일반 표를 그냥 훑으면(`SCAN t`), `ORDER BY`에 임시 B-tree를 쓰면, `LIMIT` 없이
 색인 전체를 걸으면 실패다. `service` 앞부분만 쓰는 기본키 검색(`SEARCH t USING PRIMARY KEY (service=?)`)도 훑기로
