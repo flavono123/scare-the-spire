@@ -7,8 +7,24 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": ".cloudflare/assets",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    // Same-origin API (docs/supabase-exit/STEP1_DESIGN.md 4.1): no asset may shadow it.
+    "run_worker_first": ["/api/*"]
   },
+  // Step 1 of the Supabase exit. "off" keeps every screen on the legacy path and
+  // skips D1 entirely; "d1" reads runtime_flags. API_SUPABASE_URL, API_SUPABASE_KEY
+  // and API_DATA_ENV are passed with --var at deploy time.
+  "vars": {
+    "API_RUNTIME_FLAGS": "off"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "slseoun-prod",
+      "database_id": "b0dc1d98-7091-4d77-bccf-8bdb05a32af5",
+      "migrations_dir": "d1/migrations"
+    }
+  ],
   "services": [
     {
       "binding": "PATCH_WORKER",
@@ -20,12 +36,35 @@
       "name": "LINK_PREVIEW_LIMITER",
       "namespace_id": "1001",
       "simple": { "limit": 60, "period": 60 }
+    },
+    // Same-origin API (docs/supabase-exit/STEP1_DESIGN.md 9.1): uncached public reads per IP,
+    // writes and personal reads per verified user.
+    {
+      "name": "API_READ_LIMITER",
+      "namespace_id": "1101",
+      "simple": { "limit": 600, "period": 60 }
+    },
+    {
+      "name": "API_WRITE_LIMITER",
+      "namespace_id": "1102",
+      "simple": { "limit": 30, "period": 60 }
     }
   ],
   "env": {
     "testbed": {
       "workers_dev": true,
       "preview_urls": true,
+      "vars": {
+        "API_RUNTIME_FLAGS": "d1"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "slseoun-testbed",
+          "database_id": "11081204-f9ca-4b30-b2e0-07ca427cc410",
+          "migrations_dir": "d1/migrations"
+        }
+      ],
       "services": [
         {
           "binding": "PATCH_WORKER",
@@ -37,6 +76,16 @@
           "name": "LINK_PREVIEW_LIMITER",
           "namespace_id": "1002",
           "simple": { "limit": 60, "period": 60 }
+        },
+        {
+          "name": "API_READ_LIMITER",
+          "namespace_id": "1201",
+          "simple": { "limit": 600, "period": 60 }
+        },
+        {
+          "name": "API_WRITE_LIMITER",
+          "namespace_id": "1202",
+          "simple": { "limit": 30, "period": 60 }
         }
       ]
     }

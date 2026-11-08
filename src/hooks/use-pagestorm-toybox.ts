@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useDefragmentFeed } from "@/hooks/use-defragment-feed";
+import { shouldUseLegacy } from "@/lib/api-client";
 import {
   DEFRAGMENT_FEED_SERVICE_META,
   feedItemFromPost,
@@ -24,6 +25,7 @@ import { normalizeTransfigurePost } from "@/lib/transfigure-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import type { ThisOrThatPost } from "@/lib/this-or-that";
+import { apiToyboxPost, toyboxViaApi } from "@/lib/toybox-api";
 import { TOYBOX_FEED_TABLES } from "@/lib/toybox-feed";
 
 export function usePagestormToyboxPicker(serviceHref: string | null): {
@@ -59,6 +61,14 @@ async function fetchToyboxRow(
   postId: string,
 ): Promise<unknown | null> {
   if (!supabaseEnabled || service === "history_course") return null;
+  if (toyboxViaApi()) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same `select *` row of this env.
+      return await apiToyboxPost(service, postId);
+    } catch (error) {
+      if (!shouldUseLegacy(error)) throw error;
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     `pagestorm.toybox.${service}.detail`,
     supabase

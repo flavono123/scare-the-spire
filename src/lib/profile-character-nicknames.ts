@@ -197,14 +197,6 @@ export function shouldRerollProfileNickname(options: {
   return true;
 }
 
-export function isMissingProfileCharacterNicknamePoolsTable(
-  error: { code?: string; message?: string } | null | undefined,
-): boolean {
-  if (!error) return false;
-  if (error.code === "PGRST205" || error.code === "42P01") return true;
-  return /profile_character_nickname_pools/i.test(error.message ?? "");
-}
-
 function mergeCharacterNicknamePools(
   overrides: PartialProfileCharacterNicknamePools = {},
   base: ProfileCharacterNicknamePools = DEFAULT_PROFILE_CHARACTER_NICKNAMES,

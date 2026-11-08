@@ -1,5 +1,6 @@
 "use client";
 
+import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import type { PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import {
@@ -10,6 +11,13 @@ import {
 import type { DefragmentFederatedService } from "@/lib/defragment";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import {
+  apiDefragmentBody,
+  apiUpsertDefragmentBody,
+  toyboxViaApi,
+  toyboxWriteError,
+} from "@/lib/toybox-api";
+import { isRowId } from "@/lib/toybox-api-rules";
 
 export interface DefragmentBody {
   env: string;
@@ -66,17 +74,20 @@ function normalizeBody(row: unknown): DefragmentBody | null {
   };
 }
 
-export function isMissingDefragmentBodiesTable(
-  error: { code?: string } | null | undefined,
-): boolean {
-  return error?.code === "PGRST205" || error?.code === "42P01";
-}
-
 export async function fetchDefragmentBody(
   service: DefragmentFederatedService,
   sourceId: string,
 ): Promise<DefragmentBody | null> {
   if (!supabaseEnabled) return null;
+  // Run ids are free text: one the Worker would refuse stays on legacy (as run-donation.ts does).
+  if (toyboxViaApi() && isRowId(sourceId)) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same `select *` row of this env.
+      return normalizeBody(await apiDefragmentBody(service, sourceId));
+    } catch (error) {
+      if (!shouldUseLegacy(error)) throw error;
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     "defragment_bodies.detail",
     supabase
@@ -87,10 +98,7 @@ export async function fetchDefragmentBody(
       .eq("source_id", sourceId)
       .maybeSingle(),
   );
-  if (error) {
-    if (isMissingDefragmentBodiesTable(error)) return null;
-    throw error;
-  }
+  if (error) throw error;
   return normalizeBody(data);
 }
 
@@ -110,6 +118,23 @@ export async function upsertDefragmentBody(input: {
     throw new Error("defragment overlay nickname invalid");
   }
 
+  if (toyboxViaApi()) {
+    try {
+      return normalizeBody(await apiUpsertDefragmentBody({
+        env: supabaseEnv,
+        source_service: input.service,
+        source_id: input.sourceId,
+        user_id: input.activeUserId,
+        nickname,
+        content: parsed.blocks,
+        content_text: parsed.contentText,
+        updated_at: new Date().toISOString(),
+      }));
+    } catch (error) {
+      // Only a write that certainly did nothing is sent again on the legacy path.
+      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     "defragment_bodies.upsert",
     supabase

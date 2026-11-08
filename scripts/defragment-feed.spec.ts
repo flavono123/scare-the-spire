@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import {
   cursorFromDefragmentItem,
-  isMissingDefragmentFeedRpc,
   parseDefragmentFeedRow,
 } from "../src/lib/defragment-feed";
 import {
@@ -79,11 +78,6 @@ assert.equal(parseDefragmentFeedRow({
   service: "defragment",
   title: "native body",
 }), null);
-assert.equal(isMissingDefragmentFeedRpc({ code: "PGRST202" }), true);
-assert.equal(
-  isMissingDefragmentFeedRpc({ message: "Could not find the function public.get_defragment_feed" }),
-  true,
-);
 
 assert.equal(serviceMessages.ko.defragment.defaultNickname, "밀집");
 assert.equal(serviceMessages.en.defragment.defaultNickname, "Focus");

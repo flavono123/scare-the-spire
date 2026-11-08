@@ -1,0 +1,1124 @@
+/**
+ * The comments group's Worker routes (docs/supabase-exit/STEP1_DESIGN.md 9.1)
+ * against an in-memory PostgREST that keeps the table rules the routes rely on:
+ * unique likes, the comment foreign key, RLS ownership and the reaction totals trigger.
+ * Usage: tsx scripts/api-comments.spec.ts
+ */
+import assert from "node:assert/strict";
+
+import type { D1Database, D1PreparedStatement, D1Result } from "../workers/api/d1";
+import { FLAGS_SQL, resetFlagsForTest } from "../workers/api/flags";
+import { resetJwtCachesForTest } from "../workers/api/jwt";
+import { contentRangeTotal, parseCommentInput, restErrorCode } from "../workers/api/routes/comments";
+import mainWorker from "../workers/main-worker";
+
+const ORIGIN = "https://testbed.example.workers.dev";
+const PROJECT = "https://abcdefghijklmnopqrst.supabase.co";
+const ISSUER = `${PROJECT}/auth/v1`;
+const USER = "4f1c2a7e-9b3d-4c5e-8f60-1a2b3c4d5e6f";
+const OTHER = "9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d";
+
+// --- Token helpers ------------------------------------------------------------
+
+function base64Url(bytes: Uint8Array): string {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+const segment = (value: unknown) => base64Url(new TextEncoder().encode(JSON.stringify(value)));
+
+async function makeSigner() {
+  const pair = await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, ["sign", "verify"]);
+  const publicJwk = await crypto.subtle.exportKey("jwk", pair.publicKey);
+  const jwks = { keys: [{ kty: "EC", crv: "P-256", alg: "ES256", use: "sig", kid: "spec-kid", x: publicJwk.x, y: publicJwk.y }] };
+  async function token(sub = USER) {
+    const now = Math.floor(Date.now() / 1000);
+    const input = `${segment({ alg: "ES256", kid: "spec-kid", typ: "JWT" })}.${segment({
+      iss: ISSUER, sub, aud: "authenticated", role: "authenticated", exp: now + 3600, iat: now, is_anonymous: true,
+    })}`;
+    const signature = new Uint8Array(await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, pair.privateKey, new TextEncoder().encode(input)));
+    return `${input}.${base64Url(signature)}`;
+  }
+  return { jwks, token };
+}
+
+// --- In-memory PostgREST ---------------------------------------------------------
+
+type Row = Record<string, unknown>;
+
+const TOYBOX_TABLES = new Set([
+  "combo_posts", "transfigure_posts", "this_or_that_posts", "chemical_posts", "decisions_decisions_posts",
+  "favorite_tournament_posts", "pagestorm_posts", "defragment_posts", "pagestorm_drafts", "defragment_bodies",
+  "this_or_that_post_likes", "this_or_that_post_votes", "favorite_tournament_candidate_stats",
+]);
+
+class FakeRest {
+  comments: Row[] = [];
+  commentLikes: Row[] = [];
+  likes: Row[] = [];
+  reactions: Row[] = [];
+  philosophers: Row[] = [];
+  contactInquiries: Row[] = [];
+  runs: Row[] = [];
+  stories: Row[] = [];
+  /** Toybox tables by name (posts, drafts, bodies, this or that likes and votes, tournament stats). */
+  toybox: Record<string, Row[]> = {};
+  nicknamePools: Row[] = [{ character_id: "ironclad", locale: "ko", nicknames: ["철갑"] }];
+  rpcBodies: Record<string, unknown>[] = [];
+  calls: { method: string; url: URL; auth: string | null; body: unknown }[] = [];
+  failTables = new Set<string>();
+  /** Fail only the count reads (HEAD) and the totals read of these tables. */
+  failReads = new Set<string>();
+  jwks: unknown = { keys: [] };
+  private seq = 0;
+
+  id() {
+    this.seq += 1;
+    return `00000000-0000-4000-8000-${String(this.seq).padStart(12, "0")}`;
+  }
+
+  reactionCounts(): Row[] {
+    const totals = new Map<string, Row>();
+    for (const row of this.reactions) {
+      const key = [row.env, row.resource_type, row.resource_id, row.game_version].join("|");
+      const total = totals.get(key) ?? {
+        env: row.env, resource_type: row.resource_type, resource_id: row.resource_id, game_version: row.game_version,
+        buff_count: 0, nerf_count: 0, rework_count: 0,
+      };
+      total[`${row.kind}_count`] = Number(total[`${row.kind}_count`]) + 1;
+      totals.set(key, total);
+    }
+    return [...totals.values()];
+  }
+
+  table(name: string): Row[] {
+    if (name === "comments") return this.comments;
+    if (name === "comment_likes") return this.commentLikes;
+    if (name === "likes") return this.likes;
+    if (name === "resource_reactions") return this.reactions;
+    if (name === "resource_reaction_counts") return this.reactionCounts();
+    if (name === "colorful_philosopher_posts") return this.philosophers;
+    if (name === "contact_inquiries") return this.contactInquiries;
+    if (name === "profile_character_nickname_pools") return this.nicknamePools;
+    if (name === "runs") return this.runs;
+    if (name === "community_stories") return this.stories;
+    if (name === "this_or_that_post_like_counts") {
+      const counts = new Map<string, Row>();
+      for (const like of this.toybox.this_or_that_post_likes ?? []) {
+        const key = `${like.env}|${like.post_id}`;
+        const row = counts.get(key) ?? { env: like.env, post_id: like.post_id, like_count: 0 };
+        row.like_count = Number(row.like_count) + 1;
+        counts.set(key, row);
+      }
+      return [...counts.values()];
+    }
+    if (TOYBOX_TABLES.has(name)) return (this.toybox[name] ??= []);
+    throw new Error(`unknown table ${name}`);
+  }
+
+  static parseIn(value: string): string[] {
+    const inner = /^in\.\((.*)\)$/.exec(value)?.[1] ?? "";
+    return inner ? inner.split(",").map((item) => item.replace(/^"|"$/g, "")) : [];
+  }
+
+  matches(row: Row, params: URLSearchParams, embedded?: Row): boolean {
+    for (const [name, value] of params) {
+      if (["select", "order", "limit", "on_conflict", "or"].includes(name)) continue;
+      const [owner, column] = name.includes(".") ? name.split(".") : [null, name];
+      const source = owner ? embedded : row;
+      if (!source) return false;
+      const cell = String(source[column] ?? "");
+      if (value.startsWith("eq.")) {
+        if (cell !== value.slice(3)) return false;
+      } else if (value.startsWith("in.")) {
+        if (!FakeRest.parseIn(value).includes(cell)) return false;
+      } else if (value.startsWith("neq.")) {
+        if (source[column] === null || source[column] === undefined || cell === value.slice(4)) return false;
+      } else if (value === "is.null") {
+        if (source[column] !== null && source[column] !== undefined) return false;
+      } else if (value === "not.is.null") {
+        if (source[column] === null || source[column] === undefined) return false;
+      } else if (value.startsWith("lte.")) {
+        if (!(cell <= value.slice(4))) return false;
+      } else if (value.startsWith("like.") && value.endsWith("*")) {
+        if (!cell.startsWith(value.slice(5, -1))) return false;
+      } else {
+        throw new Error(`unsupported filter ${name}=${value}`);
+      }
+    }
+    return true;
+  }
+
+  userOf(auth: string | null): string | null {
+    if (!auth) return null;
+    try {
+      return JSON.parse(atob(auth.replace(/^Bearer /, "").split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))).sub;
+    } catch {
+      return null;
+    }
+  }
+
+  async handle(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    if (url.pathname === "/auth/v1/.well-known/jwks.json") return Response.json(this.jwks);
+    const body = request.method === "GET" || request.method === "HEAD" ? undefined : await request.text().then((text) => (text ? JSON.parse(text) : undefined));
+    const auth = request.headers.get("authorization");
+    this.calls.push({ method: request.method, url, auth, body });
+    assert.equal(request.headers.get("apikey"), "sb_publishable_test");
+    const name = url.pathname.replace("/rest/v1/", "");
+    if (this.failTables.has(name)) return new Response("{\"code\":\"XX000\"}", { status: 500 });
+    if (this.failReads.has(name) && (request.method === "HEAD" || request.method === "GET")) {
+      return new Response("{\"code\":\"XX000\"}", { status: 503 });
+    }
+    const prefer = request.headers.get("prefer") ?? "";
+    const params = url.searchParams;
+    const user = this.userOf(auth);
+
+    if (name.startsWith("rpc/") && name.includes("puzzlebox")) {
+      const args = body as Row;
+      this.rpcBodies.push({ name, auth: Boolean(user), ...args });
+      if (name === "rpc/get_puzzlebox_leaderboard") {
+        return Response.json({ players: 2, offset: args.p_offset, rows: [{ rank: 1, is_me: Boolean(user) }], me: user ? { rank: 1 } : null, stats: null });
+      }
+      if (!user) return Response.json({ code: "42501" }, { status: 401 });
+      if (name === "rpc/get_my_puzzlebox_standings") return Response.json([{ board: "1", score: 4, perfect: true, rank: 1, players: 2 }]);
+      if ((args.p_run as Row)?.spam) return Response.json({ code: "54000" }, { status: 400 });
+      if (args.p_board === "999") return Response.json({ code: "22023" }, { status: 400 });
+      return Response.json({ score: 4, perfect: true, attempt: 1, improved: true, best: 4, best_perfect: true, rank: 1, players: 2 });
+    }
+    if (name === "rpc/get_my_profile_activity_stats" || name === "rpc/get_my_profile_activity") {
+      if (!user) return Response.json({ code: "42501" }, { status: 401 });
+      this.rpcBodies.push({ name, ...(body as Row) });
+      return Response.json(name.endsWith("stats") ? [{ category: "comments", post_count: 2, like_count: 1 }] : [{ activity_id: "a1", total_count: 1 }]);
+    }
+    if (name === "rpc/get_toybox_feed" || name === "rpc/get_defragment_feed_v2") {
+      this.rpcBodies.push({ name, auth: Boolean(user), ...(body as Row) });
+      return Response.json([{ post: { id: "feed-row", created_at: "2026-11-05T00:00:00Z" }, like_count: 2, comment_count: 1, recommend_score: 2 }]);
+    }
+    if (name === "rpc/get_this_or_that_vote_summaries") {
+      const args = body as { p_post_ids: string[]; p_env: string };
+      this.rpcBodies.push({ name, ...args });
+      const votes = (this.toybox.this_or_that_post_votes ?? []).filter((row) => row.env === args.p_env);
+      return Response.json(args.p_post_ids.map((id) => ({
+        post_id: id,
+        left_count: votes.filter((row) => row.post_id === id && row.choice === "left").length,
+        right_count: votes.filter((row) => row.post_id === id && row.choice === "right").length,
+      })));
+    }
+    if (name === "rpc/complete_favorite_tournament_play") {
+      if (!user) return Response.json({ code: "42501" }, { status: 401 });
+      this.rpcBodies.push({ name, ...(body as Row) });
+      if ((body as Row).p_starting_size === 3) return Response.json({ code: "22023" }, { status: 400 });
+      return Response.json({ play_count: 1 });
+    }
+    if (name === "rpc/get_engagement_counts") {
+      const env = (body as { p_env: string }).p_env;
+      const keys = new Set([...this.comments, ...this.likes].filter((row) => row.env === env).map((row) => String(row.story_id)));
+      return Response.json([...keys].map((key) => ({
+        story_id: key,
+        like_count: this.likes.filter((row) => row.env === env && row.story_id === key).length,
+        comment_count: this.comments.filter((row) => row.env === env && row.story_id === key).length,
+      })));
+    }
+
+    if (request.method === "GET" || request.method === "HEAD") {
+      let rows = this.table(name).filter((row) => {
+        // RLS: an inquiry is visible to its author only.
+        if (name === "contact_inquiries" && row.user_id !== user) return false;
+        if (name === "comment_likes" && params.has("comments.story_id")) {
+          const parent = this.comments.find((comment) => comment.id === row.comment_id);
+          return Boolean(parent) && this.matches(row, params, parent);
+        }
+        return this.matches(row, params);
+      });
+      const order = /^([a-z_]+)\.(asc|desc)$/.exec(params.get("order") ?? "");
+      if ((name === "runs" || name === "community_stories") && order) {
+        rows = [...rows].sort((a, b) => String(a[order[1]]).localeCompare(String(b[order[1]])) * (order[2] === "desc" ? -1 : 1));
+      }
+      if (params.get("order") === "created_at.asc") rows = [...rows].sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+      if (params.get("order") === "week_start.desc") rows = [...rows].sort((a, b) => String(b.week_start).localeCompare(String(a.week_start)));
+      const limit = Number(params.get("limit") ?? "100000");
+      rows = rows.slice(0, limit);
+      if (request.method === "HEAD") {
+        assert.ok(prefer.includes("count=exact"));
+        return new Response(null, { status: 200, headers: { "content-range": rows.length ? `0-${rows.length - 1}/${rows.length}` : "*/0" } });
+      }
+      const select = params.get("select") ?? "*";
+      return Response.json(rows.map((row) => this.project(row, select)));
+    }
+
+    if (!user) return Response.json({ code: "42501" }, { status: 401 });
+
+    if (request.method === "POST" && name === "runs") {
+      const rowsIn = (Array.isArray(body) ? body : [body]) as Row[];
+      if (rowsIn.some((row) => row.donor_user_id !== user)) return Response.json({ code: "42501" }, { status: 403 });
+      const inserted: Row[] = [];
+      for (const row of rowsIn) {
+        const exists = this.runs.some((run) => run.id === row.id && run.env === row.env);
+        if (exists && !params.has("on_conflict")) return Response.json({ code: "23505" }, { status: 409 });
+        if (exists) continue;
+        this.runs.push({ ...row });
+        inserted.push(row);
+      }
+      return prefer.includes("return=representation")
+        ? Response.json(inserted.map((row) => ({ id: row.id })), { status: 201 })
+        : new Response(null, { status: 201 });
+    }
+
+    if (request.method === "POST" && TOYBOX_TABLES.has(name)) {
+      const input = body as Row;
+      if (input.user_id !== user) return Response.json({ code: "42501" }, { status: 403 });
+      const rows = this.table(name);
+      if (name === "defragment_bodies") {
+        const same = rows.find((row) => ["env", "source_service", "source_id"].every((key) => row[key] === input[key]));
+        if (same && !params.has("on_conflict")) return Response.json({ code: "23505" }, { status: 409 });
+        if (same && same.user_id !== user) return Response.json({ code: "42501" }, { status: 403 });
+        const row = same ? Object.assign(same, input) : { id: this.id(), ...input };
+        if (!same) rows.push(row);
+        return Response.json([this.project(row, params.get("select") ?? "*")], { status: same ? 200 : 201 });
+      }
+      if (name === "this_or_that_post_likes" || name === "this_or_that_post_votes") {
+        if (rows.some((row) => row.post_id === input.post_id && row.user_id === user && row.env === input.env)) return Response.json({ code: "23505" }, { status: 409 });
+        rows.push({ ...input });
+        return new Response(null, { status: 201 });
+      }
+      if (typeof input.title === "string" && input.title.length > 120) return Response.json({ code: "23514" }, { status: 400 });
+      // Guard triggers reset the counters and the creation time (SURFACE_MAP 4.1).
+      const row = { ...input, id: this.id(), created_at: "2026-11-06T00:00:00Z", like_count: 0, comment_count: 0 };
+      rows.push(row);
+      return prefer.includes("return=representation")
+        ? Response.json([this.project(row, params.get("select") ?? "*")], { status: 201 })
+        : new Response(null, { status: 201 });
+    }
+
+    if (request.method === "POST") {
+      const input = body as Row;
+      if (input.user_id !== user) return Response.json({ code: "42501" }, { status: 403 });
+      if (name === "comment_likes") {
+        if (!this.comments.some((comment) => comment.id === input.comment_id)) return Response.json({ code: "23503" }, { status: 409 });
+        if (this.commentLikes.some((row) => row.comment_id === input.comment_id && row.user_id === user)) return Response.json({ code: "23505" }, { status: 409 });
+        this.commentLikes.push({ id: this.id(), ...input });
+      } else if (name === "likes") {
+        if (this.likes.some((row) => row.story_id === input.story_id && row.user_id === user && row.env === input.env)) return Response.json({ code: "23505" }, { status: 409 });
+        this.likes.push({ id: this.id(), ...input });
+      } else if (name === "resource_reactions") {
+        const same = (row: Row) => ["env", "resource_type", "resource_id", "game_version", "user_id"].every((key) => row[key] === input[key]);
+        if (this.reactions.some(same)) return Response.json({ code: "23505" }, { status: 409 });
+        this.reactions.push({ ...input });
+      } else if (name === "community_stories") {
+        const row = { id: this.id(), static_story_id: null, change_id: null, created_at: new Date().toISOString(), ...input };
+        this.stories.push(row);
+        return Response.json([this.project(row, params.get("select") ?? "*")], { status: 201 });
+      } else if (name === "contact_inquiries") {
+        // enforce_contact_inquiry_rate_limit (schema:589-618).
+        const recent = this.contactInquiries.filter((row) => row.user_id === user && row.env === input.env).length;
+        if (recent >= 3) return Response.json({ code: "P0001" }, { status: 400 });
+        this.contactInquiries.push({ id: this.id(), admin_response: null, reply_seen_at: null, status: "new", ...input });
+        return new Response(null, { status: 201 });
+      } else if (name === "comments") {
+        if (String(input.content).length > 2000) return Response.json({ code: "23514" }, { status: 400 });
+        const row = { id: this.id(), created_at: new Date().toISOString(), parent_id: null, meta: null, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false, ...input };
+        this.comments.push(row);
+        return prefer.includes("return=representation")
+          ? Response.json([this.project(row, params.get("select") ?? "*")], { status: 201 })
+          : new Response(null, { status: 201 });
+      }
+      return new Response(null, { status: 201 });
+    }
+
+    const all = name === "resource_reactions" ? this.reactions : this.table(name);
+    // RLS: only the caller's rows are visible to update and delete.
+    const owner = name === "runs" ? "donor_user_id" : "user_id";
+    const targets = all.filter((row) => this.matches(row, params) && (row[owner] === user));
+    if (request.method === "DELETE") {
+      for (const row of targets) all.splice(all.indexOf(row), 1);
+      if (name === "comments") {
+        this.commentLikes = this.commentLikes.filter((like) => targets.every((row) => row.id !== like.comment_id));
+      }
+    } else if (request.method === "PATCH") {
+      for (const row of targets) Object.assign(row, body as Row);
+    }
+    return prefer.includes("return=representation")
+      ? Response.json(targets.map((row) => this.project(row, params.get("select") ?? "*")))
+      : new Response(null, { status: 204 });
+  }
+
+  project(row: Row, select: string): Row {
+    if (select === "*") return { ...row };
+    const out: Row = {};
+    for (const field of select.split(/,(?![^(]*\))/)) {
+      if (field === "comment_likes(count)") {
+        out.comment_likes = [{ count: this.commentLikes.filter((like) => like.comment_id === row.id).length }];
+      } else if (field === "comments!inner(story_id)") {
+        const parent = this.comments.find((comment) => comment.id === row.comment_id);
+        out.comments = parent ? { story_id: parent.story_id } : null;
+      } else {
+        out[field] = row[field] ?? null;
+      }
+    }
+    return out;
+  }
+}
+
+class FakeD1 implements D1Database {
+  flags = new Map<string, string>([["path.comments", "api"], ["path.colorful-philosophers", "api"], ["path.contact", "api"], ["path.profile", "api"], ["path.puzzlebox", "api"], ["path.history-runs", "api"], ["path.stories", "api"], ["path.toybox-feed", "api"]]);
+  prepare(query: string): D1PreparedStatement {
+    const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
+      if (query !== FLAGS_SQL) throw new Error(`unexpected SQL ${query}`);
+      return { success: true, results: [...this.flags].map(([key, value]) => ({ key, value })) };
+    };
+    const statement: D1PreparedStatement = {
+      bind: () => statement,
+      all: exec as D1PreparedStatement["all"],
+      first: (async () => (await exec()).results[0] ?? null) as D1PreparedStatement["first"],
+      run: exec as D1PreparedStatement["run"],
+    };
+    return statement;
+  }
+  async batch<T>(statements: D1PreparedStatement[]): Promise<D1Result<T>[]> {
+    return Promise.all(statements.map((statement) => statement.all<T>()));
+  }
+}
+
+class Limiter {
+  keys: string[] = [];
+  allow = true;
+  async limit({ key }: { key: string }) {
+    this.keys.push(key);
+    return { success: this.allow };
+  }
+}
+
+const ctx = { waitUntil() {} };
+
+async function main() {
+  const realFetch = globalThis.fetch;
+  const rest = new FakeRest();
+  const signer = await makeSigner();
+  rest.jwks = signer.jwks;
+  globalThis.fetch = (async (input: Request | string | URL, init?: RequestInit) => rest.handle(new Request(input, init))) as typeof fetch;
+  resetFlagsForTest();
+  resetJwtCachesForTest();
+
+  const db = new FakeD1();
+  const readLimiter = new Limiter();
+  const writeLimiter = new Limiter();
+  const env = {
+    API_RUNTIME_FLAGS: "d1",
+    API_SUPABASE_URL: PROJECT,
+    API_SUPABASE_KEY: "sb_publishable_test",
+    API_DATA_ENV: "development",
+    DB: db,
+    API_READ_LIMITER: readLimiter,
+    API_WRITE_LIMITER: writeLimiter,
+    ASSETS: { fetch: async () => new Response("asset") },
+    PATCH_WORKER: { fetch: async () => new Response("patch") },
+  };
+  const call = (path: string, init: RequestInit = {}) => mainWorker.fetch(new Request(`${ORIGIN}${path}`, init), env as never, ctx);
+  const json = async (response: Response) => ({ status: response.status, body: await response.json() as Record<string, unknown>, headers: response.headers });
+  const token = await signer.token();
+  const otherToken = await signer.token(OTHER);
+  const authed = (method: string, body?: unknown, bearer = token): RequestInit => ({
+    method,
+    headers: {
+      authorization: `Bearer ${bearer}`,
+      "sec-fetch-site": "same-origin",
+      ...(body === undefined ? {} : { "content-type": "application/json" }),
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+
+  // Seed: two threads in development, one row in production that must never leak.
+  const codexKey = "sts2-codex:card:bash";
+  const patchKey = "sts2-patch:0.107.1";
+  rest.comments.push(
+    { id: "11111111-1111-4111-8111-111111111111", story_id: codexKey, user_id: OTHER, nickname: "철학자", content: "첫 댓글", content_blocks: null, created_at: "2026-11-05T01:00:00.000Z", env: "development", parent_id: null, meta: { hidden: true }, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false },
+    { id: "22222222-2222-4222-8222-222222222222", story_id: codexKey, user_id: USER, nickname: "나", content: "두 번째", content_blocks: [{ type: "text", text: "두 번째" }], created_at: "2026-11-05T02:00:00.000Z", env: "development", parent_id: null, meta: null, avatar_id: "ironclad", avatar_kind: "character", palette_id: "red", palette_swapped: true },
+    { id: "33333333-3333-4333-8333-333333333333", story_id: codexKey, user_id: OTHER, nickname: "운영", content: "운영 행", content_blocks: null, created_at: "2026-11-05T00:00:00.000Z", env: "production", parent_id: null, meta: null, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false },
+  );
+  rest.commentLikes.push({ id: rest.id(), comment_id: "11111111-1111-4111-8111-111111111111", user_id: USER });
+  rest.likes.push({ id: rest.id(), story_id: codexKey, user_id: OTHER, env: "development" });
+  rest.philosophers.push({
+    id: "44444444-4444-4444-8444-444444444444", week_start: "2026-11-02", slot: "card", resource_type: "card", resource_id: "bash",
+    name_ko: "강타", name_en: "Bash", image_url: null, body: "강타는 너프돼야 한다", game_version: "0.103.2", buff_count: 0, nerf_count: 0, rework_count: 0, env: "development",
+  });
+  rest.comments.push({ id: "55555555-5555-4555-8555-555555555555", story_id: "colorful-philosophers:44444444-4444-4444-8444-444444444444", user_id: OTHER, nickname: "답글", content: "동의", content_blocks: null, created_at: "2026-11-05T03:00:00.000Z", env: "development", parent_id: null, meta: null, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false });
+  rest.reactions.push({ env: "development", resource_type: "card", resource_id: "bash", game_version: "0.103.2", user_id: OTHER, kind: "nerf" });
+
+  // --- Public read: threads, likes, reactions, philosophers -------------------
+  const query = `/api/read/engagement?threads=${codexKey},${patchKey}&likes=${codexKey}&reactions=card:bash:0.104.0&philosophers=card:bash`;
+  rest.calls.length = 0;
+  const read = await json(await call(query, { headers: { "cf-connecting-ip": "203.0.113.9" } }));
+  assert.equal(read.status, 200);
+  assert.equal(read.headers.get("x-slseoun-api"), "1");
+  assert.equal(read.headers.get("cache-control"), "private, no-store", "no cache: a writer must see their own comment");
+  const threads = read.body.threads as Record<string, Record<string, unknown>[]>;
+  assert.deepEqual(threads[codexKey].map((row) => row.id), ["11111111-1111-4111-8111-111111111111", "22222222-2222-4222-8222-222222222222"], "oldest first, development rows only");
+  assert.deepEqual(threads[patchKey], [], "a thread with no comments is an empty list");
+  assert.equal(threads[codexKey][0].like_count, 1);
+  assert.equal(threads[codexKey][1].like_count, 0);
+  assert.ok(!("meta" in threads[codexKey][0]) && !("parent_id" in threads[codexKey][0]) && !("comment_likes" in threads[codexKey][0]));
+  assert.deepEqual(Object.keys(threads[codexKey][1]).sort(), ["avatar_id", "avatar_kind", "content", "content_blocks", "created_at", "id", "like_count", "nickname", "palette_id", "palette_swapped", "story_id", "user_id"]);
+  assert.deepEqual(read.body.likes, { [codexKey]: 1 });
+  const reactions = read.body.reactions as Record<string, unknown>;
+  assert.deepEqual(reactions["card:bash:0.104.0"], { buff: 0, nerf: 0, rework: 0 }, "a target with no row reads zero");
+  assert.deepEqual(reactions["card:bash:0.103.2"], { buff: 0, nerf: 1, rework: 0 }, "the post's own version rides along");
+  assert.equal((read.body.philosophers as Record<string, unknown[]>)["card:bash"].length, 1);
+  assert.equal(threads["colorful-philosophers:44444444-4444-4444-8444-444444444444"].length, 1, "reply threads ride along");
+  assert.equal(rest.calls.filter((entry) => entry.url.pathname.startsWith("/rest/")).length, 4,
+    "a codex detail costs four Supabase calls: posts, totals, like count, then all comment rows");
+  assert.ok(rest.calls.every((entry) => entry.auth === null), "public reads never forward a user token");
+  assert.ok(rest.calls.every((entry) => entry.url.searchParams.get("env") === "eq.development" || entry.url.searchParams.get("comments.env") === "eq.development" || !entry.url.pathname.startsWith("/rest")), "every query is scoped to the Worker env");
+  assert.equal(readLimiter.keys.at(-1), "ip:203.0.113.9");
+
+  // Same bytes with or without Authorization.
+  const anonymousBytes = await (await call(query)).text();
+  const authorizedBytes = await (await call(query, { headers: { authorization: `Bearer ${token}` } })).text();
+  assert.equal(authorizedBytes, anonymousBytes);
+
+  // Query checks.
+  for (const bad of [
+    "/api/read/engagement",
+    "/api/read/engagement?threads=",
+    `/api/read/engagement?threads=${codexKey},${codexKey}`,
+    "/api/read/engagement?threads=bad%20key",
+    "/api/read/engagement?threads=a&threads=b",
+    "/api/read/engagement?select=*",
+    `/api/read/engagement?likes=${Array.from({ length: 17 }, (_, index) => `k${index}`).join(",")}`,
+    "/api/read/engagement?reactions=card:bash",
+    `/api/read/engagement?threads=${Array.from({ length: 64 }, (_, index) => `x${"y".repeat(100)}${index}`).join(",")}`,
+  ]) {
+    assert.equal((await call(bad)).status, 400, bad);
+  }
+
+  // Partial failure keeps the other parts; all failing is 503.
+  rest.failTables.add("resource_reaction_counts");
+  const partial = await json(await call(`/api/read/engagement?threads=${codexKey}&reactions=card:bash:0.104.0`));
+  assert.equal(partial.status, 200);
+  assert.deepEqual(partial.body.unavailable, ["reactions"]);
+  assert.ok(partial.body.threads && !partial.body.reactions);
+  const allDown = await call("/api/read/engagement?reactions=card:bash:0.104.0");
+  assert.equal(allDown.status, 503);
+  rest.failTables.clear();
+
+  // HEAD never calls Supabase.
+  rest.calls.length = 0;
+  const head = await call(query, { method: "HEAD" });
+  assert.equal(head.status, 200);
+  assert.equal(rest.calls.length, 0);
+
+  // --- Personal overlay --------------------------------------------------------
+  const meQuery = `/api/me/engagement?threads=${codexKey}&likes=${codexKey}&reactions=card:bash:0.103.2`;
+  assert.equal((await json(await call(meQuery))).body.error, "token_invalid");
+  const me = await json(await call(meQuery, { headers: { authorization: `Bearer ${token}` } }));
+  assert.equal(me.status, 200);
+  assert.deepEqual(me.body.commentLikes, { [codexKey]: ["11111111-1111-4111-8111-111111111111"] });
+  assert.deepEqual(me.body.likes, { [codexKey]: false });
+  assert.deepEqual(me.body.reactions, { "card:bash:0.103.2": null });
+  const otherMe = await json(await call(meQuery, { headers: { authorization: `Bearer ${otherToken}` } }));
+  assert.deepEqual(otherMe.body.likes, { [codexKey]: true });
+  assert.deepEqual(otherMe.body.reactions, { "card:bash:0.103.2": "nerf" });
+  assert.equal((await call("/api/me/engagement?philosophers=card:bash", { headers: { authorization: `Bearer ${token}` } })).status, 400);
+
+  // --- Comment writes -------------------------------------------------------------
+  const created = await json(await call("/api/write/comments", authed("POST", {
+    threadKey: patchKey,
+    nickname: "  새 사람  ",
+    content: "패치 좋네요",
+    contentBlocks: [{ type: "text", text: "패치 좋네요" }],
+    author: { avatarId: "silent", avatarKind: "character", paletteId: null, paletteSwapped: false },
+    user_id: OTHER,
+    env: "production",
+  })));
+  assert.equal(created.status, 201);
+  const comment = created.body.comment as Record<string, unknown>;
+  assert.equal(comment.user_id, USER, "the author is the verified sub, never the body");
+  assert.equal(comment.nickname, "새 사람");
+  assert.equal(comment.like_count, 0);
+  assert.equal(rest.comments.at(-1)?.env, "development", "the env is the Worker's");
+  assert.equal(rest.comments.at(-1)?.avatar_id, "silent");
+  const plain = await json(await call("/api/write/comments", authed("POST", { threadKey: patchKey, nickname: "익명", content: "두 글자" })));
+  assert.equal(plain.status, 201);
+  assert.ok(!("avatar_id" in (rest.calls.at(-1)?.body as Row)), "no author: the token columns keep their defaults");
+
+  for (const bad of [
+    { threadKey: patchKey, nickname: "", content: "내용" },
+    { threadKey: patchKey, nickname: "가".repeat(21), content: "내용" },
+    { threadKey: patchKey, nickname: "이름", content: " a " },
+    { threadKey: patchKey, nickname: "이름", content: "가".repeat(2001) },
+    { threadKey: "bad key", nickname: "이름", content: "내용" },
+    { threadKey: patchKey, nickname: "이름", content: "내용", contentBlocks: "text" },
+    { threadKey: patchKey, nickname: "이름", content: "내용", author: { avatarId: 3 } },
+    { threadKey: patchKey, nickname: "이름", content: "내용", author: { avatarId: "a".repeat(65) } },
+    [],
+  ]) {
+    assert.equal((await call("/api/write/comments", authed("POST", bad))).status, 400, JSON.stringify(bad).slice(0, 60));
+  }
+  assert.equal((await call("/api/write/comments", { ...authed("POST", {}), headers: { authorization: `Bearer ${token}`, "content-type": "text/plain" }, body: "{}" })).status, 400);
+  const huge = JSON.stringify({ threadKey: patchKey, nickname: "이름", content: "내용", contentBlocks: ["x".repeat(170 * 1024)] });
+  assert.equal((await call("/api/write/comments", { method: "POST", headers: { authorization: `Bearer ${token}`, "content-type": "application/json" }, body: huge })).status, 413);
+  assert.equal((await call("/api/write/comments", { ...authed("POST", { threadKey: patchKey, nickname: "이름", content: "내용" }), headers: { authorization: `Bearer ${token}`, "content-type": "application/json", "sec-fetch-site": "cross-site" } })).status, 403);
+  assert.equal((await json(await call("/api/write/comments", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" }))).body.error, "token_invalid");
+
+  // Delete: own comment once, then 404; someone else's is 404 and stays.
+  const ownId = String(comment.id);
+  assert.deepEqual((await json(await call(`/api/write/comments?id=${ownId}`, authed("DELETE")))).body, { deleted: true });
+  assert.equal((await call(`/api/write/comments?id=${ownId}`, authed("DELETE"))).status, 404);
+  assert.equal((await call("/api/write/comments?id=11111111-1111-4111-8111-111111111111", authed("DELETE"))).status, 404);
+  assert.ok(rest.comments.some((row) => row.id === "11111111-1111-4111-8111-111111111111"));
+  assert.equal((await call("/api/write/comments", authed("DELETE"))).status, 400, "id is required");
+  assert.equal((await call("/api/write/comments?id=not-a-uuid", authed("DELETE"))).status, 400);
+
+  // --- Comment likes and likes are idempotent and return the count ---------------
+  const target = "22222222-2222-4222-8222-222222222222";
+  assert.deepEqual((await json(await call(`/api/write/comment-likes?id=${target}`, authed("PUT")))).body, { liked: true, count: 1 });
+  assert.deepEqual((await json(await call(`/api/write/comment-likes?id=${target}`, authed("PUT")))).body, { liked: true, count: 1 });
+  assert.deepEqual((await json(await call(`/api/write/comment-likes?id=${target}`, authed("PUT", undefined, otherToken)))).body, { liked: true, count: 2 });
+  assert.deepEqual((await json(await call(`/api/write/comment-likes?id=${target}`, authed("DELETE")))).body, { liked: false, count: 1 });
+  assert.deepEqual((await json(await call(`/api/write/comment-likes?id=${target}`, authed("DELETE")))).body, { liked: false, count: 1 });
+  assert.equal((await call("/api/write/comment-likes?id=99999999-9999-4999-8999-999999999999", authed("PUT"))).status, 404);
+
+  assert.deepEqual((await json(await call(`/api/write/likes?key=${codexKey}`, authed("PUT")))).body, { liked: true, count: 2 });
+  assert.deepEqual((await json(await call(`/api/write/likes?key=${codexKey}`, authed("PUT")))).body, { liked: true, count: 2 });
+  assert.deepEqual((await json(await call(`/api/write/likes?key=${codexKey}`, authed("DELETE")))).body, { liked: false, count: 1 });
+
+  // --- Reactions: the DB decides insert or update ---------------------------------
+  const reaction = (kind: string | null, bearer = token) => call("/api/write/reactions", authed("PUT", {
+    resourceType: "card", resourceId: "bash", gameVersion: "0.103.2", kind,
+  }, bearer));
+  assert.deepEqual((await json(await reaction("buff"))).body, { kind: "buff", counts: { buff: 1, nerf: 1, rework: 0 } });
+  assert.deepEqual((await json(await reaction("rework"))).body, { kind: "rework", counts: { buff: 0, nerf: 1, rework: 1 } }, "a second tab's stale kind cannot conflict");
+  assert.deepEqual((await json(await reaction("rework"))).body, { kind: "rework", counts: { buff: 0, nerf: 1, rework: 1 } });
+  assert.deepEqual((await json(await reaction(null))).body, { kind: null, counts: { buff: 0, nerf: 1, rework: 0 } });
+  assert.equal((await reaction("love")).status, 400);
+  assert.equal((await call("/api/write/reactions", authed("PUT", { resourceType: "card", resourceId: "a:b", gameVersion: "1", kind: "buff" }))).status, 400);
+
+  // A committed write whose count read fails answers 200 with an unknown count, never 503.
+  rest.failReads.add("likes");
+  const committedLike = await json(await call(`/api/write/likes?key=${patchKey}`, authed("PUT")));
+  assert.deepEqual(committedLike, { ...committedLike, status: 200, body: { liked: true, count: null } });
+  assert.ok(rest.likes.some((row) => row.story_id === patchKey && row.user_id === USER), "the like is stored");
+  assert.deepEqual((await json(await call(`/api/write/likes?key=${patchKey}`, authed("DELETE")))).body, { liked: false, count: null });
+  rest.failReads.delete("likes");
+  rest.failReads.add("resource_reaction_counts");
+  const committedReaction = await json(await reaction("nerf"));
+  assert.equal(committedReaction.status, 200);
+  assert.deepEqual(committedReaction.body, { kind: "nerf", counts: null });
+  assert.equal(rest.reactions.find((row) => row.user_id === USER)?.kind, "nerf");
+  await reaction(null);
+  rest.failReads.delete("resource_reaction_counts");
+
+  // Prototype names are unknown parameters, not crashes.
+  for (const name of ["constructor", "__proto__", "hasOwnProperty", "valueOf", "toString"]) {
+    assert.equal((await call(`/api/read/engagement-counts?${name}=1`)).status, 400, name);
+    assert.equal((await call(`/api/read/engagement?threads=${codexKey}&${name}=1`)).status, 400, name);
+  }
+
+  // A batch of planted 128 KB rows is cut at the byte cap and reported unavailable.
+  const plantedKey = "transfigure:planted";
+  for (let index = 0; index < 9; index += 1) {
+    rest.comments.push({ id: `66666666-6666-4666-8666-${String(index).padStart(12, "0")}`, story_id: plantedKey, user_id: OTHER, nickname: "심기", content: "큰 행", content_blocks: [{ type: "text", text: "가".repeat(43_000) }], created_at: `2026-11-05T04:00:0${index}.000Z`, env: "development", parent_id: null, meta: null, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false });
+  }
+  const planted = await json(await call(`/api/read/engagement?threads=${plantedKey}&likes=${plantedKey}`));
+  assert.equal(planted.status, 200);
+  assert.deepEqual(planted.body.unavailable, ["threads"]);
+  assert.equal((await call(`/api/read/engagement?threads=${plantedKey}`)).status, 503);
+  rest.comments = rest.comments.filter((row) => row.story_id !== plantedKey);
+
+  // --- Engagement counts ------------------------------------------------------------
+  const counts = await json(await call("/api/read/engagement-counts"));
+  assert.equal(counts.status, 200);
+  assert.equal((counts.body.comments as Record<string, number>)[codexKey], 2);
+  assert.equal((counts.body.likes as Record<string, number>)[codexKey], 1);
+  assert.equal((await call("/api/read/engagement-counts?p_env=production")).status, 400);
+
+  // --- Rate limits ------------------------------------------------------------------
+  writeLimiter.allow = false;
+  const limited = await call(`/api/write/likes?key=${codexKey}`, authed("PUT"));
+  assert.equal(limited.status, 429);
+  assert.equal(limited.headers.get("retry-after"), "30");
+  assert.equal(writeLimiter.keys.at(-1), `user:${USER}`);
+  writeLimiter.allow = true;
+  readLimiter.allow = false;
+  assert.equal((await call(query, { headers: { "cf-connecting-ip": "203.0.113.9" } })).status, 429);
+  readLimiter.allow = true;
+  // A missing binding does not block.
+  const unlimited = await mainWorker.fetch(new Request(`${ORIGIN}${query}`), { ...env, API_READ_LIMITER: undefined } as never, ctx);
+  assert.equal(unlimited.status, 200);
+
+  // --- Flags -------------------------------------------------------------------------
+  db.flags.set("path.comments", "legacy");
+  resetFlagsForTest();
+  const legacy = await json(await call(query));
+  assert.equal(legacy.status, 409);
+  assert.equal(legacy.body.reason, "flag");
+  const pinned = await call(query, { headers: { cookie: "slseoun_qa_path=comments" } });
+  assert.equal(pinned.status, 200, "development QA may pin the api path");
+  assert.equal((await call(query, { headers: { cookie: "slseoun_qa=no-supabase" } })).status, 409);
+
+  // --- Colorful philosophers (STEP1_DESIGN 9.2) -----------------------------------------
+  db.flags.set("path.comments", "api");
+  resetFlagsForTest();
+  const { kstWeekStart } = await import("../src/lib/nav-surfaces");
+  const thisWeek = kstWeekStart(new Date());
+  const nextWeek = new Date(Date.parse(`${thisWeek}T00:00:00Z`) + 7 * 86_400_000).toISOString().slice(0, 10);
+  const futureId = "77777777-7777-4777-8777-777777777777";
+  rest.philosophers.push({
+    id: futureId, week_start: nextWeek, slot: "relic", resource_type: "relic", resource_id: "orrery",
+    name_ko: "태양계의", name_en: "Orrery", image_url: null, body: "다음 주 예약", game_version: "0.103.2", env: "development",
+  });
+  rest.philosophers.push({
+    id: "88888888-8888-4888-8888-888888888888", week_start: thisWeek, slot: "card", resource_type: "card", resource_id: "zap",
+    name_ko: "전기 충격", name_en: "Zap", image_url: null, body: "운영 행", game_version: "0.103.2", env: "production",
+  });
+  rest.comments.push({ id: "99999999-0000-4000-8000-000000000001", story_id: `colorful-philosophers:${futureId}`, user_id: OTHER, nickname: "미리", content: "예약 글 답글", content_blocks: null, created_at: "2026-11-05T05:00:00.000Z", env: "development", parent_id: null, meta: null, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false });
+
+  const week = await json(await call("/api/read/colorful-philosophers/week"));
+  assert.equal(week.status, 200);
+  const weekPosts = week.body.posts as Record<string, unknown>[];
+  assert.deepEqual(weekPosts.map((row) => row.id), [futureId, "44444444-4444-4444-8444-444444444444"], "newest first, development only, reservations included");
+  assert.deepEqual(week.body.commentCounts, { "44444444-4444-4444-8444-444444444444": 1, [futureId]: 1 },
+    "replies counted for every returned post; the client picks the weeks it shows by its own clock");
+  assert.ok(!("env" in weekPosts[0]), "only the post columns");
+
+  const onePost = await json(await call("/api/read/colorful-philosophers/post?id=44444444-4444-4444-8444-444444444444"));
+  assert.equal((onePost.body.post as Record<string, unknown>).resource_id, "bash");
+  assert.equal((await json(await call("/api/read/colorful-philosophers/post?id=88888888-8888-4888-8888-888888888888"))).body.post, null, "another env's post is not found");
+  assert.equal((await call("/api/read/colorful-philosophers/post?id=not-a-uuid")).status, 400);
+  assert.equal((await call("/api/read/colorful-philosophers/post")).status, 400);
+
+  const reel = await json(await call("/api/read/colorful-philosophers/reel"));
+  assert.deepEqual((reel.body.posts as Record<string, unknown>[]).map((row) => row.id), ["44444444-4444-4444-8444-444444444444"], "no reservation in the reel");
+  assert.equal((await call("/api/read/colorful-philosophers/week?limit=500")).status, 400);
+
+  rest.failTables.add("comments");
+  const weekWithoutCounts = await json(await call("/api/read/colorful-philosophers/week"));
+  assert.equal(weekWithoutCounts.status, 200);
+  assert.ok(!("commentCounts" in weekWithoutCounts.body), "a failed count read leaves the counts out");
+  rest.failTables.clear();
+
+  db.flags.set("path.colorful-philosophers", "legacy");
+  resetFlagsForTest();
+  assert.equal((await json(await call("/api/read/colorful-philosophers/week"))).body.reason, "flag");
+  assert.equal((await call(query)).status, 200, "comments stays on its own flag");
+
+  // --- Contact (STEP1_DESIGN 9.3) ----------------------------------------------------------
+  const mailbox = (bearer?: string) => call("/api/me/mailbox", bearer ? { headers: { authorization: `Bearer ${bearer}` } } : {});
+  assert.equal((await mailbox()).status, 401);
+  assert.deepEqual((await json(await mailbox(token))).body, { v: 1, env: "development", unseen: false });
+  rest.contactInquiries.push({ id: rest.id(), user_id: OTHER, env: "development", admin_response: "답변", reply_seen_at: null });
+  assert.equal((await json(await mailbox(token))).body.unseen, false, "another user's reply is not this user's");
+  rest.contactInquiries.push({ id: rest.id(), user_id: USER, env: "production", admin_response: "답변", reply_seen_at: null });
+  assert.equal((await json(await mailbox(token))).body.unseen, false, "another env's reply does not count");
+  rest.contactInquiries.push({ id: rest.id(), user_id: USER, env: "development", admin_response: "답변", reply_seen_at: null });
+  assert.equal((await json(await mailbox(token))).body.unseen, true);
+  rest.contactInquiries = [];
+
+  const inquiry = {
+    category: "bug", message: "  강타 설명이 틀렸습니다. 확인 부탁드려요  ", replyEmail: " Me@Example.COM ",
+    pagePath: "/compendium/cards/bash?x=1#top", serviceLocale: "ko", gameLocale: "kor", viewportWidth: 390, viewportHeight: 844,
+    userId: OTHER, env: "production",
+  };
+  const sent = await call("/api/write/contact-inquiries", authed("POST", inquiry));
+  assert.equal(sent.status, 201);
+  const stored = rest.contactInquiries[0];
+  assert.equal(stored.user_id, USER);
+  assert.equal(stored.env, "development");
+  assert.equal(stored.message, "강타 설명이 틀렸습니다. 확인 부탁드려요");
+  assert.equal(stored.reply_email, "me@example.com");
+  assert.equal(stored.page_path, "/compendium/cards/bash");
+  assert.ok(!("userId" in stored) && !("status" in (rest.calls.at(-1)?.body as Row)), "only table columns; status keeps its default");
+  assert.equal(rest.calls.at(-1)?.url.searchParams.get("select"), null, "return=minimal: authenticated cannot read the row back");
+  for (const bad of [
+    { ...inquiry, category: "spam" },
+    { ...inquiry, message: "짧음" },
+    { ...inquiry, category: "partnership", replyEmail: null },
+    { ...inquiry, replyEmail: "not-an-email" },
+    { ...inquiry, serviceLocale: "ja" },
+    { ...inquiry, gameLocale: "xx" },
+    { ...inquiry, viewportWidth: 0 },
+    { ...inquiry, viewportHeight: 1.5 },
+  ]) {
+    assert.equal((await call("/api/write/contact-inquiries", authed("POST", bad))).status, 400, JSON.stringify(bad).slice(0, 80));
+  }
+  await call("/api/write/contact-inquiries", authed("POST", inquiry));
+  await call("/api/write/contact-inquiries", authed("POST", inquiry));
+  const fourth = await json(await call("/api/write/contact-inquiries", authed("POST", inquiry)));
+  assert.equal(fourth.status, 429);
+  assert.equal(fourth.body.error, "rate_limited", "the table's three-an-hour limit is a 429");
+  db.flags.set("path.contact", "legacy");
+  resetFlagsForTest();
+  assert.equal((await json(await mailbox(token))).body.reason, "flag");
+
+  // --- Profile (STEP1_DESIGN 9.4) ----------------------------------------------------------
+  const asUser = (path: string, init: RequestInit = {}) => call(path, { ...init, headers: { authorization: `Bearer ${token}`, ...(init.headers ?? {}) } });
+  assert.deepEqual((await json(await call("/api/read/profile/nicknames"))).body.rows, rest.nicknamePools);
+
+  assert.equal((await call("/api/me/profile/stats")).status, 401);
+  const stats = await json(await asUser("/api/me/profile/stats"));
+  assert.deepEqual(stats.body.rows, [{ category: "comments", post_count: 2, like_count: 1 }]);
+  assert.deepEqual(rest.rpcBodies.at(-1), { name: "rpc/get_my_profile_activity_stats", p_env: "development" });
+  assert.equal(rest.calls.at(-1)?.auth, `Bearer ${token}`, "the RPC reads auth.uid() from the user's token");
+  await asUser("/api/me/profile/activity?category=comments&sort=likes&offset=20");
+  assert.deepEqual(rest.rpcBodies.at(-1), { name: "rpc/get_my_profile_activity", p_env: "development", p_category: "comments", p_sort: "likes", p_limit: 20, p_offset: 20 });
+  for (const bad of ["category=all&sort=oldest", "category=secret", "offset=-1", "offset=99999", "offset=1e3"]) {
+    assert.equal((await asUser(`/api/me/profile/activity?${bad}`)).status, 400, bad);
+  }
+
+  rest.contactInquiries = [
+    { id: "i1", user_id: USER, env: "development", category: "bug", message: "개발 문의입니다 열글자", status: "done", admin_response: "고쳤어요", reply_seen_at: null, created_at: "2026-11-05T00:00:00Z" },
+    { id: "i2", user_id: USER, env: "production", category: "bug", message: "운영 문의입니다 열글자", status: "new", admin_response: "운영 답", reply_seen_at: null, created_at: "2026-11-04T00:00:00Z" },
+    { id: "i3", user_id: OTHER, env: "development", category: "bug", message: "남의 문의입니다 열글자", status: "new", admin_response: null, reply_seen_at: null, created_at: "2026-11-03T00:00:00Z" },
+  ];
+  const inquiries = await json(await asUser("/api/me/profile/inquiries"));
+  assert.deepEqual((inquiries.body.rows as Row[]).map((row) => row.id), ["i1"], "own rows of this env only");
+  assert.equal((await asUser("/api/write/profile/inquiries-seen", { method: "POST", headers: { "sec-fetch-site": "same-origin" } })).status, 200);
+  assert.ok(rest.contactInquiries[0].reply_seen_at, "this env's answered inquiry is marked seen");
+  assert.equal(rest.contactInquiries[1].reply_seen_at, null, "another env's stays unseen");
+  rest.contactInquiries = [];
+
+  // --- Puzzlebox (STEP1_DESIGN 9.5) -------------------------------------------------------
+  const { encodePuzzleboxBoards, parsePuzzleboxBoards } = await import("../src/lib/puzzlebox-api-rules");
+  assert.equal(encodePuzzleboxBoards({ 1: 4, 12: 16 }), "1:4,12:16");
+  assert.deepEqual(parsePuzzleboxBoards("1:4,12:16"), { 1: 4, 12: 16 });
+  for (const bad of ["", "1:4,1:5", "a:4", "1:-1", "1:4:5", "12345:1"]) assert.equal(parsePuzzleboxBoards(bad), null, bad);
+  assert.equal(encodePuzzleboxBoards({ x: 1 }), null);
+
+  const board = "/api/read/puzzlebox/leaderboard?game=connections&boards=1:4,2:4&board=total&offset=10&around_me=0";
+  const publicBoard = await json(await call(board, { headers: { authorization: `Bearer ${token}` } }));
+  assert.equal(publicBoard.status, 200);
+  assert.deepEqual(rest.rpcBodies.at(-1), {
+    name: "rpc/get_puzzlebox_leaderboard", auth: false, p_env: "development", p_game: "connections",
+    p_boards: { 1: 4, 2: 4 }, p_board: null, p_offset: 10, p_around_me: false,
+  }, "the public route never forwards a token, even when the browser sent one");
+  assert.equal((publicBoard.body.leaderboard as Row).me, null);
+  const myBoard = await json(await call(board.replace("/api/read/", "/api/me/").replace("board=total", "board=2").replace("around_me=0", "around_me=1"), { headers: { authorization: `Bearer ${token}` } }));
+  assert.deepEqual((myBoard.body.leaderboard as Row).me, { rank: 1 });
+  assert.equal((rest.rpcBodies.at(-1) as Row).p_board, "2");
+  assert.equal((rest.rpcBodies.at(-1) as Row).p_around_me, true);
+  for (const bad of ["game=chess&boards=1:4", "game=connections&boards=x", "game=connections&boards=1:4&offset=9999999", "game=connections&boards=1:4&board=total&around_me=2"]) {
+    assert.equal((await call(`/api/read/puzzlebox/leaderboard?${bad}`)).status, 400, bad);
+  }
+  assert.equal((await call("/api/me/puzzlebox/standings?game=connections&boards=1:4")).status, 401);
+  const standings = await json(await call("/api/me/puzzlebox/standings?game=connections&boards=1:4", { headers: { authorization: `Bearer ${token}` } }));
+  assert.equal((standings.body.standings as Row[])[0].board, "1");
+
+  const run = { game: "connections", board: "1", run: { picks: [] }, player: { nickname: "나" } };
+  const submitted = await json(await call("/api/write/puzzlebox/runs", authed("POST", run)));
+  assert.equal((submitted.body.result as Row).rank, 1);
+  assert.deepEqual(rest.rpcBodies.at(-1), { name: "rpc/submit_puzzlebox_run", auth: true, p_env: "development", p_game: "connections", p_board: "1", p_run: { picks: [] }, p_player: { nickname: "나" } });
+  assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, run: { spam: true } }))).status, 429, "54000 is the RPC's own run limit");
+  assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, board: "999" }))).status, 400);
+  assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, board: 1 }))).status, 400);
+  assert.equal((await call("/api/write/puzzlebox/runs", authed("POST", { ...run, run: [] }))).status, 400);
+
+  // --- History runs (STEP1_DESIGN 9.6) ---------------------------------------------------
+  const rawFile = JSON.stringify({ seed: "S", players: [{ character: "CHARACTER.IRONCLAD" }], note: "가\u00e9\"quoted\"" });
+  const runRow = (id: string, donor: string, extra: Row = {}): Row => ({
+    id, raw: rawFile, seed: "S", build: "v0.103.2", character: "IRONCLAD", ascension: 1, win: true,
+    start_time: `2026-11-0${id.length % 9}T00:00:00Z`, run_time: 100, acts_count: 3, total_floors: 50,
+    cover_spec: { auto: true }, donor_user_id: donor, donor_nickname: "기증자", env: "development",
+    created_at: `2026-11-05T0${id.length % 9}:00:00Z`, ...extra,
+  });
+  rest.runs = [runRow("aaa", OTHER), runRow("bbbb", USER), runRow("ccccc", USER, { env: "production" })];
+
+  const recent = await call("/api/read/history-runs?view=recent");
+  assert.equal(recent.status, 200);
+  assert.equal(recent.headers.get("x-slseoun-api"), "1");
+  assert.equal(recent.headers.get("x-slseoun-api-env"), "development");
+  const recentRows = await recent.json() as Row[];
+  assert.ok(Array.isArray(recentRows), "PostgREST's array, passed through without an envelope");
+  assert.deepEqual(recentRows.map((row) => row.id), ["bbbb", "aaa"], "development only, newest first");
+  assert.equal(recentRows[0].raw, rawFile, "the raw run file passes through untouched");
+  const referenceRows = await (await call("/api/read/history-runs?view=reference")).json() as Row[];
+  assert.equal(referenceRows.length, 2);
+  assert.equal((rest.calls.at(-1)?.url.searchParams.get("order")), "start_time.desc");
+  assert.equal((await call("/api/read/history-runs?view=all")).status, 400);
+  assert.equal((await call("/api/read/history-runs")).status, 400);
+
+  const detailRows = await (await call("/api/read/history-run?id=bbbb&view=detail")).json() as Row[];
+  assert.equal(detailRows[0].raw, rawFile);
+  const meta = await json(await call("/api/read/history-run?id=bbbb&view=meta"));
+  assert.deepEqual((meta.body.rows as Row[])[0], { id: "bbbb", character: "IRONCLAD", cover_spec: { auto: true } }, "meta carries no raw");
+  assert.deepEqual((await json(await call("/api/read/history-run?id=ccccc&view=meta"))).body.rows, [], "another env's run is not found");
+  assert.equal((await call("/api/read/history-run?id=a/b&view=detail")).status, 400);
+  rest.calls.length = 0;
+  assert.equal((await call("/api/read/history-runs?view=recent", { method: "HEAD" })).status, 200);
+  assert.equal(rest.calls.length, 0, "HEAD does not call Supabase");
+
+  rest.likes.push({ id: rest.id(), story_id: "history-course:aaa", user_id: OTHER, env: "development" });
+  rest.comments.push({ id: "77777777-0000-4000-8000-000000000001", story_id: "history-course:aaa", user_id: OTHER, nickname: "런", content: "좋은 런", content_blocks: null, created_at: "2026-11-05T06:00:00.000Z", env: "development", parent_id: null, meta: null, avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false });
+  const engagement = await json(await call("/api/read/history-runs/engagement?ids=aaa,bbbb"));
+  assert.deepEqual(engagement.body.likes, { aaa: 1 });
+  assert.deepEqual(engagement.body.comments, { aaa: 1 });
+  assert.equal((await call("/api/read/history-runs/engagement?ids=aaa,aaa")).status, 400);
+
+  const mine = await json(await call("/api/me/history-runs", { headers: { authorization: `Bearer ${token}` } }));
+  assert.deepEqual(mine.body.ids, ["bbbb"], "this env's runs donated by the token's user");
+  assert.deepEqual((await json(await call("/api/me/history-runs?id=aaa", { headers: { authorization: `Bearer ${token}` } }))).body.ids, []);
+
+  // Browsers send Content-Length with a string body; Node's Request does not fill it in, so the spec does.
+  const upload = (path: string, payload: unknown, headers: Record<string, string> = {}) => {
+    const text = JSON.stringify(payload);
+    return call(path, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "content-type": "application/json",
+        "sec-fetch-site": "same-origin",
+        "content-length": String(new TextEncoder().encode(text).byteLength),
+        ...headers,
+      },
+      body: text,
+    });
+  };
+  assert.equal((await upload("/api/write/history-runs", runRow("dddd", USER))).status, 201);
+  assert.equal(rest.runs.find((row) => row.id === "dddd")?.raw, rawFile, "the uploaded raw arrives as sent");
+  assert.equal((await json(await upload("/api/write/history-runs", runRow("dddd", USER)))).body.error, "duplicate", "23505 tells the page it was already shared");
+  assert.equal((await upload("/api/write/history-runs", runRow("eeee", OTHER))).status, 403, "RLS refuses another donor");
+  const batch = await json(await upload("/api/write/history-runs/batch", [runRow("dddd", USER), runRow("ffff", USER)]));
+  assert.equal(batch.status, 201);
+  assert.deepEqual(batch.body.inserted, ["ffff"], "duplicates are skipped, not failed");
+  assert.equal((await upload("/api/write/history-runs/batch", [], { "content-length": String(25 * 1024 * 1024) })).status, 413);
+  assert.equal((await call("/api/write/history-runs", { method: "POST", headers: { authorization: `Bearer ${token}`, "content-type": "text/plain" }, body: "{}" })).status, 400);
+  // A raw body needs a Content-Length (browsers send one for a string body): the body is never pumped by JS.
+  const chunk = new TextEncoder().encode("x".repeat(1024 * 1024));
+  let chunksSent = 0;
+  const endless = new ReadableStream<Uint8Array>({
+    pull(controller) {
+      chunksSent += 1;
+      if (chunksSent > 26) controller.close();
+      else controller.enqueue(chunk);
+    },
+  });
+  const overCap = await mainWorker.fetch(new Request(`${ORIGIN}/api/write/history-runs/batch`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${token}`, "content-type": "application/json", "sec-fetch-site": "same-origin" },
+    body: endless,
+    duplex: "half",
+  } as RequestInit), env as never, ctx);
+  assert.equal(overCap.status, 400, "no Content-Length, no passthrough");
+
+  const cover = (id: string, bearer = token) => call(`/api/write/history-runs/cover?id=${id}`, authed("PATCH", { coverSpec: { auto: false, card: "BASH" } }, bearer));
+  assert.equal((await json(await cover("bbbb"))).body.updated, true);
+  assert.deepEqual(rest.runs.find((row) => row.id === "bbbb")?.cover_spec, { auto: false, card: "BASH" });
+  assert.equal((await json(await cover("aaa"))).body.updated, false, "only the donor may change a cover");
+
+  rest.runs.push(runRow("gggg", USER, { donor_nickname: null }));
+  assert.equal((await call("/api/write/history-runs/nicknames", authed("POST", { nickname: "새이름" }))).status, 200);
+  assert.equal(rest.runs.find((row) => row.id === "bbbb")?.donor_nickname, "새이름");
+  assert.equal(rest.runs.find((row) => row.id === "aaa")?.donor_nickname, "기증자", "another donor's runs stay");
+  assert.equal(rest.runs.find((row) => row.id === "gggg")?.donor_nickname, null, "neq skips a null nickname, like the legacy update");
+
+  assert.equal((await json(await call("/api/write/history-runs?id=aaa", authed("DELETE")))).body.deleted, false);
+  assert.ok(rest.runs.some((row) => row.id === "aaa"));
+  assert.equal((await json(await call("/api/write/history-runs?id=bbbb", authed("DELETE")))).body.deleted, true);
+  rest.runs = [];
+
+  // --- Stories (STEP1_DESIGN 9.7) -----------------------------------------------------------
+  const story = (id: string, extra: Row = {}): Row => ({
+    id, user_id: OTHER, static_story_id: null, nickname: "이야기꾼", sentence: "강타가 세졌다", game: "sts2",
+    entity_type: "card", entity_id: "BASH", change_id: null, patch_line_id: "v0.105.0:line-001", source: "v0.105.0",
+    tags: [], linked_entities: [], created_at: `2026-11-0${id.length}T00:00:00Z`, env: "development",
+    avatar_id: null, avatar_kind: null, palette_id: null, palette_swapped: false, ...extra,
+  });
+  rest.stories = [story("s1"), story("s22", { source: "v0.106.0" }), story("s333", { env: "production" })];
+  const feed = await call("/api/read/stories?limit=100");
+  assert.equal(feed.status, 200);
+  const feedRows = await feed.json() as Row[];
+  assert.deepEqual(feedRows.map((row) => row.id), ["s22", "s1"], "this env, newest first, passed through as an array");
+  assert.deepEqual(((await (await call("/api/read/stories?limit=200&source=v0.105.0")).json()) as Row[]).map((row) => row.id), ["s1"]);
+  for (const bad of ["limit=50", "limit=1000&source=bad source", "limit=100&order=id"]) {
+    assert.equal((await call(`/api/read/stories?${bad}`)).status, 400, bad);
+  }
+  const storyInput = {
+    nickname: "  나  ", sentence: "  새 이야기입니다  ", entityType: "card", entityId: "WITHER",
+    patchLineId: "v0.106.1:line-002-card-wither", source: "v0.106.1",
+    linkedEntities: [{ entityType: "relic", entityId: "ORRERY", label: "태양계" }],
+    author: { avatarId: "silent", avatarKind: "character", paletteId: null, paletteSwapped: false },
+    user_id: OTHER, env: "production", game: "sts1", tags: ["spam"],
+  };
+  const createdStory = await json(await call("/api/write/stories", authed("POST", storyInput)));
+  assert.equal(createdStory.status, 201);
+  const storyRow = createdStory.body.row as Row;
+  assert.equal(storyRow.user_id, USER, "the author is the verified sub");
+  assert.equal(storyRow.env, "development");
+  assert.equal(storyRow.game, "sts2");
+  assert.deepEqual(storyRow.tags, [], "tags are not taken from the body");
+  assert.equal(storyRow.sentence, "새 이야기입니다");
+  assert.equal(storyRow.avatar_id, "silent");
+  for (const bad of [
+    { ...storyInput, sentence: "짧" },
+    { ...storyInput, sentence: "가".repeat(121) },
+    { ...storyInput, nickname: "가".repeat(21) },
+    { ...storyInput, patchLineId: "bad id" },
+    { ...storyInput, linkedEntities: [{ entityType: 1 }] },
+    { ...storyInput, author: { avatarId: 5 } },
+  ]) {
+    assert.equal((await call("/api/write/stories", authed("POST", bad))).status, 400, JSON.stringify(bad).slice(0, 70));
+  }
+  assert.equal((await json(await call("/api/write/stories?id=" + String(storyRow.id).replace(/^.*?([0-9a-f-]{36})$/, "$1"), authed("DELETE")))).body.deleted, true);
+  rest.stories.push(story("77777777-7777-4777-8777-000000000001"));
+  assert.equal((await json(await call("/api/write/stories?id=77777777-7777-4777-8777-000000000001", authed("DELETE")))).body.deleted, false, "not the author's");
+  rest.stories = [];
+
+  // --- Toybox feed (STEP1_DESIGN 9.8) ------------------------------------------------
+  const sendRaw = (method: string, path: string, payload: unknown, bearer = token) => {
+    const text = JSON.stringify(payload);
+    return call(path, {
+      method,
+      headers: {
+        authorization: `Bearer ${bearer}`,
+        "content-type": "application/json",
+        "sec-fetch-site": "same-origin",
+        "content-length": String(new TextEncoder().encode(text).byteLength),
+      },
+      body: text,
+    });
+  };
+  const POST_A = "aaaaaaaa-0000-4000-8000-000000000001";
+  const POST_B = "aaaaaaaa-0000-4000-8000-000000000002";
+
+  // Feeds: the RPC rows pass through as an array; the env and page size are the Worker's.
+  rest.rpcBodies.length = 0;
+  const toyFeed = await call("/api/read/toybox-feed?service=combo&sort=recommended&score=3&created_at=2026-11-05T00:00:00.123456%2B00:00&cursor_id=" + POST_A);
+  assert.equal(toyFeed.status, 200);
+  assert.equal(toyFeed.headers.get("x-slseoun-api-env"), "development");
+  assert.equal(((await toyFeed.json()) as Row[])[0].like_count, 2);
+  assert.deepEqual(rest.rpcBodies.at(-1), {
+    name: "rpc/get_toybox_feed", auth: false, p_env: "development", p_service: "combo", p_sort: "recommended", p_limit: 20,
+    p_cursor_score: 3, p_cursor_created_at: "2026-11-05T00:00:00.123456+00:00", p_cursor_id: POST_A,
+  });
+  assert.equal((await call("/api/read/defragment-feed?sort=latest")).status, 200);
+  assert.deepEqual(rest.rpcBodies.at(-1), {
+    name: "rpc/get_defragment_feed_v2", auth: false, p_env: "development", p_sort: "latest", p_limit: 20,
+    p_cursor_score: null, p_cursor_created_at: null, p_cursor_id: null,
+  });
+  for (const bad of [
+    "service=defragment&sort=latest", "service=combo&sort=oldest", "service=combo&sort=latest&score=1",
+    "service=combo&sort=latest&score=1&created_at=yesterday&cursor_id=x", "service=combo&sort=latest&p_env=production",
+  ]) {
+    assert.equal((await call(`/api/read/toybox-feed?${bad}`)).status, 400, bad);
+  }
+  rest.calls.length = 0;
+  assert.equal((await call("/api/read/defragment-runs?sort=comments&score=4&created_at=2026-11-05T00:00:00Z&cursor_id=run_1")).status, 200);
+  const runsQuery = rest.calls.at(-1)!.url.searchParams;
+  assert.equal(runsQuery.get("order"), "comment_count.desc,created_at.desc,id.desc");
+  assert.equal(runsQuery.get("or"), '(comment_count.lt.4,and(comment_count.eq.4,created_at.lt."2026-11-05T00:00:00Z"),and(comment_count.eq.4,created_at.eq."2026-11-05T00:00:00Z",id.lt."run_1"))');
+  assert.equal(runsQuery.get("env"), "eq.development");
+  assert.equal((await call("/api/read/defragment-runs?sort=play_count")).status, 400, "runs have no play count sort");
+
+  // Posts: insert passes the body through (RLS checks the author), the guard trigger resets counters.
+  const comboRow = { user_id: USER, nickname: "나", title: "콤보", env: "development", like_count: 99 };
+  const createdPost = await sendRaw("POST", "/api/write/toybox-post?service=combo", comboRow);
+  assert.equal(createdPost.status, 201);
+  const postRow = ((await createdPost.json()) as Row[])[0];
+  assert.equal(postRow.like_count, 0, "counters come from the table, not the body");
+  assert.equal((await sendRaw("POST", "/api/write/toybox-post?service=combo", { ...comboRow, user_id: OTHER })).status, 403, "RLS refuses another author");
+  assert.equal((await json(await sendRaw("POST", "/api/write/toybox-post?service=combo", { ...comboRow, title: "가".repeat(121) }))).body.error, "check_violation");
+  assert.equal((await sendRaw("POST", "/api/write/toybox-post?service=runs", comboRow)).status, 400, "only toybox tables");
+  const postId = String(postRow.id);
+  const readPost = await call(`/api/read/toybox-post?service=combo&id=${postId}`);
+  assert.equal(((await readPost.json()) as Row[])[0].title, "콤보");
+  assert.deepEqual(await (await call(`/api/read/toybox-post?service=transfigure&id=${postId}`)).json(), [], "another service's table has no such post");
+  const patched = await sendRaw("PATCH", `/api/write/toybox-post?service=combo&id=${postId}`, { title: "고친 콤보" });
+  assert.equal(((await patched.json()) as Row[])[0].title, "고친 콤보");
+  assert.deepEqual(await (await sendRaw("PATCH", `/api/write/toybox-post?service=combo&id=${postId}`, { title: "남의 것" }, otherToken)).json(), [], "not the author's: no row");
+  assert.equal((await sendRaw("PATCH", `/api/write/toybox-post?service=chemical_x&id=${postId}`, { title: "x" })).status, 400, "chemical posts have no update policy");
+  const patchCall = rest.calls.filter((entry) => entry.method === "PATCH").at(-1)!;
+  assert.equal(patchCall.url.searchParams.get("user_id"), `eq.${OTHER}`, "update is scoped to the caller");
+  assert.equal(patchCall.url.searchParams.get("env"), "eq.development");
+  assert.equal((await json(await call(`/api/write/toybox-post?service=combo&id=${postId}`, authed("DELETE", undefined, otherToken)))).body.deleted, false);
+  assert.equal((await json(await call(`/api/write/toybox-post?service=combo&id=${postId}`, authed("DELETE")))).body.deleted, true);
+  assert.equal((await call("/api/write/toybox-post?service=combo", { method: "POST", headers: { authorization: `Bearer ${token}`, "sec-fetch-site": "same-origin", "content-type": "application/json" }, body: "{}" })).status, 400, "a raw body needs Content-Length");
+
+  // Favorite tournament: presets, stats, play through the RPC with the Worker env.
+  rest.toybox.favorite_tournament_posts = [
+    { id: POST_A, preset_key: "builtin:cards", env: "development", created_at: "2026-11-01T00:00:00Z" },
+    { id: POST_B, preset_key: null, env: "development", created_at: "2026-11-02T00:00:00Z" },
+  ];
+  assert.deepEqual(((await (await call("/api/read/favorite-tournament/presets")).json()) as Row[]).map((row) => row.id), [POST_A]);
+  rest.toybox.favorite_tournament_candidate_stats = [{ tournament_id: POST_A, env: "development", resource_id: "bash" }, { tournament_id: POST_A, env: "production", resource_id: "x" }];
+  assert.equal(((await (await call(`/api/read/favorite-tournament/stats?id=${POST_A}`)).json()) as Row[]).length, 1);
+  const play = { tournamentId: POST_A, startingSize: 4, championType: "card", championId: "bash", matches: [] };
+  assert.deepEqual((await json(await call("/api/write/favorite-tournament/play", authed("POST", play)))).body.result, { play_count: 1 });
+  assert.equal(rest.rpcBodies.at(-1)!.p_env, "development");
+  assert.equal((await json(await call("/api/write/favorite-tournament/play", authed("POST", { ...play, startingSize: 3 })))).body.error, "invalid");
+  const fullPool = Array.from({ length: 297 }, (_, index) => ({ round: 1, a: { type: "relic", id: `relic_${index}` }, b: { type: "relic", id: `relic_${index + 1}` }, winner: "a" }));
+  assert.equal((await call("/api/write/favorite-tournament/play", authed("POST", { ...play, startingSize: 298, matches: fullPool }))).status, 200, "a 298-relic bracket is the RPC's to check");
+  assert.equal((await call("/api/write/favorite-tournament/play", authed("POST", { ...play, tournamentId: "x" }))).status, 400);
+
+  // Pagestorm: the list leaves out nothing it shows; drafts are the caller's own.
+  rest.toybox.pagestorm_posts = [{ id: POST_A, title: "글", content: { doc: 1 }, env: "development", created_at: "2026-11-01T00:00:00Z" }];
+  rest.calls.length = 0;
+  assert.equal((await call("/api/read/pagestorm/posts")).status, 200);
+  assert.equal(rest.calls.at(-1)!.url.searchParams.get("limit"), "50");
+  const draft = await sendRaw("POST", "/api/write/pagestorm/drafts", { user_id: USER, title: "초안", env: "development" });
+  assert.equal(draft.status, 201);
+  const draftId = String(((await draft.json()) as Row[])[0].id);
+  rest.toybox.pagestorm_drafts.push({ id: POST_B, user_id: OTHER, title: "남의 초안", env: "development" });
+  const myDrafts = await call("/api/me/pagestorm/drafts", { headers: { authorization: `Bearer ${token}` } });
+  assert.deepEqual(((await myDrafts.json()) as Row[]).map((row) => row.title), ["초안"]);
+  assert.deepEqual(await (await call(`/api/me/pagestorm/drafts?id=${POST_B}`, { headers: { authorization: `Bearer ${token}` } })).json(), [], "another user's draft is not read");
+  assert.equal((await call("/api/me/pagestorm/drafts")).status, 401);
+  assert.equal(((await (await sendRaw("PATCH", `/api/write/pagestorm/drafts?id=${draftId}`, { title: "고친 초안" })).json()) as Row[])[0].title, "고친 초안");
+  assert.equal((await json(await call(`/api/write/pagestorm/drafts?id=${draftId}`, authed("DELETE")))).body.deleted, true);
+
+  // Defragment bodies: upsert on the source key, read by source.
+  const overlay = { user_id: USER, env: "development", source_service: "combo", source_id: POST_A, content: [] };
+  assert.equal((await sendRaw("PUT", "/api/write/defragment-body", overlay)).status, 200);
+  assert.equal((await sendRaw("PUT", "/api/write/defragment-body", { ...overlay, content: [{ t: 1 }] })).status, 200);
+  assert.equal(rest.toybox.defragment_bodies.length, 1, "the second write updates the same body");
+  const bodyCall = rest.calls.filter((entry) => entry.url.pathname.endsWith("/defragment_bodies")).at(-1)!;
+  assert.equal(bodyCall.url.searchParams.get("on_conflict"), "env,source_service,source_id");
+  assert.equal(((await (await call(`/api/read/defragment-body?service=combo&id=${POST_A}`)).json()) as Row[]).length, 1);
+  assert.equal((await call("/api/read/defragment-body?service=Combo!&id=x")).status, 400);
+
+  // This or that: likes, votes, summaries. The toggles and overlays count on the read budget by IP.
+  readLimiter.keys.length = 0;
+  writeLimiter.keys.length = 0;
+  const likeFromIp = authed("PUT");
+  likeFromIp.headers = { ...(likeFromIp.headers as Record<string, string>), "cf-connecting-ip": "203.0.113.7" };
+  assert.equal((await call(`/api/write/this-or-that/like?id=${POST_A}`, likeFromIp)).status, 200);
+  assert.equal(writeLimiter.keys.length, 0, "a like is not charged to the 30/min write budget");
+  assert.deepEqual(readLimiter.keys, ["ip:203.0.113.7"]);
+  assert.equal((await call(`/api/write/this-or-that/like?id=${POST_A}`, authed("PUT"))).status, 200, "liking twice is not an error");
+  rest.toybox.this_or_that_post_likes.push({ post_id: POST_A, user_id: OTHER, env: "development" }, { post_id: POST_A, user_id: OTHER, env: "production" });
+  assert.deepEqual((await json(await call(`/api/read/this-or-that/like-counts?ids=${POST_A},${POST_B}`))).body.rows, [{ post_id: POST_A, like_count: 2 }]);
+  assert.deepEqual((await json(await call(`/api/me/this-or-that/likes?ids=${POST_A},${POST_B}`, { headers: { authorization: `Bearer ${token}` } }))).body.rows, [{ post_id: POST_A }]);
+  assert.equal((await call(`/api/write/this-or-that/like?id=${POST_A}`, authed("DELETE"))).status, 200);
+  assert.equal(rest.toybox.this_or_that_post_likes.filter((row) => row.user_id === USER).length, 0);
+  assert.equal((await call(`/api/write/this-or-that/vote?id=${POST_A}`, authed("PUT", { choice: "left", surface: "index" }))).status, 201);
+  assert.equal(rest.toybox.this_or_that_post_votes[0].created_surface, "index");
+  assert.equal((await call(`/api/write/this-or-that/vote?id=${POST_A}`, authed("PUT", { choice: "middle", surface: "index" }))).status, 400);
+  assert.equal((await json(await call(`/api/write/this-or-that/vote?id=${POST_A}`, authed("PUT", { choice: "right", surface: "detail" })))).body.error, "duplicate", "one vote per post");
+  const summaries = await json(await call(`/api/read/this-or-that/vote-summaries?ids=${POST_A}`));
+  assert.deepEqual(summaries.body.rows, [{ post_id: POST_A, left_count: 1, right_count: 0 }]);
+  assert.deepEqual((await json(await call(`/api/me/this-or-that/votes?ids=${POST_A}`, { headers: { authorization: `Bearer ${token}` } }))).body.rows, [{ post_id: POST_A, choice: "left" }]);
+  assert.equal((await call(`/api/write/this-or-that/vote?id=${POST_A}`, authed("DELETE"))).status, 200);
+  const fiftyOne = Array.from({ length: 51 }, (_, index) => `aaaaaaaa-0000-4000-8000-${String(index).padStart(12, "0")}`).join(",");
+  assert.equal((await call(`/api/read/this-or-that/vote-summaries?ids=${fiftyOne}`)).status, 400, "the RPC refuses more than 50 ids");
+  assert.equal((await call(`/api/read/this-or-that/like-counts?ids=${POST_A},${POST_A}`)).status, 400, "ids are unique");
+  rest.toybox = {};
+
+  // --- Helpers ------------------------------------------------------------------------
+  assert.equal(contentRangeTotal("0-4/5"), 5);
+  assert.equal(contentRangeTotal("*/0"), 0);
+  assert.equal(contentRangeTotal(null), null);
+  assert.equal(restErrorCode({ ok: false, status: 401, code: "42501" }), "forbidden");
+  assert.equal(restErrorCode({ ok: false, status: 401, code: "PGRST301" }), "token_expired");
+  assert.equal(restErrorCode({ ok: false, status: 400, code: "23514" }), "check_violation");
+  assert.equal(restErrorCode({ ok: false, status: 504, code: "http_504" }), "unavailable");
+  assert.equal(restErrorCode({ ok: false, status: 0, code: "timeout" }), "unavailable");
+  assert.ok(parseCommentInput({ threadKey: "byrdispatch", nickname: "😀".repeat(20), content: "ok" }), "20 emoji is 20 characters");
+  assert.equal(parseCommentInput({ threadKey: "byrdispatch", nickname: "😀".repeat(21), content: "ok" }), null);
+
+  globalThis.fetch = realFetch;
+  console.log("api-comments spec passed");
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

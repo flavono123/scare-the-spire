@@ -447,14 +447,22 @@
       AUTH_TIMEOUT_MS,
     );
 
-    if (!response.ok) throw new Error(`Auth request failed: ${response.status}`);
+    if (!response.ok) {
+      const error = new Error(`Auth request failed: ${response.status}`);
+      error.status = response.status;
+      throw error;
+    }
     return response.json();
   }
 
-  async function ensureSession(config) {
+  // On the api path a refresh that failed for a transient reason (network, timeout,
+  // 5xx) does not fall through to a new anonymous sign-up, which would replace the
+  // user's id (docs/supabase-exit/STEP1_DESIGN.md 7). A rejected refresh token
+  // (400/401) is dead either way, as supabase-js treats it.
+  async function ensureSession(config, { keepUserOnTransientFailure = false, forceRefresh = false } = {}) {
     const stored = normalizeSession(readStoredSession(config));
     const now = Math.floor(Date.now() / 1000);
-    if (stored?.access_token && stored.expires_at && stored.expires_at > now + 60) {
+    if (!forceRefresh && stored?.access_token && stored.expires_at && stored.expires_at > now + 60) {
       return stored;
     }
 
@@ -469,7 +477,9 @@
           writeStoredSession(config, refreshed);
           return refreshed;
         }
-      } catch {
+      } catch (error) {
+        const rejected = error?.status === 400 || error?.status === 401;
+        if (keepUserOnTransientFailure && !rejected) throw error;
         // Fall through to an anonymous sign-in below.
       }
     }
@@ -640,7 +650,8 @@
       error.classList.add("hidden");
       try {
         if (!config) throw new Error("Missing database config");
-        const session = await ensureSession(config);
+        const viaApi = surfacePath("stories") === "api";
+        const session = viaApi ? null : await ensureSession(config);
         const refs = patchLineRefs(action);
         const primaryRef = refs[0];
         const linkedEntities = refs.slice(1).map((ref) => ({
@@ -660,12 +671,41 @@
           palette_id: null,
           palette_swapped: false,
         };
+        if (viaApi) {
+          try {
+            // docs/supabase-exit/STEP1_DESIGN.md 9.7: the Worker fills the user id, env and game.
+            await apiWriteAsUser(config, "/api/write/stories", {
+              method: "POST",
+              group: "stories",
+              body: {
+                nickname,
+                sentence,
+                entityType: primaryRef?.type ?? null,
+                entityId: primaryRef?.id ?? null,
+                patchLineId,
+                source: patchId,
+                linkedEntities,
+                author: {
+                  avatarId: authorToken.avatar_id,
+                  avatarKind: authorToken.avatar_kind,
+                  paletteId: authorToken.palette_id,
+                  paletteSwapped: authorToken.palette_swapped,
+                },
+              },
+            });
+            close();
+            return;
+          } catch (apiError) {
+            if (!apiError.legacy || apiError.processed) throw apiError;
+          }
+        }
+        const legacySession = session ?? await ensureSession(config);
         await restRequest(config, "community_stories?select=*", {
           method: "POST",
-          token: session.access_token,
+          token: legacySession.access_token,
           headers: { Prefer: "return=representation" },
           body: {
-            user_id: sessionUserId(session),
+            user_id: sessionUserId(legacySession),
             nickname,
             sentence,
             game: "sts2",
@@ -869,7 +909,53 @@
     void remapCommentNickTokens(root);
   }
 
+  /** Thread state from /api/read/engagement and /api/me/engagement; null means use the legacy path. */
+  async function loadApiState(config, threadKey) {
+    let body;
+    try {
+      body = await apiRequest(`/api/read/engagement?threads=${threadKey}`);
+    } catch (error) {
+      if (error.legacy) return null;
+      throw error;
+    }
+    const comments = body?.v === 1 ? body.threads?.[threadKey] : undefined;
+    if (!Array.isArray(comments)) {
+      if (body?.v !== 1) {
+        slseounRuntime().demoted.add("comments");
+        return null;
+      }
+      throw new Error("unavailable");
+    }
+    const session = config ? normalizeSession(readStoredSession(config)) : null;
+    const userId = sessionUserId(session);
+    const likeCounts = new Map(comments.map((comment) => [comment.id, Number(comment.like_count) || 0]));
+    const liked = new Set();
+    const now = Math.floor(Date.now() / 1000);
+    // Only a live token; an expired one is refreshed on the first write, never on a read.
+    if (userId && comments.length > 0 && session?.access_token && session.expires_at > now + 5) {
+      try {
+        const mine = await apiRequest(`/api/me/engagement?threads=${threadKey}`, { token: session.access_token });
+        for (const id of mine?.commentLikes?.[threadKey] ?? []) liked.add(id);
+      } catch {
+        // Hearts stay empty; the comments still show.
+      }
+    }
+    return {
+      comments,
+      likeCounts,
+      liked,
+      userId,
+      nickname: readStoredNickname(copy().defaultNickname),
+      submitting: false,
+      viaApi: true,
+    };
+  }
+
   async function loadState(config, threadKey) {
+    if (commentsViaApi(threadKey)) {
+      const state = await loadApiState(config, threadKey);
+      if (state) return state;
+    }
     const comments = await restRequest(config, commentsPath(threadKey, config));
     const session = normalizeSession(readStoredSession(config));
     const userId = sessionUserId(session);
@@ -938,7 +1024,7 @@
       renderComments(root, state);
 
       try {
-        const session = await ensureSession(config);
+        const viaApi = commentsViaApi(threadKey);
         const profileState = readStoredProfileIconState();
         const authorToken = profileState.stored ? {
           avatar_id: profileState.avatarId,
@@ -951,6 +1037,41 @@
           palette_id: null,
           palette_swapped: false,
         };
+        if (viaApi) {
+          try {
+            const { result: created, session: writer } = await apiWriteAsUser(config, "/api/write/comments", {
+              method: "POST",
+              body: {
+                threadKey,
+                nickname,
+                content,
+                author: {
+                  avatarId: authorToken.avatar_id,
+                  avatarKind: authorToken.avatar_kind,
+                  paletteId: authorToken.palette_id,
+                  paletteSwapped: authorToken.palette_swapped,
+                },
+              },
+            });
+            // A new session (first write) has other likes: read the thread again for it.
+            if (sessionUserId(writer) !== state.userId) {
+              await reload();
+              return;
+            }
+            // The answer is the new row: no reload.
+            state.comments = [...state.comments, created.comment];
+            state.likeCounts.set(created.comment.id, 0);
+            state.submitting = false;
+            if (contentInput) contentInput.value = "";
+            renderComments(root, state);
+            syncCommentCounter(root);
+            return;
+          } catch (error) {
+            // Only a write that certainly did nothing is sent again on the legacy path.
+            if (!error.legacy || error.processed) throw error;
+          }
+        }
+        const session = await ensureSession(config);
         await restRequest(config, "comments?select=*", {
           method: "POST",
           token: session.access_token,
@@ -976,6 +1097,52 @@
       if (!likeButton && !deleteButton) return;
 
       try {
+        if (commentsViaApi(threadKey)) {
+          try {
+            let writer = null;
+            let changedOnServer = false;
+            if (likeButton) {
+              const commentId = likeButton.dataset.commentLike;
+              if (!commentId) return;
+              const wasLiked = state.liked.has(commentId);
+              const write = await apiWriteAsUser(config, `/api/write/comment-likes?id=${encodeURIComponent(commentId)}`, {
+                method: wasLiked ? "DELETE" : "PUT",
+              });
+              writer = write.session;
+              if (write.result.liked) state.liked.add(commentId);
+              else state.liked.delete(commentId);
+              const shown = state.likeCounts.get(commentId) ?? 0;
+              // Null: committed, but the count could not be read; adjust the shown one.
+              state.likeCounts.set(commentId, typeof write.result.count === "number"
+                ? write.result.count
+                : Math.max(0, shown + (write.result.liked === wasLiked ? 0 : write.result.liked ? 1 : -1)));
+            }
+            if (deleteButton) {
+              const commentId = deleteButton.dataset.commentDelete;
+              if (!commentId) return;
+              try {
+                const write = await apiWriteAsUser(config, `/api/write/comments?id=${encodeURIComponent(commentId)}`, {
+                  method: "DELETE",
+                });
+                writer = write.session;
+                state.comments = state.comments.filter((comment) => comment.id !== commentId);
+              } catch (error) {
+                // Already gone, or not this session's: read the thread again instead of guessing.
+                if (error.code !== "not_found") throw error;
+                changedOnServer = true;
+              }
+            }
+            // A new session (the first write signed up) has other likes and other own comments.
+            if (changedOnServer || (writer && sessionUserId(writer) !== state.userId)) {
+              await reload();
+              return;
+            }
+            renderComments(root, state);
+            return;
+          } catch (error) {
+            if (!error.legacy || error.processed) throw error;
+          }
+        }
         const session = await ensureSession(config);
         if (likeButton) {
           const commentId = likeButton.dataset.commentLike;
@@ -1195,6 +1362,150 @@
       .trim();
   }
 
+  // Same contract as src/lib/runtime-flags.ts and src/lib/nav-snapshot.ts
+  // (docs/supabase-exit/STEP1_DESIGN.md 7, 8.2). The page-wide object lets this
+  // script and the bundled patch scripts share one /api/read/nav request.
+  const FLAG_COOKIE = "slseoun_rf";
+  const API_MARKER_HEADER = "x-slseoun-api";
+  const NAV_SNAPSHOT_TTL_MS = 30000;
+
+  function slseounRuntime() {
+    window.__slseounRuntime = window.__slseounRuntime || { demoted: new Set() };
+    return window.__slseounRuntime;
+  }
+
+  function surfacePath(group) {
+    if (slseounRuntime().demoted.has(group)) return "legacy";
+    const entry = document.cookie.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${FLAG_COOKIE}=`));
+    if (!entry) return "legacy";
+    const [version, ...groups] = entry.slice(FLAG_COOKIE.length + 1).split(".");
+    return version === "v1" && groups.includes(group) ? "api" : "legacy";
+  }
+
+  const THREAD_KEY = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$/;
+  const REACTION_PART = { type: /^[a-z_-]{1,32}$/, id: /^[A-Za-z0-9._-]{1,128}$/, version: /^[A-Za-z0-9._-]{1,32}$/ };
+
+  /** Same rule as src/lib/engagement-keys.ts: other keys stay on the legacy path. */
+  function commentsViaApi(threadKey) {
+    return surfacePath("comments") === "api" && THREAD_KEY.test(threadKey);
+  }
+
+  function reactionsViaApi(type, id, version) {
+    return surfacePath("comments") === "api"
+      && REACTION_PART.type.test(type) && REACTION_PART.id.test(id) && REACTION_PART.version.test(version);
+  }
+
+  /**
+   * Same-origin /api call with src/lib/api-client.ts semantics. Errors carry
+   * `legacy` (use the legacy path) and `processed` (a write may have run, so it
+   * is never resent), plus the router's error `code`.
+   */
+  async function apiRequest(path, { method = "GET", token, body, group = "comments" } = {}) {
+    const headers = { Accept: "application/json" };
+    if (body !== undefined) headers["Content-Type"] = "application/json";
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), QUERY_TIMEOUT_MS);
+    const fail = (fields) => Object.assign(new Error(fields.code || "unavailable"), fields);
+    try {
+      let response;
+      try {
+        response = await fetch(path, {
+          method,
+          headers,
+          body: body === undefined ? undefined : JSON.stringify(body),
+          credentials: "same-origin",
+          signal: controller.signal,
+        });
+      } catch {
+        throw fail({ code: "unavailable" });
+      }
+      if (response.headers.get(API_MARKER_HEADER) !== "1") {
+        slseounRuntime().demoted.add(group);
+        void response.body?.cancel().catch(() => undefined);
+        throw fail({ legacy: true, processed: method !== "GET" && response.status !== 404 && response.status !== 405, status: response.status });
+      }
+      const parsed = await response.json().catch(() => null);
+      if (response.status === 409 && parsed?.error === "surface_legacy") {
+        slseounRuntime().demoted.add(group);
+        throw fail({ legacy: true, processed: false, status: 409 });
+      }
+      if (!response.ok) throw fail({ code: parsed?.error || `http_${response.status}`, status: response.status });
+      return parsed;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  /**
+   * An api write with the session's token; `token_expired` refreshes once and
+   * sends once more (src/lib/api-session.ts). Resolves to { result, session }.
+   */
+  async function apiWriteAsUser(config, path, init) {
+    let session = await ensureSession(config, { keepUserOnTransientFailure: true });
+    try {
+      return { result: await apiRequest(path, { ...init, token: session.access_token }), session };
+    } catch (error) {
+      if (error.code !== "token_expired") throw error;
+      session = await ensureSession(config, { keepUserOnTransientFailure: true, forceRefresh: true });
+      return { result: await apiRequest(path, { ...init, token: session.access_token }), session };
+    }
+  }
+
+  function configEnv(config) {
+    if (config?.supabaseEnv) return config.supabaseEnv;
+    try {
+      return JSON.parse(document.getElementById(CONFIG_ID)?.textContent || "{}").supabaseEnv || "production";
+    } catch {
+      return "production";
+    }
+  }
+
+  function loadNavSnapshot(expectedEnv) {
+    const runtime = slseounRuntime();
+    const now = Date.now();
+    if (runtime.nav && now - runtime.nav.at < NAV_SNAPSHOT_TTL_MS) return runtime.nav.promise;
+    const legacy = () => {
+      runtime.demoted.add("nav");
+      return new Error("surface_legacy");
+    };
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), QUERY_TIMEOUT_MS);
+    const promise = fetch("/api/read/nav", {
+      headers: { Accept: "application/json" },
+      credentials: "same-origin",
+      signal: controller.signal,
+    }).then(async (response) => {
+      // No router (a Worker from before step 1) is a legacy signal, like 409.
+      if (response.headers.get(API_MARKER_HEADER) !== "1") throw legacy();
+      const body = await response.json().catch(() => null);
+      if (response.status === 409 && body?.error === "surface_legacy") throw legacy();
+      if (!response.ok) throw new Error("unavailable");
+      if (!body || body.v !== 1 || !Array.isArray(body.courier) || !body.latest || !body.weekly) throw legacy();
+      if (body.env !== expectedEnv) throw legacy();
+      return body;
+    }).finally(() => clearTimeout(timer));
+    runtime.nav = { promise, at: now };
+    return promise;
+  }
+
+  /** Courier rows from the nav snapshot (api) or Supabase (legacy); null when neither can run. */
+  function courierItems(config, since) {
+    const legacy = () => (config
+      ? restRequest(config, `comments?select=id,story_id,content,created_at&env=eq.${config.supabaseEnv}&created_at=gte.${encodeURIComponent(since)}&order=created_at.desc&limit=12`)
+        .then((rows) => (Array.isArray(rows) ? rows : []).flatMap((row) => {
+          const text = courierCommentText(row.content);
+          if (!row.id || !row.story_id || !text) return [];
+          return [{ id: row.id, storyId: row.story_id, text }];
+        }))
+      : null);
+    if (surfacePath("nav") !== "api") return legacy();
+    return loadNavSnapshot(configEnv(config)).then(
+      (snapshot) => snapshot.courier.map((item) => ({ id: item.id, storyId: item.storyId, text: item.text })),
+      () => (slseounRuntime().demoted.has("nav") ? legacy() || [] : []),
+    );
+  }
+
   function mountCourier(config) {
     const root = document.createElement("div");
     root.id = "sts-courier-root";
@@ -1231,18 +1542,14 @@
       document.head.appendChild(style);
     }
     place(skeleton);
-    if (!config) {
+    const since = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
+    const rowsPromise = courierItems(config, since);
+    if (!rowsPromise) {
       root.replaceChildren();
       return;
     }
-    const since = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
-    restRequest(config, `comments?select=id,story_id,content,created_at&env=eq.${config.supabaseEnv}&created_at=gte.${encodeURIComponent(since)}&order=created_at.desc&limit=12`)
-      .then((rows) => {
-        const items = (Array.isArray(rows) ? rows : []).flatMap((row) => {
-          const text = courierCommentText(row.content);
-          if (!row.id || !row.story_id || !text) return [];
-          return [{ id: row.id, storyId: row.story_id, text }];
-        });
+    rowsPromise
+      .then((items) => {
         if (items.length === 0) {
           root.replaceChildren();
           return;
@@ -1423,10 +1730,23 @@
     const stack = reelStack();
     if (!stack) return;
     const currentWeek = kstWeekStart();
-    const rows = await restRequest(
-      config,
-      `colorful_philosopher_posts?select=id,week_start,slot,resource_type,resource_id,name_ko,name_en,image_url,body,game_version&env=eq.${config.supabaseEnv}&week_start=lte.${currentWeek}&order=week_start.desc&limit=12`,
-    );
+    let rows = null;
+    if (surfacePath("colorful-philosophers") === "api") {
+      try {
+        const body = await apiRequest("/api/read/colorful-philosophers/reel", { group: "colorful-philosophers" });
+        if (body?.v === 1 && Array.isArray(body.posts)) rows = body.posts;
+        else slseounRuntime().demoted.add("colorful-philosophers");
+      } catch (error) {
+        if (!error.legacy) throw error;
+      }
+    }
+    // Legacy, or the api path answered with a legacy signal.
+    rows ??= config
+      ? await restRequest(
+        config,
+        `colorful_philosopher_posts?select=id,week_start,slot,resource_type,resource_id,name_ko,name_en,image_url,body,game_version&env=eq.${config.supabaseEnv}&week_start=lte.${currentWeek}&order=week_start.desc&limit=12`,
+      )
+      : [];
     const posts = (Array.isArray(rows) ? rows : [])
       .filter((row) => row.id && row.week_start && row.resource_type && row.resource_id && row.game_version);
     if (posts.length === 0) return;
@@ -1460,11 +1780,27 @@
     const buttons = Array.from(document.querySelectorAll("[data-colorful-philosophers-card] [data-cp-reaction]"));
     const ids = Array.from(new Set(buttons.map((button) => button.dataset.cpResource).filter(Boolean)));
     if (ids.length === 0) return;
+    const counts = new Map();
+    // Totals come from the env the reaction writes go to: the Worker's on the api path.
+    const targets = Array.from(new Set(buttons
+      .filter((button) => reactionsViaApi(button.dataset.cpType, button.dataset.cpResource, button.dataset.cpVersion))
+      .map((button) => `${button.dataset.cpType}:${button.dataset.cpResource}:${button.dataset.cpVersion}`)));
+    if (targets.length > 0 && targets.length === new Set(buttons.map((button) => `${button.dataset.cpType}:${button.dataset.cpResource}:${button.dataset.cpVersion}`)).size) {
+      try {
+        const body = await apiRequest(`/api/read/engagement?reactions=${targets.slice(0, 64).join(",")}`);
+        if (body?.v === 1 && body.reactions) {
+          Object.entries(body.reactions).forEach(([target, value]) => counts.set(target, value));
+          applyReelCounts(buttons, counts);
+          return;
+        }
+      } catch (error) {
+        if (!error.legacy) throw error;
+      }
+    }
     const rows = await restRequest(
       config,
       `resource_reaction_counts?select=resource_type,resource_id,game_version,buff_count,nerf_count,rework_count&env=eq.${config.supabaseEnv}&resource_id=in.(${ids.map(encodeURIComponent).join(",")})`,
     );
-    const counts = new Map();
     (Array.isArray(rows) ? rows : []).forEach((row) => {
       counts.set(`${row.resource_type}:${row.resource_id}:${row.game_version}`, {
         buff: row.buff_count || 0,
@@ -1472,6 +1808,10 @@
         rework: row.rework_count || 0,
       });
     });
+    applyReelCounts(buttons, counts);
+  }
+
+  function applyReelCounts(buttons, counts) {
     buttons.forEach((button) => {
       const count = button.querySelector("[data-cp-count]");
       if (!count) return;
@@ -1493,30 +1833,8 @@
     } catch {
       // Keep the baked counts.
     }
-
-    try {
-      const figures = await restRequest(
-        config,
-        `transfigure_posts?select=id,title,nickname&env=eq.${config.supabaseEnv}&order=created_at.desc&limit=15`,
-      );
-      const stack = document.querySelector("[data-transfigure-preview-stack]");
-      if (!stack || stack.getAttribute("data-react-managed") === "true" || !Array.isArray(figures)) return;
-      const template = stack.querySelector("[data-transfigure-card]");
-      if (!template) return;
-      const seen = new Set(Array.from(stack.querySelectorAll("[data-transfigure-id]")).map((node) => node.getAttribute("data-transfigure-id")));
-      figures.forEach((post) => {
-        if (!post.id || seen.has(post.id)) return;
-        const card = template.cloneNode(true);
-        card.setAttribute("data-transfigure-id", post.id);
-        card.setAttribute("data-href", `${localePrefix()}/transfigure/${post.id}`);
-        card.className = "absolute inset-0 w-full opacity-0 pointer-events-none";
-        const title = card.querySelector("h3, h2, .font-semibold");
-        if (title && post.title) title.textContent = post.title;
-        stack.appendChild(card);
-      });
-    } catch {
-      // Keep the baked transfigure reel.
-    }
+    // The transfigure reel stays as baked: its rotation script (backstab-transfigure-section.tsx)
+    // takes the cards once at load, so cards appended later would never be shown.
   }
 
   function bindReelReactions(config) {
@@ -1540,13 +1858,48 @@
     const gameVersion = button.dataset.cpVersion;
     const kind = button.dataset.cpKind;
     if (!postId || !resourceType || !resourceId || !gameVersion || !kind) return;
-    const session = await ensureSession(config);
-    const userId = sessionUserId(session);
-    if (!userId) return;
     const key = `sts-resource-reaction:${resourceType}:${resourceId}:${gameVersion}`;
     const stored = window.localStorage.getItem(key);
     const previous = stored === "buff" || stored === "nerf" || stored === "rework" ? stored : null;
     const next = previous === kind ? null : kind;
+    if (reactionsViaApi(resourceType, resourceId, gameVersion)) {
+      try {
+        // The Worker reads the current row, so a stale kind cannot conflict, and it answers the totals.
+        const { result } = await apiWriteAsUser(config, "/api/write/reactions", {
+          method: "PUT",
+          body: { resourceType, resourceId, gameVersion, kind: next },
+        });
+        if (result.kind) window.localStorage.setItem(key, result.kind);
+        else window.localStorage.removeItem(key);
+        const card = button.closest("[data-colorful-philosophers-card]");
+        card?.querySelectorAll("[data-cp-reaction]").forEach((other) => {
+          const count = other.querySelector("[data-cp-count]");
+          const otherKind = other.dataset.cpKind;
+          if (!count || !otherKind) return;
+          if (result.counts) {
+            count.textContent = String(Number(result.counts[otherKind]) || 0);
+          } else {
+            // Committed, but the totals could not be read: adjust the shown ones.
+            let value = Number(count.textContent) || 0;
+            if (previous === otherKind) value = Math.max(0, value - 1);
+            if (result.kind === otherKind) value += 1;
+            count.textContent = String(value);
+          }
+          other.setAttribute("aria-pressed", result.kind === otherKind ? "true" : "false");
+        });
+        return;
+      } catch (error) {
+        if (!error.legacy || error.processed) return;
+      }
+    }
+    let session;
+    try {
+      session = await ensureSession(config);
+    } catch {
+      return;
+    }
+    const userId = sessionUserId(session);
+    if (!userId) return;
     const filter = `env=eq.${config.supabaseEnv}&resource_type=eq.${resourceType}&resource_id=eq.${resourceId}&game_version=eq.${gameVersion}&user_id=eq.${userId}`;
     try {
       if (next === null) {

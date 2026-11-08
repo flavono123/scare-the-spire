@@ -5,6 +5,16 @@ import {
   isColorfulPhilosopherReaction,
   type ColorfulPhilosopherReaction,
 } from "@/lib/colorful-philosophers";
+import {
+  engagementApiFor,
+  forgetEngagement,
+  loadEngagement,
+  loadEngagementMine,
+  shouldUseLegacy,
+  writeMayGoLegacy,
+} from "@/lib/api-engagement";
+import { apiFetchAsUser } from "@/lib/api-session";
+import { reactionTargetKey } from "@/lib/engagement-keys";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 
 export interface ResourceReactionCounts {
@@ -101,6 +111,12 @@ export function useResourceReactions(
   resourceId: string,
   gameVersion: string,
   userId: string | null = null,
+  {
+    personal = true,
+  }: {
+    /** False for read-only bars: the api path then skips this user's reaction, which they never show. */
+    personal?: boolean;
+  } = {},
 ) {
   const [counts, setCounts] = useState<ResourceReactionCounts>({ buff: 0, nerf: 0, rework: 0 });
   const [kind, setKind] = useState<ColorfulPhilosopherReaction | null>(null);
@@ -115,35 +131,59 @@ export function useResourceReactions(
   }, [resourceType, resourceId, gameVersion]);
 
   useEffect(() => {
-    if (!supabaseEnabled || !resourceType || !resourceId || !gameVersion) {
+    const targetKey = reactionTargetKey({ resourceType, resourceId, gameVersion });
+    const viaApi = Boolean(resourceType && resourceId && gameVersion) && engagementApiFor("reactions", targetKey);
+    if ((!supabaseEnabled && !viaApi) || !resourceType || !resourceId || !gameVersion) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- there is no reaction row to query
       setLoading(false);
       return;
     }
     let cancelled = false;
     setLoading(true);
-    supabase.from("resource_reaction_counts")
-      .select("buff_count, nerf_count, rework_count")
-      .eq("env", supabaseEnv)
-      .eq("resource_type", resourceType)
-      .eq("resource_id", resourceId)
-      .eq("game_version", gameVersion)
-      .maybeSingle()
-      .then(({ data, error }) => {
-        if (cancelled) return;
-        if (error) {
+    const loadLegacy = () => {
+      supabase.from("resource_reaction_counts")
+        .select("buff_count, nerf_count, rework_count")
+        .eq("env", supabaseEnv)
+        .eq("resource_type", resourceType)
+        .eq("resource_id", resourceId)
+        .eq("game_version", gameVersion)
+        .maybeSingle()
+        .then(({ data, error }) => {
+          if (cancelled) return;
+          if (error) {
+            setUnavailable(true);
+            setLoading(false);
+            return;
+          }
+          setUnavailable(false);
+          setCounts({
+            buff: data?.buff_count ?? 0,
+            nerf: data?.nerf_count ?? 0,
+            rework: data?.rework_count ?? 0,
+          });
+          setLoading(false);
+        });
+    };
+    if (viaApi) {
+      loadEngagement("reactions", targetKey)
+        .then((next) => {
+          if (cancelled) return;
+          setUnavailable(false);
+          setCounts({ buff: next.buff, nerf: next.nerf, rework: next.rework });
+          setLoading(false);
+        })
+        .catch((error) => {
+          if (cancelled) return;
+          if (shouldUseLegacy(error) && supabaseEnabled) {
+            loadLegacy();
+            return;
+          }
           setUnavailable(true);
           setLoading(false);
-          return;
-        }
-        setUnavailable(false);
-        setCounts({
-          buff: data?.buff_count ?? 0,
-          nerf: data?.nerf_count ?? 0,
-          rework: data?.rework_count ?? 0,
         });
-        setLoading(false);
-      });
+    } else {
+      loadLegacy();
+    }
     return () => {
       cancelled = true;
     };
@@ -152,26 +192,44 @@ export function useResourceReactions(
   useEffect(() => {
     if (!supabaseEnabled || !userId || !resourceType || !resourceId || !gameVersion) return;
     let cancelled = false;
-    supabase.from("resource_reactions")
-      .select("kind")
-      .eq("env", supabaseEnv)
-      .eq("resource_type", resourceType)
-      .eq("resource_id", resourceId)
-      .eq("game_version", gameVersion)
-      .eq("user_id", userId)
-      .maybeSingle()
-      .then(({ data, error }) => {
-        if (cancelled || error) return;
-        const next = data && isColorfulPhilosopherReaction(data.kind) ? data.kind : null;
-        setKind(next);
-        const key = storageKey(resourceType, resourceId, gameVersion);
-        if (next) window.localStorage.setItem(key, next);
-        else window.localStorage.removeItem(key);
-      });
+    const remember = (next: ColorfulPhilosopherReaction | null) => {
+      setKind(next);
+      const key = storageKey(resourceType, resourceId, gameVersion);
+      if (next) window.localStorage.setItem(key, next);
+      else window.localStorage.removeItem(key);
+    };
+    const loadLegacy = () => {
+      supabase.from("resource_reactions")
+        .select("kind")
+        .eq("env", supabaseEnv)
+        .eq("resource_type", resourceType)
+        .eq("resource_id", resourceId)
+        .eq("game_version", gameVersion)
+        .eq("user_id", userId)
+        .maybeSingle()
+        .then(({ data, error }) => {
+          if (cancelled || error) return;
+          remember(data && isColorfulPhilosopherReaction(data.kind) ? data.kind : null);
+        });
+    };
+    const targetKey = reactionTargetKey({ resourceType, resourceId, gameVersion });
+    if (engagementApiFor("reactions", targetKey)) {
+      if (!personal) return;
+      loadEngagementMine("reactions", targetKey)
+        .then((next) => {
+          if (!cancelled) remember(next);
+        })
+        .catch((error) => {
+          // Other failures keep this browser's cached reaction, as the legacy query ignores its errors.
+          if (!cancelled && shouldUseLegacy(error)) loadLegacy();
+        });
+    } else {
+      loadLegacy();
+    }
     return () => {
       cancelled = true;
     };
-  }, [userId, resourceType, resourceId, gameVersion]);
+  }, [personal, userId, resourceType, resourceId, gameVersion]);
 
   const choose = useCallback(async (next: ColorfulPhilosopherReaction, userId: string) => {
     const previous = kind;
@@ -188,6 +246,36 @@ export function useResourceReactions(
     const key = storageKey(resourceType, resourceId, gameVersion);
     if (nextKind) window.localStorage.setItem(key, nextKind);
     else window.localStorage.removeItem(key);
+    const revert = () => {
+      setKind(previous);
+      setCounts(previousCounts);
+      setUnavailable(true);
+      if (previous) window.localStorage.setItem(key, previous);
+      else window.localStorage.removeItem(key);
+    };
+    if (engagementApiFor("reactions", reactionTargetKey({ resourceType, resourceId, gameVersion }))) {
+      try {
+        // The Worker reads the current row, so a stale kind from another tab cannot conflict.
+        const result = await apiFetchAsUser<{ kind: ColorfulPhilosopherReaction | null; counts: ResourceReactionCounts | null }>(
+          "comments",
+          "/api/write/reactions",
+          { method: "PUT", body: { resourceType, resourceId, gameVersion, kind: nextKind } },
+        );
+        forgetEngagement("reactions", reactionTargetKey({ resourceType, resourceId, gameVersion }));
+        setPendingKind(null);
+        setUnavailable(false);
+        setKind(result.kind);
+        // Null totals: the write is committed but they could not be read; keep the optimistic ones.
+        if (result.counts) setCounts({ buff: result.counts.buff, nerf: result.counts.nerf, rework: result.counts.rework });
+        return { ok: true as const };
+      } catch (error) {
+        if (!writeMayGoLegacy(error)) {
+          setPendingKind(null);
+          revert();
+          return { ok: false as const };
+        }
+      }
+    }
     const match = {
       env: supabaseEnv,
       resource_type: resourceType,
@@ -210,11 +298,7 @@ export function useResourceReactions(
     const { error } = await write;
     setPendingKind(null);
     if (error) {
-      setKind(previous);
-      setCounts(previousCounts);
-      setUnavailable(true);
-      if (previous) window.localStorage.setItem(key, previous);
-      else window.localStorage.removeItem(key);
+      revert();
       return { ok: false as const };
     }
     setUnavailable(false);

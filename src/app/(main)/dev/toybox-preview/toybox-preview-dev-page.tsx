@@ -14,7 +14,6 @@ import {
 import {
   DEFAULT_TOYBOX_FEED_SORT,
   TOYBOX_FEED_SERVICES,
-  TOYBOX_FEED_TABLES,
   fetchToyboxFeedPage,
 } from "@/lib/toybox-feed";
 import Image from "@/components/ui/static-image";
@@ -48,7 +47,6 @@ function useToyboxPreviewSamples() {
         try {
           const page = await fetchToyboxFeedPage({
             service,
-            table: TOYBOX_FEED_TABLES[service],
             sort: DEFAULT_TOYBOX_FEED_SORT,
             cursor: null,
             normalizePost: (raw) => {

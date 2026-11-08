@@ -20,6 +20,9 @@ import { DEFRAGMENT_TOKEN_SRC } from "@/lib/defragment";
 import { FAVORITE_TOURNAMENT_TOKEN_SRC } from "@/lib/favorite-tournament";
 import { getServiceLocaleForGameLocale, localizeHrefWithGameLocale, type GameLocale } from "@/lib/i18n";
 import { PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
+import { SurfaceLegacyError } from "@/lib/api-client";
+import { loadNavSnapshot } from "@/lib/nav-snapshot";
+import { surfacePath } from "@/lib/runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { serviceMessages } from "@/messages/service";
 
@@ -151,6 +154,35 @@ function commentHref(storyId: string, commentId: string): string {
   return `${base.replace(/#comments$/, "")}#history-comment-${commentId}`;
 }
 
+type CourierRow = { id: string; storyId: string; text: string };
+
+async function legacyCourierRows(since: string): Promise<CourierRow[]> {
+  if (!supabaseEnabled) return [];
+  const { data } = await supabase.from("comments")
+    .select("id, story_id, content, created_at")
+    .eq("env", supabaseEnv)
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
+    .limit(LIMIT);
+  return (data ?? []).map((row) => ({
+    id: String(row.id ?? ""),
+    storyId: String(row.story_id ?? ""),
+    text: courierCommentText(String(row.content ?? "")),
+  }));
+}
+
+/** The nav snapshot carries the courier when nav is on the api path (STEP1_DESIGN 8.2). */
+async function courierRows(since: string): Promise<CourierRow[]> {
+  if (surfacePath("nav") === "api") {
+    try {
+      return (await loadNavSnapshot()).courier;
+    } catch (error) {
+      if (!(error instanceof SurfaceLegacyError) && surfacePath("nav") === "api") return [];
+    }
+  }
+  return legacyCourierRows(since);
+}
+
 function loadCourierSession(gameLocale: GameLocale): Promise<CourierItem[]> {
   if (sessionItems && sessionLocale === gameLocale) return Promise.resolve(sessionItems);
   if (sessionLoad && sessionLocale === gameLocale) return sessionLoad;
@@ -159,16 +191,9 @@ function loadCourierSession(gameLocale: GameLocale): Promise<CourierItem[]> {
   const since = new Date(Date.now() - WINDOW_MS).toISOString();
   const pending = (async (): Promise<CourierItem[]> => {
     try {
-      const { data } = await supabase.from("comments")
-        .select("id, story_id, content, created_at")
-        .eq("env", supabaseEnv)
-        .gte("created_at", since)
-        .order("created_at", { ascending: false })
-        .limit(LIMIT);
-      const next = (data ?? []).flatMap((row) => {
-        const id = String(row.id ?? "");
-        const storyId = String(row.story_id ?? "");
-        const text = courierCommentText(String(row.content ?? ""));
+      const rows = await courierRows(since);
+      const next = rows.flatMap((row) => {
+        const { id, storyId, text } = row;
         if (!id || !storyId || !text) return [];
         const described = describe(storyId, serviceLocale);
         return [{
@@ -247,7 +272,7 @@ export function CommentCourier() {
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (!known || !enabled || !supabaseEnabled) return;
+    if (!known || !enabled || (!supabaseEnabled && surfacePath("nav") !== "api")) return;
     let cancelled = false;
     loadCourierSession(gameLocale).then((next) => {
       if (cancelled) return;

@@ -9,8 +9,10 @@ import { DisplayedProfileNickname } from "@/components/profile/displayed-profile
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { CommentSection } from "@/components/comment-section";
 import { useAuth } from "@/hooks/use-auth";
+import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { apiDeleteToyboxPost, apiToyboxPost, toyboxViaApi } from "@/lib/toybox-api";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -54,12 +56,24 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
 
   useEffect(() => {
     if (!supabaseEnabled) return;
-    supabase
-      .from("chemical_posts")
-      .select("*")
-      .eq("id", postId)
-      .eq("env", supabaseEnv)
-      .single()
+    const load = async () => {
+      if (toyboxViaApi()) {
+        try {
+          // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, read through the Worker.
+          return { data: await apiToyboxPost("chemical_x", postId) };
+        } catch (error) {
+          // A failed legacy read leaves data null too, which shows "not found".
+          if (!shouldUseLegacy(error)) return { data: null };
+        }
+      }
+      return supabase
+        .from("chemical_posts")
+        .select("*")
+        .eq("id", postId)
+        .eq("env", supabaseEnv)
+        .single();
+    };
+    load()
       .then(({ data }) => {
         setPost(data as ChemicalPost | null);
         setLoading(false);
@@ -75,6 +89,16 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
 
   const handleDelete = useCallback(async () => {
     if (!userId || !supabaseEnabled || !post) return;
+    if (toyboxViaApi()) {
+      try {
+        // Not ours or already gone still leaves the page, as the legacy delete does.
+        await apiDeleteToyboxPost("chemical_x", postId);
+        router.replace(localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale));
+        return;
+      } catch (error) {
+        if (!writeMayGoLegacy(error)) return;
+      }
+    }
     const { error } = await withSupabaseTimeout(
       "chemical_posts.detail.delete",
       supabase

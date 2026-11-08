@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { toyboxViaApi } from "@/lib/toybox-api";
 import {
   countsFromFeedItems,
   cursorFromFeedItem,
@@ -32,8 +33,6 @@ export interface UseToyboxFeedReturn<T extends PostIdentity> {
   unavailable: boolean;
   loadMore: () => Promise<void>;
   prependPost: (post: T, raw?: unknown) => void;
-  replacePost: (post: T, raw?: unknown) => void;
-  removePost: (postId: string) => void;
   setUnavailable: (value: boolean) => void;
 }
 
@@ -69,7 +68,6 @@ export function useToyboxFeed<T extends PostIdentity>({
 
     fetchToyboxFeedPage({
       service,
-      table,
       sort,
       cursor: null,
       normalizePost: normalizeRef.current,
@@ -94,10 +92,12 @@ export function useToyboxFeed<T extends PostIdentity>({
     return () => {
       cancelled = true;
     };
-  }, [service, sort, table]);
+  }, [service, sort]);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
+    // The api path opens no channel: these tables are not in the publication, so it
+    // never delivered an event, and a failed join only hid a loaded feed (STEP1_DESIGN 14).
+    if (!supabaseEnabled || toyboxViaApi()) return;
 
     const channel = supabase
       .channel(`${table}_feed`)
@@ -147,7 +147,6 @@ export function useToyboxFeed<T extends PostIdentity>({
     try {
       const page = await fetchToyboxFeedPage({
         service,
-        table,
         sort,
         cursor,
         normalizePost: normalizeRef.current,
@@ -171,23 +170,13 @@ export function useToyboxFeed<T extends PostIdentity>({
       loadingMoreRef.current = false;
       setLoadingMore(false);
     }
-  }, [hasMore, service, sort, table]);
+  }, [hasMore, service, sort]);
 
   const prependPost = useCallback((post: T, raw: unknown = post) => {
     setItems((current) => {
       if (current.some((item) => item.post.id === post.id)) return current;
       return [itemFromPostRecord(post, raw), ...current];
     });
-  }, []);
-
-  const replacePost = useCallback((post: T, raw: unknown = post) => {
-    setItems((current) => current.map((item) => (
-      item.post.id === post.id ? mergeToyboxFeedItem(item, post, raw) : item
-    )));
-  }, []);
-
-  const removePost = useCallback((postId: string) => {
-    setItems((current) => current.filter((item) => item.post.id !== postId));
   }, []);
 
   const posts = useMemo(() => items.map((item) => item.post), [items]);
@@ -207,8 +196,6 @@ export function useToyboxFeed<T extends PostIdentity>({
     unavailable,
     loadMore,
     prependPost,
-    replacePost,
-    removePost,
     setUnavailable,
   };
 }

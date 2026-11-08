@@ -222,8 +222,9 @@ DB당 500 MB, 계정 5 GB, Worker 호출당 쿼리 50개, 쿼리 30초. 한도�
 
 ### 5.4 Realtime 대체
 
-두 곳 모두 탭이 보일 때 60초 간격으로, 그리고 탭에 다시 돌아올 때 `/api/read/*`를 다시 받는다. 응답은 메모리
-캐시를 거치고, 캐시가 비어도 색인을 탄 읽기 한 번이다. 실시간이 꼭 필요해지면 그때 Durable Object WebSocket을 검토한다.
+대체할 기능이 없다(2026-11-06 결정). 두 곳의 대상 테이블이 publication에 없어 실시간 갱신은 동작한 적이 없다
+(tasks/010 #42). polling을 두면 없던 갱신과 요청을 새로 더하는 셈이라 이관에 넣지 않는다. 실시간이 필요해지면
+그때 새 기능으로 Durable Object WebSocket이나 polling을 검토한다.
 
 ### 5.5 RPC·트리거·타입 이식
 
@@ -368,7 +369,7 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 | 0. 버티기 | DB 백업, 모바일 QA의 Supabase 차단 | Supabase | 없음 | 해당 없음 | 없음 |
 | 1. 같은 출처 API | 화면별 `/api/*`. 뒤에서는 Supabase를 읽고 쓴다 | Supabase | 같은 출처라 CORS preflight가 사라짐 | 화면 플래그를 `legacy`로 | 없음 |
 | 2. D1 그림자 | D1 첫 복사, Supabase 변경 로그 동기화, 그림자 읽기 대조 | Supabase | 없음 | 동기화 cron 끄기, 변경 로그 트리거 지우기 | 없음 |
-| 3. 읽기를 D1으로 | 화면별 읽기 저장소를 D1으로, HTML 첫 데이터 주입, Realtime 대신 polling | Supabase | 초기 로딩이 사라짐 | 화면 플래그를 `supabase`로 | 없음 |
+| 3. 읽기를 D1으로 | 화면별 읽기 저장소를 D1으로, HTML 첫 데이터 주입 | Supabase | 초기 로딩이 사라짐 | 화면 플래그를 `supabase`로 | 없음 |
 | 4. 신원과 쓰기 검증을 Worker로 | 서명 쿠키 신원, Worker가 쓰기를 검사하고 service 키로 Supabase에 씀, 브라우저 직접 쓰기 정책 닫기 | Supabase | 없음 | 신원·쓰기 플래그를 앞 단계로, 직접 쓰기 정책 복구 | 없음(Supabase Auth 장애 중에 생긴 Worker 전용 신원만 소유권이 끊김) |
 | 5. 쓰기 원본을 D1으로 | D1에 먼저 쓰고 outbox로 Supabase에 미러 | D1 | 전환하는 몇 초(길어야 1분) 동안 쓰기가 재시도됨 | 쓰기를 잠시 멈추고 outbox를 비운 뒤 원본 플래그를 `supabase`로, 2단계 동기화 재개 | 없음(outbox가 빈 뒤라면) |
 | 6. 클라이언트 정리 | 클라이언트의 `supabase-js`와 `legacy` 경로, CSP, OG 읽기, 빌드 시점 DB 읽기 제거 | D1 | JS 번들이 가벼워짐 | 저장소는 5단계 플래그로 되돌림. 클라이언트는 이전 Worker 버전으로 | 없음 |
@@ -399,17 +400,21 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 #### 1단계: 같은 출처 API(뒤는 Supabase)
 
 - D1 `slseoun-prod`와 `slseoun-testbed`를 만들고 binding과 `runtime_flags` 테이블만 먼저 둔다(`apac`
-  location hint, 읽기 복제 켜기).
+  location hint). 읽기 복제는 켜지 않는다. 복제본이 늦으면 플래그 되돌리기의 상한이 없어지기 때문이다. 3단계에
+  데이터 읽기용으로 다시 검토한다([1단계 설계](supabase-exit/STEP1_DESIGN.md) 2.2절).
 - `workers/api/`에 화면 단위 엔드포인트를 만든다. 각 엔드포인트는 같은 인터페이스 뒤에 Supabase 어댑터와 D1
   어댑터를 둔다. 이 단계에서는 Supabase 어댑터만 쓴다.
 - 쓰기는 사용자의 Supabase access token을 그대로 넘긴다. 그래서 권한은 지금처럼 RLS가 검사한다. Worker는
   ES256 JWKS로 토큰 서명만 미리 확인한다.
 - 클라이언트는 화면별 플래그(`legacy` 또는 `api`)로 기존 `supabase-js` 경로와 새 API 경로를 고른다. 두 경로가
-  한동안 번들에 같이 있다. 플래그는 Worker가 HTML에 넣어 준다.
-- Realtime은 아직 그대로 둔다.
+  한동안 번들에 같이 있다. 플래그는 Worker가 응답 쿠키로 알려 준다. 처음에는 HTML에 넣으려 했지만 수 MB짜리
+  페이지를 다시 쓰는 CPU가 Free 10 ms에 닿아 바꿨다([1단계 설계](supabase-exit/STEP1_DESIGN.md) 3.3절).
+- `api` 경로 화면은 Realtime 채널을 열지 않는다(2026-11-06 사용자 결정). 대상 테이블이 publication에 없어 이벤트가
+  한 번도 오지 않았고, 연결 실패 때 피드를 "응답 없음"으로 덮는 부작용만 있다. legacy 경로는 그대로 둔다.
 - 엔드포인트는 화면당 한 번 호출로 묶는다. Supabase REST를 그대로 중계하는 범용 프록시는 만들지 않는다. 페이지당
   호출이 10건이면 하루 Workers 요청이 17만 건까지 늘어 무료 한도를 넘는다. 화면당 1~2건이면 하루 약 5만 건 이하다.
-- 넘어갈 조건: 켠 화면의 오류율이 `legacy`와 같고, Workers 요청이 하루 6만 건 아래다.
+- 넘어갈 조건: 켠 화면의 오류율이 `legacy`와 같고, Workers 요청이 계정 전체(testbed 포함) 하루 6만 건 아래이며,
+  CPU 한도 초과가 없다([1단계 설계](supabase-exit/STEP1_DESIGN.md) 12절).
 
 #### 2단계: D1 그림자(원본은 Supabase)
 
@@ -431,7 +436,6 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 
 - 화면 플래그를 하나씩 `d1`로 바꾼다. 네비 새 글 표시처럼 읽기만 하는 화면부터 켠다.
 - HTML 첫 데이터 주입을 그 화면부터 켠다. 초기 로딩이 사라지는 단계다.
-- 그 화면의 Realtime은 60초 polling으로 바꾼다.
 - 쓰기는 여전히 Supabase로 가고, 2단계의 즉시 반영과 1분 동기화가 D1을 따라오게 한다.
 - 되돌리기는 화면 플래그를 `supabase`로 바꾸는 것뿐이다. 원본이 그대로라 잃는 것이 없다.
 - 넘어갈 조건: 켠 화면의 응답 시간 개선, D1 rows read가 하루 200만 행 아래, 매일 대조 일치.
@@ -510,7 +514,8 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 ## 9. 결정이 필요한 것
 
 1. 구현을 시작할 때 worktree 사용 승인
-2. Realtime을 polling으로 바꾸는 것(체감: 새 글이 최대 1분 늦게 보임)
+2. ~~Realtime을 polling으로 바꾸는 것~~ 결정(2026-11-06): 동작한 적 없는 기능이라 대체하지 않는다. api 경로는
+   채널을 열지 않는다
 3. 기존 익명 신원을 claim 방식으로 옮기는 것과 기한(Supabase 토큰은 퇴역 때까지 유지)
 4. 0단계(백업, QA 차단)를 지금 바로 할지: 2026-11-05에 했다
 5. 2단계에서 운영 Supabase에 변경 로그 트리거 마이그레이션을 적용하는 것(운영 DB 적용은 매번 승인)

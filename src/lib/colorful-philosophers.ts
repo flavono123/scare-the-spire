@@ -1,4 +1,6 @@
 import sts2Meta from "../../data/sts2/meta.json";
+import { philosopherReplyThreadKey } from "@/lib/engagement-keys";
+import { kstWeekStart } from "@/lib/nav-surfaces";
 import {
   buildCompendiumResourceDetailHref,
   isCompendiumResourceLinkType,
@@ -10,7 +12,6 @@ export const COLORFUL_PHILOSOPHERS_DEV_HREF = "/dev/colorful-philosophers";
 export const COLORFUL_PHILOSOPHERS_TOKEN_SRC = "/images/sts2/modifiers/draft.webp";
 export const COLORFUL_PHILOSOPHERS_BACKGROUND_SRC = "/images/sts2/events/colorful_philosophers.webp";
 export const COLORFUL_PHILOSOPHERS_POSTS_TABLE = "colorful_philosopher_posts";
-export const COLORFUL_PHILOSOPHERS_REACTIONS_TABLE = "colorful_philosopher_reactions";
 export const COLORFUL_PHILOSOPHERS_GAME_VERSION = sts2Meta.version;
 export const COLORFUL_PHILOSOPHERS_SCHEDULE_WEEKS = 8;
 
@@ -49,12 +50,9 @@ export interface ColorfulPhilosopherPost {
   reworkCount: number;
 }
 
+// The Worker's /api/read/engagement builds the same key, so it lives in engagement-keys.ts.
 export function colorfulPhilosophersCommentThreadKey(postId: string): string {
-  return `colorful-philosophers:${postId}`;
-}
-
-export function colorfulPhilosopherReactionStorageKey(postId: string): string {
-  return `sts-cp-reaction:${postId}`;
+  return philosopherReplyThreadKey(postId);
 }
 
 export function isColorfulPhilosopherSlot(value: string): value is ColorfulPhilosopherSlot {
@@ -73,17 +71,9 @@ export function isColorfulPhilosopherReaction(value: string): value is ColorfulP
   return (COLORFUL_PHILOSOPHER_REACTIONS as readonly string[]).includes(value);
 }
 
-const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
-
+// The Worker's /api/read/nav computes the same week, so the formula lives in nav-surfaces.ts.
 export function colorfulPhilosophersWeekStart(now = new Date()): string {
-  const kst = new Date(now.getTime() + KST_OFFSET_MS);
-  const mondayOffset = (kst.getUTCDay() + 6) % 7;
-  const monday = new Date(Date.UTC(
-    kst.getUTCFullYear(),
-    kst.getUTCMonth(),
-    kst.getUTCDate() - mondayOffset,
-  ));
-  return monday.toISOString().slice(0, 10);
+  return kstWeekStart(now);
 }
 
 export function colorfulPhilosophersNextWeekStart(now = new Date()): string {

@@ -54,7 +54,7 @@ export function DecisionsDecisionsClient({
     unavailable,
     loadMore,
     add,
-  } = useDecisionsDecisionsPosts(userId, sort);
+  } = useDecisionsDecisionsPosts(sort);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],

@@ -1,4 +1,4 @@
-import { rmSync } from "node:fs";
+import { readdirSync, readFileSync, rmSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
@@ -61,6 +61,17 @@ const totalKiB = Number(match[1]);
 const gzipKiB = Number(match[2]);
 if (!Number.isFinite(totalKiB) || !Number.isFinite(gzipKiB)) {
   console.error(`Invalid Wrangler dry-run upload size: ${match[0]}`);
+  process.exit(1);
+}
+
+// The same-origin API calls PostgREST with fetch; supabase-js in the Worker
+// means a client module leaked into an /api import (docs/supabase-exit/STEP1_DESIGN.md 5).
+const bundle = readdirSync(outDir)
+  .filter((file) => /\.(?:js|mjs)$/.test(file))
+  .map((file) => readFileSync(path.join(outDir, file), "utf8"))
+  .join("\n");
+if (/GoTrueClient|SupabaseClient|@supabase\/|realtime-js/.test(bundle)) {
+  console.error("The main Worker bundle contains supabase-js. Keep src/lib/supabase.ts out of workers/ imports.");
   process.exit(1);
 }
 

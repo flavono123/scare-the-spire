@@ -1,3 +1,4 @@
+import { shouldUseLegacy } from "@/lib/api-client";
 import {
   feedItemFromPost,
   isDefragmentFederatedService,
@@ -9,13 +10,14 @@ import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { isCoverSpec } from "@/lib/run-cover-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { apiDefragmentFeed, apiDefragmentRuns, toyboxViaApi } from "@/lib/toybox-api";
+import { isCursorCreatedAt, isRowId } from "@/lib/toybox-api-rules";
 import {
   asNonNegativeInt,
   buildLatestFeedKeysetFilter,
   fetchToyboxFeedPage,
   isToyboxFeedCoreSort,
   TOYBOX_FEED_PAGE_SIZE,
-  TOYBOX_FEED_TABLES,
   toyboxRecommendScore,
   type ToyboxFeedCursor,
   type ToyboxFeedSort,
@@ -24,14 +26,6 @@ import {
 export interface DefragmentFeedPage {
   items: DefragmentFeedItem[];
   hasMore: boolean;
-}
-
-export function isMissingDefragmentFeedRpc(
-  error: { code?: string; message?: string } | null | undefined,
-): boolean {
-  if (!error) return false;
-  if (error.code === "PGRST202") return true;
-  return /get_defragment_feed/i.test(error.message ?? "");
 }
 
 function asIsoTimestamp(value: unknown): string | null {
@@ -141,6 +135,18 @@ export function cursorFromDefragmentItem(
   };
 }
 
+/** Run ids are free text: a cursor the Worker would refuse stays on legacy (as run-donation.ts does). */
+function apiCursorOk(cursor: ToyboxFeedCursor | null): boolean {
+  return !cursor || (isRowId(cursor.id) && isCursorCreatedAt(cursor.createdAt));
+}
+
+function feedPage(rows: unknown[]): DefragmentFeedPage {
+  const items = rows
+    .map(parseDefragmentFeedRow)
+    .filter((item): item is DefragmentFeedItem => item != null);
+  return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
+}
+
 async function fetchFilteredDefragmentFeedPage(options: {
   service: Exclude<DefragmentFederatedService, "history_course">;
   sort: ToyboxFeedSort;
@@ -148,7 +154,6 @@ async function fetchFilteredDefragmentFeedPage(options: {
 }): Promise<DefragmentFeedPage> {
   const page = await fetchToyboxFeedPage({
     service: options.service,
-    table: TOYBOX_FEED_TABLES[options.service],
     sort: options.sort,
     cursor: options.cursor,
     normalizePost: normalizeDefragmentSourcePost,
@@ -171,6 +176,14 @@ async function fetchHistoryCourseDefragmentPage(options: {
     ? options.sort
     : "latest";
   const scoreColumn = sort === "comments" ? "comment_count" : "like_count";
+  if (toyboxViaApi() && apiCursorOk(options.cursor)) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same columns, order and keyset; the Worker builds the filter.
+      return historyCoursePage(await apiDefragmentRuns(sort, options.cursor));
+    } catch (error) {
+      if (!shouldUseLegacy(error)) throw error;
+    }
+  }
   let query = supabase
     .from("runs")
     .select("id, created_at, like_count, comment_count, seed, donor_user_id, donor_nickname, cover_spec, win, ascension, total_floors")
@@ -195,12 +208,12 @@ async function fetchHistoryCourseDefragmentPage(options: {
     "runs.feed.history_course",
     query,
   );
-  if (error) {
-    if (error.code === "42703") return { items: [], hasMore: false };
-    throw error;
-  }
+  if (error) throw error;
+  return historyCoursePage(data ?? []);
+}
 
-  const items = (data ?? [])
+function historyCoursePage(rows: unknown[]): DefragmentFeedPage {
+  const items = rows
     .map((row) => {
       const record = row as Record<string, unknown>;
       return parseDefragmentFeedRow({
@@ -249,7 +262,14 @@ export async function fetchDefragmentFeedPage(options: {
     });
   }
 
-  const v2 = await withSupabaseTimeout(
+  if (toyboxViaApi() && apiCursorOk(options.cursor)) {
+    try {
+      return feedPage(await apiDefragmentFeed(sort, options.cursor));
+    } catch (error) {
+      if (!shouldUseLegacy(error)) throw error;
+    }
+  }
+  const { data, error } = await withSupabaseTimeout(
     "get_defragment_feed_v2",
     supabase.rpc("get_defragment_feed_v2", {
       p_env: supabaseEnv,
@@ -261,27 +281,6 @@ export async function fetchDefragmentFeedPage(options: {
     }),
   );
 
-  const result = !v2.error || !isMissingDefragmentFeedRpc(v2.error)
-    ? v2
-    : await withSupabaseTimeout(
-      "get_defragment_feed",
-      supabase.rpc("get_defragment_feed", {
-        p_env: supabaseEnv,
-        p_sort: sort,
-        p_limit: TOYBOX_FEED_PAGE_SIZE,
-        p_cursor_score: options.cursor?.score ?? null,
-        p_cursor_created_at: options.cursor?.createdAt ?? null,
-        p_cursor_id: options.cursor?.id ?? null,
-      }),
-    );
-
-  if (!result.error) {
-    const items = ((result.data ?? []) as unknown[])
-      .map(parseDefragmentFeedRow)
-      .filter((item): item is DefragmentFeedItem => item != null);
-    return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
-  }
-
-  if (!isMissingDefragmentFeedRpc(result.error)) throw result.error;
-  return { items: [], hasMore: false };
+  if (error) throw error;
+  return feedPage((data ?? []) as unknown[]);
 }

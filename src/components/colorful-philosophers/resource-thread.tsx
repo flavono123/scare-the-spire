@@ -18,6 +18,8 @@ import {
 } from "@/lib/colorful-philosophers";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
+import { engagementApiFor, loadEngagement, shouldUseLegacy } from "@/lib/api-engagement";
+import { philosopherResourceKey } from "@/lib/engagement-keys";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { serviceMessages } from "@/messages/service";
 import { ResourceReactionBar } from "@/components/resource-reaction-bar";
@@ -58,22 +60,37 @@ export function ColorfulPhilosopherResourceThread({
   const [posts, setPosts] = useState<ColorfulPhilosopherPost[]>([]);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
-    supabase.from(COLORFUL_PHILOSOPHERS_POSTS_TABLE)
-      .select("id, week_start, slot, resource_type, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count")
-      .eq("env", supabaseEnv)
-      .eq("resource_type", resourceType)
-      .eq("resource_id", resourceId)
-      .order("week_start", { ascending: false })
-      .limit(20)
-      .then(({ data }) => {
-        if (cancelled) return;
-        setPosts((data ?? []).flatMap((row) => {
-          const post = colorfulPhilosopherPostFromRow(row);
-          return post ? [post] : [];
-        }));
-      });
+    const show = (rows: readonly Parameters<typeof colorfulPhilosopherPostFromRow>[0][]) => {
+      if (cancelled) return;
+      setPosts(rows.flatMap((row) => {
+        const post = colorfulPhilosopherPostFromRow(row);
+        return post ? [post] : [];
+      }));
+    };
+    const loadLegacy = () => {
+      supabase.from(COLORFUL_PHILOSOPHERS_POSTS_TABLE)
+        .select("id, week_start, slot, resource_type, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count")
+        .eq("env", supabaseEnv)
+        .eq("resource_type", resourceType)
+        .eq("resource_id", resourceId)
+        .order("week_start", { ascending: false })
+        .limit(20)
+        .then(({ data }) => show(data ?? []));
+    };
+
+    // The api answer also carries each post's replies and reaction totals for the widgets below.
+    const resourceKey = philosopherResourceKey({ resourceType, resourceId });
+    if (engagementApiFor("philosophers", resourceKey)) {
+      loadEngagement("philosophers", resourceKey)
+        .then(show)
+        .catch((error) => {
+          // Other failures show no posts, as the legacy query ignores its errors.
+          if (shouldUseLegacy(error) && supabaseEnabled) loadLegacy();
+        });
+    } else if (supabaseEnabled) {
+      loadLegacy();
+    }
     return () => {
       cancelled = true;
     };

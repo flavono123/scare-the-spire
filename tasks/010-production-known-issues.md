@@ -173,6 +173,7 @@
 42. **Toy Box 피드와 이야기의 Realtime 구독을 서버가 거절함**. 구독 응답은 ok지만 곧이어 `Unable to subscribe to changes with given parameters` 시스템 오류가 온다. 다른 사람의 수정·삭제가 실시간으로 반영되지 않는다. 운영(realtime-js 2.98)과 testbed(2.118)가 같은 응답을 받고 안내는 뜨지 않는다.
     - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
     - 원인 추정: 해당 표가 `supabase_realtime` publication에 없다(저장소 마이그레이션에는 `defragment_posts` 추가만 있음). live DB의 publication은 확인하지 못했다.
+    - 덧붙임(2026-11-06, Supabase 이관 조사): 0단계 백업의 publication 목록에도 `defragment_posts` 하나뿐이라 실시간 갱신은 한 번도 동작하지 않았다. 남은 부작용은 채널 join이 실패하거나 10초를 넘기면 이미 받은 피드를 unavailable로 덮는 것이다(`use-toybox-feed.ts:128-132`, Supabase를 막은 브라우저 QA에서도 재현). 결정: 이관 1단계의 api 경로는 채널을 열지 않는다. legacy 경로는 이 목록을 고칠 때 채널을 없애는 쪽으로 정리한다.
 43. **`scripts/encounter-compositions.spec.ts`의 기대값이 낡음**(고유 전투 배경 수 11, 기대 17, 16행). 화면 버그는 아니다. CI에 없어 드러나지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/compendium/encounters
     - 원인: `c946b7d3`이 바이트가 같은 배경을 한 파일로 합치면서 고유 배경이 17개에서 11개가 됐고(그림은 그대로) 스펙을 고치지 않았다. 기대값을 11로 바꾸면 나머지 단언은 통과한다.
@@ -245,5 +246,9 @@
 65. **`scripts/contact.spec.ts`의 'submits a private inquiry without requesting a readable row' 1건 실패**. CI에 없는 스펙이고, navbar 변경 전 코드에서도 같았다. 가짜 환경 탓인지 기존 문제인지는 가리지 못했다.
     - https://scare-the-spire.flavono123.workers.dev/contact
 66. **관리자 글 서비스 목록에 역사 강의서가 두 번 들어가 React 중복 키 오류가 남**. `Encountered two children with the same key, \`history_course\``가 개발 콘솔에 찍힌다.
+
+### 2026-11-07 Supabase 이관 정리 조사에서 추가
+
+67. **이아저? 월드컵 플레이 기록 전체가 누구에게나 열려 있음**. https://scare-the-spire.flavono123.workers.dev/this-or-that/tournament 의 플레이가 쌓이는 `favorite_tournament_plays`의 SELECT 정책 `favorite_tournament_plays_read`가 `TO public USING (true)`라, 공개 anon 키만 있으면 모든 사람의 플레이(`user_id`, 대진 `matches`, 우승 후보)를 읽을 수 있다. 앱은 이 표를 읽지 않는다(쓰기는 RPC `complete_favorite_tournament_play`, 읽기는 dev 관리 지표의 service 키뿐). 고치는 방법은 정책 삭제. 근거: `docs/supabase-exit/CLEANUP_AUDIT.md` 3.4절.
     - http://localhost:3001/dev/admin (개발 전용 화면)
     - 원인: `src/lib/admin-rls-activity.ts`의 `ADMIN_POST_SERVICES`가 `DEFRAGMENT_FEDERATED_SERVICES`(이미 `history_course` 포함)를 펼친 뒤 `"history_course"`를 또 붙인다. 운영 코드도 같다.

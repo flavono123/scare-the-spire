@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
+import { writeMayGoLegacy } from "@/lib/api-client";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import type { ChemicalPost, PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
@@ -11,6 +12,7 @@ import {
   CHEMICAL_POST_MAX_CHARS,
   CHEMICAL_POST_MIN_CHARS,
 } from "@/lib/content-limits";
+import { apiCreateToyboxPost, toyboxViaApi, toyboxWriteError } from "@/lib/toybox-api";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 
 interface UseChemicalPostsReturn {
@@ -23,7 +25,6 @@ interface UseChemicalPostsReturn {
   unavailable: boolean;
   loadMore: () => Promise<void>;
   add: (blocks: PostBlock[], nickname: string, activeUserId?: string) => Promise<void>;
-  remove: (postId: string) => Promise<void>;
 }
 
 function normalizePost(row: unknown): ChemicalPost {
@@ -48,23 +49,32 @@ export async function insertChemicalPost(
   }
 
   const token = currentAuthorProfileToken();
+  const row = {
+    user_id: activeUserId,
+    nickname: trimmedNickname,
+    content: blocks,
+    content_text: contentText,
+    env: supabaseEnv,
+    ...(token ? {
+      avatar_id: token.avatar_id,
+      avatar_kind: token.avatar_kind,
+      palette_id: token.palette_id,
+      palette_swapped: token.palette_swapped,
+    } : {}),
+  };
+  if (toyboxViaApi()) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, sent through the Worker.
+      return normalizePost(await apiCreateToyboxPost("chemical_x", row));
+    } catch (error) {
+      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     "chemical_posts.insert",
     supabase
       .from("chemical_posts")
-      .insert({
-        user_id: activeUserId,
-        nickname: trimmedNickname,
-        content: blocks,
-        content_text: contentText,
-        env: supabaseEnv,
-        ...(token ? {
-          avatar_id: token.avatar_id,
-          avatar_kind: token.avatar_kind,
-          palette_id: token.palette_id,
-          palette_swapped: token.palette_swapped,
-        } : {}),
-      })
+      .insert(row)
       .select()
       .single(),
   );
@@ -87,7 +97,6 @@ export function useChemicalPosts(
     unavailable,
     loadMore,
     prependPost,
-    removePost,
     setUnavailable,
   } = useToyboxFeed({
     service: "chemical_x",
@@ -110,22 +119,6 @@ export function useChemicalPosts(
     [prependPost, setUnavailable, userId],
   );
 
-  const remove = useCallback(
-    async (postId: string) => {
-      if (!userId || !supabaseEnabled) return;
-      const { error } = await withSupabaseTimeout(
-        "chemical_posts.delete",
-        supabase.from("chemical_posts").delete().eq("id", postId),
-      ).catch(() => ({ error: new Error("timeout") }));
-      if (error) {
-        setUnavailable(true);
-        return;
-      }
-      removePost(postId);
-    },
-    [removePost, setUnavailable, userId],
-  );
-
   return {
     posts,
     likeCounts,
@@ -136,6 +129,5 @@ export function useChemicalPosts(
     unavailable,
     loadMore,
     add,
-    remove,
   };
 }

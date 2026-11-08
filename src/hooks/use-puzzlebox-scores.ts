@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { apiFetch, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
+import { apiFetchAsUser, currentAccessToken } from "@/lib/api-session";
+import { encodePuzzleboxBoards } from "@/lib/puzzlebox-api-rules";
+import { surfacePath } from "@/lib/runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { SUPABASE_AUTH_TIMEOUT_MS, withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
@@ -128,6 +132,21 @@ export async function submitPuzzleboxRun(input: {
   try {
     const userId = await input.ensureUser();
     if (!userId) return null;
+    // docs/supabase-exit/STEP1_DESIGN.md 9.5. The game never waits on a failure: null, as before.
+    if (surfacePath("puzzlebox") === "api") {
+      try {
+        const body = await apiFetchAsUser<{ v?: number; result?: PuzzleboxSubmitResult | null }>(
+          "puzzlebox",
+          "/api/write/puzzlebox/runs",
+          { method: "POST", body: { game: input.game, board: String(input.board), run: input.run, player: input.player } },
+        );
+        if (body?.v !== 1 || !body.result) return null;
+        clearGameCache(input.game);
+        return body.result;
+      } catch (error) {
+        if (!writeMayGoLegacy(error)) return null;
+      }
+    }
     const { data, error } = await withSupabaseTimeout(
       "rpc.submit_puzzlebox_run",
       supabase.rpc("submit_puzzlebox_run", {
@@ -174,7 +193,9 @@ export function usePuzzleboxLeaderboard(input: {
   const [state, setState] = useState<LoadState<PuzzleboxLeaderboard>>({ data: null, loading: true, failed: false });
 
   useEffect(() => {
-    if (!supabaseEnabled) {
+    const encodedBoards = encodePuzzleboxBoards(JSON.parse(boardsKey) as PuzzleboxBoards);
+    const viaApi = surfacePath("puzzlebox") === "api" && encodedBoards !== null;
+    if (!supabaseEnabled && !viaApi) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- nothing to fetch without Supabase
       setState({ data: null, loading: false, failed: true });
       return;
@@ -188,6 +209,36 @@ export function usePuzzleboxLeaderboard(input: {
     }
     setState((current) => ({ data: current.data, loading: true, failed: false }));
     (async () => {
+      if (viaApi) {
+        try {
+          // With a session the RPC marks this player's rows (is_me, me), as supabase-js did with its token.
+          const token = await currentAccessToken().catch(() => null);
+          const query = new URLSearchParams({
+            game,
+            boards: encodedBoards as string,
+            board: board ?? "total",
+            offset: String(offset),
+            around_me: aroundMe ? "1" : "0",
+          });
+          const body = token
+            ? await apiFetchAsUser<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/me/puzzlebox/leaderboard?${query}`)
+            : await apiFetch<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/read/puzzlebox/leaderboard?${query}`);
+          if (cancelled) return;
+          if (body?.v !== 1 || !body.leaderboard) {
+            setState({ data: null, loading: false, failed: true });
+            return;
+          }
+          writeCache(cacheKey, body.leaderboard);
+          setState({ data: body.leaderboard, loading: false, failed: false });
+          return;
+        } catch (error) {
+          if (cancelled) return;
+          if (!shouldUseLegacy(error) || !supabaseEnabled) {
+            setState({ data: null, loading: false, failed: true });
+            return;
+          }
+        }
+      }
       try {
         const { data, error } = await withSupabaseTimeout(
           "rpc.get_puzzlebox_leaderboard",
@@ -236,6 +287,23 @@ export function useMyPuzzleboxStandings(game: PuzzleboxGame, boards: PuzzleboxBo
     }
     (async () => {
       if (!(await hasSession()) || cancelled) return;
+      const encodedBoards = encodePuzzleboxBoards(JSON.parse(boardsKey) as PuzzleboxBoards);
+      if (surfacePath("puzzlebox") === "api" && encodedBoards !== null) {
+        try {
+          const query = new URLSearchParams({ game, boards: encodedBoards });
+          const body = await apiFetchAsUser<{ v?: number; standings?: PuzzleboxStanding[] }>(
+            "puzzlebox",
+            `/api/me/puzzlebox/standings?${query}`,
+          );
+          if (cancelled || body?.v !== 1 || !Array.isArray(body.standings)) return;
+          writeCache(cacheKey, body.standings);
+          setStandings(Object.fromEntries(body.standings.map((row) => [row.board, row])));
+          return;
+        } catch (error) {
+          // Lists show local scores only, unless the Worker sent this group back to the legacy path.
+          if (cancelled || !shouldUseLegacy(error)) return;
+        }
+      }
       try {
         const { data, error } = await withSupabaseTimeout(
           "rpc.get_my_puzzlebox_standings",

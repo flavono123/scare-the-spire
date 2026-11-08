@@ -69,6 +69,10 @@ This project uses local project skills instead of global home-directory skill in
   `scare-the-spire-patches-testbed` via local `pnpm cf:testbed` (build + wrangler
   `--env testbed`). This is not GHA and must not touch production Workers.
 - Purpose: occasional personal/admin preview, or deploy-related stage verification.
+- The testbed is development-only: `cf:testbed -- --remote` builds both Workers with
+  `NEXT_PUBLIC_SUPABASE_ENV=development` and gives `/api` `API_DATA_ENV=development`,
+  so testbed pages never read or write production rows. Production builds (CI,
+  `cf:patch:deploy`) stay `production`.
 - `cf:build` and `patch:build` write `build-record.json` (HEAD plus uncommitted
   tracked changes) at the root of `.cloudflare/` and `.patch-worker/`, outside the
   uploaded assets. The record names no commit when the checkout changed between

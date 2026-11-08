@@ -105,6 +105,10 @@ async function checkPreset(browser, preset, options) {
     locale: options.locale,
     userAgent: preset.name.toLowerCase().includes("iphone") ? IOS_UA : ANDROID_UA,
   });
+  if (!options.allowSupabase) {
+    // The DNS block covers the browser only; this cookie keeps the Worker's /api off Supabase too.
+    await context.addCookies([{ name: "slseoun_qa", value: "no-supabase", url: options.baseUrl }]);
+  }
   const page = await context.newPage();
   const consoleEvents = [];
   page.on("console", (message) => {

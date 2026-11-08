@@ -5,11 +5,10 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 
-export function sanitizeContactSourcePath(value: string | null | undefined): string {
-  const path = value?.trim().split(/[?#]/, 1)[0] ?? "";
-  if (!path.startsWith("/")) return "/";
-  return path.slice(0, 512) || "/";
-}
+import { sanitizeContactSourcePath } from "@/lib/contact-rules";
+
+// The Worker uses the same rule, so it lives in the import-free contact-rules.ts.
+export { sanitizeContactSourcePath };
 
 export function getContactHref(
   pathname: string,

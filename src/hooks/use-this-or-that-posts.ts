@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
+import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
@@ -9,6 +10,13 @@ import {
   type ThisOrThatPost,
   type ThisOrThatResourceRef,
 } from "@/lib/this-or-that";
+import {
+  apiCreateToyboxPost,
+  apiDeleteToyboxPost,
+  apiToyboxPost,
+  toyboxViaApi,
+  toyboxWriteError,
+} from "@/lib/toybox-api";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 import { currentAuthorProfileToken } from "@/lib/user-profile";
 
@@ -30,7 +38,6 @@ interface UseThisOrThatPostsReturn {
   unavailable: boolean;
   loadMore: () => Promise<void>;
   add: (input: AddThisOrThatPostInput) => Promise<ThisOrThatPost | null>;
-  remove: (postId: string) => Promise<void>;
 }
 
 interface UseThisOrThatPostReturn {
@@ -62,26 +69,36 @@ export async function insertThisOrThatPost(
   }
 
   const token = currentAuthorProfileToken();
+  const row = {
+    user_id: input.activeUserId,
+    nickname: trimmedNickname,
+    left_type: input.left.type,
+    left_id: input.left.id,
+    right_type: input.right.type,
+    right_id: input.right.id,
+    reason: trimmedReason,
+    env: supabaseEnv,
+    ...(token ? {
+      avatar_id: token.avatar_id,
+      avatar_kind: token.avatar_kind,
+      palette_id: token.palette_id,
+      palette_swapped: token.palette_swapped,
+    } : {}),
+  };
+  if (toyboxViaApi()) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, through the Worker.
+      return normalizePost(await apiCreateToyboxPost("this_or_that", row));
+    } catch (error) {
+      // Only a write that certainly did nothing is sent again on the legacy path.
+      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     "this_or_that_posts.insert",
     supabase
       .from("this_or_that_posts")
-      .insert({
-        user_id: input.activeUserId,
-        nickname: trimmedNickname,
-        left_type: input.left.type,
-        left_id: input.left.id,
-        right_type: input.right.type,
-        right_id: input.right.id,
-        reason: trimmedReason,
-        env: supabaseEnv,
-        ...(token ? {
-          avatar_id: token.avatar_id,
-          avatar_kind: token.avatar_kind,
-          palette_id: token.palette_id,
-          palette_swapped: token.palette_swapped,
-        } : {}),
-      })
+      .insert(row)
       .select()
       .single(),
   );
@@ -104,7 +121,6 @@ export function useThisOrThatPosts(
     unavailable,
     loadMore,
     prependPost,
-    removePost,
     setUnavailable,
   } = useToyboxFeed({
     service: "this_or_that",
@@ -131,22 +147,6 @@ export function useThisOrThatPosts(
     [prependPost, setUnavailable, userId],
   );
 
-  const remove = useCallback(
-    async (postId: string) => {
-      if (!userId || !supabaseEnabled) return;
-      const { error } = await withSupabaseTimeout(
-        "this_or_that_posts.delete",
-        supabase.from("this_or_that_posts").delete().eq("id", postId),
-      ).catch(() => ({ error: new Error("timeout") }));
-      if (error) {
-        setUnavailable(true);
-        return;
-      }
-      removePost(postId);
-    },
-    [removePost, setUnavailable, userId],
-  );
-
   return {
     posts,
     likeCounts,
@@ -157,7 +157,6 @@ export function useThisOrThatPosts(
     unavailable,
     loadMore,
     add,
-    remove,
   };
 }
 
@@ -173,17 +172,29 @@ export function useThisOrThatPost(
     if (!supabaseEnabled) return;
     let cancelled = false;
 
-    withSupabaseTimeout(
-      "this_or_that_posts.detail",
-      supabase
-        .from("this_or_that_posts")
-        .select("*")
-        .eq("id", postId)
-        .eq("env", supabaseEnv)
-        .maybeSingle(),
-    )
-      .then(({ data, error }) => {
-        if (error) throw error;
+    const load = async () => {
+      if (toyboxViaApi()) {
+        try {
+          return await apiToyboxPost("this_or_that", postId);
+        } catch (error) {
+          if (!shouldUseLegacy(error) || !supabaseEnabled) throw error;
+        }
+      }
+      const { data, error } = await withSupabaseTimeout(
+        "this_or_that_posts.detail",
+        supabase
+          .from("this_or_that_posts")
+          .select("*")
+          .eq("id", postId)
+          .eq("env", supabaseEnv)
+          .maybeSingle(),
+      );
+      if (error) throw error;
+      return data;
+    };
+
+    load()
+      .then((data) => {
         if (cancelled) return;
         setPost(data ? normalizePost(data) : null);
         setUnavailable(false);
@@ -202,7 +213,17 @@ export function useThisOrThatPost(
 
   const remove = useCallback(async () => {
     if (!userId || !supabaseEnabled) return false;
-    const { error } = await withSupabaseTimeout(
+    let apiResult: { error: unknown } | null = null;
+    if (toyboxViaApi()) {
+      try {
+        // Not ours or already gone counts as removed, as the legacy delete does.
+        await apiDeleteToyboxPost("this_or_that", postId);
+        apiResult = { error: null };
+      } catch (error) {
+        if (!writeMayGoLegacy(error)) apiResult = { error };
+      }
+    }
+    const { error } = apiResult ?? await withSupabaseTimeout(
       "this_or_that_posts.detail.delete",
       supabase
         .from("this_or_that_posts")

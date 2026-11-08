@@ -1,22 +1,26 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { requireApiVersion, shouldUseLegacy } from "@/lib/api-client";
+import { apiFetchAsUser } from "@/lib/api-session";
 import type { PostBlock } from "@/lib/chemical-types";
+import {
+  PROFILE_ACTIVITY_CATEGORIES,
+  PROFILE_ACTIVITY_PAGE_SIZE,
+  type ProfileActivityCategory,
+  type ProfileActivityFilter,
+  type ProfileActivitySort,
+} from "@/lib/profile-activity-rules";
+import { surfacePath } from "@/lib/runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
-export const PROFILE_ACTIVITY_CATEGORIES = [
-  "stories",
-  "chemical_x",
-  "this_or_that",
-  "combo",
-  "comments",
-  "history_course",
-] as const;
-
-export type ProfileActivityCategory = (typeof PROFILE_ACTIVITY_CATEGORIES)[number];
-export type ProfileActivityFilter = "all" | ProfileActivityCategory;
-export type ProfileActivitySort = "latest" | "likes";
+export {
+  PROFILE_ACTIVITY_CATEGORIES,
+  type ProfileActivityCategory,
+  type ProfileActivityFilter,
+  type ProfileActivitySort,
+};
 
 export interface ProfileActivityItem {
   activityId: string;
@@ -52,7 +56,59 @@ interface ProfileActivityStatsRow {
   like_count: number | string;
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = PROFILE_ACTIVITY_PAGE_SIZE;
+
+type RowsBody<T> = { v?: number; rows?: T[] };
+
+/** Stats rows: the Worker on the api path (docs/supabase-exit/STEP1_DESIGN.md 9.4), else the RPC. */
+async function readStatsRows(): Promise<ProfileActivityStatsRow[]> {
+  if (surfacePath("profile") === "api") {
+    try {
+      const body = await apiFetchAsUser<RowsBody<ProfileActivityStatsRow>>("profile", "/api/me/profile/stats");
+      requireApiVersion("profile", body);
+      return body.rows ?? [];
+    } catch (error) {
+      if (!shouldUseLegacy(error)) throw error;
+    }
+  }
+  const { data, error } = await withSupabaseTimeout(
+    "profile_activity.stats",
+    supabase.rpc("get_my_profile_activity_stats", { p_env: supabaseEnv }),
+  );
+  if (error) throw error;
+  return (data ?? []) as ProfileActivityStatsRow[];
+}
+
+/** One activity page, by the same route as the stats. */
+async function readActivityRows(
+  filter: ProfileActivityFilter,
+  sort: ProfileActivitySort,
+  offset: number,
+  operation: string,
+): Promise<ProfileActivityRow[]> {
+  if (surfacePath("profile") === "api") {
+    try {
+      const query = new URLSearchParams({ category: filter, sort, offset: String(offset) });
+      const body = await apiFetchAsUser<RowsBody<ProfileActivityRow>>("profile", `/api/me/profile/activity?${query}`);
+      requireApiVersion("profile", body);
+      return body.rows ?? [];
+    } catch (error) {
+      if (!shouldUseLegacy(error)) throw error;
+    }
+  }
+  const { data, error } = await withSupabaseTimeout(
+    operation,
+    supabase.rpc("get_my_profile_activity", {
+      p_env: supabaseEnv,
+      p_category: filter,
+      p_sort: sort,
+      p_limit: PAGE_SIZE,
+      p_offset: offset,
+    }),
+  );
+  if (error) throw error;
+  return (data ?? []) as ProfileActivityRow[];
+}
 
 function emptyStats(): ProfileActivityStats {
   return {
@@ -104,16 +160,12 @@ export function useProfileActivity(
     let cancelled = false;
     setStatsLoading(true);
 
-    withSupabaseTimeout(
-      "profile_activity.stats",
-      supabase.rpc("get_my_profile_activity_stats", { p_env: supabaseEnv }),
-    )
-      .then(({ data, error }) => {
-        if (error) throw error;
+    readStatsRows()
+      .then((data) => {
         if (cancelled) return;
 
         const nextStats = emptyStats();
-        for (const row of (data ?? []) as ProfileActivityStatsRow[]) {
+        for (const row of data) {
           if (!PROFILE_ACTIVITY_CATEGORIES.includes(row.category)) continue;
           nextStats[row.category] = {
             postCount: Number(row.post_count),
@@ -149,21 +201,10 @@ export function useProfileActivity(
     setTotalCount(0);
     setItemsLoading(true);
 
-    withSupabaseTimeout(
-      "profile_activity.list",
-      supabase.rpc("get_my_profile_activity", {
-        p_env: supabaseEnv,
-        p_category: filter,
-        p_sort: sort,
-        p_limit: PAGE_SIZE,
-        p_offset: 0,
-      }),
-    )
-      .then(({ data, error }) => {
-        if (error) throw error;
+    readActivityRows(filter, sort, 0, "profile_activity.list")
+      .then((rows) => {
         if (cancelled) return;
 
-        const rows = (data ?? []) as ProfileActivityRow[];
         setItems(rows.map(normalizeItem));
         setTotalCount(rows[0] ? Number(rows[0].total_count) : 0);
         setItemsUnavailable(false);
@@ -186,20 +227,9 @@ export function useProfileActivity(
     setLoadingMore(true);
 
     try {
-      const { data, error } = await withSupabaseTimeout(
-        "profile_activity.more",
-        supabase.rpc("get_my_profile_activity", {
-          p_env: supabaseEnv,
-          p_category: filter,
-          p_sort: sort,
-          p_limit: PAGE_SIZE,
-          p_offset: items.length,
-        }),
-      );
-      if (error) throw error;
+      const rows = await readActivityRows(filter, sort, items.length, "profile_activity.more");
       if (queryKeyRef.current !== queryKey) return;
 
-      const rows = (data ?? []) as ProfileActivityRow[];
       setItems((current) => [...current, ...rows.map(normalizeItem)]);
       if (rows[0]) setTotalCount(Number(rows[0].total_count));
       setItemsUnavailable(false);

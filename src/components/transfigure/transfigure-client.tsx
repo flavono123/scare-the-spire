@@ -21,7 +21,6 @@ import {
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { GameLocale } from "@/lib/i18n";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
-import type { TransfigurePost } from "@/lib/transfigure-types";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { TransfigurePostCard } from "./transfigure-post-card";
@@ -68,12 +67,9 @@ export function TransfigureClient({
     unavailable,
     loadMore,
     add,
-    update,
-    remove,
   } = useTransfigurePosts(userId, sort);
   const loading = postsLoading || entityGraph.status === "loading";
   const [composerOpen, setComposerOpen] = useState(false);
-  const [editingPost, setEditingPost] = useState<TransfigurePost | null>(null);
   const [saveNotice, setSaveNotice] = useState<string | null>(null);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
@@ -87,32 +83,14 @@ export function TransfigureClient({
   ) => {
     const activeUserId = userId ?? await ensureUser();
     if (!activeUserId) throw new Error("anonymous auth unavailable");
-    const updating = editingPost != null;
-    const post = editingPost
-      ? await update(editingPost.id, { ...input, activeUserId })
-      : await add({ ...input, activeUserId });
+    const post = await add({ ...input, activeUserId });
     if (!post) throw new Error("transfigure post rejected");
     setComposerOpen(false);
-    setEditingPost(null);
-    setSaveNotice(updating ? copy.updateSuccess : copy.createSuccess);
-  }, [
-    add,
-    copy.createSuccess,
-    copy.updateSuccess,
-    editingPost,
-    ensureUser,
-    update,
-    userId,
-  ]);
+    setSaveNotice(copy.createSuccess);
+  }, [add, copy.createSuccess, ensureUser, userId]);
   const closeComposer = useCallback(() => {
     setComposerOpen(false);
-    setEditingPost(null);
   }, []);
-  const handleComposerDelete = useCallback(async () => {
-    if (!editingPost) return;
-    const removed = await remove(editingPost.id);
-    if (removed) closeComposer();
-  }, [closeComposer, editingPost, remove]);
 
   return (
     <div data-transfigure-page="index" className="space-y-6">
@@ -136,7 +114,6 @@ export function TransfigureClient({
               aria-expanded={composerOpen}
               onClick={() => {
                 setSaveNotice(null);
-                setEditingPost(null);
                 setComposerOpen(true);
               }}
               className="group/create inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary shadow-[0_0_18px_rgba(239,200,81,0.06)] transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/15 hover:shadow-[0_6px_22px_rgba(239,200,81,0.1)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary/70 active:translate-y-0 motion-reduce:transform-none"
@@ -176,12 +153,10 @@ export function TransfigureClient({
           entities={entities}
           entitiesStatus={entityGraph.status}
           gameLocale={gameLocale}
-          initialPost={editingPost}
           profileNickname={profile.nickname}
           serviceLocale={serviceLocale}
           upgradeLabel={upgradeLabel}
           onSubmit={handleSubmit}
-          onDelete={editingPost ? handleComposerDelete : undefined}
           onClose={closeComposer}
         />
       )}

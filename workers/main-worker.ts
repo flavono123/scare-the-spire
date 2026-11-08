@@ -6,7 +6,7 @@ type AssetsBinding = {
   fetch(request: Request): Promise<Response>;
 };
 
-type Env = {
+type Env = ApiEnv & {
   ASSETS?: AssetsBinding;
   PATCH_WORKER?: PatchWorkerBinding;
   LINK_PREVIEW_LIMITER?: LinkPreviewLimiter;
@@ -24,6 +24,9 @@ type ExecutionContextLike = {
 };
 
 import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-resource-links";
+import { withFlagCookie } from "./api/flag-cookie";
+import { isApiRouterPath, type ApiEnv } from "./api/router";
+import { apiRouter } from "./api/routes";
 import { isSearchCrawlerUserAgent } from "../src/lib/locale-detection";
 import {
   handleLinkPreviewRequest,
@@ -504,7 +507,14 @@ async function routeRequest(request: Request, env: Env, ctx: ExecutionContextLik
 
 const mainWorker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
-    return withSecurityHeaders(await routeRequest(request, env, ctx));
+    const url = new URL(request.url);
+    // Before routeRequest: /api/patches* would otherwise match the patch Worker paths.
+    if (isApiRouterPath(url.pathname)) {
+      return withSecurityHeaders(await apiRouter.handle(request, env, ctx, url));
+    }
+    // withSecurityHeaders returns a mutable copy, so the flag cookie can be appended.
+    const response = withSecurityHeaders(await routeRequest(request, env, ctx));
+    return withFlagCookie(request, url, env, ctx, apiRouter.routedGroups, response);
   },
 };
 

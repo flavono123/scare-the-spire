@@ -1,9 +1,6 @@
 import assert from "node:assert/strict";
 import { isDatabaseRejection, submitDefragmentPost } from "../src/lib/defragment-submit";
-import {
-  isMissingDefragmentBodiesTable,
-  overlayBodyForSave,
-} from "../src/hooks/use-defragment-bodies";
+import { overlayBodyForSave } from "../src/hooks/use-defragment-bodies";
 
 const post = { id: "post-1" };
 
@@ -104,19 +101,6 @@ async function run() {
   assert.equal(isDatabaseRejection({ code: "PGRST000" }), false);
   assert.equal(isDatabaseRejection(new Error("timed out")), false);
   assert.equal(isDatabaseRejection(null), false);
-
-  // Only the missing-table codes count, not a message that names the table.
-  assert.equal(isMissingDefragmentBodiesTable({ code: "PGRST205" }), true);
-  assert.equal(isMissingDefragmentBodiesTable({ code: "42P01" }), true);
-  assert.equal(isMissingDefragmentBodiesTable(null), false);
-  assert.equal(isMissingDefragmentBodiesTable({
-    code: "23514",
-    message: 'new row for relation "defragment_bodies" violates check constraint',
-  } as { code: string }), false);
-  assert.equal(isMissingDefragmentBodiesTable({
-    code: "42501",
-    message: 'new row violates row-level security policy for table "defragment_bodies"',
-  } as { code: string }), false);
 
   // Empty, one character, and valid overlays.
   const text = (value: string) => [{ type: "text", text: value }] as never;

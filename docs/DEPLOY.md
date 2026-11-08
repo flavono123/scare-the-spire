@@ -87,7 +87,10 @@ Worker 버전은 그 버전이 올린 정적 asset 목록까지 함께 갖고 �
 
 3. `pnpm cf:smoke --origin https://scare-the-spire.flavono123.workers.dev --scope all`로
    복구를 확인한다. 보안 헤더가 들어가기 전 버전으로 되돌렸다면 `--no-security-headers`를
-   붙인다.
+   붙인다. Supabase 이관 1단계의 `/api` 라우터가 들어가기 전 main Worker로 되돌렸다면
+   `--no-api-router`를 붙인다. 그 판은 `/api/read/*`에 HTML 404를 준다.
+   그 판으로 되돌리기 전에는 런타임 플래그 `path.*`를 모두 `legacy`로 바꾸고 1분 기다린다
+   ([STEP1_DESIGN.md](supabase-exit/STEP1_DESIGN.md) 13절).
 4. 원인 커밋을 `main`에서 고치거나 되돌린 뒤 push한다. 그러지 않으면 다음 push가
    같은 코드를 다시 배포한다. 워크플로의 `workflow_dispatch`는 HEAD를 다시 배포할
    뿐 이전 버전을 고르지 못한다.

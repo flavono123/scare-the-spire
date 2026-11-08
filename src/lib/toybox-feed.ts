@@ -1,4 +1,6 @@
+import { shouldUseLegacy } from "@/lib/api-client";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { apiToyboxFeed, toyboxViaApi } from "@/lib/toybox-api";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   buildLatestFeedKeysetFilter,
@@ -128,16 +130,6 @@ export function toyboxRecommendScore(likeCount: number): number {
   return likeCount;
 }
 
-export function isMissingToyboxFeedRpc(
-  error: { code?: string; message?: string } | null | undefined,
-): boolean {
-  if (!error) return false;
-  if (error.code === "PGRST202" || error.code === "42703") return true;
-  return /get_toybox_feed|left_vote_count|right_vote_count|vote_rate_bps/i.test(
-    error.message ?? "",
-  );
-}
-
 export function asNonNegativeInt(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value) && value >= 0) {
     return Math.trunc(value);
@@ -265,43 +257,8 @@ export function countsFromFeedItems<T extends PostIdentity>(
   return { likeCounts, commentCounts };
 }
 
-async function fetchLatestTablePage<T extends PostIdentity>(
-  table: string,
-  cursor: ToyboxFeedCursor | null,
-  normalizePost: (raw: unknown) => T,
-): Promise<ToyboxFeedPage<T>> {
-  let query = supabase
-    .from(table)
-    .select("*")
-    .eq("env", supabaseEnv)
-    .order("created_at", { ascending: false })
-    .order("id", { ascending: false })
-    .limit(TOYBOX_FEED_PAGE_SIZE);
-
-  if (cursor) {
-    query = query.or(buildLatestFeedKeysetFilter(cursor));
-  }
-
-  const { data, error } = await withSupabaseTimeout(
-    `${table}.feed.latest`,
-    query,
-  );
-  if (error) throw error;
-
-  const items = (data ?? [])
-    .map((row) => {
-      const post = normalizePost(row);
-      if (!post?.id || !post.created_at) return null;
-      return itemFromPostRecord(post, row);
-    })
-    .filter((item): item is ToyboxFeedItem<T> => item != null);
-
-  return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
-}
-
 export async function fetchToyboxFeedPage<T extends PostIdentity>(options: {
   service: ToyboxFeedService;
-  table: string;
   sort: ToyboxFeedSort;
   cursor: ToyboxFeedCursor | null;
   normalizePost: (raw: unknown) => T;
@@ -309,6 +266,20 @@ export async function fetchToyboxFeedPage<T extends PostIdentity>(options: {
   if (!supabaseEnabled) return { items: [], hasMore: false };
 
   const sort = resolveToyboxFeedSort(options.service, options.sort);
+  const parseRows = (rows: unknown[]) => {
+    const items = rows
+      .map((row) => parseToyboxFeedRow(row, options.normalizePost))
+      .filter((item): item is ToyboxFeedItem<T> => item != null);
+    return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
+  };
+  if (toyboxViaApi()) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same RPC rows, through the Worker.
+      return parseRows(await apiToyboxFeed(options.service, sort, options.cursor));
+    } catch (apiError) {
+      if (!shouldUseLegacy(apiError)) throw apiError;
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     `get_toybox_feed.${options.service}`,
     supabase.rpc("get_toybox_feed", {
@@ -322,15 +293,6 @@ export async function fetchToyboxFeedPage<T extends PostIdentity>(options: {
     }),
   );
 
-  if (!error) {
-    const rows = (data ?? []) as unknown[];
-    const items = rows
-      .map((row) => parseToyboxFeedRow(row, options.normalizePost))
-      .filter((item): item is ToyboxFeedItem<T> => item != null);
-    return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
-  }
-
-  if (!isMissingToyboxFeedRpc(error)) throw error;
-
-  return fetchLatestTablePage(options.table, options.cursor, options.normalizePost);
+  if (error) throw error;
+  return parseRows((data ?? []) as unknown[]);
 }

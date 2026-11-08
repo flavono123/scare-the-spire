@@ -653,6 +653,9 @@ function checkStaticMetadataAssets(): number {
 
 function checkCloudflareAssetLimits(): { count: number; largestBytes: number; largestPath: string } {
   const files = walkFiles(assetsRoot);
+  // The same-origin API owns /api (docs/supabase-exit/STEP1_DESIGN.md 4.1).
+  const apiAsset = files.find((file) => path.relative(assetsRoot, file).split(path.sep)[0] === "api");
+  assert(!apiAsset, `Static asset ${apiAsset} is under /api, which belongs to the Worker API router.`);
   assert(
     files.length <= maxAssetFiles,
     `Cloudflare static asset count ${files.length} exceeds the Free plan limit ${maxAssetFiles}.`,

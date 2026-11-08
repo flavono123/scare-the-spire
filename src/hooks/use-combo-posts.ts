@@ -9,8 +9,17 @@ import {
 } from "@/lib/combo-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
+import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import { isCheckViolation, supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import {
+  apiCreateToyboxPost,
+  apiDeleteToyboxPost,
+  apiToyboxPost,
+  apiUpdateToyboxPost,
+  toyboxViaApi,
+  toyboxWriteError,
+} from "@/lib/toybox-api";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 import { currentAuthorProfileToken } from "@/lib/user-profile";
 
@@ -30,11 +39,6 @@ interface UseComboPostsReturn {
   unavailable: boolean;
   loadMore: () => Promise<void>;
   add: (input: SaveComboPostInput) => Promise<ComboPost | null>;
-  update: (
-    postId: string,
-    input: SaveComboPostInput,
-  ) => Promise<ComboPost | null>;
-  remove: (postId: string) => Promise<void>;
 }
 
 interface UseComboPostReturn {
@@ -75,24 +79,33 @@ export async function insertComboPost(
   if (!normalized || !input.activeUserId) return null;
 
   const token = currentAuthorProfileToken();
+  const row = {
+    user_id: input.activeUserId,
+    nickname: normalized.nickname,
+    content: input.blocks,
+    content_text: normalized.contentText,
+    resources: normalized.resources,
+    env: supabaseEnv,
+    ...(token ? {
+      avatar_id: token.avatar_id,
+      avatar_kind: token.avatar_kind,
+      palette_id: token.palette_id,
+      palette_swapped: token.palette_swapped,
+    } : {}),
+  };
+  if (toyboxViaApi()) {
+    try {
+      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, sent through the Worker.
+      return normalizePost(await apiCreateToyboxPost("combo", row));
+    } catch (error) {
+      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
+    }
+  }
   const { data, error } = await withSupabaseTimeout(
     "combo_posts.insert",
     supabase
       .from("combo_posts")
-      .insert({
-        user_id: input.activeUserId,
-        nickname: normalized.nickname,
-        content: input.blocks,
-        content_text: normalized.contentText,
-        resources: normalized.resources,
-        env: supabaseEnv,
-        ...(token ? {
-          avatar_id: token.avatar_id,
-          avatar_kind: token.avatar_kind,
-          palette_id: token.palette_id,
-          palette_swapped: token.palette_swapped,
-        } : {}),
-      })
+      .insert(row)
       .select()
       .single(),
   );
@@ -101,9 +114,11 @@ export async function insertComboPost(
   return normalizePost(data);
 }
 
+/** `viaApi`: only the detail page edits; the list update is unreachable (SURFACE_MAP 13). */
 async function persistComboPostUpdate(
   postId: string,
   input: SaveComboPostInput,
+  viaApi = false,
 ) {
   const normalized = validateSaveInput(input);
   if (!normalized || !input.activeUserId) {
@@ -111,22 +126,32 @@ async function persistComboPostUpdate(
   }
 
   const token = currentAuthorProfileToken();
+  const patch = {
+    nickname: normalized.nickname,
+    content: input.blocks,
+    content_text: normalized.contentText,
+    resources: normalized.resources,
+    ...(token ? {
+      avatar_id: token.avatar_id,
+      avatar_kind: token.avatar_kind,
+      palette_id: token.palette_id,
+      palette_swapped: token.palette_swapped,
+    } : {}),
+  };
+  if (viaApi && toyboxViaApi()) {
+    try {
+      const data = await apiUpdateToyboxPost("combo", postId, patch);
+      // Legacy .single() reports no matched row as an error (PGRST116).
+      return data ? { data, error: null } : { data: null, error: { code: "PGRST116", message: "no row" } };
+    } catch (error) {
+      if (!writeMayGoLegacy(error)) return { data: null, error: toyboxWriteError(error) };
+    }
+  }
   return withSupabaseTimeout(
     "combo_posts.update",
     supabase
       .from("combo_posts")
-      .update({
-        nickname: normalized.nickname,
-        content: input.blocks,
-        content_text: normalized.contentText,
-        resources: normalized.resources,
-        ...(token ? {
-          avatar_id: token.avatar_id,
-          avatar_kind: token.avatar_kind,
-          palette_id: token.palette_id,
-          palette_swapped: token.palette_swapped,
-        } : {}),
-      })
+      .update(patch)
       .eq("id", postId)
       .eq("user_id", input.activeUserId)
       .eq("env", supabaseEnv)
@@ -149,8 +174,6 @@ export function useComboPosts(
     unavailable,
     loadMore,
     prependPost,
-    replacePost,
-    removePost,
     setUnavailable,
   } = useToyboxFeed({
     service: "combo",
@@ -178,41 +201,6 @@ export function useComboPosts(
     [prependPost, setUnavailable, userId],
   );
 
-  const update = useCallback(
-    async (postId: string, input: SaveComboPostInput) => {
-      const { data, error } = await persistComboPostUpdate(postId, {
-        ...input,
-        activeUserId: input.activeUserId ?? userId ?? undefined,
-      });
-      if (error) {
-        if (!isCheckViolation(error)) setUnavailable(true);
-        throw new Error(error.message);
-      }
-      if (!data) return null;
-
-      const post = normalizePost(data);
-      replacePost(post, data);
-      return post;
-    },
-    [replacePost, setUnavailable, userId],
-  );
-
-  const remove = useCallback(
-    async (postId: string) => {
-      if (!userId || !supabaseEnabled) return;
-      const { error } = await withSupabaseTimeout(
-        "combo_posts.delete",
-        supabase.from("combo_posts").delete().eq("id", postId),
-      ).catch(() => ({ error: new Error("timeout") }));
-      if (error) {
-        setUnavailable(true);
-        return;
-      }
-      removePost(postId);
-    },
-    [removePost, setUnavailable, userId],
-  );
-
   return {
     posts,
     likeCounts,
@@ -223,8 +211,6 @@ export function useComboPosts(
     unavailable,
     loadMore,
     add,
-    update,
-    remove,
   };
 }
 
@@ -240,15 +226,26 @@ export function useComboPost(
     if (!supabaseEnabled) return;
     let cancelled = false;
 
-    withSupabaseTimeout(
-      "combo_posts.detail",
-      supabase
-        .from("combo_posts")
-        .select("*")
-        .eq("id", postId)
-        .eq("env", supabaseEnv)
-        .maybeSingle(),
-    )
+    const load = async () => {
+      if (toyboxViaApi()) {
+        try {
+          return { data: await apiToyboxPost("combo", postId), error: null };
+        } catch (error) {
+          if (!shouldUseLegacy(error)) throw error;
+        }
+      }
+      return withSupabaseTimeout(
+        "combo_posts.detail",
+        supabase
+          .from("combo_posts")
+          .select("*")
+          .eq("id", postId)
+          .eq("env", supabaseEnv)
+          .maybeSingle(),
+      );
+    };
+
+    load()
       .then(({ data, error }) => {
         if (error) throw error;
         if (cancelled) return;
@@ -272,7 +269,7 @@ export function useComboPost(
       const { data, error } = await persistComboPostUpdate(postId, {
         ...input,
         activeUserId: input.activeUserId ?? userId ?? undefined,
-      });
+      }, true);
       if (error) {
         if (!isCheckViolation(error)) setUnavailable(true);
         throw new Error(error.message);
@@ -288,6 +285,19 @@ export function useComboPost(
 
   const remove = useCallback(async () => {
     if (!userId || !supabaseEnabled) return false;
+    if (toyboxViaApi()) {
+      try {
+        // Not ours or already gone still clears the post, as the legacy delete does.
+        await apiDeleteToyboxPost("combo", postId);
+        setPost(null);
+        return true;
+      } catch (error) {
+        if (!writeMayGoLegacy(error)) {
+          setUnavailable(true);
+          return false;
+        }
+      }
+    }
     const { error } = await withSupabaseTimeout(
       "combo_posts.detail.delete",
       supabase

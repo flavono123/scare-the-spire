@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import {
   DEFAULT_PROFILE_NICKNAMES,
-  isMissingProfileCharacterNicknamePoolsTable,
   isValidNicknameList,
   nicknamePoolFieldName,
   nicknamePoolRowsFromPools,
@@ -156,11 +155,5 @@ assert.equal(
   }),
   false,
 );
-
-assert.equal(
-  isMissingProfileCharacterNicknamePoolsTable({ code: "PGRST205", message: "table missing" }),
-  true,
-);
-assert.equal(isMissingProfileCharacterNicknamePoolsTable({ message: "ok" }), false);
 
 console.log("profile-character-nicknames.spec.ts ok");

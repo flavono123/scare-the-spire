@@ -124,8 +124,7 @@ export function CommentSection({
 
   const [submitting, setSubmitting] = useState(false);
 
-  const commentIds = useMemo(() => comments.map((c) => c.id), [comments]);
-  const { counts: likeCounts, liked: likedSet, toggle: toggleLike } = useCommentLikes(commentIds, userId);
+  const { counts: likeCounts, liked: likedSet, toggle: toggleLike } = useCommentLikes(threadKey, comments, userId);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const richContentIndexes = useMemo(() => buildRichContentIndexes(entities), [entities]);
   const nicknameInputRef = useRef<HTMLInputElement>(null);
