@@ -243,6 +243,15 @@ async function runShadow(run: ShadowRun, recheck: boolean): Promise<void> {
 }
 
 /**
+ * The caller's uid for the D1 side of an /api/me read (null for public reads). The one place the
+ * shadow reads the verified user; the identity work (resolveRequestIdentity) points this at its field.
+ */
+export function shadowUserId(context: RouteResponseEvent["context"]): string | null {
+  const user = "user" in context ? (context.user as { userId?: unknown } | undefined) : undefined;
+  return typeof user?.userId === "string" ? user.userId : null;
+}
+
+/**
  * The api router's response hook: on a sampled 200 GET of a route with shadow rules, answer as
  * before and compare in ctx.waitUntil. The client's response is the original; a copy (tee) of its
  * body is read here up to SHADOW_MAX_BYTES, unless the spec reads Supabase itself.
@@ -258,13 +267,12 @@ export function shadowOnResponse(event: RouteResponseEvent): Response {
   const rate = event.shadow?.get(route.group) ?? 0;
   if (!(rate > 0) || random() >= rate) return response;
 
-  const user = "user" in context ? (context.user as { userId?: string } | undefined) : undefined;
   const shadowContext: ShadowContext = {
     routeId: route.id,
     url: context.url,
     config: context.config,
     db,
-    userId: user?.userId ?? null,
+    userId: shadowUserId(context),
     now: context.now,
   };
   const own = spec.supabase?.(shadowContext) ?? null;
