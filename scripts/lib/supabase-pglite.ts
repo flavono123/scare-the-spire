@@ -2,7 +2,8 @@
  * Supabase on PGlite for specs: the public schema rebuilt from the repo's own supabase/*.sql and
  * supabase/migrations/*.sql (never from backup data), stand-ins for the auth schema and API roles,
  * and a small PostgREST that runs each request in one transaction as the role its keys name, so RLS,
- * grants and triggers decide exactly as they do on Supabase. Only the PostgREST features the /api
+ * grants and triggers decide exactly as they do on Supabase (auth.uid() is Supabase's definition and
+ * the request sets only request.jwt.claims, as PostgREST 12 does). Only the PostgREST features the /api
  * write routes use are here: eq/neq/gt/lt/is/in filters, select lists, on_conflict with both
  * resolutions, return=minimal|representation, HEAD with count=exact, and RPCs with named arguments.
  */
@@ -20,8 +21,12 @@ create role service_role nologin noinherit bypassrls;
 create role supabase_admin nologin;
 create schema auth;
 create table auth.users (id uuid primary key, created_at timestamptz default now(), last_sign_in_at timestamptz);
+-- Supabase's own auth.uid(): the legacy claim.sub setting first, then the claims PostgREST 12 sets.
 create function auth.uid() returns uuid language sql stable
-  as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
+  as $$ select coalesce(
+    nullif(current_setting('request.jwt.claim.sub', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
+  )::uuid $$;
 grant usage on schema auth to anon, authenticated, service_role;
 grant usage on schema public to anon, authenticated, service_role;
 create publication supabase_realtime;
@@ -341,7 +346,8 @@ export class PgRest {
       const built = await this.build(method, path, url.searchParams, prefer, body);
       const result = await this.db.transaction(async (tx) => {
         await tx.exec(`set local role ${role}`);
-        await tx.query("select set_config('request.jwt.claim.sub', $1, true)", [sub ?? ""]);
+        // Like PostgREST 12: only request.jwt.claims (the token's payload; the role alone for the keys).
+        await tx.query("select set_config('request.jwt.claims', $1, true)", [JSON.stringify(sub ? { sub, role } : { role })]);
         return tx.query<Record<string, unknown>>(built.sql, built.params);
       });
       if (built.kind === "count") {
