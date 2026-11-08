@@ -249,6 +249,25 @@ async function runs() {
     assert.equal((await h.call("/api/write/history-runs", { method: "POST", body: RUN_ROW("r0000000000000d4") })).json.error, "single_run_required");
   });
 
+  await check("run share: a batch sent one run at a time is not held to the 30/min write budget (design 4.4)", async () => {
+    const env = h.env as Record<string, unknown>;
+    const deny = { limit: async () => ({ success: false }) };
+    env.API_WRITE_LIMITER = deny;
+    try {
+      const body = shareBody(RUN_ROW("r0000000000000a9"), "{}");
+      const headers = { ...body.headers, "cf-connecting-ip": "203.0.113.9" };
+      const res = await h.call("/api/write/history-runs/share", { method: "POST", raw: body.raw, headers });
+      assert.deepEqual([res.status, res.json.inserted], [201, ["r0000000000000a9"]], "the write budget is spent, the share still goes");
+      assert.equal((await h.call("/api/write/likes?key=sts2-codex:card:bash", { method: "PUT" })).status, 429, "other writes keep the write budget");
+      env.API_READ_LIMITER = deny;
+      const again = shareBody(RUN_ROW("r0000000000000b9"), "{}");
+      assert.equal((await h.call("/api/write/history-runs/share", { method: "POST", raw: again.raw, headers: { ...again.headers, "cf-connecting-ip": "203.0.113.9" } })).status, 429, "counted per IP");
+    } finally {
+      delete env.API_WRITE_LIMITER;
+      delete env.API_READ_LIMITER;
+    }
+  });
+
   await check("run cover, nicknames and delete: owner only, one outbox row per changed run", async () => {
     seedPost(h, "history_course", "r0000000000000e5", USER);
     seedPost(h, "history_course", "r0000000000000f6", OTHER);

@@ -79,6 +79,9 @@ export const D1_WRITE_ROUTES: readonly ApiRoute[] = [
     group: "history-runs",
     access: "write",
     query: {},
+    // Design 4.4 (4): the limit must not stop a batch shared one run at a time (42 runs is more than
+    // the 30/min write budget), so a share counts on the per-IP budget; re-sharing a run is a no-op.
+    rateLimit: "ip",
     rawBody: { maxBytes: 2 * 1024 * 1024 },
     handle: async (context) => {
       void context.bodyStream?.cancel().catch(() => undefined);
