@@ -455,6 +455,13 @@ async function main() {
     assert.deepEqual(big, { ok: false, reason: "too_large" });
     const failed = await readCappedJson(new Response("{}", { status: 503 }));
     assert.deepEqual(failed, { ok: false, reason: "supabase_unavailable" });
+    // The engagement map is an RPC set (one row per key in either map): 1000 keys may be a cut answer.
+    const keyed = (count: number, offset = 0) => Object.fromEntries(Array.from({ length: count }, (_, i) => [`community:k${i + offset}`, 1]));
+    const countsShadow = { ...shadow, routeId: "read.engagement-counts", url: new URL("https://x/api/read/engagement-counts") };
+    const countsAtCap = await compareShadow(SHADOW_SPECS["read.engagement-counts"], countsShadow, { ok: true, answer: { v: 1, env: DEV, likes: keyed(600), comments: keyed(600, 400) } });
+    assert.deepEqual(countsAtCap, { kind: "skipped", reason: "row_cap" });
+    const countsBelow = await compareShadow(SHADOW_SPECS["read.engagement-counts"], countsShadow, { ok: true, answer: { v: 1, env: DEV, likes: keyed(600), comments: keyed(600, 399) } });
+    assert.notEqual(countsBelow.kind, "skipped", "999 keys: compared");
     const unavailable = await compareShadow(SHADOW_SPECS["read.engagement"], { ...shadow, routeId: "read.engagement", url: new URL("https://x/?threads=a") }, { ok: true, answer: { v: 1, env: DEV, unavailable: ["threads"] } });
     assert.deepEqual(unavailable, { kind: "skipped", reason: "unavailable" });
   });

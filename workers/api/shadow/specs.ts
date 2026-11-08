@@ -149,7 +149,13 @@ export const SHADOW_SPECS: Readonly<Record<string, ShadowSpec>> = {
     },
     rules: rules([{ path: "threads.*", keys: ["created_at"] }, { path: "philosophers.*", keys: ["week_start"], limit: 20 }]),
   },
-  "read.engagement-counts": {},
+  // get_engagement_counts has one row per key in either map; PostgREST cuts it at the row cap (rule 6).
+  "read.engagement-counts": {
+    skip: (supabase) => {
+      const keys = new Set([...Object.keys(record(record(supabase).likes)), ...Object.keys(record(record(supabase).comments))]);
+      return keys.size >= POSTGREST_ROW_CAP ? "row_cap" : null;
+    },
+  },
   "me.engagement": { skip: unavailableSkip, rules: rules([set("commentLikes.*")]) },
   "read.colorful-philosophers.week": {
     skip: (supabase) => {
