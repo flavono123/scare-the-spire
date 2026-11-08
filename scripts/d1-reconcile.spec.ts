@@ -248,18 +248,19 @@ function bareDb(): SqliteDb {
   return db;
 }
 
-function scenario(opts: { schema?: "full" | "none"; copy?: boolean; watermark?: boolean; fill?: boolean } = {}) {
+function scenario(opts: { schema?: "full" | "none"; copy?: boolean; watermark?: boolean; fill?: boolean; serviceKey?: string } = {}) {
   const data = supabaseData();
   const db = opts.schema === "none" ? bareDb() : openD1TestDb();
   if (opts.copy ?? true) firstCopy(db, data, ENV, { fill: opts.fill, nowMs: NOW });
   if (opts.watermark ?? true) db.exec("INSERT INTO sync_state (name, low_watermark, high_seen) VALUES ('supabase_in', 7, 7)");
   const d1 = new FakeD1(db, ACCOUNT, PROD_DB, D1_TOKEN);
-  const supabase = new FakeSupabase(data, SUPABASE_URL, SERVICE_KEY);
+  const serviceKey = opts.serviceKey ?? SERVICE_KEY;
+  const supabase = new FakeSupabase(data, SUPABASE_URL, serviceKey);
   const run = (fillOnly = false) =>
     runReconcile({
       target: "production",
       d1: d1HttpClient({ accountId: ACCOUNT, databaseId: PROD_DB, token: D1_TOKEN, fetch: d1.fetch }),
-      supabase: postgrestReader({ url: SUPABASE_URL, serviceKey: SERVICE_KEY, fetch: supabase.fetch }),
+      supabase: postgrestReader({ url: SUPABASE_URL, serviceKey, fetch: supabase.fetch }),
       fillOnly,
       now: () => NOW,
     });
@@ -426,6 +427,19 @@ async function main() {
     assert.equal(rows(s.db, "SELECT count(*) AS n FROM sync_checks")[0].n, report.checks.length);
     // Hand-picked report lines carry no keys or values.
     assert.ok(!report.lines.join("\n").includes(U(101)));
+  });
+
+  await check("a new-format secret key goes in apikey only, never as a bearer", async () => {
+    const s = scenario({ serviceKey: "sb_secret_test" });
+    const seen: Array<Record<string, string>> = [];
+    const fetchOnce = s.supabase.fetch;
+    s.supabase.fetch = async (url, init) => {
+      seen.push(init.headers);
+      return fetchOnce(url, init);
+    };
+    const report = await s.run();
+    assert.equal(report.status, "ok", report.lines.join("\n"));
+    assert.ok(seen.length > 0 && seen.every((headers) => headers.apikey === "sb_secret_test" && !("authorization" in headers)));
   });
 
   await check("a server row cap below the page size still reads every row", async () => {

@@ -37,12 +37,18 @@ function filterParam(filter: PostgrestFilter): string {
   return `${encodeURIComponent(filter.column)}=${filter.op}.${encodeURIComponent(filter.value)}`;
 }
 
+/** New-format keys (sb_secret_, sb_publishable_) are not JWTs: they go in apikey only (STEP1_DESIGN 5). */
+export function isNewFormatKey(key: string): boolean {
+  return key.startsWith("sb_secret_") || key.startsWith("sb_publishable_");
+}
+
 export function postgrestReader(opts: { url: string; serviceKey: string; fetch: FetchLike }): PostgrestReader {
   const base = `${opts.url.replace(/\/+$/, "")}/rest/v1`;
   const usage: PostgrestUsage = { requests: 0, bytes: 0 };
   const headers = (json: boolean): Record<string, string> => ({
     apikey: opts.serviceKey,
-    authorization: `Bearer ${opts.serviceKey}`,
+    // A legacy service_role key is a JWT and also goes as the bearer, as it did before the new keys.
+    ...(isNewFormatKey(opts.serviceKey) ? {} : { authorization: `Bearer ${opts.serviceKey}` }),
     accept: "application/json",
     ...(json ? { "content-type": "application/json" } : {}),
   });

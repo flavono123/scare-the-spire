@@ -17,6 +17,7 @@ import {
 import type { D1Statement, D1Value } from "../../src/lib/d1-sync/statements";
 import { extractRunListSummary } from "../../src/lib/run-list-summary";
 import type { FetchLike, FetchResponseLike } from "./d1-http-client";
+import { isNewFormatKey } from "./postgrest-reader";
 import { applyBatch, type SqliteDb } from "./test-db";
 
 export function response(status: number, body: unknown): FetchResponseLike {
@@ -79,7 +80,10 @@ export class FakeSupabase {
     const parsed = new URL(url);
     this.requests.push({ method: init.method, path: parsed.pathname });
     if (!url.startsWith(`${this.url}/rest/v1/`)) return response(404, { message: "wrong host" });
-    if (init.headers.apikey !== this.serviceKey || init.headers.authorization !== `Bearer ${this.serviceKey}`) {
+    // A new-format key is not a JWT: Supabase rejects it as a bearer; a legacy JWT key goes in both headers.
+    const bearer = init.headers.authorization;
+    const bearerOk = isNewFormatKey(this.serviceKey) ? bearer === undefined : bearer === `Bearer ${this.serviceKey}`;
+    if (init.headers.apikey !== this.serviceKey || !bearerOk) {
       return response(401, { message: "Invalid API key" });
     }
     const match = /^\/rest\/v1\/(rpc\/)?(\w+)$/.exec(parsed.pathname);
