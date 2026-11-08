@@ -377,7 +377,7 @@ async function main() {
   }
 
   // --- 5. Request identity resolution (router) --------------------------------------
-  const echo = (context: UserRouteContext) => jsonResponse({ uid: context.user.userId, token: context.token, source: context.identitySource });
+  const echo = async (context: UserRouteContext) => jsonResponse({ uid: context.user.userId, token: context.token, source: context.identitySource });
   const routes: ApiRoute[] = [
     { id: "spec.write", path: "/api/write/spec-echo", group: "comments", method: "POST", access: "write", handle: echo },
     { id: "spec.me", path: "/api/me/spec-echo", group: "comments", method: "GET", access: "me", rateLimit: "none", handle: echo },
