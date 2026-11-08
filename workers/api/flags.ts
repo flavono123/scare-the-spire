@@ -3,10 +3,10 @@ import {
   pathFlagKey,
   shadowFlagKey,
   type ApiSurfaceGroup,
-  type SurfacePath,
 } from "../../src/lib/api-surfaces";
 import { withTimeout, type D1Database, type D1PreparedStatement } from "./d1";
 import { supabaseApiConfig, type SupabaseApiEnv } from "./supabase-rest";
+import { defaultSurfacePath, type SurfacePath } from "./path-default";
 
 /**
  * Runtime path flags (docs/supabase-exit/STEP1_DESIGN.md 3.2). The isolate keeps
@@ -18,11 +18,7 @@ export type FlagsEnv = SupabaseApiEnv & {
   DB?: D1Database;
   /** "d1" turns the flags on; anything else keeps every group legacy without reading D1. */
   API_RUNTIME_FLAGS?: string;
-  /**
-   * Path of a routed group whose `path.<group>` row is missing or unknown, or whose flags this
-   * isolate cannot read (plan 7.2: the Worker env default is the step's safe side). "api" once the
-   * browser's direct writes are closed (STEP4_WRITE_GATE 7); anything else means legacy (today).
-   */
+  /** legacy|api for a group with no usable path flag (path-default.ts); unset is legacy. */
   API_PATH_DEFAULT?: string;
 };
 
@@ -150,27 +146,6 @@ export function flagsDisabledReason(env: FlagsEnv): "off" | "not_configured" | n
   if (env.API_RUNTIME_FLAGS !== "d1" || !env.DB) return "off";
   if (!supabaseApiConfig(env)) return "not_configured";
   return null;
-}
-
-/** API_PATH_DEFAULT: "api" only when set to exactly that; unset (today) is legacy. */
-export function defaultSurfacePath(env: FlagsEnv): SurfacePath {
-  return env.API_PATH_DEFAULT === "api" ? "api" : "legacy";
-}
-
-/**
- * An /api flags decision with the env default in place of a failed or timed-out read (plan 7.2):
- * with API_PATH_DEFAULT=api every routed group is api, so a D1 outage does not send the browser
- * to the closed direct writes. The kill switch (off, not_configured) is never overridden.
- */
-export function withPathDefault(
-  env: FlagsEnv,
-  routedGroups: ReadonlySet<ApiSurfaceGroup>,
-  decision: ApiFlagDecision,
-): ApiFlagDecision {
-  if (decision.ok || decision.reason !== "unknown" || defaultSurfacePath(env) !== "api") return decision;
-  // Shaped like a read that found no rows (empty `values`): every other flag keeps its own default.
-  const fallback = { ok: true as const, groups: routedGroups, prefetched: [], shadow: NO_SHADOW, values: new Map<string, string>() };
-  return fallback;
 }
 
 async function readFlags(

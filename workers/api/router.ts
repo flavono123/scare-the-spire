@@ -3,7 +3,7 @@ import { redactPathname } from "../path-redaction";
 import type { D1Database, D1PreparedStatement } from "./d1";
 import { d1WriteHook } from "./d1-write";
 import { qaOverride } from "./flag-cookie";
-import { apiFlags, flagsDisabledReason, withPathDefault, type ExecutionContextLike, type FlagsEnv, type ShadowRates } from "./flags";
+import { apiFlags, flagsDisabledReason, type ExecutionContextLike, type FlagsEnv, type ShadowRates } from "./flags";
 import {
   API_MARKER_HEADER,
   apiError,
@@ -20,6 +20,7 @@ import type { VerifiedSupabaseUser } from "./jwt";
 import { clientIp, withinRateLimit, type RateLimitEnv, type RateLimitKind } from "./rate-limit";
 import { supabaseApiConfig, type SupabaseApiConfig } from "./supabase-rest";
 import { workerWriteContext, writeActor, type WriteGateEnv } from "./write-gate/gate";
+import { withPathDefault } from "./path-default";
 
 /**
  * The same-origin API router (docs/supabase-exit/STEP1_DESIGN.md 4). It owns
