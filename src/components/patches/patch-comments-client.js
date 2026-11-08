@@ -1485,16 +1485,26 @@
   }
 
   /**
+   * A refused claim (token_invalid: the stored token is past the claim deadline,
+   * or HS256 without the legacy secret) also takes the token path, which
+   * refreshes the session as today; the Worker accepts the bearer while there is
+   * no cookie, and the next write claims the fresh token.
+   */
+  function tokenPathAfterClaim(error) {
+    return Boolean(error.identityLegacy) || error.code === "token_invalid";
+  }
+
+  /**
    * A cookie-mode api write, or null to use the token path: identity.mode is
-   * token again, or the route still needs the token. `identity_required` claims
-   * again and sends once more; none of these ran the handler.
+   * token again, the claim was refused, or the route still needs the token.
+   * `identity_required` claims again and sends once more; none of these ran the handler.
    */
   async function apiWriteWithCookie(config, path, init) {
     let uid;
     try {
       uid = await ensureClaimed(config);
     } catch (error) {
-      if (error.identityLegacy) return null;
+      if (tokenPathAfterClaim(error)) return null;
       throw error;
     }
     try {
@@ -1504,7 +1514,7 @@
         try {
           uid = await ensureClaimed(config, { force: true });
         } catch (claimError) {
-          if (claimError.identityLegacy) return null;
+          if (tokenPathAfterClaim(claimError)) return null;
           throw claimError;
         }
         return { result: await apiRequest(path, init), session: cookieSession(config, uid) };

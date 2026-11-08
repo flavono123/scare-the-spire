@@ -32,6 +32,10 @@ const storage = new FakeStorage();
 const fakeDocument = { cookie: "" };
 const fakeWindow: Record<string, unknown> = { localStorage: storage };
 Object.assign(globalThis, { window: fakeWindow, document: fakeDocument });
+// A real supabase-js on the same storage, so the token path (getSession) is observable.
+Object.defineProperty(globalThis, "localStorage", { value: storage, configurable: true, writable: true });
+process.env.NEXT_PUBLIC_SUPABASE_URL = "https://abcdefghijklmnopqrst.supabase.co";
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_spec";
 
 const USER = "4f1c2a7e-9b3d-4c5e-8f60-1a2b3c4d5e6f";
 const NEW_USER = "9d8c7b6a-5f4e-4d3c-8b2a-112233445566";
@@ -68,7 +72,9 @@ async function main() {
     delete fakeWindow.__slseounRuntime;
   };
   const storeSession = (uid = USER, accessToken = "stored.access.token") => {
-    storage.setItem(AUTH_KEY, JSON.stringify({ access_token: accessToken, refresh_token: "r", expires_at: 1, user: { id: uid } }));
+    // Live, so supabase-js returns it without a refresh call.
+    const expiresAt = Math.floor(Date.now() / 1000) + 3600;
+    storage.setItem(AUTH_KEY, JSON.stringify({ access_token: accessToken, refresh_token: "r", token_type: "bearer", expires_in: 3600, expires_at: expiresAt, user: { id: uid } }));
   };
 
   // --- Signal off: today's path, no claim -------------------------------------------
@@ -76,9 +82,9 @@ async function main() {
   storeSession();
   assert.equal(identity.identityCookieMode(), false);
   assert.equal(identity.cookieModeFallbackUid(), null, "no fallback uid without the signal");
-  // No supabase-js session in this spec, so the step 1 path refuses before any request, as today.
-  await assert.rejects(() => apiFetchAsUser("comments", "/api/me/engagement"), (error) => error instanceof ApiError && error.code === "token_invalid");
-  assert.equal(sent.length, 0, "signal off: no claim, no request");
+  respond = () => marked({ ok: "today" });
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/me/engagement"), { ok: "today" });
+  assert.deepEqual(sent.map((request) => [request.url, request.headers.Authorization]), [["/api/me/engagement", "Bearer stored.access.token"]], "signal off: no claim, the bearer token as today");
   reset("slseoun_idm=token");
   assert.equal(identity.identityCookieMode(), false, "only the value cookie turns it on");
 
@@ -149,18 +155,48 @@ async function main() {
   assert.equal(sent.length, 1, "a write is never resent without an identity");
 
   // --- Rollback: the Worker is on tokens again --------------------------------------------
+  const sentWith = () => sent.map((request) => [request.url, request.headers.Authorization ?? null]);
   reset("slseoun_idm=cookie");
   storeSession();
-  respond = () => marked({ error: "surface_legacy", reason: "flag" }, 409);
-  await assert.rejects(() => apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), (error) => error instanceof ApiError && error.code === "token_invalid");
-  assert.deepEqual(sent.map((request) => request.url), ["/api/auth/claim"], "a legacy claim answer goes to the token path (no supabase-js session here)");
+  respond = (request) => request.url === "/api/auth/claim"
+    ? marked({ error: "surface_legacy", reason: "flag" }, 409)
+    : marked({ ok: "token" });
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), { ok: "token" });
+  assert.deepEqual(sentWith(), [["/api/auth/claim", null], ["/api/write/comments", "Bearer stored.access.token"]], "a legacy claim answer goes to the token path");
 
   reset("slseoun_idm=cookie");
   storeSession();
   storage.setItem("slseoun-identity", JSON.stringify({ uid: USER }));
-  respond = () => marked({ error: "token_invalid" }, 401);
-  await assert.rejects(() => apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), (error) => error instanceof ApiError && error.code === "token_invalid");
-  assert.deepEqual(sent.map((request) => request.url), ["/api/write/comments"], "token_invalid in cookie mode falls back to the token path");
+  respond = (request) => request.headers.Authorization ? marked({ ok: "token" }) : marked({ error: "token_invalid" }, 401);
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), { ok: "token" });
+  assert.deepEqual(sentWith(), [["/api/write/comments", null], ["/api/write/comments", "Bearer stored.access.token"]], "token_invalid in cookie mode is redone on the token path");
+
+  // A refused claim (stored token past the deadline, or HS256 without the secret) takes the
+  // token path too, where supabase-js refreshes as today; the next call claims again.
+  reset("slseoun_idm=cookie");
+  storeSession();
+  respond = (request) => request.url === "/api/auth/claim"
+    ? marked({ error: "token_invalid" }, 401)
+    : request.headers.Authorization ? marked({ ok: "token" }) : marked({ error: "identity_required" }, 401);
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), { ok: "token" });
+  assert.deepEqual(sentWith(), [["/api/auth/claim", null], ["/api/write/comments", "Bearer stored.access.token"]], "refused claim: one write, with the bearer");
+  assert.equal(identity.claimedUid(), null);
+
+  reset("slseoun_idm=cookie");
+  storeSession();
+  storage.setItem("slseoun-identity", JSON.stringify({ uid: USER }));
+  respond = (request) => request.url === "/api/auth/claim"
+    ? marked({ error: "token_invalid" }, 401)
+    : request.headers.Authorization ? marked({ ok: "token" }) : marked({ error: "identity_required" }, 401);
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), { ok: "token" });
+  assert.deepEqual(sentWith(), [["/api/write/comments", null], ["/api/auth/claim", null], ["/api/write/comments", "Bearer stored.access.token"]], "cookie gone and the re-claim refused: the token path");
+
+  // Other claim refusals still surface.
+  reset("slseoun_idm=cookie");
+  storeSession();
+  respond = (request) => request.url === "/api/auth/claim" ? marked({ error: "rate_limited" }, 429) : marked({ ok: "never" });
+  await assert.rejects(() => apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), (error) => error instanceof ApiError && error.code === "rate_limited");
+  assert.deepEqual(sent.map((request) => request.url), ["/api/auth/claim"]);
 
   reset("slseoun_idm=cookie");
   respond = () => new Response("<html>old worker</html>", { status: 404 });
@@ -189,6 +225,8 @@ async function main() {
   assert.equal(identity.cookieModeFallbackUid(), null);
 
   console.log("api-identity-client spec passed");
+  // supabase-js keeps timers alive.
+  process.exit(0);
 }
 
 main().catch((error) => {

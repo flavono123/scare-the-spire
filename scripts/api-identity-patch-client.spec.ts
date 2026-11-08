@@ -133,6 +133,23 @@ async function main() {
     const tokenRoute = await client.apiWriteAsUser(CONFIG, "/api/write/comments", { method: "POST", body: {} });
     assert.deepEqual(tokenRoute.result, { ok: 4 }, "token_invalid in cookie mode is redone with the token");
     assert.equal(sent.length, 2);
+
+    // A refused claim (stored token past the deadline, HS256 without the secret) writes on the token path.
+    store.delete("slseoun-identity");
+    sent.length = 0;
+    state.respond = (request) => {
+      if (request.url === "/api/auth/claim") return marked({ error: "token_invalid" }, 401);
+      return request.authorization ? marked({ ok: 5 }) : marked({ error: "identity_required" }, 401);
+    };
+    const refused = await client.apiWriteAsUser(CONFIG, "/api/write/comments", { method: "POST", body: {} });
+    assert.deepEqual(refused.result, { ok: 5 });
+    assert.deepEqual(sent.map((request) => [request.url, request.authorization]), [["/api/auth/claim", null], ["/api/write/comments", `Bearer token-${USER}`]], "refused claim: one write, with the bearer");
+
+    store.set("slseoun-identity", JSON.stringify({ uid: USER }));
+    sent.length = 0;
+    const reclaimRefused = await client.apiWriteAsUser(CONFIG, "/api/write/comments", { method: "POST", body: {} });
+    assert.deepEqual(reclaimRefused.result, { ok: 5 });
+    assert.deepEqual(sent.map((request) => [request.url, request.authorization]), [["/api/write/comments", null], ["/api/auth/claim", null], ["/api/write/comments", `Bearer token-${USER}`]], "cookie gone and the re-claim refused");
   }
 
   // The personal overlay reads with the cookie in cookie mode, with the token otherwise.
