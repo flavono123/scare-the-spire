@@ -1426,3 +1426,34 @@ export function runSummaryFillStatement(runId: string, summary: RunSummaryColumn
     ],
   };
 }
+
+// ------------------------------------------------------------------------------------------- re-reads
+
+/** True when the Supabase table has an env column (the sync filters its re-reads by it). */
+export function tableHasEnv(table: string): boolean {
+  return specOf(table).drop.includes("env");
+}
+
+/**
+ * The Supabase columns a whole-row re-read selects (design 5.3 item 1): every mapped column, the
+ * child array, and env when the table has one. Never the heavy column (runs.raw): the sync queues it.
+ */
+export function supabaseRowColumns(table: string): string[] {
+  const spec = specOf(table);
+  const names = allCols(spec).map((c) => c.s);
+  if (spec.kind === "post" && spec.child) names.push(spec.child.s);
+  if (tableHasEnv(table)) names.push("env");
+  return [...new Set(names)];
+}
+
+/** The Supabase match (column -> value) of a D1 row key of this table, e.g. a sync_rejects.row_key. */
+export function supabaseKeyOf(table: string, rowKey: Record<string, D1Value>): Record<string, D1Value> {
+  const spec = specOf(table);
+  if (spec.kind === "post") return { id: rowKey.id ?? null };
+  const out: Record<string, D1Value> = {};
+  for (const part of spec.key as KeyPart[]) {
+    if (isConst(part)) continue;
+    out[part.s] = rowKey[part.d] ?? null;
+  }
+  return out;
+}

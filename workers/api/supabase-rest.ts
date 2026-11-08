@@ -78,7 +78,7 @@ export const MIN_CALL_MS = 150;
 export const DEFAULT_MAX_BYTES = 2 * 1024 * 1024;
 
 /** Reads a body counting bytes as they arrive; null when it passes `maxBytes`. */
-async function readCapped(response: Response, maxBytes: number): Promise<string | null> {
+export async function readCapped(response: Response, maxBytes: number): Promise<string | null> {
   const declared = Number(response.headers.get("content-length") ?? "");
   if (Number.isFinite(declared) && declared > maxBytes) {
     void response.body?.cancel().catch(() => undefined);
@@ -207,6 +207,8 @@ export function isUpstreamFailure(result: RestFailure): boolean {
 export type StreamRequest = Omit<RestRequest, "maxBytes"> & {
   /** A JSON body passed through without parsing (run uploads carry raw run files). */
   bodyStream?: ReadableStream<Uint8Array> | null;
+  /** Accept header; default application/json (the step-2 sync reads one run raw as text/plain). */
+  accept?: string;
 };
 
 export type StreamResult = { ok: true; status: number; response: Response } | RestFailure;
@@ -223,7 +225,7 @@ export async function postgrestStream(config: SupabaseApiConfig, request: Stream
   const method = request.method ?? "GET";
   const url = new URL(`${config.url}/rest/v1/${request.path}`);
   if (request.query) url.search = compactQuery(request.query);
-  const headers = new Headers({ apikey: config.key, Accept: "application/json" });
+  const headers = new Headers({ apikey: config.key, Accept: request.accept ?? "application/json" });
   if (request.token) headers.set("Authorization", `Bearer ${request.token}`);
   if (request.prefer?.length) headers.set("Prefer", request.prefer.join(","));
   const textBody = request.bodyStream ? undefined : request.body !== undefined ? JSON.stringify(request.body) : undefined;
