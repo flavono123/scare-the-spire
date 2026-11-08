@@ -44,10 +44,9 @@ function historicalFiles(): string[] {
   ];
 }
 
-export async function openSupabase(): Promise<{ db: PGlite; source: string }> {
+export async function openSupabase(dumpFile = process.env.SUPABASE_PUBLIC_SCHEMA): Promise<{ db: PGlite; source: string }> {
   const db = new PGlite();
   await db.exec(SUPABASE_BOOTSTRAP);
-  const dumpFile = process.env.SUPABASE_PUBLIC_SCHEMA;
   if (dumpFile) {
     const dump = readFileSync(dumpFile, "utf8")
       .split("\n")

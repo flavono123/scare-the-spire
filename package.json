@@ -56,7 +56,7 @@
     "test:entity-subset": "tsx scripts/entity-subset.spec.tsx",
     "test:security-headers": "tsx scripts/security-headers.spec.ts",
     "test:api": "tsx scripts/api-jwt.spec.ts && tsx scripts/api-supabase-rest.spec.ts && tsx scripts/api-worker.spec.ts && tsx scripts/api-comments.spec.ts && tsx scripts/api-client.spec.ts",
-    "test:d1-sync": "tsx scripts/d1-change-log.spec.ts && tsx scripts/d1-row-mapper.spec.ts && tsx scripts/d1-run-summary.spec.ts && tsx scripts/d1-run-summary-backup-check.ts && tsx scripts/d1-shadow-reads.spec.ts",
+    "test:d1-sync": "tsx scripts/d1-change-log.spec.ts && tsx scripts/d1-row-mapper.spec.ts && tsx scripts/d1-run-summary.spec.ts && tsx scripts/d1-run-summary-backup-check.ts && tsx scripts/d1-shadow-reads.spec.ts && tsx scripts/d1-shadow-backup-check.ts",
     "flags": "tsx scripts/runtime-flags.ts",
     "audit:version-api": "tsx scripts/audit-version-api-canonical.ts",
     "audit:version-locales": "tsx scripts/audit-version-locales.ts",
