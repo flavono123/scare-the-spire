@@ -1404,7 +1404,7 @@ export interface RunSummaryColumns {
   characters: string[];
   game_mode: string;
   game_elements: unknown[];
-  list_facts: Record<string, unknown>;
+  list_facts: object;
   badges: unknown[];
   summary_version: number;
 }

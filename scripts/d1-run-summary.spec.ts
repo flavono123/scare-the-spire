@@ -121,7 +121,7 @@ function supabaseRow(index: number): { image: RowImage; rawRow: RunRow } {
     ...columns, raw, created_at: CREATED[index], env: "production", badges: [], highlight_card: null, highlight_relic: null,
     note_blocks: null, like_count: index, comment_count: 0, donor_nickname: `기증자${index}`,
   };
-  const rawRow: RunRow = { ...columns, raw, created_at: postgrestTs(canonicalTs(CREATED[index]))! };
+  const rawRow: RunRow = { ...columns, cover_spec: columns.cover_spec as RunRow["cover_spec"], raw, created_at: postgrestTs(canonicalTs(CREATED[index]))! };
   return { image, rawRow };
 }
 

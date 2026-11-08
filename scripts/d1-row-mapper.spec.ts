@@ -4,7 +4,6 @@
  *   pnpm exec tsx scripts/d1-row-mapper.spec.ts
  */
 import assert from "node:assert/strict";
-import type { DatabaseSync } from "node:sqlite";
 import { canonicalTs, nowTs, postgrestTs } from "../src/lib/d1-time";
 import { parseCopyLine, parsePgArray } from "../src/lib/d1-sync/pg-text";
 import {
@@ -25,7 +24,7 @@ import {
   type RowImage,
 } from "../src/lib/d1-sync/row-mapper";
 import { toSqlText, type D1Statement } from "../src/lib/d1-sync/statements";
-import { applyBatch, count, openD1TestDb, rows } from "./d1-sync/test-db";
+import { applyBatch, count, openD1TestDb, rows, type SqliteDb } from "./d1-sync/test-db";
 
 let checks = 0;
 function check(name: string, fn: () => void) {
@@ -239,7 +238,7 @@ const IMAGES: Record<string, RowImage> = {
   },
 };
 
-function loadAll(db: DatabaseSync, withRaw = true): D1Statement[] {
+function loadAll(db: SqliteDb, withRaw = true): D1Statement[] {
   const statements: D1Statement[] = [];
   const touched = [];
   for (const table of SUPABASE_TABLES) {
@@ -407,7 +406,7 @@ function entry(table: string, op: ChangeEntry["op"], newRow: RowImage | null, ol
   return { id: nextId, table, op, newRow, oldRow, heavyChanged };
 }
 
-function applyEntries(target: DatabaseSync, entries: ChangeEntry[], mapCtx: MapContext = ctx) {
+function applyEntries(target: SqliteDb, entries: ChangeEntry[], mapCtx: MapContext = ctx) {
   const { changes, rejects } = mergeChanges(entries);
   assert.deepEqual(rejects, []);
   const statements: D1Statement[] = [];

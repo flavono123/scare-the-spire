@@ -4,7 +4,6 @@
  * by the synthetic spec and the backup-driven check.
  */
 import { isDeepStrictEqual } from "node:util";
-import type { DatabaseSync } from "node:sqlite";
 import { rankPopularComboResources } from "../../src/lib/combo-types";
 import { postgrestTs } from "../../src/lib/d1-time";
 import {
@@ -15,6 +14,7 @@ import {
   type RunSummaryListRow,
 } from "../../src/lib/run-list-summary";
 import type { RunRow } from "../../src/lib/run-summary-row";
+import type { SqliteDb } from "./test-db";
 
 /** What the list shows or searches for one donated run. */
 function comparable(inputs: HistoryRunListInputs) {
@@ -63,7 +63,7 @@ const LIST_COLUMNS =
   "p.user_id AS donor_user_id, p.created_at";
 
 /** R1's row shape for every run of the database (newest first), JSON text columns as stored. */
-export function d1ListRows(db: DatabaseSync, limit = -1): Array<Record<string, unknown>> {
+export function d1ListRows(db: SqliteDb, limit = -1): Array<Record<string, unknown>> {
   return (
     db
       .prepare(

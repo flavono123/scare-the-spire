@@ -15,7 +15,6 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { DatabaseSync } from "node:sqlite";
 import { canonicalTs, postgrestTs } from "../src/lib/d1-time";
 import { parseCopyLine } from "../src/lib/d1-sync/pg-text";
 import {
@@ -30,7 +29,7 @@ import type { D1Statement } from "../src/lib/d1-sync/statements";
 import { extractRunListSummary } from "../src/lib/run-list-summary";
 import type { RunRow } from "../src/lib/run-summary-row";
 import { RECENT_DONATED_RUNS_LIMIT } from "../src/lib/history-runs-api-rules";
-import { applyBatch, openD1TestDb } from "./d1-sync/test-db";
+import { applyBatch, openD1TestDb, type SqliteDb } from "./d1-sync/test-db";
 import {
   compareListInputs,
   d1ListRows,
@@ -125,7 +124,7 @@ function main(text: string) {
   let runCount = 0;
 
   for (const env of envs) {
-    const db: DatabaseSync = openD1TestDb();
+    const db: SqliteDb = openD1TestDb();
     // ---------------------------------------------------------------- every copied table
     const rejects = new Map<string, number>();
     const statements: D1Statement[] = [];
@@ -174,7 +173,8 @@ function main(text: string) {
       id: String(image.id), raw: String(image.raw), seed: image.seed as string, build: image.build as string,
       character: image.character as string, ascension: image.ascension as number, win: image.win as boolean,
       start_time: image.start_time as number | null, run_time: image.run_time as number | null,
-      acts_count: image.acts_count as number, total_floors: image.total_floors as number, cover_spec: image.cover_spec,
+      acts_count: image.acts_count as number, total_floors: image.total_floors as number,
+      cover_spec: image.cover_spec as RunRow["cover_spec"],
       donor_user_id: image.donor_user_id as string | null, created_at: postgrestTs(canonicalTs(image.created_at))!,
     }]));
     const fieldFailures = new Map<string, number>();
