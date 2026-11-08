@@ -44,15 +44,6 @@ import {
   CONTACT_INQUIRY_HISTORY_COLUMNS_LEGACY,
 } from "@/lib/profile-activity-rules";
 
-export function contactReplyIsUnseen(row: {
-  admin_response?: unknown;
-  reply_seen_at?: unknown;
-}): boolean {
-  return typeof row.admin_response === "string"
-    && row.admin_response.length > 0
-    && (row.reply_seen_at === null || row.reply_seen_at === undefined);
-}
-
 export function isMissingContactReplySeenColumn(
   error: { code?: string; message?: string } | null | undefined,
 ): boolean {
