@@ -109,7 +109,7 @@ export async function setupHarness(options: { dataEnv?: "production" | "developm
   };
   if (options.serviceKey) env.API_SUPABASE_SERVICE_KEY = "sb_secret_test";
   const ctx = new Ctx();
-  const tokens = { [USER]: await signer.token(USER), [OTHER]: await signer.token(OTHER) };
+  const tokens: Record<string, string> = { [USER]: await signer.token(USER), [OTHER]: await signer.token(OTHER) };
 
   async function call(path: string, init: { method?: string; body?: unknown; raw?: string; as?: string | null; headers?: Record<string, string> } = {}) {
     const headers: Record<string, string> = { ...(init.headers ?? {}) };
@@ -143,11 +143,14 @@ export async function setupHarness(options: { dataEnv?: "production" | "developm
     resetWriteGateForTest();
   }
 
-  function outbox() {
+  type OutboxView = { seq: number; table_name: string; op: string; match: Record<string, unknown>; payload: Record<string, unknown> | null };
+  function outbox(): OutboxView[] {
     return db.rows("SELECT seq, table_name, op, match_key, payload FROM outbox ORDER BY seq").map((row) => ({
-      ...row,
-      match: JSON.parse(String(row.match_key)),
-      payload: row.payload === null ? null : JSON.parse(String(row.payload)),
+      seq: Number(row.seq),
+      table_name: String(row.table_name),
+      op: String(row.op),
+      match: JSON.parse(String(row.match_key)) as Record<string, unknown>,
+      payload: row.payload === null ? null : (JSON.parse(String(row.payload)) as Record<string, unknown>),
     }));
   }
 

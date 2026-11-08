@@ -97,7 +97,7 @@ export class PgliteRest {
     const params: string[] = [];
     for (const [name, value] of url.searchParams) {
       if (["on_conflict", "select", "order", "limit"].includes(name)) continue;
-      const match = /^eq\.(.*)$/s.exec(value);
+      const match = /^eq\.([\s\S]*)$/.exec(value);
       if (!match) throw new Error(`unsupported filter ${name}=${value}`);
       params.push(match[1]);
       parts.push(`${ident(name)}::text = $${from + params.length - 1}`);
