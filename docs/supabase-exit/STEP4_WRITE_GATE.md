@@ -182,9 +182,11 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 2. Supabase secret 키를 만들어 testbed Worker secret `API_SUPABASE_SERVICE_KEY`로 넣는다(값은 출력하지 않는다).
 3. 이 코드가 든 Worker를 testbed에 배포한다. 플래그 행이 없으면 지금과 같다.
 4. testbed에서 그룹 하나씩 `pnpm flags -- set write.<group> worker --env testbed --remote --note "…"`, 그 화면의 쓰기를
-   한 번씩 해 보고 Supabase 행을 확인한다. 이상하면 그 그룹을 `rls`로.
+   한 번씩 해 보고 Supabase 행을 확인한다. 이상하면 그 그룹을 `rls`로. `history-runs`는 9절 5번(런 하나씩 공유)을
+   합친 뒤에 켠다. 그룹마다 Workers 로그의 CPU 시간도 본다(9절 5번).
 5. 운영도 같은 순서(그 그룹의 `path.<group> = api`가 켜진 뒤에만 뜻이 있다).
-6. 모든 그룹이 worker가 되면 `API_WRITE_MODE_DEFAULT=worker`를 배포하고 7절 닫기 스크립트를 적용한다.
+6. 모든 그룹이 worker가 되고 경로 플래그의 env 기본값(7절)이 `api`로 배포되면 `API_WRITE_MODE_DEFAULT=worker`를
+   배포하고 7절 닫기 스크립트를 적용한다.
 
 되돌리기: 닫기 뒤라면 `restore_direct_writes.sql` 먼저, 그다음 `write.<group>`을 `rls`로(필요하면
 `API_WRITE_MODE_DEFAULT`도 지운다). 마이그레이션 되돌리기는 모든 그룹이 rls가 된 뒤에만. 원본이 Supabase라 데이터는
