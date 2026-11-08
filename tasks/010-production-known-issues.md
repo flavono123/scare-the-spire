@@ -256,3 +256,5 @@
     - https://scare-the-spire.flavono123.workers.dev/defragment
 69. **꺼져 있는 상세 OG 코드가 없는 표를 읽음**. `workers/detail-shell-og.ts:460`이 어려운 결정 글을 `decisions_posts`에서 찾는데, 실제 표는 `decisions_decisions_posts`다. 지금은 상세 OG가 꺼져 있어(Worker에 Supabase 변수가 없음) 드러나지 않는다. 켜거나 D1로 옮길 때 같이 고친다.
     - https://scare-the-spire.flavono123.workers.dev/decisions-decisions
+70. **이거 아님 저거? 좋아요가 다른 env의 글을 가리킬 수 있음**. `this_or_that_post_likes`의 INSERT 정책은 `auth.uid() = user_id`만 보고 FK는 env를 보지 않는다. 그래서 testbed 사용자가 운영 글 id에 단 좋아요(`env = development`)가 들어간다. 수와 화면은 env로 글과 맞추므로 보이지 않는다. 투표 정책에는 같은 env 확인이 있다. 2026-11-05 백업에서는 0행이다. D1 설계가 2단계 전제 조건으로 정책 수정을 권한다(`docs/supabase-exit/D1_SCHEMA_DESIGN.md` 5.1절 3번, 10절 10번).
+    - https://scare-the-spire.flavono123.workers.dev/this-or-that

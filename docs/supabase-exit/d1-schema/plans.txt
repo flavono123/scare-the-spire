@@ -1,0 +1,996 @@
+== fixtures: loaded
+tournament cascade: ok
+combo cascade: ok
+run cascade: ok
+this-or-that like before delete: ok
+this-or-that cascade: ok
+same id in two services: two rows: ok
+same id in two services: delete is per service: ok
+comment cascade: ok
+sqlite 3.51.0
+tables (42): api_cache=1, colorful_philosopher_posts=62, comment_likes=502, comments=1504, community_stories=302, contact_inquiries=62, defragment_bodies=201, favorite_tournament_candidate_stats=2, favorite_tournament_plays=1, likes=353, outbox=3, pagestorm_drafts=1, post_chemical_x=101, post_combo=100, post_combo_resources=200, post_decisions_decisions=101, post_favorite_tournament=101, post_favorite_tournament_pool=202, post_history_course=101, post_history_course_file=101, post_pagestorm=101, post_this_or_that=101, post_transfigure=101, posts=807, profile_character_nickname_pools=2, puzzlebox_best=302, puzzlebox_board_stats=13, puzzlebox_players=52, puzzlebox_runs=602, resource_reaction_counts=122, resource_reactions=403, runtime_flag_events=1, runtime_flags=1, shadow_diffs=1, shadow_stats=1, sync_checks=3, sync_pending_raw=1, sync_rejects=1, sync_state=2, this_or_that_post_likes=401, this_or_that_post_votes=100, threads=147
+
+== CHECK / FK probes
+ok   rejected: timestamp without 6 fraction digits -> CHECK constraint failed: created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'
+ok   rejected: timestamp with +00:00 offset -> CHECK constraint failed: created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z'
+ok   rejected: uppercase uuid -> CHECK constraint failed: user_id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]'
+ok   rejected: STRICT: text in an INTEGER column -> cannot store TEXT value in INTEGER column threads.like_count
+ok   rejected: FK: comment like without its comment -> FOREIGN KEY constraint failed
+ok   rejected: FK: service row without its post -> FOREIGN KEY constraint failed
+ok   rejected: FK: service row under a post of another service (the transfigure post's id as a combo) -> FOREIGN KEY constraint failed
+ok   rejected: service column with another service's value -> CHECK constraint failed: service = 'combo'
+ok   rejected: FK: this-or-that like for a missing post (step 5 answers not_found) -> FOREIGN KEY constraint failed
+ok   rejected: posts: second row with the same (service, id) -> UNIQUE constraint failed: posts.service, posts.id
+ok   rejected: posts: uuid service with a run-shaped id -> CHECK constraint failed: CASE WHEN service = 'history_course' THEN length(CAST(id AS BLOB)) <= 1024
+              ELSE id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]' END
+ok   rejected: posts: owner-less combo -> CHECK constraint failed: user_id IS NOT NULL OR service IN ('favorite_tournament', 'history_course')
+ok   rejected: posts: title on a service without one -> CHECK constraint failed: CASE
+    WHEN service = 'transfigure' THEN title IS NULL
+      OR (length(trim(title)) BETWEEN 1 AND 80 AND length(CAST(title AS BLOB)) <= 1024)
+    WHEN service IN ('favorite_tournament', 'decisions_decisions', 'pagestorm')
+      THEN title IS NOT NULL AND length(title) BETWEEN 1 AND 80
+    WHEN service IN ('combo', 'this_or_that', 'chemical_x', 'history_course') THEN title IS NULL
+    ELSE title IS NULL OR length(title) BETWEEN 1 AND 80 END
+ok   rejected: posts: board summary over 120 chars -> CHECK constraint failed: length(summary) <= 120
+ok   rejected: run summary_version > 0 without the summary -> CHECK constraint failed: summary_version = 0 OR (characters IS NOT NULL AND game_mode IS NOT NULL
+    AND game_elements IS NOT NULL AND cover_phrases IS NOT NULL)
+ok   rejected: tournament play with wrong match count -> CHECK constraint failed: json_valid(matches) AND json_type(matches) = 'array'
+    AND json_array_length(matches) = starting_size - 1
+ok   rejected: philosopher week_start not a Monday -> CHECK constraint failed: week_start GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' AND strftime('%w', week_start) = '1'
+ok   rejected: outbox op outside the enum -> CHECK constraint failed: op IN ('insert', 'upsert', 'update', 'delete', 'rpc')
+ok   rejected: posts: run id over 1024 bytes (runs_key_size_check) -> CHECK constraint failed: CASE WHEN service = 'history_course' THEN length(CAST(id AS BLOB)) <= 1024
+              ELSE id GLOB '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f]-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]' END
+ok   rejected: posts: service id that is not a lowercase identifier -> CHECK constraint failed: length(service) BETWEEN 1 AND 32 AND service NOT GLOB '*[^a-z_]*'
+ok   rejected: sync_state: high_seen below low_watermark -> CHECK constraint failed: high_seen >= low_watermark
+ok   rejected: sync_rejects: second open reject for the same key -> UNIQUE constraint failed: sync_rejects.direction, sync_rejects.table_name, sync_rejects.row_key
+ok   accepted: 1-char comment Supabase accepts
+ok   accepted: builtin tournament without an owner
+ok   accepted: run id Supabase accepts in any shape, even a Toy Box post's uuid (key is (service, id))
+ok   accepted: run whose donor was removed (ON DELETE SET NULL)
+ok   accepted: STRICT: integral REAL into INTEGER is converted
+ok   accepted: empty thread key Supabase accepts (octet_length <= 1024 only)
+ok   accepted: a future Toy Box service: uuid id, owner, optional title (no rebuild needed)
+
+== plans (no statistics)
+PASS E1 thread read, read.engagement?threads= (<= 64 keys) [ran, 35 row(s)]
+      SEARCH comments USING INDEX comments_thread (story_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E2 my liked comments, me.engagement?threads= [ran, 0 row(s)]
+      SEARCH c USING COVERING INDEX comments_thread (story_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+      CORRELATED SCALAR SUBQUERY 2
+      SEARCH l USING PRIMARY KEY (comment_id=? AND user_id=?)
+PASS E3 thread counts of listed keys (likes=, run cards, philosopher replies, <= 100 keys) [ran, 2 row(s)]
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E4 my likes among listed keys, me.engagement?likes= [ran, 0 row(s)]
+      SEARCH likes USING PRIMARY KEY (story_id=? AND user_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E5 reaction totals, read.engagement?reactions= [ran, 2 row(s)]
+      SEARCH resource_reaction_counts USING PRIMARY KEY (resource_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E6 my reactions, me.engagement?reactions= [ran, 1 row(s)]
+      SEARCH resource_reactions USING PRIMARY KEY (resource_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E7 engagement map, read.engagement-counts (the whole map is the answer) allow=scan:threads [ran, 147 row(s)]
+      SCAN threads
+PASS E7s engagement map, step-3 scope=codex (PK range) [ran, 51 row(s)]
+      SEARCH threads USING PRIMARY KEY (thread_key>? AND thread_key<?)
+PASS E7t engagement map, step-3 scope=stories (community range + official ids) [ran, 3 row(s)]
+      COMPOUND QUERY
+      LEFT-MOST SUBQUERY
+      SEARCH threads USING PRIMARY KEY (thread_key>? AND thread_key<?)
+      UNION ALL
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+      LIST SUBQUERY 2
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E8 courier (nav snapshot refresh): newest comments of the last 14 days [ran, 4 row(s)]
+      SEARCH comments USING INDEX comments_recent (created_at>?)
+PASS E9 nav latest of one surface (x8: 7 Toy Box services + history_course) [ran, 1 row(s)]
+      SEARCH posts USING COVERING INDEX posts_service_created (service=?)
+PASS E10 story feed, read.stories?limit= [ran, 100 row(s)]
+      SCAN community_stories USING INDEX community_stories_recent
+PASS E10b story feed of one patch, read.stories?source= [ran, 34 row(s)]
+      SEARCH community_stories USING INDEX community_stories_source (source=?)
+PASS E11 one story's counts [ran, 1 row(s)]
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+PASS E13a recount, comment side of a thread (comment insert/delete, sync apply) [ran, 0 row(s)]
+      SEARCH comments USING COVERING INDEX comments_thread (story_id=?)
+PASS E13b recount, like side of a thread (like put/delete, sync apply) [ran, 1 row(s)]
+      SEARCH likes USING PRIMARY KEY (story_id=?)
+PASS E13c owner copy, step 5+ (posts and runs alike; threadOwner(key) gave service and id; a this_or_that post's like_count is its this_or_that_post_likes rows, as Supabase's this_or_that_posts.like_count) [ran, 0 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+      SCALAR SUBQUERY 1
+      SEARCH this_or_that_post_likes USING PRIMARY KEY (service=? AND post_id=?)
+      SCALAR SUBQUERY 2
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+      SCALAR SUBQUERY 3
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+PASS E14 comment-like recount [ran, 1 row(s)]
+      SEARCH comments USING INDEX sqlite_autoindex_comments_1 (id=?)
+      SCALAR SUBQUERY 1
+      SEARCH comment_likes USING PRIMARY KEY (comment_id=?)
+PASS E15 reaction totals recount, step 5+ [ran, 1 row(s)]
+      SEARCH resource_reactions USING PRIMARY KEY (resource_id=? AND resource_type=? AND game_version=?)
+PASS E16a comment insert (Worker builds id, user_id, created_at) [ran, 0 row(s)]
+PASS E16b comment delete by owner [ran, 1 row(s)]
+      SEARCH comments USING INDEX sqlite_autoindex_comments_1 (id=?)
+      SEARCH comment_likes USING PRIMARY KEY (comment_id=?)
+PASS E16c like put (generic thread-key route) [ran, 0 row(s)]
+PASS E16d like delete [ran, 0 row(s)]
+      SEARCH likes USING PRIMARY KEY (story_id=? AND user_id=?)
+PASS TL1 this-or-that like put, step 5 (same batch: TL1, E13c, outbox row; the FK rejects a missing post -> not_found and the batch rolls back, as Postgres 23503 today; a repeat like is a no-op success) [ran, 0 row(s)]
+PASS TL2 this-or-that like delete by owner, step 5 (same batch: TL2, E13c, outbox delete row matching post_id + user_id) [ran, 0 row(s)]
+      SEARCH this_or_that_post_likes USING PRIMARY KEY (service=? AND post_id=? AND user_id=?)
+PASS E16e comment-like put [ran, 0 row(s)]
+PASS E16f comment-like delete [ran, 0 row(s)]
+      SEARCH comment_likes USING PRIMARY KEY (comment_id=? AND user_id=?)
+PASS E16g reaction put (only kind changes on conflict) [ran, 0 row(s)]
+PASS E16h reaction delete [ran, 0 row(s)]
+      SEARCH resource_reactions USING PRIMARY KEY (resource_id=? AND resource_type=? AND game_version=? AND user_id=?)
+PASS E16i story insert [ran, 0 row(s)]
+PASS E16j story delete by owner [ran, 1 row(s)]
+      SEARCH community_stories USING INDEX sqlite_autoindex_community_stories_1 (id=?)
+PASS S1 take the sync lease (conditional upsert, like api_cache) [ran, 1 row(s)]
+PASS S2 outbox: next rows to send, in order (the head row's next_attempt_at gates the run) [ran, 3 row(s)]
+      SEARCH outbox USING INTEGER PRIMARY KEY (rowid>?)
+PASS S3 outbox: drop rows Supabase accepted [ran, 0 row(s)]
+      SEARCH outbox USING INTEGER PRIMARY KEY (rowid<?)
+PASS S4 open rejects to retry at the start of each run (re-read by key, never replay the payload) [ran, 1 row(s)]
+      SCAN sync_rejects USING INDEX sync_rejects_open
+PASS S4c record a reject (one open reject per key; a later failure of the same key updates it) [ran, 0 row(s)]
+PASS S4d resolve a reject after its re-read applied or found the row gone [ran, 0 row(s)]
+      SEARCH sync_rejects USING INDEX sqlite_autoindex_sync_rejects_1 (direction=? AND ref=?)
+PASS S5 shadow counters [ran, 0 row(s)]
+PASS S6 shadow difference sample [ran, 0 row(s)]
+PASS S7 sync apply: upsert a copied post row by (service, id); the mapper's Supabase table gives the service [ran, 0 row(s)]
+PASS S7b sync apply: service row (FK to posts (service, id); the sync batch defers FKs and puts the parent first) [ran, 0 row(s)]
+PASS S8 sync apply: replace a combo's resources (delete) [ran, 0 row(s)]
+      SEARCH post_combo_resources USING PRIMARY KEY (service=? AND post_id=?)
+PASS S9 sync apply: insert resources from the array, ord = array index [ran, 0 row(s)]
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+PASS S10 sync apply: delete a post by (service, id) (cascades the service row and children) [ran, 0 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+      SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH defragment_bodies USING COVERING INDEX sqlite_autoindex_defragment_bodies_1 (service=? AND post_id=?)
+      SEARCH post_pagestorm USING COVERING INDEX sqlite_autoindex_post_pagestorm_1 (service=? AND post_id=?)
+      SEARCH post_decisions_decisions USING COVERING INDEX sqlite_autoindex_post_decisions_decisions_1 (service=? AND post_id=?)
+      SEARCH post_favorite_tournament USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_transfigure USING COVERING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+      SEARCH post_combo USING COVERING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      SEARCH post_chemical_x USING COVERING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?)
+PASS S11 sync apply: commit the window, last statement of every applied batch (lease-owner guarded) [ran, 0 row(s)]
+      SEARCH sync_state USING PRIMARY KEY (name=?)
+PASS S12 sync apply: 조각모음 body, only under an existing post (0 rows -> re-read Supabase; still no post -> orphan, counted and closed) [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS S13 run raws to fetch this invocation (at most 2, under a byte cap) [ran, 1 row(s)]
+      SCAN sync_pending_raw USING INDEX sync_pending_raw_queued
+PASS S13b queue a run raw (run I or heavy_changed U, same batch as the run rows) [ran, 0 row(s)]
+PASS S13c store a fetched raw (bound from res.text(), no JSON.parse) and drop it from the queue [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS S13d drop a queued raw (stored, or the run is gone) [ran, 0 row(s)]
+      SEARCH sync_pending_raw USING PRIMARY KEY (post_id=?)
+PASS S14 mirror, step 5: read a run at send time (raw from its table, never from the outbox; no row -> send only the delete) [ran, 1 row(s)]
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH f USING INDEX sqlite_autoindex_post_history_course_file_1 (service=? AND post_id=?)
+PASS S15 mirror, step 5: tournament candidate stats as state upserts after a play (B: Supabase never recomputes them) [ran, 2 row(s)]
+      SEARCH favorite_tournament_candidate_stats USING PRIMARY KEY (service=? AND tournament_id=?)
+PASS T1 service feed, sort=latest, first page (combo, with resources; step-1 row = id, created_at, counts, recommend_score, post) [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_service_created (service=?)
+      SEARCH s USING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      CORRELATED SCALAR SUBQUERY 1
+      SEARCH r USING PRIMARY KEY (service=? AND post_id=?)
+PASS T1c service feed, sort=latest, next page (keyset) [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_service_created (service=? AND (created_at,id)<(?,?))
+      SEARCH s USING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?)
+PASS T2 service feed, sort=recommended (like_count), next page; every transfigure column of to_jsonb(p.*) [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_service_likes (service=? AND (like_count,created_at,id)<(?,?,?))
+      SEARCH s USING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+PASS T3 service feed, sort=comments, first page [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_service_comments (service=?)
+      SEARCH s USING INDEX sqlite_autoindex_post_decisions_decisions_1 (service=? AND post_id=?)
+PASS T4 this_or_that vote_rate_high (= total ballots; 0-vote posts excluded): no sort index by design, reads the whole service allow=tempsort,walk,scan:t,svcrange:t [ran, 20 row(s)]
+      SEARCH t USING PRIMARY KEY (service=?)
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      USE TEMP B-TREE FOR ORDER BY
+PASS T5 favorite_tournament sort=play_count: no sort index by design; pools are built after sort and LIMIT (<= 20 pool lookups) allow=tempsort,walk,svcrange:p,svcrange:f [ran, 20 row(s)]
+      CO-ROUTINE q
+      SEARCH p USING PRIMARY KEY (service=?)
+      SEARCH f USING PRIMARY KEY (service=? AND post_id=?)
+      USE TEMP B-TREE FOR ORDER BY
+      SCAN q
+      CORRELATED SCALAR SUBQUERY 1
+      SEARCH o USING PRIMARY KEY (service=? AND post_id=?)
+PASS T6a 조각모음 board, sort=latest, all services incl. runs (history_meta from the runs join) [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_created ((created_at,id)<(?,?))
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?) LEFT-JOIN
+PASS T6b 조각모음 board, sort=recommended [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_likes ((like_count,created_at,id)<(?,?,?))
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?) LEFT-JOIN
+PASS T6c 조각모음 board, sort=comments, first page [ran, 20 row(s)]
+      SCAN p USING INDEX posts_comments
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?) LEFT-JOIN
+PASS T7 조각모음 board, filter history_course (defragment-runs, 11 columns), sort=comments [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_service_comments (service=? AND (comment_count,created_at,id)<(?,?,?))
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS T8 one post (detail, embeds, OG), transfigure [ran, 1 row(s)]
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      SEARCH s USING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+PASS T9 tournament presets (builtins with pools; select=* of favorite_tournament_posts) allow=tempsort,walk [ran, 11 row(s)]
+      SCAN f USING INDEX post_favorite_tournament_builtin
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      CORRELATED SCALAR SUBQUERY 1
+      SEARCH o USING PRIMARY KEY (service=? AND post_id=?)
+      USE TEMP B-TREE FOR ORDER BY
+PASS T10 tournament stats [ran, 2 row(s)]
+      SEARCH favorite_tournament_candidate_stats USING PRIMARY KEY (service=? AND tournament_id=?)
+PASS T11 서류 폭풍 index (50 latest; PAGESTORM_LIST_COLUMNS) [ran, 50 row(s)]
+      SEARCH p USING INDEX posts_service_created (service=?)
+      SEARCH s USING INDEX sqlite_autoindex_post_pagestorm_1 (service=? AND post_id=?)
+PASS T12 my 서류 폭풍 drafts (PAGESTORM_LIST_COLUMNS: no updated_at in the answer) [ran, 1 row(s)]
+      SEARCH pagestorm_drafts USING INDEX pagestorm_drafts_user_updated (user_id=?)
+PASS T13 one draft [ran, 1 row(s)]
+      SEARCH pagestorm_drafts USING INDEX sqlite_autoindex_pagestorm_drafts_1 (id=?)
+PASS T14 조각모음 body of a post (the body row carries source_service itself) [ran, 1 row(s)]
+      SEARCH defragment_bodies USING INDEX sqlite_autoindex_defragment_bodies_1 (service=? AND post_id=?)
+PASS T15 this-or-that like counts (<= 100 ids; the view this_or_that_post_like_counts: rows per post, no zero rows) [ran, 2 row(s)]
+      SEARCH this_or_that_post_likes USING PRIMARY KEY (service=? AND post_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS T16 my this-or-that likes [ran, 1 row(s)]
+      SEARCH this_or_that_post_likes USING PRIMARY KEY (service=? AND post_id=? AND user_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS T17 vote summaries (<= 50 ids) [ran, 2 row(s)]
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS T18 my votes (<= 100 ids) [ran, 1 row(s)]
+      SEARCH this_or_that_post_votes USING PRIMARY KEY (service=? AND post_id=? AND user_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS T21 ownership check (body write, edit and delete guards) [ran, 1 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS T22 play validation: the tournament's pool [ran, 2 row(s)]
+      SEARCH post_favorite_tournament_pool USING PRIMARY KEY (service=? AND post_id=?)
+PASS TW1a post insert (combo, step 5): posts row [ran, 0 row(s)]
+PASS TW2 post edit (combo): snapshot and summary, owner-guarded [ran, 0 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS TW2b post edit (combo): service row, owner-guarded by EXISTS [ran, 0 row(s)]
+      SEARCH post_combo USING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS TW3 post delete by owner (cascades the service row, children, votes, this-or-that likes, stats, plays, body) [ran, 1 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+      SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH defragment_bodies USING COVERING INDEX sqlite_autoindex_defragment_bodies_1 (service=? AND post_id=?)
+      SEARCH post_pagestorm USING COVERING INDEX sqlite_autoindex_post_pagestorm_1 (service=? AND post_id=?)
+      SEARCH post_decisions_decisions USING COVERING INDEX sqlite_autoindex_post_decisions_decisions_1 (service=? AND post_id=?)
+      SEARCH post_favorite_tournament USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_transfigure USING COVERING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+      SEARCH post_combo USING COVERING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      SEARCH post_chemical_x USING COVERING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?)
+PASS TW4a vote put [ran, 0 row(s)]
+PASS TW4b vote counters recount (same batch, after the vote row changes) [ran, 1 row(s)]
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      SCALAR SUBQUERY 1
+      SEARCH this_or_that_post_votes USING PRIMARY KEY (service=? AND post_id=?)
+      SCALAR SUBQUERY 2
+      SEARCH this_or_that_post_votes USING PRIMARY KEY (service=? AND post_id=?)
+PASS TW5a tournament play insert [ran, 0 row(s)]
+PASS TW5b play_count recount [ran, 1 row(s)]
+      SEARCH post_favorite_tournament USING PRIMARY KEY (service=? AND post_id=?)
+      SCALAR SUBQUERY 1
+      SEARCH favorite_tournament_plays USING COVERING INDEX favorite_tournament_plays_tournament (service=? AND tournament_id=?)
+PASS TW5c candidate stats upsert from per-candidate deltas (aggregated in TS) [ran, 0 row(s)]
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+PASS TW5d re-rank (only rows whose rank changed are written; ?2 is Postgres timestamp::text, UTC) allow=tempsort [ran, 0 row(s)]
+      MATERIALIZE r
+      CO-ROUTINE (subquery-3)
+      SEARCH r USING PRIMARY KEY (service=? AND tournament_id=?)
+      USE TEMP B-TREE FOR ORDER BY
+      SCAN (subquery-3)
+      SCAN r
+      SEARCH s USING PRIMARY KEY (service=? AND tournament_id=? AND resource_type=? AND resource_id=?)
+PASS TW6 조각모음 body upsert, owner of the post only [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS TW7 draft delete by owner [ran, 1 row(s)]
+      SEARCH pagestorm_drafts USING INDEX sqlite_autoindex_pagestorm_drafts_1 (id=?)
+PASS R1 run list (100 latest) with summary columns and row-true counts [ran, 100 row(s)]
+      SEARCH p USING INDEX posts_service_created (service=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+PASS R1e run list, game elements view (only when the element filter opens) [ran, 100 row(s)]
+      SEARCH p USING COVERING INDEX posts_service_created (service=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS R2 combo / 조각모음 run picker (30 by start time; RUN_SUMMARY_COLUMNS with summary columns in place of raw) [ran, 30 row(s)]
+      SCAN h USING INDEX post_history_course_start_time
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+PASS R3 run detail meta (RUN_DETAIL_COLUMNS without raw; the raw is R3r, returned as the response body) [ran, 1 row(s)]
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS R4 cover editor meta (the raw is R3r) [ran, 1 row(s)]
+      SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS R3r run raw for detail and cover editor (the stored text is the body, never wrapped in JSON) [ran, 1 row(s)]
+      SEARCH post_history_course_file USING INDEX sqlite_autoindex_post_history_course_file_1 (service=? AND post_id=?)
+PASS R5 run meta / OG / "is it shared" [ran, 1 row(s)]
+      SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS R6 run engagement for listed runs (<= 100) [ran, 1 row(s)]
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS R7 my run ids [ran, 4 row(s)]
+      SEARCH posts USING COVERING INDEX posts_user (user_id=? AND service=?)
+PASS R11 cover save by owner [ran, 1 row(s)]
+      SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS R12 donor nickname sync (keys from the covering posts_user seek: without statistics an UPDATE prefers the PK's service prefix) [ran, 0 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+      LIST SUBQUERY 2
+      SEARCH posts USING COVERING INDEX posts_user (user_id=? AND service=?)
+      CREATE BLOOM FILTER
+PASS R13 unshare by owner (cascades the run row and the file; threads stay) [ran, 1 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+      SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH defragment_bodies USING COVERING INDEX sqlite_autoindex_defragment_bodies_1 (service=? AND post_id=?)
+      SEARCH post_pagestorm USING COVERING INDEX sqlite_autoindex_post_pagestorm_1 (service=? AND post_id=?)
+      SEARCH post_decisions_decisions USING COVERING INDEX sqlite_autoindex_post_decisions_decisions_1 (service=? AND post_id=?)
+      SEARCH post_favorite_tournament USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_transfigure USING COVERING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+      SEARCH post_combo USING COVERING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      SEARCH post_chemical_x USING COVERING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?)
+PASS R14a share (step 5: one run per request, N = 1): posts row, counts seeded from threads [ran, 1 row(s)]
+      SCAN e VIRTUAL TABLE INDEX 1:
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+      SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH defragment_bodies USING COVERING INDEX sqlite_autoindex_defragment_bodies_1 (service=? AND post_id=?)
+      SEARCH post_pagestorm USING COVERING INDEX sqlite_autoindex_post_pagestorm_1 (service=? AND post_id=?)
+      SEARCH post_decisions_decisions USING COVERING INDEX sqlite_autoindex_post_decisions_decisions_1 (service=? AND post_id=?)
+      SEARCH post_favorite_tournament USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_transfigure USING COVERING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+      SEARCH post_combo USING COVERING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      SEARCH post_chemical_x USING COVERING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?)
+PASS R14b share: run summary row, only under this donor's history_course posts row [ran, 0 row(s)]
+      SCAN e VIRTUAL TABLE INDEX 1:
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      SEARCH post_history_course_file USING COVERING INDEX sqlite_autoindex_post_history_course_file_1 (service=? AND post_id=?)
+PASS R14c share: the raw file (the request body text, bound without parsing), same owner guard [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS R14d share: outbox row without the raw (the mirror reads it with S14; a repeat share is an idempotent no-op) [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS P1 nickname pools (the whole 10-row table is the answer) allow=scan:profile_character_nickname_pools [ran, 2 row(s)]
+      SCAN profile_character_nickname_pools
+PASS P2 my activity (get_my_profile_activity): union of my rows, offset paging; a this_or_that post's like count is its this_or_that_post_likes rows, as the RPC counts them allow=tempsort,scan:own [ran, 20 row(s)]
+      CO-ROUTINE (subquery-6)
+      CO-ROUTINE own
+      COMPOUND QUERY
+      LEFT-MOST SUBQUERY
+      SEARCH s USING INDEX community_stories_user (user_id=?)
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+      UNION ALL
+      SEARCH p USING COVERING INDEX posts_user (user_id=? AND service=?)
+      SEARCH x USING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?) LEFT-JOIN
+      SEARCH o USING PRIMARY KEY (service=? AND post_id=?) LEFT-JOIN
+      SEARCH b USING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?) LEFT-JOIN
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?) LEFT-JOIN
+      CORRELATED SCALAR SUBQUERY 2
+      SEARCH l USING PRIMARY KEY (service=? AND post_id=?)
+      UNION ALL
+      SEARCH c USING INDEX comments_user (user_id=?)
+      SCAN own
+      SCAN (subquery-6)
+      USE TEMP B-TREE FOR ORDER BY
+PASS P3 my activity stats (get_my_profile_activity_stats) allow=tempgroup,scan:own [ran, 5 row(s)]
+      CO-ROUTINE own
+      COMPOUND QUERY
+      LEFT-MOST SUBQUERY
+      SEARCH s USING COVERING INDEX community_stories_user (user_id=?)
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+      UNION ALL
+      SEARCH p USING COVERING INDEX posts_user (user_id=? AND service=?)
+      CORRELATED SCALAR SUBQUERY 2
+      SEARCH l USING PRIMARY KEY (service=? AND post_id=?)
+      UNION ALL
+      SEARCH c USING INDEX comments_user (user_id=?)
+      SCAN own
+      USE TEMP B-TREE FOR GROUP BY
+PASS C1 inquiry insert with the 3-per-hour limit (0 changes -> 429) [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH contact_inquiries USING COVERING INDEX contact_inquiries_user_created (user_id=? AND created_at>?)
+PASS C2 mailbox dot [ran, 1 row(s)]
+      SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
+PASS C3 my inquiry history [ran, 2 row(s)]
+      SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
+PASS C4 mark replies seen [ran, 0 row(s)]
+      SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
+PASS C5a admin inbox (local script; full scan of a small table is fine) allow=scan:contact_inquiries,tempsort [ran, 62 row(s)]
+      SCAN contact_inquiries
+      USE TEMP B-TREE FOR ORDER BY
+PASS C5b admin reply (resets reply_seen_at when the reply changes) [ran, 0 row(s)]
+      SEARCH contact_inquiries USING INDEX sqlite_autoindex_contact_inquiries_1 (id=?)
+PASS X1a submit: run row with rate rules (burst 3 s, 500 a day) [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 2
+      SEARCH puzzlebox_runs USING INDEX puzzlebox_runs_user_created (user_id=? AND created_at>?)
+      SCALAR SUBQUERY 3
+      SEARCH puzzlebox_runs USING COVERING INDEX puzzlebox_runs_user_created (user_id=? AND created_at>?)
+      SCALAR SUBQUERY 1
+      SEARCH puzzlebox_best USING PRIMARY KEY (game=? AND board=? AND user_id=?)
+      SEARCH puzzlebox_best USING INDEX puzzlebox_best_run (run_id=?)
+PASS X1b submit: latest player token [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH puzzlebox_runs USING INTEGER PRIMARY KEY (rowid=?)
+      SEARCH puzzlebox_best USING INDEX puzzlebox_best_user_game (user_id=?)
+PASS X1c submit: best (replaced only by a higher score; attempts always advance) [ran, 0 row(s)]
+      SEARCH puzzlebox_runs USING INTEGER PRIMARY KEY (rowid=?)
+PASS X1d submit: board stats, first finished run of the player only [ran, 0 row(s)]
+      SEARCH puzzlebox_board_stats USING PRIMARY KEY (game=? AND board=?)
+      SCALAR SUBQUERY 1
+      SEARCH puzzlebox_runs USING INTEGER PRIMARY KEY (rowid=?)
+PASS X1e submit: answer (rank and players over non-hidden players) [ran, 1 row(s)]
+      SEARCH r USING INTEGER PRIMARY KEY (rowid=?)
+      SEARCH b USING PRIMARY KEY (game=? AND board=? AND user_id=?)
+      CORRELATED SCALAR SUBQUERY 1
+      SEARCH o USING PRIMARY KEY (game=? AND board=?)
+      SEARCH p USING PRIMARY KEY (user_id=?)
+      SCALAR SUBQUERY 2
+      SEARCH o USING PRIMARY KEY (game=? AND board=?)
+      SEARCH p USING PRIMARY KEY (user_id=?)
+PASS X2 leaderboard of one board or all boards (valid boards drive PK seeks; t and r are CTE results) allow=tempsort,tempgroup,scan:t,scan:r [ran, 10 row(s)]
+      MATERIALIZE ranked
+      CO-ROUTINE (subquery-10)
+      MATERIALIZE totals
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      SEARCH b USING PRIMARY KEY (game=? AND board=?)
+      SEARCH p USING PRIMARY KEY (user_id=?)
+      USE TEMP B-TREE FOR GROUP BY
+      SCAN t
+      USE TEMP B-TREE FOR ORDER BY
+      SCAN (subquery-10)
+      MATERIALIZE page
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 4
+      SCAN ranked
+      SCALAR SUBQUERY 5
+      SCAN ranked
+      SCAN page
+      SCAN r
+      SEARCH p USING PRIMARY KEY (user_id=?)
+      SCALAR SUBQUERY 7
+      SCAN ranked
+      SCALAR SUBQUERY 8
+      SCAN page
+      USE TEMP B-TREE FOR ORDER BY
+PASS X2s leaderboard: board stats [ran, 1 row(s)]
+      SEARCH puzzlebox_board_stats USING PRIMARY KEY (game=? AND board=?)
+PASS X4 my standings (valid boards drive exact PK seeks of my best rows) [ran, 1 row(s)]
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      SEARCH m USING PRIMARY KEY (game=? AND board=? AND user_id=?)
+      CORRELATED SCALAR SUBQUERY 1
+      SEARCH o USING PRIMARY KEY (game=? AND board=?)
+      SEARCH p USING PRIMARY KEY (user_id=?)
+      CORRELATED SCALAR SUBQUERY 2
+      SEARCH o USING PRIMARY KEY (game=? AND board=?)
+      SEARCH p USING PRIMARY KEY (user_id=?)
+PASS F1 week list (100) [ran, 62 row(s)]
+      SCAN colorful_philosopher_posts USING INDEX sqlite_autoindex_colorful_philosopher_posts_2
+PASS F2 one post [ran, 1 row(s)]
+      SEARCH colorful_philosopher_posts USING INDEX sqlite_autoindex_colorful_philosopher_posts_1 (id=?)
+PASS F3 reel (12 up to this week) [ran, 12 row(s)]
+      SEARCH colorful_philosopher_posts USING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start<?)
+PASS F4 nav weekly [ran, 1 row(s)]
+      SEARCH colorful_philosopher_posts USING COVERING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start<?)
+PASS F5 codex detail thread of one resource [ran, 3 row(s)]
+      SEARCH colorful_philosopher_posts USING INDEX colorful_philosopher_posts_resource (resource_type=? AND resource_id=?)
+PASS F6 next week open (dev nav) [ran, 0 row(s)]
+      SEARCH colorful_philosopher_posts USING COVERING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start=?)
+PASS F7 admin upsert (local script; keeps id and created_at on conflict) [ran, 1 row(s)]
+
+== plans (after ANALYZE)
+PASS E1 thread read, read.engagement?threads= (<= 64 keys) [ran, 35 row(s)]
+      SEARCH comments USING INDEX comments_thread (story_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E2 my liked comments, me.engagement?threads= [ran, 0 row(s)]
+      SEARCH c USING COVERING INDEX comments_thread (story_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+      CORRELATED SCALAR SUBQUERY 2
+      SEARCH l USING PRIMARY KEY (comment_id=? AND user_id=?)
+PASS E3 thread counts of listed keys (likes=, run cards, philosopher replies, <= 100 keys) [ran, 2 row(s)]
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E4 my likes among listed keys, me.engagement?likes= [ran, 0 row(s)]
+      SEARCH likes USING PRIMARY KEY (story_id=? AND user_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E5 reaction totals, read.engagement?reactions= [ran, 2 row(s)]
+      SEARCH resource_reaction_counts USING PRIMARY KEY (resource_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E6 my reactions, me.engagement?reactions= [ran, 1 row(s)]
+      SEARCH resource_reactions USING PRIMARY KEY (resource_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E7 engagement map, read.engagement-counts (the whole map is the answer) allow=scan:threads [ran, 147 row(s)]
+      SCAN threads
+PASS E7s engagement map, step-3 scope=codex (PK range) [ran, 51 row(s)]
+      SEARCH threads USING PRIMARY KEY (thread_key>? AND thread_key<?)
+PASS E7t engagement map, step-3 scope=stories (community range + official ids) [ran, 3 row(s)]
+      COMPOUND QUERY
+      LEFT-MOST SUBQUERY
+      SEARCH threads USING PRIMARY KEY (thread_key>? AND thread_key<?)
+      UNION ALL
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+      LIST SUBQUERY 2
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS E8 courier (nav snapshot refresh): newest comments of the last 14 days [ran, 4 row(s)]
+      SEARCH comments USING INDEX comments_recent (created_at>?)
+PASS E9 nav latest of one surface (x8: 7 Toy Box services + history_course) [ran, 1 row(s)]
+      SEARCH posts USING COVERING INDEX posts_service_created (service=?)
+PASS E10 story feed, read.stories?limit= [ran, 100 row(s)]
+      SCAN community_stories USING INDEX community_stories_recent
+PASS E10b story feed of one patch, read.stories?source= [ran, 34 row(s)]
+      SEARCH community_stories USING INDEX community_stories_source (source=?)
+PASS E11 one story's counts [ran, 1 row(s)]
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+PASS E13a recount, comment side of a thread (comment insert/delete, sync apply) [ran, 0 row(s)]
+      SEARCH comments USING COVERING INDEX comments_thread (story_id=?)
+PASS E13b recount, like side of a thread (like put/delete, sync apply) [ran, 1 row(s)]
+      SEARCH likes USING PRIMARY KEY (story_id=?)
+PASS E13c owner copy, step 5+ (posts and runs alike; threadOwner(key) gave service and id; a this_or_that post's like_count is its this_or_that_post_likes rows, as Supabase's this_or_that_posts.like_count) [ran, 0 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+      SCALAR SUBQUERY 1
+      SEARCH this_or_that_post_likes USING PRIMARY KEY (service=? AND post_id=?)
+      SCALAR SUBQUERY 2
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+      SCALAR SUBQUERY 3
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+PASS E14 comment-like recount [ran, 1 row(s)]
+      SEARCH comments USING INDEX sqlite_autoindex_comments_1 (id=?)
+      SCALAR SUBQUERY 1
+      SEARCH comment_likes USING PRIMARY KEY (comment_id=?)
+PASS E15 reaction totals recount, step 5+ [ran, 1 row(s)]
+      SEARCH resource_reactions USING PRIMARY KEY (resource_id=? AND resource_type=? AND game_version=?)
+PASS E16a comment insert (Worker builds id, user_id, created_at) [ran, 0 row(s)]
+PASS E16b comment delete by owner [ran, 1 row(s)]
+      SEARCH comments USING INDEX sqlite_autoindex_comments_1 (id=?)
+      SEARCH comment_likes USING PRIMARY KEY (comment_id=?)
+PASS E16c like put (generic thread-key route) [ran, 0 row(s)]
+PASS E16d like delete [ran, 0 row(s)]
+      SEARCH likes USING PRIMARY KEY (story_id=? AND user_id=?)
+PASS TL1 this-or-that like put, step 5 (same batch: TL1, E13c, outbox row; the FK rejects a missing post -> not_found and the batch rolls back, as Postgres 23503 today; a repeat like is a no-op success) [ran, 0 row(s)]
+PASS TL2 this-or-that like delete by owner, step 5 (same batch: TL2, E13c, outbox delete row matching post_id + user_id) [ran, 0 row(s)]
+      SEARCH this_or_that_post_likes USING PRIMARY KEY (service=? AND post_id=? AND user_id=?)
+PASS E16e comment-like put [ran, 0 row(s)]
+PASS E16f comment-like delete [ran, 0 row(s)]
+      SEARCH comment_likes USING PRIMARY KEY (comment_id=? AND user_id=?)
+PASS E16g reaction put (only kind changes on conflict) [ran, 0 row(s)]
+PASS E16h reaction delete [ran, 0 row(s)]
+      SEARCH resource_reactions USING PRIMARY KEY (resource_id=? AND resource_type=? AND game_version=? AND user_id=?)
+PASS E16i story insert [ran, 0 row(s)]
+PASS E16j story delete by owner [ran, 1 row(s)]
+      SEARCH community_stories USING INDEX sqlite_autoindex_community_stories_1 (id=?)
+PASS S1 take the sync lease (conditional upsert, like api_cache) [ran, 1 row(s)]
+PASS S2 outbox: next rows to send, in order (the head row's next_attempt_at gates the run) [ran, 3 row(s)]
+      SEARCH outbox USING INTEGER PRIMARY KEY (rowid>?)
+PASS S3 outbox: drop rows Supabase accepted [ran, 0 row(s)]
+      SEARCH outbox USING INTEGER PRIMARY KEY (rowid<?)
+PASS S4 open rejects to retry at the start of each run (re-read by key, never replay the payload) [ran, 1 row(s)]
+      SCAN sync_rejects USING INDEX sync_rejects_open
+PASS S4c record a reject (one open reject per key; a later failure of the same key updates it) [ran, 0 row(s)]
+PASS S4d resolve a reject after its re-read applied or found the row gone [ran, 0 row(s)]
+      SEARCH sync_rejects USING INDEX sqlite_autoindex_sync_rejects_1 (direction=? AND ref=?)
+PASS S5 shadow counters [ran, 0 row(s)]
+PASS S6 shadow difference sample [ran, 0 row(s)]
+PASS S7 sync apply: upsert a copied post row by (service, id); the mapper's Supabase table gives the service [ran, 0 row(s)]
+PASS S7b sync apply: service row (FK to posts (service, id); the sync batch defers FKs and puts the parent first) [ran, 0 row(s)]
+PASS S8 sync apply: replace a combo's resources (delete) [ran, 0 row(s)]
+      SEARCH post_combo_resources USING PRIMARY KEY (service=? AND post_id=?)
+PASS S9 sync apply: insert resources from the array, ord = array index [ran, 0 row(s)]
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+PASS S10 sync apply: delete a post by (service, id) (cascades the service row and children) [ran, 0 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+      SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH defragment_bodies USING COVERING INDEX sqlite_autoindex_defragment_bodies_1 (service=? AND post_id=?)
+      SEARCH post_pagestorm USING COVERING INDEX sqlite_autoindex_post_pagestorm_1 (service=? AND post_id=?)
+      SEARCH post_decisions_decisions USING COVERING INDEX sqlite_autoindex_post_decisions_decisions_1 (service=? AND post_id=?)
+      SEARCH post_favorite_tournament USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_transfigure USING COVERING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+      SEARCH post_combo USING COVERING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      SEARCH post_chemical_x USING COVERING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?)
+PASS S11 sync apply: commit the window, last statement of every applied batch (lease-owner guarded) [ran, 0 row(s)]
+      SEARCH sync_state USING PRIMARY KEY (name=?)
+PASS S12 sync apply: 조각모음 body, only under an existing post (0 rows -> re-read Supabase; still no post -> orphan, counted and closed) [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS S13 run raws to fetch this invocation (at most 2, under a byte cap) [ran, 1 row(s)]
+      SCAN sync_pending_raw USING INDEX sync_pending_raw_queued
+PASS S13b queue a run raw (run I or heavy_changed U, same batch as the run rows) [ran, 0 row(s)]
+PASS S13c store a fetched raw (bound from res.text(), no JSON.parse) and drop it from the queue [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS S13d drop a queued raw (stored, or the run is gone) [ran, 0 row(s)]
+      SEARCH sync_pending_raw USING PRIMARY KEY (post_id=?)
+PASS S14 mirror, step 5: read a run at send time (raw from its table, never from the outbox; no row -> send only the delete) [ran, 1 row(s)]
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      SEARCH f USING INDEX sqlite_autoindex_post_history_course_file_1 (service=? AND post_id=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS S15 mirror, step 5: tournament candidate stats as state upserts after a play (B: Supabase never recomputes them) [ran, 2 row(s)]
+      SEARCH favorite_tournament_candidate_stats USING PRIMARY KEY (service=? AND tournament_id=?)
+PASS T1 service feed, sort=latest, first page (combo, with resources; step-1 row = id, created_at, counts, recommend_score, post) [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_service_created (service=?)
+      SEARCH s USING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      CORRELATED SCALAR SUBQUERY 1
+      SEARCH r USING PRIMARY KEY (service=? AND post_id=?)
+PASS T1c service feed, sort=latest, next page (keyset) [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_service_created (service=? AND (created_at,id)<(?,?))
+      SEARCH s USING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?)
+PASS T2 service feed, sort=recommended (like_count), next page; every transfigure column of to_jsonb(p.*) [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_service_likes (service=? AND (like_count,created_at,id)<(?,?,?))
+      SEARCH s USING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+PASS T3 service feed, sort=comments, first page [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_service_comments (service=?)
+      SEARCH s USING INDEX sqlite_autoindex_post_decisions_decisions_1 (service=? AND post_id=?)
+PASS T4 this_or_that vote_rate_high (= total ballots; 0-vote posts excluded): no sort index by design, reads the whole service allow=tempsort,walk,scan:t,svcrange:t [ran, 20 row(s)]
+      SEARCH t USING PRIMARY KEY (service=?)
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      USE TEMP B-TREE FOR ORDER BY
+PASS T5 favorite_tournament sort=play_count: no sort index by design; pools are built after sort and LIMIT (<= 20 pool lookups) allow=tempsort,walk,svcrange:p,svcrange:f [ran, 20 row(s)]
+      CO-ROUTINE q
+      SEARCH f USING PRIMARY KEY (service=?)
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      USE TEMP B-TREE FOR ORDER BY
+      SCAN q
+      CORRELATED SCALAR SUBQUERY 1
+      SEARCH o USING PRIMARY KEY (service=? AND post_id=?)
+PASS T6a 조각모음 board, sort=latest, all services incl. runs (history_meta from the runs join) [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_created ((created_at,id)<(?,?))
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?) LEFT-JOIN
+PASS T6b 조각모음 board, sort=recommended [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_likes ((like_count,created_at,id)<(?,?,?))
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?) LEFT-JOIN
+PASS T6c 조각모음 board, sort=comments, first page [ran, 20 row(s)]
+      SCAN p USING INDEX posts_comments
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?) LEFT-JOIN
+PASS T7 조각모음 board, filter history_course (defragment-runs, 11 columns), sort=comments [ran, 20 row(s)]
+      SEARCH p USING INDEX posts_service_comments (service=? AND (comment_count,created_at,id)<(?,?,?))
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS T8 one post (detail, embeds, OG), transfigure [ran, 1 row(s)]
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      SEARCH s USING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+PASS T9 tournament presets (builtins with pools; select=* of favorite_tournament_posts) allow=tempsort,walk [ran, 11 row(s)]
+      SCAN f USING INDEX post_favorite_tournament_builtin
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      CORRELATED SCALAR SUBQUERY 1
+      SEARCH o USING PRIMARY KEY (service=? AND post_id=?)
+      USE TEMP B-TREE FOR ORDER BY
+PASS T10 tournament stats [ran, 2 row(s)]
+      SEARCH favorite_tournament_candidate_stats USING PRIMARY KEY (service=? AND tournament_id=?)
+PASS T11 서류 폭풍 index (50 latest; PAGESTORM_LIST_COLUMNS) [ran, 50 row(s)]
+      SEARCH p USING INDEX posts_service_created (service=?)
+      SEARCH s USING INDEX sqlite_autoindex_post_pagestorm_1 (service=? AND post_id=?)
+PASS T12 my 서류 폭풍 drafts (PAGESTORM_LIST_COLUMNS: no updated_at in the answer) [ran, 1 row(s)]
+      SEARCH pagestorm_drafts USING INDEX pagestorm_drafts_user_updated (user_id=?)
+PASS T13 one draft [ran, 1 row(s)]
+      SEARCH pagestorm_drafts USING INDEX sqlite_autoindex_pagestorm_drafts_1 (id=?)
+PASS T14 조각모음 body of a post (the body row carries source_service itself) [ran, 1 row(s)]
+      SEARCH defragment_bodies USING INDEX sqlite_autoindex_defragment_bodies_1 (service=? AND post_id=?)
+PASS T15 this-or-that like counts (<= 100 ids; the view this_or_that_post_like_counts: rows per post, no zero rows) [ran, 2 row(s)]
+      SEARCH this_or_that_post_likes USING PRIMARY KEY (service=? AND post_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS T16 my this-or-that likes [ran, 1 row(s)]
+      SEARCH this_or_that_post_likes USING PRIMARY KEY (service=? AND post_id=? AND user_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS T17 vote summaries (<= 50 ids) [ran, 2 row(s)]
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS T18 my votes (<= 100 ids) [ran, 1 row(s)]
+      SEARCH this_or_that_post_votes USING PRIMARY KEY (service=? AND post_id=? AND user_id=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS T21 ownership check (body write, edit and delete guards) [ran, 1 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS T22 play validation: the tournament's pool [ran, 2 row(s)]
+      SEARCH post_favorite_tournament_pool USING PRIMARY KEY (service=? AND post_id=?)
+PASS TW1a post insert (combo, step 5): posts row [ran, 0 row(s)]
+PASS TW2 post edit (combo): snapshot and summary, owner-guarded [ran, 0 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS TW2b post edit (combo): service row, owner-guarded by EXISTS [ran, 0 row(s)]
+      SEARCH post_combo USING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS TW3 post delete by owner (cascades the service row, children, votes, this-or-that likes, stats, plays, body) [ran, 1 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+      SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH defragment_bodies USING COVERING INDEX sqlite_autoindex_defragment_bodies_1 (service=? AND post_id=?)
+      SEARCH post_pagestorm USING COVERING INDEX sqlite_autoindex_post_pagestorm_1 (service=? AND post_id=?)
+      SEARCH post_decisions_decisions USING COVERING INDEX sqlite_autoindex_post_decisions_decisions_1 (service=? AND post_id=?)
+      SEARCH post_favorite_tournament USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_transfigure USING COVERING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+      SEARCH post_combo USING COVERING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      SEARCH post_chemical_x USING COVERING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?)
+PASS TW4a vote put [ran, 0 row(s)]
+PASS TW4b vote counters recount (same batch, after the vote row changes) [ran, 1 row(s)]
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      SCALAR SUBQUERY 1
+      SEARCH this_or_that_post_votes USING PRIMARY KEY (service=? AND post_id=?)
+      SCALAR SUBQUERY 2
+      SEARCH this_or_that_post_votes USING PRIMARY KEY (service=? AND post_id=?)
+PASS TW5a tournament play insert [ran, 0 row(s)]
+PASS TW5b play_count recount [ran, 1 row(s)]
+      SEARCH post_favorite_tournament USING PRIMARY KEY (service=? AND post_id=?)
+      SCALAR SUBQUERY 1
+      SEARCH favorite_tournament_plays USING COVERING INDEX favorite_tournament_plays_tournament (service=? AND tournament_id=?)
+PASS TW5c candidate stats upsert from per-candidate deltas (aggregated in TS) [ran, 0 row(s)]
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+PASS TW5d re-rank (only rows whose rank changed are written; ?2 is Postgres timestamp::text, UTC) allow=tempsort [ran, 0 row(s)]
+      MATERIALIZE r
+      CO-ROUTINE (subquery-3)
+      SEARCH r USING PRIMARY KEY (service=? AND tournament_id=?)
+      USE TEMP B-TREE FOR ORDER BY
+      SCAN (subquery-3)
+      SCAN r
+      SEARCH s USING PRIMARY KEY (service=? AND tournament_id=? AND resource_type=? AND resource_id=?)
+PASS TW6 조각모음 body upsert, owner of the post only [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS TW7 draft delete by owner [ran, 1 row(s)]
+      SEARCH pagestorm_drafts USING INDEX sqlite_autoindex_pagestorm_drafts_1 (id=?)
+PASS R1 run list (100 latest) with summary columns and row-true counts [ran, 100 row(s)]
+      SEARCH p USING INDEX posts_service_created (service=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+PASS R1e run list, game elements view (only when the element filter opens) [ran, 100 row(s)]
+      SEARCH p USING COVERING INDEX posts_service_created (service=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS R2 combo / 조각모음 run picker (30 by start time; RUN_SUMMARY_COLUMNS with summary columns in place of raw) [ran, 30 row(s)]
+      SCAN h USING INDEX post_history_course_start_time
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+PASS R3 run detail meta (RUN_DETAIL_COLUMNS without raw; the raw is R3r, returned as the response body) [ran, 1 row(s)]
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS R4 cover editor meta (the raw is R3r) [ran, 1 row(s)]
+      SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS R3r run raw for detail and cover editor (the stored text is the body, never wrapped in JSON) [ran, 1 row(s)]
+      SEARCH post_history_course_file USING INDEX sqlite_autoindex_post_history_course_file_1 (service=? AND post_id=?)
+PASS R5 run meta / OG / "is it shared" [ran, 1 row(s)]
+      SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+PASS R6 run engagement for listed runs (<= 100) [ran, 1 row(s)]
+      SEARCH threads USING PRIMARY KEY (thread_key=?)
+      LIST SUBQUERY 1
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      CREATE BLOOM FILTER
+PASS R7 my run ids [ran, 4 row(s)]
+      SEARCH posts USING COVERING INDEX posts_user (user_id=? AND service=?)
+PASS R11 cover save by owner [ran, 1 row(s)]
+      SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS R12 donor nickname sync (keys from the covering posts_user seek: without statistics an UPDATE prefers the PK's service prefix) [ran, 0 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+      LIST SUBQUERY 2
+      SEARCH posts USING COVERING INDEX posts_user (user_id=? AND service=?)
+      CREATE BLOOM FILTER
+PASS R13 unshare by owner (cascades the run row and the file; threads stay) [ran, 1 row(s)]
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+      SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH defragment_bodies USING COVERING INDEX sqlite_autoindex_defragment_bodies_1 (service=? AND post_id=?)
+      SEARCH post_pagestorm USING COVERING INDEX sqlite_autoindex_post_pagestorm_1 (service=? AND post_id=?)
+      SEARCH post_decisions_decisions USING COVERING INDEX sqlite_autoindex_post_decisions_decisions_1 (service=? AND post_id=?)
+      SEARCH post_favorite_tournament USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_transfigure USING COVERING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+      SEARCH post_combo USING COVERING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      SEARCH post_chemical_x USING COVERING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?)
+PASS R14a share (step 5: one run per request, N = 1): posts row, counts seeded from threads [ran, 1 row(s)]
+      SCAN e VIRTUAL TABLE INDEX 1:
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+      SEARCH post_history_course USING COVERING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH defragment_bodies USING COVERING INDEX sqlite_autoindex_defragment_bodies_1 (service=? AND post_id=?)
+      SEARCH post_pagestorm USING COVERING INDEX sqlite_autoindex_post_pagestorm_1 (service=? AND post_id=?)
+      SEARCH post_decisions_decisions USING COVERING INDEX sqlite_autoindex_post_decisions_decisions_1 (service=? AND post_id=?)
+      SEARCH post_favorite_tournament USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_this_or_that USING PRIMARY KEY (service=? AND post_id=?)
+      SEARCH post_transfigure USING COVERING INDEX sqlite_autoindex_post_transfigure_1 (service=? AND post_id=?)
+      SEARCH post_combo USING COVERING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?)
+      SEARCH post_chemical_x USING COVERING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?)
+PASS R14b share: run summary row, only under this donor's history_course posts row [ran, 0 row(s)]
+      SCAN e VIRTUAL TABLE INDEX 1:
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
+      SEARCH post_history_course_file USING COVERING INDEX sqlite_autoindex_post_history_course_file_1 (service=? AND post_id=?)
+PASS R14c share: the raw file (the request body text, bound without parsing), same owner guard [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS R14d share: outbox row without the raw (the mirror reads it with S14; a repeat share is an idempotent no-op) [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH posts USING PRIMARY KEY (service=? AND id=?)
+PASS P1 nickname pools (the whole 10-row table is the answer) allow=scan:profile_character_nickname_pools [ran, 2 row(s)]
+      SCAN profile_character_nickname_pools
+PASS P2 my activity (get_my_profile_activity): union of my rows, offset paging; a this_or_that post's like count is its this_or_that_post_likes rows, as the RPC counts them allow=tempsort,scan:own [ran, 20 row(s)]
+      CO-ROUTINE (subquery-6)
+      CO-ROUTINE own
+      COMPOUND QUERY
+      LEFT-MOST SUBQUERY
+      SEARCH s USING INDEX community_stories_user (user_id=?)
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+      UNION ALL
+      SEARCH p USING COVERING INDEX posts_user (user_id=? AND service=?)
+      SEARCH x USING INDEX sqlite_autoindex_post_chemical_x_1 (service=? AND post_id=?) LEFT-JOIN
+      SEARCH o USING PRIMARY KEY (service=? AND post_id=?) LEFT-JOIN
+      SEARCH b USING INDEX sqlite_autoindex_post_combo_1 (service=? AND post_id=?) LEFT-JOIN
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?) LEFT-JOIN
+      CORRELATED SCALAR SUBQUERY 2
+      SEARCH l USING PRIMARY KEY (service=? AND post_id=?)
+      UNION ALL
+      SEARCH c USING INDEX comments_user (user_id=?)
+      SCAN own
+      SCAN (subquery-6)
+      USE TEMP B-TREE FOR ORDER BY
+PASS P3 my activity stats (get_my_profile_activity_stats) allow=tempgroup,scan:own [ran, 5 row(s)]
+      CO-ROUTINE own
+      COMPOUND QUERY
+      LEFT-MOST SUBQUERY
+      SEARCH s USING COVERING INDEX community_stories_user (user_id=?)
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+      UNION ALL
+      SEARCH p USING COVERING INDEX posts_user (user_id=? AND service=?)
+      CORRELATED SCALAR SUBQUERY 2
+      SEARCH l USING PRIMARY KEY (service=? AND post_id=?)
+      UNION ALL
+      SEARCH c USING INDEX comments_user (user_id=?)
+      SCAN own
+      USE TEMP B-TREE FOR GROUP BY
+PASS C1 inquiry insert with the 3-per-hour limit (0 changes -> 429) [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH contact_inquiries USING COVERING INDEX contact_inquiries_user_created (user_id=? AND created_at>?)
+PASS C2 mailbox dot [ran, 1 row(s)]
+      SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
+PASS C3 my inquiry history [ran, 2 row(s)]
+      SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
+PASS C4 mark replies seen [ran, 0 row(s)]
+      SEARCH contact_inquiries USING INDEX contact_inquiries_user_created (user_id=?)
+PASS C5a admin inbox (local script; full scan of a small table is fine) allow=scan:contact_inquiries,tempsort [ran, 62 row(s)]
+      SCAN contact_inquiries
+      USE TEMP B-TREE FOR ORDER BY
+PASS C5b admin reply (resets reply_seen_at when the reply changes) [ran, 0 row(s)]
+      SEARCH contact_inquiries USING INDEX sqlite_autoindex_contact_inquiries_1 (id=?)
+PASS X1a submit: run row with rate rules (burst 3 s, 500 a day) [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 2
+      SEARCH puzzlebox_runs USING INDEX puzzlebox_runs_user_created (user_id=? AND created_at>?)
+      SCALAR SUBQUERY 3
+      SEARCH puzzlebox_runs USING COVERING INDEX puzzlebox_runs_user_created (user_id=? AND created_at>?)
+      SCALAR SUBQUERY 1
+      SEARCH puzzlebox_best USING PRIMARY KEY (game=? AND board=? AND user_id=?)
+      SEARCH puzzlebox_best USING INDEX puzzlebox_best_run (run_id=?)
+PASS X1b submit: latest player token [ran, 0 row(s)]
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 1
+      SEARCH puzzlebox_runs USING INTEGER PRIMARY KEY (rowid=?)
+      SEARCH puzzlebox_best USING INDEX puzzlebox_best_user_game (user_id=?)
+PASS X1c submit: best (replaced only by a higher score; attempts always advance) [ran, 0 row(s)]
+      SEARCH puzzlebox_runs USING INTEGER PRIMARY KEY (rowid=?)
+PASS X1d submit: board stats, first finished run of the player only [ran, 0 row(s)]
+      SEARCH puzzlebox_board_stats USING PRIMARY KEY (game=? AND board=?)
+      SCALAR SUBQUERY 1
+      SEARCH puzzlebox_runs USING INTEGER PRIMARY KEY (rowid=?)
+PASS X1e submit: answer (rank and players over non-hidden players) [ran, 1 row(s)]
+      SEARCH r USING INTEGER PRIMARY KEY (rowid=?)
+      SEARCH b USING PRIMARY KEY (game=? AND board=? AND user_id=?)
+      CORRELATED SCALAR SUBQUERY 1
+      SEARCH o USING PRIMARY KEY (game=? AND board=?)
+      SEARCH p USING PRIMARY KEY (user_id=?)
+      SCALAR SUBQUERY 2
+      SEARCH o USING PRIMARY KEY (game=? AND board=?)
+      SEARCH p USING PRIMARY KEY (user_id=?)
+PASS X2 leaderboard of one board or all boards (valid boards drive PK seeks; t and r are CTE results) allow=tempsort,tempgroup,scan:t,scan:r [ran, 10 row(s)]
+      MATERIALIZE ranked
+      CO-ROUTINE (subquery-10)
+      MATERIALIZE totals
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      SEARCH b USING PRIMARY KEY (game=? AND board=?)
+      SEARCH p USING PRIMARY KEY (user_id=?)
+      USE TEMP B-TREE FOR GROUP BY
+      SCAN t
+      USE TEMP B-TREE FOR ORDER BY
+      SCAN (subquery-10)
+      MATERIALIZE page
+      SCAN CONSTANT ROW
+      SCALAR SUBQUERY 4
+      SCAN ranked
+      SCALAR SUBQUERY 5
+      SCAN ranked
+      SCAN page
+      SCAN r
+      SEARCH p USING PRIMARY KEY (user_id=?)
+      SCALAR SUBQUERY 7
+      SCAN ranked
+      SCALAR SUBQUERY 8
+      SCAN page
+      USE TEMP B-TREE FOR ORDER BY
+PASS X2s leaderboard: board stats [ran, 1 row(s)]
+      SEARCH puzzlebox_board_stats USING PRIMARY KEY (game=? AND board=?)
+PASS X4 my standings (valid boards drive exact PK seeks of my best rows) [ran, 1 row(s)]
+      SCAN json_each VIRTUAL TABLE INDEX 1:
+      SEARCH m USING PRIMARY KEY (game=? AND board=? AND user_id=?)
+      CORRELATED SCALAR SUBQUERY 1
+      SEARCH o USING PRIMARY KEY (game=? AND board=?)
+      SEARCH p USING PRIMARY KEY (user_id=?)
+      CORRELATED SCALAR SUBQUERY 2
+      SEARCH o USING PRIMARY KEY (game=? AND board=?)
+      SEARCH p USING PRIMARY KEY (user_id=?)
+PASS F1 week list (100) [ran, 62 row(s)]
+      SCAN colorful_philosopher_posts USING INDEX sqlite_autoindex_colorful_philosopher_posts_2
+PASS F2 one post [ran, 1 row(s)]
+      SEARCH colorful_philosopher_posts USING INDEX sqlite_autoindex_colorful_philosopher_posts_1 (id=?)
+PASS F3 reel (12 up to this week) [ran, 12 row(s)]
+      SEARCH colorful_philosopher_posts USING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start<?)
+PASS F4 nav weekly [ran, 1 row(s)]
+      SEARCH colorful_philosopher_posts USING COVERING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start<?)
+PASS F5 codex detail thread of one resource [ran, 3 row(s)]
+      SEARCH colorful_philosopher_posts USING INDEX colorful_philosopher_posts_resource (resource_type=? AND resource_id=?)
+PASS F6 next week open (dev nav) [ran, 0 row(s)]
+      SEARCH colorful_philosopher_posts USING COVERING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start=?)
+PASS F7 admin upsert (local script; keeps id and created_at on conflict) [ran, 1 row(s)]
+
+queries: 127, failures (probes + plans, both passes): 0
