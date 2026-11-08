@@ -2,7 +2,7 @@ import type { ApiSurfaceGroup } from "../../src/lib/api-surfaces";
 import { redactPathname } from "../path-redaction";
 import type { D1Database, D1PreparedStatement } from "./d1";
 import { qaOverride } from "./flag-cookie";
-import { apiFlags, flagsDisabledReason, type ExecutionContextLike, type FlagsEnv } from "./flags";
+import { apiFlags, flagsDisabledReason, type ExecutionContextLike, type FlagsEnv, type ShadowRates } from "./flags";
 import {
   API_MARKER_HEADER,
   apiError,
@@ -170,7 +170,23 @@ const TOKEN_ERRORS: Record<"expired" | "invalid" | "unavailable", ApiErrorCode> 
   unavailable: "auth_unavailable",
 };
 
-export function createApiRouter(routes: readonly ApiRoute[]) {
+/** A handler's response to a GET (never HEAD), seen by `ApiRouterOptions.onResponse`. */
+export type RouteResponseEvent = {
+  route: ApiRoute;
+  context: PublicRouteContext | UserRouteContext;
+  response: Response;
+  /** shadow.<group> sample rates read with the flags; null when the flags were not read (QA override). */
+  shadow: ShadowRates | null;
+  /** Runs the handler again (fresh time, no prefetch) inside another request's `ctx`. */
+  rerun(ctx: ExecutionContextLike): Promise<Response>;
+};
+
+export type ApiRouterOptions = {
+  /** Returns the response to send; a throw keeps the handler's response (step 2 shadow reads). */
+  onResponse?: (event: RouteResponseEvent) => Response;
+};
+
+export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterOptions = {}) {
   const routedGroups: ReadonlySet<ApiSurfaceGroup> = new Set(routes.map((route) => route.group));
 
   async function dispatch(request: Request, env: ApiEnv, ctx: ExecutionContextLike, url: URL): Promise<{ response: Response; label: string; code: string }> {
@@ -202,6 +218,7 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
     if (qa.noSupabase) return legacy("qa");
 
     let prefetched: unknown[][] | null = null;
+    let shadow: ShadowRates | null = null;
     if (qa.forcedGroups) {
       if (!qa.forcedGroups.has(route.group)) return legacy("flag");
     } else {
@@ -213,6 +230,7 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
       );
       if (!decision.ok) return legacy(decision.reason === "unknown" ? "flag" : decision.reason);
       if (!decision.groups.has(route.group)) return legacy("flag");
+      shadow = decision.shadow;
       prefetched = route.access === "public" && route.prefetch ? decision.prefetched as unknown[][] : null;
       if (prefetched && prefetched.length === 0) prefetched = null;
     }
@@ -231,6 +249,7 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
     };
 
     let response: Response;
+    let handlerContext: PublicRouteContext | UserRouteContext = base;
     if (route.access === "public") {
       if (route.rateLimit === "ip" && !(await withinRateLimit(env, "ip", clientIp(request)))) {
         return error("rate_limited");
@@ -267,7 +286,23 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
         if (Number(length) > route.rawBody.maxBytes) return error("too_large");
         bodyStream = request.body;
       }
-      response = await route.handle({ ...base, user: check.user, token, body, bodyStream });
+      handlerContext = { ...base, user: check.user, token, body, bodyStream };
+      response = await route.handle(handlerContext as UserRouteContext);
+    }
+    if (!isHead && method === "GET" && options.onResponse) {
+      const seen = handlerContext;
+      const handle = route.handle as (context: PublicRouteContext | UserRouteContext) => Promise<Response>;
+      try {
+        response = options.onResponse({
+          route,
+          context: seen,
+          response,
+          shadow,
+          rerun: (nextCtx) => handle({ ...seen, ctx: nextCtx, now: Date.now(), prefetched: null }),
+        });
+      } catch {
+        // The hook never changes what the client gets when it fails.
+      }
     }
     return { response: isHead ? withoutBody(response) : response, label, code: "handler" };
   }
