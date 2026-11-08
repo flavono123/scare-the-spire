@@ -306,6 +306,7 @@ async function toybox() {
     assert.equal((await h.call("/api/write/toybox-post?service=combo", { method: "POST", body: COMBO_ROW({ env: "production" }) })).json.error, "invalid");
     assert.equal((await h.call("/api/write/toybox-post?service=combo", { method: "POST", body: COMBO_ROW({ id: comboId }) })).json.error, "duplicate");
     assert.equal((await h.call("/api/write/toybox-post?service=combo", { method: "POST", body: COMBO_ROW({ content_text: "x" }) })).json.error, "check_violation");
+    assert.equal((await h.call("/api/write/toybox-post?service=combo", { method: "POST", body: COMBO_ROW({ resources: [{ type: "card", id: "bash" }] }) })).json.error, "check_violation", "Supabase needs two resources");
     assert.equal((await h.call("/api/write/toybox-post?service=this_or_that", { method: "POST", body: { user_id: USER, nickname: "닉", left_type: "card", left_id: "a", right_type: "card", right_id: "b", reason: "이유", vote_rate_bps: 1 } })).json.error, "invalid");
     const builtin = { user_id: USER, nickname: "닉", title: "월드컵", preset_key: "builtin:x", game_version: "0.1", pool: [] };
     assert.equal((await h.call("/api/write/toybox-post?service=favorite_tournament", { method: "POST", body: builtin })).json.error, "forbidden");
@@ -337,11 +338,12 @@ async function toybox() {
     assert.deepEqual([other.status, other.json], [200, []]);
     const res = await h.call(`/api/write/toybox-post?service=combo&id=${comboId}`, {
       method: "PATCH",
-      body: { content_text: "고친 본문입니다", resources: [{ type: "potion", id: "fire" }], like_count: 50, env: "production", created_at: "2000-01-01T00:00:00Z" },
+      body: { content_text: "고친 본문입니다", resources: [{ type: "potion", id: "fire" }, { type: "card", id: "strike" }], like_count: 50, env: "production", created_at: "2000-01-01T00:00:00Z" },
     });
     const [row] = res.json as unknown as Array<Record<string, unknown>>;
     assert.deepEqual([row.content_text, row.like_count, row.env], ["고친 본문입니다", 0, "development"]);
-    assert.deepEqual(row.resources, [{ type: "potion", id: "fire" }]);
+    assert.deepEqual(row.resources, [{ type: "potion", id: "fire" }, { type: "card", id: "strike" }]);
+    assert.equal((await h.call(`/api/write/toybox-post?service=combo&id=${comboId}`, { method: "PATCH", body: { resources: [{ type: "card", id: "bash" }] } })).json.error, "check_violation", "combo_posts_resources_check");
     assert.equal(h.db.one("SELECT summary FROM posts WHERE id = ?1", comboId)!.summary, "고친 본문입니다");
     const out = h.outbox().at(-1)!;
     assert.deepEqual([out.op, out.match, out.payload], ["update", { id: comboId, user_id: USER }, { read: "posts", columns: ["content_text", "resources"] }]);

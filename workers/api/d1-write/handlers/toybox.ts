@@ -97,6 +97,48 @@ function isPostService(service: ToyboxPostService): service is PostService {
   return service in POST_TABLES;
 }
 
+/** Postgres `jsonb::text`: keys by length then bytes, ", " and ": " separators. */
+export function jsonbText(value: unknown): string {
+  if (value === null || typeof value !== "object") return JSON.stringify(value) ?? "null";
+  if (Array.isArray(value)) return `[${value.map(jsonbText).join(", ")}]`;
+  const encoder = new TextEncoder();
+  const keys = Object.keys(value).sort((a, b) => {
+    const left = encoder.encode(a);
+    const right = encoder.encode(b);
+    if (left.length !== right.length) return left.length - right.length;
+    for (let i = 0; i < left.length; i += 1) if (left[i] !== right[i]) return left[i] - right[i];
+    return 0;
+  });
+  return `{${keys.map((key) => `${JSON.stringify(key)}: ${jsonbText((value as Row)[key])}`).join(", ")}}`;
+}
+
+/**
+ * Supabase CHECKs on columns D1 keeps elsewhere or not at all (design 7), so a write D1 would take
+ * but Supabase would refuse is refused here as today (23514 -> check_violation), never parked in the
+ * mirror. pg_column_size caps are not ported (D1 has its 1 MiB text caps, design 2.4).
+ */
+function supabaseOnlyCheck(service: PostService, row: Row): boolean {
+  if (service === "combo" && "resources" in row) {
+    // combo_posts_resources_check
+    if (!Array.isArray(row.resources) || row.resources.length < 2) return false;
+  }
+  if (service === "transfigure") {
+    // transfigure_posts_source_game_locale_check
+    if ("source_game_locale" in row && (typeof row.source_game_locale !== "string" || Array.from(row.source_game_locale).length !== 3)) return false;
+    // transfigure_posts_extra_variants_shape (the octet_length part; the rest is a D1 CHECK)
+    if ("extra_variants" in row && new TextEncoder().encode(jsonbText(row.extra_variants)).byteLength > 262144) return false;
+  }
+  if (service === "favorite_tournament") {
+    // favorite_tournament_posts_game_version_check
+    if ("game_version" in row && (typeof row.game_version !== "string" || Array.from(row.game_version).length < 1 || Array.from(row.game_version).length > 32)) {
+      return false;
+    }
+    // favorite_tournament_posts_pool_check
+    if ("pool" in row && !Array.isArray(row.pool)) return false;
+  }
+  return true;
+}
+
 function rowsResponse(rows: string[], env: string, status = 200): Response {
   // The step 1 answer is PostgREST's array as is; this is the same array.
   return new Response(`[${rows.join(",")}]`, {
@@ -181,6 +223,7 @@ export async function createPost(write: D1WriteContext): Promise<Response> {
   const image: RowImage = { ...AUTHOR_DEFAULTS, ...input.defaults, ...body, id, user_id: write.uid, created_at: write.now, like_count: 0, comment_count: 0 };
   for (const counter of input.counters) image[counter] = 0;
   delete image.env;
+  if (!supabaseOnlyCheck(service, image)) return apiError("check_violation");
   const extra: Row = Object.fromEntries(input.extras.map((name) => [name, image[name]]));
   const statements = mapped(mapRow(input.table, image, { nowMs: write.nowMs }));
   if (!statements) return apiError("invalid");
@@ -221,6 +264,7 @@ export async function updatePost(write: D1WriteContext): Promise<Response> {
   // guard_post_server_columns keeps id, env, counts and created_at on update.
   const patch: RowImage = { ...body };
   for (const name of ["id", "env", "user_id", "created_at", "like_count", "comment_count", ...input.counters]) delete patch[name];
+  if (!supabaseOnlyCheck(service, patch)) return apiError("check_violation");
   const extra: Row = Object.fromEntries(input.extras.filter((name) => name in patch).map((name) => [name, patch[name]]));
   const statements = mapped(mapChange(
     {
