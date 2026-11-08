@@ -39,6 +39,26 @@ async function main() {
   assert.equal(surfacePath("nav"), "legacy", "demoted for the page");
   assert.equal((fakeWindow.__slseounRuntime as { demoted: Set<string> }).demoted.has("nav"), true, "shared on window");
 
+  // No cookie at all (a page served straight from assets): the build-time default, legacy unless "api".
+  const buildDefault = process.env.NEXT_PUBLIC_API_PATH_DEFAULT;
+  for (const [value, expected] of [[undefined, "legacy"], ["", "legacy"], ["legacy", "legacy"], ["API", "legacy"], ["api", "api"]] as const) {
+    if (value === undefined) delete process.env.NEXT_PUBLIC_API_PATH_DEFAULT;
+    else process.env.NEXT_PUBLIC_API_PATH_DEFAULT = value;
+    resetPage("");
+    assert.equal(surfacePath("comments"), expected, `no cookie, default ${value}`);
+    resetPage("other=1");
+    assert.equal(surfacePath("comments"), expected, `other cookies only, default ${value}`);
+    resetPage("slseoun_rf=v1.nav");
+    assert.equal(surfacePath("comments"), "legacy", `the cookie decides, default ${value}`);
+    resetPage("slseoun_rf=v2.comments");
+    assert.equal(surfacePath("comments"), "legacy", `an unknown cookie version is legacy, default ${value}`);
+    resetPage("");
+    demoteSurface("comments");
+    assert.equal(surfacePath("comments"), "legacy", `a demoted group stays legacy, default ${value}`);
+  }
+  if (buildDefault === undefined) delete process.env.NEXT_PUBLIC_API_PATH_DEFAULT;
+  else process.env.NEXT_PUBLIC_API_PATH_DEFAULT = buildDefault;
+
   // --- apiFetch legacy signals ----------------------------------------------
   const marked = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
     status,

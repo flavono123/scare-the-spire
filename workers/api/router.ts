@@ -3,7 +3,7 @@ import { redactPathname } from "../path-redaction";
 import type { D1Database, D1PreparedStatement } from "./d1";
 import { d1WriteHook } from "./d1-write";
 import { qaOverride } from "./flag-cookie";
-import { apiFlags, flagsDisabledReason, type ExecutionContextLike, type FlagsEnv, type ShadowRates } from "./flags";
+import { apiFlags, flagsDisabledReason, withPathDefault, type ExecutionContextLike, type FlagsEnv, type ShadowRates } from "./flags";
 import {
   API_MARKER_HEADER,
   apiError,
@@ -231,12 +231,13 @@ export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterO
     if (qa.forcedGroups) {
       if (!qa.forcedGroups.has(route.group)) return legacy("flag");
     } else {
-      const decision = await apiFlags(
+      // A failed read takes API_PATH_DEFAULT (plan 7.2).
+      const decision = withPathDefault(env, routedGroups, await apiFlags(
         env,
         ctx,
         routedGroups,
         route.access === "public" && route.prefetch ? route.prefetch : undefined,
-      );
+      ));
       if (!decision.ok) return legacy(decision.reason === "unknown" ? "flag" : decision.reason);
       if (!decision.groups.has(route.group)) return legacy("flag");
       shadow = decision.shadow;

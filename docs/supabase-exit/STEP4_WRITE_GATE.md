@@ -172,10 +172,19 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 - 닫는 조건(이 순서로): 5절 마이그레이션 적용, testbed와 운영 모두 모든 그룹이 `path.<group> = api`이고
   `write.<group> = worker`, 두 Worker 모두 `API_SUPABASE_SECRET_KEY`와 `API_WRITE_MODE_DEFAULT=worker` 배포.
   Supabase가 하나라서 한 번 닫으면 testbed와 운영이 같이 닫힌다.
-- 닫기 전에 더 필요한 것: 경로 플래그를 못 읽으면 라우터와 페이지 쿠키는 지금 `legacy`로 돌려보내고(flags.ts),
+- 닫기 전에 더 필요한 것: 경로 플래그를 못 읽으면 라우터와 페이지 쿠키는 `legacy`로 돌려보내고(flags.ts),
   클라이언트는 legacy 경로로 직접 쓴다. 닫은 뒤에는 그 쓰기가 실패해 D1 플래그 읽기 장애가 쓰기 장애가 된다. plan
-  7.2절("플래그를 읽지 못하면 그 단계의 안전한 쪽인 Worker env 기본값")대로 경로 플래그에도 env 기본값을 두고 `api`로
-  배포한 뒤에 닫는다. flags.ts는 신원 작업과 읽기 작업이 함께 고치는 파일이라 여기서는 고치지 않았다.
+  7.2절("플래그를 읽지 못하면 그 단계의 안전한 쪽인 Worker env 기본값")대로 경로 플래그에도 env 기본값을 둔다.
+  - 2026-11-09 만들었다(`step4/prereqs`). Worker env `API_PATH_DEFAULT`(`legacy`|`api`, 없으면 `legacy` = 지금)를
+    `path.<group>` 행이 없거나 값을 모를 때, 그리고 읽기가 실패하거나 1초를 넘을 때 쓴다(라우터와 페이지 쿠키 둘 다,
+    `API_WRITE_MODE_DEFAULT`와 같은 규칙). `legacy` 행은 그대로 legacy이고, kill switch(`API_RUNTIME_FLAGS`, 설정 오류)와
+    QA 쿠키가 먼저다. `api`이면 차가운 isolate의 페이지 응답도 라우터 표의 모든 그룹을 쿠키에 적는다.
+  - 브라우저: 자산에서 바로 나가는 정적 페이지(`run_worker_first`는 `/api/*`뿐)에 처음 온 사람은 `slseoun_rf`가 없어
+    legacy였다. 쿠키가 아예 없을 때만(그룹을 강등한 때가 아니라) 빌드 시점 `NEXT_PUBLIC_API_PATH_DEFAULT`(같은 값)를
+    따른다(`src/lib/runtime-flags.ts`, 패치 페이지의 esbuild 묶음과 `patch-comments-client.js`는 페이지 설정
+    `apiPathDefault`). Worker가 legacy로 답하면 그 페이지에서 그룹을 강등하므로 legacy로 되돌리기는 쿠키 없이도 된다.
+  - 배포: GitHub Actions와 `run-cloudflare-testbed.mjs`는 `NEXT_PUBLIC_API_PATH_DEFAULT`를 그대로 넘긴다(없으면 legacy).
+    두 값 모두 아직 넣지 않았다. 닫기 전에 Worker `--var API_PATH_DEFAULT:api`와 빌드 변수 `api`를 함께 배포한다.
 
 ## 8. 켜는 순서와 되돌리기
 
@@ -189,8 +198,8 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
    한 번씩 해 보고 Supabase 행을 확인한다. 이상하면 그 그룹을 `rls`로. `history-runs`는 9절 5번(런 하나씩 공유)을
    합친 뒤에 켠다. 그룹마다 Workers 로그의 CPU 시간도 본다(9절 5번).
 5. 운영도 같은 순서(그 그룹의 `path.<group> = api`가 켜진 뒤에만 뜻이 있다).
-6. 모든 그룹이 worker가 되고 경로 플래그의 env 기본값(7절)이 `api`로 배포되면 `API_WRITE_MODE_DEFAULT=worker`를
-   배포하고 7절 닫기 스크립트를 적용한다.
+6. 모든 그룹이 worker가 되고 경로 플래그의 env 기본값(7절 `API_PATH_DEFAULT`, 빌드 `NEXT_PUBLIC_API_PATH_DEFAULT`)이
+   `api`로 배포되면 `API_WRITE_MODE_DEFAULT=worker`를 배포하고 7절 닫기 스크립트를 적용한다.
 
 되돌리기: 닫기 뒤라면 `restore_direct_writes.sql` 먼저, 그다음 `write.<group>`을 `rls`로(필요하면
 `API_WRITE_MODE_DEFAULT`도 지운다). 마이그레이션 되돌리기는 모든 그룹이 rls가 된 뒤에만. 원본이 Supabase라 데이터는

@@ -3,6 +3,7 @@ import {
   pathFlagKey,
   shadowFlagKey,
   type ApiSurfaceGroup,
+  type SurfacePath,
 } from "../../src/lib/api-surfaces";
 import { withTimeout, type D1Database, type D1PreparedStatement } from "./d1";
 import { supabaseApiConfig, type SupabaseApiEnv } from "./supabase-rest";
@@ -17,6 +18,12 @@ export type FlagsEnv = SupabaseApiEnv & {
   DB?: D1Database;
   /** "d1" turns the flags on; anything else keeps every group legacy without reading D1. */
   API_RUNTIME_FLAGS?: string;
+  /**
+   * Path of a routed group whose `path.<group>` row is missing or unknown, or whose flags this
+   * isolate cannot read (plan 7.2: the Worker env default is the step's safe side). "api" once the
+   * browser's direct writes are closed (STEP4_WRITE_GATE 7); anything else means legacy (today).
+   */
+  API_PATH_DEFAULT?: string;
 };
 
 export type ExecutionContextLike = {
@@ -63,16 +70,20 @@ export function flagsStatement(db: D1Database): D1PreparedStatement {
   return db.prepare(FLAGS_SQL);
 }
 
-/** Groups on the api path, limited to groups this Worker version has routes for. */
+/**
+ * Groups on the api path, limited to groups this Worker version has routes for. A group without
+ * a `legacy` or `api` row takes `fallback` (API_PATH_DEFAULT).
+ */
 export function parseFlagRows(
   rows: readonly { key?: unknown; value?: unknown }[],
   routedGroups: ReadonlySet<ApiSurfaceGroup>,
+  fallback: SurfacePath = "legacy",
 ): Set<ApiSurfaceGroup> {
   const groups = new Set<ApiSurfaceGroup>();
   for (const group of API_SURFACE_GROUPS) {
     if (!routedGroups.has(group)) continue;
     const row = rows.find((candidate) => candidate.key === pathFlagKey(group));
-    if (row?.value === "api") groups.add(group);
+    if (row?.value === "api" || (fallback === "api" && row?.value !== "legacy")) groups.add(group);
   }
   return groups;
 }
@@ -141,11 +152,37 @@ export function flagsDisabledReason(env: FlagsEnv): "off" | "not_configured" | n
   return null;
 }
 
-async function readFlags(db: D1Database, routedGroups: ReadonlySet<ApiSurfaceGroup>, now: () => number) {
+/** API_PATH_DEFAULT: "api" only when set to exactly that; unset (today) is legacy. */
+export function defaultSurfacePath(env: FlagsEnv): SurfacePath {
+  return env.API_PATH_DEFAULT === "api" ? "api" : "legacy";
+}
+
+/**
+ * An /api flags decision with the env default in place of a failed or timed-out read (plan 7.2):
+ * with API_PATH_DEFAULT=api every routed group is api, so a D1 outage does not send the browser
+ * to the closed direct writes. The kill switch (off, not_configured) is never overridden.
+ */
+export function withPathDefault(
+  env: FlagsEnv,
+  routedGroups: ReadonlySet<ApiSurfaceGroup>,
+  decision: ApiFlagDecision,
+): ApiFlagDecision {
+  if (decision.ok || decision.reason !== "unknown" || defaultSurfacePath(env) !== "api") return decision;
+  // Shaped like a read that found no rows (empty `values`): every other flag keeps its own default.
+  const fallback = { ok: true as const, groups: routedGroups, prefetched: [], shadow: NO_SHADOW, values: new Map<string, string>() };
+  return fallback;
+}
+
+async function readFlags(
+  db: D1Database,
+  routedGroups: ReadonlySet<ApiSurfaceGroup>,
+  now: () => number,
+  fallback: SurfacePath = "legacy",
+) {
   const startedAt = now();
   try {
     const result = await flagsStatement(db).all<{ key: string; value: string }>();
-    const groups = parseFlagRows(result.results ?? [], routedGroups);
+    const groups = parseFlagRows(result.results ?? [], routedGroups, fallback);
     recordFlags(groups, now(), parseShadowRates(result.results ?? [], routedGroups), flagValues(result.results ?? []));
     return groups;
   } catch (error) {
@@ -168,10 +205,11 @@ export function pageFlags(
   const age = memory ? now - memory.readAt : Infinity;
   if (age >= FRESH_MS && now >= refreshGuardUntil && now >= retryAt) {
     refreshGuardUntil = now + PAGE_REFRESH_GUARD_MS;
-    ctx.waitUntil(readFlags(env.DB as D1Database, routedGroups, Date.now).catch(() => undefined));
+    ctx.waitUntil(readFlags(env.DB as D1Database, routedGroups, Date.now, defaultSurfacePath(env)).catch(() => undefined));
   }
   if (memory && age < STALE_MAX_MS) return memory.groups;
-  return null;
+  // Unknown here: with API_PATH_DEFAULT=api the page says api rather than leaving a cookie-less browser on legacy.
+  return defaultSurfacePath(env) === "api" ? routedGroups : null;
 }
 
 /**
@@ -213,7 +251,7 @@ export async function apiFlags(
     try {
       const results = await db.batch(statements);
       const flagRows = (results[0]?.results ?? []) as { key?: unknown; value?: unknown }[];
-      const groups = parseFlagRows(flagRows, routedGroups);
+      const groups = parseFlagRows(flagRows, routedGroups, defaultSurfacePath(env));
       const shadow = parseShadowRates(flagRows, routedGroups);
       recordFlags(groups, Date.now(), shadow, flagValues(flagRows));
       return { groups, shadow, prefetched: results.slice(1).map((result) => result.results ?? []) };

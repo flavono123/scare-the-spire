@@ -29,6 +29,8 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       NEXT_PUBLIC_SUPABASE_ENV: ${{ vars.NEXT_PUBLIC_SUPABASE_ENV || 'production' }}
+      # Path of a page with no slseoun_rf cookie (src/lib/runtime-flags.ts): unset = legacy.
+      NEXT_PUBLIC_API_PATH_DEFAULT: ${{ vars.NEXT_PUBLIC_API_PATH_DEFAULT }}
       ALLOW_BUILD_WITHOUT_SUPABASE: ${{ vars.ALLOW_BUILD_WITHOUT_SUPABASE }}
       NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN: ${{ secrets.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN || vars.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN }}
     steps:
@@ -156,6 +158,7 @@ jobs:
           test -n "$NEXT_PUBLIC_SUPABASE_URL"
           test -n "$NEXT_PUBLIC_SUPABASE_ANON_KEY"
           test "$NEXT_PUBLIC_SUPABASE_ENV" = "production"
+          case "${NEXT_PUBLIC_API_PATH_DEFAULT:-}" in ""|legacy|api) ;; *) echo "NEXT_PUBLIC_API_PATH_DEFAULT must be legacy or api"; exit 1 ;; esac
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
