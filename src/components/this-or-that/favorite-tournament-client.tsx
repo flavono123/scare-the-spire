@@ -66,7 +66,7 @@ export function FavoriteTournamentClient({
     unavailable,
     loadMore,
     add,
-  } = useFavoriteTournamentPosts(userId, sort);
+  } = useFavoriteTournamentPosts(sort);
   const builtins = useFavoriteTournamentBuiltins();
   const visiblePosts = useMemo(() => {
     if (!presetOnly) return posts;

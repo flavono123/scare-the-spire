@@ -145,10 +145,7 @@ export async function updateDecisionsDecisionsPost(
   return normalizeDecisionsDecisionsPost(data);
 }
 
-export function useDecisionsDecisionsPosts(
-  userId: string | null,
-  sort: ToyboxFeedSort = "latest",
-) {
+export function useDecisionsDecisionsPosts(sort: ToyboxFeedSort = "latest") {
   const feed = useToyboxFeed({
     service: DECISIONS_DECISIONS_FEED_SERVICE,
     table: DECISIONS_DECISIONS_TABLE,
@@ -167,20 +164,7 @@ export function useDecisionsDecisionsPosts(
     }
   }, [feed]);
 
-  const remove = useCallback(async (postId: string) => {
-    if (!userId || !supabaseEnabled) return;
-    const { error } = await withSupabaseTimeout(
-      "decisions_decisions_posts.delete",
-      supabase.from(DECISIONS_DECISIONS_TABLE).delete().eq("id", postId),
-    ).catch(() => ({ error: new Error("timeout") }));
-    if (error) {
-      feed.setUnavailable(true);
-      return;
-    }
-    feed.removePost(postId);
-  }, [feed, userId]);
-
-  return { ...feed, add, remove };
+  return { ...feed, add };
 }
 
 export function useDecisionsDecisionsPost(

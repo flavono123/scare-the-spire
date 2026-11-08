@@ -12,7 +12,6 @@ export const COLORFUL_PHILOSOPHERS_DEV_HREF = "/dev/colorful-philosophers";
 export const COLORFUL_PHILOSOPHERS_TOKEN_SRC = "/images/sts2/modifiers/draft.webp";
 export const COLORFUL_PHILOSOPHERS_BACKGROUND_SRC = "/images/sts2/events/colorful_philosophers.webp";
 export const COLORFUL_PHILOSOPHERS_POSTS_TABLE = "colorful_philosopher_posts";
-export const COLORFUL_PHILOSOPHERS_REACTIONS_TABLE = "colorful_philosopher_reactions";
 export const COLORFUL_PHILOSOPHERS_GAME_VERSION = sts2Meta.version;
 export const COLORFUL_PHILOSOPHERS_SCHEDULE_WEEKS = 8;
 
@@ -54,10 +53,6 @@ export interface ColorfulPhilosopherPost {
 // The Worker's /api/read/engagement builds the same key, so it lives in engagement-keys.ts.
 export function colorfulPhilosophersCommentThreadKey(postId: string): string {
   return philosopherReplyThreadKey(postId);
-}
-
-export function colorfulPhilosopherReactionStorageKey(postId: string): string {
-  return `sts-cp-reaction:${postId}`;
 }
 
 export function isColorfulPhilosopherSlot(value: string): value is ColorfulPhilosopherSlot {

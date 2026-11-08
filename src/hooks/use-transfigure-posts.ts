@@ -102,11 +102,6 @@ interface UseTransfigurePostsReturn {
   unavailable: boolean;
   loadMore: () => Promise<void>;
   add: (input: SaveTransfigurePostInput) => Promise<TransfigurePost | null>;
-  update: (
-    postId: string,
-    input: SaveTransfigurePostInput,
-  ) => Promise<TransfigurePost | null>;
-  remove: (postId: string) => Promise<boolean>;
 }
 
 interface UseTransfigurePostReturn {
@@ -457,8 +452,6 @@ export function useTransfigurePosts(
     unavailable,
     loadMore,
     prependPost,
-    replacePost,
-    removePost,
     setUnavailable,
   } = useToyboxFeed({
     service: "transfigure",
@@ -486,47 +479,6 @@ export function useTransfigurePosts(
     [prependPost, setUnavailable, userId],
   );
 
-  const update = useCallback(
-    async (postId: string, input: SaveTransfigurePostInput) => {
-      const { data, error } = await persistTransfigurePostUpdate(postId, {
-        ...input,
-        activeUserId: input.activeUserId ?? userId ?? undefined,
-      });
-      if (error) {
-        if (!isCheckViolation(error)) setUnavailable(true);
-        throw new Error(error.message);
-      }
-      if (!data) return null;
-
-      const post = normalizePost(data);
-      replacePost(post, data);
-      return post;
-    },
-    [replacePost, setUnavailable, userId],
-  );
-
-  const remove = useCallback(
-    async (postId: string) => {
-      if (!userId || !supabaseEnabled) return false;
-      const { error } = await withSupabaseTimeout(
-        "transfigure_posts.delete",
-        supabase
-          .from("transfigure_posts")
-          .delete()
-          .eq("id", postId)
-          .eq("user_id", userId)
-          .eq("env", supabaseEnv),
-      ).catch(() => ({ error: new Error("timeout") }));
-      if (error) {
-        setUnavailable(true);
-        return false;
-      }
-      removePost(postId);
-      return true;
-    },
-    [removePost, setUnavailable, userId],
-  );
-
   return {
     posts,
     likeCounts,
@@ -537,8 +489,6 @@ export function useTransfigurePosts(
     unavailable,
     loadMore,
     add,
-    update,
-    remove,
   };
 }
 

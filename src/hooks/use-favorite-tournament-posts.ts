@@ -104,10 +104,7 @@ export async function insertFavoriteTournamentPost(
   return normalizeFavoriteTournamentPost(data);
 }
 
-export function useFavoriteTournamentPosts(
-  userId: string | null,
-  sort: ToyboxFeedSort = "latest",
-) {
+export function useFavoriteTournamentPosts(sort: ToyboxFeedSort = "latest") {
   const feed = useToyboxFeed({
     service: FAVORITE_TOURNAMENT_FEED_SERVICE,
     table: FAVORITE_TOURNAMENT_TABLE,
@@ -126,20 +123,7 @@ export function useFavoriteTournamentPosts(
     }
   }, [feed]);
 
-  const remove = useCallback(async (postId: string) => {
-    if (!userId || !supabaseEnabled) return;
-    const { error } = await withSupabaseTimeout(
-      "favorite_tournament_posts.delete",
-      supabase.from(FAVORITE_TOURNAMENT_TABLE).delete().eq("id", postId),
-    ).catch(() => ({ error: new Error("timeout") }));
-    if (error) {
-      feed.setUnavailable(true);
-      return;
-    }
-    feed.removePost(postId);
-  }, [feed, userId]);
-
-  return { ...feed, add, remove };
+  return { ...feed, add };
 }
 
 export function useFavoriteTournamentBuiltins() {

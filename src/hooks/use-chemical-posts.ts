@@ -25,7 +25,6 @@ interface UseChemicalPostsReturn {
   unavailable: boolean;
   loadMore: () => Promise<void>;
   add: (blocks: PostBlock[], nickname: string, activeUserId?: string) => Promise<void>;
-  remove: (postId: string) => Promise<void>;
 }
 
 function normalizePost(row: unknown): ChemicalPost {
@@ -98,7 +97,6 @@ export function useChemicalPosts(
     unavailable,
     loadMore,
     prependPost,
-    removePost,
     setUnavailable,
   } = useToyboxFeed({
     service: "chemical_x",
@@ -121,22 +119,6 @@ export function useChemicalPosts(
     [prependPost, setUnavailable, userId],
   );
 
-  const remove = useCallback(
-    async (postId: string) => {
-      if (!userId || !supabaseEnabled) return;
-      const { error } = await withSupabaseTimeout(
-        "chemical_posts.delete",
-        supabase.from("chemical_posts").delete().eq("id", postId),
-      ).catch(() => ({ error: new Error("timeout") }));
-      if (error) {
-        setUnavailable(true);
-        return;
-      }
-      removePost(postId);
-    },
-    [removePost, setUnavailable, userId],
-  );
-
   return {
     posts,
     likeCounts,
@@ -147,6 +129,5 @@ export function useChemicalPosts(
     unavailable,
     loadMore,
     add,
-    remove,
   };
 }

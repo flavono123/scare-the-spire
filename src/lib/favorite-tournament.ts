@@ -20,7 +20,6 @@ export const FAVORITE_TOURNAMENT_BACKGROUND_SRC =
 export const FAVORITE_TOURNAMENT_TABLE = "favorite_tournament_posts";
 export const FAVORITE_TOURNAMENT_STATS_TABLE =
   "favorite_tournament_candidate_stats";
-export const FAVORITE_TOURNAMENT_PLAYS_TABLE = "favorite_tournament_plays";
 export const FAVORITE_TOURNAMENT_FEED_SERVICE = "favorite_tournament";
 
 export const FAVORITE_TOURNAMENT_GAME_VERSION = sts2Meta.version;

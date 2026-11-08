@@ -39,11 +39,6 @@ interface UseComboPostsReturn {
   unavailable: boolean;
   loadMore: () => Promise<void>;
   add: (input: SaveComboPostInput) => Promise<ComboPost | null>;
-  update: (
-    postId: string,
-    input: SaveComboPostInput,
-  ) => Promise<ComboPost | null>;
-  remove: (postId: string) => Promise<void>;
 }
 
 interface UseComboPostReturn {
@@ -179,8 +174,6 @@ export function useComboPosts(
     unavailable,
     loadMore,
     prependPost,
-    replacePost,
-    removePost,
     setUnavailable,
   } = useToyboxFeed({
     service: "combo",
@@ -208,41 +201,6 @@ export function useComboPosts(
     [prependPost, setUnavailable, userId],
   );
 
-  const update = useCallback(
-    async (postId: string, input: SaveComboPostInput) => {
-      const { data, error } = await persistComboPostUpdate(postId, {
-        ...input,
-        activeUserId: input.activeUserId ?? userId ?? undefined,
-      });
-      if (error) {
-        if (!isCheckViolation(error)) setUnavailable(true);
-        throw new Error(error.message);
-      }
-      if (!data) return null;
-
-      const post = normalizePost(data);
-      replacePost(post, data);
-      return post;
-    },
-    [replacePost, setUnavailable, userId],
-  );
-
-  const remove = useCallback(
-    async (postId: string) => {
-      if (!userId || !supabaseEnabled) return;
-      const { error } = await withSupabaseTimeout(
-        "combo_posts.delete",
-        supabase.from("combo_posts").delete().eq("id", postId),
-      ).catch(() => ({ error: new Error("timeout") }));
-      if (error) {
-        setUnavailable(true);
-        return;
-      }
-      removePost(postId);
-    },
-    [removePost, setUnavailable, userId],
-  );
-
   return {
     posts,
     likeCounts,
@@ -253,8 +211,6 @@ export function useComboPosts(
     unavailable,
     loadMore,
     add,
-    update,
-    remove,
   };
 }
 

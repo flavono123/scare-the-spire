@@ -38,7 +38,6 @@ interface UseThisOrThatPostsReturn {
   unavailable: boolean;
   loadMore: () => Promise<void>;
   add: (input: AddThisOrThatPostInput) => Promise<ThisOrThatPost | null>;
-  remove: (postId: string) => Promise<void>;
 }
 
 interface UseThisOrThatPostReturn {
@@ -122,7 +121,6 @@ export function useThisOrThatPosts(
     unavailable,
     loadMore,
     prependPost,
-    removePost,
     setUnavailable,
   } = useToyboxFeed({
     service: "this_or_that",
@@ -149,22 +147,6 @@ export function useThisOrThatPosts(
     [prependPost, setUnavailable, userId],
   );
 
-  const remove = useCallback(
-    async (postId: string) => {
-      if (!userId || !supabaseEnabled) return;
-      const { error } = await withSupabaseTimeout(
-        "this_or_that_posts.delete",
-        supabase.from("this_or_that_posts").delete().eq("id", postId),
-      ).catch(() => ({ error: new Error("timeout") }));
-      if (error) {
-        setUnavailable(true);
-        return;
-      }
-      removePost(postId);
-    },
-    [removePost, setUnavailable, userId],
-  );
-
   return {
     posts,
     likeCounts,
@@ -175,7 +157,6 @@ export function useThisOrThatPosts(
     unavailable,
     loadMore,
     add,
-    remove,
   };
 }
 

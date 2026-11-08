@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import {
-  buildComboFeedKeysetFilter,
   comboPostMatchesAnyGameElement,
   extractComboHistoryRunReferences,
   extractComboResourceRefs,
@@ -50,15 +49,6 @@ assert.deepEqual(
   rankPopularComboResources([{ resources: [card, relic] }], 0),
   [],
   "a non-positive limit should return no popular chips",
-);
-
-assert.equal(
-  buildComboFeedKeysetFilter({
-    createdAt: '2026-08-10T01:02:03.456Z',
-    id: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-  }),
-  'created_at.lt."2026-08-10T01:02:03.456Z",and(created_at.eq."2026-08-10T01:02:03.456Z",id.lt."aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")',
-  "combo feed keyset filter should quote created_at/id for PostgREST",
 );
 
 const blocks: PostBlock[] = [

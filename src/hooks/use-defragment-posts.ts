@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback } from "react";
 import { ApiError, ApiUnavailableError, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
 import type { PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
@@ -70,37 +69,6 @@ function validateSaveInput(input: SaveDefragmentPostInput): {
     ? contentText.slice(0, DEFRAGMENT_BODY_STORAGE_MAX_CHARS)
     : contentText;
   return { title, nickname, contentText: storageText };
-}
-
-export async function insertDefragmentPost(
-  input: SaveDefragmentPostInput,
-): Promise<DefragmentPost | null> {
-  if (!supabaseEnabled) return null;
-  const parsed = validateSaveInput(input);
-  if (!parsed) return null;
-
-  const authorToken = currentAuthorProfileToken();
-  const { data, error } = await withSupabaseTimeout(
-    "defragment_posts.insert",
-    supabase
-      .from("defragment_posts")
-      .insert({
-        user_id: input.activeUserId,
-        nickname: parsed.nickname,
-        title: parsed.title,
-        content: input.blocks,
-        content_text: parsed.contentText,
-        env: supabaseEnv,
-        avatar_id: authorToken.avatar_id,
-        avatar_kind: authorToken.avatar_kind,
-        palette_id: authorToken.palette_id,
-        palette_swapped: authorToken.palette_swapped,
-      })
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  return normalizePost(data);
 }
 
 export async function updateDefragmentPost(
@@ -210,20 +178,4 @@ export async function fetchDefragmentPost(
   );
   if (error) return null;
   return normalizePost(data);
-}
-
-export function useDefragmentPostMutations() {
-  const add = useCallback(async (input: SaveDefragmentPostInput) => {
-    return insertDefragmentPost(input);
-  }, []);
-  const update = useCallback(async (
-    postId: string,
-    input: SaveDefragmentPostInput,
-  ) => {
-    return updateDefragmentPost(postId, input);
-  }, []);
-  const remove = useCallback(async (postId: string, activeUserId: string) => {
-    return deleteDefragmentPost(postId, activeUserId);
-  }, []);
-  return { add, update, remove };
 }

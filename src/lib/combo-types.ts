@@ -1,9 +1,6 @@
 import type { EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
-import {
-  buildLatestFeedKeysetFilter,
-  TOYBOX_FEED_PAGE_SIZE,
-} from "@/lib/toybox-feed-keyset";
+import { TOYBOX_FEED_PAGE_SIZE } from "@/lib/toybox-feed-keyset";
 import { isYouTubeVideoId } from "@/lib/youtube-reference";
 
 /** The content_text CHECK in the rls_hardening migration. */
@@ -36,16 +33,6 @@ export function comboResourceKey(resource: ComboResourceRef): string {
 }
 
 export const COMBO_FEED_PAGE_SIZE = TOYBOX_FEED_PAGE_SIZE;
-
-export interface ComboFeedCursor {
-  createdAt: string;
-  id: string;
-}
-
-/** PostgREST `.or()` filter for (created_at, id) keyset, newest-first. */
-export function buildComboFeedKeysetFilter(cursor: ComboFeedCursor): string {
-  return buildLatestFeedKeysetFilter(cursor);
-}
 
 export function comboPostMatchesAnyGameElement(
   post: Pick<ComboPost, "resources">,
