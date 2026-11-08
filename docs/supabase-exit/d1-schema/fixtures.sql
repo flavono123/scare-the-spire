@@ -1,6 +1,7 @@
 -- Fixtures for check.db: representative rows for every table (including FK children), then bulk rows
 -- so the plans are checked on non-trivial tables, then a cascade test that fails loudly.
--- Run with PRAGMA foreign_keys = ON (prepended by build/check.py).
+-- Run with PRAGMA foreign_keys = ON (check.py prepends it; D1 enforces foreign keys by default). Loads
+-- unchanged into local D1 too (wrangler d1 execute --file), so it uses no TEMP table.
 
 -- Users: u1 '11111111-1111-4111-8111-111111111111', u2 '22222222-2222-4222-8222-222222222222'.
 
@@ -269,7 +270,8 @@ SELECT k, sum(l), sum(c), max(m), 1762560000000 FROM (
 UPDATE comments SET like_count = (SELECT count(*) FROM comment_likes l WHERE l.comment_id = comments.id);
 
 -- ---------------------------------------------------------------- cascade test (fails loudly)
-CREATE TEMP TABLE _assert (name TEXT NOT NULL, ok INTEGER NOT NULL CHECK (ok = 1));
+-- A plain table (D1 refuses TEMP tables), dropped at the end of this file.
+CREATE TABLE _assert (name TEXT NOT NULL, ok INTEGER NOT NULL CHECK (ok = 1));
 -- Deleting a tournament post removes its service row, pool, stats, plays.
 DELETE FROM posts WHERE service = 'favorite_tournament' AND id = 'a0000000-0000-4000-8000-000000000005';
 INSERT INTO _assert SELECT 'tournament cascade',
@@ -358,3 +360,4 @@ INSERT INTO runtime_flags (key, value, updated_at, note) VALUES ('sync.supabase_
 INSERT INTO runtime_flag_events (key, value, at, note) VALUES ('sync.supabase_in', 'off', '2026-11-08T00:00:00.000Z', 'fixture');
 INSERT INTO api_cache (key, body, fetched_at) VALUES ('nav', '{}', 1762560000000);
 SELECT name || ': ok' FROM _assert;
+DROP TABLE _assert;

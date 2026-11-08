@@ -1,7 +1,9 @@
 -- =====================================================================================================
--- D1 schema draft for the Supabase exit, step 2 (docs/supabase-exit/D1_SCHEMA_DESIGN.md).
--- Applies after the existing d1/migrations 0001_runtime_flags.sql and 0002_api_cache.sql, which are
--- unchanged. Split into migrations at the "-- migration:" markers.
+-- D1 schema for the Supabase exit, step 2 (docs/supabase-exit/D1_SCHEMA_DESIGN.md): the source of
+-- d1/migrations 0003-0006, which apply after the unchanged 0001_runtime_flags.sql and
+-- 0002_api_cache.sql. gen_schema.py writes each "-- migration:" section to its file with the uuid,
+-- timestamp and date GLOB tokens expanded (as short GLOBs: D1 rejects patterns over 50 bytes);
+-- check.py fails when a file and its section differ.
 --
 -- Conventions (design section "공통 규칙"):
 --   * One D1 database per environment (slseoun-prod, slseoun-testbed, local dev). No env column, and no
@@ -30,7 +32,8 @@
 
 -- =====================================================================================================
 -- migration: 0003_sync_bookkeeping.sql
--- Shared by every domain. Times here are INTEGER Unix ms.
+-- Supabase exit step 2 (D1 shadow copy), design 4.1: bookkeeping for the 1-minute sync, the step-5
+-- outbox, the daily check and the shadow reads, shared by every domain. Times here are INTEGER Unix ms.
 -- =====================================================================================================
 
 -- One row per sync loop. 'supabase_in' = steps 2-4 change-log apply (Supabase -> D1),
@@ -186,7 +189,8 @@ CREATE TABLE IF NOT EXISTS shadow_diffs (
 
 -- =====================================================================================================
 -- migration: 0004_engagement.sql
--- Comments, likes, reactions, stories, and the thread counters.
+-- Supabase exit step 2 (D1 shadow copy), design 4.2: comments, likes, reactions, stories, and the
+-- thread counters.
 -- =====================================================================================================
 
 -- Comments on any thread key. No UPDATE path for users, as in Postgres.
@@ -317,8 +321,9 @@ CREATE INDEX IF NOT EXISTS community_stories_user ON community_stories (user_id,
 
 -- =====================================================================================================
 -- migration: 0005_posts.sql
--- Toy Box posts and History Course runs: one posts row per post, one post_<service> row with the
--- service's typed columns, child tables for arrays filtered or joined by element.
+-- Supabase exit step 2 (D1 shadow copy), design 4.3 and 4.4: Toy Box posts and History Course runs.
+-- One posts row per post, one post_<service> row with the service's typed columns, child tables for
+-- arrays filtered or joined by element.
 -- =====================================================================================================
 
 -- posts is the parent of about 16 tables with ON DELETE CASCADE. Never DROP or rebuild it alone: D1
@@ -678,8 +683,9 @@ CREATE TABLE IF NOT EXISTS defragment_bodies (
 ) STRICT;
 
 -- 역사 강의서: the run's typed columns. posts holds id (the run id), owner (donor), donor nickname,
--- created_at, summary (seed or id) and the counters. The list reads these summary columns, which the
--- browser computes at upload (decision 4); old rows get them from a one-off backfill.
+-- created_at, summary (seed or id) and the counters. The list reads these summary columns, computed
+-- from the raw in D1 only (design 10.2): by the first copy and the summary backfill job in steps 2-4,
+-- sent by the browser at upload from step 5. Supabase runs has no summary columns.
 CREATE TABLE IF NOT EXISTS post_history_course (
   service TEXT NOT NULL DEFAULT 'history_course' CHECK (service = 'history_course'),
   post_id TEXT NOT NULL,
@@ -699,14 +705,16 @@ CREATE TABLE IF NOT EXISTS post_history_course (
   -- backfill never writes it. Worker cap 16 KiB; this is the row backstop.
   cover_spec TEXT CHECK (json_valid(cover_spec) AND json_type(cover_spec) = 'object'
     AND length(CAST(cover_spec AS BLOB)) <= 1048576),
-  -- Browser-computed list summary (characters, game_elements, game_mode, list_facts, summary_version).
-  -- summary_version 0 = not computed yet (not backfilled yet, or uploaded by a tab still on the old JS
-  -- after the backfill; the first copy and the daily check count these and re-run the backfill on
-  -- them); N > 0 = written by extractor version N (src constant RUN_SUMMARY_VERSION, bumped when the
-  -- extractor, buildRunHighlights or the list_facts inputs change).
+  -- List summary (characters, game_elements, game_mode, list_facts, summary_version), computed from
+  -- the raw in D1 only. summary_version 0 = not computed yet (a run the 1-minute sync inserted or whose
+  -- raw changed, or one uploaded by a tab still on the old JS; the summary backfill job fills it, and
+  -- until then the list computes that run from its raw as today); N > 0 = written by extractor version
+  -- N (src constant RUN_SUMMARY_VERSION, bumped when the extractor, buildRunHighlights, the list_facts
+  -- inputs or the badge rules change).
   summary_version INTEGER NOT NULL DEFAULT 0 CHECK (summary_version >= 0),
+  -- [{id, rarity}], party best. Rebuilt from the raw with the summary, never copied from Supabase.
   badges TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(badges) AND json_type(badges) = 'array'
-    AND length(CAST(badges AS BLOB)) <= 1048576),                    -- [{id, rarity}], party best
+    AND length(CAST(badges AS BLOB)) <= 1048576),
   characters TEXT CHECK (json_valid(characters) AND json_type(characters) = 'array'
     AND length(CAST(characters AS BLOB)) <= 65536),                  -- ["CHARACTER.IRONCLAD", ...]
   game_mode TEXT CHECK (length(CAST(game_mode AS BLOB)) <= 1024),
@@ -731,9 +739,9 @@ CREATE INDEX IF NOT EXISTS post_history_course_start_time ON post_history_course
 
 -- The raw .run file (decision 4: its own table, still in D1). Opaque text, parsed only by the browser,
 -- bound and returned by the Worker without JSON.parse. The 1.9 MB cap keeps the row under D1's 2 MB
--- limit; the step-2 Supabase migration adds the same CHECK. The raw is never copied into an outbox
--- row (the mirror reads it here). The cap is settled at 1.9 MB (design 10 D8); today's largest raw is
--- 277 KB.
+-- limit; Supabase runs gets no such CHECK, so a larger raw only a hand-crafted request can make is a
+-- sync reject (design 3.1). The raw is never copied into an outbox row (the mirror reads it here).
+-- The cap is settled at 1.9 MB (design 10.8); today's largest raw is 277 KB.
 CREATE TABLE IF NOT EXISTS post_history_course_file (
   service TEXT NOT NULL DEFAULT 'history_course' CHECK (service = 'history_course'),
   post_id TEXT NOT NULL,
@@ -745,6 +753,8 @@ CREATE TABLE IF NOT EXISTS post_history_course_file (
 
 -- =====================================================================================================
 -- migration: 0006_profile_contact_puzzlebox_philosophers.sql
+-- Supabase exit step 2 (D1 shadow copy), design 4.5: profile nickname pools, contact inquiries,
+-- 짜증나는 퍼즐상자 and 다채로운 철학자들.
 -- =====================================================================================================
 
 -- Random-nickname pools per character and locale. The Supabase table has no env column, so every

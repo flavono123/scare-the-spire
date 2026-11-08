@@ -5,8 +5,9 @@
 - [Supabase 탈출 계획](../SUPABASE_EXIT_PLAN.md) 5.5절 이식, 5.6절 환경 분리, 7절 단계
 - [1단계 설계](STEP1_DESIGN.md): 같은 출처 `/api` Worker. 2단계는 이 Worker가 D1을 그림자로 읽는다.
 - [이관 전 정리 조사](CLEANUP_AUDIT.md) 2절, 3.1절, 5절: 옮기지 않는 객체
-- 전체 DDL 초안: [d1-schema/schema.sql](d1-schema/schema.sql). 2단계 구현 때 `d1/migrations/0003_*.sql`~`0006_*.sql`로
-  나눈다. 이 문서는 발췌만 싣는다.
+- 전체 DDL: [d1/migrations/](../../d1/migrations/)의 `0003_*.sql`~`0006_*.sql`. 원본은
+  [d1-schema/schema.src.sql](d1-schema/schema.src.sql)이고 `gen_schema.py`가 마이그레이션 파일을 만든다(9절). 이 문서는
+  발췌만 싣는다.
 - 조사·설계 작업 노트(영어): [d1-schema/notes/](d1-schema/notes/). 이 문서와 다르면 이 문서를 따른다.
 
 ## 상태
@@ -18,7 +19,8 @@
 - 2026-11-08 사용자 선호 반영. `posts` 키를 `(service, id)`로 바꾸고, 이거 아님 저거? 좋아요를 자기 표로
   되돌렸다. 무엇을 뺐는지는 "검토 기록" 끝에 있다.
 - 2026-11-08 로컬 확인(`sqlite3` 3.51.0, 빈 파일, `PRAGMA foreign_keys=ON`):
-  - `0001`·`0002` 뒤에 `schema.sql`이 그대로 올라간다. 표 42개(새 표 39개), 이름 있는 색인 25개, 트리거 0개.
+  - `0001`·`0002` 뒤에 DDL 초안(지금의 `0003`~`0006`)이 그대로 올라간다. 표 42개(새 표 39개), 이름 있는 색인 25개,
+    트리거 0개.
   - 표마다 대표 행과 대량 행(글 807, 댓글 1,504, 좋아요 353, 이거 아님 저거? 좋아요 401, 이야기 302, 퍼즐상자
     런 602 등)을 넣었다. FK 자식과 지우기 연쇄 다섯 가지(월드컵, 코오오옴보, 런, 이거 아님 저거?, 댓글)가 기대대로
     지워지고 남는다. 이거 아님 저거? 글을 지우면 투표와 좋아요가 FK 연쇄로 지워진다. 같은 id를 가진 두 서비스의
@@ -29,7 +31,7 @@
     일부러 그렇다(9절). 결과는 `plans.txt`.
 - D1의 SQLite 판에서 같은 계획이 나오는지는 아직 보지 않았다. `check.py`는 이 컴퓨터의 `sqlite3`(3.51.0)만 보므로
   그대로 다시 돌려서는 알 수 없다. `0003`을 올리기 전에 로컬 D1(`wrangler d1 execute --local`)에서 `select
-  sqlite_version()`을 먼저 본다. 판이 다르면 작은 실행기를 더한다: 로컬 D1에 `0001`, `0002`, `schema.sql`,
+  sqlite_version()`을 먼저 본다. 판이 다르면 작은 실행기를 더한다: 로컬 D1에 `0001`~`0006`과
   `fixtures.sql`을 올리고, `queries.sql`의 문장마다 매개변수를 값으로 바꿔 앞에 `EXPLAIN QUERY PLAN`을 붙인 파일을
   `wrangler d1 execute --local --file --json`으로 돌려, 그 `detail` 줄을 `check.py`의 `judge()`에 넣는다(`ANALYZE`
   뒤에 한 번 더).
@@ -45,6 +47,11 @@
   검토가 사용자 확인으로 남긴 둘(배지 규칙, 문의 트리거 시점)은 그대로 옮기기 원칙으로 정했다(4.4절, 5.5절).
 - 2026-11-08 사용자 결정: 런 요약은 D1에서만 만든다. Supabase `runs`는 바꾸지 않는다(10.2절). 위 기록의 "`runs` 요약
   열 마이그레이션"과 "채우기 dry-run"은 없어졌다. 2단계에 운영 Supabase에 올리는 마이그레이션은 변경 로그 하나다(5.1절).
+- 2026-11-08 마이그레이션 `0003`~`0006`을 만들어 로컬 D1(wrangler 4.156.0, workerd 1.20261023.1)에 올렸다. 표 42개, 이름
+  있는 색인 25개, 트리거 0개. D1의 SQLite는 3.53.4다(D1이 `sqlite_version()`을 막아 workerd 바이너리에서 읽었다). D1이
+  50바이트 넘는 GLOB 패턴과 TEMP 표를 거절해 uuid·시각 CHECK를 같은 값만 받는 짧은 GLOB으로 나눠 쓰고(3.3절)
+  `fixtures.sql`을 고쳤다. 고정 행은 `check.py`와 같은 행 수로 들어간다. `check-local-d1.py`: 쿼리 128개, 두 번 모두 규칙
+  실패 0. 19개는 계획 글자만 다르고 같은 색인을 쓴다(IN 목록의 Bloom 필터 줄이 없고 EXISTS가 `SEARCH ... EXISTS`로 나온다).
 
 ## 1. 결정과 적용
 
@@ -224,7 +231,7 @@ D1이 받지 못하는 값(NULL, `'infinity'`, 10000년, 기원전, 꼴이 다�
 |---|---|---|
 | `timestamptz` | TEXT `YYYY-MM-DDTHH:MM:SS.ffffffZ` | 3.3절 |
 | `date` | TEXT `YYYY-MM-DD` | `week_start`. 월요일 CHECK 포함 |
-| `uuid` | TEXT 소문자, 하이픈, 36자 | GLOB CHECK. Supabase id를 그대로 쓴다 |
+| `uuid` | TEXT 소문자, 하이픈, 36자 | GLOB CHECK(D1 한도 때문에 짧은 GLOB 셋, 3.3절). Supabase id를 그대로 쓴다 |
 | `boolean` | INTEGER 0/1 | Postgres가 널을 허용하면 D1도 허용한다 |
 | `jsonb` | TEXT + `json_valid()` | 압축 JSON |
 | 배열 | 원소로 거르거나 조인하면 자식 표, 아니면 JSON 배열 TEXT | 결정 2 |
@@ -240,6 +247,10 @@ D1이 받지 못하는 값(NULL, `'infinity'`, 10000년, 기원전, 꼴이 다�
 
 - **저장 꼴은 하나다.** `YYYY-MM-DDTHH:MM:SS.ffffffZ`. UTC, 소수 6자리, `Z`, 27자. 모든 데이터 시각 열에 같은 GLOB
   CHECK가 있다. 다른 꼴은 들어갈 수 없다(검사 확인).
+  - D1은 50바이트가 넘는 GLOB·LIKE 패턴을 거절한다(`LIKE or GLOB pattern too complex`). 그래서 한 패턴(시각 107바이트,
+    uuid 260바이트) 대신 같은 값만 받는 짧은 GLOB을 AND로 묶는다. 시각은 1~10번째, 11~19번째, 20번째부터 끝 글자를
+    따로 보고, uuid는 `????????-????-????-????-????????????` 꼴, `[0-9a-f-]` 글자만, 하이픈 넷을 본다. `gen_schema.py`가
+    펴고 50바이트를 넘는 패턴을 막는다. 옛 한 패턴과 받는 값이 같다(4만 2천여 경우에서 차이 0, NULL 포함).
 - 왜 이 꼴인가:
   - Postgres `timestamptz`는 마이크로초까지 있다. 6자리면 잃는 것이 없어 PostgREST 문자열로 정확히 되돌릴 수 있다.
   - 길이가 고정이라 SQLite BINARY 글자 순서가 시간 순서다. 그래서 `ORDER BY created_at`, `(created_at, id)` 키셋,
@@ -339,7 +350,7 @@ D1이 받지 못하는 값(NULL, `'infinity'`, 10000년, 기원전, 꼴이 다�
 
 ## 4. 표별 설계
 
-표 39개를 마이그레이션 넷으로 나눈다. 전체 DDL은 `schema.sql`.
+표 39개를 마이그레이션 넷으로 나눈다. 전체 DDL은 `d1/migrations/`의 네 파일(원본 `schema.src.sql`, 9절).
 
 | 마이그레이션 | 표 |
 |---|---|
@@ -1076,16 +1087,20 @@ D1은 읽은 행(색인 행 포함)으로 센다. 무료는 계정에 하루 읽
 [d1-schema/](d1-schema/)에 있다. 저장소 루트에서 다시 확인한다:
 
 ```bash
-python3 -I docs/supabase-exit/d1-schema/gen_schema.py docs/supabase-exit/d1-schema/schema.src.sql docs/supabase-exit/d1-schema/schema.sql
+python3 -I docs/supabase-exit/d1-schema/gen_schema.py docs/supabase-exit/d1-schema/schema.src.sql d1/migrations
 python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1/migrations
+python3 -I docs/supabase-exit/d1-schema/check-local-d1.py docs/supabase-exit/d1-schema
 ```
 
-- `schema.sql`: 전체 DDL. `schema.src.sql`의 `@UUID@`, `@TS@`, `@DATE@`를 `gen_schema.py`가 GLOB로 편다.
+- `schema.src.sql`: 전체 DDL의 원본. `-- migration:` 구역마다 `gen_schema.py`가 `@UUID@`, `@TS@`, `@DATE@`를 GLOB로 펴서
+  `d1/migrations/0003_*.sql`~`0006_*.sql`을 쓴다. DDL은 이 파일에서만 고친다. 원격 DB에 올린 마이그레이션은 바꾸지 않고
+  새 구역을 더한다.
 - `fixtures.sql`: 대표 행, 대량 행, 지우기 연쇄 검사(실패하면 CHECK 오류로 멈춘다). 이거 아님 저거? 글을 지우면(TW3)
   투표와 좋아요가 FK 연쇄로 지워지는지 본다. 같은 id의 두 서비스 글이 두 행이고, 하나를 지워도 다른 글과 그
   서비스 행이 남는지 본다.
 - `queries.sql`: 쿼리 128개. 머리줄에 기대 색인과 허용 예외가 있다.
-- `check.py`: 임시 폴더의 빈 `check.db`에 `0001`, `0002`, `schema.sql`을 `PRAGMA foreign_keys=ON`으로 올리고, 고정 행을
+- `check.py`: 먼저 `gen_schema.py --check`로 마이그레이션 파일이 `schema.src.sql`과 같은지 본다(다르면 실패). 임시 폴더의
+  빈 `check.db`에 `d1/migrations`의 `0001`~`0006`을 차례로 `PRAGMA foreign_keys=ON`으로 올리고, 고정 행을
   넣고, CHECK·FK 검사 30개를 돌리고, 쿼리마다 `EXPLAIN QUERY PLAN`을 통계 없이 한 번, `ANALYZE` 뒤 한 번 본다.
   쿼리도 실제로 실행한다(쓰기는 savepoint 안에서 되돌림). 결과는 `plans.txt`.
   - 새로 더한 검사(막아야 함): 꼴이 틀린 서비스 이름, `high_seen < low_watermark`, 같은 키의 두 번째 열린 거절, 다른
@@ -1093,6 +1108,11 @@ python3 -I docs/supabase-exit/d1-schema/check.py docs/supabase-exit/d1-schema d1
     `(service, id)`의 두 번째 행, 1024 바이트를 넘는 런 id, 객체가 아닌 `list_facts`. (받아야 함): 빈 스레드 키,
     모르는 새 서비스의 글, 다른 글의 uuid와 같은 런 id.
   - 고정 행에 닫힌 `cross_env` 거절 한 행이 있다(키마다 하나 규칙은 열린 거절에만 걸린다).
+- `check-local-d1.py`: 같은 계획을 로컬 D1(workerd의 SQLite)에서 읽는다. 임시 `--persist-to` 폴더에 `0001`~`0006`과
+  `fixtures.sql`을 올리고(기본 로컬 D1과 원격은 건드리지 않는다), 쿼리마다 매개변수를 값으로 바꿔 `EXPLAIN QUERY PLAN`을
+  `wrangler d1 execute --local --file --json` 한 번으로 돌려 `detail` 줄을 `check.py`의 `judge()`에 넣는다(`ANALYZE` 뒤에 한
+  번 더). 결과는 `plans-local-d1.txt`이고, `plans.txt`와 계획이 다른 쿼리를 두 계획과 함께 적는다. 값으로 바꿔도
+  3.51.0에서는 계획이 하나도 바뀌지 않는다(확인).
 
 규칙: 기대한 색인을 써야 한다. 일반 표를 그냥 훑으면(`SCAN t`), `ORDER BY`에 임시 B-tree를 쓰면, `LIMIT` 없이
 색인 전체를 걸으면 실패다. `service` 앞부분만 쓰는 기본키 검색(`SEARCH t USING PRIMARY KEY (service=?)`)도 훑기로

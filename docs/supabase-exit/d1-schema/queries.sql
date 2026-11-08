@@ -1,5 +1,5 @@
 -- Every query the Worker (and the sync, the mirror and the local scripts) runs on the D1 schema.
--- Format, read by build/check.py: a header line
+-- Format, read by check.py: a header line
 --   -- @ <id> | expect=<alias>:<plan token>,... | allow=<exceptions> | params=<JSON array>
 -- followed by one statement. expect: a plan line for that alias must contain the token (an index
 -- name, PRIMARY KEY, or an autoindex). allow: scan:<alias> (a full table scan is intended),
