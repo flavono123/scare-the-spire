@@ -459,6 +459,23 @@ async function main() {
     assert.deepEqual(unavailable, { kind: "skipped", reason: "unavailable" });
   });
 
+  await check("run list: summary columns past the byte cap are projected away before the guard, never parsed", async () => {
+    const spec = SHADOW_SPECS["read.history-runs"];
+    const shadow = { routeId: "read.history-runs", url: new URL("https://x/api/read/history-runs?view=recent"), config, db: d1, userId: null, now: NOW };
+    const supabaseSide = await spec.supabase!(shadow)!;
+    assert.ok(supabaseSide.ok);
+    const huge = new RawJson(`[${"\"x\",".repeat(SHADOW_MAX_BYTES / 2)}"x"]`);
+    const notJson = new RawJson("{not json");
+    const withBigSummary = {
+      ...spec,
+      d1: async (context: Parameters<NonNullable<typeof spec.d1>>[0]) => {
+        const rows = await D1_ADAPTERS["read.history-runs"](context) as Record<string, unknown>[];
+        return rows.map((row) => ({ ...row, game_elements: huge, list_facts: notJson }));
+      },
+    };
+    assert.deepEqual(await compareShadow(withBigSummary, shadow, supabaseSide), { kind: "same" });
+  });
+
   await check("nav: a snapshot older than 90 s is not compared", async () => {
     const spec = SHADOW_SPECS["read.nav"];
     const shadow = { routeId: "read.nav", url: new URL("https://x/api/read/nav"), config, db: d1, userId: null, now: NOW };
