@@ -1,6 +1,7 @@
 import type { ApiSurfaceGroup } from "../../src/lib/api-surfaces";
 import { redactPathname } from "../path-redaction";
 import type { D1Database, D1PreparedStatement } from "./d1";
+import { d1WriteHook } from "./d1-write";
 import { qaOverride } from "./flag-cookie";
 import { apiFlags, flagsDisabledReason, type ExecutionContextLike, type FlagsEnv } from "./flags";
 import {
@@ -267,7 +268,9 @@ export function createApiRouter(routes: readonly ApiRoute[]) {
         if (Number(length) > route.rawBody.maxBytes) return error("too_large");
         bodyStream = request.body;
       }
-      response = await route.handle({ ...base, user: check.user, token, body, bodyStream });
+      const userContext: UserRouteContext = { ...base, user: check.user, token, body, bodyStream };
+      // Step 5: the write gate (pause, D1 source); null keeps the route's own handler.
+      response = (route.access === "write" ? await d1WriteHook(route, userContext) : null) ?? await route.handle(userContext);
     }
     return { response: isHead ? withoutBody(response) : response, label, code: "handler" };
   }

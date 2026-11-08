@@ -345,7 +345,7 @@ export const MIRROR_TABLES: Record<string, MirrorTable> = {
       "h.run_time AS run_time, h.acts_count AS acts_count, h.total_floors AS total_floors, h.cover_spec AS cover_spec, " +
       "h.badges AS badges, p.like_count AS like_count, p.comment_count AS comment_count, f.raw AS raw " +
       "FROM posts p JOIN post_history_course h ON h.service = p.service AND h.post_id = p.id " +
-      "JOIN post_history_course_file f ON f.service = p.service AND f.post_id = p.id " +
+      "LEFT JOIN post_history_course_file f ON f.service = p.service AND f.post_id = p.id " +
       "WHERE p.service = 'history_course' AND p.id = ?1",
     cols: [
       c("id"), c("donor_user_id"), c("donor_nickname"), c("created_at", "ts"), c("seed"), c("build"), c("character"),
