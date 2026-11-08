@@ -31,6 +31,19 @@
 
 없음.
 
+## 진행 중 배포 (2026-11-08)
+
+- 범위: `3c28929c..main`에 `refactor/supabase-exit`(Supabase 이관 1단계와 정리)를 `--no-ff`로 병합한 것. 섀소식 없는 후속 배포다.
+  운영은 `API_RUNTIME_FLAGS=off`라 화면은 그대로다.
+- push 전 운영 버전(롤백 대상): main `478e169a-7169-478b-a80e-860df4b22d4c`, patch `f22db7fa-09c3-4b4e-a038-018e6f4c2f32`.
+- D1: 0001·0002는 `before-push`다(새 표만 만들고, 지금 운영 Worker에는 D1 binding이 없다).
+- 게이트 확인(2026-11-08):
+  - CI 게이트(pre-push, `patch:test`, codex, version-api, security-headers, `test:api` 등)와 운영 env `cf:build`·`css:check`·`cf:size`(gzip 39 KiB)가 통과했다.
+  - 스위치를 끈 운영 설정 그대로 로컬 Worker 두 개에서 스모크 205개·브라우저 QA 13개가 통과했다.
+  - testbed에서 스모크 205개·QA 13개가 통과했고, 정리 전·후를 비교했다(CLEANUP_AUDIT 5절).
+  - 배포 전 검토: 6개 영역과 빈 곳 검토, 찾은 것마다 반박 검증. 남은 것은 CI의 API 변수 검사가 운영 키 형식에 기대는 점 하나다. 운영 페이지에 구운 키가 `sb_publishable_`이고 URL ref가 20자라 통과한다.
+- worktree `supabase-exit`는 병합 뒤에도 남긴다(2단계부터 계속, plan 7절).
+
 ## 기능 기대치
 
 ### supabase-exit-step1-foundation
