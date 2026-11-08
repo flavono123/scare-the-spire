@@ -6,6 +6,7 @@
 import { isDeepStrictEqual } from "node:util";
 import { rankPopularComboResources } from "../../src/lib/combo-types";
 import { postgrestTs } from "../../src/lib/d1-time";
+import { buildHistoryCourseSearchDoc } from "../../src/lib/history-course-search";
 import {
   listInputsFromRawRow,
   listInputsFromSummaryRow,
@@ -13,7 +14,7 @@ import {
   type HistoryRunListInputs,
   type RunSummaryListRow,
 } from "../../src/lib/run-list-summary";
-import type { RunRow } from "../../src/lib/run-summary-row";
+import { parseRunSafely, type DonatedRunSummary, type RunRow } from "../../src/lib/run-summary-row";
 import type { SqliteDb } from "./test-db";
 
 /** What the list shows or searches for one donated run. */
@@ -55,6 +56,55 @@ export function popularElementsMatch(rawRows: RunRow[], summaryRows: RunSummaryL
   const today = popularElements(rawRows.map(listInputsFromRawRow));
   const d1 = popularElements(summaryRows.map(listInputsFromSummaryRow));
   return isDeepStrictEqual(today, d1);
+}
+
+/** The search doc the list builds for a donated-only card (history-course-run-index.tsx searchDocs). */
+export function indexSearchDoc(donated: DonatedRunSummary) {
+  const runFacts = donated.search_facts ?? null;
+  return buildHistoryCourseSearchDoc({
+    runId: donated.id,
+    run: runFacts ? null : parseRunSafely(donated.raw),
+    runFacts,
+    donated,
+    cover: donated.cover_spec ?? null,
+    noteBlocks: donated.note_blocks ?? null,
+    entities: [],
+  });
+}
+
+/** What a list card shows and its search reads, without the transport (raw, search facts). */
+export function shownCard(donated: DonatedRunSummary) {
+  const card: Record<string, unknown> = { ...donated };
+  delete card.raw;
+  delete card.search_facts;
+  const doc = indexSearchDoc(donated);
+  return { card, haystack: doc.haystack, resources: doc.resources };
+}
+
+/**
+ * Differences between the list the client builds from the Supabase rows and the one it builds from
+ * the D1 rows (both through donatedRunsFromListRows), paired by run id: cards, search phrases, game
+ * elements, and the popular element chips over the whole list.
+ */
+export function compareDonatedRuns(today: DonatedRunSummary[], d1: DonatedRunSummary[]): string[] {
+  const diffs: string[] = [];
+  const byId = new Map(d1.map((run) => [run.id, run]));
+  if (byId.size !== today.length || today.some((run) => !byId.has(run.id))) diffs.push("runs");
+  for (const run of today) {
+    const other = byId.get(run.id);
+    if (!other) continue;
+    const a = shownCard(run);
+    const b = shownCard(other);
+    const fields = new Set([...Object.keys(a.card), ...Object.keys(b.card)]);
+    for (const field of fields) {
+      if (!isDeepStrictEqual(a.card[field], b.card[field])) diffs.push(`${run.id}:card.${field}`);
+    }
+    if (a.haystack !== b.haystack) diffs.push(`${run.id}:search.haystack`);
+    if (!isDeepStrictEqual(a.resources, b.resources)) diffs.push(`${run.id}:search.resources`);
+  }
+  const chips = (runs: DonatedRunSummary[]) => rankPopularComboResources(runs.map((run) => ({ resources: indexSearchDoc(run).resources })), 100);
+  if (!isDeepStrictEqual(chips(today), chips(d1))) diffs.push("popular chips");
+  return diffs;
 }
 
 const LIST_COLUMNS =

@@ -359,6 +359,14 @@ async function main() {
     }
   }
 
+  await check("read.history-run.raw: the raw file is not compared on requests (the daily reconcile compares its hash)", async () => {
+    const { side, shadow, status } = await supabaseSideOf("read.history-run.raw", `id=${RUN1}`, null);
+    assert.equal(status, 200);
+    assert.deepEqual(side, { ok: false, reason: "raw_file" });
+    assert.deepEqual(await compareShadow(SHADOW_SPECS["read.history-run.raw"], shadow, side), { kind: "skipped", reason: "raw_file" });
+    caseResults.push(`read.history-run.raw?id=${RUN1}`);
+  });
+
   await check("every step-1 read route has a D1 adapter, shadow rules and at least one case", () => {
     const reads = API_ROUTES.filter((route) => route.method === "GET").map((route) => route.id).sort();
     assert.deepEqual(Object.keys(D1_ADAPTERS).sort(), reads);

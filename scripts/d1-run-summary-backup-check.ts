@@ -2,7 +2,8 @@
  * Design 9 "런 요약" over a real Supabase backup: every run raw goes through the row mapper and the
  * summary extractor (RF2) into a local SQLite copy of the D1 schema, one database per env, and the
  * list inputs read back from the summary columns must equal the ones today's list builds from the
- * Supabase row and its raw. Also maps every row of the 27 copied tables (a local first-copy dry run)
+ * Supabase row and its raw, and the list the client builds from each (donatedRunsFromListRows, step 3)
+ * is the same. Also maps every row of the 27 copied tables (a local first-copy dry run)
  * and reports rejects. Reports the run count, failures and the list_facts / game_elements sizes.
  *
  *   pnpm exec tsx scripts/d1-run-summary-backup-check.ts <backup dir with public.dump> [--work <dir>]
@@ -26,11 +27,12 @@ import {
   type RowImage,
 } from "../src/lib/d1-sync/row-mapper";
 import type { D1Statement } from "../src/lib/d1-sync/statements";
-import { extractRunListSummary } from "../src/lib/run-list-summary";
+import { donatedRunsFromListRows, extractRunListSummary } from "../src/lib/run-list-summary";
 import type { RunRow } from "../src/lib/run-summary-row";
 import { RECENT_DONATED_RUNS_LIMIT } from "../src/lib/history-runs-api-rules";
 import { applyBatch, openD1TestDb, type SqliteDb } from "./d1-sync/test-db";
 import {
+  compareDonatedRuns,
   compareListInputs,
   d1ListRows,
   listAnswerBytes,
@@ -56,12 +58,17 @@ function pgRestoreBin(): string {
 
 const workDir = workArg ?? mkdtempSync(join(tmpdir(), "d1-backup-check-"));
 const sqlPath = join(workDir, "public-data.sql");
-try {
-  execFileSync(pgRestoreBin(), ["--data-only", "-f", sqlPath, dumpPath], { stdio: ["ignore", "ignore", "inherit"] });
-  main(readFileSync(sqlPath, "utf8"));
-} finally {
-  if (!workArg) rmSync(workDir, { recursive: true, force: true });
-}
+(async () => {
+  try {
+    execFileSync(pgRestoreBin(), ["--data-only", "-f", sqlPath, dumpPath], { stdio: ["ignore", "ignore", "inherit"] });
+    await main(readFileSync(sqlPath, "utf8"));
+  } finally {
+    if (!workArg) rmSync(workDir, { recursive: true, force: true });
+  }
+})().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 
 type PgRow = Record<string, string | null>;
 
@@ -94,7 +101,7 @@ function kb(bytes: number): string {
   return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
-function main(text: string) {
+async function main(text: string) {
   const blocks = copyBlocks(text);
   const images = new Map<string, RowImage[]>();
   for (const table of SUPABASE_TABLES) {
@@ -192,6 +199,18 @@ function main(text: string) {
     const popularLatest = popularElementsMatch(latest.map((row) => rawRows.get(String(row.id))!), latest.map(summaryRowFromD1));
     const popularAll = popularElementsMatch(summaryRows.map((row) => rawRows.get(String(row.id))!), summaryRows.map(summaryRowFromD1));
     if (!popularLatest || !popularAll) envFailures += 1;
+    // The client's list builder (step 3, donatedRunsFromListRows) on the Supabase rows and on the D1
+    // rows: the latest list and every run (cards, search, popular chips).
+    const neverRaw = async (): Promise<string | null> => {
+      throw new Error("a row with a summary or a raw never reads R3r");
+    };
+    const clientDiffs: string[] = [];
+    for (const rowsOfList of [latest, summaryRows]) {
+      const today = await donatedRunsFromListRows(rowsOfList.map((row) => rawRows.get(String(row.id))!), neverRaw);
+      const fromD1 = await donatedRunsFromListRows(rowsOfList.map(summaryRowFromD1) as unknown as RunRow[], neverRaw);
+      clientDiffs.push(...compareDonatedRuns(today, fromD1));
+    }
+    if (clientDiffs.length > 0) envFailures += 1;
     failures += envFailures + unreadable + versionZero;
     runCount += runImages.length;
 
@@ -202,7 +221,8 @@ function main(text: string) {
     console.log(
       `[${env}] runs ${runImages.length}; unreadable raws ${unreadable}; raws over 1.9 MB ${overCap}; summary_version 0 after fill ${versionZero}; ` +
         `list-input failures ${envFailures}${fieldFailures.size ? ` ${JSON.stringify(Object.fromEntries(fieldFailures))}` : ""}; ` +
-        `popular elements equal (latest ${latest.length}: ${popularLatest}, all: ${popularAll})`,
+        `popular elements equal (latest ${latest.length}: ${popularLatest}, all: ${popularAll}); ` +
+        `client list builder differences ${clientDiffs.length}${clientDiffs.length ? ` ${JSON.stringify(clientDiffs.slice(0, 10))}` : ""}`,
     );
     console.log(
       `[${env}] list_facts max ${kb(factsSizes.max)} median ${kb(factsSizes.median)}; game_elements max ${kb(elementSizes.max)} median ${kb(elementSizes.median)}; ` +
