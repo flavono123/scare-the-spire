@@ -1019,6 +1019,39 @@ D1 어댑터가 답을 다시 만드는 규칙:
    알려진 종류로 빼지 않고 차이로 센다. 사용자가 그 행을 어떻게 할지 정하고 그 일을 마칠 때까지 그림자 대조와 단계
    문턱은 실패다(3.1절).
 
+**샘플 플래그 명령.** 키는 `shadow.<group>`, 값은 0~1(소수 넷째 자리까지)이다.
+
+```bash
+pnpm flags set shadow.comments 0.1 --env testbed --local --note "그림자 10%"   # 로컬 D1에서 먼저
+pnpm flags set shadow.comments 1 --env testbed --remote --note "그림자 전부"    # testbed
+pnpm flags set shadow.comments 0 --env testbed --remote --note "그림자 끔"      # 끄기
+pnpm flags list --env testbed --remote                                          # 지금 값과 최근 바꾼 기록
+```
+
+- 그룹은 `nav`, `comments`, `toybox-feed`, `colorful-philosophers`, `stories`, `history-runs`, `puzzlebox`, `profile`,
+  `contact`이다.
+- 그 그룹의 `path.<group>`이 `api`인 요청에서만 돈다. 운영은 `API_RUNTIME_FLAGS=off`라 값을 넣어도 돌지 않는다.
+- 운영 원격은 `--confirm-production`을 붙이고 사용자 승인 뒤에만 바꾼다. 다시 채우는 날은 0으로 둔다(5.2절).
+- 결과는 `shadow_stats`(날, 경로별 `compared`, `differed`, `skipped`)와 `shadow_diffs`(차이마다 표본)다. 날은 UTC다.
+
+**구현 메모(2026-11-08).** 설계가 열어 둔 곳은 가장 단순한 쪽으로 했다.
+
+- 비교는 `workers/api/shadow/`, 경로별 D1 어댑터는 `workers/api/d1-adapters/`다. 라우터의 응답 훅이 표본 요청에서
+  답을 복사(tee)해 `ctx.waitUntil`에서 비교한다. 클라이언트 답은 그대로다.
+- 한쪽 답이 128 KB를 넘으면 `skipped`(CPU 10 ms). D1 쪽은 Supabase 답에 없는 열(런 요약 열)을 먼저 빼고 잰다.
+- 역사 강의서 목록, 고르기, 상세, 표지는 Worker가 원문 없는 같은 열로 Supabase를 한 번 더 읽어 비교한다.
+- 네비: 스냅샷의 `fetchedAt` 시점으로 D1을 읽는다(쿠리어 창, KST 주). 스냅샷이 90초보다 오래되면 `skipped`.
+- 7번: 다른 행에 최근 2분 안의 시각이 있으면 그 isolate 메모리에 다시 비교를 둔다(최대 16개). 2분 뒤 같은
+  isolate의 다음 api GET이 양쪽을 다시 읽어 센다. 그 전에 isolate가 사라지면 세지 않는다. 줄이 차면 `skipped`.
+- 5번: Supabase에 그 글이 있는지 한 번 더 읽어, 없으면 `compared`로만 센다.
+- 6번: 목록이 1000행이면, 철학자 답글 수나 런 참여 수의 합이 1000 이상이면 `skipped`.
+- 피드(T1~T7)는 `queries.sql`의 틀로 서비스, 정렬, 쪽마다 문장을 만든다. 틀 재현과 계획은 시험이 본다.
+- 시험: `pnpm test:d1-sync`의 `scripts/d1-shadow-reads.spec.ts`(PGlite PostgREST와 첫 복사 사본, 모든 읽기 경로).
+  백업 확인은 `pnpm exec tsx scripts/d1-shadow-backup-check.ts <백업 폴더> --work <임시 폴더>`(2026-11-05 백업 두
+  env 모두 차이 0).
+- 확인한 것: Postgres `start_time DESC`는 NULL이 앞, SQLite는 뒤다. 그 백업에 `start_time`이 없는 런은 0개다. 생기면
+  고르기(R2)가 그림자 차이로 보인다.
+
 ## 7. 옮기지 않는 것
 
 | 객체 | 이유 |
