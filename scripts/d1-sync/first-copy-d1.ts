@@ -152,6 +152,12 @@ function inlineExcept(statement: D1Statement, bind: (value: D1Value) => boolean)
 
 /** The statement with every value inlined except strings over 16 KB (then over 256 bytes, if still too long). */
 export function toWire(statement: D1Statement): WireStatement {
+  // No params (DDL, drops): the text goes as written; its comments may hold a '?'.
+  if (statement.params.length === 0) {
+    const bytes = utf8(statement.sql);
+    if (bytes > MAX_STATEMENT_BYTES) throw new Error(`statement on ${statement.sql.slice(0, 40)} is over ${MAX_STATEMENT_BYTES} bytes`);
+    return { sql: statement.sql, params: [], bytes };
+  }
   for (const threshold of [16_384, 256]) {
     const wire = inlineExcept(statement, (value) => typeof value === "string" && utf8(value) > threshold);
     if (wire.bytes <= MAX_STATEMENT_BYTES) return wire;

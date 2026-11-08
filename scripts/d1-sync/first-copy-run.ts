@@ -271,7 +271,8 @@ export async function runFirstCopy(opts: FirstCopyOptions): Promise<FirstCopyRep
     ? new Set((await opts.target.all("SELECT name FROM d1_migrations")).map((r) => String(r.name)))
     : new Set<string>();
   const missingMigrations = migrations.map((m) => m.name).filter((name) => !applied.has(name));
-  const missingTables = tables.filter((t) => !present.has(t));
+  // A re-fill re-creates the tables itself (also after a re-fill that stopped half way).
+  const missingTables = opts.refill ? [] : tables.filter((t) => !present.has(t));
   if (missingMigrations.length || missingTables.length) {
     stops.push(
       `the target lacks the step-2 schema (migrations not applied: ${missingMigrations.join(", ") || "none"}; tables missing: ` +
