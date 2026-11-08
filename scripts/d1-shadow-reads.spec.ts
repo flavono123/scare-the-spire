@@ -33,9 +33,8 @@ import {
   type FeedSort,
 } from "../workers/api/d1-adapters/toybox";
 import { clampShadowRate, parseShadowRates, resetFlagsForTest } from "../workers/api/flags";
-import { createApiRouter, type ApiRoute, type PublicRouteContext, type UserRouteContext } from "../workers/api/router";
+import { createApiRouter } from "../workers/api/router";
 import { API_ROUTES } from "../workers/api/routes";
-import { resetNavForTest } from "../workers/api/routes/nav";
 import { canonical, compareAnswers, differsOnRecentRows, normalizeAnswer, type CompareRules } from "../workers/api/shadow/compare";
 import {
   compareShadow,
@@ -49,10 +48,11 @@ import {
   shadowOnResponse,
   SYNC_LAG_MS,
 } from "../workers/api/shadow/shadow";
-import { atRowCap, SHADOW_SPECS, type ShadowContext, type SupabaseSide } from "../workers/api/shadow/specs";
+import { atRowCap, SHADOW_SPECS } from "../workers/api/shadow/specs";
 import type { SupabaseApiConfig } from "../workers/api/supabase-rest";
 import { SqliteD1 } from "./d1-shadow/d1-shim";
-import { fakePostgrest, TEST_SUPABASE_URL, testToken } from "./d1-shadow/fake-postgrest";
+import { Ctx, harness, keysAt } from "./d1-shadow/harness";
+import { fakePostgrest, TEST_SUPABASE_URL } from "./d1-shadow/fake-postgrest";
 import { DEV, firstCopy, IDS, loadFixture, ORPHAN_BODY, RUN1, RUN2, RUN3, timeAgo, U1, U2, U3, U4 } from "./d1-shadow/fixture";
 import { openSupabase } from "./d1-shadow/supabase-pglite";
 
@@ -68,16 +68,6 @@ async function main() {
     }
   }
 
-  class Ctx {
-    pending: Promise<unknown>[] = [];
-    waitUntil(promise: Promise<unknown>) {
-      this.pending.push(promise);
-    }
-    async drain() {
-      while (this.pending.length) await Promise.allSettled(this.pending.splice(0));
-    }
-  }
-
   const NOW = Date.now();
   const config: SupabaseApiConfig = { url: TEST_SUPABASE_URL, key: "sb_publishable_test", dataEnv: DEV };
 
@@ -88,70 +78,11 @@ async function main() {
   const fake = fakePostgrest(pg);
   const realFetch = globalThis.fetch;
   globalThis.fetch = fake.fetch as typeof fetch;
-
-  const ROUTES = new Map<string, ApiRoute>(API_ROUTES.map((route) => [route.id, route]));
-
-  function contextFor(routeId: string, query: string, userId: string | null, ctx = new Ctx()) {
-    const route = ROUTES.get(routeId);
-    if (!route) throw new Error(`no route ${routeId}`);
-    const url = new URL(`https://testbed.example${route.path}${query ? `?${query}` : ""}`);
-    const base: PublicRouteContext = {
-      request: new Request(url),
-      url,
-      env: { DB: d1, API_RUNTIME_FLAGS: "d1", API_SUPABASE_URL: TEST_SUPABASE_URL, API_SUPABASE_KEY: config.key, API_DATA_ENV: DEV },
-      ctx,
-      config,
-      now: Date.now(),
-      allowUpstream: true,
-      prefetched: null,
-      db: d1,
-    };
-    const context: PublicRouteContext | UserRouteContext = userId
-      ? { ...base, user: { userId, isAnonymous: true, expiresAt: NOW + 3_600_000 }, token: testToken(userId), body: undefined, bodyStream: null }
-      : base;
-    return { route, context, ctx };
-  }
-
-  function shadowContextOf(routeId: string, context: PublicRouteContext | UserRouteContext): ShadowContext {
-    return {
-      routeId,
-      url: context.url,
-      config,
-      db: d1,
-      userId: "user" in context ? context.user.userId : null,
-      now: context.now,
-    };
-  }
-
-  /** The Supabase side as the shadow hook gets it: the spec's own read, or the route's answer. */
-  async function supabaseSideOf(routeId: string, query: string, userId: string | null): Promise<{ side: SupabaseSide; shadow: ShadowContext; status: number }> {
-    resetNavForTest();
-    const { route, context, ctx } = contextFor(routeId, query, userId);
-    const response = await (route.handle as (c: PublicRouteContext | UserRouteContext) => Promise<Response>)(context);
-    const shadow = shadowContextOf(routeId, context);
-    const spec = SHADOW_SPECS[routeId];
-    const own = spec.supabase?.(shadow) ?? null;
-    const side = own ? await own : await readCappedJson(response.clone());
-    if (own) void response.body?.cancel().catch(() => undefined);
-    await ctx.drain();
-    return { side, shadow, status: response.status };
-  }
+  const h = harness(d1, config);
+  const supabaseSideOf = h.supabaseSide;
 
   /** order: paths whose rows must carry the Supabase keys in order (and must have rows unless `empty`). */
   type Case = { route: string; query?: string; user?: string; expect?: "same" | "expected"; order?: string[]; empty?: boolean };
-
-  function keysAt(value: unknown, path: string): string[][] {
-    const segments = path === "" ? [] : path.split(".");
-    let nodes: unknown[] = [value];
-    for (const segment of segments) {
-      nodes = nodes.flatMap((node) => {
-        if (!node || typeof node !== "object") return [];
-        if (segment === "*") return Object.values(node);
-        return [(node as Record<string, unknown>)[segment]];
-      });
-    }
-    return nodes.flatMap((node) => (Array.isArray(node) ? node : [])).filter((row) => row && typeof row === "object").map((row) => Object.keys(row));
-  }
 
   const caseResults: string[] = [];
   let orderedRows = 0;
@@ -171,11 +102,7 @@ async function main() {
       }
       // Key for key: every row object carries the Supabase keys in the Supabase order.
       if (item.order) {
-        const supabaseValue = spec.prepareSupabase ? spec.prepareSupabase(side.answer, shadow) : side.answer;
-        const adapter = D1_ADAPTERS[item.route];
-        let d1Value = materialize(spec.d1 ? await spec.d1({ db: d1, dataEnv: DEV, url: shadow.url, userId: shadow.userId, now: shadow.now }, side.answer)
-          : await adapter({ db: d1, dataEnv: DEV, url: shadow.url, userId: shadow.userId, now: shadow.now }));
-        if (spec.prepareD1) d1Value = spec.prepareD1(d1Value, supabaseValue, shadow);
+        const { supabase: supabaseValue, d1: d1Value } = await h.preparedPair(item.route, side, shadow);
         for (const path of item.order) {
           const left = keysAt(supabaseValue, path);
           const right = keysAt(d1Value, path);

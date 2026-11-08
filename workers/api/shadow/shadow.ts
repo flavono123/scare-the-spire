@@ -95,7 +95,7 @@ export async function compareShadow(
   spec: ShadowSpec,
   context: ShadowContext,
   supabase: SupabaseSide,
-  options: { recheck?: boolean } = {},
+  options: { recheck?: boolean; maxBytes?: number } = {},
 ): Promise<ShadowOutcome> {
   if (!supabase.ok) return { kind: "skipped", reason: supabase.reason };
   if (atRowCap(supabase.answer)) return { kind: "skipped", reason: "row_cap" };
@@ -112,7 +112,7 @@ export async function compareShadow(
   } catch (error) {
     return { kind: "skipped", reason: error instanceof AdapterInputError ? "d1_input" : "d1_unavailable" };
   }
-  if (rawJsonLength(d1) > SHADOW_MAX_BYTES) return { kind: "skipped", reason: "too_large" };
+  if (rawJsonLength(d1) > (options.maxBytes ?? SHADOW_MAX_BYTES)) return { kind: "skipped", reason: "too_large" };
   let d1Value = materialize(d1);
   if (spec.prepareD1) d1Value = spec.prepareD1(d1Value, supabaseValue, context);
   if (hasUnavailable(d1Value)) return { kind: "skipped", reason: "d1_unavailable" };
