@@ -6,6 +6,10 @@
  * Usage:
  *   tsx scripts/runtime-flags.ts list --env testbed|production --remote|--local
  *   tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note "why"
+ *   tsx scripts/runtime-flags.ts set shadow.<group> 0..1 --env testbed|production --remote|--local --note "why"
+ *
+ * shadow.<group> is the step 2 shadow-read sample rate (docs/supabase-exit/D1_SCHEMA_DESIGN.md 6):
+ * 0 (or no row) compares nothing, 1 compares every api read of the group.
  *
  * The target must be named: wrangler 4's `d1 execute` defaults to the local
  * file, so a rollback that forgot --remote would "succeed" without touching
@@ -14,17 +18,29 @@
  */
 import { spawnSync } from "node:child_process";
 
-import { API_SURFACE_GROUPS, SURFACE_PATHS, pathFlagKey } from "../src/lib/api-surfaces";
+import { API_SURFACE_GROUPS, SURFACE_PATHS, pathFlagKey, shadowFlagKey } from "../src/lib/api-surfaces";
 import { SYNC_FLAG_KEY, SYNC_FLAG_VALUES } from "../workers/sync/sync-env";
 
 type Target = { env: "testbed" | "production"; remote: boolean };
 
 const DATABASES = { testbed: "slseoun-testbed", production: "slseoun-prod" } as const;
 
-const KNOWN_KEYS = new Map<string, readonly string[]>([
-  ...API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), SURFACE_PATHS] as const),
+type KeyRule = { values: string; accepts: (value: string) => boolean };
+
+const PATH_RULE: KeyRule = { values: SURFACE_PATHS.join(", "), accepts: (value) => SURFACE_PATHS.includes(value as never) };
+// A decimal from 0 to 1 with at most 4 fraction digits; the Worker also clamps what it reads.
+const SHADOW_RULE: KeyRule = {
+  values: "a rate from 0 to 1 (e.g. 0, 0.1, 1)",
+  accepts: (value) => /^[01](?:\.\d{1,4})?$/.test(value) && Number(value) <= 1,
+};
+
+const oneOf = (values: readonly string[]): KeyRule => ({ values: values.join(", "), accepts: (value) => values.includes(value) });
+
+const KNOWN_KEYS = new Map<string, KeyRule>([
+  ...API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), PATH_RULE] as const),
+  ...API_SURFACE_GROUPS.map((group) => [shadowFlagKey(group), SHADOW_RULE] as const),
   // Step 2: the 1-minute sync and read-after-write (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3).
-  [SYNC_FLAG_KEY, SYNC_FLAG_VALUES],
+  [SYNC_FLAG_KEY, oneOf(SYNC_FLAG_VALUES)],
 ]);
 
 function usage(message?: string): never {
@@ -34,6 +50,7 @@ function usage(message?: string): never {
     "  tsx scripts/runtime-flags.ts list --env testbed|production --remote|--local",
     "  tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set sync.enabled on|off --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
+    "  tsx scripts/runtime-flags.ts set shadow.<group> 0..1 --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     `Keys: ${[...KNOWN_KEYS.keys()].join(", ")}`,
   ].join("\n"));
   process.exit(2);
@@ -98,9 +115,9 @@ function main() {
 
   if (command === "set") {
     const [key, value] = rest;
-    const allowed = key ? KNOWN_KEYS.get(key) : undefined;
-    if (!allowed) usage(`unknown key: ${key}`);
-    if (!value || !allowed.includes(value)) usage(`value for ${key} must be one of ${allowed.join(", ")}`);
+    const rule = key ? KNOWN_KEYS.get(key) : undefined;
+    if (!rule) usage(`unknown key: ${key}`);
+    if (!value || !rule.accepts(value)) usage(`value for ${key} must be ${rule.values}`);
     const note = (option(rest, "--note") ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, 200);
     if (!note) usage("--note is required");
     if (env === "production" && target.remote && !rest.includes("--confirm-production")) {

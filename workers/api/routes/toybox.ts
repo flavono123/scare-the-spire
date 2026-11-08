@@ -36,8 +36,8 @@ const STREAM_MS = 15_000;
 const UPLOAD_MS = 25_000;
 const POST_UPLOAD_MAX_BYTES = 8 * 1024 * 1024;
 const DRAFT_UPLOAD_MAX_BYTES = 4 * 1024 * 1024;
-const PAGESTORM_LIST_COLUMNS = "id,user_id,nickname,title,content,content_text,env,created_at,avatar_id,avatar_kind,palette_id,palette_swapped";
-const DEFRAGMENT_RUN_COLUMNS = "id,created_at,like_count,comment_count,seed,donor_user_id,donor_nickname,cover_spec,win,ascension,total_floors";
+export const PAGESTORM_LIST_COLUMNS = "id,user_id,nickname,title,content,content_text,env,created_at,avatar_id,avatar_kind,palette_id,palette_swapped";
+export const DEFRAGMENT_RUN_COLUMNS = "id,created_at,like_count,comment_count,seed,donor_user_id,donor_nickname,cover_spec,win,ascension,total_floors";
 
 async function stream(context: PublicRouteContext | UserRouteContext, request: Omit<StreamRequest, "deadline" | "timeoutMs">, status = 200): Promise<Response> {
   const { config } = context;

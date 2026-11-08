@@ -13,7 +13,7 @@ import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
 
 export const PHILOSOPHER_POST_COLUMNS =
   "id,week_start,slot,resource_type,resource_id,name_ko,name_en,image_url,body,game_version,buff_count,nerf_count,rework_count";
-const REEL_COLUMNS = "id,week_start,slot,resource_type,resource_id,name_ko,name_en,image_url,body,game_version";
+export const REEL_COLUMNS = "id,week_start,slot,resource_type,resource_id,name_ko,name_en,image_url,body,game_version";
 const WEEK_POST_LIMIT = 100;
 const REEL_POST_LIMIT = 12;
 /** Same cap as the legacy count query (use-colorful-philosopher-posts.ts). */
