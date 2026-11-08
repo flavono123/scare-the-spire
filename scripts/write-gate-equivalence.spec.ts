@@ -250,6 +250,7 @@ const API_CASES: ApiCase[] = [
   { name: "combo insert with an uppercase owner", method: "POST", path: "/api/write/toybox-post?service=combo", body: COMBO_ROW({ id: id("a1000000", 6), user_id: U1.toUpperCase() }), status: 201 },
   { name: "combo insert failing a CHECK", method: "POST", path: "/api/write/toybox-post?service=combo", body: COMBO_ROW({ id: id("a1000000", 7), content_text: "x" }), status: 422 },
   { name: "combo insert with a bad owner", method: "POST", path: "/api/write/toybox-post?service=combo", body: COMBO_ROW({ id: id("a1000000", 8), user_id: "not-a-uuid" }), status: 400 },
+  { name: "combo insert with an unknown column", method: "POST", path: "/api/write/toybox-post?service=combo", body: COMBO_ROW({ id: id("a1000000", 9), bogus: 1 }), status: 400 },
   { name: "combo insert duplicate id", method: "POST", path: "/api/write/toybox-post?service=combo", body: COMBO_ROW({}), status: 422 },
   {
     name: "combo update with guarded columns", method: "PATCH", path: `/api/write/toybox-post?service=combo&id=${COMBO1}`,
@@ -372,6 +373,7 @@ const INQUIRY = (overrides: Record<string, unknown>) => ({
 const GATE_CASES: GateCase[] = [
   { name: "comment for another user", request: { method: "POST", path: "comments", body: { story_id: "k", user_id: U2, nickname: "닉", content: "hello", env: "development" }, prefer: ["return=minimal"] }, status: 403, code: "42501" },
   { name: "comment with a forged time", request: { method: "POST", path: "comments", body: { story_id: "k", user_id: U1, nickname: "닉", content: "hello", env: "development", created_at: "2001-01-01T00:00:00Z" }, query: q({ select: "story_id,created_at" }), prefer: ["return=representation"] }, status: 201 },
+  { name: "comment with a key that is no column", request: { method: "POST", path: "comments", body: { story_id: "k", user_id: U1, nickname: "닉", Content: "hello", env: "development" }, prefer: ["return=minimal"] }, status: 400, code: "PGRST204" },
   { name: "comment with an empty content", request: { method: "POST", path: "comments", body: { story_id: "k", user_id: U1, nickname: "닉", content: "", env: "development" }, prefer: ["return=minimal"] }, status: 400, code: "23514" },
   { name: "comment update (no policy)", request: { method: "PATCH", path: "comments", body: { content: "edited" }, query: q({ id: `eq.${C2}`, select: "id" }), prefer: ["return=representation"] }, status: 200 },
   { name: "comment delete of another user's by its owner filter", request: { method: "DELETE", path: "comments", query: q({ id: `eq.${C2}`, user_id: `eq.${U2}`, select: "id" }), prefer: ["return=representation"] }, status: 200 },

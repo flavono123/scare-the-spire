@@ -187,6 +187,13 @@ export class PgRest {
     return signatures;
   }
 
+  /** PostgREST refuses a payload key that is not a column of the table. */
+  private async knownColumns(table: string, columns: readonly string[]): Promise<void> {
+    const types = await this.columnTypes(table);
+    const unknown = columns.find((column) => !types.has(column));
+    if (unknown !== undefined) throw new PgrstError(400, "PGRST204", `no column ${unknown}`);
+  }
+
   private async where(table: string, query: URLSearchParams, params: unknown[], alias: string): Promise<string> {
     const types = await this.columnTypes(table);
     const terms: string[] = [];
@@ -257,6 +264,7 @@ export class PgRest {
       if (!rows.every((row) => row && typeof row === "object" && !Array.isArray(row))) throw new PgrstError(400, "PGRST102", "bad body");
       if (rows.length === 0) return { kind: "rows", sql: "select '[]'::json as body", params };
       const columns = [...new Set(rows.flatMap((row) => Object.keys(row)))];
+      await this.knownColumns(path, columns);
       const list = columns.map(quoteIdent).join(", ");
       params.push(JSON.stringify(rows));
       let sql = `insert into public.${table} as pgrst_target (${list}) select ${list} from json_populate_recordset(null::public.${table}, $1::json)`;
@@ -280,6 +288,7 @@ export class PgRest {
       if (!body || typeof body !== "object" || Array.isArray(body)) throw new PgrstError(400, "PGRST102", "bad body");
       const columns = Object.keys(body);
       if (columns.length === 0) throw new PgrstError(400, "PGRST_SPEC", "empty PATCH bodies are outside this stand-in");
+      await this.knownColumns(path, columns);
       params.push(JSON.stringify(body));
       const set = columns.map((column) => `${quoteIdent(column)} = pgrst_body.${quoteIdent(column)}`).join(", ");
       const where = await this.where(path, query, params, "pgrst_target");

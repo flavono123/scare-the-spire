@@ -56,6 +56,8 @@ const reject = (status: number, code: string): GateDecision => ({ kind: "reject"
 const forbidden = (): GateDecision => reject(403, "42501");
 /** A request this gate does not know; never sent with the service key. */
 const unsupported = (): GateDecision => reject(500, "gate_unsupported");
+/** A payload key that cannot be a column (they are all lower snake case): PostgREST's answer. */
+const unknownColumn = (): GateDecision => reject(400, "PGRST204");
 
 function isPlainObject(value: unknown): value is Row {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -162,7 +164,7 @@ async function decideInsert(table: string, rule: TableRule, write: GateWrite, ac
   const rows = single ? [write.body] : (write.body as unknown[]);
   if (!rows.every(isPlainObject)) return reject(400, "PGRST102");
   const keys = [...new Set((rows as Row[]).flatMap((row) => Object.keys(row)))];
-  if (!keys.every((key) => IDENTIFIER.test(key))) return unsupported();
+  if (!keys.every((key) => IDENTIFIER.test(key))) return unknownColumn();
 
   const resolution = preferValue(write.prefer, "resolution");
   const onConflict = write.query.get("on_conflict");
@@ -237,7 +239,7 @@ async function decideInsert(table: string, rule: TableRule, write: GateWrite, ac
 async function decideUpdate(table: string, rule: TableRule, write: GateWrite, actor: string, lookups: GateLookups): Promise<GateDecision> {
   if (!isPlainObject(write.body)) return reject(400, "PGRST102");
   const keys = Object.keys(write.body);
-  if (!keys.every((key) => IDENTIFIER.test(key))) return unsupported();
+  if (!keys.every((key) => IDENTIFIER.test(key))) return unknownColumn();
   if (write.query.has("columns") || write.query.has("on_conflict")) return unsupported();
   const representation = preferValue(write.prefer, "return") === "representation";
   const filters = filterColumns(write.query);
