@@ -2,6 +2,7 @@
   const CONFIG_ID = "sts-patch-comments-config";
   const PROFILE_KEY = "sts-user-profile";
   const QUERY_TIMEOUT_MS = 8000;
+  const WRITE_PAUSE_MAX_WAIT_MS = 90000;
   const AUTH_TIMEOUT_MS = 8000;
   const COMMENT_MIN_CHARS = 2;
   const COMMENT_MAX_CHARS = 200;
@@ -1400,7 +1401,22 @@
    * `legacy` (use the legacy path) and `processed` (a write may have run, so it
    * is never resent), plus the router's error `code`.
    */
-  async function apiRequest(path, { method = "GET", token, body, group = "comments" } = {}) {
+  async function apiRequest(path, init = {}) {
+    // 503 write_paused (the step 5 cutover, src/lib/api-client.ts): the write did nothing, so it
+    // is sent again after Retry-After, for at most WRITE_PAUSE_MAX_WAIT_MS in all.
+    let waited = 0;
+    for (;;) {
+      try {
+        return await apiRequestOnce(path, init);
+      } catch (error) {
+        if (!error.retryAfterMs || waited + error.retryAfterMs > WRITE_PAUSE_MAX_WAIT_MS) throw error;
+        waited += error.retryAfterMs;
+        await new Promise((resolve) => setTimeout(resolve, error.retryAfterMs));
+      }
+    }
+  }
+
+  async function apiRequestOnce(path, { method = "GET", token, body, group = "comments" } = {}) {
     const headers = { Accept: "application/json" };
     if (body !== undefined) headers["Content-Type"] = "application/json";
     if (token) headers.Authorization = `Bearer ${token}`;
@@ -1429,6 +1445,10 @@
       if (response.status === 409 && parsed?.error === "surface_legacy") {
         slseounRuntime().demoted.add(group);
         throw fail({ legacy: true, processed: false, status: 409 });
+      }
+      if (response.status === 503 && parsed?.error === "write_paused" && method !== "GET") {
+        const seconds = Number(response.headers.get("retry-after") || "");
+        throw fail({ code: "write_paused", status: 503, retryAfterMs: Math.min(10, Math.max(1, Number.isFinite(seconds) ? seconds : 3)) * 1000 });
       }
       if (!response.ok) throw fail({ code: parsed?.error || `http_${response.status}`, status: response.status });
       return parsed;
