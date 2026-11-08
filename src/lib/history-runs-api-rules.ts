@@ -5,12 +5,8 @@
 
 export const RUN_DETAIL_COLUMNS =
   "id,raw,seed,build,character,ascension,win,start_time,run_time,acts_count,cover_spec,created_at";
-export const RUN_DETAIL_COLUMNS_LEGACY =
-  "id,raw,seed,build,character,ascension,win,start_time,run_time,acts_count,created_at";
 export const RUN_SUMMARY_COLUMNS =
   "id,raw,seed,build,character,ascension,win,start_time,run_time,acts_count,total_floors,cover_spec,donor_user_id,created_at";
-export const RUN_SUMMARY_COLUMNS_LEGACY =
-  "id,raw,seed,build,character,ascension,win,start_time,run_time,acts_count,total_floors,donor_user_id,created_at";
 
 export const RECENT_DONATED_RUNS_LIMIT = 100;
 export const HISTORY_RUN_REFERENCE_LIMIT = 30;

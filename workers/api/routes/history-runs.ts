@@ -6,9 +6,7 @@ import {
   parseRunIds,
   RECENT_DONATED_RUNS_LIMIT,
   RUN_DETAIL_COLUMNS,
-  RUN_DETAIL_COLUMNS_LEGACY,
   RUN_SUMMARY_COLUMNS,
-  RUN_SUMMARY_COLUMNS_LEGACY,
 } from "../../../src/lib/history-runs-api-rules";
 import { API_MARKER_HEADER, apiError, jsonResponse, PRIVATE_NO_STORE } from "../http";
 import type { ApiRoute, PublicRouteContext, UserRouteContext } from "../router";
@@ -37,8 +35,6 @@ const NICKNAME_MAX = 64;
 const COVER_SPEC_MAX_BYTES = 16 * 1024;
 const ENGAGEMENT_ROWS = 1000;
 
-const MISSING_COLUMN = new Set(["PGRST204", "42703"]);
-
 /**
  * PostgREST's JSON array, handed to the client by the runtime without any JS
  * touching it: a JS pump over the 5.5 MB development list cost 77-204 ms CPU
@@ -58,23 +54,19 @@ function streamedRows(response: Response, env: string): Response {
   });
 }
 
-/** Streams `select` rows; retries once with `legacySelect` when cover_spec is not deployed. */
+/** Streams `select` rows. */
 async function streamSelect(
   context: PublicRouteContext,
   query: Record<string, string>,
   select: string,
-  legacySelect: string,
 ): Promise<Response> {
   const { config } = context;
-  const deadline = Date.now() + STREAM_READ_MS;
-  const call = (columns: string) => postgrestStream(config, {
+  const result = await postgrestStream(config, {
     path: "runs",
-    deadline,
+    deadline: Date.now() + STREAM_READ_MS,
     timeoutMs: STREAM_READ_MS,
-    query: new URLSearchParams({ ...query, select: columns, env: `eq.${config.dataEnv}` }),
+    query: new URLSearchParams({ ...query, select, env: `eq.${config.dataEnv}` }),
   });
-  let result = await call(select);
-  if (!result.ok && MISSING_COLUMN.has(result.code)) result = await call(legacySelect);
   if (!result.ok) return apiError(restErrorCode(result));
   return streamedRows(result.response, config.dataEnv);
 }
@@ -84,8 +76,8 @@ async function handleList(context: PublicRouteContext): Promise<Response> {
   if (!isHistoryRunsView(view)) return apiError("invalid");
   if (!context.allowUpstream) return jsonResponse({ v: 1, env: context.config.dataEnv });
   return view === "recent"
-    ? streamSelect(context, { order: "created_at.desc", limit: String(RECENT_DONATED_RUNS_LIMIT) }, RUN_SUMMARY_COLUMNS, RUN_SUMMARY_COLUMNS_LEGACY)
-    : streamSelect(context, { order: "start_time.desc", limit: String(HISTORY_RUN_REFERENCE_LIMIT) }, RUN_SUMMARY_COLUMNS, RUN_SUMMARY_COLUMNS_LEGACY);
+    ? streamSelect(context, { order: "created_at.desc", limit: String(RECENT_DONATED_RUNS_LIMIT) }, RUN_SUMMARY_COLUMNS)
+    : streamSelect(context, { order: "start_time.desc", limit: String(HISTORY_RUN_REFERENCE_LIMIT) }, RUN_SUMMARY_COLUMNS);
 }
 
 async function handleOne(context: PublicRouteContext): Promise<Response> {
@@ -95,17 +87,14 @@ async function handleOne(context: PublicRouteContext): Promise<Response> {
   const { config } = context;
   if (!context.allowUpstream) return jsonResponse({ v: 1, env: config.dataEnv });
   const one = { id: `eq.${id}`, limit: "1" };
-  if (view === "detail") return streamSelect(context, one, RUN_DETAIL_COLUMNS, RUN_DETAIL_COLUMNS_LEGACY);
-  if (view === "cover") return streamSelect(context, one, "id,raw,cover_spec", "id,raw");
+  if (view === "detail") return streamSelect(context, one, RUN_DETAIL_COLUMNS);
+  if (view === "cover") return streamSelect(context, one, "id,raw,cover_spec");
   // meta: no raw, small enough to read here (OG fields, "is it shared").
-  const deadline = Date.now() + HANDLER_BUDGET_MS;
-  const read = (select: string) => postgrest<unknown[]>(config, {
+  const result = await postgrest<unknown[]>(config, {
     path: "runs",
-    deadline,
-    query: new URLSearchParams({ select, env: `eq.${config.dataEnv}`, ...one }),
+    deadline: Date.now() + HANDLER_BUDGET_MS,
+    query: new URLSearchParams({ select: "id,character,cover_spec", env: `eq.${config.dataEnv}`, ...one }),
   });
-  let result = await read("id,character,cover_spec");
-  if (!result.ok && MISSING_COLUMN.has(result.code)) result = await read("id,character");
   if (!result.ok) return apiError(restErrorCode(result));
   return jsonResponse({ v: 1, env: config.dataEnv, rows: result.data ?? [] });
 }
@@ -205,10 +194,7 @@ async function handleCover(context: UserRouteContext): Promise<Response> {
     body: { cover_spec: body.coverSpec },
     prefer: ["return=representation"],
   });
-  if (!result.ok) {
-    if (MISSING_COLUMN.has(result.code)) return jsonResponse({ v: 1, env: config.dataEnv, updated: false, reason: "no_column" });
-    return apiError(restErrorCode(result));
-  }
+  if (!result.ok) return apiError(restErrorCode(result));
   return jsonResponse({ v: 1, env: config.dataEnv, updated: (result.data ?? []).length > 0 });
 }
 
@@ -227,7 +213,7 @@ async function handleNicknames(context: UserRouteContext): Promise<Response> {
     body: { donor_nickname: nickname },
     prefer: ["return=minimal"],
   });
-  if (!result.ok && !MISSING_COLUMN.has(result.code)) return apiError(restErrorCode(result));
+  if (!result.ok) return apiError(restErrorCode(result));
   return jsonResponse({ v: 1, env: config.dataEnv });
 }
 

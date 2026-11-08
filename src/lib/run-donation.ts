@@ -5,9 +5,7 @@ import {
   isRunId,
   RECENT_DONATED_RUNS_LIMIT,
   RUN_DETAIL_COLUMNS,
-  RUN_DETAIL_COLUMNS_LEGACY,
   RUN_SUMMARY_COLUMNS,
-  RUN_SUMMARY_COLUMNS_LEGACY,
 } from "./history-runs-api-rules";
 import { surfacePath } from "./runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "./supabase";
@@ -103,12 +101,6 @@ type RunRow = Partial<DonatedRunSummary & DonatedRun> & {
 };
 
 // The column lists live in history-runs-api-rules.ts so the Worker reads the same ones.
-const LEGACY_RUN_DETAIL_COLUMNS = RUN_DETAIL_COLUMNS_LEGACY;
-const COVER_RUN_DETAIL_COLUMNS = RUN_DETAIL_COLUMNS;
-const LEGACY_RUN_SUMMARY_COLUMNS = RUN_SUMMARY_COLUMNS_LEGACY;
-const COVER_RUN_SUMMARY_COLUMNS = RUN_SUMMARY_COLUMNS;
-const HISTORY_REFERENCE_SUMMARY_COLUMNS = RUN_SUMMARY_COLUMNS;
-const HISTORY_REFERENCE_SUMMARY_COLUMNS_LEGACY = RUN_SUMMARY_COLUMNS_LEGACY;
 
 /** True when this env's runs go through the Worker (docs/supabase-exit/STEP1_DESIGN.md 9.6). */
 function runsViaApi(env: string = supabaseEnv): boolean {
@@ -203,27 +195,6 @@ function normalizeRunSummaryRow(row: RunRow): DonatedRunSummary {
   };
 }
 
-function isMissingCoverSpecColumn(error: unknown): boolean {
-  if (!error || typeof error !== "object") return false;
-  const message = "message" in error ? String(error.message ?? "") : "";
-  return /cover_spec/i.test(message) && /column/i.test(message);
-}
-
-function isMissingDonorNicknameColumn(error: unknown): boolean {
-  if (!error || typeof error !== "object") return false;
-  const message = "message" in error ? String(error.message ?? "") : "";
-  return /donor_nickname/i.test(message) && /column/i.test(message);
-}
-
-function omitRunColumns(
-  row: Record<string, unknown>,
-  keys: string[],
-): Record<string, unknown> {
-  const rest = { ...row };
-  for (const key of keys) delete rest[key];
-  return rest;
-}
-
 async function selectDonatedRunForEnv(
   runId: string,
   env: string,
@@ -236,36 +207,19 @@ async function selectDonatedRunForEnv(
       return { data: null, error };
     }
   }
-  const withCover = await withSupabaseTimeout(
+  const result = await withSupabaseTimeout(
     "runs.select.detail",
     supabase
       .from("runs")
-      .select(COVER_RUN_DETAIL_COLUMNS)
-      .eq("id", runId)
-      .eq("env", env)
-      .maybeSingle(),
-  ).catch((error) => ({ data: null, error }));
-
-  if (!withCover.error || !isMissingCoverSpecColumn(withCover.error)) {
-    return {
-      data: withCover.data ? normalizeRunRow(withCover.data as RunRow, runId) : null,
-      error: withCover.error ?? null,
-    };
-  }
-
-  const legacy = await withSupabaseTimeout(
-    "runs.select.detail.legacy",
-    supabase
-      .from("runs")
-      .select(LEGACY_RUN_DETAIL_COLUMNS)
+      .select(RUN_DETAIL_COLUMNS)
       .eq("id", runId)
       .eq("env", env)
       .maybeSingle(),
   ).catch((error) => ({ data: null, error }));
 
   return {
-    data: legacy.data ? normalizeRunRow(legacy.data as RunRow, runId) : null,
-    error: legacy.error ?? null,
+    data: result.data ? normalizeRunRow(result.data as RunRow, runId) : null,
+    error: result.error ?? null,
   };
 }
 
@@ -281,38 +235,19 @@ async function selectRecentDonatedRunsForEnv(
       return { data: null, error };
     }
   }
-  const withCover = await withSupabaseTimeout(
+  const result = await withSupabaseTimeout(
     "runs.select.recent",
     supabase
       .from("runs")
-      .select(COVER_RUN_SUMMARY_COLUMNS)
-      .eq("env", env)
-      .order("created_at", { ascending: false })
-      .limit(RECENT_DONATED_RUNS_LIMIT),
-  ).catch((error) => ({ data: null, error }));
-
-  if (!withCover.error || !isMissingCoverSpecColumn(withCover.error)) {
-    return {
-      data: withCover.data
-        ? (withCover.data as RunRow[]).map(normalizeRunSummaryRow)
-        : null,
-      error: withCover.error ?? null,
-    };
-  }
-
-  const legacy = await withSupabaseTimeout(
-    "runs.select.recent.legacy",
-    supabase
-      .from("runs")
-      .select(LEGACY_RUN_SUMMARY_COLUMNS)
+      .select(RUN_SUMMARY_COLUMNS)
       .eq("env", env)
       .order("created_at", { ascending: false })
       .limit(RECENT_DONATED_RUNS_LIMIT),
   ).catch((error) => ({ data: null, error }));
 
   return {
-    data: legacy.data ? (legacy.data as RunRow[]).map(normalizeRunSummaryRow) : null,
-    error: legacy.error ?? null,
+    data: result.data ? (result.data as RunRow[]).map(normalizeRunSummaryRow) : null,
+    error: result.error ?? null,
   };
 }
 
@@ -327,30 +262,11 @@ async function selectHistoryRunReferencesForEnv(
       return { data: null, error };
     }
   }
-  const withCover = await withSupabaseTimeout(
+  const result = await withSupabaseTimeout(
     "runs.select.history-references",
     supabase
       .from("runs")
-      .select(HISTORY_REFERENCE_SUMMARY_COLUMNS)
-      .eq("env", env)
-      .order("start_time", { ascending: false })
-      .limit(HISTORY_RUN_REFERENCE_LIMIT),
-  ).catch((error) => ({ data: null, error }));
-
-  if (!withCover.error || !isMissingCoverSpecColumn(withCover.error)) {
-    return {
-      data: withCover.data
-        ? (withCover.data as RunRow[]).map(normalizeRunSummaryRow)
-        : null,
-      error: withCover.error ?? null,
-    };
-  }
-
-  const result = await withSupabaseTimeout(
-    "runs.select.history-references.legacy",
-    supabase
-      .from("runs")
-      .select(HISTORY_REFERENCE_SUMMARY_COLUMNS_LEGACY)
+      .select(RUN_SUMMARY_COLUMNS)
       .eq("env", env)
       .order("start_time", { ascending: false })
       .limit(HISTORY_RUN_REFERENCE_LIMIT),
@@ -373,18 +289,9 @@ async function insertDonatedRunRow(row: Record<string, unknown>): Promise<{ erro
       if (!writeMayGoLegacy(error)) return { error: apiWriteError(error) };
     }
   }
-  const first = await withSupabaseTimeout(
+  return withSupabaseTimeout(
     "runs.insert",
     supabase.from("runs").insert(row),
-  ).catch(() => ({ error: new Error("timeout") }));
-  if (first.error && isMissingDonorNicknameColumn(first.error)) {
-    return insertDonatedRunRow(omitRunColumns(row, ["donor_nickname"]));
-  }
-  if (!first.error || !isMissingCoverSpecColumn(first.error)) return first;
-  const legacyRow = omitRunColumns(row, ["cover_spec"]);
-  return withSupabaseTimeout(
-    "runs.insert.legacy",
-    supabase.from("runs").insert(legacyRow),
   ).catch(() => ({ error: new Error("timeout") }));
 }
 
@@ -491,35 +398,13 @@ export async function donateRunsBatch(input: {
   // onConflict spans (id, env) — the composite PK after migration-009.
   // Same content-addressable runId in a different env is a fresh row;
   // only same id + same env is treated as a duplicate.
-  let result = await withSupabaseTimeout(
+  const result = await withSupabaseTimeout(
     "runs.upsert",
     supabase
       .from("runs")
       .upsert(rows, { onConflict: "id,env", ignoreDuplicates: true })
       .select("id"),
   ).catch(() => ({ data: null, error: new Error("timeout") }));
-
-  if (result.error && isMissingDonorNicknameColumn(result.error)) {
-    const stripped = rows.map((row) => omitRunColumns(row, ["donor_nickname"]));
-    result = await withSupabaseTimeout(
-      "runs.upsert.legacy-nickname",
-      supabase
-        .from("runs")
-        .upsert(stripped, { onConflict: "id,env", ignoreDuplicates: true })
-        .select("id"),
-    ).catch(() => ({ data: null, error: new Error("timeout") }));
-  }
-
-  if (result.error && isMissingCoverSpecColumn(result.error)) {
-    const legacyRows = rows.map((row) => omitRunColumns(row, ["cover_spec", "donor_nickname"]));
-    result = await withSupabaseTimeout(
-      "runs.upsert.legacy",
-      supabase
-        .from("runs")
-        .upsert(legacyRows, { onConflict: "id,env", ignoreDuplicates: true })
-        .select("id"),
-    ).catch(() => ({ data: null, error: new Error("timeout") }));
-  }
 
   if (result.error) {
     const message =
@@ -574,7 +459,6 @@ export async function updateDonatedRunCoverSpec(input: {
         `/api/write/history-runs/cover?id=${encodeURIComponent(input.runId)}`,
         { method: "PATCH", body: { coverSpec: input.coverSpec } },
       );
-      if (body?.reason === "no_column") return { ok: false, message: "cover_spec column unavailable" };
       return body?.updated ? { ok: true } : { ok: false, message: "수정 권한이 없거나 대상 런을 찾을 수 없습니다." };
     } catch (error) {
       if (!writeMayGoLegacy(error)) return { ok: false, message: apiWriteError(error).message };
@@ -592,9 +476,6 @@ export async function updateDonatedRunCoverSpec(input: {
   ).catch(() => ({ data: null, error: new Error("timeout") }));
 
   if (result.error) {
-    if (isMissingCoverSpecColumn(result.error)) {
-      return { ok: false, message: "cover_spec column unavailable" };
-    }
     const message =
       result.error instanceof Error
         ? result.error.message
@@ -629,7 +510,7 @@ export async function getDonatedRunOgFields(runId: string): Promise<{
         return null;
       }
     }
-    const withCover = await withSupabaseTimeout(
+    const result = await withSupabaseTimeout(
       "runs.select.og-fields",
       supabase
         .from("runs")
@@ -639,29 +520,9 @@ export async function getDonatedRunOgFields(runId: string): Promise<{
         .maybeSingle(),
     ).catch((error) => ({ data: null, error }));
 
-    if (withCover.error && isMissingCoverSpecColumn(withCover.error)) {
-      const legacy = await withSupabaseTimeout(
-        "runs.select.og-fields.legacy",
-        supabase
-          .from("runs")
-          .select("character")
-          .eq("id", runId)
-          .eq("env", env)
-          .maybeSingle(),
-      ).catch((error) => ({ data: null, error }));
-      if (!legacy.data) {
-        if (legacy.error) return null;
-        continue;
-      }
-      return {
-        character: String((legacy.data as RunRow).character ?? ""),
-        coverSpec: null,
-      };
-    }
-
-    if (withCover.error) return null;
-    if (!withCover.data) continue;
-    const row = withCover.data as RunRow;
+    if (result.error) return null;
+    if (!result.data) continue;
+    const row = result.data as RunRow;
     return {
       character: String(row.character ?? ""),
       coverSpec: parseCoverSpec(row.cover_spec),
@@ -689,7 +550,7 @@ export async function getRunCoverSpec(runId: string): Promise<CoverSpec | null> 
         return null;
       }
     }
-    const withCover = await withSupabaseTimeout(
+    const result = await withSupabaseTimeout(
       "runs.select.cover-spec",
       supabase
         .from("runs")
@@ -699,27 +560,9 @@ export async function getRunCoverSpec(runId: string): Promise<CoverSpec | null> 
         .maybeSingle(),
     ).catch((error) => ({ data: null, error }));
 
-    if (withCover.error && isMissingCoverSpecColumn(withCover.error)) {
-      const legacy = await withSupabaseTimeout(
-        "runs.select.cover-spec.legacy",
-        supabase
-          .from("runs")
-          .select("id, raw")
-          .eq("id", runId)
-          .eq("env", env)
-          .maybeSingle(),
-      ).catch((error) => ({ data: null, error }));
-      if (!legacy.data) {
-        if (legacy.error) return null;
-        continue;
-      }
-      const parsed = parseRunSafely((legacy.data as RunRow).raw);
-      return parsed ? pickAlternatingCover(runId, parsed) : null;
-    }
-
-    if (withCover.error) return null;
-    if (!withCover.data) continue;
-    const row = withCover.data as RunRow;
+    if (result.error) return null;
+    if (!result.data) continue;
+    const row = result.data as RunRow;
     const stored = parseCoverSpec(row.cover_spec);
     if (stored?.auto === false) return stored;
     const parsed = parseRunSafely(row.raw);

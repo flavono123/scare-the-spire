@@ -64,7 +64,6 @@ class FakeRest {
   stories: Row[] = [];
   /** Toybox tables by name (posts, drafts, bodies, this or that likes and votes, tournament stats). */
   toybox: Record<string, Row[]> = {};
-  noCoverColumn = false;
   nicknamePools: Row[] = [{ character_id: "ironclad", locale: "ko", nicknames: ["철갑"] }];
   missingTables = new Set<string>();
   noSeenColumn = false;
@@ -179,9 +178,6 @@ class FakeRest {
     const user = this.userOf(auth);
 
     if (this.missingTables.has(name)) return Response.json({ code: "PGRST205" }, { status: 404 });
-    if (name === "runs" && this.noCoverColumn && params.get("select")?.includes("cover_spec")) {
-      return Response.json({ code: "42703" }, { status: 400 });
-    }
     if (name === "contact_inquiries" && this.noSeenColumn && (params.get("select")?.includes("reply_seen_at") || params.has("reply_seen_at"))) {
       return Response.json({ code: "42703" }, { status: 400 });
     }
@@ -854,10 +850,6 @@ async function main() {
   const referenceRows = await (await call("/api/read/history-runs?view=reference")).json() as Row[];
   assert.equal(referenceRows.length, 2);
   assert.equal((rest.calls.at(-1)?.url.searchParams.get("order")), "start_time.desc");
-  rest.noCoverColumn = true;
-  const olderRuns = await (await call("/api/read/history-runs?view=recent")).json() as Row[];
-  assert.ok(!("cover_spec" in olderRuns[0]), "without the cover_spec column it reads the older columns");
-  rest.noCoverColumn = false;
   assert.equal((await call("/api/read/history-runs?view=all")).status, 400);
   assert.equal((await call("/api/read/history-runs")).status, 400);
 
