@@ -130,16 +130,6 @@ export function toyboxRecommendScore(likeCount: number): number {
   return likeCount;
 }
 
-export function isMissingToyboxFeedRpc(
-  error: { code?: string; message?: string } | null | undefined,
-): boolean {
-  if (!error) return false;
-  if (error.code === "PGRST202" || error.code === "42703") return true;
-  return /get_toybox_feed|left_vote_count|right_vote_count|vote_rate_bps/i.test(
-    error.message ?? "",
-  );
-}
-
 export function asNonNegativeInt(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value) && value >= 0) {
     return Math.trunc(value);
@@ -267,43 +257,8 @@ export function countsFromFeedItems<T extends PostIdentity>(
   return { likeCounts, commentCounts };
 }
 
-async function fetchLatestTablePage<T extends PostIdentity>(
-  table: string,
-  cursor: ToyboxFeedCursor | null,
-  normalizePost: (raw: unknown) => T,
-): Promise<ToyboxFeedPage<T>> {
-  let query = supabase
-    .from(table)
-    .select("*")
-    .eq("env", supabaseEnv)
-    .order("created_at", { ascending: false })
-    .order("id", { ascending: false })
-    .limit(TOYBOX_FEED_PAGE_SIZE);
-
-  if (cursor) {
-    query = query.or(buildLatestFeedKeysetFilter(cursor));
-  }
-
-  const { data, error } = await withSupabaseTimeout(
-    `${table}.feed.latest`,
-    query,
-  );
-  if (error) throw error;
-
-  const items = (data ?? [])
-    .map((row) => {
-      const post = normalizePost(row);
-      if (!post?.id || !post.created_at) return null;
-      return itemFromPostRecord(post, row);
-    })
-    .filter((item): item is ToyboxFeedItem<T> => item != null);
-
-  return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
-}
-
 export async function fetchToyboxFeedPage<T extends PostIdentity>(options: {
   service: ToyboxFeedService;
-  table: string;
   sort: ToyboxFeedSort;
   cursor: ToyboxFeedCursor | null;
   normalizePost: (raw: unknown) => T;
@@ -338,9 +293,6 @@ export async function fetchToyboxFeedPage<T extends PostIdentity>(options: {
     }),
   );
 
-  if (!error) return parseRows((data ?? []) as unknown[]);
-
-  if (!isMissingToyboxFeedRpc(error)) throw error;
-
-  return fetchLatestTablePage(options.table, options.cursor, options.normalizePost);
+  if (error) throw error;
+  return parseRows((data ?? []) as unknown[]);
 }

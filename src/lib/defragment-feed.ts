@@ -18,7 +18,6 @@ import {
   fetchToyboxFeedPage,
   isToyboxFeedCoreSort,
   TOYBOX_FEED_PAGE_SIZE,
-  TOYBOX_FEED_TABLES,
   toyboxRecommendScore,
   type ToyboxFeedCursor,
   type ToyboxFeedSort,
@@ -27,14 +26,6 @@ import {
 export interface DefragmentFeedPage {
   items: DefragmentFeedItem[];
   hasMore: boolean;
-}
-
-export function isMissingDefragmentFeedRpc(
-  error: { code?: string; message?: string } | null | undefined,
-): boolean {
-  if (!error) return false;
-  if (error.code === "PGRST202") return true;
-  return /get_defragment_feed/i.test(error.message ?? "");
 }
 
 function asIsoTimestamp(value: unknown): string | null {
@@ -163,7 +154,6 @@ async function fetchFilteredDefragmentFeedPage(options: {
 }): Promise<DefragmentFeedPage> {
   const page = await fetchToyboxFeedPage({
     service: options.service,
-    table: TOYBOX_FEED_TABLES[options.service],
     sort: options.sort,
     cursor: options.cursor,
     normalizePost: normalizeDefragmentSourcePost,
@@ -218,11 +208,7 @@ async function fetchHistoryCourseDefragmentPage(options: {
     "runs.feed.history_course",
     query,
   );
-  if (error) {
-    if (error.code === "42703") return { items: [], hasMore: false };
-    throw error;
-  }
-
+  if (error) throw error;
   return historyCoursePage(data ?? []);
 }
 
@@ -283,7 +269,7 @@ export async function fetchDefragmentFeedPage(options: {
       if (!shouldUseLegacy(error)) throw error;
     }
   }
-  const v2 = await withSupabaseTimeout(
+  const { data, error } = await withSupabaseTimeout(
     "get_defragment_feed_v2",
     supabase.rpc("get_defragment_feed_v2", {
       p_env: supabaseEnv,
@@ -295,22 +281,6 @@ export async function fetchDefragmentFeedPage(options: {
     }),
   );
 
-  const result = !v2.error || !isMissingDefragmentFeedRpc(v2.error)
-    ? v2
-    : await withSupabaseTimeout(
-      "get_defragment_feed",
-      supabase.rpc("get_defragment_feed", {
-        p_env: supabaseEnv,
-        p_sort: sort,
-        p_limit: TOYBOX_FEED_PAGE_SIZE,
-        p_cursor_score: options.cursor?.score ?? null,
-        p_cursor_created_at: options.cursor?.createdAt ?? null,
-        p_cursor_id: options.cursor?.id ?? null,
-      }),
-    );
-
-  if (!result.error) return feedPage((result.data ?? []) as unknown[]);
-
-  if (!isMissingDefragmentFeedRpc(result.error)) throw result.error;
-  return { items: [], hasMore: false };
+  if (error) throw error;
+  return feedPage((data ?? []) as unknown[]);
 }
