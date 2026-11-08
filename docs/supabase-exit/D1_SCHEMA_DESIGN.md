@@ -900,6 +900,21 @@ HEAD count, `comment_likes(count)`)과 같다.
 - 열린 거절이나 행 차이가 있으면 그날은 실패다. 손으로 만든 값의 거절(3.1절)은 사용자가 그 행을 어떻게 할지 정하고
   그 일을 마칠 때까지 실패다. 그 행은 Supabase에만 있으므로, 거절을 닫기만 해서는 `rows` 차이와 `derived` 차이가
   남는다. D1 읽기는 하루 모든 행 한 번(1만 안팎)이다.
+- **명령과 작업**(`scripts/d1-reconcile.ts`, `scripts/d1-sync/reconcile.ts`):
+  - `pnpm d1:reconcile --target testbed|production`: 요약 채우기(RF1 → R3r → `extractRunListSummary` → RF2) 뒤 대조.
+    `--fill-only`는 채우기만 한다(손으로 돌리는 채우기).
+  - testbed는 `env='development'`와 `slseoun-testbed`, production은 `env='production'`과 `slseoun-prod`(id는
+    `wrangler.jsonc`). Supabase는 PostgREST(service 키)로 읽기만 한다. D1은 HTTP API로 RF2와 그날의 `sync_checks`만 쓴다.
+  - 환경 변수: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_D1_API_TOKEN`(D1 편집).
+    값은 출력하지 않는다.
+  - Supabase 행은 같은 매퍼로 로컬 SQLite(D1 스키마, FK 끔)에 넣어 D1 행끼리 비교한다. 매퍼나 CHECK가 거절한 행은
+    `supabase_reject:<이유>` 차이다. D1은 표마다 기본키 키셋으로 한 번 읽는다(원문 표는 쪽마다 10행).
+  - 종료 1: 행 차이, 파생 차이, 요약 비교 차이, 열린 거절. 보고만: 채우기 뒤 `summary_version` 0 런(경고), 고아 본문,
+    `cross_env` 좋아요, 글·런 수 대 `threads`. 로그에는 수와 이유만 남기고 키는 `sync_checks.diff_sample`에만 둔다.
+  - 첫 복사 전(`0003`~`0006` 없음, 표가 빔, `sync_state`의 `supabase_in` 행 없음)에는 아무것도 쓰지 않고 알림만
+    남긴다(종료 0).
+  - `.github/workflows/d1-reconcile.yml`: 매일 04:30 KST에 testbed, production 차례로. 손으로는 `target`, `fill_only`를
+    고른다. `cloudflare-production` 환경의 비밀값을 쓰고, 예약 실행에 비밀값이 없으면 알림만 남긴다.
 
 ### 5.5 5단계 미러(D1 → Supabase)
 
