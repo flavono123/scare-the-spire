@@ -263,7 +263,9 @@ export class PgliteSource implements CopySource {
     try {
       for (const table of tables) {
         const { rows } = await db.query<{ attname: string }>(
-          "select attname from pg_attribute where attrelid = ('public.' || $1)::regclass and attnum > 0 and not attisdropped order by attnum",
+          // Generated columns are not dumped (as pg_dump leaves them out).
+          "select attname from pg_attribute where attrelid = ('public.' || $1)::regclass and attnum > 0 and not attisdropped " +
+            "and attgenerated = '' order by attnum",
           [table],
         );
         const columns = rows.map((row) => (/^[a-z_][a-z0-9_]*$/.test(row.attname) && row.attname !== "character" && row.attname !== "rows" ? row.attname : `"${row.attname}"`));
