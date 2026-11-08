@@ -90,6 +90,11 @@
   `supabaseEnv`가 `development`이고, 네비가 `/api/read/nav` 1건으로 뜨며 env 불일치 경고가 없다. 2026-09-11은 릴과
   참여 수도 `/api`로 읽는다. 남은 Supabase 요청은 페이지마다 변형 릴 1건(`transfigure_posts`, development 행)뿐이고,
   이는 9.8절에서 1단계에 옮기지 않기로 한 것이다. 운영 `/patches`는 그대로 `production`이다.
+- 2026-11-08 11:50 KST 게이트 전 정리(`e7331d14`~`34125e9a`, CLEANUP_AUDIT 5절)를 testbed에 냈다. 스모크 205개·브라우저
+  QA 13개 통과. 정리 전 배포본과 정리 뒤 배포본을 같은 13쪽으로 비교했다. 정리가 바꾼 다섯 그룹(`toybox-feed`,
+  `history-runs`, `profile`, `contact`, `colorful-philosophers`)을 legacy로 내린 상태와 api인 상태 모두에서 12쪽이 화면
+  요약·요청 목록까지 같고, 패치 페이지는 `transfigure_posts` 요청만 빠졌다. 이제 testbed 패치 페이지의 Supabase 요청은
+  0건이다. 다섯 그룹은 다시 `api`로 올려 9개 그룹 모두 `api`다.
 - 이 문서는 모든 화면이 같이 쓰는 기반과 첫 화면 `nav`를 정한다. 다른 화면은 SURFACE_MAP.md 2절을 따르되,
   이 문서 9절의 규칙이 우선한다.
 

@@ -144,3 +144,42 @@ Supabase 스키마는 7단계까지 늘리기만 한다(plan 7.2절). 구조 개
 2. **Supabase 스키마는 지금 지우지 않는다.** 3.1절은 D1로 옮기지 않는 것으로 처리하고, Supabase에서는 7단계 뒤에 지운다. 예외는 3.4절의 정책이고, 고칠 시점을 정해야 한다.
 3. **2단계 시작 전:** 2절의 선택지(env, 공통 posts, threads, 런 원문, 작성자, 색인)를 D1 스키마 설계 문서로 정한다.
 4. **결정 뒤 따로 낸다:** 3.3절 3~7번.
+
+## 5. 정리 결과(2026-11-08)
+
+4절 1번(게이트 전 정리)을 했다. 커밋은 `e7331d14`~`34125e9a` 7개이고, 1,342줄을 지우고 78줄을 더했다. push는 하지 않았다.
+
+### 지운 것
+
+- **죽은 파일**(`e7331d14`): `nav-indicators.ts`, `debate-cycle.ts`, `use-this-or-that-comment-counts.ts`, `contactReplyIsUnseen`과 각 spec.
+- **죽은 함수**(`8b451be0`, `2cd8ba00`)
+  - 철학자 반응 hook과 그것만 쓰던 저장 키·표 이름
+  - `insertDefragmentPost`, `useDefragmentPostMutations`
+  - 장난감 상자 목록 hook 6개의 `update`·`remove`, 변형·코오오옴보 목록 화면의 `editingPost`(늘 null)
+  - `useToyboxFeed`의 `replacePost`·`removePost`
+  - `FAVORITE_TOURNAMENT_PLAYS_TABLE`, `buildComboFeedKeysetFilter`
+- **닿지 않는 대체 경로**
+  - 장난감 상자 피드 RPC가 없을 때의 표 직접 읽기, 조각모음 v1 RPC 대체, 열이 없을 때의 빈 페이지(`2cd8ba00`)
+  - 런의 `cover_spec`·`donor_nickname` 열이 없을 때의 재시도 9곳, Worker의 같은 재시도와 `no_column` 답, `RUN_*_COLUMNS_LEGACY`(`a8151bdb`)
+  - 문의 `reply_seen_at` 열이 없을 때의 재시도, 닉네임 후보 표가 없을 때, 덧글 본문 표가 없을 때(legacy와 Worker 모두, `65fe9df5`)
+- **Worker의 쓰지 않는 헬퍼 셋**(`6fb0e4da`)
+- **3.3절 1번 패치 페이지 변형 릴 요청**(`34125e9a`)
+
+### 남긴 것과 이유
+
+- **철학자 주간 목록의 "표 없음" 분기**(`isMissingColorfulPhilosopherPosts`): 오류 문구에 표 이름이 들어가면 실제 오류도 "빈 주"로 보인다. 지우면 그런 오류 때의 화면이 바뀐다.
+- **패치 섹션의 React 효과**(`backstab-*-section.tsx`): dev의 `/dev/patch-types`가 하이드레이션하므로 dev에서는 돈다.
+- **`toybox-post-og-fields.ts`, `detail-shell-og.ts`의 Supabase 부분**: 상세 OG가 꺼진 것은 tasks/010에 적힌 고칠 문제다. plan은 이 읽기를 D1 binding으로 옮긴다.
+- **조각모음 고유 글 상세(`/defragment/[id]`)와 Worker의 `service=defragment`**: 지우면 라우트의 응답이 바뀐다. 3.1절의 `defragment_posts`와 함께 7단계에 지운다.
+- **3.3절 2번 legacy Realtime 채널, 3~7번**: 결정을 기다린다.
+
+### 확인
+
+- **CI와 같은 검사**: i18n, `patch:test`, codex, API spec 5개, lint, 타입 검사가 통과했다. lint 경고 66개는 정리 전부터 있던 것이다.
+- **testbed 배포**: 스모크 205개, 브라우저 QA 13개가 통과했다.
+- **정리 전·후 비교**
+  - 정리 전 배포본(`9531ccb6`)과 정리 뒤 배포본에서 같은 13쪽을 열었다. 장난감 상자 6개 목록, 조각모음 게시판과 역사 강의서 거르기, 덧글 본문 상세, 역사 강의서 목록·상세, 프로필, 다채로운 철학자들, `/patches/2026-09-11`이다. 코오오옴보·변형 목록에서는 작성 창을 여닫았다.
+  - 정리가 바꾼 다섯 그룹을 legacy로 내린 상태와 api인 상태에서 각각 비교했다.
+  - 12쪽이 같다. 본문 요약, 링크 수, 작성 창, 거르기 결과, Worker·Supabase 요청 목록이 모두 같았다.
+  - 패치 페이지만 다르다. `transfigure_posts` 요청 1건이 빠졌고, 릴의 카드 8장과 회전은 같다.
+- **브라우저로 열지 않은 경로**: 세션이 있어야 하는 문의 목록·메일함 점·읽음 표시, 런 공유·표지 저장 쓰기. Worker 쪽은 `api-comments` spec이 확인한다.

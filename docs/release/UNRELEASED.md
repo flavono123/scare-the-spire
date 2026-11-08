@@ -92,6 +92,14 @@
   플레이와 덧글 본문은 지울 수 없어 spec으로만 확인한다
 - Commits: worktree `refactor/supabase-exit`
 
+### supabase-exit-cleanup
+- Feature: 게이트 전 정리(CLEANUP_AUDIT 5절). 죽은 코드, 어느 env에서도 돌지 않는 "RPC·열·표가 없을 때" 대체 경로(legacy와
+  1단계 Worker), 패치 페이지의 변형 릴 요청을 지웠다
+- Expect: 화면은 그대로다. 패치 페이지가 `transfigure_posts`를 읽지 않는다(릴은 빌드 때 구운 카드로 같게 돈다)
+- QA: testbed에서 정리 전·후 같은 13쪽을 legacy와 api 두 경로로 비교해 12쪽이 같고 패치 페이지는 그 요청만 빠졌다. 운영
+  배포 뒤 `/patches/2026-09-11`의 릴이 돌고 Supabase 요청에 `transfigure_posts`가 없는지 본다
+- Commits: worktree `refactor/supabase-exit` `e7331d14`~`34125e9a`
+
 <!--
 ### <항목-id>
 - Feature:
