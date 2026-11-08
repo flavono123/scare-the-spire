@@ -4,6 +4,7 @@
  * public schema rebuilt from the repo's supabase SQL plus the step 4 migration. Closing must leave
  * anon and authenticated no way to write (no write policy, no write RPC) while the service role still
  * writes through the Worker's paths; restoring must bring back exactly the policies and grants of today.
+ * The step 4 migration's rollback must bring back today's triggers, functions and grants exactly.
  * Usage: tsx scripts/direct-writes-policies.spec.ts
  * SUPABASE_PUBLIC_SCHEMA=<pg_dump --schema-only of public> also restores onto that dump and compares.
  */
@@ -13,6 +14,8 @@ import type { PGlite } from "@electric-sql/pglite";
 
 import { applySqlFile, repoSchemaFiles, supabaseFromDump, supabaseFromRepo } from "./lib/supabase-pglite";
 
+const MIGRATION = "supabase/migrations/20261108160000_worker_write_actor.sql";
+const ROLLBACK = "docs/release/worker-write-actor/rollback_worker_write_actor.sql";
 const CLOSE = "docs/release/step4-direct-writes/close_direct_writes.sql";
 const RESTORE = "docs/release/step4-direct-writes/restore_direct_writes.sql";
 const U1 = "11111111-1111-4111-8111-111111111111";
@@ -109,7 +112,40 @@ async function check(db: PGlite, label: string) {
   console.log(`${label}: close and restore ok`);
 }
 
+const TRIGGERS = `
+select coalesce(jsonb_agg(jsonb_build_array(c.relname, t.tgname, pg_catalog.pg_get_triggerdef(t.oid)) order by c.relname, t.tgname), '[]'::jsonb) as triggers
+from pg_catalog.pg_trigger t join pg_catalog.pg_class c on c.oid = t.tgrelid
+where c.relnamespace = 'public'::regnamespace and not t.tgisinternal`;
+
+async function triggers(db: PGlite) {
+  const { rows } = await db.query<{ triggers: unknown }>(TRIGGERS);
+  return rows[0].triggers;
+}
+
+/** The step 4 migration on a database without it, then its rollback (twice): back to today. */
+async function rollbackCheck(db: PGlite, label: string) {
+  await db.exec(`insert into auth.users (id) values ('${U1}')`);
+  const before = { grants: await snapshot(db), triggers: await triggers(db) };
+  // Today the service role cannot write an inquiry with a user (auth.uid() is NULL): design 5.5.
+  assert.deepEqual(await as(db, "service_role", null, inquiry(`'${U1}'`)), { ok: false, code: "42501" }, `${label}: today service inquiry`);
+
+  await applySqlFile(db, MIGRATION);
+  assert.equal((await as(db, "service_role", null, inquiry(`'${U1}'`))).ok, true, `${label}: service inquiry after the migration`);
+  assert.deepEqual(await as(db, "authenticated", U1, inquiry(`'${COMBO}'`)), { ok: false, code: "42501" }, `${label}: the trigger still checks browser roles`);
+  assert.notDeepEqual(await triggers(db), before.triggers, `${label}: the migration changed the trigger`);
+
+  await applySqlFile(db, ROLLBACK);
+  await applySqlFile(db, ROLLBACK);
+  assert.deepEqual(await snapshot(db), before.grants, `${label}: rollback brings back today's policies, functions and grants`);
+  assert.deepEqual(await triggers(db), before.triggers, `${label}: rollback brings back today's triggers`);
+  assert.deepEqual(await as(db, "service_role", null, inquiry(`'${U1}'`)), { ok: false, code: "42501" }, `${label}: service inquiry refused again`);
+  console.log(`${label}: migration rollback ok`);
+}
+
 async function main() {
+  const today = await supabaseFromRepo(repoSchemaFiles((file) => file.endsWith("_d1_change_log.sql") || file === MIGRATION));
+  await rollbackCheck(today, "repo schema");
+  await today.close();
   const repo = await supabaseFromRepo(repoSchemaFiles((file) => file.endsWith("_d1_change_log.sql")));
   await check(repo, "repo schema + step 4 migration");
   await repo.close();
@@ -119,6 +155,9 @@ async function main() {
     const live = await supabaseFromDump(dump, step4);
     await check(live, "dump + step 4 migration");
     await live.close();
+    const liveToday = await supabaseFromDump(dump);
+    await rollbackCheck(liveToday, "dump");
+    await liveToday.close();
   } else {
     console.log("dump check skipped: set SUPABASE_PUBLIC_SCHEMA to a public schema dump");
   }

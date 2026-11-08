@@ -150,7 +150,9 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 - `scripts/write-gate.spec.ts`: 플래그 읽기·캐시·기본값·실패, 라우터 연결(rls는 토큰, worker는 secret 키와 소유 필터,
   키가 없으면 rls), 소유자는 라우터가 푼 신원의 uid, 사용자 토큰과 자리표시는 나가지 않음, 신원 없으면 401,
   `me` 경로는 토큰 그대로, 모르는 요청은 보내지 않음.
-- `scripts/direct-writes-policies.spec.ts`: 7절의 두 스크립트(아래).
+- `scripts/direct-writes-policies.spec.ts`: 7절의 두 스크립트(아래)와 5절 마이그레이션의 되돌리기. 오늘 DB에서 service
+  역할의 문의는 42501이고(설계 5.5), 마이그레이션 뒤에는 들어가며 브라우저 역할의 사용자 확인은 그대로다. 되돌리기를 두 번
+  돌리면 정책·함수·권한·트리거 정의가 오늘과 같아진다(저장소 SQL과 덤프 둘 다).
 - 게이트를 일부러 망가뜨린 6가지(삭제 소유 필터, insert 보호 열, 문의 제한, upsert 기존 행, update 보호 열, 투표 env)
   모두 동등성 spec이 잡았다(로컬 확인, 커밋하지 않은 일회성 확인).
 
