@@ -87,8 +87,9 @@ history-runs, puzzlebox, contact, profile(문의 읽음). nav와 colorful-philos
 ### 4.1 경로
 
 1. 라우터(`workers/api/router.ts`)는 지금처럼 신원(오늘은 사용자 토큰의 ES256 검증), 속도 제한, 본문 읽기를 한다.
-2. 그다음 `access: "write"` 경로에서 `workerWriteContext`가 그 그룹의 쓰기 방식을 본다. `worker`이고
-   `API_SUPABASE_SERVICE_KEY`(`sb_secret_…`)가 있으면 worker 방식, 아니면 `null`이라 핸들러는 지금 코드 그대로다.
+2. 그다음 `access: "write"` 경로에서 `workerWriteContext`가 본다. Worker에 `API_SUPABASE_SERVICE_KEY`(`sb_secret_…`)가
+   없으면 플래그도 읽지 않고 `null`이다(지금 운영처럼 키가 없으면 D1 읽기가 하나도 늘지 않는다). 키가 있고 그 그룹의
+   쓰기 방식이 `worker`이면 worker 방식, 아니면 `null`이라 핸들러는 지금 코드 그대로다.
 3. worker 방식이면 핸들러에 넘기는 `config`에 게이트를 달고(`withWriteGate`), `token`을 자리표시 `worker-actor`로
    바꾼다. `postgrest`·`postgrestStream`은 `token`이 있는 호출만 게이트로 보낸다(`supabase-rest.ts`에 두 줄). 공개
    읽기(좋아요 수, 반응 합계)는 지금처럼 publishable 키로 간다.
@@ -108,7 +109,7 @@ history-runs, puzzlebox, contact, profile(문의 읽음). nav와 colorful-philos
 
 - 키: `write.comments`, `write.toybox-feed`, `write.stories`, `write.history-runs`, `write.puzzlebox`, `write.profile`,
   `write.contact`. 값: `rls` | `worker`. `scripts/runtime-flags.ts set write.<group> …`로만 바꾼다.
-- `path.<group> = api`인 요청에서만 읽는다. D1 `runtime_flags`를 `key GLOB 'write.*'`로 읽고 isolate에 30초 둔다.
+- `path.<group> = api`인 쓰기 요청에서, Worker에 secret 키가 있을 때만 읽는다. D1 `runtime_flags`를 `key GLOB 'write.*'`로 읽고 isolate에 30초 둔다.
 - 행이 없거나, 모르는 값이거나, 읽기가 실패하거나 1초를 넘으면 Worker env `API_WRITE_MODE_DEFAULT`를 쓴다. 이 값은
   `worker`일 때만 worker이고 그 밖에는 rls다. 7절의 직접 쓰기를 닫은 뒤에는 안전한 쪽이 worker가 되므로 그때 이 값을
   `worker`로 배포한다(plan 7.2절: 플래그를 못 읽으면 그 단계의 안전한 쪽인 env 기본값).

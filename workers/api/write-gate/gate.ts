@@ -53,22 +53,20 @@ export function supabaseServiceConfig(env: WriteGateEnv, base: SupabaseApiConfig
   return { url: base.url, key, dataEnv: base.dataEnv };
 }
 
-let warnedNoKey = false;
-
-/** The service config when this group's writes are in worker mode here, or null for the rls path. */
+/**
+ * The service config when this group's writes are in worker mode here, or null for the rls path.
+ * Without the secret key worker mode cannot run, so the write flags are not even read: a Worker
+ * that was never given the key (production today) makes no extra D1 read on writes.
+ */
 export async function workerWriteService(
   env: WriteGateEnv,
   ctx: ExecutionContextLike,
   group: ApiSurfaceGroup,
   config: SupabaseApiConfig,
 ): Promise<SupabaseApiConfig | null> {
-  if ((await writeModeFor(env, ctx, group)) !== "worker") return null;
   const service = supabaseServiceConfig(env, config);
-  if (!service && !warnedNoKey) {
-    warnedNoKey = true;
-    console.log("api write-mode worker without API_SUPABASE_SERVICE_KEY: rls");
-  }
-  return service;
+  if (!service) return null;
+  return (await writeModeFor(env, ctx, group)) === "worker" ? service : null;
 }
 
 function serviceLookups(service: SupabaseApiConfig, deadline: number | undefined): GateLookups {

@@ -214,12 +214,14 @@ async function routerChecks() {
   assert.equal(write.apikey, "sb_publishable_test");
   assert.equal((write.body as { user_id: string }).user_id, USER);
 
-  // worker mode without the service key: still rls.
+  // worker mode without the service key: still rls, and the write flags are not even read.
   supabase.calls = [];
   resetWriteFlagsForTest();
   db.writeRows.set("write.comments", "worker");
+  const readsBefore = db.writeReads;
   assert.equal((await send("/api/write/comments", { method: "POST", body: comment })).status, 201);
   assert.equal(supabase.writes()[0].authorization, `Bearer ${token}`, "no service key: the token path");
+  assert.equal(db.writeReads, readsBefore, "no service key: no write flag read");
 
   // worker mode: the service key, no Authorization, the owner from the identity.
   const workerEnv = { ...env, API_SUPABASE_SERVICE_KEY: "sb_secret_test" };
