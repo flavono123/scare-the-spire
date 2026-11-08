@@ -38,7 +38,8 @@ def judge(qid, expect, allow, sql, lines):
         # plan shows up as SEARCH ... (service=?) rather than SCAN: it reads every row of that service.
         # On the primary key that is always a full read of the service; on a secondary index it is an
         # ordered walk, fine only under a LIMIT (the feeds walk posts_service_* and stop at 20).
-        m = re.match(r"SEARCH (\S+) USING (COVERING )?(PRIMARY KEY|INDEX \S+) \(service=\?\)$", l)
+        # Newer SQLite (local D1's 3.53.4) writes an EXISTS probe as "SEARCH <alias> EXISTS USING ...".
+        m = re.match(r"SEARCH (\S+) (?:EXISTS )?USING (COVERING )?(PRIMARY KEY|INDEX \S+) \(service=\?\)$", l)
         if m:
             alias, on_pk = m.group(1), m.group(3) == "PRIMARY KEY"
             if "svcrange:" + alias not in allow and (on_pk or (not has_limit and "walk" not in allow)):
