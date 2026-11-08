@@ -16,6 +16,9 @@ import { createApiRouter } from "../workers/api/router";
 import { commentsRoutes } from "../workers/api/routes/comments";
 import { contactRoutes } from "../workers/api/routes/contact";
 import { toyboxRoutes } from "../workers/api/routes/toybox";
+import { historyRunsRoutes } from "../workers/api/routes/history-runs";
+import { D1_WRITE_ROUTES } from "../workers/api/d1-write";
+import { jsonWithTextColumn } from "../workers/api/supabase-rest";
 import { decideWrite, ownerState, type GateLookups } from "../workers/api/write-gate/decide";
 import { supabaseServiceConfig, WORKER_ACTOR_TOKEN, writeActor } from "../workers/api/write-gate/gate";
 import { parseWriteFlagRows, resetWriteFlagsForTest, WRITE_FLAGS_SQL, writeModeFor } from "../workers/api/write-flags";
@@ -73,7 +76,7 @@ class FlagsD1 implements D1Database {
   }
 }
 
-type Call = { method: string; path: string; params: [string, string][]; apikey: string | null; authorization: string | null; body: unknown };
+type Call = { method: string; path: string; params: [string, string][]; apikey: string | null; authorization: string | null; prefer: string | null; body: unknown };
 
 class FakeSupabase {
   calls: Call[] = [];
@@ -88,8 +91,13 @@ class FakeSupabase {
       params: [...url.searchParams],
       apikey: request.headers.get("apikey"),
       authorization: request.headers.get("authorization"),
+      prefer: request.headers.get("prefer"),
       body: text ? JSON.parse(text) : undefined,
     });
+    if (request.method === "POST" && url.pathname.endsWith("/runs")) {
+      const rows = JSON.parse(text) as { id: string }[];
+      return Response.json(rows.filter((row) => row.id !== "r-already").map((row) => ({ id: row.id })), { status: 201 });
+    }
     if (request.method === "HEAD") return new Response(null, { status: 200, headers: { "content-range": "0-0/1" } });
     if (request.method === "GET") return Response.json([]);
     if (request.method === "POST" && url.pathname.endsWith("/comments")) {
@@ -290,11 +298,102 @@ async function routerChecks() {
   console.log("router wiring: ok");
 }
 
+/** One run per request in worker mode (STEP4_WRITE_GATE 9.5): the batch routes refuse, the share route writes. */
+async function historyRunShareChecks() {
+  assert.equal(jsonWithTextColumn([{ id: "r1" }], "raw", "{\"a\":\"b\\\"\"}"), "[{\"id\":\"r1\",\"raw\":\"{\\\"a\\\":\\\"b\\\\\\\"\\\"}\"}]");
+  assert.equal(jsonWithTextColumn({}, "raw", "x"), "{\"raw\":\"x\"}");
+  assert.throws(() => jsonWithTextColumn([{}, {}], "raw", "x"), "one row only");
+  assert.throws(() => jsonWithTextColumn({ raw: "y" }, "raw", "x"), "never a second raw key");
+
+  const supabase = new FakeSupabase();
+  const signer = await makeSigner();
+  supabase.jwks = signer.jwks;
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = (async (input: Request | string | URL, init?: RequestInit) => supabase.handle(new Request(input, init))) as typeof fetch;
+  resetFlagsForTest();
+  resetJwtCachesForTest();
+  const db = new FlagsD1();
+  const env = { API_RUNTIME_FLAGS: "d1", API_SUPABASE_URL: PROJECT, API_SUPABASE_KEY: "sb_publishable_test", API_DATA_ENV: "development", DB: db };
+  const workerEnv = { ...env, API_SUPABASE_SECRET_KEY: "sb_secret_test" };
+  const router = createApiRouter([...historyRunsRoutes, ...D1_WRITE_ROUTES]);
+  const token = await signer.token();
+  const raw = JSON.stringify({ seed: "S", players: [{ character: "CHARACTER.IRONCLAD" }], note: "quote \" and \\ and 한글" }, null, 2);
+  const row = (overrides: Record<string, unknown> = {}) => ({
+    id: "r-share", seed: "S", build: "v0.1", character: "IRONCLAD", ascension: 0, win: true, acts_count: 3, total_floors: 40,
+    donor_user_id: USER, donor_nickname: "닉", env: "development", badges: [], cover_spec: null,
+    characters: ["IRONCLAD"], game_mode: "standard", game_elements: [], list_facts: {}, summary_version: 1, ...overrides,
+  });
+  const upload = (path: string, text: string, environment: Record<string, unknown>, headers: Record<string, string> = {}) =>
+    router.handle(new Request(`${ORIGIN}${path}`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`, "sec-fetch-site": "same-origin", "content-type": "application/json",
+        "content-length": String(Buffer.byteLength(text)), ...headers,
+      },
+      body: text,
+    }), environment as never, ctx);
+  const share = (rowValue: unknown, environment: Record<string, unknown>, length?: number) => {
+    const rowText = JSON.stringify(rowValue);
+    return upload("/api/write/history-runs/share", `[${rowText},${raw}]`, environment, { "x-slseoun-row-length": String(length ?? rowText.length) });
+  };
+
+  // rls (today): the batch as before; the share route is unavailable, so the client keeps the batch.
+  resetWriteFlagsForTest();
+  db.writeRows.set("write.history-runs", "rls");
+  const rlsShare = await share(row(), workerEnv);
+  assert.deepEqual([rlsShare.status, await rlsShare.json()], [409, { error: "single_run_unavailable" }]);
+  assert.equal(supabase.writes().length, 0);
+
+  // worker: both step 1 uploads answer single_run_required and send nothing.
+  db.writeRows.set("write.history-runs", "worker");
+  resetWriteFlagsForTest();
+  for (const [path, body] of [["/api/write/history-runs/batch", [{ ...row(), raw }]], ["/api/write/history-runs", { ...row(), raw }]] as const) {
+    const refused = await upload(path, JSON.stringify(body), workerEnv);
+    assert.deepEqual([refused.status, await refused.json()], [409, { error: "single_run_required" }], path);
+  }
+  assert.equal(supabase.calls.length, 0, "a refused upload reads and sends nothing");
+
+  // worker: one run, the row decided by the gate, the raw spliced in unparsed, the service key.
+  const shared = await share(row(), workerEnv);
+  assert.deepEqual([shared.status, await shared.json()], [201, { v: 1, env: "development", inserted: ["r-share"] }]);
+  const [write] = supabase.writes();
+  assert.equal(write.apikey, "sb_secret_test");
+  assert.equal(write.authorization, null, "no user token, no placeholder");
+  assert.deepEqual(write.params, [["on_conflict", "id,env"], ["select", "id"]]);
+  assert.equal(write.prefer, "resolution=ignore-duplicates,return=representation");
+  const sent = (write.body as Record<string, unknown>[])[0];
+  assert.equal(sent.raw, raw, "the raw file arrives byte for byte as a string");
+  for (const column of ["characters", "game_mode", "game_elements", "list_facts", "summary_version"]) {
+    assert.equal(column in sent, false, `${column} is D1's list summary, not a runs column`);
+  }
+  assert.equal(sent.donor_user_id, USER);
+
+  supabase.calls = [];
+  const again = await share(row({ id: "r-already" }), workerEnv);
+  assert.deepEqual(await again.json(), { v: 1, env: "development", inserted: [] }, "already shared: nothing inserted");
+
+  supabase.calls = [];
+  const forged = await share(row({ donor_user_id: OTHER_USER }), workerEnv);
+  assert.equal(forged.status, 403, "another user's run is refused like the batch");
+  assert.equal(supabase.writes().length, 0);
+  for (const [label, response] of [
+    ["a wrong row length", await share(row(), workerEnv, 5)],
+    ["a row that is no object", await share(["r-share"], workerEnv)],
+  ] as const) {
+    assert.equal(response.status, 400, label);
+  }
+  assert.equal(supabase.writes().length, 0);
+
+  globalThis.fetch = realFetch;
+  console.log("history-runs one-run share: ok");
+}
+
 async function main() {
   await writeFlagChecks();
   decisionChecks();
   await unsupportedChecks();
   await routerChecks();
+  await historyRunShareChecks();
   console.log("write-gate spec passed");
 }
 

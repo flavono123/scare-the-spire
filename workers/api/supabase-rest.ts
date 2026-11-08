@@ -219,11 +219,30 @@ export function isUpstreamFailure(result: RestFailure): boolean {
 export type StreamRequest = Omit<RestRequest, "maxBytes"> & {
   /** A JSON body passed through without parsing (run uploads carry raw run files). */
   bodyStream?: ReadableStream<Uint8Array> | null;
+  /**
+   * A text column of the one row in `body`, spliced into the JSON as a string without being
+   * parsed (a shared run's raw file, routes/history-runs-share.ts). The gate decides on `body` alone.
+   */
+  rawText?: { column: string; text: string };
   /** Accept header; default application/json (the step-2 sync reads one run raw as text/plain). */
   accept?: string;
 };
 
 export type StreamResult = { ok: true; status: number; response: Response } | RestFailure;
+
+/**
+ * `body` (one row, or an array of exactly one row) as JSON with `column` set to `text`. The text is
+ * escaped as a JSON string by the runtime, never parsed, so a raw run file costs no JS parse.
+ */
+export function jsonWithTextColumn(body: unknown, column: string, text: string): string {
+  const row = Array.isArray(body) ? (body.length === 1 ? body[0] : null) : body;
+  if (!row || typeof row !== "object" || Array.isArray(row) || Object.hasOwn(row, column)) {
+    throw new Error("rawText needs one row without that column");
+  }
+  const json = JSON.stringify(row);
+  const spliced = `${json.slice(0, -1)}${json.length > 2 ? "," : ""}${JSON.stringify(column)}:${JSON.stringify(text)}}`;
+  return Array.isArray(body) ? `[${spliced}]` : spliced;
+}
 
 /**
  * A PostgREST call whose response body is handed back unread, for answers too
@@ -241,7 +260,11 @@ export async function postgrestStream(config: SupabaseApiConfig, request: Stream
   const headers = new Headers({ apikey: config.key, Accept: request.accept ?? "application/json" });
   if (request.token) headers.set("Authorization", `Bearer ${request.token}`);
   if (request.prefer?.length) headers.set("Prefer", request.prefer.join(","));
-  const textBody = request.bodyStream ? undefined : request.body !== undefined ? JSON.stringify(request.body) : undefined;
+  const textBody = request.bodyStream
+    ? undefined
+    : request.rawText
+      ? jsonWithTextColumn(request.body, request.rawText.column, request.rawText.text)
+      : request.body !== undefined ? JSON.stringify(request.body) : undefined;
   if (request.bodyStream || textBody !== undefined) headers.set("Content-Type", "application/json");
 
   let timeoutMs = request.timeoutMs ?? (method === "GET" || method === "HEAD" ? READ_TIMEOUT_MS : WRITE_TIMEOUT_MS);

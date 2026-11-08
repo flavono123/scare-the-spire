@@ -388,7 +388,6 @@ const API_CASES: ApiCase[] = [
   { name: "run upload for another user", method: "POST", path: "/api/write/history-runs", body: RUN_ROW({ id: "run-theirs", donor_user_id: U2 }), status: 403 },
   { name: "run batch with a duplicate", method: "POST", path: "/api/write/history-runs/batch", body: [RUN_ROW({ id: "run-batch-1", ...FORGED }), RUN_ROW({ id: "run-u1" })], status: 201 },
   { name: "run batch with a new row of another user", method: "POST", path: "/api/write/history-runs/batch", body: [RUN_ROW({ id: "run-batch-2", donor_user_id: U2 })], status: 403 },
-  { name: "run batch with an existing row of another user", method: "POST", path: "/api/write/history-runs/batch", body: [RUN_ROW({ id: "run-u2", donor_user_id: U2 }), RUN_ROW({ id: "run-batch-3" })], status: 403 },
   { name: "run cover", method: "PATCH", path: "/api/write/history-runs/cover?id=run-u1", body: { coverSpec: { card: "BASH" } }, status: 200 },
   { name: "run cover of another user's run", method: "PATCH", path: "/api/write/history-runs/cover?id=run-u2", body: { coverSpec: { card: "BASH" } }, status: 200 },
   { name: "run nicknames", method: "POST", path: "/api/write/history-runs/nicknames", body: { nickname: "새닉" }, status: 200 },
@@ -533,13 +532,79 @@ async function main() {
     return { status: response.status, body: normalize(body ? JSON.parse(body) : null) };
   }
 
+  // Worker mode shares runs one per request (STEP4_WRITE_GATE 9.5): the client's answer to 409
+  // single_run_required in run-donation.ts, with the list summary it adds for D1.
+  async function shareRuns(side: Side, item: ApiCase) {
+    const token = await signer.token(item.actor ?? U1, side.issuer);
+    const answers: { status: number; body: unknown }[] = [];
+    for (const run of (Array.isArray(item.body) ? item.body : [item.body]) as Record<string, unknown>[]) {
+      const { raw, ...meta } = run;
+      const rowText = JSON.stringify({ ...meta, characters: ["DEFECT"], game_mode: "standard", game_elements: [], list_facts: {}, summary_version: 1 });
+      const text = `[${rowText},${raw}]`;
+      const response = await mainWorker.fetch(new Request(`${ORIGIN}/api/write/history-runs/share`, {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`, "sec-fetch-site": "same-origin", "content-type": "application/json",
+          "content-length": String(Buffer.byteLength(text)), "x-slseoun-row-length": String(rowText.length),
+        },
+        body: text,
+      }), side.env as never, ctx);
+      answers.push({ status: response.status, body: await response.json() });
+    }
+    return answers;
+  }
+  type UploadOutcome = { inserted: string[]; already: number; failed: number; codes: unknown[] };
+  /** What run-donation.ts shows for an upload: shared, already shared, failed (donateRun and donateRunsBatch). */
+  function uploadOutcome(item: ApiCase, answers: { status: number; body: unknown }[], batch: boolean): UploadOutcome {
+    const rows = (Array.isArray(item.body) ? item.body : [item.body]) as { id: string }[];
+    const outcome: UploadOutcome = { inserted: [], already: 0, failed: 0, codes: [] };
+    if (batch) {
+      const [answer] = answers;
+      const body = answer.body as { inserted?: string[]; error?: string };
+      if (answer.status === 201) {
+        outcome.inserted = body.inserted ?? [];
+        outcome.already = rows.length - outcome.inserted.length;
+      } else {
+        outcome.failed = rows.length;
+        outcome.codes = [body.error];
+      }
+      return outcome;
+    }
+    for (const [index, answer] of answers.entries()) {
+      const body = answer.body as { inserted?: string[]; error?: string };
+      if (answer.status === 201) {
+        // The single upload answers {} (return=minimal); the share names what it inserted.
+        const inserted = body.inserted ?? [rows[index].id];
+        if (inserted.length) outcome.inserted.push(...inserted);
+        else outcome.already += 1;
+      } else if (answer.status === 422 && body.error === "duplicate") {
+        outcome.already += 1;
+      } else {
+        outcome.failed += 1;
+        outcome.codes.push(body.error);
+      }
+    }
+    return outcome;
+  }
+  const isRunUpload = (item: ApiCase) => item.method === "POST" && /^\/api\/write\/history-runs(?:\/batch)?$/.test(item.path);
+
   for (const item of API_CASES) {
     const before = { today: restToday.calls.length, step4: restStep4.calls.length };
     const rls = await callApi(sides[0], item);
     const worker = await callApi(sides[1], item);
     const rlsAfter = await callApi(sides[2], item);
     assert.equal(rls.status, item.status, `${item.name}: today answers ${rls.status} ${JSON.stringify(rls.body)}`);
-    assert.deepEqual(worker, rls, `${item.name}: worker mode answers differently`);
+    if (isRunUpload(item)) {
+      assert.deepEqual(worker, { status: 409, body: { error: "single_run_required" } }, `${item.name}: worker mode wants one run per request`);
+      const batch = item.path.endsWith("/batch");
+      assert.deepEqual(
+        uploadOutcome(item, await shareRuns(sides[1], item), false),
+        uploadOutcome(item, [rls], batch),
+        `${item.name}: sharing one run at a time shows the user something else`,
+      );
+    } else {
+      assert.deepEqual(worker, rls, `${item.name}: worker mode answers differently`);
+    }
     assert.deepEqual(rlsAfter, rls, `${item.name}: the step 4 migration changed the rls path`);
     // The rls side never uses the service key; the worker side never forwards a user token.
     assert.ok(restToday.calls.slice(before.today).every((call) => call.role !== "service_role"), `${item.name}: rls side used the service key`);
@@ -584,6 +649,23 @@ async function main() {
     await assertSameTables(today, step4Rls, `${item.name} (rls after the migration)`);
   }
   console.log(`gate cases: ${GATE_CASES.length} answer alike and leave the same rows (also with a user token after the migration)`);
+
+  // Known difference, last because it leaves different rows (STEP4_WRITE_GATE 9.10): a hand-made batch that
+  // mixes another user's run with a new one is refused as a whole today; one run at a time, the honest run
+  // goes in and only the forged one is refused. The client always sends the user's own uid.
+  {
+    const mixed: ApiCase = {
+      name: "run batch with an existing row of another user", method: "POST", path: "/api/write/history-runs/batch",
+      body: [RUN_ROW({ id: "run-u2", donor_user_id: U2 }), RUN_ROW({ id: "run-batch-3" })], status: 403,
+    };
+    const rls = await callApi(sides[0], mixed);
+    assert.equal(rls.status, 403);
+    const shares = await shareRuns(sides[1], mixed);
+    assert.deepEqual(shares.map((answer) => answer.status), [403, 201]);
+    const has = async (db: PGlite) => (await db.query("select id from public.runs where id = 'run-batch-3'")).rows.length;
+    assert.deepEqual([await has(today), await has(step4)], [0, 1]);
+  }
+  console.log("run shares: one run per request answers like the batch for every honest upload");
 
   globalThis.fetch = realFetch;
   await today.close();

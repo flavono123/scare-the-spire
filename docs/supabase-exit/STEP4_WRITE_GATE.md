@@ -195,8 +195,8 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
    이름의 같은 secret을 쓴다. 아직 없으면 Supabase secret 키를 만들어 넣는다(값은 출력하지 않는다).
 3. 이 코드가 든 Worker를 testbed에 배포한다. 플래그 행이 없으면 지금과 같다.
 4. testbed에서 그룹 하나씩 `pnpm flags -- set write.<group> worker --env testbed --remote --note "…"`, 그 화면의 쓰기를
-   한 번씩 해 보고 Supabase 행을 확인한다. 이상하면 그 그룹을 `rls`로. `history-runs`는 9절 5번(런 하나씩 공유)을
-   합친 뒤에 켠다. 그룹마다 Workers 로그의 CPU 시간도 본다(9절 5번).
+   한 번씩 해 보고 Supabase 행을 확인한다. 이상하면 그 그룹을 `rls`로. `history-runs`의 런 하나씩 공유(9절 5번)는
+   2026-11-09 합쳤다. 그룹마다 Workers 로그의 CPU 시간도 본다(9절 5번).
 5. 운영도 같은 순서(그 그룹의 `path.<group> = api`가 켜진 뒤에만 뜻이 있다).
 6. 모든 그룹이 worker가 되고 경로 플래그의 env 기본값(7절 `API_PATH_DEFAULT`, 빌드 `NEXT_PUBLIC_API_PATH_DEFAULT`)이
    `api`로 배포되면 `API_WRITE_MODE_DEFAULT=worker`를 배포하고 7절 닫기 스크립트를 적용한다.
@@ -218,11 +218,17 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
    글 상한 8 MB, 임시 저장 4 MB라 큰 글은 Free 10 ms를 넘을 수 있다. testbed에서 잰다.
    런 묶음(24 MB)은 D1 설계 4.4절 "5단계 공유 요청" 5번과 다르다. 그 절은 4단계 Worker 검증 쓰기도 묶음을 파싱하지 않고
    5단계 요청 모양(요청 하나에 런 하나, 원문은 파싱하지 않음)을 쓰라고 정했다. 그 경로(`/api/write/history-runs/share`,
-   묶음 경로의 409 `single_run_required`)는 5단계 작업(`step5/d1-writes`)이 D1 원본에만 만들고 있고, 런마다 보내는
-   클라이언트 변경은 아직 어느 쪽에도 없다. 경로 하나를 두 곳에서 만들지 않으려고 여기서는 만들지 않았다. 합칠 때 할
-   일: worker 방식의 `write.history-runs`에서 묶음 경로가 `single_run_required`로 답하고, 공유 경로가 Supabase 원본일
-   때도 행만 파싱해 `decideWrite`로 판단한 뒤 원문은 문자열로 이어 붙여 service 키로 쓰게 한다. 그 전에는
-   `write.history-runs = worker`를 켜지 않는다(나머지 그룹은 상관없다).
+   묶음 경로의 409 `single_run_required`)와 런마다 보내는 클라이언트(`run-donation.ts`, 둘씩 동시에)는 5단계 작업이
+   만들었다. 2026-11-09 Supabase 원본에도 이었다(`step4/prereqs`, `routes/history-runs-share.ts`):
+   - worker 방식의 `write.history-runs`에서 런 올리기 두 경로(`POST /api/write/history-runs`, `/batch`)는 본문을 읽지
+     않고 409 `single_run_required`로 답한다. 클라이언트는 지금처럼 런마다 공유 경로로 다시 보낸다.
+   - 공유 경로(`[<행>,<원문>]`, 행 길이는 `X-Slseoun-Row-Length`)는 행만 파싱한다. D1 목록 요약 열 다섯(`characters`,
+     `game_mode`, `game_elements`, `list_facts`, `summary_version`, Supabase `runs`에는 없다)을 뺀 행 하나를 묶음과
+     같은 요청(`on_conflict=id,env`, 중복 무시, `select=id`)으로 게이트가 `decideWrite`로 판단하고, 원문은 파싱하지 않고
+     JSON 문자열로 이어 붙여(`supabase-rest.ts` `rawText`) service 키로 쓴다. 답은 D1 공유와 같은 `{ v, env, inserted }`다.
+   - rls 방식에서는 공유 경로가 지금처럼 409 `single_run_unavailable`이고 클라이언트는 묶음을 쓴다.
+   - 동등성 spec이 런 올리기 사례마다 오늘(묶음, rls)과 worker(공유를 런마다)가 사용자에게 같은 결과(공유됨·이미
+     공유됨·실패)를 내고 같은 행(원문, 변경 로그 포함)을 남기는지 본다. 다른 점은 10번.
 6. 문의를 돌려받는 insert(`return=representation`)는 돌려받는 열마다 SELECT 권한을 본다. PostgREST가 `RETURNING`에
    넣는 열이 `select` 목록과 같다고 보았다. 실제 경로는 `return=minimal`만 쓴다.
 7. 흘려보내던 쓰기의 env는 지금처럼 클라이언트 값을 그대로 둔다. 4단계의 기준은 정직한 요청과 손으로 만든 요청 모두
@@ -241,6 +247,8 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
    `created_at`·`updated_at`(`'infinity'` 등), 글의 원소 꼴, 다른 env 글의 이거 아님 저거? 좋아요(spec 사례 "this or that like
    on another env's post")는 4단계에도 오늘처럼 Supabase에 들어가고, 1분 동기화에서 3.1절 규칙대로 거절로 남는다.
    직접 쓰기를 닫으면 브라우저 경로만 없어진다.
+10. 손으로 만든 런 묶음에 남의 런(`donor_user_id`가 다른 사람)과 새 런을 섞으면 오늘은 묶음 전체가 403이지만, 런마다
+   보내면 정직한 런은 들어가고 남의 런만 403이다(동등성 spec 끝의 사례). 클라이언트는 늘 자기 uid를 보낸다.
 
 ## 10. 열린 질문
 
