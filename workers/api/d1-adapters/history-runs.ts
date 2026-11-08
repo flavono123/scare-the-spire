@@ -88,13 +88,22 @@ export async function historyRunAdapter(context: AdapterContext): Promise<unknow
   }));
 }
 
-/** read.history-run.raw (R3r): the stored raw file as the body; empty when the run is not in this D1. */
+/** A run row whose raw file D1 does not hold yet (the 1-minute sync fetches it): a D1 error, not "not shared". */
+export class RunRawMissingError extends Error {}
+
+/**
+ * read.history-run.raw (R3r): the stored raw file as the body; empty when the run is not shared. R5
+ * rides in the same round trip: a run D1 has without its file is RunRawMissingError, so the router
+ * answers from Supabase while it is the source.
+ */
 export async function historyRunRawAdapter(context: AdapterContext): Promise<TextBody> {
   const id = context.url.searchParams.get("id") ?? "";
   if (!isRunId(id)) throw new AdapterInputError("id");
-  const [rows] = await readAll(context.db, [query(Q_R3r, id)]);
-  const raw = rows[0]?.raw;
-  return new TextBody(typeof raw === "string" ? raw : "");
+  const [files, runs] = await readAll(context.db, [query(Q_R3r, id), query(Q_R5, id)]);
+  const raw = files[0]?.raw;
+  if (typeof raw === "string") return new TextBody(raw);
+  if (runs.length > 0) throw new RunRawMissingError("raw file not in D1");
+  return new TextBody("");
 }
 
 /** read.history-runs.engagement: like and comment counts of the listed runs (runs with none left out). */

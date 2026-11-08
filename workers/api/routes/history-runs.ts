@@ -102,21 +102,29 @@ async function handleOne(context: PublicRouteContext): Promise<Response> {
   return jsonResponse({ v: 1, env: config.dataEnv, rows: result.data ?? [] });
 }
 
-/** One run's raw file as text/plain (R3r): PostgREST's single-column text body, passed through unread. */
+/** The JSON answer of one raw file: the escaped text of a 1.9 MB raw (the D1 cap) fits. */
+const RAW_ANSWER_MAX_BYTES = 4 * 1024 * 1024;
+
+/**
+ * One run's raw file as text/plain (R3r). Supabase's PostgREST answers a one-column select only as
+ * JSON (Accept: text/plain is PGRST107 without a media type handler), so this reads the row and
+ * answers its text. Raws are 57 KB at the median and 277 KB at most today.
+ */
 async function handleRaw(context: PublicRouteContext): Promise<Response> {
   const id = context.url.searchParams.get("id") ?? "";
   if (!isRunId(id)) return apiError("invalid");
   const { config } = context;
   if (!context.allowUpstream) return jsonResponse({ v: 1, env: config.dataEnv });
-  const result = await postgrestStream(config, {
+  const result = await postgrest<Array<{ raw?: unknown }>>(config, {
     path: "runs",
     deadline: Date.now() + STREAM_READ_MS,
     timeoutMs: STREAM_READ_MS,
-    query: new URLSearchParams({ select: "raw", id: `eq.${id}`, env: `eq.${config.dataEnv}` }),
-    accept: "text/plain",
+    maxBytes: RAW_ANSWER_MAX_BYTES,
+    query: new URLSearchParams({ select: "raw", id: `eq.${id}`, env: `eq.${config.dataEnv}`, limit: "1" }),
   });
   if (!result.ok) return apiError(restErrorCode(result));
-  return textResponse(result.response.body, config.dataEnv);
+  const raw = Array.isArray(result.data) ? result.data[0]?.raw : undefined;
+  return textResponse(typeof raw === "string" ? raw : "", config.dataEnv);
 }
 
 async function handleEngagement(context: PublicRouteContext): Promise<Response> {

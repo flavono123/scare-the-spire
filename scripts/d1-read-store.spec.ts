@@ -512,6 +512,25 @@ async function main() {
     }
   });
 
+  await check("R3r: a run D1 holds without its raw file (the sync has not fetched it) answers from Supabase, or 503 with D1 the origin", async () => {
+    const saved = sqlite.prepare("SELECT raw FROM post_history_course_file WHERE post_id = ?1").get(RUN1) as { raw: string };
+    sqlite.prepare("DELETE FROM post_history_course_file WHERE post_id = ?1").run(RUN1);
+    try {
+      setFlags({ [readFlagKey("history-runs")]: "d1" });
+      const { value, lines } = await logged(() => get(`${HISTORY_RUN_RAW_PATH}?id=${RUN1}`));
+      assert.equal(value.response.status, 200);
+      assert.equal(value.body, saved.raw, "Supabase's raw");
+      assert.ok(value.supabaseRequests.some((request) => request.startsWith("GET runs?select=raw")));
+      assert.deepEqual(lines.filter((line) => line.startsWith("api d1read")), ["api d1read read.history-run.raw fallback"]);
+      setFlags({ [sourceFlagKey("history-runs")]: "d1" });
+      const origin = await get(`${HISTORY_RUN_RAW_PATH}?id=${RUN1}`);
+      assert.equal(origin.response.status, 503);
+      assert.deepEqual(origin.supabaseRequests, []);
+    } finally {
+      sqlite.prepare("INSERT INTO post_history_course_file (service, post_id, raw) VALUES ('history_course', ?1, ?2)").run(RUN1, saved.raw);
+    }
+  });
+
   await check("history-course list and picker: the D1 summary rows build the same cards, search and chips as the raw rows", async () => {
     for (const view of ["recent", "reference"]) {
       const today = await donatedRunsFromListRows(await rows(`/api/read/history-runs?view=${view}`, "supabase"), noRaw);
