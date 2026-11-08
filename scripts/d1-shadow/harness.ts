@@ -80,8 +80,9 @@ export function harness(d1: SqliteD1, config: SupabaseApiConfig) {
     const spec = SHADOW_SPECS[routeId];
     const supabase = spec.prepareSupabase ? spec.prepareSupabase(side.answer, shadow) : side.answer;
     const adapterContext = { db: d1, dataEnv: config.dataEnv, url: shadow.url, userId: shadow.userId, now: shadow.now };
-    let d1Value = materialize(spec.d1 ? await spec.d1(adapterContext, side.answer) : await D1_ADAPTERS[routeId](adapterContext));
-    if (spec.prepareD1) d1Value = spec.prepareD1(d1Value, supabase, shadow);
+    const answer = spec.d1 ? await spec.d1(adapterContext, side.answer) : await D1_ADAPTERS[routeId](adapterContext);
+    // Same order as compareShadow: project, then parse.
+    const d1Value = materialize(spec.prepareD1 ? spec.prepareD1(answer, supabase, shadow) : answer);
     return { supabase, d1: d1Value };
   }
 

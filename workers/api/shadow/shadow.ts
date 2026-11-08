@@ -112,9 +112,11 @@ export async function compareShadow(
   } catch (error) {
     return { kind: "skipped", reason: error instanceof AdapterInputError ? "d1_input" : "d1_unavailable" };
   }
-  if (rawJsonLength(d1) > (options.maxBytes ?? SHADOW_MAX_BYTES)) return { kind: "skipped", reason: "too_large" };
-  let d1Value = materialize(d1);
-  if (spec.prepareD1) d1Value = spec.prepareD1(d1Value, supabaseValue, context);
+  // Project first: columns the Supabase answer lacks (run summaries, ~0.6 MB a list) are dropped
+  // before anything is measured or parsed.
+  const projected = spec.prepareD1 ? spec.prepareD1(d1, supabaseValue, context) : d1;
+  if (rawJsonLength(projected) > (options.maxBytes ?? SHADOW_MAX_BYTES)) return { kind: "skipped", reason: "too_large" };
+  const d1Value = materialize(projected);
   if (hasUnavailable(d1Value)) return { kind: "skipped", reason: "d1_unavailable" };
 
   const comparison = compareAnswers(supabaseValue, d1Value, spec.rules?.(context) ?? {});

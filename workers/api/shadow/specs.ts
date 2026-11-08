@@ -39,7 +39,10 @@ export type ShadowSpec = {
   d1?: (context: AdapterContext, supabase: unknown) => Promise<unknown>;
   /** The Supabase answer before comparing (dead columns removed, rule 3). */
   prepareSupabase?: (answer: unknown, context: ShadowContext) => unknown;
-  /** The D1 answer before comparing (projected onto what the Supabase answer carries). */
+  /**
+   * The D1 answer before comparing, projected onto what the Supabase answer carries. It gets the
+   * adapter's answer with JSON columns still unparsed (RawJson), so dropped columns are never parsed.
+   */
   prepareD1?: (answer: unknown, supabase: unknown, context: ShadowContext) => unknown;
   rules?: (context: ShadowContext) => CompareRules;
   /** Why this pair cannot be compared, or null. */

@@ -181,7 +181,18 @@ async function asks(db: PGlite, env: string): Promise<Ask[]> {
   return list;
 }
 
-type Tally = { asked: number; same: number; expected: number; differed: number; nonEmpty: number; skipped: Record<string, number>; failures: string[] };
+type Tally = {
+  asked: number;
+  same: number;
+  expected: number;
+  differed: number;
+  nonEmpty: number;
+  skipped: Record<string, number>;
+  failures: string[];
+  /** Largest Node CPU ms of one comparison (D1 reads on node:sqlite included): a rough upper bound. */
+  cpuMax: number;
+  bytesMax: number;
+};
 
 /** An answer with at least one row or entry (so a "same" is not two empty answers). */
 function hasContent(value: unknown): boolean {
@@ -224,7 +235,7 @@ async function main() {
         const queue = [...all, ...walks];
         while (queue.length) {
           const ask = queue.shift()!;
-          const tally = tallies.get(ask.route) ?? { asked: 0, same: 0, expected: 0, differed: 0, nonEmpty: 0, skipped: {}, failures: [] };
+          const tally = tallies.get(ask.route) ?? { asked: 0, same: 0, expected: 0, differed: 0, nonEmpty: 0, skipped: {}, failures: [], cpuMax: 0, bytesMax: 0 };
           tallies.set(ask.route, tally);
           tally.asked += 1;
           const { side, shadow, status } = await h.supabaseSide(ask.route, ask.query ?? "", ask.user ?? null);
@@ -233,7 +244,11 @@ async function main() {
             tally.skipped[reason] = (tally.skipped[reason] ?? 0) + 1;
             continue;
           }
+          const started = process.cpuUsage();
           const outcome = await compareShadow(SHADOW_SPECS[ask.route], shadow, side, { maxBytes: Number.MAX_SAFE_INTEGER });
+          const used = process.cpuUsage(started);
+          tally.cpuMax = Math.max(tally.cpuMax, (used.user + used.system) / 1000);
+          tally.bytesMax = Math.max(tally.bytesMax, JSON.stringify(side.answer).length);
           if (hasContent(side.answer)) tally.nonEmpty += 1;
           if (outcome.kind === "same") tally.same += 1;
           else if (outcome.kind === "expected") tally.expected += 1;
@@ -264,7 +279,7 @@ async function main() {
         }
         for (const [route, tally] of [...tallies].sort()) {
           const skipped = Object.keys(tally.skipped).length ? ` skipped ${JSON.stringify(tally.skipped)}` : "";
-          console.log(`${env} ${route}: ${tally.asked} asked (${tally.nonEmpty} with rows), ${tally.same} same, ${tally.expected} expected, ${tally.differed} differed${skipped}`);
+          console.log(`${env} ${route}: ${tally.asked} asked (${tally.nonEmpty} with rows), ${tally.same} same, ${tally.expected} expected, ${tally.differed} differed${skipped}; largest Supabase answer ${Math.round(tally.bytesMax / 1024)} KB, compare CPU max ${tally.cpuMax.toFixed(1)} ms`);
           for (const failure of tally.failures.slice(0, verbose ? 20 : 5)) console.log(`  ${failure}`);
           if (tally.differed) failed = true;
         }
