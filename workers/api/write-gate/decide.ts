@@ -92,10 +92,26 @@ function selectColumns(query: URLSearchParams): string[] | null {
   return columns.every((column) => IDENTIFIER.test(column)) ? columns : null;
 }
 
-/** Postgres uuid input: braces and hyphens are optional. */
+/**
+ * Postgres uuid input (uuid.c string_to_uuid): 32 hex digits, optionally in one pair of braces, with
+ * at most one hyphen after each group of four digits but the last. Anything else fails the cast.
+ */
 function uuidHex(value: string): string | null {
-  const hex = value.replace(/^\{/, "").replace(/\}$/, "").replace(/-/g, "").toLowerCase();
-  return /^[0-9a-f]{32}$/.test(hex) ? hex : null;
+  const braces = value.startsWith("{");
+  let at = braces ? 1 : 0;
+  let hex = "";
+  for (let byte = 0; byte < 16; byte += 1) {
+    const pair = value.slice(at, at + 2);
+    if (!/^[0-9a-fA-F]{2}$/.test(pair)) return null;
+    hex += pair;
+    at += 2;
+    if (value[at] === "-" && byte % 2 === 1 && byte < 15) at += 1;
+  }
+  if (braces) {
+    if (value[at] !== "}") return null;
+    at += 1;
+  }
+  return at === value.length ? hex.toLowerCase() : null;
 }
 
 /**

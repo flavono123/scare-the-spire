@@ -159,6 +159,13 @@ function decisionChecks() {
   assert.equal(ownerState(null, USER), "other", "NULL never equals auth.uid()");
   assert.equal(ownerState(undefined, USER), "other");
   assert.equal(ownerState("nope", USER), "invalid");
+  assert.equal(ownerState(`{${USER}`, USER), "invalid", "a brace needs its pair");
+  assert.equal(ownerState(`${USER}}`, USER), "invalid", "a brace needs its pair");
+  assert.equal(ownerState(USER.replace("-", "--"), USER), "invalid", "one hyphen at a time");
+  assert.equal(ownerState(`-${USER}`, USER), "invalid", "no leading hyphen");
+  assert.equal(ownerState(`${USER}-`, USER), "invalid", "no trailing hyphen");
+  assert.equal(ownerState(`${USER.slice(0, 7)}-${USER.slice(7)}`, USER), "invalid", "hyphens only after a group of four digits");
+  assert.equal(ownerState(USER.replace(/-/g, "").replace(/(.{4})/g, "$1-").replace(/-$/, ""), USER), "match", "a hyphen after any group of four digits");
   assert.equal(ownerState(12, USER), "invalid");
 }
 
