@@ -78,7 +78,7 @@ export const MIN_CALL_MS = 150;
 export const DEFAULT_MAX_BYTES = 2 * 1024 * 1024;
 
 /** Reads a body counting bytes as they arrive; null when it passes `maxBytes`. */
-export async function readCapped(response: Response, maxBytes: number): Promise<string | null> {
+async function readCapped(response: Response, maxBytes: number): Promise<string | null> {
   const declared = Number(response.headers.get("content-length") ?? "");
   if (Number.isFinite(declared) && declared > maxBytes) {
     void response.body?.cancel().catch(() => undefined);
