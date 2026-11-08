@@ -62,8 +62,8 @@ history-runs, puzzlebox, contact, profile(문의 읽음). nav와 colorful-philos
   `contactInquiryRow` 등)와 Supabase의 CHECK가 지금처럼 맡고, D1이 원본이 되는 5단계에는 D1 CHECK(0003~0006)가 맡는다.
 - **판단 순서**는 Postgres와 같다: 권한 → BEFORE 트리거(문의) → 정책의 WITH CHECK → (Supabase의) CHECK.
 - **insert**: 소유 열이 uid가 아니면(빠짐, NULL, 다른 uuid) 42501. uuid로 읽을 수 없는 값은 Postgres가 정책보다 먼저
-  22P02로 거절하므로 그대로 보낸다. 대소문자, 중괄호, 하이픈 형태는 같은 uuid로 본다. 추가 조건:
-  `not_builtin_preset`(대소문자 구분), `vote_post_same_env`(service로 글을 읽음), `defragment_source_owned`(service로
+  22P02로 거절하므로 그대로 보낸다. uuid로 읽는 규칙은 Postgres uuid 입력과 같다(대소문자, 한 쌍의 중괄호, 네 자리마다 하이픈 하나까지). 추가 조건:
+  `not_builtin_preset`(대소문자 구분, 문자열이 아닌 값은 그 JSON 텍스트로), `vote_post_same_env`(service로 글을 읽음), `defragment_source_owned`(service로
   원글을 읽음). 보호 트리거가 정하는 열(카운터, created_at, static_story_id)은 본문에서 뺀다. 열 기본값이 트리거가
   넣는 값과 같다(0, now(), NULL).
 - **upsert**: `merge-duplicates`면 기존 행이 update 정책의 USING을 통과해야 한다(아니면 42501). `ignore-duplicates`도
@@ -141,7 +141,8 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
   돌린다. 가짜 PostgREST는 Supabase의 `auth.uid()` 정의를 쓰고 PostgREST 12처럼 `request.jwt.claims`만 둔다. API
   사례 114개(29개 쓰기 경로 모두, 글 표 여덟 개마다 고치기·지우기를 자기 것과 남의 것으로, 정직한 요청과 남의 행, 위조한
   카운터·시각·소유자, CHECK 위반, 없는 열, 중복, 다른 env 글, 없는 글, 속도 제한 등)와
-  PostgREST 수준 사례 28개(경로가 만들지 않는 위조 소유자, 권한, 정책 없는 update 등)가 양쪽에서 같은 HTTP 응답을
+  PostgREST 수준 사례 31개(경로가 만들지 않는 위조 소유자, Postgres가 uuid로 읽지 못하는 소유자, 권한, 정책 없는 update,
+  문자열이 아닌 월드컵 프리셋 키 등)가 양쪽에서 같은 HTTP 응답을
   내고 쓰는 26개 표와 변경 로그에 같은 행을 남겨야 통과한다. 위조 시각과 새 uuid만 `<now>`, `<uuid>`로 맞춘다. rls 쪽은 service
   키를, worker 쪽은 사용자 토큰을 한 번도 쓰지 않았는지도 본다. 셋째 DB(이 마이그레이션을 두 번 적용)에 rls 방식으로
   같은 사례를 보내 오늘과 같은 답과 행이 나오는지도 본다. 마이그레이션이 브라우저 역할과 옛 탭에 바꾸는 것이 없고 다시
@@ -217,6 +218,20 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
    넣는 열이 `select` 목록과 같다고 보았다. 실제 경로는 `return=minimal`만 쓴다.
 7. 흘려보내던 쓰기의 env는 지금처럼 클라이언트 값을 그대로 둔다. 4단계의 기준은 정직한 요청과 손으로 만든 요청 모두
    오늘과 같은 결과다. 정직한 클라이언트는 api 경로에서 Worker와 같은 env를 보낸다. env 열은 5단계 D1에 없다(plan 5.6).
+8. 손으로 만든 요청만의 차이(정직한 클라이언트는 보내지 않는다):
+   - 배열 본문의 PATCH: 게이트는 400 `PGRST102`로 거절한다. PostgREST 12 소스로는 첫 원소로 고친다(`LIMIT 1`). 가짜
+     PostgREST도 배열 PATCH를 받지 않아 spec은 이 차이를 보지 않는다(실제 PostgREST로 확인하지 않았다).
+   - 객체나 배열이 아닌 JSON 본문(`5`, `"x"`): 게이트는 400 `PGRST102`. PostgREST 12 소스로는 빈 객체로 읽으므로 소유 열이
+     없어 정책이 거절할 것이다(확인하지 않았다).
+   - 소유 열 밖의 uuid 열(글 `id`, 덧글 본문 `source_id`)에 uuid로 읽을 수 없는 값: Postgres는 정책보다 먼저 22P02,
+     게이트는 정책 판단(42501)이 먼저일 수 있다. 둘 다 거절.
+   - 흘려보내던 본문은 게이트가 파싱해 다시 직렬화한다. JS 숫자(배정밀도)로 나타낼 수 없는 수(`12345678901234567890`,
+     `1e400`)는 jsonb 열에 오늘과 다른 값으로 들어간다. JS가 만든 JSON은 그대로 돌아온다.
+9. D1 설계 3.1절·10.6절은 "4단계부터 Worker가 모든 쓰기를 검증해 D1이 받지 못하는 손으로 만든 값이 생기지 않는다"고
+   적었다. 이 게이트는 오늘 Supabase와 같은 결과만 낸다(plan 7.3절 4단계의 대조 기준). 그래서 흘려보내는 본문의
+   `created_at`·`updated_at`(`'infinity'` 등), 글의 원소 꼴, 다른 env 글의 이거 아님 저거? 좋아요(spec 사례 "this or that like
+   on another env's post")는 4단계에도 오늘처럼 Supabase에 들어가고, 1분 동기화에서 3.1절 규칙대로 거절로 남는다.
+   직접 쓰기를 닫으면 브라우저 경로만 없어진다.
 
 ## 10. 열린 질문
 
@@ -228,3 +243,12 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 - 5단계 작업의 `write.paused`는 `write.<group>`과 접두사가 같지만 그룹 이름이 아니라서 이 코드는 읽고 버린다.
   `WRITE_FLAG_GROUPS`(`src/lib/api-write-modes.ts`)와 5단계의 `WRITE_GROUPS`는 같은 일곱 그룹이다. 하나로 합쳐도 된다.
 - 신원 작업과는 라우터의 `check.user` 한 곳(4.2절)만 맞추면 된다.
+- Supabase secret 키는 2단계 동기화(`workers/sync/sync-env.ts`)·5단계 미러와 같은 Worker secret
+  `API_SUPABASE_SECRET_KEY`다. `supabaseServiceConfig`가 `write-gate/gate.ts`와 `sync/sync-env.ts` 두 곳에 생기니 하나로
+  합쳐도 된다.
+- `supabase db push`는 대기 중인 마이그레이션을 모두 올린다. 2단계 변경 로그를 올리기 전에 이 브랜치를 합치면 그 push에
+  5절 마이그레이션이 함께 실린다(RELEASE_PROCESS 5절 4번의 dry-run에 둘 다 나온다). 브라우저 역할에 바뀌는 것이 없어
+  같이 올려도 되는지, 따로 올릴지는 그때 사용자에게 묻는다.
+- 쓰기 경로 안에서 사용자 토큰으로 읽는 호출(GET·HEAD)은 worker 방식에서 500 `gate_unsupported`다. 2단계의
+  읽은 직후 반영(`workers/sync/read-after-write.ts`)은 service 키로 따로 읽으므로 걸리지 않는다. 합칠 때 쓰기 핸들러에
+  토큰을 실은 읽기가 새로 생기지 않았는지 본다.
