@@ -10,70 +10,26 @@ import {
 import { surfacePath } from "./runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "./supabase";
 import { withSupabaseTimeout } from "./supabase-timeout";
-import type { PostBlock } from "./chemical-types";
 import { devToolsEnabled } from "./dev-tools";
-import { buildRunHighlights, type RunHighlightResource } from "./run-highlights";
+import { buildRunHighlights } from "./run-highlights";
 import { duplicateShareShouldUpdateCover } from "./history-course-share-state";
 import { pickAlternatingCover, suggestDefaultCover } from "./run-cover-suggest";
-import { isCoverSpec, type CoverSpec } from "./run-cover-types";
-import { parseReplayRun, type ReplayBadge, type ReplayRun } from "./sts2-run-replay";
+import type { CoverSpec } from "./run-cover-types";
+import type { ReplayRun } from "./sts2-run-replay";
 import { readStoredUserProfile } from "./user-profile";
-import { mergePartyBadges, partyCharacters } from "./history-party";
+import { mergePartyBadges } from "./history-party";
+import {
+  normalizeRunRow,
+  normalizeRunSummaryRow,
+  parseCoverSpec,
+  parseRunSafely,
+  totalFloorsFromRun,
+  type DonatedRun,
+  type DonatedRunSummary,
+  type RunRow,
+} from "./run-summary-row";
 
-export interface DonatedRun {
-  id: string;
-  raw: string;
-  seed: string;
-  build: string;
-  character: string;
-  ascension: number;
-  win: boolean;
-  start_time: number | null;
-  run_time: number | null;
-  acts_count: number;
-  badges: ReplayBadge[];
-  highlight_card: RunHighlightResource | null;
-  highlight_relic: RunHighlightResource | null;
-  note_blocks: PostBlock[] | null;
-  cover_spec: CoverSpec | null;
-  created_at: string;
-}
-
-export interface DonatedRunSummary {
-  id: string;
-  seed: string;
-  build: string;
-  character: string;
-  /** Present when listing still has raw and can parse the party. */
-  characters?: string[];
-  ascension: number;
-  win: boolean;
-  start_time: number | null;
-  run_time: number | null;
-  acts_count: number;
-  // Total floors visited across all acts. Pre-extracted at insert
-  // time so the listing query doesn't have to parse the raw JSON.
-  total_floors: number;
-  badges: ReplayBadge[];
-  highlight_card: RunHighlightResource | null;
-  highlight_relic: RunHighlightResource | null;
-  note_blocks: PostBlock[] | null;
-  cover_spec: CoverSpec | null;
-  /** Present on gallery listings that still select raw for cover backfill. */
-  raw?: string | null;
-  donor_user_id: string | null;
-  created_at: string;
-}
-
-function totalFloorsFromRun(run: ReplayRun): number {
-  let total = 0;
-  for (const act of run.map_point_history) total += act.length;
-  return total;
-}
-
-function parseCoverSpec(value: unknown): CoverSpec | null {
-  return isCoverSpec(value) ? value : null;
-}
+export type { DonatedRun, DonatedRunSummary } from "./run-summary-row";
 
 function parsedMetaFromRun(run: ReplayRun, runId: string) {
   const highlights = buildRunHighlights(run, runId);
@@ -94,11 +50,6 @@ function parsedMetaFromRun(run: ReplayRun, runId: string) {
     cover_spec: suggestDefaultCover(runId, run),
   };
 }
-
-type RunRow = Partial<DonatedRunSummary & DonatedRun> & {
-  raw?: string | null;
-  cover_spec?: unknown;
-};
 
 // The column lists live in history-runs-api-rules.ts so the Worker reads the same ones.
 
@@ -140,59 +91,6 @@ function runReadEnvs(): string[] {
     return [supabaseEnv, "production"];
   }
   return [supabaseEnv];
-}
-
-function parseRunSafely(raw: string | null | undefined): ReplayRun | null {
-  if (!raw) return null;
-  try {
-    return parseReplayRun(raw);
-  } catch {
-    return null;
-  }
-}
-
-function normalizeRunRow(row: RunRow, runId: string): DonatedRun {
-  const parsedRun = parseRunSafely(row.raw);
-  const highlights = parsedRun ? buildRunHighlights(parsedRun, runId) : null;
-  const storedCover = parseCoverSpec(row.cover_spec);
-  // Auto covers re-pick A/B on read so both variants show in the index.
-  const cover_spec =
-    storedCover?.auto === false
-      ? storedCover
-      : parsedRun
-        ? pickAlternatingCover(runId, parsedRun)
-        : storedCover;
-  return {
-    id: row.id ?? runId,
-    raw: row.raw ?? "",
-    seed: row.seed ?? parsedRun?.seed ?? "",
-    build: row.build ?? parsedRun?.build_id ?? "",
-    character: row.character ?? parsedRun?.players[0]?.character ?? "",
-    ascension: row.ascension ?? parsedRun?.ascension ?? 0,
-    win: row.win ?? parsedRun?.win ?? false,
-    start_time: row.start_time ?? parsedRun?.start_time ?? null,
-    run_time: row.run_time ?? parsedRun?.run_time ?? null,
-    acts_count: row.acts_count ?? parsedRun?.acts.length ?? 0,
-    badges: parsedRun ? mergePartyBadges(parsedRun) : (row.badges ?? []),
-    highlight_card: row.highlight_card ?? highlights?.card ?? null,
-    highlight_relic: row.highlight_relic ?? highlights?.relic ?? null,
-    note_blocks: row.note_blocks ?? null,
-    cover_spec,
-    created_at: row.created_at ?? new Date(0).toISOString(),
-  };
-}
-
-function normalizeRunSummaryRow(row: RunRow): DonatedRunSummary {
-  const runId = row.id ?? "";
-  const normalized = normalizeRunRow(row, runId);
-  const parsedRun = parseRunSafely(row.raw);
-  return {
-    ...normalized,
-    characters: parsedRun ? partyCharacters(parsedRun) : [normalized.character],
-    total_floors: row.total_floors ?? (parsedRun ? totalFloorsFromRun(parsedRun) : 0),
-    raw: row.raw ?? null,
-    donor_user_id: row.donor_user_id ?? null,
-  };
 }
 
 async function selectDonatedRunForEnv(
@@ -280,12 +178,79 @@ async function selectHistoryRunReferencesForEnv(
   };
 }
 
+/** 409 from the step 5 D1 source: runs are shared one per request (design 4.4). */
+const SINGLE_RUN_REQUIRED = "single_run_required";
+
+function singleRunRequired(error: unknown): boolean {
+  return error instanceof ApiError && error.status === 409 && error.code === SINGLE_RUN_REQUIRED;
+}
+
+/**
+ * One run to /api/write/history-runs/share: `[<row>,<raw>]`, the row's length in a header so the
+ * Worker parses only the row, with the list summary computed here (docs/supabase-exit/D1_SCHEMA_DESIGN.md
+ * 4.4, 10.2). Resolves true when this request shared it, false when it was already shared.
+ */
+async function shareOneRun(row: Record<string, unknown>): Promise<boolean> {
+  const { raw, ...meta } = row as Record<string, unknown> & { raw: string };
+  const { extractRunListSummary } = await import("./run-list-summary");
+  let summary: Record<string, unknown> = {};
+  try {
+    const extracted = extractRunListSummary(String(meta.id), raw);
+    summary = {
+      characters: extracted.characters,
+      game_mode: extracted.game_mode,
+      game_elements: extracted.game_elements,
+      list_facts: extracted.list_facts,
+      badges: extracted.badges,
+      summary_version: extracted.summary_version,
+    };
+  } catch {
+    // An unparsable raw keeps summary_version 0; the fill job and the list handle it (design 4.4).
+  }
+  const rowText = JSON.stringify({ ...meta, ...summary });
+  const body = await apiFetchAsUser<{ v?: number; inserted?: string[] }>("history-runs", "/api/write/history-runs/share", {
+    method: "POST",
+    rawBody: `[${rowText},${raw}]`,
+    headers: { "X-Slseoun-Row-Length": String(rowText.length) },
+    timeoutMs: 30_000,
+  });
+  return Array.isArray(body?.inserted) && body.inserted.length > 0;
+}
+
+/** The batch on the D1 source: one run per request, two at a time, counted as the batch answer. */
+async function shareRunsOneByOne(rows: Record<string, unknown>[]): Promise<DonateBatchResult> {
+  const result: DonateBatchResult = { inserted: 0, alreadyDonated: 0, failed: 0 };
+  let next = 0;
+  const worker = async () => {
+    while (next < rows.length) {
+      const row = rows[next];
+      next += 1;
+      try {
+        if (await shareOneRun(row)) result.inserted += 1;
+        else result.alreadyDonated += 1;
+      } catch (error) {
+        result.failed += 1;
+        result.errorMessage = apiWriteError(error).message;
+      }
+    }
+  };
+  await Promise.all([worker(), worker()]);
+  return result;
+}
+
 async function insertDonatedRunRow(row: Record<string, unknown>): Promise<{ error: { code?: string; message?: string } | null }> {
   if (runsViaApi()) {
     try {
       await apiFetchAsUser("history-runs", "/api/write/history-runs", { method: "POST", body: row, timeoutMs: 30_000 });
       return { error: null };
     } catch (error) {
+      if (singleRunRequired(error)) {
+        try {
+          return (await shareOneRun(row)) ? { error: null } : { error: { code: "23505", message: "duplicate" } };
+        } catch (shareError) {
+          return { error: apiWriteError(shareError) };
+        }
+      }
       if (!writeMayGoLegacy(error)) return { error: apiWriteError(error) };
     }
   }
@@ -390,6 +355,7 @@ export async function donateRunsBatch(input: {
       const inserted = Array.isArray(body?.inserted) ? body.inserted.length : 0;
       return { inserted, alreadyDonated: input.runs.length - inserted, failed: 0 };
     } catch (error) {
+      if (singleRunRequired(error)) return shareRunsOneByOne(rows);
       if (!writeMayGoLegacy(error)) {
         return { inserted: 0, alreadyDonated: 0, failed: input.runs.length, errorMessage: apiWriteError(error).message };
       }

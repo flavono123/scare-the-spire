@@ -95,6 +95,11 @@
   `history-runs`, `profile`, `contact`, `colorful-philosophers`)을 legacy로 내린 상태와 api인 상태 모두에서 12쪽이 화면
   요약·요청 목록까지 같고, 패치 페이지는 `transfigure_posts` 요청만 빠졌다. 이제 testbed 패치 페이지의 Supabase 요청은
   0건이다. 다섯 그룹은 다시 `api`로 올려 9개 그룹 모두 `api`다.
+- 2026-11-08 14:40 KST 1단계를 운영에 냈다(`ff3760fa`, 사용자 승인, 스위치 `off`). 운영 D1 `slseoun-prod`에 0001·0002를
+  push 전에 적용했다. 운영 스모크 205개가 통과했고, 배포 전·후 헤더 비교에서 바뀐 것은 `/api/read|me|write/*`의 JSON
+  응답뿐이다. 브라우저는 legacy 경로이고 1단계 `/api` 요청 0건, `slseoun_rf` 쿠키 없음이다. 기록은
+  [history/2026-11-08.md](../release/history/2026-11-08.md). 운영 `runtime_flags`는 0행이다(모든 그룹 legacy). 그룹을
+  켜려면 먼저 `API_RUNTIME_FLAGS`를 `d1`로 바꾸는 배포가 필요하다.
 - 이 문서는 모든 화면이 같이 쓰는 기반과 첫 화면 `nav`를 정한다. 다른 화면은 SURFACE_MAP.md 2절을 따르되,
   이 문서 9절의 규칙이 우선한다.
 

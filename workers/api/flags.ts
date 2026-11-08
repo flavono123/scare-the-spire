@@ -1,6 +1,7 @@
 import {
   API_SURFACE_GROUPS,
   pathFlagKey,
+  shadowFlagKey,
   type ApiSurfaceGroup,
 } from "../../src/lib/api-surfaces";
 import { withTimeout, type D1Database, type D1PreparedStatement } from "./d1";
@@ -29,10 +30,17 @@ export const API_FLAG_WAIT_MS = 1_000;
 const FAILURE_BACKOFF_MS = [10_000, 30_000, 60_000];
 
 const EMPTY: ReadonlySet<ApiSurfaceGroup> = new Set();
+const NO_SHADOW: ReadonlyMap<ApiSurfaceGroup, number> = new Map();
+
+/** Step 2 shadow-read sample rate per group (D1_SCHEMA_DESIGN 6); a missing group is 0. */
+export type ShadowRates = ReadonlyMap<ApiSurfaceGroup, number>;
 
 type FlagMemory = {
   groups: ReadonlySet<ApiSurfaceGroup>;
+  shadow: ShadowRates;
   readAt: number;
+  /** Every row of the read, for flags that are not path flags (identity.mode). */
+  values: ReadonlyMap<string, string>;
 };
 
 let memory: FlagMemory | null = null;
@@ -69,8 +77,48 @@ export function parseFlagRows(
   return groups;
 }
 
-export function recordFlags(groups: ReadonlySet<ApiSurfaceGroup>, now: number): void {
-  memory = { groups, readAt: now };
+/**
+ * `shadow.<group>` sample rates of routed groups: a number clamped to 0..1. Missing, empty or
+ * non-numeric values are 0 and are left out.
+ */
+export function parseShadowRates(
+  rows: readonly { key?: unknown; value?: unknown }[],
+  routedGroups: ReadonlySet<ApiSurfaceGroup>,
+): Map<ApiSurfaceGroup, number> {
+  const rates = new Map<ApiSurfaceGroup, number>();
+  for (const group of API_SURFACE_GROUPS) {
+    if (!routedGroups.has(group)) continue;
+    const row = rows.find((candidate) => candidate.key === shadowFlagKey(group));
+    const rate = clampShadowRate(row?.value);
+    if (rate > 0) rates.set(group, rate);
+  }
+  return rates;
+}
+
+export function clampShadowRate(value: unknown): number {
+  const text = typeof value === "string" ? value.trim() : typeof value === "number" ? String(value) : "";
+  if (!text) return 0;
+  const rate = Number(text);
+  if (!Number.isFinite(rate) || rate <= 0) return 0;
+  return rate >= 1 ? 1 : rate;
+}
+
+/** String-valued rows of a flags read, by key. */
+export function flagValues(rows: readonly { key?: unknown; value?: unknown }[]): Map<string, string> {
+  const values = new Map<string, string>();
+  for (const row of rows) {
+    if (typeof row.key === "string" && typeof row.value === "string") values.set(row.key, row.value);
+  }
+  return values;
+}
+
+export function recordFlags(
+  groups: ReadonlySet<ApiSurfaceGroup>,
+  now: number,
+  shadow: ShadowRates = NO_SHADOW,
+  values: ReadonlyMap<string, string> = new Map(),
+): void {
+  memory = { groups, shadow, readAt: now, values };
   failures = 0;
   retryAt = 0;
 }
@@ -98,7 +146,7 @@ async function readFlags(db: D1Database, routedGroups: ReadonlySet<ApiSurfaceGro
   try {
     const result = await flagsStatement(db).all<{ key: string; value: string }>();
     const groups = parseFlagRows(result.results ?? [], routedGroups);
-    recordFlags(groups, now());
+    recordFlags(groups, now(), parseShadowRates(result.results ?? [], routedGroups), flagValues(result.results ?? []));
     return groups;
   } catch (error) {
     recordFlagFailure(startedAt, now());
@@ -126,8 +174,17 @@ export function pageFlags(
   return null;
 }
 
+/**
+ * Every flag value of this isolate's last good read, or null when it has none
+ * younger than `maxAgeMs` (page requests accept STALE_MAX_MS, /api FRESH_MS).
+ */
+export function rememberedFlagValues(now = Date.now(), maxAgeMs = STALE_MAX_MS): ReadonlyMap<string, string> | null {
+  if (!memory || now - memory.readAt >= maxAgeMs) return null;
+  return memory.values;
+}
+
 export type ApiFlagDecision =
-  | { ok: true; groups: ReadonlySet<ApiSurfaceGroup>; prefetched: unknown[] }
+  | { ok: true; groups: ReadonlySet<ApiSurfaceGroup>; prefetched: unknown[]; shadow: ShadowRates }
   | { ok: false; reason: "off" | "not_configured" | "unknown" };
 
 /**
@@ -146,7 +203,7 @@ export async function apiFlags(
   if (disabled) return { ok: false, reason: disabled };
   const db = env.DB as D1Database;
   if (memory && now - memory.readAt < FRESH_MS) {
-    return { ok: true, groups: memory.groups, prefetched: [] };
+    return { ok: true, groups: memory.groups, prefetched: [], shadow: memory.shadow };
   }
   if (now < retryAt) return { ok: false, reason: "unknown" };
 
@@ -155,9 +212,11 @@ export async function apiFlags(
   const batch = (async () => {
     try {
       const results = await db.batch(statements);
-      const groups = parseFlagRows((results[0]?.results ?? []) as { key?: unknown; value?: unknown }[], routedGroups);
-      recordFlags(groups, Date.now());
-      return { groups, prefetched: results.slice(1).map((result) => result.results ?? []) };
+      const flagRows = (results[0]?.results ?? []) as { key?: unknown; value?: unknown }[];
+      const groups = parseFlagRows(flagRows, routedGroups);
+      const shadow = parseShadowRates(flagRows, routedGroups);
+      recordFlags(groups, Date.now(), shadow, flagValues(flagRows));
+      return { groups, shadow, prefetched: results.slice(1).map((result) => result.results ?? []) };
     } catch (error) {
       recordFlagFailure(startedAt, Date.now());
       throw error;
@@ -165,8 +224,8 @@ export async function apiFlags(
   })();
   ctx.waitUntil(batch.catch(() => undefined));
   try {
-    const { groups, prefetched } = await withTimeout(batch, API_FLAG_WAIT_MS);
-    return { ok: true, groups, prefetched };
+    const { groups, prefetched, shadow } = await withTimeout(batch, API_FLAG_WAIT_MS);
+    return { ok: true, groups, prefetched, shadow };
   } catch {
     return { ok: false, reason: "unknown" };
   }

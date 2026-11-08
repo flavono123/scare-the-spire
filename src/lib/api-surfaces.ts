@@ -32,6 +32,11 @@ export function pathFlagKey(group: ApiSurfaceGroup): string {
   return `path.${group}`;
 }
 
+/** D1 key of a group's step 2 shadow-read sample rate (0..1; docs/supabase-exit/D1_SCHEMA_DESIGN.md 6). */
+export function shadowFlagKey(group: ApiSurfaceGroup): string {
+  return `shadow.${group}`;
+}
+
 /** Cookie the Worker sets on page responses: `v1` plus the api groups, dot-joined. */
 export const FLAG_COOKIE_NAME = "slseoun_rf";
 const FLAG_COOKIE_VERSION = "v1";

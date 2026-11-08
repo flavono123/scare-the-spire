@@ -13,6 +13,8 @@ export type ApiErrorCode =
   | "invalid"
   | "token_expired"
   | "token_invalid"
+  /** Step 4 cookie mode: no valid `slseoun_id` cookie; the browser claims and retries once. */
+  | "identity_required"
   | "forbidden"
   | "cross_site"
   | "not_found"
@@ -32,6 +34,7 @@ const ERROR_STATUS: Record<ApiErrorCode, number> = {
   invalid: 400,
   token_expired: 401,
   token_invalid: 401,
+  identity_required: 401,
   forbidden: 403,
   cross_site: 403,
   not_found: 404,
