@@ -10,7 +10,7 @@ import { readdirSync, readFileSync } from "node:fs";
 
 import { PGlite } from "@electric-sql/pglite";
 
-import { mapRow, recountStatements, rowEnv, SUPABASE_TABLES, type RowImage } from "../src/lib/d1-sync/row-mapper";
+import { mapRow, recountStatements, rowEnv, SUPABASE_TABLES } from "../src/lib/d1-sync/row-mapper";
 import { runSync } from "../workers/sync/run-sync";
 import { FakePostgrest, type LogRow, type Row } from "./d1-sync/fake-postgrest";
 import { SqliteD1 } from "./d1-sync/sqlite-d1";

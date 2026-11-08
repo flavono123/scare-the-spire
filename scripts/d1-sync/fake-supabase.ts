@@ -53,7 +53,7 @@ export class FakeSupabase extends FakePostgrest {
     const out: Row = { ...(COUNTER_DEFAULTS[table] ?? {}), ...row };
     if (SERVER_ID.has(table) && out.id === undefined) out.id = crypto.randomUUID();
     if (out.created_at === undefined && table !== "puzzlebox_players" && table !== "resource_reactions") out.created_at = this.now();
-    if (table === "comments") out.parent_id ??= null, out.meta ??= null, out.content_blocks ??= null;
+    if (table === "comments") Object.assign(out, { parent_id: out.parent_id ?? null, meta: out.meta ?? null, content_blocks: out.content_blocks ?? null });
     if (table === "contact_inquiries") {
       Object.assign(out, { status: out.status ?? "new", admin_response: out.admin_response ?? null, responded_at: out.responded_at ?? null, reply_seen_at: out.reply_seen_at ?? null });
     }
@@ -136,7 +136,9 @@ export class FakeSupabase extends FakePostgrest {
         palette_id: null, palette_swapped: false, hidden: false, updated_at: this.now(),
       };
       if (this.table("puzzlebox_players").some((row) => row.user_id === sub)) {
-        const { user_id: _user, hidden: _hidden, ...rest } = playerRow;
+        const rest: Row = { ...playerRow };
+        delete rest.user_id;
+        delete rest.hidden;
         this.update("puzzlebox_players", { user_id: sub }, rest);
       } else {
         this.insert("puzzlebox_players", playerRow);
