@@ -1833,30 +1833,8 @@
     } catch {
       // Keep the baked counts.
     }
-
-    try {
-      const figures = await restRequest(
-        config,
-        `transfigure_posts?select=id,title,nickname&env=eq.${config.supabaseEnv}&order=created_at.desc&limit=15`,
-      );
-      const stack = document.querySelector("[data-transfigure-preview-stack]");
-      if (!stack || stack.getAttribute("data-react-managed") === "true" || !Array.isArray(figures)) return;
-      const template = stack.querySelector("[data-transfigure-card]");
-      if (!template) return;
-      const seen = new Set(Array.from(stack.querySelectorAll("[data-transfigure-id]")).map((node) => node.getAttribute("data-transfigure-id")));
-      figures.forEach((post) => {
-        if (!post.id || seen.has(post.id)) return;
-        const card = template.cloneNode(true);
-        card.setAttribute("data-transfigure-id", post.id);
-        card.setAttribute("data-href", `${localePrefix()}/transfigure/${post.id}`);
-        card.className = "absolute inset-0 w-full opacity-0 pointer-events-none";
-        const title = card.querySelector("h3, h2, .font-semibold");
-        if (title && post.title) title.textContent = post.title;
-        stack.appendChild(card);
-      });
-    } catch {
-      // Keep the baked transfigure reel.
-    }
+    // The transfigure reel stays as baked: its rotation script (backstab-transfigure-section.tsx)
+    // takes the cards once at load, so cards appended later would never be shown.
   }
 
   function bindReelReactions(config) {

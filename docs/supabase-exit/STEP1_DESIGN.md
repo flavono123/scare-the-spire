@@ -567,7 +567,8 @@ SURFACE_MAP 2.2절 19·20번과 10번의 `reel`을 덮는다. 글은 관리 화�
     받은 수가 있으면 묻지 않는다.
   - `useColorfulPhilosopherPost(id)`는 id가 uuid일 때 api 경로를 쓴다.
   - 셸 패치 릴(`patch-comments-client.js`의 `refreshReelWeek`)은 `/reel`을 읽는다. 반응 합계는 `comments` 그룹 경로다.
-    변형 릴(`transfigure_posts`)은 `toybox-feed` 그룹이라 그대로 둔다.
+    변형 릴(`transfigure_posts`)은 `toybox-feed` 그룹이라 그대로 두었다가, 정리(CLEANUP_AUDIT 3.3절)에서 요청을
+    지웠다. 회전 스크립트가 처음 로드 때 카드를 한 번만 잡아, 뒤에 붙인 카드는 보인 적이 없다.
   - legacy 신호나 모르는 `v`면 그룹을 내리고 같은 화면을 legacy로 다시 읽는다.
 - 다음 주 예약 확인(`useColorfulPhilosophersNextWeekOpen`)은 dev 네비에서만 돌므로 옮기지 않는다.
 
@@ -742,7 +743,7 @@ SURFACE_MAP 2.2절 11~18번. 장난감 상자 글은 행 하나가 1 MB를 넘�
   일도 api 경로에서는 없다.
 - 옮기지 않는 것: RPC가 없을 때의 대체 select, `get_defragment_feed` v1 대체, 열이 없을 때의 다시 시도(운영에 모두 있다),
   SURFACE_MAP 13번 메모의 죽은 경로, 패치 페이지의 변형 릴과 빌드 시점 읽기(`transfigure-data.ts`), 상세 셸 OG(플래그를
-  따르지 않는 4개 중 하나, SURFACE_MAP 1.2절).
+  따르지 않는 4개 중 하나, SURFACE_MAP 1.2절). 앞의 셋과 변형 릴 요청은 정리(CLEANUP_AUDIT)에서 지웠다.
 
 ## 10. 배포와 testbed
 
