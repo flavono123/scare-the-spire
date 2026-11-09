@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-data";
 import { ComboGameElementFilter } from "@/components/combo/combo-game-element-filter";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
@@ -396,12 +396,16 @@ export function HistoryCourseRunIndex({
   );
 
   // A D1 list row carries no raw; the editor reads it from R3r when it opens (design 4.4).
+  // Only the last click opens the editor: an earlier run's raw arriving late must not replace it.
+  const coverEditRequestRef = useRef<string | null>(null);
   const openDonatedCoverEditor = useCallback(async (donated: DonatedRunSummary) => {
+    coverEditRequestRef.current = donated.id;
     if (donated.raw) {
       setEditingDonated(donated);
       return;
     }
     const raw = await getDonatedRunRaw(donated.id).catch(() => null);
+    if (coverEditRequestRef.current !== donated.id) return;
     if (raw) setEditingDonated({ ...donated, raw });
   }, []);
 
