@@ -207,6 +207,7 @@ export function rememberedFlagValues(now = Date.now(), maxAgeMs = STALE_MAX_MS):
  *   route's own handler for that request. With the sync off, D1 stops following Supabase's writes,
  *   so read.<group> = d1 does not apply and the group reads Supabase — except a group without a
  *   write source of its own (nav, colorful-philosophers) once any write source is d1 (step 5).
+ *   (Shipped 2026-11-10 during a Supabase outage, when those two groups answered 503 after the cutover.)
  * - `d1-origin`: source.<group> = d1 (step 5). D1 is the origin, so there is no fallback and the
  *   sync flag does not matter (the cutover turns the sync off right before it flips the source).
  */
