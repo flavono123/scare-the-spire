@@ -1,7 +1,8 @@
 /**
  * Browser side of the step 1 API (docs/supabase-exit/STEP1_DESIGN.md 7, 8.2):
- * the flag cookie reader, apiFetch's legacy signals, the nav snapshot and
- * parity of nav dots between the snapshot and the legacy queries.
+ * the path of each group, apiFetch's answers to what used to be legacy signals
+ * (step 6 WP0: unavailable, never a demotion), the nav snapshot and parity of nav
+ * dots between the snapshot and the legacy queries.
  * Usage: tsx scripts/api-client.spec.ts
  */
 import assert from "node:assert/strict";
@@ -12,7 +13,7 @@ const fakeDocument: FakeDocument = { cookie: "" };
 Object.assign(globalThis, { window: fakeWindow, document: fakeDocument });
 
 async function main() {
-  const { ApiError, ApiUnavailableError, apiFetch, requireApiVersion, SurfaceLegacyError, writeMayGoLegacy } = await import("../src/lib/api-client");
+  const { ApiError, ApiUnavailableError, apiFetch, requireApiVersion, shouldUseLegacy, SurfaceLegacyError, writeMayGoLegacy } = await import("../src/lib/api-client");
   const { demoteSurface, slseounRuntime, surfacePath } = await import("../src/lib/runtime-flags");
   const { loadNavSnapshot, validateNavSnapshot } = await import("../src/lib/nav-snapshot");
   const { fetchUnreadSurfaceIds, NAV_SEEN_SURFACES, unreadFromSnapshot } = await import("../src/lib/nav-seen");
@@ -25,41 +26,29 @@ async function main() {
     delete fakeWindow.__slseounRuntime;
   };
 
-  // --- Flag cookie reader ----------------------------------------------------
-  resetPage("");
-  assert.equal(surfacePath("nav"), "legacy", "no cookie");
-  resetPage("other=1; slseoun_rf=v1.comments.nav");
-  assert.equal(surfacePath("nav"), "api");
-  assert.equal(surfacePath("comments"), "api");
-  assert.equal(surfacePath("profile"), "legacy");
-  resetPage("slseoun_rf=v2.nav");
-  assert.equal(surfacePath("nav"), "legacy", "unknown version");
-  resetPage("slseoun_rf=v1.nav");
-  demoteSurface("nav");
-  assert.equal(surfacePath("nav"), "legacy", "demoted for the page");
-  assert.equal((fakeWindow.__slseounRuntime as { demoted: Set<string> }).demoted.has("nav"), true, "shared on window");
-
-  // No cookie at all (a page served straight from assets): the build-time default, legacy unless "api".
+  // --- Every group is on the api path ----------------------------------------
+  // Step 6 has no legacy path: the `slseoun_rf` cookie (still sent for an older client after a
+  // rollback), the build default and a demotion no longer move a group.
+  const groups = ["nav", "comments", "profile", "toybox-feed", "history-runs"] as const;
   const buildDefault = process.env.NEXT_PUBLIC_API_PATH_DEFAULT;
-  for (const [value, expected] of [[undefined, "legacy"], ["", "legacy"], ["legacy", "legacy"], ["API", "legacy"], ["api", "api"]] as const) {
+  for (const value of [undefined, "", "legacy", "api"]) {
     if (value === undefined) delete process.env.NEXT_PUBLIC_API_PATH_DEFAULT;
     else process.env.NEXT_PUBLIC_API_PATH_DEFAULT = value;
-    resetPage("");
-    assert.equal(surfacePath("comments"), expected, `no cookie, default ${value}`);
-    resetPage("other=1");
-    assert.equal(surfacePath("comments"), expected, `other cookies only, default ${value}`);
-    resetPage("slseoun_rf=v1.nav");
-    assert.equal(surfacePath("comments"), "legacy", `the cookie decides, default ${value}`);
-    resetPage("slseoun_rf=v2.comments");
-    assert.equal(surfacePath("comments"), "legacy", `an unknown cookie version is legacy, default ${value}`);
-    resetPage("");
-    demoteSurface("comments");
-    assert.equal(surfacePath("comments"), "legacy", `a demoted group stays legacy, default ${value}`);
+    for (const cookie of ["", "other=1", "other=1; slseoun_rf=v1.comments.nav", "slseoun_rf=v1.nav", "slseoun_rf=v2.nav", "slseoun_rf=v1.nav.bogus"]) {
+      resetPage(cookie);
+      for (const group of groups) assert.equal(surfacePath(group), "api", `${group}: cookie "${cookie}", default ${value}`);
+      demoteSurface("comments");
+      assert.equal(surfacePath("comments"), "api", `a demotion does nothing: cookie "${cookie}", default ${value}`);
+    }
   }
   if (buildDefault === undefined) delete process.env.NEXT_PUBLIC_API_PATH_DEFAULT;
   else process.env.NEXT_PUBLIC_API_PATH_DEFAULT = buildDefault;
+  resetPage("slseoun_rf=v1.nav");
+  demoteSurface("nav");
+  assert.equal(slseounRuntime().demoted.size, 0, "nothing is added to the set the patch static client shares");
+  assert.equal(fakeWindow.__slseounRuntime, slseounRuntime(), "shared on window");
 
-  // --- apiFetch legacy signals ----------------------------------------------
+  // --- apiFetch: former legacy signals are an outage ---------------------------
   const marked = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
     status,
     headers: { "content-type": "application/json", "x-slseoun-api": "1" },
@@ -67,81 +56,68 @@ async function main() {
   const stubFetch = (respond: () => Response) => {
     globalThis.fetch = (async () => respond()) as typeof fetch;
   };
+  /** Unavailable with `code`, and nothing redoes or resends it on a legacy path. */
+  const outage = (code: string) => (error: unknown) => (
+    error instanceof ApiUnavailableError
+    && !(error instanceof SurfaceLegacyError)
+    && error.code === code
+    && !shouldUseLegacy(error)
+    && !writeMayGoLegacy(error)
+  );
 
   resetPage("slseoun_rf=v1.nav.comments");
   stubFetch(() => marked({ ok: 1 }));
   assert.deepEqual(await apiFetch("nav", "/api/read/nav"), { ok: 1 });
   await assert.rejects(() => apiFetch("nav", "api/read/nav"), /absolute/);
 
-  // A Worker rolled back to before step 1 answers /api with its HTML 404 and no marker.
-  stubFetch(() => new Response("<html>not found</html>", { status: 404, headers: { "content-type": "text/html" } }));
-  await assert.rejects(() => apiFetch("nav", "/api/read/nav"), (error) => (
-    error instanceof SurfaceLegacyError && error.processed === false
-  ));
-  assert.equal(surfacePath("nav"), "legacy", "demoted after an unmarked answer");
-
-  // Unmarked 404/405 on a write: nothing ran, so it may be resent on legacy.
-  stubFetch(() => new Response("<html></html>", { status: 405 }));
-  await assert.rejects(() => apiFetch("comments", "/api/write/comments", { method: "POST", body: {} }), (error) => (
-    error instanceof SurfaceLegacyError && error.processed === false
-  ));
-  // Unmarked 5xx on a write may have run: never resend.
-  resetPage("slseoun_rf=v1.comments");
-  stubFetch(() => new Response("error 1101", { status: 500 }));
-  await assert.rejects(() => apiFetch("comments", "/api/write/comments", { method: "POST", body: {} }), (error) => (
-    error instanceof SurfaceLegacyError && error.processed === true
-  ));
-
-  resetPage("slseoun_rf=v1.nav");
-  stubFetch(() => marked({ error: "surface_legacy", reason: "flag" }, 409));
-  await assert.rejects(() => apiFetch("nav", "/api/read/nav"), SurfaceLegacyError);
-  assert.equal(surfacePath("nav"), "legacy");
-
-  resetPage("slseoun_rf=v1.nav");
-  stubFetch(() => marked({ error: "unavailable" }, 503));
-  await assert.rejects(() => apiFetch("nav", "/api/read/nav"), ApiUnavailableError);
-  assert.equal(surfacePath("nav"), "api", "an outage is not a legacy signal");
-
-  // An unknown version on a read may be redone on legacy; on a write answer the write ran.
-  assert.throws(() => requireApiVersion("toybox-feed", { v: 2 }), (error) => writeMayGoLegacy(error));
-  assert.throws(() => requireApiVersion("toybox-feed", { v: 2 }, true), (error) => error instanceof SurfaceLegacyError && !writeMayGoLegacy(error));
-  assert.equal(surfacePath("toybox-feed"), "legacy", "either way the group is demoted");
-
-  // Built with NEXT_PUBLIC_API_PATH_DEFAULT=api (the direct writes are closed): a write that no router
-  // answered, or that got a legacy signal, is an outage. It never demotes and never goes to legacy.
-  // Reads keep today's demotion.
-  {
-    const buildDefault = process.env.NEXT_PUBLIC_API_PATH_DEFAULT;
-    process.env.NEXT_PUBLIC_API_PATH_DEFAULT = "api";
-    const platformError = () => new Response("<html>error 1102</html>", { status: 503, headers: { "content-type": "text/html" } });
+  const platformError = () => new Response("<html>error 1102</html>", { status: 503, headers: { "content-type": "text/html" } });
+  const legacySignal = () => marked({ error: "surface_legacy", reason: "flag" }, 409);
+  for (const cookie of ["", "slseoun_rf=v1.toybox-feed", "slseoun_rf=v1.nav"]) {
+    // A read: no router answered (a platform error page, or a Worker from before step 1 with its
+    // HTML 404), or the router's legacy signal.
+    for (const [label, respond, code] of [
+      ["an unmarked platform error page", platformError, "no_marker"],
+      ["an unmarked 404", () => new Response("<html>not found</html>", { status: 404, headers: { "content-type": "text/html" } }), "no_marker"],
+      ["the router's legacy signal", legacySignal, "surface_legacy"],
+    ] as const) {
+      resetPage(cookie);
+      stubFetch(respond);
+      await assert.rejects(() => apiFetch("toybox-feed", "/api/read/toybox-feed?service=combo"), outage(code), `${label} on a read (cookie "${cookie}")`);
+      assert.equal(surfacePath("toybox-feed"), "api", `${label} on a read does not demote (cookie "${cookie}")`);
+    }
+    // A write keeps the code the production build (direct writes closed) answered: unavailable.
     for (const [label, respond] of [
       ["an unmarked platform error page", platformError],
       ["an unmarked 404", () => new Response("<html>not found</html>", { status: 404 })],
-      ["the router's legacy signal", () => marked({ error: "surface_legacy", reason: "flag" }, 409)],
+      ["an unmarked 405", () => new Response("<html></html>", { status: 405 })],
+      ["an unmarked 500", () => new Response("error 1101", { status: 500 })],
+      ["the router's legacy signal", legacySignal],
     ] as const) {
-      for (const cookie of ["", "slseoun_rf=v1.toybox-feed"]) {
+      for (const method of ["POST", "PATCH", "DELETE"] as const) {
         resetPage(cookie);
         stubFetch(respond);
-        await assert.rejects(() => apiFetch("toybox-feed", "/api/write/toybox-post?service=combo", { method: "POST", body: {} }), (error) => (
-          error instanceof ApiUnavailableError && !(error instanceof SurfaceLegacyError) && !writeMayGoLegacy(error)
-        ), `${label} on a write: unavailable (cookie "${cookie}")`);
+        await assert.rejects(() => apiFetch("toybox-feed", "/api/write/toybox-post?service=combo", { method, body: {} }), outage("unavailable"), `${label} on a ${method} (cookie "${cookie}")`);
         assert.equal(surfacePath("toybox-feed"), "api", `${label} on a write does not demote (cookie "${cookie}")`);
       }
     }
-    resetPage("");
-    assert.equal(writeMayGoLegacy(new SurfaceLegacyError(404, false)), false, "nothing is resent on legacy");
-    assert.throws(() => requireApiVersion("toybox-feed", { v: 2 }, true), SurfaceLegacyError);
-    assert.equal(surfacePath("toybox-feed"), "api", "an unknown write answer does not demote");
-    stubFetch(platformError);
-    await assert.rejects(() => apiFetch("toybox-feed", "/api/read/toybox-feed?service=combo"), SurfaceLegacyError);
-    assert.equal(surfacePath("toybox-feed"), "legacy", "a read still demotes: direct reads keep working");
-    if (buildDefault === undefined) delete process.env.NEXT_PUBLIC_API_PATH_DEFAULT;
-    else process.env.NEXT_PUBLIC_API_PATH_DEFAULT = buildDefault;
-    // Unset (today): the same unmarked write answer demotes and is a legacy signal.
-    resetPage("slseoun_rf=v1.toybox-feed");
-    stubFetch(platformError);
-    await assert.rejects(() => apiFetch("toybox-feed", "/api/write/toybox-post?service=combo", { method: "POST", body: {} }), SurfaceLegacyError);
-    assert.equal(surfacePath("toybox-feed"), "legacy");
+  }
+
+  resetPage("slseoun_rf=v1.nav");
+  stubFetch(() => marked({ error: "unavailable" }, 503));
+  await assert.rejects(() => apiFetch("nav", "/api/read/nav"), outage("unavailable"));
+  assert.equal(surfacePath("nav"), "api", "an outage is not a legacy signal");
+
+  // An unknown version is an outage too, for a read and for the answer to a write (which ran).
+  assert.throws(() => requireApiVersion("toybox-feed", { v: 2 }), outage("bad_version"));
+  assert.throws(() => requireApiVersion("toybox-feed", { v: 2 }, true), outage("bad_version"));
+  assert.throws(() => requireApiVersion("toybox-feed", null), outage("bad_version"));
+  assert.doesNotThrow(() => requireApiVersion("toybox-feed", { v: 1 }, true));
+  assert.equal(surfacePath("toybox-feed"), "api", "either way the group is not demoted");
+
+  // The deprecated helpers answer no for every error, the old legacy class included.
+  for (const error of [new SurfaceLegacyError(404, false), new SurfaceLegacyError(500, true), new ApiUnavailableError(409, "surface_legacy"), new ApiError(422, "invalid"), new Error("x")]) {
+    assert.equal(shouldUseLegacy(error), false);
+    assert.equal(writeMayGoLegacy(error), false);
   }
 
   stubFetch(() => marked({ error: "duplicate" }, 422));
@@ -163,7 +139,7 @@ async function main() {
     error instanceof ApiError && error.code === "rate_limited"
   ));
   stubFetch(() => marked({ error: "surface_legacy", reason: "flag" }, 409));
-  await assert.rejects(() => apiFetch("history-runs", "/api/read/history-run/raw?id=r1", { responseType: "text" }), SurfaceLegacyError);
+  await assert.rejects(() => apiFetch("history-runs", "/api/read/history-run/raw?id=r1", { responseType: "text" }), outage("surface_legacy"));
 
   globalThis.fetch = (async () => {
     throw new TypeError("network");
@@ -198,8 +174,9 @@ async function main() {
   snapshot.latest.combo = "2026-11-04T09:12:33.120Z";
   snapshot.latest.transfigure = "2026-10-01T00:00:00.000Z";
   assert.equal(validateNavSnapshot(snapshot, "production"), snapshot);
-  assert.throws(() => validateNavSnapshot({ ...snapshot, v: 2 }, "production"), SurfaceLegacyError);
-  assert.throws(() => validateNavSnapshot({ ...snapshot, env: "development" }, "production"), SurfaceLegacyError);
+  // Refused (WP-N decides what the dots and the courier then show); nothing goes to a legacy path.
+  assert.throws(() => validateNavSnapshot({ ...snapshot, v: 2 }, "production"), (error) => error instanceof ApiError && !shouldUseLegacy(error));
+  assert.throws(() => validateNavSnapshot({ ...snapshot, env: "development" }, "production"), (error) => error instanceof ApiError && !shouldUseLegacy(error));
 
   // One request for every caller on the page within 30 s.
   resetPage("slseoun_rf=v1.nav");
@@ -255,11 +232,12 @@ async function main() {
   const { engagementApiFor, loadEngagement, loadEngagementMine } = await import("../src/lib/api-engagement");
   const { ENGAGEMENT_QUERY_MAX_CHARS } = await import("../src/lib/engagement-keys");
 
-  resetPage("slseoun_rf=v1.nav");
-  assert.equal(engagementApiFor("threads", "sts2-codex:card:bash"), false, "comments not on the api path");
+  for (const cookie of ["", "slseoun_rf=v1.nav", "slseoun_rf=v1.comments"]) {
+    resetPage(cookie);
+    assert.equal(engagementApiFor("threads", "sts2-codex:card:bash"), true, `on the api path whatever the cookie: "${cookie}"`);
+  }
   resetPage("slseoun_rf=v1.comments");
-  assert.equal(engagementApiFor("threads", "sts2-codex:card:bash"), true);
-  assert.equal(engagementApiFor("threads", "bad key"), false, "a key the Worker refuses stays legacy");
+  assert.equal(engagementApiFor("threads", "bad key"), false, "a key the Worker refuses is still refused (WP-C: empty thread)");
   assert.equal(engagementApiFor("reactions", "card:bash"), false);
 
   const engagementUrls: string[] = [];
@@ -315,17 +293,17 @@ async function main() {
   assert.equal(okThread.status, "fulfilled");
   assert.ok(failedReaction.status === "rejected" && failedReaction.reason instanceof ApiUnavailableError);
 
-  // A legacy signal rejects the whole batch with SurfaceLegacyError and demotes the group.
+  // The router's legacy signal rejects the whole batch as an outage; the group stays on the api path.
   engagementReply = () => marked({ error: "surface_legacy", reason: "flag" }, 409);
   const legacyAsks = await Promise.allSettled([loadEngagement("threads", "byrdispatch"), loadEngagement("likes", "byrdispatch")]);
-  assert.ok(legacyAsks.every((result) => result.status === "rejected" && result.reason instanceof SurfaceLegacyError));
-  assert.equal(engagementApiFor("threads", "byrdispatch"), false, "demoted for the page");
+  assert.ok(legacyAsks.every((result) => result.status === "rejected" && outage("surface_legacy")(result.reason)));
+  assert.equal(engagementApiFor("threads", "byrdispatch"), true, "not demoted");
 
-  // An unknown response version is a legacy signal too.
+  // An unknown response version is refused too (WP-C makes it unavailable); nothing goes to a legacy path.
   resetPage("slseoun_rf=v1.comments");
   engagementReply = () => marked({ v: 2 });
-  await assert.rejects(() => loadEngagement("threads", "byrdispatch"), SurfaceLegacyError);
-  assert.equal(engagementApiFor("threads", "byrdispatch"), false);
+  await assert.rejects(() => loadEngagement("threads", "byrdispatch"), (error) => error instanceof ApiError && !shouldUseLegacy(error));
+  assert.equal(engagementApiFor("threads", "byrdispatch"), true, "not demoted");
 
   // Batches stay under the per-part cap and the query length.
   resetPage("slseoun_rf=v1.comments");
@@ -383,11 +361,11 @@ async function main() {
   await assert.rejects(() => loadEngagementMine("likes", "byrdispatch"), (error) => error instanceof ApiError && error.code === "token_invalid");
   assert.equal(engagementUrls.length, 0);
 
-  // An answer of an unknown version is a legacy signal for its group.
+  // An answer of an unknown version is an outage for its group, without a demotion.
   resetPage("slseoun_rf=v1.profile");
   assert.doesNotThrow(() => requireApiVersion("profile", { v: 1 }));
-  assert.throws(() => requireApiVersion("profile", { v: 2 }), SurfaceLegacyError);
-  assert.equal(surfacePath("profile"), "legacy", "demoted for the page");
+  assert.throws(() => requireApiVersion("profile", { v: 2 }), outage("bad_version"));
+  assert.equal(surfacePath("profile"), "api", "not demoted");
 
   console.log("api-client spec passed");
 }
