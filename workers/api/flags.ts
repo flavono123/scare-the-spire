@@ -6,6 +6,7 @@ import {
   type ApiSurfaceGroup,
 } from "../../src/lib/api-surfaces";
 import { isWriteGroup, sourceFlagKey } from "../../src/lib/write-source-flags";
+import { SYNC_FLAG_KEY } from "../sync/sync-env";
 import { withTimeout, type D1Database, type D1PreparedStatement } from "./d1";
 import { supabaseApiConfig, type SupabaseApiEnv } from "./supabase-rest";
 import { defaultSurfacePath, type SurfacePath } from "./path-default";
@@ -201,16 +202,19 @@ export function rememberedFlagValues(now = Date.now(), maxAgeMs = STALE_MAX_MS):
 /**
  * Where a group's GET routes are answered (step 3, docs/SUPABASE_EXIT_PLAN.md 7.3):
  * - `supabase`: the route's own handler (no row, or read.<group> = supabase; today).
- * - `d1`: read.<group> = d1 while Supabase is still the write source. The route's D1 adapter
- *   answers; a D1 failure falls back to the route's own handler for that request.
- * - `d1-origin`: source.<group> = d1 (step 5). D1 is the origin, so there is no fallback.
+ * - `d1`: read.<group> = d1 while Supabase is still the write source and the step 2 sync keeps D1
+ *   current (sync.enabled = on). The route's D1 adapter answers; a D1 failure falls back to the
+ *   route's own handler for that request. With the sync off, D1 stops following Supabase's writes,
+ *   so read.<group> = d1 does not apply and the group reads Supabase.
+ * - `d1-origin`: source.<group> = d1 (step 5). D1 is the origin, so there is no fallback and the
+ *   sync flag does not matter (the cutover turns the sync off right before it flips the source).
  */
 export type ReadStore = "supabase" | "d1" | "d1-origin";
 
 /** The read store of `group` from one flags read (the rows by key, flagValues). */
 export function readStoreFor(values: ReadonlyMap<string, string>, group: ApiSurfaceGroup): ReadStore {
   if (isWriteGroup(group) && values.get(sourceFlagKey(group)) === "d1") return "d1-origin";
-  return values.get(readFlagKey(group)) === "d1" ? "d1" : "supabase";
+  return values.get(readFlagKey(group)) === "d1" && values.get(SYNC_FLAG_KEY) === "on" ? "d1" : "supabase";
 }
 
 export type ApiFlagDecision =

@@ -23,6 +23,7 @@ import {
   type RunRow,
 } from "../src/lib/run-summary-row";
 import { sourceFlagKey } from "../src/lib/write-source-flags";
+import { SYNC_FLAG_KEY } from "../workers/sync/sync-env";
 import { D1_ADAPTERS } from "../workers/api/d1-adapters";
 import { answerText } from "../workers/api/d1-adapters/rows";
 import type { D1Database, D1PreparedStatement, D1Result } from "../workers/api/d1";
@@ -159,7 +160,8 @@ async function main() {
 
   const env: ApiEnv = { DB: d1, API_RUNTIME_FLAGS: "d1", API_SUPABASE_URL: TEST_SUPABASE_URL, API_SUPABASE_KEY: "sb_publishable_test", API_DATA_ENV: DEV };
   const router = createApiRouter(API_ROUTES, { onResponse: shadowOnResponse, d1Read: d1ReadAnswer });
-  const allApi = Object.fromEntries(API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), "api"]));
+  // Every group on the api path and the step 2 sync on (read.<group> = d1 applies only with it).
+  const allApi: Record<string, string> = { ...Object.fromEntries(API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), "api"])), [SYNC_FLAG_KEY]: "on" };
 
   function setFlags(values: Record<string, string>) {
     sqlite.exec("DELETE FROM runtime_flags");
@@ -206,8 +208,9 @@ async function main() {
 
   // ------------------------------------------------------------------------------------------- the flag
 
-  await check("read store: read.<group> = d1 reads D1, source.<group> = d1 makes D1 the origin, anything else is supabase", () => {
+  await check("read store: read.<group> = d1 reads D1 while the sync runs, source.<group> = d1 makes D1 the origin, anything else is supabase", () => {
     const values = flagValues([
+      { key: SYNC_FLAG_KEY, value: "on" },
       { key: readFlagKey("nav"), value: "d1" },
       { key: readFlagKey("stories"), value: "D1" },
       { key: readFlagKey("comments"), value: "supabase" },
@@ -223,6 +226,15 @@ async function main() {
     assert.equal(readStoreFor(values, "puzzlebox"), "d1");
     assert.equal(readStoreFor(values, "colorful-philosophers"), "supabase", "groups without writes have no source flag");
     assert.equal(readStoreFor(new Map(), "history-runs"), "supabase", "no row: today");
+    // With the sync off D1 stops following Supabase's writes: read.<group> = d1 does not apply.
+    for (const sync of ["off", undefined]) {
+      const synced = new Map(values);
+      if (sync) synced.set(SYNC_FLAG_KEY, sync);
+      else synced.delete(SYNC_FLAG_KEY);
+      assert.equal(readStoreFor(synced, "nav"), "supabase", `sync ${sync ?? "missing"}: supabase`);
+      assert.equal(readStoreFor(synced, "puzzlebox"), "supabase");
+      assert.equal(readStoreFor(synced, "comments"), "d1-origin", "D1 as the origin does not need the sync");
+    }
   });
 
   await check("flags CLI: read.<group> for every group takes supabase or d1; production needs --confirm-production", () => {
@@ -322,6 +334,13 @@ async function main() {
       }
     });
   }
+
+  await check("router: with the sync off, read.<group> = d1 answers from Supabase (D1 would fall behind)", async () => {
+    setFlags({ [readFlagKey("stories")]: "d1", [SYNC_FLAG_KEY]: "off" });
+    const answer = await get("/api/read/stories?limit=100");
+    assert.equal(answer.response.status, 200);
+    assert.ok(answer.supabaseRequests.some((request) => request.includes("community_stories")), "the Supabase handler answered");
+  });
 
   await check("router: source.<group> = d1 reads D1 too (the origin), without read.<group>", async () => {
     setFlags({ [sourceFlagKey("history-runs")]: "d1" });
