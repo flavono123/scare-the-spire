@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { apiFetch, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
-import { apiFetchAsUser, currentAccessToken } from "@/lib/api-session";
+import { currentIdentityUid } from "@/lib/api-identity";
+import { apiFetchAsUser } from "@/lib/api-session";
 import { encodePuzzleboxBoards } from "@/lib/puzzlebox-api-rules";
 import { surfacePath } from "@/lib/runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { SUPABASE_AUTH_TIMEOUT_MS, withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   currentAuthorProfileToken,
   hasStoredUserProfile,
@@ -165,17 +166,12 @@ export async function submitPuzzleboxRun(input: {
   }
 }
 
-async function hasSession(): Promise<boolean> {
-  try {
-    const { data } = await withSupabaseTimeout(
-      "auth.getSession",
-      supabase.auth.getSession(),
-      SUPABASE_AUTH_TIMEOUT_MS,
-    );
-    return Boolean(data.session?.user);
-  } catch {
-    return false;
-  }
+/**
+ * Whether this browser has a user to rank as "me": a stored Supabase session or a
+ * claimed uid (step 6: no supabase-js session to ask). Signs nobody in.
+ */
+function hasIdentity(): boolean {
+  return currentIdentityUid() !== null;
 }
 
 type LoadState<T> = { data: T | null; loading: boolean; failed: boolean };
@@ -211,8 +207,8 @@ export function usePuzzleboxLeaderboard(input: {
     (async () => {
       if (viaApi) {
         try {
-          // With a session the RPC marks this player's rows (is_me, me), as supabase-js did with its token.
-          const token = await currentAccessToken().catch(() => null);
+          // With an identity the RPC marks this player's rows (is_me, me): the me route answers as the cookie's user.
+          const signedIn = hasIdentity();
           const query = new URLSearchParams({
             game,
             boards: encodedBoards as string,
@@ -220,7 +216,7 @@ export function usePuzzleboxLeaderboard(input: {
             offset: String(offset),
             around_me: aroundMe ? "1" : "0",
           });
-          const body = token
+          const body = signedIn
             ? await apiFetchAsUser<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/me/puzzlebox/leaderboard?${query}`)
             : await apiFetch<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/read/puzzlebox/leaderboard?${query}`);
           if (cancelled) return;
@@ -286,7 +282,7 @@ export function useMyPuzzleboxStandings(game: PuzzleboxGame, boards: PuzzleboxBo
       return;
     }
     (async () => {
-      if (!(await hasSession()) || cancelled) return;
+      if (!hasIdentity() || cancelled) return;
       const encodedBoards = encodePuzzleboxBoards(JSON.parse(boardsKey) as PuzzleboxBoards);
       if (surfacePath("puzzlebox") === "api" && encodedBoards !== null) {
         try {
