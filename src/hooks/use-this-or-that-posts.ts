@@ -2,9 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
-import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { dataEnv } from "@/lib/data-env";
 import {
   isSameThisOrThatResource,
   type ThisOrThatPost,
@@ -14,7 +12,6 @@ import {
   apiCreateToyboxPost,
   apiDeleteToyboxPost,
   apiToyboxPost,
-  toyboxViaApi,
   toyboxWriteError,
 } from "@/lib/toybox-api";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
@@ -58,7 +55,6 @@ export async function insertThisOrThatPost(
   const trimmedNickname = input.nickname.trim();
   if (
     !input.activeUserId
-    || !supabaseEnabled
     || trimmedReason.length < 2
     || trimmedReason.length > 500
     || trimmedNickname.length < 1
@@ -77,7 +73,7 @@ export async function insertThisOrThatPost(
     right_type: input.right.type,
     right_id: input.right.id,
     reason: trimmedReason,
-    env: supabaseEnv,
+    env: dataEnv,
     ...(token ? {
       avatar_id: token.avatar_id,
       avatar_kind: token.avatar_kind,
@@ -85,26 +81,12 @@ export async function insertThisOrThatPost(
       palette_swapped: token.palette_swapped,
     } : {}),
   };
-  if (toyboxViaApi()) {
-    try {
-      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, through the Worker.
-      return normalizePost(await apiCreateToyboxPost("this_or_that", row));
-    } catch (error) {
-      // Only a write that certainly did nothing is sent again on the legacy path.
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  try {
+    // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, through the Worker.
+    return normalizePost(await apiCreateToyboxPost("this_or_that", row));
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { data, error } = await withSupabaseTimeout(
-    "this_or_that_posts.insert",
-    supabase
-      .from("this_or_that_posts")
-      .insert(row)
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  if (!data) return null;
-  return normalizePost(data);
 }
 
 export function useThisOrThatPosts(
@@ -165,35 +147,13 @@ export function useThisOrThatPost(
   userId: string | null = null,
 ): UseThisOrThatPostReturn {
   const [post, setPost] = useState<ThisOrThatPost | null>(null);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
 
-    const load = async () => {
-      if (toyboxViaApi()) {
-        try {
-          return await apiToyboxPost("this_or_that", postId);
-        } catch (error) {
-          if (!shouldUseLegacy(error) || !supabaseEnabled) throw error;
-        }
-      }
-      const { data, error } = await withSupabaseTimeout(
-        "this_or_that_posts.detail",
-        supabase
-          .from("this_or_that_posts")
-          .select("*")
-          .eq("id", postId)
-          .eq("env", supabaseEnv)
-          .maybeSingle(),
-      );
-      if (error) throw error;
-      return data;
-    };
-
-    load()
+    apiToyboxPost("this_or_that", postId)
       .then((data) => {
         if (cancelled) return;
         setPost(data ? normalizePost(data) : null);
@@ -212,27 +172,11 @@ export function useThisOrThatPost(
   }, [postId]);
 
   const remove = useCallback(async () => {
-    if (!userId || !supabaseEnabled) return false;
-    let apiResult: { error: unknown } | null = null;
-    if (toyboxViaApi()) {
-      try {
-        // Not ours or already gone counts as removed, as the legacy delete does.
-        await apiDeleteToyboxPost("this_or_that", postId);
-        apiResult = { error: null };
-      } catch (error) {
-        if (!writeMayGoLegacy(error)) apiResult = { error };
-      }
-    }
-    const { error } = apiResult ?? await withSupabaseTimeout(
-      "this_or_that_posts.detail.delete",
-      supabase
-        .from("this_or_that_posts")
-        .delete()
-        .eq("id", postId)
-        .eq("user_id", userId)
-        .eq("env", supabaseEnv),
-    ).catch(() => ({ error: new Error("timeout") }));
-    if (error) {
+    if (!userId) return false;
+    try {
+      // Not ours or already gone counts as removed, as the legacy delete does.
+      await apiDeleteToyboxPost("this_or_that", postId);
+    } catch {
       setUnavailable(true);
       return false;
     }
