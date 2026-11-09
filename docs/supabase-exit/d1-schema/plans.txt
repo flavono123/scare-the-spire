@@ -332,6 +332,13 @@ PASS R1 run list (100 latest) with summary columns, game elements (popular chips
 PASS R2 combo / 조각모음 run picker (30 by start time; RUN_SUMMARY_COLUMNS with summary columns in place of raw) [ran, 30 row(s)]
       SCAN h USING INDEX post_history_course_start_time
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
+PASS R1j R1 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) [ran, 100 row(s)]
+      SEARCH p USING INDEX posts_service_created (service=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+PASS R2j R2 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) [ran, 30 row(s)]
+      SCAN h USING INDEX post_history_course_start_time
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
 PASS R3 run detail meta (RUN_DETAIL_COLUMNS without raw; the raw is R3r, returned as the response body) [ran, 1 row(s)]
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
       SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
@@ -804,6 +811,13 @@ PASS R1 run list (100 latest) with summary columns, game elements (popular chips
 PASS R2 combo / 조각모음 run picker (30 by start time; RUN_SUMMARY_COLUMNS with summary columns in place of raw) [ran, 30 row(s)]
       SCAN h USING INDEX post_history_course_start_time
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
+PASS R1j R1 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) [ran, 100 row(s)]
+      SEARCH p USING INDEX posts_service_created (service=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+PASS R2j R2 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) [ran, 30 row(s)]
+      SCAN h USING INDEX post_history_course_start_time
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
 PASS R3 run detail meta (RUN_DETAIL_COLUMNS without raw; the raw is R3r, returned as the response body) [ran, 1 row(s)]
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
       SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
@@ -998,4 +1012,4 @@ PASS F6 next week open (dev nav) [ran, 0 row(s)]
       SEARCH colorful_philosopher_posts USING COVERING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start=?)
 PASS F7 admin upsert (local script; keeps id and created_at on conflict) [ran, 1 row(s)]
 
-queries: 128, failures (probes + plans, both passes): 0
+queries: 130, failures (probes + plans, both passes): 0

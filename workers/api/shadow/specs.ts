@@ -1,6 +1,7 @@
 import { parseEngagementList } from "../../../src/lib/engagement-keys";
 import { RUN_DETAIL_COLUMNS, RUN_SUMMARY_COLUMNS } from "../../../src/lib/history-runs-api-rules";
 import { TOYBOX_POST_TABLES } from "../../../src/lib/toybox-api-rules";
+import { historyRunsAdapter } from "../d1-adapters/history-runs";
 import { navAdapter } from "../d1-adapters/nav";
 import { columnsOf, pick, type AdapterContext } from "../d1-adapters/rows";
 import { DEAD_POST_COLUMNS, type FeedService } from "../d1-adapters/toybox";
@@ -185,6 +186,8 @@ export const SHADOW_SPECS: Readonly<Record<string, ShadowSpec>> = {
   "me.puzzlebox.leaderboard": {},
   "me.puzzlebox.standings": { rules: rules([set("standings")]) },
   "read.history-runs": {
+    // The row objects: the served answer (R1j/R2j text) parses to them (scripts/d1-read-store.spec.ts).
+    d1: (context) => historyRunsAdapter(context),
     supabase: (context) => context.url.searchParams.get("view") === "recent"
       ? runsWithoutRaw(context, RUN_LIST_COLUMNS.join(","), { order: "created_at.desc", limit: "100" })
       : runsWithoutRaw(context, RUN_LIST_COLUMNS.join(","), { order: "start_time.desc", limit: "30" }),

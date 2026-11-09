@@ -16,6 +16,9 @@ import {
 } from "../../src/lib/run-list-summary";
 import { parseRunSafely, type DonatedRunSummary, type RunRow } from "../../src/lib/run-summary-row";
 import type { SqliteDb } from "./test-db";
+import { summaryRow } from "../../workers/api/d1-adapters/history-runs";
+import { Q_R1, Q_R1j, Q_R2, Q_R2j } from "../../workers/api/d1-adapters/queries";
+import { materialize } from "../../workers/api/d1-adapters/rows";
 
 /** What the list shows or searches for one donated run. */
 export function comparable(inputs: HistoryRunListInputs) {
@@ -168,4 +171,24 @@ export function listAnswerBytes(rows: Array<Record<string, unknown>>): number {
     list_facts: parseJson(row.list_facts),
   }));
   return new TextEncoder().encode(JSON.stringify(body)).length;
+}
+
+/**
+ * Step 3 serves the list (R1j) and the picker (R2j) as each row's JSON text built in SQLite. Over every
+ * run of the database (the LIMIT lifted), each text must parse to the row object the R1/R2 adapter
+ * builds (summaryRow), keys in the same order. Returns the ids that differ, by query.
+ */
+export function listTextDiffs(db: SqliteDb): string[] {
+  const diffs: string[] = [];
+  const all = (sql: string) => sql.replace(/LIMIT \d+$/, "LIMIT -1");
+  for (const [name, objectSql, textSql] of [["R1", Q_R1, Q_R1j], ["R2", Q_R2, Q_R2j]] as const) {
+    const objects = (db.prepare(all(objectSql)).all() as Array<Record<string, unknown>>).map((row) => materialize(summaryRow({ ...row })) as Record<string, unknown>);
+    const texts = (db.prepare(all(textSql)).all() as Array<{ row: string }>).map((row) => JSON.parse(row.row) as Record<string, unknown>);
+    if (objects.length !== texts.length) diffs.push(`${name}: ${objects.length} rows vs ${texts.length} texts`);
+    for (let i = 0; i < Math.min(objects.length, texts.length); i++) {
+      const same = isDeepStrictEqual(texts[i], objects[i]) && isDeepStrictEqual(Object.keys(texts[i]), Object.keys(objects[i]));
+      if (!same) diffs.push(`${name}:${String(objects[i].id)}`);
+    }
+  }
+  return diffs;
 }

@@ -35,6 +35,7 @@ import {
   compareDonatedRuns,
   compareListInputs,
   d1ListRows,
+  listTextDiffs,
   listAnswerBytes,
   popularElementsMatch,
   summaryRowFromD1,
@@ -211,6 +212,9 @@ async function main(text: string) {
       clientDiffs.push(...compareDonatedRuns(today, fromD1));
     }
     if (clientDiffs.length > 0) envFailures += 1;
+    // Step 3 serves R1j/R2j (row JSON built in SQLite): every run's text parses to the adapter's row.
+    const textDiffs = listTextDiffs(db);
+    if (textDiffs.length > 0) envFailures += 1;
     failures += envFailures + unreadable + versionZero;
     runCount += runImages.length;
 
@@ -222,7 +226,8 @@ async function main(text: string) {
       `[${env}] runs ${runImages.length}; unreadable raws ${unreadable}; raws over 1.9 MB ${overCap}; summary_version 0 after fill ${versionZero}; ` +
         `list-input failures ${envFailures}${fieldFailures.size ? ` ${JSON.stringify(Object.fromEntries(fieldFailures))}` : ""}; ` +
         `popular elements equal (latest ${latest.length}: ${popularLatest}, all: ${popularAll}); ` +
-        `client list builder differences ${clientDiffs.length}${clientDiffs.length ? ` ${JSON.stringify(clientDiffs.slice(0, 10))}` : ""}`,
+        `client list builder differences ${clientDiffs.length}${clientDiffs.length ? ` ${JSON.stringify(clientDiffs.slice(0, 10))}` : ""}; ` +
+        `R1j/R2j text differences ${textDiffs.length}${textDiffs.length ? ` ${JSON.stringify(textDiffs.slice(0, 10))}` : ""}`,
     );
     console.log(
       `[${env}] list_facts max ${kb(factsSizes.max)} median ${kb(factsSizes.median)}; game_elements max ${kb(elementSizes.max)} median ${kb(elementSizes.median)}; ` +

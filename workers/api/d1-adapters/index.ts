@@ -13,8 +13,8 @@ import { engagementAdapter, engagementCountsAdapter, engagementMeAdapter } from 
 import {
   historyRunAdapter,
   historyRunRawAdapter,
-  historyRunsAdapter,
   historyRunsEngagementAdapter,
+  historyRunsTextAdapter,
   myHistoryRunsAdapter,
 } from "./history-runs";
 import { navAdapter } from "./nav";
@@ -56,7 +56,7 @@ export const D1_ADAPTERS: Readonly<Record<string, D1Adapter>> = {
   "read.puzzlebox.leaderboard": leaderboardAdapter,
   "me.puzzlebox.leaderboard": leaderboardAdapter,
   "me.puzzlebox.standings": standingsAdapter,
-  "read.history-runs": historyRunsAdapter,
+  "read.history-runs": historyRunsTextAdapter,
   "read.history-run": historyRunAdapter,
   "read.history-run.raw": historyRunRawAdapter,
   "read.history-runs.engagement": historyRunsEngagementAdapter,

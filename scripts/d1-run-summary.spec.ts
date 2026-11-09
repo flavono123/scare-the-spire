@@ -21,6 +21,7 @@ import {
   compareDonatedRuns,
   compareListInputs,
   d1ListRows,
+  listTextDiffs,
   popularElementsMatch,
   summaryRowFromD1,
 } from "./d1-sync/run-summary-compare";
@@ -199,6 +200,9 @@ tampered.badges = [];
 assert.ok(compareListInputs(byId.get(RUNS[0].id)!, tampered).includes("summary.badges"));
 
 assert.throws(() => extractRunListSummary("r-bad", "{\"not\": \"a run\"}"));
+
+// Step 3 serves the list and the picker as row JSON built in SQLite (R1j, R2j): it parses to the adapter's rows.
+assert.deepEqual(listTextDiffs(db), []);
 
 // The client's list builder (run-donation.ts -> donatedRunsFromListRows, step 3) on both answer
 // shapes: the Supabase rows with their raw, the D1 rows with their summary, and a D1 row whose
