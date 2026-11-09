@@ -19,6 +19,11 @@
   // with `wrangler secret put` per env, never here: API_IDENTITY_SECRET (cookie HMAC
   // key, at least 32 characters; without it identity stays on bearer tokens) and,
   // optionally, API_SUPABASE_LEGACY_JWT_SECRET (claims of old HS256 tokens).
+  // API_PATH_DEFAULT (legacy|api, unset = legacy) is the path of a group whose path.<group> row
+  // is missing or unknown or whose flags cannot be read (plan 7.2), in the router and the page
+  // cookie; the browser bundles take the same default at build time from
+  // NEXT_PUBLIC_API_PATH_DEFAULT when a page has no slseoun_rf cookie. Both go to api before the
+  // direct writes are closed (docs/supabase-exit/STEP4_WRITE_GATE.md 7), deployed with --var, not here.
   "vars": {
     "API_RUNTIME_FLAGS": "d1"
   },

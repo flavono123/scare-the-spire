@@ -15,6 +15,7 @@ import { postgrest, postgrestStream } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
 import { readAfterWrite } from "../../sync/read-after-write";
 import { RAW_RUN_NICKNAMES } from "../../sync/sync-sql";
+import { workerUploadAnswer } from "./history-runs-share";
 
 /**
  * The history-runs group (docs/supabase-exit/STEP1_DESIGN.md 9.6). Run rows
@@ -180,6 +181,9 @@ async function handleMine(context: UserRouteContext): Promise<Response> {
 }
 
 async function streamUpload(context: UserRouteContext, batch: boolean): Promise<Response> {
+  // Step 4 worker mode: one run per request on the share route (STEP4_WRITE_GATE 9.5).
+  const single = workerUploadAnswer(context);
+  if (single) return single;
   const { config, token, bodyStream } = context;
   if (!bodyStream) return apiError("invalid");
   // The body is passed through unparsed: RLS checks donor_user_id = auth.uid() on

@@ -655,6 +655,7 @@ function renderShell(route: StaticPatchRoute): string {
             supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
             supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
             supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
+            apiPathDefault: process.env.NEXT_PUBLIC_API_PATH_DEFAULT ?? "",
           })}</script><script src="/_patches/patch-nav-indicators.js" defer></script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-card-preview.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>${routeClientScripts}${cloudflareWebAnalytics}`,
         }}
       />
@@ -691,6 +692,7 @@ async function writePatchClientAssets() {
     "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
     "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""),
     "process.env.NEXT_PUBLIC_SUPABASE_ENV": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production"),
+    "process.env.NEXT_PUBLIC_API_PATH_DEFAULT": JSON.stringify(process.env.NEXT_PUBLIC_API_PATH_DEFAULT ?? ""),
     "process.env.NEXT_PUBLIC_SITE_ORIGIN": JSON.stringify(process.env.NEXT_PUBLIC_SITE_ORIGIN ?? ""),
     "process.env.NEXT_PUBLIC_SITE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SITE_URL ?? ""),
     "process.env.SITE_URL": JSON.stringify(process.env.SITE_URL ?? ""),

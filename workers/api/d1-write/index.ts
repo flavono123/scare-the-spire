@@ -6,7 +6,8 @@ import { resolveUid, writeClock, type D1WriteHandler } from "./context";
 import { readWriteGate, type WriteGate } from "./gate";
 import { commentLike, createComment, deleteComment, reaction, threadLike } from "./handlers/engagement";
 import { submitRun } from "./handlers/puzzlebox";
-import { batchShareOnD1, deleteRun, shareRun, syncNicknames, updateCover } from "./handlers/runs";
+import { batchShareOnD1, deleteRun, SHARE_UNAVAILABLE_CODE, shareRun, syncNicknames, updateCover } from "./handlers/runs";
+import { shareRunOnSupabase } from "../routes/history-runs-share";
 import { createStory, deleteStory, markRepliesSeen, submitInquiry } from "./handlers/stories-contact";
 import {
   createDraft,
@@ -67,8 +68,11 @@ export const D1_WRITE_HANDLERS: Readonly<Record<string, D1WriteHandler>> = {
 /** D1 statements the mirror run after a write may use (the write batch and flag reads use the rest of 50). */
 export const AFTER_WRITE_MIRROR_STATEMENTS = 20;
 
-/** The share route exists for the D1 source only; on Supabase the client keeps the batch upload. */
-export const SHARE_UNAVAILABLE = "single_run_unavailable";
+/**
+ * The share route on Supabase: rls keeps the batch upload (409 single_run_unavailable); worker mode
+ * (step 4) shares one run per request with the service key (routes/history-runs-share.ts).
+ */
+export const SHARE_UNAVAILABLE = SHARE_UNAVAILABLE_CODE;
 
 /** Routes only the D1 source serves (design 4.4: one run per request). */
 export const D1_WRITE_ROUTES: readonly ApiRoute[] = [
@@ -83,10 +87,7 @@ export const D1_WRITE_ROUTES: readonly ApiRoute[] = [
     // the 30/min write budget), so a share counts on the per-IP budget; re-sharing a run is a no-op.
     rateLimit: "ip",
     rawBody: { maxBytes: 2 * 1024 * 1024 },
-    handle: async (context) => {
-      void context.bodyStream?.cancel().catch(() => undefined);
-      return jsonResponse({ error: SHARE_UNAVAILABLE }, { status: 409 });
-    },
+    handle: shareRunOnSupabase,
   },
 ];
 

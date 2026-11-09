@@ -9,6 +9,10 @@
 testbed도 `write.<group>` 행이 없으면 지금(rls)과 같다. Supabase 마이그레이션과 직접 쓰기 닫기 스크립트는
 적용하지 않았다. 서명 쿠키 신원(plan 5.3)은 다른 작업이 만들고, 여기서는 꽂을 자리만 둔다(4.2절).
 
+2026-11-09(`step4/prereqs`): 운영에서 켜기 전에 필요한 것 넷을 만들었다. 경로 플래그 env 기본값(7절), D1 키 목록과
+폐기(STEP1_DESIGN 6), Supabase 원본의 런 하나씩 공유(9절 5번), 쿠키만 있는 신원의 개인 읽기(10.1). testbed 결과는
+11절.
+
 ## 1. 바꾸는 것
 
 계획 7.3절 4단계의 "Worker가 길이, 허용 값, 소유권을 직접 검사하고 service 키로 Supabase에 쓴다"와 "모든 화면이
@@ -95,7 +99,8 @@ history-runs, puzzlebox, contact, profile(문의 읽음). nav와 colorful-philos
    읽기(좋아요 수, 반응 합계)는 지금처럼 publishable 키로 간다.
 4. 게이트는 흘려보내던 업로드 본문(글, 임시 저장, 덧글 본문, 런)을 읽어 파싱하고(24 MiB 상한), `decideWrite`로 판단한
    뒤 service 키로 보낸다. 사용자 토큰은 보내지 않는다. 조회(소유 확인, 원글 확인, 문의 수)도 service 키다.
-5. `me` 경로(개인 읽기)는 이 단계에서 바꾸지 않는다. 계속 사용자 토큰이다.
+5. `me` 경로(개인 읽기)는 요청에 그 uid의 사용자 토큰이 있으면 지금처럼 토큰이다. 서명 쿠키만 있는 신원(쿠키 방식의
+   브라우저는 토큰을 보내지 않는다)은 읽기 게이트(`write-gate/me-read.ts`)를 거쳐 service 키로 읽는다(10.1).
 
 ### 4.2 신원
 
@@ -125,6 +130,14 @@ history-runs, puzzlebox, contact, profile(문의 읽음). nav와 colorful-philos
    `request.jwt.claim.sub`를 actor로 두고 원래 RPC를 그대로 부른다. SECURITY INVOKER, `search_path` 빈 값, 실행 권한은
    service_role만(Supabase 기본 권한이 주는 anon·authenticated 실행을 거둔다). 그래서 대진·크기·후보 검사, 3초·하루
    500판 제한, 통계와 순위가 지금과 같다. D1 설계 5.5절의 `mirror_favorite_tournament_play`(5단계)와는 별개다.
+
+3. (2026-11-09 추가, 적용 안 함) `supabase/migrations/20261109150000_worker_read_actor.sql`, `db-first-additive`,
+   `before-push`(어느 env든 `identity.mode = cookie`를 켜기 전). 되돌리기는
+   `docs/release/worker-read-actor/rollback_worker_read_actor.sql`(`identity.mode`가 token으로 돌아간 뒤에만). 개인 읽기
+   RPC 넷(`get_my_profile_activity_stats`, `get_my_profile_activity`, `get_puzzlebox_leaderboard`,
+   `get_my_puzzlebox_standings`)의 `worker_*` 래퍼다. 2번과 같은 모양(트랜잭션 동안만 sub, service_role만 실행, 원래 RPC를
+   그대로). 프로필 RPC는 SECURITY INVOKER라 service 역할로 RLS를 지나 읽지만, 읽는 행이 모두 그 사용자의 것(auth.uid()로
+   거름)이거나 모두가 읽는 표라 답이 같다(동등성 spec).
 
 Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마이그레이션을 올리면 둘 다에 적용되지만 브라우저
 역할에는 바뀌는 것이 없다. `d1-change-log.spec.ts`를 `SUPABASE_PUBLIC_SCHEMA`(2026-11-05 백업)로 돌리면 이 파일 때문에
@@ -172,10 +185,19 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 - 닫는 조건(이 순서로): 5절 마이그레이션 적용, testbed와 운영 모두 모든 그룹이 `path.<group> = api`이고
   `write.<group> = worker`, 두 Worker 모두 `API_SUPABASE_SECRET_KEY`와 `API_WRITE_MODE_DEFAULT=worker` 배포.
   Supabase가 하나라서 한 번 닫으면 testbed와 운영이 같이 닫힌다.
-- 닫기 전에 더 필요한 것: 경로 플래그를 못 읽으면 라우터와 페이지 쿠키는 지금 `legacy`로 돌려보내고(flags.ts),
+- 닫기 전에 더 필요한 것: 경로 플래그를 못 읽으면 라우터와 페이지 쿠키는 `legacy`로 돌려보내고(flags.ts),
   클라이언트는 legacy 경로로 직접 쓴다. 닫은 뒤에는 그 쓰기가 실패해 D1 플래그 읽기 장애가 쓰기 장애가 된다. plan
-  7.2절("플래그를 읽지 못하면 그 단계의 안전한 쪽인 Worker env 기본값")대로 경로 플래그에도 env 기본값을 두고 `api`로
-  배포한 뒤에 닫는다. flags.ts는 신원 작업과 읽기 작업이 함께 고치는 파일이라 여기서는 고치지 않았다.
+  7.2절("플래그를 읽지 못하면 그 단계의 안전한 쪽인 Worker env 기본값")대로 경로 플래그에도 env 기본값을 둔다.
+  - 2026-11-09 만들었다(`step4/prereqs`). Worker env `API_PATH_DEFAULT`(`legacy`|`api`, 없으면 `legacy` = 지금)를
+    `path.<group>` 행이 없거나 값을 모를 때, 그리고 읽기가 실패하거나 1초를 넘을 때 쓴다(라우터와 페이지 쿠키 둘 다,
+    `API_WRITE_MODE_DEFAULT`와 같은 규칙). `legacy` 행은 그대로 legacy이고, kill switch(`API_RUNTIME_FLAGS`, 설정 오류)와
+    QA 쿠키가 먼저다. `api`이면 차가운 isolate의 페이지 응답도 라우터 표의 모든 그룹을 쿠키에 적는다.
+  - 브라우저: 자산에서 바로 나가는 정적 페이지(`run_worker_first`는 `/api/*`뿐)에 처음 온 사람은 `slseoun_rf`가 없어
+    legacy였다. 쿠키가 아예 없을 때만(그룹을 강등한 때가 아니라) 빌드 시점 `NEXT_PUBLIC_API_PATH_DEFAULT`(같은 값)를
+    따른다(`src/lib/runtime-flags.ts`, 패치 페이지의 esbuild 묶음과 `patch-comments-client.js`는 페이지 설정
+    `apiPathDefault`). Worker가 legacy로 답하면 그 페이지에서 그룹을 강등하므로 legacy로 되돌리기는 쿠키 없이도 된다.
+  - 배포: GitHub Actions와 `run-cloudflare-testbed.mjs`는 `NEXT_PUBLIC_API_PATH_DEFAULT`를 그대로 넘긴다(없으면 legacy).
+    두 값 모두 아직 넣지 않았다. 닫기 전에 Worker `--var API_PATH_DEFAULT:api`와 빌드 변수 `api`를 함께 배포한다.
 
 ## 8. 켜는 순서와 되돌리기
 
@@ -186,11 +208,11 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
    이름의 같은 secret을 쓴다. 아직 없으면 Supabase secret 키를 만들어 넣는다(값은 출력하지 않는다).
 3. 이 코드가 든 Worker를 testbed에 배포한다. 플래그 행이 없으면 지금과 같다.
 4. testbed에서 그룹 하나씩 `pnpm flags -- set write.<group> worker --env testbed --remote --note "…"`, 그 화면의 쓰기를
-   한 번씩 해 보고 Supabase 행을 확인한다. 이상하면 그 그룹을 `rls`로. `history-runs`는 9절 5번(런 하나씩 공유)을
-   합친 뒤에 켠다. 그룹마다 Workers 로그의 CPU 시간도 본다(9절 5번).
+   한 번씩 해 보고 Supabase 행을 확인한다. 이상하면 그 그룹을 `rls`로. `history-runs`의 런 하나씩 공유(9절 5번)는
+   2026-11-09 합쳤다. 그룹마다 Workers 로그의 CPU 시간도 본다(9절 5번).
 5. 운영도 같은 순서(그 그룹의 `path.<group> = api`가 켜진 뒤에만 뜻이 있다).
-6. 모든 그룹이 worker가 되고 경로 플래그의 env 기본값(7절)이 `api`로 배포되면 `API_WRITE_MODE_DEFAULT=worker`를
-   배포하고 7절 닫기 스크립트를 적용한다.
+6. 모든 그룹이 worker가 되고 경로 플래그의 env 기본값(7절 `API_PATH_DEFAULT`, 빌드 `NEXT_PUBLIC_API_PATH_DEFAULT`)이
+   `api`로 배포되면 `API_WRITE_MODE_DEFAULT=worker`를 배포하고 7절 닫기 스크립트를 적용한다.
 
 되돌리기: 닫기 뒤라면 `restore_direct_writes.sql` 먼저, 그다음 `write.<group>`을 `rls`로(필요하면
 `API_WRITE_MODE_DEFAULT`도 지운다). 마이그레이션 되돌리기는 모든 그룹이 rls가 된 뒤에만. 원본이 Supabase라 데이터는
@@ -209,11 +231,17 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
    글 상한 8 MB, 임시 저장 4 MB라 큰 글은 Free 10 ms를 넘을 수 있다. testbed에서 잰다.
    런 묶음(24 MB)은 D1 설계 4.4절 "5단계 공유 요청" 5번과 다르다. 그 절은 4단계 Worker 검증 쓰기도 묶음을 파싱하지 않고
    5단계 요청 모양(요청 하나에 런 하나, 원문은 파싱하지 않음)을 쓰라고 정했다. 그 경로(`/api/write/history-runs/share`,
-   묶음 경로의 409 `single_run_required`)는 5단계 작업(`step5/d1-writes`)이 D1 원본에만 만들고 있고, 런마다 보내는
-   클라이언트 변경은 아직 어느 쪽에도 없다. 경로 하나를 두 곳에서 만들지 않으려고 여기서는 만들지 않았다. 합칠 때 할
-   일: worker 방식의 `write.history-runs`에서 묶음 경로가 `single_run_required`로 답하고, 공유 경로가 Supabase 원본일
-   때도 행만 파싱해 `decideWrite`로 판단한 뒤 원문은 문자열로 이어 붙여 service 키로 쓰게 한다. 그 전에는
-   `write.history-runs = worker`를 켜지 않는다(나머지 그룹은 상관없다).
+   묶음 경로의 409 `single_run_required`)와 런마다 보내는 클라이언트(`run-donation.ts`, 둘씩 동시에)는 5단계 작업이
+   만들었다. 2026-11-09 Supabase 원본에도 이었다(`step4/prereqs`, `routes/history-runs-share.ts`):
+   - worker 방식의 `write.history-runs`에서 런 올리기 두 경로(`POST /api/write/history-runs`, `/batch`)는 본문을 읽지
+     않고 409 `single_run_required`로 답한다. 클라이언트는 지금처럼 런마다 공유 경로로 다시 보낸다.
+   - 공유 경로(`[<행>,<원문>]`, 행 길이는 `X-Slseoun-Row-Length`)는 행만 파싱한다. D1 목록 요약 열 다섯(`characters`,
+     `game_mode`, `game_elements`, `list_facts`, `summary_version`, Supabase `runs`에는 없다)을 뺀 행 하나를 묶음과
+     같은 요청(`on_conflict=id,env`, 중복 무시, `select=id`)으로 게이트가 `decideWrite`로 판단하고, 원문은 파싱하지 않고
+     JSON 문자열로 이어 붙여(`supabase-rest.ts` `rawText`) service 키로 쓴다. 답은 D1 공유와 같은 `{ v, env, inserted }`다.
+   - rls 방식에서는 공유 경로가 지금처럼 409 `single_run_unavailable`이고 클라이언트는 묶음을 쓴다.
+   - 동등성 spec이 런 올리기 사례마다 오늘(묶음, rls)과 worker(공유를 런마다)가 사용자에게 같은 결과(공유됨·이미
+     공유됨·실패)를 내고 같은 행(원문, 변경 로그 포함)을 남기는지 본다. 다른 점은 10번.
 6. 문의를 돌려받는 insert(`return=representation`)는 돌려받는 열마다 SELECT 권한을 본다. PostgREST가 `RETURNING`에
    넣는 열이 `select` 목록과 같다고 보았다. 실제 경로는 `return=minimal`만 쓴다.
 7. 흘려보내던 쓰기의 env는 지금처럼 클라이언트 값을 그대로 둔다. 4단계의 기준은 정직한 요청과 손으로 만든 요청 모두
@@ -232,11 +260,27 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
    `created_at`·`updated_at`(`'infinity'` 등), 글의 원소 꼴, 다른 env 글의 이거 아님 저거? 좋아요(spec 사례 "this or that like
    on another env's post")는 4단계에도 오늘처럼 Supabase에 들어가고, 1분 동기화에서 3.1절 규칙대로 거절로 남는다.
    직접 쓰기를 닫으면 브라우저 경로만 없어진다.
+10. 손으로 만든 런 묶음에 남의 런(`donor_user_id`가 다른 사람)과 새 런을 섞으면 오늘은 묶음 전체가 403이지만, 런마다
+   보내면 정직한 런은 들어가고 남의 런만 403이다(동등성 spec 끝의 사례). 클라이언트는 늘 자기 uid를 보낸다.
 
 ## 10. 열린 질문
 
-1. 쿠키 신원만 있는 사용자의 `me` 경로(개인 읽기, `get_my_*`)는 아직 사용자 토큰이 필요하다. 쿠키 작업이 같은
-   게이트 방식(service 읽기 + 소유 필터, actor RPC)으로 옮길지 합칠 때 정한다.
+1. 쿠키 신원만 있는 사용자의 `me` 경로(개인 읽기, `get_my_*`): 2026-11-09 같은 게이트 방식으로 옮겼다(`step4/prereqs`).
+   쿠키 방식의 브라우저는 토큰을 보내지 않으므로, 신원 작업만으로는 `me` 호출이 anon으로 Supabase에 닿아 RLS가 행을
+   숨기고 `get_my_*`는 실행 권한이 없었다.
+   - 라우터: `me` 경로에서 풀린 신원에 토큰이 없고(쿠키만) Worker에 secret 키가 있으면 핸들러 config 앞에 읽기
+     게이트를 달고 토큰을 자리표시로 바꾼다. 플래그는 따로 없다(토큰이 있으면 지금 그대로, 되돌리기는
+     `identity.mode = token`).
+   - 읽기 게이트(`decideMeRead`): 표 읽기는 쿼리 그대로 service 키로 보내되, 자기 행만 보이는 SELECT 정책의 표
+     (`TABLE_RULES`의 `select: "owner"`: 문의, 임시 저장, 이거 아님 저거? 투표)에는 소유 필터를 붙인다. 열 단위 권한(문의)은
+     select·필터·정렬 열에 그대로 적용(42501), 묶어 읽는 표는 모두가 읽는 표만(댓글 좋아요의 댓글). `auth.uid()`를 읽는
+     RPC 넷은 5절 3번의 래퍼로 `p_actor`를 붙여 보낸다. 그 밖(쓰기, 논리 필터, 모르는 표·RPC)은 보내지 않고 500
+     `gate_unsupported`.
+   - 검증: 동등성 spec이 `me` 경로 11개를 22가지로(내 것·남의 것, id 지정) 오늘(토큰, RLS)과 쿠키만(service 키, 4단계
+     마이그레이션 둘)에서 같은 답인지 본다. `me.engagement`의 댓글 좋아요(`comments!inner` 묶어 읽기)는 가짜 PostgREST가
+     묶어 읽기를 못 해 결정 단위 spec(`write-gate.spec.ts`)으로만 본다.
+   - 5절 3번 마이그레이션을 올리기 전에는 쿠키 방식에서 프로필 통계·활동, 퍼즐상자 내 순위·순위표의 `me` 읽기가
+     PGRST202다. 이 코드 없이 쿠키 방식이면 anon으로 닿아 앞의 셋은 실행 권한이 없고(42501) 순위표는 "나"가 빠진다.
 
 합칠 때의 메모:
 
@@ -252,3 +296,26 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 - 쓰기 경로 안에서 사용자 토큰으로 읽는 호출(GET·HEAD)은 worker 방식에서 500 `gate_unsupported`다. 2단계의
   읽은 직후 반영(`workers/sync/read-after-write.ts`)은 service 키로 따로 읽으므로 걸리지 않는다. 합칠 때 쓰기 핸들러에
   토큰을 실은 읽기가 새로 생기지 않았는지 본다.
+
+## 11. testbed 확인(2026-11-09, `step4/prereqs`)
+
+- 배포: `4d07b15b`(refactor/supabase-exit `1557e8b3`까지 합침), main Worker `ffda7ed8-b692-4dcb-a034-3450c04dc26c`,
+  2026-11-09 00:00 UTC(09:00 KST). 00:03:21 UTC에 다른 작업트리의 배포(`cf6289a1`)가 덮었다. 아래 쓰기·읽기 확인은
+  `ffda7ed8`이 받은 요청이다(wrangler tail의 `scriptVersion`으로 확인). 앞선 배포 `a5416ae4`(23:23 UTC)는 23:26 UTC에
+  덮였고, 그때의 런 공유 한 번만 그 판이 받았다. D1 `0007`은 23:00 UTC에 `slseoun-testbed`에 적용했다.
+- 플래그: `identity.mode = cookie`(23:24 UTC), `write.history-runs`·`toybox-feed`·`comments` worker(23:25~23:28),
+  `stories`·`puzzlebox`·`contact`·`profile` worker(00:01). 브라우저(Playwright, `*.supabase.co` 차단, 쿠키 신원 하나
+  `7a61af7a-…`)로 그룹마다 쓰고 Supabase 행을 service 키로 확인했다(development).
+  - 역사 강의서 https://scare-the-spire-testbed.flavono123.workers.dev/history-course 에서 런 두 개(새 것 하나, 이미 공유된
+    것 하나)를 "공유"로 올림: 묶음 409 `single_run_required` → 공유 두 번(`inserted: []`, `["11ea1ntwe8c58njp"]`), 화면은
+    지금과 같은 "1개 공유 · 1개 이미 공유됨". `runs` 행의 `donor_user_id`가 쿠키 uid이고 `raw`가 파일과 바이트까지 같다.
+  - 댓글: https://scare-the-spire-testbed.flavono123.workers.dev/compendium/cards/abrasive 작성 201, `comments` 행 확인.
+  - 장난감 상자: 서류 폭풍 글 807 KB 작성·삭제, 이거 아님 저거? 좋아요. 이야기 작성·삭제, 퍼즐상자 런 제출(행 확인),
+    문의(행 확인, `status new`), 문의 읽음 200.
+  - 개인 읽기(쿠키만): 문의함 점, 내 문의(방금 쓴 것), 내 런(둘), 임시 저장, 참여(댓글 좋아요 묶어 읽기 포함) 모두 200.
+    프로필 통계와 퍼즐상자 내 순위는 400 `invalid`(PGRST202): 5절 3번 마이그레이션 적용 전이라 예상대로다.
+- CPU(wrangler tail): 런 공유(28 KB 원문) 4 ms·7 ms, 묶음 409는 3~4 ms. 서류 폭풍 글 807 KB 작성 44 ms(같은 게이트를 가진
+  다른 판에서 24 ms). 모두 outcome `ok`이지만 큰 글은 Free 10 ms를 넘는다(9절 5번의 예상대로).
+- 키 폐기는 testbed에서 끝까지 보지 못했다: 버리는 키를 넣고(`add`) 폐기한(`revoke`) 시각에 Worker가 이미 다른 판이었다.
+  testbed D1에는 그 키가 폐기된 행으로 남아 있다(서명한 개인 키는 지웠다). 로컬 spec이 D1 읽기 주기, 폐기, claim·bearer
+  거절을 본다.

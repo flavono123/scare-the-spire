@@ -3,7 +3,13 @@
  * access tokens without asking Supabase. Fetched 2026-11-05 from
  * `<project>/auth/v1/.well-known/jwks.json`. A token with an unknown `kid`
  * makes the verifier fetch that URL again (throttled), so a key rotation still
- * works; update this list after one.
+ * works.
+ *
+ * Since step 4 this list is the seed of the D1 key list (verification-keys.ts,
+ * table api_verification_keys): add and revoke keys there with
+ * scripts/verification-keys.ts, which takes effect within a minute. This list
+ * alone counts only while that table is empty or unreadable, so after revoking
+ * one of these keys also drop it here in the next deploy.
  */
 export type SupabaseJwk = {
   kty: "EC";

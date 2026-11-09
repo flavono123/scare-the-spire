@@ -757,3 +757,26 @@ ON CONFLICT (week_start, slot) DO UPDATE SET resource_type = excluded.resource_t
   name_ko = excluded.name_ko, name_en = excluded.name_en, image_url = excluded.image_url, body = excluded.body,
   game_version = excluded.game_version
 RETURNING id, week_start, slot;
+
+-- =============================================================================== verification keys (K)
+-- Step 4 prerequisite (docs/supabase-exit/STEP1_DESIGN.md 6, workers/api/verification-keys.ts). The table
+-- holds a handful of rows; scripts/verification-keys.ts binds K2-K5 as literals (wrangler --command).
+
+-- @ K1 every key and revocation, read by the Worker at most once a minute per isolate | expect= | allow=scan:api_verification_keys | params=[]
+SELECT kid, x, y, revoked_at FROM api_verification_keys;
+
+-- @ K2 list (CLI) | expect= | allow=scan:api_verification_keys,walk | params=[]
+SELECT kid, alg, x, y, added_at, revoked_at, note FROM api_verification_keys ORDER BY kid;
+
+-- @ K3 add a key (CLI); an existing kid fails on the primary key | expect= | allow= | params=["k3-new-kid","ql4dh7v6HgNaIWxRerCKKONXztdZgjnfTmv0ORECtKI","rJ8NTkEQGvf8Jg_DSoIOa8Cq6A6If5lXa0iBqpYp_W8",1762646400000,"added"]
+INSERT INTO api_verification_keys (kid, alg, x, y, added_at, note) VALUES (?1, 'ES256', ?2, ?3, ?4, ?5);
+
+-- @ K4 revoke a kid (CLI): a new row (coordinates of the compiled-in key, or none) or the stored row; an already revoked row keeps its time | expect= | allow= | params=["k4-kid",null,null,1762646400000,"revoked"]
+INSERT INTO api_verification_keys (kid, x, y, added_at, revoked_at, note) VALUES (?1, ?2, ?3, ?4, ?4, ?5)
+ON CONFLICT (kid) DO UPDATE SET revoked_at = excluded.revoked_at, note = excluded.note WHERE api_verification_keys.revoked_at IS NULL;
+
+-- @ K5a undo a revocation (CLI): a revoke-only row without coordinates goes away | expect=api_verification_keys:PK | allow= | params=["k4-kid"]
+DELETE FROM api_verification_keys WHERE kid = ?1 AND revoked_at IS NOT NULL AND x IS NULL;
+
+-- @ K5b undo a revocation (CLI): a key with coordinates counts again | expect=api_verification_keys:PK | allow= | params=["k4-kid","restored"]
+UPDATE api_verification_keys SET revoked_at = NULL, note = ?2 WHERE kid = ?1 AND revoked_at IS NOT NULL AND x IS NOT NULL;

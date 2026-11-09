@@ -19,13 +19,14 @@ type Client = {
   identityCookieMode(): boolean;
   apiWriteAsUser(config: unknown, path: string, init: Record<string, unknown>): Promise<{ result: unknown; session: { user?: { id?: string }; access_token?: string } }>;
   loadApiState(config: unknown, threadKey: string): Promise<{ userId: string | null; liked: Set<string> } | null>;
+  surfacePath(group: string): "legacy" | "api";
 };
 
-function load() {
+function load(pageConfig: unknown = null) {
   const source = readFileSync("src/components/patches/patch-comments-client.js", "utf8");
   assert.equal(source.split(START).length, 2, "one start-up block to swap");
   // The page never finishes loading in the VM, so main() stays queued and never runs.
-  const hooked = source.replace(START, `  window.__spec = { identityCookieMode, apiWriteAsUser, loadApiState };\n${START}`);
+  const hooked = source.replace(START, `  window.__spec = { identityCookieMode, apiWriteAsUser, loadApiState, surfacePath };\n${START}`);
 
   const store = new Map<string, string>();
   const localStorage = {
@@ -33,7 +34,14 @@ function load() {
     setItem: (key: string, value: string) => void store.set(key, String(value)),
     removeItem: (key: string) => void store.delete(key),
   };
-  const document = { cookie: "", readyState: "loading", addEventListener: () => undefined, documentElement: { dataset: {} }, getElementById: () => null };
+  const configElement = pageConfig === null ? null : { textContent: JSON.stringify(pageConfig) };
+  const document = {
+    cookie: "",
+    readyState: "loading",
+    addEventListener: () => undefined,
+    documentElement: { dataset: {} },
+    getElementById: (id: string) => (id === "sts-patch-comments-config" ? configElement : null),
+  };
   const sent: Sent[] = [];
   const state: { respond: (request: Sent) => Response } = { respond: () => new Response("unset", { status: 599 }) };
   const fetch = async (input: string, init: { method?: string; headers?: Record<string, string>; body?: string } = {}) => {
@@ -179,6 +187,35 @@ async function main() {
     const me = sent.find((request) => request.url.startsWith("/api/me/"));
     assert.equal(me?.authorization ?? null, cookieMode ? null : `Bearer token-${USER}`, cookieMode ? "cookie mode: no bearer" : "signal off: bearer as today");
     assert.equal(sent.some((request) => request.url === "/api/auth/claim"), cookieMode);
+  }
+
+  // No slseoun_rf cookie: the build-time default in the page config (NEXT_PUBLIC_API_PATH_DEFAULT,
+  // same rule as src/lib/runtime-flags.ts); a cookie or a demotion decides as before.
+  for (const [label, pageConfig, expected] of [
+    ["no config", null, "legacy"],
+    ["unset", { ...CONFIG, apiPathDefault: "" }, "legacy"],
+    ["legacy", { ...CONFIG, apiPathDefault: "legacy" }, "legacy"],
+    ["not exact", { ...CONFIG, apiPathDefault: "API" }, "legacy"],
+    ["api", { ...CONFIG, apiPathDefault: "api" }, "api"],
+  ] as const) {
+    const { client, document } = load(pageConfig);
+    assert.equal(client.surfacePath("comments"), expected, `no cookie, ${label}`);
+    document.cookie = "slseoun_rf=v1.nav";
+    assert.equal(client.surfacePath("comments"), "legacy", `a cookie without the group, ${label}`);
+    document.cookie = "slseoun_rf=v1.comments";
+    assert.equal(client.surfacePath("comments"), "api", `a cookie with the group, ${label}`);
+  }
+  {
+    const { client, document } = load({ ...CONFIG, apiPathDefault: "api" });
+    document.cookie = "other=1";
+    assert.equal(client.surfacePath("stories"), "api", "another cookie is not slseoun_rf");
+    document.cookie = "slseoun_rf=v2.stories";
+    assert.equal(client.surfacePath("stories"), "legacy", "an unknown cookie version is legacy, not the default");
+  }
+  {
+    const source = readFileSync("scripts/build-patch-worker.tsx", "utf8");
+    assert.match(source, /apiPathDefault: process\.env\.NEXT_PUBLIC_API_PATH_DEFAULT \?\? ""/, "page config carries the build default");
+    assert.match(source, /"process\.env\.NEXT_PUBLIC_API_PATH_DEFAULT": JSON\.stringify\(process\.env\.NEXT_PUBLIC_API_PATH_DEFAULT \?\? ""\)/, "bundles get the build default");
   }
 
   console.log("api-identity-patch-client spec passed");

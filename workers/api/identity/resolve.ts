@@ -5,6 +5,7 @@ import type { ExecutionContextLike } from "../flags";
 import type { ApiErrorCode } from "../http";
 import { bearerToken, checkSupabaseAccessToken, fetchSupabaseJwks, type VerifiedSupabaseUser } from "../jwt";
 import { supabaseIssuer, type SupabaseApiConfig } from "../supabase-rest";
+import { verificationKeys } from "../verification-keys";
 import {
   identityCookieHeader,
   identityModeCookieHeader,
@@ -45,14 +46,17 @@ const TOKEN_ERRORS: Record<"expired" | "invalid" | "unavailable", ApiErrorCode> 
   unavailable: "auth_unavailable",
 };
 
-async function verifiedBearer(request: Request, config: SupabaseApiConfig, ctx: ExecutionContextLike) {
+async function verifiedBearer(request: Request, env: IdentityFlagsEnv, config: SupabaseApiConfig, ctx: ExecutionContextLike) {
   const token = bearerToken(request);
   if (!token) return { token: null, check: null };
   const issuer = supabaseIssuer(config);
+  const keys = await verificationKeys(env, ctx);
   const check = await checkSupabaseAccessToken(token, {
     issuer,
     fetchJwks: () => fetchSupabaseJwks(issuer),
     waitUntil: (promise) => ctx.waitUntil(promise),
+    pinnedKeys: keys.pinned,
+    revokedKids: keys.revoked,
   });
   return { token, check };
 }
@@ -73,7 +77,7 @@ export async function resolveRequestIdentity(
   if (signal) setCookies.push(signal);
 
   if (mode === "token") {
-    const { token, check } = await verifiedBearer(request, config, ctx);
+    const { token, check } = await verifiedBearer(request, env, config, ctx);
     if (!token || !check) return { ok: false, code: "token_invalid", setCookies };
     if (!check.ok) return { ok: false, code: TOKEN_ERRORS[check.reason], setCookies };
     return { ok: true, identity: { source: "token", user: check.user, token }, setCookies };
@@ -82,7 +86,7 @@ export async function resolveRequestIdentity(
   const secret = identitySecret(env) as string;
   const now = Math.floor(Date.now() / 1000);
   const cookie = await verifyIdentityCookie(secret, readCookie(request, IDENTITY_COOKIE_NAME), now);
-  const { token, check } = await verifiedBearer(request, config, ctx);
+  const { token, check } = await verifiedBearer(request, env, config, ctx);
   if (!cookie.ok) {
     // No cookie yet: a page that has not seen slseoun_idm (an isolate without the
     // flags in memory sends no signal) or JS from before step 4. Its Supabase
