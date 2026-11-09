@@ -674,8 +674,12 @@ test.describe("step 6 browser data path", () => {
       const url = new URL(response.url());
       if (url.origin !== origin) return;
       if (url.pathname === "/api/read/history-runs" && url.searchParams.get("view") === "recent") {
-        const body = (await response.json().catch(() => null)) as { rows?: { id?: unknown }[] } | null;
-        for (const row of body?.rows ?? []) if (typeof row.id === "string") listed.add(row.id);
+        // The D1 answer is a bare array of rows; read a `{ v, rows }` body too, like the browser
+        // (src/lib/run-donation.ts apiRunRows).
+        type ListedRow = { id?: unknown } | null;
+        const body = (await response.json().catch(() => null)) as ListedRow[] | { rows?: ListedRow[] } | null;
+        const rows = Array.isArray(body) ? body : body?.rows ?? [];
+        for (const row of rows) if (typeof row?.id === "string") listed.add(row.id);
         return;
       }
       if (url.pathname !== "/api/read/history-runs/engagement") return;
