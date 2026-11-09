@@ -1,9 +1,11 @@
 import {
   API_SURFACE_GROUPS,
   pathFlagKey,
+  readFlagKey,
   shadowFlagKey,
   type ApiSurfaceGroup,
 } from "../../src/lib/api-surfaces";
+import { isWriteGroup, sourceFlagKey } from "../../src/lib/write-source-flags";
 import { withTimeout, type D1Database, type D1PreparedStatement } from "./d1";
 import { supabaseApiConfig, type SupabaseApiEnv } from "./supabase-rest";
 
@@ -183,8 +185,30 @@ export function rememberedFlagValues(now = Date.now(), maxAgeMs = STALE_MAX_MS):
   return memory.values;
 }
 
+/**
+ * Where a group's GET routes are answered (step 3, docs/SUPABASE_EXIT_PLAN.md 7.3):
+ * - `supabase`: the route's own handler (no row, or read.<group> = supabase; today).
+ * - `d1`: read.<group> = d1 while Supabase is still the write source. The route's D1 adapter
+ *   answers; a D1 failure falls back to the route's own handler for that request.
+ * - `d1-origin`: source.<group> = d1 (step 5). D1 is the origin, so there is no fallback.
+ */
+export type ReadStore = "supabase" | "d1" | "d1-origin";
+
+/** The read store of `group` from one flags read (the rows by key, flagValues). */
+export function readStoreFor(values: ReadonlyMap<string, string>, group: ApiSurfaceGroup): ReadStore {
+  if (isWriteGroup(group) && values.get(sourceFlagKey(group)) === "d1") return "d1-origin";
+  return values.get(readFlagKey(group)) === "d1" ? "d1" : "supabase";
+}
+
 export type ApiFlagDecision =
-  | { ok: true; groups: ReadonlySet<ApiSurfaceGroup>; prefetched: unknown[]; shadow: ShadowRates }
+  | {
+      ok: true;
+      groups: ReadonlySet<ApiSurfaceGroup>;
+      prefetched: unknown[];
+      shadow: ShadowRates;
+      /** Every row of the same read by key (read.<group>, source.<group>: readStoreFor). */
+      values: ReadonlyMap<string, string>;
+    }
   | { ok: false; reason: "off" | "not_configured" | "unknown" };
 
 /**
@@ -203,7 +227,7 @@ export async function apiFlags(
   if (disabled) return { ok: false, reason: disabled };
   const db = env.DB as D1Database;
   if (memory && now - memory.readAt < FRESH_MS) {
-    return { ok: true, groups: memory.groups, prefetched: [], shadow: memory.shadow };
+    return { ok: true, groups: memory.groups, prefetched: [], shadow: memory.shadow, values: memory.values };
   }
   if (now < retryAt) return { ok: false, reason: "unknown" };
 
@@ -215,8 +239,9 @@ export async function apiFlags(
       const flagRows = (results[0]?.results ?? []) as { key?: unknown; value?: unknown }[];
       const groups = parseFlagRows(flagRows, routedGroups);
       const shadow = parseShadowRates(flagRows, routedGroups);
-      recordFlags(groups, Date.now(), shadow, flagValues(flagRows));
-      return { groups, shadow, prefetched: results.slice(1).map((result) => result.results ?? []) };
+      const values = flagValues(flagRows);
+      recordFlags(groups, Date.now(), shadow, values);
+      return { groups, shadow, values, prefetched: results.slice(1).map((result) => result.results ?? []) };
     } catch (error) {
       recordFlagFailure(startedAt, Date.now());
       throw error;
@@ -224,8 +249,8 @@ export async function apiFlags(
   })();
   ctx.waitUntil(batch.catch(() => undefined));
   try {
-    const { groups, prefetched, shadow } = await withTimeout(batch, API_FLAG_WAIT_MS);
-    return { ok: true, groups, prefetched, shadow };
+    const { groups, prefetched, shadow, values } = await withTimeout(batch, API_FLAG_WAIT_MS);
+    return { ok: true, groups, prefetched, shadow, values };
   } catch {
     return { ok: false, reason: "unknown" };
   }

@@ -9,6 +9,7 @@ import assert from "node:assert/strict";
 import { canonicalTs, postgrestTs } from "../src/lib/d1-time";
 import { mapRow, runSummaryFillStatement, type RowImage } from "../src/lib/d1-sync/row-mapper";
 import {
+  donatedRunsFromListRows,
   extractRunListSummary,
   listInputsFromRawRow,
   listInputsFromSummaryRow,
@@ -16,7 +17,14 @@ import {
 } from "../src/lib/run-list-summary";
 import type { RunRow } from "../src/lib/run-summary-row";
 import { applyBatch, openD1TestDb } from "./d1-sync/test-db";
-import { compareListInputs, d1ListRows, popularElementsMatch, summaryRowFromD1 } from "./d1-sync/run-summary-compare";
+import {
+  compareDonatedRuns,
+  compareListInputs,
+  d1ListRows,
+  listTextDiffs,
+  popularElementsMatch,
+  summaryRowFromD1,
+} from "./d1-sync/run-summary-compare";
 
 const U = (n: number) => `${String(n).padStart(8, "0")}-0000-4000-8000-${String(n).padStart(12, "0")}`;
 
@@ -192,4 +200,37 @@ tampered.badges = [];
 assert.ok(compareListInputs(byId.get(RUNS[0].id)!, tampered).includes("summary.badges"));
 
 assert.throws(() => extractRunListSummary("r-bad", "{\"not\": \"a run\"}"));
-console.log(`d1 run summary checks passed (${RUNS.length} synthetic runs)`);
+
+// Step 3 serves the list and the picker as row JSON built in SQLite (R1j, R2j): it parses to the adapter's rows.
+assert.deepEqual(listTextDiffs(db), []);
+
+// The client's list builder (run-donation.ts -> donatedRunsFromListRows, step 3) on both answer
+// shapes: the Supabase rows with their raw, the D1 rows with their summary, and a D1 row whose
+// summary is not filled yet (summary_version 0), which reads its raw (R3r).
+async function clientBuilderChecks() {
+  const neverRaw = async (): Promise<string | null> => {
+    throw new Error("a row with a summary or a raw never reads R3r");
+  };
+  const today = await donatedRunsFromListRows(rawRows, neverRaw);
+  const fromD1 = await donatedRunsFromListRows(listRows.map(summaryRowFromD1) as unknown as RunRow[], neverRaw);
+  assert.deepEqual(compareDonatedRuns(today, fromD1), []);
+  assert.ok(fromD1.every((run) => run.search_facts && run.raw === null));
+  const fetched: string[] = [];
+  const zeroRows = listRows.map((row, index) => (index === 0 ? { ...summaryRowFromD1(row), summary_version: 0 } : summaryRowFromD1(row)));
+  const withZero = await donatedRunsFromListRows(zeroRows as unknown as RunRow[], async (runId) => {
+    fetched.push(runId);
+    return byId.get(runId)?.raw ?? null;
+  });
+  assert.deepEqual(fetched, [listRows[0].id]);
+  assert.deepEqual(compareDonatedRuns(today, withZero), []);
+  // The comparison sees a changed card.
+  const changed = fromD1.map((run) => (run.id === RUNS[0].id ? { ...run, badges: [] } : run));
+  assert.ok(compareDonatedRuns(today, changed).some((diff) => diff.endsWith(":card.badges")));
+}
+
+clientBuilderChecks().then(() => {
+  console.log(`d1 run summary checks passed (${RUNS.length} synthetic runs)`);
+}).catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

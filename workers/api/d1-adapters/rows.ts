@@ -31,6 +31,14 @@ export class RawJson {
   constructor(readonly text: string) {}
 }
 
+/**
+ * An answer that is not JSON: stored text sent as the response body unchanged (the run raw file,
+ * R3r, design 4.4). Never parsed or re-encoded in the Worker.
+ */
+export class TextBody {
+  constructor(readonly text: string) {}
+}
+
 export type Row = Record<string, unknown>;
 
 export function json(value: unknown): RawJson | null {

@@ -1,3 +1,4 @@
+import { d1ReadAnswer } from "../d1-read";
 import { D1_WRITE_ROUTES } from "../d1-write";
 import { createApiRouter, type ApiRoute } from "../router";
 import { shadowOnResponse } from "../shadow/shadow";
@@ -15,4 +16,5 @@ import { toyboxRoutes } from "./toybox";
 export const API_ROUTES: readonly ApiRoute[] = [...navRoutes, ...commentsRoutes, ...colorfulPhilosophersRoutes, ...contactRoutes, ...profileRoutes, ...puzzleboxRoutes, ...historyRunsRoutes, ...storiesRoutes, ...toyboxRoutes, ...D1_WRITE_ROUTES];
 
 // Step 2 shadow reads ride on every GET response; inert until a shadow.<group> rate is above 0.
-export const apiRouter = createApiRouter(API_ROUTES, { onResponse: shadowOnResponse });
+// Step 3 D1 reads answer the GETs of a group whose read.<group> (or source.<group>) is d1.
+export const apiRouter = createApiRouter(API_ROUTES, { onResponse: shadowOnResponse, d1Read: d1ReadAnswer });
