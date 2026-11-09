@@ -1387,10 +1387,25 @@
     return window.__slseounRuntime;
   }
 
+  // No cookie at all: the build-time default (NEXT_PUBLIC_API_PATH_DEFAULT, `apiPathDefault` in the
+  // page config; unset is legacy), like defaultSurfacePath in src/lib/runtime-flags.ts.
+  let apiPathDefault = null;
+
+  function defaultSurfacePath() {
+    if (apiPathDefault === null) {
+      try {
+        apiPathDefault = JSON.parse(document.getElementById(CONFIG_ID)?.textContent || "{}").apiPathDefault === "api" ? "api" : "legacy";
+      } catch {
+        apiPathDefault = "legacy";
+      }
+    }
+    return apiPathDefault;
+  }
+
   function surfacePath(group) {
     if (slseounRuntime().demoted.has(group)) return "legacy";
     const entry = document.cookie.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${FLAG_COOKIE}=`));
-    if (!entry) return "legacy";
+    if (!entry) return defaultSurfacePath();
     const [version, ...groups] = entry.slice(FLAG_COOKIE.length + 1).split(".");
     return version === "v1" && groups.includes(group) ? "api" : "legacy";
   }

@@ -6,6 +6,7 @@ import { API_MARKER_HEADER, apiError, jsonResponse, legacyResponse, PRIVATE_NO_S
 import { checkSupabaseAccessToken, fetchSupabaseJwks } from "../jwt";
 import { clientIp, withinRateLimit, type RateLimitEnv } from "../rate-limit";
 import { supabaseApiConfig, supabaseIssuer, type Fetcher, type SupabaseApiConfig } from "../supabase-rest";
+import { verificationKeys } from "../verification-keys";
 import { identityCookieHeader, identityModeCookieHeader, identitySecret, signIdentityCookie, verifyIdentityCookie } from "./cookie";
 import { apiIdentityMode, type IdentityFlagsEnv } from "./mode";
 import { supabaseAnonymousSignup } from "./supabase-signup";
@@ -103,11 +104,14 @@ async function claimWithToken(
   now: number,
 ): Promise<{ ok: true; uid: string } | { ok: false; code: ApiErrorCode }> {
   const issuer = supabaseIssuer(config);
+  const keys = await verificationKeys(env, ctx);
   const check = await checkSupabaseAccessToken(token, {
     issuer,
     now,
     fetchJwks: () => fetchSupabaseJwks(issuer),
     waitUntil: (promise) => ctx.waitUntil(promise),
+    pinnedKeys: keys.pinned,
+    revokedKids: keys.revoked,
     ignoreExpiry: true,
     legacyHs256Secret: env.API_SUPABASE_LEGACY_JWT_SECRET || undefined,
   });

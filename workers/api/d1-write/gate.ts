@@ -18,7 +18,7 @@ import { FRESH_MS, STALE_MAX_MS } from "../flags";
  * (supabase unless it says d1), never paused. That keeps today's behaviour while no flag is set;
  * once D1 is the source, set API_WRITE_SOURCE_DEFAULT=d1 at the next deploy so an unreadable gate
  * cannot send a write to Supabase. (The router's own path flags fail the same way: a request only
- * gets here when they were read within STALE_MAX_MS.)
+ * gets here when they were read within STALE_MAX_MS, or on a failed read with API_PATH_DEFAULT=api.)
  */
 
 export type WriteGate = {

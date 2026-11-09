@@ -307,6 +307,10 @@ async function runRemote(options) {
   if (!options.skipBuild) {
     // Set explicitly: a checkout .env.local pointing at production must not leak into the testbed.
     const buildEnv = { ...process.env, NEXT_PUBLIC_SUPABASE_ENV: TESTBED_DATA_ENV };
+    // Optional pass-through of the browser's no-cookie path (src/lib/runtime-flags.ts); unset = legacy.
+    const apiPathDefault = process.env.NEXT_PUBLIC_API_PATH_DEFAULT ?? "";
+    if (!["", "legacy", "api"].includes(apiPathDefault)) throw new Error("NEXT_PUBLIC_API_PATH_DEFAULT must be legacy or api");
+    console.log(`[testbed] NEXT_PUBLIC_API_PATH_DEFAULT=${apiPathDefault || "(unset: legacy)"}`);
     run("build main Worker artifact", "pnpm", ["cf:build"], buildEnv);
     run("build static patch Worker artifact", "pnpm", ["patch:build"], buildEnv);
   }

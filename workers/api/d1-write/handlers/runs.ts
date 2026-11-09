@@ -1,5 +1,6 @@
 import { isRunId } from "../../../../src/lib/history-runs-api-rules";
 import { apiError, jsonResponse } from "../../http";
+import type { UserRouteContext } from "../../router";
 import { json, type D1WriteContext } from "../context";
 import { rowsOf, runBatch, stmt, writeFailureCode } from "../db";
 import { outboxStatement } from "../outbox";
@@ -20,6 +21,8 @@ import { outboxStatement } from "../outbox";
  */
 
 export const SINGLE_RUN_REQUIRED = "single_run_required";
+/** The share route on the rls path, where the browser keeps the batch upload. */
+export const SHARE_UNAVAILABLE_CODE = "single_run_unavailable";
 export const SHARE_ROW_HEADER = "X-Slseoun-Row-Length";
 export const SHARE_ROW_MAX_CHARS = 64 * 1024;
 export const COVER_SPEC_MAX_BYTES = 16 * 1024;
@@ -87,22 +90,32 @@ export function parseShareRow(value: unknown, uid: string): { row: ShareRow; nic
   return { row, nickname };
 }
 
-export async function shareRun(write: D1WriteContext): Promise<Response> {
-  const stream = write.context.bodyStream;
-  const declared = Number(write.context.request.headers.get(SHARE_ROW_HEADER) ?? "");
-  if (!stream || !Number.isSafeInteger(declared) || declared < 2 || declared > SHARE_ROW_MAX_CHARS) return apiError("invalid");
+/**
+ * The share body `[<row>,<raw>]`: the row parsed (at most SHARE_ROW_MAX_CHARS), the raw as text,
+ * never parsed. Null when the framing does not hold. Shared with the Supabase origin's share
+ * (routes/history-runs-share.ts).
+ */
+export async function readShareBody(context: UserRouteContext): Promise<{ row: unknown; raw: string } | null> {
+  const stream = context.bodyStream;
+  const declared = Number(context.request.headers.get(SHARE_ROW_HEADER) ?? "");
+  if (!stream || !Number.isSafeInteger(declared) || declared < 2 || declared > SHARE_ROW_MAX_CHARS) {
+    void stream?.cancel().catch(() => undefined);
+    return null;
+  }
   const text = await new Response(stream).text();
-  // [<row>,<raw>]: the raw is bound as text and never parsed here (R14c).
-  if (text.length < declared + 3 || text[0] !== "[" || text[declared + 1] !== "," || text[text.length - 1] !== "]") {
-    return apiError("invalid");
-  }
-  let parsedRow: unknown;
+  if (text.length < declared + 3 || text[0] !== "[" || text[declared + 1] !== "," || text[text.length - 1] !== "]") return null;
   try {
-    parsedRow = JSON.parse(text.slice(1, declared + 1));
+    return { row: JSON.parse(text.slice(1, declared + 1)), raw: text.slice(declared + 2, -1) };
   } catch {
-    return apiError("invalid");
+    return null;
   }
-  const raw = text.slice(declared + 2, -1);
+}
+
+export async function shareRun(write: D1WriteContext): Promise<Response> {
+  // [<row>,<raw>]: the raw is bound as text and never parsed here (R14c).
+  const body = await readShareBody(write.context);
+  if (!body) return apiError("invalid");
+  const { row: parsedRow, raw } = body;
   const parsed = parseShareRow(parsedRow, write.uid);
   if (parsed === "invalid" || parsed === "forbidden") return apiError(parsed);
   const { row, nickname } = parsed;

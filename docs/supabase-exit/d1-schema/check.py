@@ -145,6 +145,12 @@ def main():
          "INSERT INTO posts (id, service, user_id, nickname, summary, created_at) VALUES ('a7777777-0000-4000-8000-000000000006', 'Combo Posts', ?, 'n', 's', '2026-11-05T11:48:12.345600Z')", [UUID1]),
         ("sync_state: high_seen below low_watermark",
          "UPDATE sync_state SET low_watermark = 10, high_seen = 5 WHERE name = 'supabase_in'", []),
+        ("verification key: an accepted key without coordinates",
+         "INSERT INTO api_verification_keys (kid, added_at) VALUES ('k-probe', 1)", []),
+        ("verification key: an algorithm the verifier does not import",
+         "INSERT INTO api_verification_keys (kid, alg, x, y, added_at) VALUES ('k-probe', 'RS256', ?, ?, 1)", ["a" * 43, "b" * 43]),
+        ("verification key: a coordinate that is not 43 base64url characters",
+         "INSERT INTO api_verification_keys (kid, x, y, added_at) VALUES ('k-probe', ?, ?, 1)", ["a" * 42 + "=", "b" * 43]),
         ("sync_rejects: second open reject for the same key",
          "INSERT INTO sync_rejects (direction, ref, table_name, d1_table, row_key, op, payload, error, first_at, last_at) VALUES ('in', 42, 'comments', 'comments', '{\"id\":\"c0000000-0000-4000-8000-000000000041\"}', 'U', '{}', 'e', 1, 1)", []),
     ]
@@ -161,6 +167,8 @@ def main():
          "INSERT INTO threads (thread_key, like_count) VALUES ('k3', 2.0)", []),
         ("empty thread key Supabase accepts (octet_length <= 1024 only)",
          "INSERT INTO likes VALUES ('', ?, '2026-11-05T11:48:12.345600Z')", [UUID1]),
+        ("verification key: a revocation of a kid only the live JWKS had (no coordinates)",
+         "INSERT INTO api_verification_keys (kid, added_at, revoked_at) VALUES ('k-probe', 1, 1)", []),
         ("a future Toy Box service: uuid id, owner, optional title (no rebuild needed)",
          "INSERT INTO posts (id, service, user_id, nickname, title, summary, created_at) VALUES ('a7777777-0000-4000-8000-000000000007', 'new_service', ?, 'n', 't', 's', '2026-11-05T11:48:12.345600Z')", [UUID1]),
     ]

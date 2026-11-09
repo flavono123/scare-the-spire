@@ -8,8 +8,10 @@ import {
 /**
  * Which data path a screen group uses: "api" when the Worker's `slseoun_rf`
  * cookie lists the group and this page has not demoted it, "legacy" otherwise
- * (no cookie in `pnpm dev`, on the patch Worker's own host, or while every flag
- * is legacy). See docs/supabase-exit/STEP1_DESIGN.md 7.
+ * (on the patch Worker's own host, or while every flag is legacy). See
+ * docs/supabase-exit/STEP1_DESIGN.md 7. With no cookie at all (`pnpm dev`, or a
+ * first visit to a page served straight from assets, which never passes the
+ * Worker) the build-time default applies (defaultSurfacePath).
  *
  * Read it only in effects and event handlers, never during render: the build
  * prerenders without cookies, so a render-time read would make the first
@@ -43,10 +45,23 @@ function cookieValue(name: string): string | null {
   return null;
 }
 
+/**
+ * The path of every group while the page has no `slseoun_rf` cookie: NEXT_PUBLIC_API_PATH_DEFAULT
+ * at build time, "api" only when set to exactly that; unset is legacy (today). The Worker's
+ * API_PATH_DEFAULT is the same switch on its side (plan 7.2): set both to api before the browser's
+ * direct writes are closed (docs/supabase-exit/STEP4_WRITE_GATE.md 7). The Worker's legacy signal
+ * still demotes a group for the page, so a rollback to legacy holds without the cookie.
+ */
+export function defaultSurfacePath(): SurfacePath {
+  return process.env.NEXT_PUBLIC_API_PATH_DEFAULT === "api" ? "api" : "legacy";
+}
+
 /** Read on every call, so a newer page in another tab can move this one too. */
 export function surfacePath(group: ApiSurfaceGroup): SurfacePath {
   if (slseounRuntime().demoted.has(group)) return "legacy";
-  return parseFlagCookieValue(cookieValue(FLAG_COOKIE_NAME))?.has(group) ? "api" : "legacy";
+  const cookie = cookieValue(FLAG_COOKIE_NAME);
+  if (cookie === null) return defaultSurfacePath();
+  return parseFlagCookieValue(cookie)?.has(group) ? "api" : "legacy";
 }
 
 /** The Worker sent a legacy signal: use the legacy path for the rest of this page. */
