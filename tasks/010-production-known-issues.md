@@ -276,3 +276,9 @@
 
 72. **이야기를 쓰면 1000개·200개를 받던 이야기 목록이 100개로 잘림**. `src/hooks/use-community-stories.ts`의 `add`가 새 이야기를 앞에 붙인 뒤 늘 `COMMUNITY_STORY_LIMIT`(100)으로 자른다. 훅은 `limit`(200, 1000)으로 받았는데도 그렇다. 그래서 https://scare-the-spire.flavono123.workers.dev/patches/changes (1000개)에서 이야기를 쓰면 새로 고칠 때까지 최신 100개 밖의 이야기가 목록과 줄별 이야기 수에서 빠진다. 패치 페이지(200개)도 이야기가 100개를 넘으면 같다. 옛 legacy 쓰기도 같았다. 6단계는 그대로 옮겼다. 코드 읽기로만 확인했다.
     - https://scare-the-spire.flavono123.workers.dev/patches/changes
+
+
+### 2026-11-09 Supabase 이관 6단계(장난감 상자 WP-T1)에서 추가
+
+73. **케미컬 X 글 상세는 읽기에 실패해도 "글을 찾을 수 없습니다"를 보임**. 다른 장난감 상자 상세(코오오옴보, 변형, 어려운 결정)는 읽기에 실패하면 "데이터베이스가 응답하지 않습니다"를 보이는데, 케미컬 X 상세는 Worker 장애나 시간 초과도 글이 없는 것처럼 보인다. 삭제가 실패해도 안내 없이 그 자리에 남는다. 6단계에서도 지금 동작 그대로 옮겼다. 근거: `src/components/chemicalx/post-view.tsx`의 읽기 효과(실패 → `post = null`)와 `handleDelete`(실패 → 그냥 return). 코드로만 확인했고 화면으로는 확인하지 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/chemical-x/c0789f0e-6842-42b4-bdc8-90e4256a50de

@@ -2,17 +2,15 @@
 
 import { useCallback } from "react";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
-import { writeMayGoLegacy } from "@/lib/api-client";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import type { ChemicalPost, PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { dataEnv } from "@/lib/data-env";
 import { currentAuthorProfileToken } from "@/lib/user-profile";
 import {
   CHEMICAL_POST_MAX_CHARS,
   CHEMICAL_POST_MIN_CHARS,
 } from "@/lib/content-limits";
-import { apiCreateToyboxPost, toyboxViaApi, toyboxWriteError } from "@/lib/toybox-api";
+import { apiCreateToyboxPost, toyboxWriteError } from "@/lib/toybox-api";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
 
 interface UseChemicalPostsReturn {
@@ -36,7 +34,7 @@ export async function insertChemicalPost(
   nickname: string,
   activeUserId: string,
 ): Promise<ChemicalPost | null> {
-  if (!activeUserId || !supabaseEnabled) return null;
+  if (!activeUserId) return null;
   const contentText = blocksToPlainText(blocks).trim();
   const trimmedNickname = nickname.trim();
   if (
@@ -54,7 +52,7 @@ export async function insertChemicalPost(
     nickname: trimmedNickname,
     content: blocks,
     content_text: contentText,
-    env: supabaseEnv,
+    env: dataEnv,
     ...(token ? {
       avatar_id: token.avatar_id,
       avatar_kind: token.avatar_kind,
@@ -62,25 +60,12 @@ export async function insertChemicalPost(
       palette_swapped: token.palette_swapped,
     } : {}),
   };
-  if (toyboxViaApi()) {
-    try {
-      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, sent through the Worker.
-      return normalizePost(await apiCreateToyboxPost("chemical_x", row));
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  try {
+    // docs/supabase-exit/STEP1_DESIGN.md 9.8: the row, sent through the Worker.
+    return normalizePost(await apiCreateToyboxPost("chemical_x", row));
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { data, error } = await withSupabaseTimeout(
-    "chemical_posts.insert",
-    supabase
-      .from("chemical_posts")
-      .insert(row)
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  if (!data) return null;
-  return normalizePost(data);
 }
 
 export function useChemicalPosts(
@@ -100,7 +85,6 @@ export function useChemicalPosts(
     setUnavailable,
   } = useToyboxFeed({
     service: "chemical_x",
-    table: "chemical_posts",
     sort,
     normalizePost,
   });

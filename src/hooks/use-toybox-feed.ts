@@ -1,15 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { toyboxViaApi } from "@/lib/toybox-api";
 import {
   countsFromFeedItems,
   cursorFromFeedItem,
   DEFAULT_TOYBOX_FEED_SORT,
   fetchToyboxFeedPage,
   itemFromPostRecord,
-  mergeToyboxFeedItem,
   type ToyboxFeedCursor,
   type ToyboxFeedItem,
   type ToyboxFeedService,
@@ -38,27 +35,30 @@ export interface UseToyboxFeedReturn<T extends PostIdentity> {
 
 export function useToyboxFeed<T extends PostIdentity>({
   service,
-  table,
   sort = DEFAULT_TOYBOX_FEED_SORT,
   normalizePost,
 }: {
   service: ToyboxFeedService;
-  table: string;
+  /**
+   * @deprecated Unused: it only named the legacy Realtime channel, which step 6
+   * removed without a replacement (docs/supabase-exit/STEP6_PLAN.md 1.1). Kept
+   * while the WP-T2 hooks still pass it; WP-Z removes it.
+   */
+  table?: string;
   sort?: ToyboxFeedSort;
   normalizePost: (raw: unknown) => T;
 }): UseToyboxFeedReturn<T> {
   const [items, setItems] = useState<ToyboxFeedItem<T>[]>([]);
-  const [loading, setLoading] = useState(supabaseEnabled);
+  const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const [unavailable, setUnavailable] = useState(false);
   const loadingMoreRef = useRef(false);
   const cursorRef = useRef<ToyboxFeedCursor | null>(null);
   const normalizeRef = useRef(normalizePost);
   normalizeRef.current = normalizePost;
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
     cursorRef.current = null;
     loadingMoreRef.current = false;
@@ -94,50 +94,8 @@ export function useToyboxFeed<T extends PostIdentity>({
     };
   }, [service, sort]);
 
-  useEffect(() => {
-    // The api path opens no channel: these tables are not in the publication, so it
-    // never delivered an event, and a failed join only hid a loaded feed (STEP1_DESIGN 14).
-    if (!supabaseEnabled || toyboxViaApi()) return;
-
-    const channel = supabase
-      .channel(`${table}_feed`)
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table },
-        (payload) => {
-          const updatedPost = normalizeRef.current(payload.new);
-          if (updatedPost.env && updatedPost.env !== supabaseEnv) return;
-          setItems((current) => current.map((item) => (
-            item.post.id === updatedPost.id
-              ? mergeToyboxFeedItem(item, updatedPost, payload.new)
-              : item
-          )));
-        },
-      )
-      .on(
-        "postgres_changes",
-        { event: "DELETE", schema: "public", table },
-        (payload) => {
-          const deletedId = String(
-            (payload.old as { id?: unknown } | null)?.id ?? "",
-          );
-          if (!deletedId) return;
-          setItems((current) => current.filter((item) => item.post.id !== deletedId));
-        },
-      )
-      .subscribe((status) => {
-        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
-          setUnavailable(true);
-        }
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [table]);
-
   const loadMore = useCallback(async () => {
-    if (!supabaseEnabled || loadingMoreRef.current || !hasMore) return;
+    if (loadingMoreRef.current || !hasMore) return;
     const cursor = cursorRef.current;
     if (!cursor) return;
 

@@ -11,11 +11,6 @@ import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { metadataRecordId } from "@/lib/static-detail-shell";
-import {
-  comboPostOgImage,
-  truncateOgTitle,
-} from "@/lib/toybox-post-og";
-import { getComboPostOgFields } from "@/lib/toybox-post-og-fields";
 import { serviceMessages } from "@/messages/service";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 
@@ -31,23 +26,14 @@ export async function generateComboPostMetadata(
     serviceDescription: serviceMessages[serviceLocale].combo.subtitle,
   });
   const recordId = metadataRecordId(id);
-  const fallback = getServiceOgMetadata({
+  // Only the shell's metadata: a record's own fields are the main Worker's job
+  // (workers/detail-shell-og.ts, on with DETAIL_SHELL_OG=d1), not the build's.
+  return getServiceOgMetadata({
     serviceLocale,
     title: copy.comboTitle,
     description,
     image: COMBO_PAGE_OG_IMAGE,
     canonicalPath: recordId ? `/c-c-c-combo/${recordId}` : undefined,
-  });
-  if (!recordId) return fallback;
-
-  const fields = await getComboPostOgFields(recordId);
-  if (!fields) return fallback;
-  return getServiceOgMetadata({
-    serviceLocale,
-    title: truncateOgTitle(fields.contentText) || copy.comboTitle,
-    description,
-    image: comboPostOgImage(fields) ?? COMBO_PAGE_OG_IMAGE,
-    canonicalPath: `/c-c-c-combo/${recordId}`,
   });
 }
 

@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
+import { ApiUnavailableError } from "../src/lib/api-client";
 import {
   cursorFromDefragmentItem,
+  fetchDefragmentFeedPage,
   parseDefragmentFeedRow,
 } from "../src/lib/defragment-feed";
 import {
@@ -15,6 +17,7 @@ import {
   DEFRAGMENT_TITLE_CLASS,
 } from "../src/lib/defragment-board";
 import { TOYBOX_FEED_PAGE_SIZE, TOYBOX_FEED_SORT_OPTIONS } from "../src/lib/toybox-feed";
+import { DEFAULT_USER_PROFILE } from "../src/lib/user-profile";
 import { serviceMessages } from "../src/messages/service";
 
 assert.equal(TOYBOX_FEED_PAGE_SIZE, 20);
@@ -205,4 +208,104 @@ assert.equal(DEFRAGMENT_AUTHOR_COL_CLASS.includes("@xl:block"), true);
 assert.equal(DEFRAGMENT_DATE_COL_CLASS.includes("hidden"), true);
 assert.equal(DEFRAGMENT_DATE_COL_CLASS.includes("@xl:block"), true);
 
-console.log("defragment-feed.spec.ts: ok");
+// --- Step 6 (docs/supabase-exit/STEP6_PLAN.md WP-T1): the Worker is the only path -----------
+
+const seen: string[] = [];
+const marked = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
+  status,
+  headers: { "content-type": "application/json", "x-slseoun-api": "1" },
+});
+const stubFetch = (respond: () => Response) => {
+  seen.length = 0;
+  globalThis.fetch = (async (input: RequestInfo | URL) => {
+    seen.push(String(input));
+    return respond();
+  }) as typeof fetch;
+};
+const requested = () => seen.map((url) => {
+  const parsedUrl = new URL(url, "https://example.test");
+  return { path: parsedUrl.pathname, query: Object.fromEntries(parsedUrl.searchParams) };
+});
+const runRow = {
+  id: "12jr8pfwzycbewd9",
+  created_at: "2026-09-01T00:00:00+00:00",
+  like_count: 4,
+  comment_count: 1,
+  seed: "SEED",
+  donor_user_id: null,
+  donor_nickname: " ",
+  cover_spec: null,
+  win: true,
+  ascension: 10,
+  total_floors: 49,
+};
+const runCursor = { score: 4, createdAt: "2026-09-01T00:00:00+00:00", id: "12jr8pfwzycbewd9" };
+const postRow = { id: parsed.id, created_at: parsed.created_at, title: parsed.title, like_count: 2, comment_count: 3 };
+
+async function main() {
+  // The federated feed: get_defragment_feed_v2 rows through the Worker, core sorts only.
+  stubFetch(() => marked([{ ...postRow, service: "combo" }]));
+  const feed = await fetchDefragmentFeedPage({ sort: "play_count", cursor: null });
+  assert.equal(feed.items.length, 1);
+  assert.equal(feed.hasMore, false);
+  assert.deepEqual(requested(), [{ path: "/api/read/defragment-feed", query: { sort: "latest" } }]);
+
+  // The history-course filter: the runs feed through the Worker, mapped as the runs rows were.
+  stubFetch(() => marked([runRow]));
+  const runs = await fetchDefragmentFeedPage({ sort: "comments", cursor: runCursor, service: "history_course" });
+  assert.deepEqual(requested(), [{
+    path: "/api/read/defragment-runs",
+    query: { sort: "comments", score: "4", created_at: runCursor.createdAt, cursor_id: runCursor.id },
+  }]);
+  assert.equal(runs.items[0]?.service, "history_course");
+  assert.equal(runs.items[0]?.title, "SEED");
+  assert.equal(runs.items[0]?.nickname, DEFAULT_USER_PROFILE.nickname, "a blank donor nickname is the default profile's");
+  assert.equal(runs.items[0]?.recommendScore, 4);
+  assert.equal(runs.items[0]?.historyMeta?.totalFloors, 49);
+
+  // Another service filter is that service's toybox feed.
+  stubFetch(() => marked([{ ...postRow, content_text: "Strike / Bash" }]));
+  const combo = await fetchDefragmentFeedPage({ sort: "recommended", cursor: null, service: "combo" });
+  assert.deepEqual(requested(), [{ path: "/api/read/toybox-feed", query: { service: "combo", sort: "recommended" } }]);
+  assert.equal(combo.items[0]?.service, "combo");
+  assert.equal(combo.items[0]?.likeCount, 2);
+
+  // A cursor the Worker would refuse used to go to Supabase; it is an outage now and nothing is sent.
+  for (const [label, cursor] of [
+    ["a run id outside the row id rule", { ...runCursor, id: "run id with spaces" }],
+    ["a created_at that is not an ISO time", { ...runCursor, createdAt: "yesterday" }],
+  ] as const) {
+    for (const service of ["history_course", null] as const) {
+      stubFetch(() => marked([]));
+      await assert.rejects(
+        () => fetchDefragmentFeedPage({ sort: "latest", cursor, service }),
+        (error: unknown) => error instanceof ApiUnavailableError && error.code === "bad_cursor",
+        `${label} (${service ?? "all"})`,
+      );
+      assert.equal(seen.length, 0, `${label} (${service ?? "all"}): no request`);
+    }
+  }
+
+  // Former legacy signals are outages too: one request, no other.
+  for (const [label, respond, code] of [
+    ["409 surface_legacy", () => marked({ error: "surface_legacy", reason: "flag" }, 409), "surface_legacy"],
+    ["an unmarked platform error page", () => new Response("<html>1102</html>", { status: 502 }), "no_marker"],
+  ] as const) {
+    for (const service of ["history_course", null] as const) {
+      stubFetch(respond);
+      await assert.rejects(
+        () => fetchDefragmentFeedPage({ sort: "latest", cursor: null, service }),
+        (error: unknown) => error instanceof ApiUnavailableError && error.code === code,
+        `${label} (${service ?? "all"})`,
+      );
+      assert.equal(seen.length, 1, `${label} (${service ?? "all"}): nothing else is requested`);
+    }
+  }
+
+  console.log("defragment-feed.spec.ts: ok");
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
