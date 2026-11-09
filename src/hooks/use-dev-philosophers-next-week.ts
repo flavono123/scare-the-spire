@@ -5,7 +5,8 @@ import { devToolsEnabled } from "@/lib/dev-tools";
 
 /**
  * Dev only: true when next week's production 다채로운 철학자들 reservation is missing any slot;
- * rechecked per `refreshKey`. The dev server reads the production D1 (/api/dev/colorful-philosophers/next-week).
+ * rechecked per `refreshKey`. The dev server reads the store the save writes to (/api/dev/colorful-philosophers/next-week:
+ * production D1 once some group is on d1, Supabase before).
  */
 export function useDevPhilosophersNextWeekOpen(enabled: boolean, refreshKey: string): boolean {
   const [open, setOpen] = useState(false);

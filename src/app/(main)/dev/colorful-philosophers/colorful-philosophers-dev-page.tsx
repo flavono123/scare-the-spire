@@ -111,7 +111,10 @@ function axisBuckets(axis: AxisSpec, pool: EntityInfo[], used: EntityInfo[]): Ax
 /** The page's own data env (NEXT_PUBLIC_SUPABASE_ENV, inlined at build time). */
 const PAGE_DATA_ENV = process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production";
 
-/** Either env's week list, read on the dev server from that env's D1 (the server action). */
+/**
+ * Either env's week list, read on the dev server (the server action) from the store that env's save
+ * writes to: its D1 once some group is on d1, Supabase before.
+ */
 function useDevPhilosopherWeek(env: "development" | "production") {
   const [posts, setPosts] = useState<ColorfulPhilosopherPost[]>([]);
   const [loading, setLoading] = useState(true);
