@@ -1,17 +1,19 @@
 import type { ApiSurfaceGroup } from "@/lib/api-surfaces";
-import { defaultSurfacePath, demoteSurface } from "@/lib/runtime-flags";
 import { WRITE_PAUSED_ERROR } from "@/lib/write-source-flags";
 
 /**
  * Browser client for the same-origin Worker API (docs/supabase-exit/STEP1_DESIGN.md 4.3, 7).
  *
- * Legacy signals: 409 surface_legacy, or any /api response without the router
- * marker header (a Worker rolled back to before step 1 answers /api with an
- * HTML 404). Both demote the group for this page and throw SurfaceLegacyError;
- * callers then redo the call on the legacy path. Outages are not legacy
- * signals: the legacy path would only ask the same Supabase again.
- *
- * Writes in a bundle built with NEXT_PUBLIC_API_PATH_DEFAULT=api are the exception (writesStayOnApi).
+ * Step 6 (docs/supabase-exit/STEP6_PLAN.md 1.1, WP0): the browser has no legacy
+ * path. What used to be a legacy signal is an outage, thrown as ApiUnavailableError
+ * so the screen shows its "database is not answering" state:
+ * - an /api answer without the router marker header (a platform error page, or a
+ *   Worker rolled back to before step 1): code `no_marker`;
+ * - 409 surface_legacy (the Worker's flags are off, or the QA cookie): code `surface_legacy`;
+ * - a v1-shaped answer of another version (requireApiVersion): code `bad_version`.
+ * A write keeps today's code `unavailable` for the first two, as the production
+ * build (direct writes closed) already answered. Nothing is resent and no group
+ * is demoted.
  */
 
 export const API_MARKER_HEADER = "X-Slseoun-Api";
@@ -24,8 +26,9 @@ export class ApiError extends Error {
 }
 
 /**
- * The Worker cannot serve this call: use the legacy path. `processed` is false
- * when the request certainly did nothing, so a write may be resent on legacy.
+ * @deprecated apiFetch and requireApiVersion no longer throw it (step 6: legacy
+ * signals are ApiUnavailableError). Kept while other step 6 packages still name
+ * it; WP-Z removes it.
  */
 export class SurfaceLegacyError extends ApiError {
   constructor(status: number, readonly processed: boolean) {
@@ -76,37 +79,28 @@ function sleep(ms: number, signal?: AbortSignal): Promise<void> {
 }
 
 /**
- * A v1-shaped answer this client does not understand is a legacy signal
- * (docs/supabase-exit/STEP1_DESIGN.md 9): demote the group for the page and
- * throw so the caller redoes its legacy query. Pass `processed` for the answer
- * to a write: the router answered 2xx, so the write ran and must not be resent.
+ * A v1-shaped answer this client does not understand (docs/supabase-exit/STEP1_DESIGN.md 9)
+ * is an outage: ApiUnavailableError `bad_version`. `group` and `processed` (the
+ * answer to a write, which ran) no longer change anything; the signature stays
+ * for the callers WP-Z has not cleaned up yet.
  */
 export function requireApiVersion(group: ApiSurfaceGroup, body: { v?: unknown } | null | undefined, processed = false): void {
+  void group;
+  void processed;
   if (body?.v === 1) return;
-  // A write answer (`processed`) never demotes once writes stay on the api path.
-  if (!(processed && defaultSurfacePath() === "api")) demoteSurface(group);
-  throw new SurfaceLegacyError(200, processed);
+  throw new ApiUnavailableError(200, "bad_version");
 }
 
-/**
- * Once the build default is api, the browser's direct writes are closed (docs/supabase-exit/STEP4_WRITE_GATE.md 7):
- * the legacy path can no longer write. A write the router did not answer (a platform error page such as a
- * Cloudflare 1102, a missing marker) or answered with a legacy signal is then an outage: it surfaces as
- * ApiUnavailableError, never demotes the group (later writes on the page stay on the api path) and is never
- * resent on legacy. Reads keep today's demotion: direct Supabase reads still work after the close.
- */
-function writesStayOnApi(method: string): boolean {
-  return method !== "GET" && defaultSurfacePath() === "api";
-}
-
-/** True when a failed api call should be redone on the legacy path. */
+/** @deprecated Always false: there is no legacy path to redo a call on. WP-Z removes it. */
 export function shouldUseLegacy(error: unknown): boolean {
-  return error instanceof SurfaceLegacyError;
+  void error;
+  return false;
 }
 
-/** True when a failed api write certainly did nothing, so legacy may send it once (never once writes stay on api). */
+/** @deprecated Always false: no write is resent on a legacy path. WP-Z removes it. */
 export function writeMayGoLegacy(error: unknown): boolean {
-  return error instanceof SurfaceLegacyError && !error.processed && defaultSurfacePath() !== "api";
+  void error;
+  return false;
 }
 
 export const API_TIMEOUT_MS = 8000;
@@ -126,11 +120,13 @@ export type ApiFetchInit = {
   responseType?: "json" | "text";
 };
 
+/** `group` is the caller's flag group; the Worker routes by path, so it decides nothing here any more. */
 export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: ApiFetchInit = {}): Promise<T> {
+  void group;
   let waited = 0;
   for (;;) {
     try {
-      return await apiFetchOnce<T>(group, path, init);
+      return await apiFetchOnce<T>(path, init);
     } catch (error) {
       if (!(error instanceof WritePausedError) || waited + error.retryAfterMs > WRITE_PAUSE_MAX_WAIT_MS || init.signal?.aborted) {
         throw error;
@@ -141,7 +137,7 @@ export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: Ap
   }
 }
 
-async function apiFetchOnce<T>(group: ApiSurfaceGroup, path: string, init: ApiFetchInit): Promise<T> {
+async function apiFetchOnce<T>(path: string, init: ApiFetchInit): Promise<T> {
   if (!path.startsWith("/api/")) throw new Error(`api path must be absolute: ${path}`);
   const method = init.method ?? "GET";
   const asText = init.responseType === "text";
@@ -170,13 +166,10 @@ async function apiFetchOnce<T>(group: ApiSurfaceGroup, path: string, init: ApiFe
     }
 
     if (response.headers.get(API_MARKER_HEADER) !== "1") {
-      // No router answered. A 404/405 from an old Worker certainly did nothing;
-      // after a Cloudflare 5xx a write may have run, so it is not resent.
-      const processed = method !== "GET" && !(response.status === 404 || response.status === 405);
+      // No router answered (a platform error page, or a Worker from before step 1). After a
+      // Cloudflare 5xx a write may have run, so nothing is resent.
       void response.body?.cancel().catch(() => undefined);
-      if (writesStayOnApi(method)) throw new ApiUnavailableError(response.status, "unavailable");
-      demoteSurface(group);
-      throw new SurfaceLegacyError(response.status, processed);
+      throw new ApiUnavailableError(response.status, method === "GET" ? "no_marker" : "unavailable");
     }
 
     if (response.status === 204) return undefined as T;
@@ -196,9 +189,7 @@ async function apiFetchOnce<T>(group: ApiSurfaceGroup, path: string, init: ApiFe
     ? (payload as { error: string }).error
     : `http_${response.status}`;
   if (response.status === 409 && code === "surface_legacy") {
-    if (writesStayOnApi(method)) throw new ApiUnavailableError(409, "unavailable");
-    demoteSurface(group);
-    throw new SurfaceLegacyError(409, false);
+    throw new ApiUnavailableError(409, method === "GET" ? "surface_legacy" : "unavailable");
   }
   if (response.status === 503 && code === WRITE_PAUSED_ERROR && method !== "GET") {
     throw new WritePausedError(retryAfterMs(response));
