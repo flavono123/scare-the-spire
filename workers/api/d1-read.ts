@@ -1,3 +1,4 @@
+import { RUN_SUMMARY_CLIENT_HEADER, runReadNeedsSummaryClient } from "../../src/lib/history-runs-api-rules";
 import { D1_ADAPTERS } from "./d1-adapters";
 import { AdapterInputError, answerText, TextBody, type AdapterContext } from "./d1-adapters/rows";
 import { withTimeout } from "./d1";
@@ -18,6 +19,9 @@ import { NAV_CACHE_CONTROL, NAV_MEMORY_MS } from "./routes/nav";
  *   caches (nav: public, max-age=30);
  * - TextBody is the run raw file (R3r): text/plain, as the Supabase handler streams it.
  * The nav answer is also kept in isolate memory for NAV_MEMORY_MS, like the Supabase handler's.
+ *
+ * History-runs reads whose D1 rows carry no raw (list, picker, detail, cover) are answered from D1
+ * only for requests with RUN_SUMMARY_CLIENT_HEADER while Supabase is the source (older tabs).
  *
  * Failures: with read.<group> = d1 (Supabase still the source) a D1 error or timeout answers this
  * request from the route's own handler and logs one line; an input the adapter cannot bind goes to
@@ -71,6 +75,12 @@ function userIdOf(context: D1ReadEvent["context"]): string | null {
 export async function d1ReadAnswer(event: D1ReadEvent): Promise<Response> {
   const { route, context, store } = event;
   const origin = store === "d1-origin";
+  // A tab running the client from before step 3 cannot read the D1 run rows (no raw): while Supabase
+  // is the source it keeps the Supabase answer unless the request says it reads them.
+  if (!origin && runReadNeedsSummaryClient(route.id, context.url)
+    && context.request.headers.get(RUN_SUMMARY_CLIENT_HEADER) !== "1") {
+    return event.supabase();
+  }
   const adapter = D1_ADAPTERS[route.id];
   const db = context.db;
   if (!adapter || !db) {

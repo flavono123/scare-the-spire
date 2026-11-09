@@ -6,6 +6,7 @@ import {
   isRunId,
   RECENT_DONATED_RUNS_LIMIT,
   RUN_DETAIL_COLUMNS,
+  RUN_SUMMARY_CLIENT_HEADER,
   RUN_SUMMARY_COLUMNS,
 } from "./history-runs-api-rules";
 import { surfacePath } from "./runtime-flags";
@@ -69,7 +70,11 @@ type RowsBody = { v?: number; rows?: unknown };
  */
 async function apiRunRows(path: string): Promise<RunRow[] | "legacy"> {
   try {
-    const body = await apiFetch<RowsBody | RunRow[]>("history-runs", path, { timeoutMs: 20_000 });
+    // This client reads the D1 answers too (summary rows, no raw): say so (RUN_SUMMARY_CLIENT_HEADER).
+    const body = await apiFetch<RowsBody | RunRow[]>("history-runs", path, {
+      timeoutMs: 20_000,
+      headers: { [RUN_SUMMARY_CLIENT_HEADER]: "1" },
+    });
     if (Array.isArray(body)) return body;
     requireApiVersion("history-runs", body);
     if (!Array.isArray(body.rows)) throw new Error("bad history-runs answer");

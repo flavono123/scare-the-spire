@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { isDeepStrictEqual } from "node:util";
 
 import { API_SURFACE_GROUPS, pathFlagKey, readFlagKey, shadowFlagKey } from "../src/lib/api-surfaces";
-import { HISTORY_RUN_RAW_PATH } from "../src/lib/history-runs-api-rules";
+import { HISTORY_RUN_RAW_PATH, RUN_SUMMARY_CLIENT_HEADER } from "../src/lib/history-runs-api-rules";
 import { pickAlternatingCover } from "../src/lib/run-cover-suggest";
 import { coverFromSummaryCoverRow, donatedRunsFromListRows, type RunSummaryCoverRow } from "../src/lib/run-list-summary";
 import {
@@ -173,12 +173,14 @@ async function main() {
     resetNavForTest();
   }
 
-  async function get(path: string, init: { method?: string; headers?: Record<string, string>; envOverride?: Partial<ApiEnv> } = {}) {
+  /** A request as this client sends it (with RUN_SUMMARY_CLIENT_HEADER unless `unmarked`, an older tab). */
+  async function get(path: string, init: { method?: string; headers?: Record<string, string>; envOverride?: Partial<ApiEnv>; unmarked?: boolean } = {}) {
     const ctx = new Ctx();
     const statementsBefore = shim.statements.length;
     const requestsBefore = fake.requests.length;
+    const headers = { ...(init.unmarked ? {} : { [RUN_SUMMARY_CLIENT_HEADER]: "1" }), ...init.headers };
     const response = await router.handle(
-      new Request(`https://testbed.example${path}`, { method: init.method ?? "GET", headers: init.headers }),
+      new Request(`https://testbed.example${path}`, { method: init.method ?? "GET", headers }),
       { ...env, ...init.envOverride },
       ctx,
     );
@@ -334,6 +336,25 @@ async function main() {
       }
     });
   }
+
+  await check("router: a tab from before step 3 (no RUN_SUMMARY_CLIENT_HEADER) keeps rows with raw while Supabase is the source", async () => {
+    setFlags({ [readFlagKey("history-runs")]: "d1" });
+    for (const path of ["/api/read/history-runs?view=recent", "/api/read/history-runs?view=reference", `/api/read/history-run?id=${RUN1}&view=detail`, `/api/read/history-run?id=${RUN3}&view=cover`]) {
+      const old = await get(path, { unmarked: true });
+      assert.equal(old.response.status, 200, path);
+      assert.ok(old.supabaseRequests.length > 0, `${path}: the Supabase handler answered`);
+      assert.ok((JSON.parse(old.body) as Array<Record<string, unknown>>).every((row) => "raw" in row), `${path}: rows with raw`);
+      const marked = await get(path);
+      assert.deepEqual(marked.supabaseRequests, [], `${path}: this client reads D1`);
+    }
+    // Views whose D1 answer has today's shape are D1 for every tab; so is everything once D1 is the origin.
+    const meta = await get(`/api/read/history-run?id=${RUN1}&view=meta`, { unmarked: true });
+    assert.deepEqual(meta.supabaseRequests, []);
+    setFlags({ [sourceFlagKey("history-runs")]: "d1" });
+    const origin = await get("/api/read/history-runs?view=recent", { unmarked: true });
+    assert.deepEqual(origin.supabaseRequests, [], "D1 the origin: D1 regardless");
+    assert.ok((JSON.parse(origin.body) as Array<Record<string, unknown>>).every((row) => !("raw" in row)));
+  });
 
   await check("router: with the sync off, read.<group> = d1 answers from Supabase (D1 would fall behind)", async () => {
     setFlags({ [readFlagKey("stories")]: "d1", [SYNC_FLAG_KEY]: "off" });
