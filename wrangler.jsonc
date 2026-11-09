@@ -11,29 +11,39 @@
     // Same-origin API (docs/supabase-exit/STEP1_DESIGN.md 4.1): no asset may shadow it.
     "run_worker_first": ["/api/*"]
   },
-  // Supabase exit switch. "off" keeps every screen on the legacy path and skips D1
-  // entirely; "d1" reads runtime_flags (on since step 2, 2026-11-09; unset flags keep
-  // the legacy path and leave sync, shadow, identity and writes off). API_SUPABASE_URL, API_SUPABASE_KEY
-  // and API_DATA_ENV are passed with --var at deploy time.
+  // Supabase exit switch. "d1" reads runtime_flags (on since step 2, 2026-11-09); "off" skips D1
+  // entirely and every /api request answers 409 surface_legacy. Since step 6 the browser has no
+  // legacy path (docs/supabase-exit/STEP6_PLAN.md), so "off" stops every community feature: each
+  // screen shows its "unavailable" notice and no claim or write goes through. A missing
+  // API_SUPABASE_URL, API_SUPABASE_KEY or API_DATA_ENV (not_configured) does the same; they are
+  // passed with --var at deploy time and stay until step 7. Roll back with source.<group> (storage)
+  // or by rolling both Workers (main and patch) back to their recorded pre-step-6 versions (client),
+  // never with "off": "off", path.<group> legacy, identity.mode token and write.<group> rls only work
+  // with a pre-step-6 client, and scripts/runtime-flags.ts refuses the last three without --old-client.
   // Step 4 identity (docs/SUPABASE_EXIT_PLAN.md 5.3) reads two Worker secrets, set
   // with `wrangler secret put` per env, never here: API_IDENTITY_SECRET (cookie HMAC
-  // key, at least 32 characters; without it identity stays on bearer tokens) and,
+  // key, at least 32 characters; without it identity stays on bearer tokens, which the step 6
+  // browser never sends, so claims and writes fail) and,
   // optionally, API_SUPABASE_LEGACY_JWT_SECRET (claims of old HS256 tokens).
   // API_PATH_DEFAULT (legacy|api, unset = legacy) is the path of a group whose path.<group> row
   // is missing or unknown or whose flags cannot be read (plan 7.2), in the router and the page
-  // cookie; the browser bundles take the same default at build time from
-  // NEXT_PUBLIC_API_PATH_DEFAULT when a page has no slseoun_rf cookie. Both go to api before the
-  // direct writes are closed (docs/supabase-exit/STEP4_WRITE_GATE.md 7); api since 2026-11-09 (every
-  // path.<group> was already api). API_WRITE_MODE_DEFAULT is the write mode of a group whose
+  // cookie. It went to api before the direct writes were closed (docs/supabase-exit/STEP4_WRITE_GATE.md 7;
+  // 2026-11-09, every path.<group> was already api); since step 6 legacy is an outage like "off".
+  // API_WRITE_MODE_DEFAULT is the write mode of a group whose
   // write.<group> row is missing or cannot be read: worker since 2026-11-09, with every production
   // write.<group> row set explicitly, so the default only decides a failed flag read.
   // API_WRITE_SOURCE_DEFAULT is the write source of a group whose source.<group> row is missing or
   // cannot be read: d1 since the step 5 cutover (production 2026-11-09 13:29 UTC, testbed 13:26 UTC).
+  // API_IDENTITY_MODE_DEFAULT (token|cookie, unset = token) is the identity mode when the
+  // identity.mode row is missing or unknown or the flags cannot be read (workers/api/identity/mode.ts):
+  // cookie for step 6, whose browser has no token path (STEP6_PLAN.md 2, P12). The kill switch, a
+  // missing API_IDENTITY_SECRET and the QA cookie still mean token.
   "vars": {
     "API_RUNTIME_FLAGS": "d1",
     "API_PATH_DEFAULT": "api",
     "API_WRITE_MODE_DEFAULT": "worker",
-    "API_WRITE_SOURCE_DEFAULT": "d1"
+    "API_WRITE_SOURCE_DEFAULT": "d1",
+    "API_IDENTITY_MODE_DEFAULT": "cookie"
   },
   // Step 2 1-minute D1 sync (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3). A no-op unless
   // API_RUNTIME_FLAGS is "d1" and runtime_flags sync.enabled is on; API_SUPABASE_SECRET_KEY is a secret.
@@ -81,7 +91,8 @@
         "API_RUNTIME_FLAGS": "d1",
         "API_PATH_DEFAULT": "api",
         "API_WRITE_MODE_DEFAULT": "worker",
-        "API_WRITE_SOURCE_DEFAULT": "d1"
+        "API_WRITE_SOURCE_DEFAULT": "d1",
+        "API_IDENTITY_MODE_DEFAULT": "cookie"
       },
       "triggers": {
         "crons": ["* * * * *"]
