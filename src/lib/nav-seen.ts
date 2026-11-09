@@ -1,17 +1,13 @@
 import {
   COLORFUL_PHILOSOPHERS_HREF,
   COLORFUL_PHILOSOPHERS_POSTS_TABLE,
-  colorfulPhilosophersWeekStart,
 } from "@/lib/colorful-philosophers";
+import { dataEnv } from "@/lib/data-env";
 import { FAVORITE_TOURNAMENT_HREF } from "@/lib/favorite-tournament";
 import { stripGameLocaleFromPath } from "@/lib/i18n";
 import { PAGESTORM_HREF } from "@/lib/pagestorm";
-import { SurfaceLegacyError } from "@/lib/api-client";
 import { loadNavSnapshot, snapshotHasSurface, type NavSnapshot } from "@/lib/nav-snapshot";
 import { weeklyPublishedAt } from "@/lib/nav-surfaces";
-import { surfacePath } from "@/lib/runtime-flags";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import patchesJson from "../../data/sts2-patches.json";
 import neowslettersJson from "../../data/sts2-neowsletters.json";
 
@@ -91,15 +87,15 @@ const NEVER_SEEN_AT = "1970-01-01T00:00:00.000Z";
 export type NavSeenMap = Record<string, string>;
 export type NavForceMap = Record<string, boolean>;
 
-export function navSeenStorageKey(env = supabaseEnv): string {
+export function navSeenStorageKey(env = dataEnv): string {
   return `${STORAGE_PREFIX}${env}`;
 }
 
-export function navMenuSeenStorageKey(env = supabaseEnv): string {
+export function navMenuSeenStorageKey(env = dataEnv): string {
   return `${MENU_SEEN_PREFIX}${env}`;
 }
 
-export function navForceStorageKey(env = supabaseEnv): string {
+export function navForceStorageKey(env = dataEnv): string {
   return `${FORCE_PREFIX}${env}`;
 }
 
@@ -254,7 +250,7 @@ export function effectiveUnreadIds(realIds: readonly string[], force: NavForceMa
 type UnreadCache = { at: number; stamp: string; ids: string[] };
 
 function unreadCacheKey(): string {
-  return `${UNREAD_CACHE_PREFIX}${supabaseEnv}`;
+  return `${UNREAD_CACHE_PREFIX}${dataEnv}`;
 }
 
 export function seenStamp(seen: NavSeenMap): string {
@@ -292,63 +288,17 @@ function catalogTimes(surface: NavSeenSurface): readonly string[] {
   return [];
 }
 
-async function weeklyHasNewer(table: NonNullable<NavSeenSurface["weekly"]>, since: string): Promise<boolean> {
-  if (!supabaseEnabled) return false;
-  const { data, error } = await withSupabaseTimeout(
-    `nav-seen.weekly.${table}`,
-    supabase
-      .from(table)
-      .select("week_start")
-      .eq("env", supabaseEnv)
-      .lte("week_start", colorfulPhilosophersWeekStart())
-      .order("week_start", { ascending: false })
-      .limit(1),
-  );
-  const latest = data?.[0]?.week_start;
-  if (error || typeof latest !== "string") return false;
-  return contentIsNewerThanSeen(weeklyPublishedAt(latest.slice(0, 10)), since);
-}
-
-async function surfaceHasNewer(surface: NavSeenSurface, since: string): Promise<boolean> {
-  if (surface.catalog) return catalogHasNewer(catalogTimes(surface), since);
-  if (surface.weekly) return weeklyHasNewer(surface.weekly, since);
-  if (!surface.table || !supabaseEnabled) return false;
-  const { data, error } = await withSupabaseTimeout(
-    `nav-seen.${surface.id}`,
-    supabase
-      .from(surface.table)
-      .select("created_at")
-      .eq("env", supabaseEnv)
-      .gt("created_at", since)
-      .order("created_at", { ascending: false })
-      .limit(1),
-  );
-  if (error) return false;
-  return (data?.length ?? 0) > 0;
-}
-
-async function legacyUnreadSurfaceIds(seen: NavSeenMap): Promise<string[]> {
-  const flags = await Promise.all(NAV_SEEN_SURFACES.map(async (surface) => {
-    const since = seen[surface.id];
-    if (!since) return null;
-    // A timed-out or failed surface only loses its dot, never the other dots.
-    const hasNewer = await surfaceHasNewer(surface, since).catch(() => false);
-    return hasNewer ? surface.id : null;
-  }));
-  return flags.filter((id): id is string => id !== null);
-}
-
 /**
- * Unread ids from the Worker's nav snapshot: the same answer as the legacy
+ * Unread ids from the Worker's nav snapshot: the same answer as the former
  * per-surface queries (`created_at > since` exists iff the latest one is newer).
- * Catalog surfaces never need the network; a surface the snapshot does not
- * know (a Worker older than this bundle) asks Supabase the legacy way.
- * `snapshot` null means the API was unavailable: only catalog dots remain.
+ * Catalog surfaces never need the network. `snapshot` null means the API was
+ * unavailable or its snapshot was refused: only catalog dots remain. A table
+ * surface the snapshot does not list stays dark (the Worker lists them all).
  */
 export async function unreadFromSnapshot(seen: NavSeenMap, snapshot: NavSnapshot | null): Promise<string[]> {
-  const flags = await Promise.all(NAV_SEEN_SURFACES.map(async (surface) => {
+  return NAV_SEEN_SURFACES.flatMap((surface) => {
     const since = seen[surface.id];
-    if (!since) return null;
+    if (!since) return [];
     let hasNewer = false;
     if (surface.catalog) {
       hasNewer = catalogHasNewer(catalogTimes(surface), since);
@@ -360,26 +310,18 @@ export async function unreadFromSnapshot(seen: NavSeenMap, snapshot: NavSnapshot
     } else if (snapshotHasSurface(snapshot, surface.id)) {
       const latest = snapshot.latest[surface.id];
       hasNewer = typeof latest === "string" && contentIsNewerThanSeen(latest, since);
-    } else {
-      hasNewer = await surfaceHasNewer(surface, since).catch(() => false);
     }
-    return hasNewer ? surface.id : null;
-  }));
-  return flags.filter((id): id is string => id !== null);
+    return hasNewer ? [surface.id] : [];
+  });
 }
 
-/** Never rejects, on either path. */
+/**
+ * Never rejects. The shared snapshot promise may also come from the patch static
+ * client, which rejects with its own error; any rejection is an outage here.
+ */
 export async function fetchUnreadSurfaceIds(seen: NavSeenMap): Promise<string[]> {
-  if (surfacePath("nav") === "api") {
-    try {
-      return await unreadFromSnapshot(seen, await loadNavSnapshot());
-    } catch (error) {
-      // The shared promise may come from the patch static client, which demotes instead of throwing our class.
-      if (!(error instanceof SurfaceLegacyError) && surfacePath("nav") === "api") return unreadFromSnapshot(seen, null);
-      // Demoted: fall through to the legacy queries.
-    }
-  }
-  return legacyUnreadSurfaceIds(seen);
+  const snapshot = await loadNavSnapshot().catch(() => null);
+  return unreadFromSnapshot(seen, snapshot);
 }
 
 export function publishNavSeen(): void {

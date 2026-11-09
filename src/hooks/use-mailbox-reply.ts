@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { hasUnseenContactReply } from "@/lib/contact-inquiries";
-import { supabaseEnv } from "@/lib/supabase";
+import { dataEnv } from "@/lib/data-env";
 
 const MAILBOX_REPLY_EVENT = "sts-mailbox-reply";
 const CACHE_MS = 60_000;
@@ -11,7 +11,7 @@ const CACHE_MS = 60_000;
 type MailboxReplyDetail = { unseen: boolean };
 
 function cacheKey(userId: string): string {
-  return `sts-mailbox-reply:${supabaseEnv}:${userId}`;
+  return `sts-mailbox-reply:${dataEnv}:${userId}`;
 }
 
 function readCache(userId: string): boolean | null {
