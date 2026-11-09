@@ -227,15 +227,40 @@ async function main() {
     assert.equal(readStoreFor(values, "puzzlebox"), "d1");
     assert.equal(readStoreFor(values, "colorful-philosophers"), "supabase", "groups without writes have no source flag");
     assert.equal(readStoreFor(new Map(), "history-runs"), "supabase", "no row: today");
-    // With the sync off D1 stops following Supabase's writes: read.<group> = d1 does not apply.
+    // With the sync off while Supabase is every write source, D1 stops following Supabase's writes:
+    // read.<group> = d1 does not apply (the step 5 case, with a write source on d1, is the next check).
     for (const sync of ["off", undefined]) {
       const synced = new Map(values);
+      synced.delete(sourceFlagKey("comments"));
       if (sync) synced.set(SYNC_FLAG_KEY, sync);
       else synced.delete(SYNC_FLAG_KEY);
       assert.equal(readStoreFor(synced, "nav"), "supabase", `sync ${sync ?? "missing"}: supabase`);
       assert.equal(readStoreFor(synced, "puzzlebox"), "supabase");
-      assert.equal(readStoreFor(synced, "comments"), "d1-origin", "D1 as the origin does not need the sync");
+      const origin = new Map(synced);
+      origin.set(sourceFlagKey("comments"), "d1");
+      assert.equal(readStoreFor(origin, "comments"), "d1-origin", "D1 as the origin does not need the sync");
     }
+  });
+
+  await check("read store with the sync off: groups without a write source read D1 once any write source is d1 (step 5)", () => {
+    const supabaseOrigin = flagValues([
+      { key: SYNC_FLAG_KEY, value: "off" },
+      { key: readFlagKey("nav"), value: "d1" },
+      { key: readFlagKey("colorful-philosophers"), value: "d1" },
+      { key: readFlagKey("puzzlebox"), value: "d1" },
+    ]);
+    assert.equal(readStoreFor(supabaseOrigin, "nav"), "supabase", "no write source on d1: D1 is stale");
+    assert.equal(readStoreFor(supabaseOrigin, "colorful-philosophers"), "supabase");
+    const step5 = new Map(supabaseOrigin);
+    step5.set(sourceFlagKey("comments"), "d1");
+    step5.set(sourceFlagKey("puzzlebox"), "supabase");
+    assert.equal(readStoreFor(step5, "nav"), "d1", "nav reads the posts and comments written to D1");
+    assert.equal(readStoreFor(step5, "colorful-philosophers"), "d1", "philosopher posts are written to D1 in step 5");
+    assert.equal(readStoreFor(step5, "puzzlebox"), "supabase", "a write group follows its own source");
+    assert.equal(readStoreFor(step5, "comments"), "d1-origin");
+    const unset = new Map(step5);
+    unset.delete(readFlagKey("nav"));
+    assert.equal(readStoreFor(unset, "nav"), "supabase", "read.<group> unset stays supabase");
   });
 
   await check("flags CLI: read.<group> for every group takes supabase or d1; production needs --confirm-production", () => {
