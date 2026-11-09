@@ -98,8 +98,11 @@ globalThis.fetch = (async (input: unknown, init?: RequestInit) => {
     url: String(input),
     body: typeof init?.body === "string" ? JSON.parse(init.body) : undefined,
   };
-  calls.push(call);
   allCalls.push(call);
+  // The identity claim (src/lib/api-identity.ts, WP-A) always names this browser's user; it is
+  // not one of the calls under test.
+  if (call.url === "/api/auth/claim") return marked({ v: 1, uid: "u1" });
+  calls.push(call);
   return reply(call);
 }) as typeof fetch;
 
