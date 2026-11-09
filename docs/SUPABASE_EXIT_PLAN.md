@@ -550,6 +550,8 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 - 로컬: `pnpm dev`와 `qa:mobile`은 로컬 D1의 main Worker로 `/api`를 넘긴다(`scripts/d1-local-seed.ts`).
 - Worker에 남은 것(7단계까지): Supabase 어댑터, outbox 미러, 2단계 sync 코드, `API_SUPABASE_*` 배포 변수, claim의
   Supabase 익명 가입과 refresh, QA 쿠키, 409 legacy 응답. 새로 둔 것은 env 기본값 `API_IDENTITY_MODE_DEFAULT=cookie`다.
+  쓰기 그룹이 아닌 네비와 다채로운 철학자들의 읽기는 이 Supabase 어댑터로 간다. 동기화가 꺼져 `read.<group>` = d1이
+  적용되지 않기 때문이다(tasks/010 #75, #76). 6단계는 이것도 그대로 두었다.
 - 되돌리기: 저장소 문제는 `source.<group>` = supabase(미러가 정상일 때). 클라이언트 버그는 두 Worker를 함께 이전
   버전으로 되돌린다. `path.<group>` legacy, `identity.mode` token, `write.<group>` rls, `API_RUNTIME_FLAGS=off`는
   클라이언트를 되돌리기 전에는 전면 중단이 되므로, 플래그 CLI가 `--old-client` 없이는 거절한다.

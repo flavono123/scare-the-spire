@@ -10,7 +10,9 @@ Supabase를 Cloudflare D1으로 옮기는 작업이 진행 중이다. 전체 계
 - 1단계(같은 출처 API) 진행 중(2026-11-05 시작): worktree `.claude/worktrees/supabase-exit`, 브랜치
   `refactor/supabase-exit`. [UNRELEASED.md](release/UNRELEASED.md)에 등록했다.
 - 5단계까지 운영(2026-11-09): 모든 화면이 같은 출처 `/api`로 읽고 쓰며, 쓰기 원본은 D1이고 Supabase는 outbox
-  미러로만 따라간다([history/2026-11-09.md](release/history/2026-11-09.md)).
+  미러로 따라간다([history/2026-11-09.md](release/history/2026-11-09.md)). 다만 쓰기 그룹이 아닌 네비(새 글 점,
+  배달부)와 다채로운 철학자들은 Worker가 아직 Supabase에서 읽는다. 동기화가 꺼져 `read.<group>` = d1이 적용되지
+  않기 때문이다. Supabase가 멈추면 네비는 마지막 스냅샷에 머물고 철학자 화면은 "응답 없음"이다(tasks/010 #75, #76).
 - 6단계(클라이언트 정리) 코드 완료, 배포 전(2026-11-10): 브라우저에 supabase-js와 Supabase 직접 경로가 없다.
   패치 빌드는 셸 패치 릴만 배포된 사이트의 `/api`에서 굽는다.
 
@@ -62,8 +64,9 @@ Supabase를 Cloudflare D1으로 옮기는 작업이 진행 중이다. 전체 계
    위에서 만든다. Supabase 스키마를 바꿔야 하면 열·테이블 추가만 한다. 삭제나 이름 변경은 이관이 끝날 때까지
    하지 않는다. 이전 Worker 버전으로 되돌릴 수 있게 하기 위해서다.
 4. **브라우저 QA는 Supabase를 DNS에서 막는다.** testbed와 운영이 Supabase 프로젝트 하나를 같이 쓰고, QA 부하로
-   DB가 멈춘 적이 있다. 6단계 브라우저는 Supabase를 부르지 않고 같은 출처 `/api`(D1)만 부른다. 그래서 차단은 DNS로만
-   한다: Playwright·Chrome QA는 `--host-resolver-rules=MAP *.supabase.co ~NOTFOUND`(Playwright는
+   DB가 멈춘 적이 있다. 6단계 브라우저는 Supabase를 부르지 않고 같은 출처 `/api`만 부른다. 그 뒤에서 Worker가
+   Supabase에서 읽는 화면 데이터는 네비와 다채로운 철학자들뿐이다(위 "지금 단계"). 그래서 차단은 DNS로만 한다:
+   Playwright·Chrome QA는 `--host-resolver-rules=MAP *.supabase.co ~NOTFOUND`(Playwright는
    `PLAYWRIGHT_BLOCK_SUPABASE=1`). 이렇게 막아도 댓글·좋아요·피드 같은 데이터 화면이 그대로 뜬다. 막힌
    `*.supabase.co` 요청은 `ERR_NAME_NOT_RESOLVED`로 잡히고, 6단계 뒤에는 0건이어야 한다.
    - `slseoun_qa=no-supabase` 쿠키는 넣지 않는다. 이 쿠키가 있으면 Worker가 모든 `/api`를 409로 답해서 화면이

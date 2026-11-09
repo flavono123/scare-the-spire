@@ -63,7 +63,8 @@
 - Expect: 화면은 지금(5단계 운영)과 같다. DNS로 `*.supabase.co`를 막은 새 브라우저에서 홈, 백과사전 상세 댓글·좋아요·반응,
   패치 노트 줄 댓글, 장난감 상자 피드·상세·쓰기, 조각모음, 역사 강의서, 퍼즐상자, 프로필, 문의가
   데이터와 함께 뜨고 쓰기가 된다. 다채로운 철학자들은 지금처럼 Worker가 Supabase에서 읽어, Supabase가 멈추면
-  "응답 없음"이다(tasks/010 #75). `*.supabase.co` 요청 0, `securitypolicyviolation` 0, `/api` 409 0, "데이터베이스가
+  "응답 없음"이다(tasks/010 #75). 네비의 새 글 점과 배달부도 지금처럼 Worker가 Supabase에서 갱신해, Supabase가
+  멈추면 마지막 스냅샷에 머문다(tasks/010 #76). `*.supabase.co` 요청 0, `securitypolicyviolation` 0, `/api` 409 0, "데이터베이스가
   응답하지 않습니다" 없음. 기존 supabase-js 세션이 있는 브라우저는 같은 uid로 claim한다(만료된 토큰은 Worker가 refresh).
   Worker가 409 `surface_legacy`를 주거나 표식 헤더가 없으면 legacy로 가지 않고 "데이터베이스가 응답하지 않습니다"를
   보인다. 셸 패치 `/patches/2026-11-12`, `/patches/2026-09-11`(14개 언어)의 변형 릴 15개 순서와 철학자 카드가 사이트
