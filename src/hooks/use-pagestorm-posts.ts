@@ -1,12 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
+import { dataEnv } from "@/lib/data-env";
 import {
   PAGESTORM_BODY_MAX_CHARS,
   PAGESTORM_BODY_MIN_CHARS,
-  PAGESTORM_DRAFT_TABLE,
-  PAGESTORM_TABLE,
   PAGESTORM_TITLE_MAX_CHARS,
   PAGESTORM_TITLE_MIN_CHARS,
   isPagestormDoc,
@@ -16,8 +14,6 @@ import {
   type PagestormPost,
   type PagestormPostCard,
 } from "@/lib/pagestorm";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   apiCreatePagestormDraft,
   apiCreateToyboxPost,
@@ -29,7 +25,6 @@ import {
   apiToyboxPost,
   apiUpdatePagestormDraft,
   apiUpdateToyboxPost,
-  toyboxViaApi,
   toyboxWriteError,
 } from "@/lib/toybox-api";
 import { currentAuthorProfileToken } from "@/lib/user-profile";
@@ -48,7 +43,6 @@ function isValidSave(input: SavePagestormPostInput): boolean {
   const contentText = input.contentText.trim();
   return (
     Boolean(input.activeUserId)
-    && supabaseEnabled
     && isPagestormDoc(input.content)
     && nickname.length >= 1
     && nickname.length <= 20
@@ -65,48 +59,23 @@ export async function insertPagestormPost(
   if (!isValidSave(input)) return null;
 
   const authorToken = currentAuthorProfileToken();
-  if (toyboxViaApi()) {
-    try {
-      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, passed through to PostgREST.
-      return normalizePagestormPost(await apiCreateToyboxPost("pagestorm", {
-        user_id: input.activeUserId,
-        nickname: input.nickname.trim(),
-        title: input.title.trim(),
-        content: input.content,
-        content_text: input.contentText.trim(),
-        env: supabaseEnv,
-        avatar_id: authorToken.avatar_id,
-        avatar_kind: authorToken.avatar_kind,
-        palette_id: authorToken.palette_id,
-        palette_swapped: authorToken.palette_swapped,
-      }));
-    } catch (error) {
-      // Only a write that certainly did nothing is sent again on the legacy path.
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  try {
+    // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, through the Worker.
+    return normalizePagestormPost(await apiCreateToyboxPost("pagestorm", {
+      user_id: input.activeUserId,
+      nickname: input.nickname.trim(),
+      title: input.title.trim(),
+      content: input.content,
+      content_text: input.contentText.trim(),
+      env: dataEnv,
+      avatar_id: authorToken.avatar_id,
+      avatar_kind: authorToken.avatar_kind,
+      palette_id: authorToken.palette_id,
+      palette_swapped: authorToken.palette_swapped,
+    }));
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { data, error } = await withSupabaseTimeout(
-    "pagestorm_posts.insert",
-    supabase
-      .from(PAGESTORM_TABLE)
-      .insert({
-        user_id: input.activeUserId,
-        nickname: input.nickname.trim(),
-        title: input.title.trim(),
-        content: input.content,
-        content_text: input.contentText.trim(),
-        env: supabaseEnv,
-        avatar_id: authorToken.avatar_id,
-        avatar_kind: authorToken.avatar_kind,
-        palette_id: authorToken.palette_id,
-        palette_swapped: authorToken.palette_swapped,
-      })
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  if (!data) return null;
-  return normalizePagestormPost(data);
 }
 
 export async function updatePagestormPost(
@@ -116,48 +85,23 @@ export async function updatePagestormPost(
   if (!isValidSave(input)) return null;
 
   const authorToken = currentAuthorProfileToken();
-  if (toyboxViaApi()) {
-    try {
-      const row = await apiUpdateToyboxPost("pagestorm", postId, {
-        nickname: input.nickname.trim(),
-        title: input.title.trim(),
-        content: input.content,
-        content_text: input.contentText.trim(),
-        avatar_id: authorToken.avatar_id,
-        avatar_kind: authorToken.avatar_kind,
-        palette_id: authorToken.palette_id,
-        palette_swapped: authorToken.palette_swapped,
-      });
-      // `.single()` fails when no row matched.
-      if (!row) throw new Error("pagestorm post not updated");
-      return normalizePagestormPost(row);
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  try {
+    const row = await apiUpdateToyboxPost("pagestorm", postId, {
+      nickname: input.nickname.trim(),
+      title: input.title.trim(),
+      content: input.content,
+      content_text: input.contentText.trim(),
+      avatar_id: authorToken.avatar_id,
+      avatar_kind: authorToken.avatar_kind,
+      palette_id: authorToken.palette_id,
+      palette_swapped: authorToken.palette_swapped,
+    });
+    // No row matched (not ours or gone): a failure, as the legacy `.single()` was.
+    if (!row) throw new Error("pagestorm post not updated");
+    return normalizePagestormPost(row);
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { data, error } = await withSupabaseTimeout(
-    "pagestorm_posts.update",
-    supabase
-      .from(PAGESTORM_TABLE)
-      .update({
-        nickname: input.nickname.trim(),
-        title: input.title.trim(),
-        content: input.content,
-        content_text: input.contentText.trim(),
-        avatar_id: authorToken.avatar_id,
-        avatar_kind: authorToken.avatar_kind,
-        palette_id: authorToken.palette_id,
-        palette_swapped: authorToken.palette_swapped,
-      })
-      .eq("id", postId)
-      .eq("user_id", input.activeUserId)
-      .eq("env", supabaseEnv)
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  if (!data) return null;
-  return normalizePagestormPost(data);
 }
 
 function draftRow(input: SavePagestormPostInput) {
@@ -168,7 +112,7 @@ function draftRow(input: SavePagestormPostInput) {
     title: input.title.trim(),
     content: input.content,
     content_text: input.contentText.trim(),
-    env: supabaseEnv,
+    env: dataEnv,
     updated_at: new Date().toISOString(),
     avatar_id: authorToken.avatar_id,
     avatar_kind: authorToken.avatar_kind,
@@ -181,24 +125,11 @@ export async function insertPagestormDraft(
   input: SavePagestormPostInput,
 ): Promise<PagestormPost | null> {
   if (!isValidSave(input)) return null;
-  if (toyboxViaApi()) {
-    try {
-      return normalizePagestormPost(await apiCreatePagestormDraft(draftRow(input)));
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  try {
+    return normalizePagestormPost(await apiCreatePagestormDraft(draftRow(input)));
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { data, error } = await withSupabaseTimeout(
-    "pagestorm_drafts.insert",
-    supabase
-      .from(PAGESTORM_DRAFT_TABLE)
-      .insert(draftRow(input))
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  if (!data) return null;
-  return normalizePagestormPost(data);
 }
 
 export async function updatePagestormDraft(
@@ -206,53 +137,24 @@ export async function updatePagestormDraft(
   input: SavePagestormPostInput,
 ): Promise<PagestormPost | null> {
   if (!isValidSave(input)) return null;
-  if (toyboxViaApi()) {
-    try {
-      const row = await apiUpdatePagestormDraft(draftId, draftRow(input));
-      if (!row) throw new Error("pagestorm draft not updated");
-      return normalizePagestormPost(row);
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  try {
+    const row = await apiUpdatePagestormDraft(draftId, draftRow(input));
+    if (!row) throw new Error("pagestorm draft not updated");
+    return normalizePagestormPost(row);
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { data, error } = await withSupabaseTimeout(
-    "pagestorm_drafts.update",
-    supabase
-      .from(PAGESTORM_DRAFT_TABLE)
-      .update(draftRow(input))
-      .eq("id", draftId)
-      .eq("user_id", input.activeUserId)
-      .eq("env", supabaseEnv)
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  if (!data) return null;
-  return normalizePagestormPost(data);
 }
 
 export async function deletePagestormDraft(draftId: string, userId: string): Promise<boolean> {
-  if (!supabaseEnabled || !userId) return false;
-  if (toyboxViaApi()) {
-    try {
-      // True whether or not a row matched, like the legacy delete.
-      await apiDeletePagestormDraft(draftId);
-      return true;
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  if (!userId) return false;
+  try {
+    // True whether or not a row matched, like the legacy delete.
+    await apiDeletePagestormDraft(draftId);
+    return true;
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { error } = await withSupabaseTimeout(
-    "pagestorm_drafts.delete",
-    supabase
-      .from(PAGESTORM_DRAFT_TABLE)
-      .delete()
-      .eq("id", draftId)
-      .eq("user_id", userId)
-      .eq("env", supabaseEnv),
-  );
-  if (error) throw error;
-  return true;
 }
 
 export function usePagestormDraft(draftId: string | null) {
@@ -260,7 +162,7 @@ export function usePagestormDraft(draftId: string | null) {
   const [loadedId, setLoadedId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!draftId || !supabaseEnabled) return;
+    if (!draftId) return;
     let cancelled = false;
     const show = (data: unknown) => {
       if (cancelled) return;
@@ -272,33 +174,7 @@ export function usePagestormDraft(draftId: string | null) {
       setDraft(null);
       setLoadedId(draftId);
     };
-    const loadLegacy = () => {
-      withSupabaseTimeout(
-        "pagestorm_drafts.detail",
-        supabase
-          .from(PAGESTORM_DRAFT_TABLE)
-          .select("*")
-          .eq("id", draftId)
-          .eq("env", supabaseEnv)
-          .maybeSingle(),
-      )
-        .then(({ data, error }) => {
-          if (error) throw error;
-          show(data);
-        })
-        .catch(fail);
-    };
-    if (toyboxViaApi()) {
-      apiMyPagestormDraft(draftId)
-        .then(show)
-        .catch((error) => {
-          if (cancelled) return;
-          if (shouldUseLegacy(error)) loadLegacy();
-          else fail();
-        });
-    } else {
-      loadLegacy();
-    }
+    apiMyPagestormDraft(draftId).then(show).catch(fail);
     return () => {
       cancelled = true;
     };
@@ -306,7 +182,7 @@ export function usePagestormDraft(draftId: string | null) {
 
   return {
     draft: draftId && loadedId === draftId ? draft : null,
-    loading: Boolean(draftId) && loadedId !== draftId && supabaseEnabled,
+    loading: Boolean(draftId) && loadedId !== draftId,
   };
 }
 
@@ -314,7 +190,7 @@ export function usePagestormDrafts(userId: string | null) {
   const [drafts, setDrafts] = useState<{ userId: string; posts: PagestormPostCard[] } | null>(null);
 
   useEffect(() => {
-    if (!userId || !supabaseEnabled) return;
+    if (!userId) return;
     let cancelled = false;
     const show = (rows: unknown[]) => {
       if (cancelled) return;
@@ -326,34 +202,7 @@ export function usePagestormDrafts(userId: string | null) {
     const fail = () => {
       if (!cancelled) setDrafts({ userId, posts: [] });
     };
-    const loadLegacy = () => {
-      withSupabaseTimeout(
-        "pagestorm_drafts.list",
-        supabase
-          .from(PAGESTORM_DRAFT_TABLE)
-          .select("id, user_id, nickname, title, content, content_text, env, created_at, avatar_id, avatar_kind, palette_id, palette_swapped")
-          .eq("env", supabaseEnv)
-          .eq("user_id", userId)
-          .order("updated_at", { ascending: false })
-          .limit(20),
-      )
-        .then(({ data, error }) => {
-          if (error) throw error;
-          show(data ?? []);
-        })
-        .catch(fail);
-    };
-    if (toyboxViaApi()) {
-      apiMyPagestormDrafts()
-        .then(show)
-        .catch((error) => {
-          if (cancelled) return;
-          if (shouldUseLegacy(error)) loadLegacy();
-          else fail();
-        });
-    } else {
-      loadLegacy();
-    }
+    apiMyPagestormDrafts().then(show).catch(fail);
     return () => {
       cancelled = true;
     };
@@ -364,11 +213,10 @@ export function usePagestormDrafts(userId: string | null) {
 
 export function usePagestormPosts() {
   const [posts, setPosts] = useState<PagestormPostCard[]>([]);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
     const show = (rows: unknown[]) => {
       if (cancelled) return;
@@ -381,34 +229,7 @@ export function usePagestormPosts() {
       setUnavailable(true);
       setLoading(false);
     };
-    const loadLegacy = () => {
-      withSupabaseTimeout(
-        "pagestorm_posts.list",
-        supabase
-          .from(PAGESTORM_TABLE)
-          .select("id, user_id, nickname, title, content, content_text, env, created_at, avatar_id, avatar_kind, palette_id, palette_swapped")
-          .eq("env", supabaseEnv)
-          .order("created_at", { ascending: false })
-          .limit(50),
-      )
-        .then(({ data, error }) => {
-          if (error) throw error;
-          show(data ?? []);
-        })
-        .catch(fail);
-    };
-
-    if (toyboxViaApi()) {
-      apiPagestormPosts()
-        .then(show)
-        .catch((error) => {
-          if (cancelled) return;
-          if (shouldUseLegacy(error)) loadLegacy();
-          else fail();
-        });
-    } else {
-      loadLegacy();
-    }
+    apiPagestormPosts().then(show).catch(fail);
 
     return () => {
       cancelled = true;
@@ -420,11 +241,10 @@ export function usePagestormPosts() {
 
 export function usePagestormPost(postId: string, userId: string | null = null) {
   const [post, setPost] = useState<PagestormPost | null>(null);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
     const show = (data: unknown) => {
       if (cancelled) return;
@@ -437,34 +257,7 @@ export function usePagestormPost(postId: string, userId: string | null = null) {
       setUnavailable(true);
       setLoading(false);
     };
-    const loadLegacy = () => {
-      withSupabaseTimeout(
-        "pagestorm_posts.detail",
-        supabase
-          .from(PAGESTORM_TABLE)
-          .select("*")
-          .eq("id", postId)
-          .eq("env", supabaseEnv)
-          .maybeSingle(),
-      )
-        .then(({ data, error }) => {
-          if (error) throw error;
-          show(data);
-        })
-        .catch(fail);
-    };
-
-    if (toyboxViaApi()) {
-      apiToyboxPost("pagestorm", postId)
-        .then(show)
-        .catch((error) => {
-          if (cancelled) return;
-          if (shouldUseLegacy(error)) loadLegacy();
-          else fail();
-        });
-    } else {
-      loadLegacy();
-    }
+    apiToyboxPost("pagestorm", postId).then(show).catch(fail);
 
     return () => {
       cancelled = true;
@@ -478,30 +271,11 @@ export function usePagestormPost(postId: string, userId: string | null = null) {
   }, [postId]);
 
   const remove = useCallback(async () => {
-    if (!userId || !supabaseEnabled) return false;
-    if (toyboxViaApi()) {
-      try {
-        // True whether or not a row matched, like the legacy delete.
-        await apiDeleteToyboxPost("pagestorm", postId);
-        setPost(null);
-        return true;
-      } catch (error) {
-        if (!writeMayGoLegacy(error)) {
-          setUnavailable(true);
-          return false;
-        }
-      }
-    }
-    const { error } = await withSupabaseTimeout(
-      "pagestorm_posts.detail.delete",
-      supabase
-        .from(PAGESTORM_TABLE)
-        .delete()
-        .eq("id", postId)
-        .eq("user_id", userId)
-        .eq("env", supabaseEnv),
-    ).catch(() => ({ error: new Error("timeout") }));
-    if (error) {
+    if (!userId) return false;
+    try {
+      // True whether or not a row matched, like the legacy delete.
+      await apiDeleteToyboxPost("pagestorm", postId);
+    } catch {
       setUnavailable(true);
       return false;
     }
