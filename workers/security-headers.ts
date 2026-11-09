@@ -16,9 +16,9 @@ const CONTENT_SECURITY_POLICY = [
   // Link previews show og:image from any https host.
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  // The Workers have no env vars, so Supabase cannot name the project host.
   // The editors ask YouTube oEmbed for pasted video titles from the browser.
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cloudflareinsights.com https://www.youtube.com",
+  // Step 6: the browser calls only the same-origin /api, never Supabase.
+  "connect-src 'self' https://cloudflareinsights.com https://www.youtube.com",
   "frame-src 'self' https://www.youtube-nocookie.com",
   "media-src 'self' blob:",
   "worker-src 'self' blob:",

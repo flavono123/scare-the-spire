@@ -52,7 +52,16 @@ function fakeAssets(respond: (pathname: string) => Response) {
 const html = () => new Response("<html></html>", { headers: { "content-type": "text/html" } });
 const missing = () => new Response(null, { status: 404 });
 
+/** Step 6 (docs/supabase-exit/STEP6_PLAN.md 1.2): the browser connects to no Supabase host. */
+function assertConnectSources() {
+  const policy = SECURITY_HEADERS["Content-Security-Policy-Report-Only"];
+  const connect = policy.split("; ").find((directive) => directive.startsWith("connect-src "));
+  assert.equal(connect, "connect-src 'self' https://cloudflareinsights.com https://www.youtube.com");
+  assert.doesNotMatch(policy, /supabase/i, "no Supabase host in the policy");
+}
+
 async function main() {
+  assertConnectSources();
   assertHeadersFile(PUBLIC_HEADERS_FILE);
   for (const directory of process.argv.slice(2)) {
     assertHeadersFile(path.join(directory, "_headers"));
