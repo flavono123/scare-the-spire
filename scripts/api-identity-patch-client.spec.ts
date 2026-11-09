@@ -230,13 +230,38 @@ async function main() {
     assert.deepEqual(JSON.parse(store.get(AUTH_KEY) ?? "{}"), session, "the new session takes the existing key");
     assert.equal(urls(sent).filter((url) => url === "/api/auth/claim").length, 2, "{} is sent once");
   }
-  // Another refusal (or an outage) is not retried with {}.
-  for (const answer of [() => marked({ error: "invalid" }, 400), () => marked({ error: "auth_unavailable" }, 503)]) {
+  // Another refusal (or an outage) is not retried with {}; invalid resends the access token alone once.
+  for (const [answer, bodies] of [
+    [() => marked({ error: "invalid" }, 400), [{ access_token: jwt(USER), refresh_token: "refresh-1" }, { access_token: jwt(USER) }]],
+    [() => marked({ error: "auth_unavailable" }, 503), [{ access_token: jwt(USER), refresh_token: "refresh-1" }]],
+  ] as const) {
     const { client, store, sent, state } = load();
     store.set(AUTH_KEY, storedSession(USER));
     state.respond = answer;
     await assert.rejects(() => client.apiWriteAsUser("/api/write/comments", { method: "POST", body: {} }));
-    assert.deepEqual(urls(sent), ["/api/auth/claim"]);
+    assert.deepEqual(urls(sent), bodies.map(() => "/api/auth/claim"));
+    assert.deepEqual(sent.map((request) => request.body), bodies);
+  }
+
+  // A main Worker before WP-A (CI deploys the patch Worker first) refuses refresh_token as 400 invalid:
+  // the access token alone is resent once, and its token_invalid still claims {} once.
+  for (const [label, accessAlone, expected] of [
+    ["claimed", () => marked({ v: 1, uid: USER, created: false, session: null }), [{ access_token: jwt(USER), refresh_token: "refresh-1" }, { access_token: jwt(USER) }]],
+    ["refused", () => marked({ error: "token_invalid" }, 401), [{ access_token: jwt(USER), refresh_token: "refresh-1" }, { access_token: jwt(USER) }, {}]],
+  ] as const) {
+    const { client, store, sent, state } = load();
+    store.set(AUTH_KEY, storedSession(USER, { expired: true }));
+    state.respond = (request) => {
+      if (request.url !== "/api/auth/claim") return marked({ ok: 4 });
+      const keys = Object.keys(request.body as Record<string, unknown>);
+      if (keys.some((key) => key !== "access_token")) return marked({ error: "invalid" }, 400);
+      return keys.length ? accessAlone() : marked({ v: 1, uid: USER, created: false, session: null });
+    };
+    const write = await client.apiWriteAsUser("/api/write/comments", { method: "POST", body: {} });
+    assert.deepEqual(write.result, { ok: 4 }, `${label}: the write goes through`);
+    assert.deepEqual(sent.filter((request) => request.url === "/api/auth/claim").map((request) => request.body), expected, label);
+    assert.equal(write.session.user?.id, USER, `${label}: the same uid`);
+    noBearer(sent, `old main Worker, ${label}`);
   }
 
   // identity_required claims again and sends once more.

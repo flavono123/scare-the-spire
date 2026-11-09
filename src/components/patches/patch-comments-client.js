@@ -1184,6 +1184,21 @@
   }
 
   /**
+   * Claim with the stored session's tokens. A main Worker before the WP-A refresh path refuses a
+   * body with any key but `access_token` as 400 `invalid` (CI deploys this patch Worker first), so
+   * a refused body with `refresh_token` is resent once with the access token alone.
+   */
+  async function claimWithSession(stored) {
+    const body = claimBody(stored);
+    try {
+      return await claimIdentity(body);
+    } catch (error) {
+      if (!body.refresh_token || error.code !== "invalid") throw error;
+      return claimIdentity({ access_token: body.access_token });
+    }
+  }
+
+  /**
    * The claimed uid. Claims with the stored Supabase session (its access token, expired is fine,
    * and its refresh token, which the Worker uses only when the access token is refused) when this
    * browser has not claimed it yet, or when `force` (the cookie is gone). With no stored session it
@@ -1201,7 +1216,7 @@
     if (!force && marker && (!storedUid || storedUid === marker)) return marker;
     let claimed;
     try {
-      claimed = await claimIdentity(claimBody(stored));
+      claimed = await claimWithSession(stored);
     } catch (error) {
       if (!signUp || !stored?.access_token || error.code !== "token_invalid") throw error;
       claimed = await claimIdentity({});
