@@ -209,6 +209,12 @@ function checkWranglerConfig() {
   assert.equal(testbed.database_name, "slseoun-testbed");
   assert.equal(config.vars?.API_RUNTIME_FLAGS, "d1", "production reads runtime_flags since step 2");
   assert.deepEqual(config.assets?.run_worker_first, ["/api/*"]);
+  // Step 4 defaults (2026-11-09): every path.<group> is api and every write.<group> row is set,
+  // so these only decide a failed flag read (STEP4_WRITE_GATE.md 7, 8).
+  for (const vars of [config.vars, config.env?.testbed?.vars]) {
+    assert.equal(vars?.API_PATH_DEFAULT, "api", "API_PATH_DEFAULT is api in both envs");
+    assert.equal(vars?.API_WRITE_MODE_DEFAULT, "worker", "API_WRITE_MODE_DEFAULT is worker in both envs");
+  }
   for (const key of ["API_SUPABASE_URL", "API_SUPABASE_KEY", "API_DATA_ENV"]) {
     assert.equal(config.vars?.[key], undefined, `${key} comes from --var, not the repo`);
     assert.equal(config.env?.testbed?.vars?.[key], undefined, `${key} comes from --var, not the repo`);
@@ -337,6 +343,77 @@ async function main() {
     assert.equal(slow.status, 409);
     assert.ok(Date.now() - started < 1150, "flag wait capped near 1 s");
     db.delayMs = 0;
+    globalThis.fetch = realFetch;
+  }
+
+  // --- API_PATH_DEFAULT: the env default of a missing row or a failed read (plan 7.2) ---
+  {
+    const supabase = stubSupabase(healthySupabase);
+    const db = new FakeD1();
+    const api = { API_PATH_DEFAULT: "api" };
+    resetAll();
+    assert.equal((await nav(db, new Ctx(), {}, api)).status, 200, "no row: the default");
+    resetAll();
+    db.flags.set("path.nav", "legacy");
+    assert.deepEqual(await (await nav(db, new Ctx(), {}, api)).json(), { error: "surface_legacy", reason: "flag" }, "an explicit legacy row wins");
+    resetAll();
+    db.flags.set("path.nav", "API");
+    assert.equal((await nav(db, new Ctx(), {}, api)).status, 200, "an unknown value takes the default");
+    resetAll();
+    db.flags.set("path.nav", "legacy");
+    db.failing = true;
+    // The handler runs (nav's own snapshot is on D1 too, so it answers 503 unavailable, not legacy).
+    const down = await nav(db, new Ctx(), {}, api);
+    assert.deepEqual([down.status, await down.json()], [503, { error: "unavailable" }], "D1 down: the default, not legacy");
+    const backoff = await nav(db, new Ctx(), {}, api);
+    assert.deepEqual([backoff.status, await backoff.json()], [503, { error: "unavailable" }], "the failure backoff keeps the default");
+    db.failing = false;
+    resetAll();
+    db.delayMs = 1200;
+    // The slow D1 also holds nav's own snapshot read; what matters is that the router did not say legacy.
+    assert.notEqual((await nav(db, new Ctx(), {}, api)).status, 409, "a read past 1 s takes the default");
+    db.delayMs = 0;
+    for (const [label, extra, reason] of [
+      ["kill switch", { API_RUNTIME_FLAGS: "off" }, "off"],
+      ["bad config", { API_SUPABASE_KEY: "sb_secret_x" }, "not_configured"],
+    ] as const) {
+      resetAll();
+      db.failing = true;
+      const response = await nav(db, new Ctx(), {}, { ...api, ...extra });
+      assert.deepEqual(await response.json(), { error: "surface_legacy", reason }, `${label} wins over the default`);
+      db.failing = false;
+    }
+    resetAll();
+    const qa = await nav(db, new Ctx(), { headers: { cookie: "slseoun_qa=no-supabase" } }, api);
+    assert.deepEqual(await qa.json(), { error: "surface_legacy", reason: "qa" }, "QA no-supabase wins over the default");
+    for (const value of [undefined, "", "legacy", "API", "1"]) {
+      resetAll();
+      db.flags.clear();
+      db.failing = true;
+      const response = await nav(db, new Ctx(), {}, { API_PATH_DEFAULT: value });
+      assert.deepEqual(await response.json(), { error: "surface_legacy", reason: "flag" }, `API_PATH_DEFAULT=${value}: legacy as today`);
+      db.failing = false;
+    }
+
+    // Pages: a cold or failing isolate says api instead of leaving a cookie-less browser on legacy.
+    resetAll();
+    const pageDb = new FakeD1();
+    pageDb.flags.set("path.nav", "legacy");
+    const ctx = new Ctx();
+    const routed = new Set(["nav"] as const);
+    assert.deepEqual(pageFlags(env(pageDb, api) as never, ctx, routed), new Set(["nav"]), "cold isolate: the default");
+    await ctx.drain();
+    assert.deepEqual(pageFlags(env(pageDb, api) as never, ctx, routed), new Set(), "a read row wins");
+    resetAll();
+    const cold = await mainWorker.fetch(get("/compendium/cards"), env(new FakeD1(), api) as never, new Ctx());
+    assert.equal(
+      cold.headers.get("set-cookie"),
+      "slseoun_rf=v1.colorful-philosophers.comments.contact.history-runs.nav.profile.puzzlebox.stories.toybox-feed; Path=/; Max-Age=86400; SameSite=Lax; Secure",
+      "cold page sets every routed group to the default",
+    );
+    resetAll();
+    assert.equal(pageFlags(env(pageDb) as never, new Ctx(), routed), null, "unset: unknown stays unknown");
+    assert.ok(supabase.calls.length > 0);
     globalThis.fetch = realFetch;
   }
 

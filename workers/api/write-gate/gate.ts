@@ -189,6 +189,11 @@ export function createWriteGate(options: WriteGateOptions): WriteGateHook {
   };
 }
 
+/** True when this write runs in worker mode (the router gave the handler the gate). */
+export function isWorkerWrite(context: { config: SupabaseApiConfig }): boolean {
+  return context.config.writeGate !== undefined;
+}
+
 /** The handler config for a worker-mode write: the same project, with the gate in front of user calls. */
 export function withWriteGate(config: SupabaseApiConfig, gate: WriteGateHook): SupabaseApiConfig {
   return { ...config, writeGate: gate };

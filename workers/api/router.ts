@@ -3,7 +3,16 @@ import { redactPathname } from "../path-redaction";
 import type { D1Database, D1PreparedStatement } from "./d1";
 import { d1WriteHook } from "./d1-write";
 import { qaOverride } from "./flag-cookie";
-import { apiFlags, flagsDisabledReason, type ExecutionContextLike, type FlagsEnv, type ShadowRates } from "./flags";
+import {
+  apiFlags,
+  flagsDisabledReason,
+  readStoreFor,
+  rememberedFlagValues,
+  type ExecutionContextLike,
+  type FlagsEnv,
+  type ReadStore,
+  type ShadowRates,
+} from "./flags";
 import {
   API_MARKER_HEADER,
   apiError,
@@ -20,12 +29,16 @@ import type { VerifiedSupabaseUser } from "./jwt";
 import { clientIp, withinRateLimit, type RateLimitEnv, type RateLimitKind } from "./rate-limit";
 import { supabaseApiConfig, type SupabaseApiConfig } from "./supabase-rest";
 import { workerWriteContext, writeActor, type WriteGateEnv } from "./write-gate/gate";
+import { withPathDefault } from "./path-default";
+import { meReadContext } from "./write-gate/me-read";
 
 /**
  * The same-origin API router (docs/supabase-exit/STEP1_DESIGN.md 4). It owns
  * /api/read/, /api/me/ and /api/write/; everything else under /api keeps its
  * current handler. Order of checks: route, method, cross-site, query, kill
- * switch, QA, flag, token, rate limit, body, handler.
+ * switch, QA, flag, token, rate limit, body, handler. A GET whose group reads
+ * from D1 (step 3, flags.ts readStoreFor) is answered by `d1Read` in place of
+ * the handler, after the same checks.
  */
 
 export type ApiEnv = FlagsEnv & RateLimitEnv & IdentityEnv & WriteGateEnv;
@@ -190,9 +203,20 @@ export type RouteResponseEvent = {
   rerun(ctx: ExecutionContextLike): Promise<Response>;
 };
 
+/** A GET (never HEAD) of a group that reads from D1, handed to `ApiRouterOptions.d1Read`. */
+export type D1ReadEvent = {
+  route: ApiRoute;
+  context: PublicRouteContext | UserRouteContext;
+  store: Exclude<ReadStore, "supabase">;
+  /** The route's own (Supabase) handler for this request: the fallback while Supabase is the source. */
+  supabase(): Promise<Response>;
+};
+
 export type ApiRouterOptions = {
   /** Returns the response to send; a throw keeps the handler's response (step 2 shadow reads). */
   onResponse?: (event: RouteResponseEvent) => Response;
+  /** Step 3: answers a GET of a group whose read store is D1 (workers/api/d1-read.ts). */
+  d1Read?: (event: D1ReadEvent) => Promise<Response>;
 };
 
 export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterOptions = {}) {
@@ -228,18 +252,23 @@ export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterO
 
     let prefetched: unknown[][] | null = null;
     let shadow: ShadowRates | null = null;
+    // The QA override reads no flags: the read store is this isolate's last read, else supabase.
+    let flagValues: ReadonlyMap<string, string> = new Map();
     if (qa.forcedGroups) {
       if (!qa.forcedGroups.has(route.group)) return legacy("flag");
+      flagValues = rememberedFlagValues() ?? flagValues;
     } else {
-      const decision = await apiFlags(
+      // A failed read takes API_PATH_DEFAULT (plan 7.2).
+      const decision = withPathDefault(env, routedGroups, await apiFlags(
         env,
         ctx,
         routedGroups,
         route.access === "public" && route.prefetch ? route.prefetch : undefined,
-      );
+      ));
       if (!decision.ok) return legacy(decision.reason === "unknown" ? "flag" : decision.reason);
       if (!decision.groups.has(route.group)) return legacy("flag");
       shadow = decision.shadow;
+      flagValues = decision.values;
       prefetched = route.access === "public" && route.prefetch ? decision.prefetched as unknown[][] : null;
       if (prefetched && prefetched.length === 0) prefetched = null;
     }
@@ -257,13 +286,19 @@ export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterO
       db: env.DB ?? null,
     };
 
+    // Step 3: GET (not HEAD, which answers from caches only) of a group that reads from D1.
+    const readStore: ReadStore = !isHead && method === "GET" && options.d1Read ? readStoreFor(flagValues, route.group) : "supabase";
+    const answer = (context: PublicRouteContext | UserRouteContext, own: () => Promise<Response>): Promise<Response> => (
+      readStore !== "supabase" && options.d1Read ? options.d1Read({ route, context, store: readStore, supabase: own }) : own()
+    );
+
     let response: Response;
     let handlerContext: PublicRouteContext | UserRouteContext = base;
     if (route.access === "public") {
       if (route.rateLimit === "ip" && !(await withinRateLimit(env, "ip", clientIp(request)))) {
         return error("rate_limited");
       }
-      response = await route.handle(base);
+      response = await answer(base, () => route.handle(base));
     } else {
       // Step 4 identity (identity/resolve.ts); token mode is the step 1 bearer check.
       const resolved = await resolveRequestIdentity(request, env, ctx, config, routedGroups, qa.noSupabase, url);
@@ -295,15 +330,20 @@ export function createApiRouter(routes: readonly ApiRoute[], options: ApiRouterO
         bodyStream = request.body;
       }
       // Step 4: write.<group> = worker checks the write in the Worker and sends it with the service key,
-      // owned by the identity resolved above (write-gate/gate.ts writeActor).
-      const gated = route.access === "write" ? await workerWriteContext(env, ctx, route.group, config, writeActor(user)) : null;
+      // owned by the identity resolved above (write-gate/gate.ts writeActor). A personal read of a
+      // cookie-only identity (no Supabase token) goes out the same way, limited like RLS (write-gate/me-read.ts).
+      const gated = route.access === "write"
+        ? await workerWriteContext(env, ctx, route.group, config, writeActor(user))
+        : token === null ? meReadContext(env, config, writeActor(user)) : null;
       handlerContext = { ...base, user, token: token ?? "", identitySource: source, body, bodyStream, ...gated };
       const userContext = handlerContext as UserRouteContext;
       // Step 5: the write gate (pause, D1 source); null keeps the route's own handler.
-      response = (route.access === "write" ? await d1WriteHook(route, userContext) : null) ?? await route.handle(userContext);
+      response = (route.access === "write" ? await d1WriteHook(route, userContext) : null)
+        ?? await answer(userContext, () => route.handle(userContext));
       response = withSetCookies(response, resolved.setCookies);
     }
-    if (!isHead && method === "GET" && options.onResponse) {
+    // A D1 answer is never shadow-compared (nor its fallback: D1 just failed).
+    if (!isHead && method === "GET" && options.onResponse && readStore === "supabase") {
       const seen = handlerContext;
       const handle = route.handle as (context: PublicRouteContext | UserRouteContext) => Promise<Response>;
       try {

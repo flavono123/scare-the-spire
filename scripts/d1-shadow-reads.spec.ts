@@ -16,9 +16,10 @@ import { readFileSync } from "node:fs";
 import { pathFlagKey, shadowFlagKey, type ApiSurfaceGroup } from "../src/lib/api-surfaces";
 import { RUN_SUMMARY_COLUMNS } from "../src/lib/history-runs-api-rules";
 import { D1_ADAPTERS } from "../workers/api/d1-adapters";
+import { historyRunsAdapter } from "../workers/api/d1-adapters/history-runs";
 import { md5Hex } from "../workers/api/d1-adapters/md5";
 import * as Q from "../workers/api/d1-adapters/queries";
-import { answerText, materialize, RawJson } from "../workers/api/d1-adapters/rows";
+import { answerText, materialize, RawJson, type AdapterContext } from "../workers/api/d1-adapters/rows";
 import {
   DEAD_POST_COLUMNS,
   defragmentRunsSql,
@@ -359,6 +360,14 @@ async function main() {
     }
   }
 
+  await check("read.history-run.raw: the raw file is not compared on requests (the daily reconcile compares its hash)", async () => {
+    const { side, shadow, status } = await supabaseSideOf("read.history-run.raw", `id=${RUN1}`, null);
+    assert.equal(status, 200);
+    assert.deepEqual(side, { ok: false, reason: "raw_file" });
+    assert.deepEqual(await compareShadow(SHADOW_SPECS["read.history-run.raw"], shadow, side), { kind: "skipped", reason: "raw_file" });
+    caseResults.push(`read.history-run.raw?id=${RUN1}`);
+  });
+
   await check("every step-1 read route has a D1 adapter, shadow rules and at least one case", () => {
     const reads = API_ROUTES.filter((route) => route.method === "GET").map((route) => route.id).sort();
     assert.deepEqual(Object.keys(D1_ADAPTERS).sort(), reads);
@@ -370,7 +379,12 @@ async function main() {
     const listColumns = RUN_SUMMARY_COLUMNS.split(",").filter((name) => name !== "raw");
     const summary = ["characters", "badges", "game_mode", "game_elements", "list_facts", "summary_version"];
     for (const view of ["recent", "reference"]) {
-      const rows = await D1_ADAPTERS["read.history-runs"]({ db: d1, dataEnv: DEV, url: new URL(`https://x/?view=${view}`), userId: null, now: NOW }) as Record<string, unknown>[];
+      const context: AdapterContext = { db: d1, dataEnv: DEV, url: new URL(`https://x/?view=${view}`), userId: null, now: NOW };
+      const rows = await historyRunsAdapter(context) as Record<string, unknown>[];
+      // The served answer (R1j/R2j: each row's JSON text built in SQLite) parses to these rows, key order included.
+      const served = JSON.parse(answerText(await D1_ADAPTERS["read.history-runs"](context))) as Record<string, unknown>[];
+      assert.deepEqual(served, materialize(rows));
+      assert.deepEqual(served.map((row) => Object.keys(row)), rows.map((row) => Object.keys(row)));
       assert.ok(rows.length === 3);
       const keys = Object.keys(rows[0]);
       assert.deepEqual(keys.slice(0, listColumns.length), listColumns);
@@ -476,7 +490,7 @@ async function main() {
     const withBigSummary = {
       ...spec,
       d1: async (context: Parameters<NonNullable<typeof spec.d1>>[0]) => {
-        const rows = await D1_ADAPTERS["read.history-runs"](context) as Record<string, unknown>[];
+        const rows = await historyRunsAdapter(context) as Record<string, unknown>[];
         return rows.map((row) => ({ ...row, game_elements: huge, list_facts: notJson }));
       },
     };

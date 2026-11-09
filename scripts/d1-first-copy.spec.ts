@@ -223,6 +223,7 @@ async function main() {
   await check("migration scripts split into their statements; drop order is leaf-first", () => {
     const tables = stepTwoTables();
     assert.equal(tables.length, 39);
+    assert.ok(!tables.includes("api_verification_keys"), "a re-fill never drops the Worker-owned key list (0007)");
     const statements = stepTwoMigrations().flatMap((m) => splitSqlScript(m.text));
     assert.equal(statements.filter((s) => /^(?:--[^\n]*\n\s*)*CREATE TABLE/.test(s)).length, 39);
     assert.ok(statements.every((s) => !s.endsWith(";")));

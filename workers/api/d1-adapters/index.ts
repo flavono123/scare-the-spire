@@ -10,7 +10,13 @@ import {
   storiesAdapter,
 } from "./community";
 import { engagementAdapter, engagementCountsAdapter, engagementMeAdapter } from "./engagement";
-import { historyRunAdapter, historyRunsAdapter, historyRunsEngagementAdapter, myHistoryRunsAdapter } from "./history-runs";
+import {
+  historyRunAdapter,
+  historyRunRawAdapter,
+  historyRunsEngagementAdapter,
+  historyRunsTextAdapter,
+  myHistoryRunsAdapter,
+} from "./history-runs";
 import { navAdapter } from "./nav";
 import { leaderboardAdapter, standingsAdapter } from "./puzzlebox";
 import type { D1Adapter } from "./rows";
@@ -30,7 +36,10 @@ import {
   tournamentStatsAdapter,
 } from "./toybox";
 
-/** The D1 adapter of every step-1 read route, by route id (workers/api/routes). */
+/**
+ * The D1 adapter of every read route, by route id (workers/api/routes): step 2 shadow reads compare
+ * their answers, step 3 serves them (workers/api/d1-read.ts).
+ */
 export const D1_ADAPTERS: Readonly<Record<string, D1Adapter>> = {
   "read.nav": (context) => navAdapter(context),
   "read.engagement": engagementAdapter,
@@ -47,8 +56,9 @@ export const D1_ADAPTERS: Readonly<Record<string, D1Adapter>> = {
   "read.puzzlebox.leaderboard": leaderboardAdapter,
   "me.puzzlebox.leaderboard": leaderboardAdapter,
   "me.puzzlebox.standings": standingsAdapter,
-  "read.history-runs": historyRunsAdapter,
+  "read.history-runs": historyRunsTextAdapter,
   "read.history-run": historyRunAdapter,
+  "read.history-run.raw": historyRunRawAdapter,
   "read.history-runs.engagement": historyRunsEngagementAdapter,
   "me.history-runs": myHistoryRunsAdapter,
   "read.stories": storiesAdapter,

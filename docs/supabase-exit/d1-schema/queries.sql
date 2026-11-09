@@ -470,14 +470,47 @@ SELECT h.post_id AS id, h.seed, h.build, h."character", h.ascension, h.win, h.st
 FROM post_history_course h CROSS JOIN posts p ON p.service = h.service AND p.id = h.post_id
 ORDER BY h.start_time DESC, h.post_id DESC LIMIT 30;
 
+-- @ R1j R1 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) | expect=p:posts_service_created,h:PK,t:PK | allow= | params=[]
+SELECT
+  '{"id":' || json_quote(p.id) || ',"seed":' || json_quote(h.seed) || ',"build":' || json_quote(h.build)
+  || ',"character":' || json_quote(h."character") || ',"ascension":' || h.ascension
+  || ',"win":' || CASE h.win WHEN 1 THEN 'true' ELSE 'false' END
+  || ',"start_time":' || coalesce(h.start_time, 'null') || ',"run_time":' || coalesce(h.run_time, 'null')
+  || ',"acts_count":' || h.acts_count || ',"total_floors":' || h.total_floors
+  || ',"cover_spec":' || coalesce(h.cover_spec, 'null') || ',"donor_user_id":' || json_quote(p.user_id)
+  || ',"created_at":' || json_quote(rtrim(rtrim(substr(p.created_at, 1, 26), '0'), '.') || '+00:00')
+  || ',"characters":' || coalesce(h.characters, 'null') || ',"badges":' || h.badges
+  || ',"game_mode":' || json_quote(h.game_mode) || ',"game_elements":' || coalesce(h.game_elements, 'null')
+  || ',"list_facts":' || coalesce(h.list_facts, 'null') || ',"summary_version":' || h.summary_version
+  || ',"like_count":' || coalesce(t.like_count, 0) || ',"comment_count":' || coalesce(t.comment_count, 0) || '}' AS row
+FROM posts p CROSS JOIN post_history_course h ON h.service = p.service AND h.post_id = p.id
+LEFT JOIN threads t ON t.thread_key = 'history-course:' || p.id
+WHERE p.service = 'history_course' ORDER BY p.created_at DESC, p.id DESC LIMIT 100;
+
+-- @ R2j R2 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) | expect=h:post_history_course_start_time,p:PK | allow= | params=[]
+SELECT
+  '{"id":' || json_quote(h.post_id) || ',"seed":' || json_quote(h.seed) || ',"build":' || json_quote(h.build)
+  || ',"character":' || json_quote(h."character") || ',"ascension":' || h.ascension
+  || ',"win":' || CASE h.win WHEN 1 THEN 'true' ELSE 'false' END
+  || ',"start_time":' || coalesce(h.start_time, 'null') || ',"run_time":' || coalesce(h.run_time, 'null')
+  || ',"acts_count":' || h.acts_count || ',"total_floors":' || h.total_floors
+  || ',"cover_spec":' || coalesce(h.cover_spec, 'null') || ',"donor_user_id":' || json_quote(p.user_id)
+  || ',"created_at":' || json_quote(rtrim(rtrim(substr(p.created_at, 1, 26), '0'), '.') || '+00:00')
+  || ',"characters":' || coalesce(h.characters, 'null') || ',"badges":' || h.badges
+  || ',"game_mode":' || json_quote(h.game_mode) || ',"game_elements":' || coalesce(h.game_elements, 'null')
+  || ',"list_facts":' || coalesce(h.list_facts, 'null') || ',"summary_version":' || h.summary_version || '}' AS row
+FROM post_history_course h CROSS JOIN posts p ON p.service = h.service AND p.id = h.post_id
+ORDER BY h.start_time DESC, h.post_id DESC LIMIT 30;
+
 -- @ R3 run detail meta (RUN_DETAIL_COLUMNS without raw; the raw is R3r, returned as the response body) | expect=p:PK,h:PK | allow= | params=["r00000000000000f"]
 SELECT p.id, h.seed, h.build, h."character", h.ascension, h.win, h.start_time, h.run_time, h.acts_count,
        h.cover_spec, p.created_at
 FROM posts p JOIN post_history_course h ON h.service = p.service AND h.post_id = p.id
 WHERE p.service = 'history_course' AND p.id = ?1;
 
--- @ R4 cover view: combo thumbs re-pick a non-manual cover from list_facts as they do from the raw today; the editor's raw is R3r | expect=post_history_course:PK | allow= | params=["r00000000000000f"]
-SELECT post_id AS id, cover_spec, list_facts FROM post_history_course WHERE service = 'history_course' AND post_id = ?1;
+-- @ R4 cover view: combo thumbs re-pick a non-manual cover from list_facts and the phrase columns as they do from the raw today (summary_version 0: from R3r); the editor's raw is R3r | expect=post_history_course:PK | allow= | params=["r00000000000000f"]
+SELECT post_id AS id, cover_spec, list_facts, win, ascension, total_floors, summary_version
+FROM post_history_course WHERE service = 'history_course' AND post_id = ?1;
 
 -- @ R3r run raw for detail and cover editor (the stored text is the body, never wrapped in JSON) | expect=post_history_course_file:PK | allow= | params=["r00000000000000f"]
 SELECT raw FROM post_history_course_file WHERE service = 'history_course' AND post_id = ?1;
@@ -724,3 +757,26 @@ ON CONFLICT (week_start, slot) DO UPDATE SET resource_type = excluded.resource_t
   name_ko = excluded.name_ko, name_en = excluded.name_en, image_url = excluded.image_url, body = excluded.body,
   game_version = excluded.game_version
 RETURNING id, week_start, slot;
+
+-- =============================================================================== verification keys (K)
+-- Step 4 prerequisite (docs/supabase-exit/STEP1_DESIGN.md 6, workers/api/verification-keys.ts). The table
+-- holds a handful of rows; scripts/verification-keys.ts binds K2-K5 as literals (wrangler --command).
+
+-- @ K1 every key and revocation, read by the Worker at most once a minute per isolate | expect= | allow=scan:api_verification_keys | params=[]
+SELECT kid, x, y, revoked_at FROM api_verification_keys;
+
+-- @ K2 list (CLI) | expect= | allow=scan:api_verification_keys,walk | params=[]
+SELECT kid, alg, x, y, added_at, revoked_at, note FROM api_verification_keys ORDER BY kid;
+
+-- @ K3 add a key (CLI); an existing kid fails on the primary key | expect= | allow= | params=["k3-new-kid","ql4dh7v6HgNaIWxRerCKKONXztdZgjnfTmv0ORECtKI","rJ8NTkEQGvf8Jg_DSoIOa8Cq6A6If5lXa0iBqpYp_W8",1762646400000,"added"]
+INSERT INTO api_verification_keys (kid, alg, x, y, added_at, note) VALUES (?1, 'ES256', ?2, ?3, ?4, ?5);
+
+-- @ K4 revoke a kid (CLI): a new row (coordinates of the compiled-in key, or none) or the stored row; an already revoked row keeps its time | expect= | allow= | params=["k4-kid",null,null,1762646400000,"revoked"]
+INSERT INTO api_verification_keys (kid, x, y, added_at, revoked_at, note) VALUES (?1, ?2, ?3, ?4, ?4, ?5)
+ON CONFLICT (kid) DO UPDATE SET revoked_at = excluded.revoked_at, note = excluded.note WHERE api_verification_keys.revoked_at IS NULL;
+
+-- @ K5a undo a revocation (CLI): a revoke-only row without coordinates goes away | expect=api_verification_keys:PK | allow= | params=["k4-kid"]
+DELETE FROM api_verification_keys WHERE kid = ?1 AND revoked_at IS NOT NULL AND x IS NULL;
+
+-- @ K5b undo a revocation (CLI): a key with coordinates counts again | expect=api_verification_keys:PK | allow= | params=["k4-kid","restored"]
+UPDATE api_verification_keys SET revoked_at = NULL, note = ?2 WHERE kid = ?1 AND revoked_at IS NOT NULL AND x IS NOT NULL;

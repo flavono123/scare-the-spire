@@ -5,7 +5,8 @@
  * grants and triggers decide exactly as they do on Supabase (auth.uid() is Supabase's definition and
  * the request sets only request.jwt.claims, as PostgREST 12 does). Only the PostgREST features the /api
  * write routes use are here: eq/neq/gt/lt/is/in filters, select lists, on_conflict with both
- * resolutions, return=minimal|representation, HEAD with count=exact, and RPCs with named arguments.
+ * resolutions, return=minimal|representation, HEAD with count=exact, and RPCs with named arguments;
+ * for the personal reads also `order` and set-returning RPCs (a JSON array, as PostgREST answers).
  */
 import { readdirSync, readFileSync } from "node:fs";
 
@@ -159,7 +160,7 @@ export type PgRestCall = { method: string; path: string; search: string; role: R
 export class PgRest {
   readonly calls: PgRestCall[] = [];
   private readonly types = new Map<string, Map<string, string>>();
-  private readonly functions = new Map<string, { names: string[]; types: string[] }[]>();
+  private readonly functions = new Map<string, { names: string[]; types: string[]; set: boolean }[]>();
 
   constructor(readonly db: PGlite, readonly options: PgRestOptions) {}
 
@@ -181,12 +182,12 @@ export class PgRest {
   private async functionSignatures(name: string) {
     let signatures = this.functions.get(name);
     if (!signatures) {
-      const { rows } = await this.db.query<{ names: string[] | null; types: string[] }>(
-        `select p.proargnames as names, array(select format_type(t, null) from unnest(p.proargtypes::oid[]) as t) as types
-         from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname = $1`,
+      const { rows } = await this.db.query<{ names: string[] | null; types: string[]; set: boolean }>(
+        `select (p.proargnames)[1:p.pronargs] as names, array(select format_type(t, null) from unnest(p.proargtypes::oid[]) as t) as types,
+         p.proretset as set from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname = $1`,
         [name],
       );
-      signatures = rows.map((row) => ({ names: row.names ?? [], types: row.types }));
+      signatures = rows.map((row) => ({ names: row.names ?? [], types: row.types, set: row.set }));
       this.functions.set(name, signatures);
     }
     return signatures;
@@ -248,6 +249,9 @@ export class PgRest {
         params.push(value === null || value === undefined ? null : type === "jsonb" || type === "json" ? JSON.stringify(value) : String(value));
         return `${quoteIdent(arg)} => $${params.length}::${type}`;
       });
+      if (signature.set) {
+        return { kind: "scalar", sql: `select coalesce(json_agg(r), '[]'::json) as body from public.${quoteIdent(name)}(${named.join(", ")}) r`, params };
+      }
       return { kind: "scalar", sql: `select to_json(public.${quoteIdent(name)}(${named.join(", ")})) as body`, params };
     }
 
@@ -257,9 +261,15 @@ export class PgRest {
       const where = await this.where(path, query, params, "pgrst_target");
       if (method === "HEAD") return { kind: "count", sql: `select count(*)::int as n from public.${table} as pgrst_target ${where}`, params };
       const limit = query.get("limit");
+      const order = (query.get("order") ?? "").split(",").filter(Boolean).map((term) => {
+        const [column, direction] = term.split(".");
+        if (direction !== undefined && direction !== "asc" && direction !== "desc") throw new PgrstError(400, "PGRST100", `order ${term}`);
+        return `pgrst_target.${quoteIdent(column)}${direction === "desc" ? " desc" : ""}`;
+      });
+      const orderBy = order.length ? ` order by ${order.join(", ")}` : "";
       return {
         kind: "rows",
-        sql: `select coalesce(json_agg(r), '[]'::json) as body from (select ${returning} from public.${table} as pgrst_target ${where}${limit ? ` limit ${Number(limit)}` : ""}) r`,
+        sql: `select coalesce(json_agg(r), '[]'::json) as body from (select ${returning} from public.${table} as pgrst_target ${where}${orderBy}${limit ? ` limit ${Number(limit)}` : ""}) r`,
         params,
       };
     }

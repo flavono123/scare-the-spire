@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCompendiumEntitiesState } from "@/components/codex/use-compendium-data";
 import { ComboGameElementFilter } from "@/components/combo/combo-game-element-filter";
 import { FeedSortToggle } from "@/components/feed-sort-toggle";
@@ -38,6 +38,7 @@ import {
   type DonatedRunSummary,
   deleteDonatedRun,
   donateRun,
+  getDonatedRunRaw,
   listMyDonatedRunIds,
   listRecentDonatedRuns,
   syncDonatedRunNicknames,
@@ -256,12 +257,15 @@ export function HistoryCourseRunIndex({
   const searchDocs = useMemo(() => {
     const docs = new Map<string, ReturnType<typeof buildHistoryCourseSearchDoc>>();
     for (const item of merged) {
-      const run = item.local?.run ?? parseDonatedReplay(item.donated);
+      // A D1 list row has its search facts from the summary columns instead of a raw to parse.
+      const runFacts = item.local ? null : item.donated?.search_facts ?? null;
+      const run = item.local?.run ?? (runFacts ? null : parseDonatedReplay(item.donated));
       docs.set(
         item.runId,
         buildHistoryCourseSearchDoc({
           runId: item.runId,
           run,
+          runFacts,
           donated: item.donated,
           cover: item.local?.coverSpec ?? item.donated?.cover_spec ?? null,
           noteBlocks: item.local?.noteBlocks ?? item.donated?.note_blocks ?? null,
@@ -390,6 +394,20 @@ export function HistoryCourseRunIndex({
     },
     [ensureUser, rememberShared, rememberUnshared, userId, visibleDonatedIds],
   );
+
+  // A D1 list row carries no raw; the editor reads it from R3r when it opens (design 4.4).
+  // Only the last click opens the editor: an earlier run's raw arriving late must not replace it.
+  const coverEditRequestRef = useRef<string | null>(null);
+  const openDonatedCoverEditor = useCallback(async (donated: DonatedRunSummary) => {
+    coverEditRequestRef.current = donated.id;
+    if (donated.raw) {
+      setEditingDonated(donated);
+      return;
+    }
+    const raw = await getDonatedRunRaw(donated.id).catch(() => null);
+    if (coverEditRequestRef.current !== donated.id) return;
+    if (raw) setEditingDonated({ ...donated, raw });
+  }, []);
 
   const editingDonatedParsed = useMemo(() => {
     if (!editingDonated?.raw) return null;
@@ -545,8 +563,8 @@ export function HistoryCourseRunIndex({
                       isOwner ? () => handleUnshareDonated(donated.id) : undefined
                     }
                     onEditCover={
-                      isOwner && donated.raw
-                        ? () => setEditingDonated(donated)
+                      isOwner && (donated.raw || donated.search_facts)
+                        ? () => void openDonatedCoverEditor(donated)
                         : undefined
                     }
                   />

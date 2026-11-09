@@ -1,5 +1,5 @@
 import type { ApiSurfaceGroup } from "@/lib/api-surfaces";
-import { demoteSurface } from "@/lib/runtime-flags";
+import { defaultSurfacePath, demoteSurface } from "@/lib/runtime-flags";
 import { WRITE_PAUSED_ERROR } from "@/lib/write-source-flags";
 
 /**
@@ -10,6 +10,8 @@ import { WRITE_PAUSED_ERROR } from "@/lib/write-source-flags";
  * HTML 404). Both demote the group for this page and throw SurfaceLegacyError;
  * callers then redo the call on the legacy path. Outages are not legacy
  * signals: the legacy path would only ask the same Supabase again.
+ *
+ * Writes in a bundle built with NEXT_PUBLIC_API_PATH_DEFAULT=api are the exception (writesStayOnApi).
  */
 
 export const API_MARKER_HEADER = "X-Slseoun-Api";
@@ -81,8 +83,20 @@ function sleep(ms: number, signal?: AbortSignal): Promise<void> {
  */
 export function requireApiVersion(group: ApiSurfaceGroup, body: { v?: unknown } | null | undefined, processed = false): void {
   if (body?.v === 1) return;
-  demoteSurface(group);
+  // A write answer (`processed`) never demotes once writes stay on the api path.
+  if (!(processed && defaultSurfacePath() === "api")) demoteSurface(group);
   throw new SurfaceLegacyError(200, processed);
+}
+
+/**
+ * Once the build default is api, the browser's direct writes are closed (docs/supabase-exit/STEP4_WRITE_GATE.md 7):
+ * the legacy path can no longer write. A write the router did not answer (a platform error page such as a
+ * Cloudflare 1102, a missing marker) or answered with a legacy signal is then an outage: it surfaces as
+ * ApiUnavailableError, never demotes the group (later writes on the page stay on the api path) and is never
+ * resent on legacy. Reads keep today's demotion: direct Supabase reads still work after the close.
+ */
+function writesStayOnApi(method: string): boolean {
+  return method !== "GET" && defaultSurfacePath() === "api";
 }
 
 /** True when a failed api call should be redone on the legacy path. */
@@ -90,9 +104,9 @@ export function shouldUseLegacy(error: unknown): boolean {
   return error instanceof SurfaceLegacyError;
 }
 
-/** True when a failed api write certainly did nothing, so legacy may send it once. */
+/** True when a failed api write certainly did nothing, so legacy may send it once (never once writes stay on api). */
 export function writeMayGoLegacy(error: unknown): boolean {
-  return error instanceof SurfaceLegacyError && !error.processed;
+  return error instanceof SurfaceLegacyError && !error.processed && defaultSurfacePath() !== "api";
 }
 
 export const API_TIMEOUT_MS = 8000;
@@ -108,6 +122,8 @@ export type ApiFetchInit = {
   token?: string | null;
   timeoutMs?: number;
   signal?: AbortSignal;
+  /** "text": a 2xx body is returned as text (the run raw file, R3r); errors are still JSON. */
+  responseType?: "json" | "text";
 };
 
 export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: ApiFetchInit = {}): Promise<T> {
@@ -128,7 +144,8 @@ export async function apiFetch<T>(group: ApiSurfaceGroup, path: string, init: Ap
 async function apiFetchOnce<T>(group: ApiSurfaceGroup, path: string, init: ApiFetchInit): Promise<T> {
   if (!path.startsWith("/api/")) throw new Error(`api path must be absolute: ${path}`);
   const method = init.method ?? "GET";
-  const headers: Record<string, string> = { ...(init.headers ?? {}), Accept: "application/json" };
+  const asText = init.responseType === "text";
+  const headers: Record<string, string> = { ...(init.headers ?? {}), Accept: asText ? "text/plain" : "application/json" };
   if (init.body !== undefined || init.rawBody !== undefined) headers["Content-Type"] = "application/json";
   if (init.token) headers.Authorization = `Bearer ${init.token}`;
 
@@ -156,15 +173,16 @@ async function apiFetchOnce<T>(group: ApiSurfaceGroup, path: string, init: ApiFe
       // No router answered. A 404/405 from an old Worker certainly did nothing;
       // after a Cloudflare 5xx a write may have run, so it is not resent.
       const processed = method !== "GET" && !(response.status === 404 || response.status === 405);
-      demoteSurface(group);
       void response.body?.cancel().catch(() => undefined);
+      if (writesStayOnApi(method)) throw new ApiUnavailableError(response.status, "unavailable");
+      demoteSurface(group);
       throw new SurfaceLegacyError(response.status, processed);
     }
 
     if (response.status === 204) return undefined as T;
     // The same deadline covers the body: a stalled body must not hang every caller.
     try {
-      payload = await response.json();
+      payload = asText && response.ok ? await response.text() : await response.json();
     } catch {
       throw new ApiUnavailableError(response.status, controller.signal.aborted ? "timeout" : "bad_response");
     }
@@ -178,6 +196,7 @@ async function apiFetchOnce<T>(group: ApiSurfaceGroup, path: string, init: ApiFe
     ? (payload as { error: string }).error
     : `http_${response.status}`;
   if (response.status === 409 && code === "surface_legacy") {
+    if (writesStayOnApi(method)) throw new ApiUnavailableError(409, "unavailable");
     demoteSurface(group);
     throw new SurfaceLegacyError(409, false);
   }

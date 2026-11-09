@@ -1,10 +1,12 @@
 import { ApiError, apiFetch, requireApiVersion, shouldUseLegacy, writeMayGoLegacy } from "./api-client";
 import { apiFetchAsUser } from "./api-session";
 import {
+  HISTORY_RUN_RAW_PATH,
   HISTORY_RUN_REFERENCE_LIMIT,
   isRunId,
   RECENT_DONATED_RUNS_LIMIT,
   RUN_DETAIL_COLUMNS,
+  RUN_SUMMARY_CLIENT_HEADER,
   RUN_SUMMARY_COLUMNS,
 } from "./history-runs-api-rules";
 import { surfacePath } from "./runtime-flags";
@@ -19,6 +21,7 @@ import type { ReplayRun } from "./sts2-run-replay";
 import { readStoredUserProfile } from "./user-profile";
 import { mergePartyBadges } from "./history-party";
 import {
+  isSummaryListRow,
   normalizeRunRow,
   normalizeRunSummaryRow,
   parseCoverSpec,
@@ -67,7 +70,11 @@ type RowsBody = { v?: number; rows?: unknown };
  */
 async function apiRunRows(path: string): Promise<RunRow[] | "legacy"> {
   try {
-    const body = await apiFetch<RowsBody | RunRow[]>("history-runs", path, { timeoutMs: 20_000 });
+    // This client reads the D1 answers too (summary rows, no raw): say so (RUN_SUMMARY_CLIENT_HEADER).
+    const body = await apiFetch<RowsBody | RunRow[]>("history-runs", path, {
+      timeoutMs: 20_000,
+      headers: { [RUN_SUMMARY_CLIENT_HEADER]: "1" },
+    });
     if (Array.isArray(body)) return body;
     requireApiVersion("history-runs", body);
     if (!Array.isArray(body.rows)) throw new Error("bad history-runs answer");
@@ -76,6 +83,48 @@ async function apiRunRows(path: string): Promise<RunRow[] | "legacy"> {
     if (shouldUseLegacy(error)) return "legacy";
     throw error;
   }
+}
+
+/**
+ * One run's raw file (R3r, docs/supabase-exit/D1_SCHEMA_DESIGN.md 4.4) for an answer that came from
+ * D1 without it: the detail page, the owner's cover editor, a list row without a summary. The api
+ * route's text/plain body as is; null when the run is not shared in this env.
+ */
+async function fetchDonatedRunRaw(runId: string): Promise<string | null> {
+  if (runsViaApi() && isRunId(runId)) {
+    try {
+      const text = await apiFetch<string>("history-runs", `${HISTORY_RUN_RAW_PATH}?id=${encodeURIComponent(runId)}`, {
+        timeoutMs: 20_000,
+        responseType: "text",
+      });
+      return text || null;
+    } catch (error) {
+      if (!shouldUseLegacy(error)) throw error;
+    }
+  }
+  const result = await withSupabaseTimeout(
+    "runs.select.raw",
+    supabase.from("runs").select("raw").eq("id", runId).eq("env", supabaseEnv).maybeSingle(),
+  );
+  if (result.error) throw result.error;
+  const raw = (result.data as { raw?: unknown } | null)?.raw;
+  return typeof raw === "string" && raw ? raw : null;
+}
+
+/** The raw file of a shared run, for the owner's cover editor when the list row has none. */
+export async function getDonatedRunRaw(runId: string): Promise<string | null> {
+  if (!supabaseEnabled || !runId) return null;
+  return fetchDonatedRunRaw(runId);
+}
+
+/**
+ * List and picker rows: a Supabase answer goes through normalizeRunSummaryRow as it always has;
+ * a D1 answer (summary columns, no raw) through donatedRunsFromListRows (design 4.4).
+ */
+async function donatedRunSummaries(rows: RunRow[]): Promise<DonatedRunSummary[]> {
+  if (!rows.some(isSummaryListRow)) return rows.map(normalizeRunSummaryRow);
+  const { donatedRunsFromListRows } = await import("./run-list-summary");
+  return donatedRunsFromListRows(rows, fetchDonatedRunRaw);
 }
 
 /** An error shaped like PostgREST's, so callers keep checking `code` (23505 = already shared). */
@@ -100,7 +149,13 @@ async function selectDonatedRunForEnv(
   if (runsViaApi(env) && isRunId(runId)) {
     try {
       const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=detail`);
-      if (rows !== "legacy") return { data: rows[0] ? normalizeRunRow(rows[0], runId) : null, error: null };
+      if (rows !== "legacy") {
+        const row = rows[0];
+        if (!row) return { data: null, error: null };
+        // A D1 answer carries the detail columns without the raw: read it from R3r.
+        const raw = "raw" in row ? row.raw : await fetchDonatedRunRaw(runId);
+        return { data: normalizeRunRow({ ...row, raw: raw ?? undefined }, runId), error: null };
+      }
     } catch (error) {
       return { data: null, error };
     }
@@ -126,9 +181,10 @@ async function selectRecentDonatedRunsForEnv(
 ): Promise<{ data: DonatedRunSummary[] | null; error: unknown }> {
   if (runsViaApi(env)) {
     try {
-      // The Worker streams the rows (raw run files, about 8 MB) without parsing them.
+      // From Supabase the Worker streams the rows (raw run files, about 8 MB) without parsing them;
+      // from D1 they carry the summary columns instead of the raw (about 0.6 MB).
       const rows = await apiRunRows("/api/read/history-runs?view=recent");
-      if (rows !== "legacy") return { data: rows.map(normalizeRunSummaryRow), error: null };
+      if (rows !== "legacy") return { data: await donatedRunSummaries(rows), error: null };
     } catch (error) {
       return { data: null, error };
     }
@@ -155,7 +211,7 @@ async function selectHistoryRunReferencesForEnv(
   if (runsViaApi(env)) {
     try {
       const rows = await apiRunRows("/api/read/history-runs?view=reference");
-      if (rows !== "legacy") return { data: rows.map(normalizeRunSummaryRow), error: null };
+      if (rows !== "legacy") return { data: await donatedRunSummaries(rows), error: null };
     } catch (error) {
       return { data: null, error };
     }
@@ -507,6 +563,11 @@ export async function getRunCoverSpec(runId: string): Promise<CoverSpec | null> 
         if (rows !== "legacy") {
           const row = rows[0];
           if (!row) continue;
+          if (isSummaryListRow(row)) {
+            // A D1 cover row: list facts and phrase columns in place of the raw (R4).
+            const { coverFromSummaryCoverRow } = await import("./run-list-summary");
+            return coverFromSummaryCoverRow(runId, row as unknown as Parameters<typeof coverFromSummaryCoverRow>[1], fetchDonatedRunRaw);
+          }
           const stored = parseCoverSpec(row.cover_spec);
           if (stored?.auto === false) return stored;
           const parsed = parseRunSafely(row.raw);
