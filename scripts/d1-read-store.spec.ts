@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { isDeepStrictEqual } from "node:util";
 
 import { API_SURFACE_GROUPS, pathFlagKey, readFlagKey, shadowFlagKey } from "../src/lib/api-surfaces";
-import { HISTORY_RUN_RAW_PATH } from "../src/lib/history-runs-api-rules";
+import { HISTORY_RUN_RAW_PATH, RUN_SUMMARY_CLIENT_HEADER } from "../src/lib/history-runs-api-rules";
 import { pickAlternatingCover } from "../src/lib/run-cover-suggest";
 import { coverFromSummaryCoverRow, donatedRunsFromListRows, type RunSummaryCoverRow } from "../src/lib/run-list-summary";
 import {
@@ -23,10 +23,11 @@ import {
   type RunRow,
 } from "../src/lib/run-summary-row";
 import { sourceFlagKey } from "../src/lib/write-source-flags";
+import { SYNC_FLAG_KEY } from "../workers/sync/sync-env";
 import { D1_ADAPTERS } from "../workers/api/d1-adapters";
 import { answerText } from "../workers/api/d1-adapters/rows";
 import type { D1Database, D1PreparedStatement, D1Result } from "../workers/api/d1";
-import { d1ReadAnswer, D1_READ_FALLBACK_MS, resetD1ReadForTest } from "../workers/api/d1-read";
+import { d1ReadAnswer, D1_READ_FALLBACK_MS } from "../workers/api/d1-read";
 import { flagValues, readStoreFor, resetFlagsForTest } from "../workers/api/flags";
 import { resetJwtCachesForTest } from "../workers/api/jwt";
 import { createApiRouter, type ApiEnv } from "../workers/api/router";
@@ -159,7 +160,8 @@ async function main() {
 
   const env: ApiEnv = { DB: d1, API_RUNTIME_FLAGS: "d1", API_SUPABASE_URL: TEST_SUPABASE_URL, API_SUPABASE_KEY: "sb_publishable_test", API_DATA_ENV: DEV };
   const router = createApiRouter(API_ROUTES, { onResponse: shadowOnResponse, d1Read: d1ReadAnswer });
-  const allApi = Object.fromEntries(API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), "api"]));
+  // Every group on the api path and the step 2 sync on (read.<group> = d1 applies only with it).
+  const allApi: Record<string, string> = { ...Object.fromEntries(API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), "api"])), [SYNC_FLAG_KEY]: "on" };
 
   function setFlags(values: Record<string, string>) {
     sqlite.exec("DELETE FROM runtime_flags");
@@ -167,16 +169,17 @@ async function main() {
       sqlite.prepare("INSERT INTO runtime_flags (key, value, updated_at, note) VALUES (?1, ?2, ?3, 'spec')").run(key, value, new Date().toISOString());
     }
     resetFlagsForTest();
-    resetD1ReadForTest();
     resetNavForTest();
   }
 
-  async function get(path: string, init: { method?: string; headers?: Record<string, string>; envOverride?: Partial<ApiEnv> } = {}) {
+  /** A request as this client sends it (with RUN_SUMMARY_CLIENT_HEADER unless `unmarked`, an older tab). */
+  async function get(path: string, init: { method?: string; headers?: Record<string, string>; envOverride?: Partial<ApiEnv>; unmarked?: boolean } = {}) {
     const ctx = new Ctx();
     const statementsBefore = shim.statements.length;
     const requestsBefore = fake.requests.length;
+    const headers = { ...(init.unmarked ? {} : { [RUN_SUMMARY_CLIENT_HEADER]: "1" }), ...init.headers };
     const response = await router.handle(
-      new Request(`https://testbed.example${path}`, { method: init.method ?? "GET", headers: init.headers }),
+      new Request(`https://testbed.example${path}`, { method: init.method ?? "GET", headers }),
       { ...env, ...init.envOverride },
       ctx,
     );
@@ -206,8 +209,9 @@ async function main() {
 
   // ------------------------------------------------------------------------------------------- the flag
 
-  await check("read store: read.<group> = d1 reads D1, source.<group> = d1 makes D1 the origin, anything else is supabase", () => {
+  await check("read store: read.<group> = d1 reads D1 while the sync runs, source.<group> = d1 makes D1 the origin, anything else is supabase", () => {
     const values = flagValues([
+      { key: SYNC_FLAG_KEY, value: "on" },
       { key: readFlagKey("nav"), value: "d1" },
       { key: readFlagKey("stories"), value: "D1" },
       { key: readFlagKey("comments"), value: "supabase" },
@@ -223,6 +227,15 @@ async function main() {
     assert.equal(readStoreFor(values, "puzzlebox"), "d1");
     assert.equal(readStoreFor(values, "colorful-philosophers"), "supabase", "groups without writes have no source flag");
     assert.equal(readStoreFor(new Map(), "history-runs"), "supabase", "no row: today");
+    // With the sync off D1 stops following Supabase's writes: read.<group> = d1 does not apply.
+    for (const sync of ["off", undefined]) {
+      const synced = new Map(values);
+      if (sync) synced.set(SYNC_FLAG_KEY, sync);
+      else synced.delete(SYNC_FLAG_KEY);
+      assert.equal(readStoreFor(synced, "nav"), "supabase", `sync ${sync ?? "missing"}: supabase`);
+      assert.equal(readStoreFor(synced, "puzzlebox"), "supabase");
+      assert.equal(readStoreFor(synced, "comments"), "d1-origin", "D1 as the origin does not need the sync");
+    }
   });
 
   await check("flags CLI: read.<group> for every group takes supabase or d1; production needs --confirm-production", () => {
@@ -323,6 +336,32 @@ async function main() {
     });
   }
 
+  await check("router: a tab from before step 3 (no RUN_SUMMARY_CLIENT_HEADER) keeps rows with raw while Supabase is the source", async () => {
+    setFlags({ [readFlagKey("history-runs")]: "d1" });
+    for (const path of ["/api/read/history-runs?view=recent", "/api/read/history-runs?view=reference", `/api/read/history-run?id=${RUN1}&view=detail`, `/api/read/history-run?id=${RUN3}&view=cover`]) {
+      const old = await get(path, { unmarked: true });
+      assert.equal(old.response.status, 200, path);
+      assert.ok(old.supabaseRequests.length > 0, `${path}: the Supabase handler answered`);
+      assert.ok((JSON.parse(old.body) as Array<Record<string, unknown>>).every((row) => "raw" in row), `${path}: rows with raw`);
+      const marked = await get(path);
+      assert.deepEqual(marked.supabaseRequests, [], `${path}: this client reads D1`);
+    }
+    // Views whose D1 answer has today's shape are D1 for every tab; so is everything once D1 is the origin.
+    const meta = await get(`/api/read/history-run?id=${RUN1}&view=meta`, { unmarked: true });
+    assert.deepEqual(meta.supabaseRequests, []);
+    setFlags({ [sourceFlagKey("history-runs")]: "d1" });
+    const origin = await get("/api/read/history-runs?view=recent", { unmarked: true });
+    assert.deepEqual(origin.supabaseRequests, [], "D1 the origin: D1 regardless");
+    assert.ok((JSON.parse(origin.body) as Array<Record<string, unknown>>).every((row) => !("raw" in row)));
+  });
+
+  await check("router: with the sync off, read.<group> = d1 answers from Supabase (D1 would fall behind)", async () => {
+    setFlags({ [readFlagKey("stories")]: "d1", [SYNC_FLAG_KEY]: "off" });
+    const answer = await get("/api/read/stories?limit=100");
+    assert.equal(answer.response.status, 200);
+    assert.ok(answer.supabaseRequests.some((request) => request.includes("community_stories")), "the Supabase handler answered");
+  });
+
   await check("router: source.<group> = d1 reads D1 too (the origin), without read.<group>", async () => {
     setFlags({ [sourceFlagKey("history-runs")]: "d1" });
     const served = await get("/api/read/history-runs?view=recent");
@@ -376,14 +415,35 @@ async function main() {
     resetShadowForTest();
   });
 
-  await check("router: nav on D1 keeps public max-age=30 and answers from isolate memory for 30 s", async () => {
+  await check("router: nav on D1 keeps the shared api_cache snapshot, refreshed from D1 (one row per page view, not 10 statements)", async () => {
+    sqlite.exec("DELETE FROM api_cache");
     setFlags({ [readFlagKey("nav")]: "d1" });
     const first = await get("/api/read/nav");
+    assert.equal(first.response.status, 200);
     assert.equal(first.response.headers.get("cache-control"), "public, max-age=30");
-    assert.ok(first.statements.some((sql) => sql.includes("FROM comments")), "the first read goes to D1");
+    assert.deepEqual(first.supabaseRequests, [], "the snapshot is built from D1");
+    assert.ok(first.statements.some((sql) => sql.includes("FROM comments")), "the first fill reads D1 (E8, F4, E9)");
+    const row = sqlite.prepare("SELECT body FROM api_cache WHERE key = 'nav'").get() as { body: string };
+    assert.deepEqual(JSON.parse(row.body), JSON.parse(first.body), "the shared row holds the snapshot");
     const second = await get("/api/read/nav");
     assert.equal(second.body, first.body);
-    assert.ok(!second.statements.some((sql) => sql.includes("FROM comments")), "the second one comes from memory");
+    assert.ok(!second.statements.some((sql) => sql.includes("FROM comments")), "the isolate memory answers next");
+    resetNavForTest();
+    const another = await get("/api/read/nav");
+    assert.equal(another.body, first.body, "another isolate reads the shared row");
+    assert.ok(!another.statements.some((sql) => sql.includes("FROM comments")), "no D1 adapter read while the row is fresh");
+    // A D1 failure refreshes from Supabase while Supabase is the source (one log line).
+    sqlite.exec("DELETE FROM api_cache");
+    resetNavForTest();
+    d1.mode = "fail";
+    try {
+      const { value, lines } = await logged(() => get("/api/read/nav"));
+      assert.equal(value.response.status, 200);
+      assert.ok(value.supabaseRequests.length > 0, "the Supabase reads built it");
+      assert.deepEqual(lines.filter((line) => line.startsWith("api d1read")), ["api d1read read.nav fallback"]);
+    } finally {
+      d1.mode = "ok";
+    }
   });
 
   await check("router: the QA path override uses this isolate's last flags read for the read store", async () => {

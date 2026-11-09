@@ -9,11 +9,14 @@ import assert from "node:assert/strict";
 import { canonicalTs, postgrestTs } from "../src/lib/d1-time";
 import { mapRow, runSummaryFillStatement, type RowImage } from "../src/lib/d1-sync/row-mapper";
 import {
+  coverFromSummaryCoverRow,
   donatedRunsFromListRows,
   extractRunListSummary,
   listInputsFromRawRow,
   listInputsFromSummaryRow,
   RUN_SUMMARY_VERSION,
+  type RunSummaryCoverRow,
+  type RunSummaryListRow,
 } from "../src/lib/run-list-summary";
 import type { RunRow } from "../src/lib/run-summary-row";
 import { applyBatch, openD1TestDb } from "./d1-sync/test-db";
@@ -223,6 +226,31 @@ async function clientBuilderChecks() {
   });
   assert.deepEqual(fetched, [listRows[0].id]);
   assert.deepEqual(compareDonatedRuns(today, withZero), []);
+  // A summary the list cannot read (a hand-made share at step 5: right outer types, wrong insides)
+  // fails that row only: it goes the raw way and the card is today's.
+  const forgeries: Array<Partial<RunSummaryListRow>> = [
+    { list_facts: {} as RunSummaryListRow["list_facts"] },
+    { list_facts: { cards: [[1, 2]], relics: [], potions: [], deck_size: 1, relic_count: 0, highlight_card: null, highlight_relic: null } as unknown as RunSummaryListRow["list_facts"] },
+    { game_elements: {} as unknown as RunSummaryListRow["game_elements"] },
+    { game_elements: [null] as unknown as RunSummaryListRow["game_elements"] },
+    { characters: "CHARACTER.IRONCLAD" as unknown as string[] },
+    { badges: {} as unknown as RunSummaryListRow["badges"] },
+  ];
+  for (const forged of forgeries) {
+    const forgedRows = listRows.map((row, index) => (index === 1 ? { ...summaryRowFromD1(row), ...forged } : summaryRowFromD1(row)));
+    const reads: string[] = [];
+    const built = await donatedRunsFromListRows(forgedRows as unknown as RunRow[], async (runId) => {
+      reads.push(runId);
+      return byId.get(runId)?.raw ?? null;
+    });
+    assert.deepEqual(reads, [listRows[1].id], `${JSON.stringify(forged).slice(0, 60)}: that row reads its raw`);
+    assert.deepEqual(compareDonatedRuns(today, built), [], `${JSON.stringify(forged).slice(0, 60)}: the list is today's`);
+    // The combo cover of such a row is picked from its raw too.
+    const coverRow = { ...summaryRowFromD1(listRows[1]), ...forged };
+    const cover = await coverFromSummaryCoverRow(String(listRows[1].id), coverRow as unknown as RunSummaryCoverRow, async (runId) => byId.get(runId)?.raw ?? null);
+    assert.deepEqual(cover, listInputsFromRawRow(byId.get(String(listRows[1].id))!).summary.cover_spec);
+  }
+
   // The comparison sees a changed card.
   const changed = fromD1.map((run) => (run.id === RUNS[0].id ? { ...run, badges: [] } : run));
   assert.ok(compareDonatedRuns(today, changed).some((diff) => diff.endsWith(":card.badges")));

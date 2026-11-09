@@ -11,8 +11,9 @@
  * shadow.<group> is the step 2 shadow-read sample rate (docs/supabase-exit/D1_SCHEMA_DESIGN.md 6):
  * 0 (or no row) compares nothing, 1 compares every api read of the group.
  *   tsx scripts/runtime-flags.ts set read.<group> supabase|d1 --env ... --note "why"       (step 3 read store)
- * read.<group> = d1 answers the group's GET routes from D1 (no row = supabase); while source.<group> is
- * supabase a D1 failure falls back to Supabase for that request.
+ * read.<group> = d1 answers the group's GET routes from D1 (no row = supabase) while sync.enabled is on;
+ * with the sync off D1 falls behind, so the group reads Supabase. While source.<group> is supabase a D1
+ * failure falls back to Supabase for that request; source.<group> = d1 reads D1 whatever the sync flag.
  *   tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note "why"
  *   tsx scripts/runtime-flags.ts set source.<group> supabase|d1 --env ... --note "why"   (step 5 write source)
  *   tsx scripts/runtime-flags.ts set write.paused on|off --env ... --note "why"           (step 5 cutover pause)

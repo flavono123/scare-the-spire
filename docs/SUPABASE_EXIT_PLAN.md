@@ -449,10 +449,13 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 구현(2026-11-09, 브랜치 `step3/reads`):
 
 - 플래그 `read.<group>` = `supabase` | `d1`(행이 없으면 supabase). 다른 플래그와 같은 `runtime_flags` 한 문장으로 읽고 isolate에
-  30초 둔다. `pnpm flags set read.<group> d1 --env testbed --remote --note "..."`, 운영 원격은 `--confirm-production`.
+  30초 둔다. 원본이 Supabase인 동안 `read.<group>` = d1은 `sync.enabled` = on일 때만 적용된다(동기화가 꺼지면 D1이 뒤처지므로
+  Supabase를 읽는다). `source.<group>` = d1이면 동기화 플래그와 상관없이 D1을 읽는다. `pnpm flags set read.<group> d1 --env testbed --remote --note "..."`, 운영 원격은 `--confirm-production`.
 - 라우터: `read.<group>`이 d1이거나 `source.<group>`이 d1인 그룹의 GET(HEAD 제외)은 쿼리·rate limit·신원 검사 뒤 그 경로의 D1
-  어댑터가 답한다(`workers/api/d1-read.ts`). 머리글은 Supabase 답과 같다(배열은 통과 응답 머리글, 봉투는 `jsonResponse`,
-  네비는 `public, max-age=30`과 isolate 메모리 30초). D1 답은 그림자 대조하지 않는다.
+  어댑터가 답한다(`workers/api/d1-read.ts`). 머리글은 Supabase 답과 같다(배열은 통과 응답 머리글, 봉투는 `jsonResponse`).
+  네비는 지금처럼 공유 `api_cache` 스냅샷(isolate 메모리 30초, `public, max-age=30`, 1분에 한 isolate만 갱신)으로 답하고
+  갱신만 Supabase 대신 D1에서 읽는다. D1 답은 그림자 대조하지 않는다. 역사 강의서 목록·고르기·상세·표지는 원문 없는 D1
+  답을 읽는 클라이언트(`X-Slseoun-Run-Summary: 1`)에게만 D1로 답한다(원본이 D1이 되면 모두에게).
 - 실패: `read.<group>` = d1이고 원본이 Supabase이면 D1 오류·2초 시간 초과는 그 요청만 Supabase 처리기로 답하고 한 줄
   (`api d1read <route> fallback`)을 남긴다. D1이 묶지 못하는 입력도 Supabase 처리기로 간다(오늘 답). `source.<group>` = d1이면
   Supabase로 가지 않고 Supabase 실패 때와 같은 503(입력 오류는 400)이다.

@@ -195,22 +195,38 @@ export async function fetchNavFromSupabase(
   };
 }
 
+/**
+ * Builds a fresh snapshot for the api_cache row. Supabase (today) or, with read.nav = d1 (step 3),
+ * D1 (workers/api/d1-read.ts): either way one isolate refreshes the shared row at most once a minute.
+ * `allFailed` (or no body) means nothing could be read: the row backs off.
+ */
+export type NavSnapshotSource = (
+  context: PublicRouteContext,
+  previous: NavSnapshotBody | null,
+  now: number,
+  deadlineMs: number,
+) => Promise<{ body: NavSnapshotBody | null; allFailed: boolean }>;
+
+export const navFromSupabase: NavSnapshotSource = (context, previous, now, deadlineMs) =>
+  fetchNavFromSupabase(context.config, previous, now, undefined, deadlineMs);
+
 async function refreshUnderLease(
+  context: PublicRouteContext,
   db: D1Database,
-  config: SupabaseApiConfig,
   previous: NavSnapshotBody | null,
   failCount: number,
   now: number,
   /** The row exists but its body is unusable (another env, malformed): its age means nothing. */
   ignoreAge: boolean,
   deadlineMs: number,
+  source: NavSnapshotSource,
 ): Promise<NavSnapshotBody | null> {
   const leaseUntil = now + LEASE_MS;
   const staleBefore = ignoreAge ? Number.MAX_SAFE_INTEGER : now - NAV_REFRESH_AFTER_MS;
   const lease = await db.prepare(NAV_LEASE_SQL).bind(NAV_KEY, leaseUntil, now, staleBefore).run();
   if ((lease.meta?.changes ?? 0) !== 1) return null;
-  const { body, allFailed } = await fetchNavFromSupabase(config, previous, Date.now(), undefined, deadlineMs);
-  if (allFailed) {
+  const { body, allFailed } = await source(context, previous, Date.now(), deadlineMs);
+  if (allFailed || !body) {
     const backoff = FAIL_BACKOFF_MS[Math.min(failCount + 1, FAIL_BACKOFF_MS.length) - 1];
     await db.prepare(NAV_FAIL_SQL).bind(NAV_KEY, Date.now() + backoff, leaseUntil).run();
     return null;
@@ -244,7 +260,7 @@ async function readSnapshotRow(context: PublicRouteContext): Promise<{ row: Snap
   }
 }
 
-export async function handleNav(context: PublicRouteContext): Promise<Response> {
+export async function handleNav(context: PublicRouteContext, source: NavSnapshotSource = navFromSupabase): Promise<Response> {
   const { config, now } = context;
   if (memory && memory.body.env === config.dataEnv && now - memory.loadedAt < NAV_MEMORY_MS) {
     return respond(memory.body);
@@ -271,13 +287,14 @@ export async function handleNav(context: PublicRouteContext): Promise<Response> 
 
   const blocking = !body || age >= NAV_BLOCKING_AFTER_MS;
   const refresh = refreshUnderLease(
+    context,
     context.db,
-    config,
     body,
     row?.fail_count ?? 0,
     now,
     unusableRow,
     blocking ? NAV_BLOCKING_DEADLINE_MS : NAV_BACKGROUND_DEADLINE_MS,
+    source,
   );
   context.ctx.waitUntil(refresh.catch(() => undefined));
   if (!blocking && body) return respond(body);
@@ -296,6 +313,6 @@ export const navRoutes: PublicRoute[] = [
     group: "nav",
     access: "public",
     prefetch: (db) => [db.prepare(NAV_SNAPSHOT_SQL).bind(NAV_KEY)],
-    handle: handleNav,
+    handle: (context) => handleNav(context),
   },
 ];
