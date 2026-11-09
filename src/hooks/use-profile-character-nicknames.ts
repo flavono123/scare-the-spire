@@ -2,47 +2,24 @@
 
 import { useEffect, useState } from "react";
 import {
-  PROFILE_CHARACTER_NICKNAME_POOLS_TABLE,
   parseNicknamePoolRows,
   type ProfileNicknamePools,
 } from "@/lib/profile-character-nicknames";
-import { apiFetch, requireApiVersion, shouldUseLegacy } from "@/lib/api-client";
-import { surfacePath } from "@/lib/runtime-flags";
-import { supabase, supabaseEnabled } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { apiFetch, requireApiVersion } from "@/lib/api-client";
 
+/**
+ * The nickname pools from the Worker (docs/supabase-exit/STEP1_DESIGN.md 9.4).
+ * Null on any failure, as before; step 6 (docs/supabase-exit/STEP6_PLAN.md WP-D)
+ * has no direct Supabase read, so a former legacy signal is null too.
+ */
 export async function fetchProfileCharacterNicknamePools(): Promise<ProfileNicknamePools | null> {
-  // docs/supabase-exit/STEP1_DESIGN.md 9.4. Null on any failure, as before.
-  if (surfacePath("profile") === "api") {
-    try {
-      const body = await apiFetch<{ v?: number; rows?: unknown[] | null }>("profile", "/api/read/profile/nicknames");
-      requireApiVersion("profile", body);
-      // v1 with no rows: the pools table is not deployed, as the legacy read reports.
-      if (!body.rows) return null;
-      return parseNicknamePoolRows(body.rows as Parameters<typeof parseNicknamePoolRows>[0]);
-    } catch (error) {
-      if (!shouldUseLegacy(error)) return null;
-    }
-  }
-  if (!supabaseEnabled) return null;
-
   try {
-    const { data, error } = await withSupabaseTimeout(
-      "profile_character_nickname_pools.select",
-      supabase
-        .from(PROFILE_CHARACTER_NICKNAME_POOLS_TABLE)
-        .select("character_id, locale, nicknames"),
-    );
-    if (error) {
-      console.warn("Failed to load profile character nicknames", error.message);
-      return null;
-    }
-    return parseNicknamePoolRows(data);
-  } catch (error) {
-    console.warn(
-      "Failed to load profile character nicknames",
-      error instanceof Error ? error.message : error,
-    );
+    const body = await apiFetch<{ v?: number; rows?: unknown[] | null }>("profile", "/api/read/profile/nicknames");
+    requireApiVersion("profile", body);
+    // v1 with no rows: the pools table is not deployed.
+    if (!body.rows) return null;
+    return parseNicknamePoolRows(body.rows as Parameters<typeof parseNicknamePoolRows>[0]);
+  } catch {
     return null;
   }
 }

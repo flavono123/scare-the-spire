@@ -27,7 +27,6 @@ import {
 import { commentThreadHref } from "@/lib/comment-threads";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
-import { supabaseEnabled } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { contactMessages } from "@/messages/contact";
 
@@ -140,7 +139,7 @@ export function ProfileActivity({
   );
 
   useEffect(() => {
-    if (!supabaseEnabled || !ready || !userId) return;
+    if (!ready || !userId) return;
 
     let cancelled = false;
     listOwnContactInquiries()
@@ -160,7 +159,7 @@ export function ProfileActivity({
   const activeInquiryResult = inquiryResult?.userId === userId ? inquiryResult : null;
   const inquiries = activeInquiryResult?.items ?? [];
   const inquiriesLoading = Boolean(userId) && !activeInquiryResult;
-  const inquiriesUnavailable = !supabaseEnabled || activeInquiryResult?.unavailable === true;
+  const inquiriesUnavailable = activeInquiryResult?.unavailable === true;
 
   useEffect(() => {
     if (!userId || !activeInquiryResult) return;

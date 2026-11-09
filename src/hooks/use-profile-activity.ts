@@ -1,19 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { requireApiVersion, shouldUseLegacy } from "@/lib/api-client";
+import { requireApiVersion } from "@/lib/api-client";
 import { apiFetchAsUser } from "@/lib/api-session";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
   PROFILE_ACTIVITY_CATEGORIES,
-  PROFILE_ACTIVITY_PAGE_SIZE,
   type ProfileActivityCategory,
   type ProfileActivityFilter,
   type ProfileActivitySort,
 } from "@/lib/profile-activity-rules";
-import { surfacePath } from "@/lib/runtime-flags";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 export {
   PROFILE_ACTIVITY_CATEGORIES,
@@ -56,58 +52,29 @@ interface ProfileActivityStatsRow {
   like_count: number | string;
 }
 
-const PAGE_SIZE = PROFILE_ACTIVITY_PAGE_SIZE;
-
 type RowsBody<T> = { v?: number; rows?: T[] };
 
-/** Stats rows: the Worker on the api path (docs/supabase-exit/STEP1_DESIGN.md 9.4), else the RPC. */
-async function readStatsRows(): Promise<ProfileActivityStatsRow[]> {
-  if (surfacePath("profile") === "api") {
-    try {
-      const body = await apiFetchAsUser<RowsBody<ProfileActivityStatsRow>>("profile", "/api/me/profile/stats");
-      requireApiVersion("profile", body);
-      return body.rows ?? [];
-    } catch (error) {
-      if (!shouldUseLegacy(error)) throw error;
-    }
-  }
-  const { data, error } = await withSupabaseTimeout(
-    "profile_activity.stats",
-    supabase.rpc("get_my_profile_activity_stats", { p_env: supabaseEnv }),
-  );
-  if (error) throw error;
-  return (data ?? []) as ProfileActivityStatsRow[];
+/**
+ * Stats rows from the Worker (docs/supabase-exit/STEP1_DESIGN.md 9.4). Step 6
+ * (docs/supabase-exit/STEP6_PLAN.md WP-D): there is no RPC path, so any failure,
+ * a former legacy signal included, throws and the profile shows its notice.
+ */
+export async function readStatsRows(): Promise<ProfileActivityStatsRow[]> {
+  const body = await apiFetchAsUser<RowsBody<ProfileActivityStatsRow>>("profile", "/api/me/profile/stats");
+  requireApiVersion("profile", body);
+  return body.rows ?? [];
 }
 
 /** One activity page, by the same route as the stats. */
-async function readActivityRows(
+export async function readActivityRows(
   filter: ProfileActivityFilter,
   sort: ProfileActivitySort,
   offset: number,
-  operation: string,
 ): Promise<ProfileActivityRow[]> {
-  if (surfacePath("profile") === "api") {
-    try {
-      const query = new URLSearchParams({ category: filter, sort, offset: String(offset) });
-      const body = await apiFetchAsUser<RowsBody<ProfileActivityRow>>("profile", `/api/me/profile/activity?${query}`);
-      requireApiVersion("profile", body);
-      return body.rows ?? [];
-    } catch (error) {
-      if (!shouldUseLegacy(error)) throw error;
-    }
-  }
-  const { data, error } = await withSupabaseTimeout(
-    operation,
-    supabase.rpc("get_my_profile_activity", {
-      p_env: supabaseEnv,
-      p_category: filter,
-      p_sort: sort,
-      p_limit: PAGE_SIZE,
-      p_offset: offset,
-    }),
-  );
-  if (error) throw error;
-  return (data ?? []) as ProfileActivityRow[];
+  const query = new URLSearchParams({ category: filter, sort, offset: String(offset) });
+  const body = await apiFetchAsUser<RowsBody<ProfileActivityRow>>("profile", `/api/me/profile/activity?${query}`);
+  requireApiVersion("profile", body);
+  return body.rows ?? [];
 }
 
 function emptyStats(): ProfileActivityStats {
@@ -144,16 +111,16 @@ export function useProfileActivity(
   const [statsLoading, setStatsLoading] = useState(false);
   const [itemsLoading, setItemsLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [statsUnavailable, setStatsUnavailable] = useState(!supabaseEnabled);
-  const [itemsUnavailable, setItemsUnavailable] = useState(!supabaseEnabled);
+  const [statsUnavailable, setStatsUnavailable] = useState(false);
+  const [itemsUnavailable, setItemsUnavailable] = useState(false);
   const queryKeyRef = useRef("");
   queryKeyRef.current = `${userId ?? "guest"}:${filter}:${sort}`;
 
   useEffect(() => {
-    if (!supabaseEnabled || !userId) {
+    if (!userId) {
       setStats(emptyStats());
       setStatsLoading(false);
-      setStatsUnavailable(!supabaseEnabled);
+      setStatsUnavailable(false);
       return;
     }
 
@@ -188,11 +155,11 @@ export function useProfileActivity(
   }, [userId]);
 
   useEffect(() => {
-    if (!supabaseEnabled || !userId) {
+    if (!userId) {
       setItems([]);
       setTotalCount(0);
       setItemsLoading(false);
-      setItemsUnavailable(!supabaseEnabled);
+      setItemsUnavailable(false);
       return;
     }
 
@@ -201,7 +168,7 @@ export function useProfileActivity(
     setTotalCount(0);
     setItemsLoading(true);
 
-    readActivityRows(filter, sort, 0, "profile_activity.list")
+    readActivityRows(filter, sort, 0)
       .then((rows) => {
         if (cancelled) return;
 
@@ -222,12 +189,12 @@ export function useProfileActivity(
   }, [filter, sort, userId]);
 
   const loadMore = useCallback(async () => {
-    if (!supabaseEnabled || !userId || loadingMore || items.length >= totalCount) return;
+    if (!userId || loadingMore || items.length >= totalCount) return;
     const queryKey = queryKeyRef.current;
     setLoadingMore(true);
 
     try {
-      const rows = await readActivityRows(filter, sort, items.length, "profile_activity.more");
+      const rows = await readActivityRows(filter, sort, items.length);
       if (queryKeyRef.current !== queryKey) return;
 
       setItems((current) => [...current, ...rows.map(normalizeItem)]);

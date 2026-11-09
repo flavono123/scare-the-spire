@@ -1,22 +1,26 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   COLORFUL_PHILOSOPHERS_POSTS_TABLE,
   colorfulPhilosopherPostFromRow,
-  colorfulPhilosophersCommentThreadKey,
   colorfulPhilosophersNextWeekStart,
   COLORFUL_PHILOSOPHER_SLOTS,
-  isMissingColorfulPhilosopherPosts,
   type ColorfulPhilosopherPost,
 } from "@/lib/colorful-philosophers";
-import { apiFetch, SurfaceLegacyError } from "@/lib/api-client";
+import { apiFetch, ApiUnavailableError, requireApiVersion } from "@/lib/api-client";
+import { dataEnv } from "@/lib/data-env";
 import { isUuid } from "@/lib/engagement-keys";
-import { demoteSurface, surfacePath } from "@/lib/runtime-flags";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+// Only useColorfulPhilosophersNextWeekOpen still reads Supabase; WP-Z removes it with them.
+import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
-const POST_COLUMNS = "id, week_start, slot, resource_type, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count";
+/**
+ * Colorful philosophers posts, from the Worker only (docs/supabase-exit/STEP1_DESIGN.md 9.2).
+ * Step 6 (docs/supabase-exit/STEP6_PLAN.md WP-D): there is no direct Supabase read, so a
+ * former legacy signal (src/lib/api-client.ts) and a read the Worker cannot serve show the
+ * "database is not answering" state, as those reads did when they failed.
+ */
 
 type PostRow = Parameters<typeof colorfulPhilosopherPostFromRow>[0];
 
@@ -27,95 +31,105 @@ function postsFromRows(rows: readonly PostRow[]): ColorfulPhilosopherPost[] {
   });
 }
 
-/** A body this client does not know is a legacy signal (docs/supabase-exit/STEP1_DESIGN.md 9.2). */
-function checkVersion(body: { v?: unknown } | null): void {
-  if (body?.v === 1) return;
-  demoteSurface("colorful-philosophers");
-  throw new SurfaceLegacyError(200, false);
+export type ColorfulPhilosopherWeek = {
+  posts: ColorfulPhilosopherPost[];
+  /** Reply counts by post id, read with the posts. */
+  commentCounts: Record<string, number>;
+};
+
+/**
+ * The env's latest 100 posts and their reply counts. The Worker reads only its own env, so
+ * another env is unavailable without a request. Throws ApiError or ApiUnavailableError.
+ */
+export async function fetchColorfulPhilosopherWeek(env: string = dataEnv): Promise<ColorfulPhilosopherWeek> {
+  if (env !== dataEnv) throw new ApiUnavailableError(0, "other_env");
+  const body = await apiFetch<{ v?: number; posts?: PostRow[]; commentCounts?: Record<string, number> }>(
+    "colorful-philosophers",
+    "/api/read/colorful-philosophers/week",
+  );
+  requireApiVersion("colorful-philosophers", body);
+  return {
+    posts: postsFromRows(body.posts ?? []),
+    // No counts in a v1 answer means the Worker could not read them: show none.
+    commentCounts: body.commentCounts ?? {},
+  };
 }
 
-export function useColorfulPhilosopherWeek(env = supabaseEnv) {
+const HEX_PAIR = /^[0-9a-fA-F]{2}$/;
+
+/**
+ * The canonical uuid for an id written in another form Postgres's uuid input accepts (braces,
+ * hyphens left out or after any group of four digits; string_to_uuid in Postgres's uuid.c),
+ * or null when Postgres rejects it.
+ */
+function postgresUuid(value: string): string | null {
+  let rest = value;
+  const braces = rest.startsWith("{");
+  if (braces) rest = rest.slice(1);
+  let hex = "";
+  for (let byte = 0; byte < 16; byte += 1) {
+    const pair = rest.slice(0, 2);
+    if (!HEX_PAIR.test(pair)) return null;
+    hex += pair.toLowerCase();
+    rest = rest.slice(2);
+    if (rest.startsWith("-") && byte % 2 === 1 && byte < 15) rest = rest.slice(1);
+  }
+  if (braces) {
+    if (!rest.startsWith("}")) return null;
+    rest = rest.slice(1);
+  }
+  if (rest !== "") return null;
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+/**
+ * One post, or null when there is none. An id in another form of uuid is read as its canonical
+ * form, as the direct Supabase read matched it against the uuid id column. Any other id is
+ * unavailable without a request: that read failed on the cast and the page said the database
+ * was not answering (STEP6_PLAN WP-D 2). Throws ApiError or ApiUnavailableError.
+ */
+export async function fetchColorfulPhilosopherPost(postId: string): Promise<ColorfulPhilosopherPost | null> {
+  const id = isUuid(postId) ? postId : postgresUuid(postId);
+  if (!id) throw new ApiUnavailableError(0, "not_uuid");
+  const body = await apiFetch<{ v?: number; post?: PostRow | null }>(
+    "colorful-philosophers",
+    `/api/read/colorful-philosophers/post?id=${encodeURIComponent(id)}`,
+  );
+  requireApiVersion("colorful-philosophers", body);
+  return body.post ? colorfulPhilosopherPostFromRow(body.post) : null;
+}
+
+export function useColorfulPhilosopherWeek(env = dataEnv) {
   const [posts, setPosts] = useState<ColorfulPhilosopherPost[]>([]);
-  // Reply counts that came with the posts on the api path; null means "count them here".
+  // Reply counts that came with the posts; null until the first answer.
   const [commentCounts, setCommentCounts] = useState<Record<string, number> | null>(null);
-  const [loading, setLoading] = useState(supabaseEnabled);
+  const [loading, setLoading] = useState(true);
   const [unavailable, setUnavailable] = useState(false);
-  const [missing, setMissing] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const reload = useCallback(() => setReloadKey((value) => value + 1), []);
 
   useEffect(() => {
-    // The Worker reads its own env, so only the page's own env goes through it (the dev page picks others).
-    const viaApi = env === supabaseEnv && surfacePath("colorful-philosophers") === "api";
-    if (!supabaseEnabled && !viaApi) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- there is no post store to query
-      setPosts([]);
-      setLoading(false);
-      return;
-    }
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- show the loading line while the week is read
     setLoading(true);
-    if (viaApi) {
-      apiFetch<{ v?: number; posts?: PostRow[]; commentCounts?: Record<string, number> }>(
-        "colorful-philosophers",
-        "/api/read/colorful-philosophers/week",
-      ).then((body) => {
-        if (cancelled) return;
-        checkVersion(body);
-        setPosts(postsFromRows(body.posts ?? []));
-        // No counts in a v1 answer means the Worker could not read them: show none rather
-        // than have the browser ask Supabase again (STEP1_DESIGN 7, 9.2).
-        setCommentCounts(body.commentCounts ?? {});
-        setMissing(false);
-        setUnavailable(false);
-        setLoading(false);
-      }).catch((error) => {
-        if (cancelled) return;
-        if (error instanceof SurfaceLegacyError && supabaseEnabled) {
-          setReloadKey((value) => value + 1);
-          return;
-        }
-        setUnavailable(true);
-        setLoading(false);
-      });
-      return () => {
-        cancelled = true;
-      };
-    }
-    setCommentCounts(null);
-    withSupabaseTimeout(
-      "colorful_philosopher_posts.week",
-      supabase.from(COLORFUL_PHILOSOPHERS_POSTS_TABLE).select(POST_COLUMNS)
-        .eq("env", env)
-        .order("week_start", { ascending: false })
-        .limit(100),
-    ).then(({ data, error }) => {
+    fetchColorfulPhilosopherWeek(env).then((week) => {
       if (cancelled) return;
-      if (error) {
-        setMissing(isMissingColorfulPhilosopherPosts(error));
-        setUnavailable(!isMissingColorfulPhilosopherPosts(error));
-        setPosts([]);
-      } else {
-        setPosts((data ?? []).flatMap((row) => {
-          const post = colorfulPhilosopherPostFromRow(row);
-          return post ? [post] : [];
-        }));
-        setMissing(false);
-        setUnavailable(false);
-      }
+      setPosts(week.posts);
+      setCommentCounts(week.commentCounts);
+      setUnavailable(false);
       setLoading(false);
     }).catch(() => {
-      if (!cancelled) {
-        setUnavailable(true);
-        setLoading(false);
-      }
+      if (cancelled) return;
+      setUnavailable(true);
+      setLoading(false);
     });
     return () => {
       cancelled = true;
     };
   }, [env, reloadKey]);
 
-  return { posts, loading, unavailable, missing, reload, commentCounts };
+  // `missing` (the posts table not deployed) only ever came from the direct Supabase read.
+  return { posts, loading, unavailable, missing: false, reload, commentCounts };
 }
 
 /** True when next week's production reservation is missing any slot; rechecked per `refreshKey`. */
@@ -145,14 +159,13 @@ export function useColorfulPhilosophersNextWeekOpen(enabled: boolean, refreshKey
 
 export function useColorfulPhilosopherPost(postId: string) {
   const [post, setPost] = useState<ColorfulPhilosopherPost | null>(null);
-  const [loading, setLoading] = useState(Boolean(postId) && supabaseEnabled);
+  const [loading, setLoading] = useState(Boolean(postId));
   const [unavailable, setUnavailable] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const reload = useCallback(() => setReloadKey((value) => value + 1), []);
 
   useEffect(() => {
-    const viaApi = isUuid(postId) && surfacePath("colorful-philosophers") === "api";
-    if (!postId || (!supabaseEnabled && !viaApi)) {
+    if (!postId) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- there is no post to query
       setPost(null);
       setLoading(false);
@@ -160,50 +173,15 @@ export function useColorfulPhilosopherPost(postId: string) {
     }
     let cancelled = false;
     setLoading(true);
-    if (viaApi) {
-      apiFetch<{ v?: number; post?: PostRow | null }>(
-        "colorful-philosophers",
-        `/api/read/colorful-philosophers/post?id=${encodeURIComponent(postId)}`,
-      ).then((body) => {
-        if (cancelled) return;
-        checkVersion(body);
-        setPost(body.post ? colorfulPhilosopherPostFromRow(body.post) : null);
-        setUnavailable(false);
-        setLoading(false);
-      }).catch((error) => {
-        if (cancelled) return;
-        if (error instanceof SurfaceLegacyError && supabaseEnabled) {
-          setReloadKey((value) => value + 1);
-          return;
-        }
-        setUnavailable(true);
-        setLoading(false);
-      });
-      return () => {
-        cancelled = true;
-      };
-    }
-    withSupabaseTimeout(
-      "colorful_philosopher_posts.detail",
-      supabase.from(COLORFUL_PHILOSOPHERS_POSTS_TABLE).select(POST_COLUMNS)
-        .eq("id", postId)
-        .eq("env", supabaseEnv)
-        .maybeSingle(),
-    ).then(({ data, error }) => {
+    fetchColorfulPhilosopherPost(postId).then((next) => {
       if (cancelled) return;
-      if (error) {
-        setUnavailable(true);
-        setPost(null);
-      } else {
-        setPost(data ? colorfulPhilosopherPostFromRow(data) : null);
-        setUnavailable(false);
-      }
+      setPost(next);
+      setUnavailable(false);
       setLoading(false);
     }).catch(() => {
-      if (!cancelled) {
-        setUnavailable(true);
-        setLoading(false);
-      }
+      if (cancelled) return;
+      setUnavailable(true);
+      setLoading(false);
     });
     return () => {
       cancelled = true;
@@ -215,40 +193,8 @@ export function useColorfulPhilosopherPost(postId: string) {
 
 const EMPTY_COMMENT_COUNTS: Record<string, number> = {};
 
-/** `known`: counts that came with the week's posts (api path); then nothing is queried. */
+/** `known`: the counts that came with the week's posts; none until they come. */
 export function useColorfulPhilosopherCommentCounts(postIds: string[], known: Record<string, number> | null = null) {
-  const [counts, setCounts] = useState<Record<string, number>>(EMPTY_COMMENT_COUNTS);
-  const [loadedKey, setLoadedKey] = useState("");
-  const key = useMemo(() => [...postIds].sort().join(":"), [postIds]);
-
-  useEffect(() => {
-    if (known || !supabaseEnabled || postIds.length === 0) return;
-    let cancelled = false;
-    const threadKeys = postIds.map(colorfulPhilosophersCommentThreadKey);
-    withSupabaseTimeout(
-      "colorful_philosopher_comment_counts.select",
-      supabase.from("comments").select("story_id").eq("env", supabaseEnv).in("story_id", threadKeys).limit(1000),
-    ).then(({ data, error }) => {
-      if (cancelled) return;
-      if (error) throw error;
-      const next: Record<string, number> = {};
-      for (const row of data ?? []) {
-        const storyId = String((row as { story_id: unknown }).story_id ?? "");
-        const prefix = "colorful-philosophers:";
-        if (!storyId.startsWith(prefix)) continue;
-        const postId = storyId.slice(prefix.length);
-        next[postId] = (next[postId] ?? 0) + 1;
-      }
-      setCounts(next);
-      setLoadedKey(key);
-    }).catch(() => {
-      if (!cancelled) setLoadedKey(key);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [key, known]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (known) return known;
-  return postIds.length > 0 && loadedKey === key ? counts : EMPTY_COMMENT_COUNTS;
+  void postIds;
+  return known ?? EMPTY_COMMENT_COUNTS;
 }
