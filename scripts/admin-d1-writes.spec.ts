@@ -552,11 +552,11 @@ async function main() {
     const devRows = mixed!.data.filter((row) => row.env === "development");
     assert.equal(devRows.length, d1.testbed.rows("SELECT id FROM contact_inquiries").length, "development rows come from the testbed D1");
     const [{ n: prodTotal }] = await sbRows("select count(*)::int as n from public.contact_inquiries where env = 'production'");
-    assert.equal(mixed?.count, prodTotal + devRows.length);
+    assert.equal(mixed?.count, Number(prodTotal) + devRows.length);
     const [{ n: prodUnchecked }] = await sbRows("select count(*)::int as n from public.contact_inquiries where env = 'production' and status = 'new'");
     from = restCalls.length;
     const testbedUnchecked = Number(d1.testbed.one("SELECT count(*) AS n FROM contact_inquiries WHERE status = 'new'")!.n);
-    assert.equal(await countUncheckedInquiries(deps()), prodUnchecked + testbedUnchecked);
+    assert.equal(await countUncheckedInquiries(deps()), Number(prodUnchecked) + testbedUnchecked);
     assert.deepEqual(restSince(from), ["HEAD /rest/v1/contact_inquiries?env=eq.production&select=id&status=eq.new"]);
     await mirror("testbed");
 
