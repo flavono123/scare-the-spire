@@ -7,7 +7,8 @@
  * Usage: node scripts/check-client-bundle-supabase.mjs [asset directory ...]
  * With no argument it checks .cloudflare/assets and .patch-worker/assets, the
  * ones that exist. `cf:assets` and `patch:build` run it on their own output.
- * Every .js, .mjs and .html file under a directory is read.
+ * Every .js and .mjs file under a directory is read whole. In an .html file only
+ * what the build writes for the browser to run or fetch is read (htmlCode).
  *
  * A hit prints the file, what matched and how often, never the text around it:
  * a matched key must not land in a build log.
@@ -18,20 +19,40 @@ import path from "node:path";
 const DEFAULT_DIRECTORIES = [".cloudflare/assets", ".patch-worker/assets"];
 const CHECKED_EXTENSIONS = new Set([".js", ".mjs", ".html"]);
 
-/** [label, needle]: literal substrings, matched case-sensitively. */
+/**
+ * [label, needle, ignoreCase]: literal substrings, matched case-sensitively unless
+ * ignoreCase (postgrest: @supabase/postgrest-js and its PostgrestClient).
+ */
 const NEEDLES = [
   ["supabase-js auth client", "GoTrueClient"],
   ["supabase-js client", "SupabaseClient"],
   ["a @supabase/ package", "@supabase/"],
   ["supabase realtime-js", "realtime-js"],
+  ["supabase postgrest-js", "postgrest", true],
   ["a Supabase host", "supabase.co"],
   ["the PostgREST path", "/rest/v1"],
   ["the Supabase Auth path", "/auth/v1"],
+  ["the Supabase Realtime path", "/realtime"],
   // A publishable key (sb_publishable_...), and a legacy anon JWT, whose payload
   // starts {"iss":"supabase" (base64url).
   ["a Supabase publishable key", "sb_publishable_"],
   ["a legacy Supabase anon key", "eyJpc3MiOiJzdXBhYmFzZSI"],
 ];
+
+/**
+ * The parts of an .html file the build writes for the browser to run or fetch:
+ * every <script> element (start tag and body: inline scripts and config JSON, the
+ * RSC payload, script src) and every <link> and <meta> start tag. Element text and
+ * the other tags' attributes are left out: the shell patch pages bake user posts
+ * there (the transfigure and colorful philosophers reels, STEP6_PLAN.md 4), and a
+ * post that mentions supabase.co must not stop a deploy. React escapes < in that
+ * text, so a post cannot open one of these tags.
+ */
+const HTML_CODE = /<script\b[^>]*>[\s\S]*?(?:<\/script\s*>|$)|<(?:link|meta)\b[^>]*>/gi;
+
+function htmlCode(text) {
+  return Array.from(text.matchAll(HTML_CODE), (match) => match[0]).join("\n");
+}
 
 /**
  * The key this checkout or CI step would have inlined, when it is in the
@@ -80,9 +101,11 @@ for (const directory of directories) {
   const hits = [];
   for (const file of walk(directory)) {
     files += 1;
-    const text = readFileSync(file, "utf8");
-    for (const [label, needle] of NEEDLES) {
-      const found = count(text, needle);
+    const read = readFileSync(file, "utf8");
+    const text = path.extname(file) === ".html" ? htmlCode(read) : read;
+    const lower = text.toLowerCase();
+    for (const [label, needle, ignoreCase] of NEEDLES) {
+      const found = ignoreCase ? count(lower, needle.toLowerCase()) : count(text, needle);
       if (found > 0) hits.push(`${path.relative(directory, file)}: ${label} (${found}x)`);
     }
   }

@@ -539,7 +539,9 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
   패치 HTML 설정은 `{dataEnv}`만 담는다.
 - 빌드: `next build`는 읽지 않고, `patch:build`는 릴을 사이트 `/api`에서 굽는다(5.7절). CI 빌드 단계에는 Supabase URL과
   키가 없다(main 배포 단계와 그 앞의 검증 단계만 받는다). `scripts/check-client-bundle-supabase.mjs`가 `cf:assets`와
-  `patch:build`에서 브라우저 자산의 Supabase 흔적(클라이언트, 호스트, `/rest/v1`·`/auth/v1`, 키 앞부분)을 막는다.
+  `patch:build`에서 브라우저 자산의 Supabase 흔적(클라이언트와 `postgrest`, 호스트, `/rest/v1`·`/auth/v1`·`/realtime`,
+  키 앞부분)을 막는다. JS는 전체를 보고, HTML은 `<script>`와 `<link>`·`<meta>` 태그만 본다. 패치 페이지 본문에 구운
+  사용자 글이 이 문자열을 써도 배포가 막히지 않게 하기 위해서다.
 - CSP: `connect-src 'self' https://cloudflareinsights.com https://www.youtube.com`. Report-Only는 그대로다.
 - OG: `workers/detail-shell-og.ts`가 D1을 읽는다. `DETAIL_SHELL_OG=d1`일 때만 켜지고 기본은 꺼짐이라 운영 응답이
   지금과 같다.
