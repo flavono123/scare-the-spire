@@ -21,7 +21,8 @@ export function supabaseAdminConfig(env: NodeJS.ProcessEnv = process.env): Supab
 export type RestFetch = (url: string, init: RequestInit) => Promise<Response>;
 
 export interface RestRequest {
-  method: "GET" | "POST" | "PATCH";
+  /** HEAD: a count only (supabase-js `head: true`), read from Content-Range. */
+  method: "GET" | "HEAD" | "POST" | "PATCH";
   /** Table or rpc/<function>. */
   path: string;
   query?: Record<string, string>;

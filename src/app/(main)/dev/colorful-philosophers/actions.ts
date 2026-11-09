@@ -20,7 +20,10 @@ type WeekResult =
   | { ok: true; posts: ColorfulPhilosopherPost[] }
   | { ok: false; error: string };
 
-/** The week list of either env (its D1), for the editor's timeline and the slot preview. */
+/**
+ * The week list of either env, for the editor's timeline and the slot preview: from the store the
+ * save writes to (the env's D1 once some group is on d1, Supabase before), so a save shows at once.
+ */
 export async function listColorfulPhilosopherWeek(env: "development" | "production"): Promise<WeekResult> {
   if (process.env.NODE_ENV !== "development") {
     return { ok: false, error: "개발 서버에서만 글을 볼 수 있습니다." };
@@ -28,7 +31,7 @@ export async function listColorfulPhilosopherWeek(env: "development" | "producti
   const d1Env = d1EnvOf(env);
   if (!d1Env) return { ok: false, error: "알 수 없는 Supabase 환경입니다." };
   try {
-    const rows = await listPhilosopherPosts(adminDeps().d1(d1Env));
+    const rows = await listPhilosopherPosts(adminDeps(), d1Env);
     return {
       ok: true,
       posts: rows.flatMap((row) => {

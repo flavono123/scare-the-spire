@@ -137,7 +137,9 @@ interface AdminSnapshot {
 const adminD1 = () => adminDeps().d1;
 
 async function readContactInquiries(): Promise<QueryState<ContactInquiryAdminRow[]> | null> {
-  const result = await readAdminContactInquiries(adminD1());
+  // From the store the reply writes to (source.contact of each env), so a reply shows at once.
+  const result = await readAdminContactInquiries(adminDeps());
+  if (!result) return null;
   return { data: result.data as unknown as ContactInquiryAdminRow[], count: result.count, error: result.error };
 }
 
@@ -441,7 +443,16 @@ async function loadAdminSnapshot(
 }
 
 async function readNicknamePools(): Promise<NicknamePoolState> {
-  const { rows, gate, error } = await readAdminNicknamePools(adminD1()(ADMIN_D1_ENV));
+  // From the store the save writes to (production's source.profile), so a save shows at once.
+  const read = await readAdminNicknamePools(adminDeps());
+  if (!read) {
+    return {
+      pools: DEFAULT_PROFILE_NICKNAMES,
+      source: "defaults",
+      canEdit: false,
+    };
+  }
+  const { rows, gate, error } = read;
   // Saving needs the Supabase key only while production's profile source is Supabase.
   const canEdit = gate?.sources.profile === "d1" || supabaseAdminConfig() !== null;
   if (error) {

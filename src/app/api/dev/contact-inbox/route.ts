@@ -10,15 +10,18 @@ export async function GET() {
     return NextResponse.json({ message: "Not found" }, { status: 404 });
   }
 
-  // Both envs' D1 (production and testbed), as the Supabase count had no env filter.
-  const [{ adminDeps }, { countUncheckedInquiries }] = await Promise.all([
+  // Both envs (the Supabase count had no env filter), each from the store its replies write to.
+  const [{ adminDeps }, { countUncheckedInquiries, SupabaseKeyMissingError }] = await Promise.all([
     import("../../../../../scripts/admin/admin-deps"),
     import("../../../../../scripts/admin/admin-reads"),
   ]);
   try {
-    return NextResponse.json({ unchecked: await countUncheckedInquiries(adminDeps().d1) });
+    return NextResponse.json({ unchecked: await countUncheckedInquiries(adminDeps()) });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown D1 error";
+    if (error instanceof SupabaseKeyMissingError) {
+      return NextResponse.json({ message: "Supabase admin key is not configured." }, { status: 503 });
+    }
+    const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json({ message }, { status: 502 });
   }
 }

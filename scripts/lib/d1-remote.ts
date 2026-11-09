@@ -176,12 +176,15 @@ export class WritesPausedError extends Error {
   }
 }
 
+/** The gate read (the Worker's GATE_SQL); the operator reads lead their D1 call with it (admin-reads.ts). */
+export const GATE_STATEMENT: D1Statement = { sql: GATE_SQL, params: [WRITE_PAUSED_KEY] };
+
 /**
  * The step 5 write gate of an env, read from its D1 runtime_flags with the Worker's own SQL and
  * parser (workers/api/d1-write/gate.ts): a missing or unknown source is supabase. Unlike the Worker,
  * an unreadable gate is an error (nothing is written), never a default.
  */
 export async function readGate(d1: D1Remote): Promise<WriteGate> {
-  const [rows] = await d1.run([{ sql: GATE_SQL, params: [WRITE_PAUSED_KEY] }]);
+  const [rows] = await d1.run([GATE_STATEMENT]);
   return parseGateRows(rows ?? []);
 }

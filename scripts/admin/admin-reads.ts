@@ -6,6 +6,10 @@
  *
  * Supabase envs live in different D1 databases (production -> slseoun-prod, development ->
  * slseoun-testbed), so an env filter becomes the choice of database and a read of both envs reads both.
+ *
+ * Reads of rows an operator write changes (contact inquiries, nickname pools, philosopher posts) follow
+ * that write's store instead (see "Reads that follow the operator write" below): while the write goes
+ * to Supabase, D1 only gets it on the next step 2 sync, so the page reads Supabase and shows the save.
  */
 import {
   COMMENT_OTHER_PREFIXES,
@@ -14,12 +18,13 @@ import {
 } from "../../src/lib/admin-rls-activity";
 import type { CommentThreadService } from "../../src/lib/comment-threads";
 import { postgrestTs } from "../../src/lib/d1-time";
-import { WRITE_PAUSED_KEY } from "../../src/lib/write-source-flags";
-import { GATE_SQL, parseGateRows, type WriteGate } from "../../workers/api/d1-write/gate";
+import type { WriteSource } from "../../src/lib/write-source-flags";
+import { anyD1Source, parseGateRows, type WriteGate } from "../../workers/api/d1-write/gate";
 import { Q_F1, Q_P1 } from "../../workers/api/d1-adapters/queries";
-import { DATA_ENV_OF, D1_ENVS, type D1EnvName, type D1Remote, type D1Rows } from "../lib/d1-remote";
-import { supabaseRest, type RestFetch, type SupabaseAdminConfig } from "../lib/supabase-admin";
+import { DATA_ENV_OF, D1_ENVS, GATE_STATEMENT, type D1EnvName, type D1Remote, type D1Rows, type DataEnv } from "../lib/d1-remote";
+import { supabaseRest, type RestFetch, type RestRequest, type SupabaseAdminConfig } from "../lib/supabase-admin";
 import type { D1Statement } from "../../src/lib/d1-sync/statements";
+import { NICKNAME_POOLS_TABLE, PHILOSOPHER_POSTS_TABLE, PHILOSOPHER_SELECT, type AdminDeps } from "./admin-writes";
 
 type Row = Record<string, unknown>;
 
@@ -177,23 +182,125 @@ export async function readAdminServicePosts(
   return out;
 }
 
-/** Contact inquiries of both envs (each env's D1), newest first, with the total. */
-export async function readAdminContactInquiries(d1Of: (env: D1EnvName) => D1Remote): Promise<ReadResult<Row[]>> {
-  const parts = await Promise.all(D1_ENVS.map(async (env) => {
+// ------------------------------------------------------------------------------------------- reads that follow the operator write
+
+/**
+ * The stores of the dev server: each env's D1, and Supabase with the secret key (null without one).
+ * AdminDeps (admin-deps.ts) is one.
+ */
+export type AdminReadDeps = Pick<AdminDeps, "d1" | "supabase" | "fetch">;
+
+export const SUPABASE_KEY_MISSING = "SUPABASE_SECRET_KEY is not configured";
+
+/** A read that has to go to Supabase while the server has no secret key. */
+export class SupabaseKeyMissingError extends Error {
+  constructor() {
+    super(SUPABASE_KEY_MISSING);
+    this.name = "SupabaseKeyMissingError";
+  }
+}
+
+/**
+ * One D1 call of an env: its write gate (readGate's statement and parser, the gate the operator writes
+ * go by) and then the D1 rows, so a read on the D1 path costs no extra round trip. When the gate sends
+ * the matching write to Supabase, the caller drops the D1 rows and reads Supabase.
+ */
+async function gatedD1(d1: D1Remote, statements: D1Statement[]): Promise<{ gate: WriteGate; results: D1Rows[] }> {
+  const [gateRows, ...results] = await d1.run([GATE_STATEMENT, ...statements]);
+  return { gate: parseGateRows(gateRows ?? []), results };
+}
+
+/** A Supabase read with the secret key (PostgREST over fetch). Throws on a missing key or a failed request. */
+async function restRead(deps: AdminReadDeps, request: RestRequest): Promise<{ data: unknown; count: number | null }> {
+  if (!deps.supabase) throw new SupabaseKeyMissingError();
+  const result = await supabaseRest(deps.supabase, request, { fetch: deps.fetch });
+  if (!result.ok) throw Object.assign(new Error(result.error.message), { code: result.error.code });
+  return { data: result.data, count: result.count };
+}
+
+const rowsOf = (data: unknown): Row[] => (Array.isArray(data) ? (data as Row[]) : []);
+
+/**
+ * The envs whose source is supabase, as one Supabase read: no env filter when every env is on
+ * Supabase (the request the page made before D1), else one read per env with its `env` filter.
+ */
+function supabaseEnvFilters(envs: readonly D1EnvName[]): Array<DataEnv | undefined> {
+  if (envs.length === 0) return [];
+  return envs.length === D1_ENVS.length ? [undefined] : envs.map((env) => DATA_ENV_OF[env]);
+}
+
+// contact_inquiries: replyToContactInquiry goes by source.contact of the inquiry's env.
+
+export const CONTACT_INQUIRY_SELECT =
+  "id,user_id,category,message,reply_email,page_path,service_locale,game_locale,env,status,admin_response,responded_at,created_at";
+
+/** The page's Supabase read before D1: the latest 100 inquiries with the exact total. */
+export function contactInquiriesRequest(dataEnv?: DataEnv): RestRequest {
+  return {
+    method: "GET",
+    path: "contact_inquiries",
+    query: { select: CONTACT_INQUIRY_SELECT, ...(dataEnv ? { env: `eq.${dataEnv}` } : {}), order: "created_at.desc", limit: String(ADMIN_CONTACT_ROW_LIMIT) },
+    prefer: ["count=exact"],
+  };
+}
+
+/** The mailbox pip's Supabase count before D1 (supabase-js head: true). */
+export function uncheckedInquiriesRequest(dataEnv?: DataEnv): RestRequest {
+  return {
+    method: "HEAD",
+    path: "contact_inquiries",
+    query: { select: "id", ...(dataEnv ? { env: `eq.${dataEnv}` } : {}), status: "eq.new" },
+    prefer: ["count=exact"],
+  };
+}
+
+/**
+ * Contact inquiries of both envs, newest first, with the total: each env from the store its reply
+ * writes to. Null when that is Supabase for every env and the server has no secret key (the page's
+ * "server key needed" state, as before D1).
+ */
+export async function readAdminContactInquiries(deps: AdminReadDeps): Promise<ReadResult<Row[]> | null> {
+  type Part = { env: D1EnvName; source: WriteSource | null; rows: Row[]; count: number; error?: string };
+  const parts: Part[] = await Promise.all(D1_ENVS.map(async (env): Promise<Part> => {
     try {
-      const [rows, total] = await d1Of(env).run([
+      const { gate, results: [rows, total] } = await gatedD1(deps.d1(env), [
         stmt(
           "SELECT id, user_id, category, message, reply_email, page_path, service_locale, game_locale, status, admin_response, responded_at, created_at " +
             `FROM contact_inquiries ORDER BY created_at DESC LIMIT ${ADMIN_CONTACT_ROW_LIMIT}`,
         ),
         stmt("SELECT count(*) AS n FROM contact_inquiries"),
       ]);
-      return { rows: rows.map((row) => pgRow(row, { ts: ["responded_at", "created_at"] }, { env: DATA_ENV_OF[env] })), count: countOf(total) };
+      return {
+        env,
+        source: gate.sources.contact,
+        rows: rows.map((row) => pgRow(row, { ts: ["responded_at", "created_at"] }, { env: DATA_ENV_OF[env] })),
+        count: countOf(total),
+      };
     } catch (error) {
-      return { rows: [] as Row[], count: 0, error: `${DATA_ENV_OF[env]}: ${message(error)}` };
+      return { env, source: null, rows: [], count: 0, error: `${DATA_ENV_OF[env]}: ${message(error)}` };
     }
   }));
-  const errors = parts.flatMap((part) => ("error" in part && part.error ? [part.error] : []));
+
+  const onSupabase = parts.filter((part) => part.source === "supabase").map((part) => part.env);
+  if (onSupabase.length === D1_ENVS.length) {
+    if (!deps.supabase) return null;
+    try {
+      const { data, count } = await restRead(deps, contactInquiriesRequest());
+      return { data: rowsOf(data), count: count ?? undefined };
+    } catch (error) {
+      return { data: [], error: message(error) };
+    }
+  }
+  for (const part of parts) {
+    if (part.source !== "supabase") continue;
+    try {
+      const { data, count } = await restRead(deps, contactInquiriesRequest(DATA_ENV_OF[part.env]));
+      Object.assign(part, { rows: rowsOf(data), count: count ?? rowsOf(data).length });
+    } catch (error) {
+      Object.assign(part, { rows: [], count: 0, error: `${DATA_ENV_OF[part.env]}: ${message(error)}` });
+    }
+  }
+  const errors = parts.flatMap((part) => (part.error ? [part.error] : []));
   const data = parts
     .flatMap((part) => part.rows)
     .sort((left, right) => Date.parse(String(right.created_at)) - Date.parse(String(left.created_at)))
@@ -201,13 +308,32 @@ export async function readAdminContactInquiries(d1Of: (env: D1EnvName) => D1Remo
   return { data, count: parts.reduce((sum, part) => sum + part.count, 0), error: errors.length ? errors.join(" · ") : undefined };
 }
 
-/** The nickname pool rows (env-less: production's copy) and production's write gate, in one call. */
-export async function readAdminNicknamePools(d1: D1Remote): Promise<{ rows: Row[]; gate: WriteGate | null; error?: string }> {
+// profile_character_nickname_pools: env-less; saveProfileNicknamePools writes Supabase or production
+// D1 by production's source.profile (the testbed copy only follows), so production's gate decides.
+
+/** The page's Supabase read before D1. */
+export function nicknamePoolsRequest(): RestRequest {
+  return { method: "GET", path: NICKNAME_POOLS_TABLE, query: { select: "character_id,locale,nicknames" } };
+}
+
+/**
+ * The nickname pool rows from the store the save writes to, with production's write gate. Null when
+ * that is Supabase and the server has no secret key (defaults, not editable, as before D1).
+ */
+export async function readAdminNicknamePools(deps: AdminReadDeps): Promise<{ rows: Row[]; gate: WriteGate | null; error?: string } | null> {
+  let gate: WriteGate;
+  let d1Rows: D1Rows;
   try {
-    const [rows, gate] = await d1.run([stmt(Q_P1), stmt(GATE_SQL, WRITE_PAUSED_KEY)]);
-    return { rows: rows.map((row) => pgRow(row, { json: ["nicknames"] })), gate: parseGateRows(gate) };
+    ({ gate, results: [d1Rows] } = await gatedD1(deps.d1(ADMIN_D1_ENV), [stmt(Q_P1)]));
   } catch (error) {
     return { rows: [], gate: null, error: message(error) };
+  }
+  if (gate.sources.profile === "d1") return { rows: d1Rows.map((row) => pgRow(row, { json: ["nicknames"] })), gate };
+  if (!deps.supabase) return null;
+  try {
+    return { rows: rowsOf((await restRead(deps, nicknamePoolsRequest())).data), gate };
+  } catch (error) {
+    return { rows: [], gate, error: message(error) };
   }
 }
 
@@ -229,13 +355,21 @@ export async function readRlsActivityMetricsRpc(
 
 // ------------------------------------------------------------------------------------------- /api/dev
 
-/** Inquiries still in the "new" state, both envs (the dev mailbox pip). */
-export async function countUncheckedInquiries(d1Of: (env: D1EnvName) => D1Remote): Promise<number> {
-  const counts = await Promise.all(D1_ENVS.map(async (env) => {
-    const [rows] = await d1Of(env).run([stmt("SELECT count(*) AS n FROM contact_inquiries WHERE status = 'new'")]);
-    return countOf(rows);
+/**
+ * Inquiries still in the "new" state, both envs (the dev mailbox pip), each env from the store its
+ * reply writes to. Throws SupabaseKeyMissingError when that is Supabase and there is no secret key.
+ */
+export async function countUncheckedInquiries(deps: AdminReadDeps): Promise<number> {
+  const parts = await Promise.all(D1_ENVS.map(async (env) => {
+    const { gate, results: [rows] } = await gatedD1(deps.d1(env), [stmt("SELECT count(*) AS n FROM contact_inquiries WHERE status = 'new'")]);
+    return { env, source: gate.sources.contact, count: countOf(rows) };
   }));
-  return counts.reduce((sum, value) => sum + value, 0);
+  const onSupabase = parts.filter((part) => part.source === "supabase").map((part) => part.env);
+  let total = parts.filter((part) => part.source === "d1").reduce((sum, part) => sum + part.count, 0);
+  for (const dataEnv of supabaseEnvFilters(onSupabase)) {
+    total += (await restRead(deps, uncheckedInquiriesRequest(dataEnv))).count ?? 0;
+  }
+  return total;
 }
 
 export const PROD_RUN_LIMIT = 100;
@@ -271,14 +405,36 @@ export async function readProductionRun(d1: D1Remote, runId: string): Promise<Ro
   return pgRow(row, { bool: ["win"], ts: ["created_at"] });
 }
 
-/** /dev/colorful-philosophers: the env's latest 100 posts (the week list the Worker serves, F1). */
-export async function listPhilosopherPosts(d1: D1Remote): Promise<Row[]> {
-  const [rows] = await d1.run([stmt(Q_F1)]);
-  return rows;
+// colorful_philosopher_posts: saveColorfulPhilosopherPostRow writes D1 while some group of the env is on
+// d1 (anyD1Source), Supabase otherwise.
+
+export const PHILOSOPHER_WEEK_LIMIT = 100;
+
+/** The week list's Supabase read before D1 (useColorfulPhilosopherWeek): the env's latest 100 posts. */
+export function philosopherWeekRequest(dataEnv: DataEnv): RestRequest {
+  return {
+    method: "GET",
+    path: PHILOSOPHER_POSTS_TABLE,
+    query: { select: PHILOSOPHER_SELECT.replace(/ /g, ""), env: `eq.${dataEnv}`, order: "week_start.desc", limit: String(PHILOSOPHER_WEEK_LIMIT) },
+  };
 }
 
-/** The slots of a week's production posts (the dev menu's "next week is not full" dot). */
-export async function philosopherWeekSlots(d1: D1Remote, weekStart: string): Promise<string[]> {
-  const [rows] = await d1.run([stmt("SELECT slot FROM colorful_philosopher_posts WHERE week_start = ?1", weekStart)]);
-  return rows.map((row) => String(row.slot));
+/** The dev menu dot's Supabase read before D1 (useColorfulPhilosophersNextWeekOpen). */
+export function philosopherSlotsRequest(dataEnv: DataEnv, weekStart: string): RestRequest {
+  return { method: "GET", path: PHILOSOPHER_POSTS_TABLE, query: { select: "slot", env: `eq.${dataEnv}`, week_start: `eq.${weekStart}` } };
+}
+
+/** /dev/colorful-philosophers: the env's latest 100 posts, from the store the save writes to (D1: the Worker's F1). */
+export async function listPhilosopherPosts(deps: AdminReadDeps, env: D1EnvName): Promise<Row[]> {
+  const { gate, results: [rows] } = await gatedD1(deps.d1(env), [stmt(Q_F1)]);
+  if (anyD1Source(gate)) return rows;
+  return rowsOf((await restRead(deps, philosopherWeekRequest(DATA_ENV_OF[env]))).data);
+}
+
+/** The slots of a week's production posts (the dev menu's "next week is not full" dot), from the store the save writes to. */
+export async function philosopherWeekSlots(deps: AdminReadDeps, weekStart: string): Promise<string[]> {
+  const env: D1EnvName = "production";
+  const { gate, results: [rows] } = await gatedD1(deps.d1(env), [stmt("SELECT slot FROM colorful_philosopher_posts WHERE week_start = ?1", weekStart)]);
+  const slots = anyD1Source(gate) ? rows : rowsOf((await restRead(deps, philosopherSlotsRequest(DATA_ENV_OF[env], weekStart))).data);
+  return slots.map((row) => String(row.slot));
 }
