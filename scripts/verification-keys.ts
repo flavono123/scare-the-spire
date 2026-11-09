@@ -11,10 +11,16 @@
  *   tsx scripts/verification-keys.ts unrevoke <kid> --env ... --note "why"    (rollback of a revoke)
  *
  * Revoking: a revoked kid is refused even while Supabase's JWKS still lists it. Rotate in Supabase first
- * (a new key signs new sessions), `add` the new key, then `revoke` the old one; anyone still holding a
- * token of the old key gets token_invalid and signs in again (Supabase refreshes with the new key). After
- * revoking a compiled-in key, drop it from supabase-jwks.ts in the next deploy too: that list alone counts
- * in an isolate whose first D1 read failed.
+ * (a new key signs new sessions) and `add` the new key, then `revoke` the old one. A browser whose access
+ * token was signed by the revoked key gets token_invalid on every /api/me and /api/write call (and on a
+ * claim with that token). The client does not refresh on token_invalid (only on token_expired): the error
+ * lasts until supabase-js refreshes the session on its own schedule, shortly before the token expires
+ * (access token lifetime, 1 hour by default; the new token is signed with the new key), or until it claims
+ * again with a refreshed token. Signed-cookie identities that already claimed do not depend on the key.
+ * So after a planned rotation wait at least one access token lifetime before revoking; revoke at once only
+ * for a leaked key, accepting up to that long of failing calls. After revoking a compiled-in key, drop it
+ * from supabase-jwks.ts in the next deploy too: that list alone counts in an isolate whose first D1 read
+ * failed.
  *
  * Same target rules as scripts/runtime-flags.ts: --env and --remote|--local are required (wrangler's
  * default is local), and writing to production also needs --confirm-production, only after the user
