@@ -209,7 +209,13 @@ function checkWranglerConfig() {
   assert.equal(testbed.database_name, "slseoun-testbed");
   assert.equal(config.vars?.API_RUNTIME_FLAGS, "d1", "production reads runtime_flags since step 2");
   assert.deepEqual(config.assets?.run_worker_first, ["/api/*"]);
-  for (const key of ["API_SUPABASE_URL", "API_SUPABASE_KEY", "API_DATA_ENV", "API_PATH_DEFAULT"]) {
+  // Step 4 defaults (2026-11-09): every path.<group> is api and every write.<group> row is set,
+  // so these only decide a failed flag read (STEP4_WRITE_GATE.md 7, 8).
+  for (const vars of [config.vars, config.env?.testbed?.vars]) {
+    assert.equal(vars?.API_PATH_DEFAULT, "api", "API_PATH_DEFAULT is api in both envs");
+    assert.equal(vars?.API_WRITE_MODE_DEFAULT, "worker", "API_WRITE_MODE_DEFAULT is worker in both envs");
+  }
+  for (const key of ["API_SUPABASE_URL", "API_SUPABASE_KEY", "API_DATA_ENV"]) {
     assert.equal(config.vars?.[key], undefined, `${key} comes from --var, not the repo`);
     assert.equal(config.env?.testbed?.vars?.[key], undefined, `${key} comes from --var, not the repo`);
   }

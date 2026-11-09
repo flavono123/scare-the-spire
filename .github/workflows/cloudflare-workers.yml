@@ -30,7 +30,8 @@ jobs:
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       NEXT_PUBLIC_SUPABASE_ENV: ${{ vars.NEXT_PUBLIC_SUPABASE_ENV || 'production' }}
       # Path of a page with no slseoun_rf cookie (src/lib/runtime-flags.ts): unset = legacy.
-      NEXT_PUBLIC_API_PATH_DEFAULT: ${{ vars.NEXT_PUBLIC_API_PATH_DEFAULT }}
+      # api since 2026-11-09 (STEP4_WRITE_GATE.md 7): a page without the slseoun_rf cookie uses /api.
+      NEXT_PUBLIC_API_PATH_DEFAULT: ${{ vars.NEXT_PUBLIC_API_PATH_DEFAULT || 'api' }}
       ALLOW_BUILD_WITHOUT_SUPABASE: ${{ vars.ALLOW_BUILD_WITHOUT_SUPABASE }}
       NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN: ${{ secrets.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN || vars.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN }}
     steps:

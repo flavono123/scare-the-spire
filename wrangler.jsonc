@@ -23,9 +23,14 @@
   // is missing or unknown or whose flags cannot be read (plan 7.2), in the router and the page
   // cookie; the browser bundles take the same default at build time from
   // NEXT_PUBLIC_API_PATH_DEFAULT when a page has no slseoun_rf cookie. Both go to api before the
-  // direct writes are closed (docs/supabase-exit/STEP4_WRITE_GATE.md 7), deployed with --var, not here.
+  // direct writes are closed (docs/supabase-exit/STEP4_WRITE_GATE.md 7); api since 2026-11-09 (every
+  // path.<group> was already api). API_WRITE_MODE_DEFAULT is the write mode of a group whose
+  // write.<group> row is missing or cannot be read: worker since 2026-11-09, with every production
+  // write.<group> row set explicitly, so the default only decides a failed flag read.
   "vars": {
-    "API_RUNTIME_FLAGS": "d1"
+    "API_RUNTIME_FLAGS": "d1",
+    "API_PATH_DEFAULT": "api",
+    "API_WRITE_MODE_DEFAULT": "worker"
   },
   // Step 2 1-minute D1 sync (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3). A no-op unless
   // API_RUNTIME_FLAGS is "d1" and runtime_flags sync.enabled is on; API_SUPABASE_SECRET_KEY is a secret.
@@ -70,7 +75,9 @@
       "workers_dev": true,
       "preview_urls": true,
       "vars": {
-        "API_RUNTIME_FLAGS": "d1"
+        "API_RUNTIME_FLAGS": "d1",
+        "API_PATH_DEFAULT": "api",
+        "API_WRITE_MODE_DEFAULT": "worker"
       },
       "triggers": {
         "crons": ["* * * * *"]
