@@ -27,8 +27,10 @@ export type JwtVerifyOptions = {
   now?: number;
   /** Loads the live JWKS when a token names a key that is not pinned. */
   fetchJwks?: () => Promise<readonly SupabaseJwk[]>;
-  /** Overrides the pinned keys (tests). */
+  /** The keys to try before the live JWKS: the D1 key list (verification-keys.ts); default the compiled-in keys. */
   pinnedKeys?: readonly SupabaseJwk[];
+  /** Kids refused before any key lookup, so the live JWKS cannot bring a revoked key back (verification-keys.ts). */
+  revokedKids?: ReadonlySet<string>;
   /** Keeps a shared JWKS fetch alive when the request that started it ends. */
   waitUntil?: (promise: Promise<unknown>) => void;
   /**
@@ -252,6 +254,7 @@ export async function checkSupabaseAccessToken(token: string, options: JwtVerify
   } else {
     // JWS ES256 signatures are the raw 64-byte r||s pair WebCrypto expects.
     if (signature.length !== 64) return invalid;
+    if (options.revokedKids?.has(kid as string)) return invalid;
 
     const pinned = options.pinnedKeys ?? PINNED_SUPABASE_JWKS;
     const jwk = pinned.find((key) => key.kid === kid) ?? await liveKey(kid as string, options);

@@ -20,12 +20,16 @@ import {
   coverPhrasePoolFromFacts,
   coverPoolFactsFromRun,
   factsFromRun,
+  pickAlternatingCover,
   pickAlternatingCoverFromFacts,
   type CoverPoolFacts,
   type PhraseFacts,
 } from "./run-cover-suggest";
+import type { CoverSpec } from "./run-cover-types";
+import { RUN_SUMMARY_COLUMNS } from "./history-runs-api-rules";
 import { buildRunHighlights, runHighlightFromId } from "./run-highlights";
 import {
+  isSummaryListRow,
   normalizeRunSummaryRow,
   parseCoverSpec,
   parseRunSafely,
@@ -185,6 +189,158 @@ export function listInputsFromSummaryRow(row: RunSummaryListRow): HistoryRunList
       coverPhrasePool: (elements) => coverPhrasePoolFromFacts(phrase, elements),
     },
   };
+}
+
+/** True when a D1 row has its summary (summary_version above 0 and every summary column). */
+export function hasListSummary(row: RunSummaryListRow): boolean {
+  return row.summary_version > 0 && Boolean(row.list_facts) && Boolean(row.characters)
+    && row.game_mode !== null && Boolean(row.game_elements);
+}
+
+const isText = (value: unknown): value is string => typeof value === "string";
+const isCount = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
+const isObject = (value: unknown): value is Record<string, unknown> => Boolean(value) && typeof value === "object" && !Array.isArray(value);
+
+/** list_facts as extractRunListSummary writes it, element by element. */
+function isListFacts(value: unknown): value is RunListFacts {
+  if (!isObject(value)) return false;
+  const { cards, relics, potions, deck_size, relic_count, highlight_card, highlight_relic } = value;
+  return Array.isArray(cards) && cards.every((card) => Array.isArray(card) && card.length === 4 && isText(card[0])
+      && isCount(card[1]) && (card[2] === null || isCount(card[2])) && typeof card[3] === "boolean")
+    && Array.isArray(relics) && relics.every((relic) => Array.isArray(relic) && relic.length === 2 && isText(relic[0]) && typeof relic[1] === "boolean")
+    && Array.isArray(potions) && potions.every(isText)
+    && isCount(deck_size) && isCount(relic_count)
+    && (highlight_card === null || isText(highlight_card)) && (highlight_relic === null || isText(highlight_relic));
+}
+
+/** The other summary columns as the extractor writes them (characters, game_mode, game_elements, badges). */
+function isSummaryShape(row: RunSummaryListRow): boolean {
+  return Array.isArray(row.characters) && row.characters.every(isText)
+    && isText(row.game_mode)
+    && Array.isArray(row.game_elements) && row.game_elements.every((element) => isObject(element) && isText(element.type) && isText(element.id))
+    && Array.isArray(row.badges) && row.badges.every(isObject);
+}
+
+/**
+ * The list inputs of a D1 row from its summary columns, or null when the row has no summary or one
+ * the list cannot read (columns of the wrong shape, from a hand-made share at step 5). The search
+ * doc is built once here, as the list builds it for every card, so a summary that fails there fails
+ * here, for this row only.
+ */
+function summaryInputsOrNull(row: RunSummaryListRow): HistoryRunListInputs | null {
+  if (!hasListSummary(row) || !isListFacts(row.list_facts) || !isSummaryShape(row)) return null;
+  try {
+    const inputs = listInputsFromSummaryRow(row);
+    listSearchDoc(inputs);
+    return inputs;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Today's list row for a D1 row without a summary: the RUN_SUMMARY_COLUMNS of the Supabase select,
+ * with the raw read from R3r (null when it could not be read).
+ */
+export function rawRowFromSummaryRow(row: Record<string, unknown>, raw: string | null): RunRow {
+  const out: Record<string, unknown> = {};
+  for (const name of RUN_SUMMARY_COLUMNS.split(",")) out[name] = name === "raw" ? raw : row[name];
+  return out as RunRow;
+}
+
+/** Fetches one run's raw file (R3r); null when it is not shared or cannot be read. */
+export type RunRawFetcher = (runId: string) => Promise<string | null>;
+
+/** summary_version 0 runs read their raw at most this many at a time. */
+const RAW_FETCH_CONCURRENCY = 4;
+
+async function rawOf(fetchRaw: RunRawFetcher, runId: string): Promise<string | null> {
+  try {
+    return await fetchRaw(runId);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The history-course list (R1) or the run picker (R2) as DonatedRunSummary rows, from either
+ * answer shape, with the functions today's list uses:
+ * - a Supabase row (with `raw`): normalizeRunSummaryRow, as today;
+ * - a D1 row with its summary: listInputsFromSummaryRow, the search facts kept on `search_facts`;
+ * - a D1 row with summary_version 0, or a summary the list cannot read: its raw from R3r, then
+ *   normalizeRunSummaryRow (design 4.4). One such row never fails the others.
+ */
+export async function donatedRunsFromListRows(
+  rows: readonly RunRow[],
+  fetchRaw: RunRawFetcher,
+): Promise<DonatedRunSummary[]> {
+  const out: DonatedRunSummary[] = new Array(rows.length);
+  const pending: number[] = [];
+  rows.forEach((row, index) => {
+    if (!isSummaryListRow(row)) {
+      out[index] = normalizeRunSummaryRow(row);
+      return;
+    }
+    // No usable summary (summary_version 0, or columns the list cannot read): this row only goes the raw way.
+    const inputs = summaryInputsOrNull(row as unknown as RunSummaryListRow);
+    if (!inputs) {
+      pending.push(index);
+      return;
+    }
+    out[index] = inputs.searchFacts ? { ...inputs.summary, search_facts: inputs.searchFacts } : inputs.summary;
+  });
+  let next = 0;
+  const worker = async () => {
+    while (next < pending.length) {
+      const index = pending[next];
+      next += 1;
+      const row = rows[index] as Record<string, unknown>;
+      out[index] = normalizeRunSummaryRow(rawRowFromSummaryRow(row, await rawOf(fetchRaw, String(row.id))));
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(RAW_FETCH_CONCURRENCY, pending.length) }, worker));
+  return out;
+}
+
+/** The cover view row from D1 (R4): the stored cover and what a non-manual one is re-picked from. */
+export interface RunSummaryCoverRow {
+  id: string;
+  cover_spec: unknown;
+  list_facts: RunListFacts | null;
+  win: boolean;
+  ascension: number;
+  total_floors: number;
+  summary_version: number;
+}
+
+/**
+ * The combo thumb's cover from an R4 row, picked as getRunCoverSpec picks it from the raw: a manual
+ * cover as stored, otherwise pickAlternatingCover on the run, here from list_facts and the phrase
+ * columns (summary_version 0: from the raw, R3r).
+ */
+export async function coverFromSummaryCoverRow(
+  runId: string,
+  row: RunSummaryCoverRow,
+  fetchRaw: RunRawFetcher,
+): Promise<CoverSpec | null> {
+  const stored = parseCoverSpec(row.cover_spec);
+  if (stored?.auto === false) return stored;
+  const facts = row.list_facts;
+  if (row.summary_version > 0 && isListFacts(facts)) {
+    try {
+      return pickAlternatingCoverFromFacts(runId, facts, {
+        win: row.win,
+        totalFloors: row.total_floors,
+        ascension: row.ascension,
+        relicCount: facts.relic_count,
+        deckSize: facts.deck_size,
+      });
+    } catch {
+      // Facts the picker cannot read: pick from the raw below.
+    }
+  }
+  const parsed = parseRunSafely(await rawOf(fetchRaw, runId));
+  return parsed ? pickAlternatingCover(runId, parsed) : stored;
 }
 
 /** The search doc the list builds for a donated run (history-course-run-index.tsx). */

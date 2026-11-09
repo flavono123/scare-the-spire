@@ -37,6 +37,19 @@ export function shadowFlagKey(group: ApiSurfaceGroup): string {
   return `shadow.${group}`;
 }
 
+/**
+ * Step 3 read store of a group's GET routes (docs/SUPABASE_EXIT_PLAN.md 7.3 step 3): `supabase`
+ * (missing row: today) or `d1` (the route's D1 adapter answers; a D1 failure falls back to Supabase
+ * while `source.<group>` is still supabase).
+ */
+export const READ_STORES = ["supabase", "d1"] as const;
+export type ReadStoreFlag = (typeof READ_STORES)[number];
+
+/** D1 key of a group's step 3 read store flag. */
+export function readFlagKey(group: ApiSurfaceGroup): string {
+  return `read.${group}`;
+}
+
 /** Cookie the Worker sets on page responses: `v1` plus the api groups, dot-joined. */
 export const FLAG_COOKIE_NAME = "slseoun_rf";
 const FLAG_COOKIE_VERSION = "v1";

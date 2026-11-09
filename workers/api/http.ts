@@ -96,3 +96,20 @@ export function passthroughJson(upstream: Response, env: string, status = 200): 
     },
   });
 }
+
+/**
+ * Stored text as the response body, unparsed and not wrapped in JSON (the run raw file, R3r in
+ * docs/supabase-exit/D1_SCHEMA_DESIGN.md 4.4). An empty body means no such row in this env.
+ */
+export function textResponse(body: BodyInit | null, env: string): Response {
+  return new Response(body, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": PRIVATE_NO_STORE,
+      "X-Robots-Tag": "noindex",
+      "X-Slseoun-Api-Env": env,
+      [API_MARKER_HEADER]: "1",
+    },
+  });
+}

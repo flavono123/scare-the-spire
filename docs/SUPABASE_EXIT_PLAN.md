@@ -446,6 +446,40 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 - 되돌리기는 화면 플래그를 `supabase`로 바꾸는 것뿐이다. 원본이 그대로라 잃는 것이 없다.
 - 넘어갈 조건: 켠 화면의 응답 시간 개선, D1 rows read가 하루 200만 행 아래, 매일 대조 일치.
 
+구현(2026-11-09, 브랜치 `step3/reads`):
+
+- 플래그 `read.<group>` = `supabase` | `d1`(행이 없으면 supabase). 다른 플래그와 같은 `runtime_flags` 한 문장으로 읽고 isolate에
+  30초 둔다. 원본이 Supabase인 동안 `read.<group>` = d1은 `sync.enabled` = on일 때만 적용된다(동기화가 꺼지면 D1이 뒤처지므로
+  Supabase를 읽는다). `source.<group>` = d1이면 동기화 플래그와 상관없이 D1을 읽는다. `pnpm flags set read.<group> d1 --env testbed --remote --note "..."`, 운영 원격은 `--confirm-production`.
+- 라우터: `read.<group>`이 d1이거나 `source.<group>`이 d1인 그룹의 GET(HEAD 제외)은 쿼리·rate limit·신원 검사 뒤 그 경로의 D1
+  어댑터가 답한다(`workers/api/d1-read.ts`). 머리글은 Supabase 답과 같다(배열은 통과 응답 머리글, 봉투는 `jsonResponse`).
+  네비는 지금처럼 공유 `api_cache` 스냅샷(isolate 메모리 30초, `public, max-age=30`, 1분에 한 isolate만 갱신)으로 답하고
+  갱신만 Supabase 대신 D1에서 읽는다. D1 답은 그림자 대조하지 않는다. 역사 강의서 목록·고르기·상세·표지는 원문 없는 D1
+  답을 읽는 클라이언트(`X-Slseoun-Run-Summary: 1`)에게만 D1로 답한다(원본이 D1이 되면 모두에게).
+- 실패: `read.<group>` = d1이고 원본이 Supabase이면 D1 오류·2초 시간 초과는 그 요청만 Supabase 처리기로 답하고 한 줄
+  (`api d1read <route> fallback`)을 남긴다. D1이 묶지 못하는 입력도 Supabase 처리기로 간다(오늘 답). `source.<group>` = d1이면
+  Supabase로 가지 않고 Supabase 실패 때와 같은 503(입력 오류는 400)이다.
+- 역사 강의서: 클라이언트가 두 답 모양을 다 읽어 플래그를 언제든 어느 쪽으로든 바꿀 수 있다(`donatedRunsFromListRows`). D1
+  목록·고르기 행은 요약 열로 같은 함수를 돌리고, 요약이 없는 런(`summary_version` 0)은 R3r로 원문을 받아 오늘처럼 만든다.
+  상세와 목록의 표지 편집기는 R3r(`/api/read/history-run/raw`, text/plain)로 원문을 받는다. 코오오옴보 썸네일 표지(R4)에
+  문구 입력 열(`win`, `ascension`, `total_floors`, `summary_version`)을 더했다.
+- R3r의 Supabase 처리기는 PostgREST가 `Accept: text/plain`을 거절해(PGRST107) JSON으로 읽어 본문을 답한다. D1에 런 행은
+  있는데 원문 파일이 없으면 D1 오류로 보고 Supabase로 답한다(원본이 D1이면 503).
+- HTML 첫 데이터 주입은 하지 않았다(1단계에서 페이지 다시 쓰기 CPU가 크다고 확인했다).
+- testbed 결과(2026-11-09, 모든 그룹 `read.<group>` = d1): 화면 25개(ko·en)의 본문이 supabase 쪽과 같고 콘솔 오류가 없다.
+  역사 강의서 목록·고르기·상세·표지는 같은 순간의 Supabase 행과 데이터로 비교해 같다(원문 바이트 일치). 다른 점은 하나:
+  `created_at`이 같은 런 101개 묶음이 100개 목록 경계에 걸려, 어느 2개가 빠지는지가 Postgres와 D1에서 다르다(Postgres는
+  동률 정렬이 없고 D1은 id 순, D1 설계 6절 1번). 모바일(`mobile-viewport-qa`, 8개 크기, 320px 포함, ko·en)도 d1과 supabase의
+  결과가 같다(가로 넘침 없음, 콘솔 오류 없음). 이 스크립트의 `slseoun_qa=no-supabase` 쿠키는 /api를 legacy로 돌려 D1 읽기도
+  막으므로 `--allow-supabase`로 돌렸다.
+- 비용(testbed, `wrangler tail`·`d1 execute`): 목록 한 번 D1 rows read 201(+플래그 19, isolate당 30초에 한 번), 답 약 540 KB
+  (Supabase 원문 포함 약 5.5 MB). Worker CPU 중간값: D1 목록 10 ms(9~18), 고르기 5 ms, 상세 2 ms, R3r 원문 277 KB 4 ms
+  (3~10), 48 KB 2 ms. 같은 화면의 Supabase 쪽(testbed는 그림자 100%)은 목록 16 ms, 상세 4 ms, R3r 277 KB 10 ms(JSON 파싱).
+  D1 목록은 Free 10 ms 한도에 닿아 있어, 행마다 JSON 텍스트를 SQLite가 만들게 바꿨다(R1j·R2j, 답은 같은 값). 바꾼 뒤
+  (n=20) 목록 8 ms(5~18), 고르기 3 ms, 상세 2 ms, R3r 277 KB 5 ms. 목록은 D1에서 Worker를 지나는 바이트(약 540 KB, 그중
+  `game_elements` 약 390 KB)에 비례해 100 KB에 약 1.4 ms가 들어, 같은 답으로는 5 ms 아래로 내려가지 않는다. 더 줄이려면 답
+  모양을 바꿔야 한다(예: `game_elements`를 `type:id` 같은 짧은 꼴로 보내고 클라이언트가 펼치기, 또는 목록과 따로 받기).
+
 #### 4단계: 신원과 쓰기 검증을 Worker로(원본은 여전히 Supabase)
 
 - 서명 쿠키 신원을 켠다(5.3절). 기존 사용자는 Supabase 토큰을 claim해 같은 uid를 받는다. 토큰은 지우지 않는다.

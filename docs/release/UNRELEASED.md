@@ -10,12 +10,14 @@
 | 이름 | 브랜치 | 목적 | 상태 |
 |---|---|---|---|
 | domain-migration-c54d7b | claude/domain-migration-c54d7b | 도메인 이전(레거시 호스트 안내, 리다이렉트, robots/sitemap) | 11커밋, main보다 332 뒤처짐. 2026-10-26 정기 배포에서 제외 |
+| step3-reads | step3/reads | Supabase 이관 3단계: 읽기를 D1으로(`read.<group>` 플래그, 역사 강의서 요약 목록·R3r 원문) | testbed 확인 끝(모든 그룹 `read.<group>` = d1로 둠). `refactor/supabase-exit`에 병합 대기 |
 | supabase-exit | refactor/supabase-exit | Supabase → D1 이관. 계획은 [SUPABASE_EXIT_PLAN.md](../SUPABASE_EXIT_PLAN.md) 7절 | 2~5단계 코드를 2026-11-09 운영에 냈다(`438e5e86`). 운영은 1단계 화면 전환(전 그룹 api)과 2단계 동기화·그림자가 켜져 있다. 3단계부터 계속한다 |
 
 ## Supabase 마이그레이션
 
 | 파일 | Rollout | Order | 적용 | 확인 |
 |---|---|---|---|---|
+| `20261109150000_worker_read_actor.sql`(4단계 쿠키만 있는 신원의 개인 읽기: 프로필·퍼즐상자 읽기 RPC 넷의 `worker_*` 래퍼, service_role만. 되돌리기 `worker-read-actor/rollback_worker_read_actor.sql`) | db-first-additive | before-push(어느 env든 `identity.mode = cookie` 전. testbed는 이미 cookie라 그 전까지 프로필 통계·활동과 퍼즐상자 `me` 읽기가 실패) | 적용 안 함(`step4/prereqs`) | 로컬 PGlite `pnpm test:write-gate` 통과(개인 읽기 22가지 동등, 되돌리기 두 번) |
 
 ## D1 마이그레이션
 
@@ -24,12 +26,32 @@
 
 | 파일 | testbed(`slseoun-testbed`) | 운영(`slseoun-prod`) |
 |---|---|---|
+| 0007(4단계 전제: 토큰 서명 키 목록과 폐기 `api_verification_keys`, Worker 소유라 첫 복사의 다시 채우기가 건드리지 않음) | testbed 배포 때 적용(`step4/prereqs`) | 적용 안 함. 표가 없어도 지금과 같다(고정 키만, 1분에 한 번 읽기 실패) |
 
 ## 긴급 배포로 QA 없이 나간 범위
 
 없음.
 
 ## 기능 기대치
+
+### supabase-exit-step3-reads
+- Feature: 화면 그룹별 읽기 저장소 플래그 `read.<group>`(supabase | d1). d1이면 GET이 D1에서 답한다. 역사 강의서 목록·상세·표지 편집기·코오오옴보 런 고르기가 두 답 모양을 다 읽는다.
+- Expect: 플래그가 없으면(운영 기본) 아무것도 바뀌지 않는다. testbed에서 `read.<group>` = d1이면 화면이 supabase일 때와 같고, 역사 강의서 목록 답이 약 0.5 MB로 줄며(원문 없음), 상세와 표지 편집기가 `/api/read/history-run/raw`로 원문을 받는다.
+- QA: testbed `/history-course`, `/en/history-course`, `/history-course/<run id>`, 목록의 표지 편집(주인), 코오오옴보 글쓰기의 도전 이력 참조, 백과사전 카드·유물 상세, 장난감 상자 피드들, 다채로운 철학자들, 퍼즐상자, 프로필, 문의. 모바일 320px ko·en
+- Commits: step3/reads
+
+### step4-prereqs
+- Feature: Supabase 탈출 4단계를 운영에 켜기 전 필요한 것(`step4/prereqs`, refactor/supabase-exit에 합칠 브랜치).
+  경로 플래그 env 기본값(`API_PATH_DEFAULT`, 빌드 `NEXT_PUBLIC_API_PATH_DEFAULT`), D1 토큰 서명 키 목록과 폐기
+  (`api_verification_keys`, `scripts/verification-keys.ts`), worker 방식 역사 강의서 런 하나씩 공유(Supabase 원본),
+  쿠키만 있는 신원의 개인 읽기(읽기 게이트, `20261109150000_worker_read_actor.sql`).
+- Expect: 두 기본값을 넣지 않고 `write.history-runs = rls`, `identity.mode = token`이면 모든 화면이 지금과 같다.
+  testbed(쿠키 방식, 모든 `write.<group> = worker`)에서 역사 강의서 업로드·공유가 "N개 공유 · M개 이미 공유됨"을
+  지금처럼 보이고 Supabase `runs`에 원문 그대로 들어간다. 프로필·문의함·임시 저장·좋아요 표시 등 개인 읽기가 토큰 없이
+  같은 값을 보인다(읽기 RPC 넷은 위 Supabase 마이그레이션 적용 뒤).
+- QA: testbed `/history-course` 업로드·공유, `/profile`, 문의함 점, 페이지스톰 임시 저장, 이거 아님 저거? 좋아요·투표 표시,
+  퍼즐상자 순위. 운영은 기본값과 마이그레이션을 넣는 배포 때.
+- Commits: `step4/prereqs`의 커밋들.
 
 <!--
 ### <항목-id>

@@ -21,6 +21,7 @@ import {
   verifyIdentityCookie,
 } from "../workers/api/identity/cookie";
 import { resetJwtCachesForTest } from "../workers/api/jwt";
+import { resetVerificationKeysForTest, VERIFICATION_KEYS_SQL } from "../workers/api/verification-keys";
 import { createApiRouter, type ApiRoute, type UserRouteContext } from "../workers/api/router";
 import mainWorker from "../workers/main-worker";
 
@@ -80,11 +81,14 @@ async function makeSigner() {
 class FakeD1 implements D1Database {
   flags = new Map<string, string>();
   queries: string[] = [];
+  /** Rows of api_verification_keys; null answers like a database without the table. */
+  keys: Record<string, unknown>[] | null = null;
 
   prepare(query: string): D1PreparedStatement {
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       this.queries.push(query);
       if (query === FLAGS_SQL) return { success: true, results: [...this.flags].map(([key, value]) => ({ key, value })) };
+      if (query === VERIFICATION_KEYS_SQL && this.keys) return { success: true, results: this.keys };
       throw new Error(`unexpected SQL: ${query}`);
     };
     const statement: D1PreparedStatement = {
@@ -451,6 +455,30 @@ async function main() {
     assert.equal((await call("/api/me/spec-echo", { cookie: expired })).body.error, "identity_required");
     assert.equal((await call("/api/write/spec-echo", { cookie: goodCookie, "sec-fetch-site": "cross-site" })).body.error, "cross_site", "cross-site writes are refused before identity");
     assert.equal((await call("/api/write/spec-echo", { cookie: `${goodCookie}; slseoun_qa=no-supabase` })).body.reason, "qa");
+  }
+
+  // --- 5b. Revoked signing keys (D1 api_verification_keys, STEP1_DESIGN 6) ----------------
+  {
+    setMode("cookie");
+    const token = await signer.es256();
+    const revokeSpecKid = (revoked: boolean) => {
+      // A revocation of a kid only the live JWKS has (no coordinates), or an empty table.
+      db.keys = revoked ? [{ kid: "spec-kid", x: null, y: null, revoked_at: 1 }] : [];
+      resetVerificationKeysForTest();
+      resetJwtCachesForTest();
+    };
+    revokeSpecKid(true);
+    const refused = await claim({ access_token: token });
+    assert.deepEqual([refused.status, refused.body.error], [401, "token_invalid"], "a revoked kid cannot claim, though the live JWKS lists it");
+    assert.equal(cookiesOf(refused.response).filter((cookie) => cookie.startsWith("slseoun_id=")).length, 0);
+    const bearer = await call("/api/write/spec-echo", { authorization: `Bearer ${token}` });
+    assert.deepEqual(bearer.body, { error: "token_invalid" }, "nor name a user by bearer token");
+    assert.deepEqual((await call("/api/write/spec-echo", { cookie: goodCookie })).body, { uid: USER, token: "", source: "cookie" }, "a claimed cookie is not a token");
+    revokeSpecKid(false);
+    assert.equal((await claim({ access_token: token })).status, 200, "an empty table: today's keys");
+    db.keys = null;
+    resetVerificationKeysForTest();
+    assert.equal((await claim({ access_token: token })).status, 200, "no table (D1 error): today's keys");
   }
 
   // --- 6. Flag off: production is unchanged --------------------------------------------

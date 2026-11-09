@@ -8,6 +8,7 @@ import { isCoverSpec, type CoverSpec } from "./run-cover-types";
 import { parseReplayRun, type ReplayBadge, type ReplayRun } from "./sts2-run-replay";
 import { mergePartyBadges, partyCharacters } from "./history-party";
 import type { PostBlock } from "./chemical-types";
+import type { HistoryCourseRunSearchFacts } from "./history-course-search";
 
 export interface DonatedRun {
   id: string;
@@ -50,6 +51,12 @@ export interface DonatedRunSummary {
   cover_spec: CoverSpec | null;
   /** Present on gallery listings that still select raw for cover backfill. */
   raw?: string | null;
+  /**
+   * A list row answered from D1 with its summary columns and no raw (docs/supabase-exit/
+   * D1_SCHEMA_DESIGN.md 4.4): what the search reads from the run, built from those columns. The
+   * owner's cover editor then reads the raw from R3r.
+   */
+  search_facts?: HistoryCourseRunSearchFacts;
   donor_user_id: string | null;
   created_at: string;
 }
@@ -68,6 +75,14 @@ export type RunRow = Partial<DonatedRunSummary & DonatedRun> & {
   raw?: string | null;
   cover_spec?: unknown;
 };
+
+/**
+ * True for a run row answered from D1 (list R1, picker R2, cover R4): summary columns in place of
+ * the raw. A row from Supabase always carries `raw`.
+ */
+export function isSummaryListRow(row: object): boolean {
+  return "summary_version" in row && !("raw" in row);
+}
 
 export function parseRunSafely(raw: string | null | undefined): ReplayRun | null {
   if (!raw) return null;

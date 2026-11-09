@@ -2,7 +2,8 @@
  * A PostgREST stand-in over PGlite for the shadow-read specs: it answers the exact requests the
  * step-1 routes send (select lists with the two embeds they use, eq/neq/gt/gte/lt/lte/like/in/is
  * filters, or=(...), order, limit, HEAD count=exact, and the RPCs) by running the equivalent SQL as
- * anon or authenticated (RLS applies) and returning json_agg's text, as PostgREST does. Tokens are
+ * anon or authenticated (RLS applies) and returning json_agg's text, as PostgREST does (Accept:
+ * text/plain is refused with PGRST107, as Supabase's PostgREST refuses it). Tokens are
  * test strings mapped to user ids; nothing leaves the process.
  */
 import type { PGlite } from "@electric-sql/pglite";
@@ -226,6 +227,9 @@ export function fakePostgrest(db: PGlite): FakePostgrest {
       if (countOnly) {
         const n = result.rows[0]?.n ?? 0;
         return new Response(null, { status: 200, headers: { "content-range": `*/${n}` } });
+      }
+      if (headers.get("accept") === "text/plain") {
+        return new Response(JSON.stringify({ code: "PGRST107", message: "None of these media types are available: text/plain" }), { status: 406 });
       }
       return new Response(result.rows[0]?.body ?? "null", { status: 200, headers: { "content-type": "application/json" } });
     } catch (error) {

@@ -198,14 +198,50 @@ export const Q_R2 = `SELECT h.post_id AS id, h.seed, h.build, h."character", h.a
 FROM post_history_course h CROSS JOIN posts p ON p.service = h.service AND p.id = h.post_id
 ORDER BY h.start_time DESC, h.post_id DESC LIMIT 30`;
 
+/** R1j: R1 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) */
+export const Q_R1j = `SELECT
+  '{"id":' || json_quote(p.id) || ',"seed":' || json_quote(h.seed) || ',"build":' || json_quote(h.build)
+  || ',"character":' || json_quote(h."character") || ',"ascension":' || h.ascension
+  || ',"win":' || CASE h.win WHEN 1 THEN 'true' ELSE 'false' END
+  || ',"start_time":' || coalesce(h.start_time, 'null') || ',"run_time":' || coalesce(h.run_time, 'null')
+  || ',"acts_count":' || h.acts_count || ',"total_floors":' || h.total_floors
+  || ',"cover_spec":' || coalesce(h.cover_spec, 'null') || ',"donor_user_id":' || json_quote(p.user_id)
+  || ',"created_at":' || json_quote(rtrim(rtrim(substr(p.created_at, 1, 26), '0'), '.') || '+00:00')
+  || ',"characters":' || coalesce(h.characters, 'null') || ',"badges":' || h.badges
+  || ',"game_mode":' || json_quote(h.game_mode) || ',"game_elements":' || coalesce(h.game_elements, 'null')
+  || ',"list_facts":' || coalesce(h.list_facts, 'null') || ',"summary_version":' || h.summary_version
+  || ',"like_count":' || coalesce(t.like_count, 0) || ',"comment_count":' || coalesce(t.comment_count, 0) || '}' AS row
+FROM posts p CROSS JOIN post_history_course h ON h.service = p.service AND h.post_id = p.id
+LEFT JOIN threads t ON t.thread_key = 'history-course:' || p.id
+WHERE p.service = 'history_course' ORDER BY p.created_at DESC, p.id DESC LIMIT 100`;
+
+/** R2j: R2 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) */
+export const Q_R2j = `SELECT
+  '{"id":' || json_quote(h.post_id) || ',"seed":' || json_quote(h.seed) || ',"build":' || json_quote(h.build)
+  || ',"character":' || json_quote(h."character") || ',"ascension":' || h.ascension
+  || ',"win":' || CASE h.win WHEN 1 THEN 'true' ELSE 'false' END
+  || ',"start_time":' || coalesce(h.start_time, 'null') || ',"run_time":' || coalesce(h.run_time, 'null')
+  || ',"acts_count":' || h.acts_count || ',"total_floors":' || h.total_floors
+  || ',"cover_spec":' || coalesce(h.cover_spec, 'null') || ',"donor_user_id":' || json_quote(p.user_id)
+  || ',"created_at":' || json_quote(rtrim(rtrim(substr(p.created_at, 1, 26), '0'), '.') || '+00:00')
+  || ',"characters":' || coalesce(h.characters, 'null') || ',"badges":' || h.badges
+  || ',"game_mode":' || json_quote(h.game_mode) || ',"game_elements":' || coalesce(h.game_elements, 'null')
+  || ',"list_facts":' || coalesce(h.list_facts, 'null') || ',"summary_version":' || h.summary_version || '}' AS row
+FROM post_history_course h CROSS JOIN posts p ON p.service = h.service AND p.id = h.post_id
+ORDER BY h.start_time DESC, h.post_id DESC LIMIT 30`;
+
 /** R3: run detail meta (RUN_DETAIL_COLUMNS without raw; the raw is R3r, returned as the response body) */
 export const Q_R3 = `SELECT p.id, h.seed, h.build, h."character", h.ascension, h.win, h.start_time, h.run_time, h.acts_count,
        h.cover_spec, p.created_at
 FROM posts p JOIN post_history_course h ON h.service = p.service AND h.post_id = p.id
 WHERE p.service = 'history_course' AND p.id = ?1`;
 
-/** R4: cover view: combo thumbs re-pick a non-manual cover from list_facts as they do from the raw today; the editor's raw is R3r */
-export const Q_R4 = `SELECT post_id AS id, cover_spec, list_facts FROM post_history_course WHERE service = 'history_course' AND post_id = ?1`;
+/** R4: cover view: combo thumbs re-pick a non-manual cover from list_facts and the phrase columns as they do from the raw today (summary_version 0: from R3r); the editor's raw is R3r */
+export const Q_R4 = `SELECT post_id AS id, cover_spec, list_facts, win, ascension, total_floors, summary_version
+FROM post_history_course WHERE service = 'history_course' AND post_id = ?1`;
+
+/** R3r: run raw for detail and cover editor (the stored text is the body, never wrapped in JSON) */
+export const Q_R3r = `SELECT raw FROM post_history_course_file WHERE service = 'history_course' AND post_id = ?1`;
 
 /** R5: run meta / OG / "is it shared" */
 export const Q_R5 = `SELECT post_id AS id, "character", cover_spec FROM post_history_course WHERE service = 'history_course' AND post_id = ?1`;

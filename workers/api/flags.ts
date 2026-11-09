@@ -1,11 +1,15 @@
 import {
   API_SURFACE_GROUPS,
   pathFlagKey,
+  readFlagKey,
   shadowFlagKey,
   type ApiSurfaceGroup,
 } from "../../src/lib/api-surfaces";
+import { isWriteGroup, sourceFlagKey } from "../../src/lib/write-source-flags";
+import { SYNC_FLAG_KEY } from "../sync/sync-env";
 import { withTimeout, type D1Database, type D1PreparedStatement } from "./d1";
 import { supabaseApiConfig, type SupabaseApiEnv } from "./supabase-rest";
+import { defaultSurfacePath, type SurfacePath } from "./path-default";
 
 /**
  * Runtime path flags (docs/supabase-exit/STEP1_DESIGN.md 3.2). The isolate keeps
@@ -17,6 +21,8 @@ export type FlagsEnv = SupabaseApiEnv & {
   DB?: D1Database;
   /** "d1" turns the flags on; anything else keeps every group legacy without reading D1. */
   API_RUNTIME_FLAGS?: string;
+  /** legacy|api for a group with no usable path flag (path-default.ts); unset is legacy. */
+  API_PATH_DEFAULT?: string;
 };
 
 export type ExecutionContextLike = {
@@ -63,16 +69,20 @@ export function flagsStatement(db: D1Database): D1PreparedStatement {
   return db.prepare(FLAGS_SQL);
 }
 
-/** Groups on the api path, limited to groups this Worker version has routes for. */
+/**
+ * Groups on the api path, limited to groups this Worker version has routes for. A group without
+ * a `legacy` or `api` row takes `fallback` (API_PATH_DEFAULT).
+ */
 export function parseFlagRows(
   rows: readonly { key?: unknown; value?: unknown }[],
   routedGroups: ReadonlySet<ApiSurfaceGroup>,
+  fallback: SurfacePath = "legacy",
 ): Set<ApiSurfaceGroup> {
   const groups = new Set<ApiSurfaceGroup>();
   for (const group of API_SURFACE_GROUPS) {
     if (!routedGroups.has(group)) continue;
     const row = rows.find((candidate) => candidate.key === pathFlagKey(group));
-    if (row?.value === "api") groups.add(group);
+    if (row?.value === "api" || (fallback === "api" && row?.value !== "legacy")) groups.add(group);
   }
   return groups;
 }
@@ -141,11 +151,16 @@ export function flagsDisabledReason(env: FlagsEnv): "off" | "not_configured" | n
   return null;
 }
 
-async function readFlags(db: D1Database, routedGroups: ReadonlySet<ApiSurfaceGroup>, now: () => number) {
+async function readFlags(
+  db: D1Database,
+  routedGroups: ReadonlySet<ApiSurfaceGroup>,
+  now: () => number,
+  fallback: SurfacePath = "legacy",
+) {
   const startedAt = now();
   try {
     const result = await flagsStatement(db).all<{ key: string; value: string }>();
-    const groups = parseFlagRows(result.results ?? [], routedGroups);
+    const groups = parseFlagRows(result.results ?? [], routedGroups, fallback);
     recordFlags(groups, now(), parseShadowRates(result.results ?? [], routedGroups), flagValues(result.results ?? []));
     return groups;
   } catch (error) {
@@ -168,10 +183,11 @@ export function pageFlags(
   const age = memory ? now - memory.readAt : Infinity;
   if (age >= FRESH_MS && now >= refreshGuardUntil && now >= retryAt) {
     refreshGuardUntil = now + PAGE_REFRESH_GUARD_MS;
-    ctx.waitUntil(readFlags(env.DB as D1Database, routedGroups, Date.now).catch(() => undefined));
+    ctx.waitUntil(readFlags(env.DB as D1Database, routedGroups, Date.now, defaultSurfacePath(env)).catch(() => undefined));
   }
   if (memory && age < STALE_MAX_MS) return memory.groups;
-  return null;
+  // Unknown here: with API_PATH_DEFAULT=api the page says api rather than leaving a cookie-less browser on legacy.
+  return defaultSurfacePath(env) === "api" ? routedGroups : null;
 }
 
 /**
@@ -183,8 +199,33 @@ export function rememberedFlagValues(now = Date.now(), maxAgeMs = STALE_MAX_MS):
   return memory.values;
 }
 
+/**
+ * Where a group's GET routes are answered (step 3, docs/SUPABASE_EXIT_PLAN.md 7.3):
+ * - `supabase`: the route's own handler (no row, or read.<group> = supabase; today).
+ * - `d1`: read.<group> = d1 while Supabase is still the write source and the step 2 sync keeps D1
+ *   current (sync.enabled = on). The route's D1 adapter answers; a D1 failure falls back to the
+ *   route's own handler for that request. With the sync off, D1 stops following Supabase's writes,
+ *   so read.<group> = d1 does not apply and the group reads Supabase.
+ * - `d1-origin`: source.<group> = d1 (step 5). D1 is the origin, so there is no fallback and the
+ *   sync flag does not matter (the cutover turns the sync off right before it flips the source).
+ */
+export type ReadStore = "supabase" | "d1" | "d1-origin";
+
+/** The read store of `group` from one flags read (the rows by key, flagValues). */
+export function readStoreFor(values: ReadonlyMap<string, string>, group: ApiSurfaceGroup): ReadStore {
+  if (isWriteGroup(group) && values.get(sourceFlagKey(group)) === "d1") return "d1-origin";
+  return values.get(readFlagKey(group)) === "d1" && values.get(SYNC_FLAG_KEY) === "on" ? "d1" : "supabase";
+}
+
 export type ApiFlagDecision =
-  | { ok: true; groups: ReadonlySet<ApiSurfaceGroup>; prefetched: unknown[]; shadow: ShadowRates }
+  | {
+      ok: true;
+      groups: ReadonlySet<ApiSurfaceGroup>;
+      prefetched: unknown[];
+      shadow: ShadowRates;
+      /** Every row of the same read by key (read.<group>, source.<group>: readStoreFor). */
+      values: ReadonlyMap<string, string>;
+    }
   | { ok: false; reason: "off" | "not_configured" | "unknown" };
 
 /**
@@ -203,7 +244,7 @@ export async function apiFlags(
   if (disabled) return { ok: false, reason: disabled };
   const db = env.DB as D1Database;
   if (memory && now - memory.readAt < FRESH_MS) {
-    return { ok: true, groups: memory.groups, prefetched: [], shadow: memory.shadow };
+    return { ok: true, groups: memory.groups, prefetched: [], shadow: memory.shadow, values: memory.values };
   }
   if (now < retryAt) return { ok: false, reason: "unknown" };
 
@@ -213,10 +254,11 @@ export async function apiFlags(
     try {
       const results = await db.batch(statements);
       const flagRows = (results[0]?.results ?? []) as { key?: unknown; value?: unknown }[];
-      const groups = parseFlagRows(flagRows, routedGroups);
+      const groups = parseFlagRows(flagRows, routedGroups, defaultSurfacePath(env));
       const shadow = parseShadowRates(flagRows, routedGroups);
-      recordFlags(groups, Date.now(), shadow, flagValues(flagRows));
-      return { groups, shadow, prefetched: results.slice(1).map((result) => result.results ?? []) };
+      const values = flagValues(flagRows);
+      recordFlags(groups, Date.now(), shadow, values);
+      return { groups, shadow, values, prefetched: results.slice(1).map((result) => result.results ?? []) };
     } catch (error) {
       recordFlagFailure(startedAt, Date.now());
       throw error;
@@ -224,8 +266,8 @@ export async function apiFlags(
   })();
   ctx.waitUntil(batch.catch(() => undefined));
   try {
-    const { groups, prefetched, shadow } = await withTimeout(batch, API_FLAG_WAIT_MS);
-    return { ok: true, groups, prefetched, shadow };
+    const { groups, prefetched, shadow, values } = await withTimeout(batch, API_FLAG_WAIT_MS);
+    return { ok: true, groups, prefetched, shadow, values };
   } catch {
     return { ok: false, reason: "unknown" };
   }

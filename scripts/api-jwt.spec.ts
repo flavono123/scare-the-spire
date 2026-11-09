@@ -23,6 +23,159 @@ async function reason(token: string, options: JwtVerifyOptions) {
   return result.ok ? "ok" : result.reason;
 }
 import { PINNED_SUPABASE_JWKS, type SupabaseJwk } from "../workers/api/supabase-jwks";
+import { readFileSync } from "node:fs";
+import type { D1Database } from "../workers/api/d1";
+import { openD1TestDb } from "./d1-sync/test-db";
+import {
+  effectiveKeys,
+  KEYS_READ_INTERVAL_MS,
+  resetVerificationKeysForTest,
+  VERIFICATION_KEYS_SQL,
+  verificationKeys,
+} from "../workers/api/verification-keys";
+import {
+  addStatements,
+  bindLiterals,
+  KEY_SQL,
+  parseJwkArgument,
+  revokeStatements,
+  unrevokeStatements,
+} from "./lib/verification-key-commands";
+
+/** A D1 stub over node:sqlite with the repo's migrations; counts statements and can fail or stall. */
+function keysD1() {
+  const sqlite = openD1TestDb();
+  const state = { statements: 0, failing: false, delayMs: 0 };
+  const db = {
+    prepare(query: string) {
+      return {
+        bind: () => { throw new Error("unused"); },
+        first: () => { throw new Error("unused"); },
+        run: () => { throw new Error("unused"); },
+        async all() {
+          state.statements += 1;
+          if (state.delayMs) await new Promise((resolve) => setTimeout(resolve, state.delayMs));
+          if (state.failing) throw new Error("D1 down");
+          return { success: true, results: sqlite.prepare(query).all() as never[] };
+        },
+      };
+    },
+    batch: () => { throw new Error("unused"); },
+  } as unknown as D1Database;
+  return { db, sqlite, state };
+}
+
+class KeysCtx {
+  pending: Promise<unknown>[] = [];
+  waitUntil(promise: Promise<unknown>) {
+    this.pending.push(promise);
+  }
+}
+
+async function verificationKeysSpec(signed: { good: string; jwk: SupabaseJwk }) {
+  const compiled = PINNED_SUPABASE_JWKS[0];
+  const other: SupabaseJwk = { ...signed.jwk, kid: "added-kid" };
+  // Effective set: the compiled-in keys are the seed; rows add keys or revoke kids.
+  assert.deepEqual(effectiveKeys(null), { pinned: PINNED_SUPABASE_JWKS, revoked: new Set() }, "no read: compiled-in only");
+  assert.deepEqual(effectiveKeys([]), { pinned: PINNED_SUPABASE_JWKS, revoked: new Set() }, "empty table: compiled-in only");
+  const mixed = effectiveKeys([
+    { kid: compiled.kid, x: compiled.x, y: compiled.y, revoked_at: 1 },
+    { kid: other.kid, x: other.x, y: other.y, revoked_at: null },
+    { kid: "jwks-only", x: null, y: null, revoked_at: 2 },
+    { kid: "broken", x: "short", y: other.y, revoked_at: null },
+  ]);
+  assert.deepEqual(mixed.pinned, [other], "a revoked compiled-in key is gone, an added key counts, a bad row is skipped");
+  assert.deepEqual(mixed.revoked, new Set([compiled.kid, "jwks-only"]));
+  assert.deepEqual(effectiveKeys([{ kid: other.kid, x: other.x, y: other.y, revoked_at: null }]).pinned, [other, compiled], "added on top of the seed");
+
+  // A revoked kid is refused before any key lookup, so the live JWKS cannot bring it back.
+  resetJwtCachesForTest();
+  let fetches = 0;
+  const revokedOptions = {
+    issuer: ISSUER,
+    now: NOW,
+    pinnedKeys: [signed.jwk],
+    revokedKids: new Set([signed.jwk.kid]),
+    fetchJwks: async () => {
+      fetches += 1;
+      return [signed.jwk];
+    },
+  };
+  assert.equal(await reason(signed.good, revokedOptions), "invalid");
+  assert.equal(fetches, 0, "no JWKS fetch for a revoked kid");
+  assert.equal(await reason(signed.good, { ...revokedOptions, revokedKids: new Set(["someone-else"]) }), "ok");
+
+  // D1 cadence: one statement per isolate per minute whatever the outcome, waits capped near 1 s.
+  resetVerificationKeysForTest();
+  const ctx = new KeysCtx();
+  const { db, sqlite, state } = keysD1();
+  const t0 = 10_000_000;
+  assert.deepEqual(await verificationKeys({}, ctx, t0), effectiveKeys(null), "no binding: compiled-in");
+  assert.equal(state.statements, 0);
+  assert.deepEqual(await verificationKeys({ DB: db }, ctx, t0), effectiveKeys([]), "an empty table: compiled-in");
+  assert.equal(state.statements, 1);
+  for (const statement of revokeStatements(compiled.kid, "spec", t0, PINNED_SUPABASE_JWKS)) sqlite.exec(statement);
+  assert.deepEqual((await verificationKeys({ DB: db }, ctx, t0 + KEYS_READ_INTERVAL_MS - 1)).pinned, PINNED_SUPABASE_JWKS, "within the minute: no read");
+  assert.equal(state.statements, 1);
+  const afterRevoke = await verificationKeys({ DB: db }, ctx, t0 + KEYS_READ_INTERVAL_MS);
+  assert.equal(state.statements, 2);
+  assert.deepEqual([afterRevoke.pinned, [...afterRevoke.revoked]], [[], [compiled.kid]], "the revocation is read a minute later");
+  state.failing = true;
+  const down = await verificationKeys({ DB: db }, ctx, t0 + 2 * KEYS_READ_INTERVAL_MS);
+  assert.equal(state.statements, 3);
+  assert.deepEqual([...down.revoked], [compiled.kid], "a failed read keeps the last good one");
+  await verificationKeys({ DB: db }, ctx, t0 + 2 * KEYS_READ_INTERVAL_MS + 1);
+  assert.equal(state.statements, 3, "a failure also waits a minute");
+  state.failing = false;
+  resetVerificationKeysForTest();
+  state.failing = true;
+  assert.deepEqual(await verificationKeys({ DB: db }, ctx, t0), effectiveKeys(null), "cold and failing: compiled-in, as today");
+  state.failing = false;
+  resetVerificationKeysForTest();
+  state.delayMs = 1_500;
+  const started = Date.now();
+  assert.deepEqual(await verificationKeys({ DB: db }, ctx, Date.now()), effectiveKeys(null), "a slow read is not waited for past 1 s");
+  assert.ok(Date.now() - started < 1_400, "key wait capped near 1 s");
+  const statementsBefore = state.statements;
+  assert.deepEqual(await verificationKeys({ DB: db }, ctx, Date.now()), effectiveKeys(null), "later requests do not wait again");
+  assert.equal(state.statements, statementsBefore);
+  await Promise.allSettled(ctx.pending);
+  assert.deepEqual([...(await verificationKeys({ DB: db }, ctx, Date.now())).revoked], [compiled.kid], "the slow read lands for later requests");
+  state.delayMs = 0;
+  assert.equal(VERIFICATION_KEYS_SQL, queriesSql("K1"));
+
+  // CLI statements: queries.sql K2-K5 with literals, run on the 0007 table.
+  for (const [id, sql] of [["K2", KEY_SQL.list], ["K3", KEY_SQL.add], ["K4", KEY_SQL.revoke], ["K5a", KEY_SQL.unrevokeBare], ["K5b", KEY_SQL.unrevoke]] as const) {
+    assert.equal(sql.replace(/\s+/g, " "), queriesSql(id), `${id} is the queries.sql statement`);
+  }
+  assert.equal(bindLiterals("SELECT ?1, ?2, ?3", ["it's", 5, null]), "SELECT 'it''s', 5, NULL");
+  assert.throws(() => bindLiterals("SELECT ?2", ["a"]));
+  assert.deepEqual(parseJwkArgument(JSON.stringify({ ...other, use: "sig", key_ops: ["verify"] })), { ok: true, key: other });
+  for (const bad of ["", "[]", JSON.stringify({ ...other, crv: "P-384" }), JSON.stringify({ ...other, alg: "RS256" }), JSON.stringify({ ...other, x: "x" }), JSON.stringify({ ...other, d: "secret" })]) {
+    assert.equal(parseJwkArgument(bad).ok, false, bad);
+  }
+  const cli = keysD1().sqlite;
+  const stored = (kid: string) => cli.prepare(bindLiterals(KEY_SQL.one, [kid])).get() as Record<string, unknown> | undefined;
+  for (const statement of addStatements(other, "rotated", 100)) cli.exec(statement);
+  assert.throws(() => addStatements(other, "again", 101).forEach((statement) => cli.exec(statement)), "add refuses a known kid");
+  for (const statement of revokeStatements(other.kid, "leaked", 200, PINNED_SUPABASE_JWKS)) cli.exec(statement);
+  for (const statement of revokeStatements(other.kid, "again", 300, PINNED_SUPABASE_JWKS)) cli.exec(statement);
+  assert.deepEqual([stored(other.kid)?.revoked_at, stored(other.kid)?.note], [200, "leaked"], "a second revoke keeps the first time");
+  for (const statement of revokeStatements(compiled.kid, "seed", 400, PINNED_SUPABASE_JWKS)) cli.exec(statement);
+  assert.deepEqual([stored(compiled.kid)?.x, stored(compiled.kid)?.revoked_at], [compiled.x, 400], "the compiled-in key's row keeps its coordinates");
+  for (const statement of revokeStatements("jwks-only", "seen live", 500, PINNED_SUPABASE_JWKS)) cli.exec(statement);
+  assert.deepEqual([stored("jwks-only")?.x, stored("jwks-only")?.revoked_at], [null, 500]);
+  for (const kid of [other.kid, compiled.kid, "jwks-only"]) for (const statement of unrevokeStatements(kid, "undo")) cli.exec(statement);
+  assert.deepEqual([stored(other.kid)?.revoked_at, stored(compiled.kid)?.revoked_at, stored("jwks-only")], [null, null, undefined], "unrevoke restores keys, drops bare rows");
+}
+
+/** One statement of queries.sql by id, whitespace collapsed (check.py runs the same text). */
+function queriesSql(id: string): string {
+  const text = readFileSync("docs/supabase-exit/d1-schema/queries.sql", "utf8");
+  const block = text.split(/^-- @ /m).find((part) => part.startsWith(`${id} `));
+  assert.ok(block, `queries.sql has ${id}`);
+  return block.split("\n").slice(1).filter((line) => !line.startsWith("--")).join("\n").trim().replace(/;$/, "").replace(/\s+/g, " ");
+}
 
 const ISSUER = "https://project.supabase.co/auth/v1";
 const NOW = 1_800_000_000;
@@ -260,6 +413,8 @@ async function main() {
   assert.equal(bearerToken(new Request("https://x.test", { headers: { Authorization: `Bearer ${good}` } })), good);
   assert.equal(bearerToken(new Request("https://x.test", { headers: { Authorization: "Basic abc" } })), null);
   assert.equal(bearerToken(new Request("https://x.test")), null);
+
+  await verificationKeysSpec({ good, jwk });
 
   console.log("api-jwt spec passed");
 }

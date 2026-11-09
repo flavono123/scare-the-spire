@@ -1,4 +1,4 @@
-migrations: 0001_runtime_flags.sql, 0002_api_cache.sql, 0003_sync_bookkeeping.sql, 0004_engagement.sql, 0005_posts.sql, 0006_profile_contact_puzzlebox_philosophers.sql
+migrations: 0001_runtime_flags.sql, 0002_api_cache.sql, 0003_sync_bookkeeping.sql, 0004_engagement.sql, 0005_posts.sql, 0006_profile_contact_puzzlebox_philosophers.sql, 0007_api_verification_keys.sql
 == fixtures: loaded (103 statements)
 tournament cascade: ok
 combo cascade: ok
@@ -9,7 +9,7 @@ same id in two services: two rows: ok
 same id in two services: delete is per service: ok
 comment cascade: ok
 sqlite 3.53.4 (workerd 1.20261023.1 binary, source id 2026-07-24 19:02:57 bf7c7f30031888f4e796...; D1 refuses sqlite_version(): not authorized to use function: sqlite_version at offset 7: SQLITE_ERROR)
-tables 42, named indexes 25, triggers 0, sqlite_stat1 before ANALYZE: 0
+tables 43, named indexes 25, triggers 0, sqlite_stat1 before ANALYZE: 0
 
 == plans (no statistics)
 PASS E1 thread read, read.engagement?threads= (<= 64 keys) [DIFFERS from plans.txt]
@@ -330,10 +330,17 @@ PASS R1 run list (100 latest) with summary columns, game elements (popular chips
 PASS R2 combo / 조각모음 run picker (30 by start time; RUN_SUMMARY_COLUMNS with summary columns in place of raw) [same as plans.txt]
       SCAN h USING INDEX post_history_course_start_time
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
+PASS R1j R1 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) [same as plans.txt]
+      SEARCH p USING INDEX posts_service_created (service=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+PASS R2j R2 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) [same as plans.txt]
+      SCAN h USING INDEX post_history_course_start_time
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
 PASS R3 run detail meta (RUN_DETAIL_COLUMNS without raw; the raw is R3r, returned as the response body) [same as plans.txt]
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
       SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
-PASS R4 cover view: combo thumbs re-pick a non-manual cover from list_facts as they do from the raw today; the editor's raw is R3r [same as plans.txt]
+PASS R4 cover view: combo thumbs re-pick a non-manual cover from list_facts and the phrase columns as they do from the raw today (summary_version 0: from R3r); the editor's raw is R3r [same as plans.txt]
       SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
 PASS R3r run raw for detail and cover editor (the stored text is the body, never wrapped in JSON) [same as plans.txt]
       SEARCH post_history_course_file USING INDEX sqlite_autoindex_post_history_course_file_1 (service=? AND post_id=?)
@@ -533,6 +540,16 @@ PASS F5 codex detail thread of one resource [same as plans.txt]
 PASS F6 next week open (dev nav) [same as plans.txt]
       SEARCH colorful_philosopher_posts USING COVERING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start=?)
 PASS F7 admin upsert (local script; keeps id and created_at on conflict) [same as plans.txt]
+PASS K1 every key and revocation, read by the Worker at most once a minute per isolate allow=scan:api_verification_keys [same as plans.txt]
+      SCAN api_verification_keys
+PASS K2 list (CLI) allow=scan:api_verification_keys,walk [same as plans.txt]
+      SCAN api_verification_keys
+PASS K3 add a key (CLI); an existing kid fails on the primary key [same as plans.txt]
+PASS K4 revoke a kid (CLI): a new row (coordinates of the compiled-in key, or none) or the stored row; an already revoked row keeps its time [same as plans.txt]
+PASS K5a undo a revocation (CLI): a revoke-only row without coordinates goes away [same as plans.txt]
+      SEARCH api_verification_keys USING PRIMARY KEY (kid=?)
+PASS K5b undo a revocation (CLI): a key with coordinates counts again [same as plans.txt]
+      SEARCH api_verification_keys USING PRIMARY KEY (kid=?)
 
 == plans (after ANALYZE)
 PASS E1 thread read, read.engagement?threads= (<= 64 keys) [DIFFERS from plans.txt]
@@ -853,10 +870,17 @@ PASS R1 run list (100 latest) with summary columns, game elements (popular chips
 PASS R2 combo / 조각모음 run picker (30 by start time; RUN_SUMMARY_COLUMNS with summary columns in place of raw) [same as plans.txt]
       SCAN h USING INDEX post_history_course_start_time
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
+PASS R1j R1 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) [same as plans.txt]
+      SEARCH p USING INDEX posts_service_created (service=?)
+      SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
+      SEARCH t USING PRIMARY KEY (thread_key=?) LEFT-JOIN
+PASS R2j R2 as one JSON text per row, keys in the answer's order (step 3 serves it without parsing the JSON columns) [same as plans.txt]
+      SCAN h USING INDEX post_history_course_start_time
+      SEARCH p USING PRIMARY KEY (service=? AND id=?)
 PASS R3 run detail meta (RUN_DETAIL_COLUMNS without raw; the raw is R3r, returned as the response body) [same as plans.txt]
       SEARCH p USING PRIMARY KEY (service=? AND id=?)
       SEARCH h USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
-PASS R4 cover view: combo thumbs re-pick a non-manual cover from list_facts as they do from the raw today; the editor's raw is R3r [same as plans.txt]
+PASS R4 cover view: combo thumbs re-pick a non-manual cover from list_facts and the phrase columns as they do from the raw today (summary_version 0: from R3r); the editor's raw is R3r [same as plans.txt]
       SEARCH post_history_course USING INDEX sqlite_autoindex_post_history_course_1 (service=? AND post_id=?)
 PASS R3r run raw for detail and cover editor (the stored text is the body, never wrapped in JSON) [same as plans.txt]
       SEARCH post_history_course_file USING INDEX sqlite_autoindex_post_history_course_file_1 (service=? AND post_id=?)
@@ -1056,5 +1080,15 @@ PASS F5 codex detail thread of one resource [same as plans.txt]
 PASS F6 next week open (dev nav) [same as plans.txt]
       SEARCH colorful_philosopher_posts USING COVERING INDEX sqlite_autoindex_colorful_philosopher_posts_2 (week_start=?)
 PASS F7 admin upsert (local script; keeps id and created_at on conflict) [same as plans.txt]
+PASS K1 every key and revocation, read by the Worker at most once a minute per isolate allow=scan:api_verification_keys [same as plans.txt]
+      SCAN api_verification_keys
+PASS K2 list (CLI) allow=scan:api_verification_keys,walk [same as plans.txt]
+      SCAN api_verification_keys
+PASS K3 add a key (CLI); an existing kid fails on the primary key [same as plans.txt]
+PASS K4 revoke a kid (CLI): a new row (coordinates of the compiled-in key, or none) or the stored row; an already revoked row keeps its time [same as plans.txt]
+PASS K5a undo a revocation (CLI): a revoke-only row without coordinates goes away [same as plans.txt]
+      SEARCH api_verification_keys USING PRIMARY KEY (kid=?)
+PASS K5b undo a revocation (CLI): a key with coordinates counts again [same as plans.txt]
+      SEARCH api_verification_keys USING PRIMARY KEY (kid=?)
 
-queries: 128, rule failures (both passes): 0, plans different from plans.txt: no statistics 19 (E1, E2, E3, E4, E5, E6, E7t, S12, S13c, T15, T16, T17, T18, TW6, R6, R12, R14c, R14d, X1b); after ANALYZE 19 (E1, E2, E3, E4, E5, E6, E7t, S12, S13c, T15, T16, T17, T18, TW6, R6, R12, R14c, R14d, X1b)
+queries: 136, rule failures (both passes): 0, plans different from plans.txt: no statistics 19 (E1, E2, E3, E4, E5, E6, E7t, S12, S13c, T15, T16, T17, T18, TW6, R6, R12, R14c, R14d, X1b); after ANALYZE 19 (E1, E2, E3, E4, E5, E6, E7t, S12, S13c, T15, T16, T17, T18, TW6, R6, R12, R14c, R14d, X1b)

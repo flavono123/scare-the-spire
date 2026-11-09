@@ -314,7 +314,7 @@ async function main() {
     const parts = plan.flatMap((source) => source.parts.map((part) => `${part.d1Table}${part.filter ? `:${part.filter.value}` : ""}`));
     assert.equal(new Set(parts).size, parts.length, "no D1 table (or posts service) is compared twice");
     const bookkeeping = new Set(["runtime_flags", "runtime_flag_events", "api_cache", "sync_state", "sync_rejects", "sync_pending_raw",
-      "outbox", "sync_checks", "shadow_stats", "shadow_diffs", "threads", "sqlite_sequence"]);
+      "outbox", "sync_checks", "shadow_stats", "shadow_diffs", "threads", "sqlite_sequence", "api_verification_keys"]);
     const dataTables = rows(db, "SELECT name FROM sqlite_master WHERE type = 'table'").map((row) => String(row.name)).filter((name) => !bookkeeping.has(name));
     assert.deepEqual([...new Set(parts.map((part) => part.split(":")[0]))].sort(), dataTables.sort());
     assert.equal(parts.filter((part) => part.startsWith("posts:")).length, 8);
