@@ -80,16 +80,27 @@ function shortError(text: string): string {
 }
 
 /**
+ * Local calls of this process, one at a time: every `--local` wrangler starts its own workerd on the
+ * same .wrangler/state, and two at once can find it locked (SQLITE_BUSY), which the dev pages' parallel
+ * reads would hit. Remote calls go to the D1 API and run in parallel.
+ */
+let localQueue: Promise<unknown> = Promise.resolve();
+
+function oneLocalAtATime<T>(task: () => Promise<T>): Promise<T> {
+  const next = localQueue.then(task, task);
+  localQueue = next.catch(() => undefined);
+  return next;
+}
+
+/**
  * The D1 database of a Worker env through wrangler. `root` is the repo root (wrangler.jsonc); the
  * default is the working directory, which is the root for `next dev` and `pnpm exec tsx scripts/...`.
  */
 export function wranglerD1(env: D1EnvName, mode: D1Mode, options: { root?: string; timeoutMs?: number } = {}): D1Remote {
   const root = options.root ?? process.cwd();
   const timeoutMs = options.timeoutMs ?? WRANGLER_TIMEOUT_MS;
-  return {
-    env,
-    mode,
-    async run(statements) {
+  const call = {
+    async run(statements: readonly D1Statement[]): Promise<D1Rows[]> {
       if (statements.length === 0) return [];
       if (!existsSync(join(root, "wrangler.jsonc"))) throw new D1RemoteError(`no wrangler.jsonc in ${root}`);
       const sql = commandSql(statements);
@@ -143,6 +154,11 @@ export function wranglerD1(env: D1EnvName, mode: D1Mode, options: { root?: strin
       }
       return results.map((entry) => entry?.results ?? []);
     },
+  };
+  return {
+    env,
+    mode,
+    run: (statements) => (mode === "local" ? oneLocalAtATime(() => call.run(statements)) : call.run(statements)),
   };
 }
 
