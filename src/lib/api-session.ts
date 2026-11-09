@@ -1,28 +1,28 @@
-import { ApiError, apiFetch, type ApiFetchInit } from "@/lib/api-client";
-import { ensureClaimedIdentity, identityCookieMode, IdentityLegacyError } from "@/lib/api-identity";
+import { ApiError, apiFetch, ApiUnavailableError, type ApiFetchInit } from "@/lib/api-client";
+import { ensureClaimedIdentity } from "@/lib/api-identity";
 import type { ApiSurfaceGroup } from "@/lib/api-surfaces";
-import { supabase } from "@/lib/supabase";
-import { SUPABASE_AUTH_TIMEOUT_MS, withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 /**
- * Calls a /api/me or /api/write endpoint with the Supabase access token
- * (docs/supabase-exit/STEP1_DESIGN.md 7). Auth stays on Supabase in step 1:
- * supabase-js keeps and refreshes the session, the Worker only verifies it.
- * `token_expired` refreshes once and retries once; `token_invalid` and 503 do not.
+ * Calls a /api/me or /api/write endpoint as this browser's user. Since step 6
+ * (docs/supabase-exit/STEP6_PLAN.md WP-A 2) the signed HttpOnly cookie is the only
+ * identity: the browser claims once (api-identity.ts) and never sends a bearer token.
  *
- * Step 4 (docs/SUPABASE_EXIT_PLAN.md 5.3): while the Worker signals cookie
- * mode (`slseoun_idm`), the browser claims once and sends no bearer token; the
- * signed cookie names the user. Without the signal this is the step 1 path.
+ * - `identity_required` (the cookie is missing or expired): claim again and retry
+ *   once. The handler did not run, so nothing is sent twice.
+ * - `token_invalid`/`token_expired` from the Worker: it is on the token path
+ *   (identity.mode token, or no cookie secret), which the step 6 browser cannot
+ *   take. An outage, like every other legacy answer.
  */
 
-export async function currentAccessToken(): Promise<string | null> {
-  const { data, error } = await withSupabaseTimeout(
-    "auth.getSession",
-    supabase.auth.getSession(),
-    SUPABASE_AUTH_TIMEOUT_MS,
-  );
-  if (error) return null;
-  return data.session?.access_token ?? null;
+function tokenPathAsOutage(error: unknown): unknown {
+  if (
+    error instanceof ApiError
+    && !(error instanceof ApiUnavailableError)
+    && (error.code === "token_invalid" || error.code === "token_expired")
+  ) {
+    return new ApiUnavailableError(error.status, "unavailable");
+  }
+  return error;
 }
 
 export async function apiFetchAsUser<T>(
@@ -30,63 +30,16 @@ export async function apiFetchAsUser<T>(
   path: string,
   init: Omit<ApiFetchInit, "token"> = {},
 ): Promise<T> {
-  if (identityCookieMode()) return apiFetchWithCookie<T>(group, path, init);
-  return apiFetchWithToken<T>(group, path, init);
-}
-
-function tokenPathAfterClaim(error: unknown): boolean {
-  return error instanceof IdentityLegacyError || (error instanceof ApiError && error.code === "token_invalid");
-}
-
-/**
- * Cookie mode. `identity_required` (cookie missing or expired) claims again and
- * retries once. `token_invalid`/`token_expired` mean the Worker is back on the
- * token path (a rollback) or the route still forwards the token: redo the call
- * on the token path. None of these ran the handler, so nothing is sent twice.
- * A claim the Worker refuses (`token_invalid`: the stored token is older than
- * the claim deadline, or HS256 without the legacy secret) also takes the token
- * path, where supabase-js refreshes the session as today; the Worker accepts a
- * bearer token while there is no cookie, and the next call claims the fresh token.
- */
-async function apiFetchWithCookie<T>(group: ApiSurfaceGroup, path: string, init: Omit<ApiFetchInit, "token">): Promise<T> {
-  try {
-    await ensureClaimedIdentity();
-  } catch (error) {
-    if (tokenPathAfterClaim(error)) return apiFetchWithToken<T>(group, path, init);
-    throw error;
-  }
+  await ensureClaimedIdentity();
   try {
     return await apiFetch<T>(group, path, init);
   } catch (error) {
-    if (!(error instanceof ApiError)) throw error;
-    if (error.code === "identity_required") {
-      try {
-        await ensureClaimedIdentity({ force: true });
-      } catch (claimError) {
-        if (tokenPathAfterClaim(claimError)) return apiFetchWithToken<T>(group, path, init);
-        throw claimError;
-      }
-      return apiFetch<T>(group, path, init);
-    }
-    if (error.code === "token_invalid" || error.code === "token_expired") return apiFetchWithToken<T>(group, path, init);
-    throw error;
+    if (!(error instanceof ApiError) || error.code !== "identity_required") throw tokenPathAsOutage(error);
   }
-}
-
-async function apiFetchWithToken<T>(group: ApiSurfaceGroup, path: string, init: Omit<ApiFetchInit, "token">): Promise<T> {
-  const token = await currentAccessToken().catch(() => null);
-  if (!token) throw new ApiError(401, "token_invalid");
+  await ensureClaimedIdentity({ force: true });
   try {
-    return await apiFetch<T>(group, path, { ...init, token });
+    return await apiFetch<T>(group, path, init);
   } catch (error) {
-    if (!(error instanceof ApiError) || error.code !== "token_expired") throw error;
-    const refreshed = await withSupabaseTimeout(
-      "auth.refreshSession",
-      supabase.auth.refreshSession(),
-      SUPABASE_AUTH_TIMEOUT_MS,
-    ).catch(() => null);
-    const next = refreshed && !refreshed.error ? refreshed.data.session?.access_token : null;
-    if (!next) throw error;
-    return apiFetch<T>(group, path, { ...init, token: next });
+    throw tokenPathAsOutage(error);
   }
 }

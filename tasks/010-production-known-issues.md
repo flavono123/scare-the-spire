@@ -265,3 +265,8 @@
 
 71. **꺼져 있는 상세 OG에서 유튜브가 든 코오오옴보 글의 og:image 주소가 깨짐**. `workers/detail-shell-og.ts`의 코오오옴보 분기는 `comboPostOgImage` 결과 앞에 늘 사이트 주소를 붙인다. 그런데 유튜브 썸네일은 이미 `https://i.ytimg.com/...` 절대 주소라 `https://scare-the-spire.comhttps://i.ytimg.com/vi/<id>/hqdefault.jpg`가 된다. 서류 폭풍 분기는 `startsWith("http")`로 거르지만 이 분기는 거르지 않는다. 지금은 상세 OG가 꺼져 있어(#32) 드러나지 않고, 켤 때 같이 고친다. 근거: 6단계 OG 이관 때 옛 Supabase 조회와 새 D1 조회를 같은 데이터로 대조한 결과(둘 다 같은 깨진 값). 화면으로는 확인하지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+
+### 2026-11-10 Supabase 이관 6단계(신원 WP-A)에서 추가
+
+74. **localStorage를 쓸 수 없는 브라우저는 가입한 첫 페이지 밖에서 쓰기가 모두 실패함**. DOM storage를 끈 Android WebView처럼 `window.localStorage`가 없거나 쓰기가 거절되면, 첫 페이지에서는 claim이 새 사용자 세션을 주고 supabase-js가 그것을 메모리에 두어 댓글·좋아요·기록 제출이 된다. 다음 페이지부터는 claim이 유효한 쿠키로 같은 uid를 `kept`로 돌려주지만 세션은 주지 않는다. claim 표식도 저장되지 않아 `apiFetchAsUser`가 `token_invalid`로 끝나고 쓰기 요청이 나가지 않는다. 6단계는 이 동작 그대로 옮겼다(claim이 준 세션과 그 세션의 claim만 이 페이지의 메모리에 두고, 세션 없는 claim은 기억하지 않음. `src/lib/api-identity.ts`의 `pageSession`). 근거: 옛 `src/lib/api-session.ts`(`apiFetchWithCookie` → `apiFetchWithToken`)와 `src/hooks/use-auth.ts`(`signInThroughWorker`)의 코드 흐름, 그리고 가짜 저장소로 돌린 spec(`scripts/api-identity-client.spec.ts`). 실제 WebView에서는 확인하지 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/cards/abrasive

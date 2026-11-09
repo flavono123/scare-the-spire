@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiFetch, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
-import { apiFetchAsUser, currentAccessToken } from "@/lib/api-session";
+import { ApiError, apiFetch, ApiUnavailableError } from "@/lib/api-client";
+import { currentIdentityUid } from "@/lib/api-identity";
+import { apiFetchAsUser } from "@/lib/api-session";
+import { dataEnv } from "@/lib/data-env";
 import { encodePuzzleboxBoards } from "@/lib/puzzlebox-api-rules";
-import { surfacePath } from "@/lib/runtime-flags";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { SUPABASE_AUTH_TIMEOUT_MS, withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   currentAuthorProfileToken,
   hasStoredUserProfile,
@@ -98,7 +97,7 @@ function clearGameCache(game: PuzzleboxGame) {
   try {
     for (let index = window.sessionStorage.length - 1; index >= 0; index -= 1) {
       const key = window.sessionStorage.key(index);
-      if (key?.startsWith(`${CACHE_PREFIX}${supabaseEnv}:${game}:`)) window.sessionStorage.removeItem(key);
+      if (key?.startsWith(`${CACHE_PREFIX}${dataEnv}:${game}:`)) window.sessionStorage.removeItem(key);
     }
   } catch {
     // Nothing cached.
@@ -119,7 +118,7 @@ export function puzzleboxPlayer(defaultNickname: string) {
 
 /**
  * Sends a finished run. Signs in anonymously when needed, like a comment does.
- * Returns null when Supabase is off or down; the game never waits on it.
+ * Returns null when the API or the identity is down; the game never waits on it.
  */
 export async function submitPuzzleboxRun(input: {
   ensureUser: () => Promise<string | null>;
@@ -128,54 +127,39 @@ export async function submitPuzzleboxRun(input: {
   run: ConnectionsRun | BetaQuizRun;
   player: ReturnType<typeof puzzleboxPlayer>;
 }): Promise<PuzzleboxSubmitResult | null> {
-  if (!supabaseEnabled) return null;
   try {
     const userId = await input.ensureUser();
     if (!userId) return null;
     // docs/supabase-exit/STEP1_DESIGN.md 9.5. The game never waits on a failure: null, as before.
-    if (surfacePath("puzzlebox") === "api") {
-      try {
-        const body = await apiFetchAsUser<{ v?: number; result?: PuzzleboxSubmitResult | null }>(
-          "puzzlebox",
-          "/api/write/puzzlebox/runs",
-          { method: "POST", body: { game: input.game, board: String(input.board), run: input.run, player: input.player } },
-        );
-        if (body?.v !== 1 || !body.result) return null;
-        clearGameCache(input.game);
-        return body.result;
-      } catch (error) {
-        if (!writeMayGoLegacy(error)) return null;
-      }
-    }
-    const { data, error } = await withSupabaseTimeout(
-      "rpc.submit_puzzlebox_run",
-      supabase.rpc("submit_puzzlebox_run", {
-        p_env: supabaseEnv,
-        p_game: input.game,
-        p_board: String(input.board),
-        p_run: input.run,
-        p_player: input.player,
-      }),
+    const body = await apiFetchAsUser<{ v?: number; result?: PuzzleboxSubmitResult | null }>(
+      "puzzlebox",
+      "/api/write/puzzlebox/runs",
+      { method: "POST", body: { game: input.game, board: String(input.board), run: input.run, player: input.player } },
     );
-    if (error || !data) return null;
+    if (body?.v !== 1 || !body.result) return null;
     clearGameCache(input.game);
-    return data as PuzzleboxSubmitResult;
+    return body.result;
   } catch {
     return null;
   }
 }
 
-async function hasSession(): Promise<boolean> {
-  try {
-    const { data } = await withSupabaseTimeout(
-      "auth.getSession",
-      supabase.auth.getSession(),
-      SUPABASE_AUTH_TIMEOUT_MS,
-    );
-    return Boolean(data.session?.user);
-  } catch {
-    return false;
-  }
+/**
+ * Whether this browser has a user to rank as "me": a stored Supabase session or a
+ * claimed uid (step 6: there is no supabase-js session to ask). Calls no ensureUser.
+ */
+function hasIdentity(): boolean {
+  return currentIdentityUid() !== null;
+}
+
+/**
+ * The me route found no cookie and there was nothing to claim it again with (a claimed
+ * uid with no stored session): no identity, as supabase-js reported no session.
+ */
+function isNoIdentity(error: unknown): boolean {
+  return error instanceof ApiError
+    && !(error instanceof ApiUnavailableError)
+    && (error.code === "identity_required" || error.code === "token_invalid");
 }
 
 type LoadState<T> = { data: T | null; loading: boolean; failed: boolean };
@@ -194,14 +178,14 @@ export function usePuzzleboxLeaderboard(input: {
 
   useEffect(() => {
     const encodedBoards = encodePuzzleboxBoards(JSON.parse(boardsKey) as PuzzleboxBoards);
-    const viaApi = surfacePath("puzzlebox") === "api" && encodedBoards !== null;
-    if (!supabaseEnabled && !viaApi) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- nothing to fetch without Supabase
+    if (encodedBoards === null) {
+      // The routes (and the RPCs behind them) take well-formed boards only: nothing to rank.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- nothing to fetch for these boards
       setState({ data: null, loading: false, failed: true });
       return;
     }
     let cancelled = false;
-    const cacheKey = `${supabaseEnv}:${game}:${board ?? "total"}:${aroundMe ? "me" : offset}`;
+    const cacheKey = `${dataEnv}:${game}:${board ?? "total"}:${aroundMe ? "me" : offset}`;
     const cached = readCache<PuzzleboxLeaderboard>(cacheKey);
     if (cached) {
       setState({ data: cached, loading: false, failed: false });
@@ -209,55 +193,37 @@ export function usePuzzleboxLeaderboard(input: {
     }
     setState((current) => ({ data: current.data, loading: true, failed: false }));
     (async () => {
-      if (viaApi) {
-        try {
-          // With a session the RPC marks this player's rows (is_me, me), as supabase-js did with its token.
-          const token = await currentAccessToken().catch(() => null);
-          const query = new URLSearchParams({
-            game,
-            boards: encodedBoards as string,
-            board: board ?? "total",
-            offset: String(offset),
-            around_me: aroundMe ? "1" : "0",
-          });
-          const body = token
-            ? await apiFetchAsUser<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/me/puzzlebox/leaderboard?${query}`)
-            : await apiFetch<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/read/puzzlebox/leaderboard?${query}`);
-          if (cancelled) return;
-          if (body?.v !== 1 || !body.leaderboard) {
-            setState({ data: null, loading: false, failed: true });
-            return;
-          }
-          writeCache(cacheKey, body.leaderboard);
-          setState({ data: body.leaderboard, loading: false, failed: false });
-          return;
-        } catch (error) {
-          if (cancelled) return;
-          if (!shouldUseLegacy(error) || !supabaseEnabled) {
-            setState({ data: null, loading: false, failed: true });
-            return;
-          }
-        }
-      }
       try {
-        const { data, error } = await withSupabaseTimeout(
-          "rpc.get_puzzlebox_leaderboard",
-          supabase.rpc("get_puzzlebox_leaderboard", {
-            p_env: supabaseEnv,
-            p_game: game,
-            p_boards: JSON.parse(boardsKey) as PuzzleboxBoards,
-            p_board: board,
-            p_offset: offset,
-            p_around_me: aroundMe,
-          }),
-        );
+        // With an identity the RPC marks this player's rows (is_me, me): the me route answers as the cookie's user.
+        const signedIn = hasIdentity();
+        const query = new URLSearchParams({
+          game,
+          boards: encodedBoards,
+          board: board ?? "total",
+          offset: String(offset),
+          around_me: aroundMe ? "1" : "0",
+        });
+        type Body = { v?: number; leaderboard?: PuzzleboxLeaderboard | null };
+        const read = () => apiFetch<Body>("puzzlebox", `/api/read/puzzlebox/leaderboard?${query}`);
+        let body: Body;
+        if (signedIn) {
+          try {
+            body = await apiFetchAsUser<Body>("puzzlebox", `/api/me/puzzlebox/leaderboard?${query}`);
+          } catch (error) {
+            // Without an identity the board reads as for no session, as it did before step 6.
+            if (!isNoIdentity(error)) throw error;
+            body = await read();
+          }
+        } else {
+          body = await read();
+        }
         if (cancelled) return;
-        if (error || !data) {
+        if (body?.v !== 1 || !body.leaderboard) {
           setState({ data: null, loading: false, failed: true });
           return;
         }
-        writeCache(cacheKey, data);
-        setState({ data: data as PuzzleboxLeaderboard, loading: false, failed: false });
+        writeCache(cacheKey, body.leaderboard);
+        setState({ data: body.leaderboard, loading: false, failed: false });
       } catch {
         if (!cancelled) setState({ data: null, loading: false, failed: true });
       }
@@ -276,9 +242,8 @@ export function useMyPuzzleboxStandings(game: PuzzleboxGame, boards: PuzzleboxBo
   const [standings, setStandings] = useState<Record<string, PuzzleboxStanding>>({});
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
-    const cacheKey = `${supabaseEnv}:${game}:standings`;
+    const cacheKey = `${dataEnv}:${game}:standings`;
     const cached = readCache<PuzzleboxStanding[]>(cacheKey);
     if (cached) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- cached rows from session storage
@@ -286,36 +251,19 @@ export function useMyPuzzleboxStandings(game: PuzzleboxGame, boards: PuzzleboxBo
       return;
     }
     (async () => {
-      if (!(await hasSession()) || cancelled) return;
+      if (!hasIdentity() || cancelled) return;
       const encodedBoards = encodePuzzleboxBoards(JSON.parse(boardsKey) as PuzzleboxBoards);
-      if (surfacePath("puzzlebox") === "api" && encodedBoards !== null) {
-        try {
-          const query = new URLSearchParams({ game, boards: encodedBoards });
-          const body = await apiFetchAsUser<{ v?: number; standings?: PuzzleboxStanding[] }>(
-            "puzzlebox",
-            `/api/me/puzzlebox/standings?${query}`,
-          );
-          if (cancelled || body?.v !== 1 || !Array.isArray(body.standings)) return;
-          writeCache(cacheKey, body.standings);
-          setStandings(Object.fromEntries(body.standings.map((row) => [row.board, row])));
-          return;
-        } catch (error) {
-          // Lists show local scores only, unless the Worker sent this group back to the legacy path.
-          if (cancelled || !shouldUseLegacy(error)) return;
-        }
-      }
+      // The route (and the RPC behind it) takes well-formed boards only: lists show local scores only.
+      if (encodedBoards === null) return;
       try {
-        const { data, error } = await withSupabaseTimeout(
-          "rpc.get_my_puzzlebox_standings",
-          supabase.rpc("get_my_puzzlebox_standings", {
-            p_env: supabaseEnv,
-            p_game: game,
-            p_boards: JSON.parse(boardsKey) as PuzzleboxBoards,
-          }),
+        const query = new URLSearchParams({ game, boards: encodedBoards });
+        const body = await apiFetchAsUser<{ v?: number; standings?: PuzzleboxStanding[] }>(
+          "puzzlebox",
+          `/api/me/puzzlebox/standings?${query}`,
         );
-        if (cancelled || error || !Array.isArray(data)) return;
-        writeCache(cacheKey, data);
-        setStandings(Object.fromEntries((data as PuzzleboxStanding[]).map((row) => [row.board, row])));
+        if (cancelled || body?.v !== 1 || !Array.isArray(body.standings)) return;
+        writeCache(cacheKey, body.standings);
+        setStandings(Object.fromEntries(body.standings.map((row) => [row.board, row])));
       } catch {
         // Lists show local scores only.
       }
