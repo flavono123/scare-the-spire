@@ -282,3 +282,10 @@
 
 73. **케미컬 X 글 상세는 읽기에 실패해도 "글을 찾을 수 없습니다"를 보임**. 다른 장난감 상자 상세(코오오옴보, 변형, 어려운 결정)는 읽기에 실패하면 "데이터베이스가 응답하지 않습니다"를 보이는데, 케미컬 X 상세는 Worker 장애나 시간 초과도 글이 없는 것처럼 보인다. 삭제가 실패해도 안내 없이 그 자리에 남는다. 6단계에서도 지금 동작 그대로 옮겼다. 근거: `src/components/chemicalx/post-view.tsx`의 읽기 효과(실패 → `post = null`)와 `handleDelete`(실패 → 그냥 return). 코드로만 확인했고 화면으로는 확인하지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/chemical-x/c0789f0e-6842-42b4-bdc8-90e4256a50de
+
+
+### 2026-11-10 Supabase 이관 6단계(마무리 WP-Z)에서 추가
+
+75. **다채로운 철학자들은 5단계 뒤에도 Supabase에서 읽어, Supabase가 멈추면 목록·글·릴이 "데이터베이스가 응답하지 않습니다"**. `colorful-philosophers`는 쓰기 그룹이 아니라 `source.<group>`이 없다. `read.colorful-philosophers = d1`도 `sync.enabled = on`일 때만 D1에서 답하는데(`workers/api/flags.ts`의 `readStoreFor`), 5단계 전환이 동기화를 껐다. 그래서 지금 `/api/read/colorful-philosophers/week`, `/post`, `/reel`은 모두 Supabase를 읽는다(`workers/api/routes/colorful-philosophers.ts`). 관리 도구의 주간 글 쓰기는 D1과 outbox로 가므로(`scripts/admin/admin-writes.ts`) 글은 D1에도 있다. 2026-11-10 01:15 KST쯤 Supabase REST가 키 없는 요청에는 401로 바로 답했지만 행 하나 읽기는 25초 안에 답하지 않았다. 같은 때 운영과 testbed의 `/week`, `/reel`이 503 `unavailable`이었고, D1이 원본인 `/api/read/toybox-feed?service=transfigure&sort=latest`는 200이었다. 운영 패치 빌드도 이 릴을 못 읽어 멈춘다. 6단계 전에는 Supabase를 직접 읽었고, 6단계 B안은 사이트 `/api`를 거쳐 같은 Supabase를 읽는다(`ALLOW_BUILD_WITHOUT_API=1`로 우회). 6단계는 이 동작을 그대로 옮겼다. 브라우저 화면은 열어 보지 않았고, curl과 코드로 확인했다.
+    - https://scare-the-spire.flavono123.workers.dev/colorful-philosophers
+    - https://scare-the-spire.flavono123.workers.dev/patches/2026-11-12

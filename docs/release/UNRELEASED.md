@@ -61,12 +61,14 @@
   읽지 않고, 패치 빌드는 셸 패치 릴을 배포된 사이트의 `/api`에서 굽는다(결정 D1 B안). CI 빌드에는 Supabase URL·키가
   없다. 플래그 CLI는 `path.<group>` legacy, `identity.mode` token, `write.<group>` rls를 `--old-client` 없이 거절한다.
 - Expect: 화면은 지금(5단계 운영)과 같다. DNS로 `*.supabase.co`를 막은 새 브라우저에서 홈, 백과사전 상세 댓글·좋아요·반응,
-  패치 노트 줄 댓글, 장난감 상자 피드·상세·쓰기, 조각모음, 역사 강의서, 다채로운 철학자들, 퍼즐상자, 프로필, 문의가
-  데이터와 함께 뜨고 쓰기가 된다. `*.supabase.co` 요청 0, `securitypolicyviolation` 0, `/api` 409 0, "데이터베이스가
+  패치 노트 줄 댓글, 장난감 상자 피드·상세·쓰기, 조각모음, 역사 강의서, 퍼즐상자, 프로필, 문의가
+  데이터와 함께 뜨고 쓰기가 된다. 다채로운 철학자들은 지금처럼 Worker가 Supabase에서 읽어, Supabase가 멈추면
+  "응답 없음"이다(tasks/010 #75). `*.supabase.co` 요청 0, `securitypolicyviolation` 0, `/api` 409 0, "데이터베이스가
   응답하지 않습니다" 없음. 기존 supabase-js 세션이 있는 브라우저는 같은 uid로 claim한다(만료된 토큰은 Worker가 refresh).
   Worker가 409 `surface_legacy`를 주거나 표식 헤더가 없으면 legacy로 가지 않고 "데이터베이스가 응답하지 않습니다"를
   보인다. 셸 패치 `/patches/2026-11-12`, `/patches/2026-09-11`(14개 언어)의 변형 릴 15개 순서와 철학자 카드가 사이트
-  `/api`의 최신 값과 같다. 미리 그린 HTML은 패치 릴 데이터를 빼고 6단계 전과 같다.
+  `/api`의 최신 값과 같다. 그 릴 읽기가 실패하면 운영 패치 빌드가 멈춘다(지금과 같음. #75로 Supabase가 멈추면
+  철학자 릴에서 멈춤, `ALLOW_BUILD_WITHOUT_API=1`로 우회). 미리 그린 HTML은 패치 릴 데이터를 빼고 6단계 전과 같다.
 - QA: 병합 뒤 `pnpm cf:testbed` 전체와 공통 브라우저 확인(새 프로필 Chromium, `--host-resolver-rules="MAP *.supabase.co ~NOTFOUND"`,
   `slseoun_qa` 쿠키 없음): https://scare-the-spire-testbed.flavono123.workers.dev/ ,
   https://scare-the-spire-testbed.flavono123.workers.dev/c-c-c-combo ,
