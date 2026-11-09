@@ -39,12 +39,6 @@ export function useToyboxFeed<T extends PostIdentity>({
   normalizePost,
 }: {
   service: ToyboxFeedService;
-  /**
-   * @deprecated Unused: it only named the legacy Realtime channel, which step 6
-   * removed without a replacement (docs/supabase-exit/STEP6_PLAN.md 1.1). Kept
-   * while the WP-T2 hooks still pass it; WP-Z removes it.
-   */
-  table?: string;
   sort?: ToyboxFeedSort;
   normalizePost: (raw: unknown) => T;
 }): UseToyboxFeedReturn<T> {

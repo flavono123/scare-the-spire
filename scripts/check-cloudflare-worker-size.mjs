@@ -71,7 +71,7 @@ const bundle = readdirSync(outDir)
   .map((file) => readFileSync(path.join(outDir, file), "utf8"))
   .join("\n");
 if (/GoTrueClient|SupabaseClient|@supabase\/|realtime-js/.test(bundle)) {
-  console.error("The main Worker bundle contains supabase-js. Keep src/lib/supabase.ts out of workers/ imports.");
+  console.error("The main Worker bundle contains supabase-js. Keep @supabase/supabase-js out of workers/ imports.");
   process.exit(1);
 }
 

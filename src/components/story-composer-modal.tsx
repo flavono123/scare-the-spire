@@ -37,7 +37,6 @@ function storyComposerCopy(serviceLocale: ServiceLocale) {
       nickname: "닉네임",
       patchLineSearchPlaceholder: "카드, 몬스터, 패치 내용 검색",
       patchLineRequired: "참조할 패치 내용을 한 줄 선택하세요",
-      storageDisabled: "데이터베이스 설정이 없어 작성할 수 없습니다",
       writeSucceeded: composerMessages.success,
       writeUnavailable: composerMessages.failure,
     };
@@ -52,7 +51,6 @@ function storyComposerCopy(serviceLocale: ServiceLocale) {
     nickname: "Nickname",
     patchLineSearchPlaceholder: "Search cards, monsters, or patch text",
     patchLineRequired: "Select one patch note line to reference",
-    storageDisabled: "Database is not configured",
     writeSucceeded: composerMessages.success,
     writeUnavailable: composerMessages.failure,
   };

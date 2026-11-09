@@ -28,7 +28,7 @@ function tokenPathAsOutage(error: unknown): unknown {
 export async function apiFetchAsUser<T>(
   group: ApiSurfaceGroup,
   path: string,
-  init: Omit<ApiFetchInit, "token"> = {},
+  init: ApiFetchInit = {},
 ): Promise<T> {
   await ensureClaimedIdentity();
   try {

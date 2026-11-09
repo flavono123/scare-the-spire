@@ -1,4 +1,4 @@
-// Must stay first: src/lib/supabase.ts reads the environment when it is imported.
+// Must stay first: src/lib/data-env.ts reads the environment when it is imported.
 import "./load-build-env";
 /* eslint-disable @next/next/no-css-tags, @next/next/no-head-element, @next/next/no-img-element, @next/next/no-sync-scripts */
 import fs from "fs/promises";
@@ -685,13 +685,11 @@ async function writePatchClientAssets() {
   });
 
   // Browser bundles must not read Node `process` at runtime. Replace every
-  // NEXT_PUBLIC_* / SITE_* env access the client graph may touch.
+  // NEXT_PUBLIC_* / SITE_* env access the client graph may touch. Step 6: the
+  // bundles name no Supabase project or key, only the data env (src/lib/data-env.ts).
   const patchClientEnvDefines = {
     "process.env.NODE_ENV": JSON.stringify("production"),
-    "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
-    "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""),
     "process.env.NEXT_PUBLIC_SUPABASE_ENV": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production"),
-    "process.env.NEXT_PUBLIC_API_PATH_DEFAULT": JSON.stringify(process.env.NEXT_PUBLIC_API_PATH_DEFAULT ?? ""),
     "process.env.NEXT_PUBLIC_SITE_ORIGIN": JSON.stringify(process.env.NEXT_PUBLIC_SITE_ORIGIN ?? ""),
     "process.env.NEXT_PUBLIC_SITE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SITE_URL ?? ""),
     "process.env.SITE_URL": JSON.stringify(process.env.SITE_URL ?? ""),

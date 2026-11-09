@@ -17,14 +17,6 @@ const UPLOAD_MS = 30_000;
 type Row = Record<string, unknown>;
 type Cursor = { score: number; createdAt: string; id: string } | null;
 
-/**
- * @deprecated Always true: the toybox group has no legacy path since step 6.
- * Kept while the WP-T2 hooks still branch on it; WP-Z removes it.
- */
-export function toyboxViaApi(): boolean {
-  return true;
-}
-
 /** A passthrough answer: the array, or a v1 answer without rows (the Worker may not reach Supabase). */
 function rowsOf(data: unknown, write = false): Row[] {
   if (Array.isArray(data)) return data as Row[];

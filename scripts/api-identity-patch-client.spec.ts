@@ -27,7 +27,7 @@ type Client = {
   apiWriteAsUser(path: string, init: Record<string, unknown>): Promise<{ result: unknown; session: Session }>;
   loadState(threadKey: string): Promise<{ userId: string | null; liked: Set<string>; comments: unknown[] }>;
   courierItems(config: unknown): Promise<Array<{ id: string; storyId: string; text: string }>>;
-  slseounRuntime(): { demoted: Set<string> };
+  slseounRuntime(): Record<string, unknown>;
 };
 
 /** A Map-backed Storage with key(i) and length, which the auth key scan needs. */
@@ -305,7 +305,7 @@ async function main() {
     state.respond = respond;
     await assert.rejects(() => client.apiWriteAsUser("/api/write/comments", { method: "POST", body: {} }), (error: { code?: string }) => error.code === "unavailable", label);
     assert.deepEqual(urls(sent), ["/api/auth/claim"], `${label}: no write`);
-    assert.equal(client.slseounRuntime().demoted.size, 0, `${label}: nothing demoted`);
+    assert.equal("demoted" in client.slseounRuntime(), false, `${label}: no demotion state`);
   }
   for (const [label, respond, code] of [
     ["an unmarked platform error page", unmarked, "unavailable"],
@@ -321,7 +321,7 @@ async function main() {
       error.code === code && error.legacy === undefined
     ), label);
     assert.deepEqual(urls(sent), ["/api/write/comments"], `${label}: sent once`);
-    assert.equal(client.slseounRuntime().demoted.size, 0, `${label}: nothing demoted`);
+    assert.equal("demoted" in client.slseounRuntime(), false, `${label}: no demotion state`);
     noBearer(sent, label);
   }
 
@@ -383,7 +383,7 @@ async function main() {
     state.respond = respond;
     await assert.rejects(() => client.loadState("sts2-patch:0.1"), label);
     assert.equal(sent.length, 1, `${label}: one read`);
-    assert.equal(client.slseounRuntime().demoted.size, 0, `${label}: nothing demoted`);
+    assert.equal("demoted" in client.slseounRuntime(), false, `${label}: no demotion state`);
   }
   {
     const { client, sent } = load();
@@ -423,15 +423,15 @@ async function main() {
       state.respond = respond;
       assert.deepEqual(plain(await client.courierItems(client.readConfig())), [], `${label}: an empty courier`);
       assert.deepEqual(urls(sent), ["/api/read/nav"], `${label}: no other request`);
-      assert.equal(client.slseounRuntime().demoted.size, 0, `${label}: nothing demoted`);
+      assert.equal("demoted" in client.slseounRuntime(), false, `${label}: no demotion state`);
     }
     {
       const { client, window, state } = load();
       state.respond = () => marked(snapshot);
       await client.courierItems(client.readConfig());
-      const runtime = window.__slseounRuntime as { nav?: { promise: Promise<unknown> }; demoted: Set<string> };
+      const runtime = window.__slseounRuntime as { nav?: { promise: Promise<unknown> } };
       assert.ok(runtime.nav?.promise, "the snapshot promise is shared on window for the bundles");
-      assert.ok(runtime.demoted instanceof Set, "the shared object keeps the shape src/lib/runtime-flags.ts declares");
+      assert.deepEqual(Object.keys(runtime), ["nav"], "the shared object has the shape src/lib/runtime-flags.ts declares");
     }
   }
 

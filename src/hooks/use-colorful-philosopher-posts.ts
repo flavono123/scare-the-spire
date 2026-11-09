@@ -2,18 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
-  COLORFUL_PHILOSOPHERS_POSTS_TABLE,
   colorfulPhilosopherPostFromRow,
-  colorfulPhilosophersNextWeekStart,
-  COLORFUL_PHILOSOPHER_SLOTS,
   type ColorfulPhilosopherPost,
 } from "@/lib/colorful-philosophers";
 import { apiFetch, ApiUnavailableError, requireApiVersion } from "@/lib/api-client";
 import { dataEnv } from "@/lib/data-env";
 import { isUuid } from "@/lib/engagement-keys";
-// Only useColorfulPhilosophersNextWeekOpen still reads Supabase; WP-Z removes it with them.
-import { supabase, supabaseEnabled } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 /**
  * Colorful philosophers posts, from the Worker only (docs/supabase-exit/STEP1_DESIGN.md 9.2).
@@ -130,31 +124,6 @@ export function useColorfulPhilosopherWeek(env = dataEnv) {
 
   // `missing` (the posts table not deployed) only ever came from the direct Supabase read.
   return { posts, loading, unavailable, missing: false, reload, commentCounts };
-}
-
-/** True when next week's production reservation is missing any slot; rechecked per `refreshKey`. */
-export function useColorfulPhilosophersNextWeekOpen(enabled: boolean, refreshKey: string): boolean {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (!enabled || !supabaseEnabled) return;
-    let cancelled = false;
-    withSupabaseTimeout(
-      "colorful_philosopher_posts.next_week",
-      supabase.from(COLORFUL_PHILOSOPHERS_POSTS_TABLE).select("slot")
-        .eq("env", "production")
-        .eq("week_start", colorfulPhilosophersNextWeekStart()),
-    ).then(({ data, error }) => {
-      if (cancelled || error) return;
-      const filled = new Set((data ?? []).map((row) => row.slot));
-      setOpen(COLORFUL_PHILOSOPHER_SLOTS.some((slot) => !filled.has(slot)));
-    }).catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, [enabled, refreshKey]);
-
-  return enabled && open;
 }
 
 export function useColorfulPhilosopherPost(postId: string) {

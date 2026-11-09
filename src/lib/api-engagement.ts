@@ -284,6 +284,3 @@ export function loadEngagementMine<P extends MePart>(part: P, key: string): Prom
   });
   return promise;
 }
-
-/** @deprecated Always false (step 6); nothing in this group imports them now. WP-Z removes the re-export. */
-export { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
