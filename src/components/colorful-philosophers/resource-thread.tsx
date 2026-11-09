@@ -9,7 +9,6 @@ import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import {
   COLORFUL_PHILOSOPHERS_HREF,
-  COLORFUL_PHILOSOPHERS_POSTS_TABLE,
   addColorfulPhilosophersDays,
   colorfulPhilosopherPostFromRow,
   colorfulPhilosophersCommentThreadKey,
@@ -18,9 +17,8 @@ import {
 } from "@/lib/colorful-philosophers";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import { buildRichContentIndexes, resolveRichContentBlocks } from "@/lib/rich-content-blocks";
-import { engagementApiFor, loadEngagement, shouldUseLegacy } from "@/lib/api-engagement";
+import { engagementApiFor, loadEngagement } from "@/lib/api-engagement";
 import { philosopherResourceKey } from "@/lib/engagement-keys";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { serviceMessages } from "@/messages/service";
 import { ResourceReactionBar } from "@/components/resource-reaction-bar";
 
@@ -68,29 +66,16 @@ export function ColorfulPhilosopherResourceThread({
         return post ? [post] : [];
       }));
     };
-    const loadLegacy = () => {
-      supabase.from(COLORFUL_PHILOSOPHERS_POSTS_TABLE)
-        .select("id, week_start, slot, resource_type, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count")
-        .eq("env", supabaseEnv)
-        .eq("resource_type", resourceType)
-        .eq("resource_id", resourceId)
-        .order("week_start", { ascending: false })
-        .limit(20)
-        .then(({ data }) => show(data ?? []));
-    };
-
     // The api answer also carries each post's replies and reaction totals for the widgets below.
+    // A resource the Worker refuses is an empty thread: no posts.
     const resourceKey = philosopherResourceKey({ resourceType, resourceId });
-    if (engagementApiFor("philosophers", resourceKey)) {
-      loadEngagement("philosophers", resourceKey)
-        .then(show)
-        .catch((error) => {
-          // Other failures show no posts, as the legacy query ignores its errors.
-          if (shouldUseLegacy(error) && supabaseEnabled) loadLegacy();
-        });
-    } else if (supabaseEnabled) {
-      loadLegacy();
-    }
+    const rows: Promise<readonly Record<string, unknown>[]> = engagementApiFor("philosophers", resourceKey)
+      ? loadEngagement("philosophers", resourceKey)
+      : Promise.resolve([]);
+    rows
+      .then(show)
+      // A failure shows no posts.
+      .catch(() => undefined);
     return () => {
       cancelled = true;
     };
