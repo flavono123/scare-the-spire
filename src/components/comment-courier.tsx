@@ -9,7 +9,6 @@ import { useGameLocale } from "@/hooks/use-game-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { commentThreadHref } from "@/lib/comment-threads";
 import { COLORFUL_PHILOSOPHERS_TOKEN_SRC } from "@/lib/colorful-philosophers";
-import { courierCommentText } from "@/lib/courier-comment-text";
 import {
   COURIER_HOLD_EVENT,
   isHistoryCourseDetailPath,
@@ -20,10 +19,7 @@ import { DEFRAGMENT_TOKEN_SRC } from "@/lib/defragment";
 import { FAVORITE_TOURNAMENT_TOKEN_SRC } from "@/lib/favorite-tournament";
 import { getServiceLocaleForGameLocale, localizeHrefWithGameLocale, type GameLocale } from "@/lib/i18n";
 import { PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
-import { SurfaceLegacyError } from "@/lib/api-client";
 import { loadNavSnapshot } from "@/lib/nav-snapshot";
-import { surfacePath } from "@/lib/runtime-flags";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { serviceMessages } from "@/messages/service";
 
 const STORAGE_KEY = "sts-courier-enabled";
@@ -33,8 +29,6 @@ const COURIER_SKELETON_CSS = `
 .courier-skeleton{height:26px;width:11rem;border-radius:999px;border:1px solid rgba(255,255,255,.1);background-image:linear-gradient(100deg,rgba(255,255,255,.05) 20%,rgba(255,255,255,.38) 50%,rgba(255,255,255,.05) 80%);background-size:220% 100%;animation:courier-shimmer 1s linear infinite}
 @media (prefers-reduced-motion:reduce){.courier-skeleton{animation:none}}
 `;
-const WINDOW_MS = 14 * 24 * 60 * 60 * 1000;
-const LIMIT = 12;
 const ROTATE_MS = 8000;
 
 let sessionItems: CourierItem[] | null = null;
@@ -156,31 +150,17 @@ function commentHref(storyId: string, commentId: string): string {
 
 type CourierRow = { id: string; storyId: string; text: string };
 
-async function legacyCourierRows(since: string): Promise<CourierRow[]> {
-  if (!supabaseEnabled) return [];
-  const { data } = await supabase.from("comments")
-    .select("id, story_id, content, created_at")
-    .eq("env", supabaseEnv)
-    .gte("created_at", since)
-    .order("created_at", { ascending: false })
-    .limit(LIMIT);
-  return (data ?? []).map((row) => ({
-    id: String(row.id ?? ""),
-    storyId: String(row.story_id ?? ""),
-    text: courierCommentText(String(row.content ?? "")),
-  }));
-}
-
-/** The nav snapshot carries the courier when nav is on the api path (STEP1_DESIGN 8.2). */
-async function courierRows(since: string): Promise<CourierRow[]> {
-  if (surfacePath("nav") === "api") {
-    try {
-      return (await loadNavSnapshot()).courier;
-    } catch (error) {
-      if (!(error instanceof SurfaceLegacyError) && surfacePath("nav") === "api") return [];
-    }
+/**
+ * The nav snapshot carries the courier: the latest 12 comments of the last 14
+ * days (STEP1_DESIGN 8.2). Empty when it cannot be loaded or is refused, from
+ * either bundle of a patch page.
+ */
+async function courierRows(): Promise<CourierRow[]> {
+  try {
+    return (await loadNavSnapshot()).courier;
+  } catch {
+    return [];
   }
-  return legacyCourierRows(since);
 }
 
 function loadCourierSession(gameLocale: GameLocale): Promise<CourierItem[]> {
@@ -188,10 +168,9 @@ function loadCourierSession(gameLocale: GameLocale): Promise<CourierItem[]> {
   if (sessionLoad && sessionLocale === gameLocale) return sessionLoad;
   sessionLocale = gameLocale;
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const since = new Date(Date.now() - WINDOW_MS).toISOString();
   const pending = (async (): Promise<CourierItem[]> => {
     try {
-      const rows = await courierRows(since);
+      const rows = await courierRows();
       const next = rows.flatMap((row) => {
         const { id, storyId, text } = row;
         if (!id || !storyId || !text) return [];
@@ -272,7 +251,7 @@ export function CommentCourier() {
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (!known || !enabled || (!supabaseEnabled && surfacePath("nav") !== "api")) return;
+    if (!known || !enabled) return;
     let cancelled = false;
     loadCourierSession(gameLocale).then((next) => {
       if (cancelled) return;
