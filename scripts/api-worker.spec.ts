@@ -214,6 +214,7 @@ function checkWranglerConfig() {
   for (const vars of [config.vars, config.env?.testbed?.vars]) {
     assert.equal(vars?.API_PATH_DEFAULT, "api", "API_PATH_DEFAULT is api in both envs");
     assert.equal(vars?.API_WRITE_MODE_DEFAULT, "worker", "API_WRITE_MODE_DEFAULT is worker in both envs");
+    assert.equal(vars?.API_WRITE_SOURCE_DEFAULT, "d1", "API_WRITE_SOURCE_DEFAULT is d1 in both envs (step 5)");
   }
   for (const key of ["API_SUPABASE_URL", "API_SUPABASE_KEY", "API_DATA_ENV"]) {
     assert.equal(config.vars?.[key], undefined, `${key} comes from --var, not the repo`);

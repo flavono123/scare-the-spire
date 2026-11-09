@@ -135,6 +135,9 @@ export const SUPABASE_ORDER: Readonly<Record<string, string>> = {
 /** Tables without env in Supabase: every D1 holds every row (design 4.5). */
 const ENVLESS = new Set(["profile_character_nickname_pools", "puzzlebox_players"]);
 
+/** Any write source on D1 (step 5): the runtime_flags rows the write gate reads (d1-write/gate.ts). */
+const SOURCE_D1_SQL = "SELECT key FROM runtime_flags WHERE key >= 'source.' AND key < 'source/' AND value = 'd1' LIMIT 1";
+
 /** D1-only columns left out of the rows comparison (design 5.4): built in D1, compared elsewhere. */
 export const D1_ONLY_COLUMNS: Readonly<Record<string, readonly string[]>> = {
   posts: ["summary"],
@@ -879,7 +882,12 @@ export async function runReconcile(opts: ReconcileOptions): Promise<ReconcileRep
     const d1Rows = new Map<string, Array<Record<string, unknown>>>();
     const partKey = (source: string, part: Part) => `${source}->${part.d1Table}`;
     let threadRows: Array<Record<string, unknown>> = [];
+    // Design 5.4: once the testbed D1 is its write source (step 5), its sync is off and the env-less
+    // tables (shared with production) are no longer copied into it, so they are not compared there.
+    const testbedOnD1 = opts.target === "testbed" && (await opts.d1.query(SOURCE_D1_SQL)).rows.length > 0;
+    if (testbedOnD1) report.lines.push(`not compared (testbed on D1 source, design 5.4): ${[...ENVLESS].join(", ")}`);
     for (const source of plan) {
+      if (testbedOnD1 && ENVLESS.has(source.table)) continue;
       const query = supabaseQuery(source.table, env);
       const images = (
         await opts.supabase.selectAll(source.table, {
