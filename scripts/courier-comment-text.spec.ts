@@ -16,15 +16,14 @@ assert.equal(courierCommentText("유물[감정콘:heart]"), "유물 하트");
 assert.equal(courierCommentText("[글자콘:한 줄]"), "한 줄");
 assert.equal(courierCommentText("[감정콘:missing]"), "");
 
+// Step 6: the patch static client shows the nav snapshot's courier text, which the
+// Worker makes with courierCommentText, so it keeps no copy of its own to drift.
 const patchClient = readFileSync(
   "src/components/patches/patch-comments-client.js",
   "utf8",
 );
-assert.equal(
-  patchClient.includes(".replace(/\\[카드콘:([^\\]]*)\\]/g, \"$1\")"),
-  true,
-);
-assert.equal(patchClient.includes("function courierCommentText"), true);
+assert.equal(patchClient.includes("function courierCommentText"), false);
+assert.equal(patchClient.includes("snapshot.courier.map((item) => ({ id: item.id, storyId: item.storyId, text: item.text }))"), true);
 
 assert.equal(isHistoryCourseDetailPath("/history-course/174nxe7x9zfpgm1t"), true);
 assert.equal(isHistoryCourseDetailPath("/en/history-course/174nxe7x9zfpgm1t"), true);

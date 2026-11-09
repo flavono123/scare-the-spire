@@ -3,7 +3,6 @@
   const PROFILE_KEY = "sts-user-profile";
   const QUERY_TIMEOUT_MS = 8000;
   const WRITE_PAUSE_MAX_WAIT_MS = 90000;
-  const AUTH_TIMEOUT_MS = 8000;
   const COMMENT_MIN_CHARS = 2;
   const COMMENT_MAX_CHARS = 200;
   const CHARACTER_ICON_SLUGS = {
@@ -75,16 +74,20 @@
     },
   };
 
+  /**
+   * The page config scripts/build-patch-worker.tsx bakes: `{ dataEnv }` only (step 6,
+   * docs/supabase-exit/STEP6_PLAN.md 1.1). Every data call goes to the same-origin /api,
+   * so a missing or broken config is `{}` (the production data env), never a disabled page.
+   */
   function readConfig() {
     const element = document.getElementById(CONFIG_ID);
-    if (!element?.textContent) return null;
+    if (!element?.textContent) return {};
 
     try {
       const parsed = JSON.parse(element.textContent);
-      if (!parsed.supabaseUrl || !parsed.supabaseAnonKey) return null;
-      return parsed;
+      return parsed && typeof parsed === "object" ? parsed : {};
     } catch {
-      return null;
+      return {};
     }
   }
 
@@ -378,33 +381,51 @@
       .catch(() => apply(state.tokenUrl));
   }
 
-  function timeoutFetch(operation, input, init = {}, timeoutMs = QUERY_TIMEOUT_MS) {
-    const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(`${operation} timed out`), timeoutMs);
-    return fetch(input, { ...init, signal: controller.signal }).finally(() => {
-      window.clearTimeout(timeout);
-    });
-  }
+  // The Supabase session under supabase-js's localStorage key stays (docs/SUPABASE_EXIT_PLAN.md 5.3):
+  // it is read to claim the same uid, and a session the claim answers is written there, so a
+  // rollback finds the same identity. It is never removed. No Supabase URL is baked any more:
+  // the key is the one already stored, or one made from the host of the token's `iss`.
+  const SUPABASE_AUTH_KEY = /^sb-[a-z0-9]+-auth-token$/;
 
-  function authStorageKey(config) {
-    const host = new URL(config.supabaseUrl).hostname;
-    return `sb-${host.split(".")[0]}-auth-token`;
-  }
-
-  function readStoredSession(config) {
+  function storedAuthKey() {
     try {
-      const raw = window.localStorage.getItem(authStorageKey(config));
+      const store = window.localStorage;
+      for (let index = 0; index < store.length; index += 1) {
+        const key = store.key(index);
+        if (key && SUPABASE_AUTH_KEY.test(key)) return key;
+      }
+    } catch {
+      // No storage: nothing is stored.
+    }
+    return null;
+  }
+
+  function issuerAuthKey(session) {
+    try {
+      const key = `sb-${new URL(parseJwtPayload(session?.access_token ?? "").iss).hostname.split(".")[0]}-auth-token`;
+      return SUPABASE_AUTH_KEY.test(key) ? key : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function readStoredSession() {
+    try {
+      const key = storedAuthKey();
+      const raw = key ? window.localStorage.getItem(key) : null;
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
     }
   }
 
-  function writeStoredSession(config, session) {
+  function writeStoredSession(session) {
+    const key = session ? storedAuthKey() ?? issuerAuthKey(session) : null;
+    if (!key) return;
     try {
-      window.localStorage.setItem(authStorageKey(config), JSON.stringify(session));
+      window.localStorage.setItem(key, JSON.stringify(session));
     } catch {
-      // Ignore storage failures; the current request can still use the session.
+      // Ignore storage failures; the cookie still carries the identity.
     }
   }
 
@@ -430,118 +451,6 @@
       normalized.expires_at = Math.round(Date.now() / 1000) + Number(normalized.expires_in);
     }
     return normalized;
-  }
-
-  async function authRequest(config, path, body) {
-    const response = await timeoutFetch(
-      `auth.${path}`,
-      `${config.supabaseUrl.replace(/\/$/, "")}/auth/v1/${path}`,
-      {
-        method: "POST",
-        headers: {
-          apikey: config.supabaseAnonKey,
-          Authorization: `Bearer ${config.supabaseAnonKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      },
-      AUTH_TIMEOUT_MS,
-    );
-
-    if (!response.ok) {
-      const error = new Error(`Auth request failed: ${response.status}`);
-      error.status = response.status;
-      throw error;
-    }
-    return response.json();
-  }
-
-  // On the api path a refresh that failed for a transient reason (network, timeout,
-  // 5xx) does not fall through to a new anonymous sign-up, which would replace the
-  // user's id (docs/supabase-exit/STEP1_DESIGN.md 7). A rejected refresh token
-  // (400/401) is dead either way, as supabase-js treats it.
-  async function ensureSession(config, { keepUserOnTransientFailure = false, forceRefresh = false } = {}) {
-    const stored = normalizeSession(readStoredSession(config));
-    const now = Math.floor(Date.now() / 1000);
-    if (!forceRefresh && stored?.access_token && stored.expires_at && stored.expires_at > now + 60) {
-      return stored;
-    }
-
-    if (stored?.refresh_token) {
-      try {
-        const refreshed = normalizeSession(await authRequest(
-          config,
-          "token?grant_type=refresh_token",
-          { refresh_token: stored.refresh_token },
-        ));
-        if (refreshed) {
-          writeStoredSession(config, refreshed);
-          return refreshed;
-        }
-      } catch (error) {
-        const rejected = error?.status === 400 || error?.status === 401;
-        if (keepUserOnTransientFailure && !rejected) throw error;
-        // Fall through to an anonymous sign-in below.
-      }
-    }
-
-    const signedIn = normalizeSession(await authRequest(
-      config,
-      "signup",
-      { data: {}, gotrue_meta_security: {} },
-    ));
-    if (!signedIn) throw new Error("Anonymous sign-in failed");
-    writeStoredSession(config, signedIn);
-    return signedIn;
-  }
-
-  async function restRequest(config, path, { method = "GET", token, body, headers = {} } = {}) {
-    const response = await timeoutFetch(
-      `rest.${path}`,
-      `${config.supabaseUrl.replace(/\/$/, "")}/rest/v1/${path}`,
-      {
-        method,
-        headers: {
-          apikey: config.supabaseAnonKey,
-          Authorization: `Bearer ${token ?? config.supabaseAnonKey}`,
-          "Content-Type": "application/json",
-          ...headers,
-        },
-        body: body === undefined ? undefined : JSON.stringify(body),
-      },
-    );
-
-    if (!response.ok) {
-      const error = new Error(`REST request failed: ${response.status}`);
-      error.status = response.status;
-      try {
-        error.body = await response.text();
-      } catch {
-        error.body = "";
-      }
-      throw error;
-    }
-    if (response.status === 204) return null;
-    return response.json();
-  }
-
-  function commentsPath(threadKey, config) {
-    const params = new URLSearchParams({
-      select: "*",
-      story_id: `eq.${threadKey}`,
-      env: `eq.${config.supabaseEnv ?? "production"}`,
-      order: "created_at.asc",
-    });
-    return `comments?${params.toString()}`;
-  }
-
-  function commentLikesPath(commentIds, userId) {
-    const params = new URLSearchParams({
-      select: "comment_id",
-      comment_id: `in.(${commentIds.join(",")})`,
-    });
-    if (userId) params.set("user_id", `eq.${userId}`);
-    return `comment_likes?${params.toString()}`;
   }
 
   function readStoredNickname(defaultNickname) {
@@ -584,7 +493,7 @@
     "patch-line-v0-100-0-line-001-text-qgkkr7": "patch-line-v0-100-0-line-007-card-prepared",
   };
 
-  function openStoryComposer(action, config) {
+  function openStoryComposer(action) {
     const text = copy();
     const rawPatchLineId = action.dataset.patchLineId;
     const patchLineId = PATCH_LINE_ID_ALIASES[rawPatchLineId] ?? rawPatchLineId;
@@ -650,9 +559,6 @@
       submit.textContent = text.storySubmitting;
       error.classList.add("hidden");
       try {
-        if (!config) throw new Error("Missing database config");
-        const viaApi = surfacePath("stories") === "api";
-        const session = viaApi ? null : await ensureSession(config);
         const refs = patchLineRefs(action);
         const primaryRef = refs[0];
         const linkedEntities = refs.slice(1).map((ref) => ({
@@ -672,52 +578,23 @@
           palette_id: null,
           palette_swapped: false,
         };
-        if (viaApi) {
-          try {
-            // docs/supabase-exit/STEP1_DESIGN.md 9.7: the Worker fills the user id, env and game.
-            await apiWriteAsUser(config, "/api/write/stories", {
-              method: "POST",
-              group: "stories",
-              body: {
-                nickname,
-                sentence,
-                entityType: primaryRef?.type ?? null,
-                entityId: primaryRef?.id ?? null,
-                patchLineId,
-                source: patchId,
-                linkedEntities,
-                author: {
-                  avatarId: authorToken.avatar_id,
-                  avatarKind: authorToken.avatar_kind,
-                  paletteId: authorToken.palette_id,
-                  paletteSwapped: authorToken.palette_swapped,
-                },
-              },
-            });
-            close();
-            return;
-          } catch (apiError) {
-            if (!apiError.legacy || apiError.processed) throw apiError;
-          }
-        }
-        const legacySession = session ?? await ensureSession(config);
-        await restRequest(config, "community_stories?select=*", {
+        // docs/supabase-exit/STEP1_DESIGN.md 9.7: the Worker fills the user id, env and game.
+        await apiWriteAsUser("/api/write/stories", {
           method: "POST",
-          token: legacySession.access_token,
-          headers: { Prefer: "return=representation" },
           body: {
-            user_id: sessionUserId(legacySession),
             nickname,
             sentence,
-            game: "sts2",
-            entity_type: primaryRef?.type ?? null,
-            entity_id: primaryRef?.id ?? null,
-            patch_line_id: patchLineId,
+            entityType: primaryRef?.type ?? null,
+            entityId: primaryRef?.id ?? null,
+            patchLineId,
             source: patchId,
-            tags: [],
-            linked_entities: linkedEntities,
-            env: config.supabaseEnv ?? "production",
-            ...authorToken,
+            linkedEntities,
+            author: {
+              avatarId: authorToken.avatar_id,
+              avatarKind: authorToken.avatar_kind,
+              paletteId: authorToken.palette_id,
+              paletteSwapped: authorToken.palette_swapped,
+            },
           },
         });
         close();
@@ -733,14 +610,14 @@
     sentenceInput.focus();
   }
 
-  function mountStoryActions(config) {
+  function mountStoryActions() {
     if (!document.querySelector("[data-patch-line-story-action]")) return;
     document.addEventListener("click", (event) => {
       const action = event.target.closest("[data-patch-line-story-action]");
       if (!action) return;
       event.preventDefault();
       event.stopPropagation();
-      openStoryComposer(action, config);
+      openStoryComposer(action);
     });
   }
 
@@ -910,44 +787,24 @@
     void remapCommentNickTokens(root);
   }
 
-  /** Thread state from /api/read/engagement and /api/me/engagement; null means use the legacy path. */
-  async function loadApiState(config, threadKey) {
-    let body;
-    try {
-      body = await apiRequest(`/api/read/engagement?threads=${threadKey}`);
-    } catch (error) {
-      if (error.legacy) return null;
-      throw error;
-    }
+  /**
+   * Thread state from /api/read/engagement and /api/me/engagement. A key outside the api rule,
+   * a legacy signal or an answer of another version is an outage (renderUnavailable).
+   */
+  async function loadState(threadKey) {
+    if (!THREAD_KEY.test(threadKey)) throw new Error("unavailable");
+    const body = await apiRequest(`/api/read/engagement?threads=${threadKey}`);
     const comments = body?.v === 1 ? body.threads?.[threadKey] : undefined;
-    if (!Array.isArray(comments)) {
-      if (body?.v !== 1) {
-        slseounRuntime().demoted.add("comments");
-        return null;
-      }
-      throw new Error("unavailable");
-    }
-    const session = config ? normalizeSession(readStoredSession(config)) : null;
-    const cookieMode = identityCookieMode();
-    const userId = sessionUserId(session) ?? (cookieMode ? claimedUid() : null);
+    if (!Array.isArray(comments)) throw new Error("unavailable");
+    const session = normalizeSession(readStoredSession());
+    const userId = sessionUserId(session) ?? claimedUid();
     const likeCounts = new Map(comments.map((comment) => [comment.id, Number(comment.like_count) || 0]));
     const liked = new Set();
-    const now = Math.floor(Date.now() / 1000);
-    if (cookieMode) {
-      // Cookie mode: claim once (never a new sign-up: there is a session or a claimed uid), no token.
-      if (userId && comments.length > 0 && config) {
-        try {
-          await ensureClaimed(config);
-          const mine = await apiRequest(`/api/me/engagement?threads=${threadKey}`);
-          for (const id of mine?.commentLikes?.[threadKey] ?? []) liked.add(id);
-        } catch {
-          // Hearts stay empty; the comments still show.
-        }
-      }
-    } else if (userId && comments.length > 0 && session?.access_token && session.expires_at > now + 5) {
-      // Only a live token; an expired one is refreshed on the first write, never on a read.
+    // Claim once (never a new sign-up on a read: there is a session or a claimed uid), no token.
+    if (userId && comments.length > 0) {
       try {
-        const mine = await apiRequest(`/api/me/engagement?threads=${threadKey}`, { token: session.access_token });
+        await ensureClaimed({ signUp: false });
+        const mine = await apiRequest(`/api/me/engagement?threads=${threadKey}`);
         for (const id of mine?.commentLikes?.[threadKey] ?? []) liked.add(id);
       } catch {
         // Hearts stay empty; the comments still show.
@@ -960,56 +817,17 @@
       userId,
       nickname: readStoredNickname(copy().defaultNickname),
       submitting: false,
-      viaApi: true,
     };
   }
 
-  async function loadState(config, threadKey) {
-    if (commentsViaApi(threadKey)) {
-      const state = await loadApiState(config, threadKey);
-      if (state) return state;
-    }
-    const comments = await restRequest(config, commentsPath(threadKey, config));
-    const session = normalizeSession(readStoredSession(config));
-    const userId = sessionUserId(session);
-    const commentIds = comments.map((comment) => comment.id);
-    const likeCounts = new Map();
-    const liked = new Set();
-
-    if (commentIds.length > 0) {
-      const likes = await restRequest(config, commentLikesPath(commentIds));
-      for (const row of likes ?? []) {
-        likeCounts.set(row.comment_id, (likeCounts.get(row.comment_id) ?? 0) + 1);
-      }
-
-      if (userId) {
-        const ownLikes = await restRequest(config, commentLikesPath(commentIds, userId), {
-          token: session.access_token,
-        });
-        for (const row of ownLikes ?? []) {
-          liked.add(row.comment_id);
-        }
-      }
-    }
-
-    return {
-      comments,
-      likeCounts,
-      liked,
-      userId,
-      nickname: readStoredNickname(copy().defaultNickname),
-      submitting: false,
-    };
-  }
-
-  async function mountRoot(root, config) {
+  async function mountRoot(root) {
     const threadKey = root.dataset.threadKey;
     if (!threadKey) return;
 
     let state;
     const reload = async () => {
       renderLoading(root);
-      state = await loadState(config, threadKey);
+      state = await loadState(threadKey);
       renderComments(root, state);
       syncCommentCounter(root);
     };
@@ -1037,7 +855,6 @@
       renderComments(root, state);
 
       try {
-        const viaApi = commentsViaApi(threadKey);
         const profileState = readStoredProfileIconState();
         const authorToken = profileState.stored ? {
           avatar_id: profileState.avatarId,
@@ -1050,55 +867,32 @@
           palette_id: null,
           palette_swapped: false,
         };
-        if (viaApi) {
-          try {
-            const { result: created, session: writer } = await apiWriteAsUser(config, "/api/write/comments", {
-              method: "POST",
-              body: {
-                threadKey,
-                nickname,
-                content,
-                author: {
-                  avatarId: authorToken.avatar_id,
-                  avatarKind: authorToken.avatar_kind,
-                  paletteId: authorToken.palette_id,
-                  paletteSwapped: authorToken.palette_swapped,
-                },
-              },
-            });
-            // A new session (first write) has other likes: read the thread again for it.
-            if (sessionUserId(writer) !== state.userId) {
-              await reload();
-              return;
-            }
-            // The answer is the new row: no reload.
-            state.comments = [...state.comments, created.comment];
-            state.likeCounts.set(created.comment.id, 0);
-            state.submitting = false;
-            if (contentInput) contentInput.value = "";
-            renderComments(root, state);
-            syncCommentCounter(root);
-            return;
-          } catch (error) {
-            // Only a write that certainly did nothing is sent again on the legacy path.
-            if (!error.legacy || error.processed) throw error;
-          }
-        }
-        const session = await ensureSession(config);
-        await restRequest(config, "comments?select=*", {
+        const { result: created, session: writer } = await apiWriteAsUser("/api/write/comments", {
           method: "POST",
-          token: session.access_token,
-          headers: { Prefer: "return=representation" },
           body: {
-            story_id: threadKey,
-            user_id: sessionUserId(session),
+            threadKey,
             nickname,
             content,
-            env: config.supabaseEnv ?? "production",
-            ...authorToken,
+            author: {
+              avatarId: authorToken.avatar_id,
+              avatarKind: authorToken.avatar_kind,
+              paletteId: authorToken.palette_id,
+              paletteSwapped: authorToken.palette_swapped,
+            },
           },
         });
-        await reload();
+        // A new session (first write) has other likes: read the thread again for it.
+        if (sessionUserId(writer) !== state.userId) {
+          await reload();
+          return;
+        }
+        // The answer is the new row: no reload.
+        state.comments = [...state.comments, created.comment];
+        state.likeCounts.set(created.comment.id, 0);
+        state.submitting = false;
+        if (contentInput) contentInput.value = "";
+        renderComments(root, state);
+        syncCommentCounter(root);
       } catch {
         renderUnavailable(root);
       }
@@ -1110,85 +904,45 @@
       if (!likeButton && !deleteButton) return;
 
       try {
-        if (commentsViaApi(threadKey)) {
-          try {
-            let writer = null;
-            let changedOnServer = false;
-            if (likeButton) {
-              const commentId = likeButton.dataset.commentLike;
-              if (!commentId) return;
-              const wasLiked = state.liked.has(commentId);
-              const write = await apiWriteAsUser(config, `/api/write/comment-likes?id=${encodeURIComponent(commentId)}`, {
-                method: wasLiked ? "DELETE" : "PUT",
-              });
-              writer = write.session;
-              if (write.result.liked) state.liked.add(commentId);
-              else state.liked.delete(commentId);
-              const shown = state.likeCounts.get(commentId) ?? 0;
-              // Null: committed, but the count could not be read; adjust the shown one.
-              state.likeCounts.set(commentId, typeof write.result.count === "number"
-                ? write.result.count
-                : Math.max(0, shown + (write.result.liked === wasLiked ? 0 : write.result.liked ? 1 : -1)));
-            }
-            if (deleteButton) {
-              const commentId = deleteButton.dataset.commentDelete;
-              if (!commentId) return;
-              try {
-                const write = await apiWriteAsUser(config, `/api/write/comments?id=${encodeURIComponent(commentId)}`, {
-                  method: "DELETE",
-                });
-                writer = write.session;
-                state.comments = state.comments.filter((comment) => comment.id !== commentId);
-              } catch (error) {
-                // Already gone, or not this session's: read the thread again instead of guessing.
-                if (error.code !== "not_found") throw error;
-                changedOnServer = true;
-              }
-            }
-            // A new session (the first write signed up) has other likes and other own comments.
-            if (changedOnServer || (writer && sessionUserId(writer) !== state.userId)) {
-              await reload();
-              return;
-            }
-            renderComments(root, state);
-            return;
-          } catch (error) {
-            if (!error.legacy || error.processed) throw error;
-          }
-        }
-        const session = await ensureSession(config);
+        let writer = null;
+        let changedOnServer = false;
         if (likeButton) {
           const commentId = likeButton.dataset.commentLike;
           if (!commentId) return;
-          if (state.liked.has(commentId)) {
-            const params = new URLSearchParams({
-              comment_id: `eq.${commentId}`,
-              user_id: `eq.${sessionUserId(session)}`,
-            });
-            await restRequest(config, `comment_likes?${params.toString()}`, {
-              method: "DELETE",
-              token: session.access_token,
-            });
-          } else {
-            await restRequest(config, "comment_likes", {
-              method: "POST",
-              token: session.access_token,
-              body: { comment_id: commentId, user_id: sessionUserId(session) },
-            });
-          }
+          const wasLiked = state.liked.has(commentId);
+          const write = await apiWriteAsUser(`/api/write/comment-likes?id=${encodeURIComponent(commentId)}`, {
+            method: wasLiked ? "DELETE" : "PUT",
+          });
+          writer = write.session;
+          if (write.result.liked) state.liked.add(commentId);
+          else state.liked.delete(commentId);
+          const shown = state.likeCounts.get(commentId) ?? 0;
+          // Null: committed, but the count could not be read; adjust the shown one.
+          state.likeCounts.set(commentId, typeof write.result.count === "number"
+            ? write.result.count
+            : Math.max(0, shown + (write.result.liked === wasLiked ? 0 : write.result.liked ? 1 : -1)));
         }
-
         if (deleteButton) {
           const commentId = deleteButton.dataset.commentDelete;
           if (!commentId) return;
-          const params = new URLSearchParams({ id: `eq.${commentId}` });
-          await restRequest(config, `comments?${params.toString()}`, {
-            method: "DELETE",
-            token: session.access_token,
-          });
+          try {
+            const write = await apiWriteAsUser(`/api/write/comments?id=${encodeURIComponent(commentId)}`, {
+              method: "DELETE",
+            });
+            writer = write.session;
+            state.comments = state.comments.filter((comment) => comment.id !== commentId);
+          } catch (error) {
+            // Already gone, or not this session's: read the thread again instead of guessing.
+            if (error.code !== "not_found") throw error;
+            changedOnServer = true;
+          }
         }
-
-        await reload();
+        // A new session (the first write signed up) has other likes and other own comments.
+        if (changedOnServer || (writer && sessionUserId(writer) !== state.userId)) {
+          await reload();
+          return;
+        }
+        renderComments(root, state);
       } catch {
         renderUnavailable(root);
       }
@@ -1213,7 +967,7 @@
     window.addEventListener(PROFILE_CHANGE_EVENT, onProfileIconChange);
 
     const config = readConfig();
-    mountStoryActions(config);
+    mountStoryActions();
 
     const rawHash = window.location.hash.replace(/^#/, "");
     if (rawHash && PATCH_LINE_ANCHOR_ALIASES[rawHash]) {
@@ -1231,14 +985,8 @@
     const reelTemplate = captureReelTemplate();
 
     mountCourier(config);
-    if (!config) {
-      pageRoots.forEach(renderUnavailable);
-      bindReelReactions(null);
-      return;
-    }
-
     pageRoots.forEach((root) => {
-      mountRoot(root, config);
+      mountRoot(root);
     });
 
     // Re-query each time: refreshLiveReels swaps week cards in after load.
@@ -1249,14 +997,14 @@
         if (!card?.classList.contains("pointer-events-auto")) return;
         if (root.dataset.cpCommentMounted === "true") return;
         root.dataset.cpCommentMounted = "true";
-        mountRoot(root, config);
+        mountRoot(root);
       });
     };
     mountVisibleReel();
     document.addEventListener("cp-reel-show", mountVisibleReel);
     syncReelPressed();
-    bindReelReactions(config);
-    void refreshLiveReels(config, reelTemplate).then(mountVisibleReel);
+    bindReelReactions();
+    void refreshLiveReels(reelTemplate).then(mountVisibleReel);
   }
 
   function courierToken(storyId) {
@@ -1349,36 +1097,11 @@
     return `${path}/${id}${anchor}`;
   }
 
-  // Keep aligned with courierCommentText in src/lib/courier-comment-text.ts.
-  const COURIER_EMOTE_LABELS = {
-    exclaim: "느낌표",
-    skull: "해골",
-    thumb_down: "별로",
-    slime_sad: "슬라임",
-    question: "물음표",
-    heart: "하트",
-    thumb_up: "엄지",
-    happy_cultist: "컬티스트",
-  };
-
-  function courierCommentText(content) {
-    return String(content || "")
-      .replace(/\[카드콘:([^\]]*)\]/g, "$1")
-      .replace(/\[글자콘:([^\]]*)\]/g, "$1")
-      .replace(/\[감정콘:([^\]]*)\]/g, (_, id) => {
-        const label = COURIER_EMOTE_LABELS[id];
-        return label ? ` ${label} ` : " ";
-      })
-      .replace(/\{[^{}]+\}/g, "")
-      .replace(/\[[^\]]+\]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
-
-  // Same contract as src/lib/runtime-flags.ts and src/lib/nav-snapshot.ts
-  // (docs/supabase-exit/STEP1_DESIGN.md 7, 8.2). The page-wide object lets this
-  // script and the bundled patch scripts share one /api/read/nav request.
-  const FLAG_COOKIE = "slseoun_rf";
+  // Same contract as src/lib/nav-snapshot.ts (docs/supabase-exit/STEP1_DESIGN.md 8.2). The
+  // page-wide object lets this script and the bundled patch scripts share one /api/read/nav
+  // request. Step 6 (docs/supabase-exit/STEP6_PLAN.md 1.1): every call is on the api path and a
+  // legacy signal is an outage, never a demotion, so `demoted` stays empty; it is kept only for
+  // the shape src/lib/runtime-flags.ts declares until WP-Z.
   const API_MARKER_HEADER = "x-slseoun-api";
   const NAV_SNAPSHOT_TTL_MS = 30000;
 
@@ -1387,41 +1110,12 @@
     return window.__slseounRuntime;
   }
 
-  // No cookie at all: the build-time default (NEXT_PUBLIC_API_PATH_DEFAULT, `apiPathDefault` in the
-  // page config; unset is legacy), like defaultSurfacePath in src/lib/runtime-flags.ts.
-  let apiPathDefault = null;
-
-  function defaultSurfacePath() {
-    if (apiPathDefault === null) {
-      try {
-        apiPathDefault = JSON.parse(document.getElementById(CONFIG_ID)?.textContent || "{}").apiPathDefault === "api" ? "api" : "legacy";
-      } catch {
-        apiPathDefault = "legacy";
-      }
-    }
-    return apiPathDefault;
-  }
-
-  function surfacePath(group) {
-    if (slseounRuntime().demoted.has(group)) return "legacy";
-    const entry = document.cookie.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${FLAG_COOKIE}=`));
-    if (!entry) return defaultSurfacePath();
-    const [version, ...groups] = entry.slice(FLAG_COOKIE.length + 1).split(".");
-    return version === "v1" && groups.includes(group) ? "api" : "legacy";
-  }
-
-  // Step 4 signed-cookie identity, same contract as src/lib/api-identity.ts and
-  // src/lib/identity-cookies.ts (docs/SUPABASE_EXIT_PLAN.md 5.3). Inert unless
-  // the Worker set slseoun_idm=cookie.
-  const IDENTITY_MODE_COOKIE = "slseoun_idm";
+  // Signed-cookie identity, same contract as src/lib/api-identity.ts and src/lib/identity-cookies.ts
+  // (docs/SUPABASE_EXIT_PLAN.md 5.3, docs/supabase-exit/STEP6_PLAN.md WP0). The Worker's HttpOnly
+  // cookie carries the uid; the browser never sends a bearer token.
   const IDENTITY_MARKER_KEY = "slseoun-identity";
   const IDENTITY_CLAIM_PATH = "/api/auth/claim";
   let identityClaim = null;
-
-  function identityCookieMode() {
-    const entry = document.cookie.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${IDENTITY_MODE_COOKIE}=`));
-    return entry === `${IDENTITY_MODE_COOKIE}=cookie`;
-  }
 
   function claimedUid() {
     try {
@@ -1440,8 +1134,19 @@
     }
   }
 
-  /** POST /api/auth/claim once per page at a time; errors carry `identityLegacy` or the router `code`. */
-  function claimIdentity(accessToken) {
+  /** The claim body (ClaimRequest) for a stored session: its tokens, or `{}` with none. */
+  function claimBody(session) {
+    if (!session?.access_token) return {};
+    return session.refresh_token
+      ? { access_token: session.access_token, refresh_token: session.refresh_token }
+      : { access_token: session.access_token };
+  }
+
+  /**
+   * POST /api/auth/claim once per page at a time. Errors carry the router `code`; no router
+   * answer or a legacy signal is `unavailable`.
+   */
+  function claimIdentity(body) {
     identityClaim = identityClaim || (async () => {
       const fail = (fields) => Object.assign(new Error(fields.code || "unavailable"), fields);
       const controller = new AbortController();
@@ -1452,7 +1157,7 @@
           response = await fetch(IDENTITY_CLAIM_PATH, {
             method: "POST",
             headers: { Accept: "application/json", "Content-Type": "application/json" },
-            body: JSON.stringify(accessToken ? { access_token: accessToken } : {}),
+            body: JSON.stringify(body),
             credentials: "same-origin",
             signal: controller.signal,
           });
@@ -1461,10 +1166,10 @@
         }
         if (response.headers.get(API_MARKER_HEADER) !== "1") {
           void response.body?.cancel().catch(() => undefined);
-          throw fail({ identityLegacy: true });
+          throw fail({ code: "unavailable", status: response.status });
         }
         const parsed = await response.json().catch(() => null);
-        if (response.status === 409 && parsed?.error === "surface_legacy") throw fail({ identityLegacy: true });
+        if (response.status === 409 && parsed?.error === "surface_legacy") throw fail({ code: "unavailable", status: 409 });
         if (!response.ok) throw fail({ code: parsed?.error || `http_${response.status}`, status: response.status });
         if (parsed?.v !== 1 || typeof parsed.uid !== "string") throw fail({ code: "bad_response" });
         rememberClaim(parsed.uid);
@@ -1479,84 +1184,64 @@
   }
 
   /**
-   * The claimed uid. Claims with the stored Supabase token (expired is fine) when
-   * this browser has not claimed it yet, or when `force` (the cookie is gone).
-   * With no Supabase session the Worker signs up on Supabase, as ensureSession
-   * does today, and that session is stored for supabase-js.
+   * Claim with the stored session's tokens. A main Worker before the WP-A refresh path refuses a
+   * body with any key but `access_token` as 400 `invalid` (CI deploys this patch Worker first), so
+   * a refused body with `refresh_token` is resent once with the access token alone.
    */
-  async function ensureClaimed(config, { force = false } = {}) {
-    const stored = normalizeSession(readStoredSession(config));
+  async function claimWithSession(stored) {
+    const body = claimBody(stored);
+    try {
+      return await claimIdentity(body);
+    } catch (error) {
+      if (!body.refresh_token || error.code !== "invalid") throw error;
+      return claimIdentity({ access_token: body.access_token });
+    }
+  }
+
+  /**
+   * The claimed uid. Claims with the stored Supabase session (its access token, expired is fine,
+   * and its refresh token, which the Worker uses only when the access token is refused) when this
+   * browser has not claimed it yet, or when `force` (the cookie is gone). With no stored session it
+   * claims `{}`: the Worker keeps a valid cookie's uid or signs up a new user. A session the Worker
+   * answers (a new user, a refreshed one) is stored where supabase-js keeps it.
+   *
+   * A token claim refused as `token_invalid` (the session could not be refreshed either) claims `{}`
+   * once, as supabase-js signs in anew today when its refresh fails: a valid cookie keeps its uid,
+   * otherwise a new user. A read passes `signUp: false`, so only a write can make a user.
+   */
+  async function ensureClaimed({ force = false, signUp = true } = {}) {
+    const stored = normalizeSession(readStoredSession());
     const storedUid = sessionUserId(stored);
     const marker = claimedUid();
     if (!force && marker && (!storedUid || storedUid === marker)) return marker;
-    const claimed = await claimIdentity(stored?.access_token ?? null);
-    if (claimed.session) writeStoredSession(config, normalizeSession(claimed.session));
+    let claimed;
+    try {
+      claimed = await claimWithSession(stored);
+    } catch (error) {
+      if (!signUp || !stored?.access_token || error.code !== "token_invalid") throw error;
+      claimed = await claimIdentity({});
+    }
+    if (claimed.session) writeStoredSession(normalizeSession(claimed.session));
     return claimed.uid;
   }
 
-  /** The session to report for a cookie-mode write: the stored one when it is the same user. */
-  function cookieSession(config, uid) {
-    const stored = normalizeSession(readStoredSession(config));
+  /** The session to report for a write: the stored one when it is the same user. */
+  function cookieSession(uid) {
+    const stored = normalizeSession(readStoredSession());
     return stored && sessionUserId(stored) === uid ? stored : { user: { id: uid } };
   }
 
-  /**
-   * A refused claim (token_invalid: the stored token is past the claim deadline,
-   * or HS256 without the legacy secret) also takes the token path, which
-   * refreshes the session as today; the Worker accepts the bearer while there is
-   * no cookie, and the next write claims the fresh token.
-   */
-  function tokenPathAfterClaim(error) {
-    return Boolean(error.identityLegacy) || error.code === "token_invalid";
-  }
-
-  /**
-   * A cookie-mode api write, or null to use the token path: identity.mode is
-   * token again, the claim was refused, or the route still needs the token.
-   * `identity_required` claims again and sends once more; none of these ran the handler.
-   */
-  async function apiWriteWithCookie(config, path, init) {
-    let uid;
-    try {
-      uid = await ensureClaimed(config);
-    } catch (error) {
-      if (tokenPathAfterClaim(error)) return null;
-      throw error;
-    }
-    try {
-      return { result: await apiRequest(path, init), session: cookieSession(config, uid) };
-    } catch (error) {
-      if (error.code === "identity_required") {
-        try {
-          uid = await ensureClaimed(config, { force: true });
-        } catch (claimError) {
-          if (tokenPathAfterClaim(claimError)) return null;
-          throw claimError;
-        }
-        return { result: await apiRequest(path, init), session: cookieSession(config, uid) };
-      }
-      if (error.code === "token_invalid" || error.code === "token_expired") return null;
-      throw error;
-    }
-  }
-
+  // Same rules as src/lib/engagement-keys.ts: the Worker refuses other keys.
   const THREAD_KEY = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$/;
   const REACTION_PART = { type: /^[a-z_-]{1,32}$/, id: /^[A-Za-z0-9._-]{1,128}$/, version: /^[A-Za-z0-9._-]{1,32}$/ };
 
-  /** Same rule as src/lib/engagement-keys.ts: other keys stay on the legacy path. */
-  function commentsViaApi(threadKey) {
-    return surfacePath("comments") === "api" && THREAD_KEY.test(threadKey);
-  }
-
-  function reactionsViaApi(type, id, version) {
-    return surfacePath("comments") === "api"
-      && REACTION_PART.type.test(type) && REACTION_PART.id.test(id) && REACTION_PART.version.test(version);
+  function isReactionTarget(type, id, version) {
+    return REACTION_PART.type.test(type) && REACTION_PART.id.test(id) && REACTION_PART.version.test(version);
   }
 
   /**
-   * Same-origin /api call with src/lib/api-client.ts semantics. Errors carry
-   * `legacy` (use the legacy path) and `processed` (a write may have run, so it
-   * is never resent), plus the router's error `code`.
+   * Same-origin /api call with src/lib/api-client.ts semantics. Errors carry the router's error
+   * `code`; no router answer and a legacy signal are `unavailable`, and nothing is resent.
    */
   async function apiRequest(path, init = {}) {
     // 503 write_paused (the step 5 cutover, src/lib/api-client.ts): the write did nothing, so it
@@ -1573,17 +1258,9 @@
     }
   }
 
-  // Once the build default is api the direct writes are closed: a write the router did not answer, or
-  // answered with a legacy signal, is an outage that never demotes the group and is never resent on
-  // legacy (writesStayOnApi in src/lib/api-client.ts). Reads keep today's demotion.
-  function writesStayOnApi(method) {
-    return method !== "GET" && defaultSurfacePath() === "api";
-  }
-
-  async function apiRequestOnce(path, { method = "GET", token, body, group = "comments" } = {}) {
+  async function apiRequestOnce(path, { method = "GET", body } = {}) {
     const headers = { Accept: "application/json" };
     if (body !== undefined) headers["Content-Type"] = "application/json";
-    if (token) headers.Authorization = `Bearer ${token}`;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), QUERY_TIMEOUT_MS);
     const fail = (fields) => Object.assign(new Error(fields.code || "unavailable"), fields);
@@ -1601,17 +1278,13 @@
         throw fail({ code: "unavailable" });
       }
       if (response.headers.get(API_MARKER_HEADER) !== "1") {
+        // No router answered (a platform error page, or a Worker from before step 1). After a
+        // platform 5xx a write may have run, so nothing is resent.
         void response.body?.cancel().catch(() => undefined);
-        if (writesStayOnApi(method)) throw fail({ code: "unavailable", status: response.status });
-        slseounRuntime().demoted.add(group);
-        throw fail({ legacy: true, processed: method !== "GET" && response.status !== 404 && response.status !== 405, status: response.status });
+        throw fail({ code: "unavailable", status: response.status });
       }
       const parsed = await response.json().catch(() => null);
-      if (response.status === 409 && parsed?.error === "surface_legacy") {
-        if (writesStayOnApi(method)) throw fail({ code: "unavailable", status: 409 });
-        slseounRuntime().demoted.add(group);
-        throw fail({ legacy: true, processed: false, status: 409 });
-      }
+      if (response.status === 409 && parsed?.error === "surface_legacy") throw fail({ code: "unavailable", status: 409 });
       if (response.status === 503 && parsed?.error === "write_paused" && method !== "GET") {
         const seconds = Number(response.headers.get("retry-after") || "");
         throw fail({ code: "write_paused", status: 503, retryAfterMs: Math.min(10, Math.max(1, Number.isFinite(seconds) ? seconds : 3)) * 1000 });
@@ -1624,41 +1297,34 @@
   }
 
   /**
-   * An api write with the session's token; `token_expired` refreshes once and
-   * sends once more (src/lib/api-session.ts). Resolves to { result, session }.
+   * An api write as this browser's user (cookie identity only). `identity_required` (the cookie
+   * is gone; the handler did not run) claims again and sends once more. Any other failure,
+   * `token_*` included, is the caller's outage. Resolves to { result, session }.
    */
-  async function apiWriteAsUser(config, path, init) {
-    if (identityCookieMode()) {
-      const viaCookie = await apiWriteWithCookie(config, path, init);
-      if (viaCookie) return viaCookie;
-    }
-    let session = await ensureSession(config, { keepUserOnTransientFailure: true });
+  async function apiWriteAsUser(path, init) {
+    let uid = await ensureClaimed();
     try {
-      return { result: await apiRequest(path, { ...init, token: session.access_token }), session };
+      return { result: await apiRequest(path, init), session: cookieSession(uid) };
     } catch (error) {
-      if (error.code !== "token_expired") throw error;
-      session = await ensureSession(config, { keepUserOnTransientFailure: true, forceRefresh: true });
-      return { result: await apiRequest(path, { ...init, token: session.access_token }), session };
+      if (error.code !== "identity_required") throw error;
+      uid = await ensureClaimed({ force: true });
+      return { result: await apiRequest(path, init), session: cookieSession(uid) };
     }
   }
 
+  /** The page's data env (`dataEnv` in the config), which the nav snapshot must match. */
   function configEnv(config) {
-    if (config?.supabaseEnv) return config.supabaseEnv;
-    try {
-      return JSON.parse(document.getElementById(CONFIG_ID)?.textContent || "{}").supabaseEnv || "production";
-    } catch {
-      return "production";
-    }
+    return typeof config?.dataEnv === "string" && config.dataEnv ? config.dataEnv : "production";
   }
 
+  /**
+   * The shared /api/read/nav snapshot. No router, a legacy signal, another shape or another data
+   * env rejects it, and then the nav dots and the courier stay empty (src/lib/nav-snapshot.ts).
+   */
   function loadNavSnapshot(expectedEnv) {
     const runtime = slseounRuntime();
     const now = Date.now();
     if (runtime.nav && now - runtime.nav.at < NAV_SNAPSHOT_TTL_MS) return runtime.nav.promise;
-    const legacy = () => {
-      runtime.demoted.add("nav");
-      return new Error("surface_legacy");
-    };
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), QUERY_TIMEOUT_MS);
     const promise = fetch("/api/read/nav", {
@@ -1666,33 +1332,22 @@
       credentials: "same-origin",
       signal: controller.signal,
     }).then(async (response) => {
-      // No router (a Worker from before step 1) is a legacy signal, like 409.
-      if (response.headers.get(API_MARKER_HEADER) !== "1") throw legacy();
+      if (response.headers.get(API_MARKER_HEADER) !== "1") throw new Error("unavailable");
       const body = await response.json().catch(() => null);
-      if (response.status === 409 && body?.error === "surface_legacy") throw legacy();
       if (!response.ok) throw new Error("unavailable");
-      if (!body || body.v !== 1 || !Array.isArray(body.courier) || !body.latest || !body.weekly) throw legacy();
-      if (body.env !== expectedEnv) throw legacy();
+      if (!body || body.v !== 1 || !Array.isArray(body.courier) || !body.latest || !body.weekly) throw new Error("unavailable");
+      if (body.env !== expectedEnv) throw new Error("unavailable");
       return body;
     }).finally(() => clearTimeout(timer));
     runtime.nav = { promise, at: now };
     return promise;
   }
 
-  /** Courier rows from the nav snapshot (api) or Supabase (legacy); null when neither can run. */
-  function courierItems(config, since) {
-    const legacy = () => (config
-      ? restRequest(config, `comments?select=id,story_id,content,created_at&env=eq.${config.supabaseEnv}&created_at=gte.${encodeURIComponent(since)}&order=created_at.desc&limit=12`)
-        .then((rows) => (Array.isArray(rows) ? rows : []).flatMap((row) => {
-          const text = courierCommentText(row.content);
-          if (!row.id || !row.story_id || !text) return [];
-          return [{ id: row.id, storyId: row.story_id, text }];
-        }))
-      : null);
-    if (surfacePath("nav") !== "api") return legacy();
+  /** Courier rows from the nav snapshot; none when it is rejected. */
+  function courierItems(config) {
     return loadNavSnapshot(configEnv(config)).then(
       (snapshot) => snapshot.courier.map((item) => ({ id: item.id, storyId: item.storyId, text: item.text })),
-      () => (slseounRuntime().demoted.has("nav") ? legacy() || [] : []),
+      () => [],
     );
   }
 
@@ -1732,13 +1387,7 @@
       document.head.appendChild(style);
     }
     place(skeleton);
-    const since = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
-    const rowsPromise = courierItems(config, since);
-    if (!rowsPromise) {
-      root.replaceChildren();
-      return;
-    }
-    rowsPromise
+    courierItems(config)
       .then((items) => {
         if (items.length === 0) {
           root.replaceChildren();
@@ -1818,14 +1467,6 @@
   function captureReelTemplate() {
     const card = reelStack()?.querySelector("[data-colorful-philosophers-card]");
     return card ? card.cloneNode(true) : null;
-  }
-
-  function kstWeekStart() {
-    const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
-    const mondayOffset = (kst.getUTCDay() + 6) % 7;
-    return new Date(Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate() - mondayOffset))
-      .toISOString()
-      .slice(0, 10);
   }
 
   function addDays(value, days) {
@@ -1916,28 +1557,13 @@
     return card;
   }
 
-  async function refreshReelWeek(config, template) {
+  async function refreshReelWeek(template) {
     const stack = reelStack();
     if (!stack) return;
-    const currentWeek = kstWeekStart();
-    let rows = null;
-    if (surfacePath("colorful-philosophers") === "api") {
-      try {
-        const body = await apiRequest("/api/read/colorful-philosophers/reel", { group: "colorful-philosophers" });
-        if (body?.v === 1 && Array.isArray(body.posts)) rows = body.posts;
-        else slseounRuntime().demoted.add("colorful-philosophers");
-      } catch (error) {
-        if (!error.legacy) throw error;
-      }
-    }
-    // Legacy, or the api path answered with a legacy signal.
-    rows ??= config
-      ? await restRequest(
-        config,
-        `colorful_philosopher_posts?select=id,week_start,slot,resource_type,resource_id,name_ko,name_en,image_url,body,game_version&env=eq.${config.supabaseEnv}&week_start=lte.${currentWeek}&order=week_start.desc&limit=12`,
-      )
-      : [];
-    const posts = (Array.isArray(rows) ? rows : [])
+    const body = await apiRequest("/api/read/colorful-philosophers/reel");
+    // Another version is an outage: the baked reel stays.
+    if (body?.v !== 1 || !Array.isArray(body.posts)) throw new Error("unavailable");
+    const posts = body.posts
       .filter((row) => row.id && row.week_start && row.resource_type && row.resource_id && row.game_version);
     if (posts.length === 0) return;
     const week = String(posts[0].week_start).slice(0, 10);
@@ -1966,38 +1592,22 @@
     document.dispatchEvent(new Event("cp-reel-refresh"));
   }
 
-  async function refreshReelCounts(config) {
+  async function refreshReelCounts() {
     const buttons = Array.from(document.querySelectorAll("[data-colorful-philosophers-card] [data-cp-reaction]"));
     const ids = Array.from(new Set(buttons.map((button) => button.dataset.cpResource).filter(Boolean)));
     if (ids.length === 0) return;
     const counts = new Map();
-    // Totals come from the env the reaction writes go to: the Worker's on the api path.
+    // Totals come from the env the reaction writes go to: the Worker's.
     const targets = Array.from(new Set(buttons
-      .filter((button) => reactionsViaApi(button.dataset.cpType, button.dataset.cpResource, button.dataset.cpVersion))
+      .filter((button) => isReactionTarget(button.dataset.cpType, button.dataset.cpResource, button.dataset.cpVersion))
       .map((button) => `${button.dataset.cpType}:${button.dataset.cpResource}:${button.dataset.cpVersion}`)));
-    if (targets.length > 0 && targets.length === new Set(buttons.map((button) => `${button.dataset.cpType}:${button.dataset.cpResource}:${button.dataset.cpVersion}`)).size) {
-      try {
-        const body = await apiRequest(`/api/read/engagement?reactions=${targets.slice(0, 64).join(",")}`);
-        if (body?.v === 1 && body.reactions) {
-          Object.entries(body.reactions).forEach(([target, value]) => counts.set(target, value));
-          applyReelCounts(buttons, counts);
-          return;
-        }
-      } catch (error) {
-        if (!error.legacy) throw error;
-      }
+    // A target outside the api rule, or an answer of another version, keeps the baked counts.
+    if (targets.length === 0 || targets.length !== new Set(buttons.map((button) => `${button.dataset.cpType}:${button.dataset.cpResource}:${button.dataset.cpVersion}`)).size) {
+      throw new Error("unavailable");
     }
-    const rows = await restRequest(
-      config,
-      `resource_reaction_counts?select=resource_type,resource_id,game_version,buff_count,nerf_count,rework_count&env=eq.${config.supabaseEnv}&resource_id=in.(${ids.map(encodeURIComponent).join(",")})`,
-    );
-    (Array.isArray(rows) ? rows : []).forEach((row) => {
-      counts.set(`${row.resource_type}:${row.resource_id}:${row.game_version}`, {
-        buff: row.buff_count || 0,
-        nerf: row.nerf_count || 0,
-        rework: row.rework_count || 0,
-      });
-    });
+    const body = await apiRequest(`/api/read/engagement?reactions=${targets.slice(0, 64).join(",")}`);
+    if (body?.v !== 1 || !body.reactions) throw new Error("unavailable");
+    Object.entries(body.reactions).forEach(([target, value]) => counts.set(target, value));
     applyReelCounts(buttons, counts);
   }
 
@@ -2010,16 +1620,16 @@
     });
   }
 
-  async function refreshLiveReels(config, reelTemplate) {
+  async function refreshLiveReels(reelTemplate) {
     try {
-      await refreshReelWeek(config, reelTemplate);
+      await refreshReelWeek(reelTemplate);
     } catch {
       // Keep the baked reel if the browser cannot reach the database.
     }
     syncReelPressed();
-    bindReelReactions(config);
+    bindReelReactions();
     try {
-      await refreshReelCounts(config);
+      await refreshReelCounts();
     } catch {
       // Keep the baked counts.
     }
@@ -2027,7 +1637,7 @@
     // takes the cards once at load, so cards appended later would never be shown.
   }
 
-  function bindReelReactions(config) {
+  function bindReelReactions() {
     document.querySelectorAll("[data-cp-reaction]").forEach((button) => {
       if (button.dataset.cpBound === "true") return;
       button.dataset.cpBound = "true";
@@ -2035,85 +1645,52 @@
         event.preventDefault();
         event.stopPropagation();
         const stack = button.closest("[data-colorful-philosophers-preview-stack]");
-        if (!config || stack?.getAttribute("data-react-managed") === "true") return;
-        void applyStaticReaction(config, button);
+        if (stack?.getAttribute("data-react-managed") === "true") return;
+        void applyStaticReaction(button);
       });
     });
   }
 
-  async function applyStaticReaction(config, button) {
+  async function applyStaticReaction(button) {
     const postId = button.dataset.cpPost;
     const resourceType = button.dataset.cpType;
     const resourceId = button.dataset.cpResource;
     const gameVersion = button.dataset.cpVersion;
     const kind = button.dataset.cpKind;
     if (!postId || !resourceType || !resourceId || !gameVersion || !kind) return;
+    // The Worker refuses a target outside the api rule: nothing changes, as a failed write.
+    if (!isReactionTarget(resourceType, resourceId, gameVersion)) return;
     const key = `sts-resource-reaction:${resourceType}:${resourceId}:${gameVersion}`;
     const stored = window.localStorage.getItem(key);
     const previous = stored === "buff" || stored === "nerf" || stored === "rework" ? stored : null;
     const next = previous === kind ? null : kind;
-    if (reactionsViaApi(resourceType, resourceId, gameVersion)) {
-      try {
-        // The Worker reads the current row, so a stale kind cannot conflict, and it answers the totals.
-        const { result } = await apiWriteAsUser(config, "/api/write/reactions", {
-          method: "PUT",
-          body: { resourceType, resourceId, gameVersion, kind: next },
-        });
-        if (result.kind) window.localStorage.setItem(key, result.kind);
-        else window.localStorage.removeItem(key);
-        const card = button.closest("[data-colorful-philosophers-card]");
-        card?.querySelectorAll("[data-cp-reaction]").forEach((other) => {
-          const count = other.querySelector("[data-cp-count]");
-          const otherKind = other.dataset.cpKind;
-          if (!count || !otherKind) return;
-          if (result.counts) {
-            count.textContent = String(Number(result.counts[otherKind]) || 0);
-          } else {
-            // Committed, but the totals could not be read: adjust the shown ones.
-            let value = Number(count.textContent) || 0;
-            if (previous === otherKind) value = Math.max(0, value - 1);
-            if (result.kind === otherKind) value += 1;
-            count.textContent = String(value);
-          }
-          other.setAttribute("aria-pressed", result.kind === otherKind ? "true" : "false");
-        });
-        return;
-      } catch (error) {
-        if (!error.legacy || error.processed) return;
-      }
-    }
-    let session;
+    let result;
     try {
-      session = await ensureSession(config);
+      // The Worker reads the current row, so a stale kind cannot conflict, and it answers the totals.
+      ({ result } = await apiWriteAsUser("/api/write/reactions", {
+        method: "PUT",
+        body: { resourceType, resourceId, gameVersion, kind: next },
+      }));
     } catch {
       return;
     }
-    const userId = sessionUserId(session);
-    if (!userId) return;
-    const filter = `env=eq.${config.supabaseEnv}&resource_type=eq.${resourceType}&resource_id=eq.${resourceId}&game_version=eq.${gameVersion}&user_id=eq.${userId}`;
-    try {
-      if (next === null) {
-        await restRequest(config, `resource_reactions?${filter}`, { method: "DELETE", token: session.access_token, headers: { Prefer: "return=minimal" } });
-      } else if (previous) {
-        await restRequest(config, `resource_reactions?${filter}`, { method: "PATCH", token: session.access_token, body: { kind: next }, headers: { Prefer: "return=minimal" } });
-      } else {
-        await restRequest(config, "resource_reactions", { method: "POST", token: session.access_token, body: { env: config.supabaseEnv, resource_type: resourceType, resource_id: resourceId, game_version: gameVersion, user_id: userId, kind: next }, headers: { Prefer: "return=minimal" } });
-      }
-    } catch {
-      return;
-    }
-    if (next) window.localStorage.setItem(key, next);
+    if (result.kind) window.localStorage.setItem(key, result.kind);
     else window.localStorage.removeItem(key);
     const card = button.closest("[data-colorful-philosophers-card]");
     card?.querySelectorAll("[data-cp-reaction]").forEach((other) => {
       const count = other.querySelector("[data-cp-count]");
       const otherKind = other.dataset.cpKind;
       if (!count || !otherKind) return;
-      let value = Number(count.textContent) || 0;
-      if (previous === otherKind) value = Math.max(0, value - 1);
-      if (next === otherKind) value += 1;
-      count.textContent = String(value);
-      other.setAttribute("aria-pressed", next === otherKind ? "true" : "false");
+      if (result.counts) {
+        count.textContent = String(Number(result.counts[otherKind]) || 0);
+      } else {
+        // Committed, but the totals could not be read: adjust the shown ones.
+        let value = Number(count.textContent) || 0;
+        if (previous === otherKind) value = Math.max(0, value - 1);
+        if (result.kind === otherKind) value += 1;
+        count.textContent = String(value);
+      }
+      other.setAttribute("aria-pressed", result.kind === otherKind ? "true" : "false");
     });
   }
 
