@@ -10,6 +10,9 @@
  *
  * shadow.<group> is the step 2 shadow-read sample rate (docs/supabase-exit/D1_SCHEMA_DESIGN.md 6):
  * 0 (or no row) compares nothing, 1 compares every api read of the group.
+ *   tsx scripts/runtime-flags.ts set read.<group> supabase|d1 --env ... --note "why"       (step 3 read store)
+ * read.<group> = d1 answers the group's GET routes from D1 (no row = supabase); while source.<group> is
+ * supabase a D1 failure falls back to Supabase for that request.
  *   tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note "why"
  *   tsx scripts/runtime-flags.ts set source.<group> supabase|d1 --env ... --note "why"   (step 5 write source)
  *   tsx scripts/runtime-flags.ts set write.paused on|off --env ... --note "why"           (step 5 cutover pause)
@@ -22,39 +25,13 @@
  * Cloudflare. Changing production also needs --confirm-production, and only
  * after the user approves. Workers pick a change up within about 30 s.
  */
-import { WRITE_GROUPS, WRITE_PAUSED_KEY, WRITE_PAUSED_VALUES, WRITE_SOURCES, sourceFlagKey } from "../src/lib/write-source-flags";
 import { spawnSync } from "node:child_process";
 
-import { API_SURFACE_GROUPS, SURFACE_PATHS, pathFlagKey, shadowFlagKey } from "../src/lib/api-surfaces";
-import { SYNC_FLAG_KEY, SYNC_FLAG_VALUES } from "../workers/sync/sync-env";
-import { IDENTITY_MODE_KEY, IDENTITY_MODES } from "../src/lib/identity-cookies";
-import { WRITE_FLAG_GROUPS, WRITE_MODES, writeFlagKey } from "../src/lib/api-write-modes";
+import { checkFlagSet, KNOWN_KEYS } from "./runtime-flag-keys";
 
 type Target = { env: "testbed" | "production"; remote: boolean };
 
 const DATABASES = { testbed: "slseoun-testbed", production: "slseoun-prod" } as const;
-
-type KeyRule = { values: string; accepts: (value: string) => boolean };
-
-const PATH_RULE: KeyRule = { values: SURFACE_PATHS.join(", "), accepts: (value) => SURFACE_PATHS.includes(value as never) };
-// A decimal from 0 to 1 with at most 4 fraction digits; the Worker also clamps what it reads.
-const SHADOW_RULE: KeyRule = {
-  values: "a rate from 0 to 1 (e.g. 0, 0.1, 1)",
-  accepts: (value) => /^[01](?:\.\d{1,4})?$/.test(value) && Number(value) <= 1,
-};
-
-const oneOf = (values: readonly string[]): KeyRule => ({ values: values.join(", "), accepts: (value) => values.includes(value) });
-
-const KNOWN_KEYS = new Map<string, KeyRule>([
-  ...API_SURFACE_GROUPS.map((group) => [pathFlagKey(group), PATH_RULE] as const),
-  ...API_SURFACE_GROUPS.map((group) => [shadowFlagKey(group), SHADOW_RULE] as const),
-  // Step 2: the 1-minute sync and read-after-write (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3).
-  [SYNC_FLAG_KEY, oneOf(SYNC_FLAG_VALUES)],
-  // Step 4 identity (docs/SUPABASE_EXIT_PLAN.md 5.3): token is step 1, cookie the signed cookie.
-  [IDENTITY_MODE_KEY, oneOf(IDENTITY_MODES)],
-  // Step 4 (docs/supabase-exit/STEP4_WRITE_GATE.md): rls = today, worker = Worker checks and the service key.
-  ...WRITE_FLAG_GROUPS.map((group) => [writeFlagKey(group), oneOf(WRITE_MODES)] as const),
-]);
 
 function usage(message?: string): never {
   if (message) console.error(message);
@@ -64,6 +41,7 @@ function usage(message?: string): never {
     "  tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set sync.enabled on|off --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set shadow.<group> 0..1 --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
+    "  tsx scripts/runtime-flags.ts set read.<group> supabase|d1 --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set write.<group> rls|worker --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     `Keys: ${[...KNOWN_KEYS.keys()].join(", ")}`,
@@ -101,10 +79,6 @@ function rows(output: unknown, index: number): Record<string, unknown>[] {
   return entry?.results ?? [];
 }
 
-// Step 5 (docs/SUPABASE_EXIT_PLAN.md 7.3): the write source per group and the cutover pause.
-for (const group of WRITE_GROUPS) KNOWN_KEYS.set(sourceFlagKey(group), oneOf(WRITE_SOURCES));
-KNOWN_KEYS.set(WRITE_PAUSED_KEY, oneOf(WRITE_PAUSED_VALUES));
-
 function main() {
   const argv = process.argv.slice(2);
   // `pnpm flags -- set …` passes the separator through.
@@ -134,14 +108,10 @@ function main() {
 
   if (command === "set") {
     const [key, value] = rest;
-    const rule = key ? KNOWN_KEYS.get(key) : undefined;
-    if (!rule) usage(`unknown key: ${key}`);
-    if (!value || !rule.accepts(value)) usage(`value for ${key} must be ${rule.values}`);
+    const checked = checkFlagSet(key, value, { env, remote, confirmProduction: rest.includes("--confirm-production") });
+    if (!checked.ok) usage(checked.message);
     const note = (option(rest, "--note") ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, 200);
     if (!note) usage("--note is required");
-    if (env === "production" && target.remote && !rest.includes("--confirm-production")) {
-      usage("changing production needs --confirm-production (after the user approves)");
-    }
     const at = new Date().toISOString();
     execute(
       target,

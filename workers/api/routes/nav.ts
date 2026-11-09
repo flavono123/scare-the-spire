@@ -59,7 +59,7 @@ const COURIER_WINDOW_MS = 14 * 24 * 60 * 60_000;
 const COURIER_LIMIT = 12;
 const COURIER_TEXT_MAX = 160;
 const FAIL_BACKOFF_MS = [60_000, 120_000, 300_000];
-const NAV_CACHE_CONTROL = "public, max-age=30";
+export const NAV_CACHE_CONTROL = "public, max-age=30";
 
 export const NAV_SNAPSHOT_SQL =
   "SELECT body, fetched_at, lease_until, fail_count, fail_until FROM api_cache WHERE key = ?1";

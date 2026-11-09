@@ -1,4 +1,5 @@
 import {
+  HISTORY_RUN_RAW_PATH,
   HISTORY_RUN_REFERENCE_LIMIT,
   isHistoryRunsView,
   isHistoryRunView,
@@ -8,7 +9,7 @@ import {
   RUN_DETAIL_COLUMNS,
   RUN_SUMMARY_COLUMNS,
 } from "../../../src/lib/history-runs-api-rules";
-import { API_MARKER_HEADER, apiError, jsonResponse, PRIVATE_NO_STORE } from "../http";
+import { API_MARKER_HEADER, apiError, jsonResponse, PRIVATE_NO_STORE, textResponse } from "../http";
 import type { ApiRoute, PublicRouteContext, UserRouteContext } from "../router";
 import { postgrest, postgrestStream } from "../supabase-rest";
 import { HANDLER_BUDGET_MS, restErrorCode } from "./comments";
@@ -100,6 +101,31 @@ async function handleOne(context: PublicRouteContext): Promise<Response> {
   });
   if (!result.ok) return apiError(restErrorCode(result));
   return jsonResponse({ v: 1, env: config.dataEnv, rows: result.data ?? [] });
+}
+
+/** The JSON answer of one raw file: the escaped text of a 1.9 MB raw (the D1 cap) fits. */
+const RAW_ANSWER_MAX_BYTES = 4 * 1024 * 1024;
+
+/**
+ * One run's raw file as text/plain (R3r). Supabase's PostgREST answers a one-column select only as
+ * JSON (Accept: text/plain is PGRST107 without a media type handler), so this reads the row and
+ * answers its text. Raws are 57 KB at the median and 277 KB at most today.
+ */
+async function handleRaw(context: PublicRouteContext): Promise<Response> {
+  const id = context.url.searchParams.get("id") ?? "";
+  if (!isRunId(id)) return apiError("invalid");
+  const { config } = context;
+  if (!context.allowUpstream) return jsonResponse({ v: 1, env: config.dataEnv });
+  const result = await postgrest<Array<{ raw?: unknown }>>(config, {
+    path: "runs",
+    deadline: Date.now() + STREAM_READ_MS,
+    timeoutMs: STREAM_READ_MS,
+    maxBytes: RAW_ANSWER_MAX_BYTES,
+    query: new URLSearchParams({ select: "raw", id: `eq.${id}`, env: `eq.${config.dataEnv}`, limit: "1" }),
+  });
+  if (!result.ok) return apiError(restErrorCode(result));
+  const raw = Array.isArray(result.data) ? result.data[0]?.raw : undefined;
+  return textResponse(typeof raw === "string" ? raw : "", config.dataEnv);
 }
 
 async function handleEngagement(context: PublicRouteContext): Promise<Response> {
@@ -278,6 +304,16 @@ export const historyRunsRoutes: readonly ApiRoute[] = [
     query: { id: isRunId, view: isHistoryRunView },
     rateLimit: "ip",
     handle: handleOne,
+  },
+  {
+    id: "read.history-run.raw",
+    method: "GET",
+    path: HISTORY_RUN_RAW_PATH,
+    group: "history-runs",
+    access: "public",
+    query: idQuery,
+    rateLimit: "ip",
+    handle: handleRaw,
   },
   {
     id: "read.history-runs.engagement",

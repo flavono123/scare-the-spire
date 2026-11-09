@@ -1,6 +1,7 @@
 import { parseEngagementList } from "../../../src/lib/engagement-keys";
 import { RUN_DETAIL_COLUMNS, RUN_SUMMARY_COLUMNS } from "../../../src/lib/history-runs-api-rules";
 import { TOYBOX_POST_TABLES } from "../../../src/lib/toybox-api-rules";
+import { historyRunsAdapter } from "../d1-adapters/history-runs";
 import { navAdapter } from "../d1-adapters/nav";
 import { columnsOf, pick, type AdapterContext } from "../d1-adapters/rows";
 import { DEAD_POST_COLUMNS, type FeedService } from "../d1-adapters/toybox";
@@ -185,6 +186,8 @@ export const SHADOW_SPECS: Readonly<Record<string, ShadowSpec>> = {
   "me.puzzlebox.leaderboard": {},
   "me.puzzlebox.standings": { rules: rules([set("standings")]) },
   "read.history-runs": {
+    // The row objects: the served answer (R1j/R2j text) parses to them (scripts/d1-read-store.spec.ts).
+    d1: (context) => historyRunsAdapter(context),
     supabase: (context) => context.url.searchParams.get("view") === "recent"
       ? runsWithoutRaw(context, RUN_LIST_COLUMNS.join(","), { order: "created_at.desc", limit: "100" })
       : runsWithoutRaw(context, RUN_LIST_COLUMNS.join(","), { order: "start_time.desc", limit: "30" }),
@@ -209,6 +212,9 @@ export const SHADOW_SPECS: Readonly<Record<string, ShadowSpec>> = {
       return projectRows(answer, view === "cover" ? ["id", "cover_spec"] : RUN_DETAIL_META_COLUMNS);
     },
   },
+  // R3r: raw files are not compared on requests (the daily reconcile compares their hashes, design 6).
+  // Answering here keeps the shadow from reading a copy of a body up to 1.9 MB.
+  "read.history-run.raw": { supabase: () => Promise.resolve({ ok: false, reason: "raw_file" }) },
   "read.history-runs.engagement": {
     skip: (supabase) => (sum(record(supabase).likes) >= POSTGREST_ROW_CAP || sum(record(supabase).comments) >= POSTGREST_ROW_CAP ? "row_cap" : null),
   },

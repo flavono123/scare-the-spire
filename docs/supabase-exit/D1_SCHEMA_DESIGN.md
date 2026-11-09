@@ -631,11 +631,13 @@ CREATE TABLE IF NOT EXISTS post_history_course_file (
   계획 5.1절은 페이지 HTML에 넣는 첫 데이터 JSON에 상한 128 KB를 둔다. 목록 답은 그보다 커서, 역사 강의서 목록의
   첫 데이터를 어떻게 넣을지는 3단계에 따로 정한다. 런 고르기(R2)도 목록과 같은 요약 열을 고른다(1단계
   `RUN_SUMMARY_COLUMNS`에서 `raw` 대신 요약 열, `acts_count` 포함). 코오오옴보의 런 표지(R4)는 `cover_spec`과
-  `list_facts`를 줘 같은 규칙으로 고른다.
+  `list_facts`, 표지 문구가 읽는 `win`·`ascension`·`total_floors`와 `summary_version`을 줘 같은 규칙으로 고른다
+  (3단계 구현 때 더함: 문구 입력이 `list_facts`만으로는 모자랐다). `summary_version` 0이면 R3r 원문으로 고른다.
 - **상세와 표지 편집기의 원문.** R3(상세 메타)와 R4(코오오옴보 썸네일 표지)는 원문을 고르지 않는다. 상세와 표지
   편집기의 원문은 R3r 하나로 읽고,
   저장된 텍스트를 응답 본문 그대로 준다(JSON으로 감싸지 않음, Worker가 파싱하지 않음). 메타는 같은 요청의 헤더나
-  따로 요청(R5)으로 준다. 이 답 모양 변경은 3단계에 클라이언트와 함께 들어간다. 2단계 그림자 대조는 원문을 뺀
+  따로 요청(R5)으로 준다. 3단계 구현: `GET /api/read/history-run/raw?id=`(`read.history-run.raw`), `text/plain` 본문,
+  공유되지 않은 런은 빈 본문. Supabase 쪽은 PostgREST `select=raw`를 `Accept: text/plain`으로 받아 그대로 흘린다. 이 답 모양 변경은 3단계에 클라이언트와 함께 들어간다. 2단계 그림자 대조는 원문을 뺀
   열로 하므로 영향이 없다. testbed에서 277 KB와 1.9 MB 원문으로 `text()`, bind, 응답의 CPU를 재서 여기 적는다.
   상한은 1.9 MB로 정했다(10.8절). 지금 최대 원문은 277 KB(중간값 약 57 KB)다.
 
