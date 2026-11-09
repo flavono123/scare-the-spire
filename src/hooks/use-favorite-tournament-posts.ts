@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
-import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
+import { dataEnv } from "@/lib/data-env";
 import {
   FAVORITE_TOURNAMENT_CUSTOM_PRESET_KEY,
   FAVORITE_TOURNAMENT_FEED_SERVICE,
@@ -10,7 +10,6 @@ import {
   FAVORITE_TOURNAMENT_MIN_POOL,
   FAVORITE_TOURNAMENT_NOTE_MAX_CHARS,
   FAVORITE_TOURNAMENT_NOTE_MIN_CHARS,
-  FAVORITE_TOURNAMENT_STATS_TABLE,
   FAVORITE_TOURNAMENT_TABLE,
   FAVORITE_TOURNAMENT_TITLE_MAX_CHARS,
   FAVORITE_TOURNAMENT_TITLE_MIN_CHARS,
@@ -22,8 +21,6 @@ import {
   type FavoriteTournamentPost,
   type FavoriteTournamentResourceRef,
 } from "@/lib/favorite-tournament";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   apiCreateToyboxPost,
   apiDeleteToyboxPost,
@@ -31,7 +28,6 @@ import {
   apiTournamentPresets,
   apiTournamentStats,
   apiToyboxPost,
-  toyboxViaApi,
   toyboxWriteError,
 } from "@/lib/toybox-api";
 import { currentAuthorProfileToken } from "@/lib/user-profile";
@@ -51,7 +47,6 @@ function isValidSave(input: SaveFavoriteTournamentInput): boolean {
   const note = input.note.trim();
   return (
     Boolean(input.activeUserId)
-    && supabaseEnabled
     && nickname.length >= 1
     && nickname.length <= 20
     && title.length >= FAVORITE_TOURNAMENT_TITLE_MIN_CHARS
@@ -76,32 +71,18 @@ export async function insertFavoriteTournamentPost(
     preset_key: FAVORITE_TOURNAMENT_CUSTOM_PRESET_KEY,
     game_version: FAVORITE_TOURNAMENT_GAME_VERSION,
     pool: input.pool,
-    env: supabaseEnv,
+    env: dataEnv,
     avatar_id: authorToken.avatar_id,
     avatar_kind: authorToken.avatar_kind,
     palette_id: authorToken.palette_id,
     palette_swapped: authorToken.palette_swapped,
   };
-  if (toyboxViaApi()) {
-    try {
-      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, through the Worker.
-      return normalizeFavoriteTournamentPost(await apiCreateToyboxPost("favorite_tournament", row));
-    } catch (error) {
-      // Only a write that certainly did nothing is sent again on the legacy path.
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  try {
+    // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, through the Worker.
+    return normalizeFavoriteTournamentPost(await apiCreateToyboxPost("favorite_tournament", row));
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { data, error } = await withSupabaseTimeout(
-    "favorite_tournament_posts.insert",
-    supabase
-      .from(FAVORITE_TOURNAMENT_TABLE)
-      .insert(row)
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  if (!data) return null;
-  return normalizeFavoriteTournamentPost(data);
 }
 
 export function useFavoriteTournamentPosts(sort: ToyboxFeedSort = "latest") {
@@ -128,32 +109,11 @@ export function useFavoriteTournamentPosts(sort: ToyboxFeedSort = "latest") {
 
 export function useFavoriteTournamentBuiltins() {
   const [posts, setPosts] = useState<FavoriteTournamentPost[]>([]);
-  const [loading, setLoading] = useState(supabaseEnabled);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
-    const load = async (): Promise<unknown[]> => {
-      if (toyboxViaApi()) {
-        try {
-          return await apiTournamentPresets();
-        } catch (error) {
-          if (!shouldUseLegacy(error) || !supabaseEnabled) throw error;
-        }
-      }
-      const { data, error } = await withSupabaseTimeout(
-        "favorite_tournament_posts.builtins",
-        supabase
-          .from(FAVORITE_TOURNAMENT_TABLE)
-          .select("*")
-          .eq("env", supabaseEnv)
-          .like("preset_key", "builtin:%")
-          .order("created_at", { ascending: true }),
-      );
-      if (error) throw error;
-      return data ?? [];
-    };
-    load()
+    apiTournamentPresets()
       .then((rows) => {
         if (cancelled) return;
         setPosts(
@@ -182,51 +142,17 @@ export function useFavoriteTournamentPost(
 ) {
   const [post, setPost] = useState<FavoriteTournamentPost | null>(null);
   const [stats, setStats] = useState<FavoriteTournamentCandidateStats[]>([]);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
 
-    const load = async (): Promise<{ postRow: unknown; statsRows: unknown[] }> => {
-      if (toyboxViaApi()) {
-        try {
-          const [postRow, statsRows] = await Promise.all([
-            apiToyboxPost("favorite_tournament", postId),
-            apiTournamentStats(postId),
-          ]);
-          return { postRow, statsRows };
-        } catch (error) {
-          if (!shouldUseLegacy(error) || !supabaseEnabled) throw error;
-        }
-      }
-      const [postResult, statsResult] = await Promise.all([
-        withSupabaseTimeout(
-          "favorite_tournament_posts.detail",
-          supabase
-            .from(FAVORITE_TOURNAMENT_TABLE)
-            .select("*")
-            .eq("id", postId)
-            .eq("env", supabaseEnv)
-            .maybeSingle(),
-        ),
-        withSupabaseTimeout(
-          "favorite_tournament_candidate_stats.detail",
-          supabase
-            .from(FAVORITE_TOURNAMENT_STATS_TABLE)
-            .select("*")
-            .eq("tournament_id", postId)
-            .eq("env", supabaseEnv),
-        ),
-      ]);
-      if (postResult.error) throw postResult.error;
-      if (statsResult.error) throw statsResult.error;
-      return { postRow: postResult.data, statsRows: statsResult.data ?? [] };
-    };
-
-    load()
-      .then(({ postRow, statsRows }) => {
+    Promise.all([
+      apiToyboxPost("favorite_tournament", postId),
+      apiTournamentStats(postId),
+    ])
+      .then(([postRow, statsRows]) => {
         if (cancelled) return;
         setPost(postRow ? normalizeFavoriteTournamentPost(postRow) : null);
         setStats(
@@ -249,27 +175,11 @@ export function useFavoriteTournamentPost(
   }, [postId]);
 
   const remove = useCallback(async () => {
-    if (!userId || !supabaseEnabled) return false;
-    let apiResult: { error: unknown } | null = null;
-    if (toyboxViaApi()) {
-      try {
-        // Not ours or already gone counts as removed, as the legacy delete does.
-        await apiDeleteToyboxPost("favorite_tournament", postId);
-        apiResult = { error: null };
-      } catch (error) {
-        if (!writeMayGoLegacy(error)) apiResult = { error };
-      }
-    }
-    const { error } = apiResult ?? await withSupabaseTimeout(
-      "favorite_tournament_posts.detail.delete",
-      supabase
-        .from(FAVORITE_TOURNAMENT_TABLE)
-        .delete()
-        .eq("id", postId)
-        .eq("user_id", userId)
-        .eq("env", supabaseEnv),
-    ).catch(() => ({ error: new Error("timeout") }));
-    if (error) {
+    if (!userId) return false;
+    try {
+      // Not ours or already gone counts as removed, as the legacy delete does.
+      await apiDeleteToyboxPost("favorite_tournament", postId);
+    } catch {
       setUnavailable(true);
       return false;
     }
@@ -282,7 +192,6 @@ export function useFavoriteTournamentPost(
     champion: FavoriteTournamentResourceRef;
     matches: FavoriteTournamentMatchRecord[];
   }) => {
-    if (!supabaseEnabled) return false;
     const matches = input.matches.map((match) => ({
       left_type: match.left.type,
       left_id: match.left.id,
@@ -290,58 +199,22 @@ export function useFavoriteTournamentPost(
       right_id: match.right.id,
       winner: match.winner,
     }));
-    let apiResult: { error: unknown } | null = null;
-    if (toyboxViaApi()) {
-      try {
-        await apiTournamentPlay({
-          tournamentId: postId,
-          startingSize: input.startingSize,
-          championType: input.champion.type,
-          championId: input.champion.id,
-          matches,
-        });
-        apiResult = { error: null };
-      } catch (apiError) {
-        if (!writeMayGoLegacy(apiError)) apiResult = { error: apiError };
-      }
-    }
-    const { error } = apiResult ?? await withSupabaseTimeout(
-      "complete_favorite_tournament_play",
-      supabase.rpc("complete_favorite_tournament_play", {
-        p_tournament_id: postId,
-        p_env: supabaseEnv,
-        p_starting_size: input.startingSize,
-        p_champion_type: input.champion.type,
-        p_champion_id: input.champion.id,
-        p_matches: matches,
-      }),
-    );
-    if (error) {
+    try {
+      await apiTournamentPlay({
+        tournamentId: postId,
+        startingSize: input.startingSize,
+        championType: input.champion.type,
+        championId: input.champion.id,
+        matches,
+      });
+    } catch {
       setUnavailable(true);
       return false;
     }
     setPost((current) => current
       ? { ...current, play_count: (current.play_count ?? 0) + 1 }
       : current);
-    const reloadStats = async (): Promise<unknown[] | null> => {
-      if (toyboxViaApi()) {
-        try {
-          return await apiTournamentStats(postId);
-        } catch (apiError) {
-          if (!shouldUseLegacy(apiError)) return null;
-        }
-      }
-      const { data } = await withSupabaseTimeout(
-        "favorite_tournament_candidate_stats.reload",
-        supabase
-          .from(FAVORITE_TOURNAMENT_STATS_TABLE)
-          .select("*")
-          .eq("tournament_id", postId)
-          .eq("env", supabaseEnv),
-      ).catch(() => ({ data: null }));
-      return data;
-    };
-    const data = await reloadStats();
+    const data = await apiTournamentStats(postId).catch(() => null);
     if (data) {
       setStats(
         data
