@@ -197,6 +197,47 @@ export function hasListSummary(row: RunSummaryListRow): boolean {
     && row.game_mode !== null && Boolean(row.game_elements);
 }
 
+const isText = (value: unknown): value is string => typeof value === "string";
+const isCount = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
+const isObject = (value: unknown): value is Record<string, unknown> => Boolean(value) && typeof value === "object" && !Array.isArray(value);
+
+/** list_facts as extractRunListSummary writes it, element by element. */
+function isListFacts(value: unknown): value is RunListFacts {
+  if (!isObject(value)) return false;
+  const { cards, relics, potions, deck_size, relic_count, highlight_card, highlight_relic } = value;
+  return Array.isArray(cards) && cards.every((card) => Array.isArray(card) && card.length === 4 && isText(card[0])
+      && isCount(card[1]) && (card[2] === null || isCount(card[2])) && typeof card[3] === "boolean")
+    && Array.isArray(relics) && relics.every((relic) => Array.isArray(relic) && relic.length === 2 && isText(relic[0]) && typeof relic[1] === "boolean")
+    && Array.isArray(potions) && potions.every(isText)
+    && isCount(deck_size) && isCount(relic_count)
+    && (highlight_card === null || isText(highlight_card)) && (highlight_relic === null || isText(highlight_relic));
+}
+
+/** The other summary columns as the extractor writes them (characters, game_mode, game_elements, badges). */
+function isSummaryShape(row: RunSummaryListRow): boolean {
+  return Array.isArray(row.characters) && row.characters.every(isText)
+    && isText(row.game_mode)
+    && Array.isArray(row.game_elements) && row.game_elements.every((element) => isObject(element) && isText(element.type) && isText(element.id))
+    && Array.isArray(row.badges) && row.badges.every(isObject);
+}
+
+/**
+ * The list inputs of a D1 row from its summary columns, or null when the row has no summary or one
+ * the list cannot read (columns of the wrong shape, from a hand-made share at step 5). The search
+ * doc is built once here, as the list builds it for every card, so a summary that fails there fails
+ * here, for this row only.
+ */
+function summaryInputsOrNull(row: RunSummaryListRow): HistoryRunListInputs | null {
+  if (!hasListSummary(row) || !isListFacts(row.list_facts) || !isSummaryShape(row)) return null;
+  try {
+    const inputs = listInputsFromSummaryRow(row);
+    listSearchDoc(inputs);
+    return inputs;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Today's list row for a D1 row without a summary: the RUN_SUMMARY_COLUMNS of the Supabase select,
  * with the raw read from R3r (null when it could not be read).
@@ -226,7 +267,8 @@ async function rawOf(fetchRaw: RunRawFetcher, runId: string): Promise<string | n
  * answer shape, with the functions today's list uses:
  * - a Supabase row (with `raw`): normalizeRunSummaryRow, as today;
  * - a D1 row with its summary: listInputsFromSummaryRow, the search facts kept on `search_facts`;
- * - a D1 row with summary_version 0: its raw from R3r, then normalizeRunSummaryRow (design 4.4).
+ * - a D1 row with summary_version 0, or a summary the list cannot read: its raw from R3r, then
+ *   normalizeRunSummaryRow (design 4.4). One such row never fails the others.
  */
 export async function donatedRunsFromListRows(
   rows: readonly RunRow[],
@@ -239,12 +281,12 @@ export async function donatedRunsFromListRows(
       out[index] = normalizeRunSummaryRow(row);
       return;
     }
-    const summaryRow = row as unknown as RunSummaryListRow;
-    if (!hasListSummary(summaryRow)) {
+    // No usable summary (summary_version 0, or columns the list cannot read): this row only goes the raw way.
+    const inputs = summaryInputsOrNull(row as unknown as RunSummaryListRow);
+    if (!inputs) {
       pending.push(index);
       return;
     }
-    const inputs = listInputsFromSummaryRow(summaryRow);
     out[index] = inputs.searchFacts ? { ...inputs.summary, search_facts: inputs.searchFacts } : inputs.summary;
   });
   let next = 0;
@@ -284,14 +326,18 @@ export async function coverFromSummaryCoverRow(
   const stored = parseCoverSpec(row.cover_spec);
   if (stored?.auto === false) return stored;
   const facts = row.list_facts;
-  if (row.summary_version > 0 && facts) {
-    return pickAlternatingCoverFromFacts(runId, facts, {
-      win: row.win,
-      totalFloors: row.total_floors,
-      ascension: row.ascension,
-      relicCount: facts.relic_count,
-      deckSize: facts.deck_size,
-    });
+  if (row.summary_version > 0 && isListFacts(facts)) {
+    try {
+      return pickAlternatingCoverFromFacts(runId, facts, {
+        win: row.win,
+        totalFloors: row.total_floors,
+        ascension: row.ascension,
+        relicCount: facts.relic_count,
+        deckSize: facts.deck_size,
+      });
+    } catch {
+      // Facts the picker cannot read: pick from the raw below.
+    }
   }
   const parsed = parseRunSafely(await rawOf(fetchRaw, runId));
   return parsed ? pickAlternatingCover(runId, parsed) : stored;
