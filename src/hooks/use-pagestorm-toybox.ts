@@ -2,7 +2,6 @@
 
 import { useMemo } from "react";
 import { useDefragmentFeed } from "@/hooks/use-defragment-feed";
-import { shouldUseLegacy } from "@/lib/api-client";
 import {
   DEFRAGMENT_FEED_SERVICE_META,
   feedItemFromPost,
@@ -22,11 +21,8 @@ import {
   type PagestormToyboxSnapshot,
 } from "@/lib/pagestorm-toybox";
 import { normalizeTransfigurePost } from "@/lib/transfigure-types";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import type { ThisOrThatPost } from "@/lib/this-or-that";
-import { apiToyboxPost, toyboxViaApi } from "@/lib/toybox-api";
-import { TOYBOX_FEED_TABLES } from "@/lib/toybox-feed";
+import { apiToyboxPost } from "@/lib/toybox-api";
 
 export function usePagestormToyboxPicker(serviceHref: string | null): {
   picks: PagestormToyboxPick[];
@@ -60,26 +56,9 @@ async function fetchToyboxRow(
   service: DefragmentFederatedService,
   postId: string,
 ): Promise<unknown | null> {
-  if (!supabaseEnabled || service === "history_course") return null;
-  if (toyboxViaApi()) {
-    try {
-      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same `select *` row of this env.
-      return await apiToyboxPost(service, postId);
-    } catch (error) {
-      if (!shouldUseLegacy(error)) throw error;
-    }
-  }
-  const { data, error } = await withSupabaseTimeout(
-    `pagestorm.toybox.${service}.detail`,
-    supabase
-      .from(TOYBOX_FEED_TABLES[service])
-      .select("*")
-      .eq("id", postId)
-      .eq("env", supabaseEnv)
-      .maybeSingle(),
-  );
-  if (error) throw error;
-  return data ?? null;
+  if (service === "history_course") return null;
+  // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same `select *` row of this env.
+  return apiToyboxPost(service, postId);
 }
 
 export async function loadPagestormToyboxSnapshot(
