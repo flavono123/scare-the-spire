@@ -11,12 +11,10 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-import {
-  normalizeTransfigurePost,
-  type TransfigurePost,
-} from "@/lib/transfigure-types";
+import type { TransfigurePost } from "@/lib/transfigure-types";
 import { BUILTIN_SAMPLE_TRANSFIGURES } from "@/lib/transfigure-builtins";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { apiToyboxFeed } from "@/lib/toybox-api";
+import { recentTransfiguresFromFeed } from "@/lib/transfigure-reel";
 import { serviceDateLocale } from "@/lib/relative-time";
 import { cn } from "@/lib/utils";
 import { serviceMessages } from "@/messages/service";
@@ -98,20 +96,15 @@ export function BackstabTransfigureSection({
       : BUILTIN_SAMPLE_TRANSFIGURES;
   });
 
-  // Client-side: request real transfigures once upon entering page
+  // Client-side: request real transfigures once upon entering page. Only a
+  // hydrated page (the dev catalog) gets here: static patch pages never hydrate.
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
-    supabase
-      .from("transfigure_posts")
-      .select("*")
-      .eq("env", supabaseEnv)
-      .order("created_at", { ascending: false })
-      .limit(15)
+    apiToyboxFeed("transfigure", "latest", null)
       .then(
-        ({ data, error }) => {
-          if (error || !data || cancelled || data.length === 0) return;
-          const normalized = data.map(normalizeTransfigurePost).filter(Boolean);
+        (rows) => {
+          if (cancelled || rows.length === 0) return;
+          const normalized = recentTransfiguresFromFeed(rows).filter(Boolean);
           if (normalized.length > 0) {
             setPosts(normalized);
           }

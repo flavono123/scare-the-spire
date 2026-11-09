@@ -25,5 +25,5 @@ export default async function KoreanPatchDetailPage({
   params: Promise<{ version: string }>;
 }) {
   const { version } = await params;
-  return <PatchDetailPage version={version} serviceLocale="ko" gameLocale="kor" />;
+  return <PatchDetailPage version={version} serviceLocale="ko" gameLocale="kor" reels="none" />;
 }

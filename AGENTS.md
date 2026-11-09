@@ -140,7 +140,7 @@ evaluate whether it can cause Cloudflare `exceededResources`, Error 1102, or a
 ### 이야기 & 댓글
 - 이야기(story), 변화(diff/change)를 포함해 모든 요소에 대해 댓글로 이야기할 수 있음
 - 카드/유물 개별 페이지, 패치노트 등 각 리소스에 댓글 연결
-- 공개 서비스의 Supabase 저장소/조회 불가 UI는 `StorageUnavailableNotice`가 유일한 React 컴포넌트다. 기능별 임의 오류 박스나 "불러오지 못했습니다" 문구를 만들지 말고, 패치 Worker 정적 JS처럼 React를 쓸 수 없는 표면은 같은 이미지/문구 구조를 미러링한다.
+- 공개 서비스의 저장소 조회 불가 UI(같은 출처 `/api`가 답하지 않을 때. 6단계부터 브라우저는 Supabase를 직접 부르지 않는다)는 `StorageUnavailableNotice`가 유일한 React 컴포넌트다. 기능별 임의 오류 박스나 "불러오지 못했습니다" 문구를 만들지 말고, 패치 Worker 정적 JS처럼 React를 쓸 수 없는 표면은 같은 이미지/문구 구조를 미러링한다.
 
 ### 언어 정책
 - 서비스의 일급시민 언어는 **한국어**

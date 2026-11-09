@@ -4,7 +4,9 @@ import { PINNED_SUPABASE_JWKS, type SupabaseJwk } from "./supabase-jwks";
  * Verifies a Supabase access token (ES256) before the Worker forwards it to
  * PostgREST (docs/supabase-exit/STEP1_DESIGN.md 6). In step 1 PostgREST checks
  * the token again, so this is defense in depth plus a trusted user id for the
- * endpoints. The Worker never refreshes tokens.
+ * endpoints. Verification never refreshes a token. Since step 6 the claim route
+ * does, once, for a stored session whose access token it cannot claim
+ * (identity/supabase-refresh.ts), as supabase-js did in the browser before.
  */
 
 export type VerifiedSupabaseUser = {

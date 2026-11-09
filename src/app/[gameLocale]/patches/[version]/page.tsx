@@ -31,5 +31,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LocalizedPatchDetailPage({ params }: Props) {
   const { version, serviceLocale, gameLocale } = await getLocalePairFromParams(params);
-  return <PatchDetailPage version={version} serviceLocale={serviceLocale} gameLocale={gameLocale} />;
+  return <PatchDetailPage version={version} serviceLocale={serviceLocale} gameLocale={gameLocale} reels="none" />;
 }

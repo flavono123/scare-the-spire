@@ -159,10 +159,7 @@ for (const file of API_ONLY_SOURCES) {
   ]) {
     assert.equal(banned.test(source), false, `${file} has no ${banned}`);
   }
-  // toybox-api.ts keeps the deprecated toyboxViaApi stub for the WP-T2 hooks until WP-Z deletes it.
-  if (file !== "src/lib/toybox-api.ts") {
-    assert.equal(/\btoyboxViaApi\b/.test(source), false, `${file} does not branch on toyboxViaApi`);
-  }
+  assert.equal(/\btoyboxViaApi\b/.test(source), false, `${file} has no toyboxViaApi`);
 }
 
 type Seen = { url: string; method: string };

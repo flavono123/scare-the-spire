@@ -13,7 +13,8 @@ import { WRITE_PAUSED_ERROR } from "@/lib/write-source-flags";
  * - a v1-shaped answer of another version (requireApiVersion): code `bad_version`.
  * A write keeps today's code `unavailable` for the first two, as the production
  * build (direct writes closed) already answered. Nothing is resent and no group
- * is demoted.
+ * is demoted. No call carries a bearer token: the identity is the Worker's signed
+ * cookie (src/lib/api-session.ts).
  */
 
 export const API_MARKER_HEADER = "X-Slseoun-Api";
@@ -22,18 +23,6 @@ export class ApiError extends Error {
   constructor(readonly status: number, readonly code: string) {
     super(`api ${status} ${code}`);
     this.name = "ApiError";
-  }
-}
-
-/**
- * @deprecated apiFetch and requireApiVersion no longer throw it (step 6: legacy
- * signals are ApiUnavailableError). Kept while other step 6 packages still name
- * it; WP-Z removes it.
- */
-export class SurfaceLegacyError extends ApiError {
-  constructor(status: number, readonly processed: boolean) {
-    super(status, "surface_legacy");
-    this.name = "SurfaceLegacyError";
   }
 }
 
@@ -81,26 +70,14 @@ function sleep(ms: number, signal?: AbortSignal): Promise<void> {
 /**
  * A v1-shaped answer this client does not understand (docs/supabase-exit/STEP1_DESIGN.md 9)
  * is an outage: ApiUnavailableError `bad_version`. `group` and `processed` (the
- * answer to a write, which ran) no longer change anything; the signature stays
- * for the callers WP-Z has not cleaned up yet.
+ * answer to a write, which ran) no longer change anything; the callers still name
+ * them, as they name the group in apiFetch.
  */
 export function requireApiVersion(group: ApiSurfaceGroup, body: { v?: unknown } | null | undefined, processed = false): void {
   void group;
   void processed;
   if (body?.v === 1) return;
   throw new ApiUnavailableError(200, "bad_version");
-}
-
-/** @deprecated Always false: there is no legacy path to redo a call on. WP-Z removes it. */
-export function shouldUseLegacy(error: unknown): boolean {
-  void error;
-  return false;
-}
-
-/** @deprecated Always false: no write is resent on a legacy path. WP-Z removes it. */
-export function writeMayGoLegacy(error: unknown): boolean {
-  void error;
-  return false;
 }
 
 export const API_TIMEOUT_MS = 8000;
@@ -112,8 +89,6 @@ export type ApiFetchInit = {
   rawBody?: string;
   /** Extra request headers. */
   headers?: Record<string, string>;
-  /** Supabase access token for writes and /api/me reads. */
-  token?: string | null;
   timeoutMs?: number;
   signal?: AbortSignal;
   /** "text": a 2xx body is returned as text (the run raw file, R3r); errors are still JSON. */
@@ -143,7 +118,6 @@ async function apiFetchOnce<T>(path: string, init: ApiFetchInit): Promise<T> {
   const asText = init.responseType === "text";
   const headers: Record<string, string> = { ...(init.headers ?? {}), Accept: asText ? "text/plain" : "application/json" };
   if (init.body !== undefined || init.rawBody !== undefined) headers["Content-Type"] = "application/json";
-  if (init.token) headers.Authorization = `Bearer ${init.token}`;
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), init.timeoutMs ?? API_TIMEOUT_MS);

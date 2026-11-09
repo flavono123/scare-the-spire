@@ -106,7 +106,6 @@ export function useThisOrThatPosts(
     setUnavailable,
   } = useToyboxFeed({
     service: "this_or_that",
-    table: "this_or_that_posts",
     sort,
     normalizePost,
   });

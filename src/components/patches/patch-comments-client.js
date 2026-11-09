@@ -1098,15 +1098,14 @@
   }
 
   // Same contract as src/lib/nav-snapshot.ts (docs/supabase-exit/STEP1_DESIGN.md 8.2). The
-  // page-wide object lets this script and the bundled patch scripts share one /api/read/nav
-  // request. Step 6 (docs/supabase-exit/STEP6_PLAN.md 1.1): every call is on the api path and a
-  // legacy signal is an outage, never a demotion, so `demoted` stays empty; it is kept only for
-  // the shape src/lib/runtime-flags.ts declares until WP-Z.
+  // page-wide object (src/lib/runtime-flags.ts) lets this script and the bundled patch scripts
+  // share one /api/read/nav request. Step 6 (docs/supabase-exit/STEP6_PLAN.md 1.1): every call
+  // is on the api path and a legacy signal is an outage.
   const API_MARKER_HEADER = "x-slseoun-api";
   const NAV_SNAPSHOT_TTL_MS = 30000;
 
   function slseounRuntime() {
-    window.__slseounRuntime = window.__slseounRuntime || { demoted: new Set() };
+    window.__slseounRuntime = window.__slseounRuntime || {};
     return window.__slseounRuntime;
   }
 

@@ -100,6 +100,12 @@
   응답뿐이다. 브라우저는 legacy 경로이고 1단계 `/api` 요청 0건, `slseoun_rf` 쿠키 없음이다. 기록은
   [history/2026-11-08.md](../release/history/2026-11-08.md). 운영 `runtime_flags`는 0행이다(모든 그룹 legacy). 그룹을
   켜려면 먼저 `API_RUNTIME_FLAGS`를 `d1`로 바꾸는 배포가 필요하다.
+- 2026-11-10 6단계(클라이언트 정리, [STEP6_PLAN.md](STEP6_PLAN.md)): 브라우저의 legacy 경로가 사라졌다.
+  `src/lib/supabase.ts`(supabase-js), `surfacePath`·`demoteSurface`, `SurfaceLegacyError`와 legacy로 다시 하는 호출,
+  `supabaseEnabled` 검사, supabase-js 토큰 갱신, Realtime 채널이 없다. 4.3절의 신호는 클라이언트에서 "응답 없음"
+  (`ApiUnavailableError`, 코드 `surface_legacy`·`no_marker`·`bad_version`)이고, 신원은 서명 쿠키만 쓴다(Bearer 없음).
+  아래 4.3절 클라이언트 쪽, 7절, 8.2절, 9절의 legacy 동작은 1~5단계의 기록으로 남긴다. Worker 쪽(409 응답, QA 쿠키,
+  Supabase 어댑터)은 7단계까지 그대로다.
 - 이 문서는 모든 화면이 같이 쓰는 기반과 첫 화면 `nav`를 정한다. 다른 화면은 SURFACE_MAP.md 2절을 따르되,
   이 문서 9절의 규칙이 우선한다.
 
@@ -281,6 +287,9 @@ CREATE TABLE runtime_flag_events (id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT
 `/api` 응답. 표식이 없다는 것은 라우터가 없는 Worker(1단계 이전 판으로 되돌린 경우)이거나 Cloudflare 오류
 페이지라는 뜻이다. 1단계 이전 Worker는 `/api/*`에 HTML 404를 준다(`main-worker.ts:441-457`).
 
+6단계 뒤: 클라이언트에 legacy 경로가 없어 이 신호들은 모두 "응답 없음"이다(`src/lib/api-client.ts`, 읽기는
+`surface_legacy`·`no_marker`, 쓰기는 `unavailable`). Worker는 7단계까지 같은 409를 보낸다.
+
 ### 4.4 교차 사이트 쓰기
 
 - 1단계 쓰기는 `Authorization: Bearer` 헤더로만 인증하고 쿠키 신원이 없다. 그래서 CSRF는 구조적으로 성립하지 않는다.
@@ -354,6 +363,11 @@ CREATE TABLE runtime_flag_events (id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT
 - Worker는 토큰을 갱신하지 않는다.
 
 ## 7. 클라이언트
+
+> 6단계(2026-11-10) 뒤의 클라이언트: `src/lib/runtime-flags.ts`에는 페이지 공유 객체 `slseounRuntime()`(네비
+> 스냅샷 요청)만 남았다. `apiFetch`는 legacy 신호를 `ApiUnavailableError`로 던지고 아무 그룹도 내리지 않으며,
+> Bearer 헤더를 보내지 않는다. 개인 읽기·쓰기는 `apiFetchAsUser`(`src/lib/api-session.ts`)가 서명 쿠키로 하고,
+> 쿠키가 없거나 만료면 claim을 한 번 다시 한다. 아래는 1~5단계의 설계다.
 
 - `src/lib/runtime-flags.ts`:
   - `surfacePath(group)`: 부를 때마다 `document.cookie`의 `slseoun_rf`를 읽는다(값이 `v1.`로 시작하지 않으면
@@ -432,6 +446,8 @@ Supabase 읽기(갱신할 때만):
   네비, 배달부, 패치 페이지의 두 스크립트가 요청 하나를 같이 쓴다.
 - 응답의 `env`가 빌드의 `supabaseEnv`와 다르면 그 페이지는 `nav`를 legacy로 내린다(경고 로그). 본 시각 저장소도
   env별이라 섞으면 점이 틀린다. testbed는 main·패치 페이지 모두 development로 빌드해 Worker와 같다(10절).
+  6단계 뒤에는 빌드의 `dataEnv`(`src/lib/data-env.ts`)와 비교하고, 다르거나 모양이 다르면 테이블 점은 꺼지고
+  배달부는 비며 다른 곳에 묻지 않는다.
 - `fetchUnreadSurfaceIds(seen)`(`nav-seen.ts`)는 어느 경로에서도 거부(reject)하지 않는다.
   - 패치 노트·니오우스레터: 번들 JSON으로, 스냅샷 결과와 상관없이 계산한다.
   - 테이블 표면: `latest[id] > since[id]`. 철학자: `weeklyPublishedAt(weekly) > since`.

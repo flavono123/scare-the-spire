@@ -828,11 +828,19 @@ export async function PatchDetailPage({
   serviceLocale,
   gameLocale,
   staticHoverPreviews = false,
+  reels = "build",
 }: {
   version: string;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   staticHoverPreviews?: boolean;
+  /**
+   * "build" bakes the shell patch reels from the site's /api (patch:build).
+   * "none" reads nothing: the sample transfigures and no philosophers reel.
+   * The Next routes pass it, since /patches* is the patch Worker's and their
+   * pages never ship.
+   */
+  reels?: "build" | "none";
 }) {
   const copy = PATCH_COPY[serviceLocale];
   const patches = await getSTS2Patches();
@@ -845,8 +853,8 @@ export async function PatchDetailPage({
       getPatchBackstabGameCopy(gameLocale),
       getDebateGameCopy(gameLocale),
       loadAllEntities({ gameLocale }),
-      getRecentTransfigurePosts(15),
-      getColorfulPhilosopherGalleryPosts(),
+      reels === "build" ? getRecentTransfigurePosts(15) : [],
+      reels === "build" ? getColorfulPhilosopherGalleryPosts() : [],
     ]);
     const entityMap = new Map(entities.map((e) => [`${e.type}:${e.id}`, e]));
     const patchArt = resolvePatchArt(patch, entityMap, serviceLocale);

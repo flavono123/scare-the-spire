@@ -45,7 +45,7 @@ jobs:
 
       - run: pnpm test:api
 
-      - run: npx tsx scripts/build-supabase-read.spec.ts
+      - run: npx tsx scripts/build-api-read.spec.ts
 
       - run: npx tsx scripts/encounter-compositions.spec.ts
 

@@ -10,7 +10,6 @@ import {
   FAVORITE_TOURNAMENT_MIN_POOL,
   FAVORITE_TOURNAMENT_NOTE_MAX_CHARS,
   FAVORITE_TOURNAMENT_NOTE_MIN_CHARS,
-  FAVORITE_TOURNAMENT_TABLE,
   FAVORITE_TOURNAMENT_TITLE_MAX_CHARS,
   FAVORITE_TOURNAMENT_TITLE_MIN_CHARS,
   isFavoriteTournamentBuiltinKey,
@@ -88,7 +87,6 @@ export async function insertFavoriteTournamentPost(
 export function useFavoriteTournamentPosts(sort: ToyboxFeedSort = "latest") {
   const feed = useToyboxFeed({
     service: FAVORITE_TOURNAMENT_FEED_SERVICE,
-    table: FAVORITE_TOURNAMENT_TABLE,
     sort,
     normalizePost: normalizeFavoriteTournamentPost,
   });

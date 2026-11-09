@@ -316,16 +316,9 @@ async function waitForRemoteStack(origin, timeoutMs = REMOTE_READY_TIMEOUT_MS) {
 async function runRemote(options) {
   if (!options.skipBuild) {
     // Set explicitly: a checkout .env.local pointing at production must not leak into the testbed.
+    // It is the only data variable the builds read: the browser has no path default since step 6,
+    // and the patch reels of a development build read the testbed's /api (src/lib/build-api-read.ts).
     const buildEnv = { ...process.env, NEXT_PUBLIC_SUPABASE_ENV: TESTBED_DATA_ENV };
-    // The patch static client still reads this from its page config until step 6 WP-P drops it
-    // (the main bundle no longer does); harmless after that. The patch reels of a development
-    // build read the testbed's data, so NEXT_PUBLIC_SUPABASE_ENV above is the only data variable.
-    const apiPathDefault = process.env.NEXT_PUBLIC_API_PATH_DEFAULT ?? "api"; // like CI since 2026-11-09
-    if (!["", "legacy", "api"].includes(apiPathDefault)) throw new Error("NEXT_PUBLIC_API_PATH_DEFAULT must be legacy or api");
-    console.log(`[testbed] NEXT_PUBLIC_API_PATH_DEFAULT=${apiPathDefault || "(unset: legacy)"}`);
-    // The builds read it from their env: the default above must reach them, not only this log line.
-    if (apiPathDefault) buildEnv.NEXT_PUBLIC_API_PATH_DEFAULT = apiPathDefault;
-    else delete buildEnv.NEXT_PUBLIC_API_PATH_DEFAULT;
     run("build main Worker artifact", "pnpm", ["cf:build"], buildEnv);
     run("build static patch Worker artifact", "pnpm", ["patch:build"], buildEnv);
   }
