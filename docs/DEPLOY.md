@@ -12,8 +12,9 @@ patch 페이지와 patch-local asset을 별도로 서빙한다.
 - main Worker와 patch Worker의 기존 환경 변수는 `--keep-vars`로 유지한다.
 - `.env*` 값은 Worker에 실리지 않는다. 브라우저용 `NEXT_PUBLIC_*`만 `next build`가
   클라이언트 코드에 넣는다. main Worker가 런타임에 읽는 값은 Worker 변수뿐이라,
-  기록 셸 OG(`workers/detail-shell-og.ts`)는 Worker에
-  `NEXT_PUBLIC_SUPABASE_URL`·`NEXT_PUBLIC_SUPABASE_ANON_KEY`가 있을 때만 동작한다.
+  기록 셸 OG(`workers/detail-shell-og.ts`)는 Worker 변수 `DETAIL_SHELL_OG=d1`과
+  D1 binding `DB`가 둘 다 있을 때만 동작한다. `wrangler.jsonc`에는 이 변수를 넣지 않아
+  운영과 testbed에서는 꺼져 있고 목록 기본 OG가 나간다(tasks/010 #32).
 
 ## Main Worker
 
