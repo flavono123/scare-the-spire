@@ -212,6 +212,28 @@ async function main() {
     document.cookie = "slseoun_rf=v2.stories";
     assert.equal(client.surfacePath("stories"), "legacy", "an unknown cookie version is legacy, not the default");
   }
+  // Built with apiPathDefault api (direct writes closed): a write no router answered, or one that got the
+  // legacy signal, is an outage that keeps the group on the api path and is never redone on legacy.
+  for (const [label, respond] of [
+    ["an unmarked platform error page", () => new Response("<html>error 1102</html>", { status: 503 })],
+    ["the router's legacy signal", () => marked({ error: "surface_legacy", reason: "flag" }, 409)],
+  ] as const) {
+    for (const apiPathDefault of ["api", ""]) {
+      const { client, document, store, state } = load({ ...CONFIG, apiPathDefault });
+      document.cookie = "slseoun_rf=v1.comments";
+      store.set(AUTH_KEY, liveSession());
+      state.respond = respond;
+      const error = await client.apiWriteAsUser(CONFIG, "/api/write/comments", { method: "POST", body: {} }).then(() => null, (failure) => failure);
+      if (apiPathDefault === "api") {
+        assert.equal(error?.legacy, undefined, `${label}: not a legacy signal`);
+        assert.equal(error?.code, "unavailable", `${label}: unavailable`);
+        assert.equal(client.surfacePath("comments"), "api", `${label}: the group stays on api`);
+      } else {
+        assert.equal(error?.legacy, true, `${label}: a legacy signal today`);
+        assert.equal(client.surfacePath("comments"), "legacy", `${label}: demoted today`);
+      }
+    }
+  }
   {
     const source = readFileSync("scripts/build-patch-worker.tsx", "utf8");
     assert.match(source, /apiPathDefault: process\.env\.NEXT_PUBLIC_API_PATH_DEFAULT \?\? ""/, "page config carries the build default");

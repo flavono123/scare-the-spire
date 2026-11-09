@@ -107,6 +107,43 @@ async function main() {
   assert.throws(() => requireApiVersion("toybox-feed", { v: 2 }, true), (error) => error instanceof SurfaceLegacyError && !writeMayGoLegacy(error));
   assert.equal(surfacePath("toybox-feed"), "legacy", "either way the group is demoted");
 
+  // Built with NEXT_PUBLIC_API_PATH_DEFAULT=api (the direct writes are closed): a write that no router
+  // answered, or that got a legacy signal, is an outage. It never demotes and never goes to legacy.
+  // Reads keep today's demotion.
+  {
+    const buildDefault = process.env.NEXT_PUBLIC_API_PATH_DEFAULT;
+    process.env.NEXT_PUBLIC_API_PATH_DEFAULT = "api";
+    const platformError = () => new Response("<html>error 1102</html>", { status: 503, headers: { "content-type": "text/html" } });
+    for (const [label, respond] of [
+      ["an unmarked platform error page", platformError],
+      ["an unmarked 404", () => new Response("<html>not found</html>", { status: 404 })],
+      ["the router's legacy signal", () => marked({ error: "surface_legacy", reason: "flag" }, 409)],
+    ] as const) {
+      for (const cookie of ["", "slseoun_rf=v1.toybox-feed"]) {
+        resetPage(cookie);
+        stubFetch(respond);
+        await assert.rejects(() => apiFetch("toybox-feed", "/api/write/toybox-post?service=combo", { method: "POST", body: {} }), (error) => (
+          error instanceof ApiUnavailableError && !(error instanceof SurfaceLegacyError) && !writeMayGoLegacy(error)
+        ), `${label} on a write: unavailable (cookie "${cookie}")`);
+        assert.equal(surfacePath("toybox-feed"), "api", `${label} on a write does not demote (cookie "${cookie}")`);
+      }
+    }
+    resetPage("");
+    assert.equal(writeMayGoLegacy(new SurfaceLegacyError(404, false)), false, "nothing is resent on legacy");
+    assert.throws(() => requireApiVersion("toybox-feed", { v: 2 }, true), SurfaceLegacyError);
+    assert.equal(surfacePath("toybox-feed"), "api", "an unknown write answer does not demote");
+    stubFetch(platformError);
+    await assert.rejects(() => apiFetch("toybox-feed", "/api/read/toybox-feed?service=combo"), SurfaceLegacyError);
+    assert.equal(surfacePath("toybox-feed"), "legacy", "a read still demotes: direct reads keep working");
+    if (buildDefault === undefined) delete process.env.NEXT_PUBLIC_API_PATH_DEFAULT;
+    else process.env.NEXT_PUBLIC_API_PATH_DEFAULT = buildDefault;
+    // Unset (today): the same unmarked write answer demotes and is a legacy signal.
+    resetPage("slseoun_rf=v1.toybox-feed");
+    stubFetch(platformError);
+    await assert.rejects(() => apiFetch("toybox-feed", "/api/write/toybox-post?service=combo", { method: "POST", body: {} }), SurfaceLegacyError);
+    assert.equal(surfacePath("toybox-feed"), "legacy");
+  }
+
   stubFetch(() => marked({ error: "duplicate" }, 422));
   await assert.rejects(() => apiFetch("nav", "/api/read/nav"), (error) => (
     error instanceof ApiError && !(error instanceof SurfaceLegacyError) && error.code === "duplicate"
