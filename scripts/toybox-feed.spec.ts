@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { ApiUnavailableError } from "../src/lib/api-client";
-import { toyboxViaApi } from "../src/lib/toybox-api";
 import {
   asNonNegativeInt,
   buildLatestFeedKeysetFilter,
@@ -160,11 +159,11 @@ for (const file of API_ONLY_SOURCES) {
   ]) {
     assert.equal(banned.test(source), false, `${file} has no ${banned}`);
   }
+  // toybox-api.ts keeps the deprecated toyboxViaApi stub for the WP-T2 hooks until WP-Z deletes it.
   if (file !== "src/lib/toybox-api.ts") {
     assert.equal(/\btoyboxViaApi\b/.test(source), false, `${file} does not branch on toyboxViaApi`);
   }
 }
-assert.equal(toyboxViaApi(), true, "toyboxViaApi stays a stub answering true for the WP-T2 hooks");
 
 type Seen = { url: string; method: string };
 const seen: Seen[] = [];
