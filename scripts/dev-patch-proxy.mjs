@@ -16,8 +16,10 @@ const patchAssetsDir = path.join(root, ".patch-worker/assets");
 // Step 6 (docs/supabase-exit/STEP6_PLAN.md WP-Q): the browser's data goes to the same-origin /api
 // only, and next dev has none of those routes. They go to a local main Worker (`wrangler dev
 // --local`) on the D1 that scripts/d1-local-seed.ts copies from the testbed, with the env file it
-// writes (keep the path equal to LOCAL_API_ENV_FILE there).
-const localApiPort = Number(process.env.LOCAL_API_PORT ?? 8787);
+// writes (keep the path equal to LOCAL_API_ENV_FILE there). Not 8787/8788: `pnpm cf:testbed:local`
+// starts its main and patch Workers there (scripts/run-cloudflare-testbed.mjs), and the two commands
+// run side by side.
+const localApiPort = Number(process.env.LOCAL_API_PORT ?? 8789);
 const localApiEnvFile = path.join(root, ".wrangler/local-api/worker.env");
 // The Worker serves only /api here: an empty asset directory keeps wrangler from watching .cloudflare/assets.
 const localApiAssetsDir = path.join(root, ".wrangler/local-api/assets");
@@ -548,22 +550,35 @@ async function onMainDevExit(code, signal, startedAt) {
 
 let localApiWorker = null;
 
-/** A Worker API router answers on the local port (an unknown route is its own 409 with the marker). */
-async function localApiAnswers() {
+/**
+ * What answers on the local port: "data" is a Worker API router on the seeded env (a public read
+ * answers), "legacy" one without it (every /api route is its 409, as in `cf:testbed:local` without
+ * --api), "none" no Worker. HEAD reads the runtime flags but no rows.
+ */
+async function localApiState() {
   try {
-    const response = await fetch(`http://127.0.0.1:${localApiPort}/api/read/local-dev-probe`, {
+    const response = await fetch(`http://127.0.0.1:${localApiPort}/api/read/favorite-tournament/presets`, {
+      method: "HEAD",
       signal: AbortSignal.timeout(1500),
     });
-    void response.body?.cancel().catch(() => undefined);
-    return response.headers.get("x-slseoun-api") === "1";
+    if (response.headers.get("x-slseoun-api") !== "1") return "none";
+    return response.status === 409 ? "legacy" : "data";
   } catch {
-    return false;
+    return "none";
   }
 }
 
 async function startLocalApiWorker() {
-  if (await localApiAnswers()) {
+  const state = await localApiState();
+  if (state === "data") {
     console.log(`Reusing the local API Worker on http://127.0.0.1:${localApiPort}`);
+    return;
+  }
+  if (state === "legacy") {
+    console.log(
+      `The Worker on http://127.0.0.1:${localApiPort} answers 409 for every /api route (no seeded env): `
+        + "community screens show \"database is not answering\". Stop it or set LOCAL_API_PORT, then restart pnpm dev.",
+    );
     return;
   }
   if (!existsSync(localApiEnvFile)) {
