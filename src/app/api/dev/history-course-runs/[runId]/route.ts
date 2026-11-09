@@ -5,8 +5,6 @@ import { parseRunRouteSlug } from "@/lib/sts2-run-hash";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const PRODUCTION_RUN_ENV = "production";
-
 interface ProdRunRow {
   id: string;
   raw: string;
@@ -26,6 +24,7 @@ function notFoundResponse() {
   return NextResponse.json({ message: "Not found" }, { status: 404 });
 }
 
+/** One production run with its raw, from the production D1. */
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ runId: string }> },
@@ -39,37 +38,16 @@ export async function GET(
     return NextResponse.json({ message: "Invalid runId" }, { status: 400 });
   }
 
-  const [{ supabase, supabaseEnabled }, { withSupabaseTimeout }] = await Promise.all([
-    import("@/lib/supabase"),
-    import("@/lib/supabase-timeout"),
+  const [{ adminDeps }, { readProductionRun }] = await Promise.all([
+    import("../../../../../../scripts/admin/admin-deps"),
+    import("../../../../../../scripts/admin/admin-reads"),
   ]);
 
-  if (!supabaseEnabled) {
-    return NextResponse.json(
-      { message: "Supabase is not configured." },
-      { status: 503 },
-    );
-  }
-
   try {
-    const { data, error } = await withSupabaseTimeout(
-      "dev.history-course-runs.detail",
-      supabase
-        .from("runs")
-        .select(
-          "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, created_at",
-        )
-        .eq("env", PRODUCTION_RUN_ENV)
-        .eq("id", runId)
-        .maybeSingle(),
-    );
+    const run = await readProductionRun(adminDeps().d1("production"), runId);
+    if (!run) return notFoundResponse();
 
-    if (error) {
-      return NextResponse.json({ message: error.message }, { status: 500 });
-    }
-    if (!data) return notFoundResponse();
-
-    return NextResponse.json({ run: data as ProdRunRow });
+    return NextResponse.json({ run: run as unknown as ProdRunRow });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json({ message }, { status: 500 });

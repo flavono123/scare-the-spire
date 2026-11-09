@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { WeekPostCardPreview } from "@/components/colorful-philosophers/index-view";
-import { saveColorfulPhilosopherPost } from "@/app/(main)/dev/colorful-philosophers/actions";
+import { listColorfulPhilosopherWeek, saveColorfulPhilosopherPost } from "@/app/(main)/dev/colorful-philosophers/actions";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
-import { useColorfulPhilosopherWeek } from "@/hooks/use-colorful-philosopher-posts";
 import { matchEntities } from "@/lib/chemical-utils";
 import {
   COLORFUL_PHILOSOPHER_SLOTS,
@@ -19,7 +18,6 @@ import {
 import { POOL_LABELS, RELIC_RARITY_LABELS, RELIC_RARITY_ORDER, type RelicFilterPool } from "@/lib/codex-types";
 import { compendiumTypeLabels } from "@/lib/compendium-type-labels";
 import { serviceMessages } from "@/messages/service";
-import { supabaseEnv } from "@/lib/supabase";
 
 const CARD_AFFILIATION_LABELS: Record<string, string> = {
   ironclad: POOL_LABELS.ironclad,
@@ -110,6 +108,40 @@ function axisBuckets(axis: AxisSpec, pool: EntityInfo[], used: EntityInfo[]): Ax
     .sort((a, b) => rank(a.key) - rank(b.key));
 }
 
+/** The page's own data env (NEXT_PUBLIC_SUPABASE_ENV, inlined at build time). */
+const PAGE_DATA_ENV = process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production";
+
+/**
+ * Either env's week list, read on the dev server (the server action) from the store that env's save
+ * writes to: its D1 once some group is on d1, Supabase before.
+ */
+function useDevPhilosopherWeek(env: "development" | "production") {
+  const [posts, setPosts] = useState<ColorfulPhilosopherPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [reloadKey, setReloadKey] = useState(0);
+  const reload = useCallback(() => setReloadKey((value) => value + 1), []);
+
+  useEffect(() => {
+    let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- show the loading line while the env's list is read
+    setLoading(true);
+    listColorfulPhilosopherWeek(env).then((result) => {
+      if (cancelled) return;
+      setPosts(result.ok ? result.posts : []);
+      setLoading(false);
+    }).catch(() => {
+      if (cancelled) return;
+      setPosts([]);
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [env, reloadKey]);
+
+  return { posts, loading, reload };
+}
+
 function randomItem<T>(items: T[]): T {
   return items[Math.floor(Math.random() * items.length)];
 }
@@ -124,13 +156,13 @@ export function ColorfulPhilosophersDevPage() {
   const [body, setBody] = useState("");
   const [bodyTouched, setBodyTouched] = useState(false);
   const [targetEnv, setTargetEnv] = useState<"development" | "production">(
-    supabaseEnv === "production" ? "production" : "development",
+    PAGE_DATA_ENV === "production" ? "production" : "development",
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedPost, setSavedPost] = useState<ColorfulPhilosopherPost | null>(null);
   const { entities, loading } = useCommentEntities();
-  const weekPosts = useColorfulPhilosopherWeek(targetEnv);
+  const weekPosts = useDevPhilosopherWeek(targetEnv);
   const typeLabels = compendiumTypeLabels("ko");
   const pool = useMemo(
     () => slot === "topic" ? entities : entities.filter((entity) => entity.type === slot),

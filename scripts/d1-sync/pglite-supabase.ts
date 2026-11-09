@@ -75,7 +75,10 @@ function statusOf(code: string): number {
   return 400;
 }
 
-/** service_role PostgREST over a PGlite database: POST (insert/upsert), PATCH, DELETE, GET, rpc. */
+/**
+ * service_role PostgREST over a PGlite database: POST (insert/upsert), PATCH, DELETE, GET, HEAD, rpc.
+ * A GET or HEAD with `Prefer: count=exact` answers the total in Content-Range, as PostgREST does.
+ */
 export class PgliteRest {
   calls: Array<{ method: string; path: string; status: number }> = [];
   /** Answer the next calls with this status instead of running them (a down Supabase). */
@@ -112,7 +115,7 @@ export class PgliteRest {
       this.calls.push({ method: request.method, path, status: this.outage });
       return new Response(JSON.stringify({ code: "XX000" }), { status: this.outage });
     }
-    const text = request.method === "GET" || request.method === "DELETE" ? "" : await request.text();
+    const text = request.method === "GET" || request.method === "HEAD" || request.method === "DELETE" ? "" : await request.text();
     try {
       const result = await this.asService(() => this.run(request.method, path, url, text, request.headers));
       this.calls.push({ method: request.method, path, status: result.status });
@@ -142,7 +145,7 @@ export class PgliteRest {
       throw new Error(`no rpc ${fn}`);
     }
     const table = `public.${ident(path)}`;
-    if (method === "GET") {
+    if (method === "GET" || method === "HEAD") {
       const where = this.where(url, 1);
       const select = url.searchParams.get("select") ?? "*";
       const columns = select === "*" ? "*" : select.split(",").map(ident).join(", ");
@@ -157,7 +160,13 @@ export class PgliteRest {
         `select ${columns} from ${table} ${where.sql} ${orderSql} ${limit ? `limit ${Number(limit)}` : ""} ${offset ? `offset ${Number(offset)}` : ""}`,
         where.params,
       );
-      return Response.json(rows);
+      const out = new Headers();
+      if ((headers.get("prefer") ?? "").includes("count=exact")) {
+        const counted = await this.db.query<{ n: number }>(`select count(*)::int as n from ${table} ${where.sql}`, where.params);
+        const first = Number(offset ?? 0);
+        out.set("content-range", `${rows.length ? `${first}-${first + rows.length - 1}` : "*"}/${counted.rows[0].n}`);
+      }
+      return method === "HEAD" ? new Response(null, { status: 200, headers: out }) : Response.json(rows, { headers: out });
     }
     if (method === "DELETE") {
       const where = this.where(url, 1);

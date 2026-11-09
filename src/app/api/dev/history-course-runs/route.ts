@@ -4,9 +4,6 @@ import { devToolsEnabled } from "@/lib/dev-tools";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const PRODUCTION_RUN_ENV = "production";
-const ROW_LIMIT = 100;
-
 interface ProdRunSummary {
   id: string;
   seed: string;
@@ -25,44 +22,22 @@ function notFoundResponse() {
   return NextResponse.json({ message: "Not found" }, { status: 404 });
 }
 
+/** The latest 100 production runs, from the production D1. */
 export async function GET() {
   if (!devToolsEnabled()) {
     return notFoundResponse();
   }
 
-  const [{ supabase, supabaseEnabled }, { withSupabaseTimeout }] = await Promise.all([
-    import("@/lib/supabase"),
-    import("@/lib/supabase-timeout"),
+  const [{ adminDeps }, { listProductionRuns }] = await Promise.all([
+    import("../../../../../scripts/admin/admin-deps"),
+    import("../../../../../scripts/admin/admin-reads"),
   ]);
 
-  if (!supabaseEnabled) {
-    return NextResponse.json(
-      { message: "Supabase is not configured." },
-      { status: 503 },
-    );
-  }
-
   try {
-    const { data, error, count } = await withSupabaseTimeout(
-      "dev.history-course-runs.list",
-      supabase
-        .from("runs")
-        .select(
-          "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, created_at",
-          { count: "exact" },
-        )
-        .eq("env", PRODUCTION_RUN_ENV)
-        .order("created_at", { ascending: false })
-        .limit(ROW_LIMIT),
-    );
-
-    if (error) {
-      return NextResponse.json({ message: error.message }, { status: 500 });
-    }
-
+    const { runs, count } = await listProductionRuns(adminDeps().d1("production"));
     return NextResponse.json({
-      runs: (data ?? []) as ProdRunSummary[],
-      count: count ?? undefined,
+      runs: runs as unknown as ProdRunSummary[],
+      count,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
