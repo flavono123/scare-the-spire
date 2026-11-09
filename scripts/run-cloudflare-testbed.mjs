@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import { spawn, spawnSync } from "node:child_process";
-import { readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
+import path from "node:path";
 
 import { checkBuildRecord, describeBuildRecord } from "./build-record.mjs";
 import { CLOUDFLARE_ASSETS_DIR, CLOUDFLARE_BUILD_DIR } from "./cloudflare-assets-dir.mjs";
@@ -14,6 +15,8 @@ const REMOTE_ENVIRONMENT = "testbed";
 // shared Supabase's development rows, never production ones (users only reach production).
 const TESTBED_DATA_ENV = "development";
 const REMOTE_READY_TIMEOUT_MS = 180_000;
+// Written by scripts/d1-local-seed.ts (keep the path equal to LOCAL_API_ENV_FILE there).
+const LOCAL_API_ENV_FILE = ".wrangler/local-api/worker.env";
 
 function usage() {
   console.log(`Usage: pnpm cf:testbed -- [options]
@@ -23,11 +26,12 @@ Options:
   --remote         Deploy the isolated testbed Workers to Cloudflare and test them
   --skip-build     Reuse existing .cloudflare/assets and .patch-worker artifacts
                    (refused unless both were built from the current checkout)
-  --api            Local only: turn the runtime flags on (API_RUNTIME_FLAGS=d1) and give
-                   the local Worker the API vars from .env.local, so /api reaches the
-                   shared Supabase's development rows. Off by default, like --allow-supabase
-                   in mobile QA. Set flags with:
-                   pnpm flags set path.<group> api --env production --local --note "local QA"
+  --api            Local only: start the main Worker with the env file and the local D1
+                   that scripts/d1-local-seed.ts writes (a copy of the testbed D1, the
+                   production runtime flags, the API vars from .env.local, a local identity
+                   secret), so /api answers with data. Run the seed first:
+                   pnpm exec tsx scripts/d1-local-seed.ts
+                   Without --api every /api route answers 409 and the data tests are skipped.
   --help           Show this help`);
 }
 
@@ -237,7 +241,11 @@ function stopWorker(child) {
   }
 }
 
-function runSuites(origin, { attempts = 1, retryDelayMs = 0 } = {}) {
+/**
+ * `hasData`: the stack's /api answers with rows (the testbed, or a local Worker on the seeded D1).
+ * Without it the step 6 data-path tests in scripts/cloudflare-testbed.spec.ts are skipped.
+ */
+function runSuites(origin, { attempts = 1, retryDelayMs = 0, hasData = true } = {}) {
   run("production-shaped route smoke", "pnpm", [
     "cf:smoke",
     "--",
@@ -258,7 +266,9 @@ function runSuites(origin, { attempts = 1, retryDelayMs = 0 } = {}) {
       ...process.env,
       BASE_URL: origin,
       CF_TESTBED_ORIGIN: origin,
+      // DNS block only (playwright.config.ts): the browser must not reach Supabase at all.
       PLAYWRIGHT_BLOCK_SUPABASE: "1",
+      CF_TESTBED_DATA: hasData ? "1" : "0",
     },
   );
 }
@@ -307,7 +317,9 @@ async function runRemote(options) {
   if (!options.skipBuild) {
     // Set explicitly: a checkout .env.local pointing at production must not leak into the testbed.
     const buildEnv = { ...process.env, NEXT_PUBLIC_SUPABASE_ENV: TESTBED_DATA_ENV };
-    // Optional pass-through of the browser's no-cookie path (src/lib/runtime-flags.ts); unset = legacy.
+    // The patch static client still reads this from its page config until step 6 WP-P drops it
+    // (the main bundle no longer does); harmless after that. The patch reels of a development
+    // build read the testbed's data, so NEXT_PUBLIC_SUPABASE_ENV above is the only data variable.
     const apiPathDefault = process.env.NEXT_PUBLIC_API_PATH_DEFAULT ?? "api"; // like CI since 2026-11-09
     if (!["", "legacy", "api"].includes(apiPathDefault)) throw new Error("NEXT_PUBLIC_API_PATH_DEFAULT must be legacy or api");
     console.log(`[testbed] NEXT_PUBLIC_API_PATH_DEFAULT=${apiPathDefault || "(unset: legacy)"}`);
@@ -381,7 +393,8 @@ async function main() {
   const options = parseArgs(process.argv.slice(2));
   if (options.skipBuild && !options.origin) assertBuiltArtifacts();
   if (options.origin) {
-    runSuites(options.origin);
+    // An existing stack: CF_TESTBED_DATA=0 skips the data tests for one without API vars.
+    runSuites(options.origin, { hasData: process.env.CF_TESTBED_DATA !== "0" });
     return;
   }
 
@@ -390,6 +403,9 @@ async function main() {
     return;
   }
 
+  if (options.api && !existsSync(LOCAL_API_ENV_FILE)) {
+    throw new Error(`--api needs ${LOCAL_API_ENV_FILE}: run pnpm exec tsx scripts/d1-local-seed.ts first`);
+  }
   if (!options.skipBuild) {
     run("build main Worker artifact", "pnpm", ["cf:build"]);
     run("build static patch Worker artifact", "pnpm", ["patch:build"]);
@@ -402,9 +418,8 @@ async function main() {
     patchWorker = startWorker("patch-worker", "wrangler.patch.jsonc", 8788);
     await waitForWorker("patch Worker", patchWorker, `${LOCAL_PATCH_ORIGIN}/patches`);
 
-    const localApiArgs = options.api
-      ? ["--var", "API_RUNTIME_FLAGS:d1", ...apiVarArgs("development")]
-      : [];
+    // The seeded env file: API_RUNTIME_FLAGS=d1, the API vars, the identity secret, no Supabase secret key.
+    const localApiArgs = options.api ? ["--env-file", path.resolve(LOCAL_API_ENV_FILE)] : [];
     if (options.api) {
       run("apply local D1 migrations", "pnpm", ["exec", "wrangler", "d1", "migrations", "apply", "DB", "--local"]);
     }
@@ -416,7 +431,7 @@ async function main() {
       `${LOCAL_MAIN_ORIGIN}/patches`,
     );
 
-    runSuites(LOCAL_MAIN_ORIGIN);
+    runSuites(LOCAL_MAIN_ORIGIN, { hasData: options.api });
   } finally {
     stopWorker(mainWorker);
     stopWorker(patchWorker);
