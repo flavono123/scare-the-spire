@@ -280,6 +280,34 @@ function isRefusedToken(error: unknown): boolean {
   return error instanceof ApiError && !(error instanceof ApiUnavailableError) && error.status === 401 && error.code === "token_invalid";
 }
 
+/** A Worker from before WP-A answers a body with `refresh_token` 400 invalid (identity-cookies.ts ClaimRequest). */
+function isOlderWorkerRefusal(error: unknown): boolean {
+  return error instanceof ApiError && !(error instanceof ApiUnavailableError) && error.status === 400 && error.code === "invalid";
+}
+
+/**
+ * The token claim. CI deploys the patch Worker, whose pages carry this client, before
+ * the main Worker that takes `refresh_token` (and a failed main build leaves it so):
+ * an older Worker's 400 invalid sends the access token alone once, the claim of the
+ * client before step 6. That Worker cannot refresh, so a token it refuses is an outage
+ * here, not a `{}` claim: a new user would replace a session the newer Worker can
+ * still refresh.
+ */
+async function postTokenClaim(stored: StoredSupabaseIdentity): Promise<ClaimResponse> {
+  if (!stored.refreshToken) return postClaim({ access_token: stored.accessToken });
+  try {
+    return await postClaim({ access_token: stored.accessToken, refresh_token: stored.refreshToken });
+  } catch (error) {
+    if (!isOlderWorkerRefusal(error)) throw error;
+  }
+  try {
+    return await postClaim({ access_token: stored.accessToken });
+  } catch (error) {
+    if (isRefusedToken(error)) throw new ApiUnavailableError(401, "unavailable");
+    throw error;
+  }
+}
+
 /**
  * Claims the stored session. When the Worker refuses it (401 token_invalid: past the
  * claim window and the refresh refused too), claims `{}` once: a valid cookie keeps
@@ -289,9 +317,7 @@ function isRefusedToken(error: unknown): boolean {
 async function claimStored(stored: StoredSupabaseIdentity): Promise<ClaimResponse> {
   if (stored.accessToken !== refusedAccessToken) {
     try {
-      return await postClaim(stored.refreshToken
-        ? { access_token: stored.accessToken, refresh_token: stored.refreshToken }
-        : { access_token: stored.accessToken });
+      return await postTokenClaim(stored);
     } catch (error) {
       if (!isRefusedToken(error)) throw error;
       refusedAccessToken = stored.accessToken;

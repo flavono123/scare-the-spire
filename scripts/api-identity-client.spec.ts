@@ -337,6 +337,40 @@ async function main() {
   await assert.rejects(() => identity.ensureClaimedIdentity(), (error) => error instanceof ApiUnavailableError);
   assert.equal(claims().length, 1);
 
+  // --- A main Worker from before WP-A (the patch Worker deploys first) ------------------------
+  // It answers refresh_token 400 invalid: the access token alone, once.
+  const olderWorker = (claim: (body: { access_token?: string; refresh_token?: string }) => Response) => (request: Sent) => {
+    if (request.url !== "/api/auth/claim") return marked({ ok: "older" });
+    const body = request.body as { access_token?: string; refresh_token?: string };
+    return body.refresh_token !== undefined ? marked({ error: "invalid" }, 400) : claim(body);
+  };
+  reset();
+  const olderToken = jwt(USER, ISSUER, "older");
+  storeSession(USER, olderToken, "older-refresh");
+  respond = olderWorker(() => marked({ v: 1, uid: USER, created: false }));
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), { ok: "older" });
+  assert.deepEqual(claims(), [{ access_token: olderToken, refresh_token: "older-refresh" }, { access_token: olderToken }]);
+  assert.equal(identity.claimedUid(), USER);
+  assert.equal(stored()?.access_token, olderToken);
+
+  // It cannot refresh: a token it refuses is an outage, never {} and a new user over a session the newer Worker can refresh.
+  reset();
+  const olderRefused = jwt(USER, ISSUER, "older-refused");
+  storeSession(USER, olderRefused, "older-refresh");
+  respond = olderWorker(() => marked({ error: "token_invalid" }, 401));
+  await assert.rejects(() => apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), (error) => error instanceof ApiUnavailableError && error.code === "unavailable");
+  assert.deepEqual(claims(), [{ access_token: olderRefused, refresh_token: "older-refresh" }, { access_token: olderRefused }], "no {}");
+  assert.deepEqual(sent.map((request) => request.url), ["/api/auth/claim", "/api/auth/claim"], "no write");
+  assert.deepEqual([identity.claimedUid(), stored()?.access_token, stored()?.refresh_token], [null, olderRefused, "older-refresh"]);
+  // The next call asks again (the main Worker may be new by then).
+  respond = (request) => request.url === "/api/auth/claim"
+    ? marked({ v: 1, uid: USER, created: false, session: session(USER, jwt(USER, ISSUER, "newer"), "rotated") })
+    : marked({ ok: "newer" });
+  sent.length = 0;
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), { ok: "newer" });
+  assert.deepEqual(claims(), [{ access_token: olderRefused, refresh_token: "older-refresh" }]);
+  assert.equal(stored()?.refresh_token, "rotated");
+
   // --- identity_required: claim again and retry once ----------------------------------------
   reset();
   const requiredToken = jwt(USER, ISSUER, "required");
@@ -395,8 +429,15 @@ async function main() {
     storeSession(USER, jwt(USER, ISSUER, `refusal-${code}`));
     respond = (request) => request.url === "/api/auth/claim" ? marked({ error: code }, status) : marked({ ok: "never" });
     await assert.rejects(() => apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), (error) => error instanceof ApiError && !(error instanceof ApiUnavailableError) && error.code === code, code);
-    assert.deepEqual(sent.map((request) => request.url), ["/api/auth/claim"], `${code}: no {} and no write`);
+    // 400 invalid is also an older Worker's answer to refresh_token: the access token alone once more.
+    const tokenClaims = code === "invalid" ? 2 : 1;
+    assert.deepEqual(sent.map((request) => request.url), Array(tokenClaims).fill("/api/auth/claim"), `${code}: no {} and no write`);
   }
+  reset();
+  storeSession(USER, jwt(USER, ISSUER, "refusal-no-refresh"), null);
+  respond = (request) => request.url === "/api/auth/claim" ? marked({ error: "invalid" }, 400) : marked({ ok: "never" });
+  await assert.rejects(() => identity.ensureClaimedIdentity(), (error) => error instanceof ApiError && error.code === "invalid");
+  assert.equal(claims().length, 1, "without a refresh token there is nothing to drop");
 
   // --- New users -----------------------------------------------------------------------------
   reset();
