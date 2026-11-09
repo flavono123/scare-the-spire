@@ -25,7 +25,6 @@ const PRESETS = [
 function parseArgs(argv) {
   const options = {
     baseUrl: process.env.MOBILE_QA_BASE_URL ?? "",
-    host: process.env.MOBILE_QA_HOST ?? "0.0.0.0",
     noDev: false,
     port: Number(process.env.MOBILE_QA_PORT ?? 3000),
     route: "/patches",
@@ -36,7 +35,6 @@ function parseArgs(argv) {
     if (arg === "--list") options.list = true;
     else if (arg === "--no-dev") options.noDev = true;
     else if (arg.startsWith("--base-url=")) options.baseUrl = arg.slice("--base-url=".length);
-    else if (arg.startsWith("--host=")) options.host = arg.slice("--host=".length);
     else if (arg.startsWith("--port=")) options.port = Number(arg.slice("--port=".length));
     else if (!arg.startsWith("--")) options.route = arg;
   }
@@ -70,7 +68,8 @@ async function canReach(url) {
   }
 }
 
-async function waitForServer(baseUrl, timeoutMs = 60_000) {
+// pnpm dev builds the static patch pages before it listens.
+async function waitForServer(baseUrl, timeoutMs = 600_000) {
   const startedAt = Date.now();
   while (Date.now() - startedAt < timeoutMs) {
     if (await canReach(baseUrl)) return;
@@ -79,13 +78,18 @@ async function waitForServer(baseUrl, timeoutMs = 60_000) {
   throw new Error(`Timed out waiting for ${baseUrl}`);
 }
 
-function startDevServer({ host, port }) {
+/**
+ * `pnpm dev`, the dev proxy (scripts/dev-patch-proxy.mjs) every phone check goes through: patch pages
+ * from .patch-worker, the same-origin /api from the local main Worker on the seeded D1
+ * (scripts/d1-local-seed.ts), everything else from next dev. It listens on every interface.
+ */
+function startDevServer({ port }) {
   const child = spawn(
     "pnpm",
-    ["exec", "next", "dev", "--hostname", host, "--port", String(port)],
+    ["dev"],
     {
       cwd: process.cwd(),
-      env: process.env,
+      env: { ...process.env, PORT: String(port) },
       stdio: ["ignore", "pipe", "pipe"],
     },
   );
@@ -140,7 +144,7 @@ async function main() {
     if (options.noDev) {
       throw new Error(`${baseUrl} is not reachable. Remove --no-dev or start the dev server first.`);
     }
-    console.log(`[mobile-qa] starting dev server on ${options.host}:${options.port}`);
+    console.log(`[mobile-qa] starting pnpm dev on port ${options.port}`);
     devServer = startDevServer(options);
     await waitForServer(baseUrl);
   } else {
