@@ -11,6 +11,7 @@ import type { D1Database, D1PreparedStatement, D1Result } from "../workers/api/d
 import { FLAGS_SQL, resetFlagsForTest } from "../workers/api/flags";
 import { jsonResponse } from "../workers/api/http";
 import { CLAIM_WINDOW_SECONDS } from "../workers/api/identity/claim";
+import { defaultIdentityMode } from "../workers/api/identity/mode";
 import {
   IDENTITY_COOKIE_MAX_AGE_SECONDS,
   IDENTITY_COOKIE_RENEW_AFTER_SECONDS,
@@ -80,6 +81,8 @@ async function makeSigner() {
 
 class FakeD1 implements D1Database {
   flags = new Map<string, string>();
+  /** True: the flags read fails like a D1 outage. */
+  failFlags = false;
   queries: string[] = [];
   /** Rows of api_verification_keys; null answers like a database without the table. */
   keys: Record<string, unknown>[] | null = null;
@@ -87,7 +90,10 @@ class FakeD1 implements D1Database {
   prepare(query: string): D1PreparedStatement {
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       this.queries.push(query);
-      if (query === FLAGS_SQL) return { success: true, results: [...this.flags].map(([key, value]) => ({ key, value })) };
+      if (query === FLAGS_SQL) {
+        if (this.failFlags) throw new Error("D1 unavailable");
+        return { success: true, results: [...this.flags].map(([key, value]) => ({ key, value })) };
+      }
       if (query === VERIFICATION_KEYS_SQL && this.keys) return { success: true, results: this.keys };
       throw new Error(`unexpected SQL: ${query}`);
     };
@@ -378,6 +384,34 @@ async function main() {
     assert.equal(auth.signups.length, 6, "no sign-up while inert");
   }
 
+  // --- 4b. API_IDENTITY_MODE_DEFAULT: a missing row or a failed read (STEP6_PLAN P12) ---
+  {
+    assert.equal(defaultIdentityMode({}), "token", "unset: token, as before step 6");
+    assert.equal(defaultIdentityMode({ API_IDENTITY_MODE_DEFAULT: "cookie" }), "cookie");
+    assert.equal(defaultIdentityMode({ API_IDENTITY_MODE_DEFAULT: "Cookie" }), "token", "exactly cookie");
+    const token = await signer.es256();
+    const cookieDefault = { ...baseEnv, API_IDENTITY_MODE_DEFAULT: "cookie" };
+    setMode(null);
+    assert.equal((await claim({ access_token: token }, {}, cookieDefault)).status, 200, "no row: the env default");
+    setMode("bogus");
+    assert.equal((await claim({ access_token: token }, {}, cookieDefault)).status, 200, "a value that is neither mode: the env default");
+    setMode("token");
+    assert.equal((await claim({ access_token: token }, {}, cookieDefault)).body.reason, "flag", "a token row still wins over the default");
+    setMode("cookie");
+    assert.equal((await claim({ access_token: token }, {}, { ...cookieDefault, API_IDENTITY_SECRET: undefined })).body.reason, "not_configured", "no secret: token whatever the default");
+    assert.equal((await claim({ access_token: token }, { cookie: "slseoun_qa=no-supabase" }, cookieDefault)).body.reason, "qa", "QA no-supabase: token whatever the default");
+    assert.equal((await claim({}, {}, { ...cookieDefault, API_RUNTIME_FLAGS: "off" })).body.reason, "off", "kill switch: token whatever the default");
+
+    db.failFlags = true;
+    resetFlagsForTest();
+    assert.equal((await claim({ access_token: token })).body.reason, "flag", "a failed read without the default: token");
+    resetFlagsForTest();
+    assert.equal((await claim({ access_token: token }, {}, cookieDefault)).status, 200, "a failed read: the env default");
+    db.failFlags = false;
+    setMode("cookie");
+    assert.equal(auth.signups.length, 6, "token claims sign nobody up");
+  }
+
   // --- 5. Request identity resolution (router) --------------------------------------
   const echo = async (context: UserRouteContext) => jsonResponse({ uid: context.user.userId, token: context.token, source: context.identitySource });
   const routes: ApiRoute[] = [
@@ -441,6 +475,9 @@ async function main() {
     }
     setMode("cookie");
     assert.equal((await call("/api/write/spec-echo", { cookie: "slseoun_id=v1.garbage", authorization: `Bearer ${token}` })).body.source, "token", "a bad cookie falls back to the token too");
+    setMode(null);
+    assert.deepEqual((await call("/api/write/spec-echo", { cookie: goodCookie }, { ...baseEnv, API_IDENTITY_MODE_DEFAULT: "cookie" })).body, { uid: USER, token: "", source: "cookie" }, "no row with the cookie default: the cookie names the user");
+    setMode("cookie");
     const missing = await call("/api/write/spec-echo");
     assert.deepEqual([missing.status, missing.body.error], [401, "identity_required"], "neither cookie nor token");
     assert.ok(cookiesOf(missing.response).some((cookie) => cookie.startsWith("slseoun_idm=cookie")));
@@ -520,6 +557,19 @@ async function main() {
     assert.ok(cookiesOf(rolledBack).includes("slseoun_idm=; Max-Age=0; Path=/; SameSite=Lax; Secure"), "token mode clears the signal");
     const quiet = await mainWorker.fetch(new Request(`${ORIGIN}/compendium/cards`), baseEnv as never, pageCtx);
     assert.equal(cookieValue(quiet, "slseoun_idm"), null);
+
+    // With the cookie default an isolate that has not read the flags yet signals cookie (like API_PATH_DEFAULT=api).
+    setMode("cookie");
+    const coldCtx = { pending: [] as Promise<unknown>[], waitUntil(promise: Promise<unknown>) { this.pending.push(promise); } };
+    const cookieDefault = { ...baseEnv, API_IDENTITY_MODE_DEFAULT: "cookie" };
+    const cold = await mainWorker.fetch(new Request(`${ORIGIN}/compendium/cards`), cookieDefault as never, coldCtx);
+    assert.equal(cookieValue(cold, "slseoun_idm"), "cookie", "unknown flags with the cookie default: cookie");
+    await Promise.allSettled(coldCtx.pending);
+    setMode("token");
+    await mainWorker.fetch(new Request(`${ORIGIN}/compendium/cards`), cookieDefault as never, coldCtx);
+    await Promise.allSettled(coldCtx.pending);
+    const tokenRow = await mainWorker.fetch(new Request(`${ORIGIN}/compendium/cards`, { headers: { cookie: "slseoun_idm=cookie" } }), cookieDefault as never, coldCtx);
+    assert.ok(cookiesOf(tokenRow).includes("slseoun_idm=; Max-Age=0; Path=/; SameSite=Lax; Secure"), "a known token row still clears the signal");
   }
 
   globalThis.fetch = realFetch;
