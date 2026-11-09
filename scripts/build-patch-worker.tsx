@@ -651,11 +651,10 @@ function renderShell(route: StaticPatchRoute): string {
       <body
         className="font-service antialiased bg-background text-foreground"
         dangerouslySetInnerHTML={{
+          // Only the data env (step 6): patch-comments-client.js calls the same-origin /api, and the
+          // value must match the Worker's API_DATA_ENV (src/lib/data-env.ts).
           __html: `${app}<script id="sts-patch-comments-config" type="application/json">${escapeInlineJson({
-            supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-            supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
-            supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
-            apiPathDefault: process.env.NEXT_PUBLIC_API_PATH_DEFAULT ?? "",
+            dataEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
           })}</script><script src="/_patches/patch-nav-indicators.js" defer></script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-card-preview.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>${routeClientScripts}${cloudflareWebAnalytics}`,
         }}
       />
