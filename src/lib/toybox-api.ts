@@ -1,14 +1,13 @@
 import { ApiError, ApiUnavailableError, apiFetch, requireApiVersion } from "@/lib/api-client";
 import { apiFetchAsUser } from "@/lib/api-session";
-import { surfacePath } from "@/lib/runtime-flags";
 import { cursorQuery, type ToyboxPostService } from "@/lib/toybox-api-rules";
 
 /**
  * Browser calls for the toybox-feed group (docs/supabase-exit/STEP1_DESIGN.md 9.8).
- * Each helper is the api twin of one legacy supabase-js query; callers keep the
- * legacy query and redo it when `shouldUseLegacy(error)` (reads) or
- * `writeMayGoLegacy(error)` (writes). Feeds, posts and post writes answer with
- * PostgREST's array as is; the rest answer `{ v: 1, ... }`.
+ * Each helper is the Worker call behind one toybox read or write; since step 6
+ * (docs/supabase-exit/STEP6_PLAN.md WP-T1) it is the only path, and a failure is
+ * the screen's "database is not answering" state. Feeds, posts and post writes
+ * answer with PostgREST's array as is; the rest answer `{ v: 1, ... }`.
  */
 
 export const TOYBOX_GROUP = "toybox-feed" as const;
@@ -18,8 +17,12 @@ const UPLOAD_MS = 30_000;
 type Row = Record<string, unknown>;
 type Cursor = { score: number; createdAt: string; id: string } | null;
 
+/**
+ * @deprecated Always true: the toybox group has no legacy path since step 6.
+ * Kept while the WP-T2 hooks still branch on it; WP-Z removes it.
+ */
 export function toyboxViaApi(): boolean {
-  return surfacePath(TOYBOX_GROUP) === "api";
+  return true;
 }
 
 /** A passthrough answer: the array, or a v1 answer without rows (the Worker may not reach Supabase). */
@@ -38,16 +41,17 @@ const POSTGREST_CODES: Readonly<Record<string, string>> = {
 };
 
 /**
- * An api write error shaped like the legacy PostgREST error, so `isCheckViolation`
- * and the defragment panel's `isDatabaseRejection` read the same code. Other codes
- * (`invalid`, `unavailable`, `token_invalid`, `too_large`) stay as they are.
+ * An api write error shaped like a PostgREST error, so `isCheckViolation`
+ * (src/lib/db-errors.ts) and the defragment panel's `isDatabaseRejection` read the
+ * same code. Other codes (`invalid`, `unavailable`, `token_invalid`, `too_large`)
+ * stay as they are.
  */
 export function toyboxWriteError(error: unknown): Error & { code?: string } {
   if (!(error instanceof ApiError)) return error instanceof Error ? error : new Error(String(error));
   return Object.assign(new Error(error.code), { code: POSTGREST_CODES[error.code] ?? error.code });
 }
 
-/** `write`: the answer to a write, which ran; an unknown version then demotes without a resend. */
+/** `write`: the answer to a write, which ran; an unknown version is an outage and nothing is resent. */
 function v1<T extends { v?: unknown }>(data: T, write = false): T {
   requireApiVersion(TOYBOX_GROUP, data, write);
   return data;
@@ -83,7 +87,7 @@ export async function apiToyboxPost(service: ToyboxPostService, id: string): Pro
   return rows[0] ?? null;
 }
 
-/** Inserts the row the legacy insert would send (user_id and env included; RLS checks user_id). */
+/** Inserts the row (user_id and env included; the Worker checks both). */
 export async function apiCreateToyboxPost(service: ToyboxPostService, row: Row): Promise<Row> {
   const rows = rowsOf(await apiFetchAsUser(TOYBOX_GROUP, `/api/write/toybox-post?service=${service}`, {
     method: "POST",
@@ -181,7 +185,7 @@ export async function apiDefragmentBody(sourceService: string, sourceId: string)
   return rows[0] ?? null;
 }
 
-/** Upserts on (env, source_service, source_id); the row carries user_id and env like the legacy upsert. */
+/** Upserts on (env, source_service, source_id); the row carries user_id and env. */
 export async function apiUpsertDefragmentBody(row: Row): Promise<Row | null> {
   const rows = rowsOf(await apiFetchAsUser(TOYBOX_GROUP, "/api/write/defragment-body", { method: "PUT", body: row, timeoutMs: UPLOAD_MS }), true);
   return rows[0] ?? null;
