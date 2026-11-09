@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiFetch } from "@/lib/api-client";
+import { ApiError, apiFetch, ApiUnavailableError } from "@/lib/api-client";
 import { currentIdentityUid } from "@/lib/api-identity";
 import { apiFetchAsUser } from "@/lib/api-session";
 import { dataEnv } from "@/lib/data-env";
@@ -152,6 +152,16 @@ function hasIdentity(): boolean {
   return currentIdentityUid() !== null;
 }
 
+/**
+ * The me route found no cookie and there was nothing to claim it again with (a claimed
+ * uid with no stored session): no identity, as supabase-js reported no session.
+ */
+function isNoIdentity(error: unknown): boolean {
+  return error instanceof ApiError
+    && !(error instanceof ApiUnavailableError)
+    && (error.code === "identity_required" || error.code === "token_invalid");
+}
+
 type LoadState<T> = { data: T | null; loading: boolean; failed: boolean };
 
 /** One page of ten rows: a board's, or the game's totals when `board` is null. */
@@ -193,9 +203,20 @@ export function usePuzzleboxLeaderboard(input: {
           offset: String(offset),
           around_me: aroundMe ? "1" : "0",
         });
-        const body = signedIn
-          ? await apiFetchAsUser<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/me/puzzlebox/leaderboard?${query}`)
-          : await apiFetch<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/read/puzzlebox/leaderboard?${query}`);
+        type Body = { v?: number; leaderboard?: PuzzleboxLeaderboard | null };
+        const read = () => apiFetch<Body>("puzzlebox", `/api/read/puzzlebox/leaderboard?${query}`);
+        let body: Body;
+        if (signedIn) {
+          try {
+            body = await apiFetchAsUser<Body>("puzzlebox", `/api/me/puzzlebox/leaderboard?${query}`);
+          } catch (error) {
+            // Without an identity the board reads as for no session, as it did before step 6.
+            if (!isNoIdentity(error)) throw error;
+            body = await read();
+          }
+        } else {
+          body = await read();
+        }
         if (cancelled) return;
         if (body?.v !== 1 || !body.leaderboard) {
           setState({ data: null, loading: false, failed: true });

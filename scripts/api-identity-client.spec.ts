@@ -5,7 +5,8 @@
  * session (access and refresh token), store the session a claim answers (at the
  * key its `iss` names when there is none), `{}` once after a refused token, re-claim
  * on identity_required, legacy and token answers as outages, never a bearer token,
- * never a removed `sb-` key. Fake localStorage, window events and fetch.
+ * never a removed `sb-` key, a memory session where localStorage cannot keep one, and
+ * the puzzlebox ranking's me-or-public read. Fake localStorage, window events and fetch.
  * Usage: tsx scripts/api-identity-client.spec.ts
  */
 import assert from "node:assert/strict";
@@ -68,14 +69,12 @@ function session(uid: string, accessToken = jwt(uid), refreshToken = `refresh-${
 
 type Sent = { url: string; method: string; headers: Record<string, string>; body: unknown; credentials?: string };
 
-type HookState = { userId: string | null; ready: boolean; unavailable: boolean; ensureUser: () => Promise<string | null> };
-
 /**
  * Just enough of a React host to run useAuth outside a renderer: useState,
  * useCallback and useEffect on React's own hook dispatcher, effects after each
  * render, and a re-render while state changed.
  */
-async function mountHook(hook: () => HookState) {
+async function mountHook<HookState extends object>(hook: () => HookState) {
   const React = await import("react");
   const internals = (React as unknown as { __CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE: { H: unknown } })
     .__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
@@ -549,6 +548,50 @@ async function main() {
   assert.equal(await host.current().ensureUser(), USER, "a kept cookie");
   assert.deepEqual([host.flush().userId, host.current().unavailable], [USER, false]);
   host.unmount();
+
+  // --- Puzzlebox rankings -------------------------------------------------------------------
+  const { usePuzzleboxLeaderboard } = await import("../src/hooks/use-puzzlebox-scores");
+  const settle = async () => {
+    for (let turn = 0; turn < 20; turn += 1) await new Promise((resolve) => setTimeout(resolve, 0));
+  };
+  const paths = () => sent.map((request) => request.url.split("?")[0]);
+  const board = { players: 3, offset: 0, rows: [], me: null, stats: null };
+  const meBoard = { ...board, me: { rank: 1 } };
+  const mountBoard = async (offset: number) => {
+    const mounted = await mountHook(() => usePuzzleboxLeaderboard({ game: "connections", boards: { "1": 16 }, board: null, offset, aroundMe: false }));
+    await settle();
+    return mounted.flush();
+  };
+
+  // A stored session: the me route marks this player's rows.
+  reset();
+  storeSession(USER, jwt(USER, ISSUER, "puzzlebox"));
+  storage.setItem(MARKER_KEY, JSON.stringify({ uid: USER }));
+  respond = (request) => marked({ v: 1, leaderboard: request.url.startsWith("/api/me/") ? meBoard : board });
+  assert.deepEqual(await mountBoard(0), { data: meBoard, loading: false, failed: false });
+  assert.deepEqual(paths(), ["/api/me/puzzlebox/leaderboard"]);
+
+  // A claimed uid whose cookie is gone, with no session to claim again: the board reads as
+  // for no session, as supabase-js reported none before step 6.
+  reset();
+  storage.setItem(MARKER_KEY, JSON.stringify({ uid: USER }));
+  respond = (request) => request.url.startsWith("/api/me/") ? marked({ error: "identity_required" }, 401) : marked({ v: 1, leaderboard: board });
+  assert.deepEqual(await mountBoard(10), { data: board, loading: false, failed: false });
+  assert.deepEqual(paths(), ["/api/me/puzzlebox/leaderboard", "/api/read/puzzlebox/leaderboard"]);
+
+  // An outage on the me route is still the failure screen, not a second read.
+  reset();
+  storeSession(USER, jwt(USER, ISSUER, "puzzlebox-down"));
+  storage.setItem(MARKER_KEY, JSON.stringify({ uid: USER }));
+  respond = (request) => request.url.startsWith("/api/me/") ? marked({ error: "unavailable" }, 503) : marked({ v: 1, leaderboard: board });
+  assert.deepEqual(await mountBoard(20), { data: null, loading: false, failed: true });
+  assert.deepEqual(paths(), ["/api/me/puzzlebox/leaderboard"]);
+
+  // No identity: the public route.
+  reset();
+  respond = () => marked({ v: 1, leaderboard: board });
+  assert.deepEqual(await mountBoard(30), { data: board, loading: false, failed: false });
+  assert.deepEqual(paths(), ["/api/read/puzzlebox/leaderboard"]);
 
   // --- No usable localStorage: the page keeps a claimed session in memory, as supabase-js did ---
   // Runs last: the page's memory session outlives reset().
