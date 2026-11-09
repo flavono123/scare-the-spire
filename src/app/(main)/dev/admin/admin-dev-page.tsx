@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import { AdminTabs } from "./admin-tabs";
 import type { AdminTabId } from "./admin-tab-ids";
 import { notFound, redirect } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
 import { AdminActivityChart } from "@/components/dev/admin-activity-chart";
 import { AdminAuthorTable } from "@/components/dev/admin-author-table";
 import { AdminAuthorTimelineChart } from "@/components/dev/admin-author-timeline-chart";
@@ -26,8 +25,6 @@ import {
   adminServicePostHref,
   aggregateAdminAuthors,
   buildAuthorTimeSeries,
-  COMMENT_OTHER_PREFIXES,
-  commentStoryFilter,
   formatRate,
   isMissingRlsActivityMetricsRpc,
   mergeAdminServicePosts,
@@ -48,19 +45,26 @@ import { emotePlainText } from "@/lib/emote-con";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   DEFAULT_PROFILE_NICKNAMES,
-  PROFILE_CHARACTER_NICKNAME_POOLS_TABLE,
-  nicknamePoolRowsFromPools,
   parseNicknamePoolRows,
   parseNicknamePoolsFromFormData,
   type ProfileNicknamePools,
 } from "@/lib/profile-character-nicknames";
 import { getSiteOrigin } from "@/lib/site-origin";
-import { supabase, supabaseEnabled } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import { contactMessages } from "@/messages/contact";
+// Server-only operator tools (plan 5.7): D1 through wrangler, Supabase through fetch.
+import { adminDeps } from "../../../../../scripts/admin/admin-deps";
+import {
+  ADMIN_D1_ENV,
+  readAdminComments,
+  readAdminContactInquiries,
+  readAdminNicknamePools,
+  readAdminServicePosts,
+  readRlsActivityMetricsRpc,
+} from "../../../../../scripts/admin/admin-reads";
+import { replyToContactInquiry, saveProfileNicknamePools } from "../../../../../scripts/admin/admin-writes";
+import { supabaseAdminConfig } from "../../../../../scripts/lib/supabase-admin";
 
 const ROW_LIMIT = 50;
-const CONTACT_ROW_LIMIT = 100;
 const ADMIN_DATA_ENV = "production";
 const PRODUCTION_SITE_ORIGIN = getSiteOrigin();
 
@@ -77,7 +81,6 @@ const CONTACT_STATUS_LABELS: Record<ContactInquiryStatus, string> = {
 };
 
 const CONTACT_STATUSES = Object.keys(CONTACT_STATUS_LABELS) as ContactInquiryStatus[];
-const CONTACT_INQUIRY_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 interface ContactInquiryAdminRow {
   id: string;
@@ -117,12 +120,6 @@ interface QueryState<T> {
   note?: string;
 }
 
-interface SupabaseResult<T> {
-  data: T | null;
-  error: { code?: string; message: string } | null;
-  count?: number | null;
-}
-
 interface NicknamePoolState {
   pools: ProfileNicknamePools;
   source: "stored" | "defaults";
@@ -136,72 +133,19 @@ interface AdminSnapshot {
   metrics: QueryState<RlsActivityMetrics | null>;
 }
 
-async function readSupabase<T>(
-  operation: string,
-  promise: PromiseLike<SupabaseResult<T>>,
-  fallback: T,
-): Promise<QueryState<T>> {
-  try {
-    const { data, error, count } = await withSupabaseTimeout(operation, promise);
-    if (error) return { data: fallback, error: error.message };
-    return { data: data ?? fallback, count: count ?? undefined };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown Supabase error";
-    return { data: fallback, error: message };
-  }
-}
-
-function createInquiryAdminClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const secretKey = process.env.SUPABASE_SECRET_KEY?.trim()
-    || process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-  if (!url || !secretKey) return null;
-
-  return createClient(url, secretKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
-    },
-  });
-}
+/** The env D1s of the dev server (remote unless ADMIN_D1=local). */
+const adminD1 = () => adminDeps().d1;
 
 async function readContactInquiries(): Promise<QueryState<ContactInquiryAdminRow[]> | null> {
-  const admin = createInquiryAdminClient();
-  if (!admin) return null;
-
-  return readSupabase<ContactInquiryAdminRow[]>(
-    "admin.contact_inquiries",
-    admin
-      .from("contact_inquiries")
-      .select("id,user_id,category,message,reply_email,page_path,service_locale,game_locale,env,status,admin_response,responded_at,created_at", { count: "exact" })
-      .order("created_at", { ascending: false })
-      .limit(CONTACT_ROW_LIMIT),
-    [],
-  );
+  const result = await readAdminContactInquiries(adminD1());
+  return { data: result.data as unknown as ContactInquiryAdminRow[], count: result.count, error: result.error };
 }
 
 async function readComments(
   service: CommentThreadService | null,
 ): Promise<QueryState<CommentRow[]>> {
-  let query = supabase
-    .from("comments")
-    .select("id, story_id, user_id, nickname, content, content_blocks, env, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
-    .eq("env", ADMIN_DATA_ENV)
-    .order("created_at", { ascending: false })
-    .limit(ROW_LIMIT);
-
-  const filter = commentStoryFilter(service);
-  if (filter?.kind === "eq") query = query.eq("story_id", filter.value);
-  else if (filter?.kind === "like") query = query.like("story_id", filter.value);
-  else if (filter?.kind === "other") {
-    query = query.neq("story_id", "byrdispatch");
-    for (const prefix of COMMENT_OTHER_PREFIXES) {
-      query = query.not("story_id", "like", `${prefix}%`);
-    }
-  }
-
-  return readSupabase<CommentRow[]>("admin.comments", query, []);
+  const result = await readAdminComments(adminD1()(ADMIN_D1_ENV), service);
+  return { data: result.data as unknown as CommentRow[], count: result.count, error: result.error };
 }
 
 function asPostRow(
@@ -237,7 +181,8 @@ async function readServicePosts(
   service: AdminPostService | null,
 ): Promise<QueryState<AdminServicePostRow[]>> {
   const services = service ? [service] : [...ADMIN_POST_SERVICES];
-  const results = await Promise.all(services.map((key) => readOneServicePosts(key)));
+  const read = await readAdminServicePosts(adminD1()(ADMIN_D1_ENV), services);
+  const results = services.map((key) => readOneServicePosts(key, read[key]));
   const errors = results.flatMap((result) => result.error ? [result.error] : []);
   return {
     data: mergeAdminServicePosts(results.flatMap((result) => result.data)),
@@ -246,12 +191,18 @@ async function readServicePosts(
   };
 }
 
-async function readOneServicePosts(
+/** One service's D1 rows (already in the Supabase row shape) as admin post rows. */
+function rowsAs<T>(result: QueryState<Record<string, unknown>[]>): QueryState<T> {
+  return { data: result.data as unknown as T, count: result.count, error: result.error };
+}
+
+function readOneServicePosts(
   service: AdminPostService,
-): Promise<QueryState<AdminServicePostRow[]>> {
+  read: QueryState<Record<string, unknown>[]>,
+): QueryState<AdminServicePostRow[]> {
   switch (service) {
     case "stories": {
-      const result = await readSupabase<Array<{
+      const result = rowsAs<Array<{
         id: string;
         user_id: string | null;
         nickname: string;
@@ -261,17 +212,7 @@ async function readOneServicePosts(
         avatar_kind?: string | null;
         palette_id?: string | null;
         palette_swapped?: boolean | null;
-      }>>(
-        "admin.community_stories",
-        supabase
-          .from("community_stories")
-          .select("id, user_id, nickname, sentence, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
-          .eq("env", ADMIN_DATA_ENV)
-          .is("static_story_id", null)
-          .order("created_at", { ascending: false })
-          .limit(ROW_LIMIT),
-        [],
-      );
+      }>>(read);
       return {
         ...result,
         data: result.data.map((row) => asPostRow(service, {
@@ -281,7 +222,7 @@ async function readOneServicePosts(
       };
     }
     case "combo": {
-      const result = await readSupabase<Array<{
+      const result = rowsAs<Array<{
         id: string;
         user_id: string;
         nickname: string;
@@ -292,16 +233,7 @@ async function readOneServicePosts(
         avatar_kind?: string | null;
         palette_id?: string | null;
         palette_swapped?: boolean | null;
-      }>>(
-        "admin.combo_posts",
-        supabase
-          .from("combo_posts")
-          .select("id, user_id, nickname, content, content_text, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
-          .eq("env", ADMIN_DATA_ENV)
-          .order("created_at", { ascending: false })
-          .limit(ROW_LIMIT),
-        [],
-      );
+      }>>(read);
       return {
         ...result,
         data: result.data.map((row) => asPostRow(service, {
@@ -311,7 +243,7 @@ async function readOneServicePosts(
       };
     }
     case "transfigure": {
-      const result = await readSupabase<Array<{
+      const result = rowsAs<Array<{
         id: string;
         user_id: string;
         nickname: string;
@@ -326,16 +258,7 @@ async function readOneServicePosts(
         avatar_kind?: string | null;
         palette_id?: string | null;
         palette_swapped?: boolean | null;
-      }>>(
-        "admin.transfigure_posts",
-        supabase
-          .from("transfigure_posts")
-          .select("id, user_id, nickname, resource_type, resource_id, content, content_text, title, transformed_name, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
-          .eq("env", ADMIN_DATA_ENV)
-          .order("created_at", { ascending: false })
-          .limit(ROW_LIMIT),
-        [],
-      );
+      }>>(read);
       return {
         ...result,
         data: result.data.map((row) => asPostRow(service, {
@@ -352,7 +275,7 @@ async function readOneServicePosts(
       };
     }
     case "this_or_that": {
-      const result = await readSupabase<Array<{
+      const result = rowsAs<Array<{
         id: string;
         user_id: string;
         nickname: string;
@@ -366,16 +289,7 @@ async function readOneServicePosts(
         avatar_kind?: string | null;
         palette_id?: string | null;
         palette_swapped?: boolean | null;
-      }>>(
-        "admin.this_or_that_posts",
-        supabase
-          .from("this_or_that_posts")
-          .select("id, user_id, nickname, left_type, left_id, right_type, right_id, reason, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
-          .eq("env", ADMIN_DATA_ENV)
-          .order("created_at", { ascending: false })
-          .limit(ROW_LIMIT),
-        [],
-      );
+      }>>(read);
       return {
         ...result,
         data: result.data.map((row) => asPostRow(service, {
@@ -385,7 +299,7 @@ async function readOneServicePosts(
       };
     }
     case "chemical_x": {
-      const result = await readSupabase<Array<{
+      const result = rowsAs<Array<{
         id: string;
         user_id: string;
         nickname: string;
@@ -396,16 +310,7 @@ async function readOneServicePosts(
         avatar_kind?: string | null;
         palette_id?: string | null;
         palette_swapped?: boolean | null;
-      }>>(
-        "admin.chemical_posts",
-        supabase
-          .from("chemical_posts")
-          .select("id, user_id, nickname, content, content_text, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
-          .eq("env", ADMIN_DATA_ENV)
-          .order("created_at", { ascending: false })
-          .limit(ROW_LIMIT),
-        [],
-      );
+      }>>(read);
       return {
         ...result,
         data: result.data.map((row) => asPostRow(service, {
@@ -415,7 +320,7 @@ async function readOneServicePosts(
       };
     }
     case "decisions_decisions": {
-      const result = await readSupabase<Array<{
+      const result = rowsAs<Array<{
         id: string;
         user_id: string;
         nickname: string;
@@ -426,16 +331,7 @@ async function readOneServicePosts(
         avatar_kind?: string | null;
         palette_id?: string | null;
         palette_swapped?: boolean | null;
-      }>>(
-        "admin.decisions_decisions_posts",
-        supabase
-          .from("decisions_decisions_posts")
-          .select("id, user_id, nickname, title, note, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
-          .eq("env", ADMIN_DATA_ENV)
-          .order("created_at", { ascending: false })
-          .limit(ROW_LIMIT),
-        [],
-      );
+      }>>(read);
       return {
         ...result,
         data: result.data.map((row) => asPostRow(service, {
@@ -445,7 +341,7 @@ async function readOneServicePosts(
       };
     }
     case "favorite_tournament": {
-      const result = await readSupabase<Array<{
+      const result = rowsAs<Array<{
         id: string;
         user_id: string | null;
         nickname: string;
@@ -456,16 +352,7 @@ async function readOneServicePosts(
         avatar_kind?: string | null;
         palette_id?: string | null;
         palette_swapped?: boolean | null;
-      }>>(
-        "admin.favorite_tournament_posts",
-        supabase
-          .from("favorite_tournament_posts")
-          .select("id, user_id, nickname, title, note, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
-          .eq("env", ADMIN_DATA_ENV)
-          .order("created_at", { ascending: false })
-          .limit(ROW_LIMIT),
-        [],
-      );
+      }>>(read);
       return {
         ...result,
         data: result.data.map((row) => asPostRow(service, {
@@ -475,7 +362,7 @@ async function readOneServicePosts(
       };
     }
     case "pagestorm": {
-      const result = await readSupabase<Array<{
+      const result = rowsAs<Array<{
         id: string;
         user_id: string;
         nickname: string;
@@ -486,16 +373,7 @@ async function readOneServicePosts(
         avatar_kind?: string | null;
         palette_id?: string | null;
         palette_swapped?: boolean | null;
-      }>>(
-        "admin.pagestorm_posts",
-        supabase
-          .from("pagestorm_posts")
-          .select("id, user_id, nickname, title, content_text, created_at, avatar_id, avatar_kind, palette_id, palette_swapped", { count: "exact" })
-          .eq("env", ADMIN_DATA_ENV)
-          .order("created_at", { ascending: false })
-          .limit(ROW_LIMIT),
-        [],
-      );
+      }>>(read);
       return {
         ...result,
         data: result.data.map((row) => asPostRow(service, {
@@ -505,23 +383,14 @@ async function readOneServicePosts(
       };
     }
     case "history_course": {
-      const result = await readSupabase<Array<{
+      const result = rowsAs<Array<{
         id: string;
         donor_user_id: string | null;
         character: string;
         ascension: number;
         win: boolean;
         created_at: string;
-      }>>(
-        "admin.runs",
-        supabase
-          .from("runs")
-          .select("id, donor_user_id, character, ascension, win, created_at", { count: "exact" })
-          .eq("env", ADMIN_DATA_ENV)
-          .order("created_at", { ascending: false })
-          .limit(ROW_LIMIT),
-        [],
-      );
+      }>>(read);
       return {
         ...result,
         data: result.data.map((row) => asPostRow(service, {
@@ -537,41 +406,31 @@ async function readOneServicePosts(
 }
 
 async function readRlsActivityMetrics(): Promise<QueryState<RlsActivityMetrics | null>> {
-  const admin = createInquiryAdminClient();
-  if (!admin) {
+  const config = supabaseAdminConfig();
+  if (!config) {
     return { data: null, note: "서버 키 설정 필요" };
   }
 
-  try {
-    const { data, error } = await withSupabaseTimeout(
-      "admin.rls_activity_metrics",
-      admin.rpc("get_rls_activity_metrics", { p_env: ADMIN_DATA_ENV }),
-      20000,
-    );
-    if (error) {
-      return {
-        data: null,
-        error: error.message,
-        note: isMissingRlsActivityMetricsRpc(error)
-          ? "get_rls_activity_metrics 마이그레이션이 필요합니다."
-          : undefined,
-      };
-    }
-    const parsed = parseRlsActivityMetrics(data);
-    if (!parsed) return { data: null, error: "지표 응답을 읽지 못했습니다." };
-    return { data: parsed };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown Supabase error";
-    return { data: null, error: message };
+  // A Supabase-side metric with no D1 counterpart: the RPC over fetch until step 7.
+  const { data, error } = await readRlsActivityMetricsRpc(config, ADMIN_DATA_ENV);
+  if (error) {
+    return {
+      data: null,
+      error: error.message,
+      note: isMissingRlsActivityMetricsRpc(error)
+        ? "get_rls_activity_metrics 마이그레이션이 필요합니다."
+        : undefined,
+    };
   }
+  const parsed = parseRlsActivityMetrics(data);
+  if (!parsed) return { data: null, error: "지표 응답을 읽지 못했습니다." };
+  return { data: parsed };
 }
 
 async function loadAdminSnapshot(
   postService: AdminPostService | null,
   commentService: CommentThreadService | null,
 ): Promise<AdminSnapshot | null> {
-  if (!supabaseEnabled) return null;
-
   const [comments, posts, metrics] = await Promise.all([
     readComments(commentService),
     readServicePosts(postService),
@@ -582,62 +441,27 @@ async function loadAdminSnapshot(
 }
 
 async function readNicknamePools(): Promise<NicknamePoolState> {
-  const admin = createInquiryAdminClient();
-  if (!admin) {
+  const { rows, gate, error } = await readAdminNicknamePools(adminD1()(ADMIN_D1_ENV));
+  // Saving needs the Supabase key only while production's profile source is Supabase.
+  const canEdit = gate?.sources.profile === "d1" || supabaseAdminConfig() !== null;
+  if (error) {
     return {
       pools: DEFAULT_PROFILE_NICKNAMES,
       source: "defaults",
-      canEdit: false,
+      canEdit,
+      error,
     };
   }
-
-  try {
-    const { data, error } = await withSupabaseTimeout(
-      "admin.profile_character_nickname_pools",
-      admin
-        .from(PROFILE_CHARACTER_NICKNAME_POOLS_TABLE)
-        .select("character_id, locale, nicknames"),
-    );
-    if (error) {
-      return {
-        pools: DEFAULT_PROFILE_NICKNAMES,
-        source: "defaults",
-        canEdit: true,
-        error: error.message,
-      };
-    }
-    return {
-      pools: parseNicknamePoolRows(data),
-      source: Array.isArray(data) && data.length > 0 ? "stored" : "defaults",
-      canEdit: true,
-    };
-  } catch (error) {
-    return {
-      pools: DEFAULT_PROFILE_NICKNAMES,
-      source: "defaults",
-      canEdit: true,
-      error: error instanceof Error ? error.message : "Unknown Supabase error",
-    };
-  }
+  return {
+    pools: parseNicknamePoolRows(rows),
+    source: rows.length > 0 ? "stored" : "defaults",
+    canEdit,
+  };
 }
 
 async function writeNicknamePools(pools: ProfileNicknamePools): Promise<void> {
-  const admin = createInquiryAdminClient();
-  if (!admin) throw new Error("SUPABASE_SECRET_KEY is not configured");
-
-  const { error } = await withSupabaseTimeout(
-    "admin.profile_character_nickname_pools.upsert",
-    admin
-      .from(PROFILE_CHARACTER_NICKNAME_POOLS_TABLE)
-      .upsert(
-        nicknamePoolRowsFromPools(pools).map((row) => ({
-          ...row,
-          updated_at: new Date().toISOString(),
-        })),
-        { onConflict: "character_id,locale" },
-      ),
-  );
-  if (error) throw error;
+  // Supabase, or D1 and its outbox rows, by the profile group's write source.
+  await saveProfileNicknamePools(adminDeps(), pools);
 }
 
 async function saveProfileCharacterNicknames(formData: FormData) {
@@ -685,29 +509,14 @@ async function respondToContactInquiry(formData: FormData) {
   try {
     if (!devToolsEnabled()) throw new Error("Dev tools are disabled");
 
-    const id = String(formData.get("id") ?? "");
-    const response = String(formData.get("response") ?? "").trim();
-    const status = String(formData.get("status") ?? "") as ContactInquiryStatus;
-    if (!CONTACT_INQUIRY_ID_PATTERN.test(id)) throw new Error("Invalid inquiry id");
-    if (!CONTACT_STATUSES.includes(status)) throw new Error("Invalid inquiry status");
-    if (response.length > 8000) throw new Error("Response is too long");
-    if (!response && status === "done") throw new Error("A completed inquiry needs a response");
-
-    const admin = createInquiryAdminClient();
-    if (!admin) throw new Error("SUPABASE_SECRET_KEY is not configured");
-
-    const { error } = await withSupabaseTimeout(
-      "admin.contact_inquiries.update",
-      admin
-        .from("contact_inquiries")
-        .update({
-          admin_response: response || null,
-          responded_at: response ? new Date().toISOString() : null,
-          status: response ? "done" : status,
-        })
-        .eq("id", id),
-    );
-    if (error) throw error;
+    // The same checks as before (checkInquiryReply), then Supabase or D1 by source.contact of the
+    // inquiry's env (each env's rows live in its own D1).
+    await replyToContactInquiry(adminDeps(), {
+      id: String(formData.get("id") ?? ""),
+      dataEnv: String(formData.get("env") ?? ""),
+      response: String(formData.get("response") ?? ""),
+      status: String(formData.get("status") ?? "") as ContactInquiryStatus,
+    });
 
     revalidatePath("/dev/admin");
   } catch (error) {
@@ -976,6 +785,7 @@ export default async function SupabaseAdminPage({
                         </dl>
                         <form action={respondToContactInquiry} className="mt-4 space-y-2">
                           <input type="hidden" name="id" value={inquiry.id} />
+                          <input type="hidden" name="env" value={inquiry.env} />
                           <label className="block text-xs font-semibold text-muted-foreground" htmlFor={`response-${inquiry.id}`}>
                             운영자 답변
                           </label>

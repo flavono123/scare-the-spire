@@ -10,33 +10,15 @@ export async function GET() {
     return NextResponse.json({ message: "Not found" }, { status: 404 });
   }
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const secretKey = process.env.SUPABASE_SECRET_KEY?.trim()
-    || process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-  if (!url || !secretKey) {
-    return NextResponse.json({ message: "Supabase admin key is not configured." }, { status: 503 });
-  }
-
-  const [{ createClient }, { withSupabaseTimeout }] = await Promise.all([
-    import("@supabase/supabase-js"),
-    import("@/lib/supabase-timeout"),
+  // Both envs' D1 (production and testbed), as the Supabase count had no env filter.
+  const [{ adminDeps }, { countUncheckedInquiries }] = await Promise.all([
+    import("../../../../../scripts/admin/admin-deps"),
+    import("../../../../../scripts/admin/admin-reads"),
   ]);
-  const admin = createClient(url, secretKey, {
-    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-  });
-
   try {
-    const { count, error } = await withSupabaseTimeout(
-      "dev.contact-inbox.unchecked",
-      admin
-        .from("contact_inquiries")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "new"),
-    );
-    if (error) return NextResponse.json({ message: error.message }, { status: 502 });
-    return NextResponse.json({ unchecked: count ?? 0 });
+    return NextResponse.json({ unchecked: await countUncheckedInquiries(adminDeps().d1) });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown Supabase error";
-    return NextResponse.json({ message }, { status: 504 });
+    const message = error instanceof Error ? error.message : "Unknown D1 error";
+    return NextResponse.json({ message }, { status: 502 });
   }
 }

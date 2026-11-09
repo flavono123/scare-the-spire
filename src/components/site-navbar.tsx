@@ -15,7 +15,7 @@ import Image from "@/components/ui/static-image";
 import { useMailboxReply } from "@/hooks/use-mailbox-reply";
 import { useNavSeen } from "@/hooks/use-nav-seen";
 import { useDevContactInbox } from "@/hooks/use-dev-contact-inbox";
-import { useColorfulPhilosophersNextWeekOpen } from "@/hooks/use-colorful-philosopher-posts";
+import { useDevPhilosophersNextWeekOpen } from "@/hooks/use-dev-philosophers-next-week";
 import { COLORFUL_PHILOSOPHERS_DEV_HREF } from "@/lib/colorful-philosophers";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
@@ -784,7 +784,7 @@ export function SiteNavbar() {
     attention: item.attentionId ? navSeen.unreadIds.includes(item.attentionId) : item.attention,
   }));
   const rawDevItems = getDevNavItems({ serviceLocale, gameLocale });
-  const debateWeekOpen = useColorfulPhilosophersNextWeekOpen(
+  const debateWeekOpen = useDevPhilosophersNextWeekOpen(
     rawDevItems.some((item) => stripGameLocaleFromPath(item.href) === COLORFUL_PHILOSOPHERS_DEV_HREF),
     pathname,
   );
