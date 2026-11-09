@@ -7,7 +7,10 @@
  *   - the D1 path's outbox rows, sent by the real step 5 mirror, leave Supabase with the same row as
  *     today's direct write (both are run on the same seed rows, one per env, and compared), and the
  *     mirror's request carries today's columns;
- *   - with every source on supabase the request and the SQL are exactly today's.
+ *   - with every source on supabase the request and the SQL are exactly today's;
+ *   - the dev pages' reads of the rows these writes change (scripts/admin/admin-reads.ts) go to the
+ *     store the write went to, so a save shows at once: Supabase with today's requests while the
+ *     write's source is supabase (D1 is still the old row then), D1 when it is d1.
  *
  * D1 calls go through the same inlined SQL text wrangler is sent (toSqlText), as one transaction.
  * Usage: tsx scripts/admin-d1-writes.spec.ts
@@ -37,6 +40,15 @@ import {
   type BuiltinTournamentRow,
   type PhilosopherPostRow,
 } from "./admin/admin-writes";
+import {
+  CONTACT_INQUIRY_SELECT,
+  countUncheckedInquiries,
+  listPhilosopherPosts,
+  philosopherWeekSlots,
+  readAdminContactInquiries,
+  readAdminNicknamePools,
+  SupabaseKeyMissingError,
+} from "./admin/admin-reads";
 import { repoSupabase, PgliteRest } from "./d1-sync/pglite-supabase";
 import { SqliteD1 } from "./d1-sync/write-sqlite-d1";
 
@@ -64,10 +76,15 @@ async function main() {
   const pg = await repoSupabase({ contactWhen: true });
   await pg.query("insert into auth.users (id) values ($1)", [USER]);
   const rest = new PgliteRest(pg);
-  const restCalls: Array<{ method: string; url: URL; body: string }> = [];
+  const restCalls: Array<{ method: string; url: URL; body: string; prefer: string | null }> = [];
   const restFetch = async (input: Request | string | URL, init?: RequestInit) => {
     const request = new Request(input, init);
-    restCalls.push({ method: request.method, url: new URL(request.url), body: request.method === "GET" ? "" : await request.clone().text() });
+    restCalls.push({
+      method: request.method,
+      url: new URL(request.url),
+      body: request.method === "GET" || request.method === "HEAD" ? "" : await request.clone().text(),
+      prefer: request.headers.get("prefer"),
+    });
     return rest.handle(request);
   };
   const sqlRuns: string[] = [];
@@ -483,6 +500,149 @@ async function main() {
     assert.equal(outbox("testbed").length, 0);
     await assert.rejects(relinkStoryPatchLine(deps(), { ...RELINK, newId: OLD }), /same/);
     await assert.rejects(relinkStoryPatchLine(deps(), { ...RELINK, entityId: "" }), /--entity-id is required/);
+  });
+
+  // ------------------------------------------------------------------------------------------- 6. reads follow the write
+
+  /** A call as "METHOD /rest/v1/path?query" with the query in a stable order. */
+  const callLine = (entry: { method: string; url: URL }) =>
+    `${entry.method} ${entry.url.pathname}?${[...entry.url.searchParams].sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => `${k}=${v}`).join("&")}`;
+  const restSince = (from: number) => restCalls.slice(from).map(callLine);
+  const contactRow = (rows: Row[] | undefined, id: string) => rows?.find((row) => row.id === id);
+
+  await check("inquiry reads: a supabase gate reads Supabase (today's list and count) and shows a reply at once; d1 reads D1; mixed reads each env's store", async () => {
+    const insert = "insert into public.contact_inquiries (id, user_id, category, message, page_path, service_locale, game_locale, env, status, created_at) " +
+      "values ($1, $2, 'bug', '읽기 확인 문의입니다', '/contact', 'ko', 'kor', $3, 'new', $4)";
+    await pg.query(insert, [U(41), USER, "production", "2026-11-09T01:00:00Z"]);
+    await pg.query(insert, [U(42), USER, "development", "2026-11-09T02:00:00Z"]);
+    await copyToD1("production", "contact_inquiries", "id = $1", [U(41)]);
+    await copyToD1("testbed", "contact_inquiries", "id = $1", [U(42)]);
+    setGate("production", "supabase");
+    setGate("testbed", "supabase");
+
+    await replyToContactInquiry(deps(), { id: U(41), dataEnv: "production", response: "읽기 답변", status: "new" });
+    assert.equal(d1.production.one("SELECT status FROM contact_inquiries WHERE id = ?1", U(41))!.status, "new", "D1 still has the old row until the sync");
+    let from = restCalls.length;
+    const callsBefore = d1Calls.length;
+    const read = await readAdminContactInquiries(deps());
+    assert.equal(d1Calls.length - callsBefore, 2, "one D1 call per env: the gate and the D1 rows together");
+    assert.deepEqual(restSince(from), [
+      `GET /rest/v1/contact_inquiries?limit=100&order=created_at.desc&select=${CONTACT_INQUIRY_SELECT}`,
+    ], "today's read: both envs, no env filter");
+    assert.equal(restCalls[from].prefer, "count=exact");
+    const [{ n: total }] = await sbRows("select count(*)::int as n from public.contact_inquiries");
+    assert.equal(read?.count, total);
+    assert.deepEqual([contactRow(read?.data, U(41))?.status, contactRow(read?.data, U(41))?.admin_response], ["done", "읽기 답변"], "the reply shows at once");
+
+    from = restCalls.length;
+    const [{ n: unchecked }] = await sbRows("select count(*)::int as n from public.contact_inquiries where status = 'new'");
+    assert.equal(await countUncheckedInquiries(deps()), unchecked);
+    assert.deepEqual(restSince(from), ["HEAD /rest/v1/contact_inquiries?select=id&status=eq.new"], "today's head count");
+    assert.equal(restCalls[from].prefer, "count=exact");
+
+    setGate("testbed", "d1");
+    await replyToContactInquiry(deps(), { id: U(42), dataEnv: "development", response: "D1 답변", status: "new" });
+    from = restCalls.length;
+    const mixed = await readAdminContactInquiries(deps());
+    assert.deepEqual(restSince(from), [
+      `GET /rest/v1/contact_inquiries?env=eq.production&limit=100&order=created_at.desc&select=${CONTACT_INQUIRY_SELECT}`,
+    ], "only the supabase env reads Supabase");
+    assert.equal(contactRow(mixed?.data, U(42))?.admin_response, "D1 답변", "the D1 reply shows at once (Supabase gets it from the mirror)");
+    assert.equal(contactRow(mixed?.data, U(41))?.admin_response, "읽기 답변");
+    const devRows = mixed!.data.filter((row) => row.env === "development");
+    assert.equal(devRows.length, d1.testbed.rows("SELECT id FROM contact_inquiries").length, "development rows come from the testbed D1");
+    const [{ n: prodTotal }] = await sbRows("select count(*)::int as n from public.contact_inquiries where env = 'production'");
+    assert.equal(mixed?.count, prodTotal + devRows.length);
+    const [{ n: prodUnchecked }] = await sbRows("select count(*)::int as n from public.contact_inquiries where env = 'production' and status = 'new'");
+    from = restCalls.length;
+    const testbedUnchecked = Number(d1.testbed.one("SELECT count(*) AS n FROM contact_inquiries WHERE status = 'new'")!.n);
+    assert.equal(await countUncheckedInquiries(deps()), prodUnchecked + testbedUnchecked);
+    assert.deepEqual(restSince(from), ["HEAD /rest/v1/contact_inquiries?env=eq.production&select=id&status=eq.new"]);
+    await mirror("testbed");
+
+    setGate("testbed", "d1");
+    setGate("production", "d1");
+    from = restCalls.length;
+    const viaD1 = await readAdminContactInquiries(deps());
+    assert.deepEqual(restSince(from), [], "every env on d1: no Supabase read");
+    assert.equal(viaD1?.count, Number(d1.production.one("SELECT count(*) AS n FROM contact_inquiries")!.n) + Number(d1.testbed.one("SELECT count(*) AS n FROM contact_inquiries")!.n));
+
+    setGate("production", "supabase");
+    setGate("testbed", "supabase");
+    assert.equal(await readAdminContactInquiries(deps({ supabase: null })), null, "no key while Supabase is the store: the page's key-needed state");
+    await assert.rejects(countUncheckedInquiries(deps({ supabase: null })), SupabaseKeyMissingError);
+    setGate("testbed", "d1");
+    const noKeyMixed = await readAdminContactInquiries(deps({ supabase: null }));
+    assert.match(noKeyMixed?.error ?? "", /^production: SUPABASE_SECRET_KEY/);
+    assert.ok(noKeyMixed!.data.length > 0 && noKeyMixed!.data.every((row) => row.env === "development"));
+  });
+
+  await check("nickname pool reads: production's supabase gate reads Supabase (today's select) and shows a save at once; d1 reads production D1", async () => {
+    await resetPools();
+    setGate("production", "supabase");
+    setGate("testbed", "supabase");
+    await saveProfileNicknamePools(deps(), POOLS);
+    assert.equal(
+      d1.production.one("SELECT nicknames FROM profile_character_nickname_pools WHERE character_id = 'SILENT' AND locale = 'ko'")!.nicknames,
+      JSON.stringify(["처음 이름"]),
+      "D1 still has the old pools until the sync",
+    );
+    let from = restCalls.length;
+    const callsBefore = d1Calls.length;
+    const read = await readAdminNicknamePools(deps());
+    assert.equal(d1Calls.length - callsBefore, 1, "the gate and the D1 rows in one call");
+    assert.deepEqual(restSince(from), ["GET /rest/v1/profile_character_nickname_pools?select=character_id,locale,nicknames"]);
+    assert.equal(read?.gate?.sources.profile, "supabase");
+    const silent = (rows: Row[] | undefined) => rows?.find((row) => row.character_id === "SILENT" && row.locale === "ko")?.nicknames;
+    assert.deepEqual(silent(read?.rows), [...POOLS.ko].sort((a, b) => a.localeCompare(b, "ko")), "the saved pools show at once");
+    assert.equal(await readAdminNicknamePools(deps({ supabase: null })), null, "no key while Supabase is the store: defaults, not editable");
+
+    setGate("production", "d1");
+    setGate("testbed", "d1");
+    await saveProfileNicknamePools(deps(), DEFAULT_PROFILE_NICKNAMES);
+    from = restCalls.length;
+    const viaD1 = await readAdminNicknamePools(deps({ supabase: null }));
+    assert.deepEqual(restSince(from), [], "d1: no Supabase read, no key needed");
+    assert.deepEqual(silent(viaD1?.rows), JSON.parse(String(d1.production.one("SELECT nicknames FROM profile_character_nickname_pools WHERE character_id = 'SILENT' AND locale = 'ko'")!.nicknames)));
+    await mirror("production");
+  });
+
+  await check("philosopher reads: the week list and the next-week slots follow the save's store (anyD1Source), with today's Supabase requests", async () => {
+    const READ_WEEK = "2026-11-30";
+    // PGlite answers a date column as a full ISO time (PostgREST sends YYYY-MM-DD): compare the day.
+    const listed = (rows: Row[]) => rows.find((row) => String(row.week_start).slice(0, 10) === READ_WEEK && row.slot === "card")?.body;
+    setGate("production", "supabase");
+    setGate("testbed", "supabase");
+    await saveColorfulPhilosopherPostRow(deps(), "production", philosopherRow(READ_WEEK, "읽기 화두"));
+    assert.equal(d1.production.one("SELECT id FROM colorful_philosopher_posts WHERE week_start = ?1", READ_WEEK), undefined, "not in D1 until the sync");
+    let from = restCalls.length;
+    const rows = await listPhilosopherPosts(deps(), "production");
+    assert.deepEqual(restSince(from), [
+      "GET /rest/v1/colorful_philosopher_posts?env=eq.production&limit=100&order=week_start.desc" +
+        "&select=id,week_start,slot,resource_type,resource_id,name_ko,name_en,image_url,body,game_version,buff_count,nerf_count,rework_count",
+    ], "today's week read");
+    assert.equal(listed(rows), "읽기 화두", "the save shows at once");
+    from = restCalls.length;
+    assert.deepEqual(await philosopherWeekSlots(deps(), READ_WEEK), ["card"]);
+    assert.deepEqual(restSince(from), [`GET /rest/v1/colorful_philosopher_posts?env=eq.production&select=slot&week_start=eq.${READ_WEEK}`]);
+    await assert.rejects(listPhilosopherPosts(deps({ supabase: null }), "production"), SupabaseKeyMissingError);
+
+    let fresh = 60;
+    for (const gate of [{ source: "d1" as const }, { source: "supabase" as const, only: ["comments" as WriteGroup] }, { source: "supabase" as const }]) {
+      setGate("testbed", gate.source, gate.only ? { only: gate.only } : {});
+      const saved = await saveColorfulPhilosopherPostRow(
+        deps({ uuid: () => U((fresh += 1)) }),
+        "development",
+        philosopherRow(READ_WEEK, `화두 ${gate.source}${gate.only ? " comments" : ""}`),
+      );
+      from = restCalls.length;
+      const devRows = await listPhilosopherPosts(deps(), "testbed");
+      const readStore = restCalls.length > from ? "supabase" : "d1";
+      assert.equal(readStore, saved.store, `the read goes where the save went (${JSON.stringify(gate)})`);
+      assert.equal(listed(devRows), saved.saved ? saved.saved.body : `화두 ${gate.source}`, "and shows it at once");
+      await mirror("testbed");
+    }
+    setGate("testbed", "d1");
   });
 
   await check("every D1 write was one call (one batch)", () => {
