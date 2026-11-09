@@ -90,13 +90,28 @@ function authKeyFromIssuer(accessToken: string): string | null {
 
 export type StoredSupabaseIdentity = { accessToken: string; refreshToken: string | null; uid: string | null };
 
-/** The Supabase session stored in localStorage (by supabase-js before step 6, or by a claim), or null. */
+/**
+ * A session a claim answered that localStorage could not keep (no DOM storage, as in
+ * a WebView with it turned off, or a refused write): this page holds it in memory, as
+ * supabase-js fell back to a memory store, with whether this page's claim was for it.
+ * Nothing else falls back to memory, so a later page starts with no session and no
+ * claimed uid, as before step 6 (tasks/010-production-known-issues.md #74).
+ */
+let pageSession: { json: string; uid: string; claimed: boolean } | null = null;
+
+/**
+ * The Supabase session stored in localStorage (by supabase-js before step 6, or by a
+ * claim), or null. The one this page holds in memory comes first: it exists only
+ * after localStorage refused this page's write, so it is the newer one.
+ */
 export function storedSupabaseIdentity(): StoredSupabaseIdentity | null {
-  const store = storage();
-  if (!store) return null;
   try {
-    const key = existingAuthKey(store);
-    const raw = key ? store.getItem(key) : null;
+    let raw = pageSession?.json ?? null;
+    if (!raw) {
+      const store = storage();
+      const key = store ? existingAuthKey(store) : null;
+      raw = store && key ? store.getItem(key) : null;
+    }
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Record<string, unknown>;
     const session = (parsed.currentSession ?? parsed.session ?? parsed) as {
@@ -116,30 +131,40 @@ export function storedSupabaseIdentity(): StoredSupabaseIdentity | null {
 /**
  * Stores a session the claim answered, in supabase-js v2's shape, under the existing
  * `sb-<ref>-auth-token` key or the one its `iss` names. Replaces the stored session
- * (as a supabase-js sign-in did) and never removes one. False when nothing was written.
+ * (as a supabase-js sign-in did) and never removes one. Without usable localStorage
+ * this page keeps it in memory (`pageSession`). False when nothing was kept.
  */
 export function storeSupabaseSession(session: ClaimSession): boolean {
+  if (typeof session?.access_token !== "string" || session.access_token.length === 0) return false;
+  const json = JSON.stringify({
+    access_token: session.access_token,
+    token_type: session.token_type,
+    expires_in: session.expires_in,
+    expires_at: session.expires_at,
+    refresh_token: session.refresh_token,
+    user: session.user,
+  });
   const store = storage();
-  if (!store || typeof session?.access_token !== "string" || session.access_token.length === 0) return false;
-  try {
-    const key = existingAuthKey(store) ?? authKeyFromIssuer(session.access_token);
-    if (!key) return false;
-    store.setItem(key, JSON.stringify({
-      access_token: session.access_token,
-      token_type: session.token_type,
-      expires_in: session.expires_in,
-      expires_at: session.expires_at,
-      refresh_token: session.refresh_token,
-      user: session.user,
-    }));
-    return true;
-  } catch {
-    return false;
+  if (store) {
+    try {
+      const key = existingAuthKey(store) ?? authKeyFromIssuer(session.access_token);
+      if (!key) return false;
+      store.setItem(key, json);
+      pageSession = null;
+      return true;
+    } catch {
+      // A refused write (quota, blocked storage): this page keeps it below.
+    }
   }
+  const uid = sessionUid(session);
+  if (!uid) return false;
+  pageSession = { json, uid, claimed: false };
+  return true;
 }
 
 /** The uid this browser claimed, or null. */
 export function claimedUid(): string | null {
+  if (pageSession?.claimed) return pageSession.uid;
   try {
     const raw = storage()?.getItem(IDENTITY_MARKER_STORAGE_KEY);
     if (!raw) return null;
@@ -156,18 +181,23 @@ export function currentIdentityUid(): string | null {
 }
 
 function rememberClaim(uid: string): boolean {
-  const store = storage();
-  if (!store) return false;
+  let kept = false;
   try {
-    store.setItem(IDENTITY_MARKER_STORAGE_KEY, JSON.stringify({ uid, at: new Date().toISOString() }));
-    return true;
+    const store = storage();
+    if (store) {
+      store.setItem(IDENTITY_MARKER_STORAGE_KEY, JSON.stringify({ uid, at: new Date().toISOString() }));
+      kept = true;
+    }
   } catch {
-    // The cookie still works; the next call claims again.
-    return false;
+    // Refused: remembered below only for the session this page holds in memory.
   }
+  // The cookie still works. Otherwise the next call claims again.
+  if (pageSession) pageSession.claimed = !kept && pageSession.uid === uid.toLowerCase();
+  return kept || pageSession?.claimed === true;
 }
 
 function forgetClaim(): void {
+  if (pageSession) pageSession.claimed = false;
   try {
     storage()?.removeItem(IDENTITY_MARKER_STORAGE_KEY);
   } catch {

@@ -428,17 +428,6 @@ async function main() {
     assert.equal(identity.claimedUid(), NEW_USER, "the claim is still remembered");
   }
 
-  // Storage that throws: the claim still answers, nothing is announced.
-  reset();
-  const throwing = Object.assign(new FakeStorage(), { setItem() {
-    throw new Error("quota");
-  } });
-  fakeWindow.localStorage = throwing;
-  respond = () => marked({ v: 1, uid: NEW_USER, created: true, session: session(NEW_USER) });
-  assert.equal((await identity.claimNewIdentity()).uid, NEW_USER);
-  assert.equal(changes, 0, "no change event when nothing was stored");
-  fakeWindow.localStorage = storage;
-
   assert.equal(identity.isIdentityStorageKey(AUTH_KEY), true);
   assert.equal(identity.isIdentityStorageKey(MARKER_KEY), true);
   assert.equal(identity.isIdentityStorageKey("sts-nav-seen"), false);
@@ -519,6 +508,76 @@ async function main() {
   assert.equal(await host.current().ensureUser(), USER, "a kept cookie");
   assert.deepEqual([host.flush().userId, host.current().unavailable], [USER, false]);
   host.unmount();
+
+  // --- No usable localStorage: the page keeps a claimed session in memory, as supabase-js did ---
+  // Runs last: the page's memory session outlives reset().
+  const browserWindow = fakeWindow as unknown as { localStorage: FakeStorage | null };
+  reset();
+  browserWindow.localStorage = null;
+  // A kept cookie answers no session: nothing to keep, and the write fails as on a later
+  // page before step 6, where supabase-js held no session (tasks/010 #74).
+  respond = (request) => request.url === "/api/auth/claim"
+    ? marked({ v: 1, uid: USER, created: false, session: null })
+    : marked({ ok: "never" });
+  assert.equal((await identity.claimNewIdentity()).uid, USER);
+  assert.deepEqual([identity.claimedUid(), identity.storedSupabaseIdentity(), changes], [null, null, 0]);
+  await assert.rejects(() => apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), (error) => error instanceof ApiError && !(error instanceof ApiUnavailableError) && error.code === "token_invalid");
+  assert.deepEqual(sent.map((request) => request.url), ["/api/auth/claim"], "no write without an identity");
+
+  // A new user's session: kept for this page, so writes go out with the cookie, as on the first page before step 6.
+  reset();
+  host = await mountHook(useAuth);
+  const memorySibling = await mountHook(useAuth);
+  assert.equal(host.current().userId, null);
+  const memorySession = session(NEW_USER, jwt(NEW_USER, ISSUER, "memory"), "memory-refresh");
+  respond = (request) => request.url === "/api/auth/claim"
+    ? marked({ v: 1, uid: NEW_USER, created: true, session: memorySession })
+    : marked({ ok: "memory" });
+  assert.equal(await host.current().ensureUser(), NEW_USER);
+  assert.equal(changes, 1, "this tab's hooks hear of it, as onAuthStateChange fired for a memory session");
+  assert.equal(memorySibling.flush().userId, NEW_USER);
+  assert.deepEqual(identity.storedSupabaseIdentity(), { accessToken: memorySession.access_token, refreshToken: "memory-refresh", uid: NEW_USER });
+  assert.equal(identity.claimedUid(), NEW_USER);
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), { ok: "memory" });
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/me/engagement"), { ok: "memory" });
+  assert.deepEqual(sent.map((request) => request.url), ["/api/auth/claim", "/api/write/comments", "/api/me/engagement"], "one claim for the page");
+  assert.equal(await host.current().ensureUser(), NEW_USER);
+  host.unmount();
+  memorySibling.unmount();
+
+  // The cookie is gone: the memory session is claimed again and the call retried once.
+  sent.length = 0;
+  let memoryRefusals = 1;
+  respond = (request) => {
+    if (request.url === "/api/auth/claim") return marked({ v: 1, uid: NEW_USER, created: false, session: null });
+    if (memoryRefusals > 0) {
+      memoryRefusals -= 1;
+      return marked({ error: "identity_required" }, 401);
+    }
+    return marked({ ok: "again" });
+  };
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), { ok: "again" });
+  assert.deepEqual(claims(), [{ access_token: memorySession.access_token, refresh_token: "memory-refresh" }]);
+  assert.equal(identity.claimedUid(), NEW_USER);
+
+  // localStorage that refuses writes is the same.
+  reset();
+  browserWindow.localStorage = Object.assign(new FakeStorage(), { setItem() {
+    throw new Error("quota");
+  } });
+  const quotaSession = session(OTHER, jwt(OTHER, ISSUER, "quota"));
+  respond = () => marked({ v: 1, uid: OTHER, created: true, session: quotaSession });
+  assert.equal((await identity.claimNewIdentity()).uid, OTHER);
+  assert.deepEqual([identity.storedSupabaseIdentity()?.uid, identity.claimedUid(), changes], [OTHER, OTHER, 1]);
+
+  // Writable again: the next session goes to localStorage and the memory one is dropped.
+  reset();
+  browserWindow.localStorage = storage;
+  const backSession = session(USER, jwt(USER, ISSUER, "back"));
+  respond = () => marked({ v: 1, uid: USER, created: true, session: backSession });
+  await identity.claimNewIdentity();
+  assert.deepEqual(stored(), backSession);
+  assert.deepEqual([identity.storedSupabaseIdentity()?.accessToken, identity.claimedUid()], [backSession.access_token, USER]);
 
   // --- Never a bearer token, never a removed session ---------------------------------------
   assert.equal(allSent.some((request) => Object.keys(request.headers).some((name) => name.toLowerCase() === "authorization")), false, "no Authorization header in any request");
