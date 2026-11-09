@@ -1,18 +1,11 @@
-import { ApiError, apiFetch, requireApiVersion, shouldUseLegacy, writeMayGoLegacy } from "./api-client";
+import { ApiError, apiFetch, requireApiVersion } from "./api-client";
 import { apiFetchAsUser } from "./api-session";
+import { dataEnv } from "./data-env";
 import {
   HISTORY_RUN_RAW_PATH,
-  HISTORY_RUN_REFERENCE_LIMIT,
   isRunId,
-  RECENT_DONATED_RUNS_LIMIT,
-  RUN_DETAIL_COLUMNS,
   RUN_SUMMARY_CLIENT_HEADER,
-  RUN_SUMMARY_COLUMNS,
 } from "./history-runs-api-rules";
-import { surfacePath } from "./runtime-flags";
-import { supabase, supabaseEnabled, supabaseEnv } from "./supabase";
-import { withSupabaseTimeout } from "./supabase-timeout";
-import { devToolsEnabled } from "./dev-tools";
 import { buildRunHighlights } from "./run-highlights";
 import { duplicateShareShouldUpdateCover } from "./history-course-share-state";
 import { pickAlternatingCover, suggestDefaultCover } from "./run-cover-suggest";
@@ -54,35 +47,28 @@ function parsedMetaFromRun(run: ReplayRun, runId: string) {
   };
 }
 
-// The column lists live in history-runs-api-rules.ts so the Worker reads the same ones.
-
-/** True when this env's runs go through the Worker (docs/supabase-exit/STEP1_DESIGN.md 9.6). */
-function runsViaApi(env: string = supabaseEnv): boolean {
-  return env === supabaseEnv && surfacePath("history-runs") === "api";
-}
+// Every read and write goes through the Worker (docs/supabase-exit/STEP1_DESIGN.md 9.6), in this
+// bundle's data env only. A run id outside the api rule (isRunId) is never sent: no shared run has
+// one (docs/supabase-exit/STEP6_PLAN.md 2, P14), so those calls answer "not shared" without a request,
+// as the direct Supabase read used to.
 
 type RowsBody = { v?: number; rows?: unknown };
 
 /**
- * Rows from a Worker read, or "legacy" when the Worker sent this group back.
- * Views with raw run files are PostgREST's array passed through as is; `meta`
- * is a `{ v, env, rows }` answer. Any other shape is a legacy signal (section 9).
+ * Rows from a Worker read. Views with raw run files are PostgREST's array passed through as is
+ * (Supabase source); `meta` and the D1 answers are `{ v, env, rows }`. Any other shape, and a
+ * Worker that sends the group back, is an error (api-client's ApiUnavailableError).
  */
-async function apiRunRows(path: string): Promise<RunRow[] | "legacy"> {
-  try {
-    // This client reads the D1 answers too (summary rows, no raw): say so (RUN_SUMMARY_CLIENT_HEADER).
-    const body = await apiFetch<RowsBody | RunRow[]>("history-runs", path, {
-      timeoutMs: 20_000,
-      headers: { [RUN_SUMMARY_CLIENT_HEADER]: "1" },
-    });
-    if (Array.isArray(body)) return body;
-    requireApiVersion("history-runs", body);
-    if (!Array.isArray(body.rows)) throw new Error("bad history-runs answer");
-    return body.rows as RunRow[];
-  } catch (error) {
-    if (shouldUseLegacy(error)) return "legacy";
-    throw error;
-  }
+async function apiRunRows(path: string): Promise<RunRow[]> {
+  // This client reads the D1 answers too (summary rows, no raw): say so (RUN_SUMMARY_CLIENT_HEADER).
+  const body = await apiFetch<RowsBody | RunRow[]>("history-runs", path, {
+    timeoutMs: 20_000,
+    headers: { [RUN_SUMMARY_CLIENT_HEADER]: "1" },
+  });
+  if (Array.isArray(body)) return body;
+  requireApiVersion("history-runs", body);
+  if (!Array.isArray(body.rows)) throw new Error("bad history-runs answer");
+  return body.rows as RunRow[];
 }
 
 /**
@@ -91,29 +77,17 @@ async function apiRunRows(path: string): Promise<RunRow[] | "legacy"> {
  * route's text/plain body as is; null when the run is not shared in this env.
  */
 async function fetchDonatedRunRaw(runId: string): Promise<string | null> {
-  if (runsViaApi() && isRunId(runId)) {
-    try {
-      const text = await apiFetch<string>("history-runs", `${HISTORY_RUN_RAW_PATH}?id=${encodeURIComponent(runId)}`, {
-        timeoutMs: 20_000,
-        responseType: "text",
-      });
-      return text || null;
-    } catch (error) {
-      if (!shouldUseLegacy(error)) throw error;
-    }
-  }
-  const result = await withSupabaseTimeout(
-    "runs.select.raw",
-    supabase.from("runs").select("raw").eq("id", runId).eq("env", supabaseEnv).maybeSingle(),
-  );
-  if (result.error) throw result.error;
-  const raw = (result.data as { raw?: unknown } | null)?.raw;
-  return typeof raw === "string" && raw ? raw : null;
+  if (!isRunId(runId)) return null;
+  const text = await apiFetch<string>("history-runs", `${HISTORY_RUN_RAW_PATH}?id=${encodeURIComponent(runId)}`, {
+    timeoutMs: 20_000,
+    responseType: "text",
+  });
+  return text || null;
 }
 
 /** The raw file of a shared run, for the owner's cover editor when the list row has none. */
 export async function getDonatedRunRaw(runId: string): Promise<string | null> {
-  if (!supabaseEnabled || !runId) return null;
+  if (!runId) return null;
   return fetchDonatedRunRaw(runId);
 }
 
@@ -133,105 +107,6 @@ function apiWriteError(error: unknown): { code?: string; message: string } {
     return error.code === "duplicate" ? { code: "23505", message: "duplicate" } : { message: error.code };
   }
   return { message: error instanceof Error ? error.message : "request failed" };
-}
-
-function runReadEnvs(): string[] {
-  if (devToolsEnabled() && supabaseEnv !== "production") {
-    return [supabaseEnv, "production"];
-  }
-  return [supabaseEnv];
-}
-
-async function selectDonatedRunForEnv(
-  runId: string,
-  env: string,
-): Promise<{ data: DonatedRun | null; error: unknown }> {
-  if (runsViaApi(env) && isRunId(runId)) {
-    try {
-      const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=detail`);
-      if (rows !== "legacy") {
-        const row = rows[0];
-        if (!row) return { data: null, error: null };
-        // A D1 answer carries the detail columns without the raw: read it from R3r.
-        const raw = "raw" in row ? row.raw : await fetchDonatedRunRaw(runId);
-        return { data: normalizeRunRow({ ...row, raw: raw ?? undefined }, runId), error: null };
-      }
-    } catch (error) {
-      return { data: null, error };
-    }
-  }
-  const result = await withSupabaseTimeout(
-    "runs.select.detail",
-    supabase
-      .from("runs")
-      .select(RUN_DETAIL_COLUMNS)
-      .eq("id", runId)
-      .eq("env", env)
-      .maybeSingle(),
-  ).catch((error) => ({ data: null, error }));
-
-  return {
-    data: result.data ? normalizeRunRow(result.data as RunRow, runId) : null,
-    error: result.error ?? null,
-  };
-}
-
-async function selectRecentDonatedRunsForEnv(
-  env: string,
-): Promise<{ data: DonatedRunSummary[] | null; error: unknown }> {
-  if (runsViaApi(env)) {
-    try {
-      // From Supabase the Worker streams the rows (raw run files, about 8 MB) without parsing them;
-      // from D1 they carry the summary columns instead of the raw (about 0.6 MB).
-      const rows = await apiRunRows("/api/read/history-runs?view=recent");
-      if (rows !== "legacy") return { data: await donatedRunSummaries(rows), error: null };
-    } catch (error) {
-      return { data: null, error };
-    }
-  }
-  const result = await withSupabaseTimeout(
-    "runs.select.recent",
-    supabase
-      .from("runs")
-      .select(RUN_SUMMARY_COLUMNS)
-      .eq("env", env)
-      .order("created_at", { ascending: false })
-      .limit(RECENT_DONATED_RUNS_LIMIT),
-  ).catch((error) => ({ data: null, error }));
-
-  return {
-    data: result.data ? (result.data as RunRow[]).map(normalizeRunSummaryRow) : null,
-    error: result.error ?? null,
-  };
-}
-
-async function selectHistoryRunReferencesForEnv(
-  env: string,
-): Promise<{ data: DonatedRunSummary[] | null; error: unknown }> {
-  if (runsViaApi(env)) {
-    try {
-      const rows = await apiRunRows("/api/read/history-runs?view=reference");
-      if (rows !== "legacy") return { data: await donatedRunSummaries(rows), error: null };
-    } catch (error) {
-      return { data: null, error };
-    }
-  }
-  const result = await withSupabaseTimeout(
-    "runs.select.history-references",
-    supabase
-      .from("runs")
-      .select(RUN_SUMMARY_COLUMNS)
-      .eq("env", env)
-      .order("start_time", { ascending: false })
-      .limit(HISTORY_RUN_REFERENCE_LIMIT),
-  ).catch((error) => ({ data: null, error }));
-
-  return {
-    data: result.data
-      ? (result.data as RunRow[]).map(normalizeRunSummaryRow)
-      : null,
-    error: result.error ?? null,
-  };
 }
 
 /** 409 from the step 5 D1 source: runs are shared one per request (design 4.4). */
@@ -295,25 +170,19 @@ async function shareRunsOneByOne(rows: Record<string, unknown>[]): Promise<Donat
 }
 
 async function insertDonatedRunRow(row: Record<string, unknown>): Promise<{ error: { code?: string; message?: string } | null }> {
-  if (runsViaApi()) {
-    try {
-      await apiFetchAsUser("history-runs", "/api/write/history-runs", { method: "POST", body: row, timeoutMs: 30_000 });
-      return { error: null };
-    } catch (error) {
-      if (singleRunRequired(error)) {
-        try {
-          return (await shareOneRun(row)) ? { error: null } : { error: { code: "23505", message: "duplicate" } };
-        } catch (shareError) {
-          return { error: apiWriteError(shareError) };
-        }
+  try {
+    await apiFetchAsUser("history-runs", "/api/write/history-runs", { method: "POST", body: row, timeoutMs: 30_000 });
+    return { error: null };
+  } catch (error) {
+    if (singleRunRequired(error)) {
+      try {
+        return (await shareOneRun(row)) ? { error: null } : { error: { code: "23505", message: "duplicate" } };
+      } catch (shareError) {
+        return { error: apiWriteError(shareError) };
       }
-      if (!writeMayGoLegacy(error)) return { error: apiWriteError(error) };
     }
+    return { error: apiWriteError(error) };
   }
-  return withSupabaseTimeout(
-    "runs.insert",
-    supabase.from("runs").insert(row),
-  ).catch(() => ({ error: new Error("timeout") }));
 }
 
 export async function donateRun(input: {
@@ -323,9 +192,6 @@ export async function donateRun(input: {
   donorUserId: string;
   coverSpec?: CoverSpec | null;
 }): Promise<{ ok: true } | { ok: false; alreadyDonated: boolean; message: string }> {
-  if (!supabaseEnabled) {
-    return { ok: false, alreadyDonated: false, message: "Supabase 연결이 설정되지 않았습니다." };
-  }
   const meta = parsedMetaFromRun(input.run, input.runId);
   if (input.coverSpec) meta.cover_spec = input.coverSpec;
   const { error } = await insertDonatedRunRow({
@@ -333,7 +199,7 @@ export async function donateRun(input: {
     raw: input.raw,
     donor_user_id: input.donorUserId,
     donor_nickname: readStoredUserProfile().nickname,
-    env: supabaseEnv,
+    env: dataEnv,
     ...meta,
   });
   if (!error) return { ok: true };
@@ -367,8 +233,8 @@ export interface DonateBatchResult {
 // One round-trip donation for a batch of runs. The 'upload + tick
 // share' path used to fire 42 sequential inserts and lost ~30 to
 // auth race + rate limiting; this collapses the whole batch into a
-// single upsert. ignoreDuplicates lets already-donated rows pass
-// through without aborting siblings.
+// single request. Already-donated rows pass through without aborting
+// siblings.
 export async function donateRunsBatch(input: {
   runs: Array<{
     runId: string;
@@ -378,14 +244,6 @@ export async function donateRunsBatch(input: {
   }>;
   donorUserId: string;
 }): Promise<DonateBatchResult> {
-  if (!supabaseEnabled) {
-    return {
-      inserted: 0,
-      alreadyDonated: 0,
-      failed: input.runs.length,
-      errorMessage: "Supabase 연결이 설정되지 않았습니다.",
-    };
-  }
   if (input.runs.length === 0) {
     return { inserted: 0, alreadyDonated: 0, failed: 0 };
   }
@@ -397,119 +255,61 @@ export async function donateRunsBatch(input: {
       raw: r.raw,
       donor_user_id: input.donorUserId,
       donor_nickname: readStoredUserProfile().nickname,
-      env: supabaseEnv,
+      env: dataEnv,
       ...meta,
     };
   });
-  if (runsViaApi()) {
-    try {
-      const body = await apiFetchAsUser<{ v?: number; inserted?: string[] }>(
-        "history-runs",
-        "/api/write/history-runs/batch",
-        { method: "POST", body: rows, timeoutMs: 30_000 },
-      );
-      const inserted = Array.isArray(body?.inserted) ? body.inserted.length : 0;
-      return { inserted, alreadyDonated: input.runs.length - inserted, failed: 0 };
-    } catch (error) {
-      if (singleRunRequired(error)) return shareRunsOneByOne(rows);
-      if (!writeMayGoLegacy(error)) {
-        return { inserted: 0, alreadyDonated: 0, failed: input.runs.length, errorMessage: apiWriteError(error).message };
-      }
-    }
+  try {
+    const body = await apiFetchAsUser<{ v?: number; inserted?: string[] }>(
+      "history-runs",
+      "/api/write/history-runs/batch",
+      { method: "POST", body: rows, timeoutMs: 30_000 },
+    );
+    // The batch answer lists only the newly shared ids; the rest were already shared (by anyone).
+    const inserted = Array.isArray(body?.inserted) ? body.inserted.length : 0;
+    return { inserted, alreadyDonated: input.runs.length - inserted, failed: 0 };
+  } catch (error) {
+    if (singleRunRequired(error)) return shareRunsOneByOne(rows);
+    return { inserted: 0, alreadyDonated: 0, failed: input.runs.length, errorMessage: apiWriteError(error).message };
   }
-  // onConflict spans (id, env) — the composite PK after migration-009.
-  // Same content-addressable runId in a different env is a fresh row;
-  // only same id + same env is treated as a duplicate.
-  const result = await withSupabaseTimeout(
-    "runs.upsert",
-    supabase
-      .from("runs")
-      .upsert(rows, { onConflict: "id,env", ignoreDuplicates: true })
-      .select("id"),
-  ).catch(() => ({ data: null, error: new Error("timeout") }));
-
-  if (result.error) {
-    const message =
-      result.error instanceof Error
-        ? result.error.message
-        : typeof result.error === "object" &&
-            result.error &&
-            "message" in result.error
-          ? String((result.error as { message?: unknown }).message ?? "upsert failed")
-          : "upsert failed";
-    return {
-      inserted: 0,
-      alreadyDonated: 0,
-      failed: input.runs.length,
-      errorMessage: message,
-    };
-  }
-  // upsert with ignoreDuplicates returns ONLY the newly-inserted rows
-  // — anything that conflicted on `id` is silently skipped. We treat
-  // those as 'already donated' (by this user or anyone).
-  const inserted = result.data?.length ?? 0;
-  return {
-    inserted,
-    alreadyDonated: input.runs.length - inserted,
-    failed: 0,
-  };
 }
 
 export async function getDonatedRun(runId: string): Promise<DonatedRun | null> {
-  if (!supabaseEnabled) return null;
-  for (const env of runReadEnvs()) {
-    const { data, error } = await selectDonatedRunForEnv(runId, env);
-    if (data) return data;
-    if (error) return null;
+  if (!isRunId(runId)) return null;
+  try {
+    const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=detail`);
+    const row = rows[0];
+    if (!row) return null;
+    // A D1 answer carries the detail columns without the raw: read it from R3r.
+    const raw = "raw" in row ? row.raw : await fetchDonatedRunRaw(runId);
+    return normalizeRunRow({ ...row, raw: raw ?? undefined }, runId);
+  } catch {
+    return null;
   }
-  return null;
 }
 
-/** Persist a custom cover for a donated run (donor-only via RLS). */
+const NOT_UPDATED_MESSAGE = "수정 권한이 없거나 대상 런을 찾을 수 없습니다.";
+
+/**
+ * Persist a custom cover for a donated run. The Worker updates it only for the donor of record,
+ * taken from the visitor's identity cookie; `donorUserId` is the same user, kept for callers.
+ */
 export async function updateDonatedRunCoverSpec(input: {
   runId: string;
   donorUserId: string;
   coverSpec: CoverSpec;
 }): Promise<{ ok: true } | { ok: false; message: string }> {
-  if (!supabaseEnabled) {
-    return { ok: false, message: "Supabase 연결이 설정되지 않았습니다." };
+  if (!isRunId(input.runId)) return { ok: false, message: NOT_UPDATED_MESSAGE };
+  try {
+    const body = await apiFetchAsUser<{ v?: number; updated?: boolean; reason?: string }>(
+      "history-runs",
+      `/api/write/history-runs/cover?id=${encodeURIComponent(input.runId)}`,
+      { method: "PATCH", body: { coverSpec: input.coverSpec } },
+    );
+    return body?.updated ? { ok: true } : { ok: false, message: NOT_UPDATED_MESSAGE };
+  } catch (error) {
+    return { ok: false, message: apiWriteError(error).message };
   }
-  if (runsViaApi() && isRunId(input.runId)) {
-    try {
-      const body = await apiFetchAsUser<{ v?: number; updated?: boolean; reason?: string }>(
-        "history-runs",
-        `/api/write/history-runs/cover?id=${encodeURIComponent(input.runId)}`,
-        { method: "PATCH", body: { coverSpec: input.coverSpec } },
-      );
-      return body?.updated ? { ok: true } : { ok: false, message: "수정 권한이 없거나 대상 런을 찾을 수 없습니다." };
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) return { ok: false, message: apiWriteError(error).message };
-    }
-  }
-  const result = await withSupabaseTimeout(
-    "runs.update.cover-spec",
-    supabase
-      .from("runs")
-      .update({ cover_spec: input.coverSpec })
-      .eq("id", input.runId)
-      .eq("env", supabaseEnv)
-      .eq("donor_user_id", input.donorUserId)
-      .select("id"),
-  ).catch(() => ({ data: null, error: new Error("timeout") }));
-
-  if (result.error) {
-    const message =
-      result.error instanceof Error
-        ? result.error.message
-        : "message" in result.error
-          ? String((result.error as { message?: unknown }).message ?? "update failed")
-          : "update failed";
-    return { ok: false, message };
-  }
-  if (!result.data || result.data.length === 0) {
-    return { ok: false, message: "수정 권한이 없거나 대상 런을 찾을 수 없습니다." };
-  }
-  return { ok: true };
 }
 
 /** OG/metadata fields only — no raw parse, one small row select. */
@@ -517,140 +317,66 @@ export async function getDonatedRunOgFields(runId: string): Promise<{
   character: string;
   coverSpec: CoverSpec | null;
 } | null> {
-  if (!supabaseEnabled || !runId) return null;
-  for (const env of runReadEnvs()) {
-    // The api path serves the page's own env; dev tools then also read production on legacy.
-    if (runsViaApi(env) && isRunId(runId)) {
-      try {
-        const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=meta`);
-        if (rows !== "legacy") {
-          const row = rows[0];
-          if (!row) continue;
-          return { character: String(row.character ?? ""), coverSpec: parseCoverSpec(row.cover_spec) };
-        }
-      } catch {
-        return null;
-      }
-    }
-    const result = await withSupabaseTimeout(
-      "runs.select.og-fields",
-      supabase
-        .from("runs")
-        .select("character, cover_spec")
-        .eq("id", runId)
-        .eq("env", env)
-        .maybeSingle(),
-    ).catch((error) => ({ data: null, error }));
-
-    if (result.error) return null;
-    if (!result.data) continue;
-    const row = result.data as RunRow;
-    return {
-      character: String(row.character ?? ""),
-      coverSpec: parseCoverSpec(row.cover_spec),
-    };
+  if (!runId || !isRunId(runId)) return null;
+  try {
+    const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=meta`);
+    const row = rows[0];
+    if (!row) return null;
+    return { character: String(row.character ?? ""), coverSpec: parseCoverSpec(row.cover_spec) };
+  } catch {
+    return null;
   }
-  return null;
 }
 
 /** Light cover lookup for combo list thumbs when snapshot omitted coverSpec. */
 export async function getRunCoverSpec(runId: string): Promise<CoverSpec | null> {
-  if (!supabaseEnabled || !runId) return null;
-  for (const env of runReadEnvs()) {
-    if (runsViaApi(env) && isRunId(runId)) {
-      try {
-        const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=cover`);
-        if (rows !== "legacy") {
-          const row = rows[0];
-          if (!row) continue;
-          if (isSummaryListRow(row)) {
-            // A D1 cover row: list facts and phrase columns in place of the raw (R4).
-            const { coverFromSummaryCoverRow } = await import("./run-list-summary");
-            return coverFromSummaryCoverRow(runId, row as unknown as Parameters<typeof coverFromSummaryCoverRow>[1], fetchDonatedRunRaw);
-          }
-          const stored = parseCoverSpec(row.cover_spec);
-          if (stored?.auto === false) return stored;
-          const parsed = parseRunSafely(row.raw);
-          return parsed ? pickAlternatingCover(runId, parsed) : stored;
-        }
-      } catch {
-        return null;
-      }
+  if (!runId || !isRunId(runId)) return null;
+  try {
+    const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=cover`);
+    const row = rows[0];
+    if (!row) return null;
+    if (isSummaryListRow(row)) {
+      // A D1 cover row: list facts and phrase columns in place of the raw (R4).
+      const { coverFromSummaryCoverRow } = await import("./run-list-summary");
+      return coverFromSummaryCoverRow(runId, row as unknown as Parameters<typeof coverFromSummaryCoverRow>[1], fetchDonatedRunRaw);
     }
-    const result = await withSupabaseTimeout(
-      "runs.select.cover-spec",
-      supabase
-        .from("runs")
-        .select("id, raw, cover_spec")
-        .eq("id", runId)
-        .eq("env", env)
-        .maybeSingle(),
-    ).catch((error) => ({ data: null, error }));
-
-    if (result.error) return null;
-    if (!result.data) continue;
-    const row = result.data as RunRow;
     const stored = parseCoverSpec(row.cover_spec);
     if (stored?.auto === false) return stored;
     const parsed = parseRunSafely(row.raw);
     return parsed ? pickAlternatingCover(runId, parsed) : stored;
+  } catch {
+    return null;
   }
-  return null;
 }
 
 export async function isRunDonated(runId: string): Promise<boolean> {
-  if (!supabaseEnabled) return false;
-  if (runsViaApi() && isRunId(runId)) {
-    try {
-      const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=meta`);
-      if (rows !== "legacy") return rows.length > 0;
-    } catch {
-      return false;
-    }
+  if (!isRunId(runId)) return false;
+  try {
+    const rows = await apiRunRows(`/api/read/history-run?id=${encodeURIComponent(runId)}&view=meta`);
+    return rows.length > 0;
+  } catch {
+    return false;
   }
-  const { data, error } = await withSupabaseTimeout(
-    "runs.select.exists",
-    supabase
-      .from("runs")
-      .select("id")
-      .eq("id", runId)
-      .eq("env", supabaseEnv)
-      .maybeSingle(),
-  ).catch(() => ({ data: null, error: new Error("timeout") }));
-  return !error && !!data;
 }
 
 // True only if the visitor (userId) is the donor on record. Used to
-// gate the "공유 취소" button — RLS already enforces donor-only delete
-// server-side, so this is purely UI affordance.
+// gate the "공유 취소" button — the Worker already enforces donor-only
+// delete, so this is purely UI affordance.
 export async function isOwnDonation(
   runId: string,
   userId: string,
 ): Promise<boolean> {
-  if (!supabaseEnabled || !userId) return false;
-  if (runsViaApi() && isRunId(runId)) {
-    try {
-      // The donor is the token's user, never an id the page passes.
-      const body = await apiFetchAsUser<{ v?: number; ids?: string[] }>(
-        "history-runs",
-        `/api/me/history-runs?id=${encodeURIComponent(runId)}`,
-      );
-      return Array.isArray(body?.ids) && body.ids.includes(runId);
-    } catch (error) {
-      if (!shouldUseLegacy(error)) return false;
-    }
+  if (!userId || !isRunId(runId)) return false;
+  try {
+    // The donor is the identity cookie's user, never an id the page passes.
+    const body = await apiFetchAsUser<{ v?: number; ids?: string[] }>(
+      "history-runs",
+      `/api/me/history-runs?id=${encodeURIComponent(runId)}`,
+    );
+    return Array.isArray(body?.ids) && body.ids.includes(runId);
+  } catch {
+    return false;
   }
-  const { data, error } = await withSupabaseTimeout(
-    "runs.select.owner",
-    supabase
-      .from("runs")
-      .select("id")
-      .eq("id", runId)
-      .eq("env", supabaseEnv)
-      .eq("donor_user_id", userId)
-      .maybeSingle(),
-  ).catch(() => ({ data: null, error: new Error("timeout") }));
-  return !error && !!data;
 }
 
 // All runIds that the visitor has donated. One query, used to mark
@@ -660,62 +386,31 @@ export async function listMyDonatedRunIds(
   userId: string,
 ): Promise<Set<string>> {
   const ids = new Set<string>();
-  if (!supabaseEnabled || !userId) return ids;
-  if (runsViaApi()) {
-    try {
-      const body = await apiFetchAsUser<{ v?: number; ids?: string[] }>("history-runs", "/api/me/history-runs");
-      for (const id of body?.ids ?? []) ids.add(id);
-      return ids;
-    } catch (error) {
-      if (!shouldUseLegacy(error)) return ids;
-    }
+  if (!userId) return ids;
+  try {
+    const body = await apiFetchAsUser<{ v?: number; ids?: string[] }>("history-runs", "/api/me/history-runs");
+    for (const id of body?.ids ?? []) ids.add(id);
+  } catch {
+    // A failed read leaves the cards on the unshared action, as before.
   }
-  const { data, error } = await withSupabaseTimeout(
-    "runs.select.mine",
-    supabase
-      .from("runs")
-      .select("id")
-      .eq("env", supabaseEnv)
-      .eq("donor_user_id", userId),
-  ).catch(() => ({ data: null, error: new Error("timeout") }));
-  if (error || !data) return ids;
-  for (const row of data) ids.add(row.id as string);
   return ids;
 }
 
 export async function syncDonatedRunNicknames(userId: string): Promise<void> {
-  if (!supabaseEnabled || !userId) return;
+  if (!userId) return;
   const nickname = readStoredUserProfile().nickname;
-  if (runsViaApi()) {
-    try {
-      await apiFetchAsUser("history-runs", "/api/write/history-runs/nicknames", { method: "POST", body: { nickname } });
-      return;
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) return;
-    }
+  try {
+    await apiFetchAsUser("history-runs", "/api/write/history-runs/nicknames", { method: "POST", body: { nickname } });
+  } catch {
+    // Best effort, as before: the next visit tries again.
   }
-  await withSupabaseTimeout(
-    "runs.update.donor-nickname",
-    supabase
-      .from("runs")
-      .update({ donor_nickname: nickname })
-      .eq("env", supabaseEnv)
-      .eq("donor_user_id", userId)
-      .neq("donor_nickname", nickname),
-  ).catch(() => undefined);
 }
 
-
 export async function listRecentDonatedRuns(): Promise<DonatedRunSummary[]> {
-  if (!supabaseEnabled) return [];
-  let lastError: unknown = null;
-  for (const env of runReadEnvs()) {
-    const { data, error } = await selectRecentDonatedRunsForEnv(env);
-    if (data?.length) return data;
-    if (error) lastError = error;
-  }
-  if (lastError) throw lastError;
-  return [];
+  // From Supabase the Worker streams the rows (raw run files, about 8 MB) without parsing them;
+  // from D1 they carry the summary columns instead of the raw (about 0.6 MB). Errors reach the caller.
+  const rows = await apiRunRows("/api/read/history-runs?view=recent");
+  return donatedRunSummaries(rows);
 }
 
 /**
@@ -726,35 +421,19 @@ export async function listRecentDonatedRuns(): Promise<DonatedRunSummary[]> {
  * browser and only loads them when opened.
  */
 export async function listHistoryRunReferences(): Promise<DonatedRunSummary[]> {
-  if (!supabaseEnabled) return [];
-  let lastError: unknown = null;
-  for (const env of runReadEnvs()) {
-    const { data, error } = await selectHistoryRunReferencesForEnv(env);
-    if (data?.length) return data;
-    if (error) lastError = error;
-  }
-  if (lastError) throw lastError;
-  return [];
+  const rows = await apiRunRows("/api/read/history-runs?view=reference");
+  return donatedRunSummaries(rows);
 }
 
 export async function deleteDonatedRun(runId: string): Promise<boolean> {
-  if (!supabaseEnabled) return false;
-  if (runsViaApi() && isRunId(runId)) {
-    try {
-      // Like the legacy delete, success means "no error", whether or not a row went.
-      await apiFetchAsUser("history-runs", `/api/write/history-runs?id=${encodeURIComponent(runId)}`, { method: "DELETE" });
-      return true;
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) return false;
-    }
+  // No shared run has an id outside the rule (P14): the old direct delete matched no row and
+  // reported success, which the api delete also does for a run that is not there.
+  if (!isRunId(runId)) return true;
+  try {
+    // Success means "no error", whether or not a row went.
+    await apiFetchAsUser("history-runs", `/api/write/history-runs?id=${encodeURIComponent(runId)}`, { method: "DELETE" });
+    return true;
+  } catch {
+    return false;
   }
-  const { error } = await withSupabaseTimeout(
-    "runs.delete",
-    supabase
-      .from("runs")
-      .delete()
-      .eq("id", runId)
-      .eq("env", supabaseEnv),
-  ).catch(() => ({ error: new Error("timeout") }));
-  return !error;
 }
