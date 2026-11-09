@@ -139,6 +139,7 @@
 32. **Toy Box 기록 링크의 미리보기(OG)가 기록별 값이 아니라 목록 기본값**(제목·설명·이미지). canonical·hreflang·og:url만 기록 주소.
     - https://scare-the-spire.flavono123.workers.dev/this-or-that/c23e2302-a8da-473d-8205-5078c5aba49e
     - 원인: `workers/detail-shell-og.ts`는 Worker 변수가 있어야 동작하는데 Worker에 `NEXT_PUBLIC_SUPABASE_URL`·`NEXT_PUBLIC_SUPABASE_ANON_KEY`가 없다(CI는 빌드 환경에만 넣음). 켜면 기록 셸 요청마다 공유 Supabase를 조회하므로 부하를 함께 정해야 한다.
+    - 덧붙임(2026-11-09, Supabase 이관 6단계): 조회를 Supabase에서 main Worker의 D1(`env.DB`) 1행 읽기로 옮겼다. 켜는 조건은 Worker 변수 `DETAIL_SHELL_OG=d1`과 DB binding이고, `wrangler.jsonc`에는 넣지 않아 여전히 꺼져 있다. 켜면 기록 셸 요청(크롤러 포함)마다 D1을 한 번 읽는다.
 33. **게임 전용 언어의 통합 검색이 그 언어 이름을 못 찾고, 결과가 한국어 패치 제목으로 나옴**('強打', '赤べこ', '痛击' 0건, 'Bash'는 'v0.98.2 핫픽스 패치 노트 …').
     - https://scare-the-spire.flavono123.workers.dev/ja
     - 원인 추정: 모든 언어가 `/generated/search-index.json` 하나를 쓰고, 게임 로케일별 이름·제목이 들어 있지 않다(미확인).
@@ -256,5 +257,11 @@
     - https://scare-the-spire.flavono123.workers.dev/defragment
 69. **꺼져 있는 상세 OG 코드가 없는 표를 읽음**. `workers/detail-shell-og.ts:460`이 어려운 결정 글을 `decisions_posts`에서 찾는데, 실제 표는 `decisions_decisions_posts`다. 지금은 상세 OG가 꺼져 있어(Worker에 Supabase 변수가 없음) 드러나지 않는다. 켜거나 D1로 옮길 때 같이 고친다.
     - https://scare-the-spire.flavono123.workers.dev/decisions-decisions
+    - 덧붙임(2026-11-09, Supabase 이관 6단계): D1으로 옮기면서도 지금과 같게 질의 없이 null로 두었다(`workers/detail-shell-og.ts`의 decisions-decisions 분기). 고칠 때는 D1 `post_decisions_decisions`에서 읽고 이미지 규칙도 새로 정해야 한다. 옛 코드가 쓰던 `situation_character` 열은 실제 표에도 없다.
 70. **이거 아님 저거? 좋아요가 다른 env의 글을 가리킬 수 있음**. `this_or_that_post_likes`의 INSERT 정책은 `auth.uid() = user_id`만 보고 FK는 env를 보지 않는다. 그래서 testbed 사용자가 운영 글 id에 단 좋아요(`env = development`)가 들어간다. 수와 화면은 env로 글과 맞추므로 보이지 않는다. 투표 정책에는 같은 env 확인이 있다. 2026-11-05 백업에서는 0행이다. D1 설계는 운영을 바꾸지 않는다. 동기화가 `cross_env`로 세고 넣지 않는다(`docs/supabase-exit/D1_SCHEMA_DESIGN.md` 2.2절, 10.6절).
     - https://scare-the-spire.flavono123.workers.dev/this-or-that
+
+### 2026-11-09 Supabase 이관 6단계(상세 OG) 대조에서 추가
+
+71. **꺼져 있는 상세 OG에서 유튜브가 든 코오오옴보 글의 og:image 주소가 깨짐**. `workers/detail-shell-og.ts`의 코오오옴보 분기는 `comboPostOgImage` 결과 앞에 늘 사이트 주소를 붙인다. 그런데 유튜브 썸네일은 이미 `https://i.ytimg.com/...` 절대 주소라 `https://scare-the-spire.comhttps://i.ytimg.com/vi/<id>/hqdefault.jpg`가 된다. 서류 폭풍 분기는 `startsWith("http")`로 거르지만 이 분기는 거르지 않는다. 지금은 상세 OG가 꺼져 있어(#32) 드러나지 않고, 켤 때 같이 고친다. 근거: 6단계 OG 이관 때 옛 Supabase 조회와 새 D1 조회를 같은 데이터로 대조한 결과(둘 다 같은 깨진 값). 화면으로는 확인하지 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo

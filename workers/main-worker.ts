@@ -10,12 +10,8 @@ type Env = ApiEnv & {
   ASSETS?: AssetsBinding;
   PATCH_WORKER?: PatchWorkerBinding;
   LINK_PREVIEW_LIMITER?: LinkPreviewLimiter;
-  NEXT_PUBLIC_SUPABASE_URL?: string;
-  NEXT_PUBLIC_SUPABASE_ANON_KEY?: string;
-  NEXT_PUBLIC_SUPABASE_ENV?: string;
-  SUPABASE_URL?: string;
-  SUPABASE_ANON_KEY?: string;
-  SUPABASE_ENV?: string;
+  /** "d1" turns on record OG enrichment from DB (workers/detail-shell-og.ts); unset in wrangler.jsonc. */
+  DETAIL_SHELL_OG?: string;
 };
 
 type ExecutionContextLike = {

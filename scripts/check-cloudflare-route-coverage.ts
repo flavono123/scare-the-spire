@@ -123,10 +123,9 @@ async function main() {
     throw new Error(`${assetsRoot} does not exist. Run the Cloudflare asset collector first.`);
   }
 
-  // No network and no Supabase lookups: the Worker must answer from assets.
-  for (const key of ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "SUPABASE_URL", "SUPABASE_ANON_KEY"]) {
-    delete process.env[key];
-  }
+  // No network and no OG lookups: the Worker must answer from assets. The env below has neither
+  // DETAIL_SHELL_OG nor a DB binding, so record shells are served without OG enrichment, as in
+  // production (workers/detail-shell-og.ts).
   globalThis.fetch = (() => Promise.reject(new Error("network disabled in route coverage check"))) as typeof fetch;
   (globalThis as { HTMLRewriter?: unknown }).HTMLRewriter = class {
     on() {
