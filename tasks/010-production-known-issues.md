@@ -265,3 +265,8 @@
 
 71. **꺼져 있는 상세 OG에서 유튜브가 든 코오오옴보 글의 og:image 주소가 깨짐**. `workers/detail-shell-og.ts`의 코오오옴보 분기는 `comboPostOgImage` 결과 앞에 늘 사이트 주소를 붙인다. 그런데 유튜브 썸네일은 이미 `https://i.ytimg.com/...` 절대 주소라 `https://scare-the-spire.comhttps://i.ytimg.com/vi/<id>/hqdefault.jpg`가 된다. 서류 폭풍 분기는 `startsWith("http")`로 거르지만 이 분기는 거르지 않는다. 지금은 상세 OG가 꺼져 있어(#32) 드러나지 않고, 켤 때 같이 고친다. 근거: 6단계 OG 이관 때 옛 Supabase 조회와 새 D1 조회를 같은 데이터로 대조한 결과(둘 다 같은 깨진 값). 화면으로는 확인하지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+
+### 2026-11-09 Supabase 이관 6단계(참여·이야기) 정리에서 추가
+
+72. **이야기를 쓰면 1000개·200개를 받던 이야기 목록이 100개로 잘림**. `src/hooks/use-community-stories.ts`의 `add`가 새 이야기를 앞에 붙인 뒤 늘 `COMMUNITY_STORY_LIMIT`(100)으로 자른다. 훅은 `limit`(200, 1000)으로 받았는데도 그렇다. 그래서 https://scare-the-spire.flavono123.workers.dev/patches/changes (1000개)에서 이야기를 쓰면 새로 고칠 때까지 최신 100개 밖의 이야기가 목록과 줄별 이야기 수에서 빠진다. 패치 페이지(200개)도 이야기가 100개를 넘으면 같다. 옛 legacy 쓰기도 같았다. 6단계는 그대로 옮겼다. 코드 읽기로만 확인했다.
+    - https://scare-the-spire.flavono123.workers.dev/patches/changes
