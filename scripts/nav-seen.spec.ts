@@ -8,6 +8,29 @@ import assert from "node:assert/strict";
 
 // The keys below are checked by their exact names; the build default data env is production.
 delete process.env.NEXT_PUBLIC_SUPABASE_ENV;
+// A configured Supabase project, so a direct Supabase query anywhere in these
+// modules would be made (and counted below) instead of skipped for a missing URL.
+const SUPABASE_URL = "https://nav-seen-spec.supabase.invalid";
+process.env.NEXT_PUBLIC_SUPABASE_URL = SUPABASE_URL;
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "nav-seen-spec-anon-key";
+
+// Every request goes through this one fetch, installed before any import.
+const requested: string[] = [];
+let supabaseRequests = 0;
+let respond: () => Response | Promise<Response> = () => Promise.reject(new TypeError("no answer set"));
+globalThis.fetch = (async (input: string | URL | Request) => {
+  const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+  requested.push(url);
+  if (url.startsWith(SUPABASE_URL)) {
+    supabaseRequests += 1;
+    // A newer row for every query, so a Supabase answer would also light dots.
+    return new Response(JSON.stringify([{ created_at: "2099-01-01T00:00:00.000Z", week_start: "2099-01-01" }]), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  }
+  return respond();
+}) as typeof fetch;
 
 type FakeWindow = {
   __slseounRuntime?: unknown;
@@ -151,14 +174,10 @@ async function main() {
   assert.equal(dispatched.length, 1);
 
   // --- Dots come from the nav snapshot only -------------------------------------
-  const requested: string[] = [];
-  const stubFetch = (respond: () => Response | Promise<Response>) => {
+  const stubFetch = (answerWith: () => Response | Promise<Response>) => {
     requested.length = 0;
+    respond = answerWith;
     delete fakeWindow.__slseounRuntime;
-    globalThis.fetch = (async (input: string | URL | Request) => {
-      requested.push(typeof input === "string" ? input : input instanceof URL ? input.href : input.url);
-      return respond();
-    }) as typeof fetch;
   };
   const answer = (body: unknown, status = 200, marked = true) => new Response(JSON.stringify(body), {
     status,
@@ -193,7 +212,7 @@ async function main() {
   const partialIds = await fetchUnreadSurfaceIds(since);
   assert.ok(partialIds.includes("transfigure"));
   assert.ok(!partialIds.includes("combo"), "an unlisted surface stays dark");
-  assert.deepEqual(requested, ["/api/read/nav"]);
+  assert.deepEqual(requested, ["/api/read/nav"], "an unlisted surface asks nothing else");
 
   // --- A failed or refused snapshot: catalog dots only, empty courier ----------
   const neverSeen = Object.fromEntries(NAV_SEEN_SURFACES.map((surface) => [surface.id, "1970-01-01T00:00:00.000Z"]));
@@ -224,6 +243,8 @@ async function main() {
   fakeWindow.__slseounRuntime = { demoted: new Set(["nav"]), nav: { promise: Promise.reject(new Error("demoted")), at: Date.now() } };
   assert.deepEqual(await fetchUnreadSurfaceIds(neverSeen), catalogOnly);
   assert.deepEqual(requested, [], "the shared rejection is reused, nothing is asked");
+
+  assert.equal(supabaseRequests, 0, "nothing asks Supabase directly");
 
   console.log("nav-seen.spec.ts: ok");
 }
