@@ -17,7 +17,6 @@ import {
 import { sanitizeContactSourcePath } from "@/lib/contact-routing";
 import type { FeedbackFormGameCopy } from "@/lib/borrowed-game-copy";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
-import { supabaseEnabled } from "@/lib/supabase";
 import type { ContactMessages } from "@/messages/contact";
 
 const CATEGORY_ICONS: Record<ContactCategory, string> = {
@@ -62,7 +61,7 @@ export default function ContactPage({
   const trimmedMessage = message.trim();
   const trimmedEmail = replyEmail.trim();
   const partnershipEmailMissing = category === "partnership" && trimmedEmail.length === 0;
-  const unavailable = !supabaseEnabled || authUnavailable || submitState === "unavailable";
+  const unavailable = authUnavailable || submitState === "unavailable";
   const submitted = submitState === "success";
   const submitting = submitState === "submitting";
   const submitDisabled =
@@ -93,7 +92,6 @@ export default function ContactPage({
       }
 
       await submitContactInquiry({
-        userId: activeUserId,
         category: category ?? "other",
         message: trimmedMessage,
         replyEmail: trimmedEmail || null,
