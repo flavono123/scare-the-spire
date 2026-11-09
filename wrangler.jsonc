@@ -27,10 +27,13 @@
   // path.<group> was already api). API_WRITE_MODE_DEFAULT is the write mode of a group whose
   // write.<group> row is missing or cannot be read: worker since 2026-11-09, with every production
   // write.<group> row set explicitly, so the default only decides a failed flag read.
+  // API_WRITE_SOURCE_DEFAULT is the write source of a group whose source.<group> row is missing or
+  // cannot be read: d1 since the step 5 cutover (production 2026-11-09 13:29 UTC, testbed 13:26 UTC).
   "vars": {
     "API_RUNTIME_FLAGS": "d1",
     "API_PATH_DEFAULT": "api",
-    "API_WRITE_MODE_DEFAULT": "worker"
+    "API_WRITE_MODE_DEFAULT": "worker",
+    "API_WRITE_SOURCE_DEFAULT": "d1"
   },
   // Step 2 1-minute D1 sync (docs/supabase-exit/D1_SCHEMA_DESIGN.md 5.3). A no-op unless
   // API_RUNTIME_FLAGS is "d1" and runtime_flags sync.enabled is on; API_SUPABASE_SECRET_KEY is a secret.
@@ -77,7 +80,8 @@
       "vars": {
         "API_RUNTIME_FLAGS": "d1",
         "API_PATH_DEFAULT": "api",
-        "API_WRITE_MODE_DEFAULT": "worker"
+        "API_WRITE_MODE_DEFAULT": "worker",
+        "API_WRITE_SOURCE_DEFAULT": "d1"
       },
       "triggers": {
         "crons": ["* * * * *"]
