@@ -1,12 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ApiError, apiFetch, requireApiVersion, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
+import { ApiError, apiFetch, requireApiVersion } from "@/lib/api-client";
 import { apiFetchAsUser } from "@/lib/api-session";
-import { isStoryLimit, isStorySource, STORY_COLUMNS } from "@/lib/stories-api-rules";
-import { surfacePath } from "@/lib/runtime-flags";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { isStorySource, type STORY_LIMITS } from "@/lib/stories-api-rules";
 import { resolveCanonicalPatchLineId } from "@/lib/resolve-story-patch-line";
 import type { LinkedEntity, STS2PatchLine, Story, StoryEntityType, StoryGame } from "@/lib/types";
 
@@ -16,7 +13,10 @@ import {
   type AuthorProfileTokenPayload,
 } from "@/lib/user-profile";
 
-const COMMUNITY_STORY_LIMIT = 100;
+/** A page size the Worker takes (/api/read/stories). */
+type StoryLimit = (typeof STORY_LIMITS)[number];
+
+const COMMUNITY_STORY_LIMIT: StoryLimit = 100;
 
 interface CommunityStoryRow {
   id: string;
@@ -56,7 +56,7 @@ interface UseCommunityStoriesReturn {
 
 interface UseCommunityStoriesOptions {
   source?: string;
-  limit?: number;
+  limit?: StoryLimit;
 }
 
 function communityStoryId(id: string): string {
@@ -131,85 +131,38 @@ export function useCommunityStories(
   options: UseCommunityStoriesOptions = {},
 ): UseCommunityStoriesReturn {
   const [rows, setRows] = useState<CommunityStoryRow[]>([]);
-  const [loading, setLoading] = useState(supabaseEnabled);
+  const [loading, setLoading] = useState(true);
   const [unavailable, setUnavailable] = useState(false);
   const source = options.source;
   const limit = options.limit ?? COMMUNITY_STORY_LIMIT;
 
   useEffect(() => {
-    // docs/supabase-exit/STEP1_DESIGN.md 9.7. The api path opens no Realtime channel:
-    // the table is not in the publication, so it never delivered an event (section 14).
-    const viaApi = surfacePath("stories") === "api"
-      && isStoryLimit(String(limit))
-      && (!source || isStorySource(source));
-    if (!supabaseEnabled && !viaApi) return;
+    // docs/supabase-exit/STEP1_DESIGN.md 9.7. No Realtime channel: the table is not in the
+    // publication, so it never delivered an event (section 14, STEP6_PLAN.md 1.1).
     let cancelled = false;
-    let channel: ReturnType<typeof supabase.channel> | null = null;
-    const showRows = (next: CommunityStoryRow[]) => {
-      if (cancelled) return;
-      setRows(next);
-      setUnavailable(false);
-      setLoading(false);
-    };
-    const fail = () => {
-      if (cancelled) return;
-      setUnavailable(true);
-      setLoading(false);
-    };
-
-    const loadLegacy = () => {
-      let query = supabase
-        .from("community_stories")
-        .select(STORY_COLUMNS)
-        .eq("env", supabaseEnv)
-        .order("created_at", { ascending: false })
-        .limit(limit);
-      if (source) query = query.eq("source", source);
-
-      withSupabaseTimeout("community_stories.select", query)
-        .then(({ data, error }) => {
-          if (error) throw error;
-          showRows((data ?? []) as CommunityStoryRow[]);
-        })
-        .catch(fail);
-
-      channel = supabase
-        .channel("community_stories")
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "community_stories",
-          },
-          (payload) => {
-            const nextRow = payload.new as CommunityStoryRow;
-            if (nextRow.env !== supabaseEnv) return;
-            if (source && nextRow.source !== source) return;
-            setRows((prev) => uniqueRows([nextRow, ...prev]).slice(0, limit));
-          },
-        )
-        .subscribe();
-    };
-
-    if (viaApi) {
-      const query = new URLSearchParams({ limit: String(limit), ...(source ? { source } : {}) });
-      apiFetch<CommunityStoryRow[]>("stories", `/api/read/stories?${query}`, { timeoutMs: 20_000 })
-        .then((data) => {
-          if (!Array.isArray(data)) throw new Error("bad stories answer");
-          showRows(data);
-        })
-        .catch((error) => {
-          if (cancelled) return;
-          if (shouldUseLegacy(error) && supabaseEnabled) loadLegacy();
-          else fail();
-        });
-    } else {
-      loadLegacy();
-    }
+    // A source the Worker refuses has no story: the Worker never writes one with it.
+    const read: Promise<CommunityStoryRow[]> = source && !isStorySource(source)
+      ? Promise.resolve([])
+      : apiFetch<CommunityStoryRow[]>(
+        "stories",
+        `/api/read/stories?${new URLSearchParams({ limit: String(limit), ...(source ? { source } : {}) })}`,
+        { timeoutMs: 20_000 },
+      );
+    read
+      .then((data) => {
+        if (!Array.isArray(data)) throw new Error("bad stories answer");
+        if (cancelled) return;
+        setRows(data);
+        setUnavailable(false);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setUnavailable(true);
+        setLoading(false);
+      });
     return () => {
       cancelled = true;
-      if (channel) supabase.removeChannel(channel);
     };
   }, [limit, source]);
 
@@ -223,7 +176,7 @@ export function useCommunityStories(
     ) => {
       const trimmedSentence = sentence.trim();
       const trimmedNickname = nickname.trim();
-      if (!activeUserId || !supabaseEnabled || !trimmedSentence || !trimmedNickname || !patchLine.id) return;
+      if (!activeUserId || !trimmedSentence || !trimmedNickname || !patchLine.id) return;
 
       const primaryRef = patchLine.entityRefs[0];
       const linkedEntities = patchLine.entityRefs.slice(1).map((ref) => ({
@@ -234,68 +187,32 @@ export function useCommunityStories(
 
       const token = authorToken !== undefined ? authorToken : currentAuthorProfileToken();
       const patchLineId = resolveCanonicalPatchLineId(patchLine.id) ?? patchLine.id;
-      if (surfacePath("stories") === "api") {
-        try {
-          const body = await apiFetchAsUser<{ v?: number; row?: CommunityStoryRow }>("stories", "/api/write/stories", {
-            method: "POST",
-            body: {
-              nickname: trimmedNickname,
-              sentence: trimmedSentence,
-              entityType: primaryRef?.type ?? null,
-              entityId: primaryRef?.id ?? null,
-              patchLineId,
-              source: patchLine.patch,
-              linkedEntities,
-              ...(token ? {
-                author: {
-                  avatarId: token.avatar_id,
-                  avatarKind: token.avatar_kind,
-                  paletteId: token.palette_id,
-                  paletteSwapped: token.palette_swapped,
-                },
-              } : {}),
-            },
-          });
-          requireApiVersion("stories", body, true);
-          const inserted = body.row;
-          if (inserted) setRows((prev) => uniqueRows([inserted, ...prev]).slice(0, COMMUNITY_STORY_LIMIT));
-          return;
-        } catch (error) {
-          // Only a write that certainly did nothing is sent again on the legacy path.
-          if (!writeMayGoLegacy(error)) throw new Error(error instanceof ApiError ? error.code : "Story storage unavailable");
-        }
-      }
-      const { data, error } = await withSupabaseTimeout(
-        "community_stories.insert",
-        supabase
-          .from("community_stories")
-          .insert({
-            user_id: activeUserId,
+      try {
+        const body = await apiFetchAsUser<{ v?: number; row?: CommunityStoryRow }>("stories", "/api/write/stories", {
+          method: "POST",
+          body: {
             nickname: trimmedNickname,
             sentence: trimmedSentence,
-            game: "sts2",
-            entity_type: primaryRef?.type ?? null,
-            entity_id: primaryRef?.id ?? null,
-            patch_line_id: patchLineId,
+            entityType: primaryRef?.type ?? null,
+            entityId: primaryRef?.id ?? null,
+            patchLineId,
             source: patchLine.patch,
-            tags: [],
-            linked_entities: linkedEntities,
-            env: supabaseEnv,
+            linkedEntities,
             ...(token ? {
-              avatar_id: token.avatar_id,
-              avatar_kind: token.avatar_kind,
-              palette_id: token.palette_id,
-              palette_swapped: token.palette_swapped,
+              author: {
+                avatarId: token.avatar_id,
+                avatarKind: token.avatar_kind,
+                paletteId: token.palette_id,
+                paletteSwapped: token.palette_swapped,
+              },
             } : {}),
-          })
-          .select(STORY_COLUMNS)
-          .single(),
-      ).catch(() => ({ data: null, error: new Error("timeout") }));
-
-      if (error) throw new Error(error.message);
-
-      if (data) {
-        setRows((prev) => uniqueRows([data as CommunityStoryRow, ...prev]).slice(0, COMMUNITY_STORY_LIMIT));
+          },
+        });
+        requireApiVersion("stories", body, true);
+        const inserted = body.row;
+        if (inserted) setRows((prev) => uniqueRows([inserted, ...prev]).slice(0, COMMUNITY_STORY_LIMIT));
+      } catch (error) {
+        throw new Error(error instanceof ApiError ? error.code : "Story storage unavailable");
       }
     },
     [userId],
@@ -304,35 +221,14 @@ export function useCommunityStories(
   const remove = useCallback(
     async (storyId: string, activeUserId = userId) => {
       const rowId = communityRowIdFromStoryId(storyId);
-      if (!activeUserId || !supabaseEnabled || !rowId) return;
+      if (!activeUserId || !rowId) return;
 
-      if (surfacePath("stories") === "api") {
-        let resendOnLegacy = false;
-        try {
-          // Not ours or already gone leaves the list too, as the legacy delete does.
-          await apiFetchAsUser("stories", `/api/write/stories?id=${encodeURIComponent(rowId)}`, { method: "DELETE" });
-        } catch (error) {
-          if (!writeMayGoLegacy(error)) throw new Error(error instanceof ApiError ? error.code : "Story storage unavailable");
-          resendOnLegacy = true;
-        }
-        if (!resendOnLegacy) {
-          setRows((prev) => prev.filter((row) => row.id !== rowId));
-          return;
-        }
+      try {
+        // Not ours or already gone leaves the list too.
+        await apiFetchAsUser("stories", `/api/write/stories?id=${encodeURIComponent(rowId)}`, { method: "DELETE" });
+      } catch (error) {
+        throw new Error(error instanceof ApiError ? error.code : "Story storage unavailable");
       }
-
-      const { error } = await withSupabaseTimeout(
-        "community_stories.delete",
-        supabase
-          .from("community_stories")
-          .delete()
-          .eq("id", rowId)
-          .eq("user_id", activeUserId)
-          .eq("env", supabaseEnv),
-      ).catch(() => ({ error: new Error("timeout") }));
-
-      if (error) throw new Error(error.message);
-
       setRows((prev) => prev.filter((row) => row.id !== rowId));
     },
     [userId],

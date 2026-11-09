@@ -1,4 +1,4 @@
-import { ApiUnavailableError, apiFetch, SurfaceLegacyError } from "@/lib/api-client";
+import { ApiUnavailableError, apiFetch } from "@/lib/api-client";
 import { apiFetchAsUser } from "@/lib/api-session";
 import {
   ENGAGEMENT_LIMITS,
@@ -8,14 +8,13 @@ import {
   type ReactionCounts,
   type ReactionKind,
 } from "@/lib/engagement-keys";
-import { demoteSurface, surfacePath } from "@/lib/runtime-flags";
 
 /**
  * The comments group's reads on the api path (docs/supabase-exit/STEP1_DESIGN.md 9.1).
  * Hooks ask for one part of one key; asks that arrive within a few milliseconds
- * share one /api/read/engagement (or /api/me/engagement) request. A legacy
- * signal rejects every ask of the batch with SurfaceLegacyError so each hook
- * redoes its own legacy query.
+ * share one /api/read/engagement (or /api/me/engagement) request. An outage,
+ * or an answer of another version, rejects every ask of the batch with
+ * ApiUnavailableError (step 6 has no legacy query to redo it on).
  */
 
 export type ApiComment = {
@@ -76,9 +75,14 @@ const BATCH_MAX_WAIT_MS = 40;
 const PRIMED_MS = 15_000;
 const QUERY_BUDGET = ENGAGEMENT_QUERY_MAX_CHARS - 200;
 
-/** True when this page reads the comments group through the Worker and the key is one the Worker takes. */
+/**
+ * True when the key is one the Worker takes. Hooks treat any other key as an
+ * empty thread (no likes, no reactions, no posts): no row in either env has
+ * such a key (docs/supabase-exit/STEP6_PLAN.md P15, P16), and one bad key would
+ * fail the whole batch.
+ */
 export function engagementApiFor(part: EngagementPart, key: string): boolean {
-  return surfacePath("comments") === "api" && isEngagementEntry(part, key);
+  return isEngagementEntry(part, key);
 }
 
 const primed = new Map<string, { value: unknown; until: number }>();
@@ -148,10 +152,9 @@ function queryFor(asks: readonly Ask[], parts: readonly EngagementPart[]): strin
   return lists.join("&");
 }
 
-/** A body this client does not understand is a legacy signal, like an unknown nav snapshot version. */
-function unknownBody(): SurfaceLegacyError {
-  demoteSurface("comments");
-  return new SurfaceLegacyError(200, false);
+/** A body this client does not understand is an outage, like requireApiVersion's `bad_version`. */
+function unknownBody(): ApiUnavailableError {
+  return new ApiUnavailableError(200, "bad_version");
 }
 
 function settle(asks: readonly Ask[], pick: (ask: Ask) => unknown, unavailable: readonly string[] | undefined) {
@@ -282,4 +285,5 @@ export function loadEngagementMine<P extends MePart>(part: P, key: string): Prom
   return promise;
 }
 
+/** @deprecated Always false (step 6); nothing in this group imports them now. WP-Z removes the re-export. */
 export { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";

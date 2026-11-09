@@ -10,12 +10,9 @@ import {
   forgetEngagement,
   loadEngagement,
   loadEngagementMine,
-  shouldUseLegacy,
-  writeMayGoLegacy,
 } from "@/lib/api-engagement";
 import { apiFetchAsUser } from "@/lib/api-session";
 import { reactionTargetKey } from "@/lib/engagement-keys";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 
 export interface ResourceReactionCounts {
   buff: number;
@@ -43,34 +40,29 @@ export function readResourceReaction(target: ResourceReactionTarget): ColorfulPh
   return cached && isColorfulPhilosopherReaction(cached) ? cached : null;
 }
 
-/** One request for a small, bounded set of resources (e.g. a week's reel). */
+/**
+ * Totals for a small, bounded set of resources (e.g. a week's reel), from
+ * /api/read/engagement?reactions= (asks made together share one request). A
+ * target the Worker refuses counts zero; any failure gives null.
+ */
 export async function fetchResourceReactionCounts(
   targets: readonly ResourceReactionTarget[],
 ): Promise<Map<string, ResourceReactionCounts> | null> {
-  if (!supabaseEnabled || targets.length === 0) return null;
-  const ids = Array.from(new Set(targets.map((target) => target.resourceId)));
-  const { data, error } = await supabase.from("resource_reaction_counts")
-    .select("resource_type, resource_id, game_version, buff_count, nerf_count, rework_count")
-    .eq("env", supabaseEnv)
-    .in("resource_id", ids);
-  if (error) return null;
-  const wanted = new Set(targets.map(resourceReactionKey));
-  const counts = new Map<string, ResourceReactionCounts>();
-  for (const target of targets) counts.set(resourceReactionKey(target), { buff: 0, nerf: 0, rework: 0 });
-  for (const row of data ?? []) {
-    const key = resourceReactionKey({
-      resourceType: String(row.resource_type),
-      resourceId: String(row.resource_id),
-      gameVersion: String(row.game_version),
+  if (targets.length === 0) return null;
+  const keys = Array.from(new Set(targets.map(resourceReactionKey)));
+  try {
+    const rows = await Promise.all(keys.map((key) => (
+      engagementApiFor("reactions", key) ? loadEngagement("reactions", key) : Promise.resolve(null)
+    )));
+    const counts = new Map<string, ResourceReactionCounts>();
+    keys.forEach((key, index) => {
+      const row = rows[index];
+      counts.set(key, { buff: row?.buff ?? 0, nerf: row?.nerf ?? 0, rework: row?.rework ?? 0 });
     });
-    if (!wanted.has(key)) continue;
-    counts.set(key, {
-      buff: row.buff_count ?? 0,
-      nerf: row.nerf_count ?? 0,
-      rework: row.rework_count ?? 0,
-    });
+    return counts;
+  } catch {
+    return null;
   }
-  return counts;
 }
 
 export async function saveResourceReaction(input: {
@@ -85,24 +77,21 @@ export async function saveResourceReaction(input: {
   const key = storageKey(input.resourceType, input.resourceId, input.gameVersion);
   if (nextKind) window.localStorage.setItem(key, nextKind);
   else window.localStorage.removeItem(key);
-  const scoped = {
-    env: supabaseEnv,
-    resource_type: input.resourceType,
-    resource_id: input.resourceId,
-    game_version: input.gameVersion,
-    user_id: input.userId,
-  };
-  const write = nextKind === null
-    ? supabase.from("resource_reactions").delete().match(scoped)
-    : input.previous
-      ? supabase.from("resource_reactions").update({ kind: nextKind }).match(scoped)
-      : supabase.from("resource_reactions").insert({ ...scoped, kind: nextKind });
-  const { error } = await write;
-  if (error) {
+  const target = { resourceType: input.resourceType, resourceId: input.resourceId, gameVersion: input.gameVersion };
+  const targetKey = reactionTargetKey(target);
+  // The Worker knows the user (input.userId only says the caller has one) and reads the current
+  // row. A target it refuses takes no reaction, as the closed direct insert refused it.
+  const saved = engagementApiFor("reactions", targetKey) && await apiFetchAsUser(
+    "comments",
+    "/api/write/reactions",
+    { method: "PUT", body: { ...target, kind: nextKind } },
+  ).then(() => true, () => false);
+  if (!saved) {
     if (input.previous) window.localStorage.setItem(key, input.previous);
     else window.localStorage.removeItem(key);
     return { ok: false as const };
   }
+  forgetEngagement("reactions", targetKey);
   return { ok: true as const, kind: nextKind };
 }
 
@@ -120,7 +109,7 @@ export function useResourceReactions(
 ) {
   const [counts, setCounts] = useState<ResourceReactionCounts>({ buff: 0, nerf: 0, rework: 0 });
   const [kind, setKind] = useState<ColorfulPhilosopherReaction | null>(null);
-  const [loading, setLoading] = useState(supabaseEnabled && Boolean(resourceType && resourceId && gameVersion));
+  const [loading, setLoading] = useState(Boolean(resourceType && resourceId && gameVersion));
   const [unavailable, setUnavailable] = useState(false);
   const [pendingKind, setPendingKind] = useState<ColorfulPhilosopherReaction | null>(null);
 
@@ -131,107 +120,61 @@ export function useResourceReactions(
   }, [resourceType, resourceId, gameVersion]);
 
   useEffect(() => {
-    const targetKey = reactionTargetKey({ resourceType, resourceId, gameVersion });
-    const viaApi = Boolean(resourceType && resourceId && gameVersion) && engagementApiFor("reactions", targetKey);
-    if ((!supabaseEnabled && !viaApi) || !resourceType || !resourceId || !gameVersion) {
+    if (!resourceType || !resourceId || !gameVersion) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- there is no reaction row to query
       setLoading(false);
       return;
     }
+    const targetKey = reactionTargetKey({ resourceType, resourceId, gameVersion });
     let cancelled = false;
     setLoading(true);
-    const loadLegacy = () => {
-      supabase.from("resource_reaction_counts")
-        .select("buff_count, nerf_count, rework_count")
-        .eq("env", supabaseEnv)
-        .eq("resource_type", resourceType)
-        .eq("resource_id", resourceId)
-        .eq("game_version", gameVersion)
-        .maybeSingle()
-        .then(({ data, error }) => {
-          if (cancelled) return;
-          if (error) {
-            setUnavailable(true);
-            setLoading(false);
-            return;
-          }
-          setUnavailable(false);
-          setCounts({
-            buff: data?.buff_count ?? 0,
-            nerf: data?.nerf_count ?? 0,
-            rework: data?.rework_count ?? 0,
-          });
-          setLoading(false);
-        });
-    };
-    if (viaApi) {
-      loadEngagement("reactions", targetKey)
-        .then((next) => {
-          if (cancelled) return;
-          setUnavailable(false);
-          setCounts({ buff: next.buff, nerf: next.nerf, rework: next.rework });
-          setLoading(false);
-        })
-        .catch((error) => {
-          if (cancelled) return;
-          if (shouldUseLegacy(error) && supabaseEnabled) {
-            loadLegacy();
-            return;
-          }
-          setUnavailable(true);
-          setLoading(false);
-        });
-    } else {
-      loadLegacy();
-    }
+    // A target the Worker refuses is an empty thread: no reactions.
+    const read = engagementApiFor("reactions", targetKey)
+      ? loadEngagement("reactions", targetKey)
+      : Promise.resolve({ buff: 0, nerf: 0, rework: 0 });
+    read
+      .then((next) => {
+        if (cancelled) return;
+        setUnavailable(false);
+        setCounts({ buff: next.buff, nerf: next.nerf, rework: next.rework });
+        setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setUnavailable(true);
+        setLoading(false);
+      });
     return () => {
       cancelled = true;
     };
   }, [resourceType, resourceId, gameVersion]);
 
   useEffect(() => {
-    if (!supabaseEnabled || !userId || !resourceType || !resourceId || !gameVersion) return;
-    let cancelled = false;
-    const remember = (next: ColorfulPhilosopherReaction | null) => {
-      setKind(next);
-      const key = storageKey(resourceType, resourceId, gameVersion);
-      if (next) window.localStorage.setItem(key, next);
-      else window.localStorage.removeItem(key);
-    };
-    const loadLegacy = () => {
-      supabase.from("resource_reactions")
-        .select("kind")
-        .eq("env", supabaseEnv)
-        .eq("resource_type", resourceType)
-        .eq("resource_id", resourceId)
-        .eq("game_version", gameVersion)
-        .eq("user_id", userId)
-        .maybeSingle()
-        .then(({ data, error }) => {
-          if (cancelled || error) return;
-          remember(data && isColorfulPhilosopherReaction(data.kind) ? data.kind : null);
-        });
-    };
+    if (!userId || !resourceType || !resourceId || !gameVersion) return;
     const targetKey = reactionTargetKey({ resourceType, resourceId, gameVersion });
-    if (engagementApiFor("reactions", targetKey)) {
-      if (!personal) return;
-      loadEngagementMine("reactions", targetKey)
-        .then((next) => {
-          if (!cancelled) remember(next);
-        })
-        .catch((error) => {
-          // Other failures keep this browser's cached reaction, as the legacy query ignores its errors.
-          if (!cancelled && shouldUseLegacy(error)) loadLegacy();
-        });
-    } else {
-      loadLegacy();
-    }
+    const viaApi = engagementApiFor("reactions", targetKey);
+    if (viaApi && !personal) return;
+    let cancelled = false;
+    // A target the Worker refuses is an empty thread: this user has no reaction on it.
+    const read = viaApi ? loadEngagementMine("reactions", targetKey) : Promise.resolve(null);
+    read
+      .then((next) => {
+        if (cancelled) return;
+        setKind(next);
+        const key = storageKey(resourceType, resourceId, gameVersion);
+        if (next) window.localStorage.setItem(key, next);
+        else window.localStorage.removeItem(key);
+      })
+      // A failure keeps this browser's cached reaction.
+      .catch(() => undefined);
     return () => {
       cancelled = true;
     };
   }, [personal, userId, resourceType, resourceId, gameVersion]);
 
-  const choose = useCallback(async (next: ColorfulPhilosopherReaction, userId: string) => {
+  const choose = useCallback(async (next: ColorfulPhilosopherReaction, activeUserId: string) => {
+    // The Worker knows the user; callers pass the one ensureUser gave them.
+    void activeUserId;
     const previous = kind;
     const previousCounts = counts;
     const nextKind = previous === next ? null : next;
@@ -253,56 +196,32 @@ export function useResourceReactions(
       if (previous) window.localStorage.setItem(key, previous);
       else window.localStorage.removeItem(key);
     };
-    if (engagementApiFor("reactions", reactionTargetKey({ resourceType, resourceId, gameVersion }))) {
-      try {
-        // The Worker reads the current row, so a stale kind from another tab cannot conflict.
-        const result = await apiFetchAsUser<{ kind: ColorfulPhilosopherReaction | null; counts: ResourceReactionCounts | null }>(
-          "comments",
-          "/api/write/reactions",
-          { method: "PUT", body: { resourceType, resourceId, gameVersion, kind: nextKind } },
-        );
-        forgetEngagement("reactions", reactionTargetKey({ resourceType, resourceId, gameVersion }));
-        setPendingKind(null);
-        setUnavailable(false);
-        setKind(result.kind);
-        // Null totals: the write is committed but they could not be read; keep the optimistic ones.
-        if (result.counts) setCounts({ buff: result.counts.buff, nerf: result.counts.nerf, rework: result.counts.rework });
-        return { ok: true as const };
-      } catch (error) {
-        if (!writeMayGoLegacy(error)) {
-          setPendingKind(null);
-          revert();
-          return { ok: false as const };
-        }
-      }
-    }
-    const match = {
-      env: supabaseEnv,
-      resource_type: resourceType,
-      resource_id: resourceId,
-      game_version: gameVersion,
-      user_id: userId,
-    };
-    const write = nextKind === null
-      ? supabase.from("resource_reactions").delete().match(match)
-      : previous
-        ? supabase.from("resource_reactions").update({ kind: nextKind }).match(match)
-        : supabase.from("resource_reactions").insert({
-          env: supabaseEnv,
-          resource_type: resourceType,
-          resource_id: resourceId,
-          game_version: gameVersion,
-          user_id: userId,
-          kind: nextKind,
-        });
-    const { error } = await write;
-    setPendingKind(null);
-    if (error) {
+    const targetKey = reactionTargetKey({ resourceType, resourceId, gameVersion });
+    // A target the Worker refuses takes no reaction, as the closed direct insert refused it.
+    if (!engagementApiFor("reactions", targetKey)) {
+      setPendingKind(null);
       revert();
       return { ok: false as const };
     }
-    setUnavailable(false);
-    return { ok: true as const };
+    try {
+      // The Worker reads the current row, so a stale kind from another tab cannot conflict.
+      const result = await apiFetchAsUser<{ kind: ColorfulPhilosopherReaction | null; counts: ResourceReactionCounts | null }>(
+        "comments",
+        "/api/write/reactions",
+        { method: "PUT", body: { resourceType, resourceId, gameVersion, kind: nextKind } },
+      );
+      forgetEngagement("reactions", targetKey);
+      setPendingKind(null);
+      setUnavailable(false);
+      setKind(result.kind);
+      // Null totals: the write is committed but they could not be read; keep the optimistic ones.
+      if (result.counts) setCounts({ buff: result.counts.buff, nerf: result.counts.nerf, rework: result.counts.rework });
+      return { ok: true as const };
+    } catch {
+      setPendingKind(null);
+      revert();
+      return { ok: false as const };
+    }
   }, [counts, gameVersion, kind, resourceId, resourceType]);
 
   return { counts, kind, loading, unavailable, pendingKind, choose };

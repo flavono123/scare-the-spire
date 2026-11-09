@@ -15,7 +15,6 @@ import {
   type PatchLineReferenceDataState,
 } from "@/components/patch-line-reference";
 import { StoryWriteIcon } from "@/components/story-token-icon";
-import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { patchLineDisplayText, patchLineSectionPath } from "@/lib/patch-line-display";
 import type { ResolvedPatchArt } from "@/lib/sts2-patch-art";
@@ -168,7 +167,7 @@ export function StoryComposerModal({
   );
   const trimmedSentence = sentence.trim();
   const submitted = submitFeedback?.tone === "success";
-  const disabled = !authReady || !supabaseEnabled || submitting || submitted || trimmedSentence.length < 2 || !nickname.trim() || !selectedPatchLine;
+  const disabled = !authReady || submitting || submitted || trimmedSentence.length < 2 || !nickname.trim() || !selectedPatchLine;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -222,7 +221,7 @@ export function StoryComposerModal({
             placeholder={storyPlaceholder}
             maxLength={STORY_DRAFT_MAX_LENGTH}
             rows={3}
-            disabled={!authReady || !supabaseEnabled}
+            disabled={!authReady}
             className="service-textarea min-h-24 resize-none disabled:opacity-40"
           />
 
@@ -233,7 +232,7 @@ export function StoryComposerModal({
               onChange={(event) => setNickname(event.target.value.slice(0, 20))}
               placeholder={copy.nickname}
               maxLength={20}
-              disabled={!authReady || !supabaseEnabled}
+              disabled={!authReady}
               className="service-input h-8 min-w-0 flex-1 !py-1.5 text-xs disabled:opacity-40"
             />
             <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
@@ -326,27 +325,25 @@ export function StoryComposerModal({
         </GameScrollArea>
 
         <div className="border-t border-border/60 px-4 py-3">
-          {(!supabaseEnabled || submitFeedback) && (
+          {submitFeedback && (
             <div
               className={cn(
                 "mb-3 flex items-center gap-2 rounded-md border px-3 py-2 text-xs font-medium",
-                !supabaseEnabled
-                  ? "border-amber-700/30 bg-amber-600/10 text-amber-900 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-200"
-                  : submitFeedback?.tone === "success"
-                    ? "border-emerald-700/30 bg-emerald-600/10 text-emerald-800 dark:border-emerald-400/35 dark:bg-emerald-400/10 dark:text-emerald-200"
-                    : "border-red-700/30 bg-red-600/10 text-red-800 dark:border-red-400/35 dark:bg-red-400/10 dark:text-red-200",
+                submitFeedback.tone === "success"
+                  ? "border-emerald-700/30 bg-emerald-600/10 text-emerald-800 dark:border-emerald-400/35 dark:bg-emerald-400/10 dark:text-emerald-200"
+                  : "border-red-700/30 bg-red-600/10 text-red-800 dark:border-red-400/35 dark:bg-red-400/10 dark:text-red-200",
               )}
-              role={!supabaseEnabled || submitFeedback?.tone === "error" ? "alert" : "status"}
-              aria-live={submitFeedback?.tone === "success" ? "polite" : "assertive"}
+              role={submitFeedback.tone === "error" ? "alert" : "status"}
+              aria-live={submitFeedback.tone === "success" ? "polite" : "assertive"}
               data-story-submit-feedback
-              data-tone={!supabaseEnabled ? "error" : submitFeedback?.tone}
+              data-tone={submitFeedback.tone}
             >
-              {submitFeedback?.tone === "success" ? (
+              {submitFeedback.tone === "success" ? (
                 <CheckCircle2 size={15} aria-hidden />
               ) : (
                 <AlertCircle size={15} aria-hidden />
               )}
-              <span>{!supabaseEnabled ? copy.storageDisabled : submitFeedback?.message}</span>
+              <span>{submitFeedback.message}</span>
             </div>
           )}
           <div className="flex justify-end">

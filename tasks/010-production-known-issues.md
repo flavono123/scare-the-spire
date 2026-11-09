@@ -270,3 +270,9 @@
 
 74. **localStorage를 쓸 수 없는 브라우저는 가입한 첫 페이지 밖에서 쓰기가 모두 실패함**. DOM storage를 끈 Android WebView처럼 `window.localStorage`가 없거나 쓰기가 거절되면, 첫 페이지에서는 claim이 새 사용자 세션을 주고 supabase-js가 그것을 메모리에 두어 댓글·좋아요·기록 제출이 된다. 다음 페이지부터는 claim이 유효한 쿠키로 같은 uid를 `kept`로 돌려주지만 세션은 주지 않는다. claim 표식도 저장되지 않아 `apiFetchAsUser`가 `token_invalid`로 끝나고 쓰기 요청이 나가지 않는다. 6단계는 이 동작 그대로 옮겼다(claim이 준 세션과 그 세션의 claim만 이 페이지의 메모리에 두고, 세션 없는 claim은 기억하지 않음. `src/lib/api-identity.ts`의 `pageSession`). 근거: 옛 `src/lib/api-session.ts`(`apiFetchWithCookie` → `apiFetchWithToken`)와 `src/hooks/use-auth.ts`(`signInThroughWorker`)의 코드 흐름, 그리고 가짜 저장소로 돌린 spec(`scripts/api-identity-client.spec.ts`). 실제 WebView에서는 확인하지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/compendium/cards/abrasive
+
+
+### 2026-11-09 Supabase 이관 6단계(참여·이야기) 정리에서 추가
+
+72. **이야기를 쓰면 1000개·200개를 받던 이야기 목록이 100개로 잘림**. `src/hooks/use-community-stories.ts`의 `add`가 새 이야기를 앞에 붙인 뒤 늘 `COMMUNITY_STORY_LIMIT`(100)으로 자른다. 훅은 `limit`(200, 1000)으로 받았는데도 그렇다. 그래서 https://scare-the-spire.flavono123.workers.dev/patches/changes (1000개)에서 이야기를 쓰면 새로 고칠 때까지 최신 100개 밖의 이야기가 목록과 줄별 이야기 수에서 빠진다. 패치 페이지(200개)도 이야기가 100개를 넘으면 같다. 옛 legacy 쓰기도 같았다. 6단계는 그대로 옮겼다. 코드 읽기로만 확인했다.
+    - https://scare-the-spire.flavono123.workers.dev/patches/changes
