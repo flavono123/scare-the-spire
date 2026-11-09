@@ -161,7 +161,8 @@ async function main() {
     assert.equal(report.status, "done", report.lines.join("\n"));
     const after = await snapshot();
     for (const table of RELOAD_ORDER) {
-      if (table === "puzzlebox_players") continue;
+      // Env-less tables (puzzlebox_players, profile_character_nickname_pools) reload from production only.
+      if (MIRROR_TABLES[table].productionOnly) continue;
       assert.deepEqual([...(after[table] as string[])].sort(), d1Keys(table), `${table}: Supabase keys equal D1 keys`);
     }
     assert.deepEqual(await one("select nickname, content_text, like_count, comment_count from public.combo_posts where id = $1", [combo]),
@@ -184,6 +185,8 @@ async function main() {
     assert.equal(await count("select count(*)::int as n from public.comments where env = 'production'"), 1);
     assert.equal(await count("select count(*)::int as n from public.likes where env = 'production'"), 1);
     assert.equal(await count("select count(*)::int as n from public.puzzlebox_players"), 0, "testbed never writes the env-less players");
+    assert.equal(await count("select count(*)::int as n from public.profile_character_nickname_pools"), 10,
+      "nor the env-less nickname pools (Supabase keeps its migration's ten rows)");
     assert.ok(seen.every((headers) => headers.get("apikey") === KEY && headers.get("authorization") === null));
   });
 
@@ -203,6 +206,12 @@ async function main() {
     const report = await reload({ target: "production", tables: ["puzzlebox_players"] });
     assert.equal(report.status, "done", report.lines.join("\n"));
     assert.equal(await count("select count(*)::int as n from public.puzzlebox_players"), 1);
+    // The operator-written env-less nickname pools follow the same rule: production's D1 rows, exactly.
+    h.db.run("INSERT INTO profile_character_nickname_pools (character_id, locale, nicknames, updated_at) VALUES ('IRONCLAD', 'ko', '[\"철갑\"]', '2026-11-09T00:00:00.000000Z')");
+    const pools = await reload({ target: "production", tables: ["profile_character_nickname_pools"] });
+    assert.equal(pools.status, "done", pools.lines.join("\n"));
+    assert.deepEqual((await pg.query("select character_id, locale, nicknames from public.profile_character_nickname_pools")).rows,
+      [{ character_id: "IRONCLAD", locale: "ko", nicknames: ["철갑"] }]);
     h.db.run("INSERT INTO likes (story_id, user_id, created_at) VALUES ('sts2-codex:card:new', ?1, '2026-11-09T00:00:00.000000Z')", USER);
     refuseWritesTo = "likes";
     const failed = await reload({ tables: ["likes"] });

@@ -51,6 +51,9 @@ export const RELOAD_ORDER: readonly string[] = [
   "puzzlebox_runs",
   "puzzlebox_best",
   "puzzlebox_board_stats",
+  // Written by the operator scripts (scripts/admin) once D1 is the source; no FK either way.
+  "profile_character_nickname_pools",
+  "colorful_philosopher_posts",
 ];
 
 /** Written by the tournament RPC with each play; never upserted or deleted on its own. */

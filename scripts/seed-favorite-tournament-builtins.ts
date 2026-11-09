@@ -1,7 +1,18 @@
-import { mkdtempSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { spawnSync } from "node:child_process";
+/**
+ * Seeds the builtin 이아저? 월드컵 tournaments (pnpm worldcup:seed) for each env, through
+ * scripts/admin/admin-writes.ts: while an env's source.toybox-feed is supabase, the same SQL as
+ * before on the linked project (`supabase db query --linked`); while it is d1, that env's D1 rows
+ * and outbox rows, which the step 5 mirror sends to Supabase.
+ *
+ *   set -a && source .env.local && set +a
+ *   pnpm worldcup:seed [--env=production|development] [--dry-run] [--local]
+ *
+ * --dry-run lists the presets, reads each env's write gate and prints what would run. --local uses
+ * the wrangler dev D1 (the Supabase path then needs --dry-run).
+ */
+import { adminDeps } from "./admin/admin-deps";
+import { seedBuiltinTournaments, type BuiltinTournamentRow } from "./admin/admin-writes";
+import { runCli } from "./admin/cli";
 import { getDecisionsDecisionsGameCopy } from "../src/lib/borrowed-game-copy";
 import { decisionsPresetLabel } from "../src/lib/decisions-preset-label";
 import {
@@ -54,7 +65,7 @@ async function main() {
     throw new Error("No builtin worldcup seeds (pools too small or catalog empty).");
   }
 
-  const rows = envs.flatMap((env) => seeds.map((seed, index) => ({
+  const rows: BuiltinTournamentRow[] = envs.flatMap((env) => seeds.map((seed, index) => ({
     nickname: FAVORITE_TOURNAMENT_BUILTIN_NICKNAME,
     title: seed.title,
     note: seed.note,
@@ -69,62 +80,16 @@ async function main() {
   for (const seed of seeds) {
     console.log(`  ${seed.presetKey}  ${seed.title}  (${seed.pool.length})`);
   }
-  if (dryRun) return;
 
-  const tag = `ft${Date.now().toString(36)}`;
-  const sql = `
-insert into public.favorite_tournament_posts (
-  user_id,
-  nickname,
-  title,
-  note,
-  preset_key,
-  game_version,
-  pool,
-  env,
-  created_at
-)
-select
-  null,
-  x.nickname,
-  x.title,
-  x.note,
-  x.preset_key,
-  x.game_version,
-  x.pool,
-  x.env,
-  x.created_at
-from jsonb_to_recordset($${tag}$${JSON.stringify(rows)}$${tag}$::jsonb) as x(
-  nickname text,
-  title text,
-  note text,
-  preset_key text,
-  game_version text,
-  pool jsonb,
-  env text,
-  created_at timestamptz
-)
-on conflict (env, preset_key) where (preset_key like 'builtin:%')
-do update set
-  nickname = excluded.nickname,
-  title = excluded.title,
-  note = excluded.note,
-  pool = excluded.pool,
-  game_version = excluded.game_version;
-`;
-
-  const dir = mkdtempSync(join(tmpdir(), "worldcup-seed-"));
-  const file = join(dir, "seed.sql");
-  writeFileSync(file, sql);
-  const result = spawnSync("supabase", ["db", "query", "--linked", "-f", file], {
-    stdio: "inherit",
+  const deps = adminDeps({
+    mode: process.argv.includes("--local") ? "local" : "remote",
+    dryRun,
+    cli: true,
+    log: (line) => console.log(line),
   });
-  if (result.status !== 0) {
-    throw new Error(`supabase db query failed with status ${result.status ?? "null"}`);
-  }
+  const tag = `ft${Date.now().toString(36)}`;
+  const result = await seedBuiltinTournaments(deps, rows, tag);
+  if (result.dryRun) console.log("dry run: nothing written");
 }
 
-void main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
-});
+runCli(main);

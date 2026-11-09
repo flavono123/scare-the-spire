@@ -10,7 +10,9 @@ import {
   type NavSeenSurface,
 } from "@/lib/nav-seen";
 import { getToyBoxNavItems, toyBoxHasNewService } from "@/lib/site-nav-items";
-import { supabaseEnv } from "@/lib/supabase";
+
+/** The page's data env (NEXT_PUBLIC_SUPABASE_ENV, inlined at build time), as the nav keys use it. */
+const PAGE_DATA_ENV = process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production";
 
 function IndicatorChip({
   surface,
@@ -68,7 +70,7 @@ export default function NavIndicatorsDevPage() {
       <header className="flex flex-col gap-2">
         <h1 className="font-service text-xl font-bold">상단바 안 읽음</h1>
         <p className="text-sm text-muted-foreground">
-          이 브라우저의 {supabaseEnv} 표시를 강제한다. 칩을 누르면 상단바 점이 바로 바뀐다.
+          이 브라우저의 {PAGE_DATA_ENV} 표시를 강제한다. 칩을 누르면 상단바 점이 바로 바뀐다.
         </p>
       </header>
 

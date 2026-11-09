@@ -1,14 +1,10 @@
 import { pagestormPostOgImage } from "../src/lib/pagestorm";
-import {
-  DEFRAGMENT_PAGE_OG_IMAGE,
-  PAGESTORM_PAGE_OG_IMAGE,
-} from "../src/lib/page-og-images";
+import { PAGESTORM_PAGE_OG_IMAGE } from "../src/lib/page-og-images";
 import {
   chemicalPostOgImage,
   clipOgDescription,
   comboPostOgImage,
   coverOgImageFromFields,
-  postBlockOgImage,
   toyboxResourceOgImageUrl,
   truncateOgTitle,
 } from "../src/lib/toybox-post-og";
@@ -28,6 +24,10 @@ import {
   getGameLocaleFromPathname,
   getServiceLocaleForGameLocale,
 } from "../src/lib/i18n";
+import { withTimeout, type D1Database } from "./api/d1";
+import { Q_R5 } from "./api/d1-adapters/queries";
+import { json, materialize, query, readAll, type Row } from "./api/d1-adapters/rows";
+import { postObject, postSql, type FeedService } from "./api/d1-adapters/toybox";
 
 interface HTMLRewriterElement {
   setInnerContent(content: string, options?: { html?: boolean }): void;
@@ -59,12 +59,14 @@ export interface WorkerEnv {
   PATCH_WORKER?: {
     fetch(request: Request): Promise<Response>;
   };
-  NEXT_PUBLIC_SUPABASE_URL?: string;
-  NEXT_PUBLIC_SUPABASE_ANON_KEY?: string;
-  NEXT_PUBLIC_SUPABASE_ENV?: string;
-  SUPABASE_URL?: string;
-  SUPABASE_ANON_KEY?: string;
-  SUPABASE_ENV?: string;
+  /** The main Worker's D1 copy of the data env (wrangler.jsonc d1_databases). */
+  DB?: D1Database;
+  /**
+   * "d1" turns on per-record OG enrichment, read from DB. wrangler.jsonc does not set it, so
+   * production and the testbed serve the shell's list OG, as they did while this lookup read
+   * Supabase without the Worker having Supabase variables (tasks/010 #32).
+   */
+  DETAIL_SHELL_OG?: string;
 }
 
 export interface ExecutionContextLike {
@@ -194,59 +196,66 @@ export function parseDetailShellTarget(pathname: string): DetailShellTarget | nu
   return null;
 }
 
-function resolveSupabaseConfig(env: WorkerEnv) {
-  const url = (
-    env.NEXT_PUBLIC_SUPABASE_URL ||
-    env.SUPABASE_URL ||
-    (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_SUPABASE_URL) ||
-    ""
-  ).replace(/\/+$/, "");
-  const anonKey =
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-    env.SUPABASE_ANON_KEY ||
-    (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY) ||
-    "";
-  const supabaseEnv =
-    env.NEXT_PUBLIC_SUPABASE_ENV ||
-    env.SUPABASE_ENV ||
-    (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_SUPABASE_ENV) ||
-    "production";
+/** The limit the PostgREST lookup had: a slower read serves the shell's list OG. */
+const OG_LOOKUP_TIMEOUT_MS = 600;
 
-  return {
-    url,
-    anonKey,
-    env: supabaseEnv,
-    enabled: Boolean(url && anonKey),
-  };
+/**
+ * A record id as Postgres uuid input reads it (uuid_in: any case, a hyphen allowed after every four
+ * hex digits), in the canonical lowercase form D1 stores. null where Postgres rejects the text: the
+ * PostgREST lookup answered 400 there, which served no OG.
+ */
+function canonicalPostUuid(recordId: string): string | null {
+  if (!/^(?:[0-9a-f]{4}-?){7}[0-9a-f]{4}$/i.test(recordId)) return null;
+  const hex = recordId.replace(/-/g, "").toLowerCase();
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-async function fetchSupabaseRestSingleRow<T>(
-  url: string,
-  anonKey: string,
-  table: string,
-  select: string,
-  recordId: string,
-  envName: string,
-): Promise<T | null> {
-  const endpoint = `${url}/rest/v1/${table}?id=eq.${encodeURIComponent(recordId)}&env=eq.${encodeURIComponent(envName)}&select=${encodeURIComponent(select)}&limit=1`;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 600);
-
+/** The first row of one D1 read, or null on no row, an error or the time limit. */
+async function readD1Row(db: D1Database, sql: string, ...params: unknown[]): Promise<Row | null> {
   try {
-    const res = await fetch(endpoint, {
-      headers: {
-        apikey: anonKey,
-        Authorization: `Bearer ${anonKey}`,
-        Accept: "application/json",
-      },
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-    if (!res.ok) return null;
-    const rows = (await res.json()) as T[];
-    return Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
+    const [rows] = await withTimeout(readAll(db, [query(sql, ...params)]), OG_LOOKUP_TIMEOUT_MS);
+    return rows[0] ?? null;
   } catch {
-    clearTimeout(timeout);
+    return null;
+  }
+}
+
+/**
+ * `columns` of one Toy Box post as the Supabase row has them (postObject), JSON columns parsed: the
+ * answer of the former `select=<columns>&id=eq.<id>&limit=1` PostgREST read. The D1 copy holds the
+ * Worker's data env only, which the read filtered by.
+ */
+async function readPostColumns<T>(
+  db: D1Database,
+  service: FeedService,
+  recordId: string,
+  columns: readonly string[],
+): Promise<T | null> {
+  const id = canonicalPostUuid(recordId);
+  if (!id) return null;
+  const row = await readD1Row(db, postSql(service), id, service);
+  if (!row) return null;
+  try {
+    // env is not among the columns read, so the data env passed here never shows.
+    const post = postObject(service, row, "production");
+    const out: Row = {};
+    for (const name of columns) out[name] = materialize(post[name]);
+    return out as T;
+  } catch {
+    return null;
+  }
+}
+
+/** character and cover_spec of one History Course run (R5, the former `runs` read). */
+async function readRunCover(
+  db: D1Database,
+  runId: string,
+): Promise<{ character: string | null; cover_spec: unknown } | null> {
+  const row = await readD1Row(db, Q_R5, runId);
+  if (!row) return null;
+  try {
+    return { character: (row.character as string | null) ?? null, cover_spec: materialize(json(row.cover_spec)) };
+  } catch {
     return null;
   }
 }
@@ -272,8 +281,8 @@ export async function fetchDetailShellOgData(
   siteOrigin: string,
   pathname: string,
 ): Promise<DetailShellOgData | null> {
-  const config = resolveSupabaseConfig(env);
-  if (!config.enabled) return null;
+  const db = env.DETAIL_SHELL_OG === "d1" ? env.DB : undefined;
+  if (!db) return null;
 
   // Same rule as the app: only the prefixless (kor) page is Korean, every
   // other game locale uses the en service copy.
@@ -282,10 +291,7 @@ export async function fetchDetailShellOgData(
   const game = serviceLocale === "en" ? "Slay the Spire 2" : "슬레이 더 스파이어 2";
 
   if (target.service === "history-course") {
-    const row = await fetchSupabaseRestSingleRow<{
-      character: string | null;
-      cover_spec: unknown;
-    }>(config.url, config.anonKey, "runs", "character, cover_spec", target.recordId, config.env);
+    const row = await readRunCover(db, target.recordId);
 
     if (!row || !isCoverSpec(row.cover_spec)) return null;
 
@@ -309,11 +315,11 @@ export async function fetchDetailShellOgData(
   }
 
   if (target.service === "c-c-c-combo" || target.service === "defragment-combo") {
-    const row = await fetchSupabaseRestSingleRow<{
+    const row = await readPostColumns<{
       content_text: string | null;
       content: unknown;
       resources: unknown;
-    }>(config.url, config.anonKey, "combo_posts", "content_text, content, resources", target.recordId, config.env);
+    }>(db, "combo", target.recordId, ["content_text", "content", "resources"]);
 
     if (!row) return null;
 
@@ -335,10 +341,10 @@ export async function fetchDetailShellOgData(
   }
 
   if (target.service === "chemical-x" || target.service === "defragment-chemical_x") {
-    const row = await fetchSupabaseRestSingleRow<{
+    const row = await readPostColumns<{
       content_text: string | null;
       content: unknown;
-    }>(config.url, config.anonKey, "chemical_posts", "content_text, content", target.recordId, config.env);
+    }>(db, "chemical_x", target.recordId, ["content_text", "content"]);
 
     if (!row) return null;
 
@@ -360,11 +366,13 @@ export async function fetchDetailShellOgData(
     target.service === "this-or-that-tournament" ||
     target.service === "defragment-this_or_that"
   ) {
-    const row = await fetchSupabaseRestSingleRow<{
+    // The tournament route reads this_or_that too, as it read this_or_that_posts: a tournament id
+    // (a favorite_tournament post) has no row there, so it gets no OG.
+    const row = await readPostColumns<{
       reason: string | null;
       left_type: string | null;
       left_id: string | null;
-    }>(config.url, config.anonKey, "this_or_that_posts", "reason, left_type, left_id", target.recordId, config.env);
+    }>(db, "this_or_that", target.recordId, ["reason", "left_type", "left_id"]);
 
     if (!row) return null;
 
@@ -382,19 +390,12 @@ export async function fetchDetailShellOgData(
   }
 
   if (target.service === "transfigure" || target.service === "defragment-transfigure") {
-    const row = await fetchSupabaseRestSingleRow<{
+    const row = await readPostColumns<{
       title: string | null;
       transformed_name: string | null;
       resource_type: string | null;
       resource_id: string | null;
-    }>(
-      config.url,
-      config.anonKey,
-      "transfigure_posts",
-      "title, transformed_name, resource_type, resource_id",
-      target.recordId,
-      config.env,
-    );
+    }>(db, "transfigure", target.recordId, ["title", "transformed_name", "resource_type", "resource_id"]);
 
     if (!row) return null;
 
@@ -412,11 +413,11 @@ export async function fetchDetailShellOgData(
   }
 
   if (target.service === "pagestorm" || target.service === "defragment-pagestorm") {
-    const row = await fetchSupabaseRestSingleRow<{
+    const row = await readPostColumns<{
       title: string | null;
       content_text: string | null;
       content: unknown;
-    }>(config.url, config.anonKey, "pagestorm_posts", "title, content_text, content", target.recordId, config.env);
+    }>(db, "pagestorm", target.recordId, ["title", "content_text", "content"]);
     if (!row) return null;
     const rawTitle = truncateOgTitle(row.title || "");
     const fallbackServiceName = serviceLocale === "en" ? "Pagestorm" : "서류 폭풍";
@@ -432,46 +433,14 @@ export async function fetchDetailShellOgData(
     return { title, description, image };
   }
 
-  if (target.service === "defragment") {
-    const row = await fetchSupabaseRestSingleRow<{
-      title: string | null;
-      content_text: string | null;
-      content: unknown;
-    }>(config.url, config.anonKey, "defragment_posts", "title, content_text, content", target.recordId, config.env);
-    if (!row) return null;
-    const rawTitle = truncateOgTitle(row.title || "");
-    const fallbackServiceName = serviceLocale === "en" ? "Defragment" : "조각모음";
-    const title = rawTitle ? `${rawTitle} - ${brand}` : `${fallbackServiceName} - ${brand}`;
-    const imageSource = postBlockOgImage(asPostBlocks(row.content), DEFRAGMENT_PAGE_OG_IMAGE);
-    const image = imageSource.url.startsWith("http") ? imageSource.url : `${siteOrigin}${imageSource.url}`;
-    const description = clipOgDescription(
-      row.content_text || "",
-      serviceLocale === "en"
-        ? `${game} · ${brand} · Defragment · Community`
-        : `${game} · ${brand} · 조각모음 · 커뮤니티`,
-    );
-    return { title, description, image };
-  }
+  // defragment_posts never had a row and is not copied to D1 (D1_SCHEMA_DESIGN 7): no OG, without
+  // a query, as the toybox-post adapter answers it.
+  if (target.service === "defragment") return null;
 
+  // The PostgREST read asked for decisions_posts, a table that does not exist, so it never served
+  // OG (tasks/010 #69). Kept that way until that entry is fixed.
   if (target.service === "decisions-decisions" || target.service === "defragment-decisions_decisions") {
-    const row = await fetchSupabaseRestSingleRow<{
-      title: string | null;
-      situation_character: string | null;
-    }>(config.url, config.anonKey, "decisions_posts", "title, situation_character", target.recordId, config.env);
-
-    if (!row) return null;
-
-    const rawTitle = truncateOgTitle(row.title || "");
-    const fallbackServiceName = serviceLocale === "en" ? "Decisions Decisions" : "어려운 결정";
-    const title = rawTitle ? `${rawTitle} - ${brand}` : `${fallbackServiceName} - ${brand}`;
-    const charSlug = (row.situation_character || "ironclad").replace(/^(CARD|CHARACTER|RELIC|POTION|POWER)\./i, "").toLowerCase();
-    const image = `${siteOrigin}/images/sts2/characters/select_${charSlug}.webp`;
-    const description =
-      serviceLocale === "en"
-        ? `${game} · ${brand} · Decisions Decisions · Strategic problem solving`
-        : `${game} · ${brand} · 어려운 결정 · 슬레이 더 스파이어 2 상황 판단`;
-
-    return { title, description, image };
+    return null;
   }
 
   return null;

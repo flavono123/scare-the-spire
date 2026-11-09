@@ -381,6 +381,34 @@ export const MIRROR_TABLES: Record<string, MirrorTable> = {
       c("championships", "int"), c("current_rank", "int"), c("rank_history", "json"),
     ],
   },
+  // The two tables only the operator writes (scripts/admin, plan 5.7); no Worker route writes them.
+  profile_character_nickname_pools: {
+    table: "profile_character_nickname_pools",
+    // Env-less (design 4.5): every database holds the same rows. Like puzzlebox_players, only the
+    // production database gets their outbox rows; the operator writes the other database directly.
+    hasEnv: false,
+    conflict: ["character_id", "locale"],
+    key: ["character_id", "locale"],
+    readSql:
+      "SELECT character_id, locale, nicknames, updated_at FROM profile_character_nickname_pools WHERE character_id = ?1 AND locale = ?2",
+    cols: [c("character_id"), c("locale"), c("nicknames", "json"), c("updated_at", "ts")],
+    productionOnly: true,
+  },
+  colorful_philosopher_posts: {
+    table: "colorful_philosopher_posts",
+    hasEnv: true,
+    // The dev page's upsert target (onConflict env,week_start,slot). id and created_at ride along,
+    // so a week's new row gets D1's id in Supabase too (threads are keyed by the post id).
+    conflict: ["env", "week_start", "slot"],
+    key: ["week_start", "slot"],
+    readSql:
+      "SELECT id, week_start, slot, resource_type, resource_id, name_ko, name_en, image_url, body, game_version, created_at " +
+      "FROM colorful_philosopher_posts WHERE week_start = ?1 AND slot = ?2",
+    cols: [
+      c("id"), c("week_start"), c("slot"), c("resource_type"), c("resource_id"), c("name_ko"), c("name_en"), c("image_url"),
+      c("body"), c("game_version"), c("created_at", "ts"),
+    ],
+  },
 };
 
 export function mirrorTable(table: string): MirrorTable {
