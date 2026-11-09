@@ -461,6 +461,9 @@ async function seedLocalRuns(page: Page, runIds: string[]) {
 
 test("History Course loads an IndexedDB-only run while Supabase is unavailable", async ({ page }) => {
   await blockSupabase(page);
+  // A run without a stored cover still asks the shared store for one (run-detail-loader's
+  // getDonatedRunOgFields); the Worker's 409 makes that read fail, as before step 6.
+  await forceApiLegacyAnswer(page);
   await seedLocalRuns(page, [LOCAL_RUN_ID]);
 
   const response = await page.goto(absolute(`/history-course/${LOCAL_RUN_ID}`), {
