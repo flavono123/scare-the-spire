@@ -78,9 +78,18 @@ function canonical(path: string) {
   return `${CANONICAL_ORIGIN}${path}`;
 }
 
+const SUPABASE_HOST = /^https?:\/\/[^/]+\.supabase\.co(?:[:/]|$)/;
+
+/** Cuts the browser off Supabase. Screens read the Worker's same-origin /api, which answers from D1. */
 async function blockSupabase(page: Page) {
-  await page.route(/https:\/\/[^/]+\.supabase\.co\//, (route) => route.abort("connectionfailed"));
-  // Screens on the api path reach Supabase through the Worker; this cookie sends them back to legacy.
+  await page.route(SUPABASE_HOST, (route) => route.abort("connectionfailed"));
+}
+
+/**
+ * The Worker's legacy answer: with the QA cookie every /api route is 409 surface_legacy
+ * (workers/api/flag-cookie.ts), which the step 6 browser shows as its unavailable state.
+ */
+async function forceApiLegacyAnswer(page: Page) {
   await page.context().addCookies([{ name: "slseoun_qa", value: "no-supabase", url: BASE_URL }]);
 }
 
@@ -397,6 +406,8 @@ test("History Course invalid detail returns to its index with client navigation"
 
 test("Supabase failure uses the shared unavailable state", async ({ page }) => {
   await blockSupabase(page);
+  // The browser has no Supabase path to fail; the Worker's 409 stands in for a data outage.
+  await forceApiLegacyAnswer(page);
   await page.goto(absolute(`/c-c-c-combo/${MISSING_UUID}`), { waitUntil: "domcontentloaded" });
 
   await expect(
