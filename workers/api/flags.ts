@@ -5,7 +5,7 @@ import {
   shadowFlagKey,
   type ApiSurfaceGroup,
 } from "../../src/lib/api-surfaces";
-import { isWriteGroup, sourceFlagKey } from "../../src/lib/write-source-flags";
+import { isWriteGroup, sourceFlagKey, WRITE_GROUPS } from "../../src/lib/write-source-flags";
 import { SYNC_FLAG_KEY } from "../sync/sync-env";
 import { withTimeout, type D1Database, type D1PreparedStatement } from "./d1";
 import { supabaseApiConfig, type SupabaseApiEnv } from "./supabase-rest";
@@ -205,7 +205,8 @@ export function rememberedFlagValues(now = Date.now(), maxAgeMs = STALE_MAX_MS):
  * - `d1`: read.<group> = d1 while Supabase is still the write source and the step 2 sync keeps D1
  *   current (sync.enabled = on). The route's D1 adapter answers; a D1 failure falls back to the
  *   route's own handler for that request. With the sync off, D1 stops following Supabase's writes,
- *   so read.<group> = d1 does not apply and the group reads Supabase.
+ *   so read.<group> = d1 does not apply and the group reads Supabase — except a group without a
+ *   write source of its own (nav, colorful-philosophers) once any write source is d1 (step 5).
  * - `d1-origin`: source.<group> = d1 (step 5). D1 is the origin, so there is no fallback and the
  *   sync flag does not matter (the cutover turns the sync off right before it flips the source).
  */
@@ -214,7 +215,17 @@ export type ReadStore = "supabase" | "d1" | "d1-origin";
 /** The read store of `group` from one flags read (the rows by key, flagValues). */
 export function readStoreFor(values: ReadonlyMap<string, string>, group: ApiSurfaceGroup): ReadStore {
   if (isWriteGroup(group) && values.get(sourceFlagKey(group)) === "d1") return "d1-origin";
-  return values.get(readFlagKey(group)) === "d1" && values.get(SYNC_FLAG_KEY) === "on" ? "d1" : "supabase";
+  if (values.get(readFlagKey(group)) !== "d1") return "supabase";
+  if (values.get(SYNC_FLAG_KEY) === "on") return "d1";
+  // Step 5: the sync is off because D1 took over the writes. A group with no write source of its
+  // own (nav, colorful-philosophers) reads rows that now land in D1 first (users' posts and
+  // comments, the operator tools' philosopher posts), so D1 is current for it. A write group whose
+  // own source is still supabase keeps reading Supabase.
+  return !isWriteGroup(group) && anyWriteSourceOnD1(values) ? "d1" : "supabase";
+}
+
+function anyWriteSourceOnD1(values: ReadonlyMap<string, string>): boolean {
+  return WRITE_GROUPS.some((writeGroup) => values.get(sourceFlagKey(writeGroup)) === "d1");
 }
 
 export type ApiFlagDecision =
