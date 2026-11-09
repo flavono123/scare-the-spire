@@ -60,15 +60,18 @@ pnpm patch:audit-ids
   - Re-run `pnpm patch:audit-ids` until it exits cleanly with code 0.
 
 ### Step 4: Check Remote Database Records (When Applicable)
-If an old ID was actively referenced in Supabase `community_stories`:
+If an old ID was actively referenced in `community_stories`, use the operator script. It reads each env's write source (`source.stories` in that env's D1) and changes the store that is the source: Supabase with the same SQL as before while the source is `supabase`, or D1 (the source) plus one outbox row per story while it is `d1`, which the step 5 mirror sends to Supabase. Never run a raw `UPDATE` on Supabase: once D1 is the source, a Supabase-only change is invisible to users and lost on the next reload.
 1. Check for affected rows:
    ```bash
-   supabase db query --linked "SELECT id, sentence, patch_line_id FROM public.community_stories WHERE patch_line_id = '<old-id>';"
+   set -a && source .env.local >/dev/null 2>&1 && set +a
+   pnpm exec tsx scripts/admin/story-patch-line.ts find --old '<old-id>'
    ```
-2. If any rows are returned, update the remote database record to point to the canonical new ID and entity metadata:
+2. If any rows are returned, point them at the canonical new ID and entity metadata (preview with `--dry-run` first):
    ```bash
-   supabase db query --linked "UPDATE public.community_stories SET patch_line_id = '<new-id>', entity_type = '<type>', entity_id = '<id>' WHERE patch_line_id = '<old-id>';"
+   pnpm exec tsx scripts/admin/story-patch-line.ts relink --old '<old-id>' --new '<new-id>' --entity-type '<type>' --entity-id '<id>' --dry-run
+   pnpm exec tsx scripts/admin/story-patch-line.ts relink --old '<old-id>' --new '<new-id>' --entity-type '<type>' --entity-id '<id>'
    ```
+   The script needs the operator's `wrangler` login (D1) and, while a source is `supabase`, the linked Supabase CLI. It refuses while `write.paused` is on (a cutover is running); retry after it.
 
 ### Step 5: Test & Verify
 Verify the entire pipeline locally:
