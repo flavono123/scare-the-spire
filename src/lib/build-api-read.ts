@@ -13,7 +13,7 @@ import { DEFAULT_SITE_ORIGIN } from "@/lib/site-origin";
 const DEFAULT_BUILD_QUERY_TIMEOUT_MS = 30_000;
 
 export const BUILD_WITHOUT_API_ENV = "ALLOW_BUILD_WITHOUT_API";
-/** The name from before the reads moved to /api, still accepted: the deploy workflow sets it. */
+/** The name from before the reads moved to /api, still accepted (the deploy workflow maps an Actions variable of this name to ALLOW_BUILD_WITHOUT_API too). */
 export const BUILD_WITHOUT_API_ENV_ALIAS = "ALLOW_BUILD_WITHOUT_SUPABASE";
 
 /** Points the build's own data env at another deployment (a local `wrangler dev`, a spec server). */
