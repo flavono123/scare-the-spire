@@ -13,6 +13,13 @@
 조사 7개(댓글, 패치 페이지, 네비·피드, 장난감 상자 A·B, 역사 강의서·퍼즐상자, 신원·프로필·관리), 인프라 보고,
 DB 보고, 누락 검토다. 조사하면서 코드와 DB는 바꾸지 않았고 Supabase에 요청하지 않았다.
 
+2026-11-10 6단계(클라이언트 정리, [STEP6_PLAN.md](STEP6_PLAN.md)) 뒤: 이 지도가 적은 브라우저의 Supabase 호출은
+모두 사라졌다. `src/lib/supabase.ts`(supabase-js 클라이언트)와 `use-auth.ts`의 익명 가입·갱신, Realtime 채널 두 곳,
+화면마다의 legacy 읽기·쓰기, 패치 정적 클라이언트의 `/rest/v1`·`/auth/v1` 호출이 없다. 브라우저는 같은 출처
+`/api/read|me|write/*`와 `/api/auth/claim`만 부르고, 신원은 서명 쿠키다(Bearer 없음, 세션 갱신과 익명 가입은 claim이
+Worker에서 한다). 빌드는 Supabase를 읽지 않는다(5.2절). 3절의 표는 1~5단계 기록으로 남긴다. Worker 안의 Supabase
+어댑터, outbox 미러, sync는 7단계까지 남는다.
+
 표기:
 
 - 경로는 저장소 루트 기준이고 `파일:줄`로 적는다. 3절에서는 파일 제목이 링크다.
@@ -241,7 +248,7 @@ dev 관리)는 1단계 플래그가 없다. 플래그 이름은 plan 7.2절(plan
 | 읽기 | localStorage `sb-<ref>-auth-token`(`use-auth.ts:17,53`, `patch-comments-client.js:388-400`) |
 | 쓰기 | `/auth/v1/signup`(`use-auth.ts:29-31`, `patch-comments-client.js:477`). `/auth/v1/token` 갱신(`supabase.ts:20`의 자동 갱신, `patch-comments-client.js:463`) |
 | Realtime | 없음. `onAuthStateChange`는 로컬과 BroadcastChannel이다 |
-| 엔드포인트 | 1단계에는 없다. Auth는 브라우저에서 Supabase로 바로 간다. `/api/write/*`는 `Authorization: Bearer <access_token>`을 받는다. 토큰은 호출 직전에 `supabase.auth.getSession()`에서 꺼낸다. Worker는 검증만 하고 갱신하지 않는다. 401이면 클라이언트가 supabase-js로 갱신하고 한 번 다시 보낸다. 4단계에 `/api/auth/claim`이 생긴다 |
+| 엔드포인트 | 1단계에는 없다. Auth는 브라우저에서 Supabase로 바로 간다. `/api/write/*`는 `Authorization: Bearer <access_token>`을 받는다. 토큰은 호출 직전에 `supabase.auth.getSession()`에서 꺼낸다. Worker는 검증만 하고 갱신하지 않는다. 401이면 클라이언트가 supabase-js로 갱신하고 한 번 다시 보낸다. 4단계에 `/api/auth/claim`이 생긴다. 6단계 뒤: 브라우저는 Supabase Auth를 부르지 않는다. 저장된 `sb-<ref>-auth-token`을 읽어 `/api/auth/claim`에 한 번 보내고(access·refresh token), 갱신과 익명 가입은 claim이 Worker에서 한다. 그다음은 서명 쿠키만 쓴다 |
 | 신원 | - |
 | 메모 | `useAuth`는 공유 상태가 없다. 인스턴스마다 `getSession`과 구독을 따로 한다. 세션을 갱신하는 곳이 둘이라(supabase-js와 `patch-comments-client.js:434-485`) refresh token 회전이 겹칠 수 있다. 패치 클라이언트는 갱신이 실패하면 새로 가입해 uid를 덮어쓴다(`patch-comments-client.js:472-483`). 동시에 `ensureUser`를 부르면 익명 가입이 둘 생길 수 있다(`run-donation.ts:366-370` 주석) |
 
@@ -589,7 +596,7 @@ dev 관리)는 1단계 플래그가 없다. 플래그 이름은 plan 7.2절(plan
 |---|---|
 | 페이지 | 셸 패치 2개의 HTML(`patch-detail-page.tsx:843-849`). `patch:build`(`build-patch-worker.tsx:919,939`)와 `next build`(`src/app/(main)/patches/[version]/page.tsx:28`, `src/app/[gameLocale]/patches/[version]/page.tsx:34`) |
 | 읽기 | `transfigure_posts` 15개(`transfigure-data.ts:35`, `:52` **[추가]**). `colorful_philosopher_posts` 12개(`colorful-philosophers-gallery.ts:43`). 반응 합계(`:76`) |
-| 엔드포인트 | 없음. 3단계에 HTML 주입으로 바꾸고 6단계에 지운다(plan:257-258) |
+| 엔드포인트 | 없음. 3단계에 HTML 주입으로 바꾸고 6단계에 지운다(plan:257-258). 6단계 결과(결정 D1 B안): `next build`는 읽지 않고(Next 패치 라우트가 `reels="none"`), `patch:build`가 배포된 사이트의 `/api/read/toybox-feed?service=transfigure&sort=latest` 앞 15개와 `/api/read/colorful-philosophers/reel`, `/api/read/engagement?reactions=`를 굽는다(`src/lib/build-api-read.ts`) |
 | 메모 | 5.2절 |
 
 #### 32. dev 관리 화면
@@ -690,7 +697,7 @@ dev 관리)는 1단계 플래그가 없다. 플래그 이름은 plan 7.2절(plan
 
 ### 3.2 신원과 클라이언트
 
-[src/lib/supabase.ts](../../src/lib/supabase.ts) — 51개 파일이 import한다. `supabaseEnv`(`:8`), 재시도 끔(`:18`), `isCheckViolation`(`:11-13`).
+`src/lib/supabase.ts`(6단계에 지움) — 51개 파일이 import했다. `supabaseEnv`(`:8`), 재시도 끔(`:18`), `isCheckViolation`(`:11-13`).
 
 | 줄 | 함수 | 종류 | 대상 | 내용 | 신원 | 언제 |
 |---|---|---|---|---|---|---|
@@ -1146,6 +1153,7 @@ colorful_philosopher_reactions, favorite_tournament_plays는 user_id까지 누�
 | (없음) | - | `defragment_posts` | publication에 든 유일한 테이블이다(pub:2, `supabase/migrations/20260820043839_defragment_posts_realtime.sql:9-15`). 구독하던 채널은 e42cb181(2026-08-20)에서 지워졌다. 피드 RPC도 이 테이블을 읽지 않는다 |
 
 - 해제는 `use-community-stories.ts:183`, `use-toybox-feed.ts:135`의 `removeChannel`이다. HTTP 요청은 없다 **[추가]**.
+- 6단계 뒤: 두 채널은 대체 없이 지웠다(plan 5.4). CSP의 `wss://*.supabase.co`도 뺐다.
 - 정리: 지금의 Realtime은 연결만 쓰고 아무것도 갱신하지 않는다. plan은 1단계에 그대로 두고(plan:409) 3단계에
   60초 polling으로 바꾼다(plan:434). polling은 지금 없는 갱신과 요청을 새로 더한다. 이 문서는 `api` 모드에서
   채널을 열지 않는 안을 권하지만 plan을 바꾸는 일이라 결정이 필요하다(8.4절). 채널을 남기면 `api` 화면도 Realtime
@@ -1166,6 +1174,8 @@ colorful_philosopher_reactions, favorite_tournament_plays는 user_id까지 누�
 - 모듈 캐시가 프로세스마다라서 static generation 워커 수만큼 읽는다(`transfigure-data.ts:21`,
   `colorful-philosophers-gallery.ts:14`).
 - `src/lib/supabase.ts:20`은 Node에서 import될 때도 클라이언트를 만든다. 쓰기 전에는 요청이 없다.
+- 6단계 뒤: 위 읽기는 Supabase에 가지 않는다. 2.2절 31번의 6단계 결과를 보라. 운영 패치 빌드는 `/api`를 읽지 못하면
+  실패하고, 우회 변수는 `ALLOW_BUILD_WITHOUT_API`다(옛 이름 `ALLOW_BUILD_WITHOUT_SUPABASE`도 받음).
 
 ### 5.3 스크립트·테스트 전용
 
@@ -1314,7 +1324,8 @@ colorful_philosopher_reactions, favorite_tournament_plays는 user_id까지 누�
   vitest-pool-workers는 없다(`package.json:104-127`).
 - Playwright는 `playwright.config.ts:5-24` testMatch에 넣어야 한다. `*.supabase.co` route mock은 같은 출처 `/api`를
   보지 못한다. `api` 경로 시험은 `/api/*`를 mock한다. 서명을 확인하는 Worker는 가짜 HS256 토큰을 거절한다.
-- `pnpm dev`는 Worker가 없다(3000 프록시 → `next dev` 3001, `dev-patch-proxy.mjs:11-12,299-350,445-450`). `/api`도
+- (6단계 뒤에는 `pnpm dev`가 `/api`를 로컬 D1의 main Worker로 넘긴다. `scripts/d1-local-seed.ts`로 채운다.)
+  `pnpm dev`는 Worker가 없다(3000 프록시 → `next dev` 3001, `dev-patch-proxy.mjs:11-12,299-350,445-450`). `/api`도
   주입도 없다. Next route handler로 흉내 내거나(`src/app/api/link-preview/route.ts:1-10`) `/api`를 `wrangler dev`로
   넘긴다. 클라이언트는 플래그가 없으면 `legacy`다.
 
@@ -1325,6 +1336,8 @@ colorful_philosopher_reactions, favorite_tournament_plays는 user_id까지 누�
   패치(`patch-worker.ts:59,61`) 둘 다.
 - 같은 출처 `/api`는 `'self'`라 1단계에 바꿀 것이 없다. Supabase 항목은 6단계까지 남긴다(plan:469). Realtime을
   남기면 wss도 남는다.
+- 6단계 뒤: `connect-src 'self' https://cloudflareinsights.com https://www.youtube.com`. 두 파일을 같은 커밋에서
+  고쳤고 `security-headers.spec.ts`가 이 값을 고정한다. Report-Only는 그대로다.
 - 나중에 바꿀 때 두 파일이 같아야 한다(`security-headers.spec.ts:31-37`, CI·cf:assets·patch:build가 확인). 배포는
   두 Worker 모두다. testbed spec은 CSP 위반이 있으면 실패한다(`cloudflare-testbed.spec.ts:48-71`).
 

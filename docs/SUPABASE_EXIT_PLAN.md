@@ -17,6 +17,11 @@
 2026-11-05: 0단계를 마쳤다(7.3절 0단계의 결과). 같은 시기 다른 작업의 유의사항은
 [SUPABASE_EXIT_PARALLEL_WORK.md](SUPABASE_EXIT_PARALLEL_WORK.md)에 있다.
 
+2026-11-10: 운영은 5단계까지 마쳤다(모든 `source.<group>` = d1, 동기화 꺼짐, 쿠키 신원, 브라우저 직접 쓰기 닫힘.
+기록은 [history/2026-11-09.md](release/history/2026-11-09.md)). 6단계(클라이언트 정리)는 `refactor/supabase-exit`에서
+코드를 마쳤고 배포 전이다(7.3절 6단계의 구현). 계획과 조사는 [STEP6_PLAN.md](supabase-exit/STEP6_PLAN.md),
+[STEP6_INVENTORY.md](supabase-exit/STEP6_INVENTORY.md)에 있다.
+
 ## 결론
 
 - **이전할 곳**: Cloudflare D1(SQLite)과 지금 쓰는 main Worker의 같은 출처(same-origin) `/api/*` 경로,
@@ -256,8 +261,11 @@ DB당 500 MB, 계정 5 GB, Worker 호출당 쿼리 50개, 쿼리 30초. 한도�
 
 - 문의 내역(이메일 포함), 닉네임 풀, 활동 지표는 로컬 스크립트에서 `wrangler d1 execute --remote`로 다룬다.
   `/dev`는 지금처럼 운영 빌드에서 막아 둔다. 브라우저 쪽에는 secret 키를 쓰는 경로가 남지 않는다.
-- `next build`와 `patch:build`는 DB를 읽지 않는다. 글 데이터는 런타임 주입으로만 들어간다. 그러면 빌드가 DB
-  상태와 무관해지고, 샘플 글로 몰래 대체되는 문제도 사라진다.
+- 빌드는 Supabase를 읽지 않는다. `next build`는 아무 데이터도 읽지 않는다. `patch:build`는 셸 패치 릴(변형 최신
+  15개, 다채로운 철학자들 릴)만 배포된 사이트의 같은 출처 `/api`에서 빌드 때 굽는다(6단계 결정 D1 B안,
+  [STEP6_PLAN.md](supabase-exit/STEP6_PLAN.md) 4절). 패치 페이지는 hydrate하지 않는 정적 HTML이라 런타임 주입으로는
+  같은 화면을 만들 수 없기 때문이다. 운영 빌드는 그 `/api`를 읽지 못하면 실패하므로(`ALLOW_BUILD_WITHOUT_API=1`로
+  우회) 샘플 글로 몰래 대체되지 않는다.
 - [detail-shell-og.ts](../workers/detail-shell-og.ts)의 REST 호출은 D1 binding으로 바꾼다.
 - CSP `connect-src`에서 `*.supabase.co`를 뺀다([security-headers.ts](../workers/security-headers.ts)).
 
@@ -513,10 +521,38 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 
 - 클라이언트에서 `@supabase/supabase-js`와 `legacy` 경로를 지운다.
 - CSP `connect-src`에서 `*.supabase.co`를 뺀다. [detail-shell-og.ts](../workers/detail-shell-og.ts)의 REST 읽기를
-  D1 binding으로 바꾼다. `next build`와 `patch:build`는 DB를 읽지 않는다(5.7절).
+  D1 binding으로 바꾼다. 빌드는 Supabase를 읽지 않고, 패치 릴만 사이트 `/api`에서 굽는다(5.7절).
 - Worker 안의 Supabase 어댑터와 outbox 미러는 남긴다. 그래서 저장소는 여전히 플래그로 5단계 이전으로 돌아갈
   수 있다.
 - 넘어갈 조건: Supabase 로그에 운영 referer 요청이 0건이다.
+
+구현(2026-11-10, `refactor/supabase-exit`, 작업 묶음 WP0~WP-Z. [STEP6_PLAN.md](supabase-exit/STEP6_PLAN.md)):
+
+- 브라우저: `@supabase/supabase-js`(lock에서 패키지 8개)와 `src/lib/supabase.ts`, `src/lib/supabase-timeout.ts`를
+  지웠다. 모든 데이터 호출은 같은 출처 `/api/read|me|write/*`와 `/api/auth/claim`뿐이다. Worker의 legacy 신호(409
+  `surface_legacy`, 표식 헤더 없음, 다른 응답 버전)는 legacy로 가지 않고 지금의 "데이터베이스가 응답하지 않습니다"가
+  된다. Realtime 채널 두 곳은 대체 없이 지웠다(5.4절). `supabaseEnabled` 분기는 운영 빌드의 값(true)으로 접어
+  미리 그린 HTML이 같다.
+- 신원: 서명 쿠키만 쓰고 Bearer를 보내지 않는다. localStorage의 `sb-<ref>-auth-token`은 읽어서 claim에 한 번 보내고
+  지우지 않는다(5.3절, 7단계에 지움). 세션 갱신과 익명 가입은 claim이 Worker에서 한다.
+- 데이터 env: `src/lib/data-env.ts`의 `dataEnv`. 빌드 변수 이름 `NEXT_PUBLIC_SUPABASE_ENV`는 7단계까지 둔다.
+  패치 HTML 설정은 `{dataEnv}`만 담는다.
+- 빌드: `next build`는 읽지 않고, `patch:build`는 릴을 사이트 `/api`에서 굽는다(5.7절). CI 빌드 단계에는 Supabase URL과
+  키가 없다(main 배포 단계와 그 앞의 검증 단계만 받는다). `scripts/check-client-bundle-supabase.mjs`가 `cf:assets`와
+  `patch:build`에서 브라우저 자산의 Supabase 흔적(클라이언트, 호스트, `/rest/v1`·`/auth/v1`, 키 앞부분)을 막는다.
+- CSP: `connect-src 'self' https://cloudflareinsights.com https://www.youtube.com`. Report-Only는 그대로다.
+- OG: `workers/detail-shell-og.ts`가 D1을 읽는다. `DETAIL_SHELL_OG=d1`일 때만 켜지고 기본은 꺼짐이라 운영 응답이
+  지금과 같다.
+- 관리 도구: `/dev/admin`, `/dev/colorful-philosophers`, `worldcup:seed`, 패치 노트 이야기 다시 잇기가 쓰기 원본을
+  따른다(d1이면 D1과 outbox).
+- 로컬: `pnpm dev`와 `qa:mobile`은 로컬 D1의 main Worker로 `/api`를 넘긴다(`scripts/d1-local-seed.ts`).
+- Worker에 남은 것(7단계까지): Supabase 어댑터, outbox 미러, 2단계 sync 코드, `API_SUPABASE_*` 배포 변수, claim의
+  Supabase 익명 가입과 refresh, QA 쿠키, 409 legacy 응답. 새로 둔 것은 env 기본값 `API_IDENTITY_MODE_DEFAULT=cookie`다.
+- 되돌리기: 저장소 문제는 `source.<group>` = supabase(미러가 정상일 때). 클라이언트 버그는 두 Worker를 함께 이전
+  버전으로 되돌린다. `path.<group>` legacy, `identity.mode` token, `write.<group>` rls, `API_RUNTIME_FLAGS=off`는
+  클라이언트를 되돌리기 전에는 전면 중단이 되므로, 플래그 CLI가 `--old-client` 없이는 거절한다.
+- 남은 일: 병합 뒤 testbed 전체 확인(DNS로 Supabase를 막은 브라우저에서 `*.supabase.co` 요청 0, CSP 위반 0,
+  `/api` 409 0), 정기 배포(두 Worker 함께), 배포 뒤 넘어갈 조건 확인.
 
 #### 7단계: Supabase 퇴역
 

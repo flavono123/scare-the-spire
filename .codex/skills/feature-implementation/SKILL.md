@@ -36,9 +36,11 @@ resources, rich patch notes, mobile layout, animation, or QA.
   profile, History Course, and Compendium Bestiary routes. Keep `page.tsx`
   limited to Next.js-supported route exports and required route config; have
   base and `[gameLocale]` route entries import the shared module.
-- Preserve Combo's locale URLs and metadata. Read `/c-c-c-combo/[id]` records from
-  Supabase in the browser; do not add request-time Worker Supabase reads, full
-  Compendium joins, or large JSON parsing for them.
+- Preserve Combo's locale URLs and metadata. Read `/c-c-c-combo/[id]` records in
+  the browser through the same-origin `/api` (`src/lib/toybox-api.ts`); since
+  Supabase exit step 6 the browser never calls Supabase. Do not render records
+  into the page at request time in the Worker, and do not add full Compendium
+  joins or large JSON parsing for them.
 - Keep `/patches*` and `/_patches*` owned by the separate static patch Worker.
   Generate patch HTML, CSS, JavaScript, and resource indexes ahead of time
   instead of moving patch work into the main Worker request path.
@@ -240,8 +242,8 @@ identity field.
   Thread keys stay in `src/lib/comment-threads.ts`.
 - Do not call `get_engagement_counts` or `count(*)` to hydrate a Toy Box index.
   That RPC is for bounded Codex tile overlays and similar non-feed surfaces.
-- Do not add request-time Worker Supabase reads or full-table joins for these
-  counts.
+- The feed page from `/api/read/toybox-feed` carries these counts. Do not add
+  request-time Worker reads into the page HTML or full-table joins for them.
 - Codex library tile overlays are a separate surface; do not casually change
   them when updating community index cards.
 
@@ -320,12 +322,13 @@ client list and does not call `get_toybox_feed`.
   조각모음 write panel; use standalone insert helpers. Do not delete original
   posts from 조각모음.
 - History Course is not a feed source or 조각모음 write type.
-- If the RPC is missing (`PGRST202`), fall back to a latest-only keyset on that
-  service's own table. Do not emulate recommended/comments sort in the browser
-  by loading the whole env. 조각모음 has no single-table fallback; a missing
-  `get_defragment_feed` returns an empty page instead of native `defragment_posts`.
-- Keep these RPCs browser → Supabase. Do not add request-time Worker reads,
-  markdown rendering, or full Compendium joins for the feeds.
+- The browser reads these feeds only from the same-origin `/api`
+  (`/api/read/toybox-feed`, `/api/read/defragment-feed`, `src/lib/toybox-api.ts`),
+  which answers the `get_toybox_feed` / `get_defragment_feed_v2` rows; it never
+  calls Supabase or the RPCs (step 6). A failed read is the shared unavailable
+  state. Do not emulate recommended/comments sort in the browser by loading the
+  whole env. Do not add request-time Worker reads into the page HTML, markdown
+  rendering, or full Compendium joins for the feeds.
 
 ### Toy Box content widths
 
