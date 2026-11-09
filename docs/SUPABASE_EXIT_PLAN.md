@@ -472,7 +472,10 @@ SJC 1,200, HKG 908, NRT 866, LAX 491이고, ICN은 114건이다. 가장 바쁜 S
 - 비용(testbed, `wrangler tail`·`d1 execute`): 목록 한 번 D1 rows read 201(+플래그 19, isolate당 30초에 한 번), 답 약 540 KB
   (Supabase 원문 포함 약 5.5 MB). Worker CPU 중간값: D1 목록 10 ms(9~18), 고르기 5 ms, 상세 2 ms, R3r 원문 277 KB 4 ms
   (3~10), 48 KB 2 ms. 같은 화면의 Supabase 쪽(testbed는 그림자 100%)은 목록 16 ms, 상세 4 ms, R3r 277 KB 10 ms(JSON 파싱).
-  D1 목록은 Free 10 ms 한도에 닿아 있다(어댑터 결과 역직렬화와 답 조립). 줄이려면 SQL이 JSON 텍스트를 만들게 하는 길이 있다.
+  D1 목록은 Free 10 ms 한도에 닿아 있어, 행마다 JSON 텍스트를 SQLite가 만들게 바꿨다(R1j·R2j, 답은 같은 값). 바꾼 뒤
+  (n=20) 목록 8 ms(5~18), 고르기 3 ms, 상세 2 ms, R3r 277 KB 5 ms. 목록은 D1에서 Worker를 지나는 바이트(약 540 KB, 그중
+  `game_elements` 약 390 KB)에 비례해 100 KB에 약 1.4 ms가 들어, 같은 답으로는 5 ms 아래로 내려가지 않는다. 더 줄이려면 답
+  모양을 바꿔야 한다(예: `game_elements`를 `type:id` 같은 짧은 꼴로 보내고 클라이언트가 펼치기, 또는 목록과 따로 받기).
 
 #### 4단계: 신원과 쓰기 검증을 Worker로(원본은 여전히 Supabase)
 
