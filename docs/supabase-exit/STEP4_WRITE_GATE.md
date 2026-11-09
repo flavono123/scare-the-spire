@@ -296,3 +296,26 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
 - 쓰기 경로 안에서 사용자 토큰으로 읽는 호출(GET·HEAD)은 worker 방식에서 500 `gate_unsupported`다. 2단계의
   읽은 직후 반영(`workers/sync/read-after-write.ts`)은 service 키로 따로 읽으므로 걸리지 않는다. 합칠 때 쓰기 핸들러에
   토큰을 실은 읽기가 새로 생기지 않았는지 본다.
+
+## 11. testbed 확인(2026-11-09, `step4/prereqs`)
+
+- 배포: `4d07b15b`(refactor/supabase-exit `1557e8b3`까지 합침), main Worker `ffda7ed8-b692-4dcb-a034-3450c04dc26c`,
+  2026-11-09 00:00 UTC(09:00 KST). 00:03:21 UTC에 다른 작업트리의 배포(`cf6289a1`)가 덮었다. 아래 쓰기·읽기 확인은
+  `ffda7ed8`이 받은 요청이다(wrangler tail의 `scriptVersion`으로 확인). 앞선 배포 `a5416ae4`(23:23 UTC)는 23:26 UTC에
+  덮였고, 그때의 런 공유 한 번만 그 판이 받았다. D1 `0007`은 23:00 UTC에 `slseoun-testbed`에 적용했다.
+- 플래그: `identity.mode = cookie`(23:24 UTC), `write.history-runs`·`toybox-feed`·`comments` worker(23:25~23:28),
+  `stories`·`puzzlebox`·`contact`·`profile` worker(00:01). 브라우저(Playwright, `*.supabase.co` 차단, 쿠키 신원 하나
+  `7a61af7a-…`)로 그룹마다 쓰고 Supabase 행을 service 키로 확인했다(development).
+  - 역사 강의서 https://scare-the-spire-testbed.flavono123.workers.dev/history-course 에서 런 두 개(새 것 하나, 이미 공유된
+    것 하나)를 "공유"로 올림: 묶음 409 `single_run_required` → 공유 두 번(`inserted: []`, `["11ea1ntwe8c58njp"]`), 화면은
+    지금과 같은 "1개 공유 · 1개 이미 공유됨". `runs` 행의 `donor_user_id`가 쿠키 uid이고 `raw`가 파일과 바이트까지 같다.
+  - 댓글: https://scare-the-spire-testbed.flavono123.workers.dev/compendium/cards/abrasive 작성 201, `comments` 행 확인.
+  - 장난감 상자: 서류 폭풍 글 807 KB 작성·삭제, 이거 아님 저거? 좋아요. 이야기 작성·삭제, 퍼즐상자 런 제출(행 확인),
+    문의(행 확인, `status new`), 문의 읽음 200.
+  - 개인 읽기(쿠키만): 문의함 점, 내 문의(방금 쓴 것), 내 런(둘), 임시 저장, 참여(댓글 좋아요 묶어 읽기 포함) 모두 200.
+    프로필 통계와 퍼즐상자 내 순위는 400 `invalid`(PGRST202): 5절 3번 마이그레이션 적용 전이라 예상대로다.
+- CPU(wrangler tail): 런 공유(28 KB 원문) 4 ms·7 ms, 묶음 409는 3~4 ms. 서류 폭풍 글 807 KB 작성 44 ms(같은 게이트를 가진
+  다른 판에서 24 ms). 모두 outcome `ok`이지만 큰 글은 Free 10 ms를 넘는다(9절 5번의 예상대로).
+- 키 폐기는 testbed에서 끝까지 보지 못했다: 버리는 키를 넣고(`add`) 폐기한(`revoke`) 시각에 Worker가 이미 다른 판이었다.
+  testbed D1에는 그 키가 폐기된 행으로 남아 있다(서명한 개인 키는 지웠다). 로컬 spec이 D1 읽기 주기, 폐기, claim·bearer
+  거절을 본다.
