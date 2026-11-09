@@ -133,10 +133,28 @@ async function main() {
   // --- Colorful philosophers: a post -------------------------------------------
   // The id column is a uuid: before step 6 these went to Supabase, PostgREST failed on the cast
   // and the page said the database was not answering. Now the same, without a request.
-  for (const id of ["not-a-uuid", "__id__", "1", `${POST_ID}x`, `${POST_ID.slice(0, -1)}g`]) {
+  const bare = POST_ID.replaceAll("-", "");
+  for (const id of [
+    "not-a-uuid", "__id__", "1", `${POST_ID}x`, `${POST_ID.slice(0, -1)}g`,
+    `{${POST_ID}`, `${POST_ID}}`, `[${POST_ID}]`, ` ${POST_ID}`, `${POST_ID} `,
+    `${bare}-`, `-${bare}`, `${bare.slice(0, 3)}-${bare.slice(3)}`, `${bare.slice(0, 4)}--${bare.slice(4)}`,
+    bare.slice(0, -1), `${bare}0`,
+  ]) {
     const { result, made } = await withAnswer(() => marked({ v: 1, post: postRow }), () => fetchColorfulPhilosopherPost(id));
     assert.ok(unavailable(result), `post id "${id}" is unavailable`);
     assert.equal(made.length, 0, `post id "${id}" makes no request`);
+  }
+  // Other forms Postgres's uuid input accepts matched the row on the direct read: they are read
+  // as the canonical uuid.
+  for (const id of [
+    bare, bare.toUpperCase(), `{${POST_ID}}`, `{${bare}}`,
+    bare.replace(/(.{4})(?=.)/g, "$1-"), `${bare.slice(0, 8)}-${bare.slice(8, 16)}-${bare.slice(16, 24)}-${bare.slice(24)}`,
+    `{${POST_ID.toUpperCase()}}`,
+  ]) {
+    const { result, made } = await withAnswer(() => marked({ v: 1, post: postRow }), () => fetchColorfulPhilosopherPost(id));
+    assert.equal(result.status, "fulfilled", `post id "${id}" is read`);
+    assert.equal(result.status === "fulfilled" ? result.value?.id : null, POST_ID);
+    assert.deepEqual(made.map((call) => `${call.method} ${call.url}`), [`GET /api/read/colorful-philosophers/post?id=${POST_ID}`], `post id "${id}"`);
   }
 
   {

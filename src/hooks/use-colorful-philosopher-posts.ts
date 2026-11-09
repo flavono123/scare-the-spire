@@ -55,16 +55,45 @@ export async function fetchColorfulPhilosopherWeek(env: string = dataEnv): Promi
   };
 }
 
+const HEX_PAIR = /^[0-9a-fA-F]{2}$/;
+
 /**
- * One post, or null when there is none. An id that is not a uuid is unavailable without a
- * request: the posts' id column is a uuid, so reading it failed and the page said the
- * database was not answering (STEP6_PLAN WP-D 2). Throws ApiError or ApiUnavailableError.
+ * The canonical uuid for an id written in another form Postgres's uuid input accepts (braces,
+ * hyphens left out or after any group of four digits; string_to_uuid in Postgres's uuid.c),
+ * or null when Postgres rejects it.
+ */
+function postgresUuid(value: string): string | null {
+  let rest = value;
+  const braces = rest.startsWith("{");
+  if (braces) rest = rest.slice(1);
+  let hex = "";
+  for (let byte = 0; byte < 16; byte += 1) {
+    const pair = rest.slice(0, 2);
+    if (!HEX_PAIR.test(pair)) return null;
+    hex += pair.toLowerCase();
+    rest = rest.slice(2);
+    if (rest.startsWith("-") && byte % 2 === 1 && byte < 15) rest = rest.slice(1);
+  }
+  if (braces) {
+    if (!rest.startsWith("}")) return null;
+    rest = rest.slice(1);
+  }
+  if (rest !== "") return null;
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+/**
+ * One post, or null when there is none. An id in another form of uuid is read as its canonical
+ * form, as the direct Supabase read matched it against the uuid id column. Any other id is
+ * unavailable without a request: that read failed on the cast and the page said the database
+ * was not answering (STEP6_PLAN WP-D 2). Throws ApiError or ApiUnavailableError.
  */
 export async function fetchColorfulPhilosopherPost(postId: string): Promise<ColorfulPhilosopherPost | null> {
-  if (!isUuid(postId)) throw new ApiUnavailableError(0, "not_uuid");
+  const id = isUuid(postId) ? postId : postgresUuid(postId);
+  if (!id) throw new ApiUnavailableError(0, "not_uuid");
   const body = await apiFetch<{ v?: number; post?: PostRow | null }>(
     "colorful-philosophers",
-    `/api/read/colorful-philosophers/post?id=${encodeURIComponent(postId)}`,
+    `/api/read/colorful-philosophers/post?id=${encodeURIComponent(id)}`,
   );
   requireApiVersion("colorful-philosophers", body);
   return body.post ? colorfulPhilosopherPostFromRow(body.post) : null;
