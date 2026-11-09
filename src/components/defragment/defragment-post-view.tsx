@@ -31,7 +31,6 @@ import {
 } from "@/lib/defragment";
 import { localizeHrefWithGameLocale, type GameLocale } from "@/lib/i18n";
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
-import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { formatTimeAgo } from "@/lib/relative-time";
@@ -53,8 +52,8 @@ export function DefragmentPostView({
   const indexHref = localizeHrefWithGameLocale(DEFRAGMENT_HREF, serviceLocale, gameLocale);
   const { userId, ready, ensureUser } = useAuth();
   const [post, setPost] = useState<DefragmentPost | null>(null);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
   const [copied, setCopied] = useState(false);
   const [editing, setEditing] = useState(false);
   const { entities } = useCommentEntities(undefined, { enabled: Boolean(post) });
@@ -67,7 +66,6 @@ export function DefragmentPostView({
   const isAuthor = Boolean(userId && post && post.user_id === userId);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
     fetchDefragmentPost(postId)
       .then((next) => {
