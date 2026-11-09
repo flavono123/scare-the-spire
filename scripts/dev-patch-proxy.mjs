@@ -3,7 +3,7 @@ import net from "node:net";
 import os from "node:os";
 import path from "node:path";
 import fs from "node:fs/promises";
-import { createReadStream, rmSync, watch } from "node:fs";
+import { createReadStream, existsSync, mkdirSync, rmSync, watch } from "node:fs";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
 import { BUILD_RECORD_FILE } from "./build-record.mjs";
 
@@ -13,6 +13,14 @@ const preferredMainPort = Number(process.env.MAIN_DEV_PORT ?? 3001);
 let proxyPort = preferredProxyPort;
 let mainPort = preferredMainPort;
 const patchAssetsDir = path.join(root, ".patch-worker/assets");
+// Step 6 (docs/supabase-exit/STEP6_PLAN.md WP-Q): the browser's data goes to the same-origin /api
+// only, and next dev has none of those routes. They go to a local main Worker (`wrangler dev
+// --local`) on the D1 that scripts/d1-local-seed.ts copies from the testbed, with the env file it
+// writes (keep the path equal to LOCAL_API_ENV_FILE there).
+const localApiPort = Number(process.env.LOCAL_API_PORT ?? 8787);
+const localApiEnvFile = path.join(root, ".wrangler/local-api/worker.env");
+// The Worker serves only /api here: an empty asset directory keeps wrangler from watching .cloudflare/assets.
+const localApiAssetsDir = path.join(root, ".wrangler/local-api/assets");
 const portReclaimTimeoutMs = Number(process.env.DEV_PORT_RECLAIM_TIMEOUT_MS ?? 4000);
 const portSearchLimit = 50;
 
@@ -351,11 +359,33 @@ async function servePatchAsset(req, res, pathname) {
   }
 }
 
+/**
+ * The routes the main Worker's API router owns (workers/api/router.ts isApiRouterPath). Every other
+ * /api path (/api/link-preview, /api/dev/*) stays on next dev.
+ */
+function isLocalApiPath(pathname) {
+  return pathname === "/api/auth/claim"
+    || ["/api/read/", "/api/me/", "/api/write/"].some((prefix) => pathname.startsWith(prefix));
+}
+
 function proxyToMain(req, res) {
+  proxyRequest(req, res, mainPort, "Main dev server");
+}
+
+/**
+ * The Host header goes through unchanged, so the Worker sees the page's origin (its same-origin write
+ * check) and sets its cookies for it. A failure is a 502 without the API marker header, which the
+ * browser shows as its "database is not answering" state.
+ */
+function proxyToLocalApi(req, res) {
+  proxyRequest(req, res, localApiPort, "Local API Worker");
+}
+
+function proxyRequest(req, res, port, label) {
   const upstream = http.request(
     {
       hostname: "127.0.0.1",
-      port: mainPort,
+      port,
       path: req.url,
       method: req.method,
       headers: {
@@ -369,7 +399,7 @@ function proxyToMain(req, res) {
   );
   upstream.on("error", (error) => {
     res.writeHead(502, { "content-type": "text/plain; charset=utf-8" });
-    res.end(`Main dev server unavailable: ${error.message}`);
+    res.end(`${label} unavailable: ${error.message}`);
   });
   req.pipe(upstream);
 }
@@ -443,6 +473,10 @@ const mainRetryWindowMs = 20_000;
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url ?? "/", `http://${req.headers.host ?? `localhost:${proxyPort}`}`);
+  if (isLocalApiPath(url.pathname)) {
+    proxyToLocalApi(req, res);
+    return;
+  }
   if (isPatchRoute(url.pathname)) {
     void servePatchAsset(req, res, url.pathname);
     return;
@@ -512,8 +546,73 @@ async function onMainDevExit(code, signal, startedAt) {
   shutdown(code ?? 1);
 }
 
+let localApiWorker = null;
+
+/** A Worker API router answers on the local port (an unknown route is its own 409 with the marker). */
+async function localApiAnswers() {
+  try {
+    const response = await fetch(`http://127.0.0.1:${localApiPort}/api/read/local-dev-probe`, {
+      signal: AbortSignal.timeout(1500),
+    });
+    void response.body?.cancel().catch(() => undefined);
+    return response.headers.get("x-slseoun-api") === "1";
+  } catch {
+    return false;
+  }
+}
+
+async function startLocalApiWorker() {
+  if (await localApiAnswers()) {
+    console.log(`Reusing the local API Worker on http://127.0.0.1:${localApiPort}`);
+    return;
+  }
+  if (!existsSync(localApiEnvFile)) {
+    console.log(
+      "No local API Worker: community screens show \"database is not answering\" until "
+        + "`pnpm exec tsx scripts/d1-local-seed.ts` copies the testbed D1 here; then restart pnpm dev.",
+    );
+    return;
+  }
+  mkdirSync(localApiAssetsDir, { recursive: true });
+  const child = spawn("pnpm", [
+    "exec",
+    "wrangler",
+    "dev",
+    "--config",
+    "wrangler.jsonc",
+    "--local",
+    "--ip",
+    "127.0.0.1",
+    "--port",
+    String(localApiPort),
+    "--env-file",
+    localApiEnvFile,
+    "--assets",
+    localApiAssetsDir,
+    "--log-level",
+    "warn",
+    "--show-interactive-dev-session=false",
+  ], {
+    cwd: root,
+    stdio: ["ignore", "inherit", "inherit"],
+    env: { ...process.env, WRANGLER_WRITE_LOGS: "0" },
+  });
+  localApiWorker = child;
+  child.on("error", (error) => {
+    console.error(`Failed to start the local API Worker: ${error.message}`);
+  });
+  child.on("exit", (code, signal) => {
+    if (localApiWorker === child) localApiWorker = null;
+    if (!shuttingDown) {
+      console.error(`Local API Worker exited (${signal ?? code ?? "unknown"}); /api answers 502 until pnpm dev restarts`);
+    }
+  });
+  console.log(`Local API Worker (wrangler dev --local, seeded D1) on http://127.0.0.1:${localApiPort}`);
+}
+
 void (async () => {
   try {
+    void startLocalApiWorker();
     const proxyHold = await allocateHeldPort(preferredProxyPort, new Set(), "0.0.0.0");
     const mainHold = await allocateHeldPort(
       preferredMainPort,
@@ -534,19 +633,19 @@ void (async () => {
 
 server.on("upgrade", proxyUpgradeToMain);
 
-function killMainDev(signal) {
-  if (!mainDev?.pid) return;
-  killProcessTree(mainDev.pid, signal);
+function killChildren(signal) {
+  if (mainDev?.pid) killProcessTree(mainDev.pid, signal);
+  if (localApiWorker?.pid) killProcessTree(localApiWorker.pid, signal);
 }
 
 function shutdown(exitCode = 0) {
   if (shuttingDown) return;
   shuttingDown = true;
   server.close();
-  killMainDev("SIGTERM");
+  killChildren("SIGTERM");
   process.exitCode = exitCode;
   setTimeout(() => {
-    killMainDev("SIGKILL");
+    killChildren("SIGKILL");
     process.exit(exitCode);
   }, 1500).unref();
 }
