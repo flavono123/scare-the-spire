@@ -196,6 +196,13 @@ Supabase 프로젝트는 testbed와 운영이 하나를 같이 쓴다. 이 마�
     legacy였다. 쿠키가 아예 없을 때만(그룹을 강등한 때가 아니라) 빌드 시점 `NEXT_PUBLIC_API_PATH_DEFAULT`(같은 값)를
     따른다(`src/lib/runtime-flags.ts`, 패치 페이지의 esbuild 묶음과 `patch-comments-client.js`는 페이지 설정
     `apiPathDefault`). Worker가 legacy로 답하면 그 페이지에서 그룹을 강등하므로 legacy로 되돌리기는 쿠키 없이도 된다.
+  - 단 쓰기는 다르다(2026-11-09 리뷰 반영). 빌드 기본값이 api인 묶음에서, 라우터가 답하지 않은 쓰기(Cloudflare 1102 같은
+    플랫폼 오류 페이지, 표시 헤더 없음)와 legacy 신호(409 `surface_legacy`)를 받은 쓰기는 장애(`ApiUnavailableError`,
+    지금 api 경로가 보이는 오류)로 끝난다. 그룹을 강등하지 않고 legacy로 다시 보내지도 않는다(`writeMayGoLegacy`는 거짓).
+    닫은 뒤 legacy 쓰기는 실패할 뿐이고, 강등되면 그 페이지의 다음 쓰기가 모두 닫힌 길로 가기 때문이다. 읽기는 지금처럼
+    강등한다(닫은 뒤에도 Supabase 직접 읽기는 된다). `src/lib/api-client.ts`와 `patch-comments-client.js`가 같은 규칙이다.
+    그래서 직접 쓰기를 닫은 뒤의 경로 되돌리기(`path.<group> = legacy`)는 쓰기에 듣지 않는다. 쓰기까지 되돌리려면
+    `restore_direct_writes.sql` 뒤에 빌드 기본값을 뺀 판을 배포한다.
   - 배포: GitHub Actions와 `run-cloudflare-testbed.mjs`는 `NEXT_PUBLIC_API_PATH_DEFAULT`를 그대로 넘긴다(없으면 legacy).
     두 값 모두 아직 넣지 않았다. 닫기 전에 Worker `--var API_PATH_DEFAULT:api`와 빌드 변수 `api`를 함께 배포한다.
 

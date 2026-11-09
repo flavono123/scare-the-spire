@@ -1573,6 +1573,13 @@
     }
   }
 
+  // Once the build default is api the direct writes are closed: a write the router did not answer, or
+  // answered with a legacy signal, is an outage that never demotes the group and is never resent on
+  // legacy (writesStayOnApi in src/lib/api-client.ts). Reads keep today's demotion.
+  function writesStayOnApi(method) {
+    return method !== "GET" && defaultSurfacePath() === "api";
+  }
+
   async function apiRequestOnce(path, { method = "GET", token, body, group = "comments" } = {}) {
     const headers = { Accept: "application/json" };
     if (body !== undefined) headers["Content-Type"] = "application/json";
@@ -1594,12 +1601,14 @@
         throw fail({ code: "unavailable" });
       }
       if (response.headers.get(API_MARKER_HEADER) !== "1") {
-        slseounRuntime().demoted.add(group);
         void response.body?.cancel().catch(() => undefined);
+        if (writesStayOnApi(method)) throw fail({ code: "unavailable", status: response.status });
+        slseounRuntime().demoted.add(group);
         throw fail({ legacy: true, processed: method !== "GET" && response.status !== 404 && response.status !== 405, status: response.status });
       }
       const parsed = await response.json().catch(() => null);
       if (response.status === 409 && parsed?.error === "surface_legacy") {
+        if (writesStayOnApi(method)) throw fail({ code: "unavailable", status: 409 });
         slseounRuntime().demoted.add(group);
         throw fail({ legacy: true, processed: false, status: 409 });
       }
