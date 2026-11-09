@@ -10,11 +10,6 @@ import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { metadataRecordId } from "@/lib/static-detail-shell";
-import {
-  toyboxResourceOgImageUrl,
-  truncateOgTitle,
-} from "@/lib/toybox-post-og";
-import { getThisOrThatPostOgFields } from "@/lib/toybox-post-og-fields";
 import { serviceMessages } from "@/messages/service";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 
@@ -31,27 +26,14 @@ export async function generateThisOrThatPostMetadata(
     serviceDescription: copy.subtitle,
   });
   const recordId = metadataRecordId(id);
-  const fallback = getServiceOgMetadata({
+  // Only the shell's metadata: a record's own fields are the main Worker's job
+  // (workers/detail-shell-og.ts, on with DETAIL_SHELL_OG=d1), not the build's.
+  return getServiceOgMetadata({
     serviceLocale,
     title: gameCopy.title,
     description,
     image: THIS_OR_THAT_PAGE_OG_IMAGE,
     canonicalPath: recordId ? `/this-or-that/${recordId}` : undefined,
-  });
-  if (!recordId) return fallback;
-
-  const fields = await getThisOrThatPostOgFields(recordId);
-  if (!fields) return fallback;
-  const title = truncateOgTitle(fields.reason) || gameCopy.title;
-  const imageUrl = toyboxResourceOgImageUrl(fields.leftType, fields.leftId);
-  return getServiceOgMetadata({
-    serviceLocale,
-    title,
-    description,
-    image: imageUrl
-      ? { url: imageUrl, alt: title }
-      : THIS_OR_THAT_PAGE_OG_IMAGE,
-    canonicalPath: `/this-or-that/${recordId}`,
   });
 }
 

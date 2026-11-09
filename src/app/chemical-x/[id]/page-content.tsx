@@ -10,11 +10,6 @@ import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { metadataRecordId } from "@/lib/static-detail-shell";
-import {
-  chemicalPostOgImage,
-  truncateOgTitle,
-} from "@/lib/toybox-post-og";
-import { getChemicalPostOgFields } from "@/lib/toybox-post-og-fields";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
@@ -30,23 +25,14 @@ export async function generateChemicalXPostMetadata(
     serviceDescription: serviceMessages[serviceLocale].chemicalX.subtitle,
   });
   const recordId = metadataRecordId(id);
-  const fallback = getServiceOgMetadata({
+  // Only the shell's metadata: a record's own fields are the main Worker's job
+  // (workers/detail-shell-og.ts, on with DETAIL_SHELL_OG=d1), not the build's.
+  return getServiceOgMetadata({
     serviceLocale,
     title: copy.chemicalXTitle,
     description,
     image: CHEMICAL_X_PAGE_OG_IMAGE,
     canonicalPath: recordId ? `/chemical-x/${recordId}` : undefined,
-  });
-  if (!recordId) return fallback;
-
-  const fields = await getChemicalPostOgFields(recordId);
-  if (!fields) return fallback;
-  return getServiceOgMetadata({
-    serviceLocale,
-    title: truncateOgTitle(fields.contentText) || copy.chemicalXTitle,
-    description,
-    image: chemicalPostOgImage(fields.content),
-    canonicalPath: `/chemical-x/${recordId}`,
   });
 }
 
