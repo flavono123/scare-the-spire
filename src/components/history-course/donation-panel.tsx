@@ -10,7 +10,6 @@ import {
   isRunDonated,
 } from "@/lib/run-donation";
 import { loadRun } from "@/lib/run-store";
-import { supabaseEnabled } from "@/lib/supabase";
 import type { ReplayRun } from "@/lib/sts2-run-replay";
 import { TOYBOX_WIDE_MAX_CLASS } from "@/lib/toybox-layout";
 import { cn } from "@/lib/utils";
@@ -29,7 +28,7 @@ interface Props {
 export function DonationPanel({ runId, run, raw, source, embedded = false }: Props) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.donation;
   const { userId, ready, ensureUser } = useAuth();
-  // We know it's donated if we loaded it from Supabase. Otherwise we
+  // We know it's donated if we loaded it from the shared runs. Otherwise we
   // don't know yet — null means "checking", false/true after lookup.
   const [donated, setDonated] = useState<boolean | null>(
     source === "donated" ? true : null,
@@ -70,7 +69,7 @@ export function DonationPanel({ runId, run, raw, source, embedded = false }: Pro
     };
   }, [donated, runId, userId]);
 
-  if (!supabaseEnabled || donated === null) return null;
+  if (donated === null) return null;
 
   const url =
     typeof window !== "undefined"
