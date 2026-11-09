@@ -27,7 +27,7 @@ import { SYNC_FLAG_KEY } from "../workers/sync/sync-env";
 import { D1_ADAPTERS } from "../workers/api/d1-adapters";
 import { answerText } from "../workers/api/d1-adapters/rows";
 import type { D1Database, D1PreparedStatement, D1Result } from "../workers/api/d1";
-import { d1ReadAnswer, D1_READ_FALLBACK_MS, resetD1ReadForTest } from "../workers/api/d1-read";
+import { d1ReadAnswer, D1_READ_FALLBACK_MS } from "../workers/api/d1-read";
 import { flagValues, readStoreFor, resetFlagsForTest } from "../workers/api/flags";
 import { resetJwtCachesForTest } from "../workers/api/jwt";
 import { createApiRouter, type ApiEnv } from "../workers/api/router";
@@ -169,7 +169,6 @@ async function main() {
       sqlite.prepare("INSERT INTO runtime_flags (key, value, updated_at, note) VALUES (?1, ?2, ?3, 'spec')").run(key, value, new Date().toISOString());
     }
     resetFlagsForTest();
-    resetD1ReadForTest();
     resetNavForTest();
   }
 
@@ -416,14 +415,35 @@ async function main() {
     resetShadowForTest();
   });
 
-  await check("router: nav on D1 keeps public max-age=30 and answers from isolate memory for 30 s", async () => {
+  await check("router: nav on D1 keeps the shared api_cache snapshot, refreshed from D1 (one row per page view, not 10 statements)", async () => {
+    sqlite.exec("DELETE FROM api_cache");
     setFlags({ [readFlagKey("nav")]: "d1" });
     const first = await get("/api/read/nav");
+    assert.equal(first.response.status, 200);
     assert.equal(first.response.headers.get("cache-control"), "public, max-age=30");
-    assert.ok(first.statements.some((sql) => sql.includes("FROM comments")), "the first read goes to D1");
+    assert.deepEqual(first.supabaseRequests, [], "the snapshot is built from D1");
+    assert.ok(first.statements.some((sql) => sql.includes("FROM comments")), "the first fill reads D1 (E8, F4, E9)");
+    const row = sqlite.prepare("SELECT body FROM api_cache WHERE key = 'nav'").get() as { body: string };
+    assert.deepEqual(JSON.parse(row.body), JSON.parse(first.body), "the shared row holds the snapshot");
     const second = await get("/api/read/nav");
     assert.equal(second.body, first.body);
-    assert.ok(!second.statements.some((sql) => sql.includes("FROM comments")), "the second one comes from memory");
+    assert.ok(!second.statements.some((sql) => sql.includes("FROM comments")), "the isolate memory answers next");
+    resetNavForTest();
+    const another = await get("/api/read/nav");
+    assert.equal(another.body, first.body, "another isolate reads the shared row");
+    assert.ok(!another.statements.some((sql) => sql.includes("FROM comments")), "no D1 adapter read while the row is fresh");
+    // A D1 failure refreshes from Supabase while Supabase is the source (one log line).
+    sqlite.exec("DELETE FROM api_cache");
+    resetNavForTest();
+    d1.mode = "fail";
+    try {
+      const { value, lines } = await logged(() => get("/api/read/nav"));
+      assert.equal(value.response.status, 200);
+      assert.ok(value.supabaseRequests.length > 0, "the Supabase reads built it");
+      assert.deepEqual(lines.filter((line) => line.startsWith("api d1read")), ["api d1read read.nav fallback"]);
+    } finally {
+      d1.mode = "ok";
+    }
   });
 
   await check("router: the QA path override uses this isolate's last flags read for the read store", async () => {
