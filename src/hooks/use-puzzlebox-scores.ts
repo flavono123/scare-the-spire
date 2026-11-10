@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiFetch, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
-import { apiFetchAsUser, currentAccessToken } from "@/lib/api-session";
+import { ApiError, apiFetch, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
+import { claimedUid, identityCookieMode, storedSupabaseIdentity } from "@/lib/api-identity";
+import { apiFetchAsUser } from "@/lib/api-session";
 import { encodePuzzleboxBoards } from "@/lib/puzzlebox-api-rules";
 import { surfacePath } from "@/lib/runtime-flags";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
@@ -180,7 +181,17 @@ async function hasSession(): Promise<boolean> {
 
 type LoadState<T> = { data: T | null; loading: boolean; failed: boolean };
 
-/** One page of ten rows: a board's, or the game's totals when `board` is null. */
+/** Whether this browser already holds an identity the /api/me read can use, judged without asking Supabase. */
+function hasStoredIdentity(): boolean {
+  return (identityCookieMode() && claimedUid() !== null) || storedSupabaseIdentity() !== null;
+}
+
+/**
+ * One page of ten rows: a board's, or the game's totals when `board` is null.
+ *
+ * The state remembers which page it holds. Moving to another board, game or page reads as
+ * loading at once, instead of keeping the last page on screen until the answer comes.
+ */
 export function usePuzzleboxLeaderboard(input: {
   game: PuzzleboxGame;
   boards: PuzzleboxBoards;
@@ -190,29 +201,31 @@ export function usePuzzleboxLeaderboard(input: {
 }): LoadState<PuzzleboxLeaderboard> {
   const { game, boards, board, offset, aroundMe } = input;
   const boardsKey = JSON.stringify(boards);
-  const [state, setState] = useState<LoadState<PuzzleboxLeaderboard>>({ data: null, loading: true, failed: false });
+  const cacheKey = `${supabaseEnv}:${game}:${board ?? "total"}:${aroundMe ? "me" : offset}`;
+  const [state, setState] = useState<LoadState<PuzzleboxLeaderboard> & { key: string | null }>({
+    key: null,
+    data: null,
+    loading: true,
+    failed: false,
+  });
 
   useEffect(() => {
     const encodedBoards = encodePuzzleboxBoards(JSON.parse(boardsKey) as PuzzleboxBoards);
     const viaApi = surfacePath("puzzlebox") === "api" && encodedBoards !== null;
+    const settle = (data: PuzzleboxLeaderboard | null) => setState({ key: cacheKey, data, loading: false, failed: data === null });
     if (!supabaseEnabled && !viaApi) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- nothing to fetch without Supabase
-      setState({ data: null, loading: false, failed: true });
+      settle(null);
       return;
     }
     let cancelled = false;
-    const cacheKey = `${supabaseEnv}:${game}:${board ?? "total"}:${aroundMe ? "me" : offset}`;
     const cached = readCache<PuzzleboxLeaderboard>(cacheKey);
     if (cached) {
-      setState({ data: cached, loading: false, failed: false });
+      settle(cached);
       return;
     }
-    setState((current) => ({ data: current.data, loading: true, failed: false }));
     (async () => {
       if (viaApi) {
         try {
-          // With a session the RPC marks this player's rows (is_me, me), as supabase-js did with its token.
-          const token = await currentAccessToken().catch(() => null);
           const query = new URLSearchParams({
             game,
             boards: encodedBoards as string,
@@ -220,21 +233,32 @@ export function usePuzzleboxLeaderboard(input: {
             offset: String(offset),
             around_me: aroundMe ? "1" : "0",
           });
-          const body = token
-            ? await apiFetchAsUser<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/me/puzzlebox/leaderboard?${query}`)
-            : await apiFetch<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/read/puzzlebox/leaderboard?${query}`);
+          const anonymous = () =>
+            apiFetch<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>("puzzlebox", `/api/read/puzzlebox/leaderboard?${query}`);
+          // With an identity the RPC marks this player's rows (is_me, me), as supabase-js did with its token.
+          // The browser's own storage tells whether there is one: asking supabase-js (getSession) first could
+          // wait on a token refresh against a slow Supabase before every board switch.
+          const body = hasStoredIdentity()
+            ? await apiFetchAsUser<{ v?: number; leaderboard?: PuzzleboxLeaderboard | null }>(
+                "puzzlebox",
+                `/api/me/puzzlebox/leaderboard?${query}`,
+              ).catch((error: unknown) => {
+                if (error instanceof ApiError && error.status === 401) return anonymous();
+                throw error;
+              })
+            : await anonymous();
           if (cancelled) return;
           if (body?.v !== 1 || !body.leaderboard) {
-            setState({ data: null, loading: false, failed: true });
+            settle(null);
             return;
           }
           writeCache(cacheKey, body.leaderboard);
-          setState({ data: body.leaderboard, loading: false, failed: false });
+          settle(body.leaderboard);
           return;
         } catch (error) {
           if (cancelled) return;
           if (!shouldUseLegacy(error) || !supabaseEnabled) {
-            setState({ data: null, loading: false, failed: true });
+            settle(null);
             return;
           }
         }
@@ -253,21 +277,22 @@ export function usePuzzleboxLeaderboard(input: {
         );
         if (cancelled) return;
         if (error || !data) {
-          setState({ data: null, loading: false, failed: true });
+          settle(null);
           return;
         }
         writeCache(cacheKey, data);
-        setState({ data: data as PuzzleboxLeaderboard, loading: false, failed: false });
+        settle(data as PuzzleboxLeaderboard);
       } catch {
-        if (!cancelled) setState({ data: null, loading: false, failed: true });
+        if (!cancelled) settle(null);
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [game, boardsKey, board, offset, aroundMe]);
+  }, [game, boardsKey, board, offset, aroundMe, cacheKey]);
 
-  return state;
+  if (state.key !== cacheKey) return { data: null, loading: true, failed: false };
+  return { data: state.data, loading: state.loading, failed: state.failed };
 }
 
 /** The player's rank on each board they finished, for the lists. Never signs anyone in. */
