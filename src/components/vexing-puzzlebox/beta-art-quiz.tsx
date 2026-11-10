@@ -17,6 +17,7 @@ import {
 import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import { ScoreSummary, type ScoreSubmission } from "@/components/vexing-puzzlebox/score-summary";
+import { focusOnPhone } from "@/components/vexing-puzzlebox/focus-on-phone";
 import { useVakuu } from "@/components/vexing-puzzlebox/vakuu-chatter";
 import { useAuth } from "@/hooks/use-auth";
 import { puzzleboxPlayer, submitPuzzleboxRun, useMyPuzzleboxStandings } from "@/hooks/use-puzzlebox-scores";
@@ -165,8 +166,6 @@ export function BetaArtQuiz({
   /** What the open question has had on screen; the next question starts from the toggles. */
   const [questionShown, setQuestionShown] = useState<RunDisplay | undefined>(undefined);
   const artRef = useRef<HTMLImageElement>(null);
-  /** The answer slot: the merchant speaks from its top right corner, and a hovered choice previews here. */
-  const answerRef = useRef<HTMLElement>(null);
   /** The choice under a mouse (or keyboard focus); touch never sets it, so a tap is one tap. */
   const [previewKey, setPreviewKey] = useState<string | null>(null);
   const [clockOn, setClockOn] = useState(false);
@@ -197,6 +196,11 @@ export function BetaArtQuiz({
     const requested = Number(new URLSearchParams(window.location.search).get("set"));
     if (requested >= 1 && requested <= sets.length) setSetIndex(requested - 1);
   }, [sets.length]);
+
+  // Opening a set (or a link to one) brings the board up on a phone.
+  useEffect(() => {
+    if (setIndex !== null) focusOnPhone(boardRef.current);
+  }, [setIndex]);
 
   // Vakuu sums up a finished set.
   useEffect(() => {
@@ -292,12 +296,22 @@ export function BetaArtQuiz({
                   saved ? "border-primary/50 bg-primary/10" : "border-border bg-card/90"
                 }`}
               >
-                <span className="flex items-baseline justify-between gap-2">
+                <span className="flex items-center justify-between gap-2">
                   <span className="font-game-title text-sm font-semibold">
                     {copy.quizSet} {index + 1}
                   </span>
-                  <span className="text-xs tabular-nums text-muted-foreground">
-                    {saved ? `${saved.filter(Boolean).length}/${questions.length}` : questions.length}
+                  <span className="flex items-center gap-1.5">
+                    {best && (
+                      <span
+                        title={standing ? copy.rankLine.replace("{rank}", String(standing.rank)).replace("{players}", String(standing.players)) : undefined}
+                        className="rounded bg-amber-400/15 px-1.5 font-game-title text-sm font-bold tabular-nums spire-gold"
+                      >
+                        {best.best}
+                      </span>
+                    )}
+                    <span className="text-xs tabular-nums text-muted-foreground">
+                      {saved ? `${saved.filter(Boolean).length}/${questions.length}` : questions.length}
+                    </span>
                   </span>
                 </span>
                 <span className="mt-1.5 grid grid-cols-4 gap-1">
@@ -313,16 +327,6 @@ export function BetaArtQuiz({
                     />
                   ))}
                 </span>
-                {best && (
-                  <span className="mt-1.5 flex items-baseline justify-end gap-1.5 whitespace-nowrap">
-                    <span className="font-game-title text-sm font-bold tabular-nums spire-gold">{best.best}</span>
-                    {standing && (
-                      <span className="text-[11px] tabular-nums text-muted-foreground">
-                        {copy.rankLine.replace("{rank}", String(standing.rank)).replace("{players}", String(standing.players))}
-                      </span>
-                    )}
-                  </span>
-                )}
               </button>
             </li>
           );
@@ -413,7 +417,6 @@ export function BetaArtQuiz({
     clock.reset();
     setClockOn(false);
     setPreviewKey(null);
-    const speaker = answerRef.current ?? choice;
     const nextAnswers = [...answers, answer];
     const nextResults = nextAnswers.map((item) => item.correct);
     const streak = nextResults.slice(-STREAK);
@@ -424,10 +427,10 @@ export function BetaArtQuiz({
     );
     playSound("uiClick");
     if (correct) {
-      say("success", speaker);
+      say("success", choice);
       playSound("gold");
     } else {
-      say("forbidden", speaker);
+      say("forbidden", choice);
       playInvalidShake(choice);
       playSound("lifeLost");
       setHurt((count) => count + 1);
@@ -459,7 +462,7 @@ export function BetaArtQuiz({
   const previewChoice = picked === null && previewKey !== null ? question.choices.find((item) => item.key === previewKey) ?? null : null;
 
   return (
-    <div ref={boardRef} className="relative mx-auto max-w-2xl pb-40 sm:pb-6" data-beta-art-question={questionIndex + 1}>
+    <div ref={boardRef} className="relative mx-auto max-w-2xl scroll-mt-14 min-h-[calc(100svh-3.5rem)] pb-40 sm:min-h-0 sm:pb-6" data-beta-art-question={questionIndex + 1}>
       {lostLife && (
         <div key={`hurt-${hurt}`} className="beta-quiz-hurt pointer-events-none absolute -inset-2 z-10 rounded-xl" aria-hidden="true" />
       )}
@@ -544,7 +547,6 @@ export function BetaArtQuiz({
             <figcaption className="absolute left-2 top-1.5 text-[10px] tracking-wide text-white/35">{copy.beta}</figcaption>
           </figure>
           <figure
-            ref={answerRef}
             className="relative flex aspect-[25/19] items-center justify-center overflow-hidden rounded-xl border border-border bg-black"
             data-beta-art-preview={previewChoice?.key}
           >

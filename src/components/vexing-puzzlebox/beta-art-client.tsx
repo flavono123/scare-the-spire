@@ -1,13 +1,14 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PortaledHoverTipLayer } from "@/components/codex/card-keyword-tip-stack";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { HoverTip } from "@/components/codex/hover-tip";
 import Image from "@/components/ui/static-image";
 import { BetaArtGallery } from "@/components/vexing-puzzlebox/beta-art-gallery";
 import { BetaArtQuiz } from "@/components/vexing-puzzlebox/beta-art-quiz";
+import { focusOnPhone } from "@/components/vexing-puzzlebox/focus-on-phone";
 import { BetaArtViewer } from "@/components/vexing-puzzlebox/beta-art-viewer";
 import { useAuth } from "@/hooks/use-auth";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
@@ -168,6 +169,7 @@ export function BetaArtClient({
   const [openComments, setOpenComments] = useState(false);
   const { userId, ready, ensureUser } = useAuth();
   const auth = useMemo(() => ({ userId, ready, ensureUser }), [userId, ready, ensureUser]);
+  const contentRef = useRef<HTMLDivElement>(null);
   const engagement = useEngagementCounts({ enabled: mode !== "quiz" });
 
   useEffect(() => {
@@ -182,6 +184,9 @@ export function BetaArtClient({
       setOpenComments(window.location.hash === "#comments");
     }
   }, [entries]);
+
+  // Landing on a mode brings its game area up on a phone.
+  useEffect(() => focusOnPhone(contentRef.current), [mode]);
 
   const changeMode = (next: BetaArtMode) => {
     setMode(next);
@@ -301,7 +306,7 @@ export function BetaArtClient({
         </div>
       )}
 
-      <div className="mt-4">
+      <div ref={contentRef} className="mt-4 scroll-mt-14">
         {mode !== "quiz" && filtered.length === 0 && (
           <p className="py-16 text-center text-sm text-muted-foreground">{copy.filtersEmpty}</p>
         )}
