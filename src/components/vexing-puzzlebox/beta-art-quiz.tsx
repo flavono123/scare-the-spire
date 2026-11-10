@@ -14,7 +14,6 @@ import {
   useItemDisplay,
   type ItemDisplay,
 } from "@/components/vexing-puzzlebox/display-toggles";
-import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import { ScoreSummary, type ScoreSubmission } from "@/components/vexing-puzzlebox/score-summary";
 import { focusOnPhone } from "@/components/vexing-puzzlebox/focus-on-phone";
@@ -156,7 +155,6 @@ export function BetaArtQuiz({
   const [savedSets, setSavedSets] = useState<Record<string, boolean[]>>({});
   const [copied, setCopied] = useState(false);
   const [display, setDisplay] = useItemDisplay(gameLocale);
-  const say = useMerchantSay();
   const vakuu = useVakuu();
   const playSound = usePuzzleboxSound();
   const { stored, profile } = useStoredProfileSnapshot();
@@ -427,10 +425,8 @@ export function BetaArtQuiz({
     );
     playSound("uiClick");
     if (correct) {
-      say("success", choice);
       playSound("gold");
     } else {
-      say("forbidden", choice);
       playInvalidShake(choice);
       playSound("lifeLost");
       setHurt((count) => count + 1);
