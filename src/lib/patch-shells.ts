@@ -38,7 +38,19 @@ const PATCH_SHELLS: Record<ShellPatchType, PatchShell> = {
   },
 };
 
+/** 준비 시간 before a dated patch: the 포석 body (reels, playlist, comments) until Steam notes land. */
+const PREP_TIME_SHELL: PatchShell = {
+  ...PATCH_SHELLS.gambit,
+  titleToken: { src: "/images/sts2/intents/animated/sleep.webp", alt: { ko: "수면", en: "Sleep" } },
+  hero: {
+    ko: "오늘의 패치가 드러나기를 기다리고 있습니다 ...",
+    en: "Today's patch is waiting to be revealed ...",
+  },
+  searchImageUrl: "/images/sts2/cards/prep_time.webp",
+};
+
 export function getPatchShell(patch: STS2Patch): PatchShell | null {
   if (patch.type === "wither" || patch.type === "gambit") return PATCH_SHELLS[patch.type];
+  if (patch.status === "watching" && patch.watchStage !== "delay") return PREP_TIME_SHELL;
   return null;
 }

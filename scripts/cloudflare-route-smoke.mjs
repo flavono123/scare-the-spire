@@ -90,7 +90,12 @@ function parseArgs(argv) {
 const SHELL_PATCH_BODY = {
   wither: { ko: ["시듦", "금요일에 패치가"], en: ["Wither", "On Friday"] },
   gambit: { ko: ["포석", "시간을 2주 벌었습니다"], en: ["The Gambit", "Bought 2 weeks of time"] },
+  prep_time: { ko: ["준비 시간", "오늘의 패치가 드러나기를"], en: ["Prep Time", "Today's patch is waiting"] },
 };
+
+function shellPatchBody(patch) {
+  return SHELL_PATCH_BODY[patch.status === "watching" ? patch.watchStage ?? "prep_time" : patch.type];
+}
 
 function latestPatch() {
   const patches = JSON.parse(readFileSync("data/sts2-patches.json", "utf8"));
@@ -431,8 +436,8 @@ function patchCases() {
       path: `/patches/${latest.version}`,
       headers: { Accept: "text/html" },
       contentType: "text/html",
-      bodyIncludes: SHELL_PATCH_BODY[latest.type]
-        ? [...SHELL_PATCH_BODY[latest.type].ko, "application/ld+json"]
+      bodyIncludes: shellPatchBody(latest)
+        ? [...shellPatchBody(latest).ko, "application/ld+json"]
         : [
             `슬레이 더 스파이어 2 v${latest.version}`,
             latest.summaryKo,
@@ -444,8 +449,8 @@ function patchCases() {
       path: `/en/patches/${latest.version}`,
       headers: { Accept: "text/html" },
       contentType: "text/html",
-      bodyIncludes: SHELL_PATCH_BODY[latest.type]
-        ? [...SHELL_PATCH_BODY[latest.type].en, "application/ld+json"]
+      bodyIncludes: shellPatchBody(latest)
+        ? [...shellPatchBody(latest).en, "application/ld+json"]
         : [
             `Slay the Spire 2 v${latest.version}`,
             latest.summary,

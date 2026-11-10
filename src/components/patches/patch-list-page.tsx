@@ -198,11 +198,8 @@ export async function PatchListPage({
               ? "mt-1 text-sm font-medium text-zinc-500"
               : "mt-1 text-sm font-medium text-amber-100/75";
             const dateClassName = isDelay ? "mt-2 text-xs text-zinc-600" : "mt-2 text-xs text-amber-100/45";
-            return (
-              <article
-                key={patch.id}
-                className={cardClassName}
-              >
+            const cardBody = (
+              <>
                 <div className="flex flex-wrap items-center gap-2">
                   <PatchStageTitle
                     stage={visualStage}
@@ -229,6 +226,24 @@ export async function PatchListPage({
                 <p className={descriptionClassName}>{stageCopy.description}</p>
                 <p className={dateClassName}>{patch.date}</p>
                 <PatchArtPreview art={patchArt} priority={index === 0} tone={isDelay ? "building" : "watching"} />
+              </>
+            );
+            // A prep-time shell carries the reels and comments on its own page.
+            if (shell) {
+              return (
+                <Link
+                  key={patch.id}
+                  href={localizeHrefWithGameLocale(`/patches/${patch.version}`, serviceLocale, gameLocale)}
+                  prefetch={false}
+                  className={cn(cardClassName, "transition-colors hover:border-amber-400/60")}
+                >
+                  {cardBody}
+                </Link>
+              );
+            }
+            return (
+              <article key={patch.id} className={cardClassName}>
+                {cardBody}
               </article>
             );
           }

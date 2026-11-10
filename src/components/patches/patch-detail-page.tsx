@@ -894,6 +894,11 @@ export async function PatchDetailPage({
               label={copy.types[patch.type]}
               serviceLocale={serviceLocale}
             />
+            {patch.status === "watching" && (
+              <Badge variant="outline" className="bg-amber-500/10 text-amber-300 border-amber-400/40">
+                {copy.watchingBadge}
+              </Badge>
+            )}
           </div>
           <div className={`mt-3 text-base leading-relaxed ${WITHER_PATCH_HERO_CLASS}`}>
             <RichText text={shell.hero[serviceLocale]} />

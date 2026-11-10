@@ -604,24 +604,26 @@
     }
   },
   {
-    "id": "gambit-2026-11-12",
-    "version": "2026-11-12",
-    "versionLabel": "The Gambit",
-    "versionLabelKo": "포석",
-    "date": "2026-11-12",
-    "title": "The Gambit",
-    "titleKo": "포석",
-    "type": "gambit",
+    "id": "prep-time-2026-11-13",
+    "version": "2026-11-13",
+    "versionLabel": "Prep Time",
+    "versionLabelKo": "준비 시간",
+    "date": "2026-11-13",
+    "title": "Prep Time",
+    "titleKo": "준비 시간",
+    "type": "beta",
+    "status": "watching",
+    "watchStage": "prep_time",
     "steamUrl": null,
-    "summary": "Bought 2 weeks of time. If the November 12 patch is a dud, die.",
-    "summaryKo": "시간을 2주 벌었습니다. 11월 12일 패치가 똥패치라면, 죽습니다.",
+    "summary": "Today's patch is waiting to be revealed ...",
+    "summaryKo": "오늘의 패치가 드러나기를 기다리고 있습니다 ...",
     "hasBalanceChanges": false,
     "art": {
       "type": "card",
-      "id": "THE_GAMBIT",
-      "imageUrl": "/images/sts2/cards/the_gambit.webp",
-      "alt": "The Gambit card art",
-      "altKo": "포석 카드 아트"
+      "id": "PREP_TIME",
+      "imageUrl": "/images/sts2/cards/prep_time.webp",
+      "alt": "Prep Time card art",
+      "altKo": "준비 시간 카드 아트"
     }
   }
 ]
