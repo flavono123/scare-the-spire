@@ -50,13 +50,11 @@ const OTHER_CARDS_TOKEN = "/images/game-assets/card-misc/energy_colorless.png";
 /** submenu_button_short.tscn: a parchment panel, the title in gold over the art, a cream description. */
 function ModeButton({
   label,
-  description,
   icon,
   selected,
   onSelect,
 }: {
   label: string;
-  description: string;
   icon: string;
   selected: boolean;
   onSelect: () => void;
@@ -67,7 +65,7 @@ function ModeButton({
       role="tab"
       aria-selected={selected}
       onClick={onSelect}
-      className={`group/mode relative aspect-[490/560] w-[6.5rem] min-w-0 shrink transition-[transform,filter] duration-150 sm:w-[8.5rem] ${
+      className={`group/mode relative aspect-[490/430] w-[5rem] min-w-0 shrink transition-[transform,filter] duration-150 sm:w-[7rem] ${
         selected
           ? "scale-105 drop-shadow-[0_0_10px_rgba(239,200,81,0.55)]"
           : "brightness-75 hover:scale-[1.03] hover:brightness-95"
@@ -82,7 +80,7 @@ function ModeButton({
       />
       <span className="absolute inset-x-[8%] top-[5%] flex h-[17%] items-center justify-center">
         <span
-          className="font-game-title text-sm font-bold leading-none sm:text-base"
+          className="font-game-title text-xs font-bold leading-none sm:text-sm"
           style={{
             color: "#efc851",
             WebkitTextStroke: "3px #333127",
@@ -98,14 +96,8 @@ function ModeButton({
         alt=""
         width={378}
         height={288}
-        className="absolute left-1/2 top-[25%] w-[72%] -translate-x-1/2"
+        className="absolute left-1/2 top-[27%] w-[72%] -translate-x-1/2"
       />
-      <span
-        className="absolute inset-x-[10%] bottom-[7%] text-center text-[10px] leading-tight sm:text-[11px]"
-        style={{ color: "#fff6e2", textShadow: "1.5px 1px 0 rgba(0,0,0,0.25)" }}
-      >
-        {description}
-      </span>
     </button>
   );
 }
@@ -213,10 +205,10 @@ export function BetaArtClient({
     return true;
   }), [entries, typeFilter, colorFilter, earlyAccessOnly, characterColors, needle]);
 
-  const modes: { id: BetaArtMode; label: string; description: string }[] = [
-    { id: "watch", label: copy.modeWatch, description: copy.modeWatchDescription },
-    { id: "gallery", label: copy.modeGallery, description: copy.modeGalleryDescription },
-    { id: "quiz", label: copy.modeQuiz, description: copy.modeQuizDescription },
+  const modes: { id: BetaArtMode; label: string }[] = [
+    { id: "watch", label: copy.modeWatch },
+    { id: "gallery", label: copy.modeGallery },
+    { id: "quiz", label: copy.modeQuiz },
   ];
   const typeFilters: { id: BetaArtType; label: string }[] = [
     { id: "card", label: copy.filterCard },
@@ -232,7 +224,6 @@ export function BetaArtClient({
           <ModeButton
             key={item.id}
             label={item.label}
-            description={item.description}
             icon={MODE_ICONS[item.id]}
             selected={mode === item.id}
             onSelect={() => changeMode(item.id)}

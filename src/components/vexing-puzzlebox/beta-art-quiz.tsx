@@ -165,6 +165,10 @@ export function BetaArtQuiz({
   /** What the open question has had on screen; the next question starts from the toggles. */
   const [questionShown, setQuestionShown] = useState<RunDisplay | undefined>(undefined);
   const artRef = useRef<HTMLImageElement>(null);
+  /** The answer slot: the merchant speaks from its top right corner, and a hovered choice previews here. */
+  const answerRef = useRef<HTMLElement>(null);
+  /** The choice under a mouse (or keyboard focus); touch never sets it, so a tap is one tap. */
+  const [previewKey, setPreviewKey] = useState<string | null>(null);
   const [clockOn, setClockOn] = useState(false);
   const [hurt, setHurt] = useState(0);
   const [localScores, setLocalScores] = useState<Record<string, LocalBestScore>>({});
@@ -213,6 +217,7 @@ export function BetaArtQuiz({
     setSetIndex(index);
     setAnswers([]);
     setPicked(null);
+    setPreviewKey(null);
     setCopied(false);
     setSubmission(null);
     const url = new URL(window.location.href);
@@ -226,6 +231,7 @@ export function BetaArtQuiz({
     questionShownAt.current = at;
     setQuestionShown(undefined);
     setPicked(null);
+    setPreviewKey(null);
     const board = boardRef.current;
     if (board && board.getBoundingClientRect().top < 0) board.scrollIntoView({ block: "start", behavior: "smooth" });
   }, []);
@@ -406,6 +412,8 @@ export function BetaArtQuiz({
     };
     clock.reset();
     setClockOn(false);
+    setPreviewKey(null);
+    const speaker = answerRef.current ?? choice;
     const nextAnswers = [...answers, answer];
     const nextResults = nextAnswers.map((item) => item.correct);
     const streak = nextResults.slice(-STREAK);
@@ -416,10 +424,10 @@ export function BetaArtQuiz({
     );
     playSound("uiClick");
     if (correct) {
-      say("success", choice);
+      say("success", speaker);
       playSound("gold");
     } else {
-      say("forbidden", choice);
+      say("forbidden", speaker);
       playInvalidShake(choice);
       playSound("lifeLost");
       setHurt((count) => count + 1);
@@ -448,9 +456,10 @@ export function BetaArtQuiz({
 
   const lastQuestion = answers.length === set.length || livesLeft <= 0;
   const lostLife = picked !== null && pickedAnswer !== null && !pickedAnswer.correct;
+  const previewChoice = picked === null && previewKey !== null ? question.choices.find((item) => item.key === previewKey) ?? null : null;
 
   return (
-    <div ref={boardRef} className="relative mx-auto max-w-2xl" data-beta-art-question={questionIndex + 1}>
+    <div ref={boardRef} className="relative mx-auto max-w-2xl pb-40 sm:pb-6" data-beta-art-question={questionIndex + 1}>
       {lostLife && (
         <div key={`hurt-${hurt}`} className="beta-quiz-hurt pointer-events-none absolute -inset-2 z-10 rounded-xl" aria-hidden="true" />
       )}
@@ -534,8 +543,27 @@ export function BetaArtQuiz({
             />
             <figcaption className="absolute left-2 top-1.5 text-[10px] tracking-wide text-white/35">{copy.beta}</figcaption>
           </figure>
-          <figure className="relative flex aspect-[25/19] items-center justify-center overflow-hidden rounded-xl border border-border bg-black">
-            {picked !== null && question.entry.officialUrl ? (
+          <figure
+            ref={answerRef}
+            className="relative flex aspect-[25/19] items-center justify-center overflow-hidden rounded-xl border border-border bg-black"
+            data-beta-art-preview={previewChoice?.key}
+          >
+            {previewChoice ? (
+              // The picture alone when pictures are on, otherwise the choice's name.
+              display.token && previewChoice.officialUrl ? (
+                <Image
+                  src={previewChoice.officialUrl}
+                  alt=""
+                  width={720}
+                  height={540}
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <span className="px-3 text-center font-game-title text-xl font-bold [word-break:keep-all] sm:text-2xl">
+                  <ChoiceLabel entry={previewChoice} display={{ ...display, token: false, local: display.local || !display.original }} />
+                </span>
+              )
+            ) : picked !== null && question.entry.officialUrl ? (
               <Image
                 src={question.entry.officialUrl}
                 alt={question.entry.name}
@@ -585,6 +613,17 @@ export function BetaArtQuiz({
                 disabled={picked !== null}
                 {...{ [CHARACTER_HAND_TARGET_ATTRIBUTE]: "" }}
                 onClick={(event) => pick(choice.key, event.currentTarget, event.timeStamp)}
+                // Mouse only: a touch pointer never opens the preview, so no tap is spent on it.
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse" && picked === null) setPreviewKey(choice.key);
+                }}
+                onPointerLeave={(event) => {
+                  if (event.pointerType === "mouse") setPreviewKey((current) => (current === choice.key ? null : current));
+                }}
+                onFocus={(event) => {
+                  if (event.currentTarget.matches(":focus-visible") && picked === null) setPreviewKey(choice.key);
+                }}
+                onBlur={() => setPreviewKey((current) => (current === choice.key ? null : current))}
                 className={`flex justify-center rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors [word-break:keep-all] ${stateClass}`}
               >
                 {/* A wrong pick reads as a nerf: red, jittering. */}
