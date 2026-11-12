@@ -143,6 +143,8 @@ const MONSTER_ALIASES = {
     tags: ["shared-actor", "variant-skin"],
   },
   BOWLBUG_EGG: { folder: "bowlbug", skin: "cocoon", tags: ["shared-actor", "variant-skin"] },
+  // v0.113.0 pets: monster rows carry no image_url, so name their actor folders.
+  BYRDINE_MONSTER: { folder: "byrdine", tags: ["image-slug-alias"] },
   BOWLBUG_NECTAR: { folder: "bowlbug", skin: "goop", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_ROCK: { folder: "bowlbug", skin: "rock", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_SILK: { folder: "bowlbug", skin: "web", tags: ["shared-actor", "variant-skin"] },
@@ -188,6 +190,7 @@ const MONSTER_ALIASES = {
   SCROLL_OF_BITING: { folder: "scroll_of_biting", tags: ["variant-skin"] },
   SKULKING_COLONY: { folder: "skulking_colony", tags: ["image-slug-alias"] },
   TORCH_HEAD_AMALGAM: { folder: "torch_head_amalgam", tags: ["image-slug-alias"] },
+  WUPPY: { folder: "wuppy", tags: ["image-slug-alias"] },
 };
 
 const MONSTER_SKIN_PARTS = {
