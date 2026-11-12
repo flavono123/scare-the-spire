@@ -2,7 +2,9 @@ import "server-only";
 
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
+import { Suspense } from "react";
 import { AdminTabs } from "./admin-tabs";
+import { CloudflareLimitsPanel } from "./cloudflare-limits-panel";
 import type { AdminTabId } from "./admin-tab-ids";
 import { notFound, redirect } from "next/navigation";
 import { AdminActivityChart } from "@/components/dev/admin-activity-chart";
@@ -638,6 +640,7 @@ export default async function SupabaseAdminPage({
     { id: "comments", label: "댓글" },
     { id: "posts", label: "서비스 글" },
     { id: "nicks", label: "프로필 닉네임" },
+    { id: "cloudflare", label: "CF 한도" },
   ] as const;
 
   return (
@@ -898,6 +901,12 @@ export default async function SupabaseAdminPage({
         onReset={resetProfileCharacterNicknames}
       />
 </>
+          ),
+          cloudflare: (
+            // Streams in after the page: gh logs and the Cloudflare API take a few seconds.
+            <Suspense fallback={<p className="mt-6 text-sm text-muted-foreground">Cloudflare 운영 사용량 조회 중…</p>}>
+              <CloudflareLimitsPanel />
+            </Suspense>
           ),
         }}
       />
