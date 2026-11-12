@@ -1053,7 +1053,11 @@ export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promis
       betaImageFiles,
       imageFile,
     ) ?? betaImageUrlForFile("relics", officialImageFiles, imageFile, { exact: false });
-    return mapRelic(kor, eng, variantMap, iconVariants, betaImageUrl, gameRelics, gameEnchantments, gameLocale);
+    const relic = mapRelic(kor, eng, variantMap, iconVariants, betaImageUrl, gameRelics, gameEnchantments, gameLocale);
+    // New relics can ship with beta art only (v0.113.0); show it until official art lands.
+    return relic.imageUrl && imageFile && !officialImageFiles.has(imageFile) && betaImageUrl
+      ? { ...relic, imageUrl: betaImageUrl }
+      : relic;
   });
 }
 
@@ -1390,7 +1394,11 @@ export async function getCodexPowers(opts?: { gameLocale?: GameLocale; includeDe
         betaImageFiles,
         imageFile,
       ) ?? betaImageUrlForFile("powers", officialImageFiles, imageFile, { exact: false });
-      return mapPower(kor, eng, betaImageUrl, gamePowers, gamePowersEn, gameLocale);
+      const power = mapPower(kor, eng, betaImageUrl, gamePowers, gamePowersEn, gameLocale);
+      // New powers can ship with beta icons only (v0.113.0); show them until official art lands.
+      return power.imageUrl && imageFile && !officialImageFiles.has(imageFile) && betaImageUrl
+        ? { ...power, imageUrl: betaImageUrl }
+        : power;
     });
 }
 
@@ -1796,7 +1804,10 @@ function mapEpoch(
     unlocksRelics: kor.unlocks_relics ?? [],
     unlocksPotions: kor.unlocks_potions ?? [],
     expandsTimeline: kor.expands_timeline ?? [],
-    imageUrl: imageFiles.has(imageKey) ? `/images/sts2/epochs/${imageKey}.webp` : null,
+    // New epochs can ship with placeholder art only (v0.113.0); show it until official art lands.
+    imageUrl: imageFiles.has(imageKey)
+      ? `/images/sts2/epochs/${imageKey}.webp`
+      : betaImageFiles.has(imageKey) ? `/images/sts2/epochs-beta/${imageKey}.webp` : null,
     betaImageUrl: betaImageFiles.has(imageKey) ? `/images/sts2/epochs-beta/${imageKey}.webp` : null,
     introducedInPatch: kor.introducedInPatch,
     deprecated: kor.deprecated,
@@ -2081,7 +2092,7 @@ function eventDisplayVars(eventId: string, gameLocale: GameLocale): EventDisplay
     case "WATERLOGGED_SCRIPTORIUM":
       return {
         Gold: 55,
-        PricklySpongeGold: 99,
+        PricklySpongeGold: 120, // v0.113.0: 99 -> 120
         Cards: 2,
       };
     case "WELCOME_TO_WONGOS":
