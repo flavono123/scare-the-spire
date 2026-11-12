@@ -88,7 +88,10 @@
         "card_applications": [
           {
             "card_id": "WITHER",
-            "amount": null
+            "amount": {
+              "normal": 1,
+              "ascension": 2
+            }
           }
         ]
       }
@@ -172,7 +175,10 @@
         "card_applications": [
           {
             "card_id": "WITHER",
-            "amount": null
+            "amount": {
+              "normal": 1,
+              "ascension": 2
+            }
           }
         ]
       }
@@ -414,9 +420,9 @@
     "name": "Axebot",
     "type": "Normal",
     "show_in_compendium": true,
-    "min_hp": null,
+    "min_hp": 70,
     "max_hp": null,
-    "min_hp_ascension": null,
+    "min_hp_ascension": 80,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -2488,9 +2494,9 @@
     "name": "Ceremonial Beast",
     "type": "Boss",
     "show_in_compendium": true,
-    "min_hp": null,
+    "min_hp": 252,
     "max_hp": null,
-    "min_hp_ascension": null,
+    "min_hp_ascension": 262,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -2547,7 +2553,10 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 2,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -2709,7 +2718,10 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 2,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -3867,11 +3879,6 @@
           "normal": 1,
           "ascension": null
         }
-      },
-      {
-        "power_id": "PLATING",
-        "target": "self",
-        "amount": null
       }
     ]
   },
@@ -11051,9 +11058,9 @@
     "name": "Lagavulin Matriarch",
     "type": "Boss",
     "show_in_compendium": true,
-    "min_hp": null,
+    "min_hp": 222,
     "max_hp": null,
-    "min_hp_ascension": null,
+    "min_hp_ascension": 233,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -11167,12 +11174,18 @@
           {
             "power_id": "STRENGTH",
             "target": "player",
-            "amount": null
+            "amount": {
+              "normal": -2,
+              "ascension": null
+            }
           },
           {
             "power_id": "DEXTERITY",
             "target": "player",
-            "amount": null
+            "amount": {
+              "normal": -2,
+              "ascension": null
+            }
           },
           {
             "power_id": "STRENGTH",
@@ -11307,12 +11320,18 @@
           {
             "power_id": "STRENGTH",
             "target": "player",
-            "amount": null
+            "amount": {
+              "normal": -2,
+              "ascension": null
+            }
           },
           {
             "power_id": "DEXTERITY",
             "target": "player",
-            "amount": null
+            "amount": {
+              "normal": -2,
+              "ascension": null
+            }
           },
           {
             "power_id": "STRENGTH",
@@ -11415,6 +11434,10 @@
       "Slash": {
         "normal": 19,
         "ascension": 21
+      },
+      "Slash2": {
+        "normal": 12,
+        "ascension": 14
       },
       "Disembowel": {
         "normal": 9,
@@ -15613,7 +15636,10 @@
           {
             "power_id": "STRENGTH",
             "target": "unknown",
-            "amount": null
+            "amount": {
+              "normal": 1,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -15756,7 +15782,7 @@
       }
     ],
     "move_graph": {
-      "initial": "DREAD_INITIAL",
+      "initial": "PUPPET_STRINGS",
       "confidence": "static",
       "transitions": [
         {
@@ -15824,20 +15850,6 @@
           "to": "OFF_WITH_YOUR_HEAD",
           "chance": 100.0,
           "kind": "fixed"
-        },
-        {
-          "from": "__START__",
-          "to": "DREAD_INITIAL",
-          "chance": null,
-          "kind": "conditional",
-          "condition": "AscensionHelper.IsDread()"
-        },
-        {
-          "from": "__START__",
-          "to": "PUPPET_STRINGS",
-          "chance": null,
-          "kind": "conditional",
-          "condition": "!(AscensionHelper.IsDread())"
         }
       ],
       "states": [
@@ -16275,6 +16287,10 @@
       "PreciseSmash": {
         "normal": 18,
         "ascension": 20
+      },
+      "RocketClaw": {
+        "normal": 31,
+        "ascension": 35
       }
     },
     "block_values": null,
@@ -16303,11 +16319,6 @@
           "normal": 1,
           "ascension": null
         }
-      },
-      {
-        "power_id": "PLATING",
-        "target": "self",
-        "amount": null
       }
     ]
   },
@@ -20345,7 +20356,10 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 2,
+              "ascension": 3
+            }
           }
         ],
         "card_applications": [
@@ -20463,7 +20477,10 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 2,
+              "ascension": 3
+            }
           }
         ],
         "card_applications": [
@@ -20620,7 +20637,10 @@
       {
         "power_id": "ENRAGE",
         "target": "self",
-        "amount": null
+        "amount": {
+          "normal": 2,
+          "ascension": 3
+        }
       }
     ]
   },
@@ -21679,9 +21699,9 @@
     "name": "The Insatiable",
     "type": "Boss",
     "show_in_compendium": true,
-    "min_hp": null,
+    "min_hp": 321,
     "max_hp": null,
-    "min_hp_ascension": null,
+    "min_hp_ascension": 341,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -21707,7 +21727,10 @@
           {
             "power_id": "SANDPIT",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 4,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -21829,7 +21852,10 @@
           {
             "power_id": "SANDPIT",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 4,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -23382,6 +23408,10 @@
       ]
     },
     "damage_values": {
+      "StrongTackle": {
+        "normal": 26,
+        "ascension": 32
+      },
       "Tackle": {
         "normal": 18,
         "ascension": 22
@@ -24908,7 +24938,10 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 2,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -25012,7 +25045,10 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 2,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -25090,7 +25126,10 @@
       {
         "power_id": "SLIPPERY",
         "target": "self",
-        "amount": null
+        "amount": {
+          "normal": 8,
+          "ascension": 9
+        }
       }
     ]
   },
@@ -25402,7 +25441,10 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 3,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -25435,7 +25477,10 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 3,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -25462,7 +25507,10 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 3,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -25495,7 +25543,10 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 3,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -25528,7 +25579,10 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 3,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -25641,7 +25695,10 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 3,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -25674,7 +25731,10 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 3,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -25707,7 +25767,10 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 3,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
@@ -25740,7 +25803,10 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": null
+            "amount": {
+              "normal": 3,
+              "ascension": null
+            }
           }
         ],
         "card_applications": []
