@@ -909,6 +909,97 @@
     }
   },
   {
+    "id": "BYRDINE_MONSTER",
+    "source": "animations/monsters/byrdine/byrdine",
+    "renderStatus": "spine",
+    "renderTags": [
+      "image-slug-alias"
+    ],
+    "atlasUrl": "/spine/sts2/monsters/byrdine/byrdine.atlas?v=cea9ede305",
+    "binaryUrl": "/spine/sts2/monsters/byrdine/byrdine.skel?v=d3b0974410",
+    "textureUrls": [
+      "/spine/sts2/monsters/byrdine/byrdine.png?v=c4fa1da57f",
+      "/spine/sts2/monsters/byrdine/byrdine_2.png?v=d710cd185b"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "eye/defect",
+      "eye/ironclad",
+      "eye/necro",
+      "eye/regent",
+      "eye/silent",
+      "hair/v1",
+      "hair/v2",
+      "hair/v3",
+      "hair/v4"
+    ],
+    "skinVariants": [
+      {
+        "id": "eye/defect",
+        "label": "eye/defect",
+        "attachmentCount": 1
+      },
+      {
+        "id": "eye/ironclad",
+        "label": "eye/ironclad",
+        "attachmentCount": 1
+      },
+      {
+        "id": "eye/necro",
+        "label": "eye/necro",
+        "attachmentCount": 1
+      },
+      {
+        "id": "eye/regent",
+        "label": "eye/regent",
+        "attachmentCount": 1
+      },
+      {
+        "id": "eye/silent",
+        "label": "eye/silent",
+        "attachmentCount": 1
+      },
+      {
+        "id": "hair/v1",
+        "label": "hair/v1",
+        "attachmentCount": 2
+      },
+      {
+        "id": "hair/v2",
+        "label": "hair/v2",
+        "attachmentCount": 2
+      },
+      {
+        "id": "hair/v3",
+        "label": "hair/v3",
+        "attachmentCount": 2
+      },
+      {
+        "id": "hair/v4",
+        "label": "hair/v4",
+        "attachmentCount": 2
+      }
+    ],
+    "animations": [
+      "attack",
+      "attack_overlay",
+      "be_born",
+      "idle_loop",
+      "stand_still"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "NOTHING": [
+        "nothing",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
     "id": "BYRDONIS",
     "source": "animations/monsters/byrdonis/byrdonis",
     "renderStatus": "spine",
@@ -3107,13 +3198,15 @@
         "buff",
         "idle_loop"
       ],
-      "RADIATE": [
-        "radiate",
-        "attack_block",
+      "JAB_MOVE_2": [
+        "jab_move_2",
+        "jabmove2",
+        "jab-move-2",
+        "buff",
         "attack",
+        "attack_block",
         "attack_double",
         "_ignore/attack_double_alt",
-        "buff",
         "idle_loop"
       ],
       "WHIRLWIND": [
@@ -5130,25 +5223,72 @@
       }
     ],
     "moveAnimations": {
-      "TARGETING_RETICLE": [
+      "CALCULATING": [
+        "calculating",
+        "left/attack_double",
+        "left/attack_heavy",
+        "left/attack_med",
+        "reactions/attack_left",
+        "reactions/attack_right",
         "right/attack",
-        "right/idle_loop",
-        "body/idle_loop"
-      ],
-      "PRECISION_BEAM": [
+        "right/attack_heavy",
         "right/attack_med",
-        "right/idle_loop",
-        "body/idle_loop"
+        "left/buff",
+        "body/idle_loop",
+        "empty"
+      ],
+      "PRECISE_SMASH": [
+        "precise_smash",
+        "precisesmash",
+        "precise-smash",
+        "left/attack_double",
+        "left/attack_heavy",
+        "left/attack_med",
+        "reactions/attack_left",
+        "reactions/attack_right",
+        "right/attack",
+        "right/attack_heavy",
+        "right/attack_med",
+        "left/buff",
+        "body/idle_loop",
+        "empty"
+      ],
+      "PRECISE_SMASH_MOVE_2": [
+        "precise_smash_move_2",
+        "precisesmashmove2",
+        "precise-smash-move-2",
+        "left/buff",
+        "left/attack_double",
+        "left/attack_heavy",
+        "left/attack_med",
+        "reactions/attack_left",
+        "reactions/attack_right",
+        "right/attack",
+        "right/attack_heavy",
+        "right/attack_med",
+        "body/idle_loop",
+        "empty"
       ],
       "CHARGE_UP": [
         "right/charge_up",
         "right/charged_loop",
         "body/idle_loop"
       ],
-      "LASER": [
+      "ROCKET_CLAW": [
+        "rocket_claw",
+        "rocketclaw",
+        "rocket-claw",
+        "left/attack_double",
+        "left/attack_heavy",
+        "left/attack_med",
+        "reactions/attack_left",
+        "reactions/attack_right",
+        "right/attack",
         "right/attack_heavy",
-        "right/rest_loop",
-        "body/idle_loop"
+        "right/attack_med",
+        "left/buff",
+        "body/idle_loop",
+        "empty"
       ],
       "RECHARGE": [
         "right/wake_up",
@@ -5313,39 +5453,21 @@
       ]
     },
     "moveEffects": {
-      "PRECISION_BEAM": [
+      "ROCKET_CLAW": [
         {
-          "id": "VFX_LASER",
-          "folder": "vfx_laser",
-          "source": "animations/vfx/vfx_laser/laser",
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
           "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas?v=327ec82d30",
-          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel?v=0fae7bb8de",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel?v=22cf2c07a3",
           "textureUrls": [
-            "/spine/sts2/vfx/laser.png?v=34542df42c"
+            "/spine/sts2/vfx/scratch.png?v=7e2fd15523"
           ],
           "animations": [
-            "animation"
+            "scratch"
           ],
-          "idleAnimation": "animation",
-          "durationSeconds": 0.347,
-          "usable": true
-        }
-      ],
-      "LASER": [
-        {
-          "id": "VFX_LASER",
-          "folder": "vfx_laser",
-          "source": "animations/vfx/vfx_laser/laser",
-          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas?v=327ec82d30",
-          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel?v=0fae7bb8de",
-          "textureUrls": [
-            "/spine/sts2/vfx/laser.png?v=34542df42c"
-          ],
-          "animations": [
-            "animation"
-          ],
-          "idleAnimation": "animation",
-          "durationSeconds": 0.347,
+          "idleAnimation": "scratch",
+          "durationSeconds": 0.167,
           "usable": true
         }
       ]
@@ -7401,8 +7523,10 @@
         "hidden_attack",
         "idle_loop"
       ],
-      "BELOW": [
-        "below",
+      "FROM_BELOW": [
+        "from_below",
+        "frombelow",
+        "from-below",
         "attack",
         "hidden_attack",
         "unburrow_attack",
@@ -8076,6 +8200,51 @@
         "wriggle",
         "attack",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "WUPPY",
+    "source": "animations/monsters/wuppy/wuppy",
+    "renderStatus": "spine",
+    "renderTags": [
+      "image-slug-alias"
+    ],
+    "atlasUrl": "/spine/sts2/monsters/wuppy/wuppy.atlas?v=cb63ccb9c9",
+    "binaryUrl": "/spine/sts2/monsters/wuppy/wuppy.skel?v=f2afa7837b",
+    "textureUrls": [
+      "/spine/sts2/monsters/wuppy/wuppy.png?v=7bb7ac930d"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_slam",
+      "attack_squirt",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "NOTHING": [
+        "nothing",
+        "idle_loop",
+        "attack_slam"
       ],
       "hurt": [
         "hurt",
