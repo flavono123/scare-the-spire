@@ -26134,5 +26134,4722 @@
         }
       }
     ]
+  },
+  {
+    "id": "axebot-v0-113-0-change",
+    "entityType": "monster",
+    "entityId": "AXEBOT",
+    "patch": "v0.113.0",
+    "date": "2026-11-13",
+    "character": null,
+    "summary": "Axebot HP is now a fixed value instead of a range: 70-78 -> 70 (76-86 -> 80 at Ascension 8).",
+    "summaryKo": "잘라봇 체력이 범위 대신 고정값이 되었습니다: 70-78 → 70 (승천 8: 76-86 → 80).",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "체력",
+        "before": "70-78 (76-86)",
+        "after": "70 (80)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "maxHp",
+        "before": 78,
+        "after": null
+      },
+      {
+        "field": "minHpAscension",
+        "before": 76,
+        "after": 80
+      },
+      {
+        "field": "maxHpAscension",
+        "before": 86,
+        "after": null
+      }
+    ]
+  },
+  {
+    "id": "infested-prism-v0-113-0-change",
+    "entityType": "monster",
+    "entityId": "INFESTED_PRISM",
+    "patch": "v0.113.0",
+    "date": "2026-11-13",
+    "character": null,
+    "summary": "Infested Prism no longer uses Radiate: its pattern is Jab, Jab, Whirlwind, Pulsate, and Pulsate applies 1 Vulnerable instead of gaining 20 (22) Block.",
+    "summaryKo": "감염된 프리즘이 더 이상 방출을 쓰지 않습니다. 패턴은 찌르기, 찌르기, 소용돌이, 맥박이고, 맥박은 방어도 20(22) 대신 취약을 1 부여합니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Jab, Radiate, Whirlwind, Pulsate. Pulsate gains 20(22) Block.",
+        "after": "Jab, Jab, Whirlwind, Pulsate. Pulsate applies 1 Vulnerable.",
+        "beforeKo": "찌르기, 방출, 소용돌이, 맥박. 맥박이 방어도 20(22) 획득",
+        "afterKo": "찌르기, 찌르기, 소용돌이, 맥박. 맥박이 취약 1 부여",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "JAB",
+            "name": "찌르기",
+            "nameEn": "Jab",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Jab",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RADIATE",
+            "name": "방출",
+            "nameEn": "Radiate",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Radiate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "WHIRLWIND",
+            "name": "소용돌이",
+            "nameEn": "Whirlwind",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Whirlwind",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PULSATE",
+            "name": "맥박",
+            "nameEn": "Pulsate",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Pulsate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "VITAL_SPARK",
+                "powerName": "생명의 불꽃",
+                "powerNameEn": "Vital Spark",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/vital_spark_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "JAB",
+            "name": "찌르기",
+            "nameEn": "Jab",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Jab",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "JAB_MOVE_2",
+            "name": "찌르기",
+            "nameEn": "Jab",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Jab",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "WHIRLWIND",
+            "name": "소용돌이",
+            "nameEn": "Whirlwind",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Whirlwind",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PULSATE",
+            "name": "맥박",
+            "nameEn": "Pulsate",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DebuffIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Pulsate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "VULNERABLE",
+                "powerName": "취약",
+                "powerNameEn": "Vulnerable",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/vulnerable_power.webp"
+              },
+              {
+                "powerId": "VITAL_SPARK",
+                "powerName": "생명의 불꽃",
+                "powerNameEn": "Vital Spark",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/vital_spark_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "JAB",
+            "name": "찌르기",
+            "nameEn": "Jab",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Jab",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RADIATE",
+            "name": "방출",
+            "nameEn": "Radiate",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Radiate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "WHIRLWIND",
+            "name": "소용돌이",
+            "nameEn": "Whirlwind",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Whirlwind",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PULSATE",
+            "name": "맥박",
+            "nameEn": "Pulsate",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Pulsate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "VITAL_SPARK",
+                "powerName": "생명의 불꽃",
+                "powerNameEn": "Vital Spark",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/vital_spark_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "JAB",
+            "name": "찌르기",
+            "nameEn": "Jab",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Jab",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "JAB_MOVE_2",
+            "name": "찌르기",
+            "nameEn": "Jab",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Jab",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "WHIRLWIND",
+            "name": "소용돌이",
+            "nameEn": "Whirlwind",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Whirlwind",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PULSATE",
+            "name": "맥박",
+            "nameEn": "Pulsate",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DebuffIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Pulsate",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "VULNERABLE",
+                "powerName": "취약",
+                "powerNameEn": "Vulnerable",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/vulnerable_power.webp"
+              },
+              {
+                "powerId": "VITAL_SPARK",
+                "powerName": "생명의 불꽃",
+                "powerNameEn": "Vital Spark",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/vital_spark_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "damageValues",
+        "before": {
+          "Jab": {
+            "normal": 15,
+            "ascension": 17
+          },
+          "Radiate": {
+            "normal": 11,
+            "ascension": 13
+          },
+          "Whirlwind": {
+            "normal": 5,
+            "ascension": 6
+          },
+          "Pulsate": {
+            "normal": 8,
+            "ascension": 10
+          }
+        },
+        "after": {
+          "Jab": {
+            "normal": 15,
+            "ascension": 17
+          },
+          "Whirlwind": {
+            "normal": 5,
+            "ascension": 6
+          },
+          "Pulsate": {
+            "normal": 8,
+            "ascension": 10
+          }
+        }
+      },
+      {
+        "field": "moveGraph",
+        "before": {
+          "initial": "JAB",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "JAB",
+              "to": "RADIATE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "RADIATE",
+              "to": "WHIRLWIND",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "WHIRLWIND",
+              "to": "PULSATE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "PULSATE",
+              "to": "JAB",
+              "chance": 100,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "JAB",
+              "kind": "move",
+              "next": "RADIATE"
+            },
+            {
+              "id": "RADIATE",
+              "kind": "move",
+              "next": "WHIRLWIND"
+            },
+            {
+              "id": "WHIRLWIND",
+              "kind": "move",
+              "next": "PULSATE"
+            },
+            {
+              "id": "PULSATE",
+              "kind": "move",
+              "next": "JAB"
+            }
+          ]
+        },
+        "after": {
+          "initial": "JAB",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "JAB",
+              "to": "JAB_MOVE_2",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "JAB_MOVE_2",
+              "to": "WHIRLWIND",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "WHIRLWIND",
+              "to": "PULSATE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "PULSATE",
+              "to": "JAB",
+              "chance": 100,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "JAB",
+              "kind": "move",
+              "next": "JAB_MOVE_2"
+            },
+            {
+              "id": "JAB_MOVE_2",
+              "kind": "move",
+              "next": "WHIRLWIND"
+            },
+            {
+              "id": "WHIRLWIND",
+              "kind": "move",
+              "next": "PULSATE"
+            },
+            {
+              "id": "PULSATE",
+              "kind": "move",
+              "next": "JAB"
+            }
+          ]
+        }
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "tunneler-v0-113-0-buff",
+    "entityType": "monster",
+    "entityId": "TUNNELER",
+    "patch": "v0.113.0",
+    "date": "2026-11-13",
+    "character": null,
+    "summary": "Tunneler's Attack from Below is renamed From Below and its damage increased from 23 to 24 (26 -> 28 at Ascension 9).",
+    "summaryKo": "땅굴충의 하단 공격이 지하 공격으로 이름이 바뀌고 피해량이 23 → 24 (승천 9: 26 → 28)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "23(26)",
+        "after": "24(28)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "BITE",
+            "name": "물기",
+            "nameEn": "Bite",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Bite",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BURROW",
+            "name": "땅굴 파기",
+            "nameEn": "Burrow",
+            "kind": "move",
+            "actionTypes": [
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "BuffIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "BURROWED",
+                "powerName": "잠복",
+                "powerNameEn": "Burrowed",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/burrowed_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "BELOW",
+            "name": "하단 공격",
+            "nameEn": "Attack from Below",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Below",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "DIZZY",
+            "name": "어지러움",
+            "nameEn": "Dizzy",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "StunIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StunIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "BITE",
+            "name": "물기",
+            "nameEn": "Bite",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Bite",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BURROW",
+            "name": "땅굴 파기",
+            "nameEn": "Burrow",
+            "kind": "move",
+            "actionTypes": [
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "BuffIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "BURROWED",
+                "powerName": "잠복",
+                "powerNameEn": "Burrowed",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/burrowed_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "FROM_BELOW",
+            "name": "지하 공격",
+            "nameEn": "From Below",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "FromBelow",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "DIZZY",
+            "name": "어지러움",
+            "nameEn": "Dizzy",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "StunIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StunIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "BITE",
+            "name": "물기",
+            "nameEn": "Bite",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Bite",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BURROW",
+            "name": "땅굴 파기",
+            "nameEn": "Burrow",
+            "kind": "move",
+            "actionTypes": [
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "BuffIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "BURROWED",
+                "powerName": "잠복",
+                "powerNameEn": "Burrowed",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/burrowed_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "BELOW",
+            "name": "하단 공격",
+            "nameEn": "Attack from Below",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Below",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "STUNNED",
+            "name": "기절함",
+            "nameEn": "Stunned",
+            "kind": "move",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "DIZZY",
+            "name": "어지러움",
+            "nameEn": "Dizzy",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "StunIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StunIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "BITE",
+            "name": "물기",
+            "nameEn": "Bite",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Bite",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BURROW",
+            "name": "땅굴 파기",
+            "nameEn": "Burrow",
+            "kind": "move",
+            "actionTypes": [
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "BuffIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "BURROWED",
+                "powerName": "잠복",
+                "powerNameEn": "Burrowed",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/burrowed_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "FROM_BELOW",
+            "name": "지하 공격",
+            "nameEn": "From Below",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "FromBelow",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "STUNNED",
+            "name": "기절함",
+            "nameEn": "Stunned",
+            "kind": "move",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "DIZZY",
+            "name": "어지러움",
+            "nameEn": "Dizzy",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "StunIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StunIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "damageValues",
+        "before": {
+          "Bite": {
+            "normal": 13,
+            "ascension": 15
+          },
+          "Below": {
+            "normal": 23,
+            "ascension": 26
+          }
+        },
+        "after": {
+          "Bite": {
+            "normal": 13,
+            "ascension": 15
+          },
+          "FromBelow": {
+            "normal": 24,
+            "ascension": 28
+          }
+        }
+      },
+      {
+        "field": "moveGraph",
+        "before": {
+          "initial": "BITE",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "BITE",
+              "to": "BURROW",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BURROW",
+              "to": "BELOW",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BELOW",
+              "to": "BELOW",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "DIZZY",
+              "to": "BITE",
+              "chance": 100,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "BITE",
+              "kind": "move",
+              "next": "BURROW"
+            },
+            {
+              "id": "BURROW",
+              "kind": "move",
+              "next": "BELOW"
+            },
+            {
+              "id": "BELOW",
+              "kind": "move",
+              "next": "BELOW"
+            },
+            {
+              "id": "DIZZY",
+              "kind": "move",
+              "next": "BITE"
+            }
+          ]
+        },
+        "after": {
+          "initial": "BITE",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "BITE",
+              "to": "BURROW",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BURROW",
+              "to": "FROM_BELOW",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "FROM_BELOW",
+              "to": "FROM_BELOW",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "DIZZY",
+              "to": "BITE",
+              "chance": 100,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "BITE",
+              "kind": "move",
+              "next": "BURROW"
+            },
+            {
+              "id": "BURROW",
+              "kind": "move",
+              "next": "FROM_BELOW"
+            },
+            {
+              "id": "FROM_BELOW",
+              "kind": "move",
+              "next": "FROM_BELOW"
+            },
+            {
+              "id": "DIZZY",
+              "kind": "move",
+              "next": "BITE"
+            }
+          ]
+        }
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "rocket-v0-113-0-change",
+    "entityType": "monster",
+    "entityId": "ROCKET",
+    "patch": "v0.113.0",
+    "date": "2026-11-13",
+    "character": null,
+    "summary": "Rocket's moves were renamed: Targeting Reticle -> Calculating, Precision Beam -> Precise Smash, Laser -> Rocket Claw.",
+    "summaryKo": "로켓의 행동 이름이 바뀌었습니다: 십자선 조준 → 계산, 정밀 광선 → 정교한 후려치기, 레이저 → 로켓 집게발.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Targeting Reticle, Precision Beam, Laser",
+        "after": "Calculating, Precise Smash, Rocket Claw",
+        "beforeKo": "십자선 조준, 정밀 광선, 레이저",
+        "afterKo": "계산, 정교한 후려치기, 로켓 집게발",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "TARGETING_RETICLE",
+            "name": "십자선 조준",
+            "nameEn": "Targeting Reticle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "TargetingReticle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PRECISION_BEAM",
+            "name": "정밀 광선",
+            "nameEn": "Precision Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "PrecisionBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "CHARGE_UP",
+            "name": "충전",
+            "nameEn": "Charge Up",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "LASER",
+            "name": "레이저",
+            "nameEn": "Laser",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Laser",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RECHARGE",
+            "name": "재충전",
+            "nameEn": "Recharge",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "SleepIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SleepIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "CALCULATING",
+            "name": "계산",
+            "nameEn": "Calculating",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Calculating",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PRECISE_SMASH",
+            "name": "정교한 후려치기",
+            "nameEn": "Precise Smash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "PreciseSmash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PRECISE_SMASH_MOVE_2",
+            "name": "정교한 후려치기",
+            "nameEn": "Precise Smash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "PreciseSmash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "CHARGE_UP",
+            "name": "충전",
+            "nameEn": "Charge Up",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "ROCKET_CLAW",
+            "name": "로켓 집게발",
+            "nameEn": "Rocket Claw",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "RocketClaw",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RECHARGE",
+            "name": "재충전",
+            "nameEn": "Recharge",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "SleepIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SleepIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "TARGETING_RETICLE",
+            "name": "십자선 조준",
+            "nameEn": "Targeting Reticle",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "TargetingReticle",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PRECISION_BEAM",
+            "name": "정밀 광선",
+            "nameEn": "Precision Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "PrecisionBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "CHARGE_UP",
+            "name": "충전",
+            "nameEn": "Charge Up",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "LASER",
+            "name": "레이저",
+            "nameEn": "Laser",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Laser",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RECHARGE",
+            "name": "재충전",
+            "nameEn": "Recharge",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "SleepIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SleepIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "CALCULATING",
+            "name": "계산",
+            "nameEn": "Calculating",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Calculating",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PRECISE_SMASH",
+            "name": "정교한 후려치기",
+            "nameEn": "Precise Smash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "PreciseSmash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PRECISE_SMASH_MOVE_2",
+            "name": "정교한 후려치기",
+            "nameEn": "Precise Smash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "PreciseSmash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "CHARGE_UP",
+            "name": "충전",
+            "nameEn": "Charge Up",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "ROCKET_CLAW",
+            "name": "로켓 집게발",
+            "nameEn": "Rocket Claw",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "RocketClaw",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RECHARGE",
+            "name": "재충전",
+            "nameEn": "Recharge",
+            "kind": "move",
+            "actionTypes": [
+              "special"
+            ],
+            "intents": [
+              "SleepIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SleepIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "damageValues",
+        "before": {
+          "TargetingReticle": {
+            "normal": 3,
+            "ascension": 4
+          },
+          "PrecisionBeam": {
+            "normal": 18,
+            "ascension": 20
+          },
+          "Laser": {
+            "normal": 31,
+            "ascension": 35
+          }
+        },
+        "after": {
+          "Calculating": {
+            "normal": 3,
+            "ascension": 4
+          },
+          "PreciseSmash": {
+            "normal": 18,
+            "ascension": 20
+          },
+          "RocketClaw": {
+            "normal": 31,
+            "ascension": 35
+          }
+        }
+      },
+      {
+        "field": "moveGraph",
+        "before": {
+          "initial": "TARGETING_RETICLE",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "TARGETING_RETICLE",
+              "to": "PRECISION_BEAM",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "PRECISION_BEAM",
+              "to": "CHARGE_UP",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "CHARGE_UP",
+              "to": "LASER",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "LASER",
+              "to": "RECHARGE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "RECHARGE",
+              "to": "TARGETING_RETICLE",
+              "chance": 100,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "TARGETING_RETICLE",
+              "kind": "move",
+              "next": "PRECISION_BEAM"
+            },
+            {
+              "id": "PRECISION_BEAM",
+              "kind": "move",
+              "next": "CHARGE_UP"
+            },
+            {
+              "id": "CHARGE_UP",
+              "kind": "move",
+              "next": "LASER"
+            },
+            {
+              "id": "LASER",
+              "kind": "move",
+              "next": "RECHARGE"
+            },
+            {
+              "id": "RECHARGE",
+              "kind": "move",
+              "next": "TARGETING_RETICLE"
+            }
+          ]
+        },
+        "after": {
+          "initial": "CALCULATING",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "CALCULATING",
+              "to": "PRECISE_SMASH",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "PRECISE_SMASH",
+              "to": "CHARGE_UP",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "CHARGE_UP",
+              "to": "ROCKET_CLAW",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "ROCKET_CLAW",
+              "to": "RECHARGE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "RECHARGE",
+              "to": "CALCULATING",
+              "chance": 100,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "CALCULATING",
+              "kind": "move",
+              "next": "PRECISE_SMASH"
+            },
+            {
+              "id": "PRECISE_SMASH",
+              "kind": "move",
+              "next": "CHARGE_UP"
+            },
+            {
+              "id": "PRECISE_SMASH_MOVE_2",
+              "kind": "move",
+              "next": null
+            },
+            {
+              "id": "CHARGE_UP",
+              "kind": "move",
+              "next": "ROCKET_CLAW"
+            },
+            {
+              "id": "ROCKET_CLAW",
+              "kind": "move",
+              "next": "RECHARGE"
+            },
+            {
+              "id": "RECHARGE",
+              "kind": "move",
+              "next": "CALCULATING"
+            }
+          ]
+        }
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "kin-follower-v0-113-0-change",
+    "entityType": "monster",
+    "entityId": "KIN_FOLLOWER",
+    "patch": "v0.113.0",
+    "date": "2026-11-13",
+    "character": null,
+    "summary": "Kin Followers now pick their first move by position: Power Dance, Quick Slash, then Boomerang.",
+    "summaryKo": "혈족 추종자의 첫 행동이 위치에 따라 강화의 춤, 전광석화, 부메랑 투척으로 정해집니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Opens with Power Dance or Quick Slash.",
+        "after": "Opens with Power Dance, Quick Slash or Boomerang by position.",
+        "beforeKo": "강화의 춤 또는 전광석화로 시작",
+        "afterKo": "위치에 따라 강화의 춤, 전광석화, 부메랑 투척으로 시작",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moveGraph",
+        "before": {
+          "initial": "POWER_DANCE",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "QUICK_SLASH",
+              "to": "BOOMERANG",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BOOMERANG",
+              "to": "POWER_DANCE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "POWER_DANCE",
+              "to": "QUICK_SLASH",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "__START__",
+              "to": "POWER_DANCE",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "StartsWithDance"
+            },
+            {
+              "from": "__START__",
+              "to": "QUICK_SLASH",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "!StartsWithDance"
+            }
+          ],
+          "states": [
+            {
+              "id": "QUICK_SLASH",
+              "kind": "move",
+              "next": "BOOMERANG"
+            },
+            {
+              "id": "BOOMERANG",
+              "kind": "move",
+              "next": "POWER_DANCE"
+            },
+            {
+              "id": "POWER_DANCE",
+              "kind": "move",
+              "next": "QUICK_SLASH"
+            }
+          ]
+        },
+        "after": {
+          "initial": "POWER_DANCE",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "QUICK_SLASH",
+              "to": "BOOMERANG",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BOOMERANG",
+              "to": "POWER_DANCE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "POWER_DANCE",
+              "to": "QUICK_SLASH",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "__START__",
+              "to": "POWER_DANCE",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "Index == 0"
+            },
+            {
+              "from": "__START__",
+              "to": "QUICK_SLASH",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "Index == 1"
+            },
+            {
+              "from": "__START__",
+              "to": "BOOMERANG",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "Index == 2"
+            }
+          ],
+          "states": [
+            {
+              "id": "QUICK_SLASH",
+              "kind": "move",
+              "next": "BOOMERANG"
+            },
+            {
+              "id": "BOOMERANG",
+              "kind": "move",
+              "next": "POWER_DANCE"
+            },
+            {
+              "id": "POWER_DANCE",
+              "kind": "move",
+              "next": "QUICK_SLASH"
+            }
+          ]
+        }
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "queen-v0-113-0-change",
+    "entityType": "monster",
+    "entityId": "QUEEN",
+    "patch": "v0.113.0",
+    "date": "2026-11-13",
+    "character": null,
+    "summary": "Queen gains an opening move used only in Dread mode.",
+    "summaryKo": "여왕에게 드레드 모드에서만 쓰는 첫 행동이 추가되었습니다.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "No Dread opening.",
+        "after": "Dread mode opens with Dread Initial.",
+        "beforeKo": "드레드 첫 행동 없음",
+        "afterKo": "드레드 모드에서 공포의 시작으로 시작",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "PUPPET_STRINGS",
+            "name": "Puppet Strings",
+            "nameEn": "Puppet Strings",
+            "kind": "move",
+            "actionTypes": [
+              "debuff"
+            ],
+            "intents": [
+              "CardDebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "CardDebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "CHAINS_OF_BINDING",
+                "powerName": "속박의 사슬",
+                "powerNameEn": "Chains of Binding",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/chains_of_binding_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "YOU_ARE_MINE",
+            "name": "너는 내 것이다",
+            "nameEn": "You Are Mine",
+            "kind": "move",
+            "actionTypes": [
+              "debuff"
+            ],
+            "intents": [
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "FRAIL",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 99,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              },
+              {
+                "powerId": "WEAK",
+                "powerName": "약화",
+                "powerNameEn": "Weak",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 99,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/weak_power.webp"
+              },
+              {
+                "powerId": "VULNERABLE",
+                "powerName": "취약",
+                "powerNameEn": "Vulnerable",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 99,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/vulnerable_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "BURN_BRIGHT_FOR_ME",
+            "name": "환하게 타올라라",
+            "nameEn": "Burn Bright for Me",
+            "kind": "move",
+            "actionTypes": [
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "BuffIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "unknown",
+                "amount": {
+                  "normal": 1,
+                  "ascension": 1
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "OFF_WITH_YOUR_HEAD",
+            "name": "목을 베어라",
+            "nameEn": "Off with Your Head",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "OffWithYourHead",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 5,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "EXECUTION",
+            "name": "처형",
+            "nameEn": "Execution",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Execution",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ENRAGE",
+            "name": "Enrage",
+            "nameEn": "Enrage",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "PUPPET_STRINGS",
+            "name": "Puppet Strings",
+            "nameEn": "Puppet Strings",
+            "kind": "move",
+            "actionTypes": [
+              "debuff"
+            ],
+            "intents": [
+              "CardDebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "CardDebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "CHAINS_OF_BINDING",
+                "powerName": "속박의 사슬",
+                "powerNameEn": "Chains of Binding",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/chains_of_binding_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "YOU_ARE_MINE",
+            "name": "너는 내 것이다",
+            "nameEn": "You Are Mine",
+            "kind": "move",
+            "actionTypes": [
+              "debuff"
+            ],
+            "intents": [
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "FRAIL",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 99,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              },
+              {
+                "powerId": "WEAK",
+                "powerName": "약화",
+                "powerNameEn": "Weak",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 99,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/weak_power.webp"
+              },
+              {
+                "powerId": "VULNERABLE",
+                "powerName": "취약",
+                "powerNameEn": "Vulnerable",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 99,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/vulnerable_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "DREAD_INITIAL",
+            "name": "공포의 시작",
+            "nameEn": "Dread Initial",
+            "kind": "move",
+            "actionTypes": [
+              "debuff"
+            ],
+            "intents": [
+              "CardDebuffIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "CardDebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "CHAINS_OF_BINDING",
+                "powerName": "속박의 사슬",
+                "powerNameEn": "Chains of Binding",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/chains_of_binding_power.webp"
+              },
+              {
+                "powerId": "FRAIL",
+                "powerName": "손상",
+                "powerNameEn": "Frail",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 99,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/frail_power.webp"
+              },
+              {
+                "powerId": "WEAK",
+                "powerName": "약화",
+                "powerNameEn": "Weak",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 99,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/weak_power.webp"
+              },
+              {
+                "powerId": "VULNERABLE",
+                "powerName": "취약",
+                "powerNameEn": "Vulnerable",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 99,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/vulnerable_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "BURN_BRIGHT_FOR_ME",
+            "name": "환하게 타올라라",
+            "nameEn": "Burn Bright for Me",
+            "kind": "move",
+            "actionTypes": [
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "BuffIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "unknown",
+                "amount": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "OFF_WITH_YOUR_HEAD",
+            "name": "목을 베어라",
+            "nameEn": "Off with Your Head",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "OffWithYourHead",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 5,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "EXECUTION",
+            "name": "처형",
+            "nameEn": "Execution",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Execution",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ENRAGE",
+            "name": "Enrage",
+            "nameEn": "Enrage",
+            "kind": "move",
+            "actionTypes": [
+              "buff"
+            ],
+            "intents": [
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "moveGraph",
+        "before": {
+          "initial": "PUPPET_STRINGS",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "PUPPET_STRINGS",
+              "to": "YOU_ARE_MINE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "YOU_ARE_MINE",
+              "to": "BURN_BRIGHT_FOR_ME",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "!HasAmalgamDied"
+            },
+            {
+              "from": "YOU_ARE_MINE",
+              "to": "OFF_WITH_YOUR_HEAD",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "HasAmalgamDied"
+            },
+            {
+              "from": "OFF_WITH_YOUR_HEAD",
+              "to": "EXECUTION",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "EXECUTION",
+              "to": "ENRAGE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BURN_BRIGHT_FOR_ME",
+              "to": "BURN_BRIGHT_FOR_ME",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "!HasAmalgamDied"
+            },
+            {
+              "from": "BURN_BRIGHT_FOR_ME",
+              "to": "OFF_WITH_YOUR_HEAD",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "HasAmalgamDied"
+            },
+            {
+              "from": "ENRAGE",
+              "to": "OFF_WITH_YOUR_HEAD",
+              "chance": 100,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "PUPPET_STRINGS",
+              "kind": "move",
+              "next": "YOU_ARE_MINE"
+            },
+            {
+              "id": "YOU_ARE_MINE",
+              "kind": "move",
+              "next": "YOURE_MINE_NOW_BRANCH"
+            },
+            {
+              "id": "YOURE_MINE_NOW_BRANCH",
+              "kind": "conditional",
+              "branches": [
+                {
+                  "to": "BURN_BRIGHT_FOR_ME",
+                  "condition": "!HasAmalgamDied"
+                },
+                {
+                  "to": "OFF_WITH_YOUR_HEAD",
+                  "condition": "HasAmalgamDied"
+                }
+              ]
+            },
+            {
+              "id": "BURN_BRIGHT_FOR_ME",
+              "kind": "move",
+              "next": "BURN_BRIGHT_FOR_ME_BRANCH"
+            },
+            {
+              "id": "BURN_BRIGHT_FOR_ME_BRANCH",
+              "kind": "conditional",
+              "branches": [
+                {
+                  "to": "BURN_BRIGHT_FOR_ME",
+                  "condition": "!HasAmalgamDied"
+                },
+                {
+                  "to": "OFF_WITH_YOUR_HEAD",
+                  "condition": "HasAmalgamDied"
+                }
+              ]
+            },
+            {
+              "id": "OFF_WITH_YOUR_HEAD",
+              "kind": "move",
+              "next": "EXECUTION"
+            },
+            {
+              "id": "EXECUTION",
+              "kind": "move",
+              "next": "ENRAGE"
+            },
+            {
+              "id": "ENRAGE",
+              "kind": "move",
+              "next": "OFF_WITH_YOUR_HEAD"
+            }
+          ]
+        },
+        "after": {
+          "initial": "PUPPET_STRINGS",
+          "confidence": "static",
+          "transitions": [
+            {
+              "from": "PUPPET_STRINGS",
+              "to": "YOU_ARE_MINE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "YOU_ARE_MINE",
+              "to": "BURN_BRIGHT_FOR_ME",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "!HasAmalgamDied"
+            },
+            {
+              "from": "YOU_ARE_MINE",
+              "to": "OFF_WITH_YOUR_HEAD",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "HasAmalgamDied"
+            },
+            {
+              "from": "DREAD_INITIAL",
+              "to": "BURN_BRIGHT_FOR_ME",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "!HasAmalgamDied"
+            },
+            {
+              "from": "DREAD_INITIAL",
+              "to": "OFF_WITH_YOUR_HEAD",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "HasAmalgamDied"
+            },
+            {
+              "from": "OFF_WITH_YOUR_HEAD",
+              "to": "EXECUTION",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "EXECUTION",
+              "to": "ENRAGE",
+              "chance": 100,
+              "kind": "fixed"
+            },
+            {
+              "from": "BURN_BRIGHT_FOR_ME",
+              "to": "BURN_BRIGHT_FOR_ME",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "!HasAmalgamDied"
+            },
+            {
+              "from": "BURN_BRIGHT_FOR_ME",
+              "to": "OFF_WITH_YOUR_HEAD",
+              "chance": null,
+              "kind": "conditional",
+              "condition": "HasAmalgamDied"
+            },
+            {
+              "from": "ENRAGE",
+              "to": "OFF_WITH_YOUR_HEAD",
+              "chance": 100,
+              "kind": "fixed"
+            }
+          ],
+          "states": [
+            {
+              "id": "PUPPET_STRINGS",
+              "kind": "move",
+              "next": "YOU_ARE_MINE"
+            },
+            {
+              "id": "YOU_ARE_MINE",
+              "kind": "move",
+              "next": "YOURE_MINE_NOW_BRANCH"
+            },
+            {
+              "id": "DREAD_INITIAL",
+              "kind": "move",
+              "next": "YOURE_MINE_NOW_BRANCH"
+            },
+            {
+              "id": "YOURE_MINE_NOW_BRANCH",
+              "kind": "conditional",
+              "branches": [
+                {
+                  "to": "BURN_BRIGHT_FOR_ME",
+                  "condition": "!HasAmalgamDied"
+                },
+                {
+                  "to": "OFF_WITH_YOUR_HEAD",
+                  "condition": "HasAmalgamDied"
+                }
+              ]
+            },
+            {
+              "id": "BURN_BRIGHT_FOR_ME",
+              "kind": "move",
+              "next": "BURN_BRIGHT_FOR_ME_BRANCH"
+            },
+            {
+              "id": "BURN_BRIGHT_FOR_ME_BRANCH",
+              "kind": "conditional",
+              "branches": [
+                {
+                  "to": "BURN_BRIGHT_FOR_ME",
+                  "condition": "!HasAmalgamDied"
+                },
+                {
+                  "to": "OFF_WITH_YOUR_HEAD",
+                  "condition": "HasAmalgamDied"
+                }
+              ]
+            },
+            {
+              "id": "OFF_WITH_YOUR_HEAD",
+              "kind": "move",
+              "next": "EXECUTION"
+            },
+            {
+              "id": "EXECUTION",
+              "kind": "move",
+              "next": "ENRAGE"
+            },
+            {
+              "id": "ENRAGE",
+              "kind": "move",
+              "next": "OFF_WITH_YOUR_HEAD"
+            }
+          ]
+        }
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "the-adversary-mk-one-v0-113-0-change",
+    "entityType": "monster",
+    "entityId": "THE_ADVERSARY_MK_ONE",
+    "patch": "v0.113.0",
+    "date": "2026-11-13",
+    "character": null,
+    "summary": "The Adversary's Barrage move has a new Korean name.",
+    "summaryKo": "적대자의 집중포화 행동 이름이 집중 공세로 바뀌었습니다.",
+    "diffs": [
+      {
+        "attribute": "name",
+        "displayName": "Move name",
+        "displayNameKo": "행동 이름",
+        "before": "집중포화",
+        "after": "집중 공세",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "SMASH",
+            "name": "후려치기",
+            "nameEn": "Smash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Smash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BEAM",
+            "name": "광선",
+            "nameEn": "Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Beam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중포화",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "SMASH",
+            "name": "후려치기",
+            "nameEn": "Smash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Smash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BEAM",
+            "name": "광선",
+            "nameEn": "Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Beam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중 공세",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "SMASH",
+            "name": "후려치기",
+            "nameEn": "Smash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Smash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BEAM",
+            "name": "광선",
+            "nameEn": "Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Beam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중포화",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "SMASH",
+            "name": "후려치기",
+            "nameEn": "Smash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Smash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BEAM",
+            "name": "광선",
+            "nameEn": "Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Beam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중 공세",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "the-adversary-mk-two-v0-113-0-change",
+    "entityType": "monster",
+    "entityId": "THE_ADVERSARY_MK_TWO",
+    "patch": "v0.113.0",
+    "date": "2026-11-13",
+    "character": null,
+    "summary": "The Adversary's Barrage move has a new Korean name.",
+    "summaryKo": "적대자의 집중포화 행동 이름이 집중 공세로 바뀌었습니다.",
+    "diffs": [
+      {
+        "attribute": "name",
+        "displayName": "Move name",
+        "displayNameKo": "행동 이름",
+        "before": "집중포화",
+        "after": "집중 공세",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "BASH",
+            "name": "강타",
+            "nameEn": "Bash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Bash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FLAME_BEAM",
+            "name": "화염 광선",
+            "nameEn": "Flame Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "FlameBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중포화",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "BASH",
+            "name": "강타",
+            "nameEn": "Bash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Bash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FLAME_BEAM",
+            "name": "화염 광선",
+            "nameEn": "Flame Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "FlameBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중 공세",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "BASH",
+            "name": "강타",
+            "nameEn": "Bash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Bash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FLAME_BEAM",
+            "name": "화염 광선",
+            "nameEn": "Flame Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "FlameBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중포화",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "BASH",
+            "name": "강타",
+            "nameEn": "Bash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Bash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FLAME_BEAM",
+            "name": "화염 광선",
+            "nameEn": "Flame Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "FlameBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중 공세",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
+  },
+  {
+    "id": "the-adversary-mk-three-v0-113-0-change",
+    "entityType": "monster",
+    "entityId": "THE_ADVERSARY_MK_THREE",
+    "patch": "v0.113.0",
+    "date": "2026-11-13",
+    "character": null,
+    "summary": "The Adversary's Barrage move has a new Korean name.",
+    "summaryKo": "적대자의 집중포화 행동 이름이 집중 공세로 바뀌었습니다.",
+    "diffs": [
+      {
+        "attribute": "name",
+        "displayName": "Move name",
+        "displayNameKo": "행동 이름",
+        "before": "집중포화",
+        "after": "집중 공세",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "CRASH",
+            "name": "충돌",
+            "nameEn": "Crash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Crash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FLAME_BEAM",
+            "name": "화염 광선",
+            "nameEn": "Flame Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "FlameBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중포화",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 4,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "CRASH",
+            "name": "충돌",
+            "nameEn": "Crash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Crash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FLAME_BEAM",
+            "name": "화염 광선",
+            "nameEn": "Flame Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "FlameBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중 공세",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 4,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "CRASH",
+            "name": "충돌",
+            "nameEn": "Crash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Crash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FLAME_BEAM",
+            "name": "화염 광선",
+            "nameEn": "Flame Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "FlameBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중포화",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 4,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "CRASH",
+            "name": "충돌",
+            "nameEn": "Crash",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Crash",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "FLAME_BEAM",
+            "name": "화염 광선",
+            "nameEn": "Flame Beam",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "FlameBeam",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "BARRAGE",
+            "name": "집중 공세",
+            "nameEn": "Barrage",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "MultiAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "Barrage",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 4,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          }
+        ]
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
   }
 ]
