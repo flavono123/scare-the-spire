@@ -31,8 +31,14 @@ export async function renderContactPage(
   const mailboxTitle = relicCopy["TINY_MAILBOX.title"]
     ?? (serviceLocale === "ko" ? "작은 우편함" : "Tiny Mailbox");
 
+  // DEV_TOOLS_BUILD is inlined at build time, so production builds drop this branch.
+  const devInbox = process.env.DEV_TOOLS_BUILD === "1"
+    ? await import("@/components/dev/contact-inbox-panel").then(({ ContactInboxPanel }) => <ContactInboxPanel />)
+    : null;
+
   return (
     <ContactPage
+      devInbox={devInbox}
       copy={contactMessages[serviceLocale]}
       feedbackCopy={feedbackCopy}
       mailboxTitle={mailboxTitle}

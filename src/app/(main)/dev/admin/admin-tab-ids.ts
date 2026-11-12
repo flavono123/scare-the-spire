@@ -1,5 +1,4 @@
 export const ADMIN_TAB_IDS = [
-  "contact",
   "metrics",
   "authors",
   "comments",

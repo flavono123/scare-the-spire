@@ -26,10 +26,6 @@ export default async function SupabaseAdminPage({ searchParams }: SupabaseAdminP
         import("./admin-dev-page"),
       ]);
     const params = await searchParams;
-    const contactSave = params.contactSave;
-    const contactSaveResult = contactSave === "saved" || contactSave === "error"
-      ? contactSave
-      : undefined;
     const nicksSave = params.nicksSave;
     const nicksSaveResult = nicksSave === "saved" || nicksSave === "error" || nicksSave === "invalid"
       ? nicksSave
@@ -38,7 +34,6 @@ export default async function SupabaseAdminPage({ searchParams }: SupabaseAdminP
     const comments = typeof params.comments === "string" ? params.comments : undefined;
     return (
       <SupabaseAdminDevPage
-        contactSaveResult={contactSaveResult}
         nicksSaveResult={nicksSaveResult}
         postService={isAdminPostService(posts) ? posts : null}
         commentService={isAdminCommentService(comments) ? comments : null}
