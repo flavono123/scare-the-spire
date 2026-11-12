@@ -110,6 +110,26 @@ def extract_braced_block(text: str, opening_brace: int) -> tuple[str, int] | Non
     return None
 
 
+_DREAD_IF_RE = re.compile(r"if\s*\(\s*AscensionHelper\.IsDread\(\)\s*\)\s*")
+
+
+def strip_dread_branches(text: str) -> str:
+    """Keep the non-Dread side of `if (AscensionHelper.IsDread()) { … } [else { … }]` (v0.113.0)."""
+    while match := _DREAD_IF_RE.search(text):
+        dread = extract_braced_block(text, match.end())
+        if dread is None:
+            break
+        _, end = dread
+        else_match = re.match(r"\s*else\s*", text[end:])
+        normal = ""
+        if else_match:
+            else_block = extract_braced_block(text, end + else_match.end())
+            if else_block is not None:
+                normal, end = else_block
+        text = text[: match.start()] + normal + text[end:]
+    return text
+
+
 def parse_monster_arrays(text: str) -> dict[str, list[str]]:
     arrays: dict[str, list[str]] = {}
     for match in _MONSTER_ARRAY_RE.finditer(text):
@@ -621,7 +641,7 @@ def build_entries(
         deprecated_only = ent_id not in loc_kor_by_id and ent_id not in loc_eng_by_id
         cs = find_encounter_class(source_root, ent_id)
         if cs is not None:
-            meta = parse_encounter_meta(cs.read_text())
+            meta = parse_encounter_meta(strip_dread_branches(cs.read_text()))
         else:
             meta = {
                 "room_type": "Monster",

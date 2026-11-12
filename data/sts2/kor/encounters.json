@@ -3627,22 +3627,10 @@
             "KIN_FOLLOWER"
           ],
           [
-            "KIN_FOLLOWER"
-          ],
-          [
-            "KIN_FOLLOWER"
-          ],
-          [
-            "KIN_FOLLOWER"
-          ],
-          [
             "KIN_PRIEST"
           ]
         ],
         "slot_names": [
-          "slot1",
-          "slot2",
-          "slot3",
           "slot1",
           "slot2",
           "leaderSlot"
