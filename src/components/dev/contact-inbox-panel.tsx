@@ -1,5 +1,6 @@
 import "server-only";
 
+import { ContactInboxEnvTabs } from "./contact-inbox-env-tabs";
 import { revalidatePath } from "next/cache";
 import type {
   ContactCategory,
@@ -96,10 +97,15 @@ export async function ContactInboxPanel() {
             <code>SUPABASE_SECRET_KEY</code>를 서버 환경에 설정하면 문의를 조회하고 답변할 수 있습니다.
           </div>
         ) : (
-          <div className="grid gap-6 xl:grid-cols-2">
-            {(["production", "development"] as const).map((env) => {
-              const rows = contactRows.filter((inquiry) => inquiry.env === env);
-              return (
+          <ContactInboxEnvTabs
+            counts={{
+              production: contactRows.filter((i) => i.env === "production").length,
+              development: contactRows.filter((i) => i.env === "development").length,
+            }}
+            panels={Object.fromEntries(
+              (["production", "development"] as const).map((env) => [env, (() => {
+                const rows = contactRows.filter((inquiry) => inquiry.env === env);
+                return (
                 <div key={env}>
                   <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
                     <span className={env === "production" ? "text-emerald-300" : "text-sky-300"}>
@@ -178,9 +184,10 @@ export async function ContactInboxPanel() {
                     )}
                   </div>
                 </div>
-              );
-            })}
-          </div>
+                );
+              })()]),
+            ) as Record<"production" | "development", React.ReactNode>}
+          />
         )}
     </div>
   );

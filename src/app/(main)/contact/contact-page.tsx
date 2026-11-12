@@ -124,7 +124,7 @@ export default function ContactPage({
       <main
         data-contact-page
         data-auth-ready={authReady ? "true" : "false"}
-        className="relative mx-auto w-full max-w-3xl"
+        className={`relative mx-auto w-full ${devInbox && devTab === "inbox" ? "max-w-6xl" : "max-w-3xl"}`}
       >
         <header className="mb-5 flex items-center gap-4 sm:mb-7">
           <span className="relative flex h-20 w-20 shrink-0 items-center justify-center sm:h-24 sm:w-24">
