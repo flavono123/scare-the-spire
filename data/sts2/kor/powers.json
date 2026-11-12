@@ -426,7 +426,7 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/conductors_baton_power.png",
+    "image_url": null,
     "vars": {
       "DamageDecrease": 0.75
     }
@@ -1229,7 +1229,7 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/free_card_power.png",
+    "image_url": null,
     "vars": {}
   },
   {
@@ -1697,7 +1697,7 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/ki_verse_power.png",
+    "image_url": null,
     "vars": {}
   },
   {
@@ -1924,7 +1924,7 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/mythic_form_power.png",
+    "image_url": null,
     "vars": {
       "Upgraded": 0
     }
@@ -2270,7 +2270,7 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/quietus_power.png",
+    "image_url": null,
     "vars": {}
   },
   {
@@ -2577,7 +2577,7 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/show_off_power.png",
+    "image_url": null,
     "vars": {}
   },
   {
@@ -3457,7 +3457,7 @@
     "type": "Debuff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/you_are_mine_power.png",
+    "image_url": null,
     "vars": {}
   }
 ]

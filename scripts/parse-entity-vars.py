@@ -43,6 +43,8 @@ DEFAULT_NAMES: dict[str, str] = {
     "RepeatVar": "Repeat",
     "SummonVar": "Summon",
     "HpLossVar": "HpLoss",
+    "HitCountVar": "HitCount",
+    "OstyDamageVar": "OstyDamage",
 }
 
 # Entity kinds we know how to extract.
