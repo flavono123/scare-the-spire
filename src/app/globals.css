@@ -1387,16 +1387,20 @@
 .character-regent { color: #fb923c; }
 .character-necrobinder { color: #f472b6; }
 .character-defect { color: #22d3ee; }
+/* The Fool: StsColors.yellow (#FFFA72); light mode needs a darker yellow for contrast. */
+.character-fool { color: #fffa72; }
 .light .character-ironclad { color: #dc2626; }
 .light .character-silent { color: #047857; }
 .light .character-regent { color: #c2410c; }
 .light .character-necrobinder { color: #be185d; }
 .light .character-defect { color: #0e7490; }
+.light .character-fool { color: #a16207; }
 .dark .character-ironclad { color: #f87171; }
 .dark .character-silent { color: #34d399; }
 .dark .character-regent { color: #fb923c; }
 .dark .character-necrobinder { color: #f472b6; }
 .dark .character-defect { color: #22d3ee; }
+.dark .character-fool { color: #fffa72; }
 
 /* History Course YouTube-style cover phrase */
 .cover-phrase-outline {

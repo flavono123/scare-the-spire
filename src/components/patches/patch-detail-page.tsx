@@ -177,6 +177,7 @@ const CHARACTER_HEADING_COLORS = {
   REGENT: "regent",
   NECROBINDER: "necrobinder",
   DEFECT: "defect",
+  FOOL: "fool",
 } as const;
 
 function ancientRelicAliases(ownerName: string, relicName: string): string[] {

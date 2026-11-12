@@ -79,6 +79,7 @@ const AFFILIATION_ICONS: Partial<Record<EpochAffiliation, string>> = {
   regent: getCharacterTokenIcon("regent", "/images/sts2/characters/character_icon_regent.webp"),
   necrobinder: getCharacterTokenIcon("necrobinder", "/images/sts2/characters/character_icon_necrobinder.webp"),
   defect: getCharacterTokenIcon("defect", "/images/sts2/characters/character_icon_defect.webp"),
+  fool: getCharacterTokenIcon("fool", "/images/sts2/characters/character_icon_fool.webp"),
   neow: "/images/sts2/run-history/neow.png",
   darv: "/images/sts2/run-history/darv.png",
   orobas: "/images/sts2/run-history/orobas.png",

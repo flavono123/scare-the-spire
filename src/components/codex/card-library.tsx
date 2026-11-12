@@ -73,8 +73,8 @@ interface EngagementSortState {
 }
 
 const COLOR_SORT_ORDER: Record<string, number> = {
-  ironclad: 0, silent: 1, defect: 2, necrobinder: 3, regent: 4,
-  colorless: 5, ancient: 6, status: 7, curse: 8, event: 9, quest: 10, token: 11,
+  ironclad: 0, silent: 1, defect: 2, necrobinder: 3, regent: 4, fool: 5,
+  colorless: 6, ancient: 7, status: 8, curse: 9, event: 10, quest: 11, token: 12,
 };
 
 const TYPE_SORT_ORDER: Record<string, number> = {

@@ -838,6 +838,7 @@ const VARIANT_SUFFIX_TO_POOL: Record<string, RelicPool> = {
   necro: "necrobinder",
   necrobinder: "necrobinder",
   regent: "regent",
+  fool: "fool",
 };
 
 type RelicIconVariantSource = Omit<RelicIconVariant, "imageUrl"> & {
@@ -953,7 +954,7 @@ async function scanRelicVariants(): Promise<Map<string, Partial<Record<RelicPool
   const variants = new Map<string, Partial<Record<RelicPool, string>>>();
 
   for (const file of files) {
-    const match = file.match(/^(.+?)_(ironclad|silent|defect|necro|necrobinder|regent)\.webp$/);
+    const match = file.match(/^(.+?)_(ironclad|silent|defect|necro|necrobinder|regent|fool)\.webp$/);
     if (!match) continue;
     const [, baseName, suffix] = match;
     const pool = VARIANT_SUFFIX_TO_POOL[suffix];
@@ -1086,10 +1087,12 @@ const CHARACTER_SLUGS: Record<string, string> = {
   REGENT: "regent",
   NECROBINDER: "necrobinder",
   DEFECT: "defect",
+  FOOL: "fool",
 };
 const CHARACTER_SELECT_BACKGROUNDS: Record<string, string> = {
   SILENT: "/images/sts2/character-select/character_select_silent_bg.webp",
   NECROBINDER: "/images/sts2/character-select/character_select_necrobinder_bg.webp",
+  FOOL: "/images/sts2/character-select/character_select_fool_bg.webp",
 };
 const CHARACTER_SELECT_VFX_IMAGES: Record<string, string[]> = {
   NECROBINDER: [
@@ -1174,16 +1177,21 @@ function mapCharacterQuotes(
     const fallback = selected ?? character.quotes[key] ?? eng.quotes[key] ?? "";
     return String(fallback);
   };
+  // The game ships "TODO" for quotes it has not written yet (The Fool, v0.113.0).
+  const quoteText = (key: string, fallback: string): string => {
+    const text = gameText(gameCharacters, `${character.id}.${key}`, fallback);
+    return text === "TODO" ? "" : text;
+  };
 
   return {
-    eventDeathPrevention: gameText(gameCharacters, `${character.id}.eventDeathPrevention`, quoteFallback("event_death_prevention")),
-    goldMonologue: gameText(gameCharacters, `${character.id}.goldMonologue`, quoteFallback("gold_monologue")),
-    aromaPrinciple: gameText(gameCharacters, `${character.id}.aromaPrinciple`, quoteFallback("aroma_principle")),
-    banterAlive: gameText(gameCharacters, `${character.id}.banter.alive.endTurnPing`, quoteFallback("banter_alive")),
-    banterDead: gameText(gameCharacters, `${character.id}.banter.dead.endTurnPing`, quoteFallback("banter_dead")),
-    unlockText: gameText(gameCharacters, `${character.id}.unlockText`, quoteFallback("unlock_text")) || null,
-    cardsModifierTitle: gameText(gameCharacters, `${character.id}.cardsModifierTitle`, quoteFallback("cards_modifier_title")),
-    cardsModifierDescription: gameText(gameCharacters, `${character.id}.cardsModifierDescription`, quoteFallback("cards_modifier_description")),
+    eventDeathPrevention: quoteText("eventDeathPrevention", quoteFallback("event_death_prevention")),
+    goldMonologue: quoteText("goldMonologue", quoteFallback("gold_monologue")),
+    aromaPrinciple: quoteText("aromaPrinciple", quoteFallback("aroma_principle")),
+    banterAlive: quoteText("banter.alive.endTurnPing", quoteFallback("banter_alive")),
+    banterDead: quoteText("banter.dead.endTurnPing", quoteFallback("banter_dead")),
+    unlockText: quoteText("unlockText", quoteFallback("unlock_text")) || null,
+    cardsModifierTitle: quoteText("cardsModifierTitle", quoteFallback("cards_modifier_title")),
+    cardsModifierDescription: quoteText("cardsModifierDescription", quoteFallback("cards_modifier_description")),
   };
 }
 
@@ -1597,6 +1605,7 @@ const EPOCH_CHARACTER_STORY_IDS: Record<string, EpochAffiliation> = {
   Defect: "defect",
   Necrobinder: "necrobinder",
   Regent: "regent",
+  Fool: "fool",
 };
 
 const EPOCH_ANCIENT_AFFILIATIONS = [
@@ -2237,6 +2246,8 @@ function ancientCharacterGender(group: string): string {
     case "Necrobinder":
       return "feminine";
     case "Defect":
+    // The Fool is CharacterGender.Tree; speakers default to the neutral guess.
+    case "Fool":
     case "First Visit":
     case "Returning":
       return "neutral";

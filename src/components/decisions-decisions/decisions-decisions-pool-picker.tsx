@@ -104,6 +104,7 @@ const EPOCH_AFFILIATION_ICONS: Record<string, string> = {
   regent: CHARACTER_TOKEN_ICONS.regent,
   necrobinder: CHARACTER_TOKEN_ICONS.necrobinder,
   defect: CHARACTER_TOKEN_ICONS.defect,
+  fool: CHARACTER_TOKEN_ICONS.fool,
   neow: "/images/sts2/run-history/neow.png",
   darv: "/images/sts2/run-history/darv.png",
   orobas: "/images/sts2/run-history/orobas.png",

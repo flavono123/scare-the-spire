@@ -34,6 +34,10 @@ assert.equal(migrated.paletteId, null);
 assert.equal(migrated.paletteSwapped, false);
 assert.equal(migrated.nicknameLocked, false);
 assert.equal(profileAvatarTokenUrl(migrated), "/images/sts2/characters/character_icon_necrobinder.webp");
+assert.equal(
+  profileAvatarTokenUrl(normalizeUserProfile({ ...DEFAULT_USER_PROFILE, characterId: "FOOL", avatarId: "FOOL" })),
+  "/images/sts2/characters/character_icon_fool.webp",
+);
 
 const locked = normalizeUserProfile({
   ...DEFAULT_USER_PROFILE,

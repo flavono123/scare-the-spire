@@ -49,6 +49,7 @@ const INACTIVE_FRAME: Record<
 const SELECT_BACKGROUNDS: Record<string, string> = {
   silent: "/images/sts2/character-select/character_select_silent_bg.webp",
   necrobinder: "/images/sts2/character-select/character_select_necrobinder_bg.webp",
+  fool: "/images/sts2/character-select/character_select_fool_bg.webp",
 };
 
 export function coverCharacterSelectBackgroundSrc(

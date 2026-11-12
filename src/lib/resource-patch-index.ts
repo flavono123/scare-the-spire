@@ -52,7 +52,7 @@ export interface ResourcePatchIndexData {
   staticStories: Story[];
 }
 
-const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "REGENT", "NECROBINDER", "DEFECT"];
+const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "REGENT", "NECROBINDER", "DEFECT", "FOOL"];
 const RESOURCE_TYPES = new Set<StoryEntityType>(RESOURCE_PATCH_GROUP_ORDER);
 
 function isResourceType(type: EntityInfo["type"] | string): type is StoryEntityType {

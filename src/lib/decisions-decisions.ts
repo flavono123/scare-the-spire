@@ -264,6 +264,7 @@ export const CARD_POOL_MINORS = [
   "defect",
   "necrobinder",
   "regent",
+  "fool",
   "colorless",
 ] as const satisfies readonly CardColor[];
 
@@ -274,6 +275,7 @@ export const CARD_AFFILIATION_MINORS = [
   "defect",
   "necrobinder",
   "regent",
+  "fool",
   "colorless",
   "ancient",
   "status",
@@ -290,6 +292,7 @@ export const RELIC_POOL_MINORS = [
   "defect",
   "necrobinder",
   "regent",
+  "fool",
 ] as const satisfies readonly RelicPool[];
 
 export const RELIC_AFFILIATION_MINORS = [
@@ -298,6 +301,7 @@ export const RELIC_AFFILIATION_MINORS = [
   "defect",
   "necrobinder",
   "regent",
+  "fool",
   "shared",
   "event",
 ] as const satisfies readonly (RelicPool | "event")[];
@@ -310,6 +314,7 @@ export const POTION_POOL_MINORS = [
   "defect",
   "necrobinder",
   "regent",
+  "fool",
   "event",
 ] as const satisfies readonly (PotionPool | "all")[];
 
@@ -319,6 +324,7 @@ export const POTION_AFFILIATION_MINORS = [
   "defect",
   "necrobinder",
   "regent",
+  "fool",
   "shared",
   "event",
 ] as const satisfies readonly PotionPool[];
@@ -398,6 +404,7 @@ export const DECISIONS_DECISIONS_PRESET_DEFS: readonly DecisionsDecisionsPresetD
   { key: "cards-defect", kind: "cards", color: "defect" },
   { key: "cards-necrobinder", kind: "cards", color: "necrobinder" },
   { key: "cards-regent", kind: "cards", color: "regent" },
+  { key: "cards-fool", kind: "cards", color: "fool" },
   { key: "cards-colorless", kind: "cards", color: "colorless" },
   { key: "relics-shared", kind: "relics", pool: "shared" },
   { key: ALL_ANCIENT_RELICS_PRESET_KEY, kind: "ancient-relics" },

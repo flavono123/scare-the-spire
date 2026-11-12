@@ -1,13 +1,14 @@
 import type { CodexRelic, RelicPool } from "@/lib/codex-types";
 import { characterPoolSlug } from "@/lib/user-profile";
 
-/** Game character order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트 */
+/** Game character order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트, 풀 */
 export const RELIC_CHARACTER_VARIANT_ORDER: RelicPool[] = [
   "ironclad",
   "silent",
   "regent",
   "necrobinder",
   "defect",
+  "fool",
 ];
 
 export function relicPoolFromCharacterId(characterId: string): RelicPool {

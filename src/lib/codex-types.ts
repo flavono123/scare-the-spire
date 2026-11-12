@@ -12,6 +12,7 @@ export type CardColor =
   | "defect"
   | "necrobinder"
   | "regent"
+  | "fool"
   | "colorless"
   | "curse"
   | "event"
@@ -32,7 +33,7 @@ export type CardRarityKo =
   | "상태이상"
   | "퀘스트";
 
-export type CharacterColor = "red" | "green" | "blue" | "purple" | "orange";
+export type CharacterColor = "red" | "green" | "blue" | "purple" | "orange" | "yellow";
 
 export interface CodexCard extends CodexLifecycle {
   id: string;
@@ -221,6 +222,7 @@ export type CardFilterCategory =
   | "defect"
   | "necrobinder"
   | "regent"
+  | "fool"
   | "colorless"
   | "token"
   | "event"
@@ -236,6 +238,7 @@ export const COLOR_LABELS: Record<CardFilterCategory, string> = {
   defect: "디펙트",
   necrobinder: "네크로바인더",
   regent: "리젠트",
+  fool: "풀",
   colorless: "무색",
   token: "토큰",
   event: "이벤트",
@@ -262,6 +265,8 @@ export const COLOR_ALIASES: Record<string, CardFilterCategory> = {
   리젠: "regent",
   리젠트: "regent",
   regent: "regent",
+  풀: "fool",
+  fool: "fool",
   무색: "colorless",
   colorless: "colorless",
   토큰: "token",
@@ -295,7 +300,8 @@ export type RelicPool =
   | "silent"
   | "defect"
   | "necrobinder"
-  | "regent";
+  | "regent"
+  | "fool";
 
 export interface CodexRelic extends CodexLifecycle {
   id: string;
@@ -379,7 +385,7 @@ export const RELIC_RARITY_DESCRIPTIONS: Record<RelicRarityKo, string> = {
 };
 
 // Pool filter for relics (character or shared)
-export type RelicFilterPool = "shared" | "ironclad" | "silent" | "defect" | "necrobinder" | "regent";
+export type RelicFilterPool = "shared" | "ironclad" | "silent" | "defect" | "necrobinder" | "regent" | "fool";
 
 export const POOL_LABELS: Record<RelicFilterPool, string> = {
   shared: "공용",
@@ -388,6 +394,7 @@ export const POOL_LABELS: Record<RelicFilterPool, string> = {
   defect: "디펙트",
   necrobinder: "네크로바인더",
   regent: "리젠트",
+  fool: "풀",
 };
 
 export const POOL_ALIASES: Record<string, RelicFilterPool> = {
@@ -408,6 +415,8 @@ export const POOL_ALIASES: Record<string, RelicFilterPool> = {
   리젠: "regent",
   리젠트: "regent",
   regent: "regent",
+  풀: "fool",
+  fool: "fool",
 };
 
 export const RARITY_ALIASES: Record<string, RelicRarityKo> = {
@@ -437,6 +446,7 @@ export type PotionPool =
   | "defect"
   | "necrobinder"
   | "regent"
+  | "fool"
   | "event";
 
 export interface CodexPotion extends CodexLifecycle {
@@ -748,6 +758,7 @@ export type EpochAffiliation =
   | "defect"
   | "necrobinder"
   | "regent"
+  | "fool"
   | "darv"
   | "neow"
   | "nonupeipe"
@@ -822,6 +833,7 @@ export const EPOCH_AFFILIATION_ORDER: EpochAffiliation[] = [
   "regent",
   "necrobinder",
   "defect",
+  "fool",
   "neow",
   "darv",
   "orobas",
@@ -878,7 +890,7 @@ export const TYPE_ALIASES: Record<string, CardTypeKo> = {
 };
 
 // Character color mapping (aligned with dev/text-effects reference)
-export const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "REGENT", "NECROBINDER", "DEFECT"];
+export const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "REGENT", "NECROBINDER", "DEFECT", "FOOL"];
 
 export const CHARACTER_COLORS: Record<string, string> = {
   ironclad: "#f87171",
@@ -886,6 +898,7 @@ export const CHARACTER_COLORS: Record<string, string> = {
   defect: "#22d3ee",
   necrobinder: "#f472b6",
   regent: "#fb923c",
+  fool: "#fffa72",
 };
 
 /**

@@ -16,6 +16,7 @@ const CHARACTER_LABELS: Record<ServiceLocale, Record<string, string>> = {
     "CHARACTER.DEFECT": "디펙트",
     "CHARACTER.NECROBINDER": "네크로바인더",
     "CHARACTER.REGENT": "리젠트",
+    "CHARACTER.FOOL": "풀",
   },
   en: {
     "CHARACTER.IRONCLAD": "Ironclad",
@@ -23,6 +24,7 @@ const CHARACTER_LABELS: Record<ServiceLocale, Record<string, string>> = {
     "CHARACTER.DEFECT": "Defect",
     "CHARACTER.NECROBINDER": "Necrobinder",
     "CHARACTER.REGENT": "Regent",
+    "CHARACTER.FOOL": "The Fool",
   },
 };
 
@@ -32,6 +34,7 @@ export const HISTORY_RUN_CHARACTER_PORTRAITS: Record<string, string> = {
   "CHARACTER.DEFECT": "/images/sts2/characters/char_select_defect.webp",
   "CHARACTER.NECROBINDER": "/images/sts2/characters/char_select_necrobinder.webp",
   "CHARACTER.REGENT": "/images/sts2/characters/char_select_regent.webp",
+  "CHARACTER.FOOL": "/images/sts2/characters/char_select_fool.webp",
 };
 
 export const HISTORY_COURSE_RELIC_IMAGE = "/images/sts2/relics/history_course.webp";
