@@ -651,7 +651,12 @@ function checkStaticMetadataAssets(): number {
   return staticMetadataAssets.length;
 }
 
-function checkCloudflareAssetLimits(): { count: number; largestBytes: number; largestPath: string } {
+function checkCloudflareAssetLimits(): {
+  count: number;
+  largestBytes: number;
+  largestPath: string;
+  groups: Record<string, number>;
+} {
   const files = walkFiles(assetsRoot);
   // The same-origin API owns /api (docs/supabase-exit/STEP1_DESIGN.md 4.1).
   const apiAsset = files.find((file) => path.relative(assetsRoot, file).split(path.sep)[0] === "api");
@@ -669,7 +674,12 @@ function checkCloudflareAssetLimits(): { count: number; largestBytes: number; la
 
   let largestBytes = 0;
   let largestPath = "";
+  // Files per first three directory segments, read by `pnpm cf:limits` from the deploy log.
+  const groups: Record<string, number> = {};
   for (const file of files) {
+    const dirs = path.relative(assetsRoot, path.dirname(file)).split(path.sep).filter(Boolean);
+    const group = dirs.slice(0, 3).join("/") || "(root)";
+    groups[group] = (groups[group] ?? 0) + 1;
     const size = statSync(file).size;
     assert(
       size <= maxAssetBytes,
@@ -681,7 +691,8 @@ function checkCloudflareAssetLimits(): { count: number; largestBytes: number; la
     }
   }
 
-  return { count: files.length, largestBytes, largestPath };
+  const sortedGroups = Object.fromEntries(Object.entries(groups).sort((a, b) => b[1] - a[1]));
+  return { count: files.length, largestBytes, largestPath, groups: sortedGroups };
 }
 
 const routeCounts = checkServiceLocaleDetails();
@@ -706,6 +717,7 @@ console.log(
     + `${formatCount(maxAssetFiles)} limit (headroom ${formatCount(assetFileBudget - assetStats.count)} to budget, `
     + `${formatCount(maxAssetFiles - assetStats.count)} to limit)`,
 );
+console.log(`Cloudflare static asset groups: ${JSON.stringify(assetStats.groups)}`);
 console.log(
   `Largest Cloudflare static asset: ${(assetStats.largestBytes / 1024 / 1024).toFixed(2)} MiB (${assetStats.largestPath})`,
 );
