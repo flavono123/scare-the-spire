@@ -70,6 +70,10 @@ export interface CodexCard extends CodexLifecycle {
     upgrade: Record<string, string | number>;
     maxLevel: number;
     imageUrls?: string[]; // index 0 is base art; the last entry repeats for higher levels
+    /** Extra amount added on the n-th upgrade, times n (Dingy Dagger: +3, then +1 more each level). */
+    upgradeRamp?: number;
+    /** Game title per upgrade stage, from `<ID>.title.<stage>`; the last stage whose minLevel is reached wins. */
+    titles?: { minLevel: number; name: string }[];
   };
   imageUrl: string | null; // local path
   betaImageUrl: string | null; // local path

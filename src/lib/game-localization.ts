@@ -11,6 +11,22 @@ const LOCALIZATION_DIR = path.join(process.cwd(), "data/sts2/localization");
 
 const tableCache = new Map<string, Promise<GameLocalizationTable>>();
 
+/**
+ * Cards whose CardModel.Title switches by upgrade level ship only `<ID>.title.<stage>`.
+ * Alias the base stage to `<ID>.title` so every name lookup resolves.
+ */
+export const STAGED_CARD_TITLE_BASE: Record<string, string> = {
+  DINGY_DAGGER: "dingy",
+};
+
+function withStagedCardTitles(table: GameLocalizationTable): GameLocalizationTable {
+  for (const [id, stage] of Object.entries(STAGED_CARD_TITLE_BASE)) {
+    const staged = table[`${id}.title.${stage}`];
+    if (staged && !table[`${id}.title`]) table[`${id}.title`] = staged;
+  }
+  return table;
+}
+
 export async function readGameLocalizationTable(
   locale: GameLocale,
   tableName: string,
@@ -21,7 +37,8 @@ export async function readGameLocalizationTable(
 
   const tablePromise = fs
     .readFile(path.join(LOCALIZATION_DIR, locale, `${tableName}.json`), "utf-8")
-    .then((raw) => JSON.parse(tableName === "monsters" ? stripNameCounterPlaceholder(raw) : raw) as GameLocalizationTable);
+    .then((raw) => JSON.parse(tableName === "monsters" ? stripNameCounterPlaceholder(raw) : raw) as GameLocalizationTable)
+    .then((table) => (tableName === "cards" ? withStagedCardTitles(table) : table));
 
   tableCache.set(cacheKey, tablePromise);
   return tablePromise;

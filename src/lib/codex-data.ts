@@ -160,7 +160,47 @@ const CARD_SPECIAL_UPGRADES: Record<string, NonNullable<CodexCard["specialUpgrad
       "/images/sts2/cards/wither3.webp",
     ],
   },
+  // DingyDagger.OnUpgrade adds 3 + CurrentUpgradeLevel damage (7, 11, 16, 22...);
+  // its title and portrait switch at upgrade 3 (fine) and 6 (pristine).
+  DINGY_DAGGER: {
+    upgrade: { damage: "+3" },
+    upgradeRamp: 1,
+    maxLevel: 99,
+    imageUrls: [
+      "/images/sts2/cards/dingy_dagger.webp",
+      "/images/sts2/cards/dingy_dagger.webp",
+      "/images/sts2/cards/dingy_dagger.webp",
+      "/images/sts2/cards/fine_dagger.webp",
+      "/images/sts2/cards/fine_dagger.webp",
+      "/images/sts2/cards/fine_dagger.webp",
+      "/images/sts2/cards/pristine_dagger.webp",
+    ],
+  },
 };
+
+const STAGED_CARD_TITLES: Record<string, { minLevel: number; stage: string }[]> = {
+  DINGY_DAGGER: [
+    { minLevel: 0, stage: "dingy" },
+    { minLevel: 3, stage: "fine" },
+    { minLevel: 6, stage: "pristine" },
+  ],
+};
+
+function cardSpecialUpgrade(
+  id: string,
+  gameCards: GameLocalizationTable,
+): CodexCard["specialUpgrade"] {
+  const special = CARD_SPECIAL_UPGRADES[id];
+  const stages = STAGED_CARD_TITLES[id];
+  if (!special || !stages) return special;
+  return {
+    ...special,
+    titles: stages.flatMap(({ minLevel, stage }) => {
+      const name = gameCards[`${id}.title.${stage}`];
+      return name ? [{ minLevel, name }] : [];
+    }),
+  };
+}
 
 function withCardVarFallbacks(id: string, vars: RawCard["vars"]): Record<string, number> {
   return { ...(CARD_VAR_FALLBACKS[id] ?? {}), ...(vars ?? {}) };
@@ -654,7 +694,7 @@ function mapCard(
     multiplayerOnly: isMultiplayerOnlyCardId(kor.id),
     upgrade,
     maxUpgradeLevel: kor.max_upgrade_level ?? (upgrade ? 1 : 0),
-    specialUpgrade: CARD_SPECIAL_UPGRADES[kor.id],
+    specialUpgrade: cardSpecialUpgrade(kor.id, gameCards),
     imageUrl: codexCardImageUrl(kor),
     betaImageUrl: spireCodexImageToLocal(kor.beta_image_url),
     introducedInPatch: kor.introducedInPatch,

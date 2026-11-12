@@ -807,7 +807,10 @@ export const CardTile = memo(function CardTile({
   const imageSrc = getCardDisplayImageUrl(card, effectiveUpgradeLevel, showBeta);
   const isUpgraded = effectiveUpgradeLevel > 0;
   const maxUpgradeLevel = getCardMaxUpgradeLevel(card);
-  const renderedCardName = getMadScienceRenderedCardName(card);
+  const stagedTitle = card.specialUpgrade?.titles
+    ?.filter((title) => effectiveUpgradeLevel >= title.minLevel)
+    .at(-1)?.name;
+  const renderedCardName = stagedTitle ?? getMadScienceRenderedCardName(card);
   const titleUpgradeSuffix = isUpgraded
     ? maxUpgradeLevel > 1 ? `+${effectiveUpgradeLevel}` : "+"
     : "";
