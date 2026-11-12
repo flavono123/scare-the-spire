@@ -32,7 +32,7 @@ function Meter({
   unit?: string;
   detail?: string;
 }) {
-  const t = tone(used, budget ?? limit * 0.8, budget ?? limit * 0.95);
+  const t = tone(used, limit * (budget === undefined ? 0.8 : 0.9), budget ?? limit * 0.95);
   const ratio = Math.min(1, used / limit);
   return (
     <div className="rounded-md border border-border bg-card/40 px-4 py-3">
