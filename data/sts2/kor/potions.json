@@ -110,7 +110,8 @@
     "rarity": "고급",
     "pool": "fool",
     "image_url": "/static/images/potions/bottled_song.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "CLARITY",
@@ -157,7 +158,8 @@
     "image_url": "/static/images/potions/crystalline_euphoria.png",
     "vars": {
       "Cards": 3
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "CUNNING_POTION",
@@ -597,7 +599,8 @@
     "image_url": "/static/images/potions/precision_potion.png",
     "vars": {
       "AimPower": 21
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "RADIANT_TINCTURE",

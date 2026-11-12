@@ -2105,7 +2105,8 @@
     },
     "damage_values": null,
     "block_values": null,
-    "image_url": null
+    "image_url": null,
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "BYRDONIS",
@@ -26275,7 +26276,8 @@
     },
     "damage_values": null,
     "block_values": null,
-    "image_url": null
+    "image_url": null,
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ZAPBOT",

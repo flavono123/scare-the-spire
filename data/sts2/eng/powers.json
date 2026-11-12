@@ -41,7 +41,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/aeonglass_dominion_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "AFTERIMAGE",
@@ -74,7 +75,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/aim_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ALL_IS_WELL",
@@ -85,7 +87,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/all_is_well_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "AMBERGRIS",
@@ -112,7 +115,8 @@
     "vars": {
       "Cards": 2,
       "Energy": 1
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ANTICIPATE",
@@ -136,7 +140,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/archery_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ARSENAL",
@@ -416,7 +421,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/compost_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "CONDUCTORS_BATON",
@@ -429,7 +435,8 @@
     "image_url": null,
     "vars": {
       "DamageDecrease": 0.75
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "CONFUSED",
@@ -552,7 +559,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/covering_fire_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "CRAB_RAGE",
@@ -794,7 +802,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/dislike_you_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "DOOM",
@@ -908,7 +917,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/ecstasy_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ENCORE",
@@ -921,7 +931,8 @@
     "image_url": "/static/images/powers/encore_power.png",
     "vars": {
       "PlaysRemaining": 0
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ENERGY_NEXT_TURN",
@@ -958,7 +969,8 @@
     "image_url": "/static/images/powers/ennui_power.png",
     "vars": {
       "Cards": 0
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ENRAGE",
@@ -980,7 +992,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/ensemble_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ENTROPY",
@@ -1024,7 +1037,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/explosive_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "EXPLOSIVE_ARROWS",
@@ -1035,7 +1049,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/explosive_arrows_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "EXTRA_TURN",
@@ -1046,7 +1061,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/extra_turn_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "FAN_OF_KNIVES",
@@ -1230,7 +1246,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": null,
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "FREE_POWER",
@@ -1320,7 +1337,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/god_byrd_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "GRAPPLE",
@@ -1503,7 +1521,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/hidden_roots_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "HIGH_VOLTAGE",
@@ -1525,7 +1544,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/honing_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "HOTFIX",
@@ -1573,7 +1593,8 @@
     "image_url": "/static/images/powers/impaled_power.png",
     "vars": {
       "HitCounter": 3
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "IMPROVEMENT",
@@ -1632,7 +1653,8 @@
     "image_url": "/static/images/powers/insatiable_dominion_power.png",
     "vars": {
       "Damage": 2
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "INTANGIBLE",
@@ -1698,7 +1720,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": null,
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "KNOCKDOWN",
@@ -1720,7 +1743,8 @@
     "stack_type": "Single",
     "allow_negative": null,
     "image_url": "/static/images/powers/lagavulin_matriarch_dominion_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "LEADERSHIP",
@@ -1775,7 +1799,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/lost_lute_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "LULLABY",
@@ -1786,7 +1811,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/lullaby_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "MACHINE_LEARNING",
@@ -1914,7 +1940,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/motif_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "MYTHIC_FORM",
@@ -1927,7 +1954,8 @@
     "image_url": null,
     "vars": {
       "Upgraded": 0
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "NECRO_MASTERY",
@@ -2271,7 +2299,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": null,
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "RADIANCE",
@@ -2519,7 +2548,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/serrated_arrows_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "SETUP_STRIKE",
@@ -2578,7 +2608,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": null,
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "SHRIEK",
@@ -2646,7 +2677,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/simpleton_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "SKITTISH",
@@ -2772,7 +2804,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/song_path_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "SPECTRUM_SHIFT",
@@ -2928,7 +2961,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/stretch_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "SUBROUTINE",
@@ -3262,7 +3296,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/tune_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "TYRANNY",
@@ -3328,7 +3363,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/violent_chord_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "VITAL_SPARK",
@@ -3436,7 +3472,8 @@
     "stack_type": "Single",
     "allow_negative": null,
     "image_url": "/static/images/powers/wuppys_loyalty_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "YAH",
@@ -3447,7 +3484,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/yah_power.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "YOU_ARE_MINE",
@@ -3458,6 +3496,7 @@
     "stack_type": "Single",
     "allow_negative": null,
     "image_url": null,
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   }
 ]

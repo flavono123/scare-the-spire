@@ -136,7 +136,8 @@
     "rarity": "이벤트 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/bath_robes.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "BATH_TOWEL",
@@ -149,7 +150,8 @@
     "image_url": "/static/images/relics/bath_towel.png",
     "vars": {
       "Heal": 8
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "BEATING_REMNANT",
@@ -262,7 +264,8 @@
     "rarity": "상점 유물",
     "pool": "fool",
     "image_url": "/static/images/relics/bizarre_lamp.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "BLACK_BLOOD",
@@ -517,7 +520,8 @@
     "rarity": "이벤트 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/byrdine.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "BYRDPIP",
@@ -708,7 +712,8 @@
     "rarity": "희귀 유물",
     "pool": "fool",
     "image_url": "/static/images/relics/conductors_baton.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "CRACKED_CORE",
@@ -1026,7 +1031,8 @@
     "image_url": "/static/images/relics/exercise_mat.png",
     "vars": {
       "StretchPower": 6
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "FAKE_ANCHOR",
@@ -1179,7 +1185,8 @@
     "image_url": "/static/images/relics/fertilizer.png",
     "vars": {
       "StrengthPower": 1
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "FESTIVE_POPPER",
@@ -2025,7 +2032,8 @@
     "vars": {
       "DamageThreshold": 30,
       "StrengthPower": 2
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "MINI_REGENT",
@@ -2243,7 +2251,8 @@
     "image_url": "/static/images/relics/obsidian_vice.png",
     "vars": {
       "Damage": 1
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "OCARINA",
@@ -2254,7 +2263,8 @@
     "rarity": "고급 유물",
     "pool": "fool",
     "image_url": "/static/images/relics/ocarina.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ODDLY_SMOOTH_STONE",
@@ -3241,7 +3251,8 @@
     "image_url": "/static/images/relics/song_bow.png",
     "vars": {
       "AimPower": 6
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "SOZU",
@@ -3346,7 +3357,8 @@
     "vars": {
       "AimPower": 12,
       "EndOfTurnAim": 3
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "STRAWBERRY",
@@ -3511,7 +3523,8 @@
     "rarity": "이벤트 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/thumbscrew.png",
-    "vars": {}
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "TINGSHA",
@@ -3574,7 +3587,8 @@
     "image_url": "/static/images/relics/tormentous_collar.png",
     "vars": {
       "WeakPower": 2
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "TOUCH_OF_OROBAS",
@@ -3676,7 +3690,8 @@
     "image_url": "/static/images/relics/twine.png",
     "vars": {
       "Block": 4
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "TWISTED_FUNNEL",
@@ -3897,7 +3912,8 @@
     "image_url": "/static/images/relics/whittling_knife.png",
     "vars": {
       "AimPower": 5
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "WING_CHARM",
@@ -3962,7 +3978,8 @@
     "vars": {
       "MaxHp": 0,
       "CurrentHp": 0
-    }
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "YUMMY_COOKIE",
