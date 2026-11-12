@@ -103,6 +103,16 @@
     }
   },
   {
+    "id": "BOTTLED_SONG",
+    "name": "병 속의 노래",
+    "description": "무작위 \"와\", \"초\", \"키\" 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다.",
+    "description_raw": "무작위 \"와\", \"초\", \"키\" 카드를 1장 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다.",
+    "rarity": "고급",
+    "pool": "fool",
+    "image_url": "/static/images/potions/bottled_song.png",
+    "vars": {}
+  },
+  {
     "id": "CLARITY",
     "name": "명확성 추출물",
     "description": "카드를 [blue]1[/blue]장 뽑습니다. 다음 [blue]3[/blue]턴 시작 시, 카드를 추가로 [blue]1[/blue]장 뽑습니다.",
@@ -133,6 +143,18 @@
     "rarity": "희귀",
     "pool": "regent",
     "image_url": "/static/images/potions/cosmic_concoction.png",
+    "vars": {
+      "Cards": 3
+    }
+  },
+  {
+    "id": "CRYSTALLINE_EUPHORIA",
+    "name": "수정 희열",
+    "description": "[gold]기쁨[/gold]을 [blue]3[/blue]장 [gold]손[/gold]으로 가져옵니다.\n[gold]손[/gold]을 [gold]슬픔[/gold]으로 가득 채웁니다.",
+    "description_raw": "[gold]기쁨[/gold]을 [blue]{Cards}[/blue]장 [gold]손[/gold]으로 가져옵니다.\n[gold]손[/gold]을 [gold]슬픔[/gold]으로 가득 채웁니다.",
+    "rarity": "희귀",
+    "pool": "fool",
+    "image_url": "/static/images/potions/crystalline_euphoria.png",
     "vars": {
       "Cards": 3
     }
@@ -564,6 +586,18 @@
     "pool": "shared",
     "image_url": "/static/images/potions/power_potion.png",
     "vars": {}
+  },
+  {
+    "id": "PRECISION_POTION",
+    "name": "신중함 포션",
+    "description": "[gold]조준[/gold]을 [blue]21[/blue] 얻습니다.",
+    "description_raw": "[gold]조준[/gold]을 [blue]{AimPower}[/blue] 얻습니다.",
+    "rarity": "일반",
+    "pool": "fool",
+    "image_url": "/static/images/potions/precision_potion.png",
+    "vars": {
+      "AimPower": 21
+    }
   },
   {
     "id": "RADIANT_TINCTURE",

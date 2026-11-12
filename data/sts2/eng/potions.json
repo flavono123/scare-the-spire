@@ -103,6 +103,16 @@
     }
   },
   {
+    "id": "BOTTLED_SONG",
+    "name": "Bottled Song",
+    "description": "Add a random “Wah”, “Cho”, and “Ki” card into your [gold]Hand[/gold]. They're free to play this turn.",
+    "description_raw": "Add a random “Wah”, “Cho”, and “Ki” card into your [gold]Hand[/gold]. They're free to play this turn.",
+    "rarity": "Uncommon",
+    "pool": "fool",
+    "image_url": "/static/images/potions/bottled_song.png",
+    "vars": {}
+  },
+  {
     "id": "CLARITY",
     "name": "Clarity Extract",
     "description": "Draw [blue]1[/blue] card. At the start of your next [blue]3[/blue] turns, draw [blue]1[/blue] additional card.",
@@ -133,6 +143,18 @@
     "rarity": "Rare",
     "pool": "regent",
     "image_url": "/static/images/potions/cosmic_concoction.png",
+    "vars": {
+      "Cards": 3
+    }
+  },
+  {
+    "id": "CRYSTALLINE_EUPHORIA",
+    "name": "Crystalline Euphoria",
+    "description": "Add [blue]3[/blue] [gold]Joy[/gold] into your [gold]Hand[/gold].\nFill your [gold]Hand[/gold] with [gold]Sadness[/gold].",
+    "description_raw": "Add [blue]{Cards}[/blue] [gold]Joy[/gold] into your [gold]Hand[/gold].\nFill your [gold]Hand[/gold] with [gold]Sadness[/gold].",
+    "rarity": "Rare",
+    "pool": "fool",
+    "image_url": "/static/images/potions/crystalline_euphoria.png",
     "vars": {
       "Cards": 3
     }
@@ -564,6 +586,18 @@
     "pool": "shared",
     "image_url": "/static/images/potions/power_potion.png",
     "vars": {}
+  },
+  {
+    "id": "PRECISION_POTION",
+    "name": "Precision Potion",
+    "description": "Gain [blue]21[/blue] [gold]Aim[/gold].",
+    "description_raw": "Gain [blue]{AimPower}[/blue] [gold]Aim[/gold].",
+    "rarity": "Common",
+    "pool": "fool",
+    "image_url": "/static/images/potions/precision_potion.png",
+    "vars": {
+      "AimPower": 21
+    }
   },
   {
     "id": "RADIANT_TINCTURE",

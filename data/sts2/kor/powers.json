@@ -33,6 +33,17 @@
     "vars": {}
   },
   {
+    "id": "AEONGLASS_DOMINION",
+    "name": "영겁의 모래시계의 권능",
+    "description": "내 턴 시작 시, [gold]뽑을 카드 더미[/gold] 맨 위에 [gold]시듦[/gold]을 [blue]1[/blue]장 추가합니다.",
+    "description_raw": "내 턴 시작 시, [gold]뽑을 카드 더미[/gold] 맨 위에 [gold]시듦[/gold]을 [blue]{Amount}[/blue]장 추가합니다.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/aeonglass_dominion_power.png",
+    "vars": {}
+  },
+  {
     "id": "AFTERIMAGE",
     "name": "잔상",
     "description": "카드를 사용할 때마다, [gold]방어도[/gold]를 [blue]1[/blue] 얻습니다.",
@@ -55,6 +66,28 @@
     "vars": {}
   },
   {
+    "id": "AIM",
+    "name": "조준",
+    "description": "다음 [gold]화살[/gold]의 피해량이 증가합니다.",
+    "description_raw": "다음 [gold]화살[/gold]의 피해량이 [blue]{Amount}[/blue] 증가합니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/aim_power.png",
+    "vars": {}
+  },
+  {
+    "id": "ALL_IS_WELL",
+    "name": "다 잘될 거야",
+    "description": "[gold]슬픔[/gold]을 생성할 때마다, [gold]방어도[/gold]를 [blue]4[/blue] 얻습니다.",
+    "description_raw": "[gold]슬픔[/gold]을 생성할 때마다, [gold]방어도[/gold]를 [blue]{Amount}[/blue] 얻습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/all_is_well_power.png",
+    "vars": {}
+  },
+  {
     "id": "AMBERGRIS",
     "name": "용연향",
     "description": "이번 턴 후에 추가 턴을 진행합니다.",
@@ -63,7 +96,23 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/ambergris_power.png",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.113.0",
     "vars": {}
+  },
+  {
+    "id": "AMNESIA",
+    "name": "기억상실",
+    "description": "이번 턴에, 카드를 [blue]2[/blue]장 적게 뽑고 [energy:1]를 잃습니다.",
+    "description_raw": "이번 턴에, 카드를 {Cards}장 적게 뽑고 {Energy:energyIcons()}를 잃습니다.",
+    "type": "Debuff",
+    "stack_type": "Single",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/amnesia_power.png",
+    "vars": {
+      "Cards": 2,
+      "Energy": 1
+    }
   },
   {
     "id": "ANTICIPATE",
@@ -76,6 +125,17 @@
     "image_url": "/static/images/powers/anticipate_power.png",
     "deprecated": true,
     "deprecatedInPatch": "v0.104.0",
+    "vars": {}
+  },
+  {
+    "id": "ARCHERY",
+    "name": "궁술",
+    "description": "내 턴 시작 시, [gold]조준[/gold]을 [blue]4[/blue] 얻습니다.",
+    "description_raw": "내 턴 시작 시, [gold]조준[/gold]을 [blue]{Amount}[/blue] 얻습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/archery_power.png",
     "vars": {}
   },
   {
@@ -348,6 +408,30 @@
     }
   },
   {
+    "id": "COMPOST",
+    "name": "퇴비 제작",
+    "description": "적이 죽을 때마다, 모든 플레이어가 [gold]에너지[/gold]를 얻습니다.",
+    "description_raw": "적이 죽을 때마다, 모든 플레이어가 {Amount:energyIcons()}를 얻습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/compost_power.png",
+    "vars": {}
+  },
+  {
+    "id": "CONDUCTORS_BATON",
+    "name": "지휘봉",
+    "description": "다음 턴까지 받는 공격 피해가 [blue]25%[/blue] 감소합니다.",
+    "description_raw": "다음 턴까지 받는 공격 피해가 [blue]{DamageDecrease:percentLess()}%[/blue] 감소합니다.",
+    "type": "Buff",
+    "stack_type": "Single",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/conductors_baton_power.png",
+    "vars": {
+      "DamageDecrease": 0.75
+    }
+  },
+  {
     "id": "CONFUSED",
     "name": "혼란",
     "description": "카드를 뽑을 때마다 카드의 비용이 [blue]0[/blue]부터 [blue]3[/blue]의 무작위 값으로 설정됩니다.",
@@ -457,6 +541,17 @@
     "stack_type": "Single",
     "allow_negative": null,
     "image_url": "/static/images/powers/covered_power.png",
+    "vars": {}
+  },
+  {
+    "id": "COVERING_FIRE",
+    "name": "엄호 포화",
+    "description": "[gold]발사[/gold]할 때마다, 아군들이 [gold]방어도[/gold]를 [blue]X[/blue] 얻습니다.",
+    "description_raw": "[gold]발사[/gold]할 때마다, 아군들이 [gold]방어도[/gold]를 [blue]{Amount}[/blue] 얻습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/covering_fire_power.png",
     "vars": {}
   },
   {
@@ -691,6 +786,17 @@
     "vars": {}
   },
   {
+    "id": "DISLIKE_YOU",
+    "name": "너 싫어",
+    "description": "이번 턴 동안 대상 적이 [gold]사격[/gold]으로 받는 피해가 [blue]50%[/blue] 증가합니다.",
+    "description_raw": "이번 턴 동안 대상 적이 [gold]사격[/gold]으로 받는 피해가 [blue]{Amount}%[/blue] 증가합니다.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/dislike_you_power.png",
+    "vars": {}
+  },
+  {
     "id": "DOOM",
     "name": "종말",
     "description": "적의 턴 종료 시 적의 체력이 종말 이하라면, 사망합니다.",
@@ -794,6 +900,30 @@
     "vars": {}
   },
   {
+    "id": "ECSTASY",
+    "name": "황홀경",
+    "description": "내 턴 시작 시, [gold]손[/gold]에 있는 무작위 [gold]슬픔[/gold] [blue]1[/blue]장을 [gold]기쁨[/gold]으로 [gold]변화[/gold]시킵니다.",
+    "description_raw": "내 턴 시작 시, [gold]손[/gold]에 있는 무작위 [gold]슬픔[/gold] [blue]{Amount}[/blue]장을 [gold]기쁨[/gold]으로 [gold]변화[/gold]시킵니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ecstasy_power.png",
+    "vars": {}
+  },
+  {
+    "id": "ENCORE",
+    "name": "앙코르",
+    "description": "이번 턴에 카드를 [blue]1[/blue]장만 더 사용할 수 있습니다.",
+    "description_raw": "이번 턴에 카드를 [blue]{PlaysRemaining}[/blue]장만 더 사용할 수 있습니다.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/encore_power.png",
+    "vars": {
+      "PlaysRemaining": 0
+    }
+  },
+  {
     "id": "ENERGY_NEXT_TURN",
     "name": "다음 턴 에너지",
     "description": "다음 턴에 [gold]에너지[/gold]를 추가로 얻습니다.",
@@ -818,6 +948,19 @@
     "vars": {}
   },
   {
+    "id": "ENNUI",
+    "name": "권태",
+    "description": "내 턴 시작 시, [gold]슬픔[/gold]을 [blue]1[/blue]장 [gold]손[/gold]으로 가져오고, 카드를 추가로 [blue]2[/blue]장 뽑습니다.",
+    "description_raw": "내 턴 시작 시, [gold]슬픔[/gold]을 [blue]{Cards}[/blue]장 [gold]손[/gold]으로 가져오고, 카드를 추가로 [blue]{Amount}[/blue]장 뽑습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ennui_power.png",
+    "vars": {
+      "Cards": 0
+    }
+  },
+  {
     "id": "ENRAGE",
     "name": "격분",
     "description": "스킬 카드를 사용할 때마다, [gold]힘[/gold]을 [blue]2[/blue] 얻습니다.",
@@ -826,6 +969,17 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/enrage_power.png",
+    "vars": {}
+  },
+  {
+    "id": "ENSEMBLE",
+    "name": "합창",
+    "description": "다른 플레이어가 다음에 사용하는 카드 [blue]3[/blue]장을 비용 없이 사용할 수 있습니다.",
+    "description_raw": "다른 플레이어가 다음에 사용하는 {Amount:choose(1):카드를|카드 [blue]{}[/blue]장을} 비용 없이 사용할 수 있습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ensemble_power.png",
     "vars": {}
   },
   {
@@ -859,6 +1013,39 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/escape_artist_power.png",
+    "vars": {}
+  },
+  {
+    "id": "EXPLOSIVE",
+    "name": "폭발성",
+    "description": "이 생명체가 죽을 시 폭발하며, 피해를 줍니다.",
+    "description_raw": "이 생명체가 죽을 시 폭발하며, 피해를 [blue]{Amount}[/blue] 줍니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/explosive_power.png",
+    "vars": {}
+  },
+  {
+    "id": "EXPLOSIVE_ARROWS",
+    "name": "폭발성 화살",
+    "description": "적을 [gold]꿰뚫을[/gold] 때마다, 모든 적에게 피해를 [blue]6[/blue] 줍니다.",
+    "description_raw": "적을 [gold]꿰뚫을[/gold] 때마다, 모든 적에게 피해를 [blue]{Amount}[/blue] 줍니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/explosive_arrows_power.png",
+    "vars": {}
+  },
+  {
+    "id": "EXTRA_TURN",
+    "name": "추가 턴",
+    "description": "이번 턴 후에 추가 턴을 진행합니다.",
+    "description_raw": "이번 턴 후에 추가 턴을 진행합니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/extra_turn_power.png",
     "vars": {}
   },
   {
@@ -1035,6 +1222,17 @@
     "vars": {}
   },
   {
+    "id": "FREE_CARD",
+    "name": "무료 카드",
+    "description": "다음에 사용하는 카드의 비용이 [blue]0[/blue] [energy:1]이 됩니다.",
+    "description_raw": "다음에 사용하는 {Amount:choose(1):카드의|카드 [blue]{}[/blue]장의} 비용이 [blue]0[/blue] {energyPrefix:energyIcons(1)}이 됩니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/free_card_power.png",
+    "vars": {}
+  },
+  {
     "id": "FREE_POWER",
     "name": "무료 파워",
     "description": "다음에 사용하는 파워 카드의 비용이 [blue]0[/blue] [energy:1]이 됩니다.",
@@ -1114,6 +1312,17 @@
     "vars": {}
   },
   {
+    "id": "GOD_BYRD",
+    "name": "불섀",
+    "description": "다음 턴 시작 시, 모든 적에게 피해를 [blue]20[/blue] 줍니다.",
+    "description_raw": "다음 턴 시작 시, 모든 적에게 피해를 [blue]{Amount}[/blue] 줍니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/god_byrd_power.png",
+    "vars": {}
+  },
+  {
     "id": "GRAPPLE",
     "name": "그래플링",
     "description": "이번 턴에 [gold]방어도[/gold]를 얻을 때마다, 대상 적에게 피해를 [blue]5[/blue] 줍니다.",
@@ -1152,8 +1361,8 @@
   {
     "id": "HAILSTORM",
     "name": "우박 폭풍",
-    "description": "내 턴 종료 시 [gold]냉기[/gold]를 보유하고 있다면, 모든 적에게 피해를 [blue]6[/blue] 줍니다.",
-    "description_raw": "내 턴 종료 시 [gold]냉기[/gold]를 보유하고 있다면, 모든 적에게 피해를 [blue]{Amount}[/blue] 줍니다.",
+    "description": "내 턴 종료 시 [gold]냉기[/gold]를 보유했다면, 모든 적에게 피해를 [blue]6[/blue] 줍니다.",
+    "description_raw": "내 턴 종료 시 [gold]냉기[/gold]를 보유했다면, 모든 적에게 피해를 [blue]{Amount}[/blue] 줍니다.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -1286,6 +1495,17 @@
     "vars": {}
   },
   {
+    "id": "HIDDEN_ROOTS",
+    "name": "숨겨진 뿌리",
+    "description": "내 턴 시작 시, [gold]스트레칭[/gold]을 [blue]5[/blue] 얻습니다.",
+    "description_raw": "내 턴 시작 시, [gold]스트레칭[/gold]을 [blue]{Amount}[/blue] 얻습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/hidden_roots_power.png",
+    "vars": {}
+  },
+  {
     "id": "HIGH_VOLTAGE",
     "name": "고전압",
     "description": "이 생물의 턴 종료 시, 대상이 [gold]힘[/gold]을 [blue]2[/blue] 얻습니다.",
@@ -1294,6 +1514,17 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/high_voltage_power.png",
+    "vars": {}
+  },
+  {
+    "id": "HONING",
+    "name": "연마",
+    "description": "[gold]화살[/gold]의 피해량이 [blue]50%[/blue] 증가합니다.",
+    "description_raw": "[gold]화살[/gold]의 피해량이 [blue]{Amount}%[/blue] 증가합니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/honing_power.png",
     "vars": {}
   },
   {
@@ -1330,6 +1561,19 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/imbalanced_power.png",
     "vars": {}
+  },
+  {
+    "id": "IMPALED",
+    "name": "꿰뚫림",
+    "description": "적은 [gold]화살[/gold]에 맞을 시 [gold]꿰뚫린[/gold] 상태가 됩니다. 대상 적을 [blue]3[/blue]번 공격할 시 [gold]화살[/gold]이 [gold]회수[/gold]됩니다.",
+    "description_raw": "이 적을 [blue]{HitCounter}[/blue]번 더 공격할 시 이 [gold]화살[/gold]이 [gold]회수[/gold]됩니다.",
+    "type": "None",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/impaled_power.png",
+    "vars": {
+      "HitCounter": 3
+    }
   },
   {
     "id": "IMPROVEMENT",
@@ -1376,6 +1620,19 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/infinite_blades_power.png",
     "vars": {}
+  },
+  {
+    "id": "INSATIABLE_DOMINION",
+    "name": "탐의 권능",
+    "description": "내 턴 종료 시, 턴 수에 따라 피해를 입습니다.",
+    "description_raw": "내 턴 종료 시, 피해를 {Damage} 받고 피해량이 1 증가합니다.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/insatiable_dominion_power.png",
+    "vars": {
+      "Damage": 2
+    }
   },
   {
     "id": "INTANGIBLE",
@@ -1433,6 +1690,17 @@
     "vars": {}
   },
   {
+    "id": "KI_VERSE",
+    "name": "키 절",
+    "description": "이번 턴 동안 다음에 사용하는 \"와\", \"초\", \"키\" 카드가 1번 추가로 사용됩니다.",
+    "description_raw": "이번 턴 동안 다음에 사용하는 \"와\", \"초\", \"키\" {Amount:choose(1):카드가|카드 [blue]{}[/blue]장이} 1번 추가로 사용됩니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ki_verse_power.png",
+    "vars": {}
+  },
+  {
     "id": "KNOCKDOWN",
     "name": "때려눕히기",
     "description": "이 생물이 이번 턴에 다른 플레이어로부터 받는 피해량이 [blue]X[/blue]배가 됩니다.",
@@ -1441,6 +1709,17 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/knockdown_power.png",
+    "vars": {}
+  },
+  {
+    "id": "LAGAVULIN_MATRIARCH_DOMINION",
+    "name": "라가불린 대모의 권능",
+    "description": "내 턴 종료 시, [gold]힘[/gold]과 [gold]민첩[/gold]을 [blue]1[/blue] 잃습니다.",
+    "description_raw": "내 턴 종료 시, [gold]힘[/gold]과 [gold]민첩[/gold]을 [blue]{Amount}[/blue] 잃습니다.",
+    "type": "Debuff",
+    "stack_type": "Single",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/lagavulin_matriarch_dominion_power.png",
     "vars": {}
   },
   {
@@ -1485,6 +1764,28 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/loop_power.png",
+    "vars": {}
+  },
+  {
+    "id": "LOST_LUTE",
+    "name": "잃어버린 류트",
+    "description": "[gold]선율[/gold]을 얻을 때마다, [gold]뽑을 카드 더미[/gold] 맨 위의 카드를 사용합니다.",
+    "description_raw": "[gold]선율[/gold]을 얻을 때마다, [gold]뽑을 카드 더미[/gold] {Amount:choose(1):맨 위의 카드를|맨 위에서부터 [blue]{}[/blue]장의 카드를} 사용합니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/lost_lute_power.png",
+    "vars": {}
+  },
+  {
+    "id": "LULLABY",
+    "name": "자장가",
+    "description": "모든 [gold]선율[/gold]을 얻을 시, [gold]방어도[/gold]를 [blue]20[/blue] 얻습니다.",
+    "description_raw": "모든 [gold]선율[/gold]을 얻을 시, [gold]방어도[/gold]를 [blue]{Amount}[/blue] 얻습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/lullaby_power.png",
     "vars": {}
   },
   {
@@ -1605,6 +1906,30 @@
     }
   },
   {
+    "id": "MOTIF",
+    "name": "모티프",
+    "description": "[gold]선율[/gold]을 얻을 때마다, 카드를 [blue]1[/blue]장 뽑습니다.",
+    "description_raw": "[gold]선율[/gold]을 얻을 때마다, 카드를 [blue]{Amount}[/blue]장 뽑습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/motif_power.png",
+    "vars": {}
+  },
+  {
+    "id": "MYTHIC_FORM",
+    "name": "신비의 형상",
+    "description": "내 턴 시작 시, 무작위 [gold]타로[/gold] 카드를 [blue]1[/blue]장 [gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "내 턴 시작 시, 무작위 {Amount:choose(1):[gold]타로[/gold] 카드를 1장|[gold]타로[/gold] 카드를 [blue]{}[/blue]장} [gold]손[/gold]으로 가져옵니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/mythic_form_power.png",
+    "vars": {
+      "Upgraded": 0
+    }
+  },
+  {
     "id": "NECRO_MASTERY",
     "name": "강령의 극의",
     "description": "[gold]골골이[/gold]가 체력을 잃을 때마다, 모든 적이 동일한 만큼의 체력을 잃습니다.",
@@ -1706,8 +2031,8 @@
   {
     "id": "ONE_TWO_PUNCH",
     "name": "원투 펀치",
-    "description": "이번 턴에 다음에 사용하는 공격 카드가 두 번 사용됩니다.",
-    "description_raw": "이번 턴에 다음에 사용하는 {Amount:choose(1):공격 카드가|공격 카드 [blue]{}[/blue]장이} 두 번 사용됩니다.",
+    "description": "이번 턴에 다음에 사용하는 공격 카드가 2번 사용됩니다.",
+    "description_raw": "이번 턴에 다음에 사용하는 {Amount:choose(1):공격 카드가|공격 카드 [blue]{}[/blue]장이} 2번 사용됩니다.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -1755,7 +2080,7 @@
   },
   {
     "id": "PAINFUL_STABS",
-    "name": "고통스러운 찌르기",
+    "name": "깊은 자상",
     "description": "내가 막히지 않은 공격 피해를 받을 때마다, [gold]버린 카드 더미[/gold]에 [gold]부상[/gold]을 [blue]1[/blue]장 섞어 넣습니다.",
     "description_raw": "내가 막히지 않은 공격 피해를 받을 때마다, [gold]버린 카드 더미[/gold]에 [gold]부상[/gold]을 [blue]{Amount}[/blue]장 섞어 넣습니다.",
     "type": "Buff",
@@ -1826,7 +2151,7 @@
   {
     "id": "PHANTOM_BLADES",
     "name": "환영검",
-    "description": "[gold]단도[/gold]가 [gold]보존[/gold]을 얻습니다.\n매 턴마다 처음으로 사용하는 [gold]단도[/gold]의 피해량이 [blue]9[/blue] 증가합니다.",
+    "description": "[gold]단도[/gold]가 [gold]보존[/gold]을 얻습니다.\n매 턴마다 처음으로 사용하는 [gold]단도[/gold]의 피해량이 [blue]8[/blue] 증가합니다.",
     "description_raw": "[gold]단도[/gold]가 [gold]보존[/gold]을 얻습니다.\n매 턴마다 처음으로 사용하는 [gold]단도[/gold]의 피해량이 [blue]{Amount}[/blue] 증가합니다.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -1935,6 +2260,17 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/pyre_power.png",
+    "vars": {}
+  },
+  {
+    "id": "QUIETUS",
+    "name": "종지부",
+    "description": "이번 턴 동안 다음 [gold]사격[/gold]의 피해량이 [blue]2[/blue]배가 되지만, [gold]화살[/gold]이 파괴됩니다.",
+    "description_raw": "이번 턴 동안 다음 [gold]사격[/gold]의 피해량이 [blue]{Amount}[/blue]배가 되지만, [gold]화살[/gold]이 파괴됩니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/quietus_power.png",
     "vars": {}
   },
   {
@@ -2053,7 +2389,7 @@
   },
   {
     "id": "RETAIN_HAND",
-    "name": "손패 보존",
+    "name": "손 보존",
     "description": "다음 [blue]2[/blue]턴 동안, [gold]손[/gold]에 있는 카드들을 [gold]보존[/gold]합니다.",
     "description_raw": "{Amount:choose(1):이번 턴에|다음 [blue]{}[/blue]턴 동안,} [gold]손[/gold]에 있는 카드들을 [gold]보존[/gold]합니다.",
     "type": "Buff",
@@ -2175,6 +2511,17 @@
     "vars": {}
   },
   {
+    "id": "SERRATED_ARROWS",
+    "name": "톱니 화살",
+    "description": "[gold]꿰뚫린[/gold] 상태의 적이 공격 카드로 받는 피해가 증가합니다.",
+    "description_raw": "[gold]꿰뚫린[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]{Amount}%[/blue] 증가합니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/serrated_arrows_power.png",
+    "vars": {}
+  },
+  {
     "id": "SETUP_STRIKE",
     "name": "SetupStrikePower",
     "description": "",
@@ -2223,6 +2570,17 @@
     "vars": {}
   },
   {
+    "id": "SHOW_OFF",
+    "name": "으스대기",
+    "description": "이번 턴 동안 하수인이 아닌 적이 죽을 시, 이 [gold]으스대기[/gold]로 얻는 [gold]조준[/gold]이 영구적으로 [blue]X[/blue] 증가합니다.",
+    "description_raw": "이번 턴 동안 하수인이 아닌 적이 죽을 시, 이 [gold]으스대기[/gold]로 얻는 [gold]조준[/gold]이 영구적으로 [blue]{Amount}[/blue] 증가합니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/show_off_power.png",
+    "vars": {}
+  },
+  {
     "id": "SHRIEK",
     "name": "괴성",
     "description": "이 생물의 체력이 처음으로 [blue]50%[/blue] 이하로 떨어질 시, 대상이 [gold]기절[/gold] 상태가 됩니다.",
@@ -2261,7 +2619,7 @@
     "id": "SIC_EM",
     "name": "덮쳐!",
     "description": "이번 턴에 [gold]골골이[/gold]가 이 적을 공격할 때마다, [gold]소환[/gold] [blue]3[/blue].",
-    "description_raw": "이번 턴에 [gold]골골이[/gold]가 이 적을 공격할 때마다, [gold]소환[/gold] [blue]{Amount}[/blue].",
+    "description_raw": "이번 턴에{IsMultiplayer: 내|} [gold]골골이[/gold]가 이 적을 공격할 때마다, [gold]소환[/gold] [blue]{Amount}[/blue].",
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -2277,6 +2635,17 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/signal_boost_power.png",
+    "vars": {}
+  },
+  {
+    "id": "SIMPLETON",
+    "name": "얼간이",
+    "description": "내 턴 종료 시, [gold]손[/gold]에 있는 가장 비용이 낮은 카드를 사용합니다.",
+    "description_raw": "내 턴 종료 시, [gold]손[/gold]에 있는 가장 비용이 낮은 {Amount:choose(1):카드를|카드를 [blue]{}[/blue]장} 사용합니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/simpleton_power.png",
     "vars": {}
   },
   {
@@ -2395,6 +2764,17 @@
     }
   },
   {
+    "id": "SONG_PATH",
+    "name": "노래의 길",
+    "description": "[gold]초 선율[/gold]을 얻을 때마다, [gold]방어도[/gold]를 [blue]5[/blue] 얻습니다.",
+    "description_raw": "[gold]초 선율[/gold]을 얻을 때마다, [gold]방어도[/gold]를 [blue]{Amount}[/blue] 얻습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/song_path_power.png",
+    "vars": {}
+  },
+  {
     "id": "SPECTRUM_SHIFT",
     "name": "스펙트럼 이동",
     "description": "내 턴 시작 시, 무작위 무색 카드를 [blue]1[/blue]장 [gold]손[/gold]으로 가져옵니다.",
@@ -2421,7 +2801,7 @@
   {
     "id": "SPEEDSTER",
     "name": "스피드스터",
-    "description": "내 턴 동안 카드를 뽑을 때마다, 모든 적에게 피해를 [blue]1[/blue] 줍니다.",
+    "description": "내 턴 동안 카드를 뽑을 때마다, 모든 적에게 피해를 [blue]3[/blue] 줍니다.",
     "description_raw": "내 턴 동안 카드를 뽑을 때마다, 모든 적에게 피해를 [blue]{Amount}[/blue] 줍니다.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -2537,6 +2917,17 @@
     "stack_type": "Counter",
     "allow_negative": true,
     "image_url": "/static/images/powers/strength_power.png",
+    "vars": {}
+  },
+  {
+    "id": "STRETCH",
+    "name": "스트레칭",
+    "description": "다음에 카드를 사용해 [gold]방어도[/gold]를 얻을 때, 추가 [gold]방어도[/gold]를 얻습니다.",
+    "description_raw": "다음에 카드를 사용해 [gold]방어도[/gold]를 얻을 때, [gold]방어도[/gold]를 [blue]{Amount}[/blue] 추가로 얻습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/stretch_power.png",
     "vars": {}
   },
   {
@@ -2841,8 +3232,8 @@
   {
     "id": "TRACKING",
     "name": "추적",
-    "description": "[gold]약화[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]50%[/blue] 증가합니다.",
-    "description_raw": "[gold]약화[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]{Amount}%[/blue] 증가합니다.",
+    "description": "[gold]약화[/gold] 상태의 적이 내 공격 카드로 받는 피해가 [blue]50%[/blue] 증가합니다.",
+    "description_raw": "[gold]약화[/gold] 상태의 적이 내 공격 카드로 받는 피해가 [blue]{Amount}%[/blue] 증가합니다.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -2860,6 +3251,17 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/trash_to_treasure_power.png",
+    "vars": {}
+  },
+  {
+    "id": "TUNE",
+    "name": "조율",
+    "description": "내 턴 종료 시 [gold]키 선율[/gold]을 보유했다면, 다음에 사용하는 카드의 비용이 0 에너지가 됩니다.",
+    "description_raw": "내 턴 종료 시 [gold]키 선율[/gold]을 보유했다면, 다음에 사용하는 {Amount:choose(1):카드|카드 [blue]{}[/blue]장}의 비용이 [blue]0[/blue] {energyPrefix:energyIcons(1)}가 됩니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/tune_power.png",
     "vars": {}
   },
   {
@@ -2915,6 +3317,17 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/vigor_power.png",
+    "vars": {}
+  },
+  {
+    "id": "VIOLENT_CHORD",
+    "name": "격렬한 화음",
+    "description": "[gold]와 선율[/gold]을 얻을 때마다, 모든 적에게 피해를 [blue]9[/blue] 줍니다.",
+    "description_raw": "[gold]와 선율[/gold]을 얻을 때마다, 모든 적에게 피해를 [blue]{Amount}[/blue] 줍니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/violent_chord_power.png",
     "vars": {}
   },
   {
@@ -3012,6 +3425,39 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/wraith_form_power.png",
+    "vars": {}
+  },
+  {
+    "id": "WUPPYS_LOYALTY",
+    "name": "워피의 충성심",
+    "description": "[gold]워피[/gold]가 모든 막히지 않은 공격 피해를 받아냅니다.",
+    "description_raw": "[gold]워피[/gold]가 모든 막히지 않은 공격 피해를 받아냅니다.",
+    "type": "Buff",
+    "stack_type": "Single",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/wuppys_loyalty_power.png",
+    "vars": {}
+  },
+  {
+    "id": "YAH",
+    "name": "야!",
+    "description": "매 턴마다 처음으로 [gold]화살[/gold]을 [gold]회수[/gold]할 시,[energy:1]를 얻습니다.",
+    "description_raw": "매 턴마다 처음으로 [gold]화살[/gold]을 [gold]회수[/gold]할 시, {Amount:energyIcons()}를 얻습니다.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/yah_power.png",
+    "vars": {}
+  },
+  {
+    "id": "YOU_ARE_MINE",
+    "name": "너는 내 것이다",
+    "description": "다음 턴에, [gold]약화[/gold], [gold]취약[/gold], [gold]손상[/gold]을 [blue]3[/blue] 얻습니다.",
+    "description_raw": "다음 턴에, [gold]약화[/gold], [gold]취약[/gold], [gold]손상[/gold]을 [blue]{Amount}[/blue] 얻습니다.",
+    "type": "Debuff",
+    "stack_type": "Single",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/you_are_mine_power.png",
     "vars": {}
   }
 ]

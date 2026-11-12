@@ -128,6 +128,30 @@
     }
   },
   {
+    "id": "BATH_ROBES",
+    "name": "목욕 가운",
+    "description": "다음 [gold]보스[/gold] 전투 시작 시, 체력을 모두 회복합니다.",
+    "description_raw": "다음 [gold]보스[/gold] 전투 시작 시, 체력을 모두 회복합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "이벤트 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/bath_robes.png",
+    "vars": {}
+  },
+  {
+    "id": "BATH_TOWEL",
+    "name": "목욕 수건",
+    "description": "매 전투 시작 시, 체력을 [green]8[/green] 회복합니다.",
+    "description_raw": "매 전투 시작 시, 체력을 [green]{Heal}[/green] 회복합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "이벤트 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/bath_towel.png",
+    "vars": {
+      "Heal": 8
+    }
+  },
+  {
     "id": "BEATING_REMNANT",
     "name": "고동치는 잔여물",
     "description": "내가 한 턴에 잃는 체력이 [blue]20[/blue]을 넘을 수 없습니다.",
@@ -227,6 +251,17 @@
     "rarity": "이벤트 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/bing_bong.png",
+    "vars": {}
+  },
+  {
+    "id": "BIZARRE_LAMP",
+    "name": "기묘한 램프",
+    "description": "매 전투 시작 시, [gold]기쁨[/gold]을 1장, [gold]슬픔[/gold]을 1장 [gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "매 전투 시작 시, [gold]기쁨[/gold]을 1장, [gold]슬픔[/gold]을 1장 [gold]손[/gold]으로 가져옵니다.",
+    "flavor": "플레이스홀더",
+    "rarity": "상점 유물",
+    "pool": "fool",
+    "image_url": "/static/images/relics/bizarre_lamp.png",
     "vars": {}
   },
   {
@@ -412,8 +447,8 @@
   {
     "id": "BRILLIANT_SCARF",
     "name": "멋진 스카프",
-    "description": "매 턴마다 손에서 [blue]다섯 번째[/blue]로 내는 카드를 비용 없이 사용합니다.",
-    "description_raw": "매 턴마다 손에서 [blue]다섯 번째[/blue]로 내는 카드를 비용 없이 사용합니다.",
+    "description": "매 턴마다 손에서 [blue]여섯 번째[/blue]로 내는 카드를 비용 없이 사용합니다.",
+    "description_raw": "매 턴마다 손에서 [blue]여섯 번째[/blue]로 내는 카드를 비용 없이 사용합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
@@ -474,10 +509,21 @@
     "vars": {}
   },
   {
+    "id": "BYRDINE",
+    "name": "섀다인",
+    "description": "획득 시, [gold]섀 급습[/gold]을 [gold]불섀[/gold]로 [gold]변화[/gold]시킵니다. [gold]섀다인[/gold]이 당신과 함께 전투에 참여합니다.",
+    "description_raw": "획득 시, [gold]섀 급습[/gold]을 [gold]불섀[/gold]로 [gold]변화[/gold]시킵니다. [gold]섀다인[/gold]이 당신과 함께 전투에 참여합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "이벤트 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/byrdine.png",
+    "vars": {}
+  },
+  {
     "id": "BYRDPIP",
     "name": "짹짹이",
-    "description": "획득 시, [gold]섀 급습[/gold] 카드를 얻습니다. [gold]짹짹이[/gold]가 당신과 함께 전투에 참여합니다.",
-    "description_raw": "획득 시, [gold]섀 급습[/gold] 카드를 얻습니다. [gold]짹짹이[/gold]가 당신과 함께 전투에 참여합니다.",
+    "description": "획득 시, [gold]섀 급습[/gold] 카드를 얻습니다. [gold]짹짹이[/gold]가 당신과 함께 전투에 참여합니다. [gold]섀 급습[/gold]을 [blue]6[/blue]번 사용 시, [gold]휴식 장소[/gold]에서 [gold]짹짹이[/gold]를 진화시킬 수 있습니다.",
+    "description_raw": "획득 시, [gold]섀 급습[/gold] 카드를 얻습니다. [gold]짹짹이[/gold]가 당신과 함께 전투에 참여합니다. [gold]섀 급습[/gold]을 [blue]{Repeat}[/blue]번 사용 시, [gold]휴식 장소[/gold]에서 [gold]짹짹이[/gold]를 진화시킬 수 있습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
@@ -652,6 +698,17 @@
     "vars": {
       "Block": 1
     }
+  },
+  {
+    "id": "CONDUCTORS_BATON",
+    "name": "지휘봉",
+    "description": "모든 [gold]선율[/gold]을 얻을 시, 다음 턴까지 받는 공격 피해가 [blue]25%[/blue] 감소합니다.",
+    "description_raw": "모든 [gold]선율[/gold]을 얻을 시, 다음 턴까지 받는 공격 피해가 [blue]25%[/blue] 감소합니다.",
+    "flavor": "플레이스홀더",
+    "rarity": "희귀 유물",
+    "pool": "fool",
+    "image_url": "/static/images/relics/conductors_baton.png",
+    "vars": {}
   },
   {
     "id": "CRACKED_CORE",
@@ -959,6 +1016,19 @@
     }
   },
   {
+    "id": "EXERCISE_MAT",
+    "name": "운동용 매트",
+    "description": "매 전투 시작 시, [gold]스트레칭[/gold]을 [blue]6[/blue] 얻습니다.",
+    "description_raw": "매 전투 시작 시, [gold]스트레칭[/gold]을 [blue]{StretchPower}[/blue] 얻습니다.",
+    "flavor": "플레이스홀더",
+    "rarity": "일반 유물",
+    "pool": "fool",
+    "image_url": "/static/images/relics/exercise_mat.png",
+    "vars": {
+      "StretchPower": 6
+    }
+  },
+  {
     "id": "FAKE_ANCHOR",
     "name": "닻?",
     "description": "매 전투 시작 시 [gold]방어도[/gold]를 [blue]4[/blue] 얻습니다.",
@@ -1096,6 +1166,19 @@
     "image_url": "/static/images/relics/fencing_manual.png",
     "vars": {
       "Forge": 10
+    }
+  },
+  {
+    "id": "FERTILIZER",
+    "name": "비료",
+    "description": "[gold]슬픔[/gold]을 생성할 때마다, [gold]힘[/gold]을 [blue]1[/blue] 얻습니다.",
+    "description_raw": "[gold]슬픔[/gold]을 생성할 때마다, [gold]힘[/gold]을 [blue]{StrengthPower}[/blue] 얻습니다.",
+    "flavor": "플레이스홀더",
+    "rarity": "희귀 유물",
+    "pool": "fool",
+    "image_url": "/static/images/relics/fertilizer.png",
+    "vars": {
+      "StrengthPower": 1
     }
   },
   {
@@ -1645,8 +1728,8 @@
   {
     "id": "LASTING_CANDY",
     "name": "오래 가는 사탕",
-    "description": "두 번의 전투마다, 카드 보상에 파워 카드가 1장 추가됩니다.",
-    "description_raw": "두 번의 전투마다, 카드 보상에 파워 카드가 1장 추가됩니다.",
+    "description": "2번의 전투마다, 카드 보상에 파워 카드가 1장 추가됩니다.",
+    "description_raw": "2번의 전투마다, 카드 보상에 파워 카드가 1장 추가됩니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
@@ -1667,8 +1750,8 @@
   {
     "id": "LAVA_ROCK",
     "name": "화산암",
-    "description": "1막의 보스가 보상으로 [gold]유물[/gold]을 [blue]2[/blue]개 제공합니다.",
-    "description_raw": "1막의 보스가 보상으로 [gold]유물[/gold]을 [blue]{Relics}[/blue]개 제공합니다.",
+    "description": "[blue]1[/blue][gold]막[/gold]의 보스가 보상으로 [gold]유물[/gold]을 [blue]2[/blue]개 제공합니다.",
+    "description_raw": "[blue]1[/blue][gold]막[/gold]의 보스가 보상으로 [gold]유물[/gold]을 [blue]{Relics}[/blue]개 제공합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
@@ -1931,6 +2014,20 @@
     }
   },
   {
+    "id": "MIGHTY_WINGS",
+    "name": "강력한 날개",
+    "description": "한 번의 공격으로 [blue]30[/blue] 이상의 피해를 입힐 때마다, [gold]힘[/gold]을 [blue]2[/blue] 얻습니다.",
+    "description_raw": "한 번의 공격으로 [blue]{DamageThreshold}[/blue] 이상의 피해를 입힐 때마다, [gold]힘[/gold]을 [blue]{StrengthPower}[/blue] 얻습니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "이벤트 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/mighty_wings.png",
+    "vars": {
+      "DamageThreshold": 30,
+      "StrengthPower": 2
+    }
+  },
+  {
     "id": "MINI_REGENT",
     "name": "미니 리젠트",
     "description": "매 턴마다 처음으로 [star:1]을 소모 시, [gold]힘[/gold]을 [blue]1[/blue] 얻습니다.",
@@ -2133,6 +2230,30 @@
     "rarity": "고대 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/nutritious_soup.png",
+    "vars": {}
+  },
+  {
+    "id": "OBSIDIAN_VICE",
+    "name": "흑요석 바이스",
+    "description": "내 턴 종료 시, [gold]손[/gold]에 있는 카드 1장당 무작위 적에게 피해를 [blue]1[/blue] 줍니다.",
+    "description_raw": "내 턴 종료 시, [gold]손[/gold]에 있는 카드 1장당 무작위 적에게 피해를 [blue]{Damage}[/blue] 줍니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "이벤트 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/obsidian_vice.png",
+    "vars": {
+      "Damage": 1
+    }
+  },
+  {
+    "id": "OCARINA",
+    "name": "오카리나",
+    "description": "매 전투 시작 시, 무작위 “와”, “초”, “키” 카드를 1장 [gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "매 전투 시작 시, 무작위 “와”, “초”, “키” 카드를 1장 [gold]손[/gold]으로 가져옵니다.",
+    "flavor": "플레이스홀더",
+    "rarity": "고급 유물",
+    "pool": "fool",
+    "image_url": "/static/images/relics/ocarina.png",
     "vars": {}
   },
   {
@@ -2612,7 +2733,7 @@
   },
   {
     "id": "PRECISE_SCISSORS",
-    "name": "정밀한 가위",
+    "name": "정교한 가위",
     "description": "획득 시, [gold]덱[/gold]에서 카드를 [blue]1[/blue]장 제거합니다.",
     "description_raw": "획득 시, [gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 제거합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
@@ -2744,8 +2865,8 @@
   {
     "id": "REGAL_PILLOW",
     "name": "호화로운 베개",
-    "description": "[gold]휴식[/gold]을 취할 때마다 추가로 체력을 [blue]15[/blue] 회복합니다.",
-    "description_raw": "[gold]휴식[/gold]을 취할 때마다 추가로 체력을 [blue]{Heal}[/blue] 회복합니다.",
+    "description": "[gold]휴식[/gold]을 취할 때마다 추가로 체력을 [green]15[/green] 회복합니다.",
+    "description_raw": "[gold]휴식[/gold]을 취할 때마다 추가로 체력을 [green]{Heal}[/green] 회복합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
@@ -3110,6 +3231,19 @@
     }
   },
   {
+    "id": "SONG_BOW",
+    "name": "노래의 활",
+    "description": "매 전투 시작 시 [gold]조준[/gold]을 [blue]6[/blue] 얻습니다.",
+    "description_raw": "매 전투 시작 시 [gold]조준[/gold]을 [blue]{AimPower}[/blue] 얻습니다.",
+    "flavor": "플레이스홀더",
+    "rarity": "시작 유물",
+    "pool": "fool",
+    "image_url": "/static/images/relics/song_bow.png",
+    "vars": {
+      "AimPower": 6
+    }
+  },
+  {
     "id": "SOZU",
     "name": "시시오도시",
     "description": "매 턴 시작 시, [energy:1]를 얻습니다. 더 이상 포션을 획득할 수 없습니다.",
@@ -3199,6 +3333,20 @@
     "pool": "shared",
     "image_url": "/static/images/relics/storybook.png",
     "vars": {}
+  },
+  {
+    "id": "STORYTELLER",
+    "name": "이야기꾼",
+    "description": "매 전투 시작 시 [gold]조준[/gold]을 [blue]12[/blue] 얻습니다. 내 턴 종료 시, [gold]조준[/gold]을 [blue]3[/blue] 얻습니다.",
+    "description_raw": "매 전투 시작 시 [gold]조준[/gold]을 [blue]{AimPower}[/blue] 얻습니다. 내 턴 종료 시, [gold]조준[/gold]을 [blue]{EndOfTurnAim}[/blue] 얻습니다.",
+    "flavor": "플레이스홀더",
+    "rarity": "시작 유물",
+    "pool": "fool",
+    "image_url": "/static/images/relics/storyteller.png",
+    "vars": {
+      "AimPower": 12,
+      "EndOfTurnAim": 3
+    }
   },
   {
     "id": "STRAWBERRY",
@@ -3355,6 +3503,17 @@
     "vars": {}
   },
   {
+    "id": "THUMBSCREW",
+    "name": "엄지 나사",
+    "description": "여러 번 적중하는 공격 카드가 한 번 더 적중합니다.",
+    "description_raw": "여러 번 적중하는 공격 카드가 한 번 더 적중합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "이벤트 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/thumbscrew.png",
+    "vars": {}
+  },
+  {
     "id": "TINGSHA",
     "name": "팅샤",
     "description": "내 턴 동안 카드를 버릴 때마다, 버린 카드 1장당 무작위 적에게 피해를 [blue]3[/blue] 줍니다.",
@@ -3402,6 +3561,19 @@
     "image_url": "/static/images/relics/toolbox.png",
     "vars": {
       "Cards": 3
+    }
+  },
+  {
+    "id": "TORMENTOUS_COLLAR",
+    "name": "고문용 목걸이",
+    "description": "엘리트 전투 시작 시, 모든 적에게 [gold]약화[/gold]를 [blue]2[/blue] 부여합니다.",
+    "description_raw": "엘리트 전투 시작 시, 모든 적에게 [gold]약화[/gold]를 [blue]{WeakPower}[/blue] 부여합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "이벤트 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/tormentous_collar.png",
+    "vars": {
+      "WeakPower": 2
     }
   },
   {
@@ -3491,6 +3663,19 @@
     "vars": {
       "Cards": 10,
       "Block": 7
+    }
+  },
+  {
+    "id": "TWINE",
+    "name": "노끈",
+    "description": "[gold]화살[/gold]을 [gold]회수[/gold]할 때마다, [gold]방어도[/gold]를 [blue]4[/blue] 얻습니다.",
+    "description_raw": "[gold]화살[/gold]을 [gold]회수[/gold]할 때마다, [gold]방어도[/gold]를 [blue]{Block}[/blue] 얻습니다.",
+    "flavor": "플레이스홀더",
+    "rarity": "희귀 유물",
+    "pool": "fool",
+    "image_url": "/static/images/relics/twine.png",
+    "vars": {
+      "Block": 4
     }
   },
   {
@@ -3702,6 +3887,19 @@
     "vars": {}
   },
   {
+    "id": "WHITTLING_KNIFE",
+    "name": "조각칼",
+    "description": "[gold]뽑을 카드 더미[/gold]를 섞을 때마다, [gold]조준[/gold]을 [blue]5[/blue] 얻습니다.",
+    "description_raw": "[gold]뽑을 카드 더미[/gold]를 섞을 때마다, [gold]조준[/gold]을 [blue]{AimPower}[/blue] 얻습니다.",
+    "flavor": "플레이스홀더",
+    "rarity": "고급 유물",
+    "pool": "fool",
+    "image_url": "/static/images/relics/whittling_knife.png",
+    "vars": {
+      "AimPower": 5
+    }
+  },
+  {
     "id": "WING_CHARM",
     "name": "날개 부적",
     "description": "매 카드 보상마다 무작위 카드 1장이, [purple]신속[/purple]이 [blue]1[/blue] [gold]인챈트[/gold]된 상태로 등장합니다.",
@@ -3750,6 +3948,20 @@
     "vars": {
       "Repeat": 3,
       "RemainingCombats": 5
+    }
+  },
+  {
+    "id": "WUPPY",
+    "name": "워피",
+    "description": "[gold]워피[/gold]의 체력은 [blue]0[/blue]/[blue]0[/blue]입니다. [gold]워피[/gold]는 전투 중 모든 공격 피해를 받아냅니다.",
+    "description_raw": "[gold]워피[/gold]의 체력은 [blue]{CurrentHp}[/blue]/[blue]{MaxHp}[/blue]입니다. [gold]워피[/gold]는 전투 중 모든 공격 피해를 받아냅니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "이벤트 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/wuppy.png",
+    "vars": {
+      "MaxHp": 0,
+      "CurrentHp": 0
     }
   },
   {
