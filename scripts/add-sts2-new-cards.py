@@ -63,6 +63,8 @@ SELF_CHECK = ["BASH", "FALLING_STAR", "BARRICADE", "ACCURACY", "AFTERIMAGE", "ST
 GAME_FIELDS = ["cost", "is_x_cost", "is_x_star_cost", "star_cost", "type", "rarity", "target", "color", "damage", "block",
                "hit_count", "powers_applied", "cards_draw", "energy_gain", "hp_loss", "tags", "vars", "upgrade"]
 # Multi-level cards (DingyDagger): UpgradeValueBy(N + CurrentUpgradeLevel); the level is 1 during the first upgrade.
+# Canonical vars whose value is a property, not a literal: SHOW_OFF's AimPower is CurrentAim = BaseAim (5) when created.
+VAR_FALLBACKS = {"SHOW_OFF": {"AimPower": 5}}
 UP_LEVEL_RE = re.compile(r"base\.DynamicVars(?:\.|\[\")(\w+)(?:\"\])?\.UpgradeValueBy\(\s*(-?\d+)\s*\+\s*base\.CurrentUpgradeLevel\s*\)")
 
 
@@ -87,10 +89,12 @@ def title(cards_loc: dict, cid: str, text: str) -> str | None:
     return cards_loc.get(f"{cid}.title.{m.group(1)}") if m else None
 
 
-def ordered_vars(text: str, star_cost) -> dict | None:
+def ordered_vars(cid: str, text: str, star_cost) -> dict | None:
     out: dict = {}
     for cls, generic, args in pv.find_var_calls(ce.canonical_block(text)):
         parsed = pv.parse_var(cls, generic, args)
+        if not parsed and generic in VAR_FALLBACKS.get(cid, {}):
+            parsed = (generic, VAR_FALLBACKS[cid][generic])
         if not parsed or isinstance(parsed[1], dict) or parsed[0] in out:
             continue
         out[parsed[0]] = parsed[1]
@@ -113,6 +117,7 @@ def upgrade_of(text: str, cost: int) -> dict | None:
     for name, v in ce.UP_VAR_RE.findall(body):
         key = name.lower()
         up[key] = signed(ce.num(up.get(key, "0")) + ce.num(v))
+    up = {k: v for k, v in up.items() if ce.num(v) != 0}  # UpgradeValueBy(0m) only refreshes the display
     for name, v in UP_LEVEL_RE.findall(body):
         up[name.lower()] = signed(int(v) + 1)
     delta = sum(int(x) for x in ce.UP_COST_RE.findall(body))
@@ -126,12 +131,11 @@ def build(cid: str, text: str, color: str, lang: str, tables: dict) -> dict:
     cost, ctype, rarity, target = int(m.group(1)), m.group(2), m.group(3), m.group(4)
     star = re.search(r"CanonicalStarCost\s*=>\s*(-?\d+)", text)
     star_cost = int(star.group(1)) if star else None
-    vars_ = ordered_vars(text, star_cost)
+    vars_ = ordered_vars(cid, text, star_cost)
     v = vars_ or {}
     powers = [
-        {"power": tables["powers"].get(f"{pv.slugify(g)}.title", g[:-5]), "amount": ce.num(str(val))}
-        for cls, g, args in pv.find_var_calls(ce.canonical_block(text))
-        if cls == "PowerVar" and g and (val := pv.parse_var(cls, g, args)) and (val := val[1]) is not None
+        {"power": tables["powers"].get(f"{pv.slugify(k)}.title", k[:-5]), "amount": ce.num(str(val))}
+        for k, val in v.items() if k.endswith("Power") and len(k) > 5
     ]
     tags = re.search(r"CanonicalTags\s*=>\s*new HashSet<CardTag>\s*(\{[^}]*\}|\(\))", text)
     raw = tables["cards"].get(f"{cid}.description", "")
@@ -177,8 +181,9 @@ def bake(rows: list[dict]) -> None:
 
 
 def image_urls(cid: str, text: str) -> tuple[str | None, str | None]:
-    m = re.search(r'return "(\w+)";\s*\}\s*$', text.split("GetPortraitFilename()")[-1], re.M)
-    slug = (m.group(1) if m else cid.lower())
+    # Level-dependent portraits (DingyDagger.GetPortraitFilename): the method's final return is the level-0 file.
+    m = re.search(r"string GetPortraitFilename\(\)\s*\{(.*?)\n\t\}", text, re.S)
+    slug = re.findall(r'return "(\w+)";', m.group(1))[-1] if m else cid.lower()
     pub = REPO / "public/images/sts2"
     return (
         f"/static/images/cards/{slug}.png" if (pub / "cards" / f"{slug}.webp").exists() else None,
@@ -240,7 +245,7 @@ def main() -> int:
             for b in built:
                 row = by_id[b["id"]]
                 ops = {k: v for k, v in (row["upgrade"] or {}).items() if k.startswith(("add_", "remove_"))}
-                for f in GAME_FIELDS + ["description", "description_raw"]:
+                for f in GAME_FIELDS + ["name", "description", "description_raw"]:
                     row[f] = b[f]
                 row["upgrade"] = {**(row["upgrade"] or {}), **ops} or None
                 changed.append(f"{lang} update {b['id']}")
