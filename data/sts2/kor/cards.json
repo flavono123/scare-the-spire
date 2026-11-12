@@ -30,7 +30,7 @@
     },
     "introducedInPatch": "v0.109.0",
     "image_url": "/static/images/cards/abundance.png",
-    "beta_image_url": null
+    "beta_image_url": "/static/images/cards/beta/abundance.png"
   },
   {
     "id": "ABRASIVE",
@@ -1848,7 +1848,7 @@
       "strength": "+2"
     },
     "introducedInPatch": "v0.108.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/blaze.png",
     "beta_image_url": "/static/images/cards/beta/blaze.png"
   },
   {
@@ -6807,7 +6807,7 @@
     "upgrade": null,
     "introducedInPatch": "v0.109.0",
     "image_url": "/static/images/cards/dowsing.png",
-    "beta_image_url": null
+    "beta_image_url": "/static/images/cards/beta/dowsing.png"
   },
   {
     "id": "DRAIN_POWER",
@@ -15108,7 +15108,7 @@
       "damage": "+4"
     },
     "introducedInPatch": "v0.108.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/outrage.png",
     "beta_image_url": "/static/images/cards/beta/outrage.png"
   },
   {
@@ -19116,7 +19116,7 @@
       "energy": "+1"
     },
     "introducedInPatch": "v0.110.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/sidestep.png",
     "beta_image_url": "/static/images/cards/beta/sidestep.png"
   },
   {
