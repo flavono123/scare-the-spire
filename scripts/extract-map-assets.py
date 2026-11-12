@@ -72,6 +72,7 @@ DIRECT_MARKER_IMPORTS = {
     "map_marker_defect": "images/packed/map/icons/map_marker_defect.png.import",
     "map_marker_necrobinder": "images/packed/map/icons/map_marker_necrobinder.png.import",
     "map_marker_regent": "images/packed/map/icons/map_marker_regent.png.import",
+    "map_marker_fool": "images/packed/map/icons/map_marker_fool.png.import",
 }
 
 # Boss node/outline assets — parallels ANCIENT_ASSETS on the frontend.

@@ -317,6 +317,7 @@ const CHARACTER_ALIASES = {
     },
   },
   SILENT: { folder: "silent", attackVfx: "VFX_SCRATCH" },
+  FOOL: { folder: "fool" },
 };
 
 const CHARACTER_SELECT_ALIASES = {
@@ -325,6 +326,7 @@ const CHARACTER_SELECT_ALIASES = {
   NECROBINDER: { folder: "necrobinder" },
   REGENT: { folder: "regent", skin: "normal" },
   SILENT: { folder: "silent" },
+  FOOL: { folder: "fool" },
 };
 
 const ANCIENT_SPINE_ALIASES = {
