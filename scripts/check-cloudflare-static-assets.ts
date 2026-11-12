@@ -605,11 +605,12 @@ function checkStaticLegacyPages(): number {
         const extensions = routeExtensions.get(routePath) ?? new Set<StaticPageExtension>();
         extensions.add(extension);
         routeExtensions.set(routePath, extensions);
+        // STS1 details are not published (main Worker file limit); the Worker
+        // redirects them to list modals, so a copied one means the filter broke.
         const assetPath = staticCompendiumAssetPath(routePath, extension);
-        assert(assetPath, `Static routing rejected STS1 detail ${routePath}.${extension}`);
         assert(
-          statSync(path.join(assetsRoot, assetPath.slice(1)), { throwIfNoEntry: false })?.isFile(),
-          `Missing copied STS1 detail: ${assetPath}`,
+          !assetPath || !statSync(path.join(assetsRoot, assetPath.slice(1)), { throwIfNoEntry: false }),
+          `STS1 detail must not be copied: ${assetPath}`,
         );
       }
       for (const [routePath, extensions] of routeExtensions) {
@@ -617,7 +618,6 @@ function checkStaticLegacyPages(): number {
         assert(extensions.has("rsc"), `Missing generated RSC for ${routePath}`);
       }
       assert(routeExtensions.size > 0, `No STS1 ${segment} detail routes were found.`);
-      count += routeExtensions.size * 2;
     }
   }
 

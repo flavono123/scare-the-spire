@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
-import { getGameOnlyCompendiumDetailFallbackHref } from "../src/lib/compendium-resource-links";
+import {
+  getGameOnlyCompendiumDetailFallbackHref,
+  getSts1DetailRedirectPath,
+} from "../src/lib/compendium-resource-links";
 import {
   GAME_LOCALES,
   getServiceLocaleForGameLocale,
@@ -113,5 +116,14 @@ for (const href of [
 }
 assert.equal(languageHref("/compendium/cards", "jpn"), "/ja/compendium/cards");
 assert.equal(languageHref("/patches/0.105.1", "deu"), "/de/patches/0.105.1");
+
+// STS1 detail pages are not published on any locale: the Worker sends them to list modals.
+const sts1Redirect = (path: string) => getSts1DetailRedirectPath(new URL(path, "https://x.invalid"));
+assert.equal(sts1Redirect("/compendium/sts1/cards/Strike"), "/compendium/sts1/cards?card=strike");
+assert.equal(sts1Redirect("/en/compendium/sts1/relics/burningblood"), "/en/compendium/sts1/relics?relic=burningblood");
+assert.equal(sts1Redirect("/ja/compendium/sts1/potions/bloodpotion"), "/ja/compendium/sts1/potions?potion=bloodpotion");
+assert.equal(sts1Redirect("/compendium/sts1/characters/ironclad"), "/compendium/sts1/characters");
+assert.equal(sts1Redirect("/compendium/sts1/cards"), null);
+assert.equal(sts1Redirect("/compendium/cards/BASH"), null);
 
 console.log("compendium-locale-detail-fallback ok");

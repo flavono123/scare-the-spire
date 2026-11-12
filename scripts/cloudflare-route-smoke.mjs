@@ -123,6 +123,17 @@ function page(path, owner, bodyIncludes) {
   ];
 }
 
+// STS1 detail pages are not published; the Worker sends them to the list modal.
+function sts1DetailRedirect(path, location) {
+  return {
+    name: `${path} STS1 detail redirect`,
+    path,
+    headers: { Accept: "text/html" },
+    statuses: [308],
+    location,
+  };
+}
+
 function missingPage(path) {
   return page(path).map((testCase) => ({
     ...testCase,
@@ -137,22 +148,22 @@ function mainCases() {
     ...page("/zh", "home"),
     ...page("/compendium/cards", "compendium"),
     ...page("/compendium/sts1/cards", "compendium"),
-    ...page("/compendium/sts1/cards/bash", "compendium"),
-    ...page("/en/compendium/sts1/cards/bash", "compendium"),
+    sts1DetailRedirect("/compendium/sts1/cards/bash", "/compendium/sts1/cards"),
+    sts1DetailRedirect("/en/compendium/sts1/cards/bash", "/en/compendium/sts1/cards"),
     ...page("/zh/compendium/sts1/cards", "compendium"),
     ...page("/compendium/sts1/powers", "compendium"),
-    ...page("/compendium/sts1/powers/strength", "compendium"),
-    ...page("/en/compendium/sts1/powers/strength", "compendium"),
+    sts1DetailRedirect("/compendium/sts1/powers/strength", "/compendium/sts1/powers"),
+    sts1DetailRedirect("/en/compendium/sts1/powers/strength", "/en/compendium/sts1/powers"),
     ...page("/compendium/sts1/monsters", "compendium"),
-    ...page("/compendium/sts1/monsters/jaw-worm", "compendium"),
-    ...page("/en/compendium/sts1/monsters/jaw-worm", "compendium"),
+    sts1DetailRedirect("/compendium/sts1/monsters/jaw-worm", "/compendium/sts1/monsters"),
+    sts1DetailRedirect("/en/compendium/sts1/monsters/jaw-worm", "/en/compendium/sts1/monsters"),
     ...page("/compendium/sts1/characters", "compendium"),
-    ...page("/compendium/sts1/characters/ironclad", "compendium"),
-    ...page("/en/compendium/sts1/characters/ironclad", "compendium"),
+    sts1DetailRedirect("/compendium/sts1/characters/ironclad", "/compendium/sts1/characters"),
+    sts1DetailRedirect("/en/compendium/sts1/characters/ironclad", "/en/compendium/sts1/characters"),
     ...page("/compendium/sts2/cards", "compendium"),
     ...page("/cards", "legacy"),
     ...page("/cards/bash", "legacy"),
-    ...page("/cards/strike-ironclad", "legacy"),
+    sts1DetailRedirect("/cards/strike-ironclad", "/compendium/sts1/cards"),
     ...page("/compendium/powers/painful_stabs", "compendium"),
     ...page("/en/compendium/powers/painful_stabs", "compendium"),
     ...page("/zh/compendium/powers?power=painful_stabs", "compendium"),

@@ -19,14 +19,6 @@ import { getSTS2Patches } from "@/lib/data";
 import { getNeowsletters } from "@/lib/neowsletters";
 import { getActiveRunBadgeCatalog } from "@/lib/run-badge-catalog";
 import { searchLanguageAlternates } from "@/lib/search-canonical";
-import {
-  getSts1Cards,
-  getSts1Characters,
-  getSts1Monsters,
-  getSts1Potions,
-  getSts1Powers,
-  getSts1Relics,
-} from "@/lib/sts1/data";
 
 export const dynamic = "force-static";
 
@@ -114,24 +106,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     detailParamGroups,
     patches,
     neowsletters,
-    sts1Cards,
-    sts1Relics,
-    sts1Potions,
-    sts1Powers,
-    sts1Monsters,
-    sts1Characters,
   ] = await Promise.all([
     Promise.all(
       COMPENDIUM_DETAIL_ROUTES.map(([, generateParams]) => generateParams()),
     ),
     getSTS2Patches(),
     getNeowsletters(),
-    getSts1Cards(),
-    getSts1Relics(),
-    getSts1Potions(),
-    getSts1Powers(),
-    getSts1Monsters(),
-    getSts1Characters(),
   ]);
   const paths = [
     ...PUBLIC_INDEX_PATHS,
@@ -140,12 +120,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const [segment] = COMPENDIUM_DETAIL_ROUTES[index];
       return params.map(({ id }) => `/compendium/${segment}/${id}`);
     }),
-    ...sts1Cards.map((card) => `/compendium/sts1/cards/${card.slug}`),
-    ...sts1Relics.map((relic) => `/compendium/sts1/relics/${relic.slug}`),
-    ...sts1Potions.map((potion) => `/compendium/sts1/potions/${potion.slug}`),
-    ...sts1Powers.map((power) => `/compendium/sts1/powers/${power.slug}`),
-    ...sts1Monsters.map((monster) => `/compendium/sts1/monsters/${monster.slug}`),
-    ...sts1Characters.map((character) => `/compendium/sts1/characters/${character.slug}`),
   ];
   const buildDate = new Date().toISOString().slice(0, 10);
   const lastModified = (date: string) => lastModifiedNoLaterThan(date, buildDate);

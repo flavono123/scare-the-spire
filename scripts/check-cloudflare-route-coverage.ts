@@ -19,6 +19,7 @@ import {
   buildCompendiumEntryHref,
   COMPENDIUM_RESOURCE_LINK_TYPES,
   getGameOnlyCompendiumDetailFallbackHref,
+  getSts1DetailRedirectPath,
 } from "../src/lib/compendium-resource-links";
 import { GAME_LOCALES, pathPrefixForGameLocale } from "../src/lib/i18n";
 import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
@@ -177,7 +178,18 @@ async function main() {
       const label = `${routePath} (${rsc ? "rsc" : "document"})`;
       let outcome: Outcome | null = null;
 
-      if (response.headers.get("x-coverage-owner") === "patch") {
+      // STS1 details are not published: documents redirect to the list modal,
+      // and nothing links their RSC payloads.
+      const sts1Redirect = getSts1DetailRedirectPath(new URL(routePath, origin));
+      const responseLocation = response.headers.get("location");
+      if (sts1Redirect) {
+        const redirected = responseLocation ? new URL(responseLocation, origin) : null;
+        if (!rsc && response.status === 308 && `${redirected?.pathname}${redirected?.search}` === sts1Redirect) {
+          outcome = "redirect";
+        } else if (rsc && response.status === 404) {
+          outcome = "not-found";
+        }
+      } else if (response.headers.get("x-coverage-owner") === "patch") {
         outcome = "patch";
       } else if (status === 404) {
         if (response.status === 404 && owner === "not-found") outcome = "not-found";

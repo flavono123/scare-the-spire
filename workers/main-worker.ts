@@ -19,7 +19,10 @@ type ExecutionContextLike = {
   passThroughOnException?(): void;
 };
 
-import { getLegacyCompendiumDetailRedirectPath } from "../src/lib/compendium-resource-links";
+import {
+  getLegacyCompendiumDetailRedirectPath,
+  getSts1DetailRedirectPath,
+} from "../src/lib/compendium-resource-links";
 import { withFlagCookie } from "./api/flag-cookie";
 import { isApiRouterPath, type ApiEnv } from "./api/router";
 import { apiRouter } from "./api/routes";
@@ -47,6 +50,7 @@ import {
   staticNotFoundAssetPath,
   staticServiceDetailShellAssetPath,
   staticServicePageAssetPath,
+  sts1LegacyAliasPath,
   sts2CompendiumAliasPath,
 } from "./static-page-routing";
 
@@ -155,12 +159,16 @@ function maybeRedirectLegacyCompendiumDetail(request: Request, url: URL): Respon
     return null;
   }
 
-  const redirectPath = getLegacyCompendiumDetailRedirectPath(url);
+  // Covers /compendium/sts1/<type>/<slug> and the legacy /cards/<slug>-style aliases.
+  const sts1Alias = sts1LegacyAliasPath(url.pathname);
+  const sts1Path = getSts1DetailRedirectPath(sts1Alias ? new URL(sts1Alias, url) : url);
+  const redirectPath = sts1Path ?? getLegacyCompendiumDetailRedirectPath(url);
   if (!redirectPath) return null;
 
   const redirectUrl = new URL(request.url);
-  redirectUrl.pathname = redirectPath;
-  redirectUrl.search = "";
+  const [pathname, search = ""] = redirectPath.split("?");
+  redirectUrl.pathname = pathname;
+  redirectUrl.search = search;
   redirectUrl.hash = "";
   return new Response(null, {
     status: 308,

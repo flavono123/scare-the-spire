@@ -21,15 +21,15 @@ assert.equal(
 );
 assert.equal(
   commentThreadHref("sts1-codex:potion:bloodpotion"),
-  "/compendium/sts1/potions/bloodpotion#comments",
+  "/compendium/sts1/potions?potion=bloodpotion#comments",
 );
 assert.equal(
   commentThreadHref("sts1-codex:card:strike"),
-  "/compendium/sts1/cards/strike#comments",
+  "/compendium/sts1/cards?card=strike#comments",
 );
 assert.equal(
   commentThreadHref("sts1-codex:relic:burningblood"),
-  "/compendium/sts1/relics/burningblood#comments",
+  "/compendium/sts1/relics?relic=burningblood#comments",
 );
 assert.equal(
   buildSts1CommentThreadKey("potion", "bloodpotion"),

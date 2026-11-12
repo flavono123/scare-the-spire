@@ -1,4 +1,5 @@
 import { pathPrefixForGameLocale, type GameLocale } from "@/lib/i18n";
+import { STS1_LIST_SELECTOR_PARAMS } from "@/lib/sts1/paths";
 
 export type CompendiumResourceLinkType =
   | "affliction"
@@ -186,17 +187,6 @@ export function buildCompendiumEntryHref(
   return `${url.pathname}${url.search}`;
 }
 
-// STS1 list pages and the query param each one opens an entry with. The STS1
-// character select has no such param, so its fallback is the plain list.
-const STS1_LIST_SELECTOR_PARAMS: Record<string, string | null> = {
-  cards: "card",
-  characters: null,
-  potions: "potion",
-  powers: "power",
-  monsters: "monster",
-  relics: "relic",
-};
-
 /**
  * Game-only locales publish no Compendium detail pages, so a Korean or English
  * detail path moved onto one of them (language menu, browser-language
@@ -210,18 +200,7 @@ export function getGameOnlyCompendiumDetailFallbackHref(href: string): string | 
   const localized = localizedCompendiumPath(url.pathname);
   if (!localized || supportsDirectCompendiumDetails(localized.localePrefix)) return null;
 
-  const sts1Match = /^\/compendium\/sts1\/([^/]+)\/[^/]+$/.exec(localized.path);
-  if (sts1Match) {
-    const listType = sts1Match[1];
-    if (!Object.hasOwn(STS1_LIST_SELECTOR_PARAMS, listType)) return null;
-    const id = detailIdFromPath(localized.path, `/compendium/sts1/${listType}`);
-    if (!id) return null;
-    url.pathname = `${localized.localePrefix}/compendium/sts1/${listType}`;
-    for (const param of COMPENDIUM_SELECTOR_PARAMS) url.searchParams.delete(param);
-    const param = STS1_LIST_SELECTOR_PARAMS[listType];
-    if (param) url.searchParams.set(param, id.toLowerCase());
-    return `${url.pathname}${url.search}`;
-  }
+  if (/^\/compendium\/sts1\//.test(localized.path)) return sts1DetailListHref(url, localized);
 
   for (const [type, config] of Object.entries(COMPENDIUM_RESOURCE_LINKS)) {
     if (type === "affliction") continue;
@@ -232,6 +211,31 @@ export function getGameOnlyCompendiumDetailFallbackHref(href: string): string | 
   }
 
   return null;
+}
+
+/** The list URL that opens an STS1 detail path's entry, or null when `url` is not one. */
+function sts1DetailListHref(
+  url: URL,
+  localized: { localePrefix: string; path: string },
+): string | null {
+  const sts1Match = /^\/compendium\/sts1\/([^/]+)\/[^/]+$/.exec(localized.path);
+  if (!sts1Match) return null;
+  const listType = sts1Match[1];
+  if (!Object.hasOwn(STS1_LIST_SELECTOR_PARAMS, listType)) return null;
+  const id = detailIdFromPath(localized.path, `/compendium/sts1/${listType}`);
+  if (!id) return null;
+  const next = new URL(url);
+  next.pathname = `${localized.localePrefix}/compendium/sts1/${listType}`;
+  for (const param of COMPENDIUM_SELECTOR_PARAMS) next.searchParams.delete(param);
+  const param = STS1_LIST_SELECTOR_PARAMS[listType as keyof typeof STS1_LIST_SELECTOR_PARAMS];
+  if (param) next.searchParams.set(param, id.toLowerCase());
+  return `${next.pathname}${next.search}`;
+}
+
+/** STS1 detail pages are not published on any locale; old links open the list modal. */
+export function getSts1DetailRedirectPath(url: URL): string | null {
+  const localized = localizedCompendiumPath(url.pathname);
+  return localized ? sts1DetailListHref(url, localized) : null;
 }
 
 export function getLegacyCompendiumDetailRedirectPath(url: URL): string | null {

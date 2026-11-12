@@ -253,12 +253,8 @@ function staticPageRelativePath(file) {
     parts.length === compendiumIndex + 2
     && parts[compendiumIndex + 1] === "sts1"
     && sts1CompendiumSegments.has(parsed.name);
-  const isSts1Detail =
-    parts.length === compendiumIndex + 3
-    && parts[compendiumIndex + 1] === "sts1"
-    && sts1CompendiumSegments.has(parts[compendiumIndex + 2])
-    && (compendiumIndex === 0 || parts[0] === "en");
-  if (!isIndex && !isServiceLocaleDetail && !isSts1Index && !isSts1Detail) return null;
+  // STS1 detail pages are not published; the Worker redirects them to list modals.
+  if (!isIndex && !isServiceLocaleDetail && !isSts1Index) return null;
 
   return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
 }
