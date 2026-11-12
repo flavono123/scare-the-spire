@@ -24,7 +24,7 @@ const CHARACTER_LABELS: Record<ServiceLocale, Record<string, string>> = {
     "CHARACTER.DEFECT": "Defect",
     "CHARACTER.NECROBINDER": "Necrobinder",
     "CHARACTER.REGENT": "Regent",
-    "CHARACTER.FOOL": "The Fool",
+    "CHARACTER.FOOL": "Fool",
   },
 };
 

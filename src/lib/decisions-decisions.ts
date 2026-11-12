@@ -83,6 +83,7 @@ export const SPIRE_TIER_COLOR_KEYS = [
   "purple",
   "silver",
   "bronze",
+  "yellow",
 ] as const;
 
 export const CHARACTER_TIER_COLOR_KEYS = [
@@ -91,6 +92,7 @@ export const CHARACTER_TIER_COLOR_KEYS = [
   "defect",
   "necrobinder",
   "regent",
+  "fool",
 ] as const;
 
 export type SpireTierColorKey = (typeof SPIRE_TIER_COLOR_KEYS)[number];
@@ -151,6 +153,7 @@ const SPIRE_TIER_BAR: Record<SpireTierColorKey, string> = {
   purple: "#c084fc",
   silver: "#8ad6e0",
   bronze: "#d7a470",
+  yellow: "#fffa72",
 };
 
 export const TIER_PALETTE_KEYS = [
@@ -177,6 +180,17 @@ const SPIRE_TIER_TEXT: Record<SpireTierColorKey, string> = {
   purple: "spire-purple",
   silver: "spire-silver",
   bronze: "spire-bronze",
+  yellow: "spire-yellow",
+};
+
+/** Each character bucket currently borrows a spire color; kept apart so one can change alone. */
+const CHARACTER_TIER_TEXT_COLOR: Record<CharacterTierColorKey, SpireTierColorKey> = {
+  ironclad: "red",
+  silent: "green",
+  defect: "aqua",
+  necrobinder: "pink",
+  regent: "orange",
+  fool: "yellow",
 };
 
 const PLAYABLE_CARD_TYPES = new Set<CardTypeKo>(["공격", "스킬", "파워"]);
@@ -212,17 +226,7 @@ export function tierColorBar(color: TierColorKey): string {
 
 export function tierColorTextClass(color: TierColorKey): string {
   if (isCharacterTierColorKey(color)) {
-    return SPIRE_TIER_TEXT[
-      color === "ironclad"
-        ? "red"
-        : color === "silent"
-        ? "green"
-        : color === "defect"
-        ? "aqua"
-        : color === "necrobinder"
-        ? "pink"
-        : "orange"
-    ];
+    return SPIRE_TIER_TEXT[CHARACTER_TIER_TEXT_COLOR[color]];
   }
   return SPIRE_TIER_TEXT[color];
 }

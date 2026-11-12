@@ -24,8 +24,8 @@ const COLOR_CLASSES: Record<string, string> = {
   regent: "character-regent",
   necrobinder: "character-necrobinder",
   fool: "character-fool",
-  // Game text tags The Fool by StsColors.yellow, the same color as [fool].
-  yellow: "character-fool",
+  // Game text tags The Fool by StsColors.yellow; [fool] currently shares its color.
+  yellow: "spire-yellow",
 };
 
 const EFFECT_CLASSES: Record<string, string> = {
