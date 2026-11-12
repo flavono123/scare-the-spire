@@ -610,16 +610,25 @@
     "title": "Beta Patch Notes - v0.113.0",
     "titleKo": "베타 패치 노트 - v0.113.0",
     "type": "beta",
-    "status": "building",
+    "draft": true,
     "steamUrl": "https://store.steampowered.com/news/app/2868840?emclan=103582791474493240&emgid=708914333639245837",
-    "summary": "Rich patch notes are being prepared.",
-    "summaryKo": "리치 패치 노트를 준비하고 있습니다.",
+    "summary": "New character The Fool, new game modes Blitz and Dread, new events, cards and relics, Expect a Fight, Expertise and Memento Mori reworks, and many bug fixes.",
+    "summaryKo": "새 캐릭터 The Fool, 새 게임 모드 Blitz·Dread, 새 이벤트·카드·유물, 싸움 준비·전문성·메멘토 모리 리워크, 많은 버그 수정.",
     "hasBalanceChanges": true,
     "art": {
       "type": "card",
-      "id": "TOOLS_OF_THE_TRADE",
-      "alt": "Tools of the Trade card art",
-      "altKo": "작업 도구 카드 아트"
-    }
+      "id": "MEMENTO_MORI",
+      "alt": "Memento Mori card art",
+      "altKo": "메멘토 모리 카드 아트"
+    },
+    "featuredEntities": [
+      { "type": "card", "id": "EXPECT_A_FIGHT" },
+      { "type": "card", "id": "EXPERTISE" },
+      { "type": "card", "id": "MEMENTO_MORI" },
+      { "type": "relic", "id": "DOWSING_ROD" },
+      { "type": "relic", "id": "RINGING_TRIANGLE" },
+      { "type": "monster", "id": "INFESTED_PRISM" },
+      { "type": "card", "id": "SALVO" }
+    ]
   }
 ]
