@@ -994,7 +994,7 @@
     "id": "ASTRAL_PULSE",
     "name": "Astral Pulse",
     "description": "Deal 6 damage to ALL enemies twice.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies twice.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {HitCount:choose(2):twice|{HitCount:diff()} times}.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -1015,6 +1015,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 6,
+      "HitCount": 2,
       "StarCost": 3
     },
     "upgrade": {
@@ -3467,7 +3468,7 @@
     "id": "CELESTIAL_MIGHT",
     "name": "Celestial Might",
     "description": "Deal 6 damage 3 times.",
-    "description_raw": "Deal {Damage:diff()} damage {Repeat:diff()} {Repeat:plural:time|times}.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:diff()} {HitCount:plural:time|times}.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -3478,7 +3479,7 @@
     "color": "regent",
     "damage": 6,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -3488,10 +3489,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 6,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/celestial_might.png",
     "beta_image_url": null
@@ -4436,7 +4437,7 @@
     "id": "CONFLAGRATION",
     "name": "Conflagration",
     "description": "Deal 2 damage to ALL enemies 4 times.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {Repeat:diff()} {Repeat:plural:time|times}.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {HitCount:diff()} {HitCount:plural:time|times}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -4457,10 +4458,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 2,
-      "Repeat": 4
+      "HitCount": 4
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/conflagration.png",
     "beta_image_url": "/static/images/cards/beta/conflagration.png"
@@ -5130,7 +5131,7 @@
     "id": "DAGGER_SPRAY",
     "name": "Dagger Spray",
     "description": "Deal 4 damage to ALL enemies twice.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies twice.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {HitCount:choose(2):twice|{HitCount:diff()} times}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -5150,7 +5151,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 4
+      "Damage": 4,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -6536,7 +6538,7 @@
     "id": "DISMANTLE",
     "name": "Dismantle",
     "description": "Deal 8 damage.\nIf the enemy is [gold]Vulnerable[/gold], hits twice.",
-    "description_raw": "Deal {Damage:diff()} damage.\nIf the enemy is [gold]Vulnerable[/gold], hits twice.",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf the enemy is [gold]Vulnerable[/gold], hits {HitCount:choose(2):twice|{HitCount:diff()} times}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6547,7 +6549,7 @@
     "color": "ironclad",
     "damage": 8,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -6556,7 +6558,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 8
+      "Damage": 8,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -6774,7 +6777,7 @@
   {
     "id": "DOWSING",
     "name": "Dowsing",
-    "description": "After entering 5 more [gold]?[/gold] rooms, transforms into an [gold]Abundance[/gold].",
+    "description": "After entering 4 more [gold]?[/gold] rooms, transforms into an [gold]Abundance[/gold].",
     "description_raw": "After entering {Rooms:diff()} more [gold]?[/gold] {Rooms:plural:room|rooms}, transforms into an [gold]Abundance[/gold].",
     "cost": -1,
     "is_x_cost": null,
@@ -6799,7 +6802,7 @@
       "ABUNDANCE"
     ],
     "vars": {
-      "Rooms": 5
+      "Rooms": 4
     },
     "upgrade": null,
     "introducedInPatch": "v0.109.0",
@@ -7804,8 +7807,8 @@
   {
     "id": "EXPECT_A_FIGHT",
     "name": "Expect a Fight",
-    "description": "Gain 15 [gold]Block[/gold].\nGains 5 additional [gold]Block[/gold] for each [gold]Strength[/gold] you have.",
-    "description_raw": "Gain {CalculatedBlock:diff()} [gold]Block[/gold].\nGains {CalculationExtra:diff()} additional [gold]Block[/gold] for each [gold]Strength[/gold] you have.",
+    "description": "Gain 15 [gold]Block[/gold].\nAttacks in your [gold]Hand[/gold] cost 1 less [energy:1] until played.",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nAttacks in your [gold]Hand[/gold] cost {Energy:diff()} less {energyPrefix:energyIcons(1)} until played.",
     "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -7819,18 +7822,17 @@
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
-    "energy_gain": null,
+    "energy_gain": 1,
     "hp_loss": null,
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 15,
-      "CalculationExtra": 5
+      "Block": 15,
+      "Energy": 1
     },
     "upgrade": {
-      "calculationbase": "+1",
-      "calculationextra": "+3"
+      "block": "+5"
     },
     "image_url": "/static/images/cards/expect_a_fight.png",
     "beta_image_url": null
@@ -7838,8 +7840,8 @@
   {
     "id": "EXPERTISE",
     "name": "Expertise",
-    "description": "Draw 2 cards.\nThey gain [gold]Retain[/gold] this turn.",
-    "description_raw": "Draw {Cards:diff()} cards.\nThey gain [gold]Retain[/gold] this turn.",
+    "description": "Draw 2 cards.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
+    "description_raw": "Draw {Cards:diff()} cards.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -7944,7 +7946,7 @@
     "id": "EXTERMINATE",
     "name": "Exterminate",
     "description": "Deal 3 damage to ALL enemies 4 times.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {Repeat:diff()} times.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {HitCount:diff()} times.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -7955,7 +7957,7 @@
     "color": "event",
     "damage": 3,
     "block": null,
-    "hit_count": null,
+    "hit_count": 4,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -7965,7 +7967,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 3,
-      "Repeat": 4
+      "HitCount": 4
     },
     "upgrade": {
       "damage": "+1"
@@ -8327,7 +8329,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "necrobinder",
-    "damage": 3,
+    "damage": null,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -8341,8 +8343,7 @@
     "spawns_cards": null,
     "vars": {
       "OstyDamage": 3,
-      "Cards": 1,
-      "Damage": 3
+      "Cards": 1
     },
     "upgrade": {
       "ostydamage": "+3"
@@ -8354,7 +8355,7 @@
     "id": "FIEND_FIRE",
     "name": "Fiend Fire",
     "description": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nDeal 7 damage for each card [gold]Exhausted[/gold].",
-    "description_raw": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nDeal {Damage:diff()} damage for each card [gold]Exhausted[/gold].",
+    "description_raw": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nDeal {Damage:diff()} damage for each card [gold]Exhausted[/gold].{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -8376,7 +8377,9 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 7
+      "Damage": 7,
+      "CalculationBase": 0,
+      "CalculationExtra": 1
     },
     "upgrade": {
       "damage": "+3"
@@ -8388,7 +8391,7 @@
     "id": "FIGHT_ME",
     "name": "Fight Me!",
     "description": "Deal 5 damage twice.\nGain 3 [gold]Strength[/gold].\nThe enemy gains 1 [gold]Strength[/gold].",
-    "description_raw": "Deal {Damage:diff()} damage twice.\nGain {StrengthPower:diff()} [gold]Strength[/gold].\nThe enemy gains {EnemyStrength:diff()} [gold]Strength[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.\nGain {StrengthPower:diff()} [gold]Strength[/gold].\nThe enemy gains {EnemyStrength:diff()} [gold]Strength[/gold].",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -8399,7 +8402,7 @@
     "color": "ironclad",
     "damage": 5,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": [
       {
         "power": "Strength",
@@ -8413,11 +8416,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "EnemyStrength": 1,
       "Damage": 5,
-      "Repeat": 2,
+      "HitCount": 2,
       "StrengthPower": 3,
-      "Strength": 3
+      "Strength": 3,
+      "EnemyStrength": 1
     },
     "upgrade": {
       "damage": "+1",
@@ -9079,8 +9082,8 @@
   {
     "id": "FORGOTTEN_RITUAL",
     "name": "Forgotten Ritual",
-    "description": "Gain [energy:3].",
-    "description_raw": "Gain {Energy:energyIcons()}.",
+    "description": "If you [gold]Exhausted[/gold] a card this turn, gain [energy:3].",
+    "description_raw": "If you [gold]Exhausted[/gold] a card this turn, gain {Energy:energyIcons()}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -10141,7 +10144,7 @@
     "id": "GUNK_UP",
     "name": "Gunk Up",
     "description": "Deal 4 damage 3 times.\nAdd a [gold]Slimed[/gold] into your [gold]Discard Pile[/gold].",
-    "description_raw": "Deal {Damage:diff()} damage {Repeat:diff()} {Repeat:plural:time|times}.\nAdd a [gold]Slimed[/gold] into your [gold]Discard Pile[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:diff()} {HitCount:plural:time|times}.\nAdd a [gold]Slimed[/gold] into your [gold]Discard Pile[/gold].",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -10152,7 +10155,7 @@
     "color": "defect",
     "damage": 4,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -10164,7 +10167,7 @@
     ],
     "vars": {
       "Damage": 4,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
       "damage": "+1"
@@ -12397,8 +12400,8 @@
   {
     "id": "KNOCKOUT_BLOW",
     "name": "Knockout Blow",
-    "description": "Deal 30 damage.\nIf this kills an enemy, gain [star:5].",
-    "description_raw": "Deal {Damage:diff()} damage.\nIf this kills an enemy, gain {Stars:starIcons()}.",
+    "description": "Deal 30 damage.\nIf this kills an enemy, gain\n[star:5].",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf this kills an enemy, gain\n{Stars:starIcons()}.",
     "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -13261,7 +13264,7 @@
     "id": "MAUL",
     "name": "Maul",
     "description": "Deal 5 damage twice.\nIncrease the damage of ALL Maul cards by 2 this combat.",
-    "description_raw": "Deal {Damage:diff()} damage twice.\nIncrease the damage of ALL Maul cards by {Increase:diff()} this combat.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.\nIncrease the damage of ALL Maul cards by {Increase:diff()} this combat.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -13281,8 +13284,9 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 2,
-      "Damage": 5
+      "Damage": 5,
+      "HitCount": 2,
+      "Increase": 2
     },
     "upgrade": {
       "damage": "+1",
@@ -13395,17 +13399,17 @@
   {
     "id": "MEMENTO_MORI",
     "name": "Memento Mori",
-    "description": "Deal 9 damage.\nDeals 4 additional damage for each card discarded this turn.",
-    "description_raw": "Deal {CalculatedDamage:diff()} damage.\nDeals {ExtraDamage:diff()} additional damage for each card discarded this turn.",
-    "cost": 1,
+    "description": "Deal 19 damage to the enemy with the lowest HP.",
+    "description_raw": "Deal {Damage:diff()} damage to the enemy with the lowest HP.",
+    "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Attack",
     "rarity": "Uncommon",
-    "target": "AnyEnemy",
+    "target": "RandomEnemy",
     "color": "silent",
-    "damage": null,
+    "damage": 19,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -13418,14 +13422,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 9,
-      "ExtraDamage": 4,
-      "CalculatedDamage": 9
+      "Damage": 19
     },
     "upgrade": {
-      "calculateddamage": "+2",
-      "calculationbase": "+2",
-      "extradamage": "+1"
+      "damage": "+4"
     },
     "image_url": "/static/images/cards/memento_mori.png",
     "beta_image_url": null
@@ -13755,9 +13755,9 @@
   {
     "id": "MINION_DIVE_BOMB",
     "name": "Minion Dive Bomb",
-    "description": "Deal 13 damage.",
+    "description": "Deal 11 damage.",
     "description_raw": "Deal {Damage:diff()} damage.",
-    "cost": 1,
+    "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -13765,7 +13765,7 @@
     "rarity": "Token",
     "target": "AnyEnemy",
     "color": "token",
-    "damage": 13,
+    "damage": 11,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -13780,10 +13780,10 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 13
+      "Damage": 11
     },
     "upgrade": {
-      "damage": "+3"
+      "damage": "+2"
     },
     "image_url": "/static/images/cards/minion_dive_bomb.png",
     "beta_image_url": null
@@ -13866,7 +13866,7 @@
     "id": "MIRAGE",
     "name": "Mirage",
     "description": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.",
-    "description_raw": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.{InCombat:\n(Gain {CalculatedBlock:diff()} [gold]Block[/gold])|}",
+    "description_raw": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.{InCombat:\n(Gains {CalculatedBlock:diff()} [gold]Block[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15461,7 +15461,7 @@
     "id": "PECK",
     "name": "Peck",
     "description": "Deal 2 damage 3 times.",
-    "description_raw": "Deal {Damage:diff()} damage {Repeat:diff()} times.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:diff()} times.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15472,7 +15472,7 @@
     "color": "event",
     "damage": 2,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -15482,10 +15482,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 2,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/peck.png",
     "beta_image_url": null
@@ -15529,7 +15529,7 @@
   {
     "id": "PHANTOM_BLADES",
     "name": "Phantom Blades",
-    "description": "[gold]Shivs[/gold] gain [gold]Retain[/gold].\nThe first [gold]Shiv[/gold] you play each turn deals 9 additional damage.",
+    "description": "[gold]Shivs[/gold] gain [gold]Retain[/gold].\nThe first [gold]Shiv[/gold] you play each turn deals 8 additional damage.",
     "description_raw": "[gold]Shivs[/gold] gain [gold]Retain[/gold].\nThe first [gold]Shiv[/gold] you play each turn deals {PhantomBladesPower:diff()} additional damage.",
     "cost": 1,
     "is_x_cost": null,
@@ -15545,7 +15545,7 @@
     "powers_applied": [
       {
         "power": "Phantom Blades",
-        "amount": 9
+        "amount": 8
       }
     ],
     "cards_draw": null,
@@ -15557,8 +15557,8 @@
       "SHIV"
     ],
     "vars": {
-      "PhantomBladesPower": 9,
-      "PhantomBlades": 9
+      "PhantomBladesPower": 8,
+      "PhantomBlades": 8
     },
     "upgrade": {
       "phantombladespower": "+3"
@@ -15735,7 +15735,7 @@
     "id": "PLOT",
     "name": "Plot",
     "description": "Next turn, ALL players draw 2 cards.",
-    "description_raw": "Next turn, ALL players draw {Cards} cards.",
+    "description_raw": "Next turn, ALL players draw {Cards:diff()} cards.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15748,7 +15748,7 @@
     "block": null,
     "hit_count": null,
     "powers_applied": null,
-    "cards_draw": null,
+    "cards_draw": 2,
     "energy_gain": null,
     "hp_loss": null,
     "keywords": null,
@@ -15941,7 +15941,7 @@
   {
     "id": "PRECISE_CUT",
     "name": "Precise Cut",
-    "description": "Deal 15 damage.\nDeals 2 less damage for each other card in your [gold]Hand[/gold].",
+    "description": "Deal 13 damage.\nDeals 2 less damage for each other card in your [gold]Hand[/gold].",
     "description_raw": "Deal {CalculatedDamage:diff()} damage.\nDeals {ExtraDamage:inverseDiff()} less damage for each other card in your [gold]Hand[/gold].",
     "cost": 0,
     "is_x_cost": null,
@@ -15963,8 +15963,7 @@
     "spawns_cards": null,
     "vars": {
       "CalculationBase": 13,
-      "ExtraDamage": 2,
-      "CalculatedDamage": 15
+      "ExtraDamage": 2
     },
     "upgrade": {
       "calculationbase": "+3"
@@ -17263,7 +17262,7 @@
     "id": "REFRACT",
     "name": "Refract",
     "description": "Deal 10 damage twice.\n[gold]Channel[/gold] 2 [gold]Glass[/gold].",
-    "description_raw": "Deal {Damage:diff()} damage twice.\n[gold]Channel[/gold] {Repeat:diff()} [gold]Glass[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.\n[gold]Channel[/gold] {Repeat:diff()} [gold]Glass[/gold].",
     "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -17284,7 +17283,8 @@
     "spawns_cards": null,
     "vars": {
       "Repeat": 2,
-      "Damage": 10
+      "Damage": 10,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+3"
@@ -17545,7 +17545,7 @@
     "id": "RICOCHET",
     "name": "Ricochet",
     "description": "Deal 3 damage to a random enemy 4 times.",
-    "description_raw": "Deal {Damage:diff()} damage to a random enemy {Repeat:diff()} times.",
+    "description_raw": "Deal {Damage:diff()} damage to a random enemy {HitCount:diff()} times.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -17556,7 +17556,7 @@
     "color": "silent",
     "damage": 3,
     "block": null,
-    "hit_count": null,
+    "hit_count": 4,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -17568,10 +17568,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 3,
-      "Repeat": 4
+      "HitCount": 4
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/ricochet.png",
     "beta_image_url": "/static/images/cards/beta/ricochet.png"
@@ -17589,7 +17589,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "necrobinder",
-    "damage": 4,
+    "damage": null,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -17603,8 +17603,7 @@
     "spawns_cards": null,
     "vars": {
       "OstyDamage": 4,
-      "Energy": 2,
-      "Damage": 4
+      "Energy": 2
     },
     "upgrade": {
       "ostydamage": "+2"
@@ -17616,7 +17615,7 @@
     "id": "RIP_AND_TEAR",
     "name": "Rip and Tear",
     "description": "Deal 7 damage to a random enemy twice.",
-    "description_raw": "Deal {Damage:diff()} damage to a random enemy twice.",
+    "description_raw": "Deal {Damage:diff()} damage to a random enemy {HitCount:choose(2):twice|{HitCount:diff()} times}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -17636,7 +17635,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 7
+      "Damage": 7,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -17925,7 +17925,7 @@
   {
     "id": "SALVO",
     "name": "Salvo",
-    "description": "Deal 12 damage.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
+    "description": "Deal 10 damage.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
     "description_raw": "Deal {Damage:diff()} damage.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
     "cost": 1,
     "is_x_cost": null,
@@ -17935,7 +17935,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "colorless",
-    "damage": 12,
+    "damage": 10,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -17946,7 +17946,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 12
+      "Damage": 10
     },
     "upgrade": {
       "damage": "+4"
@@ -18560,7 +18560,7 @@
     "id": "SEVEN_STARS",
     "name": "Seven Stars",
     "description": "Deal 7 damage to ALL enemies 7 times.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {Repeat:diff()} {Repeat:plural:time|times}.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {HitCount:diff()} {HitCount:plural:time|times}.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -18571,7 +18571,7 @@
     "color": "regent",
     "damage": 7,
     "block": null,
-    "hit_count": null,
+    "hit_count": 7,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -18581,7 +18581,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 7,
-      "Repeat": 7,
+      "HitCount": 7,
       "StarCost": 7
     },
     "upgrade": {
@@ -19842,7 +19842,7 @@
     "id": "SOVEREIGN_BLADE",
     "name": "Sovereign Blade",
     "description": "Deal 10 damage.",
-    "description_raw": "Deal {Damage:diff()} damage{TargetType:choose(AllEnemies): to ALL enemies|}{Repeat:plural:| {} times}.{GainsBlock:cond:\nGain {CalculatedBlock:diff()} [gold]Block[/gold].|}",
+    "description_raw": "Deal {Damage:diff()} damage{TargetType:choose(AllEnemies): to ALL enemies|}{HitCount:plural:| {HitCount:diff()} times}.{GainsBlock:cond:\nGain {CalculatedBlock:diff()} [gold]Block[/gold].|}",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -19853,7 +19853,7 @@
     "color": "token",
     "damage": 10,
     "block": null,
-    "hit_count": null,
+    "hit_count": 1,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -19867,8 +19867,7 @@
       "Damage": 10,
       "CalculationBase": 0,
       "CalculationExtra": 1,
-      "Repeat": 1,
-      "baseDamage": 10
+      "HitCount": 1
     },
     "upgrade": {
       "cost": 1
@@ -19945,7 +19944,7 @@
   {
     "id": "SPEEDSTER",
     "name": "Speedster",
-    "description": "Whenever you draw a card during your turn, deal 2 damage to ALL enemies.",
+    "description": "Whenever you draw a card during your turn, deal 3 damage to ALL enemies.",
     "description_raw": "Whenever you draw a card during your turn, deal {SpeedsterPower:diff()} damage to ALL enemies.",
     "cost": 2,
     "is_x_cost": null,
@@ -19961,7 +19960,7 @@
     "powers_applied": [
       {
         "power": "Speedster",
-        "amount": 2
+        "amount": 3
       }
     ],
     "cards_draw": null,
@@ -19971,8 +19970,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "SpeedsterPower": 2,
-      "Speedster": 2
+      "SpeedsterPower": 3,
+      "Speedster": 3
     },
     "upgrade": {
       "add_innate": 1
@@ -20052,7 +20051,7 @@
     "id": "SPITE",
     "name": "Spite",
     "description": "Deal 5 damage.\nIf you lost HP this turn,\nhits 2 times.",
-    "description_raw": "Deal {Damage:diff()} damage.\nIf you lost HP this turn,\nhits {Repeat:diff()} times.",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf you lost HP this turn,\nhits {HitCount:diff()} times.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -20063,7 +20062,7 @@
     "color": "ironclad",
     "damage": 5,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -20073,10 +20072,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 5,
-      "Repeat": 2
+      "HitCount": 2
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/spite.png",
     "beta_image_url": "/static/images/cards/beta/spite.png"
@@ -21285,7 +21284,7 @@
     "id": "SWORD_BOOMERANG",
     "name": "Sword Boomerang",
     "description": "Deal 3 damage to a random enemy 3 times.",
-    "description_raw": "Deal {Damage:diff()} damage to a random enemy {Repeat:diff()} times.",
+    "description_raw": "Deal {Damage:diff()} damage to a random enemy {HitCount:diff()} times.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -21296,7 +21295,7 @@
     "color": "ironclad",
     "damage": 3,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -21306,10 +21305,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 3,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/sword_boomerang.png",
     "beta_image_url": null
@@ -22588,7 +22587,7 @@
     "id": "THRASH",
     "name": "Thrash",
     "description": "Deal 4 damage twice.\n[gold]Exhaust[/gold] a random Attack in your [gold]Hand[/gold] and add its damage to this card.",
-    "description_raw": "Deal {Damage:diff()} damage twice.\n[gold]Exhaust[/gold] a random Attack in your [gold]Hand[/gold] and add its damage to this card.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.\n[gold]Exhaust[/gold] a random Attack in your [gold]Hand[/gold] and add its damage to this card.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -22608,7 +22607,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 4
+      "Damage": 4,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -22892,8 +22892,8 @@
   {
     "id": "TRACKING",
     "name": "Tracking",
-    "description": "[gold]Weak[/gold] enemies take 50% more damage from Attacks.",
-    "description_raw": "[gold]Weak[/gold] enemies take 50% more damage from Attacks.",
+    "description": "[gold]Weak[/gold] enemies take 50% more damage from your Attacks.",
+    "description_raw": "[gold]Weak[/gold] enemies take 50% more damage from your Attacks.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -23192,7 +23192,7 @@
     "id": "TWIN_STRIKE",
     "name": "Twin Strike",
     "description": "Deal 5 damage twice.",
-    "description_raw": "Deal {Damage:diff()} damage twice.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -23214,7 +23214,8 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 5
+      "Damage": 5,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -23593,7 +23594,7 @@
     "id": "UPROAR",
     "name": "Uproar",
     "description": "Deal 6 damage twice.\nPlay a random Attack from your [gold]Draw Pile[/gold].",
-    "description_raw": "Deal {Damage:diff()} damage twice.\nPlay a random Attack from your [gold]Draw Pile[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.\nPlay a random Attack from your [gold]Draw Pile[/gold].",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -23613,7 +23614,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 6
+      "Damage": 6,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
