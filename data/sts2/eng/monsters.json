@@ -88,10 +88,7 @@
         "card_applications": [
           {
             "card_id": "WITHER",
-            "amount": {
-              "normal": 1,
-              "ascension": 2
-            }
+            "amount": null
           }
         ]
       }
@@ -175,10 +172,7 @@
         "card_applications": [
           {
             "card_id": "WITHER",
-            "amount": {
-              "normal": 1,
-              "ascension": 2
-            }
+            "amount": null
           }
         ]
       }
@@ -420,10 +414,10 @@
     "name": "Axebot",
     "type": "Normal",
     "show_in_compendium": true,
-    "min_hp": 70,
-    "max_hp": 78,
-    "min_hp_ascension": 76,
-    "max_hp_ascension": 86,
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
     "moves": [
       {
         "id": "BOOT_UP",
@@ -2054,6 +2048,60 @@
     ]
   },
   {
+    "id": "BYRDINE_MONSTER",
+    "name": "Byrdine",
+    "type": "Normal",
+    "show_in_compendium": true,
+    "min_hp": 9999,
+    "max_hp": 9999,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing",
+        "action_types": [],
+        "intents": [],
+        "intent_details": [],
+        "power_applications": [],
+        "card_applications": []
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing",
+        "action_types": [],
+        "intents": [],
+        "intent_details": [],
+        "power_applications": [],
+        "card_applications": []
+      }
+    ],
+    "move_graph": {
+      "initial": "NOTHING",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "NOTHING",
+          "to": "NOTHING",
+          "chance": 100.0,
+          "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "NOTHING",
+          "kind": "move",
+          "next": "NOTHING"
+        }
+      ]
+    },
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
+  },
+  {
     "id": "BYRDONIS",
     "name": "Byrdonis",
     "type": "Elite",
@@ -2440,9 +2488,9 @@
     "name": "Ceremonial Beast",
     "type": "Boss",
     "show_in_compendium": true,
-    "min_hp": 252,
+    "min_hp": null,
     "max_hp": null,
-    "min_hp_ascension": 262,
+    "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -2499,10 +2547,7 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": {
-              "normal": 2,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -2664,10 +2709,7 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": {
-              "normal": 2,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -3825,6 +3867,11 @@
           "normal": 1,
           "ascension": null
         }
+      },
+      {
+        "power_id": "PLATING",
+        "target": "self",
+        "amount": null
       }
     ]
   },
@@ -9576,27 +9623,22 @@
         "card_applications": []
       },
       {
-        "id": "RADIATE",
-        "name": "Radiate",
+        "id": "JAB_MOVE_2",
+        "name": "Jab",
         "action_types": [
-          "attack",
-          "defense"
+          "attack"
         ],
         "intents": [
-          "SingleAttackIntent",
-          "DefendIntent"
+          "SingleAttackIntent"
         ],
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "Radiate",
+            "damage_key": "Jab",
             "repeat": {
               "normal": 1,
               "ascension": null
             }
-          },
-          {
-            "type": "DefendIntent"
           }
         ],
         "power_applications": [],
@@ -9629,13 +9671,13 @@
         "name": "Pulsate",
         "action_types": [
           "attack",
-          "buff",
-          "defense"
+          "debuff",
+          "buff"
         ],
         "intents": [
           "SingleAttackIntent",
-          "BuffIntent",
-          "DefendIntent"
+          "DebuffIntent",
+          "BuffIntent"
         ],
         "intent_details": [
           {
@@ -9647,13 +9689,21 @@
             }
           },
           {
-            "type": "BuffIntent"
+            "type": "DebuffIntent"
           },
           {
-            "type": "DefendIntent"
+            "type": "BuffIntent"
           }
         ],
         "power_applications": [
+          {
+            "power_id": "VULNERABLE",
+            "target": "player",
+            "amount": {
+              "normal": 1,
+              "ascension": null
+            }
+          },
           {
             "power_id": "VITAL_SPARK",
             "target": "self",
@@ -9690,27 +9740,22 @@
         "card_applications": []
       },
       {
-        "id": "RADIATE",
-        "name": "Radiate",
+        "id": "JAB_MOVE_2",
+        "name": "Jab",
         "action_types": [
-          "attack",
-          "defense"
+          "attack"
         ],
         "intents": [
-          "SingleAttackIntent",
-          "DefendIntent"
+          "SingleAttackIntent"
         ],
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "Radiate",
+            "damage_key": "Jab",
             "repeat": {
               "normal": 1,
               "ascension": null
             }
-          },
-          {
-            "type": "DefendIntent"
           }
         ],
         "power_applications": [],
@@ -9743,13 +9788,13 @@
         "name": "Pulsate",
         "action_types": [
           "attack",
-          "buff",
-          "defense"
+          "debuff",
+          "buff"
         ],
         "intents": [
           "SingleAttackIntent",
-          "BuffIntent",
-          "DefendIntent"
+          "DebuffIntent",
+          "BuffIntent"
         ],
         "intent_details": [
           {
@@ -9761,13 +9806,21 @@
             }
           },
           {
-            "type": "BuffIntent"
+            "type": "DebuffIntent"
           },
           {
-            "type": "DefendIntent"
+            "type": "BuffIntent"
           }
         ],
         "power_applications": [
+          {
+            "power_id": "VULNERABLE",
+            "target": "player",
+            "amount": {
+              "normal": 1,
+              "ascension": null
+            }
+          },
           {
             "power_id": "VITAL_SPARK",
             "target": "self",
@@ -9786,12 +9839,12 @@
       "transitions": [
         {
           "from": "JAB",
-          "to": "RADIATE",
+          "to": "JAB_MOVE_2",
           "chance": 100.0,
           "kind": "fixed"
         },
         {
-          "from": "RADIATE",
+          "from": "JAB_MOVE_2",
           "to": "WHIRLWIND",
           "chance": 100.0,
           "kind": "fixed"
@@ -9813,10 +9866,10 @@
         {
           "id": "JAB",
           "kind": "move",
-          "next": "RADIATE"
+          "next": "JAB_MOVE_2"
         },
         {
-          "id": "RADIATE",
+          "id": "JAB_MOVE_2",
           "kind": "move",
           "next": "WHIRLWIND"
         },
@@ -9836,10 +9889,6 @@
       "Jab": {
         "normal": 15,
         "ascension": 17
-      },
-      "Radiate": {
-        "normal": 11,
-        "ascension": 13
       },
       "Whirlwind": {
         "normal": 5,
@@ -10311,14 +10360,21 @@
           "to": "POWER_DANCE",
           "chance": null,
           "kind": "conditional",
-          "condition": "StartsWithDance"
+          "condition": "Index == 0"
         },
         {
           "from": "__START__",
           "to": "QUICK_SLASH",
           "chance": null,
           "kind": "conditional",
-          "condition": "!StartsWithDance"
+          "condition": "Index == 1"
+        },
+        {
+          "from": "__START__",
+          "to": "BOOMERANG",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "Index == 2"
         }
       ],
       "states": [
@@ -10995,9 +11051,9 @@
     "name": "Lagavulin Matriarch",
     "type": "Boss",
     "show_in_compendium": true,
-    "min_hp": 222,
+    "min_hp": null,
     "max_hp": null,
-    "min_hp_ascension": 233,
+    "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -11111,18 +11167,12 @@
           {
             "power_id": "STRENGTH",
             "target": "player",
-            "amount": {
-              "normal": -2,
-              "ascension": null
-            }
+            "amount": null
           },
           {
             "power_id": "DEXTERITY",
             "target": "player",
-            "amount": {
-              "normal": -2,
-              "ascension": null
-            }
+            "amount": null
           },
           {
             "power_id": "STRENGTH",
@@ -11257,18 +11307,12 @@
           {
             "power_id": "STRENGTH",
             "target": "player",
-            "amount": {
-              "normal": -2,
-              "ascension": null
-            }
+            "amount": null
           },
           {
             "power_id": "DEXTERITY",
             "target": "player",
-            "amount": {
-              "normal": -2,
-              "ascension": null
-            }
+            "amount": null
           },
           {
             "power_id": "STRENGTH",
@@ -11371,10 +11415,6 @@
       "Slash": {
         "normal": 19,
         "ascension": 21
-      },
-      "Slash2": {
-        "normal": 12,
-        "ascension": 14
       },
       "Disembowel": {
         "normal": 9,
@@ -15497,6 +15537,60 @@
         "card_applications": []
       },
       {
+        "id": "DREAD_INITIAL",
+        "name": "Dread Initial",
+        "action_types": [
+          "debuff"
+        ],
+        "intents": [
+          "CardDebuffIntent",
+          "DebuffIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "CardDebuffIntent"
+          },
+          {
+            "type": "DebuffIntent"
+          }
+        ],
+        "power_applications": [
+          {
+            "power_id": "CHAINS_OF_BINDING",
+            "target": "player",
+            "amount": {
+              "normal": 3,
+              "ascension": null
+            }
+          },
+          {
+            "power_id": "FRAIL",
+            "target": "player",
+            "amount": {
+              "normal": 99,
+              "ascension": null
+            }
+          },
+          {
+            "power_id": "WEAK",
+            "target": "player",
+            "amount": {
+              "normal": 99,
+              "ascension": null
+            }
+          },
+          {
+            "power_id": "VULNERABLE",
+            "target": "player",
+            "amount": {
+              "normal": 99,
+              "ascension": null
+            }
+          }
+        ],
+        "card_applications": []
+      },
+      {
         "id": "BURN_BRIGHT_FOR_ME",
         "name": "Burn Bright for Me",
         "action_types": [
@@ -15519,10 +15613,7 @@
           {
             "power_id": "STRENGTH",
             "target": "unknown",
-            "amount": {
-              "normal": 1,
-              "ascension": 1
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -15665,7 +15756,7 @@
       }
     ],
     "move_graph": {
-      "initial": "PUPPET_STRINGS",
+      "initial": "DREAD_INITIAL",
       "confidence": "static",
       "transitions": [
         {
@@ -15683,6 +15774,20 @@
         },
         {
           "from": "YOU_ARE_MINE",
+          "to": "OFF_WITH_YOUR_HEAD",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "HasAmalgamDied"
+        },
+        {
+          "from": "DREAD_INITIAL",
+          "to": "BURN_BRIGHT_FOR_ME",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "!HasAmalgamDied"
+        },
+        {
+          "from": "DREAD_INITIAL",
           "to": "OFF_WITH_YOUR_HEAD",
           "chance": null,
           "kind": "conditional",
@@ -15719,6 +15824,20 @@
           "to": "OFF_WITH_YOUR_HEAD",
           "chance": 100.0,
           "kind": "fixed"
+        },
+        {
+          "from": "__START__",
+          "to": "DREAD_INITIAL",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "AscensionHelper.IsDread()"
+        },
+        {
+          "from": "__START__",
+          "to": "PUPPET_STRINGS",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "!(AscensionHelper.IsDread())"
         }
       ],
       "states": [
@@ -15729,6 +15848,11 @@
         },
         {
           "id": "YOU_ARE_MINE",
+          "kind": "move",
+          "next": "YOURE_MINE_NOW_BRANCH"
+        },
+        {
+          "id": "DREAD_INITIAL",
           "kind": "move",
           "next": "YOURE_MINE_NOW_BRANCH"
         },
@@ -15811,8 +15935,8 @@
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "TARGETING_RETICLE",
-        "name": "Targeting Reticle",
+        "id": "CALCULATING",
+        "name": "Calculating",
         "action_types": [
           "attack"
         ],
@@ -15822,7 +15946,7 @@
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "TargetingReticle",
+            "damage_key": "Calculating",
             "repeat": {
               "normal": 1,
               "ascension": null
@@ -15833,8 +15957,8 @@
         "card_applications": []
       },
       {
-        "id": "PRECISION_BEAM",
-        "name": "Precision Beam",
+        "id": "PRECISE_SMASH",
+        "name": "Precise Smash",
         "action_types": [
           "attack"
         ],
@@ -15844,7 +15968,29 @@
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "PrecisionBeam",
+            "damage_key": "PreciseSmash",
+            "repeat": {
+              "normal": 1,
+              "ascension": null
+            }
+          }
+        ],
+        "power_applications": [],
+        "card_applications": []
+      },
+      {
+        "id": "PRECISE_SMASH_MOVE_2",
+        "name": "Precise Smash",
+        "action_types": [
+          "attack"
+        ],
+        "intents": [
+          "SingleAttackIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "SingleAttackIntent",
+            "damage_key": "PreciseSmash",
             "repeat": {
               "normal": 1,
               "ascension": null
@@ -15881,8 +16027,8 @@
         "card_applications": []
       },
       {
-        "id": "LASER",
-        "name": "Laser",
+        "id": "ROCKET_CLAW",
+        "name": "Rocket Claw",
         "action_types": [
           "attack"
         ],
@@ -15892,7 +16038,7 @@
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "Laser",
+            "damage_key": "RocketClaw",
             "repeat": {
               "normal": 1,
               "ascension": null
@@ -15922,8 +16068,8 @@
     ],
     "bestiary_moves": [
       {
-        "id": "TARGETING_RETICLE",
-        "name": "Targeting Reticle",
+        "id": "CALCULATING",
+        "name": "Calculating",
         "action_types": [
           "attack"
         ],
@@ -15933,7 +16079,7 @@
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "TargetingReticle",
+            "damage_key": "Calculating",
             "repeat": {
               "normal": 1,
               "ascension": null
@@ -15944,8 +16090,8 @@
         "card_applications": []
       },
       {
-        "id": "PRECISION_BEAM",
-        "name": "Precision Beam",
+        "id": "PRECISE_SMASH",
+        "name": "Precise Smash",
         "action_types": [
           "attack"
         ],
@@ -15955,7 +16101,29 @@
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "PrecisionBeam",
+            "damage_key": "PreciseSmash",
+            "repeat": {
+              "normal": 1,
+              "ascension": null
+            }
+          }
+        ],
+        "power_applications": [],
+        "card_applications": []
+      },
+      {
+        "id": "PRECISE_SMASH_MOVE_2",
+        "name": "Precise Smash",
+        "action_types": [
+          "attack"
+        ],
+        "intents": [
+          "SingleAttackIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "SingleAttackIntent",
+            "damage_key": "PreciseSmash",
             "repeat": {
               "normal": 1,
               "ascension": null
@@ -15992,8 +16160,8 @@
         "card_applications": []
       },
       {
-        "id": "LASER",
-        "name": "Laser",
+        "id": "ROCKET_CLAW",
+        "name": "Rocket Claw",
         "action_types": [
           "attack"
         ],
@@ -16003,7 +16171,7 @@
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "Laser",
+            "damage_key": "RocketClaw",
             "repeat": {
               "normal": 1,
               "ascension": null
@@ -16032,80 +16200,81 @@
       }
     ],
     "move_graph": {
-      "initial": "TARGETING_RETICLE",
+      "initial": "CALCULATING",
       "confidence": "static",
       "transitions": [
         {
-          "from": "TARGETING_RETICLE",
-          "to": "PRECISION_BEAM",
+          "from": "CALCULATING",
+          "to": "PRECISE_SMASH",
           "chance": 100.0,
           "kind": "fixed"
         },
         {
-          "from": "PRECISION_BEAM",
+          "from": "PRECISE_SMASH",
           "to": "CHARGE_UP",
           "chance": 100.0,
           "kind": "fixed"
         },
         {
           "from": "CHARGE_UP",
-          "to": "LASER",
+          "to": "ROCKET_CLAW",
           "chance": 100.0,
           "kind": "fixed"
         },
         {
-          "from": "LASER",
+          "from": "ROCKET_CLAW",
           "to": "RECHARGE",
           "chance": 100.0,
           "kind": "fixed"
         },
         {
           "from": "RECHARGE",
-          "to": "TARGETING_RETICLE",
+          "to": "CALCULATING",
           "chance": 100.0,
           "kind": "fixed"
         }
       ],
       "states": [
         {
-          "id": "TARGETING_RETICLE",
+          "id": "CALCULATING",
           "kind": "move",
-          "next": "PRECISION_BEAM"
+          "next": "PRECISE_SMASH"
         },
         {
-          "id": "PRECISION_BEAM",
+          "id": "PRECISE_SMASH",
           "kind": "move",
           "next": "CHARGE_UP"
         },
         {
-          "id": "CHARGE_UP",
+          "id": "PRECISE_SMASH_MOVE_2",
           "kind": "move",
-          "next": "LASER"
+          "next": null
         },
         {
-          "id": "LASER",
+          "id": "CHARGE_UP",
+          "kind": "move",
+          "next": "ROCKET_CLAW"
+        },
+        {
+          "id": "ROCKET_CLAW",
           "kind": "move",
           "next": "RECHARGE"
         },
         {
           "id": "RECHARGE",
           "kind": "move",
-          "next": "TARGETING_RETICLE"
+          "next": "CALCULATING"
         }
       ]
     },
     "damage_values": {
-      "TargetingReticle": {
+      "Calculating": {
         "normal": 3,
         "ascension": 4
       },
-      "PrecisionBeam": {
+      "PreciseSmash": {
         "normal": 18,
         "ascension": 20
-      },
-      "Laser": {
-        "normal": 31,
-        "ascension": 35
       }
     },
     "block_values": null,
@@ -16134,6 +16303,11 @@
           "normal": 1,
           "ascension": null
         }
+      },
+      {
+        "power_id": "PLATING",
+        "target": "self",
+        "amount": null
       }
     ]
   },
@@ -20171,10 +20345,7 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": {
-              "normal": 2,
-              "ascension": 3
-            }
+            "amount": null
           }
         ],
         "card_applications": [
@@ -20292,10 +20463,7 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": {
-              "normal": 2,
-              "ascension": 3
-            }
+            "amount": null
           }
         ],
         "card_applications": [
@@ -20452,10 +20620,7 @@
       {
         "power_id": "ENRAGE",
         "target": "self",
-        "amount": {
-          "normal": 2,
-          "ascension": 3
-        }
+        "amount": null
       }
     ]
   },
@@ -21514,9 +21679,9 @@
     "name": "The Insatiable",
     "type": "Boss",
     "show_in_compendium": true,
-    "min_hp": 321,
+    "min_hp": null,
     "max_hp": null,
-    "min_hp_ascension": 341,
+    "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -21542,10 +21707,7 @@
           {
             "power_id": "SANDPIT",
             "target": "self",
-            "amount": {
-              "normal": 4,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -21667,10 +21829,7 @@
           {
             "power_id": "SANDPIT",
             "target": "self",
-            "amount": {
-              "normal": 4,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -23223,10 +23382,6 @@
       ]
     },
     "damage_values": {
-      "StrongTackle": {
-        "normal": 26,
-        "ascension": 32
-      },
       "Tackle": {
         "normal": 18,
         "ascension": 22
@@ -23579,8 +23734,8 @@
         "card_applications": []
       },
       {
-        "id": "BELOW",
-        "name": "Attack from Below",
+        "id": "FROM_BELOW",
+        "name": "From Below",
         "action_types": [
           "attack"
         ],
@@ -23590,7 +23745,7 @@
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "Below",
+            "damage_key": "FromBelow",
             "repeat": {
               "normal": 1,
               "ascension": null
@@ -23673,8 +23828,8 @@
         "card_applications": []
       },
       {
-        "id": "BELOW",
-        "name": "Attack from Below",
+        "id": "FROM_BELOW",
+        "name": "From Below",
         "action_types": [
           "attack"
         ],
@@ -23684,7 +23839,7 @@
         "intent_details": [
           {
             "type": "SingleAttackIntent",
-            "damage_key": "Below",
+            "damage_key": "FromBelow",
             "repeat": {
               "normal": 1,
               "ascension": null
@@ -23733,13 +23888,13 @@
         },
         {
           "from": "BURROW",
-          "to": "BELOW",
+          "to": "FROM_BELOW",
           "chance": 100.0,
           "kind": "fixed"
         },
         {
-          "from": "BELOW",
-          "to": "BELOW",
+          "from": "FROM_BELOW",
+          "to": "FROM_BELOW",
           "chance": 100.0,
           "kind": "fixed"
         },
@@ -23759,12 +23914,12 @@
         {
           "id": "BURROW",
           "kind": "move",
-          "next": "BELOW"
+          "next": "FROM_BELOW"
         },
         {
-          "id": "BELOW",
+          "id": "FROM_BELOW",
           "kind": "move",
-          "next": "BELOW"
+          "next": "FROM_BELOW"
         },
         {
           "id": "DIZZY",
@@ -23778,9 +23933,9 @@
         "normal": 13,
         "ascension": 15
       },
-      "Below": {
-        "normal": 23,
-        "ascension": 26
+      "FromBelow": {
+        "normal": 24,
+        "ascension": 28
       }
     },
     "block_values": {
@@ -24753,10 +24908,7 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": {
-              "normal": 2,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -24860,10 +25012,7 @@
           {
             "power_id": "STRENGTH",
             "target": "self",
-            "amount": {
-              "normal": 2,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -24941,10 +25090,7 @@
       {
         "power_id": "SLIPPERY",
         "target": "self",
-        "amount": {
-          "normal": 8,
-          "ascension": 9
-        }
+        "amount": null
       }
     ]
   },
@@ -25256,10 +25402,7 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -25292,10 +25435,7 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -25322,10 +25462,7 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -25358,10 +25495,7 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -25394,10 +25528,7 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -25510,10 +25641,7 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -25546,10 +25674,7 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -25582,10 +25707,7 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -25618,10 +25740,7 @@
           {
             "power_id": "STEAM_ERUPTION",
             "target": "self",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
+            "amount": null
           }
         ],
         "card_applications": []
@@ -26037,6 +26156,60 @@
     },
     "block_values": null,
     "image_url": "/static/images/monsters/wriggler.png"
+  },
+  {
+    "id": "WUPPY",
+    "name": "Wuppy",
+    "type": "Normal",
+    "show_in_compendium": true,
+    "min_hp": 50,
+    "max_hp": 50,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing",
+        "action_types": [],
+        "intents": [],
+        "intent_details": [],
+        "power_applications": [],
+        "card_applications": []
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing",
+        "action_types": [],
+        "intents": [],
+        "intent_details": [],
+        "power_applications": [],
+        "card_applications": []
+      }
+    ],
+    "move_graph": {
+      "initial": "NOTHING",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "NOTHING",
+          "to": "NOTHING",
+          "chance": 100.0,
+          "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "NOTHING",
+          "kind": "move",
+          "next": "NOTHING"
+        }
+      ]
+    },
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
   },
   {
     "id": "ZAPBOT",

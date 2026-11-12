@@ -419,7 +419,7 @@
     "pool": "shared",
     "image_url": "/static/images/relics/brilliant_scarf.png",
     "vars": {
-      "Cards": 5
+      "Cards": 6
     }
   },
   {
@@ -482,7 +482,9 @@
     "rarity": "이벤트 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/byrdpip.png",
-    "vars": {}
+    "vars": {
+      "Repeat": 6
+    }
   },
   {
     "id": "CALLING_BELL",
@@ -1872,10 +1874,7 @@
     "rarity": "고대 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/meat_cleaver.png",
-    "vars": {
-      "Cards": 2,
-      "MaxHp": 5
-    }
+    "vars": {}
   },
   {
     "id": "MEAT_ON_THE_BONE",
