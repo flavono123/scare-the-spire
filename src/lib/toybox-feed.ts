@@ -1,7 +1,4 @@
-import { shouldUseLegacy } from "@/lib/api-client";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { apiToyboxFeed, toyboxViaApi } from "@/lib/toybox-api";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { apiToyboxFeed } from "@/lib/toybox-api";
 import {
   buildLatestFeedKeysetFilter,
   TOYBOX_FEED_PAGE_SIZE,
@@ -263,36 +260,11 @@ export async function fetchToyboxFeedPage<T extends PostIdentity>(options: {
   cursor: ToyboxFeedCursor | null;
   normalizePost: (raw: unknown) => T;
 }): Promise<ToyboxFeedPage<T>> {
-  if (!supabaseEnabled) return { items: [], hasMore: false };
-
   const sort = resolveToyboxFeedSort(options.service, options.sort);
-  const parseRows = (rows: unknown[]) => {
-    const items = rows
-      .map((row) => parseToyboxFeedRow(row, options.normalizePost))
-      .filter((item): item is ToyboxFeedItem<T> => item != null);
-    return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
-  };
-  if (toyboxViaApi()) {
-    try {
-      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same RPC rows, through the Worker.
-      return parseRows(await apiToyboxFeed(options.service, sort, options.cursor));
-    } catch (apiError) {
-      if (!shouldUseLegacy(apiError)) throw apiError;
-    }
-  }
-  const { data, error } = await withSupabaseTimeout(
-    `get_toybox_feed.${options.service}`,
-    supabase.rpc("get_toybox_feed", {
-      p_env: supabaseEnv,
-      p_service: options.service,
-      p_sort: sort,
-      p_limit: TOYBOX_FEED_PAGE_SIZE,
-      p_cursor_score: options.cursor?.score ?? null,
-      p_cursor_created_at: options.cursor?.createdAt ?? null,
-      p_cursor_id: options.cursor?.id ?? null,
-    }),
-  );
-
-  if (error) throw error;
-  return parseRows((data ?? []) as unknown[]);
+  // docs/supabase-exit/STEP1_DESIGN.md 9.8: the get_toybox_feed rows, through the Worker.
+  const rows = await apiToyboxFeed(options.service, sort, options.cursor);
+  const items = rows
+    .map((row) => parseToyboxFeedRow(row, options.normalizePost))
+    .filter((item): item is ToyboxFeedItem<T> => item != null);
+  return { items, hasMore: items.length >= TOYBOX_FEED_PAGE_SIZE };
 }

@@ -1,7 +1,12 @@
+import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
+import { HISTORY_RUN_ENGAGEMENT_IDS, isRunId } from "../src/lib/history-runs-api-rules";
 import { getSiteOrigin } from "../src/lib/site-origin";
 
 const BASE_URL = (process.env.CF_TESTBED_ORIGIN ?? process.env.BASE_URL ?? "http://127.0.0.1:8787").replace(/\/$/, "");
+// The stack answers /api with data (the testbed, or a local Worker on a seeded D1). The runner sets
+// 0 for a local Worker without API vars, where every /api route is 409 by design.
+const STACK_HAS_DATA = process.env.CF_TESTBED_DATA !== "0";
 const CANONICAL_ORIGIN = (process.env.CF_TESTBED_CANONICAL_ORIGIN ?? getSiteOrigin()).replace(/\/$/, "");
 const MISSING_UUID = "00000000-0000-4000-8000-000000000000";
 const LOCAL_RUN_ID = "1testbedlocalrun";
@@ -78,9 +83,18 @@ function canonical(path: string) {
   return `${CANONICAL_ORIGIN}${path}`;
 }
 
+const SUPABASE_HOST = /^https?:\/\/[^/]+\.supabase\.co(?:[:/]|$)/;
+
+/** Cuts the browser off Supabase. Screens read the Worker's same-origin /api, which answers from D1. */
 async function blockSupabase(page: Page) {
-  await page.route(/https:\/\/[^/]+\.supabase\.co\//, (route) => route.abort("connectionfailed"));
-  // Screens on the api path reach Supabase through the Worker; this cookie sends them back to legacy.
+  await page.route(SUPABASE_HOST, (route) => route.abort("connectionfailed"));
+}
+
+/**
+ * The Worker's legacy answer: with the QA cookie every /api route is 409 surface_legacy
+ * (workers/api/flag-cookie.ts), which the step 6 browser shows as its unavailable state.
+ */
+async function forceApiLegacyAnswer(page: Page) {
   await page.context().addCookies([{ name: "slseoun_qa", value: "no-supabase", url: BASE_URL }]);
 }
 
@@ -397,6 +411,8 @@ test("History Course invalid detail returns to its index with client navigation"
 
 test("Supabase failure uses the shared unavailable state", async ({ page }) => {
   await blockSupabase(page);
+  // The browser has no Supabase path to fail; the Worker's 409 stands in for a data outage.
+  await forceApiLegacyAnswer(page);
   await page.goto(absolute(`/c-c-c-combo/${MISSING_UUID}`), { waitUntil: "domcontentloaded" });
 
   await expect(
@@ -405,10 +421,10 @@ test("Supabase failure uses the shared unavailable state", async ({ page }) => {
   await expect(page.getByText(/데이터베이스가 응답하지 않습니다|No responses from database/)).toBeVisible();
 });
 
-test("History Course loads an IndexedDB-only run while Supabase is unavailable", async ({ page }) => {
-  await blockSupabase(page);
+/** Puts uploaded runs in this browser's IndexedDB before any page script runs. */
+async function seedLocalRuns(page: Page, runIds: string[]) {
   await page.addInitScript(
-    async ({ runId, raw }) => {
+    async ({ ids, raw }) => {
       await new Promise<void>((resolve, reject) => {
         const request = indexedDB.open("scare-the-spire", 1);
         request.onupgradeneeded = () => {
@@ -422,13 +438,15 @@ test("History Course loads an IndexedDB-only run while Supabase is unavailable",
         request.onsuccess = () => {
           const database = request.result;
           const transaction = database.transaction("runs", "readwrite");
-          transaction.objectStore("runs").put({
-            runId,
-            raw,
-            savedAt: Date.now(),
-            origin: "upload",
-            noteBlocks: null,
-          });
+          for (const runId of ids) {
+            transaction.objectStore("runs").put({
+              runId,
+              raw,
+              savedAt: Date.now(),
+              origin: "upload",
+              noteBlocks: null,
+            });
+          }
           transaction.oncomplete = () => {
             database.close();
             resolve();
@@ -437,8 +455,16 @@ test("History Course loads an IndexedDB-only run while Supabase is unavailable",
         };
       });
     },
-    { runId: LOCAL_RUN_ID, raw: LOCAL_RUN_RAW },
+    { ids: runIds, raw: LOCAL_RUN_RAW },
   );
+}
+
+test("History Course loads an IndexedDB-only run while Supabase is unavailable", async ({ page }) => {
+  await blockSupabase(page);
+  // A run without a stored cover still asks the shared store for one (run-detail-loader's
+  // getDonatedRunOgFields); the Worker's 409 makes that read fail, as before step 6.
+  await forceApiLegacyAnswer(page);
+  await seedLocalRuns(page, [LOCAL_RUN_ID]);
 
   const response = await page.goto(absolute(`/history-course/${LOCAL_RUN_ID}`), {
     waitUntil: "domcontentloaded",
@@ -499,4 +525,202 @@ test("beta art card filters stay pressable on the narrowest phone", async ({ pag
     });
     expect(covered).toBeNull();
   }
+});
+
+// --- Step 6 (docs/supabase-exit/STEP6_PLAN.md WP-Q): the browser's data goes to the same-origin
+// /api only. These read real rows and one test writes (and deletes) a comment, so they need a stack
+// whose /api answers: the testbed, or a local Worker on a D1 seeded by scripts/d1-local-seed.ts.
+
+const UNAVAILABLE_TEXT = /데이터베이스가 응답하지 않습니다|No responses from database/;
+const SUPABASE_URL = /^(?:https?|wss?):\/\/[^/]+\.supabase\.co(?:[:/?]|$)/;
+
+type Traffic = {
+  /** Any request or socket to a Supabase host (blocked at DNS, so it fails, but it is still made). */
+  supabase: string[];
+  /** Same-origin /api answers 409: the Worker's legacy answer, an outage for the step 6 browser. */
+  legacy: string[];
+  /** Same-origin /api requests that carried an Authorization header (identity is the cookie). */
+  bearer: string[];
+};
+
+function withoutQuery(url: string): string {
+  const parsed = new URL(url);
+  return `${parsed.origin}${parsed.pathname}`;
+}
+
+function watchTraffic(page: Page): Traffic {
+  const traffic: Traffic = { supabase: [], legacy: [], bearer: [] };
+  const apiPrefix = `${new URL(BASE_URL).origin}/api/`;
+  page.on("request", (request) => {
+    const url = request.url();
+    if (SUPABASE_URL.test(url)) traffic.supabase.push(`${request.method()} ${withoutQuery(url)}`);
+    if (url.startsWith(apiPrefix) && request.headers().authorization) {
+      traffic.bearer.push(`${request.method()} ${withoutQuery(url)}`);
+    }
+  });
+  page.on("websocket", (socket) => {
+    if (SUPABASE_URL.test(socket.url())) traffic.supabase.push(`WS ${withoutQuery(socket.url())}`);
+  });
+  page.on("response", (response) => {
+    if (response.url().startsWith(apiPrefix) && response.status() === 409) {
+      traffic.legacy.push(`${response.request().method()} ${withoutQuery(response.url())}`);
+    }
+  });
+  return traffic;
+}
+
+function latestPatchPath(): string {
+  const patches = JSON.parse(readFileSync("data/sts2-patches.json", "utf8")) as { version: string; date: string }[];
+  patches.sort((left, right) => right.date.localeCompare(left.date));
+  return `/patches/${patches[0].version}`;
+}
+
+/** Opens `path` and lets its data reads settle, then checks it shows no "database is not answering". */
+async function visitSettled(page: Page, path: string) {
+  const response = await page.goto(absolute(path), { waitUntil: "load", timeout: 45_000 });
+  expect(response?.status(), path).toBe(200);
+  // Best effort: an embed may keep the network busy; the data reads finish well within this.
+  await page.waitForLoadState("networkidle", { timeout: 20_000 }).catch(() => undefined);
+  await page.waitForTimeout(1_500);
+  await expect(page.getByText(UNAVAILABLE_TEXT).filter({ visible: true }), path).toHaveCount(0);
+}
+
+test.describe("step 6 browser data path", () => {
+  test.skip(!STACK_HAS_DATA, "needs a stack whose /api answers (CF_TESTBED_DATA=0)");
+
+  test("pages read the same-origin /api only and get no legacy answer", async ({ page }) => {
+    test.setTimeout(180_000);
+    await blockSupabase(page);
+    const traffic = watchTraffic(page);
+
+    for (const path of ["/", "/compendium/cards/abrasive", latestPatchPath(), "/c-c-c-combo"]) {
+      await visitSettled(page, path);
+    }
+    // A post from the feed the page just showed; the missing-record shell when the feed is empty.
+    const detail = await page.locator('a[href^="/c-c-c-combo/"]').evaluateAll((links) =>
+      links
+        .map((link) => link.getAttribute("href") ?? "")
+        .find((href) => /^\/c-c-c-combo\/[0-9a-f-]{36}$/i.test(href)) ?? null,
+    );
+    await visitSettled(page, detail ?? `/c-c-c-combo/${MISSING_UUID}`);
+
+    expect(traffic.supabase).toEqual([]);
+    expect(traffic.legacy).toEqual([]);
+    expect(traffic.bearer).toEqual([]);
+  });
+
+  test("a new browser claims once, keeps the Supabase session, and writes without a bearer token", async ({ page }) => {
+    test.setTimeout(120_000);
+    await blockSupabase(page);
+    const traffic = watchTraffic(page);
+    const claims: { status: number; body: Record<string, unknown> | null }[] = [];
+    page.on("response", async (response) => {
+      if (new URL(response.url()).pathname !== "/api/auth/claim") return;
+      claims.push({ status: response.status(), body: await response.json().catch(() => null) });
+    });
+
+    await visitSettled(page, "/compendium/cards/abrasive");
+    const editor = page.locator('[contenteditable="true"][aria-placeholder="댓글을 입력하세요"]').first();
+    await expect(editor).toBeVisible({ timeout: 30_000 });
+    const text = `cf testbed QA ${Date.now()}`;
+    await editor.click();
+    await page.keyboard.type(text);
+    // The submit button of this editor's own composer (the nearest block holding both).
+    const composer = editor.locator('xpath=ancestor::div[.//button[normalize-space(.)="작성"]][1]');
+    await composer.getByRole("button", { name: "작성", exact: true }).click();
+
+    const entry = page.locator("li[id^='history-comment-']").filter({ hasText: text });
+    await expect(entry).toHaveCount(1, { timeout: 30_000 });
+
+    // useAuth's ensureUser signed this browser up through the Worker and kept the session it got.
+    expect(claims.map((claim) => claim.status), "one claim, then the cookie").toEqual([200]);
+    const claimed = claims[0]?.body ?? null;
+    expect(claimed).toMatchObject({ v: 1, created: true });
+    const uid = String(claimed?.uid ?? "");
+    expect(uid).toMatch(/^[0-9a-f-]{36}$/);
+    const stored = await page.evaluate(() => {
+      const key = Object.keys(localStorage).find((name) => /^sb-[a-z0-9]+-auth-token$/.test(name)) ?? null;
+      const session = key ? (JSON.parse(localStorage.getItem(key) ?? "null") as Record<string, unknown> | null) : null;
+      const marker = JSON.parse(localStorage.getItem("slseoun-identity") ?? "null") as { uid?: unknown } | null;
+      return {
+        key,
+        hasAccessToken: typeof session?.access_token === "string" && session.access_token.length > 0,
+        hasRefreshToken: typeof session?.refresh_token === "string" && session.refresh_token.length > 0,
+        userId: (session?.user as { id?: unknown } | undefined)?.id ?? null,
+        markerUid: marker?.uid ?? null,
+      };
+    });
+    expect(stored.key, "sb-<ref>-auth-token is stored").not.toBeNull();
+    expect(stored).toMatchObject({ hasAccessToken: true, hasRefreshToken: true, userId: uid, markerUid: uid });
+
+    await entry.getByRole("button", { name: "삭제" }).click();
+    await expect(entry).toHaveCount(0, { timeout: 30_000 });
+
+    expect(traffic.supabase).toEqual([]);
+    expect(traffic.legacy).toEqual([]);
+    expect(traffic.bearer).toEqual([]);
+  });
+
+  test("History Course counts every listed run past 100, 100 ids per request", async ({ page }) => {
+    test.setTimeout(120_000);
+    await blockSupabase(page);
+    // The shared list stops at 100 (RECENT_DONATED_RUNS_LIMIT); uploads kept only in this browser
+    // join it, so the index holds more than one request's worth of runs.
+    const localIds = ["1testbedindexrun01", "1testbedindexrun02"];
+    await seedLocalRuns(page, localIds);
+    const origin = new URL(BASE_URL).origin;
+    const listed = new Set<string>();
+    const asked: string[][] = [];
+    const failed: string[] = [];
+    const comments = new Map<string, number>();
+    page.on("response", async (response) => {
+      const url = new URL(response.url());
+      if (url.origin !== origin) return;
+      if (url.pathname === "/api/read/history-runs" && url.searchParams.get("view") === "recent") {
+        // The D1 answer is a bare array of rows; read a `{ v, rows }` body too, like the browser
+        // (src/lib/run-donation.ts apiRunRows).
+        type ListedRow = { id?: unknown } | null;
+        const body = (await response.json().catch(() => null)) as ListedRow[] | { rows?: ListedRow[] } | null;
+        const rows = Array.isArray(body) ? body : body?.rows ?? [];
+        for (const row of rows) if (typeof row?.id === "string") listed.add(row.id);
+        return;
+      }
+      if (url.pathname !== "/api/read/history-runs/engagement") return;
+      asked.push((url.searchParams.get("ids") ?? "").split(",").filter(Boolean));
+      const body = (await response.json().catch(() => null)) as { v?: unknown; comments?: Record<string, number> } | null;
+      if (!response.ok() || body?.v !== 1 || !body.comments) {
+        failed.push(`${response.status()} ${url.pathname}`);
+        return;
+      }
+      for (const [runId, count] of Object.entries(body.comments)) comments.set(runId, count);
+    });
+
+    const response = await page.goto(absolute("/history-course"), { waitUntil: "domcontentloaded" });
+    expect(response?.status()).toBe(200);
+    const expected = () => [...new Set([...listed, ...localIds])].filter(isRunId);
+    const missing = () => {
+      const seen = new Set(asked.flat());
+      return expected().filter((runId) => !seen.has(runId));
+    };
+    await expect.poll(() => listed.size, { timeout: 45_000 }).toBeGreaterThan(0);
+    await expect.poll(missing, { timeout: 45_000 }).toEqual([]);
+
+    expect(expected().length, "the index holds more runs than one request takes").toBeGreaterThan(HISTORY_RUN_ENGAGEMENT_IDS);
+    for (const ids of asked) {
+      expect(ids.length).toBeLessThanOrEqual(HISTORY_RUN_ENGAGEMENT_IDS);
+      expect(new Set(ids).size).toBe(ids.length);
+    }
+    expect(failed).toEqual([]);
+
+    // Every card shows its run's count from the merged answers, past the 100th run too.
+    await page.waitForLoadState("networkidle");
+    const labels = await page.locator('a[href*="/history-course/"][aria-label]').evaluateAll((links) =>
+      links.map((link) => ({ href: link.getAttribute("href") ?? "", label: link.getAttribute("aria-label") ?? "" })),
+    );
+    const labelOf = (runId: string) => labels.find((link) => link.href.includes(`/history-course/${encodeURIComponent(runId)}#`))?.label;
+    for (const runId of expected()) {
+      const count = comments.get(runId) ?? 0;
+      expect(labelOf(runId), runId).toBe(count > 0 ? `${count}개의 댓글` : "첫 댓글 쓰기");
+    }
+  });
 });

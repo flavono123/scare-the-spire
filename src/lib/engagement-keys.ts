@@ -1,7 +1,8 @@
 /**
  * Keys and limits of the comments group API (docs/supabase-exit/STEP1_DESIGN.md 9.1).
  * No imports: the Worker and every client bundle share these checks, so a key
- * the Worker would refuse is read on the legacy path instead of failing.
+ * the Worker would refuse is never sent: the client shows it as an empty thread
+ * (docs/supabase-exit/STEP6_PLAN.md P15, P16: no such key in either env).
  */
 
 /** Every thread key in both envs on 2026-11-06 uses only these characters. */

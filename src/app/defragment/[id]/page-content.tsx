@@ -12,8 +12,6 @@ import {
   composeToyBoxPostOgDescription,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { clipOgDescription, postBlockOgImage } from "@/lib/toybox-post-og";
-import { getDefragmentPostOgFields } from "@/lib/toybox-post-og-fields";
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
@@ -24,23 +22,19 @@ export async function generateDefragmentPostMetadata(
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const gameCopy = await getDefragmentGameCopy(gameLocale);
-  const fallbackDescription = composeToyBoxPostOgDescription({
+  const description = composeToyBoxPostOgDescription({
     serviceLocale,
     serviceName: serviceMessages[serviceLocale].nav.defragment,
     serviceDescription: serviceMessages[serviceLocale].defragment.subtitle,
   });
   const recordId = metadataRecordId(id);
-  const fields = recordId ? await getDefragmentPostOgFields(recordId) : null;
-  const title = fields?.title.trim() || gameCopy.title;
-  const description = fields
-    ? clipOgDescription(fields.contentText, fallbackDescription)
-    : fallbackDescription;
-  const image = fields ? postBlockOgImage(fields.content, DEFRAGMENT_PAGE_OG_IMAGE) : DEFRAGMENT_PAGE_OG_IMAGE;
+  // Only the shell's metadata: a record's own fields are the main Worker's job
+  // (workers/detail-shell-og.ts, on with DETAIL_SHELL_OG=d1), not the build's.
   return getServiceOgMetadata({
     serviceLocale,
-    title,
+    title: gameCopy.title,
     description,
-    image,
+    image: DEFRAGMENT_PAGE_OG_IMAGE,
     canonicalPath: recordId ? `/defragment/${recordId}` : undefined,
   });
 }

@@ -1,4 +1,4 @@
-import { shouldUseLegacy } from "@/lib/api-client";
+import { ApiUnavailableError } from "@/lib/api-client";
 import {
   feedItemFromPost,
   isDefragmentFederatedService,
@@ -8,13 +8,10 @@ import {
 } from "@/lib/defragment";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { isCoverSpec } from "@/lib/run-cover-types";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
-import { apiDefragmentFeed, apiDefragmentRuns, toyboxViaApi } from "@/lib/toybox-api";
+import { apiDefragmentFeed, apiDefragmentRuns } from "@/lib/toybox-api";
 import { isCursorCreatedAt, isRowId } from "@/lib/toybox-api-rules";
 import {
   asNonNegativeInt,
-  buildLatestFeedKeysetFilter,
   fetchToyboxFeedPage,
   isToyboxFeedCoreSort,
   TOYBOX_FEED_PAGE_SIZE,
@@ -135,9 +132,14 @@ export function cursorFromDefragmentItem(
   };
 }
 
-/** Run ids are free text: a cursor the Worker would refuse stays on legacy (as run-donation.ts does). */
-function apiCursorOk(cursor: ToyboxFeedCursor | null): boolean {
-  return !cursor || (isRowId(cursor.id) && isCursorCreatedAt(cursor.createdAt));
+/**
+ * The cursor is the last row the Worker sent (its ISO created_at and row id), so
+ * one the Worker would refuse is an outage, not a query to send
+ * (docs/supabase-exit/STEP6_PLAN.md WP-T1; run ids are checked by P14).
+ */
+function requireApiCursor(cursor: ToyboxFeedCursor | null): void {
+  if (!cursor || (isRowId(cursor.id) && isCursorCreatedAt(cursor.createdAt))) return;
+  throw new ApiUnavailableError(0, "bad_cursor");
 }
 
 function feedPage(rows: unknown[]): DefragmentFeedPage {
@@ -175,41 +177,9 @@ async function fetchHistoryCourseDefragmentPage(options: {
   const sort = options.sort === "comments" || options.sort === "recommended"
     ? options.sort
     : "latest";
-  const scoreColumn = sort === "comments" ? "comment_count" : "like_count";
-  if (toyboxViaApi() && apiCursorOk(options.cursor)) {
-    try {
-      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same columns, order and keyset; the Worker builds the filter.
-      return historyCoursePage(await apiDefragmentRuns(sort, options.cursor));
-    } catch (error) {
-      if (!shouldUseLegacy(error)) throw error;
-    }
-  }
-  let query = supabase
-    .from("runs")
-    .select("id, created_at, like_count, comment_count, seed, donor_user_id, donor_nickname, cover_spec, win, ascension, total_floors")
-    .eq("env", supabaseEnv)
-    .order(sort === "latest" ? "created_at" : scoreColumn, { ascending: false })
-    .order("created_at", { ascending: false })
-    .order("id", { ascending: false })
-    .limit(TOYBOX_FEED_PAGE_SIZE);
-
-  if (options.cursor && sort === "latest") {
-    query = query.or(buildLatestFeedKeysetFilter(options.cursor));
-  } else if (options.cursor) {
-    const score = String(Math.trunc(options.cursor.score));
-    const createdAt = options.cursor.createdAt.replaceAll('"', "");
-    const id = options.cursor.id.replaceAll('"', "");
-    query = query.or(
-      `${scoreColumn}.lt.${score},and(${scoreColumn}.eq.${score},created_at.lt."${createdAt}"),and(${scoreColumn}.eq.${score},created_at.eq."${createdAt}",id.lt."${id}")`,
-    );
-  }
-
-  const { data, error } = await withSupabaseTimeout(
-    "runs.feed.history_course",
-    query,
-  );
-  if (error) throw error;
-  return historyCoursePage(data ?? []);
+  requireApiCursor(options.cursor);
+  // docs/supabase-exit/STEP1_DESIGN.md 9.8: the runs columns, order and keyset; the Worker builds the filter.
+  return historyCoursePage(await apiDefragmentRuns(sort, options.cursor));
 }
 
 function historyCoursePage(rows: unknown[]): DefragmentFeedPage {
@@ -248,8 +218,6 @@ export async function fetchDefragmentFeedPage(options: {
   cursor: ToyboxFeedCursor | null;
   service?: DefragmentFederatedService | null;
 }): Promise<DefragmentFeedPage> {
-  if (!supabaseEnabled) return { items: [], hasMore: false };
-
   const sort: ToyboxFeedSort = isToyboxFeedCoreSort(options.sort) ? options.sort : "latest";
   if (options.service === "history_course") {
     return fetchHistoryCourseDefragmentPage({ sort, cursor: options.cursor });
@@ -262,25 +230,7 @@ export async function fetchDefragmentFeedPage(options: {
     });
   }
 
-  if (toyboxViaApi() && apiCursorOk(options.cursor)) {
-    try {
-      return feedPage(await apiDefragmentFeed(sort, options.cursor));
-    } catch (error) {
-      if (!shouldUseLegacy(error)) throw error;
-    }
-  }
-  const { data, error } = await withSupabaseTimeout(
-    "get_defragment_feed_v2",
-    supabase.rpc("get_defragment_feed_v2", {
-      p_env: supabaseEnv,
-      p_sort: sort,
-      p_limit: TOYBOX_FEED_PAGE_SIZE,
-      p_cursor_score: options.cursor?.score ?? null,
-      p_cursor_created_at: options.cursor?.createdAt ?? null,
-      p_cursor_id: options.cursor?.id ?? null,
-    }),
-  );
-
-  if (error) throw error;
-  return feedPage((data ?? []) as unknown[]);
+  requireApiCursor(options.cursor);
+  // docs/supabase-exit/STEP1_DESIGN.md 9.8: the get_defragment_feed_v2 rows, through the Worker.
+  return feedPage(await apiDefragmentFeed(sort, options.cursor));
 }

@@ -1,8 +1,9 @@
 /**
  * Step 4 signed-cookie identity in the Worker (docs/SUPABASE_EXIT_PLAN.md 5.3):
  * the cookie, POST /api/auth/claim (existing and new users against a fake
- * Supabase Auth), request identity resolution behind identity.mode, and the
- * flag-off path staying as today. D1 and Supabase are in-memory stubs.
+ * Supabase Auth), the step 6 refresh claim and API_IDENTITY_MODE_DEFAULT, request
+ * identity resolution behind identity.mode, and the flag-off path staying as
+ * today. D1 and Supabase are in-memory stubs.
  * Usage: tsx scripts/api-identity.spec.ts
  */
 import assert from "node:assert/strict";
@@ -10,7 +11,9 @@ import assert from "node:assert/strict";
 import type { D1Database, D1PreparedStatement, D1Result } from "../workers/api/d1";
 import { FLAGS_SQL, resetFlagsForTest } from "../workers/api/flags";
 import { jsonResponse } from "../workers/api/http";
-import { CLAIM_WINDOW_SECONDS } from "../workers/api/identity/claim";
+import { CLAIM_WINDOW_SECONDS, MAX_REFRESH_TOKEN_LENGTH } from "../workers/api/identity/claim";
+import { defaultIdentityMode } from "../workers/api/identity/mode";
+import { supabaseRefreshSession } from "../workers/api/identity/supabase-refresh";
 import {
   IDENTITY_COOKIE_MAX_AGE_SECONDS,
   IDENTITY_COOKIE_RENEW_AFTER_SECONDS,
@@ -80,6 +83,8 @@ async function makeSigner() {
 
 class FakeD1 implements D1Database {
   flags = new Map<string, string>();
+  /** True: the flags read fails like a D1 outage. */
+  failFlags = false;
   queries: string[] = [];
   /** Rows of api_verification_keys; null answers like a database without the table. */
   keys: Record<string, unknown>[] | null = null;
@@ -87,7 +92,10 @@ class FakeD1 implements D1Database {
   prepare(query: string): D1PreparedStatement {
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       this.queries.push(query);
-      if (query === FLAGS_SQL) return { success: true, results: [...this.flags].map(([key, value]) => ({ key, value })) };
+      if (query === FLAGS_SQL) {
+        if (this.failFlags) throw new Error("D1 unavailable");
+        return { success: true, results: [...this.flags].map(([key, value]) => ({ key, value })) };
+      }
       if (query === VERIFICATION_KEYS_SQL && this.keys) return { success: true, results: this.keys };
       throw new Error(`unexpected SQL: ${query}`);
     };
@@ -115,11 +123,16 @@ class Limiter {
 }
 
 type SignupMode = "ok" | "http_500" | "http_429" | "network" | "garbage";
+type RefreshMode = "ok" | "http_400" | "http_401" | "http_403" | "http_429" | "http_500" | "network" | "garbage" | "not_anonymous" | "mismatch" | "expired";
 
 class FakeSupabaseAuth {
   jwks: unknown = { keys: [] };
   signupMode: SignupMode = "ok";
   signups: { apikey: string | null; version: string | null; body: unknown }[] = [];
+  refreshMode: RefreshMode = "ok";
+  refreshes: { apikey: string | null; version: string | null; grant: string | null; body: unknown }[] = [];
+  /** Signs the access token a refresh answers (set in main, where the signer is). */
+  signRefreshed: (overrides: Record<string, unknown>) => Promise<string> = async () => "unset";
   other: string[] = [];
 
   async handle(request: Request): Promise<Response> {
@@ -145,6 +158,28 @@ class FakeSupabaseAuth {
         user: { id: NEW_USER, aud: "authenticated", role: "authenticated", is_anonymous: true },
       });
     }
+    if (url.origin === PROJECT && url.pathname === "/auth/v1/token" && request.method === "POST") {
+      this.refreshes.push({
+        apikey: request.headers.get("apikey"),
+        version: request.headers.get("x-supabase-api-version"),
+        grant: url.searchParams.get("grant_type"),
+        body: await request.json(),
+      });
+      const mode = this.refreshMode;
+      if (mode === "network") throw new TypeError("fetch failed");
+      if (mode.startsWith("http_")) return Response.json({ code: "refresh_token_not_found" }, { status: Number(mode.slice(5)) });
+      if (mode === "garbage") return new Response("not json", { status: 200 });
+      const now = Math.floor(Date.now() / 1000);
+      const overrides = mode === "not_anonymous" ? { is_anonymous: false } : mode === "expired" ? { exp: now - 60, iat: now - 3660 } : {};
+      return Response.json({
+        access_token: await this.signRefreshed(overrides),
+        token_type: "bearer",
+        expires_in: 3600,
+        expires_at: now + 3600,
+        refresh_token: "rotated-refresh",
+        user: { id: mode === "mismatch" ? OTHER : USER, aud: "authenticated", role: "authenticated", is_anonymous: true },
+      });
+    }
     this.other.push(`${request.method} ${url.pathname}`);
     return new Response("unexpected", { status: 599 });
   }
@@ -166,6 +201,7 @@ async function main() {
   const auth = new FakeSupabaseAuth();
   const signer = await makeSigner();
   auth.jwks = signer.jwks;
+  auth.signRefreshed = (overrides) => signer.es256(overrides);
   globalThis.fetch = (async (input: Request | string | URL, init?: RequestInit) => auth.handle(new Request(input, init))) as typeof fetch;
   const now = () => Math.floor(Date.now() / 1000);
 
@@ -357,6 +393,91 @@ async function main() {
     auth.signupMode = "ok";
   }
 
+  // --- 3b. Claim: refresh when the stored access token can no longer be claimed (step 6) ---
+  {
+    const signupsBefore = auth.signups.length;
+    const pastWindow = await signer.es256({ exp: now() - CLAIM_WINDOW_SECONDS - 60, iat: now() - CLAIM_WINDOW_SECONDS - 3660 });
+    auth.refreshes.length = 0;
+    auth.refreshMode = "ok";
+    const refreshed = await claim({ access_token: pastWindow, refresh_token: "stored-refresh" });
+    assert.equal(refreshed.status, 200);
+    assert.deepEqual([refreshed.body.v, refreshed.body.uid, refreshed.body.created], [1, USER, false], "the same uid, not a new user");
+    const session = refreshed.body.session as Record<string, unknown>;
+    assert.equal(session.refresh_token, "rotated-refresh");
+    assert.equal(typeof session.access_token, "string");
+    assert.deepEqual([session.token_type, session.expires_in, typeof session.expires_at], ["bearer", 3600, "number"]);
+    assert.equal((session.user as { id: string }).id, USER, "the session goes back for localStorage");
+    assert.equal(await cookieUid(refreshed.response), USER, "the cookie carries the refreshed uid");
+    assert.deepEqual(auth.refreshes, [{
+      apikey: "sb_publishable_test",
+      version: "2024-01-01",
+      grant: "refresh_token",
+      body: { refresh_token: "stored-refresh" },
+    }], "the request supabase-js refreshSession sends");
+    const fresh = await claim({ access_token: session.access_token as string });
+    assert.deepEqual([fresh.status, fresh.body.uid, fresh.body.session], [200, USER, null], "the refreshed token claims like any live token");
+
+    // Only token_invalid refreshes.
+    auth.refreshes.length = 0;
+    const live = await claim({ access_token: await signer.es256(), refresh_token: "stored-refresh" });
+    assert.deepEqual([live.status, live.body.session], [200, null], "a claimable token is claimed without a refresh");
+    const expired = await claim({ access_token: await signer.es256({ exp: now() - 3600, iat: now() - 7200 }), refresh_token: "stored-refresh" });
+    assert.deepEqual([expired.status, expired.body.session], [200, null], "expired within the window: no refresh");
+    const notAnonymous = await claim({ access_token: await signer.es256({ is_anonymous: false }), refresh_token: "stored-refresh" });
+    assert.deepEqual([notAnonymous.status, notAnonymous.body.error], [403, "forbidden"], "forbidden is not refreshed");
+    assert.equal(auth.refreshes.length, 0);
+    const hs256 = await claim({ access_token: await signer.hs256(LEGACY_SECRET, { exp: now() - 86_400 }), refresh_token: "stored-refresh" });
+    assert.deepEqual([hs256.status, hs256.body.uid], [200, USER], "HS256 without the legacy secret refreshes");
+    assert.equal(auth.refreshes.length, 1);
+    const noRefresh = await claim({ access_token: pastWindow });
+    assert.deepEqual([noRefresh.status, noRefresh.body.error], [401, "token_invalid"], "no refresh token: token_invalid as before");
+    assert.equal(auth.refreshes.length, 1);
+
+    // Refused by Supabase Auth: token_invalid, so the browser claims {} next.
+    for (const mode of ["http_400", "http_401", "http_403"] as const) {
+      auth.refreshMode = mode;
+      const refused = await claim({ access_token: pastWindow, refresh_token: "stored-refresh" });
+      assert.deepEqual([refused.status, refused.body], [401, { error: "token_invalid" }], mode);
+      assert.equal(cookieValue(refused.response, "slseoun_id"), null, `${mode}: no identity cookie`);
+    }
+    // An Auth outage: 503, the browser keeps its session for the next try.
+    for (const mode of ["http_429", "http_500", "network", "garbage"] as const) {
+      auth.refreshMode = mode;
+      const outage = await claim({ access_token: pastWindow, refresh_token: "stored-refresh" });
+      assert.deepEqual([outage.status, outage.body], [503, { error: "auth_unavailable" }], mode);
+      assert.equal(cookieValue(outage.response, "slseoun_id"), null, `${mode}: no identity cookie`);
+      assert.equal(outage.response.headers.get("x-slseoun-api"), "1", `${mode}: a router answer`);
+    }
+    // The new token is checked like a bearer, expiry included.
+    for (const [mode, status, error] of [["not_anonymous", 403, "forbidden"], ["mismatch", 401, "token_invalid"], ["expired", 401, "token_invalid"]] as const) {
+      auth.refreshMode = mode;
+      const checked = await claim({ access_token: pastWindow, refresh_token: "stored-refresh" });
+      assert.deepEqual([checked.status, checked.body.error], [status, error], mode);
+      assert.equal(cookieValue(checked.response, "slseoun_id"), null, `${mode}: no identity cookie`);
+    }
+    auth.refreshMode = "ok";
+
+    // Body rules.
+    assert.equal((await claim({ refresh_token: "stored-refresh" })).body.error, "invalid", "a refresh token never comes alone");
+    assert.equal((await claim({ access_token: pastWindow, refresh_token: 1 })).body.error, "invalid");
+    assert.equal((await claim({ access_token: pastWindow, refresh_token: "" })).body.error, "invalid");
+    assert.equal((await claim({ access_token: pastWindow, refresh_token: "r".repeat(MAX_REFRESH_TOKEN_LENGTH + 1) })).body.error, "invalid");
+    assert.equal((await claim({ access_token: pastWindow, refresh_token: "r", uid: OTHER })).body.error, "invalid", "only the two token keys");
+    assert.equal((await claim({ access_token: pastWindow, refresh_token: null })).status, 401, "a null refresh token is no refresh token");
+    assert.deepEqual([(await claim({ refresh_token: null })).body.created], [true], "{ refresh_token: null } is a new user");
+    assert.equal(auth.signups.length, signupsBefore + 1);
+    auth.signups.length = signupsBefore;
+
+    // The refresh call itself: a timeout is an outage, never a refusal.
+    const config = { url: PROJECT, key: "sb_publishable_test", dataEnv: "development" as const };
+    const hung = await supabaseRefreshSession(config, "r", (_input, init) => new Promise((_resolve, reject) => {
+      init?.signal?.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")));
+    }), 20);
+    assert.deepEqual(hung, { ok: false, refused: false, code: "timeout" });
+    const large = await supabaseRefreshSession(config, "r", async () => new Response("x".repeat(17 * 1024)));
+    assert.deepEqual(large, { ok: false, refused: false, code: "too_large" });
+  }
+
   // --- 4. Claim is inert unless every switch is on ----------------------------------
   {
     const token = await signer.es256();
@@ -376,6 +497,34 @@ async function main() {
     assert.deepEqual([off.status, off.body.reason], [409, "off"], "production (flags off) never claims");
     assert.equal(cookiesOf(off.response).length, 0);
     assert.equal(auth.signups.length, 6, "no sign-up while inert");
+  }
+
+  // --- 4b. API_IDENTITY_MODE_DEFAULT: a missing row or a failed read (STEP6_PLAN P12) ---
+  {
+    assert.equal(defaultIdentityMode({}), "token", "unset: token, as before step 6");
+    assert.equal(defaultIdentityMode({ API_IDENTITY_MODE_DEFAULT: "cookie" }), "cookie");
+    assert.equal(defaultIdentityMode({ API_IDENTITY_MODE_DEFAULT: "Cookie" }), "token", "exactly cookie");
+    const token = await signer.es256();
+    const cookieDefault = { ...baseEnv, API_IDENTITY_MODE_DEFAULT: "cookie" };
+    setMode(null);
+    assert.equal((await claim({ access_token: token }, {}, cookieDefault)).status, 200, "no row: the env default");
+    setMode("bogus");
+    assert.equal((await claim({ access_token: token }, {}, cookieDefault)).status, 200, "a value that is neither mode: the env default");
+    setMode("token");
+    assert.equal((await claim({ access_token: token }, {}, cookieDefault)).body.reason, "flag", "a token row still wins over the default");
+    setMode("cookie");
+    assert.equal((await claim({ access_token: token }, {}, { ...cookieDefault, API_IDENTITY_SECRET: undefined })).body.reason, "not_configured", "no secret: token whatever the default");
+    assert.equal((await claim({ access_token: token }, { cookie: "slseoun_qa=no-supabase" }, cookieDefault)).body.reason, "qa", "QA no-supabase: token whatever the default");
+    assert.equal((await claim({}, {}, { ...cookieDefault, API_RUNTIME_FLAGS: "off" })).body.reason, "off", "kill switch: token whatever the default");
+
+    db.failFlags = true;
+    resetFlagsForTest();
+    assert.equal((await claim({ access_token: token })).body.reason, "flag", "a failed read without the default: token");
+    resetFlagsForTest();
+    assert.equal((await claim({ access_token: token }, {}, cookieDefault)).status, 200, "a failed read: the env default");
+    db.failFlags = false;
+    setMode("cookie");
+    assert.equal(auth.signups.length, 6, "token claims sign nobody up");
   }
 
   // --- 5. Request identity resolution (router) --------------------------------------
@@ -441,6 +590,9 @@ async function main() {
     }
     setMode("cookie");
     assert.equal((await call("/api/write/spec-echo", { cookie: "slseoun_id=v1.garbage", authorization: `Bearer ${token}` })).body.source, "token", "a bad cookie falls back to the token too");
+    setMode(null);
+    assert.deepEqual((await call("/api/write/spec-echo", { cookie: goodCookie }, { ...baseEnv, API_IDENTITY_MODE_DEFAULT: "cookie" })).body, { uid: USER, token: "", source: "cookie" }, "no row with the cookie default: the cookie names the user");
+    setMode("cookie");
     const missing = await call("/api/write/spec-echo");
     assert.deepEqual([missing.status, missing.body.error], [401, "identity_required"], "neither cookie nor token");
     assert.ok(cookiesOf(missing.response).some((cookie) => cookie.startsWith("slseoun_idm=cookie")));
@@ -520,6 +672,19 @@ async function main() {
     assert.ok(cookiesOf(rolledBack).includes("slseoun_idm=; Max-Age=0; Path=/; SameSite=Lax; Secure"), "token mode clears the signal");
     const quiet = await mainWorker.fetch(new Request(`${ORIGIN}/compendium/cards`), baseEnv as never, pageCtx);
     assert.equal(cookieValue(quiet, "slseoun_idm"), null);
+
+    // With the cookie default an isolate that has not read the flags yet signals cookie (like API_PATH_DEFAULT=api).
+    setMode("cookie");
+    const coldCtx = { pending: [] as Promise<unknown>[], waitUntil(promise: Promise<unknown>) { this.pending.push(promise); } };
+    const cookieDefault = { ...baseEnv, API_IDENTITY_MODE_DEFAULT: "cookie" };
+    const cold = await mainWorker.fetch(new Request(`${ORIGIN}/compendium/cards`), cookieDefault as never, coldCtx);
+    assert.equal(cookieValue(cold, "slseoun_idm"), "cookie", "unknown flags with the cookie default: cookie");
+    await Promise.allSettled(coldCtx.pending);
+    setMode("token");
+    await mainWorker.fetch(new Request(`${ORIGIN}/compendium/cards`), cookieDefault as never, coldCtx);
+    await Promise.allSettled(coldCtx.pending);
+    const tokenRow = await mainWorker.fetch(new Request(`${ORIGIN}/compendium/cards`, { headers: { cookie: "slseoun_idm=cookie" } }), cookieDefault as never, coldCtx);
+    assert.ok(cookiesOf(tokenRow).includes("slseoun_idm=; Max-Age=0; Path=/; SameSite=Lax; Secure"), "a known token row still clears the signal");
   }
 
   globalThis.fetch = realFetch;

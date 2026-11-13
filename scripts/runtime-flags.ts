@@ -5,7 +5,7 @@
  *
  * Usage:
  *   tsx scripts/runtime-flags.ts list --env testbed|production --remote|--local
- *   tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note "why"
+ *   tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note "why" [--old-client]
  *   tsx scripts/runtime-flags.ts set shadow.<group> 0..1 --env testbed|production --remote|--local --note "why"
  *
  * shadow.<group> is the step 2 shadow-read sample rate (docs/supabase-exit/D1_SCHEMA_DESIGN.md 6):
@@ -14,12 +14,18 @@
  * read.<group> = d1 answers the group's GET routes from D1 (no row = supabase) while sync.enabled is on;
  * with the sync off D1 falls behind, so the group reads Supabase. While source.<group> is supabase a D1
  * failure falls back to Supabase for that request; source.<group> = d1 reads D1 whatever the sync flag.
- *   tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note "why"
+ *   tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note "why" [--old-client]
  *   tsx scripts/runtime-flags.ts set source.<group> supabase|d1 --env ... --note "why"   (step 5 write source)
  *   tsx scripts/runtime-flags.ts set write.paused on|off --env ... --note "why"           (step 5 cutover pause)
  *
  * The step 5 keys are normally flipped together by scripts/d1-cutover.ts (pause, drain, reconcile,
  * every source.<group>, unpause); setting them one by one is for a rollback by hand.
+ *
+ * Since step 6 the browser has no legacy path and sends no bearer token, so path.<group> legacy,
+ * identity.mode token and write.<group> rls stop what they govern. The CLI refuses them unless
+ * --old-client says both Workers (main and patch) were rolled back to a pre-step-6 version first
+ * (docs/supabase-exit/STEP6_PLAN.md 3, the rollback table after step 6); a storage rollback is
+ * source.<group>.
  *
  * The target must be named: wrangler 4's `d1 execute` defaults to the local
  * file, so a rollback that forgot --remote would "succeed" without touching
@@ -39,12 +45,13 @@ function usage(message?: string): never {
   console.error([
     "Usage:",
     "  tsx scripts/runtime-flags.ts list --env testbed|production --remote|--local",
-    "  tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
+    "  tsx scripts/runtime-flags.ts set path.<group> legacy|api --env testbed|production --remote|--local --note \"why\" [--confirm-production] [--old-client]",
     "  tsx scripts/runtime-flags.ts set sync.enabled on|off --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set shadow.<group> 0..1 --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
     "  tsx scripts/runtime-flags.ts set read.<group> supabase|d1 --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
-    "  tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
-    "  tsx scripts/runtime-flags.ts set write.<group> rls|worker --env testbed|production --remote|--local --note \"why\" [--confirm-production]",
+    "  tsx scripts/runtime-flags.ts set identity.mode token|cookie --env testbed|production --remote|--local --note \"why\" [--confirm-production] [--old-client]",
+    "  tsx scripts/runtime-flags.ts set write.<group> rls|worker --env testbed|production --remote|--local --note \"why\" [--confirm-production] [--old-client]",
+    "  --old-client: path legacy, identity.mode token and write rls only after both Workers are back on a pre-step-6 version",
     `Keys: ${[...KNOWN_KEYS.keys()].join(", ")}`,
   ].join("\n"));
   process.exit(2);
@@ -109,7 +116,12 @@ function main() {
 
   if (command === "set") {
     const [key, value] = rest;
-    const checked = checkFlagSet(key, value, { env, remote, confirmProduction: rest.includes("--confirm-production") });
+    const checked = checkFlagSet(key, value, {
+      env,
+      remote,
+      confirmProduction: rest.includes("--confirm-production"),
+      oldClient: rest.includes("--old-client"),
+    });
     if (!checked.ok) usage(checked.message);
     const note = (option(rest, "--note") ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, 200);
     if (!note) usage("--note is required");

@@ -11,11 +11,6 @@ import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { metadataRecordId } from "@/lib/static-detail-shell";
-import {
-  toyboxResourceOgImageUrl,
-  truncateOgTitle,
-} from "@/lib/toybox-post-og";
-import { getTransfigurePostOgFields } from "@/lib/toybox-post-og-fields";
 import { TOYBOX_NARROW_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
 
@@ -31,31 +26,14 @@ export async function generateTransfigurePostMetadata(
     serviceDescription: serviceMessages[serviceLocale].transfigure.subtitle,
   });
   const recordId = metadataRecordId(id);
-  const fallback = getServiceOgMetadata({
+  // Only the shell's metadata: a record's own fields are the main Worker's job
+  // (workers/detail-shell-og.ts, on with DETAIL_SHELL_OG=d1), not the build's.
+  return getServiceOgMetadata({
     serviceLocale,
     title: copy.transfigureTitle,
     description,
     image: TRANSFIGURE_PAGE_OG_IMAGE,
     canonicalPath: recordId ? `/transfigure/${recordId}` : undefined,
-  });
-  if (!recordId) return fallback;
-
-  const fields = await getTransfigurePostOgFields(recordId);
-  if (!fields) return fallback;
-  const title = truncateOgTitle(
-    fields.title?.trim()
-    || fields.transformedName?.trim()
-    || copy.transfigureTitle,
-  );
-  const imageUrl = toyboxResourceOgImageUrl(fields.resourceType, fields.resourceId);
-  return getServiceOgMetadata({
-    serviceLocale,
-    title,
-    description,
-    image: imageUrl
-      ? { url: imageUrl, alt: title }
-      : TRANSFIGURE_PAGE_OG_IMAGE,
-    canonicalPath: `/transfigure/${recordId}`,
   });
 }
 

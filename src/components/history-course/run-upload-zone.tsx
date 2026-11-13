@@ -12,7 +12,6 @@ import { loadRun, saveRun } from "@/lib/run-store";
 import { isBuildSupported } from "@/lib/sts2-build-version";
 import { computeRunHash, runRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
-import { supabaseEnabled } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
@@ -144,7 +143,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
             });
             saved += 1;
             latestRunId = parsed.slug;
-            if (shareOnUpload && supabaseEnabled) toShare.push(parsed);
+            if (shareOnUpload) toShare.push(parsed);
           } catch {
             // ignore individual save failure
           }
@@ -333,17 +332,15 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
               {copy.selectFile}
             </button>
           </div>
-          {supabaseEnabled && (
-            <label className="inline-flex cursor-pointer items-center gap-2 text-[11px] text-muted-foreground hover:text-foreground">
-              <input
-                type="checkbox"
-                checked={shareOnUpload}
-                onChange={(e) => setShareOnUpload(e.target.checked)}
-                className="h-3.5 w-3.5 rounded border-zinc-600 bg-zinc-900 text-amber-500 focus:ring-amber-500"
-              />
-              {copy.shareOnUpload}
-            </label>
-          )}
+          <label className="inline-flex cursor-pointer items-center gap-2 text-[11px] text-muted-foreground hover:text-foreground">
+            <input
+              type="checkbox"
+              checked={shareOnUpload}
+              onChange={(e) => setShareOnUpload(e.target.checked)}
+              className="h-3.5 w-3.5 rounded border-zinc-600 bg-zinc-900 text-amber-500 focus:ring-amber-500"
+            />
+            {copy.shareOnUpload}
+          </label>
           {isParsing && (
             <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <RefreshCw className="h-3 w-3 animate-spin" aria-hidden />

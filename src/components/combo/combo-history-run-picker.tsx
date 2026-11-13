@@ -26,7 +26,6 @@ import {
 import { isCoverSpec } from "@/lib/run-cover-types";
 import { listOwnRuns } from "@/lib/run-store";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
-import { supabaseEnabled } from "@/lib/supabase";
 import { serviceMessages } from "@/messages/service";
 import { GameScrollArea } from "@/components/game-scroll-area";
 
@@ -138,11 +137,6 @@ export function ComboHistoryRunPicker({
       finishSelection(entry.block);
       return;
     }
-    if (!supabaseEnabled) {
-      setStorageUnavailable(true);
-      return;
-    }
-
     setPendingRunId(entry.runId);
     setError(null);
     const activeUserId = userId ?? await ensureUser();

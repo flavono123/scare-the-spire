@@ -9,10 +9,7 @@ import { DisplayedProfileNickname } from "@/components/profile/displayed-profile
 import { PostDetailActions } from "@/components/post-detail-actions";
 import { CommentSection } from "@/components/comment-section";
 import { useAuth } from "@/hooks/use-auth";
-import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
-import { apiDeleteToyboxPost, apiToyboxPost, toyboxViaApi } from "@/lib/toybox-api";
+import { apiDeleteToyboxPost, apiToyboxPost } from "@/lib/toybox-api";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -48,33 +45,18 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
   const router = useRouter();
   const { userId, ready } = useAuth();
   const [post, setPost] = useState<ChemicalPost | null>(null);
-  const [loading, setLoading] = useState(supabaseEnabled);
+  const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [showTooltips, setShowTooltips] = useState(true);
   const { entities: resolvedEntities } = useCommentEntities(entities);
   const entityMap = useMemo(() => buildEntityMap(resolvedEntities), [resolvedEntities]);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
-    const load = async () => {
-      if (toyboxViaApi()) {
-        try {
-          // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, read through the Worker.
-          return { data: await apiToyboxPost("chemical_x", postId) };
-        } catch (error) {
-          // A failed legacy read leaves data null too, which shows "not found".
-          if (!shouldUseLegacy(error)) return { data: null };
-        }
-      }
-      return supabase
-        .from("chemical_posts")
-        .select("*")
-        .eq("id", postId)
-        .eq("env", supabaseEnv)
-        .single();
-    };
-    load()
-      .then(({ data }) => {
+    // docs/supabase-exit/STEP1_DESIGN.md 9.8: the row, read through the Worker.
+    // A failed read leaves the post null, which shows "not found".
+    apiToyboxPost("chemical_x", postId)
+      .catch(() => null)
+      .then((data) => {
         setPost(data as ChemicalPost | null);
         setLoading(false);
       });
@@ -88,27 +70,13 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
   }, [postId]);
 
   const handleDelete = useCallback(async () => {
-    if (!userId || !supabaseEnabled || !post) return;
-    if (toyboxViaApi()) {
-      try {
-        // Not ours or already gone still leaves the page, as the legacy delete does.
-        await apiDeleteToyboxPost("chemical_x", postId);
-        router.replace(localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale));
-        return;
-      } catch (error) {
-        if (!writeMayGoLegacy(error)) return;
-      }
+    if (!userId || !post) return;
+    try {
+      // Not ours or already gone still leaves the page; a failed delete stays.
+      await apiDeleteToyboxPost("chemical_x", postId);
+    } catch {
+      return;
     }
-    const { error } = await withSupabaseTimeout(
-      "chemical_posts.detail.delete",
-      supabase
-        .from("chemical_posts")
-        .delete()
-        .eq("id", postId)
-        .eq("user_id", userId)
-        .eq("env", supabaseEnv),
-    ).catch(() => ({ error: new Error("timeout") }));
-    if (error) return;
     router.replace(localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale));
   }, [gameLocale, post, postId, router, serviceLocale, userId]);
 

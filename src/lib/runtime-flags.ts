@@ -1,26 +1,14 @@
-import {
-  FLAG_COOKIE_NAME,
-  parseFlagCookieValue,
-  type ApiSurfaceGroup,
-  type SurfacePath,
-} from "@/lib/api-surfaces";
-
 /**
- * Which data path a screen group uses: "api" when the Worker's `slseoun_rf`
- * cookie lists the group and this page has not demoted it, "legacy" otherwise
- * (on the patch Worker's own host, or while every flag is legacy). See
- * docs/supabase-exit/STEP1_DESIGN.md 7. With no cookie at all (`pnpm dev`, or a
- * first visit to a page served straight from assets, which never passes the
- * Worker) the build-time default applies (defaultSurfacePath).
+ * Page-wide runtime state shared by every bundle on the page (patch pages load several).
  *
- * Read it only in effects and event handlers, never during render: the build
- * prerenders without cookies, so a render-time read would make the first
- * client render differ from the HTML and break hydration.
+ * Step 6 (docs/supabase-exit/STEP6_PLAN.md 1.1): the browser has no legacy path,
+ * so there is no per-group path to read. The Worker still sends the `slseoun_rf`
+ * cookie for an older client after a rollback; nothing here reads it. A legacy
+ * signal from the Worker is an outage (src/lib/api-client.ts).
  */
 
-/** Page-wide state shared by every bundle on the page (patch pages load several). */
+/** `nav` is the shared nav snapshot promise (src/lib/nav-snapshot.ts and the patch static client). */
 export type SlseounRuntime = {
-  demoted: Set<string>;
   nav?: { promise: Promise<unknown>; at: number };
 };
 
@@ -31,40 +19,7 @@ declare global {
 }
 
 export function slseounRuntime(): SlseounRuntime {
-  if (typeof window === "undefined") return { demoted: new Set() };
-  window.__slseounRuntime ??= { demoted: new Set() };
+  if (typeof window === "undefined") return {};
+  window.__slseounRuntime ??= {};
   return window.__slseounRuntime;
-}
-
-function cookieValue(name: string): string | null {
-  if (typeof document === "undefined") return null;
-  for (const part of document.cookie.split(";")) {
-    const index = part.indexOf("=");
-    if (index >= 0 && part.slice(0, index).trim() === name) return part.slice(index + 1).trim();
-  }
-  return null;
-}
-
-/**
- * The path of every group while the page has no `slseoun_rf` cookie: NEXT_PUBLIC_API_PATH_DEFAULT
- * at build time, "api" only when set to exactly that; unset is legacy (today). The Worker's
- * API_PATH_DEFAULT is the same switch on its side (plan 7.2): set both to api before the browser's
- * direct writes are closed (docs/supabase-exit/STEP4_WRITE_GATE.md 7). The Worker's legacy signal
- * still demotes a group for the page, so a rollback to legacy holds without the cookie.
- */
-export function defaultSurfacePath(): SurfacePath {
-  return process.env.NEXT_PUBLIC_API_PATH_DEFAULT === "api" ? "api" : "legacy";
-}
-
-/** Read on every call, so a newer page in another tab can move this one too. */
-export function surfacePath(group: ApiSurfaceGroup): SurfacePath {
-  if (slseounRuntime().demoted.has(group)) return "legacy";
-  const cookie = cookieValue(FLAG_COOKIE_NAME);
-  if (cookie === null) return defaultSurfacePath();
-  return parseFlagCookieValue(cookie)?.has(group) ? "api" : "legacy";
-}
-
-/** The Worker sent a legacy signal: use the legacy path for the rest of this page. */
-export function demoteSurface(group: ApiSurfaceGroup): void {
-  slseounRuntime().demoted.add(group);
 }

@@ -26,13 +26,13 @@ jobs:
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
       NEXT_PUBLIC_SITE_ORIGIN: ${{ vars.NEXT_PUBLIC_SITE_ORIGIN }}
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      # The data env (src/lib/data-env.ts); the name stays until step 7. The builds need no
+      # Supabase URL or key since step 6: the steps that check or deploy the Worker's
+      # API_SUPABASE_* vars get them in their own env.
       NEXT_PUBLIC_SUPABASE_ENV: ${{ vars.NEXT_PUBLIC_SUPABASE_ENV || 'production' }}
-      # Path of a page with no slseoun_rf cookie (src/lib/runtime-flags.ts): unset = legacy.
-      # api since 2026-11-09 (STEP4_WRITE_GATE.md 7): a page without the slseoun_rf cookie uses /api.
-      NEXT_PUBLIC_API_PATH_DEFAULT: ${{ vars.NEXT_PUBLIC_API_PATH_DEFAULT || 'api' }}
-      ALLOW_BUILD_WITHOUT_SUPABASE: ${{ vars.ALLOW_BUILD_WITHOUT_SUPABASE }}
+      # A production patch:build stops when it cannot read the reels from the site's /api
+      # (src/lib/build-api-read.ts); 1 releases during an outage. The old variable name still works.
+      ALLOW_BUILD_WITHOUT_API: ${{ vars.ALLOW_BUILD_WITHOUT_API || vars.ALLOW_BUILD_WITHOUT_SUPABASE }}
       NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN: ${{ secrets.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN || vars.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -159,9 +159,11 @@ jobs:
           test -n "$NEXT_PUBLIC_SUPABASE_URL"
           test -n "$NEXT_PUBLIC_SUPABASE_ANON_KEY"
           test "$NEXT_PUBLIC_SUPABASE_ENV" = "production"
-          case "${NEXT_PUBLIC_API_PATH_DEFAULT:-}" in ""|legacy|api) ;; *) echo "NEXT_PUBLIC_API_PATH_DEFAULT must be legacy or api"; exit 1 ;; esac
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Checked here, before the patch deploy, and used only by the main deploy step below.
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
       - run: pnpm install --frozen-lockfile
         if: steps.changes.outputs.deploy_any == 'true'
@@ -173,6 +175,9 @@ jobs:
       - run: pnpm patch:test
         if: steps.changes.outputs.patch == 'true' || steps.changes.outputs.patch_after_main == 'true'
 
+      # patch:build bakes the shell patch reels from ${NEXT_PUBLIC_SITE_ORIGIN}/api, the main
+      # Worker deployed before this run (STEP6_PLAN decision D1, option B). It needs no
+      # Supabase URL, key or D1 token; ALLOW_BUILD_WITHOUT_API is the job's.
       - name: Deploy patch Worker before main
         if: steps.changes.outputs.patch == 'true'
         run: |
@@ -310,6 +315,10 @@ jobs:
           done
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Only this step: the source of the Worker's API_SUPABASE_URL and API_SUPABASE_KEY
+          # (Worker Supabase adapters, outbox mirror and sync, until step 7). No build runs here.
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
       - name: Smoke deployed Cloudflare Worker
         if: steps.changes.outputs.main == 'true'
@@ -374,6 +383,7 @@ jobs:
           smoke "/generated/search-index.json"
           smoke "/generated/compendium-resource-manifest.json"
 
+      # Same patch:build as above; the reels now come from the main Worker this run deployed.
       - name: Redeploy patch Worker after main
         if: steps.changes.outputs.main == 'true' && steps.changes.outputs.patch_after_main == 'true'
         run: |

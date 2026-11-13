@@ -9,6 +9,7 @@ import { supabaseApiConfig, supabaseIssuer, type Fetcher, type SupabaseApiConfig
 import { verificationKeys } from "../verification-keys";
 import { identityCookieHeader, identityModeCookieHeader, identitySecret, signIdentityCookie, verifyIdentityCookie } from "./cookie";
 import { apiIdentityMode, type IdentityFlagsEnv } from "./mode";
+import { supabaseRefreshSession } from "./supabase-refresh";
 import { supabaseAnonymousSignup } from "./supabase-signup";
 
 /**
@@ -22,6 +23,14 @@ import { supabaseAnonymousSignup } from "./supabase-signup";
  *   a token is claimable until CLAIM_WINDOW_SECONDS after it expired. The
  *   cookie carries the token's uid. Sending it again gives the same cookie uid.
  *   The browser keeps its Supabase session in localStorage (plan: until step 7).
+ * - `{ "access_token", "refresh_token" }` (step 6, docs/supabase-exit/STEP6_PLAN.md
+ *   WP-A 5): the same, and when the access token is refused as token_invalid
+ *   (past the claim deadline, or HS256 without the legacy secret) the Worker
+ *   refreshes the session on Supabase Auth, as supabase-js did in the browser
+ *   before step 6. The new access token is checked with its expiry; its anonymous
+ *   uid gets the cookie and the new session goes back for localStorage. A refused
+ *   refresh is token_invalid (the browser then claims `{}`), an Auth outage 503
+ *   auth_unavailable.
  * - `{}`: a new user. A request that already has a valid cookie keeps it.
  *   Otherwise the Worker signs up anonymously on Supabase and returns that
  *   session so supabase-js holds the same uid. When that sign-up fails the
@@ -36,6 +45,8 @@ export type ClaimEnv = IdentityFlagsEnv & RateLimitEnv;
 /** Plan 5.3 "claim 기한을 둔다(예: 180일)", read as: until 180 days after the token's `exp`. */
 export const CLAIM_WINDOW_SECONDS = 180 * 86_400;
 const MAX_BODY_BYTES = 9 * 1024;
+/** Supabase refresh tokens are short random strings; the cap only bounds what is forwarded. */
+export const MAX_REFRESH_TOKEN_LENGTH = 1024;
 
 type Outcome = { response: Response; code: string };
 
@@ -44,7 +55,9 @@ function log(status: number, code: string): void {
   console.log(`api POST auth.claim ${status} ${code}`);
 }
 
-async function readBody(request: Request): Promise<{ ok: true; token: string | null } | { ok: false; code: ApiErrorCode }> {
+type ClaimBody = { ok: true; token: string | null; refreshToken: string | null } | { ok: false; code: ApiErrorCode };
+
+async function readBody(request: Request): Promise<ClaimBody> {
   if (!/^application\/json(?:\s*;|$)/i.test(request.headers.get("content-type") ?? "")) return { ok: false, code: "invalid" };
   const declared = Number(request.headers.get("content-length") ?? "0");
   if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) return { ok: false, code: "too_large" };
@@ -63,11 +76,18 @@ async function readBody(request: Request): Promise<{ ok: true; token: string | n
   }
   if (!body || typeof body !== "object" || Array.isArray(body)) return { ok: false, code: "invalid" };
   const keys = Object.keys(body);
-  if (keys.some((key) => key !== "access_token")) return { ok: false, code: "invalid" };
+  if (keys.some((key) => key !== "access_token" && key !== "refresh_token")) return { ok: false, code: "invalid" };
   const token = (body as { access_token?: unknown }).access_token;
-  if (token === undefined || token === null) return { ok: true, token: null };
+  const refresh = (body as { refresh_token?: unknown }).refresh_token;
+  const hasRefresh = refresh !== undefined && refresh !== null;
+  if (token === undefined || token === null) {
+    // A refresh token rides along with the access token it belongs to, never alone.
+    return hasRefresh ? { ok: false, code: "invalid" } : { ok: true, token: null, refreshToken: null };
+  }
   if (typeof token !== "string" || token.length === 0) return { ok: false, code: "invalid" };
-  return { ok: true, token };
+  if (!hasRefresh) return { ok: true, token, refreshToken: null };
+  if (typeof refresh !== "string" || refresh.length === 0 || refresh.length > MAX_REFRESH_TOKEN_LENGTH) return { ok: false, code: "invalid" };
+  return { ok: true, token, refreshToken: refresh };
 }
 
 /** Same rule as router.ts isCrossSiteWrite (copied: router.ts imports this module). */
@@ -96,6 +116,21 @@ async function respond(
   return response;
 }
 
+async function checkToken(token: string, env: ClaimEnv, ctx: ExecutionContextLike, config: SupabaseApiConfig, now: number, ignoreExpiry: boolean) {
+  const issuer = supabaseIssuer(config);
+  const keys = await verificationKeys(env, ctx);
+  return checkSupabaseAccessToken(token, {
+    issuer,
+    now,
+    fetchJwks: () => fetchSupabaseJwks(issuer),
+    waitUntil: (promise) => ctx.waitUntil(promise),
+    pinnedKeys: keys.pinned,
+    revokedKids: keys.revoked,
+    ignoreExpiry,
+    legacyHs256Secret: env.API_SUPABASE_LEGACY_JWT_SECRET || undefined,
+  });
+}
+
 async function claimWithToken(
   token: string,
   env: ClaimEnv,
@@ -103,22 +138,30 @@ async function claimWithToken(
   config: SupabaseApiConfig,
   now: number,
 ): Promise<{ ok: true; uid: string } | { ok: false; code: ApiErrorCode }> {
-  const issuer = supabaseIssuer(config);
-  const keys = await verificationKeys(env, ctx);
-  const check = await checkSupabaseAccessToken(token, {
-    issuer,
-    now,
-    fetchJwks: () => fetchSupabaseJwks(issuer),
-    waitUntil: (promise) => ctx.waitUntil(promise),
-    pinnedKeys: keys.pinned,
-    revokedKids: keys.revoked,
-    ignoreExpiry: true,
-    legacyHs256Secret: env.API_SUPABASE_LEGACY_JWT_SECRET || undefined,
-  });
+  const check = await checkToken(token, env, ctx, config, now, true);
   if (!check.ok) return { ok: false, code: check.reason === "unavailable" ? "auth_unavailable" : "token_invalid" };
   if (check.user.expiresAt + CLAIM_WINDOW_SECONDS <= now) return { ok: false, code: "token_invalid" };
   if (!check.user.isAnonymous) return { ok: false, code: "forbidden" };
   return { ok: true, uid: check.user.userId };
+}
+
+/** The refresh claim: a new session from Supabase Auth, its access token checked like a bearer (expiry included). */
+async function claimWithRefresh(
+  refreshToken: string,
+  env: ClaimEnv,
+  ctx: ExecutionContextLike,
+  config: SupabaseApiConfig,
+  now: number,
+  fetcher: Fetcher | undefined,
+): Promise<{ ok: true; uid: string; session: ClaimSession } | { ok: false; code: ApiErrorCode; detail: string }> {
+  const refreshed = await supabaseRefreshSession(config, refreshToken, fetcher);
+  if (!refreshed.ok) return { ok: false, code: refreshed.refused ? "token_invalid" : "auth_unavailable", detail: refreshed.code };
+  const check = await checkToken(refreshed.session.access_token, env, ctx, config, now, false);
+  if (!check.ok) return { ok: false, code: check.reason === "unavailable" ? "auth_unavailable" : "token_invalid", detail: `check_${check.reason}` };
+  // The session's user must be the token's: the browser stores both under one key.
+  if (check.user.userId !== refreshed.uid) return { ok: false, code: "token_invalid", detail: "user_mismatch" };
+  if (!check.user.isAnonymous) return { ok: false, code: "forbidden", detail: "not_anonymous" };
+  return { ok: true, uid: check.user.userId, session: refreshed.session };
 }
 
 async function claim(
@@ -158,8 +201,11 @@ async function claim(
 
   if (body.token !== null) {
     const claimed = await claimWithToken(body.token, env, ctx, config, now);
-    if (!claimed.ok) return { response: apiError(claimed.code), code: claimed.code };
-    return { response: await respond(request, url, secret, claimed.uid, false, null, now), code: "claimed" };
+    if (claimed.ok) return { response: await respond(request, url, secret, claimed.uid, false, null, now), code: "claimed" };
+    if (claimed.code !== "token_invalid" || body.refreshToken === null) return { response: apiError(claimed.code), code: claimed.code };
+    const refreshed = await claimWithRefresh(body.refreshToken, env, ctx, config, now, fetcher);
+    if (!refreshed.ok) return { response: apiError(refreshed.code), code: `refresh_${refreshed.code}:${refreshed.detail}` };
+    return { response: await respond(request, url, secret, refreshed.uid, false, refreshed.session, now), code: "refreshed" };
   }
 
   const existing = await verifyIdentityCookie(secret, readCookie(request, IDENTITY_COOKIE_NAME), now);
@@ -171,7 +217,7 @@ async function claim(
   return { response: apiError("auth_unavailable"), code: `auth_unavailable:${signup.code}` };
 }
 
-/** Handles the claim path; `fetcher` replaces the Supabase Auth fetch in specs. */
+/** Handles the claim path; `fetcher` replaces the Supabase Auth fetch (sign-up, refresh) in specs. */
 export async function handleIdentityClaim(
   request: Request,
   env: ClaimEnv,

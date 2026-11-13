@@ -18,7 +18,7 @@ import {
   saveResourceReaction,
   type ResourceReactionCounts,
 } from "@/hooks/use-resource-reactions";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { apiFetch } from "@/lib/api-client";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -162,21 +162,18 @@ export function BackstabColorfulPhilosophersSection({
     setHydrated(true);
   }, []);
 
+  // Only a hydrated page (the dev catalog) gets here: static patch pages never
+  // hydrate, and patch-comments.js refreshes their reel from the same route.
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
     const currentWeek = colorfulPhilosophersWeekStart();
-    supabase.from("colorful_philosopher_posts")
-      .select("id, week_start, slot, resource_type, resource_id, name_ko, name_en, image_url, body, game_version, buff_count, nerf_count, rework_count")
-      .eq("env", supabaseEnv)
-      .lte("week_start", currentWeek)
-      .order("week_start", { ascending: false })
-      .limit(12)
-      .then(async ({ data }) => {
-        if (cancelled || !data?.length) return;
+    apiFetch<{ v?: unknown; posts?: unknown }>("colorful-philosophers", "/api/read/colorful-philosophers/reel")
+      .then(async (body) => {
+        const rows = body?.v === 1 && Array.isArray(body.posts) ? body.posts : null;
+        if (cancelled || !rows?.length) return;
         const next = colorfulPhilosophersReelPosts(
-          data.flatMap((row) => {
-            const post = colorfulPhilosopherPostFromRow(row);
+          rows.flatMap((row) => {
+            const post = colorfulPhilosopherPostFromRow(row ?? {});
             return post ? [post] : [];
           }),
           currentWeek,
@@ -186,7 +183,8 @@ export function BackstabColorfulPhilosophersSection({
         const live = await fetchResourceReactionCounts(next);
         if (cancelled || !live) return;
         setCounts((current) => ({ ...current, ...Object.fromEntries(live) }));
-      });
+      })
+      .catch(() => {});
     return () => {
       cancelled = true;
     };

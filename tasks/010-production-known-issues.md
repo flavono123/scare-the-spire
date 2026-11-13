@@ -266,14 +266,41 @@
 71. **꺼져 있는 상세 OG에서 유튜브가 든 코오오옴보 글의 og:image 주소가 깨짐**. `workers/detail-shell-og.ts`의 코오오옴보 분기는 `comboPostOgImage` 결과 앞에 늘 사이트 주소를 붙인다. 그런데 유튜브 썸네일은 이미 `https://i.ytimg.com/...` 절대 주소라 `https://scare-the-spire.comhttps://i.ytimg.com/vi/<id>/hqdefault.jpg`가 된다. 서류 폭풍 분기는 `startsWith("http")`로 거르지만 이 분기는 거르지 않는다. 지금은 상세 OG가 꺼져 있어(#32) 드러나지 않고, 켤 때 같이 고친다. 근거: 6단계 OG 이관 때 옛 Supabase 조회와 새 D1 조회를 같은 데이터로 대조한 결과(둘 다 같은 깨진 값). 화면으로는 확인하지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
 
+### 2026-11-10 Supabase 이관 6단계(신원 WP-A)에서 추가
+
+74. **localStorage를 쓸 수 없는 브라우저는 가입한 첫 페이지 밖에서 쓰기가 모두 실패함**. DOM storage를 끈 Android WebView처럼 `window.localStorage`가 없거나 쓰기가 거절되면, 첫 페이지에서는 claim이 새 사용자 세션을 주고 supabase-js가 그것을 메모리에 두어 댓글·좋아요·기록 제출이 된다. 다음 페이지부터는 claim이 유효한 쿠키로 같은 uid를 `kept`로 돌려주지만 세션은 주지 않는다. claim 표식도 저장되지 않아 `apiFetchAsUser`가 `token_invalid`로 끝나고 쓰기 요청이 나가지 않는다. 6단계는 이 동작 그대로 옮겼다(claim이 준 세션과 그 세션의 claim만 이 페이지의 메모리에 두고, 세션 없는 claim은 기억하지 않음. `src/lib/api-identity.ts`의 `pageSession`). 근거: 옛 `src/lib/api-session.ts`(`apiFetchWithCookie` → `apiFetchWithToken`)와 `src/hooks/use-auth.ts`(`signInThroughWorker`)의 코드 흐름, 그리고 가짜 저장소로 돌린 spec(`scripts/api-identity-client.spec.ts`). 실제 WebView에서는 확인하지 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/cards/abrasive
+
+
+### 2026-11-09 Supabase 이관 6단계(참여·이야기) 정리에서 추가
+
+72. **이야기를 쓰면 1000개·200개를 받던 이야기 목록이 100개로 잘림**. `src/hooks/use-community-stories.ts`의 `add`가 새 이야기를 앞에 붙인 뒤 늘 `COMMUNITY_STORY_LIMIT`(100)으로 자른다. 훅은 `limit`(200, 1000)으로 받았는데도 그렇다. 그래서 https://scare-the-spire.flavono123.workers.dev/patches/changes (1000개)에서 이야기를 쓰면 새로 고칠 때까지 최신 100개 밖의 이야기가 목록과 줄별 이야기 수에서 빠진다. 패치 페이지(200개)도 이야기가 100개를 넘으면 같다. 옛 legacy 쓰기도 같았다. 6단계는 그대로 옮겼다. 코드 읽기로만 확인했다.
+    - https://scare-the-spire.flavono123.workers.dev/patches/changes
+
+
+### 2026-11-09 Supabase 이관 6단계(장난감 상자 WP-T1)에서 추가
+
+73. **케미컬 X 글 상세는 읽기에 실패해도 "글을 찾을 수 없습니다"를 보임**. 다른 장난감 상자 상세(코오오옴보, 변형, 어려운 결정)는 읽기에 실패하면 "데이터베이스가 응답하지 않습니다"를 보이는데, 케미컬 X 상세는 Worker 장애나 시간 초과도 글이 없는 것처럼 보인다. 삭제가 실패해도 안내 없이 그 자리에 남는다. 6단계에서도 지금 동작 그대로 옮겼다. 근거: `src/components/chemicalx/post-view.tsx`의 읽기 효과(실패 → `post = null`)와 `handleDelete`(실패 → 그냥 return). 코드로만 확인했고 화면으로는 확인하지 않았다.
+    - https://scare-the-spire.flavono123.workers.dev/chemical-x/c0789f0e-6842-42b4-bdc8-90e4256a50de
+
+
+### 2026-11-10 Supabase 이관 6단계(마무리 WP-Z)에서 추가
+
+75. **다채로운 철학자들은 5단계 뒤에도 Supabase에서 읽어, Supabase가 멈추면 목록·글·릴이 "데이터베이스가 응답하지 않습니다"**. `colorful-philosophers`는 쓰기 그룹이 아니라 `source.<group>`이 없다. `read.colorful-philosophers = d1`도 `sync.enabled = on`일 때만 D1에서 답하는데(`workers/api/flags.ts`의 `readStoreFor`), 5단계 전환이 동기화를 껐다. 그래서 지금 `/api/read/colorful-philosophers/week`, `/post`, `/reel`은 모두 Supabase를 읽는다(`workers/api/routes/colorful-philosophers.ts`). 관리 도구의 주간 글 쓰기는 D1과 outbox로 가므로(`scripts/admin/admin-writes.ts`) 글은 D1에도 있다. 2026-11-10 01:15 KST쯤 Supabase REST가 키 없는 요청에는 401로 바로 답했지만 행 하나 읽기는 25초 안에 답하지 않았다. 같은 때 운영과 testbed의 `/week`, `/reel`이 503 `unavailable`이었고, D1이 원본인 `/api/read/toybox-feed?service=transfigure&sort=latest`는 200이었다. 운영 패치 빌드도 이 릴을 못 읽어 멈춘다. 6단계 전에는 Supabase를 직접 읽었고, 6단계 B안은 사이트 `/api`를 거쳐 같은 Supabase를 읽는다(`ALLOW_BUILD_WITHOUT_API=1`로 우회). 6단계는 이 동작을 그대로 옮겼다. 브라우저 화면은 열어 보지 않았고, curl과 코드로 확인했다.
+    - https://scare-the-spire.flavono123.workers.dev/colorful-philosophers
+    - https://scare-the-spire.flavono123.workers.dev/patches/2026-11-12
+76. **네비의 새 글 점과 배달부도 5단계 뒤에 Supabase에서 갱신해, Supabase가 멈추면 마지막 스냅샷에 머묾**. #75와 같은 원인이다. `nav`도 쓰기 그룹이 아니라 `source.<group>`이 없고, `read.nav = d1`은 `sync.enabled = on`일 때만 D1에서 답한다(`workers/api/flags.ts`의 `readStoreFor`). 5단계 전환이 동기화를 꺼서 `/api/read/nav`는 D1 경로(`workers/api/d1-read.ts`의 `navFromD1`)로 가지 않고, 기본 동작인 `navFromSupabase`(`workers/api/routes/nav.ts`)가 Supabase에서 스냅샷을 새로 만든다. 갱신이 실패하면 `api_cache`의 옛 스냅샷을 200으로 계속 주고(실패 뒤 다시 시도하는 간격은 최대 5분), 스냅샷이 하루를 넘기면 다시 시도하는 요청 하나가 갱신을 기다린다(최대 6초). 그래서 Supabase가 멈춘 동안 모든 페이지(패치 정적 페이지 포함)의 네비 점과 배달부에 그 뒤의 새 글·댓글이 나오지 않는다. 쓰기는 D1이 원본이라 새 글은 D1에 있다. 2026-11-10 02:09 KST(17:09Z)에 운영 `/api/read/nav`의 `fetchedAt`이 `2026-11-09T15:25:08.416Z`(1시간 44분 전)였고, 02:13 KST에 다시 읽어도 같았다. testbed는 `2026-11-09T10:44:22.957Z`에 멈춰 있었다. 그때 변형·코오오옴보의 D1 최신 글은 스냅샷 값과 같아서, 화면에서 빠진 글이 있는지는 확인하지 않았다. 6단계는 이 동작을 그대로 옮겼다(브라우저는 같은 출처 `/api/read/nav`만 부른다). 브라우저 화면은 열어 보지 않았고, curl과 코드로 확인했다.
+    - https://scare-the-spire.flavono123.workers.dev/
+    - https://scare-the-spire.flavono123.workers.dev/patches/2026-11-12
+
 ### 2026-11-13 v0.113.0 백과사전 백필에서 추가
 
-72. **영문 카드 데이터 일부 수치가 게임과 다름**(한국어는 정상). v0.113.0 행 재생성 비교(`python3 scripts/add-sts2-new-cards.py --report`)로 찾았고, 0.111 원본과 비교하면 이번 패치 이전부터 있던 값이다. 영어 설명이 틀리게 보인다.
+77. **영문 카드 데이터 일부 수치가 게임과 다름**(한국어는 정상). v0.113.0 행 재생성 비교(`python3 scripts/add-sts2-new-cards.py --report`)로 찾았고, 0.111 원본과 비교하면 이번 패치 이전부터 있던 값이다. 영어 설명이 틀리게 보인다.
     - 변수: HEMOKINESIS 14(게임 15), HEIRLOOM_HAMMER 17(20), I_AM_INVINCIBLE 9(10), SCULPTING_STRIKE 8(9), SEEKER_STRIKE 6(9), SKEWER 7(8), SOLAR_STRIKE 8(9), GATHER_LIGHT 7(8), TREMBLE 2(3), MINION_STRIKE 7(6)
     - 비용: BANSHEES_CRY 6(9), BUNDLE_OF_JOY 2(1), SEANCE 0(1). X 비용으로 잘못 표시: ALL_FOR_ONE, BULLET_TIME, JACKPOT, SCRAPE, TRANSFIGURE
     - 대상: BEGONE AnyEnemy(게임 Self), NOT_YET 한국어 대상 '자신'
     - https://scare-the-spire.flavono123.workers.dev/en/compendium/cards/hemokinesis
-73. **무한의 컨베이어 이벤트가 벨트에서 집기 비용을 35 골드로 보여 줌**(게임 40, v0.100.0에서 바뀜).
+78. **무한의 컨베이어 이벤트가 벨트에서 집기 비용을 35 골드로 보여 줌**(게임 40, v0.100.0에서 바뀜).
     - https://scare-the-spire.flavono123.workers.dev/compendium/events/endless_conveyor
-74. **게임에 클래스가 없는 파워 DIAMOND_DIADEM, DOOR_REVIVAL이 폐기 표시 없이 남아 있음**.
+79. **게임에 클래스가 없는 파워 DIAMOND_DIADEM, DOOR_REVIVAL이 폐기 표시 없이 남아 있음**.
     - https://scare-the-spire.flavono123.workers.dev/compendium/powers

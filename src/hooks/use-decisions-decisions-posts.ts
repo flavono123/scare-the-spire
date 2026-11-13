@@ -2,12 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
-import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
+import { dataEnv } from "@/lib/data-env";
 import {
   DECISIONS_DECISIONS_FEED_SERVICE,
   DECISIONS_DECISIONS_GAME_VERSION,
   DECISIONS_DECISIONS_NOTE_MAX_CHARS,
-  DECISIONS_DECISIONS_TABLE,
   DECISIONS_DECISIONS_TITLE_MAX_CHARS,
   DECISIONS_DECISIONS_TITLE_MIN_CHARS,
   normalizeDecisionsDecisionsPost,
@@ -16,14 +15,11 @@ import {
   type TierPlacement,
   type TierRow,
 } from "@/lib/decisions-decisions";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   apiCreateToyboxPost,
   apiDeleteToyboxPost,
   apiToyboxPost,
   apiUpdateToyboxPost,
-  toyboxViaApi,
   toyboxWriteError,
 } from "@/lib/toybox-api";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
@@ -46,7 +42,6 @@ function isValidSave(input: SaveDecisionsDecisionsPostInput): boolean {
   const note = input.note.trim();
   return (
     Boolean(input.activeUserId)
-    && supabaseEnabled
     && nickname.length >= 1
     && nickname.length <= 20
     && title.length >= DECISIONS_DECISIONS_TITLE_MIN_CHARS
@@ -71,31 +66,18 @@ export async function insertDecisionsDecisionsPost(
     rows: input.rows,
     placements: input.placements,
     extra_ids: input.extraIds,
-    env: supabaseEnv,
+    env: dataEnv,
     avatar_id: authorToken.avatar_id,
     avatar_kind: authorToken.avatar_kind,
     palette_id: authorToken.palette_id,
     palette_swapped: authorToken.palette_swapped,
   };
-  if (toyboxViaApi()) {
-    try {
-      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, sent through the Worker.
-      return normalizeDecisionsDecisionsPost(await apiCreateToyboxPost("decisions_decisions", row));
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  try {
+    // docs/supabase-exit/STEP1_DESIGN.md 9.8: the row, sent through the Worker.
+    return normalizeDecisionsDecisionsPost(await apiCreateToyboxPost("decisions_decisions", row));
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { data, error } = await withSupabaseTimeout(
-    "decisions_decisions_posts.insert",
-    supabase
-      .from(DECISIONS_DECISIONS_TABLE)
-      .insert(row)
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  if (!data) return null;
-  return normalizeDecisionsDecisionsPost(data);
 }
 
 export async function updateDecisionsDecisionsPost(
@@ -119,36 +101,19 @@ export async function updateDecisionsDecisionsPost(
     palette_id: authorToken.palette_id,
     palette_swapped: authorToken.palette_swapped,
   };
-  if (toyboxViaApi()) {
-    try {
-      const data = await apiUpdateToyboxPost("decisions_decisions", postId, patch);
-      // Legacy .single() throws when no row matched (PGRST116).
-      if (!data) throw new Error("no row");
-      return normalizeDecisionsDecisionsPost(data);
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  try {
+    const data = await apiUpdateToyboxPost("decisions_decisions", postId, patch);
+    // No matched row (not ours or gone) throws, as PostgREST .single() did (PGRST116).
+    if (!data) throw new Error("no row");
+    return normalizeDecisionsDecisionsPost(data);
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { data, error } = await withSupabaseTimeout(
-    "decisions_decisions_posts.update",
-    supabase
-      .from(DECISIONS_DECISIONS_TABLE)
-      .update(patch)
-      .eq("id", postId)
-      .eq("user_id", input.activeUserId)
-      .eq("env", supabaseEnv)
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  if (!data) return null;
-  return normalizeDecisionsDecisionsPost(data);
 }
 
 export function useDecisionsDecisionsPosts(sort: ToyboxFeedSort = "latest") {
   const feed = useToyboxFeed({
     service: DECISIONS_DECISIONS_FEED_SERVICE,
-    table: DECISIONS_DECISIONS_TABLE,
     sort,
     normalizePost: normalizeDecisionsDecisionsPost,
   });
@@ -172,35 +137,14 @@ export function useDecisionsDecisionsPost(
   userId: string | null = null,
 ) {
   const [post, setPost] = useState<DecisionsDecisionsPost | null>(null);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
 
-    const load = async () => {
-      if (toyboxViaApi()) {
-        try {
-          return { data: await apiToyboxPost("decisions_decisions", postId), error: null };
-        } catch (error) {
-          if (!shouldUseLegacy(error)) throw error;
-        }
-      }
-      return withSupabaseTimeout(
-        "decisions_decisions_posts.detail",
-        supabase
-          .from(DECISIONS_DECISIONS_TABLE)
-          .select("*")
-          .eq("id", postId)
-          .eq("env", supabaseEnv)
-          .maybeSingle(),
-      );
-    };
-
-    load()
-      .then(({ data, error }) => {
-        if (error) throw error;
+    apiToyboxPost("decisions_decisions", postId)
+      .then((data) => {
         if (cancelled) return;
         setPost(data ? normalizeDecisionsDecisionsPost(data) : null);
         setUnavailable(false);
@@ -224,30 +168,11 @@ export function useDecisionsDecisionsPost(
   }, [postId]);
 
   const remove = useCallback(async () => {
-    if (!userId || !supabaseEnabled) return false;
-    if (toyboxViaApi()) {
-      try {
-        // Not ours or already gone still clears the post, as the legacy delete does.
-        await apiDeleteToyboxPost("decisions_decisions", postId);
-        setPost(null);
-        return true;
-      } catch (error) {
-        if (!writeMayGoLegacy(error)) {
-          setUnavailable(true);
-          return false;
-        }
-      }
-    }
-    const { error } = await withSupabaseTimeout(
-      "decisions_decisions_posts.detail.delete",
-      supabase
-        .from(DECISIONS_DECISIONS_TABLE)
-        .delete()
-        .eq("id", postId)
-        .eq("user_id", userId)
-        .eq("env", supabaseEnv),
-    ).catch(() => ({ error: new Error("timeout") }));
-    if (error) {
+    if (!userId) return false;
+    try {
+      // Not ours or already gone still clears the post.
+      await apiDeleteToyboxPost("decisions_decisions", postId);
+    } catch {
       setUnavailable(true);
       return false;
     }

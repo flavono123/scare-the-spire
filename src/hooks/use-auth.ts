@@ -1,80 +1,52 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { claimNewIdentity, cookieModeFallbackUid, identityCookieMode, IdentityLegacyError } from "@/lib/api-identity";
-import { supabase, supabaseEnabled } from "@/lib/supabase";
-import { SUPABASE_AUTH_TIMEOUT_MS, withSupabaseTimeout } from "@/lib/supabase-timeout";
+import {
+  claimedUid,
+  claimNewIdentity,
+  IDENTITY_CHANGE_EVENT,
+  isIdentityStorageKey,
+  storedSupabaseIdentity,
+} from "@/lib/api-identity";
 
 /**
- * Step 4 cookie mode (docs/SUPABASE_EXIT_PLAN.md 5.3): a browser with no
- * Supabase session asks the Worker, which signs up on Supabase for it and
- * returns that session, so both systems hold the same uid. Null when the
- * Worker says identity.mode is token: then today's anonymous sign-in runs.
+ * This browser's user without supabase-js (docs/supabase-exit/STEP6_PLAN.md WP-A 3).
+ *
+ * - `userId`: the stored Supabase session's uid, else the uid this browser claimed
+ *   (the order supabase-js getSession and the cookie-mode fallback had). Read from
+ *   localStorage on mount, and again whenever another tab (`storage`) or this one
+ *   (IDENTITY_CHANGE_EVENT) stores a claim or a session, as onAuthStateChange did.
+ * - `ensureUser`: the uid, asking the Worker for one when this browser has none: it
+ *   keeps a valid cookie's uid or signs up a new user and the session is stored
+ *   (api-identity.ts). A failed claim leaves `unavailable` set, as a failed
+ *   anonymous sign-in did.
  */
-async function signInThroughWorker(): Promise<string | null> {
-  let claimed;
-  try {
-    claimed = await claimNewIdentity();
-  } catch (error) {
-    if (error instanceof IdentityLegacyError) return null;
-    throw error;
-  }
-  if (claimed.session) {
-    // The cookie is the identity now; a failed hand-over only leaves supabase-js without it.
-    await withSupabaseTimeout(
-      "auth.setSession",
-      supabase.auth.setSession({
-        access_token: claimed.session.access_token,
-        refresh_token: claimed.session.refresh_token,
-      }),
-      SUPABASE_AUTH_TIMEOUT_MS,
-    ).catch(() => undefined);
-  }
-  return claimed.uid;
+
+function knownIdentity(): { uid: string | null; stored: boolean } {
+  const stored = storedSupabaseIdentity()?.uid ?? null;
+  return { uid: stored ?? claimedUid(), stored: stored !== null };
 }
 
 export function useAuth() {
   const [userId, setUserId] = useState<string | null>(null);
-  const [ready, setReady] = useState(!supabaseEnabled);
+  const [ready, setReady] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
 
   const ensureUser = useCallback(async (): Promise<string | null> => {
-    if (!supabaseEnabled) return null;
     if (userId) return userId;
 
+    const stored = storedSupabaseIdentity()?.uid ?? null;
+    if (stored) {
+      setUserId(stored);
+      setUnavailable(false);
+      return stored;
+    }
+
     try {
-      const { data: { session }, error } = await withSupabaseTimeout(
-        "auth.getSession",
-        supabase.auth.getSession(),
-        SUPABASE_AUTH_TIMEOUT_MS,
-      );
-      if (error) throw error;
-      if (session?.user) {
-        setUserId(session.user.id);
-        setUnavailable(false);
-        return session.user.id;
-      }
-
-      if (identityCookieMode()) {
-        const workerUserId = await signInThroughWorker();
-        if (workerUserId) {
-          setUserId(workerUserId);
-          setUnavailable(false);
-          return workerUserId;
-        }
-      }
-
-      const { data, error: signInError } = await withSupabaseTimeout(
-        "auth.signInAnonymously",
-        supabase.auth.signInAnonymously(),
-        SUPABASE_AUTH_TIMEOUT_MS,
-      );
-      if (signInError) throw signInError;
-
-      const nextUserId = data.session?.user.id ?? null;
-      setUserId(nextUserId);
-      setUnavailable(!nextUserId);
-      return nextUserId;
+      const claimed = await claimNewIdentity();
+      setUserId(claimed.uid);
+      setUnavailable(false);
+      return claimed.uid;
     } catch {
       setUserId(null);
       setUnavailable(true);
@@ -83,46 +55,25 @@ export function useAuth() {
   }, [userId]);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
-    let cancelled = false;
+    const sync = () => {
+      const known = knownIdentity();
+      setUserId(known.uid);
+      if (known.stored) setUnavailable(false);
+    };
+    const onStorage = (event: StorageEvent) => {
+      // A null key is localStorage.clear() in another tab.
+      if (event.key === null || isIdentityStorageKey(event.key)) sync();
+    };
 
-    (async () => {
-      try {
-        const { data: { session }, error } = await withSupabaseTimeout(
-          "auth.getSession",
-          supabase.auth.getSession(),
-          SUPABASE_AUTH_TIMEOUT_MS,
-        );
-        if (error) throw error;
-        if (cancelled) return;
-        if (session?.user) {
-          setUserId(session.user.id);
-          setUnavailable(false);
-          return;
-        }
-
-        setUserId(cookieModeFallbackUid());
-        setUnavailable(false);
-      } catch {
-        if (!cancelled) {
-          setUserId(null);
-          setUnavailable(true);
-        }
-      } finally {
-        if (!cancelled) setReady(true);
-      }
-    })();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUserId(session?.user.id ?? cookieModeFallbackUid());
-        if (session?.user) setUnavailable(false);
-      },
-    );
-
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is only readable after mount
+    setUserId(knownIdentity().uid);
+    setUnavailable(false);
+    setReady(true);
+    window.addEventListener("storage", onStorage);
+    window.addEventListener(IDENTITY_CHANGE_EVENT, sync);
     return () => {
-      cancelled = true;
-      subscription.unsubscribe();
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener(IDENTITY_CHANGE_EVENT, sync);
     };
   }, []);
 

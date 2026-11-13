@@ -49,7 +49,6 @@ import type { CoverSpec } from "@/lib/run-cover-types";
 import { deleteRun, listOwnRuns, updateRunCoverSpec } from "@/lib/run-store";
 import { isBuildSupported, MIN_SUPPORTED_BUILD } from "@/lib/sts2-build-version";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
-import { supabaseEnabled } from "@/lib/supabase";
 import { serviceMessages } from "@/messages/service";
 import { RandomPickCard } from "./random-pick-card";
 import { RunCard, runCardPropsFromReplay } from "./run-card";
@@ -154,12 +153,8 @@ export function HistoryCourseRunIndex({
   }, [refreshKey]);
 
   useEffect(() => {
-    if (!supabaseEnabled) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- empty donated list when storage is off
-      setDonatedRuns([]);
-      return;
-    }
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- clear the notice before a refresh
     setUnavailable(false);
     listRecentDonatedRuns()
       .then((result) => {
@@ -181,7 +176,7 @@ export function HistoryCourseRunIndex({
   }, [userId]);
 
   useEffect(() => {
-    if (!supabaseEnabled || !userId) return;
+    if (!userId) return;
     let cancelled = false;
     listMyDonatedRunIds(userId).then((ids) => {
       if (!cancelled) setDonatedIds(ids);
@@ -300,7 +295,7 @@ export function HistoryCourseRunIndex({
       setEditingLocal((prev) => (prev ? { ...prev, coverSpec: cover } : null));
       // Do not gate this on the share button. That flag lags the insert,
       // and skipping the update is what left other devices on the auto cover.
-      if (!localCoverSaveAttemptsRemoteSync(supabaseEnabled)) return;
+      if (!localCoverSaveAttemptsRemoteSync(true)) return;
       const activeUserId = userId ?? (await ensureUser());
       if (!activeUserId) return;
       const result = await updateDonatedRunCoverSpec({
@@ -372,7 +367,6 @@ export function HistoryCourseRunIndex({
 
   const handleShare = useCallback(
     async (entry: LocalEntry) => {
-      if (!supabaseEnabled) return;
       const activeUserId = userId ?? await ensureUser();
       if (!activeUserId) return;
       const wasDonated = visibleDonatedIds.has(entry.runId);
@@ -484,7 +478,7 @@ export function HistoryCourseRunIndex({
         </p>
       ) : (
         <ul className="grid gap-x-4 gap-y-8 overflow-visible sm:grid-cols-2 lg:grid-cols-3">
-          {supabaseEnabled && !unavailable ? (
+          {!unavailable ? (
             <li>
               <RandomPickCard runs={donatedForRandom} userId={userId} />
             </li>
@@ -524,11 +518,7 @@ export function HistoryCourseRunIndex({
                     onPick={() => handlePickLocal(local)}
                     onDelete={() => handleDeleteLocal(local)}
                     onEditCover={() => setEditingLocal(local)}
-                    onShare={
-                      supabaseEnabled
-                        ? () => handleShare(local)
-                        : undefined
-                    }
+                    onShare={() => handleShare(local)}
                     shareState={shared ? "shared" : "none"}
                   />
                 ) : donated ? (

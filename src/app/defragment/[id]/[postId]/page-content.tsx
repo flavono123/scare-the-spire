@@ -20,13 +20,10 @@ import {
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { DEFRAGMENT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
-import { pagestormPostOgImage } from "@/lib/pagestorm";
 import {
   composeToyBoxPostOgDescription,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { clipOgDescription } from "@/lib/toybox-post-og";
-import { getPagestormPostOgFields } from "@/lib/toybox-post-og-fields";
 import { metadataRecordId } from "@/lib/static-detail-shell";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { serviceMessages } from "@/messages/service";
@@ -47,18 +44,8 @@ export async function generateDefragmentFederatedPostMetadata(
     serviceDescription: serviceMessages[serviceLocale].defragment.subtitle,
   });
   const recordId = metadataRecordId(id);
-  if (service === "pagestorm" && recordId) {
-    const fields = await getPagestormPostOgFields(recordId);
-    if (fields) {
-      return getServiceOgMetadata({
-        serviceLocale,
-        title: fields.title.trim() || gameCopy.title,
-        description: clipOgDescription(fields.contentText, description),
-        image: pagestormPostOgImage(fields.content),
-        canonicalPath: `/defragment/${service}/${recordId}`,
-      });
-    }
-  }
+  // Only the shell's metadata: a record's own fields are the main Worker's job
+  // (workers/detail-shell-og.ts, on with DETAIL_SHELL_OG=d1), not the build's.
   return getServiceOgMetadata({
     serviceLocale,
     title: gameCopy.title,

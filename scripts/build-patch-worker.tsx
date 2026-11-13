@@ -1,4 +1,4 @@
-// Must stay first: src/lib/supabase.ts reads the environment when it is imported.
+// Must stay first: src/lib/data-env.ts reads the environment when it is imported.
 import "./load-build-env";
 /* eslint-disable @next/next/no-css-tags, @next/next/no-head-element, @next/next/no-img-element, @next/next/no-sync-scripts */
 import fs from "fs/promises";
@@ -651,11 +651,10 @@ function renderShell(route: StaticPatchRoute): string {
       <body
         className="font-service antialiased bg-background text-foreground"
         dangerouslySetInnerHTML={{
+          // Only the data env (step 6): patch-comments-client.js calls the same-origin /api, and the
+          // value must match the Worker's API_DATA_ENV (src/lib/data-env.ts).
           __html: `${app}<script id="sts-patch-comments-config" type="application/json">${escapeInlineJson({
-            supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-            supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
-            supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
-            apiPathDefault: process.env.NEXT_PUBLIC_API_PATH_DEFAULT ?? "",
+            dataEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
           })}</script><script src="/_patches/patch-nav-indicators.js" defer></script><script src="/_patches/patch-global-search.js" defer></script><script src="/_patches/patch-static-card-preview.js" defer></script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-rich-comments.js" defer></script><script src="/_patches/patch-comments.js" defer></script>${routeClientScripts}${cloudflareWebAnalytics}`,
         }}
       />
@@ -686,13 +685,11 @@ async function writePatchClientAssets() {
   });
 
   // Browser bundles must not read Node `process` at runtime. Replace every
-  // NEXT_PUBLIC_* / SITE_* env access the client graph may touch.
+  // NEXT_PUBLIC_* / SITE_* env access the client graph may touch. Step 6: the
+  // bundles name no Supabase project or key, only the data env (src/lib/data-env.ts).
   const patchClientEnvDefines = {
     "process.env.NODE_ENV": JSON.stringify("production"),
-    "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""),
-    "process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""),
     "process.env.NEXT_PUBLIC_SUPABASE_ENV": JSON.stringify(process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production"),
-    "process.env.NEXT_PUBLIC_API_PATH_DEFAULT": JSON.stringify(process.env.NEXT_PUBLIC_API_PATH_DEFAULT ?? ""),
     "process.env.NEXT_PUBLIC_SITE_ORIGIN": JSON.stringify(process.env.NEXT_PUBLIC_SITE_ORIGIN ?? ""),
     "process.env.NEXT_PUBLIC_SITE_URL": JSON.stringify(process.env.NEXT_PUBLIC_SITE_URL ?? ""),
     "process.env.SITE_URL": JSON.stringify(process.env.SITE_URL ?? ""),

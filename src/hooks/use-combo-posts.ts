@@ -9,15 +9,13 @@ import {
 } from "@/lib/combo-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import { useToyboxFeed } from "@/hooks/use-toybox-feed";
-import { shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
-import { isCheckViolation, supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { dataEnv } from "@/lib/data-env";
+import { isCheckViolation } from "@/lib/db-errors";
 import {
   apiCreateToyboxPost,
   apiDeleteToyboxPost,
   apiToyboxPost,
   apiUpdateToyboxPost,
-  toyboxViaApi,
   toyboxWriteError,
 } from "@/lib/toybox-api";
 import type { ToyboxFeedSort } from "@/lib/toybox-feed";
@@ -59,7 +57,6 @@ function validateSaveInput(input: SaveComboPostInput) {
   const resources = extractComboResourceRefs(input.blocks);
   if (
     !input.activeUserId
-    || !supabaseEnabled
     || contentText.length < 2
     || nickname.length < 1
     || nickname.length > 20
@@ -85,7 +82,7 @@ export async function insertComboPost(
     content: input.blocks,
     content_text: normalized.contentText,
     resources: normalized.resources,
-    env: supabaseEnv,
+    env: dataEnv,
     ...(token ? {
       avatar_id: token.avatar_id,
       avatar_kind: token.avatar_kind,
@@ -93,32 +90,18 @@ export async function insertComboPost(
       palette_swapped: token.palette_swapped,
     } : {}),
   };
-  if (toyboxViaApi()) {
-    try {
-      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same row, sent through the Worker.
-      return normalizePost(await apiCreateToyboxPost("combo", row));
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) throw toyboxWriteError(error);
-    }
+  try {
+    // docs/supabase-exit/STEP1_DESIGN.md 9.8: the row, sent through the Worker.
+    return normalizePost(await apiCreateToyboxPost("combo", row));
+  } catch (error) {
+    throw toyboxWriteError(error);
   }
-  const { data, error } = await withSupabaseTimeout(
-    "combo_posts.insert",
-    supabase
-      .from("combo_posts")
-      .insert(row)
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  if (!data) return null;
-  return normalizePost(data);
 }
 
-/** `viaApi`: only the detail page edits; the list update is unreachable (SURFACE_MAP 13). */
+/** Only the detail page edits (SURFACE_MAP 13). */
 async function persistComboPostUpdate(
   postId: string,
   input: SaveComboPostInput,
-  viaApi = false,
 ) {
   const normalized = validateSaveInput(input);
   if (!normalized || !input.activeUserId) {
@@ -138,26 +121,13 @@ async function persistComboPostUpdate(
       palette_swapped: token.palette_swapped,
     } : {}),
   };
-  if (viaApi && toyboxViaApi()) {
-    try {
-      const data = await apiUpdateToyboxPost("combo", postId, patch);
-      // Legacy .single() reports no matched row as an error (PGRST116).
-      return data ? { data, error: null } : { data: null, error: { code: "PGRST116", message: "no row" } };
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) return { data: null, error: toyboxWriteError(error) };
-    }
+  try {
+    const data = await apiUpdateToyboxPost("combo", postId, patch);
+    // No matched row (not ours or gone) is an error, as PostgREST .single() reported it (PGRST116).
+    return data ? { data, error: null } : { data: null, error: { code: "PGRST116", message: "no row" } };
+  } catch (error) {
+    return { data: null, error: toyboxWriteError(error) };
   }
-  return withSupabaseTimeout(
-    "combo_posts.update",
-    supabase
-      .from("combo_posts")
-      .update(patch)
-      .eq("id", postId)
-      .eq("user_id", input.activeUserId)
-      .eq("env", supabaseEnv)
-      .select()
-      .single(),
-  ).catch(() => ({ data: null, error: new Error("timeout") }));
 }
 
 export function useComboPosts(
@@ -177,7 +147,6 @@ export function useComboPosts(
     setUnavailable,
   } = useToyboxFeed({
     service: "combo",
-    table: "combo_posts",
     sort,
     normalizePost,
   });
@@ -219,35 +188,14 @@ export function useComboPost(
   userId: string | null = null,
 ): UseComboPostReturn {
   const [post, setPost] = useState<ComboPost | null>(null);
-  const [loading, setLoading] = useState(supabaseEnabled);
-  const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
     let cancelled = false;
 
-    const load = async () => {
-      if (toyboxViaApi()) {
-        try {
-          return { data: await apiToyboxPost("combo", postId), error: null };
-        } catch (error) {
-          if (!shouldUseLegacy(error)) throw error;
-        }
-      }
-      return withSupabaseTimeout(
-        "combo_posts.detail",
-        supabase
-          .from("combo_posts")
-          .select("*")
-          .eq("id", postId)
-          .eq("env", supabaseEnv)
-          .maybeSingle(),
-      );
-    };
-
-    load()
-      .then(({ data, error }) => {
-        if (error) throw error;
+    apiToyboxPost("combo", postId)
+      .then((data) => {
         if (cancelled) return;
         setPost(data ? normalizePost(data) : null);
         setUnavailable(false);
@@ -269,7 +217,7 @@ export function useComboPost(
       const { data, error } = await persistComboPostUpdate(postId, {
         ...input,
         activeUserId: input.activeUserId ?? userId ?? undefined,
-      }, true);
+      });
       if (error) {
         if (!isCheckViolation(error)) setUnavailable(true);
         throw new Error(error.message);
@@ -284,30 +232,11 @@ export function useComboPost(
   );
 
   const remove = useCallback(async () => {
-    if (!userId || !supabaseEnabled) return false;
-    if (toyboxViaApi()) {
-      try {
-        // Not ours or already gone still clears the post, as the legacy delete does.
-        await apiDeleteToyboxPost("combo", postId);
-        setPost(null);
-        return true;
-      } catch (error) {
-        if (!writeMayGoLegacy(error)) {
-          setUnavailable(true);
-          return false;
-        }
-      }
-    }
-    const { error } = await withSupabaseTimeout(
-      "combo_posts.detail.delete",
-      supabase
-        .from("combo_posts")
-        .delete()
-        .eq("id", postId)
-        .eq("user_id", userId)
-        .eq("env", supabaseEnv),
-    ).catch(() => ({ error: new Error("timeout") }));
-    if (error) {
+    if (!userId) return false;
+    try {
+      // Not ours or already gone still clears the post.
+      await apiDeleteToyboxPost("combo", postId);
+    } catch {
       setUnavailable(true);
       return false;
     }

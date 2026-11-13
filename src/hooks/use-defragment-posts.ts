@@ -1,6 +1,6 @@
 "use client";
 
-import { ApiError, ApiUnavailableError, shouldUseLegacy, writeMayGoLegacy } from "@/lib/api-client";
+import { ApiError, ApiUnavailableError } from "@/lib/api-client";
 import type { PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import {
@@ -10,10 +10,9 @@ import {
   DEFRAGMENT_TITLE_MAX_CHARS,
   DEFRAGMENT_TITLE_MIN_CHARS,
 } from "@/lib/content-limits";
+import { dataEnv } from "@/lib/data-env";
 import type { DefragmentPost } from "@/lib/defragment";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
-import { apiDeleteToyboxPost, apiToyboxPost, apiUpdateToyboxPost, toyboxViaApi } from "@/lib/toybox-api";
+import { apiDeleteToyboxPost, apiToyboxPost, apiUpdateToyboxPost } from "@/lib/toybox-api";
 import { currentAuthorProfileToken } from "@/lib/user-profile";
 
 export interface SaveDefragmentPostInput {
@@ -36,7 +35,7 @@ function normalizePost(row: unknown): DefragmentPost | null {
     title: typeof record.title === "string" ? record.title : "",
     content: Array.isArray(record.content) ? record.content as PostBlock[] : [],
     content_text: typeof record.content_text === "string" ? record.content_text : "",
-    env: typeof record.env === "string" ? record.env : supabaseEnv,
+    env: typeof record.env === "string" ? record.env : dataEnv,
     created_at: record.created_at,
     avatar_id: typeof record.avatar_id === "string" ? record.avatar_id : (typeof record.avatarId === "string" ? record.avatarId : null),
     avatar_kind: typeof record.avatar_kind === "string" ? record.avatar_kind : (typeof record.avatarKind === "string" ? record.avatarKind : null),
@@ -75,107 +74,47 @@ export async function updateDefragmentPost(
   postId: string,
   input: SaveDefragmentPostInput,
 ): Promise<DefragmentPost | null> {
-  if (!supabaseEnabled) return null;
   const parsed = validateSaveInput(input);
   if (!parsed) return null;
 
   const authorToken = currentAuthorProfileToken();
-  if (toyboxViaApi()) {
-    try {
-      // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same patch; the Worker adds the id, user_id and env filters.
-      // Callers treat every error alike, so the ApiError goes up as is.
-      const row = await apiUpdateToyboxPost("defragment", postId, {
-        nickname: parsed.nickname,
-        title: parsed.title,
-        content: input.blocks,
-        content_text: parsed.contentText,
-        avatar_id: authorToken.avatar_id,
-        avatar_kind: authorToken.avatar_kind,
-        palette_id: authorToken.palette_id,
-        palette_swapped: authorToken.palette_swapped,
-      });
-      // `.single()` fails when no row matched.
-      if (!row) throw new Error("defragment post not updated");
-      return normalizePost(row);
-    } catch (error) {
-      // Only a write that certainly did nothing is sent again on the legacy path.
-      if (!writeMayGoLegacy(error)) throw error;
-    }
-  }
-  const { data, error } = await withSupabaseTimeout(
-    "defragment_posts.update",
-    supabase
-      .from("defragment_posts")
-      .update({
-        nickname: parsed.nickname,
-        title: parsed.title,
-        content: input.blocks,
-        content_text: parsed.contentText,
-        avatar_id: authorToken.avatar_id,
-        avatar_kind: authorToken.avatar_kind,
-        palette_id: authorToken.palette_id,
-        palette_swapped: authorToken.palette_swapped,
-      })
-      .eq("id", postId)
-      .eq("user_id", input.activeUserId)
-      .eq("env", supabaseEnv)
-      .select()
-      .single(),
-  );
-  if (error) throw error;
-  return normalizePost(data);
+  // docs/supabase-exit/STEP1_DESIGN.md 9.8: the same patch; the Worker adds the id, user_id and env filters.
+  // Callers treat every error alike, so the ApiError goes up as is.
+  const row = await apiUpdateToyboxPost("defragment", postId, {
+    nickname: parsed.nickname,
+    title: parsed.title,
+    content: input.blocks,
+    content_text: parsed.contentText,
+    avatar_id: authorToken.avatar_id,
+    avatar_kind: authorToken.avatar_kind,
+    palette_id: authorToken.palette_id,
+    palette_swapped: authorToken.palette_swapped,
+  });
+  // No row matched (not ours or gone): a failure, as the legacy `.single()` was.
+  if (!row) throw new Error("defragment post not updated");
+  return normalizePost(row);
 }
 
 export async function deleteDefragmentPost(
   postId: string,
   activeUserId: string,
 ): Promise<boolean> {
-  if (!supabaseEnabled) return false;
-  if (toyboxViaApi()) {
-    try {
-      // True whether or not a row matched, like the legacy delete.
-      await apiDeleteToyboxPost("defragment", postId);
-      return true;
-    } catch (error) {
-      if (!writeMayGoLegacy(error)) throw error;
-    }
-  }
-  const { error } = await withSupabaseTimeout(
-    "defragment_posts.delete",
-    supabase
-      .from("defragment_posts")
-      .delete()
-      .eq("id", postId)
-      .eq("user_id", activeUserId)
-      .eq("env", supabaseEnv),
-  );
-  if (error) throw error;
+  // The Worker names the caller; activeUserId stays for the callers' signature.
+  void activeUserId;
+  // True whether or not a row matched, like the legacy delete.
+  await apiDeleteToyboxPost("defragment", postId);
   return true;
 }
 
 export async function fetchDefragmentPost(
   postId: string,
 ): Promise<DefragmentPost | null> {
-  if (!supabaseEnabled) return null;
-  if (toyboxViaApi()) {
-    try {
-      return normalizePost(await apiToyboxPost("defragment", postId));
-    } catch (error) {
-      // An outage rejects like the legacy timeout, so the page shows "unavailable".
-      if (error instanceof ApiUnavailableError || (error instanceof ApiError && error.code === "rate_limited")) throw error;
-      // A PostgREST error on the legacy read becomes "no post".
-      if (!shouldUseLegacy(error)) return null;
-    }
+  try {
+    return normalizePost(await apiToyboxPost("defragment", postId));
+  } catch (error) {
+    // An outage rejects like the legacy timeout, so the page shows "unavailable".
+    if (error instanceof ApiUnavailableError || (error instanceof ApiError && error.code === "rate_limited")) throw error;
+    // Any other error is "no post", as a PostgREST error on the legacy read was.
+    return null;
   }
-  const { data, error } = await withSupabaseTimeout(
-    "defragment_posts.detail",
-    supabase
-      .from("defragment_posts")
-      .select("*")
-      .eq("id", postId)
-      .eq("env", supabaseEnv)
-      .single(),
-  );
-  if (error) return null;
-  return normalizePost(data);
 }

@@ -438,4 +438,124 @@ assert.deepEqual(parsePagestormTransfigureReel("[]"), []);
 assert.deepEqual(parsePagestormTransfigureReel("not json"), []);
 assert.deepEqual(parsePagestormTransfigureReel([{ resourceType: "card" }]), []);
 
-console.log("pagestorm.spec.ts: ok");
+// --- Step 6: pagestorm reads and writes go only through the Worker -------------------
+// (docs/supabase-exit/STEP6_PLAN.md WP-T2). Every former legacy signal is the screen's
+// failure, with one request and nothing redone on a direct Supabase path.
+async function apiOnly() {
+  const fakeStorage = new Map<string, string>();
+  Object.assign(globalThis, {
+    window: {
+      localStorage: {
+        getItem: (key: string) => fakeStorage.get(key) ?? null,
+        setItem: (key: string, value: string) => void fakeStorage.set(key, value),
+        removeItem: (key: string) => void fakeStorage.delete(key),
+        key: (index: number) => [...fakeStorage.keys()][index] ?? null,
+        get length() {
+          return fakeStorage.size;
+        },
+      },
+    },
+    // A claimed browser in cookie mode: writes go out without a claim request.
+    document: { cookie: "slseoun_idm=cookie" },
+  });
+  fakeStorage.set("slseoun-identity", JSON.stringify({ uid: "user-1", at: "2026-11-09T00:00:00.000Z" }));
+
+  const { ApiUnavailableError } = await import("../src/lib/api-client");
+  const { dataEnv } = await import("../src/lib/data-env");
+  const { loadPagestormToyboxSnapshot } = await import("../src/hooks/use-pagestorm-toybox");
+  const { deletePagestormDraft, insertPagestormDraft, insertPagestormPost } = await import("../src/hooks/use-pagestorm-posts");
+
+  const requests: { url: string; method: string; body: unknown }[] = [];
+  const marked = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
+    status,
+    headers: { "content-type": "application/json", "x-slseoun-api": "1" },
+  });
+  const stub = (respond: () => Response) => {
+    requests.length = 0;
+    globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+      requests.push({
+        url: String(input),
+        method: init?.method ?? "GET",
+        body: typeof init?.body === "string" ? JSON.parse(init.body) : undefined,
+      });
+      return respond();
+    }) as typeof fetch;
+  };
+  const onlyApi = () => {
+    for (const request of requests) assert.ok(request.url.startsWith("/api/"), `same-origin /api only: ${request.url}`);
+  };
+  const legacySignal = () => marked({ error: "surface_legacy" }, 409);
+  const pick = { id: "post-1", service: "/this-or-that", userId: "u", title: "pick title", nickname: "pick nick" };
+
+  // A toybox embed reads its row from /api/read/toybox-post.
+  stub(() => marked([{ reason: "row reason", nickname: "row nick", left_type: "card", left_id: "A", right_type: "relic", right_id: "B" }]));
+  const snapshot = await loadPagestormToyboxSnapshot(pick);
+  assert.equal(snapshot.title, "row reason");
+  assert.equal(snapshot.nickname, "row nick");
+  assert.deepEqual([snapshot.leftType, snapshot.leftId, snapshot.rightType, snapshot.rightId], ["card", "A", "relic", "B"]);
+  assert.deepEqual(requests.map((request) => request.url), ["/api/read/toybox-post?service=this_or_that&id=post-1"]);
+
+  // No row: the pick as it was.
+  stub(() => marked([]));
+  assert.equal((await loadPagestormToyboxSnapshot(pick)).title, "pick title");
+
+  // A legacy signal, an answer without the router marker, and a 5xx are an outage.
+  for (const respond of [legacySignal, () => new Response("<html>", { status: 200 }), () => marked({ error: "upstream" }, 503)]) {
+    stub(respond);
+    await assert.rejects(loadPagestormToyboxSnapshot(pick), ApiUnavailableError);
+    assert.equal(requests.length, 1);
+    onlyApi();
+  }
+
+  // History course embeds read nothing.
+  stub(() => marked([]));
+  const run = await loadPagestormToyboxSnapshot({ ...pick, service: "/history-course" });
+  assert.equal(run.title, "pick title");
+  assert.equal(requests.length, 0);
+
+  // Writes: invalid input and no user write nothing.
+  const input = {
+    nickname: " 닉네임 ",
+    title: " 제목 ",
+    content: doc,
+    contentText: " 본문 ",
+    activeUserId: "user-1",
+  };
+  stub(() => marked([]));
+  assert.equal(await insertPagestormPost({ ...input, title: " " }), null);
+  assert.equal(await insertPagestormDraft({ ...input, activeUserId: "" }), null);
+  assert.equal(await deletePagestormDraft("draft-1", ""), false);
+  assert.equal(requests.length, 0);
+
+  // A post insert sends the trimmed row with the data env.
+  stub(() => marked([{ id: "new-post", title: "제목", created_at: "2026-11-09T00:00:00.000Z" }], 201));
+  assert.equal((await insertPagestormPost(input))?.id, "new-post");
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].url, "/api/write/toybox-post?service=pagestorm");
+  assert.equal(requests[0].method, "POST");
+  assert.deepEqual(
+    (({ user_id, nickname, title, content_text, env }) => ({ user_id, nickname, title, content_text, env }))(requests[0].body as Record<string, unknown>),
+    { user_id: "user-1", nickname: "닉네임", title: "제목", content_text: "본문", env: dataEnv },
+  );
+
+  // A refused write keeps the database code the composer reads (check violation: 23514).
+  stub(() => marked({ error: "check_violation" }, 400));
+  await assert.rejects(insertPagestormDraft(input), (error: { code?: string }) => error.code === "23514");
+  assert.equal(requests.length, 1);
+
+  // A legacy signal on a write is "unavailable" and is not sent again anywhere.
+  for (const write of [() => insertPagestormPost(input), () => insertPagestormDraft(input), () => deletePagestormDraft("draft-1", "user-1")]) {
+    stub(legacySignal);
+    await assert.rejects(write(), (error: { code?: string }) => error.code === "unavailable");
+    assert.equal(requests.length, 1);
+    onlyApi();
+  }
+}
+
+apiOnly().then(
+  () => console.log("pagestorm.spec.ts: ok"),
+  (error) => {
+    console.error(error);
+    process.exit(1);
+  },
+);
