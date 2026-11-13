@@ -3,7 +3,7 @@
 
 The Fool's melody symbols mark Wah/Cho/Ki cards in combat, and the Fool's arrow
 stands for Shoot cards (the game's "화살" hover tip). Minion, Shiv and Osty Attack
-reuse images the site already serves, so they are not extracted here.
+reuse power icons the site already serves, so they are not extracted here.
 
 Usage: python3 scripts/extract-card-tag-icons.py
 """
