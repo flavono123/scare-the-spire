@@ -30,9 +30,15 @@
 
 ## 긴급 배포로 QA 없이 나간 범위
 
-없음.
+- 2026-11-13 v0.113.0 패치노트 긴급 배포(작업 도구 `7d2f9a2a`)에 다른 세션 커밋이 같이 나감: `88fcf932`·`e9cec30e`(문의함 화면, dev 전용), `f2abe1a4`(`pnpm cf:limits` 스크립트), `97ec500b`·`d00b2be3`(/dev/admin CF 한도 탭, dev 전용), `7bdd202b`(문서). 운영 화면 영향 없음.
 
 ## 기능 기대치
+
+### v0113-codex-backfill
+- Feature: v0.113.0 백과사전 백필(worktree `v0113-codex-backfill`을 `a822bf5c`로 병합). 새 캐릭터 풀(6번째 캐릭터: 타입·카드 타일 프레임·에너지 아이콘·필터·`[fool]` 색·캐릭터 페이지), 신규 카드 121·유물 17·포션 3·파워 39·이벤트 5·에포크 9·몬스터 2, 기존 카드 43장 갱신, 변경 기록(카드·유물·몬스터·이벤트·포션·파워), 베타 그림만 있는 유물·파워·에포크의 그림 표시, 티어 리스트·페이지스톰의 노랑/풀 색, 영문 짧은 이름 Fool, 패치 줄 생성과 옛 패치노트 공식 개명 반영, 패치 이력 인덱스 재검증(no-cache). 드레드 모드 값을 걸러 내도록 몬스터·조우 파서 수정.
+- Expect: /compendium/characters에 풀이 6번째로 나오고 /compendium/characters/fool이 체력 77·골드 99·시작 덱을 보인다. /compendium/cards?card=FOOLISH_SHOT 모달이 풀 프레임으로 뜬다. /compendium/relics?relic=bath_robes가 베타 그림으로 뜬다. /patches/0.113.0의 새 이름이 모두 링크된다. /compendium/monsters/infested_prism 패치 이력에 v0.113.0이 있다. 옛 버전 선택 시 새 카드·유물이 보이지 않는다. 정적 파일은 약 16,000개.
+- QA: 위 경로들(브라우저로 확인함: 캐릭터 목록·상세, 카드 상세·모달, 유물 모달, 패치노트 링크, 몬스터 이력). 확인 못 함: 영문 페이지 전체, 모바일 폭, 옛 버전 선택기, 티어 리스트·페이지스톰 색 선택기.
+- Commits: `8cd3f7eb`(STS1 상세 내리기, 이미 배포)부터 `a822bf5c`까지.
 
 ### supabase-exit-step3-reads
 - Feature: 화면 그룹별 읽기 저장소 플래그 `read.<group>`(supabase | d1). d1이면 GET이 D1에서 답한다. 역사 강의서 목록·상세·표지 편집기·코오오옴보 런 고르기가 두 답 모양을 다 읽는다.
