@@ -1466,7 +1466,7 @@ function renderBBNodes(
       // [gold] tag: check if content matches an entity
       if (node.tag === "gold") {
         const plainText = extractPlainText(node.children);
-        const entity = findEntity(plainText, lookup, node.param);
+        const entity = findGoldTagEntity(plainText, lookup, node.param, context);
 
         if (entity) {
           return (
@@ -1536,7 +1536,7 @@ function renderSineBBNodes(
 
       if (node.tag === "gold") {
         const plainText = extractPlainText(node.children);
-        const entity = findEntity(plainText, lookup, node.param);
+        const entity = findGoldTagEntity(plainText, lookup, node.param, context);
 
         if (entity) {
           return (
@@ -1854,6 +1854,20 @@ function findMonsterMoveKeywordAt(
     b.label.length - a.label.length
   ));
   return { keyword: matches[0], start };
+}
+
+/** [gold:monsterMove] names repeat across monsters; prefer the monster named on the same line. */
+function findGoldTagEntity(
+  text: string,
+  lookup: EntityLookup,
+  typeHint: string | undefined,
+  context: RenderContext,
+): EntityInfo | null {
+  if (typeHint === "monsterMove") {
+    const scoped = findMonsterMoveEntity(text, lookup, context);
+    if (scoped) return scoped;
+  }
+  return findEntity(text, lookup, typeHint);
 }
 
 function findMonsterMoveEntity(

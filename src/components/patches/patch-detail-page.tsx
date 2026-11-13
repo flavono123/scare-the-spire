@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
 import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches, getSTS2PatchLines, getSTS2Stories } from "@/lib/data";
-import { getCodexCards, getCodexCharacters, getCodexRelics, getCodexPotions, getCodexPowers, getCodexKeywords, getCodexModifiers, getCodexAscensions, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
+import { getCodexCards, getCodexCharacters, getCodexRelics, getCodexPotions, getCodexPowers, getCodexKeywords, getCodexModifiers, getCodexAscensions, getCodexEnchantments, getCodexAfflictions, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
 import { characterTitleAliases, loadAllEntities } from "@/lib/load-all-entities";
@@ -438,6 +438,63 @@ const PATCH_REMOVED_MONSTER_MOVES: Record<string, PatchMonsterMoveOverride[]> = 
       intents: ["SingleAttackIntent"],
       damageKey: "Smash",
       damage: { normal: 12, ascension: 13 },
+      repeat: { normal: 1, ascension: null },
+    },
+  ],
+  "0.113.0": [
+    {
+      monsterId: "INFESTED_PRISM",
+      id: "RADIATE",
+      nameKo: "방출",
+      nameEn: "Radiate",
+      actionTypes: ["attack", "defense"],
+      intents: ["SingleAttackIntent", "DefendIntent"],
+      damageKey: "Radiate",
+      damage: { normal: 11, ascension: 13 },
+      repeat: { normal: 1, ascension: null },
+    },
+    {
+      monsterId: "TUNNELER",
+      id: "BELOW",
+      nameKo: "하단 공격",
+      nameEn: "Attack from Below",
+      actionTypes: ["attack"],
+      intents: ["SingleAttackIntent"],
+      damageKey: "Below",
+      damage: { normal: 23, ascension: 26 },
+      repeat: { normal: 1, ascension: null },
+    },
+    {
+      monsterId: "ROCKET",
+      id: "TARGETING_RETICLE",
+      nameKo: "십자선 조준",
+      nameEn: "Targeting Reticle",
+      actionTypes: ["attack"],
+      intents: ["SingleAttackIntent"],
+      damageKey: "TargetingReticle",
+      damage: { normal: 3, ascension: 4 },
+      repeat: { normal: 1, ascension: null },
+    },
+    {
+      monsterId: "ROCKET",
+      id: "PRECISION_BEAM",
+      nameKo: "정밀 광선",
+      nameEn: "Precision Beam",
+      actionTypes: ["attack"],
+      intents: ["SingleAttackIntent"],
+      damageKey: "PrecisionBeam",
+      damage: { normal: 18, ascension: 20 },
+      repeat: { normal: 1, ascension: null },
+    },
+    {
+      monsterId: "ROCKET",
+      id: "LASER",
+      nameKo: "레이저",
+      nameEn: "Laser",
+      actionTypes: ["attack"],
+      intents: ["SingleAttackIntent"],
+      damageKey: "Laser",
+      damage: { normal: 31, ascension: 35 },
       repeat: { normal: 1, ascension: null },
     },
   ],
@@ -965,7 +1022,7 @@ export async function PatchDetailPage({
     );
   }
 
-  const [versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexModifiers, codexAscensions, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
+  const [versionDiffs, codexMeta, codexCards, codexCharacters, codexRelics, codexPotions, codexPowers, codexKeywords, codexModifiers, codexAscensions, codexEnchantments, codexAfflictions, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder, patchStageCopy] = await Promise.all([
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
@@ -977,6 +1034,7 @@ export async function PatchDetailPage({
     getCodexModifiers({ gameLocale }),
     getCodexAscensions({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
+    getCodexAfflictions({ gameLocale }),
     getCodexEvents({ gameLocale }),
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
@@ -1131,6 +1189,15 @@ export async function PatchDetailPage({
       color: e.cardType ?? "Any",
       type: "enchantment" as const,
       enchantmentData: e,
+    })),
+    ...codexAfflictions.map((a) => ({
+      id: a.id,
+      nameEn: a.nameEn,
+      nameKo: patchDisplayName(a.name, a.nameEn, gameLocale),
+      imageUrl: a.imageUrl,
+      color: "affliction",
+      type: "affliction" as const,
+      afflictionData: a,
     })),
     ...codexEvents.map((e) => ({
       id: e.id,

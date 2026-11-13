@@ -40419,7 +40419,7 @@
     "searchText": "v0.113.0:line-016-ancient-nonupeipe-relic-brilliant-scarf v0.113.0 0.113.0 콘텐츠 및 밸런스 고대의 존재 노누파이페의 멋진 스카프 (너프): 5번째 카드 → 6번째 카드. nonupeipe's brilliant scarf (nerf): from 5th card -> 6th card. ancient nonupeipe 노누파이페 노누파이페 nonupeipe relic brilliant_scarf 멋진 스카프 멋진 스카프 brilliant scarf"
   },
   {
-    "id": "v0.113.0:line-017-text-4yuvo5",
+    "id": "v0.113.0:line-017-relic-byrdpip",
     "patch": "v0.113.0",
     "version": "0.113.0",
     "date": "2026-11-13",
@@ -40431,12 +40431,18 @@
       "Content & Balance",
       "Events"
     ],
-    "markdownKo": "[gold:monster]짹짹이[/gold] 진화가 추가되었습니다.",
-    "markdownEn": "Added [gold:monster]Byrdpip[/gold] evolution.",
+    "markdownKo": "[gold:relic]짹짹이[/gold] 진화가 추가되었습니다.",
+    "markdownEn": "Added [gold:relic]Byrdpip[/gold] evolution.",
     "textKo": "짹짹이 진화가 추가되었습니다.",
     "textEn": "Added Byrdpip evolution.",
-    "entityRefs": [],
-    "searchText": "v0.113.0:line-017-text-4yuvo5 v0.113.0 0.113.0 콘텐츠 및 밸런스 이벤트 짹짹이 진화가 추가되었습니다. added byrdpip evolution."
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "BYRDPIP",
+        "label": "짹짹이"
+      }
+    ],
+    "searchText": "v0.113.0:line-017-relic-byrdpip v0.113.0 0.113.0 콘텐츠 및 밸런스 이벤트 짹짹이 진화가 추가되었습니다. added byrdpip evolution. relic byrdpip 짹짹이 짹짹이 byrdpip"
   },
   {
     "id": "v0.113.0:line-018-text-vj5se1",
@@ -40891,8 +40897,8 @@
       "Content & Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold:monster]감염된 프리즘[/gold] 변경:\n• 더 이상 [gold]방출[/gold] 행동을 쓰지 않습니다. 이제 패턴은 [gold]찌르기[/gold], [gold]찌르기[/gold], [gold]소용돌이[/gold], [gold]맥박[/gold]입니다.\n• [gold]맥박[/gold]이 더 이상 방어도를 20 ([gold:ascension]승천 8[/gold]에서 22) 얻지 않습니다. 대신 [gold:power]취약[/gold]을 1 부여합니다.",
-    "markdownEn": "Changed [gold:monster]Infested Prism[/gold]:\n• No longer uses its [gold]Radiate[/gold] move. Its pattern is now [gold]Jab[/gold], [gold]Jab[/gold], [gold]Whirlwind[/gold], [gold]Pulsate[/gold].\n• [gold]Pulsate[/gold] no longer gains 20 Block (22 at A8). It now applies 1 [gold:power]Vulnerable[/gold] instead.",
+    "markdownKo": "[gold:monster]감염된 프리즘[/gold] 변경:\n• 더 이상 [gold:monsterMove]방출[/gold] 행동을 쓰지 않습니다. 이제 패턴은 [gold:monsterMove]찌르기[/gold], [gold:monsterMove]찌르기[/gold], [gold:monsterMove]소용돌이[/gold], [gold:monsterMove]맥박[/gold]입니다.\n• [gold:monsterMove]맥박[/gold]이 더 이상 방어도를 20 ([gold:ascension]승천 8[/gold]에서 22) 얻지 않습니다. 대신 [gold:power]취약[/gold]을 1 부여합니다.",
+    "markdownEn": "Changed [gold:monster]Infested Prism[/gold]:\n• No longer uses its [gold:monsterMove]Radiate[/gold] move. Its pattern is now [gold:monsterMove]Jab[/gold], [gold:monsterMove]Jab[/gold], [gold:monsterMove]Whirlwind[/gold], [gold:monsterMove]Pulsate[/gold].\n• [gold:monsterMove]Pulsate[/gold] no longer gains 20 Block (22 at A8). It now applies 1 [gold:power]Vulnerable[/gold] instead.",
     "summaryMarkdownKo": "[gold:monster]감염된 프리즘[/gold] 변경:",
     "summaryMarkdownEn": "Changed [gold:monster]Infested Prism[/gold]:",
     "textKo": "감염된 프리즘 변경:\n• 더 이상 방출 행동을 쓰지 않습니다. 이제 패턴은 찌르기, 찌르기, 소용돌이, 맥박입니다.\n• 맥박이 더 이상 방어도를 20 (승천 8에서 22) 얻지 않습니다. 대신 취약을 1 부여합니다.",
@@ -40924,8 +40930,8 @@
       "Content & Balance",
       "Enemies"
     ],
-    "markdownKo": "더 이상 [gold]방출[/gold] 행동을 쓰지 않습니다. 이제 패턴은 [gold]찌르기[/gold], [gold]찌르기[/gold], [gold]소용돌이[/gold], [gold]맥박[/gold]입니다.",
-    "markdownEn": "No longer uses its [gold]Radiate[/gold] move. Its pattern is now [gold]Jab[/gold], [gold]Jab[/gold], [gold]Whirlwind[/gold], [gold]Pulsate[/gold].",
+    "markdownKo": "더 이상 [gold:monsterMove]방출[/gold] 행동을 쓰지 않습니다. 이제 패턴은 [gold:monsterMove]찌르기[/gold], [gold:monsterMove]찌르기[/gold], [gold:monsterMove]소용돌이[/gold], [gold:monsterMove]맥박[/gold]입니다.",
+    "markdownEn": "No longer uses its [gold:monsterMove]Radiate[/gold] move. Its pattern is now [gold:monsterMove]Jab[/gold], [gold:monsterMove]Jab[/gold], [gold:monsterMove]Whirlwind[/gold], [gold:monsterMove]Pulsate[/gold].",
     "textKo": "더 이상 방출 행동을 쓰지 않습니다. 이제 패턴은 찌르기, 찌르기, 소용돌이, 맥박입니다.",
     "textEn": "No longer uses its Radiate move. Its pattern is now Jab, Jab, Whirlwind, Pulsate.",
     "entityRefs": [],
@@ -40944,8 +40950,8 @@
       "Content & Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold]맥박[/gold]이 더 이상 방어도를 20 ([gold:ascension]승천 8[/gold]에서 22) 얻지 않습니다. 대신 [gold:power]취약[/gold]을 1 부여합니다.",
-    "markdownEn": "[gold]Pulsate[/gold] no longer gains 20 Block (22 at A8). It now applies 1 [gold:power]Vulnerable[/gold] instead.",
+    "markdownKo": "[gold:monsterMove]맥박[/gold]이 더 이상 방어도를 20 ([gold:ascension]승천 8[/gold]에서 22) 얻지 않습니다. 대신 [gold:power]취약[/gold]을 1 부여합니다.",
+    "markdownEn": "[gold:monsterMove]Pulsate[/gold] no longer gains 20 Block (22 at A8). It now applies 1 [gold:power]Vulnerable[/gold] instead.",
     "textKo": "맥박이 더 이상 방어도를 20 (승천 8에서 22) 얻지 않습니다. 대신 취약을 1 부여합니다.",
     "textEn": "Pulsate no longer gains 20 Block (22 at A8). It now applies 1 Vulnerable instead.",
     "entityRefs": [
@@ -40975,8 +40981,8 @@
       "Content & Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold:monster]땅굴충[/gold] ([green][sine]버프[/sine][/green]): [gold]하단 공격[/gold]의 이름이 [gold]지하 공격[/gold]으로 바뀌고, 피해량이 23 → 24 ([gold:ascension]승천 9[/gold]에서 26 → 28)로 증가했습니다.",
-    "markdownEn": "[gold:monster]Tunneler[/gold] ([green][sine]buff[/sine][/green]): [gold]Attack from Below[/gold] renamed to From Below, and its damage increased from 23 -> 24 (26 -> 28 at A9).",
+    "markdownKo": "[gold:monster]땅굴충[/gold] ([green][sine]버프[/sine][/green]): [gold:monsterMove]하단 공격[/gold]의 이름이 [gold:monsterMove]지하 공격[/gold]으로 바뀌고, 피해량이 23 → 24 ([gold:ascension]승천 9[/gold]에서 26 → 28)로 증가했습니다.",
+    "markdownEn": "[gold:monster]Tunneler[/gold] ([green][sine]buff[/sine][/green]): [gold:monsterMove]Attack from Below[/gold] renamed to [gold:monsterMove]From Below[/gold], and its damage increased from 23 -> 24 (26 -> 28 at A9).",
     "textKo": "땅굴충 (버프): 하단 공격의 이름이 지하 공격으로 바뀌고, 피해량이 23 → 24 (승천 9에서 26 → 28)로 증가했습니다.",
     "textEn": "Tunneler (buff): Attack from Below renamed to From Below, and its damage increased from 23 -> 24 (26 -> 28 at A9).",
     "entityRefs": [
@@ -41503,8 +41509,8 @@
     "sectionEn": [
       "Writing"
     ],
-    "markdownKo": "[gold:encounter]황제 게[/gold] 보스의 [gold:monster]로켓[/gold] 행동 이름이 바뀌었습니다: [gold]십자선 조준[/gold] → [gold]계산[/gold], [gold]정밀 광선[/gold] → [gold]정교한 후려치기[/gold], [gold]레이저[/gold] → [gold]로켓 집게발[/gold].",
-    "markdownEn": "Renamed the [gold:encounter]Kaiser Crab[/gold] boss's [gold:monster]Rocket[/gold] moves: [gold]Targeting Reticle[/gold] -> Calculating, [gold]Precision Beam[/gold] -> Precise Smash, [gold]Laser[/gold] -> Rocket Claw.",
+    "markdownKo": "[gold:encounter]황제 게[/gold] 보스의 [gold:monster]로켓[/gold] 행동 이름이 바뀌었습니다: [gold:monsterMove]십자선 조준[/gold] → [gold:monsterMove]계산[/gold], [gold:monsterMove]정밀 광선[/gold] → [gold:monsterMove]정교한 후려치기[/gold], [gold:monsterMove]레이저[/gold] → [gold:monsterMove]로켓 집게발[/gold].",
+    "markdownEn": "Renamed the [gold:encounter]Kaiser Crab[/gold] boss's [gold:monster]Rocket[/gold] moves: [gold:monsterMove]Targeting Reticle[/gold] -> [gold:monsterMove]Calculating[/gold], [gold:monsterMove]Precision Beam[/gold] -> [gold:monsterMove]Precise Smash[/gold], [gold:monsterMove]Laser[/gold] -> [gold:monsterMove]Rocket Claw[/gold].",
     "textKo": "황제 게 보스의 로켓 행동 이름이 바뀌었습니다: 십자선 조준 → 계산, 정밀 광선 → 정교한 후려치기, 레이저 → 로켓 집게발.",
     "textEn": "Renamed the Kaiser Crab boss's Rocket moves: Targeting Reticle -> Calculating, Precision Beam -> Precise Smash, Laser -> Rocket Claw.",
     "entityRefs": [
@@ -42175,7 +42181,7 @@
     "searchText": "v0.113.0:line-085-ancient-tezcatara v0.113.0 0.113.0 오디오 테즈카타라에 음성 효과음과 환경음을 추가했습니다. added voice sound effects and ambience for tezcatara. ancient tezcatara 테즈카타라 테즈카타라 tezcatara"
   },
   {
-    "id": "v0.113.0:line-086-text-yx7z36",
+    "id": "v0.113.0:line-086-encounter-the-architect-event-encounter",
     "patch": "v0.113.0",
     "version": "0.113.0",
     "date": "2026-11-13",
@@ -42185,12 +42191,18 @@
     "sectionEn": [
       "Audio"
     ],
-    "markdownKo": "[gold:monster]아키텍트[/gold]의 번개 공격에 효과음을 추가했습니다.",
-    "markdownEn": "Added a sound effect for [gold:monster]The Architect[/gold]'s lightning attack.",
+    "markdownKo": "[gold:encounter]아키텍트[/gold]의 번개 공격에 효과음을 추가했습니다.",
+    "markdownEn": "Added a sound effect for [gold:encounter]The Architect[/gold]'s lightning attack.",
     "textKo": "아키텍트의 번개 공격에 효과음을 추가했습니다.",
     "textEn": "Added a sound effect for The Architect's lightning attack.",
-    "entityRefs": [],
-    "searchText": "v0.113.0:line-086-text-yx7z36 v0.113.0 0.113.0 오디오 아키텍트의 번개 공격에 효과음을 추가했습니다. added a sound effect for the architect's lightning attack."
+    "entityRefs": [
+      {
+        "type": "encounter",
+        "id": "THE_ARCHITECT_EVENT_ENCOUNTER",
+        "label": "아키텍트"
+      }
+    ],
+    "searchText": "v0.113.0:line-086-encounter-the-architect-event-encounter v0.113.0 0.113.0 오디오 아키텍트의 번개 공격에 효과음을 추가했습니다. added a sound effect for the architect's lightning attack. encounter the_architect_event_encounter 아키텍트 아키텍트 the architect"
   },
   {
     "id": "v0.113.0:line-087-text-1qwe8uk",
@@ -43024,7 +43036,7 @@
     "searchText": "v0.113.0:line-120-card-transfigure-card-helix-drill v0.113.0 0.113.0 버그 수정 디펙트 변형으로 비용이 오른 뒤 무료가 된 나선 관통이 잘못된 횟수로 공격하던 문제를 고쳤습니다. fixed helix drill hitting the wrong number of times when its cost was raised by transfigure and it was then made free. card transfigure 변형 변형 transfigure card helix_drill 나선 관통 나선 관통 helix drill"
   },
   {
-    "id": "v0.113.0:line-121-card-imitation-learning",
+    "id": "v0.113.0:line-121-card-imitation-learning-affliction-bound",
     "patch": "v0.113.0",
     "version": "0.113.0",
     "date": "2026-11-13",
@@ -43036,8 +43048,8 @@
       "Bug Fixes",
       "Defect"
     ],
-    "markdownKo": "[gold:card]모방 학습[/gold]의 복사본을 사용할 수 없을 때(예: 그 턴에 이미 [gold]구속[/gold] 카드를 사용함) 충전이 줄던 문제를 고쳤습니다.",
-    "markdownEn": "Fixed [gold:card]Imitation Learning[/gold] losing a charge when its copy could not be played (e.g. a Bound card after you had already played one that turn).",
+    "markdownKo": "[gold:card]모방 학습[/gold]의 복사본을 사용할 수 없을 때(예: 그 턴에 이미 [gold:affliction]구속[/gold] 카드를 사용함) 충전이 줄던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed [gold:card]Imitation Learning[/gold] losing a charge when its copy could not be played (e.g. a [gold:affliction]Bound[/gold] card after you had already played one that turn).",
     "textKo": "모방 학습의 복사본을 사용할 수 없을 때(예: 그 턴에 이미 구속 카드를 사용함) 충전이 줄던 문제를 고쳤습니다.",
     "textEn": "Fixed Imitation Learning losing a charge when its copy could not be played (e.g. a Bound card after you had already played one that turn).",
     "entityRefs": [
@@ -43045,9 +43057,14 @@
         "type": "card",
         "id": "IMITATION_LEARNING",
         "label": "모방 학습"
+      },
+      {
+        "type": "affliction",
+        "id": "BOUND",
+        "label": "구속"
       }
     ],
-    "searchText": "v0.113.0:line-121-card-imitation-learning v0.113.0 0.113.0 버그 수정 디펙트 모방 학습의 복사본을 사용할 수 없을 때(예: 그 턴에 이미 구속 카드를 사용함) 충전이 줄던 문제를 고쳤습니다. fixed imitation learning losing a charge when its copy could not be played (e.g. a bound card after you had already played one that turn). card imitation_learning 모방 학습 모방 학습 imitation learning"
+    "searchText": "v0.113.0:line-121-card-imitation-learning-affliction-bound v0.113.0 0.113.0 버그 수정 디펙트 모방 학습의 복사본을 사용할 수 없을 때(예: 그 턴에 이미 구속 카드를 사용함) 충전이 줄던 문제를 고쳤습니다. fixed imitation learning losing a charge when its copy could not be played (e.g. a bound card after you had already played one that turn). card imitation_learning 모방 학습 모방 학습 imitation learning affliction bound 구속 구속 bound"
   },
   {
     "id": "v0.113.0:line-122-card-foregone-conclusion-card-guiding-star",
@@ -43476,8 +43493,8 @@
       "Bug Fixes",
       "Enemies"
     ],
-    "markdownKo": "[gold:monster]의식의 신수[/gold]가 [gold]파헤치기[/gold] 도중 기절하면(예: [gold:power]가시[/gold]로) 더 이상 그 끝에 [gold:power]힘[/gold]을 되찾지 않습니다.",
-    "markdownEn": "[gold:monster]Ceremonial Beast[/gold] no longer regains its [gold:power]Strength[/gold] at the end of [gold]Plow[/gold] if it was stunned during the attack (e.g. by [gold:power]Thorns[/gold]).",
+    "markdownKo": "[gold:monster]의식의 신수[/gold]가 [gold:monsterMove]파헤치기[/gold] 도중 기절하면(예: [gold:power]가시[/gold]로) 더 이상 그 끝에 [gold:power]힘[/gold]을 되찾지 않습니다.",
+    "markdownEn": "[gold:monster]Ceremonial Beast[/gold] no longer regains its [gold:power]Strength[/gold] at the end of [gold:monsterMove]Plow[/gold] if it was stunned during the attack (e.g. by [gold:power]Thorns[/gold]).",
     "textKo": "의식의 신수가 파헤치기 도중 기절하면(예: 가시로) 더 이상 그 끝에 힘을 되찾지 않습니다.",
     "textEn": "Ceremonial Beast no longer regains its Strength at the end of Plow if it was stunned during the attack (e.g. by Thorns).",
     "entityRefs": [
