@@ -167,6 +167,11 @@ export function staticCompendiumAssetPath(
   return `/_cf_static_pages/${parts.join("/")}.${extension}`;
 }
 
+/** STS1 detail pages are assets of the STS1 Worker, not the main Worker (docs/designs/sts1-compendium-worker.md). */
+export function isSts1DetailAssetPath(assetPath: string): boolean {
+  return /^\/_cf_static_pages\/(?:en\/)?compendium\/sts1\/[^/]+\/[^/]+\.(?:html|rsc)$/.test(assetPath);
+}
+
 export const STATIC_DETAIL_SHELL_SEGMENT = "__id__";
 
 const STATIC_SERVICE_DETAIL_SEGMENTS = new Set([

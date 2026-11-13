@@ -9,6 +9,8 @@ type AssetsBinding = {
 type Env = ApiEnv & {
   ASSETS?: AssetsBinding;
   PATCH_WORKER?: PatchWorkerBinding;
+  /** STS1 detail pages and its build's /_next/static (workers/sts1-worker.ts). */
+  STS1_WORKER?: AssetsBinding;
   LINK_PREVIEW_LIMITER?: LinkPreviewLimiter;
   /** "d1" turns on record OG enrichment from DB (workers/detail-shell-og.ts); unset in wrangler.jsonc. */
   DETAIL_SHELL_OG?: string;
@@ -42,6 +44,7 @@ import { nextRoutingResponse } from "./next-routing-parity";
 import { redactPathname } from "./path-redaction";
 import { withSecurityHeaders } from "./security-headers";
 import {
+  isSts1DetailAssetPath,
   legacyWorldcupDetailRedirectPath,
   prerenderedRedirect,
   staticCompendiumAssetPath,
@@ -154,14 +157,19 @@ function maybeRedirectRootToPreferredLocale(request: Request, url: URL): Respons
   return Response.redirect(redirectUrl.toString(), 302);
 }
 
-function maybeRedirectLegacyCompendiumDetail(request: Request, url: URL): Response | null {
+function maybeRedirectLegacyCompendiumDetail(request: Request, url: URL, env: Env): Response | null {
   if ((request.method !== "GET" && request.method !== "HEAD") || !isDocumentRequest(request, url)) {
     return null;
   }
 
-  // Covers /compendium/sts1/<type>/<slug> and the legacy /cards/<slug>-style aliases.
+  // Covers /compendium/sts1/<type>/<slug> and the legacy /cards/<slug>-style aliases. The STS1
+  // Worker serves ko and en details; game-only locales, or a Worker without the binding, open
+  // the entry as a modal on its list page instead.
   const sts1Alias = sts1LegacyAliasPath(url.pathname);
-  const sts1Path = getSts1DetailRedirectPath(sts1Alias ? new URL(sts1Alias, url) : url);
+  const sts1Url = sts1Alias ? new URL(sts1Alias, url) : url;
+  const sts1Published = Boolean(env.STS1_WORKER)
+    && isSts1DetailAssetPath(staticCompendiumAssetPath(sts1Url.pathname, "html") ?? "");
+  const sts1Path = sts1Published ? null : getSts1DetailRedirectPath(sts1Url);
   const redirectPath = sts1Path ?? getLegacyCompendiumDetailRedirectPath(url);
   if (!redirectPath) return null;
 
@@ -244,20 +252,21 @@ async function fetchStaticPageAsset(
   assetPath: string,
   pageType: string,
 ): Promise<Response | null> {
-  if (!env.ASSETS || (request.method !== "GET" && request.method !== "HEAD")) return null;
+  const assets = isSts1DetailAssetPath(assetPath) ? env.STS1_WORKER : env.ASSETS;
+  if (!assets || (request.method !== "GET" && request.method !== "HEAD")) return null;
 
   const assetUrl = new URL(request.url);
   assetUrl.pathname = assetPath;
   assetUrl.search = "";
 
-  let assetResponse = await env.ASSETS.fetch(new Request(assetUrl, request));
+  let assetResponse = await assets.fetch(new Request(assetUrl, request));
   if ([301, 302, 307, 308].includes(assetResponse.status)) {
     const location = assetResponse.headers.get("Location");
     if (location?.startsWith("/_cf_static_pages/")) {
       const redirectedAssetUrl = new URL(request.url);
       redirectedAssetUrl.pathname = location;
       redirectedAssetUrl.search = "";
-      assetResponse = await env.ASSETS.fetch(new Request(redirectedAssetUrl, request));
+      assetResponse = await assets.fetch(new Request(redirectedAssetUrl, request));
     }
   }
   if (assetResponse.status === 404) return null;
@@ -277,6 +286,29 @@ async function fetchStaticPageAsset(
     statusText: assetResponse.statusText,
     headers,
   });
+}
+
+/**
+ * A /_next/static file the main Worker's assets lack (the asset layer answers the rest
+ * before this script runs). The STS1 Worker keeps every chunk of its own build, so its
+ * pages still load while the two Workers are on different builds.
+ */
+async function maybeServeSts1NextStatic(request: Request, env: Env, url: URL): Promise<Response | null> {
+  if (!env.STS1_WORKER || !isReadMethod(request.method) || !url.pathname.startsWith("/_next/static/")) {
+    return null;
+  }
+
+  const response = await env.STS1_WORKER.fetch(request);
+  if (response.status === 404) {
+    await response.body?.cancel();
+    return null;
+  }
+  if (response.status !== 200) return response;
+
+  // The STS1 Worker has no _headers file; match public/_headers for /_next/static/*.
+  const headers = new Headers(response.headers);
+  headers.set("Cache-Control", "public, max-age=31536000, immutable");
+  return new Response(request.method === "HEAD" ? null : response.body, { status: 200, headers });
 }
 
 async function maybeServeStaticHomePage(request: Request, env: Env, url: URL): Promise<Response | null> {
@@ -472,7 +504,7 @@ async function routeRequest(request: Request, env: Env, ctx: ExecutionContextLik
   const localeRedirect = maybeRedirectRootToPreferredLocale(request, url);
   if (localeRedirect) return localeRedirect;
 
-  const legacyCompendiumRedirect = maybeRedirectLegacyCompendiumDetail(request, url);
+  const legacyCompendiumRedirect = maybeRedirectLegacyCompendiumDetail(request, url, env);
   if (legacyCompendiumRedirect) return legacyCompendiumRedirect;
 
   const legacyWorldcupRedirect = maybeRedirectLegacyWorldcupDetail(request, url);
@@ -493,6 +525,9 @@ async function routeRequest(request: Request, env: Env, ctx: ExecutionContextLik
       },
     });
   }
+
+  const sts1NextStatic = await maybeServeSts1NextStatic(request, env, url);
+  if (sts1NextStatic) return sts1NextStatic;
 
   const staticHomeResponse = await maybeServeStaticHomePage(request, env, url);
   if (staticHomeResponse) return staticHomeResponse;
