@@ -614,15 +614,17 @@
     "draft": true,
     "steamUrl": "https://store.steampowered.com/news/app/2868840?emclan=103582791474493240&emgid=708914333639245837",
     "summary": "New character The Fool, new game modes Blitz and Dread, new events, cards and relics, Expect a Fight, Expertise and Memento Mori reworks, and many bug fixes.",
-    "summaryKo": "새 캐릭터 The Fool, 새 게임 모드 Blitz·Dread, 새 이벤트·카드·유물, 싸움 준비·전문성·메멘토 모리 리워크, 많은 버그 수정.",
+    "summaryKo": "새 캐릭터 풀, 새 게임 모드 블리츠·드레드, 새 이벤트·카드·유물, 싸움 준비·전문성·메멘토 모리 리워크, 많은 버그 수정.",
     "hasBalanceChanges": true,
     "art": {
-      "type": "card",
-      "id": "MEMENTO_MORI",
-      "alt": "Memento Mori card art",
-      "altKo": "메멘토 모리 카드 아트"
+      "type": "image",
+      "imageUrl": "/images/sts2/patches/v0.113.0/fool-lobby.webp",
+      "alt": "The Fool on the character select screen",
+      "altKo": "캐릭터 선택 화면의 풀",
+      "objectPosition": "70% center"
     },
     "featuredEntities": [
+      { "type": "character", "id": "FOOL" },
       { "type": "card", "id": "EXPECT_A_FIGHT" },
       { "type": "card", "id": "EXPERTISE" },
       { "type": "card", "id": "MEMENTO_MORI" },
