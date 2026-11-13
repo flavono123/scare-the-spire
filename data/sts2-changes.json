@@ -32275,6 +32275,65 @@
         "after": 120,
         "diffType": "number"
       }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "options",
+        "before": [
+          {
+            "id": "BLOODY_INK",
+            "title": "핏빛 잉크",
+            "description": "최대 체력을 [green]6[/green] 얻습니다."
+          },
+          {
+            "id": "TENTACLE_QUILL",
+            "title": "촉수 펜",
+            "description": "[gold]골드[/gold]를 [red]55[/red] 지불합니다. 카드 1장에 [purple]안정[/purple]을 [gold]인챈트[/gold]합니다."
+          },
+          {
+            "id": "TENTACLE_QUILL_LOCKED",
+            "title": "잠김",
+            "description": "[gold]골드[/gold]가 [blue]55[/blue] 필요합니다."
+          },
+          {
+            "id": "PRICKLY_SPONGE",
+            "title": "꺼끌꺼끌한 스펀지",
+            "description": "[gold]골드[/gold]를 [red]99[/red] 지불합니다. 카드 [blue]2[/blue]장에 [purple]안정[/purple]을 [gold]인챈트[/gold]합니다."
+          },
+          {
+            "id": "PRICKLY_SPONGE_LOCKED",
+            "title": "잠김",
+            "description": "[gold]골드[/gold]가 [blue]99[/blue] 필요합니다."
+          }
+        ],
+        "after": [
+          {
+            "id": "BLOODY_INK",
+            "title": "핏빛 잉크",
+            "description": "최대 체력을 [green]6[/green] 얻습니다."
+          },
+          {
+            "id": "TENTACLE_QUILL",
+            "title": "촉수 펜",
+            "description": "[gold]골드[/gold]를 [red]55[/red] 지불합니다. 카드 1장에 [purple]안정[/purple]을 [gold]인챈트[/gold]합니다."
+          },
+          {
+            "id": "TENTACLE_QUILL_LOCKED",
+            "title": "잠김",
+            "description": "[gold]골드[/gold]가 [blue]55[/blue] 필요합니다."
+          },
+          {
+            "id": "PRICKLY_SPONGE",
+            "title": "꺼끌꺼끌한 스펀지",
+            "description": "[gold]골드[/gold]를 [red]120[/red] 지불합니다. 카드 [blue]2[/blue]장에 [purple]안정[/purple]을 [gold]인챈트[/gold]합니다."
+          },
+          {
+            "id": "PRICKLY_SPONGE_LOCKED",
+            "title": "잠김",
+            "description": "[gold]골드[/gold]가 [blue]120[/blue] 필요합니다."
+          }
+        ]
+      }
     ]
   },
   {

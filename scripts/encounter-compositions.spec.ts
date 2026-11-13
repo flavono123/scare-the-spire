@@ -122,7 +122,7 @@ async function main() {
   }
 
   const characters = await getCodexCharacters({ gameLocale: "kor" });
-  assert.equal(characters.length, 5);
+  assert.equal(characters.length, 6); // The Fool joined in v0.113.0
   for (const character of characters) {
     assert.ok(character.spineAsset, `${character.id} must render through a Spine asset`);
     assert.ok(character.spineAsset.idleAnimation, `${character.id} must have an idle animation`);
