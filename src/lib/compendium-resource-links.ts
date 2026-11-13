@@ -232,7 +232,10 @@ function sts1DetailListHref(
   return `${next.pathname}${next.search}`;
 }
 
-/** STS1 detail pages are not published on any locale; old links open the list modal. */
+/**
+ * The list modal URL of an STS1 detail path. The Worker sends game-only locales here (they
+ * publish no STS1 details), and every locale when it has no STS1_WORKER binding.
+ */
 export function getSts1DetailRedirectPath(url: URL): string | null {
   const localized = localizedCompendiumPath(url.pathname);
   return localized ? sts1DetailListHref(url, localized) : null;
