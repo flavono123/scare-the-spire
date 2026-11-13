@@ -125,7 +125,10 @@ Prefer items with `tags` containing `patchnotes`, but also search unfiltered tit
 
 Use this when Steam has published the patch but rich notes are not ready yet.
 
-1. Add or update the `data/sts2-patches.json` entry with the real version/date/title/type/Steam URL.
+1. Add or update the `data/sts2-patches.json` entry with the real version/date/title/type/Steam URL,
+   and `publishedAt` set to the Steam post time (the API item's `date`, as ISO UTC with
+   milliseconds, e.g. `2026-11-12T20:30:16.000Z`). The patch-notes unread dot counts a
+   patch as new from this time; without it the dot waits until noon UTC of `date`.
 2. Keep `steamUrl` live.
 3. Set `status` to `"building"` so the index/detail UI shows the `작업 도구`
    stage while the patch is being prepared.

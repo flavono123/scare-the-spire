@@ -10,12 +10,13 @@ import { SurfaceLegacyError } from "@/lib/api-client";
 import { loadNavSnapshot, snapshotHasSurface, type NavSnapshot } from "@/lib/nav-snapshot";
 import { weeklyPublishedAt } from "@/lib/nav-surfaces";
 import { surfacePath } from "@/lib/runtime-flags";
+import { patchPublishedAt } from "@/lib/sts2-patch-labels";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import patchesJson from "../../data/sts2-patches.json";
 import neowslettersJson from "../../data/sts2-neowsletters.json";
 
-const PATCH_NOTE_TIMES = (patchesJson as { date: string }[]).map((patch) => `${patch.date}T12:00:00.000Z`);
+const PATCH_NOTE_TIMES = (patchesJson as { date: string; publishedAt?: string }[]).map(patchPublishedAt);
 const NEOWSLETTER_ADDED_TIMES = (neowslettersJson as { addedAt: string }[]).map((issue) => issue.addedAt);
 
 export function contentIsNewerThanSeen(publishedAt: string, seenAt: string): boolean {

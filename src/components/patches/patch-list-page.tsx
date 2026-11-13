@@ -13,7 +13,7 @@ import {
   getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
-import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
+import { getPatchVersionLabel, isPatchDraft, patchPublishedAt } from "@/lib/sts2-patch-labels";
 import { getPatchShell } from "@/lib/patch-shells";
 import { resolvePatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
@@ -285,7 +285,7 @@ export async function PatchListPage({
                     </a>
                   )}
                 </div>
-                <IndexReadFrame surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`} className="mt-1 block text-sm font-medium text-zinc-500">{title}</IndexReadFrame>
+                <IndexReadFrame surfaceId="patch-notes" publishedAt={patchPublishedAt(patch)} className="mt-1 block text-sm font-medium text-zinc-500">{title}</IndexReadFrame>
                 <p className="mt-2 text-xs text-zinc-600">{patch.date}</p>
                 <PatchArtPreview art={patchArt} priority={index === 0} tone="building" />
               </article>
@@ -368,7 +368,7 @@ export async function PatchListPage({
                   )}
                 </span>
               </div>
-              <IndexReadFrame surfaceId="patch-notes" publishedAt={`${patch.date}T12:00:00.000Z`} className="mt-1 block text-sm font-medium">{title}</IndexReadFrame>
+              <IndexReadFrame surfaceId="patch-notes" publishedAt={patchPublishedAt(patch)} className="mt-1 block text-sm font-medium">{title}</IndexReadFrame>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{summary}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">{patch.date}</p>
               {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} />}

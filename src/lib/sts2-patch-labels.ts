@@ -13,3 +13,8 @@ export function isPatchDraft(patch: STS2Patch): boolean {
   if (patch.draft !== true) return false;
   return !patch.status || patch.status === "ready";
 }
+
+/** When a patch counts as new for unread dots: its Steam post time, else noon UTC of its date. */
+export function patchPublishedAt(patch: Pick<STS2Patch, "date" | "publishedAt">): string {
+  return patch.publishedAt ?? `${patch.date}T12:00:00.000Z`;
+}
