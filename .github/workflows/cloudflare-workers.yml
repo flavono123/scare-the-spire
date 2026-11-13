@@ -141,7 +141,7 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         if: steps.changes.outputs.deploy_any == 'true'
 
       - uses: actions/setup-node@v4
