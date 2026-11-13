@@ -160,7 +160,47 @@ const CARD_SPECIAL_UPGRADES: Record<string, NonNullable<CodexCard["specialUpgrad
       "/images/sts2/cards/wither3.webp",
     ],
   },
+  // DingyDagger.OnUpgrade adds 3 + CurrentUpgradeLevel damage (7, 11, 16, 22...);
+  // its title and portrait switch at upgrade 3 (fine) and 6 (pristine).
+  DINGY_DAGGER: {
+    upgrade: { damage: "+3" },
+    upgradeRamp: 1,
+    maxLevel: 99,
+    imageUrls: [
+      "/images/sts2/cards/dingy_dagger.webp",
+      "/images/sts2/cards/dingy_dagger.webp",
+      "/images/sts2/cards/dingy_dagger.webp",
+      "/images/sts2/cards/fine_dagger.webp",
+      "/images/sts2/cards/fine_dagger.webp",
+      "/images/sts2/cards/fine_dagger.webp",
+      "/images/sts2/cards/pristine_dagger.webp",
+    ],
+  },
 };
+
+const STAGED_CARD_TITLES: Record<string, { minLevel: number; stage: string }[]> = {
+  DINGY_DAGGER: [
+    { minLevel: 0, stage: "dingy" },
+    { minLevel: 3, stage: "fine" },
+    { minLevel: 6, stage: "pristine" },
+  ],
+};
+
+function cardSpecialUpgrade(
+  id: string,
+  gameCards: GameLocalizationTable,
+): CodexCard["specialUpgrade"] {
+  const special = CARD_SPECIAL_UPGRADES[id];
+  const stages = STAGED_CARD_TITLES[id];
+  if (!special || !stages) return special;
+  return {
+    ...special,
+    titles: stages.flatMap(({ minLevel, stage }) => {
+      const name = gameCards[`${id}.title.${stage}`];
+      return name ? [{ minLevel, name }] : [];
+    }),
+  };
+}
 
 function withCardVarFallbacks(id: string, vars: RawCard["vars"]): Record<string, number> {
   return { ...(CARD_VAR_FALLBACKS[id] ?? {}), ...(vars ?? {}) };
@@ -654,7 +694,7 @@ function mapCard(
     multiplayerOnly: isMultiplayerOnlyCardId(kor.id),
     upgrade,
     maxUpgradeLevel: kor.max_upgrade_level ?? (upgrade ? 1 : 0),
-    specialUpgrade: CARD_SPECIAL_UPGRADES[kor.id],
+    specialUpgrade: cardSpecialUpgrade(kor.id, gameCards),
     imageUrl: codexCardImageUrl(kor),
     betaImageUrl: spireCodexImageToLocal(kor.beta_image_url),
     introducedInPatch: kor.introducedInPatch,
@@ -838,6 +878,7 @@ const VARIANT_SUFFIX_TO_POOL: Record<string, RelicPool> = {
   necro: "necrobinder",
   necrobinder: "necrobinder",
   regent: "regent",
+  fool: "fool",
 };
 
 type RelicIconVariantSource = Omit<RelicIconVariant, "imageUrl"> & {
@@ -953,7 +994,7 @@ async function scanRelicVariants(): Promise<Map<string, Partial<Record<RelicPool
   const variants = new Map<string, Partial<Record<RelicPool, string>>>();
 
   for (const file of files) {
-    const match = file.match(/^(.+?)_(ironclad|silent|defect|necro|necrobinder|regent)\.webp$/);
+    const match = file.match(/^(.+?)_(ironclad|silent|defect|necro|necrobinder|regent|fool)\.webp$/);
     if (!match) continue;
     const [, baseName, suffix] = match;
     const pool = VARIANT_SUFFIX_TO_POOL[suffix];
@@ -1012,7 +1053,11 @@ export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promis
       betaImageFiles,
       imageFile,
     ) ?? betaImageUrlForFile("relics", officialImageFiles, imageFile, { exact: false });
-    return mapRelic(kor, eng, variantMap, iconVariants, betaImageUrl, gameRelics, gameEnchantments, gameLocale);
+    const relic = mapRelic(kor, eng, variantMap, iconVariants, betaImageUrl, gameRelics, gameEnchantments, gameLocale);
+    // New relics can ship with beta art only (v0.113.0); show it until official art lands.
+    return relic.imageUrl && imageFile && !officialImageFiles.has(imageFile) && betaImageUrl
+      ? { ...relic, imageUrl: betaImageUrl }
+      : relic;
   });
 }
 
@@ -1086,10 +1131,12 @@ const CHARACTER_SLUGS: Record<string, string> = {
   REGENT: "regent",
   NECROBINDER: "necrobinder",
   DEFECT: "defect",
+  FOOL: "fool",
 };
 const CHARACTER_SELECT_BACKGROUNDS: Record<string, string> = {
   SILENT: "/images/sts2/character-select/character_select_silent_bg.webp",
   NECROBINDER: "/images/sts2/character-select/character_select_necrobinder_bg.webp",
+  FOOL: "/images/sts2/character-select/character_select_fool_bg.webp",
 };
 const CHARACTER_SELECT_VFX_IMAGES: Record<string, string[]> = {
   NECROBINDER: [
@@ -1174,16 +1221,21 @@ function mapCharacterQuotes(
     const fallback = selected ?? character.quotes[key] ?? eng.quotes[key] ?? "";
     return String(fallback);
   };
+  // The game ships "TODO" for quotes it has not written yet (The Fool, v0.113.0).
+  const quoteText = (key: string, fallback: string): string => {
+    const text = gameText(gameCharacters, `${character.id}.${key}`, fallback);
+    return text === "TODO" ? "" : text;
+  };
 
   return {
-    eventDeathPrevention: gameText(gameCharacters, `${character.id}.eventDeathPrevention`, quoteFallback("event_death_prevention")),
-    goldMonologue: gameText(gameCharacters, `${character.id}.goldMonologue`, quoteFallback("gold_monologue")),
-    aromaPrinciple: gameText(gameCharacters, `${character.id}.aromaPrinciple`, quoteFallback("aroma_principle")),
-    banterAlive: gameText(gameCharacters, `${character.id}.banter.alive.endTurnPing`, quoteFallback("banter_alive")),
-    banterDead: gameText(gameCharacters, `${character.id}.banter.dead.endTurnPing`, quoteFallback("banter_dead")),
-    unlockText: gameText(gameCharacters, `${character.id}.unlockText`, quoteFallback("unlock_text")) || null,
-    cardsModifierTitle: gameText(gameCharacters, `${character.id}.cardsModifierTitle`, quoteFallback("cards_modifier_title")),
-    cardsModifierDescription: gameText(gameCharacters, `${character.id}.cardsModifierDescription`, quoteFallback("cards_modifier_description")),
+    eventDeathPrevention: quoteText("eventDeathPrevention", quoteFallback("event_death_prevention")),
+    goldMonologue: quoteText("goldMonologue", quoteFallback("gold_monologue")),
+    aromaPrinciple: quoteText("aromaPrinciple", quoteFallback("aroma_principle")),
+    banterAlive: quoteText("banter.alive.endTurnPing", quoteFallback("banter_alive")),
+    banterDead: quoteText("banter.dead.endTurnPing", quoteFallback("banter_dead")),
+    unlockText: quoteText("unlockText", quoteFallback("unlock_text")) || null,
+    cardsModifierTitle: quoteText("cardsModifierTitle", quoteFallback("cards_modifier_title")),
+    cardsModifierDescription: quoteText("cardsModifierDescription", quoteFallback("cards_modifier_description")),
   };
 }
 
@@ -1342,7 +1394,11 @@ export async function getCodexPowers(opts?: { gameLocale?: GameLocale; includeDe
         betaImageFiles,
         imageFile,
       ) ?? betaImageUrlForFile("powers", officialImageFiles, imageFile, { exact: false });
-      return mapPower(kor, eng, betaImageUrl, gamePowers, gamePowersEn, gameLocale);
+      const power = mapPower(kor, eng, betaImageUrl, gamePowers, gamePowersEn, gameLocale);
+      // New powers can ship with beta icons only (v0.113.0); show them until official art lands.
+      return power.imageUrl && imageFile && !officialImageFiles.has(imageFile) && betaImageUrl
+        ? { ...power, imageUrl: betaImageUrl }
+        : power;
     });
 }
 
@@ -1597,6 +1653,7 @@ const EPOCH_CHARACTER_STORY_IDS: Record<string, EpochAffiliation> = {
   Defect: "defect",
   Necrobinder: "necrobinder",
   Regent: "regent",
+  Fool: "fool",
 };
 
 const EPOCH_ANCIENT_AFFILIATIONS = [
@@ -1747,7 +1804,10 @@ function mapEpoch(
     unlocksRelics: kor.unlocks_relics ?? [],
     unlocksPotions: kor.unlocks_potions ?? [],
     expandsTimeline: kor.expands_timeline ?? [],
-    imageUrl: imageFiles.has(imageKey) ? `/images/sts2/epochs/${imageKey}.webp` : null,
+    // New epochs can ship with placeholder art only (v0.113.0); show it until official art lands.
+    imageUrl: imageFiles.has(imageKey)
+      ? `/images/sts2/epochs/${imageKey}.webp`
+      : betaImageFiles.has(imageKey) ? `/images/sts2/epochs-beta/${imageKey}.webp` : null,
     betaImageUrl: betaImageFiles.has(imageKey) ? `/images/sts2/epochs-beta/${imageKey}.webp` : null,
     introducedInPatch: kor.introducedInPatch,
     deprecated: kor.deprecated,
@@ -2032,7 +2092,7 @@ function eventDisplayVars(eventId: string, gameLocale: GameLocale): EventDisplay
     case "WATERLOGGED_SCRIPTORIUM":
       return {
         Gold: 55,
-        PricklySpongeGold: 99,
+        PricklySpongeGold: 120, // v0.113.0: 99 -> 120
         Cards: 2,
       };
     case "WELCOME_TO_WONGOS":
@@ -2237,6 +2297,8 @@ function ancientCharacterGender(group: string): string {
     case "Necrobinder":
       return "feminine";
     case "Defect":
+    // The Fool is CharacterGender.Tree; speakers default to the neutral guess.
+    case "Fool":
     case "First Visit":
     case "Returning":
       return "neutral";

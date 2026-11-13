@@ -21,6 +21,7 @@ All task instructions must be followed by an immediate speculative commit after 
 - **Data**: JSON files in `data/`
 - **Package Manager**: pnpm
 - **Deploy**: Cloudflare Workers (정적 전용 main Worker: `next build` 결과물을 Wrangler로 배포, OpenNext 없음). `main`에 push하면 GHA `.github/workflows/cloudflare-workers.yml`이 배포
+- **Cloudflare 한도**: Workers Free. 페이지·백과사전 항목·짜퍼 게임·`public/` 파일을 늘리는 기능은 착수 전 `pnpm cf:limits`로 main 정적 애셋 여유(버전당 20,000, 예산 19,500)를 확인한다. 1건당 파일 비용과 대응은 [docs/CLOUDFLARE_LIMITS.md](docs/CLOUDFLARE_LIMITS.md), dev 화면은 `/dev/admin?tab=cloudflare`
 
 ## 프로젝트 구조
 

@@ -94,6 +94,10 @@ evaluate whether it can cause Cloudflare `exceededResources`, Error 1102, or a
 - Treat Workers Free limits as design constraints: 10 ms CPU time per HTTP
   request, 128 MB memory per isolate, 3 MiB gzip Worker bundle size, 50
   subrequests per invocation, and 100,000 requests per day.
+- Before a feature that adds pages, compendium entries, game tabs, or public
+  files, run `pnpm cf:limits` and check the main Worker's static asset headroom
+  (20,000 files per version, build budget 19,500). Per-addition file costs and
+  what to do near the budget: `docs/CLOUDFLARE_LIMITS.md`.
 - Do not add request-time work that scales with total cards, relics, patch
   notes, comments, or search documents unless it is precomputed, cached, or
   bounded to a small constant.

@@ -292,3 +292,15 @@
 76. **네비의 새 글 점과 배달부도 5단계 뒤에 Supabase에서 갱신해, Supabase가 멈추면 마지막 스냅샷에 머묾**. #75와 같은 원인이다. `nav`도 쓰기 그룹이 아니라 `source.<group>`이 없고, `read.nav = d1`은 `sync.enabled = on`일 때만 D1에서 답한다(`workers/api/flags.ts`의 `readStoreFor`). 5단계 전환이 동기화를 꺼서 `/api/read/nav`는 D1 경로(`workers/api/d1-read.ts`의 `navFromD1`)로 가지 않고, 기본 동작인 `navFromSupabase`(`workers/api/routes/nav.ts`)가 Supabase에서 스냅샷을 새로 만든다. 갱신이 실패하면 `api_cache`의 옛 스냅샷을 200으로 계속 주고(실패 뒤 다시 시도하는 간격은 최대 5분), 스냅샷이 하루를 넘기면 다시 시도하는 요청 하나가 갱신을 기다린다(최대 6초). 그래서 Supabase가 멈춘 동안 모든 페이지(패치 정적 페이지 포함)의 네비 점과 배달부에 그 뒤의 새 글·댓글이 나오지 않는다. 쓰기는 D1이 원본이라 새 글은 D1에 있다. 2026-11-10 02:09 KST(17:09Z)에 운영 `/api/read/nav`의 `fetchedAt`이 `2026-11-09T15:25:08.416Z`(1시간 44분 전)였고, 02:13 KST에 다시 읽어도 같았다. testbed는 `2026-11-09T10:44:22.957Z`에 멈춰 있었다. 그때 변형·코오오옴보의 D1 최신 글은 스냅샷 값과 같아서, 화면에서 빠진 글이 있는지는 확인하지 않았다. 6단계는 이 동작을 그대로 옮겼다(브라우저는 같은 출처 `/api/read/nav`만 부른다). 브라우저 화면은 열어 보지 않았고, curl과 코드로 확인했다.
     - https://scare-the-spire.flavono123.workers.dev/
     - https://scare-the-spire.flavono123.workers.dev/patches/2026-11-12
+
+### 2026-11-13 v0.113.0 백과사전 백필에서 추가
+
+77. **영문 카드 데이터 일부 수치가 게임과 다름**(한국어는 정상). v0.113.0 행 재생성 비교(`python3 scripts/add-sts2-new-cards.py --report`)로 찾았고, 0.111 원본과 비교하면 이번 패치 이전부터 있던 값이다. 영어 설명이 틀리게 보인다.
+    - 변수: HEMOKINESIS 14(게임 15), HEIRLOOM_HAMMER 17(20), I_AM_INVINCIBLE 9(10), SCULPTING_STRIKE 8(9), SEEKER_STRIKE 6(9), SKEWER 7(8), SOLAR_STRIKE 8(9), GATHER_LIGHT 7(8), TREMBLE 2(3), MINION_STRIKE 7(6)
+    - 비용: BANSHEES_CRY 6(9), BUNDLE_OF_JOY 2(1), SEANCE 0(1). X 비용으로 잘못 표시: ALL_FOR_ONE, BULLET_TIME, JACKPOT, SCRAPE, TRANSFIGURE
+    - 대상: BEGONE AnyEnemy(게임 Self), NOT_YET 한국어 대상 '자신'
+    - https://scare-the-spire.flavono123.workers.dev/en/compendium/cards/hemokinesis
+78. **무한의 컨베이어 이벤트가 벨트에서 집기 비용을 35 골드로 보여 줌**(게임 40, v0.100.0에서 바뀜).
+    - https://scare-the-spire.flavono123.workers.dev/compendium/events/endless_conveyor
+79. **게임에 클래스가 없는 파워 DIAMOND_DIADEM, DOOR_REVIVAL이 폐기 표시 없이 남아 있음**.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/powers

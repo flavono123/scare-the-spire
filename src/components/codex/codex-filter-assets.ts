@@ -1,4 +1,4 @@
-import type { CardTypeKo } from "@/lib/codex-types";
+import type { CardFilterTag, CardTypeKo } from "@/lib/codex-types";
 
 export const CHARACTER_TOKEN_ICONS: Record<string, string> = {
   ironclad: "/images/sts2/characters/character_icon_ironclad.webp",
@@ -6,6 +6,7 @@ export const CHARACTER_TOKEN_ICONS: Record<string, string> = {
   defect: "/images/sts2/characters/character_icon_defect.webp",
   necrobinder: "/images/sts2/characters/character_icon_necrobinder.webp",
   regent: "/images/sts2/characters/character_icon_regent.webp",
+  fool: "/images/sts2/characters/character_icon_fool.webp",
 };
 
 export const COLORLESS_FILTER_ICON = "/images/sts2/icons/colorless_energy_icon.webp";
@@ -32,3 +33,14 @@ export function getCardTypeFilterIcon(type: CardTypeKo): string {
 export function getCharacterTokenIcon(characterId: string, fallback: string): string {
   return CHARACTER_TOKEN_ICONS[characterId.toLowerCase()] ?? fallback;
 }
+
+/** Game art for each card tag filter: Fool melody symbols and arrow, and the power icons that act on Minion, Shiv (Phantom Blades reads the tag) and Osty attacks (Calcify). */
+export const CARD_TAG_FILTER_ICONS: Record<CardFilterTag, string> = {
+  Wah: "/images/sts2/card-tags/wah.webp",
+  Cho: "/images/sts2/card-tags/cho.webp",
+  Ki: "/images/sts2/card-tags/ki.webp",
+  Shoot: "/images/sts2/card-tags/shoot.webp",
+  Minion: "/images/sts2/powers/minion_power.webp",
+  Shiv: "/images/sts2/powers/phantom_blades_power.webp",
+  OstyAttack: "/images/sts2/powers/calcify_power.webp",
+};

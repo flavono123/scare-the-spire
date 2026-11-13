@@ -48,6 +48,8 @@ data chunk가 업로드에서 빠졌거나 게임 전용 로케일의 목록 모
 빌드는 `--skip-build`로 재사용되지 않는다.
 
 Workers Free는 버전 하나에 정적 asset 파일을 20,000개까지만 올린다.
+운영 사용량과 추가 1건당 비용은 `pnpm cf:limits`와
+[CLOUDFLARE_LIMITS.md](CLOUDFLARE_LIMITS.md)에 있다.
 
 - `scripts/cloudflare-asset-excludes.mjs`에 맞는 `public/` 파일은 저장소에
   남기고 업로드에서 뺀다. Godot `.tres`/`.exr`, `spine-vfx.atlas`로 합쳐지는

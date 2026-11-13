@@ -123,6 +123,11 @@ const STARTING_DECK_BY_CHARACTER: Record<string, string[]> = {
     CARD("FALLING_STAR"),
     CARD("VENERATE"),
   ],
+  FOOL: [
+    ...Array(5).fill(CARD("STRIKE_FOOL")),
+    ...Array(4).fill(CARD("DEFEND_FOOL")),
+    CARD("FOOLISH_SHOT"),
+  ],
   RANDOM_CHARACTER: [
     CARD("STRIKE_IRONCLAD"),
     CARD("STRIKE_SILENT"),

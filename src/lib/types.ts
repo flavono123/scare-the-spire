@@ -126,6 +126,8 @@ export interface STS2Patch {
   versionLabel?: string;
   versionLabelKo?: string;
   date: string;
+  /** When the patch went live (Steam post time, ISO). Unread dots use it; without it, noon UTC of `date`. */
+  publishedAt?: string;
   title: string;
   titleKo: string;
   type: PatchType;

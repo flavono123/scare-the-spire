@@ -23,6 +23,8 @@ export const EPOCH_AFFILIATION_ALIASES: Record<string, EpochAffiliation> = {
   리젠: "regent",
   리젠트: "regent",
   regent: "regent",
+  풀: "fool",
+  fool: "fool",
   니오우: "neow",
   neow: "neow",
   다브: "darv",
@@ -127,6 +129,7 @@ export function getEpochAffiliationLabel(
     case "defect":
     case "necrobinder":
     case "regent":
+    case "fool":
       return messages.labels.pools[affiliation];
     case "neow":
       return serviceLocale === "ko" ? "니오우" : "Neow";

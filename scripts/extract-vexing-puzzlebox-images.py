@@ -24,7 +24,7 @@ from PIL import Image, ImageChops
 from scripts.lib.ctex import ctex_to_image, parse_import_file
 from scripts.lib.pck import PCKReader, default_pck_path
 
-CHARACTERS = ("ironclad", "silent", "regent", "necrobinder", "defect")
+CHARACTERS = ("ironclad", "silent", "regent", "necrobinder", "defect", "fool")
 # Rock and paper are the grab poses NHandImage.GrabRelic swaps between.
 POSES = ("point", "paper", "rock")
 OUTPUT_ROOT = Path("public/images/sts2/ui")

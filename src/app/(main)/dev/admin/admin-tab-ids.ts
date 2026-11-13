@@ -1,10 +1,10 @@
 export const ADMIN_TAB_IDS = [
-  "contact",
   "metrics",
   "authors",
   "comments",
   "posts",
   "nicks",
+  "cloudflare",
 ] as const;
 
 export type AdminTabId = (typeof ADMIN_TAB_IDS)[number];

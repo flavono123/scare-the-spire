@@ -216,6 +216,13 @@ const patchReloadJobs = [
       "src/components/patch-note-renderer.tsx",
       "src/lib/neowsletter-anchors.ts",
       "scripts/build-patch-worker.tsx",
+      // Patch index/detail pages: their data and the components that render them.
+      "data/sts2-patches.json",
+      "data/sts2-patch-notes",
+      "src/components/patches",
+      "src/lib/patch-shells.ts",
+      "src/lib/gambit-patch-shell.ts",
+      "src/lib/wither-patch-shell.ts",
     ],
     args: ["exec", "tsx", "scripts/build-patch-worker.tsx"],
   },
@@ -266,7 +273,7 @@ function watchPatchSources() {
       watch(path.join(root, relativePath), () => enqueuePatchReload(job.args));
     }
   }
-  console.log("Watching navbar sources to reload the patch worker");
+  console.log("Watching navbar and patch sources to reload the patch worker");
 }
 
 function lanIPv4Addresses() {

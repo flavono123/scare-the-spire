@@ -605,11 +605,12 @@ function checkStaticLegacyPages(): number {
         const extensions = routeExtensions.get(routePath) ?? new Set<StaticPageExtension>();
         extensions.add(extension);
         routeExtensions.set(routePath, extensions);
+        // STS1 details are not published (main Worker file limit); the Worker
+        // redirects them to list modals, so a copied one means the filter broke.
         const assetPath = staticCompendiumAssetPath(routePath, extension);
-        assert(assetPath, `Static routing rejected STS1 detail ${routePath}.${extension}`);
         assert(
-          statSync(path.join(assetsRoot, assetPath.slice(1)), { throwIfNoEntry: false })?.isFile(),
-          `Missing copied STS1 detail: ${assetPath}`,
+          !assetPath || !statSync(path.join(assetsRoot, assetPath.slice(1)), { throwIfNoEntry: false }),
+          `STS1 detail must not be copied: ${assetPath}`,
         );
       }
       for (const [routePath, extensions] of routeExtensions) {
@@ -617,7 +618,6 @@ function checkStaticLegacyPages(): number {
         assert(extensions.has("rsc"), `Missing generated RSC for ${routePath}`);
       }
       assert(routeExtensions.size > 0, `No STS1 ${segment} detail routes were found.`);
-      count += routeExtensions.size * 2;
     }
   }
 
@@ -651,7 +651,12 @@ function checkStaticMetadataAssets(): number {
   return staticMetadataAssets.length;
 }
 
-function checkCloudflareAssetLimits(): { count: number; largestBytes: number; largestPath: string } {
+function checkCloudflareAssetLimits(): {
+  count: number;
+  largestBytes: number;
+  largestPath: string;
+  groups: Record<string, number>;
+} {
   const files = walkFiles(assetsRoot);
   // The same-origin API owns /api (docs/supabase-exit/STEP1_DESIGN.md 4.1).
   const apiAsset = files.find((file) => path.relative(assetsRoot, file).split(path.sep)[0] === "api");
@@ -669,7 +674,12 @@ function checkCloudflareAssetLimits(): { count: number; largestBytes: number; la
 
   let largestBytes = 0;
   let largestPath = "";
+  // Files per first three directory segments, read by `pnpm cf:limits` from the deploy log.
+  const groups: Record<string, number> = {};
   for (const file of files) {
+    const dirs = path.relative(assetsRoot, path.dirname(file)).split(path.sep).filter(Boolean);
+    const group = dirs.slice(0, 3).join("/") || "(root)";
+    groups[group] = (groups[group] ?? 0) + 1;
     const size = statSync(file).size;
     assert(
       size <= maxAssetBytes,
@@ -681,7 +691,8 @@ function checkCloudflareAssetLimits(): { count: number; largestBytes: number; la
     }
   }
 
-  return { count: files.length, largestBytes, largestPath };
+  const sortedGroups = Object.fromEntries(Object.entries(groups).sort((a, b) => b[1] - a[1]));
+  return { count: files.length, largestBytes, largestPath, groups: sortedGroups };
 }
 
 const routeCounts = checkServiceLocaleDetails();
@@ -706,6 +717,7 @@ console.log(
     + `${formatCount(maxAssetFiles)} limit (headroom ${formatCount(assetFileBudget - assetStats.count)} to budget, `
     + `${formatCount(maxAssetFiles - assetStats.count)} to limit)`,
 );
+console.log(`Cloudflare static asset groups: ${JSON.stringify(assetStats.groups)}`);
 console.log(
   `Largest Cloudflare static asset: ${(assetStats.largestBytes / 1024 / 1024).toFixed(2)} MiB (${assetStats.largestPath})`,
 );

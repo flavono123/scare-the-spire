@@ -36,9 +36,44 @@ MONSTER_NAMESPACES = [
     "MegaCrit.Sts2.Core.Models.Events",
 ]
 
+# v0.113.0 Dread mode adds `+ (AscensionHelper.IsDread() ? N : 0)` terms and
+# `if (!AscensionHelper.IsDread()) { return N; } return M;` getters to HP, damage
+# and power amounts. The Compendium keeps the non-Dread values, so
+# strip_dread_variants() rewrites both to their non-Dread form before parsing.
+_DREAD_BONUS_TERM_RE = re.compile(r"\s*\+\s*\(AscensionHelper\.IsDread\(\)\s*\?\s*\d+\s*:\s*0\)")
+_DREAD_GETTER_RE = re.compile(
+    r"int\s+(?P<name>\w+)\s*\{\s*get\s*\{\s*if\s*\(!AscensionHelper\.IsDread\(\)\)\s*\{\s*"
+    r"return\s+(?P<normal>[^;]+);\s*\}\s*return\s+[^;]+;\s*\}\s*\}"
+)
+
+
+# ((!AscensionHelper.IsDread()) ? <normal> : <dread>)  and  AscensionHelper.IsDread() ? <dread> : <normal>
+_DREAD_NOT_TERNARY_RE = re.compile(
+    r"\(\(!AscensionHelper\.IsDread\(\)\)\s*\?\s*(?P<normal>[^:;()]+?)\s*:\s*[^;()]+?\)"
+)
+_DREAD_TERNARY_RE = re.compile(
+    r"\(?AscensionHelper\.IsDread\(\)\)?\s*\?\s*[\w.]+\s*:\s*(?P<normal>[\w.]+)"
+)
+
+
+def strip_dread_variants(text: str) -> str:
+    # Bonus terms first: the generic ternary below would otherwise eat `(IsDread() ? N : 0)`.
+    text = _DREAD_BONUS_TERM_RE.sub("", text)
+    # A getter that is 0 outside Dread guards a Dread-only effect: `if (PlatingAmount > 0) { ... }`.
+    for m in _DREAD_GETTER_RE.finditer(text):
+        if m.group("normal").strip() == "0":
+            guard = rf"if\s*\(\s*{m.group('name')}\s*>\s*0\s*\)\s*\{{[^{{}}]*\}}"
+            text = re.sub(guard, "", text)
+    text = _DREAD_GETTER_RE.sub(lambda m: f"int {m.group('name')} => {m.group('normal')};", text)
+    text = _DREAD_NOT_TERNARY_RE.sub(lambda m: m.group("normal"), text)
+    return _DREAD_TERNARY_RE.sub(lambda m: m.group("normal"), text)
+
+
 _HP_ASC_RE = re.compile(
     r"public\s+override\s+int\s+(?P<field>MinInitialHp|MaxInitialHp)\s*=>\s*"
-    r"AscensionHelper\.GetValueIfAscension\([^,]+,\s*(?P<asc>\d+)\s*,\s*(?P<base>\d+)\s*\)\s*;"
+    r"AscensionHelper\.GetValueIfAscension\([^,]+,\s*(?P<asc>\d+)\s*,\s*(?P<base>\d+)\s*\)"
+    # Axebot adds RespawnMaxHpBonus (RespawnCount * 10), 0 on its first spawn.
+    r"(?:\s*\+\s*RespawnMaxHpBonus)?\s*;"
 )
 _HP_PLAIN_RE = re.compile(
     r"public\s+override\s+int\s+(?P<field>MinInitialHp|MaxInitialHp)\s*=>\s*(?P<base>\d+)\s*;"
@@ -56,7 +91,7 @@ _INT_PROP_ASC_PLUS_POWER_RE = re.compile(
     re.DOTALL,
 )
 _INT_PROP_PLAIN_RE = re.compile(
-    r"(?:public|private|protected)\s+(?:static\s+)?int\s+(?P<name>\w+)\s*=>\s*(?P<val>\d+)\s*;"
+    r"(?:public|private|protected)\s+(?:static\s+)?int\s+(?P<name>\w+)\s*=>\s*(?P<val>-?\d+)\s*;"
 )
 _INT_PROP_DEFAULT_GETTER_RE = re.compile(
     r"(?:public|private|protected)\s+(?:static\s+)?int\s+(?P<name>\w+)\s*\{.*?"
@@ -1066,7 +1101,7 @@ def build_entries(
         deprecated_only = ent_id not in loc_kor_by_id and ent_id not in loc_eng_by_id
         cs = find_monster_class(source_root, ent_id)
         if cs is not None:
-            text = cs.read_text()
+            text = strip_dread_variants(cs.read_text())
             hp = parse_hp(text)
             move_ids, damage_values, block_values, move_metadata = parse_moves_and_damage(text)
             initial_power_applications = parse_initial_power_applications(text)

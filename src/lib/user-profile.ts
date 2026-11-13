@@ -6,6 +6,7 @@ const KNOWN_CHARACTER_IDS = new Set([
   "REGENT",
   "NECROBINDER",
   "DEFECT",
+  "FOOL",
 ]);
 
 export type ProfileAvatarKind = "character" | "boss";
@@ -49,7 +50,8 @@ export type CharacterPoolSlug =
   | "silent"
   | "regent"
   | "necrobinder"
-  | "defect";
+  | "defect"
+  | "fool";
 
 const CHARACTER_ICON_SLUGS: Record<string, CharacterPoolSlug> = {
   IRONCLAD: "ironclad",
@@ -57,6 +59,7 @@ const CHARACTER_ICON_SLUGS: Record<string, CharacterPoolSlug> = {
   REGENT: "regent",
   NECROBINDER: "necrobinder",
   DEFECT: "defect",
+  FOOL: "fool",
 };
 
 /** Boss-room encounter ids from extracted `encounters.json`. */

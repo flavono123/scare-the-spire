@@ -164,7 +164,12 @@ function isNoIdentity(error: unknown): boolean {
 
 type LoadState<T> = { data: T | null; loading: boolean; failed: boolean };
 
-/** One page of ten rows: a board's, or the game's totals when `board` is null. */
+/**
+ * One page of ten rows: a board's, or the game's totals when `board` is null.
+ *
+ * The state remembers which page it holds. Moving to another board, game or page reads as
+ * loading at once, instead of keeping the last page on screen until the answer comes.
+ */
 export function usePuzzleboxLeaderboard(input: {
   game: PuzzleboxGame;
   boards: PuzzleboxBoards;
@@ -174,24 +179,28 @@ export function usePuzzleboxLeaderboard(input: {
 }): LoadState<PuzzleboxLeaderboard> {
   const { game, boards, board, offset, aroundMe } = input;
   const boardsKey = JSON.stringify(boards);
-  const [state, setState] = useState<LoadState<PuzzleboxLeaderboard>>({ data: null, loading: true, failed: false });
+  const cacheKey = `${dataEnv}:${game}:${board ?? "total"}:${aroundMe ? "me" : offset}`;
+  const [state, setState] = useState<LoadState<PuzzleboxLeaderboard> & { key: string | null }>({
+    key: null,
+    data: null,
+    loading: true,
+    failed: false,
+  });
 
   useEffect(() => {
     const encodedBoards = encodePuzzleboxBoards(JSON.parse(boardsKey) as PuzzleboxBoards);
+    const settle = (data: PuzzleboxLeaderboard | null) => setState({ key: cacheKey, data, loading: false, failed: data === null });
     if (encodedBoards === null) {
       // The routes (and the RPCs behind them) take well-formed boards only: nothing to rank.
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- nothing to fetch for these boards
-      setState({ data: null, loading: false, failed: true });
+      settle(null);
       return;
     }
     let cancelled = false;
-    const cacheKey = `${dataEnv}:${game}:${board ?? "total"}:${aroundMe ? "me" : offset}`;
     const cached = readCache<PuzzleboxLeaderboard>(cacheKey);
     if (cached) {
-      setState({ data: cached, loading: false, failed: false });
+      settle(cached);
       return;
     }
-    setState((current) => ({ data: current.data, loading: true, failed: false }));
     (async () => {
       try {
         // With an identity the RPC marks this player's rows (is_me, me): the me route answers as the cookie's user.
@@ -219,21 +228,22 @@ export function usePuzzleboxLeaderboard(input: {
         }
         if (cancelled) return;
         if (body?.v !== 1 || !body.leaderboard) {
-          setState({ data: null, loading: false, failed: true });
+          settle(null);
           return;
         }
         writeCache(cacheKey, body.leaderboard);
-        setState({ data: body.leaderboard, loading: false, failed: false });
+        settle(body.leaderboard);
       } catch {
-        if (!cancelled) setState({ data: null, loading: false, failed: true });
+        if (!cancelled) settle(null);
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [game, boardsKey, board, offset, aroundMe]);
+  }, [game, boardsKey, board, offset, aroundMe, cacheKey]);
 
-  return state;
+  if (state.key !== cacheKey) return { data: null, loading: true, failed: false };
+  return { data: state.data, loading: state.loading, failed: state.failed };
 }
 
 /** The player's rank on each board they finished, for the lists. Never signs anyone in. */

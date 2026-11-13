@@ -604,24 +604,33 @@
     }
   },
   {
-    "id": "gambit-2026-11-12",
-    "version": "2026-11-12",
-    "versionLabel": "The Gambit",
-    "versionLabelKo": "포석",
-    "date": "2026-11-12",
-    "title": "The Gambit",
-    "titleKo": "포석",
-    "type": "gambit",
-    "steamUrl": null,
-    "summary": "Bought 2 weeks of time. If the November 12 patch is a dud, die.",
-    "summaryKo": "시간을 2주 벌었습니다. 11월 12일 패치가 똥패치라면, 죽습니다.",
-    "hasBalanceChanges": false,
+    "id": "v0.113.0",
+    "version": "0.113.0",
+    "date": "2026-11-13",
+    "publishedAt": "2026-11-12T20:30:16.000Z",
+    "title": "Beta Patch Notes - v0.113.0",
+    "titleKo": "베타 패치 노트 - v0.113.0",
+    "type": "beta",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840?emclan=103582791474493240&emgid=708914333639245837",
+    "summary": "New character The Fool, new game modes Blitz and Dread, new events, cards and relics, Expect a Fight, Expertise and Memento Mori reworks, and many bug fixes.",
+    "summaryKo": "새 캐릭터 풀, 새 게임 모드 블리츠·드레드, 새 이벤트·카드·유물, 싸움 준비·전문성·메멘토 모리 리워크, 많은 버그 수정.",
+    "hasBalanceChanges": true,
     "art": {
-      "type": "card",
-      "id": "THE_GAMBIT",
-      "imageUrl": "/images/sts2/cards/the_gambit.webp",
-      "alt": "The Gambit card art",
-      "altKo": "포석 카드 아트"
-    }
+      "type": "image",
+      "imageUrl": "/images/sts2/patches/v0.113.0/fool-lobby.webp",
+      "alt": "The Fool on the character select screen",
+      "altKo": "캐릭터 선택 화면의 풀",
+      "objectPosition": "70% center"
+    },
+    "featuredEntities": [
+      { "type": "character", "id": "FOOL" },
+      { "type": "card", "id": "EXPECT_A_FIGHT" },
+      { "type": "card", "id": "EXPERTISE" },
+      { "type": "card", "id": "MEMENTO_MORI" },
+      { "type": "relic", "id": "DOWSING_ROD" },
+      { "type": "relic", "id": "RINGING_TRIANGLE" },
+      { "type": "monster", "id": "INFESTED_PRISM" },
+      { "type": "card", "id": "SALVO" }
+    ]
   }
 ]

@@ -119,6 +119,7 @@ export default async function RelicDetailPage({
     defect: serviceText.labels.pools.defect,
     necrobinder: serviceText.labels.pools.necrobinder,
     regent: serviceText.labels.pools.regent,
+    fool: serviceText.labels.pools.fool,
   };
   for (const character of characters) {
     poolLabels[character.id.toLowerCase() as RelicPool] = character.name;

@@ -6,12 +6,17 @@ export interface CodexLifecycle {
   deprecatedInPatch?: string;
 }
 
+/** Card tags the card library can filter by (game CardTag). Strike and Defend are left out: their names already say it. */
+export const CARD_FILTER_TAGS = ["Wah", "Cho", "Ki", "Shoot", "Minion", "Shiv", "OstyAttack"] as const;
+export type CardFilterTag = (typeof CARD_FILTER_TAGS)[number];
+
 export type CardColor =
   | "ironclad"
   | "silent"
   | "defect"
   | "necrobinder"
   | "regent"
+  | "fool"
   | "colorless"
   | "curse"
   | "event"
@@ -32,7 +37,7 @@ export type CardRarityKo =
   | "상태이상"
   | "퀘스트";
 
-export type CharacterColor = "red" | "green" | "blue" | "purple" | "orange";
+export type CharacterColor = "red" | "green" | "blue" | "purple" | "orange" | "yellow";
 
 export interface CodexCard extends CodexLifecycle {
   id: string;
@@ -69,6 +74,10 @@ export interface CodexCard extends CodexLifecycle {
     upgrade: Record<string, string | number>;
     maxLevel: number;
     imageUrls?: string[]; // index 0 is base art; the last entry repeats for higher levels
+    /** Extra amount added on the n-th upgrade, times n (Dingy Dagger: +3, then +1 more each level). */
+    upgradeRamp?: number;
+    /** Game title per upgrade stage, from `<ID>.title.<stage>`; the last stage whose minLevel is reached wins. */
+    titles?: { minLevel: number; name: string }[];
   };
   imageUrl: string | null; // local path
   betaImageUrl: string | null; // local path
@@ -221,6 +230,7 @@ export type CardFilterCategory =
   | "defect"
   | "necrobinder"
   | "regent"
+  | "fool"
   | "colorless"
   | "token"
   | "event"
@@ -236,6 +246,7 @@ export const COLOR_LABELS: Record<CardFilterCategory, string> = {
   defect: "디펙트",
   necrobinder: "네크로바인더",
   regent: "리젠트",
+  fool: "풀",
   colorless: "무색",
   token: "토큰",
   event: "이벤트",
@@ -262,6 +273,8 @@ export const COLOR_ALIASES: Record<string, CardFilterCategory> = {
   리젠: "regent",
   리젠트: "regent",
   regent: "regent",
+  풀: "fool",
+  fool: "fool",
   무색: "colorless",
   colorless: "colorless",
   토큰: "token",
@@ -295,7 +308,8 @@ export type RelicPool =
   | "silent"
   | "defect"
   | "necrobinder"
-  | "regent";
+  | "regent"
+  | "fool";
 
 export interface CodexRelic extends CodexLifecycle {
   id: string;
@@ -379,7 +393,7 @@ export const RELIC_RARITY_DESCRIPTIONS: Record<RelicRarityKo, string> = {
 };
 
 // Pool filter for relics (character or shared)
-export type RelicFilterPool = "shared" | "ironclad" | "silent" | "defect" | "necrobinder" | "regent";
+export type RelicFilterPool = "shared" | "ironclad" | "silent" | "defect" | "necrobinder" | "regent" | "fool";
 
 export const POOL_LABELS: Record<RelicFilterPool, string> = {
   shared: "공용",
@@ -388,6 +402,7 @@ export const POOL_LABELS: Record<RelicFilterPool, string> = {
   defect: "디펙트",
   necrobinder: "네크로바인더",
   regent: "리젠트",
+  fool: "풀",
 };
 
 export const POOL_ALIASES: Record<string, RelicFilterPool> = {
@@ -408,6 +423,8 @@ export const POOL_ALIASES: Record<string, RelicFilterPool> = {
   리젠: "regent",
   리젠트: "regent",
   regent: "regent",
+  풀: "fool",
+  fool: "fool",
 };
 
 export const RARITY_ALIASES: Record<string, RelicRarityKo> = {
@@ -437,6 +454,7 @@ export type PotionPool =
   | "defect"
   | "necrobinder"
   | "regent"
+  | "fool"
   | "event";
 
 export interface CodexPotion extends CodexLifecycle {
@@ -748,6 +766,7 @@ export type EpochAffiliation =
   | "defect"
   | "necrobinder"
   | "regent"
+  | "fool"
   | "darv"
   | "neow"
   | "nonupeipe"
@@ -822,6 +841,7 @@ export const EPOCH_AFFILIATION_ORDER: EpochAffiliation[] = [
   "regent",
   "necrobinder",
   "defect",
+  "fool",
   "neow",
   "darv",
   "orobas",
@@ -878,7 +898,7 @@ export const TYPE_ALIASES: Record<string, CardTypeKo> = {
 };
 
 // Character color mapping (aligned with dev/text-effects reference)
-export const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "REGENT", "NECROBINDER", "DEFECT"];
+export const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "REGENT", "NECROBINDER", "DEFECT", "FOOL"];
 
 export const CHARACTER_COLORS: Record<string, string> = {
   ironclad: "#f87171",
@@ -886,6 +906,7 @@ export const CHARACTER_COLORS: Record<string, string> = {
   defect: "#22d3ee",
   necrobinder: "#f472b6",
   regent: "#fb923c",
+  fool: "#fffa72",
 };
 
 /**

@@ -30,7 +30,7 @@
     },
     "introducedInPatch": "v0.109.0",
     "image_url": "/static/images/cards/abundance.png",
-    "beta_image_url": null
+    "beta_image_url": "/static/images/cards/beta/abundance.png"
   },
   {
     "id": "ABRASIVE",
@@ -451,6 +451,84 @@
     "beta_image_url": null
   },
   {
+    "id": "ALL_IS_WELL",
+    "name": "All Is Well",
+    "description": "Whenever you create a [gold]Sadness[/gold], gain 4 [gold]Block[/gold].",
+    "description_raw": "Whenever you create a [gold]Sadness[/gold], gain {AllIsWellPower:diff()} [gold]Block[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "All Is Well",
+        "amount": 4
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "AllIsWellPower": 4,
+      "AllIsWell": 4
+    },
+    "upgrade": {
+      "alliswellpower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/all_is_well.png"
+  },
+  {
+    "id": "AMNESIA",
+    "name": "Amnesia",
+    "description": "This turn, draw 2 fewer cards and lose [energy:1].",
+    "description_raw": "This turn, draw {Cards} fewer cards and lose {Energy:energyIcons()}.",
+    "cost": -1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Status",
+    "rarity": "Status",
+    "target": "None",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Amnesia",
+        "amount": 1
+      }
+    ],
+    "cards_draw": 2,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "AmnesiaPower": 1,
+      "Amnesia": 1,
+      "Cards": 2,
+      "Energy": 1
+    },
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/amnesia.png",
+    "beta_image_url": "/static/images/cards/beta/amnesia.png"
+  },
+  {
     "id": "ANGER",
     "name": "Anger",
     "description": "Deal 6 damage.\nAdd a copy of this card into your [gold]Discard Pile[/gold].",
@@ -481,6 +559,41 @@
     },
     "image_url": "/static/images/cards/anger.png",
     "beta_image_url": null
+  },
+  {
+    "id": "ANGUISH",
+    "name": "Anguish",
+    "description": "Deal 6 damage.\nDeals 6 additional damage for each [gold]Sadness[/gold] you have created this combat.",
+    "description_raw": "Deal {CalculatedDamage:diff()} damage.\nDeals {ExtraDamage:diff()} additional damage for each [gold]Sadness[/gold] you have created this combat.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 6,
+      "ExtraDamage": 6
+    },
+    "upgrade": {
+      "calculationbase": "+1",
+      "extradamage": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/anguish.png"
   },
   {
     "id": "ANOINTED",
@@ -627,6 +740,45 @@
     "beta_image_url": "/static/images/cards/beta/apparition.png"
   },
   {
+    "id": "ARCHERY",
+    "name": "Archery",
+    "description": "At the start of your turn, gain 4 [gold]Aim[/gold].",
+    "description_raw": "At the start of your turn, gain {AimPower:diff()} [gold]Aim[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Aim",
+        "amount": 4
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "AimPower": 4,
+      "Aim": 4
+    },
+    "upgrade": {
+      "aimpower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/archery.png"
+  },
+  {
     "id": "ARMAMENTS",
     "name": "Armaments",
     "description": "Gain 5 [gold]Block[/gold].\n[gold]Upgrade[/gold] a card in your [gold]Hand[/gold].",
@@ -655,6 +807,39 @@
     "upgrade": null,
     "image_url": "/static/images/cards/armaments.png",
     "beta_image_url": null
+  },
+  {
+    "id": "ARROW_STAB",
+    "name": "Arrow Stab",
+    "description": "Deal 9 damage.\nIf you have an [gold]Arrow[/gold], put a card that can [gold]Shoot[/gold] from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf you have an [gold]Arrow[/gold], put a card that can [gold]Shoot[/gold] from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 9,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 9
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/arrow_stab.png"
   },
   {
     "id": "ARSENAL",
@@ -809,7 +994,7 @@
     "id": "ASTRAL_PULSE",
     "name": "Astral Pulse",
     "description": "Deal 6 damage to ALL enemies twice.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies twice.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {HitCount:choose(2):twice|{HitCount:diff()} times}.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -830,6 +1015,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 6,
+      "HitCount": 2,
       "StarCost": 3
     },
     "upgrade": {
@@ -1662,7 +1848,7 @@
       "strength": "+2"
     },
     "introducedInPatch": "v0.108.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/blaze.png",
     "beta_image_url": "/static/images/cards/beta/blaze.png"
   },
   {
@@ -1764,6 +1950,74 @@
     },
     "image_url": "/static/images/cards/bloodletting.png",
     "beta_image_url": null
+  },
+  {
+    "id": "BLOSSOM_SHOT",
+    "name": "Blossom Shot",
+    "description": "[gold]Shoot[/gold] an Arrow to deal 11 damage and gain [gold]Stretch[/gold] equal to the damage dealt.",
+    "description_raw": "[gold]Shoot[/gold] an Arrow to deal {Damage:diff()} damage and gain [gold]Stretch[/gold] equal to the damage dealt.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 11,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 11
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/blossom_shot.png"
+  },
+  {
+    "id": "BLOT_OUT_THE_SKY",
+    "name": "Blot out the Sky",
+    "description": "Add a random card that can [gold]Shoot[/gold] into your [gold]Hand[/gold]. It's free to play this turn.",
+    "description_raw": "Add a random card that can [gold]Shoot[/gold] into your [gold]Hand[/gold]. It's free to play this turn.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "cost": 0
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/blot_out_the_sky.png"
   },
   {
     "id": "BLUDGEON",
@@ -2101,6 +2355,45 @@
     "beta_image_url": null
   },
   {
+    "id": "BOUNCE",
+    "name": "Bounce",
+    "description": "Gain 10 [gold]Stretch[/gold].\nAt the start of your next turn, return this to your [gold]Hand[/gold].",
+    "description_raw": "Gain {StretchPower:diff()} [gold]Stretch[/gold].\nAt the start of your next turn, return this to your [gold]Hand[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Stretch",
+        "amount": 10
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "StretchPower": 10,
+      "Stretch": 10
+    },
+    "upgrade": {
+      "stretchpower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/bounce.png"
+  },
+  {
     "id": "BOUNCING_FLASK",
     "name": "Bouncing Flask",
     "description": "Apply 3 [gold]Poison[/gold] to a random enemy 3 times.",
@@ -2138,6 +2431,79 @@
     },
     "image_url": "/static/images/cards/bouncing_flask.png",
     "beta_image_url": null
+  },
+  {
+    "id": "BOW_SMACK",
+    "name": "Bow Smack",
+    "description": "Deal 8 damage.\nIf the enemy is [gold]Impaled[/gold], gain [energy:1].",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf the enemy is [gold]Impaled[/gold], gain {Energy:energyIcons()}.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 8,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 8,
+      "Energy": 1
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/bow_smack.png"
+  },
+  {
+    "id": "BRACE",
+    "name": "Brace",
+    "description": "Gain 8 [gold]Aim[/gold] X times.",
+    "description_raw": "Gain {AimPower:diff()} [gold]Aim[/gold] X times.",
+    "cost": 0,
+    "is_x_cost": true,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Aim",
+        "amount": 8
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "AimPower": 8,
+      "Aim": 8
+    },
+    "upgrade": {
+      "aimpower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/brace.png"
   },
   {
     "id": "BRAND",
@@ -2250,6 +2616,42 @@
     },
     "image_url": "/static/images/cards/breakthrough.png",
     "beta_image_url": null
+  },
+  {
+    "id": "BRIGHTEN_UP",
+    "name": "Brighten Up",
+    "description": "Add 2 [gold]Sadness[/gold] to your [gold]Hand[/gold].\nAdd 2 [gold]Joy[/gold] to your [gold]Hand[/gold].",
+    "description_raw": "Add {Sadness:diff()} [gold]Sadness[/gold] to your [gold]Hand[/gold].\nAdd {Joy:diff()} [gold]Joy[/gold] to your [gold]Hand[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Joy": 2,
+      "Sadness": 2
+    },
+    "upgrade": {
+      "joy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/brighten_up.png"
   },
   {
     "id": "BRIGHTEST_FLAME",
@@ -3066,7 +3468,7 @@
     "id": "CELESTIAL_MIGHT",
     "name": "Celestial Might",
     "description": "Deal 6 damage 3 times.",
-    "description_raw": "Deal {Damage:diff()} damage {Repeat:diff()} {Repeat:plural:time|times}.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:diff()} {HitCount:plural:time|times}.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -3077,7 +3479,7 @@
     "color": "regent",
     "damage": 6,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -3087,10 +3489,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 6,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/celestial_might.png",
     "beta_image_url": null
@@ -3255,6 +3657,233 @@
     },
     "image_url": "/static/images/cards/chill.png",
     "beta_image_url": null
+  },
+  {
+    "id": "CHO_BARBS",
+    "name": "Cho Barbs",
+    "description": "Gain 7 [gold]Block[/gold].\nGain 3 [gold]Thorns[/gold] this turn.",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nGain {ChoBarbsPower:diff()} [gold]Thorns[/gold] this turn.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Common",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 7,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "ChoBarbs",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 7,
+      "ChoBarbsPower": 3,
+      "ChoBarbs": 3
+    },
+    "upgrade": {
+      "block": "+2",
+      "chobarbspower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_barbs.png"
+  },
+  {
+    "id": "CHO_CHORUS",
+    "name": "Cho Chorus",
+    "description": "Gain 12 [gold]Block[/gold].\nPlay ALL “Wah” and “Ki” cards in your [gold]Hand[/gold].",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nPlay ALL “Wah” and “Ki” cards in your [gold]Hand[/gold].",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 12,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 12
+    },
+    "upgrade": {
+      "block": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_chorus.png"
+  },
+  {
+    "id": "CHO_FIRM",
+    "name": "Cho Firm",
+    "description": "Gain 6 [gold]Block[/gold].\nIf you have an [gold]Arrow[/gold], gain [gold]Block[/gold] an additional time.",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nIf you have an [gold]Arrow[/gold], gain [gold]Block[/gold] an additional time.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Common",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 6,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 6
+    },
+    "upgrade": {
+      "block": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_firm.png"
+  },
+  {
+    "id": "CHO_KI",
+    "name": "Cho Ki",
+    "description": "Gain 8 [gold]Block[/gold].\nRegain any spent [gold]Stretch[/gold].",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nRegain any spent [gold]Stretch[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 8,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho",
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 8
+    },
+    "upgrade": {
+      "block": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_ki.png"
+  },
+  {
+    "id": "CHO_LIMBS",
+    "name": "Cho Limbs",
+    "description": "Gain 5 [gold]Block[/gold] twice.\nCosts 2 less [energy:1] if you have a [gold]Wah Melody[/gold] or [gold]Ki Melody[/gold].",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold] twice.\nCosts 2 less {energyPrefix:energyIcons(1)} if you have a [gold]Wah Melody[/gold] or [gold]Ki Melody[/gold].",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 5,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 5
+    },
+    "upgrade": {
+      "block": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_limbs.png"
+  },
+  {
+    "id": "CHO_READY",
+    "name": "Cho Ready",
+    "description": "Gain 8 [gold]Block[/gold].\n Gain 3 [gold]Aim[/gold].",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\n Gain {AimPower:diff()} [gold]Aim[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Common",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 8,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Aim",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 8,
+      "AimPower": 3,
+      "Aim": 3
+    },
+    "upgrade": {
+      "block": "+3",
+      "aimpower": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_ready.png"
   },
   {
     "id": "CINDER",
@@ -3487,6 +4116,39 @@
     "beta_image_url": null
   },
   {
+    "id": "CODA",
+    "name": "Coda",
+    "description": "Deal 40 damage.\nCosts 2 less [energy:1] for each [gold]Melody[/gold] you have.",
+    "description_raw": "Deal {Damage:diff()} damage.\nCosts 2 less {energyPrefix:energyIcons(1)} for each [gold]Melody[/gold] you have.",
+    "cost": 6,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Rare",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 40,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 40
+    },
+    "upgrade": {
+      "damage": "+15"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/coda.png"
+  },
+  {
     "id": "COLD_SNAP",
     "name": "Cold Snap",
     "description": "Deal 6 damage.\n[gold]Channel[/gold] 1 [gold]Frost[/gold].",
@@ -3700,6 +4362,39 @@
     "beta_image_url": null
   },
   {
+    "id": "COMPOST",
+    "name": "Compost",
+    "description": "Whenever an enemy dies, ALL players gain [energy:1].",
+    "description_raw": "Whenever an enemy dies, ALL players gain {Energy:energyIcons()}.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1
+    },
+    "upgrade": {
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/compost.png"
+  },
+  {
     "id": "CONCOCT",
     "name": "Concoct",
     "description": "Choose another player. Whenever their Attacks deal unblocked damage this turn, they apply 3 [gold]Poison[/gold].",
@@ -3742,7 +4437,7 @@
     "id": "CONFLAGRATION",
     "name": "Conflagration",
     "description": "Deal 2 damage to ALL enemies 4 times.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {Repeat:diff()} {Repeat:plural:time|times}.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {HitCount:diff()} {HitCount:plural:time|times}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -3763,10 +4458,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 2,
-      "Repeat": 4
+      "HitCount": 4
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/conflagration.png",
     "beta_image_url": "/static/images/cards/beta/conflagration.png"
@@ -4153,6 +4848,45 @@
     "beta_image_url": null
   },
   {
+    "id": "COVERING_FIRE",
+    "name": "Covering Fire",
+    "description": "Whenever you [gold]Shoot[/gold], allies gain 8 [gold]Block[/gold].",
+    "description_raw": "Whenever you [gold]Shoot[/gold], allies gain {CoveringFirePower:diff()} [gold]Block[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Covering Fire",
+        "amount": 8
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "CoveringFirePower": 8,
+      "CoveringFire": 8
+    },
+    "upgrade": {
+      "coveringfirepower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/covering_fire.png"
+  },
+  {
     "id": "CRASH_LANDING",
     "name": "Crash Landing",
     "description": "Deal 21 damage to ALL enemies.\nFill your [gold]Hand[/gold] with [gold]Debris[/gold].",
@@ -4397,7 +5131,7 @@
     "id": "DAGGER_SPRAY",
     "name": "Dagger Spray",
     "description": "Deal 4 damage to ALL enemies twice.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies twice.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {HitCount:choose(2):twice|{HitCount:diff()} times}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -4417,7 +5151,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 4
+      "Damage": 4,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -4690,6 +5425,47 @@
     },
     "image_url": "/static/images/cards/deadly_poison.png",
     "beta_image_url": null
+  },
+  {
+    "id": "DEATH",
+    "name": "Death",
+    "description": "Apply 75 [gold]Doom[/gold].",
+    "description_raw": "Apply {DoomPower:diff()} [gold]Doom[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Doom",
+        "amount": 75
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "DoomPower": 75,
+      "Doom": 75
+    },
+    "upgrade": {
+      "doom": "+24"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/death.png"
   },
   {
     "id": "DEATH_MARCH",
@@ -4975,6 +5751,46 @@
     "beta_image_url": "/static/images/cards/beta/decisions_decisions.png"
   },
   {
+    "id": "DEEP_STRETCH",
+    "name": "Deep Stretch",
+    "description": "Gain 7 [gold]Stretch[/gold].\nDraw 1 card.",
+    "description_raw": "Gain {StretchPower:diff()} [gold]Stretch[/gold].\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Common",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Stretch",
+        "amount": 7
+      }
+    ],
+    "cards_draw": 1,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 1,
+      "StretchPower": 7,
+      "Stretch": 7
+    },
+    "upgrade": {
+      "stretchpower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/deep_stretch.png"
+  },
+  {
     "id": "DEFEND_DEFECT",
     "name": "Defend",
     "description": "Gain 5 [gold]Block[/gold].",
@@ -5143,6 +5959,41 @@
     },
     "image_url": "/static/images/cards/defend_silent.png",
     "beta_image_url": null
+  },
+  {
+    "id": "DEFEND_FOOL",
+    "name": "Defend",
+    "description": "Gain 5 [gold]Block[/gold].",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Basic",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 5,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Defend"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 5
+    },
+    "upgrade": {
+      "block": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/defend_fool.png",
+    "beta_image_url": "/static/images/cards/beta/defend_fool.png"
   },
   {
     "id": "DEFILE",
@@ -5506,6 +6357,39 @@
     "beta_image_url": "/static/images/cards/beta/devour_life.png"
   },
   {
+    "id": "DINGY_DAGGER",
+    "name": "Dingy Dagger",
+    "description": "Deal 7 damage.\nCan be upgraded any number of times.",
+    "description_raw": "Deal {Damage:diff()} damage.\nCan be upgraded any number of times.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Event",
+    "target": "AnyEnemy",
+    "color": "event",
+    "damage": 7,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 7
+    },
+    "upgrade": {
+      "damage": "+4"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/dingy_dagger.png",
+    "beta_image_url": "/static/images/cards/beta/dingy_dagger.png"
+  },
+  {
     "id": "DIRGE",
     "name": "Dirge",
     "description": "[gold]Summon[/gold] 3 X times.\nAdd X [gold]Souls[/gold] into your [gold]Draw Pile[/gold].",
@@ -5610,10 +6494,51 @@
     "beta_image_url": "/static/images/cards/beta/disintegration.png"
   },
   {
+    "id": "DISLIKE_YOU",
+    "name": "Dislike You",
+    "description": "Deal 8 damage.\nThe enemy takes 50% additional damage from [gold]Shots[/gold] this turn.",
+    "description_raw": "Deal {Damage:diff()} damage.\nThe enemy takes {DislikeYouPower:diff()}% additional damage from [gold]Shots[/gold] this turn.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 8,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Dislike You",
+        "amount": 50
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 8,
+      "DislikeYouPower": 50,
+      "DislikeYou": 50
+    },
+    "upgrade": {
+      "damage": "+1",
+      "dislikeyoupower": "+25"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/dislike_you.png"
+  },
+  {
     "id": "DISMANTLE",
     "name": "Dismantle",
     "description": "Deal 8 damage.\nIf the enemy is [gold]Vulnerable[/gold], hits twice.",
-    "description_raw": "Deal {Damage:diff()} damage.\nIf the enemy is [gold]Vulnerable[/gold], hits twice.",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf the enemy is [gold]Vulnerable[/gold], hits {HitCount:choose(2):twice|{HitCount:diff()} times}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -5624,7 +6549,7 @@
     "color": "ironclad",
     "damage": 8,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -5633,7 +6558,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 8
+      "Damage": 8,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -5672,6 +6598,43 @@
     },
     "image_url": "/static/images/cards/distraction.png",
     "beta_image_url": "/static/images/cards/beta/distraction.png"
+  },
+  {
+    "id": "DIVINE_SHOT",
+    "name": "Divine Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 40 damage.",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Ancient",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 40,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Retain"
+    ],
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 40
+    },
+    "upgrade": {
+      "damage": "+10"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/divine_shot.png"
   },
   {
     "id": "DODGE_AND_ROLL",
@@ -5814,7 +6777,7 @@
   {
     "id": "DOWSING",
     "name": "Dowsing",
-    "description": "After entering 5 more [gold]?[/gold] rooms, transforms into an [gold]Abundance[/gold].",
+    "description": "After entering 4 more [gold]?[/gold] rooms, transforms into an [gold]Abundance[/gold].",
     "description_raw": "After entering {Rooms:diff()} more [gold]?[/gold] {Rooms:plural:room|rooms}, transforms into an [gold]Abundance[/gold].",
     "cost": -1,
     "is_x_cost": null,
@@ -5839,12 +6802,12 @@
       "ABUNDANCE"
     ],
     "vars": {
-      "Rooms": 5
+      "Rooms": 4
     },
     "upgrade": null,
     "introducedInPatch": "v0.109.0",
     "image_url": "/static/images/cards/dowsing.png",
-    "beta_image_url": null
+    "beta_image_url": "/static/images/cards/beta/dowsing.png"
   },
   {
     "id": "DRAIN_POWER",
@@ -6148,6 +7111,39 @@
     "beta_image_url": null
   },
   {
+    "id": "ECSTASY",
+    "name": "Ecstasy",
+    "description": "At the start of your turn, [gold]Transform[/gold] 1 random [gold]Sadness[/gold] in your [gold]Hand[/gold] into [gold]Joy[/gold].",
+    "description_raw": "At the start of your turn, [gold]Transform[/gold] {Cards:diff()} random [gold]Sadness[/gold] in your [gold]Hand[/gold] into [gold]Joy[/gold].",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 1
+    },
+    "upgrade": {
+      "cost": 1
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ecstasy.png"
+  },
+  {
     "id": "EIDOLON",
     "name": "Eidolon",
     "description": "Play ALL [gold]Ethereal[/gold] cards in your [gold]Exhaust Pile[/gold].",
@@ -6178,6 +7174,47 @@
     },
     "image_url": "/static/images/cards/eidolon.png",
     "beta_image_url": "/static/images/cards/beta/eidolon.png"
+  },
+  {
+    "id": "ENCORE",
+    "name": "Encore",
+    "description": "Gain [energy:1].\nDraw 2 cards.\nYou can only play 1 more card this turn.",
+    "description_raw": "Gain {Energy:energyIcons()}.\nDraw {Cards:diff()} cards.\nYou can only play {EncorePower:diff()} more {EncorePower:plural:card|cards} this turn.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Encore",
+        "amount": 1
+      }
+    ],
+    "cards_draw": 2,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1,
+      "Cards": 2,
+      "EncorePower": 1,
+      "Encore": 1
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/encore.png"
   },
   {
     "id": "END_OF_DAYS",
@@ -6305,15 +7342,133 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "Exhaust"
-    ],
+    "keywords": [],
     "tags": null,
     "spawns_cards": null,
     "vars": null,
     "upgrade": null,
     "image_url": "/static/images/cards/enlightenment.png",
     "beta_image_url": null
+  },
+  {
+    "id": "ENNUI",
+    "name": "Ennui",
+    "description": "At the start of your turn, add 1 [gold]Sadness[/gold] to your [gold]Hand[/gold] and draw 2 additional cards.",
+    "description_raw": "At the start of your turn, add 1 [gold]Sadness[/gold] to your [gold]Hand[/gold] and draw {EnnuiPower:diff()} additional {EnnuiPower:plural:card|cards}.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Ennui",
+        "amount": 2
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "EnnuiPower": 2,
+      "Ennui": 2
+    },
+    "upgrade": {
+      "ennuipower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ennui.png"
+  },
+  {
+    "id": "ENRAPTURE",
+    "name": "Enrapture",
+    "description": "Give another player 6 [gold]Vigor[/gold] and 6 [gold]Stretch[/gold].",
+    "description_raw": "Give another player {VigorPower:diff()} [gold]Vigor[/gold] and {StretchPower:diff()} [gold]Stretch[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Vigor",
+        "amount": 6
+      },
+      {
+        "power": "Stretch",
+        "amount": 6
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "VigorPower": 6,
+      "Vigor": 6,
+      "StretchPower": 6,
+      "Stretch": 6
+    },
+    "upgrade": {
+      "vigorpower": "+3",
+      "stretchpower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/enrapture.png"
+  },
+  {
+    "id": "ENSEMBLE",
+    "name": "Ensemble",
+    "description": "The next 4 cards played by other players are free to play.",
+    "description_raw": "The next {Cards:plural:card|{:diff()} cards} played by {Cards:plural:another player|other players} {Cards:plural:is|are} free to play.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 4,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 4
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ensemble.png"
   },
   {
     "id": "ENTHRALLED",
@@ -6444,6 +7599,41 @@
     },
     "image_url": "/static/images/cards/envenom.png",
     "beta_image_url": null
+  },
+  {
+    "id": "EPIC_RETRIEVAL",
+    "name": "Epic Retrieval",
+    "description": "Deal 15 damage.\nIf this [gold]Dislodges[/gold] an [gold]Arrow[/gold], gain [energy:3].",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf this [gold]Dislodges[/gold] an [gold]Arrow[/gold], gain {Energy:energyIcons()}.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 15,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 3,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 15,
+      "Energy": 3
+    },
+    "upgrade": {
+      "damage": "+5",
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/epic_retrieval.png"
   },
   {
     "id": "EQUILIBRIUM",
@@ -6617,8 +7807,8 @@
   {
     "id": "EXPECT_A_FIGHT",
     "name": "Expect a Fight",
-    "description": "Gain 15 [gold]Block[/gold].\nGains 5 additional [gold]Block[/gold] for each [gold]Strength[/gold] you have.",
-    "description_raw": "Gain {CalculatedBlock:diff()} [gold]Block[/gold].\nGains {CalculationExtra:diff()} additional [gold]Block[/gold] for each [gold]Strength[/gold] you have.",
+    "description": "Gain 15 [gold]Block[/gold].\nAttacks in your [gold]Hand[/gold] cost 1 less [energy:1] until played.",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nAttacks in your [gold]Hand[/gold] cost {Energy:diff()} less {energyPrefix:energyIcons(1)} until played.",
     "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6632,18 +7822,17 @@
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
-    "energy_gain": null,
+    "energy_gain": 1,
     "hp_loss": null,
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 15,
-      "CalculationExtra": 5
+      "Block": 15,
+      "Energy": 1
     },
     "upgrade": {
-      "calculationbase": "+1",
-      "calculationextra": "+3"
+      "block": "+5"
     },
     "image_url": "/static/images/cards/expect_a_fight.png",
     "beta_image_url": null
@@ -6651,8 +7840,8 @@
   {
     "id": "EXPERTISE",
     "name": "Expertise",
-    "description": "Draw 2 cards.\nThey gain [gold]Retain[/gold] this turn.",
-    "description_raw": "Draw {Cards:diff()} cards.\nThey gain [gold]Retain[/gold] this turn.",
+    "description": "Draw 2 cards.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
+    "description_raw": "Draw {Cards:diff()} cards.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6679,6 +7868,45 @@
     },
     "image_url": "/static/images/cards/expertise.png",
     "beta_image_url": null
+  },
+  {
+    "id": "EXPLOSIVE_ARROWS",
+    "name": "Explosive Arrows",
+    "description": "Whenever you [gold]Impale[/gold] an enemy, deal 6 damage to ALL enemies.",
+    "description_raw": "Whenever you [gold]Impale[/gold] an enemy, deal {ExplosiveArrowsPower:diff()} damage to ALL enemies.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Explosive Arrows",
+        "amount": 6
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "ExplosiveArrowsPower": 6,
+      "ExplosiveArrows": 6
+    },
+    "upgrade": {
+      "explosivearrowspower": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/explosive_arrows.png"
   },
   {
     "id": "EXPOSE",
@@ -6718,7 +7946,7 @@
     "id": "EXTERMINATE",
     "name": "Exterminate",
     "description": "Deal 3 damage to ALL enemies 4 times.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {Repeat:diff()} times.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {HitCount:diff()} times.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6729,7 +7957,7 @@
     "color": "event",
     "damage": 3,
     "block": null,
-    "hit_count": null,
+    "hit_count": 4,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -6739,7 +7967,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 3,
-      "Repeat": 4
+      "HitCount": 4
     },
     "upgrade": {
       "damage": "+1"
@@ -7101,7 +8329,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "necrobinder",
-    "damage": 3,
+    "damage": null,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -7115,8 +8343,7 @@
     "spawns_cards": null,
     "vars": {
       "OstyDamage": 3,
-      "Cards": 1,
-      "Damage": 3
+      "Cards": 1
     },
     "upgrade": {
       "ostydamage": "+3"
@@ -7128,7 +8355,7 @@
     "id": "FIEND_FIRE",
     "name": "Fiend Fire",
     "description": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nDeal 7 damage for each card [gold]Exhausted[/gold].",
-    "description_raw": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nDeal {Damage:diff()} damage for each card [gold]Exhausted[/gold].",
+    "description_raw": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nDeal {Damage:diff()} damage for each card [gold]Exhausted[/gold].{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -7150,7 +8377,9 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 7
+      "Damage": 7,
+      "CalculationBase": 0,
+      "CalculationExtra": 1
     },
     "upgrade": {
       "damage": "+3"
@@ -7162,7 +8391,7 @@
     "id": "FIGHT_ME",
     "name": "Fight Me!",
     "description": "Deal 5 damage twice.\nGain 3 [gold]Strength[/gold].\nThe enemy gains 1 [gold]Strength[/gold].",
-    "description_raw": "Deal {Damage:diff()} damage twice.\nGain {StrengthPower:diff()} [gold]Strength[/gold].\nThe enemy gains {EnemyStrength:diff()} [gold]Strength[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.\nGain {StrengthPower:diff()} [gold]Strength[/gold].\nThe enemy gains {EnemyStrength:diff()} [gold]Strength[/gold].",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -7173,7 +8402,7 @@
     "color": "ironclad",
     "damage": 5,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": [
       {
         "power": "Strength",
@@ -7187,11 +8416,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "EnemyStrength": 1,
       "Damage": 5,
-      "Repeat": 2,
+      "HitCount": 2,
       "StrengthPower": 3,
-      "Strength": 3
+      "Strength": 3,
+      "EnemyStrength": 1
     },
     "upgrade": {
       "damage": "+1",
@@ -7568,6 +8797,37 @@
     "beta_image_url": null
   },
   {
+    "id": "FLORESCENCE",
+    "name": "Florescence",
+    "description": "[gold]Exhaust[/gold] ALL of your cards that [gold]Shoot[/gold] and create [gold]The Shot[/gold].",
+    "description_raw": "[gold]Exhaust[/gold] ALL of your cards that [gold]Shoot[/gold] and create [gold]{IfUpgraded:show:The Shot+|The Shot}[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/florescence.png"
+  },
+  {
     "id": "FOCUSED_STRIKE",
     "name": "Focused Strike",
     "description": "Deal 9 damage.\nGain 1 [gold]Focus[/gold] this turn.",
@@ -7683,6 +8943,41 @@
     "beta_image_url": null
   },
   {
+    "id": "FOOLISH_SHOT",
+    "name": "Foolish Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 15 damage.",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Basic",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 15,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 15
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/foolish_shot.png"
+  },
+  {
     "id": "FOOTWORK",
     "name": "Footwork",
     "description": "Gain 2 [gold]Dexterity[/gold].",
@@ -7787,8 +9082,8 @@
   {
     "id": "FORGOTTEN_RITUAL",
     "name": "Forgotten Ritual",
-    "description": "Gain [energy:3].",
-    "description_raw": "Gain {Energy:energyIcons()}.",
+    "description": "If you [gold]Exhausted[/gold] a card this turn, gain [energy:3].",
+    "description_raw": "If you [gold]Exhausted[/gold] a card this turn, gain {Energy:energyIcons()}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -8471,6 +9766,39 @@
     "beta_image_url": null
   },
   {
+    "id": "GOD_BYRD",
+    "name": "God Byrd",
+    "description": "At the start of your next turn, deal 30 damage to ALL enemies.",
+    "description_raw": "At the start of your next turn, deal {Damage:diff()} damage to ALL enemies.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Event",
+    "target": "None",
+    "color": "event",
+    "damage": 30,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 30
+    },
+    "upgrade": {
+      "damage": "+10"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/god_byrd.png",
+    "beta_image_url": null
+  },
+  {
     "id": "GOLD_AXE",
     "name": "Gold Axe",
     "description": "Deal damage equal to the number of cards played this combat.",
@@ -8680,6 +10008,40 @@
     "beta_image_url": "/static/images/cards/beta/greed.png"
   },
   {
+    "id": "GROWTH",
+    "name": "Growth",
+    "description": "[gold]Exhaust[/gold] ALL [gold]Sadness[/gold] in your [gold]Hand[/gold].\nGain 4 [gold]Stretch[/gold] for each card [gold]Exhausted[/gold].",
+    "description_raw": "[gold]Exhaust[/gold] ALL [gold]Sadness[/gold] in your [gold]Hand[/gold].\nGain {CalculationExtra:diff()} [gold]Stretch[/gold] for each card [gold]Exhausted[/gold].{InCombat:\n(Gains {CalculatedStretch:diff()} [gold]Stretch[/gold])|}",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 0,
+      "CalculationExtra": 4
+    },
+    "upgrade": {
+      "calculationextra": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/growth.png"
+  },
+  {
     "id": "GUARDS",
     "name": "GUARDS!!!",
     "description": "[gold]Transform[/gold] any number of cards in your [gold]Hand[/gold] into [gold]Minion Sacrifice[/gold].",
@@ -8782,7 +10144,7 @@
     "id": "GUNK_UP",
     "name": "Gunk Up",
     "description": "Deal 4 damage 3 times.\nAdd a [gold]Slimed[/gold] into your [gold]Discard Pile[/gold].",
-    "description_raw": "Deal {Damage:diff()} damage {Repeat:diff()} {Repeat:plural:time|times}.\nAdd a [gold]Slimed[/gold] into your [gold]Discard Pile[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:diff()} {HitCount:plural:time|times}.\nAdd a [gold]Slimed[/gold] into your [gold]Discard Pile[/gold].",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -8793,7 +10155,7 @@
     "color": "defect",
     "damage": 4,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -8805,7 +10167,7 @@
     ],
     "vars": {
       "Damage": 4,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
       "damage": "+1"
@@ -8980,6 +10342,40 @@
     "beta_image_url": "/static/images/cards/beta/hang.png"
   },
   {
+    "id": "HARMONIC_SHIELD",
+    "name": "Harmonic Shield",
+    "description": "Gain 5 [gold]Block[/gold] for each [gold]Melody[/gold] you have.",
+    "description_raw": "Gain {CalculationExtra:diff()} [gold]Block[/gold] for each [gold]Melody[/gold] you have.{InCombat:\n(Gain {CalculatedBlock:diff()} [gold]Block[/gold])|}",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 0,
+      "CalculationExtra": 5
+    },
+    "upgrade": {
+      "calculationextra": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/harmonic_shield.png"
+  },
+  {
     "id": "HAUNT",
     "name": "Haunt",
     "description": "Whenever you play a [gold]Soul[/gold], a random enemy loses 7 HP.",
@@ -9152,6 +10548,42 @@
     },
     "image_url": "/static/images/cards/heavenly_drill.png",
     "beta_image_url": "/static/images/cards/beta/heavenly_drill.png"
+  },
+  {
+    "id": "HEAVY_SHOT",
+    "name": "Heavy Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 20 damage.\n[gold]Aim[/gold] affects this card 2 times.",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage.\n[gold]Aim[/gold] affects this card {AimMultiplier:plural:{:diff()} time|{:diff()} times}.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 20,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 20,
+      "AimMultiplier": 2
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/heavy_shot.png"
   },
   {
     "id": "HEGEMONY",
@@ -9485,6 +10917,45 @@
     "beta_image_url": "/static/images/cards/beta/hidden_gem.png"
   },
   {
+    "id": "HIDDEN_ROOTS",
+    "name": "Hidden Roots",
+    "description": "At the start of your turn, gain 3 [gold]Stretch[/gold].",
+    "description_raw": "At the start of your turn, gain {HiddenRootsPower:diff()} [gold]Stretch[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Hidden Roots",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "HiddenRootsPower": 3,
+      "HiddenRoots": 3
+    },
+    "upgrade": {
+      "hiddenrootspower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/hidden_roots.png"
+  },
+  {
     "id": "HIGH_FIVE",
     "name": "High Five",
     "description": "[gold]Osty[/gold] deals 11 damage\nand applies 2 [gold]Vulnerable[/gold]\nto ALL enemies.",
@@ -9528,6 +10999,43 @@
     "beta_image_url": null
   },
   {
+    "id": "HOBBLING_SHOT",
+    "name": "Hobbling Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 13 damage and apply 1 [gold]Weak[/gold] and [gold]Vulnerable[/gold].",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage and apply {Power:diff()} [gold]Weak[/gold] and [gold]Vulnerable[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 13,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 13,
+      "Power": 1
+    },
+    "upgrade": {
+      "damage": "+1",
+      "power": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/hobbling_shot.png"
+  },
+  {
     "id": "HOLOGRAM",
     "name": "Hologram",
     "description": "Gain 3 [gold]Block[/gold].\nPut a card from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold].",
@@ -9561,6 +11069,45 @@
     },
     "image_url": "/static/images/cards/hologram.png",
     "beta_image_url": null
+  },
+  {
+    "id": "HONING",
+    "name": "Honing",
+    "description": "[gold]Arrows[/gold] deal 50% additional damage.",
+    "description_raw": "[gold]Arrows[/gold] deal {HoningPower:diff()}% additional damage.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Honing",
+        "amount": 50
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "HoningPower": 50,
+      "Honing": 50
+    },
+    "upgrade": {
+      "cost": 2
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/honing.png"
   },
   {
     "id": "HOTFIX",
@@ -10319,6 +11866,111 @@
     "beta_image_url": "/static/images/cards/beta/jackpot.png"
   },
   {
+    "id": "JEST",
+    "name": "Jest",
+    "description": "Gain 14 [gold]Block[/gold].\nAdd 1 [gold]Sadness[/gold] into your [gold]Hand[/gold].",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nAdd {Cards:diff()} [gold]Sadness[/gold] into your [gold]Hand[/gold].",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Common",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 14,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Block": 14,
+      "Cards": 1
+    },
+    "upgrade": {
+      "block": "+4"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/jest.png"
+  },
+  {
+    "id": "JOY",
+    "name": "Joy",
+    "description": "Gain [energy:1].\nDraw 1 card.",
+    "description_raw": "Gain {Energy:energyIcons()}.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1,
+      "Cards": 1
+    },
+    "upgrade": {
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/joy.png"
+  },
+  {
+    "id": "JUDGEMENT",
+    "name": "Judgement",
+    "description": "If the enemy has 30 or less HP, set their HP to 0.",
+    "description_raw": "If the enemy has {Threshold:diff()} or less HP, set their HP to 0.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Threshold": 30
+    },
+    "upgrade": {
+      "threshold": "+10"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/judgement.png"
+  },
+  {
     "id": "JUGGERNAUT",
     "name": "Juggernaut",
     "description": "Whenever you gain [gold]Block[/gold], deal 6 damage to a random enemy.",
@@ -10385,6 +12037,224 @@
     },
     "image_url": "/static/images/cards/juggling.png",
     "beta_image_url": "/static/images/cards/beta/juggling.png"
+  },
+  {
+    "id": "JUSTICE",
+    "name": "Justice",
+    "description": "Deal 30 damage.",
+    "description_raw": "Deal {Damage:diff()} damage.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Token",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": 30,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 30
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/justice.png"
+  },
+  {
+    "id": "KI_CHANT",
+    "name": "Ki Chant",
+    "description": "Look at the top 3 cards of your [gold]Draw Pile[/gold]. Choose 1 to add to your [gold]Hand[/gold] and discard the rest.",
+    "description_raw": "Look at the top {Cards:diff()} cards of your [gold]Draw Pile[/gold]. Choose 1 to add to your [gold]Hand[/gold] and discard the rest.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Common",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 3,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 3
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ki_chant.png"
+  },
+  {
+    "id": "KI_HOP",
+    "name": "Ki Hop",
+    "description": "Deal 7 damage.\nIf the enemy is [gold]Impaled[/gold], draw 2 cards.",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf the enemy is [gold]Impaled[/gold], draw {Cards:diff()} {Cards:plural:card|cards}.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 7,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 7,
+      "Cards": 2
+    },
+    "upgrade": {
+      "damage": "+1",
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ki_hop.png"
+  },
+  {
+    "id": "KI_REST",
+    "name": "Ki Rest",
+    "description": "Next turn, gain [energy:5].\nIf you have a [gold]Wah Melody[/gold] or [gold]Cho Melody[/gold], [gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
+    "description_raw": "Next turn, gain {Energy:energyIcons()}.\nIf you have a [gold]Wah Melody[/gold] or [gold]Cho Melody[/gold], [gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 5,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 5
+    },
+    "upgrade": {
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ki_rest.png"
+  },
+  {
+    "id": "KI_VERSE",
+    "name": "Ki Verse",
+    "description": "The next “Wah”, “Cho”, or “Ki” card you play this turn is played an additional time.",
+    "description_raw": "The next{KiVersePower:plural:| {:diff()}} “Wah”, “Cho”, or “Ki” {KiVersePower:plural:card|cards} you play this turn {KiVersePower:plural:is|are} played an additional time.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Ki Verse",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "KiVersePower": 1,
+      "KiVerse": 1
+    },
+    "upgrade": {
+      "kiversepower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ki_verse.png"
+  },
+  {
+    "id": "KI_WHIP",
+    "name": "Ki Whip",
+    "description": "Deal 5 damage.\nNext turn, gain [energy:2].",
+    "description_raw": "Deal {Damage:diff()} damage.\nNext turn, gain {Energy:energyIcons()}.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 5,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 2,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 5,
+      "Energy": 2
+    },
+    "upgrade": {
+      "damage": "+1",
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ki_whip.png"
   },
   {
     "id": "KINGLY_KICK",
@@ -10530,8 +12400,8 @@
   {
     "id": "KNOCKOUT_BLOW",
     "name": "Knockout Blow",
-    "description": "Deal 30 damage.\nIf this kills an enemy, gain [star:5].",
-    "description_raw": "Deal {Damage:diff()} damage.\nIf this kills an enemy, gain {Stars:starIcons()}.",
+    "description": "Deal 30 damage.\nIf this kills an enemy, gain\n[star:5].",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf this kills an enemy, gain\n{Stars:starIcons()}.",
     "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -10919,6 +12789,37 @@
     "beta_image_url": "/static/images/cards/beta/lightning_rod.png"
   },
   {
+    "id": "LOCKED_IN",
+    "name": "Locked In",
+    "description": "Put a card that can [gold]Shoot[/gold] from your [gold]Draw Pile[/gold] into your [gold]Hand[/gold].",
+    "description_raw": "Put a card that can [gold]Shoot[/gold] from your [gold]Draw Pile[/gold] into your [gold]Hand[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "cost": 0
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/locked_in.png"
+  },
+  {
     "id": "LOOP",
     "name": "Loop",
     "description": "At the start of your turn, trigger the passive ability of your rightmost Orb.",
@@ -10949,6 +12850,84 @@
     },
     "image_url": "/static/images/cards/loop.png",
     "beta_image_url": null
+  },
+  {
+    "id": "LOST_LUTE",
+    "name": "Lost Lute",
+    "description": "Whenever you gain a [gold]Melody[/gold], play the top card of your [gold]Draw Pile[/gold].",
+    "description_raw": "Whenever you gain a [gold]Melody[/gold], play the top card of your [gold]Draw Pile[/gold].",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Ancient",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Lost Lute",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "LostLutePower": 1,
+      "LostLute": 1
+    },
+    "upgrade": {
+      "cost": 2
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/lost_lute.png"
+  },
+  {
+    "id": "LULLABY",
+    "name": "Lullaby",
+    "description": "When you gain every [gold]Melody[/gold], gain 20 [gold]Block[/gold].",
+    "description_raw": "When you gain every [gold]Melody[/gold], gain {LullabyPower:diff()} [gold]Block[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Lullaby",
+        "amount": 20
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "LullabyPower": 20,
+      "Lullaby": 20
+    },
+    "upgrade": {
+      "add_innate": 1
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/lullaby.png"
   },
   {
     "id": "LUMINESCE",
@@ -11285,7 +13264,7 @@
     "id": "MAUL",
     "name": "Maul",
     "description": "Deal 5 damage twice.\nIncrease the damage of ALL Maul cards by 2 this combat.",
-    "description_raw": "Deal {Damage:diff()} damage twice.\nIncrease the damage of ALL Maul cards by {Increase:diff()} this combat.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.\nIncrease the damage of ALL Maul cards by {Increase:diff()} this combat.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -11305,8 +13284,9 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 2,
-      "Damage": 5
+      "Damage": 5,
+      "HitCount": 2,
+      "Increase": 2
     },
     "upgrade": {
       "damage": "+1",
@@ -11379,19 +13359,19 @@
     "beta_image_url": null
   },
   {
-    "id": "MEMENTO_MORI",
-    "name": "Memento Mori",
-    "description": "Deal 9 damage.\nDeals 4 additional damage for each card discarded this turn.",
-    "description_raw": "Deal {CalculatedDamage:diff()} damage.\nDeals {ExtraDamage:diff()} additional damage for each card discarded this turn.",
+    "id": "MELODIC_SHOT",
+    "name": "Melodic Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 12 damage.\nHits an additional time for each [gold]Melody[/gold] you have.",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage.\nHits an additional time for each [gold]Melody[/gold] you have.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Attack",
-    "rarity": "Uncommon",
+    "rarity": "Rare",
     "target": "AnyEnemy",
-    "color": "silent",
-    "damage": null,
+    "color": "fool",
+    "damage": 12,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -11399,17 +13379,53 @@
     "energy_gain": null,
     "hp_loss": null,
     "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 12,
+      "CalculationBase": 1,
+      "CalculationExtra": 1
+    },
+    "upgrade": {
+      "damage": "+1",
+      "cost": 0
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/melodic_shot.png"
+  },
+  {
+    "id": "MEMENTO_MORI",
+    "name": "Memento Mori",
+    "description": "Deal 19 damage to the enemy with the lowest HP.",
+    "description_raw": "Deal {Damage:diff()} damage to the enemy with the lowest HP.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "RandomEnemy",
+    "color": "silent",
+    "damage": 19,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Sly"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 9,
-      "ExtraDamage": 4,
-      "CalculatedDamage": 9
+      "Damage": 19
     },
     "upgrade": {
-      "calculateddamage": "+2",
-      "calculationbase": "+2",
-      "extradamage": "+1"
+      "damage": "+4"
     },
     "image_url": "/static/images/cards/memento_mori.png",
     "beta_image_url": null
@@ -11562,6 +13578,74 @@
     "beta_image_url": "/static/images/cards/beta/midnight.png"
   },
   {
+    "id": "MIGHTY_SHIELD",
+    "name": "Mighty Shield",
+    "description": "Gain 20 [gold]Block[/gold].\nAdd 3 [gold]Dazed[/gold] into your [gold]Draw Pile[/gold].",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nAdd {Cards:diff()} [gold]Dazed[/gold] into your [gold]Draw Pile[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Event",
+    "target": "Self",
+    "color": "event",
+    "damage": null,
+    "block": 20,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 3,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Block": 20,
+      "Cards": 3
+    },
+    "upgrade": {
+      "block": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/mighty_shield.png",
+    "beta_image_url": "/static/images/cards/beta/mighty_shield.png"
+  },
+  {
+    "id": "MIGHTY_WEAPON",
+    "name": "Mighty Weapon",
+    "description": "Deal 25 damage to ALL enemies.\nAdd 2 [gold]Dazed[/gold] into your [gold]Draw Pile[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\nAdd {Cards:diff()} [gold]Dazed[/gold] into your [gold]Draw Pile[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Event",
+    "target": "AllEnemies",
+    "color": "event",
+    "damage": 25,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 25,
+      "Cards": 2
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/mighty_weapon.png",
+    "beta_image_url": "/static/images/cards/beta/mighty_weapon.png"
+  },
+  {
     "id": "MIMIC",
     "name": "Mimic",
     "description": "Gain [gold]Block[/gold] equal to the [gold]Block[/gold] on another player.",
@@ -11671,9 +13755,9 @@
   {
     "id": "MINION_DIVE_BOMB",
     "name": "Minion Dive Bomb",
-    "description": "Deal 13 damage.",
+    "description": "Deal 11 damage.",
     "description_raw": "Deal {Damage:diff()} damage.",
-    "cost": 1,
+    "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -11681,7 +13765,7 @@
     "rarity": "Token",
     "target": "AnyEnemy",
     "color": "token",
-    "damage": 13,
+    "damage": 11,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -11696,10 +13780,10 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 13
+      "Damage": 11
     },
     "upgrade": {
-      "damage": "+3"
+      "damage": "+2"
     },
     "image_url": "/static/images/cards/minion_dive_bomb.png",
     "beta_image_url": null
@@ -11782,7 +13866,7 @@
     "id": "MIRAGE",
     "name": "Mirage",
     "description": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.",
-    "description_raw": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.{InCombat:\n(Gain {CalculatedBlock:diff()} [gold]Block[/gold])|}",
+    "description_raw": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.{InCombat:\n(Gains {CalculatedBlock:diff()} [gold]Block[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -12012,6 +14096,78 @@
     "beta_image_url": "/static/images/cards/beta/monologue.png"
   },
   {
+    "id": "MOTIF",
+    "name": "Motif",
+    "description": "Whenever you gain a [gold]Melody[/gold], draw 1 card.",
+    "description_raw": "Whenever you gain a [gold]Melody[/gold], draw {MotifPower:diff()} {MotifPower:plural:card|cards}.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Motif",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "MotifPower": 1,
+      "Motif": 1
+    },
+    "upgrade": {
+      "cost": 1
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/motif.png"
+  },
+  {
+    "id": "MOURNING_BLOW",
+    "name": "Mourning Blow",
+    "description": "Deal 10 damage.\nTransform this into [gold]Sadness[/gold] and return it to your [gold]Hand[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage.\nTransform this into [gold]Sadness[/gold] and return it to your [gold]Hand[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 10,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 10
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/mourning_blow.png"
+  },
+  {
     "id": "MULTI_CAST",
     "name": "Multi-Cast",
     "description": "[gold]Evoke[/gold] your rightmost Orb X times.",
@@ -12072,6 +14228,106 @@
     },
     "image_url": "/static/images/cards/murder.png",
     "beta_image_url": "/static/images/cards/beta/murder.png"
+  },
+  {
+    "id": "MY_SHINIES",
+    "name": "My Shinies",
+    "description": "Deal 1 damage for every 20 [gold]Gold[/gold] you have.",
+    "description_raw": "Deal {Damage:diff()} damage for every {Gold:diff()} [gold]Gold[/gold] you have.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Rare",
+    "target": "AnyEnemy",
+    "color": "colorless",
+    "damage": 1,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 1,
+      "CalculationBase": 0,
+      "Gold": 20,
+      "CalculationExtra": 1
+    },
+    "upgrade": {
+      "gold": "-10"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/my_shinies.png"
+  },
+  {
+    "id": "MYTHIC_FORM",
+    "name": "Mythic Form",
+    "description": "At the start of your turn, add a random [gold]Tarot[/gold] card into your [gold]Hand[/gold].",
+    "description_raw": "At the start of your turn, add a random{IfUpgraded:show: Upgraded|} [gold]Tarot[/gold] card into your [gold]Hand[/gold].",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/mythic_form.png"
+  },
+  {
+    "id": "NAIL",
+    "name": "Nail",
+    "description": "If the enemy is [gold]Impaled[/gold], Deal 20 damage and apply 2 [gold]Weak[/gold] and [gold]Vulnerable[/gold].",
+    "description_raw": "If the enemy is [gold]Impaled[/gold], Deal {Damage:diff()} damage and apply {Power:diff()} [gold]Weak[/gold] and [gold]Vulnerable[/gold].",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Rare",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 20,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 20,
+      "Power": 2
+    },
+    "upgrade": {
+      "damage": "+5",
+      "power": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/nail.png"
   },
   {
     "id": "NECRO_MASTERY",
@@ -12365,6 +14621,45 @@
     },
     "image_url": "/static/images/cards/no_escape.png",
     "beta_image_url": null
+  },
+  {
+    "id": "NOCK",
+    "name": "Nock",
+    "description": "Gain 5 [gold]Aim[/gold].",
+    "description_raw": "Gain {AimPower:diff()} [gold]Aim[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Common",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Aim",
+        "amount": 5
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "AimPower": 5,
+      "Aim": 5
+    },
+    "upgrade": {
+      "aimpower": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/nock.png"
   },
   {
     "id": "NORMALITY",
@@ -12813,7 +15108,7 @@
       "damage": "+4"
     },
     "introducedInPatch": "v0.108.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/outrage.png",
     "beta_image_url": "/static/images/cards/beta/outrage.png"
   },
   {
@@ -13166,7 +15461,7 @@
     "id": "PECK",
     "name": "Peck",
     "description": "Deal 2 damage 3 times.",
-    "description_raw": "Deal {Damage:diff()} damage {Repeat:diff()} times.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:diff()} times.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -13177,7 +15472,7 @@
     "color": "event",
     "damage": 2,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -13187,10 +15482,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 2,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/peck.png",
     "beta_image_url": null
@@ -13234,7 +15529,7 @@
   {
     "id": "PHANTOM_BLADES",
     "name": "Phantom Blades",
-    "description": "[gold]Shivs[/gold] gain [gold]Retain[/gold].\nThe first [gold]Shiv[/gold] you play each turn deals 9 additional damage.",
+    "description": "[gold]Shivs[/gold] gain [gold]Retain[/gold].\nThe first [gold]Shiv[/gold] you play each turn deals 8 additional damage.",
     "description_raw": "[gold]Shivs[/gold] gain [gold]Retain[/gold].\nThe first [gold]Shiv[/gold] you play each turn deals {PhantomBladesPower:diff()} additional damage.",
     "cost": 1,
     "is_x_cost": null,
@@ -13250,7 +15545,7 @@
     "powers_applied": [
       {
         "power": "Phantom Blades",
-        "amount": 9
+        "amount": 8
       }
     ],
     "cards_draw": null,
@@ -13262,8 +15557,8 @@
       "SHIV"
     ],
     "vars": {
-      "PhantomBladesPower": 9,
-      "PhantomBlades": 9
+      "PhantomBladesPower": 8,
+      "PhantomBlades": 8
     },
     "upgrade": {
       "phantombladespower": "+3"
@@ -13440,7 +15735,7 @@
     "id": "PLOT",
     "name": "Plot",
     "description": "Next turn, ALL players draw 2 cards.",
-    "description_raw": "Next turn, ALL players draw {Cards} cards.",
+    "description_raw": "Next turn, ALL players draw {Cards:diff()} cards.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -13453,7 +15748,7 @@
     "block": null,
     "hit_count": null,
     "powers_applied": null,
-    "cards_draw": null,
+    "cards_draw": 2,
     "energy_gain": null,
     "hp_loss": null,
     "keywords": null,
@@ -13646,7 +15941,7 @@
   {
     "id": "PRECISE_CUT",
     "name": "Precise Cut",
-    "description": "Deal 15 damage.\nDeals 2 less damage for each other card in your [gold]Hand[/gold].",
+    "description": "Deal 13 damage.\nDeals 2 less damage for each other card in your [gold]Hand[/gold].",
     "description_raw": "Deal {CalculatedDamage:diff()} damage.\nDeals {ExtraDamage:inverseDiff()} less damage for each other card in your [gold]Hand[/gold].",
     "cost": 0,
     "is_x_cost": null,
@@ -13668,8 +15963,7 @@
     "spawns_cards": null,
     "vars": {
       "CalculationBase": 13,
-      "ExtraDamage": 2,
-      "CalculatedDamage": 15
+      "ExtraDamage": 2
     },
     "upgrade": {
       "calculationbase": "+3"
@@ -14058,6 +16352,39 @@
     "beta_image_url": "/static/images/cards/beta/pull_from_below.png"
   },
   {
+    "id": "PUNCH_OF_JOY",
+    "name": "Punch of Joy",
+    "description": "Deal 13 damage.\n[gold]Transform[/gold] 1 random [gold]Sadness[/gold] in your [gold]Hand[/gold] into [gold]Joy[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage.\n[gold]Transform[/gold] 1 random [gold]Sadness[/gold] in your [gold]Hand[/gold] into [gold]Joy[/gold].",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 13,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 13
+    },
+    "upgrade": {
+      "damage": "+4"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/punch_of_joy.png"
+  },
+  {
     "id": "PURITY",
     "name": "Purity",
     "description": "Exhaust up to 3 cards in your [gold]Hand[/gold].",
@@ -14221,6 +16548,115 @@
     "beta_image_url": "/static/images/cards/beta/quasar.png"
   },
   {
+    "id": "QUICK_SHOT",
+    "name": "Quick Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 10 damage.",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 10,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 10
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/quick_shot.png"
+  },
+  {
+    "id": "QUIETUS",
+    "name": "Quietus",
+    "description": "This turn, your next [gold]Shot[/gold] deals double damage but the [gold]Arrow[/gold] is destroyed.",
+    "description_raw": "This turn, your next [gold]Shot[/gold] deals {IfUpgraded:show:triple|double} damage but the [gold]Arrow[/gold] is destroyed.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Quietus",
+        "amount": 2
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "QuietusPower": 2,
+      "Quietus": 2
+    },
+    "upgrade": {
+      "quietuspower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/quietus.png"
+  },
+  {
+    "id": "QUIVER",
+    "name": "Quiver",
+    "description": "Gain 1 additional [gold]Arrow[/gold].",
+    "description_raw": "Gain {Repeat:diff()} additional [gold]{Repeat:plural:Arrow|Arrows}[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Repeat": 1
+    },
+    "upgrade": {
+      "repeat": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/quiver.png"
+  },
+  {
     "id": "RADIATE",
     "name": "Radiate",
     "description": "Deal 3 damage to ALL enemies for each [star:1] gained this turn.",
@@ -14286,6 +16722,41 @@
     },
     "image_url": "/static/images/cards/rage.png",
     "beta_image_url": null
+  },
+  {
+    "id": "RAIN_SHOT",
+    "name": "Rain Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 12 damage.\nDamage ALL other enemies equal to the damage dealt.",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage.\nDamage ALL other enemies equal to the damage dealt.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 12,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 12
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/rain_shot.png"
   },
   {
     "id": "RAINBOW",
@@ -14383,6 +16854,42 @@
     },
     "image_url": "/static/images/cards/rampage.png",
     "beta_image_url": null
+  },
+  {
+    "id": "RAPID_SHOT",
+    "name": "Rapid Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 3 damage 3 times.",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage {HitCount:diff()} times.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 3,
+    "block": null,
+    "hit_count": 3,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 3,
+      "HitCount": 3
+    },
+    "upgrade": {
+      "hitcount": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/rapid_shot.png"
   },
   {
     "id": "RATTLE",
@@ -14621,6 +17128,37 @@
     "beta_image_url": "/static/images/cards/beta/rebound.png"
   },
   {
+    "id": "RECALL",
+    "name": "Recall",
+    "description": "If the enemy is [gold]Impaled[/gold], [gold]Dislodge[/gold] and put a card from your [gold]Discard Pile[/gold] on top of your [gold]Draw Pile[/gold].",
+    "description_raw": "If the enemy is [gold]Impaled[/gold], [gold]Dislodge[/gold] and put a card from your [gold]Discard Pile[/gold] on top of your [gold]Draw Pile[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "cost": 0
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/recall.png"
+  },
+  {
     "id": "REFINE_BLADE",
     "name": "Refine Blade",
     "description": "[gold]Forge[/gold] 8.\nNext turn, gain [energy:1].",
@@ -14724,7 +17262,7 @@
     "id": "REFRACT",
     "name": "Refract",
     "description": "Deal 10 damage twice.\n[gold]Channel[/gold] 2 [gold]Glass[/gold].",
-    "description_raw": "Deal {Damage:diff()} damage twice.\n[gold]Channel[/gold] {Repeat:diff()} [gold]Glass[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.\n[gold]Channel[/gold] {Repeat:diff()} [gold]Glass[/gold].",
     "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -14745,7 +17283,8 @@
     "spawns_cards": null,
     "vars": {
       "Repeat": 2,
-      "Damage": 10
+      "Damage": 10,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+3"
@@ -14856,6 +17395,41 @@
     "beta_image_url": "/static/images/cards/beta/rend.png"
   },
   {
+    "id": "REPEAT_SHOT",
+    "name": "Repeat Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 15 damage X times.",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage X times.",
+    "cost": 0,
+    "is_x_cost": true,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Rare",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 15,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 15
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/repeat_shot.png"
+  },
+  {
     "id": "RESONANCE",
     "name": "Resonance",
     "description": "Gain 1 [gold]Strength[/gold]. ALL enemies lose 1 [gold]Strength[/gold].",
@@ -14931,10 +17505,47 @@
     "beta_image_url": null
   },
   {
+    "id": "RHYTHM_STRIKE",
+    "name": "Rhythm Strike",
+    "description": "Deal 4 damage.\nHits an additional time for each [gold]Melody[/gold] you have.",
+    "description_raw": "Deal {Damage:diff()} damage.\nHits an additional time for each [gold]Melody[/gold] you have.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 4,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Strike"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 4,
+      "CalculationBase": 1,
+      "CalculationExtra": 1
+    },
+    "upgrade": {
+      "damage": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/rhythm_strike.png"
+  },
+  {
     "id": "RICOCHET",
     "name": "Ricochet",
     "description": "Deal 3 damage to a random enemy 4 times.",
-    "description_raw": "Deal {Damage:diff()} damage to a random enemy {Repeat:diff()} times.",
+    "description_raw": "Deal {Damage:diff()} damage to a random enemy {HitCount:diff()} times.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -14945,7 +17556,7 @@
     "color": "silent",
     "damage": 3,
     "block": null,
-    "hit_count": null,
+    "hit_count": 4,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -14957,10 +17568,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 3,
-      "Repeat": 4
+      "HitCount": 4
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/ricochet.png",
     "beta_image_url": "/static/images/cards/beta/ricochet.png"
@@ -14978,7 +17589,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "necrobinder",
-    "damage": 4,
+    "damage": null,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -14992,8 +17603,7 @@
     "spawns_cards": null,
     "vars": {
       "OstyDamage": 4,
-      "Energy": 2,
-      "Damage": 4
+      "Energy": 2
     },
     "upgrade": {
       "ostydamage": "+2"
@@ -15005,7 +17615,7 @@
     "id": "RIP_AND_TEAR",
     "name": "Rip and Tear",
     "description": "Deal 7 damage to a random enemy twice.",
-    "description_raw": "Deal {Damage:diff()} damage to a random enemy twice.",
+    "description_raw": "Deal {Damage:diff()} damage to a random enemy {HitCount:choose(2):twice|{HitCount:diff()} times}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15025,7 +17635,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 7
+      "Damage": 7,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -15174,6 +17785,39 @@
     "beta_image_url": "/static/images/cards/beta/royalties.png"
   },
   {
+    "id": "RUMMAGE",
+    "name": "Rummage",
+    "description": "Draw 3 cards.\nAdd a [gold]Sadness[/gold] into your [gold]Hand[/gold].",
+    "description_raw": "Draw {Cards:diff()} {Cards:plural:card|cards}.\nAdd a [gold]Sadness[/gold] into your [gold]Hand[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 3,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 3
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/rummage.png"
+  },
+  {
     "id": "RUPTURE",
     "name": "Rupture",
     "description": "Whenever you lose HP on your turn, gain 1 [gold]Strength[/gold].",
@@ -15247,9 +17891,41 @@
     "beta_image_url": null
   },
   {
+    "id": "SADNESS",
+    "name": "Sadness",
+    "description": "",
+    "description_raw": "",
+    "cost": -1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Status",
+    "rarity": "Status",
+    "target": "None",
+    "color": "status",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Retain",
+      "Unplayable"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/sadness.png"
+  },
+  {
     "id": "SALVO",
     "name": "Salvo",
-    "description": "Deal 12 damage.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
+    "description": "Deal 10 damage.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
     "description_raw": "Deal {Damage:diff()} damage.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
     "cost": 1,
     "is_x_cost": null,
@@ -15259,7 +17935,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "colorless",
-    "damage": 12,
+    "damage": 10,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -15270,7 +17946,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 12
+      "Damage": 10
     },
     "upgrade": {
       "damage": "+4"
@@ -15688,6 +18364,40 @@
     "beta_image_url": "/static/images/cards/beta/seeking_edge.png"
   },
   {
+    "id": "SELF_DEPRECATE",
+    "name": "Self Deprecate",
+    "description": "Add a [gold]Sadness[/gold] to your [gold]Hand[/gold].\nAdd 2 [gold]Joy[/gold] to all allies' [gold]Hands[/gold].",
+    "description_raw": "Add {Sadness:plural:a|{:diff()}} [gold]Sadness[/gold] to your [gold]Hand[/gold].\nAdd {Joy:diff()} [gold]Joy[/gold] to all allies' [gold]Hands[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "AllAllies",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Joy": 2,
+      "Sadness": 1
+    },
+    "upgrade": {
+      "joy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/self_deprecate.png"
+  },
+  {
     "id": "SENTRY_MODE",
     "name": "Sentry Mode",
     "description": "At the start of your turn, add 1 [gold]Sweeping Gaze[/gold] into your [gold]Hand[/gold].",
@@ -15766,6 +18476,45 @@
     "beta_image_url": "/static/images/cards/beta/serpent_form.png"
   },
   {
+    "id": "SERRATED_ARROWS",
+    "name": "Serrated Arrows",
+    "description": "[gold]Impaled[/gold] enemies take 25% more damage from your Attacks.",
+    "description_raw": "[gold]Impaled[/gold] enemies take {SerratedArrowsPower:diff()}% more damage from your Attacks.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Serrated Arrows",
+        "amount": 25
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "SerratedArrowsPower": 25,
+      "SerratedArrows": 25
+    },
+    "upgrade": {
+      "serratedarrowspower": "+25"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/serrated_arrows.png"
+  },
+  {
     "id": "SETUP_STRIKE",
     "name": "Setup Strike",
     "description": "Deal 7 damage.\nGain 3 [gold]Strength[/gold] this turn.",
@@ -15811,7 +18560,7 @@
     "id": "SEVEN_STARS",
     "name": "Seven Stars",
     "description": "Deal 7 damage to ALL enemies 7 times.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {Repeat:diff()} {Repeat:plural:time|times}.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {HitCount:diff()} {HitCount:plural:time|times}.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15822,7 +18571,7 @@
     "color": "regent",
     "damage": 7,
     "block": null,
-    "hit_count": null,
+    "hit_count": 7,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -15832,7 +18581,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 7,
-      "Repeat": 7,
+      "HitCount": 7,
       "StarCost": 7
     },
     "upgrade": {
@@ -16180,6 +18929,54 @@
     "beta_image_url": "/static/images/cards/beta/shockwave.png"
   },
   {
+    "id": "SHOW_OFF",
+    "name": "Show Off",
+    "description": "Gain 5 [gold]Aim[/gold].\nIf a non-minion enemy dies this turn, permanently increase this card's [gold]Aim[/gold] by 2.",
+    "description_raw": "Gain {AimPower:diff()} [gold]Aim[/gold].\nIf a non-minion enemy dies this turn, permanently increase this card's [gold]Aim[/gold] by {ShowOffPower:diff()}.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Aim",
+        "amount": 5
+      },
+      {
+        "power": "Show Off",
+        "amount": 2
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "BaseAim": 5,
+      "AimPower": 5,
+      "Aim": 5,
+      "ShowOffPower": 2,
+      "ShowOff": 2
+    },
+    "upgrade": {
+      "showoffpower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/show_off.png"
+  },
+  {
     "id": "SHROUD",
     "name": "Shroud",
     "description": "Whenever you apply [gold]Doom[/gold], gain 3 [gold]Block[/gold].",
@@ -16317,7 +19114,7 @@
       "energy": "+1"
     },
     "introducedInPatch": "v0.110.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/sidestep.png",
     "beta_image_url": "/static/images/cards/beta/sidestep.png"
   },
   {
@@ -16359,6 +19156,45 @@
     },
     "image_url": "/static/images/cards/signal_boost.png",
     "beta_image_url": null
+  },
+  {
+    "id": "SIMPLETON",
+    "name": "Simpleton",
+    "description": "At the end of your turn, play the least expensive card in your [gold]Hand[/gold].",
+    "description_raw": "At the end of your turn, play the{SimpletonPower:plural:| {:diff()}} least expensive {SimpletonPower:plural:card|cards} in your [gold]Hand[/gold].",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Simpleton",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "SimpletonPower": 1,
+      "Simpleton": 1
+    },
+    "upgrade": {
+      "cost": 1
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/simpleton.png"
   },
   {
     "id": "SKEWER",
@@ -16423,6 +19259,44 @@
     },
     "image_url": "/static/images/cards/skim.png",
     "beta_image_url": null
+  },
+  {
+    "id": "SKY_SHOT",
+    "name": "Sky Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 30 damage.",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Rare",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 30,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust",
+      "Innate"
+    ],
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 30
+    },
+    "upgrade": {
+      "damage": "+10"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/sky_shot.png"
   },
   {
     "id": "SLEIGHT_OF_FLESH",
@@ -16752,6 +19626,45 @@
     "beta_image_url": null
   },
   {
+    "id": "SONG_PATH",
+    "name": "Song Path",
+    "description": "Whenever you gain a [gold]Cho Melody[/gold], gain 5 [gold]Block[/gold].",
+    "description_raw": "Whenever you gain a [gold]Cho Melody[/gold], gain {SongPathPower:diff()} [gold]Block[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Song Path",
+        "amount": 5
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "SongPathPower": 5,
+      "SongPath": 5
+    },
+    "upgrade": {
+      "songpathpower": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/song_path.png"
+  },
+  {
     "id": "SOOT",
     "name": "Soot",
     "description": "",
@@ -16780,6 +19693,42 @@
     "upgrade": null,
     "image_url": "/static/images/cards/soot.png",
     "beta_image_url": "/static/images/cards/beta/soot.png"
+  },
+  {
+    "id": "SORROWFUL_STRIKE",
+    "name": "Sorrowful Strike",
+    "description": "Deal 13 damage.\nAdd 2 [gold]Sadness[/gold] into your [gold]Hand[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage.\nAdd {Cards:diff()} [gold]Sadness[/gold] into your [gold]Hand[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 13,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Strike"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 13,
+      "Cards": 2
+    },
+    "upgrade": {
+      "damage": "+4"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/sorrowful_strike.png"
   },
   {
     "id": "SOUL",
@@ -16893,7 +19842,7 @@
     "id": "SOVEREIGN_BLADE",
     "name": "Sovereign Blade",
     "description": "Deal 10 damage.",
-    "description_raw": "Deal {Damage:diff()} damage{TargetType:choose(AllEnemies): to ALL enemies|}{Repeat:plural:| {} times}.{GainsBlock:cond:\nGain {CalculatedBlock:diff()} [gold]Block[/gold].|}",
+    "description_raw": "Deal {Damage:diff()} damage{TargetType:choose(AllEnemies): to ALL enemies|}{HitCount:plural:| {HitCount:diff()} times}.{GainsBlock:cond:\nGain {CalculatedBlock:diff()} [gold]Block[/gold].|}",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -16904,7 +19853,7 @@
     "color": "token",
     "damage": 10,
     "block": null,
-    "hit_count": null,
+    "hit_count": 1,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -16918,8 +19867,7 @@
       "Damage": 10,
       "CalculationBase": 0,
       "CalculationExtra": 1,
-      "Repeat": 1,
-      "baseDamage": 10
+      "HitCount": 1
     },
     "upgrade": {
       "cost": 1
@@ -16996,7 +19944,7 @@
   {
     "id": "SPEEDSTER",
     "name": "Speedster",
-    "description": "Whenever you draw a card during your turn, deal 2 damage to ALL enemies.",
+    "description": "Whenever you draw a card during your turn, deal 3 damage to ALL enemies.",
     "description_raw": "Whenever you draw a card during your turn, deal {SpeedsterPower:diff()} damage to ALL enemies.",
     "cost": 2,
     "is_x_cost": null,
@@ -17012,7 +19960,7 @@
     "powers_applied": [
       {
         "power": "Speedster",
-        "amount": 2
+        "amount": 3
       }
     ],
     "cards_draw": null,
@@ -17022,8 +19970,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "SpeedsterPower": 2,
-      "Speedster": 2
+      "SpeedsterPower": 3,
+      "Speedster": 3
     },
     "upgrade": {
       "add_innate": 1
@@ -17103,7 +20051,7 @@
     "id": "SPITE",
     "name": "Spite",
     "description": "Deal 5 damage.\nIf you lost HP this turn,\nhits 2 times.",
-    "description_raw": "Deal {Damage:diff()} damage.\nIf you lost HP this turn,\nhits {Repeat:diff()} times.",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf you lost HP this turn,\nhits {HitCount:diff()} times.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -17114,7 +20062,7 @@
     "color": "ironclad",
     "damage": 5,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -17124,10 +20072,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 5,
-      "Repeat": 2
+      "HitCount": 2
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/spite.png",
     "beta_image_url": "/static/images/cards/beta/spite.png"
@@ -17466,6 +20414,41 @@
     "beta_image_url": null
   },
   {
+    "id": "STEADY_CADENCE",
+    "name": "Steady Cadence",
+    "description": "Deal 10 damage.\nDraw 1 card for each [gold]Melody[/gold] you have.",
+    "description_raw": "Deal {Damage:diff()} damage.\nDraw 1 card for each [gold]Melody[/gold] you have.{InCombat:\n(Draw {CalculatedCards:diff()} {CalculatedCards:plural:card|cards})|}",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 10,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 10,
+      "CalculationBase": 0,
+      "CalculationExtra": 1
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/steady_cadence.png"
+  },
+  {
     "id": "STOKE",
     "name": "Stoke",
     "description": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nAdd 1 random card into your [gold]Hand[/gold] for each card [gold]Exhausted[/gold].",
@@ -17702,6 +20685,47 @@
     "beta_image_url": "/static/images/cards/beta/stratagem.png"
   },
   {
+    "id": "STRENGTH",
+    "name": "Strength",
+    "description": "Gain 4 [gold]Strength[/gold].",
+    "description_raw": "Gain {StrengthPower:diff()} [gold]Strength[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Strength",
+        "amount": 4
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "StrengthPower": 4,
+      "Strength": 4
+    },
+    "upgrade": {
+      "strengthpower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/strength.png"
+  },
+  {
     "id": "STRIKE_DEFECT",
     "name": "Strike",
     "description": "Deal 6 damage.",
@@ -17870,6 +20894,41 @@
     },
     "image_url": "/static/images/cards/strike_silent.png",
     "beta_image_url": null
+  },
+  {
+    "id": "STRIKE_FOOL",
+    "name": "Strike",
+    "description": "Deal 6 damage.",
+    "description_raw": "Deal {Damage:diff()} damage.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Basic",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 6,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Strike"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 6
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/strike_fool.png",
+    "beta_image_url": "/static/images/cards/beta/strike_fool.png"
   },
   {
     "id": "SUBROUTINE",
@@ -18225,7 +21284,7 @@
     "id": "SWORD_BOOMERANG",
     "name": "Sword Boomerang",
     "description": "Deal 3 damage to a random enemy 3 times.",
-    "description_raw": "Deal {Damage:diff()} damage to a random enemy {Repeat:diff()} times.",
+    "description_raw": "Deal {Damage:diff()} damage to a random enemy {HitCount:diff()} times.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -18236,7 +21295,7 @@
     "color": "ironclad",
     "damage": 3,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -18246,10 +21305,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 3,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/sword_boomerang.png",
     "beta_image_url": null
@@ -18534,6 +21593,41 @@
     "beta_image_url": null
   },
   {
+    "id": "TEMPERANCE",
+    "name": "Temperance",
+    "description": "Gain 30 [gold]Block[/gold].",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": 30,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Block": 30
+    },
+    "upgrade": {
+      "block": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/temperance.png"
+  },
+  {
     "id": "TEMPEST",
     "name": "Tempest",
     "description": "[gold]Channel[/gold] X [gold]Lightning[/gold].",
@@ -18699,6 +21793,177 @@
     "beta_image_url": null
   },
   {
+    "id": "THE_CHARIOT",
+    "name": "The Chariot",
+    "description": "Deal 25 damage to ALL enemies.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Token",
+    "target": "AllEnemies",
+    "color": "token",
+    "damage": 25,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 25
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_chariot.png"
+  },
+  {
+    "id": "THE_DEVIL",
+    "name": "The Devil",
+    "description": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nPlay the top card of your [gold]Draw Pile[/gold] for each card [gold]Exhausted[/gold] this way.",
+    "description_raw": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\n{IfUpgraded:show:[gold]Upgrade[/gold] and play|Play} the top card of your [gold]Draw Pile[/gold] for each card [gold]Exhausted[/gold] this way.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_devil.png"
+  },
+  {
+    "id": "THE_EMPEROR",
+    "name": "The Emperor",
+    "description": "Gain [energy:7].",
+    "description_raw": "Gain {Energy:energyIcons()}.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 7,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 7
+    },
+    "upgrade": {
+      "energy": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_emperor.png"
+  },
+  {
+    "id": "THE_EMPRESS",
+    "name": "The Empress",
+    "description": "Apply 3 [gold]Weak[/gold].\nApply 3 [gold]Vulnerable[/gold].",
+    "description_raw": "Apply {Power:diff()} [gold]Weak[/gold].\nApply {Power:diff()} [gold]Vulnerable[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Power": 3
+    },
+    "upgrade": {
+      "power": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_empress.png"
+  },
+  {
+    "id": "THE_FOOL",
+    "name": "The Fool",
+    "description": "Play 2 random cards from your [gold]Hand[/gold].",
+    "description_raw": "Play {Cards:diff()} random {Cards:plural:card|cards} from your [gold]Hand[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 2
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_fool.png"
+  },
+  {
     "id": "THE_GAMBIT",
     "name": "The Gambit",
     "description": "Gain 50 [gold]Block[/gold].\nIf you take unblocked attack damage this combat, die.",
@@ -18729,6 +21994,147 @@
     },
     "image_url": "/static/images/cards/the_gambit.png",
     "beta_image_url": null
+  },
+  {
+    "id": "THE_HANGED_MAN",
+    "name": "The Hanged Man",
+    "description": "Lose 6 HP.\nTake an extra turn after this one.",
+    "description_raw": "Lose {HpLoss:diff()} HP.\nTake an extra turn after this one.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": 6,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "HpLoss": 6
+    },
+    "upgrade": {
+      "hploss": "-3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_hanged_man.png"
+  },
+  {
+    "id": "THE_HERMIT",
+    "name": "The Hermit",
+    "description": "Discard a card.\nDraw 2 cards.\nDiscarded [gold]Curses[/gold] are [gold]Exhausted[/gold].",
+    "description_raw": "Discard a card.\nDraw {Cards:diff()} {Cards:plural:card|cards}.\nDiscarded [gold]Curses[/gold] are [gold]Exhausted[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 2
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_hermit.png"
+  },
+  {
+    "id": "THE_HIEROPHANT",
+    "name": "The Hierophant",
+    "description": "Add 3 random Colorless cards into your [gold]Hand[/gold].\nThey cost 1 less [energy:1] this turn.",
+    "description_raw": "Add {Cards:diff()} random Colorless {Cards:plural:card|cards} into your [gold]Hand[/gold].\nThey cost 1 less {energyPrefix:energyIcons(1)} this turn.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 3,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 3
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_hierophant.png"
+  },
+  {
+    "id": "THE_HIGH_PRIESTESS",
+    "name": "The High Priestess",
+    "description": "Draw 4 cards.",
+    "description_raw": "Draw {Cards:diff()} cards.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 4,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust",
+      "Retain"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 4
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_high_priestess.png"
   },
   {
     "id": "THE_HUNT",
@@ -18763,6 +22169,103 @@
     },
     "image_url": "/static/images/cards/the_hunt.png",
     "beta_image_url": "/static/images/cards/beta/the_hunt.png"
+  },
+  {
+    "id": "THE_LOVERS",
+    "name": "The Lovers",
+    "description": "Fill your [gold]Hand[/gold] with random cards from other characters.",
+    "description_raw": "Fill your [gold]Hand[/gold] with random{IfUpgraded:show: upgraded|} cards from other characters.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_lovers.png"
+  },
+  {
+    "id": "THE_MAGICIAN",
+    "name": "The Magician",
+    "description": "Gain 3 Orb Slots.\n[gold]Channel[/gold] 3 random Orbs.",
+    "description_raw": "Gain {Repeat:diff()} Orb Slots.\n[gold]Channel[/gold] {Repeat:diff()} random {Repeat:plural:Orb|Orbs}.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Repeat": 3
+    },
+    "upgrade": {
+      "repeat": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_magician.png"
+  },
+  {
+    "id": "THE_MOON",
+    "name": "The Moon",
+    "description": "Fill your [gold]Hand[/gold] with [gold]Shivs[/gold].",
+    "description_raw": "Fill your [gold]Hand[/gold] with [gold]{IfUpgraded:show:Shivs+|Shivs}[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_moon.png"
   },
   {
     "id": "THE_SCYTHE",
@@ -18833,6 +22336,42 @@
     "beta_image_url": "/static/images/cards/beta/the_sealed_throne.png"
   },
   {
+    "id": "THE_SHOT",
+    "name": "The Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 10 damage for each card [gold]Exhausted[/gold] by [gold]Florescence[/gold].",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {ExtraDamage:diff()} damage for each card [gold]Exhausted[/gold] by [gold]Florescence[/gold].{InCombat:\n(Deals {CalculatedDamage:diff()} damage)|}",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Token",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 0,
+      "ExtraDamage": 10
+    },
+    "upgrade": {
+      "extradamage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_shot.png"
+  },
+  {
     "id": "THE_SMITH",
     "name": "The Smith",
     "description": "[gold]Forge[/gold] 30.",
@@ -18864,6 +22403,151 @@
     },
     "image_url": "/static/images/cards/the_smith.png",
     "beta_image_url": null
+  },
+  {
+    "id": "THE_STAR",
+    "name": "The Star",
+    "description": "Next turn, gain [energy:3] and draw 3 cards.",
+    "description_raw": "Next turn, gain {Energy:energyIcons()} and draw {Cards:diff()} {Cards:plural:card|cards}.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 3,
+    "energy_gain": 3,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 3,
+      "Energy": 3
+    },
+    "upgrade": {
+      "cards": "+1",
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_star.png"
+  },
+  {
+    "id": "THE_SUN",
+    "name": "The Sun",
+    "description": "Draw 2 cards.\nGain [energy:2].\nAdd a [gold]Soot[/gold] into your [gold]Discard Pile[/gold].",
+    "description_raw": "Draw {Cards:diff()} cards.\nGain {Energy:energyIcons()}.\nAdd a [gold]Soot[/gold] into your [gold]Discard Pile[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": 2,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 2,
+      "Energy": 2
+    },
+    "upgrade": {
+      "energy": "+1",
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_sun.png"
+  },
+  {
+    "id": "THE_TOWER",
+    "name": "The Tower",
+    "description": "Deal 2 damage for each floor traveled.",
+    "description_raw": "Deal {ExtraDamage:diff()} damage for each floor traveled.{InCombat:\n(Deal {CalculatedDamage:diff()} damage.)|}",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Token",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 0,
+      "ExtraDamage": 2
+    },
+    "upgrade": {
+      "extradamage": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_tower.png"
+  },
+  {
+    "id": "THE_WORLD",
+    "name": "The World",
+    "description": "Put 5 random cards from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold].",
+    "description_raw": "Put {Cards:diff()} random {Cards:plural:card|cards} from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 5,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 5
+    },
+    "upgrade": {
+      "cards": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_world.png"
   },
   {
     "id": "THINKING_AHEAD",
@@ -18903,7 +22587,7 @@
     "id": "THRASH",
     "name": "Thrash",
     "description": "Deal 4 damage twice.\n[gold]Exhaust[/gold] a random Attack in your [gold]Hand[/gold] and add its damage to this card.",
-    "description_raw": "Deal {Damage:diff()} damage twice.\n[gold]Exhaust[/gold] a random Attack in your [gold]Hand[/gold] and add its damage to this card.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.\n[gold]Exhaust[/gold] a random Attack in your [gold]Hand[/gold] and add its damage to this card.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -18923,7 +22607,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 4
+      "Damage": 4,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -19039,6 +22724,41 @@
     },
     "image_url": "/static/images/cards/thunderclap.png",
     "beta_image_url": null
+  },
+  {
+    "id": "TIMBER",
+    "name": "Timber",
+    "description": "Deal 20 damage.\nIf this kills an enemy, deal 30 damage to ALL enemies.",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf this kills an enemy, deal {OnKillDamage:diff()} damage to ALL enemies.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 20,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 20,
+      "OnKillDamage": 30
+    },
+    "upgrade": {
+      "damage": "+5",
+      "onkilldamage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/timber.png"
   },
   {
     "id": "TIMES_UP",
@@ -19172,8 +22892,8 @@
   {
     "id": "TRACKING",
     "name": "Tracking",
-    "description": "[gold]Weak[/gold] enemies take 50% more damage from Attacks.",
-    "description_raw": "[gold]Weak[/gold] enemies take 50% more damage from Attacks.",
+    "description": "[gold]Weak[/gold] enemies take 50% more damage from your Attacks.",
+    "description_raw": "[gold]Weak[/gold] enemies take 50% more damage from your Attacks.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -19304,6 +23024,41 @@
     "beta_image_url": null
   },
   {
+    "id": "TRICK_SHOT",
+    "name": "Trick Shot",
+    "description": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 12 damage and return this card to your [gold]Hand[/gold].",
+    "description_raw": "[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal {Damage:diff()} damage and return this card to your [gold]Hand[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 12,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 12
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/trick_shot.png"
+  },
+  {
     "id": "TRUE_GRIT",
     "name": "True Grit",
     "description": "Gain 7 [gold]Block[/gold].\n[gold]Exhaust[/gold] 1 card at random.",
@@ -19334,6 +23089,39 @@
     },
     "image_url": "/static/images/cards/true_grit.png",
     "beta_image_url": null
+  },
+  {
+    "id": "TUNE",
+    "name": "Tune",
+    "description": "At the end of your turn, if you have a [gold]Ki Melody[/gold], the next card you play costs 0 [energy:1].",
+    "description_raw": "At the end of your turn, if you have a [gold]Ki Melody[/gold], the next card you play costs 0 {energyPrefix:energyIcons(1)}.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1
+    },
+    "upgrade": {
+      "cost": 1
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/tune.png"
   },
   {
     "id": "TURBO",
@@ -19404,7 +23192,7 @@
     "id": "TWIN_STRIKE",
     "name": "Twin Strike",
     "description": "Deal 5 damage twice.",
-    "description_raw": "Deal {Damage:diff()} damage twice.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -19426,7 +23214,8 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 5
+      "Damage": 5,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -19805,7 +23594,7 @@
     "id": "UPROAR",
     "name": "Uproar",
     "description": "Deal 6 damage twice.\nPlay a random Attack from your [gold]Draw Pile[/gold].",
-    "description_raw": "Deal {Damage:diff()} damage twice.\nPlay a random Attack from your [gold]Draw Pile[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:choose(2):twice|{HitCount:diff()} times}.\nPlay a random Attack from your [gold]Draw Pile[/gold].",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -19825,13 +23614,53 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 6
+      "Damage": 6,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
     },
     "image_url": "/static/images/cards/uproar.png",
     "beta_image_url": "/static/images/cards/beta/uproar.png"
+  },
+  {
+    "id": "UPROOT",
+    "name": "Uproot",
+    "description": "If the enemy is [gold]Impaled[/gold], [gold]Dislodge[/gold] and apply 3 [gold]Vulnerable[/gold].",
+    "description_raw": "If the enemy is [gold]Impaled[/gold], [gold]Dislodge[/gold] and apply {VulnerablePower:diff()} [gold]Vulnerable[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Vulnerable",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "VulnerablePower": 3,
+      "Vulnerable": 3
+    },
+    "upgrade": {
+      "vulnerable": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/uproot.png"
   },
   {
     "id": "VEILPIERCER",
@@ -19928,6 +23757,84 @@
     },
     "image_url": "/static/images/cards/vicious.png",
     "beta_image_url": "/static/images/cards/beta/vicious.png"
+  },
+  {
+    "id": "VIOLENT_CHORD",
+    "name": "Violent Chord",
+    "description": "Whenever you gain a [gold]Wah Melody[/gold], deal 9 damage to ALL enemies.",
+    "description_raw": "Whenever you gain a [gold]Wah Melody[/gold], deal {ViolentChordPower:diff()} damage to ALL enemies.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Violent Chord",
+        "amount": 9
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "ViolentChordPower": 9,
+      "ViolentChord": 9
+    },
+    "upgrade": {
+      "violentchordpower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/violent_chord.png"
+  },
+  {
+    "id": "VITRIOL",
+    "name": "Vitriol",
+    "description": "Apply 2 [gold]Weak[/gold].\nAdd a [gold]Sadness[/gold] into your [gold]Hand[/gold].",
+    "description_raw": "Apply {WeakPower:diff()} [gold]Weak[/gold].\nAdd a [gold]Sadness[/gold] into your [gold]Hand[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Weak",
+        "amount": 2
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "WeakPower": 2,
+      "Weak": 2
+    },
+    "upgrade": {
+      "weak": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/vitriol.png"
   },
   {
     "id": "VOID",
@@ -20070,6 +23977,308 @@
     "beta_image_url": "/static/images/cards/beta/voltaic.png"
   },
   {
+    "id": "WAH_BLAST",
+    "name": "Wah Blast",
+    "description": "Deal 14 damage to ALL enemies.\nIf you have a [gold]Cho Melody[/gold] or [gold]Ki Melody[/gold], hits twice.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\nIf you have a [gold]Cho Melody[/gold] or [gold]Ki Melody[/gold], hits twice.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AllEnemies",
+    "color": "fool",
+    "damage": 14,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 14
+    },
+    "upgrade": {
+      "damage": "+4"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_blast.png"
+  },
+  {
+    "id": "WAH_CHO",
+    "name": "Wah Cho",
+    "description": "Gain 3 [gold]Block[/gold].\nDeal 3 damage.",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nDeal {Damage:diff()} damage.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 3,
+    "block": 3,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah",
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 3,
+      "Block": 3
+    },
+    "upgrade": {
+      "damage": "+2",
+      "block": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_cho.png"
+  },
+  {
+    "id": "WAH_CHO_KI",
+    "name": "Wah Cho Ki",
+    "description": "Gain 9 [gold]Block[/gold].\nDeal 9 damage.\nDraw 1 card.",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nDeal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Rare",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 9,
+    "block": 9,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah",
+      "Cho",
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 9,
+      "Block": 9,
+      "Cards": 1
+    },
+    "upgrade": {
+      "damage": "+3",
+      "block": "+3",
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_cho_ki.png"
+  },
+  {
+    "id": "WAH_HAMMER",
+    "name": "Wah Hammer",
+    "description": "Deal 9 damage.\nDeals double damage to [gold]Impaled[/gold] enemies.",
+    "description_raw": "Deal {Damage:diff()} damage.\nDeals double damage to [gold]Impaled[/gold] enemies.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 9,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 9
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_hammer.png"
+  },
+  {
+    "id": "WAH_KI",
+    "name": "Wah Ki",
+    "description": "Deal 2 damage 2 times.\nNext turn, gain [energy:1] and draw 1 card.",
+    "description_raw": "Deal {Damage:diff()} damage {HitCount:diff()} {HitCount:plural:time|times}.\nNext turn, gain {Energy:energyIcons()} and draw {Cards:diff()} {Cards:plural:card|cards}.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 2,
+    "block": null,
+    "hit_count": 2,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah",
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 2,
+      "HitCount": 2,
+      "Cards": 1,
+      "Energy": 1
+    },
+    "upgrade": {
+      "damage": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_ki.png"
+  },
+  {
+    "id": "WAH_SWEEP",
+    "name": "Wah Sweep",
+    "description": "Deal 8 damage to ALL enemies.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AllEnemies",
+    "color": "fool",
+    "damage": 8,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 8
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_sweep.png"
+  },
+  {
+    "id": "WAH_SYMPHONY",
+    "name": "Wah Symphony",
+    "description": "Deal 6 damage to ALL enemies.\nDeals 4 additional damage for ALL your cards containing “Wah”, “Cho”, or “Ki”.",
+    "description_raw": "Deal {CalculatedDamage:diff()} damage to ALL enemies.\nDeals {ExtraDamage:diff()} additional damage for ALL your cards containing “Wah”, “Cho”, or “Ki”.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Rare",
+    "target": "AllEnemies",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 6,
+      "ExtraDamage": 4
+    },
+    "upgrade": {
+      "extradamage": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_symphony.png"
+  },
+  {
+    "id": "WAH_TOUCH",
+    "name": "Wah Touch",
+    "description": "Deal 6 damage.\nApply 1 [gold]Vulnerable[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} [gold]Vulnerable[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Common",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 6,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Vulnerable",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 6,
+      "VulnerablePower": 1,
+      "Vulnerable": 1
+    },
+    "upgrade": {
+      "damage": "+2",
+      "vulnerable": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_touch.png"
+  },
+  {
     "id": "WASTE_AWAY",
     "name": "Waste Away",
     "description": "Gain 1 less [energy:1] per turn.",
@@ -20136,6 +24345,41 @@
     "beta_image_url": null
   },
   {
+    "id": "WHEEL_OF_FORTUNE",
+    "name": "Wheel of Fortune",
+    "description": "Discard your [gold]Hand[/gold].\nDraw 7 cards.",
+    "description_raw": "Discard your [gold]Hand[/gold].\nDraw {Cards:diff()} cards.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Token",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 7,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 7
+    },
+    "upgrade": {
+      "cards": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wheel_of_fortune.png"
+  },
+  {
     "id": "WHIRLWIND",
     "name": "Whirlwind",
     "description": "Deal 5 damage to ALL enemies X times.",
@@ -20200,6 +24444,39 @@
     },
     "image_url": "/static/images/cards/whistle.png",
     "beta_image_url": "/static/images/cards/beta/whistle.png"
+  },
+  {
+    "id": "WHISTLING_ARROWS",
+    "name": "Whistling Arrows",
+    "description": "Gain 3 [gold]Block[/gold].\nWhenever you [gold]Shoot[/gold] an [gold]Arrow[/gold], return this to your [gold]Hand[/gold] from the [gold]Discard Pile[/gold].",
+    "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nWhenever you [gold]Shoot[/gold] an [gold]Arrow[/gold], return this to your [gold]Hand[/gold] from the [gold]Discard Pile[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 3,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Block": 3
+    },
+    "upgrade": {
+      "block": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/whistling_arrows.png"
   },
   {
     "id": "WHITE_NOISE",
@@ -20408,6 +24685,39 @@
     "beta_image_url": null
   },
   {
+    "id": "WREST",
+    "name": "Wrest",
+    "description": "If the enemy is [gold]Impaled[/gold], [gold]Dislodge[/gold] and draw 2 cards.",
+    "description_raw": "If the enemy is [gold]Impaled[/gold], [gold]Dislodge[/gold] and draw {Cards:diff()} {Cards:plural:card|cards}.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 2
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wrest.png"
+  },
+  {
     "id": "WRITHE",
     "name": "Writhe",
     "description": "",
@@ -20471,6 +24781,78 @@
     },
     "image_url": "/static/images/cards/wrought_in_war.png",
     "beta_image_url": "/static/images/cards/beta/wrought_in_war.png"
+  },
+  {
+    "id": "YAH",
+    "name": "Yah!",
+    "description": "The first time you [gold]Dislodge[/gold] an [gold]Arrow[/gold] each turn, gain [energy:1].",
+    "description_raw": "The first time you [gold]Dislodge[/gold] an [gold]Arrow[/gold] each turn, gain {Energy:energyIcons()}.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1
+    },
+    "upgrade": {
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/yah.png"
+  },
+  {
+    "id": "YOGA",
+    "name": "Yoga",
+    "description": "ALL players gain 6 [gold]Stretch[/gold].",
+    "description_raw": "ALL players gain {StretchPower:diff()} [gold]Stretch[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AllAllies",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Stretch",
+        "amount": 6
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "StretchPower": 6,
+      "Stretch": 6
+    },
+    "upgrade": {
+      "stretchpower": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/yoga.png"
   },
   {
     "id": "ZAP",

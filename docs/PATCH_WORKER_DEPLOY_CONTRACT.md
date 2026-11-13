@@ -8,7 +8,7 @@ but independently deployable surfaces.
 
 - Patch pages must not render a clickable Compendium link unless that resource
   exists in the deployed Compendium resource manifest.
-- Missing resources must render as hover-only "모음집 준비 중" / "Compendium page
+- Missing resources must render as hover-only "백과사전 준비 중" / "Compendium page
   in progress" previews.
 - Pending resources may still use rich patch markup and hover previews, but the
   user must not be able to click through to a 404 Compendium page.

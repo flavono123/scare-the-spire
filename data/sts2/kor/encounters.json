@@ -13,7 +13,7 @@
         "name": "영겁의 모래시계"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}의 방해를 친절하게 받아들이지 않았습니다.",
+    "loss_text": "[gold]{encounter}[/gold](은)는 {character}의 방해를 친절하게 받아들이지 않았습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -39,7 +39,7 @@
         "name": "잘라봇"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 절단되었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 절단되었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -68,7 +68,7 @@
         "name": "전투 친구 V1.0"
       }
     ],
-    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???",
+    "loss_text": "{character}(은)는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???",
     "compositions": [
       {
         "id": "FIXED",
@@ -94,7 +94,7 @@
         "name": "전투 친구 V2.0"
       }
     ],
-    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???",
+    "loss_text": "{character}(은)는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???",
     "compositions": [
       {
         "id": "FIXED",
@@ -120,7 +120,7 @@
         "name": "전투 친구 V3.0"
       }
     ],
-    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???",
+    "loss_text": "{character}(은)는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???",
     "compositions": [
       {
         "id": "FIXED",
@@ -160,7 +160,7 @@
         "name": "그릇벌레 (바위)"
       }
     ],
-    "loss_text": "{character}는 분주한 [gold]{encounter}[/gold]에 의해 저지되었습니다.",
+    "loss_text": "{character}(은)는 분주한 [gold]{encounter}[/gold]에 의해 저지되었습니다.",
     "compositions": [
       {
         "id": "OPTION_01",
@@ -307,7 +307,7 @@
         "name": "그릇벌레 (바위)"
       }
     ],
-    "loss_text": "{character}는 분주한 [gold]{encounter}[/gold]에 의해 저지되었습니다.",
+    "loss_text": "{character}(은)는 분주한 [gold]{encounter}[/gold]에 의해 저지되었습니다.",
     "compositions": [
       {
         "id": "OPTION_01",
@@ -356,7 +356,7 @@
         "name": "옛 시대의 우상"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 반으로 잘렸습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 반으로 잘렸습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -408,7 +408,7 @@
         "name": "의식의 신수"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 안식에 들었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 안식에 들었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -436,7 +436,7 @@
         "name": "먹깨비"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 잘근잘근 씹혀 죽었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 잘근잘근 씹혀 죽었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -469,7 +469,7 @@
         "name": "큐브형 구조체"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}를 으깨버렸습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 으깨버렸습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -503,7 +503,7 @@
         "name": "시체 민달팽이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}를 마음껏 먹어치웠습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 마음껏 먹어치웠습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -537,7 +537,7 @@
         "name": "시체 민달팽이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}를 마음껏 먹어치웠습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 마음껏 먹어치웠습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -566,7 +566,7 @@
         "name": "큐브형 구조체"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 레이저에 의해 사망했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 레이저에 의해 사망했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -596,7 +596,7 @@
         "name": "흠뻑 젖은 광신자"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 살해당했습니다. [sine]까아아악[/sine]...",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 살해당했습니다. [sine]까아아악[/sine]...",
     "compositions": [
       {
         "id": "FIXED",
@@ -633,7 +633,7 @@
         "name": "DECIMILLIPEDE_SEGMENT_BACK"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 영역에서 살아남지 못했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 영역에서 살아남지 못했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -670,7 +670,7 @@
         "name": "꿈틀벌레"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 감염되었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에게 감염되었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -711,7 +711,7 @@
         "name": "열정적인 조각가"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 산산조각이 났습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 산산조각이 났습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -754,7 +754,7 @@
         "name": "곤충술사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 벌침에 쏘여 사망했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 벌침에 쏘여 사망했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -782,7 +782,7 @@
         "name": "갑각충"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -825,7 +825,7 @@
         "name": "갑각충"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -862,7 +862,7 @@
         "name": "조립 전문가"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 로봇들에게 지져졌습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 로봇들에게 지져졌습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -891,7 +891,7 @@
         "name": "상?인"
       }
     ],
-    "loss_text": "{character}는 [gold][b]{encounter}[/b][/gold]의 분노를 마주했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 분노를 마주했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -931,7 +931,7 @@
         "name": "날개버섯"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 흡수되었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에게 흡수되었습니다.",
     "compositions": [
       {
         "id": "OPTION_01",
@@ -967,7 +967,7 @@
     "act": null,
     "tags": null,
     "monsters": [],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 박살이 났습니다."
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 박살이 났습니다."
   },
   {
     "id": "FOGMOG_NORMAL",
@@ -986,7 +986,7 @@
         "name": "톱니눈"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 환상에 의해 집중하지 못했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 환상에 의해 집중하지 못했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1015,7 +1015,7 @@
         "name": "화석 매복자"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 습격당했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에게 습격당했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1129,7 +1129,7 @@
         "name": "교활한 그렘린"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 털렸습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에게 털렸습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1184,7 +1184,7 @@
         "name": "사냥꾼 살해자"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1210,7 +1210,7 @@
         "name": "감염된 프리즘"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 저지당했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 저지당했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1315,7 +1315,7 @@
         "name": "마법 기사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 살해당했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 살해당했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1378,7 +1378,7 @@
         "name": "라가불린 대모"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 반으로 썰렸습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에게 반으로 썰렸습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1408,7 +1408,7 @@
         "name": "가스 폭탄"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 악취를 견디지 못했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 악취를 견디지 못했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1437,7 +1437,7 @@
         "name": "태초의 공벌레"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 무력화되었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 무력화되었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1463,7 +1463,7 @@
         "name": "장수아귀"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 맛있는 한 끼 식사가 되었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 맛있는 한 끼 식사가 되었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1489,7 +1489,7 @@
         "name": "기계 기사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 찔리고 불태워졌습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에게 찔리고 불태워졌습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1515,7 +1515,7 @@
         "name": "수수께끼의 기사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 열쇠를 가져가려고 했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 열쇠를 가져가려고 했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1541,7 +1541,7 @@
         "name": "진듸기"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 둘러싸였습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에게 둘러싸였습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1685,7 +1685,7 @@
         "name": "튼튼한 알"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 자식들을 위한 먹이가 되었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 자식들을 위한 먹이가 되었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1740,7 +1740,7 @@
         "name": "허깨비 정원사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 안식에 들었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 안식에 들었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1814,7 +1814,7 @@
         "name": "권투형 구조체"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]와 주먹다짐을 했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]와 주먹다짐을 했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1840,7 +1840,7 @@
         "name": "권투형 구조체"
       }
     ],
-    "loss_text": "{character}는 두 [gold]{encounter}[/gold]의 싸움을 방해했습니다.",
+    "loss_text": "{character}(은)는 두 [gold]{encounter}[/gold]의 싸움을 방해했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1922,7 +1922,7 @@
         "name": "추적 습격자"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold] 무리에게 집단 구타를 당했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold] 무리에게 집단 구타를 당했습니다.",
     "compositions": [
       {
         "id": "OPTION_01",
@@ -2916,7 +2916,7 @@
         "name": "석회화된 광신자"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]들에게 패배했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]들에게 패배했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3001,7 +3001,7 @@
         "name": "압축벌레"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 간식이 됐습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 간식이 됐습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3027,7 +3027,7 @@
         "name": "잠행 군체"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 흡수당했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 흡수당했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3053,7 +3053,7 @@
         "name": "슬라임 광전사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 흡수되었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에게 흡수되었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3093,7 +3093,7 @@
         "name": "나뭇잎 슬라임 (중)"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 쓰러졌습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 쓰러졌습니다.",
     "compositions": [
       {
         "id": "OPTION_01",
@@ -3160,7 +3160,7 @@
         "name": "가지 슬라임 (중)"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 쓰러졌습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 쓰러졌습니다.",
     "compositions": [
       {
         "id": "OPTION_01",
@@ -3260,7 +3260,7 @@
         "name": "미끈거리는 교살마"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 질식사했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 질식사했습니다.",
     "compositions": [
       {
         "id": "SNAPPING_JAXFRUIT",
@@ -3319,7 +3319,7 @@
         "name": "오물팽이"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]를 이길 수 없었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]를 이길 수 없었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3355,7 +3355,7 @@
         "name": "그릇벌레 (실크)"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]를 방해했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]를 방해했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3399,7 +3399,7 @@
         "name": "날개버섯"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]들과 충돌했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]들과 충돌했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3454,7 +3454,7 @@
         "name": "영혼 결합체"
       }
     ],
-    "loss_text": "{character}는 잊힌 전장에서 [gold]{encounter}[/gold]에 의해 사망했습니다.",
+    "loss_text": "{character}(은)는 잊힌 전장에서 [gold]{encounter}[/gold]에 의해 사망했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3480,7 +3480,7 @@
         "name": "가시두꺼비"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 가시를 뚫지 못했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 가시를 뚫지 못했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3614,7 +3614,7 @@
         "name": "혈족 사제"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 뛰어난 전략에 의해 완패했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]의 뛰어난 전략에 의해 완패했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3688,7 +3688,7 @@
         "name": "투사된 공포"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]와 그것의 환영에 의해 박살났습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]와 그것의 환영에 의해 박살났습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3745,7 +3745,7 @@
         "name": "올챙이"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]을 처리하지 못했습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]을 처리하지 못했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3764,6 +3764,8 @@
   {
     "id": "TUNNELER_NORMAL",
     "name": "땅굴 2인조",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.103.0",
     "room_type": "Monster",
     "is_weak": false,
     "act": "Act 2 - Hive",
@@ -3795,9 +3797,7 @@
           ]
         ]
       }
-    ],
-    "deprecated": true,
-    "deprecatedInPatch": "v0.103.0"
+    ]
   },
   {
     "id": "TUNNELER_WEAK",
@@ -3814,7 +3814,7 @@
         "name": "땅굴충"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 얻어맞았습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에게 얻어맞았습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3873,7 +3873,7 @@
         "name": "두꼬리쥐"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 둘러싸였습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에게 둘러싸였습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3910,7 +3910,7 @@
         "name": "밴텀"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 잉클릿으로 변해버렸습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]에 의해 잉클릿으로 변해버렸습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3936,7 +3936,7 @@
         "name": "휘청거리는 덩굴"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]로부터 도망칠 수 없었습니다.",
+    "loss_text": "{character}(은)는 [gold]{encounter}[/gold]로부터 도망칠 수 없었습니다.",
     "compositions": [
       {
         "id": "FIXED",

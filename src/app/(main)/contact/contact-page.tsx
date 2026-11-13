@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { CheckCircle2, LockKeyhole } from "lucide-react";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
@@ -45,7 +45,9 @@ export default function ContactPage({
   mailboxTitle,
   serviceLocale,
   gameLocale,
+  devInbox = null,
 }: {
+  devInbox?: ReactNode;
   copy: ContactMessages;
   feedbackCopy: FeedbackFormGameCopy;
   mailboxTitle: string;
@@ -53,6 +55,7 @@ export default function ContactPage({
   gameLocale: GameLocale;
 }) {
   const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
+  const [devTab, setDevTab] = useState<"inbox" | "form">("inbox");
   const [category, setCategory] = useState<ContactCategory | null>(null);
   const [message, setMessage] = useState("");
   const [replyEmail, setReplyEmail] = useState("");
@@ -119,7 +122,7 @@ export default function ContactPage({
       <main
         data-contact-page
         data-auth-ready={authReady ? "true" : "false"}
-        className="relative mx-auto w-full max-w-3xl"
+        className={`relative mx-auto w-full ${devInbox && devTab === "inbox" ? "max-w-6xl" : "max-w-3xl"}`}
       >
         <header className="mb-5 flex items-center gap-4 sm:mb-7">
           <span className="relative flex h-20 w-20 shrink-0 items-center justify-center sm:h-24 sm:w-24">
@@ -142,7 +145,25 @@ export default function ContactPage({
           </div>
         </header>
 
-        <section data-contact-form-panel className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+        {devInbox && (
+          <div role="tablist" className="mb-4 flex gap-2 text-sm font-bold">
+            {([["inbox", "문의 내역함"], ["form", "문의"]] as const).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={devTab === id}
+                onClick={() => setDevTab(id)}
+                className={`rounded-lg border px-4 py-2 ${devTab === id ? "border-primary/60 bg-primary/12 text-primary" : "border-border text-muted-foreground"}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+        {devInbox && devTab === "inbox" && devInbox}
+
+        <section hidden={!!devInbox && devTab === "inbox"} data-contact-form-panel className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
           <div className="flex items-center gap-2 border-b border-border bg-muted/50 px-4 py-3 text-xs text-muted-foreground sm:px-6">
             <LockKeyhole className="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
             <span>{copy.privateNote}</span>

@@ -14,9 +14,9 @@ import {
   useItemDisplay,
   type ItemDisplay,
 } from "@/components/vexing-puzzlebox/display-toggles";
-import { useMerchantSay } from "@/components/vexing-puzzlebox/merchant-feedback";
 import { usePuzzleboxSound } from "@/components/vexing-puzzlebox/puzzlebox-audio";
 import { ScoreSummary, type ScoreSubmission } from "@/components/vexing-puzzlebox/score-summary";
+import { focusOnPhone } from "@/components/vexing-puzzlebox/focus-on-phone";
 import { useVakuu } from "@/components/vexing-puzzlebox/vakuu-chatter";
 import { useAuth } from "@/hooks/use-auth";
 import { puzzleboxPlayer, submitPuzzleboxRun, useMyPuzzleboxStandings } from "@/hooks/use-puzzlebox-scores";
@@ -155,7 +155,6 @@ export function BetaArtQuiz({
   const [savedSets, setSavedSets] = useState<Record<string, boolean[]>>({});
   const [copied, setCopied] = useState(false);
   const [display, setDisplay] = useItemDisplay(gameLocale);
-  const say = useMerchantSay();
   const vakuu = useVakuu();
   const playSound = usePuzzleboxSound();
   const { stored, profile } = useStoredProfileSnapshot();
@@ -165,6 +164,8 @@ export function BetaArtQuiz({
   /** What the open question has had on screen; the next question starts from the toggles. */
   const [questionShown, setQuestionShown] = useState<RunDisplay | undefined>(undefined);
   const artRef = useRef<HTMLImageElement>(null);
+  /** The choice under a mouse (or keyboard focus); touch never sets it, so a tap is one tap. */
+  const [previewKey, setPreviewKey] = useState<string | null>(null);
   const [clockOn, setClockOn] = useState(false);
   const [hurt, setHurt] = useState(0);
   const [localScores, setLocalScores] = useState<Record<string, LocalBestScore>>({});
@@ -194,6 +195,11 @@ export function BetaArtQuiz({
     if (requested >= 1 && requested <= sets.length) setSetIndex(requested - 1);
   }, [sets.length]);
 
+  // Opening a set (or a link to one) brings the board up on a phone.
+  useEffect(() => {
+    if (setIndex !== null) focusOnPhone(boardRef.current);
+  }, [setIndex]);
+
   // Vakuu sums up a finished set.
   useEffect(() => {
     if (!setFinished || !set) return;
@@ -213,6 +219,7 @@ export function BetaArtQuiz({
     setSetIndex(index);
     setAnswers([]);
     setPicked(null);
+    setPreviewKey(null);
     setCopied(false);
     setSubmission(null);
     const url = new URL(window.location.href);
@@ -226,6 +233,7 @@ export function BetaArtQuiz({
     questionShownAt.current = at;
     setQuestionShown(undefined);
     setPicked(null);
+    setPreviewKey(null);
     const board = boardRef.current;
     if (board && board.getBoundingClientRect().top < 0) board.scrollIntoView({ block: "start", behavior: "smooth" });
   }, []);
@@ -286,12 +294,22 @@ export function BetaArtQuiz({
                   saved ? "border-primary/50 bg-primary/10" : "border-border bg-card/90"
                 }`}
               >
-                <span className="flex items-baseline justify-between gap-2">
+                <span className="flex items-center justify-between gap-2">
                   <span className="font-game-title text-sm font-semibold">
                     {copy.quizSet} {index + 1}
                   </span>
-                  <span className="text-xs tabular-nums text-muted-foreground">
-                    {saved ? `${saved.filter(Boolean).length}/${questions.length}` : questions.length}
+                  <span className="flex items-center gap-1.5">
+                    {best && (
+                      <span
+                        title={standing ? copy.rankLine.replace("{rank}", String(standing.rank)).replace("{players}", String(standing.players)) : undefined}
+                        className="rounded bg-amber-400/15 px-1.5 font-game-title text-sm font-bold tabular-nums spire-gold"
+                      >
+                        {best.best}
+                      </span>
+                    )}
+                    <span className="text-xs tabular-nums text-muted-foreground">
+                      {saved ? `${saved.filter(Boolean).length}/${questions.length}` : questions.length}
+                    </span>
                   </span>
                 </span>
                 <span className="mt-1.5 grid grid-cols-4 gap-1">
@@ -307,16 +325,6 @@ export function BetaArtQuiz({
                     />
                   ))}
                 </span>
-                {best && (
-                  <span className="mt-1.5 flex items-baseline justify-end gap-1.5 whitespace-nowrap">
-                    <span className="font-game-title text-sm font-bold tabular-nums spire-gold">{best.best}</span>
-                    {standing && (
-                      <span className="text-[11px] tabular-nums text-muted-foreground">
-                        {copy.rankLine.replace("{rank}", String(standing.rank)).replace("{players}", String(standing.players))}
-                      </span>
-                    )}
-                  </span>
-                )}
               </button>
             </li>
           );
@@ -406,6 +414,7 @@ export function BetaArtQuiz({
     };
     clock.reset();
     setClockOn(false);
+    setPreviewKey(null);
     const nextAnswers = [...answers, answer];
     const nextResults = nextAnswers.map((item) => item.correct);
     const streak = nextResults.slice(-STREAK);
@@ -416,10 +425,8 @@ export function BetaArtQuiz({
     );
     playSound("uiClick");
     if (correct) {
-      say("success", choice);
       playSound("gold");
     } else {
-      say("forbidden", choice);
       playInvalidShake(choice);
       playSound("lifeLost");
       setHurt((count) => count + 1);
@@ -448,9 +455,10 @@ export function BetaArtQuiz({
 
   const lastQuestion = answers.length === set.length || livesLeft <= 0;
   const lostLife = picked !== null && pickedAnswer !== null && !pickedAnswer.correct;
+  const previewChoice = picked === null && previewKey !== null ? question.choices.find((item) => item.key === previewKey) ?? null : null;
 
   return (
-    <div ref={boardRef} className="relative mx-auto max-w-2xl" data-beta-art-question={questionIndex + 1}>
+    <div ref={boardRef} className="relative mx-auto max-w-2xl scroll-mt-14 min-h-[calc(100svh-3.5rem)] pb-40 sm:min-h-0 sm:pb-6" data-beta-art-question={questionIndex + 1}>
       {lostLife && (
         <div key={`hurt-${hurt}`} className="beta-quiz-hurt pointer-events-none absolute -inset-2 z-10 rounded-xl" aria-hidden="true" />
       )}
@@ -534,8 +542,26 @@ export function BetaArtQuiz({
             />
             <figcaption className="absolute left-2 top-1.5 text-[10px] tracking-wide text-white/35">{copy.beta}</figcaption>
           </figure>
-          <figure className="relative flex aspect-[25/19] items-center justify-center overflow-hidden rounded-xl border border-border bg-black">
-            {picked !== null && question.entry.officialUrl ? (
+          <figure
+            className="relative flex aspect-[25/19] items-center justify-center overflow-hidden rounded-xl border border-border bg-black"
+            data-beta-art-preview={previewChoice?.key}
+          >
+            {previewChoice ? (
+              // The picture alone when pictures are on, otherwise the choice's name.
+              display.token && previewChoice.officialUrl ? (
+                <Image
+                  src={previewChoice.officialUrl}
+                  alt=""
+                  width={720}
+                  height={540}
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <span className="px-3 text-center font-game-title text-xl font-bold [word-break:keep-all] sm:text-2xl">
+                  <ChoiceLabel entry={previewChoice} display={{ ...display, token: false, local: display.local || !display.original }} />
+                </span>
+              )
+            ) : picked !== null && question.entry.officialUrl ? (
               <Image
                 src={question.entry.officialUrl}
                 alt={question.entry.name}
@@ -585,6 +611,17 @@ export function BetaArtQuiz({
                 disabled={picked !== null}
                 {...{ [CHARACTER_HAND_TARGET_ATTRIBUTE]: "" }}
                 onClick={(event) => pick(choice.key, event.currentTarget, event.timeStamp)}
+                // Mouse only: a touch pointer never opens the preview, so no tap is spent on it.
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse" && picked === null) setPreviewKey(choice.key);
+                }}
+                onPointerLeave={(event) => {
+                  if (event.pointerType === "mouse") setPreviewKey((current) => (current === choice.key ? null : current));
+                }}
+                onFocus={(event) => {
+                  if (event.currentTarget.matches(":focus-visible") && picked === null) setPreviewKey(choice.key);
+                }}
+                onBlur={() => setPreviewKey((current) => (current === choice.key ? null : current))}
                 className={`flex justify-center rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors [word-break:keep-all] ${stateClass}`}
               >
                 {/* A wrong pick reads as a nerf: red, jittering. */}

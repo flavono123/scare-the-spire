@@ -115,6 +115,7 @@ const CHARACTER_POOLS: PotionPool[] = [
   "defect",
   "necrobinder",
   "regent",
+  "fool",
 ];
 
 interface PotionLibraryProps {
@@ -340,6 +341,7 @@ export function PotionLibrary({
       defect: serviceText.labels.pools.defect,
       necrobinder: serviceText.labels.pools.necrobinder,
       regent: serviceText.labels.pools.regent,
+      fool: serviceText.labels.pools.fool,
     };
     for (const character of characters) {
       labels[character.id.toLowerCase() as PotionPool] = character.name;

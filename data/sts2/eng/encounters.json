@@ -3764,6 +3764,8 @@
   {
     "id": "TUNNELER_NORMAL",
     "name": "Tunneling Twosome",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.103.0",
     "room_type": "Monster",
     "is_weak": false,
     "act": "Act 2 - Hive",
@@ -3795,9 +3797,7 @@
           ]
         ]
       }
-    ],
-    "deprecated": true,
-    "deprecatedInPatch": "v0.103.0"
+    ]
   },
   {
     "id": "TUNNELER_WEAK",

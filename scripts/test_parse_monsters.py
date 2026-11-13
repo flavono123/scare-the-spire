@@ -238,5 +238,67 @@ class ParseMonsterMoveGraphTests(unittest.TestCase):
         )
 
 
+class StripDreadVariantsTests(unittest.TestCase):
+    """v0.113.0 Dread mode wraps values; the Compendium keeps the non-Dread ones."""
+
+    SOURCE = """
+	public override int MinInitialHp => AscensionHelper.GetValueIfAscension(AscensionLevel.ToughEnemies, 80, 70) + (AscensionHelper.IsDread() ? 30 : 0) + RespawnMaxHpBonus;
+
+	private int DebuffAmount
+	{
+		get
+		{
+			if (!AscensionHelper.IsDread())
+			{
+				return -2;
+			}
+			return -3;
+		}
+	}
+
+	private int PlatingAmount
+	{
+		get
+		{
+			if (!AscensionHelper.IsDread())
+			{
+				return 0;
+			}
+			return 14;
+		}
+	}
+
+	public override async Task AfterAddedToRoom()
+	{
+		await PowerCmd.Apply<ArtifactPower>(new ThrowingPlayerChoiceContext(), base.Creature, 0m, base.Creature, null);
+		if (PlatingAmount > 0)
+		{
+			await PowerCmd.Apply<PlatingPower>(new ThrowingPlayerChoiceContext(), base.Creature, PlatingAmount, base.Creature, null);
+		}
+	}
+
+	int strengthAmount = ((!AscensionHelper.IsDread()) ? 1 : 2);
+	return new MonsterMoveStateMachine(list, AscensionHelper.IsDread() ? moveState3 : moveState);
+"""
+
+    def test_keeps_non_dread_values(self) -> None:
+        text = parse_monsters.strip_dread_variants(self.SOURCE)
+        self.assertNotIn("IsDread", text)
+        self.assertEqual(
+            parse_monsters.parse_hp(text),
+            {"min_hp": 70, "max_hp": None, "min_hp_ascension": 80, "max_hp_ascension": None},
+        )
+        props = parse_monsters.parse_int_props(text)
+        self.assertEqual(props["DebuffAmount"], {"normal": -2, "ascension": None})
+        self.assertEqual(props["strengthAmount"], {"normal": 1, "ascension": None})
+        self.assertIn("MonsterMoveStateMachine(list, moveState)", text)
+
+    def test_drops_dread_only_guarded_power_but_keeps_real_zero_amount(self) -> None:
+        powers = parse_monsters.parse_initial_power_applications(
+            parse_monsters.strip_dread_variants(self.SOURCE)
+        )
+        self.assertEqual([p["power_id"] for p in powers], ["ARTIFACT"])
+
+
 if __name__ == "__main__":
     unittest.main()

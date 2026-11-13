@@ -23,6 +23,7 @@ const HAND_TEXTURES: Record<PointingHand, { width: number; height: number; tipX:
   regent: { width: 422, height: 1200, tipX: 127, tipY: 22 },
   necrobinder: { width: 422, height: 1200, tipX: 155, tipY: 18 },
   defect: { width: 422, height: 1200, tipX: 213, tipY: 39 },
+  fool: { width: 422, height: 1200, tipX: 160, tipY: 51 },
   merchant: { width: 515, height: 1272, tipX: 216, tipY: 2 },
   fake_merchant: { width: 335, height: 840, tipX: 157, tipY: 1 },
 };

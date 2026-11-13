@@ -20,6 +20,16 @@
         "var": "Summon"
       }
     ],
+    "CRYSTALLINE_EUPHORIA": [
+      {
+        "kind": "card",
+        "id": "JOY"
+      },
+      {
+        "kind": "card",
+        "id": "SADNESS"
+      }
+    ],
     "CUNNING_POTION": [
       {
         "kind": "card",
@@ -158,6 +168,12 @@
       {
         "kind": "card",
         "id": "SOUL"
+      }
+    ],
+    "PRECISION_POTION": [
+      {
+        "kind": "power",
+        "id": "AIM"
       }
     ],
     "RADIANT_TINCTURE": [

@@ -367,8 +367,16 @@
   pointer-events: none;
 }
 
-.group:hover > .entity-hover-tip,
-.group:focus-within > .entity-hover-tip {
+/* Touch screens open these on the first tap from the static patch client
+   (.is-tap-open); a :hover rule there would make iOS swallow or replay taps. */
+@media (hover: hover) {
+  .group:hover > .entity-hover-tip,
+  .group:focus-within > .entity-hover-tip {
+    display: block;
+  }
+}
+
+.group.is-tap-open > .entity-hover-tip {
   display: block;
 }
 
@@ -1360,6 +1368,8 @@
 .spire-orange { color: #fb923c; }
 .spire-pink { color: #f472b6; }
 .spire-aqua { color: #22d3ee; }
+/* StsColors.yellow (#FFFA72), the game's [yellow] text tag. */
+.spire-yellow { color: #fffa72; }
 
 .light .spire-silver { color: #0f766e; }
 .light .spire-bronze { color: #9a5b24; }
@@ -1370,6 +1380,7 @@
 .light .spire-orange { color: #c2410c; }
 .light .spire-pink { color: #be185d; }
 .light .spire-aqua { color: #0e7490; }
+.light .spire-yellow { color: #a16207; }
 
 .dark .spire-silver { color: #8ad6e0; }
 .dark .spire-bronze { color: #d7a470; }
@@ -1380,6 +1391,7 @@
 .dark .spire-orange { color: #fb923c; }
 .dark .spire-pink { color: #f472b6; }
 .dark .spire-aqua { color: #22d3ee; }
+.dark .spire-yellow { color: #fffa72; }
 
 /* Character identity text. Distinct from buff [green] / nerf [red] tags. */
 .character-ironclad { color: #f87171; }
@@ -1387,16 +1399,20 @@
 .character-regent { color: #fb923c; }
 .character-necrobinder { color: #f472b6; }
 .character-defect { color: #22d3ee; }
+/* The Fool: same values as .spire-yellow for now, kept as its own bucket so it can change alone. */
+.character-fool { color: #fffa72; }
 .light .character-ironclad { color: #dc2626; }
 .light .character-silent { color: #047857; }
 .light .character-regent { color: #c2410c; }
 .light .character-necrobinder { color: #be185d; }
 .light .character-defect { color: #0e7490; }
+.light .character-fool { color: #a16207; }
 .dark .character-ironclad { color: #f87171; }
 .dark .character-silent { color: #34d399; }
 .dark .character-regent { color: #fb923c; }
 .dark .character-necrobinder { color: #f472b6; }
 .dark .character-defect { color: #22d3ee; }
+.dark .character-fool { color: #fffa72; }
 
 /* History Course YouTube-style cover phrase */
 .cover-phrase-outline {

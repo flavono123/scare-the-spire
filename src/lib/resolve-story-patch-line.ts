@@ -21,6 +21,11 @@ export const PATCH_LINE_ALIASES: Record<string, string> = {
   // v0.100.0 initial abbreviated note was replaced with full Steam patch notes in commit caf38da0.
   // The 'Prepared -> Prepare' rework moved from line-001 (text-qgkkr7) to line-007 (card-prepared).
   "v0.100.0:line-001-text-qgkkr7": "v0.100.0:line-007-card-prepared",
+  // v0.113.0 tags fixed the day it shipped: Byrdpip is the relic, The Architect the
+  // event encounter, and Bound the affliction (patch pages now load afflictions).
+  "v0.113.0:line-017-text-4yuvo5": "v0.113.0:line-017-relic-byrdpip",
+  "v0.113.0:line-086-text-yx7z36": "v0.113.0:line-086-encounter-the-architect-event-encounter",
+  "v0.113.0:line-121-card-imitation-learning": "v0.113.0:line-121-card-imitation-learning-affliction-bound",
 };
 
 export function resolveCanonicalPatchLineId(id: string | null | undefined): string | undefined {

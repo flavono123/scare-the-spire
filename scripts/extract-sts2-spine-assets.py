@@ -76,6 +76,7 @@ SPINE_TEXTURE_SCALE_BY_PREFIX = {
 CHARACTER_SELECT_STATIC_IMPORTS = {
     "animations/character_select/silent/character_select_silent_bg.png.import": "character_select_silent_bg.webp",
     "animations/character_select/necrobinder/character_select_necrobinder_bg.png.import": "character_select_necrobinder_bg.webp",
+    "animations/character_select/fool/fool_character_select_bg_2.jpg.import": "character_select_fool_bg.webp",
     "images/vfx/characters/necro_character_select_fire_shape.png.import": "necro_character_select_fire_shape.webp",
     "images/vfx/characters/osty_character_select_fire_shape.png.import": "osty_character_select_fire_shape.webp",
 }
