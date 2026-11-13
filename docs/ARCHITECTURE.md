@@ -14,6 +14,8 @@ data/*.json + data/*.md
      + scripts/prune-cf-unreferenced-assets.mjs
   -> .cloudflare/assets + workers/main-worker.ts (Wrangler bundle)
   -> scare-the-spire main Worker
+  (STS1 detail HTML/RSC + that build's /_next/static -> .sts1-worker/assets
+   -> scare-the-spire-sts1 Worker, called through the STS1_WORKER binding)
 
 data/sts2-patch-notes/*.md
   -> pnpm patch:build
@@ -27,6 +29,7 @@ data/sts2-patch-notes/*.md
 - [DEPRECATED.md](./architecture/DEPRECATED.md) — 삭제된 카드/유물, 표현 방식
 - [PATCH_WORKER_DEPLOY_CONTRACT.md](./PATCH_WORKER_DEPLOY_CONTRACT.md) — patch-first 배포 계약
 - [CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md](./CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md) — 추후 커스텀 도메인 route dispatch 목표
+- [designs/sts1-compendium-worker.md](./designs/sts1-compendium-worker.md) — STS1 상세를 별도 Worker로 서비스하는 설계
 - [OPENNEXT_EXIT_PLAN.md](./OPENNEXT_EXIT_PLAN.md) — 정적 shell 전환과 OpenNext 런타임 제거 기록
 
 ## Worker 구조
@@ -38,6 +41,10 @@ data/sts2-patch-notes/*.md
   not-found 페이지를 404로 돌려준다(`workers/next-routing-parity.ts`).
 - `workers/patch-worker.ts`: `pnpm patch:build` 결과물을 서빙하는
   asset-first Worker. 런타임에서 patch markdown을 렌더링하지 않는다.
+- `workers/sts1-worker.ts`: STS1 백과사전 상세(ko·en HTML/RSC)와 같은 빌드의
+  `/_next/static`을 서빙하는 asset 전용 Worker. 공개 주소가 없고 main이
+  `STS1_WORKER` service binding으로 상세와, main 애셋에 없는 `/_next/static`을 묻는다
+  (빌드가 어긋날 때). main 정적 파일 한도(Workers Free 버전당 20,000) 때문에 나눴다.
 - `workers/security-headers.ts`: 두 Worker가 함께 쓰는 보안 헤더 정책. Worker가
   만든 응답은 `withSecurityHeaders`가, asset 응답(직접 요청과 `env.ASSETS.fetch`
   모두)은 `public/_headers`의 `/*` 규칙이 덮는다. patch build가 같은 규칙을

@@ -3,7 +3,8 @@
 이 프로젝트의 기본 배포 대상은 Cloudflare Workers Free다. main Worker는
 `next build`가 prerender한 정적 페이지와 asset만 서빙하는 정적 전용
 Worker이고(런타임에 Next/OpenNext 없음), patch Worker는 미리 생성한 정적
-patch 페이지와 patch-local asset을 별도로 서빙한다.
+patch 페이지와 patch-local asset을 별도로 서빙한다. STS1 Worker는 main과 같은 빌드의
+STS1 백과사전 상세 페이지를 싣고, main이 service binding으로 부른다.
 
 ## 사전 조건
 
@@ -61,7 +62,10 @@ Workers Free는 버전 하나에 정적 asset 파일을 20,000개까지만 올�
   `PATCH_WORKER_PUBLIC_PREFIXES`이고, 이 경로는 위 참조 검사 대상이 아니다.
 - `prune-cf-unreferenced-assets.mjs`는 서빙되는 HTML·RSC·JSON·CSS에서
   닿지 않는 `/_next/static` 파일(route handler, dev·patch 페이지, 리다이렉트
-  전용 페이지 chunk, Pages Router runtime)을 지운다.
+  전용 페이지 chunk, Pages Router runtime)을 지운다. STS1 Worker의 상세 페이지도
+  시작점이라, 그 페이지가 쓰는 chunk는 main에 남는다.
+- STS1 상세(ko·en HTML·RSC)는 main 업로드에 없다. `copy-cf-static-pages.mjs`가
+  `.sts1-worker/assets`에 쓴다(아래 "STS1 Worker").
 - `pnpm cf:assets`는 파일 수가 예산(기본 19,500 = 한도 20,000 − 예비 500)을
   넘으면 실패하고, 사용량·예산·한도·남은 수를 출력한다. 예비분은 급한
   패치 release가 들어갈 자리다. 큰 기능이 예산을 넘기면 먼저 안 쓰는 asset을
@@ -79,13 +83,16 @@ Worker 버전은 그 버전이 올린 정적 asset 목록까지 함께 갖고 �
    ```bash
    pnpm exec wrangler deployments status --name scare-the-spire
    pnpm exec wrangler deployments status --name scare-the-spire-patches
+   pnpm exec wrangler deployments status --name scare-the-spire-sts1
    ```
 
-2. 문제가 생기면 문제가 난 Worker만 되돌린다.
+2. 문제가 생기면 문제가 난 Worker만 되돌린다. main과 STS1 Worker는 한쪽만 되돌려도
+   STS1 상세가 뜬다(main이 자기에게 없는 `/_next/static`을 STS1 Worker에서 받는다).
 
    ```bash
    pnpm exec wrangler rollback <version-id> --name scare-the-spire
    pnpm exec wrangler rollback <version-id> --name scare-the-spire-patches
+   pnpm exec wrangler rollback <version-id> --name scare-the-spire-sts1
    ```
 
 3. `pnpm cf:smoke --origin https://scare-the-spire.flavono123.workers.dev --scope all`로
@@ -120,6 +127,25 @@ patch-first 배포가 필요하면 `docs/PATCH_WORKER_DEPLOY_CONTRACT.md`를 따
 현재 `/patches*`와 `/_patches*`는 main Worker의 `PATCH_WORKER` service
 binding을 경유한다. 커스텀 도메인 도입 후 직접 route dispatch 목표는
 `docs/CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md`에 기록되어 있다.
+
+## STS1 Worker
+
+STS1 백과사전 상세 페이지(ko·en의 `/compendium/sts1/<type>/<slug>`, 옛 별칭 `/cards/<slug>`)는
+main Worker 정적 파일 한도 때문에 `scare-the-spire-sts1` Worker가 싣는다
+([설계](designs/sts1-compendium-worker.md)). 공개 주소가 없고 main이 `STS1_WORKER` service
+binding으로만 부르므로, 페이지 헤더와 보안 헤더는 main이 붙인다.
+
+- 빌드: `pnpm cf:build`가 함께 만든다. `.sts1-worker/assets`에 상세 HTML·RSC와 같은 빌드의
+  `/_next/static` 전체가 들어간다. `pnpm cf:assets`가 상세가 빠짐없이 있는지, 예산 안인지,
+  상세가 쓰는 chunk가 main에도 있는지 본다.
+- 배포: CI가 main을 배포하는 모든 실행에서 main 바로 앞에 `pnpm cf:sts1:deploy`로 배포한다.
+  바인딩 대상이 없으면 main 배포가 실패하므로 이 순서다. 빌드 ID가 바뀌면 상세 파일이 전부 바뀌어
+  매번 다시 올라간다.
+- 빌드가 어긋날 때(두 배포 사이, 한쪽 실패, 한쪽만 롤백): main은 자기 애셋에 없는
+  `/_next/static` 요청을 STS1 Worker에 묻는다. STS1 상세와 다른 페이지 사이 이동만 새로고침이 된다.
+- 게임 전용 로케일과 바인딩이 없는 설정에서는 main이 지금처럼 목록 모달로 308을 보낸다.
+- testbed는 `scare-the-spire-sts1-testbed`다. `pnpm cf:testbed -- --remote`가 main 앞에 배포하고,
+  `pnpm cf:testbed:local`은 로컬에서 8789 포트로 띄운다.
 
 ## Free Tier 확인
 

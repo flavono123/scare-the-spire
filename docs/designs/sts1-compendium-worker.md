@@ -380,9 +380,15 @@ STS1 Worker (scare-the-spire-sts1, 공개 주소 없음)
 *   **Proposed Changes**: 배포 범위 판정에서 `wrangler.sts1.jsonc`를 main 쪽에 넣는다. `cf:size` 다음에 "Deploy STS1 Worker" 단계를 더한다(main 배포와 같은 3회 재시도).
     main 스모크에 `smoke_static_detail "/compendium/sts1/cards/strike-r"`와 `"/en/compendium/sts1/relics/burning-blood"`를 더한다.
 
-#### 20. `scripts/cloudflare-auth.mjs` (Modify)
+#### 20. `scripts/cloudflare-auth.mjs` (구현에서 뺌)
 
-*   **Proposed Changes**: `WORKERS`에 `sts1: "scare-the-spire-sts1"`을 더한다. `cf:logs`·`cf:errors`의 Worker 선택에 쓰인다.
+*   **Proposed Changes**: 바꾸지 않는다. `cf:logs`·`cf:metrics`는 `--worker`를 `main|patch|all`로만 받아서,
+    `WORKERS`에 넣어도 STS1 Worker를 따로 고를 수 없다. 두 도구까지 고칠 만큼의 이득이 없다.
+    STS1 Worker는 요청을 넘기기만 하므로 오류도 main 쪽에 드러난다.
+
+#### 20-1. `scripts/prune-cf-unreferenced-assets.spec.ts` (Modify, 구현에서 더함)
+
+*   **Proposed Changes**: 다른 Worker가 같은 출처에서 서빙하는 페이지(추가 시작 디렉터리)만 가리키는 chunk가 지워지지 않는지 확인하는 경우를 더한다.
 
 #### 21. 문서 (Modify)
 
