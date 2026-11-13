@@ -39,7 +39,8 @@ const FALLBACK_PATCH_ART: ResolvedPatchArt = {
 
 export function loadResourcePatchIndex(): Promise<ResourcePatchIndexData> {
   if (!resourcePatchIndexPromise) {
-    resourcePatchIndexPromise = fetch(RESOURCE_PATCH_INDEX_ASSET)
+    // A mutable fixed URL, like sts2-patch-lines.json: revalidate so a new patch shows up at once.
+    resourcePatchIndexPromise = fetch(RESOURCE_PATCH_INDEX_ASSET, { cache: "no-cache" })
       .then((response) => {
         if (!response.ok) throw new Error(`Resource patch index failed: ${response.status}`);
         return response.json() as Promise<ResourcePatchIndexData>;
