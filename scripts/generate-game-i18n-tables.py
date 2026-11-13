@@ -49,6 +49,9 @@ TITLE_TABLES = {
 }
 
 
+STAGED_CARD_TITLE_BASE = {"DINGY_DAGGER": "dingy"}
+
+
 def loc_titles(locale: str, filename: str) -> dict[str, str]:
     path = LOC_DIR / locale / filename
     if not path.exists():
@@ -59,6 +62,11 @@ def loc_titles(locale: str, filename: str) -> dict[str, str]:
         if not isinstance(value, str) or not key.endswith(".title"):
             continue
         out[key[: -len(".title")]] = value
+    # Cards titled per upgrade stage ship only `<ID>.title.<stage>` (src/lib/game-localization.ts).
+    for card_id, stage in STAGED_CARD_TITLE_BASE.items():
+        staged = data.get(f"{card_id}.title.{stage}")
+        if isinstance(staged, str) and card_id not in out:
+            out[card_id] = staged
     return out
 
 

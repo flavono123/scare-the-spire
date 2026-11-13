@@ -43,6 +43,16 @@
         "id": "SOOT"
       }
     ],
+    "BIZARRE_LAMP": [
+      {
+        "kind": "card",
+        "id": "JOY"
+      },
+      {
+        "kind": "card",
+        "id": "SADNESS"
+      }
+    ],
     "BOOKMARK": [
       {
         "kind": "keyword",
@@ -140,6 +150,24 @@
         "id": "BLOCK"
       }
     ],
+    "CONDUCTORS_BATON": [
+      {
+        "kind": "static",
+        "id": "WAH_MELODY"
+      },
+      {
+        "kind": "static",
+        "id": "CHO_MELODY"
+      },
+      {
+        "kind": "static",
+        "id": "KI_MELODY"
+      },
+      {
+        "kind": "power",
+        "id": "CONDUCTORS_BATON"
+      }
+    ],
     "CRACKED_CORE": [
       {
         "kind": "static",
@@ -198,6 +226,12 @@
         "id": "STRENGTH"
       }
     ],
+    "EXERCISE_MAT": [
+      {
+        "kind": "power",
+        "id": "STRETCH"
+      }
+    ],
     "FAKE_ANCHOR": [
       {
         "kind": "static",
@@ -231,6 +265,16 @@
     "FENCING_MANUAL": [
       {
         "kind": "forge"
+      }
+    ],
+    "FERTILIZER": [
+      {
+        "kind": "card",
+        "id": "SADNESS"
+      },
+      {
+        "kind": "power",
+        "id": "STRENGTH"
       }
     ],
     "FRESNEL_LENS": [
@@ -389,6 +433,12 @@
         "id": "COOK"
       }
     ],
+    "MIGHTY_WINGS": [
+      {
+        "kind": "power",
+        "id": "STRENGTH"
+      }
+    ],
     "MINI_REGENT": [
       {
         "kind": "power",
@@ -429,6 +479,20 @@
       {
         "kind": "enchantment",
         "id": "TEZCATARAS_EMBER"
+      }
+    ],
+    "OCARINA": [
+      {
+        "kind": "static",
+        "id": "WAH_MELODY"
+      },
+      {
+        "kind": "static",
+        "id": "CHO_MELODY"
+      },
+      {
+        "kind": "static",
+        "id": "KI_MELODY"
       }
     ],
     "ODDLY_SMOOTH_STONE": [
@@ -649,6 +713,12 @@
         "id": "POISON"
       }
     ],
+    "SONG_BOW": [
+      {
+        "kind": "power",
+        "id": "AIM"
+      }
+    ],
     "SOZU": [
       {
         "kind": "static",
@@ -675,6 +745,12 @@
       {
         "kind": "card_with_tips",
         "id": "BRIGHTEST_FLAME"
+      }
+    ],
+    "STORYTELLER": [
+      {
+        "kind": "power",
+        "id": "AIM"
       }
     ],
     "STURDY_CLAMP": [
@@ -727,6 +803,12 @@
         "id": "STRENGTH"
       }
     ],
+    "TORMENTOUS_COLLAR": [
+      {
+        "kind": "power",
+        "id": "WEAK"
+      }
+    ],
     "TOUGH_BANDAGES": [
       {
         "kind": "static",
@@ -740,6 +822,12 @@
       }
     ],
     "TUNING_FORK": [
+      {
+        "kind": "static",
+        "id": "BLOCK"
+      }
+    ],
+    "TWINE": [
       {
         "kind": "static",
         "id": "BLOCK"
@@ -797,6 +885,12 @@
       {
         "kind": "static",
         "id": "ENERGY"
+      }
+    ],
+    "WHITTLING_KNIFE": [
+      {
+        "kind": "power",
+        "id": "AIM"
       }
     ]
   },

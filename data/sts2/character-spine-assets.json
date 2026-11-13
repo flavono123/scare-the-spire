@@ -75,6 +75,59 @@
     }
   },
   {
+    "id": "FOOL",
+    "source": "animations/characters/fool/fool",
+    "renderStatus": "spine",
+    "renderTags": [],
+    "atlasUrl": "/spine/sts2/characters/fool/fool.atlas?v=c861351411",
+    "binaryUrl": "/spine/sts2/characters/fool/fool.skel?v=fc6d51c338",
+    "textureUrls": [
+      "/spine/sts2/characters/fool/fool.png?v=d6be035e53"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "block_wip",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop",
+      "low_health_loop",
+      "relaxed_loop",
+      "shoot"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "IDLE": [
+        "idle_loop"
+      ],
+      "ATTACK": [
+        "attack",
+        "shoot",
+        "cast",
+        "idle_loop"
+      ],
+      "HURT": [
+        "hurt",
+        "idle_loop",
+        "attack"
+      ],
+      "DIE": [
+        "die",
+        "idle_loop",
+        "attack"
+      ],
+      "LOW_HP_IDLE": [
+        "low_health_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
     "id": "IRONCLAD",
     "source": "animations/characters/ironclad/ironclad",
     "renderStatus": "spine",

@@ -224,16 +224,13 @@ async function main() {
 
   const expectAFight = cards.find((card) => card.id === "EXPECT_A_FIGHT");
   assert.ok(expectAFight);
-  assert.equal(expectAFight.vars.CalculatedBlock, 15);
+  // v0.113.0 rework: plain Block 15(20) instead of CalculatedBlock.
+  assert.equal(expectAFight.vars.Block, 15);
   assert.match(expectAFight.description, /15/);
   assert.equal(expectAFight.description.includes("X"), false);
   assert.match(
-    bakeDescription(expectAFight.descriptionRaw, {
-      ...expectAFight.vars,
-      CalculatedBlock: 16,
-      CalculationExtra: 8,
-    }),
-    /16/,
+    bakeDescription(expectAFight.descriptionRaw, { ...expectAFight.vars, Block: 20 }),
+    /20/,
   );
 
   console.log("card-keyword-tips.selfcheck: ok");

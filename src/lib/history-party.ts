@@ -41,6 +41,7 @@ const KNOWN_CHARACTERS = new Set([
   "defect",
   "necrobinder",
   "regent",
+  "fool",
 ]);
 
 export function characterSlug(character: string | undefined): string {

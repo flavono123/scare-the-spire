@@ -19,7 +19,7 @@ const categories = [
   {
     href: "/compendium/characters",
     labelKey: "characters",
-    count: 5,
+    count: 6,
     description: null,
     images: [
       "/images/sts2/characters/character_icon_ironclad.webp",

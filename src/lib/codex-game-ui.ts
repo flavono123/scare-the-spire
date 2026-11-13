@@ -368,6 +368,7 @@ export async function getCodexGameUiLabels(
       defect: gameText(characters, "DEFECT.title", "디펙트"),
       necrobinder: gameText(characters, "NECROBINDER.title", "네크로바인더"),
       regent: gameText(characters, "REGENT.title", "리젠트"),
+      fool: gameText(characters, "FOOL.title", "풀"),
     },
     nav: {
       cards: gameText(mainMenu, "COMPENDIUM_CARD_LIBRARY.title", "카드 목록"),

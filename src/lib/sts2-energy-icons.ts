@@ -8,6 +8,7 @@ export const STS2_ENERGY_ICON_BY_VARIANT: Record<Sts2EnergyIconVariant, string> 
   defect: "/images/game-assets/card-misc/energy_defect.png",
   necrobinder: "/images/game-assets/card-misc/energy_necrobinder.png",
   regent: "/images/game-assets/card-misc/energy_regent.png",
+  fool: "/images/game-assets/card-misc/energy_fool.png",
   colorless: "/images/game-assets/card-misc/energy_colorless.png",
   curse: "/images/game-assets/card-misc/energy_colorless.png",
   event: "/images/game-assets/card-misc/energy_colorless.png",

@@ -104,6 +104,30 @@ KNOWN_UPSTREAM_MISSING_CODEX_TITLE_KEYS = {
         "cards:SOULBOUND.title",
     },
     "pol": {
+        # v0.113.0: the game ships these without a pol title (English fallback).
+        "cards:WAH_SWEEP.title",
+        "relics:BATH_ROBES.title",
+        "relics:BATH_TOWEL.title",
+        "relics:BIZARRE_LAMP.title",
+        "relics:CONDUCTORS_BATON.title",
+        "relics:EXERCISE_MAT.title",
+        "relics:FERTILIZER.title",
+        "relics:MIGHTY_WINGS.title",
+        "relics:OBSIDIAN_VICE.title",
+        "relics:OCARINA.title",
+        "relics:SONG_BOW.title",
+        "relics:STORYTELLER.title",
+        "relics:THUMBSCREW.title",
+        "relics:TORMENTOUS_COLLAR.title",
+        "relics:TWINE.title",
+        "relics:WHITTLING_KNIFE.title",
+        "relics:WUPPY.title",
+        "events:MUSEUM_OF_TORTURE.title",
+        "events:SHRINE_OF_THE_WARLORD.title",
+        "events:THERMAE_NONUPEIPE.title",
+        "events:WATERFALL_OF_OBVIOUS_SECRETS.title",
+        "events:WUPPY_IN_TROUBLE.title",
+        "monsters:WUPPY.name",
         "cards:BLADE_SYMPHONY.title",
         "cards:BLAZE.title",
         "cards:CACOPHONY.title",
@@ -164,6 +188,14 @@ KNOWN_UPSTREAM_MISSING_CODEX_TITLE_KEYS = {
         "relics:SILKEN_TRESS.title",
     },
     "tur": {
+        # v0.113.0: the game ships these without a tur title (English fallback).
+        "cards:COMPOST.title",
+        "cards:ENRAPTURE.title",
+        "cards:FOOLISH_SHOT.title",
+        "cards:KI_CHANT.title",
+        "cards:LOCKED_IN.title",
+        "relics:BATH_ROBES.title",
+        "relics:THUMBSCREW.title",
         "cards:BLADE_SYMPHONY.title",
         "cards:BLAZE.title",
         "cards:CACOPHONY.title",
@@ -406,7 +438,8 @@ def validate_codex_entity_titles(errors: list[str]) -> None:
             if item.get("deprecated") or not (item.get("image_url") or item.get("beta_image_url")):
                 continue
             key = f"{item['id']}.title"
-            if key not in tables["cards"]:
+            # Staged cards (Dingy Dagger) split the title into `.title.<stage>` keys.
+            if key not in tables["cards"] and not any(k.startswith(f"{key}.") for k in tables["cards"]):
                 add_missing(missing, lang, f"cards:{key}")
 
         for item in raw["relics"]:

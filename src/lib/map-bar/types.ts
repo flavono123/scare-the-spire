@@ -18,8 +18,8 @@ export const MAP_BAR_ORIENTATIONS: readonly MapBarOrientation[] = ["horizontal",
 export type MapBarAct = "overgrowth" | "underdocks" | "hive" | "glory";
 export const MAP_BAR_ACTS: readonly MapBarAct[] = ["overgrowth", "underdocks", "hive", "glory"];
 
-export type MapBarCharacter = "ironclad" | "silent" | "defect" | "necrobinder" | "regent";
-export const MAP_BAR_CHARACTERS: readonly MapBarCharacter[] = ["ironclad", "silent", "defect", "necrobinder", "regent"];
+export type MapBarCharacter = "ironclad" | "silent" | "defect" | "necrobinder" | "regent" | "fool";
+export const MAP_BAR_CHARACTERS: readonly MapBarCharacter[] = ["ironclad", "silent", "defect", "necrobinder", "regent", "fool"];
 
 export type MapBarBackground = "transparent" | "paper";
 

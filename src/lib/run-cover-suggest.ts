@@ -726,6 +726,8 @@ export function characterSpireClass(character: string | undefined): string {
       return "spire-orange";
     case "CHARACTER.NECROBINDER":
       return "spire-pink";
+    case "CHARACTER.FOOL":
+      return "character-fool";
     default:
       return "spire-gold";
   }

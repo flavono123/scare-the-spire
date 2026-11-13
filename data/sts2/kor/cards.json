@@ -30,11 +30,11 @@
     },
     "introducedInPatch": "v0.109.0",
     "image_url": "/static/images/cards/abundance.png",
-    "beta_image_url": null
+    "beta_image_url": "/static/images/cards/beta/abundance.png"
   },
   {
     "id": "ABRASIVE",
-    "name": "연마",
+    "name": "가시 두르기",
     "description": "[gold]민첩[/gold]을 1 얻습니다.\n[gold]가시[/gold]를 4 얻습니다.",
     "description_raw": "[gold]민첩[/gold]을 {DexterityPower:diff()} 얻습니다.\n[gold]가시[/gold]를 {ThornsPower:diff()} 얻습니다.",
     "cost": 3,
@@ -451,6 +451,84 @@
     "beta_image_url": null
   },
   {
+    "id": "ALL_IS_WELL",
+    "name": "다 잘될 거야",
+    "description": "[gold]슬픔[/gold]을 생성할 때마다,\n[gold]방어도[/gold]를 4 얻습니다.",
+    "description_raw": "[gold]슬픔[/gold]을 생성할 때마다,\n[gold]방어도[/gold]를 {AllIsWellPower:diff()} 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "다 잘될 거야",
+        "amount": 4
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "AllIsWellPower": 4,
+      "AllIsWell": 4
+    },
+    "upgrade": {
+      "alliswellpower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/all_is_well.png"
+  },
+  {
+    "id": "AMNESIA",
+    "name": "기억상실",
+    "description": "이번 턴에,\n카드를 2장 적게 뽑고\n[energy:1]를 잃습니다.",
+    "description_raw": "이번 턴에,\n카드를 {Cards}장 적게 뽑고\n{Energy:energyIcons()}를 잃습니다.",
+    "cost": -1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "상태이상",
+    "rarity": "상태이상",
+    "target": "None",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "기억상실",
+        "amount": 1
+      }
+    ],
+    "cards_draw": 2,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "AmnesiaPower": 1,
+      "Amnesia": 1,
+      "Cards": 2,
+      "Energy": 1
+    },
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/amnesia.png",
+    "beta_image_url": "/static/images/cards/beta/amnesia.png"
+  },
+  {
     "id": "ANGER",
     "name": "분노",
     "description": "피해를 6 줍니다.\n이 카드의 복사본을 1장\n[gold]버린 카드 더미[/gold]에\n추가합니다.",
@@ -481,6 +559,41 @@
     },
     "image_url": "/static/images/cards/anger.png",
     "beta_image_url": null
+  },
+  {
+    "id": "ANGUISH",
+    "name": "괴로움",
+    "description": "피해를 6 줍니다.\n이번 전투 동안 생성한\n[gold]슬픔[/gold] 1장당\n피해량이 6 증가합니다.",
+    "description_raw": "피해를 {CalculatedDamage:diff()} 줍니다.\n이번 전투 동안 생성한\n[gold]슬픔[/gold] 1장당\n피해량이 {ExtraDamage:diff()} 증가합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 6,
+      "ExtraDamage": 6
+    },
+    "upgrade": {
+      "calculationbase": "+1",
+      "extradamage": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/anguish.png"
   },
   {
     "id": "ANOINTED",
@@ -627,6 +740,45 @@
     "beta_image_url": "/static/images/cards/beta/apparition.png"
   },
   {
+    "id": "ARCHERY",
+    "name": "궁술",
+    "description": "내 턴 시작 시,\n[gold]조준[/gold]을 4 얻습니다.",
+    "description_raw": "내 턴 시작 시,\n[gold]조준[/gold]을 {AimPower:diff()} 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "조준",
+        "amount": 4
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "AimPower": 4,
+      "Aim": 4
+    },
+    "upgrade": {
+      "aimpower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/archery.png"
+  },
+  {
     "id": "ARMAMENTS",
     "name": "전투장비",
     "description": "[gold]방어도[/gold]를 5 얻습니다.\n[gold]손[/gold]에 있는 카드를 1장\n[gold]강화[/gold]합니다.",
@@ -655,6 +807,39 @@
     "upgrade": null,
     "image_url": "/static/images/cards/armaments.png",
     "beta_image_url": null
+  },
+  {
+    "id": "ARROW_STAB",
+    "name": "화살 찌르기",
+    "description": "피해를 9 줍니다.\n[gold]화살[/gold]을 보유했다면,\n[gold]버린 카드 더미[/gold]에서\n[gold]발사[/gold]할 수 있는 카드를 1장\n[gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]화살[/gold]을 보유했다면,\n[gold]버린 카드 더미[/gold]에서\n[gold]발사[/gold]할 수 있는 카드를 1장\n[gold]손[/gold]으로 가져옵니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 9,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 9
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/arrow_stab.png"
   },
   {
     "id": "ARSENAL",
@@ -808,8 +993,8 @@
   {
     "id": "ASTRAL_PULSE",
     "name": "별의 파동",
-    "description": "모든 적에게\n피해를 6만큼 2번 줍니다.",
-    "description_raw": "모든 적에게\n피해를 {Damage:diff()}만큼 2번 줍니다.",
+    "description": "모든 적에게 피해를\n6만큼 2번 줍니다.",
+    "description_raw": "모든 적에게 피해를\n{Damage:diff()}만큼 {HitCount:choose(2):2번|{HitCount:diff()}번} 줍니다.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -830,6 +1015,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 6,
+      "HitCount": 2,
       "StarCost": 3
     },
     "upgrade": {
@@ -1038,7 +1224,7 @@
   },
   {
     "id": "BARRAGE",
-    "name": "일제 사격",
+    "name": "집중 공세",
     "description": "[gold]영창[/gold]된 구체 1개당\n피해를 5 줍니다.",
     "description_raw": "[gold]영창[/gold]된 구체 1개당\n피해를 {Damage:diff()} 줍니다.{InCombat:\n({CalculatedHits:diff()}번 적중합니다)|}",
     "cost": 1,
@@ -1662,7 +1848,7 @@
       "strength": "+2"
     },
     "introducedInPatch": "v0.108.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/blaze.png",
     "beta_image_url": "/static/images/cards/beta/blaze.png"
   },
   {
@@ -1764,6 +1950,74 @@
     },
     "image_url": "/static/images/cards/bloodletting.png",
     "beta_image_url": null
+  },
+  {
+    "id": "BLOSSOM_SHOT",
+    "name": "만개하는 사격",
+    "description": "피해를 11 주는\n화살을 [gold]발사[/gold]하고\n가한 피해량만큼\n[gold]스트레칭[/gold]을 얻습니다.",
+    "description_raw": "피해를 {Damage:diff()} 주는\n화살을 [gold]발사[/gold]하고\n가한 피해량만큼\n[gold]스트레칭[/gold]을 얻습니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 11,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 11
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/blossom_shot.png"
+  },
+  {
+    "id": "BLOT_OUT_THE_SKY",
+    "name": "태양을 가리다",
+    "description": "[gold]발사[/gold]할 수 있는 무작위 카드를\n1장 [gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
+    "description_raw": "[gold]발사[/gold]할 수 있는 무작위 카드를\n1장 [gold]손[/gold]으로 가져옵니다.\n이번 턴 동안 그 카드를\n비용 없이 사용할 수 있습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "cost": 0
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/blot_out_the_sky.png"
   },
   {
     "id": "BLUDGEON",
@@ -2101,6 +2355,45 @@
     "beta_image_url": null
   },
   {
+    "id": "BOUNCE",
+    "name": "튀어오르기",
+    "description": "[gold]스트레칭[/gold]을 10 얻습니다.\n다음 턴 시작 시, 이 카드를\n다시 [gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "[gold]스트레칭[/gold]을 {StretchPower:diff()} 얻습니다.\n다음 턴 시작 시, 이 카드를\n다시 [gold]손[/gold]으로 가져옵니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "스트레칭",
+        "amount": 10
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "StretchPower": 10,
+      "Stretch": 10
+    },
+    "upgrade": {
+      "stretchpower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/bounce.png"
+  },
+  {
     "id": "BOUNCING_FLASK",
     "name": "탄성 플라스크",
     "description": "무작위 적에게 [gold]중독[/gold]을\n3만큼 3번 부여합니다.",
@@ -2138,6 +2431,79 @@
     },
     "image_url": "/static/images/cards/bouncing_flask.png",
     "beta_image_url": null
+  },
+  {
+    "id": "BOW_SMACK",
+    "name": "활 후려치기",
+    "description": "피해를 8 줍니다.\n대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n[energy:1]를 얻습니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n{Energy:energyIcons()}를 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 8,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 8,
+      "Energy": 1
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/bow_smack.png"
+  },
+  {
+    "id": "BRACE",
+    "name": "버팀목",
+    "description": "[gold]조준[/gold]을 8만큼\nX번 얻습니다.",
+    "description_raw": "[gold]조준[/gold]을 {AimPower:diff()}만큼\nX번 얻습니다.",
+    "cost": 0,
+    "is_x_cost": true,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "조준",
+        "amount": 8
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "AimPower": 8,
+      "Aim": 8
+    },
+    "upgrade": {
+      "aimpower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/brace.png"
   },
   {
     "id": "BRAND",
@@ -2252,6 +2618,42 @@
     "beta_image_url": null
   },
   {
+    "id": "BRIGHTEN_UP",
+    "name": "분위기 띄우기",
+    "description": "[gold]슬픔[/gold]을 2장\n[gold]손[/gold]으로 가져옵니다.\n[gold]기쁨[/gold]을 2장\n[gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "[gold]슬픔[/gold]을 {Sadness:diff()}장\n[gold]손[/gold]으로 가져옵니다.\n[gold]기쁨[/gold]을 {Joy:diff()}장\n[gold]손[/gold]으로 가져옵니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Joy": 2,
+      "Sadness": 2
+    },
+    "upgrade": {
+      "joy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/brighten_up.png"
+  },
+  {
     "id": "BRIGHTEST_FLAME",
     "name": "찬란한 불꽃",
     "description": "[energy:2]를 얻습니다.\n카드를 2장 뽑습니다.\n최대 체력을 2 잃습니다.",
@@ -2289,8 +2691,8 @@
   {
     "id": "BUBBLE_BUBBLE",
     "name": "차오르는 독",
-    "description": "대상 적이 [gold]중독[/gold]을\n보유하고 있다면,\n[gold]중독[/gold]을 9 부여합니다.",
-    "description_raw": "대상 적이 [gold]중독[/gold]을\n보유하고 있다면,\n[gold]중독[/gold]을 {PoisonPower:diff()} 부여합니다.",
+    "description": "대상 적이 [gold]중독[/gold]을\n보유했다면, [gold]중독[/gold]을\n9 부여합니다.",
+    "description_raw": "대상 적이 [gold]중독[/gold]을\n보유했다면, [gold]중독[/gold]을\n{PoisonPower:diff()} 부여합니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -3066,7 +3468,7 @@
     "id": "CELESTIAL_MIGHT",
     "name": "천상의 권능",
     "description": "피해를 6만큼 3번 줍니다.",
-    "description_raw": "피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:diff()}번 줍니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -3077,7 +3479,7 @@
     "color": "regent",
     "damage": 6,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -3087,10 +3489,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 6,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/celestial_might.png",
     "beta_image_url": null
@@ -3255,6 +3657,233 @@
     },
     "image_url": "/static/images/cards/chill.png",
     "beta_image_url": null
+  },
+  {
+    "id": "CHO_BARBS",
+    "name": "초 미늘",
+    "description": "[gold]방어도[/gold]를 7 얻습니다.\n이번 턴 동안\n[gold]가시[/gold]를 3 얻습니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n이번 턴 동안\n[gold]가시[/gold]를 {ChoBarbsPower:diff()} 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "일반",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 7,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "ChoBarbs",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 7,
+      "ChoBarbsPower": 3,
+      "ChoBarbs": 3
+    },
+    "upgrade": {
+      "block": "+2",
+      "chobarbspower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_barbs.png"
+  },
+  {
+    "id": "CHO_CHORUS",
+    "name": "초 코러스",
+    "description": "[gold]방어도[/gold]를 12 얻습니다.\n[gold]손[/gold]에 있는 모든 “와”, “키”\n카드를 사용합니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n[gold]손[/gold]에 있는 모든 “와”, “키”\n카드를 사용합니다.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 12,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 12
+    },
+    "upgrade": {
+      "block": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_chorus.png"
+  },
+  {
+    "id": "CHO_FIRM",
+    "name": "초 경화",
+    "description": "[gold]방어도[/gold]를 6 얻습니다.\n[gold]화살[/gold]을 보유했다면,\n[gold]방어도[/gold]를 1번 추가로\n얻습니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n[gold]화살[/gold]을 보유했다면,\n[gold]방어도[/gold]를 1번 추가로\n얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "일반",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 6,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 6
+    },
+    "upgrade": {
+      "block": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_firm.png"
+  },
+  {
+    "id": "CHO_KI",
+    "name": "초 키",
+    "description": "[gold]방어도[/gold]를 8 얻습니다.\n소모한 [gold]스트레칭[/gold]을 다시\n얻습니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n소모한 [gold]스트레칭[/gold]을 다시\n얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 8,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho",
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 8
+    },
+    "upgrade": {
+      "block": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_ki.png"
+  },
+  {
+    "id": "CHO_LIMBS",
+    "name": "초 가지",
+    "description": "[gold]방어도[/gold]를 5만큼 2번\n얻습니다. [gold]와 선율[/gold]이나\n[gold]키 선율[/gold]을 보유했다면,\n비용이 2 [energy:1] 감소합니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()}만큼 2번\n얻습니다. [gold]와 선율[/gold]이나\n[gold]키 선율[/gold]을 보유했다면,\n비용이 2 {energyPrefix:energyIcons(1)} 감소합니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 5,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 5
+    },
+    "upgrade": {
+      "block": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_limbs.png"
+  },
+  {
+    "id": "CHO_READY",
+    "name": "초 준비",
+    "description": "[gold]방어도[/gold]를 8 얻습니다.\n[gold]조준[/gold]을 3 얻습니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n[gold]조준[/gold]을 {AimPower:diff()} 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "일반",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 8,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "조준",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 8,
+      "AimPower": 3,
+      "Aim": 3
+    },
+    "upgrade": {
+      "block": "+3",
+      "aimpower": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cho_ready.png"
   },
   {
     "id": "CINDER",
@@ -3487,6 +4116,39 @@
     "beta_image_url": null
   },
   {
+    "id": "CODA",
+    "name": "코다",
+    "description": "피해를 40 줍니다.\n보유한 [gold]선율[/gold]마다\n비용이 2 [energy:1] 감소합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n보유한 [gold]선율[/gold]마다\n비용이 2 {energyPrefix:energyIcons(1)} 감소합니다.",
+    "cost": 6,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "희귀",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 40,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 40
+    },
+    "upgrade": {
+      "damage": "+15"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/coda.png"
+  },
+  {
     "id": "COLD_SNAP",
     "name": "꽃샘추위",
     "description": "피해를 6 줍니다.\n[gold]냉기[/gold]를 1번 [gold]영창[/gold]합니다.",
@@ -3700,6 +4362,39 @@
     "beta_image_url": null
   },
   {
+    "id": "COMPOST",
+    "name": "퇴비 제작",
+    "description": "적이 죽을 때마다,\n모든 플레이어가\n[energy:1]를 얻습니다.",
+    "description_raw": "적이 죽을 때마다,\n모든 플레이어가\n{Energy:energyIcons()}를 얻습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1
+    },
+    "upgrade": {
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/compost.png"
+  },
+  {
     "id": "CONCOCT",
     "name": "조제",
     "description": "다른 플레이어를 선택합니다. 이번 턴 동안 대상의 공격 카드가 막히지 않은 피해를 줄 때마다, [gold]중독[/gold]을 3 부여합니다.",
@@ -3741,8 +4436,8 @@
   {
     "id": "CONFLAGRATION",
     "name": "대화재",
-    "description": "모든 적에게\n피해를 2만큼 4번 줍니다.",
-    "description_raw": "모든 적에게\n피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.",
+    "description": "모든 적에게 피해를\n2만큼 4번 줍니다.",
+    "description_raw": "모든 적에게 피해를\n{Damage:diff()}만큼 {HitCount:diff()}번 줍니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -3763,10 +4458,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 2,
-      "Repeat": 4
+      "HitCount": 4
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/conflagration.png",
     "beta_image_url": "/static/images/cards/beta/conflagration.png"
@@ -4153,6 +4848,45 @@
     "beta_image_url": null
   },
   {
+    "id": "COVERING_FIRE",
+    "name": "엄호 포화",
+    "description": "[gold]발사[/gold]할 때마다,\n아군들이 [gold]방어도[/gold]를\n8 얻습니다.",
+    "description_raw": "[gold]발사[/gold]할 때마다,\n아군들이 [gold]방어도[/gold]를\n{CoveringFirePower:diff()} 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "엄호 포화",
+        "amount": 8
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "CoveringFirePower": 8,
+      "CoveringFire": 8
+    },
+    "upgrade": {
+      "coveringfirepower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/covering_fire.png"
+  },
+  {
     "id": "CRASH_LANDING",
     "name": "불시착",
     "description": "모든 적에게\n피해를 21 줍니다.\n[gold]손[/gold]을 [gold]잔해[/gold]로 가득 채웁니다.",
@@ -4396,8 +5130,8 @@
   {
     "id": "DAGGER_SPRAY",
     "name": "단검 분사",
-    "description": "모든 적에게\n피해를 4만큼 2번 줍니다.",
-    "description_raw": "모든 적에게\n피해를 {Damage:diff()}만큼 2번 줍니다.",
+    "description": "모든 적에게 피해를\n4만큼 2번 줍니다.",
+    "description_raw": "모든 적에게 피해를\n{Damage:diff()}만큼 {HitCount:choose(2):2번|{HitCount:diff()}번} 줍니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -4417,7 +5151,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 4
+      "Damage": 4,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -4690,6 +5425,47 @@
     },
     "image_url": "/static/images/cards/deadly_poison.png",
     "beta_image_url": null
+  },
+  {
+    "id": "DEATH",
+    "name": "죽음",
+    "description": "[gold]종말[/gold]을 75 부여합니다.",
+    "description_raw": "[gold]종말[/gold]을 {DoomPower:diff()} 부여합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "종말",
+        "amount": 75
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "DoomPower": 75,
+      "Doom": 75
+    },
+    "upgrade": {
+      "doom": "+24"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/death.png"
   },
   {
     "id": "DEATH_MARCH",
@@ -4975,6 +5751,46 @@
     "beta_image_url": "/static/images/cards/beta/decisions_decisions.png"
   },
   {
+    "id": "DEEP_STRETCH",
+    "name": "딥 스트레칭",
+    "description": "[gold]스트레칭[/gold]을 7 얻습니다.\n카드를 1장 뽑습니다.",
+    "description_raw": "[gold]스트레칭[/gold]을 {StretchPower:diff()} 얻습니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "일반",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "스트레칭",
+        "amount": 7
+      }
+    ],
+    "cards_draw": 1,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 1,
+      "StretchPower": 7,
+      "Stretch": 7
+    },
+    "upgrade": {
+      "stretchpower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/deep_stretch.png"
+  },
+  {
     "id": "DEFEND_DEFECT",
     "name": "수비",
     "description": "[gold]방어도[/gold]를 5 얻습니다.",
@@ -5143,6 +5959,41 @@
     },
     "image_url": "/static/images/cards/defend_silent.png",
     "beta_image_url": null
+  },
+  {
+    "id": "DEFEND_FOOL",
+    "name": "수비",
+    "description": "[gold]방어도[/gold]를 5 얻습니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "기본",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 5,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Defend"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Block": 5
+    },
+    "upgrade": {
+      "block": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/defend_fool.png",
+    "beta_image_url": "/static/images/cards/beta/defend_fool.png"
   },
   {
     "id": "DEFILE",
@@ -5506,6 +6357,39 @@
     "beta_image_url": "/static/images/cards/beta/devour_life.png"
   },
   {
+    "id": "DINGY_DAGGER",
+    "name": "초라한 단검",
+    "description": "피해를 7 줍니다.\n강화 횟수에\n제한이 없습니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n강화 횟수에\n제한이 없습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "이벤트",
+    "target": "AnyEnemy",
+    "color": "event",
+    "damage": 7,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 7
+    },
+    "upgrade": {
+      "damage": "+4"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/dingy_dagger.png",
+    "beta_image_url": "/static/images/cards/beta/dingy_dagger.png"
+  },
+  {
     "id": "DIRGE",
     "name": "장송가",
     "description": "X번 [gold]소환[/gold] 3.\n[gold]뽑을 카드 더미[/gold]에 [gold]영혼[/gold]을\nX장 추가합니다.",
@@ -5610,10 +6494,51 @@
     "beta_image_url": "/static/images/cards/beta/disintegration.png"
   },
   {
+    "id": "DISLIKE_YOU",
+    "name": "너 싫어",
+    "description": "피해를 8 줍니다.\n이번 턴 동안 대상 적이\n[gold]사격[/gold]으로 받는 피해가\n50% 증가합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 대상 적이\n[gold]사격[/gold]으로 받는 피해가\n{DislikeYouPower:diff()}% 증가합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 8,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "너 싫어",
+        "amount": 50
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 8,
+      "DislikeYouPower": 50,
+      "DislikeYou": 50
+    },
+    "upgrade": {
+      "damage": "+1",
+      "dislikeyoupower": "+25"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/dislike_you.png"
+  },
+  {
     "id": "DISMANTLE",
     "name": "해체",
     "description": "피해를 8 줍니다.\n대상 적이 [gold]취약[/gold] 상태라면,\n2번 적중합니다.",
-    "description_raw": "피해를 {Damage:diff()} 줍니다.\n대상 적이 [gold]취약[/gold] 상태라면,\n2번 적중합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n대상 적이 [gold]취약[/gold] 상태라면,\n{HitCount:choose(2):2번|{HitCount:diff()}번} 적중합니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -5624,7 +6549,7 @@
     "color": "ironclad",
     "damage": 8,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -5633,7 +6558,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 8
+      "Damage": 8,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -5672,6 +6598,43 @@
     },
     "image_url": "/static/images/cards/distraction.png",
     "beta_image_url": "/static/images/cards/beta/distraction.png"
+  },
+  {
+    "id": "DIVINE_SHOT",
+    "name": "신성한 사격",
+    "description": "피해를 40 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "description_raw": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고대의 존재",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 40,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "보존"
+    ],
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 40
+    },
+    "upgrade": {
+      "damage": "+10"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/divine_shot.png"
   },
   {
     "id": "DODGE_AND_ROLL",
@@ -5814,7 +6777,7 @@
   {
     "id": "DOWSING",
     "name": "다우징",
-    "description": "[gold]?[/gold] 방에 5번 더 진입한 후에, [gold]풍요[/gold]로 변화합니다.",
+    "description": "[gold]?[/gold] 방에 4번 더 진입한 후에, [gold]풍요[/gold]로 변화합니다.",
     "description_raw": "[gold]?[/gold] 방에 {Rooms:diff()}번 더 진입한 후에, [gold]풍요[/gold]로 변화합니다.",
     "cost": -1,
     "is_x_cost": null,
@@ -5839,12 +6802,12 @@
       "ABUNDANCE"
     ],
     "vars": {
-      "Rooms": 5
+      "Rooms": 4
     },
     "upgrade": null,
     "introducedInPatch": "v0.109.0",
     "image_url": "/static/images/cards/dowsing.png",
-    "beta_image_url": null
+    "beta_image_url": "/static/images/cards/beta/dowsing.png"
   },
   {
     "id": "DRAIN_POWER",
@@ -6148,6 +7111,39 @@
     "beta_image_url": null
   },
   {
+    "id": "ECSTASY",
+    "name": "황홀경",
+    "description": "내 턴 시작 시, [gold]손[/gold]에 있는\n무작위 [gold]슬픔[/gold] 1장을\n[gold]기쁨[/gold]으로 [gold]변화[/gold]시킵니다.",
+    "description_raw": "내 턴 시작 시, [gold]손[/gold]에 있는\n무작위 [gold]슬픔[/gold] {Cards:diff()}장을\n[gold]기쁨[/gold]으로 [gold]변화[/gold]시킵니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 1
+    },
+    "upgrade": {
+      "cost": 1
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ecstasy.png"
+  },
+  {
     "id": "EIDOLON",
     "name": "허상",
     "description": "[gold]소멸된 카드 더미[/gold]에 있는\n모든 [gold]휘발성[/gold] 카드를\n사용합니다.",
@@ -6178,6 +7174,47 @@
     },
     "image_url": "/static/images/cards/eidolon.png",
     "beta_image_url": "/static/images/cards/beta/eidolon.png"
+  },
+  {
+    "id": "ENCORE",
+    "name": "앙코르",
+    "description": "[energy:1]를 얻습니다.\n카드를 2장 뽑습니다.\n이번 턴에 카드를 1장만 더\n사용할 수 있습니다.",
+    "description_raw": "{Energy:energyIcons()}를 얻습니다.\n카드를 {Cards:diff()}장 뽑습니다.\n이번 턴에 카드를 {EncorePower:diff()}장만 더\n사용할 수 있습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "앙코르",
+        "amount": 1
+      }
+    ],
+    "cards_draw": 2,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1,
+      "Cards": 2,
+      "EncorePower": 1,
+      "Encore": 1
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/encore.png"
   },
   {
     "id": "END_OF_DAYS",
@@ -6305,15 +7342,133 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "소멸"
-    ],
+    "keywords": [],
     "tags": null,
     "spawns_cards": null,
     "vars": null,
     "upgrade": null,
     "image_url": "/static/images/cards/enlightenment.png",
     "beta_image_url": null
+  },
+  {
+    "id": "ENNUI",
+    "name": "권태",
+    "description": "내 턴 시작 시, [gold]슬픔[/gold]을\n1장 [gold]손[/gold]으로 가져오고,\n카드를 추가로 2장\n뽑습니다.",
+    "description_raw": "내 턴 시작 시, [gold]슬픔[/gold]을\n1장 [gold]손[/gold]으로 가져오고,\n카드를 추가로 {EnnuiPower:diff()}장\n뽑습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "권태",
+        "amount": 2
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "EnnuiPower": 2,
+      "Ennui": 2
+    },
+    "upgrade": {
+      "ennuipower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ennui.png"
+  },
+  {
+    "id": "ENRAPTURE",
+    "name": "도취",
+    "description": "다른 플레이어에게\n[gold]활력[/gold]을 6,\n[gold]스트레칭[/gold]을 6 줍니다.",
+    "description_raw": "다른 플레이어에게\n[gold]활력[/gold]을 {VigorPower:diff()},\n[gold]스트레칭[/gold]을 {StretchPower:diff()} 줍니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "AnyAlly",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "활력",
+        "amount": 6
+      },
+      {
+        "power": "스트레칭",
+        "amount": 6
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "VigorPower": 6,
+      "Vigor": 6,
+      "StretchPower": 6,
+      "Stretch": 6
+    },
+    "upgrade": {
+      "vigorpower": "+3",
+      "stretchpower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/enrapture.png"
+  },
+  {
+    "id": "ENSEMBLE",
+    "name": "합창",
+    "description": "다른 플레이어가 다음에\n사용하는 카드 4장을\n비용 없이 사용할 수\n있습니다.",
+    "description_raw": "다른 플레이어가 다음에\n사용하는 {Cards:choose(1):카드를|카드 {:diff()}장을}\n비용 없이 사용할 수\n있습니다.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 4,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 4
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ensemble.png"
   },
   {
     "id": "ENTHRALLED",
@@ -6444,6 +7599,41 @@
     },
     "image_url": "/static/images/cards/envenom.png",
     "beta_image_url": null
+  },
+  {
+    "id": "EPIC_RETRIEVAL",
+    "name": "영웅적인 확보",
+    "description": "피해를 15 줍니다.\n이 카드가 [gold]화살[/gold]을\n[gold]회수[/gold]했다면,\n[energy:3]를 얻습니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n이 카드가 [gold]화살[/gold]을\n[gold]회수[/gold]했다면,\n{Energy:energyIcons()}를 얻습니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 15,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 3,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 15,
+      "Energy": 3
+    },
+    "upgrade": {
+      "damage": "+5",
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/epic_retrieval.png"
   },
   {
     "id": "EQUILIBRIUM",
@@ -6617,8 +7807,8 @@
   {
     "id": "EXPECT_A_FIGHT",
     "name": "싸움 준비",
-    "description": "[gold]방어도[/gold]를 15 얻습니다.\n보유한 [gold]힘[/gold]마다 [gold]방어도[/gold]를\n추가로 5 얻습니다.",
-    "description_raw": "[gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다.\n보유한 [gold]힘[/gold]마다 [gold]방어도[/gold]를\n추가로 {CalculationExtra:diff()} 얻습니다.",
+    "description": "[gold]방어도[/gold]를 15 얻습니다.\n[gold]손[/gold]에 있는 공격 카드의\n비용이 사용하기 전까지\n[energy:1] 1 감소합니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n[gold]손[/gold]에 있는 공격 카드의\n비용이 사용하기 전까지\n{energyPrefix:energyIcons(1)} {Energy:diff()} 감소합니다.",
     "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6632,18 +7822,17 @@
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
-    "energy_gain": null,
+    "energy_gain": 1,
     "hp_loss": null,
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 15,
-      "CalculationExtra": 5
+      "Block": 15,
+      "Energy": 1
     },
     "upgrade": {
-      "calculationbase": "+1",
-      "calculationextra": "+3"
+      "block": "+5"
     },
     "image_url": "/static/images/cards/expect_a_fight.png",
     "beta_image_url": null
@@ -6651,8 +7840,8 @@
   {
     "id": "EXPERTISE",
     "name": "전문성",
-    "description": "카드를 2장 뽑습니다.\n그 카드가 이번 턴에\n[gold]보존[/gold]을 얻습니다.",
-    "description_raw": "카드를 {Cards:diff()}장 뽑습니다.\n그 카드가 이번 턴에\n[gold]보존[/gold]을 얻습니다.",
+    "description": "카드를 2장 뽑습니다.\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다.",
+    "description_raw": "카드를 {Cards:diff()}장 뽑습니다.\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6679,6 +7868,45 @@
     },
     "image_url": "/static/images/cards/expertise.png",
     "beta_image_url": null
+  },
+  {
+    "id": "EXPLOSIVE_ARROWS",
+    "name": "폭발성 화살",
+    "description": "적을 [gold]꿰뚫을[/gold] 때마다,\n모든 적에게\n피해를 6 줍니다.",
+    "description_raw": "적을 [gold]꿰뚫을[/gold] 때마다,\n모든 적에게\n피해를 {ExplosiveArrowsPower:diff()} 줍니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "폭발성 화살",
+        "amount": 6
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "ExplosiveArrowsPower": 6,
+      "ExplosiveArrows": 6
+    },
+    "upgrade": {
+      "explosivearrowspower": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/explosive_arrows.png"
   },
   {
     "id": "EXPOSE",
@@ -6717,8 +7945,8 @@
   {
     "id": "EXTERMINATE",
     "name": "박멸",
-    "description": "모든 적에게\n피해를 3만큼 4번 줍니다.",
-    "description_raw": "모든 적에게\n피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.",
+    "description": "모든 적에게 피해를\n3만큼 4번 줍니다.",
+    "description_raw": "모든 적에게 피해를\n{Damage:diff()}만큼 {HitCount:diff()}번 줍니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6729,7 +7957,7 @@
     "color": "event",
     "damage": 3,
     "block": null,
-    "hit_count": null,
+    "hit_count": 4,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -6739,7 +7967,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 3,
-      "Repeat": 4
+      "HitCount": 4
     },
     "upgrade": {
       "damage": "+1"
@@ -7090,7 +8318,7 @@
   },
   {
     "id": "FETCH",
-    "name": "회수",
+    "name": "가져와!",
     "description": "[gold]골골이[/gold]가 피해를 3 줍니다.\n이번 턴에 이 카드를\n처음 사용했다면,\n카드를 1장 뽑습니다.",
     "description_raw": "[gold]골골이[/gold]가 피해를 {OstyDamage:diff()} 줍니다.\n이번 턴에 이 카드를\n처음 사용했다면,\n카드를 {Cards:diff()}장 뽑습니다.",
     "cost": 0,
@@ -7101,7 +8329,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "necrobinder",
-    "damage": 3,
+    "damage": null,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -7115,8 +8343,7 @@
     "spawns_cards": null,
     "vars": {
       "OstyDamage": 3,
-      "Cards": 1,
-      "Damage": 3
+      "Cards": 1
     },
     "upgrade": {
       "ostydamage": "+3"
@@ -7128,7 +8355,7 @@
     "id": "FIEND_FIRE",
     "name": "지옥불",
     "description": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드 1장당\n피해를 7 줍니다.",
-    "description_raw": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드 1장당\n피해를 {Damage:diff()} 줍니다.",
+    "description_raw": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드 1장당\n피해를 {Damage:diff()} 줍니다.{InCombat:\n({CalculatedHits:diff()}번 적중합니다)|}",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -7150,7 +8377,9 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 7
+      "Damage": 7,
+      "CalculationBase": 0,
+      "CalculationExtra": 1
     },
     "upgrade": {
       "damage": "+3"
@@ -7162,7 +8391,7 @@
     "id": "FIGHT_ME",
     "name": "덤벼라!",
     "description": "피해를 5만큼 2번 줍니다.\n[gold]힘[/gold]을 3 얻습니다.\n대상 적이 [gold]힘[/gold]을 1 얻습니다.",
-    "description_raw": "피해를 {Damage:diff()}만큼 2번 줍니다.\n[gold]힘[/gold]을 {StrengthPower:diff()} 얻습니다.\n대상 적이 [gold]힘[/gold]을 {EnemyStrength:diff()} 얻습니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:choose(2):2번|{HitCount:diff()}번} 줍니다.\n[gold]힘[/gold]을 {StrengthPower:diff()} 얻습니다.\n대상 적이 [gold]힘[/gold]을 {EnemyStrength:diff()} 얻습니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -7173,7 +8402,7 @@
     "color": "ironclad",
     "damage": 5,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": [
       {
         "power": "힘",
@@ -7187,11 +8416,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "EnemyStrength": 1,
       "Damage": 5,
-      "Repeat": 2,
+      "HitCount": 2,
       "StrengthPower": 3,
-      "Strength": 3
+      "Strength": 3,
+      "EnemyStrength": 1
     },
     "upgrade": {
       "damage": "+1",
@@ -7568,6 +8797,37 @@
     "beta_image_url": null
   },
   {
+    "id": "FLORESCENCE",
+    "name": "개화",
+    "description": "손에 있는 [gold]발사[/gold]할 수 있는\n카드를 모두 [gold]소멸[/gold]시키고,\n[gold]최후의 한 발[/gold]을\n생성합니다.",
+    "description_raw": "손에 있는 [gold]발사[/gold]할 수 있는\n카드를 모두 [gold]소멸[/gold]시키고,\n[gold]{IfUpgraded:show:최후의 한 발+|최후의 한 발}[/gold]을\n생성합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/florescence.png"
+  },
+  {
     "id": "FOCUSED_STRIKE",
     "name": "밀집 타격",
     "description": "피해를 9 줍니다.\n이번 턴에\n[gold]밀집[/gold]을 1 얻습니다.",
@@ -7683,6 +8943,41 @@
     "beta_image_url": null
   },
   {
+    "id": "FOOLISH_SHOT",
+    "name": "얼빠진 사격",
+    "description": "피해를 15 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "description_raw": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "기본",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 15,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 15
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/foolish_shot.png"
+  },
+  {
     "id": "FOOTWORK",
     "name": "발놀림",
     "description": "[gold]민첩[/gold]을 2 얻습니다.",
@@ -7787,8 +9082,8 @@
   {
     "id": "FORGOTTEN_RITUAL",
     "name": "잊힌 의식",
-    "description": "[energy:3]를 얻습니다.",
-    "description_raw": "{Energy:energyIcons()}를 얻습니다.",
+    "description": "이번 턴에 카드를\n[gold]소멸[/gold]시켰다면,\n[energy:3]를 얻습니다.",
+    "description_raw": "이번 턴에 카드를\n[gold]소멸[/gold]시켰다면,\n{Energy:energyIcons()}를 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -8471,6 +9766,39 @@
     "beta_image_url": null
   },
   {
+    "id": "GOD_BYRD",
+    "name": "불섀",
+    "description": "다음 턴 시작 시,\n모든 적에게\n피해를 30 줍니다.",
+    "description_raw": "다음 턴 시작 시,\n모든 적에게\n피해를 {Damage:diff()} 줍니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "이벤트",
+    "target": "None",
+    "color": "event",
+    "damage": 30,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 30
+    },
+    "upgrade": {
+      "damage": "+10"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/god_byrd.png",
+    "beta_image_url": null
+  },
+  {
     "id": "GOLD_AXE",
     "name": "황금 도끼",
     "description": "이번 전투 동안 사용한\n카드의 수와 동일한 만큼의\n피해를 줍니다.",
@@ -8680,6 +10008,40 @@
     "beta_image_url": "/static/images/cards/beta/greed.png"
   },
   {
+    "id": "GROWTH",
+    "name": "성장",
+    "description": "[gold]손[/gold]에 있는 모든 [gold]슬픔[/gold]을\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드 1장당\n[gold]스트레칭[/gold]을 4 얻습니다.",
+    "description_raw": "[gold]손[/gold]에 있는 모든 [gold]슬픔[/gold]을\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드 1장당\n[gold]스트레칭[/gold]을 {CalculationExtra:diff()} 얻습니다.{InCombat:\n([gold]스트레칭[/gold]을 {CalculatedStretch:diff()} 얻습니다)|}",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 0,
+      "CalculationExtra": 4
+    },
+    "upgrade": {
+      "calculationextra": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/growth.png"
+  },
+  {
     "id": "GUARDS",
     "name": "막아라!!!",
     "description": "[gold]손[/gold]에 있는 카드를\n원하는 만큼\n[gold]하수인 희생[/gold]으로\n[gold]변화[/gold]시킵니다.",
@@ -8782,7 +10144,7 @@
     "id": "GUNK_UP",
     "name": "틀어막기",
     "description": "피해를 4만큼 3번 줍니다.\n[gold]버린 카드 더미[/gold]에\n[gold]점액투성이[/gold]를\n1장 추가합니다.",
-    "description_raw": "피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.\n[gold]버린 카드 더미[/gold]에\n[gold]점액투성이[/gold]를\n1장 추가합니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:diff()}번 줍니다.\n[gold]버린 카드 더미[/gold]에\n[gold]점액투성이[/gold]를\n1장 추가합니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -8793,7 +10155,7 @@
     "color": "defect",
     "damage": 4,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -8805,7 +10167,7 @@
     ],
     "vars": {
       "Damage": 4,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
       "damage": "+1"
@@ -8816,8 +10178,8 @@
   {
     "id": "HAILSTORM",
     "name": "우박 폭풍",
-    "description": "내 턴 종료 시 [gold]냉기[/gold]를\n보유하고 있다면, 모든\n적에게 피해를 6 줍니다.",
-    "description_raw": "내 턴 종료 시 [gold]냉기[/gold]를\n보유하고 있다면, 모든\n적에게 피해를 {HailstormPower:diff()} 줍니다.",
+    "description": "내 턴 종료 시 [gold]냉기[/gold]를\n보유했다면, 모든 적에게\n피해를 6 줍니다.",
+    "description_raw": "내 턴 종료 시 [gold]냉기[/gold]를\n보유했다면, 모든 적에게\n피해를 {HailstormPower:diff()} 줍니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -8978,6 +10340,40 @@
     },
     "image_url": "/static/images/cards/hang.png",
     "beta_image_url": "/static/images/cards/beta/hang.png"
+  },
+  {
+    "id": "HARMONIC_SHIELD",
+    "name": "화음 방패",
+    "description": "보유한 [gold]선율[/gold]마다\n[gold]방어도[/gold]를 5 얻습니다.",
+    "description_raw": "보유한 [gold]선율[/gold]마다\n[gold]방어도[/gold]를 {CalculationExtra:diff()} 얻습니다.{InCombat:\n([gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다)|}",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 0,
+      "CalculationExtra": 5
+    },
+    "upgrade": {
+      "calculationextra": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/harmonic_shield.png"
   },
   {
     "id": "HAUNT",
@@ -9152,6 +10548,42 @@
     },
     "image_url": "/static/images/cards/heavenly_drill.png",
     "beta_image_url": "/static/images/cards/beta/heavenly_drill.png"
+  },
+  {
+    "id": "HEAVY_SHOT",
+    "name": "묵직한 사격",
+    "description": "피해를 20 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n[gold]조준[/gold]의 효과가 2배로\n적용됩니다.",
+    "description_raw": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n[gold]조준[/gold]의 효과가 {AimMultiplier:plural:{:diff()}배로|{:diff()}배로}\n적용됩니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 20,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 20,
+      "AimMultiplier": 2
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/heavy_shot.png"
   },
   {
     "id": "HEGEMONY",
@@ -9485,6 +10917,45 @@
     "beta_image_url": "/static/images/cards/beta/hidden_gem.png"
   },
   {
+    "id": "HIDDEN_ROOTS",
+    "name": "숨겨진 뿌리",
+    "description": "내 턴 시작 시,\n[gold]스트레칭[/gold]을 3 얻습니다.",
+    "description_raw": "내 턴 시작 시,\n[gold]스트레칭[/gold]을 {HiddenRootsPower:diff()} 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "숨겨진 뿌리",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "HiddenRootsPower": 3,
+      "HiddenRoots": 3
+    },
+    "upgrade": {
+      "hiddenrootspower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/hidden_roots.png"
+  },
+  {
     "id": "HIGH_FIVE",
     "name": "하이파이브",
     "description": "[gold]골골이[/gold]가 모든 적에게\n피해를 11 주고\n[gold]취약[/gold]을 2 부여합니다.",
@@ -9528,6 +10999,43 @@
     "beta_image_url": null
   },
   {
+    "id": "HOBBLING_SHOT",
+    "name": "발목 사격",
+    "description": "피해를 13 주는\n[gold]화살[/gold]을 [gold]발사[/gold]하고 [gold]약화[/gold]와\n[gold]취약[/gold]을 1 부여합니다.",
+    "description_raw": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]하고 [gold]약화[/gold]와\n[gold]취약[/gold]을 {Power:diff()} 부여합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 13,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 13,
+      "Power": 1
+    },
+    "upgrade": {
+      "damage": "+1",
+      "power": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/hobbling_shot.png"
+  },
+  {
     "id": "HOLOGRAM",
     "name": "홀로그램",
     "description": "[gold]방어도[/gold]를 3 얻습니다.\n[gold]버린 카드 더미[/gold]에서 카드를 1장 [gold]손[/gold]으로 가져옵니다.",
@@ -9561,6 +11069,45 @@
     },
     "image_url": "/static/images/cards/hologram.png",
     "beta_image_url": null
+  },
+  {
+    "id": "HONING",
+    "name": "연마",
+    "description": "[gold]화살[/gold]의 피해량이\n50% 증가합니다.",
+    "description_raw": "[gold]화살[/gold]의 피해량이\n{HoningPower:diff()}% 증가합니다.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "연마",
+        "amount": 50
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "HoningPower": 50,
+      "Honing": 50
+    },
+    "upgrade": {
+      "cost": 2
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/honing.png"
   },
   {
     "id": "HOTFIX",
@@ -10319,6 +11866,111 @@
     "beta_image_url": "/static/images/cards/beta/jackpot.png"
   },
   {
+    "id": "JEST",
+    "name": "농담",
+    "description": "[gold]방어도[/gold]를 14 얻습니다.\n[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n[gold]슬픔[/gold]을 {Cards:diff()}장\n[gold]손[/gold]으로 가져옵니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "일반",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 14,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Block": 14,
+      "Cards": 1
+    },
+    "upgrade": {
+      "block": "+4"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/jest.png"
+  },
+  {
+    "id": "JOY",
+    "name": "기쁨",
+    "description": "[energy:1]를 얻습니다.\n카드를 1장 뽑습니다.",
+    "description_raw": "{Energy:energyIcons()}를 얻습니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1,
+      "Cards": 1
+    },
+    "upgrade": {
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/joy.png"
+  },
+  {
+    "id": "JUDGEMENT",
+    "name": "심판",
+    "description": "대상 적의 체력이\n30 이하라면,\n체력을 0으로 만듭니다.",
+    "description_raw": "대상 적의 체력이\n{Threshold:diff()} 이하라면,\n체력을 0으로 만듭니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Threshold": 30
+    },
+    "upgrade": {
+      "threshold": "+10"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/judgement.png"
+  },
+  {
     "id": "JUGGERNAUT",
     "name": "절대적인 힘",
     "description": "[gold]방어도[/gold]를 얻을 때마다, 무작위 적에게 피해를 6 줍니다.",
@@ -10385,6 +12037,224 @@
     },
     "image_url": "/static/images/cards/juggling.png",
     "beta_image_url": "/static/images/cards/beta/juggling.png"
+  },
+  {
+    "id": "JUSTICE",
+    "name": "정의",
+    "description": "피해를 30 줍니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "토큰",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": 30,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 30
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/justice.png"
+  },
+  {
+    "id": "KI_CHANT",
+    "name": "키 챈트",
+    "description": "[gold]뽑을 카드 더미[/gold] 맨 위의\n카드 3장을 봅니다.\n1장을 선택해 [gold]손[/gold]으로\n가져오고 나머지는\n버립니다.",
+    "description_raw": "[gold]뽑을 카드 더미[/gold] 맨 위의\n카드 {Cards:diff()}장을 봅니다.\n1장을 선택해 [gold]손[/gold]으로\n가져오고 나머지는\n버립니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "일반",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 3,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 3
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ki_chant.png"
+  },
+  {
+    "id": "KI_HOP",
+    "name": "키 깡총",
+    "description": "피해를 7 줍니다.\n대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n카드를 2장 뽑습니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n카드를 {Cards:diff()}장 뽑습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 7,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 7,
+      "Cards": 2
+    },
+    "upgrade": {
+      "damage": "+1",
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ki_hop.png"
+  },
+  {
+    "id": "KI_REST",
+    "name": "키 휴식",
+    "description": "다음 턴에, [energy:5]를 얻습니다.\n[gold]와 선율[/gold]이나 [gold]초 선율[/gold]을\n보유했다면,\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다.",
+    "description_raw": "다음 턴에, {Energy:energyIcons()}를 얻습니다.\n[gold]와 선율[/gold]이나 [gold]초 선율[/gold]을\n보유했다면,\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 5,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 5
+    },
+    "upgrade": {
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ki_rest.png"
+  },
+  {
+    "id": "KI_VERSE",
+    "name": "키 절",
+    "description": "이번 턴 동안 다음에\n사용하는 “와”, “초”, “키”\n카드가 1번 추가로\n사용됩니다.",
+    "description_raw": "이번 턴 동안 다음에\n사용하는 “와”, “초”, “키”\n{KiVersePower:choose(1):카드가|카드 {:diff()}장이} 1번 추가로\n사용됩니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "키 절",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "KiVersePower": 1,
+      "KiVerse": 1
+    },
+    "upgrade": {
+      "kiversepower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ki_verse.png"
+  },
+  {
+    "id": "KI_WHIP",
+    "name": "키 채찍질",
+    "description": "피해를 5 줍니다.\n다음 턴에,\n[energy:2]를 얻습니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n다음 턴에,\n{Energy:energyIcons()}를 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 5,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 2,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 5,
+      "Energy": 2
+    },
+    "upgrade": {
+      "damage": "+1",
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/ki_whip.png"
   },
   {
     "id": "KINGLY_KICK",
@@ -10919,6 +12789,37 @@
     "beta_image_url": "/static/images/cards/beta/lightning_rod.png"
   },
   {
+    "id": "LOCKED_IN",
+    "name": "목표 고정",
+    "description": "[gold]뽑을 카드 더미[/gold]에서\n[gold]발사[/gold]할 수 있는 카드를\n1장 [gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "[gold]뽑을 카드 더미[/gold]에서\n[gold]발사[/gold]할 수 있는 카드를\n1장 [gold]손[/gold]으로 가져옵니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "cost": 0
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/locked_in.png"
+  },
+  {
     "id": "LOOP",
     "name": "반복",
     "description": "내 턴 시작 시, 가장\n오른쪽의 구체의 지속\n능력을 발동시킵니다.",
@@ -10949,6 +12850,84 @@
     },
     "image_url": "/static/images/cards/loop.png",
     "beta_image_url": null
+  },
+  {
+    "id": "LOST_LUTE",
+    "name": "잃어버린 류트",
+    "description": "[gold]선율[/gold]을 얻을 때마다,\n[gold]뽑을 카드 더미[/gold] 맨 위의\n카드를 사용합니다.",
+    "description_raw": "[gold]선율[/gold]을 얻을 때마다,\n[gold]뽑을 카드 더미[/gold] 맨 위의\n카드를 사용합니다.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "고대의 존재",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "잃어버린 류트",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "LostLutePower": 1,
+      "LostLute": 1
+    },
+    "upgrade": {
+      "cost": 2
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/lost_lute.png"
+  },
+  {
+    "id": "LULLABY",
+    "name": "자장가",
+    "description": "모든 [gold]선율[/gold]을 얻을 시,\n[gold]방어도[/gold]를 20 얻습니다.",
+    "description_raw": "모든 [gold]선율[/gold]을 얻을 시,\n[gold]방어도[/gold]를 {LullabyPower:diff()} 얻습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "자장가",
+        "amount": 20
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "LullabyPower": 20,
+      "Lullaby": 20
+    },
+    "upgrade": {
+      "add_innate": 1
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/lullaby.png"
   },
   {
     "id": "LUMINESCE",
@@ -11285,7 +13264,7 @@
     "id": "MAUL",
     "name": "할퀴기",
     "description": "피해를 5만큼 2번 줍니다.\n이번 전투 동안\n모든 할퀴기 카드의\n피해량이 2 증가합니다.",
-    "description_raw": "피해를 {Damage:diff()}만큼 2번 줍니다.\n이번 전투 동안\n모든 할퀴기 카드의\n피해량이 {Increase:diff()} 증가합니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:choose(2):2번|{HitCount:diff()}번} 줍니다.\n이번 전투 동안\n모든 할퀴기 카드의\n피해량이 {Increase:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -11305,8 +13284,9 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 2,
-      "Damage": 5
+      "Damage": 5,
+      "HitCount": 2,
+      "Increase": 2
     },
     "upgrade": {
       "damage": "+1",
@@ -11379,19 +13359,19 @@
     "beta_image_url": null
   },
   {
-    "id": "MEMENTO_MORI",
-    "name": "메멘토 모리",
-    "description": "피해를 9 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 4 증가합니다.",
-    "description_raw": "피해를 {CalculatedDamage:diff()} 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 {ExtraDamage:diff()} 증가합니다.",
+    "id": "MELODIC_SHOT",
+    "name": "선율 사격",
+    "description": "피해를 12 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n보유한 [gold]선율[/gold]만큼\n반복합니다.",
+    "description_raw": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n보유한 [gold]선율[/gold]만큼\n반복합니다.{InCombat:\n({CalculatedHits:diff()}번 적중합니다)|}",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "공격",
-    "rarity": "고급",
+    "rarity": "희귀",
     "target": "AnyEnemy",
-    "color": "silent",
-    "damage": null,
+    "color": "fool",
+    "damage": 12,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -11399,17 +13379,53 @@
     "energy_gain": null,
     "hp_loss": null,
     "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 12,
+      "CalculationBase": 1,
+      "CalculationExtra": 1
+    },
+    "upgrade": {
+      "damage": "+1",
+      "cost": 0
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/melodic_shot.png"
+  },
+  {
+    "id": "MEMENTO_MORI",
+    "name": "메멘토 모리",
+    "description": "체력이 가장 낮은 적에게\n피해를 19 줍니다.",
+    "description_raw": "체력이 가장 낮은 적에게\n피해를 {Damage:diff()} 줍니다.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "RandomEnemy",
+    "color": "silent",
+    "damage": 19,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "교활"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 9,
-      "ExtraDamage": 4,
-      "CalculatedDamage": 9
+      "Damage": 19
     },
     "upgrade": {
-      "calculateddamage": "+2",
-      "calculationbase": "+2",
-      "extradamage": "+1"
+      "damage": "+4"
     },
     "image_url": "/static/images/cards/memento_mori.png",
     "beta_image_url": null
@@ -11562,6 +13578,74 @@
     "beta_image_url": "/static/images/cards/beta/midnight.png"
   },
   {
+    "id": "MIGHTY_SHIELD",
+    "name": "강력한 방패",
+    "description": "[gold]방어도[/gold]를 20 얻습니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]어지러움[/gold]을 3장 추가합니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]어지러움[/gold]을 {Cards:diff()}장 추가합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "이벤트",
+    "target": "Self",
+    "color": "event",
+    "damage": null,
+    "block": 20,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 3,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Block": 20,
+      "Cards": 3
+    },
+    "upgrade": {
+      "block": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/mighty_shield.png",
+    "beta_image_url": "/static/images/cards/beta/mighty_shield.png"
+  },
+  {
+    "id": "MIGHTY_WEAPON",
+    "name": "강력한 무기",
+    "description": "모든 적에게\n피해를 25 줍니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]어지러움[/gold]을 2장 추가합니다.",
+    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]어지러움[/gold]을 {Cards:diff()}장 추가합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "이벤트",
+    "target": "AllEnemies",
+    "color": "event",
+    "damage": 25,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 25,
+      "Cards": 2
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/mighty_weapon.png",
+    "beta_image_url": "/static/images/cards/beta/mighty_weapon.png"
+  },
+  {
     "id": "MIMIC",
     "name": "흉내내기",
     "description": "다른 플레이어의 [gold]방어도[/gold]와\n동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.",
@@ -11671,7 +13755,7 @@
   {
     "id": "MINION_DIVE_BOMB",
     "name": "하수인 투하",
-    "description": "피해를 13 줍니다.",
+    "description": "피해를 11 줍니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.",
     "cost": 0,
     "is_x_cost": null,
@@ -11681,7 +13765,7 @@
     "rarity": "토큰",
     "target": "AnyEnemy",
     "color": "token",
-    "damage": 13,
+    "damage": 11,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -11696,10 +13780,10 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 13
+      "Damage": 11
     },
     "upgrade": {
-      "damage": "+3"
+      "damage": "+2"
     },
     "image_url": "/static/images/cards/minion_dive_bomb.png",
     "beta_image_url": null
@@ -12012,6 +14096,78 @@
     "beta_image_url": "/static/images/cards/beta/monologue.png"
   },
   {
+    "id": "MOTIF",
+    "name": "모티프",
+    "description": "[gold]선율[/gold]을 얻을 때마다,\n카드를 1장 뽑습니다.",
+    "description_raw": "[gold]선율[/gold]을 얻을 때마다,\n카드를 {MotifPower:diff()}장 뽑습니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "모티프",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "MotifPower": 1,
+      "Motif": 1
+    },
+    "upgrade": {
+      "cost": 1
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/motif.png"
+  },
+  {
+    "id": "MOURNING_BLOW",
+    "name": "애도의 일격",
+    "description": "피해를 10 줍니다.\n이 카드를 [gold]슬픔[/gold]으로\n변화시킨 뒤 다시 [gold]손[/gold]으로\n가져옵니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n이 카드를 [gold]슬픔[/gold]으로\n변화시킨 뒤 다시 [gold]손[/gold]으로\n가져옵니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 10,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 10
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/mourning_blow.png"
+  },
+  {
     "id": "MULTI_CAST",
     "name": "다중 시전",
     "description": "가장 오른쪽의 구체를\nX번 [gold]발현[/gold]합니다.",
@@ -12072,6 +14228,106 @@
     },
     "image_url": "/static/images/cards/murder.png",
     "beta_image_url": "/static/images/cards/beta/murder.png"
+  },
+  {
+    "id": "MY_SHINIES",
+    "name": "내 반짝이들",
+    "description": "보유한 [gold]골드[/gold] 20마다\n피해를 1 줍니다.",
+    "description_raw": "보유한 [gold]골드[/gold] {Gold:diff()}마다\n피해를 {Damage:diff()} 줍니다.{InCombat:\n({CalculatedHits:diff()}번 적중합니다)|}",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "희귀",
+    "target": "AnyEnemy",
+    "color": "colorless",
+    "damage": 1,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 1,
+      "CalculationBase": 0,
+      "Gold": 20,
+      "CalculationExtra": 1
+    },
+    "upgrade": {
+      "gold": "-10"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/my_shinies.png"
+  },
+  {
+    "id": "MYTHIC_FORM",
+    "name": "신비의 형상",
+    "description": "내 턴 시작 시,\n무작위 [gold]타로[/gold] 카드를\n1장 [gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "내 턴 시작 시,\n무작위{IfUpgraded:show: 강화된|} [gold]타로[/gold] 카드를\n1장 [gold]손[/gold]으로 가져옵니다.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/mythic_form.png"
+  },
+  {
+    "id": "NAIL",
+    "name": "못질",
+    "description": "대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n피해를 20 주고 [gold]약화[/gold]와\n[gold]취약[/gold]을 2 부여합니다.",
+    "description_raw": "대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n피해를 {Damage:diff()} 주고 [gold]약화[/gold]와\n[gold]취약[/gold]을 {Power:diff()} 부여합니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "희귀",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 20,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 20,
+      "Power": 2
+    },
+    "upgrade": {
+      "damage": "+5",
+      "power": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/nail.png"
   },
   {
     "id": "NECRO_MASTERY",
@@ -12365,6 +14621,45 @@
     },
     "image_url": "/static/images/cards/no_escape.png",
     "beta_image_url": null
+  },
+  {
+    "id": "NOCK",
+    "name": "오늬",
+    "description": "[gold]조준[/gold]을 5 얻습니다.",
+    "description_raw": "[gold]조준[/gold]을 {AimPower:diff()} 얻습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "일반",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "조준",
+        "amount": 5
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "AimPower": 5,
+      "Aim": 5
+    },
+    "upgrade": {
+      "aimpower": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/nock.png"
   },
   {
     "id": "NORMALITY",
@@ -12813,7 +15108,7 @@
       "damage": "+4"
     },
     "introducedInPatch": "v0.108.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/outrage.png",
     "beta_image_url": "/static/images/cards/beta/outrage.png"
   },
   {
@@ -13166,7 +15461,7 @@
     "id": "PECK",
     "name": "쪼기",
     "description": "피해를 2만큼 3번 줍니다.",
-    "description_raw": "피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:diff()}번 줍니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -13177,7 +15472,7 @@
     "color": "event",
     "damage": 2,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -13187,10 +15482,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 2,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/peck.png",
     "beta_image_url": null
@@ -13234,7 +15529,7 @@
   {
     "id": "PHANTOM_BLADES",
     "name": "환영검",
-    "description": "[gold]단도[/gold]가 [gold]보존[/gold]을 얻습니다.\n매 턴마다 처음으로\n사용하는 [gold]단도[/gold]의\n피해량이 9 증가합니다.",
+    "description": "[gold]단도[/gold]가 [gold]보존[/gold]을 얻습니다.\n매 턴마다 처음으로\n사용하는 [gold]단도[/gold]의\n피해량이 8 증가합니다.",
     "description_raw": "[gold]단도[/gold]가 [gold]보존[/gold]을 얻습니다.\n매 턴마다 처음으로\n사용하는 [gold]단도[/gold]의\n피해량이 {PhantomBladesPower:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -13250,7 +15545,7 @@
     "powers_applied": [
       {
         "power": "환영검",
-        "amount": 9
+        "amount": 8
       }
     ],
     "cards_draw": null,
@@ -13262,8 +15557,8 @@
       "SHIV"
     ],
     "vars": {
-      "PhantomBladesPower": 9,
-      "PhantomBlades": 9
+      "PhantomBladesPower": 8,
+      "PhantomBlades": 8
     },
     "upgrade": {
       "phantombladespower": "+3"
@@ -13406,7 +15701,7 @@
   },
   {
     "id": "PINPOINT",
-    "name": "정밀 사격",
+    "name": "일점 조준",
     "description": "피해를 15 줍니다.\n이번 턴에 스킬 카드를\n사용할 때마다 비용이\n1 [energy:1] 감소합니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 턴에 스킬 카드를\n사용할 때마다 비용이\n1 {energyPrefix:energyIcons(1)} 감소합니다.",
     "cost": 3,
@@ -13440,7 +15735,7 @@
     "id": "PLOT",
     "name": "구상",
     "description": "다음 턴에,\n모든 플레이어가\n카드를 2장 뽑습니다.",
-    "description_raw": "다음 턴에,\n모든 플레이어가\n카드를 {Cards}장 뽑습니다.",
+    "description_raw": "다음 턴에,\n모든 플레이어가\n카드를 {Cards:diff()}장 뽑습니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -13453,7 +15748,7 @@
     "block": null,
     "hit_count": null,
     "powers_applied": null,
-    "cards_draw": null,
+    "cards_draw": 2,
     "energy_gain": null,
     "hp_loss": null,
     "keywords": null,
@@ -13645,8 +15940,8 @@
   },
   {
     "id": "PRECISE_CUT",
-    "name": "정밀한 베기",
-    "description": "피해를 15 줍니다.\n[gold]손[/gold]에 있는 다른 카드 1장당 피해량이 2 감소합니다.",
+    "name": "정교한 베기",
+    "description": "피해를 13 줍니다.\n[gold]손[/gold]에 있는 다른 카드 1장당 피해량이 2 감소합니다.",
     "description_raw": "피해를 {CalculatedDamage:diff()} 줍니다.\n[gold]손[/gold]에 있는 다른 카드 1장당 피해량이 {ExtraDamage:inverseDiff()} 감소합니다.",
     "cost": 0,
     "is_x_cost": null,
@@ -13668,8 +15963,7 @@
     "spawns_cards": null,
     "vars": {
       "CalculationBase": 13,
-      "ExtraDamage": 2,
-      "CalculatedDamage": 15
+      "ExtraDamage": 2
     },
     "upgrade": {
       "calculationbase": "+3"
@@ -14058,6 +16352,39 @@
     "beta_image_url": "/static/images/cards/beta/pull_from_below.png"
   },
   {
+    "id": "PUNCH_OF_JOY",
+    "name": "강렬한 기쁨",
+    "description": "피해를 13 줍니다.\n[gold]손[/gold]에 있는 무작위\n[gold]슬픔[/gold] 1장을 [gold]기쁨[/gold]으로\n[gold]변화[/gold]시킵니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]손[/gold]에 있는 무작위\n[gold]슬픔[/gold] 1장을 [gold]기쁨[/gold]으로\n[gold]변화[/gold]시킵니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 13,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 13
+    },
+    "upgrade": {
+      "damage": "+4"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/punch_of_joy.png"
+  },
+  {
     "id": "PURITY",
     "name": "순수",
     "description": "[gold]손[/gold]에 있는 카드를\n최대 3장까지 소멸시킵니다.",
@@ -14221,6 +16548,115 @@
     "beta_image_url": "/static/images/cards/beta/quasar.png"
   },
   {
+    "id": "QUICK_SHOT",
+    "name": "재빠른 사격",
+    "description": "피해를 10 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "description_raw": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 10,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 10
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/quick_shot.png"
+  },
+  {
+    "id": "QUIETUS",
+    "name": "종지부",
+    "description": "이번 턴 동안, 다음 [gold]사격[/gold]의\n피해량이 2배가 되지만,\n[gold]화살[/gold]이 파괴됩니다.",
+    "description_raw": "이번 턴 동안, 다음 [gold]사격[/gold]의\n피해량이 {IfUpgraded:show:3배|2배}가 되지만,\n[gold]화살[/gold]이 파괴됩니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "종지부",
+        "amount": 2
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "QuietusPower": 2,
+      "Quietus": 2
+    },
+    "upgrade": {
+      "quietuspower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/quietus.png"
+  },
+  {
+    "id": "QUIVER",
+    "name": "화살통",
+    "description": "[gold]화살[/gold]을 1개\n추가로 얻습니다.",
+    "description_raw": "[gold]화살[/gold]을 {Repeat:diff()}개\n추가로 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Repeat": 1
+    },
+    "upgrade": {
+      "repeat": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/quiver.png"
+  },
+  {
     "id": "RADIATE",
     "name": "방출",
     "description": "이번 턴에 얻은 [star:1]의\n수만큼 모든 적에게\n피해를 3 줍니다.",
@@ -14286,6 +16722,41 @@
     },
     "image_url": "/static/images/cards/rage.png",
     "beta_image_url": null
+  },
+  {
+    "id": "RAIN_SHOT",
+    "name": "빗발치는 사격",
+    "description": "피해를 12 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n가한 피해량만큼 다른 모든\n적에게 피해를 줍니다.",
+    "description_raw": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n가한 피해량만큼 다른 모든\n적에게 피해를 줍니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 12,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 12
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/rain_shot.png"
   },
   {
     "id": "RAINBOW",
@@ -14383,6 +16854,42 @@
     },
     "image_url": "/static/images/cards/rampage.png",
     "beta_image_url": null
+  },
+  {
+    "id": "RAPID_SHOT",
+    "name": "신속 사격",
+    "description": "피해를 3만큼 3번 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:diff()}번 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 3,
+    "block": null,
+    "hit_count": 3,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 3,
+      "HitCount": 3
+    },
+    "upgrade": {
+      "hitcount": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/rapid_shot.png"
   },
   {
     "id": "RATTLE",
@@ -14621,6 +17128,37 @@
     "beta_image_url": "/static/images/cards/beta/rebound.png"
   },
   {
+    "id": "RECALL",
+    "name": "수거",
+    "description": "대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n[gold]회수[/gold]하고 [gold]버린 카드 더미[/gold]의 카드 1장을 [gold]뽑을 카드 더미[/gold] 맨 위에 놓습니다.",
+    "description_raw": "대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n[gold]회수[/gold]하고 [gold]버린 카드 더미[/gold]의 카드 1장을 [gold]뽑을 카드 더미[/gold] 맨 위에 놓습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "cost": 0
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/recall.png"
+  },
+  {
     "id": "REFINE_BLADE",
     "name": "검날 개선",
     "description": "[gold]단조[/gold] 8.\n다음 턴에, [energy:1]를 얻습니다.",
@@ -14724,7 +17262,7 @@
     "id": "REFRACT",
     "name": "굴절",
     "description": "피해를 10만큼 2번 줍니다.\n[gold]유리[/gold]를 2번 [gold]영창[/gold]합니다.",
-    "description_raw": "피해를 {Damage:diff()}만큼 2번 줍니다.\n[gold]유리[/gold]를 {Repeat:diff()}번 [gold]영창[/gold]합니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:choose(2):2번|{HitCount:diff()}번} 줍니다.\n[gold]유리[/gold]를 {Repeat:diff()}번 [gold]영창[/gold]합니다.",
     "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -14745,7 +17283,8 @@
     "spawns_cards": null,
     "vars": {
       "Repeat": 2,
-      "Damage": 10
+      "Damage": 10,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+3"
@@ -14856,6 +17395,41 @@
     "beta_image_url": "/static/images/cards/beta/rend.png"
   },
   {
+    "id": "REPEAT_SHOT",
+    "name": "반복 사격",
+    "description": "피해를 15만큼 X번 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 X번 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "cost": 0,
+    "is_x_cost": true,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "희귀",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 15,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 15
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/repeat_shot.png"
+  },
+  {
     "id": "RESONANCE",
     "name": "공진",
     "description": "[gold]힘[/gold]을 1 얻습니다.\n모든 적이\n[gold]힘[/gold]을 1 잃습니다.",
@@ -14931,10 +17505,47 @@
     "beta_image_url": null
   },
   {
+    "id": "RHYTHM_STRIKE",
+    "name": "리듬 타격",
+    "description": "피해를 4 줍니다.\n보유한 [gold]선율[/gold]만큼\n반복합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n보유한 [gold]선율[/gold]만큼\n반복합니다.{InCombat:\n({CalculatedHits:diff()}번 적중합니다)|}",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 4,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Strike"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 4,
+      "CalculationBase": 1,
+      "CalculationExtra": 1
+    },
+    "upgrade": {
+      "damage": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/rhythm_strike.png"
+  },
+  {
     "id": "RICOCHET",
     "name": "도탄",
     "description": "무작위 적에게\n피해를 3만큼 4번 줍니다.",
-    "description_raw": "무작위 적에게\n피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.",
+    "description_raw": "무작위 적에게\n피해를 {Damage:diff()}만큼 {HitCount:diff()}번 줍니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -14945,7 +17556,7 @@
     "color": "silent",
     "damage": 3,
     "block": null,
-    "hit_count": null,
+    "hit_count": 4,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -14957,10 +17568,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 3,
-      "Repeat": 4
+      "HitCount": 4
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/ricochet.png",
     "beta_image_url": "/static/images/cards/beta/ricochet.png"
@@ -14968,8 +17579,8 @@
   {
     "id": "RIGHT_HAND_HAND",
     "name": "진정한 오른팔",
-    "description": "[gold]골골이[/gold]가 피해를 4 줍니다.\n비용이 [energy:2] 이상인\n카드를 사용할 때마다,\n이 카드를 [gold]버린 카드 더미[/gold]에서\n다시 [gold]손[/gold]으로 가져옵니다.",
-    "description_raw": "[gold]골골이[/gold]가 피해를 {OstyDamage:diff()} 줍니다.\n비용이 {Energy:energyIcons()} 이상인\n카드를 사용할 때마다,\n이 카드를 [gold]버린 카드 더미[/gold]에서\n다시 [gold]손[/gold]으로 가져옵니다.",
+    "description": "[gold]골골이[/gold]가 피해를 4 줍니다.\n비용이 [energy:2] 이상인\n카드를 사용할 때마다,\n[gold]버린 카드 더미[/gold]에서 이 카드를\n다시 [gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "[gold]골골이[/gold]가 피해를 {OstyDamage:diff()} 줍니다.\n비용이 {Energy:energyIcons()} 이상인\n카드를 사용할 때마다,\n[gold]버린 카드 더미[/gold]에서 이 카드를\n다시 [gold]손[/gold]으로 가져옵니다.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -14978,7 +17589,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "necrobinder",
-    "damage": 4,
+    "damage": null,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -14992,8 +17603,7 @@
     "spawns_cards": null,
     "vars": {
       "OstyDamage": 4,
-      "Energy": 2,
-      "Damage": 4
+      "Energy": 2
     },
     "upgrade": {
       "ostydamage": "+2"
@@ -15005,7 +17615,7 @@
     "id": "RIP_AND_TEAR",
     "name": "날뛰기",
     "description": "무작위 적에게\n피해를 7만큼 2번 줍니다.",
-    "description_raw": "무작위 적에게\n피해를 {Damage:diff()}만큼 2번 줍니다.",
+    "description_raw": "무작위 적에게\n피해를 {Damage:diff()}만큼 {HitCount:choose(2):2번|{HitCount:diff()}번} 줍니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15025,7 +17635,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 7
+      "Damage": 7,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -15036,8 +17647,8 @@
   {
     "id": "ROCKET_PUNCH",
     "name": "로켓 펀치",
-    "description": "피해를 13 줍니다.\n카드를 1장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 [energy:1]씩 감소합니다.",
-    "description_raw": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.\n상태이상 카드를 생성 시,\n이 카드의 비용이 사용하기\n전까지 {energyPrefix:energyIcons(1)}씩 감소합니다.",
+    "description": "피해를 13 줍니다.\n카드를 1장 뽑습니다.\n상태이상 카드를 생성할 때마다,\n이 카드의 비용이 사용하기\n전까지 1 [energy:1] 감소합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.\n상태이상 카드를 생성할 때마다,\n이 카드의 비용이 사용하기\n전까지 1 {energyPrefix:energyIcons(1)} 감소합니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15174,6 +17785,39 @@
     "beta_image_url": "/static/images/cards/beta/royalties.png"
   },
   {
+    "id": "RUMMAGE",
+    "name": "헤집기",
+    "description": "카드를 3장 뽑습니다.\n[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "카드를 {Cards:diff()}장 뽑습니다.\n[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 3,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 3
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/rummage.png"
+  },
+  {
     "id": "RUPTURE",
     "name": "파열",
     "description": "내 턴 동안 체력을 잃을\n때마다, [gold]힘[/gold]을 1 얻습니다.",
@@ -15247,9 +17891,41 @@
     "beta_image_url": null
   },
   {
+    "id": "SADNESS",
+    "name": "슬픔",
+    "description": "",
+    "description_raw": "",
+    "cost": -1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "상태이상",
+    "rarity": "상태이상",
+    "target": "None",
+    "color": "status",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "보존",
+      "사용불가"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/sadness.png"
+  },
+  {
     "id": "SALVO",
     "name": "집중 포화",
-    "description": "피해를 12 줍니다.\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다.",
+    "description": "피해를 10 줍니다.\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -15259,7 +17935,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "colorless",
-    "damage": 12,
+    "damage": 10,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -15270,7 +17946,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 12
+      "Damage": 10
     },
     "upgrade": {
       "damage": "+4"
@@ -15690,6 +18366,40 @@
     "beta_image_url": "/static/images/cards/beta/seeking_edge.png"
   },
   {
+    "id": "SELF_DEPRECATE",
+    "name": "자기 비하",
+    "description": "[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.\n모든 아군의 [gold]손[/gold]에\n[gold]기쁨[/gold]을 2장 추가합니다.",
+    "description_raw": "[gold]슬픔[/gold]을 {Sadness:choose(1):1장|{:diff()}장}\n[gold]손[/gold]으로 가져옵니다.\n모든 아군의 [gold]손[/gold]에\n[gold]기쁨[/gold]을 {Joy:diff()}장 추가합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "AllAllies",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Joy": 2,
+      "Sadness": 1
+    },
+    "upgrade": {
+      "joy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/self_deprecate.png"
+  },
+  {
     "id": "SENTRY_MODE",
     "name": "경계 태세",
     "description": "내 턴 시작 시,\n[gold]훑어보기[/gold]를 1장\n[gold]손[/gold]으로 가져옵니다.",
@@ -15768,6 +18478,45 @@
     "beta_image_url": "/static/images/cards/beta/serpent_form.png"
   },
   {
+    "id": "SERRATED_ARROWS",
+    "name": "톱니 화살",
+    "description": "[gold]꿰뚫린[/gold] 상태의 적이\n공격 카드로 받는 피해가\n25% 증가합니다.",
+    "description_raw": "[gold]꿰뚫린[/gold] 상태의 적이\n공격 카드로 받는 피해가\n{SerratedArrowsPower:diff()}% 증가합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "톱니 화살",
+        "amount": 25
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "SerratedArrowsPower": 25,
+      "SerratedArrows": 25
+    },
+    "upgrade": {
+      "serratedarrowspower": "+25"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/serrated_arrows.png"
+  },
+  {
     "id": "SETUP_STRIKE",
     "name": "사전 타격",
     "description": "피해를 7 줍니다.\n이번 턴 동안\n[gold]힘[/gold]을 3 얻습니다.",
@@ -15812,8 +18561,8 @@
   {
     "id": "SEVEN_STARS",
     "name": "일곱 개의 별",
-    "description": "모든 적에게\n피해를 7만큼 7번 줍니다.",
-    "description_raw": "모든 적에게\n피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.",
+    "description": "모든 적에게 피해를\n7만큼 7번 줍니다.",
+    "description_raw": "모든 적에게 피해를\n{Damage:diff()}만큼 {HitCount:diff()}번 줍니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -15824,7 +18573,7 @@
     "color": "regent",
     "damage": 7,
     "block": null,
-    "hit_count": null,
+    "hit_count": 7,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -15834,7 +18583,7 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 7,
-      "Repeat": 7,
+      "HitCount": 7,
       "StarCost": 7
     },
     "upgrade": {
@@ -16182,6 +18931,54 @@
     "beta_image_url": "/static/images/cards/beta/shockwave.png"
   },
   {
+    "id": "SHOW_OFF",
+    "name": "으스대기",
+    "description": "[gold]조준[/gold]을 5 얻습니다.\n이번 턴 동안 하수인이 아닌\n적이 죽을 시, 이 카드로 얻는\n[gold]조준[/gold]이 영구적으로\n2 증가합니다.",
+    "description_raw": "[gold]조준[/gold]을 {AimPower:diff()} 얻습니다.\n이번 턴 동안 하수인이 아닌\n적이 죽을 시, 이 카드로 얻는\n[gold]조준[/gold]이 영구적으로\n{ShowOffPower:diff()} 증가합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "조준",
+        "amount": 5
+      },
+      {
+        "power": "으스대기",
+        "amount": 2
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "BaseAim": 5,
+      "AimPower": 5,
+      "Aim": 5,
+      "ShowOffPower": 2,
+      "ShowOff": 2
+    },
+    "upgrade": {
+      "showoffpower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/show_off.png"
+  },
+  {
     "id": "SHROUD",
     "name": "수의",
     "description": "[gold]종말[/gold]을 부여할 때마다,\n[gold]방어도[/gold]를 3 얻습니다.",
@@ -16319,7 +19116,7 @@
       "energy": "+1"
     },
     "introducedInPatch": "v0.110.0",
-    "image_url": null,
+    "image_url": "/static/images/cards/sidestep.png",
     "beta_image_url": "/static/images/cards/beta/sidestep.png"
   },
   {
@@ -16361,6 +19158,45 @@
     },
     "image_url": "/static/images/cards/signal_boost.png",
     "beta_image_url": null
+  },
+  {
+    "id": "SIMPLETON",
+    "name": "얼간이",
+    "description": "내 턴 종료 시, [gold]손[/gold]에 있는\n가장 비용이 낮은\n카드를 사용합니다.",
+    "description_raw": "내 턴 종료 시, [gold]손[/gold]에 있는\n가장 비용이 낮은\n{SimpletonPower:choose(1):카드를|카드를 {:diff()}장} 사용합니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "얼간이",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "SimpletonPower": 1,
+      "Simpleton": 1
+    },
+    "upgrade": {
+      "cost": 1
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/simpleton.png"
   },
   {
     "id": "SKEWER",
@@ -16425,6 +19261,44 @@
     },
     "image_url": "/static/images/cards/skim.png",
     "beta_image_url": null
+  },
+  {
+    "id": "SKY_SHOT",
+    "name": "고공 사격",
+    "description": "피해를 30 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "description_raw": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "희귀",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 30,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸",
+      "선천성"
+    ],
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 30
+    },
+    "upgrade": {
+      "damage": "+10"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/sky_shot.png"
   },
   {
     "id": "SLEIGHT_OF_FLESH",
@@ -16754,6 +19628,45 @@
     "beta_image_url": null
   },
   {
+    "id": "SONG_PATH",
+    "name": "노래의 길",
+    "description": "[gold]초 선율[/gold]을 얻을 때마다,\n[gold]방어도[/gold]를 5 얻습니다.",
+    "description_raw": "[gold]초 선율[/gold]을 얻을 때마다,\n[gold]방어도[/gold]를 {SongPathPower:diff()} 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "노래의 길",
+        "amount": 5
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "SongPathPower": 5,
+      "SongPath": 5
+    },
+    "upgrade": {
+      "songpathpower": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/song_path.png"
+  },
+  {
     "id": "SOOT",
     "name": "그을음",
     "description": "",
@@ -16782,6 +19695,42 @@
     "upgrade": null,
     "image_url": "/static/images/cards/soot.png",
     "beta_image_url": "/static/images/cards/beta/soot.png"
+  },
+  {
+    "id": "SORROWFUL_STRIKE",
+    "name": "비탄의 타격",
+    "description": "피해를 13 줍니다.\n[gold]슬픔[/gold]을 2장\n[gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]슬픔[/gold]을 {Cards:diff()}장\n[gold]손[/gold]으로 가져옵니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 13,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Strike"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 13,
+      "Cards": 2
+    },
+    "upgrade": {
+      "damage": "+4"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/sorrowful_strike.png"
   },
   {
     "id": "SOUL",
@@ -16895,7 +19844,7 @@
     "id": "SOVEREIGN_BLADE",
     "name": "군주의 칼날",
     "description": "피해를 10 줍니다.",
-    "description_raw": "{TargetType:choose(AllEnemies):모든 적에게 |}피해를 {Damage:diff()}{Repeat:choose(1):|만큼 {}번} 줍니다.{GainsBlock:cond:\n[gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다.|}",
+    "description_raw": "{TargetType:choose(AllEnemies):모든 적에게 |}피해를 {Damage:diff()}{HitCount:choose(1):|만큼 {}번} 줍니다.{GainsBlock:cond:\n[gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다.|}",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -16906,7 +19855,7 @@
     "color": "token",
     "damage": 10,
     "block": null,
-    "hit_count": null,
+    "hit_count": 1,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -16920,8 +19869,7 @@
       "Damage": 10,
       "CalculationBase": 0,
       "CalculationExtra": 1,
-      "Repeat": 1,
-      "baseDamage": 10
+      "HitCount": 1
     },
     "upgrade": {
       "cost": 1
@@ -16998,7 +19946,7 @@
   {
     "id": "SPEEDSTER",
     "name": "스피드스터",
-    "description": "내 턴 동안 카드를 뽑을\n때마다, 모든 적에게\n피해를 2 줍니다.",
+    "description": "내 턴 동안 카드를 뽑을\n때마다, 모든 적에게\n피해를 3 줍니다.",
     "description_raw": "내 턴 동안 카드를 뽑을\n때마다, 모든 적에게\n피해를 {SpeedsterPower:diff()} 줍니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -17014,7 +19962,7 @@
     "powers_applied": [
       {
         "power": "스피드스터",
-        "amount": 2
+        "amount": 3
       }
     ],
     "cards_draw": null,
@@ -17024,8 +19972,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "SpeedsterPower": 2,
-      "Speedster": 2
+      "SpeedsterPower": 3,
+      "Speedster": 3
     },
     "upgrade": {
       "add_innate": 1
@@ -17105,7 +20053,7 @@
     "id": "SPITE",
     "name": "악의",
     "description": "피해를 5 줍니다.\n이번 턴 동안 체력을\n잃었다면, 2번 적중합니다.",
-    "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 체력을\n잃었다면, {Repeat:diff()}번 적중합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안 체력을\n잃었다면, {HitCount:diff()}번 적중합니다.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -17116,7 +20064,7 @@
     "color": "ironclad",
     "damage": 5,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -17126,10 +20074,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 5,
-      "Repeat": 2
+      "HitCount": 2
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/spite.png",
     "beta_image_url": "/static/images/cards/beta/spite.png"
@@ -17468,6 +20416,41 @@
     "beta_image_url": null
   },
   {
+    "id": "STEADY_CADENCE",
+    "name": "안정된 마침",
+    "description": "피해를 10 줍니다.\n보유한 [gold]선율[/gold]마다\n카드를 1장 뽑습니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n보유한 [gold]선율[/gold]마다\n카드를 1장 뽑습니다.{InCombat:\n(카드를 {CalculatedCards:diff()}장 뽑습니다)|}",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 10,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 10,
+      "CalculationBase": 0,
+      "CalculationExtra": 1
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/steady_cadence.png"
+  },
+  {
     "id": "STOKE",
     "name": "화력 증폭",
     "description": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드의 수만큼\n무작위 카드를\n1장 [gold]손[/gold]으로 가져옵니다.",
@@ -17704,6 +20687,47 @@
     "beta_image_url": "/static/images/cards/beta/stratagem.png"
   },
   {
+    "id": "STRENGTH",
+    "name": "힘",
+    "description": "[gold]힘[/gold]을 4 얻습니다.",
+    "description_raw": "[gold]힘[/gold]을 {StrengthPower:diff()} 얻습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "힘",
+        "amount": 4
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "StrengthPower": 4,
+      "Strength": 4
+    },
+    "upgrade": {
+      "strengthpower": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/strength.png"
+  },
+  {
     "id": "STRIKE_DEFECT",
     "name": "타격",
     "description": "피해를 6 줍니다.",
@@ -17872,6 +20896,41 @@
     },
     "image_url": "/static/images/cards/strike_silent.png",
     "beta_image_url": null
+  },
+  {
+    "id": "STRIKE_FOOL",
+    "name": "타격",
+    "description": "피해를 6 줍니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "기본",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 6,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Strike"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 6
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": "/static/images/cards/strike_fool.png",
+    "beta_image_url": "/static/images/cards/beta/strike_fool.png"
   },
   {
     "id": "SUBROUTINE",
@@ -18227,7 +21286,7 @@
     "id": "SWORD_BOOMERANG",
     "name": "부메랑 칼날",
     "description": "무작위 적에게\n피해를 3만큼 3번 줍니다.",
-    "description_raw": "무작위 적에게\n피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.",
+    "description_raw": "무작위 적에게\n피해를 {Damage:diff()}만큼 {HitCount:diff()}번 줍니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -18238,7 +21297,7 @@
     "color": "ironclad",
     "damage": 3,
     "block": null,
-    "hit_count": null,
+    "hit_count": 3,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -18248,10 +21307,10 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 3,
-      "Repeat": 3
+      "HitCount": 3
     },
     "upgrade": {
-      "repeat": "+1"
+      "hitcount": "+1"
     },
     "image_url": "/static/images/cards/sword_boomerang.png",
     "beta_image_url": null
@@ -18536,6 +21595,41 @@
     "beta_image_url": null
   },
   {
+    "id": "TEMPERANCE",
+    "name": "절제",
+    "description": "[gold]방어도[/gold]를 30 얻습니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": 30,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Block": 30
+    },
+    "upgrade": {
+      "block": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/temperance.png"
+  },
+  {
     "id": "TEMPEST",
     "name": "뇌우",
     "description": "[gold]전기[/gold]를 X번 [gold]영창[/gold]합니다.",
@@ -18701,6 +21795,177 @@
     "beta_image_url": null
   },
   {
+    "id": "THE_CHARIOT",
+    "name": "전차",
+    "description": "모든 적에게\n피해를 25 줍니다.",
+    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "토큰",
+    "target": "AllEnemies",
+    "color": "token",
+    "damage": 25,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 25
+    },
+    "upgrade": {
+      "damage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_chariot.png"
+  },
+  {
+    "id": "THE_DEVIL",
+    "name": "악마",
+    "description": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n이렇게 [gold]소멸[/gold]시킨 카드 1장당\n[gold]뽑을 카드 더미[/gold] 맨 위의\n카드를 사용합니다.",
+    "description_raw": "[gold]손[/gold]에 있는 모든 카드를\n[gold]소멸[/gold]시킵니다.\n이렇게 [gold]소멸[/gold]시킨 카드 1장당\n[gold]뽑을 카드 더미[/gold] 맨 위의\n카드를 {IfUpgraded:show:[gold]강화[/gold]한 뒤 사용합니다|사용합니다}.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_devil.png"
+  },
+  {
+    "id": "THE_EMPEROR",
+    "name": "황제",
+    "description": "[energy:7]를 얻습니다.",
+    "description_raw": "{Energy:energyIcons()}를 얻습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 7,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 7
+    },
+    "upgrade": {
+      "energy": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_emperor.png"
+  },
+  {
+    "id": "THE_EMPRESS",
+    "name": "여제",
+    "description": "[gold]약화[/gold]를 3 부여합니다.\n[gold]취약[/gold]을 3 부여합니다.",
+    "description_raw": "[gold]약화[/gold]를 {Power:diff()} 부여합니다.\n[gold]취약[/gold]을 {Power:diff()} 부여합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Power": 3
+    },
+    "upgrade": {
+      "power": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_empress.png"
+  },
+  {
+    "id": "THE_FOOL",
+    "name": "광대",
+    "description": "[gold]손[/gold]에 있는 무작위\n카드를 2장 사용합니다.",
+    "description_raw": "[gold]손[/gold]에 있는 무작위\n카드를 {Cards:diff()}장 사용합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 2
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_fool.png"
+  },
+  {
     "id": "THE_GAMBIT",
     "name": "포석",
     "description": "[gold]방어도[/gold]를 50 얻습니다.\n이번 전투 동안\n막히지 않은 공격 피해를\n받는다면, 죽습니다.",
@@ -18731,6 +21996,147 @@
     },
     "image_url": "/static/images/cards/the_gambit.png",
     "beta_image_url": null
+  },
+  {
+    "id": "THE_HANGED_MAN",
+    "name": "매달린 사람",
+    "description": "체력을 6 잃습니다.\n이번 턴 이후에 추가 턴을 진행합니다.",
+    "description_raw": "체력을 {HpLoss:diff()} 잃습니다.\n이번 턴 이후에 추가 턴을 진행합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": 6,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "HpLoss": 6
+    },
+    "upgrade": {
+      "hploss": "-3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_hanged_man.png"
+  },
+  {
+    "id": "THE_HERMIT",
+    "name": "은둔자",
+    "description": "카드를 1장 버립니다.\n카드를 2장 뽑습니다.\n버린 [gold]저주[/gold]는 [gold]소멸[/gold]됩니다.",
+    "description_raw": "카드를 1장 버립니다.\n카드를 {Cards:diff()}장 뽑습니다.\n버린 [gold]저주[/gold]는 [gold]소멸[/gold]됩니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 2
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_hermit.png"
+  },
+  {
+    "id": "THE_HIEROPHANT",
+    "name": "교황",
+    "description": "무작위 무색 카드를 3장\n[gold]손[/gold]으로 가져옵니다.\n그 카드의 비용이 이번 턴 동안\n1 [energy:1] 감소합니다.",
+    "description_raw": "무작위 무색 카드를 {Cards:diff()}장\n[gold]손[/gold]으로 가져옵니다.\n그 카드의 비용이 이번 턴 동안\n1 {energyPrefix:energyIcons(1)} 감소합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 3,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 3
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_hierophant.png"
+  },
+  {
+    "id": "THE_HIGH_PRIESTESS",
+    "name": "여교황",
+    "description": "카드를 4장 뽑습니다.",
+    "description_raw": "카드를 {Cards:diff()}장 뽑습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 4,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸",
+      "보존"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 4
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_high_priestess.png"
   },
   {
     "id": "THE_HUNT",
@@ -18765,6 +22171,103 @@
     },
     "image_url": "/static/images/cards/the_hunt.png",
     "beta_image_url": "/static/images/cards/beta/the_hunt.png"
+  },
+  {
+    "id": "THE_LOVERS",
+    "name": "연인",
+    "description": "[gold]손[/gold]을 다른 캐릭터의\n무작위 카드로\n가득 채웁니다.",
+    "description_raw": "[gold]손[/gold]을 다른 캐릭터의\n무작위 {IfUpgraded:show:강화된 |}카드로\n가득 채웁니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_lovers.png"
+  },
+  {
+    "id": "THE_MAGICIAN",
+    "name": "마술사",
+    "description": "구체 슬롯을 3개 얻습니다.\n무작위 구체를\n3번 [gold]영창[/gold]합니다.",
+    "description_raw": "구체 슬롯을 {Repeat:diff()}개 얻습니다.\n무작위 구체를\n{Repeat:diff()}번 [gold]영창[/gold]합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Repeat": 3
+    },
+    "upgrade": {
+      "repeat": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_magician.png"
+  },
+  {
+    "id": "THE_MOON",
+    "name": "달",
+    "description": "[gold]손[/gold]을 [gold]단도[/gold]로\n가득 채웁니다.",
+    "description_raw": "[gold]손[/gold]을 [gold]{IfUpgraded:show:단도+|단도}[/gold]로\n가득 채웁니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": null,
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_moon.png"
   },
   {
     "id": "THE_SCYTHE",
@@ -18835,6 +22338,42 @@
     "beta_image_url": "/static/images/cards/beta/the_sealed_throne.png"
   },
   {
+    "id": "THE_SHOT",
+    "name": "최후의 한 발",
+    "description": "[gold]개화[/gold]로 [gold]소멸[/gold]시킨 카드\n1장당 피해를 10 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+    "description_raw": "[gold]개화[/gold]로 [gold]소멸[/gold]시킨 카드\n1장당 피해를 {ExtraDamage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.{InCombat:\n(피해를 {CalculatedDamage:diff()} 줍니다)|}",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "토큰",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 0,
+      "ExtraDamage": 10
+    },
+    "upgrade": {
+      "extradamage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_shot.png"
+  },
+  {
     "id": "THE_SMITH",
     "name": "위대한 재련",
     "description": "[gold]단조[/gold] 30.",
@@ -18866,6 +22405,151 @@
     },
     "image_url": "/static/images/cards/the_smith.png",
     "beta_image_url": null
+  },
+  {
+    "id": "THE_STAR",
+    "name": "별",
+    "description": "다음 턴에,\n[energy:3]를 얻고\n카드를 3장 뽑습니다.",
+    "description_raw": "다음 턴에,\n{Energy:energyIcons()}를 얻고\n카드를 {Cards:diff()}장 뽑습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 3,
+    "energy_gain": 3,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 3,
+      "Energy": 3
+    },
+    "upgrade": {
+      "cards": "+1",
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_star.png"
+  },
+  {
+    "id": "THE_SUN",
+    "name": "태양",
+    "description": "카드를 2장 뽑습니다.\n[energy:2]를 얻습니다.\n[gold]버린 카드 더미[/gold]에 [gold]그을음[/gold]을\n1장 추가합니다.",
+    "description_raw": "카드를 {Cards:diff()}장 뽑습니다.\n{Energy:energyIcons()}를 얻습니다.\n[gold]버린 카드 더미[/gold]에 [gold]그을음[/gold]을\n1장 추가합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": 2,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 2,
+      "Energy": 2
+    },
+    "upgrade": {
+      "energy": "+1",
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_sun.png"
+  },
+  {
+    "id": "THE_TOWER",
+    "name": "탑",
+    "description": "방문한 층 1층당\n피해를 2 줍니다.",
+    "description_raw": "방문한 층 1층당\n피해를 {ExtraDamage:diff()} 줍니다.{InCombat:\n(피해를 {CalculatedDamage:diff()} 줍니다.)|}",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "토큰",
+    "target": "AnyEnemy",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 0,
+      "ExtraDamage": 2
+    },
+    "upgrade": {
+      "extradamage": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_tower.png"
+  },
+  {
+    "id": "THE_WORLD",
+    "name": "세계",
+    "description": "[gold]버린 카드 더미[/gold]에서 무작위\n카드를 5장 [gold]손[/gold]으로\n가져옵니다.",
+    "description_raw": "[gold]버린 카드 더미[/gold]에서 무작위\n카드를 {Cards:diff()}장 [gold]손[/gold]으로\n가져옵니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 5,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 5
+    },
+    "upgrade": {
+      "cards": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_world.png"
   },
   {
     "id": "THINKING_AHEAD",
@@ -18905,7 +22589,7 @@
     "id": "THRASH",
     "name": "난타",
     "description": "피해를 4만큼 2번 줍니다.\n[gold]손[/gold]에 있는 무작위 공격\n카드를 1장 [gold]소멸[/gold]시키고,\n그 카드의 피해량을\n이 카드에 추가합니다.",
-    "description_raw": "피해를 {Damage:diff()}만큼 2번 줍니다.\n[gold]손[/gold]에 있는 무작위 공격\n카드를 1장 [gold]소멸[/gold]시키고,\n그 카드의 피해량을\n이 카드에 추가합니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:choose(2):2번|{HitCount:diff()}번} 줍니다.\n[gold]손[/gold]에 있는 무작위 공격\n카드를 1장 [gold]소멸[/gold]시키고,\n그 카드의 피해량을\n이 카드에 추가합니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -18925,7 +22609,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 4
+      "Damage": 4,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -19041,6 +22726,41 @@
     },
     "image_url": "/static/images/cards/thunderclap.png",
     "beta_image_url": null
+  },
+  {
+    "id": "TIMBER",
+    "name": "넘어간다",
+    "description": "피해를 20 줍니다.\n이 카드가 적을 처치 시,\n모든 적에게\n피해를 30 줍니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n이 카드가 적을 처치 시,\n모든 적에게\n피해를 {OnKillDamage:diff()} 줍니다.",
+    "cost": 3,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 20,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 20,
+      "OnKillDamage": 30
+    },
+    "upgrade": {
+      "damage": "+5",
+      "onkilldamage": "+5"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/timber.png"
   },
   {
     "id": "TIMES_UP",
@@ -19174,8 +22894,8 @@
   {
     "id": "TRACKING",
     "name": "추적",
-    "description": "[gold]약화[/gold] 상태의 적이\n공격 카드로 받는 피해가\n50% 증가합니다.",
-    "description_raw": "[gold]약화[/gold] 상태의 적이\n공격 카드로 받는 피해가\n50% 증가합니다.",
+    "description": "[gold]약화[/gold] 상태의 적이\n내 공격 카드로 받는 피해가\n50% 증가합니다.",
+    "description_raw": "[gold]약화[/gold] 상태의 적이\n내 공격 카드로 받는 피해가\n50% 증가합니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -19306,6 +23026,41 @@
     "beta_image_url": null
   },
   {
+    "id": "TRICK_SHOT",
+    "name": "묘기 사격",
+    "description": "피해를 12 주는 [gold]화살[/gold]을\n[gold]발사[/gold]하고 이 카드를\n다시 [gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "피해를 {Damage:diff()} 주는 [gold]화살[/gold]을\n[gold]발사[/gold]하고 이 카드를\n다시 [gold]손[/gold]으로 가져옵니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 12,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Shoot"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 12
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/trick_shot.png"
+  },
+  {
     "id": "TRUE_GRIT",
     "name": "진정한 끈기",
     "description": "[gold]방어도[/gold]를 7 얻습니다.\n무작위 카드를\n1장 [gold]소멸[/gold]시킵니다.",
@@ -19336,6 +23091,39 @@
     },
     "image_url": "/static/images/cards/true_grit.png",
     "beta_image_url": null
+  },
+  {
+    "id": "TUNE",
+    "name": "조율",
+    "description": "내 턴 종료 시 [gold]키 선율[/gold]을\n보유했다면, 다음에\n사용하는 카드의 비용이\n0 [energy:1]이 됩니다.",
+    "description_raw": "내 턴 종료 시 [gold]키 선율[/gold]을\n보유했다면, 다음에\n사용하는 카드의 비용이\n0 {energyPrefix:energyIcons(1)}이 됩니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1
+    },
+    "upgrade": {
+      "cost": 1
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/tune.png"
   },
   {
     "id": "TURBO",
@@ -19406,7 +23194,7 @@
     "id": "TWIN_STRIKE",
     "name": "이중 타격",
     "description": "피해를 5만큼 2번 줍니다.",
-    "description_raw": "피해를 {Damage:diff()}만큼 2번 줍니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:choose(2):2번|{HitCount:diff()}번} 줍니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -19428,7 +23216,8 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 5
+      "Damage": 5,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
@@ -19807,7 +23596,7 @@
     "id": "UPROAR",
     "name": "난동",
     "description": "피해를 6만큼 2번 줍니다.\n[gold]뽑을 카드 더미[/gold]에서\n무작위 공격 카드를\n1장 사용합니다.",
-    "description_raw": "피해를 {Damage:diff()}만큼 2번 줍니다.\n[gold]뽑을 카드 더미[/gold]에서\n무작위 공격 카드를\n1장 사용합니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:choose(2):2번|{HitCount:diff()}번} 줍니다.\n[gold]뽑을 카드 더미[/gold]에서\n무작위 공격 카드를\n1장 사용합니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -19827,13 +23616,53 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 6
+      "Damage": 6,
+      "HitCount": 2
     },
     "upgrade": {
       "damage": "+2"
     },
     "image_url": "/static/images/cards/uproar.png",
     "beta_image_url": "/static/images/cards/beta/uproar.png"
+  },
+  {
+    "id": "UPROOT",
+    "name": "뽑아내기",
+    "description": "대상 적이 [gold]꿰뚫린[/gold]\n상태라면, [gold]회수[/gold]하고\n[gold]취약[/gold]을 3 부여합니다.",
+    "description_raw": "대상 적이 [gold]꿰뚫린[/gold]\n상태라면, [gold]회수[/gold]하고\n[gold]취약[/gold]을 {VulnerablePower:diff()} 부여합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "취약",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "VulnerablePower": 3,
+      "Vulnerable": 3
+    },
+    "upgrade": {
+      "vulnerable": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/uproot.png"
   },
   {
     "id": "VEILPIERCER",
@@ -19930,6 +23759,84 @@
     },
     "image_url": "/static/images/cards/vicious.png",
     "beta_image_url": "/static/images/cards/beta/vicious.png"
+  },
+  {
+    "id": "VIOLENT_CHORD",
+    "name": "격렬한 화음",
+    "description": "[gold]와 선율[/gold]을 얻을 때마다,\n모든 적에게\n피해를 9 줍니다.",
+    "description_raw": "[gold]와 선율[/gold]을 얻을 때마다,\n모든 적에게\n피해를 {ViolentChordPower:diff()} 줍니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "격렬한 화음",
+        "amount": 9
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "ViolentChordPower": 9,
+      "ViolentChord": 9
+    },
+    "upgrade": {
+      "violentchordpower": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/violent_chord.png"
+  },
+  {
+    "id": "VITRIOL",
+    "name": "독설",
+    "description": "[gold]약화[/gold]를 2 부여합니다.\n[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "[gold]약화[/gold]를 {WeakPower:diff()} 부여합니다.\n[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "약화",
+        "amount": 2
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "WeakPower": 2,
+      "Weak": 2
+    },
+    "upgrade": {
+      "weak": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/vitriol.png"
   },
   {
     "id": "VOID",
@@ -20072,6 +23979,308 @@
     "beta_image_url": "/static/images/cards/beta/voltaic.png"
   },
   {
+    "id": "WAH_BLAST",
+    "name": "와 세례",
+    "description": "모든 적에게\n피해를 14 줍니다.\n[gold]초 선율[/gold]이나 [gold]키 선율[/gold]을\n보유했다면,\n2번 적중합니다.",
+    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n[gold]초 선율[/gold]이나 [gold]키 선율[/gold]을\n보유했다면,\n2번 적중합니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AllEnemies",
+    "color": "fool",
+    "damage": 14,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 14
+    },
+    "upgrade": {
+      "damage": "+4"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_blast.png"
+  },
+  {
+    "id": "WAH_CHO",
+    "name": "와 초",
+    "description": "[gold]방어도[/gold]를 3 얻습니다.\n피해를 3 줍니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n피해를 {Damage:diff()} 줍니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 3,
+    "block": 3,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah",
+      "Cho"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 3,
+      "Block": 3
+    },
+    "upgrade": {
+      "damage": "+2",
+      "block": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_cho.png"
+  },
+  {
+    "id": "WAH_CHO_KI",
+    "name": "와 초 키",
+    "description": "[gold]방어도[/gold]를 9 얻습니다.\n피해를 9 줍니다.\n카드를 1장 뽑습니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "희귀",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 9,
+    "block": 9,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah",
+      "Cho",
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 9,
+      "Block": 9,
+      "Cards": 1
+    },
+    "upgrade": {
+      "damage": "+3",
+      "block": "+3",
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_cho_ki.png"
+  },
+  {
+    "id": "WAH_HAMMER",
+    "name": "와 망치",
+    "description": "피해를 9 줍니다.\n[gold]꿰뚫린[/gold] 상태의 적에게는\n피해량이 2배가 됩니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]꿰뚫린[/gold] 상태의 적에게는\n피해량이 2배가 됩니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 9,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 9
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_hammer.png"
+  },
+  {
+    "id": "WAH_KI",
+    "name": "와 키",
+    "description": "피해를 2만큼 2번 줍니다.\n다음 턴에, [energy:1]를 얻고\n카드를 1장 뽑습니다.",
+    "description_raw": "피해를 {Damage:diff()}만큼 {HitCount:diff()}번 줍니다.\n다음 턴에, {Energy:energyIcons()}를 얻고\n카드를 {Cards:diff()}장 뽑습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 2,
+    "block": null,
+    "hit_count": 2,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah",
+      "Ki"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 2,
+      "HitCount": 2,
+      "Cards": 1,
+      "Energy": 1
+    },
+    "upgrade": {
+      "damage": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_ki.png"
+  },
+  {
+    "id": "WAH_SWEEP",
+    "name": "와 휩쓸기",
+    "description": "모든 적에게\n피해를 8 줍니다.",
+    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AllEnemies",
+    "color": "fool",
+    "damage": 8,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 8
+    },
+    "upgrade": {
+      "damage": "+3"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_sweep.png"
+  },
+  {
+    "id": "WAH_SYMPHONY",
+    "name": "와 교향곡",
+    "description": "모든 적에게\n피해를 6 줍니다.\n보유한 카드 중 이름에 “와”,\n“초”, “키”가 포함된 카드 1장당\n피해량이 4 증가합니다.",
+    "description_raw": "모든 적에게\n피해를 {CalculatedDamage:diff()} 줍니다.\n보유한 카드 중 이름에 “와”,\n“초”, “키”가 포함된 카드 1장당\n피해량이 {ExtraDamage:diff()} 증가합니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "희귀",
+    "target": "AllEnemies",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "CalculationBase": 6,
+      "ExtraDamage": 4
+    },
+    "upgrade": {
+      "extradamage": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_symphony.png"
+  },
+  {
+    "id": "WAH_TOUCH",
+    "name": "와 터치",
+    "description": "피해를 6 줍니다.\n[gold]취약[/gold]을 1 부여합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]취약[/gold]을 {VulnerablePower:diff()} 부여합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "공격",
+    "rarity": "일반",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": 6,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "취약",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": [
+      "Wah"
+    ],
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 6,
+      "VulnerablePower": 1,
+      "Vulnerable": 1
+    },
+    "upgrade": {
+      "damage": "+2",
+      "vulnerable": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wah_touch.png"
+  },
+  {
     "id": "WASTE_AWAY",
     "name": "쇠퇴",
     "description": "매 턴마다 얻는\n[energy:1]가 1 감소합니다.",
@@ -20138,6 +24347,41 @@
     "beta_image_url": null
   },
   {
+    "id": "WHEEL_OF_FORTUNE",
+    "name": "운명의 바퀴",
+    "description": "[gold]손[/gold]에 있는 모든 카드를\n버립니다.\n카드를 7장 뽑습니다.",
+    "description_raw": "[gold]손[/gold]에 있는 모든 카드를\n버립니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "토큰",
+    "target": "Self",
+    "color": "token",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 7,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 7
+    },
+    "upgrade": {
+      "cards": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wheel_of_fortune.png"
+  },
+  {
     "id": "WHIRLWIND",
     "name": "소용돌이",
     "description": "모든 적에게 피해를\n5만큼 X번 줍니다.",
@@ -20202,6 +24446,39 @@
     },
     "image_url": "/static/images/cards/whistle.png",
     "beta_image_url": "/static/images/cards/beta/whistle.png"
+  },
+  {
+    "id": "WHISTLING_ARROWS",
+    "name": "휘파람 화살",
+    "description": "[gold]방어도[/gold]를 3 얻습니다\n[gold]화살[/gold]을 [gold]발사[/gold]할 때마다,\n[gold]버린 카드 더미[/gold]에서\n이 카드를 다시 [gold]손[/gold]으로\n가져옵니다.",
+    "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다\n[gold]화살[/gold]을 [gold]발사[/gold]할 때마다,\n[gold]버린 카드 더미[/gold]에서\n이 카드를 다시 [gold]손[/gold]으로\n가져옵니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": 3,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Block": 3
+    },
+    "upgrade": {
+      "block": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/whistling_arrows.png"
   },
   {
     "id": "WHITE_NOISE",
@@ -20410,6 +24687,39 @@
     "beta_image_url": null
   },
   {
+    "id": "WREST",
+    "name": "잡아뜯기",
+    "description": "대상 적이 [gold]꿰뚫린[/gold]\n상태라면, [gold]회수[/gold]하고\n카드를 2장 뽑습니다.",
+    "description_raw": "대상 적이 [gold]꿰뚫린[/gold]\n상태라면, [gold]회수[/gold]하고\n카드를 {Cards:diff()}장 뽑습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "AnyEnemy",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 2,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 2
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wrest.png"
+  },
+  {
     "id": "WRITHE",
     "name": "몸부림",
     "description": "",
@@ -20473,6 +24783,78 @@
     },
     "image_url": "/static/images/cards/wrought_in_war.png",
     "beta_image_url": "/static/images/cards/beta/wrought_in_war.png"
+  },
+  {
+    "id": "YAH",
+    "name": "야!",
+    "description": "매 턴마다 처음으로\n[gold]화살[/gold]을 [gold]회수[/gold]할 시,\n[energy:1]를 얻습니다.",
+    "description_raw": "매 턴마다 처음으로\n[gold]화살[/gold]을 [gold]회수[/gold]할 시,\n{Energy:energyIcons()}를 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "파워",
+    "rarity": "희귀",
+    "target": "Self",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Energy": 1
+    },
+    "upgrade": {
+      "energy": "+1"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/yah.png"
+  },
+  {
+    "id": "YOGA",
+    "name": "요가",
+    "description": "모든 플레이어가\n[gold]스트레칭[/gold]을 6 얻습니다.",
+    "description_raw": "모든 플레이어가\n[gold]스트레칭[/gold]을 {StretchPower:diff()} 얻습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "AllAllies",
+    "color": "fool",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "스트레칭",
+        "amount": 6
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "StretchPower": 6,
+      "Stretch": 6
+    },
+    "upgrade": {
+      "stretchpower": "+2"
+    },
+    "introducedInPatch": "v0.113.0",
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/yoga.png"
   },
   {
     "id": "ZAP",

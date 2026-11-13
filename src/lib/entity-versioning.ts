@@ -118,7 +118,9 @@ function applyReverseDiff(entity: Record<string, unknown>, diff: EntityFieldDiff
     const parent = entity[parts[0]];
     if (parent && typeof parent === "object") {
       const nested = { ...(parent as Record<string, unknown>) };
-      nested[parts[1]] = diff.before;
+      // No "before" means the key was added in this patch: it did not exist earlier.
+      if (diff.before === undefined) delete nested[parts[1]];
+      else nested[parts[1]] = diff.before;
       entity[parts[0]] = nested;
     }
   }

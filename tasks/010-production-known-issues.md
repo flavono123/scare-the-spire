@@ -265,3 +265,15 @@
 
 71. **꺼져 있는 상세 OG에서 유튜브가 든 코오오옴보 글의 og:image 주소가 깨짐**. `workers/detail-shell-og.ts`의 코오오옴보 분기는 `comboPostOgImage` 결과 앞에 늘 사이트 주소를 붙인다. 그런데 유튜브 썸네일은 이미 `https://i.ytimg.com/...` 절대 주소라 `https://scare-the-spire.comhttps://i.ytimg.com/vi/<id>/hqdefault.jpg`가 된다. 서류 폭풍 분기는 `startsWith("http")`로 거르지만 이 분기는 거르지 않는다. 지금은 상세 OG가 꺼져 있어(#32) 드러나지 않고, 켤 때 같이 고친다. 근거: 6단계 OG 이관 때 옛 Supabase 조회와 새 D1 조회를 같은 데이터로 대조한 결과(둘 다 같은 깨진 값). 화면으로는 확인하지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+
+### 2026-11-13 v0.113.0 백과사전 백필에서 추가
+
+72. **영문 카드 데이터 일부 수치가 게임과 다름**(한국어는 정상). v0.113.0 행 재생성 비교(`python3 scripts/add-sts2-new-cards.py --report`)로 찾았고, 0.111 원본과 비교하면 이번 패치 이전부터 있던 값이다. 영어 설명이 틀리게 보인다.
+    - 변수: HEMOKINESIS 14(게임 15), HEIRLOOM_HAMMER 17(20), I_AM_INVINCIBLE 9(10), SCULPTING_STRIKE 8(9), SEEKER_STRIKE 6(9), SKEWER 7(8), SOLAR_STRIKE 8(9), GATHER_LIGHT 7(8), TREMBLE 2(3), MINION_STRIKE 7(6)
+    - 비용: BANSHEES_CRY 6(9), BUNDLE_OF_JOY 2(1), SEANCE 0(1). X 비용으로 잘못 표시: ALL_FOR_ONE, BULLET_TIME, JACKPOT, SCRAPE, TRANSFIGURE
+    - 대상: BEGONE AnyEnemy(게임 Self), NOT_YET 한국어 대상 '자신'
+    - https://scare-the-spire.flavono123.workers.dev/en/compendium/cards/hemokinesis
+73. **무한의 컨베이어 이벤트가 벨트에서 집기 비용을 35 골드로 보여 줌**(게임 40, v0.100.0에서 바뀜).
+    - https://scare-the-spire.flavono123.workers.dev/compendium/events/endless_conveyor
+74. **게임에 클래스가 없는 파워 DIAMOND_DIADEM, DOOR_REVIVAL이 폐기 표시 없이 남아 있음**.
+    - https://scare-the-spire.flavono123.workers.dev/compendium/powers

@@ -957,6 +957,7 @@ async function buildDecisionsDecisionsGameCopy(
     defect,
     necrobinder,
     regent,
+    fool,
     colorlessTip,
   ] = await Promise.all([
     readGameTextWithEnglishFallback(gameLocale, "cards", "DECISIONS_DECISIONS.title"),
@@ -970,6 +971,7 @@ async function buildDecisionsDecisionsGameCopy(
     readGameTextWithEnglishFallback(gameLocale, "characters", "DEFECT.title"),
     readGameTextWithEnglishFallback(gameLocale, "characters", "NECROBINDER.title"),
     readGameTextWithEnglishFallback(gameLocale, "characters", "REGENT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "FOOL.title"),
     readGameTextWithEnglishFallback(gameLocale, "card_library", "POOL_COLORLESS_TIP"),
   ]);
 
@@ -982,6 +984,7 @@ async function buildDecisionsDecisionsGameCopy(
       "cards-defect": defect,
       "cards-necrobinder": necrobinder,
       "cards-regent": regent,
+      "cards-fool": fool,
       "cards-colorless": stripTrailingSentenceMark(stripGameMarkup(colorlessTip)),
       "relics-shared": getCodexNavGameLabel(gameLocale, "relics") ?? "Relics",
       "potions-all": getCodexNavGameLabel(gameLocale, "potions") ?? "Potions",

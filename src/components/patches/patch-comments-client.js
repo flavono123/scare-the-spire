@@ -12,6 +12,7 @@
     REGENT: "regent",
     NECROBINDER: "necrobinder",
     DEFECT: "defect",
+    FOOL: "fool",
   };
   // Keep in sync with PROFILE_PALETTE_PAIRS (excludes ivory-sky).
   const PROFILE_PALETTES = {

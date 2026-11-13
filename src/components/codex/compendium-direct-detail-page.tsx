@@ -102,6 +102,7 @@ function buildRelicPoolLabels(payload: CompendiumDetailPayload): Record<RelicPoo
     defect: serviceText.labels.pools.defect,
     necrobinder: serviceText.labels.pools.necrobinder,
     regent: serviceText.labels.pools.regent,
+    fool: serviceText.labels.pools.fool,
   };
 
   for (const character of payload.resources.characters) {
@@ -121,6 +122,7 @@ function buildPotionPoolLabels(payload: CompendiumDetailPayload): Record<PotionP
     defect: serviceText.labels.pools.defect,
     necrobinder: serviceText.labels.pools.necrobinder,
     regent: serviceText.labels.pools.regent,
+    fool: serviceText.labels.pools.fool,
   };
 
   for (const character of payload.resources.characters) {

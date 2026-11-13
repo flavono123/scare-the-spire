@@ -265,12 +265,14 @@ export function renderCardDescription(
   const enchantChanged = new Set<string>();
   const templateVarKeys = getTemplateVarKeys(raw, finalVars);
 
-  const upgrade = card.upgrade ?? card.specialUpgrade?.upgrade ?? null;
+  // A special upgrade overrides the one-step data upgrade (Dingy Dagger's data says +4 for level 1).
+  const upgrade = card.specialUpgrade?.upgrade ?? card.upgrade ?? null;
+  const ramp = card.specialUpgrade?.upgradeRamp ?? 0;
 
   if (upgradeLevel > 0 && upgrade) {
     for (const [key, diff] of Object.entries(upgrade)) {
       if (typeof diff === "string" && /^[+-]\d+/.test(diff)) {
-        const delta = parseInt(diff, 10) * upgradeLevel;
+        const delta = parseInt(diff, 10) * upgradeLevel + (ramp * upgradeLevel * (upgradeLevel + 1)) / 2;
         const varKey = findUpgradeVarKey(finalVars, key, templateVarKeys);
         if (varKey && delta !== 0) {
           finalVars[varKey] = (finalVars[varKey] ?? 0) + delta;

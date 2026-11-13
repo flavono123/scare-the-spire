@@ -128,6 +128,32 @@
     }
   },
   {
+    "id": "BATH_ROBES",
+    "name": "Bath Robes",
+    "description": "At the start of the next [gold]Boss[/gold] combat, heal all of your HP.",
+    "description_raw": "At the start of the next [gold]Boss[/gold] combat, heal all of your HP.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Event Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/bath_robes.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "BATH_TOWEL",
+    "name": "Bath Towel",
+    "description": "At the start of each combat, heal [green]8[/green] HP.",
+    "description_raw": "At the start of each combat, heal [green]{Heal}[/green] HP.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Event Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/bath_towel.png",
+    "vars": {
+      "Heal": 8
+    },
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "BEATING_REMNANT",
     "name": "Beating Remnant",
     "description": "You cannot lose more than [blue]20[/blue] HP in a single turn.",
@@ -228,6 +254,18 @@
     "pool": "shared",
     "image_url": "/static/images/relics/bing_bong.png",
     "vars": {}
+  },
+  {
+    "id": "BIZARRE_LAMP",
+    "name": "Bizarre Lamp",
+    "description": "At the start of each combat, add a [gold]Joy[/gold] and a [gold]Sadness[/gold] into your [gold]Hand[/gold].",
+    "description_raw": "At the start of each combat, add a [gold]Joy[/gold] and a [gold]Sadness[/gold] into your [gold]Hand[/gold].",
+    "flavor": "PLACEHOLDER",
+    "rarity": "Shop Relic",
+    "pool": "fool",
+    "image_url": "/static/images/relics/bizarre_lamp.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "BLACK_BLOOD",
@@ -412,14 +450,14 @@
   {
     "id": "BRILLIANT_SCARF",
     "name": "Brilliant Scarf",
-    "description": "The [blue]5th[/blue] card you play from your hand each turn is free.",
-    "description_raw": "The [blue]5th[/blue] card you play from your hand each turn is free.",
+    "description": "The [blue]6th[/blue] card you play from your hand each turn is free.",
+    "description_raw": "The [blue]6th[/blue] card you play from your hand each turn is free.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/brilliant_scarf.png",
     "vars": {
-      "Cards": 5
+      "Cards": 6
     }
   },
   {
@@ -474,15 +512,29 @@
     "vars": {}
   },
   {
+    "id": "BYRDINE",
+    "name": "Byrdine",
+    "description": "Upon pickup, [gold]Transform[/gold] [gold]Byrd Swoop[/gold] into [gold]God Byrd[/gold]. A [gold]Byrdine[/gold] will accompany you in battles.",
+    "description_raw": "Upon pickup, [gold]Transform[/gold] [gold]Byrd Swoop[/gold] into [gold]God Byrd[/gold]. A [gold]Byrdine[/gold] will accompany you in battles.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Event Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/byrdine.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "BYRDPIP",
     "name": "Byrdpip",
-    "description": "Upon pickup, gain the card [gold]Byrd Swoop[/gold]. A [gold]Byrdpip[/gold] will accompany you in battles.",
-    "description_raw": "Upon pickup, gain the card [gold]Byrd Swoop[/gold]. A [gold]Byrdpip[/gold] will accompany you in battles.",
+    "description": "Upon pickup, gain the card [gold]Byrd Swoop[/gold]. A [gold]Byrdpip[/gold] will accompany you in battles. Once you play [gold]Byrd Swoop[/gold] [blue]6[/blue] times, you can evolve [gold]Byrdpip[/gold] at a [gold]Rest Site[/gold].",
+    "description_raw": "Upon pickup, gain the card [gold]Byrd Swoop[/gold]. A [gold]Byrdpip[/gold] will accompany you in battles. Once you play [gold]Byrd Swoop[/gold] [blue]{Repeat}[/blue] {Repeat:plural:time|times}, you can evolve [gold]Byrdpip[/gold] at a [gold]Rest Site[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/byrdpip.png",
-    "vars": {}
+    "vars": {
+      "Repeat": 6
+    }
   },
   {
     "id": "CALLING_BELL",
@@ -650,6 +702,18 @@
     "vars": {
       "Block": 1
     }
+  },
+  {
+    "id": "CONDUCTORS_BATON",
+    "name": "Conductor's Baton",
+    "description": "When you gain every [gold]Melody[/gold], receive [blue]25%[/blue] less attack damage until your next turn.",
+    "description_raw": "When you gain every [gold]Melody[/gold], receive [blue]25%[/blue] less attack damage until your next turn.",
+    "flavor": "PLACEHOLDER",
+    "rarity": "Rare Relic",
+    "pool": "fool",
+    "image_url": "/static/images/relics/conductors_baton.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "CRACKED_CORE",
@@ -957,6 +1021,20 @@
     }
   },
   {
+    "id": "EXERCISE_MAT",
+    "name": "Exercise Mat",
+    "description": "Start each combat with [blue]6[/blue] [gold]Stretch[/gold].",
+    "description_raw": "Start each combat with [blue]{StretchPower}[/blue] [gold]Stretch[/gold].",
+    "flavor": "PLACEHOLDER",
+    "rarity": "Common Relic",
+    "pool": "fool",
+    "image_url": "/static/images/relics/exercise_mat.png",
+    "vars": {
+      "StretchPower": 6
+    },
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "FAKE_ANCHOR",
     "name": "Anchor???",
     "description": "Start each combat with [blue]4[/blue] [gold]Block[/gold].",
@@ -1095,6 +1173,20 @@
     "vars": {
       "Forge": 10
     }
+  },
+  {
+    "id": "FERTILIZER",
+    "name": "Fertilizer",
+    "description": "Whenever you create a [gold]Sadness[/gold], gain [blue]1[/blue] [gold]Strength[/gold].",
+    "description_raw": "Whenever you create a [gold]Sadness[/gold], gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
+    "flavor": "PLACEHOLDER",
+    "rarity": "Rare Relic",
+    "pool": "fool",
+    "image_url": "/static/images/relics/fertilizer.png",
+    "vars": {
+      "StrengthPower": 1
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "FESTIVE_POPPER",
@@ -1665,8 +1757,8 @@
   {
     "id": "LAVA_ROCK",
     "name": "Lava Rock",
-    "description": "The Act 1 Boss drops [blue]2[/blue] [gold]Relics[/gold].",
-    "description_raw": "The Act 1 Boss drops [blue]{Relics}[/blue] [gold]Relics[/gold].",
+    "description": "The [gold]Act[/gold] [blue]1[/blue] Boss drops [blue]2[/blue] [gold]Relics[/gold].",
+    "description_raw": "The [gold]Act[/gold] [blue]1[/blue] Boss drops [blue]{Relics}[/blue] [gold]Relics[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
@@ -1872,10 +1964,7 @@
     "rarity": "Ancient Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/meat_cleaver.png",
-    "vars": {
-      "Cards": 2,
-      "MaxHp": 5
-    }
+    "vars": {}
   },
   {
     "id": "MEAT_ON_THE_BONE",
@@ -1930,6 +2019,21 @@
       "Damage": 30,
       "OrbCount": 7
     }
+  },
+  {
+    "id": "MIGHTY_WINGS",
+    "name": "Mighty Wings",
+    "description": "Whenever you deal [blue]30[/blue] or more attack damage in a single hit, gain [blue]2[/blue] [gold]Strength[/gold].",
+    "description_raw": "Whenever you deal [blue]{DamageThreshold}[/blue] or more attack damage in a single hit, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Event Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/mighty_wings.png",
+    "vars": {
+      "DamageThreshold": 30,
+      "StrengthPower": 2
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "MINI_REGENT",
@@ -2135,6 +2239,32 @@
     "pool": "shared",
     "image_url": "/static/images/relics/nutritious_soup.png",
     "vars": {}
+  },
+  {
+    "id": "OBSIDIAN_VICE",
+    "name": "Obsidian Vice",
+    "description": "At the end of your turn, deal [blue]1[/blue] damage to a random enemy for each card in your [gold]Hand[/gold].",
+    "description_raw": "At the end of your turn, deal [blue]{Damage}[/blue] damage to a random enemy for each card in your [gold]Hand[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Event Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/obsidian_vice.png",
+    "vars": {
+      "Damage": 1
+    },
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "OCARINA",
+    "name": "Ocarina",
+    "description": "At the start of each combat, add a random “Wah”, “Cho”, or “Ki” card into your [gold]Hand[/gold].",
+    "description_raw": "At the start of each combat, add a random “Wah”, “Cho”, or “Ki” card into your [gold]Hand[/gold].",
+    "flavor": "PLACEHOLDER",
+    "rarity": "Uncommon Relic",
+    "pool": "fool",
+    "image_url": "/static/images/relics/ocarina.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ODDLY_SMOOTH_STONE",
@@ -2745,8 +2875,8 @@
   {
     "id": "REGAL_PILLOW",
     "name": "Regal Pillow",
-    "description": "Whenever you [gold]Rest[/gold], heal an additional [blue]15[/blue] HP.",
-    "description_raw": "Whenever you [gold]Rest[/gold], heal an additional [blue]{Heal}[/blue] HP.",
+    "description": "Whenever you [gold]Rest[/gold], heal an additional [green]15[/green] HP.",
+    "description_raw": "Whenever you [gold]Rest[/gold], heal an additional [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
     "pool": "shared",
@@ -3111,6 +3241,20 @@
     }
   },
   {
+    "id": "SONG_BOW",
+    "name": "Song Bow",
+    "description": "Start each combat with [blue]6[/blue] [gold]Aim[/gold].",
+    "description_raw": "Start each combat with [blue]{AimPower}[/blue] [gold]Aim[/gold].",
+    "flavor": "PLACEHOLDER",
+    "rarity": "Starter Relic",
+    "pool": "fool",
+    "image_url": "/static/images/relics/song_bow.png",
+    "vars": {
+      "AimPower": 6
+    },
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "SOZU",
     "name": "Sozu",
     "description": "Gain [energy:1] at the start of each turn. You can no longer obtain [gold]Potions[/gold].",
@@ -3200,6 +3344,21 @@
     "pool": "shared",
     "image_url": "/static/images/relics/storybook.png",
     "vars": {}
+  },
+  {
+    "id": "STORYTELLER",
+    "name": "Storyteller",
+    "description": "Start each combat with [blue]12[/blue] [gold]Aim[/gold]. At the end of your turn, gain [blue]3[/blue] [gold]Aim[/gold].",
+    "description_raw": "Start each combat with [blue]{AimPower}[/blue] [gold]Aim[/gold]. At the end of your turn, gain [blue]{EndOfTurnAim}[/blue] [gold]Aim[/gold].",
+    "flavor": "PLACEHOLDER",
+    "rarity": "Starter Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/storyteller.png",
+    "vars": {
+      "AimPower": 12,
+      "EndOfTurnAim": 3
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "STRAWBERRY",
@@ -3356,6 +3515,18 @@
     "vars": {}
   },
   {
+    "id": "THUMBSCREW",
+    "name": "Thumbscrew",
+    "description": "Attacks that hit multiple times hit one additional time.",
+    "description_raw": "Attacks that hit multiple times hit one additional time.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Event Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/thumbscrew.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "TINGSHA",
     "name": "Tingsha",
     "description": "Whenever you discard a card during your turn, deal [blue]3[/blue] damage to a random enemy for each card discarded.",
@@ -3404,6 +3575,20 @@
     "vars": {
       "Cards": 3
     }
+  },
+  {
+    "id": "TORMENTOUS_COLLAR",
+    "name": "Tormentous Collar",
+    "description": "At the start of Elite combats, apply [blue]2[/blue] [gold]Weak[/gold] to ALL enemies.",
+    "description_raw": "At the start of Elite combats, apply [blue]{WeakPower}[/blue] [gold]Weak[/gold] to ALL enemies.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Event Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/tormentous_collar.png",
+    "vars": {
+      "WeakPower": 2
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "TOUCH_OF_OROBAS",
@@ -3493,6 +3678,20 @@
       "Cards": 10,
       "Block": 7
     }
+  },
+  {
+    "id": "TWINE",
+    "name": "Twine",
+    "description": "Whenever you [gold]Dislodge[/gold] an [gold]Arrow[/gold], gain [blue]4[/blue] [gold]Block[/gold].",
+    "description_raw": "Whenever you [gold]Dislodge[/gold] an [gold]Arrow[/gold], gain [blue]{Block}[/blue] [gold]Block[/gold].",
+    "flavor": "PLACEHOLDER",
+    "rarity": "Rare Relic",
+    "pool": "fool",
+    "image_url": "/static/images/relics/twine.png",
+    "vars": {
+      "Block": 4
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "TWISTED_FUNNEL",
@@ -3703,6 +3902,20 @@
     "vars": {}
   },
   {
+    "id": "WHITTLING_KNIFE",
+    "name": "Whittling Knife",
+    "description": "Whenever you shuffle your [gold]Draw Pile[/gold], gain [blue]5[/blue] [gold]Aim[/gold].",
+    "description_raw": "Whenever you shuffle your [gold]Draw Pile[/gold], gain [blue]{AimPower}[/blue] [gold]Aim[/gold].",
+    "flavor": "PLACEHOLDER",
+    "rarity": "Uncommon Relic",
+    "pool": "fool",
+    "image_url": "/static/images/relics/whittling_knife.png",
+    "vars": {
+      "AimPower": 5
+    },
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "WING_CHARM",
     "name": "Wing Charm",
     "description": "A random card in each card reward is [gold]Enchanted[/gold] with [purple]Swift[/purple] [blue]1[/blue].",
@@ -3752,6 +3965,21 @@
       "Repeat": 3,
       "RemainingCombats": 5
     }
+  },
+  {
+    "id": "WUPPY",
+    "name": "Wuppy",
+    "description": "[gold]Wuppy[/gold] has [blue]0[/blue]/[blue]0[/blue] HP. [gold]Wuppy[/gold] absorbs ALL attack damage in combat.",
+    "description_raw": "[gold]Wuppy[/gold] has [blue]{CurrentHp}[/blue]/[blue]{MaxHp}[/blue] HP. [gold]Wuppy[/gold] absorbs ALL attack damage in combat.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Event Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/wuppy.png",
+    "vars": {
+      "MaxHp": 0,
+      "CurrentHp": 0
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "YUMMY_COOKIE",

@@ -22,6 +22,7 @@ const yummyCookie = {
 
 assert.equal(relicPoolFromCharacterId("IRONCLAD"), "ironclad");
 assert.equal(relicPoolFromCharacterId("NECROBINDER"), "necrobinder");
+assert.equal(relicPoolFromCharacterId("FOOL"), "fool");
 assert.equal(relicPoolFromCharacterId("unknown"), "necrobinder");
 
 assert.equal(pickRelicCharacterVariant(yummyCookie, "silent"), "silent");

@@ -62,6 +62,7 @@ export const TRANSFIGURE_CARD_COLORS = [
   "regent",
   "necrobinder",
   "defect",
+  "fool",
   "colorless",
   "status",
   "curse",

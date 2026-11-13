@@ -28,6 +28,34 @@
     "moveEffects": {}
   },
   {
+    "id": "FOOL",
+    "source": "animations/character_select/fool/character_select_fool_bg",
+    "renderStatus": "spine",
+    "renderTags": [
+      "character-select-background"
+    ],
+    "atlasUrl": "/spine/sts2/character-select/fool/character_select_fool_bg.atlas?v=c3f995be0b",
+    "binaryUrl": "/spine/sts2/character-select/fool/character_select_fool_bg.skel?v=93cf22db31",
+    "textureUrls": [
+      "/spine/sts2/character-select/fool/character_select_fool_bg.png?v=3f11fb56d7"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "animation"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "animation",
+    "moveAnimations": {
+      "IDLE": [
+        "animation"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
     "id": "IRONCLAD",
     "source": "animations/character_select/ironclad/characterselect_ironclad",
     "renderStatus": "spine",

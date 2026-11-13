@@ -33,6 +33,18 @@
     "vars": {}
   },
   {
+    "id": "AEONGLASS_DOMINION",
+    "name": "Aeonglass Dominion",
+    "description": "At the start of your turn, add [blue]1[/blue] [gold]Wither[/gold] to the top of your [gold]Draw Pile[/gold].",
+    "description_raw": "At the start of your turn, add [blue]{Amount}[/blue] [gold]Wither[/gold] to the top of your [gold]Draw Pile[/gold].",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/aeonglass_dominion_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "AFTERIMAGE",
     "name": "Afterimage",
     "description": "Whenever you play a card, gain [blue]1[/blue] [gold]Block[/gold].",
@@ -55,6 +67,30 @@
     "vars": {}
   },
   {
+    "id": "AIM",
+    "name": "Aim",
+    "description": "Your next [gold]Arrow[/gold] deals more damage.",
+    "description_raw": "Your next [gold]Arrow[/gold] deals [blue]{Amount}[/blue] more damage.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/aim_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "ALL_IS_WELL",
+    "name": "All Is Well",
+    "description": "Whenever you create a [gold]Sadness[/gold], gain [blue]4[/blue] [gold]Block[/gold].",
+    "description_raw": "Whenever you create a [gold]Sadness[/gold], gain [blue]{Amount}[/blue] [gold]Block[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/all_is_well_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "AMBERGRIS",
     "name": "Ambergris",
     "description": "Take an extra turn after this one.",
@@ -63,7 +99,24 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/ambergris_power.png",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.113.0",
     "vars": {}
+  },
+  {
+    "id": "AMNESIA",
+    "name": "Amnesia",
+    "description": "This turn, draw [blue]2[/blue] fewer cards and lose [energy:1].",
+    "description_raw": "This turn, draw {Cards} fewer cards and lose {Energy:energyIcons()}.",
+    "type": "Debuff",
+    "stack_type": "Single",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/amnesia_power.png",
+    "vars": {
+      "Cards": 2,
+      "Energy": 1
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ANTICIPATE",
@@ -77,6 +130,18 @@
     "deprecated": true,
     "deprecatedInPatch": "v0.104.0",
     "vars": {}
+  },
+  {
+    "id": "ARCHERY",
+    "name": "Archery",
+    "description": "At the start of your turn, gain [blue]4[/blue] [gold]Aim[/gold].",
+    "description_raw": "At the start of your turn, gain [blue]{Amount}[/blue] [gold]Aim[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/archery_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ARSENAL",
@@ -348,6 +413,32 @@
     }
   },
   {
+    "id": "COMPOST",
+    "name": "Compost",
+    "description": "Whenever an enemy dies, ALL players gain [gold]Energy[/gold].",
+    "description_raw": "Whenever an enemy dies, ALL players gain {Amount:energyIcons()}.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/compost_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "CONDUCTORS_BATON",
+    "name": "Conductor's Baton",
+    "description": "Receive [blue]25%[/blue] less attack damage until your next turn.",
+    "description_raw": "Receive [blue]{DamageDecrease:percentLess()}%[/blue] less attack damage until your next turn.",
+    "type": "Buff",
+    "stack_type": "Single",
+    "allow_negative": null,
+    "image_url": null,
+    "vars": {
+      "DamageDecrease": 0.75
+    },
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "CONFUSED",
     "name": "Confused",
     "description": "The costs of your cards are randomized on draw, from [blue]0[/blue] to [blue]3[/blue].",
@@ -458,6 +549,18 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/covered_power.png",
     "vars": {}
+  },
+  {
+    "id": "COVERING_FIRE",
+    "name": "Covering Fire",
+    "description": "Whenever you [gold]Shoot[/gold], allies gain [blue]X[/blue] [gold]Block[/gold].",
+    "description_raw": "Whenever you [gold]Shoot[/gold], allies gain [blue]{Amount}[/blue] [gold]Block[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/covering_fire_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "CRAB_RAGE",
@@ -691,6 +794,18 @@
     "vars": {}
   },
   {
+    "id": "DISLIKE_YOU",
+    "name": "Dislike You",
+    "description": "This enemy takes [blue]50%[/blue] additional damage from [gold]Shots[/gold] this turn.",
+    "description_raw": "This enemy takes [blue]{Amount}%[/blue] additional damage from [gold]Shots[/gold] this turn.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/dislike_you_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "DOOM",
     "name": "Doom",
     "description": "At the end of the enemy turn, if it has at least as much Doom as HP, it dies.",
@@ -794,6 +909,32 @@
     "vars": {}
   },
   {
+    "id": "ECSTASY",
+    "name": "Ecstasy",
+    "description": "At the start of your turn, [gold]Transform[/gold] [blue]1[/blue] random [gold]Sadness[/gold] in your [gold]Hand[/gold] into [gold]Joy[/gold].",
+    "description_raw": "At the start of your turn, [gold]Transform[/gold] [blue]{Amount}[/blue] random [gold]Sadness[/gold] in your [gold]Hand[/gold] into [gold]Joy[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ecstasy_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "ENCORE",
+    "name": "Encore",
+    "description": "You can only play [blue]1[/blue] more card this turn.",
+    "description_raw": "You can only play [blue]{PlaysRemaining}[/blue] more {PlaysRemaining:plural:card|cards} this turn.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/encore_power.png",
+    "vars": {
+      "PlaysRemaining": 0
+    },
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "ENERGY_NEXT_TURN",
     "name": "Energy Next Turn",
     "description": "Gain additional [gold]Energy[/gold] next turn.",
@@ -818,6 +959,20 @@
     "vars": {}
   },
   {
+    "id": "ENNUI",
+    "name": "Ennui",
+    "description": "At the start of your turn, add [blue]1[/blue] [gold]Sadness[/gold] to your [gold]Hand[/gold] and draw [blue]2[/blue] additional cards.",
+    "description_raw": "At the start of your turn, add [blue]{Cards}[/blue] [gold]Sadness[/gold] to your [gold]Hand[/gold] and draw [blue]{Amount}[/blue] additional {Amount:plural:card|cards}.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ennui_power.png",
+    "vars": {
+      "Cards": 0
+    },
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "ENRAGE",
     "name": "Enrage",
     "description": "Whenever you play a Skill, gains [blue]2[/blue] [gold]Strength[/gold].",
@@ -827,6 +982,18 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/enrage_power.png",
     "vars": {}
+  },
+  {
+    "id": "ENSEMBLE",
+    "name": "Ensemble",
+    "description": "The next [blue]3[/blue] cards played by other players are free to play.",
+    "description_raw": "The next {Amount:plural:card|[blue]{}[/blue] cards} played by {Amount:plural:another player|other players} {Amount:plural:is|are} free to play.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ensemble_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "ENTROPY",
@@ -860,6 +1027,42 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/escape_artist_power.png",
     "vars": {}
+  },
+  {
+    "id": "EXPLOSIVE",
+    "name": "Explosive",
+    "description": "When this creature dies, it explodes, dealing damage.",
+    "description_raw": "When this creature dies, it explodes, dealing [blue]{Amount}[/blue] damage.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/explosive_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "EXPLOSIVE_ARROWS",
+    "name": "Explosive Arrows",
+    "description": "Whenever you [gold]Impale[/gold] an enemy, deal [blue]6[/blue] damage to ALL enemies.",
+    "description_raw": "Whenever you [gold]Impale[/gold] an enemy, deal [blue]{Amount}[/blue] damage to ALL enemies.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/explosive_arrows_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "EXTRA_TURN",
+    "name": "Extra Turn",
+    "description": "Take an extra turn after this one.",
+    "description_raw": "Take an extra turn after this one.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/extra_turn_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "FAN_OF_KNIVES",
@@ -1035,6 +1238,18 @@
     "vars": {}
   },
   {
+    "id": "FREE_CARD",
+    "name": "Free Card",
+    "description": "The next card you play costs [blue]0[/blue] [energy:1].",
+    "description_raw": "The next {Amount:plural:card|[blue]{}[/blue] cards} you play {Amount:plural:costs|cost} [blue]0[/blue] {energyPrefix:energyIcons(1)}.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": null,
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "FREE_POWER",
     "name": "Free Power",
     "description": "The next Power you play costs [blue]0[/blue] [energy:1].",
@@ -1112,6 +1327,18 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/gigantification_power.png",
     "vars": {}
+  },
+  {
+    "id": "GOD_BYRD",
+    "name": "God Byrd",
+    "description": "At the start of your next turn, deal [blue]20[/blue] damage to ALL enemies.",
+    "description_raw": "At the start of your next turn, deal [blue]{Amount}[/blue] damage to ALL enemies.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/god_byrd_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "GRAPPLE",
@@ -1286,6 +1513,18 @@
     "vars": {}
   },
   {
+    "id": "HIDDEN_ROOTS",
+    "name": "Hidden Roots",
+    "description": "At the start of your turn, gain [blue]5[/blue] [gold]Stretch[/gold].",
+    "description_raw": "At the start of your turn, gain [blue]{Amount}[/blue] [gold]Stretch[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/hidden_roots_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "HIGH_VOLTAGE",
     "name": "High Voltage",
     "description": "At the end of this creature's turn, it gains [blue]2[/blue] [gold]Strength[/gold].",
@@ -1295,6 +1534,18 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/high_voltage_power.png",
     "vars": {}
+  },
+  {
+    "id": "HONING",
+    "name": "Honing",
+    "description": "[gold]Arrows[/gold] deal [blue]50%[/blue] additional damage.",
+    "description_raw": "[gold]Arrows[/gold] deal [blue]{Amount}%[/blue] additional damage.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/honing_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "HOTFIX",
@@ -1330,6 +1581,20 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/imbalanced_power.png",
     "vars": {}
+  },
+  {
+    "id": "IMPALED",
+    "name": "Impaled",
+    "description": "An enemy is [gold]Impaled[/gold] when it is shot by an [gold]Arrow[/gold]. The [gold]Arrow[/gold] is [gold]Dislodged[/gold] after you hit the enemy [blue]3[/blue] times.",
+    "description_raw": "This [gold]Arrow[/gold] is [gold]Dislodged[/gold] after you hit this enemy [blue]{HitCounter}[/blue] more {HitCounter:plural:time|times}.",
+    "type": "None",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/impaled_power.png",
+    "vars": {
+      "HitCounter": 3
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "IMPROVEMENT",
@@ -1376,6 +1641,20 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/infinite_blades_power.png",
     "vars": {}
+  },
+  {
+    "id": "INSATIABLE_DOMINION",
+    "name": "Insatiable Dominion",
+    "description": "At the end of your turn, take damage based on the turn count.",
+    "description_raw": "At the end of your turn, take {Damage} damage and increase the damage by one.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/insatiable_dominion_power.png",
+    "vars": {
+      "Damage": 2
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "INTANGIBLE",
@@ -1433,6 +1712,18 @@
     "vars": {}
   },
   {
+    "id": "KI_VERSE",
+    "name": "Ki Verse",
+    "description": "The next “Wah”, “Cho”, or “Ki” card you play this turn is played an additional time.",
+    "description_raw": "The next{Amount:plural:| [blue]{}[/blue]} “Wah”, “Cho”, or “Ki” {Amount:plural:card|cards} you play this turn {Amount:plural:is|are} played an additional time.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": null,
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "KNOCKDOWN",
     "name": "Knockdown",
     "description": "This creature takes [blue]X[/blue] times the damage from other players this turn.",
@@ -1442,6 +1733,18 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/knockdown_power.png",
     "vars": {}
+  },
+  {
+    "id": "LAGAVULIN_MATRIARCH_DOMINION",
+    "name": "Lagavulin Matriarch Dominion",
+    "description": "At the end of this turn, lose [blue]1[/blue] [gold]Strength[/gold] and [gold]Dexterity[/gold].",
+    "description_raw": "At the end of this turn, lose [blue]{Amount}[/blue] [gold]Strength[/gold] and [gold]Dexterity[/gold].",
+    "type": "Debuff",
+    "stack_type": "Single",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/lagavulin_matriarch_dominion_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "LEADERSHIP",
@@ -1486,6 +1789,30 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/loop_power.png",
     "vars": {}
+  },
+  {
+    "id": "LOST_LUTE",
+    "name": "Lost Lute",
+    "description": "Whenever you gain a [gold]Melody[/gold], play the top card of your [gold]Draw Pile[/gold].",
+    "description_raw": "Whenever you gain a [gold]Melody[/gold], play the {Amount:plural:top card|next [blue]{}[/blue] top cards} of your [gold]Draw Pile[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/lost_lute_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "LULLABY",
+    "name": "Lullaby",
+    "description": "When you gain every [gold]Melody[/gold], gain [blue]20[/blue] [gold]Block[/gold].",
+    "description_raw": "When you gain every [gold]Melody[/gold], gain [blue]{Amount}[/blue] [gold]Block[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/lullaby_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "MACHINE_LEARNING",
@@ -1603,6 +1930,32 @@
       "StrengthPower": 1,
       "StrengthApplied": 0
     }
+  },
+  {
+    "id": "MOTIF",
+    "name": "Motif",
+    "description": "Whenever you gain a [gold]Melody[/gold], draw [blue]1[/blue] card.",
+    "description_raw": "Whenever you gain a [gold]Melody[/gold], draw [blue]{Amount}[/blue] {Amount:plural:card|cards}.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/motif_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "MYTHIC_FORM",
+    "name": "Mythic Form",
+    "description": "At the start of your turn, add [blue]1[/blue] random [gold]Tarot[/gold] into your [gold]Hand[/gold].",
+    "description_raw": "At the start of your turn, add {Amount:choose(1):a random [gold]Tarot[/gold]|[blue]{}[/blue] random [gold]Tarots[/gold]} into your [gold]Hand[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": null,
+    "vars": {
+      "Upgraded": 0
+    },
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "NECRO_MASTERY",
@@ -1826,7 +2179,7 @@
   {
     "id": "PHANTOM_BLADES",
     "name": "Phantom Blades",
-    "description": "[gold]Shivs[/gold] gain [gold]Retain[/gold].\nThe first [gold]Shiv[/gold] you play each turn deals [blue]9[/blue] additional damage.",
+    "description": "[gold]Shivs[/gold] gain [gold]Retain[/gold].\nThe first [gold]Shiv[/gold] you play each turn deals [blue]8[/blue] additional damage.",
     "description_raw": "[gold]Shivs[/gold] gain [gold]Retain[/gold].\nThe first [gold]Shiv[/gold] you play each turn deals [blue]{Amount}[/blue] additional damage.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -1936,6 +2289,18 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/pyre_power.png",
     "vars": {}
+  },
+  {
+    "id": "QUIETUS",
+    "name": "Quietus",
+    "description": "Your next [gold]Shot[/gold] this turn deals [blue]2[/blue] times more damage but the [gold]Arrow[/gold] is destroyed.",
+    "description_raw": "Your next [gold]Shot[/gold] this turn deals [blue]{Amount}[/blue] times more damage but the [gold]Arrow[/gold] is destroyed.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": null,
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "RADIANCE",
@@ -2175,6 +2540,18 @@
     "vars": {}
   },
   {
+    "id": "SERRATED_ARROWS",
+    "name": "Serrated Arrows",
+    "description": "[gold]Impaled[/gold] enemies take additional damage from your Attacks.",
+    "description_raw": "[gold]Impaled[/gold] enemies take an additional [blue]{Amount}%[/blue] damage from your Attacks.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/serrated_arrows_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "SETUP_STRIKE",
     "name": "SetupStrikePower",
     "description": "",
@@ -2223,6 +2600,18 @@
     "vars": {}
   },
   {
+    "id": "SHOW_OFF",
+    "name": "Show Off",
+    "description": "If a non-minion enemy dies this turn, permanently increase the [gold]Aim[/gold] of this [gold]Show Off[/gold] by [blue]X[/blue].",
+    "description_raw": "If a non-minion enemy dies this turn, permanently increase the [gold]Aim[/gold] of this [gold]Show Off[/gold] by [blue]{Amount}[/blue].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": null,
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "SHRIEK",
     "name": "Shriek",
     "description": "The first time this creature's HP reaches [blue]50%[/blue] or below, it becomes [gold]Stunned[/gold].",
@@ -2261,7 +2650,7 @@
     "id": "SIC_EM",
     "name": "Sic 'Em",
     "description": "Whenever [gold]Osty[/gold] hits this enemy this turn, [gold]Summon[/gold] [blue]3[/blue].",
-    "description_raw": "Whenever [gold]Osty[/gold] hits this enemy this turn, [gold]Summon[/gold] [blue]{Amount}[/blue].",
+    "description_raw": "Whenever{IsMultiplayer: your|} [gold]Osty[/gold] hits this enemy this turn, [gold]Summon[/gold] [blue]{Amount}[/blue].",
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -2278,6 +2667,18 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/signal_boost_power.png",
     "vars": {}
+  },
+  {
+    "id": "SIMPLETON",
+    "name": "Simpleton",
+    "description": "At the end of your turn, play the least expensive card in your [gold]Hand[/gold].",
+    "description_raw": "At the end of your turn, play the{Amount:plural:| [blue]{}[/blue]} least expensive {Amount:plural:card|cards} in your [gold]Hand[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/simpleton_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "SKITTISH",
@@ -2395,6 +2796,18 @@
     }
   },
   {
+    "id": "SONG_PATH",
+    "name": "Song Path",
+    "description": "Whenever you gain a [gold]Cho Melody[/gold], gain [blue]5[/blue] [gold]Block[/gold].",
+    "description_raw": "Whenever you gain a [gold]Cho Melody[/gold], gain [blue]{Amount}[/blue] [gold]Block[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/song_path_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
     "id": "SPECTRUM_SHIFT",
     "name": "Spectrum Shift",
     "description": "At the start of your turn, add [blue]1[/blue] random Colorless card into your [gold]Hand[/gold].",
@@ -2421,7 +2834,7 @@
   {
     "id": "SPEEDSTER",
     "name": "Speedster",
-    "description": "Whenever you draw a card during your turn, deal [blue]1[/blue] damage to ALL enemies.",
+    "description": "Whenever you draw a card during your turn, deal [blue]3[/blue] damage to ALL enemies.",
     "description_raw": "Whenever you draw a card during your turn, deal [blue]{Amount}[/blue] damage to ALL enemies.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -2538,6 +2951,18 @@
     "allow_negative": true,
     "image_url": "/static/images/powers/strength_power.png",
     "vars": {}
+  },
+  {
+    "id": "STRETCH",
+    "name": "Stretch",
+    "description": "The next time you gain [gold]Block[/gold] from a card, gain additional [gold]Block[/gold].",
+    "description_raw": "The next time you gain [gold]Block[/gold] from a card, gain an additional [blue]{Amount}[/blue] [gold]Block[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/stretch_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "SUBROUTINE",
@@ -2841,8 +3266,8 @@
   {
     "id": "TRACKING",
     "name": "Tracking",
-    "description": "[gold]Weak[/gold] enemies take [blue]50%[/blue] more damage from Attacks.",
-    "description_raw": "[gold]Weak[/gold] enemies take [blue]{Amount}%[/blue] more damage from Attacks.",
+    "description": "[gold]Weak[/gold] enemies take [blue]50%[/blue] more damage from your Attacks.",
+    "description_raw": "[gold]Weak[/gold] enemies take [blue]{Amount}%[/blue] more damage from your Attacks.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -2861,6 +3286,18 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/trash_to_treasure_power.png",
     "vars": {}
+  },
+  {
+    "id": "TUNE",
+    "name": "Tune",
+    "description": "At the end of your turn, if you have a [gold]Ki Melody[/gold], the next card you play costs 0 energy.",
+    "description_raw": "At the end of your turn, if you have a [gold]Ki Melody[/gold], the next {Amount:plural:card|[blue]{}[/blue] cards} you play {Amount:plural:costs|cost} [blue]0[/blue] {energyPrefix:energyIcons(1)}.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/tune_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "TYRANNY",
@@ -2916,6 +3353,18 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/vigor_power.png",
     "vars": {}
+  },
+  {
+    "id": "VIOLENT_CHORD",
+    "name": "Violent Chord",
+    "description": "Whenever you gain a [gold]Wah Melody[/gold], deal [blue]9[/blue] damage to ALL enemies.",
+    "description_raw": "Whenever you gain a [gold]Wah Melody[/gold], deal [blue]{Amount}[/blue] damage to ALL enemies.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/violent_chord_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   },
   {
     "id": "VITAL_SPARK",
@@ -3013,5 +3462,41 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/wraith_form_power.png",
     "vars": {}
+  },
+  {
+    "id": "WUPPYS_LOYALTY",
+    "name": "Wuppy's Loyalty",
+    "description": "[gold]Wuppy[/gold] absorbs ALL attack damage.",
+    "description_raw": "[gold]Wuppy[/gold] absorbs ALL attack damage.",
+    "type": "Buff",
+    "stack_type": "Single",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/wuppys_loyalty_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "YAH",
+    "name": "Yah!",
+    "description": "The first time you [gold]Dislodge[/gold] an [gold]Arrow[/gold] each turn, gain [energy:1].",
+    "description_raw": "The first time you [gold]Dislodge[/gold] an [gold]Arrow[/gold] each turn, gain {Amount:energyIcons()}.",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/yah_power.png",
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
+  },
+  {
+    "id": "YOU_ARE_MINE",
+    "name": "You Are Mine",
+    "description": "Next turn, gain [blue]3[/blue] [gold]Weak[/gold], [gold]Vulnerable[/gold], and [gold]Frail[/gold].",
+    "description_raw": "Next turn, gain [blue]{Amount}[/blue] [gold]Weak[/gold], [gold]Vulnerable[/gold], and [gold]Frail[/gold].",
+    "type": "Debuff",
+    "stack_type": "Single",
+    "allow_negative": null,
+    "image_url": null,
+    "vars": {},
+    "introducedInPatch": "v0.113.0"
   }
 ]
