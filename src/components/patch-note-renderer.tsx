@@ -775,14 +775,14 @@ function LocalizedEntityPreview({
             imageClassName="h-14 w-14 rounded object-cover opacity-60 grayscale"
             meta={(
               <span className="rounded border border-fuchsia-400/30 bg-fuchsia-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-fuchsia-200">
-                {serviceLocale === "en" ? "Compendium page in progress" : "모음집 준비 중"}
+                {serviceLocale === "en" ? "Compendium page in progress" : "백과사전 준비 중"}
               </span>
             )}
           >
             <span className="text-sm text-zinc-300">
               {serviceLocale === "en"
                 ? "This patch note can be published before the Compendium page is ready."
-                : "패치노트가 모음집 페이지보다 먼저 배포된 상태입니다."}
+                : "패치노트가 백과사전 페이지보다 먼저 배포된 상태입니다."}
             </span>
           </GameResourcePreview>,
         )

@@ -72,7 +72,7 @@ export function CharacterLowHpIdleBlock({
 
   const title = serviceLocale === "ko" ? "낮은 체력 대기" : "Low HP Idle";
   const summary = serviceLocale === "ko"
-    ? "체력이 최대치의 25% 이하일 때 대기 모션이 바뀝니다. 캐릭터를 누르면 모음집에서 낮은 체력이 켜진 채로 열립니다."
+    ? "체력이 최대치의 25% 이하일 때 대기 모션이 바뀝니다. 캐릭터를 누르면 백과사전에서 낮은 체력이 켜진 채로 열립니다."
     : "Idle changes when remaining HP is 25% or less. Open a character to see it with Low HP already on.";
 
   return (
