@@ -367,8 +367,16 @@
   pointer-events: none;
 }
 
-.group:hover > .entity-hover-tip,
-.group:focus-within > .entity-hover-tip {
+/* Touch screens open these on the first tap from the static patch client
+   (.is-tap-open); a :hover rule there would make iOS swallow or replay taps. */
+@media (hover: hover) {
+  .group:hover > .entity-hover-tip,
+  .group:focus-within > .entity-hover-tip {
+    display: block;
+  }
+}
+
+.group.is-tap-open > .entity-hover-tip {
   display: block;
 }
 

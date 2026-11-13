@@ -79,11 +79,50 @@ import { DESCRIPTION_FIT, FONT_CQI } from "@/lib/sts2-card-style";
   const movedOutside = (trigger: Element, relatedTarget: EventTarget | null) =>
     !(relatedTarget instanceof Node) || !trigger.contains(relatedTarget);
 
+  // Touch screens get two taps: the first opens the preview, a second tap on the
+  // same keyword follows its link, and a tap elsewhere closes it. Without this a
+  // tap followed the link at once (iOS only paused on CSS-hover previews).
+  const touchScreen = window.matchMedia("(hover: none)");
+  const CSS_TIP_OPEN = "is-tap-open";
+  let armedTrigger: Element | null = null;
+
+  function cssTipTrigger(target: Element): Element | null {
+    const group = target.closest(".group");
+    return group?.querySelector(":scope > .entity-hover-tip") ? group : null;
+  }
+
+  function disarm() {
+    armedTrigger?.classList.remove(CSS_TIP_OPEN);
+    armedTrigger = null;
+    hidePreview();
+  }
+
+  document.addEventListener("click", (event) => {
+    if (!touchScreen.matches || !(event.target instanceof Element)) return;
+    const link = event.target.closest("a[href]");
+    const trigger = closestTrigger(event.target) ?? cssTipTrigger(event.target);
+    if (!link || !trigger || !trigger.contains(link)) {
+      disarm();
+      return;
+    }
+    if (armedTrigger === trigger) {
+      disarm();
+      return;
+    }
+    event.preventDefault();
+    disarm();
+    armedTrigger = trigger;
+    if (trigger.matches(TRIGGER_SELECTOR)) showPreview(trigger);
+    else trigger.classList.add(CSS_TIP_OPEN);
+  }, true);
+
   document.addEventListener("pointerover", (event) => {
+    if (event.pointerType === "touch") return;
     const trigger = closestTrigger(event.target);
     if (trigger && movedOutside(trigger, event.relatedTarget)) showPreview(trigger);
   });
   document.addEventListener("pointerout", (event) => {
+    if (event.pointerType === "touch") return;
     const trigger = closestTrigger(event.target);
     if (trigger && movedOutside(trigger, event.relatedTarget)) hidePreview();
   });
@@ -95,6 +134,6 @@ import { DESCRIPTION_FIT, FONT_CQI } from "@/lib/sts2-card-style";
     const trigger = closestTrigger(event.target);
     if (trigger && movedOutside(trigger, event.relatedTarget)) hidePreview();
   });
-  window.addEventListener("resize", hidePreview);
-  window.addEventListener("scroll", hidePreview, { passive: true });
+  window.addEventListener("resize", disarm);
+  window.addEventListener("scroll", disarm, { passive: true });
 })();
