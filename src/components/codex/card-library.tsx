@@ -25,8 +25,10 @@ import {
   CodexPotion,
   CodexPower,
   CardFilterCategory,
+  CardFilterTag,
   CardTypeKo,
 } from "@/lib/codex-types";
+import { CARD_FILTER_TAGS } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
@@ -172,6 +174,7 @@ import {
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import {
+  CARD_TAG_FILTER_ICONS,
   COLORLESS_FILTER_ICON,
   EVENT_FILTER_ICON,
   QUEST_FILTER_ICON,
@@ -248,6 +251,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     new Set()
   );
   const [selectedCosts, setSelectedCosts] = useState<Set<string>>(new Set());
+  const [selectedTags, setSelectedTags] = useState<Set<CardFilterTag>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -313,6 +317,12 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     });
   }, [cards, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
+  // Tags present in the selected version (older versions have no Fool tags).
+  const availableTags = useMemo(() => {
+    const present = new Set(versionedCards.flatMap((card) => card.tags));
+    return CARD_FILTER_TAGS.filter((tag) => present.has(tag));
+  }, [versionedCards]);
+
   // Filtered & sorted cards (always sorted by name)
   const filteredCards = useMemo(() => {
     let result = versionedCards;
@@ -369,6 +379,12 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       });
     }
 
+    // Tag filter: any selected tag matches; a tag hidden by an older version no longer applies.
+    const activeTags = availableTags.filter((tag) => selectedTags.has(tag));
+    if (activeTags.length > 0) {
+      result = result.filter((c) => c.tags.some((tag) => activeTags.includes(tag as CardFilterTag)));
+    }
+
     // Text search (name + description + keywords)
     if (searchText) {
       result = result.filter(
@@ -415,6 +431,8 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     selectedRarities,
     selectedRarityDetails,
     selectedCosts,
+    selectedTags,
+    availableTags,
     searchText,
     matchCost,
     sortKeys,
@@ -429,8 +447,8 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   // Build a stable key from filter inputs to reset visibleCount on change
   const filterKey = useMemo(
     () =>
-      `${[...selectedColors].sort()}-${[...selectedTypes].sort()}-${[...selectedRarities].sort()}-${[...selectedRarityDetails].sort()}-${[...selectedCosts].sort()}-${searchText}-${multiplayerCycle}`,
-    [selectedColors, selectedTypes, selectedRarities, selectedRarityDetails, selectedCosts, searchText, multiplayerCycle],
+      `${[...selectedColors].sort()}-${[...selectedTypes].sort()}-${[...selectedRarities].sort()}-${[...selectedRarityDetails].sort()}-${[...selectedCosts].sort()}-${[...selectedTags].sort()}-${searchText}-${multiplayerCycle}`,
+    [selectedColors, selectedTypes, selectedRarities, selectedRarityDetails, selectedCosts, selectedTags, searchText, multiplayerCycle],
   );
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -519,6 +537,15 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       return { ...prev, [key]: isPrimary ? (prev[key] === "asc" ? "desc" : "asc") : "asc" };
     });
   }, [sortKeys]);
+
+  const toggleTag = useCallback((tag: CardFilterTag) => {
+    setSelectedTags((prev) => {
+      const next = new Set(prev);
+      if (next.has(tag)) next.delete(tag);
+      else next.add(tag);
+      return next;
+    });
+  }, []);
 
   const toggleCost = useCallback((cost: string) => {
     setSelectedCosts((prev) => {
@@ -760,6 +787,23 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
             })}
           </div>
         </FilterSection>
+
+        {/* Card tags (game CardTag, without Strike/Defend) */}
+        {availableTags.length > 0 && (
+          <FilterSection label={serviceText.labels.tags}>
+            <div className="flex flex-wrap gap-1.5">
+              {availableTags.map((tag) => (
+                <IconFilterButton
+                  key={tag}
+                  icon={CARD_TAG_FILTER_ICONS[tag]}
+                  label={gameUi.cardLibrary.tags[tag]}
+                  active={selectedTags.has(tag)}
+                  onClick={() => toggleTag(tag)}
+                />
+              ))}
+            </div>
+          </FilterSection>
+        )}
 
         {/* Name sort (no filter, just sort toggle) */}
         <FilterSection label={gameUi.cardLibrary.sort.name} sortDir={sortDirs.name} onSortToggle={() => toggleSort("name")} sortTitle={serviceText.common.sortButtonTitle}>

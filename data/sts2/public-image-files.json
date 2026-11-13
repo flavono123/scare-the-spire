@@ -198,6 +198,12 @@
     "base.webp",
     "overlay.webp"
   ],
+  "card-tags": [
+    "cho.webp",
+    "ki.webp",
+    "shoot.webp",
+    "wah.webp"
+  ],
   "cards": [
     "abrasive.webp",
     "abundance.webp",
@@ -2255,6 +2261,9 @@
     "rng-correlation-v0.103.3.png",
     "rng-correlation-v0.107.1.png",
     "rng-prng-streams.png"
+  ],
+  "patches/v0.113.0": [
+    "fool-lobby.webp"
   ],
   "potions": [
     "ambergris.webp",

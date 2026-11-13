@@ -1115,6 +1115,7 @@ export const serviceMessages = {
         modifiers: "개",
         ascensions: "개",
         affiliation: "캐릭터",
+        tags: "태그",
         forms: "형상",
         cardTypes: {
           공격: "공격",
@@ -2735,6 +2736,7 @@ export const serviceMessages = {
         modifiers: "modifiers",
         ascensions: "ascensions",
         affiliation: "Character",
+        tags: "Tags",
         forms: "Forms",
         cardTypes: {
           공격: "Attack",

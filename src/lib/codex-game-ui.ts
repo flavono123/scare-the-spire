@@ -4,6 +4,7 @@ import {
   readGameLocalizationTable,
 } from "@/lib/game-localization";
 import type {
+  CardFilterTag,
   CardRarityKo,
   CardTypeKo,
   EncounterRoomType,
@@ -64,6 +65,7 @@ export type CodexGameUiLabels = {
     };
     types: Record<CardTypeKo, string>;
     rarities: Record<CardLibraryRarityKey, string>;
+    tags: Record<CardFilterTag, string>;
   };
   relicCollection: {
     rarities: Record<RelicRarityKo, LabelDescription>;
@@ -222,6 +224,9 @@ export async function getCodexGameUiLabels(
     statsScreen,
     intents,
     characters,
+    powers,
+    cards,
+    monsters,
   ] = await Promise.all([
     readGameLocalizationTable(gameLocale, "events"),
     readGameLocalizationTable(gameLocale, "main_menu_ui"),
@@ -236,6 +241,9 @@ export async function getCodexGameUiLabels(
     readGameLocalizationTable(gameLocale, "stats_screen"),
     readGameLocalizationTable(gameLocale, "intents"),
     readGameLocalizationTable(gameLocale, "characters"),
+    readGameLocalizationTable(gameLocale, "powers"),
+    readGameLocalizationTable(gameLocale, "cards"),
+    readGameLocalizationTable(gameLocale, "monsters"),
   ]);
 
   const cardTypes = Object.fromEntries(
@@ -404,6 +412,16 @@ export async function getCodexGameUiLabels(
       },
       types: cardTypes,
       rarities,
+      // The game names each tag in its own hover tips (melodies, arrows) or by the thing it stands for.
+      tags: {
+        Wah: gameText(staticHoverTips, "WAH_MELODY.title", "와 선율"),
+        Cho: gameText(staticHoverTips, "CHO_MELODY.title", "초 선율"),
+        Ki: gameText(staticHoverTips, "KI_MELODY.title", "키 선율"),
+        Shoot: gameText(staticHoverTips, "ARROW.title", "화살"),
+        Minion: gameText(powers, "MINION_POWER.title", "하수인"),
+        Shiv: gameText(cards, "SHIV.title", "단도"),
+        OstyAttack: gameText(monsters, "OSTY.name", "골골이"),
+      },
     },
     relicCollection: {
       rarities: relicRarities,

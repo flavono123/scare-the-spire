@@ -6,6 +6,10 @@ export interface CodexLifecycle {
   deprecatedInPatch?: string;
 }
 
+/** Card tags the card library can filter by (game CardTag). Strike and Defend are left out: their names already say it. */
+export const CARD_FILTER_TAGS = ["Wah", "Cho", "Ki", "Shoot", "Minion", "Shiv", "OstyAttack"] as const;
+export type CardFilterTag = (typeof CARD_FILTER_TAGS)[number];
+
 export type CardColor =
   | "ironclad"
   | "silent"
