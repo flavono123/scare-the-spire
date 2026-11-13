@@ -14,7 +14,7 @@ import { readdirSync, readFileSync, rmdirSync, rmSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
+import { CLOUDFLARE_ASSETS_DIR, STS1_WORKER_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
 import { isPatchWorkerPublicAsset, publicAssetExcludeReason } from "./cloudflare-asset-excludes.mjs";
 
 const TEXT_ASSET = /\.(html|rsc|js|mjs|css|json|txt|xml|webmanifest|atlas|svg)$/;
@@ -53,9 +53,10 @@ function safeDecode(value) {
 /**
  * Lists `_next/static` files unreachable from the served text assets.
  * @param {string} assetsDir
+ * @param {string[]} [extraRootDirs] pages another Worker serves on this origin (STS1 details)
  * @returns {{ total: number, reachable: string[], unreachable: string[] }}
  */
-export function findUnreachableNextStatic(assetsDir) {
+export function findUnreachableNextStatic(assetsDir, extraRootDirs = []) {
   const nextStaticDir = path.join(assetsDir, "_next", "static");
   const nextFiles = walkFiles(nextStaticDir).map((file) => toPosix(path.relative(assetsDir, file)));
 
@@ -99,6 +100,11 @@ export function findUnreachableNextStatic(assetsDir) {
     scanPaths(readFileSync(file, "utf8"));
     seedCount += 1;
   }
+  for (const file of extraRootDirs.flatMap((dir) => walkFiles(dir))) {
+    if (!TEXT_ASSET.test(file)) continue;
+    scanPaths(readFileSync(file, "utf8"));
+    seedCount += 1;
+  }
 
   while (queue.length > 0) {
     const file = queue.shift();
@@ -130,9 +136,10 @@ export function findUnreachableNextStatic(assetsDir) {
  * Files the patch Worker serves stay reachable, so references to them are fine.
  * @param {string} assetsDir
  * @param {string} publicDir
+ * @param {string[]} [extraRootDirs] pages another Worker serves on this origin (STS1 details)
  * @returns {{ excluded: string[], referenced: Array<{ asset: string, from: string }> }}
  */
-export function findReferencedExcludedAssets(assetsDir, publicDir) {
+export function findReferencedExcludedAssets(assetsDir, publicDir, extraRootDirs = []) {
   const excluded = walkFiles(publicDir)
     .map((file) => toPosix(path.relative(publicDir, file)))
     .filter((relativePath) => publicAssetExcludeReason(relativePath, publicDir));
@@ -144,7 +151,7 @@ export function findReferencedExcludedAssets(assetsDir, publicDir) {
   const referenced = [];
   if (excludedPaths.size === 0) return { excluded, referenced };
 
-  for (const file of walkFiles(assetsDir)) {
+  for (const file of [assetsDir, ...extraRootDirs].flatMap((dir) => walkFiles(dir))) {
     const relativePath = toPosix(path.relative(assetsDir, file));
     if (!TEXT_ASSET.test(relativePath)) continue;
     const text = readFileSync(file, "utf8");
@@ -159,8 +166,11 @@ export function findReferencedExcludedAssets(assetsDir, publicDir) {
 function main() {
   const assetsDir = CLOUDFLARE_ASSETS_DIR;
   const publicDir = "public";
+  // STS1 detail pages load their chunks and public files from this origin too.
+  // Not the STS1 Worker's own /_next/static copy: it would mark every chunk reachable.
+  const extraRootDirs = [path.join(STS1_WORKER_ASSETS_DIR, "_cf_static_pages")];
 
-  const { excluded, referenced } = findReferencedExcludedAssets(assetsDir, publicDir);
+  const { excluded, referenced } = findReferencedExcludedAssets(assetsDir, publicDir, extraRootDirs);
   if (referenced.length > 0) {
     const lines = referenced.slice(0, 20).map(({ asset, from }) => `  ${asset} <- ${from}`);
     throw new Error(
@@ -169,7 +179,7 @@ function main() {
     );
   }
 
-  const { total, unreachable } = findUnreachableNextStatic(assetsDir);
+  const { total, unreachable } = findUnreachableNextStatic(assetsDir, extraRootDirs);
   for (const file of unreachable) rmSync(path.join(assetsDir, file));
   removeEmptyDirs(path.join(assetsDir, "_next", "static"));
 

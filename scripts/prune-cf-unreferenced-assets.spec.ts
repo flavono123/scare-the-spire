@@ -93,6 +93,11 @@ try {
     "async CSS via the miniCssF hash map",
   );
 
+  // Pages another Worker serves on this origin (STS1 details) keep their chunks too.
+  const sts1Pages = path.join(root, "sts1-pages");
+  write(sts1Pages, "compendium/sts1/cards/bash.html", '<script src="/_next/static/chunks/9999-8888888888888888.js"></script>');
+  assert.ok(!findUnreachableNextStatic(assets, [sts1Pages]).unreachable.includes("_next/static/chunks/9999-8888888888888888.js"));
+
   // Without served pages nothing reaches the runtime, so pruning refuses to run.
   const empty = path.join(root, "empty");
   write(empty, "_next/static/chunks/webpack-1111111111111111.js");

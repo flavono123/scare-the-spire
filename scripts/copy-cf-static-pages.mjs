@@ -1,5 +1,6 @@
 import {
   copyFileSync,
+  cpSync,
   mkdirSync,
   readdirSync,
   readFileSync,
@@ -9,11 +10,13 @@ import {
 } from "node:fs";
 import path from "node:path";
 
-import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
+import { CLOUDFLARE_ASSETS_DIR, STS1_WORKER_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
 
 const appDir = path.join(".next", "server", "app");
 const assetsDir = CLOUDFLARE_ASSETS_DIR;
 const outDir = path.join(assetsDir, "_cf_static_pages");
+// STS1 detail pages go to the STS1 Worker instead (docs/designs/sts1-compendium-worker.md).
+const sts1OutDir = path.join(STS1_WORKER_ASSETS_DIR, "_cf_static_pages");
 const staticMetadataFiles = [
   { source: "robots.txt.body", target: "robots.txt" },
   { source: "sitemap.xml.body", target: "sitemap.xml" },
@@ -253,10 +256,19 @@ function staticPageRelativePath(file) {
     parts.length === compendiumIndex + 2
     && parts[compendiumIndex + 1] === "sts1"
     && sts1CompendiumSegments.has(parsed.name);
-  // STS1 detail pages are not published; the Worker redirects them to list modals.
-  if (!isIndex && !isServiceLocaleDetail && !isSts1Index) return null;
+  if (!isIndex && !isServiceLocaleDetail && !isSts1Index && !isSts1Detail(relative)) return null;
 
   return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
+}
+
+// STS1 detail pages: compendium/sts1/<type>/<slug> and en/compendium/sts1/<type>/<slug>.
+function isSts1Detail(relative) {
+  const parts = path.parse(relative).dir.split(path.sep).filter(Boolean);
+  const compendiumIndex = parts[0] === "en" ? 1 : 0;
+  return parts.length === compendiumIndex + 3
+    && parts[compendiumIndex] === "compendium"
+    && parts[compendiumIndex + 1] === "sts1"
+    && sts1CompendiumSegments.has(parts[compendiumIndex + 2]);
 }
 
 function documentGameLocale(relative) {
@@ -322,15 +334,19 @@ if (!statSync(assetsDir, { throwIfNoEntry: false })?.isDirectory()) {
 }
 
 rmSync(outDir, { recursive: true, force: true });
+rmSync(STS1_WORKER_ASSETS_DIR, { recursive: true, force: true });
 
 let count = 0;
+let sts1Count = 0;
 let localizedCount = 0;
 let strippedHintCount = 0;
 for (const file of walk(appDir)) {
   const relative = staticPageRelativePath(file);
   if (!relative) continue;
 
-  const output = path.join(outDir, relative);
+  const sts1Detail = isSts1Detail(relative);
+  if (sts1Detail) sts1Count += 1;
+  const output = path.join(sts1Detail ? sts1OutDir : outDir, relative);
   mkdirSync(path.dirname(output), { recursive: true });
   const gameLocale = documentGameLocale(relative);
   if (gameLocale) {
@@ -362,7 +378,15 @@ if (count === 0) {
   throw new Error("No Cloudflare static HTML/RSC files were copied.");
 }
 
-console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir} (${localizedCount} with an English document root, ${strippedHintCount} RSC without image hints)`);
+console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir} and ${sts1OutDir} (${sts1Count} STS1 detail, ${localizedCount} with an English document root, ${strippedHintCount} RSC without image hints)`);
+
+// Before the prune step on purpose: the STS1 Worker keeps every chunk of this build, so
+// its pages still load when the main Worker is on another build (the main Worker
+// forwards /_next/static misses to it).
+cpSync(path.join(assetsDir, "_next", "static"), path.join(STS1_WORKER_ASSETS_DIR, "_next", "static"), {
+  recursive: true,
+});
+console.log(`Copied ${path.join(assetsDir, "_next", "static")} to ${path.join(STS1_WORKER_ASSETS_DIR, "_next", "static")}`);
 
 for (const metadataFile of staticMetadataFiles) {
   const source = path.join(appDir, metadataFile.source);
