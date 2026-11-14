@@ -769,6 +769,8 @@
     "stack_type": "Single",
     "allow_negative": null,
     "image_url": "/static/images/powers/diamond_diadem_power.png",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.109.0",
     "vars": {}
   },
   {
@@ -824,7 +826,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": null
+    "image_url": null,
+    "deprecated": true
   },
   {
     "id": "DOUBLE_DAMAGE",
