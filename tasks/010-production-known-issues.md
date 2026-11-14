@@ -317,7 +317,7 @@
     - 비용: BANSHEES_CRY 6(9), BUNDLE_OF_JOY 2(1), SEANCE 0(1). X 비용으로 잘못 표시: ALL_FOR_ONE, BULLET_TIME, JACKPOT, SCRAPE, TRANSFIGURE
     - 대상: BEGONE AnyEnemy(게임 Self), NOT_YET 한국어 대상 '자신'
     - https://scare-the-spire.flavono123.workers.dev/en/compendium/cards/hemokinesis
-    - 처리(2026-11-15): 고침(`ef686fa8`): 아래 20장의 행을 `--update`로 다시 만들었다(en·ko 모두, 변수·비용·X 비용·대상). 다시 돌린 `--report`에 이 20장은 없다. 남은 report 약 200줄은 옛 행의 파생 필드 잡음(Calculated\* 변수, 옴니 카드의 `damage`)과 v0.113.1 한국어 문구 갱신(ABUNDANCE·CACOPHONY·CONSTELLATION·SOULBOUND 등은 ko 행에 영어 문구가 남음)이다. 후자는 v0.113.1 코덱스 갱신 때 같이 다시 만든다. 이 항목의 목록에는 없었다.
+    - 처리(2026-11-15): 고침(`ef686fa8`): 아래 20장의 행을 `--update`로 다시 만들었다(en·ko 모두, 변수·비용·X 비용·대상). 다시 돌린 `--report`에 이 20장은 없다. 남은 report 약 200줄은 옛 행의 파생 필드 잡음(Calculated\* 변수, 옴니 카드의 `damage`)과 v0.113.1 한국어 문구 갱신이다. ko 행에 영어 문구가 남은 3장(CACOPHONY·CONSTELLATION·SOULBOUND)은 `7624530b`에서 같이 다시 만들었다. 나머지는 줄바꿈 차이 정도(ABUNDANCE·CONCOCT·FLORESCENCE 등)라 v0.113.1 코덱스 갱신 때 만든다.
 78. **무한의 컨베이어 이벤트가 벨트에서 집기 비용을 35 골드로 보여 줌**(게임 40, v0.100.0에서 바뀜).
     - https://scare-the-spire.flavono123.workers.dev/compendium/events/endless_conveyor
     - 처리(2026-11-15): 고침(`9e13ff0e`): ENDLESS_CONVEYOR의 en·ko 행에서 35를 40으로 바꿨다(안내판과 접시 6개, 9곳). 그 밖 변수(75·10·4)는 게임과 같다. 다른 게임 언어는 이 행으로 떨어져 함께 바뀐다.
