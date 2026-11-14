@@ -240,6 +240,7 @@ const PAGESTORM = "70000001-0000-4000-8000-000000000001";
 const TOURNAMENT = "50000001-0000-4000-8000-000000000001";
 const DECISIONS = "60000001-0000-4000-8000-000000000001";
 const RUN = "r0000000000000a01";
+const COMBO_YOUTUBE = "70000001-0000-4000-8000-000000000001";
 const MISSING = "00000000-0000-4000-8000-000000000000";
 
 function seededD1(): SqliteD1 {
@@ -268,6 +269,14 @@ function seededD1(): SqliteD1 {
   // Inserted out of order: resources come back in array (ord) order.
   run("INSERT INTO post_combo_resources (post_id, ord, resource_type, resource_id) VALUES (?, 1, 'card', 'bash')", COMBO);
   run("INSERT INTO post_combo_resources (post_id, ord, resource_type, resource_id) VALUES (?, 0, 'relic', 'anchor')", COMBO);
+
+  // A YouTube thumbnail is an absolute URL: it must not get the site origin in front (tasks/010 #71).
+  post("combo", COMBO_YOUTUBE, "영상 콤보");
+  run(
+    "INSERT INTO post_combo (post_id, content, content_text) VALUES (?, ?, '영상 콤보')",
+    COMBO_YOUTUBE,
+    JSON.stringify([{ type: "youtube", videoId: "dQw4w9WgXcQ", title: "영상", url: "https://youtu.be/dQw4w9WgXcQ" }]),
+  );
 
   post("chemical_x", CHEM, "닻 케미컬");
   run(
@@ -437,6 +446,7 @@ async function main() {
     [`/defragment/this_or_that/${TOT}`, { title: "높이맞음? - 슬서운 이야기", description: koDescription.thisOrThat, image: `${ORIGIN}/images/sts2/cards/bash.webp` }],
     [`/c-c-c-combo/${COMBO}`, { title: "강타와 닻 콤보 - 슬서운 이야기", description: koDescription.combo, image: `${ORIGIN}/images/sts2/relics/anchor.webp` }],
     [`/defragment/combo/${COMBO}`, { title: "강타와 닻 콤보 - 슬서운 이야기", description: koDescription.combo, image: `${ORIGIN}/images/sts2/relics/anchor.webp` }],
+    [`/c-c-c-combo/${COMBO_YOUTUBE}`, { title: "영상 콤보 - 슬서운 이야기", description: koDescription.combo, image: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" }],
     [`/chemical-x/${CHEM}`, { title: "닻 케미컬 - 슬서운 이야기", description: koDescription.chemical, image: `${ORIGIN}/images/sts2/relics/anchor.webp` }],
     [`/transfigure/${TRANSFIGURE}`, { title: "강강타 - 슬서운 이야기", description: koDescription.transfigure, image: `${ORIGIN}/images/sts2/cards/bash.webp` }],
     [`/pagestorm/${PAGESTORM}`, { title: "문서 제목 - 슬서운 이야기", description: "본문 내용", image: `${ORIGIN}/images/sts2/cards/bash.webp` }],

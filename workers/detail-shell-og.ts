@@ -331,7 +331,8 @@ export async function fetchDetailShellOgData(
         content: asPostBlocks(row.content),
         resources: asComboResources(row.resources),
       }) ?? COMBO_PAGE_OG_IMAGE;
-    const image = `${siteOrigin}${imageSource.url}`;
+    // A YouTube thumbnail is already absolute (tasks/010 #71).
+    const image = imageSource.url.startsWith("http") ? imageSource.url : `${siteOrigin}${imageSource.url}`;
     const description =
       serviceLocale === "en"
         ? `${game} · ${brand} · C-c-c-Combo · Share game-element combos`
