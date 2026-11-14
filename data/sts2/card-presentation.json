@@ -1,0 +1,7345 @@
+{
+ "archiveVersion": "0.113.0",
+ "note": "Read from OnPlay in source order. Numbers are symbolic; the simulator resolves them from the character and the versioned card vars.",
+ "cards": {
+  "ABRASIVE": {
+   "source": "Abrasive.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ACCELERANT": {
+   "source": "Accelerant.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ACCURACY": {
+   "source": "Accuracy.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ADAPTIVE_STRIKE": {
+   "source": "AdaptiveStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "AFTERIMAGE": {
+   "source": "Afterimage.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "AFTERLIFE": {
+   "source": "Afterlife.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
+     "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
+    }
+   ]
+  },
+  "AGGRESSION": {
+   "source": "Aggression.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ALCHEMIZE": {
+   "source": "Alchemize.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "ALIGNMENT": {
+   "source": "Alignment.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "ALL_FOR_ONE": {
+   "source": "AllForOne.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "blunt_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "ANGER": {
+   "source": "Anger.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "ANGUISH": {
+   "source": "Anguish.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "ANTICIPATE": {
+   "source": "Anticipate.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "APPARITION": {
+   "source": "Apparition.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "ARCHERY": {
+   "source": "Archery.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ARMAMENTS": {
+   "source": "Armaments.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "ARROW_STAB": {
+   "source": "ArrowStab.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "ARSENAL": {
+   "source": "Arsenal.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ASHEN_STRIKE": {
+   "source": "AshenStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "ASSASSINATE": {
+   "source": "Assassinate.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_dramatic_stab"
+     }
+    }
+   ]
+  },
+  "ASTRAL_PULSE": {
+   "source": "AstralPulse.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "hitFx": {
+      "scene": "vfx/vfx_starry_impact"
+     },
+     "hitVfxOnEach": true
+    }
+   ]
+  },
+  "BACKFLIP": {
+   "source": "Backflip.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "BACKSTAB": {
+   "source": "Backstab.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_dramatic_stab",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BALL_LIGHTNING": {
+   "source": "BallLightning.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BANSHEES_CRY": {
+   "source": "BansheesCry.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "BARRAGE": {
+   "source": "Barrage.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt"
+     }
+    }
+   ]
+  },
+  "BARRICADE": {
+   "source": "Barricade.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "BASH": {
+   "source": "Bash.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BEACON_OF_HOPE": {
+   "source": "BeaconOfHope.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "BEAM_CELL": {
+   "source": "BeamCell.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BEAT_INTO_SHAPE": {
+   "source": "BeatIntoShape.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BIASED_COGNITION": {
+   "source": "BiasedCognition.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "BIG_BANG": {
+   "source": "BigBang.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "BLACK_HOLE": {
+   "source": "BlackHole.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "BLADE_DANCE": {
+   "source": "BladeDance.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.1f"
+    }
+   ]
+  },
+  "BLADE_SYMPHONY": {
+   "source": "BladeSymphony.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.1f"
+    }
+   ]
+  },
+  "BLIGHT_STRIKE": {
+   "source": "BlightStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "BLOOD_WALL": {
+   "source": "BloodWall.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "sfx",
+     "event": "event:/sfx/characters/ironclad/ironclad_bloodwall"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "BLOODLETTING": {
+   "source": "Bloodletting.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "BLOSSOM_SHOT": {
+   "source": "BlossomShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "BLUDGEON": {
+   "source": "Bludgeon.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Ironclad.GetHeavyAnimIfApplicable(base.Owner.Character)",
+      "delay": "Ironclad.GetHeavyAttackDelayIfApplicable(base.Owner.Character)"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "heavy_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "BLUR": {
+   "source": "Blur.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "BODY_SLAM": {
+   "source": "BodySlam.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BODYGUARD": {
+   "source": "Bodyguard.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
+     "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
+    }
+   ]
+  },
+  "BOLAS": {
+   "source": "Bolas.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NBolasVfx",
+     "args": "base.Owner.Creature, cardPlay.Target"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BOMBARDMENT": {
+   "source": "Bombardment.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NLargeMagicMissileVfx",
+     "args": "nCreature.GetBottomOfHitbox(), new Color(\"50b598\")",
+     "color": "50b598",
+     "anchor": "bottomOfHitbox"
+    },
+    {
+     "op": "wait",
+     "seconds": "nLargeMagicMissileVfx.WaitTime"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BONE_SHARDS": {
+   "source": "BoneShards.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.OstyDamage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "BOOST_AWAY": {
+   "source": "BoostAway.cs",
+   "steps": [
+    {
+     "op": "block"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.5f"
+    }
+   ]
+  },
+  "BOOT_SEQUENCE": {
+   "source": "BootSequence.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "BORROWED_TIME": {
+   "source": "BorrowedTime.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "BOUNCING_FLASK": {
+   "source": "BouncingFlask.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "vfx",
+     "class": "NItemThrowVfx",
+     "args": "lastPos, targetNode.GetBottomOfHitbox(), ModelDb.Potion<PoisonPotion>().Image",
+     "anchor": "bottomOfHitbox"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.5f"
+    },
+    {
+     "op": "vfx",
+     "class": "NSplashVfx",
+     "args": "targetNode.VfxSpawnPosition, _vfxTint"
+    },
+    {
+     "op": "vfx",
+     "class": "NLiquidOverlayVfx",
+     "args": "enemy, _vfxTint"
+    },
+    {
+     "op": "vfx",
+     "class": "NGaseousImpactVfx",
+     "args": "targetNode.VfxSpawnPosition, _vfxTint"
+    }
+   ]
+  },
+  "BOW_SMACK": {
+   "source": "BowSmack.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BRACE": {
+   "source": "Brace.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "BRAND": {
+   "source": "Brand.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "vfx",
+     "class": "NGroundFireVfx",
+     "args": "base.Owner.Creature"
+    },
+    {
+     "op": "sfx",
+     "event": "event:/sfx/characters/attack_fire"
+    }
+   ]
+  },
+  "BREAK": {
+   "source": "Break.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Ironclad.GetHeavyAnimIfApplicable(base.Owner.Character)",
+      "delay": "Ironclad.GetHeavyAttackDelayIfApplicable(base.Owner.Character)"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "heavy_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "BREAKTHROUGH": {
+   "source": "Breakthrough.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BRIGHTEN_UP": {
+   "source": "BrightenUp.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "sfx",
+     "event": "event:/sfx/characters/fugitive/fugitive_joy"
+    }
+   ]
+  },
+  "BUBBLE_BUBBLE": {
+   "source": "BubbleBubble.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NGaseousImpactVfx",
+     "args": "nCreature.VfxSpawnPosition, new Color(\"83eb85\")",
+     "color": "83eb85"
+    },
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "BUFFER": {
+   "source": "Buffer.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "BULK_UP": {
+   "source": "BulkUp.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "BULLET_TIME": {
+   "source": "BulletTime.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "BULLY": {
+   "source": "Bully.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BULWARK": {
+   "source": "Bulwark.cs",
+   "steps": [
+    {
+     "op": "block"
+    },
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "BURNING_PACT": {
+   "source": "BurningPact.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "BURST": {
+   "source": "Burst.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "BURY": {
+   "source": "Bury.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "BYRD_SWOOP": {
+   "source": "ByrdSwoop.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Attack",
+      "delay": "base.Owner.Character.AttackAnimDelay"
+     },
+     "hooks": {
+      "WithAttackerFx": "() => NByrdpipReadyToEvolveVfx.Create(base.Owner)"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NByrdpipReadyToEvolveVfx",
+     "args": "base.Owner"
+    }
+   ]
+  },
+  "CALCIFY": {
+   "source": "Calcify.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CALL_OF_THE_VOID": {
+   "source": "CallOfTheVoid.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CALTROPS": {
+   "source": "Caltrops.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CAPACITOR": {
+   "source": "Capacitor.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CAPTURE_SPIRIT": {
+   "source": "CaptureSpirit.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "CELESTIAL_MIGHT": {
+   "source": "CelestialMight.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_starry_impact",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "CHAOS": {
+   "source": "Chaos.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "CHARGE": {
+   "source": "Charge.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "CHARGE_BATTERY": {
+   "source": "ChargeBattery.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "CHILD_OF_THE_STARS": {
+   "source": "ChildOfTheStars.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CHILL": {
+   "source": "Chill.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "CHO_BARBS": {
+   "source": "ChoBarbs.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "CHO_CHORUS": {
+   "source": "ChoChorus.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "CHO_FIRM": {
+   "source": "ChoFirm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "CHO_KI": {
+   "source": "ChoKi.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "CHO_LIMBS": {
+   "source": "ChoLimbs.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "CHO_READY": {
+   "source": "ChoReady.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "CINDER": {
+   "source": "Cinder.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "attackerAnim": {
+      "name": "Ironclad.GetHeavyAnimIfApplicable(base.Owner.Character)",
+      "delay": "Ironclad.GetHeavyAttackDelayIfApplicable(base.Owner.Character)"
+     },
+     "targeting": "target",
+     "hooks": {
+      "WithHitVfxNode": "(Creature t) => NFireBurstVfx.Create(t, 0.75f)"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NFireBurstVfx",
+     "args": "t, 0.75f"
+    }
+   ]
+  },
+  "CLASH": {
+   "source": "Clash.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "CLAW": {
+   "source": "Claw.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hooks": {
+      "WithHitVfxNode": "(Creature t) => NScratchVfx.Create(t, goingRight: true)"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NScratchVfx",
+     "args": "t, goingRight: true"
+    }
+   ]
+  },
+  "CLEANSE": {
+   "source": "Cleanse.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
+     "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
+    }
+   ]
+  },
+  "CLOAK_AND_DAGGER": {
+   "source": "CloakAndDagger.cs",
+   "steps": [
+    {
+     "op": "block"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.25f"
+    }
+   ]
+  },
+  "CLOAK_OF_STARS": {
+   "source": "CloakOfStars.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "CODA": {
+   "source": "Coda.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target"
+    }
+   ]
+  },
+  "COLD_SNAP": {
+   "source": "ColdSnap.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "COLLISION_COURSE": {
+   "source": "CollisionCourse.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    },
+    {
+     "op": "wait",
+     "seconds": "0.5f"
+    }
+   ]
+  },
+  "COLOSSUS": {
+   "source": "Colossus.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "COMET": {
+   "source": "Comet.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "vfx",
+     "class": "NSmallMagicMissileVfx",
+     "args": "nCreature.GetBottomOfHitbox(), new Color(\"50b598\")",
+     "color": "50b598",
+     "anchor": "bottomOfHitbox"
+    },
+    {
+     "op": "wait",
+     "seconds": "nSmallMagicMissileVfx.WaitTime"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": null
+    }
+   ]
+  },
+  "COMPACT": {
+   "source": "Compact.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "COMPILE_DRIVER": {
+   "source": "CompileDriver.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "COMPOST": {
+   "source": "Compost.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CONCOCT": {
+   "source": "Concoct.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CONFLAGRATION": {
+   "source": "Conflagration.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NGroundFireVfx",
+     "args": "item"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "CONQUEROR": {
+   "source": "Conqueror.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "CONSTELLATION": {
+   "source": "Constellation.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "anim",
+     "who": "cardPlay.Target",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "CONSUMING_SHADOW": {
+   "source": "ConsumingShadow.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CONVERGENCE": {
+   "source": "Convergence.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "COOLANT": {
+   "source": "Coolant.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "COOLHEADED": {
+   "source": "Coolheaded.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "CORROSIVE_WAVE": {
+   "source": "CorrosiveWave.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "CORRUPTION": {
+   "source": "Corruption.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "COSMIC_INDIFFERENCE": {
+   "source": "CosmicIndifference.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "COUNTDOWN": {
+   "source": "Countdown.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CRASH_LANDING": {
+   "source": "CrashLanding.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "heavy_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "CREATIVE_AI": {
+   "source": "CreativeAi.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CRESCENT_SPEAR": {
+   "source": "CrescentSpear.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_starry_impact"
+     }
+    }
+   ]
+  },
+  "CRIMSON_MANTLE": {
+   "source": "CrimsonMantle.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CRUELTY": {
+   "source": "Cruelty.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "CRUSH_UNDER": {
+   "source": "CrushUnder.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    },
+    {
+     "op": "vfx",
+     "class": "NSpikeSplashVfx",
+     "args": "item"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "blunt_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "DAGGER_SPRAY": {
+   "source": "DaggerSpray.cs",
+   "steps": [
+    {
+     "op": "sfx",
+     "event": "event:/sfx/characters/silent/silent_dagger_spray"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "allEnemies",
+     "hooks": {
+      "WithAttackerFx": "() => NDaggerSprayFlurryVfx.Create(base.Owner.Creature, new Color(\"#b1ccca\"), goingRight: true)",
+      "BeforeDamage": "delegate { IReadOnlyList<Creature> hittableEnemies = base.CombatState.HittableEnemies; foreach (Creature item in hittableEnemies) { NDaggerSprayImpactVfx child = NDaggerSprayImpactVfx.Create(item, new Color(\"#b1ccca\"), goingRight: true); NCombatRoom.Instance?.CombatVfxContainer.AddChildSafely(child); } return Task.CompletedTask; }"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NDaggerSprayFlurryVfx",
+     "args": "base.Owner.Creature, new Color(\"#b1ccca\"), goingRight: true",
+     "color": "b1ccca"
+    },
+    {
+     "op": "vfx",
+     "class": "NDaggerSprayImpactVfx",
+     "args": "item, new Color(\"#b1ccca\"), goingRight: true",
+     "color": "b1ccca"
+    }
+   ]
+  },
+  "DAGGER_THROW": {
+   "source": "DaggerThrow.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hooks": {
+      "WithAttackerFx": "() => NDaggerSprayFlurryVfx.Create(base.Owner.Creature, new Color(\"#b1ccca\"), goingRight: true)",
+      "WithHitVfxNode": "(Creature t) => NDaggerSprayImpactVfx.Create(t, new Color(\"#b1ccca\"), goingRight: true)"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NDaggerSprayFlurryVfx",
+     "args": "base.Owner.Creature, new Color(\"#b1ccca\"), goingRight: true",
+     "color": "b1ccca"
+    },
+    {
+     "op": "vfx",
+     "class": "NDaggerSprayImpactVfx",
+     "args": "t, new Color(\"#b1ccca\"), goingRight: true",
+     "color": "b1ccca"
+    }
+   ]
+  },
+  "DANSE_MACABRE": {
+   "source": "DanseMacabre.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "DARK_EMBRACE": {
+   "source": "DarkEmbrace.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "DARK_SHACKLES": {
+   "source": "DarkShackles.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "DARKNESS": {
+   "source": "Darkness.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "DASH": {
+   "source": "Dash.cs",
+   "steps": [
+    {
+     "op": "block"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_flying_slash"
+     }
+    }
+   ]
+  },
+  "DEADLY_POISON": {
+   "source": "DeadlyPoison.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NPoisonImpactVfx",
+     "args": "cardPlay.Target"
+    },
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "DEATH": {
+   "source": "Death.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "DEATH_MARCH": {
+   "source": "DeathMarch.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "DEATHBRINGER": {
+   "source": "Deathbringer.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "DEATHS_DOOR": {
+   "source": "DeathsDoor.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DEBILITATE": {
+   "source": "Debilitate.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "DECISIONS_DECISIONS": {
+   "source": "DecisionsDecisions.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "DEFEND_DEFECT": {
+   "source": "DefendDefect.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DEFEND_FOOL": {
+   "source": "DefendFool.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DEFEND_IRONCLAD": {
+   "source": "DefendIronclad.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DEFEND_NECROBINDER": {
+   "source": "DefendNecrobinder.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DEFEND_REGENT": {
+   "source": "DefendRegent.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DEFEND_SILENT": {
+   "source": "DefendSilent.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DEFILE": {
+   "source": "Defile.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "DEFLECT": {
+   "source": "Deflect.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DEFRAGMENT": {
+   "source": "Defragment.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "DEFY": {
+   "source": "Defy.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DELAY": {
+   "source": "Delay.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DEMESNE": {
+   "source": "Demesne.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "DEMON_FORM": {
+   "source": "DemonForm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "DEMONIC_SHIELD": {
+   "source": "DemonicShield.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DEVASTATE": {
+   "source": "Devastate.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "DEVOUR_LIFE": {
+   "source": "DevourLife.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "DINGY_DAGGER": {
+   "source": "DingyDagger.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "DIRGE": {
+   "source": "Dirge.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "DISLIKE_YOU": {
+   "source": "DislikeYou.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "DISMANTLE": {
+   "source": "Dismantle.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "hitCount",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "DIVINE_SHOT": {
+   "source": "DivineShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "DODGE_AND_ROLL": {
+   "source": "DodgeAndRoll.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "DOMINATE": {
+   "source": "Dominate.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "DOUBLE_ENERGY": {
+   "source": "DoubleEnergy.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "DRAIN_POWER": {
+   "source": "DrainPower.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "DRAMATIC_ENTRANCE": {
+   "source": "DramaticEntrance.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Attack",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "DREDGE": {
+   "source": "Dredge.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "DUALCAST": {
+   "source": "Dualcast.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.1f, 0.25f"
+    }
+   ]
+  },
+  "DYING_STAR": {
+   "source": "DyingStar.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Attack",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_starry_impact"
+     },
+     "hitVfxOnEach": true
+    }
+   ]
+  },
+  "ECHO_FORM": {
+   "source": "EchoForm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ECHOING_SLASH": {
+   "source": "EchoingSlash.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Attack",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    }
+   ]
+  },
+  "ECSTASY": {
+   "source": "Ecstasy.cs",
+   "steps": [
+    {
+     "op": "sfx",
+     "event": "event:/sfx/characters/fugitive/fugitive_joy"
+    },
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "EIDOLON": {
+   "source": "Eidolon.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "ENCORE": {
+   "source": "Encore.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "END_OF_DAYS": {
+   "source": "EndOfDays.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "vfx",
+     "class": "NLargeMagicMissileVfx",
+     "args": "sideCenterFloor.Value, new Color(\"8c2447\")",
+     "color": "8c2447"
+    },
+    {
+     "op": "wait",
+     "seconds": "nLargeMagicMissileVfx.WaitTime"
+    }
+   ]
+  },
+  "ENERGY_SURGE": {
+   "source": "EnergySurge.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ENFEEBLING_TOUCH": {
+   "source": "EnfeeblingTouch.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "ENNUI": {
+   "source": "Ennui.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ENRAPTURE": {
+   "source": "Enrapture.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "ENTRENCH": {
+   "source": "Entrench.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "ENVENOM": {
+   "source": "Envenom.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "EPIC_RETRIEVAL": {
+   "source": "EpicRetrieval.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "EQUILIBRIUM": {
+   "source": "Equilibrium.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "ERADICATE": {
+   "source": "Eradicate.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "ResolveEnergyXValue()",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "ESCAPE_PLAN": {
+   "source": "EscapePlan.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "EVIL_EYE": {
+   "source": "EvilEye.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "EXPECT_AFIGHT": {
+   "source": "ExpectAFight.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "EXPOSE": {
+   "source": "Expose.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "EXTERMINATE": {
+   "source": "Exterminate.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "FALLING_STAR": {
+   "source": "FallingStar.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_starry_impact"
+     }
+    }
+   ]
+  },
+  "FAN_OF_KNIVES": {
+   "source": "FanOfKnives.cs",
+   "steps": [
+    {
+     "op": "wait",
+     "seconds": "0.1f, 0.2f"
+    }
+   ]
+  },
+  "FEAR": {
+   "source": "Fear.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    },
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    }
+   ]
+  },
+  "FEED": {
+   "source": "Feed.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_bite",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "FEEDING_FRENZY": {
+   "source": "FeedingFrenzy.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "FERAL": {
+   "source": "Feral.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "FETCH": {
+   "source": "Fetch.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.OstyDamage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "FIEND_FIRE": {
+   "source": "FiendFire.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "cardCount",
+     "targeting": "target",
+     "hooks": {
+      "BeforeDamage": "delegate { NGroundFireVfx nGroundFireVfx = NGroundFireVfx.Create(cardPlay.Target); if (nGroundFireVfx == null) { return Task.CompletedTask; } SfxCmd.Play(\"event:/sfx/characters/attack_fire\"); nGroundFireVfx.Scale = Vector2.One * scale; NCombatRoom.Instance?.CombatVfxContainer.AddChildSafely(nGroundFireVfx); scale += 0.1f; return Task.CompletedTask; }"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NGroundFireVfx",
+     "args": "cardPlay.Target"
+    },
+    {
+     "op": "sfx",
+     "event": "event:/sfx/characters/attack_fire"
+    }
+   ]
+  },
+  "FIGHT_ME": {
+   "source": "FightMe.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "FIGHT_THROUGH": {
+   "source": "FightThrough.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "FINESSE": {
+   "source": "Finesse.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "FINISHER": {
+   "source": "Finisher.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "targeting": "target",
+     "hooks": {
+      "WithHitVfxNode": "(Creature t) => NStabVfx.Create(t, facingEnemies: true)"
+     },
+     "hitFx": {
+      "scene": null,
+      "sfx": "blunt_attack.mp3"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NStabVfx",
+     "args": "t, facingEnemies: true"
+    }
+   ]
+  },
+  "FISTICUFFS": {
+   "source": "Fisticuffs.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "FLAK_CANNON": {
+   "source": "FlakCannon.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "statusCount",
+     "targeting": "randomEnemy",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "FLAME_BARRIER": {
+   "source": "FlameBarrier.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NFireBurningVfx",
+     "args": "base.Owner.Creature, 0.75f, goingRight: false"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "FLANKING": {
+   "source": "Flanking.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "FLASH_OF_STEEL": {
+   "source": "FlashOfSteel.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NThinSliceVfx",
+     "args": "cardPlay.Target"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Attack",
+      "delay": "num"
+     }
+    }
+   ]
+  },
+  "FLATTEN": {
+   "source": "Flatten.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.OstyDamage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "FLECHETTES": {
+   "source": "Flechettes.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash",
+      "sfx": "dagger_throw.mp3"
+     }
+    }
+   ]
+  },
+  "FLICK_FLACK": {
+   "source": "FlickFlack.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Attack",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "FOCUSED_STRIKE": {
+   "source": "FocusedStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "FOOLISH_SHOT": {
+   "source": "FoolishShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "FOOTWORK": {
+   "source": "Footwork.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "FORBIDDEN_GRIMOIRE": {
+   "source": "ForbiddenGrimoire.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "FOREGONE_CONCLUSION": {
+   "source": "ForegoneConclusion.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "FORGOTTEN_RITUAL": {
+   "source": "ForgottenRitual.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NGroundFireVfx",
+     "args": "base.Owner.Creature, VfxColor.Purple"
+    },
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "FRIENDSHIP": {
+   "source": "Friendship.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "FTL": {
+   "source": "Ftl.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "FURNACE": {
+   "source": "Furnace.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "FUSION": {
+   "source": "Fusion.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "GAMMA_BLAST": {
+   "source": "GammaBlast.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_giant_horizontal_slash"
+     }
+    }
+   ]
+  },
+  "GANG_UP": {
+   "source": "GangUp.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "GATHER_LIGHT": {
+   "source": "GatherLight.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "GENESIS": {
+   "source": "Genesis.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "GENETIC_ALGORITHM": {
+   "source": "GeneticAlgorithm.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "GIANT_ROCK": {
+   "source": "GiantRock.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_rock_shatter",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "GLACIER": {
+   "source": "Glacier.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "GLASSWORK": {
+   "source": "Glasswork.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "GLIMPSE_BEYOND": {
+   "source": "GlimpseBeyond.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "GLITTERSTREAM": {
+   "source": "Glitterstream.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "GLOW": {
+   "source": "Glow.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "GO_FOR_THE_EYES": {
+   "source": "GoForTheEyes.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "GOLD_AXE": {
+   "source": "GoldAxe.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_dramatic_stab",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "GRAND_FINALE": {
+   "source": "GrandFinale.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NGrandFinaleVfx",
+     "args": "base.Owner.Creature"
+    },
+    {
+     "op": "wait",
+     "seconds": "1.625f"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hooks": {
+      "WithHitVfxNode": "NGrandFinaleImpactVfx.Create"
+     },
+     "hitFx": {
+      "scene": null,
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "GRAVE_WARDEN": {
+   "source": "GraveWarden.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "GRAVEBLAST": {
+   "source": "Graveblast.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "GUARDS": {
+   "source": "Guards.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "GUIDING_STAR": {
+   "source": "GuidingStar.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "sfx",
+     "event": "event:/sfx/characters/regent/regent_guiding_star"
+    },
+    {
+     "op": "vfx",
+     "class": "NSmallMagicMissileVfx",
+     "args": "nCreature.GetBottomOfHitbox(), new Color(\"50b598\")",
+     "color": "50b598",
+     "anchor": "bottomOfHitbox"
+    },
+    {
+     "op": "wait",
+     "seconds": "nSmallMagicMissileVfx.WaitTime"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "attackerAnim": null,
+     "targeting": "target"
+    }
+   ]
+  },
+  "GUNK_UP": {
+   "source": "GunkUp.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": null,
+      "sfx": "blunt_attack.mp3"
+     },
+     "hooks": {
+      "WithHitVfxNode": "NGoopyImpactVfx.Create"
+     }
+    },
+    {
+     "op": "wait",
+     "seconds": "0.5f"
+    }
+   ]
+  },
+  "HAILSTORM": {
+   "source": "Hailstorm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "HAMMER_TIME": {
+   "source": "HammerTime.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "HAND_OF_GREED": {
+   "source": "HandOfGreed.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "HAND_TRICK": {
+   "source": "HandTrick.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "HANG": {
+   "source": "Hang.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "HARMONIC_SHIELD": {
+   "source": "HarmonicShield.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "HAUNT": {
+   "source": "Haunt.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "HAZE": {
+   "source": "Haze.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.2f, 0.4f"
+    }
+   ]
+  },
+  "HEADBUTT": {
+   "source": "Headbutt.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "HEAVENLY_DRILL": {
+   "source": "HeavenlyDrill.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "num",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_giant_horizontal_slash",
+      "sfx": "slash_attack.mp3"
+     }
+    }
+   ]
+  },
+  "HEAVY_SHOT": {
+   "source": "HeavyShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "HEGEMONY": {
+   "source": "Hegemony.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "HEIRLOOM_HAMMER": {
+   "source": "HeirloomHammer.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "HELIX_DRILL": {
+   "source": "HelixDrill.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "HELLO_WORLD": {
+   "source": "HelloWorld.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "HEMOKINESIS": {
+   "source": "Hemokinesis.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_bloody_impact"
+     }
+    }
+   ]
+  },
+  "HIDDEN_CACHE": {
+   "source": "HiddenCache.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "HIDDEN_GEM": {
+   "source": "HiddenGem.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "HIDDEN_ROOTS": {
+   "source": "HiddenRoots.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "HIGH_FIVE": {
+   "source": "HighFive.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.OstyDamage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "HOBBLING_SHOT": {
+   "source": "HobblingShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "HOLOGRAM": {
+   "source": "Hologram.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "HONING": {
+   "source": "Honing.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "HOTFIX": {
+   "source": "Hotfix.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "HOWL_FROM_BEYOND": {
+   "source": "HowlFromBeyond.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "attackerAnim": {
+      "name": "Cast",
+      "delay": "base.Owner.Character.CastAnimDelay"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "HYPERBEAM": {
+   "source": "Hyperbeam.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "attackerAnim": {
+      "name": "Cast",
+      "delay": "0.5f"
+     },
+     "hooks": {
+      "BeforeDamage": "async delegate { List<Creature> enemies = base.CombatState.Enemies.Where((Creature e) => e.IsAlive).ToList(); NHyperbeamVfx nHyperbeamVfx = NHyperbeamVfx.Create(base.Owner.Creature, enemies.Last()); if (nHyperbeamVfx != null) { NCombatRoom.Instance?.CombatVfxContainer.AddChildSafely(nHyperbeamVfx); await Cmd.Wait(0.5f); } foreach (Creature item in enemies) { NHyperbeamImpactVfx nHyperbeamImpactVfx = NHyperbeamImpactVfx.Create(base.Owner.Creature, item); if (nHyperbeamImpactVfx != null) { NCombatRoom.Instance?.CombatVfxContainer.AddChildSafely(nHyperbeamImpactVfx); } } }"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NHyperbeamVfx",
+     "args": "base.Owner.Creature, enemies.Last()"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.5f"
+    },
+    {
+     "op": "vfx",
+     "class": "NHyperbeamImpactVfx",
+     "args": "base.Owner.Creature, item"
+    }
+   ]
+  },
+  "IAM_INVINCIBLE": {
+   "source": "IAmInvincible.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "ICE_LANCE": {
+   "source": "IceLance.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "IGNITION": {
+   "source": "Ignition.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "IMITATION_LEARNING": {
+   "source": "ImitationLearning.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "IMPERVIOUS": {
+   "source": "Impervious.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "INFERNO": {
+   "source": "Inferno.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "INFINITE_BLADES": {
+   "source": "InfiniteBlades.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "INTERCEPT": {
+   "source": "Intercept.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "INVOKE": {
+   "source": "Invoke.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
+     "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
+    }
+   ]
+  },
+  "IRON_WAVE": {
+   "source": "IronWave.cs",
+   "steps": [
+    {
+     "op": "block"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_flying_slash"
+     }
+    }
+   ]
+  },
+  "ITERATION": {
+   "source": "Iteration.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "JACKPOT": {
+   "source": "Jackpot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "JEST": {
+   "source": "Jest.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "JUDGEMENT": {
+   "source": "Judgement.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NBigSlashVfx",
+     "args": "cardPlay.Target"
+    },
+    {
+     "op": "vfx",
+     "class": "NBigSlashImpactVfx",
+     "args": "cardPlay.Target"
+    }
+   ]
+  },
+  "JUGGERNAUT": {
+   "source": "Juggernaut.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "JUGGLING": {
+   "source": "Juggling.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "JUSTICE": {
+   "source": "Justice.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "KI_HOP": {
+   "source": "KiHop.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "KI_REST": {
+   "source": "KiRest.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "KI_VERSE": {
+   "source": "KiVerse.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "KI_WHIP": {
+   "source": "KiWhip.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "KINGLY_KICK": {
+   "source": "KinglyKick.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "KINGLY_PUNCH": {
+   "source": "KinglyPunch.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "KNOCKDOWN": {
+   "source": "Knockdown.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "KNOCKOUT_BLOW": {
+   "source": "KnockoutBlow.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "KNOW_THY_PLACE": {
+   "source": "KnowThyPlace.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "LARGESSE": {
+   "source": "Largesse.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "LEADING_STRIKE": {
+   "source": "LeadingStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    },
+    {
+     "op": "wait",
+     "seconds": "0.25f"
+    }
+   ]
+  },
+  "LEAP": {
+   "source": "Leap.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "LEG_SWEEP": {
+   "source": "LegSweep.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "LEGION_OF_BONE": {
+   "source": "LegionOfBone.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
+     "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
+    }
+   ]
+  },
+  "LETHALITY": {
+   "source": "Lethality.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "LIFT": {
+   "source": "Lift.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "LIGHTNING_ROD": {
+   "source": "LightningRod.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "LOOP": {
+   "source": "Loop.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "LOST_LUTE": {
+   "source": "LostLute.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "LULLABY": {
+   "source": "Lullaby.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "LUMINESCE": {
+   "source": "Luminesce.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "LUNAR_BLAST": {
+   "source": "LunarBlast.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "MACHINE_LEARNING": {
+   "source": "MachineLearning.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "MAKE_IT_SO": {
+   "source": "MakeItSo.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_starry_impact"
+     }
+    }
+   ]
+  },
+  "MALAISE": {
+   "source": "Malaise.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "MANGLE": {
+   "source": "Mangle.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Ironclad.GetHeavyAnimIfApplicable(base.Owner.Character)",
+      "delay": "Ironclad.GetHeavyAttackDelayIfApplicable(base.Owner.Character)"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "heavy_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "MANIFEST_AUTHORITY": {
+   "source": "ManifestAuthority.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "MASTER_PLANNER": {
+   "source": "MasterPlanner.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "MAUL": {
+   "source": "Maul.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "target",
+     "hooks": {
+      "WithHitVfxNode": "(Creature t) => NScratchVfx.Create(t, goingRight: true)"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NScratchVfx",
+     "args": "t, goingRight: true"
+    }
+   ]
+  },
+  "MELANCHOLY": {
+   "source": "Melancholy.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "MELODIC_SHOT": {
+   "source": "MelodicShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "MEMENTO_MORI": {
+   "source": "MementoMori.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.IntValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "METEOR_SHOWER": {
+   "source": "MeteorShower.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "METEOR_STRIKE": {
+   "source": "MeteorStrike.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NLargeMagicMissileVfx",
+     "args": "nCreature.GetBottomOfHitbox(), new Color(\"50b598\")",
+     "color": "50b598",
+     "anchor": "bottomOfHitbox"
+    },
+    {
+     "op": "wait",
+     "seconds": "nLargeMagicMissileVfx.WaitTime"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": null,
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "MIDNIGHT": {
+   "source": "Midnight.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Ironclad.GetHeavyAnimIfApplicable(base.Owner.Character)",
+      "delay": "Ironclad.GetHeavyAttackDelayIfApplicable(base.Owner.Character)"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "heavy_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "MIGHTY_SHIELD": {
+   "source": "MightyShield.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "MIGHTY_WEAPON": {
+   "source": "MightyWeapon.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "MIMIC": {
+   "source": "Mimic.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "MIND_BLAST": {
+   "source": "MindBlast.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt"
+     }
+    }
+   ]
+  },
+  "MINION_DIVE_BOMB": {
+   "source": "MinionDiveBomb.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "attackerAnim": {
+      "name": "Cast",
+      "delay": "1f"
+     },
+     "targeting": "target",
+     "hooks": {
+      "WithAttackerFx": "() => NMinionDiveBombVfx.Create(base.Owner.Creature, cardPlay.Target)"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NMinionDiveBombVfx",
+     "args": "base.Owner.Creature, cardPlay.Target"
+    }
+   ]
+  },
+  "MINION_SACRIFICE": {
+   "source": "MinionSacrifice.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "MINION_STRIKE": {
+   "source": "MinionStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "MIRAGE": {
+   "source": "Mirage.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "MISERY": {
+   "source": "Misery.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "MODDED": {
+   "source": "Modded.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "MOLTEN_FIST": {
+   "source": "MoltenFist.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_molten_fist",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "MOMENTUM_STRIKE": {
+   "source": "MomentumStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "MONARCHS_GAZE": {
+   "source": "MonarchsGaze.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "MONOLOGUE": {
+   "source": "Monologue.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "MOTIF": {
+   "source": "Motif.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "MOURNING_BLOW": {
+   "source": "MourningBlow.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "MULTI_CAST": {
+   "source": "MultiCast.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.25f"
+    }
+   ]
+  },
+  "MURDER": {
+   "source": "Murder.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "MY_SHINIES": {
+   "source": "MyShinies.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "hitCount",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_coin_explosion_regular",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "MYTHIC_FORM": {
+   "source": "MythicForm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "NAIL": {
+   "source": "Nail.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "NECRO_MASTERY": {
+   "source": "NecroMastery.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "NEGATIVE_PULSE": {
+   "source": "NegativePulse.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "NEOWS_FURY": {
+   "source": "NeowsFury.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "NEUROSURGE": {
+   "source": "Neurosurge.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "NEUTRALIZE": {
+   "source": "Neutralize.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NThinSliceVfx",
+     "args": "cardPlay.Target"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Attack",
+      "delay": "num"
+     }
+    }
+   ]
+  },
+  "NIGHTMARE": {
+   "source": "Nightmare.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NSmokyVignetteVfx",
+     "args": "new Color(0.8f, 0.3f, 0.8f, 0.66f), new Color(0f, 0f, 4f, 0.33f)"
+    },
+    {
+     "op": "vfx",
+     "class": "NNightmareHandsVfx",
+     "args": ""
+    },
+    {
+     "op": "wait",
+     "seconds": "0.1f, 0.25f"
+    },
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "NO_ESCAPE": {
+   "source": "NoEscape.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "NOCK": {
+   "source": "Nock.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "NOT_YET": {
+   "source": "NotYet.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "NOXIOUS_FUMES": {
+   "source": "NoxiousFumes.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "NULL": {
+   "source": "Null.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "OBLIVION": {
+   "source": "Oblivion.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "ONE_FOR_ALL": {
+   "source": "OneForAll.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "player.Creature",
+     "name": "PowerUp",
+     "delay": "player.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ORBIT": {
+   "source": "Orbit.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "OUTBREAK": {
+   "source": "Outbreak.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "vfx",
+     "class": "NPoisonImpactVfx",
+     "args": "hittableEnemy"
+    }
+   ]
+  },
+  "OUTRAGE": {
+   "source": "Outrage.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "OVERCLOCK": {
+   "source": "Overclock.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NFireBurningVfx",
+     "args": "base.Owner.Creature, 1f, goingRight: false"
+    },
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.5f"
+    }
+   ]
+  },
+  "PACTS_END": {
+   "source": "PactsEnd.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "attackerAnim": {
+      "name": "Ironclad.GetHeavyAnimIfApplicable(base.Owner.Character)",
+      "delay": "Ironclad.GetHeavyAttackDelayIfApplicable(base.Owner.Character)"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "heavy_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "PAGESTORM": {
+   "source": "Pagestorm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "PALE_BLUE_DOT": {
+   "source": "PaleBlueDot.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "PANIC_BUTTON": {
+   "source": "PanicButton.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "PARRY": {
+   "source": "Parry.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "PARTICLE_WALL": {
+   "source": "ParticleWall.cs",
+   "steps": [
+    {
+     "op": "block"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.25f"
+    }
+   ]
+  },
+  "PATTER": {
+   "source": "Patter.cs",
+   "steps": [
+    {
+     "op": "block"
+    },
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "PECK": {
+   "source": "Peck.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "PERFECTED_STRIKE": {
+   "source": "PerfectedStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": null,
+      "sfx": "heavy_attack.mp3"
+     },
+     "hooks": {
+      "WithHitVfxNode": "(Creature t) => NBigSlashImpactVfx.Create(t)"
+     },
+     "attackerAnim": {
+      "name": "Ironclad.GetHeavyAnimIfApplicable(base.Owner.Character)",
+      "delay": "Ironclad.GetHeavyAttackDelayIfApplicable(base.Owner.Character)"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NBigSlashVfx",
+     "args": "t"
+    },
+    {
+     "op": "vfx",
+     "class": "NBigSlashImpactVfx",
+     "args": "t"
+    }
+   ]
+  },
+  "PHANTOM_BLADES": {
+   "source": "PhantomBlades.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "PHOTON_CUT": {
+   "source": "PhotonCut.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash",
+      "sfx": "dagger_throw.mp3"
+     }
+    }
+   ]
+  },
+  "PIERCING_WAIL": {
+   "source": "PiercingWail.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "PILLAGE": {
+   "source": "Pillage.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "PINPOINT": {
+   "source": "Pinpoint.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "POISONED_STAB": {
+   "source": "PoisonedStab.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_dramatic_stab"
+     }
+    }
+   ]
+  },
+  "POKE": {
+   "source": "Poke.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.OstyDamage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "attack_poke",
+      "delay": "0.3f"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "POMMEL_STRIKE": {
+   "source": "PommelStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "POUNCE": {
+   "source": "Pounce.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "PRECISE_CUT": {
+   "source": "PreciseCut.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash",
+      "sfx": "dagger_throw.mp3"
+     }
+    }
+   ]
+  },
+  "PREDATOR": {
+   "source": "Predator.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "PRIMAL_FORCE": {
+   "source": "PrimalForce.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "PROPHESIZE": {
+   "source": "Prophesize.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    }
+   ]
+  },
+  "PROTECTOR": {
+   "source": "Protector.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "PULL_AGGRO": {
+   "source": "PullAggro.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
+     "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "PULL_FROM_BELOW": {
+   "source": "PullFromBelow.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "PUNCH_OF_JOY": {
+   "source": "PunchOfJoy.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fugitive/fugitive_joy\""
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "PUTREFY": {
+   "source": "Putrefy.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "QUADCAST": {
+   "source": "Quadcast.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.15f, 0.25f"
+    }
+   ]
+  },
+  "QUICK_SHOT": {
+   "source": "QuickShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "QUIVER": {
+   "source": "Quiver.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "RADIATE": {
+   "source": "Radiate.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_starry_impact",
+      "sfx": "slash_attack.mp3"
+     },
+     "hitVfxOnEach": true
+    }
+   ]
+  },
+  "RAGE": {
+   "source": "Rage.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "RAIN_SHOT": {
+   "source": "RainShot.cs",
+   "steps": [
+    {
+     "op": "sfx",
+     "event": "event:/sfx/characters/fool/fool_shot"
+    },
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+     "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+    }
+   ]
+  },
+  "RAINBOW": {
+   "source": "Rainbow.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "RALLY": {
+   "source": "Rally.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "RAMPAGE": {
+   "source": "Rampage.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "RAPID_SHOT": {
+   "source": "RapidShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "RATTLE": {
+   "source": "Rattle.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.OstyDamage.BaseValue",
+     "targeting": "target",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "REANIMATE": {
+   "source": "Reanimate.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
+     "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
+    }
+   ]
+  },
+  "REAP": {
+   "source": "Reap.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "REAPER_FORM": {
+   "source": "ReaperForm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "REAVE": {
+   "source": "Reave.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "REBOOT": {
+   "source": "Reboot.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "REBOUND": {
+   "source": "Rebound.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "REFINE_BLADE": {
+   "source": "RefineBlade.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "REFLECT": {
+   "source": "Reflect.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "REFLEX": {
+   "source": "Reflex.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    }
+   ]
+  },
+  "REFRACT": {
+   "source": "Refract.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "RELAX": {
+   "source": "Relax.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "REND": {
+   "source": "Rend.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "REPEAT_SHOT": {
+   "source": "RepeatShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "num",
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_giant_horizontal_slash"
+     }
+    }
+   ]
+  },
+  "RESONANCE": {
+   "source": "Resonance.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "RHYTHM_STRIKE": {
+   "source": "RhythmStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "RICOCHET": {
+   "source": "Ricochet.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "randomEnemy",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "RIGHT_HAND_HAND": {
+   "source": "RightHandHand.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.OstyDamage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "RIP_AND_TEAR": {
+   "source": "RipAndTear.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "randomEnemy",
+     "hooks": {
+      "WithHitVfxNode": "(Creature t) => NScratchVfx.Create(t, goingRight: true)"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NScratchVfx",
+     "args": "t, goingRight: true"
+    }
+   ]
+  },
+  "ROCKET_PUNCH": {
+   "source": "RocketPunch.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "ROYAL_GAMBLE": {
+   "source": "RoyalGamble.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    }
+   ]
+  },
+  "ROYALTIES": {
+   "source": "Royalties.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SACRIFICE": {
+   "source": "Sacrifice.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "SALVO": {
+   "source": "Salvo.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SCOURGE": {
+   "source": "Scourge.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "SCRAPE": {
+   "source": "Scrape.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SCULPTING_STRIKE": {
+   "source": "SculptingStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SEANCE": {
+   "source": "Seance.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "SECOND_WIND": {
+   "source": "SecondWind.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "SEEKER_STRIKE": {
+   "source": "SeekerStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SEEKING_EDGE": {
+   "source": "SeekingEdge.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SELF_DEPRECATE": {
+   "source": "SelfDeprecate.cs",
+   "steps": [
+    {
+     "op": "sfx",
+     "event": "event:/sfx/characters/fugitive/fugitive_joy"
+    }
+   ]
+  },
+  "SENTRY_MODE": {
+   "source": "SentryMode.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SERPENT_FORM": {
+   "source": "SerpentForm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SERRATED_ARROWS": {
+   "source": "SerratedArrows.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SETUP_STRIKE": {
+   "source": "SetupStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SEVEN_STARS": {
+   "source": "SevenStars.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_starry_impact",
+      "sfx": "slash_attack.mp3"
+     },
+     "hitVfxOnEach": true
+    }
+   ]
+  },
+  "SEVERANCE": {
+   "source": "Severance.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SHADOW_SHIELD": {
+   "source": "ShadowShield.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "SHADOWMELD": {
+   "source": "Shadowmeld.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "SHARED_FATE": {
+   "source": "SharedFate.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "SHATTER": {
+   "source": "Shatter.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SHINING_STRIKE": {
+   "source": "ShiningStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_starry_impact"
+     }
+    }
+   ]
+  },
+  "SHIV": {
+   "source": "Shiv.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hooks": {
+      "WithHitVfxNode": "(Creature t) => NShivThrowVfx.Create(base.Owner.Creature, t, Colors.Green)"
+     },
+     "attackerAnim": {
+      "name": "Shiv",
+      "delay": "0.2f"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NShivThrowVfx",
+     "args": "base.Owner.Creature, lastEnemy, Colors.Green"
+    },
+    {
+     "op": "vfx",
+     "class": "NShivThrowVfx",
+     "args": "base.Owner.Creature, t, Colors.Green"
+    }
+   ]
+  },
+  "SHOCKWAVE": {
+   "source": "Shockwave.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "SHROUD": {
+   "source": "Shroud.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SHRUG_IT_OFF": {
+   "source": "ShrugItOff.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "SIC_EM": {
+   "source": "SicEm.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.OstyDamage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "SIGNAL_BOOST": {
+   "source": "SignalBoost.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SIMPLETON": {
+   "source": "Simpleton.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SKEWER": {
+   "source": "Skewer.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "ResolveEnergyXValue()",
+     "targeting": "target",
+     "hooks": {
+      "WithHitVfxNode": "(Creature t) => NStabVfx.Create(t, facingEnemies: true, VfxColor.Gold)"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NStabVfx",
+     "args": "t, facingEnemies: true, VfxColor.Gold"
+    }
+   ]
+  },
+  "SKY_SHOT": {
+   "source": "SkyShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SLEIGHT_OF_FLESH": {
+   "source": "SleightOfFlesh.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SLICE": {
+   "source": "Slice.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NThinSliceVfx",
+     "args": "cardPlay.Target, VfxColor.Red"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Attack",
+      "delay": "num"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash",
+      "sfx": "slash_attack.mp3"
+     }
+    }
+   ]
+  },
+  "SLIMED": {
+   "source": "Slimed.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NGoopyImpactVfx",
+     "args": "base.Owner.Creature"
+    }
+   ]
+  },
+  "SMOKESTACK": {
+   "source": "Smokestack.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SNAKEBITE": {
+   "source": "Snakebite.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "SNAP": {
+   "source": "Snap.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.OstyDamage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "SNEAKY": {
+   "source": "Sneaky.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SOLAR_STRIKE": {
+   "source": "SolarStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SORROWFUL_STRIKE": {
+   "source": "SorrowfulStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SOUL_STORM": {
+   "source": "SoulStorm.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SOULBOUND": {
+   "source": "Soulbound.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    },
+    {
+     "op": "anim",
+     "who": "cardPlay.Target",
+     "name": "PowerUp",
+     "delay": "cardPlay.Target.Player.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SOVEREIGN_BLADE": {
+   "source": "SovereignBlade.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "attackerAnim": {
+      "name": "animName",
+      "delay": "delay"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/regent/regent_sovereign_blade\"",
+      "BeforeDamage": "delegate { NSovereignBladeVfx vfxNode = GetVfxNode(base.Owner, this); NCreature nCreature = NCombatRoom.Instance?.GetCreatureNode(cardPlay.Target); if (vfxNode != null && nCreature != null) { vfxNode.Attack(nCreature.VfxSpawnPosition); } return Task.CompletedTask; }",
+      "WithHitVfxNode": "NBigSlashImpactVfx.Create"
+     },
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_giant_horizontal_slash",
+      "sfx": "slash_attack.mp3"
+     }
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "SOW": {
+   "source": "Sow.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "SPECTRUM_SHIFT": {
+   "source": "SpectrumShift.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SPINNER": {
+   "source": "Spinner.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SPIRIT_OF_ASH": {
+   "source": "SpiritOfAsh.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SPITE": {
+   "source": "Spite.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "hitCount",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SPUR": {
+   "source": "Spur.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
+     "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
+    }
+   ]
+  },
+  "SQUASH": {
+   "source": "Squash.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt"
+     }
+    }
+   ]
+  },
+  "SQUEEZE": {
+   "source": "Squeeze.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "STACK": {
+   "source": "Stack.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "STARDUST": {
+   "source": "Stardust.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "ResolveStarXValue()",
+     "targeting": "randomEnemy",
+     "hitFx": {
+      "scene": "vfx/vfx_starry_impact"
+     }
+    }
+   ]
+  },
+  "STEADY_CADENCE": {
+   "source": "SteadyCadence.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Cast",
+      "delay": "base.Owner.Character.CastAnimDelay"
+     }
+    }
+   ]
+  },
+  "STOKE": {
+   "source": "Stoke.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "STOMP": {
+   "source": "Stomp.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    },
+    {
+     "op": "vfx",
+     "class": "NSpikeSplashVfx",
+     "args": "hittableEnemy"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "attackerAnim": {
+      "name": "Ironclad.GetHeavyAnimIfApplicable(base.Owner.Character)",
+      "delay": "Ironclad.GetHeavyAttackDelayIfApplicable(base.Owner.Character)"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "heavy_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "STORM": {
+   "source": "Storm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "STORM_OF_STEEL": {
+   "source": "StormOfSteel.cs",
+   "steps": [
+    {
+     "op": "wait",
+     "seconds": "0f, 0.25f"
+    }
+   ]
+  },
+  "STRANGLE": {
+   "source": "Strangle.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "STRENGTH": {
+   "source": "Strength.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "STRIKE_DEFECT": {
+   "source": "StrikeDefect.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "STRIKE_FOOL": {
+   "source": "StrikeFool.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "STRIKE_IRONCLAD": {
+   "source": "StrikeIronclad.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "STRIKE_NECROBINDER": {
+   "source": "StrikeNecrobinder.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "STRIKE_REGENT": {
+   "source": "StrikeRegent.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "STRIKE_SILENT": {
+   "source": "StrikeSilent.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SUBROUTINE": {
+   "source": "Subroutine.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SUCKER_PUNCH": {
+   "source": "SuckerPunch.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "SUMMON_FORTH": {
+   "source": "SummonForth.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "SUNDER": {
+   "source": "Sunder.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash",
+      "sfx": "slash_attack.mp3"
+     }
+    }
+   ]
+  },
+  "SUPERCRITICAL": {
+   "source": "Supercritical.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SUPERMASSIVE": {
+   "source": "Supermassive.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "SUPPRESS": {
+   "source": "Suppress.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NThinSliceVfx",
+     "args": "cardPlay.Target"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Attack",
+      "delay": "num"
+     }
+    }
+   ]
+  },
+  "SURVIVOR": {
+   "source": "Survivor.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "SWEEPING_BEAM": {
+   "source": "SweepingBeam.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Attack",
+     "delay": "base.Owner.Character.AttackAnimDelay"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "attackerAnim": {
+      "name": "Cast",
+      "delay": "0.5f"
+     },
+     "hooks": {
+      "BeforeDamage": "async delegate { List<Creature> targets = base.CombatState.HittableEnemies.ToList(); NSweepingBeamVfx nSweepingBeamVfx = NSweepingBeamVfx.Create(base.Owner.Creature, targets); if (nSweepingBeamVfx != null) { NCombatRoom.Instance?.CombatVfxContainer.AddChildSafely(nSweepingBeamVfx); await Cmd.Wait(0.5f); } }"
+     }
+    },
+    {
+     "op": "vfx",
+     "class": "NSweepingBeamVfx",
+     "args": "base.Owner.Creature, targets"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.5f"
+    }
+   ]
+  },
+  "SWEEPING_GAZE": {
+   "source": "SweepingGaze.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.OstyDamage.BaseValue",
+     "targeting": "randomEnemy",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "SWORD_BOOMERANG": {
+   "source": "SwordBoomerang.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "randomEnemy",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "SWORD_SAGE": {
+   "source": "SwordSage.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "SYNCHRONIZE": {
+   "source": "Synchronize.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "SYNTHESIS": {
+   "source": "Synthesis.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "TAG_TEAM": {
+   "source": "TagTeam.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "TANK": {
+   "source": "Tank.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "TAUNT": {
+   "source": "Taunt.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "TEAR_ASUNDER": {
+   "source": "TearAsunder.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "(int)((CalculatedVar)base.DynamicVars[\"CalculatedHits\"]).Calculate(cardPlay.Target)",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "TEMPERANCE": {
+   "source": "Temperance.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "TEMPEST": {
+   "source": "Tempest.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "TESLA_COIL": {
+   "source": "TeslaCoil.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "THE_BALL": {
+   "source": "TheBall.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "THE_CHARIOT": {
+   "source": "TheChariot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "THE_EMPRESS": {
+   "source": "TheEmpress.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "THE_GAMBIT": {
+   "source": "TheGambit.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "THE_HUNT": {
+   "source": "TheHunt.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "THE_MAGICIAN": {
+   "source": "TheMagician.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "THE_SCYTHE": {
+   "source": "TheScythe.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "THE_SEALED_THRONE": {
+   "source": "TheSealedThrone.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "THE_SHOT": {
+   "source": "TheShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "THE_SMITH": {
+   "source": "TheSmith.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "THE_STAR": {
+   "source": "TheStar.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "THE_TOWER": {
+   "source": "TheTower.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "THRASH": {
+   "source": "Thrash.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_thrash"
+     }
+    }
+   ]
+  },
+  "THRUMMING_HATCHET": {
+   "source": "ThrummingHatchet.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "THUNDER": {
+   "source": "Thunder.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "THUNDERCLAP": {
+   "source": "Thunderclap.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "TIMBER": {
+   "source": "Timber.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars[\"OnKillDamage\"].BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_giant_horizontal_slash",
+      "sfx": "slash_attack.mp3"
+     }
+    }
+   ]
+  },
+  "TIMES_UP": {
+   "source": "TimesUp.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "TOOLS_OF_THE_TRADE": {
+   "source": "ToolsOfTheTrade.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "TORIC_TOUGHNESS": {
+   "source": "ToricToughness.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "TRACKING": {
+   "source": "Tracking.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "TRANSFIGURE": {
+   "source": "Transfigure.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "TRASH_TO_TREASURE": {
+   "source": "TrashToTreasure.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "TREMBLE": {
+   "source": "Tremble.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "TRICK_SHOT": {
+   "source": "TrickShot.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "attackerAnim": {
+      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
+      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
+     },
+     "hooks": {
+      "WithAttackerFx": "null, \"event:/sfx/characters/fool/fool_shot\""
+     },
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "TRUE_GRIT": {
+   "source": "TrueGrit.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "TUNE": {
+   "source": "Tune.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "TURBO": {
+   "source": "Turbo.cs",
+   "steps": [
+    {
+     "op": "wait",
+     "seconds": "0.5f"
+    }
+   ]
+  },
+  "TWIN_STRIKE": {
+   "source": "TwinStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "TYRANNY": {
+   "source": "Tyranny.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "ULTIMATE_DEFEND": {
+   "source": "UltimateDefend.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "ULTIMATE_STRIKE": {
+   "source": "UltimateStrike.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "UNDEATH": {
+   "source": "Undeath.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "UNDERWORLD": {
+   "source": "Underworld.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "UNLEASH": {
+   "source": "Unleash.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "UNMOVABLE": {
+   "source": "Unmovable.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "UNRELENTING": {
+   "source": "Unrelenting.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Ironclad.GetHeavyAnimIfApplicable(base.Owner.Character)",
+      "delay": "Ironclad.GetHeavyAttackDelayIfApplicable(base.Owner.Character)"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "heavy_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "UNTOUCHABLE": {
+   "source": "Untouchable.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "UP_MY_SLEEVE": {
+   "source": "UpMySleeve.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    },
+    {
+     "op": "wait",
+     "seconds": "0.1f"
+    }
+   ]
+  },
+  "UPPERCUT": {
+   "source": "Uppercut.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "attackerAnim": {
+      "name": "Ironclad.GetHeavyAnimIfApplicable(base.Owner.Character)",
+      "delay": "Ironclad.GetHeavyAttackDelayIfApplicable(base.Owner.Character)"
+     },
+     "hitFx": {
+      "scene": "vfx/vfx_heavy_blunt",
+      "sfx": "heavy_attack.mp3"
+     },
+     "hitVfxAtBase": true
+    }
+   ]
+  },
+  "UPROAR": {
+   "source": "Uproar.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "VEILPIERCER": {
+   "source": "Veilpiercer.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "VENERATE": {
+   "source": "Venerate.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "VICIOUS": {
+   "source": "Vicious.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "VIOLENT_CHORD": {
+   "source": "ViolentChord.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "VITRIOL": {
+   "source": "Vitriol.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "VOID_FORM": {
+   "source": "VoidForm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "VOLLEY": {
+   "source": "Volley.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "ResolveEnergyXValue()",
+     "targeting": "randomEnemy",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "VOLTAIC": {
+   "source": "Voltaic.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "WAH_BLAST": {
+   "source": "WahBlast.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "hitCount",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "WAH_CHO": {
+   "source": "WahCho.cs",
+   "steps": [
+    {
+     "op": "block"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt"
+     }
+    }
+   ]
+  },
+  "WAH_CHO_KI": {
+   "source": "WahChoKi.cs",
+   "steps": [
+    {
+     "op": "block"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt"
+     }
+    }
+   ]
+  },
+  "WAH_HAMMER": {
+   "source": "WahHammer.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "WAH_KI": {
+   "source": "WahKi.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitCount": "base.DynamicVars.HitCount.IntValue",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt"
+     }
+    }
+   ]
+  },
+  "WAH_SWEEP": {
+   "source": "WahSweep.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "WAH_SYMPHONY": {
+   "source": "WahSymphony.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.CalculatedDamage",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "heavy_attack.mp3"
+     }
+    }
+   ]
+  },
+  "WAH_TOUCH": {
+   "source": "WahTouch.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt",
+      "sfx": "blunt_attack.mp3"
+     }
+    }
+   ]
+  },
+  "WELL_LAID_PLANS": {
+   "source": "WellLaidPlans.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "WHIRLWIND": {
+   "source": "Whirlwind.cs",
+   "steps": [
+    {
+     "op": "vfx",
+     "class": "NHorizontalLinesVfx",
+     "args": "color, 0.8 + (double)Mathf.Min(8, num) * num2"
+    },
+    {
+     "op": "sfx",
+     "event": "event:/sfx/characters/ironclad/ironclad_whirlwind"
+    },
+    {
+     "op": "vfx",
+     "class": "NSmokyVignetteVfx",
+     "args": "color, color"
+    },
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "hitCount": "num",
+     "targeting": "allEnemies",
+     "hitFx": {
+      "scene": "vfx/vfx_giant_horizontal_slash"
+     }
+    }
+   ]
+  },
+  "WHISTLE": {
+   "source": "Whistle.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_slash"
+     }
+    }
+   ]
+  },
+  "WHISTLING_ARROWS": {
+   "source": "WhistlingArrows.cs",
+   "steps": [
+    {
+     "op": "block"
+    }
+   ]
+  },
+  "WHITE_NOISE": {
+   "source": "WhiteNoise.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  },
+  "WRAITH_FORM": {
+   "source": "WraithForm.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "WROUGHT_IN_WAR": {
+   "source": "WroughtInWar.cs",
+   "steps": [
+    {
+     "op": "attack",
+     "amount": "base.DynamicVars.Damage.BaseValue",
+     "targeting": "target",
+     "hitFx": {
+      "scene": "vfx/vfx_attack_blunt"
+     }
+    }
+   ]
+  },
+  "YAH": {
+   "source": "Yah.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "PowerUp",
+     "delay": "base.Owner.Character.PowerUpAnimDelay"
+    }
+   ]
+  },
+  "YOGA": {
+   "source": "Yoga.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "teammates[i]",
+     "name": "Cast",
+     "delay": "waitTime"
+    }
+   ]
+  },
+  "ZAP": {
+   "source": "Zap.cs",
+   "steps": [
+    {
+     "op": "anim",
+     "who": "base.Owner.Creature",
+     "name": "Cast",
+     "delay": "base.Owner.Character.CastAnimDelay"
+    }
+   ]
+  }
+ }
+}

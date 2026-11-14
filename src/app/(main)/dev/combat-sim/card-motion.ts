@@ -187,7 +187,12 @@ export function flyArrival(seed: number): number {
   return flyParams(seed).arrival;
 }
 
-export function buildMotion(result: SimResult, timeline: CombatTimeline, speed: SimSpeed = "normal"): MotionModel {
+export function buildMotion(
+  result: SimResult,
+  timeline: CombatTimeline,
+  speed: SimSpeed = "normal",
+  playPosition: { x: number; y: number } = PLAY_POSITION,
+): MotionModel {
   const positionSeconds = pileLerpMs(speed) / 1000;
   // CardPileCmd exhaust fade: FastMode == Fast ? 0.2 : 0.3 (Instant keeps 0.3).
   const exhaustSeconds = speed === "fast" ? 0.2 : 0.3;
@@ -246,7 +251,7 @@ export function buildMotion(result: SimResult, timeline: CombatTimeline, speed: 
           return;
         }
         if (to === "play") {
-          track(uid).segments.push({ kind: "tween", t, to: { x: PLAY_POSITION.x, y: PLAY_POSITION.y, scale: PLAY_SCALE, rotate: 0 }, positionSeconds });
+          track(uid).segments.push({ kind: "tween", t, to: { x: playPosition.x, y: playPosition.y, scale: PLAY_SCALE, rotate: 0 }, positionSeconds });
           relayout(beat.after, t);
           return;
         }

@@ -419,6 +419,8 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
   console.log(`${out}${warn}`);
 }
 
+const pageComplaints = new WeakMap<Page, string[]>();
+
 const cdpSessions = new WeakMap<Page, Promise<CDPSession>>();
 
 function cdpSession(page: Page): Promise<CDPSession> {
@@ -655,6 +657,14 @@ async function main() {
       // tsx keeps function names with an `__name` helper that page.evaluate does not ship.
       await context.addInitScript("globalThis.__name = (fn) => fn;");
       const page = await context.newPage();
+      // Keep what the page complained about, so a failed shot can say why (a stalled Spine load, a 404).
+      const complaints: string[] = [];
+      pageComplaints.set(page, complaints);
+      page.on("pageerror", (error) => complaints.push(`pageerror: ${error.message}`));
+      page.on("console", (message) => {
+        if (message.type() === "error" || message.type() === "warning") complaints.push(`${message.type()}: ${message.text()}`);
+      });
+      page.on("requestfailed", (request) => complaints.push(`request failed: ${request.url()} ${request.failure()?.errorText ?? ""}`));
       pages.set(key, page);
       return page;
     };
@@ -672,9 +682,11 @@ async function main() {
           const message = error instanceof Error ? error.message : String(error);
           if (attempt < 2) {
             console.warn(`retrying ${shot.out}: ${message.split("\n")[0]}`);
+            pageComplaints.get(page)?.splice(0);
             continue;
           }
-          console.error(`failed ${shot.out}: ${message}`);
+          const complaints = (pageComplaints.get(page) ?? []).slice(-8);
+          console.error(`failed ${shot.out}: ${message}${complaints.length ? `\n  page said:\n    ${complaints.join("\n    ")}` : ""}`);
           failed.push(shot.out);
           break;
         }

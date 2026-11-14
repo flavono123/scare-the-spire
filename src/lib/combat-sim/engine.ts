@@ -502,7 +502,11 @@ class Combat {
     creature.block -= blocked;
     creature.hp = Math.max(0, creature.hp - (amount - blocked));
     this.emit({ kind: "damage", creature: creature.key, amount, blocked, hpFrom, hpTo: creature.hp, source });
-    if (creature.hp < hpFrom) this.emit({ kind: "animate", creature: creature.key, animation: "hurt", delayMs: 0 });
+    // CreatureCmd.Damage: a hit plays "Hit" on the receiver; a kill starts the death animation instead (StartDeathAnim).
+    if (creature.hp < hpFrom) {
+      const killed = creature.hp === 0 && creature.key !== "player";
+      this.emit({ kind: "animate", creature: creature.key, animation: killed ? "die" : "hurt", delayMs: 0 });
+    }
   }
 
   /** `CardPileCmd.ShuffleIfNecessary`: an empty draw pile takes the shuffled discard pile. */

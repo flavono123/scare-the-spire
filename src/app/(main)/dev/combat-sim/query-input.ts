@@ -3,6 +3,10 @@ import { SCENE_PARTS, SIM_SPEEDS, type CombatSimInput, type PileType, type Power
 
 export type SearchParams = Record<string, string | string[] | undefined>;
 
+/** What the stage draws: everything, or one transparent layer for compositing. */
+export type SimLayer = "all" | "scene" | "vfx" | "card";
+export const SIM_LAYERS: readonly SimLayer[] = ["all", "scene", "vfx", "card"];
+
 export interface CombatSimViewOptions {
   /** Start paused at this time (ms). `end` means the last frame. */
   t: number | "end" | null;
@@ -11,7 +15,26 @@ export interface CombatSimViewOptions {
   frame: number;
   /** Show the in-frame unimplemented / rejected tags (not game UI, so off by default). */
   badges: boolean;
+  /** Health bars (and the power row under them) on the creatures; `hp=0` hides them. */
+  hpBars: boolean;
+  /** Intent icons over the monsters; `intents=0` hides them. */
+  intents: boolean;
+  /** `card`: no hand, energy orb or piles, only the card being played with its glow and trail (`ui=card`). */
+  ui: "full" | "card";
+  /** Scene band in stage px: background height and creature feet y (`bgHeight=`, `feetY=`); null keeps the part defaults. */
+  bgHeight: number | null;
+  feetY: number | null;
+  /** Visible stage height in px (`crop=`); null shows the full 1080x1920 stage. */
+  crop: number | null;
+  /** `layer=scene|vfx|card` draws that layer alone on a transparent stage; `all` is the default. */
+  layer: SimLayer;
 }
+
+/**
+ * `layout=shorts`: the scene for a title-less shorts window (1080x1050 band), no hand and no bars or
+ * intents inside it. Each key can still be set after it.
+ */
+const SHORTS_LAYOUT = { ui: "card", hpBars: false, intents: false, bgHeight: 1050, feetY: 840, crop: 1050 } as const;
 
 export interface ParsedCombatSimQuery {
   input: CombatSimInput | null;
@@ -159,8 +182,9 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
     }
     const maxEnergy = get("maxEnergy");
     if (maxEnergy) input.maxEnergy = Number(maxEnergy);
+    // `hp=0` is a view option (hide the health bars): a player at 0 HP is not a scene this simulator plays.
     const hp = get("hp");
-    if (hp) input.hp = Number(hp);
+    if (hp && Number(hp) !== 0) input.hp = Number(hp);
     const piles = {
       hand: cardList(get("hand")),
       drawPile: cardList(get("draw") ?? get("drawPile")),
@@ -185,11 +209,33 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
   const rawT = get("t");
   const t = rawT === undefined ? null : rawT === "end" ? "end" : Math.max(0, Number(rawT) || 0);
   const frame = Number(get("frame") ?? 360);
+  const layout = get("layout");
+  if (layout !== undefined && layout !== "shorts") errors.push(`알 수 없는 layout: ${layout} (shorts)`);
+  const base = layout === "shorts" ? SHORTS_LAYOUT : null;
+  const number = (key: string, fallback: number | null) => {
+    const raw = get(key);
+    if (raw === undefined) return fallback;
+    const value = Number(raw);
+    if (Number.isFinite(value) && value > 0) return value;
+    errors.push(`${key}는 0보다 큰 숫자여야 합니다: ${raw}`);
+    return fallback;
+  };
+  const ui = get("ui") ?? base?.ui ?? "full";
+  if (ui !== "full" && ui !== "card") errors.push(`알 수 없는 ui: ${ui} (full, card)`);
+  const layer = get("layer") ?? "all";
+  if (!SIM_LAYERS.includes(layer as SimLayer)) errors.push(`알 수 없는 layer: ${layer} (${SIM_LAYERS.join(", ")})`);
   const options: CombatSimViewOptions = {
     t,
     autoplay: get("autoplay") === "1",
     frame: Number.isFinite(frame) && frame > 0 ? frame : 360,
     badges: get("badges") === "1",
+    hpBars: get("hp") === undefined ? base?.hpBars ?? true : Number(get("hp")) !== 0,
+    intents: get("intents") === undefined ? base?.intents ?? true : get("intents") !== "0",
+    ui: ui === "card" ? "card" : "full",
+    bgHeight: number("bgHeight", base?.bgHeight ?? null),
+    feetY: number("feetY", base?.feetY ?? null),
+    crop: number("crop", base?.crop ?? null),
+    layer: SIM_LAYERS.includes(layer as SimLayer) ? (layer as SimLayer) : "all",
   };
 
   const complete = input.version && (input.encounter || input.monsters?.length);

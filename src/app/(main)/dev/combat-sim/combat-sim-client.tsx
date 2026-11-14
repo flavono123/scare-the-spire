@@ -91,6 +91,7 @@ export function CombatSimClient({ view, errors }: { view: CombatSimView; errors:
   const [, setActorsVersion] = useState(0);
 
   const frameScale = view.options.frame / STAGE_W;
+  const stageHeight = view.options.crop ?? STAGE_H;
   const pixelRatio = frameScale * devicePixelRatio;
 
   useEffect(() => {
@@ -194,9 +195,9 @@ export function CombatSimClient({ view, errors }: { view: CombatSimView; errors:
         data-version={view.catalog.version}
         data-game-locale="kor"
         className="relative shrink-0 overflow-hidden"
-        style={{ width: view.options.frame, height: (view.options.frame * STAGE_H) / STAGE_W }}
+        style={{ width: view.options.frame, height: (view.options.frame * stageHeight) / STAGE_W }}
       >
-        <div className="absolute left-0 top-0" style={{ width: STAGE_W, height: STAGE_H, transform: `scale(${frameScale})`, transformOrigin: "0 0" }}>
+        <div className="absolute left-0 top-0" style={{ width: STAGE_W, height: stageHeight, transform: `scale(${frameScale})`, transformOrigin: "0 0" }}>
           <CombatStage
             view={view}
             result={result}

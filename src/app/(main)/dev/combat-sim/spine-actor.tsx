@@ -10,6 +10,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import type { AnimationState, ManagedWebGLRenderingContext, SceneRenderer, Skeleton } from "@esotericsoftware/spine-player";
 import type { MonsterSpineAsset } from "@/lib/codex-types";
+import { deathOpacity, type DeathFade } from "./godot-anim";
 import {
   createSpinePlainTextDownloader,
   loadSpinePlayerRuntime,
@@ -20,6 +21,8 @@ export interface SpineCue {
   /** ms */
   t: number;
   animation: string;
+  /** Stay on the last frame instead of mixing back to idle (the death animation). */
+  hold?: boolean;
 }
 
 export interface SpineViewport {
@@ -43,6 +46,8 @@ interface SpineActorProps {
   viewport: SpineViewport | null;
   t: number;
   cues: SpineCue[];
+  /** Set for a monster that dies: the body fades out after its death animation. */
+  death?: DeathFade | null;
   onStatus: (id: string, status: ActorStatus) => void;
 }
 
@@ -67,7 +72,7 @@ const CUE_MIX_OUT = 0.2;
 const OVERSCAN_X = 0.4;
 const OVERSCAN_TOP = 0.35;
 
-export function SpineActor({ id, asset, width, height, pixelRatio, viewport, t, cues, onStatus }: SpineActorProps) {
+export function SpineActor({ id, asset, width, height, pixelRatio, viewport, t, cues, death, onStatus }: SpineActorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const loadedRef = useRef<Loaded | null>(null);
   const drawRef = useRef<() => void>(() => {});
@@ -118,6 +123,8 @@ export function SpineActor({ id, asset, width, height, pixelRatio, viewport, t, 
     drawRef.current();
   });
 
+  const deathCue = cues.find((cue) => cue.hold);
+  const dieMs = (deathCue ? loadedRef.current?.durations.get(deathCue.animation) ?? 0 : 0) * 1000;
   return (
     <canvas
       ref={canvasRef}
@@ -129,6 +136,7 @@ export function SpineActor({ id, asset, width, height, pixelRatio, viewport, t, 
         marginLeft: -width * OVERSCAN_X,
         marginTop: -height * OVERSCAN_TOP,
         display: "block",
+        opacity: death ? deathOpacity(death, t, dieMs) : 1,
       }}
     />
   );
@@ -226,6 +234,8 @@ function poseAt(loaded: Loaded, tMs: number, cues: SpineCue[]) {
         ? { animation: previous.animation, time: start - previous.t / 1000, loop: false }
         : idle(start);
       setTrack(loaded, from, { animation: cue.animation, time: 0, loop: false }, CUE_MIX_IN, t - start);
+    } else if (cue.hold) {
+      setTrack(loaded, null, { animation: cue.animation, time: duration, loop: false }, 0, 0);
     } else {
       const end = start + duration;
       setTrack(loaded, { animation: cue.animation, time: duration, loop: false }, idle(end), CUE_MIX_OUT, t - end);

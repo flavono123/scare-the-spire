@@ -32,9 +32,11 @@ keys override the preset and JSON.
 | character | `"SILENT"` | `character=SILENT` | HP and max energy from character data. Optional; required by the `player` and `cards` parts. |
 | parts | `["player", "cards"]` | `parts=player,cards`, `parts=none` | What the stage shows and the server loads. The encounter (background, monsters, intents, monster HP) is always there; `player` adds the character and its HP bar, `cards` the hand, piles, energy orb and card play. Default: both with a character, none without (encounter only). Without `cards`, no card data, affliction text, energy counter, card trail or energy VFX is loaded and card actions are skipped. |
 | speed | `"fast"` | `speed=fast` | Game speed (FastMode): `normal` (default), `fast`, `instant`. Changes only how long the game waits and how long some tweens run; steps and final state are the same in every mode (see [Speed](#speed-fastmode)). |
-| encounter | `"DOORMAKER_BOSS"` | `encounter=AXEBOTS_NORMAL` | Composition from the archived `Encounters/<Name>.cs`, else site data. |
+| encounter | `"DOORMAKER_BOSS"` | `encounter=AXEBOTS_NORMAL` | Composition from the archived `Encounters/<Name>.cs`, else site data. Required unless `monsters` is given. |
+| monsters | `["ASSASSIN_RUBY_RAIDER", "BYRDONIS"]` | `monsters=ASSASSIN_RUBY_RAIDER,BYRDONIS,TRACKER_RUBY_RAIDER` | The monsters on stage, in order, whatever encounter they come from. Each takes its bounds, visual position and scale from any encounter scene that has it (`data/sts2/encounter-scene-assets.json`); the background comes from `encounter` when given, else from the first encounter whose scene has the first monster. Three or more are shrunk (the monsters only) to fit the monster region, as in the game's auto layout. |
+| monsterHp | `{ "BYRDONIS": 33 }` | `monsterHp=BYRDONIS=33,1=20` | Current HP per monster (id or index); max HP stays the monster's own (raised to the value when it is higher). A scene that must end in a kill sets the HP the card can take. |
 | energy, maxEnergy | `3`, `3` | `energy=3/3` | |
-| hp | `70` | `hp=40` | Player current HP. |
+| hp | `70` | `hp=40` | Player current HP. `hp=0` is not an input: it is the view option that hides the health bars (see below). |
 | hand, drawPile, discardPile, exhaustPile | `["PREPARED+", "STRIKE_SILENT*5"]` | `hand=ACROBATICS,PREPARED+`, `draw=…`, `discard=…`, `exhaust=…` | `+` is upgraded, `*N` repeats. Order is kept; draws take `drawPile[0]` first. |
 | powers | `{ "DOORMAKER": ["GRASP_POWER:1"], "player": [] }` | `powers=DOORMAKER=GRASP_POWER:1` | Key: `player`, a monster id, or a monster index. Applied at setup, so `AfterApplied` runs. |
 | moves | `{ "DOORMAKER": "GRASP" }` | `moves=DOORMAKER=GRASP` | Current move (intent); default is the move graph's initial move. |
@@ -60,6 +62,15 @@ encounter down, give the monsters the full width and grow the background.
 View options (not part of the input): `t=<ms>|end` starts paused there,
 `autoplay=1`, `frame=<css width>` (default 360), `badges=1` shows
 unimplemented/rejected tags in the frame (the dev panel log always lists them).
+
+| Key | Effect |
+| --- | --- |
+| `hp=0` | Hides the health bars and the power row under them (any other `hp=N` is the player's HP). |
+| `intents=0` | Hides the intent icons. |
+| `ui=card` | Card-only interface: no hand, energy orb or piles; only the card being played (from hover on) with its glow and trail is drawn. The card lands where the game puts it, (960, 440) on the 1920x1080 screen: the stage center in x, and in y the game's 300 px above the creatures' feet (`enemyBaselineY` 740) times 1.15. The scene takes the card-less band (feet y 1240, background 1560 high) unless the next two say otherwise. |
+| `bgHeight=<px>`, `feetY=<px>` | The scene band: how high the background is and where the creatures' feet stand (stage px, top of the stage is 0). |
+| `crop=<px>` | The stage is only that tall (default 1920), so a PNG of the stage is exactly the window. |
+| `layout=shorts` | `ui=card`, `hp=0`, `intents=0`, `bgHeight=1050`, `feetY=840`, `crop=1050`: the scene for a title-less shorts window (1080x1050). Any key above overrides it. Hand, orb and piles are not drawn, so nothing sits in the bottom 576 px or the right 130 px that the shorts UI covers. |
 
 ## Rules implemented
 
@@ -203,6 +214,13 @@ deliberate departures are for the 9:16 frame and are marked "9:16" below.
   fill textures with their modulate colors, the clipping mask, the lagging
   middleground (holds 1 s, then 1 s Expo Out), Kreon Bold 24 label with glyph
   spacing 1 and outline 16 (#900000, #1B3045 with block), block icon and label.
+- Monster death (NCreature.StartDeathAnim / AnimDie, NMonsterDeathVfx): a damage that takes a
+  monster to 0 HP starts its `die` animation (no wait: `CreatureCmd.Kill` does not
+  await it) and the body keeps the last frame. The health bar and power row fade from 0.5 s after
+  the death over 0.5 s (Expo Out; Instant hides them at once), the intent fades linearly over
+  0.5 s, and 0.5 s after the death animation ends the body dissolves over
+  `min(bounds width x 1.2 / 192 x 2.5, 2.5)` s (Sine Out). The dissolve shader is drawn as a plain
+  fade; on Instant the body just disappears. Still-art monsters fade as soon as they die.
 - Spine actors (`spine-actor.tsx`) rebuild their pose from the cue list on
   every `t` (physics reset, not simulated). Doormaker and other still-art
   monsters use `monster-static-art.ts` by current move.

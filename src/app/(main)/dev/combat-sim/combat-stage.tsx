@@ -11,7 +11,7 @@ import { gameStroke, TEXT_CREAM } from "@/lib/sts2-card-style";
 import { substituteAmount } from "@/lib/sts2-enchant-rules";
 import { SpineActor, type ActorStatus, type SpineCue, type SpineViewport } from "./spine-actor";
 import { buildMotion, evaluateTrack, flyPositionAt, pileViews, type CardVisual, type PileView } from "./card-motion";
-import { clamp01, ease, rgba } from "./godot-anim";
+import { clamp01, deathOpacity, ease, rgba, type DeathFade } from "./godot-anim";
 import {
   CARD_H,
   CARD_W,
@@ -26,6 +26,7 @@ import {
   orbBaseAngle,
   playerBox,
   sceneFrame,
+  scenePlayPosition,
   visibleState,
   type CreatureBox,
 } from "./stage-layout";
@@ -54,44 +55,68 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
   const frame = timeline.frameAt(t);
   const visible = visibleState(frame.beat, frame.progress, frame.state);
   const recent = timeline.beatsUntil(t);
+  const { hpBars, intents, ui, layer, bgHeight, feetY, crop } = view.options;
   const withPlayer = view.parts.includes("player") && view.character !== null;
   const withCards = view.parts.includes("cards") && view.character !== null;
-  const sceneLayout = sceneFrame(withPlayer, withCards);
+  // ui=card: no hand, orb or piles, so the scene takes the card-less band and the card lands mid-scene.
+  const cardOnly = withCards && ui === "card";
+  const sceneLayout = sceneFrame(withPlayer, withCards && !cardOnly, { feetY, bgHeight });
   const player = playerBox(sceneLayout);
   const monsters = useMemo(
-    () => monsterBoxes(view.monsters, view.combatLayout, sceneFrame(withPlayer, withCards)),
-    [view.monsters, view.combatLayout, withPlayer, withCards],
+    () => monsterBoxes(view.monsters, view.combatLayout, sceneFrame(withPlayer, withCards && !cardOnly, { feetY, bgHeight })),
+    [view.monsters, view.combatLayout, withPlayer, withCards, cardOnly, feetY, bgHeight],
   );
   const cues = useMemo(() => animationCues(timeline, view), [timeline, view]);
   const speed = view.input.speed ?? "normal";
-  const motion = useMemo(() => buildMotion(result, timeline, speed), [result, timeline, speed]);
+  const deaths = useMemo(() => deathFades(timeline, view, speed), [timeline, view, speed]);
+  const playPosition = cardOnly ? scenePlayPosition(sceneLayout, view.combatLayout?.enemyBaselineY) : null;
+  const playX = playPosition?.x;
+  const playY = playPosition?.y;
+  const motion = useMemo(
+    () => buildMotion(result, timeline, speed, playX === undefined || playY === undefined ? undefined : { x: playX, y: playY }),
+    [result, timeline, speed, playX, playY],
+  );
   const glows = useMemo(() => playableGlowModel(result, timeline, view), [result, timeline, view]);
   const energyGains = useMemo(
     () => timeline.beats.filter((beat) => beat.event.kind === "energy" && beat.event.to > beat.event.from).map((beat) => beat.start),
     [timeline],
   );
+  // Cards that get played; in card-only view they show only while lifted out of the hand (hover, play, flight).
+  const playedUids = useMemo(
+    () => new Set(timeline.beats.flatMap((beat) => (beat.event.kind === "move" && beat.event.cause === "play" ? [beat.event.uid] : []))),
+    [timeline],
+  );
+  const shownCard = (visual: CardVisual) => !cardOnly || (playedUids.has(visual.uid) && visual.lifted);
   const visuals = motion.tracks.map((track) => evaluateTrack(track, t));
   const piles = pileViews(motion, t);
   const flights = visuals
-    .filter((visual) => visual.fly && visual.visible)
+    .filter((visual) => visual.fly && visual.visible && shownCard(visual))
     .map((visual) => {
       const fly = visual.fly!;
       return { visual, seed: fly.seed, positionAt: (age: number) => flyPositionAt(fly.from, fly.to, fly.seed, age) };
     });
   const trail = view.cardTrail;
+  const showScene = layer === "all" || layer === "scene";
+  const showVfx = layer === "all" || layer === "vfx";
+  const showCards = layer === "all" || layer === "card";
 
   return (
     <SimClock.Provider value={t}>
-    <div className="absolute left-0 top-0 overflow-hidden" style={{ width: STAGE_W, height: STAGE_H, background: "#0b0b0f" }} data-game-locale="kor">
+    <div
+      className="absolute left-0 top-0 overflow-hidden"
+      style={{ width: STAGE_W, height: crop ?? STAGE_H, background: layer === "all" ? "#0b0b0f" : "transparent" }}
+      data-game-locale="kor"
+      data-combat-sim-layer={layer}
+    >
       <PreloadImages
         urls={[
           ...(trail ? [trail.outer.texture, trail.inner.texture, trail.bigSparks?.texture, trail.littleSparks?.texture, ...trail.sprites.map((sprite) => sprite.texture)] : []),
-          ...(view.energyGainVfx?.layers.map((layer) => layer.texture) ?? []),
+          ...(view.energyGainVfx?.layers.map((item) => item.texture) ?? []),
         ]}
       />
-      <Background url={view.background} height={sceneLayout.backgroundHeight} />
+      {showScene && <Background url={view.background} height={sceneLayout.backgroundHeight} />}
 
-      {withPlayer && view.character && (
+      {showScene && withPlayer && view.character && (
         <Creature
           id="player"
           box={player}
@@ -105,10 +130,11 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
           view={view}
           timeline={timeline}
           barWidth={player.width}
+          showBar={hpBars}
           onActorStatus={onActorStatus}
         />
       )}
-      {view.monsters.map((monster, index) => {
+      {showScene && view.monsters.map((monster, index) => {
         const state = visible.monsters[index];
         if (!state) return null;
         const box = monsters[index];
@@ -121,6 +147,7 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
             spine={monster.spine}
             imageUrl={monster.staticArt ? (state.moveId ? monster.staticArt.byMove[state.moveId] : null) ?? monster.staticArt.defaultImage : monster.imageUrl}
             cues={cues[`m${index}`] ?? []}
+            death={deaths[`m${index}`] ?? null}
             t={t}
             pixelRatio={pixelRatio}
             viewport={monster.layout ? viewportFromLayout(monster.layout) : null}
@@ -128,14 +155,15 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
             timeline={timeline}
             // NCreature: monster bars are the bounds width + 24 (HpBarSizeReduction); without bounds, the scene's 250.
             barWidth={monster.layout ? (monster.layout.bounds.width + 24) * box.scale : 250 * box.scale}
+            showBar={hpBars}
             onActorStatus={onActorStatus}
           >
-            <Intent view={view} monster={monster} moveId={state.moveId} box={box} t={t} />
+            {intents && <Intent view={view} monster={monster} moveId={state.moveId} box={box} t={t} />}
           </Creature>
         );
       })}
 
-      {withCards && view.character?.energyCounter && (
+      {showCards && withCards && !cardOnly && view.character?.energyCounter && (
         <EnergyOrb
           asset={view.character.energyCounter}
           energy={visible.energy}
@@ -147,10 +175,10 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
           pixelRatio={pixelRatio}
         />
       )}
-      {withCards && (
+      {showCards && withCards && (
         <>
-          <Piles view={view} piles={piles} />
-          {visuals.map((visual) => (
+          {!cardOnly && <Piles view={view} piles={piles} />}
+          {visuals.filter(shownCard).map((visual) => (
             <CardView
               key={visual.uid}
               visual={visual}
@@ -163,8 +191,8 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
         </>
       )}
 
-      <DamageNumbers timeline={timeline} t={t} player={withPlayer ? player : null} monsters={monsters} />
-      {badges && <Badges beats={recent} t={t} />}
+      {showVfx && <DamageNumbers timeline={timeline} t={t} player={withPlayer ? player : null} monsters={monsters} />}
+      {badges && layer === "all" && <Badges beats={recent} t={t} />}
     </div>
     </SimClock.Provider>
   );
@@ -201,11 +229,24 @@ function animationCues(timeline: CombatTimeline, view: CombatSimView): Record<st
     if (beat.event.kind !== "animate") continue;
     const { creature, animation } = beat.event;
     const asset = creature === "player" ? view.character?.spine : view.monsters[Number(creature.slice(1))]?.spine;
-    const key = animation === "attack" ? "ATTACK" : animation === "hurt" ? "HURT" : "CAST";
+    const key = animation === "attack" ? "ATTACK" : animation === "hurt" ? "HURT" : animation === "die" ? "die" : "CAST";
     const name = asset?.moveAnimations?.[key]?.[0] ?? animation;
-    (cues[creature] ??= []).push({ t: beat.start, animation: name });
+    (cues[creature] ??= []).push({ t: beat.start, animation: name, hold: animation === "die" });
   }
   return cues;
+}
+
+/** When each dying monster's body fades (NCreature.AnimDie + NMonsterDeathVfx), by creature key. */
+function deathFades(timeline: CombatTimeline, view: CombatSimView, speed: string): Record<string, DeathFade> {
+  const fades: Record<string, DeathFade> = {};
+  for (const beat of timeline.beats) {
+    if (beat.event.kind !== "animate" || beat.event.animation !== "die" || fades[beat.event.creature]) continue;
+    const layout = view.monsters[Number(beat.event.creature.slice(1))]?.layout;
+    // The fade covers the body bounds x 1.2 (default padding): min(width / (0.1 x 1920) x 2.5, 2.5) s.
+    const width = (layout?.bounds.width ?? 480) * 1.2;
+    fades[beat.event.creature] = { at: beat.start, instant: speed === "instant", fadeMs: Math.min((width / 192) * 2.5, 2.5) * 1000 };
+  }
+  return fades;
 }
 
 interface CreatureProps {
@@ -215,6 +256,8 @@ interface CreatureProps {
   spine: NonNullable<CombatSimView["character"]>["spine"] | CombatSimMonsterView["spine"];
   imageUrl: string | null;
   cues: SpineCue[];
+  /** Set once this monster is killed. */
+  death?: DeathFade | null;
   t: number;
   pixelRatio: number;
   viewport: SpineViewport | null;
@@ -222,13 +265,19 @@ interface CreatureProps {
   timeline: CombatTimeline;
   /** Health bar width in stage px. */
   barWidth: number;
+  /** False hides the health bar and the power row under it (`hp=0`). */
+  showBar: boolean;
   onActorStatus: (id: string, status: ActorStatus) => void;
   children?: React.ReactNode;
 }
 
-function Creature({ id, box, creature, spine, imageUrl, cues, t, pixelRatio, viewport, view, timeline, barWidth, onActorStatus, children }: CreatureProps) {
+function Creature({ id, box, creature, spine, imageUrl, cues, death = null, t, pixelRatio, viewport, view, timeline, barWidth, showBar, onActorStatus, children }: CreatureProps) {
   const left = box.x - box.width / 2;
   const top = box.y - box.height;
+  // AnimateOutSimple: the bar (and power row) fades 0.5 s after the death, over 0.5 s Expo Out; Instant hides it at once.
+  const barOpacity = !death ? 1 : death.instant ? (t < death.at ? 1 : 0) : 1 - ease.expoOut(clamp01((t - death.at - 500) / 500));
+  // AnimHideIntent: linear over 0.5 s from the death.
+  const intentOpacity = !death ? 1 : 1 - clamp01((t - death.at) / 500);
   return (
     <>
       <div className="absolute" style={{ left, top, width: box.width, height: box.height, zIndex: 10 }} data-combat-sim-creature={id}>
@@ -242,15 +291,17 @@ function Creature({ id, box, creature, spine, imageUrl, cues, t, pixelRatio, vie
             viewport={viewport}
             t={t}
             cues={cues}
+            death={death}
             onStatus={onActorStatus}
           />
         ) : imageUrl ? (
+          // A still has no death animation: it fades as soon as the monster dies.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageUrl} alt="" className="h-full w-full object-contain" style={{ objectPosition: "50% 100%" }} />
+          <img src={imageUrl} alt="" className="h-full w-full object-contain" style={{ objectPosition: "50% 100%", opacity: death ? deathOpacity(death, t, 0) : 1 }} />
         ) : null}
       </div>
-      {children}
-      <HealthBar id={id} creature={creature} box={box} width={barWidth} view={view} timeline={timeline} t={t} />
+      {children && <div style={{ opacity: intentOpacity }}>{children}</div>}
+      {showBar && <HealthBar id={id} creature={creature} box={box} width={barWidth} view={view} timeline={timeline} t={t} opacity={barOpacity} />}
     </>
   );
 }
@@ -309,7 +360,7 @@ const HP_BAR = {
   labelOutlineBlocked: "#1B3045",
 };
 
-function HealthBar({ id, creature, box, width, view, timeline, t }: {
+function HealthBar({ id, creature, box, width, view, timeline, t, opacity = 1 }: {
   id: string;
   creature: SimCreature;
   box: CreatureBox;
@@ -317,6 +368,7 @@ function HealthBar({ id, creature, box, width, view, timeline, t }: {
   view: CombatSimView;
   timeline: CombatTimeline;
   t: number;
+  opacity?: number;
 }) {
   // Width follows the creature's bounds; height, fonts and icons are fixed UI sizes.
   const k = UI_SCALE;
@@ -343,7 +395,7 @@ function HealthBar({ id, creature, box, width, view, timeline, t }: {
   // NHealthBar.AnimateInBlock is skipped on Instant: the block icon just appears.
   const blockSince = view.input.speed === "instant" ? Infinity : blockAppearSince(timeline, id, t);
   return (
-    <div className="absolute" style={{ left, top, width, height, zIndex: 30 }} data-combat-sim-health={id}>
+    <div className="absolute" style={{ left, top, width, height, zIndex: 30, opacity }} data-combat-sim-health={id}>
       <NinePatch url={view.ui.health_bar_bg} texture={{ width: 20, height: 16 }} margin={9} x={k} y={0} width={width - 2 * k} height={height} scale={k} color={HP_BAR.background} />
       {hasBlock && (
         <NinePatch url={view.ui.health_bar_stroke} texture={{ width: 22, height: 16 }} margin={9} x={k} y={0} width={width - 2 * k} height={height} scale={k} color={HP_BAR.blockOutline} />

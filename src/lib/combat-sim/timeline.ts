@@ -90,7 +90,8 @@ export function beatDuration(event: SimEvent, action: number, speed: SimSpeed = 
       return FRAME_MS;
     case "pause": return scaledWait(event.fastMs, event.normalMs, speed);
     case "animate":
-      if (event.animation === "hurt") return 0;
+      // Hit and death animations start without a wait (CreatureCmd.Kill does not await the death animation).
+      if (event.animation === "hurt" || event.animation === "die") return 0;
       return animWaitMs(event.delayMs + (speed === "normal" ? event.normalExtraMs ?? 0 : 0), speed);
     case "enter": return pileLerpMs(speed);
     // PlayPowerCardFlyVfx: not simulated per mode, normal value kept.

@@ -36,12 +36,29 @@ export interface SceneFrame {
  * creatures stay above the hand; without it the encounter moves down and the
  * background grows; without the player the monsters take the full width.
  */
-export function sceneFrame(withPlayer: boolean, withCards: boolean): SceneFrame {
+export function sceneFrame(
+  withPlayer: boolean,
+  withCards: boolean,
+  band: { feetY?: number | null; bgHeight?: number | null } = {},
+): SceneFrame {
   return {
-    feetY: withCards ? FEET_Y : 1240,
+    feetY: band.feetY ?? (withCards ? FEET_Y : 1240),
     monsterRegion: withPlayer ? MONSTER_REGION : { left: 90, right: 990 },
-    backgroundHeight: withCards ? 1260 : 1560,
+    backgroundHeight: band.bgHeight ?? (withCards ? 1260 : 1560),
   };
+}
+
+/** Game screen y of the creatures' feet (`enemyBaselineY`, 740 in every encounter scene). */
+const GAME_FEET_Y = 740;
+/** PileTypeExtensions.GetTargetPosition(Play): the game screen is 1920x1080 and the card lands at (960, 440). */
+const GAME_PLAY = { x: 960, y: 440 };
+
+/**
+ * Card-only view (`ui=card`): the played card lands where the game puts it, in the middle of the
+ * scene, not in the hand band. x is the stage center; y keeps the game's distance above the feet.
+ */
+export function scenePlayPosition(frame: SceneFrame, baselineY = GAME_FEET_Y): { x: number; y: number } {
+  return { x: STAGE_W / 2, y: frame.feetY - (baselineY - GAME_PLAY.y) * UI_SCALE };
 }
 
 /** Game point pinned to the stage's bottom-left / bottom-right corner. */

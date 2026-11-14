@@ -92,3 +92,22 @@ export function rgba(color: number[], alphaScale = 1): string {
 export function multiplyColor(a: number[], b: number[]): number[] {
   return a.map((value, i) => value * (b[i] ?? 1));
 }
+
+/**
+ * A monster's death (NCreature.AnimDie): the body keeps the last frame of its death animation for the
+ * 0.5 s after it ends, then NMonsterDeathVfx dissolves it over `fadeMs` (Sine Out on the shader
+ * threshold; the noise dissolve is drawn as a plain fade). Instant skips the VFX and frees the node.
+ */
+export interface DeathFade {
+  /** When the death animation starts (ms on the sim clock). */
+  at: number;
+  instant: boolean;
+  fadeMs: number;
+}
+
+export function deathOpacity(death: DeathFade, tMs: number, dieMs: number): number {
+  const start = death.at + dieMs + 500;
+  if (tMs < start) return 1;
+  if (death.instant) return 0;
+  return 1 - ease.sineOut(clamp01((tMs - start) / death.fadeMs));
+}
