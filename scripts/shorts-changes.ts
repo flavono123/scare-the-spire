@@ -7,10 +7,23 @@
  *   pnpm shorts:changes 0.111.0 --json
  *
  * "before" is the previous version the Compendium version picker offers.
- * Rows whose text, costs, keywords, type, and rarity do not move are marked
- * `same-tile`; a tile capture of them would look identical.
+ * Every row has a `class`:
+ *   new           the element first ships in this version (`introducedInPatch`); there is no as-is
+ *   same-tile     text (whitespace and line breaks ignored), costs, keywords, type and rarity do not move:
+ *                 a tile capture would look identical
+ *   wording       only the phrasing moved: the numbers, the highlighted words (keywords, powers, cards)
+ *                 and the tile fields are the same ("보존" -> "보존을 얻습니다"), the effect is not
+ *   tile_changed  anything else that shows on the tile
  */
 
+import {
+  getCodexCards,
+  getCodexEnchantments,
+  getCodexEpochs,
+  getCodexPotions,
+  getCodexPowers,
+  getCodexRelics,
+} from "../src/lib/codex-data";
 import { getEntityVersionDiffs, getSTS2Changes, getSTS2PatchLines, getSTS2Patches } from "../src/lib/data";
 import { compareVersions, getVersionsWithDiffs } from "../src/lib/entity-versioning";
 import { getVersionedEntity } from "../src/lib/versioned-entity-api";
@@ -27,7 +40,10 @@ const ROUTES: Partial<Record<string, string>> = {
   event: "events",
 };
 
+type RowClass = "new" | "same-tile" | "wording" | "tile_changed";
+
 interface Row {
+  class: RowClass;
   type: string;
   id: string;
   name: string | null;
@@ -39,7 +55,7 @@ interface Row {
   tileBefore: Record<string, unknown>;
   tileAfter: Record<string, unknown>;
   sameTile: boolean;
-  targets: { asIs: string; toBe: string } | null;
+  targets: { asIs: string | null; toBe: string } | null;
 }
 
 /** Fields besides the description that change what a tile shows. */
@@ -49,12 +65,64 @@ function tileFields(entity: Record<string, unknown> | null | undefined): Record<
   return Object.fromEntries(TILE_FIELDS.map((field) => [field, entity?.[field] ?? null]));
 }
 
+/** Whitespace and line breaks are layout, not text: "피해 6.\n약화 1" and "피해 6. 약화 1" are the same. */
+function squash(text: string | null): string | null {
+  return text === null ? null : text.replace(/\s+/g, " ").trim();
+}
+
+/** The numbers and the highlighted spans of a raw description: what a rewording leaves alone. */
+function effectSignature(raw: unknown): string {
+  const text = typeof raw === "string" ? raw : "";
+  const spans = [...text.matchAll(/\[([a-z]+)(?:[:=][^\]]*)?\]([^\[]*)\[\/\1\]/gi)].map((match) => `${match[1]}:${match[2].replace(/\s+/g, "")}`);
+  const numbers = text.replace(/\[\/?[a-z]+(?:[:=][^\]]*)?\]/gi, " ").match(/\d+/g) ?? [];
+  return JSON.stringify({ spans, numbers });
+}
+
 function plain(text: unknown): string | null {
   if (typeof text !== "string") return null;
   return text
     .replace(/\[(?:energy|star):(\d+)\]/g, "($1)")
     .replace(/\[\/?[a-z]+(?:[:=][^\]]*)?\]/gi, "")
     .trim();
+}
+
+interface IntroducedEntity {
+  type: string;
+  id: string;
+  name: string | null;
+  description: string | null;
+  entity: Record<string, unknown>;
+}
+
+/** Every element whose `introducedInPatch` is this version, by the type names the change list uses. */
+async function introducedIn(version: string): Promise<IntroducedEntity[]> {
+  const gameLocale = "kor" as const;
+  const [cards, relics, potions, powers, enchantments, epochs] = await Promise.all([
+    getCodexCards({ gameLocale }),
+    getCodexRelics({ gameLocale }),
+    getCodexPotions({ gameLocale }),
+    getCodexPowers({ gameLocale }),
+    getCodexEnchantments({ gameLocale }),
+    getCodexEpochs({ gameLocale }),
+  ]);
+  const lists: [string, { id: string; name?: string; description?: string; introducedInPatch?: string }[]][] = [
+    ["card", cards],
+    ["relic", relics],
+    ["potion", potions],
+    ["power", powers],
+    ["enchantment", enchantments],
+    ["epoch", epochs],
+  ];
+  return lists.flatMap(([type, list]) =>
+    list
+      .filter((entry) => entry.introducedInPatch?.replace(/^v/, "") === version)
+      .map((entry) => ({
+        type,
+        id: entry.id,
+        name: entry.name ?? null,
+        description: entry.description ?? null,
+        entity: entry as unknown as Record<string, unknown>,
+      })));
 }
 
 async function main() {
@@ -103,6 +171,9 @@ async function main() {
       .map((line) => line.textKo);
 
   const patchChanges = changes.filter((change) => change.patch.replace(/^v/, "") === wanted);
+  // Elements that first ship in this version have no change entry; the loaders know them by introducedInPatch.
+  const introduced = await introducedIn(wanted);
+  const introducedKeys = new Set(introduced.map((entry) => `${entry.type}:${entry.id}`));
   const seen = new Set<string>();
   const rows: Row[] = [];
   for (const change of patchChanges) {
@@ -122,9 +193,19 @@ async function main() {
     const after = plain(toBe?.entity?.description);
     const tileBefore = tileFields(asIs?.entity);
     const tileAfter = tileFields(toBe?.entity);
+    const sameFields = JSON.stringify(tileBefore) === JSON.stringify(tileAfter);
+    const sameText = squash(before) === squash(after);
+    const rowClass: RowClass = introducedKeys.has(key)
+      ? "new"
+      : sameText && sameFields
+        ? "same-tile"
+        : sameFields && effectSignature(asIs?.entity?.description) === effectSignature(toBe?.entity?.description)
+          ? "wording"
+          : "tile_changed";
     const route = ROUTES[change.entityType];
     const name = (toBe?.entity?.name ?? asIs?.entity?.name ?? null) as string | null;
     rows.push({
+      class: rowClass,
       type: change.entityType,
       id: change.entityId,
       name,
@@ -135,10 +216,29 @@ async function main() {
       after,
       tileBefore,
       tileAfter,
-      sameTile: before === after && JSON.stringify(tileBefore) === JSON.stringify(tileAfter),
+      sameTile: rowClass === "same-tile",
       targets: route
-        ? { asIs: `${route}/${change.entityId}@${previous}`, toBe: `${route}/${change.entityId}@${wanted}` }
+        ? { asIs: rowClass === "new" ? null : `${route}/${change.entityId}@${previous}`, toBe: `${route}/${change.entityId}@${wanted}` }
         : null,
+    });
+  }
+  for (const entry of introduced) {
+    const key = `${entry.type}:${entry.id}`;
+    if (seen.has(key)) continue;
+    const route = ROUTES[entry.type];
+    rows.push({
+      class: "new",
+      type: entry.type,
+      id: entry.id,
+      name: entry.name,
+      summaryKo: null,
+      patchLines: linesFor(entry.id, entry.name),
+      before: null,
+      after: plain(entry.description),
+      tileBefore: tileFields(null),
+      tileAfter: tileFields(entry.entity),
+      sameTile: false,
+      targets: route ? { asIs: null, toBe: `${route}/${entry.id}@${wanted}` } : null,
     });
   }
 
@@ -149,7 +249,7 @@ async function main() {
 
   console.log(`v${wanted}  (as-is = v${previous})  ${rows.length} elements\n`);
   for (const row of rows) {
-    const flag = row.sameTile ? "  [same-tile]" : "";
+    const flag = row.class === "tile_changed" ? "" : `  [${row.class}]`;
     console.log(`${row.type} ${row.id}  ${row.name ?? ""}${flag}`);
     for (const line of row.patchLines) console.log(`  patch: ${line}`);
     if (row.summaryKo) console.log(`  note : ${row.summaryKo}`);
@@ -159,7 +259,7 @@ async function main() {
     console.log(`  as-is: ${row.before?.replace(/\n/g, " ") ?? "-"}`);
     console.log(`  to-be: ${row.after?.replace(/\n/g, " ") ?? "-"}`);
     if (moved.length > 0) console.log(`  also : ${moved.join(", ")}`);
-    if (row.targets) console.log(`  shots: ${row.targets.asIs}  ${row.targets.toBe}`);
+    if (row.targets) console.log(`  shots: ${row.targets.asIs ?? "(new)"}  ${row.targets.toBe}`);
     console.log("");
   }
 }
