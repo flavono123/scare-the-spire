@@ -170,7 +170,11 @@ export function ComboGameElementFilter({
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     };
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        // Capture on window runs before the modal frame's listener: close only the filter.
+        event.stopPropagation();
+        setOpen(false);
+      }
     };
     const mobileQuery = window.matchMedia("(max-width: 639px)");
     const previousOverflow = document.body.style.overflow;
@@ -180,11 +184,11 @@ export function ComboGameElementFilter({
     }
 
     document.addEventListener("pointerdown", handlePointerDown);
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown, true);
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("pointerdown", handlePointerDown);
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown, true);
     };
   }, [open]);
 

@@ -98,7 +98,11 @@ export function TransfigureResourcePicker({
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     };
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        // Document runs before the modal frame's window listener: close only the picker.
+        event.stopPropagation();
+        setOpen(false);
+      }
     };
 
     document.addEventListener("pointerdown", handlePointerDown);
