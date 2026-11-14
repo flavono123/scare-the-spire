@@ -424,7 +424,7 @@
     "description": "Deal 10 damage.\nPut ALL 0[energy:1] cards from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nPut ALL 0{energyPrefix:energyIcons(1)} cards from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold].",
     "cost": 2,
-    "is_x_cost": true,
+    "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Attack",
@@ -1194,7 +1194,7 @@
     "name": "Banshee's Cry",
     "description": "Deal 33 damage to ALL enemies.\nCosts [energy:2] less for each [gold]Ethereal[/gold] card played this combat.",
     "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\nCosts {Energy:energyIcons()} less for each [gold]Ethereal[/gold] card played this combat.",
-    "cost": 6,
+    "cost": 9,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -1217,7 +1217,7 @@
       "Energy": 2
     },
     "upgrade": {
-      "damage": "+6"
+      "cost": 7
     },
     "image_url": "/static/images/cards/banshees_cry.png",
     "beta_image_url": "/static/images/cards/beta/banshees_cry.png"
@@ -1537,7 +1537,7 @@
     "star_cost": null,
     "type": "Skill",
     "rarity": "Common",
-    "target": "AnyEnemy",
+    "target": "Self",
     "color": "regent",
     "damage": null,
     "block": null,
@@ -2816,7 +2816,7 @@
     "description": "You cannot draw additional cards this turn. ALL cards in your [gold]Hand[/gold] are free to play this turn.",
     "description_raw": "You cannot draw additional cards this turn. ALL cards in your [gold]Hand[/gold] are free to play this turn.",
     "cost": 3,
-    "is_x_cost": true,
+    "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Skill",
@@ -2913,7 +2913,7 @@
     "name": "Bundle of Joy",
     "description": "Add 3 random Colorless cards into your [gold]Hand[/gold].",
     "description_raw": "Add {Cards:diff()} random Colorless {Cards:plural:card|cards} into your [gold]Hand[/gold].",
-    "cost": 2,
+    "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -9396,7 +9396,7 @@
   {
     "id": "GATHER_LIGHT",
     "name": "Gather Light",
-    "description": "Gain 7 [gold]Block[/gold].\nGain [star:1].",
+    "description": "Gain 8 [gold]Block[/gold].\nGain [star:1].",
     "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nGain {Stars:starIcons()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -9407,7 +9407,7 @@
     "target": "Self",
     "color": "regent",
     "damage": null,
-    "block": 7,
+    "block": 8,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -9417,7 +9417,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 7,
+      "Block": 8,
       "Stars": 1
     },
     "upgrade": {
@@ -10622,7 +10622,7 @@
   {
     "id": "HEIRLOOM_HAMMER",
     "name": "Heirloom Hammer",
-    "description": "Deal 17 damage.\nChoose a Colorless card in your [gold]Hand[/gold]. Add a copy of that card into your [gold]Hand[/gold].",
+    "description": "Deal 20 damage.\nChoose a Colorless card in your [gold]Hand[/gold]. Add a copy of that card into your [gold]Hand[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nChoose a Colorless card in your [gold]Hand[/gold]. Add a copy of that card into your [gold]Hand[/gold].",
     "cost": 2,
     "is_x_cost": null,
@@ -10632,7 +10632,7 @@
     "rarity": "Rare",
     "target": "AnyEnemy",
     "color": "regent",
-    "damage": 17,
+    "damage": 20,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -10643,7 +10643,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 17,
+      "Damage": 20,
       "Repeat": 1
     },
     "upgrade": {
@@ -10749,7 +10749,7 @@
   {
     "id": "HEMOKINESIS",
     "name": "Hemokinesis",
-    "description": "Lose 2 HP.\nDeal 14 damage.",
+    "description": "Lose 2 HP.\nDeal 15 damage.",
     "description_raw": "Lose {HpLoss:diff()} HP.\nDeal {Damage:diff()} damage.",
     "cost": 1,
     "is_x_cost": null,
@@ -10759,7 +10759,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "ironclad",
-    "damage": 14,
+    "damage": 15,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -10771,7 +10771,7 @@
     "spawns_cards": null,
     "vars": {
       "HpLoss": 2,
-      "Damage": 14
+      "Damage": 15
     },
     "upgrade": {
       "damage": "+5"
@@ -11257,7 +11257,7 @@
   {
     "id": "I_AM_INVINCIBLE",
     "name": "I Am Invincible",
-    "description": "Gain 9 [gold]Block[/gold].\nAt the end of your turn, if this is on top of your [gold]Draw Pile[/gold], play it.",
+    "description": "Gain 10 [gold]Block[/gold].\nAt the end of your turn, if this is on top of your [gold]Draw Pile[/gold], play it.",
     "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nAt the end of your turn, if this is on top of your [gold]Draw Pile[/gold], play it.",
     "cost": 1,
     "is_x_cost": null,
@@ -11268,7 +11268,7 @@
     "target": "Self",
     "color": "regent",
     "damage": null,
-    "block": 9,
+    "block": 10,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -11278,7 +11278,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 9
+      "Block": 10
     },
     "upgrade": {
       "block": "+3"
@@ -11838,7 +11838,7 @@
     "description": "Deal 25 damage.\nAdd 3 random 0[energy:1] cards into your [gold]Hand[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nAdd {Cards:diff()} random{IfUpgraded:show: [gold]Upgraded[/gold]} 0{energyPrefix:energyIcons(1)} {Cards:plural:card|cards} into your [gold]Hand[/gold].",
     "cost": 3,
-    "is_x_cost": true,
+    "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Attack",
@@ -13827,7 +13827,7 @@
   {
     "id": "MINION_STRIKE",
     "name": "Minion Strike",
-    "description": "Deal 7 damage.\nDraw 1 card.",
+    "description": "Deal 6 damage.\nDraw 1 card.",
     "description_raw": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
     "cost": 0,
     "is_x_cost": null,
@@ -13837,7 +13837,7 @@
     "rarity": "Token",
     "target": "AnyEnemy",
     "color": "token",
-    "damage": 7,
+    "damage": 6,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -13853,7 +13853,7 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 7,
+      "Damage": 6,
       "Cards": 1
     },
     "upgrade": {
@@ -18072,7 +18072,7 @@
     "description": "Deal 7 damage.\nDraw 4 cards.\nDiscard all cards drawn this way that do not cost 0 [energy:1].",
     "description_raw": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} cards.\nDiscard all cards drawn this way that do not cost 0 {energyPrefix:energyIcons(1)}.",
     "cost": 1,
-    "is_x_cost": true,
+    "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Attack",
@@ -18135,7 +18135,7 @@
   {
     "id": "SCULPTING_STRIKE",
     "name": "Sculpting Strike",
-    "description": "Deal 8 damage.\nAdd [gold]Ethereal[/gold] to a card in your [gold]Hand[/gold].",
+    "description": "Deal 9 damage.\nAdd [gold]Ethereal[/gold] to a card in your [gold]Hand[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nAdd [gold]Ethereal[/gold] to a card in your [gold]Hand[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -18145,7 +18145,7 @@
     "rarity": "Common",
     "target": "AnyEnemy",
     "color": "necrobinder",
-    "damage": 8,
+    "damage": 9,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -18158,7 +18158,7 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 8
+      "Damage": 9
     },
     "upgrade": {
       "damage": "+3"
@@ -18171,7 +18171,7 @@
     "name": "Seance",
     "description": "Transform a card in your [gold]Draw Pile[/gold] into [gold]Soul[/gold].",
     "description_raw": "Transform a card in your [gold]Draw Pile[/gold] into [gold]Soul[/gold].",
-    "cost": 0,
+    "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -18196,7 +18196,9 @@
     "vars": {
       "Cards": 1
     },
-    "upgrade": null,
+    "upgrade": {
+      "cost": 0
+    },
     "image_url": "/static/images/cards/seance.png",
     "beta_image_url": "/static/images/cards/beta/seance.png"
   },
@@ -18299,7 +18301,7 @@
   {
     "id": "SEEKER_STRIKE",
     "name": "Seeker Strike",
-    "description": "Deal 6 damage.\nChoose 1 of 3 cards in your [gold]Draw Pile[/gold] to add into your [gold]Hand[/gold].",
+    "description": "Deal 9 damage.\nChoose 1 of 3 cards in your [gold]Draw Pile[/gold] to add into your [gold]Hand[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nChoose 1 of {Cards:diff()} cards in your [gold]Draw Pile[/gold] to add into your [gold]Hand[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -18309,7 +18311,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "colorless",
-    "damage": 6,
+    "damage": 9,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -18322,7 +18324,7 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 6,
+      "Damage": 9,
       "Cards": 3
     },
     "upgrade": {
@@ -19199,7 +19201,7 @@
   {
     "id": "SKEWER",
     "name": "Skewer",
-    "description": "Deal 7 damage X times.",
+    "description": "Deal 8 damage X times.",
     "description_raw": "Deal {Damage:diff()} damage X times.",
     "cost": 0,
     "is_x_cost": true,
@@ -19209,7 +19211,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "silent",
-    "damage": 7,
+    "damage": 8,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -19220,7 +19222,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 7
+      "Damage": 8
     },
     "upgrade": {
       "damage": "+3"
@@ -19592,7 +19594,7 @@
   {
     "id": "SOLAR_STRIKE",
     "name": "Solar Strike",
-    "description": "Deal 8 damage.\nGain [star:1].",
+    "description": "Deal 9 damage.\nGain [star:1].",
     "description_raw": "Deal {Damage:diff()} damage.\nGain {Stars:starIcons()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -19602,7 +19604,7 @@
     "rarity": "Common",
     "target": "AnyEnemy",
     "color": "regent",
-    "damage": 8,
+    "damage": 9,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -19615,7 +19617,7 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 8,
+      "Damage": 9,
       "Stars": 1
     },
     "upgrade": {
@@ -22925,7 +22927,7 @@
     "description": "Add [gold]Replay[/gold] to a card in your [gold]Hand[/gold].\nIt costs an extra [energy:1].",
     "description_raw": "Add [gold]Replay[/gold] to a card in your [gold]Hand[/gold].\nIt costs an extra {Energy:energyIcons()}.",
     "cost": 1,
-    "is_x_cost": true,
+    "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Skill",
@@ -22986,7 +22988,7 @@
   {
     "id": "TREMBLE",
     "name": "Tremble",
-    "description": "Apply 2 [gold]Vulnerable[/gold].",
+    "description": "Apply 3 [gold]Vulnerable[/gold].",
     "description_raw": "Apply {VulnerablePower:diff()} [gold]Vulnerable[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -23002,7 +23004,7 @@
     "powers_applied": [
       {
         "power": "Vulnerable",
-        "amount": 2
+        "amount": 3
       }
     ],
     "cards_draw": null,
@@ -23014,8 +23016,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "VulnerablePower": 2,
-      "Vulnerable": 2
+      "VulnerablePower": 3,
+      "Vulnerable": 3
     },
     "upgrade": {
       "vulnerable": "+1"
