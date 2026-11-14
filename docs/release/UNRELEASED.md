@@ -92,6 +92,12 @@
   `wp-t2`, `wp-q`, `wp-w`, `step6/wp-z`(`step6/patch-reels` 포함)). OG D1(`step6/og-d1`)과 관리 도구(`step6/dev-tools`)는
   2026-11-09에 먼저 나갔다.
 
+### shorts-sim-capture-tools
+- Feature: 쇼츠용 전투 시뮬레이터(dev 전용 `/dev/combat-sim`)와 `pnpm shorts:capture`·`shorts:changes` 개선(0.113 쇼츠 요청). `monsters=`·`monsterHp=`, `hp=0`·`intents=0`·`ui=card`·`bgHeight`·`feetY`·`crop`·`layout=shorts`·`layer=`, 몬스터 사망, 카드 연출(애니메이션·타격 VFX·화면 흔들림·대상 화살표), `--layers`, `--no-flavor`·`--art-only`, 다운로드 버튼 재시도, `shorts:changes`의 `class`(new·same-tile·wording·tile_changed), 패치 날 보관 스크립트. 운영 번들에는 `public/images/sts2/vfx/hit`(10)·`combat-ui/fool`(6)·`combat-ui/targeting_arrow_*`(2)·휴식 장소 이미지 3장이 정적 애셋으로 들어가고, 유물 타일과 에포크 상세에 `data-capture-*` 속성만 더해졌다.
+- Expect: 운영 화면은 그대로다(속성만 추가, 새 이미지는 참조하는 곳 없음). `/compendium/relics/byrdpip`·`/compendium/epochs/fool1_epoch` 화면과 이미지 다운로드가 지금과 같다. `pnpm cf:limits`의 main 정적 애셋이 약 20개 늘어난다(예산 19,500 안).
+- QA: 없음(dev 도구). 확인함: 위 두 상세 페이지의 캡처, `pnpm test:combat-sim`, `tsc`.
+- Commits: `1bf5c04b`부터 이 항목을 쓴 커밋까지(`scripts/`·`docs/COMBAT_SIM.md`·`src/app/(main)/dev/combat-sim`·`src/lib/combat-sim`).
+
 <!--
 ### <항목-id>
 - Feature:

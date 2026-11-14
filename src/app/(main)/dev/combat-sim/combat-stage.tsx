@@ -255,6 +255,7 @@ const ANIMATION_KEYS: Record<string, { keys: string[]; fallback: string }> = {
   hurt: { keys: ["HURT", "hurt"], fallback: "hurt" },
   die: { keys: ["DIE", "die"], fallback: "die" },
   cast: { keys: ["CAST", "cast"], fallback: "cast" },
+  shoot: { keys: [], fallback: "shoot" },
   powerUp: { keys: ["POWER_UP"], fallback: "cast" },
 };
 

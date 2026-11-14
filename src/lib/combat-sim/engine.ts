@@ -556,8 +556,9 @@ class Combat {
             this.emit({ kind: "unimplemented", what: `${card.def.name}: ${step.who} ${step.name} 동작` });
             break;
           }
+          // `Fool.GetShootBowAnimIfApplicable(...)` is the Fool's bow shot; other computed names (summon variants) are a Cast.
           const name = step.name.toLowerCase();
-          const animation = name === "powerup" ? "powerUp" : name === "attack" ? "attack" : "cast";
+          const animation = name === "powerup" ? "powerUp" : name === "attack" ? "attack" : name.includes("shootbow") ? "shoot" : "cast";
           this.emit({ kind: "animate", creature: "player", animation, delayMs: delayMs(step.delay) });
           break;
         }

@@ -258,7 +258,7 @@ export type SimEvent =
    * CreatureCmd.TriggerAnim: waits `delayMs` (Normal) / min(delay / 2, 250 ms) (Fast) / 0 (Instant).
    * `normalExtraMs` is added to the delay only on Normal (e.g. Neutralize's +0.2 s).
    */
-  | { kind: "animate"; creature: string; animation: "cast" | "powerUp" | "attack" | "hurt" | "die"; delayMs: number; normalExtraMs?: number }
+  | { kind: "animate"; creature: string; animation: "cast" | "powerUp" | "attack" | "shoot" | "hurt" | "die"; delayMs: number; normalExtraMs?: number }
   /**
    * A VFX the card spawns, not awaited (its wait is a separate `pause`): a hit VFX scene
    * (`vfx/vfx_attack_slash`, from `WithHitFx`, `at` the creature's center or base) or a dedicated node

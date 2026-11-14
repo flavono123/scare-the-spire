@@ -295,7 +295,34 @@ sequence or a single `--t` capture:
 - The first seek after a page load rasterizes differently from later ones,
   so the capture first seeks a fresh page to the end.
 
+## Spine render paths: one or two (review, no pixel comparison made)
+
+Two paths draw a Spine actor today. The site's `spine-player` (WebGL in the page: `spine-actor.tsx`, the Compendium stages,
+`shorts:capture`) and MegaDot with the game's own spine-godot GDExtension (what the shorts repo uses, and what
+`scripts/extract-hit-vfx.py` uses for VFX only). Read from the code, not measured:
+
+- The simulator has to give the same pixels for the same time on every run and rebuild the pose from the cue list at any `t`
+  (`poseAt`), in a page that `shorts:capture` seeks. MegaDot plays a scene forward in real time with a window; it cannot seek or
+  drive that. A Godot render of the whole combat would mean porting the engine, the timeline and the card layer to GDScript.
+- spine-godot is what shows the game's skins, meshes and blend modes. The site's runtime takes skins from `defaultSkinCombination`
+  (`load` in `spine-actor.tsx`), draws with `premultipliedAlpha: false` and resets physics instead of simulating it; whether the
+  result differs from the game for a given monster has not been compared here.
+- Recommendation: keep `spine-player` for creatures in the simulator and use MegaDot only where the game's own particles or nodes
+  are needed (the VFX sheets above). A scene that must have a creature and a VFX in one Godot render stays on the shorts repo's
+  MegaDot path. Before switching any monster, render its idle and its attack in both and diff them; `scripts/godot/hit-vfx` is the
+  place to add a `kind=creature` render for that.
+
 ## Not simulated or not ported
+
+- Shorts requests not done (0.113 Fool, pets and overlays): the Fool's own creature VFX (`NFoolVfx` events, arrows that stick in
+  enemies and are recalled, `ArrowCmd.ShootArrowAtTarget`), Wah/Cho/Ki melody state and symbols (the images are extracted,
+  `data/sts2/fool-ui-assets.json`, but nothing draws them), sorrow/joy, stretching, Tarot; pet creatures (Byrdpip, Byrdine,
+  Wuppy) and `TalkCmd` speech bubbles; the rest-site Evolve choice and `NByrdEvolutionVfx`, dread enemy empowerment, the Blitz
+  merchant. A Fool card still plays what the data above covers (its animation, hit VFX, damage) and lists the rest as unimplemented.
+  Hit VFX not rendered: `heavy_blunt`, `starry_impact`, `flying_slash`, `bite` and every dedicated `N...Vfx` a card creates except
+  Comet's missile.
+- A card's `OnPlay` reads from the 0.113.0 source only (`card-presentation.json`); `FOOL` and the new cards play on that version.
+
 
 - Rules: relics, potions, rewards, most enemy AI, damage modifiers, card
   generation by effects.
