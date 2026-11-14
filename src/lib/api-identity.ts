@@ -94,10 +94,15 @@ export type StoredSupabaseIdentity = { accessToken: string; refreshToken: string
  * A session a claim answered that localStorage could not keep (no DOM storage, as in
  * a WebView with it turned off, or a refused write): this page holds it in memory, as
  * supabase-js fell back to a memory store, with whether this page's claim was for it.
- * Nothing else falls back to memory, so a later page starts with no session and no
- * claimed uid, as before step 6 (tasks/010-production-known-issues.md #74).
  */
 let pageSession: { json: string; uid: string; claimed: boolean } | null = null;
+
+/**
+ * The uid a claim answered when localStorage could not keep the marker, for this page.
+ * The cookie is what authorizes the writes, so a later page that claims `{}` and gets its
+ * uid back (no session: the cookie is valid) can write too (tasks/010 #74).
+ */
+let pageClaimedUid: string | null = null;
 
 /**
  * The Supabase session stored in localStorage (by supabase-js before step 6, or by a
@@ -165,6 +170,7 @@ export function storeSupabaseSession(session: ClaimSession): boolean {
 /** The uid this browser claimed, or null. */
 export function claimedUid(): string | null {
   if (pageSession?.claimed) return pageSession.uid;
+  if (pageClaimedUid) return pageClaimedUid;
   try {
     const raw = storage()?.getItem(IDENTITY_MARKER_STORAGE_KEY);
     if (!raw) return null;
@@ -193,11 +199,13 @@ function rememberClaim(uid: string): boolean {
   }
   // The cookie still works. Otherwise the next call claims again.
   if (pageSession) pageSession.claimed = !kept && pageSession.uid === uid.toLowerCase();
-  return kept || pageSession?.claimed === true;
+  pageClaimedUid = kept ? null : uid.toLowerCase();
+  return kept || pageSession?.claimed === true || pageClaimedUid !== null;
 }
 
 function forgetClaim(): void {
   if (pageSession) pageSession.claimed = false;
+  pageClaimedUid = null;
   try {
     storage()?.removeItem(IDENTITY_MARKER_STORAGE_KEY);
   } catch {

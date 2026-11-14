@@ -598,15 +598,18 @@ async function main() {
   const browserWindow = fakeWindow as unknown as { localStorage: FakeStorage | null };
   reset();
   browserWindow.localStorage = null;
-  // A kept cookie answers no session: nothing to keep, and the write fails as on a later
-  // page before step 6, where supabase-js held no session (tasks/010 #74).
+  // A kept cookie answers no session: nothing to store, but the claimed uid is held for this
+  // page, so the write goes out with the cookie (tasks/010 #74).
   respond = (request) => request.url === "/api/auth/claim"
     ? marked({ v: 1, uid: USER, created: false, session: null })
-    : marked({ ok: "never" });
+    : marked({ ok: "cookie" });
   assert.equal((await identity.claimNewIdentity()).uid, USER);
-  assert.deepEqual([identity.claimedUid(), identity.storedSupabaseIdentity(), changes], [null, null, 0]);
-  await assert.rejects(() => apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), (error) => error instanceof ApiError && !(error instanceof ApiUnavailableError) && error.code === "token_invalid");
-  assert.deepEqual(sent.map((request) => request.url), ["/api/auth/claim"], "no write without an identity");
+  assert.deepEqual([identity.claimedUid(), identity.storedSupabaseIdentity(), changes], [USER, null, 1]);
+  assert.deepEqual(await apiFetchAsUser("comments", "/api/write/comments", { method: "POST", body: {} }), { ok: "cookie" });
+  assert.deepEqual(sent.map((request) => request.url), ["/api/auth/claim", "/api/write/comments"], "one claim, then the write");
+  // The cookie is gone: a forced claim has nothing to claim with and forgets the uid held for this page.
+  await assert.rejects(() => identity.ensureClaimedIdentity({ force: true }), (error) => error instanceof ApiError && error.code === "identity_required");
+  assert.equal(identity.claimedUid(), null);
 
   // A new user's session: kept for this page, so writes go out with the cookie, as on the first page before step 6.
   reset();
