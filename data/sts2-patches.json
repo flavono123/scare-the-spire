@@ -647,10 +647,10 @@
     "summaryKo": "드레드 파워 아이콘, 적의 몸에 박히는 화살, 풀 역사 문구 다듬기, 스트레칭·숙련과 으스대기+ 수정, 번역 업데이트.",
     "hasBalanceChanges": false,
     "art": {
-      "type": "image",
-      "imageUrl": "/images/sts2/patches/v0.113.1/steam-post.webp",
-      "alt": "The Fool reaching toward a giant blue creature, from the Steam post",
-      "altKo": "거대한 파란 생물에게 손을 뻗는 풀 (Steam 게시글 이미지)"
+      "type": "epoch",
+      "id": "FOOL2_EPOCH",
+      "alt": "Epoch: What Am I?",
+      "altKo": "역사: 나는 뭐지?"
     }
   }
 ]
