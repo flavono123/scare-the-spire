@@ -157,7 +157,6 @@ const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
     href: VEXING_PUZZLEBOX_HREF,
     icon: VEXING_PUZZLEBOX_TOKEN_SRC,
     createdAt: "2026-11-02",
-    announceNewThrough: "2026-11-04",
     getLabel: (_serviceLocale, gameLocale) => getVexingPuzzleboxNavTitle(gameLocale),
   },
   {
