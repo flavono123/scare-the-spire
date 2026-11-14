@@ -134,6 +134,21 @@
     "y": 135
    },
    "durationMs": 500
+  },
+  "NSmallMagicMissileVfx#50b598": {
+   "scene": "NSmallMagicMissileVfx#50b598",
+   "url": "/images/sts2/vfx/hit/vfx_small_magic_missile-50b598.webp",
+   "kind": "dedicated",
+   "fps": 30,
+   "frames": 41,
+   "frameWidth": 851,
+   "frameHeight": 1080,
+   "columns": 9,
+   "origin": {
+    "x": 635,
+    "y": 900
+   },
+   "durationMs": 1367
   }
  },
  "archiveVersion": "0.113.0",

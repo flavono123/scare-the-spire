@@ -14,7 +14,8 @@ Writes  public/images/sts2/vfx/hit/<scene>.webp  and  data/sts2/hit-vfx-assets.j
 A MegaDot window opens for about a second per scene while it renders (it does not draw headless).
 
 Scenes whose root script is a dedicated C# class (NHeavyBluntVfx, NStarryImpactVfx, the Spine ones)
-are skipped and listed: their sequence has to be ported to GDScript one by one.
+are skipped and listed: their sequence has to be ported to GDScript one by one. One is ported,
+NSmallMagicMissileVfx (Comet), rendered once per tint a card gives it; see DEDICATED.
 """
 
 from __future__ import annotations
@@ -78,6 +79,24 @@ def describe(scene_text: str) -> dict:
     return {"kind": "dedicated", "scripts": sorted(set(scripts))}
 
 
+# Dedicated VFX nodes ported to GDScript in scripts/godot/hit-vfx/main.gd, keyed by node class:
+# (scene, target point in the render frame, how long the sequence runs in seconds).
+DEDICATED = {"NSmallMagicMissileVfx": ("vfx_small_magic_missile", (960, 900), 1.8)}
+
+
+def dedicated_vfx() -> list[tuple[str, str, str]]:
+    """(node class, tint, key) for every ported dedicated node a card creates, once per tint."""
+    path = os.path.join(ROOT, "data", "sts2", "card-presentation.json")
+    cards = json.load(open(path, encoding="utf8"))["cards"]
+    found: dict[str, tuple[str, str, str]] = {}
+    for card in cards.values():
+        for step in card["steps"]:
+            if step["op"] == "vfx" and step["class"] in DEDICATED and step.get("color"):
+                key = f"{step['class']}#{step['color']}"
+                found[key] = (step["class"], step["color"], key)
+    return list(found.values())
+
+
 def hit_scenes(archive_version: str) -> list[str]:
     path = os.path.join(ROOT, "data", "sts2", "card-presentation.json")
     cards = json.load(open(path, encoding="utf8"))["cards"]
@@ -105,7 +124,7 @@ class Frozen(Exception):
     """The render stopped changing while still painting: the scene needs more than the shared player does."""
 
 
-def pack(scene: str, info: dict, files: list[str]) -> dict:
+def pack(scene: str, info: dict, files: list[str], key: str | None = None, origin: tuple[int, int] = ORIGIN, lossy: bool = False) -> dict:
     images = [Image.open(path).convert("RGBA") for path in files]
     boxes = [image.getchannel("A").point(lambda v: 255 if v > 3 else 0).getbbox() for image in images]
     painted = [i for i, box in enumerate(boxes) if box]
@@ -130,9 +149,12 @@ def pack(scene: str, info: dict, files: list[str]) -> dict:
     for index, crop in enumerate(crops):
         sheet.paste(crop, ((index % columns) * width, (index // columns) * height))
     os.makedirs(OUT_DIR, exist_ok=True)
-    sheet.save(os.path.join(OUT_DIR, f"{scene}.webp"), "WEBP", lossless=True, quality=100, method=6)
+    if lossy:
+        sheet.save(os.path.join(OUT_DIR, f"{scene}.webp"), "WEBP", quality=92, method=6)
+    else:
+        sheet.save(os.path.join(OUT_DIR, f"{scene}.webp"), "WEBP", lossless=True, quality=100, method=6)
     return {
-        "scene": f"vfx/{scene}",
+        "scene": key or f"vfx/{scene}",
         "url": f"/images/sts2/vfx/hit/{scene}.webp",
         "kind": info["kind"],
         "fps": FPS,
@@ -141,7 +163,7 @@ def pack(scene: str, info: dict, files: list[str]) -> dict:
         "frameHeight": height,
         "columns": columns,
         # Where the scene's origin (the target point) sits inside one frame.
-        "origin": {"x": ORIGIN[0] - left, "y": ORIGIN[1] - top},
+        "origin": {"x": origin[0] - left, "y": origin[1] - top},
         "durationMs": round(len(crops) * 1000 / FPS),
     }
 
@@ -197,6 +219,18 @@ def main() -> None:
             continue
         existing["scenes"][entry["scene"]] = entry
         print(f"{scene}: {entry['frames']} frames {entry['frameWidth']}x{entry['frameHeight']} ({info['kind']})")
+
+    if not args.scene:
+        for cls, color, key in dedicated_vfx():
+            scene, origin, seconds = DEDICATED[cls]
+            name = f"{scene}-{color}"
+            files = render(pck, ["kind=missile", f"color={color}", f"origin={origin[0]},{origin[1]}"], seconds)
+            try:
+                entry = pack(name, {"kind": "dedicated"}, files, key=key, origin=origin, lossy=True)
+            finally:
+                shutil.rmtree(os.path.dirname(files[0]), ignore_errors=True)
+            existing["scenes"][key] = entry
+            print(f"{key}: {entry['frames']} frames {entry['frameWidth']}x{entry['frameHeight']} (ported)")
 
     existing["archiveVersion"] = args.archive_version
     existing["note"] = "Rendered by scripts/extract-hit-vfx.py from the game package (MegaDot); origin is the target point inside a frame."
