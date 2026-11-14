@@ -35,11 +35,14 @@ import { WRITE_GROUPS, WRITE_PAUSED_KEY, sourceFlagKey } from "../src/lib/write-
 import { supabaseApiConfig } from "../workers/api/supabase-rest";
 import { SYNC_FLAG_KEY } from "../workers/sync/sync-env";
 import { checkFlagSet } from "./runtime-flag-keys";
+import { splitOversizedInserts } from "./lib/split-oversized-insert";
 
 /** Read by scripts/dev-patch-proxy.mjs and scripts/run-cloudflare-testbed.mjs (keep the paths equal). */
 const LOCAL_API_DIR = ".wrangler/local-api";
 const LOCAL_API_ENV_FILE = `${LOCAL_API_DIR}/worker.env`;
 const EXPORT_FILE = `${LOCAL_API_DIR}/testbed-export.sql`;
+/** The export with oversized INSERTs split; holds the same testbed rows, so it is deleted after the import. */
+const IMPORT_FILE = `${LOCAL_API_DIR}/testbed-import.sql`;
 /** The data env of every local stack: the testbed's rows, never production's (plan 5.6). */
 const LOCAL_DATA_ENV = "development";
 const FLAG_NOTE = "d1-local-seed: production step 5 state";
@@ -234,8 +237,15 @@ function main() {
     localFile("empty the local D1", dropFile);
     rmSync(dropFile, { force: true });
 
-    localFile("import the export into the local D1", dump);
+    // Rows written with bound parameters can export as INSERTs over D1's statement limit.
+    const { sql, split } = splitOversizedInserts(readFileSync(dump, "utf8"));
+    if (split > 0) {
+      writeFileSync(IMPORT_FILE, sql, { mode: 0o600 });
+      console.log(`\n[d1-local-seed] split ${split} INSERT(s) over D1's 100,000-byte statement limit into chunked UPDATEs`);
+    }
+    localFile("import the export into the local D1", split > 0 ? IMPORT_FILE : dump);
   } finally {
+    rmSync(IMPORT_FILE, { force: true });
     if (!options.fromFile && !options.keepExport) rmSync(EXPORT_FILE, { force: true });
   }
 
