@@ -1,0 +1,141 @@
+{
+ "scenes": {
+  "vfx/vfx_attack_slash": {
+   "scene": "vfx/vfx_attack_slash",
+   "url": "/images/sts2/vfx/hit/vfx_attack_slash.webp",
+   "kind": "sprite",
+   "fps": 30,
+   "frames": 8,
+   "frameWidth": 681,
+   "frameHeight": 670,
+   "columns": 8,
+   "origin": {
+    "x": 334,
+    "y": 325
+   },
+   "durationMs": 267
+  },
+  "vfx/vfx_attack_blunt": {
+   "scene": "vfx/vfx_attack_blunt",
+   "url": "/images/sts2/vfx/hit/vfx_attack_blunt.webp",
+   "kind": "particles",
+   "fps": 30,
+   "frames": 23,
+   "frameWidth": 461,
+   "frameHeight": 392,
+   "columns": 17,
+   "origin": {
+    "x": 194,
+    "y": 198
+   },
+   "durationMs": 767
+  },
+  "vfx/vfx_giant_horizontal_slash": {
+   "scene": "vfx/vfx_giant_horizontal_slash",
+   "url": "/images/sts2/vfx/hit/vfx_giant_horizontal_slash.webp",
+   "kind": "particles",
+   "fps": 30,
+   "frames": 8,
+   "frameWidth": 757,
+   "frameHeight": 112,
+   "columns": 8,
+   "origin": {
+    "x": 339,
+    "y": 49
+   },
+   "durationMs": 267
+  },
+  "vfx/vfx_bloody_impact": {
+   "scene": "vfx/vfx_bloody_impact",
+   "url": "/images/sts2/vfx/hit/vfx_bloody_impact.webp",
+   "kind": "particles",
+   "fps": 30,
+   "frames": 5,
+   "frameWidth": 183,
+   "frameHeight": 209,
+   "columns": 5,
+   "origin": {
+    "x": 92,
+    "y": 102
+   },
+   "durationMs": 167
+  },
+  "vfx/vfx_molten_fist": {
+   "scene": "vfx/vfx_molten_fist",
+   "url": "/images/sts2/vfx/hit/vfx_molten_fist.webp",
+   "kind": "particles",
+   "fps": 30,
+   "frames": 24,
+   "frameWidth": 782,
+   "frameHeight": 766,
+   "columns": 10,
+   "origin": {
+    "x": 636,
+    "y": 238
+   },
+   "durationMs": 800
+  },
+  "vfx/vfx_thrash": {
+   "scene": "vfx/vfx_thrash",
+   "url": "/images/sts2/vfx/hit/vfx_thrash.webp",
+   "kind": "particles",
+   "fps": 30,
+   "frames": 14,
+   "frameWidth": 377,
+   "frameHeight": 417,
+   "columns": 14,
+   "origin": {
+    "x": 186,
+    "y": 158
+   },
+   "durationMs": 467
+  },
+  "vfx/vfx_rock_shatter": {
+   "scene": "vfx/vfx_rock_shatter",
+   "url": "/images/sts2/vfx/hit/vfx_rock_shatter.webp",
+   "kind": "particles",
+   "fps": 30,
+   "frames": 35,
+   "frameWidth": 315,
+   "frameHeight": 466,
+   "columns": 26,
+   "origin": {
+    "x": 140,
+    "y": 238
+   },
+   "durationMs": 1167
+  },
+  "vfx/vfx_coin_explosion_regular": {
+   "scene": "vfx/vfx_coin_explosion_regular",
+   "url": "/images/sts2/vfx/hit/vfx_coin_explosion_regular.webp",
+   "kind": "particles",
+   "fps": 30,
+   "frames": 35,
+   "frameWidth": 445,
+   "frameHeight": 563,
+   "columns": 18,
+   "origin": {
+    "x": 281,
+    "y": 221
+   },
+   "durationMs": 1167
+  },
+  "vfx/vfx_dramatic_stab": {
+   "scene": "vfx/vfx_dramatic_stab",
+   "url": "/images/sts2/vfx/hit/vfx_dramatic_stab.webp",
+   "kind": "particles",
+   "fps": 30,
+   "frames": 15,
+   "frameWidth": 817,
+   "frameHeight": 260,
+   "columns": 10,
+   "origin": {
+    "x": 472,
+    "y": 135
+   },
+   "durationMs": 500
+  }
+ },
+ "archiveVersion": "0.113.0",
+ "note": "Rendered by scripts/extract-hit-vfx.py from the game package (MegaDot); origin is the target point inside a frame."
+}
