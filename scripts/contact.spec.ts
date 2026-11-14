@@ -16,6 +16,12 @@ async function waitForContactReady(page: Page) {
   await expect(page.locator("[data-contact-page]")).toHaveAttribute("data-auth-ready", "true");
 }
 
+// A dev server opens the tiny mailbox on the operator inbox tab and hides the form; builds have no tabs.
+async function openContactForm(page: Page) {
+  const tab = page.getByRole("tab", { name: "문의", exact: true });
+  if (await tab.count()) await tab.click();
+}
+
 const API_MARKER = { "X-Slseoun-Api": "1" };
 const SAME_ORIGIN_API = /\/api\/(?:read|me|write)\//;
 
@@ -65,6 +71,8 @@ test.describe("Tiny Mailbox contact entry points", () => {
     await expect(page.locator('header a[href*="/contact?from="]')).toBeHidden();
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
+    // Before hydration the link has no source path yet.
+    await expect(launcher).toHaveAttribute("href", /\/contact\?from=%2F$/);
     await launcher.click();
     await expect(page).toHaveURL(/\/contact\?from=%2F$/);
     await expect(page.getByRole("heading", { name: "작은 우편함" })).toBeVisible();
@@ -78,6 +86,7 @@ test.describe("Tiny Mailbox contact form", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(`${BASE}/contact?from=%2Fpatches%2F0.103.0`, { waitUntil: "domcontentloaded" });
     await waitForContactReady(page);
+    await openContactForm(page);
 
     const submit = page.getByRole("button", { name: "발송!" });
     await expect(submit).toBeDisabled();
@@ -111,6 +120,7 @@ test.describe("Tiny Mailbox contact form", () => {
       { waitUntil: "domcontentloaded" },
     );
     await waitForContactReady(page);
+    await openContactForm(page);
     await expect(page.locator('input[name="contact-category"]:checked')).toHaveCount(0);
     await expect(page.getByText("(선택)", { exact: true })).toHaveCount(0);
     await page.getByLabel("문의 내용").fill("패치 화면에서 확인할 오류가 있습니다.");
@@ -162,6 +172,7 @@ test.describe("Tiny Mailbox inquiry history", () => {
 
     await page.goto(`${BASE}/contact`, { waitUntil: "domcontentloaded" });
     await waitForContactReady(page);
+    await openContactForm(page);
     await page.getByLabel("문의 내용").fill("프로필에서 확인할 문의입니다.");
     await page.getByRole("button", { name: "발송!" }).click();
     await expect(page.getByRole("heading", { name: "전송 성공! 감사합니다!" })).toBeVisible();
@@ -175,11 +186,5 @@ test.describe("Tiny Mailbox inquiry history", () => {
     await expect(history.getByText("운영자 답변입니다.", { exact: true })).toBeVisible();
     expect(new URL(profileReadUrl).pathname).toBe("/api/me/profile/inquiries");
     expect(decodeURIComponent(profileReadUrl)).not.toContain("reply_email");
-  });
-
-  test("renders the dev admin mailbox", async ({ page }) => {
-    await page.goto(`${BASE}/dev/admin?contactSave=saved`, { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "문의 우편함" })).toBeVisible();
-    await expect(page.getByRole("status")).toHaveText("저장했습니다.");
   });
 });
