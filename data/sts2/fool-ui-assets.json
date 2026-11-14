@@ -1,0 +1,38 @@
+{
+ "archiveVersion": "0.113.0",
+ "assets": {
+  "symbol_wah": {
+   "url": "/images/sts2/combat-ui/fool/symbol_wah.webp",
+   "width": 112,
+   "height": 112,
+   "glow": "FF009980"
+  },
+  "symbol_cho": {
+   "url": "/images/sts2/combat-ui/fool/symbol_cho.webp",
+   "width": 112,
+   "height": 112,
+   "glow": "0048FFC0"
+  },
+  "symbol_ki": {
+   "url": "/images/sts2/combat-ui/fool/symbol_ki.webp",
+   "width": 112,
+   "height": 112,
+   "glow": "FF770080"
+  },
+  "fool_symbol_glow": {
+   "url": "/images/sts2/combat-ui/fool/fool_symbol_glow.webp",
+   "width": 112,
+   "height": 112
+  },
+  "arrow": {
+   "url": "/images/sts2/combat-ui/fool/arrow.webp",
+   "width": 33,
+   "height": 260
+  },
+  "arrow_stroke": {
+   "url": "/images/sts2/combat-ui/fool/arrow_stroke.webp",
+   "width": 33,
+   "height": 260
+  }
+ }
+}

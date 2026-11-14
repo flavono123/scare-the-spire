@@ -1324,6 +1324,10 @@
     "select_regent.webp",
     "select_silent.webp"
   ],
+  "combat-ui": [
+    "targeting_arrow_head.webp",
+    "targeting_arrow_segment.webp"
+  ],
   "combat-ui/energy-counters/defect": [
     "defect_orb_layer_1.webp",
     "defect_orb_layer_2.webp",
@@ -1355,6 +1359,14 @@
     "silent_orb_layer_3.webp",
     "silent_orb_layer_4.webp",
     "silent_orb_layer_5.webp"
+  ],
+  "combat-ui/fool": [
+    "arrow_stroke.webp",
+    "arrow.webp",
+    "fool_symbol_glow.webp",
+    "symbol_cho.webp",
+    "symbol_ki.webp",
+    "symbol_wah.webp"
   ],
   "combat-ui/powers": [
     "grasp_power.webp"
@@ -3068,6 +3080,7 @@
     "wuppy.webp"
   ],
   "rooms/rest-sites": [
+    "fool_rest_site_placeholder.webp",
     "glory_rest_site_00.webp",
     "glory_rest_site_fire.webp",
     "hive_rest_site_00.webp",
@@ -3264,12 +3277,14 @@
     "option_clone.webp",
     "option_cook.webp",
     "option_dig.webp",
+    "option_evolve.webp",
     "option_hatch.webp",
     "option_heal.webp",
     "option_kindle.webp",
     "option_lift.webp",
     "option_mend.webp",
     "option_outline.webp",
+    "option_restore.webp",
     "option_smith.webp",
     "option_toke.webp"
   ],
@@ -3319,5 +3334,17 @@
     "glow_card_rare.webp",
     "glow_card_uncommon.webp",
     "star1.webp"
+  ],
+  "vfx/hit": [
+    "vfx_attack_blunt.webp",
+    "vfx_attack_slash.webp",
+    "vfx_bloody_impact.webp",
+    "vfx_coin_explosion_regular.webp",
+    "vfx_dramatic_stab.webp",
+    "vfx_giant_horizontal_slash.webp",
+    "vfx_molten_fist.webp",
+    "vfx_rock_shatter.webp",
+    "vfx_small_magic_missile-50b598.webp",
+    "vfx_thrash.webp"
   ]
 }

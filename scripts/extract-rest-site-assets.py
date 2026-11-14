@@ -9,6 +9,7 @@ Outputs:
     hive_rest_site_00.webp, hive_rest_site_fire.webp
     glory_rest_site_00.webp, glory_rest_site_fire.webp
     underdocks_rest_site_bg.webp, underdocks_rest_site_fire.webp
+    fool_rest_site_placeholder.webp
 
 Sources:
   images/ui/rest_site/*.png.import
@@ -35,6 +36,9 @@ OPTION_IMPORTS = {
     "option_kindle": "images/ui/rest_site/option_kindle.png.import",
     "option_mend": "images/ui/rest_site/option_mend.png.import",
     "option_toke": "images/ui/rest_site/option_toke.png.import",
+    # 0.113.0: Evolve (Byrdpip, Byrdine) and Restore.
+    "option_evolve": "images/ui/rest_site/option_evolve.png.import",
+    "option_restore": "images/ui/rest_site/option_restore.png.import",
 }
 
 CAMP_IMPORTS = {
@@ -46,6 +50,8 @@ CAMP_IMPORTS = {
     "glory_rest_site_fire": "images/rooms/rest_sites/glory/glory_rest_site_fire.png.import",
     "underdocks_rest_site_bg": "images/rooms/rest_sites/underdocks/underdocks_rest_site_bg.png.import",
     "underdocks_rest_site_fire": "images/rooms/rest_sites/underdocks/underdocks_rest_site_fire.png.import",
+    # 0.113.0: the Fool's camp is a still image (not Spine).
+    "fool_rest_site_placeholder": "images/rooms/rest_sites/rest_site_fool_placeholder.png.import",
 }
 
 
