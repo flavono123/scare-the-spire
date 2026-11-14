@@ -20,6 +20,7 @@
 
 | 파일 | Rollout | Order | 적용 | 확인 |
 |---|---|---|---|---|
+| `20261115000000_drop_favorite_tournament_plays_read.sql`(tasks/010 #67: 이아저? 월드컵 플레이 기록 `favorite_tournament_plays`의 anon 읽기 정책과 select 권한 삭제. 읽는 클라이언트 없음, 되돌리기 `favorite-plays-read/rollback_favorite_tournament_plays_read.sql`) | contract-cleanup | later-release(읽는 앱이 없어 순서와 무관하게 안전하다. 사용자 승인 때 앞당길 수 있다) | 적용 안 함 | 로컬 PGlite `pnpm test:write-gate` 통과 |
 | `20261109150000_worker_read_actor.sql`(4단계 쿠키만 있는 신원의 개인 읽기: 프로필·퍼즐상자 읽기 RPC 넷의 `worker_*` 래퍼, service_role만. 되돌리기 `worker-read-actor/rollback_worker_read_actor.sql`) | db-first-additive | before-push(어느 env든 `identity.mode = cookie` 전. testbed는 이미 cookie라 그 전까지 프로필 통계·활동과 퍼즐상자 `me` 읽기가 실패) | 적용 안 함(`step4/prereqs`) | 로컬 PGlite `pnpm test:write-gate` 통과(개인 읽기 22가지 동등, 되돌리기 두 번) |
 
 ## D1 마이그레이션
