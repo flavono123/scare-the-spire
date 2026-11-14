@@ -6,6 +6,7 @@ presentation steps the combat simulator replays: the player's `TriggerAnim`, `Da
 chains (hit count, attacker animation, `WithHitFx` scene), dedicated VFX nodes
 (`N...Vfx.Create(...)`), `GainBlock`, and waits. Numbers stay symbolic (`CastAnimDelay`,
 `DynamicVars.Damage`): the simulator resolves them from the character and the versioned card vars.
+`other` lists the commands (`PowerCmd.Apply`, `CardPileCmd.Draw`, ...) the simulator does not replay.
 
     python3 scripts/extract-card-presentation.py --archive-version 0.113.0
 
@@ -184,6 +185,48 @@ def presentation(body: str) -> list[dict]:
     return [step for _, step in found]
 
 
+HANDLED_COMMANDS = {"DamageCmd.Attack", "CreatureCmd.TriggerAnim", "CreatureCmd.GainBlock", "Cmd.Wait", "Cmd.CustomScaledWait", "SfxCmd.Play"}
+# Commands that only read or schedule; they do not change what the player sees on the stage.
+IGNORED_COMMANDS = {"Cmd.Wait"}
+
+
+def other_commands(body: str) -> list[str]:
+    """Commands the presentation does not replay (`PowerCmd.Apply`, `CardPileCmd.Draw`, ...), once each."""
+    seen: list[str] = []
+    for match in re.finditer(r"\b(\w+Cmd)\.(\w+)\s*(?:<[^>()]*>)?\s*\(", body):
+        name = f"{match.group(1)}.{match.group(2)}"
+        if name not in HANDLED_COMMANDS and name not in seen:
+            seen.append(name)
+    return seen
+
+
+def class_wait_seconds(vfx_dir: str, class_name: str) -> float | None:
+    """`float WaitTime { get; private set; } = 0.2f;` of a dedicated VFX node."""
+    path = os.path.join(vfx_dir, f"{class_name}.cs")
+    if not os.path.exists(path):
+        return None
+    match = re.search(r"float WaitTime\s*\{[^}]*\}\s*=\s*([0-9.]+)f", open(path, encoding="utf8").read())
+    return float(match.group(1)) if match else None
+
+
+def resolve_waits(steps: list[dict], vfx_dir: str) -> None:
+    for step in steps:
+        if step["op"] != "wait":
+            continue
+        raw = step["seconds"]
+        literal = re.fullmatch(r"([0-9.]+)f?", raw.strip())
+        if literal:
+            step["seconds"] = float(literal.group(1))
+            continue
+        owner = re.fullmatch(r"(\w+)\.WaitTime", raw.strip())
+        if owner:
+            class_name = owner.group(1)[0].upper() + owner.group(1)[1:]
+            seconds = class_wait_seconds(vfx_dir, class_name)
+            if seconds is not None:
+                step["seconds"] = seconds
+                step["of"] = class_name
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--archive-version", default="0.113.0")
@@ -194,6 +237,7 @@ def main() -> None:
     if not os.path.isdir(cards_dir):
         sys.exit(f"no decompiled cards at {cards_dir} (see docs/COMBAT_SIM.md, 'Build archive')")
 
+    vfx_dir = os.path.join(args.builds_dir, args.archive_version, "src", "MegaCrit.Sts2.Core.Nodes.Vfx")
     cards: dict[str, dict] = {}
     for file in sorted(os.listdir(cards_dir)):
         if not file.endswith(".cs"):
@@ -206,8 +250,10 @@ def main() -> None:
         if body is None:
             continue
         steps = presentation(body)
-        if steps:
-            cards[pascal_to_id(class_match.group(1))] = {"source": file, "steps": steps}
+        resolve_waits(steps, vfx_dir)
+        other = other_commands(body)
+        if steps or other:
+            cards[pascal_to_id(class_match.group(1))] = {"source": file, "steps": steps, **({"other": other} if other else {})}
 
     payload = {
         "archiveVersion": args.archive_version,

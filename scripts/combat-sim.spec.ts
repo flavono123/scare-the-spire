@@ -200,6 +200,59 @@ async function main() {
     console.log("skip Axebots: build archive not found");
   }
 
+  // --- monsters= and monsterHp=, card presentation, monster death (0.113.0 source) --------------
+  if (archiveDir("0.113.0")) {
+    const monsterQuery = parseCombatSimQuery({
+      version: "0.113.0",
+      character: "REGENT",
+      monsters: "ASSASSIN_RUBY_RAIDER,BYRDONIS,TRACKER_RUBY_RAIDER",
+      monsterHp: "BYRDONIS=20",
+      hand: "COMET",
+      script: "play:COMET@1",
+      layout: "shorts",
+      hp: "0",
+    });
+    assert.deepEqual(monsterQuery.errors, []);
+    assert.equal(monsterQuery.input?.encounter, undefined);
+    assert.equal(monsterQuery.input?.hp, undefined, "hp=0 hides the bars, it is not the player's HP");
+    assert.deepEqual(
+      { ...monsterQuery.options, t: null },
+      { t: null, autoplay: false, frame: 360, badges: false, hpBars: false, intents: false, ui: "card", bgHeight: 1050, feetY: 840, crop: 1050, layer: "all" },
+    );
+
+    const comet = await loadCombatSimCatalog(monsterQuery.input!);
+    assert.deepEqual(comet.catalog.encounter.monsters.map((entry) => entry.monsterId), ["ASSASSIN_RUBY_RAIDER", "BYRDONIS", "TRACKER_RUBY_RAIDER"]);
+    assert.ok(comet.catalog.encounter.monsters.every((entry) => entry.slot === null));
+    const run = runCombat(monsterQuery.input!, comet.catalog);
+    assert.equal(run.start.monsters[1].hp, 20);
+    // Comet has no hand-written recipe: its OnPlay presentation plays (Cast, the missile, a wait, 33 damage).
+    const playEvents = run.steps.filter((step) => step.action === 0).map((step) => step.event);
+    const cast = playEvents.find((event) => event.kind === "animate");
+    assert.ok(cast?.kind === "animate" && cast.animation === "cast" && cast.delayMs === comet.catalog.character!.castAnimDelay * 1000 && cast.delayMs > 0);
+    const missile = playEvents.find((event) => event.kind === "vfx");
+    assert.ok(missile?.kind === "vfx" && missile.effect === "NSmallMagicMissileVfx" && missile.target === "m1" && missile.color === "50b598" && missile.at === "bottom");
+    const damage = playEvents.find((event) => event.kind === "damage");
+    assert.ok(damage?.kind === "damage" && damage.amount === 33 && damage.hpFrom === 20 && damage.hpTo === 0);
+    // A killing blow starts the death animation, not the hit animation.
+    const animations = playEvents.flatMap((event) => (event.kind === "animate" ? [event.animation] : []));
+    assert.deepEqual(animations, ["cast", "die"]);
+    assert.ok(playEvents.some((event) => event.kind === "unimplemented" && event.what.includes("PowerCmd.Apply")));
+    // The missile's own wait is Cmd.Wait(0.2): not scaled by Fast, skipped on Instant.
+    const missileWait = (speed: "normal" | "fast" | "instant") =>
+      buildTimeline(run, { ...monsterQuery.input!, speed }).beats.find((beat) => beat.event.kind === "pause" && beat.event.reason === "NSmallMagicMissileVfx")!.duration;
+    assert.deepEqual([missileWait("normal"), missileWait("fast"), missileWait("instant")], [200, 200, 0]);
+
+    // A hit VFX scene comes from WithHitFx; a recipe card (Strike) plays it too, before its damage.
+    const slash = { version: "0.113.0", character: "SILENT", monsters: ["BYRDONIS"], hand: ["STRIKE_SILENT"], script: [{ do: "play" as const, card: "STRIKE_SILENT", target: 0 }] };
+    const slashLoad = await loadCombatSimCatalog(slash);
+    const slashEvents = runCombat(slash, slashLoad.catalog).steps.map((step) => step.event.kind);
+    assert.ok(slashEvents.indexOf("vfx") > 0 && slashEvents.indexOf("vfx") < slashEvents.indexOf("damage"));
+    // A monster not in the given scene's encounter, and a missing background encounter, both resolve.
+    await assert.rejects(loadCombatSimCatalog({ version: "0.113.0", monsters: ["NO_SUCH_MONSTER"] }), /배경으로 쓸 조우/);
+  } else {
+    console.log("skip monsters=, presentation: 0.113.0 build archive not found");
+  }
+
   console.log("combat sim OK");
 }
 

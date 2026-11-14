@@ -144,6 +144,36 @@ export interface SimCharacterDef {
   maxEnergy: number;
   /** CharacterModel.AttackAnimDelay seconds (AttackCommand.FromCard). */
   attackAnimDelay: number;
+  /** CharacterModel.CastAnimDelay / PowerUpAnimDelay seconds (`TriggerAnim(..., "Cast" / "PowerUp", delay)`). */
+  castAnimDelay: number;
+  powerUpAnimDelay: number;
+}
+
+/**
+ * One step of what a card's `OnPlay` shows, read from the build source in order
+ * (`data/sts2/card-presentation.json`, `scripts/extract-card-presentation.py`). Numbers stay symbolic.
+ */
+export type PresentationStep =
+  | { op: "anim"; who: string; name: string; delay: string | null }
+  | {
+    op: "attack";
+    amount: string;
+    hitCount?: string;
+    /** Absent: the default Attack animation; null: `WithNoAttackerAnim`. */
+    attackerAnim?: { name: string; delay: string | null } | null;
+    hitFx?: { scene: string | null; sfx?: string };
+    targeting?: "target" | "allEnemies" | "randomEnemy";
+    hitVfxAtBase?: boolean;
+  }
+  | { op: "vfx"; class: string; args: string; color?: string; anchor?: string }
+  | { op: "block" }
+  | { op: "wait"; seconds: number | string; of?: string }
+  | { op: "sfx"; event: string };
+
+export interface CardPresentation {
+  steps: PresentationStep[];
+  /** Commands the simulator does not replay (`PowerCmd.Apply`, `CardPileCmd.Draw`, ...). */
+  other?: string[];
 }
 
 export interface SimEncounterDef {
@@ -159,6 +189,8 @@ export interface SimCatalog {
   character: SimCharacterDef | null;
   encounter: SimEncounterDef;
   cards: Record<string, SimCardDef>;
+  /** What each played card shows (animations, hit VFX, damage); see `PresentationStep`. */
+  presentation: Record<string, CardPresentation>;
   monsters: Record<string, SimMonsterDef>;
   powers: Record<string, SimPowerDef>;
   afflictions: Record<string, SimAfflictionDef>;
@@ -226,7 +258,13 @@ export type SimEvent =
    * CreatureCmd.TriggerAnim: waits `delayMs` (Normal) / min(delay / 2, 250 ms) (Fast) / 0 (Instant).
    * `normalExtraMs` is added to the delay only on Normal (e.g. Neutralize's +0.2 s).
    */
-  | { kind: "animate"; creature: string; animation: "cast" | "attack" | "hurt" | "die"; delayMs: number; normalExtraMs?: number }
+  | { kind: "animate"; creature: string; animation: "cast" | "powerUp" | "attack" | "hurt" | "die"; delayMs: number; normalExtraMs?: number }
+  /**
+   * A VFX the card spawns, not awaited (its wait is a separate `pause`): a hit VFX scene
+   * (`vfx/vfx_attack_slash`, from `WithHitFx`, `at` the creature's center or base) or a dedicated node
+   * class (`NSmallMagicMissileVfx`, tinted by `color`, anchored at the bottom of the target's hitbox).
+   */
+  | { kind: "vfx"; effect: string; target: string | null; at?: "center" | "base" | "bottom"; color?: string }
   /**
    * Cmd.CustomScaledWait(fast, normal): Instant waits 0. With `sincePlayMove`, the
    * time since that step's play move finished is subtracted (OnPlayWrapper's

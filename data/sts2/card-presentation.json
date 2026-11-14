@@ -11,6 +11,18 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "ABUNDANCE": {
+   "source": "Abundance.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardSelectCmd.FromChooseACardScreen",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "ACCELERANT": {
@@ -22,6 +34,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ACCURACY": {
@@ -33,6 +48,18 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "ACROBATICS": {
+   "source": "Acrobatics.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardSelectCmd.FromHandForDiscard",
+    "CardCmd.Discard"
    ]
   },
   "ADAPTIVE_STRIKE": {
@@ -46,6 +73,19 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
+   ]
+  },
+  "ADRENALINE": {
+   "source": "Adrenaline.cs",
+   "steps": [],
+   "other": [
+    "VfxCmd.PlayFullScreenInCombat",
+    "PlayerCmd.GainEnergy",
+    "CardPileCmd.Draw"
    ]
   },
   "AFTERIMAGE": {
@@ -57,6 +97,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "AFTERLIFE": {
@@ -68,6 +111,9 @@
      "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
      "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
     }
+   ],
+   "other": [
+    "OstyCmd.Summon"
    ]
   },
   "AGGRESSION": {
@@ -79,6 +125,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ALCHEMIZE": {
@@ -90,6 +139,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PotionCmd.TryToProcure"
    ]
   },
   "ALIGNMENT": {
@@ -101,6 +153,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy"
    ]
   },
   "ALL_FOR_ONE": {
@@ -116,6 +171,16 @@
      },
      "hitVfxAtBase": true
     }
+   ],
+   "other": [
+    "CardPileCmd.Add"
+   ]
+  },
+  "ALL_IS_WELL": {
+   "source": "AllIsWell.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ANGER": {
@@ -129,6 +194,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "ANGUISH": {
@@ -145,6 +214,13 @@
     }
    ]
   },
+  "ANOINTED": {
+   "source": "Anointed.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Add"
+   ]
+  },
   "ANTICIPATE": {
    "source": "Anticipate.cs",
    "steps": [
@@ -154,6 +230,16 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "APOTHEOSIS": {
+   "source": "Apotheosis.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Upgrade"
    ]
   },
   "APPARITION": {
@@ -165,6 +251,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ARCHERY": {
@@ -176,6 +265,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ARMAMENTS": {
@@ -184,6 +276,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardSelectCmd.FromHandForUpgrade"
    ]
   },
   "ARROW_STAB": {
@@ -198,6 +294,11 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.PlayerHasAnyArrows",
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
    ]
   },
   "ARSENAL": {
@@ -209,6 +310,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ASHEN_STRIKE": {
@@ -236,6 +340,9 @@
       "scene": "vfx/vfx_dramatic_stab"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ASTRAL_PULSE": {
@@ -253,12 +360,22 @@
     }
    ]
   },
+  "AUTOMATION": {
+   "source": "Automation.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
   "BACKFLIP": {
    "source": "Backflip.cs",
    "steps": [
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "BACKSTAB": {
@@ -287,6 +404,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "BANSHEES_CRY": {
@@ -325,6 +445,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BASH": {
@@ -339,6 +462,17 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "BATTLE_TRANCE": {
+   "source": "BattleTrance.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw",
+    "PowerCmd.Apply"
    ]
   },
   "BEACON_OF_HOPE": {
@@ -350,6 +484,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BEAM_CELL": {
@@ -364,6 +501,16 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "BEAT_DOWN": {
+   "source": "BeatDown.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.AutoPlay"
    ]
   },
   "BEAT_INTO_SHAPE": {
@@ -378,6 +525,25 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "ForgeCmd.Forge"
+   ]
+  },
+  "BEGONE": {
+   "source": "Begone.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardCmd.Upgrade",
+    "CardCmd.Transform"
+   ]
+  },
+  "BELIEVE_IN_YOU": {
+   "source": "BelieveInYou.cs",
+   "steps": [],
+   "other": [
+    "PlayerCmd.GainEnergy"
    ]
   },
   "BIASED_COGNITION": {
@@ -389,6 +555,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BIG_BANG": {
@@ -400,6 +569,12 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw",
+    "PlayerCmd.GainStars",
+    "PlayerCmd.GainEnergy",
+    "ForgeCmd.Forge"
    ]
   },
   "BLACK_HOLE": {
@@ -411,6 +586,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BLADE_DANCE": {
@@ -424,8 +602,15 @@
     },
     {
      "op": "wait",
-     "seconds": "0.1f"
+     "seconds": 0.1
     }
+   ]
+  },
+  "BLADE_OF_INK": {
+   "source": "BladeOfInk.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Enchant"
    ]
   },
   "BLADE_SYMPHONY": {
@@ -439,8 +624,15 @@
     },
     {
      "op": "wait",
-     "seconds": "0.1f"
+     "seconds": 0.1
     }
+   ]
+  },
+  "BLAZE": {
+   "source": "Blaze.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BLIGHT_STRIKE": {
@@ -454,6 +646,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BLOOD_WALL": {
@@ -472,6 +667,11 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "VfxCmd.PlayOnCreatureCenter",
+    "CreatureCmd.Damage",
+    "VfxCmd.PlayOnCreature"
    ]
   },
   "BLOODLETTING": {
@@ -483,6 +683,11 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "VfxCmd.PlayOnCreatureCenter",
+    "CreatureCmd.Damage",
+    "PlayerCmd.GainEnergy"
    ]
   },
   "BLOSSOM_SHOT": {
@@ -503,6 +708,17 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget",
+    "PowerCmd.Apply"
+   ]
+  },
+  "BLOT_OUT_THE_SKY": {
+   "source": "BlotOutTheSky.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "BLUDGEON": {
@@ -530,6 +746,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BODY_SLAM": {
@@ -555,6 +774,9 @@
      "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
      "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
     }
+   ],
+   "other": [
+    "OstyCmd.Summon"
    ]
   },
   "BOLAS": {
@@ -588,7 +810,8 @@
     },
     {
      "op": "wait",
-     "seconds": "nLargeMagicMissileVfx.WaitTime"
+     "seconds": 0.2,
+     "of": "NLargeMagicMissileVfx"
     },
     {
      "op": "attack",
@@ -616,6 +839,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CreatureCmd.Kill"
    ]
   },
   "BOOST_AWAY": {
@@ -626,8 +852,12 @@
     },
     {
      "op": "wait",
-     "seconds": "0.5f"
+     "seconds": 0.5
     }
+   ],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "BOOT_SEQUENCE": {
@@ -647,6 +877,17 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy",
+    "PowerCmd.Apply"
+   ]
+  },
+  "BOUNCE": {
+   "source": "Bounce.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BOUNCING_FLASK": {
@@ -666,7 +907,7 @@
     },
     {
      "op": "wait",
-     "seconds": "0.5f"
+     "seconds": 0.5
     },
     {
      "op": "vfx",
@@ -683,6 +924,9 @@
      "class": "NGaseousImpactVfx",
      "args": "targetNode.VfxSpawnPosition, _vfxTint"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BOW_SMACK": {
@@ -697,6 +941,10 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.CreatureIsImpaledByArrow",
+    "PlayerCmd.GainEnergy"
    ]
   },
   "BRACE": {
@@ -708,6 +956,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BRAND": {
@@ -728,6 +979,13 @@
      "op": "sfx",
      "event": "event:/sfx/characters/attack_fire"
     }
+   ],
+   "other": [
+    "VfxCmd.PlayOnCreatureCenter",
+    "CreatureCmd.Damage",
+    "CardSelectCmd.FromHand",
+    "CardCmd.Exhaust",
+    "PowerCmd.Apply"
    ]
   },
   "BREAK": {
@@ -747,6 +1005,9 @@
      },
      "hitVfxAtBase": true
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BREAKTHROUGH": {
@@ -761,6 +1022,10 @@
       "sfx": "heavy_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "VfxCmd.PlayOnCreatureCenter",
+    "CreatureCmd.Damage"
    ]
   },
   "BRIGHTEN_UP": {
@@ -776,6 +1041,18 @@
      "op": "sfx",
      "event": "event:/sfx/characters/fugitive/fugitive_joy"
     }
+   ],
+   "other": [
+    "CardPileCmd.AddGeneratedCardsToCombat"
+   ]
+  },
+  "BRIGHTEST_FLAME": {
+   "source": "BrightestFlame.cs",
+   "steps": [],
+   "other": [
+    "PlayerCmd.GainEnergy",
+    "CardPileCmd.Draw",
+    "CreatureCmd.LoseMaxHp"
    ]
   },
   "BUBBLE_BUBBLE": {
@@ -793,6 +1070,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BUFFER": {
@@ -804,6 +1084,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BULK_UP": {
@@ -815,6 +1098,10 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.RemoveSlots",
+    "PowerCmd.Apply"
    ]
   },
   "BULLET_TIME": {
@@ -826,6 +1113,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BULLY": {
@@ -854,6 +1144,16 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "ForgeCmd.Forge"
+   ]
+  },
+  "BUNDLE_OF_JOY": {
+   "source": "BundleOfJoy.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "BURNING_PACT": {
@@ -865,6 +1165,11 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardCmd.Exhaust",
+    "CardPileCmd.Draw"
    ]
   },
   "BURST": {
@@ -876,6 +1181,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "BURY": {
@@ -917,6 +1225,20 @@
     }
    ]
   },
+  "CACOPHONY": {
+   "source": "Cacophony.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "CALAMITY": {
+   "source": "Calamity.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
   "CALCIFY": {
    "source": "Calcify.cs",
    "steps": [
@@ -926,6 +1248,16 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "CALCULATED_GAMBLE": {
+   "source": "CalculatedGamble.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.DiscardAndDraw"
    ]
   },
   "CALL_OF_THE_VOID": {
@@ -937,6 +1269,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CALTROPS": {
@@ -948,6 +1283,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CAPACITOR": {
@@ -959,6 +1297,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.AddSlots"
    ]
   },
   "CAPTURE_SPIRIT": {
@@ -970,6 +1311,25 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CreatureCmd.Damage",
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardsToCombat"
+   ]
+  },
+  "CASCADE": {
+   "source": "Cascade.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.AutoPlayFromDrawPile"
+   ]
+  },
+  "CATASTROPHE": {
+   "source": "Catastrophe.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.AutoPlay"
    ]
   },
   "CELESTIAL_MIGHT": {
@@ -996,6 +1356,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "CHARGE": {
@@ -1007,6 +1370,11 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardCmd.TransformTo",
+    "CardCmd.Upgrade"
    ]
   },
   "CHARGE_BATTERY": {
@@ -1021,6 +1389,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CHILD_OF_THE_STARS": {
@@ -1032,6 +1403,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CHILL": {
@@ -1043,6 +1417,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "CHO_BARBS": {
@@ -1051,6 +1428,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "PowerCmd.Apply"
    ]
   },
   "CHO_CHORUS": {
@@ -1065,6 +1446,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "CardCmd.AutoPlay"
    ]
   },
   "CHO_FIRM": {
@@ -1079,6 +1464,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "ArrowCmd.PlayerHasAnyArrows"
    ]
   },
   "CHO_KI": {
@@ -1093,6 +1482,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "PowerCmd.Apply"
    ]
   },
   "CHO_LIMBS": {
@@ -1107,6 +1500,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx"
    ]
   },
   "CHO_READY": {
@@ -1115,6 +1511,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "PowerCmd.Apply"
    ]
   },
   "CINDER": {
@@ -1137,6 +1537,9 @@
      "class": "NFireBurstVfx",
      "args": "t, 0.75f"
     }
+   ],
+   "other": [
+    "CardCmd.Exhaust"
    ]
   },
   "CLASH": {
@@ -1179,6 +1582,11 @@
      "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
      "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
     }
+   ],
+   "other": [
+    "OstyCmd.Summon",
+    "CardSelectCmd.FromCombatPile",
+    "CardCmd.Exhaust"
    ]
   },
   "CLOAK_AND_DAGGER": {
@@ -1189,7 +1597,7 @@
     },
     {
      "op": "wait",
-     "seconds": "0.25f"
+     "seconds": 0.25
     }
    ]
   },
@@ -1228,6 +1636,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "COLLISION_COURSE": {
@@ -1244,8 +1655,11 @@
     },
     {
      "op": "wait",
-     "seconds": "0.5f"
+     "seconds": 0.5
     }
+   ],
+   "other": [
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "COLOSSUS": {
@@ -1260,6 +1674,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "COMET": {
@@ -1280,7 +1697,8 @@
     },
     {
      "op": "wait",
-     "seconds": "nSmallMagicMissileVfx.WaitTime"
+     "seconds": 0.2,
+     "of": "NSmallMagicMissileVfx"
     },
     {
      "op": "attack",
@@ -1288,6 +1706,9 @@
      "targeting": "target",
      "attackerAnim": null
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "COMPACT": {
@@ -1302,6 +1723,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardCmd.Transform"
    ]
   },
   "COMPILE_DRIVER": {
@@ -1316,6 +1741,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "COMPOST": {
@@ -1327,6 +1755,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CONCOCT": {
@@ -1338,6 +1769,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CONFLAGRATION": {
@@ -1369,6 +1803,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "ForgeCmd.Forge",
+    "PowerCmd.Apply"
    ]
   },
   "CONSTELLATION": {
@@ -1389,6 +1827,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw",
+    "PlayerCmd.GainEnergy"
    ]
   },
   "CONSUMING_SHADOW": {
@@ -1400,6 +1842,10 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel",
+    "PowerCmd.Apply"
    ]
   },
   "CONVERGENCE": {
@@ -1411,6 +1857,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "COOLANT": {
@@ -1422,6 +1871,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "COOLHEADED": {
@@ -1433,6 +1885,17 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel",
+    "CardPileCmd.Draw"
+   ]
+  },
+  "COORDINATE": {
+   "source": "Coordinate.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CORROSIVE_WAVE": {
@@ -1444,6 +1907,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CORRUPTION": {
@@ -1455,6 +1921,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "COSMIC_INDIFFERENCE": {
@@ -1463,6 +1932,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
    ]
   },
   "COUNTDOWN": {
@@ -1474,6 +1947,16 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "COVERING_FIRE": {
+   "source": "CoveringFire.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CRASH_LANDING": {
@@ -1489,6 +1972,9 @@
      },
      "hitVfxAtBase": true
     }
+   ],
+   "other": [
+    "CardPileCmd.AddGeneratedCardsToCombat"
    ]
   },
   "CREATIVE_AI": {
@@ -1500,6 +1986,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CRESCENT_SPEAR": {
@@ -1524,6 +2013,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CRUELTY": {
@@ -1535,6 +2027,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "CRUSH_UNDER": {
@@ -1561,6 +2056,9 @@
      },
      "hitVfxAtBase": true
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DAGGER_SPRAY": {
@@ -1618,6 +2116,11 @@
      "args": "t, new Color(\"#b1ccca\"), goingRight: true",
      "color": "b1ccca"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardSelectCmd.FromHandForDiscard",
+    "CardCmd.Discard"
    ]
   },
   "DANSE_MACABRE": {
@@ -1629,6 +2132,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DARK_EMBRACE": {
@@ -1640,6 +2146,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DARK_SHACKLES": {
@@ -1651,6 +2160,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DARKNESS": {
@@ -1662,6 +2174,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel",
+    "OrbCmd.Passive"
    ]
   },
   "DASH": {
@@ -1694,6 +2210,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DEATH": {
@@ -1705,6 +2224,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DEATH_MARCH": {
@@ -1729,6 +2251,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DEATHS_DOOR": {
@@ -1756,6 +2281,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DECISIONS_DECISIONS": {
@@ -1767,6 +2295,19 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardSelectCmd.FromHand",
+    "CardCmd.AutoPlay"
+   ]
+  },
+  "DEEP_STRETCH": {
+   "source": "DeepStretch.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply",
+    "CardPileCmd.Draw"
    ]
   },
   "DEFEND_DEFECT": {
@@ -1847,6 +2388,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DEFY": {
@@ -1861,6 +2405,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DELAY": {
@@ -1875,6 +2422,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DEMESNE": {
@@ -1886,6 +2436,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DEMON_FORM": {
@@ -1897,6 +2450,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DEMONIC_SHIELD": {
@@ -1905,6 +2461,18 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "VfxCmd.PlayOnCreatureCenter",
+    "CreatureCmd.Damage"
+   ]
+  },
+  "DEPRECATED_CARD": {
+   "source": "DeprecatedCard.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardPileCmd.RemoveFromDeck"
    ]
   },
   "DEVASTATE": {
@@ -1930,6 +2498,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DINGY_DAGGER": {
@@ -1954,6 +2525,20 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OstyCmd.Summon",
+    "CardCmd.Upgrade",
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardsToCombat"
+   ]
+  },
+  "DISCOVERY": {
+   "source": "Discovery.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromChooseACardScreen",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "DISLIKE_YOU": {
@@ -1967,6 +2552,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DISMANTLE": {
@@ -1982,6 +2570,13 @@
       "sfx": "heavy_attack.mp3"
      }
     }
+   ]
+  },
+  "DISTRACTION": {
+   "source": "Distraction.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "DIVINE_SHOT": {
@@ -2002,6 +2597,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget"
    ]
   },
   "DODGE_AND_ROLL": {
@@ -2010,6 +2608,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DOMINATE": {
@@ -2021,6 +2622,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "DOUBLE_ENERGY": {
@@ -2032,6 +2636,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy"
    ]
   },
   "DRAIN_POWER": {
@@ -2045,6 +2652,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardCmd.Preview"
    ]
   },
   "DRAMATIC_ENTRANCE": {
@@ -2064,6 +2675,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "VfxCmd.PlayFullScreenInCombat"
    ]
   },
   "DREDGE": {
@@ -2075,6 +2689,25 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardPileCmd.Add",
+    "CardSelectCmd.FromCombatPile"
+   ]
+  },
+  "DRUM_OF_BATTLE": {
+   "source": "DrumOfBattle.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw"
+   ]
+  },
+  "DUAL_WIELD": {
+   "source": "DualWield.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "DUALCAST": {
@@ -2090,6 +2723,9 @@
      "op": "wait",
      "seconds": "0.1f, 0.25f"
     }
+   ],
+   "other": [
+    "OrbCmd.EvokeNext"
    ]
   },
   "DYING_STAR": {
@@ -2110,6 +2746,10 @@
      },
      "hitVfxOnEach": true
     }
+   ],
+   "other": [
+    "PowerCmd.Apply",
+    "VfxCmd.PlayOnCreature"
    ]
   },
   "ECHO_FORM": {
@@ -2121,6 +2761,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ECHOING_SLASH": {
@@ -2132,6 +2775,9 @@
      "name": "Attack",
      "delay": "base.Owner.Character.AttackAnimDelay"
     }
+   ],
+   "other": [
+    "CreatureCmd.Damage"
    ]
   },
   "ECSTASY": {
@@ -2147,6 +2793,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "EIDOLON": {
@@ -2158,6 +2807,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardCmd.AutoPlay"
    ]
   },
   "ENCORE": {
@@ -2169,6 +2821,11 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy",
+    "CardPileCmd.Draw",
+    "PowerCmd.Apply"
    ]
   },
   "END_OF_DAYS": {
@@ -2188,8 +2845,13 @@
     },
     {
      "op": "wait",
-     "seconds": "nLargeMagicMissileVfx.WaitTime"
+     "seconds": 0.2,
+     "of": "NLargeMagicMissileVfx"
     }
+   ],
+   "other": [
+    "VfxCmd.GetSideCenterFloor",
+    "PowerCmd.Apply"
    ]
   },
   "ENERGY_SURGE": {
@@ -2201,6 +2863,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy"
    ]
   },
   "ENFEEBLING_TOUCH": {
@@ -2212,6 +2877,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ENNUI": {
@@ -2223,6 +2891,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ENRAPTURE": {
@@ -2234,6 +2905,16 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "ENSEMBLE": {
+   "source": "Ensemble.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ENTRENCH": {
@@ -2242,6 +2923,13 @@
     {
      "op": "block"
     }
+   ]
+  },
+  "ENTROPY": {
+   "source": "Entropy.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ENVENOM": {
@@ -2253,6 +2941,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "EPIC_RETRIEVAL": {
@@ -2274,6 +2965,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ERADICATE": {
@@ -2296,6 +2990,16 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
+   ]
+  },
+  "ETERNAL_ARMOR": {
+   "source": "EternalArmor.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "EVIL_EYE": {
@@ -2310,6 +3014,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "VfxCmd.PlayOnCreatureCenter"
    ]
   },
   "EXPECT_AFIGHT": {
@@ -2326,6 +3033,21 @@
     }
    ]
   },
+  "EXPERTISE": {
+   "source": "Expertise.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw",
+    "PowerCmd.Apply"
+   ]
+  },
+  "EXPLOSIVE_ARROWS": {
+   "source": "ExplosiveArrows.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
   "EXPOSE": {
    "source": "Expose.cs",
    "steps": [
@@ -2335,6 +3057,12 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "VfxCmd.PlayOnCreatureCenter",
+    "CreatureCmd.LoseBlock",
+    "PowerCmd.Remove",
+    "PowerCmd.Apply"
    ]
   },
   "EXTERMINATE": {
@@ -2351,6 +3079,13 @@
     }
    ]
   },
+  "FADE": {
+   "source": "Fade.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
   "FALLING_STAR": {
    "source": "FallingStar.cs",
    "steps": [
@@ -2362,6 +3097,9 @@
       "scene": "vfx/vfx_starry_impact"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FAN_OF_KNIVES": {
@@ -2371,6 +3109,16 @@
      "op": "wait",
      "seconds": "0.1f, 0.2f"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "FASTEN": {
+   "source": "Fasten.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FEAR": {
@@ -2390,6 +3138,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.AttackAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FEED": {
@@ -2404,6 +3155,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "CreatureCmd.GainMaxHp"
    ]
   },
   "FEEDING_FRENZY": {
@@ -2415,6 +3169,16 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "FEEL_NO_PAIN": {
+   "source": "FeelNoPain.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FERAL": {
@@ -2426,6 +3190,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FETCH": {
@@ -2440,6 +3207,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "FIEND_FIRE": {
@@ -2463,6 +3233,9 @@
      "op": "sfx",
      "event": "event:/sfx/characters/attack_fire"
     }
+   ],
+   "other": [
+    "CardCmd.Exhaust"
    ]
   },
   "FIGHT_ME": {
@@ -2478,6 +3251,9 @@
       "sfx": "heavy_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FIGHT_THROUGH": {
@@ -2486,6 +3262,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "FINESSE": {
@@ -2494,6 +3274,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "FINISHER": {
@@ -2548,6 +3331,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "CardCmd.Exhaust"
    ]
   },
   "FLAME_BARRIER": {
@@ -2561,6 +3347,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FLANKING": {
@@ -2572,6 +3361,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FLASH_OF_STEEL": {
@@ -2591,6 +3383,9 @@
       "delay": "num"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "FLATTEN": {
@@ -2641,6 +3436,15 @@
     }
    ]
   },
+  "FLORESCENCE": {
+   "source": "Florescence.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Exhaust",
+    "CardCmd.Upgrade",
+    "CardPileCmd.AddGeneratedCardToCombat"
+   ]
+  },
   "FOCUSED_STRIKE": {
    "source": "FocusedStrike.cs",
    "steps": [
@@ -2652,6 +3456,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FOOLISH_SHOT": {
@@ -2672,6 +3479,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget"
    ]
   },
   "FOOTWORK": {
@@ -2683,6 +3493,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FORBIDDEN_GRIMOIRE": {
@@ -2694,6 +3507,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FOREGONE_CONCLUSION": {
@@ -2705,6 +3521,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FORGOTTEN_RITUAL": {
@@ -2721,6 +3540,16 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy"
+   ]
+  },
+  "FRANTIC_ESCAPE": {
+   "source": "FranticEscape.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.ModifyAmount"
    ]
   },
   "FRIENDSHIP": {
@@ -2732,6 +3561,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FTL": {
@@ -2745,6 +3577,16 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
+   ]
+  },
+  "FUEL": {
+   "source": "Fuel.cs",
+   "steps": [],
+   "other": [
+    "PlayerCmd.GainEnergy"
    ]
   },
   "FURNACE": {
@@ -2756,6 +3598,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "FUSION": {
@@ -2767,6 +3612,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "GAMMA_BLAST": {
@@ -2780,6 +3628,9 @@
       "scene": "vfx/vfx_giant_horizontal_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "GANG_UP": {
@@ -2802,6 +3653,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainStars"
    ]
   },
   "GENESIS": {
@@ -2813,6 +3667,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "GENETIC_ALGORITHM": {
@@ -2849,6 +3706,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "GLASSWORK": {
@@ -2863,6 +3723,18 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
+   ]
+  },
+  "GLIMMER": {
+   "source": "Glimmer.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardSelectCmd.FromHand",
+    "CardPileCmd.Add"
    ]
   },
   "GLIMPSE_BEYOND": {
@@ -2874,6 +3746,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardPileCmd.AddGeneratedCardsToCombat",
+    "CardCmd.PreviewCardPileAdd"
    ]
   },
   "GLITTERSTREAM": {
@@ -2888,6 +3764,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "GLOW": {
@@ -2899,6 +3778,11 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainStars",
+    "CardPileCmd.Draw",
+    "PowerCmd.Apply"
    ]
   },
   "GO_FOR_THE_EYES": {
@@ -2913,6 +3797,16 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "GOD_BYRD": {
+   "source": "GodByrd.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "GOLD_AXE": {
@@ -2939,7 +3833,7 @@
     },
     {
      "op": "wait",
-     "seconds": "1.625f"
+     "seconds": 1.625
     },
     {
      "op": "attack",
@@ -2967,6 +3861,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardsToCombat"
    ]
   },
   "GRAVEBLAST": {
@@ -2980,6 +3878,18 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
+   ]
+  },
+  "GROWTH": {
+   "source": "Growth.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Exhaust",
+    "PowerCmd.Apply"
    ]
   },
   "GUARDS": {
@@ -2991,6 +3901,11 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardCmd.Upgrade",
+    "CardCmd.Transform"
    ]
   },
   "GUIDING_STAR": {
@@ -3015,7 +3930,8 @@
     },
     {
      "op": "wait",
-     "seconds": "nSmallMagicMissileVfx.WaitTime"
+     "seconds": 0.2,
+     "of": "NSmallMagicMissileVfx"
     },
     {
      "op": "attack",
@@ -3023,6 +3939,9 @@
      "attackerAnim": null,
      "targeting": "target"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "GUNK_UP": {
@@ -3043,8 +3962,12 @@
     },
     {
      "op": "wait",
-     "seconds": "0.5f"
+     "seconds": 0.5
     }
+   ],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "HAILSTORM": {
@@ -3056,6 +3979,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "HAMMER_TIME": {
@@ -3067,6 +3993,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "HAND_OF_GREED": {
@@ -3081,6 +4010,10 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "VfxCmd.PlayVfx",
+    "PlayerCmd.GainGold"
    ]
   },
   "HAND_TRICK": {
@@ -3089,6 +4022,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardCmd.ApplySingleTurnSly"
    ]
   },
   "HANG": {
@@ -3102,6 +4039,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "HARMONIC_SHIELD": {
@@ -3127,6 +4067,16 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "HAVOC": {
+   "source": "Havoc.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.AutoPlayFromDrawPile"
    ]
   },
   "HAZE": {
@@ -3142,6 +4092,9 @@
      "op": "wait",
      "seconds": "0.2f, 0.4f"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "HEADBUTT": {
@@ -3156,6 +4109,10 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
    ]
   },
   "HEAVENLY_DRILL": {
@@ -3191,6 +4148,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget"
    ]
   },
   "HEGEMONY": {
@@ -3205,6 +4165,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "HEIRLOOM_HAMMER": {
@@ -3219,6 +4182,10 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "HELIX_DRILL": {
@@ -3244,6 +4211,16 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "HELLRAISER": {
+   "source": "Hellraiser.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "HEMOKINESIS": {
@@ -3257,6 +4234,17 @@
       "scene": "vfx/vfx_bloody_impact"
      }
     }
+   ],
+   "other": [
+    "CreatureCmd.Damage"
+   ]
+  },
+  "HIBERNATE": {
+   "source": "Hibernate.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply",
+    "OrbCmd.Channel"
    ]
   },
   "HIDDEN_CACHE": {
@@ -3268,6 +4256,19 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainStars",
+    "PowerCmd.Apply"
+   ]
+  },
+  "HIDDEN_DAGGERS": {
+   "source": "HiddenDaggers.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Discard",
+    "CardSelectCmd.FromHandForDiscard",
+    "CardCmd.Upgrade"
    ]
   },
   "HIDDEN_GEM": {
@@ -3279,6 +4280,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardCmd.Preview"
    ]
   },
   "HIDDEN_ROOTS": {
@@ -3290,6 +4294,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "HIGH_FIVE": {
@@ -3304,6 +4311,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "HOBBLING_SHOT": {
@@ -3324,6 +4334,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget",
+    "PowerCmd.Apply"
    ]
   },
   "HOLOGRAM": {
@@ -3332,6 +4346,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
    ]
   },
   "HONING": {
@@ -3343,6 +4361,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "HOTFIX": {
@@ -3354,6 +4375,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "HOWL_FROM_BEYOND": {
@@ -3372,6 +4396,13 @@
       "sfx": "heavy_attack.mp3"
      }
     }
+   ]
+  },
+  "HUDDLE_UP": {
+   "source": "HuddleUp.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.DrawWithoutBlockingOnOtherPlayers"
    ]
   },
   "HYPERBEAM": {
@@ -3396,13 +4427,16 @@
     },
     {
      "op": "wait",
-     "seconds": "0.5f"
+     "seconds": 0.5
     },
     {
      "op": "vfx",
      "class": "NHyperbeamImpactVfx",
      "args": "base.Owner.Creature, item"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "IAM_INVINCIBLE": {
@@ -3424,6 +4458,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "IGNITION": {
@@ -3435,6 +4472,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "IMITATION_LEARNING": {
@@ -3446,6 +4486,17 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.ModifyAmount",
+    "PowerCmd.Apply"
+   ]
+  },
+  "IMPATIENCE": {
+   "source": "Impatience.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "IMPERVIOUS": {
@@ -3454,6 +4505,13 @@
     {
      "op": "block"
     }
+   ]
+  },
+  "INFERNAL_BLADE": {
+   "source": "InfernalBlade.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "INFERNO": {
@@ -3465,6 +4523,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "INFINITE_BLADES": {
@@ -3476,6 +4537,16 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "INFLAME": {
+   "source": "Inflame.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "INTERCEPT": {
@@ -3484,6 +4555,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "INVOKE": {
@@ -3495,6 +4569,9 @@
      "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
      "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "IRON_WAVE": {
@@ -3522,6 +4599,16 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "JACK_OF_ALL_TRADES": {
+   "source": "JackOfAllTrades.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "JACKPOT": {
@@ -3535,6 +4622,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "JEST": {
@@ -3543,6 +4634,17 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardPileCmd.AddGeneratedCardsToCombat"
+   ]
+  },
+  "JOY": {
+   "source": "Joy.cs",
+   "steps": [],
+   "other": [
+    "PlayerCmd.GainEnergy",
+    "CardPileCmd.Draw"
    ]
   },
   "JUDGEMENT": {
@@ -3558,6 +4660,9 @@
      "class": "NBigSlashImpactVfx",
      "args": "cardPlay.Target"
     }
+   ],
+   "other": [
+    "CreatureCmd.SetCurrentHp"
    ]
   },
   "JUGGERNAUT": {
@@ -3569,6 +4674,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "JUGGLING": {
@@ -3580,6 +4688,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "JUSTICE": {
@@ -3595,6 +4706,18 @@
     }
    ]
   },
+  "KI_CHANT": {
+   "source": "KiChant.cs",
+   "steps": [],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "CardPileCmd.ShuffleIfNecessary",
+    "CardPileCmd.Shuffle",
+    "CardPileCmd.Add",
+    "CardSelectCmd.FromCombatPile",
+    "CardCmd.Discard"
+   ]
+  },
   "KI_HOP": {
    "source": "KiHop.cs",
    "steps": [
@@ -3607,6 +4730,11 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "ArrowCmd.CreatureIsImpaledByArrow",
+    "CardPileCmd.Draw"
    ]
   },
   "KI_REST": {
@@ -3618,6 +4746,10 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "PowerCmd.Apply"
    ]
   },
   "KI_VERSE": {
@@ -3629,6 +4761,10 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "PowerCmd.Apply"
    ]
   },
   "KI_WHIP": {
@@ -3642,6 +4778,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "PowerCmd.Apply"
    ]
   },
   "KINGLY_KICK": {
@@ -3671,6 +4811,14 @@
     }
    ]
   },
+  "KNIFE_TRAP": {
+   "source": "KnifeTrap.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardCmd.AutoPlay"
+   ]
+  },
   "KNOCKDOWN": {
    "source": "Knockdown.cs",
    "steps": [
@@ -3682,6 +4830,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "KNOCKOUT_BLOW": {
@@ -3696,6 +4847,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PlayerCmd.GainStars"
    ]
   },
   "KNOW_THY_PLACE": {
@@ -3707,6 +4861,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "LARGESSE": {
@@ -3718,6 +4875,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "LEADING_STRIKE": {
@@ -3733,7 +4894,7 @@
     },
     {
      "op": "wait",
-     "seconds": "0.25f"
+     "seconds": 0.25
     }
    ]
   },
@@ -3757,6 +4918,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "LEGION_OF_BONE": {
@@ -3768,6 +4932,9 @@
      "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
      "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
     }
+   ],
+   "other": [
+    "OstyCmd.Summon"
    ]
   },
   "LETHALITY": {
@@ -3779,6 +4946,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "LIFT": {
@@ -3801,6 +4971,17 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "LOCKED_IN": {
+   "source": "LockedIn.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
    ]
   },
   "LOOP": {
@@ -3812,6 +4993,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "LOST_LUTE": {
@@ -3823,6 +5007,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "LULLABY": {
@@ -3834,6 +5021,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "LUMINESCE": {
@@ -3845,6 +5035,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy"
    ]
   },
   "LUNAR_BLAST": {
@@ -3871,6 +5064,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "MAKE_IT_SO": {
@@ -3895,6 +5091,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "MANGLE": {
@@ -3914,6 +5113,9 @@
      },
      "hitVfxAtBase": true
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "MANIFEST_AUTHORITY": {
@@ -3922,6 +5124,17 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardPileCmd.AddGeneratedCardToCombat"
+   ]
+  },
+  "MASTER_OF_STRATEGY": {
+   "source": "MasterOfStrategy.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "MASTER_PLANNER": {
@@ -3933,6 +5146,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "MAUL": {
@@ -3952,6 +5168,13 @@
      "class": "NScratchVfx",
      "args": "t, goingRight: true"
     }
+   ]
+  },
+  "MAYHEM": {
+   "source": "Mayhem.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "MELANCHOLY": {
@@ -3981,6 +5204,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget"
    ]
   },
   "MEMENTO_MORI": {
@@ -3996,6 +5222,14 @@
     }
    ]
   },
+  "METAMORPHOSIS": {
+   "source": "Metamorphosis.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
+   ]
+  },
   "METEOR_SHOWER": {
    "source": "MeteorShower.cs",
    "steps": [
@@ -4008,6 +5242,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "METEOR_STRIKE": {
@@ -4022,7 +5259,8 @@
     },
     {
      "op": "wait",
-     "seconds": "nLargeMagicMissileVfx.WaitTime"
+     "seconds": 0.2,
+     "of": "NLargeMagicMissileVfx"
     },
     {
      "op": "attack",
@@ -4033,6 +5271,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "MIDNIGHT": {
@@ -4060,6 +5301,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "MIGHTY_WEAPON": {
@@ -4073,6 +5318,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "MIMIC": {
@@ -4137,6 +5386,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "MIRAGE": {
@@ -4158,6 +5410,11 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.FindExistingInstanceForStacking",
+    "PowerCmd.ModifyAmount",
+    "PowerCmd.Apply"
    ]
   },
   "MODDED": {
@@ -4169,6 +5426,10 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.AddSlots",
+    "CardPileCmd.Draw"
    ]
   },
   "MOLTEN_FIST": {
@@ -4183,6 +5444,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "MOMENTUM_STRIKE": {
@@ -4207,6 +5471,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "MONOLOGUE": {
@@ -4218,6 +5485,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "MOTIF": {
@@ -4229,6 +5499,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "MOURNING_BLOW": {
@@ -4256,8 +5529,11 @@
     },
     {
      "op": "wait",
-     "seconds": "0.25f"
+     "seconds": 0.25
     }
+   ],
+   "other": [
+    "OrbCmd.EvokeNext"
    ]
   },
   "MURDER": {
@@ -4297,6 +5573,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "NAIL": {
@@ -4311,6 +5590,10 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.CreatureIsImpaledByArrow",
+    "PowerCmd.Apply"
    ]
   },
   "NECRO_MASTERY": {
@@ -4322,6 +5605,10 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "OstyCmd.Summon",
+    "PowerCmd.Apply"
    ]
   },
   "NEGATIVE_PULSE": {
@@ -4336,6 +5623,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "NEOWS_FURY": {
@@ -4349,6 +5639,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Add",
+    "CardSelectCmd.FromCombatPile"
    ]
   },
   "NEUROSURGE": {
@@ -4360,6 +5654,11 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy",
+    "CardPileCmd.Draw",
+    "PowerCmd.Apply"
    ]
   },
   "NEUTRALIZE": {
@@ -4379,6 +5678,16 @@
       "delay": "num"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "NEUTRON_AEGIS": {
+   "source": "NeutronAegis.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "NIGHTMARE": {
@@ -4404,6 +5713,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "PowerCmd.Apply"
    ]
   },
   "NO_ESCAPE": {
@@ -4415,6 +5728,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "NOCK": {
@@ -4426,6 +5742,16 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "NOSTALGIA": {
+   "source": "Nostalgia.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "NOT_YET": {
@@ -4437,6 +5763,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CreatureCmd.Heal"
    ]
   },
   "NOXIOUS_FUMES": {
@@ -4448,6 +5777,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "NULL": {
@@ -4461,6 +5793,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply",
+    "OrbCmd.Channel"
    ]
   },
   "OBLIVION": {
@@ -4472,6 +5808,25 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "OFFERING": {
+   "source": "Offering.cs",
+   "steps": [],
+   "other": [
+    "CreatureCmd.Damage",
+    "PlayerCmd.GainEnergy",
+    "CardPileCmd.Draw"
+   ]
+  },
+  "OMNISLICE": {
+   "source": "Omnislice.cs",
+   "steps": [],
+   "other": [
+    "CreatureCmd.Damage"
    ]
   },
   "ONE_FOR_ALL": {
@@ -4483,6 +5838,16 @@
      "name": "PowerUp",
      "delay": "player.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "ONE_TWO_PUNCH": {
+   "source": "OneTwoPunch.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ORBIT": {
@@ -4494,6 +5859,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "OUTBREAK": {
@@ -4510,6 +5878,16 @@
      "class": "NPoisonImpactVfx",
      "args": "hittableEnemy"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "OUTMANEUVER": {
+   "source": "Outmaneuver.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "OUTRAGE": {
@@ -4523,6 +5901,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "OVERCLOCK": {
@@ -4541,8 +5923,13 @@
     },
     {
      "op": "wait",
-     "seconds": "0.5f"
+     "seconds": 0.5
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "PACTS_END": {
@@ -4573,6 +5960,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "PALE_BLUE_DOT": {
@@ -4584,6 +5974,16 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "PANACHE": {
+   "source": "Panache.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "PANIC_BUTTON": {
@@ -4592,6 +5992,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "PARRY": {
@@ -4603,6 +6006,16 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "PARSE": {
+   "source": "Parse.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "PARTICLE_WALL": {
@@ -4613,7 +6026,7 @@
     },
     {
      "op": "wait",
-     "seconds": "0.25f"
+     "seconds": 0.25
     }
    ]
   },
@@ -4629,6 +6042,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "PECK": {
@@ -4685,6 +6101,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "PHOTON_CUT": {
@@ -4699,6 +6118,11 @@
       "sfx": "dagger_throw.mp3"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardPileCmd.Add",
+    "CardSelectCmd.FromHand"
    ]
   },
   "PIERCING_WAIL": {
@@ -4710,6 +6134,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "PILLAGE": {
@@ -4723,6 +6150,16 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
+   ]
+  },
+  "PILLAR_OF_CREATION": {
+   "source": "PillarOfCreation.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "PINPOINT": {
@@ -4738,6 +6175,13 @@
     }
    ]
   },
+  "PLOT": {
+   "source": "Plot.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
   "POISONED_STAB": {
    "source": "PoisonedStab.cs",
    "steps": [
@@ -4749,6 +6193,9 @@
       "scene": "vfx/vfx_dramatic_stab"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "POKE": {
@@ -4781,6 +6228,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "POUNCE": {
@@ -4794,6 +6244,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "PRECISE_CUT": {
@@ -4821,6 +6274,25 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "PREP_TIME": {
+   "source": "PrepTime.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "PREPARED": {
+   "source": "Prepared.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardCmd.Discard",
+    "CardSelectCmd.FromHandForDiscard"
    ]
   },
   "PRIMAL_FORCE": {
@@ -4832,6 +6304,24 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardCmd.Transform"
+   ]
+  },
+  "PRODUCTION": {
+   "source": "Production.cs",
+   "steps": [],
+   "other": [
+    "PlayerCmd.GainEnergy"
+   ]
+  },
+  "PROLONG": {
+   "source": "Prolong.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "PROPHESIZE": {
@@ -4843,6 +6333,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.AttackAnimDelay"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "PROTECTOR": {
@@ -4859,6 +6352,13 @@
     }
    ]
   },
+  "PROWESS": {
+   "source": "Prowess.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
   "PULL_AGGRO": {
    "source": "PullAggro.cs",
    "steps": [
@@ -4871,6 +6371,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "OstyCmd.Summon"
    ]
   },
   "PULL_FROM_BELOW": {
@@ -4902,6 +6405,17 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "CardCmd.Transform"
+   ]
+  },
+  "PURITY": {
+   "source": "Purity.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardCmd.Exhaust"
    ]
   },
   "PUTREFY": {
@@ -4913,6 +6427,16 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "PYRE": {
+   "source": "Pyre.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "QUADCAST": {
@@ -4928,6 +6452,18 @@
      "op": "wait",
      "seconds": "0.15f, 0.25f"
     }
+   ],
+   "other": [
+    "OrbCmd.EvokeNext"
+   ]
+  },
+  "QUASAR": {
+   "source": "Quasar.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardSelectCmd.FromChooseACardScreen",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "QUICK_SHOT": {
@@ -4948,6 +6484,16 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget"
+   ]
+  },
+  "QUIETUS": {
+   "source": "Quietus.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "QUIVER": {
@@ -4959,6 +6505,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "ArrowCmd.GainArrowSlot"
    ]
   },
   "RADIATE": {
@@ -4986,6 +6535,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "RAIN_SHOT": {
@@ -5001,6 +6553,12 @@
      "name": "Fool.GetShootBowAnimIfApplicable(base.Owner.Character)",
      "delay": "Fool.GetShootBowDelayIfApplicable(base.Owner.Character)"
     }
+   ],
+   "other": [
+    "ArrowCmd.TryShootArrow",
+    "ArrowCmd.ImpaleTarget",
+    "CreatureCmd.Damage",
+    "PowerCmd.Remove"
    ]
   },
   "RAINBOW": {
@@ -5012,6 +6570,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "RALLY": {
@@ -5054,6 +6615,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget"
    ]
   },
   "RATTLE": {
@@ -5080,6 +6644,9 @@
      "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
      "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
     }
+   ],
+   "other": [
+    "OstyCmd.Summon"
    ]
   },
   "REAP": {
@@ -5104,6 +6671,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "REAVE": {
@@ -5117,6 +6687,11 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardsToCombat"
    ]
   },
   "REBOOT": {
@@ -5128,6 +6703,11 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardPileCmd.Add",
+    "CardPileCmd.Shuffle",
+    "CardPileCmd.Draw"
    ]
   },
   "REBOUND": {
@@ -5141,6 +6721,19 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "RECALL": {
+   "source": "Recall.cs",
+   "steps": [],
+   "other": [
+    "ArrowCmd.CreatureIsImpaledByPlayersArrow",
+    "ArrowCmd.DislodgeArrow",
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
    ]
   },
   "REFINE_BLADE": {
@@ -5152,6 +6745,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "ForgeCmd.Forge",
+    "PowerCmd.Apply"
    ]
   },
   "REFLECT": {
@@ -5166,6 +6763,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "REFLEX": {
@@ -5177,6 +6777,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.AttackAnimDelay"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "REFRACT": {
@@ -5191,6 +6794,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "RELAX": {
@@ -5205,6 +6811,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "REND": {
@@ -5236,6 +6845,9 @@
       "scene": "vfx/vfx_giant_horizontal_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget"
    ]
   },
   "RESONANCE": {
@@ -5247,6 +6859,17 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "RESTLESSNESS": {
+   "source": "Restlessness.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw",
+    "PlayerCmd.GainEnergy"
    ]
   },
   "RHYTHM_STRIKE": {
@@ -5322,6 +6945,16 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
+   ]
+  },
+  "ROLLING_BOULDER": {
+   "source": "RollingBoulder.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ROYAL_GAMBLE": {
@@ -5333,6 +6966,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.AttackAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainStars"
    ]
   },
   "ROYALTIES": {
@@ -5344,6 +6980,24 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "RUMMAGE": {
+   "source": "Rummage.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardPileCmd.AddGeneratedCardToCombat"
+   ]
+  },
+  "RUPTURE": {
+   "source": "Rupture.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SACRIFICE": {
@@ -5358,6 +7012,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CreatureCmd.Kill"
    ]
   },
   "SALVO": {
@@ -5371,6 +7028,18 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "SCAVENGE": {
+   "source": "Scavenge.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardCmd.Exhaust",
+    "PowerCmd.Apply"
    ]
   },
   "SCOURGE": {
@@ -5382,6 +7051,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply",
+    "CardPileCmd.Draw"
    ]
   },
   "SCRAPE": {
@@ -5395,6 +7068,17 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardCmd.Discard"
+   ]
+  },
+  "SCRAWL": {
+   "source": "Scrawl.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "SCULPTING_STRIKE": {
@@ -5408,6 +7092,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardCmd.ApplyKeyword"
    ]
   },
   "SEANCE": {
@@ -5419,6 +7107,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardCmd.TransformTo"
    ]
   },
   "SECOND_WIND": {
@@ -5433,6 +7125,25 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardCmd.Exhaust"
+   ]
+  },
+  "SECRET_TECHNIQUE": {
+   "source": "SecretTechnique.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
+   ]
+  },
+  "SECRET_WEAPON": {
+   "source": "SecretWeapon.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
    ]
   },
   "SEEKER_STRIKE": {
@@ -5446,6 +7157,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
    ]
   },
   "SEEKING_EDGE": {
@@ -5457,6 +7172,10 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply",
+    "ForgeCmd.Forge"
    ]
   },
   "SELF_DEPRECATE": {
@@ -5466,6 +7185,9 @@
      "op": "sfx",
      "event": "event:/sfx/characters/fugitive/fugitive_joy"
     }
+   ],
+   "other": [
+    "CardPileCmd.AddGeneratedCardsToCombat"
    ]
   },
   "SENTRY_MODE": {
@@ -5477,6 +7199,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SERPENT_FORM": {
@@ -5488,6 +7213,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SERRATED_ARROWS": {
@@ -5499,6 +7227,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SETUP_STRIKE": {
@@ -5512,6 +7243,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SEVEN_STARS": {
@@ -5541,6 +7275,10 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.AddGeneratedCardToCombat",
+    "CardCmd.PreviewCardPileAdd"
    ]
   },
   "SHADOW_SHIELD": {
@@ -5555,6 +7293,17 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
+   ]
+  },
+  "SHADOW_STEP": {
+   "source": "ShadowStep.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Discard",
+    "PowerCmd.Apply"
    ]
   },
   "SHADOWMELD": {
@@ -5566,6 +7315,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SHARED_FATE": {
@@ -5577,6 +7329,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SHATTER": {
@@ -5590,6 +7345,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "OrbCmd.EvokeNext"
    ]
   },
   "SHINING_STRIKE": {
@@ -5603,6 +7361,9 @@
       "scene": "vfx/vfx_starry_impact"
      }
     }
+   ],
+   "other": [
+    "PlayerCmd.GainStars"
    ]
   },
   "SHIV": {
@@ -5641,6 +7402,17 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "VfxCmd.PlayOnCreatureCenter",
+    "PowerCmd.Apply"
+   ]
+  },
+  "SHOW_OFF": {
+   "source": "ShowOff.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SHROUD": {
@@ -5652,6 +7424,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SHRUG_IT_OFF": {
@@ -5660,6 +7435,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "SIC_EM": {
@@ -5674,6 +7452,16 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "SIDESTEP": {
+   "source": "Sidestep.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SIGNAL_BOOST": {
@@ -5685,6 +7473,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SIMPLETON": {
@@ -5696,6 +7487,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SKEWER": {
@@ -5717,6 +7511,13 @@
     }
    ]
   },
+  "SKIM": {
+   "source": "Skim.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw"
+   ]
+  },
   "SKY_SHOT": {
    "source": "SkyShot.cs",
    "steps": [
@@ -5735,6 +7536,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget"
    ]
   },
   "SLEIGHT_OF_FLESH": {
@@ -5746,6 +7550,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SLICE": {
@@ -5779,6 +7586,9 @@
      "class": "NGoopyImpactVfx",
      "args": "base.Owner.Creature"
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "SMOKESTACK": {
@@ -5790,6 +7600,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SNAKEBITE": {
@@ -5801,6 +7614,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "VfxCmd.PlayOnCreatureCenter",
+    "PowerCmd.Apply"
    ]
   },
   "SNAP": {
@@ -5815,6 +7632,10 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardCmd.ApplyKeyword"
    ]
   },
   "SNEAKY": {
@@ -5826,6 +7647,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SOLAR_STRIKE": {
@@ -5839,6 +7663,16 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PlayerCmd.GainStars"
+   ]
+  },
+  "SONG_PATH": {
+   "source": "SongPath.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SORROWFUL_STRIKE": {
@@ -5852,6 +7686,16 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.AddGeneratedCardsToCombat"
+   ]
+  },
+  "SOUL": {
+   "source": "Soul.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "SOUL_STORM": {
@@ -5882,6 +7726,9 @@
      "name": "PowerUp",
      "delay": "cardPlay.Target.Player.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SOVEREIGN_BLADE": {
@@ -5934,6 +7781,16 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "SPEEDSTER": {
+   "source": "Speedster.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SPINNER": {
@@ -5945,6 +7802,10 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel",
+    "PowerCmd.Apply"
    ]
   },
   "SPIRIT_OF_ASH": {
@@ -5956,6 +7817,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SPITE": {
@@ -5972,6 +7836,23 @@
     }
    ]
   },
+  "SPLASH": {
+   "source": "Splash.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardSelectCmd.FromChooseACardScreen",
+    "CardPileCmd.AddGeneratedCardToCombat"
+   ]
+  },
+  "SPOILS_OF_BATTLE": {
+   "source": "SpoilsOfBattle.cs",
+   "steps": [],
+   "other": [
+    "ForgeCmd.Forge",
+    "CardPileCmd.Draw"
+   ]
+  },
   "SPUR": {
    "source": "Spur.cs",
    "steps": [
@@ -5981,6 +7862,10 @@
      "name": "Necrobinder.GetSummonAnimIfApplicable(base.Owner.Character)",
      "delay": "Necrobinder.GetSummonDelayIfApplicable(base.Owner.Character)"
     }
+   ],
+   "other": [
+    "OstyCmd.Summon",
+    "CreatureCmd.Heal"
    ]
   },
   "SQUASH": {
@@ -5994,6 +7879,9 @@
       "scene": "vfx/vfx_attack_blunt"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SQUEEZE": {
@@ -6016,6 +7904,13 @@
     {
      "op": "block"
     }
+   ]
+  },
+  "STAMPEDE": {
+   "source": "Stampede.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "STARDUST": {
@@ -6044,6 +7939,9 @@
       "delay": "base.Owner.Character.CastAnimDelay"
      }
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "STOKE": {
@@ -6055,6 +7953,11 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardCmd.Exhaust",
+    "CardCmd.Upgrade",
+    "CardPileCmd.AddGeneratedCardsToCombat"
    ]
   },
   "STOMP": {
@@ -6087,6 +7990,13 @@
     }
    ]
   },
+  "STONE_ARMOR": {
+   "source": "StoneArmor.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
   "STORM": {
    "source": "Storm.cs",
    "steps": [
@@ -6096,6 +8006,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "STORM_OF_STEEL": {
@@ -6105,6 +8018,10 @@
      "op": "wait",
      "seconds": "0f, 0.25f"
     }
+   ],
+   "other": [
+    "CardCmd.Discard",
+    "CardCmd.Upgrade"
    ]
   },
   "STRANGLE": {
@@ -6118,6 +8035,16 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "STRATAGEM": {
+   "source": "Stratagem.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "STRENGTH": {
@@ -6129,6 +8056,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "STRIKE_DEFECT": {
@@ -6218,6 +8148,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SUCKER_PUNCH": {
@@ -6232,6 +8165,9 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SUMMON_FORTH": {
@@ -6243,6 +8179,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardPileCmd.Add",
+    "ForgeCmd.Forge"
    ]
   },
   "SUNDER": {
@@ -6257,6 +8197,9 @@
       "sfx": "slash_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy"
    ]
   },
   "SUPERCRITICAL": {
@@ -6268,6 +8211,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy"
    ]
   },
   "SUPERMASSIVE": {
@@ -6301,6 +8247,9 @@
       "delay": "num"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SURVIVOR": {
@@ -6309,6 +8258,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromHandForDiscard",
+    "CardCmd.Discard"
    ]
   },
   "SWEEPING_BEAM": {
@@ -6339,8 +8292,11 @@
     },
     {
      "op": "wait",
-     "seconds": "0.5f"
+     "seconds": 0.5
     }
+   ],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "SWEEPING_GAZE": {
@@ -6380,6 +8336,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SYNCHRONIZE": {
@@ -6391,6 +8350,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "SYNTHESIS": {
@@ -6404,6 +8366,16 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "TACTICIAN": {
+   "source": "Tactician.cs",
+   "steps": [],
+   "other": [
+    "PlayerCmd.GainEnergy"
    ]
   },
   "TAG_TEAM": {
@@ -6417,6 +8389,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TANK": {
@@ -6428,6 +8403,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TAUNT": {
@@ -6442,6 +8420,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TEAR_ASUNDER": {
@@ -6475,6 +8456,16 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
+   ]
+  },
+  "TERRAFORMING": {
+   "source": "Terraforming.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TESLA_COIL": {
@@ -6488,6 +8479,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "OrbCmd.Passive"
    ]
   },
   "THE_BALL": {
@@ -6501,6 +8495,13 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ]
+  },
+  "THE_BOMB": {
+   "source": "TheBomb.cs",
+   "steps": [],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "THE_CHARIOT": {
@@ -6517,6 +8518,22 @@
     }
    ]
   },
+  "THE_DEVIL": {
+   "source": "TheDevil.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Exhaust",
+    "CardPileCmd.AutoPlayFromDrawPile",
+    "CardCmd.Upgrade"
+   ]
+  },
+  "THE_EMPEROR": {
+   "source": "TheEmperor.cs",
+   "steps": [],
+   "other": [
+    "PlayerCmd.GainEnergy"
+   ]
+  },
   "THE_EMPRESS": {
    "source": "TheEmpress.cs",
    "steps": [
@@ -6526,6 +8543,16 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "THE_FOOL": {
+   "source": "TheFool.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.AutoPlay"
    ]
   },
   "THE_GAMBIT": {
@@ -6534,6 +8561,41 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "THE_HANGED_MAN": {
+   "source": "TheHangedMan.cs",
+   "steps": [],
+   "other": [
+    "CreatureCmd.Damage",
+    "PowerCmd.Apply"
+   ]
+  },
+  "THE_HERMIT": {
+   "source": "TheHermit.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromHandForDiscard",
+    "CardCmd.Exhaust",
+    "CardCmd.Discard",
+    "CardPileCmd.Draw"
+   ]
+  },
+  "THE_HIEROPHANT": {
+   "source": "TheHierophant.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.AddGeneratedCardToCombat"
+   ]
+  },
+  "THE_HIGH_PRIESTESS": {
+   "source": "TheHighPriestess.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw"
    ]
   },
   "THE_HUNT": {
@@ -6547,6 +8609,17 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "THE_LOVERS": {
+   "source": "TheLovers.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Upgrade",
+    "CardPileCmd.AddGeneratedCardsToCombat"
    ]
   },
   "THE_MAGICIAN": {
@@ -6558,6 +8631,17 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.AddSlots",
+    "OrbCmd.Channel"
+   ]
+  },
+  "THE_MOON": {
+   "source": "TheMoon.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.Upgrade"
    ]
   },
   "THE_SCYTHE": {
@@ -6582,6 +8666,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "THE_SHOT": {
@@ -6602,6 +8689,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget"
    ]
   },
   "THE_SMITH": {
@@ -6613,6 +8703,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "ForgeCmd.Forge"
    ]
   },
   "THE_STAR": {
@@ -6624,6 +8717,18 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "THE_SUN": {
+   "source": "TheSun.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw",
+    "PlayerCmd.GainEnergy",
+    "CardPileCmd.AddToCombatAndPreview"
    ]
   },
   "THE_TOWER": {
@@ -6640,6 +8745,22 @@
     }
    ]
   },
+  "THE_WORLD": {
+   "source": "TheWorld.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Add"
+   ]
+  },
+  "THINKING_AHEAD": {
+   "source": "ThinkingAhead.cs",
+   "steps": [],
+   "other": [
+    "CardPileCmd.Draw",
+    "CardSelectCmd.FromHand",
+    "CardPileCmd.Add"
+   ]
+  },
   "THRASH": {
    "source": "Thrash.cs",
    "steps": [
@@ -6652,6 +8773,9 @@
       "scene": "vfx/vfx_thrash"
      }
     }
+   ],
+   "other": [
+    "CardCmd.Exhaust"
    ]
   },
   "THRUMMING_HATCHET": {
@@ -6677,6 +8801,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "THUNDERCLAP": {
@@ -6690,6 +8817,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TIMBER": {
@@ -6737,6 +8867,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TORIC_TOUGHNESS": {
@@ -6745,6 +8878,9 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TRACKING": {
@@ -6756,6 +8892,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TRANSFIGURE": {
@@ -6767,6 +8906,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromHand"
    ]
   },
   "TRASH_TO_TREASURE": {
@@ -6778,6 +8920,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TREMBLE": {
@@ -6789,6 +8934,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TRICK_SHOT": {
@@ -6809,6 +8957,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "ArrowCmd.ShootArrowAtTarget"
    ]
   },
   "TRUE_GRIT": {
@@ -6817,6 +8968,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardSelectCmd.FromHand",
+    "CardCmd.Exhaust"
    ]
   },
   "TUNE": {
@@ -6828,6 +8983,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "TURBO": {
@@ -6835,8 +8993,21 @@
    "steps": [
     {
      "op": "wait",
-     "seconds": "0.5f"
+     "seconds": 0.5
     }
+   ],
+   "other": [
+    "PlayerCmd.GainEnergy",
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
+   ]
+  },
+  "TUTOR": {
+   "source": "Tutor.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
    ]
   },
   "TWIN_STRIKE": {
@@ -6862,6 +9033,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ULTIMATE_DEFEND": {
@@ -6891,6 +9065,10 @@
     {
      "op": "block"
     }
+   ],
+   "other": [
+    "CardCmd.PreviewCardPileAdd",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "UNDERWORLD": {
@@ -6902,6 +9080,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "UNLEASH": {
@@ -6927,6 +9108,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "UNRELENTING": {
@@ -6946,6 +9130,9 @@
      },
      "hitVfxAtBase": true
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "UNTOUCHABLE": {
@@ -6967,7 +9154,7 @@
     },
     {
      "op": "wait",
-     "seconds": "0.1f"
+     "seconds": 0.1
     }
    ]
   },
@@ -6988,6 +9175,9 @@
      },
      "hitVfxAtBase": true
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "UPROAR": {
@@ -7002,6 +9192,18 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CardCmd.AutoPlay"
+   ]
+  },
+  "UPROOT": {
+   "source": "Uproot.cs",
+   "steps": [],
+   "other": [
+    "ArrowCmd.CreatureIsImpaledByPlayersArrow",
+    "ArrowCmd.DislodgeArrow",
+    "PowerCmd.Apply"
    ]
   },
   "VEILPIERCER": {
@@ -7015,6 +9217,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "VENERATE": {
@@ -7026,6 +9231,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PlayerCmd.GainStars"
    ]
   },
   "VICIOUS": {
@@ -7037,6 +9245,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "VIOLENT_CHORD": {
@@ -7048,6 +9259,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "VITRIOL": {
@@ -7059,6 +9273,10 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply",
+    "CardPileCmd.AddGeneratedCardToCombat"
    ]
   },
   "VOID_FORM": {
@@ -7070,6 +9288,10 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply",
+    "PlayerCmd.EndTurn"
    ]
   },
   "VOLLEY": {
@@ -7095,6 +9317,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   },
   "WAH_BLAST": {
@@ -7110,6 +9335,10 @@
       "sfx": "heavy_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "VfxCmd.PlayOnCreatureCenter"
    ]
   },
   "WAH_CHO": {
@@ -7126,6 +9355,9 @@
       "scene": "vfx/vfx_attack_blunt"
      }
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx"
    ]
   },
   "WAH_CHO_KI": {
@@ -7142,6 +9374,10 @@
       "scene": "vfx/vfx_attack_blunt"
      }
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "CardPileCmd.Draw"
    ]
   },
   "WAH_HAMMER": {
@@ -7156,6 +9392,10 @@
       "sfx": "heavy_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "VfxCmd.PlayOnCreatureCenter"
    ]
   },
   "WAH_KI": {
@@ -7170,6 +9410,10 @@
       "scene": "vfx/vfx_attack_blunt"
      }
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "PowerCmd.Apply"
    ]
   },
   "WAH_SWEEP": {
@@ -7183,6 +9427,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx"
    ]
   },
   "WAH_SYMPHONY": {
@@ -7197,6 +9444,9 @@
       "sfx": "heavy_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx"
    ]
   },
   "WAH_TOUCH": {
@@ -7211,6 +9461,10 @@
       "sfx": "blunt_attack.mp3"
      }
     }
+   ],
+   "other": [
+    "MelodyCmd.PlayMelodyVfx",
+    "PowerCmd.Apply"
    ]
   },
   "WELL_LAID_PLANS": {
@@ -7222,6 +9476,17 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "WHEEL_OF_FORTUNE": {
+   "source": "WheelOfFortune.cs",
+   "steps": [],
+   "other": [
+    "CardCmd.DiscardAndDraw",
+    "CardPileCmd.Draw"
    ]
   },
   "WHIRLWIND": {
@@ -7263,6 +9528,9 @@
       "scene": "vfx/vfx_attack_slash"
      }
     }
+   ],
+   "other": [
+    "CreatureCmd.Stun"
    ]
   },
   "WHISTLING_ARROWS": {
@@ -7282,6 +9550,24 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "CardPileCmd.AddGeneratedCardToCombat"
+   ]
+  },
+  "WISH": {
+   "source": "Wish.cs",
+   "steps": [],
+   "other": [
+    "CardSelectCmd.FromCombatPile",
+    "CardPileCmd.Add"
+   ]
+  },
+  "WISP": {
+   "source": "Wisp.cs",
+   "steps": [],
+   "other": [
+    "PlayerCmd.GainEnergy"
    ]
   },
   "WRAITH_FORM": {
@@ -7293,6 +9579,18 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
+   ]
+  },
+  "WREST": {
+   "source": "Wrest.cs",
+   "steps": [],
+   "other": [
+    "ArrowCmd.CreatureIsImpaledByPlayersArrow",
+    "ArrowCmd.DislodgeArrow",
+    "CardPileCmd.Draw"
    ]
   },
   "WROUGHT_IN_WAR": {
@@ -7306,6 +9604,9 @@
       "scene": "vfx/vfx_attack_blunt"
      }
     }
+   ],
+   "other": [
+    "ForgeCmd.Forge"
    ]
   },
   "YAH": {
@@ -7317,6 +9618,9 @@
      "name": "PowerUp",
      "delay": "base.Owner.Character.PowerUpAnimDelay"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "YOGA": {
@@ -7328,6 +9632,9 @@
      "name": "Cast",
      "delay": "waitTime"
     }
+   ],
+   "other": [
+    "PowerCmd.Apply"
    ]
   },
   "ZAP": {
@@ -7339,6 +9646,9 @@
      "name": "Cast",
      "delay": "base.Owner.Character.CastAnimDelay"
     }
+   ],
+   "other": [
+    "OrbCmd.Channel"
    ]
   }
  }

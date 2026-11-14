@@ -26,6 +26,7 @@ import { CARD_RECIPES, resolveCount, type CardOp } from "./card-effects";
 import { AFFLICTION_HOOKS, POWER_HOOKS, type HookContext } from "./hooks";
 import { nextRandom, seedRandom } from "./rng";
 import type {
+  CardPresentation,
   CardSpec,
   CombatSimInput,
   ScenePart,
@@ -36,6 +37,7 @@ import type {
   SimCardDef,
   SimCatalog,
   SimCreature,
+  PresentationStep,
   SimEvent,
   SimKeyword,
   SimMonster,
@@ -425,10 +427,13 @@ class Combat {
 
     this.eachPower((owner, power) => POWER_HOOKS[power.id]?.beforeCardPlayed?.(this.hooks, owner, power, this.state.cards[uid]));
     const recipe = CARD_RECIPES[card.def.id];
-    if (!recipe) {
-      this.emit({ kind: "unimplemented", what: `${card.def.name} 효과` });
-    } else {
+    const presentation = this.catalog.presentation[card.def.id];
+    if (recipe) {
       for (const op of recipe.ops) this.runOp(op, card, uid, target, action.choose);
+    } else if (presentation) {
+      this.runPresentation(card, target, presentation);
+    } else {
+      this.emit({ kind: "unimplemented", what: `${card.def.name} 효과` });
     }
     // Enchantments are not simulated; the affliction runs after them, still inside the play.
     const affliction = this.state.cards[uid].affliction;
@@ -459,12 +464,17 @@ class Combat {
         const targets = op.target === "allEnemies"
           ? this.state.monsters.filter((monster) => monster.hp > 0)
           : target ? [target] : [];
-        this.noteDamageModifiers(this.state.player, targets);
         // AttackCommand.FromCard: TriggerAnim("Attack", Character.AttackAnimDelay), then CreatureCmd.Damage.
-        const delayMs = (this.catalog.character?.attackAnimDelay ?? 0) * 1000;
-        this.emit({ kind: "animate", creature: "player", animation: "attack", delayMs, ...(op.normalAnimExtra ? { normalExtraMs: op.normalAnimExtra * 1000 } : {}) });
-        for (const monster of targets) this.dealDamage(monster, amount, uid);
-        this.emit({ kind: "pause", reason: "damage", fastMs: 100, normalMs: 200 });
+        const attack = this.presentationAttack(card.def.id);
+        this.attack({
+          amount,
+          hits: 1,
+          targets,
+          uid,
+          attackerAnim: { animation: "attack", delayMs: (this.catalog.character?.attackAnimDelay ?? 0) * 1000, normalExtraMs: op.normalAnimExtra ? op.normalAnimExtra * 1000 : undefined },
+          hitFx: attack?.hitFx?.scene ?? null,
+          at: attack?.hitVfxAtBase ? "base" : "center",
+        });
         return;
       }
       case "block": {
@@ -488,6 +498,138 @@ class Combat {
         this.emit({ kind: "unimplemented", what: `${card.def.name}: ${op.what}` });
         return;
     }
+  }
+
+  /** The card's first `DamageCmd.Attack` step from the presentation data, if any. */
+  private presentationAttack(cardId: string): Extract<PresentationStep, { op: "attack" }> | null {
+    const step = this.catalog.presentation[cardId]?.steps.find((entry) => entry.op === "attack");
+    return step?.op === "attack" ? step : null;
+  }
+
+  /**
+   * AttackCommand.Execute: per hit, the attacker animation (first hit only) is awaited, the hit VFX
+   * is handed to `CreatureCmd.Damage` for each target, damage is dealt, and `Damage` ends with
+   * CustomScaledWait(0.1, 0.2).
+   */
+  private attack(params: {
+    amount: number;
+    hits: number;
+    targets: SimCreature[];
+    uid: string;
+    attackerAnim: { animation: "attack" | "cast"; delayMs: number; normalExtraMs?: number } | null;
+    hitFx: string | null;
+    at: "center" | "base";
+  }) {
+    this.noteDamageModifiers(this.state.player, params.targets);
+    for (let hit = 0; hit < params.hits; hit += 1) {
+      const alive = params.targets.filter((creature) => creature.hp > 0);
+      if (alive.length === 0) break;
+      if (hit === 0 && params.attackerAnim) {
+        const { animation, delayMs, normalExtraMs } = params.attackerAnim;
+        this.emit({ kind: "animate", creature: "player", animation, delayMs, ...(normalExtraMs ? { normalExtraMs } : {}) });
+      }
+      for (const creature of alive) {
+        if (params.hitFx) this.emit({ kind: "vfx", effect: params.hitFx, target: creature.key, at: params.at });
+        this.dealDamage(creature, params.amount, params.uid);
+      }
+      this.emit({ kind: "pause", reason: "damage", fastMs: 100, normalMs: 200 });
+    }
+  }
+
+  /** A card without a hand-written recipe: replay its OnPlay presentation steps, then flag what is left. */
+  private runPresentation(card: EffectiveCard, target: SimMonster | null, presentation: CardPresentation) {
+    const uid = this.state.piles.play.at(-1) ?? "";
+    const character = this.catalog.character;
+    const delayMs = (expression: string | null): number => {
+      const literal = expression?.match(/^([0-9.]+)f?$/);
+      if (literal) return Number(literal[1]) * 1000;
+      if (expression?.includes("CastAnimDelay")) return (character?.castAnimDelay ?? 0) * 1000;
+      if (expression?.includes("PowerUpAnimDelay")) return (character?.powerUpAnimDelay ?? 0) * 1000;
+      if (expression?.includes("AttackAnimDelay") || expression?.includes("AttackDelay")) return (character?.attackAnimDelay ?? 0) * 1000;
+      return (character?.attackAnimDelay ?? 0) * 1000;
+    };
+    for (const step of presentation.steps) {
+      switch (step.op) {
+        case "anim": {
+          // TriggerAnim on the owner; a teammate or the target playing an animation is not simulated.
+          if (/Target|teammates/.test(step.who)) {
+            this.emit({ kind: "unimplemented", what: `${card.def.name}: ${step.who} ${step.name} 동작` });
+            break;
+          }
+          const name = step.name.toLowerCase();
+          const animation = name === "powerup" ? "powerUp" : name === "attack" ? "attack" : "cast";
+          this.emit({ kind: "animate", creature: "player", animation, delayMs: delayMs(step.delay) });
+          break;
+        }
+        case "vfx":
+          // Dedicated VFX nodes (N...Vfx.Create) at the target; the card's own wait follows as a `wait` step.
+          this.emit({
+            kind: "vfx",
+            effect: step.class,
+            target: target?.key ?? null,
+            at: step.anchor === "bottomOfHitbox" ? "bottom" : "center",
+            ...(step.color ? { color: step.color } : {}),
+          });
+          break;
+        case "wait": {
+          // Cmd.Wait: not scaled by Fast, skipped on Instant.
+          const ms = typeof step.seconds === "number" ? step.seconds * 1000 : 0;
+          if (ms > 0) this.emit({ kind: "pause", reason: step.of ?? "wait", fastMs: ms, normalMs: ms });
+          break;
+        }
+        case "attack": {
+          const amount = this.presentationVar(card, step.amount);
+          if (amount === null) {
+            this.emit({ kind: "unimplemented", what: `${card.def.name}: 피해량 ${step.amount}` });
+            break;
+          }
+          const hits = step.hitCount === undefined ? 1 : Math.max(1, this.presentationVar(card, step.hitCount, true) ?? 1);
+          const targets = step.targeting === "allEnemies"
+            ? this.state.monsters.filter((monster) => monster.hp > 0)
+            : step.targeting === "randomEnemy"
+              ? this.randomEnemy()
+              : target ? [target] : [];
+          const named = step.attackerAnim?.name;
+          this.attack({
+            amount,
+            hits,
+            targets,
+            uid,
+            // WithNoAttackerAnim (null) plays nothing; an unnamed or heavy variant is the character's attack.
+            attackerAnim: step.attackerAnim === null
+              ? null
+              : { animation: named?.toLowerCase() === "cast" ? "cast" : "attack", delayMs: delayMs(step.attackerAnim?.delay ?? "AttackAnimDelay") },
+            hitFx: step.hitFx?.scene ?? null,
+            at: step.hitVfxAtBase ? "base" : "center",
+          });
+          break;
+        }
+        case "block":
+          this.runOp({ op: "block", var: "Block" }, card, uid, target, undefined);
+          break;
+        case "sfx":
+          break;
+      }
+    }
+    for (const command of presentation.other ?? []) this.emit({ kind: "unimplemented", what: `${card.def.name}: ${command}` });
+  }
+
+  /** `base.DynamicVars.Damage.BaseValue`, `DynamicVars.HitCount.IntValue`, `DynamicVars["X"]` or a literal -> the card's var. */
+  private presentationVar(card: EffectiveCard, expression: string, integer = false): number | null {
+    const literal = expression.trim().match(/^([0-9.]+)m?f?$/);
+    if (literal) return Number(literal[1]);
+    const name = expression.match(/DynamicVars\.(\w+)/)?.[1] ?? expression.match(/DynamicVars\["(\w+)"\]/)?.[1];
+    const value = name ? card.vars[name] : undefined;
+    return value === undefined ? null : integer ? Math.trunc(value) : Math.max(0, Math.trunc(value));
+  }
+
+  /** TargetingRandomOpponents: the game draws from `Rng.CombatTargets`; here the seeded RNG picks one living monster. */
+  private randomEnemy(): SimMonster[] {
+    const alive = this.state.monsters.filter((monster) => monster.hp > 0);
+    if (alive.length === 0) return [];
+    const [value, rng] = nextRandom(this.state.rng);
+    this.state.rng = rng;
+    return [alive[Math.floor(value * alive.length)]];
   }
 
   private noteDamageModifiers(attacker: SimCreature, targets: SimCreature[]) {

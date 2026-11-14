@@ -223,14 +223,27 @@ function viewportFromLayout(layout: NonNullable<CombatSimMonsterView["layout"]>)
   return { x, y: (layout.visualPosition.y - layout.bounds.bottom) / scaleY, width: layout.bounds.width / scaleX, height: layout.bounds.height / scaleY };
 }
 
+/**
+ * Spine animation per engine animation. Characters list them by state (`ATTACK`, `HURT`, `DIE`, a Defect-only
+ * `POWER_UP`); monsters by move or `hurt` / `die`. Without a state the trigger plays the plain animation: the
+ * default animator maps both Cast and PowerUp to `cast`.
+ */
+const ANIMATION_KEYS: Record<string, { keys: string[]; fallback: string }> = {
+  attack: { keys: ["ATTACK", "attack"], fallback: "attack" },
+  hurt: { keys: ["HURT", "hurt"], fallback: "hurt" },
+  die: { keys: ["DIE", "die"], fallback: "die" },
+  cast: { keys: ["CAST", "cast"], fallback: "cast" },
+  powerUp: { keys: ["POWER_UP"], fallback: "cast" },
+};
+
 function animationCues(timeline: CombatTimeline, view: CombatSimView): Record<string, SpineCue[]> {
   const cues: Record<string, SpineCue[]> = {};
   for (const beat of timeline.beats) {
     if (beat.event.kind !== "animate") continue;
     const { creature, animation } = beat.event;
     const asset = creature === "player" ? view.character?.spine : view.monsters[Number(creature.slice(1))]?.spine;
-    const key = animation === "attack" ? "ATTACK" : animation === "hurt" ? "HURT" : animation === "die" ? "die" : "CAST";
-    const name = asset?.moveAnimations?.[key]?.[0] ?? animation;
+    const entry = ANIMATION_KEYS[animation];
+    const name = entry.keys.map((key) => asset?.moveAnimations?.[key]?.[0]).find(Boolean) ?? entry.fallback;
     (cues[creature] ??= []).push({ t: beat.start, animation: name, hold: animation === "die" });
   }
   return cues;

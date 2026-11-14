@@ -101,6 +101,7 @@ export function beatDuration(event: SimEvent, action: number, speed: SimSpeed = 
     case "wait": return event.ms;
     case "rejected": return 800;
     case "energy":
+    case "vfx":
     case "afflictionTrigger":
     case "afflict":
     case "clearAffliction":

@@ -24,6 +24,7 @@ import { inputCardIds, parsePowerSpec, sceneParts } from "./engine";
 import { AFFLICTION_HOOKS } from "./hooks";
 import type {
   CombatSimInput,
+  CardPresentation,
   SimAfflictionDef,
   SimCardDef,
   SimCardType,
@@ -134,11 +135,29 @@ async function readArchiveSource(version: string, relative: string): Promise<str
   }
 }
 
-/** CharacterModel.AttackAnimDelay from `Characters/<Character>.cs`, in seconds. */
-export async function readArchiveAttackAnimDelay(version: string, characterId: string): Promise<number | null> {
+/** A CharacterModel animation delay (`AttackAnimDelay`, `CastAnimDelay`, `PowerUpAnimDelay`) from `Characters/<Character>.cs`, in seconds. */
+export async function readArchiveCharacterDelay(
+  version: string,
+  characterId: string,
+  property: "AttackAnimDelay" | "CastAnimDelay" | "PowerUpAnimDelay",
+): Promise<number | null> {
   const source = await readArchiveSource(version, `MegaCrit.Sts2.Core.Models.Characters/${idToPascal(characterId)}.cs`);
-  const match = source?.match(/AttackAnimDelay\s*=>\s*([0-9.]+)f/);
+  const match = source?.match(new RegExp(`${property}\\s*=>\\s*([0-9.]+)f`));
   return match ? Number(match[1]) : null;
+}
+
+export function readArchiveAttackAnimDelay(version: string, characterId: string): Promise<number | null> {
+  return readArchiveCharacterDelay(version, characterId, "AttackAnimDelay");
+}
+
+let cardPresentation: Promise<{ archiveVersion: string; cards: Record<string, CardPresentation> }> | null = null;
+
+/** `data/sts2/card-presentation.json`: what each card's OnPlay shows (`scripts/extract-card-presentation.py`). */
+function readCardPresentation() {
+  cardPresentation ??= readFile(path.join(process.cwd(), "data/sts2/card-presentation.json"), "utf8")
+    .then((text) => JSON.parse(text) as { archiveVersion: string; cards: Record<string, CardPresentation> })
+    .catch(() => ({ archiveVersion: "", cards: {} }));
+  return cardPresentation;
 }
 
 /**
@@ -209,6 +228,10 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
   if (characterId && !character) throw new Error(`unknown character: ${input.character}`);
   const attackAnimDelay = characterId ? await readArchiveAttackAnimDelay(version, characterId) : null;
   if (characterId && attackAnimDelay === null) warnings.push(`${characterId} AttackAnimDelay를 아카이브에서 읽지 못해 0으로 둡니다`);
+  const castAnimDelay = characterId ? await readArchiveCharacterDelay(version, characterId, "CastAnimDelay") : null;
+  const powerUpAnimDelay = characterId ? await readArchiveCharacterDelay(version, characterId, "PowerUpAnimDelay") : null;
+  // CharacterModel.PowerUpAnimDelay defaults to CastAnimDelay; only a character that overrides it has its own line.
+  if (characterId && withCards && castAnimDelay === null) warnings.push(`${characterId} CastAnimDelay를 아카이브에서 읽지 못해 0으로 둡니다`);
 
   // `monsters` replaces the composition; the encounter then only lends its background and layout.
   const listedMonsters = input.monsters?.map((id) => id.toUpperCase());
@@ -305,6 +328,16 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
     };
   }
 
+  const presentation: Record<string, CardPresentation> = {};
+  const presentationData = withCards ? await readCardPresentation() : null;
+  for (const cardId of Object.keys(cards)) {
+    const entry = presentationData?.cards[cardId];
+    if (entry) presentation[cardId] = entry;
+  }
+  if (presentationData && Object.keys(presentation).length > 0 && presentationData.archiveVersion && presentationData.archiveVersion !== version) {
+    warnings.push(`카드 연출(애니메이션, 타격 VFX)은 v${presentationData.archiveVersion} 빌드 소스 기준입니다 (v${version}과 다를 수 있음)`);
+  }
+
   const powers: Record<string, SimPowerDef> = {};
   const powerIds = new Set(Object.values(input.powers ?? {}).flat().map((spec) => parsePowerSpec(spec).id));
   for (const powerId of powerIds) {
@@ -335,10 +368,19 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
     catalog: {
       version,
       character: character
-        ? { id: character.id, name: character.name, hp: character.startingHp, maxEnergy: character.maxEnergy, attackAnimDelay: attackAnimDelay ?? 0 }
+        ? {
+          id: character.id,
+          name: character.name,
+          hp: character.startingHp,
+          maxEnergy: character.maxEnergy,
+          attackAnimDelay: attackAnimDelay ?? 0,
+          castAnimDelay: castAnimDelay ?? 0,
+          powerUpAnimDelay: powerUpAnimDelay ?? castAnimDelay ?? 0,
+        }
         : null,
       encounter: { id: encounterId, name: listedMonsters && !input.encounter ? listedMonsters.join(" + ") : encounter.name, monsters: monsterSlots },
       cards,
+      presentation,
       monsters,
       powers,
       afflictions,
