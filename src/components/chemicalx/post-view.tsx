@@ -7,6 +7,7 @@ import Image from "@/components/ui/static-image";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { DisplayedProfileNickname } from "@/components/profile/displayed-profile-nickname";
 import { PostDetailActions } from "@/components/post-detail-actions";
+import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { CommentSection } from "@/components/comment-section";
 import { useAuth } from "@/hooks/use-auth";
 import { apiDeleteToyboxPost, apiToyboxPost } from "@/lib/toybox-api";
@@ -46,6 +47,7 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
   const { userId, ready } = useAuth();
   const [post, setPost] = useState<ChemicalPost | null>(null);
   const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showTooltips, setShowTooltips] = useState(true);
   const { entities: resolvedEntities } = useCommentEntities(entities);
@@ -53,13 +55,11 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
 
   useEffect(() => {
     // docs/supabase-exit/STEP1_DESIGN.md 9.8: the row, read through the Worker.
-    // A failed read leaves the post null, which shows "not found".
+    // No row is "not found"; a failed read is "unavailable" (tasks/010 #73).
     apiToyboxPost("chemical_x", postId)
-      .catch(() => null)
-      .then((data) => {
-        setPost(data as ChemicalPost | null);
-        setLoading(false);
-      });
+      .then((data) => setPost(data as ChemicalPost | null))
+      .catch(() => setUnavailable(true))
+      .finally(() => setLoading(false));
   }, [postId]);
 
   const handleCopyUrl = useCallback(() => {
@@ -79,6 +79,10 @@ export function ChemicalXPostView({ postId, entities, variant = "page" }: PostVi
     }
     router.replace(localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale));
   }, [gameLocale, post, postId, router, serviceLocale, userId]);
+
+  if (unavailable) {
+    return <StorageUnavailableNotice title={copy.unavailableTitle} />;
+  }
 
   if (loading) {
     return (
