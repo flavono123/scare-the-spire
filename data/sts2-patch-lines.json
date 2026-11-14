@@ -44206,5 +44206,425 @@
     "textEn": "Compressed the textures for Ancient backgrounds, high-resolution relics, Timeline art, the character select screen and some enemy effects, so they load faster and use less memory.",
     "entityRefs": [],
     "searchText": "v0.113.0:line-164-text-1uqxcbh v0.113.0 0.113.0 성능 고대의 존재 배경, 고해상도 유물, 타임라인 아트, 캐릭터 선택 화면, 일부 적 효과의 텍스처를 압축해 더 빨리 불러오고 메모리를 덜 쓰게 했습니다. compressed the textures for ancient backgrounds, high-resolution relics, timeline art, the character select screen and some enemy effects, so they load faster and use less memory."
+  },
+  {
+    "id": "v0.113.1:line-001-text-1lwmcuh",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "다음 [gold]드레드[/gold] 파워의 아이콘이 추가되었습니다:",
+    "markdownEn": "Added icons for the following [gold]Dread[/gold] powers:",
+    "textKo": "다음 드레드 파워의 아이콘이 추가되었습니다:",
+    "textEn": "Added icons for the following Dread powers:",
+    "entityRefs": [],
+    "searchText": "v0.113.1:line-001-text-1lwmcuh v0.113.1 0.113.1 아트 다음 드레드 파워의 아이콘이 추가되었습니다: added icons for the following dread powers:"
+  },
+  {
+    "id": "v0.113.1:line-002-power-aeonglass-dominion",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:power]영겁의 모래시계의 권능[/gold]",
+    "markdownEn": "[gold:power]Aeonglass Dominion[/gold]",
+    "textKo": "영겁의 모래시계의 권능",
+    "textEn": "Aeonglass Dominion",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "AEONGLASS_DOMINION",
+        "label": "영겁의 모래시계의 권능"
+      }
+    ],
+    "searchText": "v0.113.1:line-002-power-aeonglass-dominion v0.113.1 0.113.1 아트 영겁의 모래시계의 권능 aeonglass dominion power aeonglass_dominion 영겁의 모래시계의 권능 영겁의 모래시계의 권능 aeonglass dominion"
+  },
+  {
+    "id": "v0.113.1:line-003-power-explosive",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:power]폭발성[/gold]",
+    "markdownEn": "[gold:power]Explosive[/gold]",
+    "textKo": "폭발성",
+    "textEn": "Explosive",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "EXPLOSIVE",
+        "label": "폭발성"
+      }
+    ],
+    "searchText": "v0.113.1:line-003-power-explosive v0.113.1 0.113.1 아트 폭발성 explosive power explosive 폭발성 폭발성 explosive"
+  },
+  {
+    "id": "v0.113.1:line-004-power-insatiable-dominion",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:power]탐의 권능[/gold]",
+    "markdownEn": "[gold:power]Insatiable Dominion[/gold]",
+    "textKo": "탐의 권능",
+    "textEn": "Insatiable Dominion",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "INSATIABLE_DOMINION",
+        "label": "탐의 권능"
+      }
+    ],
+    "searchText": "v0.113.1:line-004-power-insatiable-dominion v0.113.1 0.113.1 아트 탐의 권능 insatiable dominion power insatiable_dominion 탐의 권능 탐의 권능 insatiable dominion"
+  },
+  {
+    "id": "v0.113.1:line-005-power-lagavulin-matriarch-dominion",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:power]라가불린 대모의 권능[/gold]",
+    "markdownEn": "[gold:power]Lagavulin Matriarch Dominion[/gold]",
+    "textKo": "라가불린 대모의 권능",
+    "textEn": "Lagavulin Matriarch Dominion",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "LAGAVULIN_MATRIARCH_DOMINION",
+        "label": "라가불린 대모의 권능"
+      }
+    ],
+    "searchText": "v0.113.1:line-005-power-lagavulin-matriarch-dominion v0.113.1 0.113.1 아트 라가불린 대모의 권능 lagavulin matriarch dominion power lagavulin_matriarch_dominion 라가불린 대모의 권능 라가불린 대모의 권능 lagavulin matriarch dominion"
+  },
+  {
+    "id": "v0.113.1:line-006-power-you-are-mine",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:power]너는 내 것이다[/gold]",
+    "markdownEn": "[gold:power]You Are Mine[/gold]",
+    "textKo": "너는 내 것이다",
+    "textEn": "You Are Mine",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "YOU_ARE_MINE",
+        "label": "너는 내 것이다"
+      }
+    ],
+    "searchText": "v0.113.1:line-006-power-you-are-mine v0.113.1 0.113.1 아트 너는 내 것이다 you are mine power you_are_mine 너는 내 것이다 너는 내 것이다 you are mine"
+  },
+  {
+    "id": "v0.113.1:line-007-text-7954hu",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold]화살[/gold]이 이제 모든 적의 중심이 아니라 몸에 박힙니다.",
+    "markdownEn": "[gold]Arrows[/gold] now stick to the body of every enemy instead of its center.",
+    "textKo": "화살이 이제 모든 적의 중심이 아니라 몸에 박힙니다.",
+    "textEn": "Arrows now stick to the body of every enemy instead of its center.",
+    "entityRefs": [],
+    "searchText": "v0.113.1:line-007-text-7954hu v0.113.1 0.113.1 아트 화살이 이제 모든 적의 중심이 아니라 몸에 박힙니다. arrows now stick to the body of every enemy instead of its center."
+  },
+  {
+    "id": "v0.113.1:line-008-character-fool",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "문구"
+    ],
+    "sectionEn": [
+      "Writing"
+    ],
+    "markdownKo": "[gold:character]풀[/gold]의 일부 역사 문구를 다듬었습니다.",
+    "markdownEn": "Polished the text of some of [gold:character]The Fool[/gold]'s epochs.",
+    "textKo": "풀의 일부 역사 문구를 다듬었습니다.",
+    "textEn": "Polished the text of some of The Fool's epochs.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "FOOL",
+        "label": "풀"
+      }
+    ],
+    "searchText": "v0.113.1:line-008-character-fool v0.113.1 0.113.1 문구 풀의 일부 역사 문구를 다듬었습니다. polished the text of some of the fool's epochs. character fool 풀 풀 the fool fool"
+  },
+  {
+    "id": "v0.113.1:line-009-character-fool",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "터키어에서 [gold:character]풀[/gold]의 일부 역사를 열면 타임라인이 멈추던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed the timeline getting stuck when opening some of [gold:character]The Fool[/gold]'s epochs in Turkish.",
+    "textKo": "터키어에서 풀의 일부 역사를 열면 타임라인이 멈추던 문제를 고쳤습니다.",
+    "textEn": "Fixed the timeline getting stuck when opening some of The Fool's epochs in Turkish.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "FOOL",
+        "label": "풀"
+      }
+    ],
+    "searchText": "v0.113.1:line-009-character-fool v0.113.1 0.113.1 버그 수정 일반 터키어에서 풀의 일부 역사를 열면 타임라인이 멈추던 문제를 고쳤습니다. fixed the timeline getting stuck when opening some of the fool's epochs in turkish. character fool 풀 풀 the fool fool"
+  },
+  {
+    "id": "v0.113.1:line-010-text-ktpu7y",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "기록 보관소에서 손상된 런을 보면 복사본이 중복으로 추가되던 문제를 고쳤습니다.",
+    "markdownEn": "Viewing a damaged run in Run History no longer adds duplicate copies of it.",
+    "textKo": "기록 보관소에서 손상된 런을 보면 복사본이 중복으로 추가되던 문제를 고쳤습니다.",
+    "textEn": "Viewing a damaged run in Run History no longer adds duplicate copies of it.",
+    "entityRefs": [],
+    "searchText": "v0.113.1:line-010-text-ktpu7y v0.113.1 0.113.1 버그 수정 일반 기록 보관소에서 손상된 런을 보면 복사본이 중복으로 추가되던 문제를 고쳤습니다. viewing a damaged run in run history no longer adds duplicate copies of it."
+  },
+  {
+    "id": "v0.113.1:line-011-text-x76vi9",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "역사의 포션 해금 화면에서 포션에 마우스를 올리면 카드 미리보기가 포션 설명을 가리던 문제를 고쳤습니다.",
+    "markdownEn": "Card previews no longer cover a potion's text when hovering it on an epoch's potion unlock screen.",
+    "textKo": "역사의 포션 해금 화면에서 포션에 마우스를 올리면 카드 미리보기가 포션 설명을 가리던 문제를 고쳤습니다.",
+    "textEn": "Card previews no longer cover a potion's text when hovering it on an epoch's potion unlock screen.",
+    "entityRefs": [],
+    "searchText": "v0.113.1:line-011-text-x76vi9 v0.113.1 0.113.1 버그 수정 일반 역사의 포션 해금 화면에서 포션에 마우스를 올리면 카드 미리보기가 포션 설명을 가리던 문제를 고쳤습니다. card previews no longer cover a potion's text when hovering it on an epoch's potion unlock screen."
+  },
+  {
+    "id": "v0.113.1:line-012-power-insatiable-dominion",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "[gold:power]탐의 권능[/gold]의 중복된 툴팁을 제거했습니다.",
+    "markdownEn": "Removed a duplicate tooltip from the [gold:power]Insatiable Dominion[/gold].",
+    "textKo": "탐의 권능의 중복된 툴팁을 제거했습니다.",
+    "textEn": "Removed a duplicate tooltip from the Insatiable Dominion.",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "INSATIABLE_DOMINION",
+        "label": "탐의 권능"
+      }
+    ],
+    "searchText": "v0.113.1:line-012-power-insatiable-dominion v0.113.1 0.113.1 버그 수정 일반 탐의 권능의 중복된 툴팁을 제거했습니다. removed a duplicate tooltip from the insatiable dominion. power insatiable_dominion 탐의 권능 탐의 권능 insatiable dominion"
+  },
+  {
+    "id": "v0.113.1:line-013-character-fool",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "[gold:character]풀[/gold]의 역사 설명 하나의 오타를 고쳤습니다.",
+    "markdownEn": "Fixed a typo in one of [gold:character]The Fool[/gold]'s epoch descriptions.",
+    "textKo": "풀의 역사 설명 하나의 오타를 고쳤습니다.",
+    "textEn": "Fixed a typo in one of The Fool's epoch descriptions.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "FOOL",
+        "label": "풀"
+      }
+    ],
+    "searchText": "v0.113.1:line-013-character-fool v0.113.1 0.113.1 버그 수정 일반 풀의 역사 설명 하나의 오타를 고쳤습니다. fixed a typo in one of the fool's epoch descriptions. character fool 풀 풀 the fool fool"
+  },
+  {
+    "id": "v0.113.1:line-014-text-fxjfpj",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "일본어에서 [gold]화살[/gold]이 없을 때 [gold]화살[/gold] 툴팁의 텍스트가 깨져 보이던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed the Japanese [gold]Arrow[/gold] tooltip showing broken text when you have no [gold]Arrows[/gold].",
+    "textKo": "일본어에서 화살이 없을 때 화살 툴팁의 텍스트가 깨져 보이던 문제를 고쳤습니다.",
+    "textEn": "Fixed the Japanese Arrow tooltip showing broken text when you have no Arrows.",
+    "entityRefs": [],
+    "searchText": "v0.113.1:line-014-text-fxjfpj v0.113.1 0.113.1 버그 수정 일반 일본어에서 화살이 없을 때 화살 툴팁의 텍스트가 깨져 보이던 문제를 고쳤습니다. fixed the japanese arrow tooltip showing broken text when you have no arrows."
+  },
+  {
+    "id": "v0.113.1:line-015-text-dz0mz8",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "번체 중국어 텍스트가 항상 복수형으로 표시되던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed Traditional Chinese text that always showed the plural wording.",
+    "textKo": "번체 중국어 텍스트가 항상 복수형으로 표시되던 문제를 고쳤습니다.",
+    "textEn": "Fixed Traditional Chinese text that always showed the plural wording.",
+    "entityRefs": [],
+    "searchText": "v0.113.1:line-015-text-dz0mz8 v0.113.1 0.113.1 버그 수정 일반 번체 중국어 텍스트가 항상 복수형으로 표시되던 문제를 고쳤습니다. fixed traditional chinese text that always showed the plural wording."
+  },
+  {
+    "id": "v0.113.1:line-016-text-88m4la",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "여러 언어의 번역을 업데이트하고 깨진 서식을 고쳤습니다.",
+    "markdownEn": "Updated translations and fixed broken formatting in several languages.",
+    "textKo": "여러 언어의 번역을 업데이트하고 깨진 서식을 고쳤습니다.",
+    "textEn": "Updated translations and fixed broken formatting in several languages.",
+    "entityRefs": [],
+    "searchText": "v0.113.1:line-016-text-88m4la v0.113.1 0.113.1 버그 수정 일반 여러 언어의 번역을 업데이트하고 깨진 서식을 고쳤습니다. updated translations and fixed broken formatting in several languages."
+  },
+  {
+    "id": "v0.113.1:line-017-power-stretch-card-ki-hop",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:power]스트레칭[/gold]이 이제 [gold:card]키 깡총[/gold]처럼 스스로는 [gold]방어도[/gold]를 얻지 않는 카드에서도 [gold:enchantment]숙련[/gold]의 [gold]방어도[/gold]에 더해집니다.",
+    "markdownEn": "[gold:power]Stretch[/gold] now adds to the [gold]Block[/gold] from [gold:enchantment]Adroit[/gold] on cards that don't gain [gold]Block[/gold] themselves, like [gold:card]Ki Hop[/gold].",
+    "textKo": "스트레칭이 이제 키 깡총처럼 스스로는 방어도를 얻지 않는 카드에서도 숙련의 방어도에 더해집니다.",
+    "textEn": "Stretch now adds to the Block from Adroit on cards that don't gain Block themselves, like Ki Hop.",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "STRETCH",
+        "label": "스트레칭"
+      },
+      {
+        "type": "card",
+        "id": "KI_HOP",
+        "label": "키 깡총"
+      },
+      {
+        "type": "enchantment",
+        "id": "ADROIT",
+        "label": "숙련"
+      }
+    ],
+    "searchText": "v0.113.1:line-017-power-stretch-card-ki-hop v0.113.1 0.113.1 버그 수정 풀 스트레칭이 이제 키 깡총처럼 스스로는 방어도를 얻지 않는 카드에서도 숙련의 방어도에 더해집니다. stretch now adds to the block from adroit on cards that don't gain block themselves, like ki hop. power stretch 스트레칭 스트레칭 stretch card ki_hop 키 깡총 키 깡총 ki hop enchantment adroit 숙련 숙련 adroit"
+  },
+  {
+    "id": "v0.113.1:line-018-power-aim",
+    "patch": "v0.113.1",
+    "version": "0.113.1",
+    "date": "2026-11-15",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]으스대기+[/gold]의 강화 미리보기가 강화로 바뀌지 않는 [gold:power]조준[/gold]을 더 이상 초록색으로 강조하지 않습니다.",
+    "markdownEn": "[gold:card]Show Off+[/gold]'s upgrade preview no longer highlights its [gold:power]Aim[/gold] in green, which the upgrade does not change.",
+    "textKo": "으스대기+의 강화 미리보기가 강화로 바뀌지 않는 조준을 더 이상 초록색으로 강조하지 않습니다.",
+    "textEn": "Show Off+'s upgrade preview no longer highlights its Aim in green, which the upgrade does not change.",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "AIM",
+        "label": "조준"
+      }
+    ],
+    "searchText": "v0.113.1:line-018-power-aim v0.113.1 0.113.1 버그 수정 풀 으스대기+의 강화 미리보기가 강화로 바뀌지 않는 조준을 더 이상 초록색으로 강조하지 않습니다. show off+'s upgrade preview no longer highlights its aim in green, which the upgrade does not change. power aim 조준 조준 aim"
   }
 ]
