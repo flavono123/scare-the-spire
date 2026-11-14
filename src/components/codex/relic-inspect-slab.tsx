@@ -128,7 +128,8 @@ export function RelicInspectSlab({
             {description}
           </div>
           {flavor ? (
-            <div className="mt-auto flex w-full max-w-[22rem] shrink-0 flex-col items-center gap-2">
+            // data-capture-flavor: shorts:capture --no-flavor hides this block without moving anything else.
+            <div data-capture-flavor className="mt-auto flex w-full max-w-[22rem] shrink-0 flex-col items-center gap-2">
               <div
                 className="h-px w-[70%] max-w-[16rem] bg-gradient-to-r from-transparent via-white/35 to-transparent"
                 aria-hidden

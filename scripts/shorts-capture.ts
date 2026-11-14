@@ -18,10 +18,16 @@
  * `upgraded` (card pages: tick "View Upgrades" before capturing), `enchant`
  * (card pages: press the enchantment button with that title first), `beta`
  * (card, relic, power, epoch pages: turn on the "Beta Art" toggle first),
+ * `noFlavor` (relic pages: leave the flavor line out, the tile keeps its size),
+ * `artOnly` (epoch pages: the art without the shade and the text panel),
  * `t` (combat simulator: seek to this ms first), `frames` (combat simulator:
  * `{ fps, from?, to? }`, `out` is a directory that gets 0000.png, 0001.png, ...).
  * A mark or replace phrase must occur exactly once in the description.
  * Relative paths resolve from the directory pnpm was invoked in.
+ *
+ * A shot that fails is retried once on a freshly loaded page; a batch goes on
+ * with the next shot and exits non-zero at the end naming the failed ones. A
+ * missing Playwright browser is reported before anything else runs.
  *
  * Every PNG gets a sidecar `<out>.json`: requested and final URL, version and
  * locale stamped on the rendered tile, edits, pixel ratio, image size, and the
@@ -75,6 +81,8 @@ function studioOf(url: string): Studio | null {
 }
 const CAPTURE_SELECTOR = "[data-combat-sim-stage], [data-map-bar-stage], [data-card-tile], [data-relic-inspect-slab]";
 const DOWNLOAD_SELECTOR = "[data-compendium-download-image]";
+/** How long the download button may stay disabled or the PNG may take (first compile of a page included). */
+const DOWNLOAD_READY_MS = 180_000;
 
 /** Same colors the card tile uses for its BBCode spans. */
 const MARK_COLORS: Record<string, { color: string; bold: boolean }> = {
@@ -114,6 +122,10 @@ interface Shot {
   t?: number;
   /** Combat simulator: capture a frame sequence into the `out` directory. */
   frames?: { fps: number; from?: number; to?: number };
+  /** Relic pages: leave the flavor line out of the tile (the tile keeps its size). */
+  noFlavor?: boolean;
+  /** Epoch pages: capture the art alone, without the shade and the text panel. */
+  artOnly?: boolean;
 }
 
 interface Batch {
@@ -279,6 +291,9 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
   const out = resolvePath(shot.out, outDir);
 
   await page.goto(url, { waitUntil: "domcontentloaded", timeout: 180_000 });
+  // The tile downloads clone the DOM with computed styles, so hiding is enough; visibility keeps the layout.
+  const hide = [shot.noFlavor ? "[data-capture-flavor]" : null, shot.artOnly ? "[data-capture-overlay]" : null].filter(Boolean);
+  if (hide.length > 0) await page.addStyleTag({ content: `${hide.join(", ")} { visibility: hidden !important; }` });
   const selector = shot.selector ?? CAPTURE_SELECTOR;
   // Power and epoch pages have no tile node; their download button renders the
   // art block it is bound to, so the button alone means the page is ready.
@@ -344,20 +359,27 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     throw new Error(`${url}: ${reasons.join("; ")}`);
   }
 
-  const stamp = !hasNode
-    ? { version: null, gameLocale: null }
-    : await page.locator(selector).first().evaluate((node: HTMLElement) => ({
-      version: node.dataset.version ?? null,
-      gameLocale: node.dataset.gameLocale ?? null,
-    }));
+  // STS1 tiles carry a game locale but no data version (their data is not versioned), and the
+  // pages without a tile node (power, epoch) have neither: read the locale from whatever is stamped.
+  const stamp = await page.evaluate(({ selector, hasNode }) => {
+    const node = hasNode ? document.querySelector<HTMLElement>(selector) : null;
+    const stamped = node ?? document.querySelector<HTMLElement>("[data-game-locale]");
+    return { version: node?.dataset.version ?? null, gameLocale: stamped?.dataset.gameLocale ?? null };
+  }, { selector, hasNode });
 
   await mkdir(path.dirname(out), { recursive: true });
   const button = page.locator(DOWNLOAD_SELECTOR).filter({ visible: true }).first();
   let method: "download-button" | "element-screenshot";
   if (await button.count()) {
+    // A page the dev server compiles for the first time keeps the button disabled (working) for a while.
+    await page.waitForFunction(
+      (sel) => [...document.querySelectorAll<HTMLButtonElement>(sel)].some((node) => !node.disabled && node.offsetParent !== null),
+      DOWNLOAD_SELECTOR,
+      { timeout: DOWNLOAD_READY_MS },
+    );
     const [download] = await Promise.all([
-      page.waitForEvent("download", { timeout: 60_000 }),
-      button.click(),
+      page.waitForEvent("download", { timeout: DOWNLOAD_READY_MS }),
+      button.click({ timeout: DOWNLOAD_READY_MS }),
     ]);
     await download.saveAs(out);
     method = "download-button";
@@ -373,8 +395,17 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
     requested,
     url: page.url(),
     target: shot.target ?? null,
+    game: /\/(?:compendium\/)?sts1\//.test(new URL(url).pathname) ? "sts1" : "sts2",
     stamp,
-    edits: { mark: shot.mark ?? [], replace: shot.replace ?? [], upgraded: shot.upgraded ?? false, enchant: shot.enchant ?? null, beta: shot.beta ?? false },
+    edits: {
+      mark: shot.mark ?? [],
+      replace: shot.replace ?? [],
+      upgraded: shot.upgraded ?? false,
+      enchant: shot.enchant ?? null,
+      beta: shot.beta ?? false,
+      noFlavor: shot.noFlavor ?? false,
+      artOnly: shot.artOnly ?? false,
+    },
     method,
     pixelRatio: await page.evaluate("window.devicePixelRatio"),
     ...image,
@@ -498,6 +529,27 @@ async function captureFrames(page: Page, shot: Shot, requested: string, selector
   console.log(`${outDir} (${selected.length} frames, ${image.width}x${image.height})`);
 }
 
+function browserArgs(sim: boolean): string[] {
+  return ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", ...(sim ? SIM_RASTER_ARGS : [])];
+}
+
+/**
+ * Playwright keeps its browsers in a per-user cache, and the headless shell is a separate download
+ * from `playwright install`. Launching once tells a missing one from a working one right away.
+ */
+async function assertBrowserInstalled() {
+  try {
+    await (await chromium.launch({ args: browserArgs(false) })).close();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (!/Executable doesn't exist|playwright install/i.test(message)) throw error;
+    throw new Error(
+      "Playwright's chromium headless shell is not installed on this machine. Install it, then run again:\n" +
+        "  pnpm exec playwright install chromium-headless-shell",
+    );
+  }
+}
+
 function parseArgs(argv: string[]): { batch: Batch; batchDir: string } | null {
   const shot: Partial<Shot> = { mark: [], replace: [] };
   let base: string | undefined;
@@ -520,6 +572,8 @@ function parseArgs(argv: string[]): { batch: Batch; batchDir: string } | null {
       case "--upgraded": shot.upgraded = true; break;
       case "--enchant": shot.enchant = value(); break;
       case "--beta": shot.beta = true; break;
+      case "--no-flavor": shot.noFlavor = true; break;
+      case "--art-only": shot.artOnly = true; break;
       case "--t": shot.t = Number(value()); break;
       case "--frames": shot.frames = { fps: shot.frames?.fps ?? 30 }; break;
       case "--fps": shot.frames = { fps: Number(value()) }; break;
@@ -544,7 +598,8 @@ async function main() {
     console.log(
       "usage: pnpm shorts:capture (--target type/ID[@version] | --url path) --out file.png\n" +
         "         [--mark text]... [--mark-color red|gold|green|blue|purple|#hex] [--replace old=>new]...\n" +
-        "         [--selector css] [--upgraded] [--enchant name] [--beta] [--locale kor|eng] [--base http://localhost:3000]\n" +
+        "         [--selector css] [--upgraded] [--enchant name] [--beta] [--no-flavor] [--art-only]\n" +
+        "         [--locale kor|eng] [--base http://localhost:3000]\n" +
         "         [--t ms] [--frames [--fps 30]]   (combat simulator and map bar pages; --frames writes <out>/0000.png...)\n" +
         "       pnpm shorts:capture --batch shots.json",
     );
@@ -560,6 +615,8 @@ async function main() {
   }
   const base = batch.base ?? DEFAULT_BASE;
 
+  // Before anything slow: a Mac whose Playwright cache is empty would otherwise stall in the Spine and capture steps.
+  await assertBrowserInstalled();
   try {
     await fetch(base, { signal: AbortSignal.timeout(120_000) });
   } catch {
@@ -575,8 +632,7 @@ async function main() {
   const browserFor = (sim: boolean) => {
     let browser = browsers.get(sim);
     if (!browser) {
-      const args = ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", ...(sim ? SIM_RASTER_ARGS : [])];
-      browser = chromium.launch({ args });
+      browser = chromium.launch({ args: browserArgs(sim) });
       browsers.set(sim, browser);
     }
     return browser;
@@ -602,11 +658,29 @@ async function main() {
       pages.set(key, page);
       return page;
     };
+    // One bad shot must not stop a batch: retry once on a freshly opened page, then go on and fail at the end.
+    const failed: string[] = [];
     for (const shot of batch.shots) {
       const locale = shot.locale ?? batch.locale ?? "kor";
       const sim = Boolean(shot.url && studioOf(shot.url));
-      await capture(await pageFor(locale, sim), { ...shot, locale }, base, locale, outDir);
+      const page = await pageFor(locale, sim);
+      for (let attempt = 1; ; attempt += 1) {
+        try {
+          await capture(page, { ...shot, locale }, base, locale, outDir);
+          break;
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          if (attempt < 2) {
+            console.warn(`retrying ${shot.out}: ${message.split("\n")[0]}`);
+            continue;
+          }
+          console.error(`failed ${shot.out}: ${message}`);
+          failed.push(shot.out);
+          break;
+        }
+      }
     }
+    if (failed.length > 0) throw new Error(`${failed.length} of ${batch.shots.length} shots failed:\n  ${failed.join("\n  ")}`);
   } finally {
     await Promise.all([...browsers.values()].map(async (browser) => (await browser).close()));
   }

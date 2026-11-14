@@ -253,8 +253,9 @@ export function EpochDetail({
               ) : (
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
               )}
-              <div className="absolute inset-0 bg-gradient-to-l from-black/90 via-black/45 to-black/10" />
-              <div className="dark absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[5%] sm:right-[4%] sm:top-[5%] sm:w-[48%] sm:min-w-[360px] sm:max-w-[560px]">
+              {/* data-capture-overlay: shorts:capture --art-only hides the shade and the text panel to keep the art alone. */}
+              <div data-capture-overlay className="absolute inset-0 bg-gradient-to-l from-black/90 via-black/45 to-black/10" />
+              <div data-capture-overlay className="dark absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[5%] sm:right-[4%] sm:top-[5%] sm:w-[48%] sm:min-w-[360px] sm:max-w-[560px]">
                 <div className="relative flex min-h-0 flex-1 flex-col">
                   <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
                   <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
