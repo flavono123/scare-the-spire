@@ -63,12 +63,10 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
   const withCards = view.parts.includes("cards") && view.character !== null;
   // ui=card: no hand, orb or piles, so the scene takes the card-less band and the card lands mid-scene.
   const cardOnly = withCards && ui === "card";
-  const sceneLayout = sceneFrame(withPlayer, withCards && !cardOnly, { feetY, bgHeight });
+  const handBand = withCards && !cardOnly;
+  const sceneLayout = sceneFrame(withPlayer, handBand, { feetY, bgHeight });
   const player = playerBox(sceneLayout);
-  const monsters = useMemo(
-    () => monsterBoxes(view.monsters, view.combatLayout, sceneFrame(withPlayer, withCards && !cardOnly, { feetY, bgHeight })),
-    [view.monsters, view.combatLayout, withPlayer, withCards, cardOnly, feetY, bgHeight],
-  );
+  const monsters = monsterBoxes(view.monsters, view.combatLayout, sceneLayout);
   const cues = useMemo(() => animationCues(timeline, view), [timeline, view]);
   const speed = view.input.speed ?? "normal";
   const deaths = useMemo(() => deathFades(timeline, view, speed), [timeline, view, speed]);
