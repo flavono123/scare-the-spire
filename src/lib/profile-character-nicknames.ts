@@ -49,8 +49,16 @@ const DEFAULT_PROFILE_CHARACTER_NICKNAMES: ProfileCharacterNicknamePools = {
   },
 };
 
+// The Fool has no row of its own: the table's character_id CHECK lists only the first five
+// characters, and the stored pool is one flat list anyway. Names from 슬갤 and r/slaythespire (2026-11).
+const DEFAULT_FOOL_NICKNAMES: ProfileNicknamePools = {
+  ko: ["풀", "폴", "더 폴", "와초키", "바보", "바보궁수", "네얼간이", "광대", "궁수"],
+  en: ["The Fool", "Fool", "Bard", "Tree", "Jester", "Wuppy", "Wah Cho Ki", "Clown", "Sad Clown", "Musician", "Plant Guy", "Bard Archer"],
+};
+
 export const DEFAULT_PROFILE_NICKNAMES: ProfileNicknamePools = flattenCharacterNicknamePools(
   DEFAULT_PROFILE_CHARACTER_NICKNAMES,
+  DEFAULT_FOOL_NICKNAMES,
 );
 
 export function isProfileNicknameLocale(value: string | null | undefined): value is ProfileNicknameLocale {
@@ -214,14 +222,17 @@ function mergeCharacterNicknamePools(
   return merged;
 }
 
-function flattenCharacterNicknamePools(pools: ProfileCharacterNicknamePools): ProfileNicknamePools {
+function flattenCharacterNicknamePools(
+  pools: ProfileCharacterNicknamePools,
+  extra: ProfileNicknamePools = { ko: [], en: [] },
+): ProfileNicknamePools {
   return {
     ko: sortNicknameList(
-      uniqueNicknames(PROFILE_CHARACTER_NICKNAME_IDS.flatMap((id) => pools[id].ko)),
+      uniqueNicknames([...PROFILE_CHARACTER_NICKNAME_IDS.flatMap((id) => pools[id].ko), ...extra.ko]),
       "ko",
     ),
     en: sortNicknameList(
-      uniqueNicknames(PROFILE_CHARACTER_NICKNAME_IDS.flatMap((id) => pools[id].en)),
+      uniqueNicknames([...PROFILE_CHARACTER_NICKNAME_IDS.flatMap((id) => pools[id].en), ...extra.en]),
       "en",
     ),
   };

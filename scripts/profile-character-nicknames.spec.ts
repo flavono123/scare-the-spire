@@ -39,11 +39,11 @@ assert.deepEqual(
 );
 assert.equal(
   DEFAULT_PROFILE_NICKNAMES.ko.join(", "),
-  "골골맘, 네바, 네크단, 네크로맨서, 네평, 디펙터, 디평, 디황, 리평, 리황, 사일단, 사장연, 사평, 아이돌클라스, 아이언클래스, 아이언클레임, 아장연, 아클단, 아평",
+  "골골맘, 광대, 궁수, 네바, 네얼간이, 네크단, 네크로맨서, 네평, 더 폴, 디펙터, 디평, 디황, 리평, 리황, 바보, 바보궁수, 사일단, 사장연, 사평, 아이돌클라스, 아이언클래스, 아이언클레임, 아장연, 아클단, 아평, 와초키, 폴, 풀",
 );
 assert.equal(
   DEFAULT_PROFILE_NICKNAMES.en.join(", "),
-  "Clad, Defect, Ironclad, King Reggie, Necro, Necro Binder, Necrobinder, Orb Defect, Regent, Reggie, Shiv Silent, Silent, The Clad, The Defect, The Silent",
+  "Bard, Bard Archer, Clad, Clown, Defect, Fool, Ironclad, Jester, King Reggie, Musician, Necro, Necro Binder, Necrobinder, Orb Defect, Plant Guy, Regent, Reggie, Sad Clown, Shiv Silent, Silent, The Clad, The Defect, The Fool, The Silent, Tree, Wah Cho Ki, Wuppy",
 );
 
 assert.deepEqual(normalizeNicknameLines("  아평  \n아평\n\n아클단"), ["아평", "아클단"]);
