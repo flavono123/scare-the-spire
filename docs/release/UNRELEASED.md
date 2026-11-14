@@ -71,14 +71,12 @@
   없다. 플래그 CLI는 `path.<group>` legacy, `identity.mode` token, `write.<group>` rls를 `--old-client` 없이 거절한다.
 - Expect: 화면은 지금(5단계 운영)과 같다. DNS로 `*.supabase.co`를 막은 새 브라우저에서 홈, 백과사전 상세 댓글·좋아요·반응,
   패치 노트 줄 댓글, 장난감 상자 피드·상세·쓰기, 조각모음, 역사 강의서, 퍼즐상자, 프로필, 문의가
-  데이터와 함께 뜨고 쓰기가 된다. 다채로운 철학자들은 지금처럼 Worker가 Supabase에서 읽어, Supabase가 멈추면
-  "응답 없음"이다(tasks/010 #75). 네비의 새 글 점과 배달부도 지금처럼 Worker가 Supabase에서 갱신해, Supabase가
-  멈추면 마지막 스냅샷에 머문다(tasks/010 #76). `*.supabase.co` 요청 0, `securitypolicyviolation` 0, `/api` 409 0, "데이터베이스가
+  데이터와 함께 뜨고 쓰기가 된다. 다채로운 철학자들과 네비의 새 글 점·배달부도 `3669c1b2` 핫픽스 뒤에는 Worker가
+  D1에서 읽는다(tasks/010 #75, #76 해소). `*.supabase.co` 요청 0, `securitypolicyviolation` 0, `/api` 409 0, "데이터베이스가
   응답하지 않습니다" 없음. 기존 supabase-js 세션이 있는 브라우저는 같은 uid로 claim한다(만료된 토큰은 Worker가 refresh).
   Worker가 409 `surface_legacy`를 주거나 표식 헤더가 없으면 legacy로 가지 않고 "데이터베이스가 응답하지 않습니다"를
   보인다. 셸 패치 `/patches/2026-11-12`, `/patches/2026-09-11`(14개 언어)의 변형 릴 15개 순서와 철학자 카드가 사이트
-  `/api`의 최신 값과 같다. 그 릴 읽기가 실패하면 운영 패치 빌드가 멈춘다(지금과 같음. #75로 Supabase가 멈추면
-  철학자 릴에서 멈춤, `ALLOW_BUILD_WITHOUT_API=1`로 우회). 미리 그린 HTML은 패치 릴 데이터를 빼고 6단계 전과 같다.
+  `/api`의 최신 값과 같다. 그 릴 읽기가 실패하면 운영 패치 빌드가 멈춘다(지금과 같음. `ALLOW_BUILD_WITHOUT_API=1`로 우회). 미리 그린 HTML은 패치 릴 데이터를 빼고 6단계 전과 같다.
 - QA: 병합 뒤 `pnpm cf:testbed` 전체와 공통 브라우저 확인(새 프로필 Chromium, `--host-resolver-rules="MAP *.supabase.co ~NOTFOUND"`,
   `slseoun_qa` 쿠키 없음): https://scare-the-spire-testbed.flavono123.workers.dev/ ,
   https://scare-the-spire-testbed.flavono123.workers.dev/c-c-c-combo ,
@@ -98,6 +96,12 @@
 - Expect: 운영 화면은 그대로다(속성만 추가, 새 이미지는 참조하는 곳 없음). `/compendium/relics/byrdpip`·`/compendium/epochs/fool1_epoch` 화면과 이미지 다운로드가 지금과 같다. `pnpm cf:limits`의 main 정적 애셋이 약 20개 늘어난다(예산 19,500 안).
 - QA: 없음(dev 도구). 확인함: 위 두 상세 페이지의 캡처, `pnpm test:combat-sim`, `tsc`.
 - Commits: `1bf5c04b`부터 이 항목을 쓴 커밋까지(`scripts/`·`docs/COMBAT_SIM.md`·`src/app/(main)/dev/combat-sim`·`src/lib/combat-sim`).
+
+### known-issues-fixes-2
+- Feature: tasks/010 #62~79 처리(2026-11-15). 게임 요소 선택 창(코오오옴보·변형 작성, 코오오옴보 목록 필터)에서 Esc가 선택 창만 닫음(#63). 게임 전용 언어 페이지의 JS 끈 헤더 링크가 그 언어 접두사로 감(#64). 케미컬 X 상세가 읽기 실패와 없는 글을 구분(#73). 이야기를 쓸 때 목록이 100개로 잘리지 않음(#72). DOM 저장소 없는 브라우저가 첫 페이지 밖에서도 쓰기 가능(#74). 카드 20장의 수치·비용·X 비용·대상을 게임에 맞춤(#77). 무한의 컨베이어 접시 값 40 골드(#78). 파워 DIAMOND_DIADEM·DOOR_REVIVAL 폐기 표시(#79). 꺼져 있는 상세 OG 보강: 유튜브 썸네일 주소, 어려운 결정 제목(#69, #71). dev 전용·테스트: 관리 글 서비스 중복 키(#66), contact spec(#65). Supabase 마이그레이션 1건은 만들기만 했다(#67, 위 표).
+- Expect: `/c-c-c-combo` 작성창에서 선택 창을 열고 Esc 한 번이면 선택 창만 닫히고 두 번째가 작성창을 닫는다. `/ja/compendium/cards`를 JS 없이 열면 헤더 둘째 줄 링크가 `/ja`, `/ja/compendium` …이다(ko·en 페이지는 그대로). `/en/compendium/cards/hemokinesis`가 Deal 15 damage, `seance`가 비용 1(강화 0), `begone`·`not_yet` 대상 Self, `all_for_one`·`bullet_time`·`jackpot`·`scrape`·`transfigure`에 X 비용 표시 없음. `/compendium/events/endless_conveyor`와 en 판에 40 골드. `/compendium/powers/diamond_diadem`·`door_revival`이 폐기 표시(회색). `/patches/changes`에서 이야기를 쓰면 줄별 이야기 수가 줄지 않는다. DETAIL_SHELL_OG와 마이그레이션이 꺼져 있어 운영 OG와 DB는 그대로다.
+- QA: 위 경로들. 확인함: Esc 동작(Playwright, dev 서버, 고치기 전에는 실패), 빌드 산출물의 ja·de 헤더 링크, `scripts/contact.spec.ts` 5개, `detail-shell-og.spec.ts`, `api-identity-client.spec.ts`, `test:write-gate`, `i18n:validate`, `tsc`. 확인 못 함: 케미컬 X 상세의 읽기 실패 화면(브라우저), 이야기 목록 잘림(브라우저), 영문 카드 20장 전체의 모달 화면, 실제 WebView(#74).
+- Commits: `7b2b8616`, `c0ebccac`, `214ddf9b`, `464b2a45`, `ac1087ab`, `9a9ba0ff`, `6565fe37`, `50b4d6bb`, `ad97242e`, `1bd87ba8`, `ef686fa8`, `9e13ff0e`, `8b93262f`.
 
 <!--
 ### <항목-id>

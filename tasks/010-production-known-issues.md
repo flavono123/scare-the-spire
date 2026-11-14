@@ -1,10 +1,12 @@
 # Task 010: 운영에도 있는 기존 문제 모음
 
-## 상태: 수정 완료 후 사용자 검수 대기 (2026-11-02, 미배포)
+## 상태: 수정 완료 후 사용자 검수 대기 (2026-11-02, 2026-11-15 2차, 미배포)
 
 - 고침: #1~20, #22, #24~31, #33~37, #39~41, #43, #44, #46~59, #61.
 - 이미 고쳐짐: #19, #21, #38. 재현 안 됨: #23(동시 4회 전부 200, 드문 500이 사라졌다고 단정은 못 함).
 - 결정 대기: #32(기록별 OG, 요청마다 Supabase 조회), #42(Realtime publication), #45(DB 낮은 항목), #60(Free 인스턴스, Pro 사용 안 함).
+- 2026-11-15 2차: #62~79를 훑었다. 고침: #63~66, #69, #71~74, #77~79. 해소(이미 고쳐짐·구조로 해결): #70, #75, #76. 버그 아님: #62.
+  마이그레이션만 만들고 적용 안 함: #67. 남은 것: #68(운영 D1 값 확인), #32·#42·#45·#60(결정 대기), #23(재현 안 됨). 각 항목의 '처리' 줄을 본다.
 - 아래 목록은 기록으로 남긴다. 수정 내용은 `docs/release/UNRELEASED.md`의 known-issues-fixes에 있다.
 
 ## 분류
@@ -240,48 +242,61 @@
 
 62. **몬스터 스킨 이름이 게임 언어로 나오지 않음**. 생성 데이터의 `spineAsset.skinVariants[].label`이 모든 언어에서 '형태 1' 같은 한국어다(30건).
     - https://scare-the-spire.flavono123.workers.dev/en/compendium/bestiary
+    - 처리(2026-11-15): 버그 아님. `skinVariants[].label`은 화면에서 쓰지 않는다(`hasMonsterSkinParts`가 길이만 본다). 보이는 이름은 `skinParts`의 서비스 문구(ko '형태 1' / 그 밖 'Form 1')라 게임 번역 대상이 아니다.
 63. **게임 요소 선택 창을 연 채 Esc를 누르면 작성창까지 닫힘**. 초안은 남는다. 코드 읽기로만 확인했다.
     - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+    - 처리(2026-11-15): 고침(`c0ebccac`): 코오오옴보·변형의 게임 요소 선택 창과 코오오옴보 목록의 필터 창이 Esc를 먼저 받는다. `/c-c-c-combo` 작성창에서 Esc 한 번은 선택 창만, 두 번째가 작성창을 닫는 것을 브라우저로 확인했고, 고치기 전에는 둘 다 닫혔다. 편집기 안 카드콘·이모트 팝업은 건드리지 않았다.
 64. **JavaScript를 끈 게임 전용 언어 페이지의 간단 헤더가 영어이고 `/en`으로 링크**. 공용 레이아웃이 로케일을 모른다(#24의 남은 부분).
     - https://scare-the-spire.flavono123.workers.dev/ja/compendium/cards
+    - 처리(2026-11-15): 고침(`214ddf9b`): `copy-cf-static-pages.mjs`가 게임 전용 언어 페이지의 `<noscript>` 헤더 링크를 그 페이지의 접두사(`/ja`, `/de` …)로 바꾼다. 글자는 서비스 언어(en)대로 영어다. 빌드 산출물에서 ja·de 페이지의 링크를 확인했고 `/ja/patches`는 패치 Worker가 답하는 경로다.
 65. **`scripts/contact.spec.ts`의 'submits a private inquiry without requesting a readable row' 1건 실패**. CI에 없는 스펙이고, navbar 변경 전 코드에서도 같았다. 가짜 환경 탓인지 기존 문제인지는 가리지 못했다.
     - https://scare-the-spire.flavono123.workers.dev/contact
+    - 처리(2026-11-15): 고침(`464b2a45`): 실패 원인은 spec이 낡은 것이었다. dev 서버는 우편함 페이지를 문의 내역함 탭으로 열어 폼을 숨기고(`88fcf932`), 모바일 런처는 hydration 전에 눌러 `from`이 비었고, dev admin의 문의 우편함 화면은 없어졌다. spec이 폼 탭을 열고 링크의 `from`을 기다리며 사라진 테스트를 뺐다. 5개 통과.
 66. **관리자 글 서비스 목록에 역사 강의서가 두 번 들어가 React 중복 키 오류가 남**. `Encountered two children with the same key, \`history_course\``가 개발 콘솔에 찍힌다.
     - http://localhost:3001/dev/admin (개발 전용 화면)
     - 원인: `src/lib/admin-rls-activity.ts`의 `ADMIN_POST_SERVICES`가 `DEFRAGMENT_FEDERATED_SERVICES`(이미 `history_course` 포함)를 펼친 뒤 `"history_course"`를 또 붙인다. 운영 코드도 같다.
+    - 처리(2026-11-15): 고침(`7b2b8616`): `ADMIN_POST_SERVICES`에서 중복된 `history_course`를 뺐다.
 
 ### 2026-11-07 Supabase 이관 정리 조사에서 추가
 
 67. **이아저? 월드컵 플레이 기록 전체가 누구에게나 열려 있음**. https://scare-the-spire.flavono123.workers.dev/this-or-that/tournament 의 플레이가 쌓이는 `favorite_tournament_plays`의 SELECT 정책 `favorite_tournament_plays_read`가 `TO public USING (true)`라, 공개 anon 키만 있으면 모든 사람의 플레이(`user_id`, 대진 `matches`, 우승 후보)를 읽을 수 있다. 앱은 이 표를 읽지 않는다(쓰기는 RPC `complete_favorite_tournament_play`, 읽기는 dev 관리 지표의 service 키뿐). 고치는 방법은 정책 삭제. 근거: `docs/supabase-exit/CLEANUP_AUDIT.md` 3.4절.
+    - 처리(2026-11-15): 마이그레이션을 만들었고 적용하지 않았다(`ac1087ab`, `20261115000000_drop_favorite_tournament_plays_read.sql`: 정책과 anon·authenticated select 권한 삭제, 되돌리기 `docs/release/favorite-plays-read/`). 읽는 앱이 없어 배포 순서와 무관하다. 운영 DB 적용은 승인이 필요하다.
 68. **역사 강의서 런을 내렸다 다시 공유하면 좋아요·댓글 수가 0부터 다시 셈**. 공유를 지우고 같은 런을 다시 올리면 `runs.like_count`·`comment_count`가 0으로 시작한다. 그런데 그 런의 좋아요·댓글 행(`history-course:<id>` 스레드)은 남아 있다. 역사 강의서 목록은 행을 직접 세어 맞게 보이지만, 조각모음 게시판의 역사 강의서 항목과 그 정렬(추천순·댓글순)은 어긋난 열을 쓴다. 근거: `docs/supabase-exit/d1-schema/notes/inventory-runs-profile.md`(D1 설계 조사, 화면으로는 확인하지 않음). D1 이관 5단계에 그 런의 좋아요나 댓글이 바뀌면(다시 올린 런은 올릴 때) 행 수로 맞춰진다. 그 뒤 활동이 없는 런에는 복사한 수가 남는다(`D1_SCHEMA_DESIGN.md` 2.3절, 10.1절).
     - https://scare-the-spire.flavono123.workers.dev/defragment
+    - 처리(2026-11-15): D1 쓰기는 이미 맞춘다(`workers/api/d1-write/context.ts`의 `ownerCopyStatement`가 스레드 수를 글에 복사). 남은 것은 5단계 전에 다시 올렸고 그 뒤 활동이 없는 런의 옛 값이다. 운영 D1에서 어긋난 런이 있는지 세어야 알 수 있고, 값을 고치려면 운영 D1 쓰기 승인이 필요하다. 확인하지 않았다.
 69. **꺼져 있는 상세 OG 코드가 없는 표를 읽음**. `workers/detail-shell-og.ts:460`이 어려운 결정 글을 `decisions_posts`에서 찾는데, 실제 표는 `decisions_decisions_posts`다. 지금은 상세 OG가 꺼져 있어(Worker에 Supabase 변수가 없음) 드러나지 않는다. 켜거나 D1로 옮길 때 같이 고친다.
     - https://scare-the-spire.flavono123.workers.dev/decisions-decisions
     - 덧붙임(2026-11-09, Supabase 이관 6단계): D1으로 옮기면서도 지금과 같게 질의 없이 null로 두었다(`workers/detail-shell-og.ts`의 decisions-decisions 분기). 고칠 때는 D1 `post_decisions_decisions`에서 읽고 이미지 규칙도 새로 정해야 한다. 옛 코드가 쓰던 `situation_character` 열은 실제 표에도 없다.
+    - 처리(2026-11-15): 고침(`6565fe37`): D1 `posts.title`을 읽어 제목을 `글 제목 - 슬서운 이야기`로 하고 이미지는 목록 이미지(`decisions_decisions.webp`), 설명은 `… 어려운 결정 · 게임 요소 티어 만들기`(en은 'Make game-element tiers')로 정했다. `DETAIL_SHELL_OG=d1`이 꺼져 있어 운영은 그대로다. spec 통과.
 70. **이거 아님 저거? 좋아요가 다른 env의 글을 가리킬 수 있음**. `this_or_that_post_likes`의 INSERT 정책은 `auth.uid() = user_id`만 보고 FK는 env를 보지 않는다. 그래서 testbed 사용자가 운영 글 id에 단 좋아요(`env = development`)가 들어간다. 수와 화면은 env로 글과 맞추므로 보이지 않는다. 투표 정책에는 같은 env 확인이 있다. 2026-11-05 백업에서는 0행이다. D1 설계는 운영을 바꾸지 않는다. 동기화가 `cross_env`로 세고 넣지 않는다(`docs/supabase-exit/D1_SCHEMA_DESIGN.md` 2.2절, 10.6절).
     - https://scare-the-spire.flavono123.workers.dev/this-or-that
+    - 처리(2026-11-15): 5단계로 해소: 클라이언트의 직접 쓰기가 닫혔고 D1 좋아요는 Worker가 그 환경 DB의 글에만 넣는다(env별 D1). Supabase 쪽 옛 정책은 7단계에서 표와 함께 없어진다. 0행이던 2026-11-05 백업 이후 새로 생길 길이 없다.
 
 ### 2026-11-09 Supabase 이관 6단계(상세 OG) 대조에서 추가
 
 71. **꺼져 있는 상세 OG에서 유튜브가 든 코오오옴보 글의 og:image 주소가 깨짐**. `workers/detail-shell-og.ts`의 코오오옴보 분기는 `comboPostOgImage` 결과 앞에 늘 사이트 주소를 붙인다. 그런데 유튜브 썸네일은 이미 `https://i.ytimg.com/...` 절대 주소라 `https://scare-the-spire.comhttps://i.ytimg.com/vi/<id>/hqdefault.jpg`가 된다. 서류 폭풍 분기는 `startsWith("http")`로 거르지만 이 분기는 거르지 않는다. 지금은 상세 OG가 꺼져 있어(#32) 드러나지 않고, 켤 때 같이 고친다. 근거: 6단계 OG 이관 때 옛 Supabase 조회와 새 D1 조회를 같은 데이터로 대조한 결과(둘 다 같은 깨진 값). 화면으로는 확인하지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/c-c-c-combo
+    - 처리(2026-11-15): 고침(`9a9ba0ff`): 코오오옴보 분기가 `http`로 시작하는 이미지를 그대로 둔다. spec에 유튜브 글을 더했다. OG가 꺼져 있어 운영은 그대로다.
 
 ### 2026-11-10 Supabase 이관 6단계(신원 WP-A)에서 추가
 
 74. **localStorage를 쓸 수 없는 브라우저는 가입한 첫 페이지 밖에서 쓰기가 모두 실패함**. DOM storage를 끈 Android WebView처럼 `window.localStorage`가 없거나 쓰기가 거절되면, 첫 페이지에서는 claim이 새 사용자 세션을 주고 supabase-js가 그것을 메모리에 두어 댓글·좋아요·기록 제출이 된다. 다음 페이지부터는 claim이 유효한 쿠키로 같은 uid를 `kept`로 돌려주지만 세션은 주지 않는다. claim 표식도 저장되지 않아 `apiFetchAsUser`가 `token_invalid`로 끝나고 쓰기 요청이 나가지 않는다. 6단계는 이 동작 그대로 옮겼다(claim이 준 세션과 그 세션의 claim만 이 페이지의 메모리에 두고, 세션 없는 claim은 기억하지 않음. `src/lib/api-identity.ts`의 `pageSession`). 근거: 옛 `src/lib/api-session.ts`(`apiFetchWithCookie` → `apiFetchWithToken`)와 `src/hooks/use-auth.ts`(`signInThroughWorker`)의 코드 흐름, 그리고 가짜 저장소로 돌린 spec(`scripts/api-identity-client.spec.ts`). 실제 WebView에서는 확인하지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/compendium/cards/abrasive
+    - 처리(2026-11-15): 고침(`1bd87ba8`): claim이 쿠키로 uid를 돌려주고 저장소가 없으면 그 uid를 이 페이지 메모리에 두어 쓰기가 나간다(쿠키가 신원이다). 가짜 저장소 spec으로 확인했고 실제 WebView는 보지 않았다. 새로 고치면 같은 claim으로 다시 얻는다.
 
 
 ### 2026-11-09 Supabase 이관 6단계(참여·이야기) 정리에서 추가
 
 72. **이야기를 쓰면 1000개·200개를 받던 이야기 목록이 100개로 잘림**. `src/hooks/use-community-stories.ts`의 `add`가 새 이야기를 앞에 붙인 뒤 늘 `COMMUNITY_STORY_LIMIT`(100)으로 자른다. 훅은 `limit`(200, 1000)으로 받았는데도 그렇다. 그래서 https://scare-the-spire.flavono123.workers.dev/patches/changes (1000개)에서 이야기를 쓰면 새로 고칠 때까지 최신 100개 밖의 이야기가 목록과 줄별 이야기 수에서 빠진다. 패치 페이지(200개)도 이야기가 100개를 넘으면 같다. 옛 legacy 쓰기도 같았다. 6단계는 그대로 옮겼다. 코드 읽기로만 확인했다.
     - https://scare-the-spire.flavono123.workers.dev/patches/changes
+    - 처리(2026-11-15): 고침(`50b4d6bb`): `add`가 훅의 `limit`로 자른다(기본 100은 그대로).
 
 
 ### 2026-11-09 Supabase 이관 6단계(장난감 상자 WP-T1)에서 추가
 
 73. **케미컬 X 글 상세는 읽기에 실패해도 "글을 찾을 수 없습니다"를 보임**. 다른 장난감 상자 상세(코오오옴보, 변형, 어려운 결정)는 읽기에 실패하면 "데이터베이스가 응답하지 않습니다"를 보이는데, 케미컬 X 상세는 Worker 장애나 시간 초과도 글이 없는 것처럼 보인다. 삭제가 실패해도 안내 없이 그 자리에 남는다. 6단계에서도 지금 동작 그대로 옮겼다. 근거: `src/components/chemicalx/post-view.tsx`의 읽기 효과(실패 → `post = null`)와 `handleDelete`(실패 → 그냥 return). 코드로만 확인했고 화면으로는 확인하지 않았다.
     - https://scare-the-spire.flavono123.workers.dev/chemical-x/c0789f0e-6842-42b4-bdc8-90e4256a50de
+    - 처리(2026-11-15): 고침(`ad97242e`): 읽기가 실패하면 다른 상세처럼 '데이터베이스가 응답하지 않습니다'를 보이고 글이 없으면 '글을 찾을 수 없습니다'를 그대로 보인다. 삭제 실패 때 안내가 없는 것은 그대로 뒀다(다른 상세도 같다).
 
 
 ### 2026-11-10 Supabase 이관 6단계(마무리 WP-Z)에서 추가
@@ -289,9 +304,11 @@
 75. **다채로운 철학자들은 5단계 뒤에도 Supabase에서 읽어, Supabase가 멈추면 목록·글·릴이 "데이터베이스가 응답하지 않습니다"**. `colorful-philosophers`는 쓰기 그룹이 아니라 `source.<group>`이 없다. `read.colorful-philosophers = d1`도 `sync.enabled = on`일 때만 D1에서 답하는데(`workers/api/flags.ts`의 `readStoreFor`), 5단계 전환이 동기화를 껐다. 그래서 지금 `/api/read/colorful-philosophers/week`, `/post`, `/reel`은 모두 Supabase를 읽는다(`workers/api/routes/colorful-philosophers.ts`). 관리 도구의 주간 글 쓰기는 D1과 outbox로 가므로(`scripts/admin/admin-writes.ts`) 글은 D1에도 있다. 2026-11-10 01:15 KST쯤 Supabase REST가 키 없는 요청에는 401로 바로 답했지만 행 하나 읽기는 25초 안에 답하지 않았다. 같은 때 운영과 testbed의 `/week`, `/reel`이 503 `unavailable`이었고, D1이 원본인 `/api/read/toybox-feed?service=transfigure&sort=latest`는 200이었다. 운영 패치 빌드도 이 릴을 못 읽어 멈춘다. 6단계 전에는 Supabase를 직접 읽었고, 6단계 B안은 사이트 `/api`를 거쳐 같은 Supabase를 읽는다(`ALLOW_BUILD_WITHOUT_API=1`로 우회). 6단계는 이 동작을 그대로 옮겼다. 브라우저 화면은 열어 보지 않았고, curl과 코드로 확인했다.
     - https://scare-the-spire.flavono123.workers.dev/colorful-philosophers
     - https://scare-the-spire.flavono123.workers.dev/patches/2026-11-12
+    - 처리(2026-11-15): 해소: `3669c1b2`(2026-11-10 02:20 KST 핫픽스)가 `readStoreFor`를 바꿔, 쓰기 원본이 하나라도 d1이면 네비와 다채로운 철학자들도 D1을 읽는다. 이 항목과 6단계 문서의 '그대로 옮겼다' 문장은 그 전 상태였다. 문서 문장을 고쳤다.
 76. **네비의 새 글 점과 배달부도 5단계 뒤에 Supabase에서 갱신해, Supabase가 멈추면 마지막 스냅샷에 머묾**. #75와 같은 원인이다. `nav`도 쓰기 그룹이 아니라 `source.<group>`이 없고, `read.nav = d1`은 `sync.enabled = on`일 때만 D1에서 답한다(`workers/api/flags.ts`의 `readStoreFor`). 5단계 전환이 동기화를 꺼서 `/api/read/nav`는 D1 경로(`workers/api/d1-read.ts`의 `navFromD1`)로 가지 않고, 기본 동작인 `navFromSupabase`(`workers/api/routes/nav.ts`)가 Supabase에서 스냅샷을 새로 만든다. 갱신이 실패하면 `api_cache`의 옛 스냅샷을 200으로 계속 주고(실패 뒤 다시 시도하는 간격은 최대 5분), 스냅샷이 하루를 넘기면 다시 시도하는 요청 하나가 갱신을 기다린다(최대 6초). 그래서 Supabase가 멈춘 동안 모든 페이지(패치 정적 페이지 포함)의 네비 점과 배달부에 그 뒤의 새 글·댓글이 나오지 않는다. 쓰기는 D1이 원본이라 새 글은 D1에 있다. 2026-11-10 02:09 KST(17:09Z)에 운영 `/api/read/nav`의 `fetchedAt`이 `2026-11-09T15:25:08.416Z`(1시간 44분 전)였고, 02:13 KST에 다시 읽어도 같았다. testbed는 `2026-11-09T10:44:22.957Z`에 멈춰 있었다. 그때 변형·코오오옴보의 D1 최신 글은 스냅샷 값과 같아서, 화면에서 빠진 글이 있는지는 확인하지 않았다. 6단계는 이 동작을 그대로 옮겼다(브라우저는 같은 출처 `/api/read/nav`만 부른다). 브라우저 화면은 열어 보지 않았고, curl과 코드로 확인했다.
     - https://scare-the-spire.flavono123.workers.dev/
     - https://scare-the-spire.flavono123.workers.dev/patches/2026-11-12
+    - 처리(2026-11-15): 해소: #75와 같다(`3669c1b2`).
 
 ### 2026-11-13 v0.113.0 백과사전 백필에서 추가
 
@@ -300,7 +317,10 @@
     - 비용: BANSHEES_CRY 6(9), BUNDLE_OF_JOY 2(1), SEANCE 0(1). X 비용으로 잘못 표시: ALL_FOR_ONE, BULLET_TIME, JACKPOT, SCRAPE, TRANSFIGURE
     - 대상: BEGONE AnyEnemy(게임 Self), NOT_YET 한국어 대상 '자신'
     - https://scare-the-spire.flavono123.workers.dev/en/compendium/cards/hemokinesis
+    - 처리(2026-11-15): 고침(`ef686fa8`): 아래 20장의 행을 `--update`로 다시 만들었다(en·ko 모두, 변수·비용·X 비용·대상). 다시 돌린 `--report`에 이 20장은 없다. 남은 report 약 200줄은 옛 행의 파생 필드 잡음(Calculated\* 변수, 옴니 카드의 `damage`)과 v0.113.1 한국어 문구 갱신(ABUNDANCE·CACOPHONY·CONSTELLATION·SOULBOUND 등은 ko 행에 영어 문구가 남음)이다. 후자는 v0.113.1 코덱스 갱신 때 같이 다시 만든다. 이 항목의 목록에는 없었다.
 78. **무한의 컨베이어 이벤트가 벨트에서 집기 비용을 35 골드로 보여 줌**(게임 40, v0.100.0에서 바뀜).
     - https://scare-the-spire.flavono123.workers.dev/compendium/events/endless_conveyor
+    - 처리(2026-11-15): 고침(`9e13ff0e`): ENDLESS_CONVEYOR의 en·ko 행에서 35를 40으로 바꿨다(안내판과 접시 6개, 9곳). 그 밖 변수(75·10·4)는 게임과 같다. 다른 게임 언어는 이 행으로 떨어져 함께 바뀐다.
 79. **게임에 클래스가 없는 파워 DIAMOND_DIADEM, DOOR_REVIVAL이 폐기 표시 없이 남아 있음**.
     - https://scare-the-spire.flavono123.workers.dev/compendium/powers
+    - 처리(2026-11-15): 고침(`8b93262f`): 두 파워에 `deprecated`를 넣었다. DIAMOND_DIADEM은 `deprecatedInPatch: v0.109.0`(그때 유물 효과가 바뀐 것에서 추정), DOOR_REVIVAL은 그림도 문구도 없는 자리표시자라 패치 없이 표시했다.

@@ -10,9 +10,8 @@ Supabase를 Cloudflare D1으로 옮기는 작업이 진행 중이다. 전체 계
 - 1단계(같은 출처 API) 진행 중(2026-11-05 시작): worktree `.claude/worktrees/supabase-exit`, 브랜치
   `refactor/supabase-exit`. [UNRELEASED.md](release/UNRELEASED.md)에 등록했다.
 - 5단계까지 운영(2026-11-09): 모든 화면이 같은 출처 `/api`로 읽고 쓰며, 쓰기 원본은 D1이고 Supabase는 outbox
-  미러로 따라간다([history/2026-11-09.md](release/history/2026-11-09.md)). 다만 쓰기 그룹이 아닌 네비(새 글 점,
-  배달부)와 다채로운 철학자들은 Worker가 아직 Supabase에서 읽는다. 동기화가 꺼져 `read.<group>` = d1이 적용되지
-  않기 때문이다. Supabase가 멈추면 네비는 마지막 스냅샷에 머물고 철학자 화면은 "응답 없음"이다(tasks/010 #75, #76).
+  미러로 따라간다([history/2026-11-09.md](release/history/2026-11-09.md)). 쓰기 그룹이 아닌 네비(새 글 점,
+  배달부)와 다채로운 철학자들도 `3669c1b2` 핫픽스(2026-11-10) 뒤에는 쓰기 원본이 d1이면 D1에서 읽는다(tasks/010 #75, #76 해소).
 - 6단계(클라이언트 정리) 코드 완료, 배포 전(2026-11-10): 브라우저에 supabase-js와 Supabase 직접 경로가 없다.
   패치 빌드는 셸 패치 릴만 배포된 사이트의 `/api`에서 굽는다.
 
