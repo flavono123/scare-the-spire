@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
-import { DatabaseSync } from "node:sqlite";
+import { createRequire } from "node:module";
 import { splitOversizedInsert, splitOversizedInserts } from "./lib/split-oversized-insert";
+
+// node:sqlite (Node 22.5+) has no types in this @types/node.
+type SqliteDb = { exec(sql: string): void; prepare(sql: string): { get(): unknown } };
+const { DatabaseSync } = createRequire(import.meta.url)("node:sqlite") as { DatabaseSync: new (path: string) => SqliteDb };
 
 // A small limit stands in for D1's 100,000 bytes.
 const LIMIT = 2_000;

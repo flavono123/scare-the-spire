@@ -8,10 +8,11 @@
 /** D1's maximum SQL statement length in bytes. */
 export const D1_MAX_STATEMENT_BYTES = 100_000;
 
-const INSERT_RE = /^INSERT INTO ("(?:[^"]|"")*"|[A-Za-z_][\w]*) \((.*?)\) VALUES\((.*)\);$/s;
+// One export line: newlines inside values are already escaped, so `.` needs no dotAll flag.
+const INSERT_RE = /^INSERT INTO ("(?:[^"]|"")*"|[A-Za-z_][\w]*) \((.*?)\) VALUES\((.*)\);$/;
 // A quoted literal, optionally wrapped in the replace(...,'\n',char(10)) calls the export uses for
 // control characters. Captures: the replace( prefix, the literal body, the ,'\x',char(N)) suffix.
-const VALUE_RE = /^((?:replace\()*)'((?:[^']|'')*)'((?:,'\\[a-z]',char\(\d+\)\))*)$/s;
+const VALUE_RE = /^((?:replace\()*)'((?:[^']|'')*)'((?:,'\\[a-z]',char\(\d+\)\))*)$/;
 
 const byteLength = (text: string) => Buffer.byteLength(text, "utf8");
 
