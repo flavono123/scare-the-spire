@@ -210,12 +210,12 @@ export function useCommunityStories(
         });
         requireApiVersion("stories", body, true);
         const inserted = body.row;
-        if (inserted) setRows((prev) => uniqueRows([inserted, ...prev]).slice(0, COMMUNITY_STORY_LIMIT));
+        if (inserted) setRows((prev) => uniqueRows([inserted, ...prev]).slice(0, limit));
       } catch (error) {
         throw new Error(error instanceof ApiError ? error.code : "Story storage unavailable");
       }
     },
-    [userId],
+    [userId, limit],
   );
 
   const remove = useCallback(
