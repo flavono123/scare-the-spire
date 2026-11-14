@@ -367,7 +367,6 @@ function LanguageDropdown({
 export function LanguageSelect({ value, label }: { value: GameLocale; label: string }) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const option = (locale: GameLocale) => (
     <option key={locale} value={locale}>{GAME_LOCALE_NATIVE_LABELS[locale]}</option>
   );
@@ -380,7 +379,8 @@ export function LanguageSelect({ value, label }: { value: GameLocale; label: str
       onChange={(event) => {
         const locale = event.target.value as GameLocale;
         writeLocalePreferenceCookies(locale);
-        router.push(languageHref(pathname, new URLSearchParams(searchParams.toString()), locale));
+        // Read the query on change: useSearchParams would need a Suspense boundary to prerender /profile.
+        router.push(languageHref(pathname, new URLSearchParams(window.location.search), locale));
       }}
       className="h-8 max-w-[11rem] rounded-md border border-border bg-background/80 px-1.5 text-xs font-semibold text-foreground shadow-sm"
     >
