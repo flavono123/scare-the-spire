@@ -43,8 +43,19 @@ export interface CombatSimInput {
   version: string;
   /** Character id, e.g. "SILENT". Required by the `player` and `cards` parts. */
   character?: string;
-  /** Encounter id, e.g. "DOORMAKER_BOSS". */
-  encounter: string;
+  /**
+   * Encounter id, e.g. "DOORMAKER_BOSS": its composition, background and layout.
+   * With `monsters` it only supplies the background and layout (default: the first encounter that has
+   * the first monster); one of the two is required.
+   */
+  encounter?: string;
+  /**
+   * Monsters on stage, in order, whatever encounter they come from (`ASSASSIN_RUBY_RAIDER`,
+   * `BYRDONIS`, ...). Each takes its bounds and visual scale from any encounter scene that has it.
+   */
+  monsters?: string[];
+  /** Current HP per monster (id or index), for scenes that must end in a kill; max HP stays the monster's own. */
+  monsterHp?: Record<string, number>;
   /**
    * Scene parts to show and load. Defaults to both with a character, none
    * without one (an encounter-only scene). `[]` shows the encounter alone.
@@ -215,7 +226,7 @@ export type SimEvent =
    * CreatureCmd.TriggerAnim: waits `delayMs` (Normal) / min(delay / 2, 250 ms) (Fast) / 0 (Instant).
    * `normalExtraMs` is added to the delay only on Normal (e.g. Neutralize's +0.2 s).
    */
-  | { kind: "animate"; creature: string; animation: "cast" | "attack" | "hurt"; delayMs: number; normalExtraMs?: number }
+  | { kind: "animate"; creature: string; animation: "cast" | "attack" | "hurt" | "die"; delayMs: number; normalExtraMs?: number }
   /**
    * Cmd.CustomScaledWait(fast, normal): Instant waits 0. With `sincePlayMove`, the
    * time since that step's play move finished is subtracted (OnPlayWrapper's

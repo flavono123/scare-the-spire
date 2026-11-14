@@ -45,6 +45,17 @@ function parsePowers(value: string): Record<string, PowerSpec[]> {
   return powers;
 }
 
+/** `BYRDONIS=33,1=20`: a number per monster id or index. */
+function parseNumberMap(value: string, label: string): Record<string, number> {
+  const map: Record<string, number> = {};
+  for (const entry of list(value) ?? []) {
+    const [monster, amount] = entry.split("=");
+    if (!monster || amount === undefined || !Number.isFinite(Number(amount))) throw new Error(`${label} entries look like MONSTER=number: ${entry}`);
+    map[monster.trim()] = Number(amount);
+  }
+  return map;
+}
+
 /** `DOORMAKER=GRASP` */
 function parseMoves(value: string): Record<string, string> {
   const moves: Record<string, string> = {};
@@ -122,6 +133,10 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
     if (character) input.character = character.toUpperCase();
     const encounter = get("encounter");
     if (encounter) input.encounter = encounter.toUpperCase();
+    const monsters = get("monsters");
+    if (monsters !== undefined) input.monsters = (list(monsters) ?? []).map((id) => id.toUpperCase());
+    const monsterHp = get("monsterHp");
+    if (monsterHp !== undefined) input.monsterHp = parseNumberMap(monsterHp, "monsterHp");
     // parts=none (encounter only), parts=player, parts=player,cards
     const parts = get("parts");
     if (parts !== undefined) {
@@ -177,9 +192,9 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
     badges: get("badges") === "1",
   };
 
-  const complete = input.version && input.encounter;
-  if (!complete && (preset || json || Object.keys(params).some((key) => ["version", "character", "encounter", "parts"].includes(key)))) {
-    errors.push("version과 encounter가 필요합니다 (player·cards 파트에는 character도)");
+  const complete = input.version && (input.encounter || input.monsters?.length);
+  if (!complete && (preset || json || Object.keys(params).some((key) => ["version", "character", "encounter", "monsters", "parts"].includes(key)))) {
+    errors.push("version과 encounter(또는 monsters)가 필요합니다 (player·cards 파트에는 character도)");
   }
   return { input: complete ? (input as CombatSimInput) : null, preset, options, errors };
 }

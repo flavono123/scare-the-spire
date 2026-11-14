@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Link from "next/link";
 import { getCodexCharacters, getCodexPowers } from "@/lib/codex-data";
-import { loadCombatSimCatalog } from "@/lib/combat-sim/catalog";
+import { findMonsterLayout, loadCombatSimCatalog } from "@/lib/combat-sim/catalog";
 import { parsePowerSpec, sceneParts } from "@/lib/combat-sim/engine";
 import { COMBAT_SIM_PRESETS } from "@/lib/combat-sim/scenarios";
 import { resolveMonsterStaticArt } from "@/lib/monster-static-art";
@@ -57,6 +57,15 @@ async function buildView(
   const layoutById = new Map((scene?.combatLayout.monsters ?? []).map((layout) => [layout.monsterId, layout]));
   const slotByName = new Map((scene?.monsterSlots ?? []).map((slot) => [slot.slotName, slot]));
 
+  // A listed monster the scene's encounter does not have takes its bounds from any scene that does.
+  const layouts = new Map(layoutById);
+  for (const { monsterId } of catalog.encounter.monsters) {
+    if (!layouts.has(monsterId)) {
+      const found = await findMonsterLayout(monsterId);
+      if (found) layouts.set(monsterId, found);
+    }
+  }
+
   const monsters: CombatSimMonsterView[] = catalog.encounter.monsters.map(({ monsterId, slot }) => {
     const monster = entities.monsters[monsterId];
     const staticArt = resolveMonsterStaticArt(monsterId, catalog.version);
@@ -67,7 +76,7 @@ async function buildView(
       spine: staticArt ? null : monster?.spineAsset ?? null,
       staticArt,
       imageUrl: monster?.imageUrl ?? monster?.bossImageUrl ?? null,
-      layout: layoutById.get(monsterId) ?? null,
+      layout: layouts.get(monsterId) ?? null,
       slotPosition,
     };
   });

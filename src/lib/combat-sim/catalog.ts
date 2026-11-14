@@ -18,7 +18,7 @@ import { readFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { getCodexAfflictions, getCodexCharacters, getCodexPowers } from "../codex-data";
-import type { CodexCard, CodexEncounter, CodexMonster } from "../codex-types";
+import type { CodexCard, CodexEncounter, CodexMonster, EncounterSceneAsset, EncounterSceneCombatMonsterLayout } from "../codex-types";
 import { getVersionedEntity } from "../versioned-entity-api";
 import { inputCardIds, parsePowerSpec, sceneParts } from "./engine";
 import { AFFLICTION_HOOKS } from "./hooks";
@@ -70,6 +70,30 @@ const KEYWORDS: Record<string, SimKeyword> = {
   교활: "Sly",
   영구: "Eternal",
 };
+
+let encounterScenes: Promise<EncounterSceneAsset[]> | null = null;
+
+function readEncounterScenes(): Promise<EncounterSceneAsset[]> {
+  encounterScenes ??= readFile(path.join(process.cwd(), "data/sts2/encounter-scene-assets.json"), "utf8")
+    .then((text) => JSON.parse(text) as EncounterSceneAsset[]);
+  return encounterScenes;
+}
+
+/** First encounter scene that has this monster (any one: its bounds and visual scale are the monster's own). */
+export async function sceneEncounterOf(monsterId: string): Promise<string | null> {
+  const scenes = await readEncounterScenes();
+  return scenes.find((scene) => scene.combatLayout.monsters.some((layout) => layout.monsterId === monsterId))?.id ?? null;
+}
+
+/** The monster's bounds, visual position and scale from whichever encounter scene carries it. */
+export async function findMonsterLayout(monsterId: string): Promise<EncounterSceneCombatMonsterLayout | null> {
+  const scenes = await readEncounterScenes();
+  for (const scene of scenes) {
+    const layout = scene.combatLayout.monsters.find((entry) => entry.monsterId === monsterId);
+    if (layout) return layout;
+  }
+  return null;
+}
 
 /** `AxebotsNormal` -> `AXEBOTS_NORMAL`. */
 export function pascalToId(name: string): string {
@@ -186,18 +210,23 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
   const attackAnimDelay = characterId ? await readArchiveAttackAnimDelay(version, characterId) : null;
   if (characterId && attackAnimDelay === null) warnings.push(`${characterId} AttackAnimDelay를 아카이브에서 읽지 못해 0으로 둡니다`);
 
-  const encounterId = input.encounter.toUpperCase();
+  // `monsters` replaces the composition; the encounter then only lends its background and layout.
+  const listedMonsters = input.monsters?.map((id) => id.toUpperCase());
+  const encounterId = input.encounter?.toUpperCase() ?? (listedMonsters ? await sceneEncounterOf(listedMonsters[0]) : null);
+  if (!encounterId) throw new Error(`배경으로 쓸 조우를 찾지 못했습니다: ${listedMonsters?.[0] ?? "(encounter 없음)"}는 어느 조우 장면에도 없습니다. encounter=를 함께 주세요`);
   const encounterResult = await getVersionedEntity<CodexEncounter>({ entityType: "encounter", entityId: encounterId, version, locale });
   const encounter = encounterResult.entity;
-  if (!encounter) throw new Error(`unknown encounter: ${input.encounter}`);
+  if (!encounter) throw new Error(`unknown encounter: ${encounterId}`);
   if (!encounterResult.isAvailable) warnings.push(`${encounterId}는 v${version}에 없는 조우입니다`);
 
-  const archiveMonsters = await readArchiveEncounterMonsters(version, encounterId);
+  const archiveMonsters = listedMonsters ? null : await readArchiveEncounterMonsters(version, encounterId);
   const siteComposition = encounter.compositions?.[0];
-  const monsterSlots = archiveMonsters
-    ?? siteComposition?.slots.map((slot, index) => ({ monsterId: slot[0].id, slot: siteComposition.slotNames[index] ?? null }))
-    ?? encounter.monsters.map((monster) => ({ monsterId: monster.id, slot: null }));
-  if (!archiveMonsters) warnings.push(`조우 구성은 사이트 데이터(현재 기준)를 썼습니다: ${encounterId}`);
+  const monsterSlots = listedMonsters
+    ? listedMonsters.map((monsterId) => ({ monsterId, slot: null }))
+    : archiveMonsters
+      ?? siteComposition?.slots.map((slot, index) => ({ monsterId: slot[0].id, slot: siteComposition.slotNames[index] ?? null }))
+      ?? encounter.monsters.map((monster) => ({ monsterId: monster.id, slot: null }));
+  if (!listedMonsters && !archiveMonsters) warnings.push(`조우 구성은 사이트 데이터(현재 기준)를 썼습니다: ${encounterId}`);
 
   const monsters: Record<string, SimMonsterDef> = {};
   const monsterEntities: Record<string, CodexMonster> = {};
@@ -308,7 +337,7 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
       character: character
         ? { id: character.id, name: character.name, hp: character.startingHp, maxEnergy: character.maxEnergy, attackAnimDelay: attackAnimDelay ?? 0 }
         : null,
-      encounter: { id: encounterId, name: encounter.name, monsters: monsterSlots },
+      encounter: { id: encounterId, name: listedMonsters && !input.encounter ? listedMonsters.join(" + ") : encounter.name, monsters: monsterSlots },
       cards,
       monsters,
       powers,

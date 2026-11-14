@@ -184,8 +184,9 @@ class Combat {
       if (!def) this.warnings.push(`몬스터 데이터 없음: ${monsterId}`);
       const moveId = this.lookup(input.moves, monsterId, index) ?? def?.initialMove ?? null;
       if (moveId && def && !def.moves[moveId]) this.warnings.push(`${monsterId}에 ${moveId} 행동이 없습니다`);
-      const maxHp = def?.hp ?? 1;
-      return { key: `m${index}`, id: monsterId, hp: maxHp, maxHp, block: 0, powers: [], slot, moveId };
+      const hp = Math.max(0, Math.trunc(this.lookup(input.monsterHp, monsterId, index) ?? def?.hp ?? 1));
+      const maxHp = Math.max(def?.hp ?? 1, hp);
+      return { key: `m${index}`, id: monsterId, hp, maxHp, block: 0, powers: [], slot, moveId };
     });
 
     const maxEnergy = withCards ? input.maxEnergy ?? character?.maxEnergy ?? 0 : 0;
