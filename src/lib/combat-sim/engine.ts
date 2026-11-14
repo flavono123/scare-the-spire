@@ -410,7 +410,7 @@ class Combat {
       return;
     }
 
-    this.emit({ kind: "select", uid });
+    this.emit({ kind: "select", uid, ...(target ? { target: target.key } : {}) });
     // PlayCardAction: SpendResources, then OnPlayWrapper.
     if (energyToSpend > 0) {
       const from = this.state.energy;

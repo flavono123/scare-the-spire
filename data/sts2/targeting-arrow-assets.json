@@ -1,0 +1,13 @@
+{
+ "archiveVersion": "0.113.0",
+ "head": {
+  "url": "/images/sts2/combat-ui/targeting_arrow_head.webp",
+  "width": 183,
+  "height": 203
+ },
+ "segment": {
+  "url": "/images/sts2/combat-ui/targeting_arrow_segment.webp",
+  "width": 148,
+  "height": 148
+ }
+}

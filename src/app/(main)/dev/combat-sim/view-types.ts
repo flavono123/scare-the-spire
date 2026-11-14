@@ -8,6 +8,8 @@ import type {
 import type { CombatSimInput, ScenePart, SimCatalog } from "@/lib/combat-sim/types";
 import type { MonsterStaticArt } from "@/lib/monster-static-art";
 import type { CombatSimViewOptions } from "./query-input";
+import type { HitVfxAsset } from "./hit-vfx-layer";
+import type { TargetingArrowAsset } from "./targeting-arrow";
 import type { CardTrailAsset, EnergyGainVfx } from "./vfx-layer";
 
 export interface EnergyCounterAsset {
@@ -63,4 +65,8 @@ export interface CombatSimView {
   cardTrail: CardTrailAsset | null;
   /** <character>_energy_vfx_back/front.tscn glow and ring. */
   energyGainVfx: EnergyGainVfx | null;
+  /** Frame sheets of the hit VFX a card spawns (`scripts/extract-hit-vfx.py`), by `hitVfxKey`. Empty without the cards part. */
+  hitVfx: Record<string, HitVfxAsset>;
+  /** NTargetingArrow textures; null without the cards part. */
+  targetingArrow: TargetingArrowAsset | null;
 }

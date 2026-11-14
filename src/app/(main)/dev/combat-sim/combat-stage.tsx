@@ -30,6 +30,9 @@ import {
   visibleState,
   type CreatureBox,
 } from "./stage-layout";
+import { HitVfxLayer } from "./hit-vfx-layer";
+import { screenShakeAt } from "./screen-shake";
+import { TargetingArrow } from "./targeting-arrow";
 import { CardTrailLayer, EnergyGainLayerImage, PreloadImages, type EnergyGainVfx } from "./vfx-layer";
 import type { CombatSimMonsterView, CombatSimView, EnergyCounterAsset } from "./view-types";
 import { SimClock, WeightedOverlay } from "./weighted-overlay";
@@ -96,6 +99,12 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
       return { visual, seed: fly.seed, positionAt: (age: number) => flyPositionAt(fly.from, fly.to, fly.seed, age) };
     });
   const trail = view.cardTrail;
+  const shake = screenShakeAt(timeline, t);
+  // NTargetingArrow: while a single-target card is lifted, an arrow runs from the card to its target.
+  const aiming = timeline.beats.find((beat) => beat.event.kind === "select" && beat.event.target && beat.start <= t && t < beat.start + beat.duration);
+  const aimEvent = aiming?.event.kind === "select" ? aiming.event : null;
+  const aimCard = aimEvent ? visuals.find((visual) => visual.uid === aimEvent.uid) : null;
+  const aimBox = aimEvent?.target ? monsters[Number(aimEvent.target.slice(1))] : null;
   const showScene = layer === "all" || layer === "scene";
   const showVfx = layer === "all" || layer === "vfx";
   const showCards = layer === "all" || layer === "card";
@@ -108,6 +117,7 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
       data-game-locale="kor"
       data-combat-sim-layer={layer}
     >
+      <div className="absolute left-0 top-0" style={{ width: STAGE_W, height: crop ?? STAGE_H, transform: shake.x || shake.y ? `translate(${shake.x}px, ${shake.y}px)` : undefined }}>
       <PreloadImages
         urls={[
           ...(trail ? [trail.outer.texture, trail.inner.texture, trail.bigSparks?.texture, trail.littleSparks?.texture, ...trail.sprites.map((sprite) => sprite.texture)] : []),
@@ -178,21 +188,33 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
       {showCards && withCards && (
         <>
           {!cardOnly && <Piles view={view} piles={piles} />}
-          {visuals.filter(shownCard).map((visual) => (
+          {/* Hidden, not left out: the card art loads with the page, so a seek never waits on a lazy image in a hidden stage. */}
+          {visuals.map((visual) => (
             <CardView
               key={visual.uid}
               visual={visual}
               view={view}
               state={visible}
-              glow={glowAt(glows[visual.uid], t)}
+              glow={shownCard(visual) ? glowAt(glows[visual.uid], t) : 0}
+              hidden={!shownCard(visual)}
             />
           ))}
           <CardTrailLayer flights={flights} trail={trail} pixelRatio={pixelRatio} />
+          {view.targetingArrow && aimCard && aimBox && (
+            <TargetingArrow
+              asset={view.targetingArrow}
+              from={{ x: aimCard.pose.x, y: aimCard.pose.y - (CARD_H * aimCard.pose.scale) / 2 }}
+              to={{ x: aimBox.x, y: aimBox.y - aimBox.height / 2 }}
+              midY={STAGE_H / 2}
+            />
+          )}
         </>
       )}
 
+      {showVfx && <HitVfxLayer timeline={timeline} t={t} assets={view.hitVfx} player={withPlayer ? player : null} monsters={monsters} />}
       {showVfx && <DamageNumbers timeline={timeline} t={t} player={withPlayer ? player : null} monsters={monsters} />}
       {badges && layer === "all" && <Badges beats={recent} t={t} />}
+      </div>
     </div>
     </SimClock.Provider>
   );
@@ -718,9 +740,11 @@ interface CardViewProps {
   state: SimState;
   /** NCardHighlight width fraction (0..1 of 0.075). */
   glow: number;
+  /** Card-only view: a card that is not being played stays in the DOM but is not drawn. */
+  hidden?: boolean;
 }
 
-function CardView({ visual, view, state, glow }: CardViewProps) {
+function CardView({ visual, view, state, glow, hidden = false }: CardViewProps) {
   const card = state.cards[visual.uid] ?? null;
   const def = card ? view.catalog.cards[card.id] : null;
   const entity = card ? view.cards[card.id] : null;
@@ -731,7 +755,7 @@ function CardView({ visual, view, state, glow }: CardViewProps) {
   const suffix = affliction ? view.catalog.afflictions[affliction.id]?.extraCardText ?? null : null;
   if (!card || !entity) return null;
   const { pose } = visual;
-  const shown = visual.visible && visual.alpha > 0.01 && pose.scale > 0.001;
+  const shown = !hidden && visual.visible && visual.alpha > 0.01 && pose.scale > 0.001;
   const z = visual.fly ? 460 : visual.lifted ? 400 : inHand ? 100 + state.piles.hand.indexOf(visual.uid) : 50;
   return (
     <div

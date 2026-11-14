@@ -240,7 +240,7 @@ export interface SimState {
 export type SimEvent =
   | { kind: "energy"; from: number; to: number; cause: "cost" | "affliction" | "power" | "turn"; sourceId?: string; uid?: string }
   /** The player picks the card up (hover/drag) before PlayCardAction pays for it. */
-  | { kind: "select"; uid: string }
+  | { kind: "select"; uid: string; /** The monster a single-target card is aimed at (the targeting arrow's end). */ target?: string }
   /**
    * `awaited` on a play move: AddDuringManualCardPlay waits for the play-pile
    * tween only for Power cards; other cards start their effect while it flies.

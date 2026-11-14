@@ -70,6 +70,7 @@ unimplemented/rejected tags in the frame (the dev panel log always lists them).
 | `ui=card` | Card-only interface: no hand, energy orb or piles; only the card being played (from hover on) with its glow and trail is drawn. The card lands where the game puts it, (960, 440) on the 1920x1080 screen: the stage center in x, and in y the game's 300 px above the creatures' feet (`enemyBaselineY` 740) times 1.15. The scene takes the card-less band (feet y 1240, background 1560 high) unless the next two say otherwise. |
 | `bgHeight=<px>`, `feetY=<px>` | The scene band: how high the background is and where the creatures' feet stand (stage px, top of the stage is 0). |
 | `crop=<px>` | The stage is only that tall (default 1920), so a PNG of the stage is exactly the window. |
+| `layer=scene\|vfx\|card` | Draws that layer alone on a transparent stage (`scene`: background, creatures, bars, intents; `vfx`: hit VFX and damage numbers; `card`: the cards, glow, trail and targeting arrow). The screen shake moves every layer the same, so they register. `shorts:capture --layers scene,vfx,card` saves each on its own PNG. |
 | `layout=shorts` | `ui=card`, `hp=0`, `intents=0`, `bgHeight=1050`, `feetY=840`, `crop=1050`: the scene for a title-less shorts window (1080x1050). Any key above overrides it. Hand, orb and piles are not drawn, so nothing sits in the bottom 576 px or the right 130 px that the shorts UI covers. |
 
 ## Rules implemented
@@ -93,6 +94,37 @@ against 0.102.0:
 - `PlayerCmd.LoseEnergy`: clamps at 0.
 - Damage removes block first, then HP. Strength/Weak/Vulnerable and
   Dexterity/Frail are not applied; when present the step is tagged unimplemented.
+
+### Card presentation (any card)
+
+A card with no hand-written recipe below still shows what the game shows when it is played. `scripts/extract-card-presentation.py`
+reads every `Cards/<Card>.cs` `OnPlay` from the archived source into `data/sts2/card-presentation.json`: in source order
+the owner's `TriggerAnim` (Cast, PowerUp, Attack; the delay is the character's `CastAnimDelay`, `PowerUpAnimDelay`, `AttackAnimDelay`),
+dedicated VFX nodes (`N...Vfx.Create`) with their `Cmd.Wait`, `DamageCmd.Attack` chains (`WithHitCount`, `WithNoAttackerAnim`,
+`WithAttackerAnim`, `WithHitFx`, targeting) and `GainBlock`. The engine replays them (`runPresentation`): the animation, the VFX at
+the target, the wait (not scaled by Fast, skipped on Instant), then the damage number and the monster's hit or death. The commands it
+does not replay (`PowerCmd.Apply`, `CardPileCmd.Draw`, ...) are listed as unimplemented. Comet is Cast, the 50b598 missile at the bottom
+of the target's hitbox, a 0.2 s wait and 33 damage, then "미구현: 혜성: PowerCmd.Apply". The data is the 0.113.0 source's; a run on another
+version warns that the animations and VFX may differ. Recipe cards (Strike, Defend, ...) get their hit VFX from the same data.
+
+### Hit VFX, screen shake and the targeting arrow
+
+- `scripts/extract-hit-vfx.py` renders the `WithHitFx` scenes (and the dedicated nodes it has a port for) from the game package with
+  MegaDot (`~/Applications/MegaDot.app`) on a transparent 1920x1080 frame at 30 fps and packs each into one WebP sheet:
+  `public/images/sts2/vfx/hit/*.webp`, `data/sts2/hit-vfx-assets.json` (frame size, columns, the target point inside a frame, duration).
+  `scripts/godot/hit-vfx/main.gd` does what the shared C# players do (MegaDot does not load C# scripts): NVfxParticleSystem turns every
+  particle node on, NSpriteAnimator shows its frames in turn; `NSmallMagicMissileVfx` is ported from its source. A MegaDot window opens
+  for about a second per scene (it does not draw headless), is kept on top (an occluded window repeats frames) and a frozen render is
+  retried. Rendered: `vfx_attack_slash`, `attack_blunt`, `giant_horizontal_slash`, `dramatic_stab`, `rock_shatter`, `bloody_impact`,
+  `molten_fist`, `coin_explosion_regular`, `thrash`, and Comet's missile. Not rendered, because their root is a dedicated C# or Spine node
+  that has to be ported one by one: `heavy_blunt` (NHeavyBluntVfx), `starry_impact`, `flying_slash`, `bite`, and every other `N...Vfx` a card creates.
+  The slash's random rotation is baked at the middle of its range. The sheet plays once at the `vfx` event, at the target's center
+  (default), base (`WithHitVfxSpawnedAtBase`) or the bottom of its hitbox, scaled with the creature.
+- Screen shake (`screen-shake.ts`): `CreatureCmd.Damage` calls `NGame.ScreenShake` with Weak / Medium / Strong by the damage that got
+  through (under 6 / under 11 / more; a fully blocked hit is Weak), Short (0.3 s), as a `ScreenPunchInstance`. The angle is seeded by
+  the step; the multiplier is 1 (the game's setting default is not mapped). It moves all layers.
+- Targeting arrow (`targeting-arrow.tsx`, textures from `scripts/extract-targeting-arrow.py`): while a single-target card is lifted
+  (the `select` beat) 19 segments and a head run along `NTargetingArrow`'s Bezier from the card to the target, tinted E61E1B.
 
 Card effects (`card-effects.ts`; numbers come from the versioned card vars):
 
@@ -228,6 +260,8 @@ deliberate departures are for the 9:16 frame and are marked "9:16" below.
   `state()`, `frameTimes(fps)`, `duration`, `actionEnds`, `input`.
 
 ```bash
+# Three listed monsters, a card-only shorts window, Comet, each layer on its own transparent PNG at 30 fps
+pnpm shorts:capture --url "/dev/combat-sim?version=0.113.0&character=REGENT&monsters=ASSASSIN_RUBY_RAIDER,BYRDONIS,TRACKER_RUBY_RAIDER&monsterHp=ASSASSIN_RUBY_RAIDER=20,BYRDONIS=20,TRACKER_RUBY_RAIDER=20&hand=COMET&script=play:COMET@1,wait:2500&layout=shorts" --frames --fps 30 --layers scene,vfx,card --out ~/P/slseoun-shorts/<dir>/comet
 pnpm shorts:capture --url "/dev/combat-sim?preset=doormaker-grasp-0.102.0" --t 3190 --out ~/P/slseoun-shorts/<dir>/grasp.png
 pnpm shorts:capture --url "/dev/combat-sim?preset=doormaker-grasp-0.102.0" --frames --fps 30 --out ~/P/slseoun-shorts/<dir>/frames
 pnpm shorts:capture --url "/dev/combat-sim?preset=doormaker-grasp-0.102.0&speed=fast" --frames --fps 30 --out ~/P/slseoun-shorts/<dir>/frames-fast

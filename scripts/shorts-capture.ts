@@ -21,7 +21,8 @@
  * `noFlavor` (relic pages: leave the flavor line out, the tile keeps its size),
  * `artOnly` (epoch pages: the art without the shade and the text panel),
  * `t` (combat simulator: seek to this ms first), `frames` (combat simulator:
- * `{ fps, from?, to? }`, `out` is a directory that gets 0000.png, 0001.png, ...).
+ * `{ fps, from?, to? }`, `out` is a directory that gets 0000.png, 0001.png, ...),
+ * `layers` (combat simulator: `["scene", "vfx", "card"]`, each layer on its own transparent PNG).
  * A mark or replace phrase must occur exactly once in the description.
  * Relative paths resolve from the directory pnpm was invoked in.
  *
@@ -72,10 +73,15 @@ interface Studio {
 }
 
 const COMBAT_SIM_STUDIO: Studio = { handle: "__sim", stage: "[data-combat-sim-stage]", transparent: false };
+/** A combat simulator layer (`layer=scene|vfx|card`) is drawn on a transparent stage, so the PNG keeps its alpha. */
+const COMBAT_SIM_LAYER_STUDIO: Studio = { handle: "__sim", stage: "[data-combat-sim-stage]", transparent: true };
 const MAP_BAR_STUDIO: Studio = { handle: "__bar", stage: "[data-map-bar-stage]", transparent: true };
 
 function studioOf(url: string): Studio | null {
-  if (isCombatSim(url)) return COMBAT_SIM_STUDIO;
+  if (isCombatSim(url)) {
+    const layer = new URL(url, "http://x").searchParams.get("layer");
+    return layer && layer !== "all" ? COMBAT_SIM_LAYER_STUDIO : COMBAT_SIM_STUDIO;
+  }
   if (url.includes("/dev/map-bar")) return MAP_BAR_STUDIO;
   return null;
 }
@@ -122,6 +128,11 @@ interface Shot {
   t?: number;
   /** Combat simulator: capture a frame sequence into the `out` directory. */
   frames?: { fps: number; from?: number; to?: number };
+  /**
+   * Combat simulator: capture these layers separately, each on a transparent stage (`scene`, `vfx`, `card`).
+   * A single frame goes to `<out>-<layer>.png`; a frame sequence to `<out>/<layer>/0000.png...`.
+   */
+  layers?: string[];
   /** Relic pages: leave the flavor line out of the tile (the tile keeps its size). */
   noFlavor?: boolean;
   /** Epoch pages: capture the art alone, without the shade and the text panel. */
@@ -146,6 +157,27 @@ const invokedFrom = process.env.INIT_CWD ?? process.cwd();
 function resolvePath(value: string, from = invokedFrom): string {
   const expanded = value.startsWith("~/") ? path.join(os.homedir(), value.slice(2)) : value;
   return path.resolve(from, expanded);
+}
+
+const SIM_LAYERS = ["scene", "vfx", "card"];
+
+/** A shot with `layers` becomes one shot per layer: `layer=` set on the page, the output named after it. */
+function expandLayers(shots: Shot[]): Shot[] {
+  return shots.flatMap((shot) => {
+    if (!shot.layers?.length) return [shot];
+    if (!shot.url || !isCombatSim(shot.url)) throw new Error(`layers need a combat simulator url: ${JSON.stringify(shot)}`);
+    return shot.layers.map((layer) => {
+      if (!SIM_LAYERS.includes(layer)) throw new Error(`unknown layer ${layer} (${SIM_LAYERS.join(", ")})`);
+      const url = new URL(shot.url!, "http://layer.invalid");
+      url.searchParams.set("layer", layer);
+      return {
+        ...shot,
+        layers: undefined,
+        url: `${url.pathname}${url.search}`,
+        out: shot.frames ? path.join(shot.out, layer) : shot.out.replace(/(\.png)?$/, `-${layer}.png`),
+      };
+    });
+  });
 }
 
 /** `cards/SPLASH@0.111.0` -> `/compendium/cards/splash?version=0.111.0`. */
@@ -512,7 +544,7 @@ async function captureFrames(page: Page, shot: Shot, requested: string, selector
     frames: selected.length,
     times: selected,
     duration: await page.evaluate(`window.${handle}.duration`),
-    ...(studio === COMBAT_SIM_STUDIO
+    ...(studio.handle === "__sim"
       ? { actionEnds: await page.evaluate("window.__sim.actionEnds") }
       : {
         events: await page.evaluate("window.__bar.events"),
@@ -574,6 +606,7 @@ function parseArgs(argv: string[]): { batch: Batch; batchDir: string } | null {
       case "--upgraded": shot.upgraded = true; break;
       case "--enchant": shot.enchant = value(); break;
       case "--beta": shot.beta = true; break;
+      case "--layers": shot.layers = value().split(",").map((layer) => layer.trim()).filter(Boolean); break;
       case "--no-flavor": shot.noFlavor = true; break;
       case "--art-only": shot.artOnly = true; break;
       case "--t": shot.t = Number(value()); break;
@@ -603,6 +636,7 @@ async function main() {
         "         [--selector css] [--upgraded] [--enchant name] [--beta] [--no-flavor] [--art-only]\n" +
         "         [--locale kor|eng] [--base http://localhost:3000]\n" +
         "         [--t ms] [--frames [--fps 30]]   (combat simulator and map bar pages; --frames writes <out>/0000.png...)\n" +
+        "         [--layers scene,vfx,card]        (combat simulator: each layer on its own transparent PNG)\n" +
         "       pnpm shorts:capture --batch shots.json",
     );
     process.exit(1);
@@ -670,7 +704,7 @@ async function main() {
     };
     // One bad shot must not stop a batch: retry once on a freshly opened page, then go on and fail at the end.
     const failed: string[] = [];
-    for (const shot of batch.shots) {
+    for (const shot of expandLayers(batch.shots)) {
       const locale = shot.locale ?? batch.locale ?? "kor";
       const sim = Boolean(shot.url && studioOf(shot.url));
       const page = await pageFor(locale, sim);
@@ -692,7 +726,7 @@ async function main() {
         }
       }
     }
-    if (failed.length > 0) throw new Error(`${failed.length} of ${batch.shots.length} shots failed:\n  ${failed.join("\n  ")}`);
+    if (failed.length > 0) throw new Error(`${failed.length} shots failed:\n  ${failed.join("\n  ")}`);
   } finally {
     await Promise.all([...browsers.values()].map(async (browser) => (await browser).close()));
   }

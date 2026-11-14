@@ -9,6 +9,8 @@ import { resolveMonsterStaticArt } from "@/lib/monster-static-art";
 import { CombatSimClient } from "./combat-sim-client";
 import { parseCombatSimQuery, type SearchParams } from "./query-input";
 import type { CombatSimMonsterView, CombatSimView, EnergyCounterAsset } from "./view-types";
+import type { HitVfxAsset } from "./hit-vfx-layer";
+import type { TargetingArrowAsset } from "./targeting-arrow";
 import type { CardTrailAsset, EnergyGainVfx } from "./vfx-layer";
 
 interface CombatUiAssets {
@@ -17,6 +19,10 @@ interface CombatUiAssets {
   cardTrails: Record<string, CardTrailAsset | null>;
   powerIcons: Record<string, string>;
   ui: Record<string, string>;
+}
+
+async function readDataJson<T>(name: string): Promise<T> {
+  return JSON.parse(await readFile(path.join(process.cwd(), "data/sts2", name), "utf8")) as T;
 }
 
 async function readCombatUiAssets(): Promise<CombatUiAssets> {
@@ -51,6 +57,13 @@ async function buildView(
     getCodexPowers({ gameLocale: "kor", includeDeprecated: true }),
     readCombatUiAssets(),
   ]);
+  // Card VFX and the targeting arrow only matter while cards are played.
+  const [hitVfxData, targetingArrow] = withCards
+    ? await Promise.all([
+      readDataJson<{ scenes: Record<string, HitVfxAsset> }>("hit-vfx-assets.json").catch(() => ({ scenes: {} })),
+      readDataJson<TargetingArrowAsset>("targeting-arrow-assets.json").catch(() => null),
+    ])
+    : [{ scenes: {} }, null];
   const characterId = catalog.character?.id ?? null;
   const character = withPlayer && characterId ? characters.find((entry) => entry.id === characterId) ?? null : null;
   const scene = entities.encounter?.scene ?? null;
@@ -113,6 +126,8 @@ async function buildView(
     ui: uiAssets.ui,
     cardTrail: withCards && characterId ? uiAssets.cardTrails[characterId] ?? null : null,
     energyGainVfx: withCards && characterId ? uiAssets.energyGainVfx[characterId] ?? null : null,
+    hitVfx: hitVfxData.scenes,
+    targetingArrow,
   };
 }
 
