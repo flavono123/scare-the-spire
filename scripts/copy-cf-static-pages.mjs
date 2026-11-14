@@ -259,11 +259,24 @@ function staticPageRelativePath(file) {
   return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
 }
 
-function documentGameLocale(relative) {
+function documentLocaleSegment(relative) {
   const parsed = path.parse(relative);
   if (parsed.ext !== ".html") return null;
-  const segment = parsed.dir ? relative.split(path.sep)[0] : parsed.name;
-  return gameLocaleByPathSegment[segment] ?? null;
+  return parsed.dir ? relative.split(path.sep)[0] : parsed.name;
+}
+
+function documentGameLocale(relative) {
+  return gameLocaleByPathSegment[documentLocaleSegment(relative)] ?? null;
+}
+
+/**
+ * The no-JavaScript header comes from the shared layout, which cannot know the
+ * game locale and links under /en. Point those links at the page's own prefix.
+ */
+function localizeNoScriptHeader(html, segment) {
+  if (segment === "en") return html;
+  return html.replace(/<noscript><header[\s\S]*?<\/noscript>/, (header) =>
+    header.replace(/href="\/en(?=["/])/g, `href="/${segment}`));
 }
 
 function setHtmlTagAttribute(tag, name, value) {
@@ -286,7 +299,8 @@ function localizeDocumentRoot(html, gameLocale, relative) {
     ["data-service-locale", "en"],
     ["data-game-locale", gameLocale],
   ].reduce((current, [name, value]) => setHtmlTagAttribute(current, name, value), match[0]);
-  return `${html.slice(0, match.index)}${tag}${html.slice(match.index + match[0].length)}`;
+  const localized = `${html.slice(0, match.index)}${tag}${html.slice(match.index + match[0].length)}`;
+  return localizeNoScriptHeader(localized, documentLocaleSegment(relative));
 }
 
 // STS2 detail pages: compendium/<type>/<id> and en/compendium/<type>/<id>.
