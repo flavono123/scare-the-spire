@@ -124,8 +124,8 @@ interface Shot {
   enchant?: string;
   /** Turn on the page's "Beta Art" toggle first (cards, relics, powers, epochs). */
   beta?: boolean;
-  /** Combat simulator: seek to this time (ms) before capturing. */
-  t?: number;
+  /** Combat simulator: seek to this time (ms), or `end` for the last frame, before capturing. */
+  t?: number | "end";
   /** Combat simulator: capture a frame sequence into the `out` directory. */
   frames?: { fps: number; from?: number; to?: number };
   /**
@@ -347,7 +347,12 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
       await captureFrames(page, shot, requested, selector, out, studio);
       return;
     }
-    if (shot.t !== undefined) await studioSeek(page, studio, Number(shot.t));
+    if (shot.t !== undefined) {
+      // `end` is the last frame, as `t=end` is in the page's query. A NaN here used to reach the page and crash its stage.
+      const time = shot.t === "end" ? ((await page.evaluate(`window.${studio.handle}.duration`)) as number) : Number(shot.t);
+      if (!Number.isFinite(time)) throw new Error(`${url}: t must be milliseconds or "end", got ${JSON.stringify(shot.t)}`);
+      await studioSeek(page, studio, time);
+    }
   } else if (shot.frames || shot.t !== undefined) {
     throw new Error(`${url}: --t and --frames need a combat simulator or map bar page (window.__sim, window.__bar)`);
   }
@@ -609,7 +614,7 @@ function parseArgs(argv: string[]): { batch: Batch; batchDir: string } | null {
       case "--layers": shot.layers = value().split(",").map((layer) => layer.trim()).filter(Boolean); break;
       case "--no-flavor": shot.noFlavor = true; break;
       case "--art-only": shot.artOnly = true; break;
-      case "--t": shot.t = Number(value()); break;
+      case "--t": { const raw = value(); shot.t = raw === "end" ? "end" : Number(raw); break; }
       case "--frames": shot.frames = { fps: shot.frames?.fps ?? 30 }; break;
       case "--fps": shot.frames = { fps: Number(value()) }; break;
       case "--mark": shot.mark!.push(value()); break;

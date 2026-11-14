@@ -150,6 +150,8 @@ export function CombatSimClient({ view, errors }: { view: CombatSimView; errors:
         return true;
       },
       async seek(value) {
+        // A NaN time reaches every cue and layout as NaN and crashes the stage; say so instead.
+        if (!Number.isFinite(value)) throw new Error(`__sim.seek needs a finite time in ms, got ${String(value)}`);
         flushSync(() => {
           setPlaying(false);
           setT(clamp(value));
