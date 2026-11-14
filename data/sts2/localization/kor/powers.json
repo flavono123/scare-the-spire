@@ -950,7 +950,7 @@
   "WRAITH_FORM_POWER.description": "내 턴 시작 시, [gold]민첩[/gold]을 [blue]1[/blue] 잃습니다.",
   "WRAITH_FORM_POWER.smartDescription": "내 턴 시작 시, [gold]민첩[/gold]을 [blue]{Amount}[/blue] 잃습니다.",
   "WRAITH_FORM_POWER.title": "유령의 형상",
-  "WUPPYS_LOYALTY_POWER.description": "[gold]워피[/gold]가 모든 막히지 않은 공격 피해를 받아냅니다.",
+  "WUPPYS_LOYALTY_POWER.description": "[gold]워피[/gold]가 모든 공격 피해를 받아냅니다.",
   "WUPPYS_LOYALTY_POWER.title": "워피의 충성심",
   "YAH_POWER.description": "매 턴마다 처음으로 [gold]화살[/gold]을 [gold]회수[/gold]할 시,{energyPrefix:energyIcons(1)}를 얻습니다.",
   "YAH_POWER.smartDescription": "매 턴마다 처음으로 [gold]화살[/gold]을 [gold]회수[/gold]할 시, {Amount:energyIcons()}를 얻습니다.",

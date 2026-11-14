@@ -1,6 +1,6 @@
 {
   "ARROW.count": "{Arrows:cond:>0?(Kamu punya [blue]{Arrows}[/blue] panah)|[red](Kamu tidak punya panah)[/red]}",
-  "ARROW.description": "Panah bisa ditembak oleh kartu untuk [gold]Menusuk[/gold] sebuah kartu.{ShowArrowCount:\n{ArrowCount}|}",
+  "ARROW.description": "Panah bisa ditembak oleh kartu untuk [gold]Menusuk[/gold] sebuah target.{ShowArrowCount:\n{ArrowCount}|}",
   "ARROW.missing.description": "Saat ini [gold]Tertusuk[/gold] ke sebuah target. Serang musuh untuk [gold]Melepasnya[/gold].{ShowArrowCount:\n{ArrowCount}|}",
   "ARROW.title": "Panah",
   "BLOCK.description": "Sampai giliran selanjutnya, mencegah kerusakan.",

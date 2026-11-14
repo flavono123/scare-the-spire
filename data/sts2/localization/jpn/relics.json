@@ -530,7 +530,7 @@
   "METRONOME.description": "各戦闘で初めて[gold]オーブ[/gold]を[blue]{OrbCount}[/blue]個[gold]生成[/gold]した時、すべての敵に[blue]{Damage}[/blue]ダメージを与える。",
   "METRONOME.flavor": "[red]このレリックの詳細は今後明かされるはずだ……[/red]",
   "METRONOME.title": "メトロノーム",
-  "MIGHTY_WINGS.description": "1回あたり[blue]{DamageThreshold}[/blue]以上のアタックダメージを与える場合、[blue]{StrengthPower}[/blue][gold]筋力[/gold]を得る。",
+  "MIGHTY_WINGS.description": "1回あたり[blue]{DamageThreshold}[/blue]以上のアタックダメージを与える場合、[gold]筋力[/gold][blue]{StrengthPower}[/blue]を得る。",
   "MIGHTY_WINGS.flavor": "[red]このレリックの詳細は今後明かされるはずだ……[/red]",
   "MIGHTY_WINGS.title": "強ェ翼",
   "MINIATURE_CANNON.description": "[gold]アップグレード[/gold]されたアタックは、ダメージが[blue]{ExtraDamage}[/blue]増加する。",

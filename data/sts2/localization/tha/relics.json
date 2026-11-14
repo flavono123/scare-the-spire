@@ -26,7 +26,7 @@
   "BAG_OF_MARBLES.description": "ตอนเริ่มต้นการต่อสู้ สร้าง [blue]{VulnerablePower}[/blue] [gold]จุดอ่อน[/gold]ใส่ศัตรูทั้งหมด",
   "BAG_OF_MARBLES.flavor": "[red]รายละเอียดของเครื่องรางนี้จะถูกเปิดเผยในอนาคต...[/red]",
   "BAG_OF_MARBLES.title": "ถุงเก็บลูกแก้ว",
-  "BAG_OF_PREPARATION.description": "ตอนเริ่มต้นแต่ละการต่อสู้ จั่วเพิ่มอีก [blue]{Cards}[/blue] การ์ด",
+  "BAG_OF_PREPARATION.description": "ตอนเริ่มต้นแต่ละการต่อสู้ จั่วการ์ดเพิ่มอีก [blue]{Cards}[/blue] ใบ",
   "BAG_OF_PREPARATION.flavor": "[red]รายละเอียดของเครื่องรางนี้จะถูกเปิดเผยในอนาคต...[/red]",
   "BAG_OF_PREPARATION.title": "กระเป๋าแห่งการเตรียมพร้อม",
   "BEATING_REMNANT.description": "คุณไม่สามารถเสียเกิน [blue]20[/blue] HP ได้ในแต่ละเทิร์น",

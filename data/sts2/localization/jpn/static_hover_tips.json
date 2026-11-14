@@ -1,5 +1,5 @@
 {
-  "ARROW.count": "{Arrows:cond:>0?(矢を[blue]{Arrows}[/blue]本持っている)|[red]\\(矢を持っていない)[/red]}",
+  "ARROW.count": "{Arrows:cond:>0?(矢を[blue]{Arrows}[/blue]本持っている)|[red](矢を持っていない)[/red]}",
   "ARROW.description": "矢を放つと、対象を[gold]刺矢[/gold]状態にできる。{ShowArrowCount:\n{ArrowCount}|}",
   "ARROW.missing.description": "現在、[gold]刺矢[/gold]として対象に刺さっている。敵を攻撃して矢を[gold]引き抜く[/gold]。{ShowArrowCount:\n{ArrowCount}|}",
   "ARROW.title": "矢",
@@ -11,7 +11,7 @@
   "CARD_REWARD.title": "カード報酬",
   "CHANNELING.description": "オーブを生成すると、1番目の空きスロットに配置される。空きがない場合は、スロットを空けるため、1番目のオーブを自動的に[gold]解放[/gold]する。",
   "CHANNELING.title": "生成",
-  "CHO_MELODY.description": "このターン、「チョ」のカードをプレイすれば発動する。",
+  "CHO_MELODY.description": "「チョ」のカードをプレイすると、ターン終了時まで演奏する。",
   "CHO_MELODY.title": "チョの旋律",
   "COMPENDIUM.description": "これまでにスパイアで発見したすべてのカード、ポーション、レリックを確認する。",
   "COMPENDIUM.title": "図鑑",
@@ -25,7 +25,7 @@
   "DOUBLE_BOSS.title": "{BossName1} & {BossName2}",
   "DRAW_PILE.description": "毎ターンの開始時に、\nここから[blue]5[/blue]枚のカードを引く。\n\nクリックすると山札のカードを確認できる（表示は順不同）。",
   "DRAW_PILE.title": "山札{Hotkey:choose(None):| ({})}",
-  "DREAD_ROTATION.description": "[gold]ローテーション連勝[/gold]では、勝利するたびに使用キャラクターが右隣のキャラクターへ切り替わる。\n勝利数は別枠の連勝記録にカウントされ、各キャラクター個別の連勝記録には加算されない。",
+  "DREAD_ROTATION.description": "[gold]ローテーション[/gold]では、勝利するたびに使用キャラクターが右隣のキャラクターへ切り替わる。\n勝利数は別枠の連勝記録にカウントされ、各キャラクター個別の連勝記録には加算されない。",
   "DREAD_ROTATION.title": "ローテーション",
   "END_TURN.description": "このボタンを押すと、あなたのターンが終了する。\n\n手札をすべて捨て、敵のターンになる。その後、カードを[blue]5[/blue]枚引いて、再びあなたのターンになる。",
   "END_TURN.title": "ターン終了{Hotkey:choose(None):| ({})}",
@@ -45,7 +45,7 @@
   "FORGE.title": "鍛造",
   "HIT_POINTS.description": "HPがゼロになると死亡する。",
   "HIT_POINTS.title": "ヒットポイント (HP)",
-  "KI_MELODY.description": "このターン、「キ」のカードをプレイすれば発動する。",
+  "KI_MELODY.description": "「キ」のカードをプレイすると、ターン終了時まで演奏する。",
   "KI_MELODY.title": "キの旋律",
   "LINKED_REWARDS.description": "この組み合わせからは、報酬を[blue]1[/blue]つしか選べない。",
   "LINKED_REWARDS.title": "リンク報酬",
@@ -107,6 +107,6 @@
   "TRANSFORM.description": "変化したカードは、いずれかのレアリティのランダムなカードになる。",
   "TRANSFORM.title": "変化",
   "TURN_NUMBER.description": "この戦闘の現在のターン数。",
-  "WAH_MELODY.description": "このターン、「ワー」のカードをプレイすれば発動する。",
+  "WAH_MELODY.description": "「ワー」のカードをプレイすると、ターン終了時まで演奏する。",
   "WAH_MELODY.title": "ワーの旋律"
 }

@@ -26,7 +26,7 @@
   "COLORLESS_POTION.title": "Бесцветное зелье",
   "COSMIC_CONCOCTION.description": "Добавляет в [gold]руку[/gold] [blue]{Cards}[/blue] {Cards:plural(ru):[gold]улучшенную[/gold] бесцветную карту|[gold]улучшенные[/gold] бесцветные карты|[gold]улучшенных[/gold] бесцветных карт}.",
   "COSMIC_CONCOCTION.title": "Космическое варево",
-  "CRYSTALLINE_EUPHORIA.description": "Добавляет в [gold]руку[/gold] [blue]{Cards}[/blue] [gold]«Отрады»[/gold].\nЗаполняет [gold]руку[/gold] [gold]«Печалями»[/gold].",
+  "CRYSTALLINE_EUPHORIA.description": "Добавляет в [gold]руку[/gold] [blue]{Cards}[/blue] {Cards:plural(ru):[gold]«Отраду»[/gold]|[gold]«Отрады»[/gold]|[gold]«Отрад»[/gold]}.\nЗаполняет [gold]руку[/gold] [gold]«Печалями»[/gold].",
   "CRYSTALLINE_EUPHORIA.title": "Кристаллическая эйфория",
   "CUNNING_POTION.description": "Добавляет в [gold]руку[/gold] [blue]{Cards}[/blue] [gold]улучшенных[/gold] {Cards:plural(ru):заточку|заточки|заточек} .",
   "CUNNING_POTION.title": "Зелье хитростей",

@@ -1,5 +1,5 @@
 {
-  "BLITZ.NEOW.description": "Выберите [blue]3[/blue] карты, чтобы добавить в [gold]колоду[/gold].",
+  "BLITZ.NEOW.description": "Выберите [blue]3[/blue] карты, которые хотите добавить в [gold]колоду[/gold].",
   "BLITZ.NEOW.selectionScreenPrompt": "Выберите [blue]3[/blue] карты, которые хотите добавить в колоду.",
   "BLITZ.NEOW.title": "Блиц",
   "DREAD.AEONGLASS.description": "Добавляет [blue]1[/blue] [gold]«Усыхание»[/gold] на верх [gold]стопки добора[/gold] в начале хода.",
@@ -17,7 +17,7 @@
   "DREAD.title": "Всевластие, {BossName}",
   "DREAD_PORTRAIT_DESCRIPTION": "\n[blue]Условия:[/blue]\n{dreadRules:list: {}|\n}",
   "DREAD_RULE_01": "1. Включены все модификаторы Возвышения.",
-  "DREAD_RULE_02": "2. В конце каждого акта [gold]колоду[/gold] добавляется [purple]«Бремя возвышения»[/purple].",
+  "DREAD_RULE_02": "2. В конце каждого акта в [gold]колоду[/gold] добавляется [purple]«Бремя возвышения»[/purple].",
   "DREAD_RULE_03": "3. Враги получают дополнительные способности от боссов текущего акта.",
   "DREAD_RULE_04": "4. Боссы еще сильнее.",
   "LEVEL_00.description": "Игра без модификаторов Возвышения.",

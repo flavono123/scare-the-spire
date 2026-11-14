@@ -1149,7 +1149,7 @@
   "SIDESTEP.title": "Menyamping",
   "SIGNAL_BOOST.description": "Kuasa selanjutnya yang kamu mainkan dimainkan sekali lagi.",
   "SIGNAL_BOOST.title": "Penguat Sinyal",
-  "SIMPLETON.description": "Pada akhir giliranmu, mainkan{SimpletonPower:plural:| {:diff()}} kartu paling murah di [gold]Tanganmu[/gold].",
+  "SIMPLETON.description": "Pada akhir giliranmu, mainkan{SimpletonPower:choose(1):| {:diff()}} kartu paling murah di [gold]Tanganmu[/gold].",
   "SIMPLETON.title": "Jelata",
   "SKEWER.description": "Lakukan {Damage:diff()} kerusakan X kali.",
   "SKEWER.title": "Tusuk",

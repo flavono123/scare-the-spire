@@ -570,7 +570,7 @@
   "GLOW.description": "Obtienes {Stars:starIcons()}.\nRobas {Cards:diff()} {Cards:plural:carta|cartas}.\nEn el siguiente turno, robas {Cards:diff()} {Cards:plural:carta|cartas}.",
   "GLOW.title": "Brillo",
   "GOD_BYRD.description": "Al inicio de tu próximo turno, inflige {Damage:diff()} de daño a todos los enemigos.",
-  "GOD_BYRD.title": "Jáparo divino",
+  "GOD_BYRD.title": "Jáparo celestial",
   "GOLD_AXE.description": "Infliges daño por un valor equivalente a la cantidad de cartas que hayas jugado en este combate.{InCombat:\n(Infliges {CalculatedDamage:diff()} de daño)|}",
   "GOLD_AXE.title": "Hacha de oro",
   "GOOD_INSTINCTS.description": "Obtienes {Block:diff()} de [gold]bloqueo[/gold].",

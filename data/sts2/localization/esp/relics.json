@@ -127,7 +127,7 @@
   "BURNING_STICKS.description": "La primera vez que [gold]agotes[/gold] una carta de habilidad en cada combate, agregas una copia de ella a tu [gold]mano[/gold].",
   "BURNING_STICKS.flavor": "[red]Los detalles de esta reliquia se revelarán en el futuro...[/red]",
   "BURNING_STICKS.title": "Inciensos",
-  "BYRDINE.description": "Al recogerla, [gold]transforma[/gold] [gold]Ataque de jáparo[/gold] en [gold]Jáparo divino[/gold]. Una [gold]japarina[/gold] te acompañará en los combates.",
+  "BYRDINE.description": "Al recogerla, [gold]transforma[/gold] [gold]Ataque de jáparo[/gold] en [gold]Jáparo celestial[/gold]. Una [gold]japarina[/gold] te acompañará en los combates.",
   "BYRDINE.flavor": "[red]Los detalles de esta reliquia se revelarán en el futuro...[/red]",
   "BYRDINE.title": "Japarina",
   "BYRDPIP.description": "Al recogerla, obtienes la carta [gold]Ataque de jáparo[/gold]. Una [gold]japarina[/gold] te acompañará en los combates. Tras jugar [gold]Ataque de jáparo[/gold] [blue]{Repeat}[/blue] {Repeat:plural:vez|veces}, puedes evolucionar la [gold]japarina[/gold] en un [gold]punto de descanso[/gold].",

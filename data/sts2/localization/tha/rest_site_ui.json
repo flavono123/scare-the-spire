@@ -15,6 +15,7 @@
   "OPTION_LIFT.description": "เริ่มการต่อสู้ด้วย +1 ความแข็งแรง (เหลือ {LiftsLeft})",
   "OPTION_LIFT.name": "ฝึกซ้อม",
   "OPTION_MEND.name": "รักษา",
+  "OPTION_RESTORE.name": "ฟื้นพลัง",
   "OPTION_SMITH.descriptionDisabled": "[red]ไม่มีการ์ดให้พัฒนา[/red]",
   "OPTION_SMITH.name": "ตีบวก",
   "PROMPT": "ทำอะไรดี?"

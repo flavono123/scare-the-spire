@@ -89,7 +89,7 @@
   "RELIC_RARITY.SHOP": "レリック（ショップ）",
   "RELIC_RARITY.STARTER": "レリック（スターター）",
   "RELIC_RARITY.UNCOMMON": "レリック（アンコモン）",
-  "RELIC_USED_UP": "[red]このレリックは使い切った。[/red]\n{description}",
+  "RELIC_USED_UP": "[red]このレリックは使用済み。[/red]\n{description}",
   "SHOW_UPGRADE": "アップグレード版を表示",
   "SKIP_MERCHANT_BUTTON": "ショップを出る",
   "SKIP_REWARDS_BUTTON": "報酬をスキップ",

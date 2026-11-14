@@ -531,7 +531,7 @@
   "SUNKEN_TREASURY.pages.INITIAL.description": "Sebuah jalan menuntutmu ke sebuah brankas yang sedikit kebanjiran.\nAda [blue]2[/blue] [gold]peti[/gold] tapi hanya ada [blue]1[/blue] [jitter][purple]kunci rapuh[/purple][/jitter].\n\n[gold]Peti Pertama:[/gold] Mengocoknya, kamu mendengar suara bergemerincing. Sejumlah emas.\n[gold]Peti Kedua:[/gold] Besar, berhias, dan jelas [red]terkutuk[/red]. Banyak emas!",
   "SUNKEN_TREASURY.pages.INITIAL.options.FIRST_CHEST.description": "Dapatkan [blue]{SmallChestGold}[/blue] [gold]Emas[/gold].",
   "SUNKEN_TREASURY.pages.INITIAL.options.FIRST_CHEST.title": "Peti Pertama",
-  "SUNKEN_TREASURY.pages.INITIAL.options.SECOND_CHEST.description": "Dapatkan [blue]{LargeChestGold}[/blue] [gold]Emas[/gold]. Dapatkan [red]Kerakusan[/red].",
+  "SUNKEN_TREASURY.pages.INITIAL.options.SECOND_CHEST.description": "Dapatkan [blue]{LargeChestGold}[/blue] [gold]Emas[/gold]. Dapatkan [red]Ketamakan[/red].",
   "SUNKEN_TREASURY.pages.INITIAL.options.SECOND_CHEST.title": "Peti Kedua",
   "SUNKEN_TREASURY.pages.SECOND_CHEST.description": "Kamu tak pernah melihat [gold]emas[/gold] sebanyak itu dalam satu tempat!\n\n[sine]Semua barang jualan Si [/sine][blue]Pedagang[/blue][sine] bisa dibeli...[/sine]\n{Monologue}\n[sine]Orang berbahaya bisa dibayar...[/sine]\n\nPikiran [red][sine]tamak[/sine][/red] ada bersamamu selamanya...",
   "SUNKEN_TREASURY.title": "Harta Tenggelam",

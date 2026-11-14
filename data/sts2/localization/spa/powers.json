@@ -745,7 +745,7 @@
   "SOAR_POWER.description": "Recibe un [gold]50 %[/gold] menos de daño de ataque hasta que aterriza.",
   "SOAR_POWER.smartDescription": "Recibe un [blue]{DamageDecrease} %[/blue] menos de daño hasta que aterriza.",
   "SOAR_POWER.title": "Planear",
-  "SONG_PATH_POWER.description": "Siempre que ganes una [gold]Melodía Cho[/gold], gana [blue]7[/blue] de [gold]Bloqueo[/gold].",
+  "SONG_PATH_POWER.description": "Siempre que ganes una [gold]Melodía Cho[/gold], gana [blue]5[/blue] de [gold]Bloqueo[/gold].",
   "SONG_PATH_POWER.smartDescription": "Siempre que ganes una [gold]Melodía Cho[/gold], gana [blue]{Amount}[/blue] de [gold]Bloqueo[/gold].",
   "SONG_PATH_POWER.title": "Senda musical",
   "SOULBOUND_POWER.description": "Cuando {ApplierName} cree un [gold]Alma[/gold], añade otro [gold]Alma[/gold] a tu [gold]Pila de robo[/gold].",

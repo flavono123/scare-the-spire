@@ -597,7 +597,7 @@
   "OBSIDIAN_VICE.description": "在你的回合结束时，你的[gold]手牌[/gold]中每有一张牌，就随机对一名敌人造成[blue]{Damage}[/blue]点伤害。",
   "OBSIDIAN_VICE.flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
   "OBSIDIAN_VICE.title": "黑曜石钳子",
-  "OCARINA.description": "在每场战斗开始时，将随机“哇”、“啾”、“叽”牌各一张加入你的[gold]手牌[/gold]。",
+  "OCARINA.description": "在每场战斗开始时，将一张随机“哇”、“啾”或“叽”牌加入你的[gold]手牌[/gold]。",
   "OCARINA.flavor": "临时文本",
   "OCARINA.title": "陶笛",
   "ODDLY_SMOOTH_STONE.description": "在每场战斗开始时，获得[blue]{DexterityPower}[/blue]点[gold]敏捷[/gold]。",

@@ -515,7 +515,7 @@
   "FLECHETTES.title": "프레췌",
   "FLICK_FLACK.description": "모든 적에게\n피해를 {Damage:diff()} 줍니다.",
   "FLICK_FLACK.title": "재주넘기",
-  "FLORESCENCE.description": "손에 있는 [gold]발사[/gold]할 수 있는\n카드를 모두 [gold]소멸[/gold]시키고,\n[gold]{IfUpgraded:show:최후의 한 발+|최후의 한 발}[/gold]을\n생성합니다.",
+  "FLORESCENCE.description": "[gold]발사[/gold]할 수 있는 카드를\n모두 [gold]소멸[/gold]시키고,\n[gold]{IfUpgraded:show:최후의 한 발+|최후의 한 발}[/gold]을\n생성합니다.",
   "FLORESCENCE.title": "개화",
   "FOCUSED_STRIKE.description": "피해를 {Damage:diff()} 줍니다.\n이번 턴에\n[gold]밀집[/gold]을 {FocusPower:diff()} 얻습니다.",
   "FOCUSED_STRIKE.title": "밀집 타격",

@@ -110,6 +110,7 @@
   "COLOSSUS_POWER.title": "Devasa",
   "COMPOST_POWER.description": "Bir düşman öldüğünde TÜM oyuncular [gold]Enerji[/gold] elde eder.",
   "COMPOST_POWER.smartDescription": "Bir düşman öldüğünde TÜM oyuncular {Amount:energyIcons()} elde eder.",
+  "COMPOST_POWER.title": "Karışım",
   "CONCOCT_POWER.description": "Bu tur her engellenmeyen hasar verdiğinde [blue]3[/blue] [gold]Zehir[/gold] uygula.",
   "CONCOCT_POWER.smartDescription": "Bu tur her engellenmeyen hasar verdiğinde [blue]{Amount}[/blue] [gold]Zehir[/gold] uygula.",
   "CONCOCT_POWER.title": "Karıştır",
