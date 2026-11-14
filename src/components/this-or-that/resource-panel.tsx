@@ -6,6 +6,7 @@ import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import { RelicInspectPreview } from "@/components/codex/relic-inspect-preview";
+import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
 import { EntityPreview, type EntityInfo, type EntityType } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import { useGameUiLabels } from "@/hooks/use-game-ui-labels";
@@ -219,7 +220,21 @@ export function ThisOrThatResourcePanel({
   const assetOnlyHoverTip = assetOnly && !entity.cardData && assetOnlyDescription(entity)
     ? <AssetOnlyNonCardPreview entity={entity} size={size} />
     : null;
-  const preview = entity.cardData ? (
+  const preview = entity.cardData && assetOnly ? (
+    // The asset box clips, and a vote column can be narrower than the card plus
+    // the energy orb that hangs past its frame: shrink to fit, never past cardWidth.
+    <span className="block w-full px-[6%]">
+      <span className="mx-auto block" style={{ maxWidth: cardWidth }}>
+        <FittedCardTile
+          card={entity.cardData}
+          serviceLocale={serviceLocale}
+          showUpgrade={false}
+          showBeta={false}
+          interactive={false}
+        />
+      </span>
+    </span>
+  ) : entity.cardData ? (
     <CardTile
       card={entity.cardData}
       serviceLocale={serviceLocale}
