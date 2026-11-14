@@ -3495,7 +3495,7 @@
     "type": "Debuff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": null,
+    "image_url": "/static/images/powers/you_are_mine_power.png",
     "vars": {},
     "introducedInPatch": "v0.113.0"
   }
