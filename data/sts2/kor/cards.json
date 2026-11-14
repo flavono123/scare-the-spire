@@ -3135,8 +3135,8 @@
   {
     "id": "CACOPHONY",
     "name": "불협화음",
-    "description": "Every 33 cards drawn by ALL players, deal 66 damage to a random enemy.",
-    "description_raw": "Every {Cards:diff()} cards drawn by ALL players, deal {Damage:diff()} damage to a random enemy.",
+    "description": "모든 플레이어가 뽑는 카드\n33장마다, 무작위 적에게\n피해를 66 줍니다.",
+    "description_raw": "모든 플레이어가 뽑는 카드\n{Cards:diff()}장마다, 무작위 적에게\n피해를 {Damage:diff()} 줍니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -3149,7 +3149,7 @@
     "block": null,
     "hit_count": null,
     "powers_applied": null,
-    "cards_draw": null,
+    "cards_draw": 33,
     "energy_gain": null,
     "hp_loss": null,
     "keywords": null,
@@ -4501,8 +4501,8 @@
   {
     "id": "CONSTELLATION",
     "name": "별자리",
-    "description": "Another player draws 1 card, gains 1, and gains 9 [gold]Block[/gold].",
-    "description_raw": "Another player draws {Cards:diff()} {Cards:plural:card|cards}, gains {Energy:energyIcons()}, and gains {Block:diff()} [gold]Block[/gold].",
+    "description": "다른 플레이어가\n카드를 1장 뽑고,\n[energy:1]를 얻고,\n[gold]방어도[/gold]를 9 얻습니다.",
+    "description_raw": "다른 플레이어가\n카드를 {Cards:diff()}장 뽑고,\n{Energy:energyIcons()}를 얻고,\n[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -4524,7 +4524,8 @@
     "vars": {
       "Cards": 1,
       "Energy": 1,
-      "Block": 9
+      "Block": 9,
+      "StarCost": 2
     },
     "upgrade": {
       "block": "+3"
@@ -19805,8 +19806,8 @@
   {
     "id": "SOULBOUND",
     "name": "영혼 결속",
-    "description": "Choose an ally.\nWhenever you create a [gold]Soul[/gold], add a [gold]Soul[/gold] to their [gold]Draw Pile[/gold].",
-    "description_raw": "Choose an ally.\nWhenever you create a [gold]Soul[/gold], add a [gold]Soul[/gold] to their [gold]Draw Pile[/gold].",
+    "description": "아군을 1명 선택합니다.\n[gold]영혼[/gold]을 생성할 때마다,\n대상의 [gold]뽑을 카드 더미[/gold]에\n[gold]영혼[/gold]을 1장 추가합니다.",
+    "description_raw": "아군을 1명 선택합니다.\n[gold]영혼[/gold]을 생성할 때마다,\n대상의 [gold]뽑을 카드 더미[/gold]에\n[gold]영혼[/gold]을 1장 추가합니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -19818,12 +19819,7 @@
     "damage": null,
     "block": null,
     "hit_count": null,
-    "powers_applied": [
-      {
-        "power": "Soulbound",
-        "amount": 1
-      }
-    ],
+    "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
