@@ -648,9 +648,9 @@
     "hasBalanceChanges": false,
     "art": {
       "type": "image",
-      "imageUrl": "/images/sts2/patches/default-art.jpg",
-      "alt": "Slay the Spire 2 patch notes banner",
-      "altKo": "슬레이 더 스파이어 2 패치 노트 배너"
+      "imageUrl": "/images/sts2/patches/v0.113.1/steam-post.webp",
+      "alt": "The Fool reaching toward a giant blue creature, from the Steam post",
+      "altKo": "거대한 파란 생물에게 손을 뻗는 풀 (Steam 게시글 이미지)"
     }
   }
 ]
