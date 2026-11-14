@@ -2,12 +2,16 @@
 """Extract the game's icons for card tags that have no other Compendium image.
 
 The Fool's melody symbols mark Wah/Cho/Ki cards in combat, and the Fool's arrow
-stands for Shoot cards (the game's "화살" hover tip). Minion, Shiv and Osty Attack
+stands for Shoot cards (the game's "화살" hover tip). Tarot is a service tag (the
+game's TarotCards list has no CardTag or icon), so it takes the wheel from the Wheel
+of Fortune tarot card portrait, masked to a round emblem. Minion, Shiv and Osty Attack
 reuse power icons the site already serves, so they are not extracted here.
 
 Usage: python3 scripts/extract-card-tag-icons.py
 """
 from __future__ import annotations
+
+from PIL import Image, ImageDraw
 
 import sys
 from pathlib import Path
@@ -24,6 +28,7 @@ ICONS = {
     "cho": "res://images/packed/fool/symbol_cho.png",
     "ki": "res://images/packed/fool/symbol_ki.png",
     "shoot": "res://images/packed/fool/arrow.png",
+    "tarot": "res://images/packed/card_portraits/token/beta/wheel_of_fortune.png",
 }
 
 
@@ -42,6 +47,16 @@ def main() -> int:
         if slug == "shoot":
             # The arrow sprite points straight down; lay it to point up-right so it fills a square chip.
             image = image.rotate(135, resample=3, expand=True)
+        if slug == "tarot":
+            # Square on the wheel, then keep only the disc inside its outer ring.
+            w, h = image.size
+            side = int(h * 0.86)
+            left, top = (w - side) // 2, (h - side) // 2
+            image = image.crop((left, top, left + side, top + side))
+            mask = Image.new("L", image.size, 0)
+            inset = int(side * 0.035)
+            ImageDraw.Draw(mask).ellipse((inset, inset, side - inset, side - inset), fill=255)
+            image.putalpha(mask)
         bbox = image.getbbox()
         if bbox:
             image = image.crop(bbox)

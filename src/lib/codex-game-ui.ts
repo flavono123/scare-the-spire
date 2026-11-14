@@ -418,6 +418,7 @@ export async function getCodexGameUiLabels(
         Cho: gameText(staticHoverTips, "CHO_MELODY.title", "초 선율"),
         Ki: gameText(staticHoverTips, "KI_MELODY.title", "키 선율"),
         Shoot: gameText(staticHoverTips, "ARROW.title", "화살"),
+        Tarot: gameText(staticHoverTips, "TAROT.title", "타로"),
         Minion: gameText(powers, "MINION_POWER.title", "하수인"),
         Shiv: gameText(cards, "SHIV.title", "단도"),
         OstyAttack: gameText(monsters, "OSTY.name", "골골이"),

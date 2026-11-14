@@ -86,7 +86,7 @@ function entitySearchText(entity: EntityInfo): string {
       card.color,
       card.keywords.join(" "),
       Object.values(card.keywordLabels).join(" "),
-      card.tags.join(" "),
+      [...card.tags, ...card.serviceTags].join(" "),
       card.appliedPowerIds.join(" "),
     );
   }

@@ -6,8 +6,11 @@ export interface CodexLifecycle {
   deprecatedInPatch?: string;
 }
 
-/** Card tags the card library can filter by (game CardTag). Strike and Defend are left out: their names already say it. */
-export const CARD_FILTER_TAGS = ["Wah", "Cho", "Ki", "Shoot", "Minion", "Shiv", "OstyAttack"] as const;
+/**
+ * Card tags the card library can filter by: game CardTag (`tags`) and service tags (`serviceTags`).
+ * Strike and Defend are left out: their names already say it.
+ */
+export const CARD_FILTER_TAGS = ["Wah", "Cho", "Ki", "Shoot", "Tarot", "Minion", "Shiv", "OstyAttack"] as const;
 export type CardFilterTag = (typeof CARD_FILTER_TAGS)[number];
 
 export type CardColor =
@@ -64,7 +67,8 @@ export interface CodexCard extends CodexLifecycle {
   hitCount: number | null;
   keywords: string[];
   keywordLabels: Record<string, string>; // Korean keyword -> selected game locale label
-  tags: string[];
+  tags: string[]; // game CardTag
+  serviceTags: string[]; // tags this service defines on top of the game's (card-service-tags.ts)
   appliedPowerIds: string[]; // Canonical power ids applied or granted by this card
   /** Game `CardMultiplayerConstraint.MultiplayerOnly`. Hidden when the library MP tick is off. */
   multiplayerOnly: boolean;

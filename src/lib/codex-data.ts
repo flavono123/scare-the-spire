@@ -74,6 +74,7 @@ import {
   LocalizedFuturePotionOption,
 } from "./codex-types";
 import { groupAncientDialogueLines } from "./ancient-dialogue";
+import { cardServiceTags } from "./card-service-tags";
 import {
   getDefaultTinkerRiderForType,
   getMadSciencePreviewCard,
@@ -690,6 +691,7 @@ function mapCard(
     ),
     keywordLabels,
     tags: kor.tags ?? [],
+    serviceTags: cardServiceTags(kor.id),
     appliedPowerIds: getAppliedPowerIds(eng),
     multiplayerOnly: isMultiplayerOnlyCardId(kor.id),
     upgrade,

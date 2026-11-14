@@ -319,7 +319,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
 
   // Tags present in the selected version (older versions have no Fool tags).
   const availableTags = useMemo(() => {
-    const present = new Set(versionedCards.flatMap((card) => card.tags));
+    const present = new Set(versionedCards.flatMap((card) => [...card.tags, ...card.serviceTags]));
     return CARD_FILTER_TAGS.filter((tag) => present.has(tag));
   }, [versionedCards]);
 
@@ -382,7 +382,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     // Tag filter: any selected tag matches; a tag hidden by an older version no longer applies.
     const activeTags = availableTags.filter((tag) => selectedTags.has(tag));
     if (activeTags.length > 0) {
-      result = result.filter((c) => c.tags.some((tag) => activeTags.includes(tag as CardFilterTag)));
+      result = result.filter((c) => [...c.tags, ...c.serviceTags].some((tag) => activeTags.includes(tag as CardFilterTag)));
     }
 
     // Text search (name + description + keywords)

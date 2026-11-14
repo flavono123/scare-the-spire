@@ -156,6 +156,7 @@ const staticCard: EntityInfo = {
     keywords: [],
     keywordLabels: {},
     tags: [],
+    serviceTags: [],
     appliedPowerIds: [],
     multiplayerOnly: false,
     upgrade: null,

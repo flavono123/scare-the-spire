@@ -34,13 +34,14 @@ export function getCharacterTokenIcon(characterId: string, fallback: string): st
   return CHARACTER_TOKEN_ICONS[characterId.toLowerCase()] ?? fallback;
 }
 
-/** Game art for each card tag filter: Fool melody symbols and arrow, and the power icons that act on Minion, Shiv (Phantom Blades reads the tag) and Osty attacks (Calcify). */
+/** Game art for each card tag filter: Fool melody symbols and arrow, the Wheel of Fortune for Tarot, and the power icons that act on Minion, Shiv (Infinite Blades) and Osty attacks (Calcify). */
 export const CARD_TAG_FILTER_ICONS: Record<CardFilterTag, string> = {
   Wah: "/images/sts2/card-tags/wah.webp",
   Cho: "/images/sts2/card-tags/cho.webp",
   Ki: "/images/sts2/card-tags/ki.webp",
   Shoot: "/images/sts2/card-tags/shoot.webp",
+  Tarot: "/images/sts2/card-tags/tarot.webp",
   Minion: "/images/sts2/powers/minion_power.webp",
-  Shiv: "/images/sts2/powers/phantom_blades_power.webp",
+  Shiv: "/images/sts2/powers/infinite_blades_power.webp",
   OstyAttack: "/images/sts2/powers/calcify_power.webp",
 };

@@ -45,6 +45,7 @@ function cardEntity(cardData: {
       keywords: [],
       keywordLabels: {},
       tags: [],
+      serviceTags: [],
       appliedPowerIds: [],
       multiplayerOnly: false,
       upgrade: cardData.upgrade ?? null,
