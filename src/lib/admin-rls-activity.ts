@@ -12,10 +12,10 @@ import {
   type DefragmentFederatedService,
 } from "@/lib/defragment";
 
+// history_course is already part of DEFRAGMENT_FEDERATED_SERVICES.
 export const ADMIN_POST_SERVICES = [
   "stories",
   ...DEFRAGMENT_FEDERATED_SERVICES,
-  "history_course",
 ] as const;
 
 export type AdminPostService = (typeof ADMIN_POST_SERVICES)[number];
