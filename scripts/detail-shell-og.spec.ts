@@ -301,6 +301,12 @@ function seededD1(): SqliteD1 {
     }),
   );
 
+  post("decisions_decisions", DECISIONS, "내 티어", "내 티어");
+  run(
+    "INSERT INTO post_decisions_decisions (post_id, preset_key, game_version, \"rows\", placements) VALUES (?, 'custom', 'v0.107.1', '[]', '[]')",
+    DECISIONS,
+  );
+
   post("favorite_tournament", TOURNAMENT, "내 대회", "내 대회");
   run("INSERT INTO post_favorite_tournament (post_id, preset_key) VALUES (?, 'custom')", TOURNAMENT);
 
@@ -448,6 +454,8 @@ async function main() {
     [`/defragment/combo/${COMBO}`, { title: "강타와 닻 콤보 - 슬서운 이야기", description: koDescription.combo, image: `${ORIGIN}/images/sts2/relics/anchor.webp` }],
     [`/c-c-c-combo/${COMBO_YOUTUBE}`, { title: "영상 콤보 - 슬서운 이야기", description: koDescription.combo, image: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" }],
     [`/chemical-x/${CHEM}`, { title: "닻 케미컬 - 슬서운 이야기", description: koDescription.chemical, image: `${ORIGIN}/images/sts2/relics/anchor.webp` }],
+    [`/decisions-decisions/${DECISIONS}`, { title: "내 티어 - 슬서운 이야기", description: "슬레이 더 스파이어 2 · 슬서운 이야기 · 어려운 결정 · 게임 요소 티어 만들기", image: `${ORIGIN}/images/sts2/cards/decisions_decisions.webp` }],
+    [`/defragment/decisions_decisions/${DECISIONS}`, { title: "내 티어 - 슬서운 이야기", description: "슬레이 더 스파이어 2 · 슬서운 이야기 · 어려운 결정 · 게임 요소 티어 만들기", image: `${ORIGIN}/images/sts2/cards/decisions_decisions.webp` }],
     [`/transfigure/${TRANSFIGURE}`, { title: "강강타 - 슬서운 이야기", description: koDescription.transfigure, image: `${ORIGIN}/images/sts2/cards/bash.webp` }],
     [`/pagestorm/${PAGESTORM}`, { title: "문서 제목 - 슬서운 이야기", description: "본문 내용", image: `${ORIGIN}/images/sts2/cards/bash.webp` }],
     [`/history-course/${RUN}`, { title: "50층 보스 격파! - 슬서운 이야기 역사 강의서", description: koDescription.history, image: `${ORIGIN}/images/sts2/cards/bash.webp` }],
@@ -477,13 +485,11 @@ async function main() {
   }
 
   // Always null without a D1 read: not a uuid (PostgREST answered 400), defragment_posts (never had
-  // a row), decisions_posts (no such table, tasks/010 #69), and services without a branch.
+  // a row), and services without a branch.
   const readsBefore = d1.statements.length;
   for (const pathname of [
     "/c-c-c-combo/test-post-uuid",
     `/defragment/${COMBO}`,
-    `/decisions-decisions/${DECISIONS}`,
-    `/defragment/decisions_decisions/${DECISIONS}`,
     `/colorful-philosophers/${COMBO}`,
     `/defragment/favorite_tournament/${TOURNAMENT}`,
     `/defragment/history_course/${RUN}`,

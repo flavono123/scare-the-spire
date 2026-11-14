@@ -14,6 +14,7 @@ import type { ComboResourceRef } from "../src/lib/combo-types";
 import {
   CHEMICAL_X_PAGE_OG_IMAGE,
   COMBO_PAGE_OG_IMAGE,
+  DECISIONS_DECISIONS_PAGE_OG_IMAGE,
   THIS_OR_THAT_PAGE_OG_IMAGE,
 } from "../src/lib/page-og-images";
 import {
@@ -439,9 +440,21 @@ export async function fetchDetailShellOgData(
   if (target.service === "defragment") return null;
 
   // The PostgREST read asked for decisions_posts, a table that does not exist, so it never served
-  // OG (tasks/010 #69). Kept that way until that entry is fixed.
+  // OG (tasks/010 #69). It reads the post title from D1 now and keeps the list's image.
   if (target.service === "decisions-decisions" || target.service === "defragment-decisions_decisions") {
-    return null;
+    const row = await readPostColumns<{ title: string | null }>(db, "decisions_decisions", target.recordId, ["title"]);
+    if (!row) return null;
+
+    const rawTitle = truncateOgTitle(row.title || "");
+    const fallbackServiceName = serviceLocale === "en" ? "Decisions, Decisions" : "어려운 결정";
+    const title = rawTitle ? `${rawTitle} - ${brand}` : `${fallbackServiceName} - ${brand}`;
+    const image = `${siteOrigin}${DECISIONS_DECISIONS_PAGE_OG_IMAGE.url}`;
+    const description =
+      serviceLocale === "en"
+        ? `${game} · ${brand} · Decisions, Decisions · Make game-element tiers`
+        : `${game} · ${brand} · 어려운 결정 · 게임 요소 티어 만들기`;
+
+    return { title, description, image };
   }
 
   return null;
