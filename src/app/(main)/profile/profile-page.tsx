@@ -9,6 +9,8 @@ import { COURIER_TOKEN_SRC, readCourierEnabled, writeCourierEnabled } from "@/co
 import { ProfileActivity, type ProfileActivityCopy } from "@/components/profile-activity";
 import { ProfileAvatarToken } from "@/components/profile/profile-avatar-token";
 import { ProfilePalettePicker, type ProfilePalettePickerCopy } from "@/components/profile/profile-palette-picker";
+import { LanguageSelect } from "@/components/site-navbar";
+import { serviceMessages } from "@/messages/service";
 import {
   GAME_UI_HOVER_TIP_NAV_DELAY_MS,
   GameUiHoverTip,
@@ -270,6 +272,14 @@ export default function ProfilePage({
                 />
               }
             />
+
+            {/* The navbar shows its language dropdown from xl up. */}
+            <div className="xl:hidden">
+              <ProfileRow
+                label={serviceMessages[serviceLocale].languageSelect}
+                tokens={<LanguageSelect value={gameLocale} label={serviceMessages[serviceLocale].languageSelect} />}
+              />
+            </div>
           </div>
 
           <AvatarRender

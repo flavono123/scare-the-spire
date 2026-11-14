@@ -361,6 +361,35 @@ function LanguageDropdown({
   );
 }
 
+// Narrow-screen stand-in for LanguageDropdown on the profile page. A native
+// select escapes the profile hero's overflow clipping and opens the OS picker.
+// shortcut: lives on the profile page only, until the navbar becomes one menu bar.
+export function LanguageSelect({ value, label }: { value: GameLocale; label: string }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const option = (locale: GameLocale) => (
+    <option key={locale} value={locale}>{GAME_LOCALE_NATIVE_LABELS[locale]}</option>
+  );
+
+  return (
+    <select
+      aria-label={label}
+      data-profile-language-select=""
+      value={value}
+      onChange={(event) => {
+        const locale = event.target.value as GameLocale;
+        writeLocalePreferenceCookies(locale);
+        router.push(languageHref(pathname, new URLSearchParams(searchParams.toString()), locale));
+      }}
+      className="h-8 max-w-[11rem] rounded-md border border-border bg-background/80 px-1.5 text-xs font-semibold text-foreground shadow-sm"
+    >
+      {serviceLanguageNavLocales.map(option)}
+      <optgroup label="only game locale">{gameOnlyLanguageNavLocales.map(option)}</optgroup>
+    </select>
+  );
+}
+
 /**
  * The first effect after a document load runs before the metadata boundary
  * hydrates, so a client navigation there leaves the old title, canonical, and
