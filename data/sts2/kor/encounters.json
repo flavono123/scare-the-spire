@@ -469,7 +469,7 @@
         "name": "큐브형 구조체"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 으깨버렸습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}을(를) 으깨버렸습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -503,7 +503,7 @@
         "name": "시체 민달팽이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 마음껏 먹어치웠습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}을(를) 마음껏 먹어치웠습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -537,7 +537,7 @@
         "name": "시체 민달팽이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 마음껏 먹어치웠습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}을(를) 마음껏 먹어치웠습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1095,7 +1095,7 @@
         "name": "구체 머리"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 감전시켰습니다.",
+    "loss_text": "[gold]{encounter}[/gold]는 {character}(을)를 감전시켰습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1158,7 +1158,7 @@
         "name": "유령선"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]은 {character}를 마구 짓밟았습니다.",
+    "loss_text": "[gold]{encounter}[/gold]은 {character}(을)를 마구 짓밟았습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1236,7 +1236,7 @@
         "name": "잉클릿"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]들은 {character}를 통과시키지 않았습니다.",
+    "loss_text": "[gold]{encounter}[/gold]들은 {character}(을)를 통과시키지 않았습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1272,7 +1272,7 @@
         "name": "로켓"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 사방에서 공격했습니다.",
+    "loss_text": "[gold]{encounter}[/gold]는 {character}(을)를 사방에서 공격했습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1574,7 +1574,7 @@
         "name": "깨작이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}를 두들겨 팼습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 두들겨 팼습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1609,7 +1609,7 @@
         "name": "깨작이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]가 {character}를 두들겨 팼습니다.",
+    "loss_text": "[gold]{encounter}[/gold]가 {character}(을)를 두들겨 팼습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1642,7 +1642,7 @@
         "name": "복슬지렁이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}를 마음껏 먹어치웠습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 마음껏 먹어치웠습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -1666,7 +1666,7 @@
     "act": null,
     "tags": null,
     "monsters": [],
-    "loss_text": "[gold]{encounter}[/gold]들이 {character}를 마음껏 먹어치웠습니다."
+    "loss_text": "[gold]{encounter}[/gold]들이 {character}(을)를 마음껏 먹어치웠습니다."
   },
   {
     "id": "OVICOPTER_NORMAL",
@@ -2841,7 +2841,7 @@
         "name": "물어뜯는 두루마리"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]들은 {character}를 갈기갈기 찢어버렸습니다.",
+    "loss_text": "[gold]{encounter}[/gold]들은 {character}(을)를 갈기갈기 찢어버렸습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -2878,7 +2878,7 @@
         "name": "물어뜯는 두루마리"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]들은 {character}를 갈기갈기 찢어버렸습니다.",
+    "loss_text": "[gold]{encounter}[/gold]들은 {character}(을)를 갈기갈기 찢어버렸습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -2947,7 +2947,7 @@
         "name": "불량 해초"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 때려눕혔습니다.",
+    "loss_text": "[gold]{encounter}[/gold]는 {character}(을)를 때려눕혔습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -2973,7 +2973,7 @@
         "name": "시궁창 조개"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 통째로 삼켜버렸습니다.",
+    "loss_text": "[gold]{encounter}[/gold]는 {character}(을)를 통째로 삼켜버렸습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3428,7 +3428,7 @@
         "name": "영혼 물교기"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 파멸로 이끌었습니다.",
+    "loss_text": "[gold]{encounter}[/gold]는 {character}(을)를 파멸로 이끌었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3584,7 +3584,7 @@
         "name": "탐"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]은 {character}를 먹어치웠습니다. 그리고 아직도 굶주려 있습니다...",
+    "loss_text": "[gold]{encounter}[/gold]은 {character}(을)를 먹어치웠습니다. 그리고 아직도 굶주려 있습니다...",
     "compositions": [
       {
         "id": "FIXED",
@@ -3719,7 +3719,7 @@
         "name": "폴짝이 도적"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]은 {character}를 털어먹었습니다.",
+    "loss_text": "[gold]{encounter}[/gold]은 {character}(을)를 털어먹었습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3783,7 +3783,7 @@
         "name": "먹깨비"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 끝장냈습니다.",
+    "loss_text": "[gold]{encounter}[/gold]는 {character}(을)를 끝장냈습니다.",
     "compositions": [
       {
         "id": "FIXED",
