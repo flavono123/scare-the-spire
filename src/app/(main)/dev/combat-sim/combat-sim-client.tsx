@@ -31,6 +31,14 @@ export interface CombatSimHandle {
 }
 
 export interface CombatSimSnapshot {
+  /** The encounter, and which of the site's compositions the monsters came from (null: the archived source or `monsters=`). */
+  encounter: string;
+  composition: number | null;
+  compositionCount: number;
+  ascension: number;
+  dread: boolean;
+  /** The Dread dominion applied (`KAISER_CRAB`, ...), or null. */
+  dominion: string | null;
   t: number;
   action: number | null;
   event: SimEvent["kind"] | null;
@@ -40,8 +48,8 @@ export interface CombatSimSnapshot {
   drawPile: number;
   discardPile: number;
   exhaustPile: number;
-  player: { hp: number; block: number };
-  monsters: { id: string; hp: number; move: string | null }[];
+  player: { hp: number; block: number; powers: string[] };
+  monsters: { id: string; hp: number; maxHp: number; move: string | null; powers: string[] }[];
 }
 
 declare global {
@@ -58,11 +66,17 @@ function nextFrame(): Promise<void> {
   });
 }
 
-function snapshot(result: SimResult, timeline: CombatTimeline, t: number): CombatSimSnapshot {
+function snapshot(result: SimResult, timeline: CombatTimeline, t: number, catalog: CombatSimView["catalog"]): CombatSimSnapshot {
   const frame = timeline.frameAt(t);
   const state = visibleState(frame.beat, frame.progress, frame.state);
   const label = (uid: string) => `${state.cards[uid].id}${state.cards[uid].upgraded ? "+" : ""}`;
   return {
+    encounter: catalog.encounter.id,
+    composition: catalog.encounter.composition,
+    compositionCount: catalog.encounter.compositionCount,
+    ascension: catalog.ascension,
+    dread: catalog.dread,
+    dominion: catalog.dominion?.id ?? null,
     t: frame.t,
     action: frame.beat?.action ?? null,
     event: frame.beat?.event.kind ?? null,
@@ -72,8 +86,8 @@ function snapshot(result: SimResult, timeline: CombatTimeline, t: number): Comba
     drawPile: state.piles.draw.length,
     discardPile: state.piles.discard.length,
     exhaustPile: state.piles.exhaust.length,
-    player: { hp: state.player.hp, block: state.player.block },
-    monsters: state.monsters.map((monster) => ({ id: monster.id, hp: monster.hp, move: monster.moveId })),
+    player: { hp: state.player.hp, block: state.player.block, powers: state.player.powers.map((power) => `${power.id}:${power.amount}`) },
+    monsters: state.monsters.map((monster) => ({ id: monster.id, hp: monster.hp, maxHp: monster.maxHp, move: monster.moveId, powers: monster.powers.map((power) => `${power.id}:${power.amount}`) })),
   };
 }
 
@@ -159,7 +173,7 @@ export function CombatSimClient({ view, errors }: { view: CombatSimView; errors:
         // The 2D effects are <img>s whose src the render just replaced.
         await Promise.all([...(stageRef.current?.querySelectorAll("img") ?? [])].map((image) => image.decode().catch(() => undefined)));
         await settle();
-        return snapshot(result, timeline, tRef.current);
+        return snapshot(result, timeline, tRef.current, view.catalog);
       },
       async step() {
         const next = timeline.actionEnds.find((end) => end > tRef.current + 0.5) ?? timeline.duration;
@@ -173,7 +187,7 @@ export function CombatSimClient({ view, errors }: { view: CombatSimView; errors:
         setPlaying(false);
       },
       state() {
-        return snapshot(result, timeline, tRef.current);
+        return snapshot(result, timeline, tRef.current, view.catalog);
       },
       frameTimes(fps = 30) {
         const count = Math.floor((timeline.duration / 1000) * fps) + 1;
@@ -184,9 +198,9 @@ export function CombatSimClient({ view, errors }: { view: CombatSimView; errors:
     return () => {
       if (window.__sim === handle) delete window.__sim;
     };
-  }, [result, timeline, view.input]);
+  }, [result, timeline, view.input, view.catalog]);
 
-  const current = snapshot(result, timeline, t);
+  const current = snapshot(result, timeline, t, view.catalog);
   const warnings = [...new Set([...errors, ...view.warnings, ...result.warnings])];
 
   return (
@@ -298,6 +312,7 @@ function describeEvent(event: SimEvent): string {
     case "damage": return `${event.creature} 피해 ${event.amount} (막음 ${event.blocked}) ${event.hpFrom} → ${event.hpTo}`;
     case "block": return `${event.creature} 방어도 +${event.amount} = ${event.total}`;
     case "animate": return `${event.creature} ${event.animation}${event.delayMs ? ` (지연 ${event.delayMs}ms)` : ""}`;
+    case "choose": return `카드 고르기 화면: ${event.cards.join(" / ")} → ${event.picked}`;
     case "vfx": return `${event.target ?? "—"}에 ${event.effect}${event.color ? ` (#${event.color})` : ""}`;
     case "pause": return `대기 ${event.reason} (고속 ${event.fastMs} / 일반 ${event.normalMs}ms${event.sincePlayMove !== undefined ? ", 카드 낸 뒤 경과만큼 차감" : ""})`;
     case "intent": return `${event.creature} 다음 행동 ${event.moveId ?? "—"}`;

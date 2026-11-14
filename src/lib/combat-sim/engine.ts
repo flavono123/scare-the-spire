@@ -23,7 +23,8 @@
  */
 
 import { CARD_RECIPES, resolveCount, type CardOp } from "./card-effects";
-import { AFFLICTION_HOOKS, POWER_HOOKS, type HookContext } from "./hooks";
+import { AFFLICTION_HOOKS, POWER_HOOKS, SIDE_TURN_HOOKS, type HookContext } from "./hooks";
+import { modifiedBlock, modifiedDamage } from "./modifiers";
 import { nextRandom, seedRandom } from "./rng";
 import type {
   CardPresentation,
@@ -39,6 +40,7 @@ import type {
   SimCreature,
   PresentationStep,
   SimEvent,
+  SimMonsterDef,
   SimKeyword,
   SimMonster,
   SimResult,
@@ -48,6 +50,10 @@ import type {
 import { PILE_TYPES, SCENE_PARTS } from "./types";
 
 export const MAX_HAND_SIZE = 10;
+/** Powers that may go below 0 instead of ending at 0 (`AllowNegative`). */
+const POWER_ALLOWS_NEGATIVE = ["STRENGTH_POWER", "DEXTERITY_POWER"];
+/** Slot names the game's encounters use, for conditions on `SlotName` when the monsters come from a list. */
+const SLOT_ORDINALS = ["first", "second", "third", "fourth", "fifth"];
 const TURN_DRAW = 5;
 
 export function parseCardSpec(spec: CardSpec): { id: string; upgraded: boolean; count: number } {
@@ -184,10 +190,14 @@ class Combat {
     const monsters: SimMonster[] = catalog.encounter.monsters.map(({ monsterId, slot }, index) => {
       const def = catalog.monsters[monsterId];
       if (!def) this.warnings.push(`몬스터 데이터 없음: ${monsterId}`);
-      const moveId = this.lookup(input.moves, monsterId, index) ?? def?.initialMove ?? null;
+      const moveId = this.lookup(input.moves, monsterId, index) ?? (def ? this.resolveState(def, def.initialMove, slot, index) : null);
       if (moveId && def && !def.moves[moveId]) this.warnings.push(`${monsterId}에 ${moveId} 행동이 없습니다`);
-      const hp = Math.max(0, Math.trunc(this.lookup(input.monsterHp, monsterId, index) ?? def?.hp ?? 1));
-      const maxHp = Math.max(def?.hp ?? 1, hp);
+      // MinInitialHp..MaxInitialHp at this ascension, rolled with a seed of its own so no other draw moves.
+      const range = def ? def.hpMax - def.hp : 0;
+      const rolled = def ? def.hp + (range > 0 ? Math.floor(nextRandom(seedRandom((input.seed ?? 1) * 7919 + index * 104729 + 13))[0] * (range + 1)) : 0) : 1;
+      const hp = Math.max(0, Math.trunc(this.lookup(input.monsterHp, monsterId, index) ?? rolled));
+      // The roll is the monster's max HP too (Creature.SetMaxHpInternal); a lower `monsterHp` only wounds it.
+      const maxHp = Math.max(rolled, hp, 1);
       return { key: `m${index}`, id: monsterId, hp, maxHp, block: 0, powers: [], slot, moveId };
     });
 
@@ -254,6 +264,28 @@ class Combat {
       this.state.cards[card.uid].affliction = null;
       this.emit({ kind: "clearAffliction", uid: card.uid, afflictionId: current.id });
     },
+    gainBlock: (creature, amount) => {
+      creature.block += amount;
+      this.emit({ kind: "block", creature: creature.key, amount, total: creature.block });
+    },
+    applyPower: (owner, spec) => this.applyPower(owner, spec),
+    changePowerAmount: (owner, powerId, delta) => {
+      const power = owner.powers.find((entry) => entry.id === powerId);
+      if (!power) return;
+      power.amount += delta;
+      if (power.amount === 0 || (delta < 0 && !POWER_ALLOWS_NEGATIVE.includes(powerId) && power.amount < 0)) {
+        owner.powers = owner.powers.filter((entry) => entry.id !== powerId);
+        this.emit({ kind: "power", creature: owner.key, powerId, amount: delta, change: "removed" });
+      } else {
+        this.emit({ kind: "power", creature: owner.key, powerId, amount: delta, change: "applied" });
+      }
+    },
+    removePower: (owner, powerId) => {
+      if (!owner.powers.some((entry) => entry.id === powerId)) return;
+      owner.powers = owner.powers.filter((entry) => entry.id !== powerId);
+      this.emit({ kind: "power", creature: owner.key, powerId, amount: 0, change: "removed" });
+    },
+    round: () => this.state.turn,
     loseEnergy: (amount, cause, sourceId, uid) => {
       if (amount <= 0) return;
       const from = this.state.energy;
@@ -279,6 +311,8 @@ class Combat {
     const existing = owner.powers.find((power) => power.id === spec.id);
     if (existing) existing.amount += spec.amount;
     else owner.powers.push({ ...spec });
+    // A stack that reaches 0 is gone (a debuff cancelled by its opposite).
+    if (owner.powers.find((power) => power.id === spec.id)?.amount === 0) owner.powers = owner.powers.filter((power) => power.id !== spec.id);
     this.emit({ kind: "power", creature: owner.key, powerId: spec.id, amount: spec.amount, change: "applied" });
     // PowerCmd.Apply: CustomScaledWait(0.1, 0.25); powers present at setup are already in place.
     if (this.action >= 0) this.emit({ kind: "pause", reason: "power", fastMs: 100, normalMs: 250 });
@@ -292,6 +326,8 @@ class Combat {
   }
 
   setup() {
+    this.setupStartPowers();
+    this.setupDominion();
     const powers = this.input.powers ?? {};
     for (const [key, specs] of Object.entries(powers)) {
       const owner = key === "player"
@@ -303,6 +339,52 @@ class Combat {
         continue;
       }
       for (const spec of specs) this.applyPower(owner, parsePowerSpec(spec));
+    }
+    this.setupPlatingBlock();
+  }
+
+  /** Monsters' `AfterAddedToRoom` power applications (Plating, Artifact, ...), before any `powers` input. */
+  private setupStartPowers() {
+    this.state.monsters.forEach((monster) => {
+      for (const power of this.catalog.monsters[monster.id]?.startPowers ?? []) {
+        this.applyPower(power.target === "player" ? this.state.player : monster, { id: power.powerId, amount: power.amount });
+      }
+    });
+  }
+
+  /** PlatingPower.BeforeSideTurnStart: round 1 begins with the block already on the monster (whoever gave it the power). */
+  private setupPlatingBlock() {
+    for (const monster of this.state.monsters) {
+      const plating = monster.powers.find((power) => power.id === "PLATING_POWER");
+      if (plating) this.hooks.gainBlock(monster, plating.amount);
+    }
+  }
+
+  /** DreadRunModel's dominion: its powers on the players and enemies, its cards and its choose screen. */
+  private setupDominion() {
+    const dominion = this.catalog.dominion;
+    if (!dominion) return;
+    for (const power of dominion.player) this.applyPower(this.state.player, { id: power.powerId, amount: power.amount });
+    for (const power of dominion.enemies) {
+      for (const monster of this.state.monsters) this.applyPower(monster, { id: power.powerId, amount: power.amount });
+    }
+    if (!hasPart(this.input, "cards")) {
+      if (dominion.drawPileCards.length > 0 || dominion.chooseScreen) this.warnings.push(`${dominion.id} 권능의 카드는 cards 파트가 있어야 보입니다`);
+      return;
+    }
+    // CardPileCmd.AddToCombatAndPreview(..., Draw, CardPilePosition.Random): a seeded random slot of the draw pile.
+    dominion.drawPileCards.forEach((id, index) => {
+      const uid = `dominion-${index}`;
+      this.state.cards[uid] = { uid, id, upgraded: false, affliction: null };
+      const [value, rng] = nextRandom(this.state.rng);
+      this.state.rng = rng;
+      this.state.piles.draw.splice(Math.floor(value * (this.state.piles.draw.length + 1)), 0, uid);
+      this.emit({ kind: "enter", uid, to: "draw" });
+    });
+    if (dominion.chooseScreen) {
+      // KnowledgeDemonDominion.BeforeHandDraw (turn 1): FromChooseACardScreen; the sim takes the first card.
+      this.emit({ kind: "choose", cards: dominion.chooseScreen, picked: dominion.chooseScreen[0] });
+      this.emit({ kind: "unimplemented", what: `${dominion.chooseScreen[0]} OnChosen 효과` });
     }
   }
 
@@ -318,7 +400,8 @@ class Combat {
   }
 
   private runAction(action: SimAction) {
-    const cardAction = action.do === "play" || action.do === "endTurn" || action.do === "startTurn" || action.do === "addCard";
+    // endTurn and startTurn also pass the turn without the card interface (side-turn powers still run); a play or a new card needs it.
+    const cardAction = action.do === "play" || action.do === "addCard";
     if (cardAction && !hasPart(this.input, "cards")) {
       this.emit({ kind: "rejected", reason: `cards 파트가 꺼져 있어 ${action.do}를 건너뜁니다` });
       return;
@@ -479,13 +562,11 @@ class Combat {
       }
       case "block": {
         const amount = Math.max(0, Math.trunc(card.vars[op.var] ?? 0));
-        if (this.state.player.powers.some((power) => power.id === "DEXTERITY_POWER" || power.id === "FRAIL_POWER")) {
-          this.emit({ kind: "unimplemented", what: "방어도 수정자(민첩/손상)" });
-        }
-        this.state.player.block += amount;
-        this.emit({ kind: "block", creature: "player", amount, total: this.state.player.block });
+        const gained = modifiedBlock(amount, this.state.player.powers);
+        this.state.player.block += gained;
+        this.emit({ kind: "block", creature: "player", amount: gained, total: this.state.player.block });
         // CreatureCmd.GainBlock: CustomScaledWait(0.1, 0.25).
-        if (amount > 0) this.emit({ kind: "pause", reason: "block", fastMs: 100, normalMs: 250 });
+        if (gained > 0) this.emit({ kind: "pause", reason: "block", fastMs: 100, normalMs: 250 });
         return;
       }
       case "draw":
@@ -520,7 +601,6 @@ class Combat {
     hitFx: string | null;
     at: "center" | "base";
   }) {
-    this.noteDamageModifiers(this.state.player, params.targets);
     for (let hit = 0; hit < params.hits; hit += 1) {
       const alive = params.targets.filter((creature) => creature.hp > 0);
       if (alive.length === 0) break;
@@ -530,7 +610,7 @@ class Combat {
       }
       for (const creature of alive) {
         if (params.hitFx) this.emit({ kind: "vfx", effect: params.hitFx, target: creature.key, at: params.at });
-        this.dealDamage(creature, params.amount, params.uid);
+        this.dealDamage(creature, modifiedDamage(params.amount, this.state.player.powers, creature.powers), params.uid);
       }
       this.emit({ kind: "pause", reason: "damage", fastMs: 100, normalMs: 200 });
     }
@@ -633,12 +713,6 @@ class Combat {
     return [alive[Math.floor(value * alive.length)]];
   }
 
-  private noteDamageModifiers(attacker: SimCreature, targets: SimCreature[]) {
-    const modifiers = ["STRENGTH_POWER", "WEAK_POWER", "VULNERABLE_POWER"];
-    const has = [attacker, ...targets].some((creature) => creature.powers.some((power) => modifiers.includes(power.id)));
-    if (has) this.emit({ kind: "unimplemented", what: "피해 수정자(힘/약화/취약)" });
-  }
-
   private dealDamage(creature: SimCreature, amount: number, source: string) {
     const blocked = Math.min(creature.block, amount);
     const hpFrom = creature.hp;
@@ -703,18 +777,22 @@ class Combat {
   private endTurn() {
     // CombatManager.DoTurnEnd: CustomScaledWait(0.3, 0.6) before the hand goes to the discard pile.
     this.emit({ kind: "pause", reason: "turnEnd", fastMs: 300, normalMs: 600 });
-    for (const uid of [...this.state.piles.hand]) {
+    for (const uid of hasPart(this.input, "cards") ? [...this.state.piles.hand] : []) {
       const card = this.effective(uid);
       if (card?.keywords.includes("Retain")) continue;
       if (card?.keywords.includes("Ethereal")) this.moveCard(uid, "exhaust", "exhaust");
       else this.moveCard(uid, "discard", "endTurn");
     }
+    this.runSideTurnHooks("player", "beforeSideTurnEndEarly");
+    this.runSideTurnHooks("player", "afterSideTurnEnd");
+    this.reportSideTurnPowers("player");
   }
 
   private monsterTurn() {
     // CombatManager.StartTurn (enemy side): CustomScaledWait(0.5, 0.8) before ExecuteEnemyTurn.
     this.emit({ kind: "pause", reason: "enemyTurn", fastMs: 500, normalMs: 800 });
-    for (const monster of this.state.monsters) {
+    this.runSideTurnHooks("enemy", "afterSideTurnStart");
+    for (const [index, monster] of this.state.monsters.entries()) {
       if (monster.hp <= 0 || !monster.moveId) continue;
       const def = this.catalog.monsters[monster.id];
       const move = def?.moves[monster.moveId];
@@ -730,22 +808,108 @@ class Combat {
           // AttackCommand.FromMonster(...).WithAttackerAnim(name, delay): one TriggerAnim, then a CreatureCmd.Damage per hit.
           this.emit({ kind: "animate", creature: monster.key, animation: "attack", delayMs: move.attackAnimDelay * 1000 });
           for (let hit = 0; hit < (intent.repeat ?? 1); hit += 1) {
-            this.noteDamageModifiers(monster, [this.state.player]);
-            this.dealDamage(this.state.player, intent.damage, monster.key);
+            this.dealDamage(this.state.player, modifiedDamage(intent.damage, monster.powers, this.state.player.powers), monster.key);
             this.emit({ kind: "pause", reason: "damage", fastMs: 100, normalMs: 200 });
           }
         } else {
           this.emit({ kind: "unimplemented", what: `${def.name} ${move.name ?? move.id}: ${intent.type}` });
         }
       }
-      const next = this.nextMove(monster.id, monster.moveId);
+      const next = this.nextMove(monster, index);
       monster.moveId = next;
       this.emit({ kind: "intent", creature: monster.key, moveId: next });
     }
+    this.runSideTurnHooks("enemy", "beforeSideTurnEndEarly");
+    this.runSideTurnHooks("enemy", "afterSideTurnEnd");
+    this.reportSideTurnPowers("enemy");
   }
 
-  private nextMove(monsterId: string, moveId: string): string | null {
-    const options = (this.catalog.monsters[monsterId]?.transitions ?? []).filter((edge) => edge.from === moveId);
+  /**
+   * Run the side-turn hooks (`SIDE_TURN_HOOKS`) of every creature's powers for one phase: `side` is whose turn it is
+   * (the player's, or every monster's), `phase` the game hook name. The owner only reacts to its own side's turn
+   * unless the power says otherwise (Weak ticking down at the enemies' end of turn applies to everyone).
+   */
+  private runSideTurnHooks(side: "player" | "enemy", phase: "beforeSideTurnEndEarly" | "afterSideTurnEnd" | "afterSideTurnStart") {
+    for (const owner of this.creatures()) {
+      for (const power of [...owner.powers]) {
+        const hooks = SIDE_TURN_HOOKS[power.id];
+        const run = hooks?.[phase];
+        if (!run) continue;
+        this.checkVersion(power.id, hooks.checkedVersions);
+        run(this.hooks, owner, power, { side, ownerSide: owner.key === "player" ? "player" : "enemy" });
+      }
+    }
+  }
+
+  /** Powers whose class has a side-turn hook that `hooks.ts` does not run: listed, once each, so a reader knows. */
+  private reportSideTurnPowers(side: "player" | "enemy") {
+    const seen = new Set<string>();
+    for (const owner of this.creatures()) {
+      for (const power of owner.powers) {
+        if (seen.has(power.id) || SIDE_TURN_HOOKS[power.id] || !this.catalog.sideTurnPowers.includes(power.id)) continue;
+        seen.add(power.id);
+        this.emit({ kind: "unimplemented", what: `${this.catalog.powers[power.id]?.name ?? power.id} 턴 효과 (${side === "player" ? "플레이어" : "적"} 턴 끝)` });
+      }
+    }
+  }
+
+  /**
+   * Follow a move state machine from `stateId` to a move (`ConditionalBranchState` / `RandomBranchState`): a
+   * conditional picks the first branch whose condition holds (only `base.Creature.SlotName == "x"` can be
+   * evaluated; any other condition takes the first branch and warns), a random branch is a weighted draw that
+   * skips the previous move when the branch forbids repeating it.
+   */
+  private resolveState(def: SimMonsterDef, stateId: string | null, slot: string | null, index: number, previous: string | null = null, draw?: () => number): string | null {
+    const slotName = slot ?? SLOT_ORDINALS[index] ?? "";
+    const next = draw ?? (() => nextRandom(seedRandom((this.input.seed ?? 1) * 7919 + index * 104729 + 29))[0]);
+    let current = stateId;
+    for (let step = 0; current && step < 12; step += 1) {
+      if (def.moves[current]) return current;
+      const state = def.states[current];
+      if (!state) return current;
+      if (state.kind === "move") {
+        current = state.next;
+      } else if (state.kind === "conditional") {
+        const results = state.branches.map((branch) => this.evalCondition(branch.condition, slotName));
+        const hit = results.indexOf(true);
+        const guess = results.indexOf(null);
+        const chosen = hit >= 0 ? hit : guess >= 0 ? guess : 0;
+        if (hit < 0 && guess >= 0) {
+          const note = `${def.id} ${current}: 분기 조건을 풀지 못해 첫 가지(${state.branches[chosen].to})를 골랐습니다 (${state.branches[chosen].condition})`;
+          if (!this.warnings.includes(note)) this.warnings.push(note);
+        }
+        current = state.branches[chosen]?.to ?? null;
+      } else {
+        const options = state.branches.filter((branch) => !(branch.cannotRepeat && branch.to === previous));
+        const pool = options.length > 0 ? options : state.branches;
+        const total = pool.reduce((sum, branch) => sum + branch.weight, 0);
+        let roll = next() * total;
+        current = pool.find((branch) => (roll -= branch.weight) < 0)?.to ?? pool.at(-1)?.to ?? null;
+      }
+    }
+    return current;
+  }
+
+  private evalCondition(condition: string | null, slotName: string): boolean | null {
+    const match = condition?.trim().match(/^base\.Creature\.SlotName\s*(==|!=)\s*"([^"]*)"$/);
+    if (!match) return null;
+    return match[1] === "==" ? slotName === match[2] : slotName !== match[2];
+  }
+
+  private nextMove(monster: SimMonster, index: number): string | null {
+    const def = this.catalog.monsters[monster.id];
+    const moveId = monster.moveId!;
+    const node = def?.states[moveId];
+    if (def && node?.kind === "move") {
+      const draw = () => {
+        const [value, rng] = nextRandom(this.state.rng);
+        this.state.rng = rng;
+        return value;
+      };
+      return this.resolveState(def, node.next ?? moveId, monster.slot, index, moveId, draw);
+    }
+    // No state machine in the data for this move: the flat transition list.
+    const options = (def?.transitions ?? []).filter((edge) => edge.from === moveId);
     if (options.length === 0) return moveId;
     if (options.length === 1) return options[0].to;
     const total = options.reduce((sum, edge) => sum + edge.weight, 0);
@@ -762,6 +926,7 @@ class Combat {
   private startTurn() {
     this.state.turn += 1;
     this.state.player.block = 0;
+    if (!hasPart(this.input, "cards")) return;
     const from = this.state.energy;
     this.state.energy = this.state.maxEnergy;
     this.emit({ kind: "energy", from, to: this.state.energy, cause: "turn" });

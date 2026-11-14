@@ -12,6 +12,14 @@ export interface HookContext {
   allCards(): SimCard[];
   afflict(card: SimCard, afflictionId: string, amount: number, sourceId: string): void;
   clearAffliction(card: SimCard): void;
+  /** `CreatureCmd.GainBlock(creature, amount, Unpowered)`. */
+  gainBlock(creature: SimCreature, amount: number): void;
+  applyPower(owner: SimCreature, spec: { id: string; amount: number }): void;
+  /** `PowerCmd.ModifyAmount`: adds `delta`; a power that reaches 0 (or goes negative when it cannot) is removed. */
+  changePowerAmount(owner: SimCreature, powerId: string, delta: number): void;
+  removePower(owner: SimCreature, powerId: string): void;
+  /** `CombatState.RoundNumber`: 1 on the first player turn. */
+  round(): number;
   /** `PlayerCmd.LoseEnergy`: energy never drops below 0. */
   loseEnergy(amount: number, cause: "affliction" | "power", sourceId: string, uid?: string): void;
 }
@@ -69,3 +77,62 @@ export const AFFLICTION_HOOKS: Record<string, AfflictionHooks> = {
     },
   },
 };
+
+/** Which side's turn is running, and which side the power's owner is on. */
+export interface SideTurn {
+  side: "player" | "enemy";
+  ownerSide: "player" | "enemy";
+}
+
+export type SideTurnHook = (ctx: HookContext, owner: SimCreature, power: SimPower, turn: SideTurn) => void;
+
+export interface SideTurnHooks {
+  source: string;
+  checkedVersions: string[];
+  beforeSideTurnEndEarly?: SideTurnHook;
+  afterSideTurnEnd?: SideTurnHook;
+  afterSideTurnStart?: SideTurnHook;
+}
+
+const SIDE_TURN_BUILDS = ["0.113.0"];
+
+/** `PowerModel` overrides of `BeforeSideTurnEndEarly`, `AfterSideTurnEnd` and `AfterSideTurnStart` (0.113.0 source). */
+export const SIDE_TURN_HOOKS: Record<string, SideTurnHooks> = {
+  PLATING_POWER: {
+    source: "MegaCrit.Sts2.Core.Models.Powers/PlatingPower.cs",
+    checkedVersions: SIDE_TURN_BUILDS,
+    // BeforeSideTurnEndEarly: the owner's side ends its turn -> GainBlock(Amount).
+    beforeSideTurnEndEarly(ctx, owner, power, turn) {
+      if (turn.side === turn.ownerSide) ctx.gainBlock(owner, power.amount);
+    },
+    // AfterSideTurnStart: the owner's side starts a turn after round 1 -> ModifyAmount(-Decrement), Decrement = the player count (1).
+    afterSideTurnStart(ctx, owner, power, turn) {
+      if (turn.side === turn.ownerSide && ctx.round() > 1) ctx.changePowerAmount(owner, power.id, -1);
+    },
+  },
+  LAGAVULIN_MATRIARCH_DOMINION_POWER: {
+    source: "MegaCrit.Sts2.Core.Models.Powers/LagavulinMatriarchDominionPower.cs",
+    checkedVersions: SIDE_TURN_BUILDS,
+    // AfterSideTurnEnd: the player's turn ends -> -Amount Strength and Dexterity, then the power is removed.
+    afterSideTurnEnd(ctx, owner, power, turn) {
+      if (turn.side !== "player" || turn.ownerSide !== "player") return;
+      ctx.applyPower(owner, { id: "STRENGTH_POWER", amount: -power.amount });
+      ctx.applyPower(owner, { id: "DEXTERITY_POWER", amount: -power.amount });
+      ctx.removePower(owner, power.id);
+    },
+  },
+  // Weak, Vulnerable and Frail: AfterSideTurnEnd(Enemy) -> TickDownDuration, on whoever carries them.
+  WEAK_POWER: tickDown("WeakPower"),
+  VULNERABLE_POWER: tickDown("VulnerablePower"),
+  FRAIL_POWER: tickDown("FrailPower"),
+};
+
+function tickDown(file: string): SideTurnHooks {
+  return {
+    source: `MegaCrit.Sts2.Core.Models.Powers/${file}.cs`,
+    checkedVersions: SIDE_TURN_BUILDS,
+    afterSideTurnEnd(ctx, owner, power, turn) {
+      if (turn.side === "enemy") ctx.changePowerAmount(owner, power.id, -1);
+    },
+  };
+}

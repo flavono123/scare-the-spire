@@ -104,6 +104,7 @@ export function parseScript(value: string): SimAction[] {
         return { do: "wait", ms: Number(rest) };
       case "end":
       case "endturn":
+      case "end_turn":
         return { do: "endTurn" };
       case "monsters":
       case "monsterturn":
@@ -200,6 +201,24 @@ export function parseCombatSimQuery(params: SearchParams): ParsedCombatSimQuery 
     if (moves !== undefined) input.moves = parseMoves(moves);
     const seed = get("seed");
     if (seed) input.seed = Number(seed);
+    const ascension = get("ascension");
+    if (ascension !== undefined) {
+      const level = Number(ascension);
+      if (!Number.isInteger(level) || level < 0 || level > 10) throw new Error(`ascension은 0..10 정수입니다: ${ascension}`);
+      input.ascension = level;
+    }
+    const dread = get("dread");
+    if (dread !== undefined) input.dread = dread === "1" || dread === "true";
+    const dominion = get("dominion");
+    if (dominion) input.dominion = dominion.toUpperCase();
+    const composition = get("composition");
+    if (composition !== undefined) {
+      const index = Number(composition);
+      if (!Number.isInteger(index) || index < 0) throw new Error(`composition은 0 이상 정수입니다: ${composition}`);
+      input.composition = index;
+    }
+    const startPowers = get("startPowers");
+    if (startPowers !== undefined) input.startPowers = !(startPowers === "0" || startPowers === "false");
     const script = get("script");
     if (script !== undefined) input.script = parseScript(script);
   } catch (error) {

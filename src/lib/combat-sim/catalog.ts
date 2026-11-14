@@ -20,6 +20,8 @@ import path from "node:path";
 import { getCodexAfflictions, getCodexCharacters, getCodexPowers } from "../codex-data";
 import type { CodexCard, CodexEncounter, CodexMonster, EncounterSceneAsset, EncounterSceneCombatMonsterLayout } from "../codex-types";
 import { getVersionedEntity } from "../versioned-entity-api";
+import { evaluateProperty, parseNumericProperties, DEADLY_ENEMIES, TOUGH_ENEMIES } from "./csharp-values";
+import { dominionFor, findDominionRule, DOMINION_RULES, type EncounterFacts } from "./dread";
 import { inputCardIds, parsePowerSpec, sceneParts } from "./engine";
 import { AFFLICTION_HOOKS } from "./hooks";
 import type {
@@ -29,8 +31,11 @@ import type {
   SimCardDef,
   SimCardType,
   SimCatalog,
+  SimDominionDef,
   SimKeyword,
   SimMonsterDef,
+  SimStateDef,
+  SourceValues,
   SimPowerDef,
 } from "./types";
 
@@ -123,6 +128,38 @@ export async function readArchiveEncounterMonsters(
   const pattern = /ModelDb\.Monster<(\w+)>\(\)\.ToMutable\(\),\s*(?:"([^"]+)"|\(string\)null)/g;
   const monsters = [...source.matchAll(pattern)].map((match) => ({ monsterId: pascalToId(match[1]), slot: match[2] ?? null }));
   return monsters.length > 0 ? monsters : null;
+}
+
+/** `new (MonsterModel, string)[N]` in GenerateMonsters: how many monsters the encounter builds (null when not spelled that way). */
+export async function readArchiveEncounterMonsterCount(version: string, encounterId: string): Promise<number | null> {
+  const source = await readArchiveSource(version, `MegaCrit.Sts2.Core.Models.Encounters/${idToPascal(encounterId)}.cs`);
+  const match = source?.match(/new\(MonsterModel,\s*string\??\)\[(\d+)\]/);
+  return match ? Number(match[1]) : null;
+}
+
+/** The bosses an act can roll, in `BossDiscoveryOrder` (`Acts/<Act>.cs`), as encounter ids. */
+export async function readArchiveActBosses(version: string, act: string | null): Promise<string[]> {
+  const name = act?.replace(/^Act\s*\d+\s*-\s*/, "").trim();
+  if (!name) return [];
+  const source = await readArchiveSource(version, `MegaCrit.Sts2.Core.Models.Acts/${idToPascal(name.replace(/\s+/g, "_"))}.cs`);
+  const block = source?.match(/BossDiscoveryOrder[^]*?\}\);/)?.[0] ?? "";
+  return [...block.matchAll(/ModelDb\.Encounter<(\w+)>/g)].map((match) => pascalToId(match[1]));
+}
+
+/** A monster class's numeric properties (`MinInitialHp`, `BiteDamage`, ...), for ascension and Dread values. */
+async function readArchiveMonsterProps(version: string, monsterId: string): Promise<Record<string, string> | null> {
+  const source = await readArchiveSource(version, `MegaCrit.Sts2.Core.Models.Monsters/${idToPascal(monsterId)}.cs`);
+  return source ? parseNumericProperties(source) : null;
+}
+
+/** Of these power ids, the ones whose class overrides a side-turn hook (`AfterSideTurnEnd`, `BeforeSideTurnStart`, ...). */
+async function readArchiveSideTurnPowers(version: string, powerIds: string[]): Promise<string[]> {
+  const found: string[] = [];
+  for (const powerId of powerIds) {
+    const source = await readArchiveSource(version, `MegaCrit.Sts2.Core.Models.Powers/${idToPascal(powerId)}.cs`);
+    if (source && /override\s+(?:async\s+)?Task\s+(?:After|Before)(?:Side)?Turn(?:End|Start)\w*\(/.test(source)) found.push(powerId);
+  }
+  return found;
 }
 
 async function readArchiveSource(version: string, relative: string): Promise<string | null> {
@@ -242,14 +279,69 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
   if (!encounter) throw new Error(`unknown encounter: ${encounterId}`);
   if (!encounterResult.isAvailable) warnings.push(`${encounterId}는 v${version}에 없는 조우입니다`);
 
-  const archiveMonsters = listedMonsters ? null : await readArchiveEncounterMonsters(version, encounterId);
-  const siteComposition = encounter.compositions?.[0];
-  const monsterSlots = listedMonsters
-    ? listedMonsters.map((monsterId) => ({ monsterId, slot: null }))
-    : archiveMonsters
-      ?? siteComposition?.slots.map((slot, index) => ({ monsterId: slot[0].id, slot: siteComposition.slotNames[index] ?? null }))
-      ?? encounter.monsters.map((monster) => ({ monsterId: monster.id, slot: null }));
-  if (!listedMonsters && !archiveMonsters) warnings.push(`조우 구성은 사이트 데이터(현재 기준)를 썼습니다: ${encounterId}`);
+  const ascension = Math.max(0, Math.min(10, Math.trunc(input.ascension ?? 0)));
+  const dread = Boolean(input.dread);
+  const values: SourceValues = { ascension, dread };
+  const tough = ascension >= TOUGH_ENEMIES;
+  const deadly = ascension >= DEADLY_ENEMIES;
+
+  // Composition: `monsters` replaces it; `composition=N` takes the site's compositions[N]; otherwise the archived
+  // source's list when it is the whole encounter (and matches a site composition when there are any), else compositions[0].
+  const compositions = encounter.compositions ?? [];
+  const compositionSlots = (index: number) => compositions[index].slots.map((slot, at) => ({ monsterId: slot[0].id, slot: compositions[index].slotNames[at] ?? null }));
+  let monsterSlots: { monsterId: string; slot: string | null }[];
+  let compositionIndex: number | null = null;
+  if (listedMonsters) {
+    monsterSlots = listedMonsters.map((monsterId) => ({ monsterId, slot: null }));
+  } else if (input.composition !== undefined) {
+    if (!compositions[input.composition]) throw new Error(`${encounterId}에 composition ${input.composition}이 없습니다 (0..${Math.max(0, compositions.length - 1)}, 사이트 데이터 ${compositions.length}개)`);
+    compositionIndex = input.composition;
+    monsterSlots = compositionSlots(compositionIndex);
+  } else {
+    const archiveMonsters = await readArchiveEncounterMonsters(version, encounterId);
+    const generated = await readArchiveEncounterMonsterCount(version, encounterId);
+    const complete = archiveMonsters !== null && (generated === null || archiveMonsters.length >= generated);
+    const archiveKey = archiveMonsters?.map((entry) => entry.monsterId).join(",");
+    const matching = compositions.findIndex((entry, index) => compositionSlots(index).map((slot) => slot.monsterId).join(",") === archiveKey);
+    if (archiveMonsters && complete) {
+      monsterSlots = archiveMonsters;
+      compositionIndex = matching >= 0 ? matching : null;
+    } else if (compositions.length > 0) {
+      compositionIndex = 0;
+      monsterSlots = compositionSlots(0);
+      warnings.push(
+        archiveMonsters
+          ? `아카이브 소스의 구성(${archiveKey})은 일부만 읽혀(몬스터를 고르는 코드가 있는 조우) 사이트 compositions[0]을 씁니다 (${compositions.length}개: composition=N으로 고르세요)`
+          : `조우 구성은 사이트 데이터(현재 기준) compositions[0]을 썼습니다 (${compositions.length}개: composition=N으로 고르세요)`,
+      );
+    } else {
+      monsterSlots = encounter.monsters.map((monster) => ({ monsterId: monster.id, slot: null }));
+      warnings.push(`조우 구성은 사이트 데이터(현재 기준)를 썼습니다: ${encounterId}`);
+    }
+  }
+  const roomType = encounter.roomType ?? null;
+  const isWeak = Boolean(encounter.isWeak) || encounterId.endsWith("_WEAK");
+
+  // Dread: the act's boss dominion, not in a boss room (DreadRunModel.RemoveDominionIfRoomIsBoss).
+  let dominion: SimDominionDef | null = null;
+  if (dread && roomType === "Boss") {
+    warnings.push(`${encounterId}는 보스 조우라 권능이 없습니다 (DreadRunModel.RemoveDominionIfRoomIsBoss). 보스는 IsDread() 값을 씁니다`);
+  } else if (dread) {
+    let rule = input.dominion ? findDominionRule(input.dominion) : null;
+    if (input.dominion && !rule) throw new Error(`알 수 없는 dominion: ${input.dominion} (${DOMINION_RULES.map((entry) => entry.id).join(", ")})`);
+    if (!rule) {
+      const bosses = await readArchiveActBosses(version, encounter.act ?? null);
+      rule = bosses.map((boss) => findDominionRule(boss)).find(Boolean) ?? null;
+      if (rule) warnings.push(`막(${encounter.act})의 보스는 런마다 굴립니다: 첫 보스 ${rule.boss}의 권능을 썼습니다 (후보 ${bosses.join(", ")}; dominion=으로 고르세요)`);
+      else warnings.push(`${encounterId}의 막에서 보스 권능을 찾지 못했습니다. dominion=<보스>로 지정하세요`);
+    }
+    if (rule) {
+      const facts: EncounterFacts = { id: encounterId, roomType, isWeak, monsterCount: monsterSlots.length };
+      dominion = dominionFor(rule, facts);
+    }
+  } else if (input.dominion) {
+    warnings.push("dominion은 dread=1과 함께 써야 적용됩니다");
+  }
 
   const monsters: Record<string, SimMonsterDef> = {};
   const monsterEntities: Record<string, CodexMonster> = {};
@@ -263,7 +355,27 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
     monsterEntities[monsterId] = monster;
     const animDelays = await readArchiveMoveAnimDelays(version, monsterId);
     if (!animDelays) warnings.push(`${monsterId} 공격 애니메이션 지연을 아카이브에서 읽지 못해 0으로 둡니다`);
-    const damageOf = (key: string | null | undefined) => (key ? monster.damageValues?.[key]?.normal ?? undefined : undefined);
+    // The site data has both columns; Dread (and an HP the data leaves empty) reads the archived class's expressions.
+    const props = dread || monster.minHp === null || monster.maxHp === null ? await readArchiveMonsterProps(version, monsterId) : null;
+    const sourceValue = (name: string) => (props ? evaluateProperty(props, name, values) : null);
+    const damageOf = (key: string | null | undefined) => {
+      if (!key) return undefined;
+      const value = monster.damageValues?.[key];
+      const fromSource = dread ? sourceValue(`${key}Damage`) ?? sourceValue(key) : null;
+      return fromSource ?? ((deadly ? value?.ascension ?? value?.normal : value?.normal) ?? undefined);
+    };
+    const repeatOf = (intent: { repeat?: { normal: number | null; ascension: number | null } | null; repeatExpression?: string | null }) => {
+      const fromSource = dread && intent.repeatExpression ? sourceValue(intent.repeatExpression) : null;
+      if (fromSource !== null) return fromSource;
+      return (deadly ? intent.repeat?.ascension ?? intent.repeat?.normal : intent.repeat?.normal) ?? undefined;
+    };
+    let hpMin = (tough ? monster.minHpAscension : null) ?? monster.minHp;
+    let hpMax = (tough ? monster.maxHpAscension : null) ?? monster.maxHp;
+    if (dread || hpMin === null || hpMax === null) {
+      hpMin = sourceValue("MinInitialHp") ?? hpMin;
+      hpMax = sourceValue("MaxInitialHp") ?? hpMax;
+    }
+    if (hpMin === null) warnings.push(`${monsterId} 체력을 데이터와 소스에서 읽지 못해 1로 둡니다`);
     const archiveMonster = archiveMonsterData?.[monsterId];
     const archiveDamageOf = (key: string | undefined) => (key ? archiveMonster?.damageValues?.[key]?.normal ?? undefined : undefined);
     const intentsOf = (move: CodexMonster["moves"][number]) => {
@@ -271,7 +383,7 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
         return move.intentDetails.map((intent) => ({
           type: intent.type,
           damage: damageOf(intent.damageKey),
-          repeat: intent.repeat?.normal ?? undefined,
+          repeat: repeatOf(intent),
         }));
       }
       const archived = archiveMonster?.moves?.[move.id]?.intentDetails;
@@ -286,8 +398,26 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
     monsters[monsterId] = {
       id: monsterId,
       name: monster.name,
-      hp: monster.minHp ?? 1,
+      hp: hpMin ?? 1,
+      hpMax: Math.max(hpMax ?? hpMin ?? 1, hpMin ?? 1),
       initialMove: monster.moveGraph?.initial ?? monster.moves[0]?.id ?? null,
+      states: Object.fromEntries((monster.moveGraph?.states ?? []).map((state): [string, SimStateDef] => [
+        state.id,
+        state.kind === "move"
+          ? { kind: "move", next: state.next }
+          : state.kind === "random"
+            ? { kind: "random", branches: state.branches.map((branch) => ({ to: branch.to, weight: branch.weight ?? branch.baseChance ?? 1, cannotRepeat: branch.repeat === "cannot_repeat" })) }
+            : { kind: "conditional", branches: state.branches.map((branch) => ({ to: branch.to, condition: branch.condition })) },
+      ])),
+      startPowers: (input.startPowers === false ? [] : monster.initialPowerApplications ?? [])
+        .filter((application) => application.target === "self" || application.target === "player")
+        .map((application) => ({
+          powerId: application.powerId,
+          // Dread adds to some amounts in the class (`EnrageAmount => ... + (IsDread() ? 1 : 0)`): read `<Power>Amount` from the source.
+          amount: (dread ? sourceValue(`${idToPascal(application.powerId.replace(/_POWER$/, ""))}Amount`) : null)
+            ?? (deadly ? application.amount?.ascension ?? application.amount?.normal : application.amount?.normal) ?? 1,
+          target: application.target as "self" | "player",
+        })),
       transitions: (monster.moveGraph?.transitions ?? []).map((edge) => ({
         from: edge.from,
         to: edge.to,
@@ -305,7 +435,9 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
 
   const cards: Record<string, SimCardDef> = {};
   const cardEntities: Record<string, CodexCard> = {};
-  for (const cardId of inputCardIds(input)) {
+  // A dominion's cards (Beckon, the Sloth / Amnesia screen) belong to the card interface too.
+  const dominionCards = withCards && dominion ? [...dominion.drawPileCards, ...(dominion.chooseScreen ?? [])] : [];
+  for (const cardId of new Set([...inputCardIds(input), ...dominionCards])) {
     const result = await getVersionedEntity<CodexCard>({ entityType: "card", entityId: cardId, version, locale });
     const card = result.entity;
     if (!card) {
@@ -339,7 +471,12 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
   }
 
   const powers: Record<string, SimPowerDef> = {};
-  const powerIds = new Set(Object.values(input.powers ?? {}).flat().map((spec) => parsePowerSpec(spec).id));
+  // Every power that can be on stage: the input's, the monsters' start powers, and the dominion's.
+  const powerIds = new Set([
+    ...Object.values(input.powers ?? {}).flat().map((spec) => parsePowerSpec(spec).id),
+    ...Object.values(monsters).flatMap((monster) => monster.startPowers.map((power) => power.powerId)),
+    ...(dominion ? [...dominion.player, ...dominion.enemies].map((power) => power.powerId) : []),
+  ]);
   for (const powerId of powerIds) {
     const site = sitePowers.find((power) => power.id === powerId);
     const title = archivePowerLoc?.[`${powerId}.title`];
@@ -378,9 +515,21 @@ export async function loadCombatSimCatalog(input: CombatSimInput): Promise<Catal
           powerUpAnimDelay: powerUpAnimDelay ?? castAnimDelay ?? 0,
         }
         : null,
-      encounter: { id: encounterId, name: listedMonsters && !input.encounter ? listedMonsters.join(" + ") : encounter.name, monsters: monsterSlots },
+      encounter: {
+        id: encounterId,
+        name: listedMonsters && !input.encounter ? listedMonsters.join(" + ") : encounter.name,
+        monsters: monsterSlots,
+        composition: compositionIndex,
+        compositionCount: compositions.length,
+        roomType,
+        isWeak,
+      },
       cards,
       presentation,
+      ascension,
+      dread,
+      dominion,
+      sideTurnPowers: await readArchiveSideTurnPowers(version, [...powerIds]),
       monsters,
       powers,
       afflictions,

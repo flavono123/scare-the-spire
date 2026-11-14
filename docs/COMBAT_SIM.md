@@ -34,6 +34,11 @@ keys override the preset and JSON.
 | speed | `"fast"` | `speed=fast` | Game speed (FastMode): `normal` (default), `fast`, `instant`. Changes only how long the game waits and how long some tweens run; steps and final state are the same in every mode (see [Speed](#speed-fastmode)). |
 | encounter | `"DOORMAKER_BOSS"` | `encounter=AXEBOTS_NORMAL` | Composition from the archived `Encounters/<Name>.cs`, else site data. Required unless `monsters` is given. |
 | monsters | `["ASSASSIN_RUBY_RAIDER", "BYRDONIS"]` | `monsters=ASSASSIN_RUBY_RAIDER,BYRDONIS,TRACKER_RUBY_RAIDER` | The monsters on stage, in order, whatever encounter they come from. Each takes its bounds, visual position and scale from any encounter scene that has it (`data/sts2/encounter-scene-assets.json`); the background comes from `encounter` when given, else from the first encounter whose scene has the first monster. Three or more are shrunk (the monsters only) to fit the monster region, as in the game's auto layout. |
+| composition | `2` | `composition=1` | Which of the site's compositions (`encounters.json` `compositions[N]`) the monsters come from, when `monsters` is not given. Without it the archived source's list is used when it is the whole encounter, else `compositions[0]` (with a warning: BOWLBUGS_WEAK builds a random Egg or Nectar, the source does not name them, so it is Rock + Egg). `window.__sim.state()` carries `composition` (null: archived source or `monsters=`), `compositionCount` and `encounter`. |
+| ascension | `9` | `ascension=9` | Ascension 0..10. From 8 (ToughEnemies) the monsters' higher HP range, from 9 (DeadlyEnemies) their higher damage, repeat counts and start power amounts (the site data's two columns). HP is rolled inside `MinInitialHp..MaxInitialHp` with `seed` (its own stream per monster: the game's RNG order is not reproduced) and the roll is the max HP. `__sim.state()` carries `ascension`. |
+| dread | `true` | `dread=1` | Dread run. Applies the act's boss dominion to the encounter (below); a boss room gets none (`RemoveDominionIfRoomIsBoss`) and its monsters read `IsDread()` values instead. |
+| dominion | `"KAISER_CRAB"` | `dominion=KAISER_CRAB` | Whose dominion: a dominion or boss id (`KAISER_CRAB`, `KAISER_CRAB_BOSS`, `the_kin`). A run rolls one of the act's bosses; without it the first boss in the act's `BossDiscoveryOrder` is used, with a warning that lists the others. `__sim.state()` carries `dread` and `dominion`. |
+| startPowers | `false` | `startPowers=0` | The monsters' `AfterAddedToRoom` power applications (Plating, Artifact, Hard To Kill, Imbalanced, ...) are applied at setup before `powers`; `0` leaves only `powers` (add it where `powers=` already supplies them by hand). |
 | monsterHp | `{ "BYRDONIS": 33 }` | `monsterHp=BYRDONIS=33,1=20` | Current HP per monster (id or index); max HP stays the monster's own (raised to the value when it is higher). A scene that must end in a kill sets the HP the card can take. |
 | energy, maxEnergy | `3`, `3` | `energy=3/3` | |
 | hp | `70` | `hp=40` | Player current HP. `hp=0` is not an input: it is the view option that hides the health bars (see below). |
@@ -49,9 +54,9 @@ Script actions:
 | JSON | Query token | Effect |
 | --- | --- | --- |
 | `{ "do": "play", "card": "PREPARED+", "target": 0, "choose": ["STRIKE_SILENT"] }` | `play:PREPARED+@0>STRIKE_SILENT\|STRIKE_SILENT` | Play the first hand card with that id and upgrade state. `choose` names the cards a discard prompt picks (from the right of the hand); without it the rightmost cards are discarded. |
-| `{ "do": "endTurn" }` | `end` | Hand to discard; Retain stays, Ethereal exhausts. |
-| `{ "do": "monsterTurn" }` | `monsters` | Each monster runs its current move's attack intents, then follows its move graph. |
-| `{ "do": "startTurn" }` | `start` | Block clears, energy refills, draw 5. |
+| `{ "do": "endTurn" }` | `end`, `end_turn` | The player's turn ends: hand to discard (Retain stays, Ethereal exhausts), then the player-side turn-end powers run (Lagavulin Matriarch's dominion: -1 Strength and Dexterity, then it is gone). Works without the `cards` part. |
+| `{ "do": "monsterTurn" }` | `monsters` | The enemies' turn: Plating counts down (after round 1), each monster runs its current move's attack intents and follows its move graph, then Plating gives block again and Weak, Vulnerable and Frail tick down. Plating block shows after this step, not after `end`. |
+| `{ "do": "startTurn" }` | `start` | Block clears, energy refills, draw 5 (the turn number still advances without the `cards` part). |
 | `{ "do": "addCard", "card": "SHIV", "pile": "hand" }` | `add:SHIV@hand` | A card enters combat; runs `AfterCardEnteredCombat`. |
 | `{ "do": "wait", "ms": 600 }` | `wait:600` | |
 
@@ -152,6 +157,38 @@ uses them yet. A rule used outside its checked builds adds a warning.
 Monster turn: single and multi attack intents deal `damageValues[key].normal`
 x repeat; every other intent (buff, debuff, summon, phase power swaps) is
 tagged unimplemented.
+
+## Ascension, Dread and what a monster starts with
+
+Everything here is read from the build archive (`~/sts2-builds/<version>`: `src` and the site data of that version), and
+`scripts/combat-sim.spec.ts` pins it for 0.113.0.
+
+- **Values** (`csharp-values.ts`): HP, damage and repeat counts come from the site data's normal and ascension columns. Dread (and an HP the
+  data leaves empty, like Test Subject's `FirstFormHp`) reads the monster class's own expressions: the properties of
+  `Monsters/<Monster>.cs` (`MinInitialHp`, `<Key>Damage`, `<Power>Amount`, `repeat_expression`) over `GetValueIfAscension`,
+  `HasAscension`, `IsDread`, `?:`, `+ - * /`, comparisons and the class's other properties. Anything outside that (state fields like
+  `_respawns`, other classes, `IsDread` inside a move body such as Queen's strength) is not read: the site data's value is kept.
+  Dread never changes which moves a boss has, only these numbers.
+- **Move graph**: the first move can be a branch state (`INIT_MOVE`, `RAND`); it is resolved to a real move. A conditional takes the first
+  branch whose condition holds (only `base.Creature.SlotName == "first"` can be evaluated: Exoskeletons, Mytes; with `monsters=` the slot is
+  first, second, ... by position), any other condition takes the first branch and warns; a random branch is a weighted draw that skips the previous
+  move when the branch says `cannot_repeat`. Cooldowns and conditions on combat state (`IsOffBalance`, `CanFabricate`) are not evaluated.
+- **Start powers**: `initial_power_applications` of the monster data, on itself (Artifact, Hard To Kill) or on the player (Rocket's Surrounded). Plating
+  also starts round 1 with its block (`PlatingPower.BeforeSideTurnStart`).
+- **Dominions** (`dread.ts`, 0.113.0 source, checked against the archived class by the spec): Aeonglass (player Aeonglass Dominion 1), Ceremonial
+  Beast (enemy Ritual 1), Insatiable (player Insatiable Dominion 1), Kaiser Crab (enemy Plating 7), Kin (player Weak 2 and Frail 2), Knowledge
+  Demon (a choose-a-card screen, Sloth or Amnesia, before the first draw; the sim shows it for 2 s and takes the first card, its `OnChosen` effect is
+  listed as unimplemented), Lagavulin Matriarch (player power that turns into -1 Strength and Dexterity at the end of turn 1), Queen (player You Are Mine 3),
+  Soul Fysh (a Beckon at a random place of the draw pile), Test Subject (enemy Strength 3), Vantom (enemy Slippery 2 in an elite room, else 1),
+  Waterfall Giant (enemy Explosive: 3 for several monsters, 4 weak, 7 elite, else 5). The players' powers show on the player's bar (`parts=player`);
+  the cards need `parts=cards`. A power's own effect runs only if it is one of the hooked powers below; the others are on the bar and are
+  listed once as "턴 효과" when a turn ends.
+- **Powers change numbers** (`modifiers.ts`): the intent number and the real hit use Strength (additive), the attacker's Weak (x0.75) and the target's
+  Vulnerable (x1.5), rounded down, so Test Subject's Strength 3 shows in the intents and in the damage; the player's cards use the same; block uses
+  Dexterity and Frail (x0.75). Relics, enchantments, Vigor, Intangible and the like are not applied, and the game's final rounding was not read.
+- **Turn-end powers** (`SIDE_TURN_HOOKS` in `hooks.ts`): Plating (block at the end of its side's turn, one less each round after the first), Lagavulin
+  Matriarch's dominion power, and Weak, Vulnerable and Frail ticking down after the enemies' turn. Any other power whose class overrides a side-turn hook
+  is reported, not run.
 
 ## Speed (FastMode)
 

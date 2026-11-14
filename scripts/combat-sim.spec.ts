@@ -1,5 +1,10 @@
 import assert from "node:assert/strict";
-import { archiveDir, loadCombatSimCatalog } from "../src/lib/combat-sim/catalog";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { archiveDir, archiveRoot, idToPascal, loadCombatSimCatalog } from "../src/lib/combat-sim/catalog";
+import { evaluateExpression, parseNumericProperties } from "../src/lib/combat-sim/csharp-values";
+import { DOMINION_RULES } from "../src/lib/combat-sim/dread";
+import { modifiedBlock, modifiedDamage } from "../src/lib/combat-sim/modifiers";
 import { effectiveCard, parseCardSpec, runCombat, sceneParts } from "../src/lib/combat-sim/engine";
 import { COMBAT_SIM_PRESETS } from "../src/lib/combat-sim/scenarios";
 import { parseCombatSimQuery } from "../src/app/(main)/dev/combat-sim/query-input";
@@ -249,8 +254,109 @@ async function main() {
     assert.ok(slashEvents.indexOf("vfx") > 0 && slashEvents.indexOf("vfx") < slashEvents.indexOf("damage"));
     // A monster not in the given scene's encounter, and a missing background encounter, both resolve.
     await assert.rejects(loadCombatSimCatalog({ version: "0.113.0", monsters: ["NO_SUCH_MONSTER"] }), /배경으로 쓸 조우/);
+
+    // --- ascension, Dread, composition, start powers, branch states, turn-end powers ------------------
+    const q = parseCombatSimQuery({ version: "0.113.0", encounter: "BOWLBUGS_WEAK", ascension: "9", dread: "1", dominion: "kaiser_crab", composition: "1", startPowers: "0", script: "end_turn,monsters" });
+    assert.deepEqual(q.errors, []);
+    assert.deepEqual(
+      { ascension: q.input?.ascension, dread: q.input?.dread, dominion: q.input?.dominion, composition: q.input?.composition, startPowers: q.input?.startPowers, script: q.input?.script },
+      { ascension: 9, dread: true, dominion: "KAISER_CRAB", composition: 1, startPowers: false, script: [{ do: "endTurn" }, { do: "monsterTurn" }] },
+    );
+    assert.ok(parseCombatSimQuery({ version: "0.113.0", encounter: "BOWLBUGS_WEAK", ascension: "11" }).errors.length > 0, "ascension above 10 is refused");
+
+    // Composition: the archived source builds a random Egg or Nectar there (not spelled as a tuple), so the site's compositions are used.
+    const bowl = async (extra: object) => loadCombatSimCatalog({ version: "0.113.0", encounter: "BOWLBUGS_WEAK", ...extra });
+    assert.deepEqual((await bowl({})).catalog.encounter.monsters.map((entry) => entry.monsterId), ["BOWLBUG_ROCK", "BOWLBUG_EGG"]);
+    const second = (await bowl({ composition: 1 })).catalog.encounter;
+    assert.deepEqual([second.monsters.map((entry) => entry.monsterId), second.composition, second.compositionCount], [["BOWLBUG_ROCK", "BOWLBUG_NECTAR"], 1, 2]);
+    await assert.rejects(bowl({ composition: 2 }), /composition 2/);
+
+    // The first move of a branch state resolves to a real move (Exoskeletons pick by slot name).
+    const exoskeletons = await loadCombatSimCatalog({ version: "0.113.0", encounter: "EXOSKELETONS_NORMAL" });
+    const exoRun = runCombat({ version: "0.113.0", encounter: "EXOSKELETONS_NORMAL" }, exoskeletons.catalog);
+    assert.deepEqual(exoRun.start.monsters.slice(0, 3).map((monster) => monster.moveId), ["SKITTER", "MANDIBLES", "ENRAGE"]);
+    assert.ok(exoRun.start.monsters.every((monster) => monster.moveId && exoskeletons.catalog.monsters.EXOSKELETON.moves[monster.moveId]));
+    assert.deepEqual(exoRun.start.monsters[0].powers, [{ id: "HARD_TO_KILL", amount: 9 }], "AfterAddedToRoom powers are applied without powers=");
+
+    // Ascension: HP range at 8 (ToughEnemies), damage at 9 (DeadlyEnemies); the HP roll is fixed by the seed.
+    const tunneler = async (extra: object) => loadCombatSimCatalog({ version: "0.113.0", encounter: "TUNNELER_WEAK", ...extra });
+    const [a0, a8, a9] = (await Promise.all([0, 8, 9].map((ascension) => tunneler({ ascension })))).map((load) => load.catalog.monsters.TUNNELER);
+    assert.ok(a8.hp > a0.hp && a9.hp === a8.hp, "tough HP from level 8");
+    assert.ok(a9.moves.BITE.intents[0].damage! > a8.moves.BITE.intents[0].damage!, "deadly damage from level 9");
+    assert.equal(a8.moves.BITE.intents[0].damage, a0.moves.BITE.intents[0].damage);
+    const rolled = async (seed: number) => runCombat({ version: "0.113.0", encounter: "BOWLBUGS_NORMAL", seed }, (await loadCombatSimCatalog({ version: "0.113.0", encounter: "BOWLBUGS_NORMAL", seed })).catalog).start.monsters.map((monster) => monster.hp);
+    assert.deepEqual(await rolled(3), await rolled(3));
+    const hpOf = (monster: { hp: number; maxHp: number }) => monster.hp === monster.maxHp;
+    assert.ok((runCombat({ version: "0.113.0", encounter: "BOWLBUGS_NORMAL" }, (await loadCombatSimCatalog({ version: "0.113.0", encounter: "BOWLBUGS_NORMAL" })).catalog).start.monsters).every(hpOf), "max HP is the roll");
+
+    // Start powers off: only `powers`.
+    const plain = await loadCombatSimCatalog({ version: "0.113.0", encounter: "AEONGLASS_BOSS" });
+    assert.deepEqual(runCombat({ version: "0.113.0", encounter: "AEONGLASS_BOSS" }, plain.catalog).start.monsters[0].powers.map((power) => power.id).sort(), ["ARTIFACT", "WITHERING_PRESENCE"]);
+    assert.deepEqual(runCombat({ version: "0.113.0", encounter: "AEONGLASS_BOSS", startPowers: false }, (await loadCombatSimCatalog({ version: "0.113.0", encounter: "AEONGLASS_BOSS", startPowers: false })).catalog).start.monsters[0].powers, []);
+
+    // Dread: a boss reads IsDread() values (HP from FirstFormHp, Enrage +1) and has no dominion; other rooms get the act's.
+    const dreadBoss = { version: "0.113.0", encounter: "TEST_SUBJECT_BOSS", dread: true, ascension: 10 };
+    const dreadBossRun = runCombat(dreadBoss, (await loadCombatSimCatalog(dreadBoss)).catalog);
+    const normalBossRun = runCombat({ ...dreadBoss, dread: false }, (await loadCombatSimCatalog({ ...dreadBoss, dread: false })).catalog);
+    assert.equal(dreadBossRun.start.monsters[0].hp, 111);
+    assert.equal(dreadBossRun.start.monsters[0].powers.find((power) => power.id === "ENRAGE")?.amount, (normalBossRun.start.monsters[0].powers.find((power) => power.id === "ENRAGE")?.amount ?? 0) + 1);
+    assert.equal((await loadCombatSimCatalog(dreadBoss)).catalog.dominion, null);
+    assert.equal((await tunneler({ dread: true, dominion: "KAISER_CRAB" })).catalog.dominion?.id, "KAISER_CRAB");
+    await assert.rejects(tunneler({ dread: true, dominion: "NO_SUCH_BOSS" }), /알 수 없는 dominion/);
+    // Waterfall Giant: GetExplosiveAmount(encounter): 3 for several monsters, 4 weak, 5, 7 elite.
+    const explosive = async (encounter: string) => (await loadCombatSimCatalog({ version: "0.113.0", encounter, dread: true, dominion: "WATERFALL_GIANT" })).catalog.dominion?.enemies[0].amount;
+    assert.deepEqual([await explosive("BOWLBUGS_NORMAL"), await explosive("TUNNELER_WEAK")], [3, 4]);
+    // Each dominion rule names the powers the archived class applies.
+    for (const rule of DOMINION_RULES) {
+      const file = path.join(archiveRoot(), "0.113.0", "src/MegaCrit.Sts2.Core.Models.Dread.Dominions", `${idToPascal(rule.id)}Dominion.cs`);
+      const source = readFileSync(file, "utf8");
+      const facts = { id: "X", roomType: "Monster", isWeak: false, monsterCount: 1 };
+      for (const power of [...(rule.player ?? []), ...(rule.enemies?.(facts) ?? [])]) {
+        assert.ok(source.includes(`Apply<${idToPascal(power.powerId)}>`), `${rule.id}: ${power.powerId}`);
+      }
+      for (const card of [...(rule.drawPileCards ?? []), ...(rule.chooseScreen ?? [])]) assert.ok(source.includes(`<${idToPascal(card)}>`), `${rule.id}: ${card}`);
+    }
+
+    // Powers change the intent number and the hit: Strength 3 from Test Subject's dominion.
+    const strong = { version: "0.113.0", encounter: "TUNNELER_WEAK", character: "SILENT", parts: ["player" as const], dread: true, dominion: "TEST_SUBJECT", script: [{ do: "monsterTurn" as const }] };
+    const strongLoad = await loadCombatSimCatalog(strong);
+    const strongRun = runCombat(strong, strongLoad.catalog);
+    const biteDamage = strongLoad.catalog.monsters.TUNNELER.moves.BITE.intents[0].damage!;
+    assert.equal(strongRun.start.monsters[0].powers.find((power) => power.id === "STRENGTH_POWER")?.amount, 3);
+    assert.equal(kinds(strongRun, "damage").map((step) => (step.event.kind === "damage" ? step.event.amount : 0))[0], biteDamage + 3);
+    assert.equal(modifiedDamage(10, [{ id: "STRENGTH_POWER", amount: 3 }], []), 13);
+    assert.equal(modifiedDamage(10, [{ id: "WEAK_POWER", amount: 1 }], [{ id: "VULNERABLE_POWER", amount: 1 }]), 11);
+    assert.equal(modifiedBlock(5, [{ id: "DEXTERITY_POWER", amount: -1 }, { id: "FRAIL_POWER", amount: 1 }]), 3);
+
+    // Turn-end powers: Plating (block now, block again and 1 less each round), Lagavulin's dominion (-1 Strength, Dexterity, gone).
+    const plating = { version: "0.113.0", encounter: "TUNNELER_WEAK", character: "SILENT", parts: ["player" as const], dread: true, dominion: "KAISER_CRAB", script: [{ do: "endTurn" as const }, { do: "monsterTurn" as const }, { do: "startTurn" as const }, { do: "endTurn" as const }, { do: "monsterTurn" as const }] };
+    const platingRun = runCombat(plating, (await loadCombatSimCatalog(plating)).catalog);
+    assert.equal(platingRun.start.monsters[0].block, 7, "round 1 starts with the block");
+    assert.deepEqual(platingRun.final.monsters[0].powers.find((power) => power.id === "PLATING_POWER"), { id: "PLATING_POWER", amount: 6 });
+    assert.equal(platingRun.final.monsters[0].block, 6);
+    const lagavulin = { ...plating, dominion: "LAGAVULIN_MATRIARCH", script: [{ do: "endTurn" as const }] };
+    const lagavulinRun = runCombat(lagavulin, (await loadCombatSimCatalog(lagavulin)).catalog);
+    assert.deepEqual(lagavulinRun.final.player.powers.map((power) => `${power.id}:${power.amount}`).sort(), ["DEXTERITY_POWER:-1", "STRENGTH_POWER:-1"]);
+
+    // Dominion cards and the choose screen.
+    const knowledge = { version: "0.113.0", encounter: "TUNNELER_WEAK", character: "SILENT", dread: true, dominion: "KNOWLEDGE_DEMON", hand: ["STRIKE_SILENT"], script: [{ do: "wait" as const, ms: 50 }] };
+    const knowledgeLoad = await loadCombatSimCatalog(knowledge);
+    const knowledgeRun = runCombat(knowledge, knowledgeLoad.catalog);
+    assert.ok(knowledgeRun.steps.some((step) => step.event.kind === "choose" && step.event.cards.join() === "SLOTH,AMNESIA"));
+    assert.equal(buildTimeline(knowledgeRun, knowledge).beats.find((beat) => beat.event.kind === "choose")?.duration, 2000);
+    const beckon = { version: "0.113.0", encounter: "TUNNELER_WEAK", character: "SILENT", dread: true, dominion: "SOUL_FYSH", drawPile: ["STRIKE_SILENT*3"] };
+    const beckonRun = runCombat(beckon, (await loadCombatSimCatalog(beckon)).catalog);
+    assert.equal(beckonRun.start.piles.draw.length, 4);
+    assert.ok(beckonRun.start.piles.draw.some((uid) => beckonRun.start.cards[uid].id === "BECKON"));
+
+    // The C# expression reader behind the Dread values.
+    const props = parseNumericProperties("public int FirstFormHp => AscensionHelper.GetValueIfAscension(AscensionLevel.ToughEnemies, 111, 100);\nprivate int Count\n{\n get\n {\n if (!AscensionHelper.IsDread())\n {\n return 3;\n }\n return 4;\n }\n}");
+    assert.equal(evaluateExpression(props.FirstFormHp, props, { ascension: 8, dread: false }), 111);
+    assert.equal(evaluateExpression(props.FirstFormHp, props, { ascension: 7, dread: false }), 100);
+    assert.deepEqual([false, true].map((dread) => evaluateExpression(props.Count, props, { ascension: 0, dread })), [3, 4]);
+    assert.equal(evaluateExpression("_respawns + 1", props, { ascension: 0, dread: false }), null, "state fields are not read");
   } else {
-    console.log("skip monsters=, presentation: 0.113.0 build archive not found");
+    console.log("skip monsters=, presentation, ascension, dread: 0.113.0 build archive not found");
   }
 
   console.log("combat sim OK");

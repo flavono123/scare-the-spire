@@ -39,6 +39,9 @@ export interface CombatTimeline {
   beatsUntil(t: number): TimelineBeat[];
 }
 
+/** How long a choose-a-card screen is shown (Knowledge Demon's dominion): player input, not a game wait. */
+export const CHOOSE_SCREEN_MS = 2000;
+
 /** One game frame at 60 fps: a tween with only callbacks finishes on the next frame. */
 const FRAME_MS = 1000 / 60;
 
@@ -73,6 +76,8 @@ export function animWaitMs(delayMs: number, speed: SimSpeed): number {
  * input, 0.3 s in every mode); script waits and rejected tags are not game waits.
  */
 export function beatDuration(event: SimEvent, action: number, speed: SimSpeed = "normal"): number {
+  // The choose-a-card screen is on screen before the first draw, whatever the speed (player input, like `select`).
+  if (event.kind === "choose") return CHOOSE_SCREEN_MS;
   if (action < 0) return 0; // setup is already in place at t = 0
   switch (event.kind) {
     case "select": return 300;

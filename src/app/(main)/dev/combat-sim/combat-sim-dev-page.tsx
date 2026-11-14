@@ -94,7 +94,8 @@ async function buildView(
     };
   });
 
-  const powerIds = new Set(Object.values(input.powers ?? {}).flat().map((spec) => parsePowerSpec(spec).id));
+  // Every power that can be on stage: the input's, the monsters' start powers and the dominion's (the catalog lists them).
+  const powerIds = new Set([...Object.values(input.powers ?? {}).flat().map((spec) => parsePowerSpec(spec).id), ...Object.keys(catalog.powers)]);
   const powerIcons: Record<string, string | null> = {};
   for (const powerId of powerIds) {
     powerIcons[powerId] = sitePowers.find((power) => power.id === powerId)?.imageUrl ?? uiAssets.powerIcons[powerId] ?? null;

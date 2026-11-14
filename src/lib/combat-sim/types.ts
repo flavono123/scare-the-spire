@@ -78,9 +78,31 @@ export interface CombatSimInput {
   moves?: Record<string, string>;
   /** Accepted and ignored for now. */
   relics?: string[];
-  /** Seed for shuffles (only used when an empty draw pile must reshuffle the discard pile). */
+  /** Seed for shuffles and for each monster's HP roll inside its range. */
   seed?: number;
+  /**
+   * Ascension level 0..10 (`AscensionLevel`): 8 ToughEnemies picks the monsters' higher HP range, 9 DeadlyEnemies their
+   * higher damage, repeat counts and start powers. Default 0.
+   */
+  ascension?: number;
+  /**
+   * Dread: the encounter gets its act's boss dominion (`DreadRunModel.ApplyCurrentDominion`) unless the room is a
+   * boss room (`RemoveDominionIfRoomIsBoss`), and monsters read `AscensionHelper.IsDread()` values (boss HP and moves).
+   */
+  dread?: boolean;
+  /** Whose dominion Dread applies: a boss encounter or dominion id (`KNOWLEDGE_DEMON`, `QUEEN_BOSS`). Default: the first boss of the encounter's act. */
+  dominion?: string;
+  /** Which of the site's compositions for the encounter (`encounters.json` `compositions[index]`), when `monsters` is not given. */
+  composition?: number;
+  /** Apply every monster's AfterAddedToRoom powers (Plating, Artifact, ...) at setup. Default true; `false` leaves only `powers`. */
+  startPowers?: boolean;
   script?: SimAction[];
+}
+
+/** What `AscensionHelper` reads: the run's ascension level and whether it is a Dread run. */
+export interface SourceValues {
+  ascension: number;
+  dread: boolean;
 }
 
 export type SimCardType = "Attack" | "Skill" | "Power" | "Status" | "Curse" | "Quest" | "Other";
@@ -114,13 +136,48 @@ export interface SimMoveDef {
   attackAnimDelay: number;
 }
 
+/** A node of a monster's move state machine (`MonsterMoveStateMachine`): a move, or a branch that picks the next one. */
+export type SimStateDef =
+  | { kind: "move"; next: string | null }
+  | { kind: "random"; branches: { to: string; weight: number; cannotRepeat: boolean }[] }
+  | { kind: "conditional"; branches: { to: string; condition: string | null }[] };
+
 export interface SimMonsterDef {
   id: string;
   name: string;
+  /** `MinInitialHp` / `MaxInitialHp` at the input's ascension and Dread; the HP is rolled inside the range. */
   hp: number;
+  hpMax: number;
   moves: Record<string, SimMoveDef>;
+  /** The graph's first state: a move id, or a branch state (`INIT_MOVE`) that `states` resolves. */
   initialMove: string | null;
+  states: Record<string, SimStateDef>;
   transitions: { from: string; to: string; weight: number }[];
+  /** `AfterAddedToRoom` power applications on itself (Plating, Artifact, ...), amounts at the input's ascension. */
+  startPowers: { powerId: string; amount: number; target: "self" | "player" }[];
+}
+
+/** One power a dominion puts on a side. */
+export interface SimDominionPower {
+  powerId: string;
+  amount: number;
+}
+
+/**
+ * A Dread boss dominion (`Models/Dread/Dominions/<Boss>Dominion.cs`) as it applies to this encounter: powers on the
+ * players and on the enemies, cards it adds, and a choose-a-card screen. Effects of the dominion's own powers
+ * (the turn-by-turn ones) run only where `hooks.ts` has them.
+ */
+export interface SimDominionDef {
+  id: string;
+  /** The boss encounter whose act this is, e.g. `QUEEN_BOSS`. */
+  boss: string;
+  player: SimDominionPower[];
+  enemies: SimDominionPower[];
+  /** Cards added to the draw pile at random positions when combat starts (Soul Fysh's Beckon). */
+  drawPileCards: string[];
+  /** Two cards offered before the first draw (Knowledge Demon: Sloth or Amnesia); the sim shows the screen and takes the first. */
+  chooseScreen: string[] | null;
 }
 
 export interface SimPowerDef {
@@ -180,6 +237,11 @@ export interface SimEncounterDef {
   id: string;
   name: string;
   monsters: { monsterId: string; slot: string | null }[];
+  /** Site composition index the monsters come from, or null when they come from the archived source or `monsters`. */
+  composition: number | null;
+  compositionCount: number;
+  roomType: string | null;
+  isWeak: boolean;
 }
 
 /** Everything the engine needs for one version. Built server-side by catalog.ts. */
@@ -191,6 +253,12 @@ export interface SimCatalog {
   cards: Record<string, SimCardDef>;
   /** What each played card shows (animations, hit VFX, damage); see `PresentationStep`. */
   presentation: Record<string, CardPresentation>;
+  ascension: number;
+  dread: boolean;
+  /** The dominion Dread applies to this encounter; null when Dread is off or the room is a boss room. */
+  dominion: SimDominionDef | null;
+  /** Powers whose source has turn-side hooks (`AfterSideTurnEnd`, ...): ones in a scene that `hooks.ts` does not run are reported when a turn ends. */
+  sideTurnPowers: string[];
   monsters: Record<string, SimMonsterDef>;
   powers: Record<string, SimPowerDef>;
   afflictions: Record<string, SimAfflictionDef>;
@@ -274,6 +342,8 @@ export type SimEvent =
   | { kind: "intent"; creature: string; moveId: string | null }
   | { kind: "shuffle"; count: number }
   | { kind: "wait"; ms: number }
+  /** A choose-a-card screen (Knowledge Demon's dominion): `cards` are offered, `picked` is taken. */
+  | { kind: "choose"; cards: string[]; picked: string }
   | { kind: "unimplemented"; what: string }
   | { kind: "rejected"; reason: string };
 

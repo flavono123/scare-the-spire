@@ -4,6 +4,7 @@ import { memo, useMemo, type CSSProperties } from "react";
 import { CardTile } from "@/components/codex/card-tile";
 import type { CodexCard } from "@/lib/codex-types";
 import { effectiveCard } from "@/lib/combat-sim/engine";
+import { modifiedDamage } from "@/lib/combat-sim/modifiers";
 import { nextRandom, seedRandom } from "@/lib/combat-sim/rng";
 import type { CombatTimeline, TimelineBeat } from "@/lib/combat-sim/timeline";
 import type { SimCreature, SimResult, SimState } from "@/lib/combat-sim/types";
@@ -103,6 +104,9 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
   const aimEvent = aiming?.event.kind === "select" ? aiming.event : null;
   const aimCard = aimEvent ? visuals.find((visual) => visual.uid === aimEvent.uid) : null;
   const aimBox = aimEvent?.target ? monsters[Number(aimEvent.target.slice(1))] : null;
+  // A choose-a-card screen (Knowledge Demon's dominion) over the scene, until the pick.
+  const choosing = timeline.beats.find((beat) => beat.event.kind === "choose" && beat.start <= t && t < beat.start + beat.duration);
+  const chooseEvent = choosing?.event.kind === "choose" ? choosing.event : null;
   const showScene = layer === "all" || layer === "scene";
   const showVfx = layer === "all" || layer === "vfx";
   const showCards = layer === "all" || layer === "card";
@@ -166,7 +170,7 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
             showBar={hpBars}
             onActorStatus={onActorStatus}
           >
-            {intents && <Intent view={view} monster={monster} moveId={state.moveId} box={box} t={t} />}
+            {intents && <Intent view={view} monster={monster} moveId={state.moveId} box={box} t={t} owner={state} target={visible.player} />}
           </Creature>
         );
       })}
@@ -198,6 +202,7 @@ export function CombatStage({ view, result, timeline, t, pixelRatio, badges, onA
             />
           ))}
           <CardTrailLayer flights={flights} trail={trail} pixelRatio={pixelRatio} />
+          {chooseEvent && <ChooseScreen view={view} cards={chooseEvent.cards} picked={chooseEvent.picked} t={t - (choosing?.start ?? 0)} />}
           {view.targetingArrow && aimCard && aimBox && (
             <TargetingArrow
               asset={view.targetingArrow}
@@ -570,7 +575,16 @@ function attackIcon(total: number): string {
   return `attack_${tier}`;
 }
 
-function Intent({ view, monster, moveId, box, t }: { view: CombatSimView; monster: CombatSimMonsterView; moveId: string | null; box: CreatureBox; t: number }) {
+/** `owner`'s and `target`'s powers change the number on an attack intent (Strength, Weak, Vulnerable), as in the game. */
+function Intent({ view, monster, moveId, box, t, owner, target }: {
+  view: CombatSimView;
+  monster: CombatSimMonsterView;
+  moveId: string | null;
+  box: CreatureBox;
+  t: number;
+  owner: SimCreature;
+  target: SimCreature;
+}) {
   const move = moveId ? view.catalog.monsters[monster.id]?.moves[moveId] : null;
   if (!move) return null;
   const bob = Math.sin((t / 1000) * Math.PI) * 6;
@@ -583,7 +597,8 @@ function Intent({ view, monster, moveId, box, t }: { view: CombatSimView; monste
       {move.intents.map((intent, index) => {
         const isAttack = intent.damage !== undefined && (intent.type === "SingleAttackIntent" || intent.type === "MultiAttackIntent");
         const repeat = intent.repeat ?? 1;
-        const icon = isAttack ? attackIcon((intent.damage ?? 0) * repeat) : INTENT_ICONS[intent.type] ?? "unknown";
+        const damage = isAttack ? modifiedDamage(intent.damage ?? 0, owner.powers, target.powers) : 0;
+        const icon = isAttack ? attackIcon(damage * repeat) : INTENT_ICONS[intent.type] ?? "unknown";
         return (
           <div key={`${intent.type}-${index}`} className="relative" style={{ width: 64, height: 64 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -593,7 +608,7 @@ function Intent({ view, monster, moveId, box, t }: { view: CombatSimView; monste
                 className="absolute bottom-[-6px] left-0 whitespace-nowrap"
                 style={{ fontFamily: KREON, fontWeight: 700, fontSize: 32, color: TEXT_CREAM, ...outline("#000", 8) }}
               >
-                {intent.damage}{repeat > 1 ? `×${repeat}` : ""}
+                {damage}{repeat > 1 ? `×${repeat}` : ""}
               </span>
             )}
           </div>
@@ -779,6 +794,35 @@ function CardView({ visual, view, state, glow, hidden = false }: CardViewProps) 
         suffix={suffix && affliction ? substituteAmount(suffix, affliction.amount, { asEnergyIcon: true }) : null}
         weighted={affliction?.id === "WEIGHTED" && shown}
       />
+    </div>
+  );
+}
+
+/**
+ * FromChooseACardScreen: the offered cards side by side over a dark veil, the one taken lifts a little. The
+ * game's screen has its own frame and title; this is the cards on the veil, drawn at the hand's card size.
+ */
+function ChooseScreen({ view, cards, picked, t }: { view: CombatSimView; cards: string[]; picked: string; t: number }) {
+  const scale = 1.15;
+  const gap = 36;
+  const width = cards.length * CARD_W * scale + (cards.length - 1) * gap;
+  const veil = clamp01(t / 250);
+  const lift = clamp01((t - 1200) / 300);
+  return (
+    <div className="absolute inset-0" style={{ zIndex: 900, background: `rgba(0, 0, 0, ${0.6 * veil})` }} data-combat-sim-choose="">
+      {cards.map((id, index) => {
+        const card = view.cards[id];
+        if (!card) return null;
+        const left = (STAGE_W - width) / 2 + index * (CARD_W * scale + gap);
+        const top = (view.options.crop ?? STAGE_H) / 2 - (CARD_H * scale) / 2 - (id === picked ? 28 * lift : 0);
+        return (
+          <div key={id} className="absolute" style={{ left, top, width: CARD_W * scale, height: CARD_H * scale, opacity: veil, filter: id === picked ? undefined : `brightness(${1 - 0.35 * lift})` }}>
+            <div style={{ width: CARD_W, height: CARD_H, transform: `scale(${scale})`, transformOrigin: "0 0" }}>
+              <MemoCard card={card} upgraded={false} cost={view.catalog.cards[id]?.cost ?? 0} unplayable={false} suffix={null} weighted={false} />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
