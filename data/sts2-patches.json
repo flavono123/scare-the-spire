@@ -649,6 +649,7 @@
     "art": {
       "type": "epoch",
       "id": "FOOL2_EPOCH",
+      "imageUrl": "/images/sts2/epochs-beta/fool2_epoch.webp",
       "alt": "Epoch: What Am I?",
       "altKo": "역사: 나는 뭐지?"
     }
