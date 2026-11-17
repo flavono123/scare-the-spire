@@ -115,12 +115,31 @@ def ext_paths(text: str) -> dict[str, str]:
     return {m.group(2): m.group(1) for m in re.finditer(r'\[ext_resource[^\]]*path="res://([^"]+)"[^\]]*id="([^"]+)"', text)}
 
 
+def clear_edge_strips(image: Image.Image) -> Image.Image:
+    """Make edge pixels transparent where the pixel one step inward is (nearly) transparent.
+
+    entry_full_heal_and_max_hp.png has an opaque 1 px white column at x=799 beside a clear or
+    faint-glow (alpha <= 16) column, likely packing bleed: hidden on the rug, a line on a dark stage.
+    """
+    image = image.convert("RGBA")
+    px = image.load()
+    w, h = image.size
+    edges = [((0, y), (1, y)) for y in range(h)] + [((w - 1, y), (w - 2, y)) for y in range(h)]
+    edges += [((x, 0), (x, 1)) for x in range(w)] + [((x, h - 1), (x, h - 2)) for x in range(w)]
+    for edge, inner in edges:
+        if px[edge][3] and px[inner][3] < 32:
+            px[edge] = (0, 0, 0, 0)
+    return image
+
+
 def write_texture(reader: PCKReader, res_path: str, out: Path) -> str:
     spine_assets.extract_png_import(reader, f"{res_path}.import", out)
     if out.is_relative_to(IMG_ROOT):
         # Plain images ship as WebP; Spine pages keep the PNG names their atlas names.
         webp = out.with_suffix(".webp")
-        Image.open(out).save(webp, "WEBP", quality=92, method=6)
+        image = Image.open(out)
+        # Only the entry icons: other images have soft art edges this rule would eat.
+        (clear_edge_strips(image) if out.parent.name == "entries" else image).save(webp, "WEBP", quality=92, method=6)
         out.unlink()
         out = webp
     return "/" + str(out.relative_to(ROOT / "public"))
