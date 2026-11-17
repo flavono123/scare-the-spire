@@ -641,7 +641,6 @@
     "title": "Beta Hotfix Patch Notes - v0.113.1",
     "titleKo": "베타 핫픽스 패치 노트 - v0.113.1",
     "type": "hotfix",
-    "draft": true,
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/708914425087656682",
     "summary": "Dread power icons, Arrows sticking to enemy bodies, Fool epoch text polish, Stretch/Adroit and Show Off+ fixes, and translation updates.",
     "summaryKo": "드레드 파워 아이콘, 적의 몸에 박히는 화살, 풀 역사 문구 다듬기, 스트레칭·숙련과 으스대기+ 수정, 번역 업데이트.",
@@ -652,6 +651,26 @@
       "imageUrl": "/images/sts2/epochs-beta/fool2_epoch.webp",
       "alt": "Epoch: What Am I?",
       "altKo": "역사: 나는 뭐지?"
+    }
+  },
+  {
+    "id": "v0.111.1",
+    "version": "0.111.1",
+    "date": "2026-11-17",
+    "publishedAt": "2026-11-17T01:07:11.000Z",
+    "title": "Major Update #3 - v0.111.1",
+    "titleKo": "메이저 업데이트 #3 - v0.111.1",
+    "type": "release",
+    "draft": true,
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/708914425087656392",
+    "summary": "Major Update #3 pushes beta changes v0.108.0-v0.111.0 to main: Aeonglass animations, Traditional Chinese and Indonesian, Keyboard-Only mode, new Neow relics, character-specific multiplayer cards, and cumulative balance, art, and bug fixes.",
+    "summaryKo": "메이저 업데이트 #3 본섭 반영: v0.108.0~v0.111.0 베타 변경 누적, 영겁의 모래시계 애니메이션, 번체 중국어·인도네시아어, 키보드 전용 모드, 새 니오우 유물, 캐릭터별 멀티플레이어 카드, 밸런스·아트·버그 수정.",
+    "hasBalanceChanges": true,
+    "art": {
+      "type": "epoch",
+      "id": "DARV_EPOCH",
+      "alt": "Epoch: Darv",
+      "altKo": "역사: 다브"
     }
   }
 ]
