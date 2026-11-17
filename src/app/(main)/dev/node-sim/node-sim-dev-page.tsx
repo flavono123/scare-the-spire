@@ -54,7 +54,11 @@ export default async function NodeSimDevPage({ searchParams }: { searchParams: N
       background: existsSync(path.join(process.cwd(), "public", background)) ? background : null,
       spine: { merchant: manifest.spine.merchant, hand: manifest.spine.hand, character },
       backButton: { image: "/images/sts2/ui/back_button.png", arrow: "/images/sts2/ui/back_button_arrow.png" },
-      options: { zoom: Number.isFinite(zoom) && zoom > 0 ? zoom : FULL_ZOOM, camera: cameraRaw !== undefined && Number.isFinite(Number(cameraRaw)) ? Number(cameraRaw) : null },
+      options: {
+        zoom: Number.isFinite(zoom) && zoom > 0 ? zoom : FULL_ZOOM,
+        isolate: one(searchParams, "isolate") === "1",
+        camera: cameraRaw !== undefined && Number.isFinite(Number(cameraRaw)) ? Number(cameraRaw) : null,
+      },
     },
     options: {
       t: tRaw === undefined ? null : tRaw === "end" ? "end" : Number(tRaw),

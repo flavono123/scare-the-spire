@@ -71,6 +71,17 @@ the hovered slot with its tip (tip fully in view), shows the merchant before the
 and the first hovered slot while it opens. `zoom=fit` shows the whole screen width letterboxed;
 `camera=<x>` pins the left edge (game px). Nothing outside the 1920x1080 screen is drawn.
 
+`isolate=1` draws only the first hovered slot (icon, its 25% shadow, the 1.1 hover scale), its tip set and the
+merchant hand over a plain `#09090b` stage (no room, backstop, rug, other slots, selection line or back button).
+The slot and its tip set are centred as one group at a fixed 1.5 stage px per game px for every entry (the hand
+comes in from the top); `zoom` and `camera` are ignored. The tips always sit right of the slot (the game puts them
+left for the third column) so the object is at the same place in every cut. The slot is on stage from t=0; its tips
+show while it is hovered. Use it with `open=1`, since the slot rides the rug while it drops in:
+
+```bash
+pnpm shorts:capture --url "/dev/node-sim?node=blitz_merchant&entry=glam&open=1&script=hover:glam,wait:2500&isolate=1" --frames --fps 30 --out ~/_NOAV/P/slseoun-shorts/<dir>/glam
+```
+
 ## What is drawn
 
 - Room (`blitz_merchant_room.tscn`): the act's combat background (the `a` layers flattened, 2764.8x1296

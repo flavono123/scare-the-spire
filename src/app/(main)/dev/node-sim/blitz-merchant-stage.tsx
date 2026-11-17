@@ -15,6 +15,8 @@ export const STAGE_W = 1080;
 export const STAGE_H = 1920;
 const SCREEN_W = 1920;
 const SCREEN_H = 1080;
+/** Stage px per game px in isolate view: slot + tip set (about 612 game px wide) leaves ~80 px each side. */
+const ISOLATE_ZOOM = 1.5;
 
 interface SpineAssetView extends PlacedSpineAsset {
   position?: number[];
@@ -48,7 +50,8 @@ export interface BlitzMerchantStageView {
   background: string | null;
   spine: { merchant: SpineAssetView; hand: SpineAssetView; character: SpineAssetView | null };
   backButton: { image: string; arrow: string };
-  options: { zoom: number; camera: number | null };
+  /** isolate: only the framed slot, its tips and the hand, at ISOLATE_ZOOM, centred (camera/zoom ignored). */
+  options: { zoom: number; camera: number | null; isolate: boolean };
 }
 
 export function stateLayout(layout: BlitzMerchantLayoutView): BlitzStateLayout {
@@ -108,10 +111,11 @@ export function BlitzMerchantStage({ view, result, state, pixelRatio, locale, on
   onSpineStatus: (id: string, status: SpineStatus) => void;
 }) {
   const { layout } = view;
-  const zoom = view.options.zoom;
+  const isolate = view.options.isolate;
+  const zoom = isolate ? ISOLATE_ZOOM : view.options.zoom;
   const viewW = STAGE_W / zoom;
   const viewH = STAGE_H / zoom;
-  const camX = cameraX(view, result, state, viewW);
+  const camX = isolate ? 0 : cameraX(view, result, state, viewW);
   const camY = (SCREEN_H - viewH) / 2;
   const gamePixelRatio = pixelRatio * zoom;
   const font = locale === "kor"
@@ -148,26 +152,54 @@ export function BlitzMerchantStage({ view, result, state, pixelRatio, locale, on
   const backX = inv.backButton.left - 180 * (1 - backHidden);
   const backY = SCREEN_H + inv.backButton.top;
 
-  const tipSlot = state.tipSlot;
+  // Isolate: the first hovered slot stays on stage the whole time; its tips show while it is hovered.
+  const firstHover = result.beats.find((beat) => beat.action.do === "hover" && !beat.rejected)?.slot ?? 0;
+  const isolated = isolate ? (state.framed ?? firstHover) : null;
+  const tipSlot = isolate ? isolated : state.tipSlot;
+  const tipShown = !isolate || state.tipSlot === isolated;
   const tipRef = useRef<HTMLDivElement>(null);
+  const screenRef = useRef<HTMLDivElement>(null);
+  // Isolate always puts the tips right of the slot so the object sits at the same place in every cut.
+  const tipRight = isolate || (tipSlot !== null && result.stock[tipSlot].tipAlign === "right");
   const tipOrigin = tipSlot === null ? null : {
-    x: rugX + inv.slots[tipSlot][0] + (result.stock[tipSlot].tipAlign === "right" ? hit.right : hit.left - layout.hoverTip.width),
+    x: rugX + inv.slots[tipSlot][0] + (tipRight ? hit.right : hit.left - layout.hoverTip.width),
     y: inv.rug.openY + inv.slots[tipSlot][1] + hit.top,
   };
-  // NHoverTipSet.CorrectVerticalOverflow: keep the tips above the screen's bottom edge.
+  const screenTransform = (x: number, y: number) => `scale(${zoom}) translate(${-x}px, ${-y}px)`;
   useLayoutEffect(() => {
     const node = tipRef.current;
     if (!node || !tipOrigin) return;
     const height = node.offsetHeight;
-    node.style.top = `${Math.min(tipOrigin.y, SCREEN_H - height)}px`;
+    if (!isolate) {
+      // NHoverTipSet.CorrectVerticalOverflow: keep the tips above the screen's bottom edge.
+      node.style.top = `${Math.min(tipOrigin.y, SCREEN_H - height)}px`;
+      return;
+    }
+    // Centre the slot (at its 1.1 hover scale) and its tip set as one group on the stage; again when
+    // the tips resize (web fonts landing after the first layout).
+    const center = () => {
+      const ox = rugX + inv.slots[isolated!][0];
+      const oy = inv.rug.openY + inv.slots[isolated!][1];
+      const left = ox + hit.left * 1.1;
+      const right = tipOrigin.x + layout.hoverTip.width;
+      const top = Math.min(oy + hit.top * 1.1, tipOrigin.y);
+      const bottom = Math.max(oy + hit.bottom * 1.1, tipOrigin.y + node.offsetHeight);
+      if (screenRef.current) screenRef.current.style.transform = screenTransform((left + right) / 2 - viewW / 2, (top + bottom) / 2 - viewH / 2);
+    };
+    center();
+    const observer = new ResizeObserver(center);
+    observer.observe(node);
+    return () => observer.disconnect();
   });
 
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: "#000" }}>
+    <div className="absolute inset-0 overflow-hidden" style={{ background: isolate ? "#09090b" : "#000" }}>
       <div
-        className="absolute left-0 top-0 overflow-hidden"
-        style={{ width: SCREEN_W, height: SCREEN_H, transform: `scale(${zoom}) translate(${-camX}px, ${-camY}px)`, transformOrigin: "0 0" }}
+        ref={screenRef}
+        className={`absolute left-0 top-0 ${isolate ? "" : "overflow-hidden"}`}
+        style={{ width: SCREEN_W, height: SCREEN_H, transform: screenTransform(camX, camY), transformOrigin: "0 0" }}
       >
+        {!isolate && <>
         {/* Room: the act's combat background in BgContainer (scale 1.5, 23 px right of center). */}
         {view.background && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -229,10 +261,12 @@ export function BlitzMerchantStage({ view, result, state, pixelRatio, locale, on
 
         {/* Inventory */}
         <div className="absolute inset-0" style={{ background: "#000", opacity: state.backstop }} />
+        </>}
         <div className="absolute" style={{ left: rugX, top: state.rugY, width: rugW, height: rugH }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={inv.rugUrl} alt="" className="absolute inset-0 h-full w-full" />
+          {!isolate && <img src={inv.rugUrl} alt="" className="absolute inset-0 h-full w-full" />}
           {result.stock.map((entry, i) => {
+            if (isolate && i !== isolated) return null;
             const slot = state.slots[i];
             const [ox, oy] = inv.slots[i];
             return (
@@ -271,10 +305,10 @@ export function BlitzMerchantStage({ view, result, state, pixelRatio, locale, on
               </div>
             );
           })}
-          <SelectionText layout={inv.selectionText} rugW={rugW} rugH={rugH} text={result.selectionText(state.remaining)} font={font.regular} />
+          {!isolate && <SelectionText layout={inv.selectionText} rugW={rugW} rugH={rugH} text={result.selectionText(state.remaining)} font={font.regular} />}
         </div>
 
-        {backShow > 0 && (
+        {!isolate && backShow > 0 && (
           <div className="absolute" style={{ left: backX, top: backY, width: inv.backButton.right - inv.backButton.left, height: inv.backButton.bottom - inv.backButton.top }}>
             {/* back_button.tscn: Shadow (25% black, 1 px down), Image and its cream arrow Icon. */}
             <BackButtonImage src={view.backButton.image} rect={[-9, -1, 267, 150]} style={{ filter: "brightness(0)", opacity: 0.25098 }} />
@@ -292,7 +326,7 @@ export function BlitzMerchantStage({ view, result, state, pixelRatio, locale, on
           y={state.hand.y}
           sx={handScale[0]}
           sy={handScale[1]}
-          box={{ x: state.hand.x - 260, y: state.hand.y - 700, width: 520, height: 900 }}
+          box={{ x: state.hand.x - 260, y: state.hand.y - (isolate ? 1400 : 700), width: 520, height: isolate ? 1600 : 900 }}
           pixelRatio={gamePixelRatio}
           t={state.t}
           boneRotations={{ rotate_me: state.hand.rotation }}
@@ -300,7 +334,7 @@ export function BlitzMerchantStage({ view, result, state, pixelRatio, locale, on
         />
 
         {tipSlot !== null && tipOrigin && (
-          <div ref={tipRef} className="absolute flex flex-col" style={{ left: tipOrigin.x, top: tipOrigin.y, gap: layout.hoverTip.spacing }} data-node-sim-tip={result.stock[tipSlot].type}>
+          <div ref={tipRef} className="absolute flex flex-col" style={{ left: tipOrigin.x, top: tipOrigin.y, gap: layout.hoverTip.spacing, visibility: tipShown ? undefined : "hidden" }} data-node-sim-tip={result.stock[tipSlot].type}>
             {result.stock[tipSlot].tips.map((tip, i) => (
               <GameHoverTip key={i} tip={tip} layout={layout.hoverTip} font={font} colors={{ title: layout.hoverTip.titleColor, description: layout.hoverTip.descriptionColor }} />
             ))}

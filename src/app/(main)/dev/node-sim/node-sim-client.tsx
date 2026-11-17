@@ -131,7 +131,7 @@ export function NodeSimClient({ view, errors }: { view: NodeSimView; errors: str
         await document.fonts.ready;
         const deadline = performance.now() + 30_000;
         for (;;) {
-          const spinesDone = spinesRef.current.size >= 2 && [...spinesRef.current.values()].every((status) => status !== "loading");
+          const spinesDone = spinesRef.current.size >= (view.stage.options.isolate ? 1 : 2) && [...spinesRef.current.values()].every((status) => status !== "loading");
           const images = [...(stageRef.current?.querySelectorAll("img") ?? [])];
           if (spinesDone && images.every((image) => image.complete)) break;
           if (performance.now() > deadline) throw new Error("node-sim: assets did not load within 30s");
@@ -177,7 +177,7 @@ export function NodeSimClient({ view, errors }: { view: NodeSimView; errors: str
     return () => {
       if ((window.__sim as unknown) === handle) delete window.__sim;
     };
-  }, [result, layout]);
+  }, [result, layout, view.stage.options.isolate]);
 
   if (!result) {
     return (
