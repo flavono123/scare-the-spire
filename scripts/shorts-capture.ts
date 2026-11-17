@@ -41,6 +41,9 @@
  * device scale 3 is not exactly 1 and its edge antialiasing could change with
  * the frames before). A frame sequence gets `frames.json`.
  *
+ * Node simulator pages (/dev/node-sim, dev server only: the Blitz merchant room) are the same
+ * kind of studio: `window.__sim`, `frame=1080`, a 1080x1920 stage (docs/NODE_SIM.md).
+ *
  * The map progress bar (/dev/map-bar, dev server only) works the same way
  * through `window.__bar`; its frames are transparent PNGs at the bar's own size
  * (device scale 1), and sidecars add the node anchors, events and per-frame
@@ -64,6 +67,11 @@ function isCombatSim(url: string): boolean {
   return url.includes("/dev/combat-sim");
 }
 
+/** Simulator pages on the 1080x1920 stage: the combat simulator and the node simulator. */
+function isSimStage(url: string): boolean {
+  return isCombatSim(url) || url.includes("/dev/node-sim");
+}
+
 /** A dev studio page that exposes a seekable handle on window. */
 interface Studio {
   handle: "__sim" | "__bar";
@@ -76,6 +84,7 @@ const COMBAT_SIM_STUDIO: Studio = { handle: "__sim", stage: "[data-combat-sim-st
 /** A combat simulator layer (`layer=scene|vfx|card`) is drawn on a transparent stage, so the PNG keeps its alpha. */
 const COMBAT_SIM_LAYER_STUDIO: Studio = { handle: "__sim", stage: "[data-combat-sim-stage]", transparent: true };
 const MAP_BAR_STUDIO: Studio = { handle: "__bar", stage: "[data-map-bar-stage]", transparent: true };
+const NODE_SIM_STUDIO: Studio = { handle: "__sim", stage: "[data-node-sim-stage]", transparent: false };
 
 function studioOf(url: string): Studio | null {
   if (isCombatSim(url)) {
@@ -83,9 +92,10 @@ function studioOf(url: string): Studio | null {
     return layer && layer !== "all" ? COMBAT_SIM_LAYER_STUDIO : COMBAT_SIM_STUDIO;
   }
   if (url.includes("/dev/map-bar")) return MAP_BAR_STUDIO;
+  if (url.includes("/dev/node-sim")) return NODE_SIM_STUDIO;
   return null;
 }
-const CAPTURE_SELECTOR = "[data-combat-sim-stage], [data-map-bar-stage], [data-card-tile], [data-relic-inspect-slab]";
+const CAPTURE_SELECTOR = "[data-combat-sim-stage], [data-node-sim-stage], [data-map-bar-stage], [data-card-tile], [data-relic-inspect-slab]";
 const DOWNLOAD_SELECTOR = "[data-compendium-download-image]";
 /** How long the download button may stay disabled or the PNG may take (first compile of a page included). */
 const DOWNLOAD_READY_MS = 180_000;
@@ -318,7 +328,7 @@ async function capture(page: Page, shot: Shot, base: string, locale: "kor" | "en
   const requested = shot.url ?? (shot.target ? targetPath(shot.target, shot.locale ?? locale) : null);
   if (!requested) throw new Error(`shot needs target or url: ${JSON.stringify(shot)}`);
   const target = new URL(requested, base);
-  if (isCombatSim(requested) && !target.searchParams.has("frame")) target.searchParams.set("frame", String(SIM_FRAME));
+  if (isSimStage(requested) && !target.searchParams.has("frame")) target.searchParams.set("frame", String(SIM_FRAME));
   const url = target.toString();
   const out = resolvePath(shot.out, outDir);
 

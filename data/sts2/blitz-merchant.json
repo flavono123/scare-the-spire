@@ -1,0 +1,741 @@
+{
+  "source": "~/sts2-builds/0.113.0/SlayTheSpire2.app/Contents/Resources/Slay the Spire 2.pck",
+  "archiveVersion": "0.113.0",
+  "entries": [
+    {
+      "type": "CardUpgrade",
+      "key": "card_upgrade",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_card_upgrade.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_card_upgrade.webp"
+    },
+    {
+      "type": "UpgradedCardReward",
+      "key": "upgraded_card_reward",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_upgraded_card_reward.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_upgraded_card_reward.webp"
+    },
+    {
+      "type": "RandomUpgrades",
+      "key": "random_upgrades",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_random_upgrades.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_random_upgrades.webp"
+    },
+    {
+      "type": "CardTransform",
+      "key": "card_transform",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_card_transform.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_card_transform.webp"
+    },
+    {
+      "type": "CardRemoval",
+      "key": "card_removal",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_card_removal.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_card_removal.webp"
+    },
+    {
+      "type": "CardRewards",
+      "key": "card_rewards",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_card_rewards.webp"
+    },
+    {
+      "type": "ColorlessCardReward",
+      "key": "colorless_card_reward",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_colorless_card_reward.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_colorless_card_reward.webp"
+    },
+    {
+      "type": "Potions",
+      "key": "potions",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_potions.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_potions.webp"
+    },
+    {
+      "type": "CardEnchant",
+      "key": "card_enchant",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_card_enchant.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_card_enchant.webp"
+    },
+    {
+      "type": "EnchantedCardReward",
+      "key": "enchanted_card_reward",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_enchanted_card_reward.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_enchanted_card_reward.webp"
+    },
+    {
+      "type": "PrismaticCardReward",
+      "key": "prismatic_card_reward",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_prismatic_card_reward.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_prismatic_card_reward.webp"
+    },
+    {
+      "type": "RareCardReward",
+      "key": "rare_card_reward",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_rare_card_reward.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_rare_card_reward.webp"
+    },
+    {
+      "type": "UpgradedRareCard",
+      "key": "upgraded_rare_card",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_upgraded_rare_card.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_upgraded_rare_card.webp"
+    },
+    {
+      "type": "Relic",
+      "key": "relic",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_relic.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_relic.webp"
+    },
+    {
+      "type": "Glam",
+      "key": "glam",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_glam.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_glam.webp"
+    },
+    {
+      "type": "TwoMoreChoices",
+      "key": "two_more_choices",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_two_more_choices.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_two_more_choices.webp"
+    },
+    {
+      "type": "CardRewardOfEachRarity",
+      "key": "card_reward_of_each_rarity",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_card_reward_of_each_rarity.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_card_reward_of_each_rarity.webp"
+    },
+    {
+      "type": "UpgradedRareCardReward",
+      "key": "upgraded_rare_card_reward",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_upgraded_rare_card_reward.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_upgraded_rare_card_reward.webp"
+    },
+    {
+      "type": "TwoRelics",
+      "key": "two_relics",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_two_relics.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_two_relics.webp"
+    },
+    {
+      "type": "FullHealAndMaxHp",
+      "key": "full_heal_and_max_hp",
+      "iconUrl": "/images/sts2/blitz-merchant/entries/entry_full_heal_and_max_hp.webp",
+      "tokenUrl": "/images/sts2/blitz-merchant/small_tokens/entry_full_heal_and_max_hp.webp"
+    }
+  ],
+  "enchantIcons": {
+    "SHARP": "/images/sts2/blitz-merchant/enchantments/sharp.webp",
+    "NIMBLE": "/images/sts2/blitz-merchant/enchantments/nimble.webp",
+    "ADROIT": "/images/sts2/blitz-merchant/enchantments/adroit.webp",
+    "STEADY": "/images/sts2/blitz-merchant/enchantments/steady.webp",
+    "SWIFT": "/images/sts2/blitz-merchant/enchantments/swift.webp",
+    "VIGOROUS": "/images/sts2/blitz-merchant/enchantments/vigorous.webp",
+    "GLAM": "/images/sts2/blitz-merchant/enchantments/glam.webp"
+  },
+  "spine": {
+    "merchant": {
+      "atlasUrl": "/spine/sts2/blitz-merchant/merchant/blitz_merchant_top.atlas",
+      "binaryUrl": "/spine/sts2/blitz-merchant/merchant/blitz_merchant_top.skel",
+      "textureUrls": [
+        "/spine/sts2/blitz-merchant/merchant/blitz_merchant_top.png"
+      ],
+      "defaultMix": 0.1,
+      "mixes": [
+        {
+          "from": "done",
+          "to": "done_loop",
+          "mix": 0.03
+        }
+      ]
+    },
+    "hand": {
+      "atlasUrl": "/spine/sts2/blitz-merchant/hand/merchanthand.atlas",
+      "binaryUrl": "/spine/sts2/blitz-merchant/hand/merchanthand.skel",
+      "textureUrls": [
+        "/spine/sts2/blitz-merchant/hand/merchanthand.png"
+      ],
+      "defaultMix": 0.0,
+      "mixes": []
+    },
+    "characters": {
+      "IRONCLAD": {
+        "atlasUrl": "/spine/sts2/blitz-merchant/characters/ironclad/ironclad_shop.atlas",
+        "binaryUrl": "/spine/sts2/characters/ironclad/ironclad.skel",
+        "textureUrls": [
+          "/spine/sts2/blitz-merchant/characters/ironclad/ironclad_shop.png",
+          "/spine/sts2/blitz-merchant/characters/ironclad/ironclad_shop_2.png",
+          "/spine/sts2/blitz-merchant/characters/ironclad/ironclad_shop_3.png",
+          "/spine/sts2/blitz-merchant/characters/ironclad/ironclad_shop_4.png"
+        ],
+        "defaultMix": 0.05,
+        "mixes": [
+          {
+            "from": "idle_loop",
+            "to": "attack",
+            "mix": 0.1
+          },
+          {
+            "from": "idle_loop",
+            "to": "hurt",
+            "mix": 0.03
+          },
+          {
+            "from": "hurt",
+            "to": "idle_loop",
+            "mix": 0.1
+          }
+        ],
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.47,
+          0.47
+        ]
+      },
+      "SILENT": {
+        "atlasUrl": "/spine/sts2/blitz-merchant/characters/silent/silent_shop.atlas",
+        "binaryUrl": "/spine/sts2/characters/silent/silent.skel",
+        "textureUrls": [
+          "/spine/sts2/blitz-merchant/characters/silent/silent_shop.png"
+        ],
+        "defaultMix": 0.0,
+        "mixes": [],
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.47,
+          0.47
+        ]
+      },
+      "DEFECT": {
+        "atlasUrl": "/spine/sts2/blitz-merchant/characters/defect/defect_shop.atlas",
+        "binaryUrl": "/spine/sts2/characters/defect/defect.skel",
+        "textureUrls": [
+          "/spine/sts2/blitz-merchant/characters/defect/defect_shop.png"
+        ],
+        "defaultMix": 0.0,
+        "mixes": [],
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.23,
+          0.23
+        ]
+      },
+      "REGENT": {
+        "atlasUrl": "/spine/sts2/blitz-merchant/characters/regent/regent_shop.atlas",
+        "binaryUrl": "/spine/sts2/characters/regent/regent.skel",
+        "textureUrls": [
+          "/spine/sts2/blitz-merchant/characters/regent/regent_shop.png"
+        ],
+        "defaultMix": 0.05,
+        "mixes": [
+          {
+            "from": "idle_loop",
+            "to": "hurt",
+            "mix": 0.02
+          }
+        ],
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.47,
+          0.47
+        ]
+      },
+      "NECROBINDER": {
+        "atlasUrl": "/spine/sts2/blitz-merchant/characters/necrobinder/necrobinder_shop.atlas",
+        "binaryUrl": "/spine/sts2/characters/necrobinder/necrobinder.skel",
+        "textureUrls": [
+          "/spine/sts2/blitz-merchant/characters/necrobinder/necrobinder_shop.png",
+          "/spine/sts2/blitz-merchant/characters/necrobinder/necrobinder_shop_2.png",
+          "/spine/sts2/blitz-merchant/characters/necrobinder/necrobinder_shop_3.png"
+        ],
+        "defaultMix": 0.02,
+        "mixes": [
+          {
+            "from": "idle_loop",
+            "to": "attack",
+            "mix": 0.02
+          }
+        ],
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.47,
+          0.47
+        ]
+      },
+      "FOOL": {
+        "atlasUrl": "/spine/sts2/blitz-merchant/characters/fool/fool.atlas",
+        "binaryUrl": "/spine/sts2/characters/fool/fool.skel",
+        "textureUrls": [
+          "/spine/sts2/blitz-merchant/characters/fool/fool.png"
+        ],
+        "defaultMix": 0.05,
+        "mixes": [
+          {
+            "from": "idle_loop",
+            "to": "hurt",
+            "mix": 0.02
+          },
+          {
+            "from": "hurt",
+            "to": "low_health_loop",
+            "mix": 0.02
+          }
+        ],
+        "position": [
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.47,
+          0.47
+        ]
+      }
+    }
+  },
+  "layout": {
+    "screen": [
+      1920,
+      1080
+    ],
+    "room": {
+      "bgContainer": {
+        "offset": [
+          23.0,
+          0.0
+        ],
+        "scale": [
+          1.5,
+          1.5
+        ]
+      },
+      "bgLayerSize": [
+        2764.8,
+        1296
+      ],
+      "characterContainer": [
+        -396.0,
+        226.0
+      ],
+      "merchantButton": {
+        "left": 215.0,
+        "top": -189.0,
+        "right": 566.0,
+        "bottom": 274.0
+      },
+      "merchantVisual": {
+        "position": [
+          54.0,
+          419.0
+        ],
+        "scale": [
+          0.5,
+          0.486
+        ],
+        "skin": "default",
+        "animation": "animation"
+      },
+      "tokens": [
+        {
+          "slot": "TOKEN_1",
+          "editorPosition": [
+            -278.84375,
+            -396.0327
+          ]
+        },
+        {
+          "slot": "TOKEN_2",
+          "editorPosition": [
+            -205.88232,
+            -362.8048
+          ]
+        },
+        {
+          "slot": "TOKEN_3",
+          "editorPosition": [
+            -168.23901,
+            -313.06396
+          ]
+        },
+        {
+          "slot": "TOKEN_4",
+          "editorPosition": [
+            -349.44287,
+            -341.7987
+          ]
+        },
+        {
+          "slot": "TOKEN_5",
+          "editorPosition": [
+            -288.79053,
+            -305.7395
+          ]
+        },
+        {
+          "slot": "TOKEN_6",
+          "editorPosition": [
+            -231.11938,
+            -261.6062
+          ]
+        }
+      ]
+    },
+    "inventory": {
+      "backstopAlpha": 0.8,
+      "rug": {
+        "left": -842.0,
+        "top": -1635.0,
+        "right": 905.0,
+        "bottom": -657.0,
+        "openY": 80,
+        "closedY": -1000
+      },
+      "rugUrl": "/images/sts2/blitz-merchant/shop_rug.webp",
+      "slots": [
+        [
+          415.0,
+          320.0
+        ],
+        [
+          896.0,
+          293.0
+        ],
+        [
+          1291.0,
+          355.0
+        ],
+        [
+          437.0,
+          679.0
+        ],
+        [
+          831.0,
+          637.0
+        ],
+        [
+          1247.0,
+          689.0
+        ]
+      ],
+      "selectionText": {
+        "anchor": [
+          0.48700002,
+          0.93700004
+        ],
+        "left": -699.78906,
+        "top": -34.386047,
+        "right": 700.21094,
+        "bottom": 1.6139526,
+        "fontSize": 24,
+        "outlineSize": 12,
+        "color": [
+          1.0,
+          0.964706,
+          0.886275,
+          1.0
+        ],
+        "outlineColor": [
+          0.0,
+          0.0,
+          0.0,
+          0.5019608
+        ]
+      },
+      "hand": {
+        "position": [
+          234.0,
+          -54.0
+        ],
+        "scale": [
+          0.4,
+          0.4
+        ]
+      },
+      "backButton": {
+        "left": -40.0,
+        "top": -354.0,
+        "right": 160.0,
+        "bottom": -244.0
+      }
+    },
+    "slot": {
+      "hitbox": {
+        "left": -121.0,
+        "top": -120.0,
+        "right": 119.0,
+        "bottom": 120.0
+      },
+      "shadow": {
+        "offset": [
+          20.0,
+          16.0
+        ],
+        "modulate": [
+          0.0,
+          0.0,
+          0.0,
+          0.2509804
+        ]
+      }
+    },
+    "hoverTip": {
+      "width": 360,
+      "spacing": 5,
+      "margin": {
+        "left": 22,
+        "top": 16,
+        "right": 45,
+        "bottom": 28
+      },
+      "outerMargin": {
+        "right": -8,
+        "bottom": -8
+      },
+      "shadowRegionOffset": [
+        -8.0,
+        -8.0
+      ],
+      "shadowModulate": [
+        0.0,
+        0.0,
+        0.0,
+        0.25098
+      ],
+      "titleFontSize": 22,
+      "titleColor": [
+        0.937255,
+        0.784314,
+        0.317647,
+        1.0
+      ],
+      "descriptionFontSize": 22,
+      "descriptionColor": [
+        1.0,
+        0.964706,
+        0.886275,
+        1.0
+      ],
+      "lineSeparation": -2,
+      "textShadow": [
+        3,
+        2
+      ],
+      "titleIconGap": 5
+    }
+  },
+  "loc": {
+    "kor": {
+      "merchant": {
+        "MERCHANT.blitz.card_enchant_entry.description": "카드 1장에 [purple]{Enchantment}{Amount:plural:(을)를|(을)를 {}}[/purple] [gold]인챈트[/gold]합니다.",
+        "MERCHANT.blitz.card_enchant_entry.title": "{Enchantment}",
+        "MERCHANT.blitz.card_packs_entry.description": "카드 팩 [blue]2[/blue]개 중 [blue]1[/blue]개를 선택해 [gold]덱[/gold]에 추가합니다.",
+        "MERCHANT.blitz.card_packs_entry.title": "카드 팩",
+        "MERCHANT.blitz.card_removal_entry.description": "[gold]덱[/gold]에서 카드를 1장 제거합니다.",
+        "MERCHANT.blitz.card_removal_entry.title": "카드 제거 서비스",
+        "MERCHANT.blitz.card_reward_of_each_rarity_entry.description": "무작위 [red]저주[/red]를 [red]1[/red]장 받습니다.\n[gold]일반[/gold], [gold]고급[/gold], [gold]희귀[/gold] 카드 보상을 [blue]1[/blue]번 받습니다.",
+        "MERCHANT.blitz.card_reward_of_each_rarity_entry.title": "저주받은 카드 보상",
+        "MERCHANT.blitz.card_rewards_entry.description": "카드 보상을 [blue]2[/blue]번 받습니다.",
+        "MERCHANT.blitz.card_rewards_entry.title": "카드 보상",
+        "MERCHANT.blitz.card_transform_entry.description": "[gold]덱[/gold]에서 카드를 1장 [gold]변화[/gold]시킵니다.",
+        "MERCHANT.blitz.card_transform_entry.title": "카드 변화 서비스",
+        "MERCHANT.blitz.card_upgrade_entry.description": "[gold]덱[/gold]에서 카드를 1장 [gold]강화[/gold]합니다.",
+        "MERCHANT.blitz.card_upgrade_entry.title": "카드 강화 서비스",
+        "MERCHANT.blitz.colorless_card_reward_entry.description": "[gold]무색[/gold] 카드 보상을 [blue]1[/blue]번 받습니다.",
+        "MERCHANT.blitz.colorless_card_reward_entry.title": "무색 카드 보상",
+        "MERCHANT.blitz.enchanted_card_reward_entry.description": "[gold]인챈트[/gold]된 카드 보상을 [blue]1[/blue]번 받습니다.",
+        "MERCHANT.blitz.enchanted_card_reward_entry.title": "인챈트된 카드 보상",
+        "MERCHANT.blitz.full_heal_and_max_hp_entry.description": "무작위 [red]저주[/red]를 [red]1[/red]장 받습니다.\n최대 체력이 [blue]6[/blue] 증가하고 체력을 모두 회복합니다.",
+        "MERCHANT.blitz.full_heal_and_max_hp_entry.title": "저주받은 치유",
+        "MERCHANT.blitz.glam_entry.description": "무작위 [red]저주[/red]를 [red]1[/red]장 받습니다.\n카드 1장에 [purple]{Enchantment}[/purple]를 [gold]인챈트[/gold]합니다.",
+        "MERCHANT.blitz.glam_entry.title": "저주받은 {Enchantment}",
+        "MERCHANT.blitz.potions_entry.description": "포션 슬롯을 [blue]1[/blue]개 얻고 무작위 포션을 [blue]2[/blue]개 생성합니다.",
+        "MERCHANT.blitz.potions_entry.title": "포션",
+        "MERCHANT.blitz.prismatic_card_reward_entry.description": "[gold]{Character}[/gold] 카드 보상을 [blue]1[/blue]번 받습니다.",
+        "MERCHANT.blitz.prismatic_card_reward_entry.title": "{Character} 카드 보상",
+        "MERCHANT.blitz.random_upgrades_entry.description": "[gold]덱[/gold]에서 무작위 카드를 [blue]2[/blue]장 강화합니다.",
+        "MERCHANT.blitz.random_upgrades_entry.title": "무작위 강화",
+        "MERCHANT.blitz.rare_card_reward_entry.description": "희귀 카드 보상을 [blue]1[/blue]번 받습니다.",
+        "MERCHANT.blitz.rare_card_reward_entry.title": "희귀 카드 보상",
+        "MERCHANT.blitz.relic_entry.description": "무작위 [gold]유물[/gold]을 [blue]1[/blue]개 얻습니다.",
+        "MERCHANT.blitz.relic_entry.title": "유물",
+        "MERCHANT.blitz.two_more_choices_entry.description": "무작위 [red]저주[/red]를 [red]1[/red]장 받습니다.\n상인이 상품을 두 개 더 구매할 수 있게 해줍니다.",
+        "MERCHANT.blitz.two_more_choices_entry.title": "저주받은 선택",
+        "MERCHANT.blitz.two_relics_entry.description": "무작위 [red]저주[/red]를 [red]1[/red]장 받습니다.\n무작위 [gold]유물[/gold]을 [blue]2[/blue]개 얻습니다.",
+        "MERCHANT.blitz.two_relics_entry.title": "저주받은 유물",
+        "MERCHANT.blitz.upgraded_card_reward_entry.description": "[gold]강화[/gold]된 카드 보상을 [blue]1[/blue]번 받습니다.",
+        "MERCHANT.blitz.upgraded_card_reward_entry.title": "강화된 카드 보상",
+        "MERCHANT.blitz.upgraded_rare_card_entry.description": "무작위 [gold]강화[/gold]된 희귀 카드를 [blue]1[/blue]장 받습니다.",
+        "MERCHANT.blitz.upgraded_rare_card_entry.title": "강화된 희귀 카드",
+        "MERCHANT.blitz.upgraded_rare_card_reward_entry.description": "무작위 [red]저주[/red]를 [red]1[/red]장 받습니다.\n[gold]강화[/gold]된 희귀 카드 보상을 [blue]1[/blue]번 받습니다.",
+        "MERCHANT.blitz.upgraded_rare_card_reward_entry.title": "저주받은 강화된 희귀 카드 보상",
+        "MERCHANT.blitzSelection.none": "[red]더 이상 아이템을 선택할 수 없습니다.[/red]",
+        "MERCHANT.blitzSelection.remaining": "[blue]{Amount}[/blue]개의 아이템을 더 선택할 수 있습니다.",
+        "MERCHANT.talk.blitzFinishedLines.line1": "이용해 주셔서 감사합니다!",
+        "MERCHANT.talk.blitzFinishedLines.line2": "다음에 또 뵙죠!"
+      },
+      "enchantments": {
+        "SHARP": {
+          "title": "예리",
+          "description": "이 카드의 피해량이 [blue]{Amount}[/blue] 증가합니다."
+        },
+        "NIMBLE": {
+          "title": "기민함",
+          "description": "이 카드로 얻는 [gold]방어도[/gold]가 [blue]{Amount}[/blue] 증가합니다."
+        },
+        "ADROIT": {
+          "title": "숙련",
+          "description": "[gold]방어도[/gold]를 [blue]{Block:diff()}[/blue] 얻습니다."
+        },
+        "STEADY": {
+          "title": "안정",
+          "description": "이 카드가 [gold]보존[/gold]을 얻습니다."
+        },
+        "SWIFT": {
+          "title": "신속",
+          "description": "이 카드를 처음 사용 시, 카드를 [blue]{Amount}[/blue]장 뽑습니다."
+        },
+        "VIGOROUS": {
+          "title": "활기",
+          "description": "이 카드를 처음 사용 시, 추가로 피해를 [blue]{Amount}[/blue] 줍니다."
+        },
+        "GLAM": {
+          "title": "호화",
+          "description": "이 카드는 전투당 한 번 [gold]재사용[/gold]을 보유합니다."
+        }
+      },
+      "static": {
+        "REPLAY_DYNAMIC": {
+          "title": "재사용",
+          "description": "이 카드를 {Times:choose(1):1번|[blue]{}[/blue]번} 추가로 사용합니다."
+        }
+      },
+      "keywords": {
+        "RETAIN": {
+          "title": "보존",
+          "description": "보존된 카드는 턴 종료 시 버려지지 않습니다."
+        }
+      },
+      "characters": {
+        "IRONCLAD": "아이언클래드",
+        "SILENT": "사일런트",
+        "DEFECT": "디펙트",
+        "REGENT": "리젠트",
+        "NECROBINDER": "네크로바인더",
+        "FOOL": "풀"
+      }
+    },
+    "eng": {
+      "merchant": {
+        "MERCHANT.blitz.card_enchant_entry.description": "[gold]Enchant[/gold] a card with [purple]{Enchantment}{Amount:plural:| {}}[/purple].",
+        "MERCHANT.blitz.card_enchant_entry.title": "{Enchantment}",
+        "MERCHANT.blitz.card_packs_entry.description": "Choose [blue]1[/blue] of [blue]2[/blue] packs of cards to add to your [gold]Deck[/gold].",
+        "MERCHANT.blitz.card_packs_entry.title": "Card Packs",
+        "MERCHANT.blitz.card_removal_entry.description": "Remove a card from your [gold]Deck[/gold].",
+        "MERCHANT.blitz.card_removal_entry.title": "Card Removal Service",
+        "MERCHANT.blitz.card_reward_of_each_rarity_entry.description": "Receive [red]1[/red] random [red]Curse[/red].\nReceive [blue]1[/blue] [gold]Common[/gold], [gold]Uncommon[/gold] and [gold]Rare[/gold] card reward.",
+        "MERCHANT.blitz.card_reward_of_each_rarity_entry.title": "Cursed Card Rewards",
+        "MERCHANT.blitz.card_rewards_entry.description": "Receive [blue]2[/blue] card rewards.",
+        "MERCHANT.blitz.card_rewards_entry.title": "Card Rewards",
+        "MERCHANT.blitz.card_transform_entry.description": "[gold]Transform[/gold] a card in your [gold]Deck[/gold].",
+        "MERCHANT.blitz.card_transform_entry.title": "Card Transform Service",
+        "MERCHANT.blitz.card_upgrade_entry.description": "[gold]Upgrade[/gold] a card in your [gold]Deck[/gold].",
+        "MERCHANT.blitz.card_upgrade_entry.title": "Card Upgrade Service",
+        "MERCHANT.blitz.colorless_card_reward_entry.description": "Receive [blue]1[/blue] [gold]Colorless[/gold] card reward.",
+        "MERCHANT.blitz.colorless_card_reward_entry.title": "Colorless Card Reward",
+        "MERCHANT.blitz.enchanted_card_reward_entry.description": "Receive [blue]1[/blue] [gold]Enchanted[/gold] card reward.",
+        "MERCHANT.blitz.enchanted_card_reward_entry.title": "Enchanted Card Reward",
+        "MERCHANT.blitz.full_heal_and_max_hp_entry.description": "Receive [red]1[/red] random [red]Curse[/red].\nRaise your Max HP by [blue]6[/blue] and heal all of your HP.",
+        "MERCHANT.blitz.full_heal_and_max_hp_entry.title": "Cursed Heal",
+        "MERCHANT.blitz.glam_entry.description": "Receive [red]1[/red] random [red]Curse[/red].\n[gold]Enchant[/gold] a card with [purple]{Enchantment}[/purple].",
+        "MERCHANT.blitz.glam_entry.title": "Cursed {Enchantment}",
+        "MERCHANT.blitz.potions_entry.description": "Gain [blue]1[/blue] potion slot and procure [blue]2[/blue] random potions.",
+        "MERCHANT.blitz.potions_entry.title": "Potions",
+        "MERCHANT.blitz.prismatic_card_reward_entry.description": "Receive [blue]1[/blue] [gold]{Character}[/gold] card reward.",
+        "MERCHANT.blitz.prismatic_card_reward_entry.title": "{Character} Card Reward",
+        "MERCHANT.blitz.random_upgrades_entry.description": "Upgrade [blue]2[/blue] random cards in your [gold]Deck[/gold].",
+        "MERCHANT.blitz.random_upgrades_entry.title": "Random Upgrades",
+        "MERCHANT.blitz.rare_card_reward_entry.description": "Receive [blue]1[/blue] rare card reward.",
+        "MERCHANT.blitz.rare_card_reward_entry.title": "Rare Card Reward",
+        "MERCHANT.blitz.relic_entry.description": "Obtain [blue]1[/blue] random [gold]Relic[/gold].",
+        "MERCHANT.blitz.relic_entry.title": "Relic",
+        "MERCHANT.blitz.two_more_choices_entry.description": "Receive [red]1[/red] random [red]Curse[/red].\nThe Merchant allows you to purchase two more wares.",
+        "MERCHANT.blitz.two_more_choices_entry.title": "Cursed Choices",
+        "MERCHANT.blitz.two_relics_entry.description": "Receive [red]1[/red] random [red]Curse[/red].\nObtain [blue]2[/blue] random [gold]Relics[/gold].",
+        "MERCHANT.blitz.two_relics_entry.title": "Cursed Relics",
+        "MERCHANT.blitz.upgraded_card_reward_entry.description": "Receive [blue]1[/blue] [gold]Upgraded[/gold] card reward.",
+        "MERCHANT.blitz.upgraded_card_reward_entry.title": "Upgraded Card Reward",
+        "MERCHANT.blitz.upgraded_rare_card_entry.description": "Receive [blue]1[/blue] random [gold]Upgraded[/gold] rare card.",
+        "MERCHANT.blitz.upgraded_rare_card_entry.title": "Upgraded Rare Card",
+        "MERCHANT.blitz.upgraded_rare_card_reward_entry.description": "Receive [red]1[/red] random [red]Curse[/red].\nReceive [blue]1[/blue] [gold]Upgraded[/gold] rare card reward.",
+        "MERCHANT.blitz.upgraded_rare_card_reward_entry.title": "Cursed Upgraded Rare Card Reward",
+        "MERCHANT.blitzSelection.none": "[red]You can't choose any more items.[/red]",
+        "MERCHANT.blitzSelection.remaining": "You may choose [blue]{Amount}[/blue] more {Amount:plural:item|items}.",
+        "MERCHANT.talk.blitzFinishedLines.line1": "Thanks for your patronage!",
+        "MERCHANT.talk.blitzFinishedLines.line2": "Come back again!"
+      },
+      "enchantments": {
+        "SHARP": {
+          "title": "Sharp",
+          "description": "Increases damage on this card by [blue]{Amount}[/blue]."
+        },
+        "NIMBLE": {
+          "title": "Nimble",
+          "description": "Increases [gold]Block[/gold] gained from this card by [blue]{Amount}[/blue]."
+        },
+        "ADROIT": {
+          "title": "Adroit",
+          "description": "Gain [blue]{Block:diff()}[/blue] [gold]Block[/gold]."
+        },
+        "STEADY": {
+          "title": "Steady",
+          "description": "This card gains [gold]Retain[/gold]."
+        },
+        "SWIFT": {
+          "title": "Swift",
+          "description": "The first time you play this card, draw [blue]{Amount}[/blue] {Amount:plural:card|cards}."
+        },
+        "VIGOROUS": {
+          "title": "Vigorous",
+          "description": "The first time this card is played, it deals [blue]{Amount}[/blue] additional damage."
+        },
+        "GLAM": {
+          "title": "Glam",
+          "description": "This card has [gold]Replay[/gold] once per combat."
+        }
+      },
+      "static": {
+        "REPLAY_DYNAMIC": {
+          "title": "Replay",
+          "description": "Plays this card an additional {Times:plural:time|[blue]{}[/blue] times}."
+        }
+      },
+      "keywords": {
+        "RETAIN": {
+          "title": "Retain",
+          "description": "Retained cards are not discarded at the end of turn."
+        }
+      },
+      "characters": {
+        "IRONCLAD": "Ironclad",
+        "SILENT": "Silent",
+        "DEFECT": "Defect",
+        "REGENT": "Regent",
+        "NECROBINDER": "Necrobinder",
+        "FOOL": "Fool"
+      }
+    }
+  }
+}

@@ -354,8 +354,8 @@ Two paths draw a Spine actor today. The site's `spine-player` (WebGL in the page
 - Shorts requests not done (0.113 Fool, pets and overlays): the Fool's own creature VFX (`NFoolVfx` events, arrows that stick in
   enemies and are recalled, `ArrowCmd.ShootArrowAtTarget`), Wah/Cho/Ki melody state and symbols (the images are extracted,
   `data/sts2/fool-ui-assets.json`, but nothing draws them), sorrow/joy, stretching, Tarot; pet creatures (Byrdpip, Byrdine,
-  Wuppy) and `TalkCmd` speech bubbles; the rest-site Evolve choice and `NByrdEvolutionVfx`, dread enemy empowerment, the Blitz
-  merchant. A Fool card still plays what the data above covers (its animation, hit VFX, damage) and lists the rest as unimplemented.
+  Wuppy) and `TalkCmd` speech bubbles; the rest-site Evolve choice and `NByrdEvolutionVfx`, dread enemy empowerment. (The Blitz
+  merchant is a node scene: [NODE_SIM.md](NODE_SIM.md).) A Fool card still plays what the data above covers (its animation, hit VFX, damage) and lists the rest as unimplemented.
   Hit VFX not rendered: `heavy_blunt`, `starry_impact`, `flying_slash`, `bite` and every dedicated `N...Vfx` a card creates except
   Comet's missile.
 - A card's `OnPlay` reads from the 0.113.0 source only (`card-presentation.json`); `FOOL` and the new cards play on that version.

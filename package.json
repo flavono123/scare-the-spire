@@ -52,6 +52,7 @@
     "test:version-canonical": "tsx scripts/versioned-canonical.spec.ts",
     "test:monster-static-art": "tsx scripts/monster-static-art.spec.ts",
     "test:combat-sim": "tsx scripts/combat-sim.spec.ts",
+    "test:node-sim": "tsx scripts/node-sim.spec.ts",
     "test:map-bar": "tsx scripts/map-bar.spec.ts",
     "test:entity-graph": "tsx scripts/entity-graph-chunks.spec.ts",
     "test:entity-subset": "tsx scripts/entity-subset.spec.tsx",

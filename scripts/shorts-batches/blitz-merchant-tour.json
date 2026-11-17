@@ -1,0 +1,144 @@
+{
+  "shots": [
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-card_upgrade",
+      "frames": {
+        "fps": 30
+      },
+      "out": "01-card_upgrade"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-upgraded_card_reward",
+      "frames": {
+        "fps": 30
+      },
+      "out": "02-upgraded_card_reward"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-random_upgrades",
+      "frames": {
+        "fps": 30
+      },
+      "out": "03-random_upgrades"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-card_transform",
+      "frames": {
+        "fps": 30
+      },
+      "out": "04-card_transform"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-card_removal",
+      "frames": {
+        "fps": 30
+      },
+      "out": "05-card_removal"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-card_rewards",
+      "frames": {
+        "fps": 30
+      },
+      "out": "06-card_rewards"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-colorless_card_reward",
+      "frames": {
+        "fps": 30
+      },
+      "out": "07-colorless_card_reward"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-potions",
+      "frames": {
+        "fps": 30
+      },
+      "out": "08-potions"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-card_enchant",
+      "frames": {
+        "fps": 30
+      },
+      "out": "09-card_enchant"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-enchanted_card_reward",
+      "frames": {
+        "fps": 30
+      },
+      "out": "10-enchanted_card_reward"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-prismatic_card_reward",
+      "frames": {
+        "fps": 30
+      },
+      "out": "11-prismatic_card_reward"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-rare_card_reward",
+      "frames": {
+        "fps": 30
+      },
+      "out": "12-rare_card_reward"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-upgraded_rare_card",
+      "frames": {
+        "fps": 30
+      },
+      "out": "13-upgraded_rare_card"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-relic",
+      "frames": {
+        "fps": 30
+      },
+      "out": "14-relic"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-glam",
+      "frames": {
+        "fps": 30
+      },
+      "out": "15-glam"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-two_more_choices",
+      "frames": {
+        "fps": 30
+      },
+      "out": "16-two_more_choices"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-card_reward_of_each_rarity",
+      "frames": {
+        "fps": 30
+      },
+      "out": "17-card_reward_of_each_rarity"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-upgraded_rare_card_reward",
+      "frames": {
+        "fps": 30
+      },
+      "out": "18-upgraded_rare_card_reward"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-two_relics",
+      "frames": {
+        "fps": 30
+      },
+      "out": "19-two_relics"
+    },
+    {
+      "url": "/dev/node-sim?preset=blitz-merchant-full_heal_and_max_hp",
+      "frames": {
+        "fps": 30
+      },
+      "out": "20-full_heal_and_max_hp"
+    }
+  ]
+}
