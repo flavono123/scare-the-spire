@@ -14,7 +14,6 @@
 | supabase-exit | refactor/supabase-exit | Supabase → D1 이관. 계획은 [SUPABASE_EXIT_PLAN.md](../SUPABASE_EXIT_PLAN.md) 7절 | 2~5단계 코드를 2026-11-09 운영에 냈다(`438e5e86`). 운영은 5단계(모든 `source.<group>` = d1, 동기화 꺼짐, 쿠키 신원, 직접 쓰기 닫힘)다. 6단계 클라이언트 정리는 작업 묶음 WP0~WP-W가 병합됐고 WP-Z(WP-B 패치 릴 포함)는 병합 대기, 배포 전 |
 | step6-* | step6/<묶음> | 6단계 작업 묶음([STEP6_PLAN.md](../supabase-exit/STEP6_PLAN.md) 3절). 묶음마다 `.claude/worktrees/step6-<묶음>` | `step6/wp-z`가 마지막(`step6/patch-reels` 병합). `refactor/supabase-exit`에 병합한 뒤 worktree와 브랜치를 지운다 |
 | supabase-exit | refactor/supabase-exit | Supabase → D1 이관. 계획은 [SUPABASE_EXIT_PLAN.md](../SUPABASE_EXIT_PLAN.md) 7절 | 2~5단계 코드를 2026-11-09 운영에 냈다(`438e5e86`). 운영은 1단계 화면 전환(전 그룹 api)과 2단계 동기화·그림자가 켜져 있다. 3단계부터 계속한다 |
-| sts1-worker | refactor/sts1-worker | STS1 백과사전 상세(ko·en)를 별도 Worker `scare-the-spire-sts1`로 다시 서비스(8cd3f7eb 되돌리기). 설계는 브랜치의 `docs/designs/sts1-compendium-worker.md` | 2026-11-13 시작. 구현과 testbed QA를 마치고 병합 전에 사용자에게 보고. `workers/main-worker.ts`·`wrangler.jsonc`를 고치므로 병합 전에 Supabase 이관과 순서를 맞출지 묻는다 |
 
 ## Supabase 마이그레이션
 
@@ -37,6 +36,12 @@
 - 2026-11-13 v0.113.0 패치노트 긴급 배포(작업 도구 `7d2f9a2a`)에 다른 세션 커밋이 같이 나감: `88fcf932`·`e9cec30e`(문의함 화면, dev 전용), `f2abe1a4`(`pnpm cf:limits` 스크립트), `97ec500b`·`d00b2be3`(/dev/admin CF 한도 탭, dev 전용), `7bdd202b`(문서). 운영 화면 영향 없음.
 
 ## 기능 기대치
+
+### sts1-worker
+- Feature: STS1 백과사전 상세(ko·en)를 별도 Worker `scare-the-spire-sts1`이 서비스 바인딩 `STS1_WORKER`로 다시 서비스한다(8cd3f7eb 되돌리기, main 정적 파일 예산 미사용). 게임 전용 로케일은 목록 모달로 308. main 애셋에 없는 `/_next/static`은 STS1 Worker에 묻는다. STS1 링크·댓글 링크·사이트맵·canonical이 다시 상세 페이지를 가리킨다. CI는 STS1 Worker를 main보다 먼저 배포한다. 설계는 [docs/designs/sts1-compendium-worker.md](../designs/sts1-compendium-worker.md).
+- Expect: /compendium/sts1/cards/strike-r, /en/compendium/sts1/relics/burning-blood가 문서·RSC 모두 200과 `x-cf-static-page: compendium`, /cards/bash는 200과 `x-cf-static-page: legacy`. /ja/compendium/sts1/cards/strike-r은 /ja/compendium/sts1/cards?card=strike-r로 308. STS1 댓글 링크(sts1-codex:card:strike)는 /compendium/sts1/cards/strike#comments로 간다. STS1 목록 타일은 그냥 클릭하면 모달, 새 탭이면 상세. /sitemap.xml에 /compendium/sts1/<type>/<slug>가 다시 있다.
+- QA: 위 경로들(문서·RSC), STS1 목록 타일 클릭·새 탭, 이야기·byrdispatch의 STS1 댓글 링크, /sitemap.xml, /compendium/sts1/cards/strike-r canonical. 브랜치에서 로컬만 확인함(cf:build 검사, pre-push, cf:size, 로컬 testbed 스모크 204/206, 기능 20/20, 새로고침 없는 이동 3/3). 확인 못 함: 원격 testbed QA(하루 Worker 요청 한도로 미룸), 운영 첫 배포(Worker `scare-the-spire-sts1`이 처음 생긴다).
+- Commits: `640b452d`~`3c1ed6a8`, 병합 커밋.
 
 ### v0113-history-course-map
 - Feature: 역사 강의서가 v0.113 런의 지도를 다시 그린다. 일반 런은 v0.113.0 지도 생성 규칙(휴식처 5행부터, 타입 큐 순서 유지, 경로 정리 후 보정 규칙, 하위 Rng로 섞기)을 따르고, 블리츠 런은 고정 일직선 지도(고대 → 몬스터·몬스터·상점·엘리트·보물·휴식처 → 보스)를 쓴다. v0.113 업데이트 전에 시작해 후에 끝난 런은 이전 규칙 지도로 돌아간다. 상단 바 보스 초상화는 그 막에서 싸운 보스를 보이고, 보스까지 못 간 막만 예측한다. 블리츠 상점 칸은 블리츠 상인 깔개에 품목 6개를 슬롯 순서로 깔고, 산 품목마다 한 단계씩 칸이 비며 보상이 그 칸에서 상단 바로 날아간다. 남은 선택 수 문구가 줄고(두 개 더 선택은 +1), 다 쓰면 남은 품목이 어두워진다.

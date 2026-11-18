@@ -2,6 +2,7 @@ import { readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
 import {
+  isSts1DetailAssetPath,
   legacyWorldcupDetailRedirectPath,
   prerenderedRedirect,
   STATIC_EXACT_SERVICE_PAGES,
@@ -15,9 +16,11 @@ import {
   sts2CompendiumAliasPath,
   type StaticPageExtension,
 } from "../workers/static-page-routing";
-import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
+import { CLOUDFLARE_ASSETS_DIR, STS1_WORKER_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
+import { findUnreachableNextStatic } from "./prune-cf-unreferenced-assets.mjs";
 
 const assetsRoot = CLOUDFLARE_ASSETS_DIR;
+const sts1AssetsRoot = STS1_WORKER_ASSETS_DIR;
 const nextAppRoot = path.join(".next", "server", "app");
 const maxAssetBytes = Number(process.env.CLOUDFLARE_STATIC_ASSET_SIZE_LIMIT_MIB ?? 25) * 1024 * 1024;
 
@@ -607,12 +610,19 @@ function checkStaticLegacyPages(): number {
         const extensions = routeExtensions.get(routePath) ?? new Set<StaticPageExtension>();
         extensions.add(extension);
         routeExtensions.set(routePath, extensions);
-        // STS1 details are not published (main Worker file limit); the Worker
-        // redirects them to list modals, so a copied one means the filter broke.
         const assetPath = staticCompendiumAssetPath(routePath, extension);
         assert(
-          !assetPath || !statSync(path.join(assetsRoot, assetPath.slice(1)), { throwIfNoEntry: false }),
-          `STS1 detail must not be copied: ${assetPath}`,
+          assetPath && isSts1DetailAssetPath(assetPath),
+          `Static routing rejected STS1 detail ${routePath}.${extension}`,
+        );
+        // STS1 details are STS1 Worker assets (docs/designs/sts1-compendium-worker.md).
+        assert(
+          statSync(path.join(sts1AssetsRoot, assetPath.slice(1)), { throwIfNoEntry: false })?.isFile(),
+          `Missing STS1 Worker detail: ${assetPath}`,
+        );
+        assert(
+          !statSync(path.join(assetsRoot, assetPath.slice(1)), { throwIfNoEntry: false }),
+          `STS1 detail must not be copied to the main Worker: ${assetPath}`,
         );
       }
       for (const [routePath, extensions] of routeExtensions) {
@@ -697,6 +707,27 @@ function checkCloudflareAssetLimits(): {
   return { count: files.length, largestBytes, largestPath, groups: sortedGroups };
 }
 
+/**
+ * The STS1 Worker's upload: within the same budget, with its build's /_next/static, and
+ * every chunk its pages load also on main, which answers them itself while both Workers
+ * run one build. The STS1 copy only covers build skew.
+ */
+function checkSts1WorkerAssets(): number {
+  const files = walkFiles(sts1AssetsRoot);
+  assert(
+    files.length <= assetFileBudget,
+    `STS1 Worker static asset count ${files.length} exceeds the budget ${assetFileBudget}.`,
+  );
+  const missingOnMain = findUnreachableNextStatic(sts1AssetsRoot).reachable
+    .filter((file: string) => !statSync(path.join(assetsRoot, file), { throwIfNoEntry: false })?.isFile());
+  assert(
+    missingOnMain.length === 0,
+    `Main Worker assets lack ${missingOnMain.length} chunk(s) STS1 detail pages load, e.g. ${missingOnMain.slice(0, 3).join(", ")}. `
+      + "The prune step must start from the STS1 Worker pages too.",
+  );
+  return files.length;
+}
+
 const routeCounts = checkServiceLocaleDetails();
 const staticServicePageCount = checkStaticServicePages();
 const staticExactServicePageCount = checkStaticExactServicePages();
@@ -705,6 +736,7 @@ const staticCompendiumRootCount = checkStaticCompendiumRoots();
 const staticLegacyPageCount = checkStaticLegacyPages();
 const staticMetadataAssetCount = checkStaticMetadataAssets();
 const assetStats = checkCloudflareAssetLimits();
+const sts1AssetCount = checkSts1WorkerAssets();
 
 console.log(`Cloudflare static detail routes: ko=${routeCounts.ko}, en=${routeCounts.en}`);
 console.log(`Cloudflare static service page assets: ${staticServicePageCount}`);
@@ -720,6 +752,10 @@ console.log(
     + `${formatCount(maxAssetFiles - assetStats.count)} to limit)`,
 );
 console.log(`Cloudflare static asset groups: ${JSON.stringify(assetStats.groups)}`);
+console.log(
+  `STS1 Worker static assets: ${formatCount(sts1AssetCount)} used / ${formatCount(assetFileBudget)} budget / `
+    + `${formatCount(maxAssetFiles)} limit`,
+);
 console.log(
   `Largest Cloudflare static asset: ${(assetStats.largestBytes / 1024 / 1024).toFixed(2)} MiB (${assetStats.largestPath})`,
 );

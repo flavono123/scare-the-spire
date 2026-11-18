@@ -106,6 +106,10 @@ jobs:
                     # workers/patch-worker.ts matched the patch case above.
                     main_changed=true
                     ;;
+                  wrangler.sts1.jsonc)
+                    # The STS1 Worker deploys with every main build.
+                    main_changed=true
+                    ;;
                   data/*|public/*|src/*)
                     main_changed=true
                     ;;
@@ -288,6 +292,27 @@ jobs:
         if: steps.changes.outputs.main == 'true'
         run: pnpm cf:size
 
+      - name: Deploy STS1 Worker before main
+        if: steps.changes.outputs.main == 'true'
+        run: |
+          # STS1 detail pages from this build (docs/designs/sts1-compendium-worker.md). Before
+          # main: its STS1_WORKER binding fails the deploy while the target Worker does not exist.
+          for attempt in 1 2 3; do
+            echo "STS1 Worker deploy attempt ${attempt}/3"
+            if pnpm cf:sts1:deploy; then
+              exit 0
+            fi
+
+            if [[ "$attempt" -eq 3 ]]; then
+              echo "STS1 Worker deploy failed after ${attempt} attempts"
+              exit 1
+            fi
+
+            sleep $((attempt * 15))
+          done
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
       - name: Deploy to Cloudflare Workers
         if: steps.changes.outputs.main == 'true'
         run: |
@@ -380,6 +405,8 @@ jobs:
           smoke "/compendium/cards"
           smoke_static_detail "/compendium/powers/painful_stabs"
           smoke_static_detail "/en/compendium/powers/painful_stabs"
+          smoke_static_detail "/compendium/sts1/cards/strike-r"
+          smoke_static_detail "/en/compendium/sts1/relics/burning-blood"
           smoke "/generated/search-index.json"
           smoke "/generated/compendium-resource-manifest.json"
 

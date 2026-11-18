@@ -1,6 +1,7 @@
 /**
  * Runs the real main Worker against every prerendered Next route, with the
- * built static asset directory behind a local ASSETS binding, and fails when a
+ * built static asset directory behind a local ASSETS binding (and the STS1
+ * Worker's behind STS1_WORKER), and fails when a
  * public route would need a renderer. Each route must resolve to a static page,
  * the patch Worker, the same redirect its prerender returned, or (dev pages
  * and the not-found page) the static 404. Also fails when a Compendium data
@@ -19,13 +20,13 @@ import {
   buildCompendiumEntryHref,
   COMPENDIUM_RESOURCE_LINK_TYPES,
   getGameOnlyCompendiumDetailFallbackHref,
-  getSts1DetailRedirectPath,
 } from "../src/lib/compendium-resource-links";
 import { GAME_LOCALES, pathPrefixForGameLocale } from "../src/lib/i18n";
-import { CLOUDFLARE_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
+import { CLOUDFLARE_ASSETS_DIR, STS1_WORKER_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
 
 const appDir = path.join(".next", "server", "app");
 const assetsRoot = CLOUDFLARE_ASSETS_DIR;
+const sts1AssetsRoot = STS1_WORKER_ASSETS_DIR;
 const origin = "https://coverage.local";
 
 // The static Compendium copy predates this check: these index routes prerender
@@ -54,9 +55,16 @@ function walk(dir: string, files: string[] = []): string[] {
   return files;
 }
 
-function assetFile(assetPath: string): string | null {
-  const file = path.join(assetsRoot, decodeURIComponent(assetPath).replace(/^\/+/, ""));
+function assetFile(assetPath: string, root = assetsRoot): string | null {
+  const file = path.join(root, decodeURIComponent(assetPath).replace(/^\/+/, ""));
   return statSync(file, { throwIfNoEntry: false })?.isFile() ? file : null;
+}
+
+/** The STS1 Worker's assets (`html_handling: none`): exact paths only. */
+async function fetchSts1Asset(request: Request): Promise<Response> {
+  const file = assetFile(new URL(request.url).pathname, sts1AssetsRoot);
+  if (!file) return new Response(null, { status: 404 });
+  return new Response(request.method === "HEAD" ? null : readFileSync(file), { status: 200 });
 }
 
 /** Workers Static Assets with the default `html_handling: auto-trailing-slash`. */
@@ -148,6 +156,7 @@ async function main() {
     PATCH_WORKER: {
       fetch: async () => new Response("patch", { status: 200, headers: { "x-coverage-owner": "patch" } }),
     },
+    STS1_WORKER: { fetch: fetchSts1Asset },
   };
   const ctx = { waitUntil() {} };
 
@@ -178,18 +187,7 @@ async function main() {
       const label = `${routePath} (${rsc ? "rsc" : "document"})`;
       let outcome: Outcome | null = null;
 
-      // STS1 details are not published: documents redirect to the list modal,
-      // and nothing links their RSC payloads.
-      const sts1Redirect = getSts1DetailRedirectPath(new URL(routePath, origin));
-      const responseLocation = response.headers.get("location");
-      if (sts1Redirect) {
-        const redirected = responseLocation ? new URL(responseLocation, origin) : null;
-        if (!rsc && response.status === 308 && `${redirected?.pathname}${redirected?.search}` === sts1Redirect) {
-          outcome = "redirect";
-        } else if (rsc && response.status === 404) {
-          outcome = "not-found";
-        }
-      } else if (response.headers.get("x-coverage-owner") === "patch") {
+      if (response.headers.get("x-coverage-owner") === "patch") {
         outcome = "patch";
       } else if (status === 404) {
         if (response.status === 404 && owner === "not-found") outcome = "not-found";
@@ -222,6 +220,23 @@ async function main() {
           + `${owner ? ` x-cf-static-page=${owner}` : ""}`,
         );
       }
+    }
+  }
+
+  // A /_next/static file the main assets lack comes from the STS1 Worker's copy of its own
+  // build (build skew); a file neither has stays a 404.
+  const mainNextStatic = new Set(walk(path.join(assetsRoot, "_next", "static")).map((file) => path.relative(assetsRoot, file)));
+  const sts1OnlyChunk = walk(path.join(sts1AssetsRoot, "_next", "static"))
+    .map((file) => path.relative(sts1AssetsRoot, file))
+    .find((file) => !mainNextStatic.has(file) && /^[\w./-]+$/.test(file));
+  if (!sts1OnlyChunk) failures.push(`${sts1AssetsRoot}/_next/static has no file the main assets lack to probe the fallback with`);
+  for (const [file, expected] of [[sts1OnlyChunk, 200], ["_next/static/chunks/coverage-missing.js", 404]] as const) {
+    if (!file) continue;
+    const response: Response = await mainWorker.fetch(new Request(`${origin}/${file.split(path.sep).join("/")}`), env, ctx);
+    await response.body?.cancel();
+    const immutable = response.headers.get("cache-control")?.includes("immutable") ?? false;
+    if (response.status !== expected || (expected === 200 && !immutable)) {
+      failures.push(`/${file}: /_next/static fallback, Worker ${response.status} (${response.headers.get("cache-control") ?? "no cache-control"}), expected ${expected}`);
     }
   }
 

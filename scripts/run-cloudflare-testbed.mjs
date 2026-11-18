@@ -5,11 +5,12 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
 import { checkBuildRecord, describeBuildRecord } from "./build-record.mjs";
-import { CLOUDFLARE_ASSETS_DIR, CLOUDFLARE_BUILD_DIR } from "./cloudflare-assets-dir.mjs";
+import { CLOUDFLARE_ASSETS_DIR, CLOUDFLARE_BUILD_DIR, STS1_WORKER_ASSETS_DIR } from "./cloudflare-assets-dir.mjs";
 import { DEV_ASSET_WATCH_ENV } from "./wrangler-dev-assets.mjs";
 
 const LOCAL_MAIN_ORIGIN = "http://127.0.0.1:8787";
 const LOCAL_PATCH_ORIGIN = "http://127.0.0.1:8788";
+const LOCAL_STS1_ORIGIN = "http://127.0.0.1:8789";
 const REMOTE_ENVIRONMENT = "testbed";
 // The testbed is a development stage: its pages, patch pages and /api all use the
 // shared Supabase's development rows, never production ones (users only reach production).
@@ -24,7 +25,7 @@ function usage() {
 Options:
   --origin <url>   Test an already-running preview without building or starting Workers
   --remote         Deploy the isolated testbed Workers to Cloudflare and test them
-  --skip-build     Reuse existing .cloudflare/assets and .patch-worker artifacts
+  --skip-build     Reuse existing .cloudflare/assets, .sts1-worker and .patch-worker artifacts
                    (refused unless both were built from the current checkout)
   --api            Local only: start the main Worker with the env file and the local D1
                    that scripts/d1-local-seed.ts writes (a copy of the testbed D1, the
@@ -351,6 +352,13 @@ async function runRemote(options) {
     ],
     wranglerEnv,
   );
+  // Before main: its STS1_WORKER binding fails the deploy while the target Worker does not exist.
+  await runCaptured(
+    "deploy isolated STS1 Worker",
+    "pnpm",
+    ["exec", "wrangler", "deploy", "--config", "wrangler.sts1.jsonc", "--env", REMOTE_ENVIRONMENT],
+    wranglerEnv,
+  );
   const mainOutput = await runCaptured(
     "deploy isolated main Worker",
     "pnpm",
@@ -375,7 +383,7 @@ async function runRemote(options) {
 }
 
 function assertBuiltArtifacts() {
-  for (const artifact of [CLOUDFLARE_ASSETS_DIR, ".patch-worker"]) {
+  for (const artifact of [CLOUDFLARE_ASSETS_DIR, STS1_WORKER_ASSETS_DIR, ".patch-worker"]) {
     if (!statSync(artifact, { throwIfNoEntry: false })?.isDirectory()) {
       throw new Error(`--skip-build needs an existing ${artifact}; run pnpm cf:build and pnpm patch:build first`);
     }
@@ -406,10 +414,14 @@ async function main() {
   assertFreshArtifacts(options);
 
   let patchWorker;
+  let sts1Worker;
   let mainWorker;
   try {
     patchWorker = startWorker("patch-worker", "wrangler.patch.jsonc", 8788);
     await waitForWorker("patch Worker", patchWorker, `${LOCAL_PATCH_ORIGIN}/patches`);
+    sts1Worker = startWorker("sts1-worker", "wrangler.sts1.jsonc", 8789);
+    // Any answer below 500 means it is up; / is not one of its assets.
+    await waitForWorker("STS1 Worker", sts1Worker, `${LOCAL_STS1_ORIGIN}/`);
 
     // The seeded env file: API_RUNTIME_FLAGS=d1, the API vars, the identity secret, no Supabase secret key.
     const localApiArgs = options.api ? ["--env-file", path.resolve(LOCAL_API_ENV_FILE)] : [];
@@ -423,10 +435,16 @@ async function main() {
       mainWorker,
       `${LOCAL_MAIN_ORIGIN}/patches`,
     );
+    await waitForWorker(
+      "main-to-STS1 service binding",
+      mainWorker,
+      `${LOCAL_MAIN_ORIGIN}/compendium/sts1/cards/bash`,
+    );
 
     runSuites(LOCAL_MAIN_ORIGIN, { hasData: options.api });
   } finally {
     stopWorker(mainWorker);
+    stopWorker(sts1Worker);
     stopWorker(patchWorker);
   }
 }

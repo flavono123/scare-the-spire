@@ -123,8 +123,9 @@ export function sts1IndexPath(type: Sts1ResourceType): string {
   return `/compendium/sts1/${type}`;
 }
 
-// STS1 list pages and the query param each one opens an entry with. The STS1
-// character select has no such param, so its fallback is the plain list.
+// STS1 list pages and the query param each one opens an entry with, for game-only
+// locales, which publish no STS1 detail pages. The STS1 character select has no such
+// param, so its fallback is the plain list.
 export const STS1_LIST_SELECTOR_PARAMS: Record<Sts1ResourceType, string | null> = {
   cards: "card",
   characters: null,
@@ -134,12 +135,6 @@ export const STS1_LIST_SELECTOR_PARAMS: Record<Sts1ResourceType, string | null> 
   relics: "relic",
 };
 
-/**
- * Where an STS1 entry opens. STS1 detail pages are not published (they left the
- * main Worker to fit its static file limit), so every entry opens as a modal on
- * its list page; the Worker redirects old detail URLs the same way.
- */
 export function sts1DetailPath(type: Sts1ResourceType, slug: string): string {
-  const param = STS1_LIST_SELECTOR_PARAMS[type];
-  return param ? `/compendium/sts1/${type}?${param}=${slug.toLowerCase()}` : `/compendium/sts1/${type}`;
+  return `/compendium/sts1/${type}/${slug}`;
 }

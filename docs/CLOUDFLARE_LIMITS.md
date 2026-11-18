@@ -19,6 +19,7 @@ dev 서버에서는 같은 내용이 `/dev/admin?tab=cloudflare`(어드민 "CF �
 | main·patch Worker 정적 애셋 파일 수 | 버전당 20,000 | 운영 배포 GHA 로그의 wrangler `Success! Uploaded A files (B already uploaded)`, A + B = 업로드 manifest |
 | main 정적 애셋 예산 | 19,500 (= 20,000 − 예비 500) | 같은 로그의 `pnpm cf:assets` 출력. 넘으면 빌드 실패 |
 | main 정적 애셋 분포 | — | 같은 로그의 `Cloudflare static asset groups` (경로 앞 세 단계별 파일 수) |
+| STS1 Worker 정적 애셋 파일 수 | 버전당 20,000, 예산 19,500 | 같은 로그의 `STS1 Worker static assets` 줄(STS1 상세 + 그 빌드의 `/_next/static`). 넘으면 빌드 실패. `cf:limits` 표에는 아직 없다 |
 | 파일 하나 크기 | 25 MiB | `pnpm cf:assets` 출력의 가장 큰 파일 |
 | Worker 코드 gzip | 3 MiB (자체 예산 256 KiB) | `pnpm cf:size` 출력 |
 | Worker 요청 | 계정 전체 하루 100,000 | GraphQL `workersInvocationsAdaptive`, 00:00 UTC부터 |
@@ -40,7 +41,8 @@ dev 서버에서는 같은 내용이 `/dev/admin?tab=cloudflare`(어드민 "CF �
 
 | 추가하는 것 | 파일 | 근거 |
 |---|---|---|
-| STS2 백과사전 상세 항목 1개 | 4 + 이미지 | ko·en × HTML·RSC. 게임 전용 로케일은 상세를 복사하지 않는다. STS1 상세는 2026-11-13부터 어느 로케일에도 복사하지 않는다(목록 모달로 308, STS1 전용 워커 전까지) |
+| STS2 백과사전 상세 항목 1개 | 4 + 이미지 | ko·en × HTML·RSC. 게임 전용 로케일은 상세를 복사하지 않는다 |
+| STS1 백과사전 상세 항목 1개 | 이미지만 | ko·en × HTML·RSC 4개는 STS1 Worker(`scare-the-spire-sts1`)가 싣는다. 2026-11-13부터([설계](designs/sts1-compendium-worker.md)) |
 | 백과사전 목록(분류) 1개 | 28 | 로케일 14 × HTML·RSC |
 | 서비스 라우트 1개 (`/foo`) | 28 | 로케일 14 × HTML·RSC |
 | 서비스 상세 shell 1개 (`/foo/__id__`) | 28 | 로케일 14 × HTML·RSC |

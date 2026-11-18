@@ -20,6 +20,21 @@ request /patches* or /_patches*
 This works as a deployment and rollback fallback, but it invokes the main
 Worker before the patch Worker for every patch-page request.
 
+STS1 Compendium detail pages take the same kind of path
+(docs/designs/sts1-compendium-worker.md):
+
+```text
+request /compendium/sts1/<type>/<slug>, /en/compendium/sts1/<type>/<slug>, /cards/<slug>
+  -> scare-the-spire main Worker
+  -> STS1_WORKER service binding
+  -> scare-the-spire-sts1 Worker (no public URL)
+  -> static assets from .sts1-worker/assets
+```
+
+A custom domain could route those detail paths to the STS1 Worker directly,
+but `/_next/static`, the page headers, and the game-only locale list-modal 308
+stay on the main Worker.
+
 ## Target Route Shape
 
 After a custom domain is available, configure route dispatch so patch traffic
