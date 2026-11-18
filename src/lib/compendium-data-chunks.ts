@@ -4,8 +4,10 @@ import type {
   CodexAffliction,
   CodexAncient,
   CodexAscension,
+  CodexBlitzEntry,
   CodexCard,
   CodexCharacter,
+  CodexDominion,
   CodexEnchantment,
   CodexEncounter,
   CodexEpoch,
@@ -31,10 +33,12 @@ export type CompendiumDataResources = {
   afflictions: CodexAffliction[];
   ancients: CodexAncient[];
   ascensions: CodexAscension[];
+  blitzEntries: CodexBlitzEntry[];
   cardSideTipSources: CardSideTipCatalogSources;
   cards: CodexCard[];
   changes: STS2Change[];
   characters: CodexCharacter[];
+  dominions: CodexDominion[];
   enchantments: CodexEnchantment[];
   encounters: CodexEncounter[];
   epochs: CodexEpoch[];
@@ -58,10 +62,12 @@ const CHUNK_BY_KEY = {
   afflictions: "core",
   ancients: "core",
   ascensions: "core",
+  blitzEntries: "core",
   cardSideTipSources: "core",
   cards: "cards",
   changes: "history",
   characters: "core",
+  dominions: "core",
   enchantments: "enchantments",
   encounters: "encounters",
   epochs: "epochs",
@@ -111,6 +117,7 @@ export const ALL_ENTITY_DATA_KEYS = [
   "ascensions",
   "cards",
   "characters",
+  "dominions",
   "enchantments",
   "encounters",
   "epochs",

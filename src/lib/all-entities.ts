@@ -6,6 +6,7 @@ import type {
   CodexAscension,
   CodexCard,
   CodexCharacter,
+  CodexDominion,
   CodexEnchantment,
   CodexEncounter,
   CodexEpoch,
@@ -25,6 +26,7 @@ export type AllEntityResources = {
   keywords: readonly CodexKeyword[];
   modifiers: readonly CodexModifier[];
   ascensions: readonly CodexAscension[];
+  dominions: readonly CodexDominion[];
   relics: readonly CodexRelic[];
   potions: readonly CodexPotion[];
   powers: readonly CodexPower[];
@@ -94,6 +96,16 @@ export function buildAllEntities(resources: AllEntityResources): EntityInfo[] {
       color: "ascension",
       type: "ascension" as const,
       ascensionData: a,
+    })),
+    ...resources.dominions.map((d) => ({
+      id: d.id,
+      nameEn: d.nameEn,
+      nameKo: d.name,
+      imageUrl: d.imageUrl,
+      href: buildCompendiumResourceHref("dominion", d.id),
+      color: "dread",
+      type: "dominion" as const,
+      dominionData: d,
     })),
     ...resources.relics.map((r) => ({
       id: r.id,

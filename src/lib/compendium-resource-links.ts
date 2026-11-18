@@ -17,7 +17,9 @@ export type CompendiumResourceLinkType =
   | "power"
   | "relic"
   | "modifier"
-  | "ascension";
+  | "ascension"
+  | "blitzEntry"
+  | "dominion";
 
 type LinkConfig = {
   path: string;
@@ -43,6 +45,8 @@ const COMPENDIUM_RESOURCE_LINKS: Record<CompendiumResourceLinkType, LinkConfig> 
   relic: { path: "/compendium/relics", detailPath: "/compendium/relics", param: "relic" },
   modifier: { path: "/compendium/modifiers", detailPath: "/compendium/modifiers", param: "modifier" },
   ascension: { path: "/compendium/ascensions", detailPath: "/compendium/ascensions", param: "ascension" },
+  blitzEntry: { path: "/compendium/blitz-shop", detailPath: "/compendium/blitz-shop", param: "ware" },
+  dominion: { path: "/compendium/dominions", detailPath: "/compendium/dominions", param: "dominion" },
 };
 
 export const COMPENDIUM_RESOURCE_LINK_TYPES = Object.keys(

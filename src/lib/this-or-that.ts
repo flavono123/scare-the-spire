@@ -4,7 +4,7 @@ import {
   type CompendiumResourceLinkType,
 } from "@/lib/compendium-resource-links";
 
-export type ThisOrThatResourceType = Exclude<EntityType, "monsterMove">;
+export type ThisOrThatResourceType = Exclude<EntityType, "monsterMove" | "blitzEntry" | "dominion">;
 
 export type ThisOrThatResourceRef = {
   type: ThisOrThatResourceType;

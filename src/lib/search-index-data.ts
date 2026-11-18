@@ -7,6 +7,7 @@ import type { GameLocale } from "@/lib/i18n";
 import { getPatchShell } from "@/lib/patch-shells";
 import { eventCharacterQuoteSearchParts } from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
+import { getCodexBlitzEntries } from "@/lib/codex-data";
 
 export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "favoriteTournament" | "decisionsDecisions" | "pagestorm" | "debate" | "vexingPuzzlebox";
 
@@ -41,6 +42,7 @@ const TYPE_TO_COMPENDIUM_LINK_TYPE: Partial<Record<EntityType, CompendiumResourc
   epoch: "epoch",
   modifier: "modifier",
   ascension: "ascension",
+  dominion: "dominion",
 };
 
 function entityHref(entity: EntityInfo): string | null {
@@ -295,6 +297,10 @@ function entitySearchText(entity: EntityInfo): string {
     );
   }
 
+  if (entity.dominionData) {
+    appendSearchParts(parts, entity.dominionData.description, entity.dominionData.descriptionEn, entity.dominionData.encounterId);
+  }
+
   if (entity.ascensionData) {
     const ascension = entity.ascensionData;
     appendSearchParts(
@@ -339,10 +345,37 @@ function eventSearchText(
 
 /** One small file per game-only language; the shared index stays Korean and English. */
 export async function buildSearchNames(gameLocale: GameLocale): Promise<GlobalSearchNames> {
-  const entities = await loadAllEntities({ gameLocale });
-  return Object.fromEntries(
-    entities.flatMap((entity) => (entityHref(entity) ? [[entityKey(entity), entity.nameKo]] : [])),
-  );
+  const [entities, blitzEntries] = await Promise.all([
+    loadAllEntities({ gameLocale }),
+    getCodexBlitzEntries({ gameLocale }),
+  ]);
+  return Object.fromEntries([
+    ...entities.flatMap((entity) => (entityHref(entity) ? [[entityKey(entity), entity.nameKo]] : [])),
+    ...blitzEntries.map((entry) => [entityKey({ type: "blitzEntry", id: entry.id }), entry.name]),
+  ]);
+}
+
+// Blitz shop wares are searchable but not hover/link entities: their names ("유물",
+// "포션") would capture those plain game terms in every description.
+async function buildBlitzEntrySearchItems(): Promise<SearchIndexItem[]> {
+  const [entries, englishEntries] = await Promise.all([
+    getCodexBlitzEntries({ gameLocale: "kor" }),
+    getCodexBlitzEntries({ gameLocale: "eng" }),
+  ]);
+  const englishById = new Map(englishEntries.map((entry) => [entry.id, entry]));
+  return entries.map((entry) => {
+    const english = englishById.get(entry.id) ?? entry;
+    return {
+      id: entry.id,
+      type: "blitzEntry",
+      title: entry.name,
+      titleEn: english.name,
+      description: compactSearchParts([entry.id, cleanSearchText(entry.description), cleanSearchText(entry.descriptionEn)]),
+      descriptionEn: compactSearchParts([entry.id, cleanSearchText(english.description)]),
+      imageUrl: entry.imageUrl,
+      href: buildCompendiumResourceHref("blitzEntry", entry.id),
+    };
+  });
 }
 
 export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
@@ -489,5 +522,7 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: "/pagestorm",
   }];
 
-  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems, ...favoriteTournamentItems, ...decisionsDecisionsItems, ...vexingPuzzleboxItems, ...pagestormItems, ...debateItems] };
+  const blitzEntryItems = await buildBlitzEntrySearchItems();
+
+  return { items: [...patchItems, ...storyItems, ...items, ...blitzEntryItems, ...historyCourseItems, ...thisOrThatItems, ...favoriteTournamentItems, ...decisionsDecisionsItems, ...vexingPuzzleboxItems, ...pagestormItems, ...debateItems] };
 }

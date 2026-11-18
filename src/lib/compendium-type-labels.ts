@@ -24,5 +24,7 @@ export function compendiumTypeLabels(
     epoch: codex.epochs,
     modifier: codex.modifiers,
     ascension: codex.ascensions,
+    blitzEntry: codex.blitzShop,
+    dominion: codex.dominions,
   };
 }

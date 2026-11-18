@@ -21,6 +21,7 @@ export const AUTO_LINK_ENTITY_TYPES = new Set<EntityType>([
   "epoch",
   "modifier",
   "ascension",
+  "dominion",
 ]);
 
 const AUTO_LINK_SKIP_LABELS = new Set([
