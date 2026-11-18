@@ -324,3 +324,10 @@
 79. **게임에 클래스가 없는 파워 DIAMOND_DIADEM, DOOR_REVIVAL이 폐기 표시 없이 남아 있음**.
     - https://scare-the-spire.flavono123.workers.dev/compendium/powers
     - 처리(2026-11-15): 고침(`8b93262f`): 두 파워에 `deprecated`를 넣었다. DIAMOND_DIADEM은 `deprecatedInPatch: v0.109.0`(그때 유물 효과가 바뀐 것에서 추정), DOOR_REVIVAL은 그림도 문구도 없는 자리표시자라 패치 없이 표시했다.
+
+### 2026-11-18 STS1 Worker testbed QA에서 추가
+
+80. **게임 전용 로케일(`/ja` 등) 페이지가 STS2 상세 RSC를 prefetch하는데, 그 경로는 404이고 브라우저에서 요청이 끝나지 않음**. 그래서 페이지가 networkidle에 이르지 않고, `qa:cf:testbed`의 "record shells keep exactly one policy canonical set after hydration"이 `/ja/this-or-that/<없는 id>`에서 30초 시간 초과로 매번 실패한다.
+    - 열린 채 남는 요청: testbed `/ja/compendium/cards/abrasive?_rsc=…`, 운영 `/ja/compendium/characters/fool?_rsc=…`·`/ja/compendium/cards/wah_symphony?_rsc=…`(Supabase를 막은 Playwright, 로드 후 15초). curl로는 둘 다 0.3초 만에 404(`x-cf-static-page: not-found`).
+    - 페이지에 그 주소의 `<a>`는 없다. 어디서 prefetch하는지는 찾지 않았다. `/en` 같은 페이지는 열린 요청이 없다.
+    - https://scare-the-spire.flavono123.workers.dev/ja/this-or-that/00000000-0000-4000-8000-000000000000
