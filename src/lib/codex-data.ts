@@ -3015,7 +3015,7 @@ export async function getCodexBlitzEntries(opts?: { gameLocale?: GameLocale }): 
           `${id}_${enchantment}`,
           { Enchantment: enchantName(enchantments, enchantment), Amount: shown },
           { Enchantment: enchantName(engEnchantments, enchantment), Amount: shown },
-          { type: "enchantment", id: enchantment },
+          { type: "enchantment", id: enchantment, name: enchantName(enchantments, enchantment) },
           index,
         );
       });
@@ -3024,7 +3024,7 @@ export async function getCodexBlitzEntries(opts?: { gameLocale?: GameLocale }): 
         id,
         { Enchantment: enchantName(enchantments, "GLAM"), Amount: 1 },
         { Enchantment: enchantName(engEnchantments, "GLAM"), Amount: 1 },
-        { type: "enchantment", id: "GLAM" },
+        { type: "enchantment", id: "GLAM", name: enchantName(enchantments, "GLAM") },
       );
     } else if (type === "PrismaticCardReward") {
       // A card reward of another character's pool, one ware per character.
@@ -3034,7 +3034,7 @@ export async function getCodexBlitzEntries(opts?: { gameLocale?: GameLocale }): 
           `${id}_${character}`,
           { Character: name(characters) },
           { Character: name(engCharacters) },
-          { type: "character", id: character },
+          { type: "character", id: character, name: name(characters) },
           index,
         );
       });
@@ -3063,6 +3063,19 @@ const DOMINION_ENCOUNTERS: Record<string, string> = {
 
 const DOMINION_ACT_ORDER: (EventAct | null)[] = ["Act 1 - Overgrowth", "Underdocks", "Act 2 - Hive", "Act 3 - Glory", null];
 
+/** The Dread mode rules from the character select portrait (DREAD_RULE_01...). */
+export async function getCodexDreadRules(opts?: { gameLocale?: GameLocale }): Promise<string[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [ascension, engAscension] = await Promise.all([
+    readGameLocalizationTable(gameLocale, "ascension"),
+    readGameLocalizationTable("eng", "ascension"),
+  ]);
+  return Object.keys(engAscension)
+    .filter((key) => /^DREAD_RULE_\d+$/.test(key))
+    .sort()
+    .map((key) => ascension[key] ?? engAscension[key]);
+}
+
 export async function getCodexDominions(opts?: { gameLocale?: GameLocale }): Promise<CodexDominion[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const [ascension, engAscension, encounters, engEncounters] = await Promise.all([
@@ -3085,6 +3098,7 @@ export async function getCodexDominions(opts?: { gameLocale?: GameLocale }): Pro
       return [{
         id,
         encounterId,
+        encounterName: encounter.name,
         name: title.replace("{BossName}", encounter.name),
         nameEn: engTitle.replace("{BossName}", engEncounter.nameEn),
         description: ascension[key] ?? engAscension[key] ?? "",
@@ -3096,7 +3110,7 @@ export async function getCodexDominions(opts?: { gameLocale?: GameLocale }): Pro
     })
     .sort((left, right) => DOMINION_ACT_ORDER.indexOf(left.act) - DOMINION_ACT_ORDER.indexOf(right.act)
       || left.encounterId.localeCompare(right.encounterId))
-    .map(({ act: _act, ...dominion }, sortOrder) => ({ ...dominion, sortOrder }));
+    .map((dominion, sortOrder) => ({ ...dominion, sortOrder }));
 }
 
 const ASCENSION_HISTORICAL_ALIASES: Record<string, { ko: string[]; en: string[] }> = {

@@ -38,6 +38,7 @@ const COMPENDIUM_RESOURCE_TYPE_BY_ENTITY_TYPE: Partial<Record<EntityType, Compen
   ancient: "ancients",
   epoch: "epochs",
   modifier: "modifiers",
+  dominion: "dominions",
   ascension: "ascensions",
 };
 

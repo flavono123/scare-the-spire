@@ -183,6 +183,8 @@ export const sts2NavItems = [
   { href: "/compendium/badges", labelKey: "badges", icon: "/images/sts2/badges/double_snecko.webp" },
   { href: "/compendium/ascensions", labelKey: "ascensions", icon: ASCENSION_TOKEN_IMAGE_URL, iconClassName: "h-4 w-[14px]" },
   { href: "/compendium/modifiers", labelKey: "modifiers", icon: CHARACTER_CARDS_MODIFIER_IMAGE_URL },
+  { href: "/compendium/blitz-shop", labelKey: "blitzShop", icon: "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp" },
+  { href: "/compendium/dominions", labelKey: "dominions", icon: "/images/sts2/bosses/queen_boss.webp" },
 ] as const;
 
 export const sts1NavItems = [

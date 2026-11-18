@@ -184,6 +184,30 @@ const categories = [
       "/images/sts2/modifiers/draft.webp",
     ],
   },
+  {
+    href: "/compendium/blitz-shop",
+    labelKey: "blitzShop",
+    count: 30,
+    description: null,
+    images: [
+      "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp",
+      "/images/sts2/blitz-merchant/entries/entry_relic.webp",
+      "/images/sts2/blitz-merchant/entries/entry_potions.webp",
+      "/images/sts2/blitz-merchant/entries/entry_two_relics.webp",
+    ],
+  },
+  {
+    href: "/compendium/dominions",
+    labelKey: "dominions",
+    count: 12,
+    description: null,
+    images: [
+      "/images/sts2/bosses/ceremonial_beast_boss.webp",
+      "/images/sts2/bosses/waterfall_giant_boss.webp",
+      "/images/sts2/bosses/kaiser_crab_boss.webp",
+      "/images/sts2/bosses/queen_boss.webp",
+    ],
+  },
 ] as const;
 
 export async function generateMetadata({
@@ -306,4 +330,6 @@ const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = 
   modifiers: "Modifiers",
   ascensions: "Ascension",
   badges: "Badges",
+  blitzShop: "Blitz Shop",
+  dominions: "Dread Dominions",
 };

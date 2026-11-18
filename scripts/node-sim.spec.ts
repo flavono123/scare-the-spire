@@ -32,6 +32,9 @@ const layout = {
 assert.equal(formatLoc("{Enchantment}{Amount:plural:(을)를|(을)를 {}}", { Enchantment: "예리", Amount: 2 }, "kor"), "예리(을)를");
 assert.equal(formatLoc("with {Enchantment}{Amount:plural:| {}}.", { Enchantment: "Sharp", Amount: 2 }, "eng"), "with Sharp 2.");
 assert.equal(formatLoc("{Times:choose(1):1번|[blue]{}[/blue]번}", { Times: 1 }, "kor"), "1번");
+assert.equal(formatLoc("{Amount:plural(ru):| {} раза|{} раз}", { Amount: 2 }, "eng"), " 2 раза");
+assert.equal(formatLoc("{Amount:plural(ru):| {} раза|{} раз}", { Amount: 5 }, "eng"), "5 раз");
+assert.equal(formatLoc("{Amount:plural(ru):| {} раза|{} раз}", { Amount: 1 }, "eng"), "");
 
 // GetBlitzEntries: five distinct non-cursed entries, then one cursed, for any seed.
 for (let seed = 0; seed < 200; seed += 1) {

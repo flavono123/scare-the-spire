@@ -188,7 +188,7 @@ export interface CodexBlitzEntry {
   /** Half weight in the shop draw. */
   rare: boolean;
   /** The enchantment or character the ware is about. */
-  link: { type: "enchantment" | "character"; id: string } | null;
+  link: { type: "enchantment" | "character"; id: string; name: string } | null;
   sortOrder: number;
 }
 
@@ -197,6 +197,8 @@ export interface CodexDominion {
   id: string;
   /** Boss encounter that brings it. */
   encounterId: string;
+  encounterName: string;
+  act: EventAct | null;
   name: string;
   nameEn: string;
   description: string;

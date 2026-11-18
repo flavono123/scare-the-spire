@@ -66,6 +66,14 @@ export function formatLoc(template: string, vars: LocVars, lang: GameLang): stri
     if (rest.startsWith("plural:")) {
       const words = options(rest.slice("plural:".length));
       out += fill(words[Math.min(pluralIndex(lang, Number(value)), words.length - 1)]);
+    } else if (rest.startsWith("plural(")) {
+      // {Var:plural(ru):a|b|c}: the named culture's CLDR plural categories, in CLDR order.
+      const close = rest.indexOf("):");
+      const rules = new Intl.PluralRules(rest.slice("plural(".length, close));
+      const categories = rules.resolvedOptions().pluralCategories as string[];
+      const order = ["zero", "one", "two", "few", "many", "other"].filter((category) => categories.includes(category));
+      const words = options(rest.slice(close + 2));
+      out += fill(words[Math.min(order.indexOf(rules.select(Number(value))), words.length - 1)]);
     } else if (rest.startsWith("choose(")) {
       const close = rest.indexOf("):");
       const choices = rest.slice("choose(".length, close).split(",");
