@@ -161,6 +161,8 @@ export const BAD_RUN_MODIFIER_IDS = [
 export interface CodexAscension {
   id: string;
   level: number;
+  /** Blitz ascension that reuses this level, or null when Blitz has no such step. */
+  blitzLevel: number | null;
   name: string;
   nameEn: string;
   description: string;
@@ -171,8 +173,15 @@ export interface CodexAscension {
   sortOrder: number;
 }
 
+/** Game-mode labels from the game's ascension table, plain text. */
+export interface CodexAscensionGameModeLabels {
+  title: string;
+  standard: string;
+  blitz: string;
+}
+
 /** Ids of related compendium resources by kind, for the detail rail. */
-export type CodexRelatedIds = Partial<Record<"card" | "power" | "enchantment" | "character" | "encounter" | "monster", string[]>>;
+export type CodexRelatedIds = Partial<Record<"card" | "power" | "enchantment" | "character" | "encounter" | "monster" | "relic" | "potion" | "event" | "ancient", string[]>>;
 
 export interface CodexBlitzEntryVariant {
   /** Enchantment or character id. */
@@ -228,6 +237,30 @@ export interface CodexDominion {
   description: string;
   descriptionEn: string;
   imageUrl: string;
+  sortOrder: number;
+}
+
+/**
+ * A creature that fights on the player's side (`PlayerCmd.AddPet`): Osty from the Necrobinder's Summon,
+ * and the creatures of the relics with `AddsPet` (Wuppy, Byrdpip, Byrdine, Pael's Legion).
+ */
+export interface CodexPet {
+  /** The relic that brings it, or OSTY. */
+  id: string;
+  /** Its MonsterModel id (the localization and the render art). */
+  monsterId: string;
+  name: string;
+  nameEn: string;
+  /** Game text: the relic's description, or the Summon hover tip for Osty. */
+  description: string;
+  descriptionEn: string;
+  imageUrl: string;
+  /** Where it comes from: the character it belongs to, the event, or the Ancient that offers its relic; null when it only comes from evolving another pet. */
+  source: { type: "character" | "event" | "ancient"; id: string; name: string } | null;
+  /** The pet it evolves into at a rest site, and the one it evolves from. */
+  evolvesTo: string | null;
+  evolvesFrom: string | null;
+  related: CodexRelatedIds;
   sortOrder: number;
 }
 

@@ -33,8 +33,10 @@ import {
   CodexKeyword,
   CodexModifier,
   CodexAscension,
+  CodexAscensionGameModeLabels,
   CodexBlitzEntry,
   CodexDominion,
+  CodexPet,
   CodexCharacter,
   CodexRelic,
   CodexPotion,
@@ -3128,6 +3130,93 @@ export async function getCodexDominions(opts?: { gameLocale?: GameLocale }): Pro
     .map((dominion, sortOrder) => ({ ...dominion, sortOrder }));
 }
 
+/**
+ * Every creature `PlayerCmd.AddPet` puts on the player's side in 0.113: the relics with `AddsPet => true`
+ * and Osty (`OstyCmd.Summon`). `terms` are the gold words that tie other game text to the pet.
+ */
+const PET_DEFS: Array<{
+  id: string;
+  monsterId: string;
+  source: NonNullable<CodexPet["source"]>["type"] | null;
+  sourceId: string | null;
+  terms: string[];
+  evolvesTo?: string;
+  evolvesFrom?: string;
+  /** Cards its relic touches on pickup (Byrdpip transforms Byrdonis Egg into Byrd Swoop). */
+  cards?: string[];
+}> = [
+  { id: "OSTY", monsterId: "OSTY", source: "character", sourceId: "NECROBINDER", terms: ["Osty", "Summon"] },
+  { id: "WUPPY", monsterId: "WUPPY", source: "event", sourceId: "WUPPY_IN_TROUBLE", terms: ["Wuppy"] },
+  // Byrdonis Nest gives Byrdonis Egg; a rest site hatches it into the Byrdpip relic (HatchRestSiteOption).
+  { id: "BYRDPIP", monsterId: "BYRDPIP", source: "event", sourceId: "BYRDONIS_NEST", terms: ["Byrdpip"], evolvesTo: "BYRDINE", cards: ["BYRDONIS_EGG", "BYRD_SWOOP"] },
+  // Only from Byrdpip at a rest site (EvolveRestSiteOption), so its source is the evolution.
+  { id: "BYRDINE", monsterId: "BYRDINE_MONSTER", source: null, sourceId: null, terms: ["Byrdine"], evolvesFrom: "BYRDPIP", cards: ["BYRD_SWOOP", "GOD_BYRD"] },
+  { id: "PAELS_LEGION", monsterId: "PAELS_LEGION", source: "ancient", sourceId: "PAEL", terms: ["Pael's Legion"] },
+];
+
+export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<CodexPet[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [monsters, engMonsters, tips, engTips, relicText, engRelicText, relics, cards, powers, potions, events, characters, ancients] = await Promise.all([
+    readGameLocalizationTable(gameLocale, "monsters"),
+    readGameLocalizationTable("eng", "monsters"),
+    readGameLocalizationTable(gameLocale, "static_hover_tips"),
+    readGameLocalizationTable("eng", "static_hover_tips"),
+    readGameLocalizationTable(gameLocale, "relics"),
+    readGameLocalizationTable("eng", "relics"),
+    getCodexRelics({ gameLocale }),
+    getCodexCards({ gameLocale }),
+    getCodexPowers({ gameLocale }),
+    getCodexPotions({ gameLocale }),
+    getCodexEvents({ gameLocale }),
+    getCodexCharacters({ gameLocale }),
+    getCodexAncients({ gameLocale }),
+  ]);
+  const relicById = new Map(relics.map((relic) => [relic.id, relic]));
+  const sourceName = (type: NonNullable<CodexPet["source"]>["type"], id: string) => (
+    (type === "character" ? characters : type === "event" ? events : ancients).find((item) => item.id === id)?.name ?? id
+  );
+  const mentions = <T extends { id: string; descriptionEn: string }>(items: T[], terms: string[]) => items
+    .filter((item) => terms.some((term) => item.descriptionEn.includes(`[gold]${term}[/gold]`) || item.descriptionEn.includes(`[gold]${term}'s[/gold]`)))
+    .map((item) => item.id);
+
+  return PET_DEFS.flatMap((def, sortOrder) => {
+    const relic = relicById.get(def.id);
+    const name = monsters[`${def.monsterId}.name`] ?? engMonsters[`${def.monsterId}.name`];
+    if (!name || (def.id !== "OSTY" && !relic)) return [];
+    // Wuppy's description reads its live HP ({CurrentHp}/{MaxHp}); the event text is the one without it.
+    const description = def.id === "OSTY"
+      ? [tips["SUMMON_STATIC.description"], engTips["SUMMON_STATIC.description"]]
+      : relicText[`${def.id}.eventDescription`]
+        ? [relicText[`${def.id}.eventDescription`], engRelicText[`${def.id}.eventDescription`]]
+        : [relic!.description, relic!.descriptionEn];
+    const relatedRelics = [...new Set([...(relic ? [def.id] : []), ...mentions(relics, def.terms)])];
+    const related: CodexPet["related"] = {
+      ...(def.source === "character" ? { character: [def.sourceId!] } : {}),
+      ...(def.source === "event" ? { event: [def.sourceId!] } : {}),
+      ...(def.source === "ancient" ? { ancient: [def.sourceId!] } : {}),
+      relic: relatedRelics,
+      card: [...new Set([...(def.cards ?? []), ...mentions(cards, def.terms)])],
+      power: mentions(powers, def.terms),
+      potion: mentions(potions, def.terms),
+    };
+    for (const event of mentions(events, def.terms)) related.event = [...new Set([...(related.event ?? []), event])];
+    return [{
+      id: def.id,
+      monsterId: def.monsterId,
+      name,
+      nameEn: engMonsters[`${def.monsterId}.name`] ?? name,
+      description: description[0] ?? description[1] ?? "",
+      descriptionEn: description[1] ?? "",
+      imageUrl: `/images/sts2/monsters-render/${def.monsterId.toLowerCase()}.webp`,
+      source: def.source && def.sourceId ? { type: def.source, id: def.sourceId, name: sourceName(def.source, def.sourceId) } : null,
+      evolvesTo: def.evolvesTo ?? null,
+      evolvesFrom: def.evolvesFrom ?? null,
+      related: Object.fromEntries(Object.entries(related).filter(([, ids]) => ids && ids.length > 0)),
+      sortOrder,
+    }];
+  });
+}
+
 const ASCENSION_HISTORICAL_ALIASES: Record<string, { ko: string[]; en: string[] }> = {
   // A6 was reworked from Gloom to Inflation; keep both names for patch matching.
   LEVEL_06: {
@@ -3135,6 +3224,19 @@ const ASCENSION_HISTORICAL_ALIASES: Record<string, { ko: string[]; en: string[] 
     en: ["Gloom"],
   },
 };
+
+// AscensionHelper.GetLevelForBlitz: Blitz ascension N reuses this standard level (index = N).
+const BLITZ_ASCENSION_STANDARD_LEVELS = [0, 2, 4, 8, 9, 5];
+
+export async function getCodexAscensionGameModeLabels(gameLocale: GameLocale = DEFAULT_CODEX_GAME_LOCALE): Promise<CodexAscensionGameModeLabels> {
+  const ascension = await readGameLocalizationTable(gameLocale, "ascension");
+  const plain = (key: string, fallback: string) => stripCodexMarkup(gameText(ascension, key, fallback)).trim();
+  return {
+    title: plain("PORTRAIT_GAME_MODE", "게임 모드: {gameMode}").replace(/[:：]?\s*\{gameMode\}/, "").trim(),
+    standard: plain("PORTRAIT_GAME_MODE.standard", "기본"),
+    blitz: plain("PORTRAIT_GAME_MODE.blitz", "블리츠"),
+  };
+}
 
 export async function getCodexAscensions(opts?: { gameLocale?: GameLocale }): Promise<CodexAscension[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
@@ -3154,18 +3256,23 @@ export async function getCodexAscensions(opts?: { gameLocale?: GameLocale }): Pr
       const name = gameText(gameAscension, `${kor.id}.title`, gameTitleFallback(kor.name, eng.name, gameLocale));
       const nameEn = gameText(engGameAscension, `${kor.id}.title`, eng.name);
       const historical = ASCENSION_HISTORICAL_ALIASES[kor.id];
+      const blitzIndex = BLITZ_ASCENSION_STANDARD_LEVELS.indexOf(kor.level);
+      const blitzLevel = blitzIndex >= 0 ? blitzIndex : null;
       const aliasesKo = [
         ...(kor.level > 0 ? [`승천 ${kor.level}`, `A${kor.level}`] : []),
+        ...(blitzLevel ? [`블리츠 승천 ${blitzLevel}`] : []),
         ...(historical?.ko ?? []),
       ].filter((alias) => alias !== name);
       const aliasesEn = [
         ...(kor.level > 0 ? [`Ascension ${kor.level}`, `A${kor.level}`] : []),
+        ...(blitzLevel ? [`Blitz Ascension ${blitzLevel}`] : []),
         ...(historical?.en ?? []),
       ].filter((alias) => alias !== nameEn);
 
       return {
         id: kor.id,
         level: kor.level,
+        blitzLevel,
         name,
         nameEn,
         description: gameText(gameAscension, `${kor.id}.description`, gameTitleFallback(kor.description, eng.description, gameLocale)),
