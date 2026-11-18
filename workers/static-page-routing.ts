@@ -67,6 +67,8 @@ const STATIC_COMPENDIUM_SEGMENTS = new Set([
   "keywords",
   "modifiers",
   "ascensions",
+  "blitz-shop",
+  "dominions",
   "monsters",
   "potions",
   "powers",
