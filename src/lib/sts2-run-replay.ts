@@ -13,6 +13,7 @@ const MATCH_CAP = 256;
 const MAP_COLUMNS = 7;
 const MEGA_RANDOM_MIN_BUILD = "v0.107.1";
 const UINT64_SEED_MIN_BUILD = "v0.109.0";
+const MAP_RULES_V113_MIN_BUILD = "v0.113.0";
 const UINT64_MASK = BigInt("18446744073709551615");
 
 type RngProfile = "legacy-dotnet-32" | "mega-random-32" | "mega-random-64";
@@ -519,7 +520,7 @@ class MapNode {
   }
 }
 
-type ActMapVariant = "standard" | "golden_path" | "spoils";
+type ActMapVariant = "standard" | "golden_path" | "spoils" | "blitz";
 
 class GeneratedActMap {
   readonly grid: Array<Array<MapNode | null>>;
@@ -532,6 +533,9 @@ class GeneratedActMap {
   readonly actConfig: ReplayActConfig;
   readonly rng: StsRng;
   readonly variant: ActMapVariant;
+  // v0.113.0 map rules: rest sites from row 5, and pruning repair counts only
+  // modifiable points and may also convert Unknowns (StandardActMap, MapPathPruning).
+  readonly v113Rules: boolean;
 
   constructor(
     rng: StsRng,
@@ -541,10 +545,13 @@ class GeneratedActMap {
     hasSecondBoss: boolean,
     variant: ActMapVariant = "standard",
     isMultiplayer = false,
+    buildId = "unknown",
   ) {
     // Game's ActModel.GetNumberOfRooms reduces room count by 1 in multiplayer
-    // mode (ActModel.cs:175-183).
-    const numRooms = actConfig.numRooms - (isMultiplayer ? 1 : 0);
+    // mode (ActModel.cs:175-183). BlitzActMap is a fixed line that ignores it.
+    const numRooms =
+      variant === "blitz" ? BLITZ_POINT_TYPES.length : actConfig.numRooms - (isMultiplayer ? 1 : 0);
+    this.v113Rules = isBuildAtLeast(buildId, MAP_RULES_V113_MIN_BUILD);
     const gridHeight = numRooms + 1;
     this.grid = Array.from({ length: MAP_COLUMNS }, () => Array<MapNode | null>(gridHeight).fill(null));
     this.rng = rng;
@@ -557,7 +564,9 @@ class GeneratedActMap {
     this.secondBoss = hasSecondBoss ? new MapNode(Math.floor(MAP_COLUMNS / 2), gridHeight + 1, "boss") : null;
 
     if (variant === "golden_path") {
-      buildGoldenPathGrid(this);
+      buildStraightLineGrid(this, GOLDEN_PATH_POINT_TYPES);
+    } else if (variant === "blitz") {
+      buildStraightLineGrid(this, BLITZ_POINT_TYPES);
     } else if (variant === "spoils") {
       // Spoils ports MegaCrit.Sts2.Core.Map.SpoilsActMap (v0.104). No
       // centerGrid/spreadAdjacent/straighten — that's Standard-only.
@@ -2167,22 +2176,29 @@ function buildGeneratedMap(
   const isMultiplayer = run.players.length > 1;
   const variant = chooseActMapVariant(run, actStartFloor, actEndFloor);
 
+  if (variant === "blitz") {
+    // BlitzActMap uses no RNG and no point counts; pass inert ones.
+    const rng = new StsRng(seed, `act_${actIndex + 1}_map`, rngProfile);
+    const counts = config.getCounts(rng, run.ascension);
+    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "blitz", false, run.build_id);
+  }
+
   if (variant === "golden_path") {
     // Golden Path uses no RNG; pass a dummy one. Seed is deterministic regardless.
     const rng = new StsRng(seed, `act_${actIndex + 1}_golden_path`, rngProfile);
     const counts = config.getCounts(rng, run.ascension);
-    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "golden_path", isMultiplayer);
+    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "golden_path", isMultiplayer, run.build_id);
   }
 
   if (variant === "spoils") {
     const rng = new StsRng(seed, "spoils_map", rngProfile);
     const counts = config.getCounts(rng, run.ascension);
-    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "spoils", isMultiplayer);
+    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "spoils", isMultiplayer, run.build_id);
   }
 
   const baseRng = new StsRng(seed, `act_${actIndex + 1}_map`, rngProfile);
   const baseCounts = config.getCounts(baseRng, run.ascension);
-  let map = new GeneratedActMap(baseRng, config, baseCounts, false, hasSecondBoss, "standard", isMultiplayer);
+  let map = new GeneratedActMap(baseRng, config, baseCounts, false, hasSecondBoss, "standard", isMultiplayer, run.build_id);
 
   if (modifierIds.has("BIG_GAME_HUNTER")) {
     const eliteCount = map.getAllMapPoints().filter((point) => point.type === "elite").length;
@@ -2194,7 +2210,7 @@ function buildGeneratedMap(
       numRests: baseCounts.numRests,
       pointTypesThatIgnoreRules: new Set<ReplayMapPointType>(["elite"]),
     };
-    map = new GeneratedActMap(overrideRng, config, overrideCounts, false, hasSecondBoss, "standard", isMultiplayer);
+    map = new GeneratedActMap(overrideRng, config, overrideCounts, false, hasSecondBoss, "standard", isMultiplayer, run.build_id);
   }
 
   return map;
@@ -2205,6 +2221,7 @@ function chooseActMapVariant(
   actStartFloor: number,
   actEndFloor: number,
 ): ActMapVariant {
+  if (run.game_mode === "blitz") return "blitz";
   if (run.players.length === 0) return "standard";
   const idOf = (value?: string) => (value ?? "").toUpperCase();
   // Golden Compass: granted at Tezcatara's ancient option (start of an act).
@@ -2373,9 +2390,8 @@ export function cardWasInDeckAtFloor(
   return true;
 }
 
-function buildGoldenPathGrid(map: GeneratedActMap) {
-  // Per MegaCrit.Sts2.Core.Map.GoldenPathActMap — fixed 16-room straight line at col=3
-  const defaultTypes: ReplayMapPointType[] = [
+// MegaCrit.Sts2.Core.Map.GoldenPathActMap — fixed 16-room straight line at col=3.
+const GOLDEN_PATH_POINT_TYPES: readonly ReplayMapPointType[] = [
     "monster",
     "unknown",
     "monster",
@@ -2393,6 +2409,18 @@ function buildGoldenPathGrid(map: GeneratedActMap) {
     "elite",
     "rest_site",
   ];
+
+// MegaCrit.Sts2.Core.Map.BlitzActMap (v0.113.0) — fixed 6-room straight line at col=3.
+const BLITZ_POINT_TYPES: readonly ReplayMapPointType[] = [
+  "monster",
+  "monster",
+  "shop",
+  "elite",
+  "treasure",
+  "rest_site",
+];
+
+function buildStraightLineGrid(map: GeneratedActMap, defaultTypes: readonly ReplayMapPointType[]) {
   const col = Math.floor(MAP_COLUMNS / 2);
   // Grid rows: 0 (ancient) through defaultTypes.length (last normal). Boss sits
   // at row = gridHeight (just past the grid), matching GeneratedActMap's layout
@@ -2831,15 +2859,20 @@ function repairPrunedPointTypes(map: GeneratedActMap): boolean {
 
 function repairPointType(map: GeneratedActMap, type: ReplayMapPointType, targetCount: number): boolean {
   let remaining =
-    targetCount - map.getAllMapPoints().filter((point) => point.type === type).length;
+    targetCount -
+    map.getAllMapPoints().filter((point) => point.type === type && (!map.v113Rules || point.canBeModified)).length;
   if (remaining <= 0) {
     return false;
   }
 
-  const candidates = map.getAllMapPoints()
-    .filter((point) => point.type === "monster" && point.canBeModified)
-    .sort(compareMapNodes);
-  stableShuffle(candidates, compareMapNodes, map.rng);
+  const modifiableOf = (pointType: ReplayMapPointType) => {
+    const points = map.getAllMapPoints()
+      .filter((point) => point.type === pointType && point.canBeModified)
+      .sort(compareMapNodes);
+    return stableShuffle(points, compareMapNodes, map.rng);
+  };
+  const candidates = modifiableOf("monster");
+  if (map.v113Rules && type !== "unknown") candidates.push(...modifiableOf("unknown"));
 
   let changed = false;
   for (const point of candidates) {
@@ -3070,17 +3103,16 @@ function breakSegmentRelationship(segment: MapNode[]): boolean {
 
 function isValidPointType(map: GeneratedActMap, type: ReplayMapPointType, point: MapNode): boolean {
   if (!isValidForUpper(map, type, point)) return false;
-  if (!isValidForLower(type, point)) return false;
+  if (!isValidForLower(map, type, point)) return false;
   if (!isValidWithParents(type, point)) return false;
   if (!isValidWithChildren(type, point)) return false;
   if (!isValidWithSiblings(type, point)) return false;
   return true;
 }
 
-function isValidForLower(type: ReplayMapPointType, point: MapNode): boolean {
-  if (point.coord.row < 6) {
-    return type !== "rest_site" && type !== "elite";
-  }
+function isValidForLower(map: GeneratedActMap, type: ReplayMapPointType, point: MapNode): boolean {
+  if (type === "elite") return point.coord.row >= 6;
+  if (type === "rest_site") return point.coord.row >= (map.v113Rules ? 5 : 6);
   return true;
 }
 

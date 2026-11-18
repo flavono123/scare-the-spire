@@ -187,7 +187,7 @@ const categories = [
   {
     href: "/compendium/blitz-shop",
     labelKey: "blitzShop",
-    count: 30,
+    count: 20,
     description: null,
     images: [
       "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp",

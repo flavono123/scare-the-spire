@@ -370,8 +370,17 @@ async function buildBlitzEntrySearchItems(): Promise<SearchIndexItem[]> {
       type: "blitzEntry",
       title: entry.name,
       titleEn: english.name,
-      description: compactSearchParts([entry.id, cleanSearchText(entry.description), cleanSearchText(entry.descriptionEn)]),
-      descriptionEn: compactSearchParts([entry.id, cleanSearchText(english.description)]),
+      description: compactSearchParts([
+        entry.id,
+        cleanSearchText(entry.description),
+        cleanSearchText(entry.descriptionEn),
+        ...entry.variants.flatMap((variant) => [variant.name, variant.nameEn]),
+      ]),
+      descriptionEn: compactSearchParts([
+        entry.id,
+        cleanSearchText(english.description),
+        ...english.variants.map((variant) => variant.name),
+      ]),
       imageUrl: entry.imageUrl,
       href: buildCompendiumResourceHref("blitzEntry", entry.id),
     };

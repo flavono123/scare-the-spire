@@ -1,3 +1,4 @@
+import type { BlitzEntryCategory, DominionCategory } from "./blitz-dread-service-categories";
 // Types for STS2 codex card data
 
 export interface CodexLifecycle {
@@ -170,9 +171,22 @@ export interface CodexAscension {
   sortOrder: number;
 }
 
+export interface CodexBlitzEntryVariant {
+  /** Enchantment or character id. */
+  id: string;
+  /** The enchantment or character name the template is filled with. */
+  label: string;
+  name: string;
+  nameEn: string;
+  description: string;
+  descriptionEn: string;
+  iconUrl: string | null;
+  link: { type: "enchantment" | "character"; id: string };
+}
+
 /**
- * A ware of the Blitz mode merchant (MERCHANT.blitz.*_entry). Entries whose title
- * names an enchantment or character are listed once per value, as the shop shows them.
+ * A ware of the Blitz mode merchant (MERCHANT.blitz.*_entry). A ware whose title names an
+ * enchantment or character is one template entry; the shop's values are its `variants`.
  */
 export interface CodexBlitzEntry {
   id: string;
@@ -187,8 +201,11 @@ export interface CodexBlitzEntry {
   cursed: boolean;
   /** Half weight in the shop draw. */
   rare: boolean;
-  /** The enchantment or character the ware is about. */
+  /** Service-defined grouping (blitz-dread-service-categories.ts). */
+  categories: BlitzEntryCategory[];
+  /** The enchantment or character the ware is about, when it has one value. */
   link: { type: "enchantment" | "character"; id: string; name: string } | null;
+  variants: CodexBlitzEntryVariant[];
   sortOrder: number;
 }
 
@@ -199,6 +216,8 @@ export interface CodexDominion {
   encounterId: string;
   encounterName: string;
   act: EventAct | null;
+  /** Service-defined grouping (blitz-dread-service-categories.ts). */
+  category: DominionCategory;
   name: string;
   nameEn: string;
   description: string;

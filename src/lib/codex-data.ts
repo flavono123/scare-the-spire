@@ -26,6 +26,7 @@ import {
   isCursed as isCursedBlitzEntry,
 } from "./node-sim/blitz-merchant";
 import { formatLoc } from "./node-sim/loc-format";
+import { blitzEntryCategories, dominionCategory } from "./blitz-dread-service-categories";
 import {
   CodexCard,
   CodexKeyword,
@@ -2964,6 +2965,13 @@ export async function getCodexModifiers(opts?: { gameLocale?: GameLocale }): Pro
 /** EnchantmentModel.ShowAmount: the enchantments whose shop line names the amount. */
 const BLITZ_ENCHANT_SHOWS_AMOUNT = new Set(["SHARP", "NIMBLE", "ADROIT", "SWIFT", "VIGOROUS"]);
 
+/** Template words for a ware whose title is only a placeholder; the shop fills in one value. */
+// shortcut: Korean and English words only (game-only locales get English), until those locales need their own.
+const BLITZ_TEMPLATE_WORDS: Record<"kor" | "eng", Record<"Enchantment" | "Character", string>> = {
+  kor: { Enchantment: "〈인챈트〉", Character: "〈캐릭터〉" },
+  eng: { Enchantment: "⟨Enchantment⟩", Character: "⟨Character⟩" },
+};
+
 export async function getCodexBlitzEntries(opts?: { gameLocale?: GameLocale }): Promise<CodexBlitzEntry[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const [merchant, engMerchant, enchantments, engEnchantments, characters, engCharacters] = await Promise.all([
@@ -2976,73 +2984,72 @@ export async function getCodexBlitzEntries(opts?: { gameLocale?: GameLocale }): 
   ]);
   // shortcut: plural follows English (one vs other) outside Korean; per-culture rules if a locale needs them.
   const lang = gameLocale === "kor" ? "kor" : "eng";
-  const entries: CodexBlitzEntry[] = [];
+  const enchantName = (table: GameLocalizationTable, enchantment: string) =>
+    table[`${enchantment}.title`] ?? engEnchantments[`${enchantment}.title`] ?? enchantment;
+  const characterName = (table: GameLocalizationTable, character: string) =>
+    table[`${character}.shortTitle`] ?? engCharacters[`${character}.shortTitle`] ?? character;
 
-  BLITZ_ENTRY_TYPES.forEach((type, typeIndex) => {
+  return BLITZ_ENTRY_TYPES.map((type, sortOrder) => {
     const key = type.replace(/(?<!^)(?=[A-Z])/g, "_").toLowerCase();
     const line = (table: GameLocalizationTable, part: "title" | "description") =>
       table[`MERCHANT.blitz.${key}_entry.${part}`] ?? engMerchant[`MERCHANT.blitz.${key}_entry.${part}`] ?? "";
-    const push = (
-      id: string,
-      vars: Record<string, string | number>,
-      engVars: Record<string, string | number>,
-      link: CodexBlitzEntry["link"],
-      variantIndex = 0,
-    ) => {
-      entries.push({
-        id,
-        type,
-        name: formatLoc(line(merchant, "title"), vars, lang),
-        nameEn: formatLoc(line(engMerchant, "title"), engVars, "eng"),
-        description: formatLoc(line(merchant, "description"), vars, lang),
-        descriptionEn: formatLoc(line(engMerchant, "description"), engVars, "eng"),
-        imageUrl: `/images/sts2/blitz-merchant/entries/entry_${key}.webp`,
-        cursed: isCursedBlitzEntry(type),
-        rare: BLITZ_RARE_ENTRIES.includes(type),
-        link,
-        sortOrder: typeIndex * 100 + variantIndex,
-      });
-    };
-    const id = key.toUpperCase();
-    const enchantName = (table: GameLocalizationTable, enchantment: string) =>
-      table[`${enchantment}.title`] ?? engEnchantments[`${enchantment}.title`] ?? enchantment;
+    const text = (vars: Record<string, string | number>, engVars: Record<string, string | number>) => ({
+      name: formatLoc(line(merchant, "title"), vars, lang),
+      nameEn: formatLoc(line(engMerchant, "title"), engVars, "eng"),
+      description: formatLoc(line(merchant, "description"), vars, lang),
+      descriptionEn: formatLoc(line(engMerchant, "description"), engVars, "eng"),
+    });
+    let base: ReturnType<typeof text> | null = null;
+    let link: CodexBlitzEntry["link"] = null;
+    let variants: CodexBlitzEntry["variants"] = [];
 
     if (type === "CardEnchant") {
-      // BlitzRunModel.shopEnchantmentOptions: one ware per enchantment and amount.
-      BLITZ_SHOP_ENCHANTMENTS.forEach(([enchantment, amount], index) => {
+      // BlitzRunModel.shopEnchantmentOptions: the shop shows one enchantment and amount.
+      base = text({ ...BLITZ_TEMPLATE_WORDS[lang], Amount: 1 }, { ...BLITZ_TEMPLATE_WORDS.eng, Amount: 1 });
+      variants = BLITZ_SHOP_ENCHANTMENTS.map(([enchantment, amount]) => {
         const shown = BLITZ_ENCHANT_SHOWS_AMOUNT.has(enchantment) ? amount : 1;
-        push(
-          `${id}_${enchantment}`,
-          { Enchantment: enchantName(enchantments, enchantment), Amount: shown },
-          { Enchantment: enchantName(engEnchantments, enchantment), Amount: shown },
-          { type: "enchantment", id: enchantment, name: enchantName(enchantments, enchantment) },
-          index,
-        );
+        return {
+          id: enchantment,
+          label: enchantName(enchantments, enchantment),
+          ...text(
+            { Enchantment: enchantName(enchantments, enchantment), Amount: shown },
+            { Enchantment: enchantName(engEnchantments, enchantment), Amount: shown },
+          ),
+          iconUrl: `/images/sts2/blitz-merchant/enchantments/${enchantment.toLowerCase()}.webp`,
+          link: { type: "enchantment", id: enchantment },
+        };
       });
     } else if (type === "Glam") {
-      push(
-        id,
+      base = text(
         { Enchantment: enchantName(enchantments, "GLAM"), Amount: 1 },
         { Enchantment: enchantName(engEnchantments, "GLAM"), Amount: 1 },
-        { type: "enchantment", id: "GLAM", name: enchantName(enchantments, "GLAM") },
       );
+      link = { type: "enchantment", id: "GLAM", name: enchantName(enchantments, "GLAM") };
     } else if (type === "PrismaticCardReward") {
-      // A card reward of another character's pool, one ware per character.
-      BLITZ_PRISMATIC_CHARACTERS.forEach((character, index) => {
-        const name = (table: GameLocalizationTable) => table[`${character}.shortTitle`] ?? engCharacters[`${character}.shortTitle`] ?? character;
-        push(
-          `${id}_${character}`,
-          { Character: name(characters) },
-          { Character: name(engCharacters) },
-          { type: "character", id: character, name: name(characters) },
-          index,
-        );
-      });
-    } else {
-      push(id, {}, {}, null);
+      // A card reward of another character's pool; the shop shows one character.
+      base = text(BLITZ_TEMPLATE_WORDS[lang], BLITZ_TEMPLATE_WORDS.eng);
+      variants = BLITZ_PRISMATIC_CHARACTERS.map((character) => ({
+        id: character,
+        label: characterName(characters, character),
+        ...text({ Character: characterName(characters, character) }, { Character: characterName(engCharacters, character) }),
+        iconUrl: `/images/sts2/characters/character_icon_${character.toLowerCase()}.webp`,
+        link: { type: "character", id: character },
+      }));
     }
+
+    return {
+      id: key.toUpperCase(),
+      type,
+      ...(base ?? text({}, {})),
+      imageUrl: `/images/sts2/blitz-merchant/entries/entry_${key}.webp`,
+      cursed: isCursedBlitzEntry(type),
+      rare: BLITZ_RARE_ENTRIES.includes(type),
+      categories: blitzEntryCategories(type),
+      link,
+      variants,
+      sortOrder,
+    };
   });
-  return entries;
 }
 
 /** Boss encounter -> its DominionModel (EncounterModel.GetDominion overrides). */
@@ -3099,6 +3106,7 @@ export async function getCodexDominions(opts?: { gameLocale?: GameLocale }): Pro
         id,
         encounterId,
         encounterName: encounter.name,
+        category: dominionCategory(id),
         name: title.replace("{BossName}", encounter.name),
         nameEn: engTitle.replace("{BossName}", engEncounter.nameEn),
         description: ascension[key] ?? engAscension[key] ?? "",

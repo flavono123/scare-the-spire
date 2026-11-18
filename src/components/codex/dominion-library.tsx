@@ -15,9 +15,11 @@ import {
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { formatCodexCount, getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexDominion } from "@/lib/codex-types";
+import { DOMINION_CATEGORIES, type DominionCategory } from "@/lib/blitz-dread-service-categories";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { fuzzyMatchCodexText, stripCodexMarkup } from "@/lib/codex-search";
 import { DescriptionText } from "./codex-description";
+import { FilterSection, ToggleButton } from "./codex-filters";
 import {
   CompendiumIndexLayout,
   CompendiumIndexTopBar,
@@ -29,6 +31,13 @@ import { GameHoverTip } from "./hover-tip";
 import { DominionDetail } from "./dominion-detail";
 import { ModifierToken } from "./modifier-token";
 import { SearchBar } from "./search-bar";
+
+function toggleSet<T>(set: Set<T>, value: T): Set<T> {
+  const next = new Set(set);
+  if (next.has(value)) next.delete(value);
+  else next.add(value);
+  return next;
+}
 
 export function DominionLibrary({
   serviceLocale,
@@ -51,6 +60,8 @@ export function DominionLibrary({
   const view = serviceText.dominionsView;
   const urlId = useHydrationSafeSearchParam("dominion");
   const [searchQuery, setSearchQuery] = useState("");
+  const [acts, setActs] = useState<Set<string>>(new Set());
+  const [categories, setCategories] = useState<Set<DominionCategory>>(new Set());
   const [selectedIdOverride, setSelectedIdOverride] = useState<string | null>(null);
   const [useUrlSelection, setUseUrlSelection] = useState(true);
   const selectedId = useUrlSelection ? urlId : selectedIdOverride;
@@ -81,14 +92,19 @@ export function DominionLibrary({
     return () => window.removeEventListener("keydown", handler);
   }, [select, selectedId]);
 
+  // Acts in the order the dominions come in (see getCodexDominions).
+  const actOptions = useMemo(() => [...new Set(dominions.map((dominion) => dominion.act ?? "none"))], [dominions]);
+
   const filtered = useMemo(() => {
     const searchText = searchQuery.trim().toLowerCase();
-    if (!searchText) return dominions;
-    return dominions.filter((dominion) => fuzzyMatchCodexText(
+    return dominions.filter((dominion) => (
+      (acts.size === 0 || acts.has(dominion.act ?? "none"))
+      && (categories.size === 0 || categories.has(dominion.category))
+    )).filter((dominion) => !searchText || fuzzyMatchCodexText(
       [dominion.id, dominion.name, dominion.nameEn, dominion.encounterName, stripCodexMarkup(dominion.description), stripCodexMarkup(dominion.descriptionEn)].join(" "),
       searchText,
     ));
-  }, [dominions, searchQuery]);
+  }, [acts, categories, dominions, searchQuery]);
 
   // Already in act order (see getCodexDominions).
   const groups = useMemo(() => {
@@ -110,12 +126,38 @@ export function DominionLibrary({
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
       sidebar={(
-        <SearchBar
-          value={searchQuery}
-          onChange={setSearchQuery}
-          inputId="codex-filter-search"
-          placeholder={view.searchPlaceholder}
-        />
+        <>
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            inputId="codex-filter-search"
+            placeholder={view.searchPlaceholder}
+          />
+          <FilterSection label={view.actFilter}>
+            <div className="flex flex-col gap-0.5">
+              {actOptions.map((act) => (
+                <ToggleButton
+                  key={act}
+                  label={gameUi.acts[act as keyof typeof gameUi.acts]}
+                  active={acts.has(act)}
+                  onClick={() => setActs((current) => toggleSet(current, act))}
+                />
+              ))}
+            </div>
+          </FilterSection>
+          <FilterSection label={view.categoryFilter}>
+            <div className="flex flex-col gap-0.5">
+              {DOMINION_CATEGORIES.map((category) => (
+                <ToggleButton
+                  key={category}
+                  label={view.categories[category]}
+                  active={categories.has(category)}
+                  onClick={() => setCategories((current) => toggleSet(current, category))}
+                />
+              ))}
+            </div>
+          </FilterSection>
+        </>
       )}
     >
       <main className="flex flex-1 flex-col overflow-hidden" data-dominion-library>

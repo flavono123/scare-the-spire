@@ -109,13 +109,16 @@ export function DominionDetail({
         <aside className="flex flex-col gap-3">
           <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
             <div className="space-y-3">
-              {dominion.act && (
-                <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2">
+                {dominion.act && (
                   <span className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold text-foreground">
                     {gameUi.acts[dominion.act]}
                   </span>
-                </div>
-              )}
+                )}
+                <span className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm text-foreground">
+                  {serviceText.dominionsView.categories[dominion.category]}
+                </span>
+              </div>
               <div>
                 <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{serviceText.dominionsView.boss}</div>
                 <Link

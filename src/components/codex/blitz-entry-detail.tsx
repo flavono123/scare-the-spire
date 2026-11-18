@@ -9,7 +9,7 @@ import { getCodexServiceMessages } from "@/lib/codex-service";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { CodexBlitzEntry } from "@/lib/codex-types";
+import type { CodexBlitzEntry, CodexBlitzEntryVariant } from "@/lib/codex-types";
 import { closeOnPlainClick } from "@/lib/plain-click";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
@@ -22,30 +22,34 @@ export const BLITZ_CURSED_COLOR = "#ff5555";
 
 export function BlitzEntryInspect({
   entry,
+  variant = null,
   entities,
   gameUi,
   size = 96,
 }: {
   entry: CodexBlitzEntry;
+  /** One of the template's values, as the shop shows it. */
+  variant?: CodexBlitzEntryVariant | null;
   entities?: EntityInfo[];
   gameUi?: CodexGameUiLabels;
   size?: number;
 }) {
-  const excludeSelf = useMemo(() => new Set([entry.name, entry.nameEn]), [entry.name, entry.nameEn]);
+  const shown = variant ?? entry;
+  const excludeSelf = useMemo(() => new Set([shown.name, shown.nameEn]), [shown.name, shown.nameEn]);
   return (
     <div className="flex w-full max-w-[32rem] items-center gap-3 sm:gap-5">
       <ModifierToken modifier={entry} size={size} />
-      <GameHoverTip title={entry.name} className="min-w-0 w-full" style={{ minWidth: 0 }}>
+      <GameHoverTip title={shown.name} className="min-w-0 w-full" style={{ minWidth: 0 }}>
         {entities ? (
           <RichDescription
             gameUi={gameUi}
-            description={entry.description}
+            description={shown.description}
             entities={entities}
             excludeEntityTerms={excludeSelf}
             className="block text-left"
           />
         ) : (
-          <DescriptionText description={entry.description} className="block text-left" />
+          <DescriptionText description={shown.description} className="block text-left" />
         )}
       </GameHoverTip>
     </div>
@@ -72,6 +76,11 @@ export function BlitzEntryDetail({
   const view = serviceText.blitzShopView;
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const [commentCount, setCommentCount] = useState(0);
+  const [variantId, setVariantId] = useState<string | null>(null);
+  const variant = entry.variants.find((item) => item.id === variantId) ?? null;
+  const link = variant
+    ? { ...variant.link, name: variant.name }
+    : entry.link;
   const englishName = serviceLocale === "ko" ? "영어명" : "English name";
 
   return (
@@ -100,13 +109,40 @@ export function BlitzEntryDetail({
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[18rem] flex-col items-center justify-center gap-2 py-4">
           <div ref={assetCopyTargetRef}>
-            <BlitzEntryInspect entry={entry} entities={entities} gameUi={gameUi} />
+            <BlitzEntryInspect entry={entry} variant={variant} entities={entities} gameUi={gameUi} />
           </div>
           <CompendiumAssetImageActions
             serviceLocale={serviceLocale}
             fileName={`${entry.id}.png`}
             targetRef={assetCopyTargetRef}
           />
+          {entry.variants.length > 0 && (
+            <div className="mt-4 w-full max-w-[32rem]">
+              <div className="mb-2 text-xs text-muted-foreground">{view.variants}</div>
+              <div className="flex flex-wrap gap-2">
+                {entry.variants.map((item) => {
+                  const active = item.id === variantId;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setVariantId(active ? null : item.id)}
+                      aria-pressed={active}
+                      className={`flex items-center gap-1.5 rounded-md border px-2 py-1 font-game-text text-sm transition-colors ${
+                        active ? "border-primary bg-primary/15 text-primary" : "border-white/10 bg-white/[0.04] text-foreground hover:border-white/30"
+                      }`}
+                    >
+                      {item.iconUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={item.iconUrl} alt="" className="h-5 w-5 object-contain" />
+                      )}
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </section>
 
         <aside className="flex flex-col gap-3">
@@ -115,33 +151,41 @@ export function BlitzEntryDetail({
               <div className="flex flex-wrap gap-2">
                 <span
                   className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold"
-                  style={{ color: entry.cursed ? BLITZ_CURSED_COLOR : undefined }}
+                  style={{ color: entry.rare ? "#ffd700" : undefined }}
                 >
-                  {entry.cursed ? view.cursed : view.normal}
+                  {entry.rare ? view.rare : view.normal}
                 </span>
-                {entry.rare && (
-                  <span className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold text-[#ffd700]">
-                    {view.rare}
+                {entry.cursed && (
+                  <span
+                    className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold"
+                    style={{ color: BLITZ_CURSED_COLOR }}
+                  >
+                    {view.cursed}
                   </span>
                 )}
+                {entry.categories.map((category) => (
+                  <span key={category} className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm text-foreground">
+                    {view.categories[category]}
+                  </span>
+                ))}
               </div>
               {(entry.cursed || entry.rare) && (
                 <p className="text-xs leading-relaxed text-muted-foreground">
                   {[entry.cursed && view.cursedDetail, entry.rare && view.rareDetail].filter(Boolean).join(" ")}
                 </p>
               )}
-              {entry.link && (
+              {link && (
                 <Link
-                  href={localizeLink(buildCompendiumResourceHref(entry.link.type, entry.link.id))}
+                  href={localizeLink(buildCompendiumResourceHref(link.type, link.id))}
                   className="block font-game-text text-sm text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary"
                 >
-                  {entry.link.name} →
+                  {link.name} →
                 </Link>
               )}
-              {entry.nameEn !== entry.name && (
+              {(variant ?? entry).nameEn !== (variant ?? entry).name && (
                 <div>
                   <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{englishName}</div>
-                  <div className="font-game-text text-sm text-foreground">{entry.nameEn}</div>
+                  <div className="font-game-text text-sm text-foreground">{(variant ?? entry).nameEn}</div>
                 </div>
               )}
             </div>
