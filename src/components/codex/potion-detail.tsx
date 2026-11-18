@@ -25,6 +25,7 @@ import {
   getCharacterColor,
 } from "@/lib/codex-types";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { usePetReferenceGroup } from "./use-pet-reference-group";
 import { GameChoiceFrame } from "./event-choice-frame";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
@@ -141,6 +142,7 @@ export function PotionDetail({
   versionDiffs,
   onClose,
 }: PotionDetailProps) {
+  const petReferenceGroup = usePetReferenceGroup("potion", potion.id);
   const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
@@ -304,6 +306,7 @@ export function PotionDetail({
               { kind: "power", targets: relatedPowerTargets },
               { kind: "event", targets: relatedEventTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
+              petReferenceGroup,
             ]}
             serviceLocale={serviceLocale}
           >

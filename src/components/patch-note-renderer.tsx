@@ -12,7 +12,7 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, CodexModifier, CodexAscension, CodexBlitzEntry, CodexDominion, DamageValue, MonsterMove } from "@/lib/codex-types";
+import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, CodexModifier, CodexAscension, CodexBlitzEntry, CodexDominion, CodexPet, DamageValue, MonsterMove } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
@@ -74,7 +74,7 @@ import { useGameUiLabels } from "@/hooks/use-game-ui-labels";
 import { isModifiedClick, NEW_TAB_LINK_PROPS } from "@/components/editor/editor-link";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "character" | "keyword" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch" | "modifier" | "ascension" | "blitzEntry" | "dominion";
+export type EntityType = "card" | "character" | "keyword" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch" | "modifier" | "ascension" | "blitzEntry" | "dominion" | "pet";
 
 export interface EntityInfo {
   id: string;
@@ -126,6 +126,7 @@ export interface EntityInfo {
   ascensionData?: CodexAscension;
   blitzEntryData?: CodexBlitzEntry;
   dominionData?: CodexDominion;
+  petData?: CodexPet;
 }
 
 // Keep backward compat alias
@@ -175,6 +176,7 @@ function estimatePreviewSize(entity: EntityInfo): { width: number; height: numbe
   if (entity.type === "modifier" && entity.modifierData) return { width: 420, height: 160 };
   if (entity.type === "ascension" && entity.ascensionData) return { width: 420, height: 160 };
   if (entity.blitzEntryData || entity.dominionData) return { width: 420, height: 160 };
+  if (entity.petData) return { width: 440, height: 180 };
   if (entity.type === "relic" && entity.relicData) {
     return {
       width: RELIC_INSPECT_HOVER_SIZE.width + 280,
@@ -500,6 +502,7 @@ export function entityCompendiumHref(entity: EntityInfo): string | null {
     case "ascension":
     case "blitzEntry":
     case "dominion":
+    case "pet":
       return buildCompendiumResourceHref(entity.type, compendiumRouteId);
     case "monsterMove":
       if (entity.compendiumResourceId) return buildCompendiumResourceHref("monster", compendiumRouteId);
@@ -880,6 +883,16 @@ function LocalizedEntityPreview({
           </div>,
         );
       })()}
+      {showResolvedPreview && previewEntity.petData && (
+        renderTooltip(
+          <div className="flex items-center gap-3">
+            <Image src={previewEntity.petData.imageUrl} alt={previewEntity.petData.name} width={88} height={88} className="h-[88px] w-[88px] object-contain" />
+            <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+              <DescriptionText description={previewEntity.petData.description} />
+            </GameHoverTip>
+          </div>,
+        )
+      )}
       {showResolvedPreview && previewEntity.type === "relic" && previewEntity.relicData && (
         renderTooltip(
           <EntityRelicHoverPreview

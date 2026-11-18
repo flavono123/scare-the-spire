@@ -85,6 +85,7 @@ import {
   getAfflictionPreviewAmount,
 } from "@/lib/sts2-affliction-rules";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { usePetReferenceGroup } from "./use-pet-reference-group";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import { ScrollableBoundedCarousel } from "./bounded-carousel";
 import { VersionTextUnpinnedMark, isVersionTextUnpinned } from "./version-text-unpinned-mark";
@@ -200,6 +201,7 @@ function getRemovedUpgradePreviewCard(
 }
 
 export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], tipCatalogSources, tipCatalogCards, tipCatalogKeywords = [], patches, changes, versionDiffs, initialShowBeta = false, onShowBetaChange, syncBetaSearchParam = false, onClose, captureSnapshot }: CardDetailProps) {
+  const petReferenceGroup = usePetReferenceGroup("card", card.id);
   const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
@@ -829,6 +831,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "power", targets: relatedPowerTargets },
               { kind: "potion", targets: relatedPotionTargets },
+              petReferenceGroup,
             ]}
             serviceLocale={serviceLocale}
           />

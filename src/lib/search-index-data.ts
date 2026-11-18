@@ -43,6 +43,7 @@ const TYPE_TO_COMPENDIUM_LINK_TYPE: Partial<Record<EntityType, CompendiumResourc
   modifier: "modifier",
   ascension: "ascension",
   dominion: "dominion",
+  pet: "pet",
 };
 
 function entityHref(entity: EntityInfo): string | null {
@@ -299,6 +300,10 @@ function entitySearchText(entity: EntityInfo): string {
 
   if (entity.dominionData) {
     appendSearchParts(parts, entity.dominionData.description, entity.dominionData.descriptionEn, entity.dominionData.encounterId);
+  }
+
+  if (entity.petData) {
+    appendSearchParts(parts, entity.petData.description, entity.petData.descriptionEn, entity.petData.monsterId);
   }
 
   if (entity.ascensionData) {

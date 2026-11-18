@@ -31,6 +31,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { RelatedResourceLinks } from "./entity-reference-links";
+import { usePetReferenceGroup } from "./use-pet-reference-group";
 import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { GameCheckboxToggle, GameWaxCycleToggle, type GameWaxCycleValue } from "./game-checkbox";
 import { RelicInspectSlab } from "./relic-inspect-slab";
@@ -161,6 +162,7 @@ export function RelicDetail({
   versionDiffs,
   captureSnapshot,
 }: RelicDetailProps) {
+  const petReferenceGroup = usePetReferenceGroup("relic", relic.id);
   const localizeLink = useLocalizedHref();
   const profile = useStoredUserProfile();
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -593,6 +595,7 @@ export function RelicDetail({
               { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "power", targets: relatedPowerTargets },
               { kind: "ancient", targets: relatedAncientTargets },
+              petReferenceGroup,
             ]}
           />
 

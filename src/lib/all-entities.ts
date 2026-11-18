@@ -14,6 +14,7 @@ import type {
   CodexKeyword,
   CodexModifier,
   CodexMonster,
+  CodexPet,
   CodexPotion,
   CodexPower,
   CodexRelic,
@@ -37,6 +38,7 @@ export type AllEntityResources = {
   encounters: readonly CodexEncounter[];
   ancients: readonly CodexAncient[];
   epochs: readonly CodexEpoch[];
+  pets: readonly CodexPet[];
 };
 
 /** Client-safe: maps already-loaded Codex resources to hover/link entities. */
@@ -199,6 +201,17 @@ export function buildAllEntities(resources: AllEntityResources): EntityInfo[] {
       color: e.affiliation,
       type: "epoch" as const,
       epochData: e,
+    })),
+    // Last: a pet named like its relic (Wuppy, Byrdpip, ...) leaves that name to the relic.
+    ...resources.pets.map((p) => ({
+      id: p.id,
+      nameEn: p.nameEn,
+      nameKo: p.name,
+      imageUrl: p.imageUrl,
+      href: buildCompendiumResourceHref("pet", p.id),
+      color: "pet",
+      type: "pet" as const,
+      petData: p,
     })),
   ];
 }

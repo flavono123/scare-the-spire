@@ -55,6 +55,12 @@
 - QA: 위 경로를 로컬 dev 브라우저로 확인함(ko·en·ru, 블리츠 툴팁·필터·모달·값 선택, 드레드 필터, 모바일 375 폭). 확인 못 함: `pnpm cf:build` 정적 파일 수, 패치 이력 칸(두 분류 모두 아직 없음), 터치 기기 툴팁(탭하면 바로 모달).
 - Commits: `41afaf8e`부터, `d0623de2`(Worker 정적 라우팅에 두 분류 추가. 없으면 `pnpm cf:build`의 cf:assets가 막혔다).
 
+### v0113-pets-compendium
+- Feature: 백과사전 새 분류 펫(`/compendium/pets`). 게임이 `PlayerCmd.AddPet`으로 플레이어 편에 세우는 5종: 골골이(네크로바인더 소환), 그리고 `AddsPet` 유물의 워피·짹짹이·섀다인·파엘의 군체. 설명은 게임 문구(유물 설명, 골골이는 "소환" 툴팁, 워피는 체력 변수가 없는 이벤트 문구). 상세에 출처(캐릭터·이벤트·고대의 존재), 진화(짹짹이 → 섀다인, 휴식 장소), 관련 리소스 레일(게임 문구에서 펫 이름, 골골이는 "소환"까지 금색으로 언급하는 카드·파워·유물·포션·이벤트, 그리고 유물이 건드리는 카드). 반대쪽으로 카드·유물·파워·포션·이벤트·고대의 존재 상세에 "관련 펫" 줄. 검색, 호버, 자동 링크(유물과 이름이 같은 펫은 유물이 먼저), 네비·백과사전 첫 화면 카드, 사이트맵. 필터는 없다(어느 기준으로 나눠도 한 마리짜리 묶음이 생김).
+- Expect: /compendium/pets에 5마리. /compendium/pets/osty 레일에 캐릭터 네크로바인더, 유물 3(뼈 플루트·구속된 성물함·해방된 성물함), 카드 26, 파워 6, 포션 뼈다귀 영액. /compendium/pets/byrdine에 "진화 전: 짹짹이". /compendium/cards/poke, /compendium/relics/wuppy, /compendium/ancients/pael, /compendium/events/byrdonis_nest 레일에 관련 펫. /en/compendium/pets/byrdpip은 영어 문구. 정적 파일 약 +50.
+- QA: 위 경로를 로컬 dev로 확인함(ko·en, 역방향 레일 6종). 확인 못 함: 화면 캡처(브라우저 창이 숨겨져 있었음), `pnpm cf:build` 정적 파일 수, 캐릭터 상세의 관련 펫(캐릭터 상세엔 레일이 없음).
+- Commits: `f4df2a78`(데이터. 다른 세션의 블리츠 승천 변경이 섞여 들어감), 그 다음 화면 커밋.
+
 ### v0113-blitz-ascension
 - Feature: 승천 백과사전에 블리츠 승천. 블리츠 승천 1~5는 게임에서 일반 승천 2·4·8·9·5를 그대로 쓴다(`AscensionHelper.GetLevelForBlitz`). 인덱스에 "게임 모드"(기본·블리츠, 게임 번역) 필터, 블리츠 보기는 블리츠 단계 순으로 토큰에 블리츠 숫자와 밑에 "승천 N". 상세에 "블리츠 N" 배지, 검색·자동 링크 별칭 "블리츠 승천 N"/"Blitz Ascension N". 새 페이지 없음.
 - Expect: /compendium/ascensions에서 "블리츠"를 켜면 6개(0~5), 1=지친 여행자(승천 2), 5=등반자의 골칫거리(승천 5). /compendium/ascensions/level_08 상세에 "블리츠 3". /ja/compendium/ascensions 필터 이름은 ゲームモード·スタンダード·ブリッツ.

@@ -19,7 +19,8 @@ export type CompendiumResourceLinkType =
   | "modifier"
   | "ascension"
   | "blitzEntry"
-  | "dominion";
+  | "dominion"
+  | "pet";
 
 type LinkConfig = {
   path: string;
@@ -47,6 +48,7 @@ const COMPENDIUM_RESOURCE_LINKS: Record<CompendiumResourceLinkType, LinkConfig> 
   ascension: { path: "/compendium/ascensions", detailPath: "/compendium/ascensions", param: "ascension" },
   blitzEntry: { path: "/compendium/blitz-shop", detailPath: "/compendium/blitz-shop", param: "ware" },
   dominion: { path: "/compendium/dominions", detailPath: "/compendium/dominions", param: "dominion" },
+  pet: { path: "/compendium/pets", detailPath: "/compendium/pets", param: "pet" },
 };
 
 export const COMPENDIUM_RESOURCE_LINK_TYPES = Object.keys(

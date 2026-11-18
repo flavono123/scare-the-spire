@@ -185,6 +185,7 @@ export const sts2NavItems = [
   { href: "/compendium/modifiers", labelKey: "modifiers", icon: CHARACTER_CARDS_MODIFIER_IMAGE_URL },
   { href: "/compendium/blitz-shop", labelKey: "blitzShop", icon: "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp" },
   { href: "/compendium/dominions", labelKey: "dominions", icon: "/images/sts2/bosses/queen_boss.webp" },
+  { href: "/compendium/pets", labelKey: "pets", icon: "/images/sts2/monsters-render/osty.webp" },
 ] as const;
 
 export const sts1NavItems = [

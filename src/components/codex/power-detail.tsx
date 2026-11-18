@@ -33,6 +33,7 @@ import { CardSideTipsAnchor } from "./card-keyword-tip-stack";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { GameCheckboxToggle } from "./game-checkbox";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { usePetReferenceGroup } from "./use-pet-reference-group";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import {
   getRelatedCardIdsForPower,
@@ -136,6 +137,7 @@ export function PowerDetail({
   tipCatalogPowers = [],
   onClose,
 }: PowerDetailProps) {
+  const petReferenceGroup = usePetReferenceGroup("power", power.id);
   const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
@@ -296,6 +298,7 @@ export function PowerDetail({
               { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "monster", targets: relatedMonsterTargets },
               { kind: "event", targets: relatedEventTargets },
+              petReferenceGroup,
             ]}
             serviceLocale={serviceLocale}
           />

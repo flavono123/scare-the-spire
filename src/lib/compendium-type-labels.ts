@@ -26,5 +26,6 @@ export function compendiumTypeLabels(
     ascension: codex.ascensions,
     blitzEntry: codex.blitzShop,
     dominion: codex.dominions,
+    pet: codex.pets,
   };
 }

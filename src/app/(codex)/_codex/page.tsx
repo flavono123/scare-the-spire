@@ -208,6 +208,18 @@ const categories = [
       "/images/sts2/bosses/queen_boss.webp",
     ],
   },
+  {
+    href: "/compendium/pets",
+    labelKey: "pets",
+    count: 5,
+    description: null,
+    images: [
+      "/images/sts2/monsters-render/osty.webp",
+      "/images/sts2/monsters-render/wuppy.webp",
+      "/images/sts2/monsters-render/byrdpip.webp",
+      "/images/sts2/monsters-render/paels_legion.webp",
+    ],
+  },
 ] as const;
 
 export async function generateMetadata({
@@ -332,4 +344,5 @@ const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = 
   badges: "Badges",
   blitzShop: "Blitz Shop",
   dominions: "Dread Dominions",
+  pets: "Pets",
 };

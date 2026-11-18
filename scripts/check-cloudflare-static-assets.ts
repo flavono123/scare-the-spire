@@ -64,6 +64,7 @@ const compendiumSegments = new Set([
   "ascensions",
   "blitz-shop",
   "dominions",
+  "pets",
   "monsters",
   "potions",
   "powers",

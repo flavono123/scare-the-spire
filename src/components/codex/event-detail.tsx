@@ -79,6 +79,7 @@ import {
 } from "@/lib/codex-references";
 import { closeOnPlainClick } from "@/lib/plain-click";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { usePetReferenceGroup } from "./use-pet-reference-group";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 const GAME_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)";
@@ -2234,6 +2235,7 @@ export function EventDetail({
   versionDiffs,
   onClose,
 }: EventDetailProps) {
+  const petReferenceGroup = usePetReferenceGroup("event", event.id);
   const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
@@ -2489,6 +2491,7 @@ export function EventDetail({
               { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "power", targets: relatedPowerTargets },
               { kind: "potion", targets: relatedPotionTargets },
+              petReferenceGroup,
             ]}
             serviceLocale={serviceLocale}
           />

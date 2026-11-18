@@ -8,6 +8,7 @@ import type {
   CodexCard,
   CodexCharacter,
   CodexDominion,
+  CodexPet,
   CodexEnchantment,
   CodexEncounter,
   CodexEpoch,
@@ -39,6 +40,7 @@ export type CompendiumDataResources = {
   changes: STS2Change[];
   characters: CodexCharacter[];
   dominions: CodexDominion[];
+  pets: CodexPet[];
   enchantments: CodexEnchantment[];
   encounters: CodexEncounter[];
   epochs: CodexEpoch[];
@@ -68,6 +70,7 @@ const CHUNK_BY_KEY = {
   changes: "history",
   characters: "core",
   dominions: "core",
+  pets: "core",
   enchantments: "enchantments",
   encounters: "encounters",
   epochs: "epochs",
@@ -118,6 +121,7 @@ export const ALL_ENTITY_DATA_KEYS = [
   "cards",
   "characters",
   "dominions",
+  "pets",
   "enchantments",
   "encounters",
   "epochs",

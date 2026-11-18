@@ -12,6 +12,7 @@ import {
   getCodexAscensions,
   getCodexBlitzEntries,
   getCodexDominions,
+  getCodexPets,
   getCodexMonsters,
   getCodexPotions,
   getCodexPowers,
@@ -86,6 +87,10 @@ export async function generateBlitzEntryStaticParams(): Promise<StaticIdParam[]>
 
 export async function generateDominionStaticParams(): Promise<StaticIdParam[]> {
   return idParams(await getCodexDominions());
+}
+
+export async function generatePetStaticParams(): Promise<StaticIdParam[]> {
+  return idParams(await getCodexPets());
 }
 
 export async function generateAscensionStaticParams(): Promise<StaticIdParam[]> {

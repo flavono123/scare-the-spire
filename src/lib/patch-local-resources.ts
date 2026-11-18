@@ -39,6 +39,7 @@ const COMPENDIUM_RESOURCE_TYPE_BY_ENTITY_TYPE: Partial<Record<EntityType, Compen
   epoch: "epochs",
   modifier: "modifiers",
   dominion: "dominions",
+  pet: "pets",
   ascension: "ascensions",
 };
 

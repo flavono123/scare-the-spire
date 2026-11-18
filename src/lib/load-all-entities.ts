@@ -15,6 +15,7 @@ import {
   getCodexEncounters,
   getCodexAncients,
   getCodexEpochs,
+  getCodexPets,
 } from "@/lib/codex-data";
 import type { GameLocale } from "@/lib/i18n";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -41,6 +42,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
     codexEncounters,
     codexAncients,
     codexEpochs,
+    codexPets,
   ] = await Promise.all([
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexCharacters({ gameLocale }),
@@ -58,6 +60,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
     getCodexEncounters({ gameLocale }),
     getCodexAncients({ gameLocale }),
     getCodexEpochs({ gameLocale }),
+    getCodexPets({ gameLocale }),
   ]);
 
   return buildAllEntities({
@@ -77,5 +80,6 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
     encounters: codexEncounters,
     ancients: codexAncients,
     epochs: codexEpochs,
+    pets: codexPets,
   });
 }

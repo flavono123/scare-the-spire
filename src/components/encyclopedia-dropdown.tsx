@@ -20,6 +20,7 @@ const items = [
   { href: "/compendium/modifiers", label: "모드" },
   { href: "/compendium/blitz-shop", label: "블리츠 상점" },
   { href: "/compendium/dominions", label: "드레드 권능" },
+  { href: "/compendium/pets", label: "펫" },
 ];
 
 export function EncyclopediaDropdown() {

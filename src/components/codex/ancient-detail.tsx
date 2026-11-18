@@ -21,6 +21,7 @@ import {
 import type { CodexAncient, CodexCard, CodexCharacter, CodexRelic } from "@/lib/codex-types";
 import { EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { RelatedResourceLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { usePetReferenceGroup } from "./use-pet-reference-group";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import { AncientDialogueViewer } from "./ancient-dialogue-viewer";
 import { AncientSceneStage } from "./ancient-scene-stage";
@@ -119,6 +120,7 @@ export function AncientDetail({
   changes,
   versionDiffs,
 }: AncientDetailProps) {
+  const petReferenceGroup = usePetReferenceGroup("ancient", ancient.id);
   const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
@@ -287,6 +289,7 @@ export function AncientDetail({
             serviceLocale={serviceLocale}
             groups={[
               { kind: "card", targets: relatedCardTargets },
+              petReferenceGroup,
             ]}
           >
             <Link

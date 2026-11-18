@@ -22,6 +22,7 @@ export const AUTO_LINK_ENTITY_TYPES = new Set<EntityType>([
   "modifier",
   "ascension",
   "dominion",
+  "pet",
 ]);
 
 const AUTO_LINK_SKIP_LABELS = new Set([
