@@ -108,6 +108,16 @@ export interface ReplayPlayerStats {
   bought_potions?: string[];
   relics_removed?: string[];
   completed_quests?: string[];
+  /** Blitz merchant wares in slot order (v0.113 `blitz_merchant_choices`). */
+  blitz_merchant_choices?: ReplayBlitzMerchantChoice[];
+}
+
+export interface ReplayBlitzMerchantChoice {
+  /** BlitzMerchantEntryType in snake case, e.g. `card_enchant`. */
+  type: string;
+  /** The enchantment or character the ware is about, when it has one. */
+  modelId: string | null;
+  picked: boolean;
 }
 
 export interface ReplayHistoryEntry extends ReplayPlayerStats {
@@ -930,6 +940,7 @@ function applyPlayerStats(
       potion_used: undefined,
       potion_discarded: undefined,
       rest_site_choices: undefined,
+      blitz_merchant_choices: undefined,
       event_choices: undefined,
       ancient_choice: undefined,
       bought_relics: undefined,
@@ -967,6 +978,7 @@ function applyPlayerStats(
     potion_used: stats.potion_used,
     potion_discarded: stats.potion_discarded,
     rest_site_choices: stats.rest_site_choices,
+    blitz_merchant_choices: stats.blitz_merchant_choices,
     event_choices: stats.event_choices,
     ancient_choice: stats.ancient_choice,
     bought_relics: stats.bought_relics,
@@ -1236,6 +1248,7 @@ export function parseReplayRun(raw: string): ReplayRun {
               potion_used?: string[];
               potion_discarded?: string[];
               rest_site_choices?: string[];
+              blitz_merchant_choices?: Array<{ type?: unknown; model_id?: unknown; was_picked?: unknown }>;
               event_choices?: RawLocChoice[];
               ancient_choice?: Array<
                 RawLocChoice & {
@@ -1455,6 +1468,15 @@ export function parseReplayRun(raw: string): ReplayRun {
               stats.potion_used = pickStringList(rawStats.potion_used);
               stats.potion_discarded = pickStringList(rawStats.potion_discarded);
               stats.rest_site_choices = pickStringList(rawStats.rest_site_choices);
+              if (Array.isArray(rawStats.blitz_merchant_choices)) {
+                stats.blitz_merchant_choices = rawStats.blitz_merchant_choices
+                  .filter((raw) => typeof raw?.type === "string")
+                  .map((raw) => ({
+                    type: raw.type as string,
+                    modelId: typeof raw.model_id === "string" ? raw.model_id : null,
+                    picked: raw.was_picked === true,
+                  }));
+              }
               stats.bought_relics = pickStringList(rawStats.bought_relics);
               stats.bought_potions = pickStringList(rawStats.bought_potions);
               stats.relics_removed = pickStringList(rawStats.relics_removed);
@@ -1525,6 +1547,7 @@ export function parseReplayRun(raw: string): ReplayRun {
               potion_used: focused?.potion_used,
               potion_discarded: focused?.potion_discarded,
               rest_site_choices: focused?.rest_site_choices,
+              blitz_merchant_choices: focused?.blitz_merchant_choices,
               event_choices: focused?.event_choices,
               ancient_choice: focused?.ancient_choice,
               bought_relics: focused?.bought_relics,

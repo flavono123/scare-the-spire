@@ -18,6 +18,7 @@ import {
   MerchantShopScreen,
   splitShopCardRows,
 } from "@/components/history-course/merchant-shop-screen";
+import { BlitzMerchantShopScreen } from "@/components/history-course/blitz-merchant-shop-screen";
 import { RestSiteScreen } from "@/components/history-course/rest-site-screen";
 import { RoomResultReceipt } from "@/components/history-course/room-result-receipt";
 import { lookupHistoryCard } from "@/lib/history-card-lookup";
@@ -262,6 +263,8 @@ export function NodeLastScene({
           relicsById={relicsById}
           potionsById={potionsById}
           serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          locTables={locTables}
           backgroundUrl={backgroundUrl}
         />
       ) : null}
@@ -517,6 +520,8 @@ function ShopScene({
   relicsById,
   potionsById,
   serviceLocale,
+  gameLocale,
+  locTables,
   backgroundUrl,
 }: {
   entry: ReplayHistoryEntry;
@@ -525,6 +530,8 @@ function ShopScene({
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+  locTables: HistoryLocTables | null;
   backgroundUrl: string;
 }) {
   const rows = splitShopCardRows(entry.card_choices ?? [], cardsById);
@@ -537,6 +544,19 @@ function ShopScene({
         src={MERCHANT}
         className="absolute bottom-[4%] right-[2%] h-[82%] w-[42%] object-contain object-bottom drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]"
       />
+      {entry.blitz_merchant_choices?.length ? (
+        <BlitzMerchantShopScreen
+          entry={entry}
+          step={step}
+          beatProgress={beatProgress}
+          cardsById={cardsById}
+          relicsById={relicsById}
+          potionsById={potionsById}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          locTables={locTables}
+        />
+      ) : (
       <MerchantShopScreen
         characterCards={rows.characterCards}
         colorlessCards={rows.colorlessCards}
@@ -551,6 +571,7 @@ function ShopScene({
         beatProgress={beatProgress}
         step={step}
       />
+      )}
     </div>
   );
 }

@@ -18,6 +18,7 @@ export const HISTORY_LOC_TABLE_SOURCES = [
   ["relicCollection", "relic_collection"],
   ["potionLab", "potion_lab"],
   ["orbs", "orbs"],
+  ["merchantRoom", "merchant_room"],
 ] as const;
 
 export type HistoryLocTableKey = (typeof HISTORY_LOC_TABLE_SOURCES)[number][0];

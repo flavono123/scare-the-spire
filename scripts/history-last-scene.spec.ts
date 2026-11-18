@@ -39,6 +39,9 @@ import {
   shopMatItemHidden,
   shopObtainQueue,
   shopRemovalFlipProgress,
+  shopSteps,
+  lastSceneStepCount,
+  blitzShopStateAt,
   lastSceneDisplayedGold,
   lastSceneGoldRevealed,
   cardRewardTokenKind,
@@ -525,6 +528,39 @@ assert.equal(shopRemovalFlipProgress(shopRemovalEntry, 0, 1), 0);
 assert.equal(shopRemovalFlipProgress(shopRemovalEntry, 1, 0.9), 0);
 assert.ok(shopRemovalFlipProgress(shopRemovalEntry, 2, 0.9) > 0.7);
 assert.equal(shopRemovalFlipProgress(shopRemovalEntry, 3, 0), 1);
+
+// Blitz shop (profile1 1794752102 act 1): one step per bought ware in slot order, card rewards
+// take 3-card groups, and the unbought wares dim once the five choices are spent.
+const blitzShopEntry = entry({
+  map_point_type: "shop",
+  blitz_merchant_choices: [
+    { type: "card_upgrade", modelId: null, picked: true },
+    { type: "two_more_choices", modelId: null, picked: true },
+    { type: "upgraded_card_reward", modelId: null, picked: true },
+    { type: "potions", modelId: null, picked: true },
+    { type: "enchanted_card_reward", modelId: null, picked: true },
+    { type: "card_enchant", modelId: "ENCHANTMENT.SHARP", picked: false },
+  ],
+  card_choices: [
+    { id: "CARD.DEFY", picked: true }, { id: "CARD.HAUNT", picked: false }, { id: "CARD.PULL_FROM_BELOW", picked: false },
+    { id: "CARD.NECRO_MASTERY", picked: true }, { id: "CARD.SEANCE", picked: false }, { id: "CARD.BONE_SHARDS", picked: false },
+  ],
+  potion_choices: [{ id: "POTION.STABLE_SERUM", picked: true }, { id: "POTION.POWER_POTION", picked: true }],
+});
+assert.deepEqual(
+  shopSteps(blitzShopEntry).map((step) => [step.ware, step.obtains.map((item) => item.id)]),
+  [[0, []], [1, []], [2, ["CARD.DEFY"]], [3, ["POTION.STABLE_SERUM", "POTION.POWER_POTION"]], [4, ["CARD.NECRO_MASTERY"]]],
+);
+assert.equal(lastSceneStepCount("shop", blitzShopEntry), 6);
+assert.deepEqual(blitzShopStateAt(blitzShopEntry, 0, 1), {
+  statuses: ["available", "available", "available", "available", "available", "available"],
+  remaining: 3,
+});
+assert.equal(blitzShopStateAt(blitzShopEntry, 2, 1).remaining, 3, "Two More Choices nets +1");
+assert.deepEqual(blitzShopStateAt(blitzShopEntry, 5, 1), {
+  statuses: ["used", "used", "used", "used", "used", "disabled"],
+  remaining: 0,
+});
 
 const lanternKeyFight = entry({
   map_point_type: "unknown",

@@ -160,7 +160,7 @@ export function lastSceneStepCount(
     case "rest":
       return 2;
     case "shop":
-      return Math.max(3, shopObtainQueue(entry).length + 1);
+      return Math.max(3, shopSteps(entry).length + 1);
     case "death":
       return 3;
     default:
@@ -361,6 +361,104 @@ export function shopObtainQueue(entry: ReplayHistoryEntry): ShopObtain[] {
   return out;
 }
 
+/** Blitz wares that open card rewards (three cards each): how many rewards. */
+const BLITZ_CARD_REWARD_COUNT: Record<string, number> = {
+  card_rewards: 2,
+  card_reward_of_each_rarity: 3,
+  colorless_card_reward: 1,
+  upgraded_card_reward: 1,
+  enchanted_card_reward: 1,
+  prismatic_card_reward: 1,
+  rare_card_reward: 1,
+  upgraded_rare_card_reward: 1,
+};
+const BLITZ_RELIC_COUNT: Record<string, number> = { relic: 1, two_relics: 2 };
+
+export interface ShopStep {
+  /** Blitz ware slot bought in this step; null in a normal shop. */
+  ware: number | null;
+  obtains: ShopObtain[];
+}
+
+/**
+ * One step per obtain in a normal shop. A Blitz shop takes one step per bought ware, in slot
+ * order, and the ware's rewards fly in that step: card rewards take the next 3-card groups of
+ * `card_choices`, relic wares the next picked relics, Potions every picked potion.
+ */
+export function shopSteps(entry: ReplayHistoryEntry): ShopStep[] {
+  const wares = entry.blitz_merchant_choices;
+  if (!wares?.length) return shopObtainQueue(entry).map((obtain) => ({ ware: null, obtains: [obtain] }));
+  const relics = (entry.relic_choices ?? []).filter((choice) => choice.picked && choice.id).map((choice) => choice.id);
+  const potions = (entry.potion_choices ?? []).filter((choice) => choice.picked && choice.id).map((choice) => choice.id);
+  const cards = entry.card_choices ?? [];
+  const removed = (entry.cards_removed ?? []).find((card) => card.id)?.id;
+  let cardCursor = 0;
+  const steps: ShopStep[] = [];
+  wares.forEach((ware, index) => {
+    if (!ware.picked) return;
+    const obtains: ShopObtain[] = [];
+    if (ware.type === "potions") {
+      obtains.push(...potions.splice(0).map((id) => ({ kind: "potion" as const, id })));
+    } else if (BLITZ_RELIC_COUNT[ware.type]) {
+      obtains.push(...relics.splice(0, BLITZ_RELIC_COUNT[ware.type]).map((id) => ({ kind: "relic" as const, id })));
+    } else if (BLITZ_CARD_REWARD_COUNT[ware.type]) {
+      // shortcut: assumes 3-card rewards; a relic that widens rewards shifts later groups.
+      const group = cards.slice(cardCursor, cardCursor + 3 * BLITZ_CARD_REWARD_COUNT[ware.type]);
+      cardCursor += group.length;
+      for (const choice of group) if (choice.picked && choice.id) obtains.push({ kind: "card", id: choice.id });
+    } else if (ware.type === "card_removal" && removed) {
+      obtains.push({ kind: "removal", id: removed });
+    }
+    steps.push({ ware: index, obtains });
+  });
+  // Rewards the mapping could not place still fly, with the last bought ware.
+  const leftover: ShopObtain[] = [
+    ...relics.map((id) => ({ kind: "relic" as const, id })),
+    ...potions.map((id) => ({ kind: "potion" as const, id })),
+    ...cards.slice(cardCursor).filter((choice) => choice.picked && choice.id).map((choice) => ({ kind: "card" as const, id: choice.id })),
+  ];
+  if (leftover.length > 0) {
+    if (steps.length === 0) steps.push({ ware: null, obtains: [] });
+    steps[steps.length - 1].obtains.push(...leftover);
+  }
+  return steps;
+}
+
+/** 1-based scene step in which this obtain flies, or 0 when it does not. */
+function shopObtainStep(entry: ReplayHistoryEntry, kind: ShopObtain["kind"], id?: string): number {
+  const index = shopSteps(entry).findIndex((step) =>
+    step.obtains.some((item) => item.kind === kind && (id === undefined || item.id === id)),
+  );
+  return index + 1;
+}
+
+export type BlitzWareStatus = "available" | "used" | "disabled";
+
+/**
+ * NBlitzMerchantSlot look at this scene moment: a bought ware empties its slot in its step, and
+ * once no choice remains (3, +2 for Two More Choices) the unbought wares dim.
+ */
+export function blitzShopStateAt(
+  entry: ReplayHistoryEntry,
+  step: number,
+  beatProgress: number,
+): { statuses: BlitzWareStatus[]; remaining: number } {
+  const wares = entry.blitz_merchant_choices ?? [];
+  const boughtAt = new Map(shopSteps(entry).flatMap((s, i) => (s.ware === null ? [] : [[s.ware, i + 1] as const])));
+  let remaining = 3;
+  const used = wares.map((_, index) => {
+    const slot = boughtAt.get(index);
+    const isUsed = slot !== undefined && (step > slot || (step === slot && beatProgress > 0.12));
+    if (isUsed) remaining += wares[index].type === "two_more_choices" ? 1 : -1;
+    return isUsed;
+  });
+  remaining = Math.max(0, remaining);
+  return {
+    statuses: used.map((isUsed) => (isUsed ? "used" : remaining === 0 ? "disabled" : "available")),
+    remaining,
+  };
+}
+
 export function shopMatItemHidden(
   entry: ReplayHistoryEntry,
   id: string,
@@ -368,10 +466,8 @@ export function shopMatItemHidden(
   step: number,
   beatProgress: number,
 ): boolean {
-  const queue = shopObtainQueue(entry);
-  const index = queue.findIndex((item) => item.kind === kind && item.id === id);
-  if (index < 0) return false;
-  const slot = index + 1;
+  const slot = shopObtainStep(entry, kind, id);
+  if (slot === 0) return false;
   if (step > slot) return true;
   const hideAfter = kind === "card" ? 0.04 : 0.12;
   return step === slot && beatProgress > hideAfter;
@@ -383,12 +479,10 @@ export function shopRemovalFlipProgress(
   step: number,
   beatProgress: number,
 ): number {
-  const queue = shopObtainQueue(entry);
-  const index = queue.findIndex((item) => item.kind === "removal");
-  if (index < 0) {
+  const slot = shopObtainStep(entry, "removal");
+  if (slot === 0) {
     return (entry.cards_removed ?? []).some((card) => card.id) ? 1 : 0;
   }
-  const slot = index + 1;
   if (step < slot) return 0;
   if (step > slot) return 1;
   if (beatProgress < 0.45) return 0;
@@ -400,10 +494,9 @@ export function shopRemovalPickVisible(
   step: number,
   beatProgress: number,
 ): boolean {
-  const queue = shopObtainQueue(entry);
-  const index = queue.findIndex((item) => item.kind === "removal");
-  if (index < 0) return false;
-  if (step !== index + 1) return false;
+  const slot = shopObtainStep(entry, "removal");
+  if (slot === 0) return false;
+  if (step !== slot) return false;
   return beatProgress < 0.72;
 }
 
@@ -413,17 +506,14 @@ function shopObtainLanded(
   kind: ShopObtain["kind"],
   sceneLocalMs: number,
 ): boolean {
-  const queue = shopObtainQueue(entry);
-  const index = queue.findIndex((item) => item.kind === kind && item.id === id);
-  if (index < 0) return true;
-  const slot = index + 1;
+  const slot = shopObtainStep(entry, kind, id);
+  if (slot === 0) return true;
   const step = lastSceneStepIndex(sceneLocalMs);
   return step > slot || (step === slot && obtainLanded(lastSceneBeatProgress(sceneLocalMs)));
 }
 
 export function shopObtainsAtStep(entry: ReplayHistoryEntry, step: number): ShopObtain[] {
-  const queue = shopObtainQueue(entry);
-  return queue.filter((_, index) => index + 1 === step);
+  return shopSteps(entry)[step - 1]?.obtains ?? [];
 }
 
 export function lastSceneIdSetHas(ids: ReadonlySet<string> | undefined, id: string): boolean {

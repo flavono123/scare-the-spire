@@ -16,6 +16,7 @@ import {
   shopObtainsAtStep,
   shopRemovalFlipProgress,
   shopRemovalPickVisible,
+  shopSteps,
   type ShopObtain,
 } from "@/lib/history-last-scene-steps";
 import type { CodexCard, CodexPotion, CodexRelic } from "@/lib/codex-types";
@@ -263,15 +264,7 @@ export function MerchantShopScreen({
   beatProgress?: number;
   step?: number;
 }) {
-  const flying = entry ? shopObtainsAtStep(entry, step).filter(isShopFlyItem) : [];
   const removalFlip = entry ? shopRemovalFlipProgress(entry, step, beatProgress) : (removalUsed ? 1 : 0);
-  const removedCard = (entry?.cards_removed ?? []).find((card) => card.id);
-  const removedTile = removedCard?.id && cardsById
-    ? lookupHistoryCard(cardsById, removedCard.id)
-    : undefined;
-  const showRemovalPick = Boolean(
-    entry && removedTile && shopRemovalPickVisible(entry, step, beatProgress),
-  );
   const itemHidden = (id: string | undefined, kind: "relic" | "potion" | "card") =>
     Boolean(entry && id && shopMatItemHidden(entry, id, kind, step, beatProgress));
   return (
@@ -360,12 +353,55 @@ export function MerchantShopScreen({
           </div>
         </div>
       </div>
+      {entry ? (
+        <ShopObtainOverlay
+          entry={entry}
+          step={step}
+          beatProgress={beatProgress}
+          cardsById={cardsById}
+          relicsById={relicsById}
+          potionsById={potionsById}
+          serviceLocale={serviceLocale}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+/** The step's obtains flying to the top bar, and the removed card shown while it is removed. */
+export function ShopObtainOverlay({
+  entry,
+  step,
+  beatProgress,
+  cardsById,
+  relicsById,
+  potionsById,
+  serviceLocale,
+}: {
+  entry: ReplayHistoryEntry;
+  step: number;
+  beatProgress: number;
+  cardsById?: Record<string, CodexCard>;
+  relicsById?: Record<string, CodexRelic>;
+  potionsById?: Record<string, CodexPotion>;
+  serviceLocale: ServiceLocale;
+}) {
+  const flying = shopObtainsAtStep(entry, step).filter(isShopFlyItem);
+  // A Blitz ware's rewards leave from the ware's slot.
+  const ware = shopSteps(entry)[step - 1]?.ware ?? null;
+  const removedCard = (entry.cards_removed ?? []).find((card) => card.id);
+  const removedTile = removedCard?.id && cardsById
+    ? lookupHistoryCard(cardsById, removedCard.id)
+    : undefined;
+  const showRemovalPick = Boolean(removedTile && shopRemovalPickVisible(entry, step, beatProgress));
+  return (
+    <>
       {flying.map((item) => {
         const relic = item.kind === "relic" ? lookupHistoryRelic(relicsById, item.id) : undefined;
         const potion = item.kind === "potion" ? lookupHistoryPotion(potionsById, item.id) : undefined;
         const card = item.kind === "card" && cardsById ? lookupHistoryCard(cardsById, item.id) : undefined;
         const shopCard = item.kind === "card"
-          ? (entry?.card_choices ?? []).find((choice) => choice.id === item.id)
+          ? (entry.card_choices ?? []).find((choice) => choice.id === item.id)
           : undefined;
         const iconUrl =
           item.kind === "relic"
@@ -380,9 +416,11 @@ export function MerchantShopScreen({
             active
             progress={beatProgress}
             sourceSelector={
-              item.kind === "card"
-                ? `[data-history-last-scene-pick="${cssEscapeAttr(item.id)}"]`
-                : `[data-history-reward-icon="${cssEscapeAttr(item.id)}"]`
+              ware !== null
+                ? `[data-history-blitz-ware="${ware}"]`
+                : item.kind === "card"
+                  ? `[data-history-last-scene-pick="${cssEscapeAttr(item.id)}"]`
+                  : `[data-history-reward-icon="${cssEscapeAttr(item.id)}"]`
             }
             targetSelector={
               item.kind === "relic"
@@ -409,6 +447,6 @@ export function MerchantShopScreen({
           removed
         />
       ) : null}
-    </div>
+    </>
   );
 }
