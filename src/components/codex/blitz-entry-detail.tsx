@@ -17,6 +17,7 @@ import { DescriptionText } from "./codex-description";
 import { GameHoverTip } from "./hover-tip";
 import { ModifierToken } from "./modifier-token";
 import { RichDescription } from "./rich-description";
+import { RelatedResourceLinks, referenceGroupsFromIds } from "./entity-reference-links";
 
 export const BLITZ_CURSED_COLOR = "#ff5555";
 
@@ -190,6 +191,12 @@ export function BlitzEntryDetail({
               )}
             </div>
           </section>
+
+          <RelatedResourceLinks
+            gameUi={gameUi}
+            groups={referenceGroupsFromIds(entry.related, entities)}
+            serviceLocale={serviceLocale}
+          />
 
           <details className="group rounded-lg border border-border bg-compendium-rail px-4 py-3" open>
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">

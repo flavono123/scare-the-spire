@@ -11,6 +11,7 @@ import {
   type BlitzMerchantData,
 } from "../src/lib/node-sim/blitz-merchant";
 import { formatLoc } from "../src/lib/node-sim/loc-format";
+import { BLITZ_ENTRY_CATEGORIES, blitzEntryCategories, DOMINION_CATEGORIES, dominionCategory } from "../src/lib/blitz-dread-service-categories";
 import { NODE_SIM_PRESETS, parseNodeSimQuery } from "../src/lib/node-sim/scenarios";
 
 const data = JSON.parse(readFileSync(path.join(process.cwd(), "data/sts2/blitz-merchant.json"), "utf8")) as BlitzMerchantData & {
@@ -35,6 +36,14 @@ assert.equal(formatLoc("{Times:choose(1):1번|[blue]{}[/blue]번}", { Times: 1 }
 assert.equal(formatLoc("{Amount:plural(ru):| {} раза|{} раз}", { Amount: 2 }, "eng"), " 2 раза");
 assert.equal(formatLoc("{Amount:plural(ru):| {} раза|{} раз}", { Amount: 5 }, "eng"), "5 раз");
 assert.equal(formatLoc("{Amount:plural(ru):| {} раза|{} раз}", { Amount: 1 }, "eng"), "");
+// A filter that leaves a single ware or dominion is not a filter.
+for (const category of BLITZ_ENTRY_CATEGORIES) {
+  assert.ok(BLITZ_ENTRY_TYPES.filter((type) => blitzEntryCategories(type).includes(category)).length >= 2, `blitz category ${category}`);
+}
+const DOMINION_IDS = ["AEONGLASS", "CEREMONIAL_BEAST", "INSATIABLE", "KAISER_CRAB", "KIN", "KNOWLEDGE_DEMON", "LAGAVULIN_MATRIARCH", "QUEEN", "SOUL_FYSH", "TEST_SUBJECT", "VANTOM", "WATERFALL_GIANT"];
+for (const category of DOMINION_CATEGORIES) {
+  assert.ok(DOMINION_IDS.filter((id) => dominionCategory(id) === category).length >= 2, `dominion category ${category}`);
+}
 
 // GetBlitzEntries: five distinct non-cursed entries, then one cursed, for any seed.
 for (let seed = 0; seed < 200; seed += 1) {

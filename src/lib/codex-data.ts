@@ -27,6 +27,7 @@ import {
 } from "./node-sim/blitz-merchant";
 import { formatLoc } from "./node-sim/loc-format";
 import { blitzEntryCategories, dominionCategory } from "./blitz-dread-service-categories";
+import { blitzEntryRelated, dominionRelated } from "./blitz-dread-relations";
 import {
   CodexCard,
   CodexKeyword,
@@ -3047,6 +3048,7 @@ export async function getCodexBlitzEntries(opts?: { gameLocale?: GameLocale }): 
       categories: blitzEntryCategories(type),
       link,
       variants,
+      related: blitzEntryRelated(type),
       sortOrder,
     };
   });
@@ -3107,6 +3109,11 @@ export async function getCodexDominions(opts?: { gameLocale?: GameLocale }): Pro
         encounterId,
         encounterName: encounter.name,
         category: dominionCategory(id),
+        related: {
+          encounter: [encounterId],
+          monster: encounter.monsters.map((monster) => monster.id),
+          ...dominionRelated(id),
+        },
         name: title.replace("{BossName}", encounter.name),
         nameEn: engTitle.replace("{BossName}", engEncounter.nameEn),
         description: ascension[key] ?? engAscension[key] ?? "",

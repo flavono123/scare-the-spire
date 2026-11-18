@@ -171,6 +171,9 @@ export interface CodexAscension {
   sortOrder: number;
 }
 
+/** Ids of related compendium resources by kind, for the detail rail. */
+export type CodexRelatedIds = Partial<Record<"card" | "power" | "enchantment" | "character" | "encounter" | "monster", string[]>>;
+
 export interface CodexBlitzEntryVariant {
   /** Enchantment or character id. */
   id: string;
@@ -206,6 +209,7 @@ export interface CodexBlitzEntry {
   /** The enchantment or character the ware is about, when it has one value. */
   link: { type: "enchantment" | "character"; id: string; name: string } | null;
   variants: CodexBlitzEntryVariant[];
+  related: CodexRelatedIds;
   sortOrder: number;
 }
 
@@ -218,6 +222,7 @@ export interface CodexDominion {
   act: EventAct | null;
   /** Service-defined grouping (blitz-dread-service-categories.ts). */
   category: DominionCategory;
+  related: CodexRelatedIds;
   name: string;
   nameEn: string;
   description: string;

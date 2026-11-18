@@ -5,28 +5,19 @@
  */
 import type { BlitzEntryType } from "./node-sim/blitz-merchant";
 
-export const BLITZ_ENTRY_CATEGORIES = [
-  "upgrade",
-  "cardReward",
-  "enchant",
-  "transform",
-  "removal",
-  "relic",
-  "potion",
-  "heal",
-  "moreWares",
-] as const;
+// Only groupings with two or more wares; a filter that leaves one ware is not a filter.
+export const BLITZ_ENTRY_CATEGORIES = ["upgrade", "cardReward", "enchant", "relic"] as const;
 export type BlitzEntryCategory = (typeof BLITZ_ENTRY_CATEGORIES)[number];
 
 const BLITZ_CATEGORIES_BY_TYPE: Record<BlitzEntryType, BlitzEntryCategory[]> = {
   CardUpgrade: ["upgrade"],
   UpgradedCardReward: ["cardReward", "upgrade"],
   RandomUpgrades: ["upgrade"],
-  CardTransform: ["transform"],
-  CardRemoval: ["removal"],
+  CardTransform: [],
+  CardRemoval: [],
   CardRewards: ["cardReward"],
   ColorlessCardReward: ["cardReward"],
-  Potions: ["potion"],
+  Potions: [],
   CardEnchant: ["enchant"],
   EnchantedCardReward: ["cardReward", "enchant"],
   PrismaticCardReward: ["cardReward"],
@@ -34,18 +25,18 @@ const BLITZ_CATEGORIES_BY_TYPE: Record<BlitzEntryType, BlitzEntryCategory[]> = {
   UpgradedRareCard: ["cardReward", "upgrade"],
   Relic: ["relic"],
   Glam: ["enchant"],
-  TwoMoreChoices: ["moreWares"],
+  TwoMoreChoices: [],
   CardRewardOfEachRarity: ["cardReward"],
   UpgradedRareCardReward: ["cardReward", "upgrade"],
   TwoRelics: ["relic"],
-  FullHealAndMaxHp: ["heal"],
+  FullHealAndMaxHp: [],
 };
 
 export function blitzEntryCategories(type: BlitzEntryType): BlitzEntryCategory[] {
   return BLITZ_CATEGORIES_BY_TYPE[type];
 }
 
-export const DOMINION_CATEGORIES = ["enemyBuff", "playerDebuff", "damage", "addCard"] as const;
+export const DOMINION_CATEGORIES = ["enemyBuff", "playerDebuff", "damage", "addStatus"] as const;
 export type DominionCategory = (typeof DOMINION_CATEGORIES)[number];
 
 const DOMINION_CATEGORY_BY_ID: Record<string, DominionCategory> = {
@@ -56,11 +47,12 @@ const DOMINION_CATEGORY_BY_ID: Record<string, DominionCategory> = {
   KIN: "playerDebuff", // Weak, Frail
   QUEEN: "playerDebuff", // Weak, Vulnerable, Frail
   LAGAVULIN_MATRIARCH: "playerDebuff", // -Strength, -Dexterity
+  // Picks one of two Status cards, but the pick applies its power (Sloth, Amnesia); no card is added.
+  KNOWLEDGE_DEMON: "playerDebuff",
   INSATIABLE: "damage", // end-of-turn damage by turn count
   WATERFALL_GIANT: "damage", // enemies explode on death
-  AEONGLASS: "addCard", // Wither on the draw pile
-  SOUL_FYSH: "addCard", // Beckon
-  KNOWLEDGE_DEMON: "addCard", // a Dominion curse each combat
+  AEONGLASS: "addStatus", // Wither (Status) on top of the draw pile each turn
+  SOUL_FYSH: "addStatus", // Beckon (Status) into the draw pile each combat
 };
 
 export function dominionCategory(id: string): DominionCategory {

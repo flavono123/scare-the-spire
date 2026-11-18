@@ -193,7 +193,8 @@ export function BlitzEntryLibrary({
         searchText,
       );
     });
-    const categoryRank = (entry: CodexBlitzEntry) => BLITZ_ENTRY_CATEGORIES.indexOf(entry.categories[0]);
+    // Wares outside every category sort after the categorised ones.
+    const categoryRank = (entry: CodexBlitzEntry) => (entry.categories.length > 0 ? BLITZ_ENTRY_CATEGORIES.indexOf(entry.categories[0]) : BLITZ_ENTRY_CATEGORIES.length);
     const sorted = filtered.sort((a, b) => {
       if (sortKey === "name") return stripCodexMarkup(a.name).localeCompare(stripCodexMarkup(b.name), "ko");
       if (sortKey === "category") return categoryRank(a) - categoryRank(b) || a.sortOrder - b.sortOrder;

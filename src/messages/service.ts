@@ -1298,12 +1298,7 @@ export const serviceMessages = {
           upgrade: "강화",
           cardReward: "카드 보상",
           enchant: "인챈트",
-          transform: "변화",
-          removal: "제거",
           relic: "유물",
-          potion: "포션",
-          heal: "체력",
-          moreWares: "추가 구매",
         },
       },
       dominionsView: {
@@ -1316,7 +1311,7 @@ export const serviceMessages = {
           enemyBuff: "적 강화",
           playerDebuff: "플레이어 약화",
           damage: "피해",
-          addCard: "카드 추가",
+          addStatus: "상태이상 추가",
         },
       },
       cardsView: {
@@ -2969,12 +2964,7 @@ export const serviceMessages = {
           upgrade: "Upgrade",
           cardReward: "Card Reward",
           enchant: "Enchant",
-          transform: "Transform",
-          removal: "Remove",
           relic: "Relic",
-          potion: "Potion",
-          heal: "HP",
-          moreWares: "More Wares",
         },
       },
       dominionsView: {
@@ -2987,7 +2977,7 @@ export const serviceMessages = {
           enemyBuff: "Enemy buff",
           playerDebuff: "Player debuff",
           damage: "Damage",
-          addCard: "Adds a card",
+          addStatus: "Adds a Status",
         },
       },
       cardsView: {

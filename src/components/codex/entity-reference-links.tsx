@@ -7,7 +7,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 
-export type CodexReferenceKind = "card" | "event" | "potion" | "relic" | "enchantment" | "affliction" | "monster" | "encounter" | "ancient" | "power" | "epoch";
+export type CodexReferenceKind = "card" | "character" | "event" | "potion" | "relic" | "enchantment" | "affliction" | "monster" | "encounter" | "ancient" | "power" | "epoch";
 
 export interface CodexReferenceTarget {
   id: string;
@@ -42,6 +42,10 @@ const REFERENCE_KIND_CONFIG: Record<CodexReferenceKind, { icon: string; fallback
   card: {
     icon: "/images/sts2/nav/stats_cards.png",
     fallbackLabel: { ko: "카드", en: "Card" },
+  },
+  character: {
+    icon: "/images/sts2/characters/character_icon_ironclad.webp",
+    fallbackLabel: { ko: "캐릭터", en: "Character" },
   },
   event: {
     icon: "/images/sts2/nav/question_mark.png",
@@ -102,6 +106,8 @@ function relatedResourceLabel(
     switch (kind) {
       case "card":
         return compactCollectionLabel(gameUi.cardLibraryTitle);
+      case "character":
+        return gameUi.nav.characters;
       case "relic":
         return compactCollectionLabel(gameUi.relicCollectionTitle);
       case "potion":
@@ -266,6 +272,22 @@ function toPreviewEntity(
     color: target.entity?.color ?? kind,
     type: target.entity?.type ?? kind,
   };
+}
+
+/** Rail groups from a resource's related ids (CodexRelatedIds), named and previewed from the loaded entities. */
+export function referenceGroupsFromIds(
+  related: Partial<Record<CodexReferenceKind, readonly string[]>>,
+  entities: readonly EntityInfo[] | undefined,
+): CodexReferenceGroup[] {
+  if (!entities) return [];
+  const byKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
+  return (Object.entries(related) as [CodexReferenceKind, readonly string[]][]).map(([kind, ids]) => ({
+    kind,
+    targets: ids.flatMap((id) => {
+      const entity = byKey.get(`${kind}:${id}`);
+      return entity ? [{ id, href: buildCompendiumResourceHref(kind, id), title: entity.nameKo, entity }] : [];
+    }),
+  }));
 }
 
 export {
