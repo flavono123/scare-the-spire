@@ -1275,6 +1275,7 @@ export const serviceMessages = {
       },
       ascensionsView: {
         searchPlaceholder: "승천 검색...",
+        standardLevel: "승천 {level}",
       },
       blitzShopView: {
         searchPlaceholder: "블리츠 상점 검색...",
@@ -2941,6 +2942,7 @@ export const serviceMessages = {
       },
       ascensionsView: {
         searchPlaceholder: "Search ascensions...",
+        standardLevel: "Ascension {level}",
       },
       blitzShopView: {
         searchPlaceholder: "Search Blitz Shop...",

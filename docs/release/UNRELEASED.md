@@ -55,6 +55,12 @@
 - QA: 위 경로를 로컬 dev 브라우저로 확인함(ko·en·ru, 블리츠 툴팁·필터·모달·값 선택, 드레드 필터, 모바일 375 폭). 확인 못 함: `pnpm cf:build` 정적 파일 수, 패치 이력 칸(두 분류 모두 아직 없음), 터치 기기 툴팁(탭하면 바로 모달).
 - Commits: `41afaf8e`부터, `d0623de2`(Worker 정적 라우팅에 두 분류 추가. 없으면 `pnpm cf:build`의 cf:assets가 막혔다).
 
+### v0113-blitz-ascension
+- Feature: 승천 백과사전에 블리츠 승천. 블리츠 승천 1~5는 게임에서 일반 승천 2·4·8·9·5를 그대로 쓴다(`AscensionHelper.GetLevelForBlitz`). 인덱스에 "게임 모드"(기본·블리츠, 게임 번역) 필터, 블리츠 보기는 블리츠 단계 순으로 토큰에 블리츠 숫자와 밑에 "승천 N". 상세에 "블리츠 N" 배지, 검색·자동 링크 별칭 "블리츠 승천 N"/"Blitz Ascension N". 새 페이지 없음.
+- Expect: /compendium/ascensions에서 "블리츠"를 켜면 6개(0~5), 1=지친 여행자(승천 2), 5=등반자의 골칫거리(승천 5). /compendium/ascensions/level_08 상세에 "블리츠 3". /ja/compendium/ascensions 필터 이름은 ゲームモード·スタンダード·ブリッツ.
+- QA: 위 경로를 로컬 dev로 확인함(ko 인덱스·상세, en 상세, ja 필터 이름). 확인 못 함: 모바일 폭 화면 캡처(브라우저 창이 숨겨져 있었음).
+- Commits: 데이터 쪽(`blitzLevel`, 게임 모드 이름)은 펫 세션 커밋 `f4df2a78`에 섞여 들어갔고, 화면은 그 다음 커밋.
+
 ### v0113-codex-backfill
 - Feature: v0.113.0 백과사전 백필(worktree `v0113-codex-backfill`을 `a822bf5c`로 병합). 새 캐릭터 풀(6번째 캐릭터: 타입·카드 타일 프레임·에너지 아이콘·필터·`[fool]` 색·캐릭터 페이지), 신규 카드 121·유물 17·포션 3·파워 39·이벤트 5·에포크 9·몬스터 2, 기존 카드 43장 갱신, 변경 기록(카드·유물·몬스터·이벤트·포션·파워), 베타 그림만 있는 유물·파워·에포크의 그림 표시, 티어 리스트·페이지스톰의 노랑/풀 색, 영문 짧은 이름 Fool, 패치 줄 생성과 옛 패치노트 공식 개명 반영, 패치 이력 인덱스 재검증(no-cache). 드레드 모드 값을 걸러 내도록 몬스터·조우 파서 수정.
 - Expect: /compendium/characters에 풀이 6번째로 나오고 /compendium/characters/fool이 체력 77·골드 99·시작 덱을 보인다. /compendium/cards?card=FOOLISH_SHOT 모달이 풀 프레임으로 뜬다. /compendium/relics?relic=bath_robes가 베타 그림으로 뜬다. /patches/0.113.0의 새 이름이 모두 링크된다. /compendium/monsters/infested_prism 패치 이력에 v0.113.0이 있다. 옛 버전 선택 시 새 카드·유물이 보이지 않는다. 정적 파일은 약 16,000개.

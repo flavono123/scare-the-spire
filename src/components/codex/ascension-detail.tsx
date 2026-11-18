@@ -9,7 +9,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { CodexAscension } from "@/lib/codex-types";
+import type { CodexAscension, CodexAscensionGameModeLabels } from "@/lib/codex-types";
 import { closeOnPlainClick } from "@/lib/plain-click";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { AscensionToken } from "./ascension-token";
@@ -96,6 +96,7 @@ export function AscensionDetail({
   gameUi,
   backToListTitle,
   ascension,
+  gameModes,
   entities,
   onClose,
 }: {
@@ -103,6 +104,7 @@ export function AscensionDetail({
   gameUi: CodexGameUiLabels;
   backToListTitle?: string;
   ascension: CodexAscension;
+  gameModes: CodexAscensionGameModeLabels;
   entities?: EntityInfo[];
   onClose?: () => void;
 }) {
@@ -155,6 +157,11 @@ export function AscensionDetail({
                 <span className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold text-gray-300">
                   {labels.level.replace("{level}", String(ascension.level))}
                 </span>
+                {ascension.blitzLevel !== null && ascension.level > 0 && (
+                  <span className="rounded-md border border-emerald-400/30 bg-emerald-400/[0.08] px-3 py-1.5 font-game-text text-sm font-bold text-emerald-300">
+                    {`${gameModes.blitz} ${ascension.blitzLevel}`}
+                  </span>
+                )}
               </div>
               {ascension.nameEn !== ascension.name && (
                 <div>

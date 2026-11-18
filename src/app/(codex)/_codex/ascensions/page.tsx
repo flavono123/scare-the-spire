@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexAscensions } from "@/lib/codex-data";
+import { getCodexAscensionGameModeLabels, getCodexAscensions } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -45,9 +45,10 @@ export default async function CodexAscensionsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [ascensions, gameUi] = await Promise.all([
+  const [ascensions, gameUi, gameModes] = await Promise.all([
     getCodexAscensions({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
+    getCodexAscensionGameModeLabels(gameLocale),
   ]);
   return (
     <>
@@ -58,6 +59,7 @@ export default async function CodexAscensionsPage({
           gameUi={gameUi}
           title={gameUi.nav.ascensions}
           ascensions={ascensions}
+          gameModes={gameModes}
         />
       </Suspense>
       <CompendiumEntryLinkIndex

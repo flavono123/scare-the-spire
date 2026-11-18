@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexAscensions } from "@/lib/codex-data";
+import { getCodexAscensionGameModeLabels, getCodexAscensions } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -55,9 +55,10 @@ export default async function AscensionDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [ascensions, gameUi] = await Promise.all([
+  const [ascensions, gameUi, gameModes] = await Promise.all([
     getCodexAscensions({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
+    getCodexAscensionGameModeLabels(gameLocale),
   ]);
   const ascension = ascensions.find((item) => (
     item.id.toLowerCase() === id.toLowerCase() || String(item.level) === id
@@ -72,6 +73,7 @@ export default async function AscensionDetailPage({
         gameUi={gameUi}
         backToListTitle={gameUi.nav.ascensions}
         ascension={ascension}
+        gameModes={gameModes}
       />
     </div>
   );
