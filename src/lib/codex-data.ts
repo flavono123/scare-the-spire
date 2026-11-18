@@ -19,10 +19,20 @@ import { DEFAULT_GAME_LOCALE_BY_SERVICE, type GameLocale } from "./i18n";
 import { withoutNameCounterPlaceholders } from "./game-name-placeholders";
 import { FUTURE_OF_POTIONS_CHOICES, FUTURE_OF_POTIONS_EVENT_ID } from "./codex-references";
 import {
+  BLITZ_ENTRY_TYPES,
+  CHARACTERS as BLITZ_PRISMATIC_CHARACTERS,
+  RARE_ENTRIES as BLITZ_RARE_ENTRIES,
+  SHOP_ENCHANTMENTS as BLITZ_SHOP_ENCHANTMENTS,
+  isCursed as isCursedBlitzEntry,
+} from "./node-sim/blitz-merchant";
+import { formatLoc } from "./node-sim/loc-format";
+import {
   CodexCard,
   CodexKeyword,
   CodexModifier,
   CodexAscension,
+  CodexBlitzEntry,
+  CodexDominion,
   CodexCharacter,
   CodexRelic,
   CodexPotion,
@@ -2949,6 +2959,144 @@ export async function getCodexModifiers(opts?: { gameLocale?: GameLocale }): Pro
   });
 
   return modifiers;
+}
+
+/** EnchantmentModel.ShowAmount: the enchantments whose shop line names the amount. */
+const BLITZ_ENCHANT_SHOWS_AMOUNT = new Set(["SHARP", "NIMBLE", "ADROIT", "SWIFT", "VIGOROUS"]);
+
+export async function getCodexBlitzEntries(opts?: { gameLocale?: GameLocale }): Promise<CodexBlitzEntry[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [merchant, engMerchant, enchantments, engEnchantments, characters, engCharacters] = await Promise.all([
+    readGameLocalizationTable(gameLocale, "merchant_room"),
+    readGameLocalizationTable("eng", "merchant_room"),
+    readGameLocalizationTable(gameLocale, "enchantments"),
+    readGameLocalizationTable("eng", "enchantments"),
+    readGameLocalizationTable(gameLocale, "characters"),
+    readGameLocalizationTable("eng", "characters"),
+  ]);
+  // shortcut: plural follows English (one vs other) outside Korean; per-culture rules if a locale needs them.
+  const lang = gameLocale === "kor" ? "kor" : "eng";
+  const entries: CodexBlitzEntry[] = [];
+
+  BLITZ_ENTRY_TYPES.forEach((type, typeIndex) => {
+    const key = type.replace(/(?<!^)(?=[A-Z])/g, "_").toLowerCase();
+    const line = (table: GameLocalizationTable, part: "title" | "description") =>
+      table[`MERCHANT.blitz.${key}_entry.${part}`] ?? engMerchant[`MERCHANT.blitz.${key}_entry.${part}`] ?? "";
+    const push = (
+      id: string,
+      vars: Record<string, string | number>,
+      engVars: Record<string, string | number>,
+      link: CodexBlitzEntry["link"],
+      variantIndex = 0,
+    ) => {
+      entries.push({
+        id,
+        type,
+        name: formatLoc(line(merchant, "title"), vars, lang),
+        nameEn: formatLoc(line(engMerchant, "title"), engVars, "eng"),
+        description: formatLoc(line(merchant, "description"), vars, lang),
+        descriptionEn: formatLoc(line(engMerchant, "description"), engVars, "eng"),
+        imageUrl: `/images/sts2/blitz-merchant/entries/entry_${key}.webp`,
+        cursed: isCursedBlitzEntry(type),
+        rare: BLITZ_RARE_ENTRIES.includes(type),
+        link,
+        sortOrder: typeIndex * 100 + variantIndex,
+      });
+    };
+    const id = key.toUpperCase();
+    const enchantName = (table: GameLocalizationTable, enchantment: string) =>
+      table[`${enchantment}.title`] ?? engEnchantments[`${enchantment}.title`] ?? enchantment;
+
+    if (type === "CardEnchant") {
+      // BlitzRunModel.shopEnchantmentOptions: one ware per enchantment and amount.
+      BLITZ_SHOP_ENCHANTMENTS.forEach(([enchantment, amount], index) => {
+        const shown = BLITZ_ENCHANT_SHOWS_AMOUNT.has(enchantment) ? amount : 1;
+        push(
+          `${id}_${enchantment}`,
+          { Enchantment: enchantName(enchantments, enchantment), Amount: shown },
+          { Enchantment: enchantName(engEnchantments, enchantment), Amount: shown },
+          { type: "enchantment", id: enchantment },
+          index,
+        );
+      });
+    } else if (type === "Glam") {
+      push(
+        id,
+        { Enchantment: enchantName(enchantments, "GLAM"), Amount: 1 },
+        { Enchantment: enchantName(engEnchantments, "GLAM"), Amount: 1 },
+        { type: "enchantment", id: "GLAM" },
+      );
+    } else if (type === "PrismaticCardReward") {
+      // A card reward of another character's pool, one ware per character.
+      BLITZ_PRISMATIC_CHARACTERS.forEach((character, index) => {
+        const name = (table: GameLocalizationTable) => table[`${character}.shortTitle`] ?? engCharacters[`${character}.shortTitle`] ?? character;
+        push(
+          `${id}_${character}`,
+          { Character: name(characters) },
+          { Character: name(engCharacters) },
+          { type: "character", id: character },
+          index,
+        );
+      });
+    } else {
+      push(id, {}, {}, null);
+    }
+  });
+  return entries;
+}
+
+/** Boss encounter -> its DominionModel (EncounterModel.GetDominion overrides). */
+const DOMINION_ENCOUNTERS: Record<string, string> = {
+  AEONGLASS: "AEONGLASS_BOSS",
+  CEREMONIAL_BEAST: "CEREMONIAL_BEAST_BOSS",
+  INSATIABLE: "THE_INSATIABLE_BOSS",
+  KAISER_CRAB: "KAISER_CRAB_BOSS",
+  KIN: "THE_KIN_BOSS",
+  KNOWLEDGE_DEMON: "KNOWLEDGE_DEMON_BOSS",
+  LAGAVULIN_MATRIARCH: "LAGAVULIN_MATRIARCH_BOSS",
+  QUEEN: "QUEEN_BOSS",
+  SOUL_FYSH: "SOUL_FYSH_BOSS",
+  TEST_SUBJECT: "TEST_SUBJECT_BOSS",
+  VANTOM: "VANTOM_BOSS",
+  WATERFALL_GIANT: "WATERFALL_GIANT_BOSS",
+};
+
+const DOMINION_ACT_ORDER: (EventAct | null)[] = ["Act 1 - Overgrowth", "Underdocks", "Act 2 - Hive", "Act 3 - Glory", null];
+
+export async function getCodexDominions(opts?: { gameLocale?: GameLocale }): Promise<CodexDominion[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [ascension, engAscension, encounters, engEncounters] = await Promise.all([
+    readGameLocalizationTable(gameLocale, "ascension"),
+    readGameLocalizationTable("eng", "ascension"),
+    getCodexEncounters({ gameLocale }),
+    gameLocale === "eng" ? Promise.resolve(null) : getCodexEncounters({ gameLocale: "eng" }),
+  ]);
+  const encounterById = new Map(encounters.map((encounter) => [encounter.id, encounter]));
+  const engEncounterById = new Map((engEncounters ?? encounters).map((encounter) => [encounter.id, encounter]));
+  const title = ascension["DREAD.title"] ?? engAscension["DREAD.title"] ?? "{BossName}";
+  const engTitle = engAscension["DREAD.title"] ?? "{BossName}";
+
+  return Object.entries(DOMINION_ENCOUNTERS)
+    .flatMap(([id, encounterId]) => {
+      const encounter = encounterById.get(encounterId);
+      const engEncounter = engEncounterById.get(encounterId) ?? encounter;
+      if (!encounter || !engEncounter) return [];
+      const key = `DREAD.${id}.description`;
+      return [{
+        id,
+        encounterId,
+        name: title.replace("{BossName}", encounter.name),
+        nameEn: engTitle.replace("{BossName}", engEncounter.nameEn),
+        description: ascension[key] ?? engAscension[key] ?? "",
+        descriptionEn: engAscension[key] ?? "",
+        // The boss icon of the map and top bar, where the game shows the dominion.
+        imageUrl: `/images/sts2/bosses/${encounterId.toLowerCase()}.webp`,
+        act: encounter.act,
+      }];
+    })
+    .sort((left, right) => DOMINION_ACT_ORDER.indexOf(left.act) - DOMINION_ACT_ORDER.indexOf(right.act)
+      || left.encounterId.localeCompare(right.encounterId))
+    .map(({ act: _act, ...dominion }, sortOrder) => ({ ...dominion, sortOrder }));
 }
 
 const ASCENSION_HISTORICAL_ALIASES: Record<string, { ko: string[]; en: string[] }> = {

@@ -170,6 +170,41 @@ export interface CodexAscension {
   sortOrder: number;
 }
 
+/**
+ * A ware of the Blitz mode merchant (MERCHANT.blitz.*_entry). Entries whose title
+ * names an enchantment or character are listed once per value, as the shop shows them.
+ */
+export interface CodexBlitzEntry {
+  id: string;
+  /** BlitzMerchantEntryType. */
+  type: string;
+  name: string;
+  nameEn: string;
+  description: string;
+  descriptionEn: string;
+  imageUrl: string;
+  /** Comes with a random curse; the shop's sixth slot. */
+  cursed: boolean;
+  /** Half weight in the shop draw. */
+  rare: boolean;
+  /** The enchantment or character the ware is about. */
+  link: { type: "enchantment" | "character"; id: string } | null;
+  sortOrder: number;
+}
+
+/** A Dread mode boss's dominion over its act (ascension DREAD.*). */
+export interface CodexDominion {
+  id: string;
+  /** Boss encounter that brings it. */
+  encounterId: string;
+  name: string;
+  nameEn: string;
+  description: string;
+  descriptionEn: string;
+  imageUrl: string;
+  sortOrder: number;
+}
+
 /** In-game ascension flame from `ui_atlas.sprites/top_bar/top_bar_ascension`. */
 export const ASCENSION_TOKEN_IMAGE_URL = "/images/sts2/ui/topbar/top_bar_ascension.png";
 
