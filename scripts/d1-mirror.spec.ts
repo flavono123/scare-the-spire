@@ -212,6 +212,11 @@ async function recorder() {
     assert.equal(await scheduledOutboxMirror(env), null);
     assert.equal(db.statements - before, 1, "only the gate read");
     for (const group of WRITE_GROUPS) h.setFlag(sourceFlagKey(group), "d1");
+    // Step 7: mirror.enabled = off retires Supabase; the outbox row stays and nothing is sent.
+    h.setFlag("mirror.enabled", "off");
+    assert.equal(await scheduledOutboxMirror(env), null);
+    assert.equal(h.outbox().length, 1);
+    h.setFlag("mirror.enabled", "on");
     assert.equal((await scheduledOutboxMirror(env))?.sent, 1);
     assert.equal(h.outbox().length, 0);
   });

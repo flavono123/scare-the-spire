@@ -1,6 +1,7 @@
 import type { D1Database } from "../d1";
 import type { Fetcher } from "../supabase-rest";
 import { rowsOf, runBatch, stmt, type D1Statement, type D1Value } from "./db";
+import { MIRROR_FLAG_KEY } from "../../../src/lib/write-source-flags";
 import { anyD1Source, readWriteGate } from "./gate";
 import type { OutboxOp, OutboxPayload } from "./outbox";
 import { keyParams, mirrorTable, rowJson, type MirrorTable } from "./tables";
@@ -463,6 +464,16 @@ function d1TableOf(table: string): string {
  * group's source is d1. The budget leaves room for the gate read and the step 2 sync's own gate
  * read in the same scheduled invocation (the sync is off while a source is d1).
  */
+/** Whether step 7 retired Supabase (mirror.enabled = off). A failed read keeps the mirror on. */
+export async function supabaseRetired(db: D1Database): Promise<boolean> {
+  try {
+    const [rows] = await runBatch(db, [stmt("SELECT value FROM runtime_flags WHERE key = ?1", MIRROR_FLAG_KEY)]);
+    return rowsOf<{ value: string }>(rows)[0]?.value === "off";
+  } catch {
+    return false;
+  }
+}
+
 export async function scheduledOutboxMirror(
   env: MirrorEnv & { API_RUNTIME_FLAGS?: string },
   options: MirrorOptions = {},
@@ -470,6 +481,7 @@ export async function scheduledOutboxMirror(
   if (env.API_RUNTIME_FLAGS !== "d1" || !env.DB) return null;
   const gate = await readWriteGate(env.DB);
   if (!anyD1Source(gate)) return null;
+  if (await supabaseRetired(env.DB)) return null;
   return mirrorOutbox(env, { maxRows: 20, statementBudget: 43, ...options });
 }
 

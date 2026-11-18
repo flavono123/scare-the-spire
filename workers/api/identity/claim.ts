@@ -11,6 +11,7 @@ import { identityCookieHeader, identityModeCookieHeader, identitySecret, signIde
 import { apiIdentityMode, type IdentityFlagsEnv } from "./mode";
 import { supabaseRefreshSession } from "./supabase-refresh";
 import { supabaseAnonymousSignup } from "./supabase-signup";
+import { supabaseRetired } from "../d1-write/mirror";
 
 /**
  * `POST /api/auth/claim` (docs/SUPABASE_EXIT_PLAN.md 5.3), answered only while
@@ -203,6 +204,8 @@ async function claim(
     const claimed = await claimWithToken(body.token, env, ctx, config, now);
     if (claimed.ok) return { response: await respond(request, url, secret, claimed.uid, false, null, now), code: "claimed" };
     if (claimed.code !== "token_invalid" || body.refreshToken === null) return { response: apiError(claimed.code), code: claimed.code };
+    // Step 7: no Supabase to refresh on; the browser then claims {} for a Worker-made uid.
+    if (env.DB && (await supabaseRetired(env.DB))) return { response: apiError("token_invalid"), code: "refresh_retired" };
     const refreshed = await claimWithRefresh(body.refreshToken, env, ctx, config, now, fetcher);
     if (!refreshed.ok) return { response: apiError(refreshed.code), code: `refresh_${refreshed.code}:${refreshed.detail}` };
     return { response: await respond(request, url, secret, refreshed.uid, false, refreshed.session, now), code: "refreshed" };
@@ -211,6 +214,10 @@ async function claim(
   const existing = await verifyIdentityCookie(secret, readCookie(request, IDENTITY_COOKIE_NAME), now);
   if (existing.ok) return { response: await respond(request, url, secret, existing.uid, false, null, now), code: "kept" };
 
+  // Step 7: Supabase is retired, so the Worker makes the uid itself (plan 5.3).
+  if (env.DB && (await supabaseRetired(env.DB))) {
+    return { response: await respond(request, url, secret, crypto.randomUUID(), true, null, now), code: "minted" };
+  }
   const signup = await supabaseAnonymousSignup(config, fetcher);
   if (signup.ok) return { response: await respond(request, url, secret, signup.uid, true, signup.session, now), code: "signed_up" };
   // No Worker-made uid while Supabase holds the data: answer like a failed sign-in today.

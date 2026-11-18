@@ -13,7 +13,7 @@ import {
 } from "../src/lib/api-surfaces";
 import { WRITE_FLAG_GROUPS, WRITE_MODES, writeFlagKey, type WriteMode } from "../src/lib/api-write-modes";
 import { IDENTITY_MODE_KEY, IDENTITY_MODES, type IdentityMode } from "../src/lib/identity-cookies";
-import { WRITE_GROUPS, WRITE_PAUSED_KEY, WRITE_PAUSED_VALUES, WRITE_SOURCES, sourceFlagKey } from "../src/lib/write-source-flags";
+import { MIRROR_FLAG_KEY, MIRROR_FLAG_VALUES, WRITE_GROUPS, WRITE_PAUSED_KEY, WRITE_PAUSED_VALUES, WRITE_SOURCES, sourceFlagKey } from "../src/lib/write-source-flags";
 import { SYNC_FLAG_KEY, SYNC_FLAG_VALUES } from "../workers/sync/sync-env";
 
 export type KeyRule = { values: string; accepts: (value: string) => boolean };
@@ -41,6 +41,7 @@ export const KNOWN_KEYS: ReadonlyMap<string, KeyRule> = new Map<string, KeyRule>
   // Step 5 (docs/SUPABASE_EXIT_PLAN.md 7.3): the write source per group and the cutover pause.
   ...WRITE_GROUPS.map((group) => [sourceFlagKey(group), oneOf(WRITE_SOURCES)] as const),
   [WRITE_PAUSED_KEY, oneOf(WRITE_PAUSED_VALUES)],
+  [MIRROR_FLAG_KEY, oneOf(MIRROR_FLAG_VALUES)],
 ]);
 
 type OldClientOnly = { value: string; outage: string };

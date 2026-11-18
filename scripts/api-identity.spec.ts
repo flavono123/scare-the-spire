@@ -90,8 +90,13 @@ class FakeD1 implements D1Database {
   keys: Record<string, unknown>[] | null = null;
 
   prepare(query: string): D1PreparedStatement {
+    let params: unknown[] = [];
     const exec = async (): Promise<D1Result<Record<string, unknown>>> => {
       this.queries.push(query);
+      if (query === "SELECT value FROM runtime_flags WHERE key = ?1") {
+        const value = this.flags.get(String(params[0]));
+        return { success: true, results: value === undefined ? [] : [{ value }] };
+      }
       if (query === FLAGS_SQL) {
         if (this.failFlags) throw new Error("D1 unavailable");
         return { success: true, results: [...this.flags].map(([key, value]) => ({ key, value })) };
@@ -100,7 +105,10 @@ class FakeD1 implements D1Database {
       throw new Error(`unexpected SQL: ${query}`);
     };
     const statement: D1PreparedStatement = {
-      bind: () => statement,
+      bind: (...values: unknown[]) => {
+        params = values;
+        return statement;
+      },
       all: exec as D1PreparedStatement["all"],
       first: async () => ((await exec()).results[0] ?? null) as never,
       run: exec as D1PreparedStatement["run"],
@@ -381,6 +389,17 @@ async function main() {
     const bad = await claim({}, { cookie: "slseoun_id=v1.garbage" });
     assert.equal(bad.body.uid, NEW_USER, "an invalid cookie means a new user");
     assert.equal(auth.signups.length, 2);
+
+    // Step 7 (mirror.enabled = off): the Worker makes the uid itself; Supabase Auth is not called.
+    db.flags.set("mirror.enabled", "off");
+    const minted = await claim({});
+    assert.equal(minted.status, 200);
+    assert.equal(minted.body.created, true);
+    assert.equal(minted.body.session, null, "no Supabase session to keep");
+    assert.match(String(minted.body.uid), /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+    assert.equal(await cookieUid(minted.response), minted.body.uid, "the cookie carries the Worker-made uid");
+    assert.equal(auth.signups.length, 2, "no sign-up once Supabase is retired");
+    db.flags.delete("mirror.enabled");
 
     // A failed sign-up is a failed sign-in as today: 503, no Worker-made uid, no cookie.
     for (const mode of ["http_500", "http_429", "network", "garbage"] as const) {

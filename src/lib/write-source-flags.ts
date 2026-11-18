@@ -43,3 +43,13 @@ export function isWriteGroup(value: unknown): value is WriteGroup {
 export function sourceFlagKey(group: WriteGroup): string {
   return `source.${group}`;
 }
+
+/**
+ * Step 7 switch (docs/SUPABASE_EXIT_PLAN.md 7.3): `off` retires Supabase. The outbox stops mirroring to it,
+ * new identities get a Worker-made uid (no Supabase sign-up), and expired Supabase sessions are not refreshed.
+ * Unset or `on` keeps step 5/6 behavior. The two go together: a Worker-made uid is not in Supabase's
+ * auth.users, so mirroring its rows would fail their foreign keys.
+ */
+// shortcut: while off the D1 writes still add outbox rows (a few dozen a day); drop them in the step 7 code cleanup.
+export const MIRROR_FLAG_KEY = "mirror.enabled";
+export const MIRROR_FLAG_VALUES = ["on", "off"] as const;

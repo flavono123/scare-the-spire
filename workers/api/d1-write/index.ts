@@ -22,7 +22,7 @@ import {
   upsertBody,
   vote,
 } from "./handlers/toybox";
-import { mirrorOutbox, type MirrorEnv } from "./mirror";
+import { mirrorOutbox, supabaseRetired, type MirrorEnv } from "./mirror";
 
 /**
  * Step 5 hook point of the /api router (docs/SUPABASE_EXIT_PLAN.md 7.3 step 5). For every write
@@ -139,7 +139,10 @@ export async function d1WriteHook(route: UserRoute, context: UserRouteContext): 
     // Mirror right away; the 1-minute cron picks up whatever this leaves and retries the rejects
     // (design 5.5). The budget leaves the invocation's 50 D1 statements room for this write.
     context.ctx.waitUntil(
-      mirrorOutbox(context.env as MirrorEnv, { maxRows: 5, statementBudget: AFTER_WRITE_MIRROR_STATEMENTS, retryRejects: false })
+      supabaseRetired(db)
+        .then((retired) =>
+          retired ? null : mirrorOutbox(context.env as MirrorEnv, { maxRows: 5, statementBudget: AFTER_WRITE_MIRROR_STATEMENTS, retryRejects: false }),
+        )
         .catch(() => undefined),
     );
   }
