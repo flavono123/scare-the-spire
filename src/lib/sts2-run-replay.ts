@@ -16,7 +16,9 @@ const UINT64_SEED_MIN_BUILD = "v0.109.0";
 const MAP_RULES_V113_MIN_BUILD = "v0.113.0";
 const UINT64_MASK = BigInt("18446744073709551615");
 
-type RngProfile = "legacy-dotnet-32" | "mega-random-32" | "mega-random-64";
+// "mega-random-64-sub-shuffle": v0.113.0 ListExtensions.UnstableShuffle draws one
+// NextUnsignedLong from the caller's Rng and swaps with a fresh Rng seeded by it.
+type RngProfile = "legacy-dotnet-32" | "mega-random-32" | "mega-random-64" | "mega-random-64-sub-shuffle";
 
 interface ReplayRandom {
   nextInt(maxExclusive: number): number;
@@ -396,6 +398,10 @@ class MegaRandom implements ReplayRandom {
     return [nextState, (value ^ (value >> BigInt(31))) & UINT64_MASK];
   }
 
+  nextULong(): bigint {
+    return this.nextULongInner();
+  }
+
   private nextULongInner(): bigint {
     let s0 = this.s0;
     let s1 = this.s1;
@@ -445,10 +451,12 @@ class MegaRandom implements ReplayRandom {
 
 class StsRng {
   readonly seed: bigint;
+  readonly profile: RngProfile;
   private readonly random: ReplayRandom;
 
   constructor(seed: bigint, name?: string, profile: RngProfile = "legacy-dotnet-32") {
-    if (profile === "mega-random-64") {
+    this.profile = profile;
+    if (profile === "mega-random-64" || profile === "mega-random-64-sub-shuffle") {
       this.seed = name ? addUint64(seed, getDeterministicHashCode64(name)) : seed;
     } else {
       const seed32 = Number(seed);
@@ -466,6 +474,11 @@ class StsRng {
 
   nextInt(maxExclusive = INT_MAX): number {
     return this.random.nextInt(maxExclusive);
+  }
+
+  nextULong(): bigint {
+    if (!(this.random instanceof MegaRandom)) throw new Error("nextULong needs MegaRandom");
+    return this.random.nextULong();
   }
 
   nextIntRange(minInclusive: number, maxExclusive: number): number {
@@ -755,6 +768,13 @@ class GeneratedActMap {
   }
 
   private getNextValidPointType(queue: ReplayMapPointType[], point: MapNode): ReplayMapPointType | "unassigned" {
+    if (this.v113Rules) {
+      // v0.113: take the first valid type and keep the rest in their original order.
+      const index = queue.findIndex(
+        (type) => this.pointTypeCounts.pointTypesThatIgnoreRules.has(type) || isValidPointType(this, type, point),
+      );
+      return index < 0 ? "unassigned" : queue.splice(index, 1)[0];
+    }
     const length = queue.length;
     for (let i = 0; i < length; i++) {
       const type = queue.shift();
@@ -1726,6 +1746,7 @@ function bossPoolForAct(actId: string, pool: ActEncounterPool, buildId: string):
 }
 
 function rngProfileForBuild(buildId: string): RngProfile {
+  if (isBuildAtLeast(buildId, MAP_RULES_V113_MIN_BUILD)) return "mega-random-64-sub-shuffle";
   if (isBuildAtLeast(buildId, UINT64_SEED_MIN_BUILD)) return "mega-random-64";
   return isBuildAtLeast(buildId, MEGA_RANDOM_MIN_BUILD)
     ? "mega-random-32"
@@ -3323,10 +3344,11 @@ function stableShuffle<T>(items: T[], compare: (a: T, b: T) => number, rng: StsR
 }
 
 function unstableShuffle<T>(items: T[], rng: StsRng): T[] {
+  const swapRng = rng.profile === "mega-random-64-sub-shuffle" ? new StsRng(rng.nextULong(), undefined, "mega-random-64") : rng;
   let index = items.length;
   while (index > 1) {
     index--;
-    const swapIndex = rng.nextInt(index + 1);
+    const swapIndex = swapRng.nextInt(index + 1);
     const value = items[index];
     items[index] = items[swapIndex];
     items[swapIndex] = value;
