@@ -1,0 +1,1111 @@
+{
+ "finished": {
+  "ABYSSAL_BATHS": [
+   "ABSTAIN",
+   "EXIT_BATHS"
+  ],
+  "AMALGAMATOR": [
+   "COMBINE_DEFENDS",
+   "COMBINE_STRIKES"
+  ],
+  "AROMA_OF_CHAOS": [
+   "LET_GO",
+   "MAINTAIN_CONTROL"
+  ],
+  "BATTLEWORN_DUMMY": [
+   "DEFEAT",
+   "VICTORY"
+  ],
+  "BRAIN_LEECH": [
+   "RIP",
+   "SHARE_KNOWLEDGE"
+  ],
+  "BUGSLAYER": [
+   "EXTERMINATION",
+   "SQUASH"
+  ],
+  "BYRDONIS_NEST": [
+   "EAT",
+   "TAKE"
+  ],
+  "COLORFUL_PHILOSOPHERS": [
+   "DONE"
+  ],
+  "COLOSSAL_FLOWER": [
+   "EXTRACT_CURRENT_PRIZE",
+   "EXTRACT_INSTEAD",
+   "POLLINOUS_CORE"
+  ],
+  "CRYSTAL_SPHERE": [
+   "FINISH"
+  ],
+  "DENSE_VEGETATION": [
+   "TRUDGE_ON"
+  ],
+  "DOLL_ROOM": [
+   "DAUGHTER_OF_WIND",
+   "FABLE",
+   "MR_STRUGGLES"
+  ],
+  "DOORS_OF_LIGHT_AND_DARK": [
+   "DARK",
+   "LIGHT"
+  ],
+  "DROWNING_BEACON": [
+   "BOTTLE",
+   "CLIMB"
+  ],
+  "ENDLESS_CONVEYOR": [
+   "LEAVE",
+   "OBSERVE_CHEF"
+  ],
+  "FIELD_OF_MAN_SIZED_HOLES": [
+   "ENTER_YOUR_HOLE",
+   "RESIST"
+  ],
+  "GRAVE_OF_THE_FORGOTTEN": [
+   "ACCEPT",
+   "CONFRONT"
+  ],
+  "INFESTED_AUTOMATON": [
+   "STUDY",
+   "TOUCH_CORE"
+  ],
+  "JUNGLE_MAZE_ADVENTURE": [
+   "JOIN_FORCES",
+   "SOLO_QUEST"
+  ],
+  "LOST_WISP": [
+   "CLAIM",
+   "SEARCH"
+  ],
+  "LUMINOUS_CHOIR": [
+   "OFFER_TRIBUTE",
+   "REACH_INTO_THE_FLESH"
+  ],
+  "MORPHIC_GROVE": [
+   "GROUP",
+   "LONER"
+  ],
+  "MUSEUM_OF_TORTURE": [
+   "BREAK_OUT",
+   "TAKE"
+  ],
+  "POTION_COURIER": [
+   "GRAB_POTIONS",
+   "RANSACK"
+  ],
+  "PUNCH_OFF": [
+   "NAB"
+  ],
+  "RANWID_THE_ELDER": [
+   "GOLD",
+   "POTION",
+   "RELIC"
+  ],
+  "REFLECTIONS": [
+   "SHATTER",
+   "TOUCH_A_MIRROR"
+  ],
+  "RELIC_TRADER": [
+   "DONE"
+  ],
+  "ROOM_FULL_OF_CHEESE": [
+   "GORGE",
+   "SEARCH"
+  ],
+  "ROUND_TEA_PARTY": [
+   "CONTINUE_FIGHT",
+   "ENJOY_TEA"
+  ],
+  "SAPPHIRE_SEED": [
+   "EAT",
+   "PLANT"
+  ],
+  "SELF_HELP_BOOK": [
+   "NO_OPTIONS",
+   "READ_ENTIRE_BOOK",
+   "READ_PASSAGE",
+   "READ_THE_BACK"
+  ],
+  "SHRINE_OF_THE_WARLORD": [
+   "TAKE_SHIELD",
+   "TAKE_WEAPON",
+   "TAKE_WINGS"
+  ],
+  "SLIPPERY_BRIDGE": [
+   "OVERCOME"
+  ],
+  "SPIRALING_WHIRLPOOL": [
+   "DRINK",
+   "OBSERVE"
+  ],
+  "SPIRIT_GRAFTER": [
+   "LET_IT_IN",
+   "REJECTION"
+  ],
+  "STONE_OF_ALL_TIME": [
+   "LIFT",
+   "PUSH"
+  ],
+  "SUNKEN_STATUE": [
+   "DIVE_INTO_WATER",
+   "GRAB_SWORD"
+  ],
+  "SUNKEN_TREASURY": [
+   "FIRST_CHEST",
+   "SECOND_CHEST"
+  ],
+  "SYMBIOTE": [
+   "APPROACH",
+   "KILL_WITH_FIRE"
+  ],
+  "TABLET_OF_TRUTH": [
+   "DECIPHER_1",
+   "DECIPHER_2",
+   "DECIPHER_3",
+   "DECIPHER_4",
+   "DECIPHER_5",
+   "GIVE_UP",
+   "SMASH"
+  ],
+  "TEA_MASTER": [
+   "DONE",
+   "TEA_OF_DISCOURTESY"
+  ],
+  "THERMAE_NONUPEIPE": [
+   "DRINK_WATERS",
+   "PRIVATE_OASIS",
+   "THERMAL_BATHS"
+  ],
+  "THE_FUTURE_OF_POTIONS": [
+   "DONE"
+  ],
+  "THE_LANTERN_KEY": [
+   "DONE"
+  ],
+  "THE_LEGENDS_WERE_TRUE": [
+   "NAB_THE_MAP",
+   "SLOWLY_FIND_AN_EXIT"
+  ],
+  "THIS_OR_THAT": [
+   "ORNATE",
+   "PLAIN"
+  ],
+  "TINKER_TIME": [
+   "DONE"
+  ],
+  "TRASH_HEAP": [
+   "DIVE_IN",
+   "GRAB"
+  ],
+  "TRIAL": [
+   "MERCHANT_GUILTY",
+   "MERCHANT_INNOCENT",
+   "NOBLE_GUILTY",
+   "NOBLE_INNOCENT",
+   "NONDESCRIPT_GUILTY",
+   "NONDESCRIPT_INNOCENT"
+  ],
+  "UNREST_SITE": [
+   "KILL",
+   "REST"
+  ],
+  "WAR_HISTORIAN_REPY": [
+   "UNLOCK_CAGE",
+   "UNLOCK_CHEST"
+  ],
+  "WATERFALL_OF_OBVIOUS_SECRETS": [
+   "BEAT_UP",
+   "BE_NICE",
+   "NEGOTIATE"
+  ],
+  "WATERLOGGED_SCRIPTORIUM": [
+   "BLOODY_INK",
+   "PRICKLY_SPONGE",
+   "TENTACLE_QUILL"
+  ],
+  "WELCOME_TO_WONGOS": [
+   "AFTER_BUY",
+   "AFTER_BUY_BADGE_COUNTER",
+   "AFTER_BUY_RECEIVE_BADGE",
+   "LEAVE"
+  ],
+  "WELLSPRING": [
+   "BATHE",
+   "BOTTLE"
+  ],
+  "WHISPERING_HOLLOW": [
+   "GOLD",
+   "HUG"
+  ],
+  "WOOD_CARVINGS": [
+   "BIRD",
+   "SNAKE",
+   "TORUS"
+  ],
+  "WUPPY_IN_TROUBLE": [
+   "BE_CAUTIOUS",
+   "HELP_IMMEDIATELY",
+   "IGNORE"
+  ],
+  "ZEN_WEAVER": [
+   "ARACHNID_ACUPUNCTURE",
+   "BREATHING_TECHNIQUES",
+   "EMOTIONAL_AWARENESS"
+  ]
+ },
+ "targets": {
+  "ABYSSAL_BATHS": {
+   "ALL": {
+    "EXIT_BATHS": [
+     "EXIT_BATHS"
+    ],
+    "LINGER": [
+     "DEATH_WARNING",
+     "LINGER1",
+     "LINGER2",
+     "LINGER3",
+     "LINGER4",
+     "LINGER5",
+     "LINGER6",
+     "LINGER7",
+     "LINGER8",
+     "LINGER9"
+    ]
+   },
+   "INITIAL": {
+    "ABSTAIN": [
+     "ABSTAIN"
+    ],
+    "IMMERSE": [
+     "IMMERSE"
+    ]
+   }
+  },
+  "AMALGAMATOR": {
+   "INITIAL": {
+    "COMBINE_DEFENDS": [
+     "COMBINE_DEFENDS"
+    ],
+    "COMBINE_STRIKES": [
+     "COMBINE_STRIKES"
+    ]
+   }
+  },
+  "AROMA_OF_CHAOS": {
+   "INITIAL": {
+    "LET_GO": [
+     "LET_GO"
+    ],
+    "MAINTAIN_CONTROL": [
+     "MAINTAIN_CONTROL"
+    ]
+   }
+  },
+  "BATTLEWORN_DUMMY": {
+   "INITIAL": {
+    "SETTING_1": [
+     "DEFEAT",
+     "VICTORY"
+    ],
+    "SETTING_2": [
+     "DEFEAT",
+     "VICTORY"
+    ],
+    "SETTING_3": [
+     "DEFEAT",
+     "VICTORY"
+    ]
+   }
+  },
+  "BRAIN_LEECH": {
+   "INITIAL": {
+    "RIP": [
+     "RIP"
+    ],
+    "SHARE_KNOWLEDGE": [
+     "SHARE_KNOWLEDGE"
+    ]
+   }
+  },
+  "BUGSLAYER": {
+   "INITIAL": {
+    "EXTERMINATION": [
+     "EXTERMINATION"
+    ],
+    "SQUASH": [
+     "SQUASH"
+    ]
+   }
+  },
+  "BYRDONIS_NEST": {
+   "INITIAL": {
+    "EAT": [
+     "EAT"
+    ],
+    "TAKE": [
+     "TAKE"
+    ]
+   }
+  },
+  "COLORFUL_PHILOSOPHERS": {
+   "INITIAL": {
+    "DEFECT": [
+     "DONE"
+    ],
+    "EQUALITY": [
+     "DONE"
+    ],
+    "FOOL": [
+     "DONE"
+    ],
+    "IRONCLAD": [
+     "DONE"
+    ],
+    "NECROBINDER": [
+     "DONE"
+    ],
+    "REGENT": [
+     "DONE"
+    ],
+    "SILENT": [
+     "DONE"
+    ]
+   }
+  },
+  "COLOSSAL_FLOWER": {
+   "INITIAL": {
+    "EXTRACT_CURRENT_PRIZE_1": [
+     "EXTRACT_CURRENT_PRIZE"
+    ],
+    "REACH_DEEPER_1": [
+     "REACH_DEEPER_1",
+     "REACH_DEEPER_2"
+    ]
+   },
+   "REACH_DEEPER_1": {
+    "EXTRACT_CURRENT_PRIZE_2": [
+     "EXTRACT_CURRENT_PRIZE"
+    ],
+    "REACH_DEEPER_2": [
+     "REACH_DEEPER_1",
+     "REACH_DEEPER_2"
+    ]
+   },
+   "REACH_DEEPER_2": {
+    "EXTRACT_INSTEAD": [
+     "EXTRACT_INSTEAD"
+    ],
+    "POLLINOUS_CORE": [
+     "POLLINOUS_CORE"
+    ]
+   }
+  },
+  "CRYSTAL_SPHERE": {
+   "INITIAL": {
+    "PAYMENT_PLAN": [
+     "FINISH"
+    ],
+    "UNCOVER_FUTURE": [
+     "FINISH"
+    ]
+   }
+  },
+  "DENSE_VEGETATION": {
+   "INITIAL": {
+    "REST": [
+     "REST"
+    ],
+    "TRUDGE_ON": [
+     "TRUDGE_ON"
+    ]
+   },
+   "REST": {
+    "FIGHT": []
+   }
+  },
+  "DOLL_ROOM": {
+   "INITIAL": {
+    "EXAMINE": [
+     "EXAMINE"
+    ],
+    "RANDOM": [
+     "DAUGHTER_OF_WIND",
+     "MR_STRUGGLES",
+     "FABLE"
+    ],
+    "TAKE_SOME_TIME": [
+     "TAKE_SOME_TIME"
+    ]
+   }
+  },
+  "DOORS_OF_LIGHT_AND_DARK": {
+   "INITIAL": {
+    "DARK": [
+     "DARK"
+    ],
+    "LIGHT": [
+     "LIGHT"
+    ]
+   }
+  },
+  "DROWNING_BEACON": {
+   "INITIAL": {
+    "BOTTLE": [
+     "BOTTLE"
+    ],
+    "CLIMB": [
+     "CLIMB"
+    ]
+   }
+  },
+  "ENDLESS_CONVEYOR": {
+   "GRAB_SOMETHING_OFF_THE_BELT": {
+    "LEAVE": [
+     "LEAVE"
+    ]
+   },
+   "INITIAL": {
+    "OBSERVE_CHEF": [
+     "OBSERVE_CHEF"
+    ]
+   }
+  },
+  "FIELD_OF_MAN_SIZED_HOLES": {
+   "INITIAL": {
+    "ENTER_YOUR_HOLE": [
+     "ENTER_YOUR_HOLE"
+    ],
+    "RESIST": [
+     "RESIST"
+    ]
+   }
+  },
+  "GRAVE_OF_THE_FORGOTTEN": {
+   "INITIAL": {
+    "ACCEPT": [
+     "ACCEPT"
+    ],
+    "CONFRONT": [
+     "CONFRONT"
+    ]
+   }
+  },
+  "INFESTED_AUTOMATON": {
+   "INITIAL": {
+    "STUDY": [
+     "STUDY"
+    ],
+    "TOUCH_CORE": [
+     "TOUCH_CORE"
+    ]
+   }
+  },
+  "JUNGLE_MAZE_ADVENTURE": {
+   "INITIAL": {
+    "JOIN_FORCES": [
+     "JOIN_FORCES"
+    ],
+    "SOLO_QUEST": [
+     "SOLO_QUEST"
+    ]
+   }
+  },
+  "LOST_WISP": {
+   "INITIAL": {
+    "CLAIM": [
+     "CLAIM"
+    ],
+    "SEARCH": [
+     "SEARCH"
+    ]
+   }
+  },
+  "LUMINOUS_CHOIR": {
+   "INITIAL": {
+    "OFFER_TRIBUTE": [
+     "OFFER_TRIBUTE"
+    ],
+    "REACH_INTO_THE_FLESH": [
+     "REACH_INTO_THE_FLESH"
+    ]
+   }
+  },
+  "MORPHIC_GROVE": {
+   "INITIAL": {
+    "GROUP": [
+     "GROUP"
+    ],
+    "LONER": [
+     "LONER"
+    ]
+   }
+  },
+  "MUSEUM_OF_TORTURE": {
+   "DISPLAY": {
+    "BREAK_OUT": [
+     "BREAK_OUT"
+    ],
+    "TAKE": [
+     "TAKE"
+    ]
+   },
+   "INITIAL": {
+    "CONTINUE": [
+     "LOCKED"
+    ]
+   },
+   "LOCKED": {
+    "CONTINUE": [
+     "DISPLAY"
+    ]
+   }
+  },
+  "POTION_COURIER": {
+   "INITIAL": {
+    "GRAB_POTIONS": [
+     "GRAB_POTIONS"
+    ],
+    "RANSACK": [
+     "RANSACK"
+    ]
+   }
+  },
+  "PUNCH_OFF": {
+   "INITIAL": {
+    "I_CAN_TAKE_THEM": [
+     "I_CAN_TAKE_THEM"
+    ],
+    "NAB": [
+     "NAB"
+    ]
+   },
+   "I_CAN_TAKE_THEM": {
+    "FIGHT": []
+   }
+  },
+  "RANWID_THE_ELDER": {
+   "INITIAL": {
+    "GOLD": [
+     "GOLD"
+    ],
+    "POTION": [
+     "POTION"
+    ],
+    "RELIC": [
+     "RELIC"
+    ]
+   }
+  },
+  "REFLECTIONS": {
+   "INITIAL": {
+    "SHATTER": [
+     "SHATTER"
+    ],
+    "TOUCH_A_MIRROR": [
+     "TOUCH_A_MIRROR"
+    ]
+   }
+  },
+  "RELIC_TRADER": {
+   "INITIAL": {
+    "BOTTOM": [
+     "DONE"
+    ],
+    "MIDDLE": [
+     "DONE"
+    ],
+    "TOP": [
+     "DONE"
+    ]
+   }
+  },
+  "ROOM_FULL_OF_CHEESE": {
+   "INITIAL": {
+    "GORGE": [
+     "GORGE"
+    ],
+    "SEARCH": [
+     "SEARCH"
+    ]
+   }
+  },
+  "ROUND_TEA_PARTY": {
+   "INITIAL": {
+    "ENJOY_TEA": [
+     "ENJOY_TEA"
+    ],
+    "PICK_FIGHT": [
+     "PICK_FIGHT"
+    ]
+   },
+   "PICK_FIGHT": {
+    "CONTINUE_FIGHT": [
+     "CONTINUE_FIGHT"
+    ]
+   }
+  },
+  "SAPPHIRE_SEED": {
+   "INITIAL": {
+    "EAT": [
+     "EAT"
+    ],
+    "PLANT": [
+     "PLANT"
+    ]
+   }
+  },
+  "SELF_HELP_BOOK": {
+   "INITIAL": {
+    "NO_OPTIONS": [
+     "NO_OPTIONS"
+    ],
+    "READ_ENTIRE_BOOK": [
+     "READ_ENTIRE_BOOK"
+    ],
+    "READ_PASSAGE": [
+     "READ_PASSAGE"
+    ],
+    "READ_THE_BACK": [
+     "READ_THE_BACK"
+    ]
+   }
+  },
+  "SHRINE_OF_THE_WARLORD": {
+   "INITIAL": {
+    "TAKE_SHIELD": [
+     "TAKE_SHIELD"
+    ],
+    "TAKE_WEAPON": [
+     "TAKE_WEAPON"
+    ],
+    "TAKE_WINGS": [
+     "TAKE_WINGS"
+    ]
+   }
+  },
+  "SLIPPERY_BRIDGE": {
+   "INITIAL": {
+    "HOLD_ON_0": [],
+    "OVERCOME": [
+     "OVERCOME"
+    ]
+   }
+  },
+  "SPIRALING_WHIRLPOOL": {
+   "INITIAL": {
+    "DRINK": [
+     "DRINK"
+    ],
+    "OBSERVE": [
+     "OBSERVE"
+    ]
+   }
+  },
+  "SPIRIT_GRAFTER": {
+   "INITIAL": {
+    "LET_IT_IN": [
+     "LET_IT_IN"
+    ],
+    "REJECTION": [
+     "REJECTION"
+    ]
+   }
+  },
+  "STONE_OF_ALL_TIME": {
+   "INITIAL": {
+    "LIFT": [
+     "LIFT"
+    ],
+    "PUSH": [
+     "PUSH"
+    ]
+   }
+  },
+  "SUNKEN_STATUE": {
+   "INITIAL": {
+    "DIVE_INTO_WATER": [
+     "DIVE_INTO_WATER"
+    ],
+    "GRAB_SWORD": [
+     "GRAB_SWORD"
+    ]
+   }
+  },
+  "SUNKEN_TREASURY": {
+   "INITIAL": {
+    "FIRST_CHEST": [
+     "FIRST_CHEST"
+    ],
+    "SECOND_CHEST": [
+     "SECOND_CHEST"
+    ]
+   }
+  },
+  "SYMBIOTE": {
+   "INITIAL": {
+    "APPROACH": [
+     "APPROACH"
+    ],
+    "KILL_WITH_FIRE": [
+     "KILL_WITH_FIRE"
+    ]
+   }
+  },
+  "TABLET_OF_TRUTH": {
+   "DECIPHER": {
+    "GIVE_UP": [
+     "GIVE_UP"
+    ]
+   },
+   "DECIPHER_1": {
+    "DECIPHER": [
+     "DECIPHER_1",
+     "DECIPHER_2",
+     "DECIPHER_3",
+     "DECIPHER_4",
+     "DECIPHER_5"
+    ]
+   },
+   "DECIPHER_2": {
+    "DECIPHER": [
+     "DECIPHER_1",
+     "DECIPHER_2",
+     "DECIPHER_3",
+     "DECIPHER_4",
+     "DECIPHER_5"
+    ]
+   },
+   "DECIPHER_3": {
+    "DECIPHER": [
+     "DECIPHER_1",
+     "DECIPHER_2",
+     "DECIPHER_3",
+     "DECIPHER_4",
+     "DECIPHER_5"
+    ]
+   },
+   "DECIPHER_4": {
+    "DECIPHER": [
+     "DECIPHER_1",
+     "DECIPHER_2",
+     "DECIPHER_3",
+     "DECIPHER_4",
+     "DECIPHER_5"
+    ]
+   },
+   "INITIAL": {
+    "DECIPHER_1": [
+     "DECIPHER_1",
+     "DECIPHER_2",
+     "DECIPHER_3",
+     "DECIPHER_4",
+     "DECIPHER_5"
+    ],
+    "SMASH": [
+     "SMASH"
+    ]
+   }
+  },
+  "TEA_MASTER": {
+   "INITIAL": {
+    "BONE_TEA": [
+     "DONE"
+    ],
+    "EMBER_TEA": [
+     "DONE"
+    ],
+    "TEA_OF_DISCOURTESY": [
+     "TEA_OF_DISCOURTESY"
+    ]
+   }
+  },
+  "THERMAE_NONUPEIPE": {
+   "INITIAL": {
+    "DRINK_WATERS": [
+     "DRINK_WATERS"
+    ],
+    "PRIVATE_OASIS": [
+     "PRIVATE_OASIS"
+    ],
+    "THERMAL_BATHS": [
+     "THERMAL_BATHS"
+    ]
+   }
+  },
+  "THE_FUTURE_OF_POTIONS": {
+   "INITIAL": {
+    "POTION": [
+     "DONE"
+    ]
+   }
+  },
+  "THE_LANTERN_KEY": {
+   "INITIAL": {
+    "KEEP_THE_KEY": [
+     "KEEP_THE_KEY"
+    ],
+    "RETURN_THE_KEY": [
+     "DONE"
+    ]
+   },
+   "KEEP_THE_KEY": {
+    "FIGHT": []
+   }
+  },
+  "THE_LEGENDS_WERE_TRUE": {
+   "INITIAL": {
+    "NAB_THE_MAP": [
+     "NAB_THE_MAP"
+    ],
+    "SLOWLY_FIND_AN_EXIT": [
+     "SLOWLY_FIND_AN_EXIT"
+    ]
+   }
+  },
+  "THIS_OR_THAT": {
+   "INITIAL": {
+    "ORNATE": [
+     "ORNATE"
+    ],
+    "PLAIN": [
+     "PLAIN"
+    ]
+   }
+  },
+  "TINKER_TIME": {
+   "CHOOSE_CARD_TYPE": {
+    "ATTACK": [
+     "CHOOSE_RIDER"
+    ],
+    "POWER": [
+     "CHOOSE_RIDER"
+    ],
+    "SKILL": [
+     "CHOOSE_RIDER"
+    ]
+   },
+   "CHOOSE_RIDER": {
+    "CHAOS": [
+     "DONE"
+    ],
+    "CHOKING": [
+     "DONE"
+    ],
+    "CURIOUS": [
+     "DONE"
+    ],
+    "ENERGIZED": [
+     "DONE"
+    ],
+    "EXPERTISE": [
+     "DONE"
+    ],
+    "IMPROVEMENT": [
+     "DONE"
+    ],
+    "SAPPING": [
+     "DONE"
+    ],
+    "VIOLENCE": [
+     "DONE"
+    ],
+    "WISDOM": [
+     "DONE"
+    ]
+   },
+   "INITIAL": {
+    "CHOOSE_CARD_TYPE": [
+     "CHOOSE_CARD_TYPE"
+    ]
+   }
+  },
+  "TRASH_HEAP": {
+   "INITIAL": {
+    "DIVE_IN": [
+     "DIVE_IN"
+    ],
+    "GRAB": [
+     "GRAB"
+    ]
+   }
+  },
+  "TRIAL": {
+   "INITIAL": {
+    "ACCEPT": [
+     "MERCHANT",
+     "NOBLE",
+     "NONDESCRIPT"
+    ],
+    "REJECT": [
+     "REJECT"
+    ]
+   },
+   "MERCHANT": {
+    "GUILTY": [
+     "MERCHANT_GUILTY"
+    ],
+    "INNOCENT": [
+     "MERCHANT_INNOCENT"
+    ]
+   },
+   "NOBLE": {
+    "GUILTY": [
+     "NOBLE_GUILTY"
+    ],
+    "INNOCENT": [
+     "NOBLE_INNOCENT"
+    ]
+   },
+   "NONDESCRIPT": {
+    "GUILTY": [
+     "NONDESCRIPT_GUILTY"
+    ],
+    "INNOCENT": [
+     "NONDESCRIPT_INNOCENT"
+    ]
+   },
+   "REJECT": {
+    "ACCEPT": [
+     "MERCHANT",
+     "NOBLE",
+     "NONDESCRIPT"
+    ],
+    "DOUBLE_DOWN": []
+   }
+  },
+  "UNREST_SITE": {
+   "INITIAL": {
+    "KILL": [
+     "KILL"
+    ],
+    "REST": [
+     "REST"
+    ]
+   }
+  },
+  "WAR_HISTORIAN_REPY": {
+   "INITIAL": {
+    "UNLOCK_CAGE": [
+     "UNLOCK_CAGE"
+    ],
+    "UNLOCK_CHEST": [
+     "UNLOCK_CHEST"
+    ]
+   }
+  },
+  "WATERFALL_OF_OBVIOUS_SECRETS": {
+   "ENTER": {
+    "BEAT_UP": [
+     "BEAT_UP"
+    ],
+    "BE_NICE": [
+     "BE_NICE"
+    ],
+    "NEGOTIATE": [
+     "NEGOTIATE"
+    ]
+   },
+   "INITIAL": {
+    "ENTER": [
+     "ENTER"
+    ]
+   }
+  },
+  "WATERLOGGED_SCRIPTORIUM": {
+   "INITIAL": {
+    "BLOODY_INK": [
+     "BLOODY_INK"
+    ],
+    "PRICKLY_SPONGE": [
+     "PRICKLY_SPONGE"
+    ],
+    "TENTACLE_QUILL": [
+     "TENTACLE_QUILL"
+    ]
+   }
+  },
+  "WELCOME_TO_WONGOS": {
+   "INITIAL": {
+    "BARGAIN_BIN": [
+     "AFTER_BUY_RECEIVE_BADGE",
+     "AFTER_BUY_BADGE_COUNTER",
+     "AFTER_BUY"
+    ],
+    "FEATURED_ITEM": [
+     "AFTER_BUY_RECEIVE_BADGE",
+     "AFTER_BUY_BADGE_COUNTER",
+     "AFTER_BUY"
+    ],
+    "LEAVE": [
+     "LEAVE"
+    ],
+    "MYSTERY_BOX": [
+     "AFTER_BUY_RECEIVE_BADGE",
+     "AFTER_BUY_BADGE_COUNTER",
+     "AFTER_BUY"
+    ]
+   }
+  },
+  "WELLSPRING": {
+   "INITIAL": {
+    "BATHE": [
+     "BATHE"
+    ],
+    "BOTTLE": [
+     "BOTTLE"
+    ]
+   }
+  },
+  "WHISPERING_HOLLOW": {
+   "INITIAL": {
+    "GOLD": [
+     "GOLD"
+    ],
+    "HUG": [
+     "HUG"
+    ]
+   }
+  },
+  "WOOD_CARVINGS": {
+   "INITIAL": {
+    "BIRD": [
+     "BIRD"
+    ],
+    "SNAKE": [
+     "SNAKE"
+    ],
+    "TORUS": [
+     "TORUS"
+    ]
+   }
+  },
+  "WUPPY_IN_TROUBLE": {
+   "INITIAL": {
+    "BE_CAUTIOUS": [
+     "BE_CAUTIOUS"
+    ],
+    "HELP_IMMEDIATELY": [
+     "HELP_IMMEDIATELY"
+    ],
+    "IGNORE": [
+     "IGNORE"
+    ]
+   }
+  },
+  "ZEN_WEAVER": {
+   "INITIAL": {
+    "ARACHNID_ACUPUNCTURE": [
+     "ARACHNID_ACUPUNCTURE"
+    ],
+    "BREATHING_TECHNIQUES": [
+     "BREATHING_TECHNIQUES"
+    ],
+    "EMOTIONAL_AWARENESS": [
+     "EMOTIONAL_AWARENESS"
+    ]
+   }
+  }
+ }
+}

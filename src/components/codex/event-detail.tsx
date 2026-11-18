@@ -49,6 +49,7 @@ import {
   GameUiHoverTip,
 } from "@/components/game-ui-hover-tip";
 import { RichText } from "@/components/rich-text";
+import eventOptionTargets from "../../../data/sts2/event-option-targets.json";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameChoiceFrame } from "@/components/codex/event-choice-frame";
 import { FakeMerchantSpineStage } from "@/components/codex/fake-merchant-spine-stage";
@@ -1282,6 +1283,28 @@ function OptionCard({
 interface NavEntry {
   pageId: string;
   optionId: string;
+  /** Random or conditional result pages of the chosen option; pageId is one of them. */
+  outcomes?: string[];
+}
+
+// Result pages per option and the pages that end the event, read from the game's
+// event handlers (scripts/extract-event-option-targets.py). Reaches end pages such
+// as DONE or VICTORY whose ids differ from the option id.
+const SOURCE_OPTION_TARGETS: Record<string, Record<string, Record<string, string[]>>> = eventOptionTargets.targets;
+const SOURCE_FINISHED_PAGES: Record<string, string[]> = eventOptionTargets.finished;
+
+function sourceOptionTargets(
+  eventId: string,
+  currentPageId: string | null,
+  optionId: string,
+  pageMap: Map<string, EventPage>,
+): string[] {
+  const byPage = SOURCE_OPTION_TARGETS[eventId];
+  if (!byPage) return [];
+  // The Compendium splits the game's single POTION option into one per rarity and card type.
+  const id = eventId === FUTURE_OF_POTIONS_EVENT_ID && optionId.startsWith("POTION_") ? "POTION" : optionId;
+  const targets = byPage[currentPageId ?? "INITIAL"]?.[id] ?? byPage.ALL?.[id] ?? [];
+  return targets.filter((pageId) => pageMap.has(pageId));
 }
 
 // --- Resolve sequence pages (LINGER→LINGER1-9, DECIPHER→DECIPHER_1-5) ---
@@ -1490,9 +1513,16 @@ export function EventContentViewer({
   const currentPageId = currentEntry?.pageId ?? null;
   const currentPage = currentPageId ? pageMap.get(currentPageId) ?? null : null;
 
+  // An end page whose text the game keeps under an untitled option key (THE_LANTERN_KEY DONE).
+  const textOnlyOptions = currentPage && !currentPage.description && currentPage.options?.length
+    && currentPage.options.every((option) => option.title === option.id)
+    ? currentPage.options
+    : null;
   const baseDescription = event.id === "TRIAL" && currentPageId === TRIAL_CHOICES_PAGE_ID
     ? null
-    : currentPage?.description ?? event.description;
+    : currentPage?.description
+      ?? textOnlyOptions?.map((option) => option.description).join("\n\n")
+      ?? event.description;
   const description = applyEventDescriptionFixups(event, currentPageId, baseDescription, currentEntry, pages);
 
   const rawOptions = useMemo(() => {
@@ -1506,10 +1536,13 @@ export function EventContentViewer({
     }
     if (!currentPageId) return event.options ?? [];
     const page = pageMap.get(currentPageId);
+    if (textOnlyOptions) return [];
     if (page?.options && page.options.length > 0) return page.options;
+    // The event ends here; the shared ALL options belong to the pages that continue it.
+    if (SOURCE_FINISHED_PAGES[event.id]?.includes(currentPageId)) return [];
     if (allPage?.options && allPage.options.length > 0) return allPage.options;
     return [];
-  }, [currentPageId, pageMap, event.id, event.options, allPage]);
+  }, [currentPageId, pageMap, event.id, event.options, allPage, textOnlyOptions]);
 
   const trialChoiceOptions = useMemo(() => {
     if (event.id !== "TRIAL" || currentPageId !== TRIAL_CHOICES_PAGE_ID) return [];
@@ -1667,11 +1700,16 @@ export function EventContentViewer({
   const optionLabelMap = useMemo(() => {
     const map = new Map<string, string>();
     for (const opt of event.options ?? []) map.set(opt.id, opt.title);
+    if (event.id === FUTURE_OF_POTIONS_EVENT_ID) {
+      const futureOptions = event.futurePotionOptions?.map((option) => fillFuturePotionOption(option, option.potionLabel))
+        ?? FUTURE_OF_POTIONS_OPTIONS;
+      for (const opt of futureOptions) map.set(opt.id, opt.title);
+    }
     for (const page of pages) {
       for (const opt of page.options ?? []) map.set(opt.id, opt.title);
     }
     return map;
-  }, [pages, event.options]);
+  }, [pages, event.id, event.options, event.futurePotionOptions]);
 
   const canNavigate = useCallback(
     (optionId: string): boolean => {
@@ -1699,7 +1737,7 @@ export function EventContentViewer({
       if (pageMap.has(optionId)) return true;
       if (pageMap.has(`${optionId}1`) || pageMap.has(`${optionId}_1`)) return true;
       if (pageMap.has(`${optionId}0`) || pageMap.has(`${optionId}_0`)) return true;
-      return false;
+      return sourceOptionTargets(event.id, currentPageId, optionId, pageMap).length > 0;
     },
     [currentPageId, event.id, pageMap],
   );
@@ -1709,9 +1747,11 @@ export function EventContentViewer({
       onVfxTrigger?.(optionId);
       const visitCount = history.filter((h) => h.optionId === optionId).length;
       const resolved = resolveEventOptionPage(event.id, currentPageId, optionId, visitCount, pageMap);
-      if (!resolved) return;
+      const outcomes = resolved ? [] : sourceOptionTargets(event.id, currentPageId, optionId, pageMap);
+      const pageId = resolved ?? outcomes[0];
+      if (!pageId) return;
       onPreviewChange?.(null);
-      setHistory((prev) => [...prev, { pageId: resolved, optionId }]);
+      setHistory((prev) => [...prev, { pageId, optionId, ...(outcomes.length > 1 ? { outcomes } : {}) }]);
     },
     [currentPageId, event.id, history, onPreviewChange, onVfxTrigger, pageMap],
   );
@@ -1828,6 +1868,32 @@ export function EventContentViewer({
                 {getBreadcrumbLabel(entry)}
               </button>
             </span>
+          ))}
+        </div>
+      )}
+
+      {/* Random or conditional results of the last choice */}
+      {currentEntry?.outcomes && (
+        <div
+          className="mb-3 flex flex-wrap items-center gap-1.5 font-game-text text-[11px]"
+          style={{ textShadow: GAME_TEXT_SHADOW }}
+        >
+          <span className="text-[#b8a98c]">{messages.eventsView.outcomes}</span>
+          {currentEntry.outcomes.map((pageId, i) => (
+            <button
+              key={pageId}
+              onClick={() => {
+                onPreviewChange?.(null);
+                setHistory((prev) => [...prev.slice(0, -1), { ...currentEntry, pageId }]);
+              }}
+              className={`rounded border px-1.5 transition-colors ${
+                pageId === currentEntry.pageId
+                  ? "border-[#f0cf6a] font-medium text-[#f0cf6a]"
+                  : "border-[#7f715a] text-[#b8a98c] hover:text-[#f0cf6a]"
+              }`}
+            >
+              {i + 1}
+            </button>
           ))}
         </div>
       )}
