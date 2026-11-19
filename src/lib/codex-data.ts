@@ -3335,6 +3335,54 @@ export async function getCodexAscensionGameModeLabels(gameLocale: GameLocale = D
   };
 }
 
+export interface CodexAchievement {
+  id: string;
+  name: string;
+  nameEn: string;
+  description: string;
+  descriptionEn: string;
+  /** The game has no icon for 11 achievements; those get the NOPE tile. */
+  imageUrl: string;
+  hasGameArt: boolean;
+}
+
+export async function getCodexAchievements(opts?: {
+  gameLocale?: GameLocale;
+}): Promise<{ title: string; achievements: CodexAchievement[] }> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [kor, eng, game, engGame, stats] = await Promise.all([
+    readJson<Array<{ id: string; name: string; description: string }>>("kor/achievements.json"),
+    readJson<Array<{ id: string; name: string; description: string }>>("eng/achievements.json"),
+    readGameLocalizationTable(gameLocale, "achievements"),
+    readGameLocalizationTable("eng", "achievements"),
+    readGameLocalizationTable(gameLocale, "stats_screen"),
+  ]);
+  const engById = new Map(eng.map((item) => [item.id, item]));
+  return {
+    title: gameText(stats, "TAB_ACHIEVEMENT.header", "업적"),
+    achievements: kor.map((item) => {
+      const en = engById.get(item.id) ?? item;
+      const slug = item.id.toLowerCase();
+      const hasGameArt = !ACHIEVEMENTS_WITHOUT_GAME_ART.has(item.id);
+      return {
+        id: item.id,
+        name: gameText(game, `${item.id}.title`, gameLocale === "kor" ? item.name : en.name),
+        nameEn: gameText(engGame, `${item.id}.title`, en.name),
+        description: gameText(game, `${item.id}.description`, gameLocale === "kor" ? item.description : en.description),
+        descriptionEn: gameText(engGame, `${item.id}.description`, en.description),
+        imageUrl: `/images/sts2/achievements/${hasGameArt ? slug : "nope"}.webp`,
+        hasGameArt,
+      };
+    }),
+  };
+}
+
+const ACHIEVEMENTS_WITHOUT_GAME_ART = new Set([
+  "ALL_OTHER_ACHIEVEMENTS", "COMPLETE_ACT4", "COMPLETE_TIMELINE", "DEFECT_ASCENSION10",
+  "DISCOVER_ALL_CARDS", "DISCOVER_ALL_EVENTS", "DISCOVER_ALL_RELICS", "IRONCLAD_ASCENSION10",
+  "NECROBINDER_ASCENSION10", "REGENT_ASCENSION10", "SILENT_ASCENSION10",
+]);
+
 export async function getCodexAscensions(opts?: { gameLocale?: GameLocale }): Promise<CodexAscension[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const [korAscensions, engAscensions, gameAscension, engGameAscension] = await Promise.all([
