@@ -3077,18 +3077,6 @@ const DOMINION_ENCOUNTERS: Record<string, string> = {
 const DOMINION_ACT_ORDER: (EventAct | null)[] = ["Act 1 - Overgrowth", "Underdocks", "Act 2 - Hive", "Act 3 - Glory", null];
 
 /** The Dread mode rules from the character select portrait (DREAD_RULE_01...). */
-export async function getCodexDreadRules(opts?: { gameLocale?: GameLocale }): Promise<string[]> {
-  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [ascension, engAscension] = await Promise.all([
-    readGameLocalizationTable(gameLocale, "ascension"),
-    readGameLocalizationTable("eng", "ascension"),
-  ]);
-  return Object.keys(engAscension)
-    .filter((key) => /^DREAD_RULE_\d+$/.test(key))
-    .sort()
-    .map((key) => ascension[key] ?? engAscension[key]);
-}
-
 export async function getCodexDominions(opts?: { gameLocale?: GameLocale }): Promise<CodexDominion[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const [ascension, engAscension, encounters, engEncounters] = await Promise.all([

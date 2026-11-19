@@ -293,7 +293,6 @@ export function BlitzEntryLibrary({
           count={formatCodexCount(shown.length, serviceText.labels.blitzShop, serviceLocale)}
         />
         <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
-          <p className="mb-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">{view.intro}</p>
           <div className="mx-auto flex max-w-4xl flex-col gap-6">
             {rugs.map((rug, rugIndex) => (
               <section

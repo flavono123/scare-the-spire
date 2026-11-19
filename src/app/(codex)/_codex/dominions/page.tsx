@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexDominions, getCodexDreadRules } from "@/lib/codex-data";
+import { getCodexDominions } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -42,9 +42,8 @@ export default async function CodexDominionsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [dominions, rules, gameUi] = await Promise.all([
+  const [dominions, gameUi] = await Promise.all([
     getCodexDominions({ gameLocale }),
-    getCodexDreadRules({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
   return (
@@ -56,7 +55,6 @@ export default async function CodexDominionsPage({
           gameUi={gameUi}
           title={getCodexServiceMessages(serviceLocale).dominions}
           dominions={dominions}
-          rules={rules}
         />
       </Suspense>
       <CompendiumEntryLinkIndex

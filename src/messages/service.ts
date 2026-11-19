@@ -1282,7 +1282,6 @@ export const serviceMessages = {
       },
       blitzShopView: {
         searchPlaceholder: "블리츠 상점 검색...",
-        intro: "블리츠 모드의 상인이 파는 품목입니다. 상점마다 저주가 없는 품목 5개와 저주받은 품목 1개가 놓입니다.",
         normal: "일반",
         cursed: "저주",
         noCurse: "저주 없음",
@@ -1328,7 +1327,6 @@ export const serviceMessages = {
       },
       dominionsView: {
         searchPlaceholder: "권능 검색...",
-        rules: "드레드 규칙",
         boss: "보스",
         actFilter: "막",
         categoryFilter: "분류",
@@ -2973,7 +2971,6 @@ export const serviceMessages = {
       },
       blitzShopView: {
         searchPlaceholder: "Search Blitz Shop...",
-        intro: "Wares the Merchant sells in Blitz mode. Each shop stocks five wares without a curse and one cursed ware.",
         normal: "Common",
         cursed: "Cursed",
         noCurse: "No curse",
@@ -3019,7 +3016,6 @@ export const serviceMessages = {
       },
       dominionsView: {
         searchPlaceholder: "Search dominions...",
-        rules: "Dread rules",
         boss: "Boss",
         actFilter: "Act",
         categoryFilter: "Category",

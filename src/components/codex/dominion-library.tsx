@@ -45,7 +45,6 @@ export function DominionLibrary({
   gameUi,
   title,
   dominions,
-  rules,
   entities,
 }: {
   serviceLocale: ServiceLocale;
@@ -53,7 +52,6 @@ export function DominionLibrary({
   gameUi: CodexGameUiLabels;
   title: string;
   dominions: CodexDominion[];
-  rules: string[];
   entities?: EntityInfo[];
 }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -170,18 +168,6 @@ export function DominionLibrary({
           count={formatCodexCount(filtered.length, serviceText.labels.dominions, serviceLocale)}
         />
         <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
-          {rules.length > 0 && (
-            <section className="mb-8 max-w-3xl rounded-lg border border-border bg-compendium-rail px-4 py-3">
-              <h2 className="mb-2 font-game-title text-sm font-bold text-foreground">{view.rules}</h2>
-              <ul className="space-y-1">
-                {rules.map((rule) => (
-                  <li key={rule}>
-                    <DescriptionText description={rule} className="block text-left text-sm" />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
           {groups.map(([act, actDominions]) => (
             <section key={act} className="mb-8 last:mb-0">
               <h2 className="mb-3 font-game-title text-lg font-bold">
