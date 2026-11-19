@@ -19,7 +19,7 @@ dev 서버에서는 같은 내용이 `/dev/admin?tab=cloudflare`(어드민 "CF �
 | main·patch Worker 정적 애셋 파일 수 | 버전당 20,000 | 운영 배포 GHA 로그의 wrangler `Success! Uploaded A files (B already uploaded)`, A + B = 업로드 manifest |
 | main 정적 애셋 예산 | 19,500 (= 20,000 − 예비 500) | 같은 로그의 `pnpm cf:assets` 출력. 넘으면 빌드 실패 |
 | main 정적 애셋 분포 | — | 같은 로그의 `Cloudflare static asset groups` (경로 앞 세 단계별 파일 수) |
-| STS1 Worker 정적 애셋 파일 수 | 버전당 20,000, 예산 19,500 | 같은 로그의 `STS1 Worker static assets` 줄(STS1 상세 + 그 빌드의 `/_next/static`). 넘으면 빌드 실패. `cf:limits` 표에는 아직 없다 |
+| STS1 Worker 정적 애셋 파일 수 | 버전당 20,000, 예산 19,500 | 같은 로그의 `STS1 Worker static assets` 줄(STS1 상세 + 그 빌드의 `/_next/static`). 넘으면 빌드 실패. 업로드 manifest는 main과 같은 실행의 `.sts1-worker/assets` 업로드 줄 |
 | 파일 하나 크기 | 25 MiB | `pnpm cf:assets` 출력의 가장 큰 파일 |
 | Worker 코드 gzip | 3 MiB (자체 예산 256 KiB) | `pnpm cf:size` 출력 |
 | Worker 요청 | 계정 전체 하루 100,000 | GraphQL `workersInvocationsAdaptive`, 00:00 UTC부터 |

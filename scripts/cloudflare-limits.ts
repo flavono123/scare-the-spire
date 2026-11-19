@@ -1,6 +1,6 @@
 // `pnpm cf:limits [-- --json]`: production Cloudflare usage against the Workers Free
 // limits. Same data as the dev admin "CF 한도" tab; see docs/CLOUDFLARE_LIMITS.md.
-import { CLOUDFLARE_FREE_LIMITS as L, readCloudflareLimits } from "./lib/cloudflare-limits";
+import { CLOUDFLARE_FREE_LIMITS as L, readCloudflareLimits, STS1_WORKER } from "./lib/cloudflare-limits";
 
 async function main() {
   const report = await readCloudflareLimits();
@@ -14,7 +14,8 @@ async function main() {
   const line = (label: string, used: number, limit: number, unit = "") =>
     console.log(`${label.padEnd(30)} ${n(used)}${unit} / ${n(limit)}${unit} (${pct(used, limit)}, ${n(limit - used)}${unit} left)`);
 
-  for (const stats of [report.workers.main, report.workers.patch]) {
+  if (!report.workers.sts1) console.log(`${STS1_WORKER}: no production deploy found yet`);
+  for (const stats of [report.workers.main, report.workers.patch, report.workers.sts1]) {
     if (!stats) continue;
     const live = stats.liveVersionId === stats.versionId ? "live" : `NOT LIVE (live ${stats.liveVersionId ?? "?"})`;
     console.log(`${stats.worker}: version ${stats.versionId} ${live}, run ${stats.run.url} (${stats.run.createdAt})`);
@@ -28,6 +29,10 @@ async function main() {
     for (const [group, count] of Object.entries(assets.groups ?? {}).slice(0, 15)) {
       console.log(`  ${String(count).padStart(6)}  ${group}`);
     }
+  }
+  const sts1Assets = report.sts1StaticAssets;
+  if (sts1Assets) {
+    console.log(`STS1 cf:assets check: ${n(sts1Assets.used)} used / ${n(sts1Assets.budget)} budget (${n(sts1Assets.budget - sts1Assets.used)} to budget)`);
   }
   if (report.d1) {
     for (const db of report.d1) line(`D1 ${db.name} storage`, Math.round(db.bytes / 1e6), L.d1BytesPerDatabase / 1e6, " MB");

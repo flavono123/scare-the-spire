@@ -12,6 +12,11 @@ const log = [
   `${p}Cloudflare static assets: 18,844 used / 19,500 budget / 20,000 limit (headroom 656 to budget, 1,156 to limit)`,
   `${p}Largest Cloudflare static asset: 5.67 MiB (.cloudflare/assets/spine/sts2/a.png)`,
   `${p}Cloudflare static asset groups: {"compendium/cards":4000,"images/sts2":3000}`,
+  `${p}STS1 Worker static assets: 4,212 used / 19,500 budget / 20,000 limit`,
+  `${p}✨ Read 4445 files from the assets directory /home/runner/work/x/x/.sts1-worker/assets`,
+  `${p}✨ Success! Uploaded 4155 files (290 already uploaded) (180.12 sec)`,
+  `${p}Total Upload: 0.51 KiB / gzip: 0.31 KiB`,
+  `${p}Current Version ID: d9ae1a63-b222-4420-adaa-0241a4da9ab3`,
   `${p}✨ Read 19810 files from the assets directory /home/runner/work/x/x/.cloudflare/assets`,
   `${p}Total Upload: 349.26 KiB / gzip: 102.48 KiB`,
   `${p}Cloudflare Worker upload size: 349.26 KiB / gzip 102.48 KiB`,
@@ -38,10 +43,18 @@ assert.deepEqual(parsed.workers["scare-the-spire-patches"], {
 assert.equal(parsed.staticAssets?.used, 18_844);
 assert.equal(parsed.staticAssets?.largestPath, "spine/sts2/a.png");
 assert.deepEqual(parsed.staticAssets?.groups, { "compendium/cards": 4000, "images/sts2": 3000 });
+assert.deepEqual(parsed.workers["scare-the-spire-sts1"], {
+  assetFiles: 4445,
+  versionId: "d9ae1a63-b222-4420-adaa-0241a4da9ab3",
+  gzipKiB: 0.31,
+});
+assert.equal(parsed.sts1StaticAssets?.used, 4212);
+assert.equal(parsed.sts1StaticAssets?.budget, 19_500);
 
-// A patch-only run: no main stats, so the static check is not attributed to it.
+// A patch-only run: no main stats, so the static checks are not attributed to it.
 const patchOnly = parseDeployLog(log.split("\n").slice(0, 4).join("\n"));
 assert.equal(patchOnly.workers["scare-the-spire"], undefined);
 assert.equal(patchOnly.staticAssets, null);
+assert.equal(patchOnly.sts1StaticAssets, null);
 
 console.log("cloudflare-limits.spec.ts ok");

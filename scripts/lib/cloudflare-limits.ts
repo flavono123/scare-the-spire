@@ -22,6 +22,8 @@ export const CLOUDFLARE_FREE_LIMITS = {
 } as const;
 
 const DEPLOY_WORKFLOW = "cloudflare-workers.yml";
+// wrangler.sts1.jsonc. Not in WORKERS: the metrics, logs and tail scripts cover main and patch only.
+export const STS1_WORKER = "scare-the-spire-sts1";
 const MAX_RUNS_SCANNED = 15;
 
 export interface DeployRun {
@@ -54,8 +56,10 @@ export interface StaticAssetCheck {
 
 export interface CloudflareLimitsReport {
   generatedAt: string;
-  workers: { main: WorkerDeployStats | null; patch: WorkerDeployStats | null };
+  workers: { main: WorkerDeployStats | null; patch: WorkerDeployStats | null; sts1: WorkerDeployStats | null };
   staticAssets: StaticAssetCheck | null;
+  /** The same build's STS1 Worker check (STS1 details + this build's /_next/static); no largest file or groups. */
+  sts1StaticAssets: StaticAssetCheck | null;
   d1: { name: string; id: string; bytes: number }[] | null;
   /** Since 00:00 UTC, when the Free daily allowances reset (09:00 KST). */
   today: {
@@ -77,19 +81,36 @@ async function gh(args: string[]): Promise<string> {
 interface ParsedRunLog {
   workers: Record<string, Omit<WorkerDeployStats, "run" | "liveVersionId" | "worker">>;
   staticAssets: StaticAssetCheck | null;
+  sts1StaticAssets: StaticAssetCheck | null;
 }
+
+const ASSET_DIR_WORKERS: Record<string, string> = {
+  ".cloudflare": WORKERS.main,
+  ".patch-worker": WORKERS.patch,
+  ".sts1-worker": STS1_WORKER,
+};
+
+const assetCheck = (match: RegExpMatchArray): StaticAssetCheck => ({
+  used: toNumber(match[1]),
+  budget: toNumber(match[2]),
+  limit: toNumber(match[3]),
+  largestMiB: null,
+  largestPath: null,
+  groups: null,
+});
 
 /** Pulls the deploy numbers out of one production workflow log. Exported for the self-check. */
 export function parseDeployLog(log: string): ParsedRunLog {
   const workers: ParsedRunLog["workers"] = {};
   let current: string | null = null;
   let staticAssets: StaticAssetCheck | null = null;
+  let sts1StaticAssets: StaticAssetCheck | null = null;
   let mainGzipKiB: number | null = null;
 
   for (const line of log.split("\n")) {
-    const read = line.match(/Read \d+ files? from the assets directory \S*?(\.cloudflare|\.patch-worker)\/assets/);
+    const read = line.match(/Read \d+ files? from the assets directory \S*?(\.cloudflare|\.patch-worker|\.sts1-worker)\/assets/);
     if (read) {
-      current = read[1] === ".cloudflare" ? WORKERS.main : WORKERS.patch;
+      current = ASSET_DIR_WORKERS[read[1]];
       workers[current] ??= { assetFiles: null, versionId: null, gzipKiB: null };
       continue;
     }
@@ -110,14 +131,12 @@ export function parseDeployLog(log: string): ParsedRunLog {
     }
     const used = line.match(/Cloudflare static assets: ([\d,]+) used \/ ([\d,]+) budget \/ ([\d,]+) limit/);
     if (used) {
-      staticAssets = {
-        used: toNumber(used[1]),
-        budget: toNumber(used[2]),
-        limit: toNumber(used[3]),
-        largestMiB: null,
-        largestPath: null,
-        groups: null,
-      };
+      staticAssets = assetCheck(used);
+      continue;
+    }
+    const sts1Used = line.match(/STS1 Worker static assets: ([\d,]+) used \/ ([\d,]+) budget \/ ([\d,]+) limit/);
+    if (sts1Used) {
+      sts1StaticAssets = assetCheck(sts1Used);
       continue;
     }
     const largest = line.match(/Largest Cloudflare static asset: ([\d.]+) MiB \((.+)\)/);
@@ -140,14 +159,24 @@ export function parseDeployLog(log: string): ParsedRunLog {
   for (const [name, stats] of Object.entries(workers)) {
     if (!stats.versionId) delete workers[name];
   }
-  return { workers, staticAssets: workers[WORKERS.main] ? staticAssets : null };
+  const deployedMain = Boolean(workers[WORKERS.main]);
+  return {
+    workers,
+    staticAssets: deployedMain ? staticAssets : null,
+    sts1StaticAssets: deployedMain ? sts1StaticAssets : null,
+  };
 }
 
-/** Newest successful production runs, newest first, until both Workers were found. */
+/**
+ * Newest successful production runs, newest first, until main and patch were found. The STS1
+ * Worker deploys in every run that deploys main, so it comes from main's run.
+ */
 async function readDeployStats(): Promise<{
   main: Omit<WorkerDeployStats, "liveVersionId"> | null;
   patch: Omit<WorkerDeployStats, "liveVersionId"> | null;
+  sts1: Omit<WorkerDeployStats, "liveVersionId"> | null;
   staticAssets: StaticAssetCheck | null;
+  sts1StaticAssets: StaticAssetCheck | null;
 }> {
   const runs = JSON.parse(await gh([
     "run", "list", "--workflow", DEPLOY_WORKFLOW, "--branch", "main", "--status", "success",
@@ -156,7 +185,9 @@ async function readDeployStats(): Promise<{
 
   let main: Omit<WorkerDeployStats, "liveVersionId"> | null = null;
   let patch: Omit<WorkerDeployStats, "liveVersionId"> | null = null;
+  let sts1: Omit<WorkerDeployStats, "liveVersionId"> | null = null;
   let staticAssets: StaticAssetCheck | null = null;
+  let sts1StaticAssets: StaticAssetCheck | null = null;
   for (const row of runs) {
     const run: DeployRun = {
       id: row.databaseId, url: row.url, sha: row.headSha, title: row.displayTitle, createdAt: row.createdAt,
@@ -167,11 +198,14 @@ async function readDeployStats(): Promise<{
     if (!main && mainStats) {
       main = { worker: WORKERS.main, run, ...mainStats };
       staticAssets = parsed.staticAssets;
+      sts1StaticAssets = parsed.sts1StaticAssets;
+      const sts1Stats = parsed.workers[STS1_WORKER];
+      if (sts1Stats) sts1 = { worker: STS1_WORKER, run, ...sts1Stats };
     }
     if (!patch && patchStats) patch = { worker: WORKERS.patch, run, ...patchStats };
     if (main && patch) break;
   }
-  return { main, patch, staticAssets };
+  return { main, patch, sts1, staticAssets, sts1StaticAssets };
 }
 
 async function cloudflareApi<T>(auth: { accountId: string; token: string }, pathname: string): Promise<T> {
@@ -250,10 +284,15 @@ export async function readCloudflareLimits(): Promise<CloudflareLimitsReport> {
     errors.push(`Cloudflare 인증: ${errorText(error)}`);
   }
 
-  const [deploys, liveMain, livePatch, d1, today] = await Promise.all([
-    settle("GitHub Actions 배포 로그 (gh)", readDeployStats),
+  const deploysTask = settle("GitHub Actions 배포 로그 (gh)", readDeployStats);
+  const [deploys, liveMain, livePatch, liveSts1, d1, today] = await Promise.all([
+    deploysTask,
     auth ? settle("main 운영 버전", () => liveVersionId(auth, WORKERS.main)) : null,
     auth ? settle("patch 운영 버전", () => liveVersionId(auth, WORKERS.patch)) : null,
+    // Only once CI has deployed it: before that the Worker does not exist and the API answers 404.
+    auth
+      ? deploysTask.then((found) => (found?.sts1 ? settle("STS1 운영 버전", () => liveVersionId(auth, STS1_WORKER)) : null))
+      : null,
     auth
       ? settle("D1 목록", async () =>
         (await cloudflareApi<{ name: string; uuid: string; file_size: number }[]>(auth, "/d1/database"))
@@ -267,8 +306,10 @@ export async function readCloudflareLimits(): Promise<CloudflareLimitsReport> {
     workers: {
       main: deploys?.main ? { ...deploys.main, liveVersionId: liveMain } : null,
       patch: deploys?.patch ? { ...deploys.patch, liveVersionId: livePatch } : null,
+      sts1: deploys?.sts1 ? { ...deploys.sts1, liveVersionId: liveSts1 } : null,
     },
     staticAssets: deploys?.staticAssets ?? null,
+    sts1StaticAssets: deploys?.sts1StaticAssets ?? null,
     d1,
     today,
     errors,

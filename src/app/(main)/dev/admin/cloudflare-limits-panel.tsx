@@ -3,6 +3,7 @@ import "server-only";
 import {
   CLOUDFLARE_FREE_LIMITS as L,
   readCloudflareLimits,
+  STS1_WORKER,
   type WorkerDeployStats,
 } from "../../../../../scripts/lib/cloudflare-limits";
 
@@ -78,7 +79,8 @@ function DeploySource({ stats }: { stats: WorkerDeployStats }) {
 
 /** What one addition costs in main Worker static files (docs/CLOUDFLARE_LIMITS.md). */
 const UNIT_COSTS = [
-  ["STS1·STS2 백과사전 상세 항목 1개", "4 + 이미지", "ko·en × HTML·RSC. 게임 전용 로케일(zh, ja…)은 상세를 복사하지 않음"],
+  ["STS2 백과사전 상세 항목 1개", "4 + 이미지", "ko·en × HTML·RSC. 게임 전용 로케일(zh, ja…)은 상세를 복사하지 않음"],
+  ["STS1 백과사전 상세 항목 1개", "이미지만", "ko·en × HTML·RSC 4개는 STS1 Worker가 싣는다"],
   ["백과사전 목록(분류) 1개", "28", "로케일 접두 14개(기본 + 13) × HTML·RSC"],
   ["서비스 라우트 1개 (/foo)", "28", "로케일 14 × HTML·RSC"],
   ["서비스 상세 shell 1개 (/foo/__id__)", "28", "로케일 14 × HTML·RSC"],
@@ -89,8 +91,9 @@ const UNIT_COSTS = [
 
 export async function CloudflareLimitsPanel() {
   const report = await readCloudflareLimits();
-  const { main, patch } = report.workers;
+  const { main, patch, sts1 } = report.workers;
   const assets = report.staticAssets;
+  const sts1Files = sts1?.assetFiles ?? report.sts1StaticAssets?.used ?? null;
   const mainFiles = main?.assetFiles ?? assets?.used ?? null;
   const budget = assets?.budget ?? L.staticAssetFilesPerVersion - 500;
   const todayRequests = report.today
@@ -139,6 +142,23 @@ export async function CloudflareLimitsPanel() {
             <DeploySource stats={patch} />
           </div>
         )}
+        <div className="mt-4">
+          {sts1Files !== null ? (
+            <>
+              <Meter
+                label="STS1 Worker (STS1 백과사전 상세 + 그 빌드의 /_next/static)"
+                used={sts1Files}
+                limit={L.staticAssetFilesPerVersion}
+                budget={report.sts1StaticAssets?.budget}
+              />
+              {sts1 && <DeploySource stats={sts1} />}
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              STS1 Worker(<code>{STS1_WORKER}</code>)는 아직 운영 배포 기록이 없습니다. 첫 운영 배포에서 생깁니다.
+            </p>
+          )}
+        </div>
       </section>
 
       <section>
