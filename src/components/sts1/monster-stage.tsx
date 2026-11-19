@@ -74,6 +74,7 @@ export function Sts1MonsterStage({
   captureRef,
   variant = "detail",
   className,
+  stillUrl: stillOverride,
 }: {
   monster: Sts1Monster;
   playback: Sts1MonsterPlayback | null;
@@ -85,6 +86,8 @@ export function Sts1MonsterStage({
   /** `tile`: the index thumbnail — no room for intent or health bar. */
   variant?: "detail" | "tile";
   className?: string;
+  /** For skeletons outside the bestiary (Neow): where its still was rendered. */
+  stillUrl?: string;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const shakeRef = useRef<HTMLDivElement>(null);
@@ -94,7 +97,7 @@ export function Sts1MonsterStage({
   const engineRef = useRef<Sts1StageEngine | null>(null);
   const size = useElementSize(stageRef);
   const spine = monster.spine;
-  const stillUrl = sts1MonsterImageUrl(monster);
+  const stillUrl = stillOverride ?? sts1MonsterImageUrl(monster);
   const body = useMemo(() => monsterBody(monster), [monster]);
   const layout = variant === "tile" ? TILE_LAYOUT : DETAIL_LAYOUT;
   const [clip, setClip] = useState<{ name: string | null; nonce: number }>({ name: null, nonce: 0 });

@@ -538,6 +538,8 @@ export interface Sts1CompendiumKeyword {
   names: string[];
   description: string;
   image: string | null;
+  /** Stances have no icon: StanceAuraEffect's aura color stands in. */
+  color?: string;
   /** Cards, relics, potions and powers whose text names this keyword. */
   users: { type: "cards" | "relics" | "potions" | "powers"; slug: string; name: string; imageUrl: string }[];
 }

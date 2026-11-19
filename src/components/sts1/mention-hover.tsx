@@ -212,23 +212,28 @@ function RelicBitmapText({
   );
 }
 
-function RelicSlab({
+export function RelicSlab({
   entry,
   labels,
   suffix,
   keywords,
+  tierText,
+  className = "w-[15.5rem]",
 }: {
-  entry: Sts1MentionEntry;
+  entry: Pick<Sts1MentionEntry, "nameKo" | "description" | "imageUrl" | "largeImageUrl" | "tier" | "flavor">;
   labels: Sts1UiLabels;
   suffix: string;
   keywords: readonly Sts1Keyword[];
+  /** Replaces "<tier> relic" (a blight has no tier). */
+  tierText?: string;
+  className?: string;
 }) {
   return (
     <CardSideTipsAnchor
       tips={collectSts1CardSideTips(plainSts1Text(entry.description), keywords)}
       mode="always"
       preferSide="right"
-      className="w-[15.5rem]"
+      className={className}
     >
       <div
         className="relative w-full overflow-hidden"
@@ -269,7 +274,7 @@ function RelicSlab({
         <div className="absolute inset-x-[12%] top-[15%] h-[4%]">
           <FitInside>
             <RelicBitmapText
-              text={`${relicTierName(labels, entry.tier)}${suffix}`}
+              text={tierText ?? `${relicTierName(labels, entry.tier)}${suffix}`}
               gameFontPx={RELIC_DESC_FONT}
               lineHeight={1}
             />

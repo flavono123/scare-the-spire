@@ -29,6 +29,7 @@ import type {
   Sts1EventLabels,
   Sts1ItemRef,
   Sts1Modifier,
+  Sts1Monster,
   Sts1Neow,
   Sts1NeowReward,
   Sts1RefType,
@@ -120,6 +121,12 @@ const ORB_AMOUNTS: Record<string, { image: string; amounts: number[] }> = {
 };
 const ORB_ORDER = ["Lightning", "Frost", "Dark", "Plasma", "Empty"];
 const STANCE_ORDER = ["Wrath", "Calm", "Divinity"];
+/** StanceAuraEffect particle colors (the middle of each random range). */
+const STANCE_COLORS: Record<string, string> = {
+  Wrath: "rgb(166 13 38)",
+  Calm: "rgb(134 166 255)",
+  Divinity: "rgb(166 13 166)",
+};
 
 function interleave(parts: string[], amounts: number[]): string {
   return parts.map((part, index) => `${part}${index < amounts.length ? amounts[index] : ""}`).join("");
@@ -201,6 +208,7 @@ export const getSts1CompendiumKeywords = cache(async (gameLocale: GameLocale = "
       names: [stance.NAME],
       description: stance.DESCRIPTION.join(""),
       image: null,
+      color: STANCE_COLORS[id],
       users: usersOf([stance.NAME]),
     });
   }
@@ -415,6 +423,35 @@ function neowExclusions(data: RawNeow): Record<string, string[]> {
   return out;
 }
 
+type NpcSpine = Record<string, { skeleton: string; idle: string; animations: string[]; viewport: Sts1Monster["spine"] extends infer S ? S extends { viewport: infer V } ? V : never : never; still: { x: number; y: number; width: number; height: number } }>;
+
+/** Neow's skeleton (scripts/render-sts1-monsters.mjs --npcs), shaped for the bestiary's stage. */
+export async function getSts1NeowStage(gameLocale: GameLocale = "kor"): Promise<Sts1Monster> {
+  const [spine, neow] = await Promise.all([readJson<NpcSpine>("npc-spine.json"), getSts1Neow(gameLocale)]);
+  const art = spine.neow;
+  return {
+    id: "Neow",
+    slug: "neow",
+    legacySlugs: [],
+    dungeon: "exordium",
+    type: "normal",
+    hitPoints: [],
+    name: neow.name,
+    nameEn: "Neow",
+    moves: [],
+    startingEffects: [],
+    spine: {
+      idle: art.idle,
+      animations: art.animations,
+      viewport: art.viewport,
+      still: art.still,
+      skeletonUrl: `/spine/sts1/npcs/neow/${art.skeleton}`,
+      atlasUrl: "/spine/sts1/npcs/neow/skeleton.atlas",
+    },
+    vfx: null,
+  };
+}
+
 export async function getSts1NeowLabels(gameLocale: GameLocale = "kor") {
   const korean = sts1GameLocale(gameLocale) === "kor";
   return korean
@@ -500,7 +537,7 @@ export async function getSts1ScoreLabels(gameLocale: GameLocale = "kor") {
   const korean = sts1GameLocale(gameLocale) === "kor";
   return {
     title: ui.DeathScreen?.TEXT?.[6] ?? "Score",
-    death: ui.DeathScreen?.TEXT?.[14] ?? "Death",
+    death: ui.DeathScreen?.TEXT?.[9] ?? "Defeat",
     victory: ui.VictoryScreen?.TEXT?.[12] ?? "Victory",
     unused: korean ? "게임에서 쓰지 않는 점수 보너스" : "Score bonuses the game never awards",
   };
