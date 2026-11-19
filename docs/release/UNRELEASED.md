@@ -67,6 +67,12 @@
 - QA: 위 경로를 로컬 dev로 확인함(ko 인덱스·상세, en 상세, ja 필터 이름). 확인 못 함: 모바일 폭 화면 캡처(브라우저 창이 숨겨져 있었음).
 - Commits: 데이터 쪽(`blitzLevel`, 게임 모드 이름)은 펫 세션 커밋 `f4df2a78`에 섞여 들어갔고, 화면은 그 다음 커밋.
 
+### byrdispatch-2026-11-19
+- Feature: 섀소식 2026-11-19(ko·en, 캡처 2장). 백과사전 새 메뉴 블리츠 상점·드레드 권능·펫은 섀소식 제목에 메뉴 아이콘과 링크가 붙고, 다음 섀소식이 나올 때까지 네비 백과사전(STS2) 드롭다운 행에 NEW, 백과사전 아이콘에 초록 새 서비스 점이 뜬다(장난감 상자 새 서비스와 같은 방식). main 네비(STS1 Worker 상세 포함)와 patch Worker 네비가 같은 데이터를 읽는다.
+- Expect: /byrdispatch 맨 위가 2026-11-19, 블리츠 상점 목록·카드 모음집 태그 필터 캡처가 보인다. /, /patches/<버전>, /compendium/sts1/cards/strike-r 네비의 백과사전 아이콘에 초록 점, 드롭다운에 블리츠 상점·드레드 권능·펫 NEW. /en에서도 같다.
+- QA: 로컬 dev /byrdispatch(제목 아이콘·링크, 초록 점, NEW 3행). 확인 못 함: patch Worker·STS1 Worker 네비는 testbed에서 본다.
+- Commits: `b743c5de`, `b489b0d0`, `3c5c251e`, `e7100ee3`.
+
 ### v0113-codex-backfill
 - Feature: v0.113.0 백과사전 백필(worktree `v0113-codex-backfill`을 `a822bf5c`로 병합). 새 캐릭터 풀(6번째 캐릭터: 타입·카드 타일 프레임·에너지 아이콘·필터·`[fool]` 색·캐릭터 페이지), 신규 카드 121·유물 17·포션 3·파워 39·이벤트 5·에포크 9·몬스터 2, 기존 카드 43장 갱신, 변경 기록(카드·유물·몬스터·이벤트·포션·파워), 베타 그림만 있는 유물·파워·에포크의 그림 표시, 티어 리스트·페이지스톰의 노랑/풀 색, 영문 짧은 이름 Fool, 패치 줄 생성과 옛 패치노트 공식 개명 반영, 패치 이력 인덱스 재검증(no-cache). 드레드 모드 값을 걸러 내도록 몬스터·조우 파서 수정.
 - Expect: /compendium/characters에 풀이 6번째로 나오고 /compendium/characters/fool이 체력 77·골드 99·시작 덱을 보인다. /compendium/cards?card=FOOLISH_SHOT 모달이 풀 프레임으로 뜬다. /compendium/relics?relic=bath_robes가 베타 그림으로 뜬다. /patches/0.113.0의 새 이름이 모두 링크된다. /compendium/monsters/infested_prism 패치 이력에 v0.113.0이 있다. 옛 버전 선택 시 새 카드·유물이 보이지 않는다. 정적 파일은 약 16,000개.
