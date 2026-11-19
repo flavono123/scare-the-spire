@@ -37,6 +37,12 @@
 
 ## 기능 기대치
 
+### sts1-compendium-remaining-types
+- Feature: STS1 백과사전 새 분류 8개([tasks/012](../../tasks/012-sts1-compendium-remaining-types.md)). 이벤트 52종(목록은 막·공용·사당, 상세는 게임 이벤트 화면: 패널·배너 제목·액자 그림·리본 선택지, 장면 이동, 무작위 결과 탭, 캐릭터별 본문, 승천 조절기, 얻고 잃는 카드·유물·포션·저주와 전투 몬스터 토큰), 키워드(게임 키워드 47 + 구체 5 + 경지 3, STS1 툴팁 모양, 상세에 쓰는 카드·유물·포션·파워), 승천 1~20(누르면 그 단계로 맞춘 몬스터 도감), 모드 43(커스텀 모드 화면 순서와 색, 일일 도전 표시, 화면에 없는 6종 따로, 상세에 같이 못 쓰는 모드·토큰), 역병 13(유물 팝업 모양 상세, 쌓일 때 문구), 니오우(대기 동작 스파인, 선택지 4줄 + 첫 보스 미도달 축복), 도전 과제 46(달성 아이콘 격자, 호버에 조건과 토큰), 점수 31줄(사망·승리 화면 줄 모양, 쓰지 않는 3종 따로). 이벤트 장면은 바이트코드에서 옮긴 `data/sts1/events/*.json`(형식은 그 README, 검사 `scripts/check-sts1-events.ts`를 CI에서 돈다), 문구·그림은 `extract-sts1-compendium.py --only extras`, 니오우 스켈레톤은 `render-sts1-monsters.mjs --npcs`. 멘션 호버·사이트맵·STS1 Worker 경로·게임 전용 로케일 목록까지.
+- Expect: /compendium/sts1/events/big-fish에서 [상자]를 누르면 다음 장면, [떠난다] 뒤 ↺ 처음으로. /compendium/sts1/events/the-mausoleum 승천 15에서 저주 확률 50%→100%. /compendium/sts1/keywords/exhaust 레일에 소멸 카드. /compendium/sts1/ascensions 줄을 누르면 /compendium/sts1/monsters가 그 승천으로 열린다. /compendium/sts1/modifiers/blight-chests에 역병 토큰 7개와 호버. /compendium/sts1/neow에서 니오우가 움직인다. /en·/ja 목록, /en 상세 200. 정적 파일 main은 목록 8×28 + 그림 약 +130, 상세 약 130×4는 STS1 Worker.
+- QA: 로컬 dev 내장 브라우저(1440·375 폭)로 확인. 이벤트 52종 전 장면을 클릭 순회(승천 0·15 두 번, 깨진 문구 0). 8분류 게임 한국어 이름·설명 전수 대조 누락 0. 영어·게임 언어(ja·zh·de) 목록, en 상세 200. 확인 못 함: 게임 화면과 나란히 놓은 캡처(게임을 실행하지 못함), 원격 testbed, 이벤트 승천 15 외의 승천 분기(13 마인드 블룸 보상은 글에 숫자가 없어 표시 안 함).
+- Commits: `af2ba850`부터.
+
 ### sts1-worker
 - Feature: STS1 백과사전 상세(ko·en)를 별도 Worker `scare-the-spire-sts1`이 서비스 바인딩 `STS1_WORKER`로 다시 서비스한다(8cd3f7eb 되돌리기, main 정적 파일 예산 미사용). 게임 전용 로케일은 목록 모달로 308. main 애셋에 없는 `/_next/static`은 STS1 Worker에 묻는다. STS1 링크·댓글 링크·사이트맵·canonical이 다시 상세 페이지를 가리킨다. CI는 STS1 Worker를 main보다 먼저 배포한다. 설계는 [docs/designs/sts1-compendium-worker.md](../designs/sts1-compendium-worker.md).
 - Expect: /compendium/sts1/cards/strike-r, /en/compendium/sts1/relics/burning-blood가 문서·RSC 모두 200과 `x-cf-static-page: compendium`, /cards/bash는 200과 `x-cf-static-page: legacy`. /ja/compendium/sts1/cards/strike-r은 /ja/compendium/sts1/cards?card=strike-r로 308. STS1 댓글 링크(sts1-codex:card:strike)는 /compendium/sts1/cards/strike#comments로 간다. STS1 목록 타일은 그냥 클릭하면 모달, 새 탭이면 상세. /sitemap.xml에 /compendium/sts1/<type>/<slug>가 다시 있다.
