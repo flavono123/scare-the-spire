@@ -130,7 +130,7 @@
 - Feature: 관련 리소스 레일과 이벤트 선택지 호버를 게임 코드에서 읽는다(`scripts/extract-code-relations.py` → `data/sts2/code-relations.json`, 손 표와 합집합). v0.113 신규 이벤트(전쟁군주의 성지·노누파이페의 대욕장·고문 박물관·뻔한 비밀의 폭포·곤경에 처한 워피)와 기존 누락(유물→카드 20, 유물→인챈트 6, 카드·유물·포션→파워)이 채워지고, 이벤트 ↔ 고대의 존재 레일이 새로 생긴다. 런타임에 굴리는 이벤트 값(대욕장 유물, 박물관 유물, 워피 체력 5%)을 모든 게임 언어에서 채운다. 패치 때 `pnpm codex:relations`, CI에 `pnpm codex:event-templates`.
 - Expect: /compendium/events/shrine_of_the_warlord 레일 카드 3(서투름·강력한 방패·강력한 무기)·유물 강력한 날개·고대의 존재 탄스, "날개를 가져간다" 호버에 서투름+강력한 날개. /compendium/events/thermae_nonupeipe "노누파이페의 유물을 얻습니다", 호버에 죄책감+노누파이페 유물 9개, 레일에 노누파이페. /compendium/ancients/tanx 레일에 전쟁군주의 성지. /compendium/cards/mighty_shield·/compendium/relics/mighty_wings 레일에 전쟁군주의 성지.
 - QA: 위 경로를 로컬 dev로 확인함(직접 페이지, 이벤트 목록 모달). 확인 못 함: 카드 176장·유물 86개에 늘어난 파워 레일 전수 화면, ko 외 언어 화면.
-- Commits: `b91c7bc4`, `1cde02e9`, `4e33f5b3`, 그리고 이 항목을 쓴 커밋.
+- Commits: `b91c7bc4`, `1cde02e9`, `4e33f5b3`, `a21c077b`(2026-11-19 `c624132b`까지 push), `23a293a2`, `8fdcd0ad`(선택지 미리보기가 종류별 4개 초과면 겹쳐 쌓고 +N. 대욕장 +5, 쓰레기 더미 +6, 레피 상자 포션 +59).
 
 ### shorts-sim-capture-tools
 - Feature: 쇼츠용 전투 시뮬레이터(dev 전용 `/dev/combat-sim`)와 `pnpm shorts:capture`·`shorts:changes` 개선(0.113 쇼츠 요청). `monsters=`·`monsterHp=`, `hp=0`·`intents=0`·`ui=card`·`bgHeight`·`feetY`·`crop`·`layout=shorts`·`layer=`, 몬스터 사망, 카드 연출(애니메이션·타격 VFX·화면 흔들림·대상 화살표), `--layers`, `--no-flavor`·`--art-only`, 다운로드 버튼 재시도, `shorts:changes`의 `class`(new·same-tile·wording·tile_changed), 패치 날 보관 스크립트. 운영 번들에는 `public/images/sts2/vfx/hit`(10)·`combat-ui/fool`(6)·`combat-ui/targeting_arrow_*`(2)·휴식 장소 이미지 3장이 정적 애셋으로 들어가고, 유물 타일과 에포크 상세에 `data-capture-*` 속성만 더해졌다.
