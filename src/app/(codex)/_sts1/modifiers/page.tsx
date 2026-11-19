@@ -6,7 +6,6 @@ import { Sts1ModifierLibrary } from "@/components/sts1/modifier-library";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { getSts1BlightRefs, getSts1EntityRefs, getSts1ModifierLabels, getSts1Modifiers } from "@/lib/sts1/compendium-extras";
 import { getSts1Keywords, getSts1Metadata } from "@/lib/sts1/data";
-import { getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
 
 type ListProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
@@ -21,11 +20,10 @@ export default async function Sts1ModifiersPage({ searchParams }: ListProps) {
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [mods, modLabels, keywords, labels] = await Promise.all([
+  const [mods, modLabels, keywords] = await Promise.all([
     getSts1Modifiers(gameLocale),
     getSts1ModifierLabels(gameLocale),
     getSts1Keywords(gameLocale),
-    getSts1UiLabels(gameLocale),
   ]);
   const [refs, blights] = await Promise.all([
     getSts1EntityRefs({ items: mods.flatMap((mod) => mod.refs) }, gameLocale),
@@ -38,7 +36,6 @@ export default async function Sts1ModifiersPage({ searchParams }: ListProps) {
         refs={{ ...refs, blight: blights }}
         keywords={keywords}
         modLabels={modLabels}
-        labels={labels}
         serviceLocale={serviceLocale}
       />
     </Suspense>

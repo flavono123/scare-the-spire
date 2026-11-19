@@ -164,7 +164,7 @@ export const getSts1CompendiumKeywords = cache(async (gameLocale: GameLocale = "
   ].map((row) => ({ ...row, text: row.text.replace(/#[rgbyp]/g, "").replace(/\bNL\b/g, " ") }));
   const usersOf = (names: readonly string[]) => texts
     .filter((row) => names.some((name) => sts1KeywordNameOccurs(row.text, name)))
-    .map(({ text: _text, ...row }) => row);
+    .map((row) => ({ type: row.type, slug: row.slug, name: row.name, imageUrl: row.imageUrl }));
 
   const rows: Sts1CompendiumKeyword[] = keywords.map((keyword) => ({
     id: keyword.id,

@@ -9,7 +9,7 @@ import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { Sts1ModifierRow } from "@/lib/sts1/compendium-extras";
 import { sts1DetailPath, sts1IndexPath, sts1RunModUrl } from "@/lib/sts1/paths";
-import type { Sts1EntityRefs, Sts1Keyword, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1EntityRefs, Sts1Keyword } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
 import { Sts1EventText } from "./event-text";
@@ -51,7 +51,6 @@ export function Sts1ModifierDetail({
   refs,
   keywords,
   modLabels,
-  labels,
   serviceLocale,
   onClose,
 }: {
@@ -60,7 +59,6 @@ export function Sts1ModifierDetail({
   refs: Sts1EntityRefs;
   keywords: readonly Sts1Keyword[];
   modLabels: Sts1ModifierLabels;
-  labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
   onClose?: () => void;
 }) {
@@ -129,14 +127,12 @@ export function Sts1ModifierLibrary({
   refs,
   keywords,
   modLabels,
-  labels,
   serviceLocale,
 }: {
   mods: Sts1ModifierRow[];
   refs: Sts1EntityRefs;
   keywords: Sts1Keyword[];
   modLabels: Sts1ModifierLabels;
-  labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
   const localizeLink = useLocalizedHref();
@@ -179,7 +175,6 @@ export function Sts1ModifierLibrary({
             refs={refs}
             keywords={keywords}
             modLabels={modLabels}
-            labels={labels}
             serviceLocale={serviceLocale}
             onClose={close}
           />

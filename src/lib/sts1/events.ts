@@ -186,11 +186,15 @@ export const getSts1Events = cache(async (gameLocale: GameLocale = "kor"): Promi
         bodyVariants: scene.bodyVariants.map((variant) => ({ ...variant, body: resolve(variant.body) })),
       } : {}),
       ...(scene.image !== undefined ? { image: scene.image } : {}),
-      options: scene.options.map(({ note: _note, label, lockedLabel, ...option }) => ({
-        ...option,
-        label: resolve(label),
-        ...(lockedLabel ? { lockedLabel: resolve(lockedLabel) } : {}),
-      })),
+      // Notes are transcription remarks for maintainers, not game text.
+      options: scene.options.map(({ label, lockedLabel, ...option }) => {
+        delete option.note;
+        return {
+          ...option,
+          label: resolve(label),
+          ...(lockedLabel ? { lockedLabel: resolve(lockedLabel) } : {}),
+        };
+      }),
     } satisfies Sts1EventScene]));
     const name = sources.events[event.id]?.NAME ?? event.id;
     return {

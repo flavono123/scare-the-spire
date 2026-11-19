@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { Sts1ModifierDetail } from "@/components/sts1/modifier-library";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { getSts1BlightRefs, getSts1EntityRefs, getSts1ModifierLabels, getSts1Modifiers } from "@/lib/sts1/compendium-extras";
-import { getSts1Keywords, getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
+import { getSts1Keywords, getSts1Metadata } from "@/lib/sts1/data";
 import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1DetailPath, sts1RunModUrl } from "@/lib/sts1/paths";
 import { generateSts1ModifiersStaticParams } from "@/lib/sts1/static-params";
@@ -37,11 +37,10 @@ export default async function Sts1ModifierDetailPage({ params, searchParams }: D
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [mods, modLabels, keywords, labels] = await Promise.all([
+  const [mods, modLabels, keywords] = await Promise.all([
     getSts1Modifiers(gameLocale),
     getSts1ModifierLabels(gameLocale),
     getSts1Keywords(gameLocale),
-    getSts1UiLabels(gameLocale),
   ]);
   const mod = mods.find((row) => row.slug === id);
   if (!mod) notFound();
@@ -56,7 +55,6 @@ export default async function Sts1ModifierDetailPage({ params, searchParams }: D
       refs={{ ...refs, blight: blights }}
       keywords={keywords}
       modLabels={modLabels}
-      labels={labels}
       serviceLocale={serviceLocale}
     />
   );
