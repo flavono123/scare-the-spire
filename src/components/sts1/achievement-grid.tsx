@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
+import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { sts1AchievementImageUrl, sts1CharacterIconUrl } from "@/lib/sts1/paths";
@@ -39,6 +40,40 @@ function RefTokens({ achievement, refs, labels }: { achievement: Sts1Achievement
   );
 }
 
+function AchievementTile({ achievement, refs, labels }: { achievement: Sts1Achievement; refs: Sts1EntityRefs; labels: Sts1UiLabels }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="group relative flex flex-col items-center gap-1.5 text-center outline-none"
+      tabIndex={0}
+      data-sts1-achievement={achievement.key}
+      id={achievement.slug}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+    >
+      <Image
+        src={sts1AchievementImageUrl(achievement.image)}
+        alt=""
+        width={112}
+        height={112}
+        className="h-24 w-24 object-contain transition-transform group-hover:scale-105 sm:h-28 sm:w-28"
+      />
+      <span className="font-game-title text-sm font-bold text-[#efc851]">{achievement.name}</span>
+      <span className="font-game-text text-xs leading-snug text-gray-300">{achievement.description}</span>
+      {hovered ? (
+        <PortaledHoverTipLayer pin="top-left" interactive>
+          <Sts1TipBox title={achievement.name} className="w-72">
+            <Sts1EventText text={achievement.description} />
+            {achievement.refs.length ? <RefTokens achievement={achievement} refs={refs} labels={labels} /> : null}
+          </Sts1TipBox>
+        </PortaledHoverTipLayer>
+      ) : null}
+    </div>
+  );
+}
+
 /** StatsScreen's achievement grid: unlocked art, name and condition; hovering adds what it names. */
 export function Sts1AchievementGrid({
   achievements,
@@ -66,23 +101,7 @@ export function Sts1AchievementGrid({
     >
       <div className="mx-auto grid max-w-5xl grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 md:grid-cols-5">
         {filtered.map((achievement) => (
-          <div key={achievement.key} className="group relative flex flex-col items-center gap-1.5 text-center" tabIndex={0} data-sts1-achievement={achievement.key} id={achievement.slug}>
-            <Image
-              src={sts1AchievementImageUrl(achievement.image)}
-              alt=""
-              width={112}
-              height={112}
-              className="h-24 w-24 object-contain transition-transform group-hover:scale-105 sm:h-28 sm:w-28"
-            />
-            <span className="font-game-title text-sm font-bold text-[#efc851]">{achievement.name}</span>
-            <span className="font-game-text text-xs leading-snug text-gray-300">{achievement.description}</span>
-            <div className="pointer-events-none invisible absolute left-1/2 top-full z-30 w-72 -translate-x-1/2 pt-1 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100">
-              <Sts1TipBox title={achievement.name}>
-                <Sts1EventText text={achievement.description} />
-                {achievement.refs.length ? <RefTokens achievement={achievement} refs={refs} labels={labels} /> : null}
-              </Sts1TipBox>
-            </div>
-          </div>
+          <AchievementTile key={achievement.key} achievement={achievement} refs={refs} labels={labels} />
         ))}
       </div>
       <div className="mx-auto mt-10 max-w-5xl">

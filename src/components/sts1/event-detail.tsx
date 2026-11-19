@@ -178,7 +178,9 @@ export function Sts1EventScreen({
     <div ref={captureRef} className="relative w-full rounded-lg md:aspect-[1763/806]" style={{ containerType: "inline-size" }}>
       {/* GenericEventDialog.render: the 1763×806 panel, title centered on its banner (x 570, y +408),
           the 600px picture centered at x 460, text from x 816, 900 wide (1920×1080 screen). */}
-      <Image src={sts1EventUiUrl("panel")} alt="" fill className="pointer-events-none object-fill opacity-80" sizes="900px" />
+      {/* The panel art only holds its shape at its own aspect; narrow screens get its black field. */}
+      <div className="pointer-events-none absolute inset-0 rounded-lg bg-black/80 md:hidden" />
+      <Image src={sts1EventUiUrl("panel")} alt="" fill className="pointer-events-none hidden object-fill opacity-80 md:block" sizes="900px" />
       <h2 className="relative mx-[4%] pt-[3%] text-center font-game-title text-xl text-[#ffd563] [text-shadow:0_0_2px_#000,0_2px_0_#000] md:absolute md:left-[2%] md:top-0 md:m-0 md:w-[50.4%] md:pt-[2.2%] md:text-[clamp(1rem,2.3cqw,1.6rem)]">
         {event.name}
       </h2>
