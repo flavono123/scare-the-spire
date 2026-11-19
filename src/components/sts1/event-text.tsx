@@ -92,7 +92,8 @@ export function Sts1EventText({
   const names = nameIndex(refs);
   const nodes: ReactNode[] = [];
   let sine = 0;
-  const tokens = text.replace(/\s*NL\s*/g, " \n ").split(/( +)/);
+  // NL is its own word; "ONLINE" or "UNLOCK" keep theirs.
+  const tokens = text.replace(/(?:^|\s+)NL(?=\s|$)\s*/g, " \n ").split(/( +)/);
   tokens.forEach((token, index) => {
     if (token === "\n") {
       nodes.push(<br key={index} />);
