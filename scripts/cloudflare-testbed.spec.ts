@@ -609,7 +609,7 @@ test.describe("step 6 browser data path", () => {
     expect(traffic.bearer).toEqual([]);
   });
 
-  test("a new browser claims once, keeps the Supabase session, and writes without a bearer token", async ({ page }) => {
+  test("a new browser claims once, keeps the claimed identity, and writes without a bearer token", async ({ page }) => {
     test.setTimeout(120_000);
     await blockSupabase(page);
     const traffic = watchTraffic(page);
@@ -650,8 +650,13 @@ test.describe("step 6 browser data path", () => {
         markerUid: marker?.uid ?? null,
       };
     });
-    expect(stored.key, "sb-<ref>-auth-token is stored").not.toBeNull();
-    expect(stored).toMatchObject({ hasAccessToken: true, hasRefreshToken: true, userId: uid, markerUid: uid });
+    if (claimed?.session === null) {
+      // Step 7 (mirror.enabled off): the Worker mints the uid itself and answers no Supabase session.
+      expect(stored).toMatchObject({ key: null, markerUid: uid });
+    } else {
+      expect(stored.key, "sb-<ref>-auth-token is stored").not.toBeNull();
+      expect(stored).toMatchObject({ hasAccessToken: true, hasRefreshToken: true, userId: uid, markerUid: uid });
+    }
 
     await entry.getByRole("button", { name: "삭제" }).click();
     await expect(entry).toHaveCount(0, { timeout: 30_000 });
