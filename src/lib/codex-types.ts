@@ -240,7 +240,17 @@ export interface CodexDominion {
   sortOrder: number;
 }
 
-export type PetLookPart = "form" | "hair" | "eye" | "look";
+export type PetLookPart = "hair" | "eye" | "look";
+export interface PetLookOption {
+  skin: string;
+  /** The part cut out of the skeleton (scripts/render-sts2-pet-look-tokens.py), or the character's Yummy Cookie for an eye. */
+  tokenUrl: string;
+  /** The character whose eye it is. */
+  character: string | null;
+  /** Characters without an eye of their own, who get this one (ByrdineMonster.SetupSkins falls back to the Ironclad's). */
+  fallbackFor: string[];
+}
+
 export type PetAction = "attack" | "attack_poke" | "hurt" | "die" | "revive" | "block" | "sleep" | "wake_up" | "be_born";
 
 /**
@@ -263,7 +273,7 @@ export interface CodexPet {
    * Appearance parts the game rolls or picks per run; each part shows one skin. The first option is what the
    * game shows when nobody owns it (`SkinOptions[0]`; Byrdine's eye falls back to the Ironclad's).
    */
-  looks: Array<{ id: PetLookPart; options: Array<{ skin: string; name: string | null }> }>;
+  looks: Array<{ id: PetLookPart; options: PetLookOption[] }>;
   /** Spine animations the game plays for it: its animator states and the cards or relics that trigger them. */
   actions: PetAction[];
   /** One Spine frame for idle and every in-place action, so playing an action does not reframe the stage. */

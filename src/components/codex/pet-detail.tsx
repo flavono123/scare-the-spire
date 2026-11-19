@@ -9,13 +9,15 @@ import { getCodexServiceMessages } from "@/lib/codex-service";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { CodexPet, PetAction } from "@/lib/codex-types";
+import type { CodexPet, PetAction, PetLookOption, PetLookPart } from "@/lib/codex-types";
 import { closeOnPlainClick } from "@/lib/plain-click";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { DescriptionText } from "./codex-description";
-import { GameHoverTip } from "./hover-tip";
+import { GameHoverTip, HoverTip } from "./hover-tip";
+import { PortaledHoverTipLayer } from "./portaled-hover-tip-layer";
 import { MonsterSpineStage } from "./monster-spine-stage";
+import Image from "@/components/ui/static-image";
 import { RichDescription } from "./rich-description";
 import { RelatedResourceLinks, referenceGroupsFromIds } from "./entity-reference-links";
 
@@ -56,6 +58,45 @@ export function PetSpine({
       className={className}
       fallbackImageClassName="absolute inset-0 h-full w-full object-contain"
     />
+  );
+}
+
+/** A look the pet can wear, drawn as the part it changes (or the character's Yummy Cookie for an eye). */
+function PetLookToken({
+  option,
+  selected,
+  onSelect,
+  title,
+  description,
+}: {
+  option: PetLookOption;
+  selected: boolean;
+  onSelect: () => void;
+  title: string;
+  description: string;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      aria-label={title}
+      onClick={onSelect}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      className={`relative flex h-12 w-12 items-center justify-center rounded-lg border p-1 transition-colors hover:bg-white/10 ${
+        selected ? "border-[#f1c94f]/70 bg-[#f1c94f]/15" : "border-white/10 bg-white/[0.03]"
+      }`}
+    >
+      <Image src={option.tokenUrl} alt="" width={48} height={48} className="h-full w-full object-contain" />
+      {hovered && (
+        <PortaledHoverTipLayer pin="top-left">
+          <HoverTip title={title} compact>{description}</HoverTip>
+        </PortaledHoverTipLayer>
+      )}
+    </button>
   );
 }
 
@@ -129,9 +170,24 @@ export function PetDetail({
   const [actionState, setActionState] = useState<{ petId: string; action: PetAction; nonce: number } | null>(null);
   const action = actionState?.petId === pet.id ? actionState : null;
   const pickerLabelClass = "font-game-title text-sm font-bold text-[#f1c94f] [text-shadow:2px_2px_0_rgba(0,0,0,0.82)]";
-  const pickerButtonClass = (selected: boolean) => `rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10 ${
-    selected ? "border-[#f1c94f]/60 bg-[#f1c94f]/15 text-[#f1c94f]" : "border-white/10 bg-white/[0.03] text-zinc-400"
-  }`;
+  const fill = (template: string, values: Record<string, string | number>) =>
+    template.replace(/\{(\w+)\}/g, (match, key: string) => String(values[key] ?? match));
+  // Hover facts from the 0.113 source: Byrdpip and Pael's Legion roll their look on pickup (Rng.NextItem(SkinOptions)),
+  // Byrdine keeps Byrdpip's hair (EvolveRestSiteOption), and its eye follows the character (ByrdineMonster.SetupSkins).
+  const lookTip = (part: PetLookPart, option: PetLookOption, index: number) => {
+    if (part === "eye" && option.character) {
+      return {
+        title: option.character,
+        description: [fill(view.eyeOf, { character: option.character }), ...(option.fallbackFor.length > 0 ? [fill(view.eyeFallback, { names: option.fallbackFor.join(", ") })] : [])].join(" "),
+      };
+    }
+    const title = part === "hair" ? fill(view.hairTitle, { n: index + 1 }) : (view.lookOptions as Record<string, string>)[option.skin] ?? option.skin;
+    const from = pets.find((candidate) => candidate.id === pet.evolvesFrom);
+    return {
+      title,
+      description: from ? fill(view.hairInherited, { from: from.name, n: index + 1 }) : fill(view.lookRolled, { pet: pet.name }),
+    };
+  };
   const linkClass = "font-game-text text-sm text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary";
 
   return (
@@ -174,43 +230,24 @@ export function PetDetail({
             fileName={`${pet.id}.png`}
             targetRef={assetCopyTargetRef}
           />
-          {pet.spineAsset && (
+          {pet.spineAsset && pet.looks.length > 0 && (
             <div className="mt-2 flex w-full max-w-2xl flex-col items-center gap-2">
               {pet.looks.map((part, partIndex) => (
                 <div key={part.id} className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5">
                   <span className={pickerLabelClass}>{view.lookParts[part.id]}</span>
-                  <div className="flex flex-wrap gap-1" role="group" aria-label={`${pet.name} ${view.lookParts[part.id]}`}>
+                  <div className="flex flex-wrap gap-1.5" role="group" aria-label={`${pet.name} ${view.lookParts[part.id]}`}>
                     {part.options.map((option, optionIndex) => (
-                      <button
+                      <PetLookToken
                         key={option.skin}
-                        type="button"
-                        aria-pressed={skins[partIndex] === option.skin}
-                        onClick={() => setLookState({ petId: pet.id, skins: skins.map((skin, index) => (index === partIndex ? option.skin : skin)) })}
-                        className={pickerButtonClass(skins[partIndex] === option.skin)}
-                      >
-                        {option.name ?? (view.lookOptions as Record<string, string>)[option.skin] ?? String(optionIndex + 1)}
-                      </button>
+                        option={option}
+                        selected={skins[partIndex] === option.skin}
+                        onSelect={() => setLookState({ petId: pet.id, skins: skins.map((skin, index) => (index === partIndex ? option.skin : skin)) })}
+                        {...lookTip(part.id, option, optionIndex)}
+                      />
                     ))}
                   </div>
                 </div>
               ))}
-              {pet.actions.length > 0 && (
-                <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5">
-                  <span className={pickerLabelClass}>{view.actionsTitle}</span>
-                  <div className="flex flex-wrap gap-1" role="group" aria-label={`${pet.name} ${view.actionsTitle}`}>
-                    {pet.actions.map((name) => (
-                      <button
-                        key={name}
-                        type="button"
-                        onClick={() => setActionState((current) => ({ petId: pet.id, action: name, nonce: (current?.nonce ?? 0) + 1 }))}
-                        className={pickerButtonClass(action?.action === name)}
-                      >
-                        {view.actions[name]}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           )}
         </section>
@@ -243,6 +280,29 @@ export function PetDetail({
               )}
             </div>
           </section>
+
+          {pet.spineAsset && pet.actions.length > 0 && (
+            <details className="group rounded-lg border border-border bg-compendium-rail px-4 py-3" open>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
+                <span>{serviceText.monstersView.actionPreview}</span>
+                <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
+              </summary>
+              <div className="mt-3 space-y-1.5">
+                {pet.actions.map((name) => (
+                  <button
+                    key={name}
+                    type="button"
+                    onClick={() => setActionState((current) => ({ petId: pet.id, action: name, nonce: (current?.nonce ?? 0) + 1 }))}
+                    className={`w-full rounded-md border px-2.5 py-2 text-left transition-colors hover:bg-white/[0.06] ${
+                      action?.action === name ? "border-[#efc851]/65 bg-white/[0.055]" : "border-white/[0.06] bg-white/[0.015]"
+                    }`}
+                  >
+                    <span className="font-game-title block text-sm font-semibold text-gray-100">{view.actions[name]}</span>
+                  </button>
+                ))}
+              </div>
+            </details>
+          )}
 
           <RelatedResourceLinks
             gameUi={gameUi}

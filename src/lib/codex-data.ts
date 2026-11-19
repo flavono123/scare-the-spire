@@ -3147,7 +3147,7 @@ const PET_DEFS: Array<{
   { id: "WUPPY", monsterId: "WUPPY", source: "event", sourceId: "WUPPY_IN_TROUBLE", terms: ["Wuppy"], actions: ["hurt", "die"], frame: [-1280, -45, 1955, 1578] },
   // Byrdonis Nest gives Byrdonis Egg; a rest site hatches it into the Byrdpip relic (HatchRestSiteOption).
   { id: "BYRDPIP", monsterId: "BYRDPIP", source: "event", sourceId: "BYRDONIS_NEST", terms: ["Byrdpip"], evolvesTo: "BYRDINE", cards: ["BYRDONIS_EGG", "BYRD_SWOOP"],
-    looks: [{ id: "form", skins: ["version1", "version2", "version3", "version4"] }], actions: ["attack"], frame: [-290, -66, 597, 642] },
+    looks: [{ id: "hair", skins: ["version1", "version2", "version3", "version4"] }], actions: ["attack"], frame: [-290, -66, 597, 642] },
   // Only from Byrdpip at a rest site (EvolveRestSiteOption), so its source is the evolution.
   { id: "BYRDINE", monsterId: "BYRDINE_MONSTER", source: null, sourceId: null, terms: ["Byrdine"], evolvesFrom: "BYRDPIP", cards: ["BYRD_SWOOP", "GOD_BYRD"],
     // Byrdine.HairOptions; the eye is "eye/" + the owner's character (ByrdineMonster.SetupSkins). be_born plays in NByrdEvolutionVfx.
@@ -3216,6 +3216,9 @@ export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<
       potion: mentions(potions, def.terms),
     };
     for (const event of mentions(events, def.terms)) related.event = [...new Set([...(related.event ?? []), event])];
+    const spineAsset = spineAssets.find((asset) => asset.id === def.monsterId) ?? null;
+    // Spine folder ("byrdine" for BYRDINE_MONSTER), where the look tokens are written too.
+    const spineFolder = spineAsset?.atlasUrl.split("/").at(-2) ?? def.monsterId.toLowerCase();
     return [{
       id: def.id,
       monsterId: def.monsterId,
@@ -3224,11 +3227,23 @@ export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<
       description: description[0] ?? description[1] ?? "",
       descriptionEn: description[1] ?? "",
       imageUrl: `/images/sts2/monsters-render/${def.monsterId.toLowerCase()}.webp`,
-      spineAsset: spineAssets.find((asset) => asset.id === def.monsterId) ?? null,
+      spineAsset,
       actionFrame: { x: def.frame[0], y: def.frame[1], width: def.frame[2], height: def.frame[3], padLeft: "6%", padRight: "6%", padTop: "6%", padBottom: "4%" },
       looks: (def.looks ?? []).map((part) => ({
         id: part.id,
-        options: part.skins.map((skin) => ({ skin, name: part.id === "eye" ? sourceName("character", EYE_CHARACTERS[skin] ?? skin) : null })),
+        options: part.skins.map((skin) => {
+          const character = EYE_CHARACTERS[skin];
+          return {
+            skin,
+            tokenUrl: character
+              ? `/images/sts2/relics/yummy_cookie_${skin.slice("eye/".length)}.webp`
+              : `/images/sts2/pets/${spineFolder}/${skin.replace("/", "_")}.webp`,
+            character: character ? sourceName("character", character) : null,
+            fallbackFor: skin === "eye/ironclad"
+              ? CHARACTER_ORDER.filter((id) => !Object.values(EYE_CHARACTERS).includes(id)).map((id) => sourceName("character", id))
+              : [],
+          };
+        }),
       })),
       actions: def.actions,
       source: def.source && def.sourceId ? { type: def.source, id: def.sourceId, name: sourceName(def.source, def.sourceId) } : null,

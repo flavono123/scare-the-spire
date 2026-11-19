@@ -151,6 +151,62 @@
     "tiny_deck.webp",
     "whomper.webp"
   ],
+  "blitz-merchant": [
+    "shop_rug.webp"
+  ],
+  "blitz-merchant/enchantments": [
+    "adroit.webp",
+    "glam.webp",
+    "nimble.webp",
+    "sharp.webp",
+    "steady.webp",
+    "swift.webp",
+    "vigorous.webp"
+  ],
+  "blitz-merchant/entries": [
+    "entry_card_enchant.webp",
+    "entry_card_removal.webp",
+    "entry_card_reward_of_each_rarity.webp",
+    "entry_card_rewards.webp",
+    "entry_card_transform.webp",
+    "entry_card_upgrade.webp",
+    "entry_colorless_card_reward.webp",
+    "entry_enchanted_card_reward.webp",
+    "entry_full_heal_and_max_hp.webp",
+    "entry_glam.webp",
+    "entry_potions.webp",
+    "entry_prismatic_card_reward.webp",
+    "entry_random_upgrades.webp",
+    "entry_rare_card_reward.webp",
+    "entry_relic.webp",
+    "entry_two_more_choices.webp",
+    "entry_two_relics.webp",
+    "entry_upgraded_card_reward.webp",
+    "entry_upgraded_rare_card_reward.webp",
+    "entry_upgraded_rare_card.webp"
+  ],
+  "blitz-merchant/small_tokens": [
+    "entry_card_enchant.webp",
+    "entry_card_removal.webp",
+    "entry_card_reward_of_each_rarity.webp",
+    "entry_card_rewards.webp",
+    "entry_card_transform.webp",
+    "entry_card_upgrade.webp",
+    "entry_colorless_card_reward.webp",
+    "entry_enchanted_card_reward.webp",
+    "entry_full_heal_and_max_hp.webp",
+    "entry_glam.webp",
+    "entry_potions.webp",
+    "entry_prismatic_card_reward.webp",
+    "entry_random_upgrades.webp",
+    "entry_rare_card_reward.webp",
+    "entry_relic.webp",
+    "entry_two_more_choices.webp",
+    "entry_two_relics.webp",
+    "entry_upgraded_card_reward.webp",
+    "entry_upgraded_rare_card_reward.webp",
+    "entry_upgraded_rare_card.webp"
+  ],
   "boss-nodes": [
     "boss_node_aeonglass_outline.webp",
     "boss_node_aeonglass.webp",
@@ -2278,6 +2334,24 @@
   "patches/v0.113.0": [
     "fool-lobby.webp"
   ],
+  "pets/byrdine": [
+    "hair_v1.webp",
+    "hair_v2.webp",
+    "hair_v3.webp",
+    "hair_v4.webp"
+  ],
+  "pets/byrdpip": [
+    "version1.webp",
+    "version2.webp",
+    "version3.webp",
+    "version4.webp"
+  ],
+  "pets/paels_legion": [
+    "eyes.webp",
+    "horns.webp",
+    "spikes.webp",
+    "wing.webp"
+  ],
   "potions": [
     "ambergris.webp",
     "ashwater.webp",
@@ -2351,6 +2425,7 @@
     "accelerant_power.webp",
     "accuracy_power.webp",
     "adaptable_power.webp",
+    "aeonglass_dominion_power.webp",
     "afterimage_power.webp",
     "aggression_power.webp",
     "aim_power.webp",
@@ -2436,6 +2511,7 @@
     "envenom_power.webp",
     "escape_artist_power.webp",
     "explosive_arrows_power.webp",
+    "explosive_power.webp",
     "extra_turn_power.webp",
     "fade_power.webp",
     "fan_of_knives_power.webp",
@@ -2489,12 +2565,14 @@
     "infested_power.webp",
     "infinite_blades_plus_power.webp",
     "infinite_blades_power.webp",
+    "insatiable_dominion_power.webp",
     "intangible_power.webp",
     "intercept_power.webp",
     "iteration_power.webp",
     "juggernaut_power.webp",
     "juggling_power.webp",
     "knockdown_power.webp",
+    "lagavulin_matriarch_dominion_power.webp",
     "leadership_power.webp",
     "lethality_power.webp",
     "lightning_rod_power.webp",
@@ -2644,7 +2722,8 @@
     "well_laid_plans_power.webp",
     "withering_presence_power.webp",
     "wraith_form_power.webp",
-    "yah_power.webp"
+    "yah_power.webp",
+    "you_are_mine_power.webp"
   ],
   "powers-beta": [
     "aeonglass_dominion_power.webp",
@@ -3317,6 +3396,7 @@
     "submenu_unknown.webp"
   ],
   "ui/topbar": [
+    "blitz_top_bar_icon.webp",
     "potion_placeholder.png",
     "submenu_history_icon.png",
     "timer_icon.png",
