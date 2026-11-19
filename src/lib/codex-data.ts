@@ -2049,7 +2049,11 @@ function localizedEventPlaceholder(gameLocale: GameLocale, ko: string, en: strin
   return gameLocale === "kor" ? ko : en;
 }
 
-function eventDisplayVars(eventId: string, gameLocale: GameLocale): EventDisplayVars {
+function eventDisplayVars(eventId: string, gameLocale: GameLocale, relics?: GameLocalizationTable): EventDisplayVars {
+  // RelicModel.DynamicEventDescription: `eventDescription`, else `description`, with the relic's vars baked.
+  const relicEventText = (relicId: string, relicVars: EventDisplayVars) => relics
+    ? bakeDescription(gameText(relics, `${relicId}.eventDescription`, gameText(relics, `${relicId}.description`, "")), relicVars)
+    : "";
   const randomRelic = localizedEventPlaceholder(gameLocale, "무작위 유물", "a random Relic");
   const randomPotion = localizedEventPlaceholder(gameLocale, "무작위 포션", "a random Potion");
 
@@ -2093,6 +2097,29 @@ function eventDisplayVars(eventId: string, gameLocale: GameLocale): EventDisplay
         PushHpLoss: 6,
         PushVigorousAmount: 8,
       };
+    case "MUSEUM_OF_TORTURE":
+      // Rolls one of Obsidian Vice / Thumbscrew / Tormentous Collar; the option hover lists all three.
+      return {
+        MaxHp: 10,
+        Relic: localizedEventPlaceholder(gameLocale, "고문 도구", "a torture device"),
+      };
+    case "THERMAE_NONUPEIPE":
+      // Rolls one of Nonupeipe's relics (except Looming Fruit); the option hover lists them.
+      return {
+        ThermalBathsCost: 88,
+        DrinkHpLoss: 31,
+        DrinkGuiltyCount: 3,
+        BathTowelDescription: relicEventText("BATH_TOWEL", { Heal: 8 }),
+        BathRobesDescription: relicEventText("BATH_ROBES", {}),
+        DrinkRelicName: localizedEventPlaceholder(gameLocale, "노누파이페의 유물", "a Nonupeipe Relic"),
+      };
+    case "WUPPY_IN_TROUBLE":
+      // HpLoss = 5% of current HP (WuppyInTrouble.GetHpLoss).
+      return {
+        ImmediateWuppyHp: 60,
+        CautiousWuppyHp: 30,
+        HpLoss: localizedEventPlaceholder(gameLocale, "현재의 5%", "5% of current"),
+      };
     case "TABLET_OF_TRUTH":
       return {
         SmashHPGain: 20,
@@ -2131,8 +2158,10 @@ function eventDisplayVars(eventId: string, gameLocale: GameLocale): EventDisplay
 }
 
 function resolveEventText(localized: string, renderedFallback: string, vars: EventDisplayVars = {}): string {
-  const normalized = normalizeEventMarkup(localized);
-  const fallback = normalizeEventMarkup(renderedFallback);
+  // Pre-rendered data/sts2/*/events.json leaves runtime-rolled vars as [Name] (locales without event text fall back to it).
+  const fillRolled = (text: string) => text.replace(/\[([A-Z][a-z]\w*)\]/g, (m, key: string) => (key in vars ? String(vars[key]) : m));
+  const normalized = fillRolled(normalizeEventMarkup(localized));
+  const fallback = fillRolled(normalizeEventMarkup(renderedFallback));
   if (
     hasEventSmartTemplate(normalized) &&
     Object.keys(vars).length === 0 &&
@@ -2187,11 +2216,10 @@ function mapEventOptions(
   opts: RawEventOption[] | null,
   fallbackOpts: RawEventOption[] | null,
   gameEvents: GameLocalizationTable,
-  gameLocale: GameLocale,
+  vars: EventDisplayVars,
 ): EventOption[] | null {
   if (!opts || opts.length === 0) return null;
   const fallbackById = new Map((fallbackOpts ?? []).map((o) => [o.id, o]));
-  const vars = eventDisplayVars(eventId, gameLocale);
   return opts.map((o) => {
     const fallback = fallbackById.get(o.id) ?? o;
     const baseKey = `${eventId}.pages.${pageId}.options.${o.id}`;
@@ -2210,11 +2238,10 @@ function mapEventPages(
   pages: RawEventPage[] | null,
   fallbackPages: RawEventPage[] | null,
   gameEvents: GameLocalizationTable,
-  gameLocale: GameLocale,
+  vars: EventDisplayVars,
 ): EventPage[] | null {
   if (!pages || pages.length === 0) return null;
   const fallbackById = new Map((fallbackPages ?? []).map((p) => [p.id, p]));
-  const vars = eventDisplayVars(eventId, gameLocale);
   return pages.map((p) => {
     const fallback = fallbackById.get(p.id) ?? p;
     const description = gameNullableText(
@@ -2227,7 +2254,7 @@ function mapEventPages(
       description: description === null
         ? null
         : resolveEventText(description, fallback.description ?? description, vars),
-      options: mapEventOptions(eventId, p.id, p.options, fallback.options, gameEvents, gameLocale),
+      options: mapEventOptions(eventId, p.id, p.options, fallback.options, gameEvents, vars),
     };
   });
 }
@@ -2238,6 +2265,8 @@ function mapEvent(
   imageFiles: Set<string>,
   gameEvents: GameLocalizationTable,
   gameLocale: GameLocale,
+  gameRelics?: GameLocalizationTable,
+  engRelics?: GameLocalizationTable,
 ): CodexEvent {
   const key = kor.id.toLowerCase();
   const imageUrl = imageFiles.has(key) ? `/images/sts2/events/${key}.webp` : null;
@@ -2251,8 +2280,8 @@ function mapEvent(
     `${kor.id}.pages.INITIAL.description`,
     gameText(gameEvents, `${kor.id}.description`, fallbackDescription),
   );
-  const vars = eventDisplayVars(kor.id, gameLocale);
-  const varsEn = eventDisplayVars(kor.id, "eng");
+  const vars = eventDisplayVars(kor.id, gameLocale, gameRelics);
+  const varsEn = eventDisplayVars(kor.id, "eng", engRelics);
   return {
     id: kor.id,
     name: gameTitleText(gameEvents, `${kor.id}.title`, kor.name, eng.name, gameLocale),
@@ -2261,8 +2290,8 @@ function mapEvent(
     descriptionEn: resolveEventText(fallbackDescriptionEn, fallbackDescriptionEn, varsEn),
     act: (kor.act as EventAct | null),
     acts: (kor.acts as EventAct[] | null | undefined) ?? null,
-    options: mapEventOptions(kor.id, "INITIAL", kor.options, fallbackInitialPage?.options ?? fallbackEvent.options, gameEvents, gameLocale),
-    pages: mapEventPages(kor.id, kor.pages, fallbackEvent.pages, gameEvents, gameLocale),
+    options: mapEventOptions(kor.id, "INITIAL", kor.options, fallbackInitialPage?.options ?? fallbackEvent.options, gameEvents, vars),
+    pages: mapEventPages(kor.id, kor.pages, fallbackEvent.pages, gameEvents, vars),
     imageUrl,
     introducedInPatch: kor.introducedInPatch,
     deprecated: kor.deprecated,
@@ -2272,12 +2301,14 @@ function mapEvent(
 
 export async function getCodexEvents(opts?: { gameLocale?: GameLocale }): Promise<CodexEvent[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korEvents, engEvents, imgFiles, gameEvents, gameplay] = await Promise.all([
+  const [korEvents, engEvents, imgFiles, gameEvents, gameplay, gameRelics, engRelics] = await Promise.all([
     readJson<RawEvent[]>("kor/events.json"),
     readJson<RawEvent[]>("eng/events.json"),
     scanImageSlugs("events"),
     readGameLocalizationTable(gameLocale, "events"),
     readGameLocalizationTable(gameLocale, "gameplay_ui"),
+    readGameLocalizationTable(gameLocale, "relics"),
+    readGameLocalizationTable("eng", "relics"),
   ]);
 
   const engById = new Map(engEvents.map((e) => [e.id, e]));
@@ -2292,7 +2323,7 @@ export async function getCodexEvents(opts?: { gameLocale?: GameLocale }): Promis
     })
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      const event = mapEvent(kor, eng, imgFiles, gameEvents, gameLocale);
+      const event = mapEvent(kor, eng, imgFiles, gameEvents, gameLocale, gameRelics, engRelics);
       return kor.id === FUTURE_OF_POTIONS_EVENT_ID && gameLocale !== "kor"
         ? { ...event, futurePotionOptions: buildFuturePotionOptions(gameEvents, gameplay) }
         : event;
