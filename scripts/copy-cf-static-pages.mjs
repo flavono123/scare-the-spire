@@ -114,6 +114,14 @@ const sts1CompendiumSegments = new Set([
   "potions",
   "powers",
   "relics",
+  "events",
+  "keywords",
+  "ascensions",
+  "modifiers",
+  "blights",
+  "neow",
+  "achievements",
+  "score-bonuses",
 ]);
 // React Flight writes a page's eager images into its RSC payload as hint rows, and
 // the Flight client applies hint rows as soon as it parses them, so a <Link>

@@ -1,17 +1,28 @@
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import type { GameLocale } from "@/lib/i18n";
 import { sts1GameLocale } from "./locale";
+import gameListLabels from "./nav-labels-game.json";
 import type { Sts1GameLocale, Sts1ResourceType } from "./types";
 
 type Sts1MenuPanelType = Extract<Sts1ResourceType, "cards" | "relics" | "potions">;
 
 type Sts1NavLabels = Record<Sts1MenuPanelType, string>;
 
+type Sts1Sts2LabelType = "powers" | "monsters" | "characters" | "events" | "keywords";
+type Sts1GameListType = keyof (typeof gameListLabels)["kor"];
+
 // STS1 has no menu panel for these; reuse the STS2 Compendium's in-game labels.
-const STS1_FALLBACK_NAV_LABELS: Record<Exclude<Sts1ResourceType, Sts1MenuPanelType>, string> = {
+const STS1_FALLBACK_NAV_LABELS: Record<Sts1Sts2LabelType, string> = {
   powers: "Powers",
   monsters: "Bestiary",
   characters: "Characters",
+  events: "Events",
+  keywords: "Keywords",
+};
+
+// The game names achievements only inside sentences ("도전 과제 달성이 불가능하고…").
+const STS1_ACHIEVEMENT_LABELS: Partial<Record<Sts1GameLocale, string>> = {
+  kor: "도전 과제",
 };
 
 function flattenNavLabel(value: string): string {
@@ -92,8 +103,13 @@ export function getSts1NavLabel(
   gameLocale: GameLocale,
   type: Sts1ResourceType,
 ): string {
-  if (type === "powers" || type === "monsters" || type === "characters") {
+  const locale = sts1GameLocale(gameLocale);
+  if (type === "powers" || type === "monsters" || type === "characters" || type === "events" || type === "keywords") {
     return getCodexNavGameLabel(gameLocale, type) ?? STS1_FALLBACK_NAV_LABELS[type];
   }
-  return flattenNavLabel(STS1_NAV_LABELS[sts1GameLocale(gameLocale)][type]);
+  if (type === "achievements") return STS1_ACHIEVEMENT_LABELS[locale] ?? "Achievements";
+  if (type === "cards" || type === "relics" || type === "potions") {
+    return flattenNavLabel(STS1_NAV_LABELS[locale][type]);
+  }
+  return gameListLabels[locale][type satisfies Sts1GameListType];
 }

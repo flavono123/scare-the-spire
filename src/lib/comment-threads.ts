@@ -3,12 +3,30 @@ import {
   isCompendiumResourceLinkType,
 } from "@/lib/compendium-resource-links";
 import { neowsletterClaimHref } from "@/lib/neowsletter-anchors";
-import { sts1DetailPath } from "@/lib/sts1/paths";
+import { sts1DetailPath, sts1IndexPath } from "@/lib/sts1/paths";
 import type { Sts1ResourceType } from "@/lib/sts1/types";
 
 const COMMENTS_ANCHOR = "#comments";
 
-export const STS1_COMMENT_RESOURCE_TYPES = ["card", "relic", "potion", "power", "monster", "character"] as const;
+export const STS1_COMMENT_RESOURCE_TYPES = [
+  "card",
+  "relic",
+  "potion",
+  "power",
+  "monster",
+  "character",
+  "event",
+  "keyword",
+  "modifier",
+  "blight",
+  "ascension",
+  "neow",
+  "achievement",
+  "score-bonus",
+] as const;
+
+/** Lists without detail pages hold one thread for the whole list (slug `list`). */
+const STS1_LIST_COMMENT_TYPES = new Set<Sts1CommentResourceType>(["ascension", "neow", "achievement", "score-bonus"]);
 
 export type Sts1CommentResourceType = (typeof STS1_COMMENT_RESOURCE_TYPES)[number];
 
@@ -19,6 +37,14 @@ const STS1_COMMENT_RESOURCE_PATHS: Record<Sts1CommentResourceType, Sts1ResourceT
   power: "powers",
   monster: "monsters",
   character: "characters",
+  event: "events",
+  keyword: "keywords",
+  modifier: "modifiers",
+  blight: "blights",
+  ascension: "ascensions",
+  neow: "neow",
+  achievement: "achievements",
+  "score-bonus": "score-bonuses",
 };
 
 function isSts1CommentResourceType(value: string): value is Sts1CommentResourceType {
@@ -160,6 +186,9 @@ export function commentThreadHref(storyId: string): string {
   const sts1Match = /^sts1-codex:([^:]+):(.+)$/.exec(storyId);
   if (sts1Match) {
     const [, type, slug] = sts1Match;
+    if (isSts1CommentResourceType(type) && STS1_LIST_COMMENT_TYPES.has(type)) {
+      return `${sts1IndexPath(STS1_COMMENT_RESOURCE_PATHS[type])}${COMMENTS_ANCHOR}`;
+    }
     if (isSts1CommentResourceType(type) && slug) {
       return `${sts1DetailPath(STS1_COMMENT_RESOURCE_PATHS[type], encodeURIComponent(slug))}${COMMENTS_ANCHOR}`;
     }

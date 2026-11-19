@@ -8,6 +8,8 @@ import {
   getSts1Relics,
   sts1RouteIds,
 } from "./data";
+import { getSts1Blights, getSts1CompendiumKeywords, getSts1Modifiers } from "./compendium-extras";
+import { getSts1Events } from "./events";
 
 export async function generateSts1CardStaticParams() {
   return sts1RouteIds(await getSts1Cards());
@@ -55,4 +57,36 @@ export function generateSts1LocalizedMonsterStaticParams() {
 
 export function generateSts1LocalizedCharacterStaticParams() {
   return generateLocalizedStaticParams(generateSts1CharacterStaticParams);
+}
+
+export async function generateSts1EventsStaticParams() {
+  return sts1RouteIds(await getSts1Events());
+}
+
+export async function generateSts1KeywordsStaticParams() {
+  return sts1RouteIds(await getSts1CompendiumKeywords());
+}
+
+export async function generateSts1ModifiersStaticParams() {
+  return sts1RouteIds(await getSts1Modifiers());
+}
+
+export async function generateSts1BlightsStaticParams() {
+  return sts1RouteIds(await getSts1Blights());
+}
+
+export function generateSts1LocalizedEventsStaticParams() {
+  return generateLocalizedStaticParams(generateSts1EventsStaticParams);
+}
+
+export function generateSts1LocalizedKeywordsStaticParams() {
+  return generateLocalizedStaticParams(generateSts1KeywordsStaticParams);
+}
+
+export function generateSts1LocalizedModifiersStaticParams() {
+  return generateLocalizedStaticParams(generateSts1ModifiersStaticParams);
+}
+
+export function generateSts1LocalizedBlightsStaticParams() {
+  return generateLocalizedStaticParams(generateSts1BlightsStaticParams);
 }

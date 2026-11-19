@@ -52,6 +52,14 @@ const STATIC_STS1_COMPENDIUM_SEGMENTS = new Set([
   "characters",
   "monsters",
   "powers",
+  "events",
+  "keywords",
+  "ascensions",
+  "modifiers",
+  "blights",
+  "neow",
+  "achievements",
+  "score-bonuses",
 ]);
 
 const STATIC_COMPENDIUM_SEGMENTS = new Set([

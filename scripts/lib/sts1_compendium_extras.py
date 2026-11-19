@@ -133,7 +133,9 @@ def extract_extras_images(jar, *, extract_png, save_webp, parse_atlas, extract_a
             save_webp(extract_atlas_region(sheet, region), out / "achievements" / f"{stem}.webp", quality=85)
             written += 1
     save_webp(extract_png(jar, "images/ui/leaderboards/score.png"), out / "ui" / "score.webp", lossless=True)
-    written += 1
+    # The run history map's "?" room: the event list's nav icon.
+    save_webp(extract_png(jar, "images/ui/runHistory/mapIcons/unknown.png"), out / "nav" / "run-history-event.webp", lossless=True)
+    written += 2
     return written
 
 

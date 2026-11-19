@@ -107,6 +107,34 @@ export function sts1CardLibraryUiUrl(name: string): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/card-library/${name}.webp`);
 }
 
+export function sts1EventImageUrl(name: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/events/${name.replace(/\.(?:jpg|png)$/, "")}.webp`);
+}
+
+export function sts1EventUiUrl(name: "enabledButton" | "disabledButton" | "panel" | "imgFrame" | "roomTextPanel"): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/event-ui/${name}.webp`);
+}
+
+export function sts1BlightImageUrl(image: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/blights/${image.replace(/\.png$/, "")}.webp`);
+}
+
+export function sts1OrbImageUrl(name: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/orbs/${name}.webp`);
+}
+
+export function sts1AchievementImageUrl(name: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/achievements/${name}.webp`);
+}
+
+export function sts1ScoreIconUrl(): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/ui/score.webp`);
+}
+
+export function sts1NpcImageUrl(slug: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/npcs/${slug}.webp`);
+}
+
 export function sts1RunModUrl(name: string): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/run-mods/${name}.webp`);
 }
@@ -133,6 +161,14 @@ export const STS1_LIST_SELECTOR_PARAMS: Record<Sts1ResourceType, string | null> 
   powers: "power",
   monsters: "monster",
   relics: "relic",
+  events: "event",
+  keywords: "keyword",
+  modifiers: "modifier",
+  blights: "blight",
+  ascensions: null,
+  neow: null,
+  achievements: null,
+  "score-bonuses": null,
 };
 
 export function sts1DetailPath(type: Sts1ResourceType, slug: string): string {

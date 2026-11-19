@@ -200,6 +200,14 @@ export const sts1NavItems = [
   { href: "/potions", type: "potions", icon: "/images/sts2/nav/stats_potions.png" },
   { href: "/compendium/sts1/powers", type: "powers", icon: "/images/sts1/powers/hello.webp" },
   { href: "/compendium/sts1/monsters", type: "monsters", icon: "/images/sts1/nav/run-history-elite.webp" },
+  { href: "/compendium/sts1/events", type: "events", icon: "/images/sts1/nav/run-history-event.webp" },
+  { href: "/compendium/sts1/keywords", type: "keywords", icon: "/images/sts1/orbs/lightning.webp" },
+  { href: "/compendium/sts1/ascensions", type: "ascensions", icon: "/images/sts1/ui/ascension.webp" },
+  { href: "/compendium/sts1/modifiers", type: "modifiers", icon: "/images/sts1/run-mods/specialized.webp" },
+  { href: "/compendium/sts1/blights", type: "blights", icon: "/images/sts1/blights/spear.webp" },
+  { href: "/compendium/sts1/neow", type: "neow", icon: "/images/sts1/npcs/neow.webp" },
+  { href: "/compendium/sts1/achievements", type: "achievements", icon: "/images/sts1/achievements/eternal_one.webp" },
+  { href: "/compendium/sts1/score-bonuses", type: "score-bonuses", icon: "/images/sts1/ui/score.webp" },
 ] as const satisfies readonly {
   href: string;
   type: Sts1ResourceType;

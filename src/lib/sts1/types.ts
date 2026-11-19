@@ -58,7 +58,24 @@ export type Sts1MonsterType = "normal" | "elite" | "boss";
 
 export type Sts1Dungeon = "exordium" | "city" | "beyond" | "ending";
 
-export type Sts1ResourceType = "cards" | "relics" | "potions" | "powers" | "monsters" | "characters";
+export type Sts1ResourceType =
+  | "cards"
+  | "relics"
+  | "potions"
+  | "powers"
+  | "monsters"
+  | "characters"
+  | "events"
+  | "keywords"
+  | "ascensions"
+  | "modifiers"
+  | "blights"
+  | "neow"
+  | "achievements"
+  | "score-bonuses";
+
+/** Types with a detail page per entry; the others are a single list page. */
+export type Sts1DetailResourceType = Exclude<Sts1ResourceType, "ascensions" | "neow" | "achievements" | "score-bonuses">;
 
 export interface Sts1CardUpgrade {
   damage?: number;
@@ -376,6 +393,8 @@ export interface Sts1UiLabels {
   powersTitle: string;
   monstersTitle: string;
   charactersTitle: string;
+  /** Every STS1 list's title (getSts1NavLabel). */
+  listTitles: Record<Sts1ResourceType, string>;
   powerTypes: Record<Sts1PowerType, string>;
   monsters: Sts1MonsterLabels;
   viewUpgrades: string;
@@ -402,4 +421,191 @@ export interface Sts1CardStats {
   retain: boolean;
   nameSuffix: string;
   upgraded: boolean;
+}
+
+/** A localized text with its numbers left as var references, joined in order. */
+export type Sts1TextTemplate = (string | { v: string })[];
+
+export type Sts1VarValue =
+  | number
+  | { min: number; max: number }
+  | { of: "maxHp" | "currentHp" | "gold"; pct?: number; frac?: [number, number] }
+  | { list: number[] };
+
+export interface Sts1VarTier {
+  ascension: number;
+  value: Sts1VarValue;
+}
+
+export type Sts1RefType = "card" | "relic" | "potion" | "monster" | "power" | "blight";
+
+/** A fixed item, one of a small list (`pool`), or a generic draw (`tier`, not drawn as a token). */
+export interface Sts1ItemRef {
+  type: "card" | "relic" | "potion";
+  id?: string;
+  pool?: string[] | "curse";
+  tier?: string;
+  upgraded?: boolean;
+  count?: number;
+}
+
+export interface Sts1EntityRef {
+  slug: string;
+  name: string;
+  imageUrl: string;
+}
+
+/** Names, links and art for every card, relic, potion, monster and power a page names. */
+export type Sts1EntityRefs = Record<Sts1RefType, Record<string, Sts1EntityRef>> & {
+  /** Card ids `AbstractDungeon.getCurse()` draws from, when a ref asks for a random curse. */
+  cursePool?: string[];
+};
+
+export interface Sts1EventOutcome {
+  next: string;
+  chance?: number;
+  /** The branch the game takes for this character, not a roll. */
+  character?: Sts1CharacterId;
+  gains?: Sts1ItemRef[];
+  loses?: Sts1ItemRef[];
+}
+
+export interface Sts1EventOption {
+  label: Sts1TextTemplate;
+  lockedLabel?: Sts1TextTemplate;
+  disabled?: boolean;
+  preview?: Sts1ItemRef;
+  next?: string | null;
+  outcomes?: Sts1EventOutcome[];
+  gains?: Sts1ItemRef[];
+  loses?: Sts1ItemRef[];
+  combat?: { encounters: string[][] };
+  ascension?: { min?: number; max?: number };
+}
+
+export interface Sts1EventBodyVariant {
+  characters?: Sts1CharacterId[];
+  monster?: string;
+  body: Sts1TextTemplate;
+}
+
+export interface Sts1EventScene {
+  body: Sts1TextTemplate;
+  bodyVariants?: Sts1EventBodyVariant[];
+  image?: string | null;
+  options: Sts1EventOption[];
+}
+
+export type Sts1EventGroup = "exordium" | "city" | "beyond" | "shrine" | "special";
+
+export interface Sts1Event {
+  id: string;
+  slug: string;
+  legacySlugs: string[];
+  name: string;
+  nameEn: string;
+  kind: "image" | "room";
+  image: string | null;
+  groups: Sts1EventGroup[];
+  dungeons: Sts1Dungeon[];
+  vars: Record<string, Sts1VarTier[]>;
+  start: string;
+  scenes: Record<string, Sts1EventScene>;
+}
+
+export interface Sts1EventLabels {
+  title: string;
+  groups: Record<Sts1EventGroup, string>;
+  dungeons: Record<Sts1Dungeon, { act: string; name: string }>;
+  characters: Record<Sts1CharacterId, string>;
+  ascension: string;
+  /** Proceed Screen DESCRIPTIONS[0]: the button the event ends with. */
+  proceed: string;
+}
+
+export type Sts1KeywordKind = "keyword" | "orb" | "stance";
+
+export interface Sts1CompendiumKeyword {
+  id: string;
+  slug: string;
+  legacySlugs: string[];
+  kind: Sts1KeywordKind;
+  name: string;
+  nameEn: string;
+  /** Every spelling the game tips (keywords.json NAMES). */
+  names: string[];
+  description: string;
+  image: string | null;
+  /** Cards, relics, potions and powers whose text names this keyword. */
+  users: { type: "cards" | "relics" | "potions" | "powers"; slug: string; name: string; imageUrl: string }[];
+}
+
+export interface Sts1Ascension {
+  level: number;
+  description: string;
+  /** The level changes monster hit points, damage or moves. */
+  monsterStats: boolean;
+}
+
+export interface Sts1Modifier {
+  id: string;
+  slug: string;
+  legacySlugs: string[];
+  name: string;
+  nameEn: string;
+  description: string;
+  color: string | null;
+  icon: string | null;
+  dailyOnly: boolean;
+  exclusive: string[];
+  refs: Sts1ItemRef[];
+}
+
+export interface Sts1Blight {
+  id: string;
+  slug: string;
+  legacySlugs: string[];
+  name: string;
+  nameEn: string;
+  description: string;
+  stackDescription: string | null;
+  image: string;
+  unique: boolean;
+}
+
+export interface Sts1NeowReward {
+  type: string;
+  label: string;
+  refs: Sts1ItemRef[];
+}
+
+export interface Sts1NeowCategory {
+  index: number;
+  rewards: Sts1NeowReward[];
+  drawbacks: Sts1NeowReward[];
+}
+
+export interface Sts1Neow {
+  name: string;
+  greeting: string;
+  categories: Sts1NeowCategory[];
+}
+
+export interface Sts1Achievement {
+  key: string;
+  slug: string;
+  name: string;
+  description: string;
+  image: string;
+  hidden: boolean;
+  refs: { type: Sts1RefType | "character"; id: string }[];
+}
+
+export interface Sts1ScoreBonus {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  points: string;
+  screens: ("death" | "victory")[];
 }

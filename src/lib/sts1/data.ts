@@ -8,6 +8,7 @@ import { serviceMessages } from "@/messages/service";
 import { withDefaultOpenGraphCanonical } from "@/lib/service-metadata";
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { sts1GameLocale } from "./locale";
+import { getSts1NavLabel } from "./nav-labels";
 import { sts1CardPortraitUrl, sts1PotionImageUrl, sts1RelicImageUrl } from "./paths";
 import type {
   Sts1Card,
@@ -30,10 +31,16 @@ import type {
   Sts1PowerType,
   Sts1Relic,
   Sts1ResourceRef,
+  Sts1ResourceType,
   Sts1UiLabels,
 } from "./types";
 
 const DATA_ROOT = path.join(process.cwd(), "data", "sts1");
+
+const STS1_RESOURCE_TYPES: Sts1ResourceType[] = [
+  "characters", "cards", "relics", "potions", "powers", "monsters", "events", "keywords",
+  "ascensions", "modifiers", "blights", "neow", "achievements", "score-bonuses",
+];
 
 async function readJson<T>(relativePath: string): Promise<T> {
   return JSON.parse(await readFile(path.join(DATA_ROOT, relativePath), "utf8")) as T;
@@ -406,6 +413,7 @@ export const getSts1UiLabels = cache(async (gameLocale: GameLocale = "kor"): Pro
     powersTitle: getCodexNavGameLabel(gameLocale, "powers") ?? "Powers",
     monstersTitle: getCodexNavGameLabel(gameLocale, "monsters") ?? "Bestiary",
     charactersTitle: getCodexNavGameLabel(gameLocale, "characters") ?? "Characters",
+    listTitles: Object.fromEntries(STS1_RESOURCE_TYPES.map((type) => [type, getSts1NavLabel(gameLocale, type)])) as Sts1UiLabels["listTitles"],
     powerTypes,
     monsters,
     viewUpgrades: library[7] || popup[6] || "View Upgrade",
