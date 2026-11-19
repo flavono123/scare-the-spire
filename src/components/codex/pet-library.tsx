@@ -92,12 +92,6 @@ export function PetLibrary({
     selectedId ? pets.find((pet) => pet.id.toLowerCase() === selectedId.toLowerCase()) ?? null : null
   ), [pets, selectedId]);
 
-  const sourceLine = (pet: CodexPet) => {
-    if (pet.source) return pet.source.name;
-    const from = pets.find((other) => other.id === pet.evolvesFrom);
-    return from ? `${view.evolvesFrom}: ${from.name}` : null;
-  };
-
   return (
     <CompendiumIndexLayout
       sidebarOpen={sidebarOpen}
@@ -137,12 +131,7 @@ export function PetLibrary({
                 }}
               >
                 <article className="grid min-w-0 grid-cols-[6rem_minmax(0,1fr)] items-center gap-3">
-                  <div className="flex flex-col items-center gap-1">
-                    <Image src={pet.imageUrl} alt={pet.name} width={96} height={96} className="h-24 w-24 object-contain" />
-                    {sourceLine(pet) && (
-                      <span className="text-center text-[11px] leading-tight text-muted-foreground">{sourceLine(pet)}</span>
-                    )}
-                  </div>
+                  <Image src={pet.imageUrl} alt={pet.name} width={96} height={96} className="h-24 w-24 object-contain" />
                   <GameHoverTip title={pet.name} className="min-w-0 w-full" style={{ minWidth: 0 }}>
                     <DescriptionText description={pet.description} className="block text-left" />
                   </GameHoverTip>
