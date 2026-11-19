@@ -66,7 +66,7 @@ export function Sts1AchievementGrid({
     >
       <div className="mx-auto grid max-w-5xl grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 md:grid-cols-5">
         {filtered.map((achievement) => (
-          <div key={achievement.key} className="group relative flex flex-col items-center gap-1.5 text-center" tabIndex={0} data-sts1-achievement={achievement.key}>
+          <div key={achievement.key} className="group relative flex flex-col items-center gap-1.5 text-center" tabIndex={0} data-sts1-achievement={achievement.key} id={achievement.slug}>
             <Image
               src={sts1AchievementImageUrl(achievement.image)}
               alt=""

@@ -59,6 +59,10 @@ const STS1_DETAILS = [
   { detail: "/compendium/sts1/potions/regen-potion", list: "/compendium/sts1/potions?potion=regen-potion" },
   { detail: "/compendium/sts1/powers/after-image", list: "/compendium/sts1/powers?power=after-image" },
   { detail: "/compendium/sts1/relics/akabeko", list: "/compendium/sts1/relics?relic=akabeko" },
+  { detail: "/compendium/sts1/events/big-fish", list: "/compendium/sts1/events?event=big-fish" },
+  { detail: "/compendium/sts1/keywords/exhaust", list: "/compendium/sts1/keywords?keyword=exhaust" },
+  { detail: "/compendium/sts1/modifiers/draft", list: "/compendium/sts1/modifiers?modifier=draft" },
+  { detail: "/compendium/sts1/blights/accursed", list: "/compendium/sts1/blights?blight=accursed" },
 ];
 
 for (const { detail, list } of [...STS2_DETAILS, ...STS1_DETAILS]) {

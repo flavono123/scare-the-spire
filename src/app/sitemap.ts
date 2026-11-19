@@ -21,6 +21,12 @@ import {
 import { getSTS2Patches } from "@/lib/data";
 import { getNeowsletters } from "@/lib/neowsletters";
 import { getActiveRunBadgeCatalog } from "@/lib/run-badge-catalog";
+import {
+  generateSts1BlightsStaticParams,
+  generateSts1EventsStaticParams,
+  generateSts1KeywordsStaticParams,
+  generateSts1ModifiersStaticParams,
+} from "@/lib/sts1/static-params";
 import { searchLanguageAlternates } from "@/lib/search-canonical";
 import {
   getSts1Cards,
@@ -78,6 +84,14 @@ const COMPENDIUM_INDEX_PATHS = [
   "/compendium/sts1/potions",
   "/compendium/sts1/powers",
   "/compendium/sts1/monsters",
+  "/compendium/sts1/events",
+  "/compendium/sts1/keywords",
+  "/compendium/sts1/ascensions",
+  "/compendium/sts1/modifiers",
+  "/compendium/sts1/blights",
+  "/compendium/sts1/neow",
+  "/compendium/sts1/achievements",
+  "/compendium/sts1/score-bonuses",
 ] as const;
 
 const COMPENDIUM_DETAIL_ROUTES = [
@@ -129,6 +143,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     sts1Powers,
     sts1Monsters,
     sts1Characters,
+    sts1Extras,
   ] = await Promise.all([
     Promise.all(
       COMPENDIUM_DETAIL_ROUTES.map(([, generateParams]) => generateParams()),
@@ -141,6 +156,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getSts1Powers(),
     getSts1Monsters(),
     getSts1Characters(),
+    Promise.all([
+      generateSts1EventsStaticParams(),
+      generateSts1KeywordsStaticParams(),
+      generateSts1ModifiersStaticParams(),
+      generateSts1BlightsStaticParams(),
+    ]),
   ]);
   const paths = [
     ...PUBLIC_INDEX_PATHS,
@@ -155,6 +176,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...sts1Powers.map((power) => `/compendium/sts1/powers/${power.slug}`),
     ...sts1Monsters.map((monster) => `/compendium/sts1/monsters/${monster.slug}`),
     ...sts1Characters.map((character) => `/compendium/sts1/characters/${character.slug}`),
+    ...(["events", "keywords", "modifiers", "blights"] as const).flatMap((type, index) => (
+      sts1Extras[index].map(({ id }) => `/compendium/sts1/${type}/${id}`)
+    )),
   ];
   const buildDate = new Date().toISOString().slice(0, 10);
   const lastModified = (date: string) => lastModifiedNoLaterThan(date, buildDate);

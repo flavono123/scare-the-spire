@@ -64,6 +64,7 @@ export function Sts1AscensionList({
             onClick={() => setLevel(row.level)}
             className="group grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-2 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
             data-sts1-ascension={row.level}
+            id={`ascension-${row.level}`}
           >
             <span className="flex justify-center"><Sts1AscensionBadge level={row.level} size={64} /></span>
             <Sts1TipBox

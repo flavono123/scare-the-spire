@@ -21,6 +21,26 @@ import {
   sts1PowerImageUrl,
   sts1RelicImageUrl,
 } from "../src/lib/sts1/paths";
+import {
+  getSts1Achievements,
+  getSts1Ascensions,
+  getSts1Blights,
+  getSts1CompendiumKeywords,
+  getSts1Modifiers,
+  getSts1Neow,
+  getSts1ScoreBonuses,
+} from "../src/lib/sts1/compendium-extras";
+import { getSts1Events } from "../src/lib/sts1/events";
+import {
+  sts1AchievementImageUrl,
+  sts1EventImageUrl,
+  sts1IndexPath,
+  sts1NpcImageUrl,
+  sts1OrbImageUrl,
+  sts1RunModUrl,
+  sts1ScoreIconUrl,
+  sts1UiImageUrl,
+} from "../src/lib/sts1/paths";
 import type { Sts1MentionEntry, Sts1MentionIndex } from "../src/lib/sts1-mention-index";
 import type { Sts1ResourceType } from "../src/lib/sts1/types";
 
@@ -122,6 +142,7 @@ async function buildIndex(): Promise<Sts1MentionIndex> {
       largeImageUrl: sts1CharacterPortraitUrl(character.id),
     })),
   ];
+  entries.push(...await extraEntries(kor.monsters.ascension));
   const suffix = async (locale: "kor" | "eng") => {
     const ui = JSON.parse(await readFile(
       path.join(process.cwd(), "data/sts1/localization", locale, "ui.json"),
@@ -135,6 +156,109 @@ async function buildIndex(): Promise<Sts1MentionIndex> {
     relicPopupSuffix: { kor: await suffix("kor"), eng: await suffix("eng") },
     entries,
   };
+}
+
+/** Events, keywords, modifiers, blights and the single-list types (anchored on their list). */
+async function extraEntries(ascensionLabel: string): Promise<Sts1MentionEntry[]> {
+  const [events, keywords, mods, blights, ascensions, neow, achievements, scores, engEvents] = await Promise.all([
+    getSts1Events("kor"),
+    getSts1CompendiumKeywords("kor"),
+    getSts1Modifiers("kor"),
+    getSts1Blights("kor"),
+    getSts1Ascensions("kor"),
+    getSts1Neow("kor"),
+    getSts1Achievements("kor"),
+    getSts1ScoreBonuses("kor"),
+    getSts1Events("eng"),
+  ]);
+  const engAchievements = new Map((await getSts1Achievements("eng")).map((row) => [row.key, row.name]));
+  const engScores = new Map((await getSts1ScoreBonuses("eng")).map((row) => [row.id, row.name]));
+  const engEventName = new Map(engEvents.map((event) => [event.id, event.name]));
+  const listEntry = (
+    resource: Sts1MentionEntry["resource"],
+    entityType: Sts1MentionEntry["entityType"],
+    slug: string,
+    row: { nameKo: string; nameEn: string; imageUrl: string; description: string },
+  ): Sts1MentionEntry => ({
+    id: mentionId(resource, slug),
+    slug,
+    resource,
+    entityType,
+    href: `${sts1IndexPath(resource)}#${slug}`,
+    ...row,
+  });
+  return [
+    ...events.map((event): Sts1MentionEntry => ({
+      id: mentionId("events", event.slug),
+      slug: event.slug,
+      nameKo: event.name,
+      nameEn: engEventName.get(event.id) ?? event.nameEn,
+      resource: "events",
+      entityType: "event",
+      imageUrl: event.image ? sts1EventImageUrl(event.image) : "",
+      href: sts1DetailPath("events", event.slug),
+      description: plainSts1Text(
+        (event.scenes[event.start]?.body ?? []).filter((part): part is string => typeof part === "string").join("").replace(/[~@]/g, ""),
+      ),
+    })),
+    ...keywords.map((keyword): Sts1MentionEntry => ({
+      id: mentionId("keywords", keyword.slug),
+      slug: keyword.slug,
+      nameKo: keyword.name,
+      nameEn: keyword.nameEn,
+      resource: "keywords",
+      entityType: "keyword",
+      imageUrl: keyword.image ? sts1OrbImageUrl(keyword.image) : "",
+      href: sts1DetailPath("keywords", keyword.slug),
+      description: keyword.description,
+    })),
+    ...mods.map((mod): Sts1MentionEntry => ({
+      id: mentionId("modifiers", mod.slug),
+      slug: mod.slug,
+      nameKo: mod.name,
+      nameEn: mod.nameEn,
+      resource: "modifiers",
+      entityType: "modifier",
+      imageUrl: mod.icon ? sts1RunModUrl(mod.icon) : "",
+      href: sts1DetailPath("modifiers", mod.slug),
+      description: mod.description,
+    })),
+    ...blights.map((blight): Sts1MentionEntry => ({
+      id: mentionId("blights", blight.slug),
+      slug: blight.slug,
+      nameKo: blight.name,
+      nameEn: blight.nameEn,
+      resource: "blights",
+      entityType: "blight",
+      imageUrl: blight.image,
+      href: sts1DetailPath("blights", blight.slug),
+      description: blight.description,
+    })),
+    ...ascensions.map((row) => listEntry("ascensions", "ascension", `ascension-${row.level}`, {
+      nameKo: `${ascensionLabel} ${row.level}`,
+      nameEn: `Ascension ${row.level}`,
+      imageUrl: sts1UiImageUrl("ascension"),
+      description: row.description,
+    })),
+    listEntry("neow", "neow", "neow", {
+      nameKo: neow.name,
+      nameEn: "Neow",
+      imageUrl: sts1NpcImageUrl("neow"),
+      description: neow.greeting.replace(/[~@]/g, ""),
+    }),
+    ...achievements.map((row) => listEntry("achievements", "achievement", row.slug, {
+      nameKo: row.name,
+      nameEn: engAchievements.get(row.key) ?? row.name,
+      imageUrl: sts1AchievementImageUrl(row.image),
+      description: row.description,
+    })),
+    ...scores.filter((row) => !row.total).map((row) => listEntry("score-bonuses", "score-bonus", row.slug, {
+      nameKo: row.name,
+      nameEn: engScores.get(row.id) ?? row.name,
+      imageUrl: sts1ScoreIconUrl(),
+      description: [row.description, row.points].filter(Boolean).join(" "),
+    })),
+  ];
 }
 
 async function main() {

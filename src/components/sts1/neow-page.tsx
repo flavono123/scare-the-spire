@@ -86,7 +86,7 @@ export function Sts1NeowPage({
       searchQuery={searchQuery}
       onSearch={setSearchQuery}
     >
-      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
+      <div id="neow" className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
         <div className="lg:sticky lg:top-4">
           <div className="relative mx-auto aspect-[808/712] w-full max-w-md">
             <Sts1MonsterStage monster={stage} playback={null} variant="tile" stillUrl={sts1NpcImageUrl("neow")} className="absolute inset-0" />

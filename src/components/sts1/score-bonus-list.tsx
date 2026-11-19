@@ -14,7 +14,7 @@ type ScoreLabels = { title: string; death: string; victory: string; unused: stri
 /** GameOverScreen's stat line: name, then the points right-aligned in gold. */
 function ScoreLine({ row, labels, refs }: { row: Sts1ScoreBonusRow; labels: ScoreLabels; refs: Sts1EntityRefs }) {
   return (
-    <li className="flex items-start gap-3 border-b border-white/5 py-2 last:border-b-0" data-sts1-score={row.slug}>
+    <li className="flex items-start gap-3 border-b border-white/5 py-2 last:border-b-0" data-sts1-score={row.slug} id={row.slug}>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="font-game-title text-base text-[#fff6e2] [text-shadow:0_2px_0_#000]">{row.name}</span>

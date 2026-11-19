@@ -47,6 +47,19 @@ assert.equal(
   "/_cf_static_pages/compendium/sts1/monsters/jaw-worm.html",
 );
 assert.equal(staticCompendiumAssetPath("/zh/compendium/sts1/monsters/jaw-worm", "html"), null);
+for (const [type, slug] of [["events", "big-fish"], ["keywords", "exhaust"], ["modifiers", "draft"], ["blights", "accursed"]]) {
+  assert.equal(
+    staticCompendiumAssetPath(`/en/compendium/sts1/${type}/${slug}`, "html"),
+    `/_cf_static_pages/en/compendium/sts1/${type}/${slug}.html`,
+  );
+  assert.equal(staticCompendiumAssetPath(`/zh/compendium/sts1/${type}/${slug}`, "html"), null);
+}
+for (const type of ["ascensions", "neow", "achievements", "score-bonuses"]) {
+  assert.equal(
+    staticCompendiumAssetPath(`/ja/compendium/sts1/${type}`, "html"),
+    `/_cf_static_pages/ja/compendium/sts1/${type}.html`,
+  );
+}
 assert.equal(
   staticCompendiumAssetPath("/en/compendium/sts1/characters", "rsc"),
   "/_cf_static_pages/en/compendium/sts1/characters.rsc",

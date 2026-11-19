@@ -7,7 +7,21 @@ export type Sts1MentionEntry = {
   nameKo: string;
   nameEn: string;
   resource: Sts1ResourceType;
-  entityType: "card" | "relic" | "potion" | "power" | "monster" | "character";
+  entityType:
+    | "card"
+    | "relic"
+    | "potion"
+    | "power"
+    | "monster"
+    | "character"
+    | "event"
+    | "keyword"
+    | "modifier"
+    | "blight"
+    | "ascension"
+    | "neow"
+    | "achievement"
+    | "score-bonus";
   imageUrl: string;
   href: string;
   description: string;
@@ -33,6 +47,24 @@ export type Sts1MentionIndex = {
 
 export type Sts1MentionEntity = EntityInfo & { mentionDescription?: string };
 
+/** The closest shared entity type, for mention styling: blights read as relics, Neow as an ancient. */
+const ENTITY_TYPES: Record<Sts1MentionEntry["entityType"], EntityInfo["type"]> = {
+  card: "card",
+  relic: "relic",
+  potion: "potion",
+  power: "power",
+  monster: "monster",
+  character: "character",
+  event: "event",
+  keyword: "keyword",
+  modifier: "modifier",
+  blight: "relic",
+  ascension: "ascension",
+  neow: "ancient",
+  achievement: "keyword",
+  "score-bonus": "keyword",
+};
+
 export function sts1MentionEntity(entry: Sts1MentionEntry): Sts1MentionEntity {
   return {
     id: entry.id,
@@ -41,7 +73,7 @@ export function sts1MentionEntity(entry: Sts1MentionEntry): Sts1MentionEntity {
     imageUrl: entry.imageUrl,
     href: entry.href,
     color: entry.color ?? entry.pool ?? "",
-    type: entry.entityType,
+    type: ENTITY_TYPES[entry.entityType],
     mentionDescription: entry.description,
   };
 }
