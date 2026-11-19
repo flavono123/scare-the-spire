@@ -282,6 +282,16 @@ PCK 로컬라이제이션에 없는 필드들은 패치노트를 보고 직접 �
 `vars`는 `src/lib/codex-bake.ts`가 런타임에 description으로 베이크하므로,
 누락 시 사이트에 `{FocusPower}` 같은 템플릿이 그대로 노출된다.
 
+#### 7g. 리소스 상호 연결·이벤트 문구 — `pnpm codex:relations`
+
+디컴파일(`/tmp/sts2-src`)이 이번 빌드로 갱신된 상태에서 실행한다. 게임 코드에서
+관련 레일(이벤트·유물·포션·카드), 이벤트 ↔ 고대의 존재, 이벤트 선택지 hover를
+`data/sts2/code-relations.json`으로 다시 뽑고, 어느 게임 언어든 이벤트 문구에
+`{Var}`·`[Var]`·`X`가 남으면 실패한다. 실패한 이벤트는 `src/lib/codex-data.ts`의
+`eventDisplayVars`에 값을 넣는다(런타임에 굴리는 값은 `노누파이페의 유물`처럼 풀 이름).
+신규 이벤트·유물·카드가 들어간 패치에서는 생략하지 않는다. 자세한 순서는
+`.codex/skills/slseoun-patch/SKILL.md` 9번.
+
 ### Step 8: Speculative Commit
 
 Per CLAUDE.md rules, commit after each meaningful edit:

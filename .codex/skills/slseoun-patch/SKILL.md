@@ -244,8 +244,19 @@ Rules:
    - `data/sts2-changes.json` is the SSOT for structured patch changes. Put player-facing `diffs`, machine-applicable `fieldDiffs`, cross-resource `relatedEntities`, and optional `visualDiff` on the same `STS2Change` record.
    - Do not hand-author `data/sts2-entity-versions.json`; `getEntityVersionDiffs()` derives version diffs from `data/sts2-changes.json`.
    - `data/sts2/meta.json`
-9. Run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` when the patch touched any Compendium resource, monster behavior, asset, localization, or deprecated/removed resource. Treat this as the post-patch guardrail before the patch becomes ready.
-10. Before pushing any extraction/localization/lifecycle milestone:
+9. Cross-links and event text (part of the Compendium/API update after the draft,
+   never skipped for new content): with `/tmp/sts2-src` decompiled for this build
+   (`update-game-assets` fast path), run `pnpm codex:relations`. It rewrites
+   `data/sts2/code-relations.json` from game code (related rails for events,
+   relics, potions and cards; event ↔ ancient; each event option's hover tips)
+   and fails when an event text in any game locale still shows `{Var}`,
+   `[Var]` or `X`. Fix a failing event with an `eventDisplayVars` entry in
+   `src/lib/codex-data.ts`; a value the game rolls at runtime gets a pool word
+   (`노누파이페의 유물`, `고문 도구`), and the option hover lists the pool.
+   Commit the JSON with the Compendium data commit, then `pnpm static:data`
+   so `/generated/compendium-data` (the client API) carries the new text.
+10. Run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` when the patch touched any Compendium resource, monster behavior, asset, localization, or deprecated/removed resource. Treat this as the post-patch guardrail before the patch becomes ready.
+11. Before pushing any extraction/localization/lifecycle milestone:
     - Compare removed or renamed game IDs with current Codex rows and apply the
       lifecycle/deprecated sync first.
     - Preserve the previous official localized title and description for
@@ -257,9 +268,9 @@ Rules:
     - Treat extraction, lifecycle sync, and localization preservation as one
       push boundary. Keep the shell-first WIP push separate, but do not publish
       a partially synchronized game-data commit.
-11. Commit each meaningful file group independently and push publishable milestones
+12. Commit each meaningful file group independently and push publishable milestones
     quickly after the validation gate passes.
-12. For the first complete draft, set `draft: true`, omit `status` or set it to
+13. For the first complete draft, set `draft: true`, omit `status` or set it to
     `"ready"`, commit, push, and verify that the public patch page deployed with
     both the index keyword and the detail notice. Send the public patch URL to
     the user. Keep correcting in place until the user asks to take the draft

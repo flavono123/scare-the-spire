@@ -35,6 +35,8 @@ jobs:
 
       - run: pnpm codex:validate
 
+      - run: pnpm codex:event-templates
+
       - run: pnpm test:version-api
 
       - run: pnpm test:security-headers
