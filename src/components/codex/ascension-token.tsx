@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 // scenes/ui/top_bar.tscn: AscensionIcon is a 42px square (keep-aspect, centered). AscensionLabel spans it
 // inset 9 left / 11 right and grown 3 up / 15 down, so the number sits 6px below the icon's middle.
-// Kreon Bold 20, outline 12, shadow (5, 4) at 1/8 black.
+// Kreon Bold, outline 12, shadow (5, 4) at 1/8 black.
 const ICON = 42;
 
 export function AscensionToken({
@@ -43,9 +43,11 @@ export function AscensionToken({
             top: -3 * unit,
             bottom: -15 * unit,
             fontFamily: "var(--font-kreon), serif",
-            fontSize: 20 * unit,
-            // A centered 12px stroke drawn under the fill leaves 6px outside the glyph, as Godot's outline_size 12 does.
-            WebkitTextStroke: `${12 * unit}px ${outline}`,
+            // shortcut: the scene's 20 (MegaLabel then autosizes) read too big against the game; 16 matches by eye, recheck with a game capture.
+            fontSize: 16 * unit,
+            // Godot strokes outline_size / 4 out from the glyph (FreeType radius size * 16 in 26.6); a centered
+            // stroke under the fill shows half its width outside.
+            WebkitTextStroke: `${6 * unit}px ${outline}`,
             paintOrder: "stroke fill",
             textShadow: `${5 * unit}px ${4 * unit}px 0 rgba(0,0,0,0.125)`,
           }}
