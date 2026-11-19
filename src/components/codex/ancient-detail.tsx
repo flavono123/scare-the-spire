@@ -30,6 +30,7 @@ import { RichText } from "@/components/rich-text";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import {
   getRelatedCardIdsForAncient,
+  getRelatedEventIdsForAncient,
 } from "@/lib/codex-references";
 import { resolveRelicDisplayImage } from "@/lib/relic-character-variant";
 import { closeOnPlainClick } from "@/lib/plain-click";
@@ -135,6 +136,16 @@ export function AncientDetail({
     .map((cardId) => cardById.get(cardId))
     .filter((card): card is CodexCard => Boolean(card))
     .map(cardToReferenceTarget);
+  const relatedEventTargets = useMemo(() => {
+    const events = (entities ?? []).filter((entity) => entity.type === "event");
+    const eventById = new Map(events.map((entity) => [entity.id, entity]));
+    return getRelatedEventIdsForAncient(ancient, events).flatMap((eventId) => {
+      const entity = eventById.get(eventId);
+      if (!entity) return [];
+      const href = `/compendium/events/${eventId.toLowerCase()}`;
+      return [{ href, id: eventId, title: entity.nameKo, entity: { ...entity, href } }];
+    });
+  }, [ancient, entities]);
   const rewardRelics = useMemo(() => {
     const byId = new Map(
       (entities ?? [])
@@ -289,6 +300,7 @@ export function AncientDetail({
             serviceLocale={serviceLocale}
             groups={[
               { kind: "card", targets: relatedCardTargets },
+              { kind: "event", targets: relatedEventTargets },
               petReferenceGroup,
             ]}
           >

@@ -7,6 +7,7 @@ import type { CompendiumDataKey } from "@/lib/compendium-data-chunks";
 import type { GameLocale } from "@/lib/i18n";
 
 const LAZY_DATA_KEYS = [
+  "ancients",
   "cards",
   "changes",
   "enchantments",
@@ -19,7 +20,7 @@ const LAZY_DATA_KEYS = [
 
 const EMPTY: never[] = [];
 
-type EventListLoaderProps = Omit<ComponentProps<typeof EventList>, "cards" | "enchantments" | "madScienceBaseCard" | "potions" | "powers" | "relics" | "changes" | "versionDiffs" | "detailsStatus"> & {
+type EventListLoaderProps = Omit<ComponentProps<typeof EventList>, "ancients" | "cards" | "enchantments" | "madScienceBaseCard" | "potions" | "powers" | "relics" | "changes" | "versionDiffs" | "detailsStatus"> & {
   gameLocale: GameLocale;
 };
 
@@ -34,6 +35,7 @@ export function EventListLoader({ gameLocale, ...props }: EventListLoaderProps) 
     <EventList
       {...props}
       detailsStatus={status}
+      ancients={data?.ancients}
       cards={data?.cards}
       enchantments={data?.enchantments}
       madScienceBaseCard={data?.madScienceBaseCard}

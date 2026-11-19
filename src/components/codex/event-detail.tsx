@@ -19,6 +19,7 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
+  CodexAncient,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
@@ -50,6 +51,7 @@ import {
 } from "@/components/game-ui-hover-tip";
 import { RichText } from "@/components/rich-text";
 import eventOptionTargets from "../../../data/sts2/event-option-targets.json";
+import codeRelations from "../../../data/sts2/code-relations.json";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameChoiceFrame } from "@/components/codex/event-choice-frame";
 import { FakeMerchantSpineStage } from "@/components/codex/fake-merchant-spine-stage";
@@ -71,6 +73,7 @@ import {
   FUTURE_OF_POTIONS_EVENT_ID,
   fillFuturePotionOption,
   TINKER_TIME_EVENT_ID,
+  getRelatedAncientIdsForEvent,
   getRelatedCardIdsForEvent,
   getRelatedEnchantmentIdsForEvent,
   getRelatedPowerIdsForEvent,
@@ -442,6 +445,12 @@ const EVENT_OPTION_GENERATED_RANDOM_POTION_IDS: Record<string, readonly string[]
   WELLSPRING: ["BOTTLE"],
   WHISPERING_HOLLOW: ["GOLD"],
 };
+
+// Option hover tips read from each EventOption in the game code (scripts/extract-code-relations.py).
+const CODE_OPTION_PREVIEW_IDS = codeRelations.eventOptions as Record<
+  string,
+  Record<string, { card?: readonly string[]; relic?: readonly string[]; potion?: readonly string[] }>
+>;
 
 type EventPreview = {
   cards?: CodexCard[];
@@ -1663,9 +1672,10 @@ export function EventContentViewer({
 
     for (const option of options) {
       const preview = previews.get(option.id) ?? {};
-      const cardIds = EVENT_OPTION_CARD_PREVIEW_IDS[event.id]?.[option.id] ?? [];
-      const relicIds = EVENT_OPTION_RELIC_PREVIEW_IDS[event.id]?.[option.id] ?? [];
-      const potionIds = EVENT_OPTION_POTION_PREVIEW_IDS[event.id]?.[option.id] ?? [];
+      const codeIds = CODE_OPTION_PREVIEW_IDS[event.id]?.[option.id];
+      const cardIds = [...new Set([...(EVENT_OPTION_CARD_PREVIEW_IDS[event.id]?.[option.id] ?? []), ...(codeIds?.card ?? [])])];
+      const relicIds = [...new Set([...(EVENT_OPTION_RELIC_PREVIEW_IDS[event.id]?.[option.id] ?? []), ...(codeIds?.relic ?? [])])];
+      const potionIds = [...new Set([...(EVENT_OPTION_POTION_PREVIEW_IDS[event.id]?.[option.id] ?? []), ...(codeIds?.potion ?? [])])];
       const cardsForOption = cardIds
         .map((cardId) => cardById.get(cardId))
         .filter((card): card is CodexCard => Boolean(card));
@@ -1928,6 +1938,7 @@ interface EventDetailProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   event: CodexEvent;
+  ancients?: CodexAncient[];
   cards?: CodexCard[];
   characters?: EventCharacterQuoteSpeaker[];
   enchantments?: CodexEnchantment[];
@@ -2223,6 +2234,7 @@ export function EventDetail({
   serviceLocale,
   gameUi,
   event,
+  ancients = [],
   cards = [],
   characters = [],
   enchantments = [],
@@ -2354,6 +2366,11 @@ export function EventDetail({
         ]
       : relatedPotionBase;
   const relatedPotionTargets = dedupeById(relatedPotionPool).map(potionToReferenceTarget);
+  const ancientById = new Map(ancients.map((ancient) => [ancient.id, ancient]));
+  const relatedAncientTargets = getRelatedAncientIdsForEvent(event, ancients)
+    .map((ancientId) => ancientById.get(ancientId))
+    .filter((ancient): ancient is CodexAncient => Boolean(ancient))
+    .map(ancientToReferenceTarget);
 
   return (
     <div className={rootClassName}>
@@ -2491,6 +2508,7 @@ export function EventDetail({
               { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "power", targets: relatedPowerTargets },
               { kind: "potion", targets: relatedPotionTargets },
+              { kind: "ancient", targets: relatedAncientTargets },
               petReferenceGroup,
             ]}
             serviceLocale={serviceLocale}
@@ -2520,6 +2538,25 @@ export function EventDetail({
       </div>
     </div>
   );
+}
+
+function ancientToReferenceTarget(ancient: CodexAncient): CodexReferenceTarget {
+  const href = `/compendium/ancients/${ancient.id.toLowerCase()}`;
+  return {
+    href,
+    id: ancient.id,
+    title: ancient.name,
+    entity: {
+      id: ancient.id,
+      nameEn: ancient.nameEn,
+      nameKo: ancient.name,
+      imageUrl: ancient.imageUrl,
+      href,
+      color: ancient.act ?? "ancient",
+      type: "ancient",
+      ancientData: ancient,
+    },
+  };
 }
 
 function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {

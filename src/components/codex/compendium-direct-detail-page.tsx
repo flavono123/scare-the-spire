@@ -585,6 +585,7 @@ export function CompendiumDirectDetailPage({
           serviceLocale={serviceLocale}
           gameUi={gameUi}
           event={event}
+          ancients={resources.ancients}
           cards={resources.cards}
           characters={resources.characters.map(toEventCharacterQuoteSpeaker)}
           enchantments={resources.enchantments}

@@ -22,6 +22,7 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import type {
+  CodexAncient,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
@@ -204,6 +205,7 @@ interface EventListProps {
   potions?: CodexPotion[];
   powers?: CodexPower[];
   relics?: CodexRelic[];
+  ancients?: CodexAncient[];
   versions: string[];
   currentVersion: string;
   patches: STS2Patch[];
@@ -225,6 +227,7 @@ export function EventList({
   potions,
   powers,
   relics,
+  ancients,
   versions,
   currentVersion,
   patches,
@@ -497,6 +500,7 @@ export function EventList({
                 potions={potions}
                 powers={powers}
                 relics={relics}
+                ancients={ancients}
                 patches={patches}
                 changes={changes}
                 versionDiffs={versionDiffs}
