@@ -426,6 +426,10 @@ const CODEX_KEYWORD_ORDER = [
   "SLY",
   "UNPLAYABLE",
   "REPLAY",
+  "TAROT",
+  "WAH_MELODY",
+  "CHO_MELODY",
+  "KI_MELODY",
 ] as const;
 
 function keywordSortOrder(id: string): number {
@@ -827,6 +831,9 @@ export async function getCodexKeywords(opts?: { gameLocale?: GameLocale }): Prom
   return [
     ...cardKeywords,
     mapStaticHoverKeyword("REPLAY", "REPLAY_STATIC", gameStaticHoverTips, engStaticHoverTips, gameLocale),
+    // The Fool's tips the game shows on its cards; the card tag filter already uses Tarot.
+    ...(["TAROT", "WAH_MELODY", "CHO_MELODY", "KI_MELODY"] as const).map((id) =>
+      mapStaticHoverKeyword(id, id, gameStaticHoverTips, engStaticHoverTips, gameLocale)),
   ].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name, "ko"));
 }
 
