@@ -1,0 +1,2162 @@
+{
+ "card": {
+  "ABRASIVE": {
+   "power": [
+    "DEXTERITY",
+    "THORNS"
+   ]
+  },
+  "ACCELERANT": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "ANTICIPATE": {
+   "power": [
+    "DEXTERITY"
+   ]
+  },
+  "APPARITION": {
+   "power": [
+    "INTANGIBLE"
+   ]
+  },
+  "ARCHERY": {
+   "power": [
+    "AIM"
+   ]
+  },
+  "ARSENAL": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "ASSASSINATE": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "BASH": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "BATTLE_TRANCE": {
+   "power": [
+    "NO_DRAW"
+   ]
+  },
+  "BEAM_CELL": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "BIASED_COGNITION": {
+   "power": [
+    "FOCUS"
+   ]
+  },
+  "BLADE_OF_INK": {
+   "enchantment": [
+    "INKY"
+   ]
+  },
+  "BLAZE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "BLIGHT_STRIKE": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "BLOSSOM_SHOT": {
+   "power": [
+    "STRETCH"
+   ]
+  },
+  "BOUNCE": {
+   "power": [
+    "STRETCH"
+   ]
+  },
+  "BOUNCING_FLASK": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "BOW_SMACK": {
+   "power": [
+    "IMPALED"
+   ]
+  },
+  "BRACE": {
+   "power": [
+    "AIM"
+   ]
+  },
+  "BRAND": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "BREAK": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "BUBBLE_BUBBLE": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "BULK_UP": {
+   "power": [
+    "DEXTERITY",
+    "STRENGTH"
+   ]
+  },
+  "BULLET_TIME": {
+   "power": [
+    "NO_DRAW"
+   ]
+  },
+  "BULLY": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "CALTROPS": {
+   "power": [
+    "THORNS"
+   ]
+  },
+  "CHARGE_BATTERY": {
+   "power": [
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "CHO_BARBS": {
+   "power": [
+    "THORNS"
+   ]
+  },
+  "CHO_KI": {
+   "power": [
+    "STRETCH"
+   ]
+  },
+  "CHO_READY": {
+   "power": [
+    "AIM"
+   ]
+  },
+  "COLOSSUS": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "COMET": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "CONCOCT": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "CONVERGENCE": {
+   "power": [
+    "ENERGY_NEXT_TURN",
+    "RETAIN_HAND",
+    "STAR_NEXT_TURN"
+   ]
+  },
+  "COORDINATE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "CORROSIVE_WAVE": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "COUNTDOWN": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "CRUELTY": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "CRUSH_UNDER": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "DARK_SHACKLES": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "DEADLY_POISON": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "DEATH": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "DEATHBRINGER": {
+   "power": [
+    "DOOM",
+    "WEAK"
+   ]
+  },
+  "DEATHS_DOOR": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "DEBILITATE": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "DEEP_STRETCH": {
+   "power": [
+    "STRETCH"
+   ]
+  },
+  "DEFRAGMENT": {
+   "power": [
+    "FOCUS"
+   ]
+  },
+  "DEFY": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "DELAY": {
+   "power": [
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "DEMON_FORM": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "DISMANTLE": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "DODGE_AND_ROLL": {
+   "power": [
+    "BLOCK_NEXT_TURN"
+   ]
+  },
+  "DOMINATE": {
+   "power": [
+    "STRENGTH",
+    "VULNERABLE"
+   ]
+  },
+  "DOUBT": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "DYING_STAR": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "END_OF_DAYS": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "ENFEEBLING_TOUCH": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "ENRAPTURE": {
+   "power": [
+    "STRETCH",
+    "VIGOR"
+   ]
+  },
+  "ENVENOM": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "EPIC_RETRIEVAL": {
+   "power": [
+    "IMPALED"
+   ]
+  },
+  "EQUILIBRIUM": {
+   "power": [
+    "RETAIN_HAND"
+   ]
+  },
+  "ETERNAL_ARMOR": {
+   "power": [
+    "PLATING"
+   ]
+  },
+  "EXPERTISE": {
+   "power": [
+    "RETAIN_HAND"
+   ]
+  },
+  "EXPLOSIVE_ARROWS": {
+   "power": [
+    "IMPALED"
+   ]
+  },
+  "EXPOSE": {
+   "power": [
+    "ARTIFACT",
+    "VULNERABLE"
+   ]
+  },
+  "FADE": {
+   "power": [
+    "DEXTERITY"
+   ]
+  },
+  "FALLING_STAR": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "FEAR": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "FEEDING_FRENZY": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "FIGHT_ME": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "FOCUSED_STRIKE": {
+   "power": [
+    "FOCUS"
+   ]
+  },
+  "FOOTWORK": {
+   "power": [
+    "DEXTERITY"
+   ]
+  },
+  "FRANTIC_ESCAPE": {
+   "power": [
+    "SANDPIT"
+   ]
+  },
+  "FRIENDSHIP": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "GAMMA_BLAST": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "GLITTERSTREAM": {
+   "power": [
+    "BLOCK_NEXT_TURN"
+   ]
+  },
+  "GLOW": {
+   "power": [
+    "DRAW_CARDS_NEXT_TURN"
+   ]
+  },
+  "GO_FOR_THE_EYES": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "GROWTH": {
+   "power": [
+    "STRETCH"
+   ]
+  },
+  "GUIDING_STAR": {
+   "power": [
+    "DRAW_CARDS_NEXT_TURN"
+   ]
+  },
+  "HAZE": {
+   "power": [
+    "POISON",
+    "WEAK"
+   ]
+  },
+  "HEAVY_SHOT": {
+   "power": [
+    "AIM"
+   ]
+  },
+  "HEGEMONY": {
+   "power": [
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "HIDDEN_CACHE": {
+   "power": [
+    "STAR_NEXT_TURN"
+   ]
+  },
+  "HIDDEN_ROOTS": {
+   "power": [
+    "STRETCH"
+   ]
+  },
+  "HIGH_FIVE": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "HOBBLING_SHOT": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "HOTFIX": {
+   "power": [
+    "FOCUS"
+   ]
+  },
+  "HYPERBEAM": {
+   "power": [
+    "FOCUS"
+   ]
+  },
+  "INFLAME": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "INTERCEPT": {
+   "power": [
+    "COVERED"
+   ]
+  },
+  "INVOKE": {
+   "power": [
+    "ENERGY_NEXT_TURN",
+    "SUMMON_NEXT_TURN"
+   ]
+  },
+  "KI_HOP": {
+   "power": [
+    "IMPALED"
+   ]
+  },
+  "KI_REST": {
+   "power": [
+    "ENERGY_NEXT_TURN",
+    "RETAIN_HAND"
+   ]
+  },
+  "KI_WHIP": {
+   "power": [
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "KNOW_THY_PLACE": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "LEG_SWEEP": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "MAD_SCIENCE": {
+   "power": [
+    "CURIOUS",
+    "DEXTERITY",
+    "IMPROVEMENT",
+    "STRANGLE",
+    "STRENGTH",
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "MALAISE": {
+   "power": [
+    "STRENGTH",
+    "WEAK"
+   ]
+  },
+  "MANGLE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "METEOR_SHOWER": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "MIRAGE": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "MOLTEN_FIST": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "MONARCHS_GAZE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "MONOLOGUE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "NAIL": {
+   "power": [
+    "IMPALED",
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "NEGATIVE_PULSE": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "NEUROSURGE": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "NEUTRALIZE": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "NEUTRON_AEGIS": {
+   "power": [
+    "PLATING"
+   ]
+  },
+  "NOCK": {
+   "power": [
+    "AIM"
+   ]
+  },
+  "NOXIOUS_FUMES": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "NO_ESCAPE": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "NULL": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "OBLIVION": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "OUTBREAK": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "OUTMANEUVER": {
+   "power": [
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "PANIC_BUTTON": {
+   "power": [
+    "NO_BLOCK"
+   ]
+  },
+  "PATTER": {
+   "power": [
+    "VIGOR"
+   ]
+  },
+  "PIERCING_WAIL": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "PLOT": {
+   "power": [
+    "DRAW_CARDS_NEXT_TURN"
+   ]
+  },
+  "POISONED_STAB": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "POUNCE": {
+   "power": [
+    "FREE_SKILL"
+   ]
+  },
+  "PREDATOR": {
+   "power": [
+    "DRAW_CARDS_NEXT_TURN"
+   ]
+  },
+  "PREP_TIME": {
+   "power": [
+    "VIGOR"
+   ]
+  },
+  "PROLONG": {
+   "power": [
+    "BLOCK_NEXT_TURN"
+   ]
+  },
+  "PROWESS": {
+   "power": [
+    "DEXTERITY",
+    "STRENGTH"
+   ]
+  },
+  "PUTREFY": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "RAIN_SHOT": {
+   "power": [
+    "AIM",
+    "QUIETUS"
+   ]
+  },
+  "REAPER_FORM": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "RECALL": {
+   "power": [
+    "IMPALED"
+   ]
+  },
+  "REFINE_BLADE": {
+   "power": [
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "RELAX": {
+   "power": [
+    "DRAW_CARDS_NEXT_TURN",
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "RESONANCE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "RUPTURE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "SALVO": {
+   "power": [
+    "RETAIN_HAND"
+   ]
+  },
+  "SCAVENGE": {
+   "power": [
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "SCOURGE": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "SERRATED_ARROWS": {
+   "power": [
+    "IMPALED"
+   ]
+  },
+  "SETUP_STRIKE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "SHAME": {
+   "power": [
+    "FRAIL"
+   ]
+  },
+  "SHARED_FATE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "SHIV": {
+   "power": [
+    "FAN_OF_KNIVES"
+   ]
+  },
+  "SHOCKWAVE": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "SHOW_OFF": {
+   "power": [
+    "AIM"
+   ]
+  },
+  "SHROUD": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "SIDESTEP": {
+   "power": [
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "SNAKEBITE": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "SOVEREIGN_BLADE": {
+   "power": [
+    "PARRY",
+    "SEEKING_EDGE"
+   ]
+  },
+  "SQUASH": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "STONE_ARMOR": {
+   "power": [
+    "PLATING"
+   ]
+  },
+  "SUCKER_PUNCH": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "SUPPRESS": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "SYNCHRONIZE": {
+   "power": [
+    "FOCUS"
+   ]
+  },
+  "SYNTHESIS": {
+   "power": [
+    "FREE_POWER"
+   ]
+  },
+  "TAUNT": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "TERRAFORMING": {
+   "power": [
+    "VIGOR"
+   ]
+  },
+  "THE_EMPRESS": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "THE_HANGED_MAN": {
+   "power": [
+    "EXTRA_TURN"
+   ]
+  },
+  "THE_STAR": {
+   "power": [
+    "DRAW_CARDS_NEXT_TURN",
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "THUNDERCLAP": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "TIMES_UP": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "TRACKING": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "TREMBLE": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "UNDERWORLD": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "UNRELENTING": {
+   "power": [
+    "FREE_ATTACK"
+   ]
+  },
+  "UPPERCUT": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "UPROOT": {
+   "power": [
+    "IMPALED",
+    "VULNERABLE"
+   ]
+  },
+  "VICIOUS": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "VITRIOL": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "WAH_HAMMER": {
+   "power": [
+    "IMPALED"
+   ]
+  },
+  "WAH_KI": {
+   "power": [
+    "DRAW_CARDS_NEXT_TURN",
+    "ENERGY_NEXT_TURN"
+   ]
+  },
+  "WAH_TOUCH": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "WRAITH_FORM": {
+   "power": [
+    "DEXTERITY",
+    "INTANGIBLE"
+   ]
+  },
+  "WREST": {
+   "power": [
+    "IMPALED"
+   ]
+  },
+  "YOGA": {
+   "power": [
+    "STRETCH"
+   ]
+  }
+ },
+ "event": {
+  "AMALGAMATOR": {
+   "card": [
+    "ULTIMATE_DEFEND",
+    "ULTIMATE_STRIKE"
+   ]
+  },
+  "BUGSLAYER": {
+   "card": [
+    "EXTERMINATE",
+    "SQUASH"
+   ]
+  },
+  "BYRDONIS_NEST": {
+   "card": [
+    "BYRDONIS_EGG"
+   ]
+  },
+  "COLOSSAL_FLOWER": {
+   "relic": [
+    "POLLINOUS_CORE"
+   ]
+  },
+  "CRYSTAL_SPHERE": {
+   "card": [
+    "DEBT"
+   ]
+  },
+  "DOLL_ROOM": {
+   "relic": [
+    "BING_BONG",
+    "DAUGHTER_OF_THE_WIND",
+    "MR_STRUGGLES"
+   ]
+  },
+  "DROWNING_BEACON": {
+   "potion": [
+    "GLOWWATER_POTION"
+   ],
+   "relic": [
+    "FRESNEL_LENS"
+   ]
+  },
+  "ENDLESS_CONVEYOR": {
+   "card": [
+    "FEEDING_FRENZY"
+   ]
+  },
+  "FAKE_MERCHANT": {
+   "relic": [
+    "FAKE_ANCHOR",
+    "FAKE_BLOOD_VIAL",
+    "FAKE_HAPPY_FLOWER",
+    "FAKE_LEES_WAFFLE",
+    "FAKE_MANGO",
+    "FAKE_MERCHANTS_RUG",
+    "FAKE_ORICHALCUM",
+    "FAKE_SNECKO_EYE",
+    "FAKE_STRIKE_DUMMY",
+    "FAKE_VENERABLE_TEA_SET"
+   ]
+  },
+  "FIELD_OF_MAN_SIZED_HOLES": {
+   "card": [
+    "NORMALITY"
+   ],
+   "enchantment": [
+    "PERFECT_FIT"
+   ]
+  },
+  "GRAVE_OF_THE_FORGOTTEN": {
+   "card": [
+    "DECAY"
+   ],
+   "enchantment": [
+    "SOULS_POWER"
+   ],
+   "relic": [
+    "FORGOTTEN_SOUL"
+   ]
+  },
+  "HUNGRY_FOR_MUSHROOMS": {
+   "relic": [
+    "BIG_MUSHROOM",
+    "FRAGRANT_MUSHROOM"
+   ]
+  },
+  "LOST_WISP": {
+   "card": [
+    "DECAY"
+   ],
+   "relic": [
+    "LOST_WISP"
+   ]
+  },
+  "LUMINOUS_CHOIR": {
+   "card": [
+    "SPORE_MIND"
+   ]
+  },
+  "MUSEUM_OF_TORTURE": {
+   "relic": [
+    "OBSIDIAN_VICE",
+    "THUMBSCREW",
+    "TORMENTOUS_COLLAR"
+   ]
+  },
+  "POTION_COURIER": {
+   "potion": [
+    "FOUL_POTION"
+   ]
+  },
+  "PUNCH_OFF": {
+   "card": [
+    "INJURY"
+   ]
+  },
+  "REFLECTIONS": {
+   "card": [
+    "BAD_LUCK"
+   ]
+  },
+  "ROOM_FULL_OF_CHEESE": {
+   "relic": [
+    "CHOSEN_CHEESE"
+   ]
+  },
+  "ROUND_TEA_PARTY": {
+   "relic": [
+    "ROYAL_POISON"
+   ]
+  },
+  "SAPPHIRE_SEED": {
+   "enchantment": [
+    "SOWN"
+   ]
+  },
+  "SELF_HELP_BOOK": {
+   "enchantment": [
+    "NIMBLE",
+    "SHARP",
+    "SWIFT"
+   ]
+  },
+  "SHRINE_OF_THE_WARLORD": {
+   "ancient": [
+    "TANX"
+   ],
+   "card": [
+    "CLUMSY",
+    "MIGHTY_SHIELD",
+    "MIGHTY_WEAPON"
+   ],
+   "relic": [
+    "MIGHTY_WINGS"
+   ]
+  },
+  "SPIRALING_WHIRLPOOL": {
+   "enchantment": [
+    "SPIRAL"
+   ]
+  },
+  "SPIRIT_GRAFTER": {
+   "card": [
+    "METAMORPHOSIS"
+   ]
+  },
+  "STONE_OF_ALL_TIME": {
+   "enchantment": [
+    "VIGOROUS"
+   ]
+  },
+  "SUNKEN_STATUE": {
+   "relic": [
+    "SWORD_OF_STONE"
+   ]
+  },
+  "SUNKEN_TREASURY": {
+   "card": [
+    "GREED"
+   ]
+  },
+  "SYMBIOTE": {
+   "enchantment": [
+    "CORRUPTED"
+   ]
+  },
+  "TEA_MASTER": {
+   "relic": [
+    "BONE_TEA",
+    "EMBER_TEA",
+    "TEA_OF_DISCOURTESY"
+   ]
+  },
+  "THERMAE_NONUPEIPE": {
+   "ancient": [
+    "NONUPEIPE"
+   ],
+   "card": [
+    "GUILTY"
+   ],
+   "relic": [
+    "BATH_ROBES",
+    "BATH_TOWEL",
+    "BEAUTIFUL_BRACELET",
+    "BLESSED_ANTLER",
+    "BRILLIANT_SCARF",
+    "DELICATE_FROND",
+    "DIAMOND_DIADEM",
+    "FUR_COAT",
+    "GLITTER",
+    "JEWELRY_BOX",
+    "SIGNET_RING"
+   ]
+  },
+  "THE_LANTERN_KEY": {
+   "card": [
+    "LANTERN_KEY"
+   ]
+  },
+  "THE_LEGENDS_WERE_TRUE": {
+   "card": [
+    "SPOILS_MAP"
+   ]
+  },
+  "THIS_OR_THAT": {
+   "card": [
+    "CLUMSY"
+   ]
+  },
+  "TINKER_TIME": {
+   "card": [
+    "MAD_SCIENCE"
+   ],
+   "power": [
+    "DEXTERITY",
+    "STRANGLE",
+    "STRENGTH",
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "TRASH_HEAP": {
+   "card": [
+    "CALTROPS",
+    "CLASH",
+    "DISTRACTION",
+    "DUAL_WIELD",
+    "ENTRENCH",
+    "HELLO_WORLD",
+    "OUTMANEUVER",
+    "REBOUND",
+    "RIP_AND_TEAR",
+    "STACK"
+   ],
+   "relic": [
+    "DARKSTONE_PERIAPT",
+    "DREAM_CATCHER",
+    "HAND_DRILL",
+    "MAW_BANK",
+    "THE_BOOT"
+   ]
+  },
+  "TRIAL": {
+   "card": [
+    "DOUBT",
+    "REGRET",
+    "SHAME"
+   ]
+  },
+  "UNREST_SITE": {
+   "card": [
+    "POOR_SLEEP"
+   ]
+  },
+  "WAR_HISTORIAN_REPY": {
+   "card": [
+    "LANTERN_KEY"
+   ],
+   "relic": [
+    "HISTORY_COURSE"
+   ]
+  },
+  "WATERFALL_OF_OBVIOUS_SECRETS": {
+   "card": [
+    "DINGY_DAGGER",
+    "GUILTY"
+   ]
+  },
+  "WATERLOGGED_SCRIPTORIUM": {
+   "enchantment": [
+    "STEADY"
+   ]
+  },
+  "WELCOME_TO_WONGOS": {
+   "relic": [
+    "WONGOS_MYSTERY_TICKET",
+    "WONGO_CUSTOMER_APPRECIATION_BADGE"
+   ]
+  },
+  "WELLSPRING": {
+   "card": [
+    "GUILTY"
+   ]
+  },
+  "WOOD_CARVINGS": {
+   "card": [
+    "PECK",
+    "TORIC_TOUGHNESS"
+   ],
+   "enchantment": [
+    "SLITHER"
+   ]
+  },
+  "WUPPY_IN_TROUBLE": {
+   "card": [
+    "INJURY"
+   ],
+   "relic": [
+    "WUPPY"
+   ]
+  },
+  "ZEN_WEAVER": {
+   "card": [
+    "ENLIGHTENMENT"
+   ]
+  }
+ },
+ "eventOptions": {
+  "BUGSLAYER": {
+   "EXTERMINATION": {
+    "card": [
+     "EXTERMINATE"
+    ]
+   },
+   "SQUASH": {
+    "card": [
+     "SQUASH"
+    ]
+   }
+  },
+  "BYRDONIS_NEST": {
+   "TAKE": {
+    "card": [
+     "BYRDONIS_EGG"
+    ]
+   }
+  },
+  "COLOSSAL_FLOWER": {
+   "POLLINOUS_CORE": {
+    "relic": [
+     "POLLINOUS_CORE"
+    ]
+   }
+  },
+  "CRYSTAL_SPHERE": {
+   "PAYMENT_PLAN": {
+    "card": [
+     "DEBT"
+    ]
+   }
+  },
+  "DROWNING_BEACON": {
+   "BOTTLE": {
+    "potion": [
+     "GLOWWATER_POTION"
+    ]
+   },
+   "CLIMB": {
+    "relic": [
+     "FRESNEL_LENS"
+    ]
+   }
+  },
+  "FIELD_OF_MAN_SIZED_HOLES": {
+   "RESIST": {
+    "card": [
+     "NORMALITY"
+    ]
+   }
+  },
+  "GRAVE_OF_THE_FORGOTTEN": {
+   "ACCEPT": {
+    "relic": [
+     "FORGOTTEN_SOUL"
+    ]
+   },
+   "CONFRONT": {
+    "card": [
+     "DECAY"
+    ]
+   }
+  },
+  "LOST_WISP": {
+   "CLAIM": {
+    "card": [
+     "DECAY"
+    ],
+    "relic": [
+     "LOST_WISP"
+    ]
+   }
+  },
+  "LUMINOUS_CHOIR": {
+   "REACH_INTO_THE_FLESH": {
+    "card": [
+     "SPORE_MIND"
+    ]
+   }
+  },
+  "MUSEUM_OF_TORTURE": {
+   "TAKE": {
+    "relic": [
+     "OBSIDIAN_VICE",
+     "THUMBSCREW",
+     "TORMENTOUS_COLLAR"
+    ]
+   }
+  },
+  "POTION_COURIER": {
+   "GRAB_POTIONS": {
+    "potion": [
+     "FOUL_POTION"
+    ]
+   }
+  },
+  "PUNCH_OFF": {
+   "NAB": {
+    "card": [
+     "INJURY"
+    ]
+   }
+  },
+  "REFLECTIONS": {
+   "SHATTER": {
+    "card": [
+     "BAD_LUCK"
+    ]
+   }
+  },
+  "ROOM_FULL_OF_CHEESE": {
+   "SEARCH": {
+    "relic": [
+     "CHOSEN_CHEESE"
+    ]
+   }
+  },
+  "ROUND_TEA_PARTY": {
+   "ENJOY_TEA": {
+    "relic": [
+     "ROYAL_POISON"
+    ]
+   }
+  },
+  "SHRINE_OF_THE_WARLORD": {
+   "TAKE_SHIELD": {
+    "card": [
+     "MIGHTY_SHIELD"
+    ]
+   },
+   "TAKE_WEAPON": {
+    "card": [
+     "MIGHTY_WEAPON"
+    ]
+   },
+   "TAKE_WINGS": {
+    "card": [
+     "CLUMSY"
+    ],
+    "relic": [
+     "MIGHTY_WINGS"
+    ]
+   }
+  },
+  "SLIPPERY_BRIDGE": {
+   "OVERCOME": {
+    "card": []
+   }
+  },
+  "SPIRIT_GRAFTER": {
+   "LET_IT_IN": {
+    "card": [
+     "METAMORPHOSIS"
+    ]
+   }
+  },
+  "STONE_OF_ALL_TIME": {
+   "LIFT": {
+    "potion": []
+   }
+  },
+  "SUNKEN_STATUE": {
+   "GRAB_SWORD": {
+    "relic": [
+     "SWORD_OF_STONE"
+    ]
+   }
+  },
+  "SUNKEN_TREASURY": {
+   "SECOND_CHEST": {
+    "card": [
+     "GREED"
+    ]
+   }
+  },
+  "THERMAE_NONUPEIPE": {
+   "DRINK_WATERS": {
+    "card": [
+     "GUILTY"
+    ],
+    "relic": [
+     "BEAUTIFUL_BRACELET",
+     "BLESSED_ANTLER",
+     "BRILLIANT_SCARF",
+     "DELICATE_FROND",
+     "DIAMOND_DIADEM",
+     "FUR_COAT",
+     "GLITTER",
+     "JEWELRY_BOX",
+     "SIGNET_RING"
+    ]
+   }
+  },
+  "THE_LEGENDS_WERE_TRUE": {
+   "NAB_THE_MAP": {
+    "card": [
+     "SPOILS_MAP"
+    ]
+   }
+  },
+  "THIS_OR_THAT": {
+   "ORNATE": {
+    "card": [
+     "CLUMSY"
+    ]
+   }
+  },
+  "TRIAL": {
+   "GUILTY": {
+    "card": [
+     "DOUBT",
+     "REGRET"
+    ]
+   },
+   "INNOCENT": {
+    "card": [
+     "DOUBT",
+     "REGRET",
+     "SHAME"
+    ]
+   }
+  },
+  "UNREST_SITE": {
+   "REST": {
+    "card": [
+     "POOR_SLEEP"
+    ]
+   }
+  },
+  "WAR_HISTORIAN_REPY": {
+   "UNLOCK_CAGE": {
+    "card": [
+     "LANTERN_KEY"
+    ],
+    "relic": [
+     "HISTORY_COURSE"
+    ]
+   },
+   "UNLOCK_CHEST": {
+    "card": [
+     "LANTERN_KEY"
+    ]
+   }
+  },
+  "WATERFALL_OF_OBVIOUS_SECRETS": {
+   "BEAT_UP": {
+    "card": [
+     "GUILTY"
+    ]
+   },
+   "BE_NICE": {
+    "card": [
+     "DINGY_DAGGER"
+    ]
+   }
+  },
+  "WELLSPRING": {
+   "BATHE": {
+    "card": [
+     "GUILTY"
+    ]
+   }
+  },
+  "WOOD_CARVINGS": {
+   "BIRD": {
+    "card": [
+     "PECK"
+    ]
+   },
+   "TORUS": {
+    "card": [
+     "TORIC_TOUGHNESS"
+    ]
+   }
+  },
+  "WUPPY_IN_TROUBLE": {
+   "BE_CAUTIOUS": {
+    "relic": [
+     "WUPPY"
+    ]
+   },
+   "HELP_IMMEDIATELY": {
+    "card": [
+     "INJURY"
+    ],
+    "relic": [
+     "WUPPY"
+    ]
+   }
+  },
+  "ZEN_WEAVER": {
+   "BREATHING_TECHNIQUES": {
+    "card": [
+     "ENLIGHTENMENT"
+    ]
+   }
+  }
+ },
+ "potion": {
+  "AMBERGRIS": {
+   "power": [
+    "EXTRA_TURN"
+   ]
+  },
+  "BEETLE_JUICE": {
+   "power": [
+    "SHRINK"
+   ]
+  },
+  "CRYSTALLINE_EUPHORIA": {
+   "card": [
+    "JOY",
+    "SADNESS"
+   ]
+  },
+  "CUNNING_POTION": {
+   "card": [
+    "SHIV"
+   ]
+  },
+  "DEXTERITY_POTION": {
+   "power": [
+    "DEXTERITY"
+   ]
+  },
+  "DUPLICATOR": {
+   "power": [
+    "DUPLICATION"
+   ]
+  },
+  "FLEX_POTION": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "FOCUS_POTION": {
+   "power": [
+    "FOCUS"
+   ]
+  },
+  "FYSH_OIL": {
+   "power": [
+    "DEXTERITY",
+    "STRENGTH"
+   ]
+  },
+  "GHOST_IN_A_JAR": {
+   "power": [
+    "INTANGIBLE"
+   ]
+  },
+  "GIGANTIFICATION_POTION": {
+   "power": [
+    "GIGANTIFICATION"
+   ]
+  },
+  "HEART_OF_IRON": {
+   "power": [
+    "PLATING"
+   ]
+  },
+  "LIQUID_BRONZE": {
+   "power": [
+    "THORNS"
+   ]
+  },
+  "LUCKY_TONIC": {
+   "power": [
+    "BUFFER"
+   ]
+  },
+  "MAZALETHS_GIFT": {
+   "power": [
+    "RITUAL",
+    "STRENGTH"
+   ]
+  },
+  "POISON_POTION": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "POTION_OF_BINDING": {
+   "power": [
+    "VULNERABLE",
+    "WEAK"
+   ]
+  },
+  "POTION_OF_DOOM": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "POT_OF_GHOULS": {
+   "card": [
+    "SOUL"
+   ]
+  },
+  "POWDERED_DEMISE": {
+   "power": [
+    "DEMISE"
+   ]
+  },
+  "PRECISION_POTION": {
+   "power": [
+    "AIM"
+   ]
+  },
+  "RADIANT_TINCTURE": {
+   "power": [
+    "RADIANCE"
+   ]
+  },
+  "REGEN_POTION": {
+   "power": [
+    "REGEN"
+   ]
+  },
+  "SHACKLING_POTION": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "SHIP_IN_A_BOTTLE": {
+   "power": [
+    "BLOCK_NEXT_TURN"
+   ]
+  },
+  "SPEED_POTION": {
+   "power": [
+    "DEXTERITY"
+   ]
+  },
+  "STABLE_SERUM": {
+   "power": [
+    "RETAIN_HAND"
+   ]
+  },
+  "STRENGTH_POTION": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "VULNERABLE_POTION": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "WEAK_POTION": {
+   "power": [
+    "WEAK"
+   ]
+  }
+ },
+ "relic": {
+  "AKABEKO": {
+   "power": [
+    "VIGOR"
+   ]
+  },
+  "ARCHAIC_TOOTH": {
+   "card": [
+    "BASH",
+    "BREAK",
+    "DIVINE_SHOT",
+    "DOUBT",
+    "DUALCAST",
+    "FALLING_STAR",
+    "FOOLISH_SHOT",
+    "METEOR_SHOWER",
+    "NEUTRALIZE",
+    "PROTECTOR",
+    "QUADCAST",
+    "SUPPRESS",
+    "UNLEASH"
+   ]
+  },
+  "BAG_OF_MARBLES": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "BEAUTIFUL_BRACELET": {
+   "enchantment": [
+    "SWIFT"
+   ]
+  },
+  "BELT_BUCKLE": {
+   "power": [
+    "DEXTERITY"
+   ]
+  },
+  "BIIIG_HUG": {
+   "card": [
+    "SOOT"
+   ]
+  },
+  "BIZARRE_LAMP": {
+   "card": [
+    "JOY",
+    "SADNESS"
+   ]
+  },
+  "BLESSED_ANTLER": {
+   "card": [
+    "DAZED"
+   ]
+  },
+  "BLOOD_SOAKED_ROSE": {
+   "card": [
+    "ENTHRALLED"
+   ]
+  },
+  "BOOK_REPAIR_KNIFE": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "BRIMSTONE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "BRONZE_SCALES": {
+   "power": [
+    "THORNS"
+   ]
+  },
+  "BYRDINE": {
+   "card": [
+    "BYRD_SWOOP",
+    "GOD_BYRD"
+   ]
+  },
+  "BYRDPIP": {
+   "card": [
+    "BYRD_SWOOP"
+   ]
+  },
+  "CALLING_BELL": {
+   "card": [
+    "CURSE_OF_THE_BELL"
+   ]
+  },
+  "CLAWS": {
+   "card": [
+    "MAUL"
+   ]
+  },
+  "CURSED_PEARL": {
+   "card": [
+    "GREED"
+   ]
+  },
+  "DATA_DISK": {
+   "power": [
+    "FOCUS"
+   ]
+  },
+  "DIAMOND_DIADEM": {
+   "power": [
+    "BLUR"
+   ]
+  },
+  "DISTINGUISHED_CAPE": {
+   "card": [
+    "APPARITION"
+   ]
+  },
+  "DOWSING_ROD": {
+   "card": [
+    "DOWSING"
+   ]
+  },
+  "ELECTRIC_SHRYMP": {
+   "enchantment": [
+    "IMBUED"
+   ]
+  },
+  "EMBER_TEA": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "EXERCISE_MAT": {
+   "power": [
+    "STRETCH"
+   ]
+  },
+  "FAKE_SNECKO_EYE": {
+   "power": [
+    "CONFUSED"
+   ]
+  },
+  "FERTILIZER": {
+   "card": [
+    "SADNESS"
+   ],
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "FRESNEL_LENS": {
+   "enchantment": [
+    "NIMBLE"
+   ]
+  },
+  "FUNERARY_MASK": {
+   "card": [
+    "SOUL"
+   ]
+  },
+  "GIRYA": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "GLITTER": {
+   "enchantment": [
+    "GLAM"
+   ]
+  },
+  "GNARLED_HAMMER": {
+   "enchantment": [
+    "SHARP"
+   ]
+  },
+  "GORGET": {
+   "power": [
+    "PLATING"
+   ]
+  },
+  "HAND_DRILL": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "HEFTY_TABLET": {
+   "card": [
+    "INJURY"
+   ]
+  },
+  "HELICAL_DART": {
+   "card": [
+    "SHIV"
+   ],
+   "power": [
+    "DEXTERITY"
+   ]
+  },
+  "JEWELRY_BOX": {
+   "card": [
+    "APOTHEOSIS"
+   ]
+  },
+  "KIFUDA": {
+   "enchantment": [
+    "ADROIT"
+   ]
+  },
+  "KUNAI": {
+   "power": [
+    "DEXTERITY"
+   ]
+  },
+  "LARGE_CAPSULE": {
+   "card": [
+    "DEFEND_IRONCLAD",
+    "STRIKE_IRONCLAD"
+   ]
+  },
+  "MIGHTY_WINGS": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "MINI_REGENT": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "NEOWS_SACRIFICE": {
+   "card": [
+    "GUILTY"
+   ]
+  },
+  "NEOWS_TORMENT": {
+   "card": [
+    "NEOWS_FURY"
+   ]
+  },
+  "NINJA_SCROLL": {
+   "card": [
+    "SHIV"
+   ]
+  },
+  "NUTRITIOUS_SOUP": {
+   "enchantment": [
+    "TEZCATARAS_EMBER"
+   ]
+  },
+  "ODDLY_SMOOTH_STONE": {
+   "power": [
+    "DEXTERITY"
+   ]
+  },
+  "PAELS_CLAW": {
+   "enchantment": [
+    "GOOPY"
+   ]
+  },
+  "PAELS_GROWTH": {
+   "enchantment": [
+    "CLONE"
+   ]
+  },
+  "PAELS_HORN": {
+   "card": [
+    "RELAX"
+   ]
+  },
+  "PAPER_KRANE": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "PAPER_PHROG": {
+   "power": [
+    "VULNERABLE"
+   ]
+  },
+  "PHILOSOPHERS_STONE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "PRESERVED_FOG": {
+   "card": [
+    "FOLLY"
+   ]
+  },
+  "PUNCH_DAGGER": {
+   "enchantment": [
+    "MOMENTUM"
+   ]
+  },
+  "RADIANT_PEARL": {
+   "card": [
+    "LUMINESCE"
+   ]
+  },
+  "RAINBOW_RING": {
+   "power": [
+    "DEXTERITY",
+    "STRENGTH"
+   ]
+  },
+  "RED_MASK": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "RED_SKULL": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "REPTILE_TRINKET": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "RINGING_TRIANGLE": {
+   "power": [
+    "RETAIN_HAND"
+   ]
+  },
+  "ROYAL_STAMP": {
+   "enchantment": [
+    "ROYALLY_APPROVED"
+   ]
+  },
+  "RUINED_HELMET": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "SCROLL_BOXES": {
+   "card": [
+    "CLAW"
+   ]
+  },
+  "SERE_TALON": {
+   "card": [
+    "WISH"
+   ]
+  },
+  "SHURIKEN": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "SILKEN_TRESS": {
+   "enchantment": [
+    "GLAM"
+   ]
+  },
+  "SLING_OF_COURAGE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "SNECKO_EYE": {
+   "power": [
+    "CONFUSED"
+   ]
+  },
+  "SNECKO_SKULL": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "SONG_BOW": {
+   "power": [
+    "AIM"
+   ]
+  },
+  "SPARKLING_ROUGE": {
+   "power": [
+    "DEXTERITY",
+    "STRENGTH"
+   ]
+  },
+  "STORYBOOK": {
+   "card": [
+    "BRIGHTEST_FLAME"
+   ]
+  },
+  "STORYTELLER": {
+   "power": [
+    "AIM"
+   ]
+  },
+  "SWORD_OF_JADE": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "TANXS_WHISTLE": {
+   "card": [
+    "WHISTLE"
+   ]
+  },
+  "TEA_OF_DISCOURTESY": {
+   "card": [
+    "DAZED"
+   ]
+  },
+  "TOASTY_MITTENS": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "TORMENTOUS_COLLAR": {
+   "power": [
+    "WEAK"
+   ]
+  },
+  "TRI_BOOMERANG": {
+   "enchantment": [
+    "INSTINCT"
+   ]
+  },
+  "TWISTED_FUNNEL": {
+   "power": [
+    "POISON"
+   ]
+  },
+  "UNDYING_SIGIL": {
+   "power": [
+    "DOOM"
+   ]
+  },
+  "UNSETTLING_LAMP": {
+   "power": [
+    "ARTIFACT"
+   ]
+  },
+  "VAJRA": {
+   "power": [
+    "STRENGTH"
+   ]
+  },
+  "WHITTLING_KNIFE": {
+   "power": [
+    "AIM"
+   ]
+  },
+  "WING_CHARM": {
+   "enchantment": [
+    "SWIFT"
+   ]
+  },
+  "WUPPY": {
+   "power": [
+    "WUPPYS_LOYALTY"
+   ]
+  }
+ }
+}

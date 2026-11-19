@@ -17,6 +17,25 @@ import type {
 import { stripCodexMarkup } from "./codex-search";
 import { buildCompendiumResourceHref } from "./compendium-resource-links";
 import { getEncounterMonsterIds } from "./encounter-compositions";
+import codeRelations from "../../data/sts2/code-relations.json";
+
+type RelationMap = Readonly<Record<string, readonly string[]>>;
+type CodeRelationSource = "event" | "relic" | "potion" | "card";
+// Generated from the decompiled DLL by scripts/extract-code-relations.py (re-run on every game build).
+const CODE_RELATIONS = codeRelations as unknown as Record<CodeRelationSource, Record<string, Record<string, readonly string[]>>>;
+
+function codeRelationIds(source: CodeRelationSource, id: string, kind: string): readonly string[] {
+  return CODE_RELATIONS[source][id.toUpperCase()]?.[kind] ?? [];
+}
+
+// Hand-kept links stay (runtime pools the code builds dynamically); game-code links cover every new model.
+function withCodeRelations(source: CodeRelationSource, kind: string, hand: RelationMap): RelationMap {
+  const merged: Record<string, readonly string[]> = { ...hand };
+  for (const [id, links] of Object.entries(CODE_RELATIONS[source])) {
+    if (links[kind]?.length) merged[id] = dedupeIds([...(merged[id] ?? []), ...links[kind]]);
+  }
+  return merged;
+}
 
 export const FUTURE_OF_POTIONS_EVENT_ID = "THE_FUTURE_OF_POTIONS";
 export const FUTURE_OF_POTIONS_EVENT_NAME_KO = "포션의 미래?";
@@ -428,7 +447,7 @@ export function getRelatedEventIdsForKeyword(
     .map((event) => event.id);
 }
 
-export const EVENT_RELATED_CARD_IDS = {
+export const EVENT_RELATED_CARD_IDS = withCodeRelations("event", "card", {
   AMALGAMATOR: ["ULTIMATE_STRIKE", "ULTIMATE_DEFEND"],
   BUGSLAYER: ["EXTERMINATE", "SQUASH"],
   BYRDONIS_NEST: ["BYRDONIS_EGG"],
@@ -462,9 +481,9 @@ export const EVENT_RELATED_CARD_IDS = {
   WELLSPRING: ["GUILTY"],
   WOOD_CARVINGS: ["PECK", "TORIC_TOUGHNESS"],
   ZEN_WEAVER: ["ENLIGHTENMENT"],
-} as const satisfies Record<string, readonly string[]>;
+});
 
-export const EVENT_RELATED_RELIC_IDS = {
+export const EVENT_RELATED_RELIC_IDS = withCodeRelations("event", "relic", {
   COLORFUL_PHILOSOPHERS: ["PRISMATIC_GEM"],
   COLOSSAL_FLOWER: ["POLLINOUS_CORE"],
   DOLL_ROOM: ["DAUGHTER_OF_THE_WIND", "MR_STRUGGLES", "BING_BONG"],
@@ -491,14 +510,14 @@ export const EVENT_RELATED_RELIC_IDS = {
   TRASH_HEAP: ["DARKSTONE_PERIAPT", "DREAM_CATCHER", "HAND_DRILL", "MAW_BANK", "THE_BOOT"],
   WAR_HISTORIAN_REPY: ["HISTORY_COURSE"],
   WELCOME_TO_WONGOS: ["WONGO_CUSTOMER_APPRECIATION_BADGE", "WONGOS_MYSTERY_TICKET"],
-} as const satisfies Record<string, readonly string[]>;
+});
 
-export const EVENT_RELATED_POTION_IDS = {
+export const EVENT_RELATED_POTION_IDS = withCodeRelations("event", "potion", {
   DROWNING_BEACON: ["GLOWWATER_POTION"],
   POTION_COURIER: ["FOUL_POTION"],
-} as const satisfies Record<string, readonly string[]>;
+});
 
-export const EVENT_RELATED_ENCHANTMENT_IDS = {
+export const EVENT_RELATED_ENCHANTMENT_IDS = withCodeRelations("event", "enchantment", {
   FIELD_OF_MAN_SIZED_HOLES: ["PERFECT_FIT"],
   GRAVE_OF_THE_FORGOTTEN: ["SOULS_POWER"],
   SAPPHIRE_SEED: ["SOWN"],
@@ -508,17 +527,17 @@ export const EVENT_RELATED_ENCHANTMENT_IDS = {
   SYMBIOTE: ["CORRUPTED"],
   WATERLOGGED_SCRIPTORIUM: ["STEADY"],
   WOOD_CARVINGS: ["SLITHER"],
-} as const satisfies Record<string, readonly string[]>;
+});
 
-export const EVENT_RELATED_POWER_IDS = {
+export const EVENT_RELATED_POWER_IDS = withCodeRelations("event", "power", {
   TINKER_TIME: ["WEAK", "VULNERABLE", "STRENGTH", "DEXTERITY"],
-} as const satisfies Record<string, readonly string[]>;
+});
 
-export const CARD_RELATED_ENCHANTMENT_IDS = {
+export const CARD_RELATED_ENCHANTMENT_IDS = withCodeRelations("card", "enchantment", {
   BLADE_OF_INK: ["INKY"],
-} as const satisfies Record<string, readonly string[]>;
+});
 
-export const RELIC_RELATED_CARD_IDS = {
+export const RELIC_RELATED_CARD_IDS = withCodeRelations("relic", "card", {
   BLESSED_ANTLER: ["DAZED"],
   BYRDPIP: ["BYRD_SWOOP"],
   NEOWS_TORMENT: ["NEOWS_FURY"],
@@ -528,16 +547,16 @@ export const RELIC_RELATED_CARD_IDS = {
   STORYBOOK: ["BRIGHTEST_FLAME"],
   TANXS_WHISTLE: ["WHISTLE"],
   TEA_OF_DISCOURTESY: ["DAZED"],
-} as const satisfies Record<string, readonly string[]>;
+});
 
-export const RELIC_RELATED_ENCHANTMENT_IDS = {
+export const RELIC_RELATED_ENCHANTMENT_IDS = withCodeRelations("relic", "enchantment", {
   ELECTRIC_SHRYMP: ["IMBUED"],
   GLITTER: ["GLAM"],
   KIFUDA: ["ADROIT"],
   NUTRITIOUS_SOUP: ["TEZCATARAS_EMBER"],
   SILKEN_TRESS: ["GLAM"],
   TRI_BOOMERANG: ["INSTINCT"],
-} as const satisfies Record<string, readonly string[]>;
+});
 
 const RELIC_ENCHANTMENT_VAR_KEY_IDS = {
   Momentum: ["MOMENTUM"],
@@ -552,12 +571,12 @@ const RELIC_ENCHANTMENT_VAR_KEY_IDS = {
 // - strike-wide interaction: SoldiersStew.cs filters CardTag.Strike
 // - power application/preview: PowerCmd.Apply<TPower>, PowerVar<TPower>, HoverTipFactory.FromPower<TPower>
 // Temporary potion wrapper powers are normalized to the public power they preview/apply internally.
-export const POTION_RELATED_CARD_IDS = {
+export const POTION_RELATED_CARD_IDS = withCodeRelations("potion", "card", {
   CUNNING_POTION: ["SHIV"],
   POT_OF_GHOULS: ["SOUL"],
-} as const satisfies Record<string, readonly string[]>;
+});
 
-export const POTION_RELATED_POWER_IDS = {
+export const POTION_RELATED_POWER_IDS = withCodeRelations("potion", "power", {
   BEETLE_JUICE: ["SHRINK"],
   CLARITY: ["CLARITY"],
   DEXTERITY_POTION: ["DEXTERITY"],
@@ -584,9 +603,9 @@ export const POTION_RELATED_POWER_IDS = {
   STRENGTH_POTION: ["STRENGTH"],
   VULNERABLE_POTION: ["VULNERABLE"],
   WEAK_POTION: ["WEAK"],
-} as const satisfies Record<string, readonly string[]>;
+});
 
-export const POTION_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
+export const POTION_RELATED_ENCHANTMENT_IDS = withCodeRelations("potion", "enchantment", {});
 
 // Monster affliction relationships are derived from current monster move data.
 // This map only normalizes the public power IDs that apply each card affliction.
@@ -830,18 +849,18 @@ export function getRelatedEventIdsForAncient(
   ancient: AncientRelationSource,
   events: readonly AncientEventRelationTarget[],
 ): string[] {
-  void ancient;
-  void events;
-  return [];
+  const ancientId = ancient.id.toUpperCase();
+  return events
+    .filter((event) => codeRelationIds("event", event.id, "ancient").includes(ancientId))
+    .map((event) => event.id);
 }
 
 export function getRelatedAncientIdsForEvent(
   event: AncientEventRelationTarget,
   ancients: readonly AncientRelationSource[],
 ): string[] {
-  void event;
-  void ancients;
-  return [];
+  const ancientIds = codeRelationIds("event", event.id, "ancient");
+  return ancients.filter((ancient) => ancientIds.includes(ancient.id.toUpperCase())).map((ancient) => ancient.id);
 }
 
 export function getRelatedEnchantmentIdsForRelic(
@@ -958,20 +977,24 @@ function getRelatedPowerIdsFromSource(
 }
 
 export function getRelatedPowerIdsForCard(
-  card: Pick<CodexCard, "appliedPowerIds" | "vars">,
+  card: Pick<CodexCard, "id" | "appliedPowerIds" | "vars">,
   powers?: PowerReferenceIndex,
 ): readonly string[] {
   return dedupeIds([
     ...card.appliedPowerIds,
     ...getRelatedPowerIdsFromSource(card, powers),
+    ...codeRelationIds("card", card.id, "power"),
   ]);
 }
 
 export function getRelatedPowerIdsForRelic(
-  relic: Pick<CodexRelic, "vars">,
+  relic: Pick<CodexRelic, "id" | "vars">,
   powers?: PowerReferenceIndex,
 ): readonly string[] {
-  return getRelatedPowerIdsFromSource(relic, powers);
+  return dedupeIds([
+    ...getRelatedPowerIdsFromSource(relic, powers),
+    ...codeRelationIds("relic", relic.id, "power"),
+  ]);
 }
 
 export function getRelatedPowerIdsForPotion(
