@@ -94,7 +94,7 @@ export interface CodexCard extends CodexLifecycle {
   };
 }
 
-export type CodexKeywordSource = "cardKeyword" | "staticHoverTip";
+export type CodexKeywordSource = "cardKeyword" | "staticHoverTip" | "orb" | "intent";
 
 export interface CodexKeyword {
   id: string;

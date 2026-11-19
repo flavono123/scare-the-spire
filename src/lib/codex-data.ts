@@ -492,6 +492,56 @@ function mapCardKeyword(
   };
 }
 
+// Intent tips carry runtime slots (damage, hit count, card count) that have no value outside combat.
+function fillIntentSlots(text: string): string {
+  return text
+    .replace(/\{IsMultiplayer:[^|]*\|([^}]*)\}/g, "$1")
+    .replace(/\{Repeat:[^|]*\|(?:[^{}]|\{\})*\}/g, "")
+    .replace(/\{(Damage|CardCount)\}/g, "X");
+}
+
+// Orb and intent glossaries live in their own game tables; they sort after the other keywords.
+async function getOrbAndIntentKeywords(gameLocale: GameLocale): Promise<CodexKeyword[]> {
+  const [orbs, engOrbs, intents, engIntents] = await Promise.all([
+    readGameLocalizationTable(gameLocale, "orbs"),
+    readGameLocalizationTable("eng", "orbs"),
+    readGameLocalizationTable(gameLocale, "intents"),
+    readGameLocalizationTable("eng", "intents"),
+  ]);
+  const build = (
+    source: "orb" | "intent",
+    ids: string[],
+    table: GameLocalizationTable,
+    engTable: GameLocalizationTable,
+    fill: (text: string) => string,
+    offset: number,
+  ): CodexKeyword[] => ids.map((sourceId, index) => {
+    const description = fill(gameText(table, `${sourceId}.description`, ""));
+    const descriptionEn = fill(gameText(engTable, `${sourceId}.description`, description));
+    return {
+      id: source === "intent" ? `INTENT_${sourceId}` : sourceId,
+      name: gameText(table, `${sourceId}.title`, sourceId),
+      nameEn: gameText(engTable, `${sourceId}.title`, sourceId),
+      description,
+      descriptionEn,
+      descriptionRaw: description,
+      descriptionRawEn: descriptionEn,
+      source,
+      sourceId,
+      imageUrl: null,
+      sortOrder: CODEX_KEYWORD_ORDER.length + offset + index,
+    };
+  });
+  return [
+    ...build("orb", ["LIGHTNING_ORB", "FROST_ORB", "DARK_ORB", "PLASMA_ORB", "GLASS_ORB"], orbs, engOrbs, (text) => text, 0),
+    ...build(
+      "intent",
+      ["ATTACK", "DEFEND", "BUFF", "DEBUFF", "DEBUFF_STRONG", "CARD_DEBUFF", "STATUS", "SUMMON", "HEAL", "STUN", "SLEEP", "ESCAPE", "DEATH_BLOW", "UNKNOWN"],
+      intents, engIntents, fillIntentSlots, 10,
+    ),
+  ];
+}
+
 function mapStaticHoverKeyword(
   id: string,
   sourceId: string,
@@ -862,6 +912,7 @@ export async function getCodexKeywords(opts?: { gameLocale?: GameLocale }): Prom
     // The game's glossary tips for card terms (Fool's Tarot and melodies, arrows, forge, summon, orbs ...).
     ...STATIC_HOVER_KEYWORD_IDS.map((id) =>
       mapStaticHoverKeyword(id, id, gameStaticHoverTips, engStaticHoverTips, gameLocale)),
+    ...(await getOrbAndIntentKeywords(gameLocale)),
   ].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name, "ko"));
 }
 

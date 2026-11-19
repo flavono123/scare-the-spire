@@ -53,7 +53,7 @@ interface KeywordLibraryProps {
   detailsStatus?: CompendiumDataStatus;
 }
 
-const KEYWORD_SOURCE_ORDER: CodexKeyword["source"][] = ["cardKeyword", "staticHoverTip"];
+const KEYWORD_SOURCE_ORDER: CodexKeyword["source"][] = ["cardKeyword", "staticHoverTip", "orb", "intent"];
 
 const KEYWORD_SOURCE_CONFIG: Record<CodexKeyword["source"], { color: string; label: Record<ServiceLocale, string> }> = {
   cardKeyword: {
@@ -63,6 +63,14 @@ const KEYWORD_SOURCE_CONFIG: Record<CodexKeyword["source"], { color: string; lab
   staticHoverTip: {
     color: "#7dd3fc",
     label: { ko: "툴팁 키워드", en: "Hover tip" },
+  },
+  orb: {
+    color: "#67e8f9",
+    label: { ko: "구체", en: "Orbs" },
+  },
+  intent: {
+    color: "#fca5a5",
+    label: { ko: "의도", en: "Intents" },
   },
 };
 
