@@ -615,6 +615,8 @@ function checkStaticLegacyPages(): number {
       count += 2;
 
       const detailRoot = path.join(sourceRoot, segment);
+      // Single-list types (ascensions, neow, achievements, score-bonuses) have no details.
+      if (!statSync(detailRoot, { throwIfNoEntry: false })?.isDirectory()) continue;
       const detailFiles = readdirSync(detailRoot, { withFileTypes: true })
         .filter((entry) => entry.isFile());
       const routeExtensions = new Map<string, Set<StaticPageExtension>>();
