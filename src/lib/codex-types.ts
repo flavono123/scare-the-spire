@@ -247,8 +247,6 @@ export interface PetLookOption {
   tokenUrl: string;
   /** The character whose eye it is. */
   character: string | null;
-  /** Characters without an eye of their own, who get this one (ByrdineMonster.SetupSkins falls back to the Ironclad's). */
-  fallbackFor: string[];
 }
 
 export type PetAction = "attack" | "attack_poke" | "hurt" | "die" | "revive" | "block" | "sleep" | "wake_up" | "be_born";

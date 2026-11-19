@@ -1313,10 +1313,6 @@ export const serviceMessages = {
         lookParts: { hair: "머리", eye: "눈", look: "외형" },
         lookOptions: { eyes: "눈", horns: "뿔", spikes: "가시", wing: "날개" },
         hairTitle: "머리 {n}",
-        lookRolled: "{pet} 획득 시 넷 중 하나로 무작위로 정해집니다.",
-        hairInherited: "진화할 때 {from}의 머리 {n} 모양을 그대로 이어받습니다.",
-        eyeOf: "{character}로 플레이할 때의 눈 색입니다.",
-        eyeFallback: "눈이 따로 없는 {names}도 이 눈을 씁니다.",
         actions: {
           attack: "공격",
           attack_poke: "쑤시기",
@@ -3006,10 +3002,6 @@ export const serviceMessages = {
         lookParts: { hair: "Hair", eye: "Eye", look: "Look" },
         lookOptions: { eyes: "Eyes", horns: "Horns", spikes: "Spikes", wing: "Wings" },
         hairTitle: "Hair {n}",
-        lookRolled: "Rolled at random from the four when you get {pet}.",
-        hairInherited: "Keeps {from}'s Hair {n} when it evolves.",
-        eyeOf: "The eye color when playing {character}.",
-        eyeFallback: "Characters without an eye of their own ({names}) use this one too.",
         actions: {
           attack: "Attack",
           attack_poke: "Poke",

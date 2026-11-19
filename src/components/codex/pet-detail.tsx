@@ -67,13 +67,11 @@ function PetLookToken({
   selected,
   onSelect,
   title,
-  description,
 }: {
   option: PetLookOption;
   selected: boolean;
   onSelect: () => void;
   title: string;
-  description: string;
 }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -93,7 +91,7 @@ function PetLookToken({
       <Image src={option.tokenUrl} alt="" width={48} height={48} className="h-full w-full object-contain" />
       {hovered && (
         <PortaledHoverTipLayer pin="top-left">
-          <HoverTip title={title} compact>{description}</HoverTip>
+          <HoverTip title={title} compact />
         </PortaledHoverTipLayer>
       )}
     </button>
@@ -172,22 +170,12 @@ export function PetDetail({
   const pickerLabelClass = "font-game-title text-sm font-bold text-[#f1c94f] [text-shadow:2px_2px_0_rgba(0,0,0,0.82)]";
   const fill = (template: string, values: Record<string, string | number>) =>
     template.replace(/\{(\w+)\}/g, (match, key: string) => String(values[key] ?? match));
-  // Hover facts from the 0.113 source: Byrdpip and Pael's Legion roll their look on pickup (Rng.NextItem(SkinOptions)),
-  // Byrdine keeps Byrdpip's hair (EvolveRestSiteOption), and its eye follows the character (ByrdineMonster.SetupSkins).
-  const lookTip = (part: PetLookPart, option: PetLookOption, index: number) => {
-    if (part === "eye" && option.character) {
-      return {
-        title: option.character,
-        description: [fill(view.eyeOf, { character: option.character }), ...(option.fallbackFor.length > 0 ? [fill(view.eyeFallback, { names: option.fallbackFor.join(", ") })] : [])].join(" "),
-      };
-    }
-    const title = part === "hair" ? fill(view.hairTitle, { n: index + 1 }) : (view.lookOptions as Record<string, string>)[option.skin] ?? option.skin;
-    const from = pets.find((candidate) => candidate.id === pet.evolvesFrom);
-    return {
-      title,
-      description: from ? fill(view.hairInherited, { from: from.name, n: index + 1 }) : fill(view.lookRolled, { pet: pet.name }),
-    };
-  };
+  const lookTitle = (part: PetLookPart, option: PetLookOption, index: number) =>
+    part === "eye" && option.character
+      ? option.character
+      : part === "hair"
+        ? fill(view.hairTitle, { n: index + 1 })
+        : (view.lookOptions as Record<string, string>)[option.skin] ?? option.skin;
   const linkClass = "font-game-text text-sm text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary";
 
   return (
@@ -241,8 +229,12 @@ export function PetDetail({
                         key={option.skin}
                         option={option}
                         selected={skins[partIndex] === option.skin}
-                        onSelect={() => setLookState({ petId: pet.id, skins: skins.map((skin, index) => (index === partIndex ? option.skin : skin)) })}
-                        {...lookTip(part.id, option, optionIndex)}
+                        onSelect={() => {
+                          setLookState({ petId: pet.id, skins: skins.map((skin, index) => (index === partIndex ? option.skin : skin)) });
+                          // A held move would replay on the new look, so picking a look clears it.
+                          setActionState(null);
+                        }}
+                        title={lookTitle(part.id, option, optionIndex)}
                       />
                     ))}
                   </div>
@@ -292,7 +284,11 @@ export function PetDetail({
                   <button
                     key={name}
                     type="button"
-                    onClick={() => setActionState((current) => ({ petId: pet.id, action: name, nonce: (current?.nonce ?? 0) + 1 }))}
+                    onClick={() =>
+                      setActionState((current) =>
+                        current?.petId === pet.id && current.action === name ? null : { petId: pet.id, action: name, nonce: (current?.nonce ?? 0) + 1 },
+                      )
+                    }
                     className={`w-full rounded-md border px-2.5 py-2 text-left transition-colors hover:bg-white/[0.06] ${
                       action?.action === name ? "border-[#efc851]/65 bg-white/[0.055]" : "border-white/[0.06] bg-white/[0.015]"
                     }`}

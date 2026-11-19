@@ -3239,9 +3239,6 @@ export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<
               ? `/images/sts2/relics/yummy_cookie_${skin.slice("eye/".length)}.webp`
               : `/images/sts2/pets/${spineFolder}/${skin.replace("/", "_")}.webp`,
             character: character ? sourceName("character", character) : null,
-            fallbackFor: skin === "eye/ironclad"
-              ? CHARACTER_ORDER.filter((id) => !Object.values(EYE_CHARACTERS).includes(id)).map((id) => sourceName("character", id))
-              : [],
           };
         }),
       })),
