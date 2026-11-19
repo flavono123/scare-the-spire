@@ -448,7 +448,7 @@ function patchCases() {
       bodyIncludes: shellPatchBody(latest)
         ? [...shellPatchBody(latest).ko, "application/ld+json"]
         : [
-            `슬레이 더 스파이어 2 v${latest.version}`,
+            `v${latest.version} `,
             latest.summaryKo,
             "application/ld+json",
           ],
@@ -461,7 +461,7 @@ function patchCases() {
       bodyIncludes: shellPatchBody(latest)
         ? [...shellPatchBody(latest).en, "application/ld+json"]
         : [
-            `Slay the Spire 2 v${latest.version}`,
+            `v${latest.version} `,
             latest.summary,
             "application/ld+json",
           ],
