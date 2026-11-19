@@ -72,7 +72,7 @@ jobs:
           fi
           echo "ready=true" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         if: steps.credentials.outputs.ready == 'true'
 
       - uses: pnpm/action-setup@v4
