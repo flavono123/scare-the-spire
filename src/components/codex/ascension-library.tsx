@@ -69,7 +69,7 @@ function AscensionTile({
     >
       <article className="grid min-w-0 grid-cols-[5rem_minmax(0,1fr)] items-center gap-2">
         <div className="flex flex-col items-center gap-0.5">
-          <AscensionToken level={blitz ? ascension.blitzLevel ?? 0 : ascension.level} size={80} />
+          <AscensionToken level={blitz ? ascension.blitzLevel ?? 0 : ascension.level} size={80} blitz={blitz} />
           {/* The Blitz step reuses this standard level's rule. */}
           {blitz && ascension.level > 0 && (
             <span className="font-game-text text-[11px] text-muted-foreground">
@@ -105,8 +105,8 @@ export function AscensionLibrary({
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlAscensionId = useHydrationSafeSearchParam("ascension");
   const [searchQuery, setSearchQuery] = useState("");
-  const [gameMode, setGameMode] = useState<AscensionGameMode>("standard");
-  const blitz = gameMode === "blitz";
+  // Each mode is its own filter; none picked shows both.
+  const [selectedModes, setGameModes] = useState<Set<AscensionGameMode>>(new Set());
   const [selectedAscensionIdOverride, setSelectedAscensionIdOverride] = useState<string | null>(null);
   const [useUrlSelection, setUseUrlSelection] = useState(true);
   const selectedAscensionId = useUrlSelection ? urlAscensionId : selectedAscensionIdOverride;
@@ -148,8 +148,11 @@ export function AscensionLibrary({
 
   const filteredAscensions = useMemo(() => {
     const searchText = searchQuery.trim().toLowerCase();
-    return ascensions
-      .filter((ascension) => !blitz || ascension.blitzLevel !== null)
+    const shownModes = (["standard", "blitz"] as const).filter((mode) => selectedModes.size === 0 || selectedModes.has(mode));
+    return shownModes.map((mode) => ({
+      mode,
+      ascensions: ascensions
+      .filter((ascension) => mode !== "blitz" || ascension.blitzLevel !== null)
       .filter((ascension) => {
         if (!searchText) return true;
         return fuzzyMatchCodexText(
@@ -166,10 +169,12 @@ export function AscensionLibrary({
           searchText,
         );
       })
-      .sort((left, right) => (blitz
+      .sort((left, right) => (mode === "blitz"
         ? (left.blitzLevel ?? 0) - (right.blitzLevel ?? 0)
-        : left.level - right.level));
-  }, [ascensions, blitz, searchQuery]);
+        : left.level - right.level)),
+    })).filter((group) => group.ascensions.length > 0);
+  }, [ascensions, selectedModes, searchQuery]);
+  const filteredCount = filteredAscensions.reduce((sum, group) => sum + group.ascensions.length, 0);
 
   const selectedAscension = useMemo(() => {
     if (!selectedAscensionId) return null;
@@ -198,8 +203,13 @@ export function AscensionLibrary({
                 <ToggleButton
                   key={mode}
                   label={gameModes[mode]}
-                  active={gameMode === mode}
-                  onClick={() => setGameMode(mode === gameMode ? "standard" : mode)}
+                  active={selectedModes.has(mode)}
+                  onClick={() => setGameModes((current) => {
+                    const next = new Set(current);
+                    if (next.has(mode)) next.delete(mode);
+                    else next.add(mode);
+                    return next;
+                  })}
                 />
               ))}
             </div>
@@ -214,22 +224,27 @@ export function AscensionLibrary({
           closeFiltersLabel={serviceText.common.closeFilters}
           openFiltersLabel={serviceText.common.openFilters}
           title={title}
-          count={formatCodexCount(filteredAscensions.length, serviceText.labels.ascensions, serviceLocale)}
+          count={formatCodexCount(filteredCount, serviceText.labels.ascensions, serviceLocale)}
         />
         <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
-          <div className="columns-1 gap-5 xl:columns-2">
-            {filteredAscensions.map((ascension) => (
-              <AscensionTile
-                key={ascension.id}
-                gameLocale={gameLocale}
-                ascension={ascension}
-                blitz={blitz}
-                standardLevelLabel={serviceText.ascensionsView.standardLevel}
-                onClick={() => selectAscension(ascension.id)}
-              />
-            ))}
-          </div>
-          {filteredAscensions.length === 0 && (
+          {filteredAscensions.map((group) => (
+            <section key={group.mode} className="mb-8 last:mb-0">
+              <h2 className="mb-3 font-game-title text-lg font-bold">{gameModes[group.mode]}</h2>
+              <div className="columns-1 gap-5 xl:columns-2">
+                {group.ascensions.map((ascension) => (
+                  <AscensionTile
+                    key={ascension.id}
+                    gameLocale={gameLocale}
+                    ascension={ascension}
+                    blitz={group.mode === "blitz"}
+                    standardLevelLabel={serviceText.ascensionsView.standardLevel}
+                    onClick={() => selectAscension(ascension.id)}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+          {filteredCount === 0 && (
             <div className="flex h-64 items-center justify-center text-gray-500">
               {serviceText.common.noResults}
             </div>

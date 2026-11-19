@@ -269,6 +269,8 @@ export interface CodexPet {
 
 /** In-game ascension flame from `ui_atlas.sprites/top_bar/top_bar_ascension`. */
 export const ASCENSION_TOKEN_IMAGE_URL = "/images/sts2/ui/topbar/top_bar_ascension.png";
+/** BlitzIconConfig: the top bar icon of a Blitz run (`packed/character_select/blitz_top_bar_icon.png`). */
+export const BLITZ_ASCENSION_TOKEN_IMAGE_URL = "/images/sts2/ui/topbar/blitz_top_bar_icon.webp";
 
 export interface CodexCharacter {
   id: string;

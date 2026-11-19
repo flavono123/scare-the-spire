@@ -62,8 +62,8 @@
 - Commits: `f4df2a78`(데이터. 다른 세션의 블리츠 승천 변경이 섞여 들어감), 그 다음 화면 커밋.
 
 ### v0113-blitz-ascension
-- Feature: 승천 백과사전에 블리츠 승천. 블리츠 승천 1~5는 게임에서 일반 승천 2·4·8·9·5를 그대로 쓴다(`AscensionHelper.GetLevelForBlitz`). 인덱스에 "게임 모드"(기본·블리츠, 게임 번역) 필터, 블리츠 보기는 블리츠 단계 순으로 토큰에 블리츠 숫자와 밑에 "승천 N". 상세에 "블리츠 N" 배지, 검색·자동 링크 별칭 "블리츠 승천 N"/"Blitz Ascension N". 새 페이지 없음.
-- Expect: /compendium/ascensions에서 "블리츠"를 켜면 6개(0~5), 1=지친 여행자(승천 2), 5=등반자의 골칫거리(승천 5). /compendium/ascensions/level_08 상세에 "블리츠 3". /ja/compendium/ascensions 필터 이름은 ゲームモード·スタンダード·ブリッツ.
+- Feature: 승천 백과사전에 블리츠 승천. 블리츠 승천 1~5는 게임에서 일반 승천 2·4·8·9·5를 그대로 쓴다(`AscensionHelper.GetLevelForBlitz`). 인덱스에 "게임 모드"(기본·블리츠, 게임 번역) 필터: 둘은 각자 켜고 끄는 필터이고 처음엔 아무것도 켜지 않아 기본(11)과 블리츠(6)가 모드별 묶음으로 다 나온다. 블리츠 묶음은 블리츠 단계 순으로, 게임의 블리츠 아이콘(초록 번개, `packed/character_select/blitz_top_bar_icon.png`)과 연두 숫자, 밑에 "승천 N". 0단계는 게임처럼 숫자 없음. 상세에 "블리츠 N" 배지, 검색·자동 링크 별칭 "블리츠 승천 N"/"Blitz Ascension N". 새 페이지 없음.
+- Expect: /compendium/ascensions 처음엔 17개(기본·블리츠 묶음), "블리츠"만 켜면 6개(0~5, 초록 번개), 1=지친 여행자(승천 2), 5=등반자의 골칫거리(승천 5). /compendium/ascensions/level_08 상세에 "블리츠 3". /ja/compendium/ascensions 필터 이름은 ゲームモード·スタンダード·ブリッツ.
 - QA: 위 경로를 로컬 dev로 확인함(ko 인덱스·상세, en 상세, ja 필터 이름). 확인 못 함: 모바일 폭 화면 캡처(브라우저 창이 숨겨져 있었음).
 - Commits: 데이터 쪽(`blitzLevel`, 게임 모드 이름)은 펫 세션 커밋 `f4df2a78`에 섞여 들어갔고, 화면은 그 다음 커밋.
 
