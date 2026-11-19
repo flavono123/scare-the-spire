@@ -73,6 +73,20 @@ const POOL_DUNGEONS: Record<string, Sts1Dungeon> = {
   theEnding: "ending",
 };
 
+// The Spire Heart room shows the Heart; other art-less rooms show the monsters their fight starts with.
+const EVENT_ART_MONSTERS: Record<string, string[]> = {
+  "Spire Heart": ["CorruptHeart"],
+};
+
+function artMonsters(event: Sts1RawEvent): string[] {
+  if (event.image) return [];
+  if (EVENT_ART_MONSTERS[event.id]) return EVENT_ART_MONSTERS[event.id];
+  for (const scene of Object.values(event.scenes)) {
+    for (const option of scene.options) if (option.combat?.encounters[0]) return option.combat.encounters[0];
+  }
+  return [];
+}
+
 // Reached from the act 3 boss chest, not drawn from a list.
 const EVENT_DUNGEON_OVERRIDES: Record<string, Sts1Dungeon[]> = {
   "Spire Heart": ["beyond"],
@@ -187,6 +201,7 @@ export const getSts1Events = cache(async (gameLocale: GameLocale = "kor"): Promi
       nameEn: eng?.[event.id]?.NAME ?? name,
       kind: event.kind,
       image: event.image,
+      artMonsters: artMonsters(event),
       ...eventGroups(event.id, pools),
       vars: event.vars ?? {},
       start: event.start,
@@ -215,6 +230,7 @@ export function sts1EventItemRefs(events: readonly Sts1Event[]): { items: Sts1It
   const items: Sts1ItemRef[] = [];
   const monsters: string[] = [];
   for (const event of events) {
+    monsters.push(...event.artMonsters);
     for (const scene of Object.values(event.scenes)) {
       for (const option of scene.options) {
         if (option.preview) items.push(option.preview);

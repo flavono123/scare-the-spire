@@ -506,6 +506,8 @@ export interface Sts1Event {
   nameEn: string;
   kind: "image" | "room";
   image: string | null;
+  /** Room events without art: the monsters the room shows instead. */
+  artMonsters: string[];
   groups: Sts1EventGroup[];
   dungeons: Sts1Dungeon[];
   vars: Record<string, Sts1VarTier[]>;

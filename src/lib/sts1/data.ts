@@ -37,6 +37,7 @@ import type {
 
 const DATA_ROOT = path.join(process.cwd(), "data", "sts1");
 
+// Every STS1 list, for the titles getSts1UiLabels hands to client pickers.
 const STS1_RESOURCE_TYPES: Sts1ResourceType[] = [
   "characters", "cards", "relics", "potions", "powers", "monsters", "events", "keywords",
   "ascensions", "modifiers", "blights", "neow", "achievements", "score-bonuses",

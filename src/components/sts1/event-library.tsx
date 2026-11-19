@@ -2,14 +2,13 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "@/components/ui/static-image";
 import { FilterSection } from "@/components/codex/codex-filters";
 import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
-import { sts1DetailPath, sts1EventImageUrl, sts1EventUiUrl } from "@/lib/sts1/paths";
+import { sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1EntityRefs, Sts1Event, Sts1EventGroup, Sts1EventLabels, Sts1UiLabels } from "@/lib/sts1/types";
-import { Sts1EventDetail } from "./event-detail";
+import { Sts1EventArt, Sts1EventDetail } from "./event-detail";
 import {
   Sts1DetailModal,
   Sts1ListLayout,
@@ -33,23 +32,10 @@ function sectionOf(event: Sts1Event): Sts1EventGroup {
     ?? (event.groups.includes("shrine") ? "shrine" : event.groups.includes("special") ? "special" : event.dungeons[0] as Sts1EventGroup);
 }
 
-export function Sts1EventTile({ event }: { event: Sts1Event }) {
+export function Sts1EventTile({ event, refs }: { event: Sts1Event; refs: Sts1EntityRefs }) {
   return (
     <div className="flex flex-col items-center gap-2 transition-transform group-hover:-translate-y-0.5">
-      <div className="relative aspect-square w-full">
-        {event.image ? (
-          <Image
-            src={sts1EventImageUrl(event.image)}
-            alt=""
-            fill
-            className={`${event.image.endsWith(".png") ? "object-contain p-[8%]" : "object-cover p-[3.5%]"}`}
-            sizes="220px"
-          />
-        ) : (
-          <div className="absolute inset-[3.5%] bg-black/60" />
-        )}
-        <Image src={sts1EventUiUrl("imgFrame")} alt="" fill className="pointer-events-none object-fill" sizes="220px" />
-      </div>
+      <Sts1EventArt image={event.image} monsters={event.artMonsters} refs={refs} sizes="220px" />
       <span className="text-center font-game-title text-sm text-gray-100 group-hover:text-[#efc851]">{event.name}</span>
     </div>
   );
@@ -133,7 +119,7 @@ export function Sts1EventLibrary({
                   aria-label={event.name}
                   onClick={(clickEvent) => openOnPlainClick(clickEvent, () => open(event))}
                 >
-                  <Sts1EventTile event={event} />
+                  <Sts1EventTile event={event} refs={refs} />
                 </Link>
               ))}
             </div>

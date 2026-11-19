@@ -12,7 +12,8 @@ localization, so all 13 locales render from `data/sts1/localization/<locale>/eve
   "id": "Big Fish",                 // the class's ID constant = events.json key
   "className": "exordium.BigFish",  // under com.megacrit.cardcrawl.events
   "kind": "image",                  // "image" (AbstractImageEvent) | "room" (AbstractEvent + RoomEventDialog)
-  "image": "fishing.jpg",           // images/events/<file>, or null (room events without art)
+  "image": "fishing.jpg",           // images/events/<file>; nopants.png (images/npcs) and shrooms.png (bg+fgShrooms)
+                                    // are room scenes the extractor writes; null = the list draws the room's monsters
   "start": "intro",
   "vars": {                         // numbers the text shows; tiers by ascension, lowest first
     "heal": [{ "ascension": 0, "value": { "of": "maxHp", "frac": [1, 3] } }],

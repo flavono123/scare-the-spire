@@ -109,6 +109,19 @@ def extract_extras_images(jar, *, extract_png, save_webp, parse_atlas, extract_a
         lossless = path.endswith(".png")
         save_webp(image, out / "events" / f"{Path(path).stem}.webp", quality=85, lossless=lossless)
         written += 1
+    # Room events draw their scene, not a framed picture: Dead Adventurer's body, the Mushrooms layers.
+    save_webp(extract_png(jar, "images/npcs/nopants.png"), out / "events" / "nopants.webp", lossless=True)
+    shrooms = Image.alpha_composite(
+        extract_png(jar, "images/events/bgShrooms.png"),
+        extract_png(jar, "images/events/fgShrooms.png"),
+    )
+    # Both layers sit on the room floor of a 1920x1080 screen; keep the part they cover.
+    left, top, right, bottom = shrooms.getbbox()
+    side = int((bottom - top) * 1.6)
+    cx, cy = (left + right) // 2, (top + bottom) // 2
+    shrooms = shrooms.crop((cx - side // 2, cy - side // 2, cx + side // 2, cy + side // 2))
+    save_webp(shrooms, out / "events" / "shrooms.webp", quality=85)
+    written += 2
     for stem in EVENT_UI_IMAGES:
         save_webp(extract_png(jar, f"images/ui/event/{stem}.png"), out / "event-ui" / f"{stem}.webp", lossless=True)
         written += 1

@@ -17,6 +17,7 @@ import type {
   Sts1EventLabels,
   Sts1EventOption,
   Sts1EventOutcome,
+  Sts1ItemRef,
   Sts1UiLabels,
 } from "@/lib/sts1/types";
 
@@ -46,13 +47,15 @@ function OptionTokens({ option, refs }: { option: Sts1EventOption; refs: Sts1Ent
     seen.add(key);
     items.push(node);
   };
-  if (option.preview) push(`p-${option.preview.type}-${option.preview.id}`, <Sts1ItemRefTokens key="preview" item={option.preview} refs={refs} />);
-  option.gains?.forEach((item, index) => push(`g-${item.type}-${item.id ?? JSON.stringify(item.pool) ?? index}`, (
-    <Sts1ItemRefTokens key={`gain-${index}`} item={item} refs={refs} />
-  )));
-  option.loses?.forEach((item, index) => push(`l-${item.type}-${item.id ?? index}`, (
+  // The button's preview is usually the card or relic the option gives or takes: show it once.
+  const itemKey = (item: Sts1ItemRef) => `${item.type}-${item.id ?? JSON.stringify(item.pool ?? item.tier)}`;
+  option.loses?.forEach((item, index) => push(itemKey(item), (
     <Sts1ItemRefTokens key={`lose-${index}`} item={item} refs={refs} tone="lose" />
   )));
+  option.gains?.forEach((item, index) => push(itemKey(item), (
+    <Sts1ItemRefTokens key={`gain-${index}`} item={item} refs={refs} />
+  )));
+  if (option.preview) push(itemKey(option.preview), <Sts1ItemRefTokens key="preview" item={option.preview} refs={refs} />);
   option.combat?.encounters.forEach((group, groupIndex) => {
     const counts = new Map<string, number>();
     for (const id of group) counts.set(id, (counts.get(id) ?? 0) + 1);
@@ -64,6 +67,59 @@ function OptionTokens({ option, refs }: { option: Sts1EventOption; refs: Sts1Ent
   });
   if (items.length === 0) return null;
   return <span className="mt-1 flex flex-wrap items-center gap-1">{items}</span>;
+}
+
+// Small sprites the room draws on the floor; the rest are full pictures or room backgrounds.
+const SPRITE_ART = new Set(["nopants.png", "sphereClosed.png", "sphereOpen.png"]);
+
+/** The event's picture in GenericEventDialog's frame, or the room's monsters when it has none. */
+export function Sts1EventArt({
+  image,
+  monsters,
+  refs,
+  alt = "",
+  sizes,
+  className = "relative aspect-square w-full",
+}: {
+  image: string | null;
+  monsters: readonly string[];
+  refs: Sts1EntityRefs;
+  alt?: string;
+  sizes: string;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <div className="absolute inset-[3.5%] overflow-hidden bg-[#0d1316]">
+        {image ? (
+          <Image
+            src={sts1EventImageUrl(image)}
+            alt={alt}
+            fill
+            className={SPRITE_ART.has(image) ? "object-contain p-[10%] object-bottom" : "object-cover"}
+            sizes={sizes}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-end justify-center gap-[2%] px-[6%] pb-[12%]">
+            {monsters.map((id, index) => {
+              const monster = refs.monster[id];
+              return monster ? (
+                <Image
+                  key={`${id}-${index}`}
+                  src={monster.imageUrl}
+                  alt=""
+                  width={160}
+                  height={160}
+                  className="h-auto max-h-[70%] min-w-0 flex-1 object-contain object-bottom"
+                />
+              ) : null;
+            })}
+          </div>
+        )}
+      </div>
+      <Image src={sts1EventUiUrl("imgFrame")} alt="" fill className="pointer-events-none object-fill" sizes={sizes} />
+    </div>
+  );
 }
 
 /** The event screen: GenericEventDialog's panel, art in its frame, body and LargeDialogOptionButtons. */
@@ -119,11 +175,16 @@ export function Sts1EventScreen({
   };
 
   return (
-    <div ref={captureRef} className="relative w-full overflow-hidden rounded-lg">
-      <Image src={sts1EventUiUrl("panel")} alt="" fill className="pointer-events-none object-fill" sizes="900px" />
-      <div className="relative grid gap-4 p-4 pt-12 sm:p-8 sm:pt-12 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:items-start">
+    <div ref={captureRef} className="relative w-full rounded-lg md:aspect-[1763/806]" style={{ containerType: "inline-size" }}>
+      {/* GenericEventDialog.render: the 1763×806 panel, title centered on its banner (x 570, y +408),
+          the 600px picture centered at x 460, text from x 816, 900 wide (1920×1080 screen). */}
+      <Image src={sts1EventUiUrl("panel")} alt="" fill className="pointer-events-none object-fill opacity-80" sizes="900px" />
+      <h2 className="relative mx-[4%] pt-[3%] text-center font-game-title text-xl text-[#ffd563] [text-shadow:0_0_2px_#000,0_2px_0_#000] md:absolute md:left-[2%] md:top-0 md:m-0 md:w-[50.4%] md:pt-[2.2%] md:text-[clamp(1rem,2.3cqw,1.6rem)]">
+        {event.name}
+      </h2>
+      <div className="relative grid gap-4 p-4 pt-4 md:grid-cols-[34%_51%] md:gap-x-[6.8%] md:p-0 md:pl-[3.9%] md:pt-[8.6%] md:pb-[3%] md:items-start">
         {showAscension ? (
-          <div className="absolute left-3 top-3 z-10">
+          <div className="absolute right-3 top-3 z-10 md:left-[62%] md:right-auto md:top-[1.6%]">
             <MonsterAscensionStepper
               level={ascension}
               onChange={setAscension}
@@ -134,20 +195,15 @@ export function Sts1EventScreen({
             />
           </div>
         ) : null}
-        <div className="relative mx-auto aspect-square w-full max-w-[22rem]">
-          {image ? (
-            <Image
-              src={sts1EventImageUrl(image)}
-              alt={event.name}
-              fill
-              className={`object-cover ${image.endsWith(".png") ? "object-contain p-[6%]" : "p-[3.5%]"}`}
-              sizes="352px"
-            />
-          ) : null}
-          <Image src={sts1EventUiUrl("imgFrame")} alt="" fill className="pointer-events-none object-fill" sizes="352px" />
-        </div>
-        <div className="flex min-w-0 flex-col gap-3">
-          <h2 className="font-game-title text-2xl text-[#efc851] [text-shadow:0_2px_0_#000]">{event.name}</h2>
+        <Sts1EventArt
+          image={image}
+          monsters={event.artMonsters}
+          refs={refs}
+          alt={event.name}
+          sizes="352px"
+          className="relative mx-auto aspect-square w-full max-w-[22rem] md:max-w-none"
+        />
+        <div className="flex min-w-0 flex-col gap-3 md:pt-[1%]">
           {variants.length > 1 ? (
             <div className="flex flex-wrap items-center gap-1" role="tablist">
               {variants.map((variant, index) => (
@@ -156,6 +212,7 @@ export function Sts1EventScreen({
                   type="button"
                   role="tab"
                   aria-selected={index === variantIndex}
+                  data-sts1-variant={index}
                   onClick={() => setVariantIndex(index)}
                   className={`rounded border px-2 py-0.5 font-game-text text-xs ${index === variantIndex ? "border-[#efc851]/70 text-[#efc851]" : "border-white/15 text-gray-400 hover:text-gray-200"}`}
                 >
@@ -176,6 +233,7 @@ export function Sts1EventScreen({
                   key={`${outcome.next}-${index}`}
                   type="button"
                   aria-pressed={index === branch.index}
+                  data-sts1-outcome={index}
                   onClick={() => {
                     setBranch({ ...branch, index });
                     setEnded(false);
@@ -199,40 +257,48 @@ export function Sts1EventScreen({
             text={fill(body)}
             refs={refs}
             className="block font-game-text text-[15px] leading-relaxed text-[#fff6e2] [text-shadow:0_1px_0_#000]"
+            data-sts1-event-body=""
           />
           <div className="flex flex-col gap-1.5">
             {scene.options.filter((option) => optionShown(option, ascension)).map((option, index) => {
               const disabled = option.disabled || ended;
               return (
-                <button
+                // Tokens link to their pages, so they sit on the ribbon beside the <button>, not inside it.
+                <div
                   key={`${sceneKey}-${index}`}
-                  type="button"
-                  disabled={disabled}
-                  onClick={() => choose(option)}
-                  className="group relative w-full text-left transition-transform enabled:hover:translate-x-1 disabled:cursor-not-allowed"
+                  className={`group relative transition-transform ${disabled ? "" : "hover:translate-x-1 focus-within:translate-x-1"}`}
                   data-sts1-event-option={index}
                 >
+                  {/* LargeDialogOptionButton: the box is tinted 0.4 gray until hovered (white), text 0.8 gray
+                      until hovered (white), and FIREBRICK on the disabled box. */}
                   <Image
                     src={sts1EventUiUrl(disabled ? "disabledButton" : "enabledButton")}
                     alt=""
                     fill
-                    className="pointer-events-none object-fill group-enabled:group-hover:brightness-125"
+                    className={`pointer-events-none object-fill brightness-[0.4] transition-[filter] ${disabled ? "" : "group-hover:brightness-100 group-focus-within:brightness-100"}`}
                     sizes="560px"
                   />
-                  <span className={`relative block px-5 py-2.5 ${disabled ? "opacity-60" : ""}`}>
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => choose(option)}
+                    className="relative block w-full px-5 py-2.5 text-left outline-none disabled:cursor-not-allowed"
+                  >
                     <Sts1EventText
                       text={fill(option.label)}
-                      refs={refs}
-                      className="block font-game-text text-sm leading-snug text-[#fff6e2] [text-shadow:0_1px_0_#000]"
+                      className={`block font-game-text text-sm leading-snug [text-shadow:0_1px_0_#000] ${disabled ? "text-[#b22222]" : "text-[#cccccc] group-hover:text-white"}`}
                     />
+                  </button>
+                  <div className="relative -mt-1.5 px-5 pb-2 empty:hidden">
                     <OptionTokens option={option} refs={refs} />
-                  </span>
-                </button>
+                  </div>
+                </div>
               );
             })}
           </div>
           <button
             type="button"
+            data-sts1-restart=""
             onClick={restart}
             className={`self-start rounded-md border px-3 py-1 font-game-text text-xs transition-colors ${ended ? "border-[#efc851]/70 text-[#efc851]" : "border-white/15 text-gray-300 hover:text-white"}`}
           >

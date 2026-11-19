@@ -81,11 +81,13 @@ export function Sts1EventText({
   refs,
   className,
   style,
+  ...rest
 }: {
   text: string;
   refs?: Sts1EntityRefs;
   className?: string;
   style?: CSSProperties;
+  "data-sts1-event-body"?: string;
 }) {
   const names = nameIndex(refs);
   const nodes: ReactNode[] = [];
@@ -168,7 +170,7 @@ export function Sts1EventText({
     );
   });
   return (
-    <span className={className} style={style}>
+    <span className={className} style={style} {...rest}>
       {nodes}
     </span>
   );

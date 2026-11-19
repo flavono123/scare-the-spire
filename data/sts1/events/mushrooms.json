@@ -2,7 +2,7 @@
   "id": "Mushrooms",
   "className": "exordium.Mushrooms",
   "kind": "room",
-  "image": "bgShrooms.png",
+  "image": "shrooms.png",
   "start": "intro",
   "vars": {
     "heal": [

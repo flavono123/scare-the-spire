@@ -2,7 +2,7 @@
   "id": "Dead Adventurer",
   "className": "exordium.DeadAdventurer",
   "kind": "room",
-  "image": null,
+  "image": "nopants.png",
   "start": "intro",
   "vars": {
     "chance1": [
