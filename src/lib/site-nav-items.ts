@@ -186,6 +186,7 @@ export const sts2NavItems = [
   { href: "/compendium/epochs", labelKey: "epochs", icon: "/images/sts2/relics/planisphere.webp" },
   { href: "/compendium/keywords", labelKey: "keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
   { href: "/compendium/badges", labelKey: "badges", icon: "/images/sts2/badges/double_snecko.webp" },
+  { href: "/compendium/achievements", labelKey: "achievements", icon: "/images/sts2/achievements/border.webp" },
   { href: "/compendium/ascensions", labelKey: "ascensions", icon: ASCENSION_TOKEN_IMAGE_URL, iconClassName: "h-4 w-[14px]" },
   { href: "/compendium/modifiers", labelKey: "modifiers", icon: CHARACTER_CARDS_MODIFIER_IMAGE_URL },
   { href: "/compendium/blitz-shop", labelKey: "blitzShop", icon: "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp", byrdispatchSectionTitle: "블리츠 상점" },

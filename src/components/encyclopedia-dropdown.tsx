@@ -16,6 +16,7 @@ const items = [
   { href: "/compendium/epochs", label: "연대기" },
   { href: "/compendium/keywords", label: "키워드" },
   { href: "/compendium/badges", label: "뱃지" },
+  { href: "/compendium/achievements", label: "업적" },
   { href: "/compendium/ascensions", label: "승천" },
   { href: "/compendium/modifiers", label: "모드" },
   { href: "/compendium/blitz-shop", label: "블리츠 상점" },

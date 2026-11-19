@@ -19,7 +19,6 @@ import {
   buildCompendiumEntryHref,
   updateCompendiumResourceModalUrl,
 } from "@/lib/compendium-resource-links";
-import type { CodexAchievement } from "@/lib/codex-data";
 import { BadgeDetail } from "./badge-detail";
 import { DescriptionText } from "./codex-description";
 import { FilterSection, ToggleButton } from "./codex-filters";
@@ -104,15 +103,11 @@ export function BadgeLibrary({
   gameLocale,
   title,
   badges,
-  achievementsTitle,
-  achievements,
 }: {
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   title: string;
   badges: RunBadgeCatalogEntry[];
-  achievementsTitle: string;
-  achievements: CodexAchievement[];
 }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const urlBadgeId = useHydrationSafeSearchParam("badge");
@@ -157,16 +152,6 @@ export function BadgeLibrary({
         getRunBadgeVariants(left)[0].title.localeCompare(getRunBadgeVariants(right)[0].title)
       ));
   }, [badges, searchQuery, selectedModes, selectedRankStructures]);
-
-  // Achievements are a plain list under the badges: no modes or ranks, so the badge filters hide them.
-  const filteredAchievements = useMemo(() => {
-    if (selectedModes.size > 0 || selectedRankStructures.size > 0) return [];
-    const searchText = searchQuery.trim().toLowerCase();
-    return achievements.filter((achievement) => !searchText || fuzzyMatchCodexText(
-      [achievement.id, achievement.name, achievement.nameEn, stripCodexMarkup(achievement.description), stripCodexMarkup(achievement.descriptionEn)].join(" "),
-      searchText,
-    ));
-  }, [achievements, searchQuery, selectedModes, selectedRankStructures]);
 
   const selectBadge = useCallback((badge: RunBadgeCatalogEntry) => {
     setUseUrlSelection(false);
@@ -285,27 +270,7 @@ export function BadgeLibrary({
               />
             ))}
           </div>
-          {filteredAchievements.length > 0 && (
-            <section className="mt-8">
-              <h2 className="mb-3 font-game-title text-lg font-bold">{achievementsTitle}</h2>
-              <div className="columns-1 gap-5 xl:columns-2">
-                {filteredAchievements.map((achievement) => (
-                  <article
-                    key={achievement.id}
-                    className="mb-5 grid min-w-0 break-inside-avoid grid-cols-[4rem_minmax(0,1fr)] items-center gap-2"
-                  >
-                    <div className="relative h-16 w-16 shrink-0 drop-shadow-[0_2px_5px_rgba(0,0,0,0.85)]">
-                      <Image src={achievement.imageUrl} alt="" fill className="object-contain" aria-hidden />
-                    </div>
-                    <GameHoverTip title={achievement.name} className="min-w-0 w-full" style={{ minWidth: 0 }}>
-                      <DescriptionText description={achievement.description} className="block text-left" />
-                    </GameHoverTip>
-                  </article>
-                ))}
-              </div>
-            </section>
-          )}
-          {filteredBadges.length === 0 && filteredAchievements.length === 0 && (
+          {filteredBadges.length === 0 && (
             <div className="flex h-64 items-center justify-center text-gray-500">
               {serviceText.common.noResults}
             </div>

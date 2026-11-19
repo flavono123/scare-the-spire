@@ -6,7 +6,6 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexAchievements } from "@/lib/codex-data";
 import { getActiveRunBadgeCatalog } from "@/lib/run-badge-catalog";
 
 type PageProps = {
@@ -24,7 +23,6 @@ export default async function CodexBadgesPage({ searchParams }: PageProps) {
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const serviceText = getCodexServiceMessages(serviceLocale);
   const badges = await getActiveRunBadgeCatalog(gameLocale);
-  const { title: achievementsTitle, achievements } = await getCodexAchievements({ gameLocale });
 
   return (
     <Suspense>
@@ -33,8 +31,6 @@ export default async function CodexBadgesPage({ searchParams }: PageProps) {
         gameLocale={gameLocale}
         title={serviceText.badgesView.title}
         badges={badges}
-        achievementsTitle={achievementsTitle}
-        achievements={achievements}
       />
     </Suspense>
   );

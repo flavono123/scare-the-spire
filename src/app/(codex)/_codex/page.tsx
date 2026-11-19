@@ -161,6 +161,18 @@ const categories = [
     ],
   },
   {
+    href: "/compendium/achievements",
+    labelKey: "achievements",
+    count: 33,
+    description: null,
+    images: [
+      "/images/sts2/achievements/ironclad_win.webp",
+      "/images/sts2/achievements/defect_win.webp",
+      "/images/sts2/achievements/floor_ten_thousand.webp",
+      "/images/sts2/achievements/nope.webp",
+    ],
+  },
+  {
     href: "/compendium/ascensions",
     labelKey: "ascensions",
     count: 11,
@@ -342,6 +354,7 @@ const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = 
   modifiers: "Modifiers",
   ascensions: "Ascension",
   badges: "Badges",
+  achievements: "Achievements",
   blitzShop: "Blitz Shop",
   dominions: "Dread Dominions",
   pets: "Pets",
