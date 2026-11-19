@@ -1952,18 +1952,51 @@ interface EventDetailProps {
   onClose?: () => void;
 }
 
+const EVENT_PREVIEW_STACK_LIMIT = 4;
+
+// Same idea as the C-C-C-Combo resource stack: past the limit, fan the first few out and count the rest.
+function EventPreviewStack({
+  items,
+  itemWidth,
+  step,
+}: {
+  items: { key: string; node: ReactNode }[];
+  itemWidth: number;
+  step: number;
+}) {
+  const visible = items.slice(0, EVENT_PREVIEW_STACK_LIMIT);
+  const hiddenCount = items.length - visible.length;
+  return (
+    <div
+      data-event-preview-stack={items.length}
+      className="relative drop-shadow-[0_18px_30px_rgba(0,0,0,0.75)]"
+      style={{ width: itemWidth + step * (visible.length - 1) }}
+    >
+      {visible.map((item, index) => (
+        <div
+          key={item.key}
+          className={index === 0 ? "relative" : "absolute top-0"}
+          style={{ left: index === 0 ? undefined : step * index, zIndex: visible.length - index }}
+        >
+          {item.node}
+        </div>
+      ))}
+      <span
+        className="absolute -bottom-1 -right-2 z-30 rounded-full border border-primary/30 bg-zinc-950/90 px-2 py-0.5 font-game-text text-sm font-bold text-primary shadow-lg"
+        aria-label={`+${hiddenCount}`}
+      >
+        +{hiddenCount}
+      </span>
+    </div>
+  );
+}
+
 function EventPotionSetPreview({ potions }: { potions: CodexPotion[] }) {
   const columns = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(potions.length))));
-
-  return (
-    <div className="drop-shadow-[0_18px_30px_rgba(0,0,0,0.75)]">
-      <div
-        className="grid max-w-[320px] gap-2"
-        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
-      >
-        {potions.map((potion) => (
+  const tiles = potions.map((potion) => ({
+    key: potion.id,
+    node: (
           <div
-            key={potion.id}
             className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14"
           >
             <Image
@@ -1977,7 +2010,17 @@ function EventPotionSetPreview({ potions }: { potions: CodexPotion[] }) {
               }}
             />
           </div>
-        ))}
+    ),
+  }));
+  if (tiles.length > EVENT_PREVIEW_STACK_LIMIT) return <EventPreviewStack items={tiles} itemWidth={56} step={34} />;
+
+  return (
+    <div className="drop-shadow-[0_18px_30px_rgba(0,0,0,0.75)]">
+      <div
+        className="grid max-w-[320px] gap-2"
+        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      >
+        {tiles.map((tile) => <Fragment key={tile.key}>{tile.node}</Fragment>)}
       </div>
     </div>
   );
@@ -1997,16 +2040,10 @@ function EventRelicSetPreview({ relics }: { relics: CodexRelic[] }) {
   });
   const columns = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(visibleRelics.length))));
   if (visibleRelics.length === 0) return null;
-
-  return (
-    <div className="drop-shadow-[0_18px_30px_rgba(0,0,0,0.75)]">
-      <div
-        className="grid max-w-[320px] gap-2"
-        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
-      >
-        {visibleRelics.map(({ relic, imageUrl, outlinePool }) => (
+  const tiles = visibleRelics.map(({ relic, imageUrl, outlinePool }) => ({
+    key: relic.id,
+    node: (
           <div
-            key={relic.id}
             className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14"
           >
             <Image
@@ -2020,7 +2057,17 @@ function EventRelicSetPreview({ relics }: { relics: CodexRelic[] }) {
               }}
             />
           </div>
-        ))}
+    ),
+  }));
+  if (tiles.length > EVENT_PREVIEW_STACK_LIMIT) return <EventPreviewStack items={tiles} itemWidth={56} step={34} />;
+
+  return (
+    <div className="drop-shadow-[0_18px_30px_rgba(0,0,0,0.75)]">
+      <div
+        className="grid max-w-[320px] gap-2"
+        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      >
+        {tiles.map((tile) => <Fragment key={tile.key}>{tile.node}</Fragment>)}
       </div>
     </div>
   );
@@ -2034,6 +2081,22 @@ function EventCardSetPreview({
   serviceLocale: ServiceLocale;
 }) {
   const columns = cards.length >= 4 ? 4 : Math.max(1, cards.length);
+  if (cards.length > EVENT_PREVIEW_STACK_LIMIT) {
+    return (
+      <EventPreviewStack
+        itemWidth={118}
+        step={46}
+        items={cards.map((card) => ({
+          key: card.id,
+          node: (
+            <div className="w-[104px] sm:w-[118px]">
+              <CardTile card={card} showUpgrade={false} showBeta={false} width={118} interactive={false} serviceLocale={serviceLocale} />
+            </div>
+          ),
+        }))}
+      />
+    );
+  }
 
   return (
     <div
