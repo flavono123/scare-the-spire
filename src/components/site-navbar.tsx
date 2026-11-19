@@ -812,6 +812,7 @@ export function SiteNavbar() {
     ...item,
     attention: item.attentionId ? navSeen.unreadIds.includes(item.attentionId) : item.attention,
   }));
+  const sts2Items = localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true });
   const rawDevItems = getDevNavItems({ serviceLocale, gameLocale });
   const debateWeekOpen = useDevPhilosophersNextWeekOpen(
     rawDevItems.some((item) => stripGameLocaleFromPath(item.href) === COLORFUL_PHILOSOPHERS_DEV_HREF),
@@ -892,8 +893,9 @@ export function SiteNavbar() {
           <SiteNavDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
-            items={localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true })}
+            items={sts2Items}
             align="right"
+            newService={toyBoxHasNewService(sts2Items)}
           />
           <SiteNavDropdown
             icon="/images/sts1_app_icon.png"

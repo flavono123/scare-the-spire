@@ -449,6 +449,7 @@ function StaticPatchHeader({
             alt={messages.games.sts2Codex}
             items={sts2Items}
             align="right"
+            newService={toyBoxHasNewService(sts2Items)}
           />
           <SiteNavDropdown
             icon="/images/sts1_app_icon.png"

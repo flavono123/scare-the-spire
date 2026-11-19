@@ -183,9 +183,9 @@ export const sts2NavItems = [
   { href: "/compendium/badges", labelKey: "badges", icon: "/images/sts2/badges/double_snecko.webp" },
   { href: "/compendium/ascensions", labelKey: "ascensions", icon: ASCENSION_TOKEN_IMAGE_URL, iconClassName: "h-4 w-[14px]" },
   { href: "/compendium/modifiers", labelKey: "modifiers", icon: CHARACTER_CARDS_MODIFIER_IMAGE_URL },
-  { href: "/compendium/blitz-shop", labelKey: "blitzShop", icon: "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp" },
-  { href: "/compendium/dominions", labelKey: "dominions", icon: "/images/sts2/bosses/queen_boss.webp" },
-  { href: "/compendium/pets", labelKey: "pets", icon: "/images/sts2/monsters-render/osty.webp" },
+  { href: "/compendium/blitz-shop", labelKey: "blitzShop", icon: "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp", byrdispatchSectionTitle: "블리츠 상점" },
+  { href: "/compendium/dominions", labelKey: "dominions", icon: "/images/sts2/bosses/queen_boss.webp", byrdispatchSectionTitle: "드레드 권능" },
+  { href: "/compendium/pets", labelKey: "pets", icon: "/images/sts2/monsters-render/osty.webp", byrdispatchSectionTitle: "펫" },
 ] as const;
 
 export const sts1NavItems = [
@@ -337,7 +337,9 @@ export const gameOnlyLanguageNavLocales = [
   "tur",
 ] as const satisfies readonly GameLocale[];
 
-export function localizeCodexNavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string; iconClassName?: string }>(
+export function localizeCodexNavItems<
+  T extends { href: string; labelKey: CodexLabelKey; icon: string; iconClassName?: string; byrdispatchSectionTitle?: string },
+>(
   items: readonly T[],
   serviceLocale: ServiceLocale,
   gameLocale: GameLocale,
@@ -351,6 +353,8 @@ export function localizeCodexNavItems<T extends { href: string; labelKey: CodexL
       : messages.codex[item.labelKey],
     icon: item.icon,
     iconClassName: item.iconClassName,
+    // NEW until the next byrdispatch, like a new Toy Box service.
+    isNew: item.byrdispatchSectionTitle ? isLatestByrdispatchNewSection(item.byrdispatchSectionTitle) : undefined,
   }));
 }
 
