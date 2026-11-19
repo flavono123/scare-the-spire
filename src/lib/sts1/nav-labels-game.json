@@ -1,0 +1,93 @@
+{
+  "kor": {
+    "ascensions": "승천",
+    "modifiers": "모드",
+    "blights": "역병",
+    "neow": "니오우",
+    "score-bonuses": "점수"
+  },
+  "eng": {
+    "ascensions": "Ascension",
+    "modifiers": "Modifiers",
+    "blights": "Blights",
+    "neow": "Neow",
+    "score-bonuses": "Score"
+  },
+  "zhs": {
+    "ascensions": "进阶模式",
+    "modifiers": "特效",
+    "blights": "荒疫",
+    "neow": "涅奥",
+    "score-bonuses": "分数"
+  },
+  "jpn": {
+    "ascensions": "登塔",
+    "modifiers": "特殊ルール",
+    "blights": "災厄",
+    "neow": "ネオー",
+    "score-bonuses": "スコア"
+  },
+  "deu": {
+    "ascensions": "Aufstiegsmodus",
+    "modifiers": "Regeln",
+    "blights": "Fäulnis",
+    "neow": "Niau",
+    "score-bonuses": "Punktzahl"
+  },
+  "fra": {
+    "ascensions": "Ascension",
+    "modifiers": "Modificateurs",
+    "blights": "Corruption",
+    "neow": "Neow",
+    "score-bonuses": "Score"
+  },
+  "ita": {
+    "ascensions": "Ascensione",
+    "modifiers": "Modificatori",
+    "blights": "Corruzioni",
+    "neow": "Neow",
+    "score-bonuses": "Punteggio"
+  },
+  "spa": {
+    "ascensions": "Ascensión",
+    "modifiers": "Modificadores",
+    "blights": "Ruinas",
+    "neow": "Neow",
+    "score-bonuses": "Puntuación"
+  },
+  "ptb": {
+    "ascensions": "Ascensão",
+    "modifiers": "Modificadores",
+    "blights": "Máculas",
+    "neow": "Neow",
+    "score-bonuses": "Pontuação"
+  },
+  "rus": {
+    "ascensions": "Возвышение",
+    "modifiers": "Модификаторы",
+    "blights": "Напасти",
+    "neow": "Ньяу",
+    "score-bonuses": "Счёт"
+  },
+  "pol": {
+    "ascensions": "Wyniesienie",
+    "modifiers": "Modyfikatory",
+    "blights": "Plagi",
+    "neow": "Neow",
+    "score-bonuses": "Wynik"
+  },
+  "tha": {
+    "ascensions": "ผู้บรรลุ",
+    "modifiers": "กติกา",
+    "blights": "วิกฤติ",
+    "neow": "เนียว",
+    "score-bonuses": "คะแนน"
+  },
+  "tur": {
+    "ascensions": "Yükseliş",
+    "modifiers": "Düzenleyiciler",
+    "blights": "Yıkımlar",
+    "neow": "Neow",
+    "score-bonuses": "Skor"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "Duplicator",
+  "className": "shrines.Duplicator",
+  "kind": "image",
+  "image": "shrine4.jpg",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "pray",
+          "note": "Opens a grid of the whole deck titled OPTIONS[2]; a copy of the chosen card is added."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "ignore"
+        }
+      ]
+    },
+    "pray": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "ignore": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

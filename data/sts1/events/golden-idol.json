@@ -1,0 +1,203 @@
+{
+  "id": "Golden Idol",
+  "className": "exordium.GoldenIdolEvent",
+  "kind": "image",
+  "image": "goldenIdol.jpg",
+  "start": "intro",
+  "vars": {
+    "damage": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 25
+        }
+      },
+      {
+        "ascension": 15,
+        "value": {
+          "of": "maxHp",
+          "pct": 35
+        }
+      }
+    ],
+    "maxHpLoss": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 8
+        }
+      },
+      {
+        "ascension": 15,
+        "value": {
+          "of": "maxHp",
+          "pct": 10
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "preview": {
+            "type": "relic",
+            "id": "Golden Idol"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "id": "Golden Idol"
+            }
+          ],
+          "next": "boulder",
+          "note": "Gives Circlet instead if you already own Golden Idol."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "ignore"
+        }
+      ]
+    },
+    "boulder": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Injury"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Injury"
+            }
+          ],
+          "next": "run"
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "damage"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "next": "smash"
+        },
+        {
+          "label": [
+            {
+              "o": 5
+            },
+            {
+              "v": "maxHpLoss"
+            },
+            {
+              "o": 6
+            }
+          ],
+          "next": "hide",
+          "note": "Max HP loss is at least 1."
+        }
+      ]
+    },
+    "run": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "smash": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "hide": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "ignore": {
+      "body": [
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "event": {
+    "NAMES": [
+      "Neow"
+    ],
+    "TEXT": [
+      "~Salve...~ NL ~Io..~ ~sono~ ~Neow...~",
+      "~Salve...~ NL ~Di~ ~nuovo..~",
+      "~Saluti...~",
+      "~Un~ ~altro~ NL ~tentativo...?~",
+      "~Raggiungi~ ~il~ ~boss...~ NL ~per~ ~ricevere~ ~la~ ~mia..~ ~benedizione...~",
+      "~Almeno...~ ~affronta~ NL ~un~ ~boss...~",
+      "~Ti~ ~ho~ ~riportato~ ~in~ ~vita...~",
+      "~Scegli...~",
+      "~Conferito...~",
+      "~Rischio...~ NL ~..ricompensa....~",
+      "~È~ ~tempo~ ~di~ ~una~ NL ~SFIDA...~",
+      "Ricompense",
+      "~Continuiamo~ ~a~ ~salire...~",
+      "~Diventa~ ~più~ ~difficile...~",
+      "~Sorprendente...~ ~ancora...~",
+      "Maledetto!",
+      "Sbadato!",
+      "Trasformazione!"
+    ],
+    "OPTIONS": [
+      "[Continua]",
+      "[Parla]",
+      "[Ignora]",
+      "[Esci]",
+      "Scegli 10 carte da aggiungere al mazzo."
+    ]
+  },
+  "reward": {
+    "NAMES": [],
+    "TEXT": [
+      "[ #gScegli #ged #gottieni #guna #gCarta ]",
+      "[ #gOttieni #guna #gCarta #gRara #gcasuale ]",
+      "[ #gRimuovi #guna #gCarta #gdal #gtuo #gMazzo ]",
+      "[ #gPotenzia #guna #gCarta ]",
+      "[ #gTrasforma #guna #gCarta ]",
+      "[ #gOttieni #g3 #gPozioni #gcasuali ]",
+      "[ #gOttieni #guna #gReliquia #gComune #gcasuale ]",
+      "[ #gPV #gMassimi #g+",
+      "[ #gOttieni #g",
+      " #gOro ]",
+      "#gRimuovi #g2 #gCarte #gdal #gMazzo ]",
+      "#gOttieni #guna #gReliquia #gRara #gcasuale ]",
+      "#gScegli #ged #gOttieni #guna #gCarta #gRara ]",
+      "#gOttieni #g",
+      " #gOro ]",
+      "#gTrasforma #g2 #gCarte ]",
+      "#gPV #gMassimi #g+",
+      "[ #rPerdi #r",
+      " #rPV #rmassimi, ",
+      "[ #rPerdi #rtutto #rl'Oro, ",
+      "[ #rVieni #rMaledetto, ",
+      "[ #rRicevi #r",
+      "Scegli una Carta",
+      "Scegli una Carta da Rimuovere",
+      "Scegli 2 Carte da Rimuovere",
+      "Scegli una Carta da Trasformare",
+      "Scegli 2 Carte da Trasformare",
+      "Scegli una Carta da Potenziare",
+      "[ #gI #gPV #gnemici #gsono #gridotti #ga #g1 #gper #gi #gprossimi #g3 #gcombattimenti ]",
+      " #rdanni,",
+      "[ #gScegli #guna #gcarta #gIncolore #ge #gaggiungila #gal #gMazzo]",
+      "#gScegli #guna #gcarta #gIncolore #gRara #ge #gaggiungila #gal #gMazzo ]"
+    ],
+    "UNIQUE_REWARDS": [
+      "[ #rPerdi #rla #rReliquia #rIniziale. #gOttieni #guna #gReliquia #gboss #gcasuale ]"
+    ]
+  }
+}

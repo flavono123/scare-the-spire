@@ -1,0 +1,106 @@
+{
+  "id": "Colosseum",
+  "className": "city.Colosseum",
+  "kind": "image",
+  "image": "colosseum.jpg",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "arena"
+        }
+      ]
+    },
+    "arena": {
+      "body": [
+        {
+          "d": 1
+        },
+        {
+          "d": 2
+        },
+        {
+          "s": "4200"
+        },
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "combat": {
+            "encounters": [
+              [
+                "SlaverBlue",
+                "SlaverRed"
+              ]
+            ]
+          },
+          "next": "victory",
+          "note": "Colosseum Slavers; no rewards from this fight."
+        }
+      ]
+    },
+    "victory": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "combat": {
+            "encounters": [
+              [
+                "SlaverBoss",
+                "GremlinNob"
+              ]
+            ]
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "rare"
+            },
+            {
+              "type": "relic",
+              "tier": "uncommon"
+            }
+          ],
+          "next": null,
+          "note": "Colosseum Nobs, fought as an elite; rewards also include 100 gold."
+        }
+      ]
+    }
+  }
+}

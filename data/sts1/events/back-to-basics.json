@@ -1,0 +1,71 @@
+{
+  "id": "Back to Basics",
+  "className": "city.BackToBasics",
+  "kind": "image",
+  "image": "backToBasics.jpg",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "elegance",
+          "note": "Opens a removal grid (prompt OPTIONS[2]) for one purgeable card. With no purgeable cards the body stays DESCRIPTIONS[0]."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "simplicity",
+          "note": "Upgrades every starter Strike and Defend that can be upgraded."
+        }
+      ]
+    },
+    "elegance": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "simplicity": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "neow": {
+    "skeleton": "skeleton.2d91c0bcee.json",
+    "idle": "idle",
+    "animations": [
+      "idle",
+      "speak"
+    ],
+    "viewport": {
+      "x": -406.1,
+      "y": -71.3,
+      "width": 808.2,
+      "height": 712
+    },
+    "still": {
+      "x": -406.1,
+      "y": -71.3,
+      "width": 808.2,
+      "height": 712
+    }
+  }
+}

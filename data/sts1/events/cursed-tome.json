@@ -1,0 +1,191 @@
+{
+  "id": "Cursed Tome",
+  "className": "city.CursedTome",
+  "kind": "image",
+  "image": "cursedTome.jpg",
+  "start": "intro",
+  "vars": {
+    "takeDmg": [
+      {
+        "ascension": 0,
+        "value": 10
+      },
+      {
+        "ascension": 15,
+        "value": 15
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "page1"
+        },
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": "ignored"
+        }
+      ]
+    },
+    "ignored": {
+      "body": [
+        {
+          "d": 6
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "page1": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "page2"
+        }
+      ],
+      "note": "Reading the first page costs 1 HP."
+    },
+    "page2": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "page3"
+        }
+      ]
+    },
+    "page3": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "lastPage"
+        }
+      ]
+    },
+    "lastPage": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            },
+            {
+              "v": "takeDmg"
+            },
+            {
+              "o": 6
+            }
+          ],
+          "gains": [
+            {
+              "type": "relic",
+              "pool": [
+                "Necronomicon",
+                "Enchiridion",
+                "Nilry's Codex"
+              ]
+            }
+          ],
+          "next": "obtained",
+          "note": "One book the player does not own, from a reward screen; Circlet if all three are owned."
+        },
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": "stopped"
+        }
+      ]
+    },
+    "obtained": {
+      "body": [
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "stopped": {
+      "body": [
+        {
+          "d": 7
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

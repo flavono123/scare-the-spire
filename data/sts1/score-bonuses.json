@@ -1,0 +1,403 @@
+{
+  "source": "GameOverScreen.calcScore/checkScoreBonus + DeathScreen/VictoryScreen.createGameOverStats",
+  "order": "Array order is the on-screen order (unused keys last).",
+  "lines": [
+    {
+      "text": {
+        "death": [
+          "ui.json DeathScreen TEXT",
+          2
+        ],
+        "victory": [
+          "ui.json VictoryScreen TEXT",
+          1
+        ]
+      },
+      "id": null,
+      "points": {
+        "per": 5,
+        "of": "floor"
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Floors Climbed line, not a score_bonuses key; shows floorNum in parentheses."
+    },
+    {
+      "text": {
+        "death": [
+          "ui.json DeathScreen TEXT",
+          43
+        ],
+        "victory": [
+          "ui.json VictoryScreen TEXT",
+          8
+        ]
+      },
+      "id": null,
+      "points": {
+        "per": 2,
+        "of": "monster"
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Enemies Slain line (normal monsters), not a score_bonuses key."
+    },
+    {
+      "id": "Exordium Elites Killed",
+      "points": {
+        "per": 10,
+        "of": "act 1 elite"
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Always shown."
+    },
+    {
+      "id": "City Elites Killed",
+      "points": {
+        "per": 20,
+        "of": "act 2 elite"
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Shown when any act 2 elite was killed or the run reached act 2 or later."
+    },
+    {
+      "id": "Beyond Elites Killed",
+      "points": {
+        "per": 30,
+        "of": "act 3 elite"
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Shown when any act 3 elite was killed or the run reached act 3 or later."
+    },
+    {
+      "id": "Bosses Slain",
+      "points": {
+        "per": 50,
+        "of": "boss",
+        "increasing": true
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "The nth boss is worth 50*n (50, 100, 150, ...), so total = 50*n*(n+1)/2."
+    },
+    {
+      "id": "Poopy",
+      "points": {
+        "fixed": -1
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Has Spirit Poop.",
+      "refs": [
+        {
+          "type": "relic",
+          "id": "Spirit Poop"
+        }
+      ]
+    },
+    {
+      "id": "Speedster",
+      "points": {
+        "fixed": 25
+      },
+      "screens": [
+        "victory"
+      ],
+      "note": "Playtime <= 3600 s; only checked on victory. Not shown together with Light Speed."
+    },
+    {
+      "id": "Light Speed",
+      "points": {
+        "fixed": 50
+      },
+      "screens": [
+        "victory"
+      ],
+      "note": "Playtime <= 2700 s; only checked on victory."
+    },
+    {
+      "id": "Highlander",
+      "points": {
+        "fixed": 100
+      },
+      "screens": [
+        "victory"
+      ],
+      "note": "Deck highlanderCheck; only checked on victory."
+    },
+    {
+      "id": "Shiny",
+      "points": {
+        "fixed": 50
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "25 or more relics."
+    },
+    {
+      "id": "I Like Gold",
+      "points": {
+        "fixed": 75
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Gold gained >= 3000. Gold lines are exclusive: only the highest tier applies."
+    },
+    {
+      "id": "Raining Money",
+      "points": {
+        "fixed": 50
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Gold gained >= 2000."
+    },
+    {
+      "id": "Money Money",
+      "points": {
+        "fixed": 25
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Gold gained >= 1000."
+    },
+    {
+      "id": "Mystery Machine",
+      "points": {
+        "fixed": 25
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Visited 15 or more ? rooms."
+    },
+    {
+      "id": "Collector",
+      "points": {
+        "per": 25,
+        "of": "full set"
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Each non-starter card with 4+ copies (CardGroup.fullSetCheck) counts once."
+    },
+    {
+      "id": "Pauper",
+      "points": {
+        "fixed": 50
+      },
+      "screens": [
+        "victory"
+      ],
+      "note": "No rare cards (pauperCheck); only checked on victory."
+    },
+    {
+      "id": "Librarian",
+      "points": {
+        "fixed": 25
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Deck size >= 35. Not shown together with Encyclopedian."
+    },
+    {
+      "id": "Encyclopedian",
+      "points": {
+        "fixed": 50
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Deck size >= 50."
+    },
+    {
+      "id": "Stuffed",
+      "points": {
+        "fixed": 50
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Max HP - starting Max HP >= 30."
+    },
+    {
+      "id": "Well Fed",
+      "points": {
+        "fixed": 25
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Max HP - starting Max HP >= 15 (and < 30)."
+    },
+    {
+      "id": "Curses",
+      "points": {
+        "fixed": 100
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Deck cursedCheck (5+ curses)."
+    },
+    {
+      "id": "On My Own Terms",
+      "points": {
+        "fixed": 50
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "A line exists on both screens, but GameOverScreen.IS_ON_MY_OWN is only ever reset to false, so it never shows and adds nothing to calcScore."
+    },
+    {
+      "id": "Champion",
+      "points": {
+        "per": 25,
+        "of": "elite killed without taking damage"
+      },
+      "screens": [
+        "death",
+        "victory"
+      ]
+    },
+    {
+      "id": "Beyond Perfect",
+      "points": {
+        "fixed": 200
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "3 or more bosses killed without taking damage; replaces the Perfect line."
+    },
+    {
+      "id": "Perfect",
+      "points": {
+        "per": 50,
+        "of": "boss killed without taking damage"
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Shown when 1-2 perfect bosses."
+    },
+    {
+      "id": "Overkill",
+      "points": {
+        "fixed": 25
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Dealt 99+ damage with one attack."
+    },
+    {
+      "id": "Combo",
+      "points": {
+        "fixed": 25
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Played 20 cards in one turn."
+    },
+    {
+      "id": "Ascension",
+      "points": {
+        "percent": 5,
+        "per": "ascension level"
+      },
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "round(sum of all lines above except the end-of-run bonuses * 0.05 * level). Base = floors+monsters+elites+bosses+champion+perfect+overkill+combo; the bonuses from checkScoreBonus (Poopy..Curses, Heartbreaker) are added after and are not multiplied."
+    },
+    {
+      "id": "Heartbreaker",
+      "points": {
+        "fixed": 250
+      },
+      "screens": [
+        "victory"
+      ],
+      "note": "Victory in TheEnding (the Heart)."
+    },
+    {
+      "text": {
+        "death": [
+          "ui.json DeathScreen TEXT",
+          6
+        ],
+        "victory": [
+          "ui.json VictoryScreen TEXT",
+          4
+        ]
+      },
+      "id": null,
+      "screens": [
+        "death",
+        "victory"
+      ],
+      "note": "Score total line after a divider."
+    },
+    {
+      "id": "Alchemist",
+      "unused": true,
+      "screens": [],
+      "note": "Key exists in score_bonuses.json but no game class references it."
+    },
+    {
+      "id": "Minimalist",
+      "unused": true,
+      "screens": [],
+      "note": "Key exists in score_bonuses.json but no game class references it."
+    },
+    {
+      "id": "Cheater",
+      "unused": true,
+      "screens": [],
+      "note": "Key exists in score_bonuses.json but no game class references it."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "neow": {
+    "atlas": "images/npcs/neow/skeleton.atlas",
+    "skeleton": "images/npcs/neow/skeleton.json",
+    "animation": "idle"
+  }
+}

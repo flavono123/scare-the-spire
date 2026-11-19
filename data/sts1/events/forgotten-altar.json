@@ -1,0 +1,164 @@
+{
+  "id": "Forgotten Altar",
+  "className": "city.ForgottenAltar",
+  "kind": "image",
+  "image": "forgottenAltar.jpg",
+  "start": "intro",
+  "vars": {
+    "maxHp": [
+      {
+        "ascension": 0,
+        "value": 5
+      }
+    ],
+    "hpLoss": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 25
+        }
+      },
+      {
+        "ascension": 15,
+        "value": {
+          "of": "maxHp",
+          "pct": 35
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "relic",
+            "id": "Bloody Idol"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "id": "Bloody Idol"
+            }
+          ],
+          "loses": [
+            {
+              "type": "relic",
+              "id": "Golden Idol"
+            }
+          ],
+          "next": "idol",
+          "note": "Locked without Golden Idol. If Bloody Idol is already owned, gives Circlet and keeps Golden Idol."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            },
+            {
+              "v": "maxHp"
+            },
+            {
+              "o": 3
+            },
+            {
+              "v": "hpLoss"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "next": "blood"
+        },
+        {
+          "label": [
+            {
+              "o": 6
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Decay"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Decay"
+            }
+          ],
+          "next": "desecrate"
+        }
+      ]
+    },
+    "idol": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "ev": "Proceed Screen",
+              "d": 0
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "blood": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "ev": "Proceed Screen",
+              "d": 0
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "desecrate": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "ev": "Proceed Screen",
+              "d": 0
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

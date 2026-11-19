@@ -1,0 +1,87 @@
+{
+  "source": "com.megacrit.cardcrawl.neow.NeowEvent + NeowReward",
+  "localization": {
+    "dialog": "characters.json \"Neow Event\" TEXT / OPTIONS",
+    "rewards": "characters.json \"Neow Reward\" TEXT / UNIQUE_REWARDS"
+  },
+  "labelRule": "A reward option label is the drawback label (category 2 only) followed by the reward label. {\"t\":i} indexes Neow Reward TEXT, {\"u\":i} indexes Neow Reward UNIQUE_REWARDS.",
+  "hpBonus": "hp_bonus = (int)(maxHealth * 0.1) computed when the reward is built; the 20% bonus is hp_bonus * 2.",
+  "categories": [
+    {
+      "index": 0,
+      "name": "small bonus",
+      "rewards": [
+        { "type": "THREE_CARDS", "label": [{ "t": 0 }], "refs": [{ "type": "card", "tier": "character", "note": "Choose 1 of 3 class cards; each card is uncommon with 33% chance, otherwise common (NeowReward.rollRarity)." }] },
+        { "type": "ONE_RANDOM_RARE_CARD", "label": [{ "t": 1 }], "refs": [{ "type": "card", "tier": "rare" }] },
+        { "type": "REMOVE_CARD", "label": [{ "t": 2 }], "refs": [] },
+        { "type": "UPGRADE_CARD", "label": [{ "t": 3 }], "refs": [] },
+        { "type": "TRANSFORM_CARD", "label": [{ "t": 4 }], "refs": [] },
+        { "type": "RANDOM_COLORLESS", "label": [{ "t": 30 }], "refs": [{ "type": "card", "color": "colorless", "tier": "uncommon" }], "note": "Choose 1 of 3 colorless cards (uncommon pool)." }
+      ]
+    },
+    {
+      "index": 1,
+      "name": "big bonus",
+      "rewards": [
+        { "type": "THREE_SMALL_POTIONS", "label": [{ "t": 5 }], "refs": [{ "type": "potion", "tier": "random", "count": 3 }] },
+        { "type": "RANDOM_COMMON_RELIC", "label": [{ "t": 6 }], "refs": [{ "type": "relic", "tier": "common" }] },
+        { "type": "TEN_PERCENT_HP_BONUS", "label": [{ "t": 7 }, { "v": { "of": "maxHp", "pct": 10 } }, { "s": " ]" }], "refs": [] },
+        { "type": "THREE_ENEMY_KILL", "label": [{ "t": 28 }], "refs": [{ "type": "relic", "id": "NeowsBlessing" }] },
+        { "type": "HUNDRED_GOLD", "label": [{ "t": 8 }, { "v": 100 }, { "t": 9 }], "refs": [] }
+      ]
+    },
+    {
+      "index": 2,
+      "name": "drawback + reward",
+      "note": "One drawback is rolled first (uniformly from drawbacks), then a reward is rolled from the rewards allowed with that drawback.",
+      "rewards": [
+        { "type": "RANDOM_COLORLESS_2", "label": [{ "t": 31 }], "refs": [{ "type": "card", "color": "colorless", "tier": "rare" }], "excludedDrawbacks": [] },
+        { "type": "REMOVE_TWO", "label": [{ "t": 10 }], "refs": [], "excludedDrawbacks": ["CURSE"] },
+        { "type": "ONE_RARE_RELIC", "label": [{ "t": 11 }], "refs": [{ "type": "relic", "tier": "rare" }], "excludedDrawbacks": [] },
+        { "type": "THREE_RARE_CARDS", "label": [{ "t": 12 }], "refs": [{ "type": "card", "tier": "rare" }], "excludedDrawbacks": [] },
+        { "type": "TWO_FIFTY_GOLD", "label": [{ "t": 13 }, { "v": 250 }, { "t": 14 }], "refs": [], "excludedDrawbacks": ["NO_GOLD"] },
+        { "type": "TRANSFORM_TWO_CARDS", "label": [{ "t": 15 }], "refs": [], "excludedDrawbacks": [] },
+        { "type": "TWENTY_PERCENT_HP_BONUS", "label": [{ "t": 16 }, { "v": { "of": "maxHp", "pct": 20 } }, { "s": " ]" }], "refs": [], "excludedDrawbacks": ["TEN_PERCENT_HP_LOSS"], "note": "Value is twice the floored 10% bonus." }
+      ]
+    },
+    {
+      "index": 3,
+      "name": "boss relic swap",
+      "rewards": [
+        { "type": "BOSS_RELIC", "label": [{ "u": 0 }], "refs": [{ "type": "relic", "tier": "starter", "note": "lost (the first relic in the relic bar)" }, { "type": "relic", "tier": "boss" }] }
+      ]
+    }
+  ],
+  "drawbacks": [
+    { "type": "TEN_PERCENT_HP_LOSS", "label": [{ "t": 17 }, { "v": { "of": "maxHp", "pct": 10 } }, { "t": 18 }] },
+    { "type": "NO_GOLD", "label": [{ "t": 19 }] },
+    { "type": "CURSE", "label": [{ "t": 20 }], "refs": [{ "type": "card", "tier": "curse" }] },
+    { "type": "PERCENT_DAMAGE", "label": [{ "t": 21 }, { "v": { "of": "currentHp", "pct": 30 } }, { "t": 29 }], "note": "Exact value is (currentHealth / 10) * 3 with integer division." }
+  ],
+  "miniBlessing": {
+    "note": "Offered instead of the four categories when the previous run of this character did not reach the first boss (<CLASS>_SPIRITS pref = 0). In a seeded run that skips the pref, bossCount is 1 (full blessing). Two options from NeowReward(boolean).",
+    "rewards": [
+      { "type": "THREE_ENEMY_KILL", "label": [{ "t": 28 }], "refs": [{ "type": "relic", "id": "NeowsBlessing" }] },
+      { "type": "TEN_PERCENT_HP_BONUS", "label": [{ "t": 7 }, { "v": { "of": "maxHp", "pct": 10 } }, { "s": " ]" }], "refs": [] }
+    ]
+  },
+  "dialog": {
+    "intro": {
+      "firstEver": { "text": 0, "option": 1, "note": "Only the first time ever (NEOW_INTRO tip); after [Talk] Neow also says TEXT 4." },
+      "returning": { "text": { "min": 1, "max": 3 }, "option": 1, "note": "Random line 1-3, option OPTIONS[1] [Talk]." }
+    },
+    "blessing": { "text": 7, "note": "Before the four category choices." },
+    "miniBlessing": { "text": { "min": 4, "max": 6 }, "note": "Random line 4-6 before the two mini choices." },
+    "afterPick": {
+      "categories0and1": 8,
+      "categories2and3": 9,
+      "option": 3,
+      "note": "Picking option 0 or 1 says TEXT 8, option 2 or 3 says TEXT 9; then the option becomes OPTIONS[3] [Leave]."
+    },
+    "nonStandardRun": { "text": 10, "option": 1, "note": "Custom/Daily/Trial runs (shouldSkipNeowDialog) skip blessings: [Talk] applies starting mods (dailyBlessing) and says TEXT 8." },
+    "endless": { "text": { "min": 12, "max": 14 }, "option": 0, "note": "Endless loops after floor 1: [Continue] gives blights (see blights.json endless)." },
+    "revisit": { "text": 8, "option": 3, "note": "NeowEvent(true), the room after the choice was already made (e.g. on reload)." },
+    "confirmGridTitle": 11,
+    "unused": [15, 16, 17]
+  }
+}

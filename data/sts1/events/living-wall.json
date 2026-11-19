@@ -1,0 +1,68 @@
+{
+  "id": "Living Wall",
+  "className": "exordium.LivingWall",
+  "kind": "image",
+  "image": "livingWall.jpg",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "result",
+          "note": "Opens the card removal screen (prompt OPTIONS[3])."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "result",
+          "note": "Opens the card transform screen (prompt OPTIONS[4])."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 7
+            }
+          ],
+          "next": "result",
+          "note": "Opens the card upgrade screen (prompt OPTIONS[5]); locked when no card can be upgraded."
+        }
+      ]
+    },
+    "result": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 6
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

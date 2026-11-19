@@ -1,0 +1,143 @@
+{
+  "id": "The Library",
+  "className": "city.TheLibrary",
+  "kind": "image",
+  "image": "library.jpg",
+  "start": "intro",
+  "vars": {
+    "heal": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 33
+        }
+      },
+      {
+        "ascension": 15,
+        "value": {
+          "of": "maxHp",
+          "pct": 20
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "gains": [
+            {
+              "type": "card",
+              "tier": "random"
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "book1"
+            },
+            {
+              "next": "book2"
+            },
+            {
+              "next": "book3"
+            }
+          ],
+          "note": "One of three books at equal odds. Opens a grid of 20 distinct random cards to pick 1 from, with the prompt OPTIONS[4]."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            },
+            {
+              "v": "heal"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "next": "sleep"
+        }
+      ]
+    },
+    "book1": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "book2": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "book3": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "sleep": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

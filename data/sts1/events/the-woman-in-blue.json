@@ -1,0 +1,174 @@
+{
+  "id": "The Woman in Blue",
+  "className": "shrines.WomanInBlue",
+  "kind": "image",
+  "image": "ladyInBlue.jpg",
+  "start": "intro",
+  "vars": {
+    "cost1": [
+      {
+        "ascension": 0,
+        "value": 20
+      }
+    ],
+    "cost2": [
+      {
+        "ascension": 0,
+        "value": 30
+      }
+    ],
+    "cost3": [
+      {
+        "ascension": 0,
+        "value": 40
+      }
+    ],
+    "damage": [
+      {
+        "ascension": 15,
+        "value": {
+          "of": "maxHp",
+          "pct": 5
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "cost1"
+            },
+            {
+              "o": 3
+            }
+          ],
+          "gains": [
+            {
+              "type": "potion",
+              "tier": "random",
+              "count": 1
+            }
+          ],
+          "next": "bought"
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            },
+            {
+              "v": "cost2"
+            },
+            {
+              "o": 3
+            }
+          ],
+          "gains": [
+            {
+              "type": "potion",
+              "tier": "random",
+              "count": 2
+            }
+          ],
+          "next": "bought"
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            },
+            {
+              "v": "cost3"
+            },
+            {
+              "o": 3
+            }
+          ],
+          "gains": [
+            {
+              "type": "potion",
+              "tier": "random",
+              "count": 3
+            }
+          ],
+          "next": "bought"
+        },
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "ascension": {
+            "max": 14
+          },
+          "next": "punched"
+        },
+        {
+          "label": [
+            {
+              "o": 5
+            },
+            {
+              "v": "damage"
+            },
+            {
+              "o": 6
+            }
+          ],
+          "ascension": {
+            "min": 15
+          },
+          "next": "punched",
+          "note": "HP loss is ceil(5% of max HP)."
+        }
+      ]
+    },
+    "bought": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ],
+      "note": "The potions are offered on the reward screen."
+    },
+    "punched": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

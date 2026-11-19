@@ -1,0 +1,289 @@
+{
+  "id": "Wheel of Change",
+  "className": "shrines.GremlinWheelGame",
+  "kind": "image",
+  "image": "spinTheWheel.jpg",
+  "start": "intro",
+  "vars": {
+    "hpLoss": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 10
+        }
+      },
+      {
+        "ascension": 15,
+        "value": {
+          "of": "maxHp",
+          "pct": 15
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "note": "The dialog hides and the wheel spins; miscRng.random(0, 5) picks one of six equal slices.",
+          "outcomes": [
+            {
+              "next": "gold"
+            },
+            {
+              "next": "relic"
+            },
+            {
+              "next": "heal"
+            },
+            {
+              "next": "curse"
+            },
+            {
+              "next": "remove"
+            },
+            {
+              "next": "damage"
+            }
+          ]
+        }
+      ]
+    },
+    "gold": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "gold-after",
+          "note": "Gain 100 gold in Exordium, 200 in The City, 300 in The Beyond."
+        }
+      ]
+    },
+    "gold-after": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "relic": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "relic-after",
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "random"
+            }
+          ],
+          "note": "Opens a reward screen with one random screenless relic."
+        }
+      ]
+    },
+    "relic-after": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "heal": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "heal-after"
+        }
+      ]
+    },
+    "heal-after": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "curse": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": "curse-after",
+          "gains": [
+            {
+              "type": "card",
+              "id": "Decay"
+            }
+          ]
+        }
+      ]
+    },
+    "curse-after": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "remove": {
+      "body": [
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": "remove-after",
+          "note": "Opens a grid of purgeable, non-bottled cards titled OPTIONS[9]; nothing happens if there is none."
+        }
+      ]
+    },
+    "remove-after": {
+      "body": [
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "damage": {
+      "body": [
+        {
+          "d": 6
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 6
+            },
+            {
+              "v": "hpLoss"
+            },
+            {
+              "o": 7
+            }
+          ],
+          "next": "damage-after"
+        }
+      ]
+    },
+    "damage-after": {
+      "body": [
+        {
+          "d": 7
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

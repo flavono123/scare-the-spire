@@ -1,0 +1,199 @@
+{
+  "id": "Spire Heart",
+  "className": "beyond.SpireHeart",
+  "kind": "room",
+  "image": null,
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "ready-ironclad",
+              "character": "ironclad"
+            },
+            {
+              "next": "ready-silent",
+              "character": "silent"
+            },
+            {
+              "next": "ready-defect",
+              "character": "defect"
+            },
+            {
+              "next": "ready-watcher",
+              "character": "watcher"
+            }
+          ]
+        }
+      ]
+    },
+    "ready-ironclad": {
+      "body": [
+        {
+          "d": 8
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "attack"
+        }
+      ]
+    },
+    "ready-silent": {
+      "body": [
+        {
+          "d": 9
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "attack"
+        }
+      ]
+    },
+    "ready-defect": {
+      "body": [
+        {
+          "d": 10
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "attack"
+        }
+      ]
+    },
+    "ready-watcher": {
+      "body": [
+        {
+          "d": 15
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "attack"
+        }
+      ]
+    },
+    "attack": {
+      "body": [
+        {
+          "d": 1
+        },
+        {
+          "d": 2
+        }
+      ],
+      "note": "The game inserts the run's score, shown as damage dealt, between the two parts.",
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "door"
+            },
+            {
+              "next": "sleep"
+            }
+          ],
+          "note": "Not random: the door opens when act 4 is enabled and all three keys are held; otherwise the player falls asleep."
+        }
+      ]
+    },
+    "door": {
+      "body": [
+        {
+          "d": 11
+        },
+        {
+          "d": 12
+        },
+        {
+          "d": 13
+        },
+        {
+          "d": 14
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null,
+          "note": "Opens the door unlock screen and goes to act 4."
+        }
+      ]
+    },
+    "sleep": {
+      "body": [
+        {
+          "d": 3
+        },
+        {
+          "d": 4
+        },
+        {
+          "d": 5
+        },
+        {
+          "d": 6
+        },
+        {
+          "d": 7
+        }
+      ],
+      "note": "Your total damage to the heart is inserted after part 3 and the global total after part 5; parts 5-6 are left out when no global stat is available.",
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null,
+          "note": "The run ends (death screen)."
+        }
+      ]
+    }
+  }
+}

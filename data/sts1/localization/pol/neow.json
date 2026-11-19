@@ -1,0 +1,74 @@
+{
+  "event": {
+    "NAMES": [
+      "Neow"
+    ],
+    "TEXT": [
+      "~Witaj...~ NL ~Jestem...~ ~Neow...~",
+      "~Witaj...~ NL ~Ponownie...~",
+      "~Witaj...~",
+      "~Jeszcze~ NL ~raz...?~",
+      "~Dotrzyj~ ~do~ ~bossa,~ NL ~aby~ ~otrzymać~ ~więcej...~ ~błogosławieństw...~",
+      "~Zmierz~ ~się~ ~chociaż...~ NL ~z~ ~pierwszym~ ~bossem...~",
+      "~Przywróciłam~ ~cię~ ~do~ ~życia...~",
+      "~Wybierz...~",
+      "~Jak~ ~sobie~ ~życzysz...~",
+      "~Odważna...~ NL ~decyzja....~",
+      "~Czas~ ~na~ ~małe~ NL ~WYZWANIE...~",
+      "Nagrody",
+      "~Zatem~ ~kontynuujmy...~",
+      "~To~ ~będzie~ ~coraz~ ~trudniejsze...~",
+      "~Imponujące...~ ~więcej...~",
+      "Klątwa!",
+      "Wzdęcie!",
+      "Transformacja!"
+    ],
+    "OPTIONS": [
+      "[Kontynuuj]",
+      "[Rozmawiaj]",
+      "[Pomiń]",
+      "[Odejdź]",
+      "Wybierz 10 kart i dodaj je do talii."
+    ]
+  },
+  "reward": {
+    "NAMES": [],
+    "TEXT": [
+      "[ #gWybierz #gkartę #gdo #gdodania ]",
+      "[ #gOtrzymaj #glosową #grzadką #gkartę ]",
+      "[ #gUsuń #gkartę #gz #gtalii ]",
+      "[ #gUlepsz #gkartę ]",
+      "[ #gPodmień #gkartę ]",
+      "[ #gOtrzymaj #g3 #glosowe #gmikstury ]",
+      "[ #gOtrzymaj #glosowy #gpospolity #gartefakt ]",
+      "[ #gmaksymalne #gPŻ #g+",
+      "[ #gOtrzymaj #g",
+      " #gszt. #gzłota ]",
+      "#gUsuń #g2 #gkarty #gz #gtalii ]",
+      "#gOtrzymaj #glosowy #grzadki #gArtefakt ]",
+      "#gWybierz #grzadką #gkartę #gdo #gdodania ]",
+      "#gZyskaj #g",
+      " #gszt. #gzłota ]",
+      "#gPodmień #g2 #gkarty ]",
+      "#gMaksymalne #gPŻ #g+",
+      "[ #rUtrać #r",
+      " #rmaksymalnych #rPŻ ",
+      "[ #rUtrać #rcałe #rzłoto ",
+      "[ #rOtrzymaj #rKlątwę ",
+      "[ #rOtrzymaj #r",
+      "Wybierz kartę",
+      "Wybierz kartę do usunięcia",
+      "Wybierz 2 karty do usunięcia",
+      "Wybierz kartę do podmiany",
+      "Wybierz 2 karty do podmiany",
+      "Wybierz kartę do ulepszenia",
+      "[ #gPrzeciwnicy #gw #gnastępnych #gtrzech #gwalkach #gmają #g1 #gPŻ ]",
+      " #rpkt. #robrażeń",
+      "[ #gWybierz #gbezbarwną #gkartę #gdo #gdodania ]",
+      "#gWybierz #grzadką #gbezbarwną #gkartę #gdo #gdodania ]"
+    ],
+    "UNIQUE_REWARDS": [
+      "[ #rUtrać #rswój #rstartowy #rartefakt #gOtrzymaj #glosowy #glegendarny #gartefakt ]"
+    ]
+  }
+}

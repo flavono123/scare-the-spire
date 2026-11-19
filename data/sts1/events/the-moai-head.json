@@ -1,0 +1,130 @@
+{
+  "id": "The Moai Head",
+  "className": "beyond.MoaiHead",
+  "kind": "image",
+  "image": "moaiHead.jpg",
+  "start": "intro",
+  "vars": {
+    "maxHpLoss": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 12.5
+        }
+      },
+      {
+        "ascension": 15,
+        "value": {
+          "of": "maxHp",
+          "pct": 18
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "maxHpLoss"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "jump",
+          "note": "Loses max HP first, then heals to full."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 3
+            }
+          ],
+          "loses": [
+            {
+              "type": "relic",
+              "id": "Golden Idol"
+            }
+          ],
+          "next": "idol",
+          "note": "Gains 333 gold."
+        },
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": "leave"
+        }
+      ]
+    },
+    "jump": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "idol": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "leave": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

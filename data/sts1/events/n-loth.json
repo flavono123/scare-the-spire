@@ -1,0 +1,110 @@
+{
+  "id": "N'loth",
+  "className": "shrines.Nloth",
+  "kind": "image",
+  "image": "nloth.jpg",
+  "start": "intro",
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "pick": "relic"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "relic",
+            "id": "Nloth's Gift"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "id": "Nloth's Gift"
+            }
+          ],
+          "next": "traded",
+          "note": "First offered relic. The label inserts the name of one of your own relics (random, from a shuffled copy of your relics) between OPTIONS[0] and OPTIONS[1]; that relic is lost. If you already own Nloth's Gift, you get Circlet instead and keep the offered relic."
+        },
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "pick": "relic"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "relic",
+            "id": "Nloth's Gift"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "id": "Nloth's Gift"
+            }
+          ],
+          "next": "traded",
+          "note": "Second offered relic. The label inserts the name of one of your own relics (random, from a shuffled copy of your relics) between OPTIONS[0] and OPTIONS[1]; that relic is lost. If you already own Nloth's Gift, you get Circlet instead and keep the offered relic."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "refused"
+        }
+      ]
+    },
+    "traded": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "refused": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

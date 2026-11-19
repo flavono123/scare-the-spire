@@ -1,0 +1,160 @@
+{
+  "id": "FaceTrader",
+  "className": "shrines.FaceTrader",
+  "kind": "image",
+  "image": "facelessTrader.jpg",
+  "start": "intro",
+  "vars": {
+    "damage": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "frac": [
+            1,
+            10
+          ]
+        }
+      }
+    ],
+    "gold": [
+      {
+        "ascension": 0,
+        "value": 75
+      },
+      {
+        "ascension": 15,
+        "value": 50
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": "main"
+        }
+      ]
+    },
+    "main": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "damage"
+            },
+            {
+              "o": 5
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "touch",
+          "note": "Damage is maxHp / 10 (integer division), at least 1."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "gains": [
+            {
+              "type": "relic",
+              "pool": [
+                "CultistMask",
+                "FaceOfCleric",
+                "GremlinMask",
+                "NlothsMask",
+                "SsserpentHead"
+              ]
+            }
+          ],
+          "next": "trade",
+          "note": "Despite the 50/50 label, the game picks uniformly among the face relics the player does not own; if all are owned it gives Circlet."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "leave"
+        }
+      ]
+    },
+    "touch": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "trade": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "leave": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

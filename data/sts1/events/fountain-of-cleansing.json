@@ -1,0 +1,76 @@
+{
+  "id": "Fountain of Cleansing",
+  "className": "shrines.FountainOfCurseRemoval",
+  "kind": "image",
+  "image": "fountain.jpg",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "loses": [
+            {
+              "type": "card",
+              "pool": "curse"
+            }
+          ],
+          "next": "drink",
+          "note": "Removes every Curse in the deck except Ascender's Bane, Curse of the Bell, Necronomicurse and bottled cards."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "leave"
+        }
+      ]
+    },
+    "drink": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "leave": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

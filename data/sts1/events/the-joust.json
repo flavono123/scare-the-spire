@@ -1,0 +1,265 @@
+{
+  "id": "The Joust",
+  "className": "city.TheJoust",
+  "kind": "image",
+  "image": "joust.jpg",
+  "start": "halt",
+  "vars": {
+    "bet": [
+      {
+        "ascension": 0,
+        "value": 50
+      }
+    ],
+    "murdererWin": [
+      {
+        "ascension": 0,
+        "value": 100
+      }
+    ],
+    "ownerWin": [
+      {
+        "ascension": 0,
+        "value": 250
+      }
+    ]
+  },
+  "scenes": {
+    "halt": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "explain"
+        }
+      ]
+    },
+    "explain": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            },
+            {
+              "v": "bet"
+            },
+            {
+              "o": 2
+            },
+            {
+              "v": "murdererWin"
+            },
+            {
+              "o": 3
+            }
+          ],
+          "next": "betMurderer"
+        },
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "bet"
+            },
+            {
+              "o": 5
+            },
+            {
+              "v": "ownerWin"
+            },
+            {
+              "o": 3
+            }
+          ],
+          "next": "betOwner"
+        }
+      ]
+    },
+    "betMurderer": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 6
+            }
+          ],
+          "next": "joustMurderer",
+          "note": "Pays the 50 gold bet."
+        }
+      ]
+    },
+    "betOwner": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 6
+            }
+          ],
+          "next": "joustOwner",
+          "note": "Pays the 50 gold bet."
+        }
+      ]
+    },
+    "joustMurderer": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 6
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "murdererWon",
+              "chance": 70
+            },
+            {
+              "next": "murdererLost",
+              "chance": 30
+            }
+          ]
+        }
+      ]
+    },
+    "joustOwner": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 6
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "ownerWon",
+              "chance": 30
+            },
+            {
+              "next": "ownerLost",
+              "chance": 70
+            }
+          ]
+        }
+      ]
+    },
+    "murdererWon": {
+      "body": [
+        {
+          "d": 6
+        },
+        {
+          "d": 7
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ],
+      "note": "Gains 100 gold."
+    },
+    "murdererLost": {
+      "body": [
+        {
+          "d": 5
+        },
+        {
+          "d": 8
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "ownerWon": {
+      "body": [
+        {
+          "d": 5
+        },
+        {
+          "d": 7
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ],
+      "note": "Gains 250 gold."
+    },
+    "ownerLost": {
+      "body": [
+        {
+          "d": 6
+        },
+        {
+          "d": 8
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "Purifier",
+  "className": "shrines.PurificationShrine",
+  "kind": "image",
+  "image": "shrine3.jpg",
+  "start": "intro",
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "prayed"
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "ignored"
+        }
+      ]
+    },
+    "prayed": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "ignored": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "id": "Vampires",
+  "className": "city.Vampires",
+  "kind": "image",
+  "image": "vampires.jpg",
+  "start": "intro",
+  "vars": {
+    "maxHp": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 30
+        }
+      }
+    ],
+    "bites": [
+      {
+        "ascension": 0,
+        "value": 5
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "maxHp"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Bite"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Bite",
+              "count": 5
+            }
+          ],
+          "loses": [
+            {
+              "type": "card",
+              "pool": [
+                "Strike_R",
+                "Strike_G",
+                "Strike_B",
+                "Strike_P"
+              ]
+            }
+          ],
+          "next": "accept",
+          "note": "Max HP loss is ceil(30% of max HP), capped at max HP - 1. Removes every starter Strike."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "relic": "Blood Vial"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Bite"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Bite",
+              "count": 5
+            }
+          ],
+          "loses": [
+            {
+              "type": "relic",
+              "id": "Blood Vial"
+            },
+            {
+              "type": "card",
+              "pool": [
+                "Strike_R",
+                "Strike_G",
+                "Strike_B",
+                "Strike_P"
+              ]
+            }
+          ],
+          "next": "vial",
+          "note": "Only offered when the player has Blood Vial. Removes every starter Strike."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "refuse"
+        }
+      ],
+      "bodyVariants": [
+        {
+          "characters": [
+            "ironclad"
+          ],
+          "body": [
+            {
+              "d": 0
+            }
+          ]
+        },
+        {
+          "characters": [
+            "silent",
+            "watcher"
+          ],
+          "body": [
+            {
+              "d": 1
+            }
+          ]
+        },
+        {
+          "characters": [
+            "defect"
+          ],
+          "body": [
+            {
+              "d": 5
+            }
+          ]
+        }
+      ]
+    },
+    "accept": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "vial": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "refuse": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

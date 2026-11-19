@@ -1,0 +1,121 @@
+{
+  "id": "Drug Dealer",
+  "className": "city.DrugDealer",
+  "kind": "image",
+  "image": "drugDealer.jpg",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "J.A.X."
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "J.A.X."
+            }
+          ],
+          "next": "jax"
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 4
+            }
+          ],
+          "next": "subject",
+          "note": "Locked with fewer than 2 purgeable cards. Opens a transform grid (prompt OPTIONS[5]) for 2 cards."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "preview": {
+            "type": "relic",
+            "id": "MutagenicStrength"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "id": "MutagenicStrength"
+            }
+          ],
+          "next": "mutagens",
+          "note": "Circlet instead if Mutagenic Strength is already owned."
+        }
+      ]
+    },
+    "jax": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "subject": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "mutagens": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

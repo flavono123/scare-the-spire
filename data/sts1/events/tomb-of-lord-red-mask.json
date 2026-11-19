@@ -1,0 +1,110 @@
+{
+  "id": "Tomb of Lord Red Mask",
+  "className": "beyond.TombRedMask",
+  "kind": "image",
+  "image": "redMaskTomb.jpg",
+  "start": "intro",
+  "vars": {
+    "gold": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "gold",
+          "pct": 100
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "mask",
+          "note": "Requires Red Mask; gains 222 gold."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 3
+            }
+          ],
+          "preview": {
+            "type": "relic",
+            "id": "Red Mask"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "id": "Red Mask"
+            }
+          ],
+          "next": "relic",
+          "note": "Only offered without Red Mask; the label shows your current gold amount, and all of it is lost."
+        },
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "mask": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "relic": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

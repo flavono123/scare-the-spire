@@ -1,0 +1,121 @@
+{
+  "id": "Masked Bandits",
+  "className": "city.MaskedBandits",
+  "kind": "room",
+  "image": null,
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "paid1",
+          "note": "Loses all gold."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "combat": {
+            "encounters": [
+              [
+                "BanditChild",
+                "BanditLeader",
+                "BanditBear"
+              ]
+            ]
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "id": "Red Mask"
+            }
+          ],
+          "next": null,
+          "note": "Rewards add 25-35 gold (0-29 in daily runs) and Red Mask, or Circlet if the player already has Red Mask."
+        }
+      ]
+    },
+    "paid1": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "paid2"
+        }
+      ]
+    },
+    "paid2": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "paid3"
+        }
+      ]
+    },
+    "paid3": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "paid4"
+        }
+      ]
+    },
+    "paid4": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ],
+      "note": "The game opens the map on the same click that shows this text."
+    }
+  }
+}

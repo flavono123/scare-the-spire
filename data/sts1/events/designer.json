@@ -1,0 +1,229 @@
+{
+  "id": "Designer",
+  "className": "shrines.Designer",
+  "kind": "image",
+  "image": "designer2.jpg",
+  "start": "intro",
+  "vars": {
+    "adjustCost": [
+      {
+        "ascension": 0,
+        "value": 40
+      },
+      {
+        "ascension": 15,
+        "value": 50
+      }
+    ],
+    "cleanUpCost": [
+      {
+        "ascension": 0,
+        "value": 60
+      },
+      {
+        "ascension": 15,
+        "value": 75
+      }
+    ],
+    "fullServiceCost": [
+      {
+        "ascension": 0,
+        "value": 90
+      },
+      {
+        "ascension": 15,
+        "value": 110
+      }
+    ],
+    "hpLoss": [
+      {
+        "ascension": 0,
+        "value": 3
+      },
+      {
+        "ascension": 15,
+        "value": 5
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "services"
+        }
+      ]
+    },
+    "services": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "note": "At construction the game flips two coins (miscRng.randomBoolean): one picks which Adjustments variant is offered, the other which Clean Up variant. Exactly one of each pair appears, in button slots 1 and 2.",
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            },
+            {
+              "v": "adjustCost"
+            },
+            {
+              "o": 6
+            },
+            {
+              "o": 9
+            }
+          ],
+          "next": "done",
+          "note": "Adjustments variant A (50%): choose a card to upgrade (grid titled OPTIONS[15]). Disabled when gold < cost or no upgradable card."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            },
+            {
+              "v": "adjustCost"
+            },
+            {
+              "o": 6
+            },
+            {
+              "o": 7
+            },
+            {
+              "s": "2"
+            },
+            {
+              "o": 8
+            }
+          ],
+          "next": "done",
+          "note": "Adjustments variant B (50%): upgrade 2 random upgradable cards. Disabled when gold < cost or no upgradable card."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            },
+            {
+              "v": "cleanUpCost"
+            },
+            {
+              "o": 6
+            },
+            {
+              "o": 10
+            }
+          ],
+          "next": "done",
+          "note": "Clean Up variant A (50%): choose a card to remove (grid titled OPTIONS[17]). Disabled when gold < cost or no non-bottled card."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            },
+            {
+              "v": "cleanUpCost"
+            },
+            {
+              "o": 6
+            },
+            {
+              "o": 11
+            },
+            {
+              "s": "2"
+            },
+            {
+              "o": 12
+            }
+          ],
+          "next": "done",
+          "note": "Clean Up variant B (50%): choose 2 cards to transform (grid titled OPTIONS[16]). Disabled when gold < cost or fewer than 2 non-bottled cards."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "fullServiceCost"
+            },
+            {
+              "o": 6
+            },
+            {
+              "o": 13
+            }
+          ],
+          "next": "done",
+          "note": "Choose a card to remove (grid titled OPTIONS[17]), then a random upgradable card is upgraded. Disabled when gold < cost or no non-bottled card."
+        },
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "hpLoss"
+            },
+            {
+              "o": 5
+            }
+          ],
+          "next": "punched"
+        }
+      ]
+    },
+    "done": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 14
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "punched": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 14
+            }
+          ],
+          "next": null
+        }
+      ],
+      "image": "designerPunched2.jpg"
+    }
+  }
+}

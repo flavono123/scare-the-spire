@@ -1,0 +1,149 @@
+{
+  "id": "Golden Wing",
+  "className": "exordium.GoldenWing",
+  "kind": "image",
+  "image": "goldenWing.jpg",
+  "start": "intro",
+  "vars": {
+    "damage": [
+      {
+        "ascension": 0,
+        "value": 7
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "damage"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "pray"
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            },
+            {
+              "s": "50"
+            },
+            {
+              "o": 3
+            },
+            {
+              "s": "80"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 5
+            },
+            {
+              "s": "10"
+            },
+            {
+              "o": 6
+            }
+          ],
+          "next": "destroy",
+          "note": "Needs a card in the deck with 10+ damage; gains 50-80 gold."
+        },
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": "leave"
+        }
+      ]
+    },
+    "pray": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": "pray-done",
+          "note": "Opens the card removal screen (prompt OPTIONS[9])."
+        }
+      ]
+    },
+    "pray-done": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "destroy": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "leave": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "id": "MindBloom",
+  "className": "beyond.MindBloom",
+  "kind": "image",
+  "image": "mindBloom.jpg",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "rare"
+            }
+          ],
+          "combat": {
+            "encounters": [
+              [
+                "TheGuardian"
+              ],
+              [
+                "Hexaghost"
+              ],
+              [
+                "SlimeBoss"
+              ]
+            ]
+          },
+          "next": null,
+          "note": "Body updates to the fight text, then combat starts; rewards are 50 gold (25 at ascension 13+) and a rare relic, no card reward."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "gains": [
+            {
+              "type": "relic",
+              "id": "Mark of the Bloom"
+            }
+          ],
+          "next": "awake",
+          "note": "Upgrades every upgradable card in the deck."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Normality"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Normality",
+              "count": 2
+            }
+          ],
+          "next": "rich",
+          "note": "Shown when floor % 50 <= 40; gains 999 gold."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Doubt"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Doubt"
+            }
+          ],
+          "next": "healthy",
+          "note": "Shown instead of [I am Rich] when floor % 50 > 40; heals to full."
+        }
+      ]
+    },
+    "awake": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "rich": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "healthy": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

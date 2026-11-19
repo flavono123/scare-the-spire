@@ -18,7 +18,10 @@
  * - data/sts1/monster-spine.json: idle clip, clips, the viewport every clip fits
  *   in, and where the still sits inside it
  *
- * Usage: node scripts/render-sts1-monsters.mjs [--jar path] [--only slug,slug]
+ * Usage: node scripts/render-sts1-monsters.mjs [--jar path] [--only slug,slug] [--npcs]
+ *
+ * `--npcs` renders data/sts1/npc-art.json (Neow) the same way into
+ * public/images/sts1/npcs, public/spine/sts1/npcs and data/sts1/npc-spine.json.
  */
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -29,11 +32,13 @@ import path from "node:path";
 import { chromium } from "@playwright/test";
 
 const ROOT = process.cwd();
-const OUT_DIR = path.join(ROOT, "public/images/sts1/monsters");
-const SPINE_DIR = path.join(ROOT, "public/spine/sts1/monsters");
-const ART_SOURCES = path.join(ROOT, "data/sts1/monster-art.json");
+const NPCS = process.argv.includes("--npcs");
+const KIND = NPCS ? "npcs" : "monsters";
+const OUT_DIR = path.join(ROOT, `public/images/sts1/${KIND}`);
+const SPINE_DIR = path.join(ROOT, `public/spine/sts1/${KIND}`);
+const ART_SOURCES = path.join(ROOT, NPCS ? "data/sts1/npc-art.json" : "data/sts1/monster-art.json");
 const MONSTERS = path.join(ROOT, "data/sts1/monsters.json");
-const SPINE_META = path.join(ROOT, "data/sts1/monster-spine.json");
+const SPINE_META = path.join(ROOT, NPCS ? "data/sts1/npc-spine.json" : "data/sts1/monster-spine.json");
 const SPINE_BUNDLE = path.join(ROOT, "node_modules/@esotericsoftware/spine-player/dist/iife/spine-player.js");
 const DEFAULT_JAR = path.join(
   homedir(),

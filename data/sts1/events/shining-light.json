@@ -1,0 +1,98 @@
+{
+  "id": "Shining Light",
+  "className": "exordium.ShiningLight",
+  "kind": "image",
+  "image": "shiningLight.jpg",
+  "start": "intro",
+  "vars": {
+    "damage": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 20
+        }
+      },
+      {
+        "ascension": 15,
+        "value": {
+          "of": "maxHp",
+          "pct": 30
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "damage"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "enter",
+          "note": "Upgrades 2 random upgradable cards. Damage is rounded (MathUtils.round), not floored. Locked when no card can be upgraded."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "leave"
+        }
+      ]
+    },
+    "enter": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "leave": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

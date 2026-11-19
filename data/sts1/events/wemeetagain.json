@@ -1,0 +1,196 @@
+{
+  "id": "WeMeetAgain",
+  "className": "shrines.WeMeetAgain",
+  "kind": "image",
+  "image": "weMeetAgain.jpg",
+  "start": "intro",
+  "vars": {
+    "gold": [
+      {
+        "ascension": 0,
+        "value": {
+          "min": 50,
+          "max": 150
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "pick": "potion",
+              "color": "r"
+            },
+            {
+              "o": 6
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 1
+            }
+          ],
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "random"
+            }
+          ],
+          "next": "potion",
+          "note": "A random potion of yours is inserted (in red) between OPTIONS[0] and OPTIONS[6] and given away. Locked when you have no potion."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 9
+            },
+            {
+              "o": 6
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 3
+            }
+          ],
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "random"
+            }
+          ],
+          "next": "gold",
+          "note": "Gold roll is capped at your current gold (50 to min(gold, 150)). Locked under 50 gold."
+        },
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "pick": "card"
+            },
+            {
+              "o": 6
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 5
+            }
+          ],
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "random"
+            }
+          ],
+          "next": "card",
+          "note": "A random non-Basic, non-Curse card from your deck is inserted between OPTIONS[4] and OPTIONS[6], previewed and removed. Locked when you have none."
+        },
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": "attack"
+        }
+      ]
+    },
+    "potion": {
+      "body": [
+        {
+          "d": 1
+        },
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "gold": {
+      "body": [
+        {
+          "d": 2
+        },
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "card": {
+      "body": [
+        {
+          "d": 3
+        },
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "attack": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

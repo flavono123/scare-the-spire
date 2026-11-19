@@ -43,6 +43,12 @@ from scripts.lib.sts1_description_template import (  # noqa: E402
     replay_description_templates,
     template_is_resolved,
 )
+from scripts.lib.sts1_compendium_extras import (  # noqa: E402
+    extract_extras_images,
+    write_extras_localization,
+    write_extras_nav_labels,
+    write_npc_art_sources,
+)
 from scripts.lib.sts1_jar import default_sts1_jar_path, open_sts1_jar  # noqa: E402
 from scripts.lib.sts1_monster_moves import (  # noqa: E402
     class_ids,
@@ -1599,13 +1605,14 @@ def main() -> None:
         "--only",
         default="",
         help="Comma-separated sections to rebuild without touching cards/relics/potions rows: "
-        "powers, characters, relic-text, monsters.",
+        "powers, characters, relic-text, monsters, extras (events, keywords, ascension, mods, blights, "
+        "Neow, achievements, score bonuses).",
     )
     args = parser.parse_args()
 
     if args.only:
         sections = {section.strip() for section in args.only.split(",") if section.strip()}
-        unknown = sections - {"powers", "characters", "relic-text", "monsters"}
+        unknown = sections - {"powers", "characters", "relic-text", "monsters", "extras"}
         if unknown:
             parser.error(f"unknown --only sections: {', '.join(sorted(unknown))}")
         with open_sts1_jar(args.jar) as jar:
@@ -1618,6 +1625,20 @@ def main() -> None:
                 print(f"monsters={extract_monsters(jar)}")
             if "characters" in sections:
                 print(f"characters={extract_characters(jar, write_images=not args.skip_images)}")
+            if "extras" in sections:
+                write_extras_localization(jar, STS1_LOCALES, write_json)
+                write_extras_nav_labels(jar, STS1_LOCALES, write_json)
+                write_npc_art_sources(write_json)
+                if not args.skip_images:
+                    written = extract_extras_images(
+                        jar,
+                        extract_png=extract_png,
+                        save_webp=save_webp,
+                        parse_atlas=parse_atlas,
+                        extract_atlas_region=extract_atlas_region,
+                    )
+                    print(f"extras images={written}")
+                print("wrote extras localization")
         return
 
     if args.portrait_shifts_only:

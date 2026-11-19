@@ -1,0 +1,56 @@
+{
+  "id": "Lab",
+  "className": "shrines.Lab",
+  "kind": "image",
+  "image": "lab.jpg",
+  "start": "intro",
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "ascension": {
+            "max": 14
+          },
+          "gains": [
+            {
+              "type": "potion",
+              "tier": "random",
+              "count": 3
+            }
+          ],
+          "next": null,
+          "note": "Opens the reward screen with the potions; the event then ends."
+        },
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "ascension": {
+            "min": 15
+          },
+          "gains": [
+            {
+              "type": "potion",
+              "tier": "random",
+              "count": 2
+            }
+          ],
+          "next": null,
+          "note": "Opens the reward screen with the potions; the event then ends."
+        }
+      ]
+    }
+  }
+}

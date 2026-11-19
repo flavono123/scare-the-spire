@@ -1,0 +1,84 @@
+{
+  "id": "Mysterious Sphere",
+  "className": "beyond.MysteriousSphere",
+  "kind": "room",
+  "image": "sphereClosed.png",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "fight"
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "leave"
+        }
+      ]
+    },
+    "fight": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "rare"
+            }
+          ],
+          "combat": {
+            "encounters": [
+              [
+                "Orb Walker",
+                "Orb Walker"
+              ]
+            ]
+          },
+          "next": null,
+          "note": "The sphere art swaps to sphereOpen.png as combat starts; rewards add 45-55 gold (0-49 in daily runs) and a rare relic."
+        }
+      ]
+    },
+    "leave": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "id": "Addict",
+  "className": "city.Addict",
+  "kind": "image",
+  "image": "addict.jpg",
+  "start": "intro",
+  "vars": {
+    "gold": [
+      {
+        "ascension": 0,
+        "value": 85
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 2
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 3
+            }
+          ],
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "random"
+            }
+          ],
+          "next": "paid",
+          "note": "Costs 85 gold; locked below 85 gold."
+        },
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Shame"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "random"
+            },
+            {
+              "type": "card",
+              "id": "Shame"
+            }
+          ],
+          "next": "robbed"
+        },
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "paid": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "robbed": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "id": "Match and Keep!",
+  "className": "shrines.GremlinMatchGame",
+  "kind": "image",
+  "image": "matchAndKeep.jpg",
+  "start": "intro",
+  "vars": {
+    "attempts": [
+      {
+        "ascension": 0,
+        "value": 5
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "rules"
+        }
+      ]
+    },
+    "rules": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "play"
+        }
+      ]
+    },
+    "play": {
+      "body": [],
+      "note": "The dialog hides and 12 face-down cards (6 pairs, shuffled) are laid out; the counter OPTIONS[3] + attempts is drawn above them. Each pair flipped spends one attempt; a matching pair is added to the deck. The game ends when attempts reach 0. Pairs below A15: one Rare, one Uncommon, one Common, one colorless Uncommon, one random Curse, and the character's starter card. A15+: Rare, Uncommon, Common, two random Curses, starter card.",
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "attempts"
+            }
+          ],
+          "next": "complete",
+          "gains": [
+            {
+              "type": "card",
+              "tier": "rare"
+            },
+            {
+              "type": "card",
+              "tier": "uncommon"
+            },
+            {
+              "type": "card",
+              "tier": "common"
+            },
+            {
+              "type": "card",
+              "tier": "colorless"
+            },
+            {
+              "type": "card",
+              "pool": "curse"
+            }
+          ],
+          "note": "Not a button: the in-game attempts counter. Gains are whichever pairs get matched (starter card also possible)."
+        }
+      ]
+    },
+    "complete": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

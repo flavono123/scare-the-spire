@@ -1,0 +1,118 @@
+{
+  "id": "Accursed Blacksmith",
+  "className": "shrines.AccursedBlacksmith",
+  "kind": "image",
+  "image": "blacksmith.jpg",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 4
+            }
+          ],
+          "next": "forge",
+          "note": "Locked (OPTIONS[4]) when the deck has no upgradable card. Opens the upgrade grid titled OPTIONS[3]."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "relic",
+            "id": "WarpedTongs"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "id": "WarpedTongs"
+            },
+            {
+              "type": "card",
+              "id": "Pain"
+            }
+          ],
+          "next": "rummage",
+          "note": "The button previews both the Pain card and the Warped Tongs relic."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "leave"
+        }
+      ]
+    },
+    "forge": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "rummage": {
+      "body": [
+        {
+          "d": 2
+        },
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "leave": {
+      "body": [
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

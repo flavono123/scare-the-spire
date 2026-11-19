@@ -1,0 +1,85 @@
+{
+  "id": "NoteForYourself",
+  "className": "shrines.NoteForYourself",
+  "kind": "image",
+  "image": "selfNote.jpg",
+  "start": "intro",
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "choose"
+        }
+      ]
+    },
+    "choose": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            },
+            {
+              "card": "Iron Wave"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Iron Wave"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Iron Wave"
+            }
+          ],
+          "next": "complete",
+          "note": "The card is the one stored by your previous run's Note For Yourself (saved in player prefs, with its upgrade count); Iron Wave only when nothing is stored. You then pick a card from your deck to remove and store for the next run."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "complete"
+        }
+      ]
+    },
+    "complete": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

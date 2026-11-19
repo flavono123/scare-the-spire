@@ -1,0 +1,464 @@
+{
+  "source": "com.megacrit.cardcrawl.screens.stats.AchievementGrid constructor + AchievementItem",
+  "localization": "achievements.json AchievementGrid NAMES[index] / TEXT[index]",
+  "layout": {
+    "itemsPerRow": 5
+  },
+  "images": "Regions of the achievements atlas: unlocked/<image> when unlocked, locked/<image> otherwise.",
+  "hiddenRule": "For hidden items that are still locked, AchievementItem shows NAMES[26] / TEXT[26] (\"Hidden\" placeholder) instead of the real title and text.",
+  "items": [
+    {
+      "key": "SHRUG_IT_OFF",
+      "index": 0,
+      "image": "shrugItOff",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "PURITY",
+      "index": 1,
+      "image": "purity",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "COME_AT_ME",
+      "index": 2,
+      "image": "comeAtMe",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "THE_PACT",
+      "index": 3,
+      "image": "thePact",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "ADRENALINE",
+      "index": 4,
+      "image": "adrenaline",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "POWERFUL",
+      "index": 5,
+      "image": "powerful",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "JAXXED",
+      "index": 6,
+      "image": "jaxxed",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "IMPERVIOUS",
+      "index": 7,
+      "image": "impervious",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "BARRICADED",
+      "index": 8,
+      "image": "barricaded",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "CATALYST",
+      "index": 9,
+      "image": "catalyst",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "PLAGUE",
+      "index": 10,
+      "image": "plague",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "NINJA",
+      "index": 11,
+      "image": "ninja",
+      "hidden": false,
+      "refs": [
+        {
+          "type": "card",
+          "id": "Shiv"
+        }
+      ]
+    },
+    {
+      "key": "INFINITY",
+      "index": 12,
+      "image": "infinity",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "FOCUSED",
+      "index": 35,
+      "image": "focused",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "NEON",
+      "index": 36,
+      "image": "neon",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "YOU_ARE_NOTHING",
+      "index": 13,
+      "image": "youAreNothing",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "MINIMALIST",
+      "index": 31,
+      "image": "minimalist",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "DONUT",
+      "index": 32,
+      "image": "donut",
+      "hidden": false,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "Donu"
+        },
+        {
+          "type": "card",
+          "id": "Feed"
+        }
+      ]
+    },
+    {
+      "key": "PERFECT",
+      "index": 14,
+      "image": "perfect",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "ONE_RELIC",
+      "index": 27,
+      "image": "onerelic",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "SPEED_CLIMBER",
+      "index": 28,
+      "image": "speed",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "COMMON_SENSE",
+      "index": 34,
+      "image": "commonSense",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "LUCKY_DAY",
+      "index": 38,
+      "image": "luckyDay",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "ASCEND_0",
+      "index": 29,
+      "image": "0",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "ASCEND_10",
+      "index": 30,
+      "image": "10",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "ASCEND_20",
+      "index": 40,
+      "image": "20",
+      "hidden": false,
+      "refs": []
+    },
+    {
+      "key": "TRANSIENT",
+      "index": 39,
+      "image": "transient",
+      "hidden": false,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "Transient"
+        }
+      ]
+    },
+    {
+      "key": "GUARDIAN",
+      "index": 15,
+      "image": "guardian",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "TheGuardian"
+        }
+      ]
+    },
+    {
+      "key": "GHOST_GUARDIAN",
+      "index": 16,
+      "image": "ghostGuardian",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "Hexaghost"
+        }
+      ]
+    },
+    {
+      "key": "SLIME_BOSS",
+      "index": 17,
+      "image": "slimeBoss",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "SlimeBoss"
+        }
+      ]
+    },
+    {
+      "key": "AUTOMATON",
+      "index": 18,
+      "image": "automaton",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "BronzeAutomaton"
+        }
+      ]
+    },
+    {
+      "key": "COLLECTOR",
+      "index": 19,
+      "image": "collector",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "TheCollector"
+        }
+      ]
+    },
+    {
+      "key": "CHAMP",
+      "index": 20,
+      "image": "champ",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "Champ"
+        }
+      ]
+    },
+    {
+      "key": "CROW",
+      "index": 21,
+      "image": "awakenedOne",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "AwakenedOne"
+        }
+      ]
+    },
+    {
+      "key": "SHAPES",
+      "index": 22,
+      "image": "shapes",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "Donu"
+        },
+        {
+          "type": "monster",
+          "id": "Deca"
+        }
+      ]
+    },
+    {
+      "key": "TIME_EATER",
+      "index": 23,
+      "image": "timeEater",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "monster",
+          "id": "TimeEater"
+        }
+      ]
+    },
+    {
+      "key": "RUBY",
+      "index": 24,
+      "image": "ironclad",
+      "hidden": false,
+      "refs": [
+        {
+          "type": "character",
+          "id": "ironclad"
+        }
+      ]
+    },
+    {
+      "key": "EMERALD",
+      "index": 25,
+      "image": "silent",
+      "hidden": false,
+      "refs": [
+        {
+          "type": "character",
+          "id": "silent"
+        }
+      ]
+    },
+    {
+      "key": "SAPPHIRE",
+      "index": 33,
+      "image": "sapphire",
+      "hidden": false,
+      "refs": [
+        {
+          "type": "character",
+          "id": "defect"
+        }
+      ]
+    },
+    {
+      "key": "AMETHYST",
+      "index": 46,
+      "image": "amethyst",
+      "hidden": false,
+      "refs": [
+        {
+          "type": "character",
+          "id": "watcher"
+        }
+      ]
+    },
+    {
+      "key": "RUBY_PLUS",
+      "index": 41,
+      "image": "rubyPlus",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "character",
+          "id": "ironclad"
+        }
+      ]
+    },
+    {
+      "key": "EMERALD_PLUS",
+      "index": 42,
+      "image": "emeraldPlus",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "character",
+          "id": "silent"
+        }
+      ]
+    },
+    {
+      "key": "SAPPHIRE_PLUS",
+      "index": 43,
+      "image": "sapphirePlus",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "character",
+          "id": "defect"
+        }
+      ]
+    },
+    {
+      "key": "AMETHYST_PLUS",
+      "index": 47,
+      "image": "amethyst_plus",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "character",
+          "id": "watcher"
+        }
+      ]
+    },
+    {
+      "key": "THE_ENDING",
+      "index": 44,
+      "image": "theEnding",
+      "hidden": true,
+      "refs": [
+        {
+          "type": "character",
+          "id": "ironclad"
+        },
+        {
+          "type": "character",
+          "id": "silent"
+        },
+        {
+          "type": "character",
+          "id": "defect"
+        }
+      ]
+    },
+    {
+      "key": "ETERNAL_ONE",
+      "index": 45,
+      "image": "eternal_one",
+      "hidden": true,
+      "refs": []
+    }
+  ],
+  "namesNotInGrid": [
+    {
+      "index": 26,
+      "note": "Placeholder title/text used for locked hidden achievements, not an achievement."
+    },
+    {
+      "index": 37,
+      "note": "\"Energy is Overrated\": no AchievementItem or *_KEY constant references it; unused string (cut achievement)."
+    }
+  ]
+}

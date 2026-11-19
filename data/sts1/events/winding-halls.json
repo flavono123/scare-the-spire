@@ -1,0 +1,192 @@
+{
+  "id": "Winding Halls",
+  "className": "beyond.WindingHalls",
+  "kind": "image",
+  "image": "winding.jpg",
+  "start": "intro",
+  "vars": {
+    "hpLoss": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 12.5
+        }
+      },
+      {
+        "ascension": 15,
+        "value": {
+          "of": "maxHp",
+          "pct": 18
+        }
+      }
+    ],
+    "heal": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 25
+        }
+      },
+      {
+        "ascension": 15,
+        "value": {
+          "of": "maxHp",
+          "pct": 20
+        }
+      }
+    ],
+    "maxHpLoss": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 5
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "lost"
+        }
+      ]
+    },
+    "lost": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            },
+            {
+              "v": "hpLoss"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Madness"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Madness",
+              "count": 2
+            }
+          ],
+          "next": "madness"
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "heal"
+            },
+            {
+              "o": 5
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Writhe"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Writhe"
+            }
+          ],
+          "next": "focus"
+        },
+        {
+          "label": [
+            {
+              "o": 6
+            },
+            {
+              "v": "maxHpLoss"
+            },
+            {
+              "o": 7
+            }
+          ],
+          "next": "retrace"
+        }
+      ]
+    },
+    "madness": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "focus": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "retrace": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

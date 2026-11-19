@@ -1,0 +1,431 @@
+{
+  "id": "Knowing Skull",
+  "className": "city.KnowingSkull",
+  "kind": "image",
+  "image": "knowingSkull.jpg",
+  "start": "intro",
+  "vars": {
+    "potionCost": [
+      {
+        "ascension": 0,
+        "value": 6
+      }
+    ],
+    "goldCost": [
+      {
+        "ascension": 0,
+        "value": 6
+      }
+    ],
+    "cardCost": [
+      {
+        "ascension": 0,
+        "value": 6
+      }
+    ],
+    "leaveCost": [
+      {
+        "ascension": 0,
+        "value": 6
+      }
+    ],
+    "gold": [
+      {
+        "ascension": 0,
+        "value": 90
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "ask"
+        }
+      ]
+    },
+    "ask": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "potionCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "gains": [
+            {
+              "type": "potion",
+              "tier": "random"
+            }
+          ],
+          "next": "potion",
+          "note": "HP loss rises by 1 each time this is picked. Sozu blocks the potion."
+        },
+        {
+          "label": [
+            {
+              "o": 5
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 6
+            },
+            {
+              "v": "goldCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "gold",
+          "note": "HP loss rises by 1 each time this is picked."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "cardCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "gains": [
+            {
+              "type": "card",
+              "tier": "colorless"
+            }
+          ],
+          "next": "card",
+          "note": "Uncommon colorless card. HP loss rises by 1 each time this is picked."
+        },
+        {
+          "label": [
+            {
+              "o": 7
+            },
+            {
+              "v": "leaveCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "leave"
+        }
+      ]
+    },
+    "potion": {
+      "body": [
+        {
+          "d": 4
+        },
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "potionCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "gains": [
+            {
+              "type": "potion",
+              "tier": "random"
+            }
+          ],
+          "next": "potion",
+          "note": "HP loss rises by 1 each time this is picked. Sozu blocks the potion."
+        },
+        {
+          "label": [
+            {
+              "o": 5
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 6
+            },
+            {
+              "v": "goldCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "gold",
+          "note": "HP loss rises by 1 each time this is picked."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "cardCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "gains": [
+            {
+              "type": "card",
+              "tier": "colorless"
+            }
+          ],
+          "next": "card",
+          "note": "Uncommon colorless card. HP loss rises by 1 each time this is picked."
+        },
+        {
+          "label": [
+            {
+              "o": 7
+            },
+            {
+              "v": "leaveCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "leave"
+        }
+      ],
+      "note": "Asking again repeats with the picked option's cost +1; the leave cost stays 6."
+    },
+    "card": {
+      "body": [
+        {
+          "d": 5
+        },
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "potionCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "gains": [
+            {
+              "type": "potion",
+              "tier": "random"
+            }
+          ],
+          "next": "potion",
+          "note": "HP loss rises by 1 each time this is picked. Sozu blocks the potion."
+        },
+        {
+          "label": [
+            {
+              "o": 5
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 6
+            },
+            {
+              "v": "goldCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "gold",
+          "note": "HP loss rises by 1 each time this is picked."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "cardCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "gains": [
+            {
+              "type": "card",
+              "tier": "colorless"
+            }
+          ],
+          "next": "card",
+          "note": "Uncommon colorless card. HP loss rises by 1 each time this is picked."
+        },
+        {
+          "label": [
+            {
+              "o": 7
+            },
+            {
+              "v": "leaveCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "leave"
+        }
+      ],
+      "note": "Asking again repeats with the picked option's cost +1; the leave cost stays 6."
+    },
+    "gold": {
+      "body": [
+        {
+          "d": 6
+        },
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "potionCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "gains": [
+            {
+              "type": "potion",
+              "tier": "random"
+            }
+          ],
+          "next": "potion",
+          "note": "HP loss rises by 1 each time this is picked. Sozu blocks the potion."
+        },
+        {
+          "label": [
+            {
+              "o": 5
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 6
+            },
+            {
+              "v": "goldCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "gold",
+          "note": "HP loss rises by 1 each time this is picked."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "cardCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "gains": [
+            {
+              "type": "card",
+              "tier": "colorless"
+            }
+          ],
+          "next": "card",
+          "note": "Uncommon colorless card. HP loss rises by 1 each time this is picked."
+        },
+        {
+          "label": [
+            {
+              "o": 7
+            },
+            {
+              "v": "leaveCost"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "leave"
+        }
+      ],
+      "note": "Asking again repeats with the picked option's cost +1; the leave cost stays 6."
+    },
+    "leave": {
+      "body": [
+        {
+          "d": 7
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

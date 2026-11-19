@@ -1,0 +1,117 @@
+{
+  "id": "World of Goop",
+  "className": "exordium.GoopPuddle",
+  "kind": "image",
+  "image": "goopPuddle.jpg",
+  "start": "intro",
+  "vars": {
+    "gold": [
+      {
+        "ascension": 0,
+        "value": 75
+      }
+    ],
+    "damage": [
+      {
+        "ascension": 0,
+        "value": 11
+      }
+    ],
+    "goldLoss": [
+      {
+        "ascension": 0,
+        "value": {
+          "min": 20,
+          "max": 50
+        }
+      },
+      {
+        "ascension": 15,
+        "value": {
+          "min": 35,
+          "max": 75
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 1
+            },
+            {
+              "v": "damage"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "next": "gather"
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "goldLoss"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "next": "leave",
+          "note": "Gold loss is capped at your current gold."
+        }
+      ]
+    },
+    "gather": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "leave": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

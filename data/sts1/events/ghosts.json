@@ -1,0 +1,129 @@
+{
+  "id": "Ghosts",
+  "className": "city.Ghosts",
+  "kind": "image",
+  "image": "ghost.jpg",
+  "start": "intro",
+  "vars": {
+    "maxHpLoss": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 50
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "maxHpLoss"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Ghostly"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Ghostly",
+              "count": 5
+            }
+          ],
+          "ascension": {
+            "max": 14
+          },
+          "next": "accepted",
+          "note": "Max HP loss rounds up and is capped at max HP - 1."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "maxHpLoss"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Ghostly"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Ghostly",
+              "count": 3
+            }
+          ],
+          "ascension": {
+            "min": 15
+          },
+          "next": "accepted",
+          "note": "Max HP loss rounds up and is capped at max HP - 1."
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "refused"
+        }
+      ]
+    },
+    "accepted": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "refused": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

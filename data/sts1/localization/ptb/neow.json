@@ -1,0 +1,74 @@
+{
+  "event": {
+    "NAMES": [
+      "Neow"
+    ],
+    "TEXT": [
+      "~Saudações...~ NL ~Eu..~ ~sou~ ~Neow...~",
+      "~Olá...~ NL ~Novamente..~",
+      "~Saudações...~",
+      "~Outra~ NL ~tentativa...?~",
+      "~Avance~ ~até~ ~o~ ~Chefe...~ NL ~para~ ~receber~ ~mais..~ ~bençãos...~",
+      "~Enfrente~ ~pelo...~ ~menos~ NL ~o~ ~primeiro~ ~chefe...~",
+      "~Eu~ ~te~ ~trouxe~ ~de~ ~volta...~",
+      "~Escolha...~",
+      "~Concedido...~",
+      "~Arriscada...~ NL ~..recompensa....~",
+      "~Hora~ ~de~ ~um~ NL ~DESAFIO...~",
+      "Recompensas",
+      "~Let's~ ~keep~ ~going...~",
+      "~It~ ~only~ ~gets~ ~harder...~",
+      "~Impressive...~ ~more...~",
+      "Cursed!",
+      "Bloat!",
+      "Transformation!"
+    ],
+    "OPTIONS": [
+      "[Continuar]",
+      "[Conversar]",
+      "[Pular]",
+      "[Sair]",
+      "Escolha 10 cartas para adicionar ao seu deck."
+    ]
+  },
+  "reward": {
+    "NAMES": [],
+    "TEXT": [
+      "[ #gEscolha #guma #gCarta #gpara #gobter ]",
+      "[ #gObtenha #guma #gCarta #grara #galeatória ]",
+      "[ #gRemova #guma #gCarta #gdo #gseu #gbaralho ]",
+      "[ #gAprimore #guma #gCarta ]",
+      "[ #gTransforme #guma #gCarta ]",
+      "[ #gObtenha #g3 #gPoções #galeatórias ]",
+      "[ #gObtenha #guma #gRelíquia #gcomum #galeatória ]",
+      "[ #gPV #gmáximo #g+",
+      "[ #gObtenha #g",
+      " #gde #gOuro ]",
+      "#gRemova #g2 #gCartas ]",
+      "#gObtenha #guma #gRelíquia #grara #galeatória ]",
+      "#gEscolha #guma #gCarta #grara #gpara #gobter ]",
+      "#gGanhe #g",
+      " #gde #gOuro ]",
+      "#gTransforme #g2 #gCartas ]",
+      "#gPV #gmáximo #g+",
+      "[ #rPerca #r",
+      " #rPV #rmáximo ",
+      "[ #rPerca #rtodo #ro #rOuro ",
+      "[ #rObtenha #ruma #rMaldição ",
+      "[ #rPerca #r50% #rdo #rseu #rPV #ratual ",
+      "Escolha uma Carta",
+      "Selecione uma Carta para Remover",
+      "Selecione 2 Cartas para Remover",
+      "Selecione uma carta para Transformar",
+      "Selecione 2 cartas para Transformar",
+      "Selecione uma carta para Aprimorar",
+      "[ #gInimigos #gnos #gpróximos #gtrês #gcombates #gterão #g1 #gPV ]",
+      " #rdano",
+      "[ #gEscolha #guma #gCarta #gincolor #gpara #gobter ]",
+      "#gEscolha #guma #gCarta #gincolor #grara #gpara #gobter ]"
+    ],
+    "UNIQUE_REWARDS": [
+      "[ #rPerca #rsua #rRelíquia #rinicial #gGanhe #guma #gRelíquia #gde #gchefe]"
+    ]
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "id": "Liars Game",
+  "className": "exordium.Sssserpent",
+  "kind": "image",
+  "image": "liarsGame.jpg",
+  "start": "intro",
+  "vars": {
+    "gold": [
+      {
+        "ascension": 0,
+        "value": 175
+      },
+      {
+        "ascension": 15,
+        "value": 150
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "gold"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Doubt"
+          },
+          "next": "agree"
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "disagree"
+        }
+      ]
+    },
+    "agree": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "gains": [
+            {
+              "type": "card",
+              "id": "Doubt"
+            }
+          ],
+          "next": "gold"
+        }
+      ]
+    },
+    "gold": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "disagree": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

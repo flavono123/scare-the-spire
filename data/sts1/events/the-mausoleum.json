@@ -1,0 +1,157 @@
+{
+  "id": "The Mausoleum",
+  "className": "city.TheMausoleum",
+  "kind": "image",
+  "image": "mausoleum.jpg",
+  "start": "intro",
+  "vars": {
+    "curse": [
+      {
+        "ascension": 0,
+        "value": 50
+      },
+      {
+        "ascension": 15,
+        "value": 100
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "curse"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Writhe"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "random"
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "cursed",
+              "chance": 50
+            },
+            {
+              "next": "clean",
+              "chance": 50
+            }
+          ],
+          "ascension": {
+            "max": 14
+          },
+          "note": "Writhe is added only in the cursed outcome."
+        },
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "curse"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Writhe"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "random"
+            },
+            {
+              "type": "card",
+              "id": "Writhe"
+            }
+          ],
+          "next": "cursed",
+          "ascension": {
+            "min": 15
+          }
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "nope"
+        }
+      ]
+    },
+    "cursed": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "clean": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "nope": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "source": "ui.json AscensionModeDescriptions TEXT; thresholds from every 'ascensionLevel >= N' check in the game classes",
+  "localization": "ui.json AscensionModeDescriptions TEXT[index] (index = level - 1)",
+  "note": "Ascension levels are cumulative: level N applies every level <= N. monsterStats=true means the level changes monster HP, damage or moves, so the bestiary should be shown at that level.",
+  "levels": [
+    {
+      "level": 1,
+      "index": 0,
+      "changes": [
+        "other"
+      ],
+      "monsterStats": false,
+      "summary": "Elite rooms appear more often on the map (AbstractDungeon eliteRoomChance x1.6)."
+    },
+    {
+      "level": 2,
+      "index": 1,
+      "changes": [
+        "monster damage"
+      ],
+      "monsterStats": true,
+      "summary": "Normal enemies deal more damage (checked in 40 monster classes)."
+    },
+    {
+      "level": 3,
+      "index": 2,
+      "changes": [
+        "monster damage",
+        "elites"
+      ],
+      "monsterStats": true,
+      "summary": "Elites deal more damage."
+    },
+    {
+      "level": 4,
+      "index": 3,
+      "changes": [
+        "monster damage",
+        "bosses"
+      ],
+      "monsterStats": true,
+      "summary": "Bosses deal more damage."
+    },
+    {
+      "level": 5,
+      "index": 4,
+      "changes": [
+        "other"
+      ],
+      "monsterStats": false,
+      "summary": "Healing after a boss is reduced to 75% of missing HP (AbstractDungeon)."
+    },
+    {
+      "level": 6,
+      "index": 5,
+      "changes": [
+        "other"
+      ],
+      "monsterStats": false,
+      "summary": "Start each run at 90% of Max HP (AbstractDungeon)."
+    },
+    {
+      "level": 7,
+      "index": 6,
+      "changes": [
+        "monster HP"
+      ],
+      "monsterStats": true,
+      "summary": "Normal enemies have more HP."
+    },
+    {
+      "level": 8,
+      "index": 7,
+      "changes": [
+        "monster HP",
+        "elites"
+      ],
+      "monsterStats": true,
+      "summary": "Elites have more HP."
+    },
+    {
+      "level": 9,
+      "index": 8,
+      "changes": [
+        "monster HP",
+        "bosses"
+      ],
+      "monsterStats": true,
+      "summary": "Bosses (and boss minions Bronze Orb, Torch Head) have more HP."
+    },
+    {
+      "level": 10,
+      "index": 9,
+      "changes": [
+        "other"
+      ],
+      "monsterStats": false,
+      "summary": "Start each run with the Ascender's Bane curse in the deck."
+    },
+    {
+      "level": 11,
+      "index": 10,
+      "changes": [
+        "other"
+      ],
+      "monsterStats": false,
+      "summary": "One fewer potion slot (AbstractPlayer.potionSlots - 1)."
+    },
+    {
+      "level": 12,
+      "index": 11,
+      "changes": [
+        "other"
+      ],
+      "monsterStats": false,
+      "summary": "Upgraded card reward chance halved in acts 2-4 (TheCity 0.25 -> 0.125; TheBeyond/TheEnding similarly)."
+    },
+    {
+      "level": 13,
+      "index": 12,
+      "changes": [
+        "bosses",
+        "events",
+        "other"
+      ],
+      "monsterStats": false,
+      "summary": "Boss gold rewards are 75% (AbstractRoom); Mind Bloom's gold option is also reduced."
+    },
+    {
+      "level": 14,
+      "index": 13,
+      "changes": [
+        "other"
+      ],
+      "monsterStats": false,
+      "summary": "Lower starting Max HP (AbstractPlayer.getAscensionMaxHPLoss, per character)."
+    },
+    {
+      "level": 15,
+      "index": 14,
+      "changes": [
+        "events"
+      ],
+      "monsterStats": false,
+      "summary": "Unfavorable events: worse numbers in Cleric, CursedTome, DeadAdventurer, Designer, FaceTrader, ForgottenAltar, Ghosts, GoldShrine, GoldenIdolEvent, GoopPuddle, GremlinMatchGame, GremlinWheelGame, Lab, MoaiHead, Nest, ScrapOoze, ShiningLight, Sssserpent, TheLibrary, TheMausoleum, WindingHalls, WomanInBlue; Note For Yourself is removed from the event pool."
+    },
+    {
+      "level": 16,
+      "index": 15,
+      "changes": [
+        "other"
+      ],
+      "monsterStats": false,
+      "summary": "Shop prices x1.1 (ShopScreen.applyDiscount(1.1))."
+    },
+    {
+      "level": 17,
+      "index": 16,
+      "changes": [
+        "monster move effects"
+      ],
+      "monsterStats": true,
+      "summary": "Normal enemies have harder movesets and abilities (34 monster classes)."
+    },
+    {
+      "level": 18,
+      "index": 17,
+      "changes": [
+        "monster move effects",
+        "elites"
+      ],
+      "monsterStats": true,
+      "summary": "Elites have harder movesets and abilities."
+    },
+    {
+      "level": 19,
+      "index": 18,
+      "changes": [
+        "monster move effects",
+        "bosses"
+      ],
+      "monsterStats": true,
+      "summary": "Bosses have harder movesets and abilities."
+    },
+    {
+      "level": 20,
+      "index": 19,
+      "changes": [
+        "bosses",
+        "other"
+      ],
+      "monsterStats": false,
+      "summary": "Double boss: a second boss fight at the end of act 3 (AbstractMonster/ProceedButton/TopPanel check bossList and level 20); score screens also read it."
+    }
+  ]
+}

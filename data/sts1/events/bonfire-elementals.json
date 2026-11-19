@@ -1,0 +1,193 @@
+{
+  "id": "Bonfire Elementals",
+  "className": "shrines.Bonfire",
+  "kind": "image",
+  "image": "bonfire.jpg",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "spirits"
+        }
+      ]
+    },
+    "spirits": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "note": "Opens a grid of purgeable, non-bottled cards titled OPTIONS[3]; the chosen card is removed and its rarity picks the result. With no such card, 'nothing' shows directly.",
+          "outcomes": [
+            {
+              "next": "curse"
+            },
+            {
+              "next": "basic"
+            },
+            {
+              "next": "common"
+            },
+            {
+              "next": "uncommon"
+            },
+            {
+              "next": "rare"
+            },
+            {
+              "next": "nothing"
+            }
+          ]
+        }
+      ]
+    },
+    "curse": {
+      "body": [
+        {
+          "d": 2
+        },
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ],
+      "gains": [
+        {
+          "type": "relic",
+          "id": "Spirit Poop"
+        }
+      ],
+      "note": "Offered a Curse: gain Spirit Poop, or Circlet if Spirit Poop is already owned (Circlet is not in relics.json)."
+    },
+    "basic": {
+      "body": [
+        {
+          "d": 2
+        },
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ],
+      "note": "Offered a Basic card: nothing happens."
+    },
+    "common": {
+      "body": [
+        {
+          "d": 2
+        },
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ],
+      "note": "Offered a Common or Special card: heal 5 HP."
+    },
+    "uncommon": {
+      "body": [
+        {
+          "d": 2
+        },
+        {
+          "d": 6
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ],
+      "note": "Offered an Uncommon card: heal to full HP."
+    },
+    "rare": {
+      "body": [
+        {
+          "d": 2
+        },
+        {
+          "d": 7
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ],
+      "note": "Offered a Rare card: +10 Max HP, then heal to full HP."
+    },
+    "nothing": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ],
+      "note": "No purgeable card to offer."
+    }
+  }
+}

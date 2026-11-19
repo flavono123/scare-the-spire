@@ -1,0 +1,447 @@
+{
+  "id": "Dead Adventurer",
+  "className": "exordium.DeadAdventurer",
+  "kind": "room",
+  "image": null,
+  "start": "intro",
+  "vars": {
+    "chance1": [
+      {
+        "ascension": 0,
+        "value": 25
+      },
+      {
+        "ascension": 15,
+        "value": 35
+      }
+    ],
+    "chance2": [
+      {
+        "ascension": 0,
+        "value": 50
+      },
+      {
+        "ascension": 15,
+        "value": 60
+      }
+    ],
+    "chance3": [
+      {
+        "ascension": 0,
+        "value": 75
+      },
+      {
+        "ascension": 15,
+        "value": 85
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 2
+        },
+        {
+          "d": 3
+        },
+        {
+          "d": 6
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "chance1"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "fight"
+            },
+            {
+              "next": "gold-1"
+            },
+            {
+              "next": "nothing-1"
+            },
+            {
+              "next": "relic-1"
+            }
+          ],
+          "note": "Fight chance is the shown %; otherwise the next reward from a shuffled GOLD (30 gold) / NOTHING / RELIC (random relic) order."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "escape"
+        }
+      ],
+      "bodyVariants": [
+        {
+          "monster": "Sentry",
+          "body": [
+            {
+              "d": 2
+            },
+            {
+              "d": 3
+            },
+            {
+              "d": 6
+            }
+          ]
+        },
+        {
+          "monster": "GremlinNob",
+          "body": [
+            {
+              "d": 2
+            },
+            {
+              "d": 4
+            },
+            {
+              "d": 6
+            }
+          ]
+        },
+        {
+          "monster": "Lagavulin",
+          "body": [
+            {
+              "d": 2
+            },
+            {
+              "d": 5
+            },
+            {
+              "d": 6
+            }
+          ]
+        }
+      ]
+    },
+    "gold-1": {
+      "body": [
+        {
+          "d": 7
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "chance2"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "fight"
+            },
+            {
+              "next": "nothing-2"
+            },
+            {
+              "next": "relic-2"
+            }
+          ],
+          "note": "Fight chance is the shown %; otherwise the next reward from a shuffled GOLD (30 gold) / NOTHING / RELIC (random relic) order."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "nothing-1": {
+      "body": [
+        {
+          "d": 8
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "chance2"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "fight"
+            },
+            {
+              "next": "gold-2"
+            },
+            {
+              "next": "relic-2"
+            }
+          ],
+          "note": "Fight chance is the shown %; otherwise the next reward from a shuffled GOLD (30 gold) / NOTHING / RELIC (random relic) order."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "relic-1": {
+      "body": [
+        {
+          "d": 9
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "chance2"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "fight"
+            },
+            {
+              "next": "gold-2"
+            },
+            {
+              "next": "nothing-2"
+            }
+          ],
+          "note": "Fight chance is the shown %; otherwise the next reward from a shuffled GOLD (30 gold) / NOTHING / RELIC (random relic) order."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "gold-2": {
+      "body": [
+        {
+          "d": 7
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "chance3"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "fight"
+            },
+            {
+              "next": "success"
+            }
+          ],
+          "note": "The third search grants the last remaining reward (gold or relic or nothing) and ends the search."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "nothing-2": {
+      "body": [
+        {
+          "d": 8
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "chance3"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "fight"
+            },
+            {
+              "next": "success"
+            }
+          ],
+          "note": "The third search grants the last remaining reward (gold or relic or nothing) and ends the search."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "relic-2": {
+      "body": [
+        {
+          "d": 9
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "chance3"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "fight"
+            },
+            {
+              "next": "success"
+            }
+          ],
+          "note": "The third search grants the last remaining reward (gold or relic or nothing) and ends the search."
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "success": {
+      "body": [
+        {
+          "d": 10
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "escape": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "fight": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "note": "Elite fight against the enemy picked at the start; the art uses images/npcs/nopants.png.",
+      "options": [
+        {
+          "label": [
+            {
+              "o": 2
+            }
+          ],
+          "combat": {
+            "encounters": [
+              [
+                "Sentry",
+                "Sentry",
+                "Sentry"
+              ],
+              [
+                "GremlinNob"
+              ],
+              [
+                "Lagavulin"
+              ]
+            ]
+          },
+          "next": null,
+          "note": "Rewards: 25-35 gold (0-29 on daily runs) plus every unclaimed search reward (30 gold, random relic)."
+        }
+      ]
+    }
+  }
+}

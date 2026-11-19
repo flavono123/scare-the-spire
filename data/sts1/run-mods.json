@@ -1,0 +1,794 @@
+{
+  "source": "CustomModeScreen.initializeMods/addNonDailyMods, CustomMod, ModHelper, daily.mods.*",
+  "iconDir": "images/ui/run_mods/",
+  "colors": {
+    "b": "blue (FontHelper.colorString; first block: starting-deck/run-structure mods)",
+    "g": "green (beneficial)",
+    "r": "red (harmful)"
+  },
+  "screenGroup": {
+    "header": [
+      "ui.json CustomModeScreen TEXT",
+      6
+    ],
+    "note": "All mods are drawn in one scrolling list under the Modifiers header, in screenIndex order; CustomMod renders the name as [NAME] in its color code followed by the description, with no icon. isDailyMod (customOnly=false) mods are passed to ModHelper; the rest are applied by CustomTrial in addNonDailyMods."
+  },
+  "daily": {
+    "note": "ModHelper.setTodaysMods picks exactly one mod from each of starterMods, genericMods and difficultyMods (skipping a mod whose classToExclude is the chosen character): the eligible list is shuffled with java.util.Random(seed / 5) and index seed % 5 is taken. DailyScreen.renderMods lists the 3 mods in that order (starter, generic, difficulty) under DailyScreen TEXT[13], each with its 64px icon; the name is colored green ('g') when AbstractDailyMod.positive is true and red ('r') when false, then ': ' + description. It does not regroup them; positive/negative is only the color.",
+    "groups": {
+      "starter": [
+        "Draft",
+        "SealedDeck",
+        "Insanity",
+        "Chimera",
+        "Shiny",
+        "Specialized",
+        "Allstar",
+        "Heirloom",
+        "Cursed Run"
+      ],
+      "generic": [
+        "Hoarder",
+        "Vintage",
+        "ControlledChaos",
+        "Diverse",
+        "Red Cards",
+        "Green Cards",
+        "Blue Cards",
+        "Purple Cards",
+        "Colorless Cards",
+        "Time Dilation",
+        "Flight",
+        "Uncertain Future"
+      ],
+      "difficulty": [
+        "DeadlyEvents",
+        "Binary",
+        "Elite Swarm",
+        "Lethality",
+        "Midas",
+        "Night Terrors",
+        "Terminal"
+      ],
+      "legacy": [
+        "Brewmaster",
+        "MonsterHunter"
+      ]
+    }
+  },
+  "mods": [
+    {
+      "id": "Daily Mods",
+      "screenIndex": 0,
+      "color": "b",
+      "icon": null,
+      "dailyClass": null,
+      "positive": null,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": true,
+      "exclusive": [],
+      "refs": [],
+      "note": "CustomTrial.setRandomDailyMods: adds 3 random daily mods."
+    },
+    {
+      "id": "Draft",
+      "screenIndex": 1,
+      "color": "b",
+      "icon": "draft.png",
+      "dailyClass": "Draft",
+      "positive": true,
+      "dailyGroup": "starter",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [
+        "SealedDeck"
+      ],
+      "refs": []
+    },
+    {
+      "id": "SealedDeck",
+      "screenIndex": 2,
+      "color": "b",
+      "icon": "sealed_deck.png",
+      "dailyClass": "SealedDeck",
+      "positive": true,
+      "dailyGroup": "starter",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [
+        "Draft"
+      ],
+      "refs": []
+    },
+    {
+      "id": "The Ending",
+      "screenIndex": 3,
+      "color": "b",
+      "icon": "endless.png",
+      "dailyClass": "Ending",
+      "positive": true,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [
+        "Endless"
+      ],
+      "refs": [],
+      "note": "Only listed once the THE_ENDING achievement is unlocked."
+    },
+    {
+      "id": "Endless",
+      "screenIndex": 4,
+      "color": "b",
+      "icon": "endless.png",
+      "dailyClass": "Endless",
+      "positive": true,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [
+        "The Ending"
+      ],
+      "refs": [
+        {
+          "type": "blight",
+          "pool": "endless"
+        }
+      ]
+    },
+    {
+      "id": "Blight Chests",
+      "screenIndex": 5,
+      "color": "b",
+      "icon": "endless.png",
+      "dailyClass": "BlightChests",
+      "positive": true,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": true,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "blight",
+          "pool": "chestBlights"
+        }
+      ],
+      "note": "CustomTrial also turns on the Blight Chests daily mod; boss chests after act 3 on Endless offer BlightHelper.chestBlights."
+    },
+    {
+      "id": "Hoarder",
+      "screenIndex": 6,
+      "color": "b",
+      "icon": "greed.png",
+      "dailyClass": "Hoarder",
+      "positive": false,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Insanity",
+      "screenIndex": 7,
+      "color": "b",
+      "icon": "restless_journey.png",
+      "dailyClass": "Insanity",
+      "positive": false,
+      "dailyGroup": "starter",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [
+        "Shiny"
+      ],
+      "refs": []
+    },
+    {
+      "id": "Chimera",
+      "screenIndex": 8,
+      "color": "b",
+      "icon": "chimera.png",
+      "dailyClass": "Chimera",
+      "positive": true,
+      "dailyGroup": "starter",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "card",
+          "id": "Bash"
+        },
+        {
+          "type": "card",
+          "id": "Survivor"
+        },
+        {
+          "type": "card",
+          "id": "Zap"
+        },
+        {
+          "type": "card",
+          "id": "Eruption"
+        },
+        {
+          "type": "card",
+          "id": "Strike_R"
+        },
+        {
+          "type": "card",
+          "id": "Strike_G"
+        },
+        {
+          "type": "card",
+          "id": "Strike_B"
+        },
+        {
+          "type": "card",
+          "id": "Defend_R"
+        },
+        {
+          "type": "card",
+          "id": "Defend_G"
+        },
+        {
+          "type": "card",
+          "id": "Defend_P"
+        }
+      ],
+      "note": "Starting deck: Bash, Survivor, Zap, Eruption, Strike x3 (red/green/blue), Defend x3 (red/green/purple)."
+    },
+    {
+      "id": "Praise Snecko",
+      "screenIndex": 9,
+      "color": "b",
+      "icon": null,
+      "dailyClass": null,
+      "positive": null,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": true,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "relic",
+          "id": "Snecko Eye"
+        }
+      ],
+      "note": "Replaces starting relic (setShouldKeepStarterRelic false)."
+    },
+    {
+      "id": "Shiny",
+      "screenIndex": 10,
+      "color": "b",
+      "icon": "shiny.png",
+      "dailyClass": "Shiny",
+      "positive": true,
+      "dailyGroup": "starter",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [
+        "Insanity"
+      ],
+      "refs": []
+    },
+    {
+      "id": "Specialized",
+      "screenIndex": 11,
+      "color": "b",
+      "icon": "specialized.png",
+      "dailyClass": "Specialized",
+      "positive": true,
+      "dailyGroup": "starter",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Vintage",
+      "screenIndex": 12,
+      "color": "b",
+      "icon": "vintage.png",
+      "dailyClass": "Vintage",
+      "positive": true,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "ControlledChaos",
+      "screenIndex": 13,
+      "color": "b",
+      "icon": "controlled_chaos.png",
+      "dailyClass": "ControlledChaos",
+      "positive": true,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "relic",
+          "id": "Frozen Eye"
+        }
+      ],
+      "note": "AbstractPlayer adds Frozen Eye."
+    },
+    {
+      "id": "Inception",
+      "screenIndex": 14,
+      "color": "b",
+      "icon": null,
+      "dailyClass": null,
+      "positive": null,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": true,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "relic",
+          "id": "Unceasing Top"
+        }
+      ],
+      "note": "Replaces starting relic (setShouldKeepStarterRelic false)."
+    },
+    {
+      "id": "Allstar",
+      "screenIndex": 15,
+      "color": "g",
+      "icon": "all_star.png",
+      "dailyClass": "Allstar",
+      "positive": true,
+      "dailyGroup": "starter",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "card",
+          "color": "colorless",
+          "tier": "uncommon|rare",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "id": "Diverse",
+      "screenIndex": 16,
+      "color": "g",
+      "icon": "diverse.png",
+      "dailyClass": "Diverse",
+      "positive": true,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [
+        "Red Cards",
+        "Green Cards",
+        "Blue Cards",
+        "Purple Cards"
+      ],
+      "refs": []
+    },
+    {
+      "id": "Red Cards",
+      "screenIndex": 17,
+      "color": "g",
+      "icon": "red.png",
+      "dailyClass": "RedCards",
+      "positive": true,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "excludedForClass": "IRONCLAD",
+      "exclusive": [
+        "Diverse"
+      ],
+      "refs": []
+    },
+    {
+      "id": "Green Cards",
+      "screenIndex": 18,
+      "color": "g",
+      "icon": "green.png",
+      "dailyClass": "GreenCards",
+      "positive": true,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "excludedForClass": "THE_SILENT",
+      "exclusive": [
+        "Diverse"
+      ],
+      "refs": []
+    },
+    {
+      "id": "Blue Cards",
+      "screenIndex": 19,
+      "color": "g",
+      "icon": "blue.png",
+      "dailyClass": "BlueCards",
+      "positive": true,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "excludedForClass": "DEFECT",
+      "exclusive": [
+        "Diverse"
+      ],
+      "refs": []
+    },
+    {
+      "id": "Purple Cards",
+      "screenIndex": 20,
+      "color": "g",
+      "icon": "purple.png",
+      "dailyClass": "PurpleCards",
+      "positive": true,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "excludedForClass": "WATCHER",
+      "exclusive": [
+        "Diverse"
+      ],
+      "refs": [],
+      "note": "Only listed once the Watcher is unlocked."
+    },
+    {
+      "id": "Colorless Cards",
+      "screenIndex": 21,
+      "color": "g",
+      "icon": "colorless.png",
+      "dailyClass": "ColorlessCards",
+      "positive": true,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Heirloom",
+      "screenIndex": 22,
+      "color": "g",
+      "icon": "heirloom.png",
+      "dailyClass": "Heirloom",
+      "positive": true,
+      "dailyGroup": "starter",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "relic",
+          "tier": "rare"
+        }
+      ]
+    },
+    {
+      "id": "Time Dilation",
+      "screenIndex": 23,
+      "color": "g",
+      "icon": "slow_start.png",
+      "dailyClass": "TimeDilation",
+      "positive": true,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Flight",
+      "screenIndex": 24,
+      "color": "g",
+      "icon": "flight.png",
+      "dailyClass": "Flight",
+      "positive": true,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "My True Form",
+      "screenIndex": 25,
+      "color": "g",
+      "icon": null,
+      "dailyClass": null,
+      "positive": null,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": true,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "card",
+          "id": "Demon Form"
+        },
+        {
+          "type": "card",
+          "id": "Wraith Form v2"
+        },
+        {
+          "type": "card",
+          "id": "Echo Form"
+        },
+        {
+          "type": "card",
+          "id": "DevaForm"
+        }
+      ]
+    },
+    {
+      "id": "DeadlyEvents",
+      "screenIndex": 26,
+      "color": "r",
+      "icon": "deadly_events.png",
+      "dailyClass": "DeadlyEvents",
+      "positive": false,
+      "dailyGroup": "difficulty",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Binary",
+      "screenIndex": 27,
+      "color": "r",
+      "icon": "binary.png",
+      "dailyClass": "Binary",
+      "positive": false,
+      "dailyGroup": "difficulty",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "One Hit Wonder",
+      "screenIndex": 28,
+      "color": "r",
+      "icon": null,
+      "dailyClass": null,
+      "positive": null,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": true,
+      "exclusive": [],
+      "refs": [],
+      "note": "CustomTrial max HP override = 1."
+    },
+    {
+      "id": "Cursed Run",
+      "screenIndex": 29,
+      "color": "r",
+      "icon": "cursed_run.png",
+      "dailyClass": "CursedRun",
+      "positive": false,
+      "dailyGroup": "starter",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "relic",
+          "id": "Cursed Key"
+        },
+        {
+          "type": "relic",
+          "id": "Darkstone Periapt"
+        },
+        {
+          "type": "relic",
+          "id": "Du-Vu Doll"
+        }
+      ],
+      "note": "AbstractPlayer replaces the starting relics with Cursed Key, Darkstone Periapt and Du-Vu Doll."
+    },
+    {
+      "id": "Elite Swarm",
+      "screenIndex": 30,
+      "color": "r",
+      "icon": "elite_swarm.png",
+      "dailyClass": "BigGameHunter",
+      "positive": false,
+      "dailyGroup": "difficulty",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Lethality",
+      "screenIndex": 31,
+      "color": "r",
+      "icon": "lethal_enemies.png",
+      "dailyClass": "Lethality",
+      "positive": false,
+      "dailyGroup": "difficulty",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Midas",
+      "screenIndex": 32,
+      "color": "r",
+      "icon": "midas.png",
+      "dailyClass": "Midas",
+      "positive": false,
+      "dailyGroup": "difficulty",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Night Terrors",
+      "screenIndex": 33,
+      "color": "r",
+      "icon": "night_terrors.png",
+      "dailyClass": "NightTerrors",
+      "positive": false,
+      "dailyGroup": "difficulty",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Terminal",
+      "screenIndex": 34,
+      "color": "r",
+      "icon": "tough_enemies.png",
+      "dailyClass": "Terminal",
+      "positive": false,
+      "dailyGroup": "difficulty",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Uncertain Future",
+      "screenIndex": 35,
+      "color": "r",
+      "icon": "certain_future.png",
+      "dailyClass": "CertainFuture",
+      "positive": false,
+      "dailyGroup": "generic",
+      "dailyOnly": false,
+      "customOnly": false,
+      "exclusive": [],
+      "refs": []
+    },
+    {
+      "id": "Starter Deck",
+      "screenIndex": 36,
+      "color": "r",
+      "icon": null,
+      "dailyClass": null,
+      "positive": null,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": true,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "relic",
+          "id": "Busted Crown"
+        }
+      ],
+      "note": "Adds Busted Crown and also enables the Binary mod."
+    },
+    {
+      "id": "Brewmaster",
+      "screenIndex": null,
+      "color": null,
+      "icon": "brewmaster.png",
+      "dailyClass": "Brewmaster",
+      "positive": true,
+      "dailyGroup": "legacy",
+      "dailyOnly": false,
+      "customOnly": false,
+      "notOnScreen": true,
+      "exclusive": [],
+      "refs": [
+        {
+          "type": "card",
+          "id": "Venomology"
+        },
+        {
+          "type": "relic",
+          "id": "White Beast Statue"
+        }
+      ],
+      "note": "Legacy (ModHelper.legacyMods): resolvable by ID for old saves/trials, never offered. Marked [DEPRECATED]."
+    },
+    {
+      "id": "MonsterHunter",
+      "screenIndex": null,
+      "color": null,
+      "icon": "colossus.png",
+      "dailyClass": "Colossus",
+      "positive": false,
+      "dailyGroup": "legacy",
+      "dailyOnly": false,
+      "customOnly": false,
+      "notOnScreen": true,
+      "exclusive": [],
+      "refs": [],
+      "note": "Legacy (ModHelper.legacyMods, class Colossus): never offered. Marked [DEPRECATED]."
+    },
+    {
+      "id": "Careless",
+      "screenIndex": null,
+      "color": null,
+      "icon": "slow_start.png",
+      "dailyClass": "Careless",
+      "positive": false,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": false,
+      "notOnScreen": true,
+      "exclusive": [],
+      "refs": [],
+      "note": "Has a daily-mod class and code hooks (GameActionManager, AbstractRoom) but is not registered in ModHelper or listed on the screen, so it cannot be enabled."
+    },
+    {
+      "id": "Stunted Growth",
+      "screenIndex": null,
+      "color": null,
+      "icon": null,
+      "dailyClass": null,
+      "positive": null,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": false,
+      "notOnScreen": true,
+      "exclusive": [],
+      "refs": [],
+      "note": "Localization only; no class or code references it."
+    },
+    {
+      "id": "NeowTime",
+      "screenIndex": null,
+      "color": null,
+      "icon": null,
+      "dailyClass": null,
+      "positive": null,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": false,
+      "notOnScreen": true,
+      "exclusive": [],
+      "refs": [],
+      "note": "Localization only; no class or code references it."
+    },
+    {
+      "id": "IntelligentEnemies",
+      "screenIndex": null,
+      "color": null,
+      "icon": null,
+      "dailyClass": null,
+      "positive": null,
+      "dailyGroup": null,
+      "dailyOnly": false,
+      "customOnly": false,
+      "notOnScreen": true,
+      "exclusive": [],
+      "refs": [],
+      "note": "Localization only; no class or code references it."
+    }
+  ]
+}

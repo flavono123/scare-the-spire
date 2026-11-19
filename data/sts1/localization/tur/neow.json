@@ -1,0 +1,74 @@
+{
+  "event": {
+    "NAMES": [
+      "Neow"
+    ],
+    "TEXT": [
+      "~Selam...~ NL ~Ben...~ ~Neow...~",
+      "~Tekrardan...~ NL ~Merhaba...~",
+      "~Selam...~",
+      "~Yeniden~ ~mi~ NL ~deniyorsun...?~",
+      "~Kutsamamı~ ~alabilmek~ ~için...~ NL ~Boss'a~ ~ulaş...~",
+      "~En~ ~azından...~ ~ilk~ ~Boss'la~ NL ~karşılaş...~",
+      "~Seni~ ~geri~ ~getirdim...~",
+      "~Seç...~",
+      "~Yerine~ ~getirildi...~",
+      "~Risk...~ NL ~...ödül....~",
+      "~MEYDAN~ ~OKUMA~ NL ~zamanı...~",
+      "Rewards",
+      "~Hadi~ ~devam~ ~edelim...~",
+      "~Yalnızca~ ~daha~ ~da~ ~zorlaşacak...~",
+      "~Etkileyici...~ ~daha~ ~fazla...~",
+      "Lanetlendin!",
+      "Sersem!",
+      "Dönüşüm!"
+    ],
+    "OPTIONS": [
+      "[Devam Et]",
+      "[Konuş]",
+      "[Devam]",
+      "[Ayrıl]",
+      "Destene eklemek için 10 kart seç."
+    ]
+  },
+  "reward": {
+    "NAMES": [],
+    "TEXT": [
+      "[ #gEdinmek #gistediğin #gbir #gKart #gseç ]",
+      "[ #gRastgele #gbir #gnadir #gKart #gedin ]",
+      "[ #gDestenden #gbir #gKart #gçıkar ]",
+      "[ #gBir #gKart #ggeliştir ]",
+      "[ #gBir #gKart #gdönüştür ]",
+      "[ #gRastgele #g3 #gİksir #gedin ]",
+      "[ #gRastgele #gbir #gyaygın #gKalıntı #gedin ]",
+      "[ #gMaksimum #gCP #g+",
+      "[ #g",
+      " #gAltın #gedin ]",
+      "#g2 #gKart #gçıkar ]",
+      "#gRastgele #gbir #gnadir #gKalıntı #gedin ]",
+      "#gEdinmek #gistediğin #gbir #gnadir #gKart #gseç ]",
+      "#g",
+      " #gAltın #gedin ]",
+      "#g2 #gKart #gdönüştür ]",
+      "#gMaksimum #gCP #g+",
+      "[ #r",
+      " #rMaksimum #rCP #rkaybet ",
+      "[ #rTüm #rAltınını #rkaybet ",
+      "[ #rBir #rLanet #redin ",
+      "[ #r",
+      "Kart Seç",
+      "Çıkarmak için Kart seç",
+      "Çıkarmak için 2 Kart seç",
+      "Dönüştürmek için Kart seç",
+      "Dönüştürmek için 2 Kart seç",
+      "Geliştirmek için Kart seç",
+      "[ #gSıradaki #g3 #gdövüşte #gdüşmanların #g1 #gCP'si #golur ]",
+      " #rhasar #ral",
+      "[ #gEdinmek #gistediğin #grenksiz #gbir #gKart #gseç ]",
+      "#gEdinmek #gistediğin #grenksiz #gnadir #gbir #gKart #gseç ]"
+    ],
+    "UNIQUE_REWARDS": [
+      "[ #rBaşlangıç #rKalıntını #rkaybet #gRastgele #gbir #gBoss #gKalıntısı #gedin ]"
+    ]
+  }
+}

@@ -1,0 +1,225 @@
+{
+  "id": "SensoryStone",
+  "className": "beyond.SensoryStone",
+  "kind": "image",
+  "image": "sensoryStone.jpg",
+  "start": "intro",
+  "vars": {
+    "hp2": [
+      {
+        "ascension": 0,
+        "value": 5
+      }
+    ],
+    "hp3": [
+      {
+        "ascension": 0,
+        "value": 10
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": "touch"
+        }
+      ]
+    },
+    "touch": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "gains": [
+            {
+              "type": "card",
+              "tier": "colorless"
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "memory-1",
+              "chance": 25
+            },
+            {
+              "next": "memory-2",
+              "chance": 25
+            },
+            {
+              "next": "memory-3",
+              "chance": 25
+            },
+            {
+              "next": "memory-4",
+              "chance": 25
+            }
+          ]
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            },
+            {
+              "v": "hp2"
+            },
+            {
+              "o": 3
+            }
+          ],
+          "gains": [
+            {
+              "type": "card",
+              "tier": "colorless",
+              "count": 2
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "memory-1",
+              "chance": 25
+            },
+            {
+              "next": "memory-2",
+              "chance": 25
+            },
+            {
+              "next": "memory-3",
+              "chance": 25
+            },
+            {
+              "next": "memory-4",
+              "chance": 25
+            }
+          ]
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            },
+            {
+              "v": "hp3"
+            },
+            {
+              "o": 3
+            }
+          ],
+          "gains": [
+            {
+              "type": "card",
+              "tier": "colorless",
+              "count": 3
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "memory-1",
+              "chance": 25
+            },
+            {
+              "next": "memory-2",
+              "chance": 25
+            },
+            {
+              "next": "memory-3",
+              "chance": 25
+            },
+            {
+              "next": "memory-4",
+              "chance": 25
+            }
+          ]
+        }
+      ],
+      "note": "The memory shown is one of four, shuffled uniformly (not tied to the choice or character); the colorless card rewards open as a reward screen."
+    },
+    "memory-1": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "memory-2": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "memory-3": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "memory-4": {
+      "body": [
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,463 @@
+{
+  "source": "com.megacrit.cardcrawl.blights.*, helpers.BlightHelper, neow.NeowEvent.endlessBlight/uniqueBlight, rewards.chests.BossChest",
+  "imageDir": "images/blights/ (outline: images/blights/outline/)",
+  "textParts": "{\"t\":i} = that blight's DESCRIPTION[i] in blights.json; {\"v\":{\"of\":\"counter\"}} = the blight's current counter.",
+  "pools": {
+    "blights": "BlightHelper.blights: all 13 (used by getBlight lookups / getRandomBlight(rng)).",
+    "chestBlights": {
+      "ids": [
+        "Accursed",
+        "Scatterbrain",
+        "TwistingMind",
+        "BlightedDurian",
+        "VoidEssence",
+        "GraspOfShadows",
+        "MetallicRebirth"
+      ],
+      "note": "Blight Chests mod: after act 3 on Endless, boss chests offer blights from this list (BlightHelper.getRandomBlight uses relicRng; Post-Durian is rerolled while Max HP <= 20; getRandomChestBlight excludes already-offered ids)."
+    },
+    "endless": {
+      "everyLoop": [
+        "DeadlyEnemies",
+        "ToughEnemies"
+      ],
+      "uniqueSequence": [
+        "MimicInfestation",
+        "TimeMaze",
+        "FullBelly",
+        "GrotesqueTrophy"
+      ],
+      "note": "NeowEvent.endlessBlight on each Endless loop (floor > 1): obtain Spear/Shield or incrementUp them if owned, then the first missing of Mimic Infestation -> Time Maze -> Muzzle -> Grotesque Trophy; once all four are owned, Grotesque Trophy stacks."
+    }
+  },
+  "blights": [
+    {
+      "id": "DeadlyEnemies",
+      "className": "com.megacrit.cardcrawl.blights.Spear",
+      "image": "spear.png",
+      "unique": true,
+      "counter": 1,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 100
+        },
+        {
+          "t": 1
+        }
+      ],
+      "stack": "Not stacked by pickup; each Endless Neow visit calls incrementUp: damageMod +0.75 (starts at 2.0, i.e. enemies deal 2x), counter +1.",
+      "stackDescription": [
+        {
+          "t": 0
+        },
+        {
+          "v": {
+            "of": "counter",
+            "formula": "(damageMod - 1) * 100 = 100 + 75 * (counter - 1)"
+          }
+        },
+        {
+          "t": 1
+        }
+      ],
+      "sources": [
+        "endlessNeowEveryLoop"
+      ]
+    },
+    {
+      "id": "ToughEnemies",
+      "className": "com.megacrit.cardcrawl.blights.Shield",
+      "image": "shield.png",
+      "unique": true,
+      "counter": 1,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 50
+        },
+        {
+          "t": 1
+        }
+      ],
+      "stack": "Not stacked by pickup; each Endless Neow visit calls incrementUp: toughMod +0.5 (starts at 1.5), counter +1.",
+      "stackDescription": [
+        {
+          "t": 0
+        },
+        {
+          "v": {
+            "of": "counter",
+            "formula": "(toughMod - 1) * 100 = 50 * counter"
+          }
+        },
+        {
+          "t": 1
+        }
+      ],
+      "sources": [
+        "endlessNeowEveryLoop"
+      ]
+    },
+    {
+      "id": "TimeMaze",
+      "className": "com.megacrit.cardcrawl.blights.TimeMaze",
+      "image": "maze.png",
+      "unique": true,
+      "counter": 15,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 15
+        },
+        {
+          "t": 1
+        }
+      ],
+      "stack": "Unique, never stacked. The counter tracks cards played this turn (reset to 0 each turn, -1 after combat); at 15 cards are unplayable.",
+      "cantPlayMessage": [
+        {
+          "t": 2
+        },
+        {
+          "v": 15
+        },
+        {
+          "t": 1
+        }
+      ],
+      "sources": [
+        "endlessNeowUnique"
+      ]
+    },
+    {
+      "id": "TwistingMind",
+      "className": "com.megacrit.cardcrawl.blights.TwistingMind",
+      "image": "twist.png",
+      "unique": false,
+      "counter": 1,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 1
+        },
+        {
+          "t": 1
+        }
+      ],
+      "stack": "Counter +1 (one more random Status card each turn).",
+      "stackDescription": [
+        {
+          "t": 0
+        },
+        {
+          "v": {
+            "of": "counter"
+          }
+        },
+        {
+          "t": 1
+        }
+      ],
+      "sources": [
+        "blightChest"
+      ]
+    },
+    {
+      "id": "Accursed",
+      "className": "com.megacrit.cardcrawl.blights.Accursed",
+      "image": "accursed.png",
+      "unique": false,
+      "counter": 2,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 2
+        },
+        {
+          "t": 1
+        }
+      ],
+      "stack": "Counter +2 (two more Curses per boss).",
+      "stackDescription": [
+        {
+          "t": 0
+        },
+        {
+          "v": {
+            "of": "counter"
+          }
+        },
+        {
+          "t": 1
+        }
+      ],
+      "sources": [
+        "blightChest"
+      ]
+    },
+    {
+      "id": "Scatterbrain",
+      "className": "com.megacrit.cardcrawl.blights.Scatterbrain",
+      "image": "scatter.png",
+      "unique": false,
+      "counter": 1,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 1
+        },
+        {
+          "t": 1
+        }
+      ],
+      "stack": "Counter +1 and master hand size -1 again (on equip it is also -1).",
+      "stackDescription": [
+        {
+          "t": 0
+        },
+        {
+          "v": {
+            "of": "counter"
+          }
+        },
+        {
+          "t": 1
+        }
+      ],
+      "sources": [
+        "blightChest"
+      ]
+    },
+    {
+      "id": "MimicInfestation",
+      "className": "com.megacrit.cardcrawl.blights.MimicInfestation",
+      "image": "mimic.png",
+      "unique": true,
+      "counter": -1,
+      "description": [
+        {
+          "t": 0
+        }
+      ],
+      "stack": "Unique, no stack effect.",
+      "sources": [
+        "endlessNeowUnique"
+      ]
+    },
+    {
+      "id": "FullBelly",
+      "className": "com.megacrit.cardcrawl.blights.Muzzle",
+      "image": "muzzle.png",
+      "unique": true,
+      "counter": -1,
+      "description": [
+        {
+          "t": 0
+        }
+      ],
+      "stack": "Unique, no stack effect.",
+      "sources": [
+        "endlessNeowUnique"
+      ]
+    },
+    {
+      "id": "GrotesqueTrophy",
+      "className": "com.megacrit.cardcrawl.blights.GrotesqueTrophy",
+      "image": "trophy.png",
+      "unique": false,
+      "counter": 1,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 3
+        },
+        {
+          "t": 1
+        }
+      ],
+      "stack": "Counter +1 and 3 more Pride are added (confirmation grid titled DESCRIPTION[2]). Description is not rebuilt.",
+      "refs": [
+        {
+          "type": "card",
+          "id": "Pride"
+        }
+      ],
+      "confirmGridTitle": 2,
+      "sources": [
+        "endlessNeowUnique"
+      ]
+    },
+    {
+      "id": "BlightedDurian",
+      "className": "com.megacrit.cardcrawl.blights.Durian",
+      "image": "durian.png",
+      "unique": false,
+      "counter": 1,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 50
+        },
+        {
+          "t": 1
+        }
+      ],
+      "stack": "Counter +1 and lose half of current Max HP again (maxHealth / 2, integer). Description is not rebuilt.",
+      "sources": [
+        "blightChest"
+      ]
+    },
+    {
+      "id": "VoidEssence",
+      "className": "com.megacrit.cardcrawl.blights.VoidEssence",
+      "image": "void.png",
+      "unique": false,
+      "counter": 1,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 1
+        },
+        {
+          "t": 1
+        }
+      ],
+      "stack": "Counter +1 and base energy -1 more (only while energy > 0).",
+      "stackDescription": [
+        {
+          "t": 0
+        },
+        {
+          "v": {
+            "of": "counter"
+          }
+        },
+        {
+          "t": 1
+        }
+      ],
+      "sources": [
+        "blightChest"
+      ]
+    },
+    {
+      "id": "GraspOfShadows",
+      "className": "com.megacrit.cardcrawl.blights.Hauntings",
+      "image": "hauntings.png",
+      "unique": false,
+      "counter": 1,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 1
+        },
+        {
+          "t": 1
+        }
+      ],
+      "stack": "Counter +1 (one more Intangible).",
+      "stackDescription": [
+        {
+          "t": 0
+        },
+        {
+          "v": {
+            "of": "counter"
+          }
+        },
+        {
+          "t": 1
+        }
+      ],
+      "sources": [
+        "blightChest"
+      ]
+    },
+    {
+      "id": "MetallicRebirth",
+      "className": "com.megacrit.cardcrawl.blights.AncientAugmentation",
+      "image": "ancient.png",
+      "unique": false,
+      "counter": 1,
+      "description": [
+        {
+          "t": 0
+        },
+        {
+          "v": 1
+        },
+        {
+          "t": 1
+        },
+        {
+          "v": 10
+        },
+        {
+          "t": 2
+        },
+        {
+          "v": 10
+        },
+        {
+          "t": 3
+        }
+      ],
+      "stack": "Counter +1: Artifact = counter, Plated Armor = Regenerate = counter * 10.",
+      "stackDescription": [
+        {
+          "t": 0
+        },
+        {
+          "v": {
+            "of": "counter"
+          }
+        },
+        {
+          "t": 1
+        },
+        {
+          "v": {
+            "of": "counter",
+            "times": 10
+          }
+        },
+        {
+          "t": 2
+        },
+        {
+          "v": {
+            "of": "counter",
+            "times": 10
+          }
+        },
+        {
+          "t": 3
+        }
+      ],
+      "sources": [
+        "blightChest"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "event": {
+    "NAMES": [
+      "Niau"
+    ],
+    "TEXT": [
+      "~Sei~ ~gegrüßt...~ NL ~Ich~ ~bin~ ~Niau~ ~...~",
+      "~Hallo...~ NL ~Noch~ ~mal...~",
+      "~Sei~ ~gegrüßt~ ~...~",
+      "~Noch~ ~ein~ NL ~Versuch~ ~...?~",
+      "~Erreiche~ ~den~ ~Boss...~ NL ~um~ ~mehr..~ ~Segen~ ~zu~ ~erhalten...~",
+      "~Stelle~ ~dich~ ~zumindest~ ~...~ NL ~dem~ ~ersten~ ~Boss~ ~...~",
+      "~Ich~ ~habe~ ~dich~ ~zurückgeholt~ ~...~",
+      "~Wähle...~",
+      "~Gewährt...~",
+      "~Wer~ ~nicht~ ~wagt,~ NL ~der~ ~nicht~ ~gewinnt...~",
+      "~Zeit~ ~für~ ~eine~ NL ~HERAUSFORDERUNG...~",
+      "Belohnungen",
+      "~Weiter~ ~geht's...~",
+      "~Es~ ~wird~ ~nur~ ~schwerer...~",
+      "~Beeindruckend...~ ~weiter...~",
+      "Verflucht!",
+      "Wirrkopf!",
+      "Transformation!"
+    ],
+    "OPTIONS": [
+      "[Fortsetzen]",
+      "[Reden]",
+      "[Überspringen]",
+      "[Verlassen]",
+      "Wähle 10 Karten und füge sie deinem Deck hinzu."
+    ]
+  },
+  "reward": {
+    "NAMES": [],
+    "TEXT": [
+      "[ #gWähle #geine #gKarte #gfür #gdein #gDeck ]",
+      "[ #gErhalte #geine #gzufällige #gseltene #gKarte ]",
+      "[ #gEntferne #geine #gKarte #gaus #gdeinem #gDeck ]",
+      "[ #gVerbessere #geine #gKarte ]",
+      "[ #gTransformiere #geine #gKarte ]",
+      "[ #gErhalte #g3 #gzufällige #gTränke ]",
+      "[ #gErhalte #gein #gzufälliges #ggewöhnliches #gRelikt ]",
+      "[ #gMax. #gTP #g+",
+      "[ #gErhalte #g",
+      " #gGold ]",
+      "#gentferne #g2 #gKarten ]",
+      "#gerhalte #gein #gzufälliges #gseltenes #gRelikt ]",
+      "#gwähle #geine #gseltene #gKarte #gfür #gdein #gDeck ]",
+      "#gerhalte #g",
+      " #gGold ]",
+      "#gtransformiere #g2 #gKarten ]",
+      "#gmax. #gTP #g+",
+      "[ #rVerliere #r",
+      " #rmax. #rTP und ",
+      "[ #rVerliere #rdein #rgesamtes #rGold und ",
+      "[ #rErhalte #reinen #rFluch und ",
+      "[ #rVerliere #r",
+      "Wähle eine Karte",
+      "Wähle eine Karte, die du entfernst",
+      "Wähle 2 Karten, die du entfernst",
+      "Wähle eine Karte, die du transformierst",
+      "Wähle 2 Karten, die du transformierst",
+      "Wähle eine Karte, die du verbesserst",
+      "[ #gIn #gden #gnächsten #g3 #gKämpfen #ghaben #gGegner #g1 #gTP ]",
+      " #rTP und",
+      "[ #gWähle #geine #gfarblose #gKarte #gfür #gdein #gDeck ]",
+      "#gwähle #geine #gseltene #gfarblose #gKarte ]"
+    ],
+    "UNIQUE_REWARDS": [
+      "[ #rVerliere #rdein #rStartrelikt und #gerhalte #gein #gzufälliges #gBossrelikt ]"
+    ]
+  }
+}

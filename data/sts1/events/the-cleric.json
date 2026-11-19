@@ -1,0 +1,147 @@
+{
+  "id": "The Cleric",
+  "className": "exordium.Cleric",
+  "kind": "image",
+  "image": "cleric.jpg",
+  "start": "intro",
+  "vars": {
+    "heal": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 25
+        }
+      }
+    ],
+    "purifyCost": [
+      {
+        "ascension": 0,
+        "value": 50
+      },
+      {
+        "ascension": 15,
+        "value": 75
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "heal"
+            },
+            {
+              "o": 8
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 1
+            },
+            {
+              "s": "35"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "next": "heal",
+          "note": "Costs 35 gold; locked below 35 gold."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "v": "purifyCost"
+            },
+            {
+              "o": 4
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 5
+            }
+          ],
+          "next": "purify",
+          "note": "Costs purifyCost gold and opens a card removal screen (prompt OPTIONS[7]). lockedLabel shows below 50 gold; at ascension 15+ with 50-74 gold the enabled label is shown but disabled. If no card can be removed, no gold is spent."
+        },
+        {
+          "label": [
+            {
+              "o": 6
+            }
+          ],
+          "next": "leave"
+        }
+      ]
+    },
+    "heal": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "ev": "Proceed Screen",
+              "d": 0
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "purify": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "ev": "Proceed Screen",
+              "d": 0
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "leave": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "ev": "Proceed Screen",
+              "d": 0
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

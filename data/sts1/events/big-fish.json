@@ -1,0 +1,142 @@
+{
+  "id": "Big Fish",
+  "className": "exordium.BigFish",
+  "kind": "image",
+  "image": "fishing.jpg",
+  "start": "intro",
+  "vars": {
+    "heal": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "frac": [
+            1,
+            3
+          ]
+        }
+      }
+    ],
+    "maxHp": [
+      {
+        "ascension": 0,
+        "value": 5
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "heal"
+            },
+            {
+              "o": 1
+            }
+          ],
+          "next": "banana"
+        },
+        {
+          "label": [
+            {
+              "o": 2
+            },
+            {
+              "v": "maxHp"
+            },
+            {
+              "o": 3
+            }
+          ],
+          "next": "donut"
+        },
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Regret"
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "tier": "random"
+            },
+            {
+              "type": "card",
+              "id": "Regret"
+            }
+          ],
+          "next": "box"
+        }
+      ]
+    },
+    "banana": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "donut": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "box": {
+      "body": [
+        {
+          "d": 4
+        },
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 5
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "id": "Mushrooms",
+  "className": "exordium.Mushrooms",
+  "kind": "room",
+  "image": "bgShrooms.png",
+  "start": "intro",
+  "vars": {
+    "heal": [
+      {
+        "ascension": 0,
+        "value": {
+          "of": "maxHp",
+          "pct": 25
+        }
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "note": "Room art is two layers: images/events/bgShrooms.png and fgShrooms.png.",
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "ambush"
+        },
+        {
+          "label": [
+            {
+              "o": 1
+            },
+            {
+              "v": "heal"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "preview": {
+            "type": "card",
+            "id": "Parasite"
+          },
+          "gains": [
+            {
+              "type": "card",
+              "id": "Parasite"
+            }
+          ],
+          "next": "eat"
+        }
+      ]
+    },
+    "ambush": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "combat": {
+            "encounters": [
+              [
+                "FungiBeast",
+                "FungiBeast",
+                "FungiBeast"
+              ]
+            ]
+          },
+          "gains": [
+            {
+              "type": "relic",
+              "id": "Odd Mushroom"
+            }
+          ],
+          "next": null,
+          "note": "Rewards: Odd Mushroom (Circlet if already owned) and 20-30 gold (0-24 on daily runs)."
+        }
+      ]
+    },
+    "eat": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

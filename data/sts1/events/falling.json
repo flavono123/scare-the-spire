@@ -1,0 +1,167 @@
+{
+  "id": "Falling",
+  "className": "beyond.Falling",
+  "kind": "image",
+  "image": "falling.jpg",
+  "start": "intro",
+  "vars": {},
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            }
+          ],
+          "next": "choice"
+        }
+      ]
+    },
+    "choice": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 1
+            },
+            {
+              "pick": "card",
+              "color": "r"
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 2
+            }
+          ],
+          "next": "land",
+          "note": "The game appends the name (red) of a random Skill in your deck, previews it, and removes it."
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            },
+            {
+              "pick": "card",
+              "color": "r"
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 4
+            }
+          ],
+          "next": "channel",
+          "note": "The game appends the name (red) of a random Power in your deck, previews it, and removes it."
+        },
+        {
+          "label": [
+            {
+              "o": 5
+            },
+            {
+              "pick": "card",
+              "color": "r"
+            }
+          ],
+          "lockedLabel": [
+            {
+              "o": 6
+            }
+          ],
+          "next": "strike",
+          "note": "The game appends the name (red) of a random Attack in your deck, previews it, and removes it."
+        },
+        {
+          "label": [
+            {
+              "o": 8
+            }
+          ],
+          "next": "nothing",
+          "note": "Shown alone instead of the three options above when the deck has no Skill, Power or Attack."
+        }
+      ]
+    },
+    "land": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "channel": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "strike": {
+      "body": [
+        {
+          "d": 4
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "nothing": {
+      "body": [
+        {
+          "d": 5
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 7
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "source": "Exordium/TheCity/TheBeyond/TheEnding initializeEventList + initializeShrineList; AbstractDungeon.initializeSpecialOneTimeEventList; eligibility from AbstractDungeon.getEvent/getShrine",
+  "selection": {
+    "shrineChance": 0.25,
+    "note": "AbstractDungeon.generateEvent: with 25% chance (shrineChance) draw from shrineList + specialOneTimeEventList (getShrine), otherwise from eventList (getEvent); getEvent falls back to getShrine when no eventList entry is eligible. A drawn event is removed from its list for the rest of the act (specialOneTimeEventList is shared by the whole run)."
+  },
+  "lists": [
+    {
+      "name": "eventList",
+      "dungeon": "exordium",
+      "ids": ["Big Fish", "The Cleric", "Dead Adventurer", "Golden Idol", "Golden Wing", "World of Goop", "Liars Game", "Living Wall", "Mushrooms", "Scrap Ooze", "Shining Light"],
+      "notes": {
+        "The Cleric": "Only when gold >= 35.",
+        "Dead Adventurer": "Only after floor 6 (floorNum > 6).",
+        "Mushrooms": "Only after floor 6 (floorNum > 6)."
+      }
+    },
+    {
+      "name": "shrineList",
+      "dungeon": "exordium",
+      "ids": ["Match and Keep!", "Golden Shrine", "Transmorgrifier", "Purifier", "Upgrade Shrine", "Wheel of Change"]
+    },
+    {
+      "name": "eventList",
+      "dungeon": "theCity",
+      "ids": ["Addict", "Back to Basics", "Beggar", "Colosseum", "Cursed Tome", "Drug Dealer", "Forgotten Altar", "Ghosts", "Masked Bandits", "Nest", "The Library", "The Mausoleum", "Vampires"],
+      "notes": {
+        "Beggar": "Only when gold >= 75.",
+        "Colosseum": "Only in the second half of the act map (current row > map rows / 2)."
+      }
+    },
+    {
+      "name": "shrineList",
+      "dungeon": "theCity",
+      "ids": ["Match and Keep!", "Wheel of Change", "Golden Shrine", "Transmorgrifier", "Purifier", "Upgrade Shrine"]
+    },
+    {
+      "name": "eventList",
+      "dungeon": "theBeyond",
+      "ids": ["Falling", "MindBloom", "The Moai Head", "Mysterious Sphere", "SensoryStone", "Tomb of Lord Red Mask", "Winding Halls"],
+      "notes": {
+        "The Moai Head": "Only when the player has Golden Idol or is at or below 50% HP."
+      }
+    },
+    {
+      "name": "shrineList",
+      "dungeon": "theBeyond",
+      "ids": ["Match and Keep!", "Wheel of Change", "Golden Shrine", "Transmorgrifier", "Purifier", "Upgrade Shrine"]
+    },
+    {
+      "name": "eventList",
+      "dungeon": "theEnding",
+      "ids": [],
+      "note": "TheEnding.initializeEventList adds nothing."
+    },
+    {
+      "name": "shrineList",
+      "dungeon": "theEnding",
+      "ids": [],
+      "note": "TheEnding.initializeShrineList adds nothing."
+    },
+    {
+      "name": "specialOneTimeEventList",
+      "dungeon": null,
+      "ids": ["Accursed Blacksmith", "Bonfire Elementals", "Designer", "Duplicator", "FaceTrader", "Fountain of Cleansing", "Knowing Skull", "Lab", "N'loth", "NoteForYourself", "SecretPortal", "The Joust", "WeMeetAgain", "The Woman in Blue"],
+      "notes": {
+        "Designer": "Act 2 or 3 only, and gold >= 75.",
+        "Duplicator": "Act 2 or 3 only.",
+        "FaceTrader": "Act 1 or 2 only.",
+        "Fountain of Cleansing": "Only when the player has a removable curse (isCursed).",
+        "Knowing Skull": "Act 2 only, and current HP > 12.",
+        "N'loth": "Act 2 only (the code checks TheCity twice), and at least 2 relics.",
+        "NoteForYourself": "Added to the list only outside Daily runs and below Ascension 15, and only at Ascension 0 or below the character's highest unlocked Ascension.",
+        "SecretPortal": "Act 3 only, and run playtime >= 800 seconds.",
+        "The Joust": "Act 2 only, and gold >= 50.",
+        "The Woman in Blue": "Only when gold >= 50."
+      }
+    }
+  ],
+  "notInPools": {
+    "Spire Heart": "Act 4 Heart room text, not a ? room event.",
+    "Proceed Screen": "UI strings, not an event.",
+    "Thinking with Puddles": "Not added to any event list."
+  }
+}

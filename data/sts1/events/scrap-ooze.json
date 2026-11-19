@@ -1,0 +1,595 @@
+{
+  "id": "Scrap Ooze",
+  "className": "exordium.ScrapOoze",
+  "kind": "image",
+  "image": "scrapOoze.jpg",
+  "start": "intro",
+  "vars": {
+    "dmg0": [
+      {
+        "ascension": 0,
+        "value": 3
+      },
+      {
+        "ascension": 15,
+        "value": 5
+      }
+    ],
+    "chance0": [
+      {
+        "ascension": 0,
+        "value": 25
+      }
+    ],
+    "dmg1": [
+      {
+        "ascension": 0,
+        "value": 4
+      },
+      {
+        "ascension": 15,
+        "value": 6
+      }
+    ],
+    "chance1": [
+      {
+        "ascension": 0,
+        "value": 35
+      }
+    ],
+    "dmg2": [
+      {
+        "ascension": 0,
+        "value": 5
+      },
+      {
+        "ascension": 15,
+        "value": 7
+      }
+    ],
+    "chance2": [
+      {
+        "ascension": 0,
+        "value": 45
+      }
+    ],
+    "dmg3": [
+      {
+        "ascension": 0,
+        "value": 6
+      },
+      {
+        "ascension": 15,
+        "value": 8
+      }
+    ],
+    "chance3": [
+      {
+        "ascension": 0,
+        "value": 55
+      }
+    ],
+    "dmg4": [
+      {
+        "ascension": 0,
+        "value": 7
+      },
+      {
+        "ascension": 15,
+        "value": 9
+      }
+    ],
+    "chance4": [
+      {
+        "ascension": 0,
+        "value": 65
+      }
+    ],
+    "dmg5": [
+      {
+        "ascension": 0,
+        "value": 8
+      },
+      {
+        "ascension": 15,
+        "value": 10
+      }
+    ],
+    "chance5": [
+      {
+        "ascension": 0,
+        "value": 75
+      }
+    ],
+    "dmg6": [
+      {
+        "ascension": 0,
+        "value": 9
+      },
+      {
+        "ascension": 15,
+        "value": 11
+      }
+    ],
+    "chance6": [
+      {
+        "ascension": 0,
+        "value": 85
+      }
+    ],
+    "dmg7": [
+      {
+        "ascension": 0,
+        "value": 10
+      },
+      {
+        "ascension": 15,
+        "value": 12
+      }
+    ],
+    "chance7": [
+      {
+        "ascension": 0,
+        "value": 95
+      }
+    ],
+    "dmg8": [
+      {
+        "ascension": 0,
+        "value": 11
+      },
+      {
+        "ascension": 15,
+        "value": 13
+      }
+    ],
+    "chance8": [
+      {
+        "ascension": 0,
+        "value": 105
+      }
+    ]
+  },
+  "scenes": {
+    "intro": {
+      "body": [
+        {
+          "d": 0
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 0
+            },
+            {
+              "v": "dmg0"
+            },
+            {
+              "o": 1
+            },
+            {
+              "v": "chance0"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "success",
+              "chance": 26
+            },
+            {
+              "next": "fail-1",
+              "chance": 74
+            }
+          ]
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "escape"
+        }
+      ],
+      "note": "Each reach deals the shown damage; success gives a random relic. Actual success odds are chance+1% (roll 0-99 >= 99-chance)."
+    },
+    "fail-1": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "dmg1"
+            },
+            {
+              "o": 1
+            },
+            {
+              "v": "chance1"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "success",
+              "chance": 36
+            },
+            {
+              "next": "fail-2",
+              "chance": 64
+            }
+          ]
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "fail-2": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "dmg2"
+            },
+            {
+              "o": 1
+            },
+            {
+              "v": "chance2"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "success",
+              "chance": 46
+            },
+            {
+              "next": "fail-3",
+              "chance": 54
+            }
+          ]
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "fail-3": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "dmg3"
+            },
+            {
+              "o": 1
+            },
+            {
+              "v": "chance3"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "success",
+              "chance": 56
+            },
+            {
+              "next": "fail-4",
+              "chance": 44
+            }
+          ]
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "fail-4": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "dmg4"
+            },
+            {
+              "o": 1
+            },
+            {
+              "v": "chance4"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "success",
+              "chance": 66
+            },
+            {
+              "next": "fail-5",
+              "chance": 34
+            }
+          ]
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "fail-5": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "dmg5"
+            },
+            {
+              "o": 1
+            },
+            {
+              "v": "chance5"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "success",
+              "chance": 76
+            },
+            {
+              "next": "fail-6",
+              "chance": 24
+            }
+          ]
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "fail-6": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "dmg6"
+            },
+            {
+              "o": 1
+            },
+            {
+              "v": "chance6"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "success",
+              "chance": 86
+            },
+            {
+              "next": "fail-7",
+              "chance": 14
+            }
+          ]
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "fail-7": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "dmg7"
+            },
+            {
+              "o": 1
+            },
+            {
+              "v": "chance7"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "outcomes": [
+            {
+              "next": "success",
+              "chance": 96
+            },
+            {
+              "next": "fail-8",
+              "chance": 4
+            }
+          ]
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "fail-8": {
+      "body": [
+        {
+          "d": 1
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 4
+            },
+            {
+              "v": "dmg8"
+            },
+            {
+              "o": 1
+            },
+            {
+              "v": "chance8"
+            },
+            {
+              "o": 2
+            }
+          ],
+          "next": "success"
+        },
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": "escape"
+        }
+      ]
+    },
+    "success": {
+      "body": [
+        {
+          "d": 2
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    },
+    "escape": {
+      "body": [
+        {
+          "d": 3
+        }
+      ],
+      "options": [
+        {
+          "label": [
+            {
+              "o": 3
+            }
+          ],
+          "next": null
+        }
+      ]
+    }
+  }
+}
