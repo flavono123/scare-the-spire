@@ -2,7 +2,6 @@
 
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "@/components/ui/static-image";
 import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
@@ -16,8 +15,26 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
 import { DescriptionText } from "./codex-description";
 import { GameHoverTip } from "./hover-tip";
+import { MonsterSpineStage } from "./monster-spine-stage";
 import { RichDescription } from "./rich-description";
 import { RelatedResourceLinks, referenceGroupsFromIds } from "./entity-reference-links";
+
+/** The pet's idle Spine animation in its default skins, or its render when it has no Spine asset. */
+export function PetSpine({ pet, className }: { pet: CodexPet; className: string }) {
+  return (
+    <MonsterSpineStage
+      asset={pet.spineAsset}
+      fallbackImageUrl={pet.imageUrl}
+      monsterName={pet.name}
+      selectedMoveId={null}
+      selectedSkins={pet.spineSkins}
+      imagePriority={false}
+      showLoadingLabel={false}
+      className={className}
+      fallbackImageClassName="absolute inset-0 h-full w-full object-contain"
+    />
+  );
+}
 
 export function PetInspect({
   pet,
@@ -31,7 +48,7 @@ export function PetInspect({
   const excludeSelf = useMemo(() => new Set([pet.name, pet.nameEn]), [pet.name, pet.nameEn]);
   return (
     <div className="flex w-full max-w-[34rem] flex-col items-center gap-3 sm:flex-row sm:gap-5">
-      <Image src={pet.imageUrl} alt={pet.name} width={200} height={200} className="h-48 w-48 shrink-0 object-contain" />
+      <PetSpine pet={pet} className="relative h-56 w-56 shrink-0" />
       <GameHoverTip title={pet.name} className="min-w-0 w-full" style={{ minWidth: 0 }}>
         {entities ? (
           <RichDescription
@@ -73,10 +90,10 @@ export function PetDetail({
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const [commentCount, setCommentCount] = useState(0);
   const englishName = serviceLocale === "ko" ? "영어명" : "English name";
-  const evolution = [
-    { label: view.evolvesFrom, pet: pets.find((other) => other.id === pet.evolvesFrom) },
-    { label: view.evolvesTo, pet: pets.find((other) => other.id === pet.evolvesTo) },
-  ].filter((entry): entry is { label: string; pet: CodexPet } => Boolean(entry.pet));
+  const evolution = ([[view.evolvesFrom, pet.evolvesFrom], [view.evolvesTo, pet.evolvesTo]] as const).flatMap(([label, id]) => {
+    const other = pets.find((candidate) => candidate.id === id);
+    return other ? [{ label: label as string, pet: other }] : [];
+  });
   const linkClass = "font-game-text text-sm text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary";
 
   return (

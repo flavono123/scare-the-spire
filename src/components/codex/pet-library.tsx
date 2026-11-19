@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "@/components/ui/static-image";
 import {
   addCodexUrlChangeListener,
   pushCodexHistoryState,
@@ -27,7 +26,7 @@ import {
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { GameHoverTip } from "./hover-tip";
-import { PetDetail } from "./pet-detail";
+import { PetDetail, PetSpine } from "./pet-detail";
 import { SearchBar } from "./search-bar";
 
 // shortcut: search only; five pets split into one-pet groups by any field, add filters if the game adds pets.
@@ -131,7 +130,7 @@ export function PetLibrary({
                 }}
               >
                 <article className="grid min-w-0 grid-cols-[6rem_minmax(0,1fr)] items-center gap-3">
-                  <Image src={pet.imageUrl} alt={pet.name} width={96} height={96} className="h-24 w-24 object-contain" />
+                  <PetSpine pet={pet} className="relative h-24 w-24" />
                   <GameHoverTip title={pet.name} className="min-w-0 w-full" style={{ minWidth: 0 }}>
                     <DescriptionText description={pet.description} className="block text-left" />
                   </GameHoverTip>

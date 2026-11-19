@@ -3144,19 +3144,20 @@ const PET_DEFS: Array<{
   evolvesFrom?: string;
   /** Cards its relic touches on pickup (Byrdpip transforms Byrdonis Egg into Byrd Swoop). */
   cards?: string[];
+  skins?: string[];
 }> = [
   { id: "OSTY", monsterId: "OSTY", source: "character", sourceId: "NECROBINDER", terms: ["Osty", "Summon"] },
   { id: "WUPPY", monsterId: "WUPPY", source: "event", sourceId: "WUPPY_IN_TROUBLE", terms: ["Wuppy"] },
   // Byrdonis Nest gives Byrdonis Egg; a rest site hatches it into the Byrdpip relic (HatchRestSiteOption).
-  { id: "BYRDPIP", monsterId: "BYRDPIP", source: "event", sourceId: "BYRDONIS_NEST", terms: ["Byrdpip"], evolvesTo: "BYRDINE", cards: ["BYRDONIS_EGG", "BYRD_SWOOP"] },
+  { id: "BYRDPIP", monsterId: "BYRDPIP", source: "event", sourceId: "BYRDONIS_NEST", terms: ["Byrdpip"], evolvesTo: "BYRDINE", cards: ["BYRDONIS_EGG", "BYRD_SWOOP"], skins: ["version1"] },
   // Only from Byrdpip at a rest site (EvolveRestSiteOption), so its source is the evolution.
-  { id: "BYRDINE", monsterId: "BYRDINE_MONSTER", source: null, sourceId: null, terms: ["Byrdine"], evolvesFrom: "BYRDPIP", cards: ["BYRD_SWOOP", "GOD_BYRD"] },
-  { id: "PAELS_LEGION", monsterId: "PAELS_LEGION", source: "ancient", sourceId: "PAEL", terms: ["Pael's Legion"] },
+  { id: "BYRDINE", monsterId: "BYRDINE_MONSTER", source: null, sourceId: null, terms: ["Byrdine"], evolvesFrom: "BYRDPIP", cards: ["BYRD_SWOOP", "GOD_BYRD"], skins: ["hair/v1", "eye/ironclad"] },
+  { id: "PAELS_LEGION", monsterId: "PAELS_LEGION", source: "ancient", sourceId: "PAEL", terms: ["Pael's Legion"], skins: ["eyes"] },
 ];
 
 export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<CodexPet[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [monsters, engMonsters, tips, engTips, relicText, engRelicText, relics, cards, powers, potions, events, characters, ancients] = await Promise.all([
+  const [monsters, engMonsters, tips, engTips, relicText, engRelicText, relics, cards, powers, potions, events, characters, ancients, spineAssets] = await Promise.all([
     readGameLocalizationTable(gameLocale, "monsters"),
     readGameLocalizationTable("eng", "monsters"),
     readGameLocalizationTable(gameLocale, "static_hover_tips"),
@@ -3170,6 +3171,7 @@ export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<
     getCodexEvents({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexAncients({ gameLocale }),
+    readJson<MonsterSpineAsset[]>("monster-spine-assets.json").catch(() => []),
   ]);
   const relicById = new Map(relics.map((relic) => [relic.id, relic]));
   const sourceName = (type: NonNullable<CodexPet["source"]>["type"], id: string) => (
@@ -3208,6 +3210,8 @@ export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<
       description: description[0] ?? description[1] ?? "",
       descriptionEn: description[1] ?? "",
       imageUrl: `/images/sts2/monsters-render/${def.monsterId.toLowerCase()}.webp`,
+      spineAsset: spineAssets.find((asset) => asset.id === def.monsterId) ?? null,
+      spineSkins: def.skins ?? [],
       source: def.source && def.sourceId ? { type: def.source, id: def.sourceId, name: sourceName(def.source, def.sourceId) } : null,
       evolvesTo: def.evolvesTo ?? null,
       evolvesFrom: def.evolvesFrom ?? null,
