@@ -2,6 +2,11 @@ import Image from "@/components/ui/static-image";
 import { ASCENSION_TOKEN_IMAGE_URL, BLITZ_ASCENSION_TOKEN_IMAGE_URL } from "@/lib/codex-types";
 import { cn } from "@/lib/utils";
 
+// scenes/ui/top_bar.tscn: AscensionIcon is a 42px square (keep-aspect, centered). AscensionLabel spans it
+// inset 9 left / 11 right and grown 3 up / 15 down, so the number sits 6px below the icon's middle.
+// Kreon Bold 20, outline 12, shadow (5, 4) at 1/8 black.
+const ICON = 42;
+
 export function AscensionToken({
   level,
   className,
@@ -14,6 +19,7 @@ export function AscensionToken({
   /** Blitz run look (BlitzIconConfig): green bolt, green label, no label at 0. */
   blitz?: boolean;
 }) {
+  const unit = size / ICON;
   const outline = blitz ? "#054f22" : "#593400";
   return (
     <span
@@ -29,17 +35,23 @@ export function AscensionToken({
         aria-hidden
       />
       {!(blitz && level === 0) && (
-      <span
-        className={cn("absolute inset-0 flex items-center justify-center font-game-title font-bold leading-none", blitz ? "text-[#7fff00]" : "text-[#fff6e2]")}
-        style={{
-          fontSize: Math.max(18, Math.round(size * 0.36)),
-          textShadow: `0 0 0 ${outline}, 2px 2px 0 rgba(0,0,0,0.45)`,
-          WebkitTextStroke: `${Math.max(2, Math.round(size * 0.04))}px ${outline}`,
-          paintOrder: "stroke fill",
-        }}
-      >
-        {level}
-      </span>
+        <span
+          className={cn("absolute flex items-center justify-center font-bold leading-none", blitz ? "text-[#7fff00]" : "text-[#fff6e2]")}
+          style={{
+            left: 9 * unit,
+            right: 11 * unit,
+            top: -3 * unit,
+            bottom: -15 * unit,
+            fontFamily: "var(--font-kreon), serif",
+            fontSize: 20 * unit,
+            // A centered 12px stroke drawn under the fill leaves 6px outside the glyph, as Godot's outline_size 12 does.
+            WebkitTextStroke: `${12 * unit}px ${outline}`,
+            paintOrder: "stroke fill",
+            textShadow: `${5 * unit}px ${4 * unit}px 0 rgba(0,0,0,0.125)`,
+          }}
+        >
+          {level}
+        </span>
       )}
     </span>
   );
