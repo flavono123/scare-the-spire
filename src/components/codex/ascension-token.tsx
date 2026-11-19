@@ -31,7 +31,7 @@ export function AscensionToken({
         alt=""
         width={size}
         height={size}
-        className="h-full w-full object-contain drop-shadow-[0_2px_5px_rgba(0,0,0,0.85)]"
+        className="h-full w-full object-contain"
         aria-hidden
       />
       {!(blitz && level === 0) && (
