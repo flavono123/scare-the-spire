@@ -430,7 +430,28 @@ const CODEX_KEYWORD_ORDER = [
   "WAH_MELODY",
   "CHO_MELODY",
   "KI_MELODY",
+  "ARROW",
+  "FORGE",
+  "SUMMON_STATIC",
+  "CHANNELING",
+  "EVOKE",
+  "FATAL",
+  "STUN",
+  "TRANSFORM",
+  "BLOCK",
+  "ENERGY",
+  "STAR_COUNT",
 ] as const;
+
+const STATIC_HOVER_KEYWORD_IDS = [
+  "TAROT", "WAH_MELODY", "CHO_MELODY", "KI_MELODY", "ARROW", "FORGE", "SUMMON_STATIC",
+  "CHANNELING", "EVOKE", "FATAL", "STUN", "TRANSFORM", "BLOCK", "ENERGY", "STAR_COUNT",
+] as const;
+
+// Glossary tips carry runtime slots: the arrow count only shows in combat, the star icon is a token.
+function fillStaticHoverSlots(text: string): string {
+  return text.replace(/\{ShowArrowCount:[^|]*\|\}/g, "").replace(/\{singleStarIcon\}/g, "[star:1]");
+}
 
 function keywordSortOrder(id: string): number {
   const index = CODEX_KEYWORD_ORDER.indexOf(id as (typeof CODEX_KEYWORD_ORDER)[number]);
@@ -485,7 +506,7 @@ function mapStaticHoverKeyword(
   const korDescriptionFallback = gameText(gameStaticHoverTips, descriptionKey, "");
   const engDescription = gameText(engStaticHoverTips, descriptionKey, korDescriptionFallback);
 
-  return {
+  const keyword: CodexKeyword = {
     id,
     name: gameText(
       gameStaticHoverTips,
@@ -509,6 +530,13 @@ function mapStaticHoverKeyword(
     sourceId,
     imageUrl: null,
     sortOrder: keywordSortOrder(id),
+  };
+  return {
+    ...keyword,
+    description: fillStaticHoverSlots(keyword.description),
+    descriptionEn: fillStaticHoverSlots(keyword.descriptionEn),
+    descriptionRaw: fillStaticHoverSlots(keyword.descriptionRaw),
+    descriptionRawEn: fillStaticHoverSlots(keyword.descriptionRawEn),
   };
 }
 
@@ -831,8 +859,8 @@ export async function getCodexKeywords(opts?: { gameLocale?: GameLocale }): Prom
   return [
     ...cardKeywords,
     mapStaticHoverKeyword("REPLAY", "REPLAY_STATIC", gameStaticHoverTips, engStaticHoverTips, gameLocale),
-    // The Fool's tips the game shows on its cards; the card tag filter already uses Tarot.
-    ...(["TAROT", "WAH_MELODY", "CHO_MELODY", "KI_MELODY"] as const).map((id) =>
+    // The game's glossary tips for card terms (Fool's Tarot and melodies, arrows, forge, summon, orbs ...).
+    ...STATIC_HOVER_KEYWORD_IDS.map((id) =>
       mapStaticHoverKeyword(id, id, gameStaticHoverTips, engStaticHoverTips, gameLocale)),
   ].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name, "ko"));
 }
