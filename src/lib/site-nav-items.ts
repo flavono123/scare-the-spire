@@ -79,6 +79,11 @@ function toyBoxServiceIsNew(service: ToyBoxServiceDefinition): boolean {
   );
 }
 
+/** Rows marked NEW first, the rest in their own order (Array.prototype.sort is stable). */
+export function newItemsFirst<T extends { isNew?: boolean }>(items: readonly T[]): T[] {
+  return [...items].sort((a, b) => Number(Boolean(b.isNew)) - Number(Boolean(a.isNew)));
+}
+
 /** Whether the Toy Box icon should carry the new-service marker. */
 export function toyBoxHasNewService(items: readonly NavDropdownItem[]): boolean {
   return items.some((item) => item.isNew);

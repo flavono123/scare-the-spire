@@ -64,6 +64,7 @@ import {
   serviceLanguageNavLocales,
   sts1NavLinkItems,
   sts2NavItems,
+  newItemsFirst,
   toyBoxHasNewService,
 } from "@/lib/site-nav-items";
 
@@ -812,7 +813,7 @@ export function SiteNavbar() {
     ...item,
     attention: item.attentionId ? navSeen.unreadIds.includes(item.attentionId) : item.attention,
   }));
-  const sts2Items = localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true });
+  const sts2Items = newItemsFirst(localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true }));
   const rawDevItems = getDevNavItems({ serviceLocale, gameLocale });
   const debateWeekOpen = useDevPhilosophersNextWeekOpen(
     rawDevItems.some((item) => stripGameLocaleFromPath(item.href) === COLORFUL_PHILOSOPHERS_DEV_HREF),

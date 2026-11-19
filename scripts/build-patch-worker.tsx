@@ -58,6 +58,7 @@ import { contactMessages } from "@/messages/contact";
 import {
   gameOnlyLanguageNavLocales,
   getToyBoxNavItems,
+  newItemsFirst,
   toyBoxHasNewService,
   localizeCodexNavItems,
   serviceLanguageNavLocales,
@@ -378,7 +379,7 @@ function StaticPatchHeader({
   const searchCopy = messages.globalSearch.placeholder;
   const toyBoxLabel = serviceLocale === "ko" ? "장난감 상자" : "Toy Box";
   const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
-  const sts2Items = localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true });
+  const sts2Items = newItemsFirst(localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true }));
   const sts1Items = sts1NavDropdownItems(gameLocale);
 
   return (
