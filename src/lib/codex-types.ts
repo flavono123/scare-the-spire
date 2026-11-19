@@ -240,6 +240,9 @@ export interface CodexDominion {
   sortOrder: number;
 }
 
+export type PetLookPart = "form" | "hair" | "eye" | "look";
+export type PetAction = "attack" | "attack_poke" | "hurt" | "die" | "revive" | "block" | "sleep" | "wake_up" | "be_born";
+
 /**
  * A creature that fights on the player's side (`PlayerCmd.AddPet`): Osty from the Necrobinder's Summon,
  * and the creatures of the relics with `AddsPet` (Wuppy, Byrdpip, Byrdine, Pael's Legion).
@@ -256,8 +259,15 @@ export interface CodexPet {
   descriptionEn: string;
   imageUrl: string;
   spineAsset: MonsterSpineAsset | null;
-  /** Skins the game shows when nobody owns it (`SkinOptions[0]`, Byrdine's hair plus the Ironclad eye). */
-  spineSkins: string[];
+  /**
+   * Appearance parts the game rolls or picks per run; each part shows one skin. The first option is what the
+   * game shows when nobody owns it (`SkinOptions[0]`; Byrdine's eye falls back to the Ironclad's).
+   */
+  looks: Array<{ id: PetLookPart; options: Array<{ skin: string; name: string | null }> }>;
+  /** Spine animations the game plays for it: its animator states and the cards or relics that trigger them. */
+  actions: PetAction[];
+  /** One Spine frame for idle and every in-place action, so playing an action does not reframe the stage. */
+  actionFrame: MonsterSpineViewport;
   /** Where it comes from: the character it belongs to, the event, or the Ancient that offers its relic; null when it only comes from evolving another pet. */
   source: { type: "character" | "event" | "ancient"; id: string; name: string } | null;
   /** The pet it evolves into at a rest site, and the one it evolves from. */

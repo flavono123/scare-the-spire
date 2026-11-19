@@ -37,6 +37,8 @@ import {
   CodexBlitzEntry,
   CodexDominion,
   CodexPet,
+  PetAction,
+  PetLookPart,
   CodexCharacter,
   CodexRelic,
   CodexPotion,
@@ -3144,16 +3146,40 @@ const PET_DEFS: Array<{
   evolvesFrom?: string;
   /** Cards its relic touches on pickup (Byrdpip transforms Byrdonis Egg into Byrd Swoop). */
   cards?: string[];
-  skins?: string[];
+  /** Skins per appearance part, the game's default first; an eye names the character whose eye it is. */
+  looks?: Array<{ id: PetLookPart; skins: string[] }>;
+  actions: PetAction[];
+  /**
+   * Fixed Spine frame (skeleton units) holding the idle pose and the actions that stay in place, so every action
+   * plays in one frame like the combat camera; attacks leave it toward the enemy. Sampled from the 0.113 skeletons.
+   */
+  frame: [x: number, y: number, width: number, height: number];
 }> = [
-  { id: "OSTY", monsterId: "OSTY", source: "character", sourceId: "NECROBINDER", terms: ["Osty", "Summon"] },
-  { id: "WUPPY", monsterId: "WUPPY", source: "event", sourceId: "WUPPY_IN_TROUBLE", terms: ["Wuppy"] },
+  { id: "OSTY", monsterId: "OSTY", source: "character", sourceId: "NECROBINDER", terms: ["Osty", "Summon"], actions: ["attack", "attack_poke", "hurt", "die", "revive"], frame: [-782, -264, 1284, 1178] },
+  { id: "WUPPY", monsterId: "WUPPY", source: "event", sourceId: "WUPPY_IN_TROUBLE", terms: ["Wuppy"], actions: ["hurt", "die"], frame: [-1280, -45, 1955, 1578] },
   // Byrdonis Nest gives Byrdonis Egg; a rest site hatches it into the Byrdpip relic (HatchRestSiteOption).
-  { id: "BYRDPIP", monsterId: "BYRDPIP", source: "event", sourceId: "BYRDONIS_NEST", terms: ["Byrdpip"], evolvesTo: "BYRDINE", cards: ["BYRDONIS_EGG", "BYRD_SWOOP"], skins: ["version1"] },
+  { id: "BYRDPIP", monsterId: "BYRDPIP", source: "event", sourceId: "BYRDONIS_NEST", terms: ["Byrdpip"], evolvesTo: "BYRDINE", cards: ["BYRDONIS_EGG", "BYRD_SWOOP"],
+    looks: [{ id: "form", skins: ["version1", "version2", "version3", "version4"] }], actions: ["attack"], frame: [-290, -66, 597, 642] },
   // Only from Byrdpip at a rest site (EvolveRestSiteOption), so its source is the evolution.
-  { id: "BYRDINE", monsterId: "BYRDINE_MONSTER", source: null, sourceId: null, terms: ["Byrdine"], evolvesFrom: "BYRDPIP", cards: ["BYRD_SWOOP", "GOD_BYRD"], skins: ["hair/v1", "eye/ironclad"] },
-  { id: "PAELS_LEGION", monsterId: "PAELS_LEGION", source: "ancient", sourceId: "PAEL", terms: ["Pael's Legion"], skins: ["eyes"] },
+  { id: "BYRDINE", monsterId: "BYRDINE_MONSTER", source: null, sourceId: null, terms: ["Byrdine"], evolvesFrom: "BYRDPIP", cards: ["BYRD_SWOOP", "GOD_BYRD"],
+    // Byrdine.HairOptions; the eye is "eye/" + the owner's character (ByrdineMonster.SetupSkins). be_born plays in NByrdEvolutionVfx.
+    looks: [
+      { id: "hair", skins: ["hair/v1", "hair/v2", "hair/v3", "hair/v4"] },
+      { id: "eye", skins: ["eye/ironclad", "eye/silent", "eye/regent", "eye/necro", "eye/defect"] },
+    ],
+    actions: ["attack", "be_born"], frame: [-423, -43, 876, 777] },
+  { id: "PAELS_LEGION", monsterId: "PAELS_LEGION", source: "ancient", sourceId: "PAEL", terms: ["Pael's Legion"],
+    // PaelsLegion.SkinOptions picks one; the skeleton names "wings" as "wing".
+    looks: [{ id: "look", skins: ["eyes", "horns", "spikes", "wing"] }], actions: ["block", "sleep", "wake_up"], frame: [-535, -53, 854, 818] },
 ];
+
+const EYE_CHARACTERS: Record<string, string> = {
+  "eye/ironclad": "IRONCLAD",
+  "eye/silent": "SILENT",
+  "eye/regent": "REGENT",
+  "eye/necro": "NECROBINDER",
+  "eye/defect": "DEFECT",
+};
 
 export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<CodexPet[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
@@ -3211,7 +3237,12 @@ export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<
       descriptionEn: description[1] ?? "",
       imageUrl: `/images/sts2/monsters-render/${def.monsterId.toLowerCase()}.webp`,
       spineAsset: spineAssets.find((asset) => asset.id === def.monsterId) ?? null,
-      spineSkins: def.skins ?? [],
+      actionFrame: { x: def.frame[0], y: def.frame[1], width: def.frame[2], height: def.frame[3], padLeft: "6%", padRight: "6%", padTop: "6%", padBottom: "4%" },
+      looks: (def.looks ?? []).map((part) => ({
+        id: part.id,
+        options: part.skins.map((skin) => ({ skin, name: part.id === "eye" ? sourceName("character", EYE_CHARACTERS[skin] ?? skin) : null })),
+      })),
+      actions: def.actions,
       source: def.source && def.sourceId ? { type: def.source, id: def.sourceId, name: sourceName(def.source, def.sourceId) } : null,
       evolvesTo: def.evolvesTo ?? null,
       evolvesFrom: def.evolvesFrom ?? null,

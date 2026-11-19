@@ -9,7 +9,7 @@ import { getCodexServiceMessages } from "@/lib/codex-service";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { CodexPet } from "@/lib/codex-types";
+import type { CodexPet, PetAction } from "@/lib/codex-types";
 import { closeOnPlainClick } from "@/lib/plain-click";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { CompendiumAssetImageActions } from "./compendium-asset-image-actions";
@@ -19,15 +19,38 @@ import { MonsterSpineStage } from "./monster-spine-stage";
 import { RichDescription } from "./rich-description";
 import { RelatedResourceLinks, referenceGroupsFromIds } from "./entity-reference-links";
 
-/** The pet's idle Spine animation in its default skins, or its render when it has no Spine asset. */
-export function PetSpine({ pet, className }: { pet: CodexPet; className: string }) {
+/** The skins the game shows when nobody owns the pet: the first option of each look part. */
+function defaultPetSkins(pet: CodexPet): string[] {
+  return pet.looks.flatMap((part) => part.options[0]?.skin ?? []);
+}
+
+/** The pet's Spine animation (idle, or `action` once per `actionNonce`), or its render when it has no Spine asset. */
+export function PetSpine({
+  pet,
+  className,
+  skins,
+  action = null,
+  actionNonce,
+  fixedFrame = false,
+}: {
+  pet: CodexPet;
+  className: string;
+  skins?: string[];
+  action?: PetAction | null;
+  actionNonce?: number;
+  /** Hold the action frame instead of framing the idle pose (where actions play). */
+  fixedFrame?: boolean;
+}) {
   return (
     <MonsterSpineStage
       asset={pet.spineAsset}
       fallbackImageUrl={pet.imageUrl}
       monsterName={pet.name}
-      selectedMoveId={null}
-      selectedSkins={pet.spineSkins}
+      // The stage plays an animation named like the move id ("die" plays the death clip).
+      selectedMoveId={action}
+      selectedMoveNonce={actionNonce}
+      selectedSkins={skins ?? defaultPetSkins(pet)}
+      viewportOverride={fixedFrame ? pet.actionFrame : null}
       imagePriority={false}
       showLoadingLabel={false}
       className={className}
@@ -40,15 +63,21 @@ export function PetInspect({
   pet,
   entities,
   gameUi,
+  skins,
+  action,
+  actionNonce,
 }: {
   pet: CodexPet;
   entities?: EntityInfo[];
   gameUi?: CodexGameUiLabels;
+  skins?: string[];
+  action?: PetAction | null;
+  actionNonce?: number;
 }) {
   const excludeSelf = useMemo(() => new Set([pet.name, pet.nameEn]), [pet.name, pet.nameEn]);
   return (
     <div className="flex w-full max-w-[34rem] flex-col items-center gap-3 sm:flex-row sm:gap-5">
-      <PetSpine pet={pet} className="relative h-56 w-56 shrink-0" />
+      <PetSpine pet={pet} skins={skins} action={action} actionNonce={actionNonce} fixedFrame className="relative h-56 w-56 shrink-0" />
       <GameHoverTip title={pet.name} className="min-w-0 w-full" style={{ minWidth: 0 }}>
         {entities ? (
           <RichDescription
@@ -94,6 +123,15 @@ export function PetDetail({
     const other = pets.find((candidate) => candidate.id === id);
     return other ? [{ label: label as string, pet: other }] : [];
   });
+  // Keyed by pet so the modal resets when it switches to another pet.
+  const [lookState, setLookState] = useState<{ petId: string; skins: string[] }>({ petId: pet.id, skins: defaultPetSkins(pet) });
+  const skins = lookState.petId === pet.id ? lookState.skins : defaultPetSkins(pet);
+  const [actionState, setActionState] = useState<{ petId: string; action: PetAction; nonce: number } | null>(null);
+  const action = actionState?.petId === pet.id ? actionState : null;
+  const pickerLabelClass = "font-game-title text-sm font-bold text-[#f1c94f] [text-shadow:2px_2px_0_rgba(0,0,0,0.82)]";
+  const pickerButtonClass = (selected: boolean) => `rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10 ${
+    selected ? "border-[#f1c94f]/60 bg-[#f1c94f]/15 text-[#f1c94f]" : "border-white/10 bg-white/[0.03] text-zinc-400"
+  }`;
   const linkClass = "font-game-text text-sm text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary";
 
   return (
@@ -122,13 +160,59 @@ export function PetDetail({
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[18rem] flex-col items-center justify-center gap-2 py-4">
           <div ref={assetCopyTargetRef}>
-            <PetInspect pet={pet} entities={entities} gameUi={gameUi} />
+            <PetInspect
+              pet={pet}
+              entities={entities}
+              gameUi={gameUi}
+              skins={skins}
+              action={action?.action ?? null}
+              actionNonce={action?.nonce}
+            />
           </div>
           <CompendiumAssetImageActions
             serviceLocale={serviceLocale}
             fileName={`${pet.id}.png`}
             targetRef={assetCopyTargetRef}
           />
+          {pet.spineAsset && (
+            <div className="mt-2 flex w-full max-w-2xl flex-col items-center gap-2">
+              {pet.looks.map((part, partIndex) => (
+                <div key={part.id} className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5">
+                  <span className={pickerLabelClass}>{view.lookParts[part.id]}</span>
+                  <div className="flex flex-wrap gap-1" role="group" aria-label={`${pet.name} ${view.lookParts[part.id]}`}>
+                    {part.options.map((option, optionIndex) => (
+                      <button
+                        key={option.skin}
+                        type="button"
+                        aria-pressed={skins[partIndex] === option.skin}
+                        onClick={() => setLookState({ petId: pet.id, skins: skins.map((skin, index) => (index === partIndex ? option.skin : skin)) })}
+                        className={pickerButtonClass(skins[partIndex] === option.skin)}
+                      >
+                        {option.name ?? (view.lookOptions as Record<string, string>)[option.skin] ?? String(optionIndex + 1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              {pet.actions.length > 0 && (
+                <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5">
+                  <span className={pickerLabelClass}>{view.actionsTitle}</span>
+                  <div className="flex flex-wrap gap-1" role="group" aria-label={`${pet.name} ${view.actionsTitle}`}>
+                    {pet.actions.map((name) => (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => setActionState((current) => ({ petId: pet.id, action: name, nonce: (current?.nonce ?? 0) + 1 }))}
+                        className={pickerButtonClass(action?.action === name)}
+                      >
+                        {view.actions[name]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </section>
 
         <aside className="flex flex-col gap-3">
