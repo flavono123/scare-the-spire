@@ -1249,6 +1249,18 @@
   }
  },
  "eventOptions": {
+  "AMALGAMATOR": {
+   "COMBINE_DEFENDS": {
+    "card": [
+     "ULTIMATE_DEFEND"
+    ]
+   },
+   "COMBINE_STRIKES": {
+    "card": [
+     "ULTIMATE_STRIKE"
+    ]
+   }
+  },
   "BUGSLAYER": {
    "EXTERMINATION": {
     "card": [
@@ -1310,6 +1322,18 @@
    "CONFRONT": {
     "card": [
      "DECAY"
+    ]
+   }
+  },
+  "HUNGRY_FOR_MUSHROOMS": {
+   "BIG_MUSHROOM": {
+    "relic": [
+     "BIG_MUSHROOM"
+    ]
+   },
+   "FRAGRANT_MUSHROOM": {
+    "relic": [
+     "FRAGRANT_MUSHROOM"
     ]
    }
   },

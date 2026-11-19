@@ -44,7 +44,10 @@ KEEP = {
 GENERIC_RE = re.compile(r"\b(\w+)<((?:[\w.]+\.)?[A-Z]\w*)>")
 QUALIFIED_KIND = {f"{NS}{d}.": k for k, d in DIRS.items()}
 IS_RE = re.compile(r"\bis\s+([A-Z]\w*)\b")
-OPTION_RE = re.compile(r'new EventOption\(this,[^"]*?"([A-Z0-9_]+)\.pages\.([A-Z0-9_]+)\.options\.([A-Z0-9_]+)"')
+# Option keys are literal ("EVENT.pages.PAGE.options.OPT") or EventModel.InitialOptionKey("OPT").
+OPTION_RE = re.compile(r'new EventOption\(this,[^"]*?(?:"([A-Z0-9_]+)\.pages\.([A-Z0-9_]+)\.options\.([A-Z0-9_]+)"|InitialOptionKey\("([A-Z0-9_]+)"\))')
+# EventModel.RelicOption<T>(): option id is the relic id and its hover tip is the relic.
+RELIC_OPTION_RE = re.compile(r"\bRelicOption<([A-Z]\w*)>\(")
 HOVER_GENERIC_RE = re.compile(r"HoverTipFactory\.From(Card|CardWithCardHoverTips|Relic|Potion)<(?:[\w.]+\.)?([A-Z]\w*)>")
 HOVER_DYNAMIC_RE = re.compile(r"HoverTipFactory\.From(Card|Relic|Potion)\((?!\))")
 METHOD_START_RE = re.compile(r"^\t(?:private|public|protected|internal)\b", re.M)
@@ -150,7 +153,8 @@ def main() -> int:
             }
             prev_end = 0
             for m in OPTION_RE.finditer(text):
-                event_key, _page, option = m.groups()
+                event_key, _page, option, initial_option = m.groups()
+                event_key, option = event_key or own_id, option or initial_option
                 end = call_end(text, m.start() + len("new EventOption"))
                 method_start = max([s for s in starts if s < m.start()], default=0)
                 window = text[max(prev_end, method_start) : end]
@@ -173,6 +177,10 @@ def main() -> int:
                     slot = result["eventOptions"].setdefault(own_id, {}).setdefault(option, {})
                     for k, v in tips.items():
                         slot[k] = sorted(set(slot.get(k, [])) | v)
+            for cls in RELIC_OPTION_RE.findall(text):
+                rid = class_id("relic", cls)
+                if rid in known["relic"]:
+                    result["eventOptions"].setdefault(own_id, {}).setdefault(rid, {})["relic"] = [rid]
 
     rendered = json.dumps(result, ensure_ascii=False, indent=1, sort_keys=True) + "\n"
     if args.check:
