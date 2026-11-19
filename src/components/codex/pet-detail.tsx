@@ -6,7 +6,6 @@ import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexServiceMessages } from "@/lib/codex-service";
-import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { CodexPet, PetAction, PetLookOption, PetLookPart } from "@/lib/codex-types";
@@ -139,7 +138,6 @@ export function PetDetail({
   gameUi,
   backToListTitle,
   pet,
-  pets,
   entities,
   onClose,
 }: {
@@ -147,8 +145,6 @@ export function PetDetail({
   gameUi: CodexGameUiLabels;
   backToListTitle: string;
   pet: CodexPet;
-  /** All pets, to name the one it evolves from or into. */
-  pets: CodexPet[];
   entities?: EntityInfo[];
   onClose?: () => void;
 }) {
@@ -158,10 +154,6 @@ export function PetDetail({
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const [commentCount, setCommentCount] = useState(0);
   const englishName = serviceLocale === "ko" ? "영어명" : "English name";
-  const evolution = ([[view.evolvesFrom, pet.evolvesFrom], [view.evolvesTo, pet.evolvesTo]] as const).flatMap(([label, id]) => {
-    const other = pets.find((candidate) => candidate.id === id);
-    return other ? [{ label: label as string, pet: other }] : [];
-  });
   // Keyed by pet so the modal resets when it switches to another pet.
   const [lookState, setLookState] = useState<{ petId: string; skins: string[] }>({ petId: pet.id, skins: defaultPetSkins(pet) });
   const skins = lookState.petId === pet.id ? lookState.skins : defaultPetSkins(pet);
@@ -176,7 +168,6 @@ export function PetDetail({
       : part === "hair"
         ? fill(view.hairTitle, { n: index + 1 })
         : (view.lookOptions as Record<string, string>)[option.skin] ?? option.skin;
-  const linkClass = "font-game-text text-sm text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary";
 
   return (
     <div className="mx-auto w-full max-w-5xl p-4 sm:p-6" data-pet-detail>
@@ -245,33 +236,12 @@ export function PetDetail({
         </section>
 
         <aside className="flex flex-col gap-3">
-          <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-            <div className="space-y-3">
-              {pet.source && (
-                <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{view.source}</div>
-                  <Link href={localizeLink(buildCompendiumResourceHref(pet.source.type, pet.source.id))} className={linkClass}>
-                    {pet.source.name} →
-                  </Link>
-                </div>
-              )}
-              {evolution.map((entry) => (
-                <div key={entry.label}>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{entry.label}</div>
-                  <Link href={localizeLink(buildCompendiumResourceHref("pet", entry.pet.id))} className={linkClass}>
-                    {entry.pet.name} →
-                  </Link>
-                  <div className="mt-0.5 text-xs text-muted-foreground">{view.restSiteEvolution}</div>
-                </div>
-              ))}
-              {pet.nameEn !== pet.name && (
-                <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{englishName}</div>
-                  <div className="font-game-text text-sm text-foreground">{pet.nameEn}</div>
-                </div>
-              )}
-            </div>
-          </section>
+          {pet.nameEn !== pet.name && (
+            <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
+              <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{englishName}</div>
+              <div className="font-game-text text-sm text-foreground">{pet.nameEn}</div>
+            </section>
+          )}
 
           {pet.spineAsset && pet.actions.length > 0 && (
             <details className="group rounded-lg border border-border bg-compendium-rail px-4 py-3" open>

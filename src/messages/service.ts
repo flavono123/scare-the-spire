@@ -1306,10 +1306,6 @@ export const serviceMessages = {
       },
       petsView: {
         searchPlaceholder: "펫 검색...",
-        source: "출처",
-        evolvesFrom: "진화 전",
-        evolvesTo: "진화",
-        restSiteEvolution: "휴식 장소에서 진화",
         lookParts: { hair: "머리", eye: "눈", look: "외형" },
         lookOptions: { eyes: "눈", horns: "뿔", spikes: "가시", wing: "날개" },
         hairTitle: "머리 {n}",
@@ -2995,10 +2991,6 @@ export const serviceMessages = {
       },
       petsView: {
         searchPlaceholder: "Search pets...",
-        source: "Source",
-        evolvesFrom: "Evolves from",
-        evolvesTo: "Evolves into",
-        restSiteEvolution: "Evolves at a Rest Site",
         lookParts: { hair: "Hair", eye: "Eye", look: "Look" },
         lookOptions: { eyes: "Eyes", horns: "Horns", spikes: "Spikes", wing: "Wings" },
         hairTitle: "Hair {n}",

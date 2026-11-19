@@ -278,9 +278,6 @@ export interface CodexPet {
   actionFrame: MonsterSpineViewport;
   /** Where it comes from: the character it belongs to, the event, or the Ancient that offers its relic; null when it only comes from evolving another pet. */
   source: { type: "character" | "event" | "ancient"; id: string; name: string } | null;
-  /** The pet it evolves into at a rest site, and the one it evolves from. */
-  evolvesTo: string | null;
-  evolvesFrom: string | null;
   related: CodexRelatedIds;
   sortOrder: number;
 }

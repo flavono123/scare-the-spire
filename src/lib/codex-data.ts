@@ -3130,8 +3130,6 @@ const PET_DEFS: Array<{
   source: NonNullable<CodexPet["source"]>["type"] | null;
   sourceId: string | null;
   terms: string[];
-  evolvesTo?: string;
-  evolvesFrom?: string;
   /** Cards its relic touches on pickup (Byrdpip transforms Byrdonis Egg into Byrd Swoop). */
   cards?: string[];
   /** Skins per appearance part, the game's default first; an eye names the character whose eye it is. */
@@ -3146,10 +3144,10 @@ const PET_DEFS: Array<{
   { id: "OSTY", monsterId: "OSTY", source: "character", sourceId: "NECROBINDER", terms: ["Osty", "Summon"], actions: ["attack", "attack_poke", "hurt", "die", "revive"], frame: [-782, -264, 1284, 1178] },
   { id: "WUPPY", monsterId: "WUPPY", source: "event", sourceId: "WUPPY_IN_TROUBLE", terms: ["Wuppy"], actions: ["hurt", "die"], frame: [-1280, -45, 1955, 1578] },
   // Byrdonis Nest gives Byrdonis Egg; a rest site hatches it into the Byrdpip relic (HatchRestSiteOption).
-  { id: "BYRDPIP", monsterId: "BYRDPIP", source: "event", sourceId: "BYRDONIS_NEST", terms: ["Byrdpip"], evolvesTo: "BYRDINE", cards: ["BYRDONIS_EGG", "BYRD_SWOOP"],
+  { id: "BYRDPIP", monsterId: "BYRDPIP", source: "event", sourceId: "BYRDONIS_NEST", terms: ["Byrdpip"], cards: ["BYRDONIS_EGG", "BYRD_SWOOP"],
     looks: [{ id: "hair", skins: ["version1", "version2", "version3", "version4"] }], actions: ["attack"], frame: [-290, -66, 597, 642] },
   // Only from Byrdpip at a rest site (EvolveRestSiteOption), so its source is the evolution.
-  { id: "BYRDINE", monsterId: "BYRDINE_MONSTER", source: null, sourceId: null, terms: ["Byrdine"], evolvesFrom: "BYRDPIP", cards: ["BYRD_SWOOP", "GOD_BYRD"],
+  { id: "BYRDINE", monsterId: "BYRDINE_MONSTER", source: null, sourceId: null, terms: ["Byrdine"], cards: ["BYRD_SWOOP", "GOD_BYRD"],
     // Byrdine.HairOptions; the eye is "eye/" + the owner's character (ByrdineMonster.SetupSkins). be_born plays in NByrdEvolutionVfx.
     looks: [
       { id: "hair", skins: ["hair/v1", "hair/v2", "hair/v3", "hair/v4"] },
@@ -3244,8 +3242,6 @@ export async function getCodexPets(opts?: { gameLocale?: GameLocale }): Promise<
       })),
       actions: def.actions,
       source: def.source && def.sourceId ? { type: def.source, id: def.sourceId, name: sourceName(def.source, def.sourceId) } : null,
-      evolvesTo: def.evolvesTo ?? null,
-      evolvesFrom: def.evolvesFrom ?? null,
       related: Object.fromEntries(Object.entries(related).filter(([, ids]) => ids && ids.length > 0)),
       sortOrder,
     }];

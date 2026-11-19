@@ -152,7 +152,6 @@ export function PetLibrary({
               gameUi={gameUi}
               backToListTitle={title}
               pet={selected}
-              pets={pets}
               entities={entities}
               onClose={() => select(null)}
             />

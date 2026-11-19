@@ -64,7 +64,6 @@ export default async function PetDetailPage({
         gameUi={gameUi}
         backToListTitle={getCodexServiceMessages(serviceLocale).pets}
         pet={pet}
-        pets={pets}
       />
     </div>
   );
