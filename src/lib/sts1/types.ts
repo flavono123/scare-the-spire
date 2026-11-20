@@ -437,7 +437,15 @@ export interface Sts1VarTier {
   value: Sts1VarValue;
 }
 
-export type Sts1RefType = "card" | "relic" | "potion" | "monster" | "power" | "blight";
+type Sts1EntityRefType = "card" | "relic" | "potion" | "monster" | "power" | "blight";
+/** Keywords and mods are only named in text, so pages that mention them add them on top. */
+export type Sts1RefType = Sts1EntityRefType | "keyword" | "modifier";
+
+/** Something the game text names without the game tipping it (keywords and mods by slug). */
+export interface Sts1Mention {
+  type: Sts1RefType;
+  id: string;
+}
 
 /** A fixed item, one of a small list (`pool`), or a generic draw (`tier`, not drawn as a token). */
 export interface Sts1ItemRef {
@@ -456,7 +464,7 @@ export interface Sts1EntityRef {
 }
 
 /** Names, links and art for every card, relic, potion, monster and power a page names. */
-export type Sts1EntityRefs = Record<Sts1RefType, Record<string, Sts1EntityRef>> & {
+export type Sts1EntityRefs = Record<Sts1EntityRefType, Record<string, Sts1EntityRef>> & Partial<Record<"keyword" | "modifier", Record<string, Sts1EntityRef>>> & {
   /** Card ids `AbstractDungeon.getCurse()` draws from, when a ref asks for a random curse. */
   cursePool?: string[];
 };
@@ -481,6 +489,8 @@ export interface Sts1EventOption {
   loses?: Sts1ItemRef[];
   combat?: { encounters: string[][] };
   ascension?: { min?: number; max?: number };
+  /** Cards its text names that it neither gives nor takes (Back to Basics upgrades Strikes and Defends). */
+  mentions?: Sts1ItemRef[];
 }
 
 export interface Sts1EventBodyVariant {
@@ -508,6 +518,8 @@ export interface Sts1Event {
   image: string | null;
   /** Room events without art: the monsters the room shows instead. */
   artMonsters: string[];
+  /** Monsters the text names outside any fight (the Cultists in Nest). */
+  mentionMonsters: string[];
   groups: Sts1EventGroup[];
   dungeons: Sts1Dungeon[];
   vars: Record<string, Sts1VarTier[]>;
@@ -542,6 +554,8 @@ export interface Sts1CompendiumKeyword {
   color?: string;
   /** Cards, relics, potions and powers whose text names this keyword. */
   users: { type: "cards" | "relics" | "potions" | "powers"; slug: string; name: string; imageUrl: string }[];
+  /** What its text names besides keywords (FATAL names Minion). */
+  mentions: Sts1Mention[];
 }
 
 export interface Sts1Ascension {
@@ -549,6 +563,7 @@ export interface Sts1Ascension {
   description: string;
   /** The level changes monster hit points, damage or moves. */
   monsterStats: boolean;
+  mentions: Sts1Mention[];
 }
 
 export interface Sts1Modifier {
@@ -563,6 +578,8 @@ export interface Sts1Modifier {
   dailyOnly: boolean;
   exclusive: string[];
   refs: Sts1ItemRef[];
+  /** Powers and other mods its text names. */
+  mentions: Sts1Mention[];
 }
 
 export interface Sts1Blight {
@@ -575,6 +592,7 @@ export interface Sts1Blight {
   stackDescription: string | null;
   image: string;
   unique: boolean;
+  mentions: Sts1Mention[];
 }
 
 export interface Sts1NeowReward {

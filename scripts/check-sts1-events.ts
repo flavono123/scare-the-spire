@@ -52,6 +52,7 @@ for (const file of files) {
   const event = read<Sts1RawEvent>(`events/${file}`);
   const where = (scene: string, detail: string) => `${file} ${scene}: ${detail}`;
   if (!locs.eng[event.id]) errors.push(`${file}: no events.json entry ${event.id}`);
+  for (const id of event.mentionMonsters ?? []) if (!known.monster.has(id)) errors.push(`${file}: mentioned monster ${id}`);
   const used = { d: new Set<number>(), o: new Set<number>() };
   const checkParts = (scene: string, parts: readonly Sts1RawPart[] | undefined) => {
     for (const part of parts ?? []) {
@@ -94,7 +95,7 @@ for (const file of files) {
     for (const option of scene.options) {
       checkParts(key, option.label);
       checkParts(key, option.lockedLabel);
-      [option.preview, ...(option.gains ?? []), ...(option.loses ?? [])].forEach((ref) => checkRef(key, ref));
+      [option.preview, ...(option.gains ?? []), ...(option.loses ?? []), ...(option.mentions ?? [])].forEach((ref) => checkRef(key, ref));
       for (const group of option.combat?.encounters ?? []) {
         for (const id of group) if (!known.monster.has(id)) errors.push(where(key, `monster ${id}`));
       }

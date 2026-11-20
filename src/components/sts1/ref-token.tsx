@@ -2,7 +2,8 @@
 
 import Image from "@/components/ui/static-image";
 import { Sts1MentionHover } from "./mention-hover";
-import type { Sts1EntityRefs, Sts1ItemRef, Sts1RefType } from "@/lib/sts1/types";
+import type { ServiceLocale } from "@/lib/i18n";
+import type { Sts1EntityRefs, Sts1ItemRef, Sts1Mention, Sts1RefType } from "@/lib/sts1/types";
 
 const RESOURCE: Record<Sts1RefType, string> = {
   card: "cards",
@@ -11,6 +12,8 @@ const RESOURCE: Record<Sts1RefType, string> = {
   monster: "monsters",
   power: "powers",
   blight: "blights",
+  keyword: "keywords",
+  modifier: "modifiers",
 };
 
 /** One card, relic, potion, monster, power or blight: art + name, hover preview, link to its page. */
@@ -44,7 +47,7 @@ export function Sts1EntityToken({
         className="relative inline-flex cursor-help items-center gap-1"
         linkClassName="inline-flex items-center gap-1 font-game-text text-xs font-semibold text-[#efc851] no-underline hover:brightness-125"
       >
-        <Image src={ref.imageUrl} alt="" width={32} height={24} className={art} />
+        {ref.imageUrl ? <Image src={ref.imageUrl} alt="" width={32} height={24} className={art} /> : null}
         <span className={tone === "lose" ? "line-through decoration-[#ff6563]/70" : undefined}>
           {ref.name}
           {upgraded ? "+" : ""}
@@ -85,6 +88,45 @@ export function Sts1ItemRefTokens({
           upgraded={item.upgraded}
           tone={tone}
         />
+      ))}
+    </>
+  );
+}
+
+const MENTION_TITLES: Record<ServiceLocale, Record<Sts1RefType, string>> = {
+  ko: {
+    card: "관련 카드", relic: "관련 유물", potion: "관련 포션", monster: "관련 몬스터",
+    power: "관련 파워", blight: "관련 역병", keyword: "관련 키워드", modifier: "관련 모드",
+  },
+  en: {
+    card: "Related cards", relic: "Related relics", potion: "Related potions", monster: "Related monsters",
+    power: "Related powers", blight: "Related blights", keyword: "Related keywords", modifier: "Related mods",
+  },
+};
+
+/** A detail page's related rails: what the text names, one row per type. */
+export function Sts1MentionRail({
+  mentions,
+  refs,
+  serviceLocale,
+}: {
+  mentions: readonly Sts1Mention[];
+  refs: Sts1EntityRefs;
+  serviceLocale: ServiceLocale;
+}) {
+  const types = [...new Set(mentions.map((mention) => mention.type))];
+  if (!types.length) return null;
+  return (
+    <>
+      {types.map((type) => (
+        <section key={type} className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
+          <div className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">{MENTION_TITLES[serviceLocale][type]}</div>
+          <div className="flex flex-wrap gap-1.5">
+            {mentions.filter((mention) => mention.type === type).map((mention) => (
+              <Sts1EntityToken key={mention.id} type={type} id={mention.id} refs={refs} />
+            ))}
+          </div>
+        </section>
       ))}
     </>
   );

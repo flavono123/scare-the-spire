@@ -61,11 +61,11 @@ function AchievementTile({ achievement, refs, labels }: { achievement: Sts1Achie
         className="h-24 w-24 object-contain transition-transform group-hover:scale-105 sm:h-28 sm:w-28"
       />
       <span className="font-game-title text-sm font-bold text-[#efc851]">{achievement.name}</span>
-      <span className="font-game-text text-xs leading-snug text-gray-300">{achievement.description}</span>
+      <Sts1EventText text={achievement.description} className="font-game-text text-xs leading-snug text-gray-300" />
       {hovered ? (
         <PortaledHoverTipLayer pin="top-left" interactive>
           <Sts1TipBox title={achievement.name} className="w-72">
-            <Sts1EventText text={achievement.description} />
+            <Sts1EventText text={achievement.description} refs={refs} />
             {achievement.refs.length ? <RefTokens achievement={achievement} refs={refs} labels={labels} /> : null}
           </Sts1TipBox>
         </PortaledHoverTipLayer>

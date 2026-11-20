@@ -6,6 +6,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { Sts1ScoreBonusRow } from "@/lib/sts1/compendium-extras";
 import type { Sts1EntityRefs, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
+import { Sts1EventText } from "./event-text";
 import { Sts1ListLayout } from "./list-shell";
 import { Sts1EntityToken } from "./ref-token";
 
@@ -25,7 +26,7 @@ function ScoreLine({ row, labels, refs }: { row: Sts1ScoreBonusRow; labels: Scor
           ) : null}
           {row.refs.map((ref) => <Sts1EntityToken key={`${ref.type}-${ref.id}`} type={ref.type} id={ref.id} refs={refs} />)}
         </div>
-        {row.description ? <p className="mt-0.5 font-game-text text-xs text-gray-400">{row.description}</p> : null}
+        {row.description ? <Sts1EventText text={row.description} refs={refs} className="mt-0.5 block font-game-text text-xs text-gray-400" /> : null}
       </div>
       <span className="shrink-0 font-game-title text-base text-[#efc851] [text-shadow:0_2px_0_#000]">{row.points}</span>
     </li>

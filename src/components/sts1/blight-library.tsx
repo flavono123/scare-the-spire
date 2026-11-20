@@ -9,11 +9,12 @@ import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1DetailPath, sts1IndexPath } from "@/lib/sts1/paths";
-import type { Sts1Blight, Sts1Keyword, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1Blight, Sts1EntityRefs, Sts1Keyword, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1EnglishName } from "./detail-chrome";
 import { Sts1Description, Sts1DetailModal, Sts1ListLayout, openOnPlainClick, useSts1Selection } from "./list-shell";
 import { RelicSlab } from "./mention-hover";
+import { Sts1MentionRail } from "./ref-token";
 
 function detailText(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
@@ -23,12 +24,14 @@ function detailText(serviceLocale: ServiceLocale) {
 
 export function Sts1BlightDetail({
   blight,
+  refs,
   keywords,
   labels,
   serviceLocale,
   onClose,
 }: {
   blight: Sts1Blight;
+  refs: Sts1EntityRefs;
   keywords: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
@@ -65,15 +68,16 @@ export function Sts1BlightDetail({
         </div>
       </section>
       <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <Sts1Description text={blight.description} keywords={keywords} />
+        <Sts1Description text={blight.description} keywords={keywords} refs={refs} />
       </section>
       {blight.stackDescription ? (
         <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
           <div className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">{text.stacked}</div>
-          <Sts1Description text={blight.stackDescription} keywords={keywords} />
+          <Sts1Description text={blight.stackDescription} keywords={keywords} refs={refs} />
           <p className="mt-2 font-game-text text-xs text-gray-500">{text.stackNote}</p>
         </section>
       ) : null}
+      <Sts1MentionRail mentions={blight.mentions} refs={refs} serviceLocale={serviceLocale} />
       <Sts1CommentsRail resourceType="blight" slug={blight.slug} serviceLocale={serviceLocale} />
     </Sts1DetailShell>
   );
@@ -81,11 +85,13 @@ export function Sts1BlightDetail({
 
 export function Sts1BlightLibrary({
   blights,
+  refs,
   keywords,
   labels,
   serviceLocale,
 }: {
   blights: Sts1Blight[];
+  refs: Sts1EntityRefs;
   keywords: Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
@@ -106,7 +112,7 @@ export function Sts1BlightLibrary({
       onSearch={setSearchQuery}
       overlay={selected ? (
         <Sts1DetailModal label={selected.name} onClose={close}>
-          <Sts1BlightDetail blight={selected} keywords={keywords} labels={labels} serviceLocale={serviceLocale} onClose={close} />
+          <Sts1BlightDetail blight={selected} refs={refs} keywords={keywords} labels={labels} serviceLocale={serviceLocale} onClose={close} />
         </Sts1DetailModal>
       ) : null}
     >

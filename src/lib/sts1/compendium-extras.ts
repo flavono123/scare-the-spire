@@ -16,9 +16,11 @@ import { sts1GameLocale } from "./locale";
 import {
   sts1BlightImageUrl,
   sts1CardPortraitUrl,
+  sts1OrbImageUrl,
   sts1PotionImageUrl,
   sts1PowerImageUrl,
   sts1RelicImageUrl,
+  sts1RunModUrl,
 } from "./paths";
 import type {
   Sts1Achievement,
@@ -28,6 +30,7 @@ import type {
   Sts1EntityRefs,
   Sts1EventLabels,
   Sts1ItemRef,
+  Sts1Mention,
   Sts1Modifier,
   Sts1Monster,
   Sts1Neow,
@@ -132,6 +135,11 @@ function interleave(parts: string[], amounts: number[]): string {
   return parts.map((part, index) => `${part}${index < amounts.length ? amounts[index] : ""}`).join("");
 }
 
+/** Game elements a keyword's text names that the game does not tip. */
+const KEYWORD_MENTIONS: Record<string, Sts1Mention[]> = {
+  FATAL: [{ type: "power", id: "Minion" }],
+};
+
 export const getSts1CompendiumKeywords = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1CompendiumKeyword[]> => {
   const locale = sts1GameLocale(gameLocale);
   const [keywords, engKeywords, orbs, engOrbs, stances, engStances, cards, relics, potions, powers] = await Promise.all([
@@ -177,6 +185,7 @@ export const getSts1CompendiumKeywords = cache(async (gameLocale: GameLocale = "
     description: keyword.description,
     image: null,
     users: usersOf(keyword.names),
+    mentions: KEYWORD_MENTIONS[keyword.id] ?? [],
   }));
   for (const id of ORB_ORDER) {
     const orb = orbs[id] ?? engOrbs[id];
@@ -193,6 +202,7 @@ export const getSts1CompendiumKeywords = cache(async (gameLocale: GameLocale = "
       description: interleave(orb.DESCRIPTION, amounts),
       image,
       users: id === "Empty" ? [] : usersOf([orb.NAME]),
+      mentions: [],
     });
   }
   for (const id of STANCE_ORDER) {
@@ -210,6 +220,7 @@ export const getSts1CompendiumKeywords = cache(async (gameLocale: GameLocale = "
       image: null,
       color: STANCE_COLORS[id],
       users: usersOf([stance.NAME]),
+      mentions: [],
     });
   }
   void locale;
@@ -233,7 +244,7 @@ export async function getSts1KeywordKindLabels(gameLocale: GameLocale = "kor") {
 
 // ---------------------------------------------------------------- ascension
 
-type AscensionData = { levels: { level: number; index: number; monsterStats: boolean }[] };
+type AscensionData = { levels: { level: number; index: number; monsterStats: boolean; mentions?: Sts1Mention[] }[] };
 
 export const getSts1Ascensions = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Ascension[]> => {
   const [data, ui] = await Promise.all([readJson<AscensionData>("ascension.json"), getSts1UiExtras(gameLocale)]);
@@ -242,6 +253,7 @@ export const getSts1Ascensions = cache(async (gameLocale: GameLocale = "kor"): P
     level: level.level,
     description: text[level.index] ?? "",
     monsterStats: level.monsterStats,
+    mentions: level.mentions ?? [],
   }));
 });
 
@@ -292,6 +304,8 @@ export const getSts1Modifiers = cache(async (gameLocale: GameLocale = "kor"): Pr
       icon: mod.icon ? mod.icon.replace(/\.png$/, "") : null,
       dailyOnly: false,
       exclusive: mod.exclusive.map(slugify),
+      mentions: mod.refs.filter((ref) => (ref.type === "power" || ref.type === "modifier" || ref.type === "keyword") && ref.id)
+        .map((ref) => ({ type: ref.type, id: ref.id! })),
       refs: mod.refs.filter((ref): ref is Sts1ItemRef & RawModRef => ref.type === "card" || ref.type === "relic" || ref.type === "potion")
         .map((ref) => ({ type: ref.type, ...(ref.id ? { id: ref.id } : {}), ...(Array.isArray(ref.pool) ? { pool: ref.pool } : {}), ...(ref.tier ? { tier: ref.tier } : {}) })),
       onScreen: mod.screenIndex != null,
@@ -312,7 +326,8 @@ export async function getSts1ModifierLabels(gameLocale: GameLocale = "kor") {
     title: ui.CustomModeScreen?.TEXT?.[6] ?? "Modifiers",
     customMode: ui.CustomModeScreen?.TEXT?.[0] ?? "Custom Mode",
     daily: ui.DailyScreen?.TEXT?.[0] ?? "Daily Challenge",
-    offScreen: korean ? "커스텀 모드 화면에 없음" : "Not on the Custom Mode screen",
+    // Not on the Custom Mode screen nor in any daily list: text and classes left in the game, unplayable.
+    deprecated: korean ? "폐기됨" : "Deprecated",
     exclusive: korean ? "같이 쓸 수 없는 모드" : "Can't be used with",
   };
 }
@@ -325,6 +340,7 @@ type RawBlight = {
   unique: boolean;
   description: RawPart[];
   stackDescription?: RawPart[];
+  refs?: Sts1Mention[];
 };
 type RawBlights = {
   blights: RawBlight[];
@@ -355,6 +371,7 @@ export const getSts1Blights = cache(async (gameLocale: GameLocale = "kor"): Prom
       stackDescription: blight.stackDescription ? resolveTable(counterParts(blight.stackDescription), text.DESCRIPTION) : null,
       image: sts1BlightImageUrl(blight.image),
       unique: blight.unique,
+      mentions: blight.refs ?? [],
     };
   });
 });
@@ -367,6 +384,36 @@ export async function getSts1BlightRefs(ids: readonly string[], gameLocale: Game
   const blights = await getSts1Blights(gameLocale);
   const wanted = new Set(ids);
   return Object.fromEntries(blights.filter((row) => wanted.has(row.id)).map((row) => [row.id, { slug: row.slug, name: row.name, imageUrl: row.image }]));
+}
+
+/**
+ * Refs for a page: item refs (pools and tiers included) plus mentions of any type,
+ * so text and tokens can link keywords, mods and blights next to cards and monsters.
+ */
+export async function getSts1PageRefs(
+  { items = [], mentions = [] }: { items?: readonly Sts1ItemRef[]; mentions?: readonly Sts1Mention[] },
+  gameLocale: GameLocale = "kor",
+): Promise<Sts1EntityRefs> {
+  const of = (type: Sts1RefType) => new Set(mentions.filter((mention) => mention.type === type).map((mention) => mention.id));
+  const itemMentions = mentions
+    .filter((mention) => mention.type === "card" || mention.type === "relic" || mention.type === "potion")
+    .map((mention) => ({ type: mention.type as Sts1ItemRef["type"], id: mention.id }));
+  const keywordIds = of("keyword");
+  const modIds = of("modifier");
+  const [refs, blights, keywords, mods] = await Promise.all([
+    getSts1EntityRefs({ items: [...items, ...itemMentions], monsters: [...of("monster")], powers: [...of("power")] }, gameLocale),
+    getSts1BlightRefs([...of("blight")], gameLocale),
+    keywordIds.size ? getSts1CompendiumKeywords(gameLocale) : Promise.resolve([]),
+    modIds.size ? getSts1Modifiers(gameLocale) : Promise.resolve([]),
+  ]);
+  return {
+    ...refs,
+    blight: { ...refs.blight, ...blights },
+    keyword: Object.fromEntries(keywords.filter((row) => keywordIds.has(row.slug))
+      .map((row) => [row.slug, { slug: row.slug, name: row.name, imageUrl: row.image ? sts1OrbImageUrl(row.image) : "" }])),
+    modifier: Object.fromEntries(mods.filter((row) => modIds.has(row.slug))
+      .map((row) => [row.slug, { slug: row.slug, name: row.name, imageUrl: row.icon ? sts1RunModUrl(row.icon) : "" }])),
+  };
 }
 
 // ---------------------------------------------------------------- Neow
@@ -454,9 +501,10 @@ export async function getSts1NeowStage(gameLocale: GameLocale = "kor"): Promise<
 
 export async function getSts1NeowLabels(gameLocale: GameLocale = "kor") {
   const korean = sts1GameLocale(gameLocale) === "kor";
+  // NeowEvent draws category 0-3 on buttons 1-4 and names none of them, so the filter goes by position.
   return korean
-    ? { categories: ["작은 보너스", "큰 보너스", "대가와 보상", "보스 유물 교환"], mini: "첫 보스에 닿지 못한 다음 판" }
-    : { categories: ["Small bonus", "Big bonus", "Drawback and reward", "Boss relic swap"], mini: "After a run that missed the first boss" };
+    ? { filter: "선택지", slots: ["첫 번째 선택지", "두 번째 선택지", "세 번째 선택지", "네 번째 선택지"], mini: "첫 보스에 닿지 못한 다음 판" }
+    : { filter: "Option", slots: ["1st option", "2nd option", "3rd option", "4th option"], mini: "After a run that missed the first boss" };
 }
 
 // ---------------------------------------------------------------- achievements

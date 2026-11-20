@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Sts1ModifierLibrary } from "@/components/sts1/modifier-library";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
-import { getSts1BlightRefs, getSts1EntityRefs, getSts1ModifierLabels, getSts1Modifiers } from "@/lib/sts1/compendium-extras";
+import { getSts1PageRefs, getSts1ModifierLabels, getSts1Modifiers } from "@/lib/sts1/compendium-extras";
 import { getSts1Keywords, getSts1Metadata } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
 
@@ -25,15 +25,15 @@ export default async function Sts1ModifiersPage({ searchParams }: ListProps) {
     getSts1ModifierLabels(gameLocale),
     getSts1Keywords(gameLocale),
   ]);
-  const [refs, blights] = await Promise.all([
-    getSts1EntityRefs({ items: mods.flatMap((mod) => mod.refs) }, gameLocale),
-    getSts1BlightRefs(mods.flatMap((mod) => mod.blightRefs), gameLocale),
-  ]);
+  const refs = await getSts1PageRefs({
+    items: mods.flatMap((mod) => mod.refs),
+    mentions: mods.flatMap((row) => [...row.mentions, ...row.blightRefs.map((id) => ({ type: "blight" as const, id }))]),
+  }, gameLocale);
   return (
     <Suspense>
       <Sts1ModifierLibrary
         mods={mods}
-        refs={{ ...refs, blight: blights }}
+        refs={refs}
         keywords={keywords}
         modLabels={modLabels}
         serviceLocale={serviceLocale}

@@ -121,5 +121,8 @@
         }
       ]
     }
-  }
+  },
+  "mentionMonsters": [
+    "Cultist"
+  ]
 }

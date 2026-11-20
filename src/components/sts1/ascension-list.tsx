@@ -9,10 +9,11 @@ import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { STS1_MONSTER_ASCENSION_SCOPE } from "@/lib/sts1/monster-moves";
 import { sts1IndexPath, sts1UiImageUrl } from "@/lib/sts1/paths";
-import type { Sts1Ascension, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1Ascension, Sts1EntityRefs, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1EventText } from "./event-text";
 import { Sts1ListLayout } from "./list-shell";
+import { Sts1EntityToken } from "./ref-token";
 import { Sts1TipBox } from "./tip-box";
 
 /** The top panel's ascension badge with the level on it, as the stepper draws it. */
@@ -32,10 +33,12 @@ export function Sts1AscensionBadge({ level, size }: { level: number; size: numbe
 
 export function Sts1AscensionList({
   ascensions,
+  refs,
   labels,
   serviceLocale,
 }: {
   ascensions: Sts1Ascension[];
+  refs: Sts1EntityRefs;
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
@@ -55,29 +58,33 @@ export function Sts1AscensionList({
       onSearch={setSearchQuery}
     >
       <div className="mx-auto flex max-w-3xl flex-col gap-2">
-        {filtered.map((row) => (
+        {filtered.map((row) => {
           // The bestiary opens at this level: the stepper's stored level is the one it reads.
-          <Link
-            key={row.level}
-            prefetch={false}
-            href={localizeLink(sts1IndexPath("monsters"))}
-            onClick={() => setLevel(row.level)}
-            className="group grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-2 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
-            data-sts1-ascension={row.level}
-            id={`ascension-${row.level}`}
-          >
-            <span className="flex justify-center"><Sts1AscensionBadge level={row.level} size={64} /></span>
-            <Sts1TipBox
-              title={`${labels.monsters.ascension} ${row.level}`}
-              className="transition-[filter] group-hover:brightness-110"
+          const bestiary = { prefetch: false, href: localizeLink(sts1IndexPath("monsters")), onClick: () => setLevel(row.level) };
+          return (
+            <div
+              key={row.level}
+              className="group grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-2"
+              data-sts1-ascension={row.level}
+              id={`ascension-${row.level}`}
             >
-              <Sts1EventText text={row.description} />
-              {row.monsterStats ? (
-                <span className="mt-1 block text-[11px] text-[#87ceeb] group-hover:underline">→ {labels.monstersTitle}</span>
-              ) : null}
-            </Sts1TipBox>
-          </Link>
-        ))}
+              <Link {...bestiary} aria-label={`${labels.monsters.ascension} ${row.level}`} className="flex justify-center rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70">
+                <Sts1AscensionBadge level={row.level} size={64} />
+              </Link>
+              <Sts1TipBox title={`${labels.monsters.ascension} ${row.level}`}>
+                <Sts1EventText text={row.description} refs={refs} />
+                {row.mentions.length ? (
+                  <span className="mt-1.5 flex flex-wrap gap-1">
+                    {row.mentions.map((mention) => <Sts1EntityToken key={`${mention.type}-${mention.id}`} type={mention.type} id={mention.id} refs={refs} />)}
+                  </span>
+                ) : null}
+                {row.monsterStats ? (
+                  <Link {...bestiary} className="mt-1 block text-[11px] text-[#87ceeb] hover:underline">→ {labels.monstersTitle}</Link>
+                ) : null}
+              </Sts1TipBox>
+            </div>
+          );
+        })}
       </div>
       <div className="mx-auto mt-8 max-w-3xl">
         <Sts1CommentsRail resourceType="ascension" slug="list" serviceLocale={serviceLocale} />

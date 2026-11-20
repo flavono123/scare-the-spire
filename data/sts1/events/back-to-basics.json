@@ -29,7 +29,41 @@
             }
           ],
           "next": "simplicity",
-          "note": "Upgrades every starter Strike and Defend that can be upgraded."
+          "note": "Upgrades every starter Strike and Defend that can be upgraded.",
+          "mentions": [
+            {
+              "type": "card",
+              "id": "Strike_R"
+            },
+            {
+              "type": "card",
+              "id": "Defend_R"
+            },
+            {
+              "type": "card",
+              "id": "Strike_G"
+            },
+            {
+              "type": "card",
+              "id": "Defend_G"
+            },
+            {
+              "type": "card",
+              "id": "Strike_B"
+            },
+            {
+              "type": "card",
+              "id": "Defend_B"
+            },
+            {
+              "type": "card",
+              "id": "Strike_P"
+            },
+            {
+              "type": "card",
+              "id": "Defend_P"
+            }
+          ]
         }
       ]
     },

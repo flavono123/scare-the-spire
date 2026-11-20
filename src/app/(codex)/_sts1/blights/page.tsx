@@ -6,7 +6,7 @@ import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
 import { Sts1BlightLibrary } from "@/components/sts1/blight-library";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
-import { getSts1Blights } from "@/lib/sts1/compendium-extras";
+import { getSts1Blights, getSts1PageRefs } from "@/lib/sts1/compendium-extras";
 import { getSts1Keywords, getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
 
@@ -28,10 +28,11 @@ export default async function Sts1BlightsPage({ searchParams }: ListProps) {
     getSts1UiLabels(gameLocale),
   ]);
   // The detail draws the relic popup's text with the game's glyph pack.
+  const refs = await getSts1PageRefs({ mentions: blights.flatMap((row) => row.mentions) }, gameLocale);
   return (
     <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
       <Suspense>
-        <Sts1BlightLibrary blights={blights} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
+        <Sts1BlightLibrary refs={refs} blights={blights} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
       </Suspense>
     </Sts1BitmapPackScope>
   );

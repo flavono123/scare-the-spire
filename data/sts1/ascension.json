@@ -95,7 +95,13 @@
         "other"
       ],
       "monsterStats": false,
-      "summary": "Start each run with the Ascender's Bane curse in the deck."
+      "summary": "Start each run with the Ascender's Bane curse in the deck.",
+      "mentions": [
+        {
+          "type": "card",
+          "id": "AscendersBane"
+        }
+      ]
     },
     {
       "level": 11,

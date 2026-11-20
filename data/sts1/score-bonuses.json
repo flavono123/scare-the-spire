@@ -361,7 +361,13 @@
       "screens": [
         "victory"
       ],
-      "note": "Victory in TheEnding (the Heart)."
+      "note": "Victory in TheEnding (the Heart).",
+      "refs": [
+        {
+          "type": "monster",
+          "id": "CorruptHeart"
+        }
+      ]
     },
     {
       "text": {

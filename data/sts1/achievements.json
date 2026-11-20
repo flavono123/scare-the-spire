@@ -115,7 +115,12 @@
       "index": 36,
       "image": "neon",
       "hidden": false,
-      "refs": []
+      "refs": [
+        {
+          "type": "keyword",
+          "id": "orb-plasma"
+        }
+      ]
     },
     {
       "key": "YOU_ARE_NOTHING",

@@ -56,6 +56,9 @@ function OptionTokens({ option, refs }: { option: Sts1EventOption; refs: Sts1Ent
     <Sts1ItemRefTokens key={`gain-${index}`} item={item} refs={refs} />
   )));
   if (option.preview) push(itemKey(option.preview), <Sts1ItemRefTokens key="preview" item={option.preview} refs={refs} />);
+  option.mentions?.forEach((item, index) => push(itemKey(item), (
+    <Sts1ItemRefTokens key={`mention-${index}`} item={item} refs={refs} />
+  )));
   option.combat?.encounters.forEach((group, groupIndex) => {
     const counts = new Map<string, number>();
     for (const id of group) counts.set(id, (counts.get(id) ?? 0) + 1);

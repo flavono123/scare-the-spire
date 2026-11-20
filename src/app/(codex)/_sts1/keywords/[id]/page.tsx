@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Sts1KeywordDetail } from "@/components/sts1/keyword-library";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
-import { getSts1CompendiumKeyword, getSts1KeywordKindLabels } from "@/lib/sts1/compendium-extras";
+import { getSts1CompendiumKeyword, getSts1KeywordKindLabels, getSts1PageRefs } from "@/lib/sts1/compendium-extras";
 import { getSts1Keywords, getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
 import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1DetailPath } from "@/lib/sts1/paths";
@@ -43,5 +43,6 @@ export default async function Sts1KeywordDetailPage({ params, searchParams }: De
     getSts1UiLabels(gameLocale),
   ]);
   if (!keyword) notFound();
-  return <Sts1KeywordDetail keyword={keyword} kinds={kinds} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />;
+  const refs = await getSts1PageRefs({ mentions: keyword.mentions }, gameLocale);
+  return <Sts1KeywordDetail refs={refs} keyword={keyword} kinds={kinds} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />;
 }

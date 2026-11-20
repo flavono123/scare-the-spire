@@ -7,7 +7,7 @@ import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
 import { Sts1BlightDetail } from "@/components/sts1/blight-library";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
-import { getSts1Blight } from "@/lib/sts1/compendium-extras";
+import { getSts1Blight, getSts1PageRefs } from "@/lib/sts1/compendium-extras";
 import { getSts1Keywords, getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
 import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1DetailPath } from "@/lib/sts1/paths";
@@ -45,9 +45,10 @@ export default async function Sts1BlightDetailPage({ params, searchParams }: Det
     getSts1UiLabels(gameLocale),
   ]);
   if (!blight) notFound();
+  const refs = await getSts1PageRefs({ mentions: blight.mentions }, gameLocale);
   return (
     <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
-      <Sts1BlightDetail blight={blight} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
+      <Sts1BlightDetail refs={refs} blight={blight} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
     </Sts1BitmapPackScope>
   );
 }

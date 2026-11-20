@@ -657,7 +657,12 @@
       "dailyOnly": false,
       "customOnly": false,
       "exclusive": [],
-      "refs": []
+      "refs": [
+        {
+          "type": "power",
+          "id": "Plated Armor"
+        }
+      ]
     },
     {
       "id": "Uncertain Future",
@@ -687,6 +692,10 @@
         {
           "type": "relic",
           "id": "Busted Crown"
+        },
+        {
+          "type": "modifier",
+          "id": "binary"
         }
       ],
       "note": "Adds Busted Crown and also enables the Binary mod."

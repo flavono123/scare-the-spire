@@ -30,6 +30,8 @@ const RESOURCE: Record<Sts1RefType, string> = {
   monster: "monsters",
   power: "powers",
   blight: "blights",
+  keyword: "keywords",
+  modifier: "modifiers",
 };
 
 export function formatSts1Var(value: Sts1VarValue): string {
@@ -70,11 +72,113 @@ function nameIndex(refs: Sts1EntityRefs | undefined): Map<string, { type: Sts1Re
 }
 
 type Word = { text: string; color?: string; effect?: "wave" | "shake" };
+type Piece =
+  | { kind: "br" | "space" | "tab" }
+  | { kind: "energy"; orb: string; tail: string }
+  | { kind: "word"; word: Word };
+
+// Korean particles a name can carry in game text ("긍지를", "광신자들에게").
+const PARTICLE = /(?:으로|에게|에서|이나|들에게|들|을|를|이|가|은|는|의|에|로|와|과|도|만)$/;
+const TRAILING = /[.,!?…:;'"()\]\[]+$/;
+
+function parseWord(token: string): Word {
+  const word: Word = { text: token };
+  const color = /^#([rgbyp])/.exec(word.text);
+  if (color) {
+    word.color = COLORS[color[1]];
+    word.text = word.text.slice(2);
+  }
+  const wave = /^~(.*)~([.,!?…]*)$/.exec(word.text);
+  const shake = /^@(.*)@([.,!?…]*)$/.exec(word.text);
+  if (wave) {
+    word.effect = "wave";
+    word.text = wave[1] + wave[2];
+  } else if (shake) {
+    word.effect = "shake";
+    word.text = shake[1] + shake[2];
+  }
+  return word;
+}
+
+function parsePieces(text: string): Piece[] {
+  // NL is its own word ("NL NL" is two breaks); "ONLINE" or "UNLOCK" keep theirs.
+  const tokens = text.replace(/(?<=^|\s)NL(?=\s|$)/g, "\n").split(/( +|\n)/);
+  const pieces: Piece[] = [];
+  for (const token of tokens) {
+    if (!token) continue;
+    if (token === "\n") pieces.push({ kind: "br" });
+    else if (/^ +$/.test(token)) pieces.push({ kind: "space" });
+    else if (token === "TAB") pieces.push({ kind: "tab" });
+    else {
+      const energy = /^\[([RGBWE])\]([.,!?]*)$/.exec(token);
+      pieces.push(energy ? { kind: "energy", orb: ENERGY[energy[1]], tail: energy[2] } : { kind: "word", word: parseWord(token) });
+    }
+  }
+  return pieces;
+}
+
+/** A name over 1-4 same-colored words starting at `start`, allowing a trailing particle. */
+function matchName(
+  pieces: readonly Piece[],
+  start: number,
+  names: Map<string, { type: Sts1RefType; slug: string; name: string }>,
+): { end: number; ref: { type: Sts1RefType; slug: string; name: string } } | null {
+  const first = pieces[start];
+  if (first.kind !== "word" || first.word.effect) return null;
+  const words: { text: string; at: number }[] = [];
+  for (let at = start; at < pieces.length && words.length < 4; at++) {
+    const piece = pieces[at];
+    if (piece.kind === "space") continue;
+    if (piece.kind !== "word" || piece.word.color !== first.word.color || piece.word.effect) break;
+    words.push({ text: piece.word.text, at });
+  }
+  for (let count = words.length; count > 0; count--) {
+    const joined = words.slice(0, count).map((word) => word.text).join(" ").replace(TRAILING, "");
+    const ref = names.get(joined) ?? names.get(joined.replace(PARTICLE, ""));
+    if (ref) return { end: words[count - 1].at, ref };
+  }
+  return null;
+}
+
+function renderWord(word: Word, key: number, sine: { next: number }): ReactNode {
+  let content: ReactNode = word.text;
+  if (word.effect === "wave") {
+    content = Array.from(word.text).map((char, charIndex) => (
+      <span key={charIndex} className="rich-sine-letter" style={{ "--rich-sine-index": sine.next++ } as CSSProperties}>
+        {char}
+      </span>
+    ));
+  } else if (word.effect === "shake") {
+    content = <span className="rich-jitter">{word.text}</span>;
+  }
+  return <span key={key} style={word.color ? { color: word.color } : undefined}>{content}</span>;
+}
+
+function renderPiece(piece: Piece, key: number, sine: { next: number }): ReactNode {
+  if (piece.kind === "br") return <br key={key} />;
+  if (piece.kind === "space") return " ";
+  if (piece.kind === "tab") return <span key={key} className="inline-block w-6" />;
+  if (piece.kind === "energy") {
+    return (
+      <span key={key}>
+        <Image
+          src={sts1CardUiUrl(piece.orb)}
+          alt=""
+          width={24}
+          height={24}
+          className="mx-px inline-block h-[1.1em] w-[1.1em] align-[-0.2em] object-contain"
+        />
+        {piece.tail}
+      </span>
+    );
+  }
+  return renderWord(piece.word, key, sine);
+}
 
 /**
  * GenericEventDialog / FontHelper.renderSmartText: words split on spaces, `NL`
  * breaks, `#x` colors the word, `~word~` waves and `@word@` shakes, `[E]` orbs.
- * Gold words that name a card, relic, power or monster on this page link to it.
+ * Words that name something in `refs` link to it, colored or not, even with a particle.
  */
 export function Sts1EventText({
   text,
@@ -90,86 +194,30 @@ export function Sts1EventText({
   "data-sts1-event-body"?: string;
 }) {
   const names = nameIndex(refs);
+  const pieces = parsePieces(text);
   const nodes: ReactNode[] = [];
-  let sine = 0;
-  // NL is its own word; "ONLINE" or "UNLOCK" keep theirs.
-  const tokens = text.replace(/(?:^|\s+)NL(?=\s|$)\s*/g, " \n ").split(/( +)/);
-  tokens.forEach((token, index) => {
-    if (token === "\n") {
-      nodes.push(<br key={index} />);
-      return;
-    }
-    if (!token) return;
-    if (/^ +$/.test(token)) {
-      nodes.push(" ");
-      return;
-    }
-    if (token === "TAB") {
-      nodes.push(<span key={index} className="inline-block w-6" />);
-      return;
-    }
-    const energy = /^\[([RGBWE])\]([.,!?]*)$/.exec(token);
-    if (energy) {
-      nodes.push(
-        <Image
-          key={index}
-          src={sts1CardUiUrl(ENERGY[energy[1]])}
-          alt=""
-          width={24}
-          height={24}
-          className="mx-px inline-block h-[1.1em] w-[1.1em] align-[-0.2em] object-contain"
-        />,
-        energy[2],
-      );
-      return;
-    }
-    const word: Word = { text: token };
-    const color = /^#([rgbyp])/.exec(word.text);
-    if (color) {
-      word.color = COLORS[color[1]];
-      word.text = word.text.slice(2);
-    }
-    const wave = /^~(.*)~([.,!?…]*)$/.exec(word.text);
-    const shake = /^@(.*)@([.,!?…]*)$/.exec(word.text);
-    if (wave) {
-      word.effect = "wave";
-      word.text = wave[1] + wave[2];
-    } else if (shake) {
-      word.effect = "shake";
-      word.text = shake[1] + shake[2];
-    }
-    let content: ReactNode = word.text;
-    if (word.effect === "wave") {
-      content = Array.from(word.text).map((char, charIndex) => (
-        <span key={charIndex} className="rich-sine-letter" style={{ "--rich-sine-index": sine++ } as CSSProperties}>
-          {char}
-        </span>
-      ));
-    } else if (word.effect === "shake") {
-      content = <span className="rich-jitter">{word.text}</span>;
-    }
-    const bare = word.text.replace(/[.,!?…:;'"()]+$/, "");
-    const linked = word.color === COLORS.y ? names.get(bare) : undefined;
-    if (linked) {
-      nodes.push(
-        <Sts1MentionHover
-          key={index}
-          entityId={`sts1:${RESOURCE[linked.type]}:${linked.slug}`}
-          text={linked.name}
-          className="relative inline cursor-help"
-          linkClassName="no-underline hover:brightness-125"
-        >
-          <span style={{ color: word.color }}>{content}</span>
-        </Sts1MentionHover>,
-      );
-      return;
+  const sine = { next: 0 };
+  for (let index = 0; index < pieces.length; index++) {
+    const match = names.size ? matchName(pieces, index, names) : null;
+    if (!match) {
+      nodes.push(renderPiece(pieces[index], index, sine));
+      continue;
     }
     nodes.push(
-      <span key={index} style={word.color ? { color: word.color } : undefined}>
-        {content}
-      </span>,
+      <Sts1MentionHover
+        key={index}
+        entityId={`sts1:${RESOURCE[match.ref.type]}:${match.ref.slug}`}
+        text={match.ref.name}
+        className="relative inline cursor-help"
+        linkClassName="no-underline hover:brightness-125"
+      >
+        <span className={(pieces[index] as { word: Word }).word.color ? undefined : "text-[#efc851]"}>
+          {pieces.slice(index, match.end + 1).map((piece, offset) => renderPiece(piece, index + offset, sine))}
+        </span>
+      </Sts1MentionHover>,
     );
-  });
+    index = match.end;
+  }
   return (
     <span className={className} style={style} {...rest}>
       {nodes}

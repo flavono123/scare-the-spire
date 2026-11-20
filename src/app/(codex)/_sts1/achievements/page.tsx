@@ -3,7 +3,7 @@ export const dynamic = "force-static";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Sts1AchievementGrid } from "@/components/sts1/achievement-grid";
-import { getSts1Achievements, getSts1EntityRefs } from "@/lib/sts1/compendium-extras";
+import { getSts1Achievements, getSts1PageRefs } from "@/lib/sts1/compendium-extras";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
@@ -21,9 +21,8 @@ export default async function Sts1AchievementsPage({ searchParams }: ListProps) 
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
   const [achievements, labels] = await Promise.all([getSts1Achievements(gameLocale), getSts1UiLabels(gameLocale)]);
-  const refs = await getSts1EntityRefs({
-    items: achievements.flatMap((row) => row.refs.filter((ref) => ref.type === "card" || ref.type === "relic").map((ref) => ({ type: ref.type as "card" | "relic", id: ref.id }))),
-    monsters: achievements.flatMap((row) => row.refs.filter((ref) => ref.type === "monster").map((ref) => ref.id)),
+  const refs = await getSts1PageRefs({
+    mentions: achievements.flatMap((row) => row.refs.flatMap((ref) => (ref.type === "character" ? [] : [{ type: ref.type, id: ref.id }]))),
   }, gameLocale);
   return (
     <Suspense>

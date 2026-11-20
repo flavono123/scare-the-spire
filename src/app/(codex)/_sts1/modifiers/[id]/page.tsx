@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Sts1ModifierDetail } from "@/components/sts1/modifier-library";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
-import { getSts1BlightRefs, getSts1EntityRefs, getSts1ModifierLabels, getSts1Modifiers } from "@/lib/sts1/compendium-extras";
+import { getSts1PageRefs, getSts1ModifierLabels, getSts1Modifiers } from "@/lib/sts1/compendium-extras";
 import { getSts1Keywords, getSts1Metadata } from "@/lib/sts1/data";
 import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1DetailPath, sts1RunModUrl } from "@/lib/sts1/paths";
@@ -44,15 +44,15 @@ export default async function Sts1ModifierDetailPage({ params, searchParams }: D
   ]);
   const mod = mods.find((row) => row.slug === id);
   if (!mod) notFound();
-  const [refs, blights] = await Promise.all([
-    getSts1EntityRefs({ items: mod.refs }, gameLocale),
-    getSts1BlightRefs(mod.blightRefs, gameLocale),
-  ]);
+  const refs = await getSts1PageRefs({
+    items: mod.refs,
+    mentions: [...mod.mentions, ...mod.blightRefs.map((id) => ({ type: "blight" as const, id }))],
+  }, gameLocale);
   return (
     <Sts1ModifierDetail
       mod={mod}
       mods={mods}
-      refs={{ ...refs, blight: blights }}
+      refs={refs}
       keywords={keywords}
       modLabels={modLabels}
       serviceLocale={serviceLocale}

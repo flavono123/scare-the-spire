@@ -57,6 +57,7 @@ export type Sts1RawEvent = {
   start: string;
   vars?: Record<string, Sts1VarTier[]>;
   scenes: Record<string, RawScene>;
+  mentionMonsters?: string[];
 };
 
 type EventLoc = Record<string, { NAME?: string; DESCRIPTIONS?: string[]; OPTIONS?: string[] }>;
@@ -206,6 +207,7 @@ export const getSts1Events = cache(async (gameLocale: GameLocale = "kor"): Promi
       kind: event.kind,
       image: event.image,
       artMonsters: artMonsters(event),
+      mentionMonsters: event.mentionMonsters ?? [],
       ...eventGroups(event.id, pools),
       vars: event.vars ?? {},
       start: event.start,
@@ -234,11 +236,11 @@ export function sts1EventItemRefs(events: readonly Sts1Event[]): { items: Sts1It
   const items: Sts1ItemRef[] = [];
   const monsters: string[] = [];
   for (const event of events) {
-    monsters.push(...event.artMonsters);
+    monsters.push(...event.artMonsters, ...event.mentionMonsters);
     for (const scene of Object.values(event.scenes)) {
       for (const option of scene.options) {
         if (option.preview) items.push(option.preview);
-        items.push(...(option.gains ?? []), ...(option.loses ?? []));
+        items.push(...(option.gains ?? []), ...(option.loses ?? []), ...(option.mentions ?? []));
         for (const outcome of option.outcomes ?? []) items.push(...(outcome.gains ?? []), ...(outcome.loses ?? []));
         for (const group of option.combat?.encounters ?? []) monsters.push(...group);
       }

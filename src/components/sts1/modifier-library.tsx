@@ -27,17 +27,16 @@ export type Sts1ModifierLabels = {
   title: string;
   customMode: string;
   daily: string;
-  offScreen: string;
+  deprecated: string;
   exclusive: string;
 };
 
 /** CustomMod draws `[NAME]` in its color code: b (start), g (helpful), r (harmful). */
 const MOD_COLORS: Record<string, string> = { b: "#87ceeb", g: "#7fff00", r: "#ff6563" };
 
+/** Only the daily-mod classes carry an icon; the custom-only mods draw none in the game either. */
 function ModIcon({ mod, size }: { mod: Sts1ModifierRow; size: number }) {
-  if (!mod.icon) {
-    return <span className="inline-block rounded-md bg-white/5" style={{ width: size, height: size }} aria-hidden />;
-  }
+  if (!mod.icon) return null;
   return <Image src={sts1RunModUrl(mod.icon)} alt="" width={size} height={size} className="object-contain" style={{ width: size, height: size }} />;
 }
 
@@ -82,7 +81,7 @@ export function Sts1ModifierDetail({
       <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
         <h1 className="font-game-title text-2xl" style={{ color }}>{mod.name}</h1>
         <div className="mt-3 flex flex-wrap gap-2">
-          {mod.onScreen ? <Sts1MetaPill value={modLabels.customMode} /> : <Sts1MetaPill value={modLabels.offScreen} color="#9ca3af" />}
+          {mod.onScreen ? <Sts1MetaPill value={modLabels.customMode} /> : <Sts1MetaPill value={modLabels.deprecated} color="#9ca3af" />}
           {mod.daily ? <Sts1MetaPill value={modLabels.daily} color="#efc851" /> : null}
         </div>
         <div className="mt-3">
@@ -91,9 +90,10 @@ export function Sts1ModifierDetail({
       </section>
       <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
         <Sts1Description text={mod.description} keywords={keywords} refs={refs} />
-        {mod.refs.length || mod.blightRefs.length ? (
+        {mod.refs.length || mod.blightRefs.length || mod.mentions.length ? (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {mod.refs.map((item, index) => <Sts1ItemRefTokens key={index} item={item} refs={refs} />)}
+            {mod.mentions.map((mention) => <Sts1EntityToken key={`${mention.type}-${mention.id}`} type={mention.type} id={mention.id} refs={refs} />)}
             {mod.blightRefs.map((id) => <Sts1EntityToken key={id} type="blight" id={id} refs={refs} />)}
           </div>
         ) : null}
@@ -149,7 +149,7 @@ export function Sts1ModifierLibrary({
   }, [dailyOnly, mods, searchQuery]);
   const sections = [
     { key: "screen", title: modLabels.customMode, rows: filtered.filter((mod) => mod.onScreen) },
-    { key: "off", title: modLabels.offScreen, rows: filtered.filter((mod) => !mod.onScreen) },
+    { key: "deprecated", title: modLabels.deprecated, rows: filtered.filter((mod) => !mod.onScreen) },
   ].filter((section) => section.rows.length > 0);
   return (
     <Sts1ListLayout

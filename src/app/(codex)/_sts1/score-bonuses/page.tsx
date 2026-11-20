@@ -3,7 +3,7 @@ export const dynamic = "force-static";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Sts1ScoreBonusList } from "@/components/sts1/score-bonus-list";
-import { getSts1EntityRefs, getSts1ScoreBonuses, getSts1ScoreLabels } from "@/lib/sts1/compendium-extras";
+import { getSts1PageRefs, getSts1ScoreBonuses, getSts1ScoreLabels } from "@/lib/sts1/compendium-extras";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
@@ -25,9 +25,7 @@ export default async function Sts1ScoreBonusesPage({ searchParams }: ListProps) 
     getSts1ScoreLabels(gameLocale),
     getSts1UiLabels(gameLocale),
   ]);
-  const refs = await getSts1EntityRefs({
-    items: rows.flatMap((row) => row.refs.filter((ref) => ref.type === "card" || ref.type === "relic").map((ref) => ({ type: ref.type as "card" | "relic", id: ref.id }))),
-  }, gameLocale);
+  const refs = await getSts1PageRefs({ mentions: rows.flatMap((row) => row.refs) }, gameLocale);
   return (
     <Suspense>
       <Sts1ScoreBonusList rows={rows} refs={refs} scoreLabels={scoreLabels} labels={labels} serviceLocale={serviceLocale} />

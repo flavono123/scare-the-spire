@@ -9,7 +9,7 @@ import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1DetailPath, sts1OrbImageUrl } from "@/lib/sts1/paths";
-import type { Sts1CompendiumKeyword, Sts1Keyword, Sts1KeywordKind, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1CompendiumKeyword, Sts1EntityRefs, Sts1Keyword, Sts1KeywordKind, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
 import { Sts1EventText } from "./event-text";
@@ -22,7 +22,7 @@ import {
   toggled,
   useSts1Selection,
 } from "./list-shell";
-import { Sts1EntityToken } from "./ref-token";
+import { Sts1EntityToken, Sts1MentionRail } from "./ref-token";
 import { Sts1TipBox } from "./tip-box";
 
 const KIND_ORDER: Sts1KeywordKind[] = ["keyword", "orb", "stance"];
@@ -47,6 +47,7 @@ export function Sts1KeywordIcon({ keyword, size }: { keyword: Sts1CompendiumKeyw
 
 export function Sts1KeywordDetail({
   keyword,
+  refs,
   kinds,
   keywords,
   labels,
@@ -54,6 +55,7 @@ export function Sts1KeywordDetail({
   onClose,
 }: {
   keyword: Sts1CompendiumKeyword;
+  refs: Sts1EntityRefs;
   kinds: Sts1KeywordKindLabels;
   keywords: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
@@ -65,10 +67,10 @@ export function Sts1KeywordDetail({
     .filter((group) => group.rows.length > 0);
   const groupTitle = { cards: labels.cardLibraryTitle, relics: labels.relicCollectionTitle, potions: labels.potionLabTitle, powers: labels.powersTitle };
   const tokenType = { cards: "card", relics: "relic", potions: "potion", powers: "power" } as const;
-  const refs = {
+  const userRefs = {
     card: {}, relic: {}, potion: {}, monster: {}, power: {}, blight: {},
   } as Record<"card" | "relic" | "potion" | "monster" | "power" | "blight", Record<string, { slug: string; name: string; imageUrl: string }>>;
-  for (const user of keyword.users) refs[tokenType[user.type]][user.slug] = user;
+  for (const user of keyword.users) userRefs[tokenType[user.type]][user.slug] = user;
   return (
     <Sts1DetailShell
       backHref="/compendium/sts1/keywords"
@@ -82,7 +84,7 @@ export function Sts1KeywordDetail({
           icon={keyword.image || keyword.color ? <Sts1KeywordIcon keyword={keyword} size={48} /> : undefined}
           className="w-full max-w-[26rem]"
         >
-          <Sts1Description text={keyword.description} keywords={keywords.filter((row) => row.id !== keyword.id)} className="block" />
+          <Sts1Description text={keyword.description} keywords={keywords.filter((row) => row.id !== keyword.id)} refs={refs} className="block" />
         </Sts1TipBox>
       )}
     >
@@ -105,11 +107,12 @@ export function Sts1KeywordDetail({
           </div>
           <div className="flex flex-wrap gap-1.5">
             {group.rows.map((row) => (
-              <Sts1EntityToken key={row.slug} type={tokenType[group.type]} id={row.slug} refs={refs} />
+              <Sts1EntityToken key={row.slug} type={tokenType[group.type]} id={row.slug} refs={userRefs} />
             ))}
           </div>
         </section>
       ))}
+      <Sts1MentionRail mentions={keyword.mentions} refs={refs} serviceLocale={serviceLocale} />
       <Sts1CommentsRail resourceType="keyword" slug={keyword.slug} serviceLocale={serviceLocale} />
     </Sts1DetailShell>
   );
@@ -117,12 +120,14 @@ export function Sts1KeywordDetail({
 
 export function Sts1KeywordLibrary({
   rows,
+  refs,
   kinds,
   keywords,
   labels,
   serviceLocale,
 }: {
   rows: Sts1CompendiumKeyword[];
+  refs: Sts1EntityRefs;
   kinds: Sts1KeywordKindLabels;
   keywords: Sts1Keyword[];
   labels: Sts1UiLabels;
@@ -160,7 +165,7 @@ export function Sts1KeywordLibrary({
       )}
       overlay={selected ? (
         <Sts1DetailModal label={selected.name} onClose={close}>
-          <Sts1KeywordDetail keyword={selected} kinds={kinds} keywords={keywords} labels={labels} serviceLocale={serviceLocale} onClose={close} />
+          <Sts1KeywordDetail keyword={selected} refs={refs} kinds={kinds} keywords={keywords} labels={labels} serviceLocale={serviceLocale} onClose={close} />
         </Sts1DetailModal>
       ) : null}
     >
