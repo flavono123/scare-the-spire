@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import { FilterSection } from "@/components/codex/codex-filters";
-import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { Sts1NeowData } from "@/lib/sts1/compendium-extras";
@@ -14,23 +13,16 @@ import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1EventText } from "./event-text";
 import { Sts1ListLayout, filterButtonClass, toggled } from "./list-shell";
 import { Sts1MonsterStage } from "./monster-stage";
-import { Sts1EntityPreview } from "./mention-hover";
+import { Sts1HoverPreviews, sts1ItemPreviewIds } from "./ref-token";
 
 /** The game names none of these: `slots` are the four buttons by position, `mini` the two-choice blessing. */
 type NeowLabels = { filter: string; slots: string[]; mini: string };
 
 type NeowRow = { key: string; label: string; rewards: Sts1NeowReward[]; tags: string[] };
 
-/** A LargeDialogOptionButton as NeowEvent shows it: the ribbon, tinted until hovered. */
-const RESOURCE = { card: "cards", relic: "relics", potion: "potions" } as const;
-
 /** A LargeDialogOptionButton as NeowEvent shows it: the ribbon, tinted until hovered; hovering previews what it gives. */
 function NeowOption({ label, rewards, refs }: { label: string; rewards: Sts1NeowReward[]; refs: Sts1EntityRefs }) {
   const [hovered, setHovered] = useState(false);
-  const entityIds = rewards.flatMap((reward) => reward.refs).flatMap((item) => {
-    const slug = item.id ? refs[item.type]?.[item.id]?.slug : undefined;
-    return slug ? [`sts1:${RESOURCE[item.type]}:${slug}`] : [];
-  });
   return (
     <div
       className="group relative transition-transform hover:translate-x-1"
@@ -48,13 +40,7 @@ function NeowOption({ label, rewards, refs }: { label: string; rewards: Sts1Neow
       <div className="relative px-5 py-2.5">
         <Sts1EventText text={label} className="block font-game-text text-sm leading-snug text-[#cccccc] [text-shadow:0_1px_0_#000] group-hover:text-white" />
       </div>
-      {hovered && entityIds.length ? (
-        <PortaledHoverTipLayer pin="top-left">
-          <div className="flex flex-col gap-2">
-            {entityIds.map((id) => <Sts1EntityPreview key={id} entityId={id} />)}
-          </div>
-        </PortaledHoverTipLayer>
-      ) : null}
+      {hovered ? <Sts1HoverPreviews entityIds={sts1ItemPreviewIds(rewards.flatMap((reward) => reward.refs), refs)} /> : null}
     </div>
   );
 }

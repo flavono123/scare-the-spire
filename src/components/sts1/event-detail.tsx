@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useState, type ReactNode } from "react";
+import { useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import { MonsterAscensionStepper, useMonsterAscensionLevel } from "@/components/codex/monster-ascension";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
 import { Sts1EventText, fillSts1Template } from "./event-text";
-import { Sts1EntityToken, Sts1ItemRefTokens } from "./ref-token";
+import { Sts1HoverPreviews, sts1ItemPreviewIds, sts1PreviewEntityIds } from "./ref-token";
 import type { ServiceLocale } from "@/lib/i18n";
 import { STS1_MONSTER_ASCENSION_SCOPE } from "@/lib/sts1/monster-moves";
 import { sts1EventImageUrl, sts1EventUiUrl, sts1IndexPath, sts1UiImageUrl } from "@/lib/sts1/paths";
@@ -17,7 +17,6 @@ import type {
   Sts1EventLabels,
   Sts1EventOption,
   Sts1EventOutcome,
-  Sts1ItemRef,
   Sts1UiLabels,
 } from "@/lib/sts1/types";
 
@@ -39,37 +38,11 @@ function usesAscension(event: Sts1Event): boolean {
   return Object.values(event.scenes).some((scene) => scene.options.some((option) => option.ascension));
 }
 
-function OptionTokens({ option, refs }: { option: Sts1EventOption; refs: Sts1EntityRefs }) {
-  const items: ReactNode[] = [];
-  const seen = new Set<string>();
-  const push = (key: string, node: ReactNode) => {
-    if (seen.has(key)) return;
-    seen.add(key);
-    items.push(node);
-  };
-  // The button's preview is usually the card or relic the option gives or takes: show it once.
-  const itemKey = (item: Sts1ItemRef) => `${item.type}-${item.id ?? JSON.stringify(item.pool ?? item.tier)}`;
-  option.loses?.forEach((item, index) => push(itemKey(item), (
-    <Sts1ItemRefTokens key={`lose-${index}`} item={item} refs={refs} tone="lose" />
-  )));
-  option.gains?.forEach((item, index) => push(itemKey(item), (
-    <Sts1ItemRefTokens key={`gain-${index}`} item={item} refs={refs} />
-  )));
-  if (option.preview) push(itemKey(option.preview), <Sts1ItemRefTokens key="preview" item={option.preview} refs={refs} />);
-  option.mentions?.forEach((item, index) => push(itemKey(item), (
-    <Sts1ItemRefTokens key={`mention-${index}`} item={item} refs={refs} />
-  )));
-  option.combat?.encounters.forEach((group, groupIndex) => {
-    const counts = new Map<string, number>();
-    for (const id of group) counts.set(id, (counts.get(id) ?? 0) + 1);
-    push(`c-${groupIndex}`, (
-      <span key={`combat-${groupIndex}`} className="inline-flex flex-wrap items-center gap-1">
-        {[...counts].map(([id, count]) => <Sts1EntityToken key={id} type="monster" id={id} refs={refs} count={count} />)}
-      </span>
-    ));
-  });
-  if (items.length === 0) return null;
-  return <span className="mt-1 flex flex-wrap items-center gap-1">{items}</span>;
+/** What hovering an option previews: what it takes, gives, shows or names, then whom it fights. */
+function optionPreviewIds(option: Sts1EventOption, refs: Sts1EntityRefs): string[] {
+  const items = [...(option.loses ?? []), ...(option.gains ?? []), ...(option.preview ? [option.preview] : []), ...(option.mentions ?? [])];
+  const monsters = option.combat?.encounters.flat() ?? [];
+  return [...new Set([...sts1ItemPreviewIds(items, refs), ...sts1PreviewEntityIds([{ type: "monster", ids: monsters }], refs)])];
 }
 
 // Small sprites the room draws on the floor; the rest are full pictures or room backgrounds.
@@ -145,6 +118,7 @@ export function Sts1EventScreen({
   const [variantIndex, setVariantIndex] = useState(0);
   const [branch, setBranch] = useState<{ outcomes: Sts1EventOutcome[]; index: number } | null>(null);
   const [ended, setEnded] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
   const scene = event.scenes[sceneKey] ?? event.scenes[event.start];
   const image = scene.image !== undefined ? scene.image : event.image;
   const variants = scene.bodyVariants ?? [];
@@ -239,23 +213,19 @@ export function Sts1EventScreen({
                   type="button"
                   aria-pressed={index === branch.index}
                   data-sts1-outcome={index}
+                  onMouseEnter={() => setHovered(`outcome-${index}`)}
+                  onMouseLeave={() => setHovered(null)}
                   onClick={() => {
                     setBranch({ ...branch, index });
                     setEnded(false);
                     go(outcome.next);
                   }}
-                  className={`rounded border px-2 py-0.5 ${index === branch.index ? "border-[#efc851]/70 text-[#efc851]" : "border-white/15 hover:text-gray-200"}`}
+                  className={`relative rounded border px-2 py-0.5 ${index === branch.index ? "border-[#efc851]/70 text-[#efc851]" : "border-white/15 hover:text-gray-200"}`}
                 >
                   {outcomeLabel(outcome, index)}
+                  {hovered === `outcome-${index}` ? <Sts1HoverPreviews entityIds={sts1ItemPreviewIds(outcome.gains ?? [], refs)} /> : null}
                 </button>
               ))}
-              {branch.outcomes[branch.index]?.gains?.length ? (
-                <span className="flex flex-wrap gap-1">
-                  {branch.outcomes[branch.index].gains!.map((item, index) => (
-                    <Sts1ItemRefTokens key={index} item={item} refs={refs} />
-                  ))}
-                </span>
-              ) : null}
             </div>
           ) : null}
           <Sts1EventText
@@ -268,9 +238,10 @@ export function Sts1EventScreen({
             {scene.options.filter((option) => optionShown(option, ascension)).map((option, index) => {
               const disabled = option.disabled || ended;
               return (
-                // Tokens link to their pages, so they sit on the ribbon beside the <button>, not inside it.
                 <div
                   key={`${sceneKey}-${index}`}
+                  onMouseEnter={() => setHovered(`option-${index}`)}
+                  onMouseLeave={() => setHovered(null)}
                   className={`group relative transition-transform ${disabled ? "" : "hover:translate-x-1 focus-within:translate-x-1"}`}
                   data-sts1-event-option={index}
                 >
@@ -294,9 +265,7 @@ export function Sts1EventScreen({
                       className={`block font-game-text text-sm leading-snug [text-shadow:0_1px_0_#000] ${disabled ? "text-[#b22222]" : "text-[#cccccc] group-hover:text-white"}`}
                     />
                   </button>
-                  <div className="relative -mt-1.5 px-5 pb-2 empty:hidden">
-                    <OptionTokens option={option} refs={refs} />
-                  </div>
+                  {hovered === `option-${index}` ? <Sts1HoverPreviews entityIds={optionPreviewIds(option, refs)} /> : null}
                 </div>
               );
             })}
