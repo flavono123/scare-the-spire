@@ -83,10 +83,6 @@ const KEYWORD_SOURCE_CONFIG: Record<CodexKeyword["source"], { color: string; lab
     color: "#67e8f9",
     label: { ko: "구체", en: "Orbs" },
   },
-  intent: {
-    color: "#fca5a5",
-    label: { ko: "의도", en: "Intents" },
-  },
 };
 
 function keywordDetailLabels(serviceLocale: ServiceLocale) {
@@ -166,8 +162,6 @@ export function KeywordDetail({
     () => {
       const entityMap = entityByTypeAndId(entities ?? []);
       const cardsById = dataById(relatedCards);
-      // Intent names are everyday words (attack, defend ...) that match nearly every card.
-      if (keyword.source === "intent") return [];
       return getRelatedCardIdsForKeyword(keyword, relatedCards)
         .map((cardId) => cardsById.get(cardId))
         .filter((card): card is CodexCard => Boolean(card))
@@ -177,7 +171,6 @@ export function KeywordDetail({
     [entities, keyword, relatedCards],
   );
   const relatedResourceGroups = useMemo((): CodexReferenceGroup[] => {
-    if (keyword.source === "intent") return [];
     const allEntities = entities ?? [];
     const entityMap = entityByTypeAndId(allEntities);
     const relics = allEntities.flatMap((entity) => entity.relicData ? [entity.relicData] : []) satisfies CodexRelic[];

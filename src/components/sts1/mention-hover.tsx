@@ -303,27 +303,11 @@ export function RelicSlab({
   );
 }
 
-export function Sts1MentionHover({
-  entityId,
-  text,
-  editorLink = false,
-  children,
-  className = "relative inline cursor-help font-semibold spire-gold",
-  linkClassName = "font-game-title font-semibold spire-gold no-underline",
-}: {
-  entityId: string;
-  text: string;
-  /** Inside an editor: plain clicks stay put; see EDITOR_ANCHOR_PROPS. */
-  editorLink?: boolean;
-  /** Drawn in place of `text` (an icon token); `text` stays the accessible name. */
-  children?: ReactNode;
-  className?: string;
-  linkClassName?: string;
-}) {
+/** What hovering a mention shows: the card, the relic popup, or a tip for anything else. */
+export function Sts1EntityPreview({ entityId }: { entityId: string }) {
   const { index } = useSts1MentionIndex();
   const serviceLocale = useServiceLocale();
   const gameLocale = useGameLocale();
-  const [hovered, setHovered] = useState(false);
   const entry = index?.entries.find((item) => item.id === entityId);
   const localeKey = serviceLocale === "en" ? "eng" : "kor";
   const labels = index?.labels[localeKey];
@@ -370,9 +354,40 @@ export function Sts1MentionHover({
     );
   }
 
-  const layer = hovered && preview ? (
+  if (!preview) return null;
+  return drawsBitmapText ? (
+    // The glyph pack loads on first hover; the tip appears once it can draw in full.
+    <Suspense fallback={null}>
+      <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>{preview}</Sts1BitmapPackScope>
+    </Suspense>
+  ) : preview;
+}
+
+export function Sts1MentionHover({
+  entityId,
+  text,
+  editorLink = false,
+  children,
+  className = "relative inline cursor-help font-semibold spire-gold",
+  linkClassName = "font-game-title font-semibold spire-gold no-underline",
+}: {
+  entityId: string;
+  text: string;
+  /** Inside an editor: plain clicks stay put; see EDITOR_ANCHOR_PROPS. */
+  editorLink?: boolean;
+  /** Drawn in place of `text` (an icon token); `text` stays the accessible name. */
+  children?: ReactNode;
+  className?: string;
+  linkClassName?: string;
+}) {
+  const { index } = useSts1MentionIndex();
+  const serviceLocale = useServiceLocale();
+  const gameLocale = useGameLocale();
+  const [hovered, setHovered] = useState(false);
+  const entry = index?.entries.find((item) => item.id === entityId);
+  const layer = hovered && entry ? (
     <PortaledHoverTipLayer pin="top-left">
-      {preview}
+      <Sts1EntityPreview entityId={entityId} />
     </PortaledHoverTipLayer>
   ) : null;
 
@@ -392,12 +407,7 @@ export function Sts1MentionHover({
       >
         {children ?? text}
       </a>
-      {layer && drawsBitmapText ? (
-        // The glyph pack loads on first hover; the tip appears once it can draw in full.
-        <Suspense fallback={null}>
-          <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>{layer}</Sts1BitmapPackScope>
-        </Suspense>
-      ) : layer}
+      {layer}
     </span>
   );
 }

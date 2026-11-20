@@ -17,10 +17,12 @@ import type {
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { MonsterLibrary } from "./monster-library";
 import { EncounterLibrary } from "./encounter-library";
+import { IntentLibrary } from "./intent-library";
+import type { CodexIntent } from "@/lib/codex-data";
 import { useHydrationSafeSearchParam } from "./use-hydration-safe-search-param";
 import type { CompendiumDataStatus } from "./use-compendium-data";
 
-type BestiaryView = "monsters" | "encounters";
+type BestiaryView = "monsters" | "encounters" | "intents";
 
 interface BestiaryLibraryProps {
   serviceLocale: ServiceLocale;
@@ -28,6 +30,7 @@ interface BestiaryLibraryProps {
   monsters: CodexMonster[];
   characters: CodexCharacter[];
   encounters: CodexEncounter[];
+  intents?: CodexIntent[];
   afflictions?: CodexAffliction[];
   cards?: CodexCard[];
   powers?: CodexPower[];
@@ -46,6 +49,7 @@ export function BestiaryLibrary({
   monsters,
   characters,
   encounters,
+  intents = [],
   afflictions,
   cards,
   powers,
@@ -68,17 +72,22 @@ export function BestiaryLibrary({
     ?? (currentVersion ?? "");
   const setSelectedVersion = (v: string) => setUserSelectedVersion(v);
   const activeView: BestiaryView =
-    explicitView === "encounters" || Boolean(urlEncounterId)
-      ? "encounters"
-      : "monsters";
+    explicitView === "intents"
+      ? "intents"
+      : explicitView === "encounters" || Boolean(urlEncounterId)
+        ? "encounters"
+        : "monsters";
 
   const setView = (view: BestiaryView) => {
     const params = new URLSearchParams(typeof window === "undefined" ? "" : window.location.search);
     params.set("view", view);
     if (view === "monsters") {
       params.delete("encounter");
+    } else if (view === "encounters") {
+      params.delete("monster");
     } else {
       params.delete("monster");
+      params.delete("encounter");
     }
     const query = params.toString();
     router.push(query ? `${pathname}?${query}` : pathname);
@@ -108,8 +117,31 @@ export function BestiaryLibrary({
       >
         {messages.encounters}
       </button>
+      <button
+        type="button"
+        onClick={() => setView("intents")}
+        className={`px-2 py-1 text-[11px] font-medium transition-colors sm:px-2.5 sm:text-xs ${
+          activeView === "intents"
+            ? "rounded bg-primary/20 text-primary"
+            : "text-gray-400 hover:text-gray-200"
+        }`}
+      >
+        {messages.intents}
+      </button>
     </div>
   );
+
+  if (activeView === "intents") {
+    return (
+      <IntentLibrary
+        serviceLocale={serviceLocale}
+        title={gameUi.bestiaryTitle}
+        countLabel={messages.labels.intents}
+        intents={intents}
+        trailing={switcher}
+      />
+    );
+  }
 
   if (activeView === "encounters") {
     return (

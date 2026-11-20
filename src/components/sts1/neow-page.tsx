@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import { FilterSection } from "@/components/codex/codex-filters";
+import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { Sts1NeowData } from "@/lib/sts1/compendium-extras";
@@ -13,7 +14,7 @@ import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1EventText } from "./event-text";
 import { Sts1ListLayout, filterButtonClass, toggled } from "./list-shell";
 import { Sts1MonsterStage } from "./monster-stage";
-import { Sts1ItemRefTokens } from "./ref-token";
+import { Sts1EntityPreview } from "./mention-hover";
 
 /** The game names none of these: `slots` are the four buttons by position, `mini` the two-choice blessing. */
 type NeowLabels = { filter: string; slots: string[]; mini: string };
@@ -21,10 +22,22 @@ type NeowLabels = { filter: string; slots: string[]; mini: string };
 type NeowRow = { key: string; label: string; rewards: Sts1NeowReward[]; tags: string[] };
 
 /** A LargeDialogOptionButton as NeowEvent shows it: the ribbon, tinted until hovered. */
-function NeowOption({ label, rewards, refs, tags }: { label: string; rewards: Sts1NeowReward[]; refs: Sts1EntityRefs; tags: string[] }) {
-  const items = rewards.flatMap((reward) => reward.refs);
+const RESOURCE = { card: "cards", relic: "relics", potion: "potions" } as const;
+
+/** A LargeDialogOptionButton as NeowEvent shows it: the ribbon, tinted until hovered; hovering previews what it gives. */
+function NeowOption({ label, rewards, refs }: { label: string; rewards: Sts1NeowReward[]; refs: Sts1EntityRefs }) {
+  const [hovered, setHovered] = useState(false);
+  const entityIds = rewards.flatMap((reward) => reward.refs).flatMap((item) => {
+    const slug = item.id ? refs[item.type]?.[item.id]?.slug : undefined;
+    return slug ? [`sts1:${RESOURCE[item.type]}:${slug}`] : [];
+  });
   return (
-    <div className="group relative transition-transform hover:translate-x-1" data-sts1-neow-option="">
+    <div
+      className="group relative transition-transform hover:translate-x-1"
+      data-sts1-neow-option=""
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <Image
         src={sts1EventUiUrl("enabledButton")}
         alt=""
@@ -34,13 +47,14 @@ function NeowOption({ label, rewards, refs, tags }: { label: string; rewards: St
       />
       <div className="relative px-5 py-2.5">
         <Sts1EventText text={label} className="block font-game-text text-sm leading-snug text-[#cccccc] [text-shadow:0_1px_0_#000] group-hover:text-white" />
-        <div className="mt-1 flex flex-wrap items-center gap-1">
-          {tags.map((tag) => (
-            <span key={tag} className="rounded border border-white/15 px-1.5 py-px font-game-text text-[10px] text-gray-300">{tag}</span>
-          ))}
-          {items.map((item, index) => <Sts1ItemRefTokens key={index} item={item} refs={refs} />)}
-        </div>
       </div>
+      {hovered && entityIds.length ? (
+        <PortaledHoverTipLayer pin="top-left">
+          <div className="flex flex-col gap-2">
+            {entityIds.map((id) => <Sts1EntityPreview key={id} entityId={id} />)}
+          </div>
+        </PortaledHoverTipLayer>
+      ) : null}
     </div>
   );
 }
@@ -78,12 +92,19 @@ export function Sts1NeowPage({
     return out;
   }, [neow]);
   const tags = [...neow.categories.map((category) => ({ key: `c${category.index}`, label: neowLabels.slots[category.index] ?? String(category.index + 1) })), { key: "mini", label: neowLabels.mini }];
-  const tagLabel = Object.fromEntries(tags.map((tag) => [tag.key, tag.label]));
   const filtered = useMemo(() => {
     const query = searchQuery.trim();
     return rows.filter((row) => (!tagFilter.size || row.tags.some((tag) => tagFilter.has(tag)))
       && (!query || fuzzyMatchCodexText(plainSts1Text(row.label), query)));
   }, [rows, searchQuery, tagFilter]);
+  // Sections are the buttons; the mini blessing's rows sit under the second button it shares.
+  const sections = neow.categories
+    .map((category) => ({
+      key: `c${category.index}`,
+      title: neowLabels.slots[category.index] ?? String(category.index + 1),
+      rows: filtered.filter((row) => row.tags[0] === `c${category.index}` || (row.tags[0] === "mini" && category.index === 1)),
+    }))
+    .filter((section) => section.rows.length > 0);
   return (
     <Sts1ListLayout
       title={labels.listTitles.neow}
@@ -113,9 +134,19 @@ export function Sts1NeowPage({
             className="mt-3 block text-center font-game-title text-xl text-[#fff6e2] [text-shadow:0_2px_0_#000]"
           />
         </div>
-        <div className="flex flex-col gap-1.5">
-          {filtered.map((row) => (
-            <NeowOption key={row.key} label={row.label} rewards={row.rewards} refs={refs} tags={row.tags.map((tag) => tagLabel[tag])} />
+        <div className="flex flex-col gap-6">
+          {sections.map((section) => (
+            <section key={section.key}>
+              <h2 className="mb-2 font-game-title text-lg font-bold text-primary">
+                {section.title}
+                <span className="ml-2 font-game-text text-sm font-normal text-gray-400">{section.rows.length}</span>
+              </h2>
+              <div className="flex flex-col gap-1.5">
+                {section.rows.map((row) => (
+                  <NeowOption key={row.key} label={row.label} rewards={row.rewards} refs={refs} />
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       </div>

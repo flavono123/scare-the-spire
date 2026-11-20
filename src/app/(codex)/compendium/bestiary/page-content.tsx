@@ -4,6 +4,7 @@ import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 import { slimBestiaryEncounters, slimBestiaryMonsters } from "@/lib/compendium-list-props";
 import {
   getCodexEncounters,
+  getCodexIntents,
   getCodexCharacters,
   getCodexMonsters,
 } from "@/lib/codex-data";
@@ -28,10 +29,11 @@ export async function renderCompendiumBestiaryPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const [monsters, characters, encounters, patches, versionDiffs, meta, gameUi] = await Promise.all([
+  const [monsters, characters, encounters, intents, patches, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexMonsters({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
+    getCodexIntents({ gameLocale }),
     getSTS2Patches(),
     getEntityVersionDiffs(gameLocale),
     getCodexMeta(),
@@ -49,6 +51,7 @@ export async function renderCompendiumBestiaryPage(
           monsters={slimBestiaryMonsters(monsters)}
           characters={characters}
           encounters={slimBestiaryEncounters(encounters)}
+          intents={intents}
           patches={patches}
           versions={versions}
           currentVersion={meta.version}
