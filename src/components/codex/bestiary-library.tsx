@@ -83,8 +83,10 @@ export function BestiaryLibrary({
     params.set("view", view);
     if (view === "monsters") {
       params.delete("encounter");
+      params.delete("intent");
     } else if (view === "encounters") {
       params.delete("monster");
+      params.delete("intent");
     } else {
       params.delete("monster");
       params.delete("encounter");
@@ -138,6 +140,8 @@ export function BestiaryLibrary({
         title={gameUi.bestiaryTitle}
         countLabel={messages.labels.intents}
         intents={intents}
+        monsters={monsters}
+        detailsStatus={detailsStatus}
         trailing={switcher}
       />
     );
