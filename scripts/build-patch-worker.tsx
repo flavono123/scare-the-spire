@@ -28,10 +28,8 @@ import {
   getNeowsletterListMetadata,
   NeowsletterListPage,
 } from "@/components/patches/neowsletter-list-page";
-import { NAV_ATTENTION_SLOT_CLASS } from "@/components/nav-attention-dot";
 import { NotFoundView } from "@/components/not-found-view";
 import { CompendiumDetailLinksProvider } from "@/components/compendium-detail-links";
-import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import {
   GAME_LOCALE_PATH_SEGMENTS,
   GAME_LOCALE_NATIVE_LABELS,
@@ -57,14 +55,10 @@ import { PATCH_NOT_FOUND_KO_SEGMENT, patchNotFoundAssetPath } from "../workers/p
 import { contactMessages } from "@/messages/contact";
 import {
   gameOnlyLanguageNavLocales,
-  getToyBoxNavItems,
-  newItemsFirst,
-  toyBoxHasNewService,
-  localizeCodexNavItems,
   serviceLanguageNavLocales,
-  sts1NavDropdownItems,
-  sts2NavItems,
 } from "@/lib/site-nav-items";
+import { SiteTopBar } from "@/components/site-top-bar";
+import { topBarMenuRows, topBarPatchLinks } from "@/lib/top-bar-menu";
 
 type StaticPatchRoute = {
   pathname: string;
@@ -241,127 +235,6 @@ function metadataImage(metadata: StaticPatchRoute["metadata"]): string | null {
   return typeof image.url === "string" ? image.url : null;
 }
 
-function StaticNavIconLink({
-  href,
-  icon,
-  label,
-  active = false,
-  iconSize = 22,
-  profileCharacterIcon = false,
-  attentionMarker,
-}: {
-  href: string;
-  icon: string;
-  label: string;
-  active?: boolean;
-  iconSize?: number;
-  profileCharacterIcon?: boolean;
-  attentionMarker?: string;
-}) {
-  const iconImage = (
-    <img
-      src={icon}
-      alt=""
-      width={iconSize}
-      height={iconSize}
-      data-profile-character-icon={profileCharacterIcon ? "" : undefined}
-      className={attentionMarker
-        ? "h-full w-full object-contain transition-transform group-hover:scale-110"
-        : "object-contain transition-transform group-hover:scale-110"}
-      style={attentionMarker ? undefined : { width: iconSize, height: iconSize }}
-    />
-  );
-
-  return (
-    <a
-      href={href}
-      aria-label={label}
-      title={label}
-      className={`group inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border transition-colors ${
-        active
-          ? "border-primary/35 bg-primary/10"
-          : "border-transparent hover:border-primary/25 hover:bg-white/[0.05]"
-      }`}
-    >
-      {attentionMarker ? (
-        <span className={NAV_ATTENTION_SLOT_CLASS}>
-          {iconImage}
-          <span hidden data-nav-attention={attentionMarker} className="nav-attention-dot" />
-        </span>
-      ) : iconImage}
-    </a>
-  );
-}
-
-function StaticLanguageDropdown({
-  pathname,
-  value,
-  label,
-}: {
-  pathname: string;
-  value: GameLocale;
-  label: string;
-}) {
-  return (
-    <details data-static-nav-dropdown className="patch-static-dropdown relative group">
-      <summary
-        className="flex h-8 min-w-[4.5rem] max-w-[5.5rem] cursor-pointer items-center justify-between gap-1 rounded-md border border-border bg-background/80 px-2 text-left text-xs font-semibold text-foreground shadow-sm transition-colors hover:bg-muted sm:min-w-[5.75rem] sm:max-w-[8.25rem] sm:gap-2 sm:px-2.5 sm:text-sm"
-        aria-label={label}
-        title={label}
-      >
-        <span className="truncate">{GAME_LOCALE_NATIVE_LABELS[value]}</span>
-        <svg
-          className="h-3.5 w-3.5 shrink-0 text-primary transition-transform group-open:rotate-180 sm:h-4 sm:w-4"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          aria-hidden="true"
-        >
-          <path d="M10 14.5 3.5 5.5h13L10 14.5Z" />
-        </svg>
-      </summary>
-      <div className="absolute right-0 top-full z-50 mt-1 max-h-[min(32rem,calc(100vh-4rem))] w-[14.5rem] overflow-y-auto rounded-md border border-border bg-background/95 py-1 shadow-xl">
-        {serviceLanguageNavLocales.map((locale) => (
-          <a
-            key={locale}
-            href={switchGameLocaleHref(pathname, locale)}
-            aria-current={locale === value ? "true" : undefined}
-            className={`flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors ${
-              locale === value
-                ? "bg-primary/10 text-primary"
-                : "text-foreground hover:bg-white/5"
-            }`}
-          >
-            <span className="truncate text-base font-semibold" title={GAME_LOCALE_NATIVE_LABELS[locale]}>
-              {GAME_LOCALE_NATIVE_LABELS[locale]}
-            </span>
-          </a>
-        ))}
-        <div className="my-1 border-t border-border/70 px-3 pb-1 pt-2">
-          <span className="text-[9px] font-semibold uppercase tracking-wide text-amber-200/70">
-            only game locale
-          </span>
-        </div>
-        {gameOnlyLanguageNavLocales.map((locale) => (
-          <a
-            key={locale}
-            href={switchGameLocaleHref(pathname, locale)}
-            aria-current={locale === value ? "true" : undefined}
-            className={`block px-3 py-2 text-sm transition-colors ${
-              locale === value
-                ? "bg-primary/10 text-primary"
-                : "text-foreground hover:bg-white/5"
-            }`}
-          >
-            <span className="block truncate text-base font-semibold" title={GAME_LOCALE_NATIVE_LABELS[locale]}>
-              {GAME_LOCALE_NATIVE_LABELS[locale]}
-            </span>
-          </a>
-        ))}
-      </div>
-    </details>
-  );
-}
-
 function StaticPatchHeader({
   serviceLocale,
   gameLocale,
@@ -372,54 +245,36 @@ function StaticPatchHeader({
   pathname: string;
 }) {
   const messages = serviceMessages[serviceLocale];
-  const patchHref = localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale);
-  const profileHref = localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale);
-  const contactHref = getContactHref(pathname, serviceLocale, gameLocale);
-  const contactCopy = contactMessages[serviceLocale];
+  const placeCopy = messages.placeIndex;
   const searchCopy = messages.globalSearch.placeholder;
-  const toyBoxLabel = serviceLocale === "ko" ? "장난감 상자" : "Toy Box";
-  const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
-  const sts2Items = newItemsFirst(localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true }));
-  const sts1Items = sts1NavDropdownItems(gameLocale);
+  const languages = [...serviceLanguageNavLocales, ...gameOnlyLanguageNavLocales].map((locale) => ({
+    locale,
+    href: switchGameLocaleHref(pathname, locale),
+    label: GAME_LOCALE_NATIVE_LABELS[locale],
+    active: locale === gameLocale,
+    gameOnly: !(serviceLanguageNavLocales as readonly GameLocale[]).includes(locale),
+  }));
 
   return (
-    <>
-      <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
-        <div className="mx-auto flex h-12 items-center gap-1.5 px-2 sm:gap-2 sm:px-4">
-        <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
-          <a
-            href={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
-            className="flex shrink-0 items-center gap-1 text-sm font-bold text-primary sm:gap-1.5 sm:text-base"
-          >
-            <img
-              src="/images/bone_tea.png"
-              alt=""
-              width={22}
-              height={22}
-              className="h-[18px] w-[18px] object-contain sm:h-[22px] sm:w-[22px]"
-            />
-            <span className="max-[560px]:sr-only">{messages.brand}</span>
-          </a>
-
-          <StaticNavIconLink
-            href={patchHref}
-            icon="/images/sts2/nav/patch_notes_icon.png"
-            label={messages.nav.patches}
-            active
-            attentionMarker="patches"
-          />
-
-          <SiteNavDropdown
-            icon="/images/sts2/relics/toy_box.webp"
-            alt={toyBoxLabel}
-            items={toyBoxItems}
-            align="left"
-            attentionMarker="toy-box"
-            newService={toyBoxHasNewService(toyBoxItems)}
-          />
-        </div>
-
-        <div className="flex min-w-0 flex-1 items-center justify-end gap-0.5 sm:gap-1">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm" data-top-bar>
+      <SiteTopBar
+        brand={{ href: localizeHrefWithGameLocale("/", serviceLocale, gameLocale), label: messages.brand }}
+        patches={{
+          href: localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale),
+          label: messages.nav.patches,
+          items: topBarPatchLinks(serviceLocale, gameLocale),
+          attentionMarker: "patches",
+        }}
+        menu={{
+          label: placeCopy.menu,
+          rows: topBarMenuRows(serviceLocale, gameLocale),
+          newLabel: placeCopy.newLabel,
+          moreLabel: placeCopy.more,
+          allHref: localizeHrefWithGameLocale("/menu", serviceLocale, gameLocale),
+          allLabel: placeCopy.menuTitle,
+          attentionMarker: "toy-box",
+        }}
+        search={(
           <button
             type="button"
             data-patch-global-search-trigger
@@ -437,58 +292,43 @@ function StaticPatchHeader({
               ⌘K
             </kbd>
           </button>
+        )}
+        profile={{
+          href: localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale),
+          label: messages.profile.navLabel,
+          icon: (
+            <img src={UNSET_PROFILE_TOKEN_URL} alt="" width={24} height={24} data-profile-character-icon className="h-[18px] w-[18px] object-contain sm:h-6 sm:w-6" />
+          ),
+          languageLabel: messages.languageSelect,
+          languages,
+        }}
+      />
+    </header>
+  );
+}
 
-          <div className="hidden xl:block">
-            <StaticLanguageDropdown
-              pathname={pathname}
-              value={gameLocale}
-              label={messages.languageSelect}
-            />
-          </div>
-          <SiteNavDropdown
-            icon="/images/sts2/icons/app_icon.png"
-            alt={messages.games.sts2Codex}
-            items={sts2Items}
-            align="right"
-            newService={toyBoxHasNewService(sts2Items)}
-          />
-          <SiteNavDropdown
-            icon="/images/sts1_app_icon.png"
-            alt={messages.games.sts1}
-            items={sts1Items}
-            align="right"
-          />
-          <div className="hidden border-l border-white/10 pl-1 xl:block">
-            <StaticNavIconLink
-              href={contactHref}
-              icon="/images/sts2/relics/tiny_mailbox.webp"
-              label={contactCopy.navLabel}
-              iconSize={24}
-              attentionMarker="mailbox"
-            />
-          </div>
-          <StaticNavIconLink
-            href={profileHref}
-            icon={UNSET_PROFILE_TOKEN_URL}
-            label={messages.profile.navLabel}
-            iconSize={24}
-            profileCharacterIcon
-          />
-        </div>
-        </div>
-        <div className="sr-only">
-        {toyBoxItems.map((item) => (
-          <a key={item.href} href={item.href}>{item.label}</a>
-        ))}
-        {sts2Items.map((item) => (
-          <a key={item.href} href={item.href}>{item.label}</a>
-        ))}
-        {sts1Items.map((item) => (
-          <a key={item.href} href={item.href}>{item.label}</a>
-        ))}
-        </div>
-      </header>
-    </>
+function StaticMailboxLauncher({
+  serviceLocale,
+  gameLocale,
+  pathname,
+}: {
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+  pathname: string;
+}) {
+  const label = contactMessages[serviceLocale].navLabel;
+  return (
+    <a
+      href={getContactHref(pathname, serviceLocale, gameLocale)}
+      aria-label={label}
+      data-contact-launcher="floating"
+      className="group fixed right-3 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/90 shadow-[0_8px_28px_rgba(0,0,0,0.18)] backdrop-blur-sm transition-[border-color,background-color,transform] bottom-[calc(0.75rem+env(safe-area-inset-bottom))] hover:-translate-y-0.5 hover:border-primary/45 hover:bg-muted"
+    >
+      <span className="relative inline-flex h-8 w-8 items-center justify-center">
+        <img src="/images/sts2/relics/tiny_mailbox.webp" alt="" width={34} height={34} className="h-full w-full object-contain drop-shadow-md transition-transform group-hover:scale-110" />
+        <span hidden data-nav-attention="mailbox" className="nav-attention-dot" />
+      </span>
+    </a>
   );
 }
 
@@ -601,6 +441,11 @@ function renderShell(route: StaticPatchRoute): string {
       <main>
         <CompendiumDetailLinksProvider>{route.element}</CompendiumDetailLinksProvider>
       </main>
+      <StaticMailboxLauncher
+        serviceLocale={route.serviceLocale}
+        gameLocale={route.gameLocale}
+        pathname={route.pathname}
+      />
       <script
         dangerouslySetInnerHTML={{
           __html: `document.addEventListener("toggle",function(e){var d=e.target;if(!(d instanceof HTMLDetailsElement)||!d.matches("[data-static-nav-dropdown]")||!d.open)return;document.querySelectorAll("details[data-static-nav-dropdown][open]").forEach(function(o){if(o!==d)o.removeAttribute("open")})},true);document.addEventListener("pointerdown",function(e){document.querySelectorAll("details[data-static-nav-dropdown][open]").forEach(function(d){if(!d.contains(e.target))d.removeAttribute("open")})});document.addEventListener("keydown",function(e){if(e.key==="Escape")document.querySelectorAll("details[data-static-nav-dropdown][open]").forEach(function(d){d.removeAttribute("open")})});`,

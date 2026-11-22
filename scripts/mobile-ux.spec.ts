@@ -3,19 +3,22 @@ import { expect, test } from "@playwright/test";
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 
 test.describe("mobile codex drawer", () => {
-  test("keeps patch notes and the toy box reachable in the top nav", async ({ page }) => {
+  test("keeps patch notes and the menu sheet reachable in the top nav", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto(`${BASE}/patches`, { waitUntil: "networkidle" });
 
-    await expect(page.locator('header a[href$="/patches"]')).toBeVisible();
-    await expect(page.locator('header a[href$="/chemical-x"]')).toHaveCount(0);
+    const sheet = page.locator('header details[data-top-bar-popover="menu"]');
+    await expect(page.locator('header details[data-top-bar-popover="patches"] summary')).toBeVisible();
+    await expect(sheet.locator('a[href$="/history-course"]')).toBeHidden();
 
-    const toyBox = page.locator('header button[title="장난감 상자"], header button[title="Toy Box"]').first();
-    await expect(toyBox).toBeVisible();
-    await toyBox.click();
+    await sheet.locator("summary").click();
+    await expect(sheet.locator('a[href$="/toybox"]').first()).toBeVisible();
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
-    await expect(page.locator('header a[href$="/chemical-x"]').first()).toBeVisible();
-    await expect(page.locator('header a[href$="/history-course"]').first()).toBeVisible();
+    // Back closes the sheet and stays on the page.
+    await page.goBack();
+    await expect(sheet).not.toHaveAttribute("open", "");
+    await expect(page).toHaveURL(/\/patches$/);
   });
 
   test("locks background scroll while filters are open", async ({ page }) => {

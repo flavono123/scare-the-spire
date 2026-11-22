@@ -1,16 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback, useSyncExternalStore, type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, useSyncExternalStore, type MouseEvent as ReactMouseEvent } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
-import { NAV_ATTENTION_SLOT_CLASS, NavAttentionDot, type NavAttentionTone } from "@/components/nav-attention-dot";
+import { NavAttentionDot, type NavAttentionTone } from "@/components/nav-attention-dot";
 import { SiteNavDropdown } from "@/components/site-nav-dropdown";
 import { GameScrollArea } from "@/components/game-scroll-area";
-import {
-  GAME_UI_HOVER_TIP_NAV_DELAY_MS,
-  GameUiHoverTip,
-} from "@/components/game-ui-hover-tip";
 import Image from "@/components/ui/static-image";
 import { useMailboxReply } from "@/hooks/use-mailbox-reply";
 import { useNavSeen } from "@/hooks/use-nav-seen";
@@ -57,15 +53,14 @@ import { contactMessages } from "@/messages/contact";
 import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-search-param";
 import {
   getDevNavItems,
-  getToyBoxNavItems,
   gameOnlyLanguageNavLocales,
-  localizeCodexNavItems,
   serviceLanguageNavLocales,
-  sts1NavLinkItems,
-  sts2NavItems,
-  newItemsFirst,
-  toyBoxHasNewService,
 } from "@/lib/site-nav-items";
+import { SiteTopBar } from "@/components/site-top-bar";
+import { attachTopBar } from "@/lib/top-bar-controller";
+import { browserStorage, navVisitSearchBonus, readNavVisits } from "@/lib/nav-visits";
+
+import { topBarMenuRows, topBarPatchLinks } from "@/lib/top-bar-menu";
 
 type PendingSearchResult = {
   key: string;
@@ -175,195 +170,6 @@ function writeLocalePreferenceCookies(gameLocale: GameLocale) {
   document.cookie = `${GAME_LOCALE_COOKIE}=${gameLocale}; ${cookieSuffix}`;
 }
 
-// --- Nav icon with game-style tooltip ---
-
-function NavIconLink({
-  href,
-  icon,
-  iconNode,
-  label,
-  iconSize = 20,
-  iconClassName,
-  className,
-  external,
-  attention = false,
-  attentionTone = "unread",
-  tokenSlot = false,
-}: {
-  href: string;
-  icon?: string;
-  iconNode?: ReactNode;
-  label: string;
-  iconSize?: number;
-  iconClassName?: string;
-  className?: string;
-  external?: boolean;
-  attention?: boolean;
-  attentionTone?: NavAttentionTone;
-  tokenSlot?: boolean;
-}) {
-  const Tag = external ? "a" : Link;
-  const extraProps = external
-    ? { target: "_blank" as const, rel: "noopener noreferrer" }
-    : {};
-  const internalProps = external ? {} : { prefetch: false as const };
-  const iconClass = tokenSlot
-    ? `h-full w-full object-contain brightness-90 transition-all hover:brightness-110 ${iconClassName ?? ""}`
-    : `h-[18px] w-[18px] object-contain brightness-90 hover:brightness-110 transition-all sm:h-[var(--nav-icon-size)] sm:w-[var(--nav-icon-size)] ${iconClassName ?? ""}`;
-
-  return (
-    <GameUiHoverTip
-      label={label}
-      delayMs={GAME_UI_HOVER_TIP_NAV_DELAY_MS}
-      className={className}
-    >
-      <Tag
-        href={href}
-        {...extraProps}
-        {...internalProps}
-        className="flex items-center p-1 transition-colors sm:p-1.5"
-      >
-        <span className={tokenSlot ? NAV_ATTENTION_SLOT_CLASS : "relative inline-flex"}>
-          {iconNode ?? (
-            <Image
-              src={icon ?? ""}
-              alt={label}
-              width={iconSize}
-              height={iconSize}
-              className={iconClass}
-              style={{ "--nav-icon-size": `${iconSize}px` } as CSSProperties}
-            />
-          )}
-          {attention && <NavAttentionDot tone={attentionTone} />}
-        </span>
-      </Tag>
-    </GameUiHoverTip>
-  );
-}
-
-function LanguageDropdown({
-  value,
-  label,
-}: {
-  value: GameLocale;
-  label: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-haspopup="menu"
-        aria-label={label}
-        onClick={() => setOpen((v) => !v)}
-        className="flex h-8 min-w-[4.5rem] max-w-[5.5rem] items-center justify-between gap-1 rounded-md border border-border bg-background/80 px-2 text-left text-xs font-semibold text-foreground shadow-sm transition-colors hover:bg-muted sm:min-w-[5.75rem] sm:max-w-[8.25rem] sm:gap-2 sm:px-2.5 sm:text-sm"
-      >
-        <span className="truncate">{GAME_LOCALE_NATIVE_LABELS[value]}</span>
-        <svg
-          className={`h-3.5 w-3.5 shrink-0 text-primary transition-transform sm:h-4 sm:w-4 ${open ? "rotate-180" : ""}`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          aria-hidden="true"
-        >
-          <path d="M10 14.5 3.5 5.5h13L10 14.5Z" />
-        </svg>
-      </button>
-      {open && (
-        <div
-          role="menu"
-          className="absolute right-0 top-full z-50 mt-1 max-h-[min(32rem,calc(100vh-4rem))] w-[14.5rem] overflow-y-auto rounded-md border border-border bg-background/95 py-1 shadow-xl"
-        >
-          {serviceLanguageNavLocales.map((locale) => {
-            const active = locale === value;
-            const href = languageHref(
-              pathname,
-              new URLSearchParams(searchParams.toString()),
-              locale,
-            );
-
-            return (
-              <Link
-                key={locale}
-                href={href}
-                prefetch={false}
-                role="menuitem"
-                aria-current={active ? "true" : undefined}
-                onClick={() => {
-                  writeLocalePreferenceCookies(locale);
-                  setOpen(false);
-                }}
-                className={`flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors ${
-                  active
-                    ? "bg-primary/10 text-primary"
-                    : "text-foreground hover:bg-white/5"
-                }`}
-              >
-                <span className="truncate text-base font-semibold" title={GAME_LOCALE_NATIVE_LABELS[locale]}>
-                  {GAME_LOCALE_NATIVE_LABELS[locale]}
-                </span>
-              </Link>
-            );
-          })}
-          <div className="my-1 border-t border-border/70 px-3 pt-2 pb-1">
-            <span className="text-[9px] font-semibold uppercase tracking-wide text-amber-200/70">
-              only game locale
-            </span>
-          </div>
-          {gameOnlyLanguageNavLocales.map((locale) => {
-            const active = locale === value;
-            const href = languageHref(
-              pathname,
-              new URLSearchParams(searchParams.toString()),
-              locale,
-            );
-
-            return (
-              <Link
-                key={locale}
-                href={href}
-                prefetch={false}
-                role="menuitem"
-                aria-current={active ? "true" : undefined}
-                onClick={() => {
-                  writeLocalePreferenceCookies(locale);
-                  setOpen(false);
-                }}
-                className={`block px-3 py-2 text-sm transition-colors ${
-                  active
-                    ? "bg-primary/10 text-primary"
-                    : "text-foreground hover:bg-white/5"
-                }`}
-              >
-                <span className="block truncate text-base font-semibold" title={GAME_LOCALE_NATIVE_LABELS[locale]}>
-                  {GAME_LOCALE_NATIVE_LABELS[locale]}
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Narrow-screen stand-in for LanguageDropdown on the profile page. A native
-// select escapes the profile hero's overflow clipping and opens the OS picker.
-// shortcut: lives on the profile page only, until the navbar becomes one menu bar.
 export function LanguageSelect({ value, label }: { value: GameLocale; label: string }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -628,7 +434,7 @@ function GlobalSearch({
   }, [closeSearch, open]);
 
   const results = useMemo(
-    () => rankGlobalSearchResults(items, query, labels),
+    () => rankGlobalSearchResults(items, query, labels, navVisitSearchBonus(readNavVisits(browserStorage()))),
     [items, labels, query],
   );
 
@@ -787,11 +593,20 @@ export function SiteNavbar() {
   const contactCopy = contactMessages[serviceLocale];
   const { stored, profile } = useStoredProfileSnapshot();
   const navSeen = useNavSeen(pathname);
-  const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale }).map((item) => ({
-    ...item,
-    attention: item.attentionId ? navSeen.unreadIds.includes(item.attentionId) : item.attention,
+  const router = useRouter();
+  const headerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!headerRef.current) return;
+    return attachTopBar(headerRef.current, { navigate: (href) => router.push(href), pathname });
+  }, [pathname, router]);
+  const placeCopy = messages.placeIndex;
+  const languages = [...serviceLanguageNavLocales, ...gameOnlyLanguageNavLocales].map((locale) => ({
+    locale,
+    href: languageHref(pathname, new URLSearchParams(searchParams.toString()), locale),
+    label: GAME_LOCALE_NATIVE_LABELS[locale],
+    active: locale === gameLocale,
+    gameOnly: !(serviceLanguageNavLocales as readonly GameLocale[]).includes(locale),
   }));
-  const sts2Items = newItemsFirst(localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true }));
   const rawDevItems = getDevNavItems({ serviceLocale, gameLocale });
   const debateWeekOpen = useDevPhilosophersNextWeekOpen(
     rawDevItems.some((item) => stripGameLocaleFromPath(item.href) === COLORFUL_PHILOSOPHERS_DEV_HREF),
@@ -814,45 +629,43 @@ export function SiteNavbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
+      <header ref={headerRef} className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
         <InitialLocaleDetector />
         <LocaleCanonicalizer serviceLocale={serviceLocale} gameLocale={gameLocale} />
-        <div className="mx-auto flex h-12 items-center gap-1.5 px-2 sm:gap-2 sm:px-4">
-        <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
-          <Link
-            href={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
-            prefetch={false}
-            className="flex shrink-0 items-center gap-1 text-sm font-bold text-primary sm:gap-1.5 sm:text-base"
-          >
-            <Image
-              src="/images/bone_tea.png"
-              alt=""
-              width={22}
-              height={22}
-              className="h-[18px] w-[18px] object-contain sm:h-[22px] sm:w-[22px]"
-            />
-            <span className="max-[560px]:sr-only">{messages.brand}</span>
-          </Link>
-
-          <NavIconLink
-            href={localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale)}
-            icon="/images/sts2/nav/patch_notes_icon.png"
-            label={messages.nav.patches}
-            iconSize={22}
-            tokenSlot
-            attention={navSeen.patches}
-          />
-
-          <SiteNavDropdown
-            icon="/images/sts2/relics/toy_box.webp"
-            alt={serviceLocale === "ko" ? "장난감 상자" : "Toy Box"}
-            items={toyBoxItems}
-            align="left"
-            attention={navSeen.toyBox}
-            newService={toyBoxHasNewService(toyBoxItems)}
-          />
-
-          {devItems.length > 0 && (
+        <SiteTopBar
+          brand={{ href: localizeHrefWithGameLocale("/", serviceLocale, gameLocale), label: messages.brand }}
+          patches={{
+            href: localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale),
+            label: messages.nav.patches,
+            items: topBarPatchLinks(serviceLocale, gameLocale),
+            attention: navSeen.patches,
+          }}
+          menu={{
+            label: placeCopy.menu,
+            rows: topBarMenuRows(serviceLocale, gameLocale),
+            newLabel: placeCopy.newLabel,
+            moreLabel: placeCopy.more,
+            allHref: localizeHrefWithGameLocale("/menu", serviceLocale, gameLocale),
+            allLabel: placeCopy.menuTitle,
+            attention: navSeen.toyBox,
+          }}
+          unreadIds={navSeen.unreadIds}
+          search={<GlobalSearch key={gameLocale} serviceLocale={serviceLocale} gameLocale={gameLocale} />}
+          profile={{
+            href: localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale),
+            label: messages.profile.navLabel,
+            icon: (
+              <ProfileAvatarToken
+                profile={profile}
+                stored={stored}
+                size={24}
+                className="h-[18px] w-[18px] object-contain brightness-90 transition-all hover:brightness-110 sm:h-6 sm:w-6"
+              />
+            ),
+            languageLabel: messages.languageSelect,
+            languages,
+          }}
+          dev={devItems.length > 0 ? (
             <SiteNavDropdown
               icon="/images/sts2/nav/question_mark.png"
               alt="Dev"
@@ -861,55 +674,8 @@ export function SiteNavbar() {
               layout="grid"
               attention={debateWeekOpen}
             />
-          )}
-        </div>
-
-        <div className="flex min-w-0 flex-1 items-center justify-end gap-0.5 sm:gap-1">
-          <GlobalSearch key={gameLocale} serviceLocale={serviceLocale} gameLocale={gameLocale} />
-          <div className="hidden xl:block">
-            <LanguageDropdown value={gameLocale} label={messages.languageSelect} />
-          </div>
-          <SiteNavDropdown
-            icon="/images/sts2/icons/app_icon.png"
-            alt={messages.games.sts2Codex}
-            items={sts2Items}
-            align="right"
-            newService={toyBoxHasNewService(sts2Items)}
-          />
-          <SiteNavDropdown
-            icon="/images/sts1_app_icon.png"
-            alt={messages.games.sts1}
-            items={sts1NavLinkItems(serviceLocale, gameLocale)}
-            align="right"
-          />
-          <div className="hidden border-l border-border pl-1 xl:block">
-            <NavIconLink
-              href={contactHref}
-              icon="/images/sts2/relics/tiny_mailbox.webp"
-              label={contactCopy.navLabel}
-              iconSize={24}
-              iconClassName="group-hover:scale-110"
-              tokenSlot
-              attention={mailboxReply || inboxUnchecked}
-              attentionTone={mailboxTone}
-            />
-          </div>
-          <NavIconLink
-            href={localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale)}
-            className="group"
-            iconNode={(
-              <ProfileAvatarToken
-                profile={profile}
-                stored={stored}
-                size={24}
-                className="h-[18px] w-[18px] object-contain brightness-90 transition-all hover:brightness-110 sm:h-6 sm:w-6 group-hover:scale-110"
-              />
-            )}
-            label={messages.profile.navLabel}
-            iconSize={24}
-          />
-        </div>
-        </div>
+          ) : undefined}
+        />
       </header>
 
       {!isContactPage && (
@@ -917,8 +683,8 @@ export function SiteNavbar() {
           href={contactHref}
           prefetch={false}
           aria-label={contactCopy.navLabel}
-          data-contact-launcher="mobile"
-          className="group fixed right-3 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/90 shadow-[0_8px_28px_rgba(0,0,0,0.18)] backdrop-blur-sm transition-[border-color,background-color,transform] bottom-[calc(0.75rem+env(safe-area-inset-bottom))] hover:-translate-y-0.5 hover:border-primary/45 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 xl:hidden motion-reduce:transform-none"
+          data-contact-launcher="floating"
+          className="group fixed right-3 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/90 shadow-[0_8px_28px_rgba(0,0,0,0.18)] backdrop-blur-sm transition-[border-color,background-color,transform] bottom-[calc(0.75rem+env(safe-area-inset-bottom))] hover:-translate-y-0.5 hover:border-primary/45 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 motion-reduce:transform-none"
         >
           <span className="relative inline-flex h-8 w-8 items-center justify-center">
             <Image

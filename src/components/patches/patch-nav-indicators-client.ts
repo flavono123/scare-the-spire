@@ -8,6 +8,7 @@ import {
   topBarPatchUnread,
   toyBoxHasUnread,
 } from "@/lib/nav-seen";
+import { attachTopBar, layoutMenuRow } from "@/lib/top-bar-controller";
 
 function applyUnread(ids: readonly string[]) {
   const shown = new Set(effectiveUnreadIds(ids, readNavForce(window.localStorage)));
@@ -20,6 +21,8 @@ function applyUnread(ids: readonly string[]) {
         : Boolean(name && shown.has(name));
     node.hidden = !on;
   });
+  // New-post dots move items forward in an open menu.
+  document.querySelectorAll<HTMLElement>("details[open] [data-menu-row]").forEach((row) => layoutMenuRow(row));
 }
 
 function sync() {
@@ -29,5 +32,7 @@ function sync() {
   });
 }
 
+const topBar = document.querySelector<HTMLElement>("[data-top-bar]");
+if (topBar) attachTopBar(topBar);
 sync();
 window.addEventListener(NAV_SEEN_EVENT, sync);

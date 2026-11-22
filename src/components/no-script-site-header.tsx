@@ -4,12 +4,13 @@ import { serviceMessages } from "@/messages/service";
 function HeaderLinks({ serviceLocale }: { serviceLocale: ServiceLocale }) {
   const messages = serviceMessages[serviceLocale];
   const prefix = serviceLocale === "ko" ? "" : "/en";
+  const areas = messages.placeIndex.areas;
   const links = [
     [`${prefix}/patches`, messages.nav.patches],
-    [`${prefix}/compendium`, messages.games.sts2Codex],
-    [`${prefix}/c-c-c-combo`, messages.nav.combo],
-    [`${prefix}/this-or-that`, messages.nav.thisOrThat],
-    [`${prefix}/history-course`, messages.nav.historyCourse],
+    [`${prefix}/compendium`, areas.sts2],
+    [`${prefix}/vexing-puzzlebox`, areas.zzapper],
+    [`${prefix}/toybox`, areas.toybox],
+    [`${prefix}/menu`, messages.placeIndex.menuTitle],
   ] as const;
 
   return (

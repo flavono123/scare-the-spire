@@ -49,16 +49,13 @@ async function mockWorkerApi(page: Page, userId: string) {
 }
 
 test.describe("Tiny Mailbox contact entry points", () => {
-  test("uses a separated topbar utility on wide screens", async ({ page }) => {
+  test("floats the mailbox on wide screens too", async ({ page }) => {
     await setKoreanLocale(page);
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
 
-    const desktopContact = page.locator('header a[href*="/contact?from="]').filter({
-      has: page.locator('img[src*="tiny_mailbox"]'),
-    });
-    await expect(desktopContact).toBeVisible();
-    await expect(page.locator('[data-contact-launcher="mobile"]')).toBeHidden();
+    await expect(page.locator('[data-contact-launcher="floating"]')).toBeVisible();
+    await expect(page.locator('header a[href*="/contact?from="]')).toHaveCount(0);
   });
 
   test("keeps contact reachable without crowding the mobile topbar", async ({ page }) => {
@@ -66,7 +63,7 @@ test.describe("Tiny Mailbox contact entry points", () => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
 
-    const launcher = page.locator('[data-contact-launcher="mobile"]');
+    const launcher = page.locator('[data-contact-launcher="floating"]');
     await expect(launcher).toBeVisible();
     await expect(page.locator('header a[href*="/contact?from="]')).toBeHidden();
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -76,7 +73,7 @@ test.describe("Tiny Mailbox contact entry points", () => {
     await launcher.click();
     await expect(page).toHaveURL(/\/contact\?from=%2F$/);
     await expect(page.getByRole("heading", { name: "작은 우편함" })).toBeVisible();
-    await expect(page.locator('[data-contact-launcher="mobile"]')).toHaveCount(0);
+    await expect(page.locator('[data-contact-launcher="floating"]')).toHaveCount(0);
   });
 });
 

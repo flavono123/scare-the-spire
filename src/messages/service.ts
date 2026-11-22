@@ -99,6 +99,7 @@ export const serviceMessages = {
     },
     placeIndex: {
       backHome: "홈",
+      menu: "메뉴",
       newLabel: "NEW",
       more: "+{count} 더보기",
       menuTitle: "전체 메뉴",
@@ -1804,6 +1805,7 @@ export const serviceMessages = {
     },
     placeIndex: {
       backHome: "Home",
+      menu: "Menu",
       newLabel: "NEW",
       more: "+{count} more",
       menuTitle: "All menus",

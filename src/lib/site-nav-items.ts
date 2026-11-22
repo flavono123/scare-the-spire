@@ -40,11 +40,6 @@ export type NavDropdownItem = {
   children?: NavDropdownItem[];
 };
 
-/** Rows marked NEW first, the rest in their own order (Array.prototype.sort is stable). */
-export function newItemsFirst<T extends { isNew?: boolean }>(items: readonly T[]): T[] {
-  return [...items].sort((a, b) => Number(Boolean(b.isNew)) - Number(Boolean(a.isNew)));
-}
-
 /** Whether the Toy Box icon should carry the new-service marker. */
 export function toyBoxHasNewService(items: readonly NavDropdownItem[]): boolean {
   return items.some((item) => item.isNew);
@@ -269,18 +264,6 @@ export function localizePlainNavItems<
   }));
 }
 
-// The legacy /cards, /relics and /potions routes exist only without a locale prefix.
-export function sts1NavLinkItems(serviceLocale: ServiceLocale, gameLocale: GameLocale): NavDropdownItem[] {
-  return sts1NavDropdownItems(gameLocale).map((item) => ({
-    ...item,
-    href: localizeHrefWithGameLocale(
-      item.href.startsWith("/compendium/") ? item.href : `/compendium/sts1${item.href}`,
-      serviceLocale,
-      gameLocale,
-    ),
-  }));
-}
-
 export function sts1NavDropdownItems(gameLocale: GameLocale): NavDropdownItem[] {
   return sts1NavItems.map((item) => ({
     href: item.href,
@@ -290,10 +273,6 @@ export function sts1NavDropdownItems(gameLocale: GameLocale): NavDropdownItem[] 
 }
 
 /** Toy Box services and the Vexing Puzzlebox hub, newest first, children under their parent. */
-export function toyBoxMenuPlaces(): Place[] {
-  return PLACES.filter((place) => place.area === "toybox" || (place.area === "zzapper" && place.kind === "hub"));
-}
-
 export function getToyBoxNavItems({
   serviceLocale,
   gameLocale,
@@ -301,7 +280,7 @@ export function getToyBoxNavItems({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }): NavDropdownItem[] {
-  const visible = toyBoxMenuPlaces();
+  const visible = PLACES.filter((place) => place.area === "toybox" || (place.area === "zzapper" && place.kind === "hub"));
   const newestFirst = (left: Place, right: Place) => (right.createdAt ?? "").localeCompare(left.createdAt ?? "");
   const childrenByParent = new Map<string, Place[]>();
   for (const place of visible) {

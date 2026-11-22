@@ -13,7 +13,10 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 
+import { browserStorage, navVisitSearchBonus, readNavVisits } from "@/lib/nav-visits";
+
 type LoadState = "idle" | "loading" | "ready" | "error";
+
 
 const html = document.documentElement;
 const serviceLocale: ServiceLocale = html.dataset.serviceLocale === "en" ? "en" : "ko";
@@ -110,7 +113,7 @@ function renderSearchResults() {
     return;
   }
 
-  const results = rankGlobalSearchResults(items, query, labels);
+  const results = rankGlobalSearchResults(items, query, labels, navVisitSearchBonus(readNavVisits(browserStorage())));
   if (results.length === 0) {
     renderMessage(copy.noResults);
     return;
