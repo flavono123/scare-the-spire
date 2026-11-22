@@ -150,6 +150,12 @@
 - QA: 위 경로들. 확인함: Esc 동작(Playwright, dev 서버, 고치기 전에는 실패), 케미컬 X 상세의 읽기 실패·없는 글 화면(Playwright 모의 응답), 빌드 산출물의 ja·de 헤더 링크, `scripts/contact.spec.ts` 5개, `detail-shell-og.spec.ts`, `api-identity-client.spec.ts`, `test:write-gate`, `i18n:validate`, `tsc`. 확인 못 함: 이야기 목록 잘림(브라우저), 영문 카드 20장 전체의 모달 화면, 실제 WebView(#74).
 - Commits: `7b2b8616`, `c0ebccac`, `214ddf9b`, `464b2a45`, `ac1087ab`, `9a9ba0ff`, `6565fe37`, `50b4d6bb`, `ad97242e`, `1bd87ba8`, `ef686fa8`, `7624530b`, `9e13ff0e`, `8b93262f`.
 
+### nav-story-redesign
+- Feature: 상단바·메뉴·통합검색·슬서운 이야기 개편([docs/designs/nav-story-redesign/design.md](../designs/nav-story-redesign/design.md)). 메뉴 목적지는 장소 등록부 `src/data/place-registry.json` 하나에서 상단바 메뉴, 짜퍼 탭, 백과사전 첫 화면, Worker 정확 경로, 복사 스크립트, 검색 항목이 나온다. 상단바는 브랜드·패치노트(드롭다운)·메뉴(영역별 한 줄 패널, 휴대폰은 시트)·검색·프로필(언어 포함)이고 우편함은 모든 폭에서 오른쪽 아래에 뜬다. 패치 Worker도 같은 컴포넌트와 컨트롤러를 쓴다. 인덱스 페이지 /compendium(슬더스2·1), /vexing-puzzlebox(허브), /toybox, /menu를 두고 커넥션스는 /vexing-puzzlebox/connections로 옮겼다. 검색은 정확·앞부분·중간·단어·퍼지 단계로 점수를 매겨 한 목록으로 보이며 STS1 요소와 메뉴 목적지를 찾는다. 이야기 상세는 /stories/<id> 셸로 옮겼고 홈에 미리보기 릴과 행 썸네일을 넣었다.
+- Expect: 데스크톱에서 메뉴·패치노트에 마우스를 올리면 열리고 누르면 /menu·/patches로 간다. 메뉴 패널은 NEW와 새 글 항목이 앞, 그다음 이 브라우저의 방문 수, 등록부 순서이며 넘치면 "+N 더보기". 375px에서 메뉴는 시트이고 뒤로 가기로 닫힌다. 검색 "분노"·"타격"·"니오우"는 첫 줄이 그 이름이고 "강타"는 STS2 카드가 STS1 카드보다 위. /stories/sts2-doormaker-removed는 문장·요소·댓글. 홈 릴은 슬라이드마다 확대가 다시 돈다. 정적 파일 main 약 +113(인덱스 3개·커넥션스·이야기 셸 28씩 + element-art.json 1).
+- QA: 로컬 dev 내장 브라우저(800·375 폭)로 /toybox, /compendium, /vexing-puzzlebox, /vexing-puzzlebox/connections, /menu, /stories/sts2-doormaker-removed, /stories/blade-dance-shivs, / 확인. 로컬 patch:build 결과로 /patches/0.111.1 상단바 확인. spec: search:test, place-registry, nav-visits, toybox-nav, sts1-nav, nav-seen, comment-threads, detail-shell-og, worker-routing, next-routing-parity, patch:test. 확인 못 함: 이야기 행 썸네일·행 링크(dev에 API Worker가 없어 목록 대신 저장소 안내가 뜸), 원격 testbed, 이야기별 OG(운영은 `DETAIL_SHELL_OG`가 꺼져 있어 셸 기본 OG가 나간다, tasks/010 #32), playwright e2e(`contact.spec.ts`, `mobile-ux.spec.ts`는 고치기만 하고 돌리지 않음).
+- Commits: `242bd8a8`(설계 문서), `a6f31969`, `65c1e24c`, `20212f9d`, `fcbea9d5`, `d9bfca03`, `5779b4fd`.
+
 <!--
 ### <항목-id>
 - Feature:
