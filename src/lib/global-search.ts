@@ -23,13 +23,9 @@ export const globalSearchTypeOrder = [
   "dominion",
   "pet",
   "monsterMove",
-  "historyCourse",
-  "thisOrThat",
-  "favoriteTournament",
-  "decisionsDecisions",
-  "pagestorm",
-  "debate",
-  "vexingPuzzlebox",
+  "compendium",
+  "zzapper",
+  "toybox",
 ] as const;
 
 export type GlobalSearchType = (typeof globalSearchTypeOrder)[number];
@@ -74,13 +70,9 @@ export const globalSearchTypeStyles: Record<GlobalSearchType, {
   blitzEntry: { icon: "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp", color: "text-green-200", bg: "bg-green-500/10", border: "border-green-400/30" },
   dominion: { icon: "/images/sts2/bosses/queen_boss.webp", color: "text-cyan-200", bg: "bg-cyan-500/10", border: "border-cyan-400/30" },
   pet: { icon: "/images/sts2/monsters-render/osty.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
-  historyCourse: { icon: "/images/sts2/relics/history_course.webp", color: "text-violet-200", bg: "bg-violet-500/10", border: "border-violet-400/30" },
-  thisOrThat: { icon: "/images/sts2/relics/choices_paradox.webp", color: "text-blue-200", bg: "bg-blue-500/10", border: "border-blue-400/30" },
-  favoriteTournament: { icon: "/images/sts2/potions/fortifier.webp", color: "text-sky-200", bg: "bg-sky-500/10", border: "border-sky-400/30" },
-  decisionsDecisions: { icon: "/images/sts2/powers/buffer_power.webp", color: "text-sky-200", bg: "bg-sky-500/10", border: "border-sky-400/30" },
-  pagestorm: { icon: "/images/sts2/powers/pagestorm_power.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
-  debate: { icon: "/images/sts2/modifiers/draft.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
-  vexingPuzzlebox: { icon: "/images/sts2/relics/vexing_puzzlebox.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-500/30" },
+  compendium: { icon: "/images/sts2/nav/stats_cards.png", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
+  zzapper: { icon: "/images/sts2/relics/vexing_puzzlebox.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-500/30" },
+  toybox: { icon: "/images/sts2/powers/focus_power.webp", color: "text-sky-200", bg: "bg-sky-500/10", border: "border-sky-400/30" },
 };
 
 // Match tiers keep an exact name above any prefix match, a prefix above a

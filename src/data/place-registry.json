@@ -1,0 +1,529 @@
+{
+  "$comment": "Every menu destination: Codex kinds, Vexing Puzzlebox games, Toy Box services. Read by src/lib/place-registry.ts and scripts/copy-cf-static-pages.mjs. Labels: {ko,en} written here, {game} borrowed game copy title, {codex} game nav label falling back to a codex message, {sts1} STS1 nav label, {message} a serviceMessages path.",
+  "places": [
+    {
+      "id": "sts2-characters",
+      "area": "sts2",
+      "href": "/compendium/characters",
+      "label": {
+        "codex": "characters"
+      },
+      "token": "/images/sts2/characters/character_icon_ironclad.webp",
+      "art": "/images/sts2/characters/character_icon_ironclad.webp"
+    },
+    {
+      "id": "sts2-cards",
+      "area": "sts2",
+      "href": "/compendium/cards",
+      "label": {
+        "codex": "cards"
+      },
+      "token": "/images/sts2/nav/stats_cards.png",
+      "art": "/images/sts2/cards/bash.webp"
+    },
+    {
+      "id": "sts2-relics",
+      "area": "sts2",
+      "href": "/compendium/relics",
+      "label": {
+        "codex": "relics"
+      },
+      "token": "/images/sts2/relics/bing_bong.webp",
+      "art": "/images/sts2/relics/akabeko.webp"
+    },
+    {
+      "id": "sts2-potions",
+      "area": "sts2",
+      "href": "/compendium/potions",
+      "label": {
+        "codex": "potions"
+      },
+      "token": "/images/sts2/potions/potion_shaped_rock.webp",
+      "art": "/images/sts2/potions/attack_potion.webp"
+    },
+    {
+      "id": "sts2-powers",
+      "area": "sts2",
+      "href": "/compendium/powers",
+      "label": {
+        "codex": "powers"
+      },
+      "token": "/images/sts2/nav/unmovable_power_beta.webp",
+      "art": "/images/sts2/powers/strength_power.webp"
+    },
+    {
+      "id": "sts2-enchantments",
+      "area": "sts2",
+      "href": "/compendium/enchantments",
+      "label": {
+        "codex": "enchantments"
+      },
+      "token": "/images/sts2/enchantments/souls_power.webp",
+      "art": "/images/sts2/enchantments/sharp.webp"
+    },
+    {
+      "id": "sts2-bestiary",
+      "area": "sts2",
+      "href": "/compendium/bestiary",
+      "label": {
+        "codex": "monsters"
+      },
+      "token": "/images/sts2/nav/happy_cultist.png",
+      "art": "/images/sts2/bosses/ceremonial_beast_boss.webp"
+    },
+    {
+      "id": "sts2-events",
+      "area": "sts2",
+      "href": "/compendium/events",
+      "label": {
+        "codex": "events"
+      },
+      "token": "/images/sts2/nav/question_mark.png",
+      "art": "/images/sts2/events/abyssal_baths.webp"
+    },
+    {
+      "id": "sts2-ancients",
+      "area": "sts2",
+      "href": "/compendium/ancients",
+      "label": {
+        "codex": "ancients"
+      },
+      "token": "/images/sts2/nav/stats_ancients.png",
+      "art": "/images/sts2/ancients/neow.webp"
+    },
+    {
+      "id": "sts2-epochs",
+      "area": "sts2",
+      "href": "/compendium/epochs",
+      "label": {
+        "codex": "epochs"
+      },
+      "token": "/images/sts2/relics/planisphere.webp",
+      "art": "/images/sts2/epochs/neow_epoch.webp"
+    },
+    {
+      "id": "sts2-keywords",
+      "area": "sts2",
+      "href": "/compendium/keywords",
+      "label": {
+        "codex": "keywords"
+      },
+      "token": "/images/sts2/ui/topbar/submenu_history_icon.png",
+      "art": "/images/sts2/ui/topbar/submenu_history_icon.png"
+    },
+    {
+      "id": "sts2-badges",
+      "area": "sts2",
+      "href": "/compendium/badges",
+      "label": {
+        "codex": "badges"
+      },
+      "token": "/images/sts2/badges/double_snecko.webp",
+      "art": "/images/sts2/badges/perfect.webp"
+    },
+    {
+      "id": "sts2-achievements",
+      "area": "sts2",
+      "href": "/compendium/achievements",
+      "label": {
+        "codex": "achievements"
+      },
+      "token": "/images/sts2/achievements/border.webp",
+      "art": "/images/sts2/achievements/ironclad_win.webp"
+    },
+    {
+      "id": "sts2-ascensions",
+      "area": "sts2",
+      "href": "/compendium/ascensions",
+      "label": {
+        "codex": "ascensions"
+      },
+      "token": "/images/sts2/ui/topbar/top_bar_ascension.png",
+      "tokenClassName": "h-4 w-[14px]",
+      "art": "/images/sts2/ui/topbar/top_bar_ascension.png"
+    },
+    {
+      "id": "sts2-modifiers",
+      "area": "sts2",
+      "href": "/compendium/modifiers",
+      "label": {
+        "codex": "modifiers"
+      },
+      "token": "/images/sts2/modifiers/character_cards.webp",
+      "art": "/images/sts2/modifiers/hoarder.webp"
+    },
+    {
+      "id": "sts2-blitz-shop",
+      "area": "sts2",
+      "href": "/compendium/blitz-shop",
+      "label": {
+        "codex": "blitzShop"
+      },
+      "token": "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp",
+      "art": "/images/sts2/blitz-merchant/entries/entry_relic.webp",
+      "byrdispatchSectionTitle": "블리츠 상점"
+    },
+    {
+      "id": "sts2-dominions",
+      "area": "sts2",
+      "href": "/compendium/dominions",
+      "label": {
+        "codex": "dominions"
+      },
+      "token": "/images/sts2/bosses/queen_boss.webp",
+      "art": "/images/sts2/bosses/waterfall_giant_boss.webp",
+      "byrdispatchSectionTitle": "드레드 권능"
+    },
+    {
+      "id": "sts2-pets",
+      "area": "sts2",
+      "href": "/compendium/pets",
+      "label": {
+        "codex": "pets"
+      },
+      "token": "/images/sts2/monsters-render/osty.webp",
+      "art": "/images/sts2/monsters-render/wuppy.webp",
+      "byrdispatchSectionTitle": "펫"
+    },
+    {
+      "id": "sts1-characters",
+      "area": "sts1",
+      "href": "/compendium/sts1/characters",
+      "label": {
+        "sts1": "characters"
+      },
+      "token": "/images/sts1/characters/ironclad.webp"
+    },
+    {
+      "id": "sts1-cards",
+      "area": "sts1",
+      "href": "/compendium/sts1/cards",
+      "legacyHref": "/cards",
+      "label": {
+        "sts1": "cards"
+      },
+      "token": "/images/sts2/nav/stats_cards.png"
+    },
+    {
+      "id": "sts1-relics",
+      "area": "sts1",
+      "href": "/compendium/sts1/relics",
+      "legacyHref": "/relics",
+      "label": {
+        "sts1": "relics"
+      },
+      "token": "/images/sts2/relics/snecko_eye.webp"
+    },
+    {
+      "id": "sts1-potions",
+      "area": "sts1",
+      "href": "/compendium/sts1/potions",
+      "legacyHref": "/potions",
+      "label": {
+        "sts1": "potions"
+      },
+      "token": "/images/sts2/nav/stats_potions.png"
+    },
+    {
+      "id": "sts1-powers",
+      "area": "sts1",
+      "href": "/compendium/sts1/powers",
+      "label": {
+        "sts1": "powers"
+      },
+      "token": "/images/sts1/powers/hello.webp"
+    },
+    {
+      "id": "sts1-monsters",
+      "area": "sts1",
+      "href": "/compendium/sts1/monsters",
+      "label": {
+        "sts1": "monsters"
+      },
+      "token": "/images/sts1/nav/run-history-elite.webp"
+    },
+    {
+      "id": "sts1-events",
+      "area": "sts1",
+      "href": "/compendium/sts1/events",
+      "label": {
+        "sts1": "events"
+      },
+      "token": "/images/sts1/nav/run-history-event.webp"
+    },
+    {
+      "id": "sts1-keywords",
+      "area": "sts1",
+      "href": "/compendium/sts1/keywords",
+      "label": {
+        "sts1": "keywords"
+      },
+      "token": "/images/sts1/orbs/lightning.webp"
+    },
+    {
+      "id": "sts1-ascensions",
+      "area": "sts1",
+      "href": "/compendium/sts1/ascensions",
+      "label": {
+        "sts1": "ascensions"
+      },
+      "token": "/images/sts1/ui/ascension.webp"
+    },
+    {
+      "id": "sts1-modifiers",
+      "area": "sts1",
+      "href": "/compendium/sts1/modifiers",
+      "label": {
+        "sts1": "modifiers"
+      },
+      "token": "/images/sts1/run-mods/specialized.webp"
+    },
+    {
+      "id": "sts1-blights",
+      "area": "sts1",
+      "href": "/compendium/sts1/blights",
+      "label": {
+        "sts1": "blights"
+      },
+      "token": "/images/sts1/blights/spear.webp"
+    },
+    {
+      "id": "sts1-neow",
+      "area": "sts1",
+      "href": "/compendium/sts1/neow",
+      "label": {
+        "sts1": "neow"
+      },
+      "token": "/images/sts1/npcs/neow.webp"
+    },
+    {
+      "id": "sts1-achievements",
+      "area": "sts1",
+      "href": "/compendium/sts1/achievements",
+      "label": {
+        "sts1": "achievements"
+      },
+      "token": "/images/sts1/achievements/eternal_one.webp"
+    },
+    {
+      "id": "sts1-score-bonuses",
+      "area": "sts1",
+      "href": "/compendium/sts1/score-bonuses",
+      "label": {
+        "sts1": "score-bonuses"
+      },
+      "token": "/images/sts1/ui/score.webp"
+    },
+    {
+      "id": "vexing-puzzlebox",
+      "area": "zzapper",
+      "kind": "hub",
+      "href": "/vexing-puzzlebox",
+      "label": {
+        "game": "vexingPuzzlebox"
+      },
+      "token": "/images/sts2/relics/vexing_puzzlebox.webp",
+      "art": "/images/sts2/events/fake_merchant.webp",
+      "createdAt": "2026-11-02",
+      "exactRoute": true,
+      "search": {
+        "ko": "짜퍼 퀴즈 커넥션스 니오우스레터 베타 아트 감상 갤러리",
+        "en": "quiz connections neowsletter beta art viewer gallery"
+      }
+    },
+    {
+      "id": "connections",
+      "area": "zzapper",
+      "kind": "game",
+      "href": "/vexing-puzzlebox",
+      "label": {
+        "message": "vexingPuzzlebox.tabConnections"
+      },
+      "token": "/images/sts2/powers/chains_of_binding_power.webp",
+      "art": "/images/sts2/events/tablet_of_truth.webp",
+      "search": {
+        "ko": "짜퍼 커넥션스 네 묶음 퀴즈",
+        "en": "connections four groups quiz"
+      }
+    },
+    {
+      "id": "beta-art",
+      "area": "zzapper",
+      "kind": "game",
+      "href": "/vexing-puzzlebox/beta-art",
+      "label": {
+        "message": "vexingPuzzlebox.tabBetaArt"
+      },
+      "token": "/images/sts2/powers-beta/smoggy_power.webp",
+      "art": "/images/sts2/events/museum_of_torture.webp",
+      "exactRoute": true,
+      "search": {
+        "ko": "짜퍼 베타 아트 퀴즈 감상 갤러리",
+        "en": "beta art quiz viewer gallery"
+      }
+    },
+    {
+      "id": "rankings",
+      "area": "zzapper",
+      "kind": "tool",
+      "href": "/vexing-puzzlebox/rankings",
+      "label": {
+        "message": "vexingPuzzlebox.tabRankings"
+      },
+      "token": "/images/sts2/ui/leaderboard/submenu_leaderboards_icon.webp",
+      "art": "/images/sts2/events/fake_merchant.webp",
+      "exactRoute": true
+    },
+    {
+      "area": "toybox",
+      "id": "defragment",
+      "href": "/defragment",
+      "label": {
+        "game": "defragment"
+      },
+      "token": "/images/sts2/powers/focus_power.webp",
+      "art": "/images/sts2/cards/defragment.webp",
+      "createdAt": "2026-08-20",
+      "byrdispatchSectionTitle": "조각모음"
+    },
+    {
+      "area": "toybox",
+      "id": "transfigure",
+      "href": "/transfigure",
+      "label": {
+        "game": "transfigure"
+      },
+      "token": "/images/sts2/relics/astrolabe.webp",
+      "art": "/images/sts2/cards/transfigure.webp",
+      "createdAt": "2026-07-26"
+    },
+    {
+      "area": "toybox",
+      "id": "c-c-c-combo",
+      "href": "/c-c-c-combo",
+      "label": {
+        "message": "nav.combo"
+      },
+      "token": "/images/sts2/badges/ccccombo.webp",
+      "art": "/images/sts2/badges/ccccombo.webp",
+      "createdAt": "2026-07-24",
+      "byrdispatchSectionTitle": "코오오옴보",
+      "fold": true
+    },
+    {
+      "area": "toybox",
+      "id": "this-or-that",
+      "href": "/this-or-that",
+      "label": {
+        "message": "nav.thisOrThat"
+      },
+      "token": "/images/sts2/relics/choices_paradox.webp",
+      "art": "/images/sts2/events/this_or_that.webp",
+      "createdAt": "2026-07-09",
+      "byrdispatchSectionTitle": "이거 아님 저거?",
+      "search": {
+        "ko": "게임 요소 비교 이거저거 선택 이거 저거 카드 유물 포션 이벤트",
+        "en": "resource comparison thisat this that card relic potion event"
+      }
+    },
+    {
+      "area": "toybox",
+      "id": "favorite-tournament",
+      "href": "/this-or-that/tournament",
+      "label": {
+        "message": "nav.favoriteTournament"
+      },
+      "token": "/images/sts2/potions/fortifier.webp",
+      "art": "/images/sts2/events/this_or_that.webp",
+      "createdAt": "2026-08-29",
+      "parent": "this-or-that",
+      "menuHidden": true,
+      "byrdispatchSectionTitle": "이아저? 월드컵",
+      "exactRoute": true,
+      "search": {
+        "ko": "게임 요소 토너먼트 이아저 월드컵 이상형 월드컵 강장제 대진 우승 승률",
+        "en": "game element tournament thisorthat worldcup bracket champion win rate"
+      }
+    },
+    {
+      "area": "toybox",
+      "id": "history-course",
+      "href": "/history-course",
+      "label": {
+        "codex": "historyCourse",
+        "message": "nav.historyCourse"
+      },
+      "token": "/images/sts2/relics/history_course.webp",
+      "art": "/images/sts2/relics/history_course.webp",
+      "createdAt": "2026-06-18",
+      "byrdispatchSectionTitle": "역사 강의서",
+      "search": {
+        "ko": "런 리플레이 시드 공유 카드 유물 뱃지 보상 run history seed replay card relic badge",
+        "en": "run history seed sharing replay card relic badge reward"
+      }
+    },
+    {
+      "area": "toybox",
+      "id": "chemical-x",
+      "href": "/chemical-x",
+      "label": {
+        "message": "nav.chemicalX"
+      },
+      "token": "/images/sts2/relics/chemical_x.webp",
+      "art": "/images/sts2/relics/chemical_x.webp",
+      "createdAt": "2026-04-15",
+      "fold": true
+    },
+    {
+      "area": "toybox",
+      "id": "decisions-decisions",
+      "href": "/decisions-decisions",
+      "label": {
+        "game": "decisionsDecisions"
+      },
+      "token": "/images/sts2/powers/buffer_power.webp",
+      "art": "/images/sts2/cards/decisions_decisions.webp",
+      "createdAt": "2026-08-26",
+      "parent": "defragment",
+      "byrdispatchSectionTitle": "어려운 결정",
+      "exactRoute": true,
+      "search": {
+        "ko": "티어 보드 카드 유물 포션 랭킹 가이드 어려운 결정 버퍼",
+        "en": "tier list board ranking card relic potion buffer decisions"
+      }
+    },
+    {
+      "area": "toybox",
+      "id": "pagestorm",
+      "href": "/pagestorm",
+      "label": {
+        "game": "pagestorm"
+      },
+      "token": "/images/sts2/powers/pagestorm_power.webp",
+      "art": "/images/sts2/cards/pagestorm.webp",
+      "createdAt": "2026-09-01",
+      "parent": "defragment",
+      "byrdispatchSectionTitle": "서류 폭풍",
+      "search": {
+        "ko": "게임 요소로 문서 쓰기 서류 폭풍 pagestorm paper",
+        "en": "write a document with game elements pagestorm"
+      }
+    },
+    {
+      "area": "toybox",
+      "id": "colorful-philosophers",
+      "href": "/colorful-philosophers",
+      "label": {
+        "game": "debate"
+      },
+      "token": "/images/sts2/modifiers/draft.webp",
+      "art": "/images/sts2/events/colorful_philosophers.webp",
+      "createdAt": "2026-09-23",
+      "parent": "defragment",
+      "search": {
+        "ko": "이번 주 게임 요소 토론하기 다채로운 철학자들 드래프트",
+        "en": "discuss a game element this week colorful philosophers draft"
+      }
+    }
+  ]
+}

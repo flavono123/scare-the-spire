@@ -1,3 +1,5 @@
+import { exactRoutePlaceSegments } from "../src/lib/place-registry-routes";
+
 const STATIC_GAME_LOCALE_PREFIXES = new Set([
   "en",
   "zh",
@@ -308,13 +310,7 @@ export function staticServiceDetailShellAssetPath(
  * static branches they match only the exact path: a trailing slash keeps the
  * Next-style 308 that production returned before they became static.
  */
-export const STATIC_EXACT_SERVICE_PAGES: ReadonlyArray<readonly string[]> = [
-  ["decisions-decisions"],
-  ["this-or-that", "tournament"],
-  ["vexing-puzzlebox"],
-  ["vexing-puzzlebox", "beta-art"],
-  ["vexing-puzzlebox", "rankings"],
-];
+export const STATIC_EXACT_SERVICE_PAGES: ReadonlyArray<readonly string[]> = exactRoutePlaceSegments();
 
 function splitLocalePrefix(pathname: string): { localePrefix: string[]; rest: string[] } {
   const parts = pathname.split("/").filter(Boolean);

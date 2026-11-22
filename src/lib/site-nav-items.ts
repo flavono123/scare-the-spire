@@ -1,23 +1,6 @@
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { getSts1NavLabel } from "@/lib/sts1/nav-labels";
 import type { Sts1ResourceType } from "@/lib/sts1/types";
-import {
-  getDebateNavTitle,
-  getDecisionsDecisionsNavTitle,
-  getDefragmentNavTitle,
-  getPagestormNavTitle,
-  getVexingPuzzleboxNavTitle,
-  getTransfigureNavTitle,
-} from "@/lib/borrowed-game-copy";
-import {
-  ASCENSION_TOKEN_IMAGE_URL,
-  CHARACTER_CARDS_MODIFIER_IMAGE_URL,
-} from "@/lib/codex-types";
-import { DECISIONS_DECISIONS_TOKEN_SRC } from "@/lib/decisions-decisions";
-import {
-  FAVORITE_TOURNAMENT_HREF,
-  FAVORITE_TOURNAMENT_TOKEN_SRC,
-} from "@/lib/favorite-tournament";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   localizeHrefWithGameLocale,
@@ -25,12 +8,19 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
-import { DEBATE_HREF, DEBATE_TOKEN_SRC } from "@/lib/debate";
+import { DEBATE_TOKEN_SRC } from "@/lib/debate";
 import { COLORFUL_PHILOSOPHERS_DEV_HREF } from "@/lib/colorful-philosophers";
-import { VEXING_PUZZLEBOX_HREF, VEXING_PUZZLEBOX_TOKEN_SRC } from "@/lib/vexing-puzzlebox";
-import { PAGESTORM_HREF, PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
-import { isLatestByrdispatchNewSection, isLatestByrdispatchOnOrBefore } from "@/lib/toy-box-news";
+import { PAGESTORM_TOKEN_SRC } from "@/lib/pagestorm";
+import { isLatestByrdispatchNewSection } from "@/lib/toy-box-news";
 import { navSeenIdForHref } from "@/lib/nav-seen";
+import {
+  PLACES,
+  placeCodexKey,
+  placeIsNew,
+  placeLabel,
+  placesInArea,
+  type Place,
+} from "@/lib/place-registry";
 
 export type CodexLabelKey = {
   [Key in keyof typeof serviceMessages.ko.codex]:
@@ -50,35 +40,6 @@ export type NavDropdownItem = {
   children?: NavDropdownItem[];
 };
 
-type ToyBoxServiceDefinition = {
-  href: string;
-  icon: string;
-  createdAt: string;
-  byrdispatchSectionTitle?: string;
-  devOnly?: boolean;
-  nestedUnder?: string;
-  /** Tab of the parent service; omitted from the Toy Box dropdown. */
-  dropdownHidden?: boolean;
-  /**
-   * Byrdispatch date the service shipped in. It is announced as new until a
-   * later byrdispatch entry (the next regular release) is published. Delete the
-   * field to stop announcing it sooner.
-   */
-  announceNewThrough?: string;
-  getLabel: (
-    serviceLocale: ServiceLocale,
-    gameLocale: GameLocale,
-  ) => string;
-};
-
-function toyBoxServiceIsNew(service: ToyBoxServiceDefinition): boolean {
-  if (service.announceNewThrough && isLatestByrdispatchOnOrBefore(service.announceNewThrough)) return true;
-  return Boolean(
-    service.byrdispatchSectionTitle
-    && isLatestByrdispatchNewSection(service.byrdispatchSectionTitle),
-  );
-}
-
 /** Rows marked NEW first, the rest in their own order (Array.prototype.sort is stable). */
 export function newItemsFirst<T extends { isNew?: boolean }>(items: readonly T[]): T[] {
   return [...items].sort((a, b) => Number(Boolean(b.isNew)) - Number(Boolean(a.isNew)));
@@ -89,131 +50,33 @@ export function toyBoxHasNewService(items: readonly NavDropdownItem[]): boolean 
   return items.some((item) => item.isNew);
 }
 
-const TOY_BOX_SERVICE_DEFINITIONS: readonly ToyBoxServiceDefinition[] = [
-  {
-    href: "/defragment",
-    icon: "/images/sts2/powers/focus_power.webp",
-    createdAt: "2026-08-20",
-    byrdispatchSectionTitle: "조각모음",
-    getLabel: (_serviceLocale, gameLocale) => getDefragmentNavTitle(gameLocale),
-  },
-  {
-    href: "/transfigure",
-    icon: "/images/sts2/relics/astrolabe.webp",
-    createdAt: "2026-07-26",
-    getLabel: (_serviceLocale, gameLocale) => getTransfigureNavTitle(gameLocale),
-  },
-  {
-    href: "/c-c-c-combo",
-    icon: "/images/sts2/badges/ccccombo.webp",
-    createdAt: "2026-07-24",
-    byrdispatchSectionTitle: "코오오옴보",
-    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.combo,
-  },
-  {
-    href: "/this-or-that",
-    icon: "/images/sts2/relics/choices_paradox.webp",
-    createdAt: "2026-07-09",
-    byrdispatchSectionTitle: "이거 아님 저거?",
-    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.thisOrThat,
-  },
-  {
-    href: FAVORITE_TOURNAMENT_HREF,
-    icon: FAVORITE_TOURNAMENT_TOKEN_SRC,
-    createdAt: "2026-08-29",
-    nestedUnder: "/this-or-that",
-    dropdownHidden: true,
-    byrdispatchSectionTitle: "이아저? 월드컵",
-    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.favoriteTournament,
-  },
-  {
-    href: "/history-course",
-    icon: "/images/sts2/relics/history_course.webp",
-    createdAt: "2026-06-18",
-    byrdispatchSectionTitle: "역사 강의서",
-    getLabel: (serviceLocale, gameLocale) => (
-      getCodexNavGameLabel(gameLocale, "historyCourse")
-      ?? serviceMessages[serviceLocale].nav.historyCourse
-    ),
-  },
-  {
-    href: "/chemical-x",
-    icon: "/images/sts2/relics/chemical_x.webp",
-    createdAt: "2026-04-15",
-    getLabel: (serviceLocale) => serviceMessages[serviceLocale].nav.chemicalX,
-  },
-  {
-    href: "/decisions-decisions",
-    icon: DECISIONS_DECISIONS_TOKEN_SRC,
-    createdAt: "2026-08-26",
-    nestedUnder: "/defragment",
-    byrdispatchSectionTitle: "어려운 결정",
-    getLabel: (_serviceLocale, gameLocale) => getDecisionsDecisionsNavTitle(gameLocale),
-  },
-  {
-    href: PAGESTORM_HREF,
-    icon: PAGESTORM_TOKEN_SRC,
-    createdAt: "2026-09-01",
-    nestedUnder: "/defragment",
-    byrdispatchSectionTitle: "서류 폭풍",
-    getLabel: (_serviceLocale, gameLocale) => getPagestormNavTitle(gameLocale),
-  },
-  {
-    href: VEXING_PUZZLEBOX_HREF,
-    icon: VEXING_PUZZLEBOX_TOKEN_SRC,
-    createdAt: "2026-11-02",
-    getLabel: (_serviceLocale, gameLocale) => getVexingPuzzleboxNavTitle(gameLocale),
-  },
-  {
-    href: DEBATE_HREF,
-    icon: DEBATE_TOKEN_SRC,
-    createdAt: "2026-09-23",
-    nestedUnder: "/defragment",
-    getLabel: (_serviceLocale, gameLocale) => getDebateNavTitle(gameLocale),
-  },
-] as const;
-
-export const sts2NavItems = [
-  { href: "/compendium/characters", labelKey: "characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
-  { href: "/compendium/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/compendium/relics", labelKey: "relics", icon: "/images/sts2/relics/bing_bong.webp" },
-  { href: "/compendium/potions", labelKey: "potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
-  { href: "/compendium/powers", labelKey: "powers", icon: "/images/sts2/nav/unmovable_power_beta.webp" },
-  { href: "/compendium/enchantments", labelKey: "enchantments", icon: "/images/sts2/enchantments/souls_power.webp" },
-  { href: "/compendium/bestiary", labelKey: "monsters", icon: "/images/sts2/nav/happy_cultist.png" },
-  { href: "/compendium/events", labelKey: "events", icon: "/images/sts2/nav/question_mark.png" },
-  { href: "/compendium/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
-  { href: "/compendium/epochs", labelKey: "epochs", icon: "/images/sts2/relics/planisphere.webp" },
-  { href: "/compendium/keywords", labelKey: "keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
-  { href: "/compendium/badges", labelKey: "badges", icon: "/images/sts2/badges/double_snecko.webp" },
-  { href: "/compendium/achievements", labelKey: "achievements", icon: "/images/sts2/achievements/border.webp" },
-  { href: "/compendium/ascensions", labelKey: "ascensions", icon: ASCENSION_TOKEN_IMAGE_URL, iconClassName: "h-4 w-[14px]" },
-  { href: "/compendium/modifiers", labelKey: "modifiers", icon: CHARACTER_CARDS_MODIFIER_IMAGE_URL },
-  { href: "/compendium/blitz-shop", labelKey: "blitzShop", icon: "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp", byrdispatchSectionTitle: "블리츠 상점" },
-  { href: "/compendium/dominions", labelKey: "dominions", icon: "/images/sts2/bosses/queen_boss.webp", byrdispatchSectionTitle: "드레드 권능" },
-  { href: "/compendium/pets", labelKey: "pets", icon: "/images/sts2/monsters-render/osty.webp", byrdispatchSectionTitle: "펫" },
-] as const;
-
-export const sts1NavItems = [
-  { href: "/compendium/sts1/characters", type: "characters", icon: "/images/sts1/characters/ironclad.webp" },
-  { href: "/cards", type: "cards", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/relics", type: "relics", icon: "/images/sts2/relics/snecko_eye.webp" },
-  { href: "/potions", type: "potions", icon: "/images/sts2/nav/stats_potions.png" },
-  { href: "/compendium/sts1/powers", type: "powers", icon: "/images/sts1/powers/hello.webp" },
-  { href: "/compendium/sts1/monsters", type: "monsters", icon: "/images/sts1/nav/run-history-elite.webp" },
-  { href: "/compendium/sts1/events", type: "events", icon: "/images/sts1/nav/run-history-event.webp" },
-  { href: "/compendium/sts1/keywords", type: "keywords", icon: "/images/sts1/orbs/lightning.webp" },
-  { href: "/compendium/sts1/ascensions", type: "ascensions", icon: "/images/sts1/ui/ascension.webp" },
-  { href: "/compendium/sts1/modifiers", type: "modifiers", icon: "/images/sts1/run-mods/specialized.webp" },
-  { href: "/compendium/sts1/blights", type: "blights", icon: "/images/sts1/blights/spear.webp" },
-  { href: "/compendium/sts1/neow", type: "neow", icon: "/images/sts1/npcs/neow.webp" },
-  { href: "/compendium/sts1/achievements", type: "achievements", icon: "/images/sts1/achievements/eternal_one.webp" },
-  { href: "/compendium/sts1/score-bonuses", type: "score-bonuses", icon: "/images/sts1/ui/score.webp" },
-] as const satisfies readonly {
+export type Sts2NavItem = {
   href: string;
-  type: Sts1ResourceType;
+  labelKey: CodexLabelKey;
   icon: string;
-}[];
+  iconClassName?: string;
+  byrdispatchSectionTitle?: string;
+};
+
+export const sts2NavItems: readonly Sts2NavItem[] = placesInArea("sts2").map((place) => {
+  const labelKey = placeCodexKey(place);
+  if (!labelKey) throw new Error(`place-registry.json: ${place.id} needs a codex label`);
+  return {
+    href: place.href,
+    labelKey: labelKey as CodexLabelKey,
+    icon: place.token,
+    iconClassName: place.tokenClassName,
+    byrdispatchSectionTitle: place.byrdispatchSectionTitle,
+  };
+});
+
+export type Sts1NavItem = { href: string; type: Sts1ResourceType; icon: string };
+
+// Cards, relics and potions keep their legacy /cards-style paths here; links rewrite them.
+export const sts1NavItems: readonly Sts1NavItem[] = placesInArea("sts1").map((place) => {
+  if (!("sts1" in place.label)) throw new Error(`place-registry.json: ${place.id} needs an sts1 label`);
+  return { href: place.legacyHref ?? place.href, type: place.label.sts1, icon: place.token };
+});
 
 /**
  * Dev-only navbar menu grouped by purpose; within each group, ordered by
@@ -426,6 +289,11 @@ export function sts1NavDropdownItems(gameLocale: GameLocale): NavDropdownItem[] 
   }));
 }
 
+/** Toy Box services and the Vexing Puzzlebox hub, newest first, children under their parent. */
+export function toyBoxMenuPlaces(): Place[] {
+  return PLACES.filter((place) => place.area === "toybox" || (place.area === "zzapper" && place.kind === "hub"));
+}
+
 export function getToyBoxNavItems({
   serviceLocale,
   gameLocale,
@@ -433,38 +301,35 @@ export function getToyBoxNavItems({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }): NavDropdownItem[] {
-  const showDevMenu = devToolsEnabled();
-  const visible = TOY_BOX_SERVICE_DEFINITIONS
-    .filter((service) => showDevMenu || !service.devOnly);
-  const nestedByParent = new Map<string, ToyBoxServiceDefinition[]>();
-  for (const service of visible) {
-    if (!service.nestedUnder) continue;
-    const group = nestedByParent.get(service.nestedUnder) ?? [];
-    group.push(service);
-    nestedByParent.set(service.nestedUnder, group);
+  const visible = toyBoxMenuPlaces();
+  const newestFirst = (left: Place, right: Place) => (right.createdAt ?? "").localeCompare(left.createdAt ?? "");
+  const childrenByParent = new Map<string, Place[]>();
+  for (const place of visible) {
+    if (!place.parent) continue;
+    const group = childrenByParent.get(place.parent) ?? [];
+    group.push(place);
+    childrenByParent.set(place.parent, group);
   }
 
   const serviceItems = visible
-    .filter((service) => !service.nestedUnder)
-    .toSorted((left, right) => right.createdAt.localeCompare(left.createdAt))
-    .flatMap((service) => {
-      const nested = (nestedByParent.get(service.href) ?? [])
-        .toSorted((left, right) => right.createdAt.localeCompare(left.createdAt));
-      const dropdownChildren = nested.filter((child) => !child.dropdownHidden);
+    .filter((place) => !place.parent)
+    .toSorted(newestFirst)
+    .flatMap((place) => {
+      const children = (childrenByParent.get(place.id) ?? []).toSorted(newestFirst);
+      const listedChildren = children.filter((child) => !child.menuHidden);
       return [
         {
-          href: service.href,
-          label: service.getLabel(serviceLocale, gameLocale),
-          icon: service.icon,
-          isNew: toyBoxServiceIsNew(service)
-            || nested.some((child) => child.dropdownHidden && toyBoxServiceIsNew(child)),
-          attentionId: navSeenIdForHref(service.href) ?? undefined,
+          href: place.href,
+          label: placeLabel(place, serviceLocale, gameLocale),
+          icon: place.token,
+          isNew: placeIsNew(place) || children.some((child) => child.menuHidden && placeIsNew(child)),
+          attentionId: navSeenIdForHref(place.href) ?? undefined,
         },
-        ...dropdownChildren.map((child) => ({
+        ...listedChildren.map((child) => ({
           href: child.href,
-          label: child.getLabel(serviceLocale, gameLocale),
-          icon: child.icon,
-          isNew: toyBoxServiceIsNew(child),
+          label: placeLabel(child, serviceLocale, gameLocale),
+          icon: child.token,
+          isNew: placeIsNew(child),
           attentionId: navSeenIdForHref(child.href) ?? undefined,
         })),
       ];

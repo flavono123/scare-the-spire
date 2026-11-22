@@ -75,14 +75,12 @@ const staticServicePageSegments = new Set([
 const staticNestedServicePages = [
   ["pagestorm", "write"],
 ];
-// Mirrors STATIC_EXACT_SERVICE_PAGES in workers/static-page-routing.ts.
-const staticExactServicePages = [
-  ["decisions-decisions"],
-  ["this-or-that", "tournament"],
-  ["vexing-puzzlebox"],
-  ["vexing-puzzlebox", "beta-art"],
-  ["vexing-puzzlebox", "rankings"],
-];
+// Same source as STATIC_EXACT_SERVICE_PAGES in workers/static-page-routing.ts.
+const staticExactServicePages = JSON.parse(
+  readFileSync(path.join(process.cwd(), "src/data/place-registry.json"), "utf8"),
+).places
+  .filter((place) => place.exactRoute)
+  .map((place) => place.href.split("/").filter(Boolean));
 // Next's prerendered not-found page, served by the Worker for unmatched paths.
 const notFoundPage = { source: "_not-found", target: "404" };
 const staticDetailShellSegment = "__id__";

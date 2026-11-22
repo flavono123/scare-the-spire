@@ -8,8 +8,19 @@ import { getPatchShell } from "@/lib/patch-shells";
 import { eventCharacterQuoteSearchParts } from "@/lib/event-character-quotes";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getCodexBlitzEntries } from "@/lib/codex-data";
+import { PLACES, placeLabel, type Place, type PlaceArea } from "@/lib/place-registry";
+import { getSts1Cards, getSts1Monsters, getSts1Potions, getSts1Powers, getSts1Relics } from "@/lib/sts1/data";
+import { getSts1Events } from "@/lib/sts1/events";
+import {
+  sts1CardPortraitUrl,
+  sts1EventImageUrl,
+  sts1MonsterImageUrl,
+  sts1PotionImageUrl,
+  sts1PowerImageUrl,
+  sts1RelicImageUrl,
+} from "@/lib/sts1/paths";
 
-export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat" | "favoriteTournament" | "decisionsDecisions" | "pagestorm" | "debate" | "vexingPuzzlebox";
+export type SearchItemType = EntityType | "patch" | "story" | "compendium" | "zzapper" | "toybox";
 
 export type SearchIndexItem = {
   id: string;
@@ -20,6 +31,7 @@ export type SearchIndexItem = {
   descriptionEn: string;
   imageUrl: string | null;
   href: string;
+  game?: "sts1";
 };
 
 export type SearchIndexPayload = {
@@ -321,7 +333,7 @@ function entitySearchText(entity: EntityInfo): string {
   return compactSearchParts(parts);
 }
 
-function entityKey(entity: Pick<EntityInfo, "type" | "id">): string {
+function entityKey(entity: { type: SearchItemType; id: string }): string {
   return `${entity.type}:${entity.id}`;
 }
 
@@ -354,10 +366,74 @@ export async function buildSearchNames(gameLocale: GameLocale): Promise<GlobalSe
     loadAllEntities({ gameLocale }),
     getCodexBlitzEntries({ gameLocale }),
   ]);
+  const sts1Items = await buildSts1SearchItems(gameLocale);
   return Object.fromEntries([
     ...entities.flatMap((entity) => (entityHref(entity) ? [[entityKey(entity), entity.nameKo]] : [])),
     ...blitzEntries.map((entry) => [entityKey({ type: "blitzEntry", id: entry.id }), entry.name]),
+    ...sts1Items.map((item) => [entityKey(item), item.title]),
+    ...PLACES.map((place) => [entityKey(placeSearchKey(place)), placeLabel(place, "en", gameLocale)]),
   ]);
+}
+
+const PLACE_SEARCH_TYPE: Record<PlaceArea, SearchItemType> = {
+  sts2: "compendium",
+  sts1: "compendium",
+  zzapper: "zzapper",
+  toybox: "toybox",
+};
+
+function placeSearchKey(place: Place): { type: SearchItemType; id: string } {
+  return { type: PLACE_SEARCH_TYPE[place.area], id: place.id };
+}
+
+// Menu destinations: Codex kinds, Vexing Puzzlebox games, Toy Box services.
+function buildPlaceSearchItems(): SearchIndexItem[] {
+  return PLACES.filter((place) => place.kind !== "tool").map((place) => ({
+    ...placeSearchKey(place),
+    title: placeLabel(place, "ko", "kor"),
+    titleEn: placeLabel(place, "en", "eng"),
+    description: place.search?.ko ?? "",
+    descriptionEn: place.search?.en ?? "",
+    imageUrl: place.token,
+    href: place.href,
+    ...(place.area === "sts1" ? { game: "sts1" as const } : {}),
+  }));
+}
+
+/** STS1 elements; ids carry an `sts1:` prefix so their keys never meet STS2 ones. */
+async function buildSts1SearchItems(gameLocale: GameLocale): Promise<SearchIndexItem[]> {
+  const [cards, relics, potions, powers, monsters, events] = await Promise.all([
+    getSts1Cards(gameLocale),
+    getSts1Relics(gameLocale),
+    getSts1Potions(gameLocale),
+    getSts1Powers(gameLocale),
+    getSts1Monsters(gameLocale),
+    getSts1Events(gameLocale),
+  ]);
+  const item = (
+    type: SearchItemType,
+    segment: string,
+    entry: { id: string; slug: string; name: string; nameEn: string },
+    imageUrl: string | null,
+  ): SearchIndexItem => ({
+    id: `sts1:${entry.id}`,
+    type,
+    title: entry.name,
+    titleEn: entry.nameEn,
+    description: "",
+    descriptionEn: "",
+    imageUrl,
+    href: `/compendium/sts1/${segment}/${entry.slug}`,
+    game: "sts1",
+  });
+  return [
+    ...cards.map((card) => item("card", "cards", card, sts1CardPortraitUrl(card))),
+    ...relics.map((relic) => item("relic", "relics", relic, sts1RelicImageUrl(relic))),
+    ...potions.map((potion) => item("potion", "potions", potion, sts1PotionImageUrl(potion))),
+    ...powers.map((power) => item("power", "powers", power, sts1PowerImageUrl(power))),
+    ...monsters.map((monster) => item("monster", "monsters", monster, sts1MonsterImageUrl(monster))),
+    ...events.map((event) => item("event", "events", event, event.image ? sts1EventImageUrl(event.image) : null)),
+  ];
 }
 
 // Blitz shop wares are searchable but not hover/link entities: their names ("유물",
@@ -459,84 +535,10 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: `/#${story.id}`,
   }));
 
-  const historyCourseItems: SearchIndexItem[] = [{
-    id: "history-course",
-    type: "historyCourse",
-    title: "역사 강의서",
-    titleEn: "History Course",
-    description: "런 리플레이 시드 공유 카드 유물 뱃지 보상 run history seed replay card relic badge",
-    descriptionEn: "run history seed sharing replay card relic badge reward",
-    imageUrl: "/images/sts2/relics/history_course.webp",
-    href: "/history-course",
-  }];
+  const [blitzEntryItems, sts1Items] = await Promise.all([
+    buildBlitzEntrySearchItems(),
+    buildSts1SearchItems("kor"),
+  ]);
 
-  const thisOrThatItems: SearchIndexItem[] = [{
-    id: "this-or-that",
-    type: "thisOrThat",
-    title: "이거 아님 저거?",
-    titleEn: "This or That?",
-    description: "게임 요소 비교 이거저거 선택 이거 저거 카드 유물 포션 이벤트",
-    descriptionEn: "resource comparison thisat this that card relic potion event",
-    imageUrl: "/images/sts2/relics/choices_paradox.webp",
-    href: "/this-or-that",
-  }];
-
-  const favoriteTournamentItems: SearchIndexItem[] = [{
-    id: "favorite-tournament",
-    type: "favoriteTournament",
-    title: "이아저? 월드컵",
-    titleEn: "thisorthat? tournament",
-    description: "게임 요소 토너먼트 이아저 월드컵 이상형 월드컵 강장제 대진 우승 승률",
-    descriptionEn: "game element tournament thisorthat worldcup bracket champion win rate",
-    imageUrl: "/images/sts2/potions/fortifier.webp",
-    href: "/this-or-that/tournament",
-  }];
-
-  const decisionsDecisionsItems: SearchIndexItem[] = [{
-    id: "decisions-decisions",
-    type: "decisionsDecisions",
-    title: "어려운 결정",
-    titleEn: "Decisions, Decisions",
-    description: "티어 보드 카드 유물 포션 랭킹 가이드 어려운 결정 버퍼",
-    descriptionEn: "tier list board ranking card relic potion buffer decisions",
-    imageUrl: "/images/sts2/powers/buffer_power.webp",
-    href: "/decisions-decisions",
-  }];
-
-  const debateItems: SearchIndexItem[] = [{
-    id: "debate",
-    type: "debate",
-    title: "다채로운 철학자들",
-    titleEn: "Colorful Philosophers",
-    description: "이번 주 게임 요소 토론하기 다채로운 철학자들 드래프트",
-    descriptionEn: "discuss a game element this week colorful philosophers draft",
-    imageUrl: "/images/sts2/modifiers/draft.webp",
-    href: "/colorful-philosophers",
-  }];
-
-  const vexingPuzzleboxItems: SearchIndexItem[] = [{
-    id: "vexing-puzzlebox",
-    type: "vexingPuzzlebox",
-    title: "짜증나는 퍼즐상자",
-    titleEn: "Vexing Puzzlebox",
-    description: "짜퍼 퀴즈 커넥션스 니오우스레터 베타 아트 감상 갤러리",
-    descriptionEn: "quiz connections neowsletter beta art viewer gallery",
-    imageUrl: "/images/sts2/relics/vexing_puzzlebox.webp",
-    href: "/vexing-puzzlebox",
-  }];
-
-  const pagestormItems: SearchIndexItem[] = [{
-    id: "pagestorm",
-    type: "pagestorm",
-    title: "서류 폭풍",
-    titleEn: "Pagestorm",
-    description: "게임 요소로 문서 쓰기 서류 폭풍 pagestorm paper",
-    descriptionEn: "write a document with game elements pagestorm",
-    imageUrl: "/images/sts2/powers/pagestorm_power.webp",
-    href: "/pagestorm",
-  }];
-
-  const blitzEntryItems = await buildBlitzEntrySearchItems();
-
-  return { items: [...patchItems, ...storyItems, ...items, ...blitzEntryItems, ...historyCourseItems, ...thisOrThatItems, ...favoriteTournamentItems, ...decisionsDecisionsItems, ...vexingPuzzleboxItems, ...pagestormItems, ...debateItems] };
+  return { items: [...patchItems, ...storyItems, ...items, ...blitzEntryItems, ...sts1Items, ...buildPlaceSearchItems()] };
 }

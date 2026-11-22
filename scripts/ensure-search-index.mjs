@@ -10,6 +10,11 @@ const outputs = [
 ];
 const sources = [
   "data/sts2",
+  "data/sts1",
+  "data/stories.json",
+  "data/sts2-stories.json",
+  "src/data/place-registry.json",
+  "src/lib/place-registry.ts",
   "data/sts2-patches.json",
   "data/sts2-patch-lines.json",
   "src/lib/search-index-data.ts",

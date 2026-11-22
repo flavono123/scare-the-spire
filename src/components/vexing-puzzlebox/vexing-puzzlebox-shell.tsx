@@ -7,14 +7,9 @@ import Image from "@/components/ui/static-image";
 import type { VexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
+import { placeLabel, placesInArea } from "@/lib/place-registry";
 import {
-  BETA_ART_TOKEN_SRC,
-  CONNECTIONS_TOKEN_SRC,
-  RANKINGS_TOKEN_SRC,
   VEXING_PUZZLEBOX_BACKGROUND_SRC,
-  VEXING_PUZZLEBOX_BETA_ART_HREF,
-  VEXING_PUZZLEBOX_HREF,
-  VEXING_PUZZLEBOX_RANKINGS_HREF,
   VEXING_PUZZLEBOX_TOKEN_SRC,
 } from "@/lib/vexing-puzzlebox";
 import { serviceMessages } from "@/messages/service";
@@ -33,26 +28,14 @@ export function VexingPuzzleboxShell({
   children: ReactNode;
 }) {
   const copy = serviceMessages[serviceLocale].vexingPuzzlebox;
-  const tabs = [
-    {
-      id: "connections" as const,
-      label: copy.tabConnections,
-      href: VEXING_PUZZLEBOX_HREF,
-      icon: CONNECTIONS_TOKEN_SRC,
-    },
-    {
-      id: "beta-art" as const,
-      label: copy.tabBetaArt,
-      href: VEXING_PUZZLEBOX_BETA_ART_HREF,
-      icon: BETA_ART_TOKEN_SRC,
-    },
-    {
-      id: "rankings" as const,
-      label: copy.tabRankings,
-      href: VEXING_PUZZLEBOX_RANKINGS_HREF,
-      icon: RANKINGS_TOKEN_SRC,
-    },
-  ];
+  const tabs = placesInArea("zzapper")
+    .filter((place) => place.kind !== "hub")
+    .map((place) => ({
+      id: place.id,
+      label: placeLabel(place, serviceLocale, gameLocale),
+      href: place.href,
+      icon: place.token,
+    }));
 
   return (
     <div className="relative isolate min-h-[calc(100svh-3rem)]" data-vexing-puzzlebox-page={active}>
