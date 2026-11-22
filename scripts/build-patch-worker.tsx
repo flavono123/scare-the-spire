@@ -502,6 +502,8 @@ function StaticGlobalSearchOverlay({ serviceLocale }: { serviceLocale: ServiceLo
       data-empty-message={copy.empty}
       data-loading-message={copy.loading}
       data-no-results-message={copy.noResults}
+      data-load-failed-message={copy.loadFailed}
+      data-sts1-prefix={copy.sts1Prefix}
       data-type-labels={JSON.stringify(copy.labels)}
       role="dialog"
       aria-modal="true"

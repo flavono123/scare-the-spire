@@ -44,10 +44,9 @@ import {
   isSearchCrawlerUserAgent,
 } from "@/lib/locale-detection";
 import {
-  globalSearchItemScore,
   globalSearchResultKey,
-  globalSearchTypeOrder,
   globalSearchTypeStyles,
+  rankGlobalSearchResults,
   type GlobalSearchIndexItem,
   loadGlobalSearchItems,
 } from "@/lib/global-search";
@@ -493,6 +492,7 @@ function GlobalSearch({
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<GlobalSearchIndexItem[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [pendingResult, setPendingResult] = useState<PendingSearchResult | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -509,8 +509,10 @@ function GlobalSearch({
     try {
       setItems(await loadGlobalSearchItems(serviceLocale, gameLocale));
       setLoaded(true);
+      setLoadFailed(false);
     } catch {
       // The next time the search opens tries again.
+      setLoadFailed(true);
     }
   }, [gameLocale, loaded, serviceLocale]);
 
@@ -625,34 +627,10 @@ function GlobalSearch({
     };
   }, [closeSearch, open]);
 
-  const results = useMemo(() => {
-    const text = query.trim();
-    if (!text) return [];
-    return items
-      .map((item) => ({
-        item,
-        score: globalSearchItemScore(item, text, labels),
-      }))
-      .filter((entry): entry is { item: GlobalSearchIndexItem; score: number } => entry.score !== null)
-      .sort((a, b) => {
-        if (b.score !== a.score) return b.score - a.score;
-        return globalSearchTypeOrder.indexOf(a.item.type) - globalSearchTypeOrder.indexOf(b.item.type);
-      })
-      .map((entry) => entry.item)
-      .slice(0, 40);
-  }, [items, labels, query]);
-
-  const groupedResults = useMemo(() => {
-    const byType = new Map<GlobalSearchIndexItem["type"], GlobalSearchIndexItem[]>();
-    for (const item of results) {
-      const group = byType.get(item.type);
-      if (group) group.push(item);
-      else byType.set(item.type, [item]);
-    }
-    return globalSearchTypeOrder
-      .map((type) => ({ type, items: byType.get(type) ?? [] }))
-      .filter((group) => group.items.length > 0);
-  }, [results]);
+  const results = useMemo(
+    () => rankGlobalSearchResults(items, query, labels),
+    [items, labels, query],
+  );
 
   const searchOverlay = open && (
     <div className="fixed inset-0 z-[1000] px-3 pt-16 sm:pt-24">
@@ -687,77 +665,77 @@ function GlobalSearch({
               {copy.empty}
             </div>
           )}
-          {query.trim() && results.length === 0 && (
+          {query.trim() && loadFailed && !loaded && (
+            <div className="px-3 py-8 text-center text-sm text-muted-foreground">
+              {copy.loadFailed}
+            </div>
+          )}
+          {query.trim() && loaded && results.length === 0 && (
             <div className="px-3 py-8 text-center text-sm text-muted-foreground">
               {copy.noResults}
             </div>
           )}
-          {groupedResults.map((group) => {
-            const style = globalSearchTypeStyles[group.type];
-            return (
-              <section key={group.type} className="py-1">
-                <div className="flex items-center gap-2 px-2.5 py-1">
-                  <span className={`inline-flex h-5 items-center rounded border px-1.5 text-[10px] font-bold ${style.bg} ${style.border} ${style.color}`}>
-                    {labels[group.type]}
-                  </span>
-                  <span className="text-[10px] tabular-nums text-muted-foreground">
-                    {group.items.length}
-                  </span>
-                </div>
-                {group.items.slice(0, 8).map((item) => {
-                  const href = localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale);
-                  const resultKey = globalSearchResultKey(item);
-                  const isPending = pendingResult?.key === resultKey;
-                  const hasPendingResult = pendingResult !== null;
-                  return (
-                    <a
-                      key={resultKey}
-                      href={href}
-                      onClick={(event) => {
-                        if (hasPendingResult) {
-                          event.preventDefault();
-                          return;
-                        }
-                        if (!isPlainPrimaryClick(event)) return;
+          {query.trim() && !loaded && !loadFailed && (
+            <div className="px-3 py-8 text-center text-sm text-muted-foreground">
+              {copy.loading}
+            </div>
+          )}
+          {results.length > 0 && (
+            <div className="py-1">
+              {results.map((item) => {
+                const style = globalSearchTypeStyles[item.type];
+                const href = localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale);
+                const resultKey = globalSearchResultKey(item);
+                const isPending = pendingResult?.key === resultKey;
+                const hasPendingResult = pendingResult !== null;
+                return (
+                  <a
+                    key={resultKey}
+                    href={href}
+                    onClick={(event) => {
+                      if (hasPendingResult) {
                         event.preventDefault();
-                        startPendingSearchNavigation(item, href);
-                      }}
-                      aria-busy={isPending || undefined}
-                      aria-disabled={hasPendingResult || undefined}
-                      tabIndex={hasPendingResult && !isPending ? -1 : undefined}
-                      data-global-search-pending={isPending ? "true" : undefined}
-                      className={`flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors ${
-                        isPending
-                          ? "bg-white/[0.08] ring-1 ring-primary/25"
-                          : hasPendingResult
-                            ? "cursor-wait opacity-45"
-                            : "hover:bg-white/[0.07]"
-                      }`}
-                    >
-                      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded border ${style.bg} ${style.border}`}>
-                        <Image
-                          src={item.imageUrl ?? style.icon}
-                          alt=""
-                          width={32}
-                          height={32}
-                          className="h-8 w-8 object-contain"
-                        />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate font-semibold text-foreground">{item.title}</span>
-                        <span className={`block truncate text-xs ${style.color}`}>
-                          {labels[item.type]}
-                        </span>
-                      </span>
-                      {isPending && (
-                        <GlobalSearchPendingIndicator />
-                      )}
-                    </a>
-                  );
-                })}
-              </section>
-            );
-          })}
+                        return;
+                      }
+                      if (!isPlainPrimaryClick(event)) return;
+                      event.preventDefault();
+                      startPendingSearchNavigation(item, href);
+                    }}
+                    aria-busy={isPending || undefined}
+                    aria-disabled={hasPendingResult || undefined}
+                    tabIndex={hasPendingResult && !isPending ? -1 : undefined}
+                    data-global-search-pending={isPending ? "true" : undefined}
+                    className={`flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors ${
+                      isPending
+                        ? "bg-white/[0.08] ring-1 ring-primary/25"
+                        : hasPendingResult
+                          ? "cursor-wait opacity-45"
+                          : "hover:bg-white/[0.07]"
+                    }`}
+                  >
+                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded border ${style.bg} ${style.border}`}>
+                      <Image
+                        src={item.imageUrl ?? style.icon}
+                        alt=""
+                        width={32}
+                        height={32}
+                        className="h-8 w-8 object-contain"
+                      />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate font-semibold text-foreground">{item.title}</span>
+                    </span>
+                    <span className={`inline-flex h-5 shrink-0 items-center rounded border px-1.5 text-[10px] font-bold ${style.bg} ${style.border} ${style.color}`}>
+                      {item.game === "sts1" ? `${copy.sts1Prefix} ` : ""}{labels[item.type]}
+                    </span>
+                    {isPending && (
+                      <GlobalSearchPendingIndicator />
+                    )}
+                  </a>
+                );
+              })}
+            </div>
+          )}
         </GameScrollArea>
       </div>
     </div>

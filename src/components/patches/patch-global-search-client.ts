@@ -1,8 +1,8 @@
 import {
-  globalSearchItemScore,
   globalSearchTypeOrder,
   globalSearchTypeStyles,
   loadGlobalSearchItems,
+  rankGlobalSearchResults,
   type GlobalSearchIndexItem,
   type GlobalSearchType,
 } from "@/lib/global-search";
@@ -39,15 +39,13 @@ const copy = {
   empty: overlay?.dataset.emptyMessage ?? "",
   loading: overlay?.dataset.loadingMessage ?? "",
   noResults: overlay?.dataset.noResultsMessage ?? "",
+  loadFailed: overlay?.dataset.loadFailedMessage ?? overlay?.dataset.noResultsMessage ?? "",
+  sts1Prefix: overlay?.dataset.sts1Prefix ?? "",
 };
 
 let items: GlobalSearchIndexItem[] = [];
 let loadState: LoadState = "idle";
 let loadPromise: Promise<void> | null = null;
-
-function clearResults() {
-  resultsRoot?.replaceChildren();
-}
 
 function renderMessage(message: string) {
   if (!resultsRoot) return;
@@ -59,31 +57,6 @@ function renderMessage(message: string) {
 
 function localizedResultHref(item: GlobalSearchIndexItem): string {
   return localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale);
-}
-
-function rankedResults(query: string): GlobalSearchIndexItem[] {
-  return items
-    .map((item) => ({ item, score: globalSearchItemScore(item, query, labels) }))
-    .filter((entry): entry is { item: GlobalSearchIndexItem; score: number } => entry.score !== null)
-    .sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      return globalSearchTypeOrder.indexOf(a.item.type) - globalSearchTypeOrder.indexOf(b.item.type);
-    })
-    .map((entry) => entry.item)
-    .slice(0, 40);
-}
-
-function groupResults(searchResults: GlobalSearchIndexItem[]) {
-  const byType = new Map<GlobalSearchType, GlobalSearchIndexItem[]>();
-  for (const item of searchResults) {
-    const group = byType.get(item.type);
-    if (group) group.push(item);
-    else byType.set(item.type, [item]);
-  }
-
-  return globalSearchTypeOrder
-    .map((type) => ({ type, items: byType.get(type) ?? [] }))
-    .filter((group) => group.items.length > 0);
 }
 
 function createResultRow(item: GlobalSearchIndexItem): HTMLAnchorElement {
@@ -110,12 +83,13 @@ function createResultRow(item: GlobalSearchIndexItem): HTMLAnchorElement {
   const title = document.createElement("span");
   title.className = "block truncate font-semibold text-foreground";
   title.textContent = item.title;
-  const type = document.createElement("span");
-  type.className = `block truncate text-xs ${style.color}`;
-  type.textContent = labels[item.type];
-  text.append(title, type);
+  text.append(title);
 
-  link.append(imageFrame, text);
+  const chip = document.createElement("span");
+  chip.className = `inline-flex h-5 shrink-0 items-center rounded border px-1.5 text-[10px] font-bold ${style.bg} ${style.border} ${style.color}`;
+  chip.textContent = `${item.game === "sts1" ? `${copy.sts1Prefix} ` : ""}${labels[item.type]}`;
+
+  link.append(imageFrame, text, chip);
   return link;
 }
 
@@ -132,38 +106,20 @@ function renderSearchResults() {
     return;
   }
   if (loadState === "error") {
-    renderMessage(copy.noResults);
+    renderMessage(copy.loadFailed);
     return;
   }
 
-  const results = rankedResults(query);
+  const results = rankGlobalSearchResults(items, query, labels);
   if (results.length === 0) {
     renderMessage(copy.noResults);
     return;
   }
 
-  clearResults();
-  for (const group of groupResults(results)) {
-    const style = globalSearchTypeStyles[group.type];
-    const section = document.createElement("section");
-    section.className = "py-1";
-
-    const header = document.createElement("div");
-    header.className = "flex items-center gap-2 px-2.5 py-1";
-    const label = document.createElement("span");
-    label.className = `inline-flex h-5 items-center rounded border px-1.5 text-[10px] font-bold ${style.bg} ${style.border} ${style.color}`;
-    label.textContent = labels[group.type];
-    const count = document.createElement("span");
-    count.className = "text-[10px] tabular-nums text-muted-foreground";
-    count.textContent = String(group.items.length);
-    header.append(label, count);
-    section.append(header);
-
-    for (const item of group.items.slice(0, 8)) {
-      section.append(createResultRow(item));
-    }
-    resultsRoot.append(section);
-  }
+  const list = document.createElement("div");
+  list.className = "py-1";
+  for (const item of results) list.append(createResultRow(item));
+  resultsRoot.replaceChildren(list);
 }
 
 function loadIndex(): Promise<void> {
@@ -176,6 +132,8 @@ function loadIndex(): Promise<void> {
     })
     .catch(() => {
       loadState = "error";
+      // Opening the search again retries.
+      loadPromise = null;
     })
     .finally(renderSearchResults);
   return loadPromise;

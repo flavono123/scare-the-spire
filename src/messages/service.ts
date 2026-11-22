@@ -45,6 +45,8 @@ export const serviceMessages = {
       empty: "검색어를 입력하세요",
       loading: "검색 데이터를 불러오는 중",
       noResults: "검색 결과 없음",
+      loadFailed: "검색 색인을 불러오지 못했어요. 다시 열어 주세요",
+      sts1Prefix: "슬더스1",
       labels: {
         character: "캐릭터",
         card: "카드",
@@ -1735,6 +1737,8 @@ export const serviceMessages = {
       empty: "Type to search",
       loading: "Loading search data",
       noResults: "No results",
+      loadFailed: "Couldn't load the search index. Open search again to retry",
+      sts1Prefix: "StS1",
       labels: {
         character: "Character",
         card: "Card",

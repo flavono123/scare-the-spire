@@ -43,6 +43,8 @@ export type GlobalSearchIndexItem = {
   descriptionEn: string;
   imageUrl: string | null;
   href: string;
+  /** Absent means STS2; STS1 items lose ties to STS2 items. */
+  game?: "sts1";
 };
 
 export const globalSearchTypeStyles: Record<GlobalSearchType, {
@@ -81,20 +83,45 @@ export const globalSearchTypeStyles: Record<GlobalSearchType, {
   vexingPuzzlebox: { icon: "/images/sts2/relics/vexing_puzzlebox.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-500/30" },
 };
 
-function globalSearchFieldScore(value: string, query: string, weight: number): number | null {
-  const text = value.toLowerCase();
-  const normalizedQuery = query.toLowerCase();
+// Match tiers keep an exact name above any prefix match, a prefix above a
+// substring, and so on; field weights only order items within one tier.
+const SEARCH_TIER_EXACT = 4000;
+const SEARCH_TIER_PREFIX = 3000;
+const SEARCH_TIER_SUBSTRING = 2000;
+const SEARCH_TIER_ALL_WORDS = 1000;
+const SEARCH_TIER_FUZZY = 0;
+
+function globalSearchNameScore(value: string, query: string, weight: number): number | null {
+  const text = value.trim().toLowerCase();
+  const normalizedQuery = query.trim().toLowerCase();
   if (!text || !normalizedQuery) return null;
 
-  const exactIndex = text.indexOf(normalizedQuery);
-  if (exactIndex >= 0) return weight + 1000 - Math.min(exactIndex, 100);
+  if (text === normalizedQuery) return SEARCH_TIER_EXACT + weight;
+  if (text.startsWith(normalizedQuery)) return SEARCH_TIER_PREFIX + weight;
+  const index = text.indexOf(normalizedQuery);
+  if (index >= 0) return SEARCH_TIER_SUBSTRING + weight - Math.min(index, 100);
 
   const words = normalizedQuery.split(/\s+/).filter(Boolean);
-  if (words.length > 1) {
-    return words.every((word) => text.includes(word)) ? weight + 600 : null;
+  if (words.length > 1 && words.every((word) => text.includes(word))) {
+    return SEARCH_TIER_ALL_WORDS + weight;
   }
 
-  return fuzzyMatchCodexText(value, query) ? weight : null;
+  return fuzzyMatchCodexText(value, query) ? SEARCH_TIER_FUZZY + weight : null;
+}
+
+// Long text never reaches the name tiers, so a description hit stays below
+// any name that contains the query.
+function globalSearchTextScore(value: string, query: string, weight: number): number | null {
+  const text = value.toLowerCase();
+  const normalizedQuery = query.trim().toLowerCase();
+  if (!text || !normalizedQuery) return null;
+
+  if (text.includes(normalizedQuery)) return SEARCH_TIER_ALL_WORDS + weight;
+  const words = normalizedQuery.split(/\s+/).filter(Boolean);
+  if (words.length > 1 && words.every((word) => text.includes(word))) {
+    return SEARCH_TIER_FUZZY + weight;
+  }
+  return null;
 }
 
 export function globalSearchItemScore(
@@ -103,16 +130,47 @@ export function globalSearchItemScore(
   labels: Record<GlobalSearchType, string>,
 ): number | null {
   const scores = [
-    globalSearchFieldScore(item.title, query, 700),
-    globalSearchFieldScore(item.titleEn, query, 650),
-    globalSearchFieldScore(labels[item.type], query, 600),
-    globalSearchFieldScore(item.description, query, 300),
-    globalSearchFieldScore(item.descriptionEn, query, 300),
-    globalSearchFieldScore(item.id, query, 200),
+    globalSearchNameScore(item.title, query, 300),
+    globalSearchNameScore(item.titleEn, query, 250),
+    globalSearchNameScore(labels[item.type], query, 100),
+    globalSearchNameScore(item.id, query, 50),
+    globalSearchTextScore(item.description, query, 20),
+    globalSearchTextScore(item.descriptionEn, query, 20),
   ].filter((score): score is number => score !== null);
 
   if (scores.length === 0) return null;
   return Math.max(...scores);
+}
+
+export const GLOBAL_SEARCH_RESULT_LIMIT = 40;
+
+/**
+ * Score order, then STS2 before STS1, then the type order. Main and the patch
+ * Worker share this so both searches return the same list.
+ */
+export function rankGlobalSearchResults(
+  items: readonly GlobalSearchIndexItem[],
+  query: string,
+  labels: Record<GlobalSearchType, string>,
+  bonus?: (item: GlobalSearchIndexItem) => number,
+): GlobalSearchIndexItem[] {
+  const text = query.trim();
+  if (!text) return [];
+  const ranked: { item: GlobalSearchIndexItem; score: number }[] = [];
+  for (const item of items) {
+    const score = globalSearchItemScore(item, text, labels);
+    if (score === null) continue;
+    ranked.push({ item, score: score + (bonus?.(item) ?? 0) });
+  }
+  return ranked
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const gameOrder = (a.item.game === "sts1" ? 1 : 0) - (b.item.game === "sts1" ? 1 : 0);
+      if (gameOrder !== 0) return gameOrder;
+      return globalSearchTypeOrder.indexOf(a.item.type) - globalSearchTypeOrder.indexOf(b.item.type);
+    })
+    .slice(0, GLOBAL_SEARCH_RESULT_LIMIT)
+    .map((entry) => entry.item);
 }
 
 export function globalSearchResultKey(item: GlobalSearchIndexItem): string {
