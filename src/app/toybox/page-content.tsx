@@ -4,7 +4,7 @@ import { IndexTileLarge, IndexTileSmall } from "@/components/place-index/index-t
 import { NavAttentionMarkers } from "@/components/place-index/nav-attention-markers";
 import { foldLast, placeTileProps } from "@/components/place-index/place-tiles";
 import { DEFRAGMENT_FEED_SERVICE_META } from "@/lib/defragment";
-import { getServiceLocaleForGameLocale, localizeHrefWithGameLocale, type GameLocale } from "@/lib/i18n";
+import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { PLACE_AREA_META, placeLabel, placesInArea } from "@/lib/place-registry";
 import { composeToyBoxIndexOgDescription, getServiceOgMetadata } from "@/lib/service-metadata";
@@ -41,8 +41,6 @@ export function renderToyboxPage(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
           title={copy.areas.toybox}
           token={PLACE_AREA_META.toybox.token}
           art={PLACE_AREA_META.toybox.art}
-          homeHref={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
-          backLabel={copy.backHome}
         />
         <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
           {places.map((place) => {

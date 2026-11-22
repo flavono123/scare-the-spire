@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { NAV_ATTENTION_SLOT_CLASS, NavAttentionDot } from "@/components/nav-attention-dot";
 import Image from "@/components/ui/static-image";
+import { INTERNAL_TOKEN_LINK_CLASS } from "@/lib/service-link-classes";
 import type { TopBarLink, TopBarMenuRow } from "@/lib/top-bar-menu";
 
 // One top bar for the main app and the static patch pages. No hooks: the patch
@@ -180,14 +181,12 @@ export function SiteTopBar({
                 </div>
               </section>
             ))}
-            <Link
-              href={menu.allHref}
-              prefetch={false}
-              role="menuitem"
-              className="block px-2 pt-1 text-right text-xs text-muted-foreground hover:text-foreground"
-            >
-              {menu.allLabel} →
-            </Link>
+            <div className="px-2 pt-1 text-right">
+              <Link href={menu.allHref} prefetch={false} role="menuitem" className={`${INTERNAL_TOKEN_LINK_CLASS} text-xs`}>
+                <Image src="/images/sts2/ui/topbar/top_bar_map.png" alt="" width={16} height={16} className="h-4 w-4 object-contain" />
+                {menu.allLabel}
+              </Link>
+            </div>
           </div>
         </details>
         {dev}

@@ -116,7 +116,8 @@ export function attachTopBar(
     if (summary) {
       on(summary, "click", (event) => {
         // On a mouse the popover already opened on hover, so a click means "go there".
-        if (href && finePointer()) {
+        // Patch notes go straight to /patches on touch too; its tabs reach the rest.
+        if (href && (finePointer() || details.dataset.topBarPopover === "patches")) {
           event.preventDefault();
           navigate(href);
         }

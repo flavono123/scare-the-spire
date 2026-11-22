@@ -1,13 +1,12 @@
 import Image from "@/components/ui/static-image";
 import type { Metadata } from "next";
 import { IndexPageHeader } from "@/components/place-index/index-page-header";
-import { IndexTileSmall } from "@/components/place-index/index-tile";
+import { IndexTileToken } from "@/components/place-index/index-tile";
 import { NavAttentionMarkers } from "@/components/place-index/nav-attention-markers";
 import { placeTileProps } from "@/components/place-index/place-tiles";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
-  localizeHrefWithGameLocale,
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -53,8 +52,6 @@ export default async function CodexIndexPage({
           title={gameUi.compendiumTitle}
           token={PLACE_AREA_META.sts2.token}
           art={PLACE_AREA_META.sts2.art}
-          homeHref={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
-          backLabel={copy.backHome}
         />
         {sections.map((section) => (
           <section key={section.area} id={section.area} className="mt-8 scroll-mt-16">
@@ -64,7 +61,7 @@ export default async function CodexIndexPage({
             </h2>
             <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
               {section.tiles.map((tile) => (
-                <IndexTileSmall key={tile.href} {...tile} />
+                <IndexTileToken key={tile.href} {...tile} />
               ))}
             </div>
           </section>

@@ -437,7 +437,7 @@
         "message": "nav.combo"
       },
       "token": "/images/sts2/badges/ccccombo.webp",
-      "art": "/images/sts2/badges/ccccombo.webp",
+      "art": "/images/sts2/events/amalgamator.webp",
       "createdAt": "2026-07-24",
       "byrdispatchSectionTitle": "코오오옴보",
       "fold": true
@@ -486,7 +486,7 @@
         "message": "nav.historyCourse"
       },
       "token": "/images/sts2/relics/history_course.webp",
-      "art": "/images/sts2/relics/history_course.webp",
+      "art": "/images/sts2/events/war_historian_repy.webp",
       "createdAt": "2026-06-18",
       "byrdispatchSectionTitle": "역사 강의서",
       "search": {
@@ -502,7 +502,7 @@
         "message": "nav.chemicalX"
       },
       "token": "/images/sts2/relics/chemical_x.webp",
-      "art": "/images/sts2/relics/chemical_x.webp",
+      "art": "/images/sts2/cards/eradicate.webp",
       "createdAt": "2026-04-15",
       "fold": true
     },

@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { IndexPageHeader } from "@/components/place-index/index-page-header";
-import { IndexTileLarge, IndexTileSmall } from "@/components/place-index/index-tile";
+import Link from "next/link";
+import { IndexTileLarge } from "@/components/place-index/index-tile";
 import { NavAttentionMarkers } from "@/components/place-index/nav-attention-markers";
 import { placeTileProps } from "@/components/place-index/place-tiles";
 import { getVexingPuzzleboxGameCopy } from "@/lib/borrowed-game-copy";
 import { getServiceLocaleForGameLocale, localizeHrefWithGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
+import { INTERNAL_TOKEN_LINK_CLASS } from "@/lib/service-link-classes";
+import Image from "@/components/ui/static-image";
 import { VEXING_PUZZLEBOX_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { PLACE_AREA_META, placesInArea } from "@/lib/place-registry";
 import { composeToyBoxIndexOgDescription, getServiceOgMetadata } from "@/lib/service-metadata";
@@ -27,7 +30,7 @@ export async function generateVexingPuzzleboxMetadata(
   });
 }
 
-/** The Vexing Puzzlebox hub: one tile per game, tools after them. */
+/** The Vexing Puzzlebox hub: one tile per game, then a link to each tool (순위). */
 export async function renderVexingPuzzleboxPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
@@ -45,17 +48,25 @@ export async function renderVexingPuzzleboxPage(
           title={gameCopy.title}
           token={PLACE_AREA_META.zzapper.token}
           art={PLACE_AREA_META.zzapper.art}
-          homeHref={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
-          backLabel={copy.backHome}
         />
         <div className="mt-6 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
           {games.map((place) => (
             <IndexTileLarge key={place.id} {...placeTileProps(place, serviceLocale, gameLocale)} />
           ))}
-          {tools.map((place) => (
-            <IndexTileSmall key={place.id} {...placeTileProps(place, serviceLocale, gameLocale)} />
-          ))}
         </div>
+        {tools.map((place) => (
+          <p key={place.id} className="mt-3 text-right">
+            <Link
+              href={localizeHrefWithGameLocale(place.href, serviceLocale, gameLocale)}
+              prefetch={false}
+              className={`${INTERNAL_TOKEN_LINK_CLASS} font-service text-sm`}
+            >
+              <span aria-hidden>→</span>
+              <Image src={place.token} alt="" width={20} height={20} className="h-5 w-5 object-contain" />
+              {copy.rankingsLink}
+            </Link>
+          </p>
+        ))}
       </div>
       <NavAttentionMarkers />
     </div>
