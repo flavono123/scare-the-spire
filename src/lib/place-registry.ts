@@ -209,7 +209,7 @@ export const PLACE_AREA_META: Record<PlaceArea, { href: string; token: string; a
   toybox: {
     href: "/toybox",
     token: "/images/sts2/relics/toy_box.webp",
-    art: "/images/sts2/events/tinker_time.webp",
+    art: "/images/sts2/events/welcome_to_wongos.webp",
   },
 };
 

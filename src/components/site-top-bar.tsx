@@ -12,7 +12,7 @@ import type { TopBarLink, TopBarMenuRow } from "@/lib/top-bar-menu";
 export type TopBarLanguage = { locale: string; href: string; label: string; active: boolean; gameOnly: boolean };
 
 const POPOVER_CLASS = "patch-static-dropdown relative group";
-const PANEL_CLASS = "absolute z-50 mt-1 rounded-md border border-border bg-background/95 shadow-xl backdrop-blur-sm";
+const PANEL_CLASS = "absolute z-50 mt-1 rounded-md border border-border bg-background shadow-xl";
 
 function NewMark({ label }: { label: string }) {
   return (
@@ -48,12 +48,14 @@ function MenuItem({ item, order, unread, newLabel }: { item: TopBarLink; order: 
       data-order={order}
       data-fold={item.fold || undefined}
       data-new={item.isNew || undefined}
-      className="relative flex w-[8.5rem] shrink-0 items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-foreground/85 transition-colors hover:bg-white/[0.07] hover:text-foreground data-[overflow=true]:hidden max-sm:w-auto max-sm:min-w-0 max-sm:flex-1 max-sm:flex-col max-sm:gap-0.5 max-sm:text-xs"
+      className="relative flex w-[5.75rem] shrink-0 flex-col items-center gap-1 rounded-lg px-1 py-2 text-center text-xs text-foreground/85 transition-colors hover:bg-white/[0.07] hover:text-foreground data-[overflow=true]:hidden max-sm:w-auto max-sm:min-w-0 max-sm:flex-1"
     >
-      <Image src={item.token} alt="" width={22} height={22} className={`${item.tokenClassName ?? "h-5 w-5"} shrink-0 object-contain`} />
-      <span className="min-w-0 max-w-full truncate">{item.label}</span>
+      <span className="flex h-7 w-7 items-center justify-center">
+        <Image src={item.token} alt="" width={28} height={28} className={`${item.tokenClassName ?? "h-7 w-7"} shrink-0 object-contain`} />
+      </span>
+      <span className="line-clamp-2 min-w-0 max-w-full leading-tight">{item.label}</span>
       {item.isNew && (
-        <span className="max-sm:absolute max-sm:right-0.5 max-sm:top-0.5">
+        <span className="absolute right-0.5 top-0.5">
           <NewMark label={newLabel} />
         </span>
       )}
@@ -144,15 +146,16 @@ export function SiteTopBar({
           <div
             role="menu"
             aria-label={menu.label}
-            className={`${PANEL_CLASS} left-0 w-[min(46rem,calc(100vw-1rem))] space-y-1 p-2 max-sm:fixed max-sm:inset-x-0 max-sm:top-12 max-sm:h-[calc(100dvh-3rem)] max-sm:z-[45] max-sm:mt-0 max-sm:w-auto max-sm:overflow-y-auto max-sm:rounded-none max-sm:border-x-0 max-sm:p-3`}
+            className={`${PANEL_CLASS} fixed inset-x-0 top-12 mt-0 max-h-[calc(100dvh-3rem)] overflow-y-auto rounded-none border-x-0 border-t-0 max-sm:z-[45] max-sm:h-[calc(100dvh-3rem)]`}
           >
+            <div className="mx-auto max-w-[1080px] px-4 pb-3 pt-1 max-sm:px-3">
             {menu.rows.map((row) => (
-              <section key={row.area} data-menu-row={row.area} className="flex items-center gap-2 max-sm:flex-col max-sm:items-stretch max-sm:gap-1 max-sm:border-b max-sm:border-border/50 max-sm:pb-2">
+              <section key={row.area} data-menu-row={row.area} className="flex items-center gap-3 border-t border-border/50 py-2 first:border-t-0 max-sm:flex-col max-sm:items-stretch max-sm:gap-1">
                 <Link
                   href={row.href}
                   prefetch={false}
                   role="menuitem"
-                  className="flex w-[9.5rem] shrink-0 items-center gap-1.5 font-game-title text-sm text-primary hover:text-primary/80 max-sm:w-auto"
+                  className="flex w-[11.875rem] shrink-0 items-center gap-2 font-game-title text-sm text-primary hover:underline max-sm:w-auto"
                 >
                   <Image src={row.token} alt="" width={22} height={22} className="h-5 w-5 shrink-0 object-contain" />
                   <span className="truncate">{row.title}</span>
@@ -174,7 +177,7 @@ export function SiteTopBar({
                     data-menu-more
                     data-label={menu.moreLabel}
                     hidden
-                    className="order-[999] flex shrink-0 items-center whitespace-nowrap rounded-md px-2 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-white/[0.07] hover:text-foreground"
+                    className="order-[999] flex w-[5.75rem] shrink-0 items-center justify-center rounded-lg px-1 py-2 text-center text-xs font-semibold text-muted-foreground hover:bg-white/[0.07] hover:text-foreground max-sm:w-auto max-sm:flex-1"
                   >
                     <span data-menu-more-count />
                   </Link>
@@ -186,6 +189,7 @@ export function SiteTopBar({
                 <Image src="/images/sts2/ui/topbar/top_bar_map.png" alt="" width={16} height={16} className="h-4 w-4 object-contain" />
                 {menu.allLabel}
               </Link>
+            </div>
             </div>
           </div>
         </details>
@@ -209,6 +213,7 @@ export function SiteTopBar({
               role="menuitem"
               className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-foreground hover:bg-white/[0.07]"
             >
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center">{profile.icon}</span>
               {profile.label}
             </Link>
             <div className="mt-1 border-t border-border/70 px-3 pb-1 pt-2 text-[11px] font-semibold text-muted-foreground">
