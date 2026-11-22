@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
-import { Search, Trash2, X } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, STS2PatchLine, StoryEntityType } from "@/lib/types";
 import { localizeHrefWithGameLocale, type GameLocale, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
@@ -33,12 +33,12 @@ import {
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
-import { GameScrollArea } from "@/components/game-scroll-area";
 import { CardTile } from "@/components/codex/card-tile";
 import { patchVersionPath } from "@/lib/patch-line-links";
 import { resolveStoryPatchLine } from "@/lib/resolve-story-patch-line";
 import { loadFullSts2PatchLines } from "@/lib/sts2-patch-lines-client";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
+import { storyHref, storyIdFromPathSegment } from "@/lib/story-paths";
 import { serviceMessages } from "@/messages/service";
 
 // STS2 entities, changes and patches are read only by the story modal and the
@@ -65,6 +65,7 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
       deleteConfirm: "이 이야기를 삭제할까요?",
       searchPlaceholder: "검색",
       noResults: "검색 결과가 없습니다",
+      notFound: "이야기를 찾을 수 없습니다",
     };
   }
 
@@ -76,6 +77,7 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
     deleteConfirm: "Delete this story?",
     searchPlaceholder: "Search",
     noResults: "No stories found",
+    notFound: "Story not found",
   };
 }
 
@@ -681,7 +683,7 @@ function StoryCard({
   userId,
   authReady,
   ensureUser,
-  onOpen,
+  href,
   canDelete,
   onDelete,
   likeCount,
@@ -694,7 +696,7 @@ function StoryCard({
   userId: string | null;
   authReady: boolean;
   ensureUser: () => Promise<string | null>;
-  onOpen: (storyId: string) => void;
+  href: string;
   canDelete: boolean;
   onDelete: (storyId: string) => Promise<void>;
   likeCount: number;
@@ -723,9 +725,10 @@ function StoryCard({
         {/* Sentence + engagement */}
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
-            <button
-              onClick={() => onOpen(story.id)}
-              className="w-full cursor-pointer hover:opacity-80 transition-opacity"
+            <Link
+              href={href}
+              prefetch={false}
+              className="block w-full cursor-pointer hover:opacity-80 transition-opacity"
             >
               <p className="text-lg sm:text-xl font-medium leading-snug text-center">
                 &ldquo;{story.sentence}&rdquo;
@@ -736,7 +739,7 @@ function StoryCard({
                   className="ml-2"
                 />
               </p>
-            </button>
+            </Link>
             {story.community && (
               <div className="mt-1 flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
                 <DisplayedProfileNickname
@@ -783,7 +786,7 @@ function StoryCard({
   );
 }
 
-function StoryDetailModal({
+function StoryDetailBody({
   story,
   serviceLocale,
   gameLocale,
@@ -808,7 +811,6 @@ function StoryDetailModal({
   engagementLoading,
   engagementUnavailable,
   onCommentCountChange,
-  onClose,
 }: {
   story: Story;
   serviceLocale: ServiceLocale;
@@ -834,47 +836,18 @@ function StoryDetailModal({
   engagementLoading: boolean;
   engagementUnavailable: boolean;
   onCommentCountChange: (storyId: string, count: number) => void;
-  onClose: () => void;
 }) {
   const copy = storyFeedCopy(serviceLocale);
   const tips = serviceMessages[serviceLocale].engagementTips;
   const publishedLabel = story.publishedAt ? formatStoryPublishedAt(story.publishedAt, serviceLocale) : "";
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose]);
-
   return (
-    <div
-      className="fixed inset-0 z-[70] flex items-end justify-center bg-black/70 px-3 py-6 backdrop-blur-sm sm:items-center"
-      role="dialog"
-      aria-modal="true"
+    <article
+      className="rounded-lg border border-border bg-background/80"
       aria-label={copy.storyDetail}
-      data-story-detail-modal
-      onClick={onClose}
+      data-story-detail
     >
-      <article
-        className="flex max-h-[88vh] w-full max-w-2xl flex-col rounded-lg border border-border bg-background shadow-2xl"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
-          <h2 className="text-sm font-semibold">{copy.storyDetail}</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
-            title={copy.close}
-          >
-            <X size={16} />
-            <span className="sr-only">{copy.close}</span>
-          </button>
-        </div>
-
-        <GameScrollArea className="min-h-0 flex-1" size="large" scrollerClassName="space-y-4 px-4 py-4">
+        <div className="space-y-4 px-4 py-4">
           <div className="flex items-start gap-3">
             <div className="min-w-0 flex-1 text-center">
               <p className="text-xl font-medium leading-snug sm:text-2xl">
@@ -938,9 +911,8 @@ function StoryDetailModal({
             entitiesGameLocale={gameLocale}
             onCountChange={(count) => onCommentCountChange(story.id, count)}
           />
-        </GameScrollArea>
-      </article>
-    </div>
+        </div>
+    </article>
   );
 }
 
@@ -996,102 +968,56 @@ function StoryFeedToolbar({
   );
 }
 
-export function StoryFeed({
-  serviceLocale = "ko",
+/** Static stories with community rows over them, as the feed and the detail page show them. */
+function mergeStories(stories: Story[], communityStories: Story[]): Story[] {
+  const byId = new Map(stories.map((story) => [story.id, story]));
+  for (const story of communityStories) {
+    const existing = byId.get(story.id);
+    byId.set(story.id, existing ? {
+      ...existing,
+      ...story,
+      tags: story.tags ?? existing.tags,
+      linkedEntities: story.linkedEntities ?? existing.linkedEntities,
+    } : story);
+  }
+  return Array.from(byId.values());
+}
+
+/**
+ * STS2 entities, changes, patches and full patch lines load from the Compendium
+ * data chunks only while something reads them (the composer, a story detail).
+ */
+function useStoryReferences({
   gameLocale,
-  storyPlaceholder,
-  stories,
-  cards,
-  relics,
-  potions,
-  changes,
-  sts2PatchLines = [],
+  enabled,
+  allStories,
+  sts2PatchLines,
 }: {
-  serviceLocale?: ServiceLocale;
   gameLocale: GameLocale;
-  storyPlaceholder: string;
-  stories: Story[];
-  cards: Card[];
-  relics: Relic[];
-  potions: Potion[];
-  changes: Change[];
-  sts2PatchLines?: STS2PatchLine[];
+  enabled: boolean;
+  allStories: Story[];
+  sts2PatchLines: STS2PatchLine[];
 }) {
-  const { userId, ready: authReady, ensureUser } = useAuth();
-  const communityStories = useCommunityStories(userId);
-  const counts = useEngagementCounts();
-  const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
-  const [commentCountOverrides, setCommentCountOverrides] = useState<Record<string, number>>({});
-  const [sortMode, setSortMode] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [composerOpen, setComposerOpen] = useState(false);
   const [loadedPatchLines, setLoadedPatchLines] = useState<STS2PatchLine[] | null>(null);
   const [patchLinesComplete, setPatchLinesComplete] = useState(false);
-  const didMountRef = useRef(false);
-  const sts2DataEnabled = Boolean(activeStoryId) || composerOpen;
-  const sts2EntityState = useCompendiumEntitiesState(gameLocale, { enabled: sts2DataEnabled });
-  const sts2HistoryState = useCompendiumDataState(gameLocale, STS2_HISTORY_KEYS, { enabled: sts2DataEnabled });
+  const sts2EntityState = useCompendiumEntitiesState(gameLocale, { enabled });
+  const sts2HistoryState = useCompendiumDataState(gameLocale, STS2_HISTORY_KEYS, { enabled });
   const sts2Entities = sts2EntityState.entities ?? NO_STS2_ENTITIES;
   const sts2Changes = sts2HistoryState.data?.changes ?? NO_STS2_CHANGES;
   const sts2Patches = sts2HistoryState.data?.patches ?? NO_STS2_PATCHES;
   const sts2DataState = sts2ReferenceDataState(sts2EntityState.status, sts2HistoryState.status);
-  const prefetchSts2Data = useCallback(() => {
-    prefetchAllEntityGraph(gameLocale);
-    loadCompendiumData(gameLocale, STS2_HISTORY_KEYS).catch(() => {
-      // useCompendiumDataState reports the failure once the composer opens.
-    });
-  }, [gameLocale]);
-
-  const handleCommentCountChange = useCallback((storyId: string, count: number) => {
-    setCommentCountOverrides((prev) => ({
-      ...prev,
-      [storyId]: count,
-    }));
-  }, []);
-
-  useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-      queueMicrotask(() => setActiveStoryId(hash.split(",")[0] ?? null));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true;
-      return;
-    }
-
-    const nextUrl = activeStoryId
-      ? `#${activeStoryId}`
-      : `${window.location.pathname}${window.location.search}`;
-    window.history.replaceState(null, "", nextUrl);
-  }, [activeStoryId]);
 
   const patchLineOptions = loadedPatchLines?.length ? loadedPatchLines : sts2PatchLines;
   const patchLineMap = useMemo(() => new Map(patchLineOptions.map((line) => [line.id, line])), [patchLineOptions]);
-  const allStories = useMemo(() => {
-    const byId = new Map(stories.map((story) => [story.id, story]));
-    for (const story of communityStories.stories) {
-      const existing = byId.get(story.id);
-      byId.set(story.id, existing ? {
-        ...existing,
-        ...story,
-        tags: story.tags ?? existing.tags,
-        linkedEntities: story.linkedEntities ?? existing.linkedEntities,
-      } : story);
-    }
-    return Array.from(byId.values());
-  }, [communityStories.stories, stories]);
   const hasMissingPatchLine = useMemo(
     () => allStories.some((story) => story.patchLineId && !resolveStoryPatchLine(story, patchLineMap)),
     [allStories, patchLineMap],
   );
   const patchLinesLoading = hasMissingPatchLine && loadedPatchLines === null;
 
-  // After a failure the next composer or story modal opening asks again.
+  // After a failure the next composer opening or detail visit asks again.
   useEffect(() => {
-    if (patchLinesComplete || (!composerOpen && !hasMissingPatchLine)) return;
+    if (patchLinesComplete || (!enabled && !hasMissingPatchLine)) return;
     let cancelled = false;
     loadFullSts2PatchLines()
       .then((lines) => {
@@ -1105,23 +1031,8 @@ export function StoryFeed({
     return () => {
       cancelled = true;
     };
-  }, [activeStoryId, composerOpen, hasMissingPatchLine, patchLinesComplete]);
-  const searchTerm = searchQuery.trim().toLocaleLowerCase();
-  const orderedStories = useMemo(() => {
-    const filteredStories = searchTerm
-      ? allStories.filter((story) => storySearchText(story, patchLineMap).includes(searchTerm))
-      : allStories;
-    return stableStoryOrder(filteredStories, sortMode, counts);
-  }, [allStories, counts, patchLineMap, searchTerm, sortMode]);
-  const activeStory = useMemo(
-    () => activeStoryId ? allStories.find((story) => story.id === activeStoryId) ?? null : null,
-    [activeStoryId, allStories],
-  );
+  }, [enabled, hasMissingPatchLine, patchLinesComplete]);
 
-  const cardMap = useMemo(() => new Map(cards.map((c) => [c.id, c])), [cards]);
-  const relicMap = useMemo(() => new Map(relics.map((r) => [r.id, r])), [relics]);
-  const potionMap = useMemo(() => new Map(potions.map((p) => [p.id, p])), [potions]);
-  const changeMap = useMemo(() => new Map(changes.map((c) => [c.id, c])), [changes]);
   const sts2EntityMap = useMemo(
     () => new Map(sts2Entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
     [sts2Entities],
@@ -1129,19 +1040,58 @@ export function StoryFeed({
   const sts2ChangeMap = useMemo(() => new Map(sts2Changes.map((c) => [c.id, c])), [sts2Changes]);
   const sts2PatchMap = useMemo(() => new Map(sts2Patches.map((p) => [p.id, p])), [sts2Patches]);
 
-  // Index: entityId -> all changes for that entity
-  const entityChangeIndex = useMemo(() => {
-    const idx = new Map<string, Change[]>();
-    for (const c of changes) {
-      const key = `${c.entityType}:${c.entityId}`;
-      if (!idx.has(key)) idx.set(key, []);
-      idx.get(key)!.push(c);
-    }
-    return idx;
-  }, [changes]);
-  const activeStoryEntityKey = activeStory && isSTS1EntityType(activeStory.entityType) && activeStory.entityId
-    ? `${activeStory.entityType}:${activeStory.entityId}`
-    : "";
+  return {
+    sts2Entities,
+    sts2Patches,
+    sts2DataState,
+    patchLineOptions,
+    patchLineMap,
+    patchLinesLoading,
+    sts2EntityMap,
+    sts2ChangeMap,
+    sts2PatchMap,
+  };
+}
+
+export function StoryFeed({
+  serviceLocale = "ko",
+  gameLocale,
+  storyPlaceholder,
+  stories,
+  sts2PatchLines = [],
+}: {
+  serviceLocale?: ServiceLocale;
+  gameLocale: GameLocale;
+  storyPlaceholder: string;
+  stories: Story[];
+  sts2PatchLines?: STS2PatchLine[];
+}) {
+  const { userId, ready: authReady, ensureUser } = useAuth();
+  const communityStories = useCommunityStories(userId);
+  const counts = useEngagementCounts();
+  const [sortMode, setSortMode] = useState<ToyboxFeedSort>(DEFAULT_TOYBOX_FEED_SORT);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [composerOpen, setComposerOpen] = useState(false);
+  const allStories = useMemo(
+    () => mergeStories(stories, communityStories.stories),
+    [communityStories.stories, stories],
+  );
+  const references = useStoryReferences({ gameLocale, enabled: composerOpen, allStories, sts2PatchLines });
+  const { patchLineMap } = references;
+  const prefetchSts2Data = useCallback(() => {
+    prefetchAllEntityGraph(gameLocale);
+    loadCompendiumData(gameLocale, STS2_HISTORY_KEYS).catch(() => {
+      // useCompendiumDataState reports the failure once the composer opens.
+    });
+  }, [gameLocale]);
+
+  const searchTerm = searchQuery.trim().toLocaleLowerCase();
+  const orderedStories = useMemo(() => {
+    const filteredStories = searchTerm
+      ? allStories.filter((story) => storySearchText(story, patchLineMap).includes(searchTerm))
+      : allStories;
+    return stableStoryOrder(filteredStories, sortMode, counts);
+  }, [allStories, counts, patchLineMap, searchTerm, sortMode]);
 
   return (
     <div>
@@ -1152,41 +1102,12 @@ export function StoryFeed({
           userId={userId}
           authReady={authReady}
           ensureUser={ensureUser}
-          patchLines={patchLineOptions}
-          patches={sts2Patches}
-          entities={sts2Entities}
-          referenceState={sts2DataState}
+          patchLines={references.patchLineOptions}
+          patches={references.sts2Patches}
+          entities={references.sts2Entities}
+          referenceState={references.sts2DataState}
           onAdd={communityStories.add}
           onClose={() => setComposerOpen(false)}
-        />
-      )}
-      {activeStory && (
-        <StoryDetailModal
-          story={activeStory}
-          serviceLocale={serviceLocale}
-          gameLocale={gameLocale}
-          entityChanges={entityChangeIndex.get(activeStoryEntityKey) ?? []}
-          cardMap={cardMap}
-          relicMap={relicMap}
-          potionMap={potionMap}
-          changeMap={changeMap}
-          sts2EntityMap={sts2EntityMap}
-          sts2ChangeMap={sts2ChangeMap}
-          sts2PatchMap={sts2PatchMap}
-          patchLineMap={patchLineMap}
-          patchLinesLoading={patchLinesLoading}
-          sts2Patches={sts2Patches}
-          sts2Entities={sts2Entities}
-          sts2DataState={sts2DataState}
-          userId={userId}
-          authReady={authReady}
-          ensureUser={ensureUser}
-          likeCount={counts.likes[activeStory.id] ?? 0}
-          commentCount={commentCountOverrides[activeStory.id] ?? counts.comments[activeStory.id] ?? 0}
-          engagementLoading={counts.loading}
-          engagementUnavailable={counts.unavailable}
-          onCommentCountChange={handleCommentCountChange}
-          onClose={() => setActiveStoryId(null)}
         />
       )}
       <StoryFeedToolbar
@@ -1214,11 +1135,11 @@ export function StoryFeed({
                 userId={userId}
                 authReady={authReady}
                 ensureUser={ensureUser}
-                onOpen={setActiveStoryId}
+                href={localizeHrefWithGameLocale(storyHref(story.id), serviceLocale, gameLocale)}
                 canDelete={Boolean(story.community && userId && story.authorUserId === userId)}
                 onDelete={communityStories.remove}
                 likeCount={counts.likes[story.id] ?? 0}
-                commentCount={commentCountOverrides[story.id] ?? counts.comments[story.id] ?? 0}
+                commentCount={counts.comments[story.id] ?? 0}
                 engagementLoading={counts.loading}
                 engagementUnavailable={counts.unavailable}
               />
@@ -1226,5 +1147,92 @@ export function StoryFeed({
         </div>
       )}
     </div>
+  );
+}
+
+/** One story at /stories/<id>: the sentence, what it points at and its comments. */
+export function StoryDetail({
+  storyId,
+  serviceLocale = "ko",
+  gameLocale,
+  stories,
+  cards,
+  relics,
+  potions,
+  changes,
+  sts2PatchLines = [],
+}: {
+  storyId?: string;
+  serviceLocale?: ServiceLocale;
+  gameLocale: GameLocale;
+  stories: Story[];
+  cards: Card[];
+  relics: Relic[];
+  potions: Potion[];
+  changes: Change[];
+  sts2PatchLines?: STS2PatchLine[];
+}) {
+  const { userId, ready: authReady, ensureUser } = useAuth();
+  // The largest feed page holds every community story (a few dozen today).
+  const communityStories = useCommunityStories(userId, { limit: 1000 });
+  const counts = useEngagementCounts();
+  const [commentCountOverride, setCommentCountOverride] = useState<number | null>(null);
+  const id = storyId ? storyIdFromPathSegment(storyId) : "";
+  const allStories = useMemo(
+    () => mergeStories(stories, communityStories.stories),
+    [communityStories.stories, stories],
+  );
+  const story = allStories.find((candidate) => candidate.id === id) ?? null;
+  const references = useStoryReferences({
+    gameLocale,
+    enabled: Boolean(story),
+    allStories: story ? [story] : [],
+    sts2PatchLines,
+  });
+  const cardMap = useMemo(() => new Map(cards.map((c) => [c.id, c])), [cards]);
+  const relicMap = useMemo(() => new Map(relics.map((r) => [r.id, r])), [relics]);
+  const potionMap = useMemo(() => new Map(potions.map((p) => [p.id, p])), [potions]);
+  const changeMap = useMemo(() => new Map(changes.map((c) => [c.id, c])), [changes]);
+  const entityChanges = useMemo(() => {
+    if (!story || !isSTS1EntityType(story.entityType) || !story.entityId) return [];
+    return changes.filter((c) => c.entityType === story.entityType && c.entityId === story.entityId);
+  }, [changes, story]);
+  const copy = storyFeedCopy(serviceLocale);
+
+  if (!story) {
+    return (
+      <div className="px-4 py-16 text-center text-sm text-muted-foreground" data-story-detail-pending={communityStories.loading || undefined}>
+        {communityStories.loading ? <EngagementSpinner size={16} /> : copy.notFound}
+      </div>
+    );
+  }
+
+  return (
+    <StoryDetailBody
+      story={story}
+      serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
+      entityChanges={entityChanges}
+      cardMap={cardMap}
+      relicMap={relicMap}
+      potionMap={potionMap}
+      changeMap={changeMap}
+      sts2EntityMap={references.sts2EntityMap}
+      sts2ChangeMap={references.sts2ChangeMap}
+      sts2PatchMap={references.sts2PatchMap}
+      patchLineMap={references.patchLineMap}
+      patchLinesLoading={references.patchLinesLoading}
+      sts2Patches={references.sts2Patches}
+      sts2Entities={references.sts2Entities}
+      sts2DataState={references.sts2DataState}
+      userId={userId}
+      authReady={authReady}
+      ensureUser={ensureUser}
+      likeCount={counts.likes[story.id] ?? 0}
+      commentCount={commentCountOverride ?? counts.comments[story.id] ?? 0}
+      engagementLoading={counts.loading}
+      engagementUnavailable={counts.unavailable}
+      onCommentCountChange={(_storyId, count) => setCommentCountOverride(count)}
+    />
   );
 }

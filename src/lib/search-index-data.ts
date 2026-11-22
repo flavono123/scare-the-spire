@@ -1,3 +1,4 @@
+import { storyHref } from "@/lib/story-paths";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { stripCodexMarkup } from "@/lib/codex-search";
 import { buildCompendiumResourceHref, type CompendiumResourceLinkType } from "@/lib/compendium-resource-links";
@@ -37,6 +38,19 @@ export type SearchIndexItem = {
 export type SearchIndexPayload = {
   items: SearchIndexItem[];
 };
+
+/** `type:id` → image of every STS2 element, for story art and story OG (public/generated/element-art.json). */
+export type ElementArtMap = Record<string, string>;
+
+const NON_ELEMENT_SEARCH_TYPES = new Set<SearchItemType>(["patch", "story", "compendium", "zzapper", "toybox"]);
+
+export function buildElementArt(payload: SearchIndexPayload): ElementArtMap {
+  return Object.fromEntries(payload.items.flatMap((item) => (
+    item.imageUrl && !item.game && !NON_ELEMENT_SEARCH_TYPES.has(item.type)
+      ? [[`${item.type}:${item.id}`, item.imageUrl]]
+      : []
+  )));
+}
 
 const TYPE_TO_COMPENDIUM_LINK_TYPE: Partial<Record<EntityType, CompendiumResourceLinkType>> = {
   card: "card",
@@ -533,7 +547,7 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     ].filter(Boolean).join(" "),
     descriptionEn: "",
     imageUrl: "/images/bone_tea.png",
-    href: `/#${story.id}`,
+    href: storyHref(story.id),
   }));
 
   const [blitzEntryItems, sts1Items] = await Promise.all([

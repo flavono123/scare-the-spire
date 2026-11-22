@@ -1093,8 +1093,10 @@
       community: "/",
     };
     const path = paths[service];
+    // Story threads: "community:<uuid>" or a bare seed slug (src/lib/story-paths.ts).
+    if (service === "community" && id) return `/stories/${id}${anchor}`;
+    if (!storyId.includes(":") && storyId !== "byrdispatch") return `/stories/${storyId}${anchor}`;
     if (!path || !id) return `/${anchor}`;
-    if (service === "community") return `/${anchor}`;
     return `${path}/${id}${anchor}`;
   }
 

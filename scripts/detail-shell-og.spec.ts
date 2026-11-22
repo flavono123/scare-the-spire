@@ -242,6 +242,7 @@ const DECISIONS = "60000001-0000-4000-8000-000000000001";
 const RUN = "r0000000000000a01";
 const COMBO_YOUTUBE = "70000001-0000-4000-8000-000000000001";
 const MISSING = "00000000-0000-4000-8000-000000000000";
+const STORY = "80000001-0000-4000-8000-000000000001";
 
 function seededD1(): SqliteD1 {
   const sqlite = openD1TestDb();
@@ -322,6 +323,10 @@ function seededD1(): SqliteD1 {
       auto: false,
       suggestSeed: "ALPHA",
     }),
+  );
+  run(
+    "INSERT INTO community_stories (id, user_id, nickname, sentence, game, entity_type, entity_id, linked_entities, created_at) VALUES (?, ?, '철갑', '시든 뒤 기계가 남았다', 'sts2', 'card', 'WITHER', '[]', ?)",
+    STORY, USER, CREATED,
   );
   return new SqliteD1(sqlite);
 }
@@ -471,6 +476,28 @@ async function main() {
   for (const [pathname, value] of expected) {
     assert.deepEqual(await lookup(pathname), value, pathname);
   }
+
+  // Stories: a community row by uuid, a seed by slug from the bundled JSON; art from element-art.json.
+  const assets = {
+    fetch: async (request: Request) => (
+      new URL(request.url).pathname === "/generated/element-art.json"
+        ? Response.json({ "card:WITHER": "/images/sts2/cards/wither1.webp", "monster:DOORMAKER": "/images/sts2/bosses/doormaker_boss.webp" })
+        : new Response(null, { status: 404 })
+    ),
+  };
+  const storyDescription = "슬레이 더 스파이어 2 · 슬서운 이야기 · 게임 변화에 대한 이야기";
+  assert.deepEqual(await lookup(`/stories/${STORY}`, { ...on, ASSETS: assets }), {
+    title: "시든 뒤 기계가 남았다 - 슬서운 이야기",
+    description: storyDescription,
+    image: `${ORIGIN}/images/sts2/cards/wither1.webp`,
+  });
+  const seed = await lookup("/stories/sts2-doormaker-removed", { ...on, ASSETS: assets });
+  assert.equal(seed?.image, `${ORIGIN}/images/sts2/bosses/doormaker_boss.webp`);
+  assert.ok(seed?.title.endsWith(" - 슬서운 이야기"));
+  // Legacy STS1 seeds use the old /images/cards art; no art map is needed.
+  assert.equal((await lookup("/stories/blade-dance-shivs"))?.image, `${ORIGIN}/images/cards/blade-dance.webp`);
+  assert.equal(await lookup(`/stories/${MISSING}`), null);
+  assert.equal(await lookup("/stories/no-such-story"), null);
 
   // No row: a missing post, a run id in another case (runs.id is text), another service's id, and a
   // tournament id, which the lookup reads from this_or_that like before.

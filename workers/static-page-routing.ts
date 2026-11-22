@@ -196,6 +196,7 @@ const STATIC_SERVICE_DETAIL_SEGMENTS = new Set([
   "decisions-decisions",
   "pagestorm",
   "colorful-philosophers",
+  "stories",
 ]);
 
 const DEFRAGMENT_FEDERATED_SERVICES = new Set([

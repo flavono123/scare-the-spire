@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { buildSearchIndexPayload, buildSearchNames } from "../src/lib/search-index-data";
+import { buildElementArt, buildSearchIndexPayload, buildSearchNames } from "../src/lib/search-index-data";
 import { GLOBAL_SEARCH_NAMES_ROOT, globalSearchNamesPath } from "../src/lib/global-search";
 import { loadAllEntities } from "../src/lib/load-all-entities";
 import { getCodexCards } from "../src/lib/codex-data";
@@ -1249,6 +1249,7 @@ async function generateSearchIndexOnly() {
   const [searchIndex, searchNames] = await Promise.all([buildSearchIndexPayload(), searchNameTargets()]);
   await Promise.all([
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
+    writeJson({ path: "generated/element-art.json", data: buildElementArt(searchIndex) }),
     ...searchNames.map(writeJson),
   ]);
   await removeStaleStaticAliases();
@@ -1354,6 +1355,7 @@ async function main() {
       events: koreanCompendiumDetailPayload.resources.events,
     }),
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
+    writeJson({ path: "generated/element-art.json", data: buildElementArt(searchIndex) }),
     ...searchNames.map(writeJson),
     writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
     ...cardConLocales.map(writeJson),

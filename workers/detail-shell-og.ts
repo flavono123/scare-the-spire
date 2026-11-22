@@ -14,6 +14,7 @@ import type { ComboResourceRef } from "../src/lib/combo-types";
 import {
   CHEMICAL_X_PAGE_OG_IMAGE,
   COMBO_PAGE_OG_IMAGE,
+  DEFAULT_PAGE_OG_IMAGE,
   DECISIONS_DECISIONS_PAGE_OG_IMAGE,
   THIS_OR_THAT_PAGE_OG_IMAGE,
 } from "../src/lib/page-og-images";
@@ -26,6 +27,10 @@ import {
   getServiceLocaleForGameLocale,
 } from "../src/lib/i18n";
 import { withTimeout, type D1Database } from "./api/d1";
+import staticStories from "../data/stories.json";
+import staticSts2Stories from "../data/sts2-stories.json";
+import { ELEMENT_ART_PATH, storyArtUrl } from "../src/lib/story-art";
+import type { Story } from "../src/lib/types";
 import { Q_R5 } from "./api/d1-adapters/queries";
 import { json, materialize, query, readAll, type Row } from "./api/d1-adapters/rows";
 import { postObject, postSql, type FeedService } from "./api/d1-adapters/toybox";
@@ -112,6 +117,7 @@ const STATIC_SERVICE_DETAIL_SEGMENTS = new Set([
   "decisions-decisions",
   "pagestorm",
   "colorful-philosophers",
+  "stories",
 ]);
 
 const DEFRAGMENT_FEDERATED_SERVICES = new Set([
@@ -276,6 +282,43 @@ function asComboResources(value: unknown): ComboResourceRef[] {
   });
 }
 
+type StoryOgSource = Pick<Story, "sentence" | "game" | "entityType" | "entityId" | "linkedEntities">;
+
+/** A story by its path segment: a community row by uuid, else a seed by slug (its D1 row first). */
+async function readStoryOgSource(db: D1Database, recordId: string): Promise<StoryOgSource | null> {
+  const uuid = canonicalPostUuid(recordId);
+  const row = uuid
+    ? await readD1Row(db, "SELECT sentence, game, entity_type, entity_id, linked_entities FROM community_stories WHERE id = ?1", uuid)
+    : await readD1Row(db, "SELECT sentence, game, entity_type, entity_id, linked_entities FROM community_stories WHERE static_story_id = ?1", recordId);
+  if (row) {
+    try {
+      const linked = materialize(json(row.linked_entities));
+      return {
+        sentence: String(row.sentence ?? ""),
+        game: (row.game as Story["game"]) ?? undefined,
+        entityType: (row.entity_type as Story["entityType"]) ?? undefined,
+        entityId: (row.entity_id as string | null) ?? undefined,
+        linkedEntities: Array.isArray(linked) ? linked as Story["linkedEntities"] : undefined,
+      };
+    } catch {
+      return null;
+    }
+  }
+  if (uuid) return null;
+  const seed = [...staticStories, ...staticSts2Stories].find((story) => story.id === recordId);
+  return seed ? seed as StoryOgSource : null;
+}
+
+async function readElementArt(env: WorkerEnv, siteOrigin: string): Promise<Record<string, string>> {
+  if (!env.ASSETS) return {};
+  try {
+    const response = await withTimeout(env.ASSETS.fetch(new Request(`${siteOrigin}${ELEMENT_ART_PATH}`)), OG_LOOKUP_TIMEOUT_MS);
+    return response.ok ? await response.json() as Record<string, string> : {};
+  } catch {
+    return {};
+  }
+}
+
 export async function fetchDetailShellOgData(
   target: DetailShellTarget,
   env: WorkerEnv,
@@ -290,6 +333,19 @@ export async function fetchDetailShellOgData(
   const serviceLocale = getServiceLocaleForGameLocale(getGameLocaleFromPathname(pathname));
   const brand = serviceLocale === "en" ? "Scare the Spire" : "슬서운 이야기";
   const game = serviceLocale === "en" ? "Slay the Spire 2" : "슬레이 더 스파이어 2";
+
+  if (target.service === "stories") {
+    const story = await readStoryOgSource(db, target.recordId);
+    if (!story?.sentence) return null;
+    const title = `${truncateOgTitle(story.sentence)} - ${brand}`;
+    const art = storyArtUrl(story, await readElementArt(env, siteOrigin));
+    const image = art.fallback ? `${siteOrigin}${DEFAULT_PAGE_OG_IMAGE.url}` : `${siteOrigin}${art.url}`;
+    const description =
+      serviceLocale === "en"
+        ? `${game} · ${brand} · A story about a game change`
+        : `${game} · ${brand} · 게임 변화에 대한 이야기`;
+    return { title, description, image };
+  }
 
   if (target.service === "history-course") {
     const row = await readRunCover(db, target.recordId);

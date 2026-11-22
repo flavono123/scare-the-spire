@@ -7,9 +7,9 @@ import {
 
 assert.equal(
   commentThreadHref("community:11111111-2222-4333-8333-444444444444"),
-  "/#community:11111111-2222-4333-8333-444444444444",
+  "/stories/11111111-2222-4333-8333-444444444444",
 );
-assert.equal(commentThreadHref("blade-dance-shivs"), "/#blade-dance-shivs");
+assert.equal(commentThreadHref("blade-dance-shivs"), "/stories/blade-dance-shivs");
 assert.equal(commentThreadHref("sts2-patch:0.111.0"), "/patches/0.111.0#comments");
 assert.equal(
   commentThreadHref("neowsletter:2026-08:ascension-10"),

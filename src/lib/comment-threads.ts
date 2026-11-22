@@ -1,3 +1,4 @@
+import { storyHref } from "@/lib/story-paths";
 import {
   buildCompendiumResourceDetailHref,
   isCompendiumResourceLinkType,
@@ -216,5 +217,5 @@ export function commentThreadHref(storyId: string): string {
     ?? prefixedResourceCommentsHref(storyId, "pagestorm:", "/pagestorm")
     ?? prefixedResourceCommentsHref(storyId, "colorful-philosophers:", "/colorful-philosophers")
     ?? prefixedResourceCommentsHref(storyId, "history-course:", "/history-course")
-    ?? (storyId === "byrdispatch" ? `/byrdispatch${COMMENTS_ANCHOR}` : `/#${storyId}`);
+    ?? (storyId === "byrdispatch" ? `/byrdispatch${COMMENTS_ANCHOR}` : storyHref(storyId));
 }

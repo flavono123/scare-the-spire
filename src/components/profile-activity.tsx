@@ -1,5 +1,6 @@
 "use client";
 
+import { storyHref } from "@/lib/story-paths";
 import Link from "next/link";
 import { ChevronRight, LoaderCircle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -99,7 +100,7 @@ function activityHref(
   gameLocale: GameLocale,
 ): string {
   let href: string;
-  if (item.category === "stories") href = `/#${item.targetKey}`;
+  if (item.category === "stories") href = storyHref(item.targetKey);
   else if (item.category === "chemical_x") href = `/chemical-x/${item.targetKey}`;
   else if (item.category === "this_or_that") href = `/this-or-that/${item.targetKey}`;
   else if (item.category === "combo") href = `/c-c-c-combo/${item.targetKey}`;

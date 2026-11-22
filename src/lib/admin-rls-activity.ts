@@ -1,3 +1,4 @@
+import { storyHref } from "@/lib/story-paths";
 import { BYRDISPATCH_ICON } from "@/lib/byrdispatch-static";
 import {
   COMMENT_THREAD_SERVICE_PREFIX,
@@ -93,7 +94,7 @@ export function isDefragmentAdminPostService(
 }
 
 export function adminServicePostHref(service: AdminPostService, id: string): string {
-  if (service === "stories") return `/#community:${id}`;
+  if (service === "stories") return storyHref(`community:${id}`);
   if (service === "history_course") return `/history-course/${id}`;
   if (isDefragmentAdminPostService(service)) {
     return `${DEFRAGMENT_FEED_SERVICE_META[service].hrefBase}/${id}`;

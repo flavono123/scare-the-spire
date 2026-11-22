@@ -96,6 +96,7 @@ const staticServiceDetailSegments = new Set([
   "defragment",
   "pagestorm",
   "colorful-philosophers",
+  "stories",
 ]);
 const defragmentFederatedServices = new Set([
   "combo",

@@ -1,7 +1,7 @@
 // Mirrors redactPathname in scripts/cloudflare-worker-logs.mjs so Worker log
 // lines never carry user record IDs.
 const UNBOUNDED_ID_PREFIXES = [
-  /^(\/(?:[a-z]{2}(?:-[0-9]+)?\/)?(?:this-or-that|transfigure|chemical-x|c-c-c-combo|history-course|decisions-decisions|pagestorm))\/[^/]+$/i,
+  /^(\/(?:[a-z]{2}(?:-[0-9]+)?\/)?(?:this-or-that|transfigure|chemical-x|c-c-c-combo|history-course|decisions-decisions|pagestorm|stories))\/[^/]+$/i,
   /^(\/defragment\/(?:chemical_x|combo|transfigure|this_or_that))\/[^/]+$/i,
 ];
 
