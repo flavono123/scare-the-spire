@@ -172,7 +172,7 @@ function renderPiece(piece: Piece, key: number, sine: { next: number }): ReactNo
       </span>
     );
   }
-  return renderWord(piece.word, key, sine);
+  return piece.kind === "word" ? renderWord(piece.word, key, sine) : null;
 }
 
 /**
