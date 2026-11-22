@@ -27,13 +27,16 @@ function PopoverButton({ icon, label, children }: { icon: string; label: string;
     <summary
       aria-label={label}
       aria-haspopup="menu"
-      className="flex cursor-pointer items-center gap-1 rounded-md px-1 py-1 text-sm font-semibold text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground group-open:text-foreground sm:px-1.5"
+      className="flex cursor-pointer items-center rounded-md px-1 py-1 text-sm font-semibold text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground group-open:text-foreground sm:px-1.5"
     >
       <span className={NAV_ATTENTION_SLOT_CLASS}>
         <Image src={icon} alt="" width={28} height={28} className="h-full w-full object-contain brightness-90 transition-all group-hover:brightness-110 group-open:brightness-125" />
         {children}
       </span>
-      <span className="max-sm:sr-only">{label}</span>
+      {/* Icon only at rest; the label slides out while the button is hovered, focused or open. */}
+      <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-[max-width,opacity,margin] duration-200 ease-out group-hover:ml-1 group-hover:max-w-[7rem] group-hover:opacity-100 group-open:ml-1 group-open:max-w-[7rem] group-open:opacity-100 group-focus-within:ml-1 group-focus-within:max-w-[7rem] group-focus-within:opacity-100 motion-reduce:transition-none max-sm:hidden">
+        {label}
+      </span>
     </summary>
   );
 }
