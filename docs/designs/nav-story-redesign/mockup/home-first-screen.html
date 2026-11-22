@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>슬서운 이야기 첫 화면 시안</title>
+<style>
+@font-face{font-family:"STS GC Batang";src:url("https://scare-the-spire.flavono123.workers.dev/fonts/GyeonggiCheonnyeonBatangBold.woff2") format("woff2");font-weight:700;font-display:swap}
+:root{
+  --bg:#09090b; --surface:#111114; --surface-2:#18181c; --line:#26262c; --line-2:#34343c;
+  --text:#f4f4f5; --muted:#a1a1aa; --dim:#71717a;
+  --gold:#e8c66a; --gold-dim:#8a7438; --green:#7fd27a; --red:#ef6b5b;
+  --radius:12px;
+  --font:"STS GC Batang","AppleMyungjo","Batang","Nanum Myeongjo","Noto Serif KR",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+img{display:block}
+
+/* ---------- top bar: flat, no pill containers ---------- */
+.bar{position:sticky;top:0;z-index:40;height:52px;display:flex;align-items:center;gap:18px;padding:0 16px;
+  background:rgba(9,9,11,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:8px;color:var(--gold);font-size:17px;white-space:nowrap}
+.brand img{width:24px;height:24px}
+.nav{display:flex;align-items:center;gap:6px;height:52px;font-size:15px;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent;position:relative}
+.nav img{width:24px;height:24px;object-fit:contain}
+.nav:hover,.nav[aria-expanded="true"]{color:var(--gold)}
+.nav[aria-expanded="true"]{border-bottom-color:var(--gold)}
+.nav .dot{position:absolute;top:12px;left:18px}
+.dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 0 2px var(--bg)}
+.dot.green{background:var(--green)} .dot.gold{background:var(--gold)}
+.search{flex:1;max-width:420px;margin-left:auto;display:flex;align-items:center;gap:8px;height:34px;padding:0 10px;
+  border:1px solid var(--line-2);border-radius:8px;background:var(--surface);color:var(--dim);font-size:14px}
+.search kbd{margin-left:auto;font-family:ui-monospace,monospace;font-size:11px;border:1px solid var(--line-2);border-radius:5px;padding:1px 5px}
+.icon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.profile img{width:30px;height:30px;object-fit:contain}
+
+/* ---------- menu panel ---------- */
+.scrim{position:fixed;inset:52px 0 0;background:rgba(0,0,0,.55);z-index:30;opacity:0;pointer-events:none;transition:opacity .15s}
+.panel{position:fixed;top:52px;left:0;right:0;z-index:35;background:var(--surface);border-bottom:1px solid var(--line-2);
+  box-shadow:0 24px 60px rgba(0,0,0,.6);opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .15s,transform .15s;
+  max-height:calc(100vh - 52px);overflow:auto}
+body.panel-open .scrim,body.panel-open .panel{opacity:1;pointer-events:auto}
+body.panel-open .panel{transform:none}
+.panel-in{max-width:1080px;margin:0 auto;padding:8px 16px 16px}
+.prow{display:grid;grid-template-columns:190px 1fr;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.prow:first-child{border-top:0}
+.prow-h{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--gold)}
+.prow-h img{width:22px;height:22px;object-fit:contain}
+.prow-h:hover{text-decoration:underline}
+.items{display:flex;gap:4px;min-width:0;overflow:hidden}
+.item{position:relative;flex:0 0 auto;width:92px;display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 4px;border-radius:10px;font-size:12.5px;text-align:center;color:var(--text)}
+.item img{width:30px;height:30px;object-fit:contain}
+.item:hover{background:var(--surface-2)}
+.item .dot{position:absolute;top:6px;right:22px}
+.more{color:var(--muted);justify-content:center}
+.more b{font-size:18px;color:var(--gold);line-height:30px}
+.panel-close{display:none}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000;border:1px solid var(--line-2);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--muted);z-index:60;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+
+/* ---------- profile popover ---------- */
+.pop{position:fixed;top:56px;right:16px;width:240px;z-index:35;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;
+  padding:8px;box-shadow:0 18px 40px rgba(0,0,0,.6);display:none}
+body.pop-open .pop{display:block}
+.pop a,.pop label{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;font-size:14px}
+.pop a:hover{background:var(--surface-2)}
+.pop select{margin-left:auto;background:var(--bg);color:var(--text);border:1px solid var(--line-2);border-radius:6px;font:inherit;font-size:13px;padding:3px 6px}
+.pop hr{border:0;border-top:1px solid var(--line);margin:6px 0}
+
+/* ---------- mailbox ---------- */
+.mailbox{position:fixed;right:16px;bottom:16px;z-index:20;width:52px;height:52px;border-radius:50%;background:var(--surface-2);
+  border:1px solid var(--line-2);display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.mailbox img{width:34px;height:34px}
+
+/* ---------- pages ---------- */
+main{max-width:1080px;margin:0 auto;padding:16px 16px 96px}
+.page{display:none}
+.page.on{display:block}
+.news{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #3a2f55;border-radius:var(--radius);
+  background:linear-gradient(90deg,rgba(80,52,140,.25),transparent);margin-bottom:16px;font-size:14px}
+.news img{width:28px;height:28px}
+.news small{color:var(--dim);margin-left:6px}
+.news .go{margin-left:auto;font-size:13px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;font-size:11px;padding:2px 7px;border-radius:999px;border:1px solid var(--line-2);color:var(--muted);white-space:nowrap}
+.meta{display:flex;align-items:center;gap:6px;color:var(--dim);font-size:12px;flex-wrap:wrap}
+.meta img{width:16px;height:16px;border-radius:50%}
+.likes{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:12px}
+.likes svg{width:14px;height:14px}
+.fallback{width:100%;height:100%;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%,#2a2412,#0d0c08 70%)}
+.fallback img{width:42%;max-width:72px;height:auto;opacity:.9}
+
+/* reel */
+.reel{position:relative;height:340px;border-radius:16px;overflow:hidden;border:1px solid var(--line-2);background:#000}
+.slide{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1.05fr;opacity:0;transition:opacity .8s ease}
+.slide.on{opacity:1;z-index:1}
+.slide .art{position:relative;overflow:hidden}
+.slide .art img{width:100%;height:100%;object-fit:cover;transform:scale(1.05)}
+/* The zoom lives only on the active slide, so it restarts every time a slide becomes active. */
+.slide.on .art img{animation:kenburns 6.4s cubic-bezier(.2,.6,.2,1) both}
+.slide .art::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 50%,#000)}
+.slide .flash{position:absolute;inset:0;background:radial-gradient(circle at 40% 45%,rgba(255,236,170,.55),transparent 60%);opacity:0;pointer-events:none}
+.slide.on .flash{animation:flash 1.1s ease-out both}
+.slide .txt{display:flex;flex-direction:column;justify-content:center;gap:14px;padding:28px 36px 28px 4px}
+.slide q{font-size:clamp(21px,2.7vw,32px);line-height:1.35;quotes:"“" "”"}
+.slide.on q{animation:rise .9s .25s cubic-bezier(.2,.7,.2,1) both}
+.slide.on .meta{animation:rise .9s .45s cubic-bezier(.2,.7,.2,1) both}
+.bars{position:absolute;left:16px;right:16px;top:12px;display:flex;gap:4px;z-index:3}
+.bars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.18);overflow:hidden}
+.bars i::after{content:"";display:block;height:100%;width:0;background:var(--gold)}
+.bars i.done::after{width:100%}
+.bars i.on::after{animation:fill 6.4s linear forwards}
+.reel-nav{position:absolute;inset:0;display:flex;z-index:2}
+.reel-nav button{flex:1}
+@keyframes fill{to{width:100%}}
+@keyframes kenburns{from{transform:scale(1.55) translate(-6%,5%) rotate(-1.5deg);filter:brightness(1.6) saturate(1.3)}
+  22%{filter:brightness(1) saturate(1)}
+  to{transform:scale(1.08) translate(2%,-2%) rotate(0)}}
+@keyframes flash{0%{opacity:1}100%{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(18px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+
+.toolbar{display:flex;align-items:center;gap:8px;margin:18px 0 12px}
+.seg{display:flex;border:1px solid var(--line-2);border-radius:10px;overflow:hidden}
+.seg button{padding:7px 12px;font-size:13px;color:var(--muted)}
+.seg button.on{background:var(--surface-2);color:var(--text)}
+.write{margin-left:auto;display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;border:1px solid var(--gold-dim);color:var(--gold);background:#1a160c;font-size:13px}
+.write img{width:18px;height:18px}
+.rows{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.row{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row:hover{background:var(--surface-2)}
+.thumb{width:72px;height:72px;border-radius:10px;overflow:hidden;border:1px solid var(--line-2);background:#000}
+.thumb img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.row:hover .thumb img{transform:scale(1.15)}
+.thumb.contain img{object-fit:contain;padding:8px;background:radial-gradient(circle,#26262c,#0b0b0d)}
+.row .s{font-size:17px;line-height:1.4;margin-bottom:6px}
+
+/* index pages */
+.ph{display:flex;align-items:center;gap:12px;margin:8px 0 20px}
+.ph img{width:40px;height:40px;object-fit:contain}
+.ph h1{margin:0;font-size:26px;color:var(--gold)}
+.crumb{font-size:13px;color:var(--dim);margin-bottom:4px}
+.crumb a:hover{color:var(--gold)}
+.gh{display:flex;align-items:center;gap:8px;font-size:17px;margin:28px 0 12px;color:var(--text)}
+.gh img{width:26px;height:26px;object-fit:contain}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;height:132px;border:1px solid var(--line);border-radius:12px;background:radial-gradient(circle at 50% 35%,#1e1e24,var(--surface) 70%);font-size:15px;transition:border-color .15s,transform .15s}
+.tile img{width:54px;height:54px;object-fit:contain;transition:transform .2s}
+.tile:hover{border-color:var(--gold-dim);transform:translateY(-2px)}
+.tile:hover img{transform:scale(1.12)}
+.tile .dot{position:absolute;top:10px;right:10px}
+.tile .kids{display:flex;gap:6px}
+.tile .kids img{width:20px;height:20px}
+.tile.wide{grid-column:span 2}
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.game{position:relative;height:240px;border-radius:16px;overflow:hidden;border:1px solid var(--line-2);display:block;background:#000}
+.game .art{position:absolute;inset:0;transition:transform .5s}
+.game:hover .art{transform:scale(1.06)}
+.game .art img{width:100%;height:100%;object-fit:cover}
+.game .art.collage{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.game::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.9))}
+.game .name{position:absolute;left:18px;bottom:16px;z-index:1;display:flex;align-items:center;gap:10px;font-size:22px}
+.game .name img{width:34px;height:34px}
+.game .dot{position:absolute;top:14px;right:14px;z-index:1;width:10px;height:10px}
+.side-link{display:inline-flex;align-items:center;gap:8px;margin-top:16px;color:var(--muted);font-size:14px}
+.side-link img{width:24px;height:24px}
+.side-link:hover{color:var(--gold)}
+.hero{position:relative;height:150px;border-radius:16px;overflow:hidden;margin-bottom:8px;border:1px solid #3a2f55}
+.hero>img{width:100%;height:100%;object-fit:cover;opacity:.55}
+.hero .ph{position:absolute;left:20px;bottom:6px;margin:0}
+
+/* ---------- responsive ---------- */
+@media (max-width:640px){
+  .bar{padding:0 12px;gap:12px}
+  .brand span,.search span,.search kbd,.nav .lbl{display:none}
+  .search{flex:0 0 auto;width:34px;padding:0;justify-content:center;margin-left:auto}
+  .panel{z-index:45;top:0;height:100dvh;max-height:none;border:0}
+  .panel-close{display:flex;position:sticky;top:0;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--line);align-items:center;z-index:2}
+  .panel-close b{font-size:16px;color:var(--gold)}
+  .panel-close button{margin-left:auto;width:36px;height:36px;display:grid;place-items:center}
+  .prow{grid-template-columns:1fr;gap:4px}
+  .items{display:grid;grid-template-columns:repeat(4,1fr)}
+  .item{width:auto}
+  .reel{height:auto;aspect-ratio:4/5}
+  .slide{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  .slide .art::after{background:linear-gradient(180deg,transparent 50%,#000)}
+  .slide .txt{padding:0 18px 22px}
+  .row{grid-template-columns:56px 1fr;gap:12px}
+  .thumb{width:56px;height:56px}
+  .row .likes{grid-column:2}
+  .row .s{font-size:15px}
+  .tiles{grid-template-columns:repeat(3,1fr);gap:8px}
+  .tile{height:108px;font-size:13px}
+  .tile img{width:40px;height:40px}
+  .tile.wide{grid-column:span 3}
+  .games{grid-template-columns:1fr}
+  .game{height:190px}
+  .pop{left:12px;right:12px;width:auto}
+}
+@media (prefers-reduced-motion:reduce){
+  .slide{transition:none}
+  .slide.on .art img,.slide.on .flash,.slide.on q,.slide.on .meta{animation:none}
+  .bars i.on::after{animation:none;width:100%}
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <a class="brand" href="#/"><img src="https://scare-the-spire.flavono123.workers.dev/images/bone_tea.png" alt=""><span>슬서운 이야기</span></a>
+  <a class="nav" href="#/patches"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/nav/patch_notes_icon.png" alt=""><span class="lbl">패치노트</span></a>
+  <button class="nav" type="button" id="menuBtn" aria-expanded="false" aria-controls="panel" aria-label="메뉴">
+    <img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/ui/topbar/top_bar_map.png" alt=""><span class="lbl">메뉴</span><i class="dot green" id="menuDot"></i>
+  </button>
+  <button class="search" type="button" aria-label="통합 검색"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>카드, 유물, 서비스 검색</span><kbd>⌘K</kbd></button>
+  <button class="profile" type="button" id="profileBtn" aria-expanded="false" aria-label="프로필과 설정"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/profile/unset.webp" alt=""></button>
+</header>
+
+<div class="scrim" id="scrim"></div>
+
+<nav class="panel" id="panel" aria-label="전체 메뉴">
+  <div class="panel-close"><b>메뉴</b><button type="button" id="closeBtn" aria-label="닫기"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="panel-in" id="panelRows"></div>
+</nav>
+
+<div class="pop" id="pop" role="menu">
+  <a href="#/profile"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/profile/unset.webp" alt="" width="20" height="20">내 프로필</a>
+  <hr>
+  <label>언어
+    <select aria-label="언어"><option>한국어</option><option>English</option><option>日本語</option><option>Deutsch</option><option>Italiano</option></select>
+  </label>
+</div>
+
+<a class="mailbox" href="#/contact" aria-label="문의하기"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/relics/tiny_mailbox.webp" alt=""></a>
+<div class="toast" id="toast"></div>
+
+<main>
+  <!-- home -->
+  <section class="page" data-page="/">
+    <a class="news" href="#/byrdispatch"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/relics/byrdpip.webp" alt=""><span>새소식<small>최신 2026-11-19</small></span><span class="go">전체 보기</span></a>
+    <section class="reel" aria-roledescription="carousel" aria-label="이야기 미리보기">
+      <div class="bars" id="bars"></div>
+      <div id="slides"></div>
+      <div class="reel-nav"><button type="button" aria-label="이전 이야기" data-step="-1"></button><button type="button" aria-label="다음 이야기" data-step="1"></button></div>
+    </section>
+    <div class="toolbar">
+      <div class="seg"><button class="on">최신</button><button>추천</button><button>댓글</button></div>
+      <a class="write" href="#/stories/new"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/relics/history_course.webp" alt="">이야기 쓰기</a>
+    </div>
+    <div class="rows" id="rows"></div>
+  </section>
+
+  <!-- /compendium -->
+  <section class="page" data-page="/compendium">
+    <div class="crumb"><a href="#/">홈</a></div>
+    <div class="ph"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/icons/app_icon.png" alt=""><h1>백과사전</h1></div>
+    <h2 class="gh" id="sts2"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/icons/app_icon.png" alt="">슬레이 더 스파이어 2</h2>
+    <div class="tiles" data-tiles="sts2"></div>
+    <h2 class="gh" id="sts1"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts1_app_icon.png" alt="">슬레이 더 스파이어</h2>
+    <div class="tiles" data-tiles="sts1"></div>
+  </section>
+
+  <!-- /vexing-puzzlebox -->
+  <section class="page" data-page="/vexing-puzzlebox">
+    <div class="crumb"><a href="#/">홈</a></div>
+    <div class="hero"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/events/fake_merchant.webp" alt="">
+      <div class="ph"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/relics/vexing_puzzlebox.webp" alt=""><h1>짜증나는 퍼즐상자</h1></div></div>
+    <div class="games">
+      <a class="game" href="#/vexing-puzzlebox/connections">
+        <div class="art collage">
+          <img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/cards/hyperbeam.webp" alt="">
+          <img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/cards/break.webp" alt="">
+          <img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/cards/acrobatics.webp" alt="">
+          <img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/cards/echoing_slash.webp" alt="">
+        </div>
+        <span class="name"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/powers/chains_of_binding_power.webp" alt="">커넥션스</span>
+      </a>
+      <a class="game" href="#/vexing-puzzlebox/beta-art">
+        <div class="art"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/cards-beta/abrasive.webp" alt=""></div>
+        <i class="dot green"></i>
+        <span class="name"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/powers-beta/smoggy_power.webp" alt="">베타 아트</span>
+      </a>
+    </div>
+    <a class="side-link" href="#/vexing-puzzlebox/rankings"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/ui/leaderboard/submenu_leaderboards_icon.webp" alt="">순위</a>
+  </section>
+
+  <!-- /toybox -->
+  <section class="page" data-page="/toybox">
+    <div class="crumb"><a href="#/">홈</a></div>
+    <div class="ph"><img src="https://scare-the-spire.flavono123.workers.dev/images/sts2/relics/toy_box.webp" alt=""><h1>장난감 상자</h1></div>
+    <div class="tiles" data-tiles="toybox"></div>
+  </section>
+</main>
+
+<script>
+const ORIGIN = "https://scare-the-spire.flavono123.workers.dev";
+const I = p => ORIGIN + p;
+// Some assets 404 on production (STS1 nav icons, beta art); fall back to this repo's public/ copy.
+document.addEventListener("error", e => {
+  const img = e.target;
+  if (img.tagName === "IMG" && img.src.startsWith(ORIGIN)) img.src = "../../../../public" + img.src.slice(ORIGIN.length).split("?")[0];
+}, true);
+
+/* ---------- menu data ----------
+   mark: "new" = new feature (green), "post" = new post (gold).
+   fold: always sorted last (low-activity services). */
+const SECTIONS = [
+  { id: "sts2", title: "슬레이 더 스파이어 2", icon: "/images/sts2/icons/app_icon.png", href: "#/compendium", items: [
+    ["캐릭터","/images/sts2/characters/character_icon_ironclad.webp"],["카드 목록","/images/sts2/nav/stats_cards.png"],
+    ["유물 모음집","/images/sts2/relics/bing_bong.webp"],["포션 연구실","/images/sts2/potions/potion_shaped_rock.webp"],
+    ["파워","/images/sts2/nav/unmovable_power_beta.webp"],["인챈트","/images/sts2/enchantments/souls_power.webp"],
+    ["몬스터 도감","/images/sts2/nav/happy_cultist.png"],["이벤트","/images/sts2/nav/question_mark.png"],
+    ["고대의 존재","/images/sts2/nav/stats_ancients.png"],["연대기","/images/sts2/relics/planisphere.webp"],
+    ["키워드","/images/sts2/ui/topbar/submenu_history_icon.png"],["뱃지","/images/sts2/badges/double_snecko.webp"],
+    ["업적","/images/sts2/achievements/border.webp"],["승천","/images/sts2/ui/topbar/top_bar_ascension.png"],
+    ["모드","/images/sts2/modifiers/character_cards.webp"],["블리츠 상점","/images/sts2/blitz-merchant/entries/entry_card_rewards.webp","new"],
+    ["드레드 권능","/images/sts2/bosses/queen_boss.webp","new"],["펫","/images/sts2/monsters-render/osty.webp","new"],
+  ]},
+  { id: "sts1", title: "슬레이 더 스파이어", icon: "/images/sts1_app_icon.png", href: "#/compendium", anchor: "sts1", items: [
+    ["캐릭터","/images/sts1/characters/ironclad.webp"],["카드 모음집","/images/sts2/nav/stats_cards.png"],
+    ["유물 모음집","/images/sts2/relics/snecko_eye.webp"],["포션 연구실","/images/sts2/nav/stats_potions.png"],
+    ["파워","/images/sts1/powers/hello.webp"],["몬스터 도감","/images/sts1/nav/run-history-elite.webp"],
+    ["이벤트","/images/sts1/nav/run-history-event.webp"],["키워드","/images/sts1/orbs/lightning.webp"],
+    ["승천","/images/sts1/ui/ascension.webp"],["모드","/images/sts1/run-mods/specialized.webp"],
+    ["역병","/images/sts1/blights/spear.webp"],["니오우","/images/sts1/npcs/neow.webp"],
+    ["도전 과제","/images/sts1/achievements/eternal_one.webp"],["점수","/images/sts1/ui/score.webp"],
+  ]},
+  { id: "zz", title: "짜증나는 퍼즐상자", icon: "/images/sts2/relics/vexing_puzzlebox.webp", href: "#/vexing-puzzlebox", items: [
+    ["커넥션스","/images/sts2/powers/chains_of_binding_power.webp"],
+    ["베타 아트","/images/sts2/powers-beta/smoggy_power.webp","new"],
+  ]},
+  { id: "toy", title: "장난감 상자", icon: "/images/sts2/relics/toy_box.webp", href: "#/toybox", items: [
+    ["조각모음","/images/sts2/powers/focus_power.webp"],
+    ["다채로운 철학자들","/images/sts2/modifiers/draft.webp","post"],
+    ["서류 폭풍","/images/sts2/powers/pagestorm_power.webp"],
+    ["어려운 결정","/images/sts2/powers/buffer_power.webp","post"],
+    ["변형","/images/sts2/relics/astrolabe.webp","post"],
+    ["이거 아님 저거?","/images/sts2/relics/choices_paradox.webp"],
+    ["역사 강의서","/images/sts2/relics/history_course.webp"],
+    ["코오오옴보","/images/sts2/badges/ccccombo.webp",null,"fold"],
+    ["케미컬X","/images/sts2/relics/chemical_x.webp",null,"fold"],
+  ]},
+];
+// Demo visit counts; clicking a menu item adds a visit (stored per browser).
+const SEED_VISITS = { "sts2:카드 목록": 30, "sts2:유물 모음집": 18, "sts2:몬스터 도감": 9, "sts2:이벤트": 7, "sts1:카드 모음집": 6, "zz:커넥션스": 12, "toy:변형": 4 };
+const load = () => { try { return JSON.parse(localStorage.getItem("mock:visits")) ?? SEED_VISITS; } catch { return SEED_VISITS; } };
+let visits = load();
+const save = () => { try { localStorage.setItem("mock:visits", JSON.stringify(visits)); } catch {} };
+
+const rank = (sec) => sec.items.map(([label, icon, mark, fold], i) => ({ label, icon, mark, fold, i, v: visits[`${sec.id}:${label}`] ?? 0 }))
+  .sort((a, b) => (!!a.fold - !!b.fold) || (!!b.mark - !!a.mark) || (b.v - a.v) || (a.i - b.i));
+const dot = mark => mark ? `<i class="dot ${mark === "new" ? "green" : "gold"}"></i>` : "";
+
+function renderPanel() {
+  // As many items as one line holds, keeping one slot for "더보기".
+  const rowWidth = document.querySelector(".panel-in").clientWidth - (matchMedia("(max-width:640px)").matches ? 0 : 202);
+  const limit = matchMedia("(max-width:640px)").matches ? 3 : Math.max(2, Math.floor(rowWidth / 96) - 1);
+  document.getElementById("panelRows").innerHTML = SECTIONS.map(sec => {
+    const items = rank(sec), shown = items.slice(0, limit), rest = items.length - shown.length;
+    return `<div class="prow">
+      <a class="prow-h" href="${sec.href}" data-anchor="${sec.anchor ?? ""}"><img src="${I(sec.icon)}" alt="">${sec.title}</a>
+      <div class="items">${shown.map(it => `<a class="item" href="#" data-key="${sec.id}:${it.label}">${dot(it.mark)}<img src="${I(it.icon)}" alt="">${it.label}</a>`).join("")}
+      ${rest > 0 ? `<a class="item more" href="${sec.href}" data-anchor="${sec.anchor ?? ""}"><b>+${rest}</b>더보기</a>` : ""}</div>
+    </div>`;
+  }).join("");
+  const marks = SECTIONS.flatMap(s => s.items.map(x => x[2]));
+  const md = document.getElementById("menuDot");
+  md.className = "dot " + (marks.includes("new") ? "green" : marks.includes("post") ? "gold" : "");
+  md.hidden = !marks.some(Boolean);
+}
+renderPanel();
+addEventListener("resize", renderPanel);
+document.getElementById("panelRows").addEventListener("click", e => {
+  const a = e.target.closest("a"); if (!a) return;
+  if (a.dataset.key) {
+    e.preventDefault();
+    visits[a.dataset.key] = (visits[a.dataset.key] ?? 0) + 1; save(); renderPanel();
+    toast(`방문 기록: ${a.dataset.key.split(":")[1]} (${visits[a.dataset.key]}회) · 메뉴 순서에 반영`);
+    return;
+  }
+  e.preventDefault(); closePanel(); location.hash = a.getAttribute("href");
+  if (a.dataset.anchor) setTimeout(() => document.getElementById(a.dataset.anchor)?.scrollIntoView(), 50);
+});
+function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove("on"), 1800); }
+
+/* ---------- index page tiles (everything, no truncation) ---------- */
+const tile = (sec, [label, icon, mark]) => `<a class="tile" href="#">${dot(mark)}<img src="${I(icon)}" alt="">${label}</a>`;
+document.querySelector('[data-tiles="sts2"]').innerHTML = SECTIONS[0].items.map(x => tile(SECTIONS[0], x)).join("");
+document.querySelector('[data-tiles="sts1"]').innerHTML = SECTIONS[1].items.map(x => tile(SECTIONS[1], x)).join("");
+const toy = SECTIONS[3].items;
+document.querySelector('[data-tiles="toybox"]').innerHTML = [
+  `<a class="tile wide" href="#"><img src="${I(toy[0][1])}" alt="">조각모음<span class="kids">${toy.slice(1, 4).map(x => `<img src="${I(x[1])}" alt="" title="${x[0]}">`).join("")}</span></a>`,
+  ...toy.slice(1).map(x => tile(SECTIONS[3], x)),
+].join("");
+
+/* ---------- stories ---------- */
+const stories = [
+  {s:"강타는 완벽한 카드입니다 (실제로 한 말)", who:"아장연", av:"/images/sts2/characters/character_icon_ironclad.webp", d:"2026.11.06", likes:4, c:1, ver:"v0.100.0", art:"/images/sts2/cards/break.webp"},
+  {s:"풀(fool)", who:"풀", d:"2026.11.13", likes:2, ver:"v0.113.0", art:null},
+  {s:"꿈★은 이루어진다.", who:"패치아조씨2", d:"2026.09.18", likes:0, c:1, ver:"v0.111.0", art:"/images/sts2/cards/hyperbeam.webp"},
+  {s:"문을 만드는 자가 있었다", who:"슬서운 이야기", d:"2026.06.05", likes:9, ver:"v0.105.0", art:"/images/sts2/bosses/doormaker_boss.webp"},
+  {s:"사일은 1코 99취약이 있었다", who:"닉", d:"2026.09.16", likes:3, ver:"v0.110.0", art:"/images/sts2/cards/echoing_slash.webp"},
+  {s:"럭키 대야", who:"임명삭제좀", d:"2026.09.08", likes:5, ver:"v0.111.0", art:"/images/sts2/relics/regalite.webp", contain:1},
+  {s:"8월 니오우스레터엔 8월27일 패치는 없습니다로 쓰여있다 ㄱ-", who:"디황", av:"/images/sts2/characters/character_icon_defect.webp", d:"2026.10.21", likes:2, ver:"v0.111.0", art:null},
+  {s:"프리즘은 원래 때리면 1코 주는 자판기였다", who:"슬서운 이야기", d:"2026.06.05", likes:7, ver:"v0.106.0", art:"/images/sts2/monsters-render/infested_prism.webp", contain:1},
+  {s:"광기의 포션은 원래 무색 카드였다", who:"슬서운 이야기", d:"2026.05.30", likes:6, ver:"v0.104.0", art:"/images/sts2/potions/touch_of_insanity.webp", contain:1},
+];
+const thumbUp = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10v11H4V10h3Zm0 0 4-7c1.5 0 2.5 1 2.2 2.6L12.6 9H19a2 2 0 0 1 2 2.3l-1.2 7.4A2 2 0 0 1 17.8 21H7"/></svg>';
+const artImg = st => st.art ? `<img src="${I(st.art)}" alt="" loading="lazy">` : `<div class="fallback"><img src="${I("/images/sts2/nav/patch_notes_icon.png")}" alt=""></div>`;
+const metaLine = st => `<span class="meta">${st.av ? `<img src="${I(st.av)}" alt="">` : ""}${st.who} · ${st.d}${st.c ? ` · 댓글 ${st.c}` : ""} <span class="chip">${st.ver}</span></span>`;
+
+const reelItems = stories.filter(st => st.art && !st.contain).slice(0, 4);
+document.getElementById("bars").innerHTML = reelItems.map(() => "<i></i>").join("");
+document.getElementById("slides").innerHTML = reelItems.map((st, i) => `
+  <a class="slide" href="#/stories/${i}"><div class="art">${artImg(st)}<div class="flash"></div></div>
+  <div class="txt"><q>${st.s}</q>${metaLine(st)}</div></a>`).join("");
+document.getElementById("rows").innerHTML = stories.map((st, i) => `
+  <a class="row" href="#/stories/${i}"><div class="thumb ${st.contain ? "contain" : ""}">${artImg(st)}</div>
+  <div><div class="s">“${st.s}”</div>${metaLine(st)}</div><span class="likes">${thumbUp}${st.likes}</span></a>`).join("");
+
+let cur = 0, timer = null;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function show(n) {
+  cur = (n + reelItems.length) % reelItems.length;
+  document.querySelectorAll(".slide").forEach((el, i) => el.classList.toggle("on", i === cur));
+  document.querySelectorAll(".bars i").forEach((el, i) => { el.className = ""; void el.offsetWidth; el.className = i < cur ? "done" : i === cur ? "on" : ""; });
+  clearTimeout(timer);
+  if (!reduce) timer = setTimeout(() => show(cur + 1), 6400);
+}
+document.querySelectorAll(".reel-nav button").forEach(b => b.addEventListener("click", e => { e.preventDefault(); show(cur + Number(b.dataset.step)); }));
+show(0);
+
+/* ---------- tiny hash router: home, /compendium, /vexing-puzzlebox, /toybox ---------- */
+function route() {
+  const path = location.hash.slice(1).split("?")[0] || "/";
+  const known = [...document.querySelectorAll(".page")].some(p => p.dataset.page === path);
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.dataset.page === (known ? path : "/")));
+  scrollTo(0, 0);
+}
+addEventListener("hashchange", route);
+route();
+
+/* ---------- panel + profile popover ---------- */
+const body = document.body, menuBtn = document.getElementById("menuBtn"), profileBtn = document.getElementById("profileBtn");
+function openPanel() { setPop(false); body.classList.add("panel-open"); menuBtn.setAttribute("aria-expanded", "true"); }
+function closePanel() { body.classList.remove("panel-open"); menuBtn.setAttribute("aria-expanded", "false"); }
+function setPop(open) { body.classList.toggle("pop-open", open); profileBtn.setAttribute("aria-expanded", open); }
+menuBtn.addEventListener("click", () => body.classList.contains("panel-open") ? closePanel() : openPanel());
+document.getElementById("closeBtn").addEventListener("click", closePanel);
+document.getElementById("scrim").addEventListener("click", closePanel);
+profileBtn.addEventListener("click", e => { e.stopPropagation(); closePanel(); setPop(!body.classList.contains("pop-open")); });
+document.addEventListener("click", e => { if (!e.target.closest("#pop")) setPop(false); });
+addEventListener("keydown", e => { if (e.key === "Escape") { closePanel(); setPop(false); } });
+</script>
+</body>
+</html>
