@@ -56,7 +56,10 @@ const PUBLIC_INDEX_PATHS = [
   "/pagestorm",
   "/colorful-philosophers",
   "/vexing-puzzlebox",
+  "/vexing-puzzlebox/connections",
   "/vexing-puzzlebox/beta-art",
+  "/toybox",
+  "/menu",
 ] as const;
 
 const COMPENDIUM_INDEX_PATHS = [

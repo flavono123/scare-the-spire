@@ -1,6 +1,37 @@
 {
-  "$comment": "Every menu destination: Codex kinds, Vexing Puzzlebox games, Toy Box services. Read by src/lib/place-registry.ts and scripts/copy-cf-static-pages.mjs. Labels: {ko,en} written here, {game} borrowed game copy title, {codex} game nav label falling back to a codex message, {sts1} STS1 nav label, {message} a serviceMessages path.",
+  "$comment": "Every menu destination: patch notes, Codex kinds, Vexing Puzzlebox games, Toy Box services. Read by src/lib/place-registry.ts and scripts/copy-cf-static-pages.mjs. Labels: {ko,en} written here, {game} borrowed game copy title, {codex} game nav label falling back to a codex message, {sts1} STS1 nav label, {message} a serviceMessages path. indexPages: area index pages served at their exact path.",
+  "indexPages": [
+    "/toybox",
+    "/menu"
+  ],
   "places": [
+    {
+      "id": "patch-notes",
+      "area": "patches",
+      "href": "/patches",
+      "label": {
+        "message": "patchChanges.tabs.notes"
+      },
+      "token": "/images/sts2/nav/patch_notes_icon.png"
+    },
+    {
+      "id": "patch-changes",
+      "area": "patches",
+      "href": "/patches/changes",
+      "label": {
+        "message": "patchChanges.tabs.changes"
+      },
+      "token": "/images/sts2/relics/bookmark.webp"
+    },
+    {
+      "id": "neowsletters",
+      "area": "patches",
+      "href": "/patches/neowsletters",
+      "label": {
+        "message": "patchChanges.tabs.neowsletters"
+      },
+      "token": "/images/sts2/ancients/neow.webp"
+    },
     {
       "id": "sts2-characters",
       "area": "sts2",
@@ -335,7 +366,7 @@
       "id": "connections",
       "area": "zzapper",
       "kind": "game",
-      "href": "/vexing-puzzlebox",
+      "href": "/vexing-puzzlebox/connections",
       "label": {
         "message": "vexingPuzzlebox.tabConnections"
       },
@@ -344,7 +375,8 @@
       "search": {
         "ko": "짜퍼 커넥션스 네 묶음 퀴즈",
         "en": "connections four groups quiz"
-      }
+      },
+      "exactRoute": true
     },
     {
       "id": "beta-art",

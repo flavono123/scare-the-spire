@@ -1,4 +1,5 @@
 export const VEXING_PUZZLEBOX_HREF = "/vexing-puzzlebox";
+export const VEXING_PUZZLEBOX_CONNECTIONS_HREF = "/vexing-puzzlebox/connections";
 export const VEXING_PUZZLEBOX_BETA_ART_HREF = "/vexing-puzzlebox/beta-art";
 export const VEXING_PUZZLEBOX_RANKINGS_HREF = "/vexing-puzzlebox/rankings";
 export const VEXING_PUZZLEBOX_TOKEN_SRC = "/images/sts2/relics/vexing_puzzlebox.webp";

@@ -1,238 +1,21 @@
 import Image from "@/components/ui/static-image";
-import Link from "next/link";
 import type { Metadata } from "next";
+import { IndexPageHeader } from "@/components/place-index/index-page-header";
+import { IndexTileSmall } from "@/components/place-index/index-tile";
+import { NavAttentionMarkers } from "@/components/place-index/nav-attention-markers";
+import { placeTileProps } from "@/components/place-index/place-tiles";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
   localizeHrefWithGameLocale,
 } from "@/lib/i18n";
-import {
-  formatCodexCount,
-  getCodexMetadata,
-  getCodexServiceMessages,
-} from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import { PLACE_AREA_META, placesInArea } from "@/lib/place-registry";
+import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
+import { serviceMessages } from "@/messages/service";
 
 export const dynamic = "force-static";
-
-const categories = [
-  {
-    href: "/compendium/characters",
-    labelKey: "characters",
-    count: 6,
-    description: null,
-    images: [
-      "/images/sts2/characters/character_icon_ironclad.webp",
-      "/images/sts2/characters/character_icon_silent.webp",
-      "/images/sts2/characters/character_icon_regent.webp",
-      "/images/sts2/characters/character_icon_necrobinder.webp",
-    ],
-  },
-  {
-    href: "/compendium/cards",
-    labelKey: "cards",
-    count: 612,
-    description: null,
-    images: [
-      "/images/sts2/cards/bash.webp",
-      "/images/sts2/cards/backstab.webp",
-      "/images/sts2/cards/ball_lightning.webp",
-      "/images/sts2/cards/apparition.webp",
-    ],
-  },
-  {
-    href: "/compendium/keywords",
-    labelKey: "keywords",
-    count: 8,
-    description: null,
-    images: [
-      "/images/sts2/ui/topbar/submenu_history_icon.png",
-      "/images/sts2/ui/hover_tip.png",
-      "/images/sts2/icons/star_icon.webp",
-      "/images/sts2/icons/gold_icon.webp",
-    ],
-  },
-  {
-    href: "/compendium/relics",
-    labelKey: "relics",
-    count: 314,
-    description: null,
-    images: [
-      "/images/sts2/relics/akabeko.webp",
-      "/images/sts2/relics/anchor.webp",
-      "/images/sts2/relics/amethyst_aubergine.webp",
-      "/images/sts2/relics/amphorae.webp",
-    ],
-  },
-  {
-    href: "/compendium/potions",
-    labelKey: "potions",
-    count: 63,
-    description: null,
-    images: [
-      "/images/sts2/potions/attack_potion.webp",
-      "/images/sts2/potions/block_potion.webp",
-      "/images/sts2/potions/ashwater.webp",
-      "/images/sts2/potions/beetle_juice.webp",
-    ],
-  },
-  {
-    href: "/compendium/powers",
-    labelKey: "powers",
-    count: 238,
-    description: null,
-    images: [
-      "/images/sts2/powers/strength_power.webp",
-      "/images/sts2/powers/vulnerable_power.webp",
-      "/images/sts2/powers/demon_form_power.webp",
-      "/images/sts2/powers/poison_power.webp",
-    ],
-  },
-  {
-    href: "/compendium/enchantments",
-    labelKey: "enchantments",
-    count: 22,
-    description: null,
-    images: [
-      "/images/sts2/enchantments/sharp.webp",
-      "/images/sts2/enchantments/favored.webp",
-      "/images/sts2/enchantments/swift.webp",
-      "/images/sts2/enchantments/steady.webp",
-    ],
-  },
-  {
-    href: "/compendium/bestiary",
-    labelKey: "monsters",
-    count: 200,
-    description: null,
-    images: [
-      "/images/sts2/bosses/ceremonial_beast_boss.webp",
-      "/images/sts2/bosses/knowledge_demon_boss.webp",
-      "/images/sts2/bosses/queen_boss.webp",
-      "/images/sts2/bosses/vantom_boss.webp",
-    ],
-  },
-  {
-    href: "/compendium/events",
-    labelKey: "events",
-    count: 57,
-    description: null,
-    images: [
-      "/images/sts2/events/abyssal_baths.webp",
-      "/images/sts2/events/doll_room.webp",
-      "/images/sts2/events/crystal_sphere.webp",
-      "/images/sts2/events/trial.webp",
-    ],
-  },
-  {
-    href: "/compendium/ancients",
-    labelKey: "ancients",
-    count: 8,
-    description: null,
-    images: [
-      "/images/sts2/ancients/neow.webp",
-      "/images/sts2/ancients/orobas.webp",
-      "/images/sts2/ancients/pael.webp",
-      "/images/sts2/ancients/darv.webp",
-    ],
-  },
-  {
-    href: "/compendium/epochs",
-    labelKey: "epochs",
-    count: 57,
-    description: null,
-    images: [
-      "/images/sts2/epochs/colorless1_epoch.webp",
-      "/images/sts2/epochs/neow_epoch.webp",
-      "/images/sts2/epochs/underdocks_epoch.webp",
-      "/images/sts2/epochs/darv_epoch.webp",
-    ],
-  },
-  {
-    href: "/compendium/badges",
-    labelKey: "badges",
-    count: 23,
-    description: null,
-    images: [
-      "/images/sts2/badges/ccccombo.webp",
-      "/images/sts2/badges/perfect.webp",
-      "/images/sts2/badges/healer.webp",
-      "/images/sts2/badges/money_money.webp",
-    ],
-  },
-  {
-    href: "/compendium/achievements",
-    labelKey: "achievements",
-    count: 33,
-    description: null,
-    images: [
-      "/images/sts2/achievements/ironclad_win.webp",
-      "/images/sts2/achievements/defect_win.webp",
-      "/images/sts2/achievements/floor_ten_thousand.webp",
-      "/images/sts2/achievements/nope.webp",
-    ],
-  },
-  {
-    href: "/compendium/ascensions",
-    labelKey: "ascensions",
-    count: 11,
-    description: null,
-    images: [
-      "/images/sts2/ui/topbar/top_bar_ascension.png",
-      "/images/sts2/ui/topbar/top_bar_ascension.png",
-      "/images/sts2/ui/topbar/top_bar_ascension.png",
-      "/images/sts2/ui/topbar/top_bar_ascension.png",
-    ],
-  },
-  {
-    href: "/compendium/modifiers",
-    labelKey: "modifiers",
-    count: 20,
-    description: null,
-    images: [
-      "/images/sts2/modifiers/character_cards.webp",
-      "/images/sts2/modifiers/hoarder.webp",
-      "/images/sts2/modifiers/terminal.webp",
-      "/images/sts2/modifiers/draft.webp",
-    ],
-  },
-  {
-    href: "/compendium/blitz-shop",
-    labelKey: "blitzShop",
-    count: 20,
-    description: null,
-    images: [
-      "/images/sts2/blitz-merchant/entries/entry_card_rewards.webp",
-      "/images/sts2/blitz-merchant/entries/entry_relic.webp",
-      "/images/sts2/blitz-merchant/entries/entry_potions.webp",
-      "/images/sts2/blitz-merchant/entries/entry_two_relics.webp",
-    ],
-  },
-  {
-    href: "/compendium/dominions",
-    labelKey: "dominions",
-    count: 12,
-    description: null,
-    images: [
-      "/images/sts2/bosses/ceremonial_beast_boss.webp",
-      "/images/sts2/bosses/waterfall_giant_boss.webp",
-      "/images/sts2/bosses/kaiser_crab_boss.webp",
-      "/images/sts2/bosses/queen_boss.webp",
-    ],
-  },
-  {
-    href: "/compendium/pets",
-    labelKey: "pets",
-    count: 5,
-    description: null,
-    images: [
-      "/images/sts2/monsters-render/osty.webp",
-      "/images/sts2/monsters-render/wuppy.webp",
-      "/images/sts2/monsters-render/byrdpip.webp",
-      "/images/sts2/monsters-render/paels_legion.webp",
-    ],
-  },
-] as const;
 
 export async function generateMetadata({
   searchParams,
@@ -254,108 +37,40 @@ export default async function CodexIndexPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const messages = getCodexServiceMessages(serviceLocale);
+  const copy = serviceMessages[serviceLocale].placeIndex;
   const gameUi = await getCodexGameUiLabels(gameLocale);
-  const gameCategoryLabels: Partial<Record<(typeof categories)[number]["labelKey"], string>> = {
-    characters: gameUi.charactersTitle,
-    cards: gameUi.cardLibraryTitle,
-    keywords: gameUi.nav.keywords,
-    relics: gameUi.relicCollectionTitle,
-    potions: gameUi.potionLabTitle,
-    powers: gameUi.nav.powers,
-    monsters: gameUi.bestiaryTitle,
-    events: gameUi.eventsTitle,
-    ancients: gameUi.ancientsTitle,
-    epochs: gameUi.epochsTitle,
-    modifiers: gameUi.nav.modifiers,
-    ascensions: gameUi.nav.ascensions,
-  };
+  const sections = (["sts2", "sts1"] as const).map((area) => ({
+    area,
+    title: copy.areas[area],
+    token: PLACE_AREA_META[area].token,
+    tiles: placesInArea(area).map((place) => placeTileProps(place, serviceLocale, gameLocale)),
+  }));
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
-        <div className="mx-auto max-w-5xl px-6 py-12 text-center">
-          <h1 className="font-game-title text-4xl md:text-5xl text-primary mb-3">
-            {gameUi.compendiumTitle}
-          </h1>
-          <p className="font-service text-lg text-primary/60">
-            {messages.indexView.subtitle}
-          </p>
-        </div>
+    <div className="relative isolate min-h-[calc(100svh-3rem)]" data-place-index="compendium">
+      <div className={TOYBOX_WIDE_SHELL_CLASS}>
+        <IndexPageHeader
+          title={gameUi.compendiumTitle}
+          token={PLACE_AREA_META.sts2.token}
+          art={PLACE_AREA_META.sts2.art}
+          homeHref={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
+          backLabel={copy.backHome}
+        />
+        {sections.map((section) => (
+          <section key={section.area} id={section.area} className="mt-8 scroll-mt-16">
+            <h2 className="flex items-center gap-2 font-game-title text-lg text-primary/90">
+              <Image src={section.token} alt="" width={28} height={28} className="h-6 w-6 object-contain" />
+              {section.title}
+            </h2>
+            <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
+              {section.tiles.map((tile) => (
+                <IndexTileSmall key={tile.href} {...tile} />
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
-
-      {/* Category Grid */}
-      <div className="mx-auto max-w-5xl px-6 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {categories.map((cat) => (
-            <Link
-              key={cat.href}
-              href={localizeHrefWithGameLocale(cat.href, serviceLocale, gameLocale)}
-              className="group relative overflow-hidden rounded-xl border border-yellow-900/20 bg-[#12121a] hover:border-yellow-700/40 hover:bg-[#16161f] transition-all duration-200"
-            >
-              {/* Thumbnail row */}
-              <div className="flex items-center justify-center gap-3 px-6 pt-6 pb-4">
-                {cat.images.map((src, i) => (
-                  <div
-                    key={i}
-                    className="relative w-14 h-14 md:w-16 md:h-16 opacity-70 group-hover:opacity-100 transition-opacity duration-200"
-                  >
-                    <Image
-                      src={src}
-                      alt=""
-                      fill
-                      sizes="64px"
-                      className="object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.15)]"
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* Text */}
-              <div className="px-6 pb-6 text-center">
-                <h2 className="font-game-title text-2xl text-primary group-hover:text-primary transition-colors">
-                  {gameCategoryLabels[cat.labelKey] ?? messages[cat.labelKey]}
-                  {serviceLocale === "ko" && (
-                    <span className="font-game-text ml-2 text-base text-primary/30">
-                      {ENGLISH_LABELS[cat.labelKey]}
-                    </span>
-                  )}
-                </h2>
-                {cat.description && (
-                  <p className="font-service mt-1 text-sm text-primary/40">
-                    {cat.description}
-                  </p>
-                )}
-                <span className="font-game-text mt-2 inline-block text-xs text-yellow-600/60">
-                  {formatCodexCount(cat.count, messages.labels.entries, serviceLocale)}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
+      <NavAttentionMarkers />
     </div>
   );
 }
-
-const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = {
-  characters: "Characters",
-  cards: "Cards",
-  keywords: "Keywords",
-  relics: "Relics",
-  potions: "Potions",
-  powers: "Powers",
-  enchantments: "Enchantments",
-  monsters: "Bestiary",
-  events: "Events",
-  ancients: "Ancients",
-  epochs: "Epochs",
-  modifiers: "Modifiers",
-  ascensions: "Ascension",
-  badges: "Badges",
-  achievements: "Achievements",
-  blitzShop: "Blitz Shop",
-  dominions: "Dread Dominions",
-  pets: "Pets",
-};

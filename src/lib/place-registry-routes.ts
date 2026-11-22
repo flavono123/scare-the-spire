@@ -4,11 +4,11 @@ import registryPayload from "../data/place-registry.json";
 // without pulling in label messages.
 type RoutePlace = { href: string; exactRoute?: boolean };
 
-/** Path segments of places the Worker serves at their exact path. */
+/** Path segments of index pages and places the Worker serves at their exact path. */
 export function exactRoutePlaceSegments(
   places: readonly RoutePlace[] = registryPayload.places,
+  indexPages: readonly string[] = registryPayload.indexPages,
 ): string[][] {
-  return places
-    .filter((place) => place.exactRoute)
-    .map((place) => place.href.split("/").filter(Boolean));
+  return [...indexPages, ...places.filter((place) => place.exactRoute).map((place) => place.href)]
+    .map((href) => href.split("/").filter(Boolean));
 }

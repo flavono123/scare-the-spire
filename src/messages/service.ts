@@ -97,6 +97,23 @@ export const serviceMessages = {
       sts2Codex: "STS2 백과사전",
       sts1: "STS1",
     },
+    placeIndex: {
+      backHome: "홈",
+      newLabel: "NEW",
+      more: "+{count} 더보기",
+      menuTitle: "전체 메뉴",
+      menuDescription: "슬서운 이야기의 모든 메뉴",
+      toyboxDescription: "슬서운 이야기의 장난감 상자 서비스 모음",
+      zzapperDescription: "짜증나는 퍼즐상자의 게임 모음",
+      profile: "프로필",
+      areas: {
+        patches: "패치노트",
+        sts2: "슬더스2 백과사전",
+        sts1: "슬더스1 백과사전",
+        zzapper: "짜증나는 퍼즐상자",
+        toybox: "장난감 상자",
+      },
+    },
     vexingPuzzlebox: {
       subtitle: "퀴즈 풀고 베타 아트 감상하기",
       tabsLabel: "짜증나는 퍼즐상자 탭",
@@ -1784,6 +1801,23 @@ export const serviceMessages = {
     games: {
       sts2Codex: "STS2 Codex",
       sts1: "STS1",
+    },
+    placeIndex: {
+      backHome: "Home",
+      newLabel: "NEW",
+      more: "+{count} more",
+      menuTitle: "All menus",
+      menuDescription: "Every menu on Scare the Spire",
+      toyboxDescription: "Scare the Spire's Toy Box services",
+      zzapperDescription: "Vexing Puzzlebox games",
+      profile: "Profile",
+      areas: {
+        patches: "Patch Notes",
+        sts2: "STS2 Compendium",
+        sts1: "STS1 Compendium",
+        zzapper: "Vexing Puzzlebox",
+        toybox: "Toy Box",
+      },
     },
     vexingPuzzlebox: {
       subtitle: "Solve quizzes and watch beta art",

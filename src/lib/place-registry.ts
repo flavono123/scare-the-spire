@@ -14,7 +14,7 @@ import type { Sts1ResourceType } from "@/lib/sts1/types";
 import { isLatestByrdispatchNewSection, isLatestByrdispatchOnOrBefore } from "@/lib/toy-box-news";
 import { serviceMessages } from "@/messages/service";
 
-export const PLACE_AREAS = ["sts2", "sts1", "zzapper", "toybox"] as const;
+export const PLACE_AREAS = ["patches", "sts2", "sts1", "zzapper", "toybox"] as const;
 export type PlaceArea = (typeof PLACE_AREAS)[number];
 
 const PLACE_KINDS = ["page", "hub", "game", "tool"] as const;
@@ -183,6 +183,35 @@ export function parsePlaceRegistry(payload: unknown): readonly Place[] {
 }
 
 export const PLACES: readonly Place[] = parsePlaceRegistry(registryPayload);
+
+/** Each area's index page, token and the art its index page sits on. */
+export const PLACE_AREA_META: Record<PlaceArea, { href: string; token: string; art: string }> = {
+  patches: {
+    href: "/patches",
+    token: "/images/sts2/nav/patch_notes_icon.png",
+    art: "/images/sts2/events/waterlogged_scriptorium.webp",
+  },
+  sts2: {
+    href: "/compendium",
+    token: "/images/sts2/icons/app_icon.png",
+    art: "/images/sts2/events/waterlogged_scriptorium.webp",
+  },
+  sts1: {
+    href: "/compendium#sts1",
+    token: "/images/sts1_app_icon.png",
+    art: "/images/sts2/events/waterlogged_scriptorium.webp",
+  },
+  zzapper: {
+    href: "/vexing-puzzlebox",
+    token: "/images/sts2/relics/vexing_puzzlebox.webp",
+    art: "/images/sts2/events/fake_merchant.webp",
+  },
+  toybox: {
+    href: "/toybox",
+    token: "/images/sts2/relics/toy_box.webp",
+    art: "/images/sts2/events/tinker_time.webp",
+  },
+};
 
 export function placesInArea(area: PlaceArea): Place[] {
   return PLACES.filter((place) => place.area === area);

@@ -208,6 +208,11 @@ export const PAGE_OG_IMAGE_RULES = [
   },
   {
     pattern: "/vexing-puzzlebox",
+    label: "짜증나는 퍼즐상자",
+    image: VEXING_PUZZLEBOX_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/vexing-puzzlebox/connections",
     label: "짜증나는 퍼즐상자 커넥션스",
     image: VEXING_PUZZLEBOX_PAGE_OG_IMAGE,
   },

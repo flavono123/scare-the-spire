@@ -376,6 +376,7 @@ export async function buildSearchNames(gameLocale: GameLocale): Promise<GlobalSe
 }
 
 const PLACE_SEARCH_TYPE: Record<PlaceArea, SearchItemType> = {
+  patches: "patch",
   sts2: "compendium",
   sts1: "compendium",
   zzapper: "zzapper",

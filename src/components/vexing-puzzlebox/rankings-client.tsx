@@ -24,7 +24,7 @@ import {
   BETA_ART_TOKEN_SRC,
   CONNECTIONS_TOKEN_SRC,
   VEXING_PUZZLEBOX_BETA_ART_HREF,
-  VEXING_PUZZLEBOX_HREF,
+  VEXING_PUZZLEBOX_CONNECTIONS_HREF,
 } from "@/lib/vexing-puzzlebox";
 import {
   betaQuizMaxScore,
@@ -314,7 +314,7 @@ export function RankingsClient({
           label: copy.total,
           title: copy.totalTitle.replace("{game}", copy.gameConnections),
           subtitle: copy.totalBoards.replace("{count}", String(connections.length)),
-          playHref: `${local(VEXING_PUZZLEBOX_HREF)}?list`,
+          playHref: `${local(VEXING_PUZZLEBOX_CONNECTIONS_HREF)}?list`,
         },
         ...connections.map((board) => ({
           id: String(board.number),
@@ -326,7 +326,7 @@ export function RankingsClient({
               {issueMonth(board.issueDate, serviceLocale)}
             </span>
           ),
-          playHref: `${local(VEXING_PUZZLEBOX_HREF)}?p=${board.number}`,
+          playHref: `${local(VEXING_PUZZLEBOX_CONNECTIONS_HREF)}?p=${board.number}`,
         })),
       ];
     }
