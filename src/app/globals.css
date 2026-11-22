@@ -1777,3 +1777,80 @@
     animation: none;
   }
 }
+
+/* Home story reel: each slide restarts when it becomes active (data-active).
+   A short punch-in, then a slow linear drift that lasts the whole slide. */
+.story-reel-slide[data-active] .story-reel-art {
+  animation:
+    story-reel-punch 1s cubic-bezier(0.2, 0.7, 0.2, 1) both,
+    story-reel-drift 5.4s linear 1s forwards;
+}
+
+.story-reel-slide[data-active] .story-reel-flash {
+  animation: story-reel-flash 1.1s ease-out both;
+}
+
+.story-reel-slide[data-active] .story-reel-text {
+  animation: story-reel-rise 0.9s 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.story-reel-bar[data-active]::after {
+  animation: story-reel-fill 6.4s linear forwards;
+}
+
+@keyframes story-reel-punch {
+  from {
+    transform: scale(1.45) rotate(-1.5deg);
+    filter: brightness(1.6) saturate(1.3);
+  }
+  to {
+    transform: scale(1.14);
+    filter: none;
+  }
+}
+
+@keyframes story-reel-drift {
+  from {
+    transform: scale(1.14) translate(0, 0);
+  }
+  to {
+    transform: scale(1.04) translate(2%, -2%);
+  }
+}
+
+@keyframes story-reel-flash {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes story-reel-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes story-reel-fill {
+  to {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .story-reel-slide[data-active] .story-reel-art,
+  .story-reel-slide[data-active] .story-reel-flash,
+  .story-reel-slide[data-active] .story-reel-text,
+  .story-reel-bar[data-active]::after {
+    animation: none;
+  }
+}

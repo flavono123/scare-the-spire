@@ -39,6 +39,7 @@ import { resolveStoryPatchLine } from "@/lib/resolve-story-patch-line";
 import { loadFullSts2PatchLines } from "@/lib/sts2-patch-lines-client";
 import { DEFAULT_TOYBOX_FEED_SORT, type ToyboxFeedSort } from "@/lib/toybox-feed";
 import { storyHref, storyIdFromPathSegment } from "@/lib/story-paths";
+import { ELEMENT_ART_PATH, storyArtUrl } from "@/lib/story-art";
 import { serviceMessages } from "@/messages/service";
 
 // STS2 entities, changes and patches are read only by the story modal and the
@@ -66,6 +67,9 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
       searchPlaceholder: "검색",
       noResults: "검색 결과가 없습니다",
       notFound: "이야기를 찾을 수 없습니다",
+      reelLabel: "이야기 미리보기",
+      reelPrevious: "이전 이야기",
+      reelNext: "다음 이야기",
     };
   }
 
@@ -78,6 +82,9 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
     searchPlaceholder: "Search",
     noResults: "No stories found",
     notFound: "Story not found",
+    reelLabel: "Story preview",
+    reelPrevious: "Previous story",
+    reelNext: "Next story",
   };
 }
 
@@ -131,6 +138,159 @@ function formatStoryPublishedAt(publishedAt: string, serviceLocale: ServiceLocal
   }
 
   return formatShortDate(date);
+}
+
+let elementArtPromise: Promise<Record<string, string>> | null = null;
+
+/** public/generated/element-art.json, fetched once per page; empty until it arrives or on failure. */
+function useElementArt(): Record<string, string> {
+  const [art, setArt] = useState<Record<string, string>>({});
+  useEffect(() => {
+    let cancelled = false;
+    elementArtPromise ??= fetch(ELEMENT_ART_PATH)
+      .then((response) => (response.ok ? response.json() as Promise<Record<string, string>> : {}))
+      .catch(() => {
+        elementArtPromise = null;
+        return {};
+      });
+    void elementArtPromise.then((loaded) => {
+      if (!cancelled) setArt(loaded);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  return art;
+}
+
+/** STS2 card, boss and event art fill a frame; icons and whole STS1 card renders sit inside one. */
+function storyArtFills(url: string): boolean {
+  return /^\/images\/sts2\/(?:cards|cards-beta|bosses|events|ancients)\//.test(url);
+}
+
+/** "v0.105.0" from the story's patch line or source patch. */
+function storyPatchVersion(story: Story): string | null {
+  const patch = story.patchLineId?.split(":")[0] ?? story.source;
+  if (!patch) return null;
+  return patch.startsWith("v") ? patch : `v${patch}`;
+}
+
+function StoryThumb({ story, art, className }: { story: Story; art: Record<string, string>; className: string }) {
+  const { url, fallback } = storyArtUrl(story, art);
+  const fills = !fallback && storyArtFills(url);
+  return (
+    <span className={`relative block shrink-0 overflow-hidden rounded-lg border border-border/70 bg-black ${className}`}>
+      <Image
+        src={url}
+        alt=""
+        fill
+        sizes="72px"
+        className={fills
+          ? "object-cover transition-transform duration-500 group-hover:scale-110"
+          : "bg-[radial-gradient(circle,#26262c,#0b0b0d)] object-contain p-2 transition-transform duration-500 group-hover:scale-110"}
+      />
+    </span>
+  );
+}
+
+const REEL_SLIDE_MS = 6400;
+const REEL_SIZE = 4;
+
+/** The latest stories whose art fills a frame, one at a time with a punch-in and a slow drift. */
+function StoryReel({
+  stories,
+  art,
+  serviceLocale,
+  gameLocale,
+}: {
+  stories: Story[];
+  art: Record<string, string>;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+}) {
+  const slides = useMemo(() => stories
+    .map((story) => ({ story, art: storyArtUrl(story, art) }))
+    .filter((entry) => !entry.art.fallback && storyArtFills(entry.art.url))
+    .sort((a, b) => storyPublishedTime(b.story) - storyPublishedTime(a.story))
+    .slice(0, REEL_SIZE), [art, stories]);
+  const [active, setActive] = useState(0);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const current = slides.length > 0 ? active % slides.length : 0;
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReducedMotion(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion || slides.length < 2) return;
+    const timer = window.setTimeout(() => setActive((index) => (index + 1) % slides.length), REEL_SLIDE_MS);
+    return () => window.clearTimeout(timer);
+  }, [current, reducedMotion, slides.length]);
+
+  if (slides.length === 0) return null;
+  const copy = storyFeedCopy(serviceLocale);
+  const step = (delta: number) => setActive((current + delta + slides.length) % slides.length);
+
+  return (
+    <section
+      aria-roledescription="carousel"
+      aria-label={copy.reelLabel}
+      className="relative mb-3 h-[22rem] overflow-hidden rounded-xl border border-border bg-black max-sm:h-auto max-sm:aspect-[4/5]"
+    >
+      <div className="absolute inset-x-4 top-3 z-[3] flex gap-1">
+        {slides.map((slide, index) => (
+          <i
+            key={`${slide.story.id}-${index === current ? active : "idle"}`}
+            data-active={index === current || undefined}
+            className={`story-reel-bar h-[3px] flex-1 overflow-hidden rounded-sm bg-white/20 after:block after:h-full after:bg-primary after:content-[''] ${
+              index < current ? "after:w-full" : "after:w-0"
+            }`}
+          />
+        ))}
+      </div>
+      {slides.map((slide, index) => {
+        const version = storyPatchVersion(slide.story);
+        const isActive = index === current;
+        return (
+          <Link
+            key={`${slide.story.id}-${isActive ? active : "idle"}`}
+            href={localizeHrefWithGameLocale(storyHref(slide.story.id), serviceLocale, gameLocale)}
+            prefetch={false}
+            aria-hidden={!isActive || undefined}
+            tabIndex={isActive ? undefined : -1}
+            data-active={isActive || undefined}
+            className={`story-reel-slide absolute inset-0 grid grid-cols-[1fr_1.05fr] transition-opacity duration-700 max-sm:grid-cols-1 max-sm:grid-rows-[1fr_auto] ${
+              isActive ? "z-[1] opacity-100" : "pointer-events-none opacity-0"
+            }`}
+          >
+            <span className="relative overflow-hidden">
+              <Image src={slide.art.url} alt="" fill sizes="(max-width: 640px) 100vw, 360px" className="story-reel-art object-cover" />
+              <span className="story-reel-flash pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_40%_45%,rgba(255,236,170,0.55),transparent_60%)] opacity-0" />
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent from-50% to-black max-sm:bg-gradient-to-b" />
+            </span>
+            <span className="story-reel-text flex flex-col justify-center gap-3 py-7 pl-1 pr-9 max-sm:px-5 max-sm:pb-6 max-sm:pt-0">
+              <span className="text-[clamp(1.3rem,2.7vw,2rem)] font-medium leading-snug text-foreground">
+                &ldquo;{slide.story.sentence}&rdquo;
+              </span>
+              {version && (
+                <span className="w-fit rounded border border-primary/30 px-1.5 text-xs text-primary/90">{version}</span>
+              )}
+            </span>
+          </Link>
+        );
+      })}
+      {slides.length > 1 && (
+        <>
+          <button type="button" aria-label={copy.reelPrevious} onClick={() => step(-1)} className="absolute inset-y-0 left-0 z-[2] w-10 text-2xl text-white/40 transition-colors hover:text-white/90">‹</button>
+          <button type="button" aria-label={copy.reelNext} onClick={() => step(1)} className="absolute inset-y-0 right-0 z-[2] w-10 text-2xl text-white/40 transition-colors hover:text-white/90">›</button>
+        </>
+      )}
+    </section>
+  );
 }
 
 function stableStoryOrder(
@@ -684,6 +844,7 @@ function StoryCard({
   authReady,
   ensureUser,
   href,
+  art,
   canDelete,
   onDelete,
   likeCount,
@@ -697,6 +858,7 @@ function StoryCard({
   authReady: boolean;
   ensureUser: () => Promise<string | null>;
   href: string;
+  art: Record<string, string>;
   canDelete: boolean;
   onDelete: (storyId: string) => Promise<void>;
   likeCount: number;
@@ -708,6 +870,7 @@ function StoryCard({
   const copy = storyFeedCopy(serviceLocale);
   const tips = serviceMessages[serviceLocale].engagementTips;
   const publishedLabel = story.publishedAt ? formatStoryPublishedAt(story.publishedAt, serviceLocale) : "";
+  const version = storyPatchVersion(story);
 
   const handleDelete = async () => {
     if (!canDelete || deleting || !window.confirm(copy.deleteConfirm)) return;
@@ -720,17 +883,20 @@ function StoryCard({
   };
 
   return (
-    <article className="relative border-b border-border/50 last:border-b-0">
-      <div className="px-4 py-6">
-        {/* Sentence + engagement */}
-        <div className="flex items-center gap-3">
+    <article className="group relative border-b border-border/50 last:border-b-0">
+      <div className="px-4 py-4">
+        {/* Thumbnail, sentence + meta, engagement */}
+        <div className="flex items-center gap-3 sm:gap-3.5">
+          <Link href={href} prefetch={false} tabIndex={-1} aria-hidden>
+            <StoryThumb story={story} art={art} className="h-14 w-14 sm:h-[72px] sm:w-[72px]" />
+          </Link>
           <div className="min-w-0 flex-1">
             <Link
               href={href}
               prefetch={false}
-              className="block w-full cursor-pointer hover:opacity-80 transition-opacity"
+              className="block w-full cursor-pointer transition-opacity hover:opacity-80"
             >
-              <p className="text-lg sm:text-xl font-medium leading-snug text-center">
+              <p className="text-[15px] font-medium leading-snug sm:text-[17px]">
                 &ldquo;{story.sentence}&rdquo;
                 <EngagementSummary
                   commentCount={commentCount}
@@ -740,31 +906,36 @@ function StoryCard({
                 />
               </p>
             </Link>
-            {story.community && (
-              <div className="mt-1 flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
-                <DisplayedProfileNickname
-                  nickname={story.authorName ?? ""}
-                  isOwner={Boolean(userId && story.authorUserId === userId)}
-                  authorToken={story}
-                  size={14}
-                  tokenClassName="h-3.5 w-3.5"
-                  nicknameClassName="text-[11px] text-muted-foreground"
-                />
-                {publishedLabel ? <span>· {publishedLabel}</span> : null}
-                {canDelete && (
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    disabled={deleting}
-                    className="inline-flex h-5 w-5 items-center justify-center rounded text-muted-foreground/70 transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:pointer-events-none disabled:opacity-40"
-                    title={copy.deleteStory}
-                  >
-                    {deleting ? <EngagementSpinner size={12} /> : <Trash2 size={12} />}
-                    <span className="sr-only">{copy.deleteStory}</span>
-                  </button>
-                )}
-              </div>
-            )}
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
+              {story.community && (
+                <>
+                  <DisplayedProfileNickname
+                    nickname={story.authorName ?? ""}
+                    isOwner={Boolean(userId && story.authorUserId === userId)}
+                    authorToken={story}
+                    size={14}
+                    tokenClassName="h-3.5 w-3.5"
+                    nicknameClassName="text-[11px] text-muted-foreground"
+                  />
+                  {publishedLabel ? <span>· {publishedLabel}</span> : null}
+                </>
+              )}
+              {version && (
+                <span className="rounded border border-primary/30 px-1 text-[10px] text-primary/90">{version}</span>
+              )}
+              {canDelete && (
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="inline-flex h-5 w-5 items-center justify-center rounded text-muted-foreground/70 transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:pointer-events-none disabled:opacity-40"
+                  title={copy.deleteStory}
+                >
+                  {deleting ? <EngagementSpinner size={12} /> : <Trash2 size={12} />}
+                  <span className="sr-only">{copy.deleteStory}</span>
+                </button>
+              )}
+            </div>
           </div>
           <div className="shrink-0">
             <LikeButton
@@ -1077,6 +1248,7 @@ export function StoryFeed({
     [communityStories.stories, stories],
   );
   const references = useStoryReferences({ gameLocale, enabled: composerOpen, allStories, sts2PatchLines });
+  const art = useElementArt();
   const { patchLineMap } = references;
   const prefetchSts2Data = useCallback(() => {
     prefetchAllEntityGraph(gameLocale);
@@ -1110,6 +1282,7 @@ export function StoryFeed({
           onClose={() => setComposerOpen(false)}
         />
       )}
+      <StoryReel stories={allStories} art={art} serviceLocale={serviceLocale} gameLocale={gameLocale} />
       <StoryFeedToolbar
         serviceLocale={serviceLocale}
         sortMode={sortMode}
@@ -1136,6 +1309,7 @@ export function StoryFeed({
                 authReady={authReady}
                 ensureUser={ensureUser}
                 href={localizeHrefWithGameLocale(storyHref(story.id), serviceLocale, gameLocale)}
+                art={art}
                 canDelete={Boolean(story.community && userId && story.authorUserId === userId)}
                 onDelete={communityStories.remove}
                 likeCount={counts.likes[story.id] ?? 0}
