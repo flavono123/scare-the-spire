@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { parseByrdispatchMarkdown } from "../src/lib/byrdispatch";
+import { byrdispatchNewActive, parseByrdispatchMarkdown } from "../src/lib/byrdispatch";
+
+assert.equal(byrdispatchNewActive(null), false);
+assert.equal(byrdispatchNewActive("2026-11-19", Date.parse("2026-12-02T23:59:00+09:00")), true, "day 13 still new");
+assert.equal(byrdispatchNewActive("2026-11-19", Date.parse("2026-12-03T00:00:00+09:00")), false, "14 days later it expires");
 
 const parsed = parseByrdispatchMarkdown(
   `# 2026-08-20

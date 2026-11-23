@@ -131,7 +131,7 @@ export default function NavIndicatorsDevPage() {
         </div>
         <p className="text-xs text-muted-foreground">
           {newServices.length > 0
-            ? `상자 아이콘에 초록 점, 메뉴에 NEW: ${newServices.map((item) => item.label).join(", ")}. 다음 섀소식이 나오면 꺼진다. 일찍 끄려면 site-nav-items의 announceNewThrough를 지운다.`
+            ? `상자 아이콘에 초록 점, 메뉴에 NEW: ${newServices.map((item) => item.label).join(", ")}. 다음 섀소식이 나오거나 섀소식 날짜로부터 14일이 지난 뒤 배포되면 꺼진다. 일찍 끄려면 site-nav-items의 announceNewThrough를 지운다.`
             : "알릴 새 서비스가 없다."}
         </p>
       </section>

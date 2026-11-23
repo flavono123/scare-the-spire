@@ -13,6 +13,7 @@ import {
 import { buildCompendiumDataChunkFiles } from "../src/lib/compendium-data-chunks.server";
 import { buildCompendiumResourceManifest } from "../src/lib/compendium-resource-manifest";
 import {
+  byrdispatchNewActive,
   getLatestByrdispatchEntry,
   getLatestByrdispatchNotice,
 } from "../src/lib/byrdispatch";
@@ -182,7 +183,9 @@ interface BorrowedGameCopyPayload {
 interface ToyBoxNewsPayload {
   latestDate: string | null;
   newSectionTitles: string[];
+  newActive: boolean;
 }
+
 
 interface LocalizedPhraseReplacement {
   from: string;
@@ -1213,6 +1216,8 @@ async function buildToyBoxNewsPayload(): Promise<ToyBoxNewsPayload> {
     newSectionTitles: latest?.regularSections
       .filter((section) => section.statuses.includes("new"))
       .map((section) => section.title) ?? [],
+    // shortcut: judged at build time, so an expired NEW stays until the next deploy; move to the client if deploys stall for weeks.
+    newActive: byrdispatchNewActive(latest?.date ?? null),
   };
 }
 

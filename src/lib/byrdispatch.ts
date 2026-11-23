@@ -300,6 +300,13 @@ export async function getByrdispatchEntries(
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
+/** NEW markers last until the next byrdispatch, or this many days after the latest one at most. */
+export const BYRDISPATCH_NEW_TTL_DAYS = 14;
+
+export function byrdispatchNewActive(date: string | null, now = Date.now()): boolean {
+  return date !== null && now < Date.parse(`${date}T00:00:00+09:00`) + BYRDISPATCH_NEW_TTL_DAYS * 86_400_000;
+}
+
 export async function getLatestByrdispatchEntry(
   serviceLocale: ServiceLocale = "ko",
 ): Promise<ByrdispatchEntry | null> {
