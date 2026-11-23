@@ -12,12 +12,14 @@ const engCards = JSON.parse(
 
 const byId = new Set(engCards.map((card) => card.id));
 const multiplayerOnly = new Set(catalog.multiplayerOnlyIds);
-const singleplayerOnly = new Set(catalog.singleplayerOnlyIds);
+const singleplayerOnly: string[] = catalog.singleplayerOnlyIds;
 
-assert.equal(catalog.multiplayerOnlyIds.length, 37);
-assert.equal(catalog.singleplayerOnlyIds.length, 1);
-assert.ok(singleplayerOnly.has("WELL_LAID_PLANS"));
+// 0.113.0 decompile: 43 MultiplayerOnly (COMPOST, COVERING_FIRE, ENRAPTURE, ENSEMBLE, SELF_DEPRECATE, YOGA added);
+// WELL_LAID_PLANS is no longer SingleplayerOnly. scripts/sts2-score-harness --models prints the same set.
+assert.equal(catalog.multiplayerOnlyIds.length, 43);
+assert.equal(singleplayerOnly.length, 0);
 assert.equal(multiplayerOnly.has("WELL_LAID_PLANS"), false);
+assert.ok(multiplayerOnly.has("YOGA"));
 
 for (const id of [...multiplayerOnly, ...singleplayerOnly]) {
   assert.ok(byId.has(id), `unknown card id ${id}`);

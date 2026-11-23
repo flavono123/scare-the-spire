@@ -5,11 +5,15 @@
     "BLADE_SYMPHONY",
     "BLAZE",
     "CACOPHONY",
+    "COMPOST",
     "CONCOCT",
     "CONSTELLATION",
     "COORDINATE",
+    "COVERING_FIRE",
     "DEMONIC_SHIELD",
     "ENERGY_SURGE",
+    "ENRAPTURE",
+    "ENSEMBLE",
     "FADE",
     "FLANKING",
     "GANG_UP",
@@ -30,15 +34,15 @@
     "OUTRAGE",
     "PLOT",
     "RALLY",
+    "SELF_DEPRECATE",
     "SNEAKY",
     "SOULBOUND",
     "TAG_TEAM",
     "TANK",
     "THE_BALL",
     "TUTOR",
-    "UNDERWORLD"
+    "UNDERWORLD",
+    "YOGA"
   ],
-  "singleplayerOnlyIds": [
-    "WELL_LAID_PLANS"
-  ]
+  "singleplayerOnlyIds": []
 }
