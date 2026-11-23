@@ -317,5 +317,1655 @@
         "TheGuardian"
       ]
     }
+  },
+  "code": {
+    "cards:Amplify": {
+      "powers": [
+        "Amplify"
+      ]
+    },
+    "cards:Beam Cell": {
+      "powers": [
+        "Vulnerable"
+      ]
+    },
+    "cards:Biased Cognition": {
+      "powers": [
+        "Bias",
+        "Focus"
+      ]
+    },
+    "cards:Buffer": {
+      "powers": [
+        "Buffer"
+      ]
+    },
+    "cards:Conserve Battery": {
+      "powers": [
+        "EnergizedBlue"
+      ]
+    },
+    "cards:Consume": {
+      "powers": [
+        "Focus"
+      ]
+    },
+    "cards:Core Surge": {
+      "powers": [
+        "Artifact"
+      ]
+    },
+    "cards:Creative AI": {
+      "powers": [
+        "Creative AI"
+      ]
+    },
+    "cards:Defragment": {
+      "powers": [
+        "Focus"
+      ]
+    },
+    "cards:Echo Form": {
+      "powers": [
+        "Echo Form"
+      ]
+    },
+    "cards:Electrodynamics": {
+      "powers": [
+        "Electro"
+      ]
+    },
+    "cards:Undo": {
+      "powers": [
+        "Equilibrium"
+      ]
+    },
+    "cards:Go for the Eyes": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "cards:Heatsinks": {
+      "powers": [
+        "Heatsink"
+      ]
+    },
+    "cards:Hello World": {
+      "powers": [
+        "Hello"
+      ]
+    },
+    "cards:Hyperbeam": {
+      "powers": [
+        "Focus"
+      ]
+    },
+    "cards:Lockon": {
+      "powers": [
+        "Lockon"
+      ]
+    },
+    "cards:Loop": {
+      "powers": [
+        "Loop"
+      ]
+    },
+    "cards:Machine Learning": {
+      "powers": [
+        "Draw"
+      ]
+    },
+    "cards:Steam Power": {
+      "cards": [
+        "Burn"
+      ]
+    },
+    "cards:Rebound": {
+      "powers": [
+        "Rebound"
+      ]
+    },
+    "cards:Reprogram": {
+      "powers": [
+        "Dexterity",
+        "Focus",
+        "Strength"
+      ]
+    },
+    "cards:Self Repair": {
+      "powers": [
+        "Repair"
+      ]
+    },
+    "cards:Static Discharge": {
+      "powers": [
+        "StaticDischarge"
+      ]
+    },
+    "cards:Storm": {
+      "powers": [
+        "Storm"
+      ]
+    },
+    "cards:Turbo": {
+      "cards": [
+        "Void"
+      ]
+    },
+    "cards:Ghostly": {
+      "powers": [
+        "IntangiblePlayer"
+      ]
+    },
+    "cards:Blind": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "cards:Dark Shackles": {
+      "powers": [
+        "Shackled",
+        "Strength"
+      ]
+    },
+    "cards:J.A.X.": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "cards:Magnetism": {
+      "powers": [
+        "Magnetism"
+      ]
+    },
+    "cards:Mayhem": {
+      "powers": [
+        "Mayhem"
+      ]
+    },
+    "cards:Panacea": {
+      "powers": [
+        "Artifact"
+      ]
+    },
+    "cards:Panache": {
+      "powers": [
+        "Panache"
+      ]
+    },
+    "cards:PanicButton": {
+      "powers": [
+        "NoBlockPower"
+      ]
+    },
+    "cards:Sadistic Nature": {
+      "powers": [
+        "Sadistic"
+      ]
+    },
+    "cards:The Bomb": {
+      "powers": [
+        "TheBomb"
+      ]
+    },
+    "cards:Trip": {
+      "powers": [
+        "Vulnerable"
+      ]
+    },
+    "cards:Doubt": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "cards:Shame": {
+      "powers": [
+        "Frail"
+      ]
+    },
+    "cards:A Thousand Cuts": {
+      "powers": [
+        "Thousand Cuts"
+      ]
+    },
+    "cards:Accuracy": {
+      "cards": [
+        "Shiv"
+      ],
+      "powers": [
+        "Accuracy"
+      ]
+    },
+    "cards:After Image": {
+      "powers": [
+        "After Image"
+      ]
+    },
+    "cards:Blade Dance": {
+      "cards": [
+        "Shiv"
+      ]
+    },
+    "cards:Blur": {
+      "powers": [
+        "Blur"
+      ]
+    },
+    "cards:Bouncing Flask": {
+      "powers": [
+        "Poison"
+      ]
+    },
+    "cards:Bullet Time": {
+      "powers": [
+        "No Draw"
+      ]
+    },
+    "cards:Burst": {
+      "powers": [
+        "Burst"
+      ]
+    },
+    "cards:Caltrops": {
+      "powers": [
+        "Thorns"
+      ]
+    },
+    "cards:Catalyst": {
+      "powers": [
+        "Poison"
+      ]
+    },
+    "cards:Choke": {
+      "powers": [
+        "Choked"
+      ]
+    },
+    "cards:Cloak And Dagger": {
+      "cards": [
+        "Shiv"
+      ]
+    },
+    "cards:Corpse Explosion": {
+      "powers": [
+        "CorpseExplosionPower",
+        "Poison"
+      ]
+    },
+    "cards:Crippling Poison": {
+      "powers": [
+        "Poison",
+        "Weakened"
+      ]
+    },
+    "cards:Deadly Poison": {
+      "powers": [
+        "Poison"
+      ]
+    },
+    "cards:Dodge and Roll": {
+      "powers": [
+        "Next Turn Block"
+      ]
+    },
+    "cards:Doppelganger": {
+      "powers": [
+        "Draw Card",
+        "Energized"
+      ]
+    },
+    "cards:Envenom": {
+      "powers": [
+        "Envenom"
+      ]
+    },
+    "cards:Flying Knee": {
+      "powers": [
+        "Energized"
+      ]
+    },
+    "cards:Footwork": {
+      "powers": [
+        "Dexterity"
+      ]
+    },
+    "cards:Infinite Blades": {
+      "cards": [
+        "Shiv"
+      ],
+      "powers": [
+        "Infinite Blades"
+      ]
+    },
+    "cards:Leg Sweep": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "cards:Malaise": {
+      "powers": [
+        "Strength",
+        "Weakened"
+      ]
+    },
+    "cards:Neutralize": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "cards:Night Terror": {
+      "powers": [
+        "Night Terror"
+      ]
+    },
+    "cards:Noxious Fumes": {
+      "powers": [
+        "Noxious Fumes"
+      ]
+    },
+    "cards:Outmaneuver": {
+      "powers": [
+        "Energized"
+      ]
+    },
+    "cards:Phantasmal Killer": {
+      "powers": [
+        "Phantasmal"
+      ]
+    },
+    "cards:PiercingWail": {
+      "powers": [
+        "Shackled",
+        "Strength"
+      ]
+    },
+    "cards:Poisoned Stab": {
+      "powers": [
+        "Poison"
+      ]
+    },
+    "cards:Predator": {
+      "powers": [
+        "Draw Card"
+      ]
+    },
+    "cards:Storm of Steel": {
+      "cards": [
+        "Shiv"
+      ]
+    },
+    "cards:Sucker Punch": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "cards:Terror": {
+      "powers": [
+        "Vulnerable"
+      ]
+    },
+    "cards:Tools of the Trade": {
+      "powers": [
+        "Tools Of The Trade"
+      ]
+    },
+    "cards:Well Laid Plans": {
+      "powers": [
+        "Retain Cards"
+      ]
+    },
+    "cards:Wraith Form v2": {
+      "powers": [
+        "IntangiblePlayer",
+        "Wraith Form v2"
+      ]
+    },
+    "cards:BecomeAlmighty": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "cards:LiveForever": {
+      "powers": [
+        "Plated Armor"
+      ]
+    },
+    "cards:Alpha": {
+      "cards": [
+        "Beta"
+      ]
+    },
+    "cards:BattleHymn": {
+      "cards": [
+        "Smite"
+      ],
+      "powers": [
+        "BattleHymn"
+      ]
+    },
+    "cards:Blasphemy": {
+      "powers": [
+        "EndTurnDeath"
+      ]
+    },
+    "cards:CarveReality": {
+      "cards": [
+        "Smite"
+      ]
+    },
+    "cards:Collect": {
+      "cards": [
+        "Miracle"
+      ],
+      "powers": [
+        "Collect"
+      ]
+    },
+    "cards:ConjureBlade": {
+      "cards": [
+        "Expunger"
+      ]
+    },
+    "cards:CrushJoints": {
+      "powers": [
+        "Vulnerable"
+      ]
+    },
+    "cards:DeceiveReality": {
+      "cards": [
+        "Safety"
+      ]
+    },
+    "cards:DeusExMachina": {
+      "cards": [
+        "Miracle"
+      ]
+    },
+    "cards:DevaForm": {
+      "powers": [
+        "DevaForm"
+      ]
+    },
+    "cards:Devotion": {
+      "powers": [
+        "DevotionPower"
+      ]
+    },
+    "cards:Establishment": {
+      "powers": [
+        "EstablishmentPower"
+      ]
+    },
+    "cards:Evaluate": {
+      "cards": [
+        "Insight"
+      ]
+    },
+    "cards:Fasting2": {
+      "powers": [
+        "Dexterity",
+        "Strength",
+        "EnergyDownPower"
+      ]
+    },
+    "cards:Wireheading": {
+      "powers": [
+        "WireheadingPower"
+      ]
+    },
+    "cards:Indignation": {
+      "powers": [
+        "Vulnerable"
+      ]
+    },
+    "cards:LikeWater": {
+      "powers": [
+        "LikeWaterPower"
+      ]
+    },
+    "cards:MasterReality": {
+      "powers": [
+        "MasterRealityPower"
+      ]
+    },
+    "cards:MentalFortress": {
+      "powers": [
+        "Controlled"
+      ]
+    },
+    "cards:Nirvana": {
+      "powers": [
+        "Nirvana"
+      ]
+    },
+    "cards:Pray": {
+      "cards": [
+        "Insight"
+      ],
+      "powers": [
+        "Mantra"
+      ]
+    },
+    "cards:PathToVictory": {
+      "powers": [
+        "PathToVictoryPower"
+      ]
+    },
+    "cards:Prostrate": {
+      "powers": [
+        "Mantra"
+      ]
+    },
+    "cards:ReachHeaven": {
+      "cards": [
+        "ThroughViolence"
+      ]
+    },
+    "cards:Adaptation": {
+      "powers": [
+        "Adaptation"
+      ]
+    },
+    "cards:SashWhip": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "cards:Vengeance": {
+      "powers": [
+        "Draw Card",
+        "WrathNextTurnPower"
+      ]
+    },
+    "cards:Study": {
+      "cards": [
+        "Insight"
+      ],
+      "powers": [
+        "Study"
+      ]
+    },
+    "cards:Swivel": {
+      "powers": [
+        "FreeAttackPower"
+      ]
+    },
+    "cards:TalkToTheHand": {
+      "powers": [
+        "BlockReturnPower"
+      ]
+    },
+    "cards:WaveOfTheHand": {
+      "powers": [
+        "WaveOfTheHandPower"
+      ]
+    },
+    "cards:Wish": {
+      "cards": [
+        "BecomeAlmighty",
+        "FameAndFortune",
+        "LiveForever"
+      ]
+    },
+    "cards:Worship": {
+      "powers": [
+        "Mantra"
+      ]
+    },
+    "cards:WreathOfFlame": {
+      "powers": [
+        "Vigor"
+      ]
+    },
+    "cards:Barricade": {
+      "powers": [
+        "Barricade"
+      ]
+    },
+    "cards:Bash": {
+      "powers": [
+        "Vulnerable"
+      ]
+    },
+    "cards:Battle Trance": {
+      "powers": [
+        "No Draw"
+      ]
+    },
+    "cards:Berserk": {
+      "powers": [
+        "Berserk",
+        "Vulnerable"
+      ]
+    },
+    "cards:Brutality": {
+      "powers": [
+        "Brutality"
+      ]
+    },
+    "cards:Clothesline": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "cards:Combust": {
+      "powers": [
+        "Combust"
+      ]
+    },
+    "cards:Corruption": {
+      "powers": [
+        "Corruption"
+      ]
+    },
+    "cards:Dark Embrace": {
+      "powers": [
+        "Dark Embrace"
+      ]
+    },
+    "cards:Demon Form": {
+      "powers": [
+        "Demon Form"
+      ]
+    },
+    "cards:Disarm": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "cards:Double Tap": {
+      "powers": [
+        "Double Tap"
+      ]
+    },
+    "cards:Evolve": {
+      "powers": [
+        "Evolve"
+      ]
+    },
+    "cards:Feel No Pain": {
+      "powers": [
+        "Feel No Pain"
+      ]
+    },
+    "cards:Fire Breathing": {
+      "powers": [
+        "Fire Breathing"
+      ]
+    },
+    "cards:Flame Barrier": {
+      "powers": [
+        "Flame Barrier"
+      ]
+    },
+    "cards:Flex": {
+      "powers": [
+        "Flex",
+        "Strength"
+      ]
+    },
+    "cards:Immolate": {
+      "cards": [
+        "Burn"
+      ]
+    },
+    "cards:Inflame": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "cards:Intimidate": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "cards:Juggernaut": {
+      "powers": [
+        "Juggernaut"
+      ]
+    },
+    "cards:Limit Break": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "cards:Metallicize": {
+      "powers": [
+        "Metallicize"
+      ]
+    },
+    "cards:Power Through": {
+      "cards": [
+        "Wound"
+      ]
+    },
+    "cards:Rage": {
+      "powers": [
+        "Rage"
+      ]
+    },
+    "cards:Reckless Charge": {
+      "cards": [
+        "Dazed"
+      ]
+    },
+    "cards:Rupture": {
+      "powers": [
+        "Rupture"
+      ]
+    },
+    "cards:Shockwave": {
+      "powers": [
+        "Vulnerable",
+        "Weakened"
+      ]
+    },
+    "cards:Spot Weakness": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "cards:Thunderclap": {
+      "powers": [
+        "Vulnerable"
+      ]
+    },
+    "cards:Uppercut": {
+      "powers": [
+        "Vulnerable",
+        "Weakened"
+      ]
+    },
+    "cards:Wild Strike": {
+      "cards": [
+        "Wound"
+      ]
+    },
+    "cards:Beta": {
+      "cards": [
+        "Omega"
+      ]
+    },
+    "cards:Omega": {
+      "powers": [
+        "OmegaPower"
+      ]
+    },
+    "events:MindBloom": {
+      "cards": [
+        "Doubt",
+        "Normality"
+      ]
+    },
+    "events:The Moai Head": {
+      "relics": [
+        "Golden Idol"
+      ]
+    },
+    "events:Tomb of Lord Red Mask": {
+      "relics": [
+        "Red Mask"
+      ]
+    },
+    "events:Winding Halls": {
+      "cards": [
+        "Madness",
+        "Writhe"
+      ]
+    },
+    "events:Addict": {
+      "cards": [
+        "Shame"
+      ]
+    },
+    "events:Drug Dealer": {
+      "cards": [
+        "J.A.X."
+      ],
+      "relics": [
+        "MutagenicStrength"
+      ]
+    },
+    "events:Forgotten Altar": {
+      "cards": [
+        "Decay"
+      ],
+      "relics": [
+        "Bloody Idol",
+        "Golden Idol"
+      ]
+    },
+    "events:Ghosts": {
+      "cards": [
+        "Ghostly"
+      ]
+    },
+    "events:Masked Bandits": {
+      "relics": [
+        "Red Mask"
+      ]
+    },
+    "events:Nest": {
+      "cards": [
+        "RitualDagger"
+      ]
+    },
+    "events:The Mausoleum": {
+      "cards": [
+        "Writhe"
+      ]
+    },
+    "events:Vampires": {
+      "cards": [
+        "Bite"
+      ],
+      "relics": [
+        "Blood Vial"
+      ]
+    },
+    "events:Big Fish": {
+      "cards": [
+        "Regret"
+      ]
+    },
+    "events:Golden Idol": {
+      "cards": [
+        "Injury"
+      ],
+      "relics": [
+        "Golden Idol"
+      ]
+    },
+    "events:Mushrooms": {
+      "cards": [
+        "Parasite"
+      ],
+      "relics": [
+        "Odd Mushroom"
+      ]
+    },
+    "events:Liars Game": {
+      "cards": [
+        "Doubt"
+      ]
+    },
+    "events:Accursed Blacksmith": {
+      "cards": [
+        "Pain"
+      ],
+      "relics": [
+        "WarpedTongs"
+      ]
+    },
+    "events:Bonfire Elementals": {
+      "relics": [
+        "Spirit Poop"
+      ]
+    },
+    "events:Golden Shrine": {
+      "cards": [
+        "Regret"
+      ]
+    },
+    "events:Wheel of Change": {
+      "cards": [
+        "Decay"
+      ]
+    },
+    "events:N'loth": {
+      "relics": [
+        "Nloth's Gift"
+      ]
+    },
+    "events:NoteForYourself": {
+      "cards": [
+        "Iron Wave"
+      ]
+    },
+    "monsters:AwakenedOne": {
+      "cards": [
+        "Void"
+      ],
+      "powers": [
+        "Curiosity",
+        "Regenerate",
+        "Strength",
+        "Unawakened"
+      ]
+    },
+    "monsters:Darkling": {
+      "powers": [
+        "Life Link",
+        "Strength"
+      ]
+    },
+    "monsters:Deca": {
+      "cards": [
+        "Dazed"
+      ],
+      "powers": [
+        "Artifact",
+        "Plated Armor"
+      ]
+    },
+    "monsters:Donu": {
+      "powers": [
+        "Artifact",
+        "Strength"
+      ]
+    },
+    "monsters:Exploder": {
+      "powers": [
+        "Explosive"
+      ]
+    },
+    "monsters:GiantHead": {
+      "powers": [
+        "Slow",
+        "Weakened"
+      ]
+    },
+    "monsters:Maw": {
+      "powers": [
+        "Frail",
+        "Strength",
+        "Weakened"
+      ]
+    },
+    "monsters:Nemesis": {
+      "cards": [
+        "Burn"
+      ],
+      "powers": [
+        "Intangible"
+      ]
+    },
+    "monsters:Orb Walker": {
+      "cards": [
+        "Burn"
+      ],
+      "powers": [
+        "Generic Strength Up Power"
+      ]
+    },
+    "monsters:Reptomancer": {
+      "monsters": [
+        "Dagger"
+      ],
+      "powers": [
+        "Minion",
+        "Weakened"
+      ]
+    },
+    "monsters:Repulsor": {
+      "cards": [
+        "Dazed"
+      ]
+    },
+    "monsters:Dagger": {
+      "cards": [
+        "Wound"
+      ]
+    },
+    "monsters:Spiker": {
+      "powers": [
+        "Thorns"
+      ]
+    },
+    "monsters:Serpent": {
+      "powers": [
+        "Constricted"
+      ]
+    },
+    "monsters:TimeEater": {
+      "cards": [
+        "Slimed"
+      ],
+      "powers": [
+        "Draw Reduction",
+        "Frail",
+        "Time Warp",
+        "Vulnerable",
+        "Weakened"
+      ]
+    },
+    "monsters:Transient": {
+      "powers": [
+        "Fading",
+        "Shifting"
+      ]
+    },
+    "monsters:WrithingMass": {
+      "powers": [
+        "Malleable",
+        "Compulsive",
+        "Vulnerable",
+        "Weakened"
+      ]
+    },
+    "monsters:BanditBear": {
+      "powers": [
+        "Dexterity"
+      ]
+    },
+    "monsters:BanditLeader": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "monsters:BookOfStabbing": {
+      "powers": [
+        "Painful Stabs"
+      ]
+    },
+    "monsters:BronzeAutomaton": {
+      "monsters": [
+        "BronzeOrb"
+      ],
+      "powers": [
+        "Artifact",
+        "Strength"
+      ]
+    },
+    "monsters:BronzeOrb": {
+      "powers": [
+        "Stasis"
+      ]
+    },
+    "monsters:Byrd": {
+      "powers": [
+        "Flight",
+        "Strength"
+      ]
+    },
+    "monsters:Champ": {
+      "powers": [
+        "Frail",
+        "Metallicize",
+        "Strength",
+        "Vulnerable",
+        "Weakened"
+      ]
+    },
+    "monsters:Chosen": {
+      "powers": [
+        "Hex",
+        "Strength",
+        "Vulnerable",
+        "Weakened"
+      ]
+    },
+    "monsters:GremlinLeader": {
+      "powers": [
+        "Minion",
+        "Slow",
+        "Strength"
+      ]
+    },
+    "monsters:Healer": {
+      "powers": [
+        "Frail",
+        "Strength"
+      ]
+    },
+    "monsters:Mugger": {
+      "powers": [
+        "Thievery"
+      ]
+    },
+    "monsters:Shelled Parasite": {
+      "powers": [
+        "Frail",
+        "Plated Armor"
+      ]
+    },
+    "monsters:SnakePlant": {
+      "powers": [
+        "Frail",
+        "Malleable",
+        "Weakened"
+      ]
+    },
+    "monsters:Snecko": {
+      "powers": [
+        "Confusion",
+        "Vulnerable",
+        "Weakened"
+      ]
+    },
+    "monsters:SphericGuardian": {
+      "powers": [
+        "Artifact",
+        "Barricade",
+        "Frail"
+      ]
+    },
+    "monsters:SlaverBoss": {
+      "cards": [
+        "Wound"
+      ],
+      "powers": [
+        "Strength"
+      ]
+    },
+    "monsters:TheCollector": {
+      "monsters": [
+        "TorchHead"
+      ],
+      "powers": [
+        "Frail",
+        "Strength",
+        "Vulnerable",
+        "Weakened"
+      ]
+    },
+    "monsters:CorruptHeart": {
+      "cards": [
+        "Burn",
+        "Dazed",
+        "Slimed",
+        "Void",
+        "Wound"
+      ],
+      "powers": [
+        "Artifact",
+        "BeatOfDeath",
+        "Frail",
+        "Invincible",
+        "Painful Stabs",
+        "Strength",
+        "Vulnerable",
+        "Weakened"
+      ]
+    },
+    "monsters:SpireShield": {
+      "powers": [
+        "Artifact",
+        "Focus",
+        "Strength",
+        "Surrounded"
+      ]
+    },
+    "monsters:SpireSpear": {
+      "cards": [
+        "Burn"
+      ],
+      "powers": [
+        "Artifact",
+        "Strength"
+      ]
+    },
+    "monsters:AcidSlime_L": {
+      "cards": [
+        "Slimed"
+      ],
+      "monsters": [
+        "AcidSlime_M"
+      ],
+      "powers": [
+        "Poison",
+        "Split",
+        "Weakened"
+      ]
+    },
+    "monsters:AcidSlime_M": {
+      "cards": [
+        "Slimed"
+      ],
+      "powers": [
+        "Poison",
+        "Weakened"
+      ]
+    },
+    "monsters:AcidSlime_S": {
+      "powers": [
+        "Poison",
+        "Weakened"
+      ]
+    },
+    "monsters:Cultist": {
+      "powers": [
+        "Ritual"
+      ]
+    },
+    "monsters:FungiBeast": {
+      "powers": [
+        "Spore Cloud",
+        "Strength"
+      ]
+    },
+    "monsters:GremlinFat": {
+      "powers": [
+        "Frail",
+        "Weakened"
+      ]
+    },
+    "monsters:GremlinNob": {
+      "powers": [
+        "Anger",
+        "Vulnerable"
+      ]
+    },
+    "monsters:GremlinWarrior": {
+      "powers": [
+        "Angry"
+      ]
+    },
+    "monsters:Hexaghost": {
+      "cards": [
+        "Burn"
+      ],
+      "powers": [
+        "Strength"
+      ]
+    },
+    "monsters:JawWorm": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "monsters:Lagavulin": {
+      "powers": [
+        "Dexterity",
+        "Metallicize",
+        "Strength"
+      ]
+    },
+    "monsters:Looter": {
+      "powers": [
+        "Thievery"
+      ]
+    },
+    "monsters:FuzzyLouseDefensive": {
+      "powers": [
+        "Curl Up",
+        "Weakened"
+      ]
+    },
+    "monsters:FuzzyLouseNormal": {
+      "powers": [
+        "Curl Up",
+        "Strength"
+      ]
+    },
+    "monsters:Sentry": {
+      "cards": [
+        "Dazed"
+      ],
+      "powers": [
+        "Artifact"
+      ]
+    },
+    "monsters:SlaverBlue": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "monsters:SlaverRed": {
+      "powers": [
+        "Entangled",
+        "Vulnerable"
+      ]
+    },
+    "monsters:SlimeBoss": {
+      "cards": [
+        "Slimed"
+      ],
+      "monsters": [
+        "AcidSlime_L",
+        "SpikeSlime_L"
+      ],
+      "powers": [
+        "Split"
+      ]
+    },
+    "monsters:SpikeSlime_L": {
+      "cards": [
+        "Slimed"
+      ],
+      "monsters": [
+        "SpikeSlime_M"
+      ],
+      "powers": [
+        "Frail",
+        "Poison",
+        "Split"
+      ]
+    },
+    "monsters:SpikeSlime_M": {
+      "cards": [
+        "Slimed"
+      ],
+      "powers": [
+        "Frail",
+        "Poison"
+      ]
+    },
+    "monsters:SpikeSlime_S": {
+      "powers": [
+        "Poison"
+      ]
+    },
+    "monsters:TheGuardian": {
+      "powers": [
+        "Mode Shift",
+        "Sharp Hide",
+        "Vulnerable",
+        "Weakened"
+      ]
+    },
+    "powers:Anger": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "powers:Angry": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "powers:Bias": {
+      "powers": [
+        "Focus"
+      ]
+    },
+    "powers:Collect": {
+      "cards": [
+        "Miracle"
+      ]
+    },
+    "powers:Curiosity": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "powers:Demon Form": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "powers:Envenom": {
+      "powers": [
+        "Poison"
+      ]
+    },
+    "powers:Shackled": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "powers:Generic Strength Up Power": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "powers:Hex": {
+      "cards": [
+        "Dazed"
+      ]
+    },
+    "powers:Infinite Blades": {
+      "cards": [
+        "Shiv"
+      ]
+    },
+    "powers:DexLoss": {
+      "powers": [
+        "Dexterity"
+      ]
+    },
+    "powers:Flex": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "powers:Noxious Fumes": {
+      "powers": [
+        "Poison"
+      ]
+    },
+    "powers:Painful Stabs": {
+      "cards": [
+        "Wound"
+      ]
+    },
+    "powers:Phantasmal": {
+      "powers": [
+        "Double Damage"
+      ]
+    },
+    "powers:Ritual": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "powers:Rupture": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "powers:Shifting": {
+      "powers": [
+        "Shackled",
+        "Strength"
+      ]
+    },
+    "powers:Spore Cloud": {
+      "powers": [
+        "Vulnerable"
+      ]
+    },
+    "powers:Time Warp": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "powers:Wraith Form v2": {
+      "powers": [
+        "Dexterity"
+      ]
+    },
+    "powers:BattleHymn": {
+      "cards": [
+        "Smite"
+      ]
+    },
+    "powers:DevotionPower": {
+      "powers": [
+        "Mantra"
+      ]
+    },
+    "powers:Study": {
+      "cards": [
+        "Insight"
+      ]
+    },
+    "powers:WaveOfTheHandPower": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "relics:Akabeko": {
+      "powers": [
+        "Vigor"
+      ]
+    },
+    "relics:Bag of Marbles": {
+      "powers": [
+        "Vulnerable"
+      ]
+    },
+    "relics:Brimstone": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "relics:Bronze Scales": {
+      "powers": [
+        "Thorns"
+      ]
+    },
+    "relics:Calling Bell": {
+      "cards": [
+        "CurseOfTheBell"
+      ]
+    },
+    "relics:Champion Belt": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "relics:ClockworkSouvenir": {
+      "powers": [
+        "Artifact"
+      ]
+    },
+    "relics:Damaru": {
+      "powers": [
+        "Mantra"
+      ]
+    },
+    "relics:DataDisk": {
+      "powers": [
+        "Focus"
+      ]
+    },
+    "relics:Du-Vu Doll": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "relics:Yang": {
+      "powers": [
+        "Dexterity",
+        "DexLoss"
+      ]
+    },
+    "relics:FossilizedHelix": {
+      "powers": [
+        "Buffer"
+      ]
+    },
+    "relics:Girya": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "relics:GremlinMask": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "relics:HandDrill": {
+      "powers": [
+        "Vulnerable"
+      ]
+    },
+    "relics:HolyWater": {
+      "cards": [
+        "Miracle"
+      ]
+    },
+    "relics:Incense Burner": {
+      "powers": [
+        "IntangiblePlayer"
+      ]
+    },
+    "relics:Kunai": {
+      "powers": [
+        "Dexterity"
+      ]
+    },
+    "relics:Mark of Pain": {
+      "cards": [
+        "Wound"
+      ]
+    },
+    "relics:MutagenicStrength": {
+      "powers": [
+        "Flex",
+        "Strength"
+      ]
+    },
+    "relics:Necronomicon": {
+      "cards": [
+        "Necronomicurse"
+      ]
+    },
+    "relics:Ninja Scroll": {
+      "cards": [
+        "Shiv"
+      ]
+    },
+    "relics:Oddly Smooth Stone": {
+      "powers": [
+        "Dexterity"
+      ]
+    },
+    "relics:Pen Nib": {
+      "powers": [
+        "Pen Nib"
+      ]
+    },
+    "relics:Philosopher's Stone": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "relics:PureWater": {
+      "cards": [
+        "Miracle"
+      ]
+    },
+    "relics:Red Mask": {
+      "powers": [
+        "Weakened"
+      ]
+    },
+    "relics:Red Skull": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "relics:Self Forming Clay": {
+      "powers": [
+        "Next Turn Block"
+      ]
+    },
+    "relics:Shuriken": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "relics:Sling": {
+      "powers": [
+        "Strength"
+      ]
+    },
+    "relics:Snecko Eye": {
+      "powers": [
+        "Confusion"
+      ]
+    },
+    "relics:The Specimen": {
+      "powers": [
+        "Poison"
+      ]
+    },
+    "relics:Thread and Needle": {
+      "powers": [
+        "Plated Armor"
+      ]
+    },
+    "relics:TwistedFunnel": {
+      "powers": [
+        "Poison"
+      ]
+    },
+    "relics:Vajra": {
+      "powers": [
+        "Strength"
+      ]
+    }
   }
 }

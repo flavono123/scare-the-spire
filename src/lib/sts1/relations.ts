@@ -58,6 +58,7 @@ export type Sts1RelationSource =
   | "modifier"
   | "mention"
   | "card-preview"
+  | "code"
   | "ascension"
   | "achievement"
   | "score-bonus"
@@ -66,6 +67,8 @@ export type Sts1RelationSource =
 type NodeKey = `${Sts1RelatedKind}:${string}`;
 type RelationExtras = {
   cardPreviews: Record<string, string[]>;
+  /** "<kind>:<game id>" -> kind -> game ids its code constructs, directly or through one action. */
+  code: Record<string, Partial<Record<"cards" | "relics" | "potions" | "powers" | "monsters", string[]>>>;
   ascension: Record<string, { monsters?: string[]; events?: string[] }>;
 };
 
@@ -82,7 +85,23 @@ const TEXT_MISREADS = new Set([
   "events:nest|monsters:dagger",
   "relics:symbiotic-virus|cards:darkness",
 ]);
+// A split slime's constructor takes over its parent's Poison (carried state, not something it does);
+// Gremlin Leader's summon adds Time Dilation's Slow the way SpawnMonsterAction does for every summon.
+const CODE_SKIPS = /^(monsters:(acid|spike)-slime-[lms]\|powers:poison|monsters:gremlin-leader\|powers:slow)$/;
 const TEXT_MEANT: [string, string][] = [["relics:symbiotic-virus", "keywords:orb-dark"]];
+
+const CHARACTER_NODES = ["characters:ironclad", "characters:silent", "characters:defect", "characters:watcher"];
+// Mods whose text names a character's cards, a power, Neow or the final act without coloring the word.
+const MOD_LINKS: Record<string, string[]> = {
+  "red-cards": ["characters:ironclad"],
+  "green-cards": ["characters:silent"],
+  "blue-cards": ["characters:defect"],
+  "purple-cards": ["characters:watcher"],
+  diverse: CHARACTER_NODES,
+  "time-dilation": ["powers:slow"],
+  neowtime: ["neow:neow"],
+  "the-ending": ["monsters:spire-shield", "monsters:spire-spear", "monsters:corrupt-heart"],
+};
 
 function node(kind: Sts1RelatedKind, slug: string): NodeKey {
   return `${kind}:${slug}`;
@@ -262,9 +281,21 @@ export const getSts1RelationGraph = cache(async () => {
     items(from, mod.refs, "modifier");
     for (const mention of mod.mentions) link(from, ref(mention.type as keyof typeof slugOf, mention.id), "modifier");
     for (const id of mod.blightRefs) link(from, ref("blight", id), "modifier");
+    for (const key of MOD_LINKS[mod.slug] ?? []) link(from, key as NodeKey, "modifier");
   }
   for (const blight of blights) {
     for (const mention of blight.mentions) link(node("blights", blight.slug), ref(mention.type as keyof typeof slugOf, mention.id), "mention");
+  }
+  const REF_TYPE = { cards: "card", relics: "relic", potions: "potion", powers: "power", monsters: "monster", events: "event" } as const;
+  for (const [key, targets] of Object.entries(extras.code)) {
+    const [kind, ...rest] = key.split(":");
+    const from = ref(REF_TYPE[kind as keyof typeof REF_TYPE], rest.join(":"));
+    for (const [targetKind, ids] of Object.entries(targets)) {
+      for (const id of ids ?? []) {
+        const to = ref(REF_TYPE[targetKind as keyof typeof REF_TYPE], id);
+        if (!CODE_SKIPS.test(`${from}|${to}`)) link(from, to, "code");
+      }
+    }
   }
   for (const [cardId, targets] of Object.entries(extras.cardPreviews)) {
     for (const target of targets) link(ref("card", cardId), ref("card", target), "card-preview");

@@ -1610,6 +1610,54 @@ def card_previews(cls: JavaClass) -> list[str]:
     return found
 
 
+GAME_PACKAGE = "com.megacrit.cardcrawl."
+ACTION_PACKAGE = GAME_PACKAGE + "actions."
+# Actions whose own `new`s belong to whoever runs them generically (SpawnMonsterAction adds the
+# Minion / Slow / Strength that mods and relics ask for), not to the card or monster that uses them.
+SHARED_ACTIONS = {ACTION_PACKAGE + "common.SpawnMonsterAction"}
+
+
+def constructed_classes(cls: JavaClass) -> set[str]:
+    """Every class a class's code constructs (`new`), across all its methods."""
+    found: set[str] = set()
+    for method in cls.methods:
+        for _start, op, arg in iter_opcodes(method.code or b""):
+            if op == 187:
+                found.add(cls.class_name(u2_from(arg)))
+    return found
+
+
+def code_links(jar, ids_by_class: dict[str, tuple[str, str]]) -> dict[str, dict[str, list[str]]]:
+    """Game objects each card, relic, potion, power, monster or event constructs in code,
+    directly or through one action it constructs (Nightmare -> NightmareAction -> NightmarePower)."""
+    cache: dict[str, set[str]] = {}
+
+    def news(name: str) -> set[str]:
+        if name not in cache:
+            path = name.replace(".", "/") + ".class"
+            cache[name] = constructed_classes(parse_class_file(jar.read(path))) if path in names else set()
+        return cache[name]
+
+    names = set(jar.namelist())
+    links: dict[str, dict[str, list[str]]] = {}
+    for class_name, (kind, entity_id) in sorted(ids_by_class.items()):
+        direct = news(class_name)
+        reached = set(direct)
+        for name in direct:
+            if name.startswith(ACTION_PACKAGE) and name not in SHARED_ACTIONS:
+                reached |= news(name)
+        targets: dict[str, list[str]] = {}
+        for name in sorted(reached):
+            target = ids_by_class.get(name)
+            if target and target != (kind, entity_id) and target[0] != "events":
+                targets.setdefault(target[0], [])
+                if target[1] not in targets[target[0]]:
+                    targets[target[0]].append(target[1])
+        if targets:
+            links[f"{kind}:{entity_id}"] = targets
+    return links
+
+
 def extract_relation_extras(jar) -> dict[str, Any]:
     """Links the game makes in code rather than text: card previews and what each ascension level changes."""
     ids = class_ids(jar)
@@ -1644,7 +1692,34 @@ def extract_relation_extras(jar) -> dict[str, Any]:
         for level in ascension_levels_checked(parse_class_file(jar.read(name))):
             if level > 0:
                 ascension.setdefault(str(level), {}).setdefault(kind, []).append(target)
-    return {"cardPreviews": previews, "ascension": dict(sorted(ascension.items(), key=lambda item: int(item[0])))}
+    ids_by_class: dict[str, tuple[str, str]] = {}
+    for card in cards:
+        if card.get("className"):
+            ids_by_class[card["className"]] = ("cards", card["id"])
+    known = {
+        "relics": {row["id"] for row in read_data_rows("relics.json")},
+        "potions": {row["id"] for row in read_data_rows("potions.json")},
+        "powers": {row["id"] for row in read_data_rows("powers.json")},
+        "monsters": monster_ids,
+    }
+    prefixes = {"relics": "relics.", "potions": "potions.", "powers": "powers.", "monsters": "monsters."}
+    for name in jar.namelist():
+        if not name.endswith(".class") or "$" in name:
+            continue
+        dotted = name[:-6].replace("/", ".")
+        for kind, prefix in prefixes.items():
+            if dotted.startswith(GAME_PACKAGE + prefix):
+                cls = parse_class_file(jar.read(name))
+                value = next((f.const_value for f in cls.fields if f.name in ("POWER_ID", "ID") and isinstance(f.const_value, str)), None)
+                if value in known[kind]:
+                    ids_by_class[dotted] = (kind, value)
+    for class_name, event_id in events.items():
+        ids_by_class[class_name] = ("events", event_id)
+    return {
+        "cardPreviews": previews,
+        "ascension": dict(sorted(ascension.items(), key=lambda item: int(item[0]))),
+        "code": code_links(jar, ids_by_class),
+    }
 
 
 def main() -> None:
@@ -1703,7 +1778,7 @@ def main() -> None:
             if "relations" in sections:
                 relations = extract_relation_extras(jar)
                 write_json(ROOT / "data" / "sts1" / "relation-extras.json", relations)
-                print(f"card previews={len(relations['cardPreviews'])} ascension levels={len(relations['ascension'])}")
+                print(f"card previews={len(relations['cardPreviews'])} ascension levels={len(relations['ascension'])} code links={len(relations['code'])}")
             if "extras" in sections:
                 write_extras_localization(jar, STS1_LOCALES, write_json)
                 write_extras_nav_labels(jar, STS1_LOCALES, write_json)
