@@ -47,7 +47,7 @@ export function renderMenuPage(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCAL
         <IndexPageHeader
           title={copy.menuTitle}
           token="/images/sts2/ui/topbar/top_bar_map.png"
-          art={PLACE_AREA_META.toybox.art}
+          art="/images/sts2/events/jungle_maze_adventure.webp"
         />
         <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {sections.map((section) => (
