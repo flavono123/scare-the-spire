@@ -58,6 +58,7 @@
     "test:combat-sim": "tsx scripts/combat-sim.spec.ts",
     "test:node-sim": "tsx scripts/node-sim.spec.ts",
     "test:map-bar": "tsx scripts/map-bar.spec.ts",
+    "test:sts1-score": "tsx scripts/sts1-score.spec.ts",
     "test:entity-graph": "tsx scripts/entity-graph-chunks.spec.ts",
     "test:entity-subset": "tsx scripts/entity-subset.spec.tsx",
     "test:security-headers": "tsx scripts/security-headers.spec.ts",

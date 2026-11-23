@@ -8,7 +8,7 @@ import type { Sts1EntityRefs, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1EventText } from "./event-text";
 import { Sts1ListLayout } from "./list-shell";
-import { Sts1EntityToken } from "./ref-token";
+import { Sts1ScoreCalculator } from "./score-calculator";
 
 type ScoreLabels = { title: string; death: string; victory: string; unused: string };
 
@@ -24,7 +24,6 @@ function ScoreLine({ row, labels, refs }: { row: Sts1ScoreBonusRow; labels: Scor
               {row.screens[0] === "victory" ? labels.victory : labels.death}
             </span>
           ) : null}
-          {row.refs.map((ref) => <Sts1EntityToken key={`${ref.type}-${ref.id}`} type={ref.type} id={ref.id} refs={refs} />)}
         </div>
         {row.description ? <Sts1EventText text={row.description} refs={refs} className="mt-0.5 block font-game-text text-xs text-gray-400" /> : null}
       </div>
@@ -62,6 +61,7 @@ export function Sts1ScoreBonusList({
       onSearch={setSearchQuery}
     >
       <div className="mx-auto max-w-2xl">
+        <Sts1ScoreCalculator rows={rows} scoreLabels={scoreLabels} serviceLocale={serviceLocale} />
         <section className="rounded-lg border border-white/10 bg-black/50 px-5 py-3">
           <ul>{used.map((row) => <ScoreLine key={row.slug} row={row} labels={scoreLabels} refs={refs} />)}</ul>
         </section>

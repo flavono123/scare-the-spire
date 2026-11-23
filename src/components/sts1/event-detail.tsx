@@ -9,7 +9,7 @@ import { Sts1RelatedRail } from "./related-rail";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
 import { Sts1EventText, fillSts1Template } from "./event-text";
-import { Sts1HoverPreviews, sts1ItemPreviewIds, sts1PreviewEntityIds } from "./ref-token";
+import { Sts1HoverPreviews, sts1ItemPreviewIds, sts1PreviewEntityIds } from "./hover-previews";
 import type { ServiceLocale } from "@/lib/i18n";
 import { STS1_MONSTER_ASCENSION_SCOPE } from "@/lib/sts1/monster-moves";
 import { sts1EventImageUrl, sts1EventUiUrl, sts1IndexPath, sts1UiImageUrl } from "@/lib/sts1/paths";

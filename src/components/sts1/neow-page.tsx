@@ -13,7 +13,7 @@ import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1EventText } from "./event-text";
 import { Sts1ListLayout, filterButtonClass, toggled } from "./list-shell";
 import { Sts1MonsterStage } from "./monster-stage";
-import { Sts1HoverPreviews, sts1ItemPreviewIds } from "./ref-token";
+import { Sts1HoverPreviews, sts1ItemPreviewIds } from "./hover-previews";
 
 /** The game names none of these: `slots` are the four buttons by position, `mini` the two-choice blessing. */
 type NeowLabels = { filter: string; slots: string[]; mini: string };
