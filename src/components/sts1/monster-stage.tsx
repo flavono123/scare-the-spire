@@ -75,6 +75,7 @@ export function Sts1MonsterStage({
   variant = "detail",
   className,
   stillUrl: stillOverride,
+  effects = true,
 }: {
   monster: Sts1Monster;
   playback: Sts1MonsterPlayback | null;
@@ -88,6 +89,8 @@ export function Sts1MonsterStage({
   className?: string;
   /** For skeletons outside the bestiary (Neow): where its still was rendered. */
   stillUrl?: string;
+  /** false: no effect canvases (each is a WebGL context; a crowded scene runs out of them). */
+  effects?: boolean;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const shakeRef = useRef<HTMLDivElement>(null);
@@ -242,7 +245,7 @@ export function Sts1MonsterStage({
     >
       {overlay ? <div className="absolute left-2 top-2 z-50 sm:left-3 sm:top-3">{overlay}</div> : null}
       <div ref={shakeRef} className="absolute inset-0">
-        <canvas ref={behindRef} className="pointer-events-none absolute inset-0 z-0 h-full w-full" aria-hidden="true" />
+        {effects ? <canvas ref={behindRef} className="pointer-events-none absolute inset-0 z-0 h-full w-full" aria-hidden="true" /> : null}
         {box ? (
           <div className="absolute z-10" style={{ left: box.left, top: box.top, width: box.width, height: box.height }}>
             <div ref={motionRef} className="absolute inset-0">
@@ -294,7 +297,7 @@ export function Sts1MonsterStage({
               : "absolute inset-x-4 bottom-12 top-20 h-[calc(100%-8rem)] w-[calc(100%-2rem)] object-contain object-bottom"}
           />
         )}
-        <canvas ref={frontRef} className="pointer-events-none absolute inset-0 z-20 h-full w-full" aria-hidden="true" />
+        {effects ? <canvas ref={frontRef} className="pointer-events-none absolute inset-0 z-20 h-full w-full" aria-hidden="true" /> : null}
         {box && intent ? (
           <div
             className="pointer-events-none absolute z-40 flex -translate-x-1/2 justify-center"

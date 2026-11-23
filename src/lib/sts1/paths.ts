@@ -85,6 +85,11 @@ export function sts1MonsterImageUrl(monster: Pick<Sts1Monster, "slug">): string 
   return sts1Asset(`${STS1_IMAGE_ROOT}/monsters/${monster.slug}.webp`);
 }
 
+/** A combat room's background (`<act>`, `city-collector`) or foreground (`<act>-fg`): scripts/extract-sts1-scenes.py. */
+export function sts1SceneUrl(name: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/scenes/${name}.webp`);
+}
+
 export function sts1IntentImageUrl(name: string): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/intents/${name}.webp`);
 }

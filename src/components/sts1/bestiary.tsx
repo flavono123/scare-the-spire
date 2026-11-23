@@ -8,6 +8,7 @@ import { serviceMessages } from "@/messages/service";
 import type { Sts1Encounter } from "@/lib/sts1/encounters";
 import type { Sts1Intent } from "@/lib/sts1/intents";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
+import type { Sts1Monster } from "@/lib/sts1/types";
 import { Sts1EncounterLibrary } from "./encounter-library";
 import { Sts1IntentLibrary } from "./intent-library";
 import { Sts1MonsterLibrary } from "./monster-library";
@@ -19,11 +20,13 @@ export function Sts1Bestiary({
   intents,
   encounters,
   encounterRelated,
+  player,
   ...monsterProps
 }: ComponentProps<typeof Sts1MonsterLibrary> & {
   intents: Sts1Intent[];
   encounters: Sts1Encounter[];
   encounterRelated: Record<string, Sts1RelatedGroup[]>;
+  player: Sts1Monster | null;
 }) {
   const { serviceLocale, labels } = monsterProps;
   const messages = serviceMessages[serviceLocale].codex;
@@ -52,7 +55,7 @@ export function Sts1Bestiary({
     />
   );
   if (activeView === "encounters") {
-    return <Sts1EncounterLibrary encounters={encounters} related={encounterRelated} labels={labels} serviceLocale={serviceLocale} trailing={switcher} />;
+    return <Sts1EncounterLibrary encounters={encounters} related={encounterRelated} monsters={monsterProps.monsters} player={player} labels={labels} serviceLocale={serviceLocale} trailing={switcher} />;
   }
   if (activeView === "intents") return <Sts1IntentLibrary intents={intents} labels={labels} serviceLocale={serviceLocale} trailing={switcher} />;
   return <Sts1MonsterLibrary {...monsterProps} trailing={switcher} />;

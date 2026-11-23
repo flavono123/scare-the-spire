@@ -4,6 +4,7 @@ import path from "path";
 import type { GameLocale } from "@/lib/i18n";
 import {
   getSts1Cards,
+  getSts1Characters,
   getSts1Keywords,
   getSts1Potions,
   getSts1Powers,
@@ -500,6 +501,34 @@ export async function getSts1NeowStage(gameLocale: GameLocale = "kor"): Promise<
       still: art.still,
       skeletonUrl: `/spine/sts1/npcs/neow/${art.skeleton}`,
       atlasUrl: "/spine/sts1/npcs/neow/skeleton.atlas",
+    },
+    vfx: null,
+  };
+}
+
+/** Ironclad's combat skeleton (npc-spine.json), the player the encounter scene stands on the left. */
+export async function getSts1PlayerStage(gameLocale: GameLocale = "kor"): Promise<Sts1Monster> {
+  const [spine, characters] = await Promise.all([readJson<NpcSpine>("npc-spine.json"), getSts1Characters(gameLocale)]);
+  const art = spine.ironclad;
+  const name = characters.find((character) => character.id === "ironclad")?.name ?? "Ironclad";
+  return {
+    id: "Ironclad",
+    slug: "ironclad",
+    legacySlugs: [],
+    dungeon: "exordium",
+    type: "normal",
+    hitPoints: [],
+    name,
+    nameEn: "Ironclad",
+    moves: [],
+    startingEffects: [],
+    spine: {
+      idle: art.idle,
+      animations: art.animations,
+      viewport: art.viewport,
+      still: art.still,
+      skeletonUrl: `/spine/sts1/npcs/ironclad/${art.skeleton}`,
+      atlasUrl: "/spine/sts1/npcs/ironclad/skeleton.atlas",
     },
     vfx: null,
   };

@@ -11,6 +11,7 @@ MonsterInfo lists and boss lists; names from MonsterHelper.getEncounterName.
 from __future__ import annotations
 
 import copy
+import dataclasses
 import itertools
 import json
 import math
@@ -21,13 +22,14 @@ from pathlib import Path
 from typing import Any, Callable
 
 from scripts.lib.java_classfile import JavaClass, parse_class_file
-from scripts.lib.jvm_eval import decode, java_string_hash, parse_descriptor
-from scripts.lib.sts1_monster_moves import class_ids
+from scripts.lib.jvm_eval import ListObj, Obj, Static, decode, java_string_hash, parse_descriptor
+from scripts.lib.sts1_monster_moves import MonsterReader, _plain, _Recorder, class_ids, intent_switch_maps
 
 ROOT = Path(__file__).resolve().parents[2]
 HELPER = "com.megacrit.cardcrawl.helpers.MonsterHelper"
 MONSTER_PREFIX = "com.megacrit.cardcrawl.monsters."
 EVENT_PREFIX = "com.megacrit.cardcrawl.events."
+MATH_UTILS = "com.badlogic.gdx.math.MathUtils"
 DUNGEONS = (
     ("exordium", "com.megacrit.cardcrawl.dungeons.Exordium"),
     ("city", "com.megacrit.cardcrawl.dungeons.TheCity"),
@@ -57,6 +59,8 @@ UNKNOWN = _Unknown()
 @dataclass(frozen=True)
 class Mon:
     cls: str
+    # (descriptor, args) of the `<init>` that built it: where the slot stands.
+    ctor: tuple[str, tuple[Any, ...]] | None = field(default=None, compare=False, repr=False)
 
 
 @dataclass(frozen=True)
@@ -65,6 +69,15 @@ class Pick:
 
     uid: int
     mapped: tuple[tuple[Any, Any], ...] | None = None
+    ctor: tuple[str, tuple[Any, ...]] | None = field(default=None, compare=False, repr=False)
+
+
+@dataclass(frozen=True)
+class Rand:
+    """`MathUtils.random(lo, hi)` (plus constants): unknown to branches, its middle for a position."""
+
+    lo: float
+    hi: float
 
 
 @dataclass(frozen=True)
@@ -115,6 +128,7 @@ class Interpreter:
         self.pools: dict[int, list[Any]] = {}  # list uid -> items at its first draw
         self.removed: set[int] = set()
         self.problems: list[str] = []
+        self.statics: dict[tuple[str, str], Any] = {}  # what putstatic stored (a monster's <clinit> POSX)
 
     def call(self, name: str, desc: str, args: list[Any], depth: int = 0) -> list[Any]:
         """Distinct return values over every path."""
@@ -202,6 +216,15 @@ class Interpreter:
             right, left = stack.pop(), stack.pop()
             known = all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in (left, right))
             kind = (op - 96) // 4
+            if kind < 2 and {type(left), type(right)} & {Rand} and all(isinstance(v, (Rand, int, float)) for v in (left, right)):
+                sign = 1 if kind == 0 else -1
+                if isinstance(left, Rand) and not isinstance(right, Rand):
+                    stack.append(Rand(left.lo + sign * right, left.hi + sign * right))
+                elif isinstance(right, Rand) and not isinstance(left, Rand) and kind == 0:
+                    stack.append(Rand(right.lo + left, right.hi + left))
+                else:
+                    stack.append(UNKNOWN)
+                return None
             if not known or (kind >= 3 and right == 0):
                 stack.append(UNKNOWN)
             else:
@@ -240,7 +263,9 @@ class Interpreter:
                 return self._fork(state, [(target, []) for target in unique])
         elif op == 176:
             return "return", stack.pop()
-        elif op in {172, 173, 174, 175}:
+        elif op == 174:  # freturn: randomXOffset's jittered position
+            return "return", stack.pop()
+        elif op in {172, 173, 175}:
             return "return", UNKNOWN
         elif op == 177:
             return "return", None
@@ -250,7 +275,14 @@ class Interpreter:
             owner, name, _desc = cls.fieldref(insn.operand)
             stack.append(StaticRef(owner, name))
         elif op == 179:
+            owner, name, _desc = cls.fieldref(insn.operand)
+            self.statics[(owner, name)] = stack.pop()
+        elif op == 180:  # getfield: only <clinit> string tables reach one
             stack.pop()
+            stack.append(UNKNOWN)
+        elif op == 188:  # newarray (primitive)
+            count = stack.pop()
+            stack.append(Arr([0] * count) if isinstance(count, int) else UNKNOWN)
         elif op == 187:
             name = cls.class_name(insn.operand)
             if name in self.monster_classes and state.pending is not None:
@@ -276,6 +308,13 @@ class Interpreter:
             arg_types, ret = parse_descriptor(desc)
             args = [stack.pop() for _ in arg_types][::-1]
             target = stack.pop() if op != 184 else None
+            if op == 183 and name == "<init>" and isinstance(target, (Mon, Pick)):
+                built = dataclasses.replace(target, ctor=(desc, tuple(args)))
+                state.stack[:] = [built if value is target else value for value in state.stack]
+                return None
+            if op == 184 and (owner, name, desc) == (MATH_UTILS, "random", "(FF)F") and all(isinstance(a, (int, float)) for a in args):
+                stack.append(Rand(float(args[0]), float(args[1])))
+                return None
             if op == 184 and owner == HELPER:
                 results = self._call_helper(name, desc, args, depth)
             else:
@@ -339,6 +378,68 @@ class Interpreter:
         if isinstance(target, Group) and name == "<init>":
             target.slots = list(args[0].items) if isinstance(args[0], Arr) else list(args)
         return [UNKNOWN]
+
+
+class _Placer:
+    """Where `new X(args)` stands: the offsetX/offsetY X's constructor hands AbstractMonster.
+
+    The game draws a monster at (Settings.WIDTH * 0.75 + offsetX * scale,
+    AbstractDungeon.floorY + offsetY * scale), floorY = 340 * yScale, y up; at
+    1920x1080 that is (1440 + offsetX, 340 + offsetY). The player stands at (480, 340).
+    A random position (`MathUtils.random(lo, hi)`, randomXOffset) takes its middle.
+    """
+
+    def __init__(self, jar: Any, ids: dict[str, str]):
+        self.jar, self.ids = jar, ids
+        self.switch_maps = intent_switch_maps(jar)
+        self.class_by_id = {monster: name for name, monster in ids.items() if name.startswith(MONSTER_PREFIX)}
+        self.statics: dict[str, dict[tuple[str, str], Any]] = {}
+        self.cache: dict[Any, list[float]] = {}
+        self.problems: list[str] = []
+
+    def _arg(self, value: Any) -> Any:
+        if isinstance(value, Rand):
+            return (value.lo + value.hi) / 2
+        if isinstance(value, ElemRef):  # GremlinLeader.POSX[i]
+            if value.owner not in self.statics:
+                interp = Interpreter(parse_class_file(self.jar.read(value.owner.replace(".", "/") + ".class")), {})
+                interp.call("<clinit>", "()V", [])
+                self.statics[value.owner] = interp.statics
+            array = self.statics[value.owner].get((value.owner, value.name))
+            return array.items[value.index] if isinstance(array, Arr) else UNKNOWN
+        return value
+
+    def offset(self, class_name: str, ctor: tuple[str, tuple[Any, ...]] | None) -> list[float] | None:
+        if ctor is None:
+            return None
+        desc, raw = ctor
+        args = tuple(self._arg(arg) for arg in raw)
+        key = (class_name, desc, args)
+        if key not in self.cache:
+            reader = MonsterReader(self.jar, class_name.replace(".", "/") + ".class", switch_maps=self.switch_maps, class_ids=self.ids)
+            this = Obj(reader.cls.name, fields={"damage": ListObj(), "state": Static("spine", "state")})
+            reader._machine(0, _Recorder()).run(reader.cls.method("<init>", desc), this, list(args))
+            values = [_plain(arg) for arg in this.fields.get("__monster", [])][8:10]
+            if len(this.fields.get("__monster", [])) == 8:  # the 8-argument super(...) passes offset (0, 0)
+                values = [0, 0]
+            if len(values) != 2 or not all(isinstance(v, (int, float)) for v in values):
+                self.problems.append(f"{class_name}{args}: no offset")
+                values = None
+            self.cache[key] = [round(float(v), 1) for v in values] if values else None
+        return self.cache[key]
+
+    def slot(self, value: Any, monster: str, pools: dict[int, list[Any]]) -> list[float] | None:
+        """Where slot `value` puts `monster` when it holds it."""
+        if isinstance(value, Mon):
+            return self.offset(value.cls, value.ctor) if self.ids.get(value.cls) == monster else None
+        if isinstance(value, Pick):
+            if value.ctor is not None and monster in pools.get(value.uid, []):
+                return self.offset(self.class_by_id[monster], value.ctor)
+            items = [dict(value.mapped)[item] for item in pools[value.uid]] if value.mapped else pools.get(value.uid, [])
+            for item in items:
+                if (found := self.slot(item, monster, pools)) is not None:
+                    return found
+        return None
 
 
 def _slug(key: str) -> str:
@@ -425,8 +526,8 @@ def _weighted(items: list[Any], resolve: Callable[[Any], dict[str, Fraction]]) -
 
 
 class _Resolver:
-    def __init__(self, interp: Interpreter, ids: dict[str, str], known: set[str], missing: set[str]):
-        self.interp, self.ids, self.known, self.missing = interp, ids, known, missing
+    def __init__(self, interp: Interpreter, ids: dict[str, str], known: set[str], missing: set[str], placer: _Placer):
+        self.interp, self.ids, self.known, self.missing, self.placer = interp, ids, known, missing, placer
 
     def monster(self, value: Any) -> str | None:
         """A monster class (or the id string a pool holds) as a known game id."""
@@ -448,33 +549,44 @@ class _Resolver:
         return {monster: Fraction(1)} if monster else {}
 
     def composition(self, slots: list[Any]) -> dict[str, Any]:
+        """Monsters with counts and, in `at`, each copy's offset (see _Placer); a choice's
+        `from` entries carry one offset per pick index: where that pick puts the monster."""
+        pools = self.interp.pools
         monsters: dict[str, int] = {}
+        at: dict[str, list[Any]] = {}
         draws: dict[int, list[Pick]] = {}
         for slot in slots:
             if isinstance(slot, Pick):
                 draws.setdefault(slot.uid, []).append(slot)
             elif (monster := self.monster(slot)) is not None:
                 monsters[monster] = monsters.get(monster, 0) + 1
-        choices: list[tuple[dict[str, Any], bool]] = []
+                at.setdefault(monster, []).append(self.placer.slot(slot, monster, pools))
+        choices: list[tuple[dict[str, Any], bool, list[Pick]]] = []
         for uid, picks in draws.items():
             pick = picks[0]
-            items = [dict(pick.mapped)[item] if pick.mapped else item for item in self.interp.pools[uid]]
+            items = [dict(pick.mapped)[item] if pick.mapped else item for item in pools[uid]]
             pool = _weighted(items, self.distribution)
             replace = uid not in self.interp.removed
-            same = next((c for c, r in choices if r and replace and c["from"] == pool), None)
+            same = next((entry for entry in choices if entry[1] and replace and entry[0]["from"] == pool), None)
             if same is not None:  # two Louse: independent draws from equal lists
-                same["pick"] += len(picks)
+                same[0]["pick"] += len(picks)
+                same[2].extend(picks)
             elif not replace and len(picks) == sum(entry["count"] for entry in pool):
-                for entry in pool:  # drawing the whole pool is a fixed set
+                queue = list(picks)  # drawing the whole pool is a fixed set, in any order
+                for entry in pool:
                     monsters[entry["id"]] = monsters.get(entry["id"], 0) + entry["count"]
+                    for _ in range(entry["count"]):
+                        at.setdefault(entry["id"], []).append(self.placer.slot(queue.pop(0), entry["id"], pools))
             else:
-                choices.append(({"pick": len(picks), "from": pool}, replace))
-        for choice, replace in choices:
+                choices.append(({"pick": len(picks), "from": pool}, replace, list(picks)))
+        for choice, replace, picks in choices:
             if replace and choice["pick"] > 1:
                 choice["independent"] = True
-        out: dict[str, Any] = {"monsters": [{"id": monster, "count": count} for monster, count in monsters.items()]}
+            for entry in choice["from"]:
+                entry["at"] = [self.placer.slot(pick, entry["id"], pools) for pick in picks]
+        out: dict[str, Any] = {"monsters": [{"id": monster, "count": count, "at": at[monster]} for monster, count in monsters.items()]}
         if choices:
-            out["choices"] = [choice for choice, _replace in choices]
+            out["choices"] = [choice for choice, _replace, _picks in choices]
         return out
 
 
@@ -518,7 +630,8 @@ def extract_encounters(jar, locales: list[str], write_json: Callable[[Path, Any]
     known = {row["id"] for row in json.loads((ROOT / "data" / "sts1" / "monsters.json").read_text(encoding="utf-8"))}
     interp = Interpreter(helper, ids)
     missing: set[str] = set()
-    resolver = _Resolver(interp, ids, known, missing)
+    placer = _Placer(jar, ids)
+    resolver = _Resolver(interp, ids, known, missing, placer)
 
     keys = _string_switch_keys(helper, "getEncounter")
     listings: dict[str, list[tuple[str, str, int, float | None]]] = {key: [] for key in keys}
@@ -583,6 +696,13 @@ def extract_encounters(jar, locales: list[str], write_json: Callable[[Path, Any]
 
     if interp.problems:
         raise SystemExit("encounter decoding problems: " + "; ".join(interp.problems))
+    for row in encounters:
+        for part in [row, *row.get("variants", [])]:
+            refs = part["monsters"] + [entry for choice in part.get("choices", []) for entry in choice["from"]]
+            if any(None in ref["at"] for ref in refs):
+                placer.problems.append(f"{row['key']}: a monster without a position")
+    if placer.problems:
+        raise SystemExit("encounter position problems: " + "; ".join(dict.fromkeys(placer.problems)))
     slugs = [row["slug"] for row in encounters]
     if len(set(slugs)) != len(slugs):
         raise SystemExit("duplicate encounter slugs")
@@ -591,7 +711,9 @@ def extract_encounters(jar, locales: list[str], write_json: Callable[[Path, Any]
         {
             "source": "MonsterHelper.getEncounter (+ private spawn helpers) for compositions; Exordium/TheCity/TheBeyond/TheEnding "
             "generateWeakEnemies/generateStrongEnemies/generateElites MonsterInfo lists and initializeBoss for listings; "
-            "event classes calling getEncounter; MonsterHelper.getEncounterName for names",
+            "event classes calling getEncounter; MonsterHelper.getEncounterName for names; "
+            "`at`: each copy's (or, in a choice, each pick index's) AbstractMonster offsetX/offsetY from its constructor, "
+            "drawn at (1440 + x, 340 + y) on the 1920x1080 screen, y up (random jitter at its middle)",
             "encounters": encounters,
         },
     )

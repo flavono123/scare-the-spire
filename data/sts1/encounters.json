@@ -1,5 +1,5 @@
 {
-  "source": "MonsterHelper.getEncounter (+ private spawn helpers) for compositions; Exordium/TheCity/TheBeyond/TheEnding generateWeakEnemies/generateStrongEnemies/generateElites MonsterInfo lists and initializeBoss for listings; event classes calling getEncounter; MonsterHelper.getEncounterName for names",
+  "source": "MonsterHelper.getEncounter (+ private spawn helpers) for compositions; Exordium/TheCity/TheBeyond/TheEnding generateWeakEnemies/generateStrongEnemies/generateElites MonsterInfo lists and initializeBoss for listings; event classes calling getEncounter; MonsterHelper.getEncounterName for names; `at`: each copy's (or, in a choice, each pick index's) AbstractMonster offsetX/offsetY from its constructor, drawn at (1440 + x, 340 + y) on the 1920x1080 screen, y up (random jitter at its middle)",
   "encounters": [
     {
       "key": "Cultist",
@@ -16,7 +16,13 @@
       "monsters": [
         {
           "id": "Cultist",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              -10.0
+            ]
+          ]
         }
       ]
     },
@@ -35,7 +41,13 @@
       "monsters": [
         {
           "id": "JawWorm",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              25.0
+            ]
+          ]
         }
       ]
     },
@@ -58,11 +70,31 @@
           "from": [
             {
               "id": "FuzzyLouseDefensive",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -200.0,
+                  10.0
+                ],
+                [
+                  80.0,
+                  30.0
+                ]
+              ]
             },
             {
               "id": "FuzzyLouseNormal",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -200.0,
+                  10.0
+                ],
+                [
+                  80.0,
+                  30.0
+                ]
+              ]
             }
           ],
           "independent": true
@@ -87,11 +119,23 @@
           "monsters": [
             {
               "id": "AcidSlime_S",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -230.0,
+                  32.0
+                ]
+              ]
             },
             {
               "id": "SpikeSlime_M",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  35.0,
+                  8.0
+                ]
+              ]
             }
           ]
         },
@@ -99,11 +143,23 @@
           "monsters": [
             {
               "id": "SpikeSlime_S",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -230.0,
+                  32.0
+                ]
+              ]
             },
             {
               "id": "AcidSlime_M",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  35.0,
+                  8.0
+                ]
+              ]
             }
           ]
         }
@@ -124,7 +180,13 @@
       "monsters": [
         {
           "id": "SlaverBlue",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -147,23 +209,113 @@
           "from": [
             {
               "id": "GremlinWarrior",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -320.0,
+                  25.0
+                ],
+                [
+                  -160.0,
+                  -12.0
+                ],
+                [
+                  25.0,
+                  -35.0
+                ],
+                [
+                  205.0,
+                  40.0
+                ]
+              ]
             },
             {
               "id": "GremlinThief",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -320.0,
+                  25.0
+                ],
+                [
+                  -160.0,
+                  -12.0
+                ],
+                [
+                  25.0,
+                  -35.0
+                ],
+                [
+                  205.0,
+                  40.0
+                ]
+              ]
             },
             {
               "id": "GremlinFat",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -320.0,
+                  25.0
+                ],
+                [
+                  -160.0,
+                  -12.0
+                ],
+                [
+                  25.0,
+                  -35.0
+                ],
+                [
+                  205.0,
+                  40.0
+                ]
+              ]
             },
             {
               "id": "GremlinTsundere",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -320.0,
+                  25.0
+                ],
+                [
+                  -160.0,
+                  -12.0
+                ],
+                [
+                  25.0,
+                  -35.0
+                ],
+                [
+                  205.0,
+                  40.0
+                ]
+              ]
             },
             {
               "id": "GremlinWizard",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -355.0,
+                  25.0
+                ],
+                [
+                  -195.0,
+                  -12.0
+                ],
+                [
+                  -10.0,
+                  -35.0
+                ],
+                [
+                  170.0,
+                  40.0
+                ]
+              ]
             }
           ]
         }
@@ -184,7 +336,13 @@
       "monsters": [
         {
           "id": "Looter",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -207,11 +365,23 @@
           "from": [
             {
               "id": "SpikeSlime_L",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  0.0,
+                  0.0
+                ]
+              ]
             },
             {
               "id": "AcidSlime_L",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  0.0,
+                  0.0
+                ]
+              ]
             }
           ]
         }
@@ -232,11 +402,35 @@
       "monsters": [
         {
           "id": "SpikeSlime_S",
-          "count": 3
+          "count": 3,
+          "at": [
+            [
+              -480.0,
+              30.0
+            ],
+            [
+              -320.0,
+              2.0
+            ],
+            [
+              -160.0,
+              32.0
+            ]
+          ]
         },
         {
           "id": "AcidSlime_S",
-          "count": 2
+          "count": 2,
+          "at": [
+            [
+              10.0,
+              -12.0
+            ],
+            [
+              200.0,
+              9.0
+            ]
+          ]
         }
       ]
     },
@@ -259,19 +453,43 @@
           "from": [
             {
               "id": "FuzzyLouseDefensive",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -160.0,
+                  20.0
+                ]
+              ]
             },
             {
               "id": "FuzzyLouseNormal",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -160.0,
+                  20.0
+                ]
+              ]
             },
             {
               "id": "SpikeSlime_M",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -160.0,
+                  20.0
+                ]
+              ]
             },
             {
               "id": "AcidSlime_M",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -160.0,
+                  20.0
+                ]
+              ]
             }
           ]
         },
@@ -280,19 +498,43 @@
           "from": [
             {
               "id": "Cultist",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  130.0,
+                  20.0
+                ]
+              ]
             },
             {
               "id": "SlaverBlue",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  130.0,
+                  20.0
+                ]
+              ]
             },
             {
               "id": "SlaverRed",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  130.0,
+                  20.0
+                ]
+              ]
             },
             {
               "id": "Looter",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  130.0,
+                  20.0
+                ]
+              ]
             }
           ]
         }
@@ -317,11 +559,23 @@
           "from": [
             {
               "id": "FungiBeast",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -150.0,
+                  20.0
+                ]
+              ]
             },
             {
               "id": "JawWorm",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -150.0,
+                  20.0
+                ]
+              ]
             }
           ]
         },
@@ -330,19 +584,43 @@
           "from": [
             {
               "id": "FuzzyLouseDefensive",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  150.0,
+                  20.0
+                ]
+              ]
             },
             {
               "id": "FuzzyLouseNormal",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  150.0,
+                  20.0
+                ]
+              ]
             },
             {
               "id": "SpikeSlime_M",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  150.0,
+                  20.0
+                ]
+              ]
             },
             {
               "id": "AcidSlime_M",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  150.0,
+                  20.0
+                ]
+              ]
             }
           ]
         }
@@ -363,7 +641,13 @@
       "monsters": [
         {
           "id": "SlaverRed",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -386,11 +670,39 @@
           "from": [
             {
               "id": "FuzzyLouseDefensive",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -350.0,
+                  25.0
+                ],
+                [
+                  -125.0,
+                  10.0
+                ],
+                [
+                  80.0,
+                  30.0
+                ]
+              ]
             },
             {
               "id": "FuzzyLouseNormal",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -350.0,
+                  25.0
+                ],
+                [
+                  -125.0,
+                  10.0
+                ],
+                [
+                  80.0,
+                  30.0
+                ]
+              ]
             }
           ],
           "independent": true
@@ -412,7 +724,17 @@
       "monsters": [
         {
           "id": "FungiBeast",
-          "count": 2
+          "count": 2,
+          "at": [
+            [
+              -400.0,
+              30.0
+            ],
+            [
+              -40.0,
+              20.0
+            ]
+          ]
         }
       ]
     },
@@ -435,7 +757,13 @@
       "monsters": [
         {
           "id": "GremlinNob",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -454,7 +782,13 @@
       "monsters": [
         {
           "id": "Lagavulin",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              20.0
+            ]
+          ]
         }
       ]
     },
@@ -477,7 +811,21 @@
       "monsters": [
         {
           "id": "Sentry",
-          "count": 3
+          "count": 3,
+          "at": [
+            [
+              -330.0,
+              25.0
+            ],
+            [
+              -85.0,
+              10.0
+            ],
+            [
+              140.0,
+              30.0
+            ]
+          ]
         }
       ]
     },
@@ -497,7 +845,13 @@
       "monsters": [
         {
           "id": "TheGuardian",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -50.0,
+              -100.0
+            ]
+          ]
         }
       ]
     },
@@ -517,7 +871,13 @@
       "monsters": [
         {
           "id": "Hexaghost",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -537,7 +897,13 @@
       "monsters": [
         {
           "id": "SlimeBoss",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              28.0
+            ]
+          ]
         }
       ]
     },
@@ -556,7 +922,13 @@
       "monsters": [
         {
           "id": "SphericGuardian",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -575,7 +947,13 @@
       "monsters": [
         {
           "id": "Chosen",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              -20.0
+            ]
+          ]
         }
       ]
     },
@@ -594,7 +972,13 @@
       "monsters": [
         {
           "id": "Shelled Parasite",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -20.0,
+              10.0
+            ]
+          ]
         }
       ]
     },
@@ -613,7 +997,21 @@
       "monsters": [
         {
           "id": "Byrd",
-          "count": 3
+          "count": 3,
+          "at": [
+            [
+              -360.0,
+              47.5
+            ],
+            [
+              -80.0,
+              47.5
+            ],
+            [
+              200.0,
+              47.5
+            ]
+          ]
         }
       ]
     },
@@ -632,11 +1030,23 @@
       "monsters": [
         {
           "id": "Looter",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -200.0,
+              15.0
+            ]
+          ]
         },
         {
           "id": "Mugger",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              80.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -655,11 +1065,23 @@
       "monsters": [
         {
           "id": "Byrd",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -170.0,
+              47.5
+            ]
+          ]
         },
         {
           "id": "Chosen",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              80.0,
+              -20.0
+            ]
+          ]
         }
       ]
     },
@@ -678,11 +1100,23 @@
       "monsters": [
         {
           "id": "Sentry",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -305.0,
+              30.0
+            ]
+          ]
         },
         {
           "id": "SphericGuardian",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -701,7 +1135,13 @@
       "monsters": [
         {
           "id": "SnakePlant",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -30.0,
+              20.0
+            ]
+          ]
         }
       ]
     },
@@ -720,7 +1160,13 @@
       "monsters": [
         {
           "id": "Snecko",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -739,11 +1185,23 @@
       "monsters": [
         {
           "id": "Centurion",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -200.0,
+              15.0
+            ]
+          ]
         },
         {
           "id": "Healer",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              120.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -762,11 +1220,23 @@
       "monsters": [
         {
           "id": "Cultist",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -230.0,
+              15.0
+            ]
+          ]
         },
         {
           "id": "Chosen",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              100.0,
+              5.0
+            ]
+          ]
         }
       ]
     },
@@ -785,7 +1255,21 @@
       "monsters": [
         {
           "id": "Cultist",
-          "count": 3
+          "count": 3,
+          "at": [
+            [
+              -465.0,
+              -20.0
+            ],
+            [
+              -130.0,
+              15.0
+            ],
+            [
+              200.0,
+              -5.0
+            ]
+          ]
         }
       ]
     },
@@ -804,11 +1288,23 @@
       "monsters": [
         {
           "id": "Shelled Parasite",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -260.0,
+              15.0
+            ]
+          ]
         },
         {
           "id": "FungiBeast",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              120.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -827,7 +1323,13 @@
       "monsters": [
         {
           "id": "GremlinLeader",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              35.0,
+              0.0
+            ]
+          ]
         }
       ],
       "choices": [
@@ -836,23 +1338,73 @@
           "from": [
             {
               "id": "GremlinWarrior",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -366.0,
+                  -4.0
+                ],
+                [
+                  -170.0,
+                  6.0
+                ]
+              ]
             },
             {
               "id": "GremlinThief",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -366.0,
+                  -4.0
+                ],
+                [
+                  -170.0,
+                  6.0
+                ]
+              ]
             },
             {
               "id": "GremlinFat",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -366.0,
+                  -4.0
+                ],
+                [
+                  -170.0,
+                  6.0
+                ]
+              ]
             },
             {
               "id": "GremlinTsundere",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -366.0,
+                  -4.0
+                ],
+                [
+                  -170.0,
+                  6.0
+                ]
+              ]
             },
             {
               "id": "GremlinWizard",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -401.0,
+                  -4.0
+                ],
+                [
+                  -205.0,
+                  6.0
+                ]
+              ]
             }
           ],
           "independent": true
@@ -874,15 +1426,33 @@
       "monsters": [
         {
           "id": "SlaverBlue",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -385.0,
+              -15.0
+            ]
+          ]
         },
         {
           "id": "SlaverBoss",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -133.0,
+              0.0
+            ]
+          ]
         },
         {
           "id": "SlaverRed",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              125.0,
+              -30.0
+            ]
+          ]
         }
       ]
     },
@@ -901,7 +1471,13 @@
       "monsters": [
         {
           "id": "BookOfStabbing",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              5.0
+            ]
+          ]
         }
       ]
     },
@@ -917,7 +1493,13 @@
       "monsters": [
         {
           "id": "BronzeAutomaton",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -50.0,
+              20.0
+            ]
+          ]
         }
       ]
     },
@@ -933,7 +1515,13 @@
       "monsters": [
         {
           "id": "TheCollector",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              60.0,
+              135.0
+            ]
+          ]
         }
       ]
     },
@@ -949,7 +1537,13 @@
       "monsters": [
         {
           "id": "Champ",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -90.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -970,7 +1564,21 @@
       "monsters": [
         {
           "id": "Darkling",
-          "count": 3
+          "count": 3,
+          "at": [
+            [
+              -440.0,
+              30.0
+            ],
+            [
+              -140.0,
+              50.0
+            ],
+            [
+              180.0,
+              15.0
+            ]
+          ]
         }
       ]
     },
@@ -989,7 +1597,13 @@
       "monsters": [
         {
           "id": "Orb Walker",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -30.0,
+              20.0
+            ]
+          ]
         }
       ]
     },
@@ -1012,15 +1626,57 @@
           "from": [
             {
               "id": "Repulsor",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -480.0,
+                  16.0
+                ],
+                [
+                  -240.0,
+                  4.0
+                ],
+                [
+                  0.0,
+                  -2.0
+                ]
+              ]
             },
             {
               "id": "Exploder",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -480.0,
+                  16.0
+                ],
+                [
+                  -240.0,
+                  4.0
+                ],
+                [
+                  0.0,
+                  -2.0
+                ]
+              ]
             },
             {
               "id": "Spiker",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -480.0,
+                  16.0
+                ],
+                [
+                  -240.0,
+                  4.0
+                ],
+                [
+                  0.0,
+                  -2.0
+                ]
+              ]
             }
           ]
         }
@@ -1041,7 +1697,13 @@
       "monsters": [
         {
           "id": "Serpent",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              10.0
+            ]
+          ]
         }
       ]
     },
@@ -1060,7 +1722,13 @@
       "monsters": [
         {
           "id": "Transient",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              20.0
+            ]
+          ]
         }
       ]
     },
@@ -1083,15 +1751,69 @@
           "from": [
             {
               "id": "Repulsor",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -480.0,
+                  16.0
+                ],
+                [
+                  -240.0,
+                  4.0
+                ],
+                [
+                  0.0,
+                  -2.0
+                ],
+                [
+                  240.0,
+                  22.0
+                ]
+              ]
             },
             {
               "id": "Exploder",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -480.0,
+                  16.0
+                ],
+                [
+                  -240.0,
+                  4.0
+                ],
+                [
+                  0.0,
+                  -2.0
+                ],
+                [
+                  240.0,
+                  22.0
+                ]
+              ]
             },
             {
               "id": "Spiker",
-              "count": 2
+              "count": 2,
+              "at": [
+                [
+                  -480.0,
+                  16.0
+                ],
+                [
+                  -240.0,
+                  4.0
+                ],
+                [
+                  0.0,
+                  -2.0
+                ],
+                [
+                  240.0,
+                  22.0
+                ]
+              ]
             }
           ]
         }
@@ -1112,7 +1834,13 @@
       "monsters": [
         {
           "id": "Maw",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -70.0,
+              20.0
+            ]
+          ]
         }
       ]
     },
@@ -1131,7 +1859,13 @@
       "monsters": [
         {
           "id": "SphericGuardian",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              110.0,
+              10.0
+            ]
+          ]
         }
       ],
       "choices": [
@@ -1140,15 +1874,45 @@
           "from": [
             {
               "id": "Spiker",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -435.0,
+                  20.0
+                ],
+                [
+                  -210.0,
+                  10.0
+                ]
+              ]
             },
             {
               "id": "Exploder",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -435.0,
+                  20.0
+                ],
+                [
+                  -210.0,
+                  10.0
+                ]
+              ]
             },
             {
               "id": "Repulsor",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -435.0,
+                  20.0
+                ],
+                [
+                  -210.0,
+                  10.0
+                ]
+              ]
             }
           ],
           "independent": true
@@ -1170,7 +1934,21 @@
       "monsters": [
         {
           "id": "JawWorm",
-          "count": 3
+          "count": 3,
+          "at": [
+            [
+              -490.0,
+              -5.0
+            ],
+            [
+              -150.0,
+              20.0
+            ],
+            [
+              175.0,
+              5.0
+            ]
+          ]
         }
       ]
     },
@@ -1189,7 +1967,13 @@
       "monsters": [
         {
           "id": "WrithingMass",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              15.0
+            ]
+          ]
         }
       ]
     },
@@ -1208,7 +1992,13 @@
       "monsters": [
         {
           "id": "GiantHead",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -70.0,
+              40.0
+            ]
+          ]
         }
       ]
     },
@@ -1227,7 +2017,13 @@
       "monsters": [
         {
           "id": "Nemesis",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -1246,11 +2042,27 @@
       "monsters": [
         {
           "id": "Dagger",
-          "count": 2
+          "count": 2,
+          "at": [
+            [
+              -220.0,
+              115.0
+            ],
+            [
+              210.0,
+              75.0
+            ]
+          ]
         },
         {
           "id": "Reptomancer",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -20.0,
+              10.0
+            ]
+          ]
         }
       ]
     },
@@ -1266,11 +2078,27 @@
       "monsters": [
         {
           "id": "Cultist",
-          "count": 2
+          "count": 2,
+          "at": [
+            [
+              -590.0,
+              10.0
+            ],
+            [
+              -298.0,
+              -10.0
+            ]
+          ]
         },
         {
           "id": "AwakenedOne",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              100.0,
+              15.0
+            ]
+          ]
         }
       ]
     },
@@ -1286,7 +2114,13 @@
       "monsters": [
         {
           "id": "TimeEater",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -50.0,
+              30.0
+            ]
+          ]
         }
       ]
     },
@@ -1302,11 +2136,23 @@
       "monsters": [
         {
           "id": "Deca",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -350.0,
+              30.0
+            ]
+          ]
         },
         {
           "id": "Donu",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              100.0,
+              20.0
+            ]
+          ]
         }
       ]
     },
@@ -1322,11 +2168,23 @@
       "monsters": [
         {
           "id": "SpireShield",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -1000.0,
+              15.0
+            ]
+          ]
         },
         {
           "id": "SpireSpear",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              70.0,
+              10.0
+            ]
+          ]
         }
       ]
     },
@@ -1342,7 +2200,13 @@
       "monsters": [
         {
           "id": "CorruptHeart",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -50.0,
+              30.0
+            ]
+          ]
         }
       ]
     },
@@ -1359,7 +2223,13 @@
       "monsters": [
         {
           "id": "Lagavulin",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              0.0,
+              20.0
+            ]
+          ]
         }
       ]
     },
@@ -1376,7 +2246,21 @@
       "monsters": [
         {
           "id": "FungiBeast",
-          "count": 3
+          "count": 3,
+          "at": [
+            [
+              -450.0,
+              30.0
+            ],
+            [
+              -145.0,
+              20.0
+            ],
+            [
+              180.0,
+              15.0
+            ]
+          ]
         }
       ]
     },
@@ -1393,15 +2277,33 @@
       "monsters": [
         {
           "id": "BanditChild",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -320.0,
+              0.0
+            ]
+          ]
         },
         {
           "id": "BanditLeader",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -75.0,
+              -6.0
+            ]
+          ]
         },
         {
           "id": "BanditBear",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              150.0,
+              -6.0
+            ]
+          ]
         }
       ]
     },
@@ -1418,11 +2320,23 @@
       "monsters": [
         {
           "id": "SlaverBoss",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -270.0,
+              15.0
+            ]
+          ]
         },
         {
           "id": "GremlinNob",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              130.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -1439,11 +2353,23 @@
       "monsters": [
         {
           "id": "SlaverBlue",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -270.0,
+              15.0
+            ]
+          ]
         },
         {
           "id": "SlaverRed",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              130.0,
+              0.0
+            ]
+          ]
         }
       ]
     },
@@ -1460,7 +2386,17 @@
       "monsters": [
         {
           "id": "Orb Walker",
-          "count": 2
+          "count": 2,
+          "at": [
+            [
+              -250.0,
+              32.0
+            ],
+            [
+              150.0,
+              26.0
+            ]
+          ]
         }
       ]
     },
@@ -1477,7 +2413,13 @@
       "monsters": [
         {
           "id": "Orb Walker",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              150.0,
+              30.0
+            ]
+          ]
         }
       ],
       "choices": [
@@ -1486,15 +2428,45 @@
           "from": [
             {
               "id": "Spiker",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -475.0,
+                  20.0
+                ],
+                [
+                  -250.0,
+                  10.0
+                ]
+              ]
             },
             {
               "id": "Exploder",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -475.0,
+                  20.0
+                ],
+                [
+                  -250.0,
+                  10.0
+                ]
+              ]
             },
             {
               "id": "Repulsor",
-              "count": 1
+              "count": 1,
+              "at": [
+                [
+                  -475.0,
+                  20.0
+                ],
+                [
+                  -250.0,
+                  10.0
+                ]
+              ]
             }
           ],
           "independent": true
@@ -1509,7 +2481,25 @@
       "monsters": [
         {
           "id": "Byrd",
-          "count": 4
+          "count": 4,
+          "at": [
+            [
+              -470.0,
+              47.5
+            ],
+            [
+              -210.0,
+              47.5
+            ],
+            [
+              50.0,
+              47.5
+            ],
+            [
+              310.0,
+              47.5
+            ]
+          ]
         }
       ]
     },
@@ -1521,11 +2511,23 @@
       "monsters": [
         {
           "id": "Reptomancer",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -20.0,
+              10.0
+            ]
+          ]
         },
         {
           "id": "Dagger",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              210.0,
+              75.0
+            ]
+          ]
         }
       ]
     },
@@ -1537,11 +2539,27 @@
       "monsters": [
         {
           "id": "Dagger",
-          "count": 2
+          "count": 2,
+          "at": [
+            [
+              -220.0,
+              115.0
+            ],
+            [
+              210.0,
+              75.0
+            ]
+          ]
         },
         {
           "id": "Reptomancer",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -20.0,
+              10.0
+            ]
+          ]
         }
       ]
     },
@@ -1553,11 +2571,27 @@
       "monsters": [
         {
           "id": "Healer",
-          "count": 2
+          "count": 2,
+          "at": [
+            [
+              -475.0,
+              -10.0
+            ],
+            [
+              175.0,
+              -10.0
+            ]
+          ]
         },
         {
           "id": "Snecko",
-          "count": 1
+          "count": 1,
+          "at": [
+            [
+              -130.0,
+              -13.0
+            ]
+          ]
         }
       ]
     }

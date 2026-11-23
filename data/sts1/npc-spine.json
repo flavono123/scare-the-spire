@@ -18,5 +18,25 @@
       "width": 808.2,
       "height": 712
     }
+  },
+  "ironclad": {
+    "skeleton": "skeleton.76531c652e.json",
+    "idle": "Idle",
+    "animations": [
+      "Hit",
+      "Idle"
+    ],
+    "viewport": {
+      "x": -229.3,
+      "y": -30.9,
+      "width": 361,
+      "height": 263
+    },
+    "still": {
+      "x": -229.3,
+      "y": -30.9,
+      "width": 361,
+      "height": 263
+    }
   }
 }

@@ -7,7 +7,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-type Ref = { id: string; count: number };
+/** `at`: one [offsetX, offsetY] per copy (per pick index in a choice). */
+type Ref = { id: string; count: number; at: [number, number][] };
 type Composition = { monsters: Ref[]; choices?: { pick: number; from: Ref[] }[] };
 type Encounter = Composition & { key: string; slug: string; variants?: Composition[] };
 
@@ -30,6 +31,18 @@ for (const encounter of encounters) {
   if (refs.length === 0) errors.push(`${encounter.key}: no monsters`);
   for (const ref of refs) {
     if (!monsterIds.has(ref.id)) errors.push(`${encounter.key}: unknown monster ${ref.id}`);
+  }
+  const placed = (ref: Ref, slots: number) => Array.isArray(ref.at) && ref.at.length === slots
+    && ref.at.every((xy) => Array.isArray(xy) && xy.length === 2 && xy.every(Number.isFinite));
+  for (const part of parts) {
+    for (const ref of part.monsters) {
+      if (!placed(ref, ref.count)) errors.push(`${encounter.key}: ${ref.id} needs ${ref.count} positions`);
+    }
+    for (const choice of part.choices ?? []) {
+      for (const ref of choice.from) {
+        if (!placed(ref, choice.pick)) errors.push(`${encounter.key}: ${ref.id} needs a position per pick (${choice.pick})`);
+      }
+    }
   }
   for (const [locale, table] of Object.entries(names)) {
     if (!table[encounter.key] && !UNNAMED_ALLOWLIST.has(encounter.key)) errors.push(`${encounter.key}: no ${locale} name`);

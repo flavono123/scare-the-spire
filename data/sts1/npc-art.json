@@ -3,5 +3,10 @@
     "atlas": "images/npcs/neow/skeleton.atlas",
     "skeleton": "images/npcs/neow/skeleton.json",
     "animation": "idle"
+  },
+  "ironclad": {
+    "atlas": "images/characters/ironclad/idle/skeleton.atlas",
+    "skeleton": "images/characters/ironclad/idle/skeleton.json",
+    "animation": "Idle"
   }
 }

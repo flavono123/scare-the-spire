@@ -9,7 +9,8 @@ import { sts1MonsterImageUrl } from "./paths";
 import type { Sts1Dungeon } from "./types";
 
 export type Sts1EncounterPool = "weak" | "strong" | "elite" | "boss" | "event";
-type MonsterCount = { id: string; count: number };
+/** `at`: one AbstractMonster offset [x, y] per copy, or per pick index in a choice. */
+type MonsterCount = { id: string; count: number; at: [number, number][] };
 type RawEncounter = {
   key: string;
   slug: string;
@@ -22,7 +23,12 @@ type RawEncounter = {
   variants?: { monsters: MonsterCount[] }[];
 };
 
-export type Sts1EncounterMonster = { slug: string; name: string; imageUrl: string; count: number };
+/**
+ * `at`: where each copy (in a choice: each pick index) stands, as the offset its
+ * constructor hands AbstractMonster: drawn at (1440 + x, 340 + y) on the game's
+ * 1920x1080 screen, y up from the bottom.
+ */
+export type Sts1EncounterMonster = { slug: string; name: string; imageUrl: string; count: number; at: [number, number][] };
 
 export interface Sts1Encounter {
   key: string;
@@ -40,7 +46,11 @@ export interface Sts1Encounter {
   choices: { pick: number; independent: boolean; from: Sts1EncounterMonster[] }[];
   /** Whole compositions one coin flip chooses between. */
   variants: Sts1EncounterMonster[][];
+  /** The act whose combat room it is fought in: its list, else its event's act, else its monsters' latest act. */
+  sceneDungeon: Sts1Dungeon;
 }
+
+const DUNGEON_ORDER: Sts1Dungeon[] = ["exordium", "city", "beyond", "ending"];
 
 async function readNames(gameLocale: GameLocale): Promise<Record<string, string>> {
   const file = path.join(process.cwd(), "data/sts1/localization", sts1GameLocale(gameLocale), "encounters.json");
@@ -64,9 +74,17 @@ export const getSts1Encounters = cache(async (gameLocale: GameLocale = "kor"): P
     const row = eventById.get(event.id);
     return row ? [[event.className.split(".").at(-1) ?? event.className, row] as const] : [];
   }));
-  const resolve = (rows: readonly MonsterCount[]): Sts1EncounterMonster[] => rows.flatMap(({ id, count }) => {
+  // "city.Colosseum": the event's package is its act.
+  const eventDungeon = new Map(rawEvents.map((event) => [event.className.split(".").at(-1) ?? event.className, event.className.split(".")[0]]));
+  const sceneDungeon = (row: RawEncounter): Sts1Dungeon => {
+    const fromEvent = (row.events ?? []).map((name) => eventDungeon.get(name)).find((act): act is Sts1Dungeon => DUNGEON_ORDER.includes(act as Sts1Dungeon));
+    const ids = [...row.monsters, ...(row.choices ?? []).flatMap((choice) => choice.from), ...(row.variants ?? []).flatMap((variant) => variant.monsters)];
+    const latest = Math.max(0, ...ids.map(({ id }) => DUNGEON_ORDER.indexOf(monsterById.get(id)?.dungeon ?? "exordium")));
+    return row.dungeons[0] ?? fromEvent ?? DUNGEON_ORDER[latest];
+  };
+  const resolve = (rows: readonly MonsterCount[]): Sts1EncounterMonster[] => rows.flatMap(({ id, count, at }) => {
     const monster = monsterById.get(id);
-    return monster ? [{ slug: monster.slug, name: monster.name, imageUrl: sts1MonsterImageUrl(monster), count }] : [];
+    return monster ? [{ slug: monster.slug, name: monster.name, imageUrl: sts1MonsterImageUrl(monster), count, at }] : [];
   });
   return raw.map((row) => ({
     key: row.key,
@@ -84,5 +102,6 @@ export const getSts1Encounters = cache(async (gameLocale: GameLocale = "kor"): P
     monsters: resolve(row.monsters),
     choices: (row.choices ?? []).map((choice) => ({ pick: choice.pick, independent: Boolean(choice.independent), from: resolve(choice.from) })),
     variants: (row.variants ?? []).map((variant) => resolve(variant.monsters)),
+    sceneDungeon: sceneDungeon(row),
   }));
 });

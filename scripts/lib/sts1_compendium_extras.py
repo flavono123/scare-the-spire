@@ -57,6 +57,12 @@ NPC_ART = {
         "skeleton": "images/npcs/neow/skeleton.json",
         "animation": "idle",
     },
+    # The player the encounter scene stands at (480, 340): Ironclad's combat skeleton (scale 1).
+    "ironclad": {
+        "atlas": "images/characters/ironclad/idle/skeleton.atlas",
+        "skeleton": "images/characters/ironclad/idle/skeleton.json",
+        "animation": "Idle",
+    },
 }
 
 

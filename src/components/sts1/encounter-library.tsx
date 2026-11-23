@@ -9,7 +9,8 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { Sts1Encounter, Sts1EncounterMonster, Sts1EncounterPool } from "@/lib/sts1/encounters";
 import { sts1DetailPath, sts1IndexPath } from "@/lib/sts1/paths";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
-import type { Sts1Dungeon, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1Dungeon, Sts1Monster, Sts1UiLabels } from "@/lib/sts1/types";
+import { Sts1EncounterScene } from "./encounter-scene";
 import { Sts1DetailShell, Sts1EnglishName, Sts1InfoRailSection, Sts1MetaPill } from "./detail-chrome";
 import { Sts1DetailModal, Sts1ListLayout, useSts1Selection } from "./list-shell";
 import { Sts1RelatedRail } from "./related-rail";
@@ -88,12 +89,16 @@ function Composition({ encounter, labels, monsterLink }: { encounter: Sts1Encoun
 function EncounterDetail({
   encounter,
   related,
+  monsters,
+  player,
   labels,
   serviceLocale,
   onClose,
 }: {
   encounter: Sts1Encounter;
   related: readonly Sts1RelatedGroup[];
+  monsters: Sts1Monster[];
+  player: Sts1Monster | null;
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
   onClose: () => void;
@@ -115,7 +120,12 @@ function EncounterDetail({
       heroLayout="icon"
       hero={(
         <div className="flex w-full flex-col items-center gap-4">
-          <Composition encounter={encounter} labels={t} monsterLink={monsterLink} />
+          <Sts1EncounterScene
+            encounter={encounter}
+            monsters={monsters}
+            player={player}
+            rerollLabel={serviceLocale === "ko" ? "다른 구성" : "Reroll"}
+          />
           <h1 className="text-center font-game-title text-3xl text-[#fff6e2] [text-shadow:0_2px_0_#000]">{encounter.name}</h1>
         </div>
       )}
@@ -131,6 +141,9 @@ function EncounterDetail({
           <Sts1EnglishName name={encounter.name} nameEn={encounter.nameEn} serviceLocale={serviceLocale} />
         </div>
       </section>
+      <Sts1InfoRailSection title={t.composition}>
+        <Composition encounter={encounter} labels={t} monsterLink={monsterLink} />
+      </Sts1InfoRailSection>
       {Object.keys(encounter.weights).length ? (
         <Sts1InfoRailSection title={t.weight}>
           <dl className="flex flex-col gap-1 font-game-text text-sm">
@@ -155,12 +168,16 @@ function EncounterDetail({
 export function Sts1EncounterLibrary({
   encounters,
   related,
+  monsters,
+  player,
   labels,
   serviceLocale,
   trailing,
 }: {
   encounters: Sts1Encounter[];
   related?: Record<string, Sts1RelatedGroup[]>;
+  monsters: Sts1Monster[];
+  player: Sts1Monster | null;
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
   trailing?: ReactNode;
@@ -191,7 +208,7 @@ export function Sts1EncounterLibrary({
       trailing={trailing}
       overlay={selected ? (
         <Sts1DetailModal label={selected.name} onClose={close}>
-          <EncounterDetail encounter={selected} related={related?.[selected.slug] ?? []} labels={labels} serviceLocale={serviceLocale} onClose={close} />
+          <EncounterDetail encounter={selected} related={related?.[selected.slug] ?? []} monsters={monsters} player={player} labels={labels} serviceLocale={serviceLocale} onClose={close} />
         </Sts1DetailModal>
       ) : null}
     >
