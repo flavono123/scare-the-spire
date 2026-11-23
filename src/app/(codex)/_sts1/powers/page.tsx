@@ -9,6 +9,7 @@ import {
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
 import {
+  getSts1Keywords,
   getSts1Metadata,
   getSts1Powers,
   getSts1UiLabels,
@@ -36,9 +37,10 @@ export default async function Sts1PowersPage({
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [powers, labels] = await Promise.all([
+  const [powers, labels, keywords] = await Promise.all([
     getSts1Powers(gameLocale),
     getSts1UiLabels(gameLocale),
+    getSts1Keywords(gameLocale),
   ]);
   const related = await getSts1RelatedMap("powers", powers.map((power) => power.slug), gameLocale);
 
@@ -49,6 +51,7 @@ export default async function Sts1PowersPage({
         <Sts1PowerLibrary
           powers={powers}
           related={related}
+          keywords={keywords}
           labels={labels}
           serviceLocale={serviceLocale}
         />

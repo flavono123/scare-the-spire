@@ -124,7 +124,7 @@ export const getSts1RelationGraph = cache(async () => {
     potion: new Map(potions.map((row) => [row.id, row.slug])),
     power: new Map(powers.map((row) => [row.id, row.slug])),
     monster: new Map(monsters.map((row) => [row.id, row.slug])),
-    character: new Map(characters.map((row) => [row.id, row.slug])),
+    character: new Map<string, string>(characters.map((row) => [row.id, row.slug])),
     event: new Map(events.map((row) => [row.id, row.slug])),
     blight: new Map(blights.map((row) => [row.id, row.slug])),
     keyword: new Map(keywords.map((row) => [row.slug, row.slug])),

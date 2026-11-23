@@ -22,9 +22,10 @@ import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { STS1_FILTER_ICONS, STS1_POTION_RARITY_COLORS } from "@/lib/sts1/card-style";
 import { sts1CardUiUrl, sts1DetailPath } from "@/lib/sts1/paths";
-import type { Sts1Potion, Sts1PotionPool, Sts1PotionRarity, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1Keyword, Sts1Potion, Sts1PotionPool, Sts1PotionRarity, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1PotionDetail } from "./potion-detail";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
+import { Sts1EntryTips } from "./list-shell";
 import { Sts1PotionTile } from "./potion-tile";
 import { useEscapeClose } from "./use-escape-close";
 
@@ -33,11 +34,13 @@ const RARITY_ORDER: Sts1PotionRarity[] = ["common", "uncommon", "rare"];
 export function Sts1PotionLibrary({
   potions,
   related,
+  keywords,
   labels,
   serviceLocale,
 }: {
   potions: Sts1Potion[];
   related?: Record<string, Sts1RelatedGroup[]>;
+  keywords: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
@@ -181,14 +184,15 @@ export function Sts1PotionLibrary({
                       prefetch={false}
                       href={localizeLink(sts1DetailPath("potions", potion.slug))}
                       className="group"
-                      title={potion.name}
                       onClick={(event) => {
                         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
                         event.preventDefault();
                         openPotion(potion);
                       }}
                     >
-                      <Sts1PotionTile potion={potion} />
+                      <Sts1EntryTips title={potion.name} description={potion.description} keywords={keywords}>
+                        <Sts1PotionTile potion={potion} />
+                      </Sts1EntryTips>
                     </Link>
                   ))}
                 </div>

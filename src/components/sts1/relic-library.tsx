@@ -22,9 +22,10 @@ import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { STS1_FILTER_ICONS, STS1_TIER_COLORS } from "@/lib/sts1/card-style";
 import { sts1CardUiUrl, sts1DetailPath } from "@/lib/sts1/paths";
-import type { Sts1Relic, Sts1RelicPool, Sts1RelicTier, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1Keyword, Sts1Relic, Sts1RelicPool, Sts1RelicTier, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1RelicDetail } from "./relic-detail";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
+import { Sts1EntryTips } from "./list-shell";
 import { Sts1RelicTile } from "./relic-tile";
 import { useEscapeClose } from "./use-escape-close";
 
@@ -33,11 +34,13 @@ const TIER_ORDER: Exclude<Sts1RelicTier, "deprecated">[] = ["starter", "common",
 export function Sts1RelicLibrary({
   relics,
   related,
+  keywords,
   labels,
   serviceLocale,
 }: {
   relics: Sts1Relic[];
   related?: Record<string, Sts1RelatedGroup[]>;
+  keywords: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
@@ -181,14 +184,15 @@ export function Sts1RelicLibrary({
                       prefetch={false}
                       href={localizeLink(sts1DetailPath("relics", relic.slug))}
                       className="group"
-                      title={relic.name}
                       onClick={(event) => {
                         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
                         event.preventDefault();
                         openRelic(relic);
                       }}
                     >
-                      <Sts1RelicTile relic={relic} />
+                      <Sts1EntryTips title={relic.name} description={relic.description} keywords={keywords}>
+                        <Sts1RelicTile relic={relic} />
+                      </Sts1EntryTips>
                     </Link>
                   ))}
                 </div>

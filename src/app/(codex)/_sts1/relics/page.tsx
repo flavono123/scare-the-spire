@@ -8,7 +8,7 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getSts1Metadata, getSts1Relics, getSts1UiLabels } from "@/lib/sts1/data";
+import { getSts1Keywords, getSts1Metadata, getSts1Relics, getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
 import { getSts1RelatedMap } from "@/lib/sts1/relations";
 
@@ -32,9 +32,10 @@ export default async function Sts1RelicsPage({
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [relics, labels] = await Promise.all([
+  const [relics, labels, keywords] = await Promise.all([
     getSts1Relics(gameLocale),
     getSts1UiLabels(gameLocale),
+    getSts1Keywords(gameLocale),
   ]);
   const related = await getSts1RelatedMap("relics", relics.map((row) => row.slug), gameLocale);
 
@@ -42,7 +43,7 @@ export default async function Sts1RelicsPage({
   return (
     <Sts1BitmapPackScope packs={["kor"]}>
       <Suspense>
-        <Sts1RelicLibrary relics={relics} related={related} labels={labels} serviceLocale={serviceLocale} />
+        <Sts1RelicLibrary relics={relics} related={related} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
       </Suspense>
     </Sts1BitmapPackScope>
   );

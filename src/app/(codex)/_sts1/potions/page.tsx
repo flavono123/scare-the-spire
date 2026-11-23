@@ -8,7 +8,7 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getSts1Metadata, getSts1Potions, getSts1UiLabels } from "@/lib/sts1/data";
+import { getSts1Keywords, getSts1Metadata, getSts1Potions, getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
 import { getSts1RelatedMap } from "@/lib/sts1/relations";
 
@@ -32,9 +32,10 @@ export default async function Sts1PotionsPage({
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [potions, labels] = await Promise.all([
+  const [potions, labels, keywords] = await Promise.all([
     getSts1Potions(gameLocale),
     getSts1UiLabels(gameLocale),
+    getSts1Keywords(gameLocale),
   ]);
   const related = await getSts1RelatedMap("potions", potions.map((row) => row.slug), gameLocale);
 
@@ -42,7 +43,7 @@ export default async function Sts1PotionsPage({
   return (
     <Sts1BitmapPackScope packs={["kor"]}>
       <Suspense>
-        <Sts1PotionLibrary potions={potions} related={related} labels={labels} serviceLocale={serviceLocale} />
+        <Sts1PotionLibrary potions={potions} related={related} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
       </Suspense>
     </Sts1BitmapPackScope>
   );

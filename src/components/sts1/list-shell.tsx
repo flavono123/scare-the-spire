@@ -18,7 +18,7 @@ import {
 import { formatCodexCount, getCodexServiceMessages } from "@/lib/codex-service";
 import type { ServiceLocale } from "@/lib/i18n";
 import { plainSts1Text } from "@/lib/sts1/description";
-import { collectSts1CardSideTips } from "@/lib/sts1/keyword-tips";
+import { collectSts1CardSideTips, sts1KeywordTipBody } from "@/lib/sts1/keyword-tips";
 import type { Sts1EntityRefs, Sts1Keyword } from "@/lib/sts1/types";
 import { Sts1EventText } from "./event-text";
 import { useEscapeClose } from "./use-escape-close";
@@ -155,6 +155,32 @@ export function Sts1Description({
   return (
     <CardSideTipsAnchor tips={tips} mode="hover" preferSide="right" className="block">
       {body}
+    </CardSideTipsAnchor>
+  );
+}
+
+/**
+ * An index tile's hover, as the STS2 collections show it: the entry's own tip (name, game text)
+ * with the keyword tips that text raises stacked beside it.
+ */
+export function Sts1EntryTips({
+  title,
+  description,
+  keywords,
+  children,
+}: {
+  title: string;
+  description: string;
+  keywords: readonly Sts1Keyword[];
+  children: ReactNode;
+}) {
+  const tips = useMemo(() => [
+    { kind: "keyword" as const, id: `entry:${title}`, title, description: sts1KeywordTipBody(description), variant: "default" as const, source: "staticHoverTip" as const },
+    ...collectSts1CardSideTips(plainSts1Text(description), keywords),
+  ], [description, keywords, title]);
+  return (
+    <CardSideTipsAnchor tips={tips} mode="hover" preferSide="right" className="block">
+      {children}
     </CardSideTipsAnchor>
   );
 }

@@ -12,7 +12,7 @@ import { sts1DetailPath, sts1IndexPath } from "@/lib/sts1/paths";
 import type { Sts1Blight, Sts1EntityRefs, Sts1Keyword, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1EnglishName } from "./detail-chrome";
-import { Sts1Description, Sts1DetailModal, Sts1ListLayout, openOnPlainClick, useSts1Selection } from "./list-shell";
+import { Sts1Description, Sts1DetailModal, Sts1EntryTips, Sts1ListLayout, openOnPlainClick, useSts1Selection } from "./list-shell";
 import { RelicSlab } from "./mention-hover";
 import { Sts1RelatedRail } from "./related-rail";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
@@ -129,14 +129,15 @@ export function Sts1BlightLibrary({
             href={localizeLink(sts1DetailPath("blights", blight.slug))}
             className="group"
             aria-label={blight.name}
-            title={blight.name}
             onClick={(event) => openOnPlainClick(event, () => open(blight))}
           >
-            <article className="relative block">
-              <div className="h-14 w-14 rounded-lg border-2 border-transparent bg-white/5 p-1 transition-all sm:h-16 sm:w-16 group-hover:z-10 group-hover:scale-110 group-hover:border-primary/60 group-hover:bg-primary/10">
-                <Image src={blight.image} alt={blight.name} width={64} height={64} className="h-full w-full object-contain" />
-              </div>
-            </article>
+            <Sts1EntryTips title={blight.name} description={blight.description} keywords={keywords}>
+              <article className="relative block">
+                <div className="h-14 w-14 rounded-lg border-2 border-transparent bg-white/5 p-1 transition-all sm:h-16 sm:w-16 group-hover:z-10 group-hover:scale-110 group-hover:border-primary/60 group-hover:bg-primary/10">
+                  <Image src={blight.image} alt={blight.name} width={64} height={64} className="h-full w-full object-contain" />
+                </div>
+              </article>
+            </Sts1EntryTips>
           </Link>
         ))}
       </div>

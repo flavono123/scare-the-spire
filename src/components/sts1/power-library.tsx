@@ -23,9 +23,10 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { STS1_POWER_TYPE_COLORS } from "@/lib/sts1/card-style";
 import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1DetailPath } from "@/lib/sts1/paths";
-import type { Sts1Power, Sts1PowerType, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1Keyword, Sts1Power, Sts1PowerType, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1PowerDetail } from "./power-detail";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
+import { Sts1EntryTips } from "./list-shell";
 import { Sts1PowerTile } from "./power-tile";
 import { useEscapeClose } from "./use-escape-close";
 
@@ -34,11 +35,13 @@ const TYPE_ORDER: Sts1PowerType[] = ["buff", "debuff"];
 export function Sts1PowerLibrary({
   powers,
   related,
+  keywords,
   labels,
   serviceLocale,
 }: {
   powers: Sts1Power[];
   related: Record<string, Sts1RelatedGroup[]>;
+  keywords: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
@@ -172,7 +175,9 @@ export function Sts1PowerLibrary({
                         openPower(power);
                       }}
                     >
-                      <Sts1PowerTile power={power} />
+                      <Sts1EntryTips title={power.name} description={power.description} keywords={keywords}>
+                        <Sts1PowerTile power={power} />
+                      </Sts1EntryTips>
                     </Link>
                   ))}
                 </div>
