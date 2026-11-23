@@ -220,15 +220,6 @@ async function restRead(deps: AdminReadDeps, request: RestRequest): Promise<{ da
 
 const rowsOf = (data: unknown): Row[] => (Array.isArray(data) ? (data as Row[]) : []);
 
-/**
- * The envs whose source is supabase, as one Supabase read: no env filter when every env is on
- * Supabase (the request the page made before D1), else one read per env with its `env` filter.
- */
-function supabaseEnvFilters(envs: readonly D1EnvName[]): Array<DataEnv | undefined> {
-  if (envs.length === 0) return [];
-  return envs.length === D1_ENVS.length ? [undefined] : envs.map((env) => DATA_ENV_OF[env]);
-}
-
 // contact_inquiries: replyToContactInquiry goes by source.contact of the inquiry's env.
 
 export const CONTACT_INQUIRY_SELECT =
@@ -356,20 +347,14 @@ export async function readRlsActivityMetricsRpc(
 // ------------------------------------------------------------------------------------------- /api/dev
 
 /**
- * Inquiries still in the "new" state, both envs (the dev mailbox pip), each env from the store its
- * reply writes to. Throws SupabaseKeyMissingError when that is Supabase and there is no secret key.
+ * Production inquiries still in the "new" state (the dev mailbox pip), from the store its reply
+ * writes to. Development inquiries are QA leftovers and the inbox opens on 운영, so they never
+ * light it. Throws SupabaseKeyMissingError when that is Supabase and there is no secret key.
  */
 export async function countUncheckedInquiries(deps: AdminReadDeps): Promise<number> {
-  const parts = await Promise.all(D1_ENVS.map(async (env) => {
-    const { gate, results: [rows] } = await gatedD1(deps.d1(env), [stmt("SELECT count(*) AS n FROM contact_inquiries WHERE status = 'new'")]);
-    return { env, source: gate.sources.contact, count: countOf(rows) };
-  }));
-  const onSupabase = parts.filter((part) => part.source === "supabase").map((part) => part.env);
-  let total = parts.filter((part) => part.source === "d1").reduce((sum, part) => sum + part.count, 0);
-  for (const dataEnv of supabaseEnvFilters(onSupabase)) {
-    total += (await restRead(deps, uncheckedInquiriesRequest(dataEnv))).count ?? 0;
-  }
-  return total;
+  const { gate, results: [rows] } = await gatedD1(deps.d1("production"), [stmt("SELECT count(*) AS n FROM contact_inquiries WHERE status = 'new'")]);
+  if (gate.sources.contact === "d1") return countOf(rows);
+  return (await restRead(deps, uncheckedInquiriesRequest("production"))).count ?? 0;
 }
 
 export const PROD_RUN_LIMIT = 100;

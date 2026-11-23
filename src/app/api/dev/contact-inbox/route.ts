@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json({ message: "Not found" }, { status: 404 });
   }
 
-  // Both envs (the Supabase count had no env filter), each from the store its replies write to.
+  // Production only, from the store its replies write to.
   const [{ adminDeps }, { countUncheckedInquiries, SupabaseKeyMissingError }] = await Promise.all([
     import("../../../../../scripts/admin/admin-deps"),
     import("../../../../../scripts/admin/admin-reads"),

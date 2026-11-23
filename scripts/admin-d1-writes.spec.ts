@@ -535,9 +535,9 @@ async function main() {
     assert.deepEqual([contactRow(read?.data, U(41))?.status, contactRow(read?.data, U(41))?.admin_response], ["done", "읽기 답변"], "the reply shows at once");
 
     from = restCalls.length;
-    const [{ n: unchecked }] = await sbRows("select count(*)::int as n from public.contact_inquiries where status = 'new'");
+    const [{ n: unchecked }] = await sbRows("select count(*)::int as n from public.contact_inquiries where env = 'production' and status = 'new'");
     assert.equal(await countUncheckedInquiries(deps()), unchecked);
-    assert.deepEqual(restSince(from), ["HEAD /rest/v1/contact_inquiries?select=id&status=eq.new"], "today's head count");
+    assert.deepEqual(restSince(from), ["HEAD /rest/v1/contact_inquiries?env=eq.production&select=id&status=eq.new"], "production only");
     assert.equal(restCalls[from].prefer, "count=exact");
 
     setGate("testbed", "d1");
@@ -555,8 +555,7 @@ async function main() {
     assert.equal(mixed?.count, Number(prodTotal) + devRows.length);
     const [{ n: prodUnchecked }] = await sbRows("select count(*)::int as n from public.contact_inquiries where env = 'production' and status = 'new'");
     from = restCalls.length;
-    const testbedUnchecked = Number(d1.testbed.one("SELECT count(*) AS n FROM contact_inquiries WHERE status = 'new'")!.n);
-    assert.equal(await countUncheckedInquiries(deps()), Number(prodUnchecked) + testbedUnchecked);
+    assert.equal(await countUncheckedInquiries(deps()), Number(prodUnchecked), "testbed inquiries never light the pip");
     assert.deepEqual(restSince(from), ["HEAD /rest/v1/contact_inquiries?env=eq.production&select=id&status=eq.new"]);
     await mirror("testbed");
 
