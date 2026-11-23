@@ -80,13 +80,18 @@ async function imageExists(image: PageOgImage): Promise<boolean> {
   return status;
 }
 
-export async function getPageOgStatus(): Promise<PageOgStatus> {
+/** Canonical route templates of every page.tsx (route groups dropped, /codex folded into /compendium). */
+export async function listPageRoutes(): Promise<string[]> {
   const pageFiles = (await walk(appDir))
     .filter((file) => file.endsWith(`${path.sep}page.tsx`))
     .sort();
-  const pageRoutes = [
+  return [
     ...new Set(pageFiles.map((file) => canonicalStatusRoute(pageFileToRoute(file)))),
   ];
+}
+
+export async function getPageOgStatus(): Promise<PageOgStatus> {
+  const pageRoutes = await listPageRoutes();
   const rows = await Promise.all(pageRoutes.map(async (route) => {
     const rule = findPageOgImageRule(route);
     const image = getPageOgImage(route);

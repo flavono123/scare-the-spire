@@ -1,0 +1,4 @@
+{
+  "$comment": "Decisions for pages whose built og:image is a fallback (site default or another page's shared image). Written by /dev/og-images. status: intended = the fallback is on purpose, undecided = the page still needs its own image. image is the fallback seen when deciding; a different image reopens the decision.",
+  "decisions": {}
+}
