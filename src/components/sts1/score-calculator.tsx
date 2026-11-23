@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { Sts1ScoreBonusRow } from "@/lib/sts1/compendium-extras";
 import {
@@ -106,17 +106,21 @@ export function Sts1ScoreCalculator({
   scoreLabels,
   serviceLocale,
   onFocusLines,
+  onInput,
 }: {
   rows: readonly Sts1ScoreBonusRow[];
   scoreLabels: ScoreLabels;
   serviceLocale: ServiceLocale;
   /** The score line ids the field being edited feeds (null when nothing is). */
   onFocusLines?: FocusLines;
+  /** Every clamped input, so the table can show the one tier of a tiered bonus the run reaches. */
+  onInput?: (input: Sts1ScoreInput) => void;
 }) {
   const focus = (lines: string[]) => ({ lines, onFocusLines });
   const text = TEXT[serviceLocale];
   const [input, setInput] = useState<Sts1ScoreInput>(STS1_SCORE_DEFAULTS);
   const update = (patch: Partial<Sts1ScoreInput>) => setInput((previous) => clampSts1ScoreInput({ ...previous, ...patch }));
+  useEffect(() => onInput?.(input), [input, onInput]);
   const limits = sts1ScoreLimits(input);
   const { lines, total } = sts1Score(input);
   // Game names for each line: score_bonuses keys, and the Floors Climbed / Enemies Slain lines.

@@ -8,6 +8,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { Sts1ScoreBonusRow } from "@/lib/sts1/compendium-extras";
 import { sts1DetailPath, sts1IndexPath } from "@/lib/sts1/paths";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
+import { STS1_SCORE_DEFAULTS, sts1HiddenTierIds, sts1UnreachedTierIds, type Sts1ScoreInput } from "@/lib/sts1/score";
 import type { Sts1EntityRefs, Sts1Keyword, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1EnglishName, Sts1HeroTip, Sts1MetaPill } from "./detail-chrome";
@@ -19,10 +20,10 @@ import { Sts1ScoreCalculator } from "./score-calculator";
 type ScoreLabels = { title: string; death: string; victory: string; unused: string };
 
 /** GameOverScreen's stat line: name, then the points right-aligned in gold. */
-function ScoreLine({ row, labels, refs, highlighted }: { row: Sts1ScoreBonusRow; labels: ScoreLabels; refs?: Sts1EntityRefs; highlighted?: boolean }) {
+function ScoreLine({ row, labels, refs, highlighted, dimmed }: { row: Sts1ScoreBonusRow; labels: ScoreLabels; refs?: Sts1EntityRefs; highlighted?: boolean; dimmed?: boolean }) {
   return (
     <span
-      className={`flex items-start gap-3 rounded-md px-2 py-2 transition-colors ${highlighted ? "bg-primary/15 ring-1 ring-primary/70" : ""}`}
+      className={`flex items-start gap-3 rounded-md px-2 py-2 transition-colors ${highlighted ? "bg-primary/15 ring-1 ring-primary/70" : ""} ${dimmed && !highlighted ? "opacity-60" : ""}`}
       data-sts1-score={row.slug}
       data-highlighted={highlighted ? "" : undefined}
     >
@@ -123,12 +124,16 @@ export function Sts1ScoreBonusList({
   const { selected, open, close } = useSts1Selection(lines, "score");
   const [searchQuery, setSearchQuery] = useState("");
   const [focused, setFocused] = useState<string[] | null>(null);
+  const [calcInput, setCalcInput] = useState<Sts1ScoreInput>(STS1_SCORE_DEFAULTS);
+  // One tier of each tiered bonus (gold, deck size, max HP, speed, Perfect): the one the calculator reaches.
+  const hiddenTiers = useMemo(() => sts1HiddenTierIds(calcInput), [calcInput]);
+  const unreachedTiers = useMemo(() => sts1UnreachedTierIds(calcInput), [calcInput]);
   const tableRef = useRef<HTMLDivElement>(null);
   const filtered = useMemo(() => {
     const query = searchQuery.trim();
     return lines.filter((row) => !query || fuzzyMatchCodexText(`${row.name} ${row.nameEn} ${row.description} ${row.id}`, query));
   }, [lines, searchQuery]);
-  const used = filtered.filter((row) => !row.unused);
+  const used = filtered.filter((row) => !row.unused && !hiddenTiers.has(row.id));
   const unused = filtered.filter((row) => row.unused);
   // Keep the lit line in view inside the table (it scrolls on its own beside the calculator).
   useEffect(() => {
@@ -143,7 +148,7 @@ export function Sts1ScoreBonusList({
         onClick={(event) => openOnPlainClick(event, () => open(row))}
         className="block rounded-md transition-colors hover:bg-white/[0.04]"
       >
-        <ScoreLine row={row} labels={scoreLabels} highlighted={focused?.includes(row.id)} />
+        <ScoreLine row={row} labels={scoreLabels} highlighted={focused?.includes(row.id)} dimmed={unreachedTiers.has(row.id)} />
       </Link>
     </li>
   );
@@ -170,7 +175,7 @@ export function Sts1ScoreBonusList({
       ) : null}
     >
       <div className="mx-auto grid max-w-6xl items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
-        <Sts1ScoreCalculator rows={rows} scoreLabels={scoreLabels} serviceLocale={serviceLocale} onFocusLines={setFocused} />
+        <Sts1ScoreCalculator rows={rows} scoreLabels={scoreLabels} serviceLocale={serviceLocale} onFocusLines={setFocused} onInput={setCalcInput} />
         <div ref={tableRef} className="lg:sticky lg:top-0 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto">
           <section className="rounded-lg border border-white/10 bg-black/50 px-3 py-2">
             <ul>{used.map(lineLink)}</ul>

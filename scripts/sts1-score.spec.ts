@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { clampSts1ScoreInput, STS1_SCORE_DEFAULTS, sts1Score } from "../src/lib/sts1/score";
+import { clampSts1ScoreInput, STS1_SCORE_DEFAULTS, sts1HiddenTierIds, sts1Score } from "../src/lib/sts1/score";
 
 const run = (patch: Partial<typeof STS1_SCORE_DEFAULTS>) => ({ ...STS1_SCORE_DEFAULTS, ...patch });
 
@@ -31,5 +31,12 @@ const heart = sts1Score(run({
   ascension: 10, overkill: true, shiny: true, gold: 3000, collector: 2,
 }));
 assert.equal(heart.total, 2645);
+
+// The table shows one tier per tiered bonus: the reached one, else the first.
+const shownGold = (gold: 0 | 1000 | 2000 | 3000) => ["Money Money", "Raining Money", "I Like Gold"].filter((id) => !sts1HiddenTierIds(run({ gold })).has(id));
+assert.deepEqual(shownGold(0), ["Money Money"]);
+assert.deepEqual(shownGold(2000), ["Raining Money"]);
+assert.deepEqual(shownGold(3000), ["I Like Gold"]);
+assert.equal(sts1HiddenTierIds(run({ floor: 50, bosses: 3, perfect: 3 })).has("Perfect"), true);
 
 console.log("sts1-score.spec.ts: ok");

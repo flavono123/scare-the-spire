@@ -171,3 +171,30 @@ export function sts1Score(raw: Sts1ScoreInput): { lines: Sts1ScoreLine[]; total:
   const lines = [...base, ...bonuses];
   return { lines, total: lines.reduce((sum, line) => sum + line.points, 0) };
 }
+
+/**
+ * Bonuses the game prints at most one of (checkScoreBonus picks the highest tier; Beyond Perfect replaces
+ * Perfect): the score table shows the tier an input reaches, or the first tier when it reaches none.
+ */
+export const STS1_SCORE_TIERS: { ids: string[]; reached: (input: Sts1ScoreInput) => number }[] = [
+  { ids: ["Money Money", "Raining Money", "I Like Gold"], reached: (input) => ({ 0: -1, 1000: 0, 2000: 1, 3000: 2 })[input.gold] },
+  { ids: ["Librarian", "Encyclopedian"], reached: (input) => ({ none: -1, librarian: 0, encyclopedian: 1 })[input.deck] },
+  { ids: ["Well Fed", "Stuffed"], reached: (input) => ({ none: -1, wellFed: 0, stuffed: 1 })[input.maxHp] },
+  { ids: ["Speedster", "Light Speed"], reached: (input) => ({ none: -1, speedster: 0, lightSpeed: 1 })[input.speed] },
+  { ids: ["Perfect", "Beyond Perfect"], reached: (input) => (input.perfect >= 3 ? 1 : input.perfect > 0 ? 0 : -1) },
+];
+
+/** The ids of tiered bonuses the table hides for this input (every tier but the shown one). */
+export function sts1HiddenTierIds(input: Sts1ScoreInput): Set<string> {
+  const hidden = new Set<string>();
+  for (const tier of STS1_SCORE_TIERS) {
+    const shown = Math.max(tier.reached(input), 0);
+    tier.ids.forEach((id, index) => { if (index !== shown) hidden.add(id); });
+  }
+  return hidden;
+}
+
+/** Tiered bonuses the input has not reached yet (shown dimmed). */
+export function sts1UnreachedTierIds(input: Sts1ScoreInput): Set<string> {
+  return new Set(STS1_SCORE_TIERS.filter((tier) => tier.reached(input) < 0).map((tier) => tier.ids[0]));
+}
