@@ -1,0 +1,1565 @@
+{
+  "source": "MonsterHelper.getEncounter (+ private spawn helpers) for compositions; Exordium/TheCity/TheBeyond/TheEnding generateWeakEnemies/generateStrongEnemies/generateElites MonsterInfo lists and initializeBoss for listings; event classes calling getEncounter; MonsterHelper.getEncounterName for names",
+  "encounters": [
+    {
+      "key": "Cultist",
+      "slug": "cultist",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "exordium:weak": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Cultist",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Jaw Worm",
+      "slug": "jaw-worm",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "exordium:weak": 2.0
+      },
+      "monsters": [
+        {
+          "id": "JawWorm",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "2 Louse",
+      "slug": "2-louse",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "exordium:weak": 2.0
+      },
+      "monsters": [],
+      "choices": [
+        {
+          "pick": 2,
+          "from": [
+            {
+              "id": "FuzzyLouseDefensive",
+              "count": 1
+            },
+            {
+              "id": "FuzzyLouseNormal",
+              "count": 1
+            }
+          ],
+          "independent": true
+        }
+      ]
+    },
+    {
+      "key": "Small Slimes",
+      "slug": "small-slimes",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "exordium:weak": 2.0
+      },
+      "monsters": [],
+      "variants": [
+        {
+          "monsters": [
+            {
+              "id": "AcidSlime_S",
+              "count": 1
+            },
+            {
+              "id": "SpikeSlime_M",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "monsters": [
+            {
+              "id": "SpikeSlime_S",
+              "count": 1
+            },
+            {
+              "id": "AcidSlime_M",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Blue Slaver",
+      "slug": "blue-slaver",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "exordium:strong": 2.0
+      },
+      "monsters": [
+        {
+          "id": "SlaverBlue",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Gremlin Gang",
+      "slug": "gremlin-gang",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "exordium:strong": 1.0
+      },
+      "monsters": [],
+      "choices": [
+        {
+          "pick": 4,
+          "from": [
+            {
+              "id": "GremlinWarrior",
+              "count": 2
+            },
+            {
+              "id": "GremlinThief",
+              "count": 2
+            },
+            {
+              "id": "GremlinFat",
+              "count": 2
+            },
+            {
+              "id": "GremlinTsundere",
+              "count": 1
+            },
+            {
+              "id": "GremlinWizard",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Looter",
+      "slug": "looter",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "exordium:strong": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Looter",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Large Slime",
+      "slug": "large-slime",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "exordium:strong": 2.0
+      },
+      "monsters": [],
+      "choices": [
+        {
+          "pick": 1,
+          "from": [
+            {
+              "id": "SpikeSlime_L",
+              "count": 1
+            },
+            {
+              "id": "AcidSlime_L",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Lots of Slimes",
+      "slug": "lots-of-slimes",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "exordium:strong": 1.0
+      },
+      "monsters": [
+        {
+          "id": "SpikeSlime_S",
+          "count": 3
+        },
+        {
+          "id": "AcidSlime_S",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "key": "Exordium Thugs",
+      "slug": "exordium-thugs",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "exordium:strong": 1.5
+      },
+      "monsters": [],
+      "choices": [
+        {
+          "pick": 1,
+          "from": [
+            {
+              "id": "FuzzyLouseDefensive",
+              "count": 1
+            },
+            {
+              "id": "FuzzyLouseNormal",
+              "count": 1
+            },
+            {
+              "id": "SpikeSlime_M",
+              "count": 2
+            },
+            {
+              "id": "AcidSlime_M",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "pick": 1,
+          "from": [
+            {
+              "id": "Cultist",
+              "count": 2
+            },
+            {
+              "id": "SlaverBlue",
+              "count": 1
+            },
+            {
+              "id": "SlaverRed",
+              "count": 1
+            },
+            {
+              "id": "Looter",
+              "count": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Exordium Wildlife",
+      "slug": "exordium-wildlife",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "exordium:strong": 1.5
+      },
+      "monsters": [],
+      "choices": [
+        {
+          "pick": 1,
+          "from": [
+            {
+              "id": "FungiBeast",
+              "count": 1
+            },
+            {
+              "id": "JawWorm",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "pick": 1,
+          "from": [
+            {
+              "id": "FuzzyLouseDefensive",
+              "count": 1
+            },
+            {
+              "id": "FuzzyLouseNormal",
+              "count": 1
+            },
+            {
+              "id": "SpikeSlime_M",
+              "count": 2
+            },
+            {
+              "id": "AcidSlime_M",
+              "count": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Red Slaver",
+      "slug": "red-slaver",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "exordium:strong": 1.0
+      },
+      "monsters": [
+        {
+          "id": "SlaverRed",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "3 Louse",
+      "slug": "3-louse",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "exordium:strong": 2.0
+      },
+      "monsters": [],
+      "choices": [
+        {
+          "pick": 3,
+          "from": [
+            {
+              "id": "FuzzyLouseDefensive",
+              "count": 1
+            },
+            {
+              "id": "FuzzyLouseNormal",
+              "count": 1
+            }
+          ],
+          "independent": true
+        }
+      ]
+    },
+    {
+      "key": "2 Fungi Beasts",
+      "slug": "2-fungi-beasts",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "exordium:strong": 2.0
+      },
+      "monsters": [
+        {
+          "id": "FungiBeast",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "key": "Gremlin Nob",
+      "slug": "gremlin-nob",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "elite",
+        "event"
+      ],
+      "weights": {
+        "exordium:elite": 1.0
+      },
+      "events": [
+        "DeadAdventurer"
+      ],
+      "monsters": [
+        {
+          "id": "GremlinNob",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Lagavulin",
+      "slug": "lagavulin",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "elite"
+      ],
+      "weights": {
+        "exordium:elite": 1.0
+      },
+      "monsters": [
+        {
+          "id": "Lagavulin",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "3 Sentries",
+      "slug": "3-sentries",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "elite",
+        "event"
+      ],
+      "weights": {
+        "exordium:elite": 1.0
+      },
+      "events": [
+        "DeadAdventurer"
+      ],
+      "monsters": [
+        {
+          "id": "Sentry",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "key": "The Guardian",
+      "slug": "the-guardian",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "boss",
+        "event"
+      ],
+      "events": [
+        "MindBloom"
+      ],
+      "monsters": [
+        {
+          "id": "TheGuardian",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Hexaghost",
+      "slug": "hexaghost",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "boss",
+        "event"
+      ],
+      "events": [
+        "MindBloom"
+      ],
+      "monsters": [
+        {
+          "id": "Hexaghost",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Slime Boss",
+      "slug": "slime-boss",
+      "dungeons": [
+        "exordium"
+      ],
+      "pools": [
+        "boss",
+        "event"
+      ],
+      "events": [
+        "MindBloom"
+      ],
+      "monsters": [
+        {
+          "id": "SlimeBoss",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Spheric Guardian",
+      "slug": "spheric-guardian",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "city:weak": 2.0
+      },
+      "monsters": [
+        {
+          "id": "SphericGuardian",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Chosen",
+      "slug": "chosen",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "city:weak": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Chosen",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Shell Parasite",
+      "slug": "shell-parasite",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "city:weak": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Shelled Parasite",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "3 Byrds",
+      "slug": "3-byrds",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "city:weak": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Byrd",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "key": "2 Thieves",
+      "slug": "2-thieves",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "city:weak": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Looter",
+          "count": 1
+        },
+        {
+          "id": "Mugger",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Chosen and Byrds",
+      "slug": "chosen-and-byrds",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "city:strong": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Byrd",
+          "count": 1
+        },
+        {
+          "id": "Chosen",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Sentry and Sphere",
+      "slug": "sentry-and-sphere",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "city:strong": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Sentry",
+          "count": 1
+        },
+        {
+          "id": "SphericGuardian",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Snake Plant",
+      "slug": "snake-plant",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "city:strong": 6.0
+      },
+      "monsters": [
+        {
+          "id": "SnakePlant",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Snecko",
+      "slug": "snecko",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "city:strong": 4.0
+      },
+      "monsters": [
+        {
+          "id": "Snecko",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Centurion and Healer",
+      "slug": "centurion-and-healer",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "city:strong": 6.0
+      },
+      "monsters": [
+        {
+          "id": "Centurion",
+          "count": 1
+        },
+        {
+          "id": "Healer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Cultist and Chosen",
+      "slug": "cultist-and-chosen",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "city:strong": 3.0
+      },
+      "monsters": [
+        {
+          "id": "Cultist",
+          "count": 1
+        },
+        {
+          "id": "Chosen",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "3 Cultists",
+      "slug": "3-cultists",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "city:strong": 3.0
+      },
+      "monsters": [
+        {
+          "id": "Cultist",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "key": "Shelled Parasite and Fungi",
+      "slug": "shelled-parasite-and-fungi",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "city:strong": 3.0
+      },
+      "monsters": [
+        {
+          "id": "Shelled Parasite",
+          "count": 1
+        },
+        {
+          "id": "FungiBeast",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Gremlin Leader",
+      "slug": "gremlin-leader",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "elite"
+      ],
+      "weights": {
+        "city:elite": 1.0
+      },
+      "monsters": [
+        {
+          "id": "GremlinLeader",
+          "count": 1
+        }
+      ],
+      "choices": [
+        {
+          "pick": 2,
+          "from": [
+            {
+              "id": "GremlinWarrior",
+              "count": 2
+            },
+            {
+              "id": "GremlinThief",
+              "count": 2
+            },
+            {
+              "id": "GremlinFat",
+              "count": 2
+            },
+            {
+              "id": "GremlinTsundere",
+              "count": 1
+            },
+            {
+              "id": "GremlinWizard",
+              "count": 1
+            }
+          ],
+          "independent": true
+        }
+      ]
+    },
+    {
+      "key": "Slavers",
+      "slug": "slavers",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "elite"
+      ],
+      "weights": {
+        "city:elite": 1.0
+      },
+      "monsters": [
+        {
+          "id": "SlaverBlue",
+          "count": 1
+        },
+        {
+          "id": "SlaverBoss",
+          "count": 1
+        },
+        {
+          "id": "SlaverRed",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Book of Stabbing",
+      "slug": "book-of-stabbing",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "elite"
+      ],
+      "weights": {
+        "city:elite": 1.0
+      },
+      "monsters": [
+        {
+          "id": "BookOfStabbing",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Automaton",
+      "slug": "automaton",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "boss"
+      ],
+      "monsters": [
+        {
+          "id": "BronzeAutomaton",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Collector",
+      "slug": "collector",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "boss"
+      ],
+      "monsters": [
+        {
+          "id": "TheCollector",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Champ",
+      "slug": "champ",
+      "dungeons": [
+        "city"
+      ],
+      "pools": [
+        "boss"
+      ],
+      "monsters": [
+        {
+          "id": "Champ",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "3 Darklings",
+      "slug": "3-darklings",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "weak",
+        "strong"
+      ],
+      "weights": {
+        "beyond:weak": 2.0,
+        "beyond:strong": 1.0
+      },
+      "monsters": [
+        {
+          "id": "Darkling",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "key": "Orb Walker",
+      "slug": "orb-walker",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "beyond:weak": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Orb Walker",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "3 Shapes",
+      "slug": "3-shapes",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "weak"
+      ],
+      "weights": {
+        "beyond:weak": 2.0
+      },
+      "monsters": [],
+      "choices": [
+        {
+          "pick": 3,
+          "from": [
+            {
+              "id": "Repulsor",
+              "count": 2
+            },
+            {
+              "id": "Exploder",
+              "count": 2
+            },
+            {
+              "id": "Spiker",
+              "count": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Spire Growth",
+      "slug": "spire-growth",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "beyond:strong": 1.0
+      },
+      "monsters": [
+        {
+          "id": "Serpent",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Transient",
+      "slug": "transient",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "beyond:strong": 1.0
+      },
+      "monsters": [
+        {
+          "id": "Transient",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "4 Shapes",
+      "slug": "4-shapes",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "beyond:strong": 1.0
+      },
+      "monsters": [],
+      "choices": [
+        {
+          "pick": 4,
+          "from": [
+            {
+              "id": "Repulsor",
+              "count": 2
+            },
+            {
+              "id": "Exploder",
+              "count": 2
+            },
+            {
+              "id": "Spiker",
+              "count": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Maw",
+      "slug": "maw",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "beyond:strong": 1.0
+      },
+      "monsters": [
+        {
+          "id": "Maw",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Sphere and 2 Shapes",
+      "slug": "sphere-and-2-shapes",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "beyond:strong": 1.0
+      },
+      "monsters": [
+        {
+          "id": "SphericGuardian",
+          "count": 1
+        }
+      ],
+      "choices": [
+        {
+          "pick": 2,
+          "from": [
+            {
+              "id": "Spiker",
+              "count": 1
+            },
+            {
+              "id": "Exploder",
+              "count": 1
+            },
+            {
+              "id": "Repulsor",
+              "count": 1
+            }
+          ],
+          "independent": true
+        }
+      ]
+    },
+    {
+      "key": "Jaw Worm Horde",
+      "slug": "jaw-worm-horde",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "beyond:strong": 1.0
+      },
+      "monsters": [
+        {
+          "id": "JawWorm",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "key": "Writhing Mass",
+      "slug": "writhing-mass",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "strong"
+      ],
+      "weights": {
+        "beyond:strong": 1.0
+      },
+      "monsters": [
+        {
+          "id": "WrithingMass",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Giant Head",
+      "slug": "giant-head",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "elite"
+      ],
+      "weights": {
+        "beyond:elite": 2.0
+      },
+      "monsters": [
+        {
+          "id": "GiantHead",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Nemesis",
+      "slug": "nemesis",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "elite"
+      ],
+      "weights": {
+        "beyond:elite": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Nemesis",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Reptomancer",
+      "slug": "reptomancer",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "elite"
+      ],
+      "weights": {
+        "beyond:elite": 2.0
+      },
+      "monsters": [
+        {
+          "id": "Dagger",
+          "count": 2
+        },
+        {
+          "id": "Reptomancer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Awakened One",
+      "slug": "awakened-one",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "boss"
+      ],
+      "monsters": [
+        {
+          "id": "Cultist",
+          "count": 2
+        },
+        {
+          "id": "AwakenedOne",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Time Eater",
+      "slug": "time-eater",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "boss"
+      ],
+      "monsters": [
+        {
+          "id": "TimeEater",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Donu and Deca",
+      "slug": "donu-and-deca",
+      "dungeons": [
+        "beyond"
+      ],
+      "pools": [
+        "boss"
+      ],
+      "monsters": [
+        {
+          "id": "Deca",
+          "count": 1
+        },
+        {
+          "id": "Donu",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Shield and Spear",
+      "slug": "shield-and-spear",
+      "dungeons": [
+        "ending"
+      ],
+      "pools": [
+        "elite"
+      ],
+      "monsters": [
+        {
+          "id": "SpireShield",
+          "count": 1
+        },
+        {
+          "id": "SpireSpear",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "The Heart",
+      "slug": "the-heart",
+      "dungeons": [
+        "ending"
+      ],
+      "pools": [
+        "boss"
+      ],
+      "monsters": [
+        {
+          "id": "CorruptHeart",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Lagavulin Event",
+      "slug": "lagavulin-event",
+      "dungeons": [],
+      "pools": [
+        "event"
+      ],
+      "events": [
+        "DeadAdventurer"
+      ],
+      "monsters": [
+        {
+          "id": "Lagavulin",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "The Mushroom Lair",
+      "slug": "the-mushroom-lair",
+      "dungeons": [],
+      "pools": [
+        "event"
+      ],
+      "events": [
+        "Mushrooms"
+      ],
+      "monsters": [
+        {
+          "id": "FungiBeast",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "key": "Masked Bandits",
+      "slug": "masked-bandits",
+      "dungeons": [],
+      "pools": [
+        "event"
+      ],
+      "events": [
+        "MaskedBandits"
+      ],
+      "monsters": [
+        {
+          "id": "BanditChild",
+          "count": 1
+        },
+        {
+          "id": "BanditLeader",
+          "count": 1
+        },
+        {
+          "id": "BanditBear",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Colosseum Nobs",
+      "slug": "colosseum-nobs",
+      "dungeons": [],
+      "pools": [
+        "event"
+      ],
+      "events": [
+        "Colosseum"
+      ],
+      "monsters": [
+        {
+          "id": "SlaverBoss",
+          "count": 1
+        },
+        {
+          "id": "GremlinNob",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Colosseum Slavers",
+      "slug": "colosseum-slavers",
+      "dungeons": [],
+      "pools": [
+        "event"
+      ],
+      "events": [
+        "Colosseum"
+      ],
+      "monsters": [
+        {
+          "id": "SlaverBlue",
+          "count": 1
+        },
+        {
+          "id": "SlaverRed",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "2 Orb Walkers",
+      "slug": "2-orb-walkers",
+      "dungeons": [],
+      "pools": [
+        "event"
+      ],
+      "events": [
+        "MysteriousSphere"
+      ],
+      "monsters": [
+        {
+          "id": "Orb Walker",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "key": "Mysterious Sphere",
+      "slug": "mysterious-sphere",
+      "dungeons": [],
+      "pools": [
+        "event"
+      ],
+      "events": [
+        "MysteriousSphere"
+      ],
+      "monsters": [
+        {
+          "id": "Orb Walker",
+          "count": 1
+        }
+      ],
+      "choices": [
+        {
+          "pick": 2,
+          "from": [
+            {
+              "id": "Spiker",
+              "count": 1
+            },
+            {
+              "id": "Exploder",
+              "count": 1
+            },
+            {
+              "id": "Repulsor",
+              "count": 1
+            }
+          ],
+          "independent": true
+        }
+      ]
+    },
+    {
+      "key": "4 Byrds",
+      "slug": "4-byrds",
+      "dungeons": [],
+      "pools": [],
+      "monsters": [
+        {
+          "id": "Byrd",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "key": "Flame Bruiser 1 Orb",
+      "slug": "flame-bruiser-1-orb",
+      "dungeons": [],
+      "pools": [],
+      "monsters": [
+        {
+          "id": "Reptomancer",
+          "count": 1
+        },
+        {
+          "id": "Dagger",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Flame Bruiser 2 Orb",
+      "slug": "flame-bruiser-2-orb",
+      "dungeons": [],
+      "pools": [],
+      "monsters": [
+        {
+          "id": "Dagger",
+          "count": 2
+        },
+        {
+          "id": "Reptomancer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "key": "Snecko and Mystics",
+      "slug": "snecko-and-mystics",
+      "dungeons": [],
+      "pools": [],
+      "monsters": [
+        {
+          "id": "Healer",
+          "count": 2
+        },
+        {
+          "id": "Snecko",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}

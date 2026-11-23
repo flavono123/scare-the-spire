@@ -49,6 +49,7 @@ from scripts.lib.sts1_compendium_extras import (  # noqa: E402
     write_extras_nav_labels,
     write_npc_art_sources,
 )
+from scripts.lib.sts1_encounters import extract_encounters  # noqa: E402
 from scripts.lib.sts1_jar import default_sts1_jar_path, open_sts1_jar  # noqa: E402
 from scripts.lib.sts1_monster_moves import (  # noqa: E402
     class_ids,
@@ -1759,13 +1760,14 @@ def main() -> None:
         default="",
         help="Comma-separated sections to rebuild without touching cards/relics/potions rows: "
         "powers, characters, relic-text, monsters, extras (events, keywords, ascension, mods, blights, "
-        "Neow, achievements, score bonuses), relations (card previews and ascension checks).",
+        "Neow, achievements, score bonuses), relations (card previews and ascension checks), "
+        "encounters (MonsterHelper encounter compositions, act lists and names).",
     )
     args = parser.parse_args()
 
     if args.only:
         sections = {section.strip() for section in args.only.split(",") if section.strip()}
-        unknown = sections - {"powers", "characters", "relic-text", "monsters", "extras", "relations"}
+        unknown = sections - {"powers", "characters", "relic-text", "monsters", "extras", "relations", "encounters"}
         if unknown:
             parser.error(f"unknown --only sections: {', '.join(sorted(unknown))}")
         with open_sts1_jar(args.jar) as jar:
@@ -1782,6 +1784,9 @@ def main() -> None:
                 relations = extract_relation_extras(jar)
                 write_json(ROOT / "data" / "sts1" / "relation-extras.json", relations)
                 print(f"card previews={len(relations['cardPreviews'])} ascension levels={len(relations['ascension'])} code links={len(relations['code'])}")
+            if "encounters" in sections:
+                report = extract_encounters(jar, STS1_LOCALES, write_json)
+                print(f"encounters={report['count']} missing monsters={report['missing_monsters']} unnamed={report['unnamed']}")
             if "extras" in sections:
                 write_extras_localization(jar, STS1_LOCALES, write_json)
                 write_extras_nav_labels(jar, STS1_LOCALES, write_json)
