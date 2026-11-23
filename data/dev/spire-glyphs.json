@@ -85,7 +85,7 @@
         {
           "id": "knowledge-demon",
           "titleKo": "지식의 악마",
-          "noteKo": "뼈대(Spine)에 문자 고리와 세로 표지가 들어 있다. 글자표는 10자이고, 표지는 그중 5자를 다시 쓴다. 둥근 붓획에 점을 찍는 양식이며, 두 줄·끊긴 두 줄, C+점·Є처럼 바탕 획에 점이나 획을 더한 짝이 있다.",
+          "noteKo": "뼈대(Spine)에 문자 고리와 세로 표지가 들어 있다. 둘 다 평소에는 숨겨져 있고, 문자 고리는 압도적인 지식(3연타)이 쓰는 attack_heavy 애니메이션에서만 나타난다. 글자표는 10자이고, 표지는 그중 5자를 다시 쓴다. 둥근 붓획에 점을 찍는 양식이며, 두 줄·끊긴 두 줄, C+점·Є처럼 바탕 획에 점이나 획을 더한 짝이 있다.",
           "items": [
             {
               "id": "kd-ring",
@@ -257,7 +257,7 @@
       "families": [
         {
           "id": "merchant-script",
-          "titleKo": "상인 문자",
+          "titleKo": "상인 문자 (기하 도형 글자)",
           "noteKo": "상점 배경의 간판·팻말·병 라벨에 쓰인 글. Ø, Δ, X, 세로줄, 모래시계꼴, ⊙ 같은 기하 도형 글자가 여러 간판에 되풀이되고, 골드 표식이 글줄 안에 글자처럼 섞여 나온다. 게임에서 가장 폰트에 가까운 글자 세트다. 가짜 상인의 화살표 간판은 로마자 HOAX!!로 읽힌다(추정). 다른 줄은 같은 식으로 읽히지 않는다.",
           "items": [
             {
@@ -381,6 +381,36 @@
               "source": {
                 "game": "sts2",
                 "path": "images/relics/lead_paperweight.png"
+              }
+            },
+            {
+              "id": "merchant-beast-stones",
+              "labelKo": "의식의 신수 방의 선돌",
+              "noteKo": "선돌에 Ø, ⊙, 획이 가로지른 삼각형이 새겨져 있다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/rooms/overgrowth_boss/overgrowth_00_ceremonial_beast.png",
+                "crop": [
+                  0.6641,
+                  0.1875,
+                  0.8887,
+                  0.5417
+                ]
+              }
+            },
+            {
+              "id": "merchant-architect-easel",
+              "labelKo": "아키텍트 승리 배경의 이젤 스케치",
+              "noteKo": "심장 스케치 둘레의 주석에 골드 표식꼴과 ⊙.",
+              "source": {
+                "game": "sts2",
+                "path": "images/rooms/architect_victory/architect_victory_bg.png",
+                "crop": [
+                  0.734,
+                  0.434,
+                  0.7943,
+                  0.5486
+                ]
               }
             }
           ]
@@ -559,6 +589,15 @@
                 "game": "sts1",
                 "path": "images/blights/maze.png"
               }
+            },
+            {
+              "id": "maze-sts1-empty-body",
+              "labelKo": "1편 육체 수양",
+              "noteKo": "인물 뒤 고리에 미로 글자가 든 네모 타일 여덟 개쯤.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024Portraits/purple/skill/empty_body.png"
+              }
             }
           ]
         },
@@ -597,7 +636,7 @@
             {
               "id": "scribble-architect-scroll",
               "labelKo": "아키텍트 배경의 두루마리",
-              "noteKo": "도면과 점선 글줄.",
+              "noteKo": "도면과 점선 글줄. 옆으로 누운 꼬리표는 II A 4, A A 2, II 8처럼 로마자·숫자에 가깝다.",
               "source": {
                 "game": "sts2",
                 "atlas": "architect_bg_animate",
@@ -811,6 +850,124 @@
                 "game": "sts2",
                 "path": "images/powers/summon_next_turn_power.png"
               }
+            },
+            {
+              "id": "rune-sts1-transmutation",
+              "labelKo": "1편 변성",
+              "noteKo": "마법진 테두리에 붓획과 점으로 된 글자 고리(14자쯤). 2편 지식의 악마 문자 고리와 같은 양식의 선례.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024Portraits/colorless/skill/transmutation.png",
+                "crop": [
+                  0.06,
+                  0.3684,
+                  0.96,
+                  0.9868
+                ]
+              }
+            },
+            {
+              "id": "rune-sts1-seek",
+              "labelKo": "1편 탐색",
+              "noteKo": "눈 둘레의 자홍색 쐐기 글자. 2편 혈족 사제의 문자 입자와 같은 쐐기형 화면 글자 양식.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024Portraits/blue/skill/seek.png"
+              }
+            },
+            {
+              "id": "rune-sts1-biased-cognition",
+              "labelKo": "1편 인지 편향",
+              "noteKo": "막대와 눈금으로 된 화면 글줄 세 덩이.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024Portraits/blue/power/biased_cognition.png"
+              }
+            },
+            {
+              "id": "rune-sts1-door-band",
+              "labelKo": "1편 4막 열쇠 문의 띠",
+              "noteKo": "붉은 돌 띠에 새긴 글줄 한 줄. 좌우 문짝에 이어진다.",
+              "source": {
+                "game": "sts1",
+                "path": "images/ui/door/door_left.png",
+                "crop": [
+                  0.0,
+                  0.3833,
+                  0.3229,
+                  0.4833
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "sts1-beta-fonts",
+          "titleKo": "1편 베타 카드의 가짜 글자",
+          "noteKo": "1편 베타(임시) 카드 그림에는 패러디용으로 지어낸 글자가 여럿 있다. 한 그림 안에서는 글자 모양이 고른 편이지만 그림끼리 공유하지 않는다.",
+          "items": [
+            {
+              "id": "beta-secret-technique",
+              "labelKo": "1편 비밀 기술 (베타)",
+              "noteKo": "수첩 표지에 블록형 글자 세 줄(6·4·6자)과 아랫줄. 글자 수는 SECRET·TECH·NIQUES와 맞지만 치환 암호로 읽히는지는 확인하지 못했다.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024PortraitsBeta/colorless/skill/secret_technique.png",
+                "crop": [
+                  0.26,
+                  0.0789,
+                  0.76,
+                  0.9474
+                ]
+              }
+            },
+            {
+              "id": "beta-protect",
+              "labelKo": "1편 보호 (베타)",
+              "noteKo": "포켓몬 전투 화면 패러디. 이름 상자에 픽셀 글자 7자와 8자, 그 옆에 실제 문자 Lv33, 65/65.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024PortraitsBeta/purple/skill/protect.png"
+              }
+            },
+            {
+              "id": "beta-bullet-time",
+              "labelKo": "1편 불릿 타임 (베타)",
+              "noteKo": "매트릭스풍으로 흘러내리는 가짜 글자.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024PortraitsBeta/green/skill/bullet_time.png"
+              }
+            },
+            {
+              "id": "beta-turbo",
+              "labelKo": "1편 터보 (베타)",
+              "noteKo": "차 문짝의 일본어풍 낙서.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024PortraitsBeta/blue/skill/turbo.png",
+                "crop": [
+                  0.12,
+                  0.3684,
+                  0.4,
+                  0.5658
+                ]
+              }
+            },
+            {
+              "id": "beta-escape-plan",
+              "labelKo": "1편 탈출구 (베타)",
+              "noteKo": "과자 봉지의 글자 다섯 개쯤.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024PortraitsBeta/green/skill/escape_plan.png",
+                "crop": [
+                  0.78,
+                  0.5,
+                  0.99,
+                  0.7632
+                ]
+              }
             }
           ]
         }
@@ -824,7 +981,7 @@
         {
           "id": "era-glyphs",
           "titleKo": "연대표의 시대 기호",
-          "noteKo": "연대표의 시대마다 흰 붓글씨 기호가 하나씩 있다. 기호와 뜻(시대 이름)이 1:1로 정해져 있어, 와·초·키 다음으로 '뜻이 정해진 기호'에 가깝다. 감염 기호는 골드 표식꼴에 점을 찍은 모양이고, 지식의 악마 고리의 9번째 글자와도 닮았다.",
+          "noteKo": "연대표의 시대마다 흰 붓글씨 기호가 하나씩 있다. 기호와 뜻(시대 이름)이 1:1로 정해져 있어(EpochEra 값과 era_atlas 조각 이름으로 확인), 와·초·키 다음으로 '뜻이 정해진 기호'에 가깝다. 감염 기호는 골드 표식꼴에 점을 찍은 모양이고, 지식의 악마 고리의 9번째 글자와도 닮았다.",
           "items": [
             {
               "id": "era-atlas",
@@ -1008,6 +1165,21 @@
                 "game": "sts2",
                 "path": "images/powers/hex_power.png"
               }
+            },
+            {
+              "id": "seal-sts1-master-reality",
+              "labelKo": "1편 현실 지배 (베타)",
+              "noteKo": "카드 네 장에 카드 뒷면 문양과 같은 붉은 S자 곡선.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024PortraitsBeta/purple/power/master_reality.png",
+                "crop": [
+                  0.13,
+                  0.3947,
+                  0.91,
+                  0.8684
+                ]
+              }
             }
           ]
         },
@@ -1052,6 +1224,21 @@
                   0.05,
                   0.9,
                   0.65
+                ]
+              }
+            },
+            {
+              "id": "spiral-sts1-searing-blow",
+              "labelKo": "1편 불태우는 일격",
+              "noteKo": "마름모 안의 각진 나선. 고대 문자 벽의 마름모와 같은 문양.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024Portraits/red/attack/searing_blow.png",
+                "crop": [
+                  0.4,
+                  0.0,
+                  0.8,
+                  0.2368
                 ]
               }
             }
