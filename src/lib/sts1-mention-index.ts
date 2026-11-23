@@ -6,7 +6,8 @@ export type Sts1MentionEntry = {
   slug: string;
   nameKo: string;
   nameEn: string;
-  resource: Sts1ResourceType;
+  /** Encounters have no page of their own; they open on the bestiary's encounters tab. */
+  resource: Sts1ResourceType | "encounters";
   entityType:
     | "card"
     | "relic"
@@ -21,7 +22,8 @@ export type Sts1MentionEntry = {
     | "ascension"
     | "neow"
     | "achievement"
-    | "score-bonus";
+    | "score-bonus"
+    | "encounter";
   imageUrl: string;
   href: string;
   description: string;
@@ -63,6 +65,7 @@ const ENTITY_TYPES: Record<Sts1MentionEntry["entityType"], EntityInfo["type"]> =
   neow: "ancient",
   achievement: "keyword",
   "score-bonus": "keyword",
+  encounter: "encounter",
 };
 
 export function sts1MentionEntity(entry: Sts1MentionEntry): Sts1MentionEntity {

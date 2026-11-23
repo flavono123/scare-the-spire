@@ -10,18 +10,19 @@ import { Sts1MentionHover } from "./mention-hover";
 const TITLES: Record<ServiceLocale, Record<Sts1RelatedKind, string>> = {
   ko: {
     cards: "관련 카드", relics: "관련 유물", potions: "관련 포션", powers: "관련 파워", keywords: "관련 키워드",
-    monsters: "관련 몬스터", characters: "관련 캐릭터", events: "관련 이벤트", modifiers: "관련 모드", blights: "관련 역병",
+    monsters: "관련 몬스터", encounters: "관련 조우", characters: "관련 캐릭터", events: "관련 이벤트", modifiers: "관련 모드", blights: "관련 역병",
     ascensions: "관련 승천", achievements: "관련 도전 과제", "score-bonuses": "관련 점수", neow: "관련 니오우",
   },
   en: {
     cards: "Related cards", relics: "Related relics", potions: "Related potions", powers: "Related powers",
-    keywords: "Related keywords", monsters: "Related monsters", characters: "Related characters", events: "Related events",
+    keywords: "Related keywords", monsters: "Related monsters", encounters: "Related encounters", characters: "Related characters", events: "Related events",
     modifiers: "Related mods", blights: "Related blights", ascensions: "Related ascensions",
     achievements: "Related achievements", "score-bonuses": "Related score bonuses", neow: "Related Neow",
   },
 };
 
-const ICONS = new Map(sts1NavItems.map((item) => [item.type, item.icon]));
+const ICONS = new Map<string, string>(sts1NavItems.map((item) => [item.type, item.icon]));
+ICONS.set("encounters", ICONS.get("monsters") ?? "");
 
 /** One rail of "관련 ○○: a, b, c" lines, as the STS2 compendium draws related resources; names preview on hover. */
 export function Sts1RelatedRail({ groups, serviceLocale }: { groups: readonly Sts1RelatedGroup[]; serviceLocale: ServiceLocale }) {

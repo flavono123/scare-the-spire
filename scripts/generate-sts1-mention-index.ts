@@ -1,4 +1,5 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { getSts1Encounters } from "../src/lib/sts1/encounters";
 import path from "node:path";
 import { plainSts1Text } from "../src/lib/sts1/description";
 import {
@@ -160,7 +161,7 @@ async function buildIndex(): Promise<Sts1MentionIndex> {
 
 /** Events, keywords, modifiers, blights and the single-list types (anchored on their list). */
 async function extraEntries(ascensionLabel: string): Promise<Sts1MentionEntry[]> {
-  const [events, keywords, mods, blights, ascensions, neow, achievements, scores, engEvents] = await Promise.all([
+  const [events, keywords, mods, blights, ascensions, neow, achievements, scores, engEvents, encounters] = await Promise.all([
     getSts1Events("kor"),
     getSts1CompendiumKeywords("kor"),
     getSts1Modifiers("kor"),
@@ -170,12 +171,13 @@ async function extraEntries(ascensionLabel: string): Promise<Sts1MentionEntry[]>
     getSts1Achievements("kor"),
     getSts1ScoreBonuses("kor"),
     getSts1Events("eng"),
+    getSts1Encounters("kor"),
   ]);
   const engAchievements = new Map((await getSts1Achievements("eng")).map((row) => [row.key, row.name]));
   const engScores = new Map((await getSts1ScoreBonuses("eng")).map((row) => [row.id, row.name]));
   const engEventName = new Map(engEvents.map((event) => [event.id, event.name]));
   const listEntry = (
-    resource: Sts1MentionEntry["resource"],
+    resource: Sts1ResourceType,
     entityType: Sts1MentionEntry["entityType"],
     slug: string,
     row: { nameKo: string; nameEn: string; imageUrl: string; description: string },
@@ -191,7 +193,23 @@ async function extraEntries(ascensionLabel: string): Promise<Sts1MentionEntry[]>
     ...listEntry(...args),
     href: sts1DetailPath(args[0], args[2]),
   });
+  // Encounters open on the bestiary's encounters tab; the preview shows their first monster.
+  const encounterEntries = encounters.map((row): Sts1MentionEntry => {
+    const faces = [...row.monsters, ...row.variants.flat(), ...row.choices.flatMap((choice) => choice.from)];
+    return {
+      id: `sts1:encounters:${row.slug}`,
+      slug: row.slug,
+      nameKo: row.name,
+      nameEn: row.nameEn,
+      resource: "encounters",
+      entityType: "encounter",
+      imageUrl: faces[0]?.imageUrl ?? "",
+      href: `${sts1IndexPath("monsters")}?view=encounters&encounter=${row.slug}`,
+      description: [...new Set(faces.map((monster) => monster.name))].join(", "),
+    };
+  });
   return [
+    ...encounterEntries,
     ...events.map((event): Sts1MentionEntry => ({
       id: mentionId("events", event.slug),
       slug: event.slug,

@@ -20,6 +20,7 @@ import {
   getSts1Relics,
   getSts1UiLabels,
 } from "./data";
+import { getSts1Encounters } from "./encounters";
 import { getSts1Events, sts1EventItemRefs } from "./events";
 import { sts1KeywordNameOccurs } from "./keyword-tips";
 import { matchSts1Name, parseSts1Pieces } from "./smart-words";
@@ -33,6 +34,7 @@ export const STS1_RELATED_KINDS = [
   "powers",
   "keywords",
   "monsters",
+  "encounters",
   "characters",
   "events",
   "modifiers",
@@ -41,7 +43,7 @@ export const STS1_RELATED_KINDS = [
   "achievements",
   "score-bonuses",
   "neow",
-] as const satisfies readonly Sts1ResourceType[];
+] as const satisfies readonly (Sts1ResourceType | "encounters")[];
 
 export type Sts1RelatedKind = (typeof STS1_RELATED_KINDS)[number];
 export type Sts1RelatedItem = { slug: string; name: string };
@@ -62,7 +64,8 @@ export type Sts1RelationSource =
   | "ascension"
   | "achievement"
   | "score-bonus"
-  | "neow";
+  | "neow"
+  | "encounter";
 
 type NodeKey = `${Sts1RelatedKind}:${string}`;
 type RelationExtras = {
@@ -118,7 +121,7 @@ function templateText(template: Sts1TextTemplate): string {
 export const getSts1RelationGraph = cache(async () => {
   const [
     cards, relics, potions, powers, monsters, characters, events,
-    keywords, mods, blights, ascensions, achievements, scores, neow, extras,
+    keywords, mods, blights, ascensions, achievements, scores, neow, extras, encounters,
   ] = await Promise.all([
     getSts1Cards("kor"),
     getSts1Relics("kor"),
@@ -135,6 +138,7 @@ export const getSts1RelationGraph = cache(async () => {
     getSts1ScoreBonuses("kor"),
     getSts1Neow("kor"),
     readFile(path.join(process.cwd(), "data/sts1/relation-extras.json"), "utf8").then((raw) => JSON.parse(raw) as RelationExtras),
+    getSts1Encounters("kor"),
   ]);
 
   const slugOf = {
@@ -325,6 +329,13 @@ export const getSts1RelationGraph = cache(async () => {
     const from = node("score-bonuses", row.slug);
     for (const target of row.refs) link(from, ref(target.type as keyof typeof slugOf, target.id), "score-bonus");
   }
+  for (const encounter of encounters) {
+    const from = node("encounters", encounter.slug);
+    for (const monster of [...encounter.monsters, ...encounter.variants.flat(), ...encounter.choices.flatMap((choice) => choice.from)]) {
+      link(from, node("monsters", monster.slug), "encounter");
+    }
+    for (const event of encounter.events) link(from, node("events", event.slug), "encounter");
+  }
   const neowNode = node("neow", "neow");
   for (const reward of [...neow.categories.flatMap((category) => [...category.rewards, ...category.drawbacks]), ...neow.mini]) {
     items(neowNode, reward.refs, "neow");
@@ -334,7 +345,7 @@ export const getSts1RelationGraph = cache(async () => {
 
 /** Each kind's rows in game order, named for this locale. */
 const getSts1RelatedNames = cache(async (gameLocale: GameLocale) => {
-  const [cards, relics, potions, powers, monsters, characters, events, keywords, mods, blights, ascensions, achievements, scores, neow, labels] = await Promise.all([
+  const [cards, relics, potions, powers, monsters, characters, events, keywords, mods, blights, ascensions, achievements, scores, neow, labels, encounters] = await Promise.all([
     getSts1Cards(gameLocale),
     getSts1Relics(gameLocale),
     getSts1Potions(gameLocale),
@@ -350,6 +361,7 @@ const getSts1RelatedNames = cache(async (gameLocale: GameLocale) => {
     getSts1ScoreBonuses(gameLocale),
     getSts1Neow(gameLocale),
     getSts1UiLabels(gameLocale),
+    getSts1Encounters(gameLocale),
   ]);
   const ordered = (rows: readonly { slug: string; name: string }[]) => new Map(rows.map((row, index) => [row.slug, { name: row.name, index }]));
   const ascensionLabel = labels.monsters.ascension;
@@ -360,6 +372,7 @@ const getSts1RelatedNames = cache(async (gameLocale: GameLocale) => {
     powers: ordered(powers),
     keywords: ordered(keywords),
     monsters: ordered(monsters),
+    encounters: ordered(encounters),
     characters: ordered(characters),
     events: ordered(events),
     modifiers: ordered(mods),
