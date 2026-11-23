@@ -149,6 +149,8 @@ CHAR_SELECT_ICONS = {
 STS1_UI_EXTRA_FOLDERS = (
     ("images/ui/run_mods/", "run-mods"),
     ("images/ui/tip/", "tips"),
+    # Run history's TinyCard layers (cardBack, descBox, portraits, banner), tinted at draw time.
+    ("images/tinyCards/", "tiny-cards"),
 )
 
 # libGDX Color packed RGBA (or float tuples) from Color.<clinit>.

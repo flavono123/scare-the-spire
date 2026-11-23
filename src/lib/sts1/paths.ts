@@ -89,6 +89,10 @@ export function sts1IntentImageUrl(name: string): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/intents/${name}.webp`);
 }
 
+export function sts1TinyCardUrl(layer: string): string {
+  return sts1Asset(`${STS1_IMAGE_ROOT}/tiny-cards/${layer}.webp`);
+}
+
 export function sts1UiImageUrl(name: "ascension" | "block"): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/ui/${name}.webp`);
 }

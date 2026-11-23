@@ -3,6 +3,7 @@
 import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { Sts1RelatedGroup, Sts1RelatedKind } from "@/lib/sts1/relations";
+import { RESOURCE_LINK_CLASS } from "@/lib/service-link-classes";
 import { sts1NavItems } from "@/lib/site-nav-items";
 import { Sts1MentionHover } from "./mention-hover";
 
@@ -41,7 +42,7 @@ export function Sts1RelatedRail({ groups, serviceLocale }: { groups: readonly St
                     entityId={`sts1:${group.kind}:${item.slug}`}
                     text={item.name}
                     className="relative inline cursor-help"
-                    linkClassName="font-game-title font-semibold spire-gold no-underline hover:brightness-125"
+                    linkClassName={`${RESOURCE_LINK_CLASS} game-inspect-cursor`}
                   />
                 </span>
               ))}

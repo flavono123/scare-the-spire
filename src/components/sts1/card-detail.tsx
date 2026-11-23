@@ -7,12 +7,12 @@ import { GameUpgradeToggle } from "@/components/codex/game-upgrade-toggle";
 import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import { Sts1CardTile } from "./card-tile";
 import { Sts1CommentsRail } from "./comments-rail";
+import { Sts1TinyCard } from "./tiny-card";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import { Sts1RelatedRail } from "./related-rail";
-import { Sts1DetailShell, Sts1MetaPill } from "./detail-chrome";
+import { Sts1DetailShell } from "./detail-chrome";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
-import { sts1PoolColor } from "@/lib/sts1/card-style";
 import { collectSts1CardSideTips } from "@/lib/sts1/keyword-tips";
 import { sts1IndexPath } from "@/lib/sts1/paths";
 import { sts1CardStats } from "@/lib/sts1/stats";
@@ -23,15 +23,6 @@ function typeLabelFor(card: Sts1Card, labels: Sts1UiLabels): string {
     || card.type === "curse" || card.type === "status"
     ? labels.types[card.type]
     : card.type;
-}
-
-function rarityLabelFor(card: Sts1Card, labels: Sts1UiLabels): string | null {
-  if (card.rarity === "common" || card.rarity === "uncommon" || card.rarity === "rare") {
-    return labels.potionRarities[card.rarity];
-  }
-  if (card.rarity === "special") return labels.extras.special;
-  if (card.rarity === "curse") return labels.types.curse;
-  return null;
 }
 
 export function Sts1CardDetail({
@@ -61,8 +52,6 @@ export function Sts1CardDetail({
   const [isDesktop, setIsDesktop] = useState(false);
   const beta = onBetaChange ? showBeta : localBeta;
   const typeLabel = typeLabelFor(card, labels);
-  const rarityLabel = rarityLabelFor(card, labels);
-  const poolColor = sts1PoolColor(card.color);
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
   const stats = sts1CardStats(card, upgradeLevel);
   const description = stats.upgraded && card.upgradeDescription
@@ -142,15 +131,8 @@ export function Sts1CardDetail({
         data-card-detail-meta
       >
         <div className="flex min-w-0 items-center gap-3">
-          <div className="w-8 shrink-0" data-card-detail-tiny-card>
-            <Sts1CardTile
-              card={card}
-              upgradeLevel={upgradeLevel}
-              showBeta={beta}
-              keywords={keywords}
-              typeLabel={typeLabel}
-              gameLocale={gameLocale}
-            />
+          <div className="shrink-0" data-card-detail-tiny-card>
+            <Sts1TinyCard card={card} width={32} />
           </div>
           {serviceLocale !== "en" && card.nameEn && card.nameEn !== card.name ? (
             <span
@@ -159,17 +141,6 @@ export function Sts1CardDetail({
             >
               {card.nameEn}
             </span>
-          ) : null}
-        </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <Sts1MetaPill value={typeLabel} />
-          {rarityLabel ? <Sts1MetaPill value={rarityLabel} /> : null}
-          {card.color === "ironclad" || card.color === "silent" || card.color === "defect" || card.color === "watcher" ? (
-            <Sts1MetaPill value={labels.characters[card.color]} color={poolColor} />
-          ) : card.color === "colorless" ? (
-            <Sts1MetaPill value={labels.extras.colorless} />
-          ) : card.color === "curse" ? (
-            <Sts1MetaPill value={labels.types.curse} />
           ) : null}
         </div>
       </section>
