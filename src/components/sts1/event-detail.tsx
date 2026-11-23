@@ -68,7 +68,8 @@ export function Sts1EventArt({
 }) {
   return (
     <div className={className}>
-      <div className="absolute inset-[3.5%] overflow-hidden bg-[#0d1316]">
+      {/* GenericEventDialog: the 600px picture at 5px inside the 610px imgFrame. */}
+      <div className="absolute inset-[0.82%] overflow-hidden bg-[#0d1316]">
         {image ? (
           <Image
             src={sts1EventImageUrl(image)}
@@ -95,7 +96,17 @@ export function Sts1EventArt({
           </div>
         )}
       </div>
-      <Image src={sts1EventUiUrl("imgFrame")} alt="" fill className="pointer-events-none object-fill" sizes={sizes} />
+      {/* The frame texture is white; the dialog tints it with borderColor = Color(0, 0, 0, a), so it draws black. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-black"
+        style={{
+          maskImage: `url(${sts1EventUiUrl("imgFrame")})`,
+          WebkitMaskImage: `url(${sts1EventUiUrl("imgFrame")})`,
+          maskSize: "100% 100%",
+          WebkitMaskSize: "100% 100%",
+        }}
+      />
     </div>
   );
 }
@@ -318,8 +329,7 @@ export function Sts1EventDetail({
         hero={<Sts1EventScreen event={event} refs={refs} labels={labels} serviceLocale={serviceLocale} captureRef={captureRef} />}
       >
         <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-          <h1 className="font-game-title text-2xl text-primary">{event.name}</h1>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             {event.dungeons.filter((dungeon) => dungeon !== "ending").map((dungeon) => (
               <Sts1MetaPill key={dungeon} value={`${eventLabels.dungeons[dungeon].act} ${eventLabels.dungeons[dungeon].name}`} />
             ))}
