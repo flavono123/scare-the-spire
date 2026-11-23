@@ -1,5 +1,6 @@
 "use client";
 
+import { LayoutGrid, List } from "lucide-react";
 import type { ServiceLocale } from "@/lib/i18n";
 import { notifyCodexUrlChange, useHydrationSafeSearchParam } from "./use-hydration-safe-search-param";
 
@@ -50,6 +51,7 @@ export function useCompendiumLayout(fallback: CompendiumLayout): [CompendiumLayo
   return [layout, setLayout];
 }
 
+/** One button that flips gallery and list; its icon shows the view a click switches to. */
 export function CompendiumLayoutSwitcher({
   layout,
   onChange,
@@ -60,12 +62,19 @@ export function CompendiumLayoutSwitcher({
   serviceLocale: ServiceLocale;
 }) {
   const ko = serviceLocale === "ko";
+  const next: CompendiumLayout = layout === "gallery" ? "list" : "gallery";
+  const label = next === "gallery" ? (ko ? "갤러리로 보기" : "Gallery view") : (ko ? "리스트로 보기" : "List view");
+  const Icon = next === "gallery" ? LayoutGrid : List;
   return (
-    <CompendiumViewSwitcher<CompendiumLayout>
-      options={[{ key: "gallery", label: ko ? "갤러리" : "Gallery" }, { key: "list", label: ko ? "리스트" : "List" }]}
-      active={layout}
-      onChange={onChange}
-      ariaLabel={ko ? "보기" : "View"}
-    />
+    <button
+      type="button"
+      onClick={() => onChange(next)}
+      aria-label={label}
+      title={label}
+      data-layout={layout}
+      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-black/20 text-gray-300 transition-colors hover:border-primary/60 hover:text-primary"
+    >
+      <Icon className="h-4 w-4" aria-hidden />
+    </button>
   );
 }

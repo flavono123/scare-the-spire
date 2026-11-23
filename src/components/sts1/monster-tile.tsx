@@ -53,10 +53,16 @@ export function Sts1MonsterTile({ monster }: { monster: Sts1Monster }) {
   );
 }
 
-/** The STS2 bestiary's list row: a small thumbnail and the name in its type color. */
+/** The STS2 bestiary's list row: a small thumbnail and the name in its type color; hovering plays a random move. */
 export function Sts1MonsterRow({ monster }: { monster: Sts1Monster }) {
+  const [preview, setPreview] = useState<Sts1MonsterPlayback | null | undefined>(undefined);
+  const hovering = preview !== undefined;
   return (
-    <div className="flex items-center gap-3 rounded-md px-2.5 py-2 transition-colors group-hover:bg-white/[0.06]">
+    <div
+      className="flex items-center gap-3 rounded-md px-2.5 py-2 transition-colors group-hover:bg-white/[0.06]"
+      onMouseEnter={() => setPreview(randomPreview(monster))}
+      onMouseLeave={() => setPreview(undefined)}
+    >
       <div className="relative flex h-12 w-14 shrink-0 items-center justify-center overflow-hidden">
         <Image
           src={sts1MonsterImageUrl(monster)}
@@ -64,8 +70,11 @@ export function Sts1MonsterRow({ monster }: { monster: Sts1Monster }) {
           width={56}
           height={48}
           loading="lazy"
-          className="max-h-12 max-w-14 object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)]"
+          className={`max-h-12 max-w-14 object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)] ${hovering ? "opacity-0" : ""}`}
         />
+        {hovering ? (
+          <Sts1MonsterStage monster={monster} playback={preview} variant="tile" className="absolute inset-0 overflow-hidden" />
+        ) : null}
       </div>
       <span className="min-w-0 truncate font-game-title text-sm font-medium" style={{ color: STS1_MONSTER_TYPE_COLORS[monster.type] }}>
         {monster.name}

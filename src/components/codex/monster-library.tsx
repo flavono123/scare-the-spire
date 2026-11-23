@@ -672,7 +672,7 @@ function MonsterTile({
   );
 }
 
-/** The gallery view: the monster large over its name, as the STS1 bestiary lays it out. */
+/** The gallery view: the monster large over its name, as the STS1 bestiary lays it out; hovering plays a random move. */
 function MonsterGalleryTile({
   monster,
   selectedVersion,
@@ -685,8 +685,13 @@ function MonsterGalleryTile({
   onClick: () => void;
 }) {
   const localizeLink = useLocalizedHref();
+  const [hoverMoveId, setHoverMoveId] = useState<string | null | undefined>(undefined);
   const staticArt = resolveMonsterStaticArt(monster.id, selectedVersion);
-  const imageSrc = staticArt?.defaultImage ?? monster.imageUrl ?? monster.bossImageUrl;
+  const tileSpineAsset = staticArt ? null : monster.spineAsset;
+  const imageSrc = staticArt
+    ? (staticArt.byMove[hoverMoveId ?? ""] ?? staticArt.defaultImage)
+    : (monster.imageUrl ?? monster.bossImageUrl);
+  const hovering = hoverMoveId !== undefined;
   return (
     <Link
       prefetch={false}
@@ -696,11 +701,31 @@ function MonsterGalleryTile({
         event.preventDefault();
         onClick();
       }}
+      onMouseEnter={() => setHoverMoveId(pickRandomMonsterPreviewMoveId(monster))}
+      onMouseLeave={() => setHoverMoveId(undefined)}
       className={`group flex h-full flex-col items-center gap-2 rounded-lg border border-border bg-compendium-rail p-3 transition-colors hover:border-primary/60 hover:bg-white/[0.04] ${monster.deprecated ? "opacity-50 grayscale saturate-0" : ""}`}
     >
-      <div className="relative flex h-28 w-full items-center justify-center">
+      <div className="relative flex h-28 w-full items-center justify-center overflow-hidden">
         {imageSrc ? (
-          <Image src={imageSrc} alt={monster.name} width={144} height={112} loading="lazy" className="max-h-full max-w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" />
+          <Image
+            src={imageSrc}
+            alt={monster.name}
+            width={144}
+            height={112}
+            loading="lazy"
+            className={`max-h-full max-w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] transition-opacity ${hovering && tileSpineAsset ? "opacity-0" : "opacity-100"}`}
+          />
+        ) : null}
+        {hovering && tileSpineAsset ? (
+          <MonsterSpineStage
+            asset={tileSpineAsset}
+            fallbackImageUrl={imageSrc}
+            monsterName={monster.name}
+            selectedMoveId={hoverMoveId}
+            imagePriority={false}
+            showLoadingLabel={false}
+            className="absolute inset-0"
+          />
         ) : null}
       </div>
       <span className="text-center font-game-title text-sm font-bold" style={{ color: MONSTER_TYPE_CONFIG[displayType].color }}>
