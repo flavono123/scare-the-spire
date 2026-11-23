@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { clampSts2ScoreInput, STS2_SCORE_DEFAULTS, sts2Score, sts2ScoreLimits } from "../src/lib/sts2/score";
+import { clampSts2ScoreInput, STS2_SCORE_DEFAULTS, sts2BadgesFromInput, sts2Score, sts2ScoreLimits } from "../src/lib/sts2/score";
 
 const run = (patch: Partial<typeof STS2_SCORE_DEFAULTS>) => ({ ...STS2_SCORE_DEFAULTS, ...patch });
 
@@ -35,15 +35,20 @@ assert.equal(sts2Score(loss).total, 740);
 // Floors: a win fills every act; a loss can't open an act before finishing the one before it.
 assert.deepEqual(clampSts2ScoreInput(run({ won: true, floors: [1, 0, 0] })).floors, [17, 16, 15]);
 assert.deepEqual(clampSts2ScoreInput(run({ floors: [17, 0, 5] })).floors, [17, 0, 0]);
-assert.deepEqual(clampSts2ScoreInput(run({ floors: [99, 99, 99] })).floors, [18, 18, 18]); // Golden Path ceiling
+// Only act 2 can be a Golden Path (Tezcatara's Golden Compass): 18 floors solo, 17 with a party; acts 1 and 3 stay standard.
+assert.deepEqual(clampSts2ScoreInput(run({ floors: [99, 99, 99] })).floors, [17, 18, 15]);
+assert.deepEqual(clampSts2ScoreInput(run({ players: 2, floors: [99, 99, 99] })).floors, [16, 17, 14]);
+// Abandoned before Neow: no floor at all.
+assert.deepEqual(clampSts2ScoreInput(run({ floors: [0, 0, 0] })).floors, [0, 0, 0]);
 assert.equal(clampSts2ScoreInput(run({ players: 9 })).players, 4);
 assert.equal(clampSts2ScoreInput(run({ ascension: 20 })).ascension, 10);
 
-// Bosses follow progress: 3 on a win, 4 at A10, 3 again when act 3 was a Golden Path (no second boss point).
+// Bosses follow progress: 3 on a win, 4 at A10 (act 3 is never a Golden Path, so its second boss is always there).
 assert.equal(clampSts2ScoreInput(run({ won: true, bossesSlain: 0 })).bossesSlain, 3);
 assert.equal(clampSts2ScoreInput(run({ won: true, ascension: 10, bossesSlain: 0 })).bossesSlain, 4);
-assert.equal(clampSts2ScoreInput(run({ won: true, ascension: 10, floors: [17, 16, 18] })).bossesSlain, 3);
-// Dying at act 3's second boss (A10, 16 floors) may follow a first-boss kill.
+assert.equal(clampSts2ScoreInput(run({ won: true, ascension: 10, floors: [17, 18, 16], bossesSlain: 0 })).bossesSlain, 4);
+// Dying at act 3's second boss (A10, 16 floors) may follow a first-boss kill; that second boss is the win, so a loss
+// tops out at 3 (GetBossesSlainCount drops the last room of a run not won).
 assert.deepEqual(sts2ScoreLimits(run({ ascension: 10, floors: [17, 16, 16] })).bossesSlain, [2, 3]);
 
 // Elites: rows 6+ minus the treasure row, never two in a row -> 5 + 4 + 4 = 13 on a full solo run.
@@ -51,5 +56,14 @@ assert.equal(clampSts2ScoreInput(run({ won: true, elitesKilled: 100 })).elitesKi
 // None before row 6; a loss can't count the floor it died on as an elite.
 assert.equal(clampSts2ScoreInput(run({ floors: [7, 0, 0], elitesKilled: 3 })).elitesKilled, 0);
 assert.equal(clampSts2ScoreInput(run({ floors: [8, 0, 0], elitesKilled: 3 })).elitesKilled, 1);
+// A Golden Path act 2 (18 floors) has its two elites on rows 13 and 15: 5 + 2 + 4 = 11 on a won solo run.
+assert.equal(clampSts2ScoreInput(run({ won: true, floors: [17, 18, 15], elitesKilled: 100 })).elitesKilled, 11);
+
+// Badges from the inputs alone: only ELITE, at the one tier reached.
+assert.deepEqual(sts2BadgesFromInput(run({ won: true, elitesKilled: 2 })), []);
+assert.deepEqual(sts2BadgesFromInput(run({ won: true, elitesKilled: 6 })), [{ id: "ELITE", rarity: "silver" }]);
+assert.deepEqual(sts2BadgesFromInput(run({ won: true, elitesKilled: 9 })), [{ id: "ELITE", rarity: "gold" }]);
+// ELITE needs no win: a loss with 3 elites already has the bronze one.
+assert.deepEqual(sts2BadgesFromInput(run({ floors: [17, 16, 0], elitesKilled: 3 })), [{ id: "ELITE", rarity: "bronze" }]);
 
 console.log("sts2-score.spec.ts: ok");

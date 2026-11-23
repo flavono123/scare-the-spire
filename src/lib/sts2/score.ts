@@ -3,6 +3,7 @@
  * no custom modifiers) puts on each input, so the calculator never shows a score no seed can make.
  * Line keys are the SCORE_LINE ids in data/sts2/localization/<locale>/game_over_screen.json.
  */
+import type { Sts2RunBadge } from "@/lib/sts2/run-score";
 
 export type Sts2ScoreMode = "normal" | "dread";
 
@@ -32,8 +33,12 @@ export const STS2_SCORE_DEFAULTS: Sts2ScoreInput = {
 
 // ModelDb.Acts: Overgrowth or Underdocks, then Hive, then Glory; BaseNumberOfRooms 15/15, 14, 13.
 const ACT_ROOMS = [15, 14, 13] as const;
-// GoldenPathActMap._defaultPointTypes (Golden Compass): 16 rooms, one fewer in multiplayer, and no second boss point.
-const GOLDEN_PATH_ROOMS = 16;
+// GoldenPathActMap._defaultPointTypes (Golden Compass): 16 rooms in a line, one fewer in multiplayer (RemoveAt(2)).
+// The compass is Tezcatara's, Hive's Ancient, and GoldenCompass.AfterObtained remaps the act it is taken in, so only
+// act 2 can be a Golden Path: 18 floors solo / 17 in multiplayer, two more than the standard act 2 (real runs: 5 won
+// solo A10 runs, act 2 = 18 floors, compass from act 2's Ancient).
+const GOLDEN_PATH_ACT = 1;
+const GOLDEN_PATH_ROOMS = ["M", "U", "M", "R", "M", "R", "U", "T", "U", "T", "U", "S", "E", "R", "E", "R"];
 // AscensionLevel enum ends at DoubleBoss = 10; RunManager.GenerateRooms adds a second boss to the last act at that level.
 const MAX_ASCENSION = 10;
 const DOUBLE_BOSS = 10;
@@ -63,18 +68,18 @@ function standardFloors(act: number, input: Sts2ScoreInput): number {
   return rooms(act, input.players) + 2 + (act === 2 && doubleBoss(input) ? 1 : 0);
 }
 
-// shortcut: any act may become a Golden Path (Golden Compass is in Tezcatara's offer and EventRelicPool), so every act's
-// ceiling is that map's length; a Golden Compass picked up mid-act may stretch an act further, which this ignores.
+const goldenPathRooms = (players: number) => (players > 1 ? GOLDEN_PATH_ROOMS.filter((_, i) => i !== 2) : GOLDEN_PATH_ROOMS);
+
 function maxFloors(act: number, input: Sts2ScoreInput): number {
-  return Math.max(GOLDEN_PATH_ROOMS - (input.players > 1 ? 1 : 0) + 2, standardFloors(act, input));
+  return act === GOLDEN_PATH_ACT ? goldenPathRooms(input.players).length + 2 : standardFloors(act, input);
 }
 
 /**
  * Most elites one path can fight in an act's first `visitedRows` rows. StandardActMap: elites from row 6, never on the
  * last row (rest sites) or the treasure row (row count - 7), and never two in a row along a path (parent/child rules).
- * Unknown rooms never roll elites (UnknownMapPointOdds.baseEliteOdds = -1). The Golden Path's two elites never beat this.
+ * Unknown rooms never roll elites (UnknownMapPointOdds.baseEliteOdds = -1).
  */
-function eliteMax(act: number, players: number, visitedRows: number): number {
+function standardEliteMax(act: number, players: number, visitedRows: number): number {
   const last = rooms(act, players);
   const treasure = last - 6;
   let count = 0;
@@ -87,23 +92,33 @@ function eliteMax(act: number, players: number, visitedRows: number): number {
   return count;
 }
 
+// Act 2 may be a Golden Path (two elites, late): longer than the standard map it must be one; otherwise either map.
+function eliteMax(act: number, input: Sts2ScoreInput, visitedRows: number): number {
+  const standard = standardEliteMax(act, input.players, visitedRows);
+  if (act !== GOLDEN_PATH_ACT) return standard;
+  const golden = goldenPathRooms(input.players).slice(0, visitedRows).filter((room) => room === "E").length;
+  return input.floors[act] > standardFloors(act, input) ? golden : Math.max(standard, golden);
+}
+
 export function sts2ScoreLimits(input: Sts2ScoreInput): Sts2ScoreLimits {
   const floors = [0, 1, 2].map((act) => {
     if (act > 0 && input.floors[act - 1] < standardFloors(act - 1, input)) return [0, 0];
-    const min = input.won ? standardFloors(act, input) : act === 0 ? 1 : 0;
+    // A loss may end on act 1's first floor (Neow), or before it when abandoned (real run: 0 floors, score 0).
+    const min = input.won ? standardFloors(act, input) : 0;
     return [min, maxFloors(act, input)];
   }) as Sts2ScoreLimits["floors"];
   const lastAct = input.floors.reduce((last, count, act) => (count > 0 ? act : last), 0);
   // GetElitesKilledCount drops a final elite room, so a loss can't count its last floor as an elite.
   const elites = input.floors.reduce((sum, count, act) => {
     const lost = !input.won && act === lastAct;
-    return sum + eliteMax(act, input.players, Math.max(0, count - (lost ? 2 : 1)));
+    return sum + eliteMax(act, input, Math.max(0, count - (lost ? 2 : 1)));
   }, 0);
-  // GetBossesSlainCount: every boss room entered, except the last room of a loss. Standing on act 3's second boss
-  // (its full standard length) means the first fell; the same floor count on a Golden Path does not, hence the range.
+  // GetBossesSlainCount: every boss room entered, except the last room of a run not won (the fight it died in, or the
+  // room it was abandoned in). Standing on act 3's second boss (its full length) means the first fell. Killing that
+  // second boss is the win, so a loss never counts it: 3 at most (real runs: 42 A10 deaths there, all 3 bosses; no
+  // loss among 793 runs has 4). Act 3 is never a Golden Path, so a won Double Boss run always slew 4.
   const secondBossPoint = doubleBoss(input) && input.floors[2] === standardFloors(2, input);
-  // A won Golden Path act 3 (longer than the standard map) has no SecondBossMapPoint, so only three bosses.
-  const wonBosses = 3 + (doubleBoss(input) && input.floors[2] <= standardFloors(2, input) ? 1 : 0);
+  const wonBosses = 3 + (doubleBoss(input) ? 1 : 0);
   const bosses: [number, number] = input.won
     ? [wonBosses, wonBosses]
     : [lastAct, lastAct + (lastAct === 2 && secondBossPoint ? 1 : 0)];
@@ -163,4 +178,18 @@ export function sts2Score(raw: Sts2ScoreInput): { lines: Sts2ScoreLine[]; total:
     lines.push({ key: "ascension", count: input.ascension, points: total - base, multiplier: Math.round(multiplier * 10) / 10 });
   }
   return { lines, total };
+}
+
+/**
+ * The badges the calculator's inputs settle on their own, at the tier reached (ScoreUtility.GetBadges rules, 0.113.0).
+ * Only ELITE (GetElitesKilledCount: 3 / 6 / 9) reads nothing but these inputs. Every other badge needs the run file
+ * (src/lib/sts2/run-score.ts sts2RunBadges): CURSES, HIGHLANDER, HONED, BIG_DECK, TINY_DECK, TEAM_PLAYER (final deck),
+ * DOUBLE_SNECKO, ILIKESHINY (relics), FAMISHED, GLUTTON, TABLET (final max HP), MONEY_MONEY (final gold, not gold
+ * gained), KACHING (gold spent in shops), HEALER, RESTFUL, RESTLESS (rest site choices), MYSTERY_MACHINE (? rooms),
+ * PERFECT (damage taken at bosses), SPEEDY (win time), CCCCOMBO, DAMAGE_LEADER, DEBUFFER (combat stats).
+ */
+export function sts2BadgesFromInput(raw: Sts2ScoreInput): Sts2RunBadge[] {
+  const { elitesKilled } = clampSts2ScoreInput(raw);
+  const rarity = elitesKilled >= 9 ? "gold" : elitesKilled >= 6 ? "silver" : elitesKilled >= 3 ? "bronze" : null;
+  return rarity ? [{ id: "ELITE", rarity }] : [];
 }
