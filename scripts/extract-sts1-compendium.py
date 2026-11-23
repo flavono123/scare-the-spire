@@ -1309,9 +1309,10 @@ INTENT_IMAGES = {
     "stun": "images/ui/intent/stunL.png",
     "unknown": "images/ui/intent/unknownL.png",
 }
-# The top panel's ascension badge and the block icon over a creature's health bar.
+# The top panel's ascension badge and HP heart, and the block icon over a creature's health bar.
 MONSTER_UI_IMAGES = {
     "ascension": "images/ui/topPanel/ascension.png",
+    "heart": "images/ui/topPanel/panelHeart.png",
     "block": "images/ui/combat/block.png",
 }
 

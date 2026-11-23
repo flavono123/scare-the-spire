@@ -7,7 +7,7 @@ import { MonsterAscensionStepper, useMonsterAscensionLevel } from "@/components/
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1RelatedRail } from "./related-rail";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
-import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
+import { Sts1DetailShell, Sts1EnglishName, Sts1InfoRailSection, Sts1MetaPill } from "./detail-chrome";
 import { Sts1MentionHover } from "./mention-hover";
 import { Sts1MonsterStage, type Sts1MonsterPlayback } from "./monster-stage";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -69,6 +69,19 @@ type DetailText = ReturnType<typeof detailText>;
 function prettyKey(key: string | null): string | null {
   if (!key) return null;
   return key.toLowerCase().split("_").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+}
+
+/** The move's intent icon with its damage beside it, as the STS2 move list shows a metric. */
+function IntentMetric({ tier }: { tier: Sts1MonsterMoveTier }) {
+  const image = sts1IntentImageName(tier);
+  if (!image) return null;
+  const label = sts1IntentDamageLabel(tier);
+  return (
+    <span className="inline-flex shrink-0 items-center gap-1 font-game-text text-sm font-bold leading-none text-gray-100">
+      <Image src={sts1IntentImageUrl(image)} alt="" width={22} height={22} className="h-5 w-5 shrink-0 object-contain" />
+      {label ? <span>{label}</span> : null}
+    </span>
+  );
 }
 
 function IntentToken({ tier, size }: { tier: Sts1MonsterMoveTier; size: "stage" | "chip" }) {
@@ -251,7 +264,7 @@ function MoveButton({
           </span>
           <EffectTokens effects={tier} refs={refs} text={text} />
         </span>
-        <IntentToken tier={tier} size="chip" />
+        <IntentMetric tier={tier} />
       </span>
     </button>
   );
@@ -274,7 +287,6 @@ export function Sts1MonsterDetail({
 }) {
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
   const text = detailText(serviceLocale);
-  const dungeon = labels.monsters.dungeons[monster.dungeon];
   const [ascension, setAscension] = useMonsterAscensionLevel(STS1_MONSTER_ASCENSION_SCOPE);
   const [playback, setPlayback] = useState<Sts1MonsterPlayback | null>(null);
   const [previewId, setPreviewId] = useState<number | null>(null);
@@ -299,6 +311,7 @@ export function Sts1MonsterDetail({
         />
       )}
       hero={(
+        <div className="flex w-full flex-col items-center">
         <Sts1MonsterStage
           monster={monster}
           playback={playback}
@@ -316,47 +329,32 @@ export function Sts1MonsterDetail({
             />
           )}
         />
+        <h1 className="mt-2 text-center font-game-title text-3xl text-[#fff6e2] [text-shadow:0_2px_0_#000]">{monster.name}</h1>
+        </div>
       )}
     >
       <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <h1 className="font-game-title text-2xl text-primary">{monster.name}</h1>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <Sts1MetaPill
-            value={labels.monsters.types[monster.type]}
-            color={STS1_MONSTER_TYPE_COLORS[monster.type]}
-          />
-          <Sts1MetaPill value={`${dungeon.act} ${dungeon.name}`} />
+        <div className="flex flex-wrap gap-2">
+          <Sts1MetaPill value={labels.monsters.types[monster.type]} color={STS1_MONSTER_TYPE_COLORS[monster.type]} />
+          {hitPoints ? (
+            <Sts1MetaPill>
+              <span className="inline-flex items-center gap-1 leading-none text-gray-100">
+                <Image src={sts1UiImageUrl("heart")} alt="" width={22} height={22} className="h-5 w-5 shrink-0 object-contain" />
+                {hitPointRange(hitPoints)}
+              </span>
+            </Sts1MetaPill>
+          ) : null}
         </div>
         <div className="mt-3">
           <Sts1EnglishName name={monster.name} nameEn={monster.nameEn} serviceLocale={serviceLocale} />
         </div>
       </section>
-      <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <div className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-          {labels.monsters.hitPoints}
-        </div>
-        <dl className="flex flex-col gap-1 font-game-text text-sm text-foreground">
-          {monster.hitPoints.map((tier) => (
-            <div
-              key={tier.ascension}
-              className={`flex items-center justify-between gap-3 rounded px-1.5 ${tier.ascension === hitPoints?.ascension ? "bg-white/[0.06]" : ""}`}
-            >
-              <dt className="text-muted-foreground">
-                {tier.ascension > 0 ? `${labels.monsters.ascension} ${tier.ascension}+` : text.base}
-              </dt>
-              <dd className="font-bold">{hitPointRange(tier)}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
       {starting && Object.keys(starting).length > 1 ? (
-        <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-          <div className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">{text.startingEffects}</div>
+        <Sts1InfoRailSection title={text.startingEffects}>
           <EffectTokens effects={starting} refs={refs} text={text} />
-        </section>
+        </Sts1InfoRailSection>
       ) : null}
-      <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <div className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">{text.moves}</div>
+      <Sts1InfoRailSection title={text.moves}>
         {monster.moves.length > 0 ? (
           <div className="space-y-1.5">
             {monster.moves.map((move) => {
@@ -381,7 +379,7 @@ export function Sts1MonsterDetail({
         ) : (
           <p className="text-sm text-gray-500">{text.noMoves}</p>
         )}
-      </section>
+      </Sts1InfoRailSection>
       <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
       <Sts1CommentsRail
         resourceType="monster"

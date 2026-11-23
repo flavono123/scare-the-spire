@@ -13,13 +13,14 @@ import { Sts1EventText } from "./event-text";
 import { Sts1TipBox } from "./tip-box";
 import { Sts1TipsBeside } from "./mention-hover";
 
-export function Sts1MetaPill({ value, color }: { value: string; color?: string }) {
+/** STS2's MetaPill: a label, or a token (heart + HP) as children. */
+export function Sts1MetaPill({ value, color, children }: { value?: string; color?: string; children?: ReactNode }) {
   return (
     <span
-      className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold"
+      className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1.5 font-game-text text-sm font-bold"
       style={color ? { color } : undefined}
     >
-      {value}
+      {children ?? value}
     </span>
   );
 }

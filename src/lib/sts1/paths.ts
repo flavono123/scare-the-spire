@@ -93,7 +93,7 @@ export function sts1TinyCardUrl(layer: string): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/tiny-cards/${layer}.webp`);
 }
 
-export function sts1UiImageUrl(name: "ascension" | "block"): string {
+export function sts1UiImageUrl(name: "ascension" | "block" | "heart"): string {
   return sts1Asset(`${STS1_IMAGE_ROOT}/ui/${name}.webp`);
 }
 
