@@ -43,6 +43,12 @@
 - QA: 로컬 dev 내장 브라우저(1440·375 폭)로 확인. 이벤트 52종 전 장면을 클릭 순회(승천 0·15 두 번, 깨진 문구 0). 8분류 게임 한국어 이름·설명 전수 대조 누락 0. 영어·게임 언어(ja·zh·de) 목록, en 상세 200. 확인 못 함: 게임 화면과 나란히 놓은 캡처(게임을 실행하지 못함), 원격 testbed, 이벤트 승천 15 외의 승천 분기(13 마인드 블룸 보상은 글에 숫자가 없어 표시 안 함).
 - Commits: `af2ba850`부터.
 
+### compendium-detail-parity-round
+- Feature: STS1 상세를 STS2에 맞춘 묶음. 카드 정보 레일은 유형·희귀도·캐릭터 필 대신 게임 런 히스토리의 TinyCard(images/tinyCards, 색·희귀도로 물들인 레이어)와 영어명. 유물 상세는 목록 아이콘 대신 게임 유물 팝업(큰 그림), 포션·파워는 그림 위 게임 툴팁 상자, 역병·키워드·모드·승천·도전 과제도 툴팁 상자이며 모든 상세가 설명 속 키워드 툴팁을 히어로 옆(좁으면 아래)에 펼쳐 둔다. 정보 레일은 큰 제목·중복 설명 없이 필 + 영어명(키워드 활용형 목록 삭제). 몬스터 상세는 이름을 무대 아래로, 레일은 유형 필 + 하트·체력 필(현재 승천), 시작 효과·행동은 접히는 섹션, 의도 아이콘과 수치 한 줄. 몬스터 도감에 STS2식 탭: 조우(68개, MonsterHelper에서 추출한 고정·무작위·갈래 구성, 막·목록별 가중치, 시작하는 이벤트)와 의도(15종, updateIntentTip의 게임 툴팁, 쓰는 몬스터). 이벤트 그림 테두리는 게임처럼 검게 물들인 imgFrame. STS1·STS2 몬스터·이벤트 목록에 갤러리/리스트 전환(?layout=). 점수 줄마다 상세 페이지, 점수 페이지는 계산기와 기준표를 나란히 두고 넓은 화면에서 편집 중인 칸의 줄을 강조.
+- Expect: /compendium/sts1/cards/blade-dance 레일에 초록 스킬 TinyCard + Blade Dance. /compendium/sts1/relics/snecko-eye는 유물 팝업과 혼란 툴팁. /compendium/sts1/monsters/slaver-blue 레일 "적 | ♥ 46-50", 행동 섹션. /compendium/sts1/monsters?view=encounters&encounter=gremlin-gang 무작위 4, /compendium/sts1/monsters?view=intents 15종. /compendium/sts1/events/scrap-ooze 검은 테두리. /compendium/bestiary?layout=gallery 타일. /compendium/sts1/score-bonuses 1440에서 승천 칸 클릭 시 오른쪽 승천 줄 강조.
+- QA: 상세 타입별 1440·375, 도감 세 탭, 네 목록 갤러리/리스트 전환, 점수 계산기 포커스 강조, 조우 갈래·중복 표기. `pnpm exec tsx scripts/check-sts1-encounters.ts`, `pnpm test:sts1-score`(CI에도 추가).
+- Commits: `82a4a3ab`부터.
+
 ### sts1-worker
 - Feature: STS1 백과사전 상세(ko·en)를 별도 Worker `scare-the-spire-sts1`이 서비스 바인딩 `STS1_WORKER`로 다시 서비스한다(8cd3f7eb 되돌리기, main 정적 파일 예산 미사용). 게임 전용 로케일은 목록 모달로 308. main 애셋에 없는 `/_next/static`은 STS1 Worker에 묻는다. STS1 링크·댓글 링크·사이트맵·canonical이 다시 상세 페이지를 가리킨다. CI는 STS1 Worker를 main보다 먼저 배포한다. 설계는 [docs/designs/sts1-compendium-worker.md](../designs/sts1-compendium-worker.md).
 - Expect: /compendium/sts1/cards/strike-r, /en/compendium/sts1/relics/burning-blood가 문서·RSC 모두 200과 `x-cf-static-page: compendium`, /cards/bash는 200과 `x-cf-static-page: legacy`. /ja/compendium/sts1/cards/strike-r은 /ja/compendium/sts1/cards?card=strike-r로 308. STS1 댓글 링크(sts1-codex:card:strike)는 /compendium/sts1/cards/strike#comments로 간다. STS1 목록 타일은 그냥 클릭하면 모달, 새 탭이면 상세. /sitemap.xml에 /compendium/sts1/<type>/<slug>가 다시 있다.
