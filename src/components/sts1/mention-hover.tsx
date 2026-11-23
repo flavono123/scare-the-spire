@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Suspense, useLayoutEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import Image from "@/components/ui/static-image";
-import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
+import { CardSideTipsAnchor, HoverTipStack } from "@/components/codex/card-keyword-tip-stack";
+import type { CardSideTip } from "@/lib/card-keyword-tips";
 import { PortaledHoverTipLayer } from "@/components/codex/portaled-hover-tip-layer";
 import { GameResourcePreview } from "@/components/patch-note-renderer";
 import { useSts1MentionIndex } from "@/hooks/use-sts1-mention-index";
@@ -213,6 +214,16 @@ function RelicBitmapText({
   );
 }
 
+/** Keyword tips laid out beside a detail's hero (below it when the column is narrow), always open. */
+export function Sts1TipsBeside({ tips, children }: { tips: readonly CardSideTip[]; children: ReactNode }) {
+  return (
+    <div className="flex flex-wrap items-start justify-center gap-3">
+      {children}
+      {tips.length ? <div className="w-64 max-w-full shrink-0" data-sts1-hero-tips=""><HoverTipStack tips={tips} /></div> : null}
+    </div>
+  );
+}
+
 export function RelicSlab({
   entry,
   labels,
@@ -220,8 +231,14 @@ export function RelicSlab({
   keywords,
   tierText,
   className = "w-[15.5rem]",
+  tipsInFlow = false,
+  captureRef,
 }: {
+  /** The popup alone (not its tips), for image copy. */
+  captureRef?: RefObject<HTMLDivElement | null>;
   entry: Pick<Sts1MentionEntry, "nameKo" | "description" | "imageUrl" | "largeImageUrl" | "tier" | "flavor">;
+  /** On a detail page the keyword tips sit beside the popup in the layout instead of floating over the rail. */
+  tipsInFlow?: boolean;
   labels: Sts1UiLabels;
   suffix: string;
   keywords: readonly Sts1Keyword[];
@@ -229,13 +246,9 @@ export function RelicSlab({
   tierText?: string;
   className?: string;
 }) {
-  return (
-    <CardSideTipsAnchor
-      tips={collectSts1CardSideTips(plainSts1Text(entry.description), keywords)}
-      mode="always"
-      preferSide="right"
-      className={className}
-    >
+  const tips = collectSts1CardSideTips(plainSts1Text(entry.description), keywords);
+  const slab = (
+    <>
       <div
         className="relative w-full overflow-hidden"
         style={{ aspectRatio: `${PANEL.width} / ${PANEL.height}`, containerType: "inline-size" }}
@@ -300,6 +313,14 @@ export function RelicSlab({
           </div>
         ) : null}
       </div>
+    </>
+  );
+  if (tipsInFlow) {
+    return <Sts1TipsBeside tips={tips}><div ref={captureRef} className={className}>{slab}</div></Sts1TipsBeside>;
+  }
+  return (
+    <CardSideTipsAnchor tips={tips} mode="always" preferSide="right" className={className}>
+      {slab}
     </CardSideTipsAnchor>
   );
 }

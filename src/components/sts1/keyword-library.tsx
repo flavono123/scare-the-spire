@@ -11,10 +11,9 @@ import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1DetailPath, sts1OrbImageUrl } from "@/lib/sts1/paths";
 import type { Sts1CompendiumKeyword, Sts1EntityRefs, Sts1Keyword, Sts1KeywordKind, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
-import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
+import { Sts1DetailShell, Sts1EnglishName, Sts1HeroTip, Sts1MetaPill } from "./detail-chrome";
 import { Sts1EventText } from "./event-text";
 import {
-  Sts1Description,
   Sts1DetailModal,
   Sts1ListLayout,
   filterButtonClass,
@@ -73,23 +72,20 @@ export function Sts1KeywordDetail({
       serviceLocale={serviceLocale}
       heroLayout="icon"
       hero={(
-        <Sts1TipBox
+        <Sts1HeroTip
           title={keyword.name}
           icon={keyword.image || keyword.color ? <Sts1KeywordIcon keyword={keyword} size={48} /> : undefined}
+          description={keyword.description}
+          keywords={keywords.filter((row) => row.id !== keyword.id)}
+          refs={refs}
           className="w-full max-w-[26rem]"
-        >
-          <Sts1Description text={keyword.description} keywords={keywords.filter((row) => row.id !== keyword.id)} refs={refs} className="block" />
-        </Sts1TipBox>
+        />
       )}
     >
       <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <h1 className="font-game-title text-2xl text-primary">{keyword.name}</h1>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
           <Sts1MetaPill value={kinds[keyword.kind]} />
         </div>
-        {keyword.names.length > 1 ? (
-          <p className="mt-3 font-game-text text-xs text-muted-foreground">{keyword.names.join(", ")}</p>
-        ) : null}
         <div className="mt-3">
           <Sts1EnglishName name={keyword.name} nameEn={keyword.nameEn} serviceLocale={serviceLocale} />
         </div>

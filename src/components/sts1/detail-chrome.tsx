@@ -6,6 +6,12 @@ import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { ServiceLocale } from "@/lib/i18n";
 import { closeOnPlainClick } from "@/lib/plain-click";
+import { plainSts1Text } from "@/lib/sts1/description";
+import { collectSts1CardSideTips } from "@/lib/sts1/keyword-tips";
+import type { Sts1EntityRefs, Sts1Keyword } from "@/lib/sts1/types";
+import { Sts1EventText } from "./event-text";
+import { Sts1TipBox } from "./tip-box";
+import { Sts1TipsBeside } from "./mention-hover";
 
 export function Sts1MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -96,5 +102,49 @@ export function Sts1DetailShell({
         <aside className="flex min-w-0 flex-col gap-3">{children}</aside>
       </div>
     </div>
+  );
+}
+
+/**
+ * A detail hero's text as the game tips it: TipHelper's box with the keyword tips its
+ * text raises already open beside it (a detail shows every tip, as the card detail does).
+ */
+export function Sts1HeroTip({
+  title,
+  titleColor,
+  icon,
+  description,
+  keywords,
+  refs,
+  className = "w-full max-w-[22rem]",
+}: {
+  title: ReactNode;
+  titleColor?: string;
+  icon?: ReactNode;
+  description: string;
+  keywords: readonly Sts1Keyword[];
+  refs?: Sts1EntityRefs;
+  className?: string;
+}) {
+  const tips = collectSts1CardSideTips(plainSts1Text(description), keywords);
+  return (
+    <Sts1TipsBeside tips={tips}>
+      <Sts1TipBox title={title} titleColor={titleColor} icon={icon} className={className}>
+        <Sts1EventText text={description} refs={refs} />
+      </Sts1TipBox>
+    </Sts1TipsBeside>
+  );
+}
+
+/** The collapsible rail box STS2 details use for moves, effects and history. */
+export function Sts1InfoRailSection({ title, children, defaultOpen = true }: { title: string; children: ReactNode; defaultOpen?: boolean }) {
+  return (
+    <details className="group min-w-0 rounded-lg border border-border bg-compendium-rail px-4 py-3" open={defaultOpen}>
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-foreground">
+        <span>{title}</span>
+        <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
+      </summary>
+      <div className="mt-3">{children}</div>
+    </details>
   );
 }

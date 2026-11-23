@@ -107,6 +107,7 @@ type Sts1UiFile = {
   RelicViewScreen?: UiTable;
   PotionViewScreen?: UiTable;
   SingleCardViewPopup?: UiTable;
+  SingleViewRelicPopup?: UiTable;
   MenuPanels?: UiTable;
 };
 
@@ -429,6 +430,7 @@ export const getSts1UiLabels = cache(async (gameLocale: GameLocale = "kor"): Pro
     },
     characters,
     shared: locale === "kor" ? "공용" : "Shared",
+    relicPopupSuffix: ui.SingleViewRelicPopup?.TEXT?.[10] ?? "",
   };
 });
 

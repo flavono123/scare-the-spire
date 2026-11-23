@@ -10,9 +10,9 @@ import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { sts1AchievementImageUrl, sts1DetailPath, sts1IndexPath } from "@/lib/sts1/paths";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
-import type { Sts1Achievement, Sts1EntityRefs, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1Achievement, Sts1EntityRefs, Sts1Keyword, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
-import { Sts1DetailShell, Sts1EnglishName } from "./detail-chrome";
+import { Sts1DetailShell, Sts1EnglishName, Sts1HeroTip } from "./detail-chrome";
 import { Sts1EventText } from "./event-text";
 import { Sts1DetailModal, Sts1ListLayout, openOnPlainClick, useSts1Selection } from "./list-shell";
 import { Sts1RelatedRail } from "./related-rail";
@@ -22,6 +22,7 @@ export function Sts1AchievementDetail({
   achievement,
   refs,
   related = [],
+  keywords = [],
   labels,
   serviceLocale,
   onClose,
@@ -29,6 +30,7 @@ export function Sts1AchievementDetail({
   achievement: Sts1Achievement;
   refs: Sts1EntityRefs;
   related?: readonly Sts1RelatedGroup[];
+  keywords?: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
   onClose?: () => void;
@@ -43,21 +45,16 @@ export function Sts1AchievementDetail({
       heroLayout="icon"
       assetActions={<CompendiumAssetImageActions serviceLocale={serviceLocale} fileName={`${achievement.slug}.png`} targetRef={captureRef} />}
       hero={(
-        <div className="flex w-full max-w-[26rem] flex-col items-center gap-4">
+        <div className="flex w-full flex-col items-center gap-4">
           <div ref={captureRef}>
             <Image src={sts1AchievementImageUrl(achievement.image)} alt={achievement.name} width={192} height={192} className="h-44 w-44 object-contain sm:h-48 sm:w-48" />
           </div>
-          <Sts1TipBox title={achievement.name} className="w-full">
-            <Sts1EventText text={achievement.description} refs={refs} />
-          </Sts1TipBox>
+          <Sts1HeroTip title={achievement.name} description={achievement.description} keywords={keywords} refs={refs} className="w-full max-w-[22rem]" />
         </div>
       )}
     >
       <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <h1 className="font-game-title text-2xl text-primary">{achievement.name}</h1>
-        <div className="mt-3">
-          <Sts1EnglishName name={achievement.name} nameEn={achievement.nameEn} serviceLocale={serviceLocale} />
-        </div>
+        <Sts1EnglishName name={achievement.name} nameEn={achievement.nameEn} serviceLocale={serviceLocale} />
       </section>
       <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
       <Sts1CommentsRail resourceType="achievement" slug={achievement.slug} serviceLocale={serviceLocale} />
@@ -105,12 +102,14 @@ export function Sts1AchievementGrid({
   achievements,
   refs,
   related,
+  keywords,
   labels,
   serviceLocale,
 }: {
   achievements: Sts1Achievement[];
   refs: Sts1EntityRefs;
   related?: Record<string, Sts1RelatedGroup[]>;
+  keywords?: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
@@ -133,6 +132,7 @@ export function Sts1AchievementGrid({
             achievement={selected}
             refs={refs}
             related={related?.[selected.slug]}
+            keywords={keywords}
             labels={labels}
             serviceLocale={serviceLocale}
             onClose={close}

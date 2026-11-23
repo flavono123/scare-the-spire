@@ -204,7 +204,7 @@ export function Sts1RelicLibrary({
       {selectedRelic ? (
         <CompendiumDetailOverlay onClose={closeRelic} aria-label={selectedRelic.name} zClassName="z-[100]">
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <Sts1RelicDetail relic={selectedRelic} related={related?.[selectedRelic.slug]} labels={labels} serviceLocale={serviceLocale} onClose={closeRelic} />
+            <Sts1RelicDetail keywords={keywords} relic={selectedRelic} related={related?.[selectedRelic.slug]} labels={labels} serviceLocale={serviceLocale} onClose={closeRelic} />
           </div>
         </CompendiumDetailOverlay>
       ) : null}

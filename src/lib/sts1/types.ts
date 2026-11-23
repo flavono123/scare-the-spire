@@ -400,6 +400,8 @@ export interface Sts1UiLabels {
   potionRarityDescriptions: Record<Sts1PotionRarity, string>;
   characters: Record<"ironclad" | "silent" | "defect" | "watcher", string>;
   shared: string;
+  /** SingleViewRelicPopup TEXT[10]: the word after a relic's tier ("유물"). */
+  relicPopupSuffix: string;
 }
 
 export interface Sts1CardStats {

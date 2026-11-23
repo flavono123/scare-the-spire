@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Sts1RelicLibrary } from "@/components/sts1/relic-library";
 import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
+import { sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -39,9 +40,9 @@ export default async function Sts1RelicsPage({
   ]);
   const related = await getSts1RelatedMap("relics", relics.map((row) => row.slug), gameLocale);
 
-  // Sts1CardText draws relic, potion, and power text with the kor glyph pack.
+  // The relic popup draws its text with the game locale's glyph pack.
   return (
-    <Sts1BitmapPackScope packs={["kor"]}>
+    <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
       <Suspense>
         <Sts1RelicLibrary relics={relics} related={related} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
       </Suspense>

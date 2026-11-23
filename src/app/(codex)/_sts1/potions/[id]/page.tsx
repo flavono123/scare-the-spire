@@ -9,7 +9,7 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getSts1Metadata, getSts1Potion, getSts1UiLabels } from "@/lib/sts1/data";
+import { getSts1Keywords, getSts1Metadata, getSts1Potion, getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1DetailPath, sts1PotionImageUrl } from "@/lib/sts1/paths";
 import { getSts1Related } from "@/lib/sts1/relations";
 import { generateSts1PotionStaticParams } from "@/lib/sts1/static-params";
@@ -42,8 +42,9 @@ export default async function Sts1PotionDetailPage({ params, searchParams }: Det
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [potion, labels] = await Promise.all([
+  const [potion, keywords, labels] = await Promise.all([
     getSts1Potion(id, gameLocale),
+    getSts1Keywords(gameLocale),
     getSts1UiLabels(gameLocale),
   ]);
   if (!potion) notFound();
@@ -51,7 +52,7 @@ export default async function Sts1PotionDetailPage({ params, searchParams }: Det
   // Sts1CardText draws relic, potion, and power text with the kor glyph pack.
   return (
     <Sts1BitmapPackScope packs={["kor"]}>
-      <Sts1PotionDetail potion={potion} related={related} labels={labels} serviceLocale={serviceLocale} />
+      <Sts1PotionDetail keywords={keywords} potion={potion} related={related} labels={labels} serviceLocale={serviceLocale} />
     </Sts1BitmapPackScope>
   );
 }

@@ -204,7 +204,7 @@ export function Sts1PotionLibrary({
       {selectedPotion ? (
         <CompendiumDetailOverlay onClose={closePotion} aria-label={selectedPotion.name} zClassName="z-[100]">
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <Sts1PotionDetail potion={selectedPotion} related={related?.[selectedPotion.slug]} labels={labels} serviceLocale={serviceLocale} onClose={closePotion} />
+            <Sts1PotionDetail keywords={keywords} potion={selectedPotion} related={related?.[selectedPotion.slug]} labels={labels} serviceLocale={serviceLocale} onClose={closePotion} />
           </div>
         </CompendiumDetailOverlay>
       ) : null}

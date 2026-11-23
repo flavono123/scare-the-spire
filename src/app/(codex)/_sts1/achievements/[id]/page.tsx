@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { Sts1AchievementDetail } from "@/components/sts1/achievement-grid";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { getSts1Achievement, getSts1PageRefs } from "@/lib/sts1/compendium-extras";
-import { getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
+import { getSts1Keywords, getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
 import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1AchievementImageUrl, sts1DetailPath } from "@/lib/sts1/paths";
 import { getSts1Related } from "@/lib/sts1/relations";
@@ -38,7 +38,7 @@ export default async function Sts1AchievementDetailPage({ params, searchParams }
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [achievement, labels] = await Promise.all([getSts1Achievement(id, gameLocale), getSts1UiLabels(gameLocale)]);
+  const [achievement, labels, keywords] = await Promise.all([getSts1Achievement(id, gameLocale), getSts1UiLabels(gameLocale), getSts1Keywords(gameLocale)]);
   if (!achievement) notFound();
   const [refs, related] = await Promise.all([
     getSts1PageRefs({
@@ -46,5 +46,5 @@ export default async function Sts1AchievementDetailPage({ params, searchParams }
     }, gameLocale),
     getSts1Related("achievements", achievement.slug, gameLocale),
   ]);
-  return <Sts1AchievementDetail achievement={achievement} refs={refs} related={related} labels={labels} serviceLocale={serviceLocale} />;
+  return <Sts1AchievementDetail keywords={keywords} achievement={achievement} refs={refs} related={related} labels={labels} serviceLocale={serviceLocale} />;
 }

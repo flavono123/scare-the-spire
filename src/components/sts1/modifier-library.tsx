@@ -11,10 +11,9 @@ import type { Sts1ModifierRow } from "@/lib/sts1/compendium-extras";
 import { sts1DetailPath, sts1IndexPath, sts1RunModUrl } from "@/lib/sts1/paths";
 import type { Sts1EntityRefs, Sts1Keyword } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
-import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
+import { Sts1DetailShell, Sts1EnglishName, Sts1HeroTip, Sts1MetaPill } from "./detail-chrome";
 import { Sts1EventText } from "./event-text";
 import {
-  Sts1Description,
   Sts1DetailModal,
   Sts1ListLayout,
   filterButtonClass,
@@ -74,24 +73,20 @@ export function Sts1ModifierDetail({
       serviceLocale={serviceLocale}
       heroLayout="icon"
       hero={(
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex w-full flex-col items-center gap-4">
           <ModIcon mod={mod} size={128} />
-          <div className="font-game-title text-2xl [text-shadow:0_2px_0_#000]" style={{ color }}>[{mod.name}]</div>
+          <Sts1HeroTip title={`[${mod.name}]`} titleColor={color} description={mod.description} keywords={keywords} refs={refs} />
         </div>
       )}
     >
       <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <h1 className="font-game-title text-2xl" style={{ color }}>{mod.name}</h1>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
           {mod.onScreen ? <Sts1MetaPill value={modLabels.customMode} /> : <Sts1MetaPill value={modLabels.deprecated} color="#9ca3af" />}
           {mod.daily ? <Sts1MetaPill value={modLabels.daily} color="#efc851" /> : null}
         </div>
         <div className="mt-3">
           <Sts1EnglishName name={mod.name} nameEn={mod.nameEn} serviceLocale={serviceLocale} />
         </div>
-      </section>
-      <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <Sts1Description text={mod.description} keywords={keywords} refs={refs} />
       </section>
       <Sts1RelatedRail
         groups={[

@@ -5,11 +5,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Sts1RelicDetail } from "@/components/sts1/relic-detail";
 import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
+import { sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getSts1Metadata, getSts1Relic, getSts1UiLabels } from "@/lib/sts1/data";
+import { getSts1Keywords, getSts1Metadata, getSts1Relic, getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1DetailPath, sts1RelicImageUrl } from "@/lib/sts1/paths";
 import { getSts1Related } from "@/lib/sts1/relations";
 import { generateSts1RelicStaticParams } from "@/lib/sts1/static-params";
@@ -42,16 +43,17 @@ export default async function Sts1RelicDetailPage({ params, searchParams }: Deta
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [relic, labels] = await Promise.all([
+  const [relic, keywords, labels] = await Promise.all([
     getSts1Relic(id, gameLocale),
+    getSts1Keywords(gameLocale),
     getSts1UiLabels(gameLocale),
   ]);
   if (!relic) notFound();
   const related = await getSts1Related("relics", relic.slug, gameLocale);
-  // Sts1CardText draws relic, potion, and power text with the kor glyph pack.
+  // The relic popup draws its text with the game locale's glyph pack.
   return (
-    <Sts1BitmapPackScope packs={["kor"]}>
-      <Sts1RelicDetail relic={relic} related={related} labels={labels} serviceLocale={serviceLocale} />
+    <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
+      <Sts1RelicDetail keywords={keywords} relic={relic} related={related} labels={labels} serviceLocale={serviceLocale} />
     </Sts1BitmapPackScope>
   );
 }

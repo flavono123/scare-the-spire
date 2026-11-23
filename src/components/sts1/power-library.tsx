@@ -190,6 +190,7 @@ export function Sts1PowerLibrary({
         <CompendiumDetailOverlay onClose={closePower} aria-label={selectedPower.name} zClassName="z-[100]">
           <div className="mx-4 my-8 w-full max-w-6xl">
             <Sts1PowerDetail
+              keywords={keywords}
               power={selectedPower}
               related={related[selectedPower.slug] ?? []}
               labels={labels}

@@ -51,27 +51,23 @@ export function Sts1BlightDetail({
       heroLayout="icon"
       assetActions={<CompendiumAssetImageActions serviceLocale={serviceLocale} fileName={`${blight.slug}.png`} targetRef={captureRef} />}
       hero={(
-        <div ref={captureRef}>
+        <div>
           {/* SingleRelicViewPopup's panel, as the relic detail popup draws it. */}
           <RelicSlab
+            captureRef={captureRef}
             entry={{ nameKo: blight.name, description: blight.description, imageUrl: blight.image, tier: "common", flavor: "" }}
             labels={labels}
             suffix=""
-            keywords={[]}
+            keywords={keywords}
             tierText={labels.listTitles.blights}
             className="w-[min(22rem,80vw)]"
+            tipsInFlow
           />
         </div>
       )}
     >
       <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <h1 className="font-game-title text-2xl text-primary">{blight.name}</h1>
-        <div className="mt-3">
-          <Sts1EnglishName name={blight.name} nameEn={blight.nameEn} serviceLocale={serviceLocale} />
-        </div>
-      </section>
-      <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <Sts1Description text={blight.description} keywords={keywords} refs={refs} />
+        <Sts1EnglishName name={blight.name} nameEn={blight.nameEn} serviceLocale={serviceLocale} />
       </section>
       {blight.stackDescription ? (
         <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">

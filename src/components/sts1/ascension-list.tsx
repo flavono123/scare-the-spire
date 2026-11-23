@@ -8,9 +8,9 @@ import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { sts1DetailPath, sts1IndexPath, sts1UiImageUrl } from "@/lib/sts1/paths";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
-import type { Sts1Ascension, Sts1EntityRefs, Sts1UiLabels } from "@/lib/sts1/types";
+import type { Sts1Ascension, Sts1EntityRefs, Sts1Keyword, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
-import { Sts1DetailShell, Sts1EnglishName } from "./detail-chrome";
+import { Sts1DetailShell, Sts1EnglishName, Sts1HeroTip } from "./detail-chrome";
 import { Sts1EventText } from "./event-text";
 import { Sts1DetailModal, Sts1ListLayout, openOnPlainClick, useSts1Selection } from "./list-shell";
 import { Sts1RelatedRail } from "./related-rail";
@@ -35,6 +35,7 @@ export function Sts1AscensionDetail({
   ascension,
   refs,
   related = [],
+  keywords = [],
   labels,
   serviceLocale,
   onClose,
@@ -42,6 +43,7 @@ export function Sts1AscensionDetail({
   ascension: Sts1Ascension;
   refs: Sts1EntityRefs;
   related?: readonly Sts1RelatedGroup[];
+  keywords?: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
   onClose?: () => void;
@@ -55,19 +57,14 @@ export function Sts1AscensionDetail({
       serviceLocale={serviceLocale}
       heroLayout="icon"
       hero={(
-        <div className="flex w-full max-w-[26rem] flex-col items-center gap-4">
+        <div className="flex w-full flex-col items-center gap-4">
           <Sts1AscensionBadge level={ascension.level} size={128} />
-          <Sts1TipBox title={title} className="w-full">
-            <Sts1EventText text={ascension.description} refs={refs} />
-          </Sts1TipBox>
+          <Sts1HeroTip title={title} description={ascension.description} keywords={keywords} refs={refs} className="w-full max-w-[22rem]" />
         </div>
       )}
     >
       <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-        <h1 className="font-game-title text-2xl text-primary">{title}</h1>
-        <div className="mt-3">
-          <Sts1EnglishName name={title} nameEn={`Ascension ${ascension.level}`} serviceLocale={serviceLocale} />
-        </div>
+        <Sts1EnglishName name={title} nameEn={`Ascension ${ascension.level}`} serviceLocale={serviceLocale} />
       </section>
       <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
       <Sts1CommentsRail resourceType="ascension" slug={ascension.slug} serviceLocale={serviceLocale} />
@@ -79,12 +76,14 @@ export function Sts1AscensionList({
   ascensions,
   refs,
   related,
+  keywords,
   labels,
   serviceLocale,
 }: {
   ascensions: Sts1Ascension[];
   refs: Sts1EntityRefs;
   related?: Record<string, Sts1RelatedGroup[]>;
+  keywords?: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
@@ -108,6 +107,7 @@ export function Sts1AscensionList({
             ascension={selected}
             refs={refs}
             related={related?.[selected.slug]}
+            keywords={keywords}
             labels={labels}
             serviceLocale={serviceLocale}
             onClose={close}
