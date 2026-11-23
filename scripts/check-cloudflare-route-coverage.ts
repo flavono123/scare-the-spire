@@ -44,7 +44,7 @@ type Outcome = "static" | "patch" | "redirect" | "not-found";
 // entry as a modal on the list page.
 const DIRECT_DETAIL_LOCALES = new Set(["kor", "eng"]);
 // STS1 lists with detail pages (the others are a single list).
-const STS1_LISTS = ["cards", "characters", "monsters", "potions", "powers", "relics", "events", "keywords", "modifiers", "blights", "ascensions", "achievements"];
+const STS1_LISTS = ["cards", "characters", "monsters", "potions", "powers", "relics", "events", "keywords", "modifiers", "blights", "ascensions", "achievements", "score-bonuses"];
 const MODAL_PROBE_ID = "coverage-probe";
 
 function walk(dir: string, files: string[] = []): string[] {

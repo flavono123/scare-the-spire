@@ -28,6 +28,7 @@ import {
   generateSts1EventsStaticParams,
   generateSts1KeywordsStaticParams,
   generateSts1ModifiersStaticParams,
+  generateSts1ScoreBonusesStaticParams,
 } from "@/lib/sts1/static-params";
 import { searchLanguageAlternates } from "@/lib/search-canonical";
 import {
@@ -169,6 +170,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       generateSts1BlightsStaticParams(),
       generateSts1AscensionsStaticParams(),
       generateSts1AchievementsStaticParams(),
+      generateSts1ScoreBonusesStaticParams(),
     ]),
   ]);
   const paths = [
@@ -184,7 +186,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...sts1Powers.map((power) => `/compendium/sts1/powers/${power.slug}`),
     ...sts1Monsters.map((monster) => `/compendium/sts1/monsters/${monster.slug}`),
     ...sts1Characters.map((character) => `/compendium/sts1/characters/${character.slug}`),
-    ...(["events", "keywords", "modifiers", "blights", "ascensions", "achievements"] as const).flatMap((type, index) => (
+    ...(["events", "keywords", "modifiers", "blights", "ascensions", "achievements", "score-bonuses"] as const).flatMap((type, index) => (
       sts1Extras[index].map(({ id }) => `/compendium/sts1/${type}/${id}`)
     )),
   ];

@@ -75,7 +75,7 @@ export type Sts1ResourceType =
   | "score-bonuses";
 
 /** Types with a detail page per entry; the others are a single list page. */
-export type Sts1DetailResourceType = Exclude<Sts1ResourceType, "neow" | "score-bonuses">;
+export type Sts1DetailResourceType = Exclude<Sts1ResourceType, "neow">;
 
 export interface Sts1CardUpgrade {
   damage?: number;
@@ -625,6 +625,8 @@ export interface Sts1Achievement {
 export interface Sts1ScoreBonus {
   id: string;
   slug: string;
+  legacySlugs: string[];
+  nameEn: string;
   name: string;
   description: string;
   points: string;

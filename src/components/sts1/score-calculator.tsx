@@ -20,20 +20,34 @@ const TEXT = {
   en: { title: "Score calculator", outcome: "Result", none: "None", reset: "Reset", note: "Values snap to what a real run can reach." },
 } as const;
 
-function Field({ label, children }: { label: string; children: ReactNode }) {
+// Which score lines a field feeds; the table beside the calculator lights them while it is edited.
+type FocusLines = (ids: string[] | null) => void;
+
+function Field({ label, lines, onFocusLines, children }: { label: string; lines?: string[]; onFocusLines?: FocusLines; children: ReactNode }) {
   return (
-    <label className="flex min-w-0 flex-col gap-1">
+    <label
+      className="flex min-w-0 flex-col gap-1"
+      onFocus={() => (lines ? onFocusLines?.(lines) : undefined)}
+      onBlur={() => onFocusLines?.(null)}
+    >
       <span className="truncate font-game-text text-xs text-gray-400">{label}</span>
       {children}
     </label>
   );
 }
 
-function NumberField({ label, value, range, onChange }: { label: string; value: number; range: [number, number]; onChange: (value: number) => void }) {
+function NumberField({ label, value, range, onChange, lines, onFocusLines }: {
+  label: string;
+  value: number;
+  range: [number, number];
+  onChange: (value: number) => void;
+  lines?: string[];
+  onFocusLines?: FocusLines;
+}) {
   // Typing "15" passes through "1": hold what's typed, apply it once it's in range or the field is left.
   const [draft, setDraft] = useState<string | null>(null);
   return (
-    <Field label={`${label} (${range[0]}–${range[1]})`}>
+    <Field label={`${label} (${range[0]}–${range[1]})`} lines={lines} onFocusLines={onFocusLines}>
       <input
         type="number"
         inputMode="numeric"
@@ -57,15 +71,17 @@ function NumberField({ label, value, range, onChange }: { label: string; value: 
   );
 }
 
-function Choice<T extends string | number>({ label, value, options, onChange, disabled = false }: {
+function Choice<T extends string | number>({ label, value, options, onChange, disabled = false, lines, onFocusLines }: {
   label: string;
   value: T;
   options: { value: T; label: string }[];
   onChange: (value: T) => void;
   disabled?: boolean;
+  lines?: string[];
+  onFocusLines?: FocusLines;
 }) {
   return (
-    <Field label={label}>
+    <Field label={label} lines={lines} onFocusLines={onFocusLines}>
       <div className="flex flex-wrap gap-1">
         {options.map((option) => (
           <button
@@ -89,11 +105,15 @@ export function Sts1ScoreCalculator({
   rows,
   scoreLabels,
   serviceLocale,
+  onFocusLines,
 }: {
   rows: readonly Sts1ScoreBonusRow[];
   scoreLabels: ScoreLabels;
   serviceLocale: ServiceLocale;
+  /** The score line ids the field being edited feeds (null when nothing is). */
+  onFocusLines?: FocusLines;
 }) {
+  const focus = (lines: string[]) => ({ lines, onFocusLines });
   const text = TEXT[serviceLocale];
   const [input, setInput] = useState<Sts1ScoreInput>(STS1_SCORE_DEFAULTS);
   const update = (patch: Partial<Sts1ScoreInput>) => setInput((previous) => clampSts1ScoreInput({ ...previous, ...patch }));
@@ -126,6 +146,7 @@ export function Sts1ScoreCalculator({
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_14rem]">
         <div className="flex flex-col gap-3">
           <Choice<Sts1RunOutcome>
+            {...focus(["Heartbreaker"])}
             label={text.outcome}
             value={input.outcome}
             onChange={(outcome) => update({ outcome })}
@@ -136,44 +157,49 @@ export function Sts1ScoreCalculator({
             ]}
           />
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <NumberField label={floorsName} value={input.floor} range={limits.floor} onChange={(floor) => update({ floor })} />
-            <NumberField label={monstersName} value={input.monsters} range={limits.monsters} onChange={(monsters) => update({ monsters })} />
-            <NumberField label={name("Ascension")} value={input.ascension} range={limits.ascension} onChange={(ascension) => update({ ascension })} />
+            <NumberField {...focus(["line-0"])} label={floorsName} value={input.floor} range={limits.floor} onChange={(floor) => update({ floor })} />
+            <NumberField {...focus(["line-1"])} label={monstersName} value={input.monsters} range={limits.monsters} onChange={(monsters) => update({ monsters })} />
+            <NumberField {...focus(["Ascension"])} label={name("Ascension")} value={input.ascension} range={limits.ascension} onChange={(ascension) => update({ ascension })} />
             {(["Exordium Elites Killed", "City Elites Killed", "Beyond Elites Killed"] as const).map((id, act) => (
               <NumberField
                 key={id}
+                {...focus([id])}
                 label={name(id)}
                 value={input.elites[act]}
                 range={limits.elites[act]}
                 onChange={(count) => update({ elites: input.elites.map((value, index) => (index === act ? count : value)) as Sts1ScoreInput["elites"] })}
               />
             ))}
-            <NumberField label={name("Bosses Slain")} value={input.bosses} range={limits.bosses} onChange={(bosses) => update({ bosses })} />
-            <NumberField label={name("Champion")} value={input.champion} range={limits.champion} onChange={(champion) => update({ champion })} />
-            <NumberField label={name("Perfect")} value={input.perfect} range={limits.perfect} onChange={(perfect) => update({ perfect })} />
-            <NumberField label={name("Collector")} value={input.collector} range={limits.collector} onChange={(collector) => update({ collector })} />
+            <NumberField {...focus(["Bosses Slain"])} label={name("Bosses Slain")} value={input.bosses} range={limits.bosses} onChange={(bosses) => update({ bosses })} />
+            <NumberField {...focus(["Champion"])} label={name("Champion")} value={input.champion} range={limits.champion} onChange={(champion) => update({ champion })} />
+            <NumberField {...focus(["Perfect", "Beyond Perfect"])} label={name("Perfect")} value={input.perfect} range={limits.perfect} onChange={(perfect) => update({ perfect })} />
+            <NumberField {...focus(["Collector"])} label={name("Collector")} value={input.collector} range={limits.collector} onChange={(collector) => update({ collector })} />
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <Choice
-              label={`${name("Money Money")} / ${name("Raining Money")} / ${name("I Like Gold")}`}
+              {...focus(["Money Money", "Raining Money", "I Like Gold"])}
+            label={`${name("Money Money")} / ${name("Raining Money")} / ${name("I Like Gold")}`}
               value={input.gold}
               onChange={(gold) => update({ gold })}
               options={[{ value: 0 as const, label: text.none }, { value: 1000 as const, label: name("Money Money") }, { value: 2000 as const, label: name("Raining Money") }, { value: 3000 as const, label: name("I Like Gold") }]}
             />
             <Choice
-              label={`${name("Librarian")} / ${name("Encyclopedian")}`}
+              {...focus(["Librarian", "Encyclopedian"])}
+            label={`${name("Librarian")} / ${name("Encyclopedian")}`}
               value={input.deck}
               onChange={(deck) => update({ deck })}
               options={[{ value: "none" as const, label: text.none }, { value: "librarian" as const, label: name("Librarian") }, { value: "encyclopedian" as const, label: name("Encyclopedian") }]}
             />
             <Choice
-              label={`${name("Well Fed")} / ${name("Stuffed")}`}
+              {...focus(["Well Fed", "Stuffed"])}
+            label={`${name("Well Fed")} / ${name("Stuffed")}`}
               value={input.maxHp}
               onChange={(maxHp) => update({ maxHp })}
               options={[{ value: "none" as const, label: text.none }, { value: "wellFed" as const, label: name("Well Fed") }, { value: "stuffed" as const, label: name("Stuffed") }]}
             />
             <Choice
-              label={`${name("Speedster")} / ${name("Light Speed")}`}
+              {...focus(["Speedster", "Light Speed"])}
+            label={`${name("Speedster")} / ${name("Light Speed")}`}
               value={input.speed}
               disabled={!limits.victoryOnly}
               onChange={(speed) => update({ speed })}
@@ -188,6 +214,8 @@ export function Sts1ScoreCalculator({
                 disabled={toggle.victoryOnly && !limits.victoryOnly}
                 aria-pressed={Boolean(input[toggle.key])}
                 onClick={() => update({ [toggle.key]: !input[toggle.key] })}
+                onFocus={() => onFocusLines?.([toggle.id])}
+                onBlur={() => onFocusLines?.(null)}
                 className={`${filterButtonClass(Boolean(input[toggle.key]))} border border-white/10 disabled:opacity-40`}
               >
                 {name(toggle.id)}

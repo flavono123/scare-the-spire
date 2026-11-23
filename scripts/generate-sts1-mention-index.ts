@@ -274,7 +274,7 @@ async function extraEntries(ascensionLabel: string): Promise<Sts1MentionEntry[]>
       imageUrl: sts1AchievementImageUrl(row.image),
       description: row.description,
     })),
-    ...scores.filter((row) => !row.total).map((row) => listEntry("score-bonuses", "score-bonus", row.slug, {
+    ...scores.filter((row) => !row.total).map((row) => detailEntry("score-bonuses", "score-bonus", row.slug, {
       nameKo: row.name,
       nameEn: engScores.get(row.id) ?? row.name,
       imageUrl: sts1ScoreIconUrl(),

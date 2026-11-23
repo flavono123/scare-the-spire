@@ -8,7 +8,7 @@ import {
   getSts1Relics,
   sts1RouteIds,
 } from "./data";
-import { getSts1Achievements, getSts1Ascensions, getSts1Blights, getSts1CompendiumKeywords, getSts1Modifiers } from "./compendium-extras";
+import { getSts1Achievements, getSts1Ascensions, getSts1Blights, getSts1CompendiumKeywords, getSts1Modifiers, getSts1ScoreBonuses } from "./compendium-extras";
 import { getSts1Events } from "./events";
 
 export async function generateSts1CardStaticParams() {
@@ -105,4 +105,12 @@ export function generateSts1LocalizedAscensionsStaticParams() {
 
 export function generateSts1LocalizedAchievementsStaticParams() {
   return generateLocalizedStaticParams(generateSts1AchievementsStaticParams);
+}
+
+export async function generateSts1ScoreBonusesStaticParams() {
+  return sts1RouteIds((await getSts1ScoreBonuses()).filter((row) => !row.total));
+}
+
+export function generateSts1LocalizedScoreBonusesStaticParams() {
+  return generateLocalizedStaticParams(generateSts1ScoreBonusesStaticParams);
 }

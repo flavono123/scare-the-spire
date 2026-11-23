@@ -5,7 +5,8 @@ import type { Metadata } from "next";
 import { Sts1ScoreBonusList } from "@/components/sts1/score-bonus-list";
 import { getSts1PageRefs, getSts1ScoreBonuses, getSts1ScoreLabels } from "@/lib/sts1/compendium-extras";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
-import { getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
+import { getSts1Keywords, getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
+import { getSts1RelatedMap } from "@/lib/sts1/relations";
 import { sts1IndexPath } from "@/lib/sts1/paths";
 
 type ListProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
@@ -20,15 +21,19 @@ export default async function Sts1ScoreBonusesPage({ searchParams }: ListProps) 
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [rows, scoreLabels, labels] = await Promise.all([
+  const [rows, scoreLabels, labels, keywords] = await Promise.all([
     getSts1ScoreBonuses(gameLocale),
     getSts1ScoreLabels(gameLocale),
     getSts1UiLabels(gameLocale),
+    getSts1Keywords(gameLocale),
   ]);
-  const refs = await getSts1PageRefs({ mentions: rows.flatMap((row) => row.refs) }, gameLocale);
+  const [refs, related] = await Promise.all([
+    getSts1PageRefs({ mentions: rows.flatMap((row) => row.refs) }, gameLocale),
+    getSts1RelatedMap("score-bonuses", rows.filter((row) => !row.total).map((row) => row.slug), gameLocale),
+  ]);
   return (
     <Suspense>
-      <Sts1ScoreBonusList rows={rows} refs={refs} scoreLabels={scoreLabels} labels={labels} serviceLocale={serviceLocale} />
+      <Sts1ScoreBonusList rows={rows} refs={refs} related={related} keywords={keywords} scoreLabels={scoreLabels} labels={labels} serviceLocale={serviceLocale} />
     </Suspense>
   );
 }

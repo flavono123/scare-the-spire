@@ -158,6 +158,7 @@ function mainCases() {
     ...page("/compendium/sts1/achievements", "compendium"),
     ...page("/compendium/sts1/achievements/neon", "compendium"),
     ...page("/compendium/sts1/score-bonuses", "compendium"),
+    ...page("/compendium/sts1/score-bonuses/heartbreaker", "compendium"),
     ...page("/compendium/sts1/characters", "compendium"),
     ...page("/compendium/sts1/characters/ironclad", "compendium"),
     ...page("/en/compendium/sts1/characters/ironclad", "compendium"),

@@ -582,7 +582,9 @@ export const getSts1ScoreBonuses = cache(async (gameLocale: GameLocale = "kor"):
     return {
       id: line.id ?? `line-${index}`,
       slug: line.id ? slugify(line.id) : `line-${index}`,
+      legacySlugs: [],
       name,
+      nameEn: (line.id ? eng[line.id]?.NAME : undefined) ?? name,
       description: text?.DESCRIPTIONS?.[0] ?? "",
       points: formatPoints(line.points),
       screens: line.screens,
@@ -592,6 +594,10 @@ export const getSts1ScoreBonuses = cache(async (gameLocale: GameLocale = "kor"):
     };
   });
 });
+
+export async function getSts1ScoreBonus(id: string, gameLocale: GameLocale = "kor") {
+  return (await getSts1ScoreBonuses(gameLocale)).find((row) => !row.total && row.slug === id.toLowerCase());
+}
 
 export async function getSts1ScoreLabels(gameLocale: GameLocale = "kor") {
   const ui = await getSts1UiExtras(gameLocale);

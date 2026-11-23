@@ -172,7 +172,7 @@ export const STS1_LIST_SELECTOR_PARAMS: Record<Sts1ResourceType, string | null> 
   ascensions: "ascension",
   neow: null,
   achievements: "achievement",
-  "score-bonuses": null,
+  "score-bonuses": "score",
 };
 
 export function sts1DetailPath(type: Sts1ResourceType, slug: string): string {
