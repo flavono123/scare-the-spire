@@ -5,6 +5,7 @@ export const ADMIN_TAB_IDS = [
   "posts",
   "nicks",
   "cloudflare",
+  "glyphs",
 ] as const;
 
 export type AdminTabId = (typeof ADMIN_TAB_IDS)[number];

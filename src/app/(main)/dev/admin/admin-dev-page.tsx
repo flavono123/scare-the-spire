@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { Suspense } from "react";
 import { AdminTabs } from "./admin-tabs";
 import { CloudflareLimitsPanel } from "./cloudflare-limits-panel";
+import { SpireGlyphsPanel } from "./spire-glyphs-panel";
 import type { AdminTabId } from "./admin-tab-ids";
 import { notFound, redirect } from "next/navigation";
 import { AdminActivityChart } from "@/components/dev/admin-activity-chart";
@@ -641,6 +642,7 @@ export default async function SupabaseAdminPage({
     { id: "posts", label: "서비스 글" },
     { id: "nicks", label: "프로필 닉네임" },
     { id: "cloudflare", label: "CF 한도" },
+    { id: "glyphs", label: "게임 내 문자" },
   ] as const;
 
   return (
@@ -908,6 +910,7 @@ export default async function SupabaseAdminPage({
               <CloudflareLimitsPanel />
             </Suspense>
           ),
+          glyphs: <SpireGlyphsPanel />,
         }}
       />
     </main>
