@@ -1,10 +1,42 @@
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import Image from "@/components/ui/static-image";
+import { devToolsEnabled } from "@/lib/dev-tools";
+import {
+  getOgFallbackAudit,
+  writeOgFallbackDecision,
+  type OgFallbackAudit,
+  type OgFallbackGroup,
+  type OgFallbackKind,
+  type OgFallbackState,
+} from "@/lib/og-fallback-audit";
 import {
   getPageOgStatus,
   pageOgStatusLabel,
   type PageOgStatusRow,
 } from "@/lib/page-og-status";
+
+async function decideOgFallback(formData: FormData) {
+  "use server";
+
+  if (!devToolsEnabled()) throw new Error("Dev tools are disabled");
+  const key = formData.get("key");
+  const image = formData.get("image");
+  const status = formData.get("status");
+  if (typeof key !== "string" || !key.startsWith("/") || typeof image !== "string") {
+    throw new Error("Invalid OG fallback decision");
+  }
+  if (status === "reset") {
+    await writeOgFallbackDecision(key, null);
+  } else if (status === "intended" || status === "undecided") {
+    await writeOgFallbackDecision(key, { status, image, updatedAt: new Date().toISOString().slice(0, 10) });
+  } else {
+    throw new Error("Invalid OG fallback status");
+  }
+  revalidatePath("/dev/og-images");
+  redirect("/dev/og-images#og-fallbacks");
+}
 import { getSiteOrigin } from "@/lib/site-origin";
 
 const productionOrigin = getSiteOrigin();
@@ -302,9 +334,167 @@ function OgMetadataPreviewCard({ preview }: { preview: OgMetadataPreview }) {
   );
 }
 
+const FALLBACK_KIND_LABEL: Record<OgFallbackKind, string> = {
+  default: "사이트 기본 이미지",
+  shared: "다른 페이지의 이미지",
+  none: "og:image 없음",
+  broken: "이미지 파일 없음",
+};
+
+const FALLBACK_STATE_LABEL: Record<OgFallbackState, string> = {
+  unconfirmed: "미확인",
+  undecided: "이미지 미정",
+  intended: "의도한 fallback",
+};
+
+const FALLBACK_STATE_CLASS: Record<OgFallbackState, string> = {
+  unconfirmed: "border-red-400/40 bg-red-500/10 text-red-200",
+  undecided: "border-amber-400/40 bg-amber-500/10 text-amber-200",
+  intended: "border-emerald-400/35 bg-emerald-500/10 text-emerald-200",
+};
+
+function formatBuiltAt(value: string | null): string {
+  if (!value) return "빌드 없음";
+  return new Date(value).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
+}
+
+function OgFallbackNotice({ audit }: { audit: OgFallbackAudit }) {
+  const shells = audit.groups.filter((group) => group.recordShell).length;
+  return (
+    <section
+      className={`mt-6 rounded-lg border p-4 text-sm ${
+        audit.counts.unconfirmed > 0
+          ? "border-red-500/40 bg-red-500/10 text-red-100"
+          : "border-emerald-500/30 bg-emerald-500/10 text-emerald-100"
+      }`}
+    >
+      <p className="font-semibold">
+        {audit.counts.unconfirmed > 0
+          ? `확인 안 된 fallback ${audit.counts.unconfirmed}건이 있습니다. 의도한 fallback인지, 아직 이미지를 못 정한 것인지 골라 주세요.`
+          : "모든 fallback을 확인했습니다."}{" "}
+        <a href="#og-fallbacks" className="underline underline-offset-2">목록 보기</a>
+      </p>
+      <p className="mt-1 text-xs opacity-80">
+        이미지 미정 {audit.counts.undecided}건 · 의도한 fallback {audit.counts.intended}건 · 빌드된 페이지 {audit.pageCount}개(게임 언어 접두사 제외) 기준
+      </p>
+      {shells > 0 && !audit.detailShellOgOn ? (
+        <p className="mt-1 text-xs opacity-80">
+          기록 셸 {shells}건: 운영 Worker의 <code>DETAIL_SHELL_OG</code>가 꺼져 있어 개별글도 목록 이미지로 나갑니다.
+        </p>
+      ) : null}
+      {audit.staleKeys.length > 0 ? (
+        <p className="mt-1 text-xs opacity-80">
+          더 이상 fallback이 아닌 결정 {audit.staleKeys.length}건: {audit.staleKeys.join(", ")}
+        </p>
+      ) : null}
+      <ul className="mt-2 grid gap-1 text-xs opacity-80 md:grid-cols-3">
+        {audit.sources.map((source) => (
+          <li key={source.id}>
+            {source.label} · {formatBuiltAt(source.builtAt)} · HTML {source.fileCount}개 ·{" "}
+            <code>{source.buildCommand}</code>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function OgFallbackRow({ group, origin }: { group: OgFallbackGroup; origin: string }) {
+  const shown = group.paths.slice(0, 3);
+  return (
+    <article className="grid gap-4 rounded-lg border border-zinc-800 bg-zinc-950/70 p-4 md:grid-cols-[160px_1fr_auto]">
+      {group.image ? (
+        <OgImagePreview src={group.image} alt={group.key} className="h-28 w-40" />
+      ) : (
+        <div className="flex h-28 w-40 items-center justify-center rounded-md border border-dashed border-zinc-700 text-xs text-zinc-500">
+          og:image 없음
+        </div>
+      )}
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="break-all font-mono text-sm font-bold text-zinc-50">{group.key}</h3>
+          <span className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${FALLBACK_STATE_CLASS[group.state]}`}>
+            {FALLBACK_STATE_LABEL[group.state]}
+          </span>
+          <span className="rounded-full border border-zinc-700 px-2 py-0.5 text-xs text-zinc-300">
+            {FALLBACK_KIND_LABEL[group.kind]}
+            {group.kind === "shared" && group.owner ? ` (${group.owner})` : ""}
+          </span>
+          {group.recordShell ? (
+            <span className="rounded-full border border-sky-400/35 bg-sky-500/10 px-2 py-0.5 text-xs text-sky-200">
+              기록 셸
+            </span>
+          ) : null}
+        </div>
+        <p className="mt-1 break-all font-mono text-xs text-zinc-500">{group.image || "-"}</p>
+        <p className="mt-2 text-xs text-zinc-400">
+          페이지 {group.paths.length}개 · HTML {group.fileCount}개
+          {group.key !== group.template ? ` · 라우트 ${group.template}` : ""}
+        </p>
+        <ul className="mt-1 space-y-0.5 text-xs">
+          {shown.map((pagePath) => (
+            <li key={pagePath}>
+              <a href={pagePath} className="break-all font-mono text-amber-200/80 hover:underline">{`${origin}${pagePath}`}</a>
+            </li>
+          ))}
+        </ul>
+        {group.paths.length > shown.length ? (
+          <details className="mt-1 text-xs">
+            <summary className="cursor-pointer text-zinc-500">전체 {group.paths.length}개 보기</summary>
+            <ul className="mt-1 space-y-0.5">
+              {group.paths.slice(shown.length).map((pagePath) => (
+                <li key={pagePath}>
+                  <a href={pagePath} className="break-all font-mono text-amber-200/80 hover:underline">{`${origin}${pagePath}`}</a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
+      </div>
+      <form action={decideOgFallback} className="flex flex-row flex-wrap gap-2 md:flex-col">
+        <input type="hidden" name="key" value={group.key} />
+        <input type="hidden" name="image" value={group.image} />
+        <button
+          type="submit"
+          name="status"
+          value="intended"
+          disabled={group.state === "intended"}
+          className="rounded-md border border-emerald-400/40 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold text-emerald-200 hover:bg-emerald-400/15 disabled:opacity-40"
+        >
+          의도한 fallback
+        </button>
+        <button
+          type="submit"
+          name="status"
+          value="undecided"
+          disabled={group.state === "undecided"}
+          className="rounded-md border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-200 hover:bg-amber-400/15 disabled:opacity-40"
+        >
+          이미지 미정
+        </button>
+        {group.state !== "unconfirmed" ? (
+          <button
+            type="submit"
+            name="status"
+            value="reset"
+            className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs text-zinc-400 hover:bg-zinc-800"
+          >
+            미확인으로
+          </button>
+        ) : null}
+      </form>
+    </article>
+  );
+}
+
 export default async function OgImagesDevPage({ previewPath }: { previewPath?: string }) {
-  const status = await getPageOgStatus();
-  const preview = await getOgMetadataPreview(previewPath);
+  const [status, audit, preview, requestHeaders] = await Promise.all([
+    getPageOgStatus(),
+    getOgFallbackAudit(),
+    getOgMetadataPreview(previewPath),
+    headers(),
+  ]);
+  const origin = requestOrigin(requestHeaders);
   const groupedMappedRows = status.rules.map(({ rule, exists }) => ({
     rule,
     exists,
@@ -324,28 +514,30 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
         <div>
           <h1 className="text-2xl font-bold text-zinc-50">OG 이미지 현황</h1>
           <p className="mt-1 text-sm text-zinc-400">
-            상단은 입력한 URL의 실제 링크 프리뷰, 아래는 query 없는 canonical route의 기본 이미지 현황입니다.
+            빌드 결과물의 실제 og:image를 전수로 읽어, 기본 이미지나 다른 페이지 이미지로 빠진 페이지를 모읍니다.
           </p>
         </div>
         <div className="grid grid-cols-4 gap-2 text-center">
           <div className="rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2">
-            <div className="text-lg font-bold text-zinc-50">{status.rows.length}</div>
-            <div className="text-[11px] text-zinc-500">전체</div>
-          </div>
-          <div className="rounded-md border border-emerald-500/25 bg-emerald-500/10 px-3 py-2">
-            <div className="text-lg font-bold text-emerald-300">{status.mappedRows.length}</div>
-            <div className="text-[11px] text-emerald-200/70">매핑</div>
-          </div>
-          <div className="rounded-md border border-zinc-700 bg-zinc-900/60 px-3 py-2">
-            <div className="text-lg font-bold text-zinc-200">{status.defaultRows.length}</div>
-            <div className="text-[11px] text-zinc-500">기본</div>
+            <div className="text-lg font-bold text-zinc-50">{audit.pageCount}</div>
+            <div className="text-[11px] text-zinc-500">빌드 페이지</div>
           </div>
           <div className="rounded-md border border-red-500/25 bg-red-500/10 px-3 py-2">
-            <div className="text-lg font-bold text-red-300">{status.missingCount}</div>
-            <div className="text-[11px] text-red-200/70">누락</div>
+            <div className="text-lg font-bold text-red-300">{audit.counts.unconfirmed}</div>
+            <div className="text-[11px] text-red-200/70">미확인</div>
+          </div>
+          <div className="rounded-md border border-amber-500/25 bg-amber-500/10 px-3 py-2">
+            <div className="text-lg font-bold text-amber-300">{audit.counts.undecided}</div>
+            <div className="text-[11px] text-amber-200/70">이미지 미정</div>
+          </div>
+          <div className="rounded-md border border-emerald-500/25 bg-emerald-500/10 px-3 py-2">
+            <div className="text-lg font-bold text-emerald-300">{audit.counts.intended}</div>
+            <div className="text-[11px] text-emerald-200/70">의도한 fallback</div>
           </div>
         </div>
       </header>
+
+      <OgFallbackNotice audit={audit} />
 
       <section className="mt-6 rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
         <form className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
@@ -408,30 +600,16 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
         </div>
       </section>
 
-      <section className="mt-8">
+      <section id="og-fallbacks" className="mt-8 scroll-mt-6">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-amber-300">기본 이미지 라우트</h2>
-          <span className="text-xs text-zinc-500">{status.defaultRows.length} pages</span>
+          <h2 className="text-lg font-semibold text-amber-300">Fallback 전체</h2>
+          <span className="text-xs text-zinc-500">{audit.groups.length}건</span>
         </div>
-        <article className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
-          <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
-            <div>
-              <OgImagePreview
-                src={status.defaultImage.url}
-                alt={status.defaultImage.alt}
-                className="aspect-[1000/760] w-full"
-              />
-              <div className="mt-3 flex items-center justify-between gap-3">
-                <span className="text-sm font-medium text-zinc-200">{status.defaultImage.alt}</span>
-                <StatusBadge ok={status.defaultExists} />
-              </div>
-              <p className="mt-1 text-xs text-zinc-500">
-                {status.defaultImage.width} x {status.defaultImage.height}
-              </p>
-            </div>
-            <RouteChips rows={status.defaultRows} />
-          </div>
-        </article>
+        <div className="grid gap-3">
+          {audit.groups.map((group) => (
+            <OgFallbackRow key={group.key} group={group} origin={origin} />
+          ))}
+        </div>
       </section>
     </main>
   );
