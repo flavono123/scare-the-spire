@@ -7,7 +7,7 @@
     },
     {
       "titleKo": "쓰임새로 보면 세 묶음이다",
-      "bodyKo": "① 공중에 뜨는 낱글자: 카드를 내거나 몬스터가 행동할 때 VFX로 떠오른다. ② 표면에 쓰인 글: 책·두루마리·석판·벽·유물에 그려져 있다. ③ 표식·인장: 한 개짜리 기호가 물건에 찍혀 있다. 이 가운데 골드 표식은 ②의 상인 문자 글줄에도 글자로 나와 두 묶음을 잇는다. 풀의 와·초·키는 ①에 속하고, 같은 묶음의 지식의 악마·물어뜯는 두루마리·혈족 사제·인형의 방이 와·초·키와 가장 가까운 부류다."
+      "bodyKo": "① 공중에 뜨는 낱글자: 카드를 내거나 몬스터가 행동할 때 VFX로 떠오른다. ② 표면에 쓰인 글: 책·두루마리·석판·벽·유물에 그려져 있다. ③ 표식·인장: 한 개짜리 기호가 물건에 찍혀 있다. 이 가운데 골드 표식은 ②의 상인 문자 글줄에도 글자로 나와 두 묶음을 잇는다. 풀의 와·초·키는 ①에 속하고, 같은 묶음의 지식의 악마·물어뜯는 두루마리·혈족 사제·인형의 방, 그리고 입이나 말풍선에서 글자가 나오는 그림(독백, 상인의 말풍선)이 와·초·키와 가장 가까운 부류다."
     },
     {
       "titleKo": "같은 글자를 다른 서체로 쓴 것인가",
@@ -16,6 +16,10 @@
     {
       "titleKo": "뜻이 정해진 기호와 가장 폰트에 가까운 글자",
       "bodyKo": "뜻이 정해진 것은 풀의 와·초·키(기호 3개가 카드 태그 Wah·Cho·Ki, 음성 클립, 선율 3종과 1:1), 연대표의 시대 기호 6개(시대 이름과 1:1), 골드 표식(화폐)이다. 여러 그림에 같은 글자가 되풀이되는 것은 상인 문자 하나이고, 가짜 상인의 간판 하나가 HOAX!!로 읽히는 것 말고는 음가나 뜻을 붙일 근거가 게임 파일에 없다."
+    },
+    {
+      "titleKo": "양식이 되풀이되는 것",
+      "bodyKo": "같은 글자는 아니어도 그리는 방식은 몇 가지로 모인다. 붓획과 점(지식의 악마, 물어뜯는 두루마리, 상인의 말풍선, 전쟁군주의 성지의 석판, 1편 변성의 마법진), 쐐기형 화면 글자(혈족 사제, 탐색·인지 편향), 기하 도형 글자(상인·가짜 상인·다브의 상점, 의식의 신수), 각진 미로(책·두루마리·석판, 1편 고대 문자). 1편 3막의 떠 있는 입체에 새겨진 붉은 룬은 룬 유물과 같은 발상이다."
     }
   ],
   "groups": [
@@ -27,7 +31,7 @@
         {
           "id": "fool-melody",
           "titleKo": "풀의 와·초·키",
-          "noteKo": "카드 태그 Wah·Cho·Ki마다 기호 하나. 그 태그의 카드를 내면 VFX로 뜨고, 그 턴 동안 전투 UI에 켜진다(선율). 음성 클립도 wah·cho·ki로 따로 있다. 기호·소리·카드 이름이 1:1로 묶인 유일한 사례다.",
+          "noteKo": "카드 태그 Wah·Cho·Ki마다 기호 하나. 그 태그의 카드를 내면 VFX로 뜨고, 그 턴 동안 전투 UI에 켜진다(선율). 음성 클립도 wah·cho·ki로 따로 있다. 기호·소리·카드 이름이 1:1로 묶인 유일한 사례다. 베타 카드 그림 두 장에도 기호가 그려져 있고, '초'는 카드 그림 어디에도 없다.",
           "items": [
             {
               "id": "fool-wah",
@@ -78,6 +82,36 @@
               "source": {
                 "game": "sts2",
                 "path": "images/vfx/characters/fool_note.png"
+              }
+            },
+            {
+              "id": "fool-wah-hammer-card",
+              "labelKo": "카드 \"와 망치\" 베타 그림",
+              "noteKo": "망치 면에 '와' 기호.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/fool/beta/wah_hammer.png",
+                "crop": [
+                  0.3593,
+                  0.2598,
+                  0.6587,
+                  0.5591
+                ]
+              }
+            },
+            {
+              "id": "fool-motif-card",
+              "labelKo": "카드 \"모티프\" 베타 그림",
+              "noteKo": "손바닥 위에 빛나는 '키' 기호.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/fool/beta/motif.png",
+                "crop": [
+                  0.4192,
+                  0.3386,
+                  0.7395,
+                  0.6398
+                ]
               }
             }
           ]
@@ -211,6 +245,58 @@
               "source": {
                 "game": "sts2",
                 "path": "images/packed/vfx/event/doll_room_whisper_bubble_l.png"
+              }
+            }
+          ]
+        },
+        {
+          "id": "speech-glyphs",
+          "titleKo": "말소리로 나오는 글자",
+          "noteKo": "입이나 말풍선에서 글자가 나오는 그림. 와·초·키처럼 소리를 글자 모양으로 보여 주지만, 기호와 소리의 짝은 정해져 있지 않다. 상인의 말풍선은 지식의 악마·물어뜯는 두루마리와 같은 붓점 양식이다.",
+          "items": [
+            {
+              "id": "speech-monologue",
+              "labelKo": "카드 \"독백\"",
+              "noteKo": "해골 입에서 금색 각진 글자 6개가 날아오른다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/regent/monologue.png",
+                "crop": [
+                  0.05,
+                  0.0,
+                  0.52,
+                  0.4697
+                ]
+              }
+            },
+            {
+              "id": "speech-merchant-bubble",
+              "labelKo": "연대표 \"무언가를 사세요!\"의 상인 말풍선",
+              "noteKo": "둥근 붓획과 점으로 된 글자 4개.",
+              "source": {
+                "game": "sts2",
+                "path": "images/timeline/epoch_portraits/colorless5_epoch.png",
+                "crop": [
+                  0.4074,
+                  0.06,
+                  0.6049,
+                  0.3
+                ]
+              }
+            },
+            {
+              "id": "speech-luminous-choir",
+              "labelKo": "이벤트 \"빛나는 합창단\"",
+              "noteKo": "버섯 입에서 나오는 각진 빛 조각 7개. 글자라기보다 소리 표현에 가깝다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/events/luminous_choir.png",
+                "crop": [
+                  0.3488,
+                  0.3968,
+                  0.4419,
+                  0.558
+                ]
               }
             }
           ]
@@ -412,6 +498,38 @@
                   0.5486
                 ]
               }
+            },
+            {
+              "id": "merchant-darv-poster",
+              "labelKo": "다브의 상점 벽 포스터",
+              "noteKo": "손글씨 세 줄. 둘째 줄이 골드 표식으로 시작하고 ⊡, Ø, 세로 세 줄이 이어진다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/ancients/darv_placeholder.png",
+                "crop": [
+                  0,
+                  0.5333,
+                  0.0488,
+                  0.7167
+                ],
+                "gain": 2.2
+              }
+            },
+            {
+              "id": "merchant-darv-flags",
+              "labelKo": "다브의 상점 깃발",
+              "noteKo": "깃발 세 장에 점 찍힌 역삼각, X, 사선이 지나는 겹원.",
+              "source": {
+                "game": "sts2",
+                "path": "images/ancients/darv_placeholder.png",
+                "crop": [
+                  0.3926,
+                  0.1333,
+                  0.5039,
+                  0.25
+                ],
+                "gain": 2
+              }
             }
           ]
         },
@@ -598,6 +716,51 @@
                 "game": "sts1",
                 "path": "images/1024Portraits/purple/skill/empty_body.png"
               }
+            },
+            {
+              "id": "maze-wish",
+              "labelKo": "카드 \"염원\"",
+              "noteKo": "교차하는 돌 띠 전체에 각진 새김.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/event/wish.png",
+                "crop": [
+                  0.0,
+                  0.4495,
+                  1.0,
+                  1.0
+                ]
+              }
+            },
+            {
+              "id": "maze-pacts-end",
+              "labelKo": "카드 \"조약의 끝\"",
+              "noteKo": "깨지는 청록 판에 붉은 각진 획. 진리의 석판 조각과 같은 판.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/ironclad/pacts_end.png",
+                "crop": [
+                  0.4,
+                  0.1,
+                  1.0,
+                  0.95
+                ]
+              }
+            },
+            {
+              "id": "maze-production",
+              "labelKo": "카드 \"생산\"",
+              "noteKo": "컨베이어 테두리에 한 줄로 늘어선 획.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/colorless/production.png",
+                "crop": [
+                  0.0,
+                  0.6,
+                  0.95,
+                  0.9697
+                ]
+              }
             }
           ]
         },
@@ -698,6 +861,53 @@
               "source": {
                 "game": "sts2",
                 "path": "images/potions/large/foul_potion.png"
+              }
+            },
+            {
+              "id": "scribble-ironclad4-contract",
+              "labelKo": "연대표 \"조약\"의 계약서",
+              "noteKo": "붉은 인장과 흘려 쓴 글줄, 서명 자리의 X.",
+              "source": {
+                "game": "sts2",
+                "path": "images/timeline/epoch_portraits/ironclad4_epoch.png",
+                "crop": [
+                  0.6914,
+                  0.2,
+                  1.0,
+                  1.0
+                ]
+              }
+            },
+            {
+              "id": "scribble-sts1-city-chalk-line",
+              "labelKo": "1편 2막 휴식처 벽의 분필 글줄",
+              "noteKo": "어두운 벽에 분필 낙서가 가득하다. 그중 한 줄.",
+              "source": {
+                "game": "sts1",
+                "path": "cityScene/scene2.jpg",
+                "crop": [
+                  0.293,
+                  0.1221,
+                  0.4688,
+                  0.1904
+                ],
+                "gain": 4
+              }
+            },
+            {
+              "id": "scribble-sts1-city-chalk-bird",
+              "labelKo": "1편 2막 휴식처 벽의 분필 새 그림",
+              "noteKo": "부리 긴 새 그림. 같은 새 인물이 기둥에도 새겨져 있다.",
+              "source": {
+                "game": "sts1",
+                "path": "cityScene/scene2.jpg",
+                "crop": [
+                  0.4199,
+                  0.0195,
+                  0.6201,
+                  0.3125
+                ],
+                "gain": 4
               }
             }
           ]
@@ -898,6 +1108,105 @@
                   0.4833
                 ]
               }
+            },
+            {
+              "id": "rune-seek",
+              "labelKo": "seek 카드 그림",
+              "noteKo": "눈 둘레의 자홍색 쐐기 글자. 1편 탐색과 같은 그림이고 2편 카드 텍스트는 파일에 없다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/defect/seek.png"
+              }
+            },
+            {
+              "id": "rune-hotfix",
+              "labelKo": "카드 \"핫픽스\"",
+              "noteKo": "구슬 표면을 덮은 고리·막대·눈금.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/defect/hotfix.png",
+                "crop": [
+                  0.03,
+                  0.0395,
+                  0.42,
+                  0.95
+                ]
+              }
+            },
+            {
+              "id": "rune-crystal-sphere-cloth",
+              "labelKo": "이벤트 \"수정구\"의 식탁보",
+              "noteKo": "겹선 고리 안에 점으로 나뉜 각진 글자 14개쯤.",
+              "source": {
+                "game": "sts2",
+                "path": "images/events/crystal_sphere.png",
+                "crop": [
+                  0.2878,
+                  0.6324,
+                  0.375,
+                  0.682
+                ]
+              }
+            },
+            {
+              "id": "rune-warlord-slab",
+              "labelKo": "이벤트 \"전쟁군주의 성지\"의 석판",
+              "noteKo": "굵은 주황 붓획과 점 한 줄. 붓점 양식.",
+              "source": {
+                "game": "sts2",
+                "path": "images/events/shrine_of_the_warlord.png",
+                "crop": [
+                  0.3249,
+                  0.6107,
+                  0.3647,
+                  0.6448
+                ]
+              }
+            },
+            {
+              "id": "rune-sts1-beyond-obelisk",
+              "labelKo": "1편 3막 배경의 떠 있는 오벨리스크",
+              "noteKo": "두 면에 붉은 붓글씨 4자와 5자. 3막 배경의 떠 있는 입체들에는 면마다 이런 룬이 있다.",
+              "source": {
+                "game": "sts1",
+                "path": "beyondScene/scene3.png",
+                "crop": [
+                  0.8027,
+                  0.4819,
+                  0.853,
+                  0.6011
+                ]
+              }
+            },
+            {
+              "id": "rune-sts1-beyond-icosahedron",
+              "labelKo": "1편 3막 배경의 떠 있는 이십면체",
+              "noteKo": "면마다 붉은 룬 하나.",
+              "source": {
+                "game": "sts1",
+                "path": "beyondScene/scene3.png",
+                "crop": [
+                  0.271,
+                  0.4873,
+                  0.3169,
+                  0.5337
+                ]
+              }
+            },
+            {
+              "id": "rune-sts1-city-kindling",
+              "labelKo": "1편 2막 휴식처의 장작",
+              "noteKo": "널빤지 하나에 각진 새김 글자 한 줄(13자쯤).",
+              "source": {
+                "game": "sts1",
+                "path": "cityScene/scene5.png",
+                "crop": [
+                  0.1123,
+                  0.4004,
+                  0.2344,
+                  0.542
+                ]
+              }
             }
           ]
         },
@@ -1080,6 +1389,66 @@
                 "game": "sts1",
                 "path": "images/ui/map/shop.png"
               }
+            },
+            {
+              "id": "gold-darv-pouch",
+              "labelKo": "다브의 돈주머니",
+              "noteKo": "붉은 표식.",
+              "source": {
+                "game": "sts2",
+                "path": "images/ancients/darv_placeholder.png",
+                "crop": [
+                  0.6133,
+                  0.5958,
+                  0.6375,
+                  0.6483
+                ]
+              }
+            },
+            {
+              "id": "gold-golden-axe",
+              "labelKo": "golden_axe 카드 그림",
+              "noteKo": "도끼날의 원 안에 표식. 카드 텍스트는 파일에 없다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/colorless/golden_axe.png",
+                "crop": [
+                  0.38,
+                  0.2,
+                  0.63,
+                  0.5
+                ]
+              }
+            },
+            {
+              "id": "gold-greed",
+              "labelKo": "카드 \"탐욕\"",
+              "noteKo": "동전마다 표식.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/curse/greed.png",
+                "crop": [
+                  0.36,
+                  0.3592,
+                  0.56,
+                  0.5592
+                ]
+              }
+            },
+            {
+              "id": "gold-spoils-of-battle",
+              "labelKo": "카드 \"전투의 성과\" 베타 그림",
+              "noteKo": "생각 풍선 속 표식.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/regent/beta/spoils_of_battle.png",
+                "crop": [
+                  0.3593,
+                  0.0,
+                  0.6796,
+                  0.2992
+                ]
+              }
             }
           ]
         },
@@ -1241,11 +1610,26 @@
                   0.2368
                 ]
               }
+            },
+            {
+              "id": "spiral-stratagem",
+              "labelKo": "카드 \"책략\"",
+              "noteKo": "붉은 말마다 세 갈래 소용돌이. 카드 \"불의 심장\"의 보석에도 같은 문양.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/colorless/stratagem.png",
+                "crop": [
+                  0.55,
+                  0.45,
+                  1.0,
+                  0.95
+                ]
+              }
             }
           ]
         }
       ]
     }
   ],
-  "coverageKo": "훑은 범위: 2편 몬스터 아틀라스 124장과 몬스터 외 Spine 아틀라스 89장은 원본 크기로 전부 봤다. 2편 아이콘·UI·포션·파워·유물과 1편의 카드 외 그림은 일부만 원본 크기로 봤다. 2편 방 배경·이벤트·연대표와 2편·1편 카드 그림의 세밀부는 작은 썸네일로만 봤다."
+  "coverageKo": "훑은 범위(전부 원본 크기 또는 확대): 2편 Spine 아틀라스 213장, 방 배경 244장, 이벤트·연대표·고대의 존재 166장, 아이콘·UI·포션·파워·유물 2,354장, 카드 그림 1,046장. 1편 카드 그림 699장, images 폴더 1,294장, 막 배경·업적·파워 아틀라스 38장. 2편 카드는 16장 시트로 본 뒤 후보만 확대했고, 10px 안쪽의 흐린 표식은 놓쳤을 수 있다."
 }

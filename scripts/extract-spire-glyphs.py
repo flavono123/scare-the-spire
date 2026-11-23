@@ -10,6 +10,7 @@ Item `source` forms:
   {"game": "sts1", "path": "images/....png|jpg"}             whole STS1 jar image
   ... "crop": [x0, y0, x1, y1]                               fractions of the image
   ... "frame": [cols, rows, index]                           one frame of a sprite sheet
+  ... "gain": 3                                              brighten a dark source
   {"game": "sts2", "atlas": "<spine atlas>", "region": "…"}  one Spine atlas region
   {"recipe": "ring-period" | "glyph-table"}                  derived figures built below
 
@@ -182,6 +183,8 @@ def render(games: Games, source: dict) -> Image.Image:
     if "crop" in source:
         x0, y0, x1, y1 = source["crop"]
         image = image.crop((int(x0 * image.width), int(y0 * image.height), int(x1 * image.width), int(y1 * image.height)))
+    if "gain" in source:  # very dark sources (STS1 act backgrounds) are brightened so chalk and carvings show
+        image = Image.merge("RGBA", [band.point(lambda v: min(255, int(v * source["gain"]))) for band in image.split()[:3]] + [image.split()[3]])
     return image
 
 
