@@ -2,13 +2,15 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "@/components/ui/static-image";
 import { FilterSection } from "@/components/codex/codex-filters";
 import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
-import { sts1DetailPath } from "@/lib/sts1/paths";
+import { sts1DetailPath, sts1EventImageUrl } from "@/lib/sts1/paths";
 import type { Sts1EntityRefs, Sts1Event, Sts1EventGroup, Sts1EventLabels, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1EventArt, Sts1EventDetail } from "./event-detail";
+import { CompendiumLayoutSwitcher, useCompendiumLayout } from "@/components/codex/view-switcher";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import {
   Sts1DetailModal,
@@ -42,6 +44,32 @@ export function Sts1EventTile({ event, refs }: { event: Sts1Event; refs: Sts1Ent
   );
 }
 
+/** The STS2 events list row: the picture faded behind the name, acts on the right. */
+function Sts1EventRow({ event, refs, eventLabels }: { event: Sts1Event; refs: Sts1EntityRefs; eventLabels: Sts1EventLabels }) {
+  const firstMonster = event.artMonsters.map((id) => refs.monster[id]).find(Boolean);
+  const art = event.image ? sts1EventImageUrl(event.image) : firstMonster?.imageUrl;
+  return (
+    <div className="relative block h-[72px] w-full overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 shadow-sm shadow-black/20 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:border-primary/40 group-hover:bg-white/[0.04]">
+      {art ? (
+        <div className="absolute inset-0">
+          <Image src={art} alt="" fill sizes="(max-width: 768px) 100vw, 50vw" loading="lazy" className="object-cover object-[30%_center] opacity-40 transition-all duration-300 group-hover:scale-[1.03] group-hover:opacity-65" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/60 to-black/80" />
+        </div>
+      ) : null}
+      <div className="relative flex h-full items-center gap-3 px-4">
+        <h3 className="min-w-0 flex-1 truncate font-game-title text-sm font-semibold text-zinc-100 transition-colors group-hover:text-primary">{event.name}</h3>
+        <span className="flex shrink-0 flex-wrap justify-end gap-1">
+          {event.dungeons.filter((dungeon) => dungeon !== "ending").map((dungeon) => (
+            <span key={dungeon} className="rounded border border-white/10 bg-black/40 px-1.5 py-0.5 font-game-text text-[10px] text-blue-300">
+              {eventLabels.dungeons[dungeon].act}
+            </span>
+          ))}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function Sts1EventLibrary({
   events,
   refs,
@@ -58,6 +86,7 @@ export function Sts1EventLibrary({
   serviceLocale: ServiceLocale;
 }) {
   const localizeLink = useLocalizedHref();
+  const [layout, setLayout] = useCompendiumLayout("gallery");
   const { selected, open, close } = useSts1Selection(events, "event");
   const [groups, setGroups] = useState<Set<Sts1EventGroup>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
@@ -73,6 +102,7 @@ export function Sts1EventLibrary({
 
   return (
     <Sts1ListLayout
+      trailing={<CompendiumLayoutSwitcher layout={layout} onChange={setLayout} serviceLocale={serviceLocale} />}
       title={eventLabels.title}
       count={filtered.length}
       serviceLocale={serviceLocale}
@@ -113,7 +143,7 @@ export function Sts1EventLibrary({
               {eventLabels.groups[section]}
               <span className="ml-2 font-game-text text-sm font-normal text-gray-400">{group.length}</span>
             </h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+            <div className={layout === "gallery" ? "grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6" : "space-y-2"}>
               {group.map((event) => (
                 <Link
                   key={event.slug}
@@ -123,7 +153,7 @@ export function Sts1EventLibrary({
                   aria-label={event.name}
                   onClick={(clickEvent) => openOnPlainClick(clickEvent, () => open(event))}
                 >
-                  <Sts1EventTile event={event} refs={refs} />
+                  {layout === "gallery" ? <Sts1EventTile event={event} refs={refs} /> : <Sts1EventRow event={event} refs={refs} eventLabels={eventLabels} />}
                 </Link>
               ))}
             </div>

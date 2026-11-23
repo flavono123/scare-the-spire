@@ -1,5 +1,8 @@
 "use client";
 
+import type { ServiceLocale } from "@/lib/i18n";
+import { notifyCodexUrlChange, useHydrationSafeSearchParam } from "./use-hydration-safe-search-param";
+
 /** The compendium top bar's segmented toggle (bestiary tabs, gallery/list). */
 export function CompendiumViewSwitcher<T extends string>({
   options,
@@ -28,5 +31,41 @@ export function CompendiumViewSwitcher<T extends string>({
         </button>
       ))}
     </div>
+  );
+}
+
+export type CompendiumLayout = "gallery" | "list";
+
+/** Gallery or list, kept in `?layout=` so a shared link opens the same view; the index's own default stays off the URL. */
+export function useCompendiumLayout(fallback: CompendiumLayout): [CompendiumLayout, (next: CompendiumLayout) => void] {
+  const param = useHydrationSafeSearchParam("layout");
+  const layout: CompendiumLayout = param === "gallery" || param === "list" ? param : fallback;
+  const setLayout = (next: CompendiumLayout) => {
+    const url = new URL(window.location.href);
+    if (next === fallback) url.searchParams.delete("layout");
+    else url.searchParams.set("layout", next);
+    window.history.replaceState(window.history.state, "", url.toString());
+    notifyCodexUrlChange();
+  };
+  return [layout, setLayout];
+}
+
+export function CompendiumLayoutSwitcher({
+  layout,
+  onChange,
+  serviceLocale,
+}: {
+  layout: CompendiumLayout;
+  onChange: (layout: CompendiumLayout) => void;
+  serviceLocale: ServiceLocale;
+}) {
+  const ko = serviceLocale === "ko";
+  return (
+    <CompendiumViewSwitcher<CompendiumLayout>
+      options={[{ key: "gallery", label: ko ? "갤러리" : "Gallery" }, { key: "list", label: ko ? "리스트" : "List" }]}
+      active={layout}
+      onChange={onChange}
+      ariaLabel={ko ? "보기" : "View"}
+    />
   );
 }

@@ -25,7 +25,8 @@ import { sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1Dungeon, Sts1Monster, Sts1MonsterRefs, Sts1MonsterType, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1MonsterDetail } from "./monster-detail";
 import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
-import { Sts1MonsterTile } from "./monster-tile";
+import { Sts1MonsterRow, Sts1MonsterTile } from "./monster-tile";
+import { CompendiumLayoutSwitcher, useCompendiumLayout } from "@/components/codex/view-switcher";
 import { useEscapeClose } from "./use-escape-close";
 
 const DUNGEON_ORDER: Sts1Dungeon[] = ["exordium", "city", "beyond", "ending"];
@@ -55,6 +56,7 @@ export function Sts1MonsterLibrary({
 }) {
   const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const [layout, setLayout] = useCompendiumLayout("gallery");
   const urlMonsterId = useHydrationSafeSearchParam("monster");
   const [selectedTypes, setSelectedTypes] = useState<Set<Sts1MonsterType>>(new Set());
   const [selectedDungeons, setSelectedDungeons] = useState<Set<Sts1Dungeon>>(new Set());
@@ -157,7 +159,12 @@ export function Sts1MonsterLibrary({
           openFiltersLabel={serviceText.common.openFilters}
           title={labels.monstersTitle}
           count={formatCodexCount(filtered.length, serviceText.labels.items, serviceLocale)}
-          trailing={trailing}
+          trailing={(
+            <div className="flex shrink-0 items-center gap-2">
+              <CompendiumLayoutSwitcher layout={layout} onChange={setLayout} serviceLocale={serviceLocale} />
+              {trailing}
+            </div>
+          )}
         />
         <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           {filtered.length === 0 ? (
@@ -176,7 +183,7 @@ export function Sts1MonsterLibrary({
                   {labels.monsters.dungeons[dungeon].act} {labels.monsters.dungeons[dungeon].name}
                   <span className="ml-2 font-game-text text-sm font-normal text-gray-400">{group.length}</span>
                 </h2>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+                <div className={layout === "gallery" ? "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6" : "grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3"}>
                   {group.map((monster) => (
                     <Link
                       key={monster.slug}
@@ -190,7 +197,7 @@ export function Sts1MonsterLibrary({
                         openMonster(monster);
                       }}
                     >
-                      <Sts1MonsterTile monster={monster} />
+                      {layout === "gallery" ? <Sts1MonsterTile monster={monster} /> : <Sts1MonsterRow monster={monster} />}
                     </Link>
                   ))}
                 </div>

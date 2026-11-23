@@ -61,6 +61,7 @@ import {
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { VersionSelector } from "./version-selector";
+import { CompendiumLayoutSwitcher, useCompendiumLayout } from "./view-switcher";
 import {
   addCodexUrlChangeListener,
   pushCodexHistoryState,
@@ -132,6 +133,7 @@ export function MonsterLibrary({
   const [internalSelectedVersion, setInternalSelectedVersion] = useState(currentVersion ?? "");
   const [typeSortDir, setTypeSortDir] = useState<FilterSortDir>("asc");
   const [actSortDir, setActSortDir] = useState<FilterSortDir>("asc");
+  const [layout, setLayout] = useCompendiumLayout("list");
   const activeVersion = selectedVersion ?? internalSelectedVersion;
   const setActiveVersion = onVersionChange ?? setInternalSelectedVersion;
   const { userId, ready: authReady, ensureUser } = useAuth();
@@ -343,8 +345,9 @@ export function MonsterLibrary({
     });
   }, []);
 
-  const topBarTrailing = trailing || (versions && currentVersion) ? (
+  const topBarTrailing = (
     <div className="flex shrink-0 items-center gap-2">
+      <CompendiumLayoutSwitcher layout={layout} onChange={setLayout} serviceLocale={serviceLocale} />
       {trailing}
       {versions && currentVersion ? (
         <VersionSelector
@@ -355,7 +358,7 @@ export function MonsterLibrary({
         />
       ) : null}
     </div>
-  ) : undefined;
+  );
 
   return (
     <CompendiumIndexLayout
@@ -464,9 +467,20 @@ export function MonsterLibrary({
                 <span className="text-xs text-gray-600">({section.monsters.length})</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              <div className={layout === "gallery" ? "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"}>
                 {section.monsters.map((monster) => {
                   const threadKey = buildCodexCommentThreadKey("monster", monster.id);
+                  if (layout === "gallery") {
+                    return (
+                      <MonsterGalleryTile
+                        key={monster.id}
+                        monster={monster}
+                        selectedVersion={activeVersion}
+                        displayType={getDisplayMonsterType(monster)}
+                        onClick={() => openSelectedMonster(monster)}
+                      />
+                    );
+                  }
                   return (
                     <MonsterTile
                       key={monster.id}
@@ -655,6 +669,44 @@ function MonsterTile({
         className="shrink-0 px-1 py-1"
       />
     </div>
+  );
+}
+
+/** The gallery view: the monster large over its name, as the STS1 bestiary lays it out. */
+function MonsterGalleryTile({
+  monster,
+  selectedVersion,
+  displayType,
+  onClick,
+}: {
+  monster: CodexMonster;
+  selectedVersion?: string | null;
+  displayType: MonsterType;
+  onClick: () => void;
+}) {
+  const localizeLink = useLocalizedHref();
+  const staticArt = resolveMonsterStaticArt(monster.id, selectedVersion);
+  const imageSrc = staticArt?.defaultImage ?? monster.imageUrl ?? monster.bossImageUrl;
+  return (
+    <Link
+      prefetch={false}
+      href={localizeLink(buildCompendiumResourceDetailHref("monster", monster.id))}
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
+        onClick();
+      }}
+      className={`group flex h-full flex-col items-center gap-2 rounded-lg border border-border bg-compendium-rail p-3 transition-colors hover:border-primary/60 hover:bg-white/[0.04] ${monster.deprecated ? "opacity-50 grayscale saturate-0" : ""}`}
+    >
+      <div className="relative flex h-28 w-full items-center justify-center">
+        {imageSrc ? (
+          <Image src={imageSrc} alt={monster.name} width={144} height={112} loading="lazy" className="max-h-full max-w-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" />
+        ) : null}
+      </div>
+      <span className="text-center font-game-title text-sm font-bold" style={{ color: MONSTER_TYPE_CONFIG[displayType].color }}>
+        {monster.name}
+      </span>
+    </Link>
   );
 }
 

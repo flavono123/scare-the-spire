@@ -45,6 +45,7 @@ import { versionCodexEntities } from "@/lib/codex-versioning";
 import { fuzzyMatchCodexText, stripCodexMarkup } from "@/lib/codex-search";
 import { SearchBar } from "./search-bar";
 import { VersionSelector } from "./version-selector";
+import { CompendiumLayoutSwitcher, useCompendiumLayout } from "./view-switcher";
 import {
   FilterSection,
   orderByFilterSortDir,
@@ -192,6 +193,30 @@ function EventThumbnail({
   );
 }
 
+/** The gallery view: the event's picture over its name, as the STS1 events index lays it out. */
+function EventGalleryTile({ event, onClick }: { event: CodexEvent; onClick: () => void }) {
+  const localizeLink = useLocalizedHref();
+  return (
+    <Link
+      prefetch={false}
+      href={localizeLink(buildCompendiumResourceDetailHref("event", event.id))}
+      onClick={(clickEvent) => {
+        if (clickEvent.metaKey || clickEvent.ctrlKey || clickEvent.shiftKey || clickEvent.altKey || clickEvent.button !== 0) return;
+        clickEvent.preventDefault();
+        onClick();
+      }}
+      className={`group flex flex-col items-center gap-2 transition-transform hover:-translate-y-0.5 ${event.deprecated ? "opacity-50 grayscale saturate-0" : ""}`}
+    >
+      <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80">
+        {event.imageUrl ? (
+          <Image src={event.imageUrl} alt="" fill sizes="220px" loading="lazy" className="object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+        ) : null}
+      </div>
+      <span className="text-center font-game-title text-sm text-gray-100 group-hover:text-primary">{event.name}</span>
+    </Link>
+  );
+}
+
 // --- Main EventList component ---
 interface EventListProps {
   serviceLocale: ServiceLocale;
@@ -239,6 +264,7 @@ export function EventList({
   const urlEventId = useHydrationSafeSearchParam("event");
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [layout, setLayout] = useCompendiumLayout("list");
   const urlVersion = useHydrationSafeSearchParam("version");
   const [userSelectedVersion, setUserSelectedVersion] = useState<string | null>(null);
   const selectedVersion = userSelectedVersion
@@ -433,12 +459,15 @@ export function EventList({
           title={title}
           count={formatCodexCount(filtered.length, serviceText.labels.items, serviceLocale)}
           trailing={(
-            <VersionSelector
-              versions={versions}
-              currentVersion={currentVersion}
-              selectedVersion={selectedVersion}
-              onChange={setSelectedVersion}
-            />
+            <div className="flex shrink-0 items-center gap-2">
+              <CompendiumLayoutSwitcher layout={layout} onChange={setLayout} serviceLocale={serviceLocale} />
+              <VersionSelector
+                versions={versions}
+                currentVersion={currentVersion}
+                selectedVersion={selectedVersion}
+                onChange={setSelectedVersion}
+              />
+            </div>
           )}
         />
 
@@ -460,8 +489,10 @@ export function EventList({
                       {group.events.length}
                     </span>
                   </h2>
-                  <div className="space-y-2">
-                    {group.events.map((event, index) => (
+                  <div className={layout === "gallery" ? "grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6" : "space-y-2"}>
+                    {group.events.map((event, index) => layout === "gallery" ? (
+                      <EventGalleryTile key={event.id} event={event} onClick={() => selectEvent(event)} />
+                    ) : (
                       <div
                         key={event.id}
                         className="animate-card-enter"
