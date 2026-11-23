@@ -1,0 +1,321 @@
+{
+  "cardPreviews": {
+    "Immolate": [
+      "Burn"
+    ],
+    "Power Through": [
+      "Wound"
+    ],
+    "Reckless Charge": [
+      "Dazed"
+    ],
+    "Wild Strike": [
+      "Wound"
+    ],
+    "Accuracy": [
+      "Shiv"
+    ],
+    "Blade Dance": [
+      "Shiv"
+    ],
+    "Cloak And Dagger": [
+      "Shiv"
+    ],
+    "Infinite Blades": [
+      "Shiv"
+    ],
+    "Storm of Steel": [
+      "Shiv"
+    ],
+    "Steam Power": [
+      "Burn"
+    ],
+    "Turbo": [
+      "Void"
+    ],
+    "Alpha": [
+      "Beta"
+    ],
+    "BattleHymn": [
+      "Smite"
+    ],
+    "CarveReality": [
+      "Smite"
+    ],
+    "Collect": [
+      "Miracle"
+    ],
+    "ConjureBlade": [
+      "Expunger"
+    ],
+    "DeceiveReality": [
+      "Safety"
+    ],
+    "DeusExMachina": [
+      "Miracle"
+    ],
+    "Evaluate": [
+      "Insight"
+    ],
+    "Pray": [
+      "Insight"
+    ],
+    "ReachHeaven": [
+      "ThroughViolence"
+    ],
+    "Study": [
+      "Insight"
+    ],
+    "Beta": [
+      "Omega"
+    ]
+  },
+  "ascension": {
+    "2": {
+      "monsters": [
+        "Darkling",
+        "Exploder",
+        "Maw",
+        "Orb Walker",
+        "Repulsor",
+        "Spiker",
+        "Serpent",
+        "Transient",
+        "WrithingMass",
+        "BanditBear",
+        "BanditLeader",
+        "BanditChild",
+        "Byrd",
+        "Centurion",
+        "Chosen",
+        "Healer",
+        "Mugger",
+        "Shelled Parasite",
+        "SnakePlant",
+        "Snecko",
+        "SphericGuardian",
+        "AcidSlime_L",
+        "AcidSlime_M",
+        "AcidSlime_S",
+        "Cultist",
+        "FungiBeast",
+        "GremlinFat",
+        "GremlinThief",
+        "GremlinTsundere",
+        "GremlinWarrior",
+        "GremlinWizard",
+        "JawWorm",
+        "Looter",
+        "FuzzyLouseDefensive",
+        "FuzzyLouseNormal",
+        "SlaverBlue",
+        "SlaverRed",
+        "SpikeSlime_L",
+        "SpikeSlime_M",
+        "SpikeSlime_S"
+      ]
+    },
+    "3": {
+      "monsters": [
+        "GiantHead",
+        "Nemesis",
+        "Reptomancer",
+        "BookOfStabbing",
+        "GremlinLeader",
+        "SlaverBoss",
+        "SpireShield",
+        "SpireSpear",
+        "GremlinNob",
+        "Lagavulin",
+        "Sentry"
+      ]
+    },
+    "4": {
+      "monsters": [
+        "AwakenedOne",
+        "Deca",
+        "Donu",
+        "TimeEater",
+        "BronzeAutomaton",
+        "Champ",
+        "TheCollector",
+        "CorruptHeart",
+        "Hexaghost",
+        "SlimeBoss",
+        "TheGuardian"
+      ]
+    },
+    "7": {
+      "monsters": [
+        "Darkling",
+        "Exploder",
+        "Orb Walker",
+        "Repulsor",
+        "Spiker",
+        "Serpent",
+        "WrithingMass",
+        "BanditBear",
+        "BanditLeader",
+        "BanditChild",
+        "Byrd",
+        "Centurion",
+        "Chosen",
+        "Healer",
+        "Mugger",
+        "Shelled Parasite",
+        "SnakePlant",
+        "Snecko",
+        "AcidSlime_L",
+        "AcidSlime_M",
+        "AcidSlime_S",
+        "Cultist",
+        "FungiBeast",
+        "GremlinFat",
+        "GremlinThief",
+        "GremlinTsundere",
+        "GremlinWarrior",
+        "GremlinWizard",
+        "JawWorm",
+        "Looter",
+        "FuzzyLouseDefensive",
+        "FuzzyLouseNormal",
+        "SlaverBlue",
+        "SlaverRed",
+        "SpikeSlime_L",
+        "SpikeSlime_M",
+        "SpikeSlime_S"
+      ]
+    },
+    "8": {
+      "monsters": [
+        "GiantHead",
+        "Nemesis",
+        "Reptomancer",
+        "BookOfStabbing",
+        "GremlinLeader",
+        "SlaverBoss",
+        "SpireShield",
+        "SpireSpear",
+        "GremlinNob",
+        "Lagavulin",
+        "Sentry"
+      ]
+    },
+    "9": {
+      "monsters": [
+        "AwakenedOne",
+        "Deca",
+        "Donu",
+        "TimeEater",
+        "BronzeAutomaton",
+        "BronzeOrb",
+        "Champ",
+        "TheCollector",
+        "TorchHead",
+        "CorruptHeart",
+        "Hexaghost",
+        "SlimeBoss",
+        "TheGuardian"
+      ]
+    },
+    "13": {
+      "events": [
+        "MindBloom"
+      ]
+    },
+    "15": {
+      "events": [
+        "The Moai Head",
+        "Winding Halls",
+        "Cursed Tome",
+        "Forgotten Altar",
+        "Ghosts",
+        "Nest",
+        "The Library",
+        "The Mausoleum",
+        "The Cleric",
+        "Dead Adventurer",
+        "Golden Idol",
+        "World of Goop",
+        "Scrap Ooze",
+        "Shining Light",
+        "Liars Game",
+        "Designer",
+        "FaceTrader",
+        "Golden Shrine",
+        "Match and Keep!",
+        "Wheel of Change",
+        "Lab",
+        "The Woman in Blue"
+      ]
+    },
+    "17": {
+      "monsters": [
+        "Darkling",
+        "Maw",
+        "Orb Walker",
+        "Spiker",
+        "Serpent",
+        "Transient",
+        "BanditBear",
+        "BanditLeader",
+        "Byrd",
+        "Centurion",
+        "Chosen",
+        "Healer",
+        "Mugger",
+        "Shelled Parasite",
+        "SnakePlant",
+        "Snecko",
+        "SphericGuardian",
+        "AcidSlime_L",
+        "AcidSlime_M",
+        "AcidSlime_S",
+        "Cultist",
+        "FungiBeast",
+        "GremlinFat",
+        "GremlinTsundere",
+        "GremlinWarrior",
+        "GremlinWizard",
+        "JawWorm",
+        "Looter",
+        "FuzzyLouseDefensive",
+        "FuzzyLouseNormal",
+        "SlaverBlue",
+        "SlaverRed",
+        "SpikeSlime_L",
+        "SpikeSlime_M"
+      ]
+    },
+    "18": {
+      "monsters": [
+        "GiantHead",
+        "Nemesis",
+        "Reptomancer",
+        "BookOfStabbing",
+        "GremlinLeader",
+        "SlaverBoss",
+        "SpireShield",
+        "SpireSpear",
+        "GremlinNob",
+        "Lagavulin",
+        "Sentry"
+      ]
+    },
+    "19": {
+      "monsters": [
+        "AwakenedOne",
+        "Deca",
+        "Donu",
+        "TimeEater",
+        "BronzeAutomaton",
+        "Champ",
+        "TheCollector",
+        "CorruptHeart",
+        "Hexaghost",
+        "SlimeBoss",
+        "TheGuardian"
+      ]
+    }
+  }
+}

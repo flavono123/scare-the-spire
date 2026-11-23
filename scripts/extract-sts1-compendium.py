@@ -1572,6 +1572,81 @@ def attach_legacy_slugs(rows: list[dict[str, Any]], loc: dict[str, Any], kind: s
         )
 
 
+ASCENSION_FIELD = ("com.megacrit.cardcrawl.dungeons.AbstractDungeon", "ascensionLevel")
+CONST_OPS = {3: 0, 4: 1, 5: 2, 6: 3, 7: 4, 8: 5}
+
+
+def ascension_levels_checked(cls: JavaClass) -> set[int]:
+    """Levels a class compares `AbstractDungeon.ascensionLevel` against (`>= N` reads the field, then pushes N)."""
+    levels: set[int] = set()
+    for method in cls.methods:
+        if not method.code:
+            continue
+        ops = list(iter_opcodes(method.code))
+        for index, (_start, op, arg) in enumerate(ops[:-1]):
+            if op != 178 or cls.fieldref(u2_from(arg))[:2] != ASCENSION_FIELD:
+                continue
+            _next_start, next_op, next_arg = ops[index + 1]
+            if next_op == 16:
+                levels.add(s1_from(next_arg))
+            elif next_op == 17:
+                levels.add(s2_from(next_arg))
+            elif next_op in CONST_OPS:
+                levels.add(CONST_OPS[next_op])
+    return levels
+
+
+def card_previews(cls: JavaClass) -> list[str]:
+    """Card classes a card's constructor stores in `cardsToPreview`."""
+    method = cls.method("<init>")
+    found: list[str] = []
+    pending: str | None = None
+    for _start, op, arg in iter_opcodes(method.code if method and method.code else b""):
+        if op == 187:
+            pending = cls.class_name(u2_from(arg))
+        elif op == 181 and pending and cls.fieldref(u2_from(arg))[1] == "cardsToPreview":
+            found.append(pending)
+            pending = None
+    return found
+
+
+def extract_relation_extras(jar) -> dict[str, Any]:
+    """Links the game makes in code rather than text: card previews and what each ascension level changes."""
+    ids = class_ids(jar)
+    cards = read_data_rows("cards.json")
+    card_by_class = {card["className"]: card["id"] for card in cards if card.get("className")}
+    previews: dict[str, list[str]] = {}
+    for card in cards:
+        targets = [card_by_class[name] for name in card_previews(parse_jar_class(jar, card["className"])) if name in card_by_class]
+        targets = [target for target in dict.fromkeys(targets) if target != card["id"]]
+        if targets:
+            previews[card["id"]] = targets
+    events = {}
+    for path in sorted((ROOT / "data" / "sts1" / "events").glob("*.json")):
+        row = json.loads(path.read_text())
+        events[f"com.megacrit.cardcrawl.events.{row['className']}"] = row["id"]
+    monster_ids = {row["id"] for row in read_data_rows("monsters.json")}
+    ascension: dict[str, dict[str, list[str]]] = {}
+    for name in sorted(jar.namelist()):
+        if not name.endswith(".class") or "$" in name:
+            continue
+        dotted = name[:-6].replace("/", ".")
+        if dotted.startswith("com.megacrit.cardcrawl.monsters."):
+            target = ids.get(dotted)
+            kind = "monsters" if target in monster_ids else None
+        elif dotted.startswith("com.megacrit.cardcrawl.events."):
+            target = events.get(dotted)
+            kind = "events" if target else None
+        else:
+            continue
+        if not kind:
+            continue
+        for level in ascension_levels_checked(parse_class_file(jar.read(name))):
+            if level > 0:
+                ascension.setdefault(str(level), {}).setdefault(kind, []).append(target)
+    return {"cardPreviews": previews, "ascension": dict(sorted(ascension.items(), key=lambda item: int(item[0])))}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--jar", default=default_sts1_jar_path())
@@ -1606,13 +1681,13 @@ def main() -> None:
         default="",
         help="Comma-separated sections to rebuild without touching cards/relics/potions rows: "
         "powers, characters, relic-text, monsters, extras (events, keywords, ascension, mods, blights, "
-        "Neow, achievements, score bonuses).",
+        "Neow, achievements, score bonuses), relations (card previews and ascension checks).",
     )
     args = parser.parse_args()
 
     if args.only:
         sections = {section.strip() for section in args.only.split(",") if section.strip()}
-        unknown = sections - {"powers", "characters", "relic-text", "monsters", "extras"}
+        unknown = sections - {"powers", "characters", "relic-text", "monsters", "extras", "relations"}
         if unknown:
             parser.error(f"unknown --only sections: {', '.join(sorted(unknown))}")
         with open_sts1_jar(args.jar) as jar:
@@ -1625,6 +1700,10 @@ def main() -> None:
                 print(f"monsters={extract_monsters(jar)}")
             if "characters" in sections:
                 print(f"characters={extract_characters(jar, write_images=not args.skip_images)}")
+            if "relations" in sections:
+                relations = extract_relation_extras(jar)
+                write_json(ROOT / "data" / "sts1" / "relation-extras.json", relations)
+                print(f"card previews={len(relations['cardPreviews'])} ascension levels={len(relations['ascension'])}")
             if "extras" in sections:
                 write_extras_localization(jar, STS1_LOCALES, write_json)
                 write_extras_nav_labels(jar, STS1_LOCALES, write_json)
