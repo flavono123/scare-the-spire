@@ -203,9 +203,16 @@ export const getSts1RelationGraph = cache(async () => {
     }
   }
 
-  // Keywords a card, relic, potion or power's text uses (the game tips them).
+  // Keywords a card, relic, potion or power's text uses (the game tips them), and the power or card
+  // that goes by the keyword's name (인공물 the keyword and 인공물 the power, 단도 the keyword and the card).
+  const powerByName = new Map(powers.map((row) => [row.name, row.slug]));
+  const cardByName = new Map(cards.map((row) => [row.name, row.slug]));
   for (const keyword of keywords) {
     const from = node("keywords", keyword.slug);
+    const power = powerByName.get(keyword.name);
+    const card = cardByName.get(keyword.name);
+    if (power) link(from, node("powers", power), "keyword");
+    if (card) link(from, node("cards", card), "keyword");
     for (const user of keyword.users) link(from, node(user.type, user.slug), "keyword");
     for (const mention of keyword.mentions) link(from, ref(mention.type as keyof typeof slugOf, mention.id), "mention");
   }

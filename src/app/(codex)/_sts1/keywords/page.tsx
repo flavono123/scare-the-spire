@@ -3,6 +3,7 @@ export const dynamic = "force-static";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Sts1KeywordLibrary } from "@/components/sts1/keyword-library";
+import { getSts1RelatedMap } from "@/lib/sts1/relations";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { getSts1CompendiumKeywords, getSts1KeywordKindLabels, getSts1PageRefs } from "@/lib/sts1/compendium-extras";
 import { getSts1Keywords, getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
@@ -26,10 +27,13 @@ export default async function Sts1KeywordsPage({ searchParams }: ListProps) {
     getSts1Keywords(gameLocale),
     getSts1UiLabels(gameLocale),
   ]);
-  const refs = await getSts1PageRefs({ mentions: rows.flatMap((row) => row.mentions) }, gameLocale);
+  const [refs, related] = await Promise.all([
+    getSts1PageRefs({ mentions: rows.flatMap((row) => row.mentions) }, gameLocale),
+    getSts1RelatedMap("keywords", rows.map((row) => row.slug), gameLocale),
+  ]);
   return (
     <Suspense>
-      <Sts1KeywordLibrary refs={refs} rows={rows} kinds={kinds} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
+      <Sts1KeywordLibrary refs={refs} related={related} rows={rows} kinds={kinds} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
     </Suspense>
   );
 }

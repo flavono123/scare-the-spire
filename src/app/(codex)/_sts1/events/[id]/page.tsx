@@ -13,6 +13,7 @@ import { getSts1Metadata, getSts1UiLabels, sts1RouteIds } from "@/lib/sts1/data"
 import { plainSts1Text } from "@/lib/sts1/description";
 import { getSts1EntityRefs, getSts1Event, getSts1Events, sts1EventItemRefs } from "@/lib/sts1/events";
 import { sts1DetailPath, sts1EventImageUrl } from "@/lib/sts1/paths";
+import { getSts1Related } from "@/lib/sts1/relations";
 
 type DetailProps = {
   params: Promise<{ id: string }>;
@@ -47,8 +48,11 @@ export default async function Sts1EventDetailPage({ params, searchParams }: Deta
     getSts1EventLabels(gameLocale),
   ]);
   if (!event) notFound();
-  const refs = await getSts1EntityRefs(sts1EventItemRefs([event]), gameLocale);
+  const [refs, related] = await Promise.all([
+    getSts1EntityRefs(sts1EventItemRefs([event]), gameLocale),
+    getSts1Related("events", event.slug, gameLocale),
+  ]);
   return (
-    <Sts1EventDetail event={event} refs={refs} labels={labels} eventLabels={eventLabels} serviceLocale={serviceLocale} />
+    <Sts1EventDetail event={event} refs={refs} related={related} labels={labels} eventLabels={eventLabels} serviceLocale={serviceLocale} />
   );
 }

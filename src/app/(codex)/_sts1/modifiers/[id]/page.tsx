@@ -4,6 +4,7 @@ export const dynamicParams = false;
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Sts1ModifierDetail } from "@/components/sts1/modifier-library";
+import { getSts1Related } from "@/lib/sts1/relations";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { getSts1PageRefs, getSts1ModifierLabels, getSts1Modifiers } from "@/lib/sts1/compendium-extras";
 import { getSts1Keywords, getSts1Metadata } from "@/lib/sts1/data";
@@ -44,15 +45,19 @@ export default async function Sts1ModifierDetailPage({ params, searchParams }: D
   ]);
   const mod = mods.find((row) => row.slug === id);
   if (!mod) notFound();
-  const refs = await getSts1PageRefs({
-    items: mod.refs,
-    mentions: [...mod.mentions, ...mod.blightRefs.map((id) => ({ type: "blight" as const, id }))],
-  }, gameLocale);
+  const [refs, related] = await Promise.all([
+    getSts1PageRefs({
+      items: mod.refs,
+      mentions: [...mod.mentions, ...mod.blightRefs.map((id) => ({ type: "blight" as const, id }))],
+    }, gameLocale),
+    getSts1Related("modifiers", mod.slug, gameLocale),
+  ]);
   return (
     <Sts1ModifierDetail
       mod={mod}
       mods={mods}
       refs={refs}
+      related={related}
       keywords={keywords}
       modLabels={modLabels}
       serviceLocale={serviceLocale}

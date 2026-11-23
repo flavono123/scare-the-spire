@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
 import { Sts1BlightDetail } from "@/components/sts1/blight-library";
+import { getSts1Related } from "@/lib/sts1/relations";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
 import { getSts1Blight, getSts1PageRefs } from "@/lib/sts1/compendium-extras";
@@ -45,10 +46,13 @@ export default async function Sts1BlightDetailPage({ params, searchParams }: Det
     getSts1UiLabels(gameLocale),
   ]);
   if (!blight) notFound();
-  const refs = await getSts1PageRefs({ mentions: blight.mentions }, gameLocale);
+  const [refs, related] = await Promise.all([
+    getSts1PageRefs({ mentions: blight.mentions }, gameLocale),
+    getSts1Related("blights", blight.slug, gameLocale),
+  ]);
   return (
     <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
-      <Sts1BlightDetail refs={refs} blight={blight} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
+      <Sts1BlightDetail refs={refs} related={related} blight={blight} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
     </Sts1BitmapPackScope>
   );
 }

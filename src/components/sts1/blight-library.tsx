@@ -14,7 +14,8 @@ import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1EnglishName } from "./detail-chrome";
 import { Sts1Description, Sts1DetailModal, Sts1ListLayout, openOnPlainClick, useSts1Selection } from "./list-shell";
 import { RelicSlab } from "./mention-hover";
-import { Sts1MentionRail } from "./ref-token";
+import { Sts1RelatedRail } from "./related-rail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 
 function detailText(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
@@ -25,6 +26,7 @@ function detailText(serviceLocale: ServiceLocale) {
 export function Sts1BlightDetail({
   blight,
   refs,
+  related = [],
   keywords,
   labels,
   serviceLocale,
@@ -32,6 +34,7 @@ export function Sts1BlightDetail({
 }: {
   blight: Sts1Blight;
   refs: Sts1EntityRefs;
+  related?: readonly Sts1RelatedGroup[];
   keywords: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
@@ -77,7 +80,7 @@ export function Sts1BlightDetail({
           <p className="mt-2 font-game-text text-xs text-gray-500">{text.stackNote}</p>
         </section>
       ) : null}
-      <Sts1MentionRail mentions={blight.mentions} refs={refs} serviceLocale={serviceLocale} />
+      <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
       <Sts1CommentsRail resourceType="blight" slug={blight.slug} serviceLocale={serviceLocale} />
     </Sts1DetailShell>
   );
@@ -86,12 +89,14 @@ export function Sts1BlightDetail({
 export function Sts1BlightLibrary({
   blights,
   refs,
+  related,
   keywords,
   labels,
   serviceLocale,
 }: {
   blights: Sts1Blight[];
   refs: Sts1EntityRefs;
+  related?: Record<string, Sts1RelatedGroup[]>;
   keywords: Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
@@ -112,7 +117,7 @@ export function Sts1BlightLibrary({
       onSearch={setSearchQuery}
       overlay={selected ? (
         <Sts1DetailModal label={selected.name} onClose={close}>
-          <Sts1BlightDetail blight={selected} refs={refs} keywords={keywords} labels={labels} serviceLocale={serviceLocale} onClose={close} />
+          <Sts1BlightDetail blight={selected} refs={refs} related={related?.[selected.slug]} keywords={keywords} labels={labels} serviceLocale={serviceLocale} onClose={close} />
         </Sts1DetailModal>
       ) : null}
     >

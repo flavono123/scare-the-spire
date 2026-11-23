@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Sts1BitmapPackScope } from "@/components/sts1/bitmap-pack-scope";
 import { Sts1BlightLibrary } from "@/components/sts1/blight-library";
+import { getSts1RelatedMap } from "@/lib/sts1/relations";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { sts1BitmapPackName } from "@/lib/sts1/bitmap-font";
 import { getSts1Blights, getSts1PageRefs } from "@/lib/sts1/compendium-extras";
@@ -28,11 +29,14 @@ export default async function Sts1BlightsPage({ searchParams }: ListProps) {
     getSts1UiLabels(gameLocale),
   ]);
   // The detail draws the relic popup's text with the game's glyph pack.
-  const refs = await getSts1PageRefs({ mentions: blights.flatMap((row) => row.mentions) }, gameLocale);
+  const [refs, related] = await Promise.all([
+    getSts1PageRefs({ mentions: blights.flatMap((row) => row.mentions) }, gameLocale),
+    getSts1RelatedMap("blights", blights.map((row) => row.slug), gameLocale),
+  ]);
   return (
     <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
       <Suspense>
-        <Sts1BlightLibrary refs={refs} blights={blights} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
+        <Sts1BlightLibrary refs={refs} related={related} blights={blights} keywords={keywords} labels={labels} serviceLocale={serviceLocale} />
       </Suspense>
     </Sts1BitmapPackScope>
   );

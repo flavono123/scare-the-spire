@@ -9,6 +9,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1EntityRefs, Sts1Event, Sts1EventGroup, Sts1EventLabels, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1EventArt, Sts1EventDetail } from "./event-detail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import {
   Sts1DetailModal,
   Sts1ListLayout,
@@ -44,12 +45,14 @@ export function Sts1EventTile({ event, refs }: { event: Sts1Event; refs: Sts1Ent
 export function Sts1EventLibrary({
   events,
   refs,
+  related,
   labels,
   eventLabels,
   serviceLocale,
 }: {
   events: Sts1Event[];
   refs: Sts1EntityRefs;
+  related?: Record<string, Sts1RelatedGroup[]>;
   labels: Sts1UiLabels;
   eventLabels: Sts1EventLabels;
   serviceLocale: ServiceLocale;
@@ -91,6 +94,7 @@ export function Sts1EventLibrary({
           <Sts1EventDetail
             event={selected}
             refs={refs}
+            related={related?.[selected.slug]}
             labels={labels}
             eventLabels={eventLabels}
             serviceLocale={serviceLocale}

@@ -22,7 +22,8 @@ import {
   toggled,
   useSts1Selection,
 } from "./list-shell";
-import { Sts1EntityToken, Sts1MentionRail } from "./ref-token";
+import { Sts1RelatedRail } from "./related-rail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import { Sts1TipBox } from "./tip-box";
 
 const KIND_ORDER: Sts1KeywordKind[] = ["keyword", "orb", "stance"];
@@ -48,6 +49,7 @@ export function Sts1KeywordIcon({ keyword, size }: { keyword: Sts1CompendiumKeyw
 export function Sts1KeywordDetail({
   keyword,
   refs,
+  related = [],
   kinds,
   keywords,
   labels,
@@ -56,21 +58,13 @@ export function Sts1KeywordDetail({
 }: {
   keyword: Sts1CompendiumKeyword;
   refs: Sts1EntityRefs;
+  related?: readonly Sts1RelatedGroup[];
   kinds: Sts1KeywordKindLabels;
   keywords: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
   onClose?: () => void;
 }) {
-  const groups = (["cards", "relics", "potions", "powers"] as const)
-    .map((type) => ({ type, rows: keyword.users.filter((user) => user.type === type) }))
-    .filter((group) => group.rows.length > 0);
-  const groupTitle = { cards: labels.cardLibraryTitle, relics: labels.relicCollectionTitle, potions: labels.potionLabTitle, powers: labels.powersTitle };
-  const tokenType = { cards: "card", relics: "relic", potions: "potion", powers: "power" } as const;
-  const userRefs = {
-    card: {}, relic: {}, potion: {}, monster: {}, power: {}, blight: {},
-  } as Record<"card" | "relic" | "potion" | "monster" | "power" | "blight", Record<string, { slug: string; name: string; imageUrl: string }>>;
-  for (const user of keyword.users) userRefs[tokenType[user.type]][user.slug] = user;
   return (
     <Sts1DetailShell
       backHref="/compendium/sts1/keywords"
@@ -100,19 +94,7 @@ export function Sts1KeywordDetail({
           <Sts1EnglishName name={keyword.name} nameEn={keyword.nameEn} serviceLocale={serviceLocale} />
         </div>
       </section>
-      {groups.map((group) => (
-        <section key={group.type} className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-          <div className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-            {groupTitle[group.type]} <span className="text-gray-500">{group.rows.length}</span>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {group.rows.map((row) => (
-              <Sts1EntityToken key={row.slug} type={tokenType[group.type]} id={row.slug} refs={userRefs} />
-            ))}
-          </div>
-        </section>
-      ))}
-      <Sts1MentionRail mentions={keyword.mentions} refs={refs} serviceLocale={serviceLocale} />
+      <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
       <Sts1CommentsRail resourceType="keyword" slug={keyword.slug} serviceLocale={serviceLocale} />
     </Sts1DetailShell>
   );
@@ -121,6 +103,7 @@ export function Sts1KeywordDetail({
 export function Sts1KeywordLibrary({
   rows,
   refs,
+  related,
   kinds,
   keywords,
   labels,
@@ -128,6 +111,7 @@ export function Sts1KeywordLibrary({
 }: {
   rows: Sts1CompendiumKeyword[];
   refs: Sts1EntityRefs;
+  related?: Record<string, Sts1RelatedGroup[]>;
   kinds: Sts1KeywordKindLabels;
   keywords: Sts1Keyword[];
   labels: Sts1UiLabels;
@@ -165,7 +149,7 @@ export function Sts1KeywordLibrary({
       )}
       overlay={selected ? (
         <Sts1DetailModal label={selected.name} onClose={close}>
-          <Sts1KeywordDetail keyword={selected} refs={refs} kinds={kinds} keywords={keywords} labels={labels} serviceLocale={serviceLocale} onClose={close} />
+          <Sts1KeywordDetail keyword={selected} refs={refs} related={related?.[selected.slug]} kinds={kinds} keywords={keywords} labels={labels} serviceLocale={serviceLocale} onClose={close} />
         </Sts1DetailModal>
       ) : null}
     >

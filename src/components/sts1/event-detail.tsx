@@ -5,6 +5,8 @@ import Image from "@/components/ui/static-image";
 import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import { MonsterAscensionStepper, useMonsterAscensionLevel } from "@/components/codex/monster-ascension";
 import { Sts1CommentsRail } from "./comments-rail";
+import { Sts1RelatedRail } from "./related-rail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
 import { Sts1EventText, fillSts1Template } from "./event-text";
 import { Sts1HoverPreviews, sts1ItemPreviewIds, sts1PreviewEntityIds } from "./ref-token";
@@ -287,6 +289,7 @@ export function Sts1EventScreen({
 export function Sts1EventDetail({
   event,
   refs,
+  related = [],
   labels,
   eventLabels,
   serviceLocale,
@@ -294,6 +297,7 @@ export function Sts1EventDetail({
 }: {
   event: Sts1Event;
   refs: Sts1EntityRefs;
+  related?: readonly Sts1RelatedGroup[];
   labels: Sts1UiLabels;
   eventLabels: Sts1EventLabels;
   serviceLocale: ServiceLocale;
@@ -327,6 +331,7 @@ export function Sts1EventDetail({
             <Sts1EnglishName name={event.name} nameEn={event.nameEn} serviceLocale={serviceLocale} />
           </div>
         </section>
+        <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
         <Sts1CommentsRail resourceType="event" slug={event.slug} serviceLocale={serviceLocale} />
       </Sts1DetailShell>
     </div>

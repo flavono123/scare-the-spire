@@ -21,7 +21,8 @@ import {
   openOnPlainClick,
   useSts1Selection,
 } from "./list-shell";
-import { Sts1EntityToken, Sts1ItemRefTokens } from "./ref-token";
+import { Sts1RelatedRail } from "./related-rail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 
 export type Sts1ModifierLabels = {
   title: string;
@@ -48,6 +49,7 @@ export function Sts1ModifierDetail({
   mod,
   mods,
   refs,
+  related = [],
   keywords,
   modLabels,
   serviceLocale,
@@ -56,12 +58,12 @@ export function Sts1ModifierDetail({
   mod: Sts1ModifierRow;
   mods: readonly Sts1ModifierRow[];
   refs: Sts1EntityRefs;
+  related?: readonly Sts1RelatedGroup[];
   keywords: readonly Sts1Keyword[];
   modLabels: Sts1ModifierLabels;
   serviceLocale: ServiceLocale;
   onClose?: () => void;
 }) {
-  const localizeLink = useLocalizedHref();
   const exclusive = mods.filter((row) => mod.exclusive.includes(row.slug));
   const color = MOD_COLORS[mod.color ?? ""] ?? "#efc851";
   return (
@@ -90,33 +92,15 @@ export function Sts1ModifierDetail({
       </section>
       <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
         <Sts1Description text={mod.description} keywords={keywords} refs={refs} />
-        {mod.refs.length || mod.blightRefs.length || mod.mentions.length ? (
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {mod.refs.map((item, index) => <Sts1ItemRefTokens key={index} item={item} refs={refs} />)}
-            {mod.mentions.map((mention) => <Sts1EntityToken key={`${mention.type}-${mention.id}`} type={mention.type} id={mention.id} refs={refs} />)}
-            {mod.blightRefs.map((id) => <Sts1EntityToken key={id} type="blight" id={id} refs={refs} />)}
-          </div>
-        ) : null}
       </section>
-      {exclusive.length ? (
-        <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
-          <div className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">{modLabels.exclusive}</div>
-          <div className="flex flex-wrap gap-1.5">
-            {exclusive.map((row) => (
-              <Link
-                key={row.slug}
-                prefetch={false}
-                href={localizeLink(sts1DetailPath("modifiers", row.slug))}
-                className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-black/30 px-1.5 py-0.5 font-game-text text-xs hover:brightness-125"
-                style={{ color: MOD_COLORS[row.color ?? ""] ?? "#efc851" }}
-              >
-                <ModIcon mod={row} size={22} />
-                {row.name}
-              </Link>
-            ))}
-          </div>
-        </section>
-      ) : null}
+      <Sts1RelatedRail
+        groups={[
+          ...related,
+          // Mods the custom-mode screen won't let you pick together with this one.
+          ...(exclusive.length ? [{ kind: "modifiers" as const, label: modLabels.exclusive, items: exclusive.map((row) => ({ slug: row.slug, name: row.name })) }] : []),
+        ]}
+        serviceLocale={serviceLocale}
+      />
       <Sts1CommentsRail resourceType="modifier" slug={mod.slug} serviceLocale={serviceLocale} />
     </Sts1DetailShell>
   );
@@ -125,12 +109,14 @@ export function Sts1ModifierDetail({
 export function Sts1ModifierLibrary({
   mods,
   refs,
+  related,
   keywords,
   modLabels,
   serviceLocale,
 }: {
   mods: Sts1ModifierRow[];
   refs: Sts1EntityRefs;
+  related?: Record<string, Sts1RelatedGroup[]>;
   keywords: Sts1Keyword[];
   modLabels: Sts1ModifierLabels;
   serviceLocale: ServiceLocale;
@@ -173,6 +159,7 @@ export function Sts1ModifierLibrary({
             mod={selected}
             mods={mods}
             refs={refs}
+            related={related?.[selected.slug]}
             keywords={keywords}
             modLabels={modLabels}
             serviceLocale={serviceLocale}
