@@ -51,6 +51,9 @@ import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { PartyPortraitStack } from "@/components/history-course/party-portrait-stack";
+import { Sts2ScoreBreakdown } from "@/components/codex/score-calculator";
+import { sts2RunFileFromReplay, sts2RunScore } from "@/lib/sts2/run-score";
+import { STS2_SCORE_ICONS, sts2ScoreTexts } from "@/lib/sts2/score-texts";
 
 // ============================================================================
 // Run summary panel — port of
@@ -276,6 +279,7 @@ function SummaryPanel({
           potionsById={potionsById}
         />
         <ScoreChip win={run.win && ended} floor={finalFloor} />
+        {ended ? <RunScoreChip run={run} playerId={run.players[focusedPlayerIndex]?.id} serviceLocale={serviceLocale} /> : null}
         <TimeChip runTime={runTimeStr} />
         <div className="ml-auto flex min-w-[190px] flex-col items-end gap-1.5 text-right text-[11px] leading-snug text-zinc-400">
           {dateStr && <div>{dateStr}</div>}
@@ -489,6 +493,35 @@ function ScoreChip({ win, floor }: { win: boolean; floor: number }) {
       />
       <span className="font-bold tabular-nums">{floor}</span>
       {win && <span className="ml-1 text-[10px] text-amber-200">★</span>}
+    </div>
+  );
+}
+
+/** The run's score as the game-over screen computes it (ScoreUtility, checked against the game); hover lists its lines. */
+function RunScoreChip({ run, playerId, serviceLocale }: { run: ReplayRun; playerId?: number; serviceLocale: ServiceLocale }) {
+  const [open, setOpen] = useState(false);
+  const score = sts2RunScore(sts2RunFileFromReplay(run), playerId);
+  const texts = sts2ScoreTexts(serviceLocale);
+  const label = serviceLocale === "ko" ? "점수" : "Score";
+  return (
+    <div
+      className="relative flex cursor-help items-center gap-1 text-amber-200"
+      tabIndex={0}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
+      data-history-run-score={score.total}
+    >
+      <Image src={STS2_SCORE_ICONS.bossesSlain} alt="" width={22} height={22} className="h-5 w-5 object-contain" unoptimized />
+      <span className="font-bold tabular-nums">{score.total}</span>
+      {open ? (
+        <PortaledHoverTipLayer pin="top-left">
+          <div className="w-72 rounded-lg border border-white/10 bg-zinc-950/95 px-4 py-3 shadow-xl">
+            <Sts2ScoreBreakdown lines={score.lines} total={score.total} texts={texts} totalLabel={label} />
+          </div>
+        </PortaledHoverTipLayer>
+      ) : null}
     </div>
   );
 }

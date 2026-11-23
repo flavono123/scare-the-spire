@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Sts2ScoreCalculator, type Sts2ScoreTexts } from "@/components/codex/score-calculator";
+import { Sts2RunScoreLoader, Sts2ScoreCalculator, type Sts2ScoreTexts } from "@/components/codex/score-calculator";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { readGameLocalizationTable } from "@/lib/game-localization";
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord, type GameLocale } from "@/lib/i18n";
@@ -39,6 +39,7 @@ export default async function CodexScorePage({ searchParams }: PageProps) {
   return (
     <main className="px-4 py-6 sm:px-6">
       <h1 className="mx-auto mb-4 max-w-6xl font-game-title text-2xl font-bold text-primary">{TITLE[serviceLocale]}</h1>
+      <Sts2RunScoreLoader texts={texts} serviceLocale={serviceLocale} />
       <Sts2ScoreCalculator texts={texts} serviceLocale={serviceLocale} />
     </main>
   );

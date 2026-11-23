@@ -232,3 +232,32 @@ export function sts2RunBadges(run: Sts2RunFile, playerId: number): Sts2RunBadge[
     rarity && (!requiresWin || won) && (!multiplayerOnly || !solo) ? [{ id, rarity }] : [],
   );
 }
+
+/** The History Course's parsed run (ReplayRun) in the run-file shape the score reads. */
+export function sts2RunFileFromReplay(run: {
+  game_mode: string;
+  win: boolean;
+  was_abandoned?: boolean;
+  ascension: number;
+  run_time?: number;
+  players: { id: number; character: string; deck: { id: string }[]; relics: { id: string }[]; badges?: { id: string; rarity: string }[] }[];
+  map_point_history: { map_point_type: string; rooms: { room_type: string }[]; gold_gained?: number; player_stats?: { playerId?: number; gold_gained?: number }[] }[][];
+}): Sts2RunFile {
+  const firstId = run.players[0]?.id ?? 1;
+  return {
+    game_mode: run.game_mode,
+    win: run.win,
+    was_abandoned: run.was_abandoned,
+    ascension: run.ascension,
+    run_time: run.run_time,
+    players: run.players.map((player) => ({ id: player.id, character: player.character, deck: player.deck, relics: player.relics, badges: player.badges })),
+    map_point_history: run.map_point_history.map((act) => act.map((point) => ({
+      map_point_type: point.map_point_type,
+      rooms: point.rooms,
+      // Solo replays keep the stats flattened on the point (player 0).
+      player_stats: point.player_stats?.length
+        ? point.player_stats.map((stats) => ({ player_id: stats.playerId ?? firstId, gold_gained: stats.gold_gained }))
+        : [{ player_id: firstId, gold_gained: point.gold_gained }],
+    }))),
+  };
+}
