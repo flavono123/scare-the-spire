@@ -54,6 +54,7 @@ const compendiumSegments = new Set([
   "blitz-shop",
   "dominions",
   "pets",
+  "score",
   "achievements",
   "monsters",
   "potions",

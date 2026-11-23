@@ -61,6 +61,8 @@ jobs:
 
       - run: npx tsx scripts/sts1-score.spec.ts
 
+      - run: npx tsx scripts/sts2-score.spec.ts
+
       - run: pnpm lint
 
       - name: Free runner disk space for the static build

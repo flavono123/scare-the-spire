@@ -163,6 +163,16 @@
       "art": "/images/sts2/achievements/ironclad_win.webp"
     },
     {
+      "id": "sts2-score",
+      "area": "sts2",
+      "href": "/compendium/score",
+      "label": {
+        "codex": "score"
+      },
+      "token": "/images/sts2/ui/game_over_screen/score_floor.webp",
+      "art": "/images/sts2/ui/game_over_screen/score_boss.webp"
+    },
+    {
       "id": "sts2-ascensions",
       "area": "sts2",
       "href": "/compendium/ascensions",

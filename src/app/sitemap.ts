@@ -82,6 +82,7 @@ const COMPENDIUM_INDEX_PATHS = [
   "/compendium/blitz-shop",
   "/compendium/dominions",
   "/compendium/pets",
+  "/compendium/score",
   "/compendium/potions",
   "/compendium/powers",
   "/compendium/relics",
