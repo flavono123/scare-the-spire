@@ -16,7 +16,6 @@ import {
   getSts1CharacterSelectUi,
   getSts1Keywords,
   getSts1Metadata,
-  getSts1Potions,
   getSts1Relics,
   getSts1UiLabels,
 } from "@/lib/sts1/data";
@@ -24,11 +23,10 @@ import { plainSts1Text } from "@/lib/sts1/description";
 import {
   sts1CharacterPortraitUrl,
   sts1DetailPath,
-  sts1PotionImageUrl,
-  sts1RelicImageUrl,
 } from "@/lib/sts1/paths";
 import { generateSts1CharacterStaticParams } from "@/lib/sts1/static-params";
-import type { Sts1Card, Sts1ResourceRef } from "@/lib/sts1/types";
+import type { Sts1Card } from "@/lib/sts1/types";
+import { getSts1Related } from "@/lib/sts1/relations";
 
 type DetailProps = {
   params: Promise<{ id: string }>;
@@ -58,11 +56,10 @@ export default async function Sts1CharacterDetailPage({ params, searchParams }: 
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [character, cards, relics, potions, keywords, labels, ui] = await Promise.all([
+  const [character, cards, relics, keywords, labels, ui] = await Promise.all([
     getSts1Character(id, gameLocale),
     getSts1Cards(gameLocale),
     getSts1Relics(gameLocale),
-    getSts1Potions(gameLocale),
     getSts1Keywords(gameLocale),
     getSts1UiLabels(gameLocale),
     getSts1CharacterSelectUi(gameLocale),
@@ -79,39 +76,15 @@ export default async function Sts1CharacterDetailPage({ params, searchParams }: 
     else deck.push({ card, count: 1 });
   }
 
-  const relicRef = (relic: (typeof relics)[number]): Sts1ResourceRef => ({
-    type: "relics",
-    id: relic.id,
-    slug: relic.slug,
-    name: relic.name,
-    imageUrl: sts1RelicImageUrl(relic),
-  });
-  const startingRelics = character.startingRelicIds.flatMap((relicId) => {
-    const relic = relics.find((item) => item.id === relicId);
-    return relic ? [relicRef(relic)] : [];
-  });
-  const dedicated: Sts1ResourceRef[] = [
-    ...relics
-      .filter((relic) => relic.pool === character.id && !character.startingRelicIds.includes(relic.id))
-      .map(relicRef),
-    ...potions
-      .filter((potion) => potion.pool === character.id)
-      .map((potion) => ({
-        type: "potions" as const,
-        id: potion.id,
-        slug: potion.slug,
-        name: potion.name,
-        imageUrl: sts1PotionImageUrl(potion),
-      })),
-  ];
+  const related = await getSts1Related("characters", character.slug, gameLocale);
+  const startingRelicSlugs = relics.filter((relic) => character.startingRelicIds.includes(relic.id)).map((relic) => relic.slug);
 
   return (
     <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
       <Sts1CharacterDetail
-        character={character}
+        character={{ ...character, startingRelicSlugs }}
         deck={deck}
-        startingRelics={startingRelics}
-        dedicated={dedicated}
+        related={related}
         keywords={keywords}
         labels={labels}
         ui={ui}

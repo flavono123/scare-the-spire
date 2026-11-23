@@ -8,7 +8,8 @@ import Image from "@/components/ui/static-image";
 import { Sts1CardTile } from "./card-tile";
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
-import { Sts1ResourceRefLinks } from "./resource-ref-links";
+import { Sts1RelatedRail } from "./related-rail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import { Sts1SmartText } from "./smart-text";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { sts1PoolColor } from "@/lib/sts1/card-style";
@@ -18,31 +19,28 @@ import type {
   Sts1Character,
   Sts1CharacterSelectUi,
   Sts1Keyword,
-  Sts1ResourceRef,
   Sts1UiLabels,
 } from "@/lib/sts1/types";
 
 function detailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
-    ? { startingCards: "시작 카드", startingRelic: "시작 유물", dedicated: "전용 유물, 포션", orbSlots: "구체 슬롯" }
-    : { startingCards: "Starting Cards", startingRelic: "Starting Relic", dedicated: "Character Relics & Potions", orbSlots: "Orb slots" };
+    ? { startingCards: "시작 카드", startingRelic: "시작 유물", orbSlots: "구체 슬롯" }
+    : { startingCards: "Starting Cards", startingRelic: "Starting Relic", orbSlots: "Orb slots" };
 }
 
 export function Sts1CharacterDetail({
   character,
   deck,
-  startingRelics,
-  dedicated,
+  related,
   keywords,
   labels,
   ui,
   serviceLocale,
   gameLocale,
 }: {
-  character: Sts1Character;
+  character: Sts1Character & { startingRelicSlugs: string[] };
   deck: { card: Sts1Card; count: number }[];
-  startingRelics: Sts1ResourceRef[];
-  dedicated: Sts1ResourceRef[];
+  related: readonly Sts1RelatedGroup[];
   keywords: readonly Sts1Keyword[];
   labels: Sts1UiLabels;
   ui: Sts1CharacterSelectUi;
@@ -133,8 +131,19 @@ export function Sts1CharacterDetail({
           <Sts1EnglishName name={character.name} nameEn={character.nameEn} serviceLocale={serviceLocale} />
         </div>
       </section>
-      <Sts1ResourceRefLinks title={text.startingRelic} refs={startingRelics} serviceLocale={serviceLocale} />
-      <Sts1ResourceRefLinks title={text.dedicated} refs={dedicated} serviceLocale={serviceLocale} />
+      <Sts1RelatedRail
+        groups={related.flatMap((group) => {
+          // The starting relic leads the rail under its own title; the rest of the pool follows.
+          if (group.kind !== "relics") return [group];
+          const starting = group.items.filter((item) => character.startingRelicSlugs.includes(item.slug));
+          const rest = group.items.filter((item) => !character.startingRelicSlugs.includes(item.slug));
+          return [
+            ...(starting.length ? [{ ...group, items: starting, label: text.startingRelic }] : []),
+            ...(rest.length ? [{ ...group, items: rest }] : []),
+          ];
+        })}
+        serviceLocale={serviceLocale}
+      />
       <Sts1CommentsRail resourceType="character" slug={character.slug} serviceLocale={serviceLocale} />
     </Sts1DetailShell>
   );

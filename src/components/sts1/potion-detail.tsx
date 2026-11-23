@@ -4,6 +4,8 @@ import { useRef } from "react";
 import Image from "@/components/ui/static-image";
 import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import { Sts1CommentsRail } from "./comments-rail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
+import { Sts1RelatedRail } from "./related-rail";
 import { Sts1CardText } from "./description";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -14,11 +16,13 @@ import type { Sts1Potion, Sts1UiLabels } from "@/lib/sts1/types";
 
 export function Sts1PotionDetail({
   potion,
+  related = [],
   labels,
   serviceLocale,
   onClose,
 }: {
   potion: Sts1Potion;
+  related?: readonly Sts1RelatedGroup[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
   onClose?: () => void;
@@ -75,6 +79,7 @@ export function Sts1PotionDetail({
           className="font-game-text text-sm leading-relaxed text-foreground"
         />
       </section>
+      <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
       <Sts1CommentsRail
         resourceType="potion"
         slug={potion.slug}

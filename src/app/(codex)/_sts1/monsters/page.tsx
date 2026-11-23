@@ -14,6 +14,7 @@ import {
   getSts1UiLabels,
 } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
+import { getSts1RelatedMap } from "@/lib/sts1/relations";
 
 export async function generateMetadata({
   searchParams,
@@ -39,11 +40,14 @@ export default async function Sts1MonstersPage({
     getSts1Monsters(gameLocale),
     getSts1UiLabels(gameLocale),
   ]);
-  const refs = await getSts1MonsterRefs(monsters, gameLocale);
+  const [refs, related] = await Promise.all([
+    getSts1MonsterRefs(monsters, gameLocale),
+    getSts1RelatedMap("monsters", monsters.map((monster) => monster.slug), gameLocale),
+  ]);
 
   return (
     <Suspense>
-      <Sts1MonsterLibrary monsters={monsters} refs={refs} labels={labels} serviceLocale={serviceLocale} />
+      <Sts1MonsterLibrary monsters={monsters} refs={refs} related={related} labels={labels} serviceLocale={serviceLocale} />
     </Suspense>
   );
 }

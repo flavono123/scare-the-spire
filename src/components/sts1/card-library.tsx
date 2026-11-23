@@ -38,6 +38,7 @@ import type {
   Sts1UiLabels,
 } from "@/lib/sts1/types";
 import { Sts1CardDetail } from "./card-detail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import { Sts1CardTile } from "./card-tile";
 import { useEscapeClose } from "./use-escape-close";
 import { CardSideTipsAnchor } from "@/components/codex/card-keyword-tip-stack";
@@ -158,12 +159,14 @@ const Sts1LibraryCard = memo(function Sts1LibraryCard({
 
 export function Sts1CardLibrary({
   cards,
+  related,
   labels,
   keywords,
   serviceLocale,
   gameLocale,
 }: {
   cards: Sts1Card[];
+  related?: Record<string, Sts1RelatedGroup[]>;
   labels: Sts1UiLabels;
   keywords: Sts1Keyword[];
   serviceLocale: ServiceLocale;
@@ -484,6 +487,7 @@ export function Sts1CardLibrary({
           <div className="my-8 mx-4 w-full max-w-6xl">
             <Sts1CardDetail
               card={selectedCard}
+              related={related?.[selectedCard.slug]}
               labels={labels}
               keywords={keywords}
               serviceLocale={serviceLocale}

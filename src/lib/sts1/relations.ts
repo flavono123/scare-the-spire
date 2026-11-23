@@ -44,7 +44,7 @@ export const STS1_RELATED_KINDS = [
 
 export type Sts1RelatedKind = (typeof STS1_RELATED_KINDS)[number];
 export type Sts1RelatedItem = { slug: string; name: string };
-export type Sts1RelatedGroup = { kind: Sts1RelatedKind; items: Sts1RelatedItem[] };
+export type Sts1RelatedGroup = { kind: Sts1RelatedKind; items: Sts1RelatedItem[]; label?: string };
 
 /** Why two resources are linked; the audit report groups by it. */
 export type Sts1RelationSource =

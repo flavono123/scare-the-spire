@@ -17,6 +17,7 @@ import {
   getSts1UiLabels,
 } from "@/lib/sts1/data";
 import { plainSts1Text } from "@/lib/sts1/description";
+import { getSts1Related } from "@/lib/sts1/relations";
 import { sts1CardPortraitUrl, sts1DetailPath } from "@/lib/sts1/paths";
 import { sts1CardStats } from "@/lib/sts1/stats";
 import { generateSts1CardStaticParams } from "@/lib/sts1/static-params";
@@ -61,11 +62,13 @@ export default async function Sts1CardDetailPage({ params, searchParams }: Detai
     getSts1Keywords(gameLocale),
   ]);
   if (!card) notFound();
+  const related = await getSts1Related("cards", card.slug, gameLocale);
 
   return (
     <Sts1BitmapPackScope packs={[sts1BitmapPackName(gameLocale)]}>
       <Sts1CardDetail
         card={card}
+        related={related}
         labels={labels}
         keywords={keywords}
         serviceLocale={serviceLocale}

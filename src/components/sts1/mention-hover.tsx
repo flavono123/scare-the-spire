@@ -26,6 +26,7 @@ import { Sts1BitmapPackScope } from "./bitmap-pack-scope";
 import { Sts1BitmapText } from "./bitmap-text";
 import { Sts1SmartText } from "./smart-text";
 import { Sts1CardTile } from "./card-tile";
+import { Sts1TipBox } from "./tip-box";
 import { EDITOR_ANCHOR_PROPS } from "@/components/editor/editor-link";
 
 const PANEL_SRC = "/images/sts1/relic-popup/panel.webp";
@@ -338,6 +339,13 @@ export function Sts1EntityPreview({ entityId }: { entityId: string }) {
         suffix={index?.relicPopupSuffix?.[localeKey] ?? ""}
         keywords={index?.keywords ?? []}
       />
+    );
+  } else if (entry?.resource === "keywords") {
+    // A keyword previews as the game tips it: TipHelper's box, nothing else.
+    preview = (
+      <Sts1TipBox title={entry.nameKo} className="w-80">
+        <Sts1SmartText text={entry.description} color={STS1_CREAM} />
+      </Sts1TipBox>
     );
   } else if (entry) {
     preview = (

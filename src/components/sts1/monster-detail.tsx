@@ -5,6 +5,8 @@ import Image from "@/components/ui/static-image";
 import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import { MonsterAscensionStepper, useMonsterAscensionLevel } from "@/components/codex/monster-ascension";
 import { Sts1CommentsRail } from "./comments-rail";
+import { Sts1RelatedRail } from "./related-rail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
 import { Sts1MentionHover } from "./mention-hover";
 import { Sts1MonsterStage, type Sts1MonsterPlayback } from "./monster-stage";
@@ -258,12 +260,14 @@ function MoveButton({
 export function Sts1MonsterDetail({
   monster,
   refs,
+  related = [],
   labels,
   serviceLocale,
   onClose,
 }: {
   monster: Sts1Monster;
   refs: Sts1MonsterRefs;
+  related?: readonly Sts1RelatedGroup[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
   onClose?: () => void;
@@ -378,6 +382,7 @@ export function Sts1MonsterDetail({
           <p className="text-sm text-gray-500">{text.noMoves}</p>
         )}
       </section>
+      <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
       <Sts1CommentsRail
         resourceType="monster"
         slug={monster.slug}

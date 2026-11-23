@@ -12,11 +12,11 @@ import {
 import {
   getSts1Metadata,
   getSts1Power,
-  getSts1PowerSourceRefs,
   getSts1UiLabels,
 } from "@/lib/sts1/data";
 import { plainSts1Text } from "@/lib/sts1/description";
 import { sts1DetailPath, sts1PowerImageUrl } from "@/lib/sts1/paths";
+import { getSts1Related } from "@/lib/sts1/relations";
 import { generateSts1PowerStaticParams } from "@/lib/sts1/static-params";
 
 type DetailProps = {
@@ -47,18 +47,18 @@ export default async function Sts1PowerDetailPage({ params, searchParams }: Deta
   const resolved = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
-  const [power, sourceRefs, labels] = await Promise.all([
+  const [power, labels] = await Promise.all([
     getSts1Power(id, gameLocale),
-    getSts1PowerSourceRefs(gameLocale),
     getSts1UiLabels(gameLocale),
   ]);
   if (!power) notFound();
+  const related = await getSts1Related("powers", power.slug, gameLocale);
   // Sts1CardText draws relic, potion, and power text with the kor glyph pack.
   return (
     <Sts1BitmapPackScope packs={["kor"]}>
       <Sts1PowerDetail
         power={power}
-        sourceRefs={sourceRefs[power.id] ?? []}
+        related={related}
         labels={labels}
         serviceLocale={serviceLocale}
       />

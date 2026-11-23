@@ -7,6 +7,8 @@ import { GameUpgradeToggle } from "@/components/codex/game-upgrade-toggle";
 import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset-image-actions";
 import { Sts1CardTile } from "./card-tile";
 import { Sts1CommentsRail } from "./comments-rail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
+import { Sts1RelatedRail } from "./related-rail";
 import { Sts1DetailShell, Sts1MetaPill } from "./detail-chrome";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
@@ -41,7 +43,9 @@ export function Sts1CardDetail({
   showBeta = false,
   onBetaChange,
   onClose,
+  related = [],
 }: {
+  related?: readonly Sts1RelatedGroup[];
   card: Sts1Card;
   labels: Sts1UiLabels;
   keywords?: readonly Sts1Keyword[];
@@ -169,6 +173,7 @@ export function Sts1CardDetail({
           ) : null}
         </div>
       </section>
+      <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
       <Sts1CommentsRail
         resourceType="card"
         slug={card.slug}

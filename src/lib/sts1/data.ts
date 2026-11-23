@@ -9,7 +9,6 @@ import { withDefaultOpenGraphCanonical } from "@/lib/service-metadata";
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { sts1GameLocale } from "./locale";
 import { getSts1NavLabel } from "./nav-labels";
-import { sts1CardPortraitUrl, sts1PotionImageUrl, sts1RelicImageUrl } from "./paths";
 import type {
   Sts1Card,
   Sts1Character,
@@ -30,7 +29,6 @@ import type {
   Sts1Power,
   Sts1PowerType,
   Sts1Relic,
-  Sts1ResourceRef,
   Sts1ResourceType,
   Sts1UiLabels,
 } from "./types";
@@ -346,43 +344,6 @@ export async function getSts1Monster(id: string, gameLocale: GameLocale = "kor")
   const monsters = await getSts1Monsters(gameLocale);
   return monsters.find((monster) => matchesSlug(monster, id));
 }
-
-export const getSts1PowerSourceRefs = cache(async (
-  gameLocale: GameLocale = "kor",
-): Promise<Record<string, Sts1ResourceRef[]>> => {
-  const [powers, cards, relics, potions] = await Promise.all([
-    getSts1Powers(gameLocale),
-    getSts1Cards(gameLocale),
-    getSts1Relics(gameLocale),
-    getSts1Potions(gameLocale),
-  ]);
-  const cardById = new Map(cards.map((card) => [card.id, card]));
-  const relicById = new Map(relics.map((relic) => [relic.id, relic]));
-  const potionById = new Map(potions.map((potion) => [potion.id, potion]));
-  return Object.fromEntries(powers.map((power) => [
-    power.id,
-    [
-      ...power.sources.cards.flatMap((id) => {
-        const card = cardById.get(id);
-        return card
-          ? [{ type: "cards" as const, id, slug: card.slug, name: card.name, imageUrl: sts1CardPortraitUrl(card) }]
-          : [];
-      }),
-      ...power.sources.relics.flatMap((id) => {
-        const relic = relicById.get(id);
-        return relic
-          ? [{ type: "relics" as const, id, slug: relic.slug, name: relic.name, imageUrl: sts1RelicImageUrl(relic) }]
-          : [];
-      }),
-      ...power.sources.potions.flatMap((id) => {
-        const potion = potionById.get(id);
-        return potion
-          ? [{ type: "potions" as const, id, slug: potion.slug, name: potion.name, imageUrl: sts1PotionImageUrl(potion) }]
-          : [];
-      }),
-    ],
-  ]));
-});
 
 export async function getSts1Character(id: string, gameLocale: GameLocale = "kor"): Promise<Sts1Character | undefined> {
   const characters = await getSts1Characters(gameLocale);

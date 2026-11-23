@@ -18,6 +18,7 @@ import {
   getSts1UiLabels,
 } from "@/lib/sts1/data";
 import { sts1DetailPath, sts1IndexPath } from "@/lib/sts1/paths";
+import { getSts1RelatedMap } from "@/lib/sts1/relations";
 
 export async function generateMetadata({
   searchParams,
@@ -44,6 +45,7 @@ export default async function Sts1CardsPage({
     getSts1UiLabels(gameLocale),
     getSts1Keywords(gameLocale),
   ]);
+  const related = await getSts1RelatedMap("cards", cards.map((card) => card.slug), gameLocale);
 
   return (
     <>
@@ -51,6 +53,7 @@ export default async function Sts1CardsPage({
         <Suspense>
           <Sts1CardLibrary
             cards={cards}
+            related={related}
             labels={labels}
             keywords={keywords}
             serviceLocale={serviceLocale}

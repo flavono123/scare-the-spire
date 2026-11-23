@@ -24,6 +24,7 @@ import { STS1_MONSTER_TYPE_COLORS } from "@/lib/sts1/card-style";
 import { sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1Dungeon, Sts1Monster, Sts1MonsterRefs, Sts1MonsterType, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1MonsterDetail } from "./monster-detail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import { Sts1MonsterTile } from "./monster-tile";
 import { useEscapeClose } from "./use-escape-close";
 
@@ -40,11 +41,13 @@ function toggled<T>(previous: Set<T>, value: T): Set<T> {
 export function Sts1MonsterLibrary({
   monsters,
   refs,
+  related,
   labels,
   serviceLocale,
 }: {
   monsters: Sts1Monster[];
   refs: Sts1MonsterRefs;
+  related?: Record<string, Sts1RelatedGroup[]>;
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
@@ -199,6 +202,7 @@ export function Sts1MonsterLibrary({
             <Sts1MonsterDetail
               monster={selectedMonster}
               refs={refs}
+              related={related?.[selectedMonster.slug]}
               labels={labels}
               serviceLocale={serviceLocale}
               onClose={closeMonster}

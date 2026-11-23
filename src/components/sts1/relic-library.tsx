@@ -24,6 +24,7 @@ import { STS1_FILTER_ICONS, STS1_TIER_COLORS } from "@/lib/sts1/card-style";
 import { sts1CardUiUrl, sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1Relic, Sts1RelicPool, Sts1RelicTier, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1RelicDetail } from "./relic-detail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import { Sts1RelicTile } from "./relic-tile";
 import { useEscapeClose } from "./use-escape-close";
 
@@ -31,10 +32,12 @@ const TIER_ORDER: Exclude<Sts1RelicTier, "deprecated">[] = ["starter", "common",
 
 export function Sts1RelicLibrary({
   relics,
+  related,
   labels,
   serviceLocale,
 }: {
   relics: Sts1Relic[];
+  related?: Record<string, Sts1RelatedGroup[]>;
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
@@ -197,7 +200,7 @@ export function Sts1RelicLibrary({
       {selectedRelic ? (
         <CompendiumDetailOverlay onClose={closeRelic} aria-label={selectedRelic.name} zClassName="z-[100]">
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <Sts1RelicDetail relic={selectedRelic} labels={labels} serviceLocale={serviceLocale} onClose={closeRelic} />
+            <Sts1RelicDetail relic={selectedRelic} related={related?.[selectedRelic.slug]} labels={labels} serviceLocale={serviceLocale} onClose={closeRelic} />
           </div>
         </CompendiumDetailOverlay>
       ) : null}

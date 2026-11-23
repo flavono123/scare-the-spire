@@ -24,6 +24,7 @@ import { STS1_FILTER_ICONS, STS1_POTION_RARITY_COLORS } from "@/lib/sts1/card-st
 import { sts1CardUiUrl, sts1DetailPath } from "@/lib/sts1/paths";
 import type { Sts1Potion, Sts1PotionPool, Sts1PotionRarity, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1PotionDetail } from "./potion-detail";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import { Sts1PotionTile } from "./potion-tile";
 import { useEscapeClose } from "./use-escape-close";
 
@@ -31,10 +32,12 @@ const RARITY_ORDER: Sts1PotionRarity[] = ["common", "uncommon", "rare"];
 
 export function Sts1PotionLibrary({
   potions,
+  related,
   labels,
   serviceLocale,
 }: {
   potions: Sts1Potion[];
+  related?: Record<string, Sts1RelatedGroup[]>;
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
@@ -197,7 +200,7 @@ export function Sts1PotionLibrary({
       {selectedPotion ? (
         <CompendiumDetailOverlay onClose={closePotion} aria-label={selectedPotion.name} zClassName="z-[100]">
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <Sts1PotionDetail potion={selectedPotion} labels={labels} serviceLocale={serviceLocale} onClose={closePotion} />
+            <Sts1PotionDetail potion={selectedPotion} related={related?.[selectedPotion.slug]} labels={labels} serviceLocale={serviceLocale} onClose={closePotion} />
           </div>
         </CompendiumDetailOverlay>
       ) : null}

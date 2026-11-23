@@ -15,6 +15,7 @@ import {
   getSts1UiLabels,
 } from "@/lib/sts1/data";
 import { sts1DetailPath, sts1MonsterImageUrl } from "@/lib/sts1/paths";
+import { getSts1Related } from "@/lib/sts1/relations";
 import { generateSts1MonsterStaticParams } from "@/lib/sts1/static-params";
 
 type DetailProps = {
@@ -49,6 +50,9 @@ export default async function Sts1MonsterDetailPage({ params, searchParams }: De
     getSts1UiLabels(gameLocale),
   ]);
   if (!monster) notFound();
-  const refs = await getSts1MonsterRefs([monster], gameLocale);
-  return <Sts1MonsterDetail monster={monster} refs={refs} labels={labels} serviceLocale={serviceLocale} />;
+  const [refs, related] = await Promise.all([
+    getSts1MonsterRefs([monster], gameLocale),
+    getSts1Related("monsters", monster.slug, gameLocale),
+  ]);
+  return <Sts1MonsterDetail monster={monster} refs={refs} related={related} labels={labels} serviceLocale={serviceLocale} />;
 }

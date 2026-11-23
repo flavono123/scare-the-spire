@@ -10,6 +10,7 @@ import {
 } from "@/lib/i18n";
 import { getSts1Metadata, getSts1Potions, getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
+import { getSts1RelatedMap } from "@/lib/sts1/relations";
 
 export async function generateMetadata({
   searchParams,
@@ -35,12 +36,13 @@ export default async function Sts1PotionsPage({
     getSts1Potions(gameLocale),
     getSts1UiLabels(gameLocale),
   ]);
+  const related = await getSts1RelatedMap("potions", potions.map((row) => row.slug), gameLocale);
 
   // Sts1CardText draws relic, potion, and power text with the kor glyph pack.
   return (
     <Sts1BitmapPackScope packs={["kor"]}>
       <Suspense>
-        <Sts1PotionLibrary potions={potions} labels={labels} serviceLocale={serviceLocale} />
+        <Sts1PotionLibrary potions={potions} related={related} labels={labels} serviceLocale={serviceLocale} />
       </Suspense>
     </Sts1BitmapPackScope>
   );

@@ -6,34 +6,28 @@ import { CompendiumAssetImageActions } from "@/components/codex/compendium-asset
 import { Sts1CommentsRail } from "./comments-rail";
 import { Sts1CardText } from "./description";
 import { Sts1DetailShell, Sts1EnglishName, Sts1MetaPill } from "./detail-chrome";
-import { Sts1ResourceRefLinks } from "./resource-ref-links";
+import { Sts1RelatedRail } from "./related-rail";
 import type { ServiceLocale } from "@/lib/i18n";
 import { EMPTY_STS1_STATS } from "@/lib/sts1/description";
 import { STS1_POWER_TYPE_COLORS } from "@/lib/sts1/card-style";
 import { sts1IndexPath, sts1PowerImageUrl } from "@/lib/sts1/paths";
-import type { Sts1Power, Sts1ResourceRef, Sts1UiLabels } from "@/lib/sts1/types";
-
-function relatedLabels(serviceLocale: ServiceLocale) {
-  return serviceLocale === "ko"
-    ? { cards: "관련 카드", relics: "관련 유물", potions: "관련 포션" }
-    : { cards: "Related cards", relics: "Related relics", potions: "Related potions" };
-}
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
+import type { Sts1Power, Sts1UiLabels } from "@/lib/sts1/types";
 
 export function Sts1PowerDetail({
   power,
-  sourceRefs,
+  related,
   labels,
   serviceLocale,
   onClose,
 }: {
   power: Sts1Power;
-  sourceRefs: readonly Sts1ResourceRef[];
+  related: readonly Sts1RelatedGroup[];
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
   onClose?: () => void;
 }) {
   const assetCopyTargetRef = useRef<HTMLDivElement>(null);
-  const related = relatedLabels(serviceLocale);
   return (
     <Sts1DetailShell
       backHref={sts1IndexPath("powers")}
@@ -79,14 +73,7 @@ export function Sts1PowerDetail({
           />
         </section>
       ) : null}
-      {(["cards", "relics", "potions"] as const).map((type) => (
-        <Sts1ResourceRefLinks
-          key={type}
-          title={related[type]}
-          refs={sourceRefs.filter((ref) => ref.type === type)}
-          serviceLocale={serviceLocale}
-        />
-      ))}
+      <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
       <Sts1CommentsRail
         resourceType="power"
         slug={power.slug}

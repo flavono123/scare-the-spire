@@ -177,14 +177,6 @@ export interface Sts1Power {
   descriptions: string[];
 }
 
-export interface Sts1ResourceRef {
-  type: Extract<Sts1ResourceType, "cards" | "relics" | "potions">;
-  id: string;
-  slug: string;
-  name: string;
-  imageUrl: string;
-}
-
 export interface Sts1CharacterSelectEffect {
   sound?: string;
   shakeIntensity?: "LOW" | "MED" | "HIGH";
