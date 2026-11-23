@@ -2,7 +2,8 @@ export const dynamic = "force-static";
 
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { Sts1MonsterLibrary } from "@/components/sts1/monster-library";
+import { Sts1Bestiary } from "@/components/sts1/bestiary";
+import { getSts1Intents } from "@/lib/sts1/intents";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -40,14 +41,15 @@ export default async function Sts1MonstersPage({
     getSts1Monsters(gameLocale),
     getSts1UiLabels(gameLocale),
   ]);
-  const [refs, related] = await Promise.all([
+  const [refs, related, intents] = await Promise.all([
     getSts1MonsterRefs(monsters, gameLocale),
     getSts1RelatedMap("monsters", monsters.map((monster) => monster.slug), gameLocale),
+    getSts1Intents(gameLocale),
   ]);
 
   return (
     <Suspense>
-      <Sts1MonsterLibrary monsters={monsters} refs={refs} related={related} labels={labels} serviceLocale={serviceLocale} />
+      <Sts1Bestiary intents={intents} monsters={monsters} refs={refs} related={related} labels={labels} serviceLocale={serviceLocale} />
     </Suspense>
   );
 }

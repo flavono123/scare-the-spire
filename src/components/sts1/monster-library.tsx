@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   CompendiumDetailOverlay,
@@ -44,12 +44,14 @@ export function Sts1MonsterLibrary({
   related,
   labels,
   serviceLocale,
+  trailing,
 }: {
   monsters: Sts1Monster[];
   refs: Sts1MonsterRefs;
   related?: Record<string, Sts1RelatedGroup[]>;
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
+  trailing?: ReactNode;
 }) {
   const localizeLink = useLocalizedHref();
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -155,6 +157,7 @@ export function Sts1MonsterLibrary({
           openFiltersLabel={serviceText.common.openFilters}
           title={labels.monstersTitle}
           count={formatCodexCount(filtered.length, serviceText.labels.items, serviceLocale)}
+          trailing={trailing}
         />
         <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           {filtered.length === 0 ? (

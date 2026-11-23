@@ -72,6 +72,7 @@ export function Sts1ListLayout({
   onSearch,
   filters,
   overlay,
+  trailing,
   children,
 }: {
   title: string;
@@ -81,6 +82,8 @@ export function Sts1ListLayout({
   onSearch: (value: string) => void;
   filters?: ReactNode;
   overlay?: ReactNode;
+  /** Top bar controls after the count (bestiary tabs, gallery/list). */
+  trailing?: ReactNode;
   children: ReactNode;
 }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -105,6 +108,7 @@ export function Sts1ListLayout({
           openFiltersLabel={serviceText.common.openFilters}
           title={title}
           count={formatCodexCount(count, serviceText.labels.items, serviceLocale)}
+          trailing={trailing}
         />
         <CompendiumIndexScroller scrollerClassName="p-4 sm:p-6">
           {count === 0 ? (

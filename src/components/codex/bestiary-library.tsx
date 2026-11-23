@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { serviceMessages } from "@/messages/service";
+import { CompendiumViewSwitcher } from "./view-switcher";
 import type {
   CodexAffliction,
   CodexCharacter,
@@ -96,41 +97,15 @@ export function BestiaryLibrary({
   };
 
   const switcher = (
-    <div className="flex shrink-0 overflow-hidden rounded-md border border-border bg-black/20 p-0.5">
-      <button
-        type="button"
-        onClick={() => setView("monsters")}
-        className={`px-2 py-1 text-[11px] font-medium transition-colors sm:px-2.5 sm:text-xs ${
-          activeView === "monsters"
-            ? "rounded bg-primary/20 text-primary"
-            : "text-gray-400 hover:text-gray-200"
-        }`}
-      >
-        {messages.monsters}
-      </button>
-      <button
-        type="button"
-        onClick={() => setView("encounters")}
-        className={`px-2 py-1 text-[11px] font-medium transition-colors sm:px-2.5 sm:text-xs ${
-          activeView === "encounters"
-            ? "rounded bg-primary/20 text-primary"
-            : "text-gray-400 hover:text-gray-200"
-        }`}
-      >
-        {messages.encounters}
-      </button>
-      <button
-        type="button"
-        onClick={() => setView("intents")}
-        className={`px-2 py-1 text-[11px] font-medium transition-colors sm:px-2.5 sm:text-xs ${
-          activeView === "intents"
-            ? "rounded bg-primary/20 text-primary"
-            : "text-gray-400 hover:text-gray-200"
-        }`}
-      >
-        {messages.intents}
-      </button>
-    </div>
+    <CompendiumViewSwitcher<BestiaryView>
+      options={[
+        { key: "monsters", label: messages.monsters },
+        { key: "encounters", label: messages.encounters },
+        { key: "intents", label: messages.intents },
+      ]}
+      active={activeView}
+      onChange={setView}
+    />
   );
 
   if (activeView === "intents") {
