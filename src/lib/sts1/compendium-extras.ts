@@ -251,11 +251,17 @@ export const getSts1Ascensions = cache(async (gameLocale: GameLocale = "kor"): P
   const text = ui.AscensionModeDescriptions?.TEXT ?? [];
   return data.levels.map((level) => ({
     level: level.level,
+    slug: String(level.level),
+    legacySlugs: [],
     description: text[level.index] ?? "",
     monsterStats: level.monsterStats,
     mentions: level.mentions ?? [],
   }));
 });
+
+export async function getSts1Ascension(id: string, gameLocale: GameLocale = "kor") {
+  return (await getSts1Ascensions(gameLocale)).find((row) => row.slug === id);
+}
 
 // ---------------------------------------------------------------- modifiers
 
@@ -513,20 +519,27 @@ type RawAchievement = { key: string; index: number; image: string; hidden: boole
 type AchievementLoc = { AchievementGrid: { NAMES: string[]; TEXT: string[] } };
 
 export const getSts1Achievements = cache(async (gameLocale: GameLocale = "kor"): Promise<Sts1Achievement[]> => {
-  const [data, loc] = await Promise.all([
+  const [data, loc, eng] = await Promise.all([
     readJson<{ items: RawAchievement[] }>("achievements.json"),
     readLoc<AchievementLoc>(gameLocale, "achievements.json"),
+    readJson<AchievementLoc>("localization/eng/achievements.json"),
   ]);
   return data.items.map((item) => ({
     key: item.key,
     slug: slugify(item.key),
+    legacySlugs: [],
     name: loc.AchievementGrid.NAMES[item.index] ?? item.key,
+    nameEn: eng.AchievementGrid.NAMES[item.index] ?? item.key,
     description: loc.AchievementGrid.TEXT[item.index] ?? "",
     image: item.image,
     hidden: item.hidden,
     refs: item.refs,
   }));
 });
+
+export async function getSts1Achievement(id: string, gameLocale: GameLocale = "kor") {
+  return (await getSts1Achievements(gameLocale)).find((row) => row.slug === id.toLowerCase());
+}
 
 // ---------------------------------------------------------------- score bonuses
 

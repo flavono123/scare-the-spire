@@ -22,6 +22,8 @@ import { getSTS2Patches } from "@/lib/data";
 import { getNeowsletters } from "@/lib/neowsletters";
 import { getActiveRunBadgeCatalog } from "@/lib/run-badge-catalog";
 import {
+  generateSts1AchievementsStaticParams,
+  generateSts1AscensionsStaticParams,
   generateSts1BlightsStaticParams,
   generateSts1EventsStaticParams,
   generateSts1KeywordsStaticParams,
@@ -165,6 +167,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       generateSts1KeywordsStaticParams(),
       generateSts1ModifiersStaticParams(),
       generateSts1BlightsStaticParams(),
+      generateSts1AscensionsStaticParams(),
+      generateSts1AchievementsStaticParams(),
     ]),
   ]);
   const paths = [
@@ -180,7 +184,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...sts1Powers.map((power) => `/compendium/sts1/powers/${power.slug}`),
     ...sts1Monsters.map((monster) => `/compendium/sts1/monsters/${monster.slug}`),
     ...sts1Characters.map((character) => `/compendium/sts1/characters/${character.slug}`),
-    ...(["events", "keywords", "modifiers", "blights"] as const).flatMap((type, index) => (
+    ...(["events", "keywords", "modifiers", "blights", "ascensions", "achievements"] as const).flatMap((type, index) => (
       sts1Extras[index].map(({ id }) => `/compendium/sts1/${type}/${id}`)
     )),
   ];

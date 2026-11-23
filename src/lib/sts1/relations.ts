@@ -21,6 +21,7 @@ import {
   getSts1UiLabels,
 } from "./data";
 import { getSts1Events, sts1EventItemRefs } from "./events";
+import { sts1KeywordNameOccurs } from "./keyword-tips";
 import { matchSts1Name, parseSts1Pieces } from "./smart-words";
 import type { Sts1ItemRef, Sts1ResourceType, Sts1TextTemplate } from "./types";
 
@@ -68,7 +69,7 @@ type RelationExtras = {
   ascension: Record<string, { monsters?: string[]; events?: string[] }>;
 };
 
-const ASCENSION_SLUG = (level: number) => `ascension-${level}`;
+const ASCENSION_SLUG = (level: number) => String(level);
 // Levels that change the player rather than a monster or event: start damaged (6), one potion slot fewer (11), lower max HP (14).
 const PLAYER_ASCENSION_LEVELS = new Set([6, 11, 14]);
 
@@ -184,15 +185,28 @@ export const getSts1RelationGraph = cache(async () => {
     }
   };
 
+  // Plain game text names keywords by word, as TipHelper finds them on cards (event prose is left to colors).
+  const scanKeywords = (from: NodeKey, text: string) => {
+    const plain = text.replace(/#[rgbyp]/g, "").replace(/\bNL\b/g, " ");
+    for (const keyword of keywords) {
+      if (keyword.names.some((name) => sts1KeywordNameOccurs(plain, name))) link(from, node("keywords", keyword.slug), "keyword");
+    }
+  };
+
   for (const row of relics) scanText(node("relics", row.slug), row.description);
   for (const [from, to] of TEXT_MEANT) link(from as NodeKey, to as NodeKey, "text");
   for (const row of potions) scanText(node("potions", row.slug), row.description);
   for (const row of powers) scanText(node("powers", row.slug), row.description);
-  for (const row of blights) scanText(node("blights", row.slug), `${row.description} ${row.stackDescription ?? ""}`);
-  for (const row of mods) scanText(node("modifiers", row.slug), row.description);
-  for (const row of achievements) scanText(node("achievements", row.slug), row.description);
-  for (const row of scores) if (!row.total) scanText(node("score-bonuses", row.slug), row.description);
-  for (const row of ascensions) scanText(node("ascensions", ASCENSION_SLUG(row.level)), row.description);
+  for (const [from, text] of [
+    ...blights.map((row) => [node("blights", row.slug), `${row.description} ${row.stackDescription ?? ""}`] as const),
+    ...mods.map((row) => [node("modifiers", row.slug), row.description] as const),
+    ...achievements.map((row) => [node("achievements", row.slug), row.description] as const),
+    ...scores.filter((row) => !row.total).map((row) => [node("score-bonuses", row.slug), row.description] as const),
+    ...ascensions.map((row) => [node("ascensions", ASCENSION_SLUG(row.level)), row.description] as const),
+  ]) {
+    scanText(from, text);
+    scanKeywords(from, text);
+  }
   for (const row of keywords) scanText(node("keywords", row.slug), row.description);
   for (const event of events) {
     const from = node("events", event.slug);
@@ -271,6 +285,9 @@ export const getSts1RelationGraph = cache(async () => {
   for (const row of achievements) {
     const from = node("achievements", row.slug);
     for (const target of row.refs) link(from, ref(target.type as keyof typeof slugOf, target.id), "achievement");
+    // ASCEND_10 / ASCEND_20: beat that ascension level.
+    const level = /^ASCEND_(\d+)$/.exec(row.key)?.[1];
+    if (level && ascensions.some((ascension) => String(ascension.level) === level)) link(from, node("ascensions", level), "achievement");
   }
   for (const row of scores) {
     if (row.total) continue;

@@ -7,6 +7,7 @@ import { getSts1Ascensions, getSts1PageRefs } from "@/lib/sts1/compendium-extras
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
+import { getSts1RelatedMap } from "@/lib/sts1/relations";
 
 type ListProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 
@@ -21,10 +22,13 @@ export default async function Sts1AscensionsPage({ searchParams }: ListProps) {
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
   const [ascensions, labels] = await Promise.all([getSts1Ascensions(gameLocale), getSts1UiLabels(gameLocale)]);
-  const refs = await getSts1PageRefs({ mentions: ascensions.flatMap((row) => row.mentions) }, gameLocale);
+  const [refs, related] = await Promise.all([
+    getSts1PageRefs({ mentions: ascensions.flatMap((row) => row.mentions) }, gameLocale),
+    getSts1RelatedMap("ascensions", ascensions.map((row) => row.slug), gameLocale),
+  ]);
   return (
     <Suspense>
-      <Sts1AscensionList refs={refs} ascensions={ascensions} labels={labels} serviceLocale={serviceLocale} />
+      <Sts1AscensionList refs={refs} related={related} ascensions={ascensions} labels={labels} serviceLocale={serviceLocale} />
     </Suspense>
   );
 }

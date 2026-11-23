@@ -7,6 +7,7 @@ import { getSts1Achievements, getSts1PageRefs } from "@/lib/sts1/compendium-extr
 import { getGameLocaleFromSearchRecord, getServiceLocaleFromSearchRecord } from "@/lib/i18n";
 import { getSts1Metadata, getSts1UiLabels } from "@/lib/sts1/data";
 import { sts1IndexPath } from "@/lib/sts1/paths";
+import { getSts1RelatedMap } from "@/lib/sts1/relations";
 
 type ListProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 
@@ -21,12 +22,15 @@ export default async function Sts1AchievementsPage({ searchParams }: ListProps) 
   const serviceLocale = getServiceLocaleFromSearchRecord(resolved);
   const gameLocale = getGameLocaleFromSearchRecord(resolved);
   const [achievements, labels] = await Promise.all([getSts1Achievements(gameLocale), getSts1UiLabels(gameLocale)]);
-  const refs = await getSts1PageRefs({
-    mentions: achievements.flatMap((row) => row.refs.flatMap((ref) => (ref.type === "character" ? [] : [{ type: ref.type, id: ref.id }]))),
-  }, gameLocale);
+  const [refs, related] = await Promise.all([
+    getSts1PageRefs({
+      mentions: achievements.flatMap((row) => row.refs.flatMap((ref) => (ref.type === "character" ? [] : [{ type: ref.type, id: ref.id }]))),
+    }, gameLocale),
+    getSts1RelatedMap("achievements", achievements.map((row) => row.slug), gameLocale),
+  ]);
   return (
     <Suspense>
-      <Sts1AchievementGrid achievements={achievements} refs={refs} labels={labels} serviceLocale={serviceLocale} />
+      <Sts1AchievementGrid related={related} achievements={achievements} refs={refs} labels={labels} serviceLocale={serviceLocale} />
     </Suspense>
   );
 }

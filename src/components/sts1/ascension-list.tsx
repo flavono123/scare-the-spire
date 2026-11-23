@@ -3,17 +3,17 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
-import { useMonsterAscensionLevel } from "@/components/codex/monster-ascension";
 import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
-import { STS1_MONSTER_ASCENSION_SCOPE } from "@/lib/sts1/monster-moves";
-import { sts1IndexPath, sts1UiImageUrl } from "@/lib/sts1/paths";
+import { sts1DetailPath, sts1IndexPath, sts1UiImageUrl } from "@/lib/sts1/paths";
+import type { Sts1RelatedGroup } from "@/lib/sts1/relations";
 import type { Sts1Ascension, Sts1EntityRefs, Sts1UiLabels } from "@/lib/sts1/types";
 import { Sts1CommentsRail } from "./comments-rail";
+import { Sts1DetailShell, Sts1EnglishName } from "./detail-chrome";
 import { Sts1EventText } from "./event-text";
-import { Sts1ListLayout } from "./list-shell";
-import { Sts1EntityToken } from "./ref-token";
+import { Sts1DetailModal, Sts1ListLayout, openOnPlainClick, useSts1Selection } from "./list-shell";
+import { Sts1RelatedRail } from "./related-rail";
 import { Sts1TipBox } from "./tip-box";
 
 /** The top panel's ascension badge with the level on it, as the stepper draws it. */
@@ -31,19 +31,65 @@ export function Sts1AscensionBadge({ level, size }: { level: number; size: numbe
   );
 }
 
+export function Sts1AscensionDetail({
+  ascension,
+  refs,
+  related = [],
+  labels,
+  serviceLocale,
+  onClose,
+}: {
+  ascension: Sts1Ascension;
+  refs: Sts1EntityRefs;
+  related?: readonly Sts1RelatedGroup[];
+  labels: Sts1UiLabels;
+  serviceLocale: ServiceLocale;
+  onClose?: () => void;
+}) {
+  const title = `${labels.monsters.ascension} ${ascension.level}`;
+  return (
+    <Sts1DetailShell
+      backHref={sts1IndexPath("ascensions")}
+      backLabel={labels.listTitles.ascensions}
+      onClose={onClose}
+      serviceLocale={serviceLocale}
+      heroLayout="icon"
+      hero={(
+        <div className="flex w-full max-w-[26rem] flex-col items-center gap-4">
+          <Sts1AscensionBadge level={ascension.level} size={128} />
+          <Sts1TipBox title={title} className="w-full">
+            <Sts1EventText text={ascension.description} refs={refs} />
+          </Sts1TipBox>
+        </div>
+      )}
+    >
+      <section className="rounded-lg border border-border bg-compendium-rail px-4 py-3">
+        <h1 className="font-game-title text-2xl text-primary">{title}</h1>
+        <div className="mt-3">
+          <Sts1EnglishName name={title} nameEn={`Ascension ${ascension.level}`} serviceLocale={serviceLocale} />
+        </div>
+      </section>
+      <Sts1RelatedRail groups={related} serviceLocale={serviceLocale} />
+      <Sts1CommentsRail resourceType="ascension" slug={ascension.slug} serviceLocale={serviceLocale} />
+    </Sts1DetailShell>
+  );
+}
+
 export function Sts1AscensionList({
   ascensions,
   refs,
+  related,
   labels,
   serviceLocale,
 }: {
   ascensions: Sts1Ascension[];
   refs: Sts1EntityRefs;
+  related?: Record<string, Sts1RelatedGroup[]>;
   labels: Sts1UiLabels;
   serviceLocale: ServiceLocale;
 }) {
   const localizeLink = useLocalizedHref();
-  const [, setLevel] = useMonsterAscensionLevel(STS1_MONSTER_ASCENSION_SCOPE);
+  const { selected, open, close } = useSts1Selection(ascensions, "ascension");
   const [searchQuery, setSearchQuery] = useState("");
   const filtered = useMemo(() => {
     const query = searchQuery.trim();
@@ -56,38 +102,37 @@ export function Sts1AscensionList({
       serviceLocale={serviceLocale}
       searchQuery={searchQuery}
       onSearch={setSearchQuery}
+      overlay={selected ? (
+        <Sts1DetailModal label={`${labels.monsters.ascension} ${selected.level}`} onClose={close}>
+          <Sts1AscensionDetail
+            ascension={selected}
+            refs={refs}
+            related={related?.[selected.slug]}
+            labels={labels}
+            serviceLocale={serviceLocale}
+            onClose={close}
+          />
+        </Sts1DetailModal>
+      ) : null}
     >
       <div className="mx-auto flex max-w-3xl flex-col gap-2">
-        {filtered.map((row) => {
-          // The bestiary opens at this level: the stepper's stored level is the one it reads.
-          const bestiary = { prefetch: false, href: localizeLink(sts1IndexPath("monsters")), onClick: () => setLevel(row.level) };
-          return (
-            <div
-              key={row.level}
-              className="group grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-2"
-              data-sts1-ascension={row.level}
-              id={`ascension-${row.level}`}
-            >
-              <Link {...bestiary} aria-label={`${labels.monsters.ascension} ${row.level}`} className="flex justify-center rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary/70">
-                <Sts1AscensionBadge level={row.level} size={64} />
-              </Link>
-              <Sts1TipBox title={`${labels.monsters.ascension} ${row.level}`}>
-                <Sts1EventText text={row.description} refs={refs} />
-                {row.mentions.length ? (
-                  <span className="mt-1.5 flex flex-wrap gap-1">
-                    {row.mentions.map((mention) => <Sts1EntityToken key={`${mention.type}-${mention.id}`} type={mention.type} id={mention.id} refs={refs} />)}
-                  </span>
-                ) : null}
-                {row.monsterStats ? (
-                  <Link {...bestiary} className="mt-1 block text-[11px] text-[#87ceeb] hover:underline">→ {labels.monstersTitle}</Link>
-                ) : null}
-              </Sts1TipBox>
-            </div>
-          );
-        })}
-      </div>
-      <div className="mx-auto mt-8 max-w-3xl">
-        <Sts1CommentsRail resourceType="ascension" slug="list" serviceLocale={serviceLocale} />
+        {filtered.map((row) => (
+          <Link
+            key={row.level}
+            prefetch={false}
+            href={localizeLink(sts1DetailPath("ascensions", row.slug))}
+            onClick={(event) => openOnPlainClick(event, () => open(row))}
+            className="group grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-2 rounded-lg outline-none transition-transform hover:translate-x-1 focus-visible:ring-2 focus-visible:ring-primary/70"
+            data-sts1-ascension={row.level}
+          >
+            <span className="flex justify-center">
+              <Sts1AscensionBadge level={row.level} size={64} />
+            </span>
+            <Sts1TipBox title={`${labels.monsters.ascension} ${row.level}`}>
+              <Sts1EventText text={row.description} />
+            </Sts1TipBox>
+          </Link>
+        ))}
       </div>
     </Sts1ListLayout>
   );

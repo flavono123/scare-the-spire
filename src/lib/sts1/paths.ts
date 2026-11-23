@@ -165,9 +165,9 @@ export const STS1_LIST_SELECTOR_PARAMS: Record<Sts1ResourceType, string | null> 
   keywords: "keyword",
   modifiers: "modifier",
   blights: "blight",
-  ascensions: null,
+  ascensions: "ascension",
   neow: null,
-  achievements: null,
+  achievements: "achievement",
   "score-bonuses": null,
 };
 

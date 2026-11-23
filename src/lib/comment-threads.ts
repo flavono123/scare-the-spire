@@ -27,7 +27,7 @@ export const STS1_COMMENT_RESOURCE_TYPES = [
 ] as const;
 
 /** Lists without detail pages hold one thread for the whole list (slug `list`). */
-const STS1_LIST_COMMENT_TYPES = new Set<Sts1CommentResourceType>(["ascension", "neow", "achievement", "score-bonus"]);
+const STS1_LIST_COMMENT_TYPES = new Set<Sts1CommentResourceType>(["neow", "score-bonus"]);
 
 export type Sts1CommentResourceType = (typeof STS1_COMMENT_RESOURCE_TYPES)[number];
 

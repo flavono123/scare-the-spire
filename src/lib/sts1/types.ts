@@ -75,7 +75,7 @@ export type Sts1ResourceType =
   | "score-bonuses";
 
 /** Types with a detail page per entry; the others are a single list page. */
-export type Sts1DetailResourceType = Exclude<Sts1ResourceType, "ascensions" | "neow" | "achievements" | "score-bonuses">;
+export type Sts1DetailResourceType = Exclude<Sts1ResourceType, "neow" | "score-bonuses">;
 
 export interface Sts1CardUpgrade {
   damage?: number;
@@ -552,6 +552,9 @@ export interface Sts1CompendiumKeyword {
 
 export interface Sts1Ascension {
   level: number;
+  /** The level as a route id ("10"). */
+  slug: string;
+  legacySlugs: string[];
   description: string;
   /** The level changes monster hit points, damage or moves. */
   monsterStats: boolean;
@@ -608,7 +611,9 @@ export interface Sts1Neow {
 export interface Sts1Achievement {
   key: string;
   slug: string;
+  legacySlugs: string[];
   name: string;
+  nameEn: string;
   description: string;
   image: string;
   hidden: boolean;

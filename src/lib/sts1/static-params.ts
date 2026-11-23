@@ -8,7 +8,7 @@ import {
   getSts1Relics,
   sts1RouteIds,
 } from "./data";
-import { getSts1Blights, getSts1CompendiumKeywords, getSts1Modifiers } from "./compendium-extras";
+import { getSts1Achievements, getSts1Ascensions, getSts1Blights, getSts1CompendiumKeywords, getSts1Modifiers } from "./compendium-extras";
 import { getSts1Events } from "./events";
 
 export async function generateSts1CardStaticParams() {
@@ -89,4 +89,20 @@ export function generateSts1LocalizedModifiersStaticParams() {
 
 export function generateSts1LocalizedBlightsStaticParams() {
   return generateLocalizedStaticParams(generateSts1BlightsStaticParams);
+}
+
+export async function generateSts1AscensionsStaticParams() {
+  return sts1RouteIds(await getSts1Ascensions());
+}
+
+export async function generateSts1AchievementsStaticParams() {
+  return sts1RouteIds(await getSts1Achievements());
+}
+
+export function generateSts1LocalizedAscensionsStaticParams() {
+  return generateLocalizedStaticParams(generateSts1AscensionsStaticParams);
+}
+
+export function generateSts1LocalizedAchievementsStaticParams() {
+  return generateLocalizedStaticParams(generateSts1AchievementsStaticParams);
 }

@@ -187,6 +187,10 @@ async function extraEntries(ascensionLabel: string): Promise<Sts1MentionEntry[]>
     href: `${sts1IndexPath(resource)}#${slug}`,
     ...row,
   });
+  const detailEntry = (...args: Parameters<typeof listEntry>): Sts1MentionEntry => ({
+    ...listEntry(...args),
+    href: sts1DetailPath(args[0], args[2]),
+  });
   return [
     ...events.map((event): Sts1MentionEntry => ({
       id: mentionId("events", event.slug),
@@ -234,7 +238,7 @@ async function extraEntries(ascensionLabel: string): Promise<Sts1MentionEntry[]>
       href: sts1DetailPath("blights", blight.slug),
       description: blight.description,
     })),
-    ...ascensions.map((row) => listEntry("ascensions", "ascension", `ascension-${row.level}`, {
+    ...ascensions.map((row) => detailEntry("ascensions", "ascension", row.slug, {
       nameKo: `${ascensionLabel} ${row.level}`,
       nameEn: `Ascension ${row.level}`,
       imageUrl: sts1UiImageUrl("ascension"),
@@ -246,7 +250,7 @@ async function extraEntries(ascensionLabel: string): Promise<Sts1MentionEntry[]>
       imageUrl: sts1NpcImageUrl("neow"),
       description: neow.greeting.replace(/[~@]/g, ""),
     }),
-    ...achievements.map((row) => listEntry("achievements", "achievement", row.slug, {
+    ...achievements.map((row) => detailEntry("achievements", "achievement", row.slug, {
       nameKo: row.name,
       nameEn: engAchievements.get(row.key) ?? row.name,
       imageUrl: sts1AchievementImageUrl(row.image),
