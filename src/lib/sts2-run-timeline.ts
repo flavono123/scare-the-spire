@@ -1,12 +1,13 @@
 import {
   highlightKindsForAct,
   isTerminalDeathEntry,
+  isTerminalWinEntry,
   lastSceneKind,
   usesDedicatedLastScene,
   type HighlightKind,
   type LastSceneKind,
 } from "@/lib/history-last-scene";
-import { lastSceneDurationMs } from "@/lib/history-last-scene-steps";
+import { GAME_OVER_SCREEN_MS, lastSceneDurationMs } from "@/lib/history-last-scene-steps";
 import {
   type ReplayActAnalysis,
   type ReplayHistoryEntry,
@@ -40,6 +41,8 @@ export interface ActTimelineEntry {
   stackCount: number;
   sceneKind: LastSceneKind;
   highlightKinds: HighlightKind[];
+  /** Scene-local ms where a won run's game-over screen starts (its last floor only). */
+  gameOverAtMs?: number;
 }
 
 export interface ActTimeline {
@@ -140,10 +143,12 @@ export function buildActTimeline(
     );
     const sceneKind = lastSceneKind(entry, { isTerminalDeath });
     const highlightKinds = highlightByEntry[idx] ?? [];
-    const durationMs = nodeDurationForEntry(entry, {
+    const sceneEndMs = nodeDurationForEntry(entry, {
       sceneKind,
       highlight: highlightKinds.length > 0,
     });
+    const gameOver = isTerminalWinEntry(ctx?.run, acts, act.actIndex, idx);
+    const durationMs = sceneEndMs + (gameOver ? GAME_OVER_SCREEN_MS : 0);
     const out: ActTimelineEntry = {
       step: idx + 1,
       startMs: cursor,
@@ -151,6 +156,7 @@ export function buildActTimeline(
       stackCount: countStackItems(entry),
       sceneKind,
       highlightKinds,
+      ...(gameOver ? { gameOverAtMs: sceneEndMs - NODE_BASE_MS } : {}),
     };
     cursor += durationMs;
     return out;

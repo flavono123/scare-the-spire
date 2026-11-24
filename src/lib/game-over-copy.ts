@@ -55,3 +55,12 @@ export function gameOverQuote(gameLocale: GameLocale, salt = 0): string {
   const index = String(Math.abs(salt) % 17).padStart(2, "0");
   return table?.[`QUOTES.${index}`] ?? "";
 }
+
+/**
+ * The victory text under `BANNER.falseWin` (`VICTORY_DAMAGE_LOCAL`, PlayerDamage = the run's score). Only its first
+ * sentence: the rest reads the player's lifetime Architect damage from the progress file, which a run file lacks.
+ */
+export function gameOverVictoryDamage(gameLocale: GameLocale, score: number): string {
+  const template = gameOverTable(gameLocale)?.["VICTORY_DAMAGE_LOCAL"] ?? "";
+  return (template.split("\n")[0] ?? "").replace(/\{PlayerDamage(?::[^}]*)?\}/g, score.toLocaleString("en-US"));
+}

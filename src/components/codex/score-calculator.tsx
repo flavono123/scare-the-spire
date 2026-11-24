@@ -70,7 +70,7 @@ function serviceText(serviceLocale: ServiceLocale) {
 }
 
 /** The game-over screen's score lines (icon, filled label, +points or ×multiplier) and the total. */
-export function Sts2ScoreBreakdown({ lines, total, texts, totalLabel }: { lines: readonly Sts2ScoreLine[]; total: number; texts: Sts2ScoreTexts; totalLabel: string }) {
+export function Sts2ScoreBreakdown({ lines, total, texts, totalLabel, hideTotal }: { lines: readonly Sts2ScoreLine[]; total: number; texts: Sts2ScoreTexts; totalLabel: string; hideTotal?: boolean }) {
   return (
     <div>
       <ul className="space-y-1">
@@ -82,7 +82,7 @@ export function Sts2ScoreBreakdown({ lines, total, texts, totalLabel }: { lines:
           </li>
         ))}
       </ul>
-      <div className="mt-3 border-t border-white/10 pt-2 text-right font-game-title text-2xl text-[#efc851]" data-sts2-score-total={total}>
+      <div className={`mt-3 border-t border-white/10 pt-2 text-right font-game-title text-2xl text-[#efc851] ${hideTotal ? "invisible" : ""}`} data-sts2-score-total={total}>
         {totalLabel}: {total}
       </div>
     </div>

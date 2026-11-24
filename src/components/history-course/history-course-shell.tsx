@@ -1657,6 +1657,8 @@ function Stage({
           cardsById={cardsById}
           relicsById={relicsById}
           potionsById={potionsById}
+          playerId={run.players[focusedPlayerIndex]?.id}
+          gameOverLocalMs={timelineEntry?.gameOverAtMs === undefined ? undefined : sceneLocalMs - timelineEntry.gameOverAtMs}
           />
         </HistoryLastSceneErrorBoundary>
       ) : null}

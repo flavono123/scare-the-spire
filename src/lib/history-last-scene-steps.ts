@@ -11,6 +11,9 @@ import type { ReplayChoice, ReplayHistoryEntry } from "@/lib/sts2-run-replay";
 
 /** Intra-node last-scene beat, wall-clock. Playback rate does not shorten this. */
 export const LAST_SCENE_STEP_MS = 1200;
+/** The game-over screen (banner, score lines, badges, total) at the run's end, win or loss. */
+export const GAME_OVER_SCREEN_STEPS = 5;
+export const GAME_OVER_SCREEN_MS = GAME_OVER_SCREEN_STEPS * LAST_SCENE_STEP_MS;
 
 /** Combat idle window so Spine can load before `die`. */
 export const LAST_SCENE_ALIVE_MS = LAST_SCENE_STEP_MS;
@@ -162,7 +165,7 @@ export function lastSceneStepCount(
     case "shop":
       return Math.max(3, shopSteps(entry).length + 1);
     case "death":
-      return 3;
+      return GAME_OVER_SCREEN_STEPS;
     default:
       return 1;
   }

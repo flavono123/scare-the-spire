@@ -61,7 +61,7 @@ import {
 import { historyRoomChoiceCopy, eventOpeningDescription, eventLastSceneChoices } from "@/lib/history-room-choice";
 import { historyEventVfxSlug } from "@/lib/history-event-vfx";
 import { getHistoryCourseCatalog } from "@/lib/history-course-catalog";
-import { gameOverLoseBanner, gameOverQuote } from "@/lib/game-over-copy";
+import { HistoryGameOverScreen } from "@/components/history-course/game-over-screen";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { useOptionalHistoryCatalogLocale } from "@/hooks/use-history-catalog-locale";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -186,6 +186,8 @@ export function NodeLastScene({
   cardsById,
   relicsById,
   potionsById,
+  playerId,
+  gameOverLocalMs,
 }: {
   kind: LastSceneKind;
   entry: ReplayHistoryEntry;
@@ -202,6 +204,10 @@ export function NodeLastScene({
   cardsById?: Record<string, CodexCard>;
   relicsById?: Record<string, CodexRelic>;
   potionsById?: Record<string, CodexPotion>;
+  /** The focused player, whose score and badges the game-over screen shows. */
+  playerId?: number;
+  /** Scene-local ms since a won run's last fight ended: the game-over screen then covers it. */
+  gameOverLocalMs?: number;
 }) {
   const serviceLocale = useServiceLocale();
   const locTables = useOptionalHistoryCatalogLocale()?.locTables ?? null;
@@ -336,10 +342,27 @@ export function NodeLastScene({
           run={run}
           tables={tables}
           gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
           deathLabel={deathLabel}
           character={character}
+          playerId={playerId}
+          sceneLocalMs={sceneLocalMs}
           backgroundUrl={backgroundUrl}
         />
+      ) : null}
+      {gameOverLocalMs !== undefined && gameOverLocalMs >= 0 ? (
+        <div className="absolute inset-0 bg-black/70" data-history-game-over-overlay>
+          <GameOverPanel>
+            <HistoryGameOverScreen
+              run={run}
+              playerId={playerId}
+              localMs={gameOverLocalMs}
+              salt={run.seed.length}
+              gameLocale={gameLocale}
+              serviceLocale={serviceLocale}
+            />
+          </GameOverPanel>
+        </div>
       ) : null}
     </div>
   );
@@ -1027,21 +1050,25 @@ function DeathScene({
   run,
   tables,
   gameLocale,
+  serviceLocale,
   deathLabel,
   character,
+  playerId,
+  sceneLocalMs,
   backgroundUrl,
 }: {
   entry: ReplayHistoryEntry;
   run: ReplayRun;
   tables: GameI18nTables;
   gameLocale: GameLocale;
+  serviceLocale: ServiceLocale;
   deathLabel: string;
   character: string;
+  playerId?: number;
+  sceneLocalMs: number;
   backgroundUrl: string;
 }) {
   const salt = Math.round((entry.current_hp ?? 0) + (entry.damage_taken ?? 0) + run.seed.length);
-  const banner = gameOverLoseBanner(gameLocale, salt);
-  const quote = gameOverQuote(gameLocale, salt + 3);
   const causeId = run.killed_by_encounter ?? run.killed_by_event ?? entry.rooms?.[0]?.model_id;
   const cause =
     localizeGame(tables, "encounters", causeId)
@@ -1054,22 +1081,31 @@ function DeathScene({
         src={characterCombatArtSrc(character)}
         className="rich-jitter absolute bottom-[8%] left-[8%] h-[55%] w-[22%] object-contain object-bottom opacity-80"
       />
-      <HudSafe>
-        <div className="relative flex w-full max-w-sm flex-col items-center gap-3">
-          <div
-            className="relative flex w-full flex-col items-center gap-2 px-8 py-8"
-            style={{
-              backgroundImage: `url(${CONFIRM_POPUP})`,
-              backgroundSize: "100% 100%",
-            }}
-          >
-            <SceneArt src={SKULL} className="h-10 w-10 object-contain" />
-            <div className="rich-jitter font-game-title text-2xl text-red-100">{banner}</div>
-            <div className="font-game-text text-sm text-zinc-100">{cause}</div>
-            {quote ? <div className="font-game-text text-xs text-zinc-300">{quote}</div> : null}
-          </div>
-        </div>
-      </HudSafe>
+      <GameOverPanel>
+        <SceneArt src={SKULL} className="h-10 w-10 object-contain" />
+        <HistoryGameOverScreen
+          run={run}
+          playerId={playerId}
+          localMs={sceneLocalMs}
+          cause={cause}
+          salt={salt}
+          gameLocale={gameLocale}
+          serviceLocale={serviceLocale}
+        />
+      </GameOverPanel>
     </div>
+  );
+}
+
+function GameOverPanel({ children }: { children: React.ReactNode }) {
+  return (
+    <HudSafe>
+      <div
+        className="relative flex w-full max-w-sm flex-col items-center gap-2 px-8 py-8"
+        style={{ backgroundImage: `url(${CONFIRM_POPUP})`, backgroundSize: "100% 100%" }}
+      >
+        {children}
+      </div>
+    </HudSafe>
   );
 }

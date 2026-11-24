@@ -11,6 +11,7 @@ import type {
   ReplayActAnalysis,
   ReplayHistoryEntry,
   ReplayMapPointType,
+  ReplayRun,
 } from "../src/lib/sts2-run-replay";
 import {
   NODE_BASE_MS,
@@ -30,6 +31,7 @@ import {
   LAST_SCENE_ALIVE_MS,
   LAST_SCENE_DYING_MS,
   LAST_SCENE_STEP_MS,
+  GAME_OVER_SCREEN_MS,
   lastSceneDurationMs,
   lastSceneHiddenRelicIds,
   lastSceneIdSetHas,
@@ -696,5 +698,18 @@ const cardMid = quadraticBezier(
   0.5,
 );
 assert.ok(cardMid.y > 400, "card bezier control below the midpoint dips then rises to the deck");
+
+// A won run's last floor keeps its fight, then holds the game-over screen; a lost run's last floor is that screen.
+{
+  const acts = [actFromHistory([mundaneCombat, mundaneCombat])];
+  const won = buildActTimeline(acts[0], { run: { win: true } as ReplayRun, acts });
+  const plain = buildActTimeline(acts[0]);
+  assert.equal(won.entries[0].gameOverAtMs, undefined);
+  assert.equal(won.entries[1].gameOverAtMs, plain.entries[1].durationMs - NODE_BASE_MS);
+  assert.equal(won.entries[1].durationMs, plain.entries[1].durationMs + GAME_OVER_SCREEN_MS);
+  const lost = buildActTimeline(acts[0], { run: { win: false, killed_by_encounter: "ENCOUNTER.X", seed: "S" } as ReplayRun, acts });
+  assert.equal(lost.entries[1].sceneKind, "death");
+  assert.equal(lost.entries[1].gameOverAtMs, undefined);
+}
 
 console.log("history-last-scene.spec.ts ok");

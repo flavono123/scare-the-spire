@@ -85,6 +85,18 @@ export function isTerminalDeathEntry(
   return Boolean(run.killed_by_encounter || run.killed_by_event);
 }
 
+/** A won run's last floor (the final boss): the game-over screen follows its fight. */
+export function isTerminalWinEntry(
+  run: ReplayRun | undefined,
+  acts: ReplayActAnalysis[],
+  actIndex: number,
+  entryIndex: number,
+): boolean {
+  if (!run?.win) return false;
+  const lastAct = acts.length - 1;
+  return actIndex === lastAct && entryIndex === (acts[lastAct]?.history.length ?? 0) - 1;
+}
+
 export function isLanternKeyHistoryEntry(entry: ReplayHistoryEntry): boolean {
   return stripReplayId(entry.rooms?.[0]?.model_id ?? "").toUpperCase() === "THE_LANTERN_KEY";
 }
