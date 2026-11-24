@@ -2,36 +2,46 @@
   "archiveVersion": "0.113.0",
   "findings": [
     {
-      "titleKo": "하나의 언어는 아니다",
-      "bodyKo": "게임에 전용 문자 폰트는 없고, 문자는 전부 에셋마다 따로 그린 그림이다. 계열끼리 같은 글자를 공유하지 않으며, 가장 긴 글인 지식의 악마 문자 고리도 서로 다른 10자 한 줄을 다섯 번 반 이어 붙인 무늬다. 게임 텍스트도 1편 룬 유물은 \"해석할 수가 없습니다\", 진리의 석판은 \"이 언어를 그리 어렵지 않게 해독할 수 있을 것 같은 느낌\"이라고만 하고 대응표를 주지 않는다."
+      "titleKo": "하나의 문자 체계인가",
+      "bodyKo": "아니다. 문자학에서 같은 문자란 같은 글자 목록을 나눠 쓰는 것이고, 서체·필체는 그 글자의 모양 차이다. 이 기준으로 글자가 실제로 겹치는 것은 두 묶음뿐이다. 도형 문자(상인·가짜 상인·다브의 간판, 의식의 신수 방의 새김, 골드 표식)와 지식의 악마의 고리·표지. 나머지는 획 긋는 방식만 닮았고 같은 글자가 없다. 그래서 대분류는 소리 유무만 두고, 나머지는 레이블로 붙였다."
     },
     {
-      "titleKo": "쓰임새로 보면 세 묶음이다",
-      "bodyKo": "① 공중에 뜨는 낱글자: 카드를 내거나 몬스터가 행동할 때 VFX로 떠오른다. ② 표면에 쓰인 글: 책·두루마리·석판·벽·유물에 그려져 있다. ③ 표식·인장: 한 개짜리 기호가 물건에 찍혀 있다. 이 가운데 골드 표식은 ②의 상인 문자 글줄에도 글자로 나와 두 묶음을 잇는다. 풀의 와·초·키는 ①에 속하고, 같은 묶음의 지식의 악마·물어뜯는 두루마리·혈족 사제·인형의 방, 그리고 입이나 말풍선에서 글자가 나오는 그림(독백, 상인의 말풍선)이 와·초·키와 가장 가까운 부류다."
+      "titleKo": "서체 차이로 볼 수 있는 범위",
+      "bodyKo": "확정: 도형 문자는 물감 간판·돌 새김·손글씨 포스터에 같은 글자가 나와 한 문자의 서체·필체 차이다. 지식의 악마 고리와 표지는 같은 글자의 원형·세로 배열이다. 양식만: 붓점(지식의 악마, 물어뜯는 두루마리, 상인의 말풍선, 시대 기호, 성지·마법진·오벨리스크), 각진 블록(혈족 사제, 인형의 방, 독백, 탐색), 각진 미로(미로형 문자, 각진 나선). 양식 묶음은 같은 도구로 쓴 서로 다른 글일 수 있어 한 문자라고 할 수 없다."
     },
     {
-      "titleKo": "같은 글자를 다른 서체로 쓴 것인가",
-      "bodyKo": "확인된 것은 한 쌍뿐이다. 지식의 악마의 세로 표지 5자는 문자 고리 10자 중 2·3·5·4·9번째와 같은 글자다(아래 대조표). 물어뜯는 두루마리·혈족 사제·인형의 방 사이에서는 '7' 모양 한 글자만 닮았다. 글자를 같은 크기로 맞춰 겹친 비율은 고리와 표지가 0.66~0.90이고, 다른 계열끼리는 최고 0.65로 한 세트 안의 서로 다른 글자끼리 나오는 값(최고 0.67)과 구분되지 않는다."
+      "titleKo": "소리가 있는 글자",
+      "bodyKo": "음가가 확정된 지어낸 글자는 풀의 와·초·키뿐이다. 기호 하나가 한 음절인 음절 기호이고 계이름과 같은 구조다. 잠자는 소리 Z는 실제 문자라 언어별로 현지화되는데, 지어낸 글자는 현지화되지 않는다. 인형의 방·독백·상인의 말풍선은 말소리를 글자로 그렸지만 음가가 없다. 상인은 말(붓획)과 글(도형)이 다른 글자다."
     },
     {
-      "titleKo": "뜻이 정해진 기호와 가장 폰트에 가까운 글자",
-      "bodyKo": "뜻이 정해진 것은 풀의 와·초·키(기호 3개가 카드 태그 Wah·Cho·Ki, 음성 클립, 선율 3종과 1:1), 연대표의 시대 기호 6개(시대 이름과 1:1), 골드 표식(화폐)이다. 여러 그림에 같은 글자가 되풀이되는 것은 상인 문자 하나이고, 가짜 상인의 간판 하나가 HOAX!!로 읽히는 것 말고는 음가나 뜻을 붙일 근거가 게임 파일에 없다."
+      "titleKo": "실제 문자로 읽히는 것",
+      "bodyKo": "가짜 상인의 간판 둘이 영어로 읽힌다(추정): 화살표 간판 HOAX!!, 붉은 간판 SALE. 두 간판에서 Δ=A가 일치하고 Λ=L, Ξ=E는 가짜 그리스풍 서체의 수법이다. 따라서 도형 문자는 독자 언어가 아니라 영어를 도형으로 바꿔 쓴 것에 가깝다. 혈족 사제와 인형의 방 글자는 로마자·숫자(7, X, F, L, S, 4)를 비튼 모양이고, 풀의 키는 k+i로도 보인다. 1편 비밀 기술의 수첩은 글자 수만 맞고 읽지는 못했다."
     },
     {
-      "titleKo": "양식이 되풀이되는 것",
-      "bodyKo": "같은 글자는 아니어도 그리는 방식은 몇 가지로 모인다. 붓획과 점(지식의 악마, 물어뜯는 두루마리, 상인의 말풍선, 전쟁군주의 성지의 석판, 1편 변성의 마법진), 쐐기형 화면 글자(혈족 사제, 탐색·인지 편향), 기하 도형 글자(상인·가짜 상인·다브의 상점, 의식의 신수), 각진 미로(책·두루마리·석판, 1편 고대 문자). 1편 3막의 떠 있는 입체에 새겨진 붉은 룬은 룬 유물과 같은 발상이다."
+      "titleKo": "실제 문자 전통에 비추면",
+      "bodyKo": "글자 수로 유형을 가늠한다: 자모는 20~40자, 음절문자는 50~100자, 표어문자는 수백 자 이상. 게임의 세트는 3~10자라 어느 쪽도 아니다. 쐐기 문자는 같은 쐐기 자국을 조합해 글자를 만드는데 혈족 사제 글자는 끝만 뾰족한 로마자꼴이다. 점자는 정해진 칸(2×3)에 점의 유무로 글자를 가르는데 그런 세트는 없고, 지식의 악마의 점은 아랍 문자의 구별점처럼 바탕 획에 붙는 점이다. 상형 문자식(그림에서 온 표어 기호)은 시대 기호와 묵직한 석판이다. 실제 글은 글자가 고르지 않게 되풀이되는데, 지식의 악마 고리는 10자 한 줄의 반복이고 미로형 문자는 되풀이가 아예 없다."
     }
   ],
   "groups": [
     {
-      "id": "voiced",
-      "titleKo": "① 공중에 뜨는 낱글자",
-      "noteKo": "표면에 쓰인 글이 아니라, 소리나 주문이 눈에 보이는 형태로 떠오르는 스프라이트다. 글자가 낱개로 분리돼 있어 셀 수 있다.",
+      "id": "sound",
+      "titleKo": "소리와 이어진 글자",
+      "noteKo": "음가가 정해져 있거나, 누군가의 말소리로 그려진 글자.",
       "families": [
         {
           "id": "fool-melody",
           "titleKo": "풀의 와·초·키",
-          "noteKo": "카드 태그 Wah·Cho·Ki마다 기호 하나. 그 태그의 카드를 내면 VFX로 뜨고, 그 턴 동안 전투 UI에 켜진다(선율). 음성 클립도 wah·cho·ki로 따로 있다. 기호·소리·카드 이름이 1:1로 묶인 유일한 사례다. 베타 카드 그림 두 장에도 기호가 그려져 있고, '초'는 카드 그림 어디에도 없다.",
+          "noteKo": "카드 태그 Wah·Cho·Ki마다 기호 하나. 그 태그의 카드를 내면 VFX로 뜨고, 그 턴 동안 전투 UI에 켜진다(선율). 음성 클립도 wah·cho·ki로 따로 있다. 기호·소리·카드 이름이 1:1로 묶인 유일한 사례다. 베타 카드 그림 두 장에도 기호가 그려져 있고, '초'는 카드 그림 어디에도 없다. 기호 하나가 한 음절이므로 문자학으로는 음절 기호이고, 노래하는 음절에 기호를 하나씩 준다는 점에서 계이름과 구조가 같다. 다만 3자뿐이라 낱말을 적는 문자는 아니다.",
+          "labels": {
+            "sound": "음가 확정 (와·초·키)",
+            "type": "음절 기호",
+            "cluster": "단독",
+            "real": "'키'가 로마자 k+i 닮음 (추정)",
+            "parallel": "계이름(도·레·미), 음절문자(가나)",
+            "shape": "3자 · 낱자, 세로 쌓기 1례",
+            "meaning": "확정 (카드 태그·음성·선율과 1:1)",
+            "who": "풀"
+          },
           "items": [
             {
               "id": "fool-wah",
@@ -117,9 +127,192 @@
           ]
         },
         {
+          "id": "sleeping-z",
+          "titleKo": "잠자는 소리 Z",
+          "noteKo": "지어낸 글자가 아니라 실제 문자로 쓴 의성어다. 언어별로 그림을 따로 둔다. 반대로 와·초·키와 다른 지어낸 글자는 어느 언어에서도 같은 그림이다. 즉 개발진은 플레이어가 읽을 소리는 현지화하고, 지어낸 글자는 세계 안의 글자로 두어 번역하지 않는다.",
+          "labels": {
+            "sound": "음가 확정 (의성어)",
+            "type": "실제 문자",
+            "cluster": "해당 없음",
+            "real": "로마자 Z, 가나 ぐう 그대로",
+            "parallel": "만화의 의성어",
+            "shape": "1~2자",
+            "meaning": "확정 (플레이어 언어)",
+            "who": "잠든 몬스터"
+          },
+          "items": [
+            {
+              "id": "sleeping-z-eng",
+              "labelKo": "잠자는 소리 (영어)",
+              "noteKo": "실제 문자 Z. 언어별로 그림이 따로 있다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/vfx/sleeping/sleeping_z_eng.png"
+              }
+            },
+            {
+              "id": "sleeping-z-jpn",
+              "labelKo": "잠자는 소리 (일본어)",
+              "noteKo": "실제 문자 ぐう. 와·초·키는 언어와 상관없이 같은 기호를 쓴다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/vfx/sleeping/sleeping_z_jpn.png"
+              }
+            }
+          ]
+        },
+        {
+          "id": "doll-room",
+          "titleKo": "인형의 방",
+          "noteKo": "인형들의 속삭임이 말풍선 안에 글자로 뜬다(doll_room_vfx). 소리를 글자로 보여 준다는 점에서 와·초·키와 쓰임새가 가장 비슷하다.",
+          "labels": {
+            "sound": "말소리를 그림 (음가 미상)",
+            "type": "낱자 세트 (값 미상)",
+            "cluster": "각진 블록 (양식만, 물어뜯는 두루마리와 1자 닮음)",
+            "real": "7·S·4 닮음",
+            "parallel": "만화 말풍선의 외계어",
+            "shape": "3자 · 말풍선 안",
+            "meaning": "근거 없음",
+            "who": "인형들"
+          },
+          "items": [
+            {
+              "id": "doll-whispers",
+              "labelKo": "속삭임 3자 (doll_room_whispers)",
+              "noteKo": "각진 블록체. 7·S·4를 닮았다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/vfx/event/doll_room_whispers.png"
+              }
+            },
+            {
+              "id": "doll-bubble",
+              "labelKo": "속삭임 말풍선",
+              "noteKo": "글자가 담기는 말풍선.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/vfx/event/doll_room_whisper_bubble_l.png"
+              }
+            }
+          ]
+        },
+        {
+          "id": "speech-monologue",
+          "titleKo": "카드 \"독백\"",
+          "noteKo": "해골 입에서 글자가 날아오른다. 굵고 각진 토막 획에 점을 곁들인 모양으로, 혈족 사제·인형의 방과 같은 양식이다. 같은 글자는 없다.",
+          "labels": {
+            "sound": "말소리를 그림 (음가 미상)",
+            "type": "낱자 세트 (값 미상)",
+            "cluster": "각진 블록 (양식만)",
+            "real": "없음",
+            "parallel": "만화 말풍선의 외계어",
+            "shape": "6자 · 입에서 흩어짐",
+            "meaning": "근거 없음",
+            "who": "해골 (리젠트 카드)"
+          },
+          "items": [
+            {
+              "id": "speech-monologue",
+              "labelKo": "카드 \"독백\"",
+              "noteKo": "해골 입에서 금색 각진 글자 6개가 날아오른다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/regent/monologue.png",
+                "crop": [
+                  0.05,
+                  0.0,
+                  0.52,
+                  0.4697
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "speech-merchant-bubble",
+          "titleKo": "상인의 말풍선",
+          "noteKo": "상인은 간판에는 도형 문자를 쓰는데, 말풍선 속 글자는 둥근 붓획이다. 같은 인물의 말과 글이 다른 글자로 그려진 유일한 예로, 두 세트가 한 언어의 표기라는 근거는 없다.",
+          "labels": {
+            "sound": "말소리를 그림 (음가 미상)",
+            "type": "낱자 세트 (값 미상)",
+            "cluster": "붓점 (양식만)",
+            "real": "가나 닮음 (인상)",
+            "parallel": "만화 말풍선의 외계어",
+            "shape": "4자 · 두 줄",
+            "meaning": "근거 없음",
+            "who": "상인"
+          },
+          "items": [
+            {
+              "id": "speech-merchant-bubble",
+              "labelKo": "연대표 \"무언가를 사세요!\"의 상인 말풍선",
+              "noteKo": "둥근 붓획과 점으로 된 글자 4개.",
+              "source": {
+                "game": "sts2",
+                "path": "images/timeline/epoch_portraits/colorless5_epoch.png",
+                "crop": [
+                  0.4074,
+                  0.06,
+                  0.6049,
+                  0.3
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "speech-luminous-choir",
+          "titleKo": "이벤트 \"빛나는 합창단\"",
+          "noteKo": "입에서 나오는 빛 조각. 모양이 제각각이고 글자라기보다 소리의 시각 표현이다.",
+          "labels": {
+            "sound": "말소리를 그림",
+            "type": "글자 아님 (소리 표현)",
+            "cluster": "단독",
+            "real": "없음",
+            "parallel": "만화의 효과선",
+            "shape": "조각 7개",
+            "meaning": "근거 없음",
+            "who": "버섯 합창단"
+          },
+          "items": [
+            {
+              "id": "speech-luminous-choir",
+              "labelKo": "이벤트 \"빛나는 합창단\"",
+              "noteKo": "버섯 입에서 나오는 각진 빛 조각 7개. 글자라기보다 소리 표현에 가깝다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/events/luminous_choir.png",
+                "crop": [
+                  0.3488,
+                  0.3968,
+                  0.4419,
+                  0.558
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "silent",
+      "titleKo": "소리와 이어진 근거가 없는 글자",
+      "noteKo": "행동 효과로 뜨거나 물건에 쓰인 글자. 소리와 묶였다는 근거가 게임 파일에 없다.",
+      "families": [
+        {
           "id": "knowledge-demon",
           "titleKo": "지식의 악마",
-          "noteKo": "뼈대(Spine)에 문자 고리와 세로 표지가 들어 있다. 둘 다 평소에는 숨겨져 있고, 문자 고리는 압도적인 지식(3연타)이 쓰는 attack_heavy 애니메이션에서만 나타난다. 글자표는 10자이고, 표지는 그중 5자를 다시 쓴다. 둥근 붓획에 점을 찍는 양식이며, 두 줄·끊긴 두 줄, C+점·Є처럼 바탕 획에 점이나 획을 더한 짝이 있다.",
+          "noteKo": "뼈대(Spine)에 문자 고리와 세로 표지가 들어 있다. 둘 다 평소에는 숨겨져 있고, 문자 고리는 압도적인 지식(3연타)이 쓰는 attack_heavy 애니메이션에서만 나타난다. 글자표는 10자이고, 표지는 그중 5자를 다시 쓴다. 둥근 붓획에 점을 찍는 양식이며, 두 줄·끊긴 두 줄, C+점·Є처럼 바탕 획에 점이나 획을 더한 짝이 있다. 바탕 획에 점을 더해 다른 글자를 만드는 것은 아랍 문자의 구별점이나 한글의 가획과 같은 원리로, 글자를 체계로 설계한 흔적이다. 고리(원형)와 표지(세로)는 같은 글자를 방향만 바꿔 쓴 것이어서 서체 차이가 아니라 배열 차이다. 다만 55자가 같은 10자 줄의 반복이라 문장은 아니고, 글자 수 10은 자모로는 적고 숫자 한 벌과 같다(해석).",
+          "labels": {
+            "sound": "행동 VFX (소리 근거 없음)",
+            "type": "낱자 세트 10자 (값 미상)",
+            "cluster": "붓점 · 확정 (고리 = 표지)",
+            "real": "없음",
+            "parallel": "아랍 문자의 구별점, 한글 가획",
+            "shape": "10자 · 원형(윗부분 바깥)과 세로",
+            "meaning": "근거 없음 (10자 줄의 반복)",
+            "who": "지식의 악마"
+          },
           "items": [
             {
               "id": "kd-ring",
@@ -150,6 +343,14 @@
               }
             },
             {
+              "id": "glyph-table",
+              "labelKo": "낱글자 대조표",
+              "noteKo": "KD sign 1~5 = KD ring 2·3·5·4·9. 그 밖에는 Scroll 1 ≈ KD ring 1, Scroll 2 ≈ Doll 1 ≈ Kin 2 정도만 닮았다.",
+              "source": {
+                "recipe": "glyph-table"
+              }
+            },
+            {
               "id": "kd-thought",
               "labelKo": "thought 1 (생각 조각)",
               "noteKo": "thought 1~5는 초록 낙서 모양이고 글자는 아니다.",
@@ -164,7 +365,17 @@
         {
           "id": "scroll-of-biting",
           "titleKo": "물어뜯는 두루마리",
-          "noteKo": "뼈대에 rune1~rune6 슬롯이 있고 그림은 4장이다. 지식의 악마와 같은 붓점 양식이지만 같은 글자는 세로 두 줄(rune1) 하나뿐이다.",
+          "noteKo": "뼈대에 rune1~rune6 슬롯이 있고 그림은 4장이다. 세로 두 줄(rune1)은 지식의 악마 고리 1번째와, '7'에 짧은 획(rune2)은 인형의 방 1번째와 닮았다. 점을 쓰는 것은 붓점 쪽, 굵고 각진 토막 획은 각진 블록 쪽이라 두 양식 사이에 있다. 4자로는 같은 문자라고 판정할 수 없다.",
+          "labels": {
+            "sound": "행동 VFX (소리 근거 없음)",
+            "type": "낱자 세트 (값 미상)",
+            "cluster": "붓점과 각진 블록 사이 (각 1자 닮음)",
+            "real": "7 닮음",
+            "parallel": "없음",
+            "shape": "4자 · 낱자",
+            "meaning": "근거 없음",
+            "who": "물어뜯는 두루마리"
+          },
           "items": [
             {
               "id": "sob-rune1",
@@ -211,7 +422,17 @@
         {
           "id": "kin-priest",
           "titleKo": "혈족 사제",
-          "noteKo": "연약함의 구체·나약함의 구체가 맞을 때 터지는 VFX(kin_priest_grenade_vfx)의 입자다. 끝이 뾰족한 쐐기형 9자로, A·7·Y·X·F·L 같은 로마자와 숫자를 비튼 모양에 가깝다.",
+          "noteKo": "연약함의 구체·나약함의 구체가 맞을 때 터지는 VFX(kin_priest_grenade_vfx)의 입자다. 끝이 뾰족한 쐐기형 9자로, A·7·Y·X·F·L 같은 로마자와 숫자를 비튼 모양에 가깝다. 에셋 이름이 crypto(암호)다. 실제 쐐기 문자는 같은 쐐기 자국 여러 개를 조합해 한 글자를 만드는데, 이쪽은 획 끝만 뾰족한 로마자꼴이라 쐐기 문자와는 구조가 다르다.",
+          "labels": {
+            "sound": "행동 VFX (소리 근거 없음)",
+            "type": "낱자 세트 (값 미상)",
+            "cluster": "각진 블록 (양식만)",
+            "real": "로마자·숫자 닮음 (7·X·F·L)",
+            "parallel": "SF의 외계 글꼴 (비튼 로마자)",
+            "shape": "9자 · 낱자 입자",
+            "meaning": "근거 없음",
+            "who": "혈족 사제"
+          },
           "items": [
             {
               "id": "kin-crypto",
@@ -225,131 +446,286 @@
           ]
         },
         {
-          "id": "doll-room",
-          "titleKo": "인형의 방",
-          "noteKo": "인형들의 속삭임이 말풍선 안에 글자로 뜬다(doll_room_vfx). 소리를 글자로 보여 준다는 점에서 와·초·키와 쓰임새가 가장 비슷하다.",
+          "id": "brush-inscriptions",
+          "titleKo": "붓획과 점으로 쓴 글줄",
+          "noteKo": "지식의 악마와 같은 방식(둥근 붓획에 점)으로 그린 글줄. 1편 변성의 마법진은 글자 윗부분이 바깥을 향하는 원형 배열까지 지식의 악마 고리와 같고, 1편 3막의 오벨리스크는 세로 두 줄이다. 같은 글자가 겹치는 것은 확인되지 않아 '같은 필기 도구와 방식'까지만 말할 수 있다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "유사 문자 (글자 겹침 미확인)",
+            "cluster": "붓점 (양식만)",
+            "real": "없음",
+            "parallel": "붓글씨 문자 일반",
+            "shape": "가로 한 줄 / 원형 / 세로 두 줄",
+            "meaning": "근거 없음",
+            "who": "미상 (성지, 마법진, 3막의 입체)"
+          },
           "items": [
             {
-              "id": "doll-whispers",
-              "labelKo": "속삭임 3자 (doll_room_whispers)",
-              "noteKo": "각진 블록체. 7·S·4를 닮았다.",
+              "id": "rune-warlord-slab",
+              "labelKo": "이벤트 \"전쟁군주의 성지\"의 석판",
+              "noteKo": "굵은 주황 붓획과 점 한 줄. 붓점 양식.",
               "source": {
                 "game": "sts2",
-                "path": "images/packed/vfx/event/doll_room_whispers.png"
-              }
-            },
-            {
-              "id": "doll-bubble",
-              "labelKo": "속삭임 말풍선",
-              "noteKo": "글자가 담기는 말풍선.",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/vfx/event/doll_room_whisper_bubble_l.png"
-              }
-            }
-          ]
-        },
-        {
-          "id": "speech-glyphs",
-          "titleKo": "말소리로 나오는 글자",
-          "noteKo": "입이나 말풍선에서 글자가 나오는 그림. 와·초·키처럼 소리를 글자 모양으로 보여 주지만, 기호와 소리의 짝은 정해져 있지 않다. 상인의 말풍선은 지식의 악마·물어뜯는 두루마리와 같은 붓점 양식이다.",
-          "items": [
-            {
-              "id": "speech-monologue",
-              "labelKo": "카드 \"독백\"",
-              "noteKo": "해골 입에서 금색 각진 글자 6개가 날아오른다.",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/card_portraits/regent/monologue.png",
+                "path": "images/events/shrine_of_the_warlord.png",
                 "crop": [
-                  0.05,
-                  0.0,
-                  0.52,
-                  0.4697
+                  0.3249,
+                  0.6107,
+                  0.3647,
+                  0.6448
                 ]
               }
             },
             {
-              "id": "speech-merchant-bubble",
-              "labelKo": "연대표 \"무언가를 사세요!\"의 상인 말풍선",
-              "noteKo": "둥근 붓획과 점으로 된 글자 4개.",
+              "id": "rune-sts1-transmutation",
+              "labelKo": "1편 변성",
+              "noteKo": "마법진 테두리에 붓획과 점으로 된 글자 고리(14자쯤). 2편 지식의 악마 문자 고리와 같은 양식의 선례.",
               "source": {
-                "game": "sts2",
-                "path": "images/timeline/epoch_portraits/colorless5_epoch.png",
+                "game": "sts1",
+                "path": "images/1024Portraits/colorless/skill/transmutation.png",
                 "crop": [
-                  0.4074,
                   0.06,
-                  0.6049,
-                  0.3
+                  0.3684,
+                  0.96,
+                  0.9868
                 ]
               }
             },
             {
-              "id": "speech-luminous-choir",
-              "labelKo": "이벤트 \"빛나는 합창단\"",
-              "noteKo": "버섯 입에서 나오는 각진 빛 조각 7개. 글자라기보다 소리 표현에 가깝다.",
+              "id": "rune-sts1-beyond-obelisk",
+              "labelKo": "1편 3막 배경의 떠 있는 오벨리스크",
+              "noteKo": "두 면에 붉은 붓글씨 4자와 5자. 3막 배경의 떠 있는 입체들에는 면마다 이런 룬이 있다.",
               "source": {
-                "game": "sts2",
-                "path": "images/events/luminous_choir.png",
+                "game": "sts1",
+                "path": "beyondScene/scene3.png",
                 "crop": [
-                  0.3488,
-                  0.3968,
-                  0.4419,
-                  0.558
+                  0.8027,
+                  0.4819,
+                  0.853,
+                  0.6011
+                ]
+              }
+            },
+            {
+              "id": "rune-sts1-beyond-icosahedron",
+              "labelKo": "1편 3막 배경의 떠 있는 이십면체",
+              "noteKo": "면마다 붉은 룬 하나.",
+              "source": {
+                "game": "sts1",
+                "path": "beyondScene/scene3.png",
+                "crop": [
+                  0.271,
+                  0.4873,
+                  0.3169,
+                  0.5337
                 ]
               }
             }
           ]
         },
         {
-          "id": "voiced-compare",
-          "titleKo": "대조: 같은 글자인가, 실제 문자인가",
-          "noteKo": "위 다섯 세트의 낱글자를 같은 크기로 맞춘 표와, 같은 '소리 표기'인데 실제 문자를 쓰는 예.",
+          "id": "era-glyphs",
+          "titleKo": "연대표의 시대 기호",
+          "noteKo": "연대표의 시대마다 흰 붓글씨 기호가 하나씩 있다. 기호와 뜻(시대 이름)이 1:1로 정해져 있어(EpochEra 값과 era_atlas 조각 이름으로 확인), 와·초·키 다음으로 '뜻이 정해진 기호'에 가깝다. 감염 기호는 골드 표식꼴에 점을 찍은 모양이고, 지식의 악마 고리의 9번째 글자와도 닮았다. 기호 하나가 낱말 하나(시대 이름)이므로 표어 기호다. 눈·뿔 달린 삼각형·구름처럼 그림에서 온 모양이라 상형 문자의 표어자와 같은 부류다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "표어 기호 (한 기호 = 한 시대)",
+            "cluster": "붓점 (양식만) · 감염 기호가 골드 표식꼴",
+            "real": "없음",
+            "parallel": "상형 문자의 표어자, 연호",
+            "shape": "6자 · 낱자",
+            "meaning": "확정 (시대 이름과 1:1)",
+            "who": "연대표 (서술자)"
+          },
           "items": [
             {
-              "id": "glyph-table",
-              "labelKo": "낱글자 대조표",
-              "noteKo": "KD sign 1~5 = KD ring 2·3·5·4·9. 그 밖에는 Scroll 1 ≈ KD ring 1, Scroll 2 ≈ Doll 1 ≈ Kin 2 정도만 닮았다.",
-              "source": {
-                "recipe": "glyph-table"
-              }
-            },
-            {
-              "id": "sleeping-z-eng",
-              "labelKo": "잠자는 소리 (영어)",
-              "noteKo": "실제 문자 Z. 언어별로 그림이 따로 있다.",
+              "id": "era-atlas",
+              "labelKo": "시대 기호 6개 (era_atlas)",
+              "noteKo": "윗줄: 끝(3000), 문(2733). 가운뎃줄: 선사시대(-20000), 번영(1800). 아랫줄: 씨앗(0), 감염(1201). 마름모는 빈 칸용.",
               "source": {
                 "game": "sts2",
-                "path": "images/vfx/sleeping/sleeping_z_eng.png"
-              }
-            },
-            {
-              "id": "sleeping-z-jpn",
-              "labelKo": "잠자는 소리 (일본어)",
-              "noteKo": "실제 문자 ぐう. 와·초·키는 언어와 상관없이 같은 기호를 쓴다.",
-              "source": {
-                "game": "sts2",
-                "path": "images/vfx/sleeping/sleeping_z_jpn.png"
+                "path": "images/atlases/era_atlas.png"
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "written",
-      "titleKo": "② 표면에 쓰인 글",
-      "noteKo": "책, 두루마리, 석판, 벽, 유물에 그려진 글. 낱글자로 나눌 수 없거나 물건마다 서체가 다르다.",
-      "families": [
+        },
+        {
+          "id": "gold-mark",
+          "titleKo": "골드 표식",
+          "noteKo": "삼각형을 가로지르는 획(숫자 4와 비슷). 화폐 기호로 일관되게 쓰이고 1편에도 같은 표식이 있다. 상인 문자의 글줄 안에도 글자처럼 나온다. 기호 하나가 '골드'를 뜻하는 표어 기호이고, 글줄 속에서는 가격 앞에 붙는 화폐 기호처럼 쓰인다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "표어 기호 (화폐)",
+            "cluster": "도형 문자 · 확정 (글줄 안에 나옴)",
+            "real": "숫자 4 닮음",
+            "parallel": "화폐 기호 ($, ¥)",
+            "shape": "1자",
+            "meaning": "확정 (골드)",
+            "who": "상인, 그렘린, UI"
+          },
+          "items": [
+            {
+              "id": "gold-top-bar",
+              "labelKo": "상단 골드 아이콘",
+              "noteKo": "",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/common_ui/top_bar/top_bar_gold.png"
+              }
+            },
+            {
+              "id": "gold-seal-of-gold",
+              "labelKo": "황금 인장",
+              "noteKo": "",
+              "source": {
+                "game": "sts2",
+                "path": "images/relics/seal_of_gold.png"
+              }
+            },
+            {
+              "id": "gold-fat-gremlin",
+              "labelKo": "뚱뚱한 그렘린의 자루",
+              "noteKo": "붉은 물감으로 같은 표식.",
+              "source": {
+                "game": "sts2",
+                "atlas": "fat_gremlin",
+                "region": "bag"
+              }
+            },
+            {
+              "id": "gold-crystal-sphere",
+              "labelKo": "수정구의 골드",
+              "noteKo": "",
+              "source": {
+                "game": "sts2",
+                "path": "images/events/crystal_sphere/crystal_sphere_big_gold.png"
+              }
+            },
+            {
+              "id": "gold-coin-flip",
+              "labelKo": "동전 뒤집기 VFX",
+              "noteKo": "",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/vfx/coin_flip_anim.png"
+              }
+            },
+            {
+              "id": "gold-map-shop",
+              "labelKo": "지도의 상점 아이콘",
+              "noteKo": "",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/common_ui/map/icons/map_shop.png"
+              }
+            },
+            {
+              "id": "gold-heist-power",
+              "labelKo": "강도 파워 아이콘",
+              "noteKo": "붉은 표식이 찍힌 자루.",
+              "source": {
+                "game": "sts2",
+                "path": "images/powers/heist_power.png"
+              }
+            },
+            {
+              "id": "gold-sts1-top-panel",
+              "labelKo": "1편 상단 골드 자루",
+              "noteKo": "1편에도 같은 4꼴 표식.",
+              "source": {
+                "game": "sts1",
+                "path": "images/ui/topPanel/panelGoldBag.png"
+              }
+            },
+            {
+              "id": "gold-sts1-map-shop",
+              "labelKo": "1편 지도의 상점 아이콘",
+              "noteKo": "",
+              "source": {
+                "game": "sts1",
+                "path": "images/ui/map/shop.png"
+              }
+            },
+            {
+              "id": "gold-darv-pouch",
+              "labelKo": "다브의 돈주머니",
+              "noteKo": "붉은 표식.",
+              "source": {
+                "game": "sts2",
+                "path": "images/ancients/darv_placeholder.png",
+                "crop": [
+                  0.6133,
+                  0.5958,
+                  0.6375,
+                  0.6483
+                ]
+              }
+            },
+            {
+              "id": "gold-golden-axe",
+              "labelKo": "golden_axe 카드 그림",
+              "noteKo": "도끼날의 원 안에 표식. 카드 텍스트는 파일에 없다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/colorless/golden_axe.png",
+                "crop": [
+                  0.38,
+                  0.2,
+                  0.63,
+                  0.5
+                ]
+              }
+            },
+            {
+              "id": "gold-greed",
+              "labelKo": "카드 \"탐욕\"",
+              "noteKo": "동전마다 표식.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/curse/greed.png",
+                "crop": [
+                  0.36,
+                  0.3592,
+                  0.56,
+                  0.5592
+                ]
+              }
+            },
+            {
+              "id": "gold-spoils-of-battle",
+              "labelKo": "카드 \"전투의 성과\" 베타 그림",
+              "noteKo": "생각 풍선 속 표식.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/regent/beta/spoils_of_battle.png",
+                "crop": [
+                  0.3593,
+                  0.0,
+                  0.6796,
+                  0.2992
+                ]
+              }
+            }
+          ]
+        },
         {
           "id": "merchant-script",
           "titleKo": "상인 문자 (기하 도형 글자)",
-          "noteKo": "상점 배경의 간판·팻말·병 라벨에 쓰인 글. Ø, Δ, X, 세로줄, 모래시계꼴, ⊙ 같은 기하 도형 글자가 여러 간판에 되풀이되고, 골드 표식이 글줄 안에 글자처럼 섞여 나온다. 게임에서 가장 폰트에 가까운 글자 세트다. 가짜 상인의 화살표 간판은 로마자 HOAX!!로 읽힌다(추정). 다른 줄은 같은 식으로 읽히지 않는다.",
+          "noteKo": "상점 간판·팻말·라벨의 글. Ø, Δ, Λ, Ξ, X, ⊙, 모래시계꼴, 세로줄 같은 도형 글자가 여러 에셋에 되풀이되고 골드 표식이 글줄에 섞인다. 같은 글자 목록을 나눠 쓰므로 게임에서 유일하게 '한 문자'라고 할 수 있는 세트이고, 간판(물감)·선돌(새김)·포스터(손글씨)의 차이가 서체·필체 차이에 해당한다. 가짜 상인의 화살표 간판은 HOAX!!, 붉은 간판은 SALE로 읽힌다(추정). 두 간판에서 Δ=A가 일치하고 Λ=L, Ξ=E는 그리스 글자를 닮은꼴 로마자로 쓰는 가짜 그리스풍 서체와 같은 수법이다. 따라서 독자적 언어가 아니라 영어를 닮은꼴 도형으로 바꿔 쓴 것으로 보는 편이 맞다. 세로줄 I·II·III은 탤리(막대) 숫자로 보인다. 나머지 줄은 같은 식으로 읽히지 않는다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "변장한 로마자 (일부 읽힘)",
+            "cluster": "도형 문자 · 확정 (글자 겹침)",
+            "real": "HOAX!!, SALE로 읽힘 (추정). 8%·★·! 실제 기호 섞임",
+            "parallel": "가짜 그리스풍 서체 (Δ=A, Λ=L, Ξ=E), 탤리 숫자",
+            "shape": "10자 안팎 · 가로 왼→오",
+            "meaning": "두 간판만 읽힘, 나머지 미해독",
+            "who": "상인, 가짜 상인, 다브 (의식의 신수 방과 아키텍트 스케치에도)"
+          },
           "items": [
             {
               "id": "merchant-hoax-sign",
               "labelKo": "가짜 상인의 화살표 간판",
-              "noteKo": "卅 Ø Δ X ! !. H·O·A·X로 읽으면 HOAX!!(추정).",
+              "noteKo": "卅 Ø Δ X ! !. H·O·A·X로 읽으면 HOAX!!(추정). 가짜 상인의 방이라 뜻도 맞는다.",
               "source": {
                 "game": "sts2",
                 "path": "animations/backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom.png",
@@ -379,7 +755,7 @@
             {
               "id": "merchant-red-sign",
               "labelKo": "가짜 상인의 붉은 매달린 간판",
-              "noteKo": "Ø Δ Ξ 묶음이 네 번 반복된다.",
+              "noteKo": "작은 글줄 ⊖ Δ Λ Ξ가 네 번, 큰 글자로 한 번 더(E는 네모 세 개). Δ=A, Λ=L, Ξ=E로 놓으면 SALE(추정). Δ=A는 HOAX 간판과 같은 대응이다.",
               "source": {
                 "game": "sts2",
                 "path": "animations/backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom.png",
@@ -502,7 +878,7 @@
             {
               "id": "merchant-darv-poster",
               "labelKo": "다브의 상점 벽 포스터",
-              "noteKo": "손글씨 세 줄. 둘째 줄이 골드 표식으로 시작하고 ⊡, Ø, 세로 세 줄이 이어진다.",
+              "noteKo": "손글씨 세 줄. 둘째 줄은 골드 표식 뒤에 I ⊡ ⊡ Ø가 이어져 가격 표기처럼 보인다(추정).",
               "source": {
                 "game": "sts2",
                 "path": "images/ancients/darv_placeholder.png",
@@ -534,9 +910,78 @@
           ]
         },
         {
+          "id": "screen-glyphs",
+          "titleKo": "디펙트 카드의 화면 글자",
+          "noteKo": "기계 화면에 뜬 글줄. 탐색은 눈 둘레의 쐐기꼴 글자, 인지 편향·핫픽스는 막대와 눈금이다. 줄기 선에 눈금을 긋는 방식은 오검 문자나 바코드와 닮았지만 되풀이되는 글자가 없다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "유사 문자",
+            "cluster": "단독 (탐색은 각진 블록 양식)",
+            "real": "없음",
+            "parallel": "오검 문자, 바코드",
+            "shape": "글줄 · 가로, 원형",
+            "meaning": "근거 없음",
+            "who": "디펙트 (기계 화면)"
+          },
+          "items": [
+            {
+              "id": "rune-sts1-seek",
+              "labelKo": "1편 탐색",
+              "noteKo": "눈 둘레의 자홍색 쐐기 글자. 2편 혈족 사제의 문자 입자와 같은 쐐기형 화면 글자 양식.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024Portraits/blue/skill/seek.png"
+              }
+            },
+            {
+              "id": "rune-seek",
+              "labelKo": "seek 카드 그림",
+              "noteKo": "눈 둘레의 자홍색 쐐기 글자. 1편 탐색과 같은 그림이고 2편 카드 텍스트는 파일에 없다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/defect/seek.png"
+              }
+            },
+            {
+              "id": "rune-sts1-biased-cognition",
+              "labelKo": "1편 인지 편향",
+              "noteKo": "막대와 눈금으로 된 화면 글줄 세 덩이.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024Portraits/blue/power/biased_cognition.png"
+              }
+            },
+            {
+              "id": "rune-hotfix",
+              "labelKo": "카드 \"핫픽스\"",
+              "noteKo": "구슬 표면을 덮은 고리·막대·눈금.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/defect/hotfix.png",
+                "crop": [
+                  0.03,
+                  0.0395,
+                  0.42,
+                  0.95
+                ]
+              }
+            }
+          ]
+        },
+        {
           "id": "maze-writing",
           "titleKo": "미로형 문자",
-          "noteKo": "각진 미로 무늬로 '글이 쓰여 있음'을 나타내는 공통 양식. 1편 고대 문자 이벤트의 벽(선, 눈금, 각진 나선)에서 2편의 책·두루마리·석판으로 이어진다. 같은 글자가 반복되지 않아 글자표를 만들 수 없다.",
+          "noteKo": "각진 미로 무늬로 '글이 쓰여 있음'을 나타내는 공통 양식. 1편 고대 문자 이벤트의 벽(선, 눈금, 각진 나선)에서 2편의 책·두루마리·석판으로 이어진다. 같은 글자가 반복되지 않아 글자표를 만들 수 없다. 획을 직각으로 꺾어 칸을 채우는 실제 문자(구첩전, 네모 쿠픽, 파스파)와 겉모습이 닮았지만, 그쪽은 같은 글자가 같은 모양으로 되풀이된다. 이쪽은 되풀이가 없으므로 문자가 아니라 '글이 쓰여 있음'을 나타내는 유사 문자다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "유사 문자",
+            "cluster": "각진 미로 (양식만)",
+            "real": "없음",
+            "parallel": "구첩전·네모 쿠픽·파스파 (겉모습만)",
+            "shape": "글자 경계 없음",
+            "meaning": "게임 글만 해독을 말함 (진리의 석판 → \"공기\")",
+            "who": "고대의 존재들 (1편 고대 문자), 책·석판의 필자"
+          },
           "items": [
             {
               "id": "maze-scrawl",
@@ -765,9 +1210,345 @@
           ]
         },
         {
+          "id": "spiral",
+          "titleKo": "각진 나선",
+          "noteKo": "1편과 2편에 되풀이되는 문양. 미로형 문자와 같은 획으로 그린다. 글자가 아니라 번개무늬(뇌문) 계열의 장식 문양이다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "문양",
+            "cluster": "각진 미로 (양식만)",
+            "real": "없음",
+            "parallel": "뇌문, 그리스 번개무늬",
+            "shape": "1개",
+            "meaning": "근거 없음",
+            "who": "미상"
+          },
+          "items": [
+            {
+              "id": "spiral-amalgamator",
+              "labelKo": "융합자의 얼굴",
+              "noteKo": "이벤트 글: \"빛나는 문양들이 뒤엉켜 소용돌이치고 있습니다.\"",
+              "source": {
+                "game": "sts2",
+                "path": "images/events/amalgamator.png",
+                "crop": [
+                  0.2797,
+                  0.3038,
+                  0.3906,
+                  0.5314
+                ]
+              }
+            },
+            {
+              "id": "spiral-enchantment",
+              "labelKo": "소용돌이 인챈트",
+              "noteKo": "",
+              "source": {
+                "game": "sts2",
+                "path": "images/enchantments/spiral.png"
+              }
+            },
+            {
+              "id": "spiral-sts1-secret-portal",
+              "labelKo": "1편 비밀 포탈",
+              "noteKo": "",
+              "source": {
+                "game": "sts1",
+                "path": "images/events/secretPortal.jpg",
+                "crop": [
+                  0.2,
+                  0.05,
+                  0.9,
+                  0.65
+                ]
+              }
+            },
+            {
+              "id": "spiral-sts1-searing-blow",
+              "labelKo": "1편 불태우는 일격",
+              "noteKo": "마름모 안의 각진 나선. 고대 문자 벽의 마름모와 같은 문양.",
+              "source": {
+                "game": "sts1",
+                "path": "images/1024Portraits/red/attack/searing_blow.png",
+                "crop": [
+                  0.4,
+                  0.0,
+                  0.8,
+                  0.2368
+                ]
+              }
+            },
+            {
+              "id": "spiral-stratagem",
+              "labelKo": "카드 \"책략\"",
+              "noteKo": "붉은 말마다 세 갈래 소용돌이. 카드 \"불의 심장\"의 보석에도 같은 문양.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/colorless/stratagem.png",
+                "crop": [
+                  0.55,
+                  0.45,
+                  1.0,
+                  0.95
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "runic-relics",
+          "titleKo": "룬 유물",
+          "noteKo": "이름에 '룬'이 붙은 유물의 새김. 2편이 1편 그림을 이어받았고 1편 설명은 \"이 룬문자들은 해석할 수가 없습니다\"다. 실제 룬 문자는 나무·돌에 새기기 쉬운 직선 낱자 24자쯤의 자모인데, 이쪽은 유물마다 다른 무늬(겹삼각, 고리, 회로도, 동심 호)라 이름만 룬이다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "유사 문자",
+            "cluster": "단독 (유물마다 다름)",
+            "real": "없음",
+            "parallel": "룬 문자 (이름만)",
+            "shape": "유물마다 다름",
+            "meaning": "게임이 해석 불가라고 명시",
+            "who": "미상"
+          },
+          "items": [
+            {
+              "id": "rune-sts1-pyramid",
+              "labelKo": "1편 룬 피라미드",
+              "noteKo": "붉은 겹삼각 룬.",
+              "source": {
+                "game": "sts1",
+                "path": "images/relics/runicPyramid.png"
+              }
+            },
+            {
+              "id": "rune-sts2-pyramid",
+              "labelKo": "2편 룬 피라미드",
+              "noteKo": "1편과 같은 룬.",
+              "source": {
+                "game": "sts2",
+                "path": "images/relics/runic_pyramid.png"
+              }
+            },
+            {
+              "id": "rune-sts1-cube",
+              "labelKo": "1편 룬 큐브",
+              "noteKo": "한 줄로 이어진 고리 무늬.",
+              "source": {
+                "game": "sts1",
+                "path": "images/relics/runicCube.png"
+              }
+            },
+            {
+              "id": "rune-sts2-cube",
+              "labelKo": "2편 runic_cube 그림",
+              "noteKo": "그림만 있고 유물 텍스트는 없다.",
+              "source": {
+                "game": "sts2",
+                "path": "images/relics/runic_cube.png"
+              }
+            },
+            {
+              "id": "rune-sts1-capacitor",
+              "labelKo": "1편 룬 축전기",
+              "noteKo": "회로도 같은 주황 룬.",
+              "source": {
+                "game": "sts1",
+                "path": "images/largeRelics/runicCapacitor.png"
+              }
+            },
+            {
+              "id": "rune-sts2-capacitor",
+              "labelKo": "2편 룬 축전기",
+              "noteKo": "1편과 같은 룬.",
+              "source": {
+                "game": "sts2",
+                "path": "images/relics/runic_capacitor.png"
+              }
+            },
+            {
+              "id": "rune-sts1-dome",
+              "labelKo": "1편 룬 반구",
+              "noteKo": "동심 호 무늬.",
+              "source": {
+                "game": "sts1",
+                "path": "images/relics/runicDome.png"
+              }
+            }
+          ]
+        },
+        {
+          "id": "ring-inscriptions",
+          "titleKo": "고리에 두른 글줄",
+          "noteKo": "원 테두리를 따라 글자를 두른 그림. 마법진이나 시계 문자판처럼 '글자 고리'라는 형식만 같고 글자는 서로 다르다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "유사 문자",
+            "cluster": "단독 (그림마다 다름)",
+            "real": "없음",
+            "parallel": "마법진, 시계 문자판, 황도대",
+            "shape": "원형",
+            "meaning": "근거 없음",
+            "who": "미상"
+          },
+          "items": [
+            {
+              "id": "rune-planisphere",
+              "labelKo": "별자리판",
+              "noteKo": "테두리에 룬 모양 글자 고리.",
+              "source": {
+                "game": "sts2",
+                "path": "images/relics/planisphere.png"
+              }
+            },
+            {
+              "id": "rune-countdown",
+              "labelKo": "카운트다운",
+              "noteKo": "시계 숫자 자리에 룬.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/necrobinder/countdown.png",
+                "crop": [
+                  0.2,
+                  0.3,
+                  0.8,
+                  0.98
+                ]
+              }
+            },
+            {
+              "id": "rune-forbidden-grimoire",
+              "labelKo": "금지된 마도서",
+              "noteKo": "바닥 마법진의 쐐기 글자 고리.",
+              "source": {
+                "game": "sts2",
+                "path": "images/packed/card_portraits/necrobinder/forbidden_grimoire.png",
+                "crop": [
+                  0,
+                  0.45,
+                  1,
+                  0.95
+                ]
+              }
+            },
+            {
+              "id": "rune-summon-power",
+              "labelKo": "다음 턴 소환 파워 아이콘",
+              "noteKo": "원형 테두리에 끊긴 획 고리.",
+              "source": {
+                "game": "sts2",
+                "path": "images/powers/summon_next_turn_power.png"
+              }
+            },
+            {
+              "id": "rune-crystal-sphere-cloth",
+              "labelKo": "이벤트 \"수정구\"의 식탁보",
+              "noteKo": "겹선 고리 안에 점으로 나뉜 각진 글자 14개쯤.",
+              "source": {
+                "game": "sts2",
+                "path": "images/events/crystal_sphere.png",
+                "crop": [
+                  0.2878,
+                  0.6324,
+                  0.375,
+                  0.682
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "carvings",
+          "titleKo": "물건에 새긴 글줄",
+          "noteKo": "돌·나무·항아리에 새긴 글줄. 묵직한 석판에는 얼굴·소용돌이 같은 그림 글자가 섞여 있어 상형 문자식이고, 나머지는 각진 획이다. 서로 같은 글자는 없다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "유사 문자 (묵직한 석판은 그림 글자)",
+            "cluster": "단독 (물건마다 다름)",
+            "real": "없음",
+            "parallel": "상형 문자, 룬 (새김용 각진 획)",
+            "shape": "가로 한 줄",
+            "meaning": "근거 없음",
+            "who": "미상"
+          },
+          "items": [
+            {
+              "id": "rune-hefty-tablet",
+              "labelKo": "묵직한 석판",
+              "noteKo": "얼굴·소용돌이 그림 글자와 각진 글줄.",
+              "source": {
+                "game": "sts2",
+                "path": "images/relics/hefty_tablet.png"
+              }
+            },
+            {
+              "id": "rune-stone-calendar",
+              "labelKo": "석재 달력",
+              "noteKo": "나무 모양 새김.",
+              "source": {
+                "game": "sts2",
+                "path": "images/relics/stone_calendar.png"
+              }
+            },
+            {
+              "id": "rune-sts1-red-mask-tomb",
+              "labelKo": "1편 붉은 가면 왕의 무덤",
+              "noteKo": "항아리의 삼각·Z 모양 글자.",
+              "source": {
+                "game": "sts1",
+                "path": "images/events/redMaskTomb.jpg",
+                "crop": [
+                  0.1,
+                  0.05,
+                  0.9,
+                  0.75
+                ]
+              }
+            },
+            {
+              "id": "rune-sts1-door-band",
+              "labelKo": "1편 4막 열쇠 문의 띠",
+              "noteKo": "붉은 돌 띠에 새긴 글줄 한 줄. 좌우 문짝에 이어진다.",
+              "source": {
+                "game": "sts1",
+                "path": "images/ui/door/door_left.png",
+                "crop": [
+                  0.0,
+                  0.3833,
+                  0.3229,
+                  0.4833
+                ]
+              }
+            },
+            {
+              "id": "rune-sts1-city-kindling",
+              "labelKo": "1편 2막 휴식처의 장작",
+              "noteKo": "널빤지 하나에 각진 새김 글자 한 줄(13자쯤).",
+              "source": {
+                "game": "sts1",
+                "path": "cityScene/scene5.png",
+                "crop": [
+                  0.1123,
+                  0.4004,
+                  0.2344,
+                  0.542
+                ]
+              }
+            }
+          ]
+        },
+        {
           "id": "scribble-text",
           "titleKo": "흘려 쓴 가짜 글줄",
-          "noteKo": "글줄처럼 보이게 그은 낙서. 그림마다 다르고 반복되는 글자가 없다.",
+          "noteKo": "글줄처럼 보이게 그은 낙서. 그림마다 다르고 반복되는 글자가 없다. 뜻 없이 글씨의 겉모습만 흉내 낸 무의미 글씨로, 옛 서양화가 아랍 글씨를 무늬로 흉내 낸 가짜 쿠픽과 같은 부류다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "무의미 글씨",
+            "cluster": "단독 (그림마다 다름)",
+            "real": "축제용 폭죽은 한자풍, 아키텍트 꼬리표는 로마자·숫자풍",
+            "parallel": "가짜 쿠픽, 만화 속 글씨 낙서",
+            "shape": "글줄 · 가로",
+            "meaning": "1편 저주받은 고서만 게임 글이 해독을 말함",
+            "who": "책·쪽지·라벨의 필자"
+          },
           "items": [
             {
               "id": "scribble-fencing-manual",
@@ -913,307 +1694,19 @@
           ]
         },
         {
-          "id": "runes",
-          "titleKo": "룬과 새김",
-          "noteKo": "유물과 물건에 새겨진 글자. 룬 유물은 1편 그림을 2편이 그대로 이어받았고, 1편 설명은 \"이 룬문자들은 해석할 수가 없습니다\"다. 물건마다 서체가 달라 서로 같은 글자가 없다.",
-          "items": [
-            {
-              "id": "rune-sts1-pyramid",
-              "labelKo": "1편 룬 피라미드",
-              "noteKo": "붉은 겹삼각 룬.",
-              "source": {
-                "game": "sts1",
-                "path": "images/relics/runicPyramid.png"
-              }
-            },
-            {
-              "id": "rune-sts2-pyramid",
-              "labelKo": "2편 룬 피라미드",
-              "noteKo": "1편과 같은 룬.",
-              "source": {
-                "game": "sts2",
-                "path": "images/relics/runic_pyramid.png"
-              }
-            },
-            {
-              "id": "rune-sts1-cube",
-              "labelKo": "1편 룬 큐브",
-              "noteKo": "한 줄로 이어진 고리 무늬.",
-              "source": {
-                "game": "sts1",
-                "path": "images/relics/runicCube.png"
-              }
-            },
-            {
-              "id": "rune-sts2-cube",
-              "labelKo": "2편 runic_cube 그림",
-              "noteKo": "그림만 있고 유물 텍스트는 없다.",
-              "source": {
-                "game": "sts2",
-                "path": "images/relics/runic_cube.png"
-              }
-            },
-            {
-              "id": "rune-sts1-capacitor",
-              "labelKo": "1편 룬 축전기",
-              "noteKo": "회로도 같은 주황 룬.",
-              "source": {
-                "game": "sts1",
-                "path": "images/largeRelics/runicCapacitor.png"
-              }
-            },
-            {
-              "id": "rune-sts2-capacitor",
-              "labelKo": "2편 룬 축전기",
-              "noteKo": "1편과 같은 룬.",
-              "source": {
-                "game": "sts2",
-                "path": "images/relics/runic_capacitor.png"
-              }
-            },
-            {
-              "id": "rune-sts1-dome",
-              "labelKo": "1편 룬 반구",
-              "noteKo": "동심 호 무늬.",
-              "source": {
-                "game": "sts1",
-                "path": "images/relics/runicDome.png"
-              }
-            },
-            {
-              "id": "rune-hefty-tablet",
-              "labelKo": "묵직한 석판",
-              "noteKo": "얼굴·소용돌이 그림 글자와 각진 글줄.",
-              "source": {
-                "game": "sts2",
-                "path": "images/relics/hefty_tablet.png"
-              }
-            },
-            {
-              "id": "rune-planisphere",
-              "labelKo": "별자리판",
-              "noteKo": "테두리에 룬 모양 글자 고리.",
-              "source": {
-                "game": "sts2",
-                "path": "images/relics/planisphere.png"
-              }
-            },
-            {
-              "id": "rune-stone-calendar",
-              "labelKo": "석재 달력",
-              "noteKo": "나무 모양 새김.",
-              "source": {
-                "game": "sts2",
-                "path": "images/relics/stone_calendar.png"
-              }
-            },
-            {
-              "id": "rune-countdown",
-              "labelKo": "카운트다운",
-              "noteKo": "시계 숫자 자리에 룬.",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/card_portraits/necrobinder/countdown.png",
-                "crop": [
-                  0.2,
-                  0.3,
-                  0.8,
-                  0.98
-                ]
-              }
-            },
-            {
-              "id": "rune-forbidden-grimoire",
-              "labelKo": "금지된 마도서",
-              "noteKo": "바닥 마법진의 쐐기 글자 고리.",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/card_portraits/necrobinder/forbidden_grimoire.png",
-                "crop": [
-                  0,
-                  0.45,
-                  1,
-                  0.95
-                ]
-              }
-            },
-            {
-              "id": "rune-sts1-red-mask-tomb",
-              "labelKo": "1편 붉은 가면 왕의 무덤",
-              "noteKo": "항아리의 삼각·Z 모양 글자.",
-              "source": {
-                "game": "sts1",
-                "path": "images/events/redMaskTomb.jpg",
-                "crop": [
-                  0.1,
-                  0.05,
-                  0.9,
-                  0.75
-                ]
-              }
-            },
-            {
-              "id": "rune-summon-power",
-              "labelKo": "다음 턴 소환 파워 아이콘",
-              "noteKo": "원형 테두리에 끊긴 획 고리.",
-              "source": {
-                "game": "sts2",
-                "path": "images/powers/summon_next_turn_power.png"
-              }
-            },
-            {
-              "id": "rune-sts1-transmutation",
-              "labelKo": "1편 변성",
-              "noteKo": "마법진 테두리에 붓획과 점으로 된 글자 고리(14자쯤). 2편 지식의 악마 문자 고리와 같은 양식의 선례.",
-              "source": {
-                "game": "sts1",
-                "path": "images/1024Portraits/colorless/skill/transmutation.png",
-                "crop": [
-                  0.06,
-                  0.3684,
-                  0.96,
-                  0.9868
-                ]
-              }
-            },
-            {
-              "id": "rune-sts1-seek",
-              "labelKo": "1편 탐색",
-              "noteKo": "눈 둘레의 자홍색 쐐기 글자. 2편 혈족 사제의 문자 입자와 같은 쐐기형 화면 글자 양식.",
-              "source": {
-                "game": "sts1",
-                "path": "images/1024Portraits/blue/skill/seek.png"
-              }
-            },
-            {
-              "id": "rune-sts1-biased-cognition",
-              "labelKo": "1편 인지 편향",
-              "noteKo": "막대와 눈금으로 된 화면 글줄 세 덩이.",
-              "source": {
-                "game": "sts1",
-                "path": "images/1024Portraits/blue/power/biased_cognition.png"
-              }
-            },
-            {
-              "id": "rune-sts1-door-band",
-              "labelKo": "1편 4막 열쇠 문의 띠",
-              "noteKo": "붉은 돌 띠에 새긴 글줄 한 줄. 좌우 문짝에 이어진다.",
-              "source": {
-                "game": "sts1",
-                "path": "images/ui/door/door_left.png",
-                "crop": [
-                  0.0,
-                  0.3833,
-                  0.3229,
-                  0.4833
-                ]
-              }
-            },
-            {
-              "id": "rune-seek",
-              "labelKo": "seek 카드 그림",
-              "noteKo": "눈 둘레의 자홍색 쐐기 글자. 1편 탐색과 같은 그림이고 2편 카드 텍스트는 파일에 없다.",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/card_portraits/defect/seek.png"
-              }
-            },
-            {
-              "id": "rune-hotfix",
-              "labelKo": "카드 \"핫픽스\"",
-              "noteKo": "구슬 표면을 덮은 고리·막대·눈금.",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/card_portraits/defect/hotfix.png",
-                "crop": [
-                  0.03,
-                  0.0395,
-                  0.42,
-                  0.95
-                ]
-              }
-            },
-            {
-              "id": "rune-crystal-sphere-cloth",
-              "labelKo": "이벤트 \"수정구\"의 식탁보",
-              "noteKo": "겹선 고리 안에 점으로 나뉜 각진 글자 14개쯤.",
-              "source": {
-                "game": "sts2",
-                "path": "images/events/crystal_sphere.png",
-                "crop": [
-                  0.2878,
-                  0.6324,
-                  0.375,
-                  0.682
-                ]
-              }
-            },
-            {
-              "id": "rune-warlord-slab",
-              "labelKo": "이벤트 \"전쟁군주의 성지\"의 석판",
-              "noteKo": "굵은 주황 붓획과 점 한 줄. 붓점 양식.",
-              "source": {
-                "game": "sts2",
-                "path": "images/events/shrine_of_the_warlord.png",
-                "crop": [
-                  0.3249,
-                  0.6107,
-                  0.3647,
-                  0.6448
-                ]
-              }
-            },
-            {
-              "id": "rune-sts1-beyond-obelisk",
-              "labelKo": "1편 3막 배경의 떠 있는 오벨리스크",
-              "noteKo": "두 면에 붉은 붓글씨 4자와 5자. 3막 배경의 떠 있는 입체들에는 면마다 이런 룬이 있다.",
-              "source": {
-                "game": "sts1",
-                "path": "beyondScene/scene3.png",
-                "crop": [
-                  0.8027,
-                  0.4819,
-                  0.853,
-                  0.6011
-                ]
-              }
-            },
-            {
-              "id": "rune-sts1-beyond-icosahedron",
-              "labelKo": "1편 3막 배경의 떠 있는 이십면체",
-              "noteKo": "면마다 붉은 룬 하나.",
-              "source": {
-                "game": "sts1",
-                "path": "beyondScene/scene3.png",
-                "crop": [
-                  0.271,
-                  0.4873,
-                  0.3169,
-                  0.5337
-                ]
-              }
-            },
-            {
-              "id": "rune-sts1-city-kindling",
-              "labelKo": "1편 2막 휴식처의 장작",
-              "noteKo": "널빤지 하나에 각진 새김 글자 한 줄(13자쯤).",
-              "source": {
-                "game": "sts1",
-                "path": "cityScene/scene5.png",
-                "crop": [
-                  0.1123,
-                  0.4004,
-                  0.2344,
-                  0.542
-                ]
-              }
-            }
-          ]
-        },
-        {
           "id": "sts1-beta-fonts",
           "titleKo": "1편 베타 카드의 가짜 글자",
           "noteKo": "1편 베타(임시) 카드 그림에는 패러디용으로 지어낸 글자가 여럿 있다. 한 그림 안에서는 글자 모양이 고른 편이지만 그림끼리 공유하지 않는다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "패러디용 가짜 글자",
+            "cluster": "단독 (그림마다 다름)",
+            "real": "비밀 기술은 글자 수가 SECRET·TECH·NIQUES와 맞음 (미확인). 터보는 일본어풍",
+            "parallel": "게임·영화 화면 패러디",
+            "shape": "그림마다 다름",
+            "meaning": "근거 없음",
+            "who": "화면 밖 농담 (베타 그림)"
+          },
           "items": [
             {
               "id": "beta-secret-technique",
@@ -1279,183 +1772,21 @@
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "marks",
-      "titleKo": "③ 표식·인장",
-      "noteKo": "글이 아니라 한 개짜리 기호. 골드 표식만 여러 에셋에서 똑같이 반복된다.",
-      "families": [
-        {
-          "id": "era-glyphs",
-          "titleKo": "연대표의 시대 기호",
-          "noteKo": "연대표의 시대마다 흰 붓글씨 기호가 하나씩 있다. 기호와 뜻(시대 이름)이 1:1로 정해져 있어(EpochEra 값과 era_atlas 조각 이름으로 확인), 와·초·키 다음으로 '뜻이 정해진 기호'에 가깝다. 감염 기호는 골드 표식꼴에 점을 찍은 모양이고, 지식의 악마 고리의 9번째 글자와도 닮았다.",
-          "items": [
-            {
-              "id": "era-atlas",
-              "labelKo": "시대 기호 6개 (era_atlas)",
-              "noteKo": "윗줄: 끝(3000), 문(2733). 가운뎃줄: 선사시대(-20000), 번영(1800). 아랫줄: 씨앗(0), 감염(1201). 마름모는 빈 칸용.",
-              "source": {
-                "game": "sts2",
-                "path": "images/atlases/era_atlas.png"
-              }
-            }
-          ]
-        },
-        {
-          "id": "gold-mark",
-          "titleKo": "골드 표식",
-          "noteKo": "삼각형을 가로지르는 획(숫자 4와 비슷). 화폐 기호로 일관되게 쓰이고 1편에도 같은 표식이 있다. 상인 문자의 글줄 안에도 글자처럼 나온다.",
-          "items": [
-            {
-              "id": "gold-top-bar",
-              "labelKo": "상단 골드 아이콘",
-              "noteKo": "",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/common_ui/top_bar/top_bar_gold.png"
-              }
-            },
-            {
-              "id": "gold-seal-of-gold",
-              "labelKo": "황금 인장",
-              "noteKo": "",
-              "source": {
-                "game": "sts2",
-                "path": "images/relics/seal_of_gold.png"
-              }
-            },
-            {
-              "id": "gold-fat-gremlin",
-              "labelKo": "뚱뚱한 그렘린의 자루",
-              "noteKo": "붉은 물감으로 같은 표식.",
-              "source": {
-                "game": "sts2",
-                "atlas": "fat_gremlin",
-                "region": "bag"
-              }
-            },
-            {
-              "id": "gold-crystal-sphere",
-              "labelKo": "수정구의 골드",
-              "noteKo": "",
-              "source": {
-                "game": "sts2",
-                "path": "images/events/crystal_sphere/crystal_sphere_big_gold.png"
-              }
-            },
-            {
-              "id": "gold-coin-flip",
-              "labelKo": "동전 뒤집기 VFX",
-              "noteKo": "",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/vfx/coin_flip_anim.png"
-              }
-            },
-            {
-              "id": "gold-map-shop",
-              "labelKo": "지도의 상점 아이콘",
-              "noteKo": "",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/common_ui/map/icons/map_shop.png"
-              }
-            },
-            {
-              "id": "gold-heist-power",
-              "labelKo": "강도 파워 아이콘",
-              "noteKo": "붉은 표식이 찍힌 자루.",
-              "source": {
-                "game": "sts2",
-                "path": "images/powers/heist_power.png"
-              }
-            },
-            {
-              "id": "gold-sts1-top-panel",
-              "labelKo": "1편 상단 골드 자루",
-              "noteKo": "1편에도 같은 4꼴 표식.",
-              "source": {
-                "game": "sts1",
-                "path": "images/ui/topPanel/panelGoldBag.png"
-              }
-            },
-            {
-              "id": "gold-sts1-map-shop",
-              "labelKo": "1편 지도의 상점 아이콘",
-              "noteKo": "",
-              "source": {
-                "game": "sts1",
-                "path": "images/ui/map/shop.png"
-              }
-            },
-            {
-              "id": "gold-darv-pouch",
-              "labelKo": "다브의 돈주머니",
-              "noteKo": "붉은 표식.",
-              "source": {
-                "game": "sts2",
-                "path": "images/ancients/darv_placeholder.png",
-                "crop": [
-                  0.6133,
-                  0.5958,
-                  0.6375,
-                  0.6483
-                ]
-              }
-            },
-            {
-              "id": "gold-golden-axe",
-              "labelKo": "golden_axe 카드 그림",
-              "noteKo": "도끼날의 원 안에 표식. 카드 텍스트는 파일에 없다.",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/card_portraits/colorless/golden_axe.png",
-                "crop": [
-                  0.38,
-                  0.2,
-                  0.63,
-                  0.5
-                ]
-              }
-            },
-            {
-              "id": "gold-greed",
-              "labelKo": "카드 \"탐욕\"",
-              "noteKo": "동전마다 표식.",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/card_portraits/curse/greed.png",
-                "crop": [
-                  0.36,
-                  0.3592,
-                  0.56,
-                  0.5592
-                ]
-              }
-            },
-            {
-              "id": "gold-spoils-of-battle",
-              "labelKo": "카드 \"전투의 성과\" 베타 그림",
-              "noteKo": "생각 풍선 속 표식.",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/card_portraits/regent/beta/spoils_of_battle.png",
-                "crop": [
-                  0.3593,
-                  0.0,
-                  0.6796,
-                  0.2992
-                ]
-              }
-            }
-          ]
         },
         {
           "id": "seals",
           "titleKo": "인장과 문양",
-          "noteKo": "주인을 나타내는 도장이나 부적. 서로 관련은 없다.",
+          "noteKo": "주인을 나타내는 도장이나 부적. 서로 관련은 없다. 글을 적는 문자가 아니라 주인·소속을 나타내는 표장이다.",
+          "labels": {
+            "sound": "근거 없음",
+            "type": "표장",
+            "cluster": "단독",
+            "real": "왕실 도장은 모노그램풍",
+            "parallel": "모노그램, 인장, 탐가(부족 표식)",
+            "shape": "1개",
+            "meaning": "고통의 표식만 게임 글에 뜻이 나옴",
+            "who": "왕실, 북부 부족, 카드 뒷면"
+          },
           "items": [
             {
               "id": "seal-royal-stamp",
@@ -1551,85 +1882,51 @@
               }
             }
           ]
-        },
-        {
-          "id": "spiral",
-          "titleKo": "각진 나선",
-          "noteKo": "1편과 2편에 되풀이되는 문양. 미로형 문자와 같은 획으로 그린다.",
-          "items": [
-            {
-              "id": "spiral-amalgamator",
-              "labelKo": "융합자의 얼굴",
-              "noteKo": "이벤트 글: \"빛나는 문양들이 뒤엉켜 소용돌이치고 있습니다.\"",
-              "source": {
-                "game": "sts2",
-                "path": "images/events/amalgamator.png",
-                "crop": [
-                  0.2797,
-                  0.3038,
-                  0.3906,
-                  0.5314
-                ]
-              }
-            },
-            {
-              "id": "spiral-enchantment",
-              "labelKo": "소용돌이 인챈트",
-              "noteKo": "",
-              "source": {
-                "game": "sts2",
-                "path": "images/enchantments/spiral.png"
-              }
-            },
-            {
-              "id": "spiral-sts1-secret-portal",
-              "labelKo": "1편 비밀 포탈",
-              "noteKo": "",
-              "source": {
-                "game": "sts1",
-                "path": "images/events/secretPortal.jpg",
-                "crop": [
-                  0.2,
-                  0.05,
-                  0.9,
-                  0.65
-                ]
-              }
-            },
-            {
-              "id": "spiral-sts1-searing-blow",
-              "labelKo": "1편 불태우는 일격",
-              "noteKo": "마름모 안의 각진 나선. 고대 문자 벽의 마름모와 같은 문양.",
-              "source": {
-                "game": "sts1",
-                "path": "images/1024Portraits/red/attack/searing_blow.png",
-                "crop": [
-                  0.4,
-                  0.0,
-                  0.8,
-                  0.2368
-                ]
-              }
-            },
-            {
-              "id": "spiral-stratagem",
-              "labelKo": "카드 \"책략\"",
-              "noteKo": "붉은 말마다 세 갈래 소용돌이. 카드 \"불의 심장\"의 보석에도 같은 문양.",
-              "source": {
-                "game": "sts2",
-                "path": "images/packed/card_portraits/colorless/stratagem.png",
-                "crop": [
-                  0.55,
-                  0.45,
-                  1.0,
-                  0.95
-                ]
-              }
-            }
-          ]
         }
       ]
     }
   ],
-  "coverageKo": "훑은 범위(전부 원본 크기 또는 확대): 2편 Spine 아틀라스 213장, 방 배경 244장, 이벤트·연대표·고대의 존재 166장, 아이콘·UI·포션·파워·유물 2,354장, 카드 그림 1,046장. 1편 카드 그림 699장, images 폴더 1,294장, 막 배경·업적·파워 아틀라스 38장. 2편 카드는 16장 시트로 본 뒤 후보만 확대했고, 10px 안쪽의 흐린 표식은 놓쳤을 수 있다."
+  "coverageKo": "훑은 범위(전부 원본 크기 또는 확대): 2편 Spine 아틀라스 213장, 방 배경 244장, 이벤트·연대표·고대의 존재 166장, 아이콘·UI·포션·파워·유물 2,354장, 카드 그림 1,046장. 1편 카드 그림 699장, images 폴더 1,294장, 막 배경·업적·파워 아틀라스 38장. 2편 카드는 16장 시트로 본 뒤 후보만 확대했고, 10px 안쪽의 흐린 표식은 놓쳤을 수 있다.",
+  "axes": [
+    {
+      "id": "sound",
+      "titleKo": "소리",
+      "noteKo": "글자가 소리와 묶여 있는가. 음가 확정 / 말소리를 그림(음가 미상) / 근거 없음."
+    },
+    {
+      "id": "type",
+      "titleKo": "문자 유형",
+      "noteKo": "기호 하나가 무엇을 나타내는가. 음절 기호(한 음절), 표어 기호(한 낱말), 낱자 세트(글자 수가 정해져 있으나 값 미상), 변장한 실제 문자, 유사 문자(글처럼 보이는 무늬, 되풀이되는 글자 없음), 무의미 글씨, 표장."
+    },
+    {
+      "id": "cluster",
+      "titleKo": "같은 문자 후보",
+      "noteKo": "서체·필체 차이로 보고 한 문자로 묶을 수 있는 범위. '확정'은 같은 글자가 실제로 겹치는 경우, '양식만'은 획을 긋는 방식만 같은 경우."
+    },
+    {
+      "id": "real",
+      "titleKo": "실제 문자와의 관계",
+      "noteKo": "로마자·숫자·가나·한자 등으로 읽히거나 닮았는가."
+    },
+    {
+      "id": "parallel",
+      "titleKo": "닮은 실제 문자 전통",
+      "noteKo": "구조가 비슷한 실제 문자·기호 관습."
+    },
+    {
+      "id": "shape",
+      "titleKo": "글자 수·배열",
+      "noteKo": "구별되는 글자 수와 쓰는 방향."
+    },
+    {
+      "id": "meaning",
+      "titleKo": "뜻·해독",
+      "noteKo": "뜻이나 읽는 법의 근거."
+    },
+    {
+      "id": "who",
+      "titleKo": "쓰는 이·말하는 이",
+      "noteKo": "게임 안에서 이 글자를 내는 주체."
+    }
+  ]
 }
