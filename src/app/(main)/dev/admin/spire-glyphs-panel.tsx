@@ -1,11 +1,13 @@
 import "server-only";
 
+import { SpireGlyphsList, type GlyphAxis, type GlyphRow } from "./spire-glyphs-list";
 import catalogue from "../../../../../data/dev/spire-glyphs.json";
 
 type GlyphSource = { game?: string; path?: string; atlas?: string; region?: string; recipe?: string };
-type GlyphItem = { id: string; labelKo: string; noteKo: string; source: GlyphSource };
-type GlyphFamily = { id: string; titleKo: string; noteKo: string; labels: Record<string, string>; items: GlyphItem[] };
-type GlyphGroup = { id: string; titleKo: string; noteKo: string; families: GlyphFamily[] };
+type Labels = { sound: string; type: string; cluster: string[]; parallel: string; who: string };
+type GlyphItem = { id: string; labelKo: string; noteKo: string; source: GlyphSource; real: string[]; scripts: string[]; labels?: Partial<Labels> };
+type GlyphFamily = { id: string; titleKo: string; noteKo: string; labels: Labels; items: GlyphItem[] };
+type GlyphGroup = { families: GlyphFamily[] };
 
 const groups = catalogue.groups as GlyphGroup[];
 const GAME_LABEL: Record<string, string> = { sts1: "1편", sts2: "2편" };
@@ -29,15 +31,52 @@ function medium(source: GlyphSource) {
   return MEDIA.find(([pattern]) => pattern.test(source.path ?? ""))?.[1] ?? "기타";
 }
 
-const unique = (values: string[]) => [...new Set(values)].join(", ");
-const games = (family: GlyphFamily) => unique(family.items.flatMap((item) => (item.source.game ? [GAME_LABEL[item.source.game]] : [])));
-
 function sourceText(source: GlyphSource) {
   if (source.recipe) return `scripts/extract-spire-glyphs.py (${source.recipe})`;
-  return source.atlas ? `${source.atlas}.atlas › ${source.region}` : source.path;
+  return source.atlas ? `${source.atlas}.atlas › ${source.region}` : (source.path ?? "");
 }
 
-/** The invented writing found in the game files as a flat list labelled along several axes. Data: data/dev/spire-glyphs.json. */
+// One row per capture: the item's own labels over its family's, plus what the source path tells.
+const rows: GlyphRow[] = groups.flatMap((group) =>
+  group.families.flatMap((family) =>
+    family.items.map((item) => {
+      const labels = { ...family.labels, ...item.labels };
+      return {
+        id: item.id,
+        labelKo: item.labelKo,
+        noteKo: item.noteKo,
+        sourceText: sourceText(item.source),
+        real: item.real,
+        parallel: family.labels.parallel,
+        familyNoteKo: family.noteKo,
+        labels: {
+          sound: [labels.sound],
+          cluster: labels.cluster,
+          type: [labels.type],
+          scripts: item.scripts.length ? item.scripts : ["없음"],
+          who: [labels.who],
+          family: [family.titleKo],
+          medium: [medium(item.source)],
+          game: [item.source.game ? GAME_LABEL[item.source.game] : "도표"],
+        },
+      };
+    }),
+  ),
+);
+
+const note = (id: string) => catalogue.axes.find((axis) => axis.id === id)?.noteKo ?? "";
+const AXES: GlyphAxis[] = [
+  { id: "sound", titleKo: "소리", noteKo: note("sound") },
+  { id: "cluster", titleKo: "같은 문자", noteKo: note("cluster") },
+  { id: "type", titleKo: "문자 유형", noteKo: note("type") },
+  { id: "scripts", titleKo: "닮은 실제 글자", noteKo: note("real") },
+  { id: "who", titleKo: "쓰는 이·말하는 이", noteKo: note("who") },
+  { id: "family", titleKo: "계열", noteKo: "같은 물건·인물에서 나온 그림끼리의 묶음." },
+  { id: "medium", titleKo: "에셋 종류", noteKo: "원본 경로에서 읽은 에셋 종류." },
+  { id: "game", titleKo: "게임", noteKo: "1편 / 2편." },
+];
+
+/** The invented writing found in the game files: one row per capture, labelled and filterable. Data: data/dev/spire-glyphs.json. */
 export function SpireGlyphsPanel() {
   return (
     <div className="mt-6 space-y-10">
@@ -58,100 +97,19 @@ export function SpireGlyphsPanel() {
         <p className="mt-3 text-xs text-muted-foreground">{catalogue.coverageKo}</p>
       </section>
       <section>
-        <h2 className="text-lg font-bold">레이블 한눈에 보기</h2>
-        <dl className="mt-2 grid gap-x-6 gap-y-1 text-xs text-muted-foreground md:grid-cols-2">
-          {catalogue.axes.map((axis) => (
+        <h2 className="text-base font-semibold">레이블 읽는 법</h2>
+        <dl className="mt-2 space-y-1 text-xs text-muted-foreground">
+          {AXES.slice(0, 4).map((axis) => (
             <div key={axis.id}>
               <dt className="inline font-semibold text-foreground">{axis.titleKo}</dt>: <dd className="inline">{axis.noteKo}</dd>
             </div>
           ))}
+          <div>
+            <dt className="inline font-semibold text-foreground">짜임이 닮은 문자 체계</dt>: <dd className="inline">{note("parallel")}</dd>
+          </div>
         </dl>
-        <div className="mt-3 overflow-x-auto rounded-md border border-border">
-          <table className="w-full min-w-[1400px] border-collapse text-left text-xs">
-            <thead className="bg-muted/50">
-              <tr>
-                <th className="px-2 py-1.5">글자</th>
-                {catalogue.axes.map((axis) => (
-                  <th key={axis.id} className="px-2 py-1.5">
-                    {axis.titleKo}
-                  </th>
-                ))}
-                <th className="px-2 py-1.5">에셋 종류</th>
-                <th className="px-2 py-1.5">게임</th>
-              </tr>
-            </thead>
-            <tbody>
-              {groups.flatMap((group) =>
-                group.families.map((family) => (
-                  <tr key={family.id} className="border-t border-border align-top">
-                    <th className="px-2 py-1.5 font-semibold">
-                      <a href={`#glyph-${family.id}`} className="hover:underline">
-                        {family.titleKo}
-                      </a>
-                    </th>
-                    {catalogue.axes.map((axis) => (
-                      <td key={axis.id} className="px-2 py-1.5 text-muted-foreground">
-                        {family.labels[axis.id]}
-                      </td>
-                    ))}
-                    <td className="px-2 py-1.5 text-muted-foreground">{unique(family.items.map((item) => medium(item.source)))}</td>
-                    <td className="px-2 py-1.5 text-muted-foreground">{games(family)}</td>
-                  </tr>
-                )),
-              )}
-            </tbody>
-          </table>
-        </div>
       </section>
-      {groups.map((group) => (
-        <section key={group.id}>
-          <h2 className="text-lg font-bold">{group.titleKo}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{group.noteKo}</p>
-          {group.families.map((family) => (
-            <div key={family.id} id={`glyph-${family.id}`} className="mt-5 scroll-mt-20 rounded-md border border-border bg-card/40 px-4 py-4">
-              <h3 className="text-base font-semibold">
-                {family.titleKo} <span className="text-xs font-normal text-muted-foreground">{family.items.length}점</span>
-              </h3>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{family.noteKo}</p>
-              <ul className="mt-2 flex flex-wrap gap-1.5">
-                {catalogue.axes.map((axis) => (
-                  <li key={axis.id} className="rounded border border-border bg-background/60 px-2 py-0.5 text-xs">
-                    <span className="text-muted-foreground">{axis.titleKo}</span> {family.labels[axis.id]}
-                  </li>
-                ))}
-              </ul>
-              <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {family.items.map((item) => (
-                  <li key={item.id} className="flex flex-col rounded-md border border-border bg-background/60 p-3">
-                    <div className="flex h-44 items-center justify-center rounded bg-[#18181e]">
-                      {/* eslint-disable-next-line @next/next/no-img-element -- dev-only image served from data/dev */}
-                      <img
-                        src={`/api/dev/spire-glyphs/${item.id}.webp`}
-                        alt={item.labelKo}
-                        loading="lazy"
-                        className="max-h-full max-w-full object-contain"
-                      />
-                    </div>
-                    <div className="mt-2 text-sm font-semibold">
-                      {item.labelKo}
-                      {item.source.game && (
-                        <span className="ml-1.5 rounded bg-muted px-1.5 py-0.5 text-[10px] font-normal text-muted-foreground">
-                          {GAME_LABEL[item.source.game]}
-                        </span>
-                      )}
-                      <span className="ml-1.5 rounded bg-muted px-1.5 py-0.5 text-[10px] font-normal text-muted-foreground">
-                        {medium(item.source)}
-                      </span>
-                    </div>
-                    {item.noteKo && <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{item.noteKo}</p>}
-                    <code className="mt-auto break-all pt-2 text-[10px] text-muted-foreground/80">{sourceText(item.source)}</code>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </section>
-      ))}
+      <SpireGlyphsList rows={rows} axes={AXES} />
     </div>
   );
 }
