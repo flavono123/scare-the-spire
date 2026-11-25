@@ -34,6 +34,7 @@
 ## 긴급 배포로 QA 없이 나간 범위
 
 - 2026-11-13 v0.113.0 패치노트 긴급 배포(작업 도구 `7d2f9a2a`)에 다른 세션 커밋이 같이 나감: `88fcf932`·`e9cec30e`(문의함 화면, dev 전용), `f2abe1a4`(`pnpm cf:limits` 스크립트), `97ec500b`·`d00b2be3`(/dev/admin CF 한도 탭, dev 전용), `7bdd202b`(문서). 운영 화면 영향 없음.
+- 2026-11-25 v0.114.0 패치노트 긴급 배포(`618880a5`~`e4abb706`)에 `f820e6e4..618880a5`의 다른 세션 커밋 약 90개가 같이 나감. 운영 화면에 보이는 것: `nav-story-redesign`(상단바·메뉴·검색·이야기 /stories/<id>·인덱스 /compendium·/toybox·/vexing-puzzlebox·/menu, 커넥션스 /vexing-puzzlebox/connections 이동), `sts1-compendium-remaining-types`와 STS1 관련 레일·조우·의도·점수 페이지, STS2 점수 페이지(`c9442d74`~`a932b362`), 역사 강의 점수 화면(`581ef148`), 몬스터·이벤트 갤러리/목록 토글(`0e46481c`, `50b16da8`), NEW 표시 14일 만료(`1aebb756`). dev 전용: 게임 문구 카탈로그, OG 감사, 우편함 표시. 마이그레이션 없음. 스모크는 위 인덱스·이야기·/patches/0.114.0 응답 200만 봤다. 장소 등록부가 생성 JSON(`borrowed-game-copy`)을 import하는 순환 때문에 깨끗한 체크아웃 CI가 실패해 `2012aa7b`에서 빈 JSON을 먼저 깔고 생성하게 고쳤다.
 
 ## 기능 기대치
 
