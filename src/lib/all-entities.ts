@@ -49,7 +49,7 @@ export function buildAllEntities(resources: AllEntityResources): EntityInfo[] {
       id: c.id,
       nameEn: c.nameEn,
       nameKo: c.name,
-      ...inflectionAliases("card", c.id, c.id === "MAD_SCIENCE_SKILL" ? { aliasesEn: ["Mad Science"], aliasesKo: ["괴짜 과학"] } : {}),
+      ...inflectionAliases("card", c.id),
       imageUrl: c.imageUrl ?? c.betaImageUrl,
       color: c.color,
       type: "card" as const,

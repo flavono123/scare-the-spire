@@ -16,6 +16,14 @@ import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, 
 import { RELIC_RARITY_LABELS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import {
+  formatMadScienceVariantParam,
+  getMadSciencePreviewCard,
+  getMadScienceVariantFromText,
+  getMadScienceVariantHref,
+  MAD_SCIENCE_CARD_ID,
+  TINKER_CARD_TYPE_TO_KO,
+} from "@/lib/tinker-time";
 import { toCompendiumDetailHref, useCompendiumDetailLinks } from "@/components/compendium-detail-links";
 import { AUTO_LINK_ENTITY_TYPES, buildAutoLinkKeywordsByFirst, wrapNumberedAscensionMentions, wrapUntaggedEntityNames, type AutoLinkKeyword } from "@/lib/auto-link-entity-names";
 import {
@@ -90,6 +98,7 @@ export interface EntityInfo {
   color: string; // card color or pool
   type: EntityType;
   cardPreviewUpgradeLevel?: number; // Patch-note token explicitly refers to an upgraded card, e.g. Largesse+.
+  cardPreviewVariant?: string; // Mad Science variant the patch line names, e.g. attack_violence.
   /** History Course / in-run copy: enchantment painted onto the hover CardTile. */
   cardPreviewEnchantment?: {
     enchantmentImageUrl: string | null;
@@ -141,6 +150,8 @@ type RenderContext = {
   gameKeywordLabels?: Record<string, string>;
   gameHeadingLabels?: Record<string, string>;
   preferredMonsterIds?: string[];
+  /** Raw markdown of the line being rendered; it picks the Mad Science variant a line talks about. */
+  lineText?: string;
   patchVersion?: string;
   currentVersion?: string;
   patches?: STS2Patch[];
@@ -601,7 +612,7 @@ function LocalizedEntityPreview({
   const staticPreviewKey = !staticPreview
     ? undefined
     : previewEntity.type === "card" && previewEntity.cardData
-      ? `${previewEntity.id}:${previewEntity.cardPreviewUpgradeLevel ?? 0}`
+      ? `${previewEntity.id}${previewEntity.cardPreviewVariant ? `:${previewEntity.cardPreviewVariant}` : ""}:${previewEntity.cardPreviewUpgradeLevel ?? 0}`
       : `${previewEntity.type}:${previewEntity.id}`;
 
   const handleMouseEnter = useCallback(() => {
@@ -1901,7 +1912,27 @@ function findGoldTagEntity(
     const scoped = findMonsterMoveEntity(text, lookup, context);
     if (scoped) return scoped;
   }
-  return findEntity(text, lookup, typeHint);
+  const entity = findEntity(text, lookup, typeHint);
+  return entity && context.lineText ? withMadScienceLineVariant(entity, context.lineText, context) : entity;
+}
+
+/** Patch notes call it plain "Mad Science"; the Tinker Time option named on the same line picks the card shown. */
+function withMadScienceLineVariant(entity: EntityInfo, lineText: string, context: RenderContext): EntityInfo {
+  if (entity.type !== "card" || !entity.cardData || entity.id !== MAD_SCIENCE_CARD_ID) return entity;
+  const variant = getMadScienceVariantFromText(lineText);
+  const typeKo = TINKER_CARD_TYPE_TO_KO[variant.cardType];
+  const href = entityCompendiumHref(entity);
+  return {
+    ...entity,
+    cardData: getMadSciencePreviewCard(
+      entity.cardData,
+      variant.cardType,
+      variant.riderId,
+      context.gameUi?.cardLibrary.types[typeKo] ?? typeKo,
+    ),
+    cardPreviewVariant: formatMadScienceVariantParam(variant),
+    href: href && getMadScienceVariantHref(href, variant),
+  };
 }
 
 function findMonsterMoveEntity(
@@ -2416,7 +2447,9 @@ export function PatchNoteRenderer({
       : indentLevel != null && indentLevel > 0
         ? currentMonsterContext
         : [];
-    const lineContext = preferredMonsterIds.length > 0 ? { ...context, preferredMonsterIds } : context;
+    const lineContext = preferredMonsterIds.length > 0
+      ? { ...context, preferredMonsterIds, lineText: lines[i] }
+      : { ...context, lineText: lines[i] };
     const patchLine = patchLineByRenderedContent.get(patchLineContentKeyFromRenderedLine(lines[i]) ?? "");
     const patchLineAction = patchLine ? patchLineActions?.get(patchLine.id) : undefined;
     const isSectionHeading = /^#{2,6}\s/.test(trimmed);

@@ -26,6 +26,13 @@ export const PATCH_LINE_ALIASES: Record<string, string> = {
   "v0.113.0:line-017-text-4yuvo5": "v0.113.0:line-017-relic-byrdpip",
   "v0.113.0:line-086-text-yx7z36": "v0.113.0:line-086-encounter-the-architect-event-encounter",
   "v0.113.0:line-121-card-imitation-learning": "v0.113.0:line-121-card-imitation-learning-affliction-bound",
+  // Mad Science became one Compendium card (MAD_SCIENCE) instead of one per type.
+  "v0.105.0:line-093-card-mad-science-skill-card-juggling": "v0.105.0:line-093-card-mad-science-card-juggling",
+  "v0.107.1:line-269-event-crystal-sphere-card-mad-science-skill": "v0.107.1:line-269-event-crystal-sphere-card-mad-science",
+  "v0.108.0:line-132-card-mad-science-attack": "v0.108.0:line-132-card-mad-science",
+  "v0.108.0:line-139-card-supermassive-card-mad-science-skill": "v0.108.0:line-139-card-supermassive-card-mad-science",
+  "v0.111.1:line-270-card-mad-science-skill-power-vigor": "v0.111.1:line-270-card-mad-science-power-vigor",
+  "v0.111.1:line-271-card-mad-science-skill-card-supermassive": "v0.111.1:line-271-card-mad-science-card-supermassive",
   // 2026-11-26 gold tag fixes (official names and types) renamed these line ids; ssy tags found them.
   "v0.100.0:line-003-card-dominate": "v0.100.0:line-003-card-dominate-power-strength",
   "v0.100.0:line-012-ancient-neow": "v0.100.0:line-012-ancient-neow-relic-hefty-tablet",

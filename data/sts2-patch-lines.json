@@ -15628,7 +15628,7 @@
     "searchText": "v0.105.0:line-092-text-1vgfdnm v0.105.0 0.105.0 버그 수정 멀티플레이어 대괄호가 들어간 플레이어 이름(예: 클랜 태그 [])이 멀티플레이어 오류를 일으키던 문제 수정. fixed player names with brackets (e.g. clan tags like []) causing errors in multiplayer."
   },
   {
-    "id": "v0.105.0:line-093-card-mad-science-skill-card-juggling",
+    "id": "v0.105.0:line-093-card-mad-science-card-juggling",
     "patch": "v0.105.0",
     "version": "0.105.0",
     "date": "2026-05-08",
@@ -15647,7 +15647,7 @@
     "entityRefs": [
       {
         "type": "card",
-        "id": "MAD_SCIENCE_SKILL",
+        "id": "MAD_SCIENCE",
         "label": "괴짜 과학"
       },
       {
@@ -15656,7 +15656,7 @@
         "label": "저글링"
       }
     ],
-    "searchText": "v0.105.0:line-093-card-mad-science-skill-card-juggling v0.105.0 0.105.0 버그 수정 멀티플레이어 괴짜 과학, 저글링, 혼합 전투 속도 관련 상태 불일치 수정. fixed state divergence related to mad science, juggling, and mixed combat speeds. card mad_science_skill 괴짜 과학 괴짜 과학(스킬) mad science (skill) 괴짜 과학 mad science card juggling 저글링 저글링 juggling"
+    "searchText": "v0.105.0:line-093-card-mad-science-card-juggling v0.105.0 0.105.0 버그 수정 멀티플레이어 괴짜 과학, 저글링, 혼합 전투 속도 관련 상태 불일치 수정. fixed state divergence related to mad science, juggling, and mixed combat speeds. card mad_science 괴짜 과학 괴짜 과학 mad science card juggling 저글링 저글링 juggling"
   },
   {
     "id": "v0.105.0:line-094-power-strangle",
@@ -29154,7 +29154,7 @@
     "searchText": "v0.107.1:line-268-text-2k0tl8 v0.107.1 0.107.1 버그 수정 멀티플레이 멀티플레이에서 포션 사용 시 상태 불일치로 인해 발생하던 충돌을 수정했습니다. fixed a crash when using potions in multiplayer due to state divergence"
   },
   {
-    "id": "v0.107.1:line-269-event-crystal-sphere-card-mad-science-skill",
+    "id": "v0.107.1:line-269-event-crystal-sphere-card-mad-science",
     "patch": "v0.107.1",
     "version": "0.107.1",
     "date": "2026-06-19",
@@ -29178,7 +29178,7 @@
       },
       {
         "type": "card",
-        "id": "MAD_SCIENCE_SKILL",
+        "id": "MAD_SCIENCE",
         "label": "괴짜 과학"
       },
       {
@@ -29197,7 +29197,7 @@
         "label": "박치기"
       }
     ],
-    "searchText": "v0.107.1:line-269-event-crystal-sphere-card-mad-science-skill v0.107.1 0.107.1 버그 수정 멀티플레이 이벤트 전투, 수정구 이벤트, 긴 이벤트 선택지 처리, 뒤섞인 전투 속도를 지닌 괴짜 과학/저글링 카드, 쇄도 + 박치기 카드와 관련된 상태 불일치 문제를 수정했습니다. fixed state divergences related to event combats, the crystal sphere event, long event option resolution, mad science/juggling cards with mixed combat speeds, and stampede + headbutt cards event crystal_sphere 수정구 수정구 crystal sphere card mad_science_skill 괴짜 과학 괴짜 과학(스킬) mad science (skill) 괴짜 과학 mad science card juggling 저글링 저글링 juggling card stampede 쇄도 쇄도 stampede card headbutt 박치기 박치기 headbutt"
+    "searchText": "v0.107.1:line-269-event-crystal-sphere-card-mad-science v0.107.1 0.107.1 버그 수정 멀티플레이 이벤트 전투, 수정구 이벤트, 긴 이벤트 선택지 처리, 뒤섞인 전투 속도를 지닌 괴짜 과학/저글링 카드, 쇄도 + 박치기 카드와 관련된 상태 불일치 문제를 수정했습니다. fixed state divergences related to event combats, the crystal sphere event, long event option resolution, mad science/juggling cards with mixed combat speeds, and stampede + headbutt cards event crystal_sphere 수정구 수정구 crystal sphere card mad_science 괴짜 과학 괴짜 과학 mad science card juggling 저글링 저글링 juggling card stampede 쇄도 쇄도 stampede card headbutt 박치기 박치기 headbutt"
   },
   {
     "id": "v0.107.1:line-270-text-7oni55",
@@ -32904,7 +32904,7 @@
     "searchText": "v0.108.0:line-131-potion-foul-potion v0.108.0 0.108.0 버그 수정 포션 & 유물 역겨운 포션을 빠르게 여러 번 던질 때 발생할 수 있던 소프트락을 수정했습니다. fixed a softlock that could occur when throwing multiple foul potions quickly. potion foul_potion 역겨운 포션 역겨운 포션 foul potion"
   },
   {
-    "id": "v0.108.0:line-132-card-mad-science-attack",
+    "id": "v0.108.0:line-132-card-mad-science",
     "patch": "v0.108.0",
     "version": "0.108.0",
     "date": "2026-07-03",
@@ -32916,18 +32916,18 @@
       "Bug Fixes",
       "Events"
     ],
-    "markdownKo": "폭력 선택지로 만들어진 [gold:card]괴짜 과학(공격)[/gold]의 3회 타격 중 첫 타격에만 [gold]활력[/gold]이 적용되던 문제를 수정했습니다.",
-    "markdownEn": "Fixed [gold]Vigor[/gold] applying only to the first of [gold:card]Mad Science (Attack)[/gold]'s 3 hits when it was created with the Violence option.",
-    "textKo": "폭력 선택지로 만들어진 괴짜 과학(공격)의 3회 타격 중 첫 타격에만 활력이 적용되던 문제를 수정했습니다.",
-    "textEn": "Fixed Vigor applying only to the first of Mad Science (Attack)'s 3 hits when it was created with the Violence option.",
+    "markdownKo": "폭력 선택지로 만들어진 [gold:card]괴짜 과학[/gold]의 3회 타격 중 첫 타격에만 [gold]활력[/gold]이 적용되던 문제를 수정했습니다.",
+    "markdownEn": "Fixed [gold]Vigor[/gold] applying only to the first of [gold:card]Mad Science[/gold]'s 3 hits when it was created with the Violence option.",
+    "textKo": "폭력 선택지로 만들어진 괴짜 과학의 3회 타격 중 첫 타격에만 활력이 적용되던 문제를 수정했습니다.",
+    "textEn": "Fixed Vigor applying only to the first of Mad Science's 3 hits when it was created with the Violence option.",
     "entityRefs": [
       {
         "type": "card",
-        "id": "MAD_SCIENCE_ATTACK",
-        "label": "괴짜 과학(공격)"
+        "id": "MAD_SCIENCE",
+        "label": "괴짜 과학"
       }
     ],
-    "searchText": "v0.108.0:line-132-card-mad-science-attack v0.108.0 0.108.0 버그 수정 이벤트 폭력 선택지로 만들어진 괴짜 과학(공격)의 3회 타격 중 첫 타격에만 활력이 적용되던 문제를 수정했습니다. fixed vigor applying only to the first of mad science (attack)'s 3 hits when it was created with the violence option. card mad_science_attack 괴짜 과학(공격) 괴짜 과학(공격) mad science (attack)"
+    "searchText": "v0.108.0:line-132-card-mad-science v0.108.0 0.108.0 버그 수정 이벤트 폭력 선택지로 만들어진 괴짜 과학의 3회 타격 중 첫 타격에만 활력이 적용되던 문제를 수정했습니다. fixed vigor applying only to the first of mad science's 3 hits when it was created with the violence option. card mad_science 괴짜 과학 괴짜 과학 mad science"
   },
   {
     "id": "v0.108.0:line-133-event-punch-off",
@@ -33111,7 +33111,7 @@
     "searchText": "v0.108.0:line-138-relic-history-course-card-shining-strike v0.108.0 0.108.0 버그 수정 리젠트 역사 강의서의 빛나는 타격 복사본이 뽑을 카드 더미로 돌아가던 문제를 수정했습니다. fixed history course's copy of shining strike going back into your draw pile. relic history_course 역사 강의서 역사 강의서 history course card shining_strike 빛나는 타격 빛나는 타격 shining strike"
   },
   {
-    "id": "v0.108.0:line-139-card-supermassive-card-mad-science-skill",
+    "id": "v0.108.0:line-139-card-supermassive-card-mad-science",
     "patch": "v0.108.0",
     "version": "0.108.0",
     "date": "2026-07-03",
@@ -33123,10 +33123,10 @@
       "Bug Fixes",
       "Regent"
     ],
-    "markdownKo": "[gold:card]초질량[/gold]이 [gold:card]괴짜 과학(스킬)[/gold]로 생성된 카드에서 스케일링되지 않던 문제를 수정했습니다.",
-    "markdownEn": "Fixed [gold:card]Supermassive[/gold] not scaling from cards generated by [gold:card]Mad Science (Skill)[/gold].",
-    "textKo": "초질량이 괴짜 과학(스킬)로 생성된 카드에서 스케일링되지 않던 문제를 수정했습니다.",
-    "textEn": "Fixed Supermassive not scaling from cards generated by Mad Science (Skill).",
+    "markdownKo": "[gold:card]초질량[/gold]이 [gold:card]괴짜 과학[/gold]으로 생성된 카드에서 스케일링되지 않던 문제를 수정했습니다.",
+    "markdownEn": "Fixed [gold:card]Supermassive[/gold] not scaling from cards generated by [gold:card]Mad Science[/gold].",
+    "textKo": "초질량이 괴짜 과학으로 생성된 카드에서 스케일링되지 않던 문제를 수정했습니다.",
+    "textEn": "Fixed Supermassive not scaling from cards generated by Mad Science.",
     "entityRefs": [
       {
         "type": "card",
@@ -33135,11 +33135,11 @@
       },
       {
         "type": "card",
-        "id": "MAD_SCIENCE_SKILL",
-        "label": "괴짜 과학(스킬)"
+        "id": "MAD_SCIENCE",
+        "label": "괴짜 과학"
       }
     ],
-    "searchText": "v0.108.0:line-139-card-supermassive-card-mad-science-skill v0.108.0 0.108.0 버그 수정 리젠트 초질량이 괴짜 과학(스킬)로 생성된 카드에서 스케일링되지 않던 문제를 수정했습니다. fixed supermassive not scaling from cards generated by mad science (skill). card supermassive 초질량 초질량 supermassive card mad_science_skill 괴짜 과학(스킬) 괴짜 과학(스킬) mad science (skill) 괴짜 과학 mad science"
+    "searchText": "v0.108.0:line-139-card-supermassive-card-mad-science v0.108.0 0.108.0 버그 수정 리젠트 초질량이 괴짜 과학으로 생성된 카드에서 스케일링되지 않던 문제를 수정했습니다. fixed supermassive not scaling from cards generated by mad science. card supermassive 초질량 초질량 supermassive card mad_science 괴짜 과학 괴짜 과학 mad science"
   },
   {
     "id": "v0.108.0:line-140-text-lz4kar",
@@ -51495,7 +51495,7 @@
     "searchText": "v0.111.1:line-269-monster-knowledge-demon v0.111.1 0.111.1 버그 수정 적 몬스터 도감에서 지식의 악마의 지식의 저주 패턴을 반복해서 눌러도 애니메이션이 멈추지 않습니다. repeatedly clicking knowledge demon's curse of knowledge move in the bestiary no longer causes its animation to stop playing. monster knowledge_demon 지식의 악마 지식의 악마 knowledge demon"
   },
   {
-    "id": "v0.111.1:line-270-card-mad-science-skill-power-vigor",
+    "id": "v0.111.1:line-270-card-mad-science-power-vigor",
     "patch": "v0.111.1",
     "version": "0.111.1",
     "date": "2026-11-17",
@@ -51514,7 +51514,7 @@
     "entityRefs": [
       {
         "type": "card",
-        "id": "MAD_SCIENCE_SKILL",
+        "id": "MAD_SCIENCE",
         "label": "괴짜 과학"
       },
       {
@@ -51523,10 +51523,10 @@
         "label": "활력"
       }
     ],
-    "searchText": "v0.111.1:line-270-card-mad-science-skill-power-vigor v0.111.1 0.111.1 버그 수정 이벤트 폭력 선택지로 만든 괴짜 과학 카드의 3번 타격 중 첫 타격에만 활력이 적용되던 문제를 고쳤습니다. fixed an issue where vigor was only applying to the first of the mad science card's 3 hits when it was created with the violence option. card mad_science_skill 괴짜 과학 괴짜 과학(스킬) mad science (skill) 괴짜 과학 mad science power vigor 활력 활력 vigor"
+    "searchText": "v0.111.1:line-270-card-mad-science-power-vigor v0.111.1 0.111.1 버그 수정 이벤트 폭력 선택지로 만든 괴짜 과학 카드의 3번 타격 중 첫 타격에만 활력이 적용되던 문제를 고쳤습니다. fixed an issue where vigor was only applying to the first of the mad science card's 3 hits when it was created with the violence option. card mad_science 괴짜 과학 괴짜 과학 mad science power vigor 활력 활력 vigor"
   },
   {
-    "id": "v0.111.1:line-271-card-mad-science-skill-card-supermassive",
+    "id": "v0.111.1:line-271-card-mad-science-card-supermassive",
     "patch": "v0.111.1",
     "version": "0.111.1",
     "date": "2026-11-17",
@@ -51545,7 +51545,7 @@
     "entityRefs": [
       {
         "type": "card",
-        "id": "MAD_SCIENCE_SKILL",
+        "id": "MAD_SCIENCE",
         "label": "괴짜 과학"
       },
       {
@@ -51554,7 +51554,7 @@
         "label": "초질량"
       }
     ],
-    "searchText": "v0.111.1:line-271-card-mad-science-skill-card-supermassive v0.111.1 0.111.1 버그 수정 이벤트 괴짜 과학이 손에 카드를 생성할 때 초질량의 증가가 적용되지 않던 문제를 고쳤습니다. fixed mad science generating a card in your hand not scaling supermassive. card mad_science_skill 괴짜 과학 괴짜 과학(스킬) mad science (skill) 괴짜 과학 mad science card supermassive 초질량 초질량 supermassive"
+    "searchText": "v0.111.1:line-271-card-mad-science-card-supermassive v0.111.1 0.111.1 버그 수정 이벤트 괴짜 과학이 손에 카드를 생성할 때 초질량의 증가가 적용되지 않던 문제를 고쳤습니다. fixed mad science generating a card in your hand not scaling supermassive. card mad_science 괴짜 과학 괴짜 과학 mad science card supermassive 초질량 초질량 supermassive"
   },
   {
     "id": "v0.111.1:line-272-event-punch-off",
