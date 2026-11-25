@@ -8297,7 +8297,7 @@
     "searchText": "v0.103.0:line-001-text-78dzpy v0.103.0 0.103.0 컨텐츠 & 밸런스 고대의 존재 새로운 니오우 유물 추가: added new neow relics:"
   },
   {
-    "id": "v0.103.0:line-002-relic-neows-bones",
+    "id": "v0.103.0:line-002-text-c3wvng",
     "patch": "v0.103.0",
     "version": "0.103.0",
     "date": "2026-04-10",
@@ -8309,18 +8309,12 @@
       "Content & Balance",
       "Ancients"
     ],
-    "markdownKo": "[gold:relic]니오우의 뼈 주사위[/gold] (신규): \"획득 시, 무작위 [gold]니오우[/gold] 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\"",
+    "markdownKo": "[gold]니오우의 뼈[/gold] (신규): \"획득 시, 무작위 [gold]니오우[/gold] 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\"",
     "markdownEn": "**Neow's Bones** (new): \"Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.\"",
-    "textKo": "니오우의 뼈 주사위 (신규): \"획득 시, 무작위 니오우 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\"",
+    "textKo": "니오우의 뼈 (신규): \"획득 시, 무작위 니오우 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\"",
     "textEn": "Neow's Bones (new): \"Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.\"",
-    "entityRefs": [
-      {
-        "type": "relic",
-        "id": "NEOWS_BONES",
-        "label": "니오우의 뼈 주사위"
-      }
-    ],
-    "searchText": "v0.103.0:line-002-relic-neows-bones v0.103.0 0.103.0 컨텐츠 & 밸런스 고대의 존재 니오우의 뼈 주사위 (신규): \"획득 시, 무작위 니오우 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\" neow's bones (new): \"upon pickup, gain 2 random neow relics. add 1 random curse to your deck.\" relic neows_bones 니오우의 뼈 주사위 니오우의 뼈 주사위 neow's bones"
+    "entityRefs": [],
+    "searchText": "v0.103.0:line-002-text-c3wvng v0.103.0 0.103.0 컨텐츠 & 밸런스 고대의 존재 니오우의 뼈 (신규): \"획득 시, 무작위 니오우 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\" neow's bones (new): \"upon pickup, gain 2 random neow relics. add 1 random curse to your deck.\""
   },
   {
     "id": "v0.103.0:line-003-text-15m9vzg",
@@ -8681,9 +8675,9 @@
     "sectionEn": [
       "Art"
     ],
-    "markdownKo": "카드 초상화 추가: [gold:card]적응형 타격[/gold], [gold:card]그림자 방패[/gold], [gold:card]배기 장치[/gold], [gold:card]불운[/gold], [gold:card]발병[/gold]",
+    "markdownKo": "카드 초상화 추가: [gold:card]적응형 타격[/gold], [gold:card]그림자 방패[/gold], [gold:card]굴뚝[/gold], [gold:card]불운[/gold], [gold:card]발병[/gold]",
     "markdownEn": "Added portrait art for the following cards: Adaptive Strike, Shadow Shield, Smokestack, Bad Luck, Outbreak",
-    "textKo": "카드 초상화 추가: 적응형 타격, 그림자 방패, 배기 장치, 불운, 발병",
+    "textKo": "카드 초상화 추가: 적응형 타격, 그림자 방패, 굴뚝, 불운, 발병",
     "textEn": "Added portrait art for the following cards: Adaptive Strike, Shadow Shield, Smokestack, Bad Luck, Outbreak",
     "entityRefs": [
       {
@@ -8698,11 +8692,6 @@
       },
       {
         "type": "card",
-        "id": "SMOKESTACK",
-        "label": "배기 장치"
-      },
-      {
-        "type": "card",
         "id": "BAD_LUCK",
         "label": "불운"
       },
@@ -8712,7 +8701,7 @@
         "label": "발병"
       }
     ],
-    "searchText": "v0.103.0:line-018-card-adaptive-strike-card-shadow-shield v0.103.0 0.103.0 아트 카드 초상화 추가: 적응형 타격, 그림자 방패, 배기 장치, 불운, 발병 added portrait art for the following cards: adaptive strike, shadow shield, smokestack, bad luck, outbreak card adaptive_strike 적응형 타격 적응형 타격 adaptive strike card shadow_shield 그림자 방패 그림자 방패 shadow shield card smokestack 배기 장치 배기 장치 smokestack card bad_luck 불운 불운 bad luck card outbreak 발병 발병 outbreak"
+    "searchText": "v0.103.0:line-018-card-adaptive-strike-card-shadow-shield v0.103.0 0.103.0 아트 카드 초상화 추가: 적응형 타격, 그림자 방패, 굴뚝, 불운, 발병 added portrait art for the following cards: adaptive strike, shadow shield, smokestack, bad luck, outbreak card adaptive_strike 적응형 타격 적응형 타격 adaptive strike card shadow_shield 그림자 방패 그림자 방패 shadow shield card bad_luck 불운 불운 bad luck card outbreak 발병 발병 outbreak"
   },
   {
     "id": "v0.103.0:line-019-text-ingz5",
@@ -9661,7 +9650,7 @@
     "searchText": "v0.103.0:line-063-card-believe-in-you v0.103.0 0.103.0 버그 수정 멀티플레이어 역사 강의서 유물이 턴 시작 에너지 리셋 전에 너만 믿는다 카드를 사용하는 문제 수정 fixed history course relic playing believe in you card before the start-of-turn energy reset card believe_in_you 너만 믿는다 너만 믿는다 believe in you"
   },
   {
-    "id": "v0.103.0:line-064-power-smokestack",
+    "id": "v0.103.0:line-064-text-78math",
     "patch": "v0.103.0",
     "version": "0.103.0",
     "date": "2026-04-10",
@@ -9673,18 +9662,12 @@
       "Bug Fixes",
       "Multiplayer"
     ],
-    "markdownKo": "[gold:power]배기 장치[/gold] 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정",
+    "markdownKo": "[gold:power]굴뚝[/gold] 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정",
     "markdownEn": "Fixed Smokestack power proccing off of other player's Statuses",
-    "textKo": "배기 장치 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정",
+    "textKo": "굴뚝 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정",
     "textEn": "Fixed Smokestack power proccing off of other player's Statuses",
-    "entityRefs": [
-      {
-        "type": "power",
-        "id": "SMOKESTACK",
-        "label": "배기 장치"
-      }
-    ],
-    "searchText": "v0.103.0:line-064-power-smokestack v0.103.0 0.103.0 버그 수정 멀티플레이어 배기 장치 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정 fixed smokestack power proccing off of other player's statuses power smokestack 배기 장치 배기 장치 smokestack"
+    "entityRefs": [],
+    "searchText": "v0.103.0:line-064-text-78math v0.103.0 0.103.0 버그 수정 멀티플레이어 굴뚝 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정 fixed smokestack power proccing off of other player's statuses"
   },
   {
     "id": "v0.103.0:line-065-text-1xxinzo",
@@ -9970,7 +9953,7 @@
     "searchText": "v0.103.1:line-008-text-xjfgu3 v0.103.1 0.103.1 버그 수정 멀티플레이어 플레이어가 아이언클래드만 해금한 상태에서 다채로운 철학자들 이벤트가 더 이상 등장하지 않음 colorful philosophers event can no longer be encountered if a player has only ironclad unlocked"
   },
   {
-    "id": "v0.103.1:line-009-relic-neows-bones",
+    "id": "v0.103.1:line-009-text-1u3x6p5",
     "patch": "v0.103.1",
     "version": "0.103.1",
     "date": "2026-04-16",
@@ -9982,21 +9965,15 @@
       "Bug Fixes",
       "Multiplayer"
     ],
-    "markdownKo": "일부 플레이어가 [gold:relic]니오우의 뼈 주사위[/gold] 유물을 획득할 때 저주가 불일치하던 문제 수정",
+    "markdownKo": "일부 플레이어가 [gold]니오우의 뼈[/gold] 유물을 획득할 때 저주가 불일치하던 문제 수정",
     "markdownEn": "Fixed curse mismatching when some players would take **Neow's Bones** relic",
-    "textKo": "일부 플레이어가 니오우의 뼈 주사위 유물을 획득할 때 저주가 불일치하던 문제 수정",
+    "textKo": "일부 플레이어가 니오우의 뼈 유물을 획득할 때 저주가 불일치하던 문제 수정",
     "textEn": "Fixed curse mismatching when some players would take Neow's Bones relic",
-    "entityRefs": [
-      {
-        "type": "relic",
-        "id": "NEOWS_BONES",
-        "label": "니오우의 뼈 주사위"
-      }
-    ],
-    "searchText": "v0.103.1:line-009-relic-neows-bones v0.103.1 0.103.1 버그 수정 멀티플레이어 일부 플레이어가 니오우의 뼈 주사위 유물을 획득할 때 저주가 불일치하던 문제 수정 fixed curse mismatching when some players would take neow's bones relic relic neows_bones 니오우의 뼈 주사위 니오우의 뼈 주사위 neow's bones"
+    "entityRefs": [],
+    "searchText": "v0.103.1:line-009-text-1u3x6p5 v0.103.1 0.103.1 버그 수정 멀티플레이어 일부 플레이어가 니오우의 뼈 유물을 획득할 때 저주가 불일치하던 문제 수정 fixed curse mismatching when some players would take neow's bones relic"
   },
   {
-    "id": "v0.103.1:line-010-relic-neows-bones",
+    "id": "v0.103.1:line-010-text-frukx2",
     "patch": "v0.103.1",
     "version": "0.103.1",
     "date": "2026-04-16",
@@ -10008,18 +9985,12 @@
       "Bug Fixes",
       "Multiplayer"
     ],
-    "markdownKo": "[gold:relic]니오우의 뼈 주사위[/gold] 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정",
+    "markdownKo": "[gold]니오우의 뼈[/gold] 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정",
     "markdownEn": "Fixed state divergence when **Neow's Bones** relic would trigger multiple reward screens",
-    "textKo": "니오우의 뼈 주사위 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정",
+    "textKo": "니오우의 뼈 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정",
     "textEn": "Fixed state divergence when Neow's Bones relic would trigger multiple reward screens",
-    "entityRefs": [
-      {
-        "type": "relic",
-        "id": "NEOWS_BONES",
-        "label": "니오우의 뼈 주사위"
-      }
-    ],
-    "searchText": "v0.103.1:line-010-relic-neows-bones v0.103.1 0.103.1 버그 수정 멀티플레이어 니오우의 뼈 주사위 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정 fixed state divergence when neow's bones relic would trigger multiple reward screens relic neows_bones 니오우의 뼈 주사위 니오우의 뼈 주사위 neow's bones"
+    "entityRefs": [],
+    "searchText": "v0.103.1:line-010-text-frukx2 v0.103.1 0.103.1 버그 수정 멀티플레이어 니오우의 뼈 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정 fixed state divergence when neow's bones relic would trigger multiple reward screens"
   },
   {
     "id": "v0.103.1:line-011-text-3des4k",
@@ -10269,7 +10240,7 @@
         "label": "단도"
       }
     ],
-    "searchText": "v0.103.2:line-009-card-blade-of-ink-card-shiv v0.103.2 0.103.2 컨텐츠 & 밸런스 사일런트 잉크 칼날 리워크: 잉크 인챈트가 부여된 단도를 생성 — \"이 카드는 추가 피해 2를 주고 약화 1을 부여합니다.\" blade of ink reworked: generates shivs enchanted with inky - \"this card deals 2 additional damage and applies 1 weak.\" card blade_of_ink 잉크 칼날 잉크 칼날 blade of ink card shiv 단도 단도 shiv"
+    "searchText": "v0.103.2:line-009-card-blade-of-ink-card-shiv v0.103.2 0.103.2 컨텐츠 & 밸런스 사일런트 잉크 칼날 리워크: 잉크 인챈트가 부여된 단도를 생성 — \"이 카드는 추가 피해 2를 주고 약화 1을 부여합니다.\" blade of ink reworked: generates shivs enchanted with inky - \"this card deals 2 additional damage and applies 1 weak.\" card blade_of_ink 잉크 칼날 잉크 칼날 blade of ink card shiv 단도 단도 shiv shivs"
   },
   {
     "id": "v0.103.2:line-010-card-acrobatics-card-skim",
@@ -10626,7 +10597,7 @@
     "searchText": "v0.103.2:line-024-text-j36b06 v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우의 호부: 당신의 타격 1장과 수비 1장을 강화합니다. neow's talisman: upgrade 1 of your strikes and 1 of your defends."
   },
   {
-    "id": "v0.103.2:line-025-relic-neows-bones",
+    "id": "v0.103.2:line-025-text-1hkm1qb",
     "patch": "v0.103.2",
     "version": "0.103.2",
     "date": "2026-04-17",
@@ -10638,18 +10609,12 @@
       "Content & Balance",
       "Ancients & Neow"
     ],
-    "markdownKo": "[gold:relic]니오우의 뼈 주사위[/gold]: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다.",
+    "markdownKo": "[gold]니오우의 뼈[/gold]: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다.",
     "markdownEn": "**Neow's Bones**: Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.",
-    "textKo": "니오우의 뼈 주사위: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다.",
+    "textKo": "니오우의 뼈: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다.",
     "textEn": "Neow's Bones: Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.",
-    "entityRefs": [
-      {
-        "type": "relic",
-        "id": "NEOWS_BONES",
-        "label": "니오우의 뼈 주사위"
-      }
-    ],
-    "searchText": "v0.103.2:line-025-relic-neows-bones v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우의 뼈 주사위: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다. neow's bones: upon pickup, gain 2 random neow relics. add 1 random curse to your deck. relic neows_bones 니오우의 뼈 주사위 니오우의 뼈 주사위 neow's bones"
+    "entityRefs": [],
+    "searchText": "v0.103.2:line-025-text-1hkm1qb v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우의 뼈: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다. neow's bones: upon pickup, gain 2 random neow relics. add 1 random curse to your deck."
   },
   {
     "id": "v0.103.2:line-026-text-14qxr01",
@@ -35027,7 +34992,7 @@
     "searchText": "v0.109.0:line-037-card-trash-to-treasure v0.109.0 0.109.0 콘텐츠 & 밸런스 디펙트 고철을 보물로의 강화 효과가 선천성 획득 -> 비용 1 감소로 변경되었습니다. changed trash to treasure: upgrade changed from gaining innate -> lowering its cost by 1. card trash_to_treasure 고철을 보물로 고철을 보물로 trash to treasure"
   },
   {
-    "id": "v0.109.0:line-038-card-tutor",
+    "id": "v0.109.0:line-038-text-1n41zm4",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -35039,18 +35004,12 @@
       "Content & Balance",
       "Multiplayer"
     ],
-    "markdownKo": "새로운 리젠트 카드 [gold:card]가르침[/gold]가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 [gold]뽑을 카드 더미[/gold]에서 카드 1장을 선택해 [gold]손[/gold]으로 가져옵니다.\"",
+    "markdownKo": "새로운 리젠트 카드 [gold:card]강사[/gold]가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 [gold]뽑을 카드 더미[/gold]에서 카드 1장을 선택해 [gold]손[/gold]으로 가져옵니다.\"",
     "markdownEn": "Added new Regent card, [gold:card]Tutor[/gold]: Rare Skill, cost 1(0), \"Another player chooses a card in their [gold]Draw Pile[/gold] to add into their [gold]Hand[/gold].\"",
-    "textKo": "새로운 리젠트 카드 가르침가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\"",
+    "textKo": "새로운 리젠트 카드 강사가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\"",
     "textEn": "Added new Regent card, Tutor: Rare Skill, cost 1(0), \"Another player chooses a card in their Draw Pile to add into their Hand.\"",
-    "entityRefs": [
-      {
-        "type": "card",
-        "id": "TUTOR",
-        "label": "가르침"
-      }
-    ],
-    "searchText": "v0.109.0:line-038-card-tutor v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 새로운 리젠트 카드 가르침가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\" added new regent card, tutor: rare skill, cost 1(0), \"another player chooses a card in their draw pile to add into their hand.\" card tutor 가르침 가르침 tutor"
+    "entityRefs": [],
+    "searchText": "v0.109.0:line-038-text-1n41zm4 v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 새로운 리젠트 카드 강사가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\" added new regent card, tutor: rare skill, cost 1(0), \"another player chooses a card in their draw pile to add into their hand.\""
   },
   {
     "id": "v0.109.0:line-039-card-midnight",
@@ -35176,7 +35135,7 @@
         "label": "단도"
       }
     ],
-    "searchText": "v0.109.0:line-043-card-shiv v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 강화해도 단도 수가 증가하지 않습니다. upgrade no longer increases shiv count. card shiv 단도 단도 shiv"
+    "searchText": "v0.109.0:line-043-card-shiv v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 강화해도 단도 수가 증가하지 않습니다. upgrade no longer increases shiv count. card shiv 단도 단도 shiv shivs"
   },
   {
     "id": "v0.109.0:line-044-text-31h9a4",
@@ -41409,7 +41368,7 @@
         "label": "단도"
       }
     ],
-    "searchText": "v0.113.0:line-046-card-phantom-blades-card-shiv v0.113.0 0.113.0 콘텐츠 및 밸런스 사일런트 환영검 (너프): 단도 추가 피해량이 9(12) → 8(11)로 감소했습니다. phantom blades (nerf): additional shiv damage decreased from 9(12) -> 8(11). card phantom_blades 환영검 환영검 phantom blades card shiv 단도 단도 shiv"
+    "searchText": "v0.113.0:line-046-card-phantom-blades-card-shiv v0.113.0 0.113.0 콘텐츠 및 밸런스 사일런트 환영검 (너프): 단도 추가 피해량이 9(12) → 8(11)로 감소했습니다. phantom blades (nerf): additional shiv damage decreased from 9(12) -> 8(11). card phantom_blades 환영검 환영검 phantom blades card shiv 단도 단도 shiv shivs"
   },
   {
     "id": "v0.113.0:line-047-card-charge-card-minion-dive-bomb",
@@ -47916,7 +47875,7 @@
         "label": "단도"
       }
     ],
-    "searchText": "v0.111.1:line-109-card-blade-symphony-card-shiv v0.111.1 0.111.1 콘텐츠 & 밸런스 멀티플레이어 칼날 교향곡: 고급 - 스킬 - 비용 2(1) - \"모든 플레이어의 손에 단도를 2장 추가합니다.\" blade symphony: uncommon - skill - cost 2(1) - \"add 2 shivs to all players' hands.\" card blade_symphony 칼날 교향곡 칼날 교향곡 blade symphony card shiv 단도 단도 shiv"
+    "searchText": "v0.111.1:line-109-card-blade-symphony-card-shiv v0.111.1 0.111.1 콘텐츠 & 밸런스 멀티플레이어 칼날 교향곡: 고급 - 스킬 - 비용 2(1) - \"모든 플레이어의 손에 단도를 2장 추가합니다.\" blade symphony: uncommon - skill - cost 2(1) - \"add 2 shivs to all players' hands.\" card blade_symphony 칼날 교향곡 칼날 교향곡 blade symphony card shiv 단도 단도 shiv shivs"
   },
   {
     "id": "v0.111.1:line-110-card-concoct-power-poison",
@@ -54370,7 +54329,7 @@
         "label": "꿰뚫림"
       }
     ],
-    "searchText": "v0.114.0:line-034-card-recall-power-impaled v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 수거 (리워크): 비용 1(0) 일반 스킬, \"대상 적이 꿰뚫림 상태라면, 회수하고 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에 놓습니다.\" → 비용 0 일반 스킬, \"보존. 대상 적이 꿰뚫림 상태라면, 회수합니다. 소멸. (강화 시 소멸 제거.)\" recall (rework): common skill, cost 1(0), \"if the enemy is impaled, dislodge and put a card from your discard pile on top of your draw pile.\" -> common skill, cost 0, \"retain. if the enemy is impaled, dislodge. exhaust. (lose exhaust.)\" card recall 수거 수거 recall power impaled 꿰뚫림 꿰뚫림 impaled"
+    "searchText": "v0.114.0:line-034-card-recall-power-impaled v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 수거 (리워크): 비용 1(0) 일반 스킬, \"대상 적이 꿰뚫림 상태라면, 회수하고 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에 놓습니다.\" → 비용 0 일반 스킬, \"보존. 대상 적이 꿰뚫림 상태라면, 회수합니다. 소멸. (강화 시 소멸 제거.)\" recall (rework): common skill, cost 1(0), \"if the enemy is impaled, dislodge and put a card from your discard pile on top of your draw pile.\" -> common skill, cost 0, \"retain. if the enemy is impaled, dislodge. exhaust. (lose exhaust.)\" card recall 수거 수거 recall power impaled 꿰뚫림 꿰뚫림 impaled 꿰뚫린 꿰뚫을"
   },
   {
     "id": "v0.114.0:line-035-card-trick-shot",
@@ -54975,7 +54934,7 @@
         "label": "꿰뚫림"
       }
     ],
-    "searchText": "v0.114.0:line-057-card-serrated-arrows-power-impaled v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 톱니 화살 (버프): 꿰뚫림 적에 대한 추가 피해가 25%(50%) → 50%(75%)로 증가했습니다. serrated arrows (buff): impaled enemy extra damage increased from 25%(50%) -> 50%(75%). card serrated_arrows 톱니 화살 톱니 화살 serrated arrows power impaled 꿰뚫림 꿰뚫림 impaled"
+    "searchText": "v0.114.0:line-057-card-serrated-arrows-power-impaled v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 톱니 화살 (버프): 꿰뚫림 적에 대한 추가 피해가 25%(50%) → 50%(75%)로 증가했습니다. serrated arrows (buff): impaled enemy extra damage increased from 25%(50%) -> 50%(75%). card serrated_arrows 톱니 화살 톱니 화살 serrated arrows power impaled 꿰뚫림 꿰뚫림 impaled 꿰뚫린 꿰뚫을"
   },
   {
     "id": "v0.114.0:line-058-card-cho-chorus",

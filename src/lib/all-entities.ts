@@ -20,6 +20,7 @@ import type {
   CodexRelic,
 } from "@/lib/codex-types";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
+import { inflectionAliases } from "@/lib/inflection-aliases";
 
 export type AllEntityResources = {
   cards: readonly CodexCard[];
@@ -48,8 +49,7 @@ export function buildAllEntities(resources: AllEntityResources): EntityInfo[] {
       id: c.id,
       nameEn: c.nameEn,
       nameKo: c.name,
-      aliasesEn: c.id === "MAD_SCIENCE_SKILL" ? ["Mad Science"] : undefined,
-      aliasesKo: c.id === "MAD_SCIENCE_SKILL" ? ["괴짜 과학"] : undefined,
+      ...inflectionAliases("card", c.id, c.id === "MAD_SCIENCE_SKILL" ? { aliasesEn: ["Mad Science"], aliasesKo: ["괴짜 과학"] } : {}),
       imageUrl: c.imageUrl ?? c.betaImageUrl,
       color: c.color,
       type: "card" as const,
@@ -69,6 +69,7 @@ export function buildAllEntities(resources: AllEntityResources): EntityInfo[] {
       id: k.id,
       nameEn: k.nameEn,
       nameKo: k.name,
+      ...inflectionAliases("keyword", k.id),
       imageUrl: k.imageUrl,
       href: buildCompendiumResourceHref("keyword", k.id),
       color: k.source,
@@ -131,6 +132,7 @@ export function buildAllEntities(resources: AllEntityResources): EntityInfo[] {
       id: p.id,
       nameEn: p.nameEn,
       nameKo: p.name,
+      ...inflectionAliases("power", p.id),
       imageUrl: p.imageUrl,
       color: p.type,
       type: "power" as const,

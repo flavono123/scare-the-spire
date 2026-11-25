@@ -60,6 +60,7 @@ import { RichText } from "@/components/rich-text";
 import { cn } from "@/lib/utils";
 import { TOYBOX_WIDE_SHELL_CLASS } from "@/lib/toybox-layout";
 import { stripNameCounterPlaceholder } from "@/lib/game-name-placeholders";
+import { inflectionAliases } from "@/lib/inflection-aliases";
 
 const PATCH_COPY: Record<ServiceLocale, {
   backToList: string;
@@ -1111,6 +1112,7 @@ export async function PatchDetailPage({
       id: c.id,
       nameEn: c.nameEn,
       nameKo: patchDisplayName(c.name, c.nameEn, gameLocale),
+      ...inflectionAliases("card", c.id),
       imageUrl: c.imageUrl,
       color: c.color,
       type: "card" as const,
@@ -1151,6 +1153,7 @@ export async function PatchDetailPage({
       id: p.id,
       nameEn: p.nameEn,
       nameKo: patchDisplayName(p.name, p.nameEn, gameLocale),
+      ...inflectionAliases("power", p.id),
       imageUrl: p.imageUrl,
       color: p.type,
       type: "power" as const,
@@ -1160,6 +1163,7 @@ export async function PatchDetailPage({
       id: k.id,
       nameEn: k.nameEn,
       nameKo: patchDisplayName(k.name, k.nameEn, gameLocale),
+      ...inflectionAliases("keyword", k.id),
       imageUrl: null,
       color: "keyword",
       type: "keyword" as const,

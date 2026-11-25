@@ -1,0 +1,81 @@
+{
+  "kor": {
+    "keyword:ETHEREAL": [
+      "휘발성 카드"
+    ],
+    "keyword:EXHAUST": [
+      "소멸된 카드 더미"
+    ],
+    "power:IMPALED": [
+      "꿰뚫린",
+      "꿰뚫을"
+    ]
+  },
+  "eng": {
+    "card:HANG": [
+      "Hangs"
+    ],
+    "card:SHIV": [
+      "Shivs"
+    ],
+    "card:WOUND": [
+      "Wounds"
+    ],
+    "keyword:ARROW": [
+      "Arrows"
+    ],
+    "keyword:BLOCK": [
+      "Blocked",
+      "Blocks"
+    ],
+    "keyword:CHANNELING": [
+      "Channel Lightning",
+      "Channeled",
+      "Channels"
+    ],
+    "keyword:COOK": [
+      "Cooked",
+      "Cooks"
+    ],
+    "keyword:ETHEREAL": [
+      "Ethereal card"
+    ],
+    "keyword:EVOKE": [
+      "Evoke Lightning",
+      "Evoked",
+      "Evokes"
+    ],
+    "keyword:EXHAUST": [
+      "Exhaust Pile",
+      "Exhausted",
+      "Exhausts"
+    ],
+    "keyword:FORGE": [
+      "Forged",
+      "Forges"
+    ],
+    "keyword:REPLAY": [
+      "Replayed",
+      "Replays"
+    ],
+    "keyword:RETAIN": [
+      "Retained",
+      "Retains"
+    ],
+    "keyword:STUN": [
+      "Stunned",
+      "Stuns"
+    ],
+    "keyword:SUMMON_STATIC": [
+      "Summoned",
+      "Summons"
+    ],
+    "keyword:TAROT": [
+      "Tarots"
+    ],
+    "keyword:TRANSFORM": [
+      "Transformed",
+      "Transforms"
+    ]
+  }
+}

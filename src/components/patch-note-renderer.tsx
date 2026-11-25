@@ -72,6 +72,7 @@ import { useCoarsePointer } from "@/hooks/use-coarse-pointer";
 import { useGameLocale, useGameLocaleForService } from "@/hooks/use-game-locale";
 import { useGameUiLabels } from "@/hooks/use-game-ui-labels";
 import { isModifiedClick, NEW_TAB_LINK_PROPS } from "@/components/editor/editor-link";
+import { isInflectionOf } from "@/lib/inflection-aliases";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "character" | "keyword" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch" | "modifier" | "ascension" | "blitzEntry" | "dominion" | "pet";
@@ -626,7 +627,9 @@ function LocalizedEntityPreview({
     && characterHasLowHealthIdle(previewEntity.characterData)
     ? withCharacterLowHpQuery(localizedHref)
     : localizedHref;
-  const linkText = preferEntityLocaleLabel
+  // An inflection the game pairs with this tip (Exhausted, 꿰뚫린) stays as written in its own locale.
+  const keepWritten = typeof children === "string" && isInflectionOf(previewEntity.type, previewEntity.id, children, gameLocale);
+  const linkText = preferEntityLocaleLabel && !keepWritten
     ? `${previewEntity.nameKo}${cardPreviewUpgradeSuffix(previewEntity)}`
     : children;
   const renderedLinkText = (
