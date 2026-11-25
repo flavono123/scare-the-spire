@@ -31,6 +31,11 @@ export const ACT_ENCOUNTER_BACKGROUND: Record<string, string> = {
 const MONSTER_STILL_OVERRIDES: Record<string, string> = {
   FAKE_MERCHANT_MONSTER: "/images/sts2/npcs/fake_merchant.webp",
   DECIMILLIPEDE_SEGMENT: "/images/sts2/monsters-render/decimillipede.webp",
+  DECIMILLIPEDE_SEGMENT_FRONT: "/images/sts2/monsters-render/decimillipede.webp",
+  DECIMILLIPEDE_SEGMENT_MIDDLE: "/images/sts2/monsters-render/decimillipede.webp",
+  DECIMILLIPEDE_SEGMENT_BACK: "/images/sts2/monsters-render/decimillipede.webp",
+  // MysteriousKnight extends FlailKnight (same body, extra Strength and Plating).
+  MYSTERIOUS_KNIGHT: "/images/sts2/monsters-render/flail_knight.webp",
   KAISER_CRAB: "/images/sts2/monsters-render/kaiser_crab.webp",
 };
 

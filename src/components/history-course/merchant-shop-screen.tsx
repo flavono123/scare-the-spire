@@ -408,7 +408,7 @@ export function ShopObtainOverlay({
             ? (relic ? resolveRelicDisplayImage(relic, relic.pool) : null)
             : item.kind === "potion"
               ? potion?.imageUrl
-              : card?.imageUrl;
+              : card?.imageUrl ?? card?.betaImageUrl;
         if (!iconUrl && item.kind !== "card") return null;
         return (
           <LastSceneObtainFly

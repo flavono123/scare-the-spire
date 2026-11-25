@@ -179,7 +179,7 @@ export function CombatLootScreen({
     fly = {
       kind: "card",
       pickId: resolving.choice.id,
-      iconUrl: card?.imageUrl ?? ICON_CARD_SPECIAL,
+      iconUrl: card?.imageUrl ?? card?.betaImageUrl ?? ICON_CARD_SPECIAL,
       card,
     };
   }

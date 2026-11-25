@@ -1,4 +1,5 @@
 import { bakeDescription } from "@/lib/codex-bake";
+import { historyCardImageSrc, historyPotionImageSrc, historyRelicImageSrc } from "@/lib/history-image-src";
 import { historyCardDisplayName } from "@/lib/history-card-lookup";
 import { restSiteChoiceLabel } from "@/lib/history-party";
 import { historyStaticHoverTip } from "@/lib/history-static-hover-tips";
@@ -45,21 +46,15 @@ export type HistoryHoverLine = {
   art?: HistoryHoverArt;
 };
 
-function resourceSlug(id: string): string {
-  return id.replace(/^(CARD|RELIC|POTION)\./i, "").toLowerCase();
-}
-
 /** Static `/images/sts2/*` portrait for a hover art ref. */
 export function historyHoverArtSrc(art: HistoryHoverArt): string {
   if (art.kind === "card") {
     const parts = getMadScienceVariantPartsFromId(art.id);
     if (parts) return TINKER_CARD_IMAGE_BY_TYPE[parts.cardType];
-    return `/images/sts2/cards/${resourceSlug(art.id)}.webp`;
+    return historyCardImageSrc(art.id);
   }
-  if (art.kind === "relic") {
-    return `/images/sts2/relics/${resourceSlug(art.id)}.webp`;
-  }
-  return `/images/sts2/potions/${resourceSlug(art.id)}.webp`;
+  if (art.kind === "relic") return historyRelicImageSrc(art.id);
+  return historyPotionImageSrc(art.id);
 }
 
 export type HistoryHoverModel = {

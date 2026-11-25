@@ -1,5 +1,6 @@
 "use client";
 
+import { historyPotionImageSrc, historyRelicImageSrc } from "@/lib/history-image-src";
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
@@ -209,13 +210,11 @@ function prevStepGlobalMs(timeline: RunTimeline, cur: number): number {
 }
 
 function relicIconSrc(id: string): string {
-  const slug = id.replace(/^RELIC\./, "").toLowerCase();
-  return `/images/sts2/relics/${slug}.webp`;
+  return historyRelicImageSrc(id);
 }
 
 function potionIconSrc(id: string): string {
-  const slug = id.replace(/^POTION\./, "").toLowerCase();
-  return `/images/sts2/potions/${slug}.webp`;
+  return historyPotionImageSrc(id);
 }
 
 function normalizeItemId(id: string): string {

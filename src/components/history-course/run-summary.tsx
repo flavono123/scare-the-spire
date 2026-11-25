@@ -1,5 +1,6 @@
 "use client";
 
+import { historyPotionImageSrc, historyRelicImageSrc } from "@/lib/history-image-src";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
 import { HistoryTinyCardIcon } from "@/components/history-course/card-action-icon";
@@ -69,13 +70,11 @@ import { STS2_SCORE_ICONS, sts2ScoreTexts } from "@/lib/sts2/score-texts";
 // ============================================================================
 
 function relicIconSrc(id: string): string {
-  const slug = id.replace(/^RELIC\./, "").toLowerCase();
-  return `/images/sts2/relics/${slug}.webp`;
+  return historyRelicImageSrc(id);
 }
 
 function potionIconSrc(id: string): string {
-  const slug = id.replace(/^POTION\./, "").toLowerCase();
-  return `/images/sts2/potions/${slug}.webp`;
+  return historyPotionImageSrc(id);
 }
 
 function buildCardEntityInfo(
@@ -102,7 +101,7 @@ function buildCardEntityInfo(
     id: linkId,
     nameEn: card.nameEn,
     nameKo: card.name,
-    imageUrl: card.imageUrl,
+    imageUrl: card.imageUrl ?? card.betaImageUrl,
     href: buildCompendiumResourceHref("card", linkId),
     color: card.color,
     type: "card",

@@ -207,7 +207,7 @@ export function CardRewardScreen({
           progress={Math.max(0, Math.min(1, (beatProgress - CARD_REWARD_PICK_START) / (1 - CARD_REWARD_PICK_START)))}
           sourceSelector={`[data-history-last-scene-pick="${picked.id}"]`}
           targetSelector="[data-deck-target]"
-          iconUrl={pickedCard.imageUrl ?? ""}
+          iconUrl={pickedCard.imageUrl ?? pickedCard.betaImageUrl ?? ""}
           kind="card"
           card={pickedCard}
           upgradeLevel={picked.upgradeLevel ?? 0}

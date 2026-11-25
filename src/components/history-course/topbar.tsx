@@ -1,5 +1,6 @@
 "use client";
 
+import { historyPotionImageSrc, historyRelicImageSrc } from "@/lib/history-image-src";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
@@ -88,13 +89,11 @@ const NODE_SPRITE_NAME: Record<string, string> = {
 };
 
 function relicIconSrc(id: string): string {
-  const slug = id.replace(/^RELIC\./, "").toLowerCase();
-  return `/images/sts2/relics/${slug}.webp`;
+  return historyRelicImageSrc(id);
 }
 
 function potionIconSrc(id: string): string {
-  const slug = id.replace(/^POTION\./, "").toLowerCase();
-  return `/images/sts2/potions/${slug}.webp`;
+  return historyPotionImageSrc(id);
 }
 
 function bossIconSrc(id: string): string {

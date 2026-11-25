@@ -726,10 +726,11 @@ function ElementThumb({
   const size = compact ? 40 : 48;
   if (element.kind === "card") {
     const card = coverCatalogCard(catalog, element.id);
-    if (card?.imageUrl) {
+    const src = card?.imageUrl ?? card?.betaImageUrl;
+    if (src) {
       return (
         <Image
-          src={card.imageUrl}
+          src={src}
           alt=""
           width={size}
           height={Math.round(size * 1.4)}
