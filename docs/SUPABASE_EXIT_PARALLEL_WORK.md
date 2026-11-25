@@ -1,5 +1,8 @@
 # Supabase 이관 중 병렬 작업 유의사항
 
+> 끝난 문서다. 이관은 2026-11-19 7단계(Supabase 퇴역)로 끝났고 아래 유의사항은 더 이상 적용하지 않는다.
+> 스키마 변경은 [RELEASE_PROCESS.md](RELEASE_PROCESS.md) 5절(D1 마이그레이션)을 따른다.
+
 Supabase를 Cloudflare D1으로 옮기는 작업이 진행 중이다. 전체 계획은
 [SUPABASE_EXIT_PLAN.md](SUPABASE_EXIT_PLAN.md)에 있다. 이 문서에는 이관과 같은 시기에 다른 작업을 하는 세션이
 지킬 것만 모았다. 이관 단계가 바뀌면 "지금 단계"를 고친다.
