@@ -15,6 +15,7 @@ const HOSTS: Record<string, string> = {
 const HELP = `ssy <command>
 
   find <text> [--type card] [--limit 10]   Official ko/en name, id, type and URL (search index)
+  find <text> --at <version>               Names as that version's archived build had them, with renames
   changes <ENTITY_ID>                      Balance changes and field diffs per patch
   lines <version> [text]                   Patch line ids of one patch, filtered by text
   tags [version|/page ...] [--dir .patch-worker/assets] [--all]   Gold text rendered without a hover tip, vs the game (prod by default)
@@ -35,10 +36,65 @@ function parse(argv: string[]): Flags {
   return { args, opts };
 }
 
+// Names as each archived build had them (~/sts2-builds/<version>/canonical/loc, see AGENTS.md).
+const BUILDS = process.env.STS2_BUILDS_DIR ?? path.join(process.env.HOME ?? "", "sts2-builds");
+const cmpVersion = (a: string, b: string) => {
+  const [x, y] = [a, b].map((v) => v.replace(/^v/, "").split(".").map(Number));
+  for (let i = 0; i < Math.max(x.length, y.length); i++) if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) - (y[i] ?? 0);
+  return 0;
+};
+const namesCache = new Map<string, { build: string; names: Map<string, string[]> } | null>();
+/** title -> ["table:KEY", ...] for the newest archived build at or before `version`; null when no archive covers it. */
+function namesAt(version: string, loc: "kor" | "eng") {
+  const cacheKey = `${version}:${loc}`;
+  if (namesCache.has(cacheKey)) return namesCache.get(cacheKey)!;
+  const builds = existsSync(BUILDS) ? readdirSync(BUILDS).filter((d) => /^\d+\.\d+(\.\d+)?$/.test(d) && existsSync(path.join(BUILDS, d, "canonical/loc", loc))) : [];
+  const build = builds.filter((d) => cmpVersion(d, version) <= 0).sort(cmpVersion).pop();
+  let result: { build: string; names: Map<string, string[]> } | null = null;
+  if (build) {
+    const names = new Map<string, string[]>();
+    const dir = path.join(BUILDS, build, "canonical/loc", loc);
+    for (const file of readdirSync(dir)) {
+      for (const [k, v] of Object.entries(JSON.parse(readFileSync(path.join(dir, file), "utf8")) as Record<string, unknown>)) {
+        if (typeof v !== "string" || !/\.(title|name)$/.test(k)) continue;
+        const ref = `${file.replace(/\.json$/, "")}:${k.replace(/\.(title|name)$/, "")}`;
+        names.set(v.trim(), [...(names.get(v.trim()) ?? []), ref]);
+      }
+    }
+    result = { build, names };
+  }
+  namesCache.set(cacheKey, result);
+  return result;
+}
+const currentName = (loc: "kor" | "eng", ref: string) => {
+  const [table, key] = ref.split(":");
+  const file = path.join(root, "data/sts2/localization", loc, `${table}.json`);
+  if (!existsSync(file)) return undefined;
+  const t = JSON.parse(readFileSync(file, "utf8")) as Record<string, string>;
+  return t[`${key}.title`] ?? t[`${key}.name`];
+};
+
 type SearchItem = { id: string; type: string; title: string; titleEn?: string; href?: string };
 function find({ args, opts }: Flags) {
   const q = args.join(" ").toLowerCase();
   if (!q) throw new Error("find <text>");
+  if (opts.at) {
+    let hits = 0;
+    for (const loc of ["kor", "eng"] as const) {
+      const at = namesAt(opts.at, loc);
+      if (!at) throw new Error(`no archived build at or before ${opts.at} in ${BUILDS}`);
+      for (const [name, refs] of at.names) {
+        if (!name.toLowerCase().includes(q)) continue;
+        for (const ref of refs) {
+          const now = currentName(loc, ref);
+          console.log(`${loc}\t${ref}\t${name}\tat ${at.build}\tnow ${now ?? "(gone)"}${now === name ? "" : "  <- renamed"}`);
+          if (++hits >= Number(opts.limit ?? 10)) return;
+        }
+      }
+    }
+    if (!hits) process.exitCode = 1;
+    return;
+  }
   const index = "public/generated/search-index.json";
   if (!existsSync(path.join(root, index))) execFileSync("node", ["scripts/ensure-search-index.mjs"], { cwd: root, stdio: "inherit" });
   const items = json<{ items: SearchItem[] }>(index).items.filter((i) => !opts.type || i.type === opts.type);
@@ -165,7 +221,7 @@ function pagePaths(args: string[]): string[] {
 // Reads production by default, or a local build with --dir .patch-worker/assets (after pnpm patch:build).
 async function tags({ args, opts }: Flags) {
   const game = { kor: gameTerms("kor"), eng: gameTerms("eng") };
-  const rows = new Map<string, { loc: "kor" | "eng"; term: string; pages: Set<string> }>();
+  const rows = new Map<string, { loc: "kor" | "eng"; term: string; v: Verdict; pages: Set<string> }>();
   let missing = 0;
   for (const page of pagePaths(args)) {
     let html = "";
@@ -179,15 +235,20 @@ async function tags({ args, opts }: Flags) {
       html = await res.text();
     }
     const loc = page.startsWith("/en/") ? "eng" : "kor";
+    const version = page.match(/\/patches\/(\d+\.\d+(?:\.\d+)?)$/)?.[1];
     for (const [, raw] of html.matchAll(PLAIN_GOLD_RE)) {
       const term = decode(raw).trim();
-      const key = `${loc}\t${term}`;
-      const row = rows.get(key) ?? { loc, term, pages: new Set<string>() };
+      let v = verdict(game[loc], loc, term);
+      // A name the game used at this patch's build but renamed since: right for the page, the site only knows the new name.
+      const ref = version && v.text.startsWith("WORDING") ? namesAt(version, loc)?.names.get(term)?.[0] : undefined;
+      if (ref) v = { mismatch: true, text: `MISMATCH ${ref} was named this at ${namesAt(version!, loc)!.build} (now ${currentName(loc, ref) ?? "gone"}); site matches only the current name` };
+      const key = `${loc}\t${term}\t${v.text}`;
+      const row = rows.get(key) ?? { loc, term, v, pages: new Set<string>() };
       row.pages.add(page.replace(/^\/en/, ""));
       rows.set(key, row);
     }
   }
-  const out = [...rows.values()].map((r) => ({ ...r, v: verdict(game[r.loc], r.loc, r.term) }));
+  const out = [...rows.values()];
   out.sort((a, b) => a.v.text.localeCompare(b.v.text) || b.pages.size - a.pages.size);
   const all = opts.all !== undefined;
   for (const r of out) if (all || r.v.mismatch) console.log(`${r.v.text}\t${r.loc}\t${r.term}\t${r.pages.size}p\t${[...r.pages].slice(0, 4).join(" ")}${r.pages.size > 4 ? " ..." : ""}`);
