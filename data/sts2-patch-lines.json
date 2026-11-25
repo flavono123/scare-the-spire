@@ -53312,8 +53312,8 @@
       "Content & Balance",
       "Colorless Cards"
     ],
-    "markdownKo": "[gold:card]내 반짝이들[/gold] ([pink][b]리워크[/b][/pink]): \"보유한 [gold]골드[/gold] 20(10)마다 피해를 1 줍니다.\" → \"피해를 2(3) 줍니다. 보유한 [gold]골드[/gold] 25마다 추가로 한 번 더 적중합니다.\"",
-    "markdownEn": "[gold:card]My Shinies[/gold] ([pink][b]rework[/b][/pink]): \"Deal 1 damage for every 20(10) [gold]Gold[/gold] you have.\" -> \"Deal 2(3) damage. Hits an additional time for every 25 [gold]Gold[/gold] you have.\"",
+    "markdownKo": "[gold:card]내 반짝이들[/gold] ([b][pink]리워크[/pink][/b]): \"보유한 [gold]골드[/gold] 20(10)마다 피해를 1 줍니다.\" → \"피해를 2(3) 줍니다. 보유한 [gold]골드[/gold] 25마다 추가로 한 번 더 적중합니다.\"",
+    "markdownEn": "[gold:card]My Shinies[/gold] ([b][pink]rework[/pink][/b]): \"Deal 1 damage for every 20(10) [gold]Gold[/gold] you have.\" -> \"Deal 2(3) damage. Hits an additional time for every 25 [gold]Gold[/gold] you have.\"",
     "textKo": "내 반짝이들 (리워크): \"보유한 골드 20(10)마다 피해를 1 줍니다.\" → \"피해를 2(3) 줍니다. 보유한 골드 25마다 추가로 한 번 더 적중합니다.\"",
     "textEn": "My Shinies (rework): \"Deal 1 damage for every 20(10) Gold you have.\" -> \"Deal 2(3) damage. Hits an additional time for every 25 Gold you have.\"",
     "entityRefs": [
@@ -53410,8 +53410,8 @@
       "Content & Balance",
       "The Fool"
     ],
-    "markdownKo": "[gold:card]성장[/gold] ([pink][b]리워크[/b][/pink]): \"[gold]손[/gold]에 있는 모든 [gold:card]슬픔[/gold]을 [gold]소멸[/gold]시킵니다. [gold]소멸[/gold]시킨 카드 1장당 [gold:power]스트레칭[/gold]을 4(6) 얻습니다.\" → \"[gold]방어도[/gold]를 8(11) 얻습니다. [gold]손[/gold]에 있는 무작위 [gold:card]슬픔[/gold] 1장을 이 카드의 복사본으로 [gold]변화[/gold]시킵니다.\"",
-    "markdownEn": "[gold:card]Growth[/gold] ([pink][b]rework[/b][/pink]): \"[gold]Exhaust[/gold] ALL [gold:card]Sadness[/gold] in your Hand. Gain 4(6) [gold:power]Stretch[/gold] for each card [gold]Exhausted[/gold].\" -> \"Gain 8(11) [gold]Block[/gold]. [gold]Transform[/gold] 1 random [gold:card]Sadness[/gold] in your Hand into a copy of this card.\"",
+    "markdownKo": "[gold:card]성장[/gold] ([b][pink]리워크[/pink][/b]): \"[gold]손[/gold]에 있는 모든 [gold:card]슬픔[/gold]을 [gold]소멸[/gold]시킵니다. [gold]소멸[/gold]시킨 카드 1장당 [gold:power]스트레칭[/gold]을 4(6) 얻습니다.\" → \"[gold]방어도[/gold]를 8(11) 얻습니다. [gold]손[/gold]에 있는 무작위 [gold:card]슬픔[/gold] 1장을 이 카드의 복사본으로 [gold]변화[/gold]시킵니다.\"",
+    "markdownEn": "[gold:card]Growth[/gold] ([b][pink]rework[/pink][/b]): \"[gold]Exhaust[/gold] ALL [gold:card]Sadness[/gold] in your Hand. Gain 4(6) [gold:power]Stretch[/gold] for each card [gold]Exhausted[/gold].\" -> \"Gain 8(11) [gold]Block[/gold]. [gold]Transform[/gold] 1 random [gold:card]Sadness[/gold] in your Hand into a copy of this card.\"",
     "textKo": "성장 (리워크): \"손에 있는 모든 슬픔을 소멸시킵니다. 소멸시킨 카드 1장당 스트레칭을 4(6) 얻습니다.\" → \"방어도를 8(11) 얻습니다. 손에 있는 무작위 슬픔 1장을 이 카드의 복사본으로 변화시킵니다.\"",
     "textEn": "Growth (rework): \"Exhaust ALL Sadness in your Hand. Gain 4(6) Stretch for each card Exhausted.\" -> \"Gain 8(11) Block. Transform 1 random Sadness in your Hand into a copy of this card.\"",
     "entityRefs": [
@@ -53446,8 +53446,8 @@
       "Content & Balance",
       "The Fool"
     ],
-    "markdownKo": "[gold:card]화살 찌르기[/gold] ([pink][b]리워크[/b][/pink]): 비용 1 일반 공격, \"피해를 9(12) 줍니다. [gold]화살[/gold]이 있다면, [gold]버린 카드 더미[/gold]에서 [gold]발사[/gold]할 수 있는 카드 1장을 [gold]손[/gold]으로 가져옵니다.\" → 비용 2 일반 공격, \"피해를 13(15) 줍니다. [gold:power]조준[/gold]을 6(8) 얻습니다.\"",
-    "markdownEn": "[gold:card]Arrow Stab[/gold] ([pink][b]rework[/b][/pink]): Common Attack, cost 1, \"Deal 9(12) damage. If you have an [gold]Arrow[/gold], put a card that can [gold]Shoot[/gold] from your Discard Pile into your Hand.\" -> Common Attack, cost 2, \"Deal 13(15) damage. Gain 6(8) [gold:power]Aim[/gold].\"",
+    "markdownKo": "[gold:card]화살 찌르기[/gold] ([b][pink]리워크[/pink][/b]): 비용 1 일반 공격, \"피해를 9(12) 줍니다. [gold]화살[/gold]이 있다면, [gold]버린 카드 더미[/gold]에서 [gold]발사[/gold]할 수 있는 카드 1장을 [gold]손[/gold]으로 가져옵니다.\" → 비용 2 일반 공격, \"피해를 13(15) 줍니다. [gold:power]조준[/gold]을 6(8) 얻습니다.\"",
+    "markdownEn": "[gold:card]Arrow Stab[/gold] ([b][pink]rework[/pink][/b]): Common Attack, cost 1, \"Deal 9(12) damage. If you have an [gold]Arrow[/gold], put a card that can [gold]Shoot[/gold] from your Discard Pile into your Hand.\" -> Common Attack, cost 2, \"Deal 13(15) damage. Gain 6(8) [gold:power]Aim[/gold].\"",
     "textKo": "화살 찌르기 (리워크): 비용 1 일반 공격, \"피해를 9(12) 줍니다. 화살이 있다면, 버린 카드 더미에서 발사할 수 있는 카드 1장을 손으로 가져옵니다.\" → 비용 2 일반 공격, \"피해를 13(15) 줍니다. 조준을 6(8) 얻습니다.\"",
     "textEn": "Arrow Stab (rework): Common Attack, cost 1, \"Deal 9(12) damage. If you have an Arrow, put a card that can Shoot from your Discard Pile into your Hand.\" -> Common Attack, cost 2, \"Deal 13(15) damage. Gain 6(8) Aim.\"",
     "entityRefs": [
@@ -53477,8 +53477,8 @@
       "Content & Balance",
       "The Fool"
     ],
-    "markdownKo": "[gold:card]개화[/gold] ([pink][b]리워크[/b][/pink]): 비용 0 희귀 스킬, \"[gold]발사[/gold]할 수 있는 모든 카드를 [gold]소멸[/gold]시키고 [gold:card]최후의 한 발[/gold](+)을 만듭니다. [gold]소멸[/gold].\" → 비용 1 희귀 스킬, \"[gold]손[/gold]에 있는 카드를 1장 선택해 [gold:card]최후의 한 발[/gold](+)로 [gold]변화[/gold]시킵니다.\"",
-    "markdownEn": "[gold:card]Florescence[/gold] ([pink][b]rework[/b][/pink]): Rare Skill, cost 0, \"[gold]Exhaust[/gold] ALL of your cards that [gold]Shoot[/gold] and create [gold:card]The Shot[/gold](+). [gold]Exhaust[/gold].\" -> Rare Skill, cost 1, \"Choose a card in your Hand to [gold]Transform[/gold] into [gold:card]The Shot[/gold](+).\"",
+    "markdownKo": "[gold:card]개화[/gold] ([b][pink]리워크[/pink][/b]): 비용 0 희귀 스킬, \"[gold]발사[/gold]할 수 있는 모든 카드를 [gold]소멸[/gold]시키고 [gold:card]최후의 한 발[/gold](+)을 만듭니다. [gold]소멸[/gold].\" → 비용 1 희귀 스킬, \"[gold]손[/gold]에 있는 카드를 1장 선택해 [gold:card]최후의 한 발[/gold](+)로 [gold]변화[/gold]시킵니다.\"",
+    "markdownEn": "[gold:card]Florescence[/gold] ([b][pink]rework[/pink][/b]): Rare Skill, cost 0, \"[gold]Exhaust[/gold] ALL of your cards that [gold]Shoot[/gold] and create [gold:card]The Shot[/gold](+). [gold]Exhaust[/gold].\" -> Rare Skill, cost 1, \"Choose a card in your Hand to [gold]Transform[/gold] into [gold:card]The Shot[/gold](+).\"",
     "textKo": "개화 (리워크): 비용 0 희귀 스킬, \"발사할 수 있는 모든 카드를 소멸시키고 최후의 한 발(+)을 만듭니다. 소멸.\" → 비용 1 희귀 스킬, \"손에 있는 카드를 1장 선택해 최후의 한 발(+)로 변화시킵니다.\"",
     "textEn": "Florescence (rework): Rare Skill, cost 0, \"Exhaust ALL of your cards that Shoot and create The Shot(+). Exhaust.\" -> Rare Skill, cost 1, \"Choose a card in your Hand to Transform into The Shot(+).\"",
     "entityRefs": [
@@ -53508,8 +53508,8 @@
       "Content & Balance",
       "The Fool"
     ],
-    "markdownKo": "[gold:card]최후의 한 발[/gold] ([pink][b]리워크[/b][/pink]): 비용 1 토큰 공격, \"[gold:card]개화[/gold]로 [gold]소멸[/gold]시킨 카드 1장당 피해를 10(13) 주는 [gold]화살[/gold]을 [gold]발사[/gold]합니다.\" → 비용 0 토큰 공격, \"피해를 20(25) 주는 [gold]화살[/gold]을 [gold]발사[/gold]합니다. [gold]소멸[/gold].\"",
-    "markdownEn": "[gold:card]The Shot[/gold] ([pink][b]rework[/b][/pink]): Token Attack, cost 1, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 10(13) damage for each card [gold]Exhausted[/gold] by [gold:card]Florescence[/gold].\" -> Token Attack, cost 0, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 20(25) damage. [gold]Exhaust[/gold].\"",
+    "markdownKo": "[gold:card]최후의 한 발[/gold] ([b][pink]리워크[/pink][/b]): 비용 1 토큰 공격, \"[gold:card]개화[/gold]로 [gold]소멸[/gold]시킨 카드 1장당 피해를 10(13) 주는 [gold]화살[/gold]을 [gold]발사[/gold]합니다.\" → 비용 0 토큰 공격, \"피해를 20(25) 주는 [gold]화살[/gold]을 [gold]발사[/gold]합니다. [gold]소멸[/gold].\"",
+    "markdownEn": "[gold:card]The Shot[/gold] ([b][pink]rework[/pink][/b]): Token Attack, cost 1, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 10(13) damage for each card [gold]Exhausted[/gold] by [gold:card]Florescence[/gold].\" -> Token Attack, cost 0, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 20(25) damage. [gold]Exhaust[/gold].\"",
     "textKo": "최후의 한 발 (리워크): 비용 1 토큰 공격, \"개화로 소멸시킨 카드 1장당 피해를 10(13) 주는 화살을 발사합니다.\" → 비용 0 토큰 공격, \"피해를 20(25) 주는 화살을 발사합니다. 소멸.\"",
     "textEn": "The Shot (rework): Token Attack, cost 1, \"Shoot an Arrow to deal 10(13) damage for each card Exhausted by Florescence.\" -> Token Attack, cost 0, \"Shoot an Arrow to deal 20(25) damage. Exhaust.\"",
     "entityRefs": [
@@ -53539,8 +53539,8 @@
       "Content & Balance",
       "The Fool"
     ],
-    "markdownKo": "[gold:card]조율[/gold] ([pink][b]리워크[/b][/pink]): 비용 2(1) 고급 파워, \"턴 종료 시 [gold]키 선율[/gold]이 있다면, 다음에 사용하는 카드의 비용이 에너지 0이 됩니다.\" → 비용 1 고급 파워, \"[gold]키 선율[/gold]을 얻을 때마다, [gold]손[/gold]에 있는 무작위 카드를 1(2)장 [gold]강화[/gold]합니다.\"",
-    "markdownEn": "[gold:card]Tune[/gold] ([pink][b]rework[/b][/pink]): Uncommon Power, cost 2(1), \"At the end of your turn, if you have a [gold]Ki Melody[/gold], the next card you play costs 0 Energy.\" -> Uncommon Power, cost 1, \"Whenever you gain a [gold]Ki Melody[/gold], [gold]Upgrade[/gold] 1(2) random card(s) in your Hand.\"",
+    "markdownKo": "[gold:card]조율[/gold] ([b][pink]리워크[/pink][/b]): 비용 2(1) 고급 파워, \"턴 종료 시 [gold]키 선율[/gold]이 있다면, 다음에 사용하는 카드의 비용이 에너지 0이 됩니다.\" → 비용 1 고급 파워, \"[gold]키 선율[/gold]을 얻을 때마다, [gold]손[/gold]에 있는 무작위 카드를 1(2)장 [gold]강화[/gold]합니다.\"",
+    "markdownEn": "[gold:card]Tune[/gold] ([b][pink]rework[/pink][/b]): Uncommon Power, cost 2(1), \"At the end of your turn, if you have a [gold]Ki Melody[/gold], the next card you play costs 0 Energy.\" -> Uncommon Power, cost 1, \"Whenever you gain a [gold]Ki Melody[/gold], [gold]Upgrade[/gold] 1(2) random card(s) in your Hand.\"",
     "textKo": "조율 (리워크): 비용 2(1) 고급 파워, \"턴 종료 시 키 선율이 있다면, 다음에 사용하는 카드의 비용이 에너지 0이 됩니다.\" → 비용 1 고급 파워, \"키 선율을 얻을 때마다, 손에 있는 무작위 카드를 1(2)장 강화합니다.\"",
     "textEn": "Tune (rework): Uncommon Power, cost 2(1), \"At the end of your turn, if you have a Ki Melody, the next card you play costs 0 Energy.\" -> Uncommon Power, cost 1, \"Whenever you gain a Ki Melody, Upgrade 1(2) random card(s) in your Hand.\"",
     "entityRefs": [
@@ -53565,8 +53565,8 @@
       "Content & Balance",
       "The Fool"
     ],
-    "markdownKo": "[gold:card]신속 사격[/gold] → [gold:card]이중 사격[/gold] ([pink][b]리워크[/b][/pink]): 비용 1 고급 공격, \"피해를 3 주는 [gold]화살[/gold]을 3(4)번 [gold]발사[/gold]합니다.\" → 비용 1 일반 공격, \"피해를 7(10)만큼 2번 주는 [gold]화살[/gold]을 [gold]발사[/gold]합니다.\"",
-    "markdownEn": "[gold:card]Rapid Shot[/gold] -> [gold:card]Twin Shot[/gold] ([pink][b]rework[/b][/pink]): Uncommon Attack, cost 1, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 3 damage 3(4) times.\" -> Common Attack, cost 1, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 7(10) damage twice.\"",
+    "markdownKo": "[gold:card]신속 사격[/gold] → [gold:card]이중 사격[/gold] ([b][pink]리워크[/pink][/b]): 비용 1 고급 공격, \"피해를 3 주는 [gold]화살[/gold]을 3(4)번 [gold]발사[/gold]합니다.\" → 비용 1 일반 공격, \"피해를 7(10)만큼 2번 주는 [gold]화살[/gold]을 [gold]발사[/gold]합니다.\"",
+    "markdownEn": "[gold:card]Rapid Shot[/gold] -> [gold:card]Twin Shot[/gold] ([b][pink]rework[/pink][/b]): Uncommon Attack, cost 1, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 3 damage 3(4) times.\" -> Common Attack, cost 1, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 7(10) damage twice.\"",
     "textKo": "신속 사격 → 이중 사격 (리워크): 비용 1 고급 공격, \"피해를 3 주는 화살을 3(4)번 발사합니다.\" → 비용 1 일반 공격, \"피해를 7(10)만큼 2번 주는 화살을 발사합니다.\"",
     "textEn": "Rapid Shot -> Twin Shot (rework): Uncommon Attack, cost 1, \"Shoot an Arrow to deal 3 damage 3(4) times.\" -> Common Attack, cost 1, \"Shoot an Arrow to deal 7(10) damage twice.\"",
     "entityRefs": [
@@ -54160,8 +54160,8 @@
       "Content & Balance",
       "The Fool"
     ],
-    "markdownKo": "[gold:card]수거[/gold] ([pink][b]리워크[/b][/pink]): 비용 1(0) 일반 스킬, \"대상 적이 [gold:power]꿰뚫림[/gold] 상태라면, [gold]회수[/gold]하고 [gold]버린 카드 더미[/gold]의 카드 1장을 [gold]뽑을 카드 더미[/gold] 맨 위에 놓습니다.\" → 비용 0 일반 스킬, \"[gold]보존[/gold]. 대상 적이 [gold:power]꿰뚫림[/gold] 상태라면, [gold]회수[/gold]합니다. [gold]소멸[/gold]. (강화 시 [gold]소멸[/gold] 제거.)\"",
-    "markdownEn": "[gold:card]Recall[/gold] ([pink][b]rework[/b][/pink]): Common Skill, cost 1(0), \"If the enemy is [gold:power]Impaled[/gold], [gold]Dislodge[/gold] and put a card from your Discard Pile on top of your Draw Pile.\" -> Common Skill, cost 0, \"[gold]Retain[/gold]. If the enemy is [gold:power]Impaled[/gold], [gold]Dislodge[/gold]. [gold]Exhaust[/gold]. (Lose [gold]Exhaust[/gold].)\"",
+    "markdownKo": "[gold:card]수거[/gold] ([b][pink]리워크[/pink][/b]): 비용 1(0) 일반 스킬, \"대상 적이 [gold:power]꿰뚫림[/gold] 상태라면, [gold]회수[/gold]하고 [gold]버린 카드 더미[/gold]의 카드 1장을 [gold]뽑을 카드 더미[/gold] 맨 위에 놓습니다.\" → 비용 0 일반 스킬, \"[gold]보존[/gold]. 대상 적이 [gold:power]꿰뚫림[/gold] 상태라면, [gold]회수[/gold]합니다. [gold]소멸[/gold]. (강화 시 [gold]소멸[/gold] 제거.)\"",
+    "markdownEn": "[gold:card]Recall[/gold] ([b][pink]rework[/pink][/b]): Common Skill, cost 1(0), \"If the enemy is [gold:power]Impaled[/gold], [gold]Dislodge[/gold] and put a card from your Discard Pile on top of your Draw Pile.\" -> Common Skill, cost 0, \"[gold]Retain[/gold]. If the enemy is [gold:power]Impaled[/gold], [gold]Dislodge[/gold]. [gold]Exhaust[/gold]. (Lose [gold]Exhaust[/gold].)\"",
     "textKo": "수거 (리워크): 비용 1(0) 일반 스킬, \"대상 적이 꿰뚫림 상태라면, 회수하고 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에 놓습니다.\" → 비용 0 일반 스킬, \"보존. 대상 적이 꿰뚫림 상태라면, 회수합니다. 소멸. (강화 시 소멸 제거.)\"",
     "textEn": "Recall (rework): Common Skill, cost 1(0), \"If the enemy is Impaled, Dislodge and put a card from your Discard Pile on top of your Draw Pile.\" -> Common Skill, cost 0, \"Retain. If the enemy is Impaled, Dislodge. Exhaust. (Lose Exhaust.)\"",
     "entityRefs": [
@@ -54191,8 +54191,8 @@
       "Content & Balance",
       "The Fool"
     ],
-    "markdownKo": "[gold:card]묘기 사격[/gold] ([pink][b]리워크[/b][/pink]): \"피해를 12(15) 주는 [gold]화살[/gold]을 [gold]발사[/gold]하고 이 카드를 [gold]손[/gold]으로 되돌립니다.\" → \"피해를 12(14) 주는 [gold]화살[/gold]을 [gold]발사[/gold]하고 카드를 2(3)장 뽑습니다.\"",
-    "markdownEn": "[gold:card]Trick Shot[/gold] ([pink][b]rework[/b][/pink]): \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 12(15) damage and return this card to your Hand.\" -> \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 12(14) damage and draw 2(3) cards.\"",
+    "markdownKo": "[gold:card]묘기 사격[/gold] ([b][pink]리워크[/pink][/b]): \"피해를 12(15) 주는 [gold]화살[/gold]을 [gold]발사[/gold]하고 이 카드를 [gold]손[/gold]으로 되돌립니다.\" → \"피해를 12(14) 주는 [gold]화살[/gold]을 [gold]발사[/gold]하고 카드를 2(3)장 뽑습니다.\"",
+    "markdownEn": "[gold:card]Trick Shot[/gold] ([b][pink]rework[/pink][/b]): \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 12(15) damage and return this card to your Hand.\" -> \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 12(14) damage and draw 2(3) cards.\"",
     "textKo": "묘기 사격 (리워크): \"피해를 12(15) 주는 화살을 발사하고 이 카드를 손으로 되돌립니다.\" → \"피해를 12(14) 주는 화살을 발사하고 카드를 2(3)장 뽑습니다.\"",
     "textEn": "Trick Shot (rework): \"Shoot an Arrow to deal 12(15) damage and return this card to your Hand.\" -> \"Shoot an Arrow to deal 12(14) damage and draw 2(3) cards.\"",
     "entityRefs": [
@@ -54243,8 +54243,8 @@
       "Content & Balance",
       "The Fool"
     ],
-    "markdownKo": "[gold:card]화음 방패[/gold] ([pink][b]리워크[/b][/pink]): \"보유한 [gold]선율[/gold]마다 [gold]방어도[/gold]를 5(7) 얻습니다.\" → \"[gold]방어도[/gold]를 4(6) 얻습니다. 보유한 [gold]선율[/gold]마다 [gold]방어도[/gold]를 추가로 4(6) 얻습니다.\"",
-    "markdownEn": "[gold:card]Harmonic Shield[/gold] ([pink][b]rework[/b][/pink]): \"Gain 5(7) [gold]Block[/gold] for each [gold]Melody[/gold] you have.\" -> \"Gain 4(6) [gold]Block[/gold]. Gain 4(6) additional [gold]Block[/gold] for each [gold]Melody[/gold] you have.\"",
+    "markdownKo": "[gold:card]화음 방패[/gold] ([b][pink]리워크[/pink][/b]): \"보유한 [gold]선율[/gold]마다 [gold]방어도[/gold]를 5(7) 얻습니다.\" → \"[gold]방어도[/gold]를 4(6) 얻습니다. 보유한 [gold]선율[/gold]마다 [gold]방어도[/gold]를 추가로 4(6) 얻습니다.\"",
+    "markdownEn": "[gold:card]Harmonic Shield[/gold] ([b][pink]rework[/pink][/b]): \"Gain 5(7) [gold]Block[/gold] for each [gold]Melody[/gold] you have.\" -> \"Gain 4(6) [gold]Block[/gold]. Gain 4(6) additional [gold]Block[/gold] for each [gold]Melody[/gold] you have.\"",
     "textKo": "화음 방패 (리워크): \"보유한 선율마다 방어도를 5(7) 얻습니다.\" → \"방어도를 4(6) 얻습니다. 보유한 선율마다 방어도를 추가로 4(6) 얻습니다.\"",
     "textEn": "Harmonic Shield (rework): \"Gain 5(7) Block for each Melody you have.\" -> \"Gain 4(6) Block. Gain 4(6) additional Block for each Melody you have.\"",
     "entityRefs": [
@@ -54656,8 +54656,8 @@
       "Content & Balance",
       "The Fool"
     ],
-    "markdownKo": "[gold:card]와 키[/gold] ([pink][b]리워크[/b][/pink]): \"피해를 2(4)만큼 2번 줍니다. 다음 턴에 에너지를 1 얻고 카드를 1장 뽑습니다.\" → \"피해를 3(4)만큼 2번 줍니다. [gold]버린 카드 더미[/gold]의 카드 1장을 [gold]뽑을 카드 더미[/gold] 맨 위에 놓습니다.\"",
-    "markdownEn": "[gold:card]Wah Ki[/gold] ([pink][b]rework[/b][/pink]): \"Deal 2(4) damage 2 times. Next turn, gain 1 Energy and draw 1 card.\" -> \"Deal 3(4) damage 2 times. Put a card from your Discard Pile on top of your Draw Pile.\"",
+    "markdownKo": "[gold:card]와 키[/gold] ([b][pink]리워크[/pink][/b]): \"피해를 2(4)만큼 2번 줍니다. 다음 턴에 에너지를 1 얻고 카드를 1장 뽑습니다.\" → \"피해를 3(4)만큼 2번 줍니다. [gold]버린 카드 더미[/gold]의 카드 1장을 [gold]뽑을 카드 더미[/gold] 맨 위에 놓습니다.\"",
+    "markdownEn": "[gold:card]Wah Ki[/gold] ([b][pink]rework[/pink][/b]): \"Deal 2(4) damage 2 times. Next turn, gain 1 Energy and draw 1 card.\" -> \"Deal 3(4) damage 2 times. Put a card from your Discard Pile on top of your Draw Pile.\"",
     "textKo": "와 키 (리워크): \"피해를 2(4)만큼 2번 줍니다. 다음 턴에 에너지를 1 얻고 카드를 1장 뽑습니다.\" → \"피해를 3(4)만큼 2번 줍니다. 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에 놓습니다.\"",
     "textEn": "Wah Ki (rework): \"Deal 2(4) damage 2 times. Next turn, gain 1 Energy and draw 1 card.\" -> \"Deal 3(4) damage 2 times. Put a card from your Discard Pile on top of your Draw Pile.\"",
     "entityRefs": [
