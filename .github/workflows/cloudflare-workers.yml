@@ -35,7 +35,7 @@ jobs:
       ALLOW_BUILD_WITHOUT_API: ${{ vars.ALLOW_BUILD_WITHOUT_API || vars.ALLOW_BUILD_WITHOUT_SUPABASE }}
       NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN: ${{ secrets.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN || vars.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -145,10 +145,10 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         if: steps.changes.outputs.deploy_any == 'true'
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.changes.outputs.deploy_any == 'true'
         with:
           node-version: 22
@@ -242,7 +242,7 @@ jobs:
       # Never restore them; the first v2 build starts cold.
       - name: Restore Next.js build cache
         if: steps.changes.outputs.main == 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .next/cache
           key: ${{ runner.os }}-next-v2-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
