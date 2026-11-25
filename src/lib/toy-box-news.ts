@@ -1,11 +1,5 @@
 import toyBoxNewsPayload from "@/generated/toy-box-news.json";
-
-interface ToyBoxNewsPayload {
-  latestDate: string | null;
-  newSectionTitles: string[];
-  /** False once BYRDISPATCH_NEW_TTL_DAYS have passed since latestDate (judged at build). */
-  newActive: boolean;
-}
+import type { ToyBoxNewsPayload } from "@/lib/toy-box-news-types";
 
 const toyBoxNews = toyBoxNewsPayload as ToyBoxNewsPayload;
 

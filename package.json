@@ -8,7 +8,7 @@
     "dev:next": "node scripts/ensure-lint-generated.mjs && node scripts/ensure-comment-entities.mjs && node scripts/ensure-card-con-locales.mjs && node scripts/ensure-this-or-that-resources.mjs && next dev --hostname 0.0.0.0",
     "dev:mobile": "node scripts/mobile-qa.mjs",
     "qa:mobile": "node scripts/mobile-qa.mjs",
-    "static:data": "tsx scripts/generate-static-api-data.ts && tsx scripts/generate-resource-patch-index.ts && tsx scripts/generate-sts1-mention-index.ts && tsx scripts/generate-site-path-index.ts",
+    "static:data": "tsx scripts/generate-source-json.ts && tsx scripts/generate-static-api-data.ts && tsx scripts/generate-resource-patch-index.ts && tsx scripts/generate-sts1-mention-index.ts && tsx scripts/generate-site-path-index.ts",
     "byrdispatch:new-check": "tsx scripts/byrdispatch-new-check.ts",
     "build": "pnpm static:data && next build --webpack && tsx scripts/prune-dev-route-traces.ts && tsx scripts/check-vercel-function-traces.ts",
     "cf:build": "node scripts/build-record.mjs begin .cloudflare && pnpm static:data && next build --webpack && node scripts/collect-cf-assets.mjs && node scripts/copy-cf-static-pages.mjs && node scripts/prune-cf-unreferenced-assets.mjs && pnpm cf:assets && node scripts/build-record.mjs write .cloudflare",

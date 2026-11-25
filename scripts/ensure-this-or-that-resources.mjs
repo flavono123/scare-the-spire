@@ -52,6 +52,10 @@ if (await resourcesAreFresh()) {
 }
 
 console.log("Preparing this-or-that resource data...");
+// Stage 2 loads modules that import the stage-1 src/generated JSON; write it first.
+const stage1 = spawnSync("pnpm", ["exec", "tsx", "scripts/generate-source-json.ts"], { cwd: root, stdio: "inherit" });
+if (stage1.error) throw stage1.error;
+if (stage1.status) process.exit(stage1.status);
 const result = spawnSync(
   "pnpm",
   ["exec", "tsx", "scripts/generate-static-api-data.ts", "--this-or-that-resources-only"],

@@ -1,0 +1,899 @@
+// Stage 1 of the static data build: payloads made only from data/ and source libs.
+// The src/generated/*.json files written here are imported by place-registry,
+// search-index-data and the pages, so nothing here may import those modules or
+// any src/generated file (scripts/source-json-imports.spec.ts checks it).
+import fs from "fs/promises";
+import path from "path";
+import { byrdispatchNewActive, getLatestByrdispatchEntry } from "../../src/lib/byrdispatch";
+import { getCodexNavGameLabel } from "../../src/lib/codex-nav-game-labels";
+import { readGameLocalizationTable } from "../../src/lib/game-localization";
+import { GAME_LOCALES } from "../../src/lib/i18n";
+import type { GameLocale } from "../../src/lib/i18n";
+import type {
+  BorrowedGameCopyPayload,
+  DebateGameCopy,
+  DecisionsDecisionsGameCopy,
+  DefragmentGameCopy,
+  FeedbackFormGameCopy,
+  HistoryCourseLandingGameCopy,
+  PagestormGameCopy,
+  PatchBackstabGameCopy,
+  PatchStageGameCopy,
+  ThisOrThatGameCopy,
+  TransfigureGameCopy,
+  VexingPuzzleboxGameCopy,
+} from "../../src/lib/borrowed-game-copy-types";
+import type { ToyBoxNewsPayload } from "../../src/lib/toy-box-news-types";
+
+const ENGLISH_GAME_LOCALE: GameLocale = "eng";
+const LANTERN_KEY_DIRECT_TERM_BY_LOCALE: Partial<Record<GameLocale, string>> = {
+  deu: "Schlüssel",
+  eng: "key",
+  jpn: "鍵",
+  kor: "열쇠",
+  pol: "klucza",
+  ptb: "chave",
+  spa: "llave",
+  tur: "anahtarı",
+  zhs: "钥匙",
+};
+
+interface LocalizedPhraseReplacement {
+  from: string;
+  to: string;
+}
+
+const PATCH_PREP_TIME_DESCRIPTION_REPLACEMENTS: Partial<Record<GameLocale, LocalizedPhraseReplacement>> = {
+  deu: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Epoche wartet|Epochen warten}",
+    to: "Der heutige Patch wartet",
+  },
+  eng: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Epoch is|Epochs are} waiting to be revealed...",
+    to: "Today's patch is waiting to be revealed ...",
+  },
+  esp: {
+    from: "Hay {RevealableEpochCount} {RevealableEpochCount:plural:era|eras} que aún debes revelar...",
+    to: "El parche de hoy aún debe revelarse...",
+  },
+  fra: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Ère reste|Ères restent}",
+    to: "Le patch du jour reste",
+  },
+  ita: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Epoca|Epoche} da rivelare...",
+    to: "La patch di oggi deve ancora essere rivelata...",
+  },
+  jpn: {
+    from: "{RevealableEpochCount}つの断章",
+    to: "今日のパッチ",
+  },
+  kor: {
+    from: "{RevealableEpochCount}개의 역사가 드러나기를 기다리고 있습니다...",
+    to: "오늘의 패치가 드러나기를 기다리고 있습니다 ...",
+  },
+  pol: {
+    from: "{RevealableEpochCount:plural:Została 1 Epoka|Zostały {RevealableEpochCount} Epoki|Zostało {RevealableEpochCount} Epok} do odkrycia...",
+    to: "Dzisiejszy patch czeka na odkrycie...",
+  },
+  ptb: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Época ainda pode ser revelada...|Épocas ainda podem ser reveladas...}",
+    to: "O patch de hoje ainda pode ser revelado...",
+  },
+  rus: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural(ru):эпоха ожидает|эпохи ожидают|эпох ожидают}",
+    to: "Сегодняшний патч ожидает",
+  },
+  spa: {
+    from: "Puedes revelar {RevealableEpochCount} {RevealableEpochCount:plural:Época|Épocas} más...",
+    to: "El parche de hoy aún puede revelarse...",
+  },
+  tha: {
+    from: "",
+    to: "รอการเปิดเผยแพตช์ของวันนี้...",
+  },
+  tur: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Çağ|Çağ}",
+    to: "Bugünün yaması",
+  },
+  zhs: {
+    from: "{RevealableEpochCount}个历史节点",
+    to: "今天的补丁",
+  },
+};
+
+const PATCH_DRAFT_NOTICE_REPLACEMENTS: Partial<Record<GameLocale, LocalizedPhraseReplacement>> = {
+  deu: {
+    from: "Das heißt, es ist noch nicht fertig!",
+    to: "Das heißt, diese Patchnotes sind noch nicht fertig.",
+  },
+  eng: {
+    from: "That means it's not done yet!",
+    to: "That means this patch note isn't done yet.",
+  },
+  esp: {
+    from: "Eso quiere decir que aún no está terminado.",
+    to: "Eso quiere decir que estas notas aún no están terminadas.",
+  },
+  fra: {
+    from: "Cela signifie que le jeu n'est pas terminé",
+    to: "Cela signifie que ces notes de patch ne sont pas terminées.",
+  },
+  ita: {
+    from: "Ciò significa che non è ancora pronto!",
+    to: "Ciò significa che queste patch notes non sono ancora pronte.",
+  },
+  jpn: {
+    from: "つまり、ゲームはまだ未完成です！",
+    to: "つまり、このパッチノートはまだ未完成です。",
+  },
+  kor: {
+    from: "아직 개발이 완료되지 않았다는 뜻이죠!",
+    to: "아직 작업이 완료되지 않았다는 뜻이죠.",
+  },
+  pol: {
+    from: "Oznacza to, że nie została jeszcze ukończona!",
+    to: "Oznacza to, że te notatki nie zostały jeszcze ukończone.",
+  },
+  ptb: {
+    from: "Isto significa que o jogo ainda não está pronto!",
+    to: "Isto significa que estas notas ainda não estão prontas.",
+  },
+  rus: {
+    from: "То есть игра пока не готова!",
+    to: "То есть эти заметки пока не готовы.",
+  },
+  spa: {
+    from: "lo que significa que aún no está acabado.",
+    to: "lo que significa que estas notas aún no están acabadas.",
+  },
+  tha: {
+    from: "ซึ่งหมายความว่าเกมยังไม่สมบูรณ์!",
+    to: "ซึ่งหมายความว่าบันทึกแพตช์นี้ยังไม่สมบูรณ์",
+  },
+  tur: {
+    from: "Bu da oyun henüz tamamlanmamış demek!",
+    to: "Bu da bu yama notu henüz tamamlanmamış demek.",
+  },
+  zhs: {
+    from: "这意味着游戏还没有完全完成！",
+    to: "这意味着这篇补丁说明还没有完全完成！",
+  },
+};
+
+const PATCH_BACKSTAB_DESCRIPTION_REPLACEMENTS: Partial<Record<GameLocale, LocalizedPhraseReplacement>> = {
+  deu: {
+    from: "dieser Kreatur",
+    to: "dem heutigen Patch",
+  },
+  eng: {
+    from: "this creature",
+    to: "today's patch",
+  },
+  esp: {
+    from: "Esta criatura",
+    to: "El parche de hoy",
+  },
+  fra: {
+    from: "cette créature",
+    to: "le patch du jour",
+  },
+  ita: {
+    from: "questa creatura",
+    to: "la patch di oggi",
+  },
+  jpn: {
+    from: "このモンスター",
+    to: "今日のパッチ",
+  },
+  kor: {
+    from: "이 생물은",
+    to: "오늘의 패치는",
+  },
+  pol: {
+    from: "tym stworzeniem",
+    to: "dzisiejszym patchem",
+  },
+  ptb: {
+    from: "esta criatura",
+    to: "o patch de hoje",
+  },
+  rus: {
+    from: "этим врагом",
+    to: "сегодняшним патчем",
+  },
+  spa: {
+    from: "Esta criatura",
+    to: "El parche de hoy",
+  },
+  tha: {
+    from: "สิ่งมีชีวิตนี้",
+    to: "แพตช์วันนี้",
+  },
+  tur: {
+    from: "Bu yaratıkta",
+    to: "Bugünün yamasında",
+  },
+  zhs: {
+    from: "这个生物",
+    to: "今天的补丁",
+  },
+};
+
+const PATCH_DELAY_DESCRIPTION_REPLACEMENTS: Partial<Record<GameLocale, LocalizedPhraseReplacement>> = {
+  deu: {
+    from: "diesem Monster",
+    to: "diesem Patch",
+  },
+  eng: {
+    from: "Information on this monster is yet to be revealed...",
+    to: "Information on this patch is yet to be revealed ...",
+  },
+  esp: {
+    from: "este monstruo",
+    to: "este parche",
+  },
+  fra: {
+    from: "ce monstre",
+    to: "ce patch",
+  },
+  ita: {
+    from: "questo mostro",
+    to: "questa patch",
+  },
+  jpn: {
+    from: "このモンスター",
+    to: "このパッチ",
+  },
+  kor: {
+    from: "이 몬스터에 관한 정보는 아직 드러나지 않았습니다...",
+    to: "이 패치에 관한 정보는 아직 드러나지 않았습니다 ...",
+  },
+  pol: {
+    from: "tym potworze",
+    to: "tym patchu",
+  },
+  ptb: {
+    from: "esta criatura",
+    to: "este patch",
+  },
+  rus: {
+    from: "этом существе",
+    to: "этом патче",
+  },
+  spa: {
+    from: "este monstruo",
+    to: "este parche",
+  },
+  tha: {
+    from: "มอนสเตอร์ตัวนี้",
+    to: "แพตช์นี้",
+  },
+  tur: {
+    from: "Bu canavar",
+    to: "Bu yama",
+  },
+  zhs: {
+    from: "这个怪物",
+    to: "这个补丁",
+  },
+};
+
+async function readGameTextWithEnglishFallback(
+  gameLocale: GameLocale,
+  tableName: string,
+  key: string,
+): Promise<string> {
+  const table = await readGameLocalizationTable(gameLocale, tableName);
+  const localized = table[key]?.trim();
+  if (localized) return localized;
+
+  if (gameLocale === ENGLISH_GAME_LOCALE) return "";
+  const englishTable = await readGameLocalizationTable(ENGLISH_GAME_LOCALE, tableName);
+  return englishTable[key]?.trim() ?? "";
+}
+
+function stripGameMarkup(text: string): string {
+  return text
+    .replace(/\[\/?[a-z_]+(?:=[^\]]+)?(?::[^\]]+)?\]/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Static pages have no player gender; keep the first SmartFormat branch. */
+function resolveCharacterGenderChoose(text: string): string {
+  return text.replace(
+    /\{characterGender:choose\([^)]*\):([^}|]*)(?:\|[^}]*)*\}/g,
+    "$1",
+  );
+}
+
+function lastNonEmptyLine(text: string): string {
+  const lines = text
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  return lines.at(-1) ?? "";
+}
+
+function stripAquaMarkup(text: string): string {
+  return text.replace(/\[\/?aqua\]/gi, "");
+}
+
+function extractDialogueLine(text: string): string {
+  const lines = text
+    .split(/\n+/)
+    .map((line) => stripGameMarkup(line))
+    .filter(Boolean);
+
+  return lines.find((line) => /^[“"«「„—]/.test(line)) ?? "";
+}
+
+function extractLastPlainLine(text: string): string {
+  return stripGameMarkup(lastNonEmptyLine(text));
+}
+
+function replaceLanternKeyTerm(
+  quote: string,
+  gameLocale: GameLocale,
+  runHistoryLabel: string,
+): string {
+  if (gameLocale === "kor" && quote.includes("열쇠를")) {
+    return quote.replace("열쇠를", `${runHistoryLabel}을`);
+  }
+
+  const keyTerm = LANTERN_KEY_DIRECT_TERM_BY_LOCALE[gameLocale];
+  if (keyTerm && quote.includes(keyTerm)) {
+    return quote.replace(keyTerm, runHistoryLabel);
+  }
+
+  return quote ? `${runHistoryLabel}: ${quote}` : runHistoryLabel;
+}
+
+function patchPrepTimeDescription(
+  gameLocale: GameLocale,
+  timelineReminder: string,
+): string {
+  const replacement = PATCH_PREP_TIME_DESCRIPTION_REPLACEMENTS[gameLocale];
+  if (!replacement) return "Today's patch is waiting to be revealed ...";
+  if (!replacement.from) return replacement.to;
+  if (!timelineReminder.includes(replacement.from)) {
+    return gameLocale === "eng"
+      ? "Today's patch is waiting to be revealed ..."
+      : replacement.to;
+  }
+  return timelineReminder.replace(replacement.from, replacement.to);
+}
+
+function patchDelayDescription(
+  gameLocale: GameLocale,
+  bestiaryPlaceholder: string,
+): string {
+  const replacement = PATCH_DELAY_DESCRIPTION_REPLACEMENTS[gameLocale];
+  if (!replacement) return "Information on this patch is yet to be revealed ...";
+  if (!bestiaryPlaceholder.includes(replacement.from)) {
+    return gameLocale === "eng"
+      ? "Information on this patch is yet to be revealed ..."
+      : replacement.to;
+  }
+  return bestiaryPlaceholder.replace(replacement.from, replacement.to);
+}
+
+function patchBackstabDescription(
+  gameLocale: GameLocale,
+  surpriseDescription: string,
+): string {
+  const replacement = PATCH_BACKSTAB_DESCRIPTION_REPLACEMENTS[gameLocale];
+  if (!replacement) return "Something is off about today's patch...";
+  if (!surpriseDescription.includes(replacement.from)) {
+    return gameLocale === "eng"
+      ? "Something is off about today's patch..."
+      : replacement.to;
+  }
+  return surpriseDescription.replace(replacement.from, replacement.to);
+}
+
+function patchDraftNotice(
+  gameLocale: GameLocale,
+  earlyAccessDisclaimer: string,
+): string {
+  const replacement = PATCH_DRAFT_NOTICE_REPLACEMENTS[gameLocale];
+  const fallback = "That means this patch note isn't done yet.";
+  if (!replacement) return fallback;
+  const stripped = stripGameMarkup(earlyAccessDisclaimer);
+  if (!stripped.includes(replacement.from)) {
+    return gameLocale === "eng" ? fallback : replacement.to;
+  }
+  return replacement.to;
+}
+
+async function buildPatchStageGameCopy(gameLocale: GameLocale): Promise<PatchStageGameCopy> {
+  const [
+    cards,
+    powers,
+    timeline,
+    bestiary,
+    mainMenu,
+  ] = await Promise.all([
+    readGameLocalizationTable(gameLocale, "cards"),
+    readGameLocalizationTable(gameLocale, "powers"),
+    readGameLocalizationTable(gameLocale, "timeline"),
+    readGameLocalizationTable(gameLocale, "bestiary"),
+    readGameLocalizationTable(gameLocale, "main_menu_ui"),
+  ]);
+
+  const [
+    englishCards,
+    englishPowers,
+    englishTimeline,
+    englishBestiary,
+    englishMainMenu,
+  ] = gameLocale === ENGLISH_GAME_LOCALE
+    ? [cards, powers, timeline, bestiary, mainMenu]
+    : await Promise.all([
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "cards"),
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "powers"),
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "timeline"),
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "bestiary"),
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "main_menu_ui"),
+      ]);
+
+  const timelineReminder = timeline.REMINDER_TEXT ?? englishTimeline.REMINDER_TEXT ?? "";
+  const bestiaryPlaceholder = bestiary["DESCRIPTION.placeholder"]
+    ?? englishBestiary["DESCRIPTION.placeholder"]
+    ?? "";
+  const earlyAccessDisclaimer = mainMenu["EARLY_ACCESS_DISCLAIMER.description_mkb"]
+    ?? englishMainMenu["EARLY_ACCESS_DISCLAIMER.description_mkb"]
+    ?? "";
+
+  return {
+    prepTime: {
+      title: cards["PREP_TIME.title"] ?? englishCards["PREP_TIME.title"] ?? "Prep Time",
+      description: patchPrepTimeDescription(gameLocale, timelineReminder),
+    },
+    delay: {
+      title: cards["DELAY.title"] ?? englishCards["DELAY.title"] ?? "Delay",
+      description: patchDelayDescription(gameLocale, bestiaryPlaceholder),
+    },
+    workToolsTitle: powers["TOOLS_OF_THE_TRADE_POWER.title"]
+      ?? englishPowers["TOOLS_OF_THE_TRADE_POWER.title"]
+      ?? "Tools of the Trade",
+    draft: {
+      title: cards["BEAT_INTO_SHAPE.title"]
+        ?? englishCards["BEAT_INTO_SHAPE.title"]
+        ?? "Beat into Shape",
+      notice: patchDraftNotice(gameLocale, earlyAccessDisclaimer),
+    },
+  };
+}
+
+async function buildPatchBackstabGameCopy(gameLocale: GameLocale): Promise<PatchBackstabGameCopy> {
+  const [cards, powers, combatMessages] = await Promise.all([
+    readGameLocalizationTable(gameLocale, "cards"),
+    readGameLocalizationTable(gameLocale, "powers"),
+    readGameLocalizationTable(gameLocale, "combat_messages"),
+  ]);
+  const [englishCards, englishPowers, englishCombatMessages] = gameLocale === ENGLISH_GAME_LOCALE
+    ? [cards, powers, combatMessages]
+    : await Promise.all([
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "cards"),
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "powers"),
+        readGameLocalizationTable(ENGLISH_GAME_LOCALE, "combat_messages"),
+      ]);
+
+  const baseTitle = cards["BACKSTAB.title"] ?? englishCards["BACKSTAB.title"] ?? "Backstab";
+  const title = `${baseTitle}+`;
+
+  const hero = gameLocale === "kor"
+    ? "3번의 패치가 [gold]베타[/gold] 상태로 등장합니다. 다음으로 여는 큰 패치가 [red]비어 있습니다[/red]."
+    : "The next 3 patches you see are in [gold]Beta[/gold]. The next big patch you open is [red]empty[/red].";
+
+  const transfigureTitle = gameLocale === "kor" ? "변형" : "Transfigure";
+
+  const transfigureLead = gameLocale === "kor"
+    ? "어. 네, 안녕하세요! 꽤 실력이 있는 전사이신 것 같네요... 제 다음 [green]패치[/green]의 테스터가 필요했거든요!"
+    : "“Yes. Hi, hello! You look like a capable fighter... I need a tester for my next [green]patch[/green]!”";
+
+  const transfigureCta = gameLocale === "kor"
+    ? "한 번 어때요?"
+    : "How about it?";
+
+  const surpriseDescription = powers["SURPRISE_POWER.description"]
+    ?? englishPowers["SURPRISE_POWER.description"]
+    ?? "";
+
+  return {
+    title,
+    description: patchBackstabDescription(gameLocale, surpriseDescription),
+    emptyDraw: combatMessages.OPEN_EMPTY_DRAW
+      ?? englishCombatMessages.OPEN_EMPTY_DRAW
+      ?? "My Draw Pile is [red]empty[/red].",
+    hero,
+    transfigureTitle,
+    transfigureLead,
+    transfigureCta,
+  };
+}
+
+async function buildHistoryCourseLandingGameCopy(gameLocale: GameLocale): Promise<HistoryCourseLandingGameCopy> {
+  const [relicTitle, runHistoryLabel, lanternDescription] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "relics", "HISTORY_COURSE.title"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "RUN_HISTORY.title"),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "events",
+      "THE_LANTERN_KEY.pages.INITIAL.description",
+    ),
+  ]);
+  const quote = extractDialogueLine(lanternDescription);
+
+  return {
+    title: relicTitle,
+    runHistoryLabel,
+    heroQuote: replaceLanternKeyTerm(quote, gameLocale, runHistoryLabel),
+  };
+}
+
+async function buildThisOrThatGameCopy(gameLocale: GameLocale): Promise<ThisOrThatGameCopy> {
+  const [title, description, votePrompt, voteDone] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "events", "THIS_OR_THAT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "events", "THIS_OR_THAT.pages.INITIAL.description"),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "monsters",
+      "KNOWLEDGE_DEMON.moves.CURSE_OF_KNOWLEDGE.startLine",
+    ),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "monsters",
+      "KNOWLEDGE_DEMON.moves.CURSE_OF_KNOWLEDGE.doneLine",
+    ),
+  ]);
+
+  return {
+    title: title || "This or That?",
+    prompt: extractLastPlainLine(description) || extractDialogueLine(description),
+    votePrompt,
+    voteDone,
+  };
+}
+
+async function buildTransfigureGameCopy(
+  gameLocale: GameLocale,
+): Promise<TransfigureGameCopy> {
+  const [title, morphicGroveDescription, viewUpgrades] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "cards", "TRANSFIGURE.title"),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "events",
+      "MORPHIC_GROVE.pages.GROUP.description",
+    ),
+    readGameTextWithEnglishFallback(gameLocale, "card_library", "VIEW_UPGRADES"),
+  ]);
+  const paragraphs = morphicGroveDescription
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+
+  return {
+    title: title || "Transfigure",
+    subtitle: paragraphs[1] ?? paragraphs[0] ?? "",
+    viewUpgrades: viewUpgrades || "View Upgrades",
+  };
+}
+
+async function buildDefragmentGameCopy(
+  gameLocale: GameLocale,
+): Promise<DefragmentGameCopy> {
+  const [title, subtitle, description] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "cards", "DEFRAGMENT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "powers", "FOCUS_POWER.description"),
+    readGameTextWithEnglishFallback(gameLocale, "cards", "DEFRAGMENT.description"),
+  ]);
+  const placeholder = stripGameMarkup(description)
+    .replace(/\{[^}]+\}/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return {
+    title: title || "Defragment",
+    subtitle: stripGameMarkup(subtitle),
+    placeholder: placeholder || "Gain Focus.",
+  };
+}
+
+function stripTrailingSentenceMark(text: string): string {
+  return text.replace(/[.。]\s*$/, "").trim();
+}
+
+async function buildDecisionsDecisionsGameCopy(
+  gameLocale: GameLocale,
+): Promise<DecisionsDecisionsGameCopy> {
+  const [
+    title,
+    hero,
+    ironclad,
+    silent,
+    defect,
+    necrobinder,
+    regent,
+    fool,
+    colorlessTip,
+  ] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "cards", "DECISIONS_DECISIONS.title"),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "events",
+      "TRIAL.pages.INITIAL.options.ACCEPT.description",
+    ),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "IRONCLAD.title"),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "SILENT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "DEFECT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "NECROBINDER.title"),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "REGENT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "characters", "FOOL.title"),
+    readGameTextWithEnglishFallback(gameLocale, "card_library", "POOL_COLORLESS_TIP"),
+  ]);
+
+  return {
+    title: title || "Decisions, Decisions",
+    hero: resolveCharacterGenderChoose(hero) || "Serve as today's Decider.",
+    presetLabels: {
+      "cards-ironclad": ironclad,
+      "cards-silent": silent,
+      "cards-defect": defect,
+      "cards-necrobinder": necrobinder,
+      "cards-regent": regent,
+      "cards-fool": fool,
+      "cards-colorless": stripTrailingSentenceMark(stripGameMarkup(colorlessTip)),
+      "relics-shared": getCodexNavGameLabel(gameLocale, "relics") ?? "Relics",
+      "potions-all": getCodexNavGameLabel(gameLocale, "potions") ?? "Potions",
+    },
+  };
+}
+
+async function buildDebateGameCopy(
+  gameLocale: GameLocale,
+): Promise<DebateGameCopy> {
+  const [title, done, initial] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "events", "COLORFUL_PHILOSOPHERS.title"),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "events",
+      "COLORFUL_PHILOSOPHERS.pages.DONE.description",
+    ),
+    readGameTextWithEnglishFallback(
+      gameLocale,
+      "events",
+      "COLORFUL_PHILOSOPHERS.pages.INITIAL.description",
+    ),
+  ]);
+  return {
+    title: title || "Colorful Philosophers",
+    hero: stripGameMarkup(done),
+    invite: stripGameMarkup(lastNonEmptyLine(initial)),
+    // Borrows the second INITIAL sentence: the statues now argue about this week's game elements.
+    reelHero: gameLocale === "kor"
+      ? "세 가지 색의 동상들이 이번 주 게임 요소에 관해 [jitter][red]열띤 토론[/red][/jitter]을 벌이고 있습니다."
+      : "3 different colored statues are having a [jitter][red]heated debate[/red][/jitter] over this week's game elements.",
+  };
+}
+
+async function buildPagestormGameCopy(
+  gameLocale: GameLocale,
+): Promise<PagestormGameCopy> {
+  const [title, hero] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "cards", "PAGESTORM.title"),
+    readGameTextWithEnglishFallback(gameLocale, "powers", "PAGESTORM_POWER.description"),
+  ]);
+
+  return {
+    title: title || "Pagestorm",
+    hero: hero || "",
+  };
+}
+
+async function buildVexingPuzzleboxGameCopy(
+  gameLocale: GameLocale,
+): Promise<VexingPuzzleboxGameCopy> {
+  const readMerchantLines = async (key: string, count: number) => {
+    const lines = await Promise.all(
+      Array.from({ length: count }, (_, index) => (
+        readGameTextWithEnglishFallback(gameLocale, "merchant_room", `MERCHANT.talk.${key}.line${index + 1}`)
+      )),
+    );
+    return lines.filter((line): line is string => Boolean(line));
+  };
+  const [merchantSuccessLines, merchantFailureLines, merchantForbiddenLines, merchantSpaceLines] = await Promise.all([
+    readMerchantLines("purchaseSuccess", 3),
+    readMerchantLines("purchaseFailureGold", 4),
+    readMerchantLines("purchaseFailureForbidden", 2),
+    readMerchantLines("purchaseFailureSpace", 2),
+  ]);
+  const [title, hero, betaArtHighScore, betaArtLowScore] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "relics", "VEXING_PUZZLEBOX.title"),
+    readGameTextWithEnglishFallback(gameLocale, "relics", "VEXING_PUZZLEBOX.flavor"),
+    readGameTextWithEnglishFallback(gameLocale, "events", "FAKE_MERCHANT.talk.purchaseSuccess.line1"),
+    readGameTextWithEnglishFallback(gameLocale, "events", "FAKE_MERCHANT.talk.purchaseFailureForbidden.line2"),
+  ]);
+  const [soundTab, musicVolume, sfxVolume, potionThrow, potionDiscard] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "TAB_SOUND"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "MUSIC_VOLUME"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "SFX_VOLUME"),
+    readGameTextWithEnglishFallback(gameLocale, "gameplay_ui", "POTION_POPUP.throw"),
+    readGameTextWithEnglishFallback(gameLocale, "gameplay_ui", "POTION_POPUP.discard"),
+  ]);
+  // The daily run screen's leaderboard words, for the rankings tab.
+  const [leaderboardTitle, leaderboardRank, leaderboardName, leaderboardScore, leaderboardFetching, leaderboardEmpty] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "DAILY_RUN_MENU.LEADERBOARDS.title"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "LEADERBOARDS.rankHeader"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "LEADERBOARDS.nameHeader"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "LEADERBOARDS.scoreHeader"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "DAILY_RUN_MENU.LEADERBOARDS.fetchingScores"),
+    readGameTextWithEnglishFallback(gameLocale, "main_menu_ui", "DAILY_RUN_MENU.LEADERBOARDS.noScore"),
+  ]);
+  // Vakuu talks through the Whispering Earring; these are the game's own earring and Ancient lines.
+  const [vakuuName, vakuuApproval, vakuuWarning, vakuuVisits, vakuuEndless] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "ancients", "VAKUU.title"),
+    readGameTextWithEnglishFallback(gameLocale, "relics", "WHISPERING_EARRING.approval"),
+    readGameTextWithEnglishFallback(gameLocale, "relics", "WHISPERING_EARRING.warning"),
+    readGameTextWithEnglishFallback(gameLocale, "ancients", "VAKUU.talk.ANY.1-0r.ancient"),
+    readGameTextWithEnglishFallback(gameLocale, "ancients", "VAKUU.talk.ANY.2-0r.ancient"),
+  ]);
+
+  return {
+    title: title || "Vexing Puzzlebox",
+    hero: stripGameMarkup(hero || ""),
+    betaArtHighScore: betaArtHighScore || "",
+    betaArtLowScore: betaArtLowScore || "",
+    merchantSuccessLines,
+    merchantFailureLines,
+    merchantForbiddenLines,
+    merchantSpaceLines,
+    soundTab: soundTab || "Sound",
+    musicVolume: musicVolume || "Music",
+    sfxVolume: sfxVolume || "SFX",
+    potionThrow: potionThrow || "Throw",
+    potionDiscard: potionDiscard || "Discard",
+    vakuuName: vakuuName || "Vakuu",
+    vakuuApproval: vakuuApproval || "",
+    vakuuWarning: vakuuWarning || "",
+    vakuuVisits: vakuuVisits || "",
+    vakuuEndless: vakuuEndless || "",
+    leaderboardTitle: leaderboardTitle || "Leaderboards",
+    leaderboardRank: leaderboardRank || "Rank",
+    leaderboardName: leaderboardName || "Name",
+    leaderboardScore: leaderboardScore || "Score",
+    // The page draws its own dots.
+    leaderboardFetching: stripGameMarkup(leaderboardFetching || "Fetching Scores...").replace(/[.…]+$/, ""),
+    leaderboardEmpty: (leaderboardEmpty || "No scores have been submitted.").split(/\n|\\n/)[0].trim(),
+  };
+}
+
+async function buildFeedbackFormGameCopy(
+  gameLocale: GameLocale,
+): Promise<FeedbackFormGameCopy> {
+  const [
+    title,
+    categoryLabel,
+    descriptionPlaceholder,
+    sendLabel,
+    sendingLabel,
+    sendFailedLabel,
+    sendSuccessLabel,
+  ] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "SEND_FEEDBACK"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_CATEGORY_LABEL"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_DESCRIPTION_PLACEHOLDER"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_SEND_BUTTON_LABEL"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_SENDING_LABEL"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_SEND_FAILED_LABEL"),
+    readGameTextWithEnglishFallback(gameLocale, "settings_ui", "FEEDBACK_SEND_SUCCESS_LABEL"),
+  ]);
+
+  return {
+    title,
+    categoryLabel,
+    descriptionPlaceholder,
+    sendLabel,
+    sendingLabel: stripGameMarkup(sendingLabel),
+    sendFailedLabel,
+    sendSuccessLabel,
+  };
+}
+
+export async function buildBorrowedGameCopyPayload(): Promise<Record<GameLocale, BorrowedGameCopyPayload>> {
+  const entries = await Promise.all(
+    GAME_LOCALES.map(async (gameLocale) => {
+      const [
+        chemicalXPlaceholder,
+        comboPlaceholder,
+        feedbackForm,
+        historyCourseLanding,
+        patchStage,
+        patchBackstab,
+        thisOrThat,
+        transfigure,
+        defragment,
+        decisionsDecisions,
+        pagestorm,
+        debate,
+        vexingPuzzlebox,
+      ] = await Promise.all([
+        readGameTextWithEnglishFallback(
+          gameLocale,
+          "events",
+          "TEA_MASTER.pages.TEA_OF_DISCOURTESY.description",
+        ).then((description) => stripGameMarkup(lastNonEmptyLine(description))),
+        readGameTextWithEnglishFallback(
+          gameLocale,
+          "events",
+          "AMALGAMATOR.pages.INITIAL.description",
+        ).then((description) => stripAquaMarkup(lastNonEmptyLine(description))),
+        buildFeedbackFormGameCopy(gameLocale),
+        buildHistoryCourseLandingGameCopy(gameLocale),
+        buildPatchStageGameCopy(gameLocale),
+        buildPatchBackstabGameCopy(gameLocale),
+        buildThisOrThatGameCopy(gameLocale),
+        buildTransfigureGameCopy(gameLocale),
+        buildDefragmentGameCopy(gameLocale),
+        buildDecisionsDecisionsGameCopy(gameLocale),
+        buildPagestormGameCopy(gameLocale),
+        buildDebateGameCopy(gameLocale),
+        buildVexingPuzzleboxGameCopy(gameLocale),
+      ]);
+      return [
+        gameLocale,
+        {
+          chemicalXPlaceholder,
+          comboPlaceholder,
+          feedbackForm,
+          historyCourseLanding,
+          patchStage,
+          patchBackstab,
+          thisOrThat,
+          transfigure,
+          defragment,
+          decisionsDecisions,
+          pagestorm,
+          debate,
+          vexingPuzzlebox,
+        },
+      ] as const;
+    }),
+  );
+
+  return Object.fromEntries(entries) as Record<GameLocale, BorrowedGameCopyPayload>;
+}
+
+export async function buildToyBoxNewsPayload(): Promise<ToyBoxNewsPayload> {
+  const latest = await getLatestByrdispatchEntry();
+  return {
+    latestDate: latest?.date ?? null,
+    newSectionTitles: latest?.regularSections
+      .filter((section) => section.statuses.includes("new"))
+      .map((section) => section.title) ?? [],
+    // shortcut: judged at build time, so an expired NEW stays until the next deploy; move to the client if deploys stall for weeks.
+    newActive: byrdispatchNewActive(latest?.date ?? null),
+  };
+}
+
+
+/** Builds and writes every src/generated file of stage 1. */
+export async function writeSourceJsonFiles(): Promise<void> {
+  const [borrowedGameCopy, toyBoxNews] = await Promise.all([
+    buildBorrowedGameCopyPayload(),
+    buildToyBoxNewsPayload(),
+  ]);
+  await Promise.all([
+    writeSourceJson("generated/borrowed-game-copy.json", borrowedGameCopy),
+    writeSourceJson("generated/toy-box-news.json", toyBoxNews),
+  ]);
+}
+
+async function writeSourceJson(relativePath: string, data: unknown) {
+  const filePath = path.join(process.cwd(), "src", relativePath);
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, `${JSON.stringify(data, null, 2)}\n`);
+  console.log(`Wrote ${path.relative(process.cwd(), filePath)}`);
+}

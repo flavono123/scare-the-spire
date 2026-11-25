@@ -4,31 +4,37 @@ import { spawnSync } from "node:child_process";
 
 const root = process.cwd();
 
+const STAGE2 = "scripts/generate-static-api-data.ts";
+
+// Stage 1 targets come first: stage 2 imports modules that read their output.
 const targets = [
   {
     output: "src/generated/borrowed-game-copy.json",
-    flag: "--borrowed-game-copy-only",
+    script: "scripts/generate-source-json.ts",
     sources: [
       "data/i18n",
       "data/sts2",
-      "src/lib/borrowed-game-copy.ts",
-      "scripts/generate-static-api-data.ts",
+      "src/lib/borrowed-game-copy-types.ts",
+      "scripts/lib/source-json-payloads.ts",
+      "scripts/generate-source-json.ts",
       "scripts/ensure-lint-generated.mjs",
     ],
   },
   {
     output: "src/generated/toy-box-news.json",
-    flag: "--toy-box-news-only",
+    script: "scripts/generate-source-json.ts",
     sources: [
       "data/byrdispatch",
       "src/lib/byrdispatch.ts",
-      "src/lib/toy-box-news.ts",
-      "scripts/generate-static-api-data.ts",
+      "src/lib/toy-box-news-types.ts",
+      "scripts/lib/source-json-payloads.ts",
+      "scripts/generate-source-json.ts",
       "scripts/ensure-lint-generated.mjs",
     ],
   },
   {
     output: "src/generated/history-course-catalog.json",
+    script: STAGE2,
     flag: "--history-course-catalog-only",
     sources: [
       "data/sts2",
@@ -40,6 +46,7 @@ const targets = [
   },
   {
     output: "src/generated/history-last-scene-catalog.json",
+    script: STAGE2,
     flag: "--history-course-catalog-only",
     sources: [
       "data/sts2",
@@ -51,6 +58,7 @@ const targets = [
   },
   {
     output: "public/generated/history-loc/eng.json",
+    script: STAGE2,
     flag: "--history-loc-tables-only",
     sources: [
       "data/sts2/localization",
@@ -96,38 +104,24 @@ async function outputIsFresh(output, sources) {
   }
 }
 
-function runGenerate(flag) {
-  console.log(`Preparing lint-generated data (${flag})...`);
-  const result = spawnSync(
-    "pnpm",
-    ["exec", "tsx", "scripts/generate-static-api-data.ts", flag],
-    {
-      cwd: root,
-      stdio: "inherit",
-    },
-  );
+function runGenerate(script, flag) {
+  const args = flag ? [script, flag] : [script];
+  console.log(`Preparing lint-generated data (${args.join(" ")})...`);
+  const result = spawnSync("pnpm", ["exec", "tsx", ...args], {
+    cwd: root,
+    stdio: "inherit",
+  });
   if (result.error) throw result.error;
   if ((result.status ?? 1) !== 0) process.exit(result.status ?? 1);
 }
 
-// The generator imports src/lib modules (via place-registry) that import the very
-// src/generated/*.json files it is about to write. On a clean checkout (CI) those do
-// not exist yet, so seed empty stubs and force their real generation below.
-const seeded = new Set();
+// In target order, so stage 1 is written before stage 2 loads it; one run per command.
+const ran = new Set();
 for (const target of targets) {
-  if (!target.output.startsWith("src/generated/")) continue;
-  const absolute = path.join(root, target.output);
-  const missing = await fs.stat(absolute).then(() => false, () => true);
-  if (!missing) continue;
-  await fs.mkdir(path.dirname(absolute), { recursive: true });
-  await fs.writeFile(absolute, "{}\n");
-  seeded.add(target.output);
-}
-
-for (const target of targets) {
-  if (seeded.has(target.output) || !(await outputIsFresh(target.output, target.sources))) {
-    runGenerate(target.flag);
-  }
+  const key = `${target.script} ${target.flag ?? ""}`;
+  if (ran.has(key) || (await outputIsFresh(target.output, target.sources))) continue;
+  runGenerate(target.script, target.flag);
+  ran.add(key);
 }
 
 const spinePlayerSource = path.join(
