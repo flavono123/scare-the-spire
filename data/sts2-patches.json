@@ -674,10 +674,24 @@
     "title": "Beta Patch Notes - v0.114.0",
     "titleKo": "베타 패치 노트 - v0.114.0",
     "type": "beta",
-    "status": "building",
+    "draft": true,
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/680768104678031363",
-    "summary": "Patch notes are being prepared.",
-    "summaryKo": "패치 노트를 준비하고 있습니다.",
-    "hasBalanceChanges": true
+    "summary": "A mostly Fool-centric beta patch: new card Optimism, Growth, Arrow Stab, Florescence, The Shot, Tune and Recall reworks, Rapid Shot becomes Twin Shot, My Shinies rework, wide Fool buffs and nerfs, Hard to Kill change, and many bug fixes.",
+    "summaryKo": "풀 중심의 베타 패치: 새 카드 낙관, 성장·화살 찌르기·개화·최후의 한 발·조율·수거 리워크, 신속 사격이 이중 사격으로, 내 반짝이들 리워크, 풀 카드 전반의 버프·너프, 질긴 생존력 변경, 많은 버그 수정.",
+    "hasBalanceChanges": true,
+    "art": {
+      "type": "image",
+      "imageUrl": "/images/sts2/patches/default-art.webp",
+      "alt": "Slay the Spire 2 patch notes banner",
+      "altKo": "슬레이 더 스파이어 2 패치 노트 배너"
+    },
+    "featuredEntities": [
+      { "type": "character", "id": "FOOL" },
+      { "type": "card", "id": "OPTIMISM" },
+      { "type": "card", "id": "MY_SHINIES" },
+      { "type": "card", "id": "GROWTH" },
+      { "type": "card", "id": "FLORESCENCE" },
+      { "type": "card", "id": "TWIN_SHOT" }
+    ]
   }
 ]
