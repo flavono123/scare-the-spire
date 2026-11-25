@@ -41,17 +41,24 @@ import { HoverTip, HoverTipVariant } from "./hover-tip";
 import { RichText } from "@/components/rich-text";
 import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
 import {
-  getDefaultTinkerRiderForType,
-  getMadScienceCardTypeFromId,
+  formatMadScienceVariantParam,
   getMadSciencePreviewCard,
   getMadScienceRenderedCardName,
+  getMadScienceVariantFromId,
   getTinkerRiderIdsForType,
-  MAD_SCIENCE_DEFAULT_RIDER,
-  MAD_SCIENCE_DEFAULT_TYPE,
+  isMadScienceCardId,
+  MAD_SCIENCE_DEFAULT_VARIANT,
+  MAD_SCIENCE_VARIANT_PARAM,
+  parseMadScienceVariantParam,
+  resolveMadScienceVariant,
+  TINKER_CARD_TYPES,
+  TINKER_CARD_TYPE_TO_KO,
   TINKER_RIDER_CHOICE_LABELS,
   replaceTinkerTemplateValues,
-  type TinkerRiderId,
+  type MadScienceVariant,
 } from "@/lib/tinker-time";
+import { IconFilterButton } from "./codex-filters";
+import { getCardTypeFilterIcon } from "./codex-filter-assets";
 import {
   TINKER_TIME_EVENT_ID,
   TINKER_TIME_EVENT_NAME_KO,
@@ -64,7 +71,7 @@ import {
   getRelatedPowerIdsForCard,
 } from "@/lib/codex-references";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
-import { notifyCodexUrlChange } from "./use-hydration-safe-search-param";
+import { notifyCodexUrlChange, useHydrationSafeSearchParam } from "./use-hydration-safe-search-param";
 import {
   canEnchantCard,
   shouldShowAmount,
@@ -214,7 +221,9 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   const [activeAfflictionId, setActiveAfflictionId] = useState<string | null>(null);
   const [hoveredAfflictionId, setHoveredAfflictionId] = useState<string | null>(null);
   const [enchantAmount, setEnchantAmount] = useState<number>(DEFAULT_ENCHANT_AMOUNT);
-  const [madScienceRider, setMadScienceRider] = useState<TinkerRiderId>(MAD_SCIENCE_DEFAULT_RIDER);
+  const [chosenMadScienceVariant, setChosenMadScienceVariant] = useState<MadScienceVariant | null>(null);
+  const urlMadScienceVariant = useHydrationSafeSearchParam(MAD_SCIENCE_VARIANT_PARAM);
+  const urlCardId = useHydrationSafeSearchParam("card");
   const [isDesktop, setIsDesktop] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const setShowBeta = useCallback((checked: boolean) => {
@@ -247,19 +256,33 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const fixedMadScienceType = getMadScienceCardTypeFromId(card.id);
-  const isMadScience = fixedMadScienceType !== null;
-  const madScienceType = fixedMadScienceType ?? MAD_SCIENCE_DEFAULT_TYPE;
-  const madScienceRiderIds = getTinkerRiderIdsForType(madScienceType);
-  const effectiveMadScienceRider = madScienceRiderIds.includes(madScienceRider)
-    ? madScienceRider
-    : getDefaultTinkerRiderForType(madScienceType);
+  const isMadScience = isMadScienceCardId(card.id);
+
+  // Until one is picked, the variant comes from `?variant=attack_violence` or an old per-type `?card=mad_science_attack`.
+  const madScienceVariant = chosenMadScienceVariant
+    ?? parseMadScienceVariantParam(urlMadScienceVariant)
+    ?? (urlCardId && urlCardId.toUpperCase() !== card.id ? getMadScienceVariantFromId(urlCardId) : null)
+    ?? MAD_SCIENCE_DEFAULT_VARIANT;
+  const madScienceRiderIds = getTinkerRiderIdsForType(madScienceVariant.cardType);
+
+  const selectMadScienceVariant = useCallback((next: MadScienceVariant) => {
+    setChosenMadScienceVariant(next);
+    const url = new URL(window.location.href);
+    const param = formatMadScienceVariantParam(next);
+    if (param === formatMadScienceVariantParam(MAD_SCIENCE_DEFAULT_VARIANT)) {
+      url.searchParams.delete(MAD_SCIENCE_VARIANT_PARAM);
+    } else {
+      url.searchParams.set(MAD_SCIENCE_VARIANT_PARAM, param);
+    }
+    if (url.toString() !== window.location.href) window.history.replaceState(window.history.state, "", url.toString());
+  }, []);
+
   const previewCard = isMadScience
     ? getMadSciencePreviewCard(
       card,
-      madScienceType,
-      effectiveMadScienceRider,
-      card.typeLabel,
+      madScienceVariant.cardType,
+      madScienceVariant.riderId,
+      gameUi.cardLibrary.types[TINKER_CARD_TYPE_TO_KO[madScienceVariant.cardType]],
     )
     : card;
   const upgradePreviewCard = getRemovedUpgradePreviewCard(previewCard, versionDiffs);
@@ -426,8 +449,22 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
 
   const madScienceChoices = isMadScience ? (
     <div className="w-full max-w-2xl space-y-2.5">
+      <div className="flex justify-center gap-1.5" data-mad-science-type-picker>
+        {TINKER_CARD_TYPES.map((cardType) => {
+          const typeKo = TINKER_CARD_TYPE_TO_KO[cardType];
+          return (
+            <IconFilterButton
+              key={cardType}
+              icon={getCardTypeFilterIcon(typeKo)}
+              label={gameUi.cardLibrary.types[typeKo] ?? typeKo}
+              active={madScienceVariant.cardType === cardType}
+              onClick={() => selectMadScienceVariant(resolveMadScienceVariant(cardType, madScienceVariant.riderId))}
+            />
+          );
+        })}
+      </div>
       {madScienceRiderIds.map((riderId) => {
-        const active = effectiveMadScienceRider === riderId;
+        const active = madScienceVariant.riderId === riderId;
         const description = replaceTinkerTemplateValues(
           card.madScienceLabels?.riderChoiceDescriptions[riderId] ?? "",
         );
@@ -435,7 +472,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           <GameChoiceFrame
             key={riderId}
             active={active}
-            onClick={() => setMadScienceRider(riderId)}
+            onClick={() => selectMadScienceVariant({ cardType: madScienceVariant.cardType, riderId })}
           >
             <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
               <RichText text={card.madScienceLabels?.riderChoiceLabels[riderId] ?? TINKER_RIDER_CHOICE_LABELS[riderId]} />

@@ -358,6 +358,12 @@ function checkStaticExactServicePages(): number {
     "Locale worldcup indexes must keep the game-locale prefix.",
   );
   assert(
+    prerenderedRedirect("/compendium/cards/mad_science_attack")?.location === "/compendium/cards/mad_science?variant=attack"
+      && prerenderedRedirect("/en/compendium/cards/mad_science_power")?.location === "/en/compendium/cards/mad_science?variant=power"
+      && prerenderedRedirect("/compendium/cards/mad_science") === null,
+    "Old per-type Mad Science card pages must 308 to the one card with its type.",
+  );
+  assert(
     prerenderedRedirect("/this-or-that/worldcup/") === null,
     "The worldcup index with a trailing slash must keep the Next 308 to the slashless path first.",
   );

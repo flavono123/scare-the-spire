@@ -49,18 +49,6 @@ export const TINKER_RIDER_IDS: readonly TinkerRiderId[] = [
 
 export const TINKER_RIDER_ID_SET: ReadonlySet<TinkerRiderId> = new Set(TINKER_RIDER_IDS);
 
-export const TINKER_CARD_TYPE_CHOICE_LABELS: Record<TinkerCardType, string> = {
-  ATTACK: "무기",
-  SKILL: "보호대",
-  POWER: "도구",
-};
-
-export const TINKER_CARD_TYPE_CHOICE_LABELS_EN: Record<TinkerCardType, string> = {
-  ATTACK: "Weapon",
-  SKILL: "Protector",
-  POWER: "Gadget",
-};
-
 const TINKER_CARD_TYPE_LABEL_EN: Record<TinkerCardType, string> = {
   ATTACK: "Attack",
   SKILL: "Skill",
@@ -213,8 +201,75 @@ export function getMadScienceVariantPartsFromId(
   return null;
 }
 
-export function getTinkerCardTypeChoiceKey(cardType: TinkerCardType): string {
-  return `TINKER_TIME.pages.CHOOSE_CARD_TYPE.options.${cardType}.title`;
+export interface MadScienceVariant {
+  cardType: TinkerCardType;
+  riderId: TinkerRiderId;
+}
+
+/** Search param that picks a Mad Science variant: `variant=attack_violence` (or `attack` for the type's default rider). */
+export const MAD_SCIENCE_VARIANT_PARAM = "variant";
+
+export const MAD_SCIENCE_DEFAULT_VARIANT: MadScienceVariant = {
+  cardType: MAD_SCIENCE_DEFAULT_TYPE,
+  riderId: MAD_SCIENCE_DEFAULT_RIDER,
+};
+
+export function resolveMadScienceVariant(
+  cardType: TinkerCardType,
+  riderId?: TinkerRiderId | null,
+): MadScienceVariant {
+  const riders: readonly TinkerRiderId[] = TINKER_RIDER_IDS_BY_TYPE[cardType];
+  return {
+    cardType,
+    riderId: riderId && riders.includes(riderId) ? riderId : getDefaultTinkerRiderForType(cardType),
+  };
+}
+
+/** Any Mad Science id (MAD_SCIENCE, the old per-type ids, run ids with a rider) as a full variant. */
+export function getMadScienceVariantFromId(id: string): MadScienceVariant | null {
+  const parts = getMadScienceVariantPartsFromId(id);
+  return parts ? resolveMadScienceVariant(parts.cardType, parts.riderId) : null;
+}
+
+export function formatMadScienceVariantParam(variant: MadScienceVariant): string {
+  return `${variant.cardType}_${variant.riderId}`.toLowerCase();
+}
+
+export function parseMadScienceVariantParam(value: string | null | undefined): MadScienceVariant | null {
+  return value ? getMadScienceVariantFromId(`${MAD_SCIENCE_CARD_ID}_${value}`) : null;
+}
+
+/** Codex href for one Mad Science variant; the default variant keeps the bare card URL. */
+export function getMadScienceVariantHref(baseHref: string, variant: MadScienceVariant): string {
+  const param = formatMadScienceVariantParam(variant);
+  if (param === formatMadScienceVariantParam(MAD_SCIENCE_DEFAULT_VARIANT)) return baseHref;
+  const [path, hash = ""] = baseHref.split("#");
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}${MAD_SCIENCE_VARIANT_PARAM}=${param}${hash ? `#${hash}` : ""}`;
+}
+
+const TINKER_RIDER_OPTION_RE = new RegExp(
+  `(${TINKER_RIDER_IDS.flatMap((riderId) => [
+    TINKER_RIDER_CHOICE_LABELS[riderId],
+    TINKER_RIDER_CHOICE_LABELS_EN[riderId],
+  ]).join("|")})\\s*(?:선택지|옵션|option)`,
+  "i",
+);
+
+/**
+ * Patch notes name the card plainly ("Mad Science"); the Tinker Time option the same line names
+ * ("폭력 선택지", "Chaos option") picks the variant. Without one, the default (Skill, Chaos) stands.
+ */
+export function getMadScienceVariantFromText(text: string): MadScienceVariant {
+  const label = text.match(TINKER_RIDER_OPTION_RE)?.[1].toLowerCase();
+  const riderId = label
+    ? TINKER_RIDER_IDS.find((id) =>
+      TINKER_RIDER_CHOICE_LABELS[id] === label || TINKER_RIDER_CHOICE_LABELS_EN[id].toLowerCase() === label)
+    : undefined;
+  if (!riderId) return MAD_SCIENCE_DEFAULT_VARIANT;
+  const cardType = TINKER_CARD_TYPES.find((type) =>
+    (TINKER_RIDER_IDS_BY_TYPE[type] as readonly TinkerRiderId[]).includes(riderId))!;
+  return { cardType, riderId };
 }
 
 export function getTinkerRiderChoiceKey(riderId: TinkerRiderId): string {

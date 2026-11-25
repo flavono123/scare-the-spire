@@ -22,8 +22,10 @@ import { parseRunRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 import {
   getMadSciencePreviewCard,
-  getMadScienceVariantId,
   getMadScienceVariantPartsFromId,
+  MAD_SCIENCE_CARD_ID,
+  resolveMadScienceVariant,
+  TINKER_CARD_TYPE_TO_KO,
   TINKER_RIDER_CHOICE_LABELS,
   TINKER_RIDER_CHOICE_LABELS_EN,
 } from "@/lib/tinker-time";
@@ -55,28 +57,25 @@ function buildRunMadScienceCard(
 ): CodexCard | null {
   const stripped = stripCardId(replayId);
   const parts = getMadScienceVariantPartsFromId(stripped);
-  if (!parts?.riderId) return null;
+  const baseCard = parts ? cardByLookupId.get(MAD_SCIENCE_CARD_ID) : undefined;
+  if (!parts || !baseCard) return null;
 
-  const baseId = getMadScienceVariantId(parts.cardType);
-  const baseCard =
-    cardByLookupId.get(baseId) ?? cardByLookupId.get(`CARD.${baseId}`);
-  if (!baseCard) return null;
+  const { cardType, riderId } = resolveMadScienceVariant(parts.cardType, parts.riderId);
+  const card = {
+    ...getMadSciencePreviewCard(baseCard, cardType, riderId, TINKER_CARD_TYPE_TO_KO[cardType]),
+    id: stripped,
+    madScienceLabels: baseCard.madScienceLabels,
+  };
+  // A run id without a rider (MAD_SCIENCE_ATTACK) names only the type.
+  if (!parts.riderId) return { ...card, name: baseCard.name, nameEn: baseCard.nameEn };
 
   const riderLabel =
-    baseCard.madScienceLabels?.riderChoiceLabels[parts.riderId] ??
-    TINKER_RIDER_CHOICE_LABELS[parts.riderId];
-  const riderLabelEn = TINKER_RIDER_CHOICE_LABELS_EN[parts.riderId];
+    baseCard.madScienceLabels?.riderChoiceLabels[riderId] ??
+    TINKER_RIDER_CHOICE_LABELS[riderId];
   return {
-    ...getMadSciencePreviewCard(
-      baseCard,
-      parts.cardType,
-      parts.riderId,
-      baseCard.typeLabel,
-    ),
-    id: stripped,
+    ...card,
     name: `${baseCard.name} · ${riderLabel}`,
-    nameEn: `${baseCard.nameEn} · ${riderLabelEn}`,
-    madScienceLabels: baseCard.madScienceLabels,
+    nameEn: `${baseCard.nameEn} · ${TINKER_RIDER_CHOICE_LABELS_EN[riderId]}`,
   };
 }
 

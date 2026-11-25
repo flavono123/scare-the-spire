@@ -98,6 +98,11 @@ function rscRedirectSearch(request: Request, url: URL): string {
   return isRscRequest(request, url) ? url.search : "";
 }
 
+function appendSearch(location: string, search: string): string {
+  if (!search) return location;
+  return location.includes("?") ? `${location}&${search.slice(1)}` : `${location}${search}`;
+}
+
 function isDocumentRequest(request: Request, url: URL): boolean {
   if (isRscRequest(request, url)) return false;
 
@@ -436,7 +441,7 @@ function maybeServePrerenderedRedirect(request: Request, url: URL): Response | n
     status: redirect.status,
     headers: {
       "Cache-Control": "s-maxage=31536000",
-      Location: `${redirect.location}${rscRedirectSearch(request, url)}`,
+      Location: appendSearch(redirect.location, rscRedirectSearch(request, url)),
     },
   });
 }

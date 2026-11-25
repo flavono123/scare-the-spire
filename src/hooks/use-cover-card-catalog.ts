@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { useRetryWhenRequested } from "@/components/compendium-data-retry";
 import { loadCompendiumData } from "@/lib/compendium-data-chunks";
 import type { CodexCard } from "@/lib/codex-types";
-import { resolveCoverCardId } from "@/lib/run-cover-display";
+import {
+  getMadSciencePreviewCard,
+  getMadScienceVariantFromId,
+  MAD_SCIENCE_CARD_ID,
+  TINKER_CARD_TYPE_TO_KO,
+} from "@/lib/tinker-time";
 
 const COVER_CARD_KEYS = ["cards"] as const;
 
@@ -66,10 +71,10 @@ export function coverCatalogCard(
   catalog: Map<string, CodexCard>,
   cardId: string,
 ): CodexCard | null {
-  const resolved = resolveCoverCardId(cardId);
-  return (
-    catalog.get(resolved.toUpperCase()) ??
-    catalog.get(cardId.toUpperCase()) ??
-    null
-  );
+  // Mad Science run ids (MAD_SCIENCE_ATTACK_VIOLENCE) render the one card as that variant.
+  const variant = getMadScienceVariantFromId(cardId);
+  const card = catalog.get(variant ? MAD_SCIENCE_CARD_ID : cardId.toUpperCase()) ?? null;
+  return card && variant
+    ? getMadSciencePreviewCard(card, variant.cardType, variant.riderId, TINKER_CARD_TYPE_TO_KO[variant.cardType])
+    : card;
 }

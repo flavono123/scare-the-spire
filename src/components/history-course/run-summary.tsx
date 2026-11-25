@@ -42,8 +42,9 @@ import type {
 } from "@/lib/sts2-run-replay";
 import { historyEntryForPlayer } from "@/lib/sts2-run-replay";
 import {
-  getMadScienceVariantId,
-  getMadScienceVariantPartsFromId,
+  getMadScienceVariantFromId,
+  getMadScienceVariantHref,
+  MAD_SCIENCE_CARD_ID,
 } from "@/lib/tinker-time";
 import type { TopbarState } from "@/components/history-course/topbar-state";
 import { historyRunHistorySpriteSrc } from "@/lib/history-run-history-sprite";
@@ -87,10 +88,8 @@ function buildCardEntityInfo(
   },
 ): EntityInfo | null {
   if (!card) return null;
-  const madScienceParts = getMadScienceVariantPartsFromId(card.id);
-  const linkId = madScienceParts
-    ? getMadScienceVariantId(madScienceParts.cardType)
-    : card.id;
+  const madScienceVariant = getMadScienceVariantFromId(card.id);
+  const linkId = madScienceVariant ? MAD_SCIENCE_CARD_ID : card.id;
   const upgradeLevel = opts?.upgradeLevel ?? 0;
   const enchant = historyCardEnchantmentTileProps(
     opts?.enchantmentId,
@@ -102,7 +101,9 @@ function buildCardEntityInfo(
     nameEn: card.nameEn,
     nameKo: card.name,
     imageUrl: card.imageUrl ?? card.betaImageUrl,
-    href: buildCompendiumResourceHref("card", linkId),
+    href: madScienceVariant
+      ? getMadScienceVariantHref(buildCompendiumResourceHref("card", linkId), madScienceVariant)
+      : buildCompendiumResourceHref("card", linkId),
     color: card.color,
     type: "card",
     cardData: card,

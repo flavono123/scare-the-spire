@@ -59,13 +59,11 @@ import { EventVfxStage } from "@/components/codex/event-vfx-stage";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import {
   getDefaultTinkerRiderForType,
-  getMadScienceVariantId,
   getMadSciencePreviewCard,
   getTinkerRiderIdsForType,
   isTinkerCardTypeId,
   isTinkerRiderId,
   replaceTinkerTemplateValues,
-  TINKER_CARD_TYPES,
   TINKER_CARD_TYPE_TO_KO,
   type TinkerCardType,
 } from "@/lib/tinker-time";
@@ -1649,6 +1647,22 @@ export function EventContentViewer({
     }
     const generatedPotionPool = sortPotionsForPreview((potions ?? []).filter(isGeneratedPotionPoolPotion));
 
+    // Each Tinker Time option previews the one Mad Science variant it makes: the type's default rider, then the rider.
+    if (event.id === TINKER_TIME_EVENT_ID && currentPageId === "CHOOSE_CARD_TYPE" && madScienceBaseCard) {
+      for (const option of options) {
+        if (!isTinkerCardTypeId(option.id)) continue;
+        const typeKo = TINKER_CARD_TYPE_TO_KO[option.id];
+        previews.set(option.id, {
+          cards: [getMadSciencePreviewCard(
+            madScienceBaseCard,
+            option.id,
+            getDefaultTinkerRiderForType(option.id),
+            gameUi.cardLibrary.types[typeKo] ?? typeKo,
+          )],
+        });
+      }
+    }
+
     if (currentPageId === "CHOOSE_RIDER") {
       const selectedType = getTinkerSelectedType(currentEntry);
       if (selectedType && madScienceBaseCard) {
@@ -2357,28 +2371,6 @@ export function EventDetail({
   const textPanelClassName = isModal
     ? "dark absolute inset-x-4 bottom-4 top-4 z-30 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[2%] sm:right-[3.5%] sm:top-[3%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
     : "dark absolute inset-x-4 bottom-4 top-4 z-30 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]";
-  const relatedMadScienceCards = event.id === TINKER_TIME_EVENT_ID && madScienceBaseCard
-    ? TINKER_CARD_TYPES.map((cardType) => {
-        const id = getMadScienceVariantId(cardType);
-        const typeKo = TINKER_CARD_TYPE_TO_KO[cardType];
-        const typeLabel = gameUi.cardLibrary.types[typeKo] ?? typeKo;
-        const card = {
-          ...getMadSciencePreviewCard(
-            madScienceBaseCard,
-            cardType,
-            getDefaultTinkerRiderForType(cardType),
-            typeLabel,
-          ),
-          id,
-        };
-        return {
-          card,
-          href: `/compendium/cards/${id.toLowerCase()}`,
-          id,
-          title: card.name,
-        };
-      })
-    : [];
   const cardById = new Map(cards.map((card) => [card.id, card]));
   const enchantmentById = new Map(enchantments.map((enchantment) => [enchantment.id, enchantment]));
   const powerById = new Map(powers.map((power) => [power.id, power]));
@@ -2388,21 +2380,6 @@ export function EventDetail({
       .map((cardId) => cardById.get(cardId))
       .filter((card): card is CodexCard => Boolean(card))
       .map(cardToReferenceTarget),
-    ...relatedMadScienceCards.map(({ card, href, id, title }) => ({
-      href,
-      id,
-      title,
-      entity: {
-        id,
-        nameEn: card.nameEn,
-        nameKo: title,
-        imageUrl: card.imageUrl,
-        href,
-        color: card.color,
-        type: "card" as const,
-        cardData: card,
-      },
-    })),
   ];
   const relatedRelicTargets = getRelatedRelicIdsForEvent(event.id)
     .map((relicId) => relicById.get(relicId))

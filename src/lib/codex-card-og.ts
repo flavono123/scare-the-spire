@@ -5,8 +5,8 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { DEFAULT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
 import {
-  getMadScienceCardTypeFromId,
-  getMadScienceVariantId,
+  isMadScienceCardId,
+  MAD_SCIENCE_CARD_ID,
 } from "@/lib/tinker-time";
 import type { CodexCard } from "@/lib/codex-types";
 
@@ -26,8 +26,7 @@ export function findCardByCodexRouteId<T extends { id: string }>(
   id: string | undefined,
 ): T | undefined {
   if (!id) return undefined;
-  const madScienceType = getMadScienceCardTypeFromId(id);
-  const resolvedId = madScienceType ? getMadScienceVariantId(madScienceType) : id;
+  const resolvedId = isMadScienceCardId(id) ? MAD_SCIENCE_CARD_ID : id;
   return cards.find((c) => c.id.toLowerCase() === resolvedId.toLowerCase());
 }
 

@@ -89,7 +89,6 @@ export interface CodexCard extends CodexLifecycle {
   madScienceLabels?: {
     eventTitle: string;
     riderChoiceDescriptions: Record<string, string>;
-    typeChoiceLabel: string;
     riderChoiceLabels: Record<string, string>;
   };
 }

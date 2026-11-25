@@ -5,12 +5,17 @@ import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
 import { RunBadgeStrip } from "@/components/history-course/run-badge-strip";
 import { sts2RunBadges, sts2RunScore, type Sts2RunFile } from "@/lib/sts2/run-score";
+import { getRunBadgeDisplay } from "@/lib/run-badges";
 import {
   clampSts2ScoreInput,
+  STS2_BADGE_RARITIES,
+  STS2_SCORE_BADGES,
   STS2_SCORE_DEFAULTS,
-  sts2BadgesFromInput,
+  sts2BadgeTierAllowed,
+  sts2InputForBadge,
   sts2Score,
   sts2ScoreLimits,
+  type Sts2ScoreBadge,
   type Sts2ScoreInput,
   type Sts2ScoreLine,
   type Sts2ScoreLineKey,
@@ -35,7 +40,8 @@ function serviceText(serviceLocale: ServiceLocale) {
         players: "인원",
         act: (index: number) => `${index + 1}막 층`,
         total: "점수",
-        badges: "뱃지 (입력만으로 판정되는 것)",
+        badges: "뱃지",
+        badgeHint: "누를 때마다 한 단계씩 올라가며, 그 단계에 필요한 최소값을 입력에 채웁니다. 엘리트 외에는 입력이 가능성만 정합니다.",
         note: "실제 시드에서 나올 수 있는 범위로 값을 맞춥니다. 층은 지도에서 들어간 칸 수(고대의 존재·보스 칸 포함)입니다.",
         rules: {
           floorsClimbed: "1막 층마다 10, 2막 20, 3막 30",
@@ -56,7 +62,8 @@ function serviceText(serviceLocale: ServiceLocale) {
         players: "Players",
         act: (index: number) => `Act ${index + 1} floors`,
         total: "Score",
-        badges: "Badges (decided by these inputs)",
+        badges: "Badges",
+        badgeHint: "Each click raises a badge one tier and fills in the least each input needs for it. Beyond Elite, the inputs only make a badge possible.",
         note: "Values snap to what a real run can reach. Floors are map points entered (the Ancient and boss rooms count).",
         rules: {
           floorsClimbed: "10 per act 1 floor, 20 per act 2 floor, 30 per act 3 floor",
@@ -86,6 +93,48 @@ export function Sts2ScoreBreakdown({ lines, total, texts, totalLabel, hideTotal 
         {totalLabel}: {total}
       </div>
     </div>
+  );
+}
+
+/** One score badge: its art at the tier reached (dimmed when none), the tier pips, and a click to go up a tier. */
+function BadgeQuickButton({ badge, tier, serviceLocale, onClick, onFocus, onBlur }: {
+  badge: Sts2ScoreBadge;
+  tier: number;
+  serviceLocale: ServiceLocale;
+  onClick: () => void;
+  onFocus: () => void;
+  onBlur: () => void;
+}) {
+  const display = getRunBadgeDisplay({ id: badge.id, rarity: STS2_BADGE_RARITIES[Math.max(0, tier)] }, serviceLocale);
+  if (!display) return null;
+  const on = tier >= 0;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      onMouseEnter={onFocus}
+      onMouseLeave={onBlur}
+      title={display.description.replace(/\[[^\]]*\]/g, "")}
+      aria-pressed={on}
+      className={`flex w-[5.5rem] flex-col items-center gap-1 rounded-md border px-1 py-1.5 transition-colors ${on ? "border-primary/60 bg-primary/10" : "border-white/10 bg-black/30 hover:border-white/25"}`}
+      data-sts2-score-badge={badge.id}
+      data-tier={tier}
+    >
+      <span className={`relative h-10 w-10 ${on ? "" : "opacity-35 grayscale"}`}>
+        <Image src={display.baseImageUrl} alt="" fill className="object-contain" />
+        {display.imageUrl ? <Image src={display.imageUrl} alt="" fill className="object-contain" /> : null}
+      </span>
+      <span className={`w-full truncate text-center text-[11px] ${on ? "text-gray-100" : "text-gray-500"}`}>{display.title}</span>
+      {badge.tiers.length > 1 ? (
+        <span className="flex gap-1" aria-hidden>
+          {badge.tiers.map((_, index) => (
+            <span key={index} className={`h-1.5 w-1.5 rounded-full ${index <= tier ? "bg-[#efc851]" : "bg-white/15"}`} />
+          ))}
+        </span>
+      ) : null}
+    </button>
   );
 }
 
@@ -162,11 +211,31 @@ export function Sts2ScoreCalculator({ texts, serviceLocale }: { texts: Sts2Score
   const [input, setInput] = useState<Sts2ScoreInput>(STS2_SCORE_DEFAULTS);
   const [focused, setFocused] = useState<Sts2ScoreLineKey[] | null>(null);
   const tableRef = useRef<HTMLDivElement>(null);
+  // Tier picked for each badge the inputs only allow (ELITE follows its count); the inputs cap it.
+  const [held, setHeld] = useState<Record<string, number>>({});
   const update = (patch: Partial<Sts2ScoreInput>) => setInput((previous) => clampSts2ScoreInput({ ...previous, ...patch }));
   const limits = sts2ScoreLimits(input);
   const { lines, total } = sts2Score(input);
-  // Only the badges the inputs alone decide (the elite count tiers); a run file decides the rest.
-  const badges = sts2BadgesFromInput(input);
+  const tierOf = (badge: Sts2ScoreBadge) => {
+    const allowed = sts2BadgeTierAllowed(badge, input);
+    return badge.decided ? allowed : Math.min(held[badge.id] ?? -1, allowed);
+  };
+  const rarityOf = (tier: number) => STS2_BADGE_RARITIES[tier];
+  const badges = STS2_SCORE_BADGES.flatMap((badge) => {
+    const tier = tierOf(badge);
+    return tier >= 0 ? [{ id: badge.id, rarity: rarityOf(tier) }] : [];
+  });
+  const cycleBadge = (badge: Sts2ScoreBadge) => {
+    const next = tierOf(badge) + 1;
+    if (next < badge.tiers.length) {
+      setInput(sts2InputForBadge(input, badge, next));
+      setHeld((previous) => ({ ...previous, [badge.id]: next }));
+    } else {
+      setHeld((previous) => ({ ...previous, [badge.id]: -1 }));
+      if (badge.decided) update({ [badge.field]: Math.min(input[badge.field], badge.tiers[0] - 1) });
+    }
+  };
+  const badgeLine: Record<Sts2ScoreBadge["field"], Sts2ScoreLineKey> = { elitesKilled: "elitesKilled", goldGained: "goldGained", bossesSlain: "bossesSlain" };
   const focus = (keys: Sts2ScoreLineKey[]) => ({ onFocus: () => setFocused(keys), onBlur: () => setFocused(null) });
   useEffect(() => {
     if (!focused?.length) return;
@@ -180,11 +249,27 @@ export function Sts2ScoreCalculator({ texts, serviceLocale }: { texts: Sts2Score
       <section className="rounded-lg border border-white/10 bg-black/50 px-5 py-4" data-sts2-score-calculator="">
         <div className="mb-3 flex items-center justify-between gap-2">
           <h2 className="font-game-title text-lg font-bold text-primary">{t.title}</h2>
-          <button type="button" onClick={() => setInput(STS2_SCORE_DEFAULTS)} className="rounded-md border border-white/15 px-2 py-0.5 text-xs text-gray-300 hover:text-white">
+          <button type="button" onClick={() => { setInput(STS2_SCORE_DEFAULTS); setHeld({}); }} className="rounded-md border border-white/15 px-2 py-0.5 text-xs text-gray-300 hover:text-white">
             {t.reset}
           </button>
         </div>
         <div className="flex flex-col gap-3">
+          <div>
+            <div className="mb-1 text-xs text-gray-400">{t.badges}</div>
+            <div className="flex flex-wrap gap-2" data-sts2-score-badges="">
+              {STS2_SCORE_BADGES.map((badge) => (
+                <BadgeQuickButton
+                  key={badge.id}
+                  badge={badge}
+                  tier={tierOf(badge)}
+                  serviceLocale={serviceLocale}
+                  onClick={() => cycleBadge(badge)}
+                  {...focus([badgeLine[badge.field]])}
+                />
+              ))}
+            </div>
+            <p className="mt-1 text-[11px] text-gray-500">{t.badgeHint}</p>
+          </div>
           <div className="flex flex-wrap gap-4">
             <Toggle label={t.result} value={input.won} options={[{ value: false, label: texts.lose }, { value: true, label: texts.win }]} onChange={(won) => update({ won })} {...focus(["bossesSlain"])} />
             <Toggle label={t.mode} value={input.mode} options={[{ value: "normal" as const, label: t.normal }, { value: "dread" as const, label: lineLabel(texts.lines.dread) }]} onChange={(mode) => update({ mode })} {...focus(["dread", "ascension"])} />

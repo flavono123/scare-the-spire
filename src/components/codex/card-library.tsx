@@ -56,8 +56,8 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { useLocalizedHref } from "@/hooks/use-localized-href";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import {
-  getMadScienceCardTypeFromId,
-  getMadScienceVariantId,
+  isMadScienceCardId,
+  MAD_SCIENCE_CARD_ID,
 } from "@/lib/tinker-time";
 import {
   addCodexUrlChangeListener,
@@ -148,9 +148,9 @@ function cardMatchesFilterCategory(card: CodexCard, category: CardFilterCategory
   }
 }
 
+// Old per-type Mad Science links (mad_science_attack) open the one card; CardDetail reads the type from the URL.
 function resolveCardListId(id: string): string {
-  const madScienceType = getMadScienceCardTypeFromId(id);
-  return madScienceType ? getMadScienceVariantId(madScienceType) : id;
+  return isMadScienceCardId(id) ? MAD_SCIENCE_CARD_ID : id;
 }
 
 function findCardByListId(cards: CodexCard[], id: string): CodexCard | null {

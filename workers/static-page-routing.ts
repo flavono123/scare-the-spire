@@ -363,7 +363,18 @@ export function prerenderedRedirect(pathname: string): PrerenderedRedirect | nul
     return { status: 307, location: "/pagestorm/write" };
   }
   const worldcupIndex = legacyWorldcupIndexRedirectPath(pathname);
-  return worldcupIndex ? { status: 308, location: worldcupIndex } : null;
+  if (worldcupIndex) return { status: 308, location: worldcupIndex };
+  const madScience = legacyMadScienceCardRedirectPath(pathname);
+  return madScience ? { status: 308, location: madScience } : null;
+}
+
+/** Mad Science had one Compendium card per type (`mad_science_attack`); now one card keeps the type as `?variant=`. */
+export function legacyMadScienceCardRedirectPath(pathname: string): string | null {
+  if (!isExactRoutePath(pathname)) return null;
+  const { localePrefix, rest } = splitLocalePrefix(pathname);
+  if (rest.length !== 3 || rest[0] !== "compendium" || rest[1] !== "cards") return null;
+  const type = /^mad_science_(attack|skill|power)$/.exec(rest[2])?.[1];
+  return type ? `/${[...localePrefix, "compendium", "cards", "mad_science"].join("/")}?variant=${type}` : null;
 }
 
 export const STATIC_NOT_FOUND_ASSET_BASENAME = "404";

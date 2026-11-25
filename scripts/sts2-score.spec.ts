@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { clampSts2ScoreInput, STS2_SCORE_DEFAULTS, sts2BadgesFromInput, sts2Score, sts2ScoreLimits } from "../src/lib/sts2/score";
+import { clampSts2ScoreInput, STS2_SCORE_BADGES, STS2_SCORE_DEFAULTS, sts2BadgesFromInput, sts2BadgeTierAllowed, sts2InputForBadge, sts2Score, sts2ScoreLimits } from "../src/lib/sts2/score";
 
 const run = (patch: Partial<typeof STS2_SCORE_DEFAULTS>) => ({ ...STS2_SCORE_DEFAULTS, ...patch });
 
@@ -67,3 +67,19 @@ assert.deepEqual(sts2BadgesFromInput(run({ won: true, elitesKilled: 9 })), [{ id
 assert.deepEqual(sts2BadgesFromInput(run({ floors: [17, 16, 0], elitesKilled: 3 })), [{ id: "ELITE", rarity: "bronze" }]);
 
 console.log("sts2-score.spec.ts: ok");
+
+// Badge quick buttons: each tier's least input, reached by the shortest run that allows it.
+{
+  const badge = (id: string) => STS2_SCORE_BADGES.find((b) => b.id === id)!;
+  assert.deepEqual(STS2_SCORE_BADGES.map((b) => b.id), ["ELITE", "KACHING", "MONEY_MONEY", "PERFECT"]);
+  const killer = sts2InputForBadge(STS2_SCORE_DEFAULTS, badge("ELITE"), 1);
+  assert.equal(killer.elitesKilled, 6);
+  assert.equal(sts2BadgeTierAllowed(badge("ELITE"), killer), 1);
+  const rich = sts2InputForBadge(STS2_SCORE_DEFAULTS, badge("MONEY_MONEY"), 2);
+  assert.equal(rich.won, true);
+  assert.equal(rich.goldGained, 501);
+  assert.equal(sts2InputForBadge(STS2_SCORE_DEFAULTS, badge("PERFECT"), 1).bossesSlain, 2);
+  assert.equal(sts2InputForBadge(STS2_SCORE_DEFAULTS, badge("PERFECT"), 2).won, true);
+  // Raising one badge never lowers another's field.
+  assert.equal(sts2InputForBadge({ ...STS2_SCORE_DEFAULTS, goldGained: 2000 }, badge("MONEY_MONEY"), 0).goldGained, 2000);
+}

@@ -92,18 +92,14 @@ import {
 import { groupAncientDialogueLines } from "./ancient-dialogue";
 import { cardServiceTags } from "./card-service-tags";
 import {
-  getDefaultTinkerRiderForType,
   getMadSciencePreviewCard,
-  getMadScienceVariantId,
-  getTinkerCardTypeChoiceKey,
   getTinkerRiderDescriptionKey,
   getTinkerRiderChoiceKey,
   MAD_SCIENCE_CARD_ID,
   MAD_SCIENCE_DEFAULT_IMAGE_URL,
+  MAD_SCIENCE_DEFAULT_VARIANT,
   TINKER_CARD_TYPES,
   TINKER_CARD_TYPE_TO_KO,
-  TINKER_CARD_TYPE_CHOICE_LABELS,
-  TINKER_CARD_TYPE_CHOICE_LABELS_EN,
   TINKER_RIDER_CHOICE_LABELS,
   TINKER_RIDER_CHOICE_LABELS_EN,
   TINKER_RIDER_IDS_BY_TYPE,
@@ -785,19 +781,6 @@ function buildMadScienceLabels(
     ),
     riderChoiceDescriptions,
     riderChoiceLabels,
-    typeChoiceLabels: Object.fromEntries(
-      TINKER_CARD_TYPES.map((cardType) => [
-        cardType,
-        localizedGameText(
-          gameEvents,
-          engEvents,
-          getTinkerCardTypeChoiceKey(cardType),
-          TINKER_CARD_TYPE_CHOICE_LABELS[cardType],
-          TINKER_CARD_TYPE_CHOICE_LABELS_EN[cardType],
-          gameLocale,
-        ),
-      ]),
-    ) as Record<(typeof TINKER_CARD_TYPES)[number], string>,
   };
 }
 
@@ -914,24 +897,20 @@ export async function getCodexCards(opts?: {
       );
       if (card.id !== MAD_SCIENCE_CARD_ID) return [card];
 
-      return TINKER_CARD_TYPES.map((cardType) => {
-        const typeKo = TINKER_CARD_TYPE_TO_KO[cardType];
-        return {
-          ...getMadSciencePreviewCard(
-            card,
-            cardType,
-            getDefaultTinkerRiderForType(cardType),
-            typeLabels[typeKo] ?? typeKo,
-          ),
-          id: getMadScienceVariantId(cardType),
-          madScienceLabels: {
-            eventTitle: madScienceLabels.eventTitle,
-            riderChoiceDescriptions: madScienceLabels.riderChoiceDescriptions,
-            riderChoiceLabels: madScienceLabels.riderChoiceLabels,
-            typeChoiceLabel: madScienceLabels.typeChoiceLabels[cardType],
-          },
-        };
-      });
+      // One card, as in the game; the detail page and links pick the Tinker Time variant.
+      const { cardType, riderId } = MAD_SCIENCE_DEFAULT_VARIANT;
+      const typeKo = TINKER_CARD_TYPE_TO_KO[cardType];
+      return [{
+        ...getMadSciencePreviewCard(card, cardType, riderId, typeLabels[typeKo] ?? typeKo),
+        id: MAD_SCIENCE_CARD_ID,
+        name: card.name,
+        nameEn: card.nameEn,
+        madScienceLabels: {
+          eventTitle: madScienceLabels.eventTitle,
+          riderChoiceDescriptions: madScienceLabels.riderChoiceDescriptions,
+          riderChoiceLabels: madScienceLabels.riderChoiceLabels,
+        },
+      }];
     });
 }
 

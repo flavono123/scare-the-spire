@@ -64,7 +64,7 @@ const doubleBoss = (input: Sts2ScoreInput) => input.mode === "dread" || input.as
 const rooms = (act: number, players: number) => ACT_ROOMS[act] - (players > 1 ? 1 : 0);
 
 // GetNumberOfFloors = rooms + Ancient + boss; StandardActMap adds SecondBossMapPoint to the last act on Double Boss.
-function standardFloors(act: number, input: Sts2ScoreInput): number {
+export function standardFloors(act: number, input: Sts2ScoreInput): number {
   return rooms(act, input.players) + 2 + (act === 2 && doubleBoss(input) ? 1 : 0);
 }
 
@@ -192,4 +192,65 @@ export function sts2BadgesFromInput(raw: Sts2ScoreInput): Sts2RunBadge[] {
   const { elitesKilled } = clampSts2ScoreInput(raw);
   const rarity = elitesKilled >= 9 ? "gold" : elitesKilled >= 6 ? "silver" : elitesKilled >= 3 ? "bronze" : null;
   return rarity ? [{ id: "ELITE", rarity }] : [];
+}
+
+type Sts2BadgeField = "elitesKilled" | "goldGained" | "bossesSlain";
+export interface Sts2ScoreBadge {
+  id: string;
+  field: Sts2BadgeField;
+  /** The input's floor for each tier, bronze first (a single entry is a bronze-only badge). */
+  tiers: readonly number[];
+  requiresWin?: boolean;
+  /** True when the inputs decide the badge exactly; otherwise they only make it possible. */
+  decided?: boolean;
+}
+
+// CharacterModel.StartingGold for every playable character; GoldGained leaves it out.
+const STARTING_GOLD = 99;
+
+/**
+ * The badges whose condition puts a floor under a score input, in BadgePool order (the game-over screen's order).
+ * ELITE is GetElitesKilledCount 3 / 6 / 9. KACHING (1000 spent in shops) and MONEY_MONEY (200 / 400 / 600 held at a
+ * win) need that much gold beyond the starting 99; PERFECT (1 / 2 / 3 bosses without losing HP) needs that many
+ * bosses slain. The other badges read the deck, relics, HP, rest sites or combat stats, which add nothing to the score.
+ */
+export const STS2_SCORE_BADGES: readonly Sts2ScoreBadge[] = [
+  { id: "ELITE", field: "elitesKilled", tiers: [3, 6, 9], decided: true },
+  { id: "KACHING", field: "goldGained", tiers: [1000 - STARTING_GOLD] },
+  { id: "MONEY_MONEY", field: "goldGained", tiers: [200, 400, 600].map((gold) => gold - STARTING_GOLD), requiresWin: true },
+  { id: "PERFECT", field: "bossesSlain", tiers: [1, 2, 3] },
+];
+
+export const STS2_BADGE_RARITIES = ["bronze", "silver", "gold"] as const;
+
+/** Highest tier index the inputs allow (-1 for none): the exact tier for a decided badge, the ceiling otherwise. */
+export function sts2BadgeTierAllowed(badge: Sts2ScoreBadge, raw: Sts2ScoreInput): number {
+  const input = clampSts2ScoreInput(raw);
+  if (badge.requiresWin && !input.won) return -1;
+  let tier = -1;
+  badge.tiers.forEach((floor, index) => {
+    if (input[badge.field] >= floor) tier = index;
+  });
+  return tier;
+}
+
+/**
+ * The input raised just enough for `badge` at tier `tier`: the field to the tier's floor, and when the field's limit
+ * is too low, more floors (standard maps, act by act) and then a win, the shortest run that can reach it.
+ */
+export function sts2InputForBadge(raw: Sts2ScoreInput, badge: Sts2ScoreBadge, tier: number): Sts2ScoreInput {
+  const target = badge.tiers[tier];
+  let next = clampSts2ScoreInput({ ...raw, won: raw.won || Boolean(badge.requiresWin) });
+  for (;;) {
+    const tried = clampSts2ScoreInput({ ...next, [badge.field]: Math.max(next[badge.field], target) });
+    if (tried[badge.field] >= target) return tried;
+    const act = [0, 1, 2].find((index) => next.floors[index] < standardFloors(index, next));
+    if (act !== undefined) {
+      next = clampSts2ScoreInput({ ...next, floors: next.floors.map((count, index) => (index === act ? count + 1 : count)) as Sts2ScoreInput["floors"] });
+    } else if (!next.won) {
+      next = clampSts2ScoreInput({ ...next, won: true });
+    } else {
+      return tried;
+    }
+  }
 }
