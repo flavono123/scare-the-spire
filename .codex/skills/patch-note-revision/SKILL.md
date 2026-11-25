@@ -39,7 +39,7 @@ Run the line generator immediately after markdown edits:
 ```bash
 pnpm sts2:patch-lines
 ```
-This updates `data/sts2-patch-lines.json` and `data/sts2-resource-patch-index.json`.
+This updates `data/sts2-patch-lines.json` and `public/generated/sts2-resource-patch-index.json` (generated, not committed).
 
 ### Step 3: Audit ID Drifts & Auto-Detect Aliases
 Run the audit script to check for any line IDs that existed in the git baseline (`origin/main` or `HEAD`) but are missing or unresolvable in the new output:
@@ -50,7 +50,7 @@ pnpm patch:audit-ids
 - **If passed** (`✅ All baseline patch lines safely resolve`): No stories or anchors were broken. Proceed to Step 5.
 - **If unhandled drifts are reported** (`❌ Found N unresolvable baseline patch line(s)`):
   - Review the suggested aliases printed by the script.
-  - Open [`src/lib/resolve-story-patch-line.ts`](file:///Users/flavono123/P/scare-the-spire/src/lib/resolve-story-patch-line.ts) and add the mappings to `PATCH_LINE_ALIASES`:
+  - Open `src/lib/resolve-story-patch-line.ts` and add the mappings to `PATCH_LINE_ALIASES`:
     ```ts
     export const PATCH_LINE_ALIASES: Record<string, string> = {
       // Existing aliases...
@@ -60,7 +60,7 @@ pnpm patch:audit-ids
   - Re-run `pnpm patch:audit-ids` until it exits cleanly with code 0.
 
 ### Step 4: Check Remote Database Records (When Applicable)
-If an old ID was actively referenced in `community_stories`, use the operator script. It reads each env's write source (`source.stories` in that env's D1) and changes the store that is the source: Supabase with the same SQL as before while the source is `supabase`, or D1 (the source) plus one outbox row per story while it is `d1`, which the step 5 mirror sends to Supabase. Never run a raw `UPDATE` on Supabase: once D1 is the source, a Supabase-only change is invisible to users and lost on the next reload.
+If an old ID was actively referenced by a community story, use the operator script; it changes D1, the store since Supabase was retired (2026-11-19). Never hand-edit rows.
 1. Check for affected rows:
    ```bash
    set -a && source .env.local >/dev/null 2>&1 && set +a
@@ -71,7 +71,7 @@ If an old ID was actively referenced in `community_stories`, use the operator sc
    pnpm exec tsx scripts/admin/story-patch-line.ts relink --old '<old-id>' --new '<new-id>' --entity-type '<type>' --entity-id '<id>' --dry-run
    pnpm exec tsx scripts/admin/story-patch-line.ts relink --old '<old-id>' --new '<new-id>' --entity-type '<type>' --entity-id '<id>'
    ```
-   The script needs the operator's `wrangler` login (D1) and, while a source is `supabase`, the linked Supabase CLI. It refuses while `write.paused` is on (a cutover is running); retry after it.
+   The script needs the operator's `wrangler` login (D1). It refuses while `write.paused` is on; retry after it.
 
 ### Step 5: Test & Verify
 Verify the entire pipeline locally:

@@ -48,7 +48,8 @@ Do not create patch-versioned Spine folders by default. These files represent th
    find public/spine/sts2/vfx -mindepth 1 -maxdepth 1 -type d | wc -l
    node -e "const m=require('./data/sts2/monster-spine-assets.json'); const v=require('./data/sts2/spine-vfx-assets.json'); console.log({monsters:m.length, withVfx:m.filter(x=>Object.keys(x.moveEffects||{}).length).length, vfx:v.length, usableVfx:v.filter(x=>x.usable!==false).length})"
    ```
-6. Commit generated asset changes and generated index changes as separate meaningful commits when practical, following `AGENTS.md`.
+   Then `pnpm sts2:index-images` (refreshes `data/sts2/public-image-files.json`) and `pnpm cf:limits` (Spine files use static asset slots).
+7. Commit generated asset changes and generated index changes as separate meaningful commits when practical, following `AGENTS.md`.
 
 ## Runtime Policy
 
@@ -84,9 +85,9 @@ pnpm build
 
 For visual QA, inspect several detail pages in a real browser with WebGL:
 
-- `/compendium/bestiary/AXEBOT`
-- `/compendium/bestiary/BOWLBUG_EGG`
-- `/compendium/bestiary/ZAPBOT`
-- `/compendium/bestiary/AEONGLASS`
+- `/compendium/monsters/AXEBOT`
+- `/compendium/monsters/BOWLBUG_EGG`
+- `/compendium/monsters/ZAPBOT`
+- `/compendium/monsters/AEONGLASS`
 
 Headless Playwright on this workspace may not expose WebGL. In that case, verify that the static fallback remains visible and note the WebGL limitation in the final report.
