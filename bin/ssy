@@ -1,3 +1,4 @@
 #!/bin/sh
+# Lives in bin/, outside the deploy scope (cloudflare-workers.yml), so tool edits never trigger a deploy.
 root="$(cd "$(dirname "$0")/.." && pwd)"
-exec "$root/node_modules/.bin/tsx" "$root/scripts/ssy.ts" "$@"
+exec "$root/node_modules/.bin/tsx" "$root/bin/ssy.ts" "$@"

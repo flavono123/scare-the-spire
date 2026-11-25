@@ -23,7 +23,7 @@ Korean is the first-class language. Facts the repo can answer (stack, structure,
 ## Deploy
 
 - Deploy only by pushing the whole local `main` HEAD; CI (`.github/workflows/cloudflare-workers.yml`) deploys. Never push a subset, cherry-pick, alternate ref or synthetic history to `main`; reconcile divergence on the real local `main`. No ad hoc `wrangler deploy`.
-- Pushes queue behind each other (one deploy at a time, ~20 min each). Batch commits into one push when you can.
+- Pushes queue behind each other (one deploy at a time, ~20 min each). Batch commits into one push when you can. Any change under `src/`, `data/`, `public/`, `scripts/`, `workers/` or `package.json` redeploys; docs, skills and `bin/` don't, so agent tools that aren't part of the site go in `bin/`.
 - Releases (regular with byrdispatch, CI gate, smoke and feature QA; urgent patch-note releases limited to `pnpm patch:test`) follow `docs/RELEASE_PROCESS.md`. D1 schema changes go in `d1/migrations/` and are applied remotely only with user approval.
 - Don't run builds for patch Worker or byrdispatch-only deploys; build only when the main Worker or its assets change.
 - Testbed (`pnpm cf:testbed`) is development-only and never touches production; `--skip-build` refuses artifacts whose `build-record.json` doesn't match HEAD, so rebuild instead of working around it.
