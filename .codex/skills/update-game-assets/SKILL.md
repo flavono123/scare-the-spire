@@ -13,11 +13,10 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
 - DLL: `~/Library/Application Support/Steam/steamapps/common/Slay the Spire 2/SlayTheSpire2.app/Contents/Resources/data_sts2_macos_arm64/sts2.dll`
 - Version: `.../Resources/release_info.json`
 - Repo output: `data/sts2/**`, `public/images/sts2/**`, `public/spine/sts2/**`, `data/sts2/meta.json`
-- Legacy source skill: `.claude/skills/update-game-assets/SKILL.md` if deeper parser notes are needed.
 
 ## Fast Patch Workflow
 
-1. Confirm the local game install has updated to the target patch version by reading `release_info.json`.
+1. Confirm the local game install has updated to the target patch version by reading `release_info.json`, then archive it: `python3 scripts/archive-installed-build.py` (copies to `~/sts2-builds/<version>/`, decompiles, extracts `canonical/`; the combat simulator needs it).
 2. Decompile the current DLL:
    ```bash
    DLL=~/Library/Application\ Support/Steam/steamapps/common/Slay\ the\ Spire\ 2/SlayTheSpire2.app/Contents/Resources/data_sts2_macos_arm64/sts2.dll
@@ -119,6 +118,12 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
   `relics.json` but are absent from `events.json` Ancient `relics` mappings.
 - For patch-note-only balance changes, record the structured change in `data/sts2-changes.json`. Put machine-applicable diffs in the same record's `fieldDiffs`; do not hand-author `data/sts2-entity-versions.json`.
 - When any `public/images/sts2/**` asset changes, make sure rendered UI and metadata either use `src/components/ui/static-image.tsx` or pass direct image URLs through `cacheBustSts2ImageUrl()`. The cache-buster comes from `data/sts2/meta.json`, so update the meta version before validating changed art.
+
+## Parser Notes
+
+- `scripts/lib/pck.py` (`PCKReader`, `group_loc_by_id()`) and `scripts/lib/ctex.py` are the shared readers; new parsers import them. Map atlases are BC7/BC3 `.ctex`, so map scripts need Pillow and texture2ddecoder.
+- Parsers skip `DEPRECATED_*`/`MOCK_*`; locale-only ids (`HATCHLING`, `THE_ARM`, `THE_BELL`) keep names with null structural fields; `_MOVE` and `Damage`/`Block` suffixes are stripped from move ids and var keys. Each parser prints added/removed ids: review them before committing.
+- `vars` on relics/potions/powers come from `parse-entity-vars.py` and render through `src/lib/codex-bake.ts`. When coverage dips, diff `/tmp/sts2-src/MegaCrit.Sts2.Core.Localization.DynamicVars` against its `DEFAULT_NAMES` and new `MegaCrit.Sts2.Core.Models.*` dirs against `ENTITY_DIRS`, and fix the parser in the same commit. Leftover `{Var}` text on a Compendium page (other than runtime-only vars shown as `X`) means `renderBody` needs the new SmartFormat shape.
 
 ## Verification
 
