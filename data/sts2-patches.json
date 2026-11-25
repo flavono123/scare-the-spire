@@ -665,5 +665,19 @@
       "alt": "Epoch: Darv",
       "altKo": "역사: 다브"
     }
+  },
+  {
+    "id": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "publishedAt": "2026-11-25T01:42:13.000Z",
+    "title": "Beta Patch Notes - v0.114.0",
+    "titleKo": "베타 패치 노트 - v0.114.0",
+    "type": "beta",
+    "status": "building",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/680768104678031363",
+    "summary": "Patch notes are being prepared.",
+    "summaryKo": "패치 노트를 준비하고 있습니다.",
+    "hasBalanceChanges": true
   }
 ]
