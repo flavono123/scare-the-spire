@@ -57,8 +57,9 @@ const diffText = (diffs: Diff[] = []) => diffs.map((d) => `${d.field}: ${JSON.st
 function changes({ args }: Flags) {
   const id = args[0]?.toUpperCase();
   if (!id) throw new Error("changes <ENTITY_ID>");
-  // sts2-changes.json holds both summary rows and field-diff rows; entity-versions holds per-version diffs.
-  const rows = [...json<Change[]>("data/sts2-changes.json"), ...json<Change[]>("data/sts2-entity-versions.json")].filter((c) => c.entityId === id);
+  // sts2-changes.json holds summary rows and fieldDiffs rows; the app derives version diffs from it (src/lib/data.ts),
+  // so the legacy sts2-entity-versions.json is not read.
+  const rows = json<Change[]>("data/sts2-changes.json").filter((c) => c.entityId === id);
   for (const c of rows) console.log(`${c.patch}\t${c.entityType}\t${c.summaryKo || c.summary || diffText(c.fieldDiffs ?? c.diffs)}`);
   if (!rows.length) process.exitCode = 1;
 }
