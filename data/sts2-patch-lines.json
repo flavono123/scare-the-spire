@@ -712,7 +712,7 @@
     "searchText": "v0.100.0:line-002-text-bkjcg7 v0.100.0 0.100.0 콘텐츠 일반 진행 중인 런의 카드가 업데이트로 게임에서 제거되면 \"deprecated card\"로 바뀝니다. if you have an in-progress run and a card in your deck is removed from the game due to a recent update, it will be replaced with \"deprecated card\"."
   },
   {
-    "id": "v0.100.0:line-003-card-dominate",
+    "id": "v0.100.0:line-003-card-dominate-power-strength",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -724,7 +724,7 @@
       "Content",
       "Ironclad"
     ],
-    "markdownKo": "[gold:card]제압[/gold] 리워크: 스킬 - 코스트 1 - 언커먼 - \"[gold]취약[/gold] 1(2) 부여. 적의 [gold]취약[/gold]마다 [gold]힘[/gold] 1 획득. 소멸.\"",
+    "markdownKo": "[gold:card]제압[/gold] 리워크: 스킬 - 코스트 1 - 언커먼 - \"[gold]취약[/gold] 1(2) 부여. 적의 [gold]취약[/gold]마다 [gold:power]힘[/gold] 1 획득. 소멸.\"",
     "markdownEn": "Reworked [gold:card]Dominate[/gold]: Skill - Cost 1 - Uncommon - \"Apply 1(2) [gold]Vulnerable[/gold]. Gain 1 [gold]Strength[/gold] for each [gold]Vulnerable[/gold] on the enemy. Exhaust.\"",
     "textKo": "제압 리워크: 스킬 - 코스트 1 - 언커먼 - \"취약 1(2) 부여. 적의 취약마다 힘 1 획득. 소멸.\"",
     "textEn": "Reworked Dominate: Skill - Cost 1 - Uncommon - \"Apply 1(2) Vulnerable. Gain 1 Strength for each Vulnerable on the enemy. Exhaust.\"",
@@ -733,9 +733,14 @@
         "type": "card",
         "id": "DOMINATE",
         "label": "제압"
+      },
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
       }
     ],
-    "searchText": "v0.100.0:line-003-card-dominate v0.100.0 0.100.0 콘텐츠 아이언클래드 제압 리워크: 스킬 - 코스트 1 - 언커먼 - \"취약 1(2) 부여. 적의 취약마다 힘 1 획득. 소멸.\" reworked dominate: skill - cost 1 - uncommon - \"apply 1(2) vulnerable. gain 1 strength for each vulnerable on the enemy. exhaust.\" card dominate 제압 제압 dominate"
+    "searchText": "v0.100.0:line-003-card-dominate-power-strength v0.100.0 0.100.0 콘텐츠 아이언클래드 제압 리워크: 스킬 - 코스트 1 - 언커먼 - \"취약 1(2) 부여. 적의 취약마다 힘 1 획득. 소멸.\" reworked dominate: skill - cost 1 - uncommon - \"apply 1(2) vulnerable. gain 1 strength for each vulnerable on the enemy. exhaust.\" card dominate 제압 제압 dominate power strength 힘 힘 strength"
   },
   {
     "id": "v0.100.0:line-004-card-expect-a-fight",
@@ -946,7 +951,7 @@
     "searchText": "v0.100.0:line-011-monster-skulking-colony v0.100.0 0.100.0 콘텐츠 적 잠행 군체가 더 치명적인 행동 패턴으로 리워크되었습니다. reworked skulking colony to have a deadlier moveset. monster skulking_colony 잠행 군체 잠행 군체 skulking colony"
   },
   {
-    "id": "v0.100.0:line-012-ancient-neow",
+    "id": "v0.100.0:line-012-ancient-neow-relic-hefty-tablet",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -958,21 +963,26 @@
       "Content",
       "Ancients"
     ],
-    "markdownKo": "새 [gold:ancient]니오우[/gold] 축복: [gold:relic]무거운 석판[/gold] - \"레어 카드 3장 중 1장을 [gold]덱[/gold]에 추가합니다. [gold]덱[/gold]에 부상 1장을 추가합니다.\"",
+    "markdownKo": "새 [gold:ancient]니오우[/gold] 축복: [gold:relic]묵직한 석판[/gold] - \"레어 카드 3장 중 1장을 [gold]덱[/gold]에 추가합니다. [gold]덱[/gold]에 부상 1장을 추가합니다.\"",
     "markdownEn": "Added new [gold:ancient]Neow[/gold] blessing: [gold:relic]Hefty Tablet[/gold] - \"Choose 1 of 3 Rare cards to add to your Deck. Add 1 Injury to your Deck.\"",
-    "textKo": "새 니오우 축복: 무거운 석판 - \"레어 카드 3장 중 1장을 덱에 추가합니다. 덱에 부상 1장을 추가합니다.\"",
+    "textKo": "새 니오우 축복: 묵직한 석판 - \"레어 카드 3장 중 1장을 덱에 추가합니다. 덱에 부상 1장을 추가합니다.\"",
     "textEn": "Added new Neow blessing: Hefty Tablet - \"Choose 1 of 3 Rare cards to add to your Deck. Add 1 Injury to your Deck.\"",
     "entityRefs": [
       {
         "type": "ancient",
         "id": "NEOW",
         "label": "니오우"
+      },
+      {
+        "type": "relic",
+        "id": "HEFTY_TABLET",
+        "label": "묵직한 석판"
       }
     ],
-    "searchText": "v0.100.0:line-012-ancient-neow v0.100.0 0.100.0 콘텐츠 고대의 존재 새 니오우 축복: 무거운 석판 - \"레어 카드 3장 중 1장을 덱에 추가합니다. 덱에 부상 1장을 추가합니다.\" added new neow blessing: hefty tablet - \"choose 1 of 3 rare cards to add to your deck. add 1 injury to your deck.\" ancient neow 니오우 니오우 neow"
+    "searchText": "v0.100.0:line-012-ancient-neow-relic-hefty-tablet v0.100.0 0.100.0 콘텐츠 고대의 존재 새 니오우 축복: 묵직한 석판 - \"레어 카드 3장 중 1장을 덱에 추가합니다. 덱에 부상 1장을 추가합니다.\" added new neow blessing: hefty tablet - \"choose 1 of 3 rare cards to add to your deck. add 1 injury to your deck.\" ancient neow 니오우 니오우 neow relic hefty_tablet 묵직한 석판 묵직한 석판 hefty tablet"
   },
   {
-    "id": "v0.100.0:line-013-ancient-neow",
+    "id": "v0.100.0:line-013-ancient-neow-relic-neows-talisman",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -984,18 +994,23 @@
       "Content",
       "Ancients"
     ],
-    "markdownKo": "새 [gold:ancient]니오우[/gold] 축복: [gold:relic]니오우의 부적[/gold] - \"[gold]타격[/gold] 1장과 [gold]수비[/gold] 1장을 강화합니다.\"",
+    "markdownKo": "새 [gold:ancient]니오우[/gold] 축복: [gold:relic]니오우의 호부[/gold] - \"[gold]타격[/gold] 1장과 [gold]수비[/gold] 1장을 강화합니다.\"",
     "markdownEn": "Added new [gold:ancient]Neow[/gold] blessing: [gold:relic]Neow's Talisman[/gold] - \"Upgrade 1 of your Strikes and 1 of your Defends.\"",
-    "textKo": "새 니오우 축복: 니오우의 부적 - \"타격 1장과 수비 1장을 강화합니다.\"",
+    "textKo": "새 니오우 축복: 니오우의 호부 - \"타격 1장과 수비 1장을 강화합니다.\"",
     "textEn": "Added new Neow blessing: Neow's Talisman - \"Upgrade 1 of your Strikes and 1 of your Defends.\"",
     "entityRefs": [
       {
         "type": "ancient",
         "id": "NEOW",
         "label": "니오우"
+      },
+      {
+        "type": "relic",
+        "id": "NEOWS_TALISMAN",
+        "label": "니오우의 호부"
       }
     ],
-    "searchText": "v0.100.0:line-013-ancient-neow v0.100.0 0.100.0 콘텐츠 고대의 존재 새 니오우 축복: 니오우의 부적 - \"타격 1장과 수비 1장을 강화합니다.\" added new neow blessing: neow's talisman - \"upgrade 1 of your strikes and 1 of your defends.\" ancient neow 니오우 니오우 neow"
+    "searchText": "v0.100.0:line-013-ancient-neow-relic-neows-talisman v0.100.0 0.100.0 콘텐츠 고대의 존재 새 니오우 축복: 니오우의 호부 - \"타격 1장과 수비 1장을 강화합니다.\" added new neow blessing: neow's talisman - \"upgrade 1 of your strikes and 1 of your defends.\" ancient neow 니오우 니오우 neow relic neows_talisman 니오우의 호부 니오우의 호부 neow's talisman"
   },
   {
     "id": "v0.100.0:line-014-text-13y9z0k",
@@ -1187,7 +1202,7 @@
     "searchText": "v0.100.0:line-021-card-cinder v0.100.0 0.100.0 밸런스 아이언클래드 잿불 (버프): 피해 17(22) -> 18(24). cinder (buff): damage increased from 17(22) -> 18(24). card cinder 잿불 잿불 cinder"
   },
   {
-    "id": "v0.100.0:line-022-card-fight-me",
+    "id": "v0.100.0:line-022-card-fight-me-power-strength",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -1199,7 +1214,7 @@
       "Balance",
       "Ironclad"
     ],
-    "markdownKo": "[gold:card]덤벼라![/gold] ([green][sine]버프[/sine][/green]): 자가 [gold]힘[/gold] 획득 2(3) -> 3(4).",
+    "markdownKo": "[gold:card]덤벼라![/gold] ([green][sine]버프[/sine][/green]): 자가 [gold:power]힘[/gold] 획득 2(3) -> 3(4).",
     "markdownEn": "[gold:card]Fight Me![/gold] (buff): self-[gold]Strength[/gold] gain from 2(3) -> 3(4).",
     "textKo": "덤벼라! (버프): 자가 힘 획득 2(3) -> 3(4).",
     "textEn": "Fight Me! (buff): self-Strength gain from 2(3) -> 3(4).",
@@ -1208,9 +1223,14 @@
         "type": "card",
         "id": "FIGHT_ME",
         "label": "덤벼라!"
+      },
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
       }
     ],
-    "searchText": "v0.100.0:line-022-card-fight-me v0.100.0 0.100.0 밸런스 아이언클래드 덤벼라! (버프): 자가 힘 획득 2(3) -> 3(4). fight me! (buff): self-strength gain from 2(3) -> 3(4). card fight_me 덤벼라! 덤벼라! fight me!"
+    "searchText": "v0.100.0:line-022-card-fight-me-power-strength v0.100.0 0.100.0 밸런스 아이언클래드 덤벼라! (버프): 자가 힘 획득 2(3) -> 3(4). fight me! (buff): self-strength gain from 2(3) -> 3(4). card fight_me 덤벼라! 덤벼라! fight me! power strength 힘 힘 strength"
   },
   {
     "id": "v0.100.0:line-023-card-forgotten-ritual",
@@ -2528,11 +2548,11 @@
       "Balance",
       "Defect"
     ],
-    "markdownKo": "[gold:card]핫픽스[/gold] ([red][jitter]너프[/jitter][/red]):\n• 이제 소멸이 있습니다.\n• 강화가 [gold]집중[/gold] 증가 대신 소멸을 제거합니다.",
+    "markdownKo": "[gold:card]핫픽스[/gold] ([red][jitter]너프[/jitter][/red]):\n• 이제 소멸이 있습니다.\n• 강화가 [gold:power]밀집[/gold] 증가 대신 소멸을 제거합니다.",
     "markdownEn": "[gold:card]Hotfix[/gold] (nerf):\n• Now has Exhaust.\n• Upgrade now removes Exhaust instead of increasing [gold]Focus[/gold].",
     "summaryMarkdownKo": "[gold:card]핫픽스[/gold] ([red][jitter]너프[/jitter][/red]):",
     "summaryMarkdownEn": "[gold:card]Hotfix[/gold] (nerf):",
-    "textKo": "핫픽스 (너프):\n• 이제 소멸이 있습니다.\n• 강화가 집중 증가 대신 소멸을 제거합니다.",
+    "textKo": "핫픽스 (너프):\n• 이제 소멸이 있습니다.\n• 강화가 밀집 증가 대신 소멸을 제거합니다.",
     "textEn": "Hotfix (nerf):\n• Now has Exhaust.\n• Upgrade now removes Exhaust instead of increasing Focus.",
     "entityRefs": [
       {
@@ -2541,7 +2561,7 @@
         "label": "핫픽스"
       }
     ],
-    "searchText": "v0.100.0:line-075-card-hotfix v0.100.0 0.100.0 밸런스 디펙트 핫픽스 (너프): • 이제 소멸이 있습니다. • 강화가 집중 증가 대신 소멸을 제거합니다. hotfix (nerf): • now has exhaust. • upgrade now removes exhaust instead of increasing focus. card hotfix 핫픽스 핫픽스 hotfix"
+    "searchText": "v0.100.0:line-075-card-hotfix v0.100.0 0.100.0 밸런스 디펙트 핫픽스 (너프): • 이제 소멸이 있습니다. • 강화가 밀집 증가 대신 소멸을 제거합니다. hotfix (nerf): • now has exhaust. • upgrade now removes exhaust instead of increasing focus. card hotfix 핫픽스 핫픽스 hotfix"
   },
   {
     "id": "v0.100.0:line-076-text-121mkz9",
@@ -2564,7 +2584,7 @@
     "searchText": "v0.100.0:line-076-text-121mkz9 v0.100.0 0.100.0 밸런스 디펙트 이제 소멸이 있습니다. now has exhaust."
   },
   {
-    "id": "v0.100.0:line-077-text-lra695",
+    "id": "v0.100.0:line-077-power-focus",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -2576,12 +2596,18 @@
       "Balance",
       "Defect"
     ],
-    "markdownKo": "강화가 [gold]집중[/gold] 증가 대신 소멸을 제거합니다.",
+    "markdownKo": "강화가 [gold:power]밀집[/gold] 증가 대신 소멸을 제거합니다.",
     "markdownEn": "Upgrade now removes Exhaust instead of increasing [gold]Focus[/gold].",
-    "textKo": "강화가 집중 증가 대신 소멸을 제거합니다.",
+    "textKo": "강화가 밀집 증가 대신 소멸을 제거합니다.",
     "textEn": "Upgrade now removes Exhaust instead of increasing Focus.",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-077-text-lra695 v0.100.0 0.100.0 밸런스 디펙트 강화가 집중 증가 대신 소멸을 제거합니다. upgrade now removes exhaust instead of increasing focus."
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "FOCUS",
+        "label": "밀집"
+      }
+    ],
+    "searchText": "v0.100.0:line-077-power-focus v0.100.0 0.100.0 밸런스 디펙트 강화가 밀집 증가 대신 소멸을 제거합니다. upgrade now removes exhaust instead of increasing focus. power focus 밀집 밀집 focus"
   },
   {
     "id": "v0.100.0:line-078-card-rocket-punch",
@@ -2918,7 +2944,7 @@
     "searchText": "v0.100.0:line-090-relic-stone-cracker v0.100.0 0.100.0 밸런스 포션 및 유물 착암기: 이제 모든 전투에서 발동하지만, 강화하는 카드는 2장입니다. stone cracker: now works in all combats but only upgrades 2 cards. relic stone_cracker 착암기 착암기 stone cracker"
   },
   {
-    "id": "v0.100.0:line-091-monster-bygone-effigy",
+    "id": "v0.100.0:line-091-monster-bygone-effigy-power-strength",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -2930,7 +2956,7 @@
       "Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold:monster]옛 시대의 우상[/gold] ([red][jitter]너프[/jitter][/red]): 피해 15(17) -> 13(15) (여전히 [gold]힘[/gold] 10을 얻은 뒤 공격합니다).",
+    "markdownKo": "[gold:monster]옛 시대의 우상[/gold] ([red][jitter]너프[/jitter][/red]): 피해 15(17) -> 13(15) (여전히 [gold:power]힘[/gold] 10을 얻은 뒤 공격합니다).",
     "markdownEn": "[gold:monster]Bygone Effigy[/gold] (nerf): Damage decreased from 15(17) -> 13(15) (still attacks with 10 [gold]Strength[/gold]).",
     "textKo": "옛 시대의 우상 (너프): 피해 15(17) -> 13(15) (여전히 힘 10을 얻은 뒤 공격합니다).",
     "textEn": "Bygone Effigy (nerf): Damage decreased from 15(17) -> 13(15) (still attacks with 10 Strength).",
@@ -2939,9 +2965,14 @@
         "type": "monster",
         "id": "BYGONE_EFFIGY",
         "label": "옛 시대의 우상"
+      },
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
       }
     ],
-    "searchText": "v0.100.0:line-091-monster-bygone-effigy v0.100.0 0.100.0 밸런스 적 옛 시대의 우상 (너프): 피해 15(17) -> 13(15) (여전히 힘 10을 얻은 뒤 공격합니다). bygone effigy (nerf): damage decreased from 15(17) -> 13(15) (still attacks with 10 strength). monster bygone_effigy 옛 시대의 우상 옛 시대의 우상 bygone effigy"
+    "searchText": "v0.100.0:line-091-monster-bygone-effigy-power-strength v0.100.0 0.100.0 밸런스 적 옛 시대의 우상 (너프): 피해 15(17) -> 13(15) (여전히 힘 10을 얻은 뒤 공격합니다). bygone effigy (nerf): damage decreased from 15(17) -> 13(15) (still attacks with 10 strength). monster bygone_effigy 옛 시대의 우상 옛 시대의 우상 bygone effigy power strength 힘 힘 strength"
   },
   {
     "id": "v0.100.0:line-092-monster-byrdonis",
@@ -3018,7 +3049,7 @@
       "Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold:monster]로켓[/gold] ([green][sine]버프[/sine][/green]):\n• 충전 행동의 [gold]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.\n• HP 189(199) -> 199(209).\n• [gold:power]꽃게의 격노[/gold] [gold]힘[/gold] 5 -> 6.",
+    "markdownKo": "[gold:monster]로켓[/gold] ([green][sine]버프[/sine][/green]):\n• 충전 행동의 [gold:power]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.\n• HP 189(199) -> 199(209).\n• [gold:power]꽃게의 격노[/gold] [gold:power]힘[/gold] 5 -> 6.",
     "markdownEn": "[gold:monster]Rocket[/gold] (buff):\n• Charge Up move [gold]Strength[/gold] gain now scales with [gold]Ascension[/gold] from 2(2) -> 2(3).\n• HP increased from 189(199) -> 199(209).\n• [gold:power]Crab Rage[/gold] [gold]Strength[/gold] buffed from 5 -> 6.",
     "summaryMarkdownKo": "[gold:monster]로켓[/gold] ([green][sine]버프[/sine][/green]):",
     "summaryMarkdownEn": "[gold:monster]Rocket[/gold] (buff):",
@@ -3039,7 +3070,7 @@
     "searchText": "v0.100.0:line-094-monster-rocket-ascension-level-08 v0.100.0 0.100.0 밸런스 적 로켓 (버프): • 충전 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. • hp 189(199) -> 199(209). • 꽃게의 격노 힘 5 -> 6. rocket (buff): • charge up move strength gain now scales with ascension from 2(2) -> 2(3). • hp increased from 189(199) -> 199(209). • crab rage strength buffed from 5 -> 6. monster rocket 로켓 로켓 rocket ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
-    "id": "v0.100.0:line-095-text-1e9369d",
+    "id": "v0.100.0:line-095-power-strength",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -3051,12 +3082,18 @@
       "Balance",
       "Enemies"
     ],
-    "markdownKo": "충전 행동의 [gold]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.",
+    "markdownKo": "충전 행동의 [gold:power]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.",
     "markdownEn": "Charge Up move [gold]Strength[/gold] gain now scales with [gold]Ascension[/gold] from 2(2) -> 2(3).",
     "textKo": "충전 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다.",
     "textEn": "Charge Up move Strength gain now scales with Ascension from 2(2) -> 2(3).",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-095-text-1e9369d v0.100.0 0.100.0 밸런스 적 충전 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. charge up move strength gain now scales with ascension from 2(2) -> 2(3)."
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
+      }
+    ],
+    "searchText": "v0.100.0:line-095-power-strength v0.100.0 0.100.0 밸런스 적 충전 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. charge up move strength gain now scales with ascension from 2(2) -> 2(3). power strength 힘 힘 strength"
   },
   {
     "id": "v0.100.0:line-096-text-19a5kms",
@@ -3079,7 +3116,7 @@
     "searchText": "v0.100.0:line-096-text-19a5kms v0.100.0 0.100.0 밸런스 적 hp 189(199) -> 199(209). hp increased from 189(199) -> 199(209)."
   },
   {
-    "id": "v0.100.0:line-097-power-crab-rage",
+    "id": "v0.100.0:line-097-power-crab-rage-power-strength",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -3091,7 +3128,7 @@
       "Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold:power]꽃게의 격노[/gold] [gold]힘[/gold] 5 -> 6.",
+    "markdownKo": "[gold:power]꽃게의 격노[/gold] [gold:power]힘[/gold] 5 -> 6.",
     "markdownEn": "[gold:power]Crab Rage[/gold] [gold]Strength[/gold] buffed from 5 -> 6.",
     "textKo": "꽃게의 격노 힘 5 -> 6.",
     "textEn": "Crab Rage Strength buffed from 5 -> 6.",
@@ -3100,9 +3137,14 @@
         "type": "power",
         "id": "CRAB_RAGE",
         "label": "꽃게의 격노"
+      },
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
       }
     ],
-    "searchText": "v0.100.0:line-097-power-crab-rage v0.100.0 0.100.0 밸런스 적 꽃게의 격노 힘 5 -> 6. crab rage strength buffed from 5 -> 6. power crab_rage 꽃게의 격노 꽃게의 격노 crab rage"
+    "searchText": "v0.100.0:line-097-power-crab-rage-power-strength v0.100.0 0.100.0 밸런스 적 꽃게의 격노 힘 5 -> 6. crab rage strength buffed from 5 -> 6. power crab_rage 꽃게의 격노 꽃게의 격노 crab rage power strength 힘 힘 strength"
   },
   {
     "id": "v0.100.0:line-098-monster-crusher-ascension-level-08",
@@ -3117,7 +3159,7 @@
       "Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold:monster]분쇄자[/gold] ([green][sine]버프[/sine][/green]):\n• 적응 행동의 [gold]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.\n• HP 199(209) -> 209(219).\n• [gold:power]꽃게의 격노[/gold] [gold]힘[/gold] 5 -> 6.",
+    "markdownKo": "[gold:monster]분쇄자[/gold] ([green][sine]버프[/sine][/green]):\n• 적응 행동의 [gold:power]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.\n• HP 199(209) -> 209(219).\n• [gold:power]꽃게의 격노[/gold] [gold:power]힘[/gold] 5 -> 6.",
     "markdownEn": "[gold:monster]Crusher[/gold] (buff):\n• Adapt move [gold]Strength[/gold] gain now scales with [gold]Ascension[/gold] from 2(2) -> 2(3).\n• HP increased from 199(209) -> 209(219).\n• [gold:power]Crab Rage[/gold] [gold]Strength[/gold] buffed from 5 -> 6.",
     "summaryMarkdownKo": "[gold:monster]분쇄자[/gold] ([green][sine]버프[/sine][/green]):",
     "summaryMarkdownEn": "[gold:monster]Crusher[/gold] (buff):",
@@ -3138,7 +3180,7 @@
     "searchText": "v0.100.0:line-098-monster-crusher-ascension-level-08 v0.100.0 0.100.0 밸런스 적 분쇄자 (버프): • 적응 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. • hp 199(209) -> 209(219). • 꽃게의 격노 힘 5 -> 6. crusher (buff): • adapt move strength gain now scales with ascension from 2(2) -> 2(3). • hp increased from 199(209) -> 209(219). • crab rage strength buffed from 5 -> 6. monster crusher 분쇄자 분쇄자 crusher ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
-    "id": "v0.100.0:line-099-text-1312j52",
+    "id": "v0.100.0:line-099-power-strength",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -3150,12 +3192,18 @@
       "Balance",
       "Enemies"
     ],
-    "markdownKo": "적응 행동의 [gold]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.",
+    "markdownKo": "적응 행동의 [gold:power]힘[/gold] 획득이 [gold]승천[/gold]에 따라 2(2) -> 2(3)으로 스케일됩니다.",
     "markdownEn": "Adapt move [gold]Strength[/gold] gain now scales with [gold]Ascension[/gold] from 2(2) -> 2(3).",
     "textKo": "적응 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다.",
     "textEn": "Adapt move Strength gain now scales with Ascension from 2(2) -> 2(3).",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-099-text-1312j52 v0.100.0 0.100.0 밸런스 적 적응 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. adapt move strength gain now scales with ascension from 2(2) -> 2(3)."
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
+      }
+    ],
+    "searchText": "v0.100.0:line-099-power-strength v0.100.0 0.100.0 밸런스 적 적응 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. adapt move strength gain now scales with ascension from 2(2) -> 2(3). power strength 힘 힘 strength"
   },
   {
     "id": "v0.100.0:line-100-text-1ooqd3a",
@@ -3178,7 +3226,7 @@
     "searchText": "v0.100.0:line-100-text-1ooqd3a v0.100.0 0.100.0 밸런스 적 hp 199(209) -> 209(219). hp increased from 199(209) -> 209(219)."
   },
   {
-    "id": "v0.100.0:line-101-power-crab-rage",
+    "id": "v0.100.0:line-101-power-crab-rage-power-strength",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -3190,7 +3238,7 @@
       "Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold:power]꽃게의 격노[/gold] [gold]힘[/gold] 5 -> 6.",
+    "markdownKo": "[gold:power]꽃게의 격노[/gold] [gold:power]힘[/gold] 5 -> 6.",
     "markdownEn": "[gold:power]Crab Rage[/gold] [gold]Strength[/gold] buffed from 5 -> 6.",
     "textKo": "꽃게의 격노 힘 5 -> 6.",
     "textEn": "Crab Rage Strength buffed from 5 -> 6.",
@@ -3199,9 +3247,14 @@
         "type": "power",
         "id": "CRAB_RAGE",
         "label": "꽃게의 격노"
+      },
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
       }
     ],
-    "searchText": "v0.100.0:line-101-power-crab-rage v0.100.0 0.100.0 밸런스 적 꽃게의 격노 힘 5 -> 6. crab rage strength buffed from 5 -> 6. power crab_rage 꽃게의 격노 꽃게의 격노 crab rage"
+    "searchText": "v0.100.0:line-101-power-crab-rage-power-strength v0.100.0 0.100.0 밸런스 적 꽃게의 격노 힘 5 -> 6. crab rage strength buffed from 5 -> 6. power crab_rage 꽃게의 격노 꽃게의 격노 crab rage power strength 힘 힘 strength"
   },
   {
     "id": "v0.100.0:line-102-monster-decimillipede-segment-ascension-level-08",
@@ -3341,11 +3394,11 @@
       "Enemies"
     ],
     "markdownKo": "[gold:encounter]사라진 자와 잊힌 자[/gold] ([green][sine]버프[/sine][/green]):\n• 능력치 강탈이 [gold]승천[/gold]에 따라 스케일됩니다. [gold:ascension]승천 9[/gold]에서 각각 2 -> 3.\n• [gold:monster]잊힌 자[/gold]가 자신이 가진 [gold]민첩[/gold]마다 피해를 1 추가로 줍니다.",
-    "markdownEn": "[gold:encounter]The Lost and The Forgotten[/gold] (buff):\n• Stat stealing now scales with [gold]Ascension[/gold]; increased from 2 -> 3 of their respective stat at [gold:ascension]A9[/gold].\n• [gold:monster]The Forgotten[/gold] now deals an additional point of damage for every [gold]Dexterity[/gold] it has.",
+    "markdownEn": "[gold:encounter]Lost and Forgotten[/gold] (buff):\n• Stat stealing now scales with [gold]Ascension[/gold]; increased from 2 -> 3 of their respective stat at [gold:ascension]A9[/gold].\n• [gold:monster]The Forgotten[/gold] now deals an additional point of damage for every [gold]Dexterity[/gold] it has.",
     "summaryMarkdownKo": "[gold:encounter]사라진 자와 잊힌 자[/gold] ([green][sine]버프[/sine][/green]):",
-    "summaryMarkdownEn": "[gold:encounter]The Lost and The Forgotten[/gold] (buff):",
+    "summaryMarkdownEn": "[gold:encounter]Lost and Forgotten[/gold] (buff):",
     "textKo": "사라진 자와 잊힌 자 (버프):\n• 능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3.\n• 잊힌 자가 자신이 가진 민첩마다 피해를 1 추가로 줍니다.",
-    "textEn": "The Lost and The Forgotten (buff):\n• Stat stealing now scales with Ascension; increased from 2 -> 3 of their respective stat at A9.\n• The Forgotten now deals an additional point of damage for every Dexterity it has.",
+    "textEn": "Lost and Forgotten (buff):\n• Stat stealing now scales with Ascension; increased from 2 -> 3 of their respective stat at A9.\n• The Forgotten now deals an additional point of damage for every Dexterity it has.",
     "entityRefs": [
       {
         "type": "encounter",
@@ -3358,7 +3411,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.100.0:line-106-encounter-the-lost-and-forgotten-normal-ascension-level-09 v0.100.0 0.100.0 밸런스 적 사라진 자와 잊힌 자 (버프): • 능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3. • 잊힌 자가 자신이 가진 민첩마다 피해를 1 추가로 줍니다. the lost and the forgotten (buff): • stat stealing now scales with ascension; increased from 2 -> 3 of their respective stat at a9. • the forgotten now deals an additional point of damage for every dexterity it has. encounter the_lost_and_forgotten_normal 사라진 자와 잊힌 자 사라진 자와 잊힌 자 lost and forgotten ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
+    "searchText": "v0.100.0:line-106-encounter-the-lost-and-forgotten-normal-ascension-level-09 v0.100.0 0.100.0 밸런스 적 사라진 자와 잊힌 자 (버프): • 능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3. • 잊힌 자가 자신이 가진 민첩마다 피해를 1 추가로 줍니다. lost and forgotten (buff): • stat stealing now scales with ascension; increased from 2 -> 3 of their respective stat at a9. • the forgotten now deals an additional point of damage for every dexterity it has. encounter the_lost_and_forgotten_normal 사라진 자와 잊힌 자 사라진 자와 잊힌 자 lost and forgotten ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.100.0:line-107-ascension-level-09",
@@ -3425,7 +3478,7 @@
       "Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold:monster]깨작이[/gold] 변경: 이제 [gold]승천[/gold]에 맞게 스케일됩니다.\n• 쉿 행동의 [gold]힘[/gold]이 [gold:ascension]승천 9[/gold]에서 2 -> 3.\n• 베기 피해가 [gold:ascension]승천 9[/gold]에서 6 -> 7.\n• 베기 [gold]방어도[/gold]가 [gold:ascension]승천 8[/gold]에서 5 -> 6.",
+    "markdownKo": "[gold:monster]깨작이[/gold] 변경: 이제 [gold]승천[/gold]에 맞게 스케일됩니다.\n• 쉿 행동의 [gold:power]힘[/gold]이 [gold:ascension]승천 9[/gold]에서 2 -> 3.\n• 베기 피해가 [gold:ascension]승천 9[/gold]에서 6 -> 7.\n• 베기 [gold]방어도[/gold]가 [gold:ascension]승천 8[/gold]에서 5 -> 6.",
     "markdownEn": "Changed [gold:monster]Nibbit[/gold]: now properly scales with [gold]Ascension[/gold].\n• Hiss move now scales from 2 -> 3 [gold]Strength[/gold] on [gold:ascension]A9[/gold].\n• Slice move damage now scales from 6 -> 7 on [gold:ascension]A9[/gold].\n• Slice move [gold]Block[/gold] now scales from 5 -> 6 on [gold:ascension]A8[/gold].",
     "summaryMarkdownKo": "[gold:monster]깨작이[/gold] 변경: 이제 [gold]승천[/gold]에 맞게 스케일됩니다.",
     "summaryMarkdownEn": "Changed [gold:monster]Nibbit[/gold]: now properly scales with [gold]Ascension[/gold].",
@@ -3451,7 +3504,7 @@
     "searchText": "v0.100.0:line-109-monster-nibbit-ascension-level-09 v0.100.0 0.100.0 밸런스 적 깨작이 변경: 이제 승천에 맞게 스케일됩니다. • 쉿 행동의 힘이 승천 9에서 2 -> 3. • 베기 피해가 승천 9에서 6 -> 7. • 베기 방어도가 승천 8에서 5 -> 6. changed nibbit: now properly scales with ascension. • hiss move now scales from 2 -> 3 strength on a9. • slice move damage now scales from 6 -> 7 on a9. • slice move block now scales from 5 -> 6 on a8. monster nibbit 깨작이 깨작이 nibbit ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4 ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
-    "id": "v0.100.0:line-110-ascension-level-09",
+    "id": "v0.100.0:line-110-power-strength-ascension-level-09",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -3463,18 +3516,23 @@
       "Balance",
       "Enemies"
     ],
-    "markdownKo": "쉿 행동의 [gold]힘[/gold]이 [gold:ascension]승천 9[/gold]에서 2 -> 3.",
+    "markdownKo": "쉿 행동의 [gold:power]힘[/gold]이 [gold:ascension]승천 9[/gold]에서 2 -> 3.",
     "markdownEn": "Hiss move now scales from 2 -> 3 [gold]Strength[/gold] on [gold:ascension]A9[/gold].",
     "textKo": "쉿 행동의 힘이 승천 9에서 2 -> 3.",
     "textEn": "Hiss move now scales from 2 -> 3 Strength on A9.",
     "entityRefs": [
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
+      },
       {
         "type": "ascension",
         "id": "LEVEL_09",
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.100.0:line-110-ascension-level-09 v0.100.0 0.100.0 밸런스 적 쉿 행동의 힘이 승천 9에서 2 -> 3. hiss move now scales from 2 -> 3 strength on a9. ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
+    "searchText": "v0.100.0:line-110-power-strength-ascension-level-09 v0.100.0 0.100.0 밸런스 적 쉿 행동의 힘이 승천 9에서 2 -> 3. hiss move now scales from 2 -> 3 strength on a9. power strength 힘 힘 strength ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.100.0:line-111-ascension-level-09",
@@ -4627,7 +4685,7 @@
     "searchText": "v0.100.0:line-158-text-14dli4p v0.100.0 0.100.0 아트 다음 유물의 플레이스홀더 스케치를 추가했습니다: added placeholder sketches for the following relics:"
   },
   {
-    "id": "v0.100.0:line-159-text-1lvur6l",
+    "id": "v0.100.0:line-159-relic-neows-talisman",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -4637,15 +4695,21 @@
     "sectionEn": [
       "Art"
     ],
-    "markdownKo": "[gold:relic]니오우의 부적[/gold]",
+    "markdownKo": "[gold:relic]니오우의 호부[/gold]",
     "markdownEn": "[gold:relic]Neow's Talisman[/gold]",
-    "textKo": "니오우의 부적",
+    "textKo": "니오우의 호부",
     "textEn": "Neow's Talisman",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-159-text-1lvur6l v0.100.0 0.100.0 아트 니오우의 부적 neow's talisman"
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "NEOWS_TALISMAN",
+        "label": "니오우의 호부"
+      }
+    ],
+    "searchText": "v0.100.0:line-159-relic-neows-talisman v0.100.0 0.100.0 아트 니오우의 호부 neow's talisman relic neows_talisman 니오우의 호부 니오우의 호부 neow's talisman"
   },
   {
-    "id": "v0.100.0:line-160-text-kwmo8r",
+    "id": "v0.100.0:line-160-relic-hefty-tablet",
     "patch": "v0.100.0",
     "version": "0.100.0",
     "date": "2026-03-20",
@@ -4655,12 +4719,18 @@
     "sectionEn": [
       "Art"
     ],
-    "markdownKo": "[gold:relic]무거운 석판[/gold]",
+    "markdownKo": "[gold:relic]묵직한 석판[/gold]",
     "markdownEn": "[gold:relic]Hefty Tablet[/gold]",
-    "textKo": "무거운 석판",
+    "textKo": "묵직한 석판",
     "textEn": "Hefty Tablet",
-    "entityRefs": [],
-    "searchText": "v0.100.0:line-160-text-kwmo8r v0.100.0 0.100.0 아트 무거운 석판 hefty tablet"
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "HEFTY_TABLET",
+        "label": "묵직한 석판"
+      }
+    ],
+    "searchText": "v0.100.0:line-160-relic-hefty-tablet v0.100.0 0.100.0 아트 묵직한 석판 hefty tablet relic hefty_tablet 묵직한 석판 묵직한 석판 hefty tablet"
   },
   {
     "id": "v0.100.0:line-161-text-u9z1dp",
@@ -5499,7 +5569,7 @@
     "searchText": "v0.101.0:line-001-text-1d3z53i v0.101.0 0.101.0 컨텐츠 리워크 및 되돌림 사일런트 예비 (되돌림): 1코스트 \"2장 버리기. 다음 턴, 2(3) 에너지 획득\"에서 0코스트 \"1(2)장 뽑기. 1(2)장 버리기\"로 되돌림. prepare -> prepared (revert): was 1-cost \"discard 2 cards. next turn, gain 2(3) energy.\" reverted to 0-cost \"draw 1(2) card(s). discard 1(2) card(s).\""
   },
   {
-    "id": "v0.101.0:line-002-text-1ocizr1",
+    "id": "v0.101.0:line-002-text-acd6z1",
     "patch": "v0.101.0",
     "version": "0.101.0",
     "date": "2026-03-24",
@@ -5513,12 +5583,12 @@
       "Reworks and Reverts",
       "Necrobinder"
     ],
-    "markdownKo": "[gold]혼령 포획[/gold] (되돌림/[green][sine]버프[/sine][/green]): 이전 버전으로 되돌림. \"언커먼 - 스킬 - 코스트 1 - 적 HP 3(4) 감소. [gold]뽑을 더미[/gold]에 [gold]영혼[/gold] 3(4)장 추가.\" (이전: 2(3))",
+    "markdownKo": "[gold]혼령 포획[/gold] (되돌림/[green][sine]버프[/sine][/green]): 이전 버전으로 되돌림. \"언커먼 - 스킬 - 코스트 1 - 적 HP 3(4) 감소. [gold]뽑을 카드 더미[/gold]에 [gold]영혼[/gold] 3(4)장 추가.\" (이전: 2(3))",
     "markdownEn": "**Capture Spirit** (revert/buff): Reverted to previous version. \"Uncommon - Skill - Cost 1 - Enemy loses 3(4) HP. Add 3(4) Souls into your Draw Pile.\" (was 2(3))",
-    "textKo": "혼령 포획 (되돌림/버프): 이전 버전으로 되돌림. \"언커먼 - 스킬 - 코스트 1 - 적 HP 3(4) 감소. 뽑을 더미에 영혼 3(4)장 추가.\" (이전: 2(3))",
+    "textKo": "혼령 포획 (되돌림/버프): 이전 버전으로 되돌림. \"언커먼 - 스킬 - 코스트 1 - 적 HP 3(4) 감소. 뽑을 카드 더미에 영혼 3(4)장 추가.\" (이전: 2(3))",
     "textEn": "Capture Spirit (revert/buff): Reverted to previous version. \"Uncommon - Skill - Cost 1 - Enemy loses 3(4) HP. Add 3(4) Souls into your Draw Pile.\" (was 2(3))",
     "entityRefs": [],
-    "searchText": "v0.101.0:line-002-text-1ocizr1 v0.101.0 0.101.0 컨텐츠 리워크 및 되돌림 네크로바인더 혼령 포획 (되돌림/버프): 이전 버전으로 되돌림. \"언커먼 - 스킬 - 코스트 1 - 적 hp 3(4) 감소. 뽑을 더미에 영혼 3(4)장 추가.\" (이전: 2(3)) capture spirit (revert/buff): reverted to previous version. \"uncommon - skill - cost 1 - enemy loses 3(4) hp. add 3(4) souls into your draw pile.\" (was 2(3))"
+    "searchText": "v0.101.0:line-002-text-acd6z1 v0.101.0 0.101.0 컨텐츠 리워크 및 되돌림 네크로바인더 혼령 포획 (되돌림/버프): 이전 버전으로 되돌림. \"언커먼 - 스킬 - 코스트 1 - 적 hp 3(4) 감소. 뽑을 카드 더미에 영혼 3(4)장 추가.\" (이전: 2(3)) capture spirit (revert/buff): reverted to previous version. \"uncommon - skill - cost 1 - enemy loses 3(4) hp. add 3(4) souls into your draw pile.\" (was 2(3))"
   },
   {
     "id": "v0.101.0:line-003-text-h95nap",
@@ -5543,7 +5613,7 @@
     "searchText": "v0.101.0:line-003-text-h95nap v0.101.0 0.101.0 컨텐츠 리워크 및 되돌림 네크로바인더 연명 (되돌림/버프): 이전 버전으로 되돌림. \"언커먼 - 스킬 - 코스트 0 - 자신에게 종말 3 부여. 에너지 1(2) 획득.\" (이전: 종말 6(3), 에너지 1) borrowed time (revert/buff): reverted to previous version. \"uncommon - skill - cost 0 - apply 3 doom to yourself. gain 1(2) energy.\" (was 6(3) doom, 1 energy)"
   },
   {
-    "id": "v0.101.0:line-004-text-11b3jrh",
+    "id": "v0.101.0:line-004-power-strength",
     "patch": "v0.101.0",
     "version": "0.101.0",
     "date": "2026-03-24",
@@ -5557,15 +5627,21 @@
       "Reworks and Reverts",
       "Regent"
     ],
-    "markdownKo": "[gold]무기고[/gold] (리워크): \"파워 - 레어 - 코스트 1 - ([gold]선천성[/gold].) 카드를 생성할 때마다 [gold]힘[/gold] 1 획득.\" (이전: \"무색 카드를 사용할 때마다 [gold]힘[/gold] 1(2) 획득.\")",
+    "markdownKo": "[gold]무기고[/gold] (리워크): \"파워 - 레어 - 코스트 1 - ([gold]선천성[/gold].) 카드를 생성할 때마다 [gold:power]힘[/gold] 1 획득.\" (이전: \"무색 카드를 사용할 때마다 [gold:power]힘[/gold] 1(2) 획득.\")",
     "markdownEn": "**Arsenal** (rework): \"Power - Rare - Cost 1 - (Innate.) Whenever you create a card, gain 1 Strength.\" (was \"Whenever you play a Colorless Card, gain 1(2) Strength.\")",
     "textKo": "무기고 (리워크): \"파워 - 레어 - 코스트 1 - (선천성.) 카드를 생성할 때마다 힘 1 획득.\" (이전: \"무색 카드를 사용할 때마다 힘 1(2) 획득.\")",
     "textEn": "Arsenal (rework): \"Power - Rare - Cost 1 - (Innate.) Whenever you create a card, gain 1 Strength.\" (was \"Whenever you play a Colorless Card, gain 1(2) Strength.\")",
-    "entityRefs": [],
-    "searchText": "v0.101.0:line-004-text-11b3jrh v0.101.0 0.101.0 컨텐츠 리워크 및 되돌림 리젠트 무기고 (리워크): \"파워 - 레어 - 코스트 1 - (선천성.) 카드를 생성할 때마다 힘 1 획득.\" (이전: \"무색 카드를 사용할 때마다 힘 1(2) 획득.\") arsenal (rework): \"power - rare - cost 1 - (innate.) whenever you create a card, gain 1 strength.\" (was \"whenever you play a colorless card, gain 1(2) strength.\")"
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
+      }
+    ],
+    "searchText": "v0.101.0:line-004-power-strength v0.101.0 0.101.0 컨텐츠 리워크 및 되돌림 리젠트 무기고 (리워크): \"파워 - 레어 - 코스트 1 - (선천성.) 카드를 생성할 때마다 힘 1 획득.\" (이전: \"무색 카드를 사용할 때마다 힘 1(2) 획득.\") arsenal (rework): \"power - rare - cost 1 - (innate.) whenever you create a card, gain 1 strength.\" (was \"whenever you play a colorless card, gain 1(2) strength.\") power strength 힘 힘 strength"
   },
   {
-    "id": "v0.101.0:line-005-text-1mvkp1z",
+    "id": "v0.101.0:line-005-text-nsedkh",
     "patch": "v0.101.0",
     "version": "0.101.0",
     "date": "2026-03-24",
@@ -5577,12 +5653,12 @@
       "Content",
       "Potions & Relics"
     ],
-    "markdownKo": "[gold]펜듈럼[/gold] (리워크): \"커먼 - 3턴마다 카드 1장 뽑기.\" (이전: \"[gold]뽑을 더미[/gold]를 섞을 때마다 카드 1장 뽑기.\")",
+    "markdownKo": "[gold]펜듈럼[/gold] (리워크): \"커먼 - 3턴마다 카드 1장 뽑기.\" (이전: \"[gold]뽑을 카드 더미[/gold]를 섞을 때마다 카드 1장 뽑기.\")",
     "markdownEn": "**Pendulum** (rework): \"Common - Every 3 turns, draw 1 card.\" (was \"Whenever you shuffle your Draw Pile, draw a card.\")",
-    "textKo": "펜듈럼 (리워크): \"커먼 - 3턴마다 카드 1장 뽑기.\" (이전: \"뽑을 더미를 섞을 때마다 카드 1장 뽑기.\")",
+    "textKo": "펜듈럼 (리워크): \"커먼 - 3턴마다 카드 1장 뽑기.\" (이전: \"뽑을 카드 더미를 섞을 때마다 카드 1장 뽑기.\")",
     "textEn": "Pendulum (rework): \"Common - Every 3 turns, draw 1 card.\" (was \"Whenever you shuffle your Draw Pile, draw a card.\")",
     "entityRefs": [],
-    "searchText": "v0.101.0:line-005-text-1mvkp1z v0.101.0 0.101.0 컨텐츠 포션 & 유물 펜듈럼 (리워크): \"커먼 - 3턴마다 카드 1장 뽑기.\" (이전: \"뽑을 더미를 섞을 때마다 카드 1장 뽑기.\") pendulum (rework): \"common - every 3 turns, draw 1 card.\" (was \"whenever you shuffle your draw pile, draw a card.\")"
+    "searchText": "v0.101.0:line-005-text-nsedkh v0.101.0 0.101.0 컨텐츠 포션 & 유물 펜듈럼 (리워크): \"커먼 - 3턴마다 카드 1장 뽑기.\" (이전: \"뽑을 카드 더미를 섞을 때마다 카드 1장 뽑기.\") pendulum (rework): \"common - every 3 turns, draw 1 card.\" (was \"whenever you shuffle your draw pile, draw a card.\")"
   },
   {
     "id": "v0.101.0:line-006-text-tecp2g",
@@ -5691,7 +5767,7 @@
     "searchText": "v0.101.0:line-010-ascension-level-06 v0.101.0 0.101.0 밸런스 일반 비관 승천 모디파이어가 더 이상 휴식 장소 외에 ? 방에 영향을 주지 않음 gloom ascension modifier no longer affects ? rooms in addition to rest sites ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
   },
   {
-    "id": "v0.101.0:line-011-text-l3nnh2",
+    "id": "v0.101.0:line-011-text-1nitq3o",
     "patch": "v0.101.0",
     "version": "0.101.0",
     "date": "2026-03-24",
@@ -5703,12 +5779,12 @@
       "Balance",
       "Ironclad"
     ],
-    "markdownKo": "[gold]잿불[/gold] ([green][sine]버프[/sine][/green]): 이제 [gold]뽑을 더미[/gold] 맨 위 카드 대신 손패의 무작위 카드를 소멸",
+    "markdownKo": "[gold]잿불[/gold] ([green][sine]버프[/sine][/green]): 이제 [gold]뽑을 카드 더미[/gold] 맨 위 카드 대신 손패의 무작위 카드를 소멸",
     "markdownEn": "**Cinder** (buff): Now Exhausts a random card in your Hand instead of the top card of the Draw Pile",
-    "textKo": "잿불 (버프): 이제 뽑을 더미 맨 위 카드 대신 손패의 무작위 카드를 소멸",
+    "textKo": "잿불 (버프): 이제 뽑을 카드 더미 맨 위 카드 대신 손패의 무작위 카드를 소멸",
     "textEn": "Cinder (buff): Now Exhausts a random card in your Hand instead of the top card of the Draw Pile",
     "entityRefs": [],
-    "searchText": "v0.101.0:line-011-text-l3nnh2 v0.101.0 0.101.0 밸런스 아이언클래드 잿불 (버프): 이제 뽑을 더미 맨 위 카드 대신 손패의 무작위 카드를 소멸 cinder (buff): now exhausts a random card in your hand instead of the top card of the draw pile"
+    "searchText": "v0.101.0:line-011-text-1nitq3o v0.101.0 0.101.0 밸런스 아이언클래드 잿불 (버프): 이제 뽑을 카드 더미 맨 위 카드 대신 손패의 무작위 카드를 소멸 cinder (buff): now exhausts a random card in your hand instead of the top card of the draw pile"
   },
   {
     "id": "v0.101.0:line-012-text-d46p9z",
@@ -6987,7 +7063,7 @@
     "searchText": "v0.102.0:line-001-ascension-level-06 v0.102.0 0.102.0 컨텐츠 일반 승천 6 리워크: 비관 - \"휴식 장소가 줄어듭니다.\"에서 인플레이션 - \"상인에게서 카드를 제거하는 비용이 증가합니다.\"로 변경. 카드 제거 비용이 100 골드에서 시작하며, 제거당 25가 아닌 50씩 증가. reworked ascension 6 from gloom - \"less rest sites.\" -> inflation - \"removing cards from your deck at the merchant is more expensive.\" card removal now starts at 100 gold, increases by 50 gold per removal instead of 25. ascension level_06 비관 인플레이션 inflation 승천 6 a6 비관 침울 ascension 6 a6 gloom"
   },
   {
-    "id": "v0.102.0:line-002-text-yr3gr",
+    "id": "v0.102.0:line-002-power-strength",
     "patch": "v0.102.0",
     "version": "0.102.0",
     "date": "2026-04-03",
@@ -6999,12 +7075,18 @@
       "Content",
       "Silent"
     ],
-    "markdownKo": "[gold]잉크 칼날[/gold] (리워크): \"레어 - 스킬 - 코스트 1 - [gold]잉크 단도[/gold] 2(3)장을 손패에 추가.\" (이전: \"이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 [gold]힘[/gold]을 2(3) 획득.\")",
+    "markdownKo": "[gold]잉크 칼날[/gold] (리워크): \"레어 - 스킬 - 코스트 1 - [gold]잉크 단도[/gold] 2(3)장을 손패에 추가.\" (이전: \"이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 [gold:power]힘[/gold]을 2(3) 획득.\")",
     "markdownEn": "**Blade of Ink** (rework): \"Rare - Cost 1 - Skill - Add 2(3) Inky Shivs into your Hand.\" (was \"This turn, whenever you play an Attack, gain 2(3) Strength this turn.\")",
     "textKo": "잉크 칼날 (리워크): \"레어 - 스킬 - 코스트 1 - 잉크 단도 2(3)장을 손패에 추가.\" (이전: \"이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 힘을 2(3) 획득.\")",
     "textEn": "Blade of Ink (rework): \"Rare - Cost 1 - Skill - Add 2(3) Inky Shivs into your Hand.\" (was \"This turn, whenever you play an Attack, gain 2(3) Strength this turn.\")",
-    "entityRefs": [],
-    "searchText": "v0.102.0:line-002-text-yr3gr v0.102.0 0.102.0 컨텐츠 사일런트 잉크 칼날 (리워크): \"레어 - 스킬 - 코스트 1 - 잉크 단도 2(3)장을 손패에 추가.\" (이전: \"이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 힘을 2(3) 획득.\") blade of ink (rework): \"rare - cost 1 - skill - add 2(3) inky shivs into your hand.\" (was \"this turn, whenever you play an attack, gain 2(3) strength this turn.\")"
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
+      }
+    ],
+    "searchText": "v0.102.0:line-002-power-strength v0.102.0 0.102.0 컨텐츠 사일런트 잉크 칼날 (리워크): \"레어 - 스킬 - 코스트 1 - 잉크 단도 2(3)장을 손패에 추가.\" (이전: \"이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 힘을 2(3) 획득.\") blade of ink (rework): \"rare - cost 1 - skill - add 2(3) inky shivs into your hand.\" (was \"this turn, whenever you play an attack, gain 2(3) strength this turn.\") power strength 힘 힘 strength"
   },
   {
     "id": "v0.102.0:line-003-text-14q4gno",
@@ -7809,7 +7891,7 @@
     "searchText": "v0.102.0:line-043-text-17sa0ul v0.102.0 0.102.0 버그 수정 사일런트 대혼란 파워가 불릿 타임 카드를 사용할 때 손패 카드 비용이 0으로 설정되지 않는 문제 수정 fixed bullet time card getting played by mayhem power not setting the cost of the cards in your hand to 0"
   },
   {
-    "id": "v0.102.0:line-044-text-256iwq",
+    "id": "v0.102.0:line-044-power-strength",
     "patch": "v0.102.0",
     "version": "0.102.0",
     "date": "2026-04-03",
@@ -7821,12 +7903,18 @@
       "Bug Fixes",
       "Potions & Relics"
     ],
-    "markdownKo": "[gold]섬뜩한 램프[/gold] 유물이 [gold]제압[/gold] 카드의 [gold]힘[/gold] 획득량을 두 배로 만드는 문제 수정",
+    "markdownKo": "[gold]섬뜩한 램프[/gold] 유물이 [gold]제압[/gold] 카드의 [gold:power]힘[/gold] 획득량을 두 배로 만드는 문제 수정",
     "markdownEn": "Fixed Unsettling Lamp relic doubling the Strength you get from Dominate card",
     "textKo": "섬뜩한 램프 유물이 제압 카드의 힘 획득량을 두 배로 만드는 문제 수정",
     "textEn": "Fixed Unsettling Lamp relic doubling the Strength you get from Dominate card",
-    "entityRefs": [],
-    "searchText": "v0.102.0:line-044-text-256iwq v0.102.0 0.102.0 버그 수정 포션 & 유물 섬뜩한 램프 유물이 제압 카드의 힘 획득량을 두 배로 만드는 문제 수정 fixed unsettling lamp relic doubling the strength you get from dominate card"
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
+      }
+    ],
+    "searchText": "v0.102.0:line-044-power-strength v0.102.0 0.102.0 버그 수정 포션 & 유물 섬뜩한 램프 유물이 제압 카드의 힘 획득량을 두 배로 만드는 문제 수정 fixed unsettling lamp relic doubling the strength you get from dominate card power strength 힘 힘 strength"
   },
   {
     "id": "v0.102.0:line-045-text-1a0lbw5",
@@ -8209,7 +8297,7 @@
     "searchText": "v0.103.0:line-001-text-78dzpy v0.103.0 0.103.0 컨텐츠 & 밸런스 고대의 존재 새로운 니오우 유물 추가: added new neow relics:"
   },
   {
-    "id": "v0.103.0:line-002-text-c3wvng",
+    "id": "v0.103.0:line-002-relic-neows-bones",
     "patch": "v0.103.0",
     "version": "0.103.0",
     "date": "2026-04-10",
@@ -8221,12 +8309,18 @@
       "Content & Balance",
       "Ancients"
     ],
-    "markdownKo": "[gold]니오우의 뼈[/gold] (신규): \"획득 시, 무작위 [gold]니오우[/gold] 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\"",
+    "markdownKo": "[gold:relic]니오우의 뼈 주사위[/gold] (신규): \"획득 시, 무작위 [gold]니오우[/gold] 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\"",
     "markdownEn": "**Neow's Bones** (new): \"Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.\"",
-    "textKo": "니오우의 뼈 (신규): \"획득 시, 무작위 니오우 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\"",
+    "textKo": "니오우의 뼈 주사위 (신규): \"획득 시, 무작위 니오우 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\"",
     "textEn": "Neow's Bones (new): \"Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.\"",
-    "entityRefs": [],
-    "searchText": "v0.103.0:line-002-text-c3wvng v0.103.0 0.103.0 컨텐츠 & 밸런스 고대의 존재 니오우의 뼈 (신규): \"획득 시, 무작위 니오우 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\" neow's bones (new): \"upon pickup, gain 2 random neow relics. add 1 random curse to your deck.\""
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "NEOWS_BONES",
+        "label": "니오우의 뼈 주사위"
+      }
+    ],
+    "searchText": "v0.103.0:line-002-relic-neows-bones v0.103.0 0.103.0 컨텐츠 & 밸런스 고대의 존재 니오우의 뼈 주사위 (신규): \"획득 시, 무작위 니오우 유물 2개를 획득합니다. 덱에 무작위 저주 카드 1장이 추가됩니다.\" neow's bones (new): \"upon pickup, gain 2 random neow relics. add 1 random curse to your deck.\" relic neows_bones 니오우의 뼈 주사위 니오우의 뼈 주사위 neow's bones"
   },
   {
     "id": "v0.103.0:line-003-text-15m9vzg",
@@ -8551,7 +8645,7 @@
     "searchText": "v0.103.0:line-016-text-1k42ibi v0.103.0 0.103.0 컨텐츠 & 밸런스 적 섀도니스 (너프): hp 91(99)-94(99) -> 81(90)-84(90) byrdonis (nerf): hp decreased from 91(99)-94(99) -> 81(90)-84(90)."
   },
   {
-    "id": "v0.103.0:line-017-text-fbiw1k",
+    "id": "v0.103.0:line-017-power-strength",
     "patch": "v0.103.0",
     "version": "0.103.0",
     "date": "2026-04-10",
@@ -8563,12 +8657,18 @@
       "Content & Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold]문을 만드는 자[/gold] ([red][jitter]너프[/jitter][/red]): 전체적인 피해 수치 하향 및 행동 패턴 재배치. 더 이상 디버프를 부여하지 않음. [gold]힘[/gold] 획득량 감소.",
+    "markdownKo": "[gold]문을 만드는 자[/gold] ([red][jitter]너프[/jitter][/red]): 전체적인 피해 수치 하향 및 행동 패턴 재배치. 더 이상 디버프를 부여하지 않음. [gold:power]힘[/gold] 획득량 감소.",
     "markdownEn": "**Doormaker** (nerf): Overall damage numbers nerfed and moves rearranged. No longer applies debuffs. Gains less Strength.",
     "textKo": "문을 만드는 자 (너프): 전체적인 피해 수치 하향 및 행동 패턴 재배치. 더 이상 디버프를 부여하지 않음. 힘 획득량 감소.",
     "textEn": "Doormaker (nerf): Overall damage numbers nerfed and moves rearranged. No longer applies debuffs. Gains less Strength.",
-    "entityRefs": [],
-    "searchText": "v0.103.0:line-017-text-fbiw1k v0.103.0 0.103.0 컨텐츠 & 밸런스 적 문을 만드는 자 (너프): 전체적인 피해 수치 하향 및 행동 패턴 재배치. 더 이상 디버프를 부여하지 않음. 힘 획득량 감소. doormaker (nerf): overall damage numbers nerfed and moves rearranged. no longer applies debuffs. gains less strength."
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
+      }
+    ],
+    "searchText": "v0.103.0:line-017-power-strength v0.103.0 0.103.0 컨텐츠 & 밸런스 적 문을 만드는 자 (너프): 전체적인 피해 수치 하향 및 행동 패턴 재배치. 더 이상 디버프를 부여하지 않음. 힘 획득량 감소. doormaker (nerf): overall damage numbers nerfed and moves rearranged. no longer applies debuffs. gains less strength. power strength 힘 힘 strength"
   },
   {
     "id": "v0.103.0:line-018-card-adaptive-strike-card-shadow-shield",
@@ -8581,9 +8681,9 @@
     "sectionEn": [
       "Art"
     ],
-    "markdownKo": "카드 초상화 추가: [gold:card]적응형 타격[/gold], [gold:card]그림자 방패[/gold], [gold:card]굴뚝[/gold], [gold:card]불운[/gold], [gold:card]발병[/gold]",
+    "markdownKo": "카드 초상화 추가: [gold:card]적응형 타격[/gold], [gold:card]그림자 방패[/gold], [gold:card]배기 장치[/gold], [gold:card]불운[/gold], [gold:card]발병[/gold]",
     "markdownEn": "Added portrait art for the following cards: Adaptive Strike, Shadow Shield, Smokestack, Bad Luck, Outbreak",
-    "textKo": "카드 초상화 추가: 적응형 타격, 그림자 방패, 굴뚝, 불운, 발병",
+    "textKo": "카드 초상화 추가: 적응형 타격, 그림자 방패, 배기 장치, 불운, 발병",
     "textEn": "Added portrait art for the following cards: Adaptive Strike, Shadow Shield, Smokestack, Bad Luck, Outbreak",
     "entityRefs": [
       {
@@ -8598,6 +8698,11 @@
       },
       {
         "type": "card",
+        "id": "SMOKESTACK",
+        "label": "배기 장치"
+      },
+      {
+        "type": "card",
         "id": "BAD_LUCK",
         "label": "불운"
       },
@@ -8607,7 +8712,7 @@
         "label": "발병"
       }
     ],
-    "searchText": "v0.103.0:line-018-card-adaptive-strike-card-shadow-shield v0.103.0 0.103.0 아트 카드 초상화 추가: 적응형 타격, 그림자 방패, 굴뚝, 불운, 발병 added portrait art for the following cards: adaptive strike, shadow shield, smokestack, bad luck, outbreak card adaptive_strike 적응형 타격 적응형 타격 adaptive strike card shadow_shield 그림자 방패 그림자 방패 shadow shield card bad_luck 불운 불운 bad luck card outbreak 발병 발병 outbreak"
+    "searchText": "v0.103.0:line-018-card-adaptive-strike-card-shadow-shield v0.103.0 0.103.0 아트 카드 초상화 추가: 적응형 타격, 그림자 방패, 배기 장치, 불운, 발병 added portrait art for the following cards: adaptive strike, shadow shield, smokestack, bad luck, outbreak card adaptive_strike 적응형 타격 적응형 타격 adaptive strike card shadow_shield 그림자 방패 그림자 방패 shadow shield card smokestack 배기 장치 배기 장치 smokestack card bad_luck 불운 불운 bad luck card outbreak 발병 발병 outbreak"
   },
   {
     "id": "v0.103.0:line-019-text-ingz5",
@@ -9092,7 +9197,7 @@
     "searchText": "v0.103.0:line-043-text-vorzmw v0.103.0 0.103.0 버그 수정 일반 비밀 디버그 메뉴 열기 관련 소프트락 수정 fixed softlock related to opening a secret debug menu"
   },
   {
-    "id": "v0.103.0:line-044-text-14tw3bv",
+    "id": "v0.103.0:line-044-power-strength",
     "patch": "v0.103.0",
     "version": "0.103.0",
     "date": "2026-04-10",
@@ -9104,12 +9209,18 @@
       "Bug Fixes",
       "General"
     ],
-    "markdownKo": "일부 적에게 [gold]취약[/gold]이 있고 다른 적에게 없을 때, 멀티타겟 공격의 피해 미리보기에 [gold]힘[/gold]이 포함되지 않는 문제 수정",
+    "markdownKo": "일부 적에게 [gold]취약[/gold]이 있고 다른 적에게 없을 때, 멀티타겟 공격의 피해 미리보기에 [gold:power]힘[/gold]이 포함되지 않는 문제 수정",
     "markdownEn": "Fixed multi-target attack damage preview not including Strength when some enemies had Vulnerable while others didn't",
     "textKo": "일부 적에게 취약이 있고 다른 적에게 없을 때, 멀티타겟 공격의 피해 미리보기에 힘이 포함되지 않는 문제 수정",
     "textEn": "Fixed multi-target attack damage preview not including Strength when some enemies had Vulnerable while others didn't",
-    "entityRefs": [],
-    "searchText": "v0.103.0:line-044-text-14tw3bv v0.103.0 0.103.0 버그 수정 일반 일부 적에게 취약이 있고 다른 적에게 없을 때, 멀티타겟 공격의 피해 미리보기에 힘이 포함되지 않는 문제 수정 fixed multi-target attack damage preview not including strength when some enemies had vulnerable while others didn't"
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
+      }
+    ],
+    "searchText": "v0.103.0:line-044-power-strength v0.103.0 0.103.0 버그 수정 일반 일부 적에게 취약이 있고 다른 적에게 없을 때, 멀티타겟 공격의 피해 미리보기에 힘이 포함되지 않는 문제 수정 fixed multi-target attack damage preview not including strength when some enemies had vulnerable while others didn't power strength 힘 힘 strength"
   },
   {
     "id": "v0.103.0:line-045-text-puwwic",
@@ -9550,7 +9661,7 @@
     "searchText": "v0.103.0:line-063-card-believe-in-you v0.103.0 0.103.0 버그 수정 멀티플레이어 역사 강의서 유물이 턴 시작 에너지 리셋 전에 너만 믿는다 카드를 사용하는 문제 수정 fixed history course relic playing believe in you card before the start-of-turn energy reset card believe_in_you 너만 믿는다 너만 믿는다 believe in you"
   },
   {
-    "id": "v0.103.0:line-064-text-78math",
+    "id": "v0.103.0:line-064-power-smokestack",
     "patch": "v0.103.0",
     "version": "0.103.0",
     "date": "2026-04-10",
@@ -9562,12 +9673,18 @@
       "Bug Fixes",
       "Multiplayer"
     ],
-    "markdownKo": "[gold:power]굴뚝[/gold] 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정",
+    "markdownKo": "[gold:power]배기 장치[/gold] 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정",
     "markdownEn": "Fixed Smokestack power proccing off of other player's Statuses",
-    "textKo": "굴뚝 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정",
+    "textKo": "배기 장치 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정",
     "textEn": "Fixed Smokestack power proccing off of other player's Statuses",
-    "entityRefs": [],
-    "searchText": "v0.103.0:line-064-text-78math v0.103.0 0.103.0 버그 수정 멀티플레이어 굴뚝 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정 fixed smokestack power proccing off of other player's statuses"
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "SMOKESTACK",
+        "label": "배기 장치"
+      }
+    ],
+    "searchText": "v0.103.0:line-064-power-smokestack v0.103.0 0.103.0 버그 수정 멀티플레이어 배기 장치 파워가 다른 플레이어의 상태이상에서 발동하는 문제 수정 fixed smokestack power proccing off of other player's statuses power smokestack 배기 장치 배기 장치 smokestack"
   },
   {
     "id": "v0.103.0:line-065-text-1xxinzo",
@@ -9853,7 +9970,7 @@
     "searchText": "v0.103.1:line-008-text-xjfgu3 v0.103.1 0.103.1 버그 수정 멀티플레이어 플레이어가 아이언클래드만 해금한 상태에서 다채로운 철학자들 이벤트가 더 이상 등장하지 않음 colorful philosophers event can no longer be encountered if a player has only ironclad unlocked"
   },
   {
-    "id": "v0.103.1:line-009-text-1u3x6p5",
+    "id": "v0.103.1:line-009-relic-neows-bones",
     "patch": "v0.103.1",
     "version": "0.103.1",
     "date": "2026-04-16",
@@ -9865,15 +9982,21 @@
       "Bug Fixes",
       "Multiplayer"
     ],
-    "markdownKo": "일부 플레이어가 [gold]니오우의 뼈[/gold] 유물을 획득할 때 저주가 불일치하던 문제 수정",
+    "markdownKo": "일부 플레이어가 [gold:relic]니오우의 뼈 주사위[/gold] 유물을 획득할 때 저주가 불일치하던 문제 수정",
     "markdownEn": "Fixed curse mismatching when some players would take **Neow's Bones** relic",
-    "textKo": "일부 플레이어가 니오우의 뼈 유물을 획득할 때 저주가 불일치하던 문제 수정",
+    "textKo": "일부 플레이어가 니오우의 뼈 주사위 유물을 획득할 때 저주가 불일치하던 문제 수정",
     "textEn": "Fixed curse mismatching when some players would take Neow's Bones relic",
-    "entityRefs": [],
-    "searchText": "v0.103.1:line-009-text-1u3x6p5 v0.103.1 0.103.1 버그 수정 멀티플레이어 일부 플레이어가 니오우의 뼈 유물을 획득할 때 저주가 불일치하던 문제 수정 fixed curse mismatching when some players would take neow's bones relic"
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "NEOWS_BONES",
+        "label": "니오우의 뼈 주사위"
+      }
+    ],
+    "searchText": "v0.103.1:line-009-relic-neows-bones v0.103.1 0.103.1 버그 수정 멀티플레이어 일부 플레이어가 니오우의 뼈 주사위 유물을 획득할 때 저주가 불일치하던 문제 수정 fixed curse mismatching when some players would take neow's bones relic relic neows_bones 니오우의 뼈 주사위 니오우의 뼈 주사위 neow's bones"
   },
   {
-    "id": "v0.103.1:line-010-text-frukx2",
+    "id": "v0.103.1:line-010-relic-neows-bones",
     "patch": "v0.103.1",
     "version": "0.103.1",
     "date": "2026-04-16",
@@ -9885,12 +10008,18 @@
       "Bug Fixes",
       "Multiplayer"
     ],
-    "markdownKo": "[gold]니오우의 뼈[/gold] 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정",
+    "markdownKo": "[gold:relic]니오우의 뼈 주사위[/gold] 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정",
     "markdownEn": "Fixed state divergence when **Neow's Bones** relic would trigger multiple reward screens",
-    "textKo": "니오우의 뼈 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정",
+    "textKo": "니오우의 뼈 주사위 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정",
     "textEn": "Fixed state divergence when Neow's Bones relic would trigger multiple reward screens",
-    "entityRefs": [],
-    "searchText": "v0.103.1:line-010-text-frukx2 v0.103.1 0.103.1 버그 수정 멀티플레이어 니오우의 뼈 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정 fixed state divergence when neow's bones relic would trigger multiple reward screens"
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "NEOWS_BONES",
+        "label": "니오우의 뼈 주사위"
+      }
+    ],
+    "searchText": "v0.103.1:line-010-relic-neows-bones v0.103.1 0.103.1 버그 수정 멀티플레이어 니오우의 뼈 주사위 유물이 여러 보상 화면을 발생시킬 때 상태 불일치 수정 fixed state divergence when neow's bones relic would trigger multiple reward screens relic neows_bones 니오우의 뼈 주사위 니오우의 뼈 주사위 neow's bones"
   },
   {
     "id": "v0.103.1:line-011-text-3des4k",
@@ -10209,7 +10338,7 @@
     "searchText": "v0.103.2:line-011-text-fiqzm3 v0.103.2 0.103.2 컨텐츠 & 밸런스 사일런트 약간의 버프와 너프 a few buffs and nerfs"
   },
   {
-    "id": "v0.103.2:line-012-card-arsenal",
+    "id": "v0.103.2:line-012-card-arsenal-power-strength",
     "patch": "v0.103.2",
     "version": "0.103.2",
     "date": "2026-04-17",
@@ -10221,7 +10350,7 @@
       "Content & Balance",
       "Regent"
     ],
-    "markdownKo": "[gold:card]무기고[/gold] 리워크: 무색 카드가 아닌 모든 생성된 카드 기준으로 [gold]힘[/gold] 부여",
+    "markdownKo": "[gold:card]무기고[/gold] 리워크: 무색 카드가 아닌 모든 생성된 카드 기준으로 [gold:power]힘[/gold] 부여",
     "markdownEn": "**Arsenal** reworked: Strength based on any cards created (not just Colorless)",
     "textKo": "무기고 리워크: 무색 카드가 아닌 모든 생성된 카드 기준으로 힘 부여",
     "textEn": "Arsenal reworked: Strength based on any cards created (not just Colorless)",
@@ -10230,9 +10359,14 @@
         "type": "card",
         "id": "ARSENAL",
         "label": "무기고"
+      },
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
       }
     ],
-    "searchText": "v0.103.2:line-012-card-arsenal v0.103.2 0.103.2 컨텐츠 & 밸런스 리젠트 무기고 리워크: 무색 카드가 아닌 모든 생성된 카드 기준으로 힘 부여 arsenal reworked: strength based on any cards created (not just colorless) card arsenal 무기고 무기고 arsenal"
+    "searchText": "v0.103.2:line-012-card-arsenal-power-strength v0.103.2 0.103.2 컨텐츠 & 밸런스 리젠트 무기고 리워크: 무색 카드가 아닌 모든 생성된 카드 기준으로 힘 부여 arsenal reworked: strength based on any cards created (not just colorless) card arsenal 무기고 무기고 arsenal power strength 힘 힘 strength"
   },
   {
     "id": "v0.103.2:line-013-text-1szwxig",
@@ -10255,7 +10389,7 @@
     "searchText": "v0.103.2:line-013-text-1szwxig v0.103.2 0.103.2 컨텐츠 & 밸런스 리젠트 리갈라이트 유물: 무색 카드가 아닌 모든 생성된 카드 기준으로 방어도 부여 regalite relic: block for any card created (not just colorless)"
   },
   {
-    "id": "v0.103.2:line-014-card-borrowed-time",
+    "id": "v0.103.2:line-014-card-borrowed-time-power-doom",
     "patch": "v0.103.2",
     "version": "0.103.2",
     "date": "2026-04-17",
@@ -10267,18 +10401,23 @@
       "Content & Balance",
       "Necrobinder"
     ],
-    "markdownKo": "[gold:card]연명[/gold] 리워크: \"고급 - 코스트 0 - 스킬 | 자신에게 [gold]파멸[/gold] 3 부여. [gold]에너지[/gold] 1(2) 획득.\" → \"고급 - 코스트 1 - 스킬 | [gold]에너지[/gold] 4(6) 획득. 이번 턴 카드 비용이 추가로 1 증가.\"",
+    "markdownKo": "[gold:card]연명[/gold] 리워크: \"고급 - 코스트 0 - 스킬 | 자신에게 [gold:power]종말[/gold] 3 부여. [gold]에너지[/gold] 1(2) 획득.\" → \"고급 - 코스트 1 - 스킬 | [gold]에너지[/gold] 4(6) 획득. 이번 턴 카드 비용이 추가로 1 증가.\"",
     "markdownEn": "**Borrowed Time** reworked: \"Uncommon - Cost 0 - Skill | Apply 3 Doom. Gain 1(2) Energy.\" -> \"Uncommon - Cost 1 - Skill | Gain 4(6) energy. Cards cost an additional energy this turn.\"",
-    "textKo": "연명 리워크: \"고급 - 코스트 0 - 스킬 | 자신에게 파멸 3 부여. 에너지 1(2) 획득.\" → \"고급 - 코스트 1 - 스킬 | 에너지 4(6) 획득. 이번 턴 카드 비용이 추가로 1 증가.\"",
+    "textKo": "연명 리워크: \"고급 - 코스트 0 - 스킬 | 자신에게 종말 3 부여. 에너지 1(2) 획득.\" → \"고급 - 코스트 1 - 스킬 | 에너지 4(6) 획득. 이번 턴 카드 비용이 추가로 1 증가.\"",
     "textEn": "Borrowed Time reworked: \"Uncommon - Cost 0 - Skill | Apply 3 Doom. Gain 1(2) Energy.\" -> \"Uncommon - Cost 1 - Skill | Gain 4(6) energy. Cards cost an additional energy this turn.\"",
     "entityRefs": [
       {
         "type": "card",
         "id": "BORROWED_TIME",
         "label": "연명"
+      },
+      {
+        "type": "power",
+        "id": "DOOM",
+        "label": "종말"
       }
     ],
-    "searchText": "v0.103.2:line-014-card-borrowed-time v0.103.2 0.103.2 컨텐츠 & 밸런스 네크로바인더 연명 리워크: \"고급 - 코스트 0 - 스킬 | 자신에게 파멸 3 부여. 에너지 1(2) 획득.\" → \"고급 - 코스트 1 - 스킬 | 에너지 4(6) 획득. 이번 턴 카드 비용이 추가로 1 증가.\" borrowed time reworked: \"uncommon - cost 0 - skill | apply 3 doom. gain 1(2) energy.\" -> \"uncommon - cost 1 - skill | gain 4(6) energy. cards cost an additional energy this turn.\" card borrowed_time 연명 연명 borrowed time"
+    "searchText": "v0.103.2:line-014-card-borrowed-time-power-doom v0.103.2 0.103.2 컨텐츠 & 밸런스 네크로바인더 연명 리워크: \"고급 - 코스트 0 - 스킬 | 자신에게 종말 3 부여. 에너지 1(2) 획득.\" → \"고급 - 코스트 1 - 스킬 | 에너지 4(6) 획득. 이번 턴 카드 비용이 추가로 1 증가.\" borrowed time reworked: \"uncommon - cost 0 - skill | apply 3 doom. gain 1(2) energy.\" -> \"uncommon - cost 1 - skill | gain 4(6) energy. cards cost an additional energy this turn.\" card borrowed_time 연명 연명 borrowed time power doom 종말 종말 doom"
   },
   {
     "id": "v0.103.2:line-015-text-fiqzm3",
@@ -10487,7 +10626,7 @@
     "searchText": "v0.103.2:line-024-text-j36b06 v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우의 호부: 당신의 타격 1장과 수비 1장을 강화합니다. neow's talisman: upgrade 1 of your strikes and 1 of your defends."
   },
   {
-    "id": "v0.103.2:line-025-text-1hkm1qb",
+    "id": "v0.103.2:line-025-relic-neows-bones",
     "patch": "v0.103.2",
     "version": "0.103.2",
     "date": "2026-04-17",
@@ -10499,12 +10638,18 @@
       "Content & Balance",
       "Ancients & Neow"
     ],
-    "markdownKo": "[gold]니오우의 뼈[/gold]: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다.",
+    "markdownKo": "[gold:relic]니오우의 뼈 주사위[/gold]: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다.",
     "markdownEn": "**Neow's Bones**: Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.",
-    "textKo": "니오우의 뼈: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다.",
+    "textKo": "니오우의 뼈 주사위: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다.",
     "textEn": "Neow's Bones: Upon pickup, gain 2 random Neow Relics. Add 1 random Curse to your Deck.",
-    "entityRefs": [],
-    "searchText": "v0.103.2:line-025-text-1hkm1qb v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우의 뼈: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다. neow's bones: upon pickup, gain 2 random neow relics. add 1 random curse to your deck."
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "NEOWS_BONES",
+        "label": "니오우의 뼈 주사위"
+      }
+    ],
+    "searchText": "v0.103.2:line-025-relic-neows-bones v0.103.2 0.103.2 컨텐츠 & 밸런스 고대의 존재 & 니오우 니오우의 뼈 주사위: 획득 시, 무작위 니오우 유물을 2개 획득합니다. 무작위 저주를 1장 덱에 추가합니다. neow's bones: upon pickup, gain 2 random neow relics. add 1 random curse to your deck. relic neows_bones 니오우의 뼈 주사위 니오우의 뼈 주사위 neow's bones"
   },
   {
     "id": "v0.103.2:line-026-text-14qxr01",
@@ -12864,7 +13009,7 @@
     "searchText": "v0.104.0:line-088-text-1g9bjyb v0.104.0 0.104.0 버그 수정 적 난타전 이벤트에서 포션을 버릴 수 없는 문제 수정. fixed being unable to discard potions in the punch off event."
   },
   {
-    "id": "v0.104.0:line-089-text-yb65u4",
+    "id": "v0.104.0:line-089-power-strength",
     "patch": "v0.104.0",
     "version": "0.104.0",
     "date": "2026-04-24",
@@ -12876,12 +13021,18 @@
       "Bug Fixes",
       "Enemies"
     ],
-    "markdownKo": "해당 턴에 [gold]투사된 공포[/gold] 환영을 처치해도 [gold]어둠의 족쇄[/gold]에서 얻은 음수 [gold]힘[/gold]이 유지되는 문제 수정.",
+    "markdownKo": "해당 턴에 [gold]투사된 공포[/gold] 환영을 처치해도 [gold]어둠의 족쇄[/gold]에서 얻은 음수 [gold:power]힘[/gold]이 유지되는 문제 수정.",
     "markdownEn": "Fixed **Parafright** illusion keeping its negative Strength from **Dark Shackles** when you kill it for the turn.",
     "textKo": "해당 턴에 투사된 공포 환영을 처치해도 어둠의 족쇄에서 얻은 음수 힘이 유지되는 문제 수정.",
     "textEn": "Fixed Parafright illusion keeping its negative Strength from Dark Shackles when you kill it for the turn.",
-    "entityRefs": [],
-    "searchText": "v0.104.0:line-089-text-yb65u4 v0.104.0 0.104.0 버그 수정 적 해당 턴에 투사된 공포 환영을 처치해도 어둠의 족쇄에서 얻은 음수 힘이 유지되는 문제 수정. fixed parafright illusion keeping its negative strength from dark shackles when you kill it for the turn."
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
+      }
+    ],
+    "searchText": "v0.104.0:line-089-power-strength v0.104.0 0.104.0 버그 수정 적 해당 턴에 투사된 공포 환영을 처치해도 어둠의 족쇄에서 얻은 음수 힘이 유지되는 문제 수정. fixed parafright illusion keeping its negative strength from dark shackles when you kill it for the turn. power strength 힘 힘 strength"
   },
   {
     "id": "v0.104.0:line-090-text-1gkigpc",
@@ -13762,7 +13913,7 @@
     "searchText": "v0.105.0:line-019-monster-doormaker-monster-aeonglass v0.105.0 0.105.0 컨텐츠 & 밸런스 적 문을 만드는 자 (리워크): 새로운 보스 영겁의 모래시계로 교체. doormaker (rework): replaced with a new boss, aeonglass. monster doormaker 문을 만드는 자 문을 만드는 자 doormaker monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass"
   },
   {
-    "id": "v0.105.0:line-020-monster-fossil-stalker",
+    "id": "v0.105.0:line-020-monster-fossil-stalker-power-strength",
     "patch": "v0.105.0",
     "version": "0.105.0",
     "date": "2026-05-08",
@@ -13774,7 +13925,7 @@
       "Content & Balance",
       "Enemies"
     ],
-    "markdownKo": "[gold:monster]화석 매복자[/gold] (변경): 멀티플레이어에서 각 플레이어를 맞힐 때마다 [gold]힘[/gold]을 얻는 대신, 플레이어 중 누구든 맞히면 정해진 수치의 [gold]힘[/gold]을 얻습니다.",
+    "markdownKo": "[gold:monster]화석 매복자[/gold] (변경): 멀티플레이어에서 각 플레이어를 맞힐 때마다 [gold:power]힘[/gold]을 얻는 대신, 플레이어 중 누구든 맞히면 정해진 수치의 [gold:power]힘[/gold]을 얻습니다.",
     "markdownEn": "**Fossil Stalker** (change): In multiplayer, now gains a set amount of Strength if it hits any player, instead of gaining Strength for each player hit.",
     "textKo": "화석 매복자 (변경): 멀티플레이어에서 각 플레이어를 맞힐 때마다 힘을 얻는 대신, 플레이어 중 누구든 맞히면 정해진 수치의 힘을 얻습니다.",
     "textEn": "Fossil Stalker (change): In multiplayer, now gains a set amount of Strength if it hits any player, instead of gaining Strength for each player hit.",
@@ -13783,9 +13934,14 @@
         "type": "monster",
         "id": "FOSSIL_STALKER",
         "label": "화석 매복자"
+      },
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
       }
     ],
-    "searchText": "v0.105.0:line-020-monster-fossil-stalker v0.105.0 0.105.0 컨텐츠 & 밸런스 적 화석 매복자 (변경): 멀티플레이어에서 각 플레이어를 맞힐 때마다 힘을 얻는 대신, 플레이어 중 누구든 맞히면 정해진 수치의 힘을 얻습니다. fossil stalker (change): in multiplayer, now gains a set amount of strength if it hits any player, instead of gaining strength for each player hit. monster fossil_stalker 화석 매복자 화석 매복자 fossil stalker"
+    "searchText": "v0.105.0:line-020-monster-fossil-stalker-power-strength v0.105.0 0.105.0 컨텐츠 & 밸런스 적 화석 매복자 (변경): 멀티플레이어에서 각 플레이어를 맞힐 때마다 힘을 얻는 대신, 플레이어 중 누구든 맞히면 정해진 수치의 힘을 얻습니다. fossil stalker (change): in multiplayer, now gains a set amount of strength if it hits any player, instead of gaining strength for each player hit. monster fossil_stalker 화석 매복자 화석 매복자 fossil stalker power strength 힘 힘 strength"
   },
   {
     "id": "v0.105.0:line-021-monster-haunted-ship",
@@ -14100,9 +14256,9 @@
       "Art"
     ],
     "markdownKo": "역사 [gold:epoch]친구[/gold]의 아트 추가.",
-    "markdownEn": "Added art for [gold:epoch]Friendship[/gold] Epoch.",
+    "markdownEn": "Added art for [gold:epoch]Friends[/gold] Epoch.",
     "textKo": "역사 친구의 아트 추가.",
-    "textEn": "Added art for Friendship Epoch.",
+    "textEn": "Added art for Friends Epoch.",
     "entityRefs": [
       {
         "type": "epoch",
@@ -14110,7 +14266,7 @@
         "label": "친구"
       }
     ],
-    "searchText": "v0.105.0:line-032-epoch-regent5-epoch v0.105.0 0.105.0 아트 역사 친구의 아트 추가. added art for friendship epoch. epoch regent5_epoch 친구 친구 friends"
+    "searchText": "v0.105.0:line-032-epoch-regent5-epoch v0.105.0 0.105.0 아트 역사 친구의 아트 추가. added art for friends epoch. epoch regent5_epoch 친구 친구 friends"
   },
   {
     "id": "v0.105.0:line-033-power-smoggy",
@@ -15116,7 +15272,7 @@
       "Bug Fixes",
       "Necrobinder"
     ],
-    "markdownKo": "[gold:card]쇠약의 손길[/gold] 파워가 [gold:monster]의식의 신수[/gold]를 기절시킨 뒤에도 [gold]힘[/gold]을 얻게 하던 문제 수정.",
+    "markdownKo": "[gold:card]쇠약의 손길[/gold] 파워가 [gold:monster]의식의 신수[/gold]를 기절시킨 뒤에도 [gold:power]힘[/gold]을 얻게 하던 문제 수정.",
     "markdownEn": "Fixed **Enfeebling Touch** power causing **Ceremonial Beast** to gain Strength after you stun it.",
     "textKo": "쇠약의 손길 파워가 의식의 신수를 기절시킨 뒤에도 힘을 얻게 하던 문제 수정.",
     "textEn": "Fixed Enfeebling Touch power causing Ceremonial Beast to gain Strength after you stun it.",
@@ -15130,9 +15286,14 @@
         "type": "monster",
         "id": "CEREMONIAL_BEAST",
         "label": "의식의 신수"
+      },
+      {
+        "type": "power",
+        "id": "STRENGTH",
+        "label": "힘"
       }
     ],
-    "searchText": "v0.105.0:line-078-card-enfeebling-touch-monster-ceremonial-beast v0.105.0 0.105.0 버그 수정 네크로바인더 쇠약의 손길 파워가 의식의 신수를 기절시킨 뒤에도 힘을 얻게 하던 문제 수정. fixed enfeebling touch power causing ceremonial beast to gain strength after you stun it. card enfeebling_touch 쇠약의 손길 쇠약의 손길 enfeebling touch monster ceremonial_beast 의식의 신수 의식의 신수 ceremonial beast"
+    "searchText": "v0.105.0:line-078-card-enfeebling-touch-monster-ceremonial-beast v0.105.0 0.105.0 버그 수정 네크로바인더 쇠약의 손길 파워가 의식의 신수를 기절시킨 뒤에도 힘을 얻게 하던 문제 수정. fixed enfeebling touch power causing ceremonial beast to gain strength after you stun it. card enfeebling_touch 쇠약의 손길 쇠약의 손길 enfeebling touch monster ceremonial_beast 의식의 신수 의식의 신수 ceremonial beast power strength 힘 힘 strength"
   },
   {
     "id": "v0.105.0:line-079-power-rolling-boulder",
@@ -15643,9 +15804,9 @@
       "Multiplayer"
     ],
     "markdownKo": "멀티플레이어 중에는 [gold:event]전쟁사학자 레피[/gold]의 [gold:card]랜턴 열쇠[/gold] 카드 복제 보너스를 허용하지 않음.",
-    "markdownEn": "Disallow [gold:event]War Historian Repy[/gold] duplicate **Lantern Key** card bonus if you are in multiplayer.",
+    "markdownEn": "Disallow [gold:event]War Historian, Repy[/gold] duplicate **Lantern Key** card bonus if you are in multiplayer.",
     "textKo": "멀티플레이어 중에는 전쟁사학자 레피의 랜턴 열쇠 카드 복제 보너스를 허용하지 않음.",
-    "textEn": "Disallow War Historian Repy duplicate Lantern Key card bonus if you are in multiplayer.",
+    "textEn": "Disallow War Historian, Repy duplicate Lantern Key card bonus if you are in multiplayer.",
     "entityRefs": [
       {
         "type": "event",
@@ -15658,7 +15819,7 @@
         "label": "랜턴 열쇠"
       }
     ],
-    "searchText": "v0.105.0:line-098-event-war-historian-repy-card-lantern-key v0.105.0 0.105.0 버그 수정 멀티플레이어 멀티플레이어 중에는 전쟁사학자 레피의 랜턴 열쇠 카드 복제 보너스를 허용하지 않음. disallow war historian repy duplicate lantern key card bonus if you are in multiplayer. event war_historian_repy 전쟁사학자 레피 전쟁사학자 레피 war historian, repy card lantern_key 랜턴 열쇠 랜턴 열쇠 lantern key"
+    "searchText": "v0.105.0:line-098-event-war-historian-repy-card-lantern-key v0.105.0 0.105.0 버그 수정 멀티플레이어 멀티플레이어 중에는 전쟁사학자 레피의 랜턴 열쇠 카드 복제 보너스를 허용하지 않음. disallow war historian, repy duplicate lantern key card bonus if you are in multiplayer. event war_historian_repy 전쟁사학자 레피 전쟁사학자 레피 war historian, repy card lantern_key 랜턴 열쇠 랜턴 열쇠 lantern key"
   },
   {
     "id": "v0.105.1:line-001-monster-aeonglass",
@@ -22117,7 +22278,7 @@
     "searchText": "v0.107.1:line-001-text-1mcn3kd v0.107.1 0.107.1 rng 개편 첫 번째 막에서는, 생성된 소수가 0.5보다 작으면 과성장이, 그렇지 않으면 지하 선착장이 선택됩니다. for your first act, if the decimal generated is less than 0.5, you get overgrowth; otherwise, you get underdocks."
   },
   {
-    "id": "v0.107.1:line-002-relic-neows-bones",
+    "id": "v0.107.1:line-002-relic-neows-bones-card-debt",
     "patch": "v0.107.1",
     "version": "0.107.1",
     "date": "2026-06-19",
@@ -22127,7 +22288,7 @@
     "sectionEn": [
       "RNG Rework"
     ],
-    "markdownKo": "[gold:relic]니오우의 뼈 주사위[/gold]의 저주의 경우, 저희는 해당 소수를 사용해 10개의 저주 목록 중 하나를 선택합니다. 0과 0.1 사이라면 [gold]서투름[/gold]을, 0.1과 0.2 사이라면 [gold]빚[/gold]을 받는 식입니다.",
+    "markdownKo": "[gold:relic]니오우의 뼈 주사위[/gold]의 저주의 경우, 저희는 해당 소수를 사용해 10개의 저주 목록 중 하나를 선택합니다. 0과 0.1 사이라면 [gold]서투름[/gold]을, 0.1과 0.2 사이라면 [gold:card]빚[/gold]을 받는 식입니다.",
     "markdownEn": "For [gold:relic]Neow's Bones[/gold]’ curse, we use the decimal to pick from a list of ten curses. Between 0 and 0.1 you get Clumsy, between 0.1 and 0.2 you get Debt, and so on.",
     "textKo": "니오우의 뼈 주사위의 저주의 경우, 저희는 해당 소수를 사용해 10개의 저주 목록 중 하나를 선택합니다. 0과 0.1 사이라면 서투름을, 0.1과 0.2 사이라면 빚을 받는 식입니다.",
     "textEn": "For Neow's Bones’ curse, we use the decimal to pick from a list of ten curses. Between 0 and 0.1 you get Clumsy, between 0.1 and 0.2 you get Debt, and so on.",
@@ -22136,9 +22297,14 @@
         "type": "relic",
         "id": "NEOWS_BONES",
         "label": "니오우의 뼈 주사위"
+      },
+      {
+        "type": "card",
+        "id": "DEBT",
+        "label": "빚"
       }
     ],
-    "searchText": "v0.107.1:line-002-relic-neows-bones v0.107.1 0.107.1 rng 개편 니오우의 뼈 주사위의 저주의 경우, 저희는 해당 소수를 사용해 10개의 저주 목록 중 하나를 선택합니다. 0과 0.1 사이라면 서투름을, 0.1과 0.2 사이라면 빚을 받는 식입니다. for neow's bones' curse, we use the decimal to pick from a list of ten curses. between 0 and 0.1 you get clumsy, between 0.1 and 0.2 you get debt, and so on. relic neows_bones 니오우의 뼈 주사위 니오우의 뼈 주사위 neow's bones"
+    "searchText": "v0.107.1:line-002-relic-neows-bones-card-debt v0.107.1 0.107.1 rng 개편 니오우의 뼈 주사위의 저주의 경우, 저희는 해당 소수를 사용해 10개의 저주 목록 중 하나를 선택합니다. 0과 0.1 사이라면 서투름을, 0.1과 0.2 사이라면 빚을 받는 식입니다. for neow's bones' curse, we use the decimal to pick from a list of ten curses. between 0 and 0.1 you get clumsy, between 0.1 and 0.2 you get debt, and so on. relic neows_bones 니오우의 뼈 주사위 니오우의 뼈 주사위 neow's bones card debt 빚 빚 debt"
   },
   {
     "id": "v0.107.1:line-003-text-10xkew2",
@@ -22916,9 +23082,9 @@
       "Enemies"
     ],
     "markdownKo": "[gold:monster]물어뜯는 두루마리[/gold]: 31(32)-38(39) -> 30(33)-37(39).",
-    "markdownEn": "[gold:monster]Scrolls of Biting[/gold]: 31(32)-38(39) -> 30(33)-37(39)",
+    "markdownEn": "[gold:monster]Scroll of Biting[/gold]: 31(32)-38(39) -> 30(33)-37(39)",
     "textKo": "물어뜯는 두루마리: 31(32)-38(39) -> 30(33)-37(39).",
-    "textEn": "Scrolls of Biting: 31(32)-38(39) -> 30(33)-37(39)",
+    "textEn": "Scroll of Biting: 31(32)-38(39) -> 30(33)-37(39)",
     "entityRefs": [
       {
         "type": "monster",
@@ -22931,7 +23097,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.107.1:line-031-monster-scroll-of-biting-ascension-level-08 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 물어뜯는 두루마리: 31(32)-38(39) -> 30(33)-37(39). scrolls of biting: 31(32)-38(39) -> 30(33)-37(39) monster scroll_of_biting 물어뜯는 두루마리 물어뜯는 두루마리 scroll of biting ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
+    "searchText": "v0.107.1:line-031-monster-scroll-of-biting-ascension-level-08 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 물어뜯는 두루마리: 31(32)-38(39) -> 30(33)-37(39). scroll of biting: 31(32)-38(39) -> 30(33)-37(39) monster scroll_of_biting 물어뜯는 두루마리 물어뜯는 두루마리 scroll of biting ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.107.1:line-032-monster-owl-magistrate",
@@ -23030,9 +23196,9 @@
       "Enemies"
     ],
     "markdownKo": "[gold:monster]암살 습격자[/gold] ([red][jitter]너프[/jitter][/red]): 피해량이 11(12) -> 10(11)로 감소했습니다.",
-    "markdownEn": "Nerfed [gold:monster]Ruby Raider Assassin[/gold]: damage decreased from 11(12) -> 10(11)",
+    "markdownEn": "Nerfed [gold:monster]Assassin Raider[/gold]: damage decreased from 11(12) -> 10(11)",
     "textKo": "암살 습격자 (너프): 피해량이 11(12) -> 10(11)로 감소했습니다.",
-    "textEn": "Nerfed Ruby Raider Assassin: damage decreased from 11(12) -> 10(11)",
+    "textEn": "Nerfed Assassin Raider: damage decreased from 11(12) -> 10(11)",
     "entityRefs": [
       {
         "type": "monster",
@@ -23045,7 +23211,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.107.1:line-035-monster-assassin-ruby-raider-ascension-level-09 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 암살 습격자 (너프): 피해량이 11(12) -> 10(11)로 감소했습니다. nerfed ruby raider assassin: damage decreased from 11(12) -> 10(11) monster assassin_ruby_raider 암살 습격자 암살 습격자 assassin raider ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
+    "searchText": "v0.107.1:line-035-monster-assassin-ruby-raider-ascension-level-09 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 암살 습격자 (너프): 피해량이 11(12) -> 10(11)로 감소했습니다. nerfed assassin raider: damage decreased from 11(12) -> 10(11) monster assassin_ruby_raider 암살 습격자 암살 습격자 assassin raider ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.107.1:line-036-monster-vantom",
@@ -23668,9 +23834,9 @@
       "Regent"
     ],
     "markdownKo": "[gold:card]봉인된 왕좌[/gold] 카드 변경: 강화 효과가 선천성 -> 에너지 비용 1 감소로 변경되었습니다.",
-    "markdownEn": "Changed [gold:card]Sealed Throne[/gold] card: upgrade changed from Innate -> lowering Energy cost by 1",
+    "markdownEn": "Changed [gold:card]The Sealed Throne[/gold] card: upgrade changed from Innate -> lowering Energy cost by 1",
     "textKo": "봉인된 왕좌 카드 변경: 강화 효과가 선천성 -> 에너지 비용 1 감소로 변경되었습니다.",
-    "textEn": "Changed Sealed Throne card: upgrade changed from Innate -> lowering Energy cost by 1",
+    "textEn": "Changed The Sealed Throne card: upgrade changed from Innate -> lowering Energy cost by 1",
     "entityRefs": [
       {
         "type": "card",
@@ -23678,7 +23844,7 @@
         "label": "봉인된 왕좌"
       }
     ],
-    "searchText": "v0.107.1:line-058-card-the-sealed-throne v0.107.1 0.107.1 콘텐츠 & 밸런스 리젠트 봉인된 왕좌 카드 변경: 강화 효과가 선천성 -> 에너지 비용 1 감소로 변경되었습니다. changed sealed throne card: upgrade changed from innate -> lowering energy cost by 1 card the_sealed_throne 봉인된 왕좌 봉인된 왕좌 the sealed throne"
+    "searchText": "v0.107.1:line-058-card-the-sealed-throne v0.107.1 0.107.1 콘텐츠 & 밸런스 리젠트 봉인된 왕좌 카드 변경: 강화 효과가 선천성 -> 에너지 비용 1 감소로 변경되었습니다. changed the sealed throne card: upgrade changed from innate -> lowering energy cost by 1 card the_sealed_throne 봉인된 왕좌 봉인된 왕좌 the sealed throne"
   },
   {
     "id": "v0.107.1:line-059-card-crescent-spear",
@@ -24169,7 +24335,7 @@
     "searchText": "v0.107.1:line-077-relic-infused-core v0.107.1 0.107.1 콘텐츠 & 밸런스 디펙트 주입된 핵 유물 (버프): 이제 추가로 \"전기 구체의 피해량이 1 증가합니다\" 효과를 부여합니다. buffed infused core relic: now also grants \"lightning orbs deal 1 additional damage\" relic infused_core 주입된 핵 주입된 핵 infused core"
   },
   {
-    "id": "v0.107.1:line-078-power-artifact",
+    "id": "v0.107.1:line-078-power-artifact-power-slippery",
     "patch": "v0.107.1",
     "version": "0.107.1",
     "date": "2026-06-19",
@@ -24181,18 +24347,23 @@
       "Content & Balance",
       "Multiplayer"
     ],
-    "markdownKo": "적의 [gold:power]인공물[/gold], [gold]미끄러움[/gold], [gold]겁쟁이[/gold] 효과에 대한 멀티플레이 보정이 너프되었습니다.",
+    "markdownKo": "적의 [gold:power]인공물[/gold], [gold:power]미끈거림[/gold], [gold]겁쟁이[/gold] 효과에 대한 멀티플레이 보정이 너프되었습니다.",
     "markdownEn": "Nerfed multiplayer scaling for enemy [gold:power]Artifact[/gold], Slippery, and Skittish powers",
-    "textKo": "적의 인공물, 미끄러움, 겁쟁이 효과에 대한 멀티플레이 보정이 너프되었습니다.",
+    "textKo": "적의 인공물, 미끈거림, 겁쟁이 효과에 대한 멀티플레이 보정이 너프되었습니다.",
     "textEn": "Nerfed multiplayer scaling for enemy Artifact, Slippery, and Skittish powers",
     "entityRefs": [
       {
         "type": "power",
         "id": "ARTIFACT",
         "label": "인공물"
+      },
+      {
+        "type": "power",
+        "id": "SLIPPERY",
+        "label": "미끈거림"
       }
     ],
-    "searchText": "v0.107.1:line-078-power-artifact v0.107.1 0.107.1 콘텐츠 & 밸런스 멀티플레이 적의 인공물, 미끄러움, 겁쟁이 효과에 대한 멀티플레이 보정이 너프되었습니다. nerfed multiplayer scaling for enemy artifact, slippery, and skittish powers power artifact 인공물 인공물 artifact"
+    "searchText": "v0.107.1:line-078-power-artifact-power-slippery v0.107.1 0.107.1 콘텐츠 & 밸런스 멀티플레이 적의 인공물, 미끈거림, 겁쟁이 효과에 대한 멀티플레이 보정이 너프되었습니다. nerfed multiplayer scaling for enemy artifact, slippery, and skittish powers power artifact 인공물 인공물 artifact power slippery 미끈거림 미끈거림 slippery"
   },
   {
     "id": "v0.107.1:line-079-card-stratagem",
@@ -24567,7 +24738,7 @@
     "searchText": "v0.107.1:line-095-text-1s37jru v0.107.1 0.107.1 사용자 인터페이스 및 사용 경험 컨트롤러 게임 오버 및 도전 기록 화면의 배지, 도전 기록의 플레이어 정보 아이콘, 상단 바의 모드 아이콘에 컨트롤러 탐색 기능이 추가되었습니다. added controller navigation for badges in the game over and run history screens, the player info icons in run history, and the modifier icons on the top bar"
   },
   {
-    "id": "v0.107.1:line-096-text-1el3e5o",
+    "id": "v0.107.1:line-096-event-fake-merchant",
     "patch": "v0.107.1",
     "version": "0.107.1",
     "date": "2026-06-19",
@@ -24579,12 +24750,18 @@
       "User Interface & Experience",
       "Controller"
     ],
-    "markdownKo": "[gold]가짜 상인[/gold] 상점에서의 컨트롤러 탐색을 개선했습니다.",
+    "markdownKo": "[gold:event]상?인[/gold] 상점에서의 컨트롤러 탐색을 개선했습니다.",
     "markdownEn": "Improved controller navigation in the Fake Merchant shop",
-    "textKo": "가짜 상인 상점에서의 컨트롤러 탐색을 개선했습니다.",
+    "textKo": "상?인 상점에서의 컨트롤러 탐색을 개선했습니다.",
     "textEn": "Improved controller navigation in the Fake Merchant shop",
-    "entityRefs": [],
-    "searchText": "v0.107.1:line-096-text-1el3e5o v0.107.1 0.107.1 사용자 인터페이스 및 사용 경험 컨트롤러 가짜 상인 상점에서의 컨트롤러 탐색을 개선했습니다. improved controller navigation in the fake merchant shop"
+    "entityRefs": [
+      {
+        "type": "event",
+        "id": "FAKE_MERCHANT",
+        "label": "상?인"
+      }
+    ],
+    "searchText": "v0.107.1:line-096-event-fake-merchant v0.107.1 0.107.1 사용자 인터페이스 및 사용 경험 컨트롤러 상?인 상점에서의 컨트롤러 탐색을 개선했습니다. improved controller navigation in the fake merchant shop event fake_merchant 상?인 상?인 the merchant???"
   },
   {
     "id": "v0.107.1:line-097-text-10a5bf1",
@@ -25696,7 +25873,7 @@
     "searchText": "v0.107.1:line-141-monster-corpse-slug v0.107.1 0.107.1 아트 적 시체 민달팽이의 다단히트 애니메이션을 추가했습니다. added a multi-hit animation for corpse slug monster corpse_slug 시체 민달팽이 시체 민달팽이 corpse slug"
   },
   {
-    "id": "v0.107.1:line-142-text-1d1g6sg",
+    "id": "v0.107.1:line-142-monster-bowlbug-rock",
     "patch": "v0.107.1",
     "version": "0.107.1",
     "date": "2026-06-19",
@@ -25708,12 +25885,18 @@
       "Art",
       "Enemies"
     ],
-    "markdownKo": "[gold]바위 그릇벌레[/gold]의 기절 해제 애니메이션을 추가했습니다.",
-    "markdownEn": "Added an unstun animation for [gold]Rock Bowlbug[/gold]",
-    "textKo": "바위 그릇벌레의 기절 해제 애니메이션을 추가했습니다.",
-    "textEn": "Added an unstun animation for Rock Bowlbug",
-    "entityRefs": [],
-    "searchText": "v0.107.1:line-142-text-1d1g6sg v0.107.1 0.107.1 아트 적 바위 그릇벌레의 기절 해제 애니메이션을 추가했습니다. added an unstun animation for rock bowlbug"
+    "markdownKo": "[gold:monster]그릇벌레 (바위)[/gold]의 기절 해제 애니메이션을 추가했습니다.",
+    "markdownEn": "Added an unstun animation for [gold:monster]Bowlbug (Rock)[/gold]",
+    "textKo": "그릇벌레 (바위)의 기절 해제 애니메이션을 추가했습니다.",
+    "textEn": "Added an unstun animation for Bowlbug (Rock)",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "BOWLBUG_ROCK",
+        "label": "그릇벌레 (바위)"
+      }
+    ],
+    "searchText": "v0.107.1:line-142-monster-bowlbug-rock v0.107.1 0.107.1 아트 적 그릇벌레 (바위)의 기절 해제 애니메이션을 추가했습니다. added an unstun animation for bowlbug (rock) monster bowlbug_rock 그릇벌레 (바위) 그릇벌레 (바위) bowlbug (rock)"
   },
   {
     "id": "v0.107.1:line-143-monster-skulking-colony",
@@ -26055,9 +26238,9 @@
       "Enemies"
     ],
     "markdownKo": "[gold:monster]가지 슬라임 (중)[/gold]",
-    "markdownEn": "[gold:monster]Twig Slime M[/gold]",
+    "markdownEn": "[gold:monster]Twig Slime (M)[/gold]",
     "textKo": "가지 슬라임 (중)",
-    "textEn": "Twig Slime M",
+    "textEn": "Twig Slime (M)",
     "entityRefs": [
       {
         "type": "monster",
@@ -26065,7 +26248,7 @@
         "label": "가지 슬라임 (중)"
       }
     ],
-    "searchText": "v0.107.1:line-156-monster-twig-slime-m v0.107.1 0.107.1 아트 적 가지 슬라임 (중) twig slime m monster twig_slime_m 가지 슬라임 (중) 가지 슬라임 (중) twig slime (m)"
+    "searchText": "v0.107.1:line-156-monster-twig-slime-m v0.107.1 0.107.1 아트 적 가지 슬라임 (중) twig slime (m) monster twig_slime_m 가지 슬라임 (중) 가지 슬라임 (중) twig slime (m)"
   },
   {
     "id": "v0.107.1:line-157-event-zen-weaver",
@@ -27786,7 +27969,7 @@
     "searchText": "v0.107.1:line-224-encounter-test-subject-boss v0.107.1 0.107.1 버그 수정 적 실험체와 관련된 여러 문제를 수정했습니다. fixed several test subject issues encounter test_subject_boss 실험체 실험체 test subject"
   },
   {
-    "id": "v0.107.1:line-225-potion-foul-potion",
+    "id": "v0.107.1:line-225-potion-foul-potion-event-fake-merchant",
     "patch": "v0.107.1",
     "version": "0.107.1",
     "date": "2026-06-19",
@@ -27798,18 +27981,23 @@
       "Bug Fixes",
       "Events"
     ],
-    "markdownKo": "[gold:potion]역겨운 포션[/gold]을 [gold]가짜 상인[/gold]에게 건넬 수 없던 문제를 수정했습니다.",
-    "markdownEn": "Fixed being unable to give the [gold:potion]Foul Potion[/gold] to the [gold]Fake Merchant[/gold]",
-    "textKo": "역겨운 포션을 가짜 상인에게 건넬 수 없던 문제를 수정했습니다.",
-    "textEn": "Fixed being unable to give the Foul Potion to the Fake Merchant",
+    "markdownKo": "[gold:potion]역겨운 포션[/gold]을 [gold:event]상?인[/gold]에게 건넬 수 없던 문제를 수정했습니다.",
+    "markdownEn": "Fixed being unable to give the [gold:potion]Foul Potion[/gold] to the [gold:event]The Merchant???[/gold]",
+    "textKo": "역겨운 포션을 상?인에게 건넬 수 없던 문제를 수정했습니다.",
+    "textEn": "Fixed being unable to give the Foul Potion to the The Merchant???",
     "entityRefs": [
       {
         "type": "potion",
         "id": "FOUL_POTION",
         "label": "역겨운 포션"
+      },
+      {
+        "type": "event",
+        "id": "FAKE_MERCHANT",
+        "label": "상?인"
       }
     ],
-    "searchText": "v0.107.1:line-225-potion-foul-potion v0.107.1 0.107.1 버그 수정 이벤트 역겨운 포션을 가짜 상인에게 건넬 수 없던 문제를 수정했습니다. fixed being unable to give the foul potion to the fake merchant potion foul_potion 역겨운 포션 역겨운 포션 foul potion"
+    "searchText": "v0.107.1:line-225-potion-foul-potion-event-fake-merchant v0.107.1 0.107.1 버그 수정 이벤트 역겨운 포션을 상?인에게 건넬 수 없던 문제를 수정했습니다. fixed being unable to give the foul potion to the the merchant??? potion foul_potion 역겨운 포션 역겨운 포션 foul potion event fake_merchant 상?인 상?인 the merchant???"
   },
   {
     "id": "v0.107.1:line-226-event-infested-automaton",
@@ -28017,9 +28205,9 @@
       "Events"
     ],
     "markdownKo": "[gold:event]전쟁사학자 레피[/gold] 이벤트에서 [gold:card]랜턴 열쇠[/gold]를 2장보다 더 많이 보유하고 있을 경우, 이제 중복된 [gold:card]랜턴 열쇠[/gold] 카드가 모두 제거됩니다.",
-    "markdownEn": "[gold:event]War Historian Repy[/gold] event now removes all duplicate [gold:card]Lantern Key[/gold] cards if you have more than two",
+    "markdownEn": "[gold:event]War Historian, Repy[/gold] event now removes all duplicate [gold:card]Lantern Key[/gold] cards if you have more than two",
     "textKo": "전쟁사학자 레피 이벤트에서 랜턴 열쇠를 2장보다 더 많이 보유하고 있을 경우, 이제 중복된 랜턴 열쇠 카드가 모두 제거됩니다.",
-    "textEn": "War Historian Repy event now removes all duplicate Lantern Key cards if you have more than two",
+    "textEn": "War Historian, Repy event now removes all duplicate Lantern Key cards if you have more than two",
     "entityRefs": [
       {
         "type": "event",
@@ -28032,7 +28220,7 @@
         "label": "랜턴 열쇠"
       }
     ],
-    "searchText": "v0.107.1:line-233-event-war-historian-repy-card-lantern-key v0.107.1 0.107.1 버그 수정 이벤트 전쟁사학자 레피 이벤트에서 랜턴 열쇠를 2장보다 더 많이 보유하고 있을 경우, 이제 중복된 랜턴 열쇠 카드가 모두 제거됩니다. war historian repy event now removes all duplicate lantern key cards if you have more than two event war_historian_repy 전쟁사학자 레피 전쟁사학자 레피 war historian, repy card lantern_key 랜턴 열쇠 랜턴 열쇠 lantern key"
+    "searchText": "v0.107.1:line-233-event-war-historian-repy-card-lantern-key v0.107.1 0.107.1 버그 수정 이벤트 전쟁사학자 레피 이벤트에서 랜턴 열쇠를 2장보다 더 많이 보유하고 있을 경우, 이제 중복된 랜턴 열쇠 카드가 모두 제거됩니다. war historian, repy event now removes all duplicate lantern key cards if you have more than two event war_historian_repy 전쟁사학자 레피 전쟁사학자 레피 war historian, repy card lantern_key 랜턴 열쇠 랜턴 열쇠 lantern key"
   },
   {
     "id": "v0.107.1:line-234-relic-mummified-hand",
@@ -34839,7 +35027,7 @@
     "searchText": "v0.109.0:line-037-card-trash-to-treasure v0.109.0 0.109.0 콘텐츠 & 밸런스 디펙트 고철을 보물로의 강화 효과가 선천성 획득 -> 비용 1 감소로 변경되었습니다. changed trash to treasure: upgrade changed from gaining innate -> lowering its cost by 1. card trash_to_treasure 고철을 보물로 고철을 보물로 trash to treasure"
   },
   {
-    "id": "v0.109.0:line-038-text-1n41zm4",
+    "id": "v0.109.0:line-038-card-tutor",
     "patch": "v0.109.0",
     "version": "0.109.0",
     "date": "2026-07-17",
@@ -34851,12 +35039,18 @@
       "Content & Balance",
       "Multiplayer"
     ],
-    "markdownKo": "새로운 리젠트 카드 [gold:card]강사[/gold]가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 [gold]뽑을 카드 더미[/gold]에서 카드 1장을 선택해 [gold]손[/gold]으로 가져옵니다.\"",
+    "markdownKo": "새로운 리젠트 카드 [gold:card]가르침[/gold]가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 [gold]뽑을 카드 더미[/gold]에서 카드 1장을 선택해 [gold]손[/gold]으로 가져옵니다.\"",
     "markdownEn": "Added new Regent card, [gold:card]Tutor[/gold]: Rare Skill, cost 1(0), \"Another player chooses a card in their [gold]Draw Pile[/gold] to add into their [gold]Hand[/gold].\"",
-    "textKo": "새로운 리젠트 카드 강사가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\"",
+    "textKo": "새로운 리젠트 카드 가르침가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\"",
     "textEn": "Added new Regent card, Tutor: Rare Skill, cost 1(0), \"Another player chooses a card in their Draw Pile to add into their Hand.\"",
-    "entityRefs": [],
-    "searchText": "v0.109.0:line-038-text-1n41zm4 v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 새로운 리젠트 카드 강사가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\" added new regent card, tutor: rare skill, cost 1(0), \"another player chooses a card in their draw pile to add into their hand.\""
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TUTOR",
+        "label": "가르침"
+      }
+    ],
+    "searchText": "v0.109.0:line-038-card-tutor v0.109.0 0.109.0 콘텐츠 & 밸런스 멀티플레이 새로운 리젠트 카드 가르침가 추가되었습니다: 희귀 스킬, 비용 1(0), \"다른 플레이어가 뽑을 카드 더미에서 카드 1장을 선택해 손으로 가져옵니다.\" added new regent card, tutor: rare skill, cost 1(0), \"another player chooses a card in their draw pile to add into their hand.\" card tutor 가르침 가르침 tutor"
   },
   {
     "id": "v0.109.0:line-039-card-midnight",
@@ -36446,7 +36640,7 @@
       "Ancients"
     ],
     "markdownKo": "[gold:card]호각 불기[/gold] ([green][sine]버프[/sine][/green]): 비용이 3 → 2로 감소했습니다.",
-    "markdownEn": "[gold:card]Tanx's Whistle[/gold] ([green][sine]buff[/sine][/green]): cost decreased from 3 -> 2.",
+    "markdownEn": "[gold:relic]Tanx's Whistle[/gold] ([green][sine]buff[/sine][/green]): cost decreased from 3 -> 2.",
     "textKo": "호각 불기 (버프): 비용이 3 → 2로 감소했습니다.",
     "textEn": "Tanx's Whistle (buff): cost decreased from 3 -> 2.",
     "entityRefs": [
@@ -38097,9 +38291,9 @@
       "Events"
     ],
     "markdownKo": "[gold:event]랜턴 열쇠[/gold] 이벤트의 오탈자를 수정했습니다.",
-    "markdownEn": "Fixed a typo in the [gold:event]Lantern Key[/gold] event.",
+    "markdownEn": "Fixed a typo in the [gold:event]The Lantern Key[/gold] event.",
     "textKo": "랜턴 열쇠 이벤트의 오탈자를 수정했습니다.",
-    "textEn": "Fixed a typo in the Lantern Key event.",
+    "textEn": "Fixed a typo in the The Lantern Key event.",
     "entityRefs": [
       {
         "type": "event",
@@ -38107,7 +38301,7 @@
         "label": "랜턴 열쇠"
       }
     ],
-    "searchText": "v0.110.0:line-083-event-the-lantern-key v0.110.0 0.110.0 버그 수정 이벤트 랜턴 열쇠 이벤트의 오탈자를 수정했습니다. fixed a typo in the lantern key event. event the_lantern_key 랜턴 열쇠 랜턴 열쇠 the lantern key"
+    "searchText": "v0.110.0:line-083-event-the-lantern-key v0.110.0 0.110.0 버그 수정 이벤트 랜턴 열쇠 이벤트의 오탈자를 수정했습니다. fixed a typo in the the lantern key event. event the_lantern_key 랜턴 열쇠 랜턴 열쇠 the lantern key"
   },
   {
     "id": "v0.110.0:line-084-relic-pendulum-relic-bellows",
@@ -44640,9 +44834,9 @@
       "Content & Balance",
       "General"
     ],
-    "markdownKo": "턴 종료 시 발동하는 [gold]오브[/gold] 패시브가 이제 [gold:power]종말[/gold]보다 먼저 발동합니다. 예를 들어 [gold:card]정신 폭주[/gold] 카드 등으로 자신에게 [gold:power]종말[/gold]을 걸어 죽게 되더라도, 턴 종료 패시브를 가진 [gold]오브[/gold]([gold]전기[/gold] [gold]오브[/gold]로 체력 3인 적을 처치하는 경우 등)가 마지막 적을 처치하면 전투에서 패배하지 않고 승리합니다.",
+    "markdownKo": "턴 종료 시 발동하는 [gold]구체[/gold] 패시브가 이제 [gold:power]종말[/gold]보다 먼저 발동합니다. 예를 들어 [gold:card]정신 폭주[/gold] 카드 등으로 자신에게 [gold:power]종말[/gold]을 걸어 죽게 되더라도, 턴 종료 패시브를 가진 [gold]구체[/gold]([gold]전기[/gold] [gold]구체[/gold]로 체력 3인 적을 처치하는 경우 등)가 마지막 적을 처치하면 전투에서 패배하지 않고 승리합니다.",
     "markdownEn": "End-of-turn [gold]Orb[/gold] passives now trigger before [gold:power]Doom[/gold]. If a player would die to self-[gold:power]Doom[/gold] (ex. from the [gold:card]Neurosurge[/gold] card) but also has an [gold]Orb[/gold] with an end-of-turn passive that would kill the last remaining enemy (ex. [gold]Lightning[/gold] [gold]Orb[/gold] while the enemy is at 3 HP), they now win the combat instead of losing it after ending their turn.",
-    "textKo": "턴 종료 시 발동하는 오브 패시브가 이제 종말보다 먼저 발동합니다. 예를 들어 정신 폭주 카드 등으로 자신에게 종말을 걸어 죽게 되더라도, 턴 종료 패시브를 가진 오브(전기 오브로 체력 3인 적을 처치하는 경우 등)가 마지막 적을 처치하면 전투에서 패배하지 않고 승리합니다.",
+    "textKo": "턴 종료 시 발동하는 구체 패시브가 이제 종말보다 먼저 발동합니다. 예를 들어 정신 폭주 카드 등으로 자신에게 종말을 걸어 죽게 되더라도, 턴 종료 패시브를 가진 구체(전기 구체로 체력 3인 적을 처치하는 경우 등)가 마지막 적을 처치하면 전투에서 패배하지 않고 승리합니다.",
     "textEn": "End-of-turn Orb passives now trigger before Doom. If a player would die to self-Doom (ex. from the Neurosurge card) but also has an Orb with an end-of-turn passive that would kill the last remaining enemy (ex. Lightning Orb while the enemy is at 3 HP), they now win the combat instead of losing it after ending their turn.",
     "entityRefs": [
       {
@@ -44656,7 +44850,7 @@
         "label": "정신 폭주"
       }
     ],
-    "searchText": "v0.111.1:line-001-power-doom-card-neurosurge v0.111.1 0.111.1 콘텐츠 & 밸런스 일반 턴 종료 시 발동하는 오브 패시브가 이제 종말보다 먼저 발동합니다. 예를 들어 정신 폭주 카드 등으로 자신에게 종말을 걸어 죽게 되더라도, 턴 종료 패시브를 가진 오브(전기 오브로 체력 3인 적을 처치하는 경우 등)가 마지막 적을 처치하면 전투에서 패배하지 않고 승리합니다. end-of-turn orb passives now trigger before doom. if a player would die to self-doom (ex. from the neurosurge card) but also has an orb with an end-of-turn passive that would kill the last remaining enemy (ex. lightning orb while the enemy is at 3 hp), they now win the combat instead of losing it after ending their turn. power doom 종말 종말 doom card neurosurge 정신 폭주 정신 폭주 neurosurge"
+    "searchText": "v0.111.1:line-001-power-doom-card-neurosurge v0.111.1 0.111.1 콘텐츠 & 밸런스 일반 턴 종료 시 발동하는 구체 패시브가 이제 종말보다 먼저 발동합니다. 예를 들어 정신 폭주 카드 등으로 자신에게 종말을 걸어 죽게 되더라도, 턴 종료 패시브를 가진 구체(전기 구체로 체력 3인 적을 처치하는 경우 등)가 마지막 적을 처치하면 전투에서 패배하지 않고 승리합니다. end-of-turn orb passives now trigger before doom. if a player would die to self-doom (ex. from the neurosurge card) but also has an orb with an end-of-turn passive that would kill the last remaining enemy (ex. lightning orb while the enemy is at 3 hp), they now win the combat instead of losing it after ending their turn. power doom 종말 종말 doom card neurosurge 정신 폭주 정신 폭주 neurosurge"
   },
   {
     "id": "v0.111.1:line-002-text-1r333jy",
@@ -49087,7 +49281,7 @@
     "searchText": "v0.111.1:line-170-text-13otpne v0.111.1 0.111.1 아트 캐릭터 형상 vfx가 추가되었습니다. added character form vfx."
   },
   {
-    "id": "v0.111.1:line-171-text-17q4cs1",
+    "id": "v0.111.1:line-171-text-giprv5",
     "patch": "v0.111.1",
     "version": "0.111.1",
     "date": "2026-11-17",
@@ -49097,12 +49291,12 @@
     "sectionEn": [
       "Art"
     ],
-    "markdownKo": "[defect]디펙트[/defect] [gold]오브[/gold] 패시브 발동 VFX가 추가되었습니다.",
+    "markdownKo": "[defect]디펙트[/defect] [gold]구체[/gold] 패시브 발동 VFX가 추가되었습니다.",
     "markdownEn": "Added [defect]Defect[/defect] [gold]Orb[/gold] passive activation VFX.",
-    "textKo": "디펙트 오브 패시브 발동 VFX가 추가되었습니다.",
+    "textKo": "디펙트 구체 패시브 발동 VFX가 추가되었습니다.",
     "textEn": "Added Defect Orb passive activation VFX.",
     "entityRefs": [],
-    "searchText": "v0.111.1:line-171-text-17q4cs1 v0.111.1 0.111.1 아트 디펙트 오브 패시브 발동 vfx가 추가되었습니다. added defect orb passive activation vfx."
+    "searchText": "v0.111.1:line-171-text-giprv5 v0.111.1 0.111.1 아트 디펙트 구체 패시브 발동 vfx가 추가되었습니다. added defect orb passive activation vfx."
   },
   {
     "id": "v0.111.1:line-172-text-r83jt9",
@@ -50208,7 +50402,7 @@
     "searchText": "v0.111.1:line-221-text-1rwm9ql v0.111.1 0.111.1 버그 수정 일반 \"파워가 사라짐\" 알림이 더 이상 마우스 입력을 막지 않습니다. \"power wears off\" notification no longer blocks mouse input."
   },
   {
-    "id": "v0.111.1:line-222-text-1uyphu6",
+    "id": "v0.111.1:line-222-text-14j6yum",
     "patch": "v0.111.1",
     "version": "0.111.1",
     "date": "2026-11-17",
@@ -50220,12 +50414,12 @@
       "Bug Fixes",
       "General"
     ],
-    "markdownKo": "전투 시작 시 자리 표시용 [gold]오브[/gold] 숫자가 잠깐 나타나지 않습니다.",
+    "markdownKo": "전투 시작 시 자리 표시용 [gold]구체[/gold] 숫자가 잠깐 나타나지 않습니다.",
     "markdownEn": "Placeholder [gold]Orb[/gold] numbers no longer briefly show up at the start of combat.",
-    "textKo": "전투 시작 시 자리 표시용 오브 숫자가 잠깐 나타나지 않습니다.",
+    "textKo": "전투 시작 시 자리 표시용 구체 숫자가 잠깐 나타나지 않습니다.",
     "textEn": "Placeholder Orb numbers no longer briefly show up at the start of combat.",
     "entityRefs": [],
-    "searchText": "v0.111.1:line-222-text-1uyphu6 v0.111.1 0.111.1 버그 수정 일반 전투 시작 시 자리 표시용 오브 숫자가 잠깐 나타나지 않습니다. placeholder orb numbers no longer briefly show up at the start of combat."
+    "searchText": "v0.111.1:line-222-text-14j6yum v0.111.1 0.111.1 버그 수정 일반 전투 시작 시 자리 표시용 구체 숫자가 잠깐 나타나지 않습니다. placeholder orb numbers no longer briefly show up at the start of combat."
   },
   {
     "id": "v0.111.1:line-223-text-1dxoei5",
@@ -50554,7 +50748,7 @@
     "searchText": "v0.111.1:line-238-text-13jyqui v0.111.1 0.111.1 버그 수정 컨트롤러 컨트롤러로 보상을 다시 굴린 뒤 포커스가 카드로 돌아오지 않던 문제를 고쳤습니다. fixed focus not returning to cards after rerolling rewards on controller."
   },
   {
-    "id": "v0.111.1:line-239-text-1mx32ng",
+    "id": "v0.111.1:line-239-text-1hmazm4",
     "patch": "v0.111.1",
     "version": "0.111.1",
     "date": "2026-11-17",
@@ -50566,12 +50760,12 @@
       "Bug Fixes",
       "Controller"
     ],
-    "markdownKo": "다른 카드 선택 화면에 있는 동안 [gold]오브[/gold]로 컨트롤러 이동을 할 수 없게 했습니다.",
+    "markdownKo": "다른 카드 선택 화면에 있는 동안 [gold]구체[/gold]로 컨트롤러 이동을 할 수 없게 했습니다.",
     "markdownEn": "Disabled controller navigation to [gold]Orb[/gold]s while in another card selection screen.",
-    "textKo": "다른 카드 선택 화면에 있는 동안 오브로 컨트롤러 이동을 할 수 없게 했습니다.",
+    "textKo": "다른 카드 선택 화면에 있는 동안 구체로 컨트롤러 이동을 할 수 없게 했습니다.",
     "textEn": "Disabled controller navigation to Orbs while in another card selection screen.",
     "entityRefs": [],
-    "searchText": "v0.111.1:line-239-text-1mx32ng v0.111.1 0.111.1 버그 수정 컨트롤러 다른 카드 선택 화면에 있는 동안 오브로 컨트롤러 이동을 할 수 없게 했습니다. disabled controller navigation to orbs while in another card selection screen."
+    "searchText": "v0.111.1:line-239-text-1hmazm4 v0.111.1 0.111.1 버그 수정 컨트롤러 다른 카드 선택 화면에 있는 동안 구체로 컨트롤러 이동을 할 수 없게 했습니다. disabled controller navigation to orbs while in another card selection screen."
   },
   {
     "id": "v0.111.1:line-240-text-15o1yx0",
@@ -52228,9 +52422,9 @@
       "Bug Fixes",
       "Defect"
     ],
-    "markdownKo": "[gold]오브[/gold]의 패시브가 발동하지 않는데도 [gold:relic]판금 케이블[/gold] 유물이 번쩍이던 문제를 고쳤습니다.",
+    "markdownKo": "[gold]구체[/gold]의 패시브가 발동하지 않는데도 [gold:relic]판금 케이블[/gold] 유물이 번쩍이던 문제를 고쳤습니다.",
     "markdownEn": "Fixed the [gold:relic]Gold-Plated Cables[/gold] relic flashing if the [gold]Orb[/gold]'s passive is not firing.",
-    "textKo": "오브의 패시브가 발동하지 않는데도 판금 케이블 유물이 번쩍이던 문제를 고쳤습니다.",
+    "textKo": "구체의 패시브가 발동하지 않는데도 판금 케이블 유물이 번쩍이던 문제를 고쳤습니다.",
     "textEn": "Fixed the Gold-Plated Cables relic flashing if the Orb's passive is not firing.",
     "entityRefs": [
       {
@@ -52239,7 +52433,7 @@
         "label": "판금 케이블"
       }
     ],
-    "searchText": "v0.111.1:line-300-relic-gold-plated-cables v0.111.1 0.111.1 버그 수정 디펙트 오브의 패시브가 발동하지 않는데도 판금 케이블 유물이 번쩍이던 문제를 고쳤습니다. fixed the gold-plated cables relic flashing if the orb's passive is not firing. relic gold_plated_cables 판금 케이블 판금 케이블 gold-plated cables"
+    "searchText": "v0.111.1:line-300-relic-gold-plated-cables v0.111.1 0.111.1 버그 수정 디펙트 구체의 패시브가 발동하지 않는데도 판금 케이블 유물이 번쩍이던 문제를 고쳤습니다. fixed the gold-plated cables relic flashing if the orb's passive is not firing. relic gold_plated_cables 판금 케이블 판금 케이블 gold-plated cables"
   },
   {
     "id": "v0.111.1:line-301-relic-emotion-chip-relic-gold-plated-cables",
@@ -52254,9 +52448,9 @@
       "Bug Fixes",
       "Defect"
     ],
-    "markdownKo": "[gold:relic]감정 칩[/gold] 유물이 턴 시작 시 [gold]오브[/gold]를 발동시키면 [gold:relic]판금 케이블[/gold] 유물도 발동합니다.",
+    "markdownKo": "[gold:relic]감정 칩[/gold] 유물이 턴 시작 시 [gold]구체[/gold]를 발동시키면 [gold:relic]판금 케이블[/gold] 유물도 발동합니다.",
     "markdownEn": "[gold:relic]Gold-Plated Cables[/gold] relic now procs if the [gold:relic]Emotion Chip[/gold] relic triggers [gold]Orb[/gold]s at the start of your turn.",
-    "textKo": "감정 칩 유물이 턴 시작 시 오브를 발동시키면 판금 케이블 유물도 발동합니다.",
+    "textKo": "감정 칩 유물이 턴 시작 시 구체를 발동시키면 판금 케이블 유물도 발동합니다.",
     "textEn": "Gold-Plated Cables relic now procs if the Emotion Chip relic triggers Orbs at the start of your turn.",
     "entityRefs": [
       {
@@ -52270,7 +52464,7 @@
         "label": "판금 케이블"
       }
     ],
-    "searchText": "v0.111.1:line-301-relic-emotion-chip-relic-gold-plated-cables v0.111.1 0.111.1 버그 수정 디펙트 감정 칩 유물이 턴 시작 시 오브를 발동시키면 판금 케이블 유물도 발동합니다. gold-plated cables relic now procs if the emotion chip relic triggers orbs at the start of your turn. relic emotion_chip 감정 칩 감정 칩 emotion chip relic gold_plated_cables 판금 케이블 판금 케이블 gold-plated cables"
+    "searchText": "v0.111.1:line-301-relic-emotion-chip-relic-gold-plated-cables v0.111.1 0.111.1 버그 수정 디펙트 감정 칩 유물이 턴 시작 시 구체를 발동시키면 판금 케이블 유물도 발동합니다. gold-plated cables relic now procs if the emotion chip relic triggers orbs at the start of your turn. relic emotion_chip 감정 칩 감정 칩 emotion chip relic gold_plated_cables 판금 케이블 판금 케이블 gold-plated cables"
   },
   {
     "id": "v0.111.1:line-302-text-1n7vznh",
@@ -55915,7 +56109,7 @@
     "searchText": "v0.114.0:line-103-text-1yeqoxq v0.114.0 0.114.0 버그 수정 이벤트 오류가 난 이벤트가 이제 방에 갇히는 대신 진행할 수 있게 해 줍니다. an event that runs into an error now lets you proceed instead of leaving you stuck in the room."
   },
   {
-    "id": "v0.114.0:line-104-card-dingy-dagger-event-welcome-to-wongos",
+    "id": "v0.114.0:line-104-card-dingy-dagger-event-reflections",
     "patch": "v0.114.0",
     "version": "0.114.0",
     "date": "2026-11-25",
@@ -55927,10 +56121,10 @@
       "Bug Fixes",
       "Events"
     ],
-    "markdownKo": "[gold:card]초라한 단검[/gold] 카드가 [gold:event]거울에 비치다[/gold]와 [gold:event]웡고스에 오신 것을 환영합니다[/gold] 이벤트에서 한 번만 약화됩니다.",
-    "markdownEn": "[gold:card]Dingy Dagger[/gold] card is only downgraded once at the [gold:event]Reflections[/gold] and [gold:event]Welcome to Wongo's[/gold] events.",
-    "textKo": "초라한 단검 카드가 거울에 비치다와 웡고스에 오신 것을 환영합니다 이벤트에서 한 번만 약화됩니다.",
-    "textEn": "Dingy Dagger card is only downgraded once at the Reflections and Welcome to Wongo's events.",
+    "markdownKo": "[gold:card]초라한 단검[/gold] 카드가 [gold:event]거울에 비치다 다치비 에울거[/gold]와 [gold:event]웡고스에 오신 것을 환영합니다[/gold] 이벤트에서 한 번만 약화됩니다.",
+    "markdownEn": "[gold:card]Dingy Dagger[/gold] card is only downgraded once at the [gold:event]Reflections snoitcelfeR[/gold] and [gold:event]Welcome to Wongo's[/gold] events.",
+    "textKo": "초라한 단검 카드가 거울에 비치다 다치비 에울거와 웡고스에 오신 것을 환영합니다 이벤트에서 한 번만 약화됩니다.",
+    "textEn": "Dingy Dagger card is only downgraded once at the Reflections snoitcelfeR and Welcome to Wongo's events.",
     "entityRefs": [
       {
         "type": "card",
@@ -55939,11 +56133,16 @@
       },
       {
         "type": "event",
+        "id": "REFLECTIONS",
+        "label": "거울에 비치다 다치비 에울거"
+      },
+      {
+        "type": "event",
         "id": "WELCOME_TO_WONGOS",
         "label": "웡고스에 오신 것을 환영합니다"
       }
     ],
-    "searchText": "v0.114.0:line-104-card-dingy-dagger-event-welcome-to-wongos v0.114.0 0.114.0 버그 수정 이벤트 초라한 단검 카드가 거울에 비치다와 웡고스에 오신 것을 환영합니다 이벤트에서 한 번만 약화됩니다. dingy dagger card is only downgraded once at the reflections and welcome to wongo's events. card dingy_dagger 초라한 단검 초라한 단검 dingy dagger event welcome_to_wongos 웡고스에 오신 것을 환영합니다 웡고스에 오신 것을 환영합니다 welcome to wongo"
+    "searchText": "v0.114.0:line-104-card-dingy-dagger-event-reflections v0.114.0 0.114.0 버그 수정 이벤트 초라한 단검 카드가 거울에 비치다 다치비 에울거와 웡고스에 오신 것을 환영합니다 이벤트에서 한 번만 약화됩니다. dingy dagger card is only downgraded once at the reflections snoitcelfer and welcome to wongo's events. card dingy_dagger 초라한 단검 초라한 단검 dingy dagger event reflections 거울에 비치다 다치비 에울거 거울에 비치다 다치비 에울거 reflections snoitcelfer event welcome_to_wongos 웡고스에 오신 것을 환영합니다 웡고스에 오신 것을 환영합니다 welcome to wongo"
   },
   {
     "id": "v0.114.0:line-105-relic-wuppy-card-melancholy",
