@@ -18,8 +18,11 @@ import path from "node:path";
 import {
   getCodexCards,
   getCodexEnchantments,
+  getCodexEncounters,
+  getCodexEvents,
   getCodexMonsters,
   getCodexPotions,
+  getCodexPowers,
   getCodexRelics,
 } from "../src/lib/codex-data";
 import { getCodexMeta, getSTS2Changes, getSTS2Patches } from "../src/lib/data";
@@ -55,6 +58,10 @@ const SOURCES: {
   { type: "enchantment", table: "enchantments", load: (gameLocale) => getCodexEnchantments({ gameLocale }), fields: TITLE_AND_DESCRIPTION },
   // Monsters have no description template; only the name changes between builds.
   { type: "monster", table: "monsters", load: (gameLocale) => getCodexMonsters({ gameLocale }), fields: [["name", (id) => `${id}.name`]], locales: ["kor", "eng"] },
+  // Patch pages and Compendium versions name these as they were at the version (굴뚝 before 배기 장치).
+  { type: "power", table: "powers", load: (gameLocale) => getCodexPowers({ includeDeprecated: true, gameLocale }), fields: [["name", (id) => `${id}_POWER.title`]] },
+  { type: "event", table: "events", load: (gameLocale) => getCodexEvents({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
+  { type: "encounter", table: "encounters", load: (gameLocale) => getCodexEncounters({ gameLocale }), fields: [["name", (id) => `${id}.title`]] },
 ];
 
 /**

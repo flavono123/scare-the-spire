@@ -40,7 +40,8 @@ import {
 } from "@/lib/service-metadata";
 import { getPatchVersionLabel, isPatchDraft } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
-import type { PatchType, STS2Patch } from "@/lib/types";
+import type { EntityVersionDiff, PatchType, STS2Patch, VersionedEntityType } from "@/lib/types";
+import { compareVersions, reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
 import { getDebateGameCopy, getPatchStageGameCopy, getPatchBackstabGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
@@ -321,11 +322,12 @@ function addExplicitPatchTagLabel(
 
 function explicitPatchTagLabels(markdown: string): Map<EntityInfo["type"], Set<string>> {
   const labelsByType = new Map<EntityInfo["type"], Set<string>>();
-  const tagRe = /\[gold:([a-z]+)\]([\s\S]*?)\[\/gold\]/gi;
+  // Untyped [gold]덱[/gold] goes under "*": a one-character name never passes the text search.
+  const tagRe = /\[gold(?::([a-z]+))?\]([\s\S]*?)\[\/gold\]/gi;
   let match: RegExpExecArray | null;
 
   while ((match = tagRe.exec(markdown)) !== null) {
-    addExplicitPatchTagLabel(labelsByType, match[1], match[2]);
+    addExplicitPatchTagLabel(labelsByType, match[1] ?? "*", match[2]);
   }
 
   return labelsByType;
@@ -335,8 +337,8 @@ function patchEntityIsExplicitlyTagged(
   labelsByType: Map<EntityInfo["type"], Set<string>>,
   entity: EntityInfo,
 ): boolean {
-  const labels = labelsByType.get(entity.type);
-  if (!labels) return false;
+  const labels = new Set([...(labelsByType.get(entity.type) ?? []), ...(labelsByType.get("*" as EntityInfo["type"]) ?? [])]);
+  if (labels.size === 0) return false;
 
   return [
     entity.nameEn,
@@ -361,6 +363,58 @@ function filterPatchNoteEntities(markdown: string, entities: EntityInfo[]): Enti
       ...(entity.aliasesKo ?? []),
     ];
     return labels.some((label) => patchTextIncludesLabel(searchText, label));
+  });
+}
+
+function patchVersionedData(entity: EntityInfo): [VersionedEntityType, { id: string; name: string; nameEn: string }] | null {
+  if (entity.eventOptionDesc) return null;
+  switch (entity.type) {
+    case "card": return entity.cardData ? ["card", entity.cardData] : null;
+    case "relic": return entity.relicData ? ["relic", entity.relicData] : null;
+    case "potion": return entity.potionData ? ["potion", entity.potionData] : null;
+    case "power": return entity.powerData ? ["power", entity.powerData] : null;
+    case "enchantment": return entity.enchantmentData ? ["enchantment", entity.enchantmentData] : null;
+    case "event": return entity.eventData ? ["event", entity.eventData] : null;
+    case "monster": return entity.monsterData ? ["monster", entity.monsterData] : null;
+    case "encounter": return entity.encounterData ? ["encounter", entity.encounterData] : null;
+    default: return null;
+  }
+}
+
+/**
+ * Names each entity as the game did at this patch, from the same version data the
+ * Compendium version view uses (굴뚝 on 0.103.0, 배기 장치 from 0.104.0). Today's name stays an alias.
+ */
+function withPatchVersionNames(
+  entities: EntityInfo[],
+  patchVersion: string,
+  currentVersion: string,
+  versionDiffs: EntityVersionDiff[],
+  patches: STS2Patch[],
+  gameLocale: GameLocale,
+): EntityInfo[] {
+  const renamedLater = new Set(
+    versionDiffs
+      .filter((entry) =>
+        compareVersions(entry.patch.replace(/^v/, ""), patchVersion) > 0 &&
+        entry.diffs.some((diff) => diff.field === "name" || diff.field === "nameEn"),
+      )
+      .map((entry) => `${entry.entityType}:${entry.entityId}`),
+  );
+  if (renamedLater.size === 0) return entities;
+  return entities.map((entity) => {
+    const versioned = patchVersionedData(entity);
+    if (!versioned || !renamedLater.has(`${versioned[0]}:${versioned[1].id}`)) return entity;
+    const then = reconstructEntityAtVersion(versioned[1], versioned[0], patchVersion, currentVersion, versionDiffs, patches);
+    const nameKo = patchDisplayName(then.name, then.nameEn, gameLocale);
+    if (nameKo === entity.nameKo && then.nameEn === entity.nameEn) return entity;
+    return {
+      ...entity,
+      nameKo,
+      nameEn: then.nameEn,
+      aliasesKo: [...(entity.aliasesKo ?? []), entity.nameKo],
+      aliasesEn: [...(entity.aliasesEn ?? []), entity.nameEn],
+    };
   });
 }
 
@@ -1297,7 +1351,10 @@ export async function PatchDetailPage({
       };
     }),
   ];
-  const entities = applyCompendiumManifestAvailability(rawEntities, compendiumManifest);
+  const entities = applyCompendiumManifestAvailability(
+    withPatchVersionNames(rawEntities, patch.version, codexMeta.version, versionDiffs, patches, gameLocale),
+    compendiumManifest,
+  );
 
   const title = getPatchSeoTitle(patch, serviceLocale);
   const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;

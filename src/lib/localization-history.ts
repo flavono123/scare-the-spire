@@ -27,9 +27,16 @@ export type TrackedField = "name" | "descriptionRaw";
 
 /**
  * Entity types whose title and description come straight from the localization
- * tables (monsters: the name only).
+ * tables (monsters, powers, events and encounters: the name only).
  */
-export const LOCALIZATION_HISTORY_TYPES: readonly VersionedEntityType[] = ["card", "relic", "potion", "enchantment", "monster"];
+export const LOCALIZATION_HISTORY_TYPES: readonly VersionedEntityType[] = ["card", "relic", "potion", "enchantment", "monster", "power", "event", "encounter"];
+
+/** Types whose history holds only the name (their descriptions are rendered from other tables or authored diffs). */
+const NAME_ONLY_HISTORY_TYPES: readonly VersionedEntityType[] = ["monster", "power", "event", "encounter"];
+
+function historyTracksField(type: VersionedEntityType, field: TrackedField): boolean {
+  return LOCALIZATION_HISTORY_TYPES.includes(type) && (field === "name" || !NAME_ONLY_HISTORY_TYPES.includes(type));
+}
 
 /**
  * Text before this version was not pinned per locale. Older Compendium
@@ -80,10 +87,10 @@ export function localizeVersionDiffs(
   const localeText = history.text[locale] ?? {};
   const untracked = history.untracked[locale] ?? {};
   const tracked = (type: VersionedEntityType, id: string, field: TrackedField) =>
-    LOCALIZATION_HISTORY_TYPES.includes(type) && !untracked[type]?.includes(`${id}.${field}`);
+    historyTracksField(type, field) && !untracked[type]?.includes(`${id}.${field}`);
   const englishUntracked = history.untracked.eng ?? {};
   const englishTracked = (type: VersionedEntityType, id: string, field: TrackedField) =>
-    LOCALIZATION_HISTORY_TYPES.includes(type) && !englishUntracked[type]?.includes(`${id}.${field}`);
+    historyTracksField(type, field) && !englishUntracked[type]?.includes(`${id}.${field}`);
 
   const localized: EntityVersionDiff[] = base.map((entry) => {
     const pinned = compareVersions(bareVersion(entry.patch), history.pinnedFrom) > 0;
