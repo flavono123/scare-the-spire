@@ -667,7 +667,9 @@ function LocalizedEntityPreview({
   // always include the fail-closed "in progress" copy. Portals drop that
   // markup during SSR.
   const encounterFormations = entity.encounterData ? expandEncounterFormations(entity.encounterData) : [];
-  const portalHoverTips = !staticHoverPreviews && !forceShow && !isPendingCompendium;
+  // Tap previews only exist on the client, so a pending preview can portal there: inline it
+  // would sit below the full-screen close layer and show nothing on touch devices.
+  const portalHoverTips = !staticHoverPreviews && !forceShow && (!isPendingCompendium || useTapPreview);
   const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => {
     const body = useTapPreview ? (
       href ? (
