@@ -38,6 +38,9 @@ KNOWN_UPSTREAM_MISSING_CODEX_TITLE_KEYS = {
         "cards:SOULBOUND.title",
     },
     "esp": {
+        # v0.114.0: the game ships these without a title in this language (English fallback).
+        "cards:OPTIMISM.title",
+        "cards:TWIN_SHOT.title",
         "cards:CACOPHONY.title",
         "cards:CONSTELLATION.title",
         "cards:SOULBOUND.title",
@@ -47,6 +50,8 @@ KNOWN_UPSTREAM_MISSING_CODEX_TITLE_KEYS = {
         "relics:SILKEN_TRESS.title",
     },
     "fra": {
+        # v0.114.0: the game ships these without a title in this language (English fallback).
+        "cards:OPTIMISM.title",
         "cards:BLADE_SYMPHONY.title",
         "cards:BLAZE.title",
         "cards:CACOPHONY.title",
@@ -188,6 +193,9 @@ KNOWN_UPSTREAM_MISSING_CODEX_TITLE_KEYS = {
         "relics:SILKEN_TRESS.title",
     },
     "tur": {
+        # v0.114.0: the game ships these without a title in this language (English fallback).
+        "cards:OPTIMISM.title",
+        "cards:TWIN_SHOT.title",
         # v0.113.0: the game ships these without a tur title (English fallback).
         "cards:COMPOST.title",
         "cards:ENRAPTURE.title",
