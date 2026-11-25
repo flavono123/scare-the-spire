@@ -17,6 +17,8 @@ const HELP = `ssy <command>
   find <text> [--type card] [--limit 10]   Official ko/en name, id, type and URL (search index)
   changes <ENTITY_ID>                      Balance changes and field diffs per patch
   lines <version> [text]                   Patch line ids of one patch, filtered by text
+  tags <version>                           Check [gold:type]Name tags in both patch note files against official names
+  steam [version]                          Steam announcements; with a version, its title, publishedAt and raw contents
   api                                      Public GET routes and their query keys
   api <path> [key=value ...] [--host prod|testbed|local]   Call a public GET route (default prod)
   ci [--limit 3]                           Deploy runs: queue wait, run time, steps over 60s
@@ -101,6 +103,52 @@ async function api({ args, opts }: Flags) {
   if (!res.ok) process.exitCode = 1;
 }
 
+// Uses the patch renderer's own lookup, so a flagged tag is exactly one that renders without hover/link.
+async function tags({ args }: Flags) {
+  const version = args[0]?.replace(/^v?/, "v");
+  if (!version) throw new Error("tags <version>");
+  const { loadAllEntities } = await import("../src/lib/load-all-entities");
+  const { buildEntityLookup, findEntity } = await import("../src/components/patch-note-renderer");
+  const lookup = buildEntityLookup(await loadAllEntities({ gameLocale: "kor" }));
+  let problems = 0;
+  for (const file of [`${version}.ko.md`, `${version}.md`]) {
+    const rel = `data/sts2-patch-notes/${file}`;
+    if (!existsSync(path.join(root, rel))) continue;
+    for (const [, type, text] of readFileSync(path.join(root, rel), "utf8").matchAll(/\[gold(?::([a-zA-Z]+))?\]([^[]+)\[\/gold\]/g)) {
+      // shortcut: monster moves are added by the patch build with line context, not by loadAllEntities; not checked here.
+      if (type === "monsterMove") continue;
+      const hit = findEntity(text, lookup, type);
+      let issue = "";
+      if (type && !hit) issue = `no ${type} named this: no hover/link`;
+      // Untyped names resolve by name, so only a name shared by two types needs a hint.
+      else if (!type && hit) {
+        const types = new Set([...(lookup.allByKo?.get(text.trim().toLowerCase()) ?? []), ...(lookup.allByEn?.get(text.trim().toLowerCase()) ?? [])].map((e) => e.type));
+        if (types.size > 1) issue = `ambiguous (${[...types].join("/")}), resolves to ${hit.type}: add a type hint`;
+      }
+      if (issue) {
+        problems++;
+        console.log(`${file}\t[gold${type ? `:${type}` : ""}]${text}\t${issue}`);
+      }
+    }
+  }
+  if (problems) process.exitCode = 1;
+}
+
+type SteamItem = { gid: string; title: string; date: number; contents: string };
+async function steam({ args }: Flags) {
+  const res = await fetch("https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2868840&count=15&maxlength=300000&format=json&feeds=steam_community_announcements");
+  const items: SteamItem[] = (await res.json()).appnews.newsitems;
+  const version = args[0]?.replace(/^v/, "");
+  if (!version) {
+    for (const i of items) console.log(`${new Date(i.date * 1000).toISOString()}\t${i.title}`);
+    return;
+  }
+  const item = items.find((i) => i.title.includes(version));
+  if (!item) throw new Error(`no Steam announcement titled with ${version} yet`);
+  // gid is not a store news id: steamUrl must be a real store.steampowered.com/news/app/2868840/view/... URL.
+  console.log(`title: ${item.title}\npublishedAt: ${new Date(item.date * 1000).toISOString()}\n\n${item.contents}`);
+}
+
 type Step = { name: string; startedAt: string | null; completedAt: string | null };
 type Job = { name: string; startedAt: string; completedAt: string | null; steps: Step[] };
 function ci({ opts }: Flags) {
@@ -118,7 +166,10 @@ function ci({ opts }: Flags) {
   }
 }
 
-const commands: Record<string, (f: Flags) => unknown> = { find, changes, lines, api, ci };
+process.stdout.on("error", (error: NodeJS.ErrnoException) => {
+  if (error.code !== "EPIPE") throw error; // `| head` closing the pipe is fine
+});
+const commands: Record<string, (f: Flags) => unknown> = { find, changes, lines, tags, steam, api, ci };
 const [cmd, ...rest] = process.argv.slice(2);
 const run = commands[cmd ?? ""];
 if (!run) {
