@@ -3036,7 +3036,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.100.0:line-094-monster-rocket-ascension-level-08 v0.100.0 0.100.0 밸런스 적 로켓 (버프): • 충전 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. • hp 189(199) -> 199(209). • 꽃게의 격노 힘 5 -> 6. rocket (buff): • charge up move strength gain now scales with ascension from 2(2) -> 2(3). • hp increased from 189(199) -> 199(209). • crab rage strength buffed from 5 -> 6. monster rocket 로켓 로켓 rocket ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.100.0:line-094-monster-rocket-ascension-level-08 v0.100.0 0.100.0 밸런스 적 로켓 (버프): • 충전 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. • hp 189(199) -> 199(209). • 꽃게의 격노 힘 5 -> 6. rocket (buff): • charge up move strength gain now scales with ascension from 2(2) -> 2(3). • hp increased from 189(199) -> 199(209). • crab rage strength buffed from 5 -> 6. monster rocket 로켓 로켓 rocket ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.100.0:line-095-text-1e9369d",
@@ -3135,7 +3135,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.100.0:line-098-monster-crusher-ascension-level-08 v0.100.0 0.100.0 밸런스 적 분쇄자 (버프): • 적응 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. • hp 199(209) -> 209(219). • 꽃게의 격노 힘 5 -> 6. crusher (buff): • adapt move strength gain now scales with ascension from 2(2) -> 2(3). • hp increased from 199(209) -> 209(219). • crab rage strength buffed from 5 -> 6. monster crusher 분쇄자 분쇄자 crusher ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.100.0:line-098-monster-crusher-ascension-level-08 v0.100.0 0.100.0 밸런스 적 분쇄자 (버프): • 적응 행동의 힘 획득이 승천에 따라 2(2) -> 2(3)으로 스케일됩니다. • hp 199(209) -> 209(219). • 꽃게의 격노 힘 5 -> 6. crusher (buff): • adapt move strength gain now scales with ascension from 2(2) -> 2(3). • hp increased from 199(209) -> 209(219). • crab rage strength buffed from 5 -> 6. monster crusher 분쇄자 분쇄자 crusher ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.100.0:line-099-text-1312j52",
@@ -3232,7 +3232,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.100.0:line-102-monster-decimillipede-segment-ascension-level-08 v0.100.0 0.100.0 밸런스 적 만각지네 (너프): hp 42(48)-48(56) -> 40(46)-46(52). decimillipede (nerf): hp decreased from 42(48)-48(56) to 40(46)-46(52). monster decimillipede_segment 만각지네 만각지네 decimillipede ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.100.0:line-102-monster-decimillipede-segment-ascension-level-08 v0.100.0 0.100.0 밸런스 적 만각지네 (너프): hp 42(48)-48(56) -> 40(46)-46(52). decimillipede (nerf): hp decreased from 42(48)-48(56) to 40(46)-46(52). monster decimillipede_segment 만각지네 만각지네 decimillipede ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.100.0:line-103-monster-fabricator",
@@ -3325,7 +3325,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.100.0:line-105-monster-living-fog-monster-gas-bomb v0.100.0 0.100.0 밸런스 적 살아있는 안개 조우 (너프): 가스 폭탄 hp 10(12) -> 7(8). living fog encounter (nerf): gas bomb hp decreased from 10(12) -> 7(8). monster living_fog 살아있는 안개 살아있는 안개 living fog monster gas_bomb 가스 폭탄 가스 폭탄 gas bomb ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.100.0:line-105-monster-living-fog-monster-gas-bomb v0.100.0 0.100.0 밸런스 적 살아있는 안개 조우 (너프): 가스 폭탄 hp 10(12) -> 7(8). living fog encounter (nerf): gas bomb hp decreased from 10(12) -> 7(8). monster living_fog 살아있는 안개 살아있는 안개 living fog monster gas_bomb 가스 폭탄 가스 폭탄 gas bomb ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.100.0:line-106-encounter-the-lost-and-forgotten-normal-ascension-level-09",
@@ -3358,7 +3358,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.100.0:line-106-encounter-the-lost-and-forgotten-normal-ascension-level-09 v0.100.0 0.100.0 밸런스 적 사라진 자와 잊힌 자 (버프): • 능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3. • 잊힌 자가 자신이 가진 민첩마다 피해를 1 추가로 줍니다. the lost and the forgotten (buff): • stat stealing now scales with ascension; increased from 2 -> 3 of their respective stat at a9. • the forgotten now deals an additional point of damage for every dexterity it has. encounter the_lost_and_forgotten_normal 사라진 자와 잊힌 자 사라진 자와 잊힌 자 lost and forgotten ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.100.0:line-106-encounter-the-lost-and-forgotten-normal-ascension-level-09 v0.100.0 0.100.0 밸런스 적 사라진 자와 잊힌 자 (버프): • 능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3. • 잊힌 자가 자신이 가진 민첩마다 피해를 1 추가로 줍니다. the lost and the forgotten (buff): • stat stealing now scales with ascension; increased from 2 -> 3 of their respective stat at a9. • the forgotten now deals an additional point of damage for every dexterity it has. encounter the_lost_and_forgotten_normal 사라진 자와 잊힌 자 사라진 자와 잊힌 자 lost and forgotten ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.100.0:line-107-ascension-level-09",
@@ -3384,7 +3384,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.100.0:line-107-ascension-level-09 v0.100.0 0.100.0 밸런스 적 능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3. stat stealing now scales with ascension; increased from 2 -> 3 of their respective stat at a9. ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.100.0:line-107-ascension-level-09 v0.100.0 0.100.0 밸런스 적 능력치 강탈이 승천에 따라 스케일됩니다. 승천 9에서 각각 2 -> 3. stat stealing now scales with ascension; increased from 2 -> 3 of their respective stat at a9. ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.100.0:line-108-monster-the-forgotten",
@@ -3448,7 +3448,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.100.0:line-109-monster-nibbit-ascension-level-09 v0.100.0 0.100.0 밸런스 적 깨작이 변경: 이제 승천에 맞게 스케일됩니다. • 쉿 행동의 힘이 승천 9에서 2 -> 3. • 베기 피해가 승천 9에서 6 -> 7. • 베기 방어도가 승천 8에서 5 -> 6. changed nibbit: now properly scales with ascension. • hiss move now scales from 2 -> 3 strength on a9. • slice move damage now scales from 6 -> 7 on a9. • slice move block now scales from 5 -> 6 on a8. monster nibbit 깨작이 깨작이 nibbit ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9 ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.100.0:line-109-monster-nibbit-ascension-level-09 v0.100.0 0.100.0 밸런스 적 깨작이 변경: 이제 승천에 맞게 스케일됩니다. • 쉿 행동의 힘이 승천 9에서 2 -> 3. • 베기 피해가 승천 9에서 6 -> 7. • 베기 방어도가 승천 8에서 5 -> 6. changed nibbit: now properly scales with ascension. • hiss move now scales from 2 -> 3 strength on a9. • slice move damage now scales from 6 -> 7 on a9. • slice move block now scales from 5 -> 6 on a8. monster nibbit 깨작이 깨작이 nibbit ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4 ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.100.0:line-110-ascension-level-09",
@@ -3474,7 +3474,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.100.0:line-110-ascension-level-09 v0.100.0 0.100.0 밸런스 적 쉿 행동의 힘이 승천 9에서 2 -> 3. hiss move now scales from 2 -> 3 strength on a9. ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.100.0:line-110-ascension-level-09 v0.100.0 0.100.0 밸런스 적 쉿 행동의 힘이 승천 9에서 2 -> 3. hiss move now scales from 2 -> 3 strength on a9. ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.100.0:line-111-ascension-level-09",
@@ -3500,7 +3500,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.100.0:line-111-ascension-level-09 v0.100.0 0.100.0 밸런스 적 베기 피해가 승천 9에서 6 -> 7. slice move damage now scales from 6 -> 7 on a9. ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.100.0:line-111-ascension-level-09 v0.100.0 0.100.0 밸런스 적 베기 피해가 승천 9에서 6 -> 7. slice move damage now scales from 6 -> 7 on a9. ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.100.0:line-112-ascension-level-08",
@@ -3526,7 +3526,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.100.0:line-112-ascension-level-08 v0.100.0 0.100.0 밸런스 적 베기 방어도가 승천 8에서 5 -> 6. slice move block now scales from 5 -> 6 on a8. ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.100.0:line-112-ascension-level-08 v0.100.0 0.100.0 밸런스 적 베기 방어도가 승천 8에서 5 -> 6. slice move block now scales from 5 -> 6 on a8. ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.100.0:line-113-monster-phantasmal-gardener-ascension-level-08",
@@ -3557,7 +3557,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.100.0:line-113-monster-phantasmal-gardener-ascension-level-08 v0.100.0 0.100.0 밸런스 적 허깨비 정원사 (너프): hp 28(29)-32(33) -> 26(27)-31(32). phantasmal gardener (nerf): hp decreased from 28(29)-32(33) -> 26(27)-31(32). monster phantasmal_gardener 허깨비 정원사 허깨비 정원사 phantasmal gardener ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.100.0:line-113-monster-phantasmal-gardener-ascension-level-08 v0.100.0 0.100.0 밸런스 적 허깨비 정원사 (너프): hp 28(29)-32(33) -> 26(27)-31(32). phantasmal gardener (nerf): hp decreased from 28(29)-32(33) -> 26(27)-31(32). monster phantasmal_gardener 허깨비 정원사 허깨비 정원사 phantasmal gardener ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.100.0:line-114-monster-seapunk",
@@ -13842,7 +13842,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.105.0:line-022-monster-soul-fysh-ascension-level-09 v0.105.0 0.105.0 컨텐츠 & 밸런스 적 영혼 물교기 (버프): 비명 행동의 피해량 11(12) -> 13(15). soul fysh (buff): scream move damage increased from 11(12) -> 13(15). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.105.0:line-022-monster-soul-fysh-ascension-level-09 v0.105.0 0.105.0 컨텐츠 & 밸런스 적 영혼 물교기 (버프): 비명 행동의 피해량 11(12) -> 13(15). soul fysh (buff): scream move damage increased from 11(12) -> 13(15). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.105.0:line-023-ancient-tezcatara-relic-pumpkin-candle",
@@ -16890,7 +16890,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.106.0:line-041-monster-skulking-colony-ascension-level-08 v0.106.0 0.106.0 컨텐츠 & 밸런스 적 잠행 군체 변경: • hp 70(75) -> 75(80). • 단단한 껍질 15 -> 20. • 강타 행동이 제거되고, 이제 1턴과 2턴에 급가속 행동을 사용합니다. • 더 이상 방어도를 얻지 않습니다. changed skulking colony: monster skulking_colony 잠행 군체 잠행 군체 skulking colony ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.106.0:line-041-monster-skulking-colony-ascension-level-08 v0.106.0 0.106.0 컨텐츠 & 밸런스 적 잠행 군체 변경: • hp 70(75) -> 75(80). • 단단한 껍질 15 -> 20. • 강타 행동이 제거되고, 이제 1턴과 2턴에 급가속 행동을 사용합니다. • 더 이상 방어도를 얻지 않습니다. changed skulking colony: monster skulking_colony 잠행 군체 잠행 군체 skulking colony ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.106.0:line-042-text-1wh02kk",
@@ -22707,7 +22707,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.107.1:line-022-monster-skulking-colony-ascension-level-08 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 잠행 군체 변경: • 체력이 70(75) -> 75(80)으로 증가했습니다. • 단단한 껍질이 15 -> 20으로 증가했습니다. • 후려치기 기술이 제거되었습니다. 이제 1, 2턴에 급가속을 사용합니다. • 더 이상 방어도를 획득하지 않습니다. • 높은 승천에서 힘을 얻는 턴에 이제 힘을 1 추가로 획득합니다. changed skulking colony: • hp increased from 70(75) -> 75(80) • hardened shell increased from 15 -> 20 • smash move removed; now uses zoom on turns 1 and 2 • no longer gains block • now gains +1 strength on its strength-gain turn at high ascension monster skulking_colony 잠행 군체 잠행 군체 skulking colony ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.107.1:line-022-monster-skulking-colony-ascension-level-08 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 잠행 군체 변경: • 체력이 70(75) -> 75(80)으로 증가했습니다. • 단단한 껍질이 15 -> 20으로 증가했습니다. • 후려치기 기술이 제거되었습니다. 이제 1, 2턴에 급가속을 사용합니다. • 더 이상 방어도를 획득하지 않습니다. • 높은 승천에서 힘을 얻는 턴에 이제 힘을 1 추가로 획득합니다. changed skulking colony: • hp increased from 70(75) -> 75(80) • hardened shell increased from 15 -> 20 • smash move removed; now uses zoom on turns 1 and 2 • no longer gains block • now gains +1 strength on its strength-gain turn at high ascension monster skulking_colony 잠행 군체 잠행 군체 skulking colony ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.107.1:line-023-text-1o0pf69",
@@ -22931,7 +22931,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.107.1:line-031-monster-scroll-of-biting-ascension-level-08 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 물어뜯는 두루마리: 31(32)-38(39) -> 30(33)-37(39). scrolls of biting: 31(32)-38(39) -> 30(33)-37(39) monster scroll_of_biting 물어뜯는 두루마리 물어뜯는 두루마리 scroll of biting ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.107.1:line-031-monster-scroll-of-biting-ascension-level-08 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 물어뜯는 두루마리: 31(32)-38(39) -> 30(33)-37(39). scrolls of biting: 31(32)-38(39) -> 30(33)-37(39) monster scroll_of_biting 물어뜯는 두루마리 물어뜯는 두루마리 scroll of biting ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.107.1:line-032-monster-owl-magistrate",
@@ -23014,7 +23014,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.107.1:line-034-monster-soul-fysh-ascension-level-09 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 영혼 물교기 (버프): 절규 기술의 피해량이 11(12) -> 13(15)로 증가했습니다. buffed soul fysh: scream move damage increased from 11(12) -> 13(15) monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.107.1:line-034-monster-soul-fysh-ascension-level-09 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 영혼 물교기 (버프): 절규 기술의 피해량이 11(12) -> 13(15)로 증가했습니다. buffed soul fysh: scream move damage increased from 11(12) -> 13(15) monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.107.1:line-035-monster-assassin-ruby-raider-ascension-level-09",
@@ -23045,7 +23045,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.107.1:line-035-monster-assassin-ruby-raider-ascension-level-09 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 암살 습격자 (너프): 피해량이 11(12) -> 10(11)로 감소했습니다. nerfed ruby raider assassin: damage decreased from 11(12) -> 10(11) monster assassin_ruby_raider 암살 습격자 암살 습격자 assassin raider ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.107.1:line-035-monster-assassin-ruby-raider-ascension-level-09 v0.107.1 0.107.1 콘텐츠 & 밸런스 적 암살 습격자 (너프): 피해량이 11(12) -> 10(11)로 감소했습니다. nerfed ruby raider assassin: damage decreased from 11(12) -> 10(11) monster assassin_ruby_raider 암살 습격자 암살 습격자 assassin raider ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.107.1:line-036-monster-vantom",
@@ -29732,7 +29732,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.108.0:line-006-monster-torch-head-amalgam-ascension-level-09 v0.108.0 0.108.0 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 승천 9에서 피해량이 증가했습니다. • 약한 태클 피해량이 14(15) -> 14(16)으로 증가했습니다. • 태클 피해량이 18(19) -> 18(22)로 증가했습니다. torch head amalgam (buff): increased damage at ascension 9. • weak tackle damage increased from 14(15) -> 14(16). • tackle damage increased from 18(19) -> 18(22). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.108.0:line-006-monster-torch-head-amalgam-ascension-level-09 v0.108.0 0.108.0 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 승천 9에서 피해량이 증가했습니다. • 약한 태클 피해량이 14(15) -> 14(16)으로 증가했습니다. • 태클 피해량이 18(19) -> 18(22)로 증가했습니다. torch head amalgam (buff): increased damage at ascension 9. • weak tackle damage increased from 14(15) -> 14(16). • tackle damage increased from 18(19) -> 18(22). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.108.0:line-007-text-utb59i",
@@ -32836,7 +32836,7 @@
         "label": "등반자의 골칫거리"
       }
     ],
-    "searchText": "v0.108.0:line-134-card-entropy-card-ascenders-bane v0.108.0 0.108.0 버그 수정 무색 카드 엔트로피가 저주를 등반자의 골칫거리로 변형할 수 있던 문제를 수정했습니다. fixed entropy being able to transform curses into ascender's bane. card entropy 엔트로피 엔트로피 entropy card ascenders_bane 등반자의 골칫거리 등반자의 골칫거리 ascender's bane ascension level_05 등반자의 골칫거리 등반자의 골칫거리 ascender's bane 승천 5 a5 ascension 5 a5"
+    "searchText": "v0.108.0:line-134-card-entropy-card-ascenders-bane v0.108.0 0.108.0 버그 수정 무색 카드 엔트로피가 저주를 등반자의 골칫거리로 변형할 수 있던 문제를 수정했습니다. fixed entropy being able to transform curses into ascender's bane. card entropy 엔트로피 엔트로피 entropy card ascenders_bane 등반자의 골칫거리 등반자의 골칫거리 ascender's bane ascension level_05 등반자의 골칫거리 등반자의 골칫거리 ascender's bane 승천 5 a5 블리츠 승천 5 ascension 5 a5 blitz ascension 5"
   },
   {
     "id": "v0.108.0:line-135-card-hellraiser-card-shining-strike",
@@ -34207,7 +34207,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.109.0:line-013-monster-aeonglass-ascension-level-09 v0.109.0 0.109.0 콘텐츠 & 밸런스 적 영겁의 모래시계 (너프): 초반 피해를 낮추기 위해 감쇠 피해량이 26(32) -> 22(26)으로 감소했습니다. aeonglass (nerf): ebb damage decreased from 26(32) -> 22(26) to reduce its front-loaded damage. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.109.0:line-013-monster-aeonglass-ascension-level-09 v0.109.0 0.109.0 콘텐츠 & 밸런스 적 영겁의 모래시계 (너프): 초반 피해를 낮추기 위해 감쇠 피해량이 26(32) -> 22(26)으로 감소했습니다. aeonglass (nerf): ebb damage decreased from 26(32) -> 22(26) to reduce its front-loaded damage. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.109.0:line-014-monster-torch-head-amalgam-ascension-level-09",
@@ -34238,7 +34238,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.109.0:line-014-monster-torch-head-amalgam-ascension-level-09 v0.109.0 0.109.0 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 이제 1턴에 새로운 강한 태클을 사용하며, 초반 피해량이 18(22) -> 26(32)으로 증가했습니다. torch head amalgam (buff): now starts with a new strong tackle move on turn 1, increasing front-loaded damage from 18(22) -> 26(32). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.109.0:line-014-monster-torch-head-amalgam-ascension-level-09 v0.109.0 0.109.0 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 이제 1턴에 새로운 강한 태클을 사용하며, 초반 피해량이 18(22) -> 26(32)으로 증가했습니다. torch head amalgam (buff): now starts with a new strong tackle move on turn 1, increasing front-loaded damage from 18(22) -> 26(32). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.109.0:line-015-relic-history-course",
@@ -38442,7 +38442,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.0:line-003-monster-axebot-ascension-level-09 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 잘라봇 (버프): • 망치 올려치기 피해량이 12(14) → 14(18)로 증가했습니다. • 이제 다시 등장할 때마다 최대 체력을 10 얻습니다. • 좌우 연타 피해량이 9(10)x2 → 10(11)x2로 증가했습니다. axebot (buff): • hammer uppercut damage increased from 12(14) -> 14(18). • now gains +10 max hp each time it respawns. • the one-two damage increased from 9(10)x2 -> 10(11)x2. monster axebot 잘라봇 잘라봇 axebot ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.0:line-003-monster-axebot-ascension-level-09 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 잘라봇 (버프): • 망치 올려치기 피해량이 12(14) → 14(18)로 증가했습니다. • 이제 다시 등장할 때마다 최대 체력을 10 얻습니다. • 좌우 연타 피해량이 9(10)x2 → 10(11)x2로 증가했습니다. axebot (buff): • hammer uppercut damage increased from 12(14) -> 14(18). • now gains +10 max hp each time it respawns. • the one-two damage increased from 9(10)x2 -> 10(11)x2. monster axebot 잘라봇 잘라봇 axebot ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.0:line-004-text-1cjdzdw",
@@ -38533,7 +38533,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.0:line-007-monster-mecha-knight-ascension-level-09 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 기계 기사 (버프): 화염 방사 턴에도 피해를 8(12) 줍니다. mecha knight (buff): now also deals 8(12) damage on its flamethrower turn. monster mecha_knight 기계 기사 기계 기사 mecha knight ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.0:line-007-monster-mecha-knight-ascension-level-09 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 기계 기사 (버프): 화염 방사 턴에도 피해를 8(12) 줍니다. mecha knight (buff): now also deals 8(12) damage on its flamethrower turn. monster mecha_knight 기계 기사 기계 기사 mecha knight ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.0:line-008-monster-exoskeleton-ascension-level-08",
@@ -38564,7 +38564,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.111.0:line-008-monster-exoskeleton-ascension-level-08 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 갑각충 (버프): 승천 8 체력이 24-28(25-29) → 24-28(26-30)으로 증가했습니다. exoskeleton (buff): hp at a8 increased from 24-28(25-29) -> 24-28(26-30). monster exoskeleton 갑각충 갑각충 exoskeleton ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.111.0:line-008-monster-exoskeleton-ascension-level-08 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 갑각충 (버프): 승천 8 체력이 24-28(25-29) → 24-28(26-30)으로 증가했습니다. exoskeleton (buff): hp at a8 increased from 24-28(25-29) -> 24-28(26-30). monster exoskeleton 갑각충 갑각충 exoskeleton ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.111.0:line-009-monster-globe-head-power-galvanic",
@@ -38600,7 +38600,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.0:line-009-monster-globe-head-power-galvanic v0.111.0 0.111.0 콘텐츠 및 밸런스 적 구체 머리 (버프): 승천 9에서 전류가 6(6) → 6(8)로 증가했습니다. globe head (buff): galvanic at a9 increased from 6(6) -> 6(8). monster globe_head 구체 머리 구체 머리 globe head power galvanic 전류 전류 galvanic ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.0:line-009-monster-globe-head-power-galvanic v0.111.0 0.111.0 콘텐츠 및 밸런스 적 구체 머리 (버프): 승천 9에서 전류가 6(6) → 6(8)로 증가했습니다. globe head (buff): galvanic at a9 increased from 6(6) -> 6(8). monster globe_head 구체 머리 구체 머리 globe head power galvanic 전류 전류 galvanic ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.0:line-010-monster-louse-progenitor-power-strength",
@@ -38636,7 +38636,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.0:line-010-monster-louse-progenitor-power-strength v0.111.0 0.111.0 콘텐츠 및 밸런스 적 태초의 공벌레 (버프): 승천 9에서 힘 획득량이 5(5) → 5(7)로 증가했습니다. louse progenitor (buff): strength gain at a9 increased from 5(5) -> 5(7). monster louse_progenitor 태초의 공벌레 태초의 공벌레 louse progenitor power strength 힘 힘 strength ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.0:line-010-monster-louse-progenitor-power-strength v0.111.0 0.111.0 콘텐츠 및 밸런스 적 태초의 공벌레 (버프): 승천 9에서 힘 획득량이 5(5) → 5(7)로 증가했습니다. louse progenitor (buff): strength gain at a9 increased from 5(5) -> 5(7). monster louse_progenitor 태초의 공벌레 태초의 공벌레 louse progenitor power strength 힘 힘 strength ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.0:line-011-monster-soul-fysh-ascension-level-09",
@@ -38667,7 +38667,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.0:line-011-monster-soul-fysh-ascension-level-09 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 영혼 물교기 (버프): 승천 9에서 가스 방출 피해량이 16(17) → 16(18)로 증가했습니다. soul fysh (buff): de-gas damage at a9 increased from 16(17) -> 16(18). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.0:line-011-monster-soul-fysh-ascension-level-09 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 영혼 물교기 (버프): 승천 9에서 가스 방출 피해량이 16(17) → 16(18)로 증가했습니다. soul fysh (buff): de-gas damage at a9 increased from 16(17) -> 16(18). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.0:line-012-monster-entomancer-ascension-level-08",
@@ -38698,7 +38698,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.111.0:line-012-monster-entomancer-ascension-level-08 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 곤충술사 (버프): 승천 8 체력이 145(155) → 145(165)로 증가했습니다. entomancer (buff): hp at a8 increased from 145(155) -> 145(165). monster entomancer 곤충술사 곤충술사 entomancer ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.111.0:line-012-monster-entomancer-ascension-level-08 v0.111.0 0.111.0 콘텐츠 및 밸런스 적 곤충술사 (버프): 승천 8 체력이 145(155) → 145(165)로 증가했습니다. entomancer (buff): hp at a8 increased from 145(155) -> 145(165). monster entomancer 곤충술사 곤충술사 entomancer ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.111.0:line-013-card-rend",
@@ -40882,7 +40882,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.113.0:line-034-monster-axebot-ascension-level-08 v0.113.0 0.113.0 콘텐츠 및 밸런스 적 잘라봇 변경: 체력이 범위 대신 고정값이 되었습니다. 70-78 → 70 (승천 8에서 76-86 → 80). changed axebot: hp is now a fixed value instead of a range, from 70-78 -> 70 (76-86 -> 80 at a8). monster axebot 잘라봇 잘라봇 axebot ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.113.0:line-034-monster-axebot-ascension-level-08 v0.113.0 0.113.0 콘텐츠 및 밸런스 적 잘라봇 변경: 체력이 범위 대신 고정값이 되었습니다. 70-78 → 70 (승천 8에서 76-86 → 80). changed axebot: hp is now a fixed value instead of a range, from 70-78 -> 70 (76-86 -> 80 at a8). monster axebot 잘라봇 잘라봇 axebot ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.113.0:line-035-monster-infested-prism-ascension-level-08",
@@ -40915,7 +40915,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.113.0:line-035-monster-infested-prism-ascension-level-08 v0.113.0 0.113.0 콘텐츠 및 밸런스 적 감염된 프리즘 변경: • 더 이상 방출 행동을 쓰지 않습니다. 이제 패턴은 찌르기, 찌르기, 소용돌이, 맥박입니다. • 맥박이 더 이상 방어도를 20 (승천 8에서 22) 얻지 않습니다. 대신 취약을 1 부여합니다. changed infested prism: • no longer uses its radiate move. its pattern is now jab, jab, whirlwind, pulsate. • pulsate no longer gains 20 block (22 at a8). it now applies 1 vulnerable instead. monster infested_prism 감염된 프리즘 감염된 프리즘 infested prism ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.113.0:line-035-monster-infested-prism-ascension-level-08 v0.113.0 0.113.0 콘텐츠 및 밸런스 적 감염된 프리즘 변경: • 더 이상 방출 행동을 쓰지 않습니다. 이제 패턴은 찌르기, 찌르기, 소용돌이, 맥박입니다. • 맥박이 더 이상 방어도를 20 (승천 8에서 22) 얻지 않습니다. 대신 취약을 1 부여합니다. changed infested prism: • no longer uses its radiate move. its pattern is now jab, jab, whirlwind, pulsate. • pulsate no longer gains 20 block (22 at a8). it now applies 1 vulnerable instead. monster infested_prism 감염된 프리즘 감염된 프리즘 infested prism ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.113.0:line-036-text-10x5kbn",
@@ -40966,7 +40966,7 @@
         "label": "취약"
       }
     ],
-    "searchText": "v0.113.0:line-037-ascension-level-08-power-vulnerable v0.113.0 0.113.0 콘텐츠 및 밸런스 적 맥박이 더 이상 방어도를 20 (승천 8에서 22) 얻지 않습니다. 대신 취약을 1 부여합니다. pulsate no longer gains 20 block (22 at a8). it now applies 1 vulnerable instead. ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8 power vulnerable 취약 취약 vulnerable"
+    "searchText": "v0.113.0:line-037-ascension-level-08-power-vulnerable v0.113.0 0.113.0 콘텐츠 및 밸런스 적 맥박이 더 이상 방어도를 20 (승천 8에서 22) 얻지 않습니다. 대신 취약을 1 부여합니다. pulsate no longer gains 20 block (22 at a8). it now applies 1 vulnerable instead. ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3 power vulnerable 취약 취약 vulnerable"
   },
   {
     "id": "v0.113.0:line-038-monster-tunneler-ascension-level-09",
@@ -40997,7 +40997,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.113.0:line-038-monster-tunneler-ascension-level-09 v0.113.0 0.113.0 콘텐츠 및 밸런스 적 땅굴충 (버프): 하단 공격의 이름이 지하 공격으로 바뀌고, 피해량이 23 → 24 (승천 9에서 26 → 28)로 증가했습니다. tunneler (buff): attack from below renamed to from below, and its damage increased from 23 -> 24 (26 -> 28 at a9). monster tunneler 땅굴충 땅굴충 tunneler ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.113.0:line-038-monster-tunneler-ascension-level-09 v0.113.0 0.113.0 콘텐츠 및 밸런스 적 땅굴충 (버프): 하단 공격의 이름이 지하 공격으로 바뀌고, 피해량이 23 → 24 (승천 9에서 26 → 28)로 증가했습니다. tunneler (buff): attack from below renamed to from below, and its damage increased from 23 -> 24 (26 -> 28 at a9). monster tunneler 땅굴충 땅굴충 tunneler ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.113.0:line-039-card-my-shinies",
@@ -45365,7 +45365,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.1:line-024-monster-aeonglass-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 영겁의 모래시계 (너프): 초반에 몰리는 피해를 낮추기 위해 감쇠 패턴의 피해량이 26(32) → 22(26)으로 감소했습니다. aeonglass (nerf): ebb move damage decreased from 26(32) -> 22(26) to lower its front-loaded damage. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.1:line-024-monster-aeonglass-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 영겁의 모래시계 (너프): 초반에 몰리는 피해를 낮추기 위해 감쇠 패턴의 피해량이 26(32) → 22(26)으로 감소했습니다. aeonglass (nerf): ebb move damage decreased from 26(32) -> 22(26) to lower its front-loaded damage. monster aeonglass 영겁의 모래시계 영겁의 모래시계 aeonglass ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.1:line-025-monster-torch-head-amalgam-ascension-level-09",
@@ -45397,7 +45397,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.1:line-025-monster-torch-head-amalgam-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 초반 피해를 높이기 위해 1턴에 새 강력 태클 패턴으로 시작합니다. 피해량은 26(32)입니다. torch head amalgam (buff): now starts with a new strong tackle move on turn 1 to increase front-loaded damage. deals 26(32) damage. • weak tackle damage at a9 increased from 14(15) -> 14(16). • tackle damage at a9 increased from 18(19) -> 18(22). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.1:line-025-monster-torch-head-amalgam-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 횃불머리 융합체 (버프): 초반 피해를 높이기 위해 1턴에 새 강력 태클 패턴으로 시작합니다. 피해량은 26(32)입니다. torch head amalgam (buff): now starts with a new strong tackle move on turn 1 to increase front-loaded damage. deals 26(32) damage. • weak tackle damage at a9 increased from 14(15) -> 14(16). • tackle damage at a9 increased from 18(19) -> 18(22). monster torch_head_amalgam 횃불머리 융합체 횃불머리 융합체 torch head amalgam ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.1:line-026-ascension-level-09",
@@ -45423,7 +45423,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.1:line-026-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 약한 태클의 피해량이 승천 9에서 14(15) → 14(16)으로 증가했습니다. weak tackle damage at a9 increased from 14(15) -> 14(16). ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.1:line-026-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 약한 태클의 피해량이 승천 9에서 14(15) → 14(16)으로 증가했습니다. weak tackle damage at a9 increased from 14(15) -> 14(16). ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.1:line-027-ascension-level-09",
@@ -45449,7 +45449,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.1:line-027-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 태클의 피해량이 승천 9에서 18(19) → 18(22)로 증가했습니다. tackle damage at a9 increased from 18(19) -> 18(22). ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.1:line-027-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 태클의 피해량이 승천 9에서 18(19) → 18(22)로 증가했습니다. tackle damage at a9 increased from 18(19) -> 18(22). ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.1:line-028-monster-axebot",
@@ -45567,7 +45567,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.1:line-032-monster-mecha-knight-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 기계 기사 (버프): 이제 화염 방사 턴에도 피해를 8(12) 줍니다. mecha knight (buff): now also deals 8(12) damage on its flamethrower turn. monster mecha_knight 기계 기사 기계 기사 mecha knight ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.1:line-032-monster-mecha-knight-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 기계 기사 (버프): 이제 화염 방사 턴에도 피해를 8(12) 줍니다. mecha knight (buff): now also deals 8(12) damage on its flamethrower turn. monster mecha_knight 기계 기사 기계 기사 mecha knight ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.1:line-033-monster-entomancer-ascension-level-08",
@@ -45598,7 +45598,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.111.1:line-033-monster-entomancer-ascension-level-08 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 곤충술사 (버프): 승천 8 체력이 145(155) → 145(165)로 증가했습니다. entomancer (buff): hp at a8 increased from 145(155) -> 145(165). monster entomancer 곤충술사 곤충술사 entomancer ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.111.1:line-033-monster-entomancer-ascension-level-08 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 곤충술사 (버프): 승천 8 체력이 145(155) → 145(165)로 증가했습니다. entomancer (buff): hp at a8 increased from 145(155) -> 145(165). monster entomancer 곤충술사 곤충술사 entomancer ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.111.1:line-034-monster-exoskeleton-ascension-level-08",
@@ -45629,7 +45629,7 @@
         "label": "승천 8"
       }
     ],
-    "searchText": "v0.111.1:line-034-monster-exoskeleton-ascension-level-08 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 갑각충 (버프): 승천 8 체력이 24-28(25-29) → 24-28(26-30)으로 증가했습니다. exoskeleton (buff): hp at a8 increased from 24-28(25-29) -> 24-28(26-30). monster exoskeleton 갑각충 갑각충 exoskeleton ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 ascension 8 a8"
+    "searchText": "v0.111.1:line-034-monster-exoskeleton-ascension-level-08 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 갑각충 (버프): 승천 8 체력이 24-28(25-29) → 24-28(26-30)으로 증가했습니다. exoskeleton (buff): hp at a8 increased from 24-28(25-29) -> 24-28(26-30). monster exoskeleton 갑각충 갑각충 exoskeleton ascension level_08 승천 8 질긴 적들 tough enemies 승천 8 a8 블리츠 승천 3 ascension 8 a8 blitz ascension 3"
   },
   {
     "id": "v0.111.1:line-035-monster-globe-head-power-galvanic",
@@ -45665,7 +45665,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.1:line-035-monster-globe-head-power-galvanic v0.111.1 0.111.1 콘텐츠 & 밸런스 적 구체 머리 (버프): 전류 파워가 승천 9에서 6(6) → 6(8)로 증가했습니다. globe head (buff): galvanic power at a9 increased from 6(6) -> 6(8). monster globe_head 구체 머리 구체 머리 globe head power galvanic 전류 전류 galvanic ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.1:line-035-monster-globe-head-power-galvanic v0.111.1 0.111.1 콘텐츠 & 밸런스 적 구체 머리 (버프): 전류 파워가 승천 9에서 6(6) → 6(8)로 증가했습니다. globe head (buff): galvanic power at a9 increased from 6(6) -> 6(8). monster globe_head 구체 머리 구체 머리 globe head power galvanic 전류 전류 galvanic ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.1:line-036-monster-louse-progenitor-power-strength",
@@ -45701,7 +45701,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.1:line-036-monster-louse-progenitor-power-strength v0.111.1 0.111.1 콘텐츠 & 밸런스 적 태초의 공벌레 (버프): 힘 획득량이 승천 9에서 5(5) → 5(7)로 증가했습니다. louse progenitor (buff): strength gain at a9 increased from 5(5) -> 5(7). monster louse_progenitor 태초의 공벌레 태초의 공벌레 louse progenitor power strength 힘 힘 strength ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.1:line-036-monster-louse-progenitor-power-strength v0.111.1 0.111.1 콘텐츠 & 밸런스 적 태초의 공벌레 (버프): 힘 획득량이 승천 9에서 5(5) → 5(7)로 증가했습니다. louse progenitor (buff): strength gain at a9 increased from 5(5) -> 5(7). monster louse_progenitor 태초의 공벌레 태초의 공벌레 louse progenitor power strength 힘 힘 strength ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.1:line-037-monster-soul-fysh-ascension-level-09",
@@ -45732,7 +45732,7 @@
         "label": "승천 9"
       }
     ],
-    "searchText": "v0.111.1:line-037-monster-soul-fysh-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 영혼 물교기 (버프): 가스 방출 패턴의 피해량이 승천 9에서 16(17) → 16(18)로 증가했습니다. soul fysh (buff): de-gas move damage at a9 increased from 16(17) -> 16(18). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 ascension 9 a9"
+    "searchText": "v0.111.1:line-037-monster-soul-fysh-ascension-level-09 v0.111.1 0.111.1 콘텐츠 & 밸런스 적 영혼 물교기 (버프): 가스 방출 패턴의 피해량이 승천 9에서 16(17) → 16(18)로 증가했습니다. soul fysh (buff): de-gas move damage at a9 increased from 16(17) -> 16(18). monster soul_fysh 영혼 물교기 영혼 물교기 soul fysh ascension level_09 승천 9 지독한 적들 deadly enemies 승천 9 a9 블리츠 승천 4 ascension 9 a9 blitz ascension 4"
   },
   {
     "id": "v0.111.1:line-038-relic-history-course",
@@ -51805,7 +51805,7 @@
         "label": "등반자의 골칫거리"
       }
     ],
-    "searchText": "v0.111.1:line-285-card-entropy-card-ascenders-bane v0.111.1 0.111.1 버그 수정 무색 카드 엔트로피 카드가 저주를 등반자의 골칫거리로 변화시킬 수 있던 문제를 고쳤습니다. fixed entropy card being able to transform curses into ascender's bane. card entropy 엔트로피 엔트로피 entropy card ascenders_bane 등반자의 골칫거리 등반자의 골칫거리 ascender's bane ascension level_05 등반자의 골칫거리 등반자의 골칫거리 ascender's bane 승천 5 a5 ascension 5 a5"
+    "searchText": "v0.111.1:line-285-card-entropy-card-ascenders-bane v0.111.1 0.111.1 버그 수정 무색 카드 엔트로피 카드가 저주를 등반자의 골칫거리로 변화시킬 수 있던 문제를 고쳤습니다. fixed entropy card being able to transform curses into ascender's bane. card entropy 엔트로피 엔트로피 entropy card ascenders_bane 등반자의 골칫거리 등반자의 골칫거리 ascender's bane ascension level_05 등반자의 골칫거리 등반자의 골칫거리 ascender's bane 승천 5 a5 블리츠 승천 5 ascension 5 a5 blitz ascension 5"
   },
   {
     "id": "v0.111.1:line-286-card-juggling-card-uproar",
@@ -53272,5 +53272,3130 @@
     "textEn": "The \"Report Bug\" button is no longer shown in error dialogs when any player in a session has mods.",
     "entityRefs": [],
     "searchText": "v0.111.1:line-350-text-i7kppc v0.111.1 0.111.1 모딩 세션의 어느 플레이어라도 모드를 쓰면 오류 창에 \"버그 신고\" 버튼이 표시되지 않습니다. the \"report bug\" button is no longer shown in error dialogs when any player in a session has mods."
+  },
+  {
+    "id": "v0.114.0:line-001-power-hard-to-kill",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "적"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "Enemies"
+    ],
+    "markdownKo": "[gold:power]질긴 생존력[/gold] 파워 변경: 이제 체력 손실만 셉니다. 방어도에 막힌 피해는 세지 않습니다 (막힌 피해에는 이 파워가 작동하지 않는다는 뜻입니다).",
+    "markdownEn": "Changed the [gold:power]Hard to Kill[/gold] power: it now only counts HP loss, not damage to Block (meaning this power does not work on blocked damage).",
+    "textKo": "질긴 생존력 파워 변경: 이제 체력 손실만 셉니다. 방어도에 막힌 피해는 세지 않습니다 (막힌 피해에는 이 파워가 작동하지 않는다는 뜻입니다).",
+    "textEn": "Changed the Hard to Kill power: it now only counts HP loss, not damage to Block (meaning this power does not work on blocked damage).",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "HARD_TO_KILL",
+        "label": "질긴 생존력"
+      }
+    ],
+    "searchText": "v0.114.0:line-001-power-hard-to-kill v0.114.0 0.114.0 콘텐츠 및 밸런스 적 질긴 생존력 파워 변경: 이제 체력 손실만 셉니다. 방어도에 막힌 피해는 세지 않습니다 (막힌 피해에는 이 파워가 작동하지 않는다는 뜻입니다). changed the hard to kill power: it now only counts hp loss, not damage to block (meaning this power does not work on blocked damage). power hard_to_kill 질긴 생존력 질긴 생존력 hard to kill"
+  },
+  {
+    "id": "v0.114.0:line-002-card-my-shinies",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "무색 카드"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "Colorless Cards"
+    ],
+    "markdownKo": "[gold:card]내 반짝이들[/gold] 리워크: \"보유한 [gold]골드[/gold] 20(10)마다 피해를 1 줍니다.\" → \"피해를 2(3) 줍니다. 보유한 [gold]골드[/gold] 25마다 추가로 한 번 더 적중합니다.\"",
+    "markdownEn": "Reworked [gold:card]My Shinies[/gold]: \"Deal 1 damage for every 20(10) [gold]Gold[/gold] you have.\" -> \"Deal 2(3) damage. Hits an additional time for every 25 [gold]Gold[/gold] you have.\"",
+    "textKo": "내 반짝이들 리워크: \"보유한 골드 20(10)마다 피해를 1 줍니다.\" → \"피해를 2(3) 줍니다. 보유한 골드 25마다 추가로 한 번 더 적중합니다.\"",
+    "textEn": "Reworked My Shinies: \"Deal 1 damage for every 20(10) Gold you have.\" -> \"Deal 2(3) damage. Hits an additional time for every 25 Gold you have.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MY_SHINIES",
+        "label": "내 반짝이들"
+      }
+    ],
+    "searchText": "v0.114.0:line-002-card-my-shinies v0.114.0 0.114.0 콘텐츠 및 밸런스 무색 카드 내 반짝이들 리워크: \"보유한 골드 20(10)마다 피해를 1 줍니다.\" → \"피해를 2(3) 줍니다. 보유한 골드 25마다 추가로 한 번 더 적중합니다.\" reworked my shinies: \"deal 1 damage for every 20(10) gold you have.\" -> \"deal 2(3) damage. hits an additional time for every 25 gold you have.\" card my_shinies 내 반짝이들 내 반짝이들 my shinies"
+  },
+  {
+    "id": "v0.114.0:line-003-character-fool-epoch-fool2-epoch",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:character]풀[/gold]의 [gold:epoch]나는 뭐지?[/gold] 역사가 이제 [gold:card]화살통[/gold] 대신 [gold:card]연마[/gold]를 해금합니다.",
+    "markdownEn": "The Fool's [gold:epoch]What Am I?[/gold] Epoch now unlocks [gold:card]Honing[/gold] instead of [gold:card]Quiver[/gold].",
+    "textKo": "풀의 나는 뭐지? 역사가 이제 화살통 대신 연마를 해금합니다.",
+    "textEn": "The Fool's What Am I? Epoch now unlocks Honing instead of Quiver.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "FOOL",
+        "label": "풀"
+      },
+      {
+        "type": "epoch",
+        "id": "FOOL2_EPOCH",
+        "label": "나는 뭐지?"
+      },
+      {
+        "type": "card",
+        "id": "QUIVER",
+        "label": "화살통"
+      },
+      {
+        "type": "card",
+        "id": "HONING",
+        "label": "연마"
+      }
+    ],
+    "searchText": "v0.114.0:line-003-character-fool-epoch-fool2-epoch v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 풀의 나는 뭐지? 역사가 이제 화살통 대신 연마를 해금합니다. the fool's what am i? epoch now unlocks honing instead of quiver. character fool 풀 풀 the fool fool epoch fool2_epoch 나는 뭐지? 나는 뭐지? what am i? card quiver 화살통 화살통 quiver card honing 연마 연마 honing"
+  },
+  {
+    "id": "v0.114.0:line-004-card-optimism-card-sadness",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "새 카드 [gold:card]낙관[/gold]이 추가되었습니다: 비용 1 희귀 스킬, \"[gold]손[/gold]에 있는 모든 [gold:card]슬픔[/gold]을 [gold]소멸[/gold]시킵니다. [gold]소멸[/gold]시킨 카드 1장당 카드를 1장 뽑습니다. [gold]소멸[/gold]. (강화 시 [gold]소멸[/gold] 제거.)\"",
+    "markdownEn": "Added new card, [gold:card]Optimism[/gold]: Rare Skill, cost 1, \"[gold]Exhaust[/gold] ALL [gold:card]Sadness[/gold] in your Hand. Draw 1 card for each card [gold]Exhausted[/gold]. [gold]Exhaust[/gold]. (Lose [gold]Exhaust[/gold].)\"",
+    "textKo": "새 카드 낙관이 추가되었습니다: 비용 1 희귀 스킬, \"손에 있는 모든 슬픔을 소멸시킵니다. 소멸시킨 카드 1장당 카드를 1장 뽑습니다. 소멸. (강화 시 소멸 제거.)\"",
+    "textEn": "Added new card, Optimism: Rare Skill, cost 1, \"Exhaust ALL Sadness in your Hand. Draw 1 card for each card Exhausted. Exhaust. (Lose Exhaust.)\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "OPTIMISM",
+        "label": "낙관"
+      },
+      {
+        "type": "card",
+        "id": "SADNESS",
+        "label": "슬픔"
+      }
+    ],
+    "searchText": "v0.114.0:line-004-card-optimism-card-sadness v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 새 카드 낙관이 추가되었습니다: 비용 1 희귀 스킬, \"손에 있는 모든 슬픔을 소멸시킵니다. 소멸시킨 카드 1장당 카드를 1장 뽑습니다. 소멸. (강화 시 소멸 제거.)\" added new card, optimism: rare skill, cost 1, \"exhaust all sadness in your hand. draw 1 card for each card exhausted. exhaust. (lose exhaust.)\" card optimism 낙관 낙관 optimism card sadness 슬픔 슬픔 sadness"
+  },
+  {
+    "id": "v0.114.0:line-005-card-growth-card-sadness",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]성장[/gold] 리워크: \"[gold]손[/gold]에 있는 모든 [gold:card]슬픔[/gold]을 [gold]소멸[/gold]시킵니다. [gold]소멸[/gold]시킨 카드 1장당 [gold:power]스트레칭[/gold]을 4(6) 얻습니다.\" → \"[gold]방어도[/gold]를 8(11) 얻습니다. [gold]손[/gold]에 있는 무작위 [gold:card]슬픔[/gold] 1장을 이 카드의 복사본으로 [gold]변화[/gold]시킵니다.\"",
+    "markdownEn": "Reworked [gold:card]Growth[/gold]: \"[gold]Exhaust[/gold] ALL [gold:card]Sadness[/gold] in your Hand. Gain 4(6) [gold:power]Stretch[/gold] for each card [gold]Exhausted[/gold].\" -> \"Gain 8(11) [gold]Block[/gold]. [gold]Transform[/gold] 1 random [gold:card]Sadness[/gold] in your Hand into a copy of this card.\"",
+    "textKo": "성장 리워크: \"손에 있는 모든 슬픔을 소멸시킵니다. 소멸시킨 카드 1장당 스트레칭을 4(6) 얻습니다.\" → \"방어도를 8(11) 얻습니다. 손에 있는 무작위 슬픔 1장을 이 카드의 복사본으로 변화시킵니다.\"",
+    "textEn": "Reworked Growth: \"Exhaust ALL Sadness in your Hand. Gain 4(6) Stretch for each card Exhausted.\" -> \"Gain 8(11) Block. Transform 1 random Sadness in your Hand into a copy of this card.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "GROWTH",
+        "label": "성장"
+      },
+      {
+        "type": "card",
+        "id": "SADNESS",
+        "label": "슬픔"
+      },
+      {
+        "type": "power",
+        "id": "STRETCH",
+        "label": "스트레칭"
+      }
+    ],
+    "searchText": "v0.114.0:line-005-card-growth-card-sadness v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 성장 리워크: \"손에 있는 모든 슬픔을 소멸시킵니다. 소멸시킨 카드 1장당 스트레칭을 4(6) 얻습니다.\" → \"방어도를 8(11) 얻습니다. 손에 있는 무작위 슬픔 1장을 이 카드의 복사본으로 변화시킵니다.\" reworked growth: \"exhaust all sadness in your hand. gain 4(6) stretch for each card exhausted.\" -> \"gain 8(11) block. transform 1 random sadness in your hand into a copy of this card.\" card growth 성장 성장 growth card sadness 슬픔 슬픔 sadness power stretch 스트레칭 스트레칭 stretch"
+  },
+  {
+    "id": "v0.114.0:line-006-card-arrow-stab-power-aim",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]화살 찌르기[/gold] 리워크: 비용 1 일반 공격, \"피해를 9(12) 줍니다. [gold]화살[/gold]이 있다면, [gold]버린 카드 더미[/gold]에서 [gold]발사[/gold]할 수 있는 카드 1장을 [gold]손[/gold]으로 가져옵니다.\" → 비용 2 일반 공격, \"피해를 13(15) 줍니다. [gold:power]조준[/gold]을 6(8) 얻습니다.\"",
+    "markdownEn": "Reworked [gold:card]Arrow Stab[/gold]: Common Attack, cost 1, \"Deal 9(12) damage. If you have an [gold]Arrow[/gold], put a card that can [gold]Shoot[/gold] from your Discard Pile into your Hand.\" -> Common Attack, cost 2, \"Deal 13(15) damage. Gain 6(8) [gold:power]Aim[/gold].\"",
+    "textKo": "화살 찌르기 리워크: 비용 1 일반 공격, \"피해를 9(12) 줍니다. 화살이 있다면, 버린 카드 더미에서 발사할 수 있는 카드 1장을 손으로 가져옵니다.\" → 비용 2 일반 공격, \"피해를 13(15) 줍니다. 조준을 6(8) 얻습니다.\"",
+    "textEn": "Reworked Arrow Stab: Common Attack, cost 1, \"Deal 9(12) damage. If you have an Arrow, put a card that can Shoot from your Discard Pile into your Hand.\" -> Common Attack, cost 2, \"Deal 13(15) damage. Gain 6(8) Aim.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ARROW_STAB",
+        "label": "화살 찌르기"
+      },
+      {
+        "type": "power",
+        "id": "AIM",
+        "label": "조준"
+      }
+    ],
+    "searchText": "v0.114.0:line-006-card-arrow-stab-power-aim v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 화살 찌르기 리워크: 비용 1 일반 공격, \"피해를 9(12) 줍니다. 화살이 있다면, 버린 카드 더미에서 발사할 수 있는 카드 1장을 손으로 가져옵니다.\" → 비용 2 일반 공격, \"피해를 13(15) 줍니다. 조준을 6(8) 얻습니다.\" reworked arrow stab: common attack, cost 1, \"deal 9(12) damage. if you have an arrow, put a card that can shoot from your discard pile into your hand.\" -> common attack, cost 2, \"deal 13(15) damage. gain 6(8) aim.\" card arrow_stab 화살 찌르기 화살 찌르기 arrow stab power aim 조준 조준 aim"
+  },
+  {
+    "id": "v0.114.0:line-007-card-florescence-card-the-shot",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]개화[/gold] 리워크: 비용 0 희귀 스킬, \"[gold]발사[/gold]할 수 있는 모든 카드를 [gold]소멸[/gold]시키고 [gold:card]최후의 한 발[/gold](+)을 만듭니다. [gold]소멸[/gold].\" → 비용 1 희귀 스킬, \"[gold]손[/gold]에 있는 카드를 1장 선택해 [gold:card]최후의 한 발[/gold](+)로 [gold]변화[/gold]시킵니다.\"",
+    "markdownEn": "Reworked [gold:card]Florescence[/gold]: Rare Skill, cost 0, \"[gold]Exhaust[/gold] ALL of your cards that [gold]Shoot[/gold] and create [gold:card]The Shot[/gold](+). [gold]Exhaust[/gold].\" -> Rare Skill, cost 1, \"Choose a card in your Hand to [gold]Transform[/gold] into [gold:card]The Shot[/gold](+).\"",
+    "textKo": "개화 리워크: 비용 0 희귀 스킬, \"발사할 수 있는 모든 카드를 소멸시키고 최후의 한 발(+)을 만듭니다. 소멸.\" → 비용 1 희귀 스킬, \"손에 있는 카드를 1장 선택해 최후의 한 발(+)로 변화시킵니다.\"",
+    "textEn": "Reworked Florescence: Rare Skill, cost 0, \"Exhaust ALL of your cards that Shoot and create The Shot(+). Exhaust.\" -> Rare Skill, cost 1, \"Choose a card in your Hand to Transform into The Shot(+).\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "FLORESCENCE",
+        "label": "개화"
+      },
+      {
+        "type": "card",
+        "id": "THE_SHOT",
+        "label": "최후의 한 발"
+      }
+    ],
+    "searchText": "v0.114.0:line-007-card-florescence-card-the-shot v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 개화 리워크: 비용 0 희귀 스킬, \"발사할 수 있는 모든 카드를 소멸시키고 최후의 한 발(+)을 만듭니다. 소멸.\" → 비용 1 희귀 스킬, \"손에 있는 카드를 1장 선택해 최후의 한 발(+)로 변화시킵니다.\" reworked florescence: rare skill, cost 0, \"exhaust all of your cards that shoot and create the shot(+). exhaust.\" -> rare skill, cost 1, \"choose a card in your hand to transform into the shot(+).\" card florescence 개화 개화 florescence card the_shot 최후의 한 발 최후의 한 발 the shot"
+  },
+  {
+    "id": "v0.114.0:line-008-card-the-shot-card-florescence",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]최후의 한 발[/gold] 리워크: 비용 1 토큰 공격, \"[gold:card]개화[/gold]로 [gold]소멸[/gold]시킨 카드 1장당 피해를 10(13) 주는 [gold]화살[/gold]을 [gold]발사[/gold]합니다.\" → 비용 0 토큰 공격, \"피해를 20(25) 주는 [gold]화살[/gold]을 [gold]발사[/gold]합니다. [gold]소멸[/gold].\"",
+    "markdownEn": "Reworked [gold:card]The Shot[/gold]: Token Attack, cost 1, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 10(13) damage for each card [gold]Exhausted[/gold] by [gold:card]Florescence[/gold].\" -> Token Attack, cost 0, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 20(25) damage. [gold]Exhaust[/gold].\"",
+    "textKo": "최후의 한 발 리워크: 비용 1 토큰 공격, \"개화로 소멸시킨 카드 1장당 피해를 10(13) 주는 화살을 발사합니다.\" → 비용 0 토큰 공격, \"피해를 20(25) 주는 화살을 발사합니다. 소멸.\"",
+    "textEn": "Reworked The Shot: Token Attack, cost 1, \"Shoot an Arrow to deal 10(13) damage for each card Exhausted by Florescence.\" -> Token Attack, cost 0, \"Shoot an Arrow to deal 20(25) damage. Exhaust.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "THE_SHOT",
+        "label": "최후의 한 발"
+      },
+      {
+        "type": "card",
+        "id": "FLORESCENCE",
+        "label": "개화"
+      }
+    ],
+    "searchText": "v0.114.0:line-008-card-the-shot-card-florescence v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 최후의 한 발 리워크: 비용 1 토큰 공격, \"개화로 소멸시킨 카드 1장당 피해를 10(13) 주는 화살을 발사합니다.\" → 비용 0 토큰 공격, \"피해를 20(25) 주는 화살을 발사합니다. 소멸.\" reworked the shot: token attack, cost 1, \"shoot an arrow to deal 10(13) damage for each card exhausted by florescence.\" -> token attack, cost 0, \"shoot an arrow to deal 20(25) damage. exhaust.\" card the_shot 최후의 한 발 최후의 한 발 the shot card florescence 개화 개화 florescence"
+  },
+  {
+    "id": "v0.114.0:line-009-card-tune",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]조율[/gold] 리워크: 비용 2(1) 고급 파워, \"턴 종료 시 [gold]키 선율[/gold]이 있다면, 다음에 사용하는 카드의 비용이 에너지 0이 됩니다.\" → 비용 1 고급 파워, \"[gold]키 선율[/gold]을 얻을 때마다, [gold]손[/gold]에 있는 무작위 카드를 1(2)장 [gold]강화[/gold]합니다.\"",
+    "markdownEn": "Reworked [gold:card]Tune[/gold]: Uncommon Power, cost 2(1), \"At the end of your turn, if you have a [gold]Ki Melody[/gold], the next card you play costs 0 Energy.\" -> Uncommon Power, cost 1, \"Whenever you gain a [gold]Ki Melody[/gold], [gold]Upgrade[/gold] 1(2) random card(s) in your Hand.\"",
+    "textKo": "조율 리워크: 비용 2(1) 고급 파워, \"턴 종료 시 키 선율이 있다면, 다음에 사용하는 카드의 비용이 에너지 0이 됩니다.\" → 비용 1 고급 파워, \"키 선율을 얻을 때마다, 손에 있는 무작위 카드를 1(2)장 강화합니다.\"",
+    "textEn": "Reworked Tune: Uncommon Power, cost 2(1), \"At the end of your turn, if you have a Ki Melody, the next card you play costs 0 Energy.\" -> Uncommon Power, cost 1, \"Whenever you gain a Ki Melody, Upgrade 1(2) random card(s) in your Hand.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TUNE",
+        "label": "조율"
+      }
+    ],
+    "searchText": "v0.114.0:line-009-card-tune v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 조율 리워크: 비용 2(1) 고급 파워, \"턴 종료 시 키 선율이 있다면, 다음에 사용하는 카드의 비용이 에너지 0이 됩니다.\" → 비용 1 고급 파워, \"키 선율을 얻을 때마다, 손에 있는 무작위 카드를 1(2)장 강화합니다.\" reworked tune: uncommon power, cost 2(1), \"at the end of your turn, if you have a ki melody, the next card you play costs 0 energy.\" -> uncommon power, cost 1, \"whenever you gain a ki melody, upgrade 1(2) random card(s) in your hand.\" card tune 조율 조율 tune"
+  },
+  {
+    "id": "v0.114.0:line-010-card-rapid-shot-card-twin-shot",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]신속 사격[/gold]이 [gold:card]이중 사격[/gold]으로 리워크되었습니다: 비용 1 고급 공격, \"피해를 3 주는 [gold]화살[/gold]을 3(4)번 [gold]발사[/gold]합니다.\" → 비용 1 일반 공격, \"피해를 7(10)만큼 2번 주는 [gold]화살[/gold]을 [gold]발사[/gold]합니다.\"",
+    "markdownEn": "Reworked [gold:card]Rapid Shot[/gold] into [gold:card]Twin Shot[/gold]: Uncommon Attack, cost 1, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 3 damage 3(4) times.\" -> Common Attack, cost 1, \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 7(10) damage twice.\"",
+    "textKo": "신속 사격이 이중 사격으로 리워크되었습니다: 비용 1 고급 공격, \"피해를 3 주는 화살을 3(4)번 발사합니다.\" → 비용 1 일반 공격, \"피해를 7(10)만큼 2번 주는 화살을 발사합니다.\"",
+    "textEn": "Reworked Rapid Shot into Twin Shot: Uncommon Attack, cost 1, \"Shoot an Arrow to deal 3 damage 3(4) times.\" -> Common Attack, cost 1, \"Shoot an Arrow to deal 7(10) damage twice.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "RAPID_SHOT",
+        "label": "신속 사격"
+      },
+      {
+        "type": "card",
+        "id": "TWIN_SHOT",
+        "label": "이중 사격"
+      }
+    ],
+    "searchText": "v0.114.0:line-010-card-rapid-shot-card-twin-shot v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 신속 사격이 이중 사격으로 리워크되었습니다: 비용 1 고급 공격, \"피해를 3 주는 화살을 3(4)번 발사합니다.\" → 비용 1 일반 공격, \"피해를 7(10)만큼 2번 주는 화살을 발사합니다.\" reworked rapid shot into twin shot: uncommon attack, cost 1, \"shoot an arrow to deal 3 damage 3(4) times.\" -> common attack, cost 1, \"shoot an arrow to deal 7(10) damage twice.\" card rapid_shot 신속 사격 신속 사격 rapid shot card twin_shot 이중 사격 이중 사격 twin shot"
+  },
+  {
+    "id": "v0.114.0:line-011-card-mythic-form",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]신비의 형상[/gold] 변경:\n• 이제 [gold]휘발성[/gold]이 있습니다.\n• 강화하면 [gold]타로[/gold] 카드를 강화하는 대신 [gold]휘발성[/gold]을 잃습니다.",
+    "markdownEn": "Changed [gold:card]Mythic Form[/gold]:\n• Now has [gold]Ethereal[/gold].\n• Upgrade now loses [gold]Ethereal[/gold] instead of upgrading [gold]Tarot[/gold] cards.",
+    "summaryMarkdownKo": "[gold:card]신비의 형상[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:card]Mythic Form[/gold]:",
+    "textKo": "신비의 형상 변경:\n• 이제 휘발성이 있습니다.\n• 강화하면 타로 카드를 강화하는 대신 휘발성을 잃습니다.",
+    "textEn": "Changed Mythic Form:\n• Now has Ethereal.\n• Upgrade now loses Ethereal instead of upgrading Tarot cards.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MYTHIC_FORM",
+        "label": "신비의 형상"
+      }
+    ],
+    "searchText": "v0.114.0:line-011-card-mythic-form v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 신비의 형상 변경: • 이제 휘발성이 있습니다. • 강화하면 타로 카드를 강화하는 대신 휘발성을 잃습니다. changed mythic form: • now has ethereal. • upgrade now loses ethereal instead of upgrading tarot cards. card mythic_form 신비의 형상 신비의 형상 mythic form"
+  },
+  {
+    "id": "v0.114.0:line-012-text-pd7adg",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "이제 [gold]휘발성[/gold]이 있습니다.",
+    "markdownEn": "Now has [gold]Ethereal[/gold].",
+    "textKo": "이제 휘발성이 있습니다.",
+    "textEn": "Now has Ethereal.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-012-text-pd7adg v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 이제 휘발성이 있습니다. now has ethereal."
+  },
+  {
+    "id": "v0.114.0:line-013-text-wrigcd",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "강화하면 [gold]타로[/gold] 카드를 강화하는 대신 [gold]휘발성[/gold]을 잃습니다.",
+    "markdownEn": "Upgrade now loses [gold]Ethereal[/gold] instead of upgrading [gold]Tarot[/gold] cards.",
+    "textKo": "강화하면 타로 카드를 강화하는 대신 휘발성을 잃습니다.",
+    "textEn": "Upgrade now loses Ethereal instead of upgrading Tarot cards.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-013-text-wrigcd v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 강화하면 타로 카드를 강화하는 대신 휘발성을 잃습니다. upgrade now loses ethereal instead of upgrading tarot cards."
+  },
+  {
+    "id": "v0.114.0:line-014-card-cho-ready",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]초 준비[/gold] ([red][jitter]너프[/jitter][/red]):\n• [gold]방어도[/gold] 획득량이 8(11) → 8(10)으로 감소했습니다.\n• [gold:power]조준[/gold]이 3(5) → 3(4)로 감소했습니다.",
+    "markdownEn": "[gold:card]Cho Ready[/gold] ([red][jitter]nerf[/jitter][/red]):\n• [gold]Block[/gold] gain decreased from 8(11) -> 8(10).\n• [gold:power]Aim[/gold] decreased from 3(5) -> 3(4).",
+    "summaryMarkdownKo": "[gold:card]초 준비[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Cho Ready[/gold] ([red][jitter]nerf[/jitter][/red]):",
+    "textKo": "초 준비 (너프):\n• 방어도 획득량이 8(11) → 8(10)으로 감소했습니다.\n• 조준이 3(5) → 3(4)로 감소했습니다.",
+    "textEn": "Cho Ready (nerf):\n• Block gain decreased from 8(11) -> 8(10).\n• Aim decreased from 3(5) -> 3(4).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CHO_READY",
+        "label": "초 준비"
+      }
+    ],
+    "searchText": "v0.114.0:line-014-card-cho-ready v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 초 준비 (너프): • 방어도 획득량이 8(11) → 8(10)으로 감소했습니다. • 조준이 3(5) → 3(4)로 감소했습니다. cho ready (nerf): • block gain decreased from 8(11) -> 8(10). • aim decreased from 3(5) -> 3(4). card cho_ready 초 준비 초 준비 cho ready"
+  },
+  {
+    "id": "v0.114.0:line-015-text-1icsvgw",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold]방어도[/gold] 획득량이 8(11) → 8(10)으로 감소했습니다.",
+    "markdownEn": "[gold]Block[/gold] gain decreased from 8(11) -> 8(10).",
+    "textKo": "방어도 획득량이 8(11) → 8(10)으로 감소했습니다.",
+    "textEn": "Block gain decreased from 8(11) -> 8(10).",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-015-text-1icsvgw v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 방어도 획득량이 8(11) → 8(10)으로 감소했습니다. block gain decreased from 8(11) -> 8(10)."
+  },
+  {
+    "id": "v0.114.0:line-016-power-aim",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:power]조준[/gold]이 3(5) → 3(4)로 감소했습니다.",
+    "markdownEn": "[gold:power]Aim[/gold] decreased from 3(5) -> 3(4).",
+    "textKo": "조준이 3(5) → 3(4)로 감소했습니다.",
+    "textEn": "Aim decreased from 3(5) -> 3(4).",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "AIM",
+        "label": "조준"
+      }
+    ],
+    "searchText": "v0.114.0:line-016-power-aim v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 조준이 3(5) → 3(4)로 감소했습니다. aim decreased from 3(5) -> 3(4). power aim 조준 조준 aim"
+  },
+  {
+    "id": "v0.114.0:line-017-card-uproot",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]뽑아내기[/gold] ([green][sine]버프[/sine][/green]): 비용이 1 → 0으로 감소했습니다.",
+    "markdownEn": "[gold:card]Uproot[/gold] ([green][sine]buff[/sine][/green]): cost decreased from 1 -> 0.",
+    "textKo": "뽑아내기 (버프): 비용이 1 → 0으로 감소했습니다.",
+    "textEn": "Uproot (buff): cost decreased from 1 -> 0.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "UPROOT",
+        "label": "뽑아내기"
+      }
+    ],
+    "searchText": "v0.114.0:line-017-card-uproot v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 뽑아내기 (버프): 비용이 1 → 0으로 감소했습니다. uproot (buff): cost decreased from 1 -> 0. card uproot 뽑아내기 뽑아내기 uproot"
+  },
+  {
+    "id": "v0.114.0:line-018-card-heavy-shot",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]묵직한 사격[/gold] 변경:\n• 희귀도가 일반 → 고급으로 올랐습니다.\n• 피해량이 20(25) → 16(17)로 감소했습니다.\n• [gold:power]조준[/gold] 효과가 2 → 3(4)번으로 증가했습니다.",
+    "markdownEn": "Changed [gold:card]Heavy Shot[/gold]:\n• Rarity increased from Common -> Uncommon.\n• Damage decreased from 20(25) -> 16(17).\n• [gold:power]Aim[/gold] effect increased from 2 -> 3(4) times.",
+    "summaryMarkdownKo": "[gold:card]묵직한 사격[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:card]Heavy Shot[/gold]:",
+    "textKo": "묵직한 사격 변경:\n• 희귀도가 일반 → 고급으로 올랐습니다.\n• 피해량이 20(25) → 16(17)로 감소했습니다.\n• 조준 효과가 2 → 3(4)번으로 증가했습니다.",
+    "textEn": "Changed Heavy Shot:\n• Rarity increased from Common -> Uncommon.\n• Damage decreased from 20(25) -> 16(17).\n• Aim effect increased from 2 -> 3(4) times.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HEAVY_SHOT",
+        "label": "묵직한 사격"
+      }
+    ],
+    "searchText": "v0.114.0:line-018-card-heavy-shot v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 묵직한 사격 변경: • 희귀도가 일반 → 고급으로 올랐습니다. • 피해량이 20(25) → 16(17)로 감소했습니다. • 조준 효과가 2 → 3(4)번으로 증가했습니다. changed heavy shot: • rarity increased from common -> uncommon. • damage decreased from 20(25) -> 16(17). • aim effect increased from 2 -> 3(4) times. card heavy_shot 묵직한 사격 묵직한 사격 heavy shot"
+  },
+  {
+    "id": "v0.114.0:line-019-text-1cqoc2e",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "희귀도가 일반 → 고급으로 올랐습니다.",
+    "markdownEn": "Rarity increased from Common -> Uncommon.",
+    "textKo": "희귀도가 일반 → 고급으로 올랐습니다.",
+    "textEn": "Rarity increased from Common -> Uncommon.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-019-text-1cqoc2e v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 희귀도가 일반 → 고급으로 올랐습니다. rarity increased from common -> uncommon."
+  },
+  {
+    "id": "v0.114.0:line-020-text-a8uj1s",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "피해량이 20(25) → 16(17)로 감소했습니다.",
+    "markdownEn": "Damage decreased from 20(25) -> 16(17).",
+    "textKo": "피해량이 20(25) → 16(17)로 감소했습니다.",
+    "textEn": "Damage decreased from 20(25) -> 16(17).",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-020-text-a8uj1s v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 피해량이 20(25) → 16(17)로 감소했습니다. damage decreased from 20(25) -> 16(17)."
+  },
+  {
+    "id": "v0.114.0:line-021-power-aim",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:power]조준[/gold] 효과가 2 → 3(4)번으로 증가했습니다.",
+    "markdownEn": "[gold:power]Aim[/gold] effect increased from 2 -> 3(4) times.",
+    "textKo": "조준 효과가 2 → 3(4)번으로 증가했습니다.",
+    "textEn": "Aim effect increased from 2 -> 3(4) times.",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "AIM",
+        "label": "조준"
+      }
+    ],
+    "searchText": "v0.114.0:line-021-power-aim v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 조준 효과가 2 → 3(4)번으로 증가했습니다. aim effect increased from 2 -> 3(4) times. power aim 조준 조준 aim"
+  },
+  {
+    "id": "v0.114.0:line-022-card-punch-of-joy",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]강렬한 기쁨[/gold] ([green][sine]버프[/sine][/green]):\n• 피해량이 13(17) → 14(16)으로 증가했습니다.\n• 강화로 [gold:card]기쁨[/gold]으로 변화시키는 [gold:card]슬픔[/gold] 상태 카드가 1 → 2장으로 증가했습니다.",
+    "markdownEn": "[gold:card]Punch of Joy[/gold] ([green][sine]buff[/sine][/green]):\n• Damage increased from 13(17) -> 14(16).\n• [gold:card]Sadness[/gold] statuses transformed by upgrade increased from 1 -> 2.",
+    "summaryMarkdownKo": "[gold:card]강렬한 기쁨[/gold] ([green][sine]버프[/sine][/green]):",
+    "summaryMarkdownEn": "[gold:card]Punch of Joy[/gold] ([green][sine]buff[/sine][/green]):",
+    "textKo": "강렬한 기쁨 (버프):\n• 피해량이 13(17) → 14(16)으로 증가했습니다.\n• 강화로 기쁨으로 변화시키는 슬픔 상태 카드가 1 → 2장으로 증가했습니다.",
+    "textEn": "Punch of Joy (buff):\n• Damage increased from 13(17) -> 14(16).\n• Sadness statuses transformed by upgrade increased from 1 -> 2.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "PUNCH_OF_JOY",
+        "label": "강렬한 기쁨"
+      }
+    ],
+    "searchText": "v0.114.0:line-022-card-punch-of-joy v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 강렬한 기쁨 (버프): • 피해량이 13(17) → 14(16)으로 증가했습니다. • 강화로 기쁨으로 변화시키는 슬픔 상태 카드가 1 → 2장으로 증가했습니다. punch of joy (buff): • damage increased from 13(17) -> 14(16). • sadness statuses transformed by upgrade increased from 1 -> 2. card punch_of_joy 강렬한 기쁨 강렬한 기쁨 punch of joy"
+  },
+  {
+    "id": "v0.114.0:line-023-text-13o4ddh",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "피해량이 13(17) → 14(16)으로 증가했습니다.",
+    "markdownEn": "Damage increased from 13(17) -> 14(16).",
+    "textKo": "피해량이 13(17) → 14(16)으로 증가했습니다.",
+    "textEn": "Damage increased from 13(17) -> 14(16).",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-023-text-13o4ddh v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 피해량이 13(17) → 14(16)으로 증가했습니다. damage increased from 13(17) -> 14(16)."
+  },
+  {
+    "id": "v0.114.0:line-024-card-joy-card-sadness",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "강화로 [gold:card]기쁨[/gold]으로 변화시키는 [gold:card]슬픔[/gold] 상태 카드가 1 → 2장으로 증가했습니다.",
+    "markdownEn": "[gold:card]Sadness[/gold] statuses transformed by upgrade increased from 1 -> 2.",
+    "textKo": "강화로 기쁨으로 변화시키는 슬픔 상태 카드가 1 → 2장으로 증가했습니다.",
+    "textEn": "Sadness statuses transformed by upgrade increased from 1 -> 2.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "JOY",
+        "label": "기쁨"
+      },
+      {
+        "type": "card",
+        "id": "SADNESS",
+        "label": "슬픔"
+      }
+    ],
+    "searchText": "v0.114.0:line-024-card-joy-card-sadness v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 강화로 기쁨으로 변화시키는 슬픔 상태 카드가 1 → 2장으로 증가했습니다. sadness statuses transformed by upgrade increased from 1 -> 2. card joy 기쁨 기쁨 joy card sadness 슬픔 슬픔 sadness"
+  },
+  {
+    "id": "v0.114.0:line-025-card-motif-card-explosive-arrows",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]모티프[/gold]와 [gold:card]폭발성 화살[/gold] 변경: 희귀도를 맞바꿨습니다.",
+    "markdownEn": "Changed [gold:card]Motif[/gold] and [gold:card]Explosive Arrows[/gold]: swapped rarity.",
+    "textKo": "모티프와 폭발성 화살 변경: 희귀도를 맞바꿨습니다.",
+    "textEn": "Changed Motif and Explosive Arrows: swapped rarity.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MOTIF",
+        "label": "모티프"
+      },
+      {
+        "type": "card",
+        "id": "EXPLOSIVE_ARROWS",
+        "label": "폭발성 화살"
+      }
+    ],
+    "searchText": "v0.114.0:line-025-card-motif-card-explosive-arrows v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 모티프와 폭발성 화살 변경: 희귀도를 맞바꿨습니다. changed motif and explosive arrows: swapped rarity. card motif 모티프 모티프 motif card explosive_arrows 폭발성 화살 폭발성 화살 explosive arrows"
+  },
+  {
+    "id": "v0.114.0:line-026-card-explosive-arrows",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]폭발성 화살[/gold] ([green][sine]버프[/sine][/green]): 피해량이 6(8) → 8(11)로 증가했습니다.",
+    "markdownEn": "[gold:card]Explosive Arrows[/gold] ([green][sine]buff[/sine][/green]): damage increased from 6(8) -> 8(11).",
+    "textKo": "폭발성 화살 (버프): 피해량이 6(8) → 8(11)로 증가했습니다.",
+    "textEn": "Explosive Arrows (buff): damage increased from 6(8) -> 8(11).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "EXPLOSIVE_ARROWS",
+        "label": "폭발성 화살"
+      }
+    ],
+    "searchText": "v0.114.0:line-026-card-explosive-arrows v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 폭발성 화살 (버프): 피해량이 6(8) → 8(11)로 증가했습니다. explosive arrows (buff): damage increased from 6(8) -> 8(11). card explosive_arrows 폭발성 화살 폭발성 화살 explosive arrows"
+  },
+  {
+    "id": "v0.114.0:line-027-card-lullaby",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]자장가[/gold] ([red][jitter]너프[/jitter][/red]):\n• 비용이 0 → 1로 증가했습니다.\n• 강화해도 더 이상 [gold]선천성[/gold]을 얻지 않습니다.\n• [gold]방어도[/gold] 획득량이 20 → 12(16)으로 감소했습니다.",
+    "markdownEn": "[gold:card]Lullaby[/gold] ([red][jitter]nerf[/jitter][/red]):\n• Cost increased from 0 -> 1.\n• No longer gains [gold]Innate[/gold] on upgrade.\n• [gold]Block[/gold] gain decreased from 20 -> 12(16).",
+    "summaryMarkdownKo": "[gold:card]자장가[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Lullaby[/gold] ([red][jitter]nerf[/jitter][/red]):",
+    "textKo": "자장가 (너프):\n• 비용이 0 → 1로 증가했습니다.\n• 강화해도 더 이상 선천성을 얻지 않습니다.\n• 방어도 획득량이 20 → 12(16)으로 감소했습니다.",
+    "textEn": "Lullaby (nerf):\n• Cost increased from 0 -> 1.\n• No longer gains Innate on upgrade.\n• Block gain decreased from 20 -> 12(16).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "LULLABY",
+        "label": "자장가"
+      }
+    ],
+    "searchText": "v0.114.0:line-027-card-lullaby v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 자장가 (너프): • 비용이 0 → 1로 증가했습니다. • 강화해도 더 이상 선천성을 얻지 않습니다. • 방어도 획득량이 20 → 12(16)으로 감소했습니다. lullaby (nerf): • cost increased from 0 -> 1. • no longer gains innate on upgrade. • block gain decreased from 20 -> 12(16). card lullaby 자장가 자장가 lullaby"
+  },
+  {
+    "id": "v0.114.0:line-028-text-3sst5o",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "비용이 0 → 1로 증가했습니다.",
+    "markdownEn": "Cost increased from 0 -> 1.",
+    "textKo": "비용이 0 → 1로 증가했습니다.",
+    "textEn": "Cost increased from 0 -> 1.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-028-text-3sst5o v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 비용이 0 → 1로 증가했습니다. cost increased from 0 -> 1."
+  },
+  {
+    "id": "v0.114.0:line-029-text-13gsxrb",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "강화해도 더 이상 [gold]선천성[/gold]을 얻지 않습니다.",
+    "markdownEn": "No longer gains [gold]Innate[/gold] on upgrade.",
+    "textKo": "강화해도 더 이상 선천성을 얻지 않습니다.",
+    "textEn": "No longer gains Innate on upgrade.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-029-text-13gsxrb v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 강화해도 더 이상 선천성을 얻지 않습니다. no longer gains innate on upgrade."
+  },
+  {
+    "id": "v0.114.0:line-030-text-1jfhfqw",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold]방어도[/gold] 획득량이 20 → 12(16)으로 감소했습니다.",
+    "markdownEn": "[gold]Block[/gold] gain decreased from 20 -> 12(16).",
+    "textKo": "방어도 획득량이 20 → 12(16)으로 감소했습니다.",
+    "textEn": "Block gain decreased from 20 -> 12(16).",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-030-text-1jfhfqw v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 방어도 획득량이 20 → 12(16)으로 감소했습니다. block gain decreased from 20 -> 12(16)."
+  },
+  {
+    "id": "v0.114.0:line-031-card-wah-hammer",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]와 망치[/gold] ([red][jitter]너프[/jitter][/red]): 피해량이 9(12) → 9(11)로 감소했습니다.",
+    "markdownEn": "[gold:card]Wah Hammer[/gold] ([red][jitter]nerf[/jitter][/red]): damage decreased from 9(12) -> 9(11).",
+    "textKo": "와 망치 (너프): 피해량이 9(12) → 9(11)로 감소했습니다.",
+    "textEn": "Wah Hammer (nerf): damage decreased from 9(12) -> 9(11).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "WAH_HAMMER",
+        "label": "와 망치"
+      }
+    ],
+    "searchText": "v0.114.0:line-031-card-wah-hammer v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 와 망치 (너프): 피해량이 9(12) → 9(11)로 감소했습니다. wah hammer (nerf): damage decreased from 9(12) -> 9(11). card wah_hammer 와 망치 와 망치 wah hammer"
+  },
+  {
+    "id": "v0.114.0:line-032-card-repeat-shot",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]반복 사격[/gold] ([red][jitter]너프[/jitter][/red]): 피해량이 15(20) → 13(16)으로 감소했습니다.",
+    "markdownEn": "[gold:card]Repeat Shot[/gold] ([red][jitter]nerf[/jitter][/red]): damage decreased from 15(20) -> 13(16).",
+    "textKo": "반복 사격 (너프): 피해량이 15(20) → 13(16)으로 감소했습니다.",
+    "textEn": "Repeat Shot (nerf): damage decreased from 15(20) -> 13(16).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "REPEAT_SHOT",
+        "label": "반복 사격"
+      }
+    ],
+    "searchText": "v0.114.0:line-032-card-repeat-shot v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 반복 사격 (너프): 피해량이 15(20) → 13(16)으로 감소했습니다. repeat shot (nerf): damage decreased from 15(20) -> 13(16). card repeat_shot 반복 사격 반복 사격 repeat shot"
+  },
+  {
+    "id": "v0.114.0:line-033-card-wah-symphony",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]와 교향곡[/gold] ([red][jitter]너프[/jitter][/red]): 더 이상 \"와\" 카드를 세지 않습니다.",
+    "markdownEn": "[gold:card]Wah Symphony[/gold] ([red][jitter]nerf[/jitter][/red]): no longer counts \"Wah\" cards.",
+    "textKo": "와 교향곡 (너프): 더 이상 \"와\" 카드를 세지 않습니다.",
+    "textEn": "Wah Symphony (nerf): no longer counts \"Wah\" cards.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "WAH_SYMPHONY",
+        "label": "와 교향곡"
+      }
+    ],
+    "searchText": "v0.114.0:line-033-card-wah-symphony v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 와 교향곡 (너프): 더 이상 \"와\" 카드를 세지 않습니다. wah symphony (nerf): no longer counts \"wah\" cards. card wah_symphony 와 교향곡 와 교향곡 wah symphony"
+  },
+  {
+    "id": "v0.114.0:line-034-card-recall-power-impaled",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]수거[/gold] 리워크: 비용 1(0) 일반 스킬, \"대상 적이 [gold:power]꿰뚫림[/gold] 상태라면, [gold]회수[/gold]하고 [gold]버린 카드 더미[/gold]의 카드 1장을 [gold]뽑을 카드 더미[/gold] 맨 위에 놓습니다.\" → 비용 0 일반 스킬, \"[gold]보존[/gold]. 대상 적이 [gold:power]꿰뚫림[/gold] 상태라면, [gold]회수[/gold]합니다. [gold]소멸[/gold]. (강화 시 [gold]소멸[/gold] 제거.)\"",
+    "markdownEn": "Reworked [gold:card]Recall[/gold]: Common Skill, cost 1(0), \"If the enemy is [gold:power]Impaled[/gold], [gold]Dislodge[/gold] and put a card from your Discard Pile on top of your Draw Pile.\" -> Common Skill, cost 0, \"[gold]Retain[/gold]. If the enemy is [gold:power]Impaled[/gold], [gold]Dislodge[/gold]. [gold]Exhaust[/gold]. (Lose [gold]Exhaust[/gold].)\"",
+    "textKo": "수거 리워크: 비용 1(0) 일반 스킬, \"대상 적이 꿰뚫림 상태라면, 회수하고 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에 놓습니다.\" → 비용 0 일반 스킬, \"보존. 대상 적이 꿰뚫림 상태라면, 회수합니다. 소멸. (강화 시 소멸 제거.)\"",
+    "textEn": "Reworked Recall: Common Skill, cost 1(0), \"If the enemy is Impaled, Dislodge and put a card from your Discard Pile on top of your Draw Pile.\" -> Common Skill, cost 0, \"Retain. If the enemy is Impaled, Dislodge. Exhaust. (Lose Exhaust.)\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "RECALL",
+        "label": "수거"
+      },
+      {
+        "type": "power",
+        "id": "IMPALED",
+        "label": "꿰뚫림"
+      }
+    ],
+    "searchText": "v0.114.0:line-034-card-recall-power-impaled v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 수거 리워크: 비용 1(0) 일반 스킬, \"대상 적이 꿰뚫림 상태라면, 회수하고 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에 놓습니다.\" → 비용 0 일반 스킬, \"보존. 대상 적이 꿰뚫림 상태라면, 회수합니다. 소멸. (강화 시 소멸 제거.)\" reworked recall: common skill, cost 1(0), \"if the enemy is impaled, dislodge and put a card from your discard pile on top of your draw pile.\" -> common skill, cost 0, \"retain. if the enemy is impaled, dislodge. exhaust. (lose exhaust.)\" card recall 수거 수거 recall power impaled 꿰뚫림 꿰뚫림 impaled"
+  },
+  {
+    "id": "v0.114.0:line-035-card-trick-shot",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]묘기 사격[/gold] 리워크: \"피해를 12(15) 주는 [gold]화살[/gold]을 [gold]발사[/gold]하고 이 카드를 [gold]손[/gold]으로 되돌립니다.\" → \"피해를 12(14) 주는 [gold]화살[/gold]을 [gold]발사[/gold]하고 카드를 2(3)장 뽑습니다.\"",
+    "markdownEn": "Reworked [gold:card]Trick Shot[/gold]: \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 12(15) damage and return this card to your Hand.\" -> \"[gold]Shoot[/gold] an [gold]Arrow[/gold] to deal 12(14) damage and draw 2(3) cards.\"",
+    "textKo": "묘기 사격 리워크: \"피해를 12(15) 주는 화살을 발사하고 이 카드를 손으로 되돌립니다.\" → \"피해를 12(14) 주는 화살을 발사하고 카드를 2(3)장 뽑습니다.\"",
+    "textEn": "Reworked Trick Shot: \"Shoot an Arrow to deal 12(15) damage and return this card to your Hand.\" -> \"Shoot an Arrow to deal 12(14) damage and draw 2(3) cards.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TRICK_SHOT",
+        "label": "묘기 사격"
+      }
+    ],
+    "searchText": "v0.114.0:line-035-card-trick-shot v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 묘기 사격 리워크: \"피해를 12(15) 주는 화살을 발사하고 이 카드를 손으로 되돌립니다.\" → \"피해를 12(14) 주는 화살을 발사하고 카드를 2(3)장 뽑습니다.\" reworked trick shot: \"shoot an arrow to deal 12(15) damage and return this card to your hand.\" -> \"shoot an arrow to deal 12(14) damage and draw 2(3) cards.\" card trick_shot 묘기 사격 묘기 사격 trick shot"
+  },
+  {
+    "id": "v0.114.0:line-036-card-violent-chord",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]격렬한 화음[/gold] ([red][jitter]너프[/jitter][/red]): 피해량이 9(12) → 7(9)로 감소했습니다.",
+    "markdownEn": "[gold:card]Violent Chord[/gold] ([red][jitter]nerf[/jitter][/red]): damage decreased from 9(12) -> 7(9).",
+    "textKo": "격렬한 화음 (너프): 피해량이 9(12) → 7(9)로 감소했습니다.",
+    "textEn": "Violent Chord (nerf): damage decreased from 9(12) -> 7(9).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "VIOLENT_CHORD",
+        "label": "격렬한 화음"
+      }
+    ],
+    "searchText": "v0.114.0:line-036-card-violent-chord v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 격렬한 화음 (너프): 피해량이 9(12) → 7(9)로 감소했습니다. violent chord (nerf): damage decreased from 9(12) -> 7(9). card violent_chord 격렬한 화음 격렬한 화음 violent chord"
+  },
+  {
+    "id": "v0.114.0:line-037-card-harmonic-shield",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]화음 방패[/gold] 리워크: \"보유한 [gold]선율[/gold]마다 [gold]방어도[/gold]를 5(7) 얻습니다.\" → \"[gold]방어도[/gold]를 4(6) 얻습니다. 보유한 [gold]선율[/gold]마다 [gold]방어도[/gold]를 추가로 4(6) 얻습니다.\"",
+    "markdownEn": "Reworked [gold:card]Harmonic Shield[/gold]: \"Gain 5(7) [gold]Block[/gold] for each [gold]Melody[/gold] you have.\" -> \"Gain 4(6) [gold]Block[/gold]. Gain 4(6) additional [gold]Block[/gold] for each [gold]Melody[/gold] you have.\"",
+    "textKo": "화음 방패 리워크: \"보유한 선율마다 방어도를 5(7) 얻습니다.\" → \"방어도를 4(6) 얻습니다. 보유한 선율마다 방어도를 추가로 4(6) 얻습니다.\"",
+    "textEn": "Reworked Harmonic Shield: \"Gain 5(7) Block for each Melody you have.\" -> \"Gain 4(6) Block. Gain 4(6) additional Block for each Melody you have.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HARMONIC_SHIELD",
+        "label": "화음 방패"
+      }
+    ],
+    "searchText": "v0.114.0:line-037-card-harmonic-shield v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 화음 방패 리워크: \"보유한 선율마다 방어도를 5(7) 얻습니다.\" → \"방어도를 4(6) 얻습니다. 보유한 선율마다 방어도를 추가로 4(6) 얻습니다.\" reworked harmonic shield: \"gain 5(7) block for each melody you have.\" -> \"gain 4(6) block. gain 4(6) additional block for each melody you have.\" card harmonic_shield 화음 방패 화음 방패 harmonic shield"
+  },
+  {
+    "id": "v0.114.0:line-038-card-song-path",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]노래의 길[/gold] ([red][jitter]너프[/jitter][/red]): [gold]방어도[/gold] 획득량이 5(7) → 4(6)으로 감소했습니다.",
+    "markdownEn": "[gold:card]Song Path[/gold] ([red][jitter]nerf[/jitter][/red]): [gold]Block[/gold] gain decreased from 5(7) -> 4(6).",
+    "textKo": "노래의 길 (너프): 방어도 획득량이 5(7) → 4(6)으로 감소했습니다.",
+    "textEn": "Song Path (nerf): Block gain decreased from 5(7) -> 4(6).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SONG_PATH",
+        "label": "노래의 길"
+      }
+    ],
+    "searchText": "v0.114.0:line-038-card-song-path v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 노래의 길 (너프): 방어도 획득량이 5(7) → 4(6)으로 감소했습니다. song path (nerf): block gain decreased from 5(7) -> 4(6). card song_path 노래의 길 노래의 길 song path"
+  },
+  {
+    "id": "v0.114.0:line-039-card-vitriol-card-sadness",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]독설[/gold] ([red][jitter]너프[/jitter][/red]): [gold:card]슬픔[/gold]이 1 → 2장으로 증가했습니다.",
+    "markdownEn": "[gold:card]Vitriol[/gold] ([red][jitter]nerf[/jitter][/red]): [gold:card]Sadness[/gold] increased from 1 -> 2.",
+    "textKo": "독설 (너프): 슬픔이 1 → 2장으로 증가했습니다.",
+    "textEn": "Vitriol (nerf): Sadness increased from 1 -> 2.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "VITRIOL",
+        "label": "독설"
+      },
+      {
+        "type": "card",
+        "id": "SADNESS",
+        "label": "슬픔"
+      }
+    ],
+    "searchText": "v0.114.0:line-039-card-vitriol-card-sadness v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 독설 (너프): 슬픔이 1 → 2장으로 증가했습니다. vitriol (nerf): sadness increased from 1 -> 2. card vitriol 독설 독설 vitriol card sadness 슬픔 슬픔 sadness"
+  },
+  {
+    "id": "v0.114.0:line-040-card-cho-firm",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]초 경화[/gold] ([red][jitter]너프[/jitter][/red]): [gold]방어도[/gold] 획득량이 6(8) → 5(7)로 감소했습니다.",
+    "markdownEn": "[gold:card]Cho Firm[/gold] ([red][jitter]nerf[/jitter][/red]): [gold]Block[/gold] gain decreased from 6(8) -> 5(7).",
+    "textKo": "초 경화 (너프): 방어도 획득량이 6(8) → 5(7)로 감소했습니다.",
+    "textEn": "Cho Firm (nerf): Block gain decreased from 6(8) -> 5(7).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CHO_FIRM",
+        "label": "초 경화"
+      }
+    ],
+    "searchText": "v0.114.0:line-040-card-cho-firm v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 초 경화 (너프): 방어도 획득량이 6(8) → 5(7)로 감소했습니다. cho firm (nerf): block gain decreased from 6(8) -> 5(7). card cho_firm 초 경화 초 경화 cho firm"
+  },
+  {
+    "id": "v0.114.0:line-041-card-cho-barbs",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]초 미늘[/gold] 변경:\n• [gold]방어도[/gold] 획득량이 7(9) → 8(10)으로 증가했습니다.\n• [gold:power]가시[/gold]가 3(4) → 2(3)으로 감소했습니다.",
+    "markdownEn": "Changed [gold:card]Cho Barbs[/gold]:\n• [gold]Block[/gold] gain increased from 7(9) -> 8(10).\n• [gold:power]Thorns[/gold] decreased from 3(4) -> 2(3).",
+    "summaryMarkdownKo": "[gold:card]초 미늘[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:card]Cho Barbs[/gold]:",
+    "textKo": "초 미늘 변경:\n• 방어도 획득량이 7(9) → 8(10)으로 증가했습니다.\n• 가시가 3(4) → 2(3)으로 감소했습니다.",
+    "textEn": "Changed Cho Barbs:\n• Block gain increased from 7(9) -> 8(10).\n• Thorns decreased from 3(4) -> 2(3).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CHO_BARBS",
+        "label": "초 미늘"
+      }
+    ],
+    "searchText": "v0.114.0:line-041-card-cho-barbs v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 초 미늘 변경: • 방어도 획득량이 7(9) → 8(10)으로 증가했습니다. • 가시가 3(4) → 2(3)으로 감소했습니다. changed cho barbs: • block gain increased from 7(9) -> 8(10). • thorns decreased from 3(4) -> 2(3). card cho_barbs 초 미늘 초 미늘 cho barbs"
+  },
+  {
+    "id": "v0.114.0:line-042-text-123k4h9",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold]방어도[/gold] 획득량이 7(9) → 8(10)으로 증가했습니다.",
+    "markdownEn": "[gold]Block[/gold] gain increased from 7(9) -> 8(10).",
+    "textKo": "방어도 획득량이 7(9) → 8(10)으로 증가했습니다.",
+    "textEn": "Block gain increased from 7(9) -> 8(10).",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-042-text-123k4h9 v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 방어도 획득량이 7(9) → 8(10)으로 증가했습니다. block gain increased from 7(9) -> 8(10)."
+  },
+  {
+    "id": "v0.114.0:line-043-power-thorns",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:power]가시[/gold]가 3(4) → 2(3)으로 감소했습니다.",
+    "markdownEn": "[gold:power]Thorns[/gold] decreased from 3(4) -> 2(3).",
+    "textKo": "가시가 3(4) → 2(3)으로 감소했습니다.",
+    "textEn": "Thorns decreased from 3(4) -> 2(3).",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "THORNS",
+        "label": "가시"
+      }
+    ],
+    "searchText": "v0.114.0:line-043-power-thorns v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 가시가 3(4) → 2(3)으로 감소했습니다. thorns decreased from 3(4) -> 2(3). power thorns 가시 가시 thorns"
+  },
+  {
+    "id": "v0.114.0:line-044-card-cho-ready",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]초 준비[/gold] ([red][jitter]너프[/jitter][/red]): [gold]방어도[/gold] 획득량이 8(11) → 7(9)로 감소했습니다.",
+    "markdownEn": "[gold:card]Cho Ready[/gold] ([red][jitter]nerf[/jitter][/red]): [gold]Block[/gold] gain decreased from 8(11) -> 7(9).",
+    "textKo": "초 준비 (너프): 방어도 획득량이 8(11) → 7(9)로 감소했습니다.",
+    "textEn": "Cho Ready (nerf): Block gain decreased from 8(11) -> 7(9).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CHO_READY",
+        "label": "초 준비"
+      }
+    ],
+    "searchText": "v0.114.0:line-044-card-cho-ready v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 초 준비 (너프): 방어도 획득량이 8(11) → 7(9)로 감소했습니다. cho ready (nerf): block gain decreased from 8(11) -> 7(9). card cho_ready 초 준비 초 준비 cho ready"
+  },
+  {
+    "id": "v0.114.0:line-045-card-bounce-power-stretch",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]튀어오르기[/gold] ([red][jitter]너프[/jitter][/red]): [gold:power]스트레칭[/gold]이 10(13) → 8(11)로 감소했습니다.",
+    "markdownEn": "[gold:card]Bounce[/gold] ([red][jitter]nerf[/jitter][/red]): [gold:power]Stretch[/gold] decreased from 10(13) -> 8(11).",
+    "textKo": "튀어오르기 (너프): 스트레칭이 10(13) → 8(11)로 감소했습니다.",
+    "textEn": "Bounce (nerf): Stretch decreased from 10(13) -> 8(11).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BOUNCE",
+        "label": "튀어오르기"
+      },
+      {
+        "type": "power",
+        "id": "STRETCH",
+        "label": "스트레칭"
+      }
+    ],
+    "searchText": "v0.114.0:line-045-card-bounce-power-stretch v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 튀어오르기 (너프): 스트레칭이 10(13) → 8(11)로 감소했습니다. bounce (nerf): stretch decreased from 10(13) -> 8(11). card bounce 튀어오르기 튀어오르기 bounce power stretch 스트레칭 스트레칭 stretch"
+  },
+  {
+    "id": "v0.114.0:line-046-card-sorrowful-strike-card-sadness",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]비탄의 타격[/gold] ([green][sine]버프[/sine][/green]): [gold:card]슬픔[/gold]이 2 → 1장으로 감소했습니다.",
+    "markdownEn": "[gold:card]Sorrowful Strike[/gold] ([green][sine]buff[/sine][/green]): [gold:card]Sadness[/gold] decreased from 2 -> 1.",
+    "textKo": "비탄의 타격 (버프): 슬픔이 2 → 1장으로 감소했습니다.",
+    "textEn": "Sorrowful Strike (buff): Sadness decreased from 2 -> 1.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SORROWFUL_STRIKE",
+        "label": "비탄의 타격"
+      },
+      {
+        "type": "card",
+        "id": "SADNESS",
+        "label": "슬픔"
+      }
+    ],
+    "searchText": "v0.114.0:line-046-card-sorrowful-strike-card-sadness v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 비탄의 타격 (버프): 슬픔이 2 → 1장으로 감소했습니다. sorrowful strike (buff): sadness decreased from 2 -> 1. card sorrowful_strike 비탄의 타격 비탄의 타격 sorrowful strike card sadness 슬픔 슬픔 sadness"
+  },
+  {
+    "id": "v0.114.0:line-047-card-archery",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]궁술[/gold] 변경:\n• [gold:power]조준[/gold]이 4(5) → 6(8)로 증가했습니다.\n• 희귀도가 고급 → 희귀로 올랐습니다.",
+    "markdownEn": "Changed [gold:card]Archery[/gold]:\n• [gold:power]Aim[/gold] increased from 4(5) -> 6(8).\n• Rarity increased from Uncommon -> Rare.",
+    "summaryMarkdownKo": "[gold:card]궁술[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:card]Archery[/gold]:",
+    "textKo": "궁술 변경:\n• 조준이 4(5) → 6(8)로 증가했습니다.\n• 희귀도가 고급 → 희귀로 올랐습니다.",
+    "textEn": "Changed Archery:\n• Aim increased from 4(5) -> 6(8).\n• Rarity increased from Uncommon -> Rare.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ARCHERY",
+        "label": "궁술"
+      }
+    ],
+    "searchText": "v0.114.0:line-047-card-archery v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 궁술 변경: • 조준이 4(5) → 6(8)로 증가했습니다. • 희귀도가 고급 → 희귀로 올랐습니다. changed archery: • aim increased from 4(5) -> 6(8). • rarity increased from uncommon -> rare. card archery 궁술 궁술 archery"
+  },
+  {
+    "id": "v0.114.0:line-048-power-aim",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:power]조준[/gold]이 4(5) → 6(8)로 증가했습니다.",
+    "markdownEn": "[gold:power]Aim[/gold] increased from 4(5) -> 6(8).",
+    "textKo": "조준이 4(5) → 6(8)로 증가했습니다.",
+    "textEn": "Aim increased from 4(5) -> 6(8).",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "AIM",
+        "label": "조준"
+      }
+    ],
+    "searchText": "v0.114.0:line-048-power-aim v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 조준이 4(5) → 6(8)로 증가했습니다. aim increased from 4(5) -> 6(8). power aim 조준 조준 aim"
+  },
+  {
+    "id": "v0.114.0:line-049-text-1s3i9se",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "희귀도가 고급 → 희귀로 올랐습니다.",
+    "markdownEn": "Rarity increased from Uncommon -> Rare.",
+    "textKo": "희귀도가 고급 → 희귀로 올랐습니다.",
+    "textEn": "Rarity increased from Uncommon -> Rare.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-049-text-1s3i9se v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 희귀도가 고급 → 희귀로 올랐습니다. rarity increased from uncommon -> rare."
+  },
+  {
+    "id": "v0.114.0:line-050-card-melodic-shot",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]선율 사격[/gold] 변경:\n• 강화해도 더 이상 에너지 비용이 줄지 않습니다.\n• 강화하면 이제 피해량이 12(13) → 12(14)로 증가합니다.",
+    "markdownEn": "Changed [gold:card]Melodic Shot[/gold]:\n• Upgrade no longer reduces Energy cost.\n• Upgrade now increases damage from 12(13) -> 12(14).",
+    "summaryMarkdownKo": "[gold:card]선율 사격[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:card]Melodic Shot[/gold]:",
+    "textKo": "선율 사격 변경:\n• 강화해도 더 이상 에너지 비용이 줄지 않습니다.\n• 강화하면 이제 피해량이 12(13) → 12(14)로 증가합니다.",
+    "textEn": "Changed Melodic Shot:\n• Upgrade no longer reduces Energy cost.\n• Upgrade now increases damage from 12(13) -> 12(14).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MELODIC_SHOT",
+        "label": "선율 사격"
+      }
+    ],
+    "searchText": "v0.114.0:line-050-card-melodic-shot v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 선율 사격 변경: • 강화해도 더 이상 에너지 비용이 줄지 않습니다. • 강화하면 이제 피해량이 12(13) → 12(14)로 증가합니다. changed melodic shot: • upgrade no longer reduces energy cost. • upgrade now increases damage from 12(13) -> 12(14). card melodic_shot 선율 사격 선율 사격 melodic shot"
+  },
+  {
+    "id": "v0.114.0:line-051-text-9o2vr6",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "강화해도 더 이상 에너지 비용이 줄지 않습니다.",
+    "markdownEn": "Upgrade no longer reduces Energy cost.",
+    "textKo": "강화해도 더 이상 에너지 비용이 줄지 않습니다.",
+    "textEn": "Upgrade no longer reduces Energy cost.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-051-text-9o2vr6 v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 강화해도 더 이상 에너지 비용이 줄지 않습니다. upgrade no longer reduces energy cost."
+  },
+  {
+    "id": "v0.114.0:line-052-text-1nni2c3",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "강화하면 이제 피해량이 12(13) → 12(14)로 증가합니다.",
+    "markdownEn": "Upgrade now increases damage from 12(13) -> 12(14).",
+    "textKo": "강화하면 이제 피해량이 12(13) → 12(14)로 증가합니다.",
+    "textEn": "Upgrade now increases damage from 12(13) -> 12(14).",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-052-text-1nni2c3 v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 강화하면 이제 피해량이 12(13) → 12(14)로 증가합니다. upgrade now increases damage from 12(13) -> 12(14)."
+  },
+  {
+    "id": "v0.114.0:line-053-card-wah-ki",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]와 키[/gold] 리워크: \"피해를 2(4)만큼 2번 줍니다. 다음 턴에 에너지를 1 얻고 카드를 1장 뽑습니다.\" → \"피해를 3(4)만큼 2번 줍니다. [gold]버린 카드 더미[/gold]의 카드 1장을 [gold]뽑을 카드 더미[/gold] 맨 위에 놓습니다.\"",
+    "markdownEn": "Reworked [gold:card]Wah Ki[/gold]: \"Deal 2(4) damage 2 times. Next turn, gain 1 Energy and draw 1 card.\" -> \"Deal 3(4) damage 2 times. Put a card from your Discard Pile on top of your Draw Pile.\"",
+    "textKo": "와 키 리워크: \"피해를 2(4)만큼 2번 줍니다. 다음 턴에 에너지를 1 얻고 카드를 1장 뽑습니다.\" → \"피해를 3(4)만큼 2번 줍니다. 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에 놓습니다.\"",
+    "textEn": "Reworked Wah Ki: \"Deal 2(4) damage 2 times. Next turn, gain 1 Energy and draw 1 card.\" -> \"Deal 3(4) damage 2 times. Put a card from your Discard Pile on top of your Draw Pile.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "WAH_KI",
+        "label": "와 키"
+      }
+    ],
+    "searchText": "v0.114.0:line-053-card-wah-ki v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 와 키 리워크: \"피해를 2(4)만큼 2번 줍니다. 다음 턴에 에너지를 1 얻고 카드를 1장 뽑습니다.\" → \"피해를 3(4)만큼 2번 줍니다. 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에 놓습니다.\" reworked wah ki: \"deal 2(4) damage 2 times. next turn, gain 1 energy and draw 1 card.\" -> \"deal 3(4) damage 2 times. put a card from your discard pile on top of your draw pile.\" card wah_ki 와 키 와 키 wah ki"
+  },
+  {
+    "id": "v0.114.0:line-054-card-self-deprecate-card-joy",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]자기 비하[/gold] ([red][jitter]너프[/jitter][/red]): [gold:card]기쁨[/gold]이 2(3) → 1(2)로 감소했습니다.",
+    "markdownEn": "[gold:card]Self Deprecate[/gold] ([red][jitter]nerf[/jitter][/red]): [gold:card]Joy[/gold] decreased from 2(3) -> 1(2).",
+    "textKo": "자기 비하 (너프): 기쁨이 2(3) → 1(2)로 감소했습니다.",
+    "textEn": "Self Deprecate (nerf): Joy decreased from 2(3) -> 1(2).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SELF_DEPRECATE",
+        "label": "자기 비하"
+      },
+      {
+        "type": "card",
+        "id": "JOY",
+        "label": "기쁨"
+      }
+    ],
+    "searchText": "v0.114.0:line-054-card-self-deprecate-card-joy v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 자기 비하 (너프): 기쁨이 2(3) → 1(2)로 감소했습니다. self deprecate (nerf): joy decreased from 2(3) -> 1(2). card self_deprecate 자기 비하 자기 비하 self deprecate card joy 기쁨 기쁨 joy"
+  },
+  {
+    "id": "v0.114.0:line-055-card-ki-rest",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]키 휴식[/gold] ([red][jitter]너프[/jitter][/red]): 에너지 획득량이 5(6) → 4(5)로 감소했습니다.",
+    "markdownEn": "[gold:card]Ki Rest[/gold] ([red][jitter]nerf[/jitter][/red]): Energy gain decreased from 5(6) -> 4(5).",
+    "textKo": "키 휴식 (너프): 에너지 획득량이 5(6) → 4(5)로 감소했습니다.",
+    "textEn": "Ki Rest (nerf): Energy gain decreased from 5(6) -> 4(5).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "KI_REST",
+        "label": "키 휴식"
+      }
+    ],
+    "searchText": "v0.114.0:line-055-card-ki-rest v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 키 휴식 (너프): 에너지 획득량이 5(6) → 4(5)로 감소했습니다. ki rest (nerf): energy gain decreased from 5(6) -> 4(5). card ki_rest 키 휴식 키 휴식 ki rest"
+  },
+  {
+    "id": "v0.114.0:line-056-card-jest",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]농담[/gold] ([green][sine]버프[/sine][/green]): [gold]방어도[/gold] 획득량이 14(18) → 15(19)로 증가했습니다.",
+    "markdownEn": "[gold:card]Jest[/gold] ([green][sine]buff[/sine][/green]): [gold]Block[/gold] gain increased from 14(18) -> 15(19).",
+    "textKo": "농담 (버프): 방어도 획득량이 14(18) → 15(19)로 증가했습니다.",
+    "textEn": "Jest (buff): Block gain increased from 14(18) -> 15(19).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "JEST",
+        "label": "농담"
+      }
+    ],
+    "searchText": "v0.114.0:line-056-card-jest v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 농담 (버프): 방어도 획득량이 14(18) → 15(19)로 증가했습니다. jest (buff): block gain increased from 14(18) -> 15(19). card jest 농담 농담 jest"
+  },
+  {
+    "id": "v0.114.0:line-057-card-serrated-arrows-power-impaled",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]톱니 화살[/gold] ([green][sine]버프[/sine][/green]): [gold:power]꿰뚫림[/gold] 적에 대한 추가 피해가 25%(50%) → 50%(75%)로 증가했습니다.",
+    "markdownEn": "[gold:card]Serrated Arrows[/gold] ([green][sine]buff[/sine][/green]): [gold:power]Impaled[/gold] enemy extra damage increased from 25%(50%) -> 50%(75%).",
+    "textKo": "톱니 화살 (버프): 꿰뚫림 적에 대한 추가 피해가 25%(50%) → 50%(75%)로 증가했습니다.",
+    "textEn": "Serrated Arrows (buff): Impaled enemy extra damage increased from 25%(50%) -> 50%(75%).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SERRATED_ARROWS",
+        "label": "톱니 화살"
+      },
+      {
+        "type": "power",
+        "id": "IMPALED",
+        "label": "꿰뚫림"
+      }
+    ],
+    "searchText": "v0.114.0:line-057-card-serrated-arrows-power-impaled v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 톱니 화살 (버프): 꿰뚫림 적에 대한 추가 피해가 25%(50%) → 50%(75%)로 증가했습니다. serrated arrows (buff): impaled enemy extra damage increased from 25%(50%) -> 50%(75%). card serrated_arrows 톱니 화살 톱니 화살 serrated arrows power impaled 꿰뚫림 꿰뚫림 impaled"
+  },
+  {
+    "id": "v0.114.0:line-058-card-cho-chorus",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]초 코러스[/gold] ([green][sine]버프[/sine][/green]): [gold]방어도[/gold]가 12(15) → 14(18)로 증가했습니다.",
+    "markdownEn": "[gold:card]Cho Chorus[/gold] ([green][sine]buff[/sine][/green]): [gold]Block[/gold] increased from 12(15) -> 14(18).",
+    "textKo": "초 코러스 (버프): 방어도가 12(15) → 14(18)로 증가했습니다.",
+    "textEn": "Cho Chorus (buff): Block increased from 12(15) -> 14(18).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CHO_CHORUS",
+        "label": "초 코러스"
+      }
+    ],
+    "searchText": "v0.114.0:line-058-card-cho-chorus v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 초 코러스 (버프): 방어도가 12(15) → 14(18)로 증가했습니다. cho chorus (buff): block increased from 12(15) -> 14(18). card cho_chorus 초 코러스 초 코러스 cho chorus"
+  },
+  {
+    "id": "v0.114.0:line-059-card-quietus",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]종지부[/gold] ([green][sine]버프[/sine][/green]): 더 이상 발사한 [gold]화살[/gold]을 파괴하지 않습니다.",
+    "markdownEn": "[gold:card]Quietus[/gold] ([green][sine]buff[/sine][/green]): no longer destroys the [gold]Arrow[/gold] it shoots.",
+    "textKo": "종지부 (버프): 더 이상 발사한 화살을 파괴하지 않습니다.",
+    "textEn": "Quietus (buff): no longer destroys the Arrow it shoots.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "QUIETUS",
+        "label": "종지부"
+      }
+    ],
+    "searchText": "v0.114.0:line-059-card-quietus v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 종지부 (버프): 더 이상 발사한 화살을 파괴하지 않습니다. quietus (buff): no longer destroys the arrow it shoots. card quietus 종지부 종지부 quietus"
+  },
+  {
+    "id": "v0.114.0:line-060-card-wah-cho-ki",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]와 초 키[/gold] ([red][jitter]너프[/jitter][/red]):\n• 피해량과 [gold]방어도[/gold] 획득량이 9(12) → 8(10)으로 감소했습니다.\n• 비용이 1 → 2로 증가했습니다.",
+    "markdownEn": "[gold:card]Wah Cho Ki[/gold] ([red][jitter]nerf[/jitter][/red]):\n• Damage and [gold]Block[/gold] gain decreased from 9(12) -> 8(10).\n• Cost increased from 1 -> 2.",
+    "summaryMarkdownKo": "[gold:card]와 초 키[/gold] ([red][jitter]너프[/jitter][/red]):",
+    "summaryMarkdownEn": "[gold:card]Wah Cho Ki[/gold] ([red][jitter]nerf[/jitter][/red]):",
+    "textKo": "와 초 키 (너프):\n• 피해량과 방어도 획득량이 9(12) → 8(10)으로 감소했습니다.\n• 비용이 1 → 2로 증가했습니다.",
+    "textEn": "Wah Cho Ki (nerf):\n• Damage and Block gain decreased from 9(12) -> 8(10).\n• Cost increased from 1 -> 2.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "WAH_CHO_KI",
+        "label": "와 초 키"
+      }
+    ],
+    "searchText": "v0.114.0:line-060-card-wah-cho-ki v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 와 초 키 (너프): • 피해량과 방어도 획득량이 9(12) → 8(10)으로 감소했습니다. • 비용이 1 → 2로 증가했습니다. wah cho ki (nerf): • damage and block gain decreased from 9(12) -> 8(10). • cost increased from 1 -> 2. card wah_cho_ki 와 초 키 와 초 키 wah cho ki"
+  },
+  {
+    "id": "v0.114.0:line-061-text-tdax5x",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "피해량과 [gold]방어도[/gold] 획득량이 9(12) → 8(10)으로 감소했습니다.",
+    "markdownEn": "Damage and [gold]Block[/gold] gain decreased from 9(12) -> 8(10).",
+    "textKo": "피해량과 방어도 획득량이 9(12) → 8(10)으로 감소했습니다.",
+    "textEn": "Damage and Block gain decreased from 9(12) -> 8(10).",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-061-text-tdax5x v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 피해량과 방어도 획득량이 9(12) → 8(10)으로 감소했습니다. damage and block gain decreased from 9(12) -> 8(10)."
+  },
+  {
+    "id": "v0.114.0:line-062-text-1r7x0t6",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "비용이 1 → 2로 증가했습니다.",
+    "markdownEn": "Cost increased from 1 -> 2.",
+    "textKo": "비용이 1 → 2로 증가했습니다.",
+    "textEn": "Cost increased from 1 -> 2.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-062-text-1r7x0t6 v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 비용이 1 → 2로 증가했습니다. cost increased from 1 -> 2."
+  },
+  {
+    "id": "v0.114.0:line-063-card-quiver",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]화살통[/gold] 변경:\n• 강화 효과가 [gold]화살[/gold] +1 → [gold]선천성[/gold] 획득으로 바뀌었습니다.\n• 희귀도가 희귀 → 고급으로 내려갔습니다.",
+    "markdownEn": "Changed [gold:card]Quiver[/gold]:\n• Upgrade changed from +1 [gold]Arrow[/gold] -> gains [gold]Innate[/gold].\n• Rarity decreased from Rare -> Uncommon.",
+    "summaryMarkdownKo": "[gold:card]화살통[/gold] 변경:",
+    "summaryMarkdownEn": "Changed [gold:card]Quiver[/gold]:",
+    "textKo": "화살통 변경:\n• 강화 효과가 화살 +1 → 선천성 획득으로 바뀌었습니다.\n• 희귀도가 희귀 → 고급으로 내려갔습니다.",
+    "textEn": "Changed Quiver:\n• Upgrade changed from +1 Arrow -> gains Innate.\n• Rarity decreased from Rare -> Uncommon.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "QUIVER",
+        "label": "화살통"
+      }
+    ],
+    "searchText": "v0.114.0:line-063-card-quiver v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 화살통 변경: • 강화 효과가 화살 +1 → 선천성 획득으로 바뀌었습니다. • 희귀도가 희귀 → 고급으로 내려갔습니다. changed quiver: • upgrade changed from +1 arrow -> gains innate. • rarity decreased from rare -> uncommon. card quiver 화살통 화살통 quiver"
+  },
+  {
+    "id": "v0.114.0:line-064-text-9e4ahx",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "강화 효과가 [gold]화살[/gold] +1 → [gold]선천성[/gold] 획득으로 바뀌었습니다.",
+    "markdownEn": "Upgrade changed from +1 [gold]Arrow[/gold] -> gains [gold]Innate[/gold].",
+    "textKo": "강화 효과가 화살 +1 → 선천성 획득으로 바뀌었습니다.",
+    "textEn": "Upgrade changed from +1 Arrow -> gains Innate.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-064-text-9e4ahx v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 강화 효과가 화살 +1 → 선천성 획득으로 바뀌었습니다. upgrade changed from +1 arrow -> gains innate."
+  },
+  {
+    "id": "v0.114.0:line-065-text-tn3rkk",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "희귀도가 희귀 → 고급으로 내려갔습니다.",
+    "markdownEn": "Rarity decreased from Rare -> Uncommon.",
+    "textKo": "희귀도가 희귀 → 고급으로 내려갔습니다.",
+    "textEn": "Rarity decreased from Rare -> Uncommon.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-065-text-tn3rkk v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 희귀도가 희귀 → 고급으로 내려갔습니다. rarity decreased from rare -> uncommon."
+  },
+  {
+    "id": "v0.114.0:line-066-card-ki-verse",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]키 절[/gold] ([red][jitter]너프[/jitter][/red]): 더 이상 \"키\" 카드에 적용되지 않습니다.",
+    "markdownEn": "[gold:card]Ki Verse[/gold] ([red][jitter]nerf[/jitter][/red]): no longer affects \"Ki\" cards.",
+    "textKo": "키 절 (너프): 더 이상 \"키\" 카드에 적용되지 않습니다.",
+    "textEn": "Ki Verse (nerf): no longer affects \"Ki\" cards.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "KI_VERSE",
+        "label": "키 절"
+      }
+    ],
+    "searchText": "v0.114.0:line-066-card-ki-verse v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 키 절 (너프): 더 이상 \"키\" 카드에 적용되지 않습니다. ki verse (nerf): no longer affects \"ki\" cards. card ki_verse 키 절 키 절 ki verse"
+  },
+  {
+    "id": "v0.114.0:line-067-card-show-off",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]으스대기[/gold] ([green][sine]버프[/sine][/green]): 에너지 비용이 1 → 0으로 감소했습니다.",
+    "markdownEn": "[gold:card]Show Off[/gold] ([green][sine]buff[/sine][/green]): Energy cost decreased from 1 -> 0.",
+    "textKo": "으스대기 (버프): 에너지 비용이 1 → 0으로 감소했습니다.",
+    "textEn": "Show Off (buff): Energy cost decreased from 1 -> 0.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SHOW_OFF",
+        "label": "으스대기"
+      }
+    ],
+    "searchText": "v0.114.0:line-067-card-show-off v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 으스대기 (버프): 에너지 비용이 1 → 0으로 감소했습니다. show off (buff): energy cost decreased from 1 -> 0. card show_off 으스대기 으스대기 show off"
+  },
+  {
+    "id": "v0.114.0:line-068-card-simpleton",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]얼간이[/gold] 변경: 강화 효과가 비용 감소 → 카드 1(2)장 사용으로 바뀌었습니다.",
+    "markdownEn": "Changed [gold:card]Simpleton[/gold]: upgrade changed from cost reduction -> play 1(2) cards.",
+    "textKo": "얼간이 변경: 강화 효과가 비용 감소 → 카드 1(2)장 사용으로 바뀌었습니다.",
+    "textEn": "Changed Simpleton: upgrade changed from cost reduction -> play 1(2) cards.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "SIMPLETON",
+        "label": "얼간이"
+      }
+    ],
+    "searchText": "v0.114.0:line-068-card-simpleton v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 얼간이 변경: 강화 효과가 비용 감소 → 카드 1(2)장 사용으로 바뀌었습니다. changed simpleton: upgrade changed from cost reduction -> play 1(2) cards. card simpleton 얼간이 얼간이 simpleton"
+  },
+  {
+    "id": "v0.114.0:line-069-card-all-is-well",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]다 잘될 거야[/gold] ([green][sine]버프[/sine][/green]): [gold]방어도[/gold] 획득량이 4(5) → 4(6)으로 증가했습니다.",
+    "markdownEn": "[gold:card]All Is Well[/gold] ([green][sine]buff[/sine][/green]): [gold]Block[/gold] gain increased from 4(5) -> 4(6).",
+    "textKo": "다 잘될 거야 (버프): 방어도 획득량이 4(5) → 4(6)으로 증가했습니다.",
+    "textEn": "All Is Well (buff): Block gain increased from 4(5) -> 4(6).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ALL_IS_WELL",
+        "label": "다 잘될 거야"
+      }
+    ],
+    "searchText": "v0.114.0:line-069-card-all-is-well v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 다 잘될 거야 (버프): 방어도 획득량이 4(5) → 4(6)으로 증가했습니다. all is well (buff): block gain increased from 4(5) -> 4(6). card all_is_well 다 잘될 거야 다 잘될 거야 all is well"
+  },
+  {
+    "id": "v0.114.0:line-070-card-honing-modifier-murderous",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]연마[/gold] ([green][sine]버프[/sine][/green]): \"[gold]화살[/gold]의 피해량이 50% 증가합니다.\" → \"[gold]화살[/gold]의 피해량이 2배가 됩니다.\"",
+    "markdownEn": "[gold:card]Honing[/gold] ([green][sine]buff[/sine][/green]): \"[gold]Arrows[/gold] deal 50% additional damage.\" -> \"[gold]Arrows[/gold] deal double damage.\"",
+    "textKo": "연마 (버프): \"화살의 피해량이 50% 증가합니다.\" → \"화살의 피해량이 2배가 됩니다.\"",
+    "textEn": "Honing (buff): \"Arrows deal 50% additional damage.\" -> \"Arrows deal double damage.\"",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HONING",
+        "label": "연마"
+      },
+      {
+        "type": "modifier",
+        "id": "MURDEROUS",
+        "label": "살의"
+      }
+    ],
+    "searchText": "v0.114.0:line-070-card-honing-modifier-murderous v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 연마 (버프): \"화살의 피해량이 50% 증가합니다.\" → \"화살의 피해량이 2배가 됩니다.\" honing (buff): \"arrows deal 50% additional damage.\" -> \"arrows deal double damage.\" card honing 연마 연마 honing modifier murderous 살의 살의 murderous 살인마"
+  },
+  {
+    "id": "v0.114.0:line-071-card-the-hierophant",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]교황[/gold] ([red][jitter]너프[/jitter][/red]): 더 이상 비용 감소가 없습니다.",
+    "markdownEn": "[gold:card]The Hierophant[/gold] ([red][jitter]nerf[/jitter][/red]): no longer has the cost reduction.",
+    "textKo": "교황 (너프): 더 이상 비용 감소가 없습니다.",
+    "textEn": "The Hierophant (nerf): no longer has the cost reduction.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "THE_HIEROPHANT",
+        "label": "교황"
+      }
+    ],
+    "searchText": "v0.114.0:line-071-card-the-hierophant v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 교황 (너프): 더 이상 비용 감소가 없습니다. the hierophant (nerf): no longer has the cost reduction. card the_hierophant 교황 교황 the hierophant"
+  },
+  {
+    "id": "v0.114.0:line-072-card-the-emperor",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]황제[/gold] ([red][jitter]너프[/jitter][/red]): 에너지 획득량이 7(9) → 3(4)로 감소했습니다.",
+    "markdownEn": "[gold:card]The Emperor[/gold] ([red][jitter]nerf[/jitter][/red]): Energy gain decreased from 7(9) -> 3(4).",
+    "textKo": "황제 (너프): 에너지 획득량이 7(9) → 3(4)로 감소했습니다.",
+    "textEn": "The Emperor (nerf): Energy gain decreased from 7(9) -> 3(4).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "THE_EMPEROR",
+        "label": "황제"
+      }
+    ],
+    "searchText": "v0.114.0:line-072-card-the-emperor v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 황제 (너프): 에너지 획득량이 7(9) → 3(4)로 감소했습니다. the emperor (nerf): energy gain decreased from 7(9) -> 3(4). card the_emperor 황제 황제 the emperor"
+  },
+  {
+    "id": "v0.114.0:line-073-card-the-tower",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]탑[/gold] ([red][jitter]너프[/jitter][/red]): 피해량이 2(3) → 1(2)로 감소했습니다.",
+    "markdownEn": "[gold:card]The Tower[/gold] ([red][jitter]nerf[/jitter][/red]): damage decreased from 2(3) -> 1(2).",
+    "textKo": "탑 (너프): 피해량이 2(3) → 1(2)로 감소했습니다.",
+    "textEn": "The Tower (nerf): damage decreased from 2(3) -> 1(2).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "THE_TOWER",
+        "label": "탑"
+      }
+    ],
+    "searchText": "v0.114.0:line-073-card-the-tower v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 탑 (너프): 피해량이 2(3) → 1(2)로 감소했습니다. the tower (nerf): damage decreased from 2(3) -> 1(2). card the_tower 탑 탑 the tower"
+  },
+  {
+    "id": "v0.114.0:line-074-card-temperance",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]절제[/gold] ([red][jitter]너프[/jitter][/red]): [gold]방어도[/gold]가 30(35) → 20(25)로 감소했습니다.",
+    "markdownEn": "[gold:card]Temperance[/gold] ([red][jitter]nerf[/jitter][/red]): [gold]Block[/gold] decreased from 30(35) -> 20(25).",
+    "textKo": "절제 (너프): 방어도가 30(35) → 20(25)로 감소했습니다.",
+    "textEn": "Temperance (nerf): Block decreased from 30(35) -> 20(25).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TEMPERANCE",
+        "label": "절제"
+      }
+    ],
+    "searchText": "v0.114.0:line-074-card-temperance v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 절제 (너프): 방어도가 30(35) → 20(25)로 감소했습니다. temperance (nerf): block decreased from 30(35) -> 20(25). card temperance 절제 절제 temperance"
+  },
+  {
+    "id": "v0.114.0:line-075-card-the-sun-card-soot",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]태양[/gold] ([red][jitter]너프[/jitter][/red]): 이제 [gold:card]그을음[/gold] 1장을 [gold]버린 카드 더미[/gold]에 넣는 대신 [gold:card]그을음[/gold] 2장을 [gold]뽑을 카드 더미[/gold]에 넣습니다.",
+    "markdownEn": "[gold:card]The Sun[/gold] ([red][jitter]nerf[/jitter][/red]): now puts 2 [gold:card]Soot[/gold] into your Draw Pile instead of 1 into your Discard Pile.",
+    "textKo": "태양 (너프): 이제 그을음 1장을 버린 카드 더미에 넣는 대신 그을음 2장을 뽑을 카드 더미에 넣습니다.",
+    "textEn": "The Sun (nerf): now puts 2 Soot into your Draw Pile instead of 1 into your Discard Pile.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "THE_SUN",
+        "label": "태양"
+      },
+      {
+        "type": "card",
+        "id": "SOOT",
+        "label": "그을음"
+      }
+    ],
+    "searchText": "v0.114.0:line-075-card-the-sun-card-soot v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 태양 (너프): 이제 그을음 1장을 버린 카드 더미에 넣는 대신 그을음 2장을 뽑을 카드 더미에 넣습니다. the sun (nerf): now puts 2 soot into your draw pile instead of 1 into your discard pile. card the_sun 태양 태양 the sun card soot 그을음 그을음 soot"
+  },
+  {
+    "id": "v0.114.0:line-076-card-the-hermit",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]은둔자[/gold] ([green][sine]버프[/sine][/green]): 카드 뽑기가 2(3) → 3(4)장으로 증가했습니다.",
+    "markdownEn": "[gold:card]The Hermit[/gold] ([green][sine]buff[/sine][/green]): card draw increased from 2(3) -> 3(4).",
+    "textKo": "은둔자 (버프): 카드 뽑기가 2(3) → 3(4)장으로 증가했습니다.",
+    "textEn": "The Hermit (buff): card draw increased from 2(3) -> 3(4).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "THE_HERMIT",
+        "label": "은둔자"
+      }
+    ],
+    "searchText": "v0.114.0:line-076-card-the-hermit v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 은둔자 (버프): 카드 뽑기가 2(3) → 3(4)장으로 증가했습니다. the hermit (buff): card draw increased from 2(3) -> 3(4). card the_hermit 은둔자 은둔자 the hermit"
+  },
+  {
+    "id": "v0.114.0:line-077-card-death-power-doom",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "풀"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]죽음[/gold] ([red][jitter]너프[/jitter][/red]): [gold:power]종말[/gold]이 75(99) → 66(81)로 감소했습니다.",
+    "markdownEn": "[gold:card]Death[/gold] ([red][jitter]nerf[/jitter][/red]): [gold:power]Doom[/gold] decreased from 75(99) -> 66(81).",
+    "textKo": "죽음 (너프): 종말이 75(99) → 66(81)로 감소했습니다.",
+    "textEn": "Death (nerf): Doom decreased from 75(99) -> 66(81).",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "DEATH",
+        "label": "죽음"
+      },
+      {
+        "type": "power",
+        "id": "DOOM",
+        "label": "종말"
+      }
+    ],
+    "searchText": "v0.114.0:line-077-card-death-power-doom v0.114.0 0.114.0 콘텐츠 및 밸런스 풀 죽음 (너프): 종말이 75(99) → 66(81)로 감소했습니다. death (nerf): doom decreased from 75(99) -> 66(81). card death 죽음 죽음 death power doom 종말 종말 doom"
+  },
+  {
+    "id": "v0.114.0:line-078-text-ifeh2q",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "콘텐츠 및 밸런스",
+      "멀티플레이어"
+    ],
+    "sectionEn": [
+      "Content & Balance",
+      "Multiplayer"
+    ],
+    "markdownKo": "[gold]블리츠[/gold]에서 이제 싱글플레이와 마찬가지로 유물을 2개 가져갑니다.",
+    "markdownEn": "In [gold]Blitz[/gold], you now take two relics, just like in singleplayer.",
+    "textKo": "블리츠에서 이제 싱글플레이와 마찬가지로 유물을 2개 가져갑니다.",
+    "textEn": "In Blitz, you now take two relics, just like in singleplayer.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-078-text-ifeh2q v0.114.0 0.114.0 콘텐츠 및 밸런스 멀티플레이어 블리츠에서 이제 싱글플레이와 마찬가지로 유물을 2개 가져갑니다. in blitz, you now take two relics, just like in singleplayer."
+  },
+  {
+    "id": "v0.114.0:line-079-power-hardened-shell",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "사용자 인터페이스 및 경험"
+    ],
+    "sectionEn": [
+      "User Interface & Experience"
+    ],
+    "markdownKo": "[gold:power]단단한 껍질[/gold]을 대상으로 지정할 때 피해 미리보기가 이제 피해 수치를 정확히 반영합니다.",
+    "markdownEn": "Damage previews now accurately reflect damage numbers when targeting [gold:power]Hardened Shell[/gold].",
+    "textKo": "단단한 껍질을 대상으로 지정할 때 피해 미리보기가 이제 피해 수치를 정확히 반영합니다.",
+    "textEn": "Damage previews now accurately reflect damage numbers when targeting Hardened Shell.",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "HARDENED_SHELL",
+        "label": "단단한 껍질"
+      }
+    ],
+    "searchText": "v0.114.0:line-079-power-hardened-shell v0.114.0 0.114.0 사용자 인터페이스 및 경험 단단한 껍질을 대상으로 지정할 때 피해 미리보기가 이제 피해 수치를 정확히 반영합니다. damage previews now accurately reflect damage numbers when targeting hardened shell. power hardened_shell 단단한 껍질 단단한 껍질 hardened shell"
+  },
+  {
+    "id": "v0.114.0:line-080-character-fool",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:character]풀[/gold]의 휴식 장소 애니메이션을 추가했습니다.",
+    "markdownEn": "Added rest site animations for [gold:character]The Fool[/gold].",
+    "textKo": "풀의 휴식 장소 애니메이션을 추가했습니다.",
+    "textEn": "Added rest site animations for The Fool.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "FOOL",
+        "label": "풀"
+      }
+    ],
+    "searchText": "v0.114.0:line-080-character-fool v0.114.0 0.114.0 아트 풀의 휴식 장소 애니메이션을 추가했습니다. added rest site animations for the fool. character fool 풀 풀 the fool fool"
+  },
+  {
+    "id": "v0.114.0:line-081-text-15vm5vq",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "다음 역사에 아트를 추가했습니다:",
+    "markdownEn": "Added Epoch art for:",
+    "textKo": "다음 역사에 아트를 추가했습니다:",
+    "textEn": "Added Epoch art for:",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-081-text-15vm5vq v0.114.0 0.114.0 아트 다음 역사에 아트를 추가했습니다: added epoch art for:"
+  },
+  {
+    "id": "v0.114.0:line-082-epoch-event1-epoch",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:epoch]광신자들[/gold]",
+    "markdownEn": "[gold:epoch]Cultists[/gold]",
+    "textKo": "광신자들",
+    "textEn": "Cultists",
+    "entityRefs": [
+      {
+        "type": "epoch",
+        "id": "EVENT1_EPOCH",
+        "label": "광신자들"
+      }
+    ],
+    "searchText": "v0.114.0:line-082-epoch-event1-epoch v0.114.0 0.114.0 아트 광신자들 cultists epoch event1_epoch 광신자들 광신자들 cultists"
+  },
+  {
+    "id": "v0.114.0:line-083-epoch-regent3-epoch",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:epoch]우리에겐 영웅이 필요해![/gold]",
+    "markdownEn": "[gold:epoch]We Need a Hero![/gold]",
+    "textKo": "우리에겐 영웅이 필요해!",
+    "textEn": "We Need a Hero!",
+    "entityRefs": [
+      {
+        "type": "epoch",
+        "id": "REGENT3_EPOCH",
+        "label": "우리에겐 영웅이 필요해!"
+      }
+    ],
+    "searchText": "v0.114.0:line-083-epoch-regent3-epoch v0.114.0 0.114.0 아트 우리에겐 영웅이 필요해! we need a hero! epoch regent3_epoch 우리에겐 영웅이 필요해! 우리에겐 영웅이 필요해! we need a hero!"
+  },
+  {
+    "id": "v0.114.0:line-084-epoch-defect2-epoch",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:epoch]속임수[/gold]",
+    "markdownEn": "[gold:epoch]Tricked[/gold]",
+    "textKo": "속임수",
+    "textEn": "Tricked",
+    "entityRefs": [
+      {
+        "type": "epoch",
+        "id": "DEFECT2_EPOCH",
+        "label": "속임수"
+      }
+    ],
+    "searchText": "v0.114.0:line-084-epoch-defect2-epoch v0.114.0 0.114.0 아트 속임수 tricked epoch defect2_epoch 속임수 속임수 tricked"
+  },
+  {
+    "id": "v0.114.0:line-085-card-optimism",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:card]낙관[/gold]의 베타 초상화 아트를 추가했습니다.",
+    "markdownEn": "Added beta portrait art for [gold:card]Optimism[/gold].",
+    "textKo": "낙관의 베타 초상화 아트를 추가했습니다.",
+    "textEn": "Added beta portrait art for Optimism.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "OPTIMISM",
+        "label": "낙관"
+      }
+    ],
+    "searchText": "v0.114.0:line-085-card-optimism v0.114.0 0.114.0 아트 낙관의 베타 초상화 아트를 추가했습니다. added beta portrait art for optimism. card optimism 낙관 낙관 optimism"
+  },
+  {
+    "id": "v0.114.0:line-086-power-mythic-form",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "아트"
+    ],
+    "sectionEn": [
+      "Art"
+    ],
+    "markdownKo": "[gold:power]신비의 형상[/gold] 파워의 아이콘을 추가했습니다.",
+    "markdownEn": "Added icon for [gold:power]Mythic Form[/gold] power.",
+    "textKo": "신비의 형상 파워의 아이콘을 추가했습니다.",
+    "textEn": "Added icon for Mythic Form power.",
+    "entityRefs": [
+      {
+        "type": "power",
+        "id": "MYTHIC_FORM",
+        "label": "신비의 형상"
+      }
+    ],
+    "searchText": "v0.114.0:line-086-power-mythic-form v0.114.0 0.114.0 아트 신비의 형상 파워의 아이콘을 추가했습니다. added icon for mythic form power. power mythic_form 신비의 형상 신비의 형상 mythic form"
+  },
+  {
+    "id": "v0.114.0:line-087-encounter-lagavulin-matriarch-boss",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "오디오"
+    ],
+    "sectionEn": [
+      "Audio"
+    ],
+    "markdownKo": "[gold:encounter]라가불린 대모[/gold]의 배경 음악을 추가했습니다.",
+    "markdownEn": "Added background music for [gold:encounter]Lagavulin Matriarch[/gold].",
+    "textKo": "라가불린 대모의 배경 음악을 추가했습니다.",
+    "textEn": "Added background music for Lagavulin Matriarch.",
+    "entityRefs": [
+      {
+        "type": "encounter",
+        "id": "LAGAVULIN_MATRIARCH_BOSS",
+        "label": "라가불린 대모"
+      }
+    ],
+    "searchText": "v0.114.0:line-087-encounter-lagavulin-matriarch-boss v0.114.0 0.114.0 오디오 라가불린 대모의 배경 음악을 추가했습니다. added background music for lagavulin matriarch. encounter lagavulin_matriarch_boss 라가불린 대모 라가불린 대모 lagavulin matriarch"
+  },
+  {
+    "id": "v0.114.0:line-088-character-fool-encounter-the-architect-event-encounter",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "문구"
+    ],
+    "sectionEn": [
+      "Writing"
+    ],
+    "markdownKo": "[gold:character]풀[/gold]과 [gold:encounter]아키텍트[/gold], [gold:ancient]니오우[/gold], [gold:ancient]다브[/gold] 사이의 대화를 조금 추가했습니다 (다른 상호작용은 나중에 더 추가됩니다).",
+    "markdownEn": "Added a bit of banter between [gold:character]The Fool[/gold] and [gold:encounter]The Architect[/gold], [gold:ancient]Neow[/gold], and [gold:ancient]Darv[/gold] (more interactions coming later).",
+    "textKo": "풀과 아키텍트, 니오우, 다브 사이의 대화를 조금 추가했습니다 (다른 상호작용은 나중에 더 추가됩니다).",
+    "textEn": "Added a bit of banter between The Fool and The Architect, Neow, and Darv (more interactions coming later).",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "FOOL",
+        "label": "풀"
+      },
+      {
+        "type": "encounter",
+        "id": "THE_ARCHITECT_EVENT_ENCOUNTER",
+        "label": "아키텍트"
+      },
+      {
+        "type": "ancient",
+        "id": "NEOW",
+        "label": "니오우"
+      },
+      {
+        "type": "ancient",
+        "id": "DARV",
+        "label": "다브"
+      }
+    ],
+    "searchText": "v0.114.0:line-088-character-fool-encounter-the-architect-event-encounter v0.114.0 0.114.0 문구 풀과 아키텍트, 니오우, 다브 사이의 대화를 조금 추가했습니다 (다른 상호작용은 나중에 더 추가됩니다). added a bit of banter between the fool and the architect, neow, and darv (more interactions coming later). character fool 풀 풀 the fool fool encounter the_architect_event_encounter 아키텍트 아키텍트 the architect ancient neow 니오우 니오우 neow ancient darv 다브 다브 darv"
+  },
+  {
+    "id": "v0.114.0:line-089-card-harmonic-shield",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "문구"
+    ],
+    "sectionEn": [
+      "Writing"
+    ],
+    "markdownKo": "[gold:card]화음 방패[/gold] 카드 설명에 줄바꿈을 추가했습니다.",
+    "markdownEn": "Added a line break to [gold:card]Harmonic Shield[/gold] card's description.",
+    "textKo": "화음 방패 카드 설명에 줄바꿈을 추가했습니다.",
+    "textEn": "Added a line break to Harmonic Shield card's description.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "HARMONIC_SHIELD",
+        "label": "화음 방패"
+      }
+    ],
+    "searchText": "v0.114.0:line-089-card-harmonic-shield v0.114.0 0.114.0 문구 화음 방패 카드 설명에 줄바꿈을 추가했습니다. added a line break to harmonic shield card's description. card harmonic_shield 화음 방패 화음 방패 harmonic shield"
+  },
+  {
+    "id": "v0.114.0:line-090-card-ensemble",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "문구"
+    ],
+    "sectionEn": [
+      "Writing"
+    ],
+    "markdownKo": "[gold:card]합창[/gold] 카드의 문구를 \"사용 무료\"에서 \"비용 에너지 0\"으로 바꿨습니다.",
+    "markdownEn": "Reworded [gold:card]Ensemble[/gold] from \"free to play\" to \"cost 0 E\".",
+    "textKo": "합창 카드의 문구를 \"사용 무료\"에서 \"비용 에너지 0\"으로 바꿨습니다.",
+    "textEn": "Reworded Ensemble from \"free to play\" to \"cost 0 E\".",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "ENSEMBLE",
+        "label": "합창"
+      }
+    ],
+    "searchText": "v0.114.0:line-090-card-ensemble v0.114.0 0.114.0 문구 합창 카드의 문구를 \"사용 무료\"에서 \"비용 에너지 0\"으로 바꿨습니다. reworded ensemble from \"free to play\" to \"cost 0 e\". card ensemble 합창 합창 ensemble"
+  },
+  {
+    "id": "v0.114.0:line-091-card-nail",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "문구"
+    ],
+    "sectionEn": [
+      "Writing"
+    ],
+    "markdownKo": "[gold:card]못질[/gold] 카드 설명의 오타를 고쳤습니다.",
+    "markdownEn": "Fixed typo in [gold:card]Nail[/gold] card description.",
+    "textKo": "못질 카드 설명의 오타를 고쳤습니다.",
+    "textEn": "Fixed typo in Nail card description.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "NAIL",
+        "label": "못질"
+      }
+    ],
+    "searchText": "v0.114.0:line-091-card-nail v0.114.0 0.114.0 문구 못질 카드 설명의 오타를 고쳤습니다. fixed typo in nail card description. card nail 못질 못질 nail"
+  },
+  {
+    "id": "v0.114.0:line-092-enchantment-clone",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "[gold:enchantment]복제[/gold]가 인챈트된 카드를 모두 제거하거나 변화시키면, 휴식 장소에 복제 선택지가 더 이상 보이지 않습니다.",
+    "markdownEn": "If you remove or transform all your cards enchanted with [gold:enchantment]Clone[/gold], the Clone rest site option no longer shows up.",
+    "textKo": "복제가 인챈트된 카드를 모두 제거하거나 변화시키면, 휴식 장소에 복제 선택지가 더 이상 보이지 않습니다.",
+    "textEn": "If you remove or transform all your cards enchanted with Clone, the Clone rest site option no longer shows up.",
+    "entityRefs": [
+      {
+        "type": "enchantment",
+        "id": "CLONE",
+        "label": "복제"
+      }
+    ],
+    "searchText": "v0.114.0:line-092-enchantment-clone v0.114.0 0.114.0 버그 수정 일반 복제가 인챈트된 카드를 모두 제거하거나 변화시키면, 휴식 장소에 복제 선택지가 더 이상 보이지 않습니다. if you remove or transform all your cards enchanted with clone, the clone rest site option no longer shows up. enchantment clone 복제 복제 clone"
+  },
+  {
+    "id": "v0.114.0:line-093-enchantment-adroit-power-unmovable",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "[gold:enchantment]숙련[/gold]이 인챈트된 방어도 카드가 [gold:power]요지부동[/gold] 파워에는 방어도 획득 2번으로 계산되던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed a Block card with [gold:enchantment]Adroit[/gold] enchantment counting as 2 separate Block gains to the [gold:power]Unmovable[/gold] power.",
+    "textKo": "숙련이 인챈트된 방어도 카드가 요지부동 파워에는 방어도 획득 2번으로 계산되던 문제를 고쳤습니다.",
+    "textEn": "Fixed a Block card with Adroit enchantment counting as 2 separate Block gains to the Unmovable power.",
+    "entityRefs": [
+      {
+        "type": "enchantment",
+        "id": "ADROIT",
+        "label": "숙련"
+      },
+      {
+        "type": "power",
+        "id": "UNMOVABLE",
+        "label": "요지부동"
+      }
+    ],
+    "searchText": "v0.114.0:line-093-enchantment-adroit-power-unmovable v0.114.0 0.114.0 버그 수정 일반 숙련이 인챈트된 방어도 카드가 요지부동 파워에는 방어도 획득 2번으로 계산되던 문제를 고쳤습니다. fixed a block card with adroit enchantment counting as 2 separate block gains to the unmovable power. enchantment adroit 숙련 숙련 adroit power unmovable 요지부동 요지부동 unmovable"
+  },
+  {
+    "id": "v0.114.0:line-094-text-d831db",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "사용자 지정 [gold]드레드[/gold] 화면에서 컨트롤러 단축키로 승천을 바꿀 수 없게 했습니다.",
+    "markdownEn": "Can no longer change ascension via controller hotkeys in custom [gold]Dread[/gold] screen.",
+    "textKo": "사용자 지정 드레드 화면에서 컨트롤러 단축키로 승천을 바꿀 수 없게 했습니다.",
+    "textEn": "Can no longer change ascension via controller hotkeys in custom Dread screen.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-094-text-d831db v0.114.0 0.114.0 버그 수정 일반 사용자 지정 드레드 화면에서 컨트롤러 단축키로 승천을 바꿀 수 없게 했습니다. can no longer change ascension via controller hotkeys in custom dread screen."
+  },
+  {
+    "id": "v0.114.0:line-095-text-usfu5a",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "컨트롤러를 쓸 때 [gold]블리츠[/gold] 첫 상점 토큰의 호버 팁이 보이지 않던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed hovertip of the initial [gold]Blitz[/gold] shop token not appearing when using controller.",
+    "textKo": "컨트롤러를 쓸 때 블리츠 첫 상점 토큰의 호버 팁이 보이지 않던 문제를 고쳤습니다.",
+    "textEn": "Fixed hovertip of the initial Blitz shop token not appearing when using controller.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-095-text-usfu5a v0.114.0 0.114.0 버그 수정 일반 컨트롤러를 쓸 때 블리츠 첫 상점 토큰의 호버 팁이 보이지 않던 문제를 고쳤습니다. fixed hovertip of the initial blitz shop token not appearing when using controller."
+  },
+  {
+    "id": "v0.114.0:line-096-text-1ue772j",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "단축키가 더 이상 닫혔거나 숨겨진 메뉴의 버튼을 누르지 않으며, 일시정지 메뉴에서 카드나 유물을 살펴본 뒤에도 일시정지 메뉴가 단축키를 계속 막던 문제를 고쳤습니다.",
+    "markdownEn": "Hotkeys no longer press buttons on menus that are closed or hidden, and the pause menu keeps blocking hotkeys after you inspect a card or relic from it.",
+    "textKo": "단축키가 더 이상 닫혔거나 숨겨진 메뉴의 버튼을 누르지 않으며, 일시정지 메뉴에서 카드나 유물을 살펴본 뒤에도 일시정지 메뉴가 단축키를 계속 막던 문제를 고쳤습니다.",
+    "textEn": "Hotkeys no longer press buttons on menus that are closed or hidden, and the pause menu keeps blocking hotkeys after you inspect a card or relic from it.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-096-text-1ue772j v0.114.0 0.114.0 버그 수정 일반 단축키가 더 이상 닫혔거나 숨겨진 메뉴의 버튼을 누르지 않으며, 일시정지 메뉴에서 카드나 유물을 살펴본 뒤에도 일시정지 메뉴가 단축키를 계속 막던 문제를 고쳤습니다. hotkeys no longer press buttons on menus that are closed or hidden, and the pause menu keeps blocking hotkeys after you inspect a card or relic from it."
+  },
+  {
+    "id": "v0.114.0:line-097-text-k19du1",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "단축키가 열려 있는 팝업이나 오류 메시지 뒤의 화면에 닿지 않습니다.",
+    "markdownEn": "Hotkeys no longer reach the screen behind an open popup or error message.",
+    "textKo": "단축키가 열려 있는 팝업이나 오류 메시지 뒤의 화면에 닿지 않습니다.",
+    "textEn": "Hotkeys no longer reach the screen behind an open popup or error message.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-097-text-k19du1 v0.114.0 0.114.0 버그 수정 일반 단축키가 열려 있는 팝업이나 오류 메시지 뒤의 화면에 닿지 않습니다. hotkeys no longer reach the screen behind an open popup or error message."
+  },
+  {
+    "id": "v0.114.0:line-098-text-1gpyuw5",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "다른 팝업이 이미 열려 있어 나타나지 못한 튜토리얼이 영영 건너뛰어지지 않고 나중에 표시됩니다.",
+    "markdownEn": "A tutorial that couldn't appear because another popup was already open now shows later instead of being skipped for good.",
+    "textKo": "다른 팝업이 이미 열려 있어 나타나지 못한 튜토리얼이 영영 건너뛰어지지 않고 나중에 표시됩니다.",
+    "textEn": "A tutorial that couldn't appear because another popup was already open now shows later instead of being skipped for good.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-098-text-1gpyuw5 v0.114.0 0.114.0 버그 수정 일반 다른 팝업이 이미 열려 있어 나타나지 못한 튜토리얼이 영영 건너뛰어지지 않고 나중에 표시됩니다. a tutorial that couldn't appear because another popup was already open now shows later instead of being skipped for good."
+  },
+  {
+    "id": "v0.114.0:line-099-text-1ck9j5e",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "일반"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "General"
+    ],
+    "markdownKo": "다른 컴퓨터에서 플레이하거나 Steam을 다시 설치한 뒤에도 이전 런이 런 기록에서 사라지지 않습니다.",
+    "markdownEn": "Older runs no longer disappear from Run History after playing on another computer or reinstalling Steam.",
+    "textKo": "다른 컴퓨터에서 플레이하거나 Steam을 다시 설치한 뒤에도 이전 런이 런 기록에서 사라지지 않습니다.",
+    "textEn": "Older runs no longer disappear from Run History after playing on another computer or reinstalling Steam.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-099-text-1ck9j5e v0.114.0 0.114.0 버그 수정 일반 다른 컴퓨터에서 플레이하거나 steam을 다시 설치한 뒤에도 이전 런이 런 기록에서 사라지지 않습니다. older runs no longer disappear from run history after playing on another computer or reinstalling steam."
+  },
+  {
+    "id": "v0.114.0:line-100-encounter-test-subject-boss",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "적"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "Enemies"
+    ],
+    "markdownKo": "[gold:encounter]실험체[/gold]에 박힌 화살이 매우 작게 보이던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed the impaled arrow on [gold:encounter]Test Subject[/gold] being very small.",
+    "textKo": "실험체에 박힌 화살이 매우 작게 보이던 문제를 고쳤습니다.",
+    "textEn": "Fixed the impaled arrow on Test Subject being very small.",
+    "entityRefs": [
+      {
+        "type": "encounter",
+        "id": "TEST_SUBJECT_BOSS",
+        "label": "실험체"
+      }
+    ],
+    "searchText": "v0.114.0:line-100-encounter-test-subject-boss v0.114.0 0.114.0 버그 수정 적 실험체에 박힌 화살이 매우 작게 보이던 문제를 고쳤습니다. fixed the impaled arrow on test subject being very small. encounter test_subject_boss 실험체 실험체 test subject"
+  },
+  {
+    "id": "v0.114.0:line-101-monster-fat-gremlin",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "적"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "Enemies"
+    ],
+    "markdownKo": "[gold:monster]뚱뚱한 그렘린[/gold]이 도망갈 때 마우스를 올려두고 있으면 컨트롤러 탐색이 고장 나던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed controller nav breaking if you are hovering over the [gold:monster]Fat Gremlin[/gold] when it runs away.",
+    "textKo": "뚱뚱한 그렘린이 도망갈 때 마우스를 올려두고 있으면 컨트롤러 탐색이 고장 나던 문제를 고쳤습니다.",
+    "textEn": "Fixed controller nav breaking if you are hovering over the Fat Gremlin when it runs away.",
+    "entityRefs": [
+      {
+        "type": "monster",
+        "id": "FAT_GREMLIN",
+        "label": "뚱뚱한 그렘린"
+      }
+    ],
+    "searchText": "v0.114.0:line-101-monster-fat-gremlin v0.114.0 0.114.0 버그 수정 적 뚱뚱한 그렘린이 도망갈 때 마우스를 올려두고 있으면 컨트롤러 탐색이 고장 나던 문제를 고쳤습니다. fixed controller nav breaking if you are hovering over the fat gremlin when it runs away. monster fat_gremlin 뚱뚱한 그렘린 뚱뚱한 그렘린 fat gremlin"
+  },
+  {
+    "id": "v0.114.0:line-102-character-fool",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "포션 및 유물"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "Potions & Relics"
+    ],
+    "markdownKo": "포션 도감과 유물 도감에서 [gold:character]풀[/gold]의 포션·유물 외곽선을 고쳤습니다.",
+    "markdownEn": "Fixed [gold:character]Fool[/gold] potion/relic outlines in the potion and relic compendiums.",
+    "textKo": "포션 도감과 유물 도감에서 풀의 포션·유물 외곽선을 고쳤습니다.",
+    "textEn": "Fixed Fool potion/relic outlines in the potion and relic compendiums.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "FOOL",
+        "label": "풀"
+      }
+    ],
+    "searchText": "v0.114.0:line-102-character-fool v0.114.0 0.114.0 버그 수정 포션 및 유물 포션 도감과 유물 도감에서 풀의 포션·유물 외곽선을 고쳤습니다. fixed fool potion/relic outlines in the potion and relic compendiums. character fool 풀 풀 the fool fool"
+  },
+  {
+    "id": "v0.114.0:line-103-text-1yeqoxq",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "이벤트"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "Events"
+    ],
+    "markdownKo": "오류가 난 이벤트가 이제 방에 갇히는 대신 진행할 수 있게 해 줍니다.",
+    "markdownEn": "An event that runs into an error now lets you proceed instead of leaving you stuck in the room.",
+    "textKo": "오류가 난 이벤트가 이제 방에 갇히는 대신 진행할 수 있게 해 줍니다.",
+    "textEn": "An event that runs into an error now lets you proceed instead of leaving you stuck in the room.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-103-text-1yeqoxq v0.114.0 0.114.0 버그 수정 이벤트 오류가 난 이벤트가 이제 방에 갇히는 대신 진행할 수 있게 해 줍니다. an event that runs into an error now lets you proceed instead of leaving you stuck in the room."
+  },
+  {
+    "id": "v0.114.0:line-104-card-dingy-dagger-event-welcome-to-wongos",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "이벤트"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "Events"
+    ],
+    "markdownKo": "[gold:card]초라한 단검[/gold] 카드가 [gold:event]거울에 비치다[/gold]와 [gold:event]웡고스에 오신 것을 환영합니다[/gold] 이벤트에서 한 번만 약화됩니다.",
+    "markdownEn": "[gold:card]Dingy Dagger[/gold] card is only downgraded once at the [gold:event]Reflections[/gold] and [gold:event]Welcome to Wongo's[/gold] events.",
+    "textKo": "초라한 단검 카드가 거울에 비치다와 웡고스에 오신 것을 환영합니다 이벤트에서 한 번만 약화됩니다.",
+    "textEn": "Dingy Dagger card is only downgraded once at the Reflections and Welcome to Wongo's events.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "DINGY_DAGGER",
+        "label": "초라한 단검"
+      },
+      {
+        "type": "event",
+        "id": "WELCOME_TO_WONGOS",
+        "label": "웡고스에 오신 것을 환영합니다"
+      }
+    ],
+    "searchText": "v0.114.0:line-104-card-dingy-dagger-event-welcome-to-wongos v0.114.0 0.114.0 버그 수정 이벤트 초라한 단검 카드가 거울에 비치다와 웡고스에 오신 것을 환영합니다 이벤트에서 한 번만 약화됩니다. dingy dagger card is only downgraded once at the reflections and welcome to wongo's events. card dingy_dagger 초라한 단검 초라한 단검 dingy dagger event welcome_to_wongos 웡고스에 오신 것을 환영합니다 웡고스에 오신 것을 환영합니다 welcome to wongo"
+  },
+  {
+    "id": "v0.114.0:line-105-relic-wuppy-card-melancholy",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "이벤트"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "Events"
+    ],
+    "markdownKo": "[gold:relic]워피[/gold]가 전투 시작 시 죽어 있다면 [gold:card]비애[/gold] 카드의 비용을 더 이상 줄이지 않습니다.",
+    "markdownEn": "[gold:relic]Wuppy[/gold] no longer reduces [gold:card]Melancholy[/gold] card's cost if it is dead at the start of combat.",
+    "textKo": "워피가 전투 시작 시 죽어 있다면 비애 카드의 비용을 더 이상 줄이지 않습니다.",
+    "textEn": "Wuppy no longer reduces Melancholy card's cost if it is dead at the start of combat.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "WUPPY",
+        "label": "워피"
+      },
+      {
+        "type": "card",
+        "id": "MELANCHOLY",
+        "label": "비애"
+      }
+    ],
+    "searchText": "v0.114.0:line-105-relic-wuppy-card-melancholy v0.114.0 0.114.0 버그 수정 이벤트 워피가 전투 시작 시 죽어 있다면 비애 카드의 비용을 더 이상 줄이지 않습니다. wuppy no longer reduces melancholy card's cost if it is dead at the start of combat. relic wuppy 워피 워피 wuppy card melancholy 비애 비애 melancholy"
+  },
+  {
+    "id": "v0.114.0:line-106-character-fool",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:character]풀[/gold]이 이제 도감 통계에 포함됩니다.",
+    "markdownEn": "[gold:character]Fool[/gold] is now included in Bestiary stats.",
+    "textKo": "풀이 이제 도감 통계에 포함됩니다.",
+    "textEn": "Fool is now included in Bestiary stats.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "FOOL",
+        "label": "풀"
+      }
+    ],
+    "searchText": "v0.114.0:line-106-character-fool v0.114.0 0.114.0 버그 수정 풀 풀이 이제 도감 통계에 포함됩니다. fool is now included in bestiary stats. character fool 풀 풀 the fool fool"
+  },
+  {
+    "id": "v0.114.0:line-107-card-cho-chorus-card-wah-blast",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]초 코러스[/gold]가 자동 사용된 [gold:card]와 세례[/gold]의 두 번 적중 효과를 발동하지 않던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed [gold:card]Cho Chorus[/gold] not triggering the autoplayed [gold:card]Wah Blast[/gold] double hit effect.",
+    "textKo": "초 코러스가 자동 사용된 와 세례의 두 번 적중 효과를 발동하지 않던 문제를 고쳤습니다.",
+    "textEn": "Fixed Cho Chorus not triggering the autoplayed Wah Blast double hit effect.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "CHO_CHORUS",
+        "label": "초 코러스"
+      },
+      {
+        "type": "card",
+        "id": "WAH_BLAST",
+        "label": "와 세례"
+      }
+    ],
+    "searchText": "v0.114.0:line-107-card-cho-chorus-card-wah-blast v0.114.0 0.114.0 버그 수정 풀 초 코러스가 자동 사용된 와 세례의 두 번 적중 효과를 발동하지 않던 문제를 고쳤습니다. fixed cho chorus not triggering the autoplayed wah blast double hit effect. card cho_chorus 초 코러스 초 코러스 cho chorus card wah_blast 와 세례 와 세례 wah blast"
+  },
+  {
+    "id": "v0.114.0:line-108-card-bounce-enchantment-adroit",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]튀어오르기[/gold] 카드의 [gold:enchantment]숙련[/gold] 인챈트가 튀어오르기가 방금 준 [gold:power]스트레칭[/gold]을 방어도에 더하지 않습니다.",
+    "markdownEn": "[gold:enchantment]Adroit[/gold] enchantment on [gold:card]Bounce[/gold] card no longer adds the [gold:power]Stretch[/gold] that Bounce just gave to its Block.",
+    "textKo": "튀어오르기 카드의 숙련 인챈트가 튀어오르기가 방금 준 스트레칭을 방어도에 더하지 않습니다.",
+    "textEn": "Adroit enchantment on Bounce card no longer adds the Stretch that Bounce just gave to its Block.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BOUNCE",
+        "label": "튀어오르기"
+      },
+      {
+        "type": "enchantment",
+        "id": "ADROIT",
+        "label": "숙련"
+      },
+      {
+        "type": "power",
+        "id": "STRETCH",
+        "label": "스트레칭"
+      }
+    ],
+    "searchText": "v0.114.0:line-108-card-bounce-enchantment-adroit v0.114.0 0.114.0 버그 수정 풀 튀어오르기 카드의 숙련 인챈트가 튀어오르기가 방금 준 스트레칭을 방어도에 더하지 않습니다. adroit enchantment on bounce card no longer adds the stretch that bounce just gave to its block. card bounce 튀어오르기 튀어오르기 bounce enchantment adroit 숙련 숙련 adroit power stretch 스트레칭 스트레칭 stretch"
+  },
+  {
+    "id": "v0.114.0:line-109-card-the-fool",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "타로 [gold:card]광대[/gold]가 더 이상 사용할 수 없는 카드를 사용하지 못합니다.",
+    "markdownEn": "The [gold:card]The Fool[/gold] tarot can no longer play unplayable cards.",
+    "textKo": "타로 광대가 더 이상 사용할 수 없는 카드를 사용하지 못합니다.",
+    "textEn": "The The Fool tarot can no longer play unplayable cards.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "THE_FOOL",
+        "label": "광대"
+      }
+    ],
+    "searchText": "v0.114.0:line-109-card-the-fool v0.114.0 0.114.0 버그 수정 풀 타로 광대가 더 이상 사용할 수 없는 카드를 사용하지 못합니다. the the fool tarot can no longer play unplayable cards. card the_fool 광대 광대 the fool"
+  },
+  {
+    "id": "v0.114.0:line-110-card-timber-potion-gigantification-potion",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]넘어간다[/gold] 카드의 광역 피해가 [gold:potion]거대화 포션[/gold]의 영향을 받지 않던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed [gold:card]Timber[/gold] card's AOE damage not being affected by [gold:potion]Gigantification Potion[/gold].",
+    "textKo": "넘어간다 카드의 광역 피해가 거대화 포션의 영향을 받지 않던 문제를 고쳤습니다.",
+    "textEn": "Fixed Timber card's AOE damage not being affected by Gigantification Potion.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "TIMBER",
+        "label": "넘어간다"
+      },
+      {
+        "type": "potion",
+        "id": "GIGANTIFICATION_POTION",
+        "label": "거대화 포션"
+      }
+    ],
+    "searchText": "v0.114.0:line-110-card-timber-potion-gigantification-potion v0.114.0 0.114.0 버그 수정 풀 넘어간다 카드의 광역 피해가 거대화 포션의 영향을 받지 않던 문제를 고쳤습니다. fixed timber card's aoe damage not being affected by gigantification potion. card timber 넘어간다 넘어간다 timber potion gigantification_potion 거대화 포션 거대화 포션 gigantification potion"
+  },
+  {
+    "id": "v0.114.0:line-111-card-blot-out-the-sky",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]태양을 가리다[/gold] 카드가 풀이 아닌 캐릭터에게 [gold]화살[/gold] 카드를 만들어 주지 않던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed [gold:card]Blot Out the Sky[/gold] card generating no [gold]Arrow[/gold] cards for non-Fool characters.",
+    "textKo": "태양을 가리다 카드가 풀이 아닌 캐릭터에게 화살 카드를 만들어 주지 않던 문제를 고쳤습니다.",
+    "textEn": "Fixed Blot Out the Sky card generating no Arrow cards for non-Fool characters.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "BLOT_OUT_THE_SKY",
+        "label": "태양을 가리다"
+      }
+    ],
+    "searchText": "v0.114.0:line-111-card-blot-out-the-sky v0.114.0 0.114.0 버그 수정 풀 태양을 가리다 카드가 풀이 아닌 캐릭터에게 화살 카드를 만들어 주지 않던 문제를 고쳤습니다. fixed blot out the sky card generating no arrow cards for non-fool characters. card blot_out_the_sky 태양을 가리다 태양을 가리다 blot out the sky"
+  },
+  {
+    "id": "v0.114.0:line-112-card-mythic-form-potion-power-potion",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:card]신비의 형상[/gold] 카드를 [gold:potion]파워 포션[/gold]으로 만들 수 없던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed [gold:card]Mythic Form[/gold] card being unable to be created by [gold:potion]Power Potion[/gold]s.",
+    "textKo": "신비의 형상 카드를 파워 포션으로 만들 수 없던 문제를 고쳤습니다.",
+    "textEn": "Fixed Mythic Form card being unable to be created by Power Potions.",
+    "entityRefs": [
+      {
+        "type": "card",
+        "id": "MYTHIC_FORM",
+        "label": "신비의 형상"
+      },
+      {
+        "type": "potion",
+        "id": "POWER_POTION",
+        "label": "파워 포션"
+      }
+    ],
+    "searchText": "v0.114.0:line-112-card-mythic-form-potion-power-potion v0.114.0 0.114.0 버그 수정 풀 신비의 형상 카드를 파워 포션으로 만들 수 없던 문제를 고쳤습니다. fixed mythic form card being unable to be created by power potions. card mythic_form 신비의 형상 신비의 형상 mythic form potion power_potion 파워 포션 파워 포션 power potion"
+  },
+  {
+    "id": "v0.114.0:line-113-text-1gaclyi",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "화살이 맞기 전에 대상이 죽으면 그 [gold]화살[/gold]이 전투가 끝날 때까지 사라지던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed an [gold]Arrow[/gold] being lost for the rest of combat when its target died before the [gold]Arrow[/gold] hit.",
+    "textKo": "화살이 맞기 전에 대상이 죽으면 그 화살이 전투가 끝날 때까지 사라지던 문제를 고쳤습니다.",
+    "textEn": "Fixed an Arrow being lost for the rest of combat when its target died before the Arrow hit.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-113-text-1gaclyi v0.114.0 0.114.0 버그 수정 풀 화살이 맞기 전에 대상이 죽으면 그 화살이 전투가 끝날 때까지 사라지던 문제를 고쳤습니다. fixed an arrow being lost for the rest of combat when its target died before the arrow hit."
+  },
+  {
+    "id": "v0.114.0:line-114-relic-conductors-baton",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:relic]지휘봉[/gold] 유물이 자기 파워의 호버 팁을 포함하던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed [gold:relic]Conductor's Baton[/gold] relic including hovertip of its own power.",
+    "textKo": "지휘봉 유물이 자기 파워의 호버 팁을 포함하던 문제를 고쳤습니다.",
+    "textEn": "Fixed Conductor's Baton relic including hovertip of its own power.",
+    "entityRefs": [
+      {
+        "type": "relic",
+        "id": "CONDUCTORS_BATON",
+        "label": "지휘봉"
+      }
+    ],
+    "searchText": "v0.114.0:line-114-relic-conductors-baton v0.114.0 0.114.0 버그 수정 풀 지휘봉 유물이 자기 파워의 호버 팁을 포함하던 문제를 고쳤습니다. fixed conductor's baton relic including hovertip of its own power. relic conductors_baton 지휘봉 지휘봉 conductor's baton"
+  },
+  {
+    "id": "v0.114.0:line-115-character-fool-monster-crusher",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "풀"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "The Fool"
+    ],
+    "markdownKo": "[gold:character]풀[/gold]의 [gold]화살[/gold] UI가 [gold:monster]분쇄자[/gold]의 파워 판정 영역을 가리던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed [gold:character]Fool[/gold]'s [gold]Arrow[/gold] UI blocking [gold:monster]Crusher[/gold]'s power hitbox.",
+    "textKo": "풀의 화살 UI가 분쇄자의 파워 판정 영역을 가리던 문제를 고쳤습니다.",
+    "textEn": "Fixed Fool's Arrow UI blocking Crusher's power hitbox.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "FOOL",
+        "label": "풀"
+      },
+      {
+        "type": "monster",
+        "id": "CRUSHER",
+        "label": "분쇄자"
+      }
+    ],
+    "searchText": "v0.114.0:line-115-character-fool-monster-crusher v0.114.0 0.114.0 버그 수정 풀 풀의 화살 ui가 분쇄자의 파워 판정 영역을 가리던 문제를 고쳤습니다. fixed fool's arrow ui blocking crusher's power hitbox. character fool 풀 풀 the fool fool monster crusher 분쇄자 분쇄자 crusher"
+  },
+  {
+    "id": "v0.114.0:line-116-encounter-kaiser-crab-boss-encounter-vantom-boss",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "Multiplayer"
+    ],
+    "markdownKo": "[gold:encounter]황제 게[/gold]와 [gold:encounter]밴텀[/gold]의 [gold]권능[/gold] 툴팁이 잘못된 수치를 보여주던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed [gold]Dominion[/gold] tooltips for [gold:encounter]Kaiser Crab[/gold] and [gold:encounter]Vantom[/gold] displaying incorrect numbers.",
+    "textKo": "황제 게와 밴텀의 권능 툴팁이 잘못된 수치를 보여주던 문제를 고쳤습니다.",
+    "textEn": "Fixed Dominion tooltips for Kaiser Crab and Vantom displaying incorrect numbers.",
+    "entityRefs": [
+      {
+        "type": "encounter",
+        "id": "KAISER_CRAB_BOSS",
+        "label": "황제 게"
+      },
+      {
+        "type": "encounter",
+        "id": "VANTOM_BOSS",
+        "label": "밴텀"
+      }
+    ],
+    "searchText": "v0.114.0:line-116-encounter-kaiser-crab-boss-encounter-vantom-boss v0.114.0 0.114.0 버그 수정 멀티플레이어 황제 게와 밴텀의 권능 툴팁이 잘못된 수치를 보여주던 문제를 고쳤습니다. fixed dominion tooltips for kaiser crab and vantom displaying incorrect numbers. encounter kaiser_crab_boss 황제 게 황제 게 kaiser crab encounter vantom_boss 밴텀 밴텀 vantom"
+  },
+  {
+    "id": "v0.114.0:line-117-character-fool-card-ensemble",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "Multiplayer"
+    ],
+    "markdownKo": "[gold:character]풀[/gold]의 [gold:card]합창[/gold] 카드가 재사용이 있는 카드로 여러 번 줄어들던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed [gold:character]Fool[/gold]'s [gold:card]Ensemble[/gold] card decrementing multiple times from cards that have replay.",
+    "textKo": "풀의 합창 카드가 재사용이 있는 카드로 여러 번 줄어들던 문제를 고쳤습니다.",
+    "textEn": "Fixed Fool's Ensemble card decrementing multiple times from cards that have replay.",
+    "entityRefs": [
+      {
+        "type": "character",
+        "id": "FOOL",
+        "label": "풀"
+      },
+      {
+        "type": "card",
+        "id": "ENSEMBLE",
+        "label": "합창"
+      }
+    ],
+    "searchText": "v0.114.0:line-117-character-fool-card-ensemble v0.114.0 0.114.0 버그 수정 멀티플레이어 풀의 합창 카드가 재사용이 있는 카드로 여러 번 줄어들던 문제를 고쳤습니다. fixed fool's ensemble card decrementing multiple times from cards that have replay. character fool 풀 풀 the fool fool card ensemble 합창 합창 ensemble"
+  },
+  {
+    "id": "v0.114.0:line-118-text-1la1969",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "Multiplayer"
+    ],
+    "markdownKo": "멀티플레이어 호스트가 해금하지 않은 무작위를 선택하면 승천 선택기가 영영 사라지던 문제를 고쳤습니다.",
+    "markdownEn": "Selecting Random while you don't have it unlocked as the host in multiplayer no longer makes the ascension picker disappear forever.",
+    "textKo": "멀티플레이어 호스트가 해금하지 않은 무작위를 선택하면 승천 선택기가 영영 사라지던 문제를 고쳤습니다.",
+    "textEn": "Selecting Random while you don't have it unlocked as the host in multiplayer no longer makes the ascension picker disappear forever.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-118-text-1la1969 v0.114.0 0.114.0 버그 수정 멀티플레이어 멀티플레이어 호스트가 해금하지 않은 무작위를 선택하면 승천 선택기가 영영 사라지던 문제를 고쳤습니다. selecting random while you don't have it unlocked as the host in multiplayer no longer makes the ascension picker disappear forever."
+  },
+  {
+    "id": "v0.114.0:line-119-text-8q104k",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "버그 수정",
+      "멀티플레이어"
+    ],
+    "sectionEn": [
+      "Bug Fixes",
+      "Multiplayer"
+    ],
+    "markdownKo": "[gold]블리츠[/gold]나 [gold]드레드[/gold] 로비의 정보 팝업이 열려 있는 동안 연결이 끊긴 뒤 단축키가 작동하지 않던 문제를 고쳤습니다.",
+    "markdownEn": "Fixed hotkeys not working after losing connection to a [gold]Blitz[/gold] or [gold]Dread[/gold] lobby while its info popup was open.",
+    "textKo": "블리츠나 드레드 로비의 정보 팝업이 열려 있는 동안 연결이 끊긴 뒤 단축키가 작동하지 않던 문제를 고쳤습니다.",
+    "textEn": "Fixed hotkeys not working after losing connection to a Blitz or Dread lobby while its info popup was open.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-119-text-8q104k v0.114.0 0.114.0 버그 수정 멀티플레이어 블리츠나 드레드 로비의 정보 팝업이 열려 있는 동안 연결이 끊긴 뒤 단축키가 작동하지 않던 문제를 고쳤습니다. fixed hotkeys not working after losing connection to a blitz or dread lobby while its info popup was open."
+  },
+  {
+    "id": "v0.114.0:line-120-text-1hc9l14",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "성능"
+    ],
+    "sectionEn": [
+      "Performance"
+    ],
+    "markdownKo": "캐릭터 휴식 장소의 해상도를 최적화했습니다.",
+    "markdownEn": "Optimized character rest site resolutions.",
+    "textKo": "캐릭터 휴식 장소의 해상도를 최적화했습니다.",
+    "textEn": "Optimized character rest site resolutions.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-120-text-1hc9l14 v0.114.0 0.114.0 성능 캐릭터 휴식 장소의 해상도를 최적화했습니다. optimized character rest site resolutions."
+  },
+  {
+    "id": "v0.114.0:line-121-text-76skyh",
+    "patch": "v0.114.0",
+    "version": "0.114.0",
+    "date": "2026-11-25",
+    "section": [
+      "성능"
+    ],
+    "sectionEn": [
+      "Performance"
+    ],
+    "markdownKo": "여러 VFX의 GPU 부하를 줄였습니다.",
+    "markdownEn": "Reduce GPU load from various VFX.",
+    "textKo": "여러 VFX의 GPU 부하를 줄였습니다.",
+    "textEn": "Reduce GPU load from various VFX.",
+    "entityRefs": [],
+    "searchText": "v0.114.0:line-121-text-76skyh v0.114.0 0.114.0 성능 여러 vfx의 gpu 부하를 줄였습니다. reduce gpu load from various vfx."
   }
 ]
