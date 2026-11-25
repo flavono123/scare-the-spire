@@ -97,7 +97,8 @@ import {
   getTinkerRiderChoiceKey,
   MAD_SCIENCE_CARD_ID,
   MAD_SCIENCE_DEFAULT_IMAGE_URL,
-  MAD_SCIENCE_DEFAULT_VARIANT,
+  MAD_SCIENCE_DEFAULT_RIDER,
+  MAD_SCIENCE_DEFAULT_TYPE,
   TINKER_CARD_TYPES,
   TINKER_CARD_TYPE_TO_KO,
   TINKER_RIDER_CHOICE_LABELS,
@@ -898,7 +899,8 @@ export async function getCodexCards(opts?: {
       if (card.id !== MAD_SCIENCE_CARD_ID) return [card];
 
       // One card, as in the game; the detail page and links pick the Tinker Time variant.
-      const { cardType, riderId } = MAD_SCIENCE_DEFAULT_VARIANT;
+      const cardType = MAD_SCIENCE_DEFAULT_TYPE;
+      const riderId = MAD_SCIENCE_DEFAULT_RIDER;
       const typeKo = TINKER_CARD_TYPE_TO_KO[cardType];
       return [{
         ...getMadSciencePreviewCard(card, cardType, riderId, typeLabels[typeKo] ?? typeKo),
