@@ -441,16 +441,50 @@ const CODEX_KEYWORD_ORDER = [
   "BLOCK",
   "ENERGY",
   "STAR_COUNT",
+  "COOK",
+  "DECK",
+  "DRAW_PILE",
+  "DISCARD_PILE",
+  "EXHAUST_PILE",
+  "MONEY_POUCH",
+  "HIT_POINTS",
+  "POTION_SLOT",
+  "FLOOR",
+  "LINKED_REWARDS",
+  "DREAD_ROTATION",
+  "ROOM_ENEMY",
+  "ROOM_ELITE",
+  "ROOM_BOSS",
+  "ROOM_REST",
+  "ROOM_MERCHANT",
+  "ROOM_TREASURE",
+  "ROOM_EVENT",
+  "ROOM_ANCIENT",
+  "ROOM_MAP",
+  "ROOM_UNKNOWN_ENEMY",
+  "ROOM_UNKNOWN_ELITE",
+  "ROOM_UNKNOWN_EVENT",
+  "ROOM_UNKNOWN_MERCHANT",
+  "ROOM_UNKNOWN_TREASURE",
 ] as const;
 
 const STATIC_HOVER_KEYWORD_IDS = [
   "TAROT", "WAH_MELODY", "CHO_MELODY", "KI_MELODY", "ARROW", "FORGE", "SUMMON_STATIC",
   "CHANNELING", "EVOKE", "FATAL", "STUN", "TRANSFORM", "BLOCK", "ENERGY", "STAR_COUNT",
+  // Every other tip the game can show: Cook on Meat Cleaver, and the combat piles, top bar,
+  // potion slots, reward sets, Dread and map room tips. Pure controls (map, end turn,
+  // settings, compendium), the unused card reward tip and boss-name templates are left out.
+  "COOK", "DECK", "DRAW_PILE", "DISCARD_PILE", "EXHAUST_PILE", "MONEY_POUCH", "HIT_POINTS", "POTION_SLOT", "FLOOR", "LINKED_REWARDS", "DREAD_ROTATION", "ROOM_ENEMY", "ROOM_ELITE", "ROOM_BOSS", "ROOM_REST", "ROOM_MERCHANT", "ROOM_TREASURE", "ROOM_EVENT", "ROOM_ANCIENT", "ROOM_MAP", "ROOM_UNKNOWN_ENEMY", "ROOM_UNKNOWN_ELITE", "ROOM_UNKNOWN_EVENT", "ROOM_UNKNOWN_MERCHANT", "ROOM_UNKNOWN_TREASURE",
 ] as const;
 
 // Glossary tips carry runtime slots: the arrow count only shows in combat, the star icon is a token.
 function fillStaticHoverSlots(text: string): string {
   return text.replace(/\{ShowArrowCount:[^|]*\|\}/g, "").replace(/\{singleStarIcon\}/g, "[star:1]");
+}
+
+// Pile, deck and map titles end in a hotkey slot ("덱{Hotkey:choose(None):| ({})}") that only the game UI fills.
+function stripHotkeySlot(title: string): string {
+  return title.replace(/\{Hotkey:.*?\(\{\}\)\}/g, "").trim();
 }
 
 function keywordSortOrder(id: string): number {
@@ -601,6 +635,8 @@ function mapStaticHoverKeyword(
   };
   return {
     ...keyword,
+    name: stripHotkeySlot(keyword.name),
+    nameEn: stripHotkeySlot(keyword.nameEn),
     description: fillStaticHoverSlots(keyword.description),
     descriptionEn: fillStaticHoverSlots(keyword.descriptionEn),
     descriptionRaw: fillStaticHoverSlots(keyword.descriptionRaw),
