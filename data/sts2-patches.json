@@ -679,10 +679,10 @@
     "summaryKo": "풀 중심의 베타 패치: 새 카드 낙관, 성장·화살 찌르기·개화·최후의 한 발·조율·수거 리워크, 신속 사격이 이중 사격으로, 내 반짝이들 리워크, 풀 카드 전반의 버프·너프, 질긴 생존력 변경, 많은 버그 수정.",
     "hasBalanceChanges": true,
     "art": {
-      "type": "image",
-      "imageUrl": "/images/sts2/patches/default-art.webp",
-      "alt": "Slay the Spire 2 patch notes banner",
-      "altKo": "슬레이 더 스파이어 2 패치 노트 배너"
+      "type": "card",
+      "id": "OPTIMISM",
+      "alt": "Optimism, the new Fool card",
+      "altKo": "낙관, 풀의 새 카드"
     },
     "featuredEntities": [
       { "type": "character", "id": "FOOL" },
