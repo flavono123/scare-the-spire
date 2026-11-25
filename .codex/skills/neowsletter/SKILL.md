@@ -38,8 +38,8 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
 - Leave an ambiguous name untagged when several cards share it, such as Defend / 수비. Osty is `[gold]골골이[/gold]`, not a card link.
 - The tab token is `/images/sts2/ancients/neow.webp`. Do not use the map node `ancient_node_neow`.
 - `serviceLocale` selects `data/sts2-neowsletters/{id}.ko.md` or `{id}.md`. `gameLocale` selects Codex hover labels. Keep the written name on screen when the game locale matches the file (`kor` / `eng`). Swap the visible label only for other game locales, so `[gold:ascension]Ascension 10[/gold]` does not become the level title `Double Boss`.
-- Pages are finite static routes under `/patches/neowsletters`. Register them in `scripts/build-patch-worker.tsx` in the same change. Do not render markdown in the Worker.
-- Load `.codex/skills/cf-guardrails/SKILL.md` before adding routes or images. One newsletter image also occupies a main Worker public-asset slot.
+- Pages are finite static routes under `/patches/neowsletters`; the patch build registers every issue in `data/sts2-neowsletters.json` (`scripts/build-patch-worker.tsx`). Do not render markdown in the Worker.
+- Run `pnpm cf:limits` before adding images: each newsletter image also takes a main Worker public-asset slot.
 - Every meaningful edit gets its own speculative commit, following `AGENTS.md`.
 
 ## Workflow
@@ -57,7 +57,7 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
    - Put a game image on its own line: `![alt](/images/neowsletters/{id}/file.jpg)`.
    - Compress the file first. The markdown path must match the saved extension.
 5. Keep the third tab label `니오우스레터` / `Neowsletter` and the routes `/patches/neowsletters` and `/patches/neowsletters/{id}`.
-6. Rebuild patch HTML (`pnpm patch:html`) and copy assets (`pnpm patch:assets`) so `/patches` serves the new tab from the patch Worker.
+6. Check names with `bin/ssy tags data/sts2-neowsletters/{id}.ko.md data/sts2-neowsletters/{id}.md` (official names via `bin/ssy find`).
 7. Verify the Korean list, the Korean issue, and `/en/patches/neowsletters/{id}`: cover thumbnail, `spire-blue` source links with icons and arrows, gold names that stay inside the sentence, a comment control under each claim, and an open control with a count only where comments already exist.
 8. Ship it (see **Release** below).
 

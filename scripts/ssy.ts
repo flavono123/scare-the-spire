@@ -17,7 +17,7 @@ const HELP = `ssy <command>
   find <text> [--type card] [--limit 10]   Official ko/en name, id, type and URL (search index)
   changes <ENTITY_ID>                      Balance changes and field diffs per patch
   lines <version> [text]                   Patch line ids of one patch, filtered by text
-  tags <version>                           Check [gold:type]Name tags in both patch note files against official names
+  tags <version> | tags <file.md ...>      [gold:type]Name tags that render without hover/link (patch notes, neowsletters, byrdispatch)
   steam [version]                          Steam announcements; with a version, its title, publishedAt and raw contents
   api                                      Public GET routes and their query keys
   api <path> [key=value ...] [--host prod|testbed|local]   Call a public GET route (default prod)
@@ -105,15 +105,16 @@ async function api({ args, opts }: Flags) {
 
 // Uses the patch renderer's own lookup, so a flagged tag is exactly one that renders without hover/link.
 async function tags({ args }: Flags) {
-  const version = args[0]?.replace(/^v?/, "v");
-  if (!version) throw new Error("tags <version>");
+  if (!args.length) throw new Error("tags <version> | tags <file.md ...>");
+  // A version means its two patch note files; anything with a slash is a markdown path (neowsletter, byrdispatch).
+  const files = args[0].includes("/") ? args : [".ko.md", ".md"].map((ext) => `data/sts2-patch-notes/${args[0].replace(/^v?/, "v")}${ext}`);
   const { loadAllEntities } = await import("../src/lib/load-all-entities");
   const { buildEntityLookup, findEntity } = await import("../src/components/patch-note-renderer");
   const lookup = buildEntityLookup(await loadAllEntities({ gameLocale: "kor" }));
   let problems = 0;
-  for (const file of [`${version}.ko.md`, `${version}.md`]) {
-    const rel = `data/sts2-patch-notes/${file}`;
+  for (const rel of files) {
     if (!existsSync(path.join(root, rel))) continue;
+    const file = path.basename(rel);
     for (const [, type, text] of readFileSync(path.join(root, rel), "utf8").matchAll(/\[gold(?::([a-zA-Z]+))?\]([^[]+)\[\/gold\]/g)) {
       // shortcut: monster moves are added by the patch build with line context, not by loadAllEntities; not checked here.
       if (type === "monsterMove") continue;

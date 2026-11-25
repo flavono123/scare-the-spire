@@ -35,7 +35,7 @@ Compare against published entries the user already corrected (`2026-07-09`, `202
    - Preserve one nested bullet level (`  -`) when the user provides it or explicitly asks for child examples/details.
    - If the user writes a numbered list (`1. 2. 3.`), convert it to nested `-` bullets. The parser only accepts `-` bullets.
    - Route/service English naming is `byrdispatch`; the canonical public route is `/byrdispatch`.
-   - This or That tab exception: 이아저? 월드컵 is a tab of 이거 아님 저거?, not a Toy Box dropdown item. Keep writing `### 이아저? 월드컵` / `### thisorthat? tournament` when that tab itself is the update. Do not add it to `getToyBoxNavItems` as a visible row. Dropdown NEW for that work attaches to 이거 아님 저거? / This or That? (`dropdownHidden` child bubbling, or `(new)` on the parent heading). Do not invent a separate Toy Box menu entry to make the heading match.
+   - This or That tab exception: 이아저? 월드컵 is a tab of 이거 아님 저거?, not a Toy Box dropdown item. Keep writing `### 이아저? 월드컵` / `### thisorthat? tournament` when that tab itself is the update. In `src/data/place-registry.json` it is `"parent": "this-or-that"` with `"menuHidden": true`, so it never shows as a menu row; dropdown NEW for that work bubbles to 이거 아님 저거? / This or That? (or `(new)` on the parent heading). Do not invent a separate Toy Box menu entry to make the heading match.
 5. Normalize user notes without inventing product facts.
    - When the user supplies Korean copy, that wording is the SSOT. Format it (headings, bullets, markers, links, gold tags, image paths). Do not rewrite it into a different "service-update voice."
    - When the user does not supply copy, write short factual bullets in the published voice: `합니다` / `했습니다`. Do not use `했다` / `이다` diary tone from older format examples.
@@ -48,7 +48,7 @@ Compare against published entries the user already corrected (`2026-07-09`, `202
    - Ask only if the target date or intended meaning is genuinely ambiguous.
 6. Add rich references only when verifiable in this repo.
    - Use patch-note BBCode syntax such as `[gold:card]광기[/gold]` or `[gold:relic]역사 강의서[/gold]` in Korean and the verified game-localized names in English.
-   - Verify game resources against extracted Codex data or existing comment/search entity data before adding a typed tag.
+   - Verify game resources before adding a typed tag: `bin/ssy find <name>` for the official name, then `bin/ssy tags data/byrdispatch/<date>.md data/byrdispatch/<date>.en.md`.
    - Use typed tags for individual game resources, not service headings; game resource labels must follow the active game locale at render time. Use extracted Korean game text in the Korean source and extracted English game text in the English source so each file is also readable as Markdown.
    - For epoch beta-art updates, use typed `[gold:epoch]...[/gold]` references so byrdispatch renders the hover tip in beta-art mode when present.
    - Beta-art mode selects the beta art instead of the official art; do not describe or expect both images to render together.
@@ -58,7 +58,7 @@ Compare against published entries the user already corrected (`2026-07-09`, `202
 9. Run pre-push gate verification and fix any blockers:
    - Do not directly run `git push`; the user triggers the deployment push.
    - To guarantee that the user's push succeeds, directly execute the repository pre-push hook (`./.githooks/pre-push`, which runs `pnpm i18n:validate`, `pnpm lint`, and `pnpm tsc --noEmit`).
-   - Verify that every Korean date file has a same-date `.en.md` partner.
+   - Verify that every Korean date file has a same-date `.en.md` partner, and run `pnpm byrdispatch:new-check` for the NEW markers.
    - If any step fails (such as `tsc` typecheck failures or lint errors introduced by recent edits or parallel sessions), diagnose and fix the issues immediately, commit the fixes, and verify that `./.githooks/pre-push` passes cleanly (`[pre-push] ok`).
    - Do not run `pnpm build` for copy-only byrdispatch markdown.
    - Do not add a QA/browser pass to the byrdispatch write itself. Capture with headless Playwright only when media is actually required.
