@@ -32390,5 +32390,2337 @@
         "after": {}
       }
     ]
+  },
+  {
+    "id": "all-is-well-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "ALL_IS_WELL",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "4(5)",
+        "after": "4(6)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "upgrade.alliswellpower",
+        "before": "+1",
+        "after": "+2"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "All Is Well buffed: Block gain 4(5) -> 4(6).",
+    "summaryKo": "다 잘될 거야 버프: 방어도 획득량 4(5) → 4(6)."
+  },
+  {
+    "id": "archery-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "ARCHERY",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Uncommon",
+        "after": "Rare",
+        "beforeKo": "고급",
+        "afterKo": "희귀",
+        "diffType": "enum"
+      },
+      {
+        "attribute": "aim",
+        "displayName": "Aim",
+        "displayNameKo": "조준",
+        "before": "4(5)",
+        "after": "6(8)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "희귀"
+      },
+      {
+        "field": "description",
+        "before": "내 턴 시작 시,\n[gold]조준[/gold]을 4 얻습니다.",
+        "after": "내 턴 시작 시,\n[gold]조준[/gold]을 6 얻습니다."
+      },
+      {
+        "field": "vars.AimPower",
+        "before": 4,
+        "after": 6
+      },
+      {
+        "field": "vars.Aim",
+        "before": 4,
+        "after": 6
+      },
+      {
+        "field": "upgrade.aimpower",
+        "before": "+1",
+        "after": "+2"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Archery is now Rare and its Aim increased from 4(5) to 6(8).",
+    "summaryKo": "궁술이 희귀가 되었고 조준이 4(5)에서 6(8)로 증가했습니다."
+  },
+  {
+    "id": "arrow-stab-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "ARROW_STAB",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Deal 9(12) damage. If you have an Arrow, put a card that can Shoot from your Discard Pile into your Hand.",
+        "after": "Deal 13(15) damage. Gain 6(8) Aim.",
+        "beforeKo": "피해 9(12), 화살이 있다면 버린 카드 더미에서 발사할 수 있는 카드 1장을 손으로",
+        "afterKo": "피해 13(15), 조준 6(8)",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 2
+      },
+      {
+        "field": "description",
+        "before": "피해를 9 줍니다.\n[gold]화살[/gold]을 보유했다면,\n[gold]버린 카드 더미[/gold]에서\n[gold]발사[/gold]할 수 있는 카드를 1장\n[gold]손[/gold]으로 가져옵니다.",
+        "after": "피해를 13 줍니다.\n[gold]조준[/gold]을 6 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 줍니다.\n[gold]화살[/gold]을 보유했다면,\n[gold]버린 카드 더미[/gold]에서\n[gold]발사[/gold]할 수 있는 카드를 1장\n[gold]손[/gold]으로 가져옵니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n[gold]조준[/gold]을 {AimPower:diff()} 얻습니다."
+      },
+      {
+        "field": "damage",
+        "before": 9,
+        "after": 13
+      },
+      {
+        "field": "vars.Damage",
+        "before": 9,
+        "after": 13
+      },
+      {
+        "field": "vars.AimPower",
+        "after": 6
+      },
+      {
+        "field": "vars.Aim",
+        "after": 6
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+3",
+        "after": "+2"
+      },
+      {
+        "field": "upgrade.aimpower",
+        "after": "+2"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Arrow Stab reworked: cost 2, deals 13(15) damage and gains 6(8) Aim.",
+    "summaryKo": "화살 찌르기 리워크: 비용 2, 피해를 13(15) 주고 조준을 6(8) 얻습니다."
+  },
+  {
+    "id": "bounce-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "BOUNCE",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "stretch",
+        "displayName": "Stretch",
+        "displayNameKo": "스트레칭",
+        "before": "10(13)",
+        "after": "8(11)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]스트레칭[/gold]을 10 얻습니다.\n다음 턴 시작 시, 이 카드를\n다시 [gold]손[/gold]으로 가져옵니다.",
+        "after": "[gold]스트레칭[/gold]을 8 얻습니다.\n다음 턴 시작 시, 이 카드를\n다시 [gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "vars.StretchPower",
+        "before": 10,
+        "after": 8
+      },
+      {
+        "field": "vars.Stretch",
+        "before": 10,
+        "after": 8
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Bounce nerfed: Stretch 10(13) -> 8(11).",
+    "summaryKo": "튀어오르기 너프: 스트레칭 10(13) → 8(11)."
+  },
+  {
+    "id": "cho-barbs-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "CHO_BARBS",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "7(9)",
+        "after": "8(10)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "thorns",
+        "displayName": "Thorns",
+        "displayNameKo": "가시",
+        "before": "3(4)",
+        "after": "2(3)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 7 얻습니다.\n이번 턴 동안\n[gold]가시[/gold]를 3 얻습니다.",
+        "after": "[gold]방어도[/gold]를 8 얻습니다.\n이번 턴 동안\n[gold]가시[/gold]를 2 얻습니다."
+      },
+      {
+        "field": "block",
+        "before": 7,
+        "after": 8
+      },
+      {
+        "field": "vars.Block",
+        "before": 7,
+        "after": 8
+      },
+      {
+        "field": "vars.ChoBarbsPower",
+        "before": 3,
+        "after": 2
+      },
+      {
+        "field": "vars.ChoBarbs",
+        "before": 3,
+        "after": 2
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Cho Barbs changed: Block gain 7(9) -> 8(10), Thorns 3(4) -> 2(3).",
+    "summaryKo": "초 미늘 변경: 방어도 획득량 7(9) → 8(10), 가시 3(4) → 2(3)."
+  },
+  {
+    "id": "cho-chorus-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "CHO_CHORUS",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "12(15)",
+        "after": "14(18)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 12 얻습니다.\n[gold]손[/gold]에 있는 모든 “와”, “키”\n카드를 사용합니다.",
+        "after": "[gold]방어도[/gold]를 14 얻습니다.\n[gold]손[/gold]에 있는 모든 “와”, “키”\n카드를 사용합니다."
+      },
+      {
+        "field": "block",
+        "before": 12,
+        "after": 14
+      },
+      {
+        "field": "vars.Block",
+        "before": 12,
+        "after": 14
+      },
+      {
+        "field": "upgrade.block",
+        "before": "+3",
+        "after": "+4"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Cho Chorus buffed: Block 12(15) -> 14(18).",
+    "summaryKo": "초 코러스 버프: 방어도 12(15) → 14(18)."
+  },
+  {
+    "id": "cho-firm-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "CHO_FIRM",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "6(8)",
+        "after": "5(7)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 6 얻습니다.\n[gold]화살[/gold]을 보유했다면,\n[gold]방어도[/gold]를 1번 추가로\n얻습니다.",
+        "after": "[gold]방어도[/gold]를 5 얻습니다.\n[gold]화살[/gold]을 보유했다면,\n[gold]방어도[/gold]를 1번 추가로\n얻습니다."
+      },
+      {
+        "field": "block",
+        "before": 6,
+        "after": 5
+      },
+      {
+        "field": "vars.Block",
+        "before": 6,
+        "after": 5
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Cho Firm nerfed: Block gain 6(8) -> 5(7).",
+    "summaryKo": "초 경화 너프: 방어도 획득량 6(8) → 5(7)."
+  },
+  {
+    "id": "cho-ready-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "CHO_READY",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "8(11)",
+        "after": "7(9)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "aim",
+        "displayName": "Aim",
+        "displayNameKo": "조준",
+        "before": "3(5)",
+        "after": "3(4)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 8 얻습니다.\n[gold]조준[/gold]을 3 얻습니다.",
+        "after": "[gold]방어도[/gold]를 7 얻습니다.\n[gold]조준[/gold]을 3 얻습니다."
+      },
+      {
+        "field": "block",
+        "before": 8,
+        "after": 7
+      },
+      {
+        "field": "vars.Block",
+        "before": 8,
+        "after": 7
+      },
+      {
+        "field": "upgrade.block",
+        "before": "+3",
+        "after": "+2"
+      },
+      {
+        "field": "upgrade.aimpower",
+        "before": "+2",
+        "after": "+1"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Cho Ready nerfed: Block 8(11) -> 7(9), Aim 3(5) -> 3(4).",
+    "summaryKo": "초 준비 너프: 방어도 8(11) → 7(9), 조준 3(5) → 3(4)."
+  },
+  {
+    "id": "death-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "DEATH",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "doom",
+        "displayName": "Doom",
+        "displayNameKo": "종말",
+        "before": "75(99)",
+        "after": "66(81)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]종말[/gold]을 75 부여합니다.",
+        "after": "[gold]종말[/gold]을 66 부여합니다."
+      },
+      {
+        "field": "vars.DoomPower",
+        "before": 75,
+        "after": 66
+      },
+      {
+        "field": "vars.Doom",
+        "before": 75,
+        "after": 66
+      },
+      {
+        "field": "upgrade.doom",
+        "before": "+24",
+        "after": "+15"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Death nerfed: Doom 75(99) -> 66(81).",
+    "summaryKo": "죽음 너프: 종말 75(99) → 66(81)."
+  },
+  {
+    "id": "ensemble-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "ENSEMBLE",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "다른 플레이어가 다음에\n사용하는 카드 4장을\n비용 없이 사용할 수\n있습니다.",
+        "after": "다른 플레이어가 다음에\n사용하는 카드 4장의\n비용이 0 [energy:1]이 됩니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "다른 플레이어가 다음에\n사용하는 {Cards:choose(1):카드를|카드 {:diff()}장을}\n비용 없이 사용할 수\n있습니다.",
+        "after": "다른 플레이어가 다음에\n사용하는 {Cards:choose(1):카드의|카드 {:diff()}장의}\n비용이 0 {energyPrefix:energyIcons(1)}이 됩니다."
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Ensemble reworded from \"free to play\" to \"cost 0 E\".",
+    "summaryKo": "합창의 문구를 \"사용 무료\"에서 \"비용 에너지 0\"으로 바꿨습니다."
+  },
+  {
+    "id": "explosive-arrows-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "EXPLOSIVE_ARROWS",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Rare",
+        "after": "Uncommon",
+        "beforeKo": "희귀",
+        "afterKo": "고급",
+        "diffType": "enum"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "6(8)",
+        "after": "8(11)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "희귀",
+        "after": "고급"
+      },
+      {
+        "field": "description",
+        "before": "적을 [gold]꿰뚫을[/gold] 때마다,\n모든 적에게\n피해를 6 줍니다.",
+        "after": "적을 [gold]꿰뚫을[/gold] 때마다,\n모든 적에게\n피해를 8 줍니다."
+      },
+      {
+        "field": "vars.ExplosiveArrowsPower",
+        "before": 6,
+        "after": 8
+      },
+      {
+        "field": "vars.ExplosiveArrows",
+        "before": 6,
+        "after": 8
+      },
+      {
+        "field": "upgrade.explosivearrowspower",
+        "before": "+2",
+        "after": "+3"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Explosive Arrows is now Uncommon and its damage increased from 6(8) to 8(11).",
+    "summaryKo": "폭발성 화살이 고급이 되었고 피해량이 6(8)에서 8(11)로 증가했습니다."
+  },
+  {
+    "id": "florescence-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "FLORESCENCE",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": 0,
+        "after": 1,
+        "diffType": "number"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Exhaust ALL of your cards that Shoot and create The Shot(+). Exhaust.",
+        "after": "Choose a card in your Hand to Transform into The Shot(+).",
+        "beforeKo": "발사할 수 있는 모든 카드 소멸, 최후의 한 발(+) 생성, 소멸",
+        "afterKo": "손에 있는 카드 1장을 최후의 한 발(+)로 변화",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 0,
+        "after": 1
+      },
+      {
+        "field": "description",
+        "before": "손에 있는 [gold]발사[/gold]할 수 있는\n카드를 모두 [gold]소멸[/gold]시키고,\n[gold]최후의 한 발[/gold]을\n생성합니다.",
+        "after": "[gold]손[/gold]에 있는 카드를\n1장 선택해\n[gold]최후의 한 발[/gold]로\n[gold]변화[/gold]시킵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "손에 있는 [gold]발사[/gold]할 수 있는\n카드를 모두 [gold]소멸[/gold]시키고,\n[gold]{IfUpgraded:show:최후의 한 발+|최후의 한 발}[/gold]을\n생성합니다.",
+        "after": "[gold]손[/gold]에 있는 카드를\n1장 선택해\n[gold]{IfUpgraded:show:최후의 한 발+|최후의 한 발}[/gold]로\n[gold]변화[/gold]시킵니다."
+      },
+      {
+        "field": "keywords",
+        "before": [
+          "소멸"
+        ],
+        "after": []
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Florescence reworked: cost 1, Transform a card in your Hand into The Shot(+).",
+    "summaryKo": "개화 리워크: 비용 1, 손에 있는 카드 1장을 최후의 한 발(+)로 변화시킵니다."
+  },
+  {
+    "id": "growth-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "GROWTH",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Exhaust ALL Sadness in your Hand. Gain 4(6) Stretch for each card Exhausted.",
+        "after": "Gain 8(11) Block. Transform 1 random Sadness in your hand into a copy of this card.",
+        "beforeKo": "손에 있는 모든 슬픔 소멸, 소멸시킨 카드 1장당 스트레칭 4(6)",
+        "afterKo": "방어도 8(11), 손에 있는 무작위 슬픔 1장을 이 카드의 복사본으로 변화",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]손[/gold]에 있는 모든 [gold]슬픔[/gold]을\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드 1장당\n[gold]스트레칭[/gold]을 4 얻습니다.",
+        "after": "[gold]방어도[/gold]를 8 얻습니다.\n[gold]손[/gold]에 있는 무작위\n[gold]슬픔[/gold] 1장을 이 카드의\n복사본으로\n[gold]변화[/gold]시킵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]손[/gold]에 있는 모든 [gold]슬픔[/gold]을\n[gold]소멸[/gold]시킵니다.\n[gold]소멸[/gold]시킨 카드 1장당\n[gold]스트레칭[/gold]을 {CalculationExtra:diff()} 얻습니다.{InCombat:\n([gold]스트레칭[/gold]을 {CalculatedStretch:diff()} 얻습니다)|}",
+        "after": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n[gold]손[/gold]에 있는 무작위\n[gold]슬픔[/gold] 1장을 이 카드의\n복사본으로\n[gold]변화[/gold]시킵니다."
+      },
+      {
+        "field": "block",
+        "before": null,
+        "after": 8
+      },
+      {
+        "field": "vars.CalculationBase",
+        "before": 0
+      },
+      {
+        "field": "vars.CalculationExtra",
+        "before": 4
+      },
+      {
+        "field": "vars.Block",
+        "after": 8
+      },
+      {
+        "field": "upgrade.calculationextra",
+        "before": "+2"
+      },
+      {
+        "field": "upgrade.block",
+        "after": "+3"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Growth reworked: gain 8(11) Block and Transform 1 random Sadness in your Hand into a copy of this card.",
+    "summaryKo": "성장 리워크: 방어도를 8(11) 얻고, 손에 있는 무작위 슬픔 1장을 이 카드의 복사본으로 변화시킵니다."
+  },
+  {
+    "id": "harmonic-shield-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "HARMONIC_SHIELD",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Gain 5(7) Block for each Melody you have.",
+        "after": "Gain 4(6) Block. Gain 4(6) additional Block for each Melody you have.",
+        "beforeKo": "보유한 선율마다 방어도 5(7)",
+        "afterKo": "방어도 4(6), 보유한 선율마다 방어도 추가 4(6)",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "보유한 [gold]선율[/gold]마다\n[gold]방어도[/gold]를 5 얻습니다.",
+        "after": "[gold]방어도[/gold]를 4 얻습니다.\n보유한 [gold]선율[/gold]마다\n[gold]방어도[/gold]를 추가로\n4 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "보유한 [gold]선율[/gold]마다\n[gold]방어도[/gold]를 {CalculationExtra:diff()} 얻습니다.{InCombat:\n([gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다)|}",
+        "after": "[gold]방어도[/gold]를 {CalculatedBlock:diff()} 얻습니다.\n보유한 [gold]선율[/gold]마다\n[gold]방어도[/gold]를 추가로\n{CalculationExtra:diff()} 얻습니다."
+      },
+      {
+        "field": "vars.CalculationBase",
+        "before": 0,
+        "after": 4
+      },
+      {
+        "field": "vars.CalculationExtra",
+        "before": 5,
+        "after": 4
+      },
+      {
+        "field": "upgrade.calculationbase",
+        "after": "+2"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Harmonic Shield reworked: gain 4(6) Block, plus 4(6) additional Block for each Melody.",
+    "summaryKo": "화음 방패 리워크: 방어도를 4(6) 얻고, 보유한 선율마다 방어도를 추가로 4(6) 얻습니다."
+  },
+  {
+    "id": "heavy-shot-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "HEAVY_SHOT",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Common",
+        "after": "Uncommon",
+        "beforeKo": "일반",
+        "afterKo": "고급",
+        "diffType": "enum"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "20(25)",
+        "after": "16(17)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "aimMultiplier",
+        "displayName": "Aim effect",
+        "displayNameKo": "조준 효과",
+        "before": "2",
+        "after": "3(4)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "일반",
+        "after": "고급"
+      },
+      {
+        "field": "description",
+        "before": "피해를 20 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n[gold]조준[/gold]의 효과가 2배로\n적용됩니다.",
+        "after": "피해를 16 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n[gold]조준[/gold]의 효과가 3배로\n적용됩니다."
+      },
+      {
+        "field": "damage",
+        "before": 20,
+        "after": 16
+      },
+      {
+        "field": "vars.Damage",
+        "before": 20,
+        "after": 16
+      },
+      {
+        "field": "vars.AimMultiplier",
+        "before": 2,
+        "after": 3
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+5",
+        "after": "+1"
+      },
+      {
+        "field": "upgrade.aimmultiplier",
+        "after": "+1"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Heavy Shot is now Uncommon, damage decreased from 20(25) to 16(17), and its Aim effect increased from 2 to 3(4) times.",
+    "summaryKo": "묵직한 사격이 고급이 되었고, 피해량이 20(25)에서 16(17)로 감소했으며, 조준 효과가 2배에서 3(4)배로 증가했습니다."
+  },
+  {
+    "id": "honing-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "HONING",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Arrows deal 50% additional damage.",
+        "after": "Arrows deal double damage.",
+        "beforeKo": "화살의 피해량 50% 증가",
+        "afterKo": "화살의 피해량 2배",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]화살[/gold]의 피해량이\n50% 증가합니다.",
+        "after": "[gold]화살[/gold]의 피해량이\n2배가 됩니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]화살[/gold]의 피해량이\n{HoningPower:diff()}% 증가합니다.",
+        "after": "[gold]화살[/gold]의 피해량이\n2배가 됩니다."
+      },
+      {
+        "field": "vars.HoningPower",
+        "before": 50,
+        "after": 100
+      },
+      {
+        "field": "vars.Honing",
+        "before": 50,
+        "after": 100
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Honing buffed: Arrows deal double damage instead of 50% additional damage.",
+    "summaryKo": "연마 버프: 화살의 피해량이 50% 증가하는 대신 2배가 됩니다."
+  },
+  {
+    "id": "jest-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "JEST",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "14(18)",
+        "after": "15(19)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 14 얻습니다.\n[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.",
+        "after": "[gold]방어도[/gold]를 15 얻습니다.\n[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "block",
+        "before": 14,
+        "after": 15
+      },
+      {
+        "field": "vars.Block",
+        "before": 14,
+        "after": 15
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Jest buffed: Block gain 14(18) -> 15(19).",
+    "summaryKo": "농담 버프: 방어도 획득량 14(18) → 15(19)."
+  },
+  {
+    "id": "ki-rest-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "KI_REST",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "energy",
+        "displayName": "Energy",
+        "displayNameKo": "에너지",
+        "before": "5(6)",
+        "after": "4(5)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "다음 턴에, [energy:5]를 얻습니다.\n[gold]와 선율[/gold]이나 [gold]초 선율[/gold]을\n보유했다면,\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다.",
+        "after": "다음 턴에,\n[energy:4]를 얻습니다.\n[gold]와 선율[/gold]이나 [gold]초 선율[/gold]을\n보유했다면,\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "다음 턴에, {Energy:energyIcons()}를 얻습니다.\n[gold]와 선율[/gold]이나 [gold]초 선율[/gold]을\n보유했다면,\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다.",
+        "after": "다음 턴에,\n{Energy:energyIcons()}를 얻습니다.\n[gold]와 선율[/gold]이나 [gold]초 선율[/gold]을\n보유했다면,\n이번 턴에 [gold]손[/gold]에 있는\n카드를 [gold]보존[/gold]합니다."
+      },
+      {
+        "field": "vars.Energy",
+        "before": 5,
+        "after": 4
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Ki Rest nerfed: Energy gain 5(6) -> 4(5).",
+    "summaryKo": "키 휴식 너프: 에너지 획득량 5(6) → 4(5)."
+  },
+  {
+    "id": "ki-verse-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "KI_VERSE",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "affected",
+        "displayName": "Affected cards",
+        "displayNameKo": "적용 카드",
+        "before": "Wah, Cho, Ki",
+        "after": "Wah, Cho",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "이번 턴 동안 다음에\n사용하는 “와”, “초”, “키”\n카드가 1번 추가로\n사용됩니다.",
+        "after": "이번 턴 동안 다음에\n사용하는 “와”, “초”\n카드가 1번 추가로\n사용됩니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "이번 턴 동안 다음에\n사용하는 “와”, “초”, “키”\n{KiVersePower:choose(1):카드가|카드 {:diff()}장이} 1번 추가로\n사용됩니다.",
+        "after": "이번 턴 동안 다음에\n사용하는 “와”, “초”\n{KiVersePower:choose(1):카드가|카드 {:diff()}장이} 1번 추가로\n사용됩니다."
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Ki Verse nerfed: no longer affects Ki cards.",
+    "summaryKo": "키 절 너프: 더 이상 키 카드에 적용되지 않습니다."
+  },
+  {
+    "id": "lullaby-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "LULLABY",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": 0,
+        "after": 1,
+        "diffType": "number"
+      },
+      {
+        "attribute": "upgrade",
+        "displayName": "Upgrade",
+        "displayNameKo": "강화",
+        "before": "Gains Innate",
+        "after": "Block +4",
+        "diffType": "text"
+      },
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "20",
+        "after": "12(16)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 0,
+        "after": 1
+      },
+      {
+        "field": "description",
+        "before": "모든 [gold]선율[/gold]을 얻을 시,\n[gold]방어도[/gold]를 20 얻습니다.",
+        "after": "모든 [gold]선율[/gold]을 얻을 시,\n[gold]방어도[/gold]를 12 얻습니다."
+      },
+      {
+        "field": "vars.LullabyPower",
+        "before": 20,
+        "after": 12
+      },
+      {
+        "field": "vars.Lullaby",
+        "before": 20,
+        "after": 12
+      },
+      {
+        "field": "upgrade.add_innate",
+        "before": 1
+      },
+      {
+        "field": "upgrade.lullabypower",
+        "after": "+4"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Lullaby nerfed: cost 0 -> 1, no longer gains Innate on upgrade, and Block gain 20 -> 12(16).",
+    "summaryKo": "자장가 너프: 비용 0 → 1, 강화해도 더 이상 선천성을 얻지 않으며, 방어도 획득량 20 → 12(16)."
+  },
+  {
+    "id": "melodic-shot-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "MELODIC_SHOT",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "12(13)",
+        "after": "12(14)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "upgrade",
+        "displayName": "Upgrade",
+        "displayNameKo": "강화",
+        "before": "Cost 0",
+        "after": "Damage +2",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 12 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n보유한 [gold]선율[/gold]만큼\n반복합니다.",
+        "after": "피해를 12 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n보유한 [gold]선율[/gold]만큼 추가로\n적중합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n보유한 [gold]선율[/gold]만큼\n반복합니다.{InCombat:\n({CalculatedHits:diff()}번 적중합니다)|}",
+        "after": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.\n보유한 [gold]선율[/gold]만큼 추가로\n적중합니다.{InCombat:\n({CalculatedHits:diff()}번 적중합니다)|}"
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+1",
+        "after": "+2"
+      },
+      {
+        "field": "upgrade.cost",
+        "before": 0
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Melodic Shot: upgrade no longer reduces Energy cost, and now increases damage 12(13) -> 12(14).",
+    "summaryKo": "선율 사격: 강화해도 더 이상 에너지 비용이 줄지 않고, 강화하면 피해량이 12(13) → 12(14)로 증가합니다."
+  },
+  {
+    "id": "motif-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "MOTIF",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Uncommon",
+        "after": "Rare",
+        "beforeKo": "고급",
+        "afterKo": "희귀",
+        "diffType": "enum"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "희귀"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Motif and Explosive Arrows swapped rarity: Motif is now Rare.",
+    "summaryKo": "모티프와 폭발성 화살의 희귀도가 서로 바뀌어 모티프가 희귀가 되었습니다."
+  },
+  {
+    "id": "my-shinies-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "MY_SHINIES",
+    "patch": "v0.114.0",
+    "character": "colorless",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Deal 1 damage for every 20(10) Gold you have.",
+        "after": "Deal 2(3) damage. Hits an additional time for every 25 Gold you have.",
+        "beforeKo": "보유한 골드 20(10)마다 피해 1",
+        "afterKo": "피해 2(3), 보유한 골드 25마다 추가 적중",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "보유한 [gold]골드[/gold] 20마다\n피해를 1 줍니다.",
+        "after": "피해를 2 줍니다.\n보유한 [gold]골드[/gold] 25마다\n추가로 적중합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "보유한 [gold]골드[/gold] {Gold:diff()}마다\n피해를 {Damage:diff()} 줍니다.{InCombat:\n({CalculatedHits:diff()}번 적중합니다)|}",
+        "after": "피해를 {Damage:diff()} 줍니다.\n보유한 [gold]골드[/gold] {Gold:diff()}마다\n추가로 적중합니다.{InCombat:\n({CalculatedHits:diff()}번 적중합니다)|}"
+      },
+      {
+        "field": "damage",
+        "before": 1,
+        "after": 2
+      },
+      {
+        "field": "vars.Damage",
+        "before": 1,
+        "after": 2
+      },
+      {
+        "field": "vars.CalculationBase",
+        "before": 0,
+        "after": 1
+      },
+      {
+        "field": "vars.Gold",
+        "before": 20,
+        "after": 25
+      },
+      {
+        "field": "upgrade.gold",
+        "before": "-10"
+      },
+      {
+        "field": "upgrade.damage",
+        "after": "+1"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "My Shinies reworked: deals 2(3) damage and hits an additional time for every 25 Gold you have.",
+    "summaryKo": "내 반짝이들 리워크: 피해를 2(3) 주고, 보유한 골드 25마다 추가로 한 번 더 적중합니다."
+  },
+  {
+    "id": "mythic-form-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "MYTHIC_FORM",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "ethereal",
+        "displayName": "Ethereal",
+        "displayNameKo": "휘발성",
+        "before": false,
+        "after": true,
+        "diffType": "boolean"
+      },
+      {
+        "attribute": "upgrade",
+        "displayName": "Upgrade",
+        "displayNameKo": "강화",
+        "before": "Upgrades Tarot cards",
+        "after": "Loses Ethereal",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "descriptionRaw",
+        "before": "내 턴 시작 시,\n무작위{IfUpgraded:show: 강화된|} [gold]타로[/gold] 카드를\n1장 [gold]손[/gold]으로 가져옵니다.",
+        "after": "내 턴 시작 시,\n무작위 [gold]타로[/gold] 카드를\n1장 [gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "keywords",
+        "before": [],
+        "after": [
+          "휘발성"
+        ]
+      },
+      {
+        "field": "upgrade",
+        "before": null,
+        "after": {
+          "remove_ethereal": 1
+        }
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Mythic Form now has Ethereal, and upgrading it removes Ethereal instead of upgrading Tarot cards.",
+    "summaryKo": "신비의 형상에 휘발성이 생겼고, 강화하면 타로 카드를 강화하는 대신 휘발성이 사라집니다."
+  },
+  {
+    "id": "punch-of-joy-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "PUNCH_OF_JOY",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "13(17)",
+        "after": "14(16)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "sadnessTransformed",
+        "displayName": "Sadness transformed",
+        "displayNameKo": "변화시키는 슬픔",
+        "before": "1",
+        "after": "1(2)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 13 줍니다.\n[gold]손[/gold]에 있는 무작위\n[gold]슬픔[/gold] 1장을 [gold]기쁨[/gold]으로\n[gold]변화[/gold]시킵니다.",
+        "after": "피해를 14 줍니다.\n[gold]손[/gold]에 있는 무작위\n[gold]슬픔[/gold] 1장을 [gold]기쁨[/gold]으로\n[gold]변화[/gold]시킵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 줍니다.\n[gold]손[/gold]에 있는 무작위\n[gold]슬픔[/gold] 1장을 [gold]기쁨[/gold]으로\n[gold]변화[/gold]시킵니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n[gold]손[/gold]에 있는 무작위\n[gold]슬픔[/gold] {Cards:diff()}장을 [gold]기쁨[/gold]으로\n[gold]변화[/gold]시킵니다."
+      },
+      {
+        "field": "damage",
+        "before": 13,
+        "after": 14
+      },
+      {
+        "field": "vars.Damage",
+        "before": 13,
+        "after": 14
+      },
+      {
+        "field": "vars.Cards",
+        "after": 1
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+4",
+        "after": "+2"
+      },
+      {
+        "field": "upgrade.cards",
+        "after": "+1"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Punch of Joy buffed: damage 13(17) -> 14(16), and upgrade transforms 2 Sadness instead of 1.",
+    "summaryKo": "강렬한 기쁨 버프: 피해량 13(17) → 14(16), 강화하면 슬픔을 1장 대신 2장 변화시킵니다."
+  },
+  {
+    "id": "quietus-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "QUIETUS",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "arrow",
+        "displayName": "Arrow",
+        "displayNameKo": "화살",
+        "before": "Destroyed",
+        "after": "Kept",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "이번 턴 동안, 다음 [gold]사격[/gold]의\n피해량이 2배가 되지만,\n[gold]화살[/gold]이 파괴됩니다.",
+        "after": "이번 턴 동안, 다음 [gold]사격[/gold]의\n피해량이 2배가 됩니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "이번 턴 동안, 다음 [gold]사격[/gold]의\n피해량이 {IfUpgraded:show:3배|2배}가 되지만,\n[gold]화살[/gold]이 파괴됩니다.",
+        "after": "이번 턴 동안, 다음 [gold]사격[/gold]의\n피해량이 {IfUpgraded:show:3배|2배}가 됩니다."
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Quietus buffed: no longer destroys the Arrow it shoots.",
+    "summaryKo": "종지부 버프: 더 이상 발사한 화살을 파괴하지 않습니다."
+  },
+  {
+    "id": "quiver-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "QUIVER",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Rare",
+        "after": "Uncommon",
+        "beforeKo": "희귀",
+        "afterKo": "고급",
+        "diffType": "enum"
+      },
+      {
+        "attribute": "upgrade",
+        "displayName": "Upgrade",
+        "displayNameKo": "강화",
+        "before": "+1 Arrow",
+        "after": "Gains Innate",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "희귀",
+        "after": "고급"
+      },
+      {
+        "field": "upgrade.repeat",
+        "before": "+1"
+      },
+      {
+        "field": "upgrade.add_innate",
+        "after": 1
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Quiver is now Uncommon, and its upgrade changed from +1 Arrow to gaining Innate.",
+    "summaryKo": "화살통이 고급이 되었고, 강화 효과가 화살 +1에서 선천성 획득으로 바뀌었습니다."
+  },
+  {
+    "id": "recall-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "RECALL",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": "1(0)",
+        "after": 0,
+        "diffType": "number"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "If the enemy is Impaled, Dislodge and put a card from your Discard Pile on top of your Draw Pile.",
+        "after": "Retain. If the enemy is Impaled, Dislodge. Exhaust. (Lose Exhaust.)",
+        "beforeKo": "대상 적이 꿰뚫린 상태라면 회수하고 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에 놓기",
+        "afterKo": "보존, 대상 적이 꿰뚫린 상태라면 회수, 소멸 (강화 시 소멸 제거)",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 0
+      },
+      {
+        "field": "description",
+        "before": "대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n[gold]회수[/gold]하고 [gold]버린 카드 더미[/gold]의 카드 1장을 [gold]뽑을 카드 더미[/gold] 맨 위에 놓습니다.",
+        "after": "대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n[gold]회수[/gold]합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n[gold]회수[/gold]하고 [gold]버린 카드 더미[/gold]의 카드 1장을 [gold]뽑을 카드 더미[/gold] 맨 위에 놓습니다.",
+        "after": "대상 적이 [gold]꿰뚫린[/gold] 상태라면,\n[gold]회수[/gold]합니다."
+      },
+      {
+        "field": "keywords",
+        "before": [],
+        "after": [
+          "소멸",
+          "보존"
+        ]
+      },
+      {
+        "field": "upgrade.cost",
+        "before": 0
+      },
+      {
+        "field": "upgrade.remove_exhaust",
+        "after": 1
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Recall reworked: cost 0, Retain, Dislodges an Impaled enemy, and Exhausts (upgrade loses Exhaust).",
+    "summaryKo": "수거 리워크: 비용 0, 보존, 꿰뚫린 적을 회수하고 소멸합니다 (강화하면 소멸 없음)."
+  },
+  {
+    "id": "repeat-shot-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "REPEAT_SHOT",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "15(20)",
+        "after": "13(16)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 15만큼 X번 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+        "after": "피해를 13만큼 X번 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다."
+      },
+      {
+        "field": "damage",
+        "before": 15,
+        "after": 13
+      },
+      {
+        "field": "vars.Damage",
+        "before": 15,
+        "after": 13
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+5",
+        "after": "+3"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Repeat Shot nerfed: damage 15(20) -> 13(16).",
+    "summaryKo": "반복 사격 너프: 피해량 15(20) → 13(16)."
+  },
+  {
+    "id": "self-deprecate-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "SELF_DEPRECATE",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "joy",
+        "displayName": "Joy",
+        "displayNameKo": "기쁨",
+        "before": "2(3)",
+        "after": "1(2)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.\n모든 아군의 [gold]손[/gold]에\n[gold]기쁨[/gold]을 2장 추가합니다.",
+        "after": "[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.\n모든 아군의 [gold]손[/gold]에\n[gold]기쁨[/gold]을 1장 추가합니다."
+      },
+      {
+        "field": "vars.Joy",
+        "before": 2,
+        "after": 1
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Self Deprecate nerfed: Joy 2(3) -> 1(2).",
+    "summaryKo": "자기 비하 너프: 기쁨 2(3) → 1(2)."
+  },
+  {
+    "id": "serrated-arrows-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "SERRATED_ARROWS",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "extraDamage",
+        "displayName": "Extra damage",
+        "displayNameKo": "추가 피해",
+        "before": "25%(50%)",
+        "after": "50%(75%)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]꿰뚫린[/gold] 상태의 적이\n공격 카드로 받는 피해가\n25% 증가합니다.",
+        "after": "[gold]꿰뚫린[/gold] 상태의 적이\n공격 카드로 받는 피해가\n50% 증가합니다."
+      },
+      {
+        "field": "vars.SerratedArrowsPower",
+        "before": 25,
+        "after": 50
+      },
+      {
+        "field": "vars.SerratedArrows",
+        "before": 25,
+        "after": 50
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Serrated Arrows buffed: Impaled enemy extra damage 25%(50%) -> 50%(75%).",
+    "summaryKo": "톱니 화살 버프: 꿰뚫린 적에 대한 추가 피해 25%(50%) → 50%(75%)."
+  },
+  {
+    "id": "show-off-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "SHOW_OFF",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": 1,
+        "after": 0,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 0
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Show Off buffed: cost 1 -> 0.",
+    "summaryKo": "으스대기 버프: 비용 1 → 0."
+  },
+  {
+    "id": "simpleton-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "SIMPLETON",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "upgrade",
+        "displayName": "Upgrade",
+        "displayNameKo": "강화",
+        "before": "Cost reduction",
+        "after": "Plays 2 cards",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "upgrade.cost",
+        "before": 1
+      },
+      {
+        "field": "upgrade.simpletonpower",
+        "after": "+1"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Simpleton: upgrade changed from cost reduction to playing 1(2) cards.",
+    "summaryKo": "얼간이: 강화 효과가 비용 감소에서 카드 1(2)장 사용으로 바뀌었습니다."
+  },
+  {
+    "id": "song-path-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "SONG_PATH",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "5(7)",
+        "after": "4(6)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]초 선율[/gold]을 얻을 때마다,\n[gold]방어도[/gold]를 5 얻습니다.",
+        "after": "[gold]초 선율[/gold]을 얻을 때마다,\n[gold]방어도[/gold]를 4 얻습니다."
+      },
+      {
+        "field": "vars.SongPathPower",
+        "before": 5,
+        "after": 4
+      },
+      {
+        "field": "vars.SongPath",
+        "before": 5,
+        "after": 4
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Song Path nerfed: Block gain 5(7) -> 4(6).",
+    "summaryKo": "노래의 길 너프: 방어도 획득량 5(7) → 4(6)."
+  },
+  {
+    "id": "sorrowful-strike-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "SORROWFUL_STRIKE",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "sadness",
+        "displayName": "Sadness",
+        "displayNameKo": "슬픔",
+        "before": 2,
+        "after": 1,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 13 줍니다.\n[gold]슬픔[/gold]을 2장\n[gold]손[/gold]으로 가져옵니다.",
+        "after": "피해를 13 줍니다.\n[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "vars.Cards",
+        "before": 2,
+        "after": 1
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Sorrowful Strike buffed: Sadness 2 -> 1.",
+    "summaryKo": "비탄의 타격 버프: 슬픔 2 → 1."
+  },
+  {
+    "id": "temperance-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "TEMPERANCE",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "30(35)",
+        "after": "20(25)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 30 얻습니다.",
+        "after": "[gold]방어도[/gold]를 20 얻습니다."
+      },
+      {
+        "field": "block",
+        "before": 30,
+        "after": 20
+      },
+      {
+        "field": "vars.Block",
+        "before": 30,
+        "after": 20
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Temperance nerfed: Block 30(35) -> 20(25).",
+    "summaryKo": "절제 너프: 방어도 30(35) → 20(25)."
+  },
+  {
+    "id": "the-emperor-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "THE_EMPEROR",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "energy",
+        "displayName": "Energy",
+        "displayNameKo": "에너지",
+        "before": "7(9)",
+        "after": "3(4)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[energy:7]를 얻습니다.",
+        "after": "[energy:3]를 얻습니다."
+      },
+      {
+        "field": "vars.Energy",
+        "before": 7,
+        "after": 3
+      },
+      {
+        "field": "upgrade.energy",
+        "before": "+2",
+        "after": "+1"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "The Emperor nerfed: Energy gain 7(9) -> 3(4).",
+    "summaryKo": "황제 너프: 에너지 획득량 7(9) → 3(4)."
+  },
+  {
+    "id": "the-hermit-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "THE_HERMIT",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "cardsDraw",
+        "displayName": "Cards drawn",
+        "displayNameKo": "뽑는 카드",
+        "before": "2(3)",
+        "after": "3(4)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "카드를 1장 버립니다.\n카드를 2장 뽑습니다.\n버린 [gold]저주[/gold]는 [gold]소멸[/gold]됩니다.",
+        "after": "카드를 1장 버립니다.\n카드를 3장 뽑습니다.\n버린 [gold]저주[/gold]는 [gold]소멸[/gold]됩니다."
+      },
+      {
+        "field": "vars.Cards",
+        "before": 2,
+        "after": 3
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "The Hermit buffed: card draw 2(3) -> 3(4).",
+    "summaryKo": "은둔자 버프: 카드 뽑기 2(3) → 3(4)."
+  },
+  {
+    "id": "the-hierophant-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "THE_HIEROPHANT",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "costReduction",
+        "displayName": "Cost reduction",
+        "displayNameKo": "비용 감소",
+        "before": "1 less Energy this turn",
+        "after": "None",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "무작위 무색 카드를 3장\n[gold]손[/gold]으로 가져옵니다.\n그 카드의 비용이 이번 턴 동안\n1 [energy:1] 감소합니다.",
+        "after": "무작위 무색 카드를 3장\n[gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "무작위 무색 카드를 {Cards:diff()}장\n[gold]손[/gold]으로 가져옵니다.\n그 카드의 비용이 이번 턴 동안\n1 {energyPrefix:energyIcons(1)} 감소합니다.",
+        "after": "무작위 무색 카드를 {Cards:diff()}장\n[gold]손[/gold]으로 가져옵니다."
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "The Hierophant nerfed: no longer has the cost reduction.",
+    "summaryKo": "교황 너프: 더 이상 비용 감소가 없습니다."
+  },
+  {
+    "id": "the-shot-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "THE_SHOT",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": 1,
+        "after": 0,
+        "diffType": "number"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Shoot an Arrow to deal 10(13) damage for each card Exhausted by Florescence.",
+        "after": "Shoot an Arrow to deal 20(25) damage. Exhaust.",
+        "beforeKo": "개화로 소멸시킨 카드 1장당 피해 10(13)의 화살 발사",
+        "afterKo": "피해 20(25)의 화살 발사, 소멸",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 0
+      },
+      {
+        "field": "description",
+        "before": "[gold]개화[/gold]로 [gold]소멸[/gold]시킨 카드\n1장당 피해를 10 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.",
+        "after": "피해를 20 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]개화[/gold]로 [gold]소멸[/gold]시킨 카드\n1장당 피해를 {ExtraDamage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다.{InCombat:\n(피해를 {CalculatedDamage:diff()} 줍니다)|}",
+        "after": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]합니다."
+      },
+      {
+        "field": "damage",
+        "before": null,
+        "after": 20
+      },
+      {
+        "field": "vars.CalculationBase",
+        "before": 0
+      },
+      {
+        "field": "vars.ExtraDamage",
+        "before": 10
+      },
+      {
+        "field": "vars.Damage",
+        "after": 20
+      },
+      {
+        "field": "keywords",
+        "before": [],
+        "after": [
+          "소멸"
+        ]
+      },
+      {
+        "field": "upgrade.extradamage",
+        "before": "+3"
+      },
+      {
+        "field": "upgrade.damage",
+        "after": "+5"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "The Shot reworked: cost 0, Shoot an Arrow to deal 20(25) damage. Exhaust.",
+    "summaryKo": "최후의 한 발 리워크: 비용 0, 피해를 20(25) 주는 화살을 발사합니다. 소멸."
+  },
+  {
+    "id": "the-sun-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "THE_SUN",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Add a Soot into your Discard Pile.",
+        "after": "Add 2 Soot into your Draw Pile.",
+        "beforeKo": "버린 카드 더미에 그을음 1장 추가",
+        "afterKo": "뽑을 카드 더미에 그을음 2장 추가",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "카드를 2장 뽑습니다.\n[energy:2]를 얻습니다.\n[gold]버린 카드 더미[/gold]에 [gold]그을음[/gold]을\n1장 추가합니다.",
+        "after": "카드를 2장 뽑습니다.\n[energy:2]를 얻습니다.\n[gold]뽑을 카드 더미[/gold]에 [gold]그을음[/gold]을\n2장 추가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "카드를 {Cards:diff()}장 뽑습니다.\n{Energy:energyIcons()}를 얻습니다.\n[gold]버린 카드 더미[/gold]에 [gold]그을음[/gold]을\n1장 추가합니다.",
+        "after": "카드를 {Cards:diff()}장 뽑습니다.\n{Energy:energyIcons()}를 얻습니다.\n[gold]뽑을 카드 더미[/gold]에 [gold]그을음[/gold]을\n2장 추가합니다."
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "The Sun nerfed: now puts 2 Soot into your Draw Pile instead of 1 into your Discard Pile.",
+    "summaryKo": "태양 너프: 그을음 1장을 버린 카드 더미에 넣는 대신 그을음 2장을 뽑을 카드 더미에 넣습니다."
+  },
+  {
+    "id": "the-tower-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "THE_TOWER",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "2(3)",
+        "after": "1(2)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "방문한 층 1층당\n피해를 2 줍니다.",
+        "after": "방문한 층 1층당\n피해를 1 줍니다."
+      },
+      {
+        "field": "vars.ExtraDamage",
+        "before": 2,
+        "after": 1
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "The Tower nerfed: damage 2(3) -> 1(2).",
+    "summaryKo": "탑 너프: 피해량 2(3) → 1(2)."
+  },
+  {
+    "id": "trick-shot-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "TRICK_SHOT",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Shoot an Arrow to deal 12(15) damage and return this card to your Hand.",
+        "after": "Shoot an Arrow to deal 12(14) damage and draw 2(3) cards.",
+        "beforeKo": "피해 12(15)의 화살 발사, 이 카드를 손으로",
+        "afterKo": "피해 12(14)의 화살 발사, 카드 2(3)장 뽑기",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 12 주는 [gold]화살[/gold]을\n[gold]발사[/gold]하고 이 카드를\n다시 [gold]손[/gold]으로 가져옵니다.",
+        "after": "피해를 12 주는\n[gold]화살[/gold]을 [gold]발사[/gold]하고\n카드를 2장 뽑습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 주는 [gold]화살[/gold]을\n[gold]발사[/gold]하고 이 카드를\n다시 [gold]손[/gold]으로 가져옵니다.",
+        "after": "피해를 {Damage:diff()} 주는\n[gold]화살[/gold]을 [gold]발사[/gold]하고\n카드를 {Cards:diff()}장 뽑습니다."
+      },
+      {
+        "field": "vars.Cards",
+        "after": 2
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+3",
+        "after": "+2"
+      },
+      {
+        "field": "upgrade.cards",
+        "after": "+1"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Trick Shot reworked: Shoot an Arrow to deal 12(14) damage and draw 2(3) cards.",
+    "summaryKo": "묘기 사격 리워크: 피해를 12(14) 주는 화살을 발사하고 카드를 2(3)장 뽑습니다."
+  },
+  {
+    "id": "tune-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "TUNE",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": "2(1)",
+        "after": 1,
+        "diffType": "number"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "At the end of your turn, if you have a Ki Melody, the next card you play costs 0 Energy.",
+        "after": "Whenever you gain a Ki Melody, Upgrade 1(2) random card(s) in your Hand.",
+        "beforeKo": "턴 종료 시 키 선율이 있다면 다음 카드 비용 0",
+        "afterKo": "키 선율을 얻을 때마다 손에 있는 무작위 카드 1(2)장 강화",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 2,
+        "after": 1
+      },
+      {
+        "field": "description",
+        "before": "내 턴 종료 시 [gold]키 선율[/gold]을\n보유했다면, 다음에\n사용하는 카드의 비용이\n0 [energy:1]이 됩니다.",
+        "after": "[gold]키 선율[/gold]을 얻을 때마다,\n[gold]손[/gold]에 있는 무작위 카드를\n1장 [gold]강화[/gold]합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "내 턴 종료 시 [gold]키 선율[/gold]을\n보유했다면, 다음에\n사용하는 카드의 비용이\n0 {energyPrefix:energyIcons(1)}이 됩니다.",
+        "after": "[gold]키 선율[/gold]을 얻을 때마다,\n[gold]손[/gold]에 있는 무작위 카드를\n{Cards:choose(1):1장|{:diff()}장} [gold]강화[/gold]합니다."
+      },
+      {
+        "field": "vars.Energy",
+        "before": 1
+      },
+      {
+        "field": "vars.Cards",
+        "after": 1
+      },
+      {
+        "field": "upgrade.cost",
+        "before": 1
+      },
+      {
+        "field": "upgrade.cards",
+        "after": "+1"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Tune reworked: cost 1, and Upgrades 1(2) random card(s) in your Hand whenever you gain a Ki Melody.",
+    "summaryKo": "조율 리워크: 비용 1, 키 선율을 얻을 때마다 손에 있는 무작위 카드를 1(2)장 강화합니다."
+  },
+  {
+    "id": "uproot-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "UPROOT",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": 1,
+        "after": 0,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 0
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Uproot cost decreased from 1 to 0.",
+    "summaryKo": "뽑아내기 비용이 1에서 0으로 감소했습니다."
+  },
+  {
+    "id": "violent-chord-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "VIOLENT_CHORD",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "9(12)",
+        "after": "7(9)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]와 선율[/gold]을 얻을 때마다,\n모든 적에게\n피해를 9 줍니다.",
+        "after": "[gold]와 선율[/gold]을 얻을 때마다,\n모든 적에게\n피해를 7 줍니다."
+      },
+      {
+        "field": "vars.ViolentChordPower",
+        "before": 9,
+        "after": 7
+      },
+      {
+        "field": "vars.ViolentChord",
+        "before": 9,
+        "after": 7
+      },
+      {
+        "field": "upgrade.violentchordpower",
+        "before": "+3",
+        "after": "+2"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Violent Chord nerfed: damage 9(12) -> 7(9).",
+    "summaryKo": "격렬한 화음 너프: 피해량 9(12) → 7(9)."
+  },
+  {
+    "id": "vitriol-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "VITRIOL",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "sadness",
+        "displayName": "Sadness",
+        "displayNameKo": "슬픔",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]약화[/gold]를 2 부여합니다.\n[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.",
+        "after": "[gold]약화[/gold]를 2 부여합니다.\n[gold]슬픔[/gold]을 2장\n[gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]약화[/gold]를 {WeakPower:diff()} 부여합니다.\n[gold]슬픔[/gold]을 1장\n[gold]손[/gold]으로 가져옵니다.",
+        "after": "[gold]약화[/gold]를 {WeakPower:diff()} 부여합니다.\n[gold]슬픔[/gold]을 {Cards:diff()}장\n[gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "vars.Cards",
+        "after": 2
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Vitriol nerfed: Sadness 1 -> 2.",
+    "summaryKo": "독설 너프: 슬픔 1 → 2."
+  },
+  {
+    "id": "wah-cho-ki-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "WAH_CHO_KI",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "9(12)",
+        "after": "8(10)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "9(12)",
+        "after": "8(10)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 2
+      },
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 9 얻습니다.\n피해를 9 줍니다.\n카드를 1장 뽑습니다.",
+        "after": "피해를 8 줍니다.\n[gold]방어도[/gold]를 8 얻습니다.\n카드를 1장 뽑습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n카드를 {Cards:diff()}장 뽑습니다."
+      },
+      {
+        "field": "damage",
+        "before": 9,
+        "after": 8
+      },
+      {
+        "field": "block",
+        "before": 9,
+        "after": 8
+      },
+      {
+        "field": "vars.Damage",
+        "before": 9,
+        "after": 8
+      },
+      {
+        "field": "vars.Block",
+        "before": 9,
+        "after": 8
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+3",
+        "after": "+2"
+      },
+      {
+        "field": "upgrade.block",
+        "before": "+3",
+        "after": "+2"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Wah Cho Ki nerfed: damage and Block 9(12) -> 8(10), cost 1 -> 2.",
+    "summaryKo": "와 초 키 너프: 피해량과 방어도 9(12) → 8(10), 비용 1 → 2."
+  },
+  {
+    "id": "wah-hammer-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "WAH_HAMMER",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "9(12)",
+        "after": "9(11)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "upgrade.damage",
+        "before": "+3",
+        "after": "+2"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Wah Hammer nerfed: damage 9(12) -> 9(11).",
+    "summaryKo": "와 망치 너프: 피해량 9(12) → 9(11)."
+  },
+  {
+    "id": "wah-ki-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "WAH_KI",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Deal 2(4) damage 2 times. Next turn, gain 1 Energy and draw 1 card.",
+        "after": "Deal 3(4) damage 2 times. Put a card from your Discard Pile on top of your Draw Pile.",
+        "beforeKo": "피해 2(4) 2번, 다음 턴에 에너지 1과 카드 1장",
+        "afterKo": "피해 3(4) 2번, 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 2만큼 2번 줍니다.\n다음 턴에, [energy:1]를 얻고\n카드를 1장 뽑습니다.",
+        "after": "피해를 3만큼 2번 줍니다.\n[gold]버린 카드 더미[/gold]의 카드\n1장을 [gold]뽑을 카드 더미[/gold]\n맨 위에 놓습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()}만큼 {HitCount:diff()}번 줍니다.\n다음 턴에, {Energy:energyIcons()}를 얻고\n카드를 {Cards:diff()}장 뽑습니다.",
+        "after": "피해를 {Damage:diff()}만큼 {HitCount:diff()}번 줍니다.\n[gold]버린 카드 더미[/gold]의 카드\n1장을 [gold]뽑을 카드 더미[/gold]\n맨 위에 놓습니다."
+      },
+      {
+        "field": "damage",
+        "before": 2,
+        "after": 3
+      },
+      {
+        "field": "vars.Damage",
+        "before": 2,
+        "after": 3
+      },
+      {
+        "field": "vars.Cards",
+        "before": 1
+      },
+      {
+        "field": "vars.Energy",
+        "before": 1
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+2",
+        "after": "+1"
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Wah Ki reworked: deals 3(4) damage 2 times and puts a card from your Discard Pile on top of your Draw Pile.",
+    "summaryKo": "와 키 리워크: 피해를 3(4)만큼 2번 주고, 버린 카드 더미의 카드 1장을 뽑을 카드 더미 맨 위에 놓습니다."
+  },
+  {
+    "id": "wah-symphony-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "WAH_SYMPHONY",
+    "patch": "v0.114.0",
+    "character": "fool",
+    "diffs": [
+      {
+        "attribute": "counted",
+        "displayName": "Counted cards",
+        "displayNameKo": "세는 카드",
+        "before": "Wah, Cho, Ki",
+        "after": "Cho, Ki",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게\n피해를 6 줍니다.\n보유한 카드 중 이름에 “와”,\n“초”, “키”가 포함된 카드 1장당\n피해량이 4 증가합니다.",
+        "after": "모든 적에게\n피해를 6 줍니다.\n보유한 카드 중 이름에 “초”,\n“키”가 포함된 카드 1장당\n피해량이 4 증가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "모든 적에게\n피해를 {CalculatedDamage:diff()} 줍니다.\n보유한 카드 중 이름에 “와”,\n“초”, “키”가 포함된 카드 1장당\n피해량이 {ExtraDamage:diff()} 증가합니다.",
+        "after": "모든 적에게\n피해를 {CalculatedDamage:diff()} 줍니다.\n보유한 카드 중 이름에 “초”,\n“키”가 포함된 카드 1장당\n피해량이 {ExtraDamage:diff()} 증가합니다."
+      }
+    ],
+    "date": "2026-11-25",
+    "summary": "Wah Symphony nerfed: no longer counts Wah cards.",
+    "summaryKo": "와 교향곡 너프: 더 이상 와 카드를 세지 않습니다."
+  },
+  {
+    "id": "hard-to-kill-v0-114-0-change",
+    "entityType": "power",
+    "entityId": "HARD_TO_KILL_POWER",
+    "patch": "v0.114.0",
+    "date": "2026-11-25",
+    "character": null,
+    "summary": "Hard to Kill now only counts HP loss, not damage to Block (it does not work on blocked damage).",
+    "summaryKo": "질긴 생존력이 이제 체력 손실만 셉니다. 방어도에 막힌 피해는 세지 않습니다.",
+    "diffs": [
+      {
+        "attribute": "counts",
+        "displayName": "Counts",
+        "displayNameKo": "세는 피해",
+        "before": "Damage dealt, including Block",
+        "after": "HP loss only",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "rapid-shot-v0-114-0-field-diff",
+    "entityType": "card",
+    "entityId": "RAPID_SHOT",
+    "patch": "v0.114.0",
+    "date": "2026-11-25",
+    "character": "fool",
+    "summary": "Rapid Shot was reworked into Twin Shot: a Common Attack that shoots an Arrow for 7(10) damage twice.",
+    "summaryKo": "신속 사격이 이중 사격으로 리워크되었습니다: 피해를 7(10)만큼 2번 주는 화살을 발사하는 일반 공격.",
+    "diffs": [],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "TWIN_SHOT"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "deprecated",
+        "before": false,
+        "after": true
+      },
+      {
+        "field": "deprecatedInPatch",
+        "before": null,
+        "after": "v0.114.0"
+      }
+    ]
   }
 ]
