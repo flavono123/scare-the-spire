@@ -183,6 +183,9 @@ export async function loadLiveCompendiumResourceManifest(): Promise<CompendiumRe
 }
 
 export async function loadPatchBuildCompendiumResourceManifest(): Promise<CompendiumResourceManifest> {
+  // scripts/build-patch-worker.tsx reads the manifest once and hands its render processes this copy.
+  const pinnedFile = process.env.PATCH_COMPENDIUM_MANIFEST_FILE;
+  if (pinnedFile) return JSON.parse(await fs.readFile(pinnedFile, "utf-8")) as CompendiumResourceManifest;
   if (process.env.PATCH_COMPENDIUM_MANIFEST_SOURCE === "live") {
     return loadLiveCompendiumResourceManifest();
   }

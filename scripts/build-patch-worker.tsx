@@ -1,7 +1,9 @@
 // Must stay first: src/lib/data-env.ts reads the environment when it is imported.
 import "./load-build-env";
 /* eslint-disable @next/next/no-css-tags, @next/next/no-head-element, @next/next/no-img-element, @next/next/no-sync-scripts */
+import { fork } from "child_process";
 import fs from "fs/promises";
+import os from "os";
 import path from "path";
 import React, { type ReactNode } from "react";
 import type { Metadata } from "next";
@@ -29,6 +31,7 @@ import {
   NeowsletterListPage,
 } from "@/components/patches/neowsletter-list-page";
 import { NotFoundView } from "@/components/not-found-view";
+import { loadPatchBuildCompendiumResourceManifest } from "@/lib/compendium-resource-manifest";
 import { CompendiumDetailLinksProvider } from "@/components/compendium-detail-links";
 import {
   GAME_LOCALE_PATH_SEGMENTS,
@@ -74,6 +77,7 @@ type StaticPatchRoute = {
   };
 };
 
+type RouteJob = () => Promise<StaticPatchRoute>;
 
 const outDir = path.join(process.cwd(), ".patch-worker/assets");
 const patchCommentsClientPath = path.join(
@@ -642,33 +646,30 @@ async function localizedPatchRoutes(version?: string) {
   });
 }
 
-async function main() {
-  await writePatchClientAssets();
-  if (process.argv.includes("--clients-only")) return;
-
-  await writeNotFoundPages();
-
+/** Every page in build order; each job renders its route only when called. */
+async function routeJobs(): Promise<RouteJob[]> {
+  const jobs: RouteJob[] = [];
   const patches = await getSTS2Patches();
-  await writeRoute({
+  jobs.push(async () => ({
     pathname: "/patches",
     serviceLocale: "ko",
     gameLocale: "kor",
     metadata: getPatchListMetadata("ko"),
     element: await PatchListPage({ serviceLocale: "ko", gameLocale: "kor" }),
-  });
+  }));
 
   for (const route of await localizedPatchRoutes()) {
-    await writeRoute({
+    jobs.push(async () => ({
       ...route,
       metadata: getPatchListMetadata(route.serviceLocale),
       element: await PatchListPage({
         serviceLocale: route.serviceLocale,
         gameLocale: route.gameLocale,
       }),
-    });
+    }));
   }
 
-  await writeRoute({
+  jobs.push(async () => ({
     pathname: "/patches/changes",
     serviceLocale: "ko",
     gameLocale: "kor",
@@ -679,10 +680,10 @@ async function main() {
       renderHydratableHtml: renderToString,
     }),
     clientScripts: ["/_patches/resource-patch-index.js"],
-  });
+  }));
 
   for (const route of await localizedPatchRoutes("changes")) {
-    await writeRoute({
+    jobs.push(async () => ({
       ...route,
       metadata: getResourcePatchIndexMetadata(route.serviceLocale),
       element: await ResourcePatchIndexPage({
@@ -691,31 +692,31 @@ async function main() {
         renderHydratableHtml: renderToString,
       }),
       clientScripts: ["/_patches/resource-patch-index.js"],
-    });
+    }));
   }
 
   const neowsletters = await getNeowsletters();
-  await writeRoute({
+  jobs.push(async () => ({
     pathname: "/patches/neowsletters",
     serviceLocale: "ko",
     gameLocale: "kor",
     metadata: getNeowsletterListMetadata("ko"),
     element: await NeowsletterListPage({ serviceLocale: "ko", gameLocale: "kor" }),
-  });
+  }));
 
   for (const route of await localizedPatchRoutes("neowsletters")) {
-    await writeRoute({
+    jobs.push(async () => ({
       ...route,
       metadata: getNeowsletterListMetadata(route.serviceLocale),
       element: await NeowsletterListPage({
         serviceLocale: route.serviceLocale,
         gameLocale: route.gameLocale,
       }),
-    });
+    }));
   }
 
   for (const issue of neowsletters) {
-    await writeRoute({
+    jobs.push(async () => ({
       pathname: `/patches/neowsletters/${issue.id}`,
       serviceLocale: "ko",
       gameLocale: "kor",
@@ -734,10 +735,10 @@ async function main() {
         datePublished: issue.date,
         sourceUrl: issue.sourceUrl,
       },
-    });
+    }));
 
     for (const route of await localizedPatchRoutes(`neowsletters/${issue.id}`)) {
-      await writeRoute({
+      jobs.push(async () => ({
         ...route,
         metadata: await getNeowsletterDetailMetadata({
           issueId: issue.id,
@@ -754,14 +755,14 @@ async function main() {
           datePublished: issue.date,
           sourceUrl: issue.sourceUrl,
         },
-      });
+      }));
     }
   }
 
   for (const patch of patches) {
     const { version } = patch;
     const isPublished = !patch.status || patch.status === "ready";
-    await writeRoute({
+    jobs.push(async () => ({
       pathname: `/patches/${version}`,
       serviceLocale: "ko",
       gameLocale: "kor",
@@ -777,10 +778,10 @@ async function main() {
         datePublished: patch.date,
         sourceUrl: patch.steamUrl,
       } : undefined,
-    });
+    }));
 
     for (const route of await localizedPatchRoutes(version)) {
-      await writeRoute({
+      jobs.push(async () => ({
         ...route,
         metadata: await getPatchDetailMetadata({
           version,
@@ -797,9 +798,54 @@ async function main() {
           datePublished: patch.date,
           sourceUrl: patch.steamUrl,
         } : undefined,
-      });
+      }));
     }
   }
+  return jobs;
+}
+
+const SHARD_FLAG = "--shard=";
+
+/** Renders every `count`-th route job from `index`; the parent runs one of these per core. */
+async function renderShard(index: number, count: number) {
+  const jobs = await routeJobs();
+  for (let job = index; job < jobs.length; job += count) {
+    await writeRoute(await jobs[job]());
+  }
+}
+
+function runShard(index: number, count: number, env: NodeJS.ProcessEnv): Promise<void> {
+  // fork keeps process.execArgv, so each child loads through tsx like this process.
+  const child = fork(process.argv[1], [`${SHARD_FLAG}${index}/${count}`], { env, stdio: "inherit" });
+  return new Promise((resolve, reject) => {
+    child.on("error", reject);
+    child.on("exit", (code, signal) => {
+      if (code === 0) resolve();
+      else reject(new Error(`patch html shard ${index}/${count} exited with ${signal ?? code}`));
+    });
+  });
+}
+
+async function main() {
+  const shard = process.argv.find((arg) => arg.startsWith(SHARD_FLAG));
+  if (shard) {
+    const [index, count] = shard.slice(SHARD_FLAG.length).split("/").map(Number);
+    await renderShard(index, count);
+    return;
+  }
+
+  await writePatchClientAssets();
+  if (process.argv.includes("--clients-only")) return;
+
+  await writeNotFoundPages();
+
+  // One manifest read for the whole build, so every page and shard links the same resources.
+  const manifestFile = path.join(outDir, "..", "compendium-resource-manifest.json");
+  await fs.writeFile(manifestFile, JSON.stringify(await loadPatchBuildCompendiumResourceManifest()));
+  const env = { ...process.env, PATCH_COMPENDIUM_MANIFEST_FILE: manifestFile };
+
+  const count = Math.max(1, Number(process.env.PATCH_HTML_JOBS) || os.availableParallelism());
+  await Promise.all(Array.from({ length: count }, (_, index) => runShard(index, count, env)));
 }
 
 main().catch((error) => {
