@@ -41,6 +41,14 @@ but independently deployable surfaces.
   patch Worker deploy before lint, disk cleanup, and the main Worker build.
   Those steps are post-patch work; waiting on `pnpm cf:build` before
   `pnpm cf:patch:deploy` is a patch-publish regression.
+- The patch deploy is its own job with its own concurrency group
+  (`cloudflare-patch`), so it never queues behind another push's main path; the
+  main job `needs` it. Both patch deploys go through
+  `scripts/patch-worker-deploy.sh`, which tags each version with its commit and
+  never replaces a newer live commit with an older one. The redeploy after main
+  is skipped when this run's patch deploy is live and the manifest is unchanged.
+- `/patches/latest` (and `/<locale>/patches/latest`) redirects to the patch
+  list's first card, read from `/_patches/latest-version.txt` at request time.
 
 ## Static-First Routing Target
 
