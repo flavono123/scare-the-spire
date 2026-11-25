@@ -911,6 +911,10 @@ export async function getCodexCards(opts?: {
           eventTitle: madScienceLabels.eventTitle,
           riderChoiceDescriptions: madScienceLabels.riderChoiceDescriptions,
           riderChoiceLabels: madScienceLabels.riderChoiceLabels,
+          typeLabels: Object.fromEntries(TINKER_CARD_TYPES.map((type) => [
+            type,
+            typeLabels[TINKER_CARD_TYPE_TO_KO[type]] ?? TINKER_CARD_TYPE_TO_KO[type],
+          ])),
         },
       }];
     });

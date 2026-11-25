@@ -1,5 +1,6 @@
 "use client";
 
+import { buildEntityLookupMap } from "@/lib/all-entities";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
@@ -1205,7 +1206,7 @@ function useStoryReferences({
   }, [enabled, hasMissingPatchLine, patchLinesComplete]);
 
   const sts2EntityMap = useMemo(
-    () => new Map(sts2Entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
+    () => buildEntityLookupMap(sts2Entities),
     [sts2Entities],
   );
   const sts2ChangeMap = useMemo(() => new Map(sts2Changes.map((c) => [c.id, c])), [sts2Changes]);

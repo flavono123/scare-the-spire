@@ -18,6 +18,7 @@ import { GameScrollArea } from "@/components/game-scroll-area";
 import { KeywordHoverTip } from "@/components/keyword-hover-tip";
 import { SearchBar } from "@/components/codex/search-bar";
 import { FittedCardTile } from "@/components/history-course/fitted-card-tile";
+import { MadScienceVariantStep, useMadScienceVariantStep } from "@/components/codex/mad-science-variant-picker";
 import { useCardConLocale } from "@/hooks/use-card-con-locale";
 import { useGameLocale } from "@/hooks/use-game-locale";
 import { applyCardConLocale } from "@/lib/card-con-locale";
@@ -165,6 +166,8 @@ export function ComboResourcePicker({
     window.requestAnimationFrame(() => searchInputRef.current?.focus());
   };
 
+  const variantStep = useMadScienceVariantStep(selectEntity);
+
   const resolvedSearchPlaceholder = searchPlaceholder ?? copy.resourceSearchPlaceholder;
 
   return (
@@ -306,6 +309,16 @@ export function ComboResourcePicker({
           </div>
           )}
 
+          {variantStep.pending && (
+            <MadScienceVariantStep
+              key={variantStep.pending.id}
+              entity={variantStep.pending}
+              serviceLocale={serviceLocale}
+              onConfirm={variantStep.confirm}
+              onCancel={variantStep.cancel}
+              className="m-2 shrink-0"
+            />
+          )}
           <GameScrollArea className="min-h-0 flex-1" size="small" scrollerClassName={cardTiles ? "px-1 py-1" : "p-2"}>
             <div role="list">
             {results.length === 0 ? (
@@ -322,7 +335,7 @@ export function ComboResourcePicker({
                       role="listitem"
                       data-card-con-result={entity.id}
                       aria-label={applyCardConLocale(entity.cardData, cardLocale?.[entity.id]).name}
-                      onClick={() => selectEntity(entity)}
+                      onClick={() => variantStep.select(entity)}
                       className="mx-auto w-full max-w-[7.5rem] rounded-md p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     >
                       <span className={cn("block", CARD_CON_PICKER_TILE_CLASS)}>
@@ -346,7 +359,7 @@ export function ComboResourcePicker({
                     type="button"
                     role="listitem"
                     data-combo-picker-result
-                    onClick={() => selectEntity(entity)}
+                    onClick={() => variantStep.select(entity)}
                     className={cn(
                       "flex min-w-0 items-center gap-2 rounded-lg border px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/10 focus-visible:border-primary/40 focus-visible:bg-primary/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none",
                       recentlyAdded?.id === entity.id && recentlyAdded.type === entity.type

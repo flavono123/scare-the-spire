@@ -28,6 +28,7 @@ import { EmoteGlyph } from "@/components/emote-con/emote-glyph";
 import type { HistoryRunFloorBlock } from "@/lib/chemical-types";
 import { EXTERNAL_PROSE_LINK_CLASS } from "@/lib/service-link-classes";
 import { LinkBlockAnchor } from "@/components/link-reference-anchor";
+import { buildEntityLookupMap } from "@/lib/all-entities";
 
 const STAR_ICON_SRC = "/images/game-assets/card-misc/star_icon.png";
 
@@ -298,9 +299,5 @@ export function PostRenderer({
  * Build a lookup map from EntityInfo array for O(1) access in PostRenderer.
  */
 export function buildEntityMap(entities: EntityInfo[]): Map<string, EntityInfo> {
-  const map = new Map<string, EntityInfo>();
-  for (const e of entities) {
-    map.set(`${e.type}:${e.id}`, e);
-  }
-  return map;
+  return buildEntityLookupMap(entities);
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { findEntityByRef } from "@/lib/all-entities";
 import Image from "@/components/ui/static-image";
 import { CardTile } from "@/components/codex/card-tile";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
@@ -25,7 +26,7 @@ export function useColorfulPhilosopherName(post: ColorfulPhilosopherPost | null,
   const { entities } = useCommentEntities(undefined, { enabled: Boolean(post) && serviceLocale !== "ko" });
   if (!post) return "";
   if (serviceLocale === "ko") return post.nameKo;
-  const entity = entities.find((candidate) => candidate.type === post.resourceType && candidate.id === post.resourceId);
+  const entity = findEntityByRef(entities, post.resourceType, post.resourceId);
   return entity?.nameKo ?? (post.nameEn || post.nameKo);
 }
 
@@ -50,7 +51,7 @@ export function ColorfulPhilosopherSubjectArt({
 }) {
   const { entities } = useCommentEntities(undefined, { enabled: !providedEntity });
   const entity = providedEntity
-    ?? entities.find((candidate) => candidate.type === post.resourceType && candidate.id === post.resourceId);
+    ?? findEntityByRef(entities, post.resourceType, post.resourceId);
   const displayName = entity?.nameKo ?? (serviceLocale === "ko" ? post.nameKo : post.nameEn || post.nameKo);
   const card = post.resourceType === "card" ? entity?.cardData : undefined;
   const art = card ? (

@@ -20,6 +20,7 @@ import {
 } from "@/lib/transfigure-types";
 import { cn } from "@/lib/utils";
 import { GameScrollArea } from "@/components/game-scroll-area";
+import { MadScienceVariantStep, useMadScienceVariantStep } from "@/components/codex/mad-science-variant-picker";
 import { serviceMessages } from "@/messages/service";
 
 const BROWSE_RESULT_LIMIT = 48;
@@ -118,6 +119,7 @@ export function TransfigureResourcePicker({
     setOpen(false);
     setQuery("");
   };
+  const variantStep = useMadScienceVariantStep(selectEntity);
 
   return (
     <div ref={rootRef} className="relative" data-transfigure-resource-picker>
@@ -214,6 +216,16 @@ export function TransfigureResourcePicker({
             ))}
           </div>
 
+          {variantStep.pending && (
+            <MadScienceVariantStep
+              key={variantStep.pending.id}
+              entity={variantStep.pending}
+              serviceLocale={serviceLocale}
+              onConfirm={variantStep.confirm}
+              onCancel={variantStep.cancel}
+              className="m-2 shrink-0"
+            />
+          )}
           <GameScrollArea className="min-h-0 flex-1" size="small" scrollerClassName="p-2">
             <div role="list">
             {results.length === 0 ? (
@@ -231,7 +243,7 @@ export function TransfigureResourcePicker({
                       key={`${entity.type}:${entity.id}`}
                       type="button"
                       role="listitem"
-                      onClick={() => selectEntity(entity)}
+                      onClick={() => variantStep.select(entity)}
                       className={cn(
                         "flex min-w-0 items-center gap-2 rounded-lg border px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/25 hover:bg-primary/10 focus-visible:border-primary/50 focus-visible:bg-primary/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none",
                         isSelected

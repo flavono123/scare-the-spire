@@ -12,6 +12,7 @@ import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { matchEntities } from "@/lib/chemical-utils";
 import {
+  comboFilterKey,
   comboResourceKey,
   rankPopularComboResources,
   type ComboResourceRef,
@@ -119,7 +120,7 @@ export function ComboGameElementFilter({
     [entities],
   );
   const referencedKeys = useMemo(
-    () => new Set(items.flatMap((item) => item.resources.map(comboResourceKey))),
+    () => new Set(items.flatMap((item) => item.resources.map(comboFilterKey))),
     [items],
   );
   const popularResources = useMemo(

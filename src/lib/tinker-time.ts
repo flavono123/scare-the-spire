@@ -239,10 +239,21 @@ export function parseMadScienceVariantParam(value: string | null | undefined): M
   return value ? getMadScienceVariantFromId(`${MAD_SCIENCE_CARD_ID}_${value}`) : null;
 }
 
+function isDefaultMadScienceVariant(variant: MadScienceVariant): boolean {
+  return variant.cardType === MAD_SCIENCE_DEFAULT_TYPE && variant.riderId === MAD_SCIENCE_DEFAULT_RIDER;
+}
+
+/** Card id stored for one variant (toybox posts, mentions): MAD_SCIENCE for the default, else MAD_SCIENCE_ATTACK_VIOLENCE. */
+export function getMadScienceVariantCardId(variant: MadScienceVariant): string {
+  return isDefaultMadScienceVariant(variant)
+    ? MAD_SCIENCE_CARD_ID
+    : getMadScienceVariantId(variant.cardType, variant.riderId);
+}
+
 /** Codex href for one Mad Science variant; the default variant keeps the bare card URL. */
 export function getMadScienceVariantHref(baseHref: string, variant: MadScienceVariant): string {
+  if (isDefaultMadScienceVariant(variant)) return baseHref;
   const param = formatMadScienceVariantParam(variant);
-  if (param === formatMadScienceVariantParam(MAD_SCIENCE_DEFAULT_VARIANT)) return baseHref;
   const [path, hash = ""] = baseHref.split("#");
   const separator = path.includes("?") ? "&" : "?";
   return `${path}${separator}${MAD_SCIENCE_VARIANT_PARAM}=${param}${hash ? `#${hash}` : ""}`;
@@ -439,5 +450,17 @@ export function getMadSciencePreviewCard(
     type: TINKER_CARD_TYPE_TO_KO[cardType],
     typeLabel,
     vars,
+  };
+}
+
+/** The one Mad Science card painted as a variant; it keeps the game's card name. */
+export function getMadScienceVariantCard(card: CodexCard, variant: MadScienceVariant): CodexCard {
+  const typeLabel = card.madScienceLabels?.typeLabels?.[variant.cardType]
+    ?? TINKER_CARD_TYPE_TO_KO[variant.cardType];
+  return {
+    ...getMadSciencePreviewCard(card, variant.cardType, variant.riderId, typeLabel),
+    name: card.name,
+    nameEn: card.nameEn,
+    madScienceVariant: variant,
   };
 }

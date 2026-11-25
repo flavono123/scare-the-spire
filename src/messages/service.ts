@@ -374,6 +374,10 @@ export const serviceMessages = {
       detailUnavailable: "상세 정보를 불러오지 못했습니다",
       retry: "다시 시도",
     },
+    madScienceVariant: {
+      confirm: "이 카드 넣기",
+      cancel: "취소",
+    },
     cardCon: {
       label: "카드콘",
       make: "카드콘 만들기",
@@ -2080,6 +2084,10 @@ export const serviceMessages = {
       unavailable: "Could not load the game element list",
       detailUnavailable: "Could not load the details",
       retry: "Retry",
+    },
+    madScienceVariant: {
+      confirm: "Use this card",
+      cancel: "Cancel",
     },
     cardCon: {
       label: "card emoji",

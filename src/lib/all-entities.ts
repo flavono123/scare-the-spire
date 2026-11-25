@@ -21,6 +21,14 @@ import type {
 } from "@/lib/codex-types";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { inflectionAliases } from "@/lib/inflection-aliases";
+import {
+  formatMadScienceVariantParam,
+  getMadScienceVariantCard,
+  getMadScienceVariantCardId,
+  getMadScienceVariantFromId,
+  MAD_SCIENCE_CARD_ID,
+  type MadScienceVariant,
+} from "@/lib/tinker-time";
 
 export type AllEntityResources = {
   cards: readonly CodexCard[];
@@ -222,4 +230,62 @@ export function characterTitleAliases(nameEn: string): string[] | undefined {
   if (!nameEn.startsWith("The ")) return undefined;
   const withoutArticle = nameEn.slice(4).trim();
   return withoutArticle ? [withoutArticle] : undefined;
+}
+
+/** The one Mad Science card entity painted as a variant, under the variant's stored id. */
+export function withMadScienceVariantEntity(entity: EntityInfo, variant: MadScienceVariant): EntityInfo {
+  if (!entity.cardData) return entity;
+  const cardData = getMadScienceVariantCard(entity.cardData, variant);
+  return {
+    ...entity,
+    id: getMadScienceVariantCardId(variant),
+    imageUrl: cardData.imageUrl ?? entity.imageUrl,
+    cardData,
+    cardPreviewVariant: formatMadScienceVariantParam(variant),
+  };
+}
+
+/**
+ * `${type}:${id}` lookup for stored ids. Pickers list one Mad Science card; posts store a variant as
+ * MAD_SCIENCE_ATTACK_VIOLENCE (old posts as MAD_SCIENCE_ATTACK), which resolves to that card painted as
+ * the variant. Variants stay out of `values()` so name matching and lists see one card.
+ */
+export class EntityLookupMap extends Map<string, EntityInfo> {
+  private readonly variants = new Map<string, EntityInfo | undefined>();
+
+  override get(key: string): EntityInfo | undefined {
+    const entity = super.get(key);
+    if (entity || !key.startsWith("card:")) return entity;
+    if (this.variants.has(key)) return this.variants.get(key);
+    const variant = getMadScienceVariantFromId(key.slice("card:".length));
+    const base = variant ? super.get(`card:${MAD_SCIENCE_CARD_ID}`) : undefined;
+    const resolved = base && variant ? withMadScienceVariantEntity(base, variant) : undefined;
+    this.variants.set(key, resolved);
+    return resolved;
+  }
+
+  override has(key: string): boolean {
+    return this.get(key) !== undefined;
+  }
+}
+
+export function buildEntityLookupMap(entities: readonly EntityInfo[]): EntityLookupMap {
+  const map = new EntityLookupMap();
+  for (const entity of entities) map.set(`${entity.type}:${entity.id}`, entity);
+  return map;
+}
+
+/** Array lookup with the same Mad Science variant fallback as EntityLookupMap. */
+export function findEntityByRef(
+  entities: readonly EntityInfo[],
+  type: string,
+  id: string,
+): EntityInfo | undefined {
+  const exact = entities.find((entity) => entity.type === type && entity.id === id);
+  if (exact || type !== "card") return exact;
+  const variant = getMadScienceVariantFromId(id);
+  const base = variant
+    ? entities.find((entity) => entity.type === "card" && entity.id === MAD_SCIENCE_CARD_ID)
+    : undefined;
+  return base && variant ? withMadScienceVariantEntity(base, variant) : undefined;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { buildEntityLookupMap } from "@/lib/all-entities";
 import { useMemo } from "react";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { KeywordHoverTip } from "@/components/keyword-hover-tip";
@@ -172,9 +173,5 @@ export function ComboPostRenderer({
 }
 
 export function buildComboEntityMap(entities: EntityInfo[]): Map<string, EntityInfo> {
-  const map = new Map<string, EntityInfo>();
-  for (const entity of entities) {
-    map.set(`${entity.type}:${entity.id}`, entity);
-  }
-  return map;
+  return buildEntityLookupMap(entities);
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { buildEntityLookupMap } from "@/lib/all-entities";
 import { useEffect, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
@@ -89,10 +90,7 @@ export function useDecisionsDecisionsCatalog(
   const entities = includeLegacy && legacyCards.length > 0
     ? [...resources.entities, ...legacyCards]
     : resources.entities;
-  const entityMap = new Map<string, EntityInfo>();
-  for (const entity of entities) {
-    entityMap.set(`${entity.type}:${entity.id}`, entity);
-  }
+  const entityMap: Map<string, EntityInfo> = buildEntityLookupMap(entities);
 
   return {
     entities,

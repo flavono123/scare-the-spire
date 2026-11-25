@@ -1,5 +1,6 @@
 "use client";
 
+import { findEntityByRef } from "@/lib/all-entities";
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
@@ -50,5 +51,6 @@ export function findPagestormEntity(
     );
     if (exact) return exact;
   }
-  return entities.find((entity) => entity.id.toLowerCase() === needle);
+  return entities.find((entity) => entity.id.toLowerCase() === needle)
+    ?? (!type || type === "card" ? findEntityByRef(entities, "card", id.toUpperCase()) : undefined);
 }

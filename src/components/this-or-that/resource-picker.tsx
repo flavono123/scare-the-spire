@@ -12,6 +12,9 @@ import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import type { GameLocale } from "@/lib/i18n";
 import { relicAwareImageUrl } from "@/lib/relic-character-variant";
 import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
+import { MadScienceVariantPicker } from "@/components/codex/mad-science-variant-picker";
+import { withMadScienceVariantEntity } from "@/lib/all-entities";
+import { getMadScienceVariantFromId } from "@/lib/tinker-time";
 
 export function ThisOrThatResourcePicker({
   entities,
@@ -45,6 +48,7 @@ export function ThisOrThatResourcePicker({
     [candidates, query],
   );
   const hasQuery = query.trim().length > 0;
+  const madScienceVariant = value?.type === "card" && value.cardData ? getMadScienceVariantFromId(value.id) : null;
 
   return (
     <div className="space-y-2">
@@ -75,6 +79,19 @@ export function ThisOrThatResourcePicker({
             >
               <X size={14} />
             </button>
+            {value?.cardData && madScienceVariant && (
+              <MadScienceVariantPicker
+                card={value.cardData}
+                value={madScienceVariant}
+                onChange={(variant) => {
+                  const next = withMadScienceVariantEntity(value, variant);
+                  // The other side already holds this variant.
+                  if (exclude?.type === next.type && exclude.id === next.id) return;
+                  onChange(next);
+                }}
+                className="mt-2"
+              />
+            )}
           </div>
         ) : (
           <input

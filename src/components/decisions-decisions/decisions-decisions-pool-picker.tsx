@@ -4,6 +4,7 @@ import { type ReactNode, type RefObject, useMemo, useState } from "react";
 import { ChevronRight, Search } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ComboResourceAsset } from "@/components/combo/combo-resource-stack";
+import { MadScienceVariantStep, useMadScienceVariantStep } from "@/components/codex/mad-science-variant-picker";
 import {
   DecisionsPresetComboStack,
   DecisionsPresetTypeFan,
@@ -675,6 +676,8 @@ export function DecisionsDecisionsPoolPicker({
     || major === "modifier"
   );
 
+  const variantStep = useMadScienceVariantStep(onAdd);
+
   const searchField = (
     <div className="relative">
       <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-border bg-popover/80 p-2.5">
@@ -702,7 +705,7 @@ export function DecisionsDecisionsPoolPicker({
                   key={`${entity.type}:${entity.id}`}
                   type="button"
                   onClick={() => {
-                    onAdd(entity);
+                    variantStep.select(entity);
                     setQuery("");
                   }}
                   className="flex min-w-0 items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/10 focus-visible:border-primary/40 focus-visible:bg-primary/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none"
@@ -734,6 +737,16 @@ export function DecisionsDecisionsPoolPicker({
             </div>
           )}
         </div>
+      )}
+      {variantStep.pending && (
+        <MadScienceVariantStep
+          key={variantStep.pending.id}
+          entity={variantStep.pending}
+          serviceLocale={serviceLocale}
+          onConfirm={variantStep.confirm}
+          onCancel={variantStep.cancel}
+          className="mt-2"
+        />
       )}
     </div>
   );
@@ -1041,7 +1054,7 @@ export function DecisionsDecisionsPoolPicker({
                   <button
                     key={`${entity.type}:${entity.id}`}
                     type="button"
-                    onClick={() => onAdd(entity)}
+                    onClick={() => variantStep.select(entity)}
                     className="flex min-w-0 items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-left transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/10 focus-visible:border-primary/40 focus-visible:bg-primary/10 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none"
                   >
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-black/25">

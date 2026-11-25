@@ -1,5 +1,6 @@
 "use client";
 
+import { buildEntityLookupMap } from "@/lib/all-entities";
 import { useMemo, useRef, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
@@ -91,7 +92,7 @@ export function CompendiumPickerModal({
   const [major, setMajor] = useState<DecisionsPoolMajor | null>(initialMajor);
   const [dims, setDims] = useState<DecisionsFilterDims>(() => emptyFilterDims());
   const entityMap = useMemo(
-    () => new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
+    () => buildEntityLookupMap(entities),
     [entities],
   );
 

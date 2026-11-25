@@ -1,3 +1,4 @@
+import { findEntityByRef } from "@/lib/all-entities";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import {
   hasCardUpgrade,
@@ -967,9 +968,7 @@ export function findTransfigureEntity(
   entities: EntityInfo[],
   resource: TransfigureResourceRef,
 ): EntityInfo | undefined {
-  return entities.find(
-    (entity) => entity.type === resource.type && entity.id === resource.id,
-  );
+  return findEntityByRef(entities, resource.type, resource.id);
 }
 
 function nullableString(value: unknown): string | null {

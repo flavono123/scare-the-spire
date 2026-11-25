@@ -373,8 +373,9 @@ export function legacyMadScienceCardRedirectPath(pathname: string): string | nul
   if (!isExactRoutePath(pathname)) return null;
   const { localePrefix, rest } = splitLocalePrefix(pathname);
   if (rest.length !== 3 || rest[0] !== "compendium" || rest[1] !== "cards") return null;
-  const type = /^mad_science_(attack|skill|power)$/.exec(rest[2])?.[1];
-  return type ? `/${[...localePrefix, "compendium", "cards", "mad_science"].join("/")}?variant=${type}` : null;
+  // Variant card ids (`mad_science_attack_violence`) carry the rider too.
+  const variant = /^mad_science_((?:attack|skill|power)(?:_[a-z]+)?)$/.exec(rest[2])?.[1];
+  return variant ? `/${[...localePrefix, "compendium", "cards", "mad_science"].join("/")}?variant=${variant}` : null;
 }
 
 export const STATIC_NOT_FOUND_ASSET_BASENAME = "404";

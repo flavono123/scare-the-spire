@@ -18,11 +18,10 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import {
   formatMadScienceVariantParam,
-  getMadSciencePreviewCard,
+  getMadScienceVariantCard,
   getMadScienceVariantFromText,
   getMadScienceVariantHref,
   MAD_SCIENCE_CARD_ID,
-  TINKER_CARD_TYPE_TO_KO,
 } from "@/lib/tinker-time";
 import { toCompendiumDetailHref, useCompendiumDetailLinks } from "@/components/compendium-detail-links";
 import { AUTO_LINK_ENTITY_TYPES, buildAutoLinkKeywordsByFirst, wrapNumberedAscensionMentions, wrapUntaggedEntityNames, type AutoLinkKeyword } from "@/lib/auto-link-entity-names";
@@ -1913,23 +1912,17 @@ function findGoldTagEntity(
     if (scoped) return scoped;
   }
   const entity = findEntity(text, lookup, typeHint);
-  return entity && context.lineText ? withMadScienceLineVariant(entity, context.lineText, context) : entity;
+  return entity && context.lineText ? withMadScienceLineVariant(entity, context.lineText) : entity;
 }
 
 /** Patch notes call it plain "Mad Science"; the Tinker Time option named on the same line picks the card shown. */
-function withMadScienceLineVariant(entity: EntityInfo, lineText: string, context: RenderContext): EntityInfo {
+function withMadScienceLineVariant(entity: EntityInfo, lineText: string): EntityInfo {
   if (entity.type !== "card" || !entity.cardData || entity.id !== MAD_SCIENCE_CARD_ID) return entity;
   const variant = getMadScienceVariantFromText(lineText);
-  const typeKo = TINKER_CARD_TYPE_TO_KO[variant.cardType];
   const href = entityCompendiumHref(entity);
   return {
     ...entity,
-    cardData: getMadSciencePreviewCard(
-      entity.cardData,
-      variant.cardType,
-      variant.riderId,
-      context.gameUi?.cardLibrary.types[typeKo] ?? typeKo,
-    ),
+    cardData: getMadScienceVariantCard(entity.cardData, variant),
     cardPreviewVariant: formatMadScienceVariantParam(variant),
     href: href && getMadScienceVariantHref(href, variant),
   };

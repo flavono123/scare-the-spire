@@ -1,3 +1,5 @@
+import { withMadScienceVariantEntity } from "@/lib/all-entities";
+import { getMadScienceVariantFromId, MAD_SCIENCE_CARD_ID } from "@/lib/tinker-time";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import {
   buildCompendiumResourceHref,
@@ -123,6 +125,19 @@ export function createMissingThisOrThatEntity(
   };
 }
 
+/** Keys are lowercased here, so the Mad Science variant fallback of EntityLookupMap is repeated. */
+function lookupThisOrThatEntity(
+  entityMap: Map<string, EntityInfo>,
+  type: ThisOrThatPost["left_type"],
+  id: string,
+): EntityInfo | undefined {
+  const entity = entityMap.get(thisOrThatResourceKey(type, id));
+  if (entity || type !== "card") return entity;
+  const variant = getMadScienceVariantFromId(id);
+  const base = variant ? entityMap.get(thisOrThatResourceKey("card", MAD_SCIENCE_CARD_ID)) : undefined;
+  return base && variant ? withMadScienceVariantEntity(base, variant) : undefined;
+}
+
 export function resolveThisOrThatPost(
   post: ThisOrThatPost,
   entityMap: Map<string, EntityInfo>,
@@ -130,10 +145,10 @@ export function resolveThisOrThatPost(
   return {
     post,
     leftEntity:
-      entityMap.get(thisOrThatResourceKey(post.left_type, post.left_id))
+      lookupThisOrThatEntity(entityMap, post.left_type, post.left_id)
       ?? createMissingThisOrThatEntity(post.left_type, post.left_id),
     rightEntity:
-      entityMap.get(thisOrThatResourceKey(post.right_type, post.right_id))
+      lookupThisOrThatEntity(entityMap, post.right_type, post.right_id)
       ?? createMissingThisOrThatEntity(post.right_type, post.right_id),
   };
 }

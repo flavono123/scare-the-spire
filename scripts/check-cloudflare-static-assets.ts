@@ -360,6 +360,7 @@ function checkStaticExactServicePages(): number {
   assert(
     prerenderedRedirect("/compendium/cards/mad_science_attack")?.location === "/compendium/cards/mad_science?variant=attack"
       && prerenderedRedirect("/en/compendium/cards/mad_science_power")?.location === "/en/compendium/cards/mad_science?variant=power"
+      && prerenderedRedirect("/compendium/cards/mad_science_attack_violence")?.location === "/compendium/cards/mad_science?variant=attack_violence"
       && prerenderedRedirect("/compendium/cards/mad_science") === null,
     "Old per-type Mad Science card pages must 308 to the one card with its type.",
   );

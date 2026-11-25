@@ -1,5 +1,6 @@
 "use client";
 
+import { buildEntityLookupMap } from "@/lib/all-entities";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -193,7 +194,7 @@ export function ColorfulPhilosophersDevPage() {
   }, [weekPosts.posts, justSaved]);
 
   const entityByKey = useMemo(
-    () => new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
+    () => buildEntityLookupMap(entities),
     [entities],
   );
   const timeline = useMemo(() => {

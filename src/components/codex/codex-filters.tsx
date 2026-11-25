@@ -82,6 +82,7 @@ export function IconFilterButton({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={`group relative w-9 h-9 rounded-lg border-2 transition-all ${
         active

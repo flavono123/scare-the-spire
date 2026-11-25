@@ -2,6 +2,7 @@ import type { EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 import { TOYBOX_FEED_PAGE_SIZE } from "@/lib/toybox-feed-keyset";
 import { isYouTubeVideoId } from "@/lib/youtube-reference";
+import { isMadScienceCardId, MAD_SCIENCE_CARD_ID } from "@/lib/tinker-time";
 
 /** The content_text CHECK in the rls_hardening migration. */
 export const COMBO_TEXT_MAX_BYTES = 65536;
@@ -32,6 +33,17 @@ export function comboResourceKey(resource: ComboResourceRef): string {
   return `${resource.type}:${resource.id}`;
 }
 
+/** The game element a resource counts as in feed filters: every Mad Science variant is the one card. */
+export function comboFilterResource(resource: ComboResourceRef): ComboResourceRef {
+  return resource.type === "card" && isMadScienceCardId(resource.id)
+    ? { type: "card", id: MAD_SCIENCE_CARD_ID }
+    : resource;
+}
+
+export function comboFilterKey(resource: ComboResourceRef): string {
+  return comboResourceKey(comboFilterResource(resource));
+}
+
 export const COMBO_FEED_PAGE_SIZE = TOYBOX_FEED_PAGE_SIZE;
 
 export function comboPostMatchesAnyGameElement(
@@ -40,8 +52,8 @@ export function comboPostMatchesAnyGameElement(
 ): boolean {
   if (selected.length === 0) return true;
 
-  const postKeys = new Set(post.resources.map(comboResourceKey));
-  return selected.some((gameElement) => postKeys.has(comboResourceKey(gameElement)));
+  const postKeys = new Set(post.resources.map(comboFilterKey));
+  return selected.some((gameElement) => postKeys.has(comboFilterKey(gameElement)));
 }
 
 export interface RankedComboResourceRef {
@@ -58,7 +70,8 @@ export function rankPopularComboResources(
 
   const counts = new Map<string, RankedComboResourceRef>();
   for (const post of posts) {
-    for (const resource of post.resources) {
+    for (const postResource of post.resources) {
+      const resource = comboFilterResource(postResource);
       const key = comboResourceKey(resource);
       const current = counts.get(key);
       if (current) {

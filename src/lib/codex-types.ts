@@ -1,3 +1,4 @@
+import type { MadScienceVariant } from "@/lib/tinker-time";
 import type { BlitzEntryCategory, DominionCategory } from "./blitz-dread-service-categories";
 // Types for STS2 codex card data
 
@@ -52,6 +53,7 @@ export interface CodexCard extends CodexLifecycle {
   descriptionRaw: string; // selected game locale, with {Var:diff()} templates
   descriptionRawEn: string; // English, with {Var:diff()} templates
   madScienceBaseDescriptionRaw?: string; // original Mad Science template for variant recomputation
+  madScienceVariant?: MadScienceVariant; // set on a Mad Science card painted as one Tinker Time variant
   vars: Record<string, number>; // Base variable values for description template
   cost: number;
   isXCost: boolean;
@@ -90,6 +92,7 @@ export interface CodexCard extends CodexLifecycle {
     eventTitle: string;
     riderChoiceDescriptions: Record<string, string>;
     riderChoiceLabels: Record<string, string>;
+    typeLabels?: Record<string, string>; // Localized card type per Tinker Time type (ATTACK, SKILL, POWER).
   };
 }
 
