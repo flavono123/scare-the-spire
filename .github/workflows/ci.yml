@@ -47,6 +47,8 @@ jobs:
 
       - run: npx tsx scripts/place-registry.spec.ts
 
+      - run: npx tsx scripts/source-json-imports.spec.ts
+
       - run: npx tsx scripts/nav-visits.spec.ts
 
       - run: pnpm test:api
