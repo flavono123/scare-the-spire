@@ -38,7 +38,7 @@ export const BESTIARY_DEV_MONSTER_GROUPS: BestiaryDevMonsterGroup[] = [
     id: "pet",
     label: "아군/펫",
     description: "플레이어 편으로 보이거나 별도 시스템에서 다룰 대상입니다.",
-    monsterIds: ["OSTY", "BYRDPIP", "PAELS_LEGION"],
+    monsterIds: ["OSTY", "WUPPY", "BYRDPIP", "BYRDINE_MONSTER", "PAELS_LEGION"],
     publicTreatment: "dev-only",
   },
   {
