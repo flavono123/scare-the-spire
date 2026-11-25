@@ -1,4 +1,30 @@
 {
+  "achievements": [
+    "all_cards_upgraded.webp",
+    "border.webp",
+    "character_skill_ironclad1.webp",
+    "character_skill_ironclad2.webp",
+    "character_skill_necrobinder1.webp",
+    "character_skill_necrobinder2.webp",
+    "character_skill_regent1.webp",
+    "character_skill_regent2.webp",
+    "character_skill_silent1.webp",
+    "character_skill_silent2.webp",
+    "defeat_glory_enemies.webp",
+    "defeat_hive_enemies.webp",
+    "defeat_one_boss.webp",
+    "defeat_overgrowth_enemies.webp",
+    "defeat_underdocks_enemies.webp",
+    "defect_win.webp",
+    "floor_ten_thousand.webp",
+    "ironclad_win.webp",
+    "necrobinder_win.webp",
+    "no_relic_win.webp",
+    "nope.webp",
+    "play20_cards_single_turn.webp",
+    "regent_win.webp",
+    "silent_win.webp"
+  ],
   "affliction-overlays/bound": [
     "bound_border_shader.webp",
     "bound_main_preview.webp",
@@ -1141,6 +1167,7 @@
     "not_yet.webp",
     "omnislice.webp",
     "one_for_all.webp",
+    "optimism.webp",
     "outbreak.webp",
     "outmaneuver.webp",
     "outrage.webp",
@@ -1282,6 +1309,7 @@
     "tune.webp",
     "turbo.webp",
     "tutor.webp",
+    "twin_shot.webp",
     "tyranny.webp",
     "ultimate_defend.webp",
     "ultimate_strike.webp",
@@ -3300,6 +3328,14 @@
     "thumb_up.png",
     "wedge_2.png",
     "wedge_shadow.png"
+  ],
+  "ui/game_over_screen": [
+    "score_ascension.webp",
+    "score_boss.webp",
+    "score_dread.webp",
+    "score_elite.webp",
+    "score_floor.webp",
+    "score_gold.webp"
   ],
   "ui/hands": [
     "defect_paper.webp",
