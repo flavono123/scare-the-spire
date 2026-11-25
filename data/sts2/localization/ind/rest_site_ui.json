@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "Duplikat semua kartu yang berefek [gold]{EnchantmentName}[/gold].",
+  "OPTION_CLONE.descriptionDisabled": "[red]Tidak ada lagi kartu dengan Klona di Dekmu.[/red]",
   "OPTION_CLONE.name": "Klona",
   "OPTION_COOK.description": "[gold]Buang[/gold] [blue]{Cards}[/blue] kartu dari [gold]Dekmu[/gold] dan dapatkan [green]{MaxHp}[/green] HP Maksimal.",
   "OPTION_COOK.descriptionDisabled": "[red]Kamu perlu setidaknya 2 kartu yang bisa dibuang dalam Dekmu.[/red]",

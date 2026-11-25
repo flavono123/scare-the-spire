@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "[gold]{EnchantmentName}[/gold]がエンチャントされたカードをすべて複製する。",
+  "OPTION_CLONE.descriptionDisabled": "[red]デッキに「クローン」を持つカードはもう残っていない。[/red]",
   "OPTION_CLONE.name": "複製",
   "OPTION_COOK.description": "[gold]デッキ[/gold]からカードを[blue]{Cards}[/blue]枚[gold]削除[/gold]し、最大HPが[green]{MaxHp}[/green]増加する。",
   "OPTION_COOK.descriptionDisabled": "[red]デッキに削除可能なカードが2枚以上必要。[/red]",

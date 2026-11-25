@@ -1,7 +1,7 @@
 {
   "ARROW.count": "{Arrows:cond:>0?(Tienes [blue]{Arrows}[/blue] {Arrows:plural:flecha|flechas})|[red](No tienes flechas)[/red]}",
-  "ARROW.description": "Puedes disparar flechas con cartas para [gold]flechar[/gold] a un objetivo.{ShowArrowCount:\n{ArrowCount}|}",
-  "ARROW.missing.description": "[gold]Flechada[/gold] en un objetivo. Ataca al enemigo para [gold]desprenderla[/gold].{ShowArrowCount:\n{ArrowCount}|}",
+  "ARROW.description": "Puedes usar cartas para disparar flechas y [gold]flechar[/gold] a un objetivo.{ShowArrowCount:\n{ArrowCount}|}",
+  "ARROW.missing.description": "Está [gold]flechada[/gold] en un objetivo. Ataca al enemigo para [gold]quitarla[/gold].{ShowArrowCount:\n{ArrowCount}|}",
   "ARROW.title": "Flecha",
   "BLOCK.description": "Evitas el daño hasta el próximo turno.",
   "BLOCK.title": "Bloqueo",
@@ -25,7 +25,7 @@
   "DOUBLE_BOSS.title": "{BossName1} y {BossName2}",
   "DRAW_PILE.description": "Al comienzo de cada turno,\nrobas [blue]5[/blue] cartas de aquí.\n\nToca para ver las cartas del mazo de robo (barajadas).",
   "DRAW_PILE.title": "Mazo de robo{Hotkey:choose(None):| ({})}",
-  "DREAD_ROTATION.description": "En una [gold]racha de rotación[/gold], cada victoria te hace avanzar al siguiente personaje a la derecha.\nLas victorias se registran en una racha aparte y ya no cuentan para las rachas individuales de cada personaje.",
+  "DREAD_ROTATION.description": "En una [gold]racha de rotación[/gold], cada victoria te hace avanzar un personaje hacia la derecha.\nLas victorias se registran en una racha independiente y ya no contarán para las rachas individuales de cada personaje.",
   "DREAD_ROTATION.title": "Racha de rotación",
   "END_TURN.description": "Haz clic en este botón para terminar tu turno.\n\nDescartarás tu mano, será el turno del enemigo, robarás [blue]5[/blue] cartas y luego volverá a ser tu turno.",
   "END_TURN.title": "Terminar turno{Hotkey:choose(None):| ({})}",

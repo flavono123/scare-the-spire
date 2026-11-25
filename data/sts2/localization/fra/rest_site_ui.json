@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "Dupliquez toutes les cartes dotées de l'envoûtement [gold]{EnchantmentName}[/gold].",
+  "OPTION_CLONE.descriptionDisabled": "[red]Il n'y a plus de carte avec Clonage dans votre Deck.[/red]",
   "OPTION_CLONE.name": "Clonage",
   "OPTION_COOK.description": "[gold]Retirez[/gold] [blue]{Cards}[/blue] cartes de votre [gold]Deck[/gold] et gagnez [green]{MaxHp}[/green] PV Max.",
   "OPTION_COOK.descriptionDisabled": "[red]Nécessite au moins 2 cartes possibles à retirer de votre Deck.[/red]",

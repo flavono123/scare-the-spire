@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "Удвоить все карты, на которые наложены чары [gold]«{EnchantmentName}»[/gold].",
+  "OPTION_CLONE.descriptionDisabled": "[red]У вас в колоде больше нет карт с наложенными чарами Удвоение.[/red]",
   "OPTION_CLONE.name": "Удвоить",
   "OPTION_COOK.description": "[gold]Удалить[/gold] [blue]{Cards}[/blue] {Cards:plural(ru):|карты|карт} из [gold]колоды[/gold] и получить [green]{MaxHp}[/green] макс. ОЗ.",
   "OPTION_COOK.descriptionDisabled": "[red]Вам нужно не меньше 2 карт, которые можно удалить из колоды.[/red]",

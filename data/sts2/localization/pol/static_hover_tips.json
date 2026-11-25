@@ -1,4 +1,8 @@
 {
+  "ARROW.count": "{Arrows:cond:>0?(Masz [blue]{Arrows}[/blue] {Arrows:plural:Strzałę|Strzały|Strzał})|[red](Nie masz Strzał)[/red]}",
+  "ARROW.description": "Strzały można wystrzelić za pomocą kart, aby [gold]Przebić[/gold] przeciwnika.{ShowArrowCount:\n{ArrowCount}|}",
+  "ARROW.missing.description": "Twoja Strzała [gold]Przebiła[/gold] przeciwnika. Zaatakuj go, aby ją [gold]Wyjąć[/gold].{ShowArrowCount:\n{ArrowCount}|}",
+  "ARROW.title": "Strzała",
   "BLOCK.description": "Pochłania otrzymywane obrażenia do następnej tury.",
   "BLOCK.title": "Blok",
   "BOSS.description": "Pod koniec aktu zmierzysz się z [gold]{BossName:choose(Leśny Stróż|Wieczny Obserwator|Krab Cesarski|Demon Wiedzy|Matka Lagavulinów|Królowa|Dusza Rypki|Eksperyment|Nienasycony|Kapłan|Fantom|Kaskadowy Olbrzym):Leśnym Stróżem|Wiecznym Obserwatorem|Krabem Cesarskim|Demonem Wiedzy|Matką Lagavulinów|Królową|Duszą Rypki|Eksperymentem|Nienasyconym|Kapłanem|Fantomem|Kaskadowym Olbrzymem}[/gold].",
@@ -7,6 +11,8 @@
   "CARD_REWARD.title": "Łupy",
   "CHANNELING.description": "Umieszcza Sferę w pierwsze wolne miejsce. Jeżeli nie masz wolnych miejsc, twoja pierwsza Sfera zostaje [gold]Wyładowana[/gold].",
   "CHANNELING.title": "Załadowanie",
+  "CHO_MELODY.description": "Aktywuje się, gdy zagrasz kartę „Cho” w tej turze.",
+  "CHO_MELODY.title": "Melodia Cho",
   "COMPENDIUM.description": "Wyświetl wszystkie karty, mikstury i artefkaty znalezione w Iglicy.",
   "COMPENDIUM.title": "Kompendium",
   "COOK.description": "[gold]Usuń[/gold] [blue]2[/blue] karty z [gold]talii[/gold] i zyskaj [green]5[/green] maks. PŻ w [gold]Obozowisku[/gold].",
@@ -19,6 +25,8 @@
   "DOUBLE_BOSS.title": "{BossName1} i {BossName2}",
   "DRAW_PILE.description": "Na początku każdej tury\ndobierasz stąd [blue]5[/blue] kart.\n\nKliknij, aby wyświetlić (przetasowane) karty na stosie rozgrywającym.",
   "DRAW_PILE.title": "Stos rozgrywający{Hotkey:choose(None):| ({})}",
+  "DREAD_ROTATION.description": "W [gold]Serii rotacyjnej[/gold] każde zwycięstwo przesuwa cię o jedną postać na prawo.\nZwycięstwa są liczone w osobnej serii i nie liczą się do pojedynczych postaci.",
+  "DREAD_ROTATION.title": "Seria rotacyjna",
   "END_TURN.description": "Naciśnięcie tego przycisku zakończy twoją turę.\n\nOdrzucisz wszystkie karty w ręce, przeciwnicy przeprowadzą swoją turę, dobierzesz [blue]5[/blue] kart, po czym znów rozpocznie się twoja tura.",
   "END_TURN.title": "Zakończ turę{Hotkey:choose(None):| ({})}",
   "ENERGY.description": "Energia jest używana do zagrywania kart z [gold]ręki[/gold].",
@@ -37,6 +45,8 @@
   "FORGE.title": "Wykuj",
   "HIT_POINTS.description": "Kiedy skończą ci się PŻ, umierasz.",
   "HIT_POINTS.title": "Punkty Życia (PŻ)",
+  "KI_MELODY.description": "Aktywuje się, gdy zagrasz kartę „Ki” w tej turze.",
+  "KI_MELODY.title": "Melodia Ki",
   "LINKED_REWARDS.description": "Możesz wybrać tylko [blue]1[/blue] opcję z tego zestawu.",
   "LINKED_REWARDS.title": "Połączone Łupy",
   "MAP.description": "Wyświetl mapę obecnego Aktu.",
@@ -92,7 +102,11 @@
   "SUMMON_DYNAMIC.title": "Przywołaj {Summon}",
   "SUMMON_STATIC.description": "Przywołaj [gold]Kostka[/gold].\nJeżeli jest już przywołany, zwiększ jego maks. PŻ w tej walce.",
   "SUMMON_STATIC.title": "Przywołaj",
+  "TAROT.description": "Unikalne karty ze specjalnymi właściwościami.",
+  "TAROT.title": "Tarot",
   "TRANSFORM.description": "Zmienione karty stają się losowymi kartami o dowolnej rzadkości.",
   "TRANSFORM.title": "Zmiana",
-  "TURN_NUMBER.description": "Numer tury w tej walce."
+  "TURN_NUMBER.description": "Numer tury w tej walce.",
+  "WAH_MELODY.description": "Aktywuje się, gdy zagrasz kartę „Wah” w tej turze.",
+  "WAH_MELODY.title": "Melodia Wah"
 }

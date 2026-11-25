@@ -103,6 +103,7 @@
   "FOOL1_EPOCH.unlock": "[yellow]愚者[/yellow]逃跑了！……逃进了高塔？",
   "FOOL1_EPOCH.unlockInfo": "以[blue]故障机器人[/blue]{IsRevealed:游玩了|游玩}一局游戏{IsRevealed:|来揭示这个历史节点}。",
   "FOOL1_EPOCH.unlockText": "解锁 [yellow]愚者[/yellow]成为一名可玩角色。",
+  "FOOL2_EPOCH.description": "[blue]涅奥[/blue]开口...\n[sine]“是[red]他[/red]... 制造了你.. ...然后.. 又遗弃你...”[/sine]\n\n[yellow]愚者[/yellow]沉思着...\n[sine][blue]涅奥[/blue]... 是想说... 去... 找[red]建筑师[/red]...？[/sine]",
   "FOOL2_EPOCH.title": "我是谁？",
   "FOOL2_EPOCH.unlockInfo": "以[yellow]愚者[/yellow]通关[blue]第一[/blue][gold]阶段[/gold]{IsRevealed:|来揭示这个历史节点}。",
   "FOOL3_EPOCH.description": "[red]（草稿，可能会调整为剧情）[/red]\n这里的生物们，都想把我杀了，\n“滚啦！”我心想，怒敲它们的脑壳！\n\n塔里爬得越高，怪物越发可怕，\n这根棒槌不行，用它不是办法！\n\n我忠诚的好棒槌，你该进化啦！\n斧子？还是鞭子？真是难题呀！",

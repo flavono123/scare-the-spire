@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "[gold]{EnchantmentName}[/gold]가 인챈트된 모든 카드를 복제합니다.",
+  "OPTION_CLONE.descriptionDisabled": "[red]덱에 복제를 지닌 카드가 더 이상 없습니다.[/red]",
   "OPTION_CLONE.name": "복제",
   "OPTION_COOK.description": "[gold]덱[/gold]에서 카드를 [blue]{Cards}[/blue]장 [gold]제거[/gold]하고 최대 체력을 [green]{MaxHp}[/green] 얻습니다.",
   "OPTION_COOK.descriptionDisabled": "[red]덱에서 제거할 카드가 2장 이상 필요합니다.[/red]",

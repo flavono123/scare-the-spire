@@ -1955,9 +1955,7 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": null,
-    "vars": {
-      "Upgraded": 0
-    },
+    "vars": {},
     "introducedInPatch": "v0.113.0"
   },
   {

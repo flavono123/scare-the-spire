@@ -491,7 +491,7 @@
   "SLIPPERY_BRIDGE.pages.OVERCOME.description": "橋なんて大嫌いだ。",
   "SLIPPERY_BRIDGE.title": "滑りやすい橋",
   "SPIRALING_WHIRLPOOL.pages.DRINK.description": "両手で掬うようにして、[sine][aqua]らせんの渦巻き[/aqua][/sine]に手を入れた。\n\n穏やかな流れが手のひらを満たし、目を閉じてそれを少しずつ喉に流し込む。\n\n甘美な水が[sine]螺旋を描きながら[/sine]身体の[gold]中心[/gold]へと染み渡り、心の淀みや体の不調を綺麗に洗い流してくれた……",
-  "SPIRALING_WHIRLPOOL.pages.INITIAL.description": "あなたは[aqua][sine]巨大ならせんの渦巻き[/sine][/aqua]に偶然出くわした。 水は美しいバランスで渦を巻き、周囲の壁は螺旋模様で彩られている。\n\n[purple][sine]ぐるぐると…… ぐるぐると……\n…… ぐるぐると…… なんて光景だ…… [/sine][/purple]\n\nどうする？",
+  "SPIRALING_WHIRLPOOL.pages.INITIAL.description": "あなたは[aqua][sine]巨大ならせんの渦巻き[/sine][/aqua]に偶然出くわした。 水は美しいバランスで渦を巻き、周囲の壁は螺旋模様で彩られている。\n\n[purple][sine]ぐるぐる…… ぐるぐる……\n…… ぐるぐる…… なんて光景だ…… [/sine][/purple]\n\nどうする？",
   "SPIRALING_WHIRLPOOL.pages.INITIAL.options.DRINK.description": "HPを[green]{Heal}[/green]回復する。",
   "SPIRALING_WHIRLPOOL.pages.INITIAL.options.DRINK.title": "飲む",
   "SPIRALING_WHIRLPOOL.pages.INITIAL.options.OBSERVE.description": "[gold]ストライク[/gold]か[gold]防御[/gold]1枚に、[purple]らせん[/purple]を[gold]エンチャント[/gold]する。",

@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "Dupliziere alle Karten, die mit [gold]{EnchantmentName}[/gold] verzaubert sind.",
+  "OPTION_CLONE.descriptionDisabled": "[red]Es sind keine Karten mit Klon mehr in deinem Deck.[/red]",
   "OPTION_CLONE.name": "Klonen",
   "OPTION_COOK.description": "[gold]Entferne[/gold] [blue]{Cards}[/blue] Karten aus deinem [gold]Deck[/gold] und erhalte [green]{MaxHp}[/green] max. TP.",
   "OPTION_COOK.descriptionDisabled": "[red]Du brauchst in deinem Deck mindestens 2 entfernbare Karten.[/red]",

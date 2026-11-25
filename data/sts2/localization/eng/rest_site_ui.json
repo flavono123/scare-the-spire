@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "Duplicate all cards enchanted with [gold]{EnchantmentName}[/gold].",
+  "OPTION_CLONE.descriptionDisabled": "[red]There are no more cards with Clone in your Deck.[/red]",
   "OPTION_CLONE.name": "Clone",
   "OPTION_COOK.description": "[gold]Remove[/gold] [blue]{Cards}[/blue] cards from your [gold]Deck[/gold] and gain [green]{MaxHp}[/green] Max HP.",
   "OPTION_COOK.descriptionDisabled": "[red]You need at least 2 removable cards in your Deck.[/red]",

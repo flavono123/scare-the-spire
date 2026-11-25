@@ -2056,6 +2056,7 @@
   {
     "id": "BYRDINE_MONSTER",
     "name": "섀다인",
+    "introducedInPatch": "v0.113.0",
     "type": "Normal",
     "show_in_compendium": true,
     "min_hp": 9999,
@@ -2105,8 +2106,7 @@
     },
     "damage_values": null,
     "block_values": null,
-    "image_url": null,
-    "introducedInPatch": "v0.113.0"
+    "image_url": null
   },
   {
     "id": "BYRDONIS",
@@ -26227,6 +26227,7 @@
   {
     "id": "WUPPY",
     "name": "워피",
+    "introducedInPatch": "v0.113.0",
     "type": "Normal",
     "show_in_compendium": true,
     "min_hp": 50,
@@ -26276,8 +26277,7 @@
     },
     "damage_values": null,
     "block_values": null,
-    "image_url": null,
-    "introducedInPatch": "v0.113.0"
+    "image_url": null
   },
   {
     "id": "ZAPBOT",

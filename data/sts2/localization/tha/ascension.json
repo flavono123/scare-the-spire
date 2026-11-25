@@ -22,7 +22,11 @@
   "LEVEL_09.title": "ศัตรูร้ายกาจ",
   "LEVEL_10.description": "ต่อสู้[red]บอส[/red] [blue]2[/blue] ตัวตอนจบ[gold]องก์[/gold] [blue]3[/blue]",
   "LEVEL_10.title": "บอสเบิ้ล",
+  "PORTRAIT_ASCENSION_HEADER": "[gold]ผู้บรรลุ {ascension}[/gold]",
   "PORTRAIT_DESCRIPTION": "{ascensions:list: +{}|\n}",
+  "PORTRAIT_GAME_MODE_MODDED": "{gameMode} (ม็อด)",
+  "PORTRAIT_GAME_MODE_MULTIPLAYER": "{gameMode}, โหมดหลายคน",
   "PORTRAIT_TITLE": "{character} - ผู้บรรลุ {ascension}",
+  "PORTRAIT_TITLE_MODDED": "{character} (ม็อด)",
   "PORTRAIT_TITLE_NO_ASCENSION": "{character}"
 }

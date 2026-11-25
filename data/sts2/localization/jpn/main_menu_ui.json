@@ -102,7 +102,7 @@
   "EARLY_ACCESS_DISCLAIMER.description_mkb": "[gold][b]Slay the Spire 2[/b][/gold]は早期アクセス中。\nつまり、ゲームはまだ未完成です！\n\n今後もカードやモンスターなどの新コンテンツを追加していく予定ですが、同時に不具合の修正やバランス調整、細かい機能の改善なども進める必要があります。\n[blue]F2[/blue]キーを押して[gold]フィードバックフォーム[/gold]からバグの報告や意見を送り、開発にご協力ください。設定メニューからもフォームを開くことができます。\n\nさあ、スパイアが待っています！",
   "EARLY_ACCESS_DISCLAIMER.header": "早期アクセスについて",
   "EARLY_ACCESS_DISCLAIMER.proceedButton": "進む",
-  "ENABLE_TUTORIALS.description": "[gold][b]Slay the Spire[/b][/gold]を\nプレイするのは初めてのようですね！\nプレイの手助けになる簡単な\nチュートリアルとヒントを表示しますか？",
+  "ENABLE_TUTORIALS.description": "[gold][b]Slay the Spire[/b][/gold]の\nプレイは初めてのようですね！\n簡単なチュートリアルと\nヒントを表示しますか？",
   "ENABLE_TUTORIALS.title": "チュートリアルが必要ですか？",
   "FUTURE_VERSION_RUN_POPUP.description": "このプレイデータは、現在より新しいバージョンで保存されています。\n\n続きをプレイするには、ゲームをアップデートしてください。",
   "FUTURE_VERSION_RUN_POPUP.title": "新しいバージョンのプレイデータ",

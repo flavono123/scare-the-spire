@@ -1,5 +1,5 @@
 {
-  "MERCHANT.blitz.card_enchant_entry.description": "카드 1장에 [purple]{Enchantment}{Amount:plural:을(를)|을(를) {}}[/purple] [gold]인챈트[/gold]합니다.",
+  "MERCHANT.blitz.card_enchant_entry.description": "카드 1장에 [purple]{Enchantment}{Amount:plural:(을)를|(을)를 {}}[/purple] [gold]인챈트[/gold]합니다.",
   "MERCHANT.blitz.card_enchant_entry.title": "{Enchantment}",
   "MERCHANT.blitz.card_packs_entry.description": "카드 팩 [blue]2[/blue]개 중 [blue]1[/blue]개를 선택해 [gold]덱[/gold]에 추가합니다.",
   "MERCHANT.blitz.card_packs_entry.title": "카드 팩",

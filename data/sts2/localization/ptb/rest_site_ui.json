@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "Duplique todas as cartas encantadas com [gold]{EnchantmentName}[/gold].",
+  "OPTION_CLONE.descriptionDisabled": "[red]Você não possui mais cartas com Clonagem no seu Baralho.[/red]",
   "OPTION_CLONE.name": "Clonar",
   "OPTION_COOK.description": "[gold]Remova[/gold] [blue]{Cards}[/blue] cartas do seu [gold]Baralho[/gold] e receba [green]{MaxHp}[/green] PV Máximos.",
   "OPTION_COOK.descriptionDisabled": "[red]Você precisa de pelo menos 2 cartas removíveis no seu Baralho.[/red]",

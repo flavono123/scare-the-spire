@@ -54,5 +54,5 @@
   "SCORE_LINE.goldGained": "Заработано золота: {GoldAmount}",
   "VICTORY_DAMAGE": "Вы нанесли Архитектору [green]{PlayerDamage:n()}[/green] урона. Но этого оказалось мало…\nВы нанесли Архитектору в общей сложности [green]{PersonalDamage:n()}[/green] урона.\nАрхитектор получил в общей сложности [green]{TotalDamage:n()}[/green] урона от соперников, но он по-прежнему жив.",
   "VICTORY_DAMAGE_LOCAL": "Вы нанесли Архитектору [green]{PlayerDamage:n()}[/green] урона. Но этого оказалось мало…\nВы нанесли Архитектору в общей сложности [green]{PersonalDamage:n()}[/green] урона.",
-  "VICTORY_UNLOCKED_ASCENSION": "[blue]{IsMultiplayer:Multiplayer |}Вы открыли {AscensionLevel}-й уровень Возвышения![/blue]"
+  "VICTORY_UNLOCKED_ASCENSION": "Вы открыли {AscensionLevel}-й уровень Возвышения[blue]{IsMultiplayer: в совместной игре|}![/blue]"
 }

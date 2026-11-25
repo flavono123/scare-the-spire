@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "Duplichi tutte le carte incantate con [gold]{EnchantmentName}[/gold].",
+  "OPTION_CLONE.descriptionDisabled": "[red]Non ci sono altre carte con Clonazione nel tuo mazzo.[/red]",
   "OPTION_CLONE.name": "Clona",
   "OPTION_COOK.description": "[gold]Rimuovi[/gold] [blue]{Cards}[/blue] carte dal tuo [gold]mazzo[/gold] e aumenti i PV massimi di [green]{MaxHp}[/green].",
   "OPTION_COOK.descriptionDisabled": "[red]Nel tuo mazzo devi avere almeno 2 carte che si possono rimuovere.[/red]",

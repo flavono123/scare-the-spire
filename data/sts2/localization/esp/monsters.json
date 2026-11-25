@@ -45,7 +45,7 @@
   "BYGONE_EFFIGY.moves.SLEEP.title": "Letargo",
   "BYGONE_EFFIGY.moves.WAKE.title": "Despertar",
   "BYGONE_EFFIGY.name": "Efigie olvidada",
-  "BYRDINE_MONSTER.moves.NOTHING.title": "Nada",
+  "BYRDINE_MONSTER.moves.NOTHING.title": "Inmóvil",
   "BYRDINE_MONSTER.name": "Japarina",
   "BYRDONIS.moves.BITE.title": "Mordida",
   "BYRDONIS.moves.PECK.title": "Picotazo",
@@ -503,7 +503,7 @@
   "WRIGGLER.moves.SPAWNED.title": "Invocación",
   "WRIGGLER.moves.WRIGGLE.title": "Retorcimiento",
   "WRIGGLER.name": "Sanguilarva",
-  "WUPPY.moves.NOTHING.title": "Nada",
+  "WUPPY.moves.NOTHING.title": "Inmóvil",
   "WUPPY.name": "Camakrilito",
   "ZAPBOT.moves.ZAP.title": "Chispa",
   "ZAPBOT.name": "Chispabot"

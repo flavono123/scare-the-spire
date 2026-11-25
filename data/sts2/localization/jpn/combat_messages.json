@@ -1,5 +1,5 @@
 {
-  "BLOCKED_BY_HOOK": "[red]{BlockingHook}[/red]によって\nブロックされている。",
+  "BLOCKED_BY_HOOK": "[red]{BlockingHook}[/red]により\n使用できない。",
   "HAND_FULL": "手札がいっぱいだ……",
   "NOT_ENOUGH_ENERGY": "[red]エナジー[/red]が\n足りない。",
   "NOT_ENOUGH_STARS": "[red]スター[/red]が\n足りぬ。",

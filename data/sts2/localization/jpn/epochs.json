@@ -103,6 +103,7 @@
   "FOOL1_EPOCH.unlock": "[yellow]フール[/yellow]は脱出に成功した！ ……行き先はスパイア？",
   "FOOL1_EPOCH.unlockInfo": "[blue]ディフェクト[/blue]で{IsRevealed:プレイした|プレイする}{IsRevealed:|と、この断章が明らかになる}。",
   "FOOL1_EPOCH.unlockText": "[yellow]フール[/yellow]でプレイ可能となった。",
+  "FOOL2_EPOCH.description": "[blue]ネオー[/blue]が語りかける……\n[sine]「[red]奴[/red]は……お前を……創り出し……そして……見捨てた……」[/sine]\n\n[yellow]フール[/yellow]は考え込む\n[sine][blue]ネオー[/blue]が……言いたいのは……[red]アーキテクト[/red]のところに……行けってこと……？[/sine]",
   "FOOL2_EPOCH.title": "ぼくはだれ？",
   "FOOL2_EPOCH.unlockInfo": "[yellow]フール[/yellow]で[gold]第[/gold][blue]1[/blue][gold]層[/gold]をクリアする{IsRevealed:|と、この断章が明らかになる}。",
   "FOOL3_EPOCH.description": "[red]（ドラフト版：物語の一節として削除される可能性あり）[/red]\nここの生き物、みんなぼくを殺す気だ！\n「こっちに来ないで！」心の中で叫んで、ヤツらの頭に一撃！\n\n上へ行くほど、敵は手ごわくなる！\nこの棍棒じゃダメだ。今のままじゃ頼りにならない！\n\n使い慣れたぼくの相棒、そろそろ進化の時かな！\n斧にしようか。それともムチ？ 悩んじゃうな！",

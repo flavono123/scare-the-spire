@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "Zduplikuj wszystkie karty z zaklęciem [gold]{EnchantmentName}[/gold].",
+  "OPTION_CLONE.descriptionDisabled": "[red]W twojej talii nie ma więcej kart z Duplikacją.[/red]",
   "OPTION_CLONE.name": "Duplikuj",
   "OPTION_COOK.description": "[gold]Usuń[/gold] [blue]{Cards}[/blue] karty z [gold]talii[/gold] i zyskaj [green]{MaxHp}[/green] maks. PŻ.",
   "OPTION_COOK.descriptionDisabled": "[red]Potrzeba co najmniej 2 kart, które można usunąć z talii.[/red]",
@@ -18,8 +19,8 @@
   "OPTION_LIFT.name": "Ćwicz",
   "OPTION_MEND.description": "Przywróć {HasTarget:graczowi {Name}|komuś innemu} 30% maks. PŻ{HasTarget: ({Heal})|}.{ExtraText}",
   "OPTION_MEND.name": "Ulecz",
-  "OPTION_RESTORE.description": "Przywróć [gold]Wuppy[/gold] wszystkie PŻ.",
-  "OPTION_RESTORE.descriptionDisabled": "[red]Wuppy już ma pełne PŻ.[/red]",
+  "OPTION_RESTORE.description": "Przywróć [gold]Glutkowi[/gold] wszystkie PŻ.",
+  "OPTION_RESTORE.descriptionDisabled": "[red]Glutek ma już pełne PŻ.[/red]",
   "OPTION_RESTORE.name": "Przywróć",
   "OPTION_SMITH.description": "[gold]Ulepsz[/gold] kartę w [gold]talii[/gold].",
   "OPTION_SMITH.descriptionDisabled": "[red]Nie masz kart do Ulepszenia.[/red]",

@@ -18,7 +18,7 @@
   "BONE_BREW.title": "Wywar z kości",
   "BOTTLED_POTENTIAL.description": "Wtasuj WSZYSTKIE swoje karty do [gold]stosu kart rozgrywających[/gold]. Dobierz [blue]{Cards}[/blue] {Cards:plural:kartę|karty|kart}.",
   "BOTTLED_POTENTIAL.title": "Butelkowany potencjał",
-  "BOTTLED_SONG.description": "Dodaj losową kartę „Wah”, „Cho” lub „Ki” do [gold]ręki[/gold]. W tej turze są darmowe.",
+  "BOTTLED_SONG.description": "Dodaj losową kartę „Wah”, „Cho” lub „Ki” do [gold]ręki[/gold]. W tej turze jest darmowa.",
   "BOTTLED_SONG.title": "Zabutelkowana pieśń",
   "CLARITY.description": "Dobierz [blue]{Cards}[/blue] {Cards:plural:kartę|karty|kart}. Na początku {ClarityPower:plural:swojej następnej tury|swoich [blue]{}[/blue] następnych tur|swoich [blue]{}[/blue] następnych tur} dobierz [blue]1[/blue] dodatkową kartę.",
   "CLARITY.title": "Ekstrakt krystaliczny",

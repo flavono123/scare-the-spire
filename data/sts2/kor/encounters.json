@@ -469,7 +469,7 @@
         "name": "큐브형 구조체"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}을(를) 으깨버렸습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 으깨버렸습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -503,7 +503,7 @@
         "name": "시체 민달팽이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}을(를) 마음껏 먹어치웠습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 마음껏 먹어치웠습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -537,7 +537,7 @@
         "name": "시체 민달팽이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}을(를) 마음껏 먹어치웠습니다.",
+    "loss_text": "[gold]{encounter}[/gold]이 {character}(을)를 마음껏 먹어치웠습니다.",
     "compositions": [
       {
         "id": "FIXED",
@@ -3844,7 +3844,7 @@
         "name": "포탑 사수"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 벌집으로 만들었습니다.",
+    "loss_text": "[gold]{encounter}[/gold]는 {character}(을)를 벌집으로 만들었습니다.",
     "compositions": [
       {
         "id": "FIXED",

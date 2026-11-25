@@ -605,7 +605,7 @@
   "THE_FUTURE_OF_POTIONS.pages.INITIAL.options.POTION.description": "Perdi [gold]{Potion}[/gold]. Ottieni una carta [gold]{Type} {Rarity}[/gold] [gold]potenziata[/gold].",
   "THE_FUTURE_OF_POTIONS.pages.INITIAL.options.POTION.title": "Inserisci pozione {Rarity}",
   "THE_FUTURE_OF_POTIONS.title": "Il futuro delle pozioni?",
-  "THE_LANTERN_KEY.loss": "{character} ha provare a prendere la chiave di un [gold]Cavaliere misterioso[/gold].",
+  "THE_LANTERN_KEY.loss": "{character} ha provato a prendere la chiave di un [gold]Cavaliere misterioso[/gold].",
   "THE_LANTERN_KEY.pages.DONE.options.RETURN_THE_KEY.description": "Lo sconosciuto ti ringrazia per l'aiuto e ti ricompensa generosamente.",
   "THE_LANTERN_KEY.pages.INITIAL.description": "Trovi e raccogli una chiave che emana una debole luce.\n\n\"L'ho cercata dappertutto! Se non ti dispiace...\"\n\nQuesta persona sembra malintenzionata, ma come si suol dire, \"Mai giudicare un libro dalla copertina\", o forse no?",
   "THE_LANTERN_KEY.pages.INITIAL.options.KEEP_THE_KEY.description": "Combatti per ottenere la chiave.",

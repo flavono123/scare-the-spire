@@ -447,7 +447,7 @@
   "SELF_HELP_BOOK.pages.READ_THE_BACK.description": "Du drehst das Buch um und liest die Zusammenfassung:\n[blue]„Kritiker und Kultisten sind sich einig, dass scharfe und spitze Waffen der beste Weg sind, Schaden zuzufügen!“[/blue]\n\nAuf der Buchrückseite klebt ein Preisschild – durchgestrichen und mit einem deutlich reduzierten Preis übermalt.",
   "SELF_HELP_BOOK.title": "Selbsthilfebuch",
   "SHARED_EVENT_INFO": "Dies ist ein gemeinschaftliches Ereignis. Stimmt ab, welchen Weg alle gehen werden.",
-  "SHRINE_OF_THE_WARLORD.pages.INITIAL.description": "Ein in den Boden eingelassener Durchgang bringt dich zu einem unterirdischen Schrein für eine [orange]riesige chimärische Bestie[/orange]. Sein massiver Rahmen thront über [blue]3[/blue] [gold]verschiedenen Artefakten[/gold].\n\nAuf dem Boden davor ist eine Plakette, worauf steht:\n„WERDE MÄCHTIG.“\n- Tanx",
+  "SHRINE_OF_THE_WARLORD.pages.INITIAL.description": "Ein in den Boden eingelassener Durchgang bringt dich zu einem unterirdischen Schrein für eine [orange]riesige chimärische Bestie[/orange]. Ihr massives Bildnis thront über [blue]3[/blue] [gold]verschiedenen Artefakten[/gold].\n\nAuf dem Boden davor ist eine Plakette, worauf steht:\n„WERDE MÄCHTIG.“\n- Tanx",
   "SHRINE_OF_THE_WARLORD.pages.INITIAL.options.TAKE_SHIELD.description": "Nimm [gold]{ShieldTitle}[/gold] in dein [gold]Deck[/gold].",
   "SHRINE_OF_THE_WARLORD.pages.INITIAL.options.TAKE_SHIELD.title": "Den Schild nehmen",
   "SHRINE_OF_THE_WARLORD.pages.INITIAL.options.TAKE_WEAPON.description": "Nimm [gold]{WeaponTitle}[/gold] in dein [gold]Deck[/gold].",

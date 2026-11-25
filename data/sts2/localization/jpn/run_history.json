@@ -36,7 +36,7 @@
   "MAP_POINT_HISTORY.defeat.0": "{character}は{encounterName}に敗北した……",
   "MAP_POINT_HISTORY.defeat.1": "{character}は{encounterName}に打ち負かされた！",
   "MAP_POINT_HISTORY.falseVictory.0": "{character}は最上階へとたどり着いた……のか？",
-  "MAP_POINT_HISTORY.falseVictory.1": "{character}は{possessiveAdjective}全力を尽くしたが、届かなかった……",
+  "MAP_POINT_HISTORY.falseVictory.1": "{character}は全力を尽くしたが、届かなかった……",
   "MAP_POINT_HISTORY.header": "{FloorNum}階",
   "MAP_POINT_HISTORY.healed": "[green]HPを{HP}回復[/green]",
   "MAP_POINT_HISTORY.maxHpGained": "[green]最大HPが{HP}増加[/green]",

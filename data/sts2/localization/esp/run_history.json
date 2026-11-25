@@ -4,7 +4,7 @@
   "DEFAULT_EVENT_LOSS_MESSAGE": "{character} murió en el evento [gold]{event}[/gold]...",
   "GAME_MODE.blitz": "[green]Incursión[/green]",
   "GAME_MODE.custom": "[orange]Personalizada[/orange]",
-  "GAME_MODE.daily": "[blue]Partida diaria[/blue]",
+  "GAME_MODE.daily": "[blue]Diaria[/blue]",
   "GAME_MODE.dread": "[aqua]Terror[/aqua]",
   "GAME_MODE.standard": "Estándar",
   "GAME_MODE.title": "[gold]{PlayerCount}:[/gold] {GameMode}",

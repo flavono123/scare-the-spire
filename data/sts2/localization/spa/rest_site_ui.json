@@ -1,5 +1,6 @@
 {
   "OPTION_CLONE.description": "Duplica todas las cartas encantadas con [gold]{EnchantmentName}[/gold].",
+  "OPTION_CLONE.descriptionDisabled": "[red]No quedan más cartas con Clonar en tu Mazo.[/red]",
   "OPTION_CLONE.name": "Clonar",
   "OPTION_COOK.description": "[gold]Elimina[/gold] [blue]{Cards}[/blue] cartas de tu [gold]Mazo[/gold] y gana [green]{MaxHp}[/green] PV máx.",
   "OPTION_COOK.descriptionDisabled": "[red]Necesitas al menos 2 cartas que puedan eliminarse de tu Mazo.[/red]",

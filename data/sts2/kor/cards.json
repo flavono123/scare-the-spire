@@ -8817,9 +8817,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "소멸"
-    ],
+    "keywords": null,
     "tags": null,
     "spawns_cards": null,
     "vars": null,
@@ -12923,9 +12921,7 @@
       "LullabyPower": 20,
       "Lullaby": 20
     },
-    "upgrade": {
-      "add_innate": 1
-    },
+    "upgrade": null,
     "introducedInPatch": "v0.113.0",
     "image_url": null,
     "beta_image_url": "/static/images/cards/beta/lullaby.png"
@@ -14286,11 +14282,15 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "휘발성"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": null,
-    "upgrade": null,
+    "upgrade": {
+      "remove_ethereal": 1
+    },
     "introducedInPatch": "v0.113.0",
     "image_url": null,
     "beta_image_url": "/static/images/cards/beta/mythic_form.png"
@@ -16651,7 +16651,8 @@
       "Repeat": 1
     },
     "upgrade": {
-      "repeat": "+1"
+      "repeat": "+1",
+      "add_innate": 1
     },
     "introducedInPatch": "v0.113.0",
     "image_url": null,
@@ -17148,12 +17149,16 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "소멸",
+      "보존"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": null,
     "upgrade": {
-      "cost": 0
+      "cost": 0,
+      "remove_exhaust": 1
     },
     "introducedInPatch": "v0.113.0",
     "image_url": null,
@@ -22353,7 +22358,9 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "소멸"
+    ],
     "tags": [
       "Shoot"
     ],
