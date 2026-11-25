@@ -231,6 +231,25 @@ const patchReloadJobs = [
 let patchReloadTimer = null;
 let patchReloadRunning = false;
 const patchReloadQueue = new Set();
+// Open patch tabs listen here (the script servePatchAsset injects) and reload after a rebuild.
+const patchReloadEventsPath = "/__patch-reload";
+const patchReloadClients = new Set();
+const patchReloadScript = `<script>new EventSource(${JSON.stringify(patchReloadEventsPath)}).onmessage=()=>location.reload()</script>`;
+
+function servePatchReloadEvents(req, res) {
+  res.writeHead(200, {
+    "content-type": "text/event-stream",
+    "cache-control": "no-store",
+    connection: "keep-alive",
+  });
+  res.write(": connected\n\n");
+  patchReloadClients.add(res);
+  req.on("close", () => patchReloadClients.delete(res));
+}
+
+function notifyPatchReload() {
+  for (const client of patchReloadClients) client.write("data: reload\n\n");
+}
 
 function enqueuePatchReload(args) {
   patchReloadQueue.add(args.join(" "));
@@ -251,6 +270,7 @@ function runQueuedPatchReloads() {
     if (!command) {
       patchReloadRunning = false;
       if (patchReloadQueue.size > 0) runQueuedPatchReloads();
+      else if (!patchReloadTimer) notifyPatchReload();
       return;
     }
     console.log(`patch reload: pnpm ${command}`);
@@ -357,6 +377,16 @@ async function servePatchAsset(req, res, pathname) {
   try {
     const stat = await fs.stat(filePath);
     if (!stat.isFile()) throw new Error("Not a file");
+    if (filePath.endsWith(".html")) {
+      const html = (await fs.readFile(filePath, "utf8")).replace("</body>", `${patchReloadScript}</body>`);
+      res.writeHead(200, {
+        "content-type": contentType(filePath),
+        "content-length": Buffer.byteLength(html),
+        "cache-control": "no-store",
+      });
+      res.end(html);
+      return;
+    }
     res.writeHead(200, {
       "content-type": contentType(filePath),
       "content-length": stat.size,
@@ -482,6 +512,10 @@ const mainRetryWindowMs = 20_000;
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url ?? "/", `http://${req.headers.host ?? `localhost:${proxyPort}`}`);
+  if (url.pathname === patchReloadEventsPath) {
+    servePatchReloadEvents(req, res);
+    return;
+  }
   if (isLocalApiPath(url.pathname)) {
     proxyToLocalApi(req, res);
     return;
