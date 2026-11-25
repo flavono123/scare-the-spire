@@ -55882,9 +55882,9 @@
       "Potions & Relics"
     ],
     "markdownKo": "포션 도감과 유물 도감에서 [gold:character]풀[/gold]의 포션·유물 외곽선을 고쳤습니다.",
-    "markdownEn": "Fixed [gold:character]Fool[/gold] potion/relic outlines in the potion and relic compendiums.",
+    "markdownEn": "Fixed [gold:character]The Fool[/gold] potion/relic outlines in the potion and relic compendiums.",
     "textKo": "포션 도감과 유물 도감에서 풀의 포션·유물 외곽선을 고쳤습니다.",
-    "textEn": "Fixed Fool potion/relic outlines in the potion and relic compendiums.",
+    "textEn": "Fixed The Fool potion/relic outlines in the potion and relic compendiums.",
     "entityRefs": [
       {
         "type": "character",
@@ -55892,7 +55892,7 @@
         "label": "풀"
       }
     ],
-    "searchText": "v0.114.0:line-102-character-fool v0.114.0 0.114.0 버그 수정 포션 및 유물 포션 도감과 유물 도감에서 풀의 포션·유물 외곽선을 고쳤습니다. fixed fool potion/relic outlines in the potion and relic compendiums. character fool 풀 풀 the fool fool"
+    "searchText": "v0.114.0:line-102-character-fool v0.114.0 0.114.0 버그 수정 포션 및 유물 포션 도감과 유물 도감에서 풀의 포션·유물 외곽선을 고쳤습니다. fixed the fool potion/relic outlines in the potion and relic compendiums. character fool 풀 풀 the fool fool"
   },
   {
     "id": "v0.114.0:line-103-text-1yeqoxq",
@@ -55990,9 +55990,9 @@
       "The Fool"
     ],
     "markdownKo": "[gold:character]풀[/gold]이 이제 도감 통계에 포함됩니다.",
-    "markdownEn": "[gold:character]Fool[/gold] is now included in Bestiary stats.",
+    "markdownEn": "[gold:character]The Fool[/gold] is now included in Bestiary stats.",
     "textKo": "풀이 이제 도감 통계에 포함됩니다.",
-    "textEn": "Fool is now included in Bestiary stats.",
+    "textEn": "The Fool is now included in Bestiary stats.",
     "entityRefs": [
       {
         "type": "character",
@@ -56000,7 +56000,7 @@
         "label": "풀"
       }
     ],
-    "searchText": "v0.114.0:line-106-character-fool v0.114.0 0.114.0 버그 수정 풀 풀이 이제 도감 통계에 포함됩니다. fool is now included in bestiary stats. character fool 풀 풀 the fool fool"
+    "searchText": "v0.114.0:line-106-character-fool v0.114.0 0.114.0 버그 수정 풀 풀이 이제 도감 통계에 포함됩니다. the fool is now included in bestiary stats. character fool 풀 풀 the fool fool"
   },
   {
     "id": "v0.114.0:line-107-card-cho-chorus-card-wah-blast",
@@ -56140,9 +56140,9 @@
       "The Fool"
     ],
     "markdownKo": "[gold:card]태양을 가리다[/gold] 카드가 풀이 아닌 캐릭터에게 [gold]화살[/gold] 카드를 만들어 주지 않던 문제를 고쳤습니다.",
-    "markdownEn": "Fixed [gold:card]Blot Out the Sky[/gold] card generating no [gold]Arrow[/gold] cards for non-Fool characters.",
+    "markdownEn": "Fixed [gold:card]Blot out the Sky[/gold] card generating no [gold]Arrow[/gold] cards for non-Fool characters.",
     "textKo": "태양을 가리다 카드가 풀이 아닌 캐릭터에게 화살 카드를 만들어 주지 않던 문제를 고쳤습니다.",
-    "textEn": "Fixed Blot Out the Sky card generating no Arrow cards for non-Fool characters.",
+    "textEn": "Fixed Blot out the Sky card generating no Arrow cards for non-Fool characters.",
     "entityRefs": [
       {
         "type": "card",
@@ -56243,9 +56243,9 @@
       "The Fool"
     ],
     "markdownKo": "[gold:character]풀[/gold]의 [gold]화살[/gold] UI가 [gold:monster]분쇄자[/gold]의 파워 판정 영역을 가리던 문제를 고쳤습니다.",
-    "markdownEn": "Fixed [gold:character]Fool[/gold]'s [gold]Arrow[/gold] UI blocking [gold:monster]Crusher[/gold]'s power hitbox.",
+    "markdownEn": "Fixed [gold:character]The Fool[/gold]'s [gold]Arrow[/gold] UI blocking [gold:monster]Crusher[/gold]'s power hitbox.",
     "textKo": "풀의 화살 UI가 분쇄자의 파워 판정 영역을 가리던 문제를 고쳤습니다.",
-    "textEn": "Fixed Fool's Arrow UI blocking Crusher's power hitbox.",
+    "textEn": "Fixed The Fool's Arrow UI blocking Crusher's power hitbox.",
     "entityRefs": [
       {
         "type": "character",
@@ -56258,7 +56258,7 @@
         "label": "분쇄자"
       }
     ],
-    "searchText": "v0.114.0:line-115-character-fool-monster-crusher v0.114.0 0.114.0 버그 수정 풀 풀의 화살 ui가 분쇄자의 파워 판정 영역을 가리던 문제를 고쳤습니다. fixed fool's arrow ui blocking crusher's power hitbox. character fool 풀 풀 the fool fool monster crusher 분쇄자 분쇄자 crusher"
+    "searchText": "v0.114.0:line-115-character-fool-monster-crusher v0.114.0 0.114.0 버그 수정 풀 풀의 화살 ui가 분쇄자의 파워 판정 영역을 가리던 문제를 고쳤습니다. fixed the fool's arrow ui blocking crusher's power hitbox. character fool 풀 풀 the fool fool monster crusher 분쇄자 분쇄자 crusher"
   },
   {
     "id": "v0.114.0:line-116-encounter-kaiser-crab-boss-encounter-vantom-boss",
@@ -56305,9 +56305,9 @@
       "Multiplayer"
     ],
     "markdownKo": "[gold:character]풀[/gold]의 [gold:card]합창[/gold] 카드가 재사용이 있는 카드로 여러 번 줄어들던 문제를 고쳤습니다.",
-    "markdownEn": "Fixed [gold:character]Fool[/gold]'s [gold:card]Ensemble[/gold] card decrementing multiple times from cards that have replay.",
+    "markdownEn": "Fixed [gold:character]The Fool[/gold]'s [gold:card]Ensemble[/gold] card decrementing multiple times from cards that have replay.",
     "textKo": "풀의 합창 카드가 재사용이 있는 카드로 여러 번 줄어들던 문제를 고쳤습니다.",
-    "textEn": "Fixed Fool's Ensemble card decrementing multiple times from cards that have replay.",
+    "textEn": "Fixed The Fool's Ensemble card decrementing multiple times from cards that have replay.",
     "entityRefs": [
       {
         "type": "character",
@@ -56320,7 +56320,7 @@
         "label": "합창"
       }
     ],
-    "searchText": "v0.114.0:line-117-character-fool-card-ensemble v0.114.0 0.114.0 버그 수정 멀티플레이어 풀의 합창 카드가 재사용이 있는 카드로 여러 번 줄어들던 문제를 고쳤습니다. fixed fool's ensemble card decrementing multiple times from cards that have replay. character fool 풀 풀 the fool fool card ensemble 합창 합창 ensemble"
+    "searchText": "v0.114.0:line-117-character-fool-card-ensemble v0.114.0 0.114.0 버그 수정 멀티플레이어 풀의 합창 카드가 재사용이 있는 카드로 여러 번 줄어들던 문제를 고쳤습니다. fixed the fool's ensemble card decrementing multiple times from cards that have replay. character fool 풀 풀 the fool fool card ensemble 합창 합창 ensemble"
   },
   {
     "id": "v0.114.0:line-118-text-1la1969",
