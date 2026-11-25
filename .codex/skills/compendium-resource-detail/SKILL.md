@@ -1,99 +1,39 @@
 ---
 name: compendium-resource-detail
-description: Build or refactor STS2 백과사전/Compendium resource detail and modal UIs from the finalized relic detail pattern. Use when extending card, relic, potion, power, enchantment, event, monster, encounter, or ancient detail views; when adding related resources, comments, patch history, or GameHoverTip previews; or when aligning existing Codex-named components with the Compendium design rules.
+description: Build or refactor STS2 백과사전/Compendium resource detail and modal UIs, related-resource rails (관련 리소스) and reciprocal cross references, from the relic detail pattern. Use when extending card, relic, potion, power, enchantment, event, monster, encounter or ancient details; adding related resources, comments, patch history or GameHoverTip previews; or connecting resources to each other.
 ---
 
 # Compendium Resource Detail
 
-Use this skill to extend the current relic detail/modal implementation to other STS2 백과사전 resources without re-opening the product/design decisions.
+Reference implementation: `src/components/codex/relic-detail.tsx` (+ `relic-library.tsx`, `relic-tile.tsx`). Language: `CONTEXT.md`, `docs/DESIGN.md`, `docs/adr/0001-gradual-codex-deprecation.md`.
 
-## Read First
+## Detail
 
-Read only the files needed for the target resource.
+- One detail component serves both the list modal (URL query state such as `?relic=...`) and the direct `/compendium/...` route; they are the same 상세 보기, not two depths.
+- Desktop: game resource stage left, information rail right. Mobile stacks the same content; no mobile-only features.
+- Keep resource-specific controls (card upgrade, enchantment, event choices, monster moves, skins); don't flatten them into a generic detail.
+- UI words: 백과사전/Compendium, 카드, 유물, 포션, 파워, 인챈트, 이벤트, 몬스터, 관련 리소스. Never new user-facing `Codex`, `도감`, `entity`.
 
-- Product language: `CONTEXT.md`
-- Design rules: `docs/DESIGN.md`
-- Naming ADR: `docs/adr/0001-gradual-codex-deprecation.md`
-- Relic reference implementation: `src/components/codex/relic-detail.tsx`, `src/components/codex/relic-library.tsx`, `src/components/codex/relic-tile.tsx`
-- Shared UI/data helpers: `src/components/codex/hover-tip.tsx`, `src/components/codex/entity-reference-links.tsx`, `src/components/codex/sts2-change-history.tsx`, `src/components/patch-note-renderer.tsx`
-- Data loaders and version diffs: `src/lib/data.ts`, `src/lib/entity-versioning.ts`
-- Mobile QA hook: `.codex/skills/mobile-viewport-qa/SKILL.md`
+## Hover tips
 
-## Product Language
+- `GameHoverTip` holds only the official game name and effect: no English canonical name, rarity, id or service metadata. Service info goes in the rail.
+- Keyword and related-link hovers render resource asset + `GameHoverTip` (`EntityPreview`), never the old opaque web tooltip. Cards use `CardTile`.
+- Keep previews inside the viewport (right-edge resources open left, low ones open up).
 
-- Use **백과사전** / **Compendium** as product language.
-- Do not introduce new user-facing `Codex`, `도감`, or `entity` wording.
-- Use direct resource nouns in UI copy: 카드, 유물, 포션, 파워, 인챈트, 이벤트, 몬스터.
-- Use **관련 리소스** for cross-resource links.
-- Treat modal and direct URL as the same **상세 보기**, not separate navigation depths.
+## Rail
 
-## Detail Pattern
+- The info rail is always visible, untitled, not collapsible; metadata pills show values only (`희귀`, not `희귀도`).
+- 관련 리소스: always visible when non-empty, one compact line per kind (`관련 이벤트: ...`), `EntityReferenceLinks` / `EntityReferenceGroupLinks` (`src/components/codex/entity-reference-links.tsx`).
+- 패치 이력 and 댓글 default open; the comments title shows `(n)` when n > 0 (`CommentSection` `onCountChange`).
+- Patch history: `STS2ChangeHistory` with `getSTS2Changes()` (and `getEntityVersionDiffs()`, derived from `fieldDiffs`, when the resource needs version reconstruction). Only structured changes to this resource, never mere mentions. Links are `/patches/{version}` without `v`. Monsters accept old `enemy` change types.
 
-Use `src/components/codex/relic-detail.tsx` as the current source pattern.
+## Cross references
 
-- One detail component must serve both list modal and direct route.
-- List pages open the detail as a modal and keep URL query state (`?relic=...`, `?potion=...`, etc.).
-- Direct routes render the same detail component without adding a second UX depth.
-- Desktop layout: main game resource stage left, information rail right.
-- Mobile layout: stack the same content; do not create a separate mobile-only feature set.
-- Main stage should feel like the game resource floats on the background, not like a web card inside another card.
-- Additional service information belongs in the rail, not in the game hover tip.
+- Prefer derived game data (encounter monster lists, ancient relic ownership, `data/sts2/code-relations.json` from `pnpm codex:relations`) over curated maps. Curated relations live only in `src/lib/codex-references.ts` (`EVENT_RELATED_*_IDS`, special mechanics beside their constants).
+- One source map plus inverse helpers (e.g. `getRelatedEventIdsForCard`), never two maps. Canonical uppercase ids, compared case-insensitively only at lookup.
+- New related kind: extend `CodexReferenceKind` / `REFERENCE_KIND_CONFIG`, thread data through both the modal and direct route, and build targets with `id`, `/compendium/...` href, localized title and `EntityInfo`.
+- Check the reciprocal page shows the relation too.
 
-## Game Hover Tip Rules
+## Verify
 
-- Use `GameHoverTip` for non-card resource name/effect presentation.
-- `GameHoverTip` content should contain the official game name and game effect/description only.
-- Do not put English canonical names, rarity/source labels, internal IDs, or service metadata inside the main game hover tip.
-- For patch-note and related-resource keyword hover, render **resource asset + GameHoverTip**, not the old opaque web tooltip.
-- Cards can continue to use `CardTile` as the preview body.
-- Event previews use a larger background crop next to a compact `GameHoverTip`; the tip should shrink to title width when no body text is needed.
-- Keep tooltip placement inside the viewport. Right-edge resources should show previews to the left; low resources should prefer upward placement.
-
-## Rail Rules
-
-- The metadata/info rail itself is always visible, has no "정보" title, and has no collapse button.
-- Metadata pills show values only. For example, show `이벤트`, `공용`, `희귀`; do not show labels like `희귀도` or `이벤트`.
-- Related resources are always visible when present and should use one compact line per kind, e.g. `관련 이벤트: ...`.
-- Other rails such as 패치 이력 and 댓글 default to open if they are collapsible.
-- Comments title must show the count as `(n)` when count is greater than zero. Use `CommentSection` `onCountChange` where available.
-
-## Patch History Rules
-
-- Use `STS2ChangeHistory` for structured STS2 history.
-- Pass `STS2Change[]` from `getSTS2Changes()`. Pass `EntityVersionDiff[]` from `getEntityVersionDiffs()` when the target already needs version reconstruction; those diffs are derived from `STS2Change.fieldDiffs`, not a separate source of truth.
-- Show actual structured changes for the current resource only. Do not mix in patch-note mentions that merely name the resource.
-- Patch history links must use `/patches/{version}` without a leading `v` in the route, even when displayed labels include `v0.105.0`.
-- For monsters, accept both `monster` and old patch-note `enemy` change types when needed.
-
-## Implementation Checklist
-
-1. Inspect the existing target detail, library/list, direct route, and data loader files.
-2. Compare against the relic detail pattern before editing.
-3. Add missing props for `patches`, `changes`, `versionDiffs`, `entities`, and related resources only where the target needs them.
-4. Keep existing resource-specific gameplay controls; do not flatten card upgrade, enchantment, event-choice, monster-move, or skin controls into a generic detail abstraction.
-5. Replace old web hover cards with `EntityPreview`/`GameHoverTip` behavior where the resource appears as a keyword or related link.
-6. Preserve existing user changes and unrelated dirty files.
-7. Commit immediately after each meaningful edit, matching `AGENTS.md`.
-
-## Verification
-
-Run narrow checks first:
-
-```bash
-pnpm lint
-```
-
-Run a build when changing server routes, data loading, shared components, or type contracts:
-
-```bash
-pnpm build
-```
-
-For visual changes, use browser/Playwright smoke checks on:
-
-- The target list modal.
-- The direct `/compendium/.../[id]` route.
-- A right-edge or bottom-edge hover target.
-- A patch-note or related-resource keyword hover.
-
-Then run `$mobile-viewport-qa` as the final layout hook for every changed list/detail route that has mobile-visible UI. Use stable route-specific selectors when available; otherwise use `main` with a non-matching controls selector as documented in `.codex/skills/mobile-viewport-qa/SKILL.md`.
+`pnpm lint`, `pnpm codex:validate-references` (both endpoint ids exist), then browser checks of the modal, the direct route, an edge hover and a keyword hover, and `$mobile-viewport-qa` on each changed route.
