@@ -48,7 +48,7 @@ Compare against published entries the user already corrected (`2026-07-09`, `202
    - Ask only if the target date or intended meaning is genuinely ambiguous.
 6. Add rich references only when verifiable in this repo.
    - Use patch-note BBCode syntax such as `[gold:card]광기[/gold]` or `[gold:relic]역사 강의서[/gold]` in Korean and the verified game-localized names in English.
-   - Verify game resources before adding a typed tag: `bin/ssy find <name>` for the official name, then `bin/ssy tags data/byrdispatch/<date>.md data/byrdispatch/<date>.en.md`.
+   - Verify game resources before adding a typed tag: `bin/ssy find <name>` for the official name, then after the page renders `bin/ssy tags /byrdispatch /en/byrdispatch --host local` (gold text left without a hover tip, checked against the game).
    - Use typed tags for individual game resources, not service headings; game resource labels must follow the active game locale at render time. Use extracted Korean game text in the Korean source and extracted English game text in the English source so each file is also readable as Markdown.
    - For epoch beta-art updates, use typed `[gold:epoch]...[/gold]` references so byrdispatch renders the hover tip in beta-art mode when present.
    - Beta-art mode selects the beta art instead of the official art; do not describe or expect both images to render together.

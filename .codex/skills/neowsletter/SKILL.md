@@ -57,7 +57,7 @@ Build 니오우스레터 pages from the Mega Crit original. The page is a claim 
    - Put a game image on its own line: `![alt](/images/neowsletters/{id}/file.jpg)`.
    - Compress the file first. The markdown path must match the saved extension.
 5. Keep the third tab label `니오우스레터` / `Neowsletter` and the routes `/patches/neowsletters` and `/patches/neowsletters/{id}`.
-6. Check names with `bin/ssy tags data/sts2-neowsletters/{id}.ko.md data/sts2-neowsletters/{id}.md` (official names via `bin/ssy find`).
+6. Check names with `bin/ssy find` while writing; after the Release build, `bin/ssy tags /patches/neowsletters/{id} /en/patches/neowsletters/{id} --dir .patch-worker/assets` lists gold text left without a hover tip.
 7. Verify the Korean list, the Korean issue, and `/en/patches/neowsletters/{id}`: cover thumbnail, `spire-blue` source links with icons and arrows, gold names that stay inside the sentence, a comment control under each claim, and an open control with a count only where comments already exist.
 8. Ship it (see **Release** below).
 

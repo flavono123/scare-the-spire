@@ -23,7 +23,7 @@ Never delete the row. Keep the last canonical fields in both `data/sts2/{eng,kor
 
 ## QA
 
-- `pnpm i18n:validate`, `pnpm codex:validate`, `pnpm codex:validate-references`, `pnpm audit:version-api`; `pnpm lint` when code changed. `bin/ssy tags <version>` for patch-note links.
+- `pnpm i18n:validate`, `pnpm codex:validate`, `pnpm codex:validate-references`, `pnpm audit:version-api`; `pnpm lint` when code changed. `bin/ssy tags <version> --dir .patch-worker/assets` after `pnpm patch:build` (or against prod after deploy) for gold text left without a hover tip.
 - Browser: `/patches/<version>` and `/en/patches/<version>`; typed keywords open the intended resource, monster moves preview through their monster, unknown gold terms stay plain text. Deprecated resources are muted from the deprecation version and colored before it. Changed art URLs carry the `meta.json` `?v=` cache-buster (`StaticImage` / `cacheBustSts2ImageUrl()`); epoch beta art shows with `?beta=true`.
 - `$mobile-viewport-qa` for layout changes, `$animation-playback-qa` for monster pattern diffs or Spine changes.
 - Report commands run, routes and versions checked, resource ids (especially deprecated ones) and anything skipped with the reason.

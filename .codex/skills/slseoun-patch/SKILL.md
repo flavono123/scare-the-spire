@@ -78,7 +78,7 @@ The urgent path from `docs/RELEASE_PROCESS.md` section 4 under `docs/PATCH_WORKE
 | Character names, headings included | `[ironclad]`, `[silent]`, `[defect]`, `[regent]`, `[necrobinder]` around the name in either language; never `[green]`/`[red]`/`[aqua]` |
 
 - A name that is both a card and a power needs a type hint; in card-change sections that is `[gold:card]`.
-- Run `bin/ssy tags <version>` after every markup pass and fix every flag: a typed tag that resolves to nothing has no hover or link, and an untyped name shared by two types needs a hint. It does not check `[gold:monsterMove]`; hover those in the browser.
+- After `pnpm patch:build`, run `bin/ssy tags <version> --dir .patch-worker/assets` (or against prod once deployed). It reads the rendered pages and lists gold text that got no hover tip, checked against how the game renders the term: `MISMATCH` (the game shows a tip: a card, power, relic, keyword or its English inflection) and `WORDING` (not a game term) need fixing; `ok` lines are gold-only in the game too. `--all` prints the ok lines.
 - New resources from the patch: update Codex data first, then use their official names.
 
 ### Ascension history

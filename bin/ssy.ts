@@ -1,7 +1,7 @@
 // ssy: one CLI for the lookups agents used to do by hand (names, changes, patch lines, /api reads, deploy timing).
 // Run `bin/ssy help`. Read-only: it never writes files or calls write routes.
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(__dirname, "..");
@@ -17,7 +17,7 @@ const HELP = `ssy <command>
   find <text> [--type card] [--limit 10]   Official ko/en name, id, type and URL (search index)
   changes <ENTITY_ID>                      Balance changes and field diffs per patch
   lines <version> [text]                   Patch line ids of one patch, filtered by text
-  tags <version> | tags <file.md ...>      [gold:type]Name tags that render without hover/link (patch notes, neowsletters, byrdispatch)
+  tags [version|/page ...] [--dir .patch-worker/assets] [--all]   Gold text rendered without a hover tip, vs the game (prod by default)
   steam [version]                          Steam announcements; with a version, its title, publishedAt and raw contents
   api                                      Public GET routes and their query keys
   api <path> [key=value ...] [--host prod|testbed|local]   Call a public GET route (default prod)
@@ -103,39 +103,99 @@ async function api({ args, opts }: Flags) {
   if (!res.ok) process.exitCode = 1;
 }
 
-// Uses the patch renderer's own lookup, so a flagged tag is exactly one that renders without hover/link.
-async function tags({ args }: Flags) {
-  if (!args.length) throw new Error("tags <version> | tags <file.md ...>");
-  // A version means its two patch note files; anything with a slash is a markdown path (neowsletter, byrdispatch).
-  const files = args[0].includes("/") ? args : [".ko.md", ".md"].map((ext) => `data/sts2-patch-notes/${args[0].replace(/^v?/, "v")}${ext}`);
-  const { loadAllEntities } = await import("../src/lib/load-all-entities");
-  const { buildEntityLookup, findEntity } = await import("../src/components/patch-note-renderer");
-  const lookup = buildEntityLookup(await loadAllEntities({ gameLocale: "kor" }));
-  let problems = 0;
-  for (const rel of files) {
-    if (!existsSync(path.join(root, rel))) continue;
-    const file = path.basename(rel);
-    for (const [, type, text] of readFileSync(path.join(root, rel), "utf8").matchAll(/\[gold(?::([a-zA-Z]+))?\]([^[]+)\[\/gold\]/g)) {
-      // shortcut: monster moves are added by the patch build with line context, not by loadAllEntities; not checked here.
-      if (type === "monsterMove") continue;
-      const hit = findEntity(text, lookup, type);
-      let issue = "";
-      if (type && !hit) issue = `no ${type} named this: no hover/link`;
-      // Untyped names resolve by name, so only a name shared by two types needs a hint.
-      else if (!type && hit) {
-        const types = new Set([...(lookup.allByKo?.get(text.trim().toLowerCase()) ?? []), ...(lookup.allByEn?.get(text.trim().toLowerCase()) ?? [])].map((e) => e.type));
-        if (types.size > 1) issue = `ambiguous (${[...types].join("/")}), resolves to ${hit.type}: add a type hint`;
-      }
-      if (issue) {
-        problems++;
-        console.log(`${file}\t[gold${type ? `:${type}` : ""}]${text}\t${issue}`);
-      }
+// StaticHoverTip values the game attaches to card/relic/power text (HoverTipFactory.Static/ForEnergy/ForArrow in the DLL).
+// Every other static_hover_tips entry (piles, deck, gold, HP, rooms, map) only shows on UI widgets.
+const GAMEPLAY_STATIC_TIPS = ["ARROW", "BLOCK", "CHANNELING", "EVOKE", "TRANSFORM", "FATAL", "ENERGY", "STUN", "FORGE", "SUMMON_STATIC", "SUMMON_DYNAMIC", "REPLAY_STATIC", "REPLAY_DYNAMIC", "COOK", "WAH_MELODY", "CHO_MELODY", "KI_MELODY", "TAROT"];
+function gameTerms(loc: "kor" | "eng") {
+  const dir = path.join(root, "data/sts2/localization", loc);
+  const strings = (file: string) => Object.entries(JSON.parse(readFileSync(path.join(dir, file), "utf8")) as Record<string, string>);
+  const title = (v: string) => v.replace(/\{Hotkey[^}]*\}\}?|\{[A-Za-z]+\}/g, "").trim();
+  const gameplay = new Set<string>(strings("card_keywords.json").filter(([k]) => k.endsWith(".title")).map(([, v]) => title(v)));
+  const ui = new Set<string>();
+  for (const [k, v] of strings("static_hover_tips.json")) {
+    if (!k.endsWith(".title")) continue;
+    (GAMEPLAY_STATIC_TIPS.includes(k.slice(0, -6)) ? gameplay : ui).add(title(v));
+  }
+  // Cards, powers, relics, potions, enchantments, afflictions and orbs get their own tip wherever game text names them.
+  const entities = new Map<string, string>();
+  for (const kind of ["cards", "powers", "relics", "potions", "enchantments", "afflictions"]) {
+    const file = path.join(root, "data/sts2", loc, `${kind}.json`);
+    for (const e of JSON.parse(readFileSync(file, "utf8")) as { name?: string }[]) if (e.name) entities.set(e.name.trim(), kind.replace(/s$/, ""));
+  }
+  for (const [k, v] of strings("orbs.json")) if (k.endsWith(".title")) entities.set(title(v), "orb");
+  const gold = new Set<string>();
+  const values = new Set<string>();
+  for (const file of readdirSync(dir)) {
+    for (const [, v] of strings(file)) {
+      if (typeof v !== "string") continue;
+      values.add(v.trim());
+      for (const [, g] of v.matchAll(/\[gold\]([^[]+)\[\/gold\]/g)) gold.add(g.trim());
     }
   }
-  if (problems) process.exitCode = 1;
+  return { gameplay, ui, gold, values, entities };
 }
 
-type SteamItem = { gid: string; title: string; date: number; contents: string };
+type Verdict = { mismatch: boolean; text: string };
+function verdict(game: ReturnType<typeof gameTerms>, loc: "kor" | "eng", term: string): Verdict {
+  const base = term.replace(/\+$/, "");
+  const lower = base.toLowerCase();
+  if (game.gameplay.has(base)) return { mismatch: true, text: "MISMATCH the game shows a hover tip for this in card text" };
+  // English inflections (Exhausted, replays, Arrows) still get the keyword's tip in game.
+  const inflected = [...game.gameplay].find((t) => loc === "eng" && t.length > 3 && lower !== t.toLowerCase() && (lower.startsWith(t.toLowerCase()) || t.toLowerCase().startsWith(lower)));
+  if (inflected) return { mismatch: true, text: `MISMATCH inflected ${inflected}: the game shows its tip` };
+  const kind = game.entities.get(base);
+  if (kind) return { mismatch: true, text: `MISMATCH a game ${kind}: the game shows its tip` };
+  if (game.ui.has(base)) return { mismatch: false, text: "ok game tip only on UI widgets; card text is gold only" };
+  if (game.gold.has(base)) return { mismatch: false, text: "ok game text colors it gold without a tip" };
+  if (game.values.has(base)) return { mismatch: false, text: "name a game name with no Compendium page here" };
+  return { mismatch: true, text: "WORDING not a game term: check the official wording" };
+}
+
+const PLAIN_GOLD_RE = /<span class="font-game-text spire-gold font-semibold">([^<]+)<\/span>/g;
+const decode = (s: string) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+function pagePaths(args: string[]): string[] {
+  if (args.some((a) => a.startsWith("/"))) return args;
+  const patches = json<{ version: string }[]>("data/sts2-patches.json").map((p) => `/patches/${p.version}`);
+  const letters = json<{ id: string }[]>("data/sts2-neowsletters.json").map((n) => `/patches/neowsletters/${n.id}`);
+  const ko = args.length ? args.map((v) => `/patches/${v.replace(/^v/, "")}`) : [...patches, ...letters];
+  return ko.flatMap((p) => [p, `/en${p}`]);
+}
+
+// Gold text that rendered without a hover/link on the real pages, checked against how the game renders the term.
+// Reads production by default, or a local build with --dir .patch-worker/assets (after pnpm patch:build).
+async function tags({ args, opts }: Flags) {
+  const game = { kor: gameTerms("kor"), eng: gameTerms("eng") };
+  const rows = new Map<string, { loc: "kor" | "eng"; term: string; pages: Set<string> }>();
+  let missing = 0;
+  for (const page of pagePaths(args)) {
+    let html = "";
+    if (opts.dir) {
+      const file = path.join(root, opts.dir, page, "index.html");
+      if (!existsSync(file)) { missing++; continue; }
+      html = readFileSync(file, "utf8");
+    } else {
+      const res = await fetch(new URL(page, HOSTS[opts.host ?? "prod"] ?? opts.host));
+      if (!res.ok) { missing++; continue; }
+      html = await res.text();
+    }
+    const loc = page.startsWith("/en/") ? "eng" : "kor";
+    for (const [, raw] of html.matchAll(PLAIN_GOLD_RE)) {
+      const term = decode(raw).trim();
+      const key = `${loc}\t${term}`;
+      const row = rows.get(key) ?? { loc, term, pages: new Set<string>() };
+      row.pages.add(page.replace(/^\/en/, ""));
+      rows.set(key, row);
+    }
+  }
+  const out = [...rows.values()].map((r) => ({ ...r, v: verdict(game[r.loc], r.loc, r.term) }));
+  out.sort((a, b) => a.v.text.localeCompare(b.v.text) || b.pages.size - a.pages.size);
+  const all = opts.all !== undefined;
+  for (const r of out) if (all || r.v.mismatch) console.log(`${r.v.text}\t${r.loc}\t${r.term}\t${r.pages.size}p\t${[...r.pages].slice(0, 4).join(" ")}${r.pages.size > 4 ? " ..." : ""}`);
+  if (missing) console.error(`${missing} page(s) not found`);
+  if (out.some((r) => r.v.mismatch)) process.exitCode = 1;
+}
+
+type SteamItem ={ gid: string; title: string; date: number; contents: string };
 async function steam({ args }: Flags) {
   const res = await fetch("https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2868840&count=15&maxlength=300000&format=json&feeds=steam_community_announcements");
   const items: SteamItem[] = (await res.json()).appnews.newsitems;

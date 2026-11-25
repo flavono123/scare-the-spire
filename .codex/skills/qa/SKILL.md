@@ -15,7 +15,7 @@ Run the smallest set of checks that covers the change (`git status --short`, `gi
 ## By scope
 
 - STS2 data, versions, patch sync, deprecated resources: `pnpm codex:validate`, `pnpm codex:validate-references`, then the QA section of `$sts2-compendium-patch-sync`.
-- Rich patch notes: `bin/ssy tags <version>`, `pnpm patch:test`, hover/link checks on `/patches/<v>` and `/en/patches/<v>`.
+- Rich patch notes: `pnpm patch:test`, then `pnpm patch:build` and `bin/ssy tags <version> --dir .patch-worker/assets`, hover/link checks on `/patches/<v>` and `/en/patches/<v>`.
 - Routing, layout, data loading, metadata, Workers, headers, sitemap or crawlable routes: `pnpm cf:build`, `pnpm cf:assets`, `pnpm cf:size`, `pnpm cf:preview` (it serves no `/dev` or `/api/dev`; test dev tools on `pnpm dev`), and the owner-header smoke from AGENTS.md (`pnpm cf:smoke`). Check that production deploy scripts don't enable dev tools.
 - Patch Worker: `pnpm patch:build`, `pnpm patch:test`, `pnpm cf:patch:preview` when practical; it stays asset-first with no request-time markdown or Compendium queries.
 - Animation, Spine, VFX, canvas: `$animation-playback-qa`. History Course replay, `.run` parsing, RNG branching: `$history-course-qa`.
