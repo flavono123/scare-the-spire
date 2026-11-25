@@ -8,6 +8,27 @@ type Env = {
   };
 };
 
+/** The newest patch version (the patch list's first card), written by scripts/build-patch-worker.tsx. */
+export const LATEST_PATCH_VERSION_ASSET = "/_patches/latest-version.txt";
+
+/** /patches/latest and /<locale>/patches/latest: a redirect to that language's newest patch page. */
+async function latestPatchRedirect(env: Env, url: URL): Promise<Response | null> {
+  const match = /^(?:\/([^/]+))?\/patches\/latest\/?$/.exec(url.pathname);
+  if (!match) return null;
+  const segment = match[1];
+  if (segment && !gameLocaleFromPathSegment(segment.toLowerCase())) return null;
+  const asset = await env.ASSETS.fetch(new Request(new URL(LATEST_PATCH_VERSION_ASSET, url)));
+  if (asset.status !== 200) return null;
+  const version = (await asset.text()).trim();
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `${segment ? `/${segment}` : ""}/patches/${version}${url.search}`,
+      "Cache-Control": "no-store",
+    },
+  });
+}
+
 function isFilePath(pathname: string): boolean {
   return (
     pathname.startsWith("/_patches/") ||
@@ -51,6 +72,8 @@ async function notFoundPage(request: Request, env: Env, url: URL): Promise<Respo
 const patchWorker = {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    const latest = await latestPatchRedirect(env, url);
+    if (latest) return withSecurityHeaders(latest);
     const assetUrl = new URL(request.url);
     assetUrl.pathname = assetPathForUrl(url);
     const response = await env.ASSETS.fetch(new Request(assetUrl, request));

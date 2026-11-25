@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { serviceMessages } from "../src/messages/service";
 import { NOT_FOUND_TITLE_EN } from "../workers/document-locale";
 import mainWorker from "../workers/main-worker";
-import patchWorker from "../workers/patch-worker";
+import patchWorker, { LATEST_PATCH_VERSION_ASSET } from "../workers/patch-worker";
 
 const ORIGIN = "https://routing.test";
 const ctx = { waitUntil() {} };
@@ -36,6 +36,7 @@ const patchAssets = {
   async fetch(request: Request) {
     const { pathname } = new URL(request.url);
     if (pathname === "/patches/1/index.html") return new Response("page");
+    if (pathname === LATEST_PATCH_VERSION_ASSET) return new Response("0.114.0\n");
     const locale = /^\/_patches\/not-found\/([^/]+)\/index\.html$/.exec(pathname)?.[1];
     return locale
       ? new Response(`not-found:${locale}`)
@@ -69,6 +70,13 @@ async function main() {
   assert.equal(await patchPage("/patches/nope?_rsc=abc"), "404 missing");
   assert.equal(await patchPage("/patches/nope.png"), "404 missing");
   assert.equal(await patchPage("/_patches/nope.js"), "404 missing");
+
+  const latest = await patchWorker.fetch(new Request(`${ORIGIN}/patches/latest?ref=x`), { ASSETS: patchAssets });
+  assert.equal(latest.status, 302);
+  assert.equal(latest.headers.get("location"), "/patches/0.114.0?ref=x");
+  const latestEn = await patchWorker.fetch(new Request(`${ORIGIN}/en/patches/latest/`), { ASSETS: patchAssets });
+  assert.equal(latestEn.headers.get("location"), "/en/patches/0.114.0");
+  assert.equal(await patchPage("/xx/patches/latest"), "404 not-found:ko");
 }
 
 main().then(

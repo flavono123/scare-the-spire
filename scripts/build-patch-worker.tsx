@@ -55,6 +55,7 @@ import {
 } from "@/lib/search-canonical";
 import { serviceMessages } from "@/messages/service";
 import { PATCH_NOT_FOUND_KO_SEGMENT, patchNotFoundAssetPath } from "../workers/patch-not-found";
+import { LATEST_PATCH_VERSION_ASSET } from "../workers/patch-worker";
 import { contactMessages } from "@/messages/contact";
 import {
   gameOnlyLanguageNavLocales,
@@ -838,6 +839,9 @@ async function main() {
   if (process.argv.includes("--clients-only")) return;
 
   await writeNotFoundPages();
+  // Same order as the patch list (patch-list-page.tsx): its first card is /patches/latest.
+  const [latest] = [...await getSTS2Patches()].sort((a, b) => b.date.localeCompare(a.date));
+  await fs.writeFile(path.join(outDir, LATEST_PATCH_VERSION_ASSET), latest.version);
 
   // One manifest read for the whole build, so every page and shard links the same resources.
   const manifestFile = path.join(outDir, "..", "compendium-resource-manifest.json");
