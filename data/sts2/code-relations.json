@@ -26,6 +26,11 @@
     "AIM"
    ]
   },
+  "ARROW_STAB": {
+   "power": [
+    "AIM"
+   ]
+  },
   "ARSENAL": {
    "power": [
     "STRENGTH"
@@ -400,11 +405,6 @@
   "GO_FOR_THE_EYES": {
    "power": [
     "WEAK"
-   ]
-  },
-  "GROWTH": {
-   "power": [
-    "STRETCH"
    ]
   },
   "GUIDING_STAR": {
@@ -890,12 +890,6 @@
   "WAH_HAMMER": {
    "power": [
     "IMPALED"
-   ]
-  },
-  "WAH_KI": {
-   "power": [
-    "DRAW_CARDS_NEXT_TURN",
-    "ENERGY_NEXT_TURN"
    ]
   },
   "WAH_TOUCH": {
