@@ -110,8 +110,22 @@ function runGenerate(flag) {
   if ((result.status ?? 1) !== 0) process.exit(result.status ?? 1);
 }
 
+// The generator imports src/lib modules (via place-registry) that import the very
+// src/generated/*.json files it is about to write. On a clean checkout (CI) those do
+// not exist yet, so seed empty stubs and force their real generation below.
+const seeded = new Set();
 for (const target of targets) {
-  if (!(await outputIsFresh(target.output, target.sources))) {
+  if (!target.output.startsWith("src/generated/")) continue;
+  const absolute = path.join(root, target.output);
+  const missing = await fs.stat(absolute).then(() => false, () => true);
+  if (!missing) continue;
+  await fs.mkdir(path.dirname(absolute), { recursive: true });
+  await fs.writeFile(absolute, "{}\n");
+  seeded.add(target.output);
+}
+
+for (const target of targets) {
+  if (seeded.has(target.output) || !(await outputIsFresh(target.output, target.sources))) {
     runGenerate(target.flag);
   }
 }
