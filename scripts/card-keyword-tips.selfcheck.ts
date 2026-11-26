@@ -73,23 +73,24 @@ async function main() {
   assert.ok(turbo);
   assert.deepEqual(
     tipKeys(collectCardSideTips(turbo, catalog)),
-    ["keyword:DISCARD_PILE", "card:VOID"],
+    ["keyword:ENERGY", "card:VOID"],
   );
 
   const bone = byId.get("BONE_SHARDS");
   assert.ok(bone);
-  assert.deepEqual(tipKeys(collectCardSideTips(bone, catalog)), ["monster:OSTY"]);
+  // GainsBlock adds Block; naming Osty in gold adds no tip.
+  assert.deepEqual(tipKeys(collectCardSideTips(bone, catalog)), ["keyword:BLOCK"]);
 
   const rainbow = byId.get("RAINBOW");
   assert.ok(rainbow);
   assert.deepEqual(
     tipKeys(collectCardSideTips(rainbow, catalog)),
     [
-      "keyword:EXHAUST",
-      "keyword:LIGHTNING_ORB",
       "keyword:CHANNELING",
+      "keyword:LIGHTNING_ORB",
       "keyword:FROST_ORB",
       "keyword:DARK_ORB",
+      "keyword:EXHAUST",
     ],
   );
 
@@ -97,14 +98,14 @@ async function main() {
   assert.ok(apparition);
   assert.deepEqual(
     tipKeys(collectCardSideTips(apparition, catalog)),
-    ["keyword:EXHAUST", "keyword:ETHEREAL", "keyword:INTANGIBLE"],
+    ["keyword:INTANGIBLE", "keyword:EXHAUST", "keyword:ETHEREAL"],
   );
 
   const hiddenGem = byId.get("HIDDEN_GEM");
   assert.ok(hiddenGem);
   assert.deepEqual(
     tipKeys(collectCardSideTips(hiddenGem, catalog)),
-    ["keyword:DRAW_PILE", "keyword:REPLAY"],
+    ["keyword:REPLAY_STATIC"],
   );
 
   // FromForge(): Forge tip + Sovereign Blade preview + that card's Retain tip.

@@ -54,7 +54,7 @@ function tipIds(tips: readonly CardSideTip[], self: string): Set<string> {
 
 async function auditLocale(gameLocale: GameLocale) {
   const goldTips = JSON.parse(fs.readFileSync(`data/sts2/gold-tips/${gameLocale}.json`, "utf-8")) as Record<string, Record<string, string | null>>;
-  const [cards, keywords, relics, potions, powers, enchantments, afflictions, dominions, sources, cardKeywordTable, staticTable, orbTable] = await Promise.all([
+  const [cards, keywords, relics, potions, powers, enchantments, afflictions, dominions, sources, localCardKeywords, localStatic, localOrbs, engCardKeywords, engStatic, engOrbs] = await Promise.all([
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexKeywords({ gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -67,7 +67,14 @@ async function auditLocale(gameLocale: GameLocale) {
     readGameLocalizationTable(gameLocale, "card_keywords"),
     readGameLocalizationTable(gameLocale, "static_hover_tips"),
     readGameLocalizationTable(gameLocale, "orbs"),
+    readGameLocalizationTable("eng", "card_keywords"),
+    readGameLocalizationTable("eng", "static_hover_tips"),
+    readGameLocalizationTable("eng", "orbs"),
   ]);
+  // A locale table missing a key shows the English text, as the game does (Thai lacks the Fool's tips).
+  const cardKeywordTable = { ...engCardKeywords, ...localCardKeywords };
+  const staticTable = { ...engStatic, ...localStatic };
+  const orbTable = { ...engOrbs, ...localOrbs };
 
   // Keywords: the game-tip set, each with its game title and description verbatim.
   const keywordIds = new Set(keywords.map((keyword) => keyword.id));
