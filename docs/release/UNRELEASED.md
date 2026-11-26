@@ -12,6 +12,7 @@
 | domain-migration-c54d7b | claude/domain-migration-c54d7b | 도메인 이전(레거시 호스트 안내, 리다이렉트, robots/sitemap) | 11커밋, main보다 332 뒤처짐. 2026-10-26 정기 배포에서 제외 |
 | step3-reads | step3/reads | Supabase 이관 3단계: 읽기를 D1으로(`read.<group>` 플래그, 역사 강의서 요약 목록·R3r 원문) | testbed 확인 끝(모든 그룹 `read.<group>` = d1로 둠). `refactor/supabase-exit`에 병합 대기 |
 | supabase-exit | refactor/supabase-exit | Supabase → D1 이관. 계획은 [SUPABASE_EXIT_PLAN.md](../SUPABASE_EXIT_PLAN.md) 7절 | 2~5단계 코드를 2026-11-09 운영에 냈다(`438e5e86`). 운영은 5단계(모든 `source.<group>` = d1, 동기화 꺼짐, 쿠키 신원, 직접 쓰기 닫힘)다. 6단계 클라이언트 정리는 작업 묶음 WP0~WP-W가 병합됐고 WP-Z(WP-B 패치 릴 포함)는 병합 대기, 배포 전 |
+| text-tips | refactor/text-tips | 게임 문구의 금색 단어를 게임 팁 목록에서 결정(`scripts/generate-game-tips.py`, `data/sts2/game-tips.json`·`gold-tips/`), 옆 툴팁·설명 팁을 데이터로, 키워드는 게임 문구 팁 28개로, `/dev/gold-words`, `pnpm game-tips:audit` | 2026-11-26 작업 중. 끝나면 `main`에 merge |
 | step6-* | step6/<묶음> | 6단계 작업 묶음([STEP6_PLAN.md](../supabase-exit/STEP6_PLAN.md) 3절). 묶음마다 `.claude/worktrees/step6-<묶음>` | `step6/wp-z`가 마지막(`step6/patch-reels` 병합). `refactor/supabase-exit`에 병합한 뒤 worktree와 브랜치를 지운다 |
 | supabase-exit | refactor/supabase-exit | Supabase → D1 이관. 계획은 [SUPABASE_EXIT_PLAN.md](../SUPABASE_EXIT_PLAN.md) 7절 | 2~5단계 코드를 2026-11-09 운영에 냈다(`438e5e86`). 운영은 1단계 화면 전환(전 그룹 api)과 2단계 동기화·그림자가 켜져 있다. 3단계부터 계속한다 |
 

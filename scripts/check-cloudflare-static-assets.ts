@@ -374,6 +374,12 @@ function checkStaticExactServicePages(): number {
     "Old per-type Mad Science card pages must 308 to the one card with its type.",
   );
   assert(
+    prerenderedRedirect("/compendium/keywords/deck")?.location === "/compendium/keywords"
+      && prerenderedRedirect("/en/compendium/keywords/room_unknown_elite")?.location === "/en/compendium/keywords"
+      && prerenderedRedirect("/compendium/keywords/exhaust") === null,
+    "Former UI-tip keyword pages must 308 to the keyword list; game text keywords keep their pages.",
+  );
+  assert(
     prerenderedRedirect("/this-or-that/worldcup/") === null,
     "The worldcup index with a trailing slash must keep the Next 308 to the slashless path first.",
   );

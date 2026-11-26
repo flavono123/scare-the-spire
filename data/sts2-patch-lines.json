@@ -859,7 +859,7 @@
       "Content",
       "Regent"
     ],
-    "markdownKo": "[gold:card]광채[/gold] 리워크: 스킬 - 코스트 1 - 일반 - \"[gold]별[/gold] 1(2) 획득. 카드 1장 뽑기. 다음 턴에 카드 1장 뽑기.\"",
+    "markdownKo": "[gold:card]광채[/gold] 리워크: 스킬 - 코스트 1 - 일반 - \"[gold:keyword]별[/gold] 1(2) 획득. 카드 1장 뽑기. 다음 턴에 카드 1장 뽑기.\"",
     "markdownEn": "Reworked [gold:card]Glow[/gold]: Skill - Cost 1 - Common - \"Gain 1(2) Stars. Draw 1 card. Next turn, draw 1 card.\"",
     "textKo": "광채 리워크: 스킬 - 코스트 1 - 일반 - \"별 1(2) 획득. 카드 1장 뽑기. 다음 턴에 카드 1장 뽑기.\"",
     "textEn": "Reworked Glow: Skill - Cost 1 - Common - \"Gain 1(2) Stars. Draw 1 card. Next turn, draw 1 card.\"",
@@ -1505,7 +1505,7 @@
       "Balance",
       "Regent"
     ],
-    "markdownKo": "[gold:card]정렬[/gold] ([red][jitter]너프[/jitter][/red]): [gold]별[/gold] 비용 2 -> 3.",
+    "markdownKo": "[gold:card]정렬[/gold] ([red][jitter]너프[/jitter][/red]): [gold:keyword]별[/gold] 비용 2 -> 3.",
     "markdownEn": "[gold:card]Alignment[/gold] (nerf): Star cost increased from 2 -> 3.",
     "textKo": "정렬 (너프): 별 비용 2 -> 3.",
     "textEn": "Alignment (nerf): Star cost increased from 2 -> 3.",
@@ -2674,7 +2674,7 @@
       "Balance",
       "Colorless"
     ],
-    "markdownKo": "[gold:card]발견[/gold] 변경: \"이번 턴에 비용이 0 [energy:1]입니다.\" -> \"이번 턴 동안 비용 없이 사용할 수 있습니다.\"\n• 생성된 카드에 [gold]별[/gold] 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다.",
+    "markdownKo": "[gold:card]발견[/gold] 변경: \"이번 턴에 비용이 0 [energy:1]입니다.\" -> \"이번 턴 동안 비용 없이 사용할 수 있습니다.\"\n• 생성된 카드에 [gold:keyword]별[/gold] 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다.",
     "markdownEn": "Changed [gold:card]Discovery[/gold]: \"It costs 0 [energy:1] this turn.\" -> \"It's free to play this turn.\"\n• This means that, if the card it generates has a Star cost, this cost is now also reduced to 0 this turn.",
     "summaryMarkdownKo": "[gold:card]발견[/gold] 변경: \"이번 턴에 비용이 0 [energy:1]입니다.\" -> \"이번 턴 동안 비용 없이 사용할 수 있습니다.\"",
     "summaryMarkdownEn": "Changed [gold:card]Discovery[/gold]: \"It costs 0 [energy:1] this turn.\" -> \"It's free to play this turn.\"",
@@ -2702,7 +2702,7 @@
       "Balance",
       "Colorless"
     ],
-    "markdownKo": "생성된 카드에 [gold]별[/gold] 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다.",
+    "markdownKo": "생성된 카드에 [gold:keyword]별[/gold] 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다.",
     "markdownEn": "This means that, if the card it generates has a Star cost, this cost is now also reduced to 0 this turn.",
     "textKo": "생성된 카드에 별 비용이 있어도, 이번 턴에는 그 비용도 0이 됩니다.",
     "textEn": "This means that, if the card it generates has a Star cost, this cost is now also reduced to 0 this turn.",
@@ -19958,7 +19958,7 @@
       "Bug Fixes",
       "Defect"
     ],
-    "markdownKo": "[gold:card]긁어내기[/gold] 카드가 [gold]에너지[/gold] 비용은 0이지만 [gold]별[/gold] 비용이 있는 카드를 버리던 문제를 수정했습니다.",
+    "markdownKo": "[gold:card]긁어내기[/gold] 카드가 [gold]에너지[/gold] 비용은 0이지만 [gold:keyword]별[/gold] 비용이 있는 카드를 버리던 문제를 수정했습니다.",
     "markdownEn": "Fixed the [gold:card]Scrape[/gold] card discarding cards that cost zero [gold]Energy[/gold] but have a [gold]Star[/gold] cost.",
     "textKo": "긁어내기 카드가 에너지 비용은 0이지만 별 비용이 있는 카드를 버리던 문제를 수정했습니다.",
     "textEn": "Fixed the Scrape card discarding cards that cost zero Energy but have a Star cost.",
@@ -20108,7 +20108,7 @@
       "Bug Fixes",
       "Potions & Relics"
     ],
-    "markdownKo": "[gold:relic]속삭이는 귀걸이[/gold] 유물이 [gold:card]우주 먼지[/gold]를 0 [gold]별[/gold]이 아니라 올바른 양으로 재사용하도록 수정했습니다.",
+    "markdownKo": "[gold:relic]속삭이는 귀걸이[/gold] 유물이 [gold:card]우주 먼지[/gold]를 0 [gold:keyword]별[/gold]이 아니라 올바른 양으로 재사용하도록 수정했습니다.",
     "markdownEn": "Fixed the [gold:relic]Whispering Earring[/gold] relic replaying [gold:card]Stardust[/gold] for 0 [gold]Stars[/gold] instead of the correct amount.",
     "textKo": "속삭이는 귀걸이 유물이 우주 먼지를 0 별이 아니라 올바른 양으로 재사용하도록 수정했습니다.",
     "textEn": "Fixed the Whispering Earring relic replaying Stardust for 0 Stars instead of the correct amount.",
@@ -30210,7 +30210,7 @@
       "Content & Balance",
       "Regent"
     ],
-    "markdownKo": "[gold:relic]신성한 운명[/gold] ([green][sine]버프[/sine][/green]): [gold]별[/gold] 획득량이 6 -> 7로 증가했습니다.",
+    "markdownKo": "[gold:relic]신성한 운명[/gold] ([green][sine]버프[/sine][/green]): [gold:keyword]별[/gold] 획득량이 6 -> 7로 증가했습니다.",
     "markdownEn": "[gold:relic]Divine Destiny[/gold] ([green][sine]buff[/sine][/green]): [gold]Star[/gold] gain increased from 6 -> 7.",
     "textKo": "신성한 운명 (버프): 별 획득량이 6 -> 7로 증가했습니다.",
     "textEn": "Divine Destiny (buff): Star gain increased from 6 -> 7.",
@@ -30267,7 +30267,7 @@
       "Content & Balance",
       "Regent"
     ],
-    "markdownKo": "[gold:card]공진[/gold] ([green][sine]버프[/sine][/green]): [gold]별[/gold] 비용이 3 -> 2로 감소했습니다.",
+    "markdownKo": "[gold:card]공진[/gold] ([green][sine]버프[/sine][/green]): [gold:keyword]별[/gold] 비용이 3 -> 2로 감소했습니다.",
     "markdownEn": "[gold:card]Resonance[/gold] ([green][sine]buff[/sine][/green]): [gold]Star[/gold] cost decreased from 3 -> 2.",
     "textKo": "공진 (버프): 별 비용이 3 -> 2로 감소했습니다.",
     "textEn": "Resonance (buff): Star cost decreased from 3 -> 2.",
