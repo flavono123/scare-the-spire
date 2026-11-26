@@ -15,9 +15,9 @@ import {
 export const CHARACTER_HAND_TARGET_ATTRIBUTE = "data-character-hand-target";
 
 const HAND_RENDER_HEIGHT_PX = 320;
-type PointingHand = CharacterPoolSlug | "merchant" | "fake_merchant";
+export type PointingHand = CharacterPoolSlug | "merchant" | "fake_merchant";
 /** Texture size and fingertip in texture pixels, measured from each *_point.webp. */
-const HAND_TEXTURES: Record<PointingHand, { width: number; height: number; tipX: number; tipY: number }> = {
+export const HAND_TEXTURES: Record<PointingHand, { width: number; height: number; tipX: number; tipY: number }> = {
   ironclad: { width: 422, height: 1200, tipX: 146, tipY: 19 },
   silent: { width: 422, height: 1200, tipX: 159, tipY: 19 },
   regent: { width: 422, height: 1200, tipX: 127, tipY: 22 },
@@ -28,7 +28,7 @@ const HAND_TEXTURES: Record<PointingHand, { width: number; height: number; tipX:
   fake_merchant: { width: 335, height: 840, tipX: 157, tipY: 1 },
 };
 /** A profile without a character token gets one of the two merchants each time the hand comes up. */
-const MERCHANT_HANDS: PointingHand[] = ["merchant", "fake_merchant"];
+export const MERCHANT_HANDS: PointingHand[] = ["merchant", "fake_merchant"];
 /** Controls that are not tiles send the hand away at once. */
 const OTHER_CONTROL_SELECTOR = [
   "a",
@@ -48,12 +48,12 @@ const SMOOTH_TIME_S = 0.07;
 const LINGER_MS = 2000;
 const PRESSED_SCALE = 0.98;
 /** NHandImage leans 0.48 rad at the edge of a 1920 wide screen. */
-const EDGE_LEAN_RAD = 0.48;
+export const EDGE_LEAN_RAD = 0.48;
 const TIP_INSET_PX = 6;
 const SETTLE_PX = 0.5;
 
 /** MathHelper.SmoothDamp without the speed clamp. */
-function smoothDamp(
+export function smoothDamp(
   current: number,
   target: number,
   velocity: { value: number },

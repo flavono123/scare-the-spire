@@ -1,10 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { ChevronRight, X } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DecisionsDecisionsBoard } from "@/components/decisions-decisions/decisions-decisions-board";
+import {
+  DecisionsDecisionsHand,
+  type DecisionsHandGoal,
+} from "@/components/decisions-decisions/decisions-decisions-hand";
 import { DecisionsDecisionsPoolPicker } from "@/components/decisions-decisions/decisions-decisions-pool-picker";
+import { DecisionsDecisionsToken } from "@/components/decisions-decisions/decisions-decisions-token";
 import { GameConfirmModal } from "@/components/game-confirm-modal";
 import {
   cloneDefaultRows,
@@ -27,7 +40,6 @@ import {
   stampPresetIds,
   sortPoolRefs,
   tierColorBar,
-  tierColorTextClass,
   toggleFilterDim,
   UNRANKED_ROW_ID,
   type DecisionsDecisionsPost,
@@ -205,76 +217,160 @@ function refFromKey(key: string): DecisionsDecisionsResourceRef {
   return { type, id } as DecisionsDecisionsResourceRef;
 }
 
+const FLIGHT_MS = 380;
+const TIP_INSET_PX = 6;
+const PIECE_SIZE_VARS = ["--dd-card", "--dd-icon", "--dd-monster"] as const;
+const noSubscribe = () => () => {};
+
+type PieceDrag = {
+  key: string;
+  offsetX: number;
+  offsetY: number;
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+};
+type PieceFlight = { ghost: HTMLElement; animation: Animation };
+
+/** Bottom center of a piece, cut to the pool's scroll box; null once it is scrolled away. */
+function fingertipOn(element: Element): DecisionsHandGoal {
+  const rect = element.getBoundingClientRect();
+  let bottom = rect.bottom;
+  const scroller = element.parentElement?.closest(".overflow-y-auto");
+  if (scroller) {
+    const box = scroller.getBoundingClientRect();
+    if (rect.bottom < box.top + 12 || rect.top > box.bottom - 12) return null;
+    bottom = Math.min(bottom, box.bottom);
+  }
+  if (bottom < 0 || rect.top > window.innerHeight) return null;
+  return { x: rect.left + rect.width / 2, y: bottom - TIP_INSET_PX };
+}
+
 /**
- * Tier buttons for the selected piece (random.gg shows them in a modal; this
- * bar keeps the board in view and takes number keys).
+ * Flies a stand-in from `from` to where the piece now sits. The stand-in lives
+ * on <body> because both boards clip their overflow; the real piece stays
+ * hidden until it lands.
+ */
+function flyPiece(element: HTMLElement, from: DOMRect): PieceFlight | null {
+  const to = element.getBoundingClientRect();
+  if (to.width === 0 || from.width === 0) return null;
+  const ghost = element.cloneNode(true) as HTMLElement;
+  ghost.removeAttribute("data-decisions-key");
+  ghost.removeAttribute("draggable");
+  ghost.setAttribute("aria-hidden", "true");
+  ghost.querySelectorAll("canvas").forEach((node) => node.remove());
+  const computed = getComputedStyle(element);
+  for (const name of PIECE_SIZE_VARS) {
+    const value = computed.getPropertyValue(name);
+    if (value) ghost.style.setProperty(name, value);
+  }
+  Object.assign(ghost.style, {
+    position: "fixed",
+    left: `${to.left}px`,
+    top: `${to.top}px`,
+    width: `${to.width}px`,
+    height: `${to.height}px`,
+    margin: "0",
+    zIndex: "24",
+    pointerEvents: "none",
+    transformOrigin: "0 0",
+  });
+  document.body.appendChild(ghost);
+  element.style.visibility = "hidden";
+  const animation = ghost.animate([
+    { transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width})` },
+    { transform: "none" },
+  ], { duration: FLIGHT_MS, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+  const land = () => {
+    ghost.remove();
+    element.style.visibility = "";
+  };
+  animation.addEventListener("finish", land);
+  animation.addEventListener("cancel", land);
+  return { ghost, animation };
+}
+
+/**
+ * Tier buttons for the selected piece. Only there while a piece is picked
+ * (random.gg opens a modal; this keeps the board in view and takes number keys).
  */
 function TierAssignBar({
   rows,
-  selectedName,
+  entity,
+  name,
   currentRowId,
   serviceLocale,
+  gameLocale,
   onAssign,
 }: {
   rows: TierRow[];
-  selectedName: string | null;
+  entity: EntityInfo | undefined;
+  name: string;
   currentRowId: string | null;
   serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
   onAssign: (rowId: string) => void;
 }) {
   const copy = serviceMessages[serviceLocale].decisionsDecisions;
-  const disabled = !selectedName;
+  const kbd = "rounded px-1 font-sans text-[10px] font-semibold";
   return (
     <div
       role="toolbar"
       aria-label={copy.assignTier}
       data-decisions-decisions-assign-bar
-      className="sticky bottom-0 z-20 -mx-1 space-y-1.5 rounded-t-lg border border-b-0 border-white/15 bg-zinc-950/95 px-2 py-2 shadow-[0_-8px_24px_rgba(0,0,0,0.45)] backdrop-blur-sm"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-primary/25 bg-zinc-950/95 shadow-[0_-12px_32px_rgba(0,0,0,0.55)] backdrop-blur-sm animate-in fade-in slide-in-from-bottom-6 duration-200"
     >
-      <p className="flex flex-wrap items-baseline gap-x-2 text-xs">
-        <span className={cn("font-semibold", selectedName ? "text-primary" : "text-zinc-400")}>
-          {selectedName ?? copy.assignHint}
-        </span>
-        <span className="hidden text-[11px] text-zinc-500 sm:inline">
-          {copy.assignKeys.replace("{count}", String(Math.min(rows.length, 9)))}
-        </span>
-      </p>
-      <div className="flex flex-wrap gap-1.5">
-        {rows.map((row, index) => {
-          const bar = tierColorBar(row.color);
-          const active = currentRowId === row.id;
-          return (
+      {/* pr-16 keeps the buttons clear of the site's floating menu button (fixed right-3, 44px). */}
+      <div className="mx-auto flex w-full max-w-screen-2xl flex-wrap items-center gap-x-4 gap-y-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))] pl-4 pr-16 pt-2.5">
+        <div className="flex min-w-0 items-center gap-2.5 sm:w-60">
+          {entity && (
+            <span className="shrink-0 [--dd-card:34px] [--dd-icon:32px] [--dd-monster:36px]">
+              <DecisionsDecisionsToken
+                entity={entity}
+                serviceLocale={serviceLocale}
+                gameLocale={gameLocale}
+                disablePreview
+                staticOnly
+              />
+            </span>
+          )}
+          <span className="min-w-0">
+            <span className="block truncate font-service text-sm font-bold text-primary">{name}</span>
+            <span className="hidden text-[11px] text-zinc-500 sm:block">
+              {copy.assignKeys.replace("{count}", String(Math.min(rows.length, 9)))}
+            </span>
+          </span>
+        </div>
+        <div className="flex flex-1 flex-wrap gap-1.5">
+          {rows.map((row, index) => (
             <button
               key={row.id}
               type="button"
-              disabled={disabled}
-              aria-pressed={active}
+              aria-pressed={currentRowId === row.id}
               onClick={() => onAssign(row.id)}
               className={cn(
-                "inline-flex min-h-9 min-w-[3.25rem] flex-1 items-center justify-center gap-1.5 rounded-md border px-2 font-service text-sm font-bold transition-[transform,filter] hover:brightness-125 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none",
-                tierColorTextClass(row.color),
-                active && "ring-2 ring-white/70",
+                "inline-flex min-h-10 min-w-[3.5rem] flex-1 items-center justify-center gap-1.5 rounded-md px-3 font-service text-base font-bold text-zinc-950 shadow-[inset_0_-2px_0_rgba(0,0,0,0.25)] transition-[transform,filter] hover:brightness-110 active:translate-y-px sm:flex-none",
+                currentRowId === row.id && "ring-2 ring-white ring-offset-2 ring-offset-zinc-950",
               )}
-              style={{ backgroundColor: `${bar}2e`, borderColor: `${bar}88` }}
+              style={{ backgroundColor: tierColorBar(row.color) }}
             >
               {index < 9 && (
-                <kbd className="hidden rounded border border-white/15 px-1 font-sans text-[10px] font-normal text-zinc-400 sm:inline">
-                  {index + 1}
-                </kbd>
+                <kbd className={cn(kbd, "hidden bg-black/15 text-zinc-950/70 sm:inline")}>{index + 1}</kbd>
               )}
               <span className="truncate">{row.label}</span>
             </button>
-          );
-        })}
-        <button
-          type="button"
-          disabled={disabled || currentRowId === null}
-          onClick={() => onAssign(UNRANKED_ROW_ID)}
-          className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md border border-white/15 bg-white/5 px-2 text-xs font-semibold text-zinc-300 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <kbd className="hidden rounded border border-white/15 px-1 font-sans text-[10px] font-normal text-zinc-400 sm:inline">0</kbd>
-          {copy.unranked}
-        </button>
+          ))}
+          <button
+            type="button"
+            disabled={currentRowId === null}
+            onClick={() => onAssign(UNRANKED_ROW_ID)}
+            className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-white/15 bg-white/5 px-3 text-xs font-semibold text-zinc-300 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <kbd className={cn(kbd, "hidden border border-white/15 text-zinc-400 sm:inline")}>0</kbd>
+            {copy.unranked}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -382,6 +478,17 @@ export function DecisionsDecisionsComposer({
   const [poolSort, setPoolSort] = useState<PoolSort>("default");
   const [poolQuery, setPoolQuery] = useState("");
   const [poolFilters, setPoolFilters] = useState<PoolFilters>(EMPTY_POOL_FILTERS);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const pendingFlightRef = useRef<{ key: string; from: DOMRect } | null>(null);
+  const flightRef = useRef<PieceFlight | null>(null);
+  const dragRef = useRef<PieceDrag | null>(null);
+  const revealSelectedRef = useRef(false);
+  const selectedKeyRef = useRef<string | null>(null);
+  const mounted = useSyncExternalStore(noSubscribe, () => true, () => false);
+
+  const pieceElement = useCallback((key: string) => (
+    rootRef.current?.querySelector<HTMLElement>(`[data-decisions-key="${CSS.escape(key)}"]`) ?? null
+  ), []);
 
   const filterReady = poolFilterIsReady(major, dims);
   const presetKey = lockedPresetKey ?? namedPresetKeyFromFilter(major, dims);
@@ -429,6 +536,13 @@ export function DecisionsDecisionsComposer({
     ref: DecisionsDecisionsResourceRef,
     rowId: string,
   ) => {
+    // Where the piece leaves from: the drop point for a drag, else where it sits now.
+    const key = resourceKey(ref);
+    const drag = dragRef.current;
+    const from = drag?.key === key
+      ? new DOMRect(drag.x - drag.offsetX, drag.y - drag.offsetY, drag.width, drag.height)
+      : pieceElement(key)?.getBoundingClientRect();
+    pendingFlightRef.current = from ? { key, from } : null;
     setPlacements((current) => {
       const without = current.filter((item) => resourceKey(item) !== resourceKey(ref));
       if (rowId === UNRANKED_ROW_ID) return without;
@@ -436,7 +550,7 @@ export function DecisionsDecisionsComposer({
       return [...without, { ...ref, rowId, sort: sameRow.length }];
     });
     setSelectedKey(null);
-  }, []);
+  }, [pieceElement]);
 
   const toggleSelect = useCallback((ref: DecisionsDecisionsResourceRef) => {
     const key = resourceKey(ref);
@@ -613,8 +727,91 @@ export function DecisionsDecisionsComposer({
     const index = boardPool.findIndex((ref) => resourceKey(ref) === selectedKey);
     const next = [...boardPool.slice(index + 1), ...boardPool.slice(0, Math.max(index, 0))]
       .find((ref) => !placedKeys.has(resourceKey(ref)));
+    revealSelectedRef.current = Boolean(next);
     setSelectedKey(next ? resourceKey(next) : null);
   }, [boardPool, handleMove, placements, selectedKey]);
+
+  useEffect(() => {
+    selectedKeyRef.current = selectedKey;
+  }, [selectedKey]);
+
+  useLayoutEffect(() => {
+    const pending = pendingFlightRef.current;
+    pendingFlightRef.current = null;
+    const element = pending ? pieceElement(pending.key) : null;
+    if (pending && element && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      flightRef.current?.animation.finish();
+      const flight = flyPiece(element, pending.from);
+      flightRef.current = flight;
+      flight?.animation.addEventListener("finish", () => {
+        if (flightRef.current === flight) flightRef.current = null;
+      });
+    }
+    if (revealSelectedRef.current && selectedKey) {
+      revealSelectedRef.current = false;
+      pieceElement(selectedKey)?.scrollIntoView({ block: "nearest" });
+    }
+  }, [pieceElement, placements, selectedKey]);
+
+  useEffect(() => () => flightRef.current?.animation.finish(), []);
+
+  // Native drag gives no pointer events, so the hand follows dragover instead.
+  useEffect(() => {
+    if (step !== "board") return;
+    const onStart = (event: DragEvent) => {
+      const element = event.target instanceof Element
+        ? event.target.closest<HTMLElement>("[data-decisions-key]")
+        : null;
+      const key = element?.dataset.decisionsKey;
+      if (!element || !key || !rootRef.current?.contains(element)) return;
+      const rect = element.getBoundingClientRect();
+      dragRef.current = {
+        key,
+        offsetX: event.clientX - rect.left,
+        offsetY: event.clientY - rect.top,
+        width: rect.width,
+        height: rect.height,
+        x: event.clientX,
+        y: event.clientY,
+      };
+    };
+    const onOver = (event: DragEvent) => {
+      const drag = dragRef.current;
+      if (!drag || (event.clientX === 0 && event.clientY === 0)) return;
+      drag.x = event.clientX;
+      drag.y = event.clientY;
+    };
+    // A piece that changes boards remounts, so its dragend never reaches the document; drop does.
+    const onEnd = () => {
+      dragRef.current = null;
+    };
+    document.addEventListener("dragstart", onStart);
+    document.addEventListener("dragover", onOver);
+    document.addEventListener("drop", onEnd);
+    document.addEventListener("dragend", onEnd);
+    return () => {
+      document.removeEventListener("dragstart", onStart);
+      document.removeEventListener("dragover", onOver);
+      document.removeEventListener("drop", onEnd);
+      document.removeEventListener("dragend", onEnd);
+      dragRef.current = null;
+    };
+  }, [step]);
+
+  // The hand points at the dragged piece, then the flying one, then the selection.
+  const handGoal = useCallback((): DecisionsHandGoal => {
+    const drag = dragRef.current;
+    if (drag) {
+      return {
+        x: drag.x - drag.offsetX + drag.width / 2,
+        y: drag.y - drag.offsetY + drag.height - TIP_INSET_PX,
+      };
+    }
+    if (flightRef.current) return fingertipOn(flightRef.current.ghost);
+    const key = selectedKeyRef.current;
+    const element = key ? pieceElement(key) : null;
+    return element ? fingertipOn(element) : null;
+  }, [pieceElement]);
 
   useEffect(() => {
     if (step !== "board") return;
@@ -645,6 +842,7 @@ export function DecisionsDecisionsComposer({
 
   return (
     <div
+      ref={rootRef}
       className={cn("space-y-3", !embedded && "rounded-lg border border-border bg-card/20 p-3")}
       data-decisions-decisions-composer
       data-decisions-decisions-step={step}
@@ -808,6 +1006,7 @@ export function DecisionsDecisionsComposer({
                 setPoolFilters(EMPTY_POOL_FILTERS);
               }}
             />
+            <p className="text-[11px] text-zinc-500">{copy.assignHint}</p>
             <DecisionsDecisionsBoard
               variant="pool"
               rows={rows}
@@ -869,13 +1068,18 @@ export function DecisionsDecisionsComposer({
             }}
           />
           </div>
-          <TierAssignBar
-            rows={rows}
-            selectedName={selectedKey ? entityMap.get(selectedKey)?.nameKo ?? selectedKey : null}
-            currentRowId={selectedRowId}
-            serviceLocale={serviceLocale}
-            onAssign={assignSelected}
-          />
+          {selectedKey && (
+            <TierAssignBar
+              rows={rows}
+              entity={entityMap.get(selectedKey)}
+              name={entityMap.get(selectedKey)?.nameKo ?? selectedKey}
+              currentRowId={selectedRowId}
+              serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
+              onAssign={assignSelected}
+            />
+          )}
+          {mounted && <DecisionsDecisionsHand getGoal={handGoal} />}
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
@@ -886,6 +1090,8 @@ export function DecisionsDecisionsComposer({
               {submitLabel}
             </button>
           </div>
+          {/* Room for the fixed assign panel so it never covers the submit button. */}
+          <div aria-hidden className="h-20" />
         </>
       )}
 

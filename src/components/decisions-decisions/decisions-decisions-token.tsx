@@ -134,7 +134,9 @@ export function DecisionsDecisionsToken({
             : isMonster
               ? "w-[var(--dd-monster,48px)]"
               : "w-[var(--dd-icon,40px)]",
-          selected && "ring-2 ring-primary ring-offset-2 ring-offset-black",
+          "transition-transform duration-150",
+          // Lifted, with the composer's hand pointing at it; the ring only backs that up.
+          selected && "relative z-10 -translate-y-1 scale-[1.06] ring-1 ring-primary/70 shadow-[0_10px_24px_rgba(0,0,0,0.7)]",
         )}
       >
         {entity.type === "card" && entity.cardData ? (

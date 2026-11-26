@@ -405,6 +405,7 @@ export function DecisionsDecisionsBoard({
         return (
           <div
             key={key}
+            data-decisions-key={key}
             draggable={canDrag}
             className="relative [&_img]:pointer-events-none [&_*]:[-webkit-user-drag:none]"
             onDragStart={(event) => {
