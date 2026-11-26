@@ -1,5 +1,4 @@
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import {
   buildEntityKeywordIndex,
   entityDisplayNames,
@@ -12,10 +11,9 @@ import type { PostBlock } from "@/lib/chemical-types";
 interface LegacyInlineCandidate {
   value: string;
   lowerValue: string;
-  kind: "entity" | "keyword";
+  kind: "entity";
   entityId?: string;
   entityType?: EntityInfo["type"];
-  description?: string;
 }
 
 export interface RichContentIndexes {
@@ -55,21 +53,9 @@ function buildLegacyInlineIndex(entities: EntityInfo[]): Map<string, LegacyInlin
     }
   }
 
-  for (const [value, description] of Object.entries({ ...KEYWORD_DESC, ...GOLD_TERM_DESC })) {
-    const trimmed = value.trim();
-    if (!trimmed) continue;
-    addCandidate({
-      value: trimmed,
-      lowerValue: trimmed.toLowerCase(),
-      kind: "keyword",
-      description,
-    });
-  }
-
   for (const bucket of index.values()) {
     bucket.sort((a, b) => {
       if (b.value.length !== a.value.length) return b.value.length - a.value.length;
-      if (a.kind !== b.kind) return a.kind === "entity" ? -1 : 1;
       return a.value.localeCompare(b.value, "ko");
     });
   }
@@ -124,13 +110,6 @@ function parseLegacyContentBlocks(
         entityId: matched.entityId,
         entityType: matched.entityType,
         displayText: matchedText,
-      });
-    } else if (matched.description) {
-      blocks.push({
-        type: "keyword",
-        text: matchedText,
-        keyword: matchedText,
-        description: matched.description,
       });
     }
 

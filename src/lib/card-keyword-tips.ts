@@ -6,6 +6,7 @@ import type {
 } from "@/lib/codex-types";
 import type { GameLocalizationTable } from "@/lib/game-localization-text";
 import { gameText } from "@/lib/game-localization-text";
+import { isTextHoverTip } from "@/lib/hover-tip-scope";
 import {
   cardKeywordLookupKey,
   getCardDisplayKeywords,
@@ -66,12 +67,6 @@ const KEYWORD_TIP_CARD_EXPANSIONS: Record<string, string> = {
 function monsterRenderImageUrl(id: string): string {
   return `/images/sts2/monsters-render/${id.toLowerCase()}.webp`;
 }
-
-/** Gold terms that do not match static tip titles 1:1 after template strip. */
-const GOLD_STATIC_TIP_ALIASES: Record<string, string> = {
-  "소멸된 카드 더미": "EXHAUST_PILE",
-  "Exhaust Pile": "EXHAUST_PILE",
-};
 
 const ORB_IDS = [
   "LIGHTNING_ORB",
@@ -205,6 +200,8 @@ export function buildCardSideTipCatalog(input: {
 
   const registerKeywordTip = (tip: CardSideKeywordTip, ...names: Array<string | null | undefined>) => {
     if (!keywordsById.has(tip.id)) keywordsById.set(tip.id, tip);
+    // A gold word never shows a UI part's tip (Deck, piles, gold ...), so those stay off name lookup.
+    if (!isTextHoverTip(tip.source, tip.id)) return;
     for (const name of names) setKeywordTip(keywordsByName, name, tip);
   };
 
@@ -252,11 +249,6 @@ export function buildCardSideTipCatalog(input: {
       const localized = parseOrbTips(input.orbs).find((entry) => entry.id === tip.id) ?? tip;
       registerKeywordTip(localized, tip.title);
     }
-  }
-
-  for (const [gold, tipId] of Object.entries(GOLD_STATIC_TIP_ALIASES)) {
-    const existing = keywordsById.get(tipId);
-    if (existing) registerKeywordTip(existing, gold);
   }
 
   const cardsById = new Map<string, CodexCard>();

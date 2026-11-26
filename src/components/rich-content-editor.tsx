@@ -84,7 +84,6 @@ import {
   entityDisplayNames,
   entityKeywordDescription,
   matchEntities,
-  normalizeKeywordLookupKey,
   resolveEntityKeyword,
   sanitizeRichTextJson,
   stripNullCharacters,
@@ -99,7 +98,6 @@ import {
   inProgressKeywordRange,
   type ExactKeywordLabel,
 } from "@/lib/rich-keyword-plain-text";
-import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import { GameScrollArea } from "@/components/game-scroll-area";
 import type { HistoryRunBlock, HistoryRunFloorBlock, PostBlock } from "@/lib/chemical-types";
 import {
@@ -614,32 +612,16 @@ export function RichContentEditor({
     [entityMap],
   );
   const keywordEntityIndex = useMemo(() => buildEntityKeywordIndex(entities), [entities]);
-  const exactKeywordIndex = useMemo(() => buildExactKeywordIndex(buildExactKeywordLabels([
-    ...entities.flatMap(entityDisplayNames),
-    ...Object.keys(KEYWORD_DESC),
-    ...Object.keys(GOLD_TERM_DESC),
-  ])), [entities]);
-  const keywordDescriptionMap = useMemo(() => {
-    const map = new Map<string, string>();
-
-    for (const [k, v] of Object.entries(KEYWORD_DESC)) {
-      map.set(normalizeKeywordLookupKey(k), cleanTooltipText(v));
-    }
-    for (const [k, v] of Object.entries(GOLD_TERM_DESC)) {
-      map.set(normalizeKeywordLookupKey(k), cleanTooltipText(v));
-    }
-
-    return map;
-  }, []);
+  const exactKeywordIndex = useMemo(() => buildExactKeywordIndex(buildExactKeywordLabels(
+    entities.flatMap(entityDisplayNames),
+  )), [entities]);
 
   const resolveKeyword = useCallback((keyword: string): KeywordResolution => {
     const cleanKeyword = sanitizeKeywordPart(keyword);
-    const lookupKey = normalizeKeywordLookupKey(cleanKeyword);
     const entity = resolveEntityKeyword(cleanKeyword, keywordEntityIndex);
     const entityDescription = entity ? entityKeywordDescription(entity) : null;
     const description =
       (entityDescription ? cleanTooltipText(entityDescription) : null)
-      ?? keywordDescriptionMap.get(lookupKey)
       ?? cleanKeyword;
     return {
       keyword: cleanKeyword,
@@ -647,7 +629,7 @@ export function RichContentEditor({
       entityId: entity?.id,
       entityType: entity?.type,
     };
-  }, [keywordDescriptionMap, keywordEntityIndex]);
+  }, [keywordEntityIndex]);
 
   const syncEditorState = useCallback((editor: Editor) => {
     const json = sanitizeRichTextJson(editor.getJSON());

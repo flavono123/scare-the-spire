@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import {
   parseBBCode,
@@ -15,7 +15,6 @@ import {
   type EntityLookup,
 } from "@/components/patch-note-renderer";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import { GOLD_TERM_DESC, TermTooltip } from "./codex-description";
 
 /**
  * Description renderer that recognises in-line entity names inside BBCode
@@ -24,8 +23,7 @@ import { GOLD_TERM_DESC, TermTooltip } from "./codex-description";
  * detail pages (relic, enchantment, power, …).
  *
  * - `[purple]숙련[/purple]` on the 목패 relic resolves to the 숙련 enchantment.
- * - Plain `[gold]방어도[/gold]` keywords keep their static keyword tooltip
- *   when no entity matches.
+ * - Other gold words stay highlight only, as in game.
  */
 
 interface BBNode {
@@ -59,9 +57,6 @@ const COLOR_TAGS = new Set([
 interface RenderCtx {
   lookup: EntityLookup | null;
   gameUi?: CodexGameUiLabels;
-  termDescriptions: Record<string, string>;
-  hoveredTerm: string | null;
-  setHoveredTerm: (t: string | null) => void;
   energyIcon: string;
   // Don't replace these terms with entity links even when they would match —
   // useful for ambiguous keywords like 약화/취약 where the inline keyword
@@ -123,27 +118,6 @@ function renderNodes(nodes: BBNode[], ctx: RenderCtx, prefix: string): ReactNode
         }
       }
 
-      // 2) Static keyword tooltip — only for [gold] with a known term
-      if (
-        tag === "gold" &&
-        inner &&
-        ctx.termDescriptions[inner]
-      ) {
-        return (
-          <span
-            key={key}
-            className={`${className} relative cursor-help`}
-            onMouseEnter={() => ctx.setHoveredTerm(inner)}
-            onMouseLeave={() => ctx.setHoveredTerm(null)}
-          >
-            {inner}
-            {ctx.hoveredTerm === inner && (
-              <TermTooltip name={inner} desc={ctx.termDescriptions[inner]} />
-            )}
-          </span>
-        );
-      }
-
       // 3) Energy icon (renders as repeated lightning images)
       if (tag === "energy" && node.param) {
         const count = parseInt(node.param, 10) || 1;
@@ -201,8 +175,6 @@ export interface RichDescriptionProps {
   entities?: EntityInfo[];
   /** Pre-built lookup. If provided, takes precedence over `entities`. */
   lookup?: EntityLookup;
-  /** Static keyword tooltip overrides — merged on top of GOLD_TERM_DESC. */
-  termDescriptions?: Record<string, string>;
   /** Don't turn these matched names into entity links (still rendered colored). */
   excludeEntityTerms?: ReadonlySet<string>;
   /** Don't turn these matched resource kinds into entity links. */
@@ -216,33 +188,22 @@ export function RichDescription({
   entities,
   gameUi,
   lookup,
-  termDescriptions,
   excludeEntityTerms,
   excludeEntityTypes,
   energyIcon = "/images/game-assets/card-misc/energy_colorless.png",
   className,
 }: RichDescriptionProps) {
-  const [hoveredTerm, setHoveredTerm] = useState<string | null>(null);
-
   const resolvedLookup = useMemo(() => {
     if (lookup) return lookup;
     if (entities && entities.length > 0) return buildEntityLookup(entities);
     return null;
   }, [lookup, entities]);
 
-  const allTerms = useMemo(
-    () => ({ ...GOLD_TERM_DESC, ...termDescriptions }),
-    [termDescriptions],
-  );
-
   const nodes = useMemo(() => parseBBCode(description) as BBNode[], [description]);
 
   const ctx: RenderCtx = {
     lookup: resolvedLookup,
     gameUi,
-    termDescriptions: allTerms,
-    hoveredTerm,
-    setHoveredTerm,
     energyIcon,
     excludeEntityTerms,
     excludeEntityTypes,
